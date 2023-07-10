@@ -83,10 +83,10 @@ namespace FunnyExperience.Content.GUI
 
 				Color color = Color.Gray;
 
-				if (edge.end.CanAllocate())
+				if (edge.end.CanAllocate() && edge.start.level > 0)
 					color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 
-				if (edge.end.level > 0)
+				if (edge.end.level > 0 && edge.start.level > 0)
 					color = Color.White;
 
 				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.start.treePos, edge.end.treePos) / 16))

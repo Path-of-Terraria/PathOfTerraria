@@ -75,7 +75,7 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		{
 			return
 				level > 0 &&
-				!(level == 1 && TreeSystem.edges.Any(n => n.end.level > 0 && n.start == this));
+				!(level == 1 && TreeSystem.edges.Any(n => n.end.level > 0 && n.start == this && !TreeSystem.edges.Any(a => a != n && a.end == n.end && a.start.level > 0)));
 		}
 	}
 }
