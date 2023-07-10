@@ -17,12 +17,12 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 			player.statLifeMax2 += 20 * level;
 		}
 
-		public override void Connect(List<Passive> all)
+		public override void Connect(List<Passive> all, Player player)
 		{
-			Connect<MeleePassive>(all);
-			Connect<RangedPassive>(all);
-			Connect<MagicPassive>(all);
-			Connect<SummonPassive>(all);
+			Connect<MeleePassive>(all, player);
+			Connect<RangedPassive>(all, player);
+			Connect<MagicPassive>(all, player);
+			Connect<SummonPassive>(all, player);
 		}
 	}
 }

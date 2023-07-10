@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria.ModLoader.IO;
 
 namespace FunnyExperience.Core.Systems.TreeSystem
 {
@@ -14,12 +15,14 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		}
 	}
 
-	internal class TreeSystem : ModSystem
+	internal class TreePlayer : ModPlayer
 	{
-		public static List<Passive> nodes;
-		public static List<PassiveEdge> edges;
+		public int Points;
 
-		public override void Load()
+		public List<Passive> nodes = new();
+		public List<PassiveEdge> edges = new();
+
+		public override void OnEnterWorld()
 		{
 			nodes = new();
 			edges = new();
@@ -33,7 +36,7 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 				}
 			}
 
-			nodes.ForEach(n => n.Connect(nodes));
+			nodes.ForEach(n => n.Connect(nodes, Player));
 		}
 
 		public override void Unload()
@@ -41,33 +44,47 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 			nodes = null;
 			edges = null;
 		}
-	}
-
-	internal class TreePlayer : ModPlayer
-	{
-		public List<Passive> passives = new();
-
-		public int Points;
 
 		public override void UpdateEquips()
 		{
-			passives.ForEach(n => n.BuffPlayer(Player));
+			nodes.ForEach(n => n.BuffPlayer(Player));
 
-			if (Player.controlHook)
+			if (Player.controlHook && Player.controlQuickHeal)
 			{
-				TreeSystem.nodes = new();
-				TreeSystem.edges = new();
+				nodes = new();
+				edges = new();
 
 				foreach (Type type in Mod.Code.GetTypes())
 				{
 					if (!type.IsAbstract && type.IsSubclassOf(typeof(Passive)))
 					{
 						object instance = Activator.CreateInstance(type);
-						TreeSystem.nodes.Add(instance as Passive);
+						nodes.Add(instance as Passive);
 					}
 				}
 
-				TreeSystem.nodes.ForEach(n => n.Connect(TreeSystem.nodes));
+				nodes.ForEach(n => n.Connect(nodes, Player));
+			}
+		}
+
+		public override void SaveData(TagCompound tag)
+		{
+			tag["points"] = Points;
+
+			foreach (Passive passive in nodes)
+			{
+				tag[passive.GetType().Name] = passive.level;
+			}
+		}
+
+		public override void LoadData(TagCompound tag)
+		{
+			Points = tag.GetInt("points");
+
+			foreach (Passive passive in nodes)
+			{
+				if (tag.TryGet(passive.GetType().Name, out int level))
+					passive.level = level;
 			}
 		}
 	}

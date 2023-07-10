@@ -17,10 +17,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 			player.GetDamage(DamageClass.Melee) += 0.2f;
 		}
 
-		public override void Connect(List<Passive> all)
+		public override void Connect(List<Passive> all, Player player)
 		{
-			Connect<CloseRangePassive>(all);
-			Connect<BleedPassive>(all);
+			Connect<CloseRangePassive>(all, player);
+			Connect<BleedPassive>(all, player);
 		}
 	}
 
@@ -39,10 +39,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 			player.GetDamage(DamageClass.Ranged) += 0.2f;
 		}
 
-		public override void Connect(List<Passive> all)
+		public override void Connect(List<Passive> all, Player player)
 		{
-			Connect<LongRangePassive>(all);
-			Connect<AmmoPassive>(all);
+			Connect<LongRangePassive>(all, player);
+			Connect<AmmoPassive>(all, player);
 		}
 	}
 
@@ -61,10 +61,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 			player.GetDamage(DamageClass.Magic) += 0.2f;
 		}
 
-		public override void Connect(List<Passive> all)
+		public override void Connect(List<Passive> all, Player player)
 		{
-			Connect<LongRangePassive>(all);
-			Connect<ManaPassive>(all);
+			Connect<LongRangePassive>(all, player);
+			Connect<ManaPassive>(all, player);
 		}
 	}
 
@@ -83,10 +83,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 			player.GetDamage(DamageClass.Summon) += 0.2f;
 		}
 
-		public override void Connect(List<Passive> all)
+		public override void Connect(List<Passive> all, Player player)
 		{
-			Connect<MinionPassive>(all);
-			Connect<SentryPassive>(all);
+			Connect<MinionPassive>(all, player);
+			Connect<SentryPassive>(all, player);
 		}
 	}
 }

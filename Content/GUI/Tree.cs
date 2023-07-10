@@ -12,6 +12,8 @@ namespace FunnyExperience.Content.GUI
 
 		public UIPanel panel;
 
+		public TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
+
 		public override bool Visible => true;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -54,9 +56,9 @@ namespace FunnyExperience.Content.GUI
 			Texture2D tex = ModContent.Request<Texture2D>("FunnyExperience/Assets/PassiveFrameSmall").Value;
 			TreePlayer mp = Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
-			spriteBatch.Draw(tex, panel.GetDimensions().ToRectangle().TopRight() + new Vector2(-32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
-			Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", panel.GetDimensions().ToRectangle().TopRight() + new Vector2(-32, 32), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
-			Utils.DrawBorderStringBig(spriteBatch, $"Points remaining: ", panel.GetDimensions().ToRectangle().TopRight() + new Vector2(-170, 28), Color.White, 0.6f, 0.5f, 0.35f);
+			spriteBatch.Draw(tex, panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+			Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
+			Utils.DrawBorderStringBig(spriteBatch, $"Points remaining", panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(170, 32), Color.White, 0.6f, 0.5f, 0.35f);
 		}
 	}
 
@@ -67,6 +69,8 @@ namespace FunnyExperience.Content.GUI
 		public Vector2 lineOff;
 
 		UIElement Panel => Parent;
+
+		public TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
@@ -83,7 +87,7 @@ namespace FunnyExperience.Content.GUI
 
 				Color color = Color.Gray;
 
-				if (edge.end.CanAllocate() && edge.start.level > 0)
+				if (edge.end.CanAllocate(Main.LocalPlayer) && edge.start.level > 0)
 					color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 
 				if (edge.end.level > 0 && edge.start.level > 0)
@@ -157,10 +161,6 @@ namespace FunnyExperience.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			Main.NewText(GetDimensions().ToRectangle());
-
-			Main.NewText(Left.Pixels);
-
 			passive.Draw(spriteBatch, GetDimensions().Center());
 
 			if (IsMouseHovering)
@@ -174,7 +174,7 @@ namespace FunnyExperience.Content.GUI
 
 		public override void SafeClick(UIMouseEvent evt)
 		{
-			if (passive.CanAllocate())
+			if (passive.CanAllocate(Main.LocalPlayer))
 			{
 				passive.level++;
 				Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
@@ -183,7 +183,7 @@ namespace FunnyExperience.Content.GUI
 
 		public override void SafeRightClick(UIMouseEvent evt)
 		{
-			if (passive.CanDeallocate())
+			if (passive.CanDeallocate(Main.LocalPlayer))
 			{
 				passive.level--;
 				Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;

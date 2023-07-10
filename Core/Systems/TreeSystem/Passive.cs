@@ -27,7 +27,7 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 
 			Color color = Color.Gray;
 
-			if (CanAllocate())
+			if (CanAllocate(Main.LocalPlayer))
 				color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 
 			if (level > 0)
@@ -35,14 +35,14 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 
 			spriteBatch.Draw(tex, center, null, color, 0, tex.Size() / 2f, 1, 0, 0);
 
-			Utils.DrawBorderString(spriteBatch, $"{level}/{maxLevel}", center + new Vector2(width / 2f, height / 2f), Color.White, 1, 0.5f, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"{level}/{maxLevel}", center + new Vector2(width / 2f, height / 2f), color, 1, 0.5f, 0.5f);
 		}
 
 		/// <summary>
 		/// Called on load to generate the tree edges
 		/// </summary>
 		/// <param name="all"></param>
-		public virtual void Connect(List<Passive> all) { }
+		public virtual void Connect(List<Passive> all, Player player) { }
 
 		/// <summary>
 		/// Attaches a node to this node, starting at this node and ending at this node.
@@ -50,8 +50,9 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		/// </summary>
 		/// <typeparam name="T">The type of node to connect to</typeparam>
 		/// <param name="all">All nodes</param>
-		public void Connect<T>(List<Passive> all) where T : Passive
+		public void Connect<T>(List<Passive> all, Player player) where T : Passive
 		{
+			TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
 			TreeSystem.edges.Add(new(this, all.FirstOrDefault(n => n is T)));
 		}
 
@@ -59,8 +60,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		/// If this passive is unlocked or not
 		/// </summary>
 		/// <returns></returns>
-		public bool CanAllocate()
+		public bool CanAllocate(Player player)
 		{
+			TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
+
 			return
 				level < maxLevel &&
 				Main.LocalPlayer.GetModPlayer<TreePlayer>().Points > 0 &&
@@ -71,8 +74,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		/// If this passive can be refunded or not
 		/// </summary>
 		/// <returns></returns>
-		public bool CanDeallocate()
+		public bool CanDeallocate(Player player)
 		{
+			TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
+
 			return
 				level > 0 &&
 				!(level == 1 && TreeSystem.edges.Any(n => n.end.level > 0 && n.start == this && !TreeSystem.edges.Any(a => a != n && a.end == n.end && a.start.level > 0)));
