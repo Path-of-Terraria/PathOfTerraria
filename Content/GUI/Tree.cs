@@ -43,12 +43,6 @@ namespace FunnyExperience.Content.GUI
 				populated = true;
 			}
 
-			if (Main.LocalPlayer.controlHook)
-			{
-				RemoveAllChildren();
-				populated = false;
-			}
-
 			Recalculate();
 
 			base.Draw(spriteBatch);

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using FunnyExperience.Content.GUI;
+using FunnyExperience.Core.Loaders.UILoading;
+using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 
 namespace FunnyExperience.Core.Systems.TreeSystem
@@ -24,25 +26,8 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 
 		public override void OnEnterWorld()
 		{
-			nodes = new();
-			edges = new();
-
-			foreach (Type type in Mod.Code.GetTypes())
-			{
-				if (!type.IsAbstract && type.IsSubclassOf(typeof(Passive)))
-				{
-					object instance = Activator.CreateInstance(type);
-					nodes.Add(instance as Passive);
-				}
-			}
-
-			nodes.ForEach(n => n.Connect(nodes, Player));
-		}
-
-		public override void Unload()
-		{
-			nodes = null;
-			edges = null;
+			UILoader.GetUIState<Tree>().RemoveAllChildren();
+			UILoader.GetUIState<Tree>().populated = false;
 		}
 
 		public override void UpdateEquips()
@@ -79,12 +64,30 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 
 		public override void LoadData(TagCompound tag)
 		{
+			// Reset tree
+			nodes = new();
+			edges = new();
+
+			foreach (Type type in Mod.Code.GetTypes())
+			{
+				if (!type.IsAbstract && type.IsSubclassOf(typeof(Passive)))
+				{
+					object instance = Activator.CreateInstance(type);
+					nodes.Add(instance as Passive);
+				}
+			}
+
+			nodes.ForEach(n => n.Connect(nodes, Player));
+
+			// Load tree
 			Points = tag.GetInt("points");
 
 			foreach (Passive passive in nodes)
 			{
 				if (tag.TryGet(passive.GetType().Name, out int level))
 					passive.level = level;
+				else
+					passive.level = 0;
 			}
 		}
 	}
