@@ -138,6 +138,12 @@ namespace FunnyExperience.Content.GUI
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			passive.Draw(spriteBatch, GetDimensions().Center());
+
+			if (IsMouseHovering)
+			{
+				Tooltip.SetName($"{passive.name} ({passive.level}/{passive.maxLevel})");
+				Tooltip.SetTooltip(passive.tooltip);
+			}
 		}
 
 		public override void SafeClick(UIMouseEvent evt)

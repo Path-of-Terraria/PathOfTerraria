@@ -7,6 +7,9 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 	{
 		public Vector2 treePos;
 
+		public string name = "Unknown";
+		public string tooltip = "Who knows what this will do!";
+
 		public int level;
 		public int maxLevel;
 

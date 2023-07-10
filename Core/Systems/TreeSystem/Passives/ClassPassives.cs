@@ -1,17 +1,26 @@
-﻿namespace FunnyExperience.Core.Systems.TreeSystem.Passives
+﻿using System.Collections.Generic;
+
+namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 {
 	internal class MeleePassive : Passive
 	{
 		public MeleePassive() : base()
 		{
+			name = "Martial Mastery";
+			tooltip = "Increases your melee damage by 20% per level";
 			maxLevel = 5;
-
-			treePos = new Vector2(200, 300);
+			treePos = new Vector2(250, 300);
 		}
 
 		public override void BuffPlayer(Player player)
 		{
 			player.GetDamage(DamageClass.Melee) += 0.2f;
+		}
+
+		public override void Connect(List<Passive> all)
+		{
+			Connect<CloseRangePassive>(all);
+			Connect<BleedPassive>(all);
 		}
 	}
 
@@ -19,9 +28,10 @@
 	{
 		public RangedPassive() : base()
 		{
+			name = "Marksmanship Mastery";
+			tooltip = "Increases your ranged damage by 20% per level";
 			maxLevel = 5;
-
-			treePos = new Vector2(300, 250);
+			treePos = new Vector2(350, 250);
 		}
 
 		public override void BuffPlayer(Player player)
@@ -34,9 +44,10 @@
 	{
 		public MagicPassive() : base()
 		{
+			name = "Arcane Mastery";
+			tooltip = "Increases your magic damage by 20% per level";
 			maxLevel = 5;
-
-			treePos = new Vector2(500, 250);
+			treePos = new Vector2(450, 250);
 		}
 
 		public override void BuffPlayer(Player player)
@@ -49,9 +60,10 @@
 	{
 		public SummonPassive() : base()
 		{
+			name = "Summoning Mastery";
+			tooltip = "Increases your summon damage by 20% per level";
 			maxLevel = 5;
-
-			treePos = new Vector2(600, 300);
+			treePos = new Vector2(550, 300);
 		}
 
 		public override void BuffPlayer(Player player)

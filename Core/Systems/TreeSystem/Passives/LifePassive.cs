@@ -6,9 +6,9 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 	{
 		public LifePassive() : base()
 		{
-			level = 1;
+			name = "Empowered Flesh";
+			tooltip = "Increases your maximum life by 20 per level";
 			maxLevel = 5;
-
 			treePos = new Vector2(400, 400);
 		}
 

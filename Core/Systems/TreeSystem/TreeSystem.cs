@@ -52,6 +52,23 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		public override void UpdateEquips()
 		{
 			passives.ForEach(n => n.BuffPlayer(Player));
+
+			if (Player.controlHook)
+			{
+				TreeSystem.nodes = new();
+				TreeSystem.edges = new();
+
+				foreach (Type type in Mod.Code.GetTypes())
+				{
+					if (!type.IsAbstract && type.IsSubclassOf(typeof(Passive)))
+					{
+						object instance = Activator.CreateInstance(type);
+						TreeSystem.nodes.Add(instance as Passive);
+					}
+				}
+
+				TreeSystem.nodes.ForEach(n => n.Connect(TreeSystem.nodes));
+			}
 		}
 	}
 }
