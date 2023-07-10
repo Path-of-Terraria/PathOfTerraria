@@ -10,7 +10,7 @@ namespace FunnyExperience.Content.GUI
 	{
 		public bool populated = false;
 
-		UIPanel panel;
+		public UIPanel panel;
 
 		public override bool Visible => true;
 
@@ -28,6 +28,7 @@ namespace FunnyExperience.Content.GUI
 				panel.Top.Set(-400, 0.5f);
 				panel.Width.Set(600, 0);
 				panel.Height.Set(800, 0);
+				Append(panel);
 
 				var inner = new InnerPanel();
 				inner.Left.Set(0, 0);
@@ -38,8 +39,6 @@ namespace FunnyExperience.Content.GUI
 
 				TreeSystem.nodes.ForEach(n => inner.Append(new PassiveElement(n)));
 				populated = true;
-
-				Append(panel);
 			}
 
 			if (Main.LocalPlayer.controlHook)
@@ -47,6 +46,8 @@ namespace FunnyExperience.Content.GUI
 				RemoveAllChildren();
 				populated = false;
 			}
+
+			Recalculate();
 
 			base.Draw(spriteBatch);
 
@@ -63,12 +64,15 @@ namespace FunnyExperience.Content.GUI
 	{
 		public Vector2 start;
 		public Vector2 root;
+		public Vector2 lineOff;
+
+		UIElement Panel => Parent;
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
 			Rectangle oldRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 			spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
-			spriteBatch.GraphicsDevice.ScissorRectangle = Parent.GetDimensions().ToRectangle();
+			spriteBatch.GraphicsDevice.ScissorRectangle = Panel.GetDimensions().ToRectangle();
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
@@ -87,7 +91,7 @@ namespace FunnyExperience.Content.GUI
 
 				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.start.treePos, edge.end.treePos) / 16))
 				{
-					Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.start.treePos, edge.end.treePos, k);
+					Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.start.treePos, edge.end.treePos, k) + lineOff;
 					Main.spriteBatch.Draw(chainTex, pos, null, color, edge.start.treePos.DirectionTo(edge.end.treePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 				}
 			}
@@ -103,28 +107,44 @@ namespace FunnyExperience.Content.GUI
 
 		public override void SafeUpdate(GameTime gameTime)
 		{
-			if (Main.mouseLeft && Parent.IsMouseHovering)
+			if (Main.mouseLeft && Panel.IsMouseHovering)
 			{
 				if (start == Vector2.Zero)
 				{
 					start = Main.MouseScreen;
-					root = new Vector2(Left.Pixels, Top.Pixels);
+					root = lineOff;
+
+					foreach (UIElement element in Elements)
+					{
+						if (element is PassiveElement ele)
+							ele.root = new Vector2(ele.Left.Pixels, ele.Top.Pixels);
+					}
 				}
 
-				Left.Set(root.X + Main.MouseScreen.X - start.X, 0);
-				Top.Set(root.Y + Main.MouseScreen.Y - start.Y, 0);
-				Recalculate();
+				foreach (UIElement element in Elements)
+				{
+					if (element is PassiveElement ele)
+					{
+						element.Left.Set(ele.root.X + Main.MouseScreen.X - start.X, 0);
+						element.Top.Set(ele.root.Y + Main.MouseScreen.Y - start.Y, 0);
+					}
+				}
+
+				lineOff = root + Main.MouseScreen - start;
 			}
 			else
 			{
 				start = Vector2.Zero;
 			}
+
+			Recalculate();
 		}
 	}
 
 	internal class PassiveElement : SmartUIElement
 	{
 		public Passive passive;
+		public Vector2 root;
 
 		public PassiveElement(Passive passive)
 		{
@@ -137,6 +157,10 @@ namespace FunnyExperience.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
+			Main.NewText(GetDimensions().ToRectangle());
+
+			Main.NewText(Left.Pixels);
+
 			passive.Draw(spriteBatch, GetDimensions().Center());
 
 			if (IsMouseHovering)
@@ -144,6 +168,8 @@ namespace FunnyExperience.Content.GUI
 				Tooltip.SetName($"{passive.name} ({passive.level}/{passive.maxLevel})");
 				Tooltip.SetTooltip(passive.tooltip);
 			}
+
+			Recalculate();
 		}
 
 		public override void SafeClick(UIMouseEvent evt)

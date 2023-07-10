@@ -38,6 +38,12 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 		{
 			player.GetDamage(DamageClass.Ranged) += 0.2f;
 		}
+
+		public override void Connect(List<Passive> all)
+		{
+			Connect<LongRangePassive>(all);
+			Connect<AmmoPassive>(all);
+		}
 	}
 
 	internal class MagicPassive : Passive
@@ -54,6 +60,12 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 		{
 			player.GetDamage(DamageClass.Magic) += 0.2f;
 		}
+
+		public override void Connect(List<Passive> all)
+		{
+			Connect<LongRangePassive>(all);
+			Connect<ManaPassive>(all);
+		}
 	}
 
 	internal class SummonPassive : Passive
@@ -69,6 +81,12 @@ namespace FunnyExperience.Core.Systems.TreeSystem.Passives
 		public override void BuffPlayer(Player player)
 		{
 			player.GetDamage(DamageClass.Summon) += 0.2f;
+		}
+
+		public override void Connect(List<Passive> all)
+		{
+			Connect<MinionPassive>(all);
+			Connect<SentryPassive>(all);
 		}
 	}
 }
