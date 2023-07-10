@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "I9bXC7W/Cg7IYHzMfw4eYfj/Y74H9qBdFP5Eos7a8JVqFiSrNzMUjDFFI2MXAsTk9Jwk5Qoc6PQlTNATw06OHw==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Alex\\Documents\\My Games\\Terraria\\tModLoader\\ModSources\\FunnyExperience\\FunnyExperience.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Alex\\.nuget\\packages\\tmodloader.codeassist\\0.1.5\\tmodloader.codeassist.0.1.5.nupkg.sha512"
+  ],
+  "logs": []
+}
