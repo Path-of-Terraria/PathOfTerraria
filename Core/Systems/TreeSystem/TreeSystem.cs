@@ -33,23 +33,6 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		public override void UpdateEquips()
 		{
 			nodes.ForEach(n => n.BuffPlayer(Player));
-
-			if (Player.controlHook && Player.controlQuickHeal)
-			{
-				nodes = new();
-				edges = new();
-
-				foreach (Type type in Mod.Code.GetTypes())
-				{
-					if (!type.IsAbstract && type.IsSubclassOf(typeof(Passive)))
-					{
-						object instance = Activator.CreateInstance(type);
-						nodes.Add(instance as Passive);
-					}
-				}
-
-				nodes.ForEach(n => n.Connect(nodes, Player));
-			}
 		}
 
 		public override void SaveData(TagCompound tag)

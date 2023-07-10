@@ -12,9 +12,11 @@ namespace FunnyExperience.Content.GUI
 
 		public UIPanel panel;
 
+		public bool visible;
+
 		public TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
-		public override bool Visible => true;
+		public override bool Visible => visible;
 
 		public override int InsertionIndex(List<GameInterfaceLayer> layers)
 		{
@@ -23,6 +25,9 @@ namespace FunnyExperience.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
+			if (Main.LocalPlayer.controlInv)
+				visible = false;
+
 			if (!populated)
 			{
 				panel = new();

@@ -32,9 +32,18 @@ namespace FunnyExperience.Content.GUI
 			var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 
 			if (bounding.Contains(Main.MouseScreen.ToPoint()))
-			{
-				Utils.DrawBorderString(spriteBatch, $"Level {mp.level}\nExperience: {mp.exp} / {mp.NextLevel} ({Math.Truncate(mp.exp / (float)mp.NextLevel * 10000) / 100f}%)", Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
-			}
+				Utils.DrawBorderString(spriteBatch, $"Level {mp.level}\nExperience: {mp.exp} / {mp.NextLevel} ({Math.Truncate(mp.exp / (float)mp.NextLevel * 10000) / 100f}%)\n\nClick to open skill tree", Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
+		}
+
+		public override void SafeClick(UIMouseEvent evt)
+		{
+			Texture2D bar = ModContent.Request<Texture2D>("FunnyExperience/Assets/BarEmpty").Value;
+			var pos = new Vector2(Main.screenWidth / 2, 10);
+
+			var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
+
+			if (bounding.Contains(Main.MouseScreen.ToPoint()))
+				UILoader.GetUIState<Tree>().visible = true;
 		}
 	}
 }

@@ -19,21 +19,10 @@ namespace FunnyExperience.Core.Systems
 				level++;
 
 				Main.NewText($"You've reached level {level}!", new Color(145, 255, 160));
-				Main.NewText($"You have gained 1 skill point", new Color(255, 255, 160));
-
-				Main.NewText($"Maximum life has increased by 5", new Color(255, 160, 160));
-				Main.NewText($"Maximum mana has increased by 2", new Color(160, 160, 255));
-				Main.NewText($"Power has increased by 1", new Color(255, 220, 160));
+				Main.NewText($"You have gained 1 skill point. Click the experience bar to open the skill tree.", new Color(255, 255, 160));
 
 				Player.GetModPlayer<TreePlayer>().Points++;
 			}
-		}
-
-		public override void UpdateEquips()
-		{
-			Player.statLifeMax2 += level * 5;
-			Player.statManaMax2 += level * 2;
-			Player.GetDamage(DamageClass.Generic) += level * 0.01f;
 		}
 
 		public override void SaveData(TagCompound tag)
