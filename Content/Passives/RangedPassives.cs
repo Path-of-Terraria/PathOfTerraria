@@ -1,4 +1,6 @@
-﻿namespace FunnyExperience.Core.Systems.TreeSystem.Passives
+﻿using FunnyExperience.Core.Systems.TreeSystem;
+
+namespace FunnyExperience.Content.Passives
 {
 	internal class AmmoPassive : Passive
 	{

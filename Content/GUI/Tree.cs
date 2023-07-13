@@ -1,7 +1,9 @@
 ﻿using FunnyExperience.Core.Loaders.UILoading;
 using FunnyExperience.Core.Systems.TreeSystem;
 using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace FunnyExperience.Content.GUI
@@ -11,6 +13,7 @@ namespace FunnyExperience.Content.GUI
 		public bool populated = false;
 
 		public UIPanel panel;
+		public UIImageButton closeButton;
 
 		public bool visible;
 
@@ -36,6 +39,15 @@ namespace FunnyExperience.Content.GUI
 				panel.Width.Set(600, 0);
 				panel.Height.Set(800, 0);
 				Append(panel);
+
+				closeButton = new(ModContent.Request<Texture2D>("FunnyExperience/Assets/CloseButton"));
+				closeButton.Left.Set(252, 0.5f);
+				closeButton.Top.Set(-392, 0.5f);
+				closeButton.Width.Set(38, 0);
+				closeButton.Height.Set(38, 0);
+				closeButton.OnLeftClick += (a, b) => visible = false;
+				closeButton.SetVisibility(1, 1);
+				Append(closeButton);
 
 				var inner = new InnerPanel();
 				inner.Left.Set(0, 0);
@@ -97,6 +109,29 @@ namespace FunnyExperience.Content.GUI
 					Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.start.treePos, edge.end.treePos, k) + lineOff;
 					Main.spriteBatch.Draw(chainTex, pos, null, color, edge.start.treePos.DirectionTo(edge.end.treePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 				}
+
+				if (edge.end.level > 0 && edge.start.level > 0)
+				{
+					Texture2D glow = ModContent.Request<Texture2D>("FunnyExperience/Assets/GlowAlpha").Value;
+					var glowColor = new Color(255, 230, 150)
+					{
+						A = 0
+					};
+
+					var rand = new Random(edge.GetHashCode());
+
+					for (int k = 0; k < 8; k++)
+					{
+						float dist = Vector2.Distance(edge.start.treePos, edge.end.treePos);
+						float len = (40 + rand.Next(120)) * dist / 50;
+						float scale = 0.05f + rand.NextSingle() * 0.15f;
+
+						float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
+						Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.start.treePos, edge.end.treePos, progress) + lineOff;
+						float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
+						spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
+					}
+				}
 			}
 
 			base.Draw(spriteBatch);
@@ -149,6 +184,9 @@ namespace FunnyExperience.Content.GUI
 		public Passive passive;
 		public Vector2 root;
 
+		public int flashTimer;
+		public int redFlashTimer;
+
 		public PassiveElement(Passive passive)
 		{
 			this.passive = passive;
@@ -162,9 +200,54 @@ namespace FunnyExperience.Content.GUI
 		{
 			passive.Draw(spriteBatch, GetDimensions().Center());
 
+			if (flashTimer > 0)
+			{
+				Texture2D glow = ModContent.Request<Texture2D>("FunnyExperience/Assets/GlowAlpha").Value;
+				Texture2D star = ModContent.Request<Texture2D>("FunnyExperience/Assets/StarAlpha").Value;
+
+				float prog = flashTimer / 20f;
+
+				var glowColor = new Color(255, 230, 150)
+				{
+					A = 0
+				};
+
+				glowColor *= prog * 0.5f;
+
+				spriteBatch.Draw(glow, GetDimensions().Center(), null, glowColor, 0, glow.Size() / 2f, 1 + (1f - prog), 0, 0);
+				spriteBatch.Draw(star, GetDimensions().Center(), null, glowColor * 0.5f, 0, star.Size() / 2f, 1 + (1f - prog), 0, 0);
+
+				flashTimer--;
+			}
+
+			if (redFlashTimer > 0)
+			{
+				Texture2D glow = ModContent.Request<Texture2D>("FunnyExperience/Assets/GlowAlpha").Value;
+				Texture2D star = ModContent.Request<Texture2D>("FunnyExperience/Assets/StarAlpha").Value;
+
+				float prog = redFlashTimer / 20f;
+
+				var glowColor = new Color(255, 60, 60)
+				{
+					A = 0
+				};
+
+				glowColor *= prog * 0.5f;
+
+				spriteBatch.Draw(glow, GetDimensions().Center(), null, glowColor, 0, glow.Size() / 2f, 1 + (1f - prog), 0, 0);
+				spriteBatch.Draw(star, GetDimensions().Center(), null, glowColor * 0.5f, 0, star.Size() / 2f, 1 + prog, 0, 0);
+
+				redFlashTimer--;
+			}
+
 			if (IsMouseHovering)
 			{
-				Tooltip.SetName($"{passive.name} ({passive.level}/{passive.maxLevel})");
+				string name = passive.name;
+
+				if (passive.maxLevel > 1)
+					name += $" ({passive.level}/{passive.maxLevel})";
+
+				Tooltip.SetName(name);
 				Tooltip.SetTooltip(passive.tooltip);
 			}
 
@@ -177,6 +260,18 @@ namespace FunnyExperience.Content.GUI
 			{
 				passive.level++;
 				Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
+
+				flashTimer = 20;
+
+				switch (passive.level)
+				{
+					case 1: SoundEngine.PlaySound(SoundID.GuitarAm); break;
+					case 2: SoundEngine.PlaySound(SoundID.GuitarBm); break;
+					case 3: SoundEngine.PlaySound(SoundID.GuitarC); break;
+					case 4: SoundEngine.PlaySound(SoundID.GuitarD); break;
+					case 5: SoundEngine.PlaySound(SoundID.GuitarEm); break;
+					default: SoundEngine.PlaySound(SoundID.GuitarG); break;
+				}
 			}
 		}
 
@@ -186,6 +281,10 @@ namespace FunnyExperience.Content.GUI
 			{
 				passive.level--;
 				Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;
+
+				redFlashTimer = 20;
+
+				SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 			}
 		}
 	}

@@ -35,7 +35,8 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 
 			spriteBatch.Draw(tex, center, null, color, 0, tex.Size() / 2f, 1, 0, 0);
 
-			Utils.DrawBorderString(spriteBatch, $"{level}/{maxLevel}", center + new Vector2(width / 2f, height / 2f), color, 1, 0.5f, 0.5f);
+			if (maxLevel > 1)
+				Utils.DrawBorderString(spriteBatch, $"{level}/{maxLevel}", center + new Vector2(width / 2f, height / 2f), color, 1, 0.5f, 0.5f);
 		}
 
 		/// <summary>
@@ -57,10 +58,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		}
 
 		/// <summary>
-		/// If this passive is unlocked or not
+		/// If this passive is able to be allocated or not
 		/// </summary>
 		/// <returns></returns>
-		public bool CanAllocate(Player player)
+		public virtual bool CanAllocate(Player player)
 		{
 			TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
 
@@ -74,7 +75,7 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		/// If this passive can be refunded or not
 		/// </summary>
 		/// <returns></returns>
-		public bool CanDeallocate(Player player)
+		public virtual bool CanDeallocate(Player player)
 		{
 			TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
 

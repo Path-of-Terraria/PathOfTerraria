@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using FunnyExperience.Core.Systems.TreeSystem;
+using System.Collections.Generic;
 
-namespace FunnyExperience.Core.Systems.TreeSystem.Passives
+namespace FunnyExperience.Content.Passives
 {
 	internal class MeleePassive : Passive
 	{
