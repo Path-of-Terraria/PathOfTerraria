@@ -263,14 +263,98 @@ namespace FunnyExperience.Content.GUI
 
 				flashTimer = 20;
 
+				if (passive.maxLevel == 1)
+				{
+					switch (passive.level)
+					{
+						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+					}
+
+					return;
+				}
+
+				if (passive.maxLevel == 2)
+				{
+					switch (passive.level)
+					{
+						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+					}
+
+					return;
+				}
+
+				if (passive.maxLevel == 3)
+				{
+					switch (passive.level)
+					{
+						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
+						case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+					}
+
+					return;
+				}
+
+				if (passive.maxLevel == 5)
+				{
+					switch (passive.level)
+					{
+						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
+						case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
+						case 4: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier4")); break;
+						case 5: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+					}
+
+					return;
+				}
+
+				if (passive.maxLevel == 6)
+				{
+					switch (passive.level)
+					{
+						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
+						case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
+						case 4: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier4")); break;
+						case 5: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						case 6: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
+						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+					}
+
+					return;
+				}
+
+				if (passive.maxLevel == 7)
+				{
+					switch (passive.level)
+					{
+						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
+						case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
+						case 4: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier4")); break;
+						case 5: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						case 6: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
+						case 7: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
+						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+					}
+
+					return;
+				}
+
 				switch (passive.level)
 				{
-					case 1: SoundEngine.PlaySound(SoundID.GuitarAm); break;
-					case 2: SoundEngine.PlaySound(SoundID.GuitarBm); break;
-					case 3: SoundEngine.PlaySound(SoundID.GuitarC); break;
-					case 4: SoundEngine.PlaySound(SoundID.GuitarD); break;
-					case 5: SoundEngine.PlaySound(SoundID.GuitarEm); break;
-					default: SoundEngine.PlaySound(SoundID.GuitarG); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
+					case 4: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier4")); break;
+					case 5: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
 				}
 			}
 		}

@@ -1,5 +1,6 @@
 ﻿using FunnyExperience.Core.Systems.TreeSystem;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.ModLoader.IO;
 
 namespace FunnyExperience.Core.Systems
@@ -9,12 +10,14 @@ namespace FunnyExperience.Core.Systems
 		public int level = 0;
 		public int exp = 0;
 
-		public int NextLevel => level * 250 + (int)(80 * Math.Pow(2, 1 + level * 0.2f));
+		public int NextLevel => level == 100 ? 1 : level * 250 + (int)(80 * Math.Pow(2, 1 + level * 0.2f));
 
 		public override void PreUpdate()
 		{
-			if (exp > NextLevel)
+			if (exp > NextLevel && level < 100)
 			{
+				SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5"));
+
 				exp -= NextLevel;
 				level++;
 
