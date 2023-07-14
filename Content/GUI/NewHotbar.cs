@@ -65,8 +65,8 @@ namespace FunnyExperience.Content.GUI
 
 			PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
-			Texture2D lifeTexture = Terraria.GameContent.TextureAssets.Item[ItemID.LesserHealingPotion].Value;
-			Texture2D manaTexture = Terraria.GameContent.TextureAssets.Item[ItemID.LesserManaPotion].Value;
+			Texture2D lifeTexture = potionPlayer.healingLeft > 0 ? Terraria.GameContent.TextureAssets.Item[ItemID.LesserHealingPotion].Value : ModContent.Request<Texture2D>("FunnyExperience/Assets/EmptyPotion").Value;
+			Texture2D manaTexture = potionPlayer.healingLeft > 0 ? Terraria.GameContent.TextureAssets.Item[ItemID.LesserManaPotion].Value : ModContent.Request<Texture2D>("FunnyExperience/Assets/EmptyPotion").Value;
 
 			spriteBatch.Draw(lifeTexture, new Vector2(471, 40 + off), Color.White * opacity);
 			spriteBatch.Draw(manaTexture, new Vector2(523, 40 + off), Color.White * opacity);
@@ -84,7 +84,7 @@ namespace FunnyExperience.Content.GUI
 			if (Main.LocalPlayer.HasBuff(BuffID.ManaSickness))
 			{
 				Texture2D glow = ModContent.Request<Texture2D>("FunnyExperience/Assets/GlowSoft").Value;
-				spriteBatch.Draw(glow, new Vector2(480, 60 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
+				spriteBatch.Draw(glow, new Vector2(534, 60 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
 				Utils.DrawBorderString(spriteBatch, $"{Main.LocalPlayer.buffTime[Main.LocalPlayer.FindBuffIndex(BuffID.ManaSickness)] / 60 + 1}", new Vector2(534, 60 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
 			}
 		}
