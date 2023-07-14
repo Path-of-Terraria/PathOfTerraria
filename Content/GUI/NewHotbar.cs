@@ -66,7 +66,7 @@ namespace FunnyExperience.Content.GUI
 			PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
 			Texture2D lifeTexture = potionPlayer.healingLeft > 0 ? Terraria.GameContent.TextureAssets.Item[ItemID.LesserHealingPotion].Value : ModContent.Request<Texture2D>("FunnyExperience/Assets/EmptyPotion").Value;
-			Texture2D manaTexture = potionPlayer.healingLeft > 0 ? Terraria.GameContent.TextureAssets.Item[ItemID.LesserManaPotion].Value : ModContent.Request<Texture2D>("FunnyExperience/Assets/EmptyPotion").Value;
+			Texture2D manaTexture = potionPlayer.manaLeft > 0 ? Terraria.GameContent.TextureAssets.Item[ItemID.LesserManaPotion].Value : ModContent.Request<Texture2D>("FunnyExperience/Assets/EmptyPotion").Value;
 
 			spriteBatch.Draw(lifeTexture, new Vector2(471, 40 + off), Color.White * opacity);
 			spriteBatch.Draw(manaTexture, new Vector2(523, 40 + off), Color.White * opacity);
