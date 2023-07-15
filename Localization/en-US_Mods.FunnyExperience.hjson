@@ -1,0 +1,11 @@
+Items: {
+	HealingPotionPickup: {
+		DisplayName: Healing Potion Pickup
+		Tooltip: ""
+	}
+
+	ManaPotionPickup: {
+		DisplayName: Mana Potion Pickup
+		Tooltip: ""
+	}
+}

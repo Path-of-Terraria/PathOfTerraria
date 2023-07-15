@@ -65,11 +65,18 @@ namespace FunnyExperience.Content.GUI
 
 			PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
-			Texture2D lifeTexture = potionPlayer.healingLeft > 0 ? Terraria.GameContent.TextureAssets.Item[ItemID.LesserHealingPotion].Value : ModContent.Request<Texture2D>("FunnyExperience/Assets/EmptyPotion").Value;
-			Texture2D manaTexture = potionPlayer.manaLeft > 0 ? Terraria.GameContent.TextureAssets.Item[ItemID.LesserManaPotion].Value : ModContent.Request<Texture2D>("FunnyExperience/Assets/EmptyPotion").Value;
+			Texture2D bottleTex = ModContent.Request<Texture2D>("FunnyExperience/Assets/EmptyPotion").Value;
+			Texture2D lifeTexture = Terraria.GameContent.TextureAssets.Item[ItemID.LesserHealingPotion].Value;
+			Texture2D manaTexture = Terraria.GameContent.TextureAssets.Item[ItemID.LesserManaPotion].Value;
 
-			spriteBatch.Draw(lifeTexture, new Vector2(471, 40 + off), Color.White * opacity);
-			spriteBatch.Draw(manaTexture, new Vector2(523, 40 + off), Color.White * opacity);
+			spriteBatch.Draw(bottleTex, new Vector2(471, 40 + off), Color.White * opacity);
+			spriteBatch.Draw(bottleTex, new Vector2(523, 40 + off), Color.White * opacity);
+
+			int lifeH = (int)(potionPlayer.healingLeft / (float)potionPlayer.maxHealing * lifeTexture.Height);
+			int manaH = (int)(potionPlayer.manaLeft / (float)potionPlayer.maxMana * lifeTexture.Height);
+
+			spriteBatch.Draw(lifeTexture, new Rectangle(471, (int)(40 + off) + lifeTexture.Height - lifeH, bottleTex.Width, lifeH), new Rectangle(0, lifeTexture.Height - lifeH, lifeTexture.Width, lifeH), Color.White * opacity);
+			spriteBatch.Draw(manaTexture, new Rectangle(523, (int)(40 + off) + manaTexture.Height - manaH, bottleTex.Width, manaH), new Rectangle(0, manaTexture.Height - manaH, manaTexture.Width, manaH), Color.White * opacity);
 
 			Utils.DrawBorderString(spriteBatch, $"{potionPlayer.healingLeft}/{potionPlayer.maxHealing}", new Vector2(480, 112 + off), (potionPlayer.healingLeft > 0 ? new Color(255, 200, 200) : Color.Gray) * opacity, 1f * opacity, 0.5f, 0.5f);
 			Utils.DrawBorderString(spriteBatch, $"{potionPlayer.manaLeft}/{potionPlayer.maxMana}", new Vector2(534, 112 + off), (potionPlayer.manaLeft > 0 ? new Color(200, 220, 255) : Color.Gray) * opacity, 1f * opacity, 0.5f, 0.5f);
