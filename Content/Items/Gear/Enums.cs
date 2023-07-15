@@ -16,7 +16,7 @@
 		Charm
 	}
 
-	public enum GearRarity
+	public enum GearRarity : int
 	{
 		Normal,
 		Magic,
@@ -24,7 +24,7 @@
 		Unique
 	}
 
-	public enum GearInfluence
+	public enum GearInfluence : int
 	{
 		None,
 		Solar,

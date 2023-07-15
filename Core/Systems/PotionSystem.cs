@@ -57,9 +57,11 @@ namespace FunnyExperience.Core.Systems
 		{
 			maxHealing = 3;
 			healPower = 30;
+			healDelay = 300;
 
 			maxMana = 3;
 			manaPower = 50;
+			manaDelay = 300;
 		}
 	}
 

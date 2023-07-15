@@ -8,5 +8,11 @@ namespace FunnyExperience
 {
 	public class FunnyExperience : Mod
 	{
+		public static FunnyExperience instance;
+
+		public FunnyExperience()
+		{
+			instance = this;
+		}
 	}
 }

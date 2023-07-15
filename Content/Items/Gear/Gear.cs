@@ -1,6 +1,10 @@
 ﻿using FunnyExperience.Content.Items.Gear.Affixes;
 using FunnyExperience.Content.Items.Gear.Armor;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Terraria.Graphics.Effects;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 using Terraria.UI;
 
 namespace FunnyExperience.Content.Items.Gear
@@ -39,11 +43,79 @@ namespace FunnyExperience.Content.Items.Gear
 
 				sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
 				ItemSlot.Draw(sb, ref inv[slot], 21, position);
+
+				if (gear.influence == GearInfluence.Solar)
+					DrawSolarSlot(sb, position);
+
+				if (gear.influence == GearInfluence.Lunar)
+					DrawLunarSlot(sb, position);
 			}
 			else
 			{
 				orig(sb, inv, context, slot, position, color);
 			}
+		}
+
+		/// <summary>
+		/// Draws the shader overlay for solar items
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		/// <param name="pos"></param>
+		private void DrawSolarSlot(SpriteBatch spriteBatch, Vector2 pos)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>("FunnyExperience/Assets/Slots/SlotMap").Value;
+
+			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+
+			if (effect is null)
+				return;
+
+			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f % 2f);
+			effect.Parameters["primary"].SetValue(new Vector3(1, 1, 0.2f) * 0.7f);
+			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1.3f, 1));
+			effect.Parameters["secondary"].SetValue(new Vector3(0.85f, 0.6f, 0.35f) * 0.7f);
+
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("FunnyExperience/Assets/Misc/SwirlNoise").Value);
+			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("FunnyExperience/Assets/Misc/SwirlNoise").Value);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+			spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+		}
+
+		/// <summary>
+		/// Draws the shader overlay for lunar items
+		/// </summary>
+		/// <param name="spriteBatch"></param>
+		/// <param name="pos"></param>
+		private void DrawLunarSlot(SpriteBatch spriteBatch, Vector2 pos)
+		{
+			Texture2D tex = ModContent.Request<Texture2D>("FunnyExperience/Assets/Slots/SlotMap").Value;
+
+			Effect effect = Filters.Scene["LunarEffect"].GetShader().Shader;
+
+			if (effect is null)
+				return;
+
+			effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.006f % 2f);
+			effect.Parameters["primary"].SetValue(new Vector3(0.4f, 0.8f, 1f) * 0.7f);
+			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1.1f, 1));
+			effect.Parameters["secondary"].SetValue(new Vector3(0.4f, 0.4f, 0.9f) * 0.7f);
+
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("FunnyExperience/Assets/Misc/ShaderNoise").Value);
+			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("FunnyExperience/Assets/Misc/ShaderNoise").Value);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
+
+			spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
+
+			spriteBatch.End();
+			spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 		}
 
 		public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -62,21 +134,68 @@ namespace FunnyExperience.Content.Items.Gear
 			};
 			tooltips.Add(rareLine);
 
+			if (Item.damage > 0)
+			{
+				var damageLine = new TooltipLine(Mod, "Damage", HighlightNumbers($"[{Item.damage * 0.8f}-{Item.damage * 1.2f}] Damage ({Item.DamageType.DisplayName})", baseColor: "DDDDDD"));
+				tooltips.Add(damageLine);
+			}
+
+			if (Item.defense > 0)
+			{
+				var defenseLine = new TooltipLine(Mod, "Defense", HighlightNumbers($"+{Item.defense} Defense", baseColor: "DDDDDD"));
+				tooltips.Add(defenseLine);
+			}
+
+			foreach (Affix affix in affixes)
+			{
+				string text = $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}");
+
+				if (affix.requiredInfluence == GearInfluence.Solar)
+					text = $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "FFEE99", "CCB077");
+
+				if (affix.requiredInfluence == GearInfluence.Lunar)
+					text = $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "BBDDFF", "99AADD");
+
+				var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", text);
+				tooltips.Add(affixLine);
+			}
+
 			var powerLine = new TooltipLine(Mod, "Power", $"Item level {power}")
 			{
 				OverrideColor = new Color(150, 150, 150)
 			};
 			tooltips.Add(powerLine);
+		}
 
-			foreach (Affix affix in affixes)
+		/// <summary>
+		/// Adds chat tags to darken non-numerical text
+		/// </summary>
+		/// <param name="input"></param>
+		/// <returns></returns>
+		public static string HighlightNumbers(string input, string numColor = "CCCCFF", string baseColor = "A0A0A0")
+		{
+			// Define the regular expression pattern
+			string pattern = @"(\d+)|(\D+)";
+
+			// Create a regular expression object
+			var regex = new Regex(pattern);
+
+			// Perform the transformation
+			string transformedString = regex.Replace(input, match =>
 			{
-				var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", $"* {affix.tooltip}")
+				if (match.Groups[1].Success) // Numeric group
 				{
-					OverrideColor = Color.LightGray
-				};
+					return $"[c/{numColor}:{match.Value}]";
+				}
+				else if (match.Groups[2].Success) // Non-numeric group
+				{
+					return $"[c/{baseColor}:{match.Value}]";
+				}
 
-				tooltips.Add(affixLine);
-			}
+				return match.Value;
+			});
+
+			return transformedString;
 		}
 
 		/// <summary>
@@ -103,8 +222,57 @@ namespace FunnyExperience.Content.Items.Gear
 					influence = Main.rand.NextBool() ? GearInfluence.Solar : GearInfluence.Lunar;
 			}
 
+			RollAffixes();
+
 			PostRoll();
 			name = GenerateName();
+		}
+
+		/// <summary>
+		/// Selects appropriate random affixes for this item, and applies them
+		/// </summary>
+		public void RollAffixes()
+		{
+			if (rarity == GearRarity.Normal || rarity == GearRarity.Unique)
+				return;
+
+			List<Affix> possible = AffixHandler.GetAffixes(type, influence);
+
+			if (possible is null)
+				return;
+
+			if (rarity == GearRarity.Magic)
+				affixes = GenerateAffixes(possible, 2);
+			else if (rarity == GearRarity.Rare)
+				affixes = GenerateAffixes(possible, Main.rand.Next(3, 5));
+		}
+
+		/// <summary>
+		/// Used to generate a list of random affixes
+		/// </summary>
+		/// <param name="inputList">The list of affixes to pick from</param>
+		/// <param name="count"></param>
+		/// <returns></returns>
+		public static List<Affix> GenerateAffixes(List<Affix> inputList, int count)
+		{
+			if (inputList.Count <= count)
+				return inputList;
+
+			var resultList = new List<Affix>(count);
+			var random = new Random();
+
+			for (int i = 0; i < count; i++)
+			{
+				int randomIndex = random.Next(i, inputList.Count);
+
+				Affix newAffix = inputList[randomIndex].Clone();
+				newAffix.Roll();
+
+				resultList.Add(newAffix);
+				inputList[randomIndex] = inputList[i];
+			}
+
+			return resultList;
 		}
 
 		/// <summary>
@@ -121,6 +289,48 @@ namespace FunnyExperience.Content.Items.Gear
 		public virtual string GenerateName()
 		{
 			return "Unnamed Item";
+		}
+
+		public override void UpdateEquip(Player player)
+		{
+			affixes.ForEach(n => n.BuffPassive(player, this));
+		}
+
+		public override void SaveData(TagCompound tag)
+		{
+			tag["type"] = (int)type;
+			tag["rarity"] = (int)rarity;
+			tag["influence"] = (int)influence;
+
+			tag["name"] = name;
+			tag["power"] = power;
+
+			List<TagCompound> affixTags = new();
+			foreach (Affix affix in affixes)
+			{
+				var newTag = new TagCompound();
+				affix.Save(newTag);
+				affixTags.Add(newTag);
+			}
+
+			tag["affixes"] = affixTags;
+		}
+
+		public override void LoadData(TagCompound tag)
+		{
+			type = (GearType)tag.GetInt("type");
+			rarity = (GearRarity)tag.GetInt("rarity");
+			influence = (GearInfluence)tag.GetInt("influence");
+
+			name = tag.GetString("name");
+			power = tag.GetInt("power");
+
+			IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
+
+			foreach (TagCompound newTag in affixTags)
+			{
+				affixes.Add(Affix.FromTag(newTag));
+			}
 		}
 
 		/// <summary>

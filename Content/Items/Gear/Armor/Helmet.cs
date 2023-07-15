@@ -1,8 +1,11 @@
-﻿namespace FunnyExperience.Content.Items.Gear.Armor
+﻿using Terraria.ID;
+
+namespace FunnyExperience.Content.Items.Gear.Armor
 {
+	[AutoloadEquip(EquipType.Head)]
 	internal class Helmet : Gear
 	{
-		public override string Texture => "FunnyExperience/Assets/PassiveFrameTiny";
+		public override string Texture => "Terraria/" + Terraria.GameContent.TextureAssets.Item[ItemID.IronHelmet].Name;
 
 		public override void SetDefaults()
 		{
