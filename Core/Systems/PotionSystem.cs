@@ -55,6 +55,12 @@ namespace FunnyExperience.Core.Systems
 
 		public override void ResetEffects()
 		{
+			if (healingLeft > maxHealing)
+				healingLeft = maxHealing;
+
+			if (manaLeft > maxMana)
+				manaLeft = maxMana;
+
 			maxHealing = 3;
 			healPower = 30;
 			healDelay = 300;

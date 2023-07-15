@@ -134,15 +134,21 @@ namespace FunnyExperience.Content.Items.Gear
 			};
 			tooltips.Add(rareLine);
 
+			var powerLine = new TooltipLine(Mod, "Power", $" Item level: [c/CCCCFF:{power}]")
+			{
+				OverrideColor = new Color(170, 170, 170)
+			};
+			tooltips.Add(powerLine);
+
 			if (Item.damage > 0)
 			{
-				var damageLine = new TooltipLine(Mod, "Damage", HighlightNumbers($"[{Item.damage * 0.8f}-{Item.damage * 1.2f}] Damage ({Item.DamageType.DisplayName})", baseColor: "DDDDDD"));
+				var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"[{Item.damage * 0.8f}-{Item.damage * 1.2f}] Damage ({Item.DamageType.DisplayName})", baseColor: "DDDDDD"));
 				tooltips.Add(damageLine);
 			}
 
 			if (Item.defense > 0)
 			{
-				var defenseLine = new TooltipLine(Mod, "Defense", HighlightNumbers($"+{Item.defense} Defense", baseColor: "DDDDDD"));
+				var defenseLine = new TooltipLine(Mod, "Defense", $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"+{Item.defense} Defense", baseColor: "DDDDDD"));
 				tooltips.Add(defenseLine);
 			}
 
@@ -159,12 +165,44 @@ namespace FunnyExperience.Content.Items.Gear
 				var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", text);
 				tooltips.Add(affixLine);
 			}
+		}
 
-			var powerLine = new TooltipLine(Mod, "Power", $"Item level {power}")
+		public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+		{
+			if (line.Mod == Mod.Name && line.Name == "Name")
 			{
-				OverrideColor = new Color(150, 150, 150)
-			};
-			tooltips.Add(powerLine);
+				yOffset = -2;
+				line.BaseScale = Vector2.One * 1.1f;
+				return true;
+			}
+
+			if (line.Mod == Mod.Name && line.Name == "Rarity")
+			{
+				yOffset = -8;
+				line.BaseScale = Vector2.One * 0.8f;
+				return true;
+			}
+
+			if (line.Mod == Mod.Name && line.Name == "Power")
+			{
+				yOffset = 2;
+				line.BaseScale = Vector2.One * 0.8f;
+				return true;
+			}
+
+			if (line.Mod == Mod.Name && (line.Name.Contains("Affix") || line.Name == "Damage" || line.Name == "Defense"))
+			{
+				line.BaseScale = Vector2.One * 0.95f;
+
+				if (line.Name == "Damage" || line.Name == "Defense")
+					yOffset = 2;
+				else
+					yOffset = -4;
+
+				return true;
+			}
+
+			return true;
 		}
 
 		/// <summary>
@@ -331,6 +369,8 @@ namespace FunnyExperience.Content.Items.Gear
 			{
 				affixes.Add(Affix.FromTag(newTag));
 			}
+
+			PostRoll();
 		}
 
 		/// <summary>
@@ -389,7 +429,7 @@ namespace FunnyExperience.Content.Items.Gear
 			return rare switch
 			{
 				GearRarity.Normal => Color.White,
-				GearRarity.Magic => new Color(100, 100, 255),
+				GearRarity.Magic => new Color(110, 160, 255),
 				GearRarity.Rare => new Color(255, 255, 50),
 				GearRarity.Unique => new Color(25, 255, 25),
 				_ => Color.White,
@@ -438,7 +478,7 @@ namespace FunnyExperience.Content.Items.Gear
 				_ => ""
 			};
 
-			return $"{influenceName}{rareName}{typeName}";
+			return $" {influenceName}{rareName}{typeName}";
 		}
 	}
 }
