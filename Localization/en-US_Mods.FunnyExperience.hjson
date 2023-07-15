@@ -8,4 +8,9 @@ Items: {
 		DisplayName: Mana Potion Pickup
 		Tooltip: ""
 	}
+
+	Helmet: {
+		DisplayName: Helmet
+		Tooltip: ""
+	}
 }
