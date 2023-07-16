@@ -13,4 +13,14 @@ Items: {
 		DisplayName: Helmet
 		Tooltip: ""
 	}
+
+	Chestplate: {
+		DisplayName: Chestplate
+		Tooltip: ""
+	}
+
+	Leggings: {
+		DisplayName: Leggings
+		Tooltip: ""
+	}
 }

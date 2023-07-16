@@ -384,13 +384,31 @@ namespace FunnyExperience.Content.Items.Gear
 			switch (choice)
 			{
 				case 0:
-					var item = new Item();
-					item.SetDefaults(ModContent.ItemType<Helmet>());
-					var gear = item.ModItem as Helmet;
-					gear.Roll(PickPower());
-					Item.NewItem(null, pos, Vector2.Zero, item);
+					SpawnGear<Helmet>(pos);
+					break;
+
+				case 1:
+					SpawnGear<Chestplate>(pos);
+					break;
+
+				case 2:
+					SpawnGear<Leggings>(pos);
 					break;
 			}
+		}
+
+		/// <summary>
+		/// Spawns a random piece of gear of the given base type at the given position
+		/// </summary>
+		/// <typeparam name="T">The type of gear to drop</typeparam>
+		/// <param name="pos">Where to drop it in the world</param>
+		public static void SpawnGear<T>(Vector2 pos) where T : Gear
+		{
+			var item = new Item();
+			item.SetDefaults(ModContent.ItemType<T>());
+			var gear = item.ModItem as T;
+			gear.Roll(PickPower());
+			Item.NewItem(null, pos, Vector2.Zero, item);
 		}
 
 		/// <summary>
