@@ -5,7 +5,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 	[AutoloadEquip(EquipType.Body)]
 	internal class Chestplate : Gear
 	{
-		public override string Texture => "Terraria/" + Terraria.GameContent.TextureAssets.Item[ItemID.IronChainmail].Name;
+		public override string Texture => $"{FunnyExperience.ModName}/Assets/Items/Gear/Armor/Body/Base";
 
 		public override void SetDefaults()
 		{

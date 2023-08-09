@@ -5,7 +5,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 	[AutoloadEquip(EquipType.Legs)]
 	internal class Leggings : Gear
 	{
-		public override string Texture => "Terraria/" + Terraria.GameContent.TextureAssets.Item[ItemID.IronGreaves].Name;
+		public override string Texture => $"{FunnyExperience.ModName}/Assets/Items/Gear/Armor/Legs/Base";
 
 		public override void SetDefaults()
 		{
