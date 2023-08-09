@@ -14,7 +14,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 
 		public override void PostRoll()
 		{
-			Item.defense = power / 6 + 1;
+			Item.defense = Power / 6 + 1;
 		}
 
 		public override string GenerateName()
@@ -48,16 +48,16 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 				_ => "Unknown"
 			};
 
-			if (rarity == GearRarity.Normal)
+			if (Rarity == GearRarity.Normal)
 				return item;
 
-			if (rarity == GearRarity.Magic)
+			if (Rarity == GearRarity.Magic)
 				return $"{prefix} {item}";
 
-			if (rarity == GearRarity.Rare)
+			if (Rarity == GearRarity.Rare)
 				return $"{prefix} {suffix} {item}";
 
-			if (rarity == GearRarity.Unique)
+			if (Rarity == GearRarity.Unique)
 				return Item.Name;
 
 			return "Unknown Item";

@@ -27,12 +27,12 @@ namespace FunnyExperience.Content.GUI
 			spriteBatch.Draw(bar, pos, null, Color.White, 0, new Vector2(bar.Width / 2f, 0), 1, 0, 0);
 			spriteBatch.Draw(fill, target, source, Color.White);
 
-			Utils.DrawBorderString(spriteBatch, $"{mp.level}", pos + new Vector2(bar.Width * 0.5f - 20, 22), Color.White, 0.8f, 0.5f, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"{mp.Level}", pos + new Vector2(bar.Width * 0.5f - 20, 22), Color.White, 0.8f, 0.5f, 0.5f);
 
 			var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 
 			if (bounding.Contains(Main.MouseScreen.ToPoint()))
-				Utils.DrawBorderString(spriteBatch, $"Level {mp.level}\nExperience: {mp.exp} / {mp.NextLevel} ({Math.Truncate(mp.exp / (float)mp.NextLevel * 10000) / 100f}%)\n\nClick to open skill tree", Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
+				Utils.DrawBorderString(spriteBatch, $"Level {mp.Level}\nExperience: {mp.exp} / {mp.NextLevel} ({Math.Truncate(mp.exp / (float)mp.NextLevel * 10000) / 100f}%)\n\nClick to open skill tree", Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
 		}
 
 		public override void SafeClick(UIMouseEvent evt)

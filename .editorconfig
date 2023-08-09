@@ -8,12 +8,9 @@ root = true
 #### Core EditorConfig Options ####
 
 # Indentation and spacing
-indent_size = 4
 indent_style = tab
-tab_width = 4
 
 # New line preferences
-end_of_line = crlf
 insert_final_newline = false
 
 #### .NET Coding Conventions ####
@@ -30,8 +27,6 @@ dotnet_style_qualification_for_method = false:warning
 dotnet_style_qualification_for_property = false:warning
 
 # Language keywords vs BCL types preferences
-dotnet_style_predefined_type_for_locals_parameters_members = true:warning
-dotnet_style_predefined_type_for_member_access = true:warning
 
 # Parentheses preferences
 dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:warning
@@ -43,25 +38,7 @@ dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:war
 dotnet_style_require_accessibility_modifiers = for_non_interface_members
 
 # Expression-level preferences
-dotnet_style_coalesce_expression = true:warning
-dotnet_style_collection_initializer = true:warning
-dotnet_style_explicit_tuple_names = true:warning
 dotnet_style_namespace_match_folder = true
-dotnet_style_null_propagation = true:warning
-dotnet_style_object_initializer = true:warning
-dotnet_style_operator_placement_when_wrapping = beginning_of_line
-dotnet_style_prefer_auto_properties = true:warning
-dotnet_style_prefer_compound_assignment = true:warning
-dotnet_style_prefer_conditional_expression_over_assignment = false:warning
-dotnet_style_prefer_conditional_expression_over_return = false:warning
-dotnet_style_prefer_inferred_anonymous_type_member_names = true:warning
-dotnet_style_prefer_inferred_tuple_names = true:warning
-dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
-dotnet_style_prefer_simplified_boolean_expressions = true:warning
-dotnet_style_prefer_simplified_interpolation = true
-
-# Field preferences
-dotnet_style_readonly_field = true:warning
 
 # Parameter preferences
 dotnet_code_quality_unused_parameters = all:warning
@@ -222,6 +199,18 @@ dotnet_naming_style.begins_with_i.required_prefix = I
 dotnet_naming_style.begins_with_i.required_suffix =
 dotnet_naming_style.begins_with_i.word_separator =
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
+
+dotnet_naming_rule.fields_not_private.rule_name = Fields (not private) should be PascalCase
+dotnet_naming_rule.fields_not_private.severity = warning
+dotnet_naming_rule.fields_not_private.symbols = fields_not_private_symbols
+dotnet_naming_rule.fields_not_private.style = pascal_case_style
+
+dotnet_naming_symbols.fields_not_private_symbols.applicable_kinds = field
+dotnet_naming_symbols.fields_not_private_symbols.applicable_accessibilities = public, protected, internal
+dotnet_naming_symbols.fields_not_private_symbols.required_modifiers =
+
+dotnet_naming_style.pascal_case_style.capitalization = pascal_case
+
 
 [*.{cs,vb}]
 dotnet_style_coalesce_expression = true:warning

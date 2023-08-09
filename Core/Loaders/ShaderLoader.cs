@@ -34,7 +34,7 @@ namespace FunnyExperience.Core.Loaders
 
 		public static void LoadShader(string name, string path)
 		{
-			var screenRef = new Ref<Effect>(FunnyExperience.instance.Assets.Request<Effect>(path, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
+			var screenRef = new Ref<Effect>(FunnyExperience.Instance.Assets.Request<Effect>(path, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
 			Filters.Scene[name] = new Filter(new ScreenShaderData(screenRef, name + "Pass"), EffectPriority.High);
 			Filters.Scene[name].Load();
 		}

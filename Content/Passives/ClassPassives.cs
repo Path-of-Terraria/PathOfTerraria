@@ -7,15 +7,15 @@ namespace FunnyExperience.Content.Passives
 	{
 		public MeleePassive() : base()
 		{
-			name = "Martial Mastery";
-			tooltip = "Increases your melee damage by 5% per level";
-			maxLevel = 5;
-			treePos = new Vector2(250, 300);
+			Name = "Martial Mastery";
+			Tooltip = "Increases your melee damage by 5% per level";
+			MaxLevel = 5;
+			TreePos = new Vector2(250, 300);
 		}
 
 		public override void BuffPlayer(Player player)
 		{
-			player.GetDamage(DamageClass.Melee) += 0.05f * level;
+			player.GetDamage(DamageClass.Melee) += 0.05f * Level;
 		}
 
 		public override void Connect(List<Passive> all, Player player)
@@ -29,15 +29,15 @@ namespace FunnyExperience.Content.Passives
 	{
 		public RangedPassive() : base()
 		{
-			name = "Marksmanship Mastery";
-			tooltip = "Increases your ranged damage by 5% per level";
-			maxLevel = 5;
-			treePos = new Vector2(350, 250);
+			Name = "Marksmanship Mastery";
+			Tooltip = "Increases your ranged damage by 5% per level";
+			MaxLevel = 5;
+			TreePos = new Vector2(350, 250);
 		}
 
 		public override void BuffPlayer(Player player)
 		{
-			player.GetDamage(DamageClass.Ranged) += 0.05f * level;
+			player.GetDamage(DamageClass.Ranged) += 0.05f * Level;
 		}
 
 		public override void Connect(List<Passive> all, Player player)
@@ -51,15 +51,15 @@ namespace FunnyExperience.Content.Passives
 	{
 		public MagicPassive() : base()
 		{
-			name = "Arcane Mastery";
-			tooltip = "Increases your magic damage by 5% per level";
-			maxLevel = 5;
-			treePos = new Vector2(450, 250);
+			Name = "Arcane Mastery";
+			Tooltip = "Increases your magic damage by 5% per level";
+			MaxLevel = 5;
+			TreePos = new Vector2(450, 250);
 		}
 
 		public override void BuffPlayer(Player player)
 		{
-			player.GetDamage(DamageClass.Magic) += 0.05f * level;
+			player.GetDamage(DamageClass.Magic) += 0.05f * Level;
 		}
 
 		public override void Connect(List<Passive> all, Player player)
@@ -73,15 +73,15 @@ namespace FunnyExperience.Content.Passives
 	{
 		public SummonPassive() : base()
 		{
-			name = "Summoning Mastery";
-			tooltip = "Increases your summon damage by 5% per level";
-			maxLevel = 5;
-			treePos = new Vector2(550, 300);
+			Name = "Summoning Mastery";
+			Tooltip = "Increases your summon damage by 5% per level";
+			MaxLevel = 5;
+			TreePos = new Vector2(550, 300);
 		}
 
 		public override void BuffPlayer(Player player)
 		{
-			player.GetDamage(DamageClass.Summon) += 0.05f * level;
+			player.GetDamage(DamageClass.Summon) += 0.05f * Level;
 		}
 
 		public override void Connect(List<Passive> all, Player player)

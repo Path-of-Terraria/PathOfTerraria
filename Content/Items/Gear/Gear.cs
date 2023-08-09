@@ -11,14 +11,16 @@ namespace FunnyExperience.Content.Items.Gear
 {
 	internal abstract class Gear : ModItem
 	{
-		public GearType type;
-		public GearRarity rarity;
-		public GearInfluence influence;
+#pragma warning disable IDE1006 // Naming Styles
+		protected GearType type;
+#pragma warning restore IDE1006 // Naming Styles
+		protected GearRarity Rarity;
+		private GearInfluence _influence;
 
-		public string name;
-		public int power;
+		private string _name;
+		public int Power;
 
-		public List<Affix> affixes = new();
+		private List<Affix> _affixes = new();
 
 		public override void Load()
 		{
@@ -29,7 +31,7 @@ namespace FunnyExperience.Content.Items.Gear
 		{
 			if (inv[slot].ModItem is Gear gear && context != 21)
 			{
-				string rareName = gear.rarity switch
+				string rareName = gear.Rarity switch
 				{
 					GearRarity.Normal => "Normal",
 					GearRarity.Magic => "Magic",
@@ -44,10 +46,10 @@ namespace FunnyExperience.Content.Items.Gear
 				sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
 				ItemSlot.Draw(sb, ref inv[slot], 21, position);
 
-				if (gear.influence == GearInfluence.Solar)
+				if (gear._influence == GearInfluence.Solar)
 					DrawSolarSlot(sb, position);
 
-				if (gear.influence == GearInfluence.Lunar)
+				if (gear._influence == GearInfluence.Lunar)
 					DrawLunarSlot(sb, position);
 			}
 			else
@@ -122,19 +124,19 @@ namespace FunnyExperience.Content.Items.Gear
 		{
 			tooltips.Clear();
 
-			var nameLine = new TooltipLine(Mod, "Name", name)
+			var nameLine = new TooltipLine(Mod, "Name", _name)
 			{
-				OverrideColor = GetRarityColor(rarity)
+				OverrideColor = GetRarityColor(Rarity)
 			};
 			tooltips.Add(nameLine);
 
-			var rareLine = new TooltipLine(Mod, "Rarity", GetDescriptor(type, rarity, influence))
+			var rareLine = new TooltipLine(Mod, "Rarity", GetDescriptor(type, Rarity, _influence))
 			{
-				OverrideColor = Color.Lerp(GetRarityColor(rarity), Color.White, 0.5f)
+				OverrideColor = Color.Lerp(GetRarityColor(Rarity), Color.White, 0.5f)
 			};
 			tooltips.Add(rareLine);
 
-			var powerLine = new TooltipLine(Mod, "Power", $" Item level: [c/CCCCFF:{power}]")
+			var powerLine = new TooltipLine(Mod, "Power", $" Item level: [c/CCCCFF:{Power}]")
 			{
 				OverrideColor = new Color(170, 170, 170)
 			};
@@ -152,14 +154,14 @@ namespace FunnyExperience.Content.Items.Gear
 				tooltips.Add(defenseLine);
 			}
 
-			foreach (Affix affix in affixes)
+			foreach (Affix affix in _affixes)
 			{
 				string text = $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}");
 
-				if (affix.requiredInfluence == GearInfluence.Solar)
+				if (affix.RequiredInfluence == GearInfluence.Solar)
 					text = $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "FFEE99", "CCB077");
 
-				if (affix.requiredInfluence == GearInfluence.Lunar)
+				if (affix.RequiredInfluence == GearInfluence.Lunar)
 					text = $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "BBDDFF", "99AADD");
 
 				var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", text);
@@ -241,15 +243,15 @@ namespace FunnyExperience.Content.Items.Gear
 		/// </summary>
 		public void Roll(int power)
 		{
-			this.power = power;
+			this.Power = power;
 
 			int rare = Main.rand.Next(100) - (int)(power / 10f);
-			rarity = GearRarity.Normal;
+			Rarity = GearRarity.Normal;
 
 			if (rare < 25 + (int)(power / 10f))
-				rarity = GearRarity.Magic;
+				Rarity = GearRarity.Magic;
 			if (rare < 5)
-				rarity = GearRarity.Rare;
+				Rarity = GearRarity.Rare;
 
 			// Only power 50+ can get influence
 			if (power > 50)
@@ -257,13 +259,13 @@ namespace FunnyExperience.Content.Items.Gear
 				int inf = Main.rand.Next(400) - power;
 
 				if (inf < 30)
-					influence = Main.rand.NextBool() ? GearInfluence.Solar : GearInfluence.Lunar;
+					_influence = Main.rand.NextBool() ? GearInfluence.Solar : GearInfluence.Lunar;
 			}
 
 			RollAffixes();
 
 			PostRoll();
-			name = GenerateName();
+			_name = GenerateName();
 		}
 
 		/// <summary>
@@ -271,18 +273,18 @@ namespace FunnyExperience.Content.Items.Gear
 		/// </summary>
 		public void RollAffixes()
 		{
-			if (rarity == GearRarity.Normal || rarity == GearRarity.Unique)
+			if (Rarity == GearRarity.Normal || Rarity == GearRarity.Unique)
 				return;
 
-			List<Affix> possible = AffixHandler.GetAffixes(type, influence);
+			List<Affix> possible = AffixHandler.GetAffixes(type, _influence);
 
 			if (possible is null)
 				return;
 
-			if (rarity == GearRarity.Magic)
-				affixes = GenerateAffixes(possible, 2);
-			else if (rarity == GearRarity.Rare)
-				affixes = GenerateAffixes(possible, Main.rand.Next(3, 5));
+			if (Rarity == GearRarity.Magic)
+				_affixes = GenerateAffixes(possible, 2);
+			else if (Rarity == GearRarity.Rare)
+				_affixes = GenerateAffixes(possible, Main.rand.Next(3, 5));
 		}
 
 		/// <summary>
@@ -331,20 +333,20 @@ namespace FunnyExperience.Content.Items.Gear
 
 		public override void UpdateEquip(Player player)
 		{
-			affixes.ForEach(n => n.BuffPassive(player, this));
+			_affixes.ForEach(n => n.BuffPassive(player, this));
 		}
 
 		public override void SaveData(TagCompound tag)
 		{
 			tag["type"] = (int)type;
-			tag["rarity"] = (int)rarity;
-			tag["influence"] = (int)influence;
+			tag["rarity"] = (int)Rarity;
+			tag["influence"] = (int)_influence;
 
-			tag["name"] = name;
-			tag["power"] = power;
+			tag["name"] = _name;
+			tag["power"] = Power;
 
 			List<TagCompound> affixTags = new();
-			foreach (Affix affix in affixes)
+			foreach (Affix affix in _affixes)
 			{
 				var newTag = new TagCompound();
 				affix.Save(newTag);
@@ -357,17 +359,17 @@ namespace FunnyExperience.Content.Items.Gear
 		public override void LoadData(TagCompound tag)
 		{
 			type = (GearType)tag.GetInt("type");
-			rarity = (GearRarity)tag.GetInt("rarity");
-			influence = (GearInfluence)tag.GetInt("influence");
+			Rarity = (GearRarity)tag.GetInt("rarity");
+			_influence = (GearInfluence)tag.GetInt("influence");
 
-			name = tag.GetString("name");
-			power = tag.GetInt("power");
+			_name = tag.GetString("name");
+			Power = tag.GetInt("power");
 
 			IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
 
 			foreach (TagCompound newTag in affixTags)
 			{
-				affixes.Add(Affix.FromTag(newTag));
+				_affixes.Add(Affix.FromTag(newTag));
 			}
 
 			PostRoll();

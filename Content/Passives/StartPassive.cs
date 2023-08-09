@@ -7,14 +7,14 @@ namespace FunnyExperience.Content.Passives
 	{
 		public StartPassive() : base()
 		{
-			name = "Anchor";
-			tooltip = "Your journey starts here";
-			level = 1;
-			maxLevel = 1;
+			Name = "Anchor";
+			Tooltip = "Your journey starts here";
+			Level = 1;
+			MaxLevel = 1;
 
-			width = 58;
-			height = 58;
-			treePos = new Vector2(400, 500);
+			Width = 58;
+			Height = 58;
+			TreePos = new Vector2(400, 500);
 		}
 
 		public override void Connect(List<Passive> all, Player player)
