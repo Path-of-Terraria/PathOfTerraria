@@ -40,7 +40,7 @@ namespace FunnyExperience.Content.GUI
 				panel.Height.Set(800, 0);
 				Append(panel);
 
-				closeButton = new(ModContent.Request<Texture2D>("FunnyExperience/Assets/CloseButton"));
+				closeButton = new(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/CloseButton"));
 				closeButton.Left.Set(252, 0.5f);
 				closeButton.Top.Set(-392, 0.5f);
 				closeButton.Width.Set(38, 0);
@@ -64,7 +64,7 @@ namespace FunnyExperience.Content.GUI
 
 			base.Draw(spriteBatch);
 
-			Texture2D tex = ModContent.Request<Texture2D>("FunnyExperience/Assets/PassiveFrameSmall").Value;
+			Texture2D tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/PassiveFrameSmall").Value;
 			TreePlayer mp = Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
 			spriteBatch.Draw(tex, panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
@@ -94,7 +94,7 @@ namespace FunnyExperience.Content.GUI
 
 			foreach (PassiveEdge edge in TreeSystem.edges)
 			{
-				Texture2D chainTex = ModContent.Request<Texture2D>("FunnyExperience/Assets/Link").Value;
+				Texture2D chainTex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Link").Value;
 
 				Color color = Color.Gray;
 
@@ -112,7 +112,7 @@ namespace FunnyExperience.Content.GUI
 
 				if (edge.end.level > 0 && edge.start.level > 0)
 				{
-					Texture2D glow = ModContent.Request<Texture2D>("FunnyExperience/Assets/GlowAlpha").Value;
+					Texture2D glow = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/GlowAlpha").Value;
 					var glowColor = new Color(255, 230, 150)
 					{
 						A = 0
@@ -202,8 +202,8 @@ namespace FunnyExperience.Content.GUI
 
 			if (flashTimer > 0)
 			{
-				Texture2D glow = ModContent.Request<Texture2D>("FunnyExperience/Assets/GlowAlpha").Value;
-				Texture2D star = ModContent.Request<Texture2D>("FunnyExperience/Assets/StarAlpha").Value;
+				Texture2D glow = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/GlowAlpha").Value;
+				Texture2D star = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/StarAlpha").Value;
 
 				float prog = flashTimer / 20f;
 
@@ -222,8 +222,8 @@ namespace FunnyExperience.Content.GUI
 
 			if (redFlashTimer > 0)
 			{
-				Texture2D glow = ModContent.Request<Texture2D>("FunnyExperience/Assets/GlowAlpha").Value;
-				Texture2D star = ModContent.Request<Texture2D>("FunnyExperience/Assets/StarAlpha").Value;
+				Texture2D glow = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/GlowAlpha").Value;
+				Texture2D star = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/StarAlpha").Value;
 
 				float prog = redFlashTimer / 20f;
 
@@ -267,8 +267,8 @@ namespace FunnyExperience.Content.GUI
 				{
 					switch (passive.level)
 					{
-						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
-						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
+						default: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
 					}
 
 					return;
@@ -278,9 +278,9 @@ namespace FunnyExperience.Content.GUI
 				{
 					switch (passive.level)
 					{
-						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
-						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
-						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
+						default: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
 					}
 
 					return;
@@ -290,10 +290,10 @@ namespace FunnyExperience.Content.GUI
 				{
 					switch (passive.level)
 					{
-						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
-						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
-						case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
-						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier3")); break;
+						case 3: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
+						default: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
 					}
 
 					return;
@@ -303,12 +303,12 @@ namespace FunnyExperience.Content.GUI
 				{
 					switch (passive.level)
 					{
-						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
-						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
-						case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
-						case 4: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier4")); break;
-						case 5: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
-						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
+						case 3: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier3")); break;
+						case 4: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier4")); break;
+						case 5: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
+						default: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
 					}
 
 					return;
@@ -318,13 +318,13 @@ namespace FunnyExperience.Content.GUI
 				{
 					switch (passive.level)
 					{
-						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
-						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
-						case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
-						case 4: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier4")); break;
-						case 5: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
-						case 6: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
-						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
+						case 3: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier3")); break;
+						case 4: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier4")); break;
+						case 5: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
+						case 6: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
+						default: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
 					}
 
 					return;
@@ -334,14 +334,14 @@ namespace FunnyExperience.Content.GUI
 				{
 					switch (passive.level)
 					{
-						case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
-						case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
-						case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
-						case 4: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier4")); break;
-						case 5: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
-						case 6: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
-						case 7: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
-						default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
+						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
+						case 3: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier3")); break;
+						case 4: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier4")); break;
+						case 5: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
+						case 6: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
+						case 7: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
+						default: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
 					}
 
 					return;
@@ -349,12 +349,12 @@ namespace FunnyExperience.Content.GUI
 
 				switch (passive.level)
 				{
-					case 1: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5")); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier3")); break;
+					case 4: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier4")); break;
+					case 5: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
 				}
 			}
 		}

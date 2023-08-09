@@ -20,10 +20,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 
 		public virtual void Draw(SpriteBatch spriteBatch, Vector2 center)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("FunnyExperience/Assets/PassiveFrameSmall").Value;
+			Texture2D tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/PassiveFrameSmall").Value;
 
-			if (ModContent.HasAsset("FunnyExperience/Assets/Passives/" + GetType().Name))
-				tex = ModContent.Request<Texture2D>("FunnyExperience/Assets/Passives/" + GetType().Name).Value;
+			if (ModContent.HasAsset($"{FunnyExperience.ModName}/Assets/Passives/" + GetType().Name))
+				tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Passives/" + GetType().Name).Value;
 
 			Color color = Color.Gray;
 

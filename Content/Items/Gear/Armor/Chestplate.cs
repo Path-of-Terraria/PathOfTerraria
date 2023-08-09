@@ -48,19 +48,14 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 				_ => "Unknown"
 			};
 
-			if (rarity == GearRarity.Normal)
-				return item;
-
-			if (rarity == GearRarity.Magic)
-				return $"{prefix} {item}";
-
-			if (rarity == GearRarity.Rare)
-				return $"{prefix} {suffix} {item}";
-
-			if (rarity == GearRarity.Unique)
-				return Item.Name;
-
-			return "Unknown Item";
+			return rarity switch
+			{
+				GearRarity.Normal => item,
+				GearRarity.Magic => $"{prefix} {item}",
+				GearRarity.Rare => $"{prefix} {suffix} {item}",
+				GearRarity.Unique => Item.Name,
+				_ => "Unknown Item"
+			};
 		}
 	}
 }
