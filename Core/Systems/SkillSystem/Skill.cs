@@ -25,7 +25,7 @@ namespace FunnyExperience.Core.Systems.SkillSystem
 		}
 
 		public virtual string Name => GetType().Name;
-		public virtual string Texture => "FunnyExperience/Assets/Skills/" + GetType().Name;
+		public virtual string Texture => $"{FunnyExperience.ModName}/Assets/Skills/" + GetType().Name;
 
 		/// <summary>
 		/// What this skill actually does

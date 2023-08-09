@@ -19,7 +19,7 @@ namespace FunnyExperience.Core.Systems
 			if (exp <= NextLevel || Level >= 100)
 				return;
 			
-			SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/Tier5"));
+			SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5"));
 
 			exp -= NextLevel;
 			Level++;

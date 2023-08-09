@@ -9,6 +9,7 @@ namespace FunnyExperience
 	public class FunnyExperience : Mod
 	{
 		public static FunnyExperience Instance;
+		public static string ModName = "FunnyExperience";
 
 		public FunnyExperience()
 		{

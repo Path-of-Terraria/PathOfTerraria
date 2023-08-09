@@ -32,7 +32,7 @@ namespace FunnyExperience.Core.Systems
 				self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
 				mp.HealingLeft--;
 
-				SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/PickupPotion"));
+				SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/PickupPotion"));
 				SoundEngine.PlaySound(SoundID.Item3);
 			}
 		}
@@ -48,7 +48,7 @@ namespace FunnyExperience.Core.Systems
 				self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
 				mp.ManaLeft--;
 
-				SoundEngine.PlaySound(new SoundStyle("FunnyExperience/Sounds/PickupPotion"));
+				SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/PickupPotion"));
 				SoundEngine.PlaySound(SoundID.Item3);
 			}
 		}

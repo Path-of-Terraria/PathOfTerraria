@@ -40,12 +40,12 @@ namespace FunnyExperience.Content.Items.Gear
 					_ => "Normal"
 				};
 
-				Texture2D back = ModContent.Request<Texture2D>($"FunnyExperience/Assets/Slots/{rareName}Back").Value;
+				Texture2D back = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Slots/{rareName}Back").Value;
 				Color backcolor = Color.White * 0.75f;
 
 				sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
 				ItemSlot.Draw(sb, ref inv[slot], 21, position);
-
+        
 				if (gear._influence == GearInfluence.Solar)
 					DrawSolarSlot(sb, position);
 
@@ -65,7 +65,7 @@ namespace FunnyExperience.Content.Items.Gear
 		/// <param name="pos"></param>
 		private void DrawSolarSlot(SpriteBatch spriteBatch, Vector2 pos)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("FunnyExperience/Assets/Slots/SlotMap").Value;
+			Texture2D tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Slots/SlotMap").Value;
 
 			Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
 
@@ -77,8 +77,8 @@ namespace FunnyExperience.Content.Items.Gear
 			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1.3f, 1));
 			effect.Parameters["secondary"].SetValue(new Vector3(0.85f, 0.6f, 0.35f) * 0.7f);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("FunnyExperience/Assets/Misc/SwirlNoise").Value);
-			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("FunnyExperience/Assets/Misc/SwirlNoise").Value);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Misc/SwirlNoise").Value);
+			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Misc/SwirlNoise").Value);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
@@ -96,7 +96,7 @@ namespace FunnyExperience.Content.Items.Gear
 		/// <param name="pos"></param>
 		private void DrawLunarSlot(SpriteBatch spriteBatch, Vector2 pos)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>("FunnyExperience/Assets/Slots/SlotMap").Value;
+			Texture2D tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Slots/SlotMap").Value;
 
 			Effect effect = Filters.Scene["LunarEffect"].GetShader().Shader;
 
@@ -108,8 +108,8 @@ namespace FunnyExperience.Content.Items.Gear
 			effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1.1f, 1));
 			effect.Parameters["secondary"].SetValue(new Vector3(0.4f, 0.4f, 0.9f) * 0.7f);
 
-			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>("FunnyExperience/Assets/Misc/ShaderNoise").Value);
-			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>("FunnyExperience/Assets/Misc/ShaderNoise").Value);
+			effect.Parameters["sampleTexture"].SetValue(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Misc/ShaderNoise").Value);
+			effect.Parameters["mapTexture"].SetValue(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Misc/ShaderNoise").Value);
 
 			spriteBatch.End();
 			spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect, Main.GameViewMatrix.TransformationMatrix);
