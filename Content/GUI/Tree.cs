@@ -21,10 +21,10 @@ namespace FunnyExperience.Content.GUI
 
 		private static TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
-		private const int TopPadding = 400;
-		private const int LeftPadding = 500;
-		private const int PanelWidth = 1000;
-		private const int PanelHeight = 950;
+		private const int TopPadding = -400;
+		private const int LeftPadding = -450;
+		private const int PanelWidth = 900;
+		private const int PanelHeight = 800;
 
 		public override bool Visible => visible;
 
@@ -41,15 +41,15 @@ namespace FunnyExperience.Content.GUI
 			if (!Populated)
 			{
 				_panel = new UIPanel();
-				_panel.Left.Set(LeftPadding, 0);
-				_panel.Top.Set(TopPadding, 0);
+				_panel.Left.Set(LeftPadding, 0.5f);
+				_panel.Top.Set(TopPadding, 0.5f);
 				_panel.Width.Set(PanelWidth, 0);
 				_panel.Height.Set(PanelHeight, 0);
 				Append(_panel);
 
-				_closeButton = new(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/CloseButton"));
-				_closeButton.Left.Set(PanelWidth + 100, 0);
-				_closeButton.Top.Set(TopPadding + 10, 0);
+				_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/CloseButton"));
+				_closeButton.Left.Set(LeftPadding + PanelWidth - 60, 0.5f);
+				_closeButton.Top.Set(TopPadding + 10, 0.5f);
 				_closeButton.Width.Set(38, 0);
 				_closeButton.Height.Set(38, 0);
 				_closeButton.OnLeftClick += (a, b) => visible = false;
