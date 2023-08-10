@@ -6,10 +6,10 @@ namespace FunnyExperience.Content.Passives
 	{
 		public CloseRangePassive() : base()
 		{
-			name = "Close Combatant";
-			tooltip = "Increases your damage against nearby enemies by 10% per level";
-			maxLevel = 3;
-			treePos = new Vector2(160, 300);
+			Name = "Close Combatant";
+			Tooltip = "Increases your damage against nearby enemies by 10% per level";
+			MaxLevel = 3;
+			TreePos = new Vector2(160, 300);
 		}
 	}
 
@@ -17,10 +17,10 @@ namespace FunnyExperience.Content.Passives
 	{
 		public BleedPassive() : base()
 		{
-			name = "Crimson Dance";
-			tooltip = "Your melee attacks inflict bleeding, dealing 5 damage per second per level";
-			maxLevel = 3;
-			treePos = new Vector2(180, 230);
+			Name = "Crimson Dance";
+			Tooltip = "Your melee attacks inflict bleeding, dealing 5 damage per second per level";
+			MaxLevel = 3;
+			TreePos = new Vector2(180, 230);
 		}
 	}
 }

@@ -6,10 +6,10 @@ namespace FunnyExperience.Content.Passives
 	{
 		public ManaPassive() : base()
 		{
-			name = "Open Mind";
-			tooltip = "Increases your maximum mana by 20 per level";
-			maxLevel = 3;
-			treePos = new Vector2(500, 180);
+			Name = "Open Mind";
+			Tooltip = "Increases your maximum mana by 20 per level";
+			MaxLevel = 3;
+			TreePos = new Vector2(500, 180);
 		}
 	}
 }

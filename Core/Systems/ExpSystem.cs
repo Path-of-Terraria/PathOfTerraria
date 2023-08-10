@@ -5,38 +5,40 @@ using Terraria.ModLoader.IO;
 
 namespace FunnyExperience.Core.Systems
 {
-	internal class ExpSystem : ModPlayer
+	internal abstract class ExpSystem : ModPlayer
 	{
-		public int level = 0;
-		public int exp = 0;
+		public int Level;
+#pragma warning disable IDE1006 // Naming Styles
+		public int exp;
+#pragma warning restore IDE1006 // Naming Styles
 
-		public int NextLevel => level == 100 ? 1 : level * 250 + (int)(80 * Math.Pow(2, 1 + level * 0.2f));
+		public int NextLevel => Level == 100 ? 1 : Level * 250 + (int)(80 * Math.Pow(2, 1 + Level * 0.2f));
 
 		public override void PreUpdate()
 		{
-			if (exp > NextLevel && level < 100)
-			{
-				SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5"));
+			if (exp <= NextLevel || Level >= 100)
+				return;
+			
+			SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5"));
 
-				exp -= NextLevel;
-				level++;
+			exp -= NextLevel;
+			Level++;
 
-				Main.NewText($"You've reached level {level}!", new Color(145, 255, 160));
-				Main.NewText($"You have gained 1 skill point. Click the experience bar to open the skill tree.", new Color(255, 255, 160));
+			Main.NewText($"You've reached level {Level}!", new Color(145, 255, 160));
+			Main.NewText($"You have gained 1 skill point. Click the experience bar to open the skill tree.", new Color(255, 255, 160));
 
-				Player.GetModPlayer<TreePlayer>().Points++;
-			}
+			Player.GetModPlayer<TreePlayer>().Points++;
 		}
 
 		public override void SaveData(TagCompound tag)
 		{
-			tag["level"] = level;
+			tag["level"] = Level;
 			tag["exp"] = exp;
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
-			level = tag.GetInt("level");
+			Level = tag.GetInt("level");
 			exp = tag.GetInt("exp");
 		}
 	}

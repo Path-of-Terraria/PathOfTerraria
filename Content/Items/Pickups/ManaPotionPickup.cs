@@ -26,12 +26,12 @@ namespace FunnyExperience.Content.Items.Pickups
 
 		public override bool CanPickup(Player player)
 		{
-			return player.GetModPlayer<PotionSystem>().manaLeft < player.GetModPlayer<PotionSystem>().maxMana;
+			return player.GetModPlayer<PotionSystem>().ManaLeft < player.GetModPlayer<PotionSystem>().MaxMana;
 		}
 
 		public override bool OnPickup(Player player)
 		{
-			player.GetModPlayer<PotionSystem>().manaLeft++;
+			player.GetModPlayer<PotionSystem>().ManaLeft++;
 
 			CombatText.NewText(player.Hitbox, new Color(150, 190, 255), "Mana Potion");
 

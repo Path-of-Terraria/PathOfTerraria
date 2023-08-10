@@ -2,6 +2,6 @@
 {
 	internal class SkillPlayer : ModPlayer
 	{
-		public Skill[] skills = new Skill[5];
+		public Skill[] Skills = new Skill[5];
 	}
 }

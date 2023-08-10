@@ -5,7 +5,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 	[AutoloadEquip(EquipType.Legs)]
 	internal class Leggings : Gear
 	{
-		public override string Texture => "Terraria/" + Terraria.GameContent.TextureAssets.Item[ItemID.IronGreaves].Name;
+		public override string Texture => $"{FunnyExperience.ModName}/Assets/Items/Gear/Armor/Legs/Base";
 
 		public override void SetDefaults()
 		{
@@ -14,7 +14,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 
 		public override void PostRoll()
 		{
-			Item.defense = power / 14 + 1;
+			Item.defense = Power / 14 + 1;
 		}
 
 		public override string GenerateName()
@@ -49,16 +49,16 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 				_ => "Unknown"
 			};
 
-			if (rarity == GearRarity.Normal)
+			if (Rarity == GearRarity.Normal)
 				return item;
 
-			if (rarity == GearRarity.Magic)
+			if (Rarity == GearRarity.Magic)
 				return $"{prefix} {item}";
 
-			if (rarity == GearRarity.Rare)
+			if (Rarity == GearRarity.Rare)
 				return $"{prefix} {suffix} {item}";
 
-			if (rarity == GearRarity.Unique)
+			if (Rarity == GearRarity.Unique)
 				return Item.Name;
 
 			return "Unknown Item";

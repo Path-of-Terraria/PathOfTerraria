@@ -6,17 +6,17 @@
 		{
 			public DefenseAffix() : base()
 			{
-				possibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+				PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 			}
 
 			public override string GetTooltip(Player player, Gear gear)
 			{
-				return $"+{1 + (int)(value * 5) + gear.power / 50} Additional Defense";
+				return $"+{1 + (int)(Value * 5) + gear.Power / 50} Additional Defense";
 			}
 
 			public override void BuffPassive(Player player, Gear gear)
 			{
-				player.statDefense += 1 + (int)(value * 5) + gear.power / 50;
+				player.statDefense += 1 + (int)(Value * 5) + gear.Power / 50;
 			}
 		}
 
@@ -24,17 +24,17 @@
 		{
 			public EnduranceAffix() : base()
 			{
-				possibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+				PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 			}
 
 			public override string GetTooltip(Player player, Gear gear)
 			{
-				return $"+{(float)Math.Truncate((value * 5 + gear.power / 50) * 10) / 10}% Damage Reduction";
+				return $"+{(float)Math.Truncate((Value * 5 + gear.Power / 50) * 10) / 10}% Damage Reduction";
 			}
 
 			public override void BuffPassive(Player player, Gear gear)
 			{
-				player.endurance += (float)Math.Truncate((value * 5 + gear.power / 50) * 10) / 10 / 100f;
+				player.endurance += (float)Math.Truncate((Value * 5 + gear.Power / 50) * 10) / 10 / 100f;
 			}
 		}
 	}

@@ -5,15 +5,15 @@ namespace FunnyExperience.Core.Systems
 {
 	internal class PotionSystem : ModPlayer
 	{
-		public int healingLeft = 3;
-		public int maxHealing = 3;
-		public int healPower = 30;
-		public int healDelay = 300;
+		public int HealingLeft = 3;
+		public int MaxHealing = 3;
+		public int HealPower = 30;
+		public int HealDelay = 300;
 
-		public int manaLeft = 3;
-		public int maxMana = 3;
-		public int manaPower = 50;
-		public int manaDelay = 300;
+		public int ManaLeft = 3;
+		public int MaxMana = 3;
+		public int ManaPower = 50;
+		public int ManaDelay = 300;
 
 		public override void Load()
 		{
@@ -21,32 +21,32 @@ namespace FunnyExperience.Core.Systems
 			On_Player.QuickMana += QuickMana;
 		}
 
-		private void QuickHeal(On_Player.orig_QuickHeal orig, Player self)
+		private static void QuickHeal(On_Player.orig_QuickHeal orig, Player self)
 		{
 			PotionSystem mp = self.GetModPlayer<PotionSystem>();
 
-			if (mp.healingLeft > 0 && !self.HasBuff(BuffID.PotionSickness))
+			if (mp.HealingLeft > 0 && !self.HasBuff(BuffID.PotionSickness))
 			{
-				self.HealEffect(mp.healPower);
-				self.statLife += mp.healPower;
-				self.AddBuff(BuffID.PotionSickness, mp.healDelay);
-				mp.healingLeft--;
+				self.HealEffect(mp.HealPower);
+				self.statLife += mp.HealPower;
+				self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
+				mp.HealingLeft--;
 
 				SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/PickupPotion"));
 				SoundEngine.PlaySound(SoundID.Item3);
 			}
 		}
 
-		private void QuickMana(On_Player.orig_QuickMana orig, Player self)
+		private static void QuickMana(On_Player.orig_QuickMana orig, Player self)
 		{
 			PotionSystem mp = self.GetModPlayer<PotionSystem>();
 
-			if (mp.manaLeft > 0 && !self.HasBuff(BuffID.ManaSickness))
+			if (mp.ManaLeft > 0 && !self.HasBuff(BuffID.ManaSickness))
 			{
-				self.ManaEffect(mp.manaPower);
-				self.statMana += mp.manaPower;
-				self.AddBuff(BuffID.ManaSickness, mp.manaDelay);
-				mp.manaLeft--;
+				self.ManaEffect(mp.ManaPower);
+				self.statMana += mp.ManaPower;
+				self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
+				mp.ManaLeft--;
 
 				SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/PickupPotion"));
 				SoundEngine.PlaySound(SoundID.Item3);
@@ -55,19 +55,19 @@ namespace FunnyExperience.Core.Systems
 
 		public override void ResetEffects()
 		{
-			if (healingLeft > maxHealing)
-				healingLeft = maxHealing;
+			if (HealingLeft > MaxHealing)
+				HealingLeft = MaxHealing;
 
-			if (manaLeft > maxMana)
-				manaLeft = maxMana;
+			if (ManaLeft > MaxMana)
+				ManaLeft = MaxMana;
 
-			maxHealing = 3;
-			healPower = 30;
-			healDelay = 300;
+			MaxHealing = 3;
+			HealPower = 30;
+			HealDelay = 300;
 
-			maxMana = 3;
-			manaPower = 50;
-			manaDelay = 300;
+			MaxMana = 3;
+			ManaPower = 50;
+			ManaDelay = 300;
 		}
 	}
 

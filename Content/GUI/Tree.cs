@@ -10,14 +10,16 @@ namespace FunnyExperience.Content.GUI
 {
 	internal class Tree : SmartUIState
 	{
-		public bool populated = false;
+		public bool Populated = false;
 
-		public UIPanel panel;
-		public UIImageButton closeButton;
+		private UIPanel _panel;
+		private UIImageButton _closeButton;
 
+#pragma warning disable IDE1006 // Naming Styles
 		public bool visible;
+#pragma warning restore IDE1006 // Naming Styles
 
-		public TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
+		private static TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
 		private const int TopPadding = 400;
 		private const int LeftPadding = 500;
@@ -36,33 +38,33 @@ namespace FunnyExperience.Content.GUI
 			if (Main.LocalPlayer.controlInv)
 				visible = false;
 
-			if (!populated)
+			if (!Populated)
 			{
-				panel = new UIPanel();
-				panel.Left.Set(LeftPadding, 0);
-				panel.Top.Set(TopPadding, 0);
-				panel.Width.Set(PanelWidth, 0);
-				panel.Height.Set(PanelHeight, 0);
-				Append(panel);
+				_panel = new UIPanel();
+				_panel.Left.Set(LeftPadding, 0);
+				_panel.Top.Set(TopPadding, 0);
+				_panel.Width.Set(PanelWidth, 0);
+				_panel.Height.Set(PanelHeight, 0);
+				Append(_panel);
 
-				closeButton = new(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/CloseButton"));
-				closeButton.Left.Set(PanelWidth + 100, 0);
-				closeButton.Top.Set(TopPadding + 10, 0);
-				closeButton.Width.Set(38, 0);
-				closeButton.Height.Set(38, 0);
-				closeButton.OnLeftClick += (a, b) => visible = false;
-				closeButton.SetVisibility(1, 1);
-				Append(closeButton);
+				_closeButton = new(ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/CloseButton"));
+				_closeButton.Left.Set(PanelWidth + 100, 0);
+				_closeButton.Top.Set(TopPadding + 10, 0);
+				_closeButton.Width.Set(38, 0);
+				_closeButton.Height.Set(38, 0);
+				_closeButton.OnLeftClick += (a, b) => visible = false;
+				_closeButton.SetVisibility(1, 1);
+				Append(_closeButton);
 
 				var inner = new InnerPanel();
 				inner.Left.Set(0, 0);
 				inner.Top.Set(0, 0);
 				inner.Width.Set(PanelWidth - 0, 0);
 				inner.Height.Set(PanelHeight - 0, 0);
-				panel.Append(inner);
+				_panel.Append(inner);
 
-				TreeSystem.nodes.ForEach(n => inner.Append(new PassiveElement(n)));
-				populated = true;
+				TreeSystem.Nodes.ForEach(n => inner.Append(new PassiveElement(n)));
+				Populated = true;
 			}
 
 			Recalculate();
@@ -72,21 +74,21 @@ namespace FunnyExperience.Content.GUI
 			Texture2D tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/PassiveFrameSmall").Value;
 			TreePlayer mp = Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
-			spriteBatch.Draw(tex, panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
-			Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
-			Utils.DrawBorderStringBig(spriteBatch, $"Points remaining", panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(170, 32), Color.White, 0.6f, 0.5f, 0.35f);
+			spriteBatch.Draw(tex, _panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+			Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", _panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
+			Utils.DrawBorderStringBig(spriteBatch, $"Points remaining", _panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(170, 32), Color.White, 0.6f, 0.5f, 0.35f);
 		}
 	}
 
 	internal class InnerPanel : SmartUIElement
 	{
-		public Vector2 start;
-		public Vector2 root;
-		public Vector2 lineOff;
+		private Vector2 _start;
+		private Vector2 _root;
+		private Vector2 LineOff;
 
-		UIElement Panel => Parent;
+		private UIElement Panel => Parent;
 
-		public TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
+		private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
@@ -97,25 +99,25 @@ namespace FunnyExperience.Content.GUI
 			spriteBatch.End();
 			spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-			foreach (PassiveEdge edge in TreeSystem.edges)
+			foreach (PassiveEdge edge in TreeSystem.Edges)
 			{
 				Texture2D chainTex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Link").Value;
 
 				Color color = Color.Gray;
 
-				if (edge.end.CanAllocate(Main.LocalPlayer) && edge.start.level > 0)
+				if (edge.End.CanAllocate(Main.LocalPlayer) && edge.Start.Level > 0)
 					color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 
-				if (edge.end.level > 0 && edge.start.level > 0)
+				if (edge.End.Level > 0 && edge.Start.Level > 0)
 					color = Color.White;
 
-				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.start.treePos, edge.end.treePos) / 16))
+				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.Start.TreePos, edge.End.TreePos) / 16))
 				{
-					Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.start.treePos, edge.end.treePos, k) + lineOff;
-					Main.spriteBatch.Draw(chainTex, pos, null, color, edge.start.treePos.DirectionTo(edge.end.treePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
+					Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + LineOff;
+					Main.spriteBatch.Draw(chainTex, pos, null, color, edge.Start.TreePos.DirectionTo(edge.End.TreePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 				}
 
-				if (edge.end.level > 0 && edge.start.level > 0)
+				if (edge.End.Level > 0 && edge.Start.Level > 0)
 				{
 					Texture2D glow = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/GlowAlpha").Value;
 					var glowColor = new Color(255, 230, 150)
@@ -127,12 +129,12 @@ namespace FunnyExperience.Content.GUI
 
 					for (int k = 0; k < 8; k++)
 					{
-						float dist = Vector2.Distance(edge.start.treePos, edge.end.treePos);
+						float dist = Vector2.Distance(edge.Start.TreePos, edge.End.TreePos);
 						float len = (40 + rand.Next(120)) * dist / 50;
 						float scale = 0.05f + rand.NextSingle() * 0.15f;
 
 						float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
-						Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.start.treePos, edge.end.treePos, progress) + lineOff;
+						Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + LineOff;
 						float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
 						spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
 					}
@@ -152,15 +154,15 @@ namespace FunnyExperience.Content.GUI
 		{
 			if (Main.mouseLeft && Panel.IsMouseHovering)
 			{
-				if (start == Vector2.Zero)
+				if (_start == Vector2.Zero)
 				{
-					start = Main.MouseScreen;
-					root = lineOff;
+					_start = Main.MouseScreen;
+					_root = LineOff;
 
 					foreach (UIElement element in Elements)
 					{
 						if (element is PassiveElement ele)
-							ele.root = new Vector2(ele.Left.Pixels, ele.Top.Pixels);
+							ele.Root = new Vector2(ele.Left.Pixels, ele.Top.Pixels);
 					}
 				}
 
@@ -168,16 +170,16 @@ namespace FunnyExperience.Content.GUI
 				{
 					if (element is PassiveElement ele)
 					{
-						element.Left.Set(ele.root.X + Main.MouseScreen.X - start.X, 0);
-						element.Top.Set(ele.root.Y + Main.MouseScreen.Y - start.Y, 0);
+						element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0);
+						element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0);
 					}
 				}
 
-				lineOff = root + Main.MouseScreen - start;
+				LineOff = _root + Main.MouseScreen - _start;
 			}
 			else
 			{
-				start = Vector2.Zero;
+				_start = Vector2.Zero;
 			}
 
 			Recalculate();
@@ -186,31 +188,31 @@ namespace FunnyExperience.Content.GUI
 
 	internal class PassiveElement : SmartUIElement
 	{
-		public Passive passive;
-		public Vector2 root;
+		private readonly Passive _passive;
+		public Vector2 Root;
 
-		public int flashTimer;
-		public int redFlashTimer;
+		private int _flashTimer;
+		private int _redFlashTimer;
 
 		public PassiveElement(Passive passive)
 		{
-			this.passive = passive;
-			Left.Set(passive.treePos.X - passive.width / 2, 0);
-			Top.Set(passive.treePos.Y - passive.height / 2, 0);
-			Width.Set(passive.width, 0);
-			Height.Set(passive.height, 0);
+			this._passive = passive;
+			Left.Set(passive.TreePos.X - passive.Width / 2, 0);
+			Top.Set(passive.TreePos.Y - passive.Height / 2, 0);
+			Width.Set(passive.Width, 0);
+			Height.Set(passive.Height, 0);
 		}
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			passive.Draw(spriteBatch, GetDimensions().Center());
+			_passive.Draw(spriteBatch, GetDimensions().Center());
 
-			if (flashTimer > 0)
+			if (_flashTimer > 0)
 			{
 				Texture2D glow = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/GlowAlpha").Value;
 				Texture2D star = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/StarAlpha").Value;
 
-				float prog = flashTimer / 20f;
+				float prog = _flashTimer / 20f;
 
 				var glowColor = new Color(255, 230, 150)
 				{
@@ -222,15 +224,15 @@ namespace FunnyExperience.Content.GUI
 				spriteBatch.Draw(glow, GetDimensions().Center(), null, glowColor, 0, glow.Size() / 2f, 1 + (1f - prog), 0, 0);
 				spriteBatch.Draw(star, GetDimensions().Center(), null, glowColor * 0.5f, 0, star.Size() / 2f, 1 + (1f - prog), 0, 0);
 
-				flashTimer--;
+				_flashTimer--;
 			}
 
-			if (redFlashTimer > 0)
+			if (_redFlashTimer > 0)
 			{
 				Texture2D glow = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/GlowAlpha").Value;
 				Texture2D star = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/StarAlpha").Value;
 
-				float prog = redFlashTimer / 20f;
+				float prog = _redFlashTimer / 20f;
 
 				var glowColor = new Color(255, 60, 60)
 				{
@@ -242,18 +244,18 @@ namespace FunnyExperience.Content.GUI
 				spriteBatch.Draw(glow, GetDimensions().Center(), null, glowColor, 0, glow.Size() / 2f, 1 + (1f - prog), 0, 0);
 				spriteBatch.Draw(star, GetDimensions().Center(), null, glowColor * 0.5f, 0, star.Size() / 2f, 1 + prog, 0, 0);
 
-				redFlashTimer--;
+				_redFlashTimer--;
 			}
 
 			if (IsMouseHovering)
 			{
-				string name = passive.name;
+				string name = _passive.Name;
 
-				if (passive.maxLevel > 1)
-					name += $" ({passive.level}/{passive.maxLevel})";
+				if (_passive.MaxLevel > 1)
+					name += $" ({_passive.Level}/{_passive.MaxLevel})";
 
 				Tooltip.SetName(name);
-				Tooltip.SetTooltip(passive.tooltip);
+				Tooltip.SetTooltip(_passive.Tooltip);
 			}
 
 			Recalculate();
@@ -261,16 +263,16 @@ namespace FunnyExperience.Content.GUI
 
 		public override void SafeClick(UIMouseEvent evt)
 		{
-			if (passive.CanAllocate(Main.LocalPlayer))
+			if (_passive.CanAllocate(Main.LocalPlayer))
 			{
-				passive.level++;
+				_passive.Level++;
 				Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
 
-				flashTimer = 20;
+				_flashTimer = 20;
 
-				if (passive.maxLevel == 1)
+				if (_passive.MaxLevel == 1)
 				{
-					switch (passive.level)
+					switch (_passive.Level)
 					{
 						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
 						default: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
@@ -279,9 +281,9 @@ namespace FunnyExperience.Content.GUI
 					return;
 				}
 
-				if (passive.maxLevel == 2)
+				if (_passive.MaxLevel == 2)
 				{
-					switch (passive.level)
+					switch (_passive.Level)
 					{
 						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
 						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5")); break;
@@ -291,9 +293,9 @@ namespace FunnyExperience.Content.GUI
 					return;
 				}
 
-				if (passive.maxLevel == 3)
+				if (_passive.MaxLevel == 3)
 				{
-					switch (passive.level)
+					switch (_passive.Level)
 					{
 						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
 						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier3")); break;
@@ -304,9 +306,9 @@ namespace FunnyExperience.Content.GUI
 					return;
 				}
 
-				if (passive.maxLevel == 5)
+				if (_passive.MaxLevel == 5)
 				{
-					switch (passive.level)
+					switch (_passive.Level)
 					{
 						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
 						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
@@ -319,9 +321,9 @@ namespace FunnyExperience.Content.GUI
 					return;
 				}
 
-				if (passive.maxLevel == 6)
+				if (_passive.MaxLevel == 6)
 				{
-					switch (passive.level)
+					switch (_passive.Level)
 					{
 						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
 						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
@@ -335,9 +337,9 @@ namespace FunnyExperience.Content.GUI
 					return;
 				}
 
-				if (passive.maxLevel == 7)
+				if (_passive.MaxLevel == 7)
 				{
-					switch (passive.level)
+					switch (_passive.Level)
 					{
 						case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
 						case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
@@ -352,7 +354,7 @@ namespace FunnyExperience.Content.GUI
 					return;
 				}
 
-				switch (passive.level)
+				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier1")); break;
 					case 2: SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier2")); break;
@@ -366,12 +368,12 @@ namespace FunnyExperience.Content.GUI
 
 		public override void SafeRightClick(UIMouseEvent evt)
 		{
-			if (passive.CanDeallocate(Main.LocalPlayer))
+			if (_passive.CanDeallocate(Main.LocalPlayer))
 			{
-				passive.level--;
+				_passive.Level--;
 				Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;
 
-				redFlashTimer = 20;
+				_redFlashTimer = 20;
 
 				SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 			}

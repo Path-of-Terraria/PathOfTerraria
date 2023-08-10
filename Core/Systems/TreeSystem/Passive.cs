@@ -5,20 +5,20 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 {
 	internal abstract class Passive
 	{
-		public Vector2 treePos;
+		public Vector2 TreePos;
 
-		public string name = "Unknown";
-		public string tooltip = "Who knows what this will do!";
+		public string Name = "Unknown";
+		public string Tooltip = "Who knows what this will do!";
 
-		public int level;
-		public int maxLevel;
+		public int Level;
+		public int MaxLevel;
 
-		public int width = 50;
-		public int height = 50;
+		public int Width = 50;
+		public int Height = 50;
 
 		public virtual void BuffPlayer(Player player) { }
 
-		public virtual void Draw(SpriteBatch spriteBatch, Vector2 center)
+		public void Draw(SpriteBatch spriteBatch, Vector2 center)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/PassiveFrameSmall").Value;
 
@@ -30,13 +30,13 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 			if (CanAllocate(Main.LocalPlayer))
 				color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 
-			if (level > 0)
+			if (Level > 0)
 				color = Color.White;
 
 			spriteBatch.Draw(tex, center, null, color, 0, tex.Size() / 2f, 1, 0, 0);
 
-			if (maxLevel > 1)
-				Utils.DrawBorderString(spriteBatch, $"{level}/{maxLevel}", center + new Vector2(width / 2f, height / 2f), color, 1, 0.5f, 0.5f);
+			if (MaxLevel > 1)
+				Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", center + new Vector2(Width / 2f, Height / 2f), color, 1, 0.5f, 0.5f);
 		}
 
 		/// <summary>
@@ -51,24 +51,24 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		/// </summary>
 		/// <typeparam name="T">The type of node to connect to</typeparam>
 		/// <param name="all">All nodes</param>
-		public void Connect<T>(List<Passive> all, Player player) where T : Passive
+		protected void Connect<T>(List<Passive> all, Player player) where T : Passive
 		{
 			TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
-			TreeSystem.edges.Add(new(this, all.FirstOrDefault(n => n is T)));
+			TreeSystem.Edges.Add(new(this, all.FirstOrDefault(n => n is T)));
 		}
 
 		/// <summary>
 		/// If this passive is able to be allocated or not
 		/// </summary>
 		/// <returns></returns>
-		public virtual bool CanAllocate(Player player)
+		public bool CanAllocate(Player player)
 		{
 			TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
 
 			return
-				level < maxLevel &&
+				Level < MaxLevel &&
 				Main.LocalPlayer.GetModPlayer<TreePlayer>().Points > 0 &&
-				(TreeSystem.edges.Any(n => n.start.level > 0 && n.end == this) || !TreeSystem.edges.Any(n => n.end == this));
+				(TreeSystem.Edges.Any(n => n.Start.Level > 0 && n.End == this) || !TreeSystem.Edges.Any(n => n.End == this));
 		}
 
 		/// <summary>
@@ -80,8 +80,8 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 			TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
 
 			return
-				level > 0 &&
-				!(level == 1 && TreeSystem.edges.Any(n => n.end.level > 0 && n.start == this && !TreeSystem.edges.Any(a => a != n && a.end == n.end && a.start.level > 0)));
+				Level > 0 &&
+				!(Level == 1 && TreeSystem.Edges.Any(n => n.End.Level > 0 && n.Start == this && !TreeSystem.Edges.Any(a => a != n && a.End == n.End && a.Start.Level > 0)));
 		}
 	}
 }
