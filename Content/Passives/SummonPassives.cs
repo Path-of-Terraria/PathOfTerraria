@@ -6,10 +6,10 @@ namespace FunnyExperience.Content.Passives
 	{
 		public MinionPassive() : base()
 		{
-			name = "Empowered Horde";
-			tooltip = "Increases your minions' damage by 10% per level";
-			maxLevel = 3;
-			treePos = new Vector2(640, 300);
+			Name = "Empowered Horde";
+			Tooltip = "Increases your minions' damage by 10% per level";
+			MaxLevel = 3;
+			TreePos = new Vector2(640, 300);
 		}
 	}
 
@@ -17,10 +17,10 @@ namespace FunnyExperience.Content.Passives
 	{
 		public SentryPassive() : base()
 		{
-			name = "Steadfast Sentries";
-			tooltip = "Increases your sentries' damage by 10% per level";
-			maxLevel = 3;
-			treePos = new Vector2(620, 230);
+			Name = "Steadfast Sentries";
+			Tooltip = "Increases your sentries' damage by 10% per level";
+			MaxLevel = 3;
+			TreePos = new Vector2(620, 230);
 		}
 	}
 }

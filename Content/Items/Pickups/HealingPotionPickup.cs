@@ -26,12 +26,12 @@ namespace FunnyExperience.Content.Items.Pickups
 
 		public override bool CanPickup(Player player)
 		{
-			return player.GetModPlayer<PotionSystem>().healingLeft < player.GetModPlayer<PotionSystem>().maxHealing;
+			return player.GetModPlayer<PotionSystem>().HealingLeft < player.GetModPlayer<PotionSystem>().MaxHealing;
 		}
 
 		public override bool OnPickup(Player player)
 		{
-			player.GetModPlayer<PotionSystem>().healingLeft++;
+			player.GetModPlayer<PotionSystem>().HealingLeft++;
 
 			CombatText.NewText(player.Hitbox, new Color(255, 150, 150), "Healing Potion");
 

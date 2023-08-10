@@ -4,15 +4,25 @@ namespace FunnyExperience.Core.Systems.SkillSystem
 {
 	internal abstract class Skill
 	{
-		public int duration;
-		public int timer;
+		public int Duration;
+		public int Timer;
 
-		public int maxCooldown;
-		public int cooldown;
+		public int MaxCooldown;
+		private readonly int _cooldown;
 
-		public int manaCost;
+		private readonly int _manaCost;
 
-		public GearType weaponType;
+		public GearType WeaponType;
+
+		protected Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weaponType)
+		{
+			Duration = duration;
+			Timer = timer;
+			MaxCooldown = maxCooldown;
+			_cooldown = cooldown;
+			_manaCost = manaCost;
+			WeaponType = weaponType;
+		}
 
 		public virtual string Name => GetType().Name;
 		public virtual string Texture => $"{FunnyExperience.ModName}/Assets/Skills/" + GetType().Name;
@@ -37,7 +47,7 @@ namespace FunnyExperience.Core.Systems.SkillSystem
 		/// <returns>If the skill can be used or not</returns>
 		public virtual bool CanUseSkill(Player player)
 		{
-			return cooldown <= 0 && player.CheckMana(manaCost);
+			return _cooldown <= 0 && player.CheckMana(_manaCost);
 		}
 	}
 }

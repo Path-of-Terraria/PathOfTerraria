@@ -6,17 +6,17 @@ namespace FunnyExperience.Content.Items.Gear.Affixes.ArmorAffixes
 	{
 		public LifeAffix() : base()
 		{
-			possibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 		}
 
 		public override string GetTooltip(Player player, Gear gear)
 		{
-			return $"+{10 + (int)(value * 30) + gear.power / 10} Maximum Life";
+			return $"+{10 + (int)(Value * 30) + gear.Power / 10} Maximum Life";
 		}
 
 		public override void BuffPassive(Player player, Gear gear)
 		{
-			player.statLifeMax2 += 10 + (int)(value * 30) + gear.power / 10;
+			player.statLifeMax2 += 10 + (int)(Value * 30) + gear.Power / 10;
 		}
 	}
 
@@ -24,17 +24,17 @@ namespace FunnyExperience.Content.Items.Gear.Affixes.ArmorAffixes
 	{
 		public LifeRegenAffix() : base()
 		{
-			possibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 		}
 
 		public override string GetTooltip(Player player, Gear gear)
 		{
-			return $"+{1 + (int)(value * 4) + gear.power / 40} Life Regeneration";
+			return $"+{1 + (int)(Value * 4) + gear.Power / 40} Life Regeneration";
 		}
 
 		public override void BuffPassive(Player player, Gear gear)
 		{
-			player.lifeRegen += 1 + (int)(value * 4) + gear.power / 40;
+			player.lifeRegen += 1 + (int)(Value * 4) + gear.Power / 40;
 		}
 	}
 
@@ -42,17 +42,17 @@ namespace FunnyExperience.Content.Items.Gear.Affixes.ArmorAffixes
 	{
 		public LifePotionPowerAffix() : base()
 		{
-			possibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 		}
 
 		public override string GetTooltip(Player player, Gear gear)
 		{
-			return $"Healing potions restore {10 + (int)(value * 10) + gear.power / 20} more life";
+			return $"Healing potions restore {10 + (int)(Value * 10) + gear.Power / 20} more life";
 		}
 
 		public override void BuffPassive(Player player, Gear gear)
 		{
-			player.GetModPlayer<PotionSystem>().healPower += 10 + (int)(value * 10) + gear.power / 20;
+			player.GetModPlayer<PotionSystem>().HealPower += 10 + (int)(Value * 10) + gear.Power / 20;
 		}
 	}
 
@@ -60,17 +60,17 @@ namespace FunnyExperience.Content.Items.Gear.Affixes.ArmorAffixes
 	{
 		public LifePotionCapAffix() : base()
 		{
-			possibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 		}
 
 		public override string GetTooltip(Player player, Gear gear)
 		{
-			return $"You can hold {1 + (int)Math.Round(value, MidpointRounding.ToEven) + gear.power / 100} additional healing potions";
+			return $"You can hold {1 + (int)Math.Round(Value, MidpointRounding.ToEven) + gear.Power / 100} additional healing potions";
 		}
 
 		public override void BuffPassive(Player player, Gear gear)
 		{
-			player.GetModPlayer<PotionSystem>().maxHealing += 1 + (int)Math.Round(value, MidpointRounding.ToEven) + gear.power / 100;
+			player.GetModPlayer<PotionSystem>().MaxHealing += 1 + (int)Math.Round(Value, MidpointRounding.ToEven) + gear.Power / 100;
 		}
 	}
 
@@ -78,18 +78,18 @@ namespace FunnyExperience.Content.Items.Gear.Affixes.ArmorAffixes
 	{
 		public LifePotionCooldownAffix() : base()
 		{
-			possibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
-			requiredInfluence = GearInfluence.Lunar;
+			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+			RequiredInfluence = GearInfluence.Lunar;
 		}
 
 		public override string GetTooltip(Player player, Gear gear)
 		{
-			return $"Healing potions are ready {0.5f + value * 0.5f} seconds sooner";
+			return $"Healing potions are ready {0.5f + Value * 0.5f} seconds sooner";
 		}
 
 		public override void BuffPassive(Player player, Gear gear)
 		{
-			player.GetModPlayer<PotionSystem>().healDelay -= (int)(60 * (0.5f + value * 0.5f));
+			player.GetModPlayer<PotionSystem>().HealDelay -= (int)(60 * (0.5f + Value * 0.5f));
 		}
 	}
 }

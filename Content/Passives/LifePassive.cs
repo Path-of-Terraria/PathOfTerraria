@@ -7,15 +7,15 @@ namespace FunnyExperience.Content.Passives
 	{
 		public LifePassive() : base()
 		{
-			name = "Empowered Flesh";
-			tooltip = "Increases your maximum life by 20 per level";
-			maxLevel = 5;
-			treePos = new Vector2(400, 400);
+			Name = "Empowered Flesh";
+			Tooltip = "Increases your maximum life by 20 per level";
+			MaxLevel = 5;
+			TreePos = new Vector2(400, 400);
 		}
 
 		public override void BuffPlayer(Player player)
 		{
-			player.statLifeMax2 += 20 * level;
+			player.statLifeMax2 += 20 * Level;
 		}
 
 		public override void Connect(List<Passive> all, Player player)

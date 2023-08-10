@@ -14,7 +14,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 
 		public override void PostRoll()
 		{
-			Item.defense = power / 6 + 1;
+			Item.defense = Power / 6 + 1;
 		}
 
 		public override string GenerateName()
@@ -47,7 +47,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 				2 => "Chestpiece",
 				_ => "Unknown"
 			};
-
+      
 			return rarity switch
 			{
 				GearRarity.Normal => item,

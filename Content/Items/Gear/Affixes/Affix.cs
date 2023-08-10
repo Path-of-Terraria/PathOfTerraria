@@ -1,17 +1,18 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace FunnyExperience.Content.Items.Gear.Affixes
 {
 	internal abstract class Affix
 	{
-		public float minValue = 0;
-		public float maxValue = 1;
-		public float value = 1;
+		private float _minValue;
+		private float _maxValue = 1;
+		protected float Value = 1;
 
-		public GearInfluence requiredInfluence = GearInfluence.None;
+		public GearInfluence RequiredInfluence = GearInfluence.None;
 
-		public GearType possibleTypes = 0;
+		public GearType PossibleTypes = 0;
 
 		public virtual void BuffPassive(Player player, Gear gear) { }
 
@@ -21,29 +22,29 @@ namespace FunnyExperience.Content.Items.Gear.Affixes
 		{
 			var clone = (Affix)Activator.CreateInstance(GetType());
 
-			clone.minValue = minValue;
-			clone.maxValue = maxValue;
-			clone.value = value;
-			clone.requiredInfluence = requiredInfluence;
-			clone.possibleTypes = possibleTypes;
+			clone._minValue = _minValue;
+			clone._maxValue = _maxValue;
+			clone.Value = Value;
+			clone.RequiredInfluence = RequiredInfluence;
+			clone.PossibleTypes = PossibleTypes;
 
 			return clone;
 		}
 
 		public virtual void Roll()
 		{
-			value = Main.rand.Next((int)(minValue * 10), (int)(maxValue * 10)) / 10f;
+			Value = Main.rand.Next((int)(_minValue * 10), (int)(_maxValue * 10)) / 10f;
 		}
 
 		public virtual void Save(TagCompound tag)
 		{
 			tag["type"] = GetType().FullName;
-			tag["value"] = value;
+			tag["value"] = Value;
 		}
 
 		public virtual void Load(TagCompound tag)
 		{
-			value = tag.GetFloat("value");
+			Value = tag.GetFloat("value");
 		}
 
 		/// <summary>
@@ -57,7 +58,7 @@ namespace FunnyExperience.Content.Items.Gear.Affixes
 
 			if (affix is null)
 			{
-				FunnyExperience.instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+				FunnyExperience.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
 				return null;
 			}
 
@@ -68,46 +69,39 @@ namespace FunnyExperience.Content.Items.Gear.Affixes
 
 	internal class AffixHandler : ILoadable
 	{
-		public static List<Affix> prototypes = new();
+		private static List<Affix> _prototypes = new();
 
 		/// <summary>
 		/// Returns a list of affixes that are valid for the given type. Typically used to roll affixes.
 		/// </summary>
 		/// <param name="type"></param>
+		/// <param name="influence"></param>
 		/// <returns></returns>
 		public static List<Affix> GetAffixes(GearType type, GearInfluence influence)
 		{
-			var affixes = new List<Affix>();
-
-			foreach (Affix proto in prototypes)
-			{
-				if (proto.requiredInfluence != GearInfluence.None && proto.requiredInfluence != influence)
-					continue;
-
-				if ((proto.possibleTypes & type) > 0)
-					affixes.Add(proto);
-			}
-
-			return affixes;
+			return _prototypes
+				.Where(proto => proto.RequiredInfluence == GearInfluence.None || proto.RequiredInfluence == influence)
+				.Where(proto => (proto.PossibleTypes & type) > 0)
+				.ToList();
 		}
 
 		public void Load(Mod mod)
 		{
-			prototypes = new();
+			_prototypes = new List<Affix>();
 
-			foreach (Type type in FunnyExperience.instance.Code.GetTypes())
+			foreach (Type type in FunnyExperience.Instance.Code.GetTypes())
 			{
 				if (!type.IsAbstract && type.IsSubclassOf(typeof(Affix)))
 				{
 					object instance = Activator.CreateInstance(type);
-					prototypes.Add(instance as Affix);
+					_prototypes.Add(instance as Affix);
 				}
 			}
 		}
 
 		public void Unload()
 		{
-			prototypes = null;
+			_prototypes = null;
 		}
 	}
 }

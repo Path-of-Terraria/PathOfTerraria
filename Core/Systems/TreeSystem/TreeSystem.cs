@@ -7,70 +7,70 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 {
 	internal class PassiveEdge
 	{
-		public Passive start;
-		public Passive end;
+		public readonly Passive Start;
+		public readonly Passive End;
 
 		public PassiveEdge(Passive start, Passive end)
 		{
-			this.start = start;
-			this.end = end;
+			Start = start;
+			End = end;
 		}
 	}
 
-	internal class TreePlayer : ModPlayer
+	internal abstract class TreePlayer : ModPlayer
 	{
 		public int Points;
 
-		public List<Passive> nodes = new();
-		public List<PassiveEdge> edges = new();
+		public List<Passive> Nodes = new();
+		public List<PassiveEdge> Edges = new();
 
 		public override void OnEnterWorld()
 		{
 			UILoader.GetUIState<Tree>().RemoveAllChildren();
-			UILoader.GetUIState<Tree>().populated = false;
+			UILoader.GetUIState<Tree>().Populated = false;
 		}
 
 		public override void UpdateEquips()
 		{
-			nodes.ForEach(n => n.BuffPlayer(Player));
+			Nodes.ForEach(n => n.BuffPlayer(Player));
 		}
 
 		public override void SaveData(TagCompound tag)
 		{
 			tag["points"] = Points;
 
-			foreach (Passive passive in nodes)
+			foreach (Passive passive in Nodes)
 			{
-				tag[passive.GetType().Name] = passive.level;
+				tag[passive.GetType().Name] = passive.Level;
 			}
 		}
 
 		public override void LoadData(TagCompound tag)
 		{
 			// Reset tree
-			nodes = new();
-			edges = new();
+			Nodes = new List<Passive>();
+			Edges = new List<PassiveEdge>();
 
 			foreach (Type type in Mod.Code.GetTypes())
 			{
 				if (!type.IsAbstract && type.IsSubclassOf(typeof(Passive)))
 				{
 					object instance = Activator.CreateInstance(type);
-					nodes.Add(instance as Passive);
+					Nodes.Add(instance as Passive);
 				}
 			}
 
-			nodes.ForEach(n => n.Connect(nodes, Player));
+			Nodes.ForEach(n => n.Connect(Nodes, Player));
 
 			// Load tree
 			Points = tag.GetInt("points");
 
-			foreach (Passive passive in nodes)
+			foreach (Passive passive in Nodes)
 			{
 				if (tag.TryGet(passive.GetType().Name, out int level))
-					passive.level = level;
+					passive.Level = level;
 				else
-					passive.level = 0;
+					passive.Level = 0;
 			}
 		}
 	}
