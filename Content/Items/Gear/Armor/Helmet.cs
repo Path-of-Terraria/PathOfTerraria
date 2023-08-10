@@ -5,7 +5,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 	[AutoloadEquip(EquipType.Head)]
 	internal class Helmet : Gear
 	{
-		public override string Texture => "Terraria/" + Terraria.GameContent.TextureAssets.Item[ItemID.IronHelmet].Name;
+		public override string Texture => $"{FunnyExperience.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
 
 		public override void SetDefaults()
 		{
