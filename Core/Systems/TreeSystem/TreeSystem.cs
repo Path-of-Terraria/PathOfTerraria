@@ -17,7 +17,7 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 		}
 	}
 
-	internal abstract class TreePlayer : ModPlayer
+	internal class TreePlayer : ModPlayer
 	{
 		public int Points;
 
