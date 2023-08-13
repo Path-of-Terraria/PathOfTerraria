@@ -48,7 +48,7 @@ namespace FunnyExperience.Content.Items.Gear.Armor
 				_ => "Unknown"
 			};
       
-			return rarity switch
+			return Rarity switch
 			{
 				GearRarity.Normal => item,
 				GearRarity.Magic => $"{prefix} {item}",

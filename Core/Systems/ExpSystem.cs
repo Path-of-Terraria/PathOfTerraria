@@ -5,7 +5,7 @@ using Terraria.ModLoader.IO;
 
 namespace FunnyExperience.Core.Systems
 {
-	internal abstract class ExpSystem : ModPlayer
+	internal class ExpSystem : ModPlayer
 	{
 		public int Level;
 #pragma warning disable IDE1006 // Naming Styles
