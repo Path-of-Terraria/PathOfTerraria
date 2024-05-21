@@ -5,18 +5,13 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem
 {
-	internal class PassiveEdge
+	internal class PassiveEdge(Passive start, Passive end)
 	{
-		public readonly Passive Start;
-		public readonly Passive End;
-
-		public PassiveEdge(Passive start, Passive end)
-		{
-			Start = start;
-			End = end;
-		}
+		public readonly Passive Start = start;
+		public readonly Passive End = end;
 	}
 
+	// ReSharper disable once ClassNeverInstantiated.Global
 	internal class TreePlayer : ModPlayer
 	{
 		public int Points;

@@ -3,6 +3,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems
 {
+	// ReSharper disable once ClassNeverInstantiated.Global
 	internal class PotionSystem : ModPlayer
 	{
 		public int HealingLeft = 3;
