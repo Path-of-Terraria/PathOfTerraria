@@ -32,7 +32,7 @@ namespace PathOfTerraria.Core.Loaders
 
 		}
 
-		public static void LoadShader(string name, string path)
+		private static void LoadShader(string name, string path)
 		{
 			var screenRef = new Ref<Effect>(PathOfTerraria.Instance.Assets.Request<Effect>(path, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value);
 			Filters.Scene[name] = new Filter(new ScreenShaderData(screenRef, name + "Pass"), EffectPriority.High);
