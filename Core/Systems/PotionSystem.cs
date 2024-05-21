@@ -3,7 +3,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems
 {
-	internal abstract class PotionSystem : ModPlayer
+	internal class PotionSystem : ModPlayer
 	{
 		public int HealingLeft = 3;
 		public int MaxHealing = 3;
@@ -25,32 +25,28 @@ namespace PathOfTerraria.Core.Systems
 		{
 			PotionSystem mp = self.GetModPlayer<PotionSystem>();
 
-			if (mp.HealingLeft > 0 && !self.HasBuff(BuffID.PotionSickness))
-			{
-				self.HealEffect(mp.HealPower);
-				self.statLife += mp.HealPower;
-				self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
-				mp.HealingLeft--;
+			if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness)) return;
+			self.HealEffect(mp.HealPower);
+			self.statLife += mp.HealPower;
+			self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
+			mp.HealingLeft--;
 
-				SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
-				SoundEngine.PlaySound(SoundID.Item3);
-			}
+			SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
+			SoundEngine.PlaySound(SoundID.Item3);
 		}
 
 		private static void QuickMana(On_Player.orig_QuickMana orig, Player self)
 		{
 			PotionSystem mp = self.GetModPlayer<PotionSystem>();
 
-			if (mp.ManaLeft > 0 && !self.HasBuff(BuffID.ManaSickness))
-			{
-				self.ManaEffect(mp.ManaPower);
-				self.statMana += mp.ManaPower;
-				self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
-				mp.ManaLeft--;
+			if (mp.ManaLeft <= 0 || self.HasBuff(BuffID.ManaSickness)) return;
+			self.ManaEffect(mp.ManaPower);
+			self.statMana += mp.ManaPower;
+			self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
+			mp.ManaLeft--;
 
-				SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
-				SoundEngine.PlaySound(SoundID.Item3);
-			}
+			SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
+			SoundEngine.PlaySound(SoundID.Item3);
 		}
 
 		public override void ResetEffects()

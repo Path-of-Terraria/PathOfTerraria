@@ -21,8 +21,8 @@ namespace PathOfTerraria.Core.Systems.TreeSystem
 	{
 		public int Points;
 
-		public List<Passive> Nodes = new();
-		public List<PassiveEdge> Edges = new();
+		public List<Passive> Nodes = [];
+		public List<PassiveEdge> Edges = [];
 
 		public override void OnEnterWorld()
 		{
@@ -48,16 +48,14 @@ namespace PathOfTerraria.Core.Systems.TreeSystem
 		public override void LoadData(TagCompound tag)
 		{
 			// Reset tree
-			Nodes = new List<Passive>();
-			Edges = new List<PassiveEdge>();
+			Nodes = [];
+			Edges = [];
 
 			foreach (Type type in Mod.Code.GetTypes())
 			{
-				if (!type.IsAbstract && type.IsSubclassOf(typeof(Passive)))
-				{
-					object instance = Activator.CreateInstance(type);
-					Nodes.Add(instance as Passive);
-				}
+				if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive))) continue;
+				object instance = Activator.CreateInstance(type);
+				Nodes.Add(instance as Passive);
 			}
 
 			Nodes.ForEach(n => n.Connect(Nodes, Player));
@@ -67,10 +65,7 @@ namespace PathOfTerraria.Core.Systems.TreeSystem
 
 			foreach (Passive passive in Nodes)
 			{
-				if (tag.TryGet(passive.GetType().Name, out int level))
-					passive.Level = level;
-				else
-					passive.Level = 0;
+				passive.Level = tag.TryGet(passive.GetType().Name, out int level) ? level : 0;
 			}
 		}
 	}

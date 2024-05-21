@@ -55,7 +55,7 @@ namespace PathOfTerraria.Content.GUI
 			DrawBuilding(spriteBatch, 80 - prog * 80, prog);
 		}
 
-		public void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
+		private void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 		{
 			Texture2D combat = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarCombat").Value;
 			Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;

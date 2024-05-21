@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿﻿using System.Collections.Generic;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.Loaders.UILoading

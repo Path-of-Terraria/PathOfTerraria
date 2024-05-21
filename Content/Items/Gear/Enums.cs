@@ -24,6 +24,14 @@
 		Unique
 	}
 
+	public enum MobRarity
+	{
+		Normal = 0,
+		Magic = 1,
+		Rare = 2,
+		Unique = 3
+	}
+	
 	public enum GearInfluence : int
 	{
 		None,
