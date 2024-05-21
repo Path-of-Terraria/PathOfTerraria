@@ -1,7 +1,7 @@
 ﻿using ReLogic.Graphics;
 using System.Collections.Generic;
 
-namespace FunnyExperience.Helpers
+namespace PathOfTerraria.Helpers
 {
 	internal static class GUIHelper
 	{

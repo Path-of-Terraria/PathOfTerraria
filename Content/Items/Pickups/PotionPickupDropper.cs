@@ -1,6 +1,6 @@
 ﻿using Terraria.GameContent.ItemDropRules;
 
-namespace FunnyExperience.Content.Items.Pickups
+namespace PathOfTerraria.Content.Items.Pickups
 {
 	internal class PotionPickupDropper : GlobalNPC
 	{

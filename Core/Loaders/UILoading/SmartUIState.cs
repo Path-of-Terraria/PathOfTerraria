@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria.UI;
 
-namespace FunnyExperience.Core.Loaders.UILoading
+namespace PathOfTerraria.Core.Loaders.UILoading
 {
 	/// <summary>
 	/// An auto-loaded UI State, that knows information about its own visibility.

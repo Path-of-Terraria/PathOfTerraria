@@ -1,6 +1,6 @@
-﻿using FunnyExperience.Content.Items.Gear;
+﻿using PathOfTerraria.Content.Items.Gear;
 
-namespace FunnyExperience.Core.Systems.SkillSystem
+namespace PathOfTerraria.Core.Systems.SkillSystem
 {
 	internal abstract class Skill
 	{
@@ -25,7 +25,7 @@ namespace FunnyExperience.Core.Systems.SkillSystem
 		}
 
 		public virtual string Name => GetType().Name;
-		public virtual string Texture => $"{FunnyExperience.ModName}/Assets/Skills/" + GetType().Name;
+		public virtual string Texture => $"{PathOfTerraria.ModName}/Assets/Skills/" + GetType().Name;
 
 		/// <summary>
 		/// What this skill actually does

@@ -2,7 +2,7 @@
 using System.Linq;
 using Terraria.ModLoader.IO;
 
-namespace FunnyExperience.Content.Items.Gear.Affixes
+namespace PathOfTerraria.Content.Items.Gear.Affixes
 {
 	internal abstract class Affix
 	{
@@ -58,7 +58,7 @@ namespace FunnyExperience.Content.Items.Gear.Affixes
 
 			if (affix is null)
 			{
-				FunnyExperience.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+				PathOfTerraria.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
 				return null;
 			}
 
@@ -89,7 +89,7 @@ namespace FunnyExperience.Content.Items.Gear.Affixes
 		{
 			_prototypes = new List<Affix>();
 
-			foreach (Type type in FunnyExperience.Instance.Code.GetTypes())
+			foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 			{
 				if (!type.IsAbstract && type.IsSubclassOf(typeof(Affix)))
 				{

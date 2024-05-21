@@ -1,9 +1,9 @@
-﻿using FunnyExperience.Content.GUI;
-using FunnyExperience.Core.Loaders.UILoading;
+﻿using PathOfTerraria.Content.GUI;
+using PathOfTerraria.Core.Loaders.UILoading;
 using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 
-namespace FunnyExperience.Core.Systems.TreeSystem
+namespace PathOfTerraria.Core.Systems.TreeSystem
 {
 	internal class PassiveEdge
 	{

@@ -1,6 +1,6 @@
-﻿using FunnyExperience.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Core.Systems.TreeSystem;
 
-namespace FunnyExperience.Content.Passives
+namespace PathOfTerraria.Content.Passives
 {
 	internal class AmmoPassive : Passive
 	{

@@ -1,15 +1,15 @@
 ﻿using Terraria.ID;
 
-namespace FunnyExperience.Content.Items.Gear.Armor
+namespace PathOfTerraria.Content.Items.Gear.Armor
 {
 	[AutoloadEquip(EquipType.Head)]
 	internal class Helmet : Gear
 	{
-		public override string Texture => $"{FunnyExperience.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
+		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
 
 		public override void SetDefaults()
 		{
-			type = GearType.Helmet;
+			Type = GearType.Helmet;
 		}
 
 		public override void PostRoll()

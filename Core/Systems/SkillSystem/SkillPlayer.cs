@@ -1,4 +1,4 @@
-﻿namespace FunnyExperience.Core.Systems.SkillSystem
+﻿namespace PathOfTerraria.Core.Systems.SkillSystem
 {
 	internal class SkillPlayer : ModPlayer
 	{

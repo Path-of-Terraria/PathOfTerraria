@@ -1,6 +1,6 @@
 ﻿using Terraria.UI;
 
-namespace FunnyExperience.Core.Loaders.UILoading
+namespace PathOfTerraria.Core.Loaders.UILoading
 {
 	/// <summary>
 	/// Wrapper class that enforces Safe interoperability between event listeners and virtual methods for UI elements

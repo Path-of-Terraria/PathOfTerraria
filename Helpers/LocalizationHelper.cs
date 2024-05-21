@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Terraria.Localization;
 
-namespace FunnyExperience.Helpers
+namespace PathOfTerraria.Helpers
 {
 	internal static class LocalizationHelper
 	{

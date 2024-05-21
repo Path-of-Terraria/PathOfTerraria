@@ -1,4 +1,4 @@
-﻿namespace FunnyExperience.Content.Items.Gear
+﻿namespace PathOfTerraria.Content.Items.Gear
 {
 	internal class GearDrops : GlobalNPC
 	{

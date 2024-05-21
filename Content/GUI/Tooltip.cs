@@ -1,9 +1,9 @@
-﻿using FunnyExperience.Core.Loaders.UILoading;
+﻿using PathOfTerraria.Core.Loaders.UILoading;
 using System.Collections.Generic;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
-namespace FunnyExperience.Content.GUI
+namespace PathOfTerraria.Content.GUI
 {
 	/// <summary>
 	/// Draws the popup tooltip when various elements of the UI are hovered over.

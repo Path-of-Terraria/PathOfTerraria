@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace FunnyExperience.Core.Systems.TreeSystem
+namespace PathOfTerraria.Core.Systems.TreeSystem
 {
 	internal abstract class Passive
 	{
@@ -20,10 +20,10 @@ namespace FunnyExperience.Core.Systems.TreeSystem
 
 		public void Draw(SpriteBatch spriteBatch, Vector2 center)
 		{
-			Texture2D tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/PassiveFrameSmall").Value;
+			Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall").Value;
 
-			if (ModContent.HasAsset($"{FunnyExperience.ModName}/Assets/Passives/" + GetType().Name))
-				tex = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/Passives/" + GetType().Name).Value;
+			if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name))
+				tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name).Value;
 
 			Color color = Color.Gray;
 

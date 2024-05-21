@@ -1,4 +1,4 @@
-﻿namespace FunnyExperience.Content.Items.Gear.Affixes.ArmorAffixes
+﻿namespace PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes
 {
 	internal class DefenseAffixes
 	{

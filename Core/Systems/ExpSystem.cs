@@ -1,9 +1,9 @@
-﻿using FunnyExperience.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.ModLoader.IO;
 
-namespace FunnyExperience.Core.Systems
+namespace PathOfTerraria.Core.Systems
 {
 	internal class ExpSystem : ModPlayer
 	{
@@ -19,7 +19,7 @@ namespace FunnyExperience.Core.Systems
 			if (exp <= NextLevel || Level >= 100)
 				return;
 			
-			SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/Tier5"));
+			SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5"));
 
 			exp -= NextLevel;
 			Level++;

@@ -1,8 +1,8 @@
-using FunnyExperience.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Loaders.UILoading;
 using System.Collections.Generic;
 using Terraria.UI;
 
-namespace FunnyExperience.Content.GUI
+namespace PathOfTerraria.Content.GUI
 {
 	public class ExpBar : SmartUIState
 	{
@@ -15,8 +15,8 @@ namespace FunnyExperience.Content.GUI
 
 		public override void Draw(SpriteBatch spriteBatch)
 		{
-			Texture2D bar = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/BarEmpty").Value;
-			Texture2D fill = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/BarFill").Value;
+			Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarEmpty").Value;
+			Texture2D fill = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarFill").Value;
 
 			Core.Systems.ExpSystem mp = Main.LocalPlayer.GetModPlayer<Core.Systems.ExpSystem>();
 
@@ -37,7 +37,7 @@ namespace FunnyExperience.Content.GUI
 
 		public override void SafeClick(UIMouseEvent evt)
 		{
-			Texture2D bar = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/BarEmpty").Value;
+			Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarEmpty").Value;
 			var pos = new Vector2(Main.screenWidth / 2, 10);
 
 			var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);

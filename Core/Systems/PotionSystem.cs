@@ -1,9 +1,9 @@
 ﻿using Terraria.Audio;
 using Terraria.ID;
 
-namespace FunnyExperience.Core.Systems
+namespace PathOfTerraria.Core.Systems
 {
-	internal class PotionSystem : ModPlayer
+	internal abstract class PotionSystem : ModPlayer
 	{
 		public int HealingLeft = 3;
 		public int MaxHealing = 3;
@@ -32,7 +32,7 @@ namespace FunnyExperience.Core.Systems
 				self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
 				mp.HealingLeft--;
 
-				SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/PickupPotion"));
+				SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
 				SoundEngine.PlaySound(SoundID.Item3);
 			}
 		}
@@ -48,7 +48,7 @@ namespace FunnyExperience.Core.Systems
 				self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
 				mp.ManaLeft--;
 
-				SoundEngine.PlaySound(new SoundStyle($"{FunnyExperience.ModName}/Sounds/PickupPotion"));
+				SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
 				SoundEngine.PlaySound(SoundID.Item3);
 			}
 		}

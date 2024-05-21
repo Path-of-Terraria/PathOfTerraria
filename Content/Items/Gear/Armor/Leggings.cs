@@ -1,15 +1,15 @@
 ﻿using Terraria.ID;
 
-namespace FunnyExperience.Content.Items.Gear.Armor
+namespace PathOfTerraria.Content.Items.Gear.Armor
 {
 	[AutoloadEquip(EquipType.Legs)]
 	internal class Leggings : Gear
 	{
-		public override string Texture => $"{FunnyExperience.ModName}/Assets/Items/Gear/Armor/Legs/Base";
+		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Legs/Base";
 
 		public override void SetDefaults()
 		{
-			type = GearType.Leggings;
+			Type = GearType.Leggings;
 		}
 
 		public override void PostRoll()

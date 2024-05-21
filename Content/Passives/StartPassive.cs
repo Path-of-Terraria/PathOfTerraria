@@ -1,7 +1,7 @@
-﻿using FunnyExperience.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
 
-namespace FunnyExperience.Content.Passives
+namespace PathOfTerraria.Content.Passives
 {
 	internal class StartPassive : Passive
 	{

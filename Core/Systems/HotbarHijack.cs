@@ -1,12 +1,12 @@
 ﻿using Terraria.UI;
 
-namespace FunnyExperience.Core.Systems
+namespace PathOfTerraria.Core.Systems
 {
 	internal class HotbarHijack : ModSystem
 	{
 		public override void Load()
 		{
-			Terraria.UI.On_ItemSlot.LeftClick_ItemArray_int_int += StopHotbar;
+			On_ItemSlot.LeftClick_ItemArray_int_int += StopHotbar;
 		}
 
 		private void StopHotbar(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
@@ -33,20 +33,13 @@ namespace FunnyExperience.Core.Systems
 				}
 
 				// The rest of the slots cannot be weapons or picks
-				if (slot >= 2)
-				{
-					if (!weapon && !tool)
-					{
-						orig(inv, context, slot);
-						return;
-					}
-				}
-
+				if (slot < 2) return;
+				if (weapon || tool) return;
+				orig(inv, context, slot);
 				return;
 			}
 
 			orig(inv, context, slot);
-			return;
 		}
 	}
 }

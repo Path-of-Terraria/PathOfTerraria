@@ -1,6 +1,6 @@
-﻿using FunnyExperience.Core.Systems;
+﻿using PathOfTerraria.Core.Systems;
 
-namespace FunnyExperience.Content.Items.Gear.Affixes.ArmorAffixes
+namespace PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes
 {
 	internal class ManaAffix : Affix
 	{

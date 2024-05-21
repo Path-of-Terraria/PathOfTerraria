@@ -1,15 +1,15 @@
 ﻿using Terraria.ID;
 
-namespace FunnyExperience.Content.Items.Gear.Armor
+namespace PathOfTerraria.Content.Items.Gear.Armor
 {
 	[AutoloadEquip(EquipType.Body)]
 	internal class Chestplate : Gear
 	{
-		public override string Texture => $"{FunnyExperience.ModName}/Assets/Items/Gear/Armor/Body/Base";
+		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Body/Base";
 
 		public override void SetDefaults()
 		{
-			type = GearType.Chestplate;
+			Type = GearType.Chestplate;
 		}
 
 		public override void PostRoll()

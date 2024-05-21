@@ -1,12 +1,12 @@
-﻿using FunnyExperience.Core.Systems;
+﻿using PathOfTerraria.Core.Systems;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace FunnyExperience.Content.Items.Pickups
+namespace PathOfTerraria.Content.Items.Pickups
 {
 	internal class ManaPotionPickup : ModItem
 	{
-		public override string Texture => $"{FunnyExperience.ModName}/Assets/Items/ManaPotionPickup";
+		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/ManaPotionPickup";
 
 		public override void SetDefaults()
 		{
@@ -40,7 +40,7 @@ namespace FunnyExperience.Content.Items.Pickups
 				Dust.NewDustPerfect(Item.Center, DustID.PortalBoltTrail, Main.rand.NextVector2Circular(3, 3), 0, new Color(150, 190, 255), 0.5f);
 			}
 
-			var style = new SoundStyle($"{FunnyExperience.ModName}/Sounds/PickupPotion")
+			var style = new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion")
 			{
 				Pitch = -0.2f
 			};
@@ -53,7 +53,7 @@ namespace FunnyExperience.Content.Items.Pickups
 		public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 		{
 			Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-			Texture2D glow = ModContent.Request<Texture2D>($"{FunnyExperience.ModName}/Assets/GlowAlpha").Value;
+			Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowAlpha").Value;
 
 			var glowColor = new Color(50, 90, 255)
 			{
