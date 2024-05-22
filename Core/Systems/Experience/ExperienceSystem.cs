@@ -4,42 +4,41 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems
 {
+	// ReSharper disable once ClassNeverInstantiated.Global
 	public class ExperienceTracker : ModSystem{
-		private static Experience[] trackedEXP;
+		private static Experience[] _trackedExp;
 
 		public override void OnWorldLoad(){
-			trackedEXP = new Experience[1000];
+			_trackedExp = new Experience[1000];
 		}
 
-		public override void PostUpdateNPCs(){
-			for(int i = 0; i < trackedEXP.Length; i++)
-				trackedEXP[i]?.Update();
+		public override void PostUpdateNPCs()
+		{
+			foreach (Experience t in _trackedExp) t?.Update();
 		}
 
 		public override void PostDrawTiles(){
-			var batch = Main.spriteBatch;
+			SpriteBatch batch = Main.spriteBatch;
 			batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 			//Draw the orbs
-			var texture = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Experience").Value;
-			for(int i = 0; i < trackedEXP.Length; i++){
-				var xp = trackedEXP[i];
-				if(xp is null || !xp.active)
-					continue;
+			Texture2D texture = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Experience").Value;
+			foreach (Experience xp in _trackedExp)
+			{
+				if(xp is null || !xp.Active) continue;
 
-				var size = xp.GetSize();
-				if(size == Vector2.Zero || xp.collected)
-					continue;
+				Vector2 size = xp.GetSize();
+				
+				if(size == Vector2.Zero || xp.Collected) continue;
 
-				var source = xp.GetSourceRectangle();
+				Rectangle source = xp.GetSourceRectangle();
 
-				batch.Draw(texture, xp.center - Main.screenPosition, source, Color.White, xp.rotation, size / 2f, 1f, SpriteEffects.None, 0);
+				batch.Draw(texture, xp.Center - Main.screenPosition, source, Color.White, xp.Rotation, size / 2f, 1f, SpriteEffects.None, 0);
 			}
 			batch.End();
 
 			//Draw the trails
-			foreach (Experience t in trackedEXP)
-				t?.DrawTrail();
+			foreach (Experience t in _trackedExp) t?.DrawTrail();
 		}
 
 		public static int[] SpawnExperience(int xp, Vector2 location, float velocityLength, int targetPlayer){
@@ -49,33 +48,44 @@ namespace PathOfTerraria.Core.Systems
 			int totalLeft = xp;
 			while(totalLeft > 0){
 				int toSpawn;
-				if(totalLeft >= Experience.Sizes.OrbLargeBlue){
-					toSpawn = Experience.Sizes.OrbLargeBlue;
-					totalLeft -= Experience.Sizes.OrbLargeBlue;
-				}else if(totalLeft >= Experience.Sizes.OrbLargeGreen){
-					toSpawn =Mechanics. Experience.Sizes.OrbLargeGreen;
-					totalLeft -= Experience.Sizes.OrbLargeGreen;
-				}else if(totalLeft >= Experience.Sizes.OrbLargeYellow){
-					toSpawn = Experience.Sizes.OrbLargeYellow;
-					totalLeft -= Experience.Sizes.OrbLargeYellow;
-				}else if(totalLeft >= Experience.Sizes.OrbMediumBlue){
-					toSpawn = Experience.Sizes.OrbMediumBlue;
-					totalLeft -= Experience.Sizes.OrbMediumBlue;
-				}else if(totalLeft >= Experience.Sizes.OrbMediumGreen){
-					toSpawn = Experience.Sizes.OrbMediumGreen;
-					totalLeft -= Experience.Sizes.OrbMediumGreen;
-				}else if(totalLeft >= Experience.Sizes.OrbMediumYellow){
-					toSpawn = Experience.Sizes.OrbMediumYellow;
-					totalLeft -= Experience.Sizes.OrbMediumYellow;
-				}else if(totalLeft >= Experience.Sizes.OrbSmallBlue){
-					toSpawn = Experience.Sizes.OrbSmallBlue;
-					totalLeft -= Experience.Sizes.OrbSmallBlue;
-				}else if(totalLeft >= Experience.Sizes.OrbSmallGreen){
-					toSpawn = Experience.Sizes.OrbSmallGreen;
-					totalLeft -= Experience.Sizes.OrbSmallGreen;
-				}else{
-					toSpawn = Experience.Sizes.OrbSmallYellow;
-					totalLeft--;
+				switch (totalLeft)
+				{
+					case >= Experience.Sizes.OrbLargeBlue:
+						toSpawn = Experience.Sizes.OrbLargeBlue;
+						totalLeft -= Experience.Sizes.OrbLargeBlue;
+						break;
+					case >= Experience.Sizes.OrbLargeGreen:
+						toSpawn = Experience.Sizes.OrbLargeGreen;
+						totalLeft -= Experience.Sizes.OrbLargeGreen;
+						break;
+					case >= Experience.Sizes.OrbLargeYellow:
+						toSpawn = Experience.Sizes.OrbLargeYellow;
+						totalLeft -= Experience.Sizes.OrbLargeYellow;
+						break;
+					case >= Experience.Sizes.OrbMediumBlue:
+						toSpawn = Experience.Sizes.OrbMediumBlue;
+						totalLeft -= Experience.Sizes.OrbMediumBlue;
+						break;
+					case >= Experience.Sizes.OrbMediumGreen:
+						toSpawn = Experience.Sizes.OrbMediumGreen;
+						totalLeft -= Experience.Sizes.OrbMediumGreen;
+						break;
+					case >= Experience.Sizes.OrbMediumYellow:
+						toSpawn = Experience.Sizes.OrbMediumYellow;
+						totalLeft -= Experience.Sizes.OrbMediumYellow;
+						break;
+					case >= Experience.Sizes.OrbSmallBlue:
+						toSpawn = Experience.Sizes.OrbSmallBlue;
+						totalLeft -= Experience.Sizes.OrbSmallBlue;
+						break;
+					case >= Experience.Sizes.OrbSmallGreen:
+						toSpawn = Experience.Sizes.OrbSmallGreen;
+						totalLeft -= Experience.Sizes.OrbSmallGreen;
+						break;
+					default:
+						toSpawn = Experience.Sizes.OrbSmallYellow;
+						totalLeft--;
+						break;
 				}
 
 				var thing = new Experience(toSpawn, location, Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * velocityLength, targetPlayer);
@@ -95,18 +105,18 @@ namespace PathOfTerraria.Core.Systems
 		}
 
 		private static int InsertExperience(Experience expNew){
-			for(int i = 0; i < trackedEXP.Length; i++){
-				Experience exp = trackedEXP[i];
+			for(int i = 0; i < _trackedExp.Length; i++){
+				Experience exp = _trackedExp[i];
 
-				if (exp is not null && exp.active) continue;
-				trackedEXP[i] = expNew;
+				if (exp is not null && exp.Active) continue;
+				_trackedExp[i] = expNew;
 				return i;
 			}
 
-			int index = trackedEXP.Length;
-			Array.Resize(ref trackedEXP, trackedEXP.Length * 2);
+			int index = _trackedExp.Length;
+			Array.Resize(ref _trackedExp, _trackedExp.Length * 2);
 
-			trackedEXP[index] = expNew;
+			_trackedExp[index] = expNew;
 			return index;
 		}
 	}

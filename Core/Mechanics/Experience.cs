@@ -17,45 +17,45 @@ namespace PathOfTerraria.Core.Mechanics
 			public const int OrbLargeBlue =    10000;
 		}
 
-		public readonly int value;
+		private readonly int Value;
 
-		public Vector2 center;
-		public Vector2 velocity;
+		public Vector2 Center;
+		private Vector2 Velocity;
 
-		public readonly int target;
+		private readonly int Target;
 
-		private readonly Queue<Vector2> oldCenters;
-		private Color[] collectedTrail;
+		private readonly Queue<Vector2> _oldCenters;
+		private Color[] _collectedTrail;
 
-		public bool active;
-		public bool collected;
-		private bool oldCollected;
+		public bool Active;
+		public bool Collected;
+		private bool _oldCollected;
 
-		public const int ExtraUpdates = 7;
+		private const int ExtraUpdates = 7;
 
-		public readonly float rotation;
+		public readonly float Rotation;
 
 		public Experience(int xp, Vector2 startPosition, Vector2 startVelocity, int targetPlayer){
-			value = xp;
+			Value = xp;
 
 			Vector2 size = GetSize();
 			if(size == Vector2.Zero)
 				throw new Exception("Invalid xp count: " + xp);
 
-			center = startPosition;
-			velocity = startVelocity;
+			Center = startPosition;
+			Velocity = startVelocity;
 
-			target = targetPlayer;
+			Target = targetPlayer;
 
-			oldCenters = new();
+			_oldCenters = new Queue<Vector2>();
 
-			active = true;
+			Active = true;
 
-			rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+			Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 		}
 
 		public Vector2 GetSize(){
-			return value switch
+			return Value switch
 			{
 				Sizes.OrbSmallYellow or Sizes.OrbSmallGreen or Sizes.OrbSmallBlue => new Vector2(6),
 				Sizes.OrbMediumYellow or Sizes.OrbMediumGreen or Sizes.OrbMediumBlue => new Vector2(8),
@@ -64,18 +64,18 @@ namespace PathOfTerraria.Core.Mechanics
 			};
 		}
 
-		public Color GetTrailColor(){
-			if(value is Sizes.OrbSmallYellow or Sizes.OrbMediumYellow or Sizes.OrbLargeYellow)
-				return Color.Yellow;
-			if(value is Sizes.OrbSmallGreen or Sizes.OrbMediumGreen or Sizes.OrbLargeGreen)
-				return Color.LimeGreen;
-			if(value is Sizes.OrbSmallBlue or Sizes.OrbMediumBlue or Sizes.OrbLargeBlue)
-				return Color.Blue;
-			return Color.Transparent;
+		private Color GetTrailColor(){
+			return Value switch
+			{
+				Sizes.OrbSmallYellow or Sizes.OrbMediumYellow or Sizes.OrbLargeYellow => Color.Yellow,
+				Sizes.OrbSmallGreen or Sizes.OrbMediumGreen or Sizes.OrbLargeGreen => Color.LimeGreen,
+				Sizes.OrbSmallBlue or Sizes.OrbMediumBlue or Sizes.OrbLargeBlue => Color.Blue,
+				_ => Color.Transparent
+			};
 		}
 
 		public Rectangle GetSourceRectangle()
-			=> value switch{
+			=> Value switch{
 				Sizes.OrbSmallYellow =>  new Rectangle( 0,  0,  6,  6),
 				Sizes.OrbSmallGreen =>   new Rectangle( 8,  0,  6,  6),
 				Sizes.OrbSmallBlue =>    new Rectangle(16,  0,  6,  6),
@@ -89,28 +89,27 @@ namespace PathOfTerraria.Core.Mechanics
 			};
 
 		public void Update(){
-			if(!active)
-				return;
+			if(!Active) return;
 
-			oldCollected = collected;
+			_oldCollected = Collected;
 
 			//Home in on the player, unless they've disconnected
-			Player player = Main.player[target];
+			Player player = Main.player[Target];
 
 			if(!player.active)
-				collected = true;
+				Collected = true;
 
-			if(collected){
+			if(Collected){
 				//Make the trail shrink
-				if (oldCenters.Count == 0)
+				if (_oldCenters.Count == 0)
 				{
-					active = false;	
+					Active = false;	
 				}
 				else
 				{
 					for (int i = 0; i < ExtraUpdates + 1; i++)
 					{
-						oldCenters.Dequeue();	
+						_oldCenters.Dequeue();	
 					}
 				}
 
@@ -124,104 +123,112 @@ namespace PathOfTerraria.Core.Mechanics
 		}
 
 		private void InnerUpdate(){
-			Player player = Main.player[target];
+			Player player = Main.player[Target];
 
-			Vector2 direction = player.DirectionFrom(center);
+			Vector2 direction = player.DirectionFrom(Center);
 
 			switch (player.dead)
 			{
-				case false when !collected:
+				case false when !Collected:
 					{
-						if(velocity != Vector2.Zero)
-							velocity = velocity.RotateTowards(direction, MathHelper.ToRadians(270) / 60f / (ExtraUpdates + 1));
+						if (Velocity != Vector2.Zero)
+						{
+							Velocity = Velocity.RotateTowards(direction, MathHelper.ToRadians(270) / 60f / (ExtraUpdates + 1));
+						}
 
-						if(Vector2.DistanceSquared(center, player.Center) >= Vector2.DistanceSquared(center + velocity / (ExtraUpdates + 1), player.Center)){
-							velocity += Vector2.Normalize(velocity) * 5f / 60f / (ExtraUpdates + 1);
+						if(Vector2.DistanceSquared(Center, player.Center) >= Vector2.DistanceSquared(Center + Velocity / (ExtraUpdates + 1), player.Center)) {
+							Velocity += Vector2.Normalize(Velocity) * 5f / 60f / (ExtraUpdates + 1);
 
 							const float vel = 30 * 16;
-							if(velocity.LengthSquared() > vel * vel)
-								velocity = Vector2.Normalize(velocity) * vel;
-						}else
-							velocity *= 1f - 3.57f / 60f / (ExtraUpdates + 1);
+							if (Velocity.LengthSquared() > vel * vel)
+							{
+								Velocity = Vector2.Normalize(Velocity) * vel;
+							}
+						}
+						else
+						{
+							Velocity *= 1f - 3.57f / 60f / (ExtraUpdates + 1);
+						}
 
 						break;
 					}
 				case true:
 					{
 						//Slow down
-						velocity *= 1f - 0.37f / 60f;
+						Velocity *= 1f - 0.37f / 60f;
 
-						if(velocity.LengthSquared() < 0.5f * 0.5f)
-							velocity = Vector2.Zero;
+						if (Velocity.LengthSquared() < 0.5f * 0.5f)
+						{
+							Velocity = Vector2.Zero;
+						}
 						break;
 					}
 			}
 
-			if(oldCenters.Count < 30 * (ExtraUpdates + 1))
-				oldCenters.Enqueue(center);
-			else{
-				oldCenters.Dequeue();
-				oldCenters.Enqueue(center);
+			if (_oldCenters.Count < 30 * (ExtraUpdates + 1))
+			{
+				_oldCenters.Enqueue(Center);
+			} else {
+				_oldCenters.Dequeue();
+				_oldCenters.Enqueue(Center);
 			}
 
-			center += velocity / (ExtraUpdates + 1);
+			Center += Velocity / (ExtraUpdates + 1);
 
-			if(!collected && !player.dead && player.Hitbox.Contains(center.ToPoint())){
+			if(!Collected && !player.dead && player.Hitbox.Contains(Center.ToPoint())){
 				ExpModPlayer statPlayer = player.GetModPlayer<ExpModPlayer>();
-				statPlayer.Exp += value;
-				CombatText.NewText(player.Hitbox, new Color(145, 255, 160), $"+{value}");
-				collected = true;
+				statPlayer.Exp += Value;
+				CombatText.NewText(player.Hitbox, new Color(145, 255, 160), $"+{Value}");
+				Collected = true;
 			}
 
 			//Draw calls happen less often than Update calls during lag... which causes the arrays to not be the same size
 			//Therefore, the data must be set here instead of in DrawTrail
 			Color color = GetTrailColor();
-			int trailColorCount = oldCenters.Count + 1;
+			int trailColorCount = _oldCenters.Count + 1;
 			var colors = new Color[trailColorCount];
 
-			if (oldCollected && collectedTrail is not null) return;
+			if (_oldCollected && _collectedTrail is not null) return;
 			colors[^1] = color;
 			int i = 0;
-			foreach(Vector2 old in oldCenters){
+			foreach(Vector2 _ in _oldCenters){
 				colors[i] = Color.Lerp(color, Color.Transparent, 1f - i / (float)trailColorCount);
 				i++;
 			}
 
-			collectedTrail = colors;
+			_collectedTrail = colors;
 		}
 
 		public void DrawTrail(){
-			if(!active)
-				return;
+			if(!Active) return;
 
 			Vector2 size = GetSize();
-			if(size == Vector2.Zero)
-				return;
+			if(size == Vector2.Zero) return;
 
 			//No trail yet
-			if(oldCenters.Count == 0)
-				return;
+			if (_oldCenters.Count == 0) return;
 
 			Color color = GetTrailColor();
-			int trailColorCount = oldCenters.Count + 1;
+			int trailColorCount = _oldCenters.Count + 1;
 			var colors = new Color[trailColorCount];
 
-			if(!oldCollected){
-				//Manually set the colours
+			if(!_oldCollected){
+				//Manually set the colors
 				colors[^1] = color;
 				int i = 0;
-				foreach(Vector2 old in oldCenters){
+				foreach(Vector2 _ in _oldCenters){
 					colors[i] = Color.Lerp(color, Color.Transparent, 1f - i / (float)trailColorCount);
 					i++;
 				}
-			}else{
-				//If collected, just grab colors from the old array
-				Array.Copy(collectedTrail, collectedTrail.Length - trailColorCount, colors, 0, trailColorCount);
+			}
+			else 
+			{
+				Array.Copy(_collectedTrail, _collectedTrail.Length - trailColorCount, colors, 0, trailColorCount);
 			}
 
 			var points = new Vector2[trailColorCount];
-			points[^1] = center;
-			oldCenters.CopyTo(points, 0);
+			points[^1] = Center;
+			_oldCenters.CopyTo(points, 0);
 
 			PrimitiveDrawing.DrawLineStrip(points, colors);
 		}
