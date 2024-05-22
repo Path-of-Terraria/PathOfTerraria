@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems.Experience;
 using PathOfTerraria.Core.Systems.MobSystem;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Linq;

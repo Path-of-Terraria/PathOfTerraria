@@ -1,20 +1,19 @@
-﻿using PathOfTerraria.Core.Mechanics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems
+namespace PathOfTerraria.Core.Systems.Experience
 {
 	// ReSharper disable once ClassNeverInstantiated.Global
 	public class ExperienceTracker : ModSystem{
-		private static Experience[] _trackedExp;
+		private static Mechanics.Experience[] _trackedExp;
 
 		public override void OnWorldLoad(){
-			_trackedExp = new Experience[1000];
+			_trackedExp = new Mechanics.Experience[1000];
 		}
 
 		public override void PostUpdateNPCs()
 		{
-			foreach (Experience t in _trackedExp) t?.Update();
+			foreach (Mechanics.Experience t in _trackedExp) t?.Update();
 		}
 
 		public override void PostDrawTiles(){
@@ -23,7 +22,7 @@ namespace PathOfTerraria.Core.Systems
 
 			//Draw the orbs
 			Texture2D texture = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Experience").Value;
-			foreach (Experience xp in _trackedExp)
+			foreach (Mechanics.Experience xp in _trackedExp)
 			{
 				if(xp is null || !xp.Active) continue;
 
@@ -38,57 +37,57 @@ namespace PathOfTerraria.Core.Systems
 			batch.End();
 
 			//Draw the trails
-			foreach (Experience t in _trackedExp) t?.DrawTrail();
+			foreach (Mechanics.Experience t in _trackedExp) t?.DrawTrail();
 		}
 
 		public static int[] SpawnExperience(int xp, Vector2 location, float velocityLength, int targetPlayer){
 			if (xp <= 0) return [];
 
-			List<Experience> spawned = [];
+			List<Mechanics.Experience> spawned = [];
 			int totalLeft = xp;
 			while(totalLeft > 0){
 				int toSpawn;
 				switch (totalLeft)
 				{
-					case >= Experience.Sizes.OrbLargeBlue:
-						toSpawn = Experience.Sizes.OrbLargeBlue;
-						totalLeft -= Experience.Sizes.OrbLargeBlue;
+					case >= Mechanics.Experience.Sizes.OrbLargeBlue:
+						toSpawn = Mechanics.Experience.Sizes.OrbLargeBlue;
+						totalLeft -= Mechanics.Experience.Sizes.OrbLargeBlue;
 						break;
-					case >= Experience.Sizes.OrbLargeGreen:
-						toSpawn = Experience.Sizes.OrbLargeGreen;
-						totalLeft -= Experience.Sizes.OrbLargeGreen;
+					case >= Mechanics.Experience.Sizes.OrbLargeGreen:
+						toSpawn = Mechanics.Experience.Sizes.OrbLargeGreen;
+						totalLeft -= Mechanics.Experience.Sizes.OrbLargeGreen;
 						break;
-					case >= Experience.Sizes.OrbLargeYellow:
-						toSpawn = Experience.Sizes.OrbLargeYellow;
-						totalLeft -= Experience.Sizes.OrbLargeYellow;
+					case >= Mechanics.Experience.Sizes.OrbLargeYellow:
+						toSpawn = Mechanics.Experience.Sizes.OrbLargeYellow;
+						totalLeft -= Mechanics.Experience.Sizes.OrbLargeYellow;
 						break;
-					case >= Experience.Sizes.OrbMediumBlue:
-						toSpawn = Experience.Sizes.OrbMediumBlue;
-						totalLeft -= Experience.Sizes.OrbMediumBlue;
+					case >= Mechanics.Experience.Sizes.OrbMediumBlue:
+						toSpawn = Mechanics.Experience.Sizes.OrbMediumBlue;
+						totalLeft -= Mechanics.Experience.Sizes.OrbMediumBlue;
 						break;
-					case >= Experience.Sizes.OrbMediumGreen:
-						toSpawn = Experience.Sizes.OrbMediumGreen;
-						totalLeft -= Experience.Sizes.OrbMediumGreen;
+					case >= Mechanics.Experience.Sizes.OrbMediumGreen:
+						toSpawn = Mechanics.Experience.Sizes.OrbMediumGreen;
+						totalLeft -= Mechanics.Experience.Sizes.OrbMediumGreen;
 						break;
-					case >= Experience.Sizes.OrbMediumYellow:
-						toSpawn = Experience.Sizes.OrbMediumYellow;
-						totalLeft -= Experience.Sizes.OrbMediumYellow;
+					case >= Mechanics.Experience.Sizes.OrbMediumYellow:
+						toSpawn = Mechanics.Experience.Sizes.OrbMediumYellow;
+						totalLeft -= Mechanics.Experience.Sizes.OrbMediumYellow;
 						break;
-					case >= Experience.Sizes.OrbSmallBlue:
-						toSpawn = Experience.Sizes.OrbSmallBlue;
-						totalLeft -= Experience.Sizes.OrbSmallBlue;
+					case >= Mechanics.Experience.Sizes.OrbSmallBlue:
+						toSpawn = Mechanics.Experience.Sizes.OrbSmallBlue;
+						totalLeft -= Mechanics.Experience.Sizes.OrbSmallBlue;
 						break;
-					case >= Experience.Sizes.OrbSmallGreen:
-						toSpawn = Experience.Sizes.OrbSmallGreen;
-						totalLeft -= Experience.Sizes.OrbSmallGreen;
+					case >= Mechanics.Experience.Sizes.OrbSmallGreen:
+						toSpawn = Mechanics.Experience.Sizes.OrbSmallGreen;
+						totalLeft -= Mechanics.Experience.Sizes.OrbSmallGreen;
 						break;
 					default:
-						toSpawn = Experience.Sizes.OrbSmallYellow;
+						toSpawn = Mechanics.Experience.Sizes.OrbSmallYellow;
 						totalLeft--;
 						break;
 				}
 
-				var thing = new Experience(toSpawn, location, Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * velocityLength, targetPlayer);
+				var thing = new Mechanics.Experience(toSpawn, location, Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * velocityLength, targetPlayer);
 				spawned.Add(thing);
 			}
 
@@ -104,9 +103,9 @@ namespace PathOfTerraria.Core.Systems
 			return indices;
 		}
 
-		private static int InsertExperience(Experience expNew){
+		private static int InsertExperience(Mechanics.Experience expNew){
 			for(int i = 0; i < _trackedExp.Length; i++){
-				Experience exp = _trackedExp[i];
+				Mechanics.Experience exp = _trackedExp[i];
 
 				if (exp is not null && exp.Active) continue;
 				_trackedExp[i] = expNew;
