@@ -16,4 +16,9 @@
   <ItemGroup>
     <Folder Include="Assets\Gear\" />
   </ItemGroup>
+  <ItemGroup>
+    <Reference Include="SubworldLibrary">
+      <HintPath>Dependencies\SubworldLibrary.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace PathOfTerraria.Core.Mechanics
 {
-	public sealed class Experience{
+	public sealed class Experience {
 		public static class Sizes{
 			public const int OrbSmallYellow =      1;
 			public const int OrbSmallGreen =       5;
@@ -17,12 +17,12 @@ namespace PathOfTerraria.Core.Mechanics
 			public const int OrbLargeBlue =    10000;
 		}
 
-		private readonly int Value;
+		private readonly int _value;
 
 		public Vector2 Center;
-		private Vector2 Velocity;
+		private Vector2 _velocity;
 
-		private readonly int Target;
+		private readonly int _target;
 
 		private readonly Queue<Vector2> _oldCenters;
 		private Color[] _collectedTrail;
@@ -36,16 +36,16 @@ namespace PathOfTerraria.Core.Mechanics
 		public readonly float Rotation;
 
 		public Experience(int xp, Vector2 startPosition, Vector2 startVelocity, int targetPlayer){
-			Value = xp;
+			_value = xp;
 
 			Vector2 size = GetSize();
 			if(size == Vector2.Zero)
 				throw new Exception("Invalid xp count: " + xp);
 
 			Center = startPosition;
-			Velocity = startVelocity;
+			_velocity = startVelocity;
 
-			Target = targetPlayer;
+			_target = targetPlayer;
 
 			_oldCenters = new Queue<Vector2>();
 
@@ -55,7 +55,7 @@ namespace PathOfTerraria.Core.Mechanics
 		}
 
 		public Vector2 GetSize(){
-			return Value switch
+			return _value switch
 			{
 				Sizes.OrbSmallYellow or Sizes.OrbSmallGreen or Sizes.OrbSmallBlue => new Vector2(6),
 				Sizes.OrbMediumYellow or Sizes.OrbMediumGreen or Sizes.OrbMediumBlue => new Vector2(8),
@@ -65,7 +65,7 @@ namespace PathOfTerraria.Core.Mechanics
 		}
 
 		private Color GetTrailColor(){
-			return Value switch
+			return _value switch
 			{
 				Sizes.OrbSmallYellow or Sizes.OrbMediumYellow or Sizes.OrbLargeYellow => Color.Yellow,
 				Sizes.OrbSmallGreen or Sizes.OrbMediumGreen or Sizes.OrbLargeGreen => Color.LimeGreen,
@@ -75,7 +75,7 @@ namespace PathOfTerraria.Core.Mechanics
 		}
 
 		public Rectangle GetSourceRectangle()
-			=> Value switch{
+			=> _value switch{
 				Sizes.OrbSmallYellow =>  new Rectangle( 0,  0,  6,  6),
 				Sizes.OrbSmallGreen =>   new Rectangle( 8,  0,  6,  6),
 				Sizes.OrbSmallBlue =>    new Rectangle(16,  0,  6,  6),
@@ -94,7 +94,7 @@ namespace PathOfTerraria.Core.Mechanics
 			_oldCollected = Collected;
 
 			//Home in on the player, unless they've disconnected
-			Player player = Main.player[Target];
+			Player player = Main.player[_target];
 
 			if(!player.active)
 				Collected = true;
@@ -123,7 +123,7 @@ namespace PathOfTerraria.Core.Mechanics
 		}
 
 		private void InnerUpdate(){
-			Player player = Main.player[Target];
+			Player player = Main.player[_target];
 
 			Vector2 direction = player.DirectionFrom(Center);
 
@@ -131,23 +131,23 @@ namespace PathOfTerraria.Core.Mechanics
 			{
 				case false when !Collected:
 					{
-						if (Velocity != Vector2.Zero)
+						if (_velocity != Vector2.Zero)
 						{
-							Velocity = Velocity.RotateTowards(direction, MathHelper.ToRadians(270) / 60f / (ExtraUpdates + 1));
+							_velocity = _velocity.RotateTowards(direction, MathHelper.ToRadians(270) / 60f / (ExtraUpdates + 1));
 						}
 
-						if(Vector2.DistanceSquared(Center, player.Center) >= Vector2.DistanceSquared(Center + Velocity / (ExtraUpdates + 1), player.Center)) {
-							Velocity += Vector2.Normalize(Velocity) * 5f / 60f / (ExtraUpdates + 1);
+						if(Vector2.DistanceSquared(Center, player.Center) >= Vector2.DistanceSquared(Center + _velocity / (ExtraUpdates + 1), player.Center)) {
+							_velocity += Vector2.Normalize(_velocity) * 5f / 60f / (ExtraUpdates + 1);
 
 							const float vel = 30 * 16;
-							if (Velocity.LengthSquared() > vel * vel)
+							if (_velocity.LengthSquared() > vel * vel)
 							{
-								Velocity = Vector2.Normalize(Velocity) * vel;
+								_velocity = Vector2.Normalize(_velocity) * vel;
 							}
 						}
 						else
 						{
-							Velocity *= 1f - 3.57f / 60f / (ExtraUpdates + 1);
+							_velocity *= 1f - 3.57f / 60f / (ExtraUpdates + 1);
 						}
 
 						break;
@@ -155,11 +155,11 @@ namespace PathOfTerraria.Core.Mechanics
 				case true:
 					{
 						//Slow down
-						Velocity *= 1f - 0.37f / 60f;
+						_velocity *= 1f - 0.37f / 60f;
 
-						if (Velocity.LengthSquared() < 0.5f * 0.5f)
+						if (_velocity.LengthSquared() < 0.5f * 0.5f)
 						{
-							Velocity = Vector2.Zero;
+							_velocity = Vector2.Zero;
 						}
 						break;
 					}
@@ -173,12 +173,12 @@ namespace PathOfTerraria.Core.Mechanics
 				_oldCenters.Enqueue(Center);
 			}
 
-			Center += Velocity / (ExtraUpdates + 1);
+			Center += _velocity / (ExtraUpdates + 1);
 
 			if(!Collected && !player.dead && player.Hitbox.Contains(Center.ToPoint())){
 				ExpModPlayer statPlayer = player.GetModPlayer<ExpModPlayer>();
-				statPlayer.Exp += Value;
-				CombatText.NewText(player.Hitbox, new Color(145, 255, 160), $"+{Value}");
+				statPlayer.Exp += _value;
+				CombatText.NewText(player.Hitbox, new Color(145, 255, 160), $"+{_value}");
 				Collected = true;
 			}
 

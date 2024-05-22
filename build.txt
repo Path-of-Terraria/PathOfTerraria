@@ -1,3 +1,4 @@
 displayName = Path of Terraria
-author = ScottieKnowz
+author = ScalarVector & ScottieKnowz
+modReferences = SubworldLibrary
 version = 0.1
