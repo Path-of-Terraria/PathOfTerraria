@@ -4,15 +4,19 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems.Networking
 {
-	public static class Networking {
-		private enum Message{
+	public static class Networking
+	{
+		private enum Message
+		{
 			SpawnExperienceOrb
 		}
 
-		public static void HandlePacket(BinaryReader reader, int sender){
+		public static void HandlePacket(BinaryReader reader, int sender)
+		{
 			var message = (Message)reader.ReadByte();
 
-			switch(message){
+			switch (message)
+			{
 				case Message.SpawnExperienceOrb:
 					ReceiveSpawnExperienceOrb(reader, sender);
 					break;
@@ -21,8 +25,9 @@ namespace PathOfTerraria.Core.Systems.Networking
 			}
 		}
 
-		public static void SendSpawnExperienceOrbs(int sender, int target, int xp, Vector2 spawn, float velocityLength){
-			if(xp <= 0)
+		public static void SendSpawnExperienceOrbs(int sender, int target, int xp, Vector2 spawn, float velocityLength)
+		{
+			if (xp <= 0)
 				return;
 
 			ModPacket packet = GetPacket(Message.SpawnExperienceOrb);
@@ -35,7 +40,8 @@ namespace PathOfTerraria.Core.Systems.Networking
 			packet.Send(ignoreClient: sender);
 		}
 
-		private static void ReceiveSpawnExperienceOrb(BinaryReader reader, int sender){
+		private static void ReceiveSpawnExperienceOrb(BinaryReader reader, int sender)
+		{
 			byte target = reader.ReadByte();
 			int xp = reader.ReadInt32();
 			Vector2 spawn = reader.ReadVector2();
@@ -43,15 +49,16 @@ namespace PathOfTerraria.Core.Systems.Networking
 
 			if (Main.netMode == NetmodeID.Server)
 			{
-				SendSpawnExperienceOrbs(sender, target, xp, spawn, velocityLength);	
+				SendSpawnExperienceOrbs(sender, target, xp, spawn, velocityLength);
 			}
 			else
 			{
-				ExperienceTracker.SpawnExperience(xp, spawn, velocityLength, target);	
+				ExperienceTracker.SpawnExperience(xp, spawn, velocityLength, target);
 			}
 		}
 
-		private static ModPacket GetPacket(Message type){
+		private static ModPacket GetPacket(Message type)
+		{
 			ModPacket packet = PathOfTerraria.Instance.GetPacket();
 			packet.Write((byte)type);
 			return packet;

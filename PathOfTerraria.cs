@@ -4,6 +4,7 @@ global using System;
 global using Terraria;
 global using Terraria.ModLoader;
 using PathOfTerraria.API.GraphicsLib;
+using Terraria.ID;
 
 namespace PathOfTerraria
 {
@@ -19,7 +20,10 @@ namespace PathOfTerraria
 		
 		public override void Load()
 		{
-			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
+			if (Main.netMode == NetmodeID.Server)
+			{
+				PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
+			}
 		}
 	}
 }

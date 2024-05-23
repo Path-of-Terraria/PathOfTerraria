@@ -1,10 +1,10 @@
 ﻿namespace PathOfTerraria.API.GraphicsLib
 {
 	public static class PrimitiveDrawing{
-		internal static BasicEffect simpleVertexEffect;
+		private static BasicEffect _simpleVertexEffect;
 		internal static void Init(GraphicsDevice device){
 			Main.QueueMainThreadAction(() => {
-				simpleVertexEffect = new BasicEffect(device){
+				_simpleVertexEffect = new BasicEffect(device){
 					VertexColorEnabled = true
 				};
 			});
@@ -27,15 +27,14 @@
 		}
 
 		public static void DrawLineStrip(Vector2[] points, Color start, Color end){
-			if(points is null)
-				throw new ArgumentNullException(nameof(points));
+			ArgumentNullException.ThrowIfNull(points);
 
-			if(points.Length < 2)
+			if (points.Length < 2)
 				throw new ArgumentException("Too few points provided to draw a line");
 
 			float lerpStep = 1f / (points.Length - 1);
 
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.LineStrip);
+			var packet = new PrimitivePacket(PrimitiveType.LineStrip);
 
 			packet.AddDraw(ToPrimitive(points[0], Color.Lerp(start, end, 0)), ToPrimitive(points[1], Color.Lerp(start, end, lerpStep)));
 			for(int i = 2; i < points.Length; i++)
@@ -45,18 +44,16 @@
 		}
 
 		public static void DrawLineStrip(Vector2[] points, Color[] colors){
-			if(points is null)
-				throw new ArgumentNullException(nameof(points));
-			if(colors is null)
-				throw new ArgumentNullException(nameof(colors));
+			ArgumentNullException.ThrowIfNull(points);
+			ArgumentNullException.ThrowIfNull(colors);
 
-			if(colors.Length != points.Length)
+			if (colors.Length != points.Length)
 				throw new ArgumentException("Length of colors array must match length of points array", nameof(colors));
 
 			if(points.Length < 2)
 				throw new ArgumentException("Too few points provided to draw a line");
 
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.LineStrip);
+			var packet = new PrimitivePacket(PrimitiveType.LineStrip);
 
 			packet.AddDraw(ToPrimitive(points[0], colors[0]), ToPrimitive(points[1], colors[0]));
 			for(int i = 2; i < points.Length; i++)
@@ -66,17 +63,16 @@
 		}
 
 		public static void DrawLineList(Vector2[] points, Color color){
-			if(points is null)
-				throw new ArgumentNullException(nameof(points));
+			ArgumentNullException.ThrowIfNull(points);
 
-			if(points.Length % 2 != 0)
+			if (points.Length % 2 != 0)
 				throw new ArgumentException("Length of points array must be a multiple of 2", nameof(points));
 
 			//Nothing to draw, so don't
 			if(points.Length < 2)
 				throw new ArgumentException("Too few points provided to draw a line");
 
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.LineList);
+			var packet = new PrimitivePacket(PrimitiveType.LineList);
 			for(int i = 0; i < points.Length; i += 2)
 				packet.AddDraw(ToPrimitive(points[i], color), ToPrimitive(points[i + 1], color));
 
@@ -84,12 +80,10 @@
 		}
 
 		public static void DrawLineList(Vector2[] points, Color[] colors){
-			if(points is null)
-				throw new ArgumentNullException(nameof(points));
-			if(colors is null)
-				throw new ArgumentNullException(nameof(colors));
+			ArgumentNullException.ThrowIfNull(points);
+			ArgumentNullException.ThrowIfNull(colors);
 
-			if(points.Length % 2 != 0)
+			if (points.Length % 2 != 0)
 				throw new ArgumentException("Length of points array must be a multiple of 2", nameof(points));
 			if(colors.Length != points.Length)
 				throw new ArgumentException("Length of colors array must match length of points array", nameof(colors));
@@ -98,7 +92,7 @@
 			if(points.Length < 2)
 				return;
 
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.LineList);
+			var packet = new PrimitivePacket(PrimitiveType.LineList);
 			for(int i = 0; i < points.Length; i += 2)
 				packet.AddDraw(ToPrimitive(points[i], colors[i]), ToPrimitive(points[i + 1], colors[i + 1]));
 
@@ -106,10 +100,10 @@
 		}
 
 		public static void DrawHollowRectangle(Vector2 coordTL, Vector2 coordBR, Color colorTL, Color colorTR, Color colorBL, Color colorBR){
-			Vector2 tr = new Vector2(coordBR.X, coordTL.Y);
-			Vector2 bl = new Vector2(coordTL.X, coordBR.Y);
+			var tr = new Vector2(coordBR.X, coordTL.Y);
+			var bl = new Vector2(coordTL.X, coordBR.Y);
 
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.LineStrip);
+			var packet = new PrimitivePacket(PrimitiveType.LineStrip);
 
 			packet.AddDraw(ToPrimitive(coordTL, colorTL), ToPrimitive(tr, colorTR));
 			packet.AddDraw(ToPrimitive(tr, colorTR),      ToPrimitive(coordBR, colorBR));
@@ -120,10 +114,10 @@
 		}
 
 		public static void DrawFilledRectangle(Vector2 coordTL, Vector2 coordBR, Color colorTL, Color colorTR, Color colorBL, Color colorBR){
-			Vector2 tr = new Vector2(coordBR.X, coordTL.Y);
-			Vector2 bl = new Vector2(coordTL.X, coordBR.Y);
+			var tr = new Vector2(coordBR.X, coordTL.Y);
+			var bl = new Vector2(coordTL.X, coordBR.Y);
 
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.TriangleList);
+			var packet = new PrimitivePacket(PrimitiveType.TriangleList);
 
 			packet.AddDraw(ToPrimitive(coordTL, colorTL), ToPrimitive(tr, colorTR), ToPrimitive(bl, colorBL));
 			packet.AddDraw(ToPrimitive(bl, colorBL), ToPrimitive(tr, colorTR), ToPrimitive(coordBR, colorBR));
@@ -132,7 +126,7 @@
 		}
 
 		public static void DrawHollowCircle(Vector2 center, float radius, Color color){
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.LineStrip);
+			var packet = new PrimitivePacket(PrimitiveType.LineStrip);
 
 			Vector2 rotate = Vector2.UnitX * radius;
 			packet.AddDraw(ToPrimitive(rotate + center, color), ToPrimitive(rotate.RotatedBy(MathHelper.TwoPi / 360f) + center, color));
@@ -143,7 +137,7 @@
 		}
 
 		public static void DrawFilledCircle(Vector2 center, float radius, Color color){
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.TriangleList);
+			var packet = new PrimitivePacket(PrimitiveType.TriangleList);
 
 			Vector2 rotate = Vector2.UnitX * radius;
 			packet.AddDraw(ToPrimitive(rotate + center, color),
@@ -159,7 +153,7 @@
 		}
 
 		public static void DrawFilledCircle(Vector2 center, float radius, Color color, Color edge){
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.TriangleList);
+			var packet = new PrimitivePacket(PrimitiveType.TriangleList);
 
 			Vector2 rotate = Vector2.UnitX * radius;
 			packet.AddDraw(ToPrimitive(rotate + center, edge),
@@ -175,17 +169,16 @@
 		}
 
 		public static void DrawTriangleList(Vector2[] points, Color color){
-			if(points is null)
-				throw new ArgumentNullException(nameof(points));
+			ArgumentNullException.ThrowIfNull(points);
 
-			if(points.Length % 3 != 0)
+			if (points.Length % 3 != 0)
 				throw new ArgumentException("Length of points array must be a multiple of 3", nameof(points));
 
 			//Nothing to draw, so don't
 			if(points.Length < 3)
 				throw new ArgumentException("Too few points provided to draw a triangle");
 
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.TriangleList);
+			var packet = new PrimitivePacket(PrimitiveType.TriangleList);
 			for(int i = 0; i < points.Length; i += 3)
 				packet.AddDraw(ToPrimitive(points[i], color), ToPrimitive(points[i + 1], color), ToPrimitive(points[i + 2], color));
 
@@ -193,38 +186,41 @@
 		}
 
 		public static void DrawTriangleList(Vector2[] points, Color[] colors){
-			if(points is null)
-				throw new ArgumentNullException(nameof(points));
-			if(colors is null)
-				throw new ArgumentNullException(nameof(colors));
+			ArgumentNullException.ThrowIfNull(points);
+			ArgumentNullException.ThrowIfNull(colors);
 
-			if(points.Length % 3 != 0)
+			if (points.Length % 3 != 0)
+			{
 				throw new ArgumentException("Length of points array must be a multiple of 3", nameof(points));
-			if(colors.Length != points.Length)
+			}
+			if (colors.Length != points.Length)
+			{
 				throw new ArgumentException("Length of colors array must match length of points array", nameof(colors));
+			}
 
 			//Nothing to draw, so don't
-			if(points.Length < 3)
+			if (points.Length < 3)
+			{
 				throw new ArgumentException("Too few points provided to draw a triangle");
+			}
 
-			PrimitivePacket packet = new PrimitivePacket(PrimitiveType.LineList);
+			var packet = new PrimitivePacket(PrimitiveType.LineList);
 			for(int i = 0; i < points.Length; i += 3)
 				packet.AddDraw(ToPrimitive(points[i], colors[i]), ToPrimitive(points[i + 1], colors[i + 1]), ToPrimitive(points[i + 2], colors[i + 2]));
 
 			SubmitPacket(packet);
 		}
 
-		public static void SubmitPacket(PrimitivePacket packet){
-			if(packet is null)
-				throw new ArgumentNullException(nameof(packet));
+		private static void SubmitPacket(PrimitivePacket packet){
+			ArgumentNullException.ThrowIfNull(packet);
 
-			if(packet.draws is null)
+			if (packet.draws is null)
 				throw new ArgumentNullException(nameof(packet) + "." + nameof(PrimitivePacket.draws));
 
 			if(packet.draws.Count <= 0)
 				throw new ArgumentOutOfRangeException("packet.draws.Count", "Packet does not have any primitive data attached to it");
 
-			VertexBuffer buffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), packet.draws.Count, BufferUsage.WriteOnly);
+			var buffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), packet.draws.Count, BufferUsage.WriteOnly);
 
 			//Calculate the number of primitives that will be drawn
 			int count = packet.GetPrimitivesCount();
@@ -235,7 +231,7 @@
 
 			//Set the buffer
 			Main.graphics.GraphicsDevice.SetVertexBuffer(buffer);
-			simpleVertexEffect.CurrentTechnique.Passes[0].Apply();
+			_simpleVertexEffect.CurrentTechnique.Passes[0].Apply();
 
 			//Draw the vertices
 			Main.graphics.GraphicsDevice.DrawPrimitives(packet.type, 0, count);
@@ -246,7 +242,7 @@
 		/// </summary>
 		/// <param name="worldPos">The absolute world position</param>
 		/// <param name="color">The draw color</param>
-		public static VertexPositionColor ToPrimitive(Vector2 worldPos, Color color) {
+		private static VertexPositionColor ToPrimitive(Vector2 worldPos, Color color) {
 			// Compute screen coordinates by subtracting screen position from world position
 			Vector2 screenPos = worldPos - Main.screenPosition;
 
