@@ -9,12 +9,12 @@ namespace PathOfTerraria.Content.Items.Gear.Armor
 
 		public override void SetDefaults()
 		{
-			Type = GearType.Leggings;
+			GearType = GearType.Leggings;
 		}
 
 		public override void PostRoll()
 		{
-			Item.defense = Power / 14 + 1;
+			Item.defense = ItemLevel / 14 + 1;
 		}
 
 		public override string GenerateName()

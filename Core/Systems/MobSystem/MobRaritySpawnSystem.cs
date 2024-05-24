@@ -20,14 +20,12 @@ namespace PathOfTerraria.Core.Systems.MobSystem
 				<17 => MobRarity.Magic, //15% Magic 
 				_ => MobRarity.Normal,
 			};
-			switch (Rarity)
+			npc.GivenName = Rarity switch
 			{
-				case MobRarity.Magic:
-				case MobRarity.Rare:
-				case MobRarity.Unique:
-					npc.GivenName = $"{Enum.GetName(Rarity)} - {npc.GivenOrTypeName}";
-					break;
-			}
+				MobRarity.Magic or MobRarity.Rare => $"{Enum.GetName(Rarity)} - {npc.GivenOrTypeName}",
+				MobRarity.Unique => "UNIQUE MOB",
+				_ => npc.GivenName
+			};
 			switch (Rarity)
 			{
 				case MobRarity.Normal:

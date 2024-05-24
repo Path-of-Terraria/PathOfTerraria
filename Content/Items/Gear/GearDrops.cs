@@ -9,8 +9,8 @@
 
 			int rand = Main.rand.Next(100);
 
-			if (rand < 10)
-				Gear.SpawnArmor(npc.Center);
+			if (rand < 25) // 10
+				Gear.SpawnItem(npc.Center);
 		}
 	}
 }

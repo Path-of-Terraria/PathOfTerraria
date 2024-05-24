@@ -20,7 +20,7 @@ namespace PathOfTerraria
 		
 		public override void Load()
 		{
-			if (Main.netMode == NetmodeID.Server)
+			if (Main.netMode != NetmodeID.Server)
 			{
 				PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 			}

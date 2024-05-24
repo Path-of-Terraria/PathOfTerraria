@@ -1,5 +1,6 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.Systems.SkillSystem;
 using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.UI;
@@ -55,7 +56,7 @@ namespace PathOfTerraria.Content.GUI
 			DrawBuilding(spriteBatch, 80 - prog * 80, prog);
 		}
 
-		private void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
+		public void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 		{
 			Texture2D combat = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarCombat").Value;
 			Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
@@ -75,30 +76,93 @@ namespace PathOfTerraria.Content.GUI
 			int lifeH = (int)(potionPlayer.HealingLeft / (float)potionPlayer.MaxHealing * lifeTexture.Height);
 			int manaH = (int)(potionPlayer.ManaLeft / (float)potionPlayer.MaxMana * lifeTexture.Height);
 
-			spriteBatch.Draw(lifeTexture, new Rectangle(471, (int)(40 + off) + lifeTexture.Height - lifeH, bottleTex.Width, lifeH), new Rectangle(0, lifeTexture.Height - lifeH, lifeTexture.Width, lifeH), Color.White * opacity);
-			spriteBatch.Draw(manaTexture, new Rectangle(523, (int)(40 + off) + manaTexture.Height - manaH, bottleTex.Width, manaH), new Rectangle(0, manaTexture.Height - manaH, manaTexture.Width, manaH), Color.White * opacity);
+			spriteBatch.Draw(lifeTexture,
+				new Rectangle(471, (int)(40 + off) + lifeTexture.Height - lifeH, bottleTex.Width, lifeH),
+				new Rectangle(0, lifeTexture.Height - lifeH, lifeTexture.Width, lifeH), Color.White * opacity);
+			spriteBatch.Draw(manaTexture,
+				new Rectangle(523, (int)(40 + off) + manaTexture.Height - manaH, bottleTex.Width, manaH),
+				new Rectangle(0, manaTexture.Height - manaH, manaTexture.Width, manaH), Color.White * opacity);
 
-			Utils.DrawBorderString(spriteBatch, $"{potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}", new Vector2(480, 112 + off), (potionPlayer.HealingLeft > 0 ? new Color(255, 200, 200) : Color.Gray) * opacity, 1f * opacity, 0.5f, 0.5f);
-			Utils.DrawBorderString(spriteBatch, $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}", new Vector2(534, 112 + off), (potionPlayer.ManaLeft > 0 ? new Color(200, 220, 255) : Color.Gray) * opacity, 1f * opacity, 0.5f, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"{potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}",
+				new Vector2(480, 112 + off),
+				(potionPlayer.HealingLeft > 0 ? new Color(255, 200, 200) : Color.Gray) * opacity, 1f * opacity, 0.5f,
+				0.5f);
+			Utils.DrawBorderString(spriteBatch, $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}",
+				new Vector2(534, 112 + off),
+				(potionPlayer.ManaLeft > 0 ? new Color(200, 220, 255) : Color.Gray) * opacity, 1f * opacity, 0.5f,
+				0.5f);
 
+			Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowSoft").Value;
 			if (Main.LocalPlayer.HasBuff(BuffID.PotionSickness))
 			{
-				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowSoft").Value;
 				spriteBatch.Draw(glow, new Vector2(480, 60 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
-				Utils.DrawBorderString(spriteBatch, $"{Main.LocalPlayer.buffTime[Main.LocalPlayer.FindBuffIndex(BuffID.PotionSickness)] / 60 + 1}", new Vector2(480, 60 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+				Utils.DrawBorderString(spriteBatch,
+					$"{Main.LocalPlayer.buffTime[Main.LocalPlayer.FindBuffIndex(BuffID.PotionSickness)] / 60 + 1}",
+					new Vector2(480, 60 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
 			}
 
 			if (Main.LocalPlayer.HasBuff(BuffID.ManaSickness))
 			{
-				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowSoft").Value;
 				spriteBatch.Draw(glow, new Vector2(534, 60 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
-				Utils.DrawBorderString(spriteBatch, $"{Main.LocalPlayer.buffTime[Main.LocalPlayer.FindBuffIndex(BuffID.ManaSickness)] / 60 + 1}", new Vector2(534, 60 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+				Utils.DrawBorderString(spriteBatch,
+					$"{Main.LocalPlayer.buffTime[Main.LocalPlayer.FindBuffIndex(BuffID.ManaSickness)] / 60 + 1}",
+					new Vector2(534, 60 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+			}
+
+			SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
+			if (skillPlayer.Skills == null) 
+				return;
+			
+			if (skillPlayer.Skills[0] != null)
+			{
+				Skill skill = skillPlayer.Skills[0];
+				Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
+				spriteBatch.Draw(texture,
+					new Rectangle(267, (int)(15 + off) + texture.Height - manaH, texture.Width + 18, 40),
+					new Rectangle(1, 2, texture.Width - 2, 13), Color.White * opacity);
+				
+				if (skill.Timer > 0)
+				{
+					spriteBatch.Draw(glow, new Vector2(291, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
+					Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(291, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+				}
+			}
+			
+			if (skillPlayer.Skills[1] != null)
+			{
+				Skill skill = skillPlayer.Skills[1];
+				Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
+				spriteBatch.Draw(texture,
+					new Rectangle(320, (int)(15 + off) + texture.Height - manaH, texture.Width + 18, 40),
+					new Rectangle(1, 2, texture.Width - 2, 13), Color.White * opacity);
+				
+				if (skill.Timer > 0)
+				{
+					spriteBatch.Draw(glow, new Vector2(342, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
+					Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(342, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+				}
+			}
+			
+			if (skillPlayer.Skills[2] != null)
+			{
+				Skill skill = skillPlayer.Skills[2];
+				Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
+				spriteBatch.Draw(texture,
+					new Rectangle(372, (int)(15 + off) + texture.Height - manaH, texture.Width + 18, 40),
+					new Rectangle(1, 2, texture.Width - 2, 13), Color.White * opacity);
+				
+				if (skill.Timer > 0)
+				{
+					spriteBatch.Draw(glow, new Vector2(394, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
+					Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(394, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+				}
 			}
 		}
 
 		public void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 		{
-			Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBuilding").Value;
+			Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBuilding")
+				.Value;
 			Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 			Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -106,11 +170,13 @@ namespace PathOfTerraria.Content.GUI
 
 			for (int k = 2; k <= 9; k++)
 			{
-				ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21, new Vector2(24 + 124 + 52 * (k - 2), 30 + off));
+				ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21,
+					new Vector2(24 + 124 + 52 * (k - 2), 30 + off));
 			}
 
 			Texture2D select = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarSelector").Value;
-			Main.spriteBatch.Draw(select, new Vector2(_selectorX, 21 + off), null, Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
+			Main.spriteBatch.Draw(select, new Vector2(_selectorX, 21 + off), null,
+				Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
 		}
 
 		public float Ease(float input)

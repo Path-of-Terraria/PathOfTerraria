@@ -1,16 +1,17 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.Core.Systems.SkillSystem
 {
-	internal abstract class Skill
+	public abstract class Skill
 	{
 		public int Duration;
 		public int Timer;
 
 		public int MaxCooldown;
-		private readonly int _cooldown;
+		public int Cooldown;
 
-		private readonly int _manaCost;
+		public int ManaCost;
 
 		public GearType WeaponType;
 
@@ -19,8 +20,8 @@ namespace PathOfTerraria.Core.Systems.SkillSystem
 			Duration = duration;
 			Timer = timer;
 			MaxCooldown = maxCooldown;
-			_cooldown = cooldown;
-			_manaCost = manaCost;
+			Cooldown = cooldown;
+			ManaCost = manaCost;
 			WeaponType = weaponType;
 		}
 
@@ -47,7 +48,7 @@ namespace PathOfTerraria.Core.Systems.SkillSystem
 		/// <returns>If the skill can be used or not</returns>
 		public virtual bool CanUseSkill(Player player)
 		{
-			return _cooldown <= 0 && player.CheckMana(_manaCost);
+			return Timer <= 0 && player.CheckMana(ManaCost);
 		}
 	}
 }

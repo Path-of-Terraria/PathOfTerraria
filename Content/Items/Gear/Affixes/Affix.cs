@@ -9,6 +9,7 @@ namespace PathOfTerraria.Content.Items.Gear.Affixes
 		private float _minValue;
 		private float _maxValue = 1;
 		protected float Value = 1;
+		public ModifierType ModifierType = ModifierType.Passive;
 
 		public GearInfluence RequiredInfluence = GearInfluence.None;
 
@@ -17,6 +18,8 @@ namespace PathOfTerraria.Content.Items.Gear.Affixes
 		public virtual void BuffPassive(Player player, Gear gear) { }
 
 		public abstract string GetTooltip(Player player, Gear gear);
+		
+		public abstract float GetModifierValue(Gear gear);
 
 		public Affix Clone()
 		{
@@ -81,21 +84,19 @@ namespace PathOfTerraria.Content.Items.Gear.Affixes
 		{
 			return _prototypes
 				.Where(proto => proto.RequiredInfluence == GearInfluence.None || proto.RequiredInfluence == influence)
-				.Where(proto => (proto.PossibleTypes & type) > 0)
+				.Where(proto => (type & proto.PossibleTypes) == type)
 				.ToList();
 		}
 
 		public void Load(Mod mod)
 		{
-			_prototypes = new List<Affix>();
+			_prototypes = [];
 
 			foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 			{
-				if (!type.IsAbstract && type.IsSubclassOf(typeof(Affix)))
-				{
-					object instance = Activator.CreateInstance(type);
-					_prototypes.Add(instance as Affix);
-				}
+				if (type.IsAbstract || !type.IsSubclassOf(typeof(Affix))) continue;
+				object instance = Activator.CreateInstance(type);
+				_prototypes.Add(instance as Affix);
 			}
 		}
 
