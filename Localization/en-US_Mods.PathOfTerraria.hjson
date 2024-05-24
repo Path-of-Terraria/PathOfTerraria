@@ -38,6 +38,11 @@ Items: {
 		DisplayName: Katana
 		Tooltip: ""
 	}
+	
+	Staff: {
+    	DisplayName: Staff
+    	Tooltip: ""
+    }
 }
 
 Projectiles.LifeStealProjectile.DisplayName: Life Steal Projectile

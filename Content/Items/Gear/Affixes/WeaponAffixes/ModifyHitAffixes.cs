@@ -25,7 +25,7 @@
 		{
 			public AddedKnockbackAffix()
 			{
-				PossibleTypes = GearType.Sword;
+				PossibleTypes = GearType.Sword | GearType.Staff;
 				ModifierType = ModifierType.Added;
 			}
 
@@ -44,7 +44,7 @@
 		{
 			public IncreasedKnockbackAffix()
 			{
-				PossibleTypes = GearType.Sword;
+				PossibleTypes = GearType.Sword | GearType.Staff;
 				ModifierType = ModifierType.Multiplier;
 			}
 

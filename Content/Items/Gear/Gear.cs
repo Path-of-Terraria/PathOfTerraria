@@ -1,6 +1,7 @@
 ﻿﻿using PathOfTerraria.Content.Items.Gear.Affixes;
  using PathOfTerraria.Content.Items.Gear.Armor;
-using PathOfTerraria.Content.Items.Gear.Weapons.Melee;
+ using PathOfTerraria.Content.Items.Gear.Weapons.Magic;
+ using PathOfTerraria.Content.Items.Gear.Weapons.Melee;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -398,7 +399,7 @@ namespace PathOfTerraria.Content.Items.Gear
 		/// <param name="pos">Where to spawn the armor</param>
 		public static void SpawnItem(Vector2 pos)
 		{
-			int choice = Main.rand.Next(6);
+			int choice = Main.rand.Next(99);
 			
 			switch (choice)
 			{
@@ -419,6 +420,9 @@ namespace PathOfTerraria.Content.Items.Gear
 					break;
 				case 5:
 					SpawnGear<Broadsword>(pos);
+					break;
+				default:
+					SpawnGear<Staff>(pos);
 					break;
 			}
 		}
