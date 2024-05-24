@@ -1,0 +1,58 @@
+Items: {
+	HealingPotionPickup: {
+		DisplayName: Healing Potion Pickup
+		Tooltip: ""
+	}
+
+	ManaPotionPickup: {
+		DisplayName: Mana Potion Pickup
+		Tooltip: ""
+	}
+
+	Helmet: {
+		DisplayName: Helmet
+		Tooltip: ""
+	}
+
+	Chestplate: {
+		DisplayName: Chestplate
+		Tooltip: ""
+	}
+
+	Leggings: {
+		DisplayName: Leggings
+		Tooltip: ""
+	}
+
+	Sword: {
+		DisplayName: Sword
+		Tooltip: ""
+	}
+
+	Broadsword: {
+		DisplayName: Broadsword
+		Tooltip: ""
+	}
+
+	Katana: {
+		DisplayName: Katana
+		Tooltip: ""
+	}
+}
+
+Projectiles.LifeStealProjectile.DisplayName: Life Steal Projectile
+
+Keybinds: {
+	UseSkill1.DisplayName: Use Skill1
+	UseSkill2.DisplayName: Use Skill2
+	UseSkill3.DisplayName: Use Skill3
+	UseSkill4.DisplayName: Use Skill4
+	UseSkill5.DisplayName: Use Skill5
+}
+
+Buffs: {
+	CustomRage: {
+		DisplayName: Custom Rage
+		Description: Mods.PathOfTerraria.Buffs.CustomRage.Description
+	}
+}
