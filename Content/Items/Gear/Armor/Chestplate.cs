@@ -1,6 +1,4 @@
-﻿using Terraria.ID;
-
-namespace PathOfTerraria.Content.Items.Gear.Armor
+﻿namespace PathOfTerraria.Content.Items.Gear.Armor
 {
 	[AutoloadEquip(EquipType.Body)]
 	internal class Chestplate : Gear

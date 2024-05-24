@@ -1,10 +1,8 @@
 ﻿﻿using PathOfTerraria.Content.Items.Gear.Affixes;
-using PathOfTerraria.Content.Items.Gear.Affixes.WeaponAffixes;
-using PathOfTerraria.Content.Items.Gear.Armor;
+ using PathOfTerraria.Content.Items.Gear.Armor;
 using PathOfTerraria.Content.Items.Gear.Weapons.Melee;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.RegularExpressions;
 using Terraria.Graphics.Effects;
 using Terraria.ID;

@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems.SkillSystem;
 
 namespace PathOfTerraria.Content.Buffs
 {
@@ -17,9 +16,9 @@ namespace PathOfTerraria.Content.Buffs
 			modifiers.FinalDamage += 5;
 		}
 
-		public override void Update(Player Player, ref int buffIndex)
+		public override void Update(Player player, ref int buffIndex)
 		{ 
-			Player.GetDamage(DamageClass.Generic) += 1.5f; //150% more damage
+			player.GetDamage(DamageClass.Generic) += 1.5f; //150% more damage
 		}
 	}
 }

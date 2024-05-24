@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Core;
-
-namespace PathOfTerraria.Content.Items.Gear.Affixes.WeaponAffixes
+﻿namespace PathOfTerraria.Content.Items.Gear.Affixes.WeaponAffixes
 {
 	public class ModifyHitAffixes
 	{

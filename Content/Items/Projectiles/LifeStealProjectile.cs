@@ -1,6 +1,4 @@
-﻿﻿using PathOfTerraria.Core.Systems;
-
-namespace PathOfTerraria.Content.Items.Projectiles
+﻿﻿namespace PathOfTerraria.Content.Items.Projectiles
 {
 	public class LifeStealProjectile : ModProjectile
 	{

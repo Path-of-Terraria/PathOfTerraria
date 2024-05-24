@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using Terraria.DataStructures;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.MobSystem
 {

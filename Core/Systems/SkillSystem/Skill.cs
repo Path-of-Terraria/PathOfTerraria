@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.Core.Systems.SkillSystem
 {
