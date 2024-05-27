@@ -6,7 +6,7 @@ public class ModifyHitAffixes
 	{
 		public PiercingAffix()
 		{
-			PossibleTypes = GearType.Sword;
+			PossibleTypes = GearType.Melee;
 			ModifierType = ModifierType.Added;
 		}
 
@@ -25,7 +25,7 @@ public class ModifyHitAffixes
 	{
 		public AddedKnockbackAffix()
 		{
-			PossibleTypes = GearType.Sword | GearType.Staff;
+			PossibleTypes = GearType.Weapon;
 			ModifierType = ModifierType.Added;
 		}
 
@@ -44,7 +44,7 @@ public class ModifyHitAffixes
 	{
 		public IncreasedKnockbackAffix()
 		{
-			PossibleTypes = GearType.Sword | GearType.Staff;
+			PossibleTypes = GearType.Weapon;
 			ModifierType = ModifierType.Multiplier;
 		}
 

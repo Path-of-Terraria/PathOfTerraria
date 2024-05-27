@@ -2,8 +2,10 @@
  using PathOfTerraria.Content.Items.Gear.Armor;
  using PathOfTerraria.Content.Items.Gear.Weapons.Magic;
  using PathOfTerraria.Content.Items.Gear.Weapons.Melee;
+using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
@@ -14,9 +16,12 @@ namespace PathOfTerraria.Content.Items.Gear;
 
 internal abstract class Gear : ModItem
 {
+	private static List<Tuple<float, Type>> _allGear = new List<Tuple<float, Type>>();
+
 	protected GearType GearType;
 	protected GearRarity Rarity;
 	private GearInfluence _influence;
+	public abstract float DropChance { get; }
 
 	private string _name;
 	public int ItemLevel;
@@ -394,36 +399,39 @@ internal abstract class Gear : ModItem
 	}
 
 	/// <summary>
+	/// Readies all types of gear to be dropped on enemy kill.
+	/// </summary>
+	/// <param name="pos">Where to spawn the armor</param>
+	public static void GenerateGearList()
+	{
+		_allGear.Clear();
+		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
+		{
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Gear))) continue;
+			Gear instance = (Gear)Activator.CreateInstance(type);
+			_allGear.Add(new(instance.DropChance, type));
+		}
+	}
+
+	/// <summary>
 	/// Spawns a random piece of armor at the given position
 	/// </summary>
 	/// <param name="pos">Where to spawn the armor</param>
+	static MethodInfo method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
 	public static void SpawnItem(Vector2 pos)
 	{
-		int choice = Main.rand.Next(99);
-			
-		switch (choice)
+		float dropChanceSum = _allGear.Sum(x => x.Item1); // somehow apply magic find to raised unique drop chance
+		float choice = Main.rand.NextFloat(dropChanceSum);
+
+		float cumulativeChance = 0;
+		foreach (Tuple<float, Type> gear in _allGear)
 		{
-			case 0:
-				SpawnGear<Helmet>(pos);
-				break;
-			case 1:
-				SpawnGear<Chestplate>(pos);
-				break;
-			case 2:
-				SpawnGear<Leggings>(pos);
-				break;
-			case 3:
-				SpawnGear<Sword>(pos);
-				break;
-			case 4:
-				SpawnGear<Katana>(pos);
-				break;
-			case 5:
-				SpawnGear<Broadsword>(pos);
-				break;
-			default:
-				SpawnGear<Staff>(pos);
-				break;
+			cumulativeChance += gear.Item1;
+			if (choice < cumulativeChance)
+			{
+				method.MakeGenericMethod(gear.Item2).Invoke(null, new object[] { pos });
+				return;
+			}
 		}
 	}
 

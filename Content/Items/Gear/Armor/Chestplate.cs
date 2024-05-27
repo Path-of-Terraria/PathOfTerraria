@@ -5,6 +5,8 @@ internal class Chestplate : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Body/Base";
 
+	public override float DropChance => 1f;
+
 	public override void SetDefaults()
 	{
 		GearType = GearType.Chestplate;

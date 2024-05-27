@@ -6,7 +6,7 @@
  {
 	 public ManaAffix()
 	 {
-		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+		 PossibleTypes = GearType.Armor;
 	 }
 		
 	 public override float GetModifierValue(Gear gear)
@@ -29,7 +29,7 @@
  {
 	 public ManaRegenAffix()
 	 {
-		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+		 PossibleTypes = GearType.Armor;
 	 }
 		
 	 public override float GetModifierValue(Gear gear)
@@ -52,7 +52,7 @@
  {
 	 public ManaPotionPowerAffix()
 	 {
-		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+		 PossibleTypes = GearType.Armor;
 	 }
 		
 	 public override float GetModifierValue(Gear gear)
@@ -75,7 +75,7 @@
  {
 	 public ManaPotionCapAffix()
 	 {
-		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+		 PossibleTypes = GearType.Armor;
 	 }
 		
 	 public override float GetModifierValue(Gear gear)
@@ -98,7 +98,7 @@
  {
 	 public ManaPotionCooldownAffix()
 	 {
-		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
+		 PossibleTypes = GearType.Armor;
 		 RequiredInfluence = GearInfluence.Solar;
 	 }
 		

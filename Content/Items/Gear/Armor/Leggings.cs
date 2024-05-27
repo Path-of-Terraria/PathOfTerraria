@@ -5,6 +5,8 @@ internal class Leggings : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Legs/Base";
 
+	public override float DropChance => 1f;
+
 	public override void SetDefaults()
 	{
 		GearType = GearType.Leggings;
