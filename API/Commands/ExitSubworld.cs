@@ -1,20 +1,19 @@
 ﻿using SubworldLibrary;
 
-namespace PathOfTerraria.API.Commands
-{
-	[Autoload]
-	public class ExitSubworld : ModCommand {
-		public override string Command => "exitworld";
+namespace PathOfTerraria.API.Commands;
 
-		public override CommandType Type => CommandType.Chat;
+[Autoload]
+public class ExitSubworld : ModCommand {
+	public override string Command => "exitworld";
 
-		public override string Usage => "[c/ff6a00:Usage: /exitworld]";
+	public override CommandType Type => CommandType.Chat;
 
-		public override string Description => "Exits the subworld";
+	public override string Usage => "[c/ff6a00:Usage: /exitworld]";
 
-		public override void Action(CommandCaller caller, string input, string[] args)
-		{
-			SubworldSystem.Exit();
-		}
+	public override string Description => "Exits the subworld";
+
+	public override void Action(CommandCaller caller, string input, string[] args)
+	{
+		SubworldSystem.Exit();
 	}
 }
