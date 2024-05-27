@@ -6,7 +6,7 @@ public class ModifyHitAffixes
 	{
 		public PiercingAffix()
 		{
-			PossibleTypes = GearType.Meele;
+			PossibleTypes = GearType.Melee;
 			ModifierType = ModifierType.Added;
 		}
 

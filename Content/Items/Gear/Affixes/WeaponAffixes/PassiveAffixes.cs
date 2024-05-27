@@ -24,7 +24,7 @@ public class PassiveAffixes
 	{
 		public SharpAffix()
 		{
-			PossibleTypes = GearType.Meele;
+			PossibleTypes = GearType.Melee;
 			ModifierType = ModifierType.Added;
 		}
 

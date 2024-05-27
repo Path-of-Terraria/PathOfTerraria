@@ -21,10 +21,10 @@
 	 Accessories = Ring | Charm,
 	 Equipment = Armor | Accessories,
 
-	 Meele = Sword | Spear,
+	 Melee = Sword | Spear,
 	 Magic = Staff | Tome | Wand,
 	 Ranged = Bow | Gun,
-	 Weapon = Meele | Magic | Ranged,
+	 Weapon = Melee | Magic | Ranged,
  }
 
  public enum GearRarity
