@@ -197,8 +197,6 @@ internal class NewHotbar : SmartUIState
 
 		var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 
-		if (bounding.Contains(Main.MouseScreen.ToPoint()))
-			UILoader.GetUIState<Tree>().IsVisible = true;
 	}
 
 	private void DrawHotkeys(SpriteBatch spriteBatch)

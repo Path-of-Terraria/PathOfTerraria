@@ -1,6 +1,10 @@
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.Audio;
+using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
@@ -12,6 +16,13 @@ public class ExpBar : SmartUIState
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+	}
+	public Rectangle GetRectangle()
+	{
+		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarEmpty").Value;
+		var pos = new Vector2(Main.screenWidth / 2, 10);
+
+		return new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -38,12 +49,22 @@ public class ExpBar : SmartUIState
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
+		Console.WriteLine("A");
 		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarEmpty").Value;
 		var pos = new Vector2(Main.screenWidth / 2, 10);
 
 		var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 
 		if (bounding.Contains(Main.MouseScreen.ToPoint()))
-			UILoader.GetUIState<Tree>().IsVisible = true;
+		{
+			UILoader.GetUIState<Tree>().IsVisible = !UILoader.GetUIState<Tree>().IsVisible;
+
+			if (UILoader.GetUIState<Tree>().IsVisible)
+				SoundEngine.PlaySound(SoundID.MenuOpen, Main.LocalPlayer.Center);
+			else
+				SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+
+			Main.playerInventory = false;
+		}
 	}
 }
