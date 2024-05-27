@@ -1,62 +1,61 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Affixes.WeaponAffixes
+﻿namespace PathOfTerraria.Content.Items.Gear.Affixes.WeaponAffixes;
+
+public class ModifyHitAffixes
 {
-	public class ModifyHitAffixes
+	internal class PiercingAffix : Affix
 	{
-		internal class PiercingAffix : Affix
+		public PiercingAffix()
 		{
-			public PiercingAffix()
-			{
-				PossibleTypes = GearType.Sword;
-				ModifierType = ModifierType.Added;
-			}
-
-			public override float GetModifierValue(Gear gear)
-			{
-				return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
-			}
-
-			public override string GetTooltip(Player player, Gear gear)
-			{
-				return $"+{GetModifierValue(gear)} Armor Penetration";
-			}
+			PossibleTypes = GearType.Sword;
+			ModifierType = ModifierType.Added;
 		}
 
-		internal class AddedKnockbackAffix : Affix
+		public override float GetModifierValue(Gear gear)
 		{
-			public AddedKnockbackAffix()
-			{
-				PossibleTypes = GearType.Sword | GearType.Staff;
-				ModifierType = ModifierType.Added;
-			}
-
-			public override float GetModifierValue(Gear gear)
-			{
-				return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
-			}
-
-			public override string GetTooltip(Player player, Gear gear)
-			{
-				return $"+{GetModifierValue(gear)} Added Knockback";
-			}
+			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
 		}
 
-		internal class IncreasedKnockbackAffix : Affix
+		public override string GetTooltip(Player player, Gear gear)
 		{
-			public IncreasedKnockbackAffix()
-			{
-				PossibleTypes = GearType.Sword | GearType.Staff;
-				ModifierType = ModifierType.Multiplier;
-			}
+			return $"+{GetModifierValue(gear)} Armor Penetration";
+		}
+	}
 
-			public override float GetModifierValue(Gear gear)
-			{
-				return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
-			}
+	internal class AddedKnockbackAffix : Affix
+	{
+		public AddedKnockbackAffix()
+		{
+			PossibleTypes = GearType.Sword | GearType.Staff;
+			ModifierType = ModifierType.Added;
+		}
 
-			public override string GetTooltip(Player player, Gear gear)
-			{
-				return $"{GetModifierValue(gear)}% Increased Knockback";
-			}
+		public override float GetModifierValue(Gear gear)
+		{
+			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
+		}
+
+		public override string GetTooltip(Player player, Gear gear)
+		{
+			return $"+{GetModifierValue(gear)} Added Knockback";
+		}
+	}
+
+	internal class IncreasedKnockbackAffix : Affix
+	{
+		public IncreasedKnockbackAffix()
+		{
+			PossibleTypes = GearType.Sword | GearType.Staff;
+			ModifierType = ModifierType.Multiplier;
+		}
+
+		public override float GetModifierValue(Gear gear)
+		{
+			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
+		}
+
+		public override string GetTooltip(Player player, Gear gear)
+		{
+			return $"{GetModifierValue(gear)}% Increased Knockback";
 		}
 	}
 }

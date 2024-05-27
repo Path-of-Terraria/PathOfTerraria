@@ -1,63 +1,62 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Armor
+﻿namespace PathOfTerraria.Content.Items.Gear.Armor;
+
+[AutoloadEquip(EquipType.Head)]
+internal class Helmet : Gear
 {
-	[AutoloadEquip(EquipType.Head)]
-	internal class Helmet : Gear
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
+
+	public override void SetDefaults()
 	{
-		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
+		GearType = GearType.Helmet;
+	}
 
-		public override void SetDefaults()
+	public override void PostRoll()
+	{
+		Item.defense = ItemLevel / 10 + 1;
+	}
+
+	public override string GenerateName()
+	{
+		string prefix = Main.rand.Next(5) switch
 		{
-			GearType = GearType.Helmet;
-		}
+			0 => "Adept",
+			1 => "Tattered",
+			2 => "Enchanted",
+			3 => "Beautiful",
+			4 => "Strange",
+			_ => "Unknown"
+		};
 
-		public override void PostRoll()
+		string suffix = Main.rand.Next(5) switch
 		{
-			Item.defense = ItemLevel / 10 + 1;
-		}
+			0 => "Drape",
+			1 => "Dome",
+			2 => "Thought",
+			3 => "Vision",
+			4 => "Maw",
+			_ => "Unknown"
+		};
 
-		public override string GenerateName()
+		string item = Main.rand.Next(3) switch
 		{
-			string prefix = Main.rand.Next(5) switch
-			{
-				0 => "Adept",
-				1 => "Tattered",
-				2 => "Enchanted",
-				3 => "Beautiful",
-				4 => "Strange",
-				_ => "Unknown"
-			};
+			0 => "Helmet",
+			1 => "Visor",
+			2 => "Crown",
+			_ => "Unknown"
+		};
 
-			string suffix = Main.rand.Next(5) switch
-			{
-				0 => "Drape",
-				1 => "Dome",
-				2 => "Thought",
-				3 => "Vision",
-				4 => "Maw",
-				_ => "Unknown"
-			};
+		if (Rarity == GearRarity.Normal)
+			return item;
 
-			string item = Main.rand.Next(3) switch
-			{
-				0 => "Helmet",
-				1 => "Visor",
-				2 => "Crown",
-				_ => "Unknown"
-			};
+		if (Rarity == GearRarity.Magic)
+			return $"{prefix} {item}";
 
-			if (Rarity == GearRarity.Normal)
-				return item;
+		if (Rarity == GearRarity.Rare)
+			return $"{prefix} {suffix} {item}";
 
-			if (Rarity == GearRarity.Magic)
-				return $"{prefix} {item}";
+		if (Rarity == GearRarity.Unique)
+			return Item.Name;
 
-			if (Rarity == GearRarity.Rare)
-				return $"{prefix} {suffix} {item}";
-
-			if (Rarity == GearRarity.Unique)
-				return Item.Name;
-
-			return "Unknown Item";
-		}
+		return "Unknown Item";
 	}
 }

@@ -1,49 +1,48 @@
-﻿﻿namespace PathOfTerraria.Content.Items.Gear
-{
-	[Flags]
-	public enum GearType : long
-	{
-		None = 0,
-		Sword = 1 << 0,
-		Spear = 1 << 1,
-		Bow = 1 << 2, 
-		Gun = 1 << 3, 
-		Staff = 1 << 4,
-		Tome = 1 << 5, 
-		Helmet = 1 << 6, 
-		Chestplate = 1 << 7,
-		Leggings = 1 << 8,
-		Ring = 1 << 9,
-		Charm = 1 << 10
-	}
+﻿﻿namespace PathOfTerraria.Content.Items.Gear;
 
-	public enum GearRarity
-	{
-		Normal,
-		Magic,
-		Rare,
-		Unique
-	}
+ [Flags]
+ public enum GearType : long
+ {
+	 None = 0,
+	 Sword = 1 << 0,
+	 Spear = 1 << 1,
+	 Bow = 1 << 2, 
+	 Gun = 1 << 3, 
+	 Staff = 1 << 4,
+	 Tome = 1 << 5, 
+	 Helmet = 1 << 6, 
+	 Chestplate = 1 << 7,
+	 Leggings = 1 << 8,
+	 Ring = 1 << 9,
+	 Charm = 1 << 10
+ }
 
-	public enum GearInfluence
-	{
-		None,
-		Solar,
-		Lunar
-	}
+ public enum GearRarity
+ {
+	 Normal,
+	 Magic,
+	 Rare,
+	 Unique
+ }
 
-	public enum ModifierType
-	{
-		Passive,
-		Added,
-		Multiplier
-	}
+ public enum GearInfluence
+ {
+	 None,
+	 Solar,
+	 Lunar
+ }
+
+ public enum ModifierType
+ {
+	 Passive,
+	 Added,
+	 Multiplier
+ }
 	
-	public enum MobRarity
-	{
-		Normal = 0,
-		Magic = 1,
-		Rare = 2,
-		Unique = 3
-	}
-}
+ public enum MobRarity
+ {
+	 Normal = 0,
+	 Magic = 1,
+	 Rare = 2,
+	 Unique = 3
+ }

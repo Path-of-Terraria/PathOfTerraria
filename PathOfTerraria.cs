@@ -6,24 +6,23 @@ global using Terraria.ModLoader;
 using PathOfTerraria.API.GraphicsLib;
 using Terraria.ID;
 
-namespace PathOfTerraria
-{
-	public class PathOfTerraria : Mod
-	{
-		public static PathOfTerraria Instance;
-		public static readonly string ModName = "PathOfTerraria";
+namespace PathOfTerraria;
 
-		public PathOfTerraria()
-		{
-			Instance = this;
-		}
+public class PathOfTerraria : Mod
+{
+	public static PathOfTerraria Instance;
+	public static readonly string ModName = "PathOfTerraria";
+
+	public PathOfTerraria()
+	{
+		Instance = this;
+	}
 		
-		public override void Load()
+	public override void Load()
+	{
+		if (Main.netMode != NetmodeID.Server)
 		{
-			if (Main.netMode != NetmodeID.Server)
-			{
-				PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
-			}
+			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 		}
 	}
 }
