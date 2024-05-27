@@ -1,6 +1,10 @@
-﻿using PathOfTerraria.Content.GUI;
+﻿using Microsoft.Build.Framework;
+using PathOfTerraria.Content.GUI;
 using PathOfTerraria.Core.Loaders.UILoading;
 using System.Collections.Generic;
+using Terraria.Audio;
+using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
@@ -28,6 +32,23 @@ internal class TreePlayer : ModPlayer
 	public override void UpdateEquips()
 	{
 		Nodes.ForEach(n => n.BuffPlayer(Player));
+	}
+
+	private bool _blockMouse = false;
+	private bool _lastState = false;
+	public override void PreUpdate()
+	{
+		if (!Main.mouseLeft) 
+			_blockMouse = false;
+
+		if (!_lastState && Main.mouseLeft)
+			Main.blockMouse = UILoader.GetUIState<Tree>().IsVisible &&
+						  UILoader.GetUIState<Tree>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
+		else
+			_blockMouse = UILoader.GetUIState<ExpBar>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
+
+		Main.blockMouse = Main.blockMouse || _blockMouse;
+		_lastState = Main.mouseLeft;
 	}
 
 	public override void SaveData(TagCompound tag)

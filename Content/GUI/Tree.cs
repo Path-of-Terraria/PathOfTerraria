@@ -31,6 +31,11 @@ internal class Tree : SmartUIState
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
+	public Rectangle GetRectangle()
+	{
+		return _panel.GetDimensions().ToRectangle();
+	}
+
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		if (Main.LocalPlayer.controlInv)
@@ -50,7 +55,10 @@ internal class Tree : SmartUIState
 			_closeButton.Top.Set(TopPadding + 10, 0.5f);
 			_closeButton.Width.Set(38, 0);
 			_closeButton.Height.Set(38, 0);
-			_closeButton.OnLeftClick += (a, b) => IsVisible = false;
+			_closeButton.OnLeftClick += (a, b) => {
+				IsVisible = false;
+				SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+			};
 			_closeButton.SetVisibility(1, 1);
 			Append(_closeButton);
 
@@ -72,9 +80,9 @@ internal class Tree : SmartUIState
 		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall").Value;
 		TreePlayer mp = Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
-		spriteBatch.Draw(tex, _panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
-		Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", _panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(32, 32), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
-		Utils.DrawBorderStringBig(spriteBatch, $"Points remaining", _panel.GetDimensions().ToRectangle().TopLeft() + new Vector2(170, 32), Color.White, 0.6f, 0.5f, 0.35f);
+		spriteBatch.Draw(tex, GetRectangle().TopLeft() + new Vector2(32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+		Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", GetRectangle().TopLeft() + new Vector2(32, 32), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
+		Utils.DrawBorderStringBig(spriteBatch, $"Points remaining", GetRectangle().TopLeft() + new Vector2(170, 32), Color.White, 0.6f, 0.5f, 0.35f);
 	}
 }
 
@@ -148,9 +156,20 @@ internal class InnerPanel : SmartUIElement
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
 	}
 
+	private bool _blockMouse = false;
+	private bool _isHovering = false;
+	private bool _lastState = false;
 	public override void SafeUpdate(GameTime gameTime)
 	{
-		if (Main.mouseLeft && Panel.IsMouseHovering)
+		if (Main.mouseLeft && !_lastState)
+		{
+			_blockMouse = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
+			_isHovering = Panel.IsMouseHovering;
+		}
+		else if (!Main.mouseLeft)
+			_blockMouse = _isHovering= false;
+
+		if (_isHovering)
 		{
 			if (_start == Vector2.Zero)
 			{
@@ -179,6 +198,9 @@ internal class InnerPanel : SmartUIElement
 		{
 			_start = Vector2.Zero;
 		}
+
+		Main.blockMouse = _blockMouse;
+		_lastState = Main.mouseLeft;
 
 		Recalculate();
 	}
