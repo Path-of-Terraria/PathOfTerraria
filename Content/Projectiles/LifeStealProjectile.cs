@@ -1,145 +1,144 @@
-﻿﻿namespace PathOfTerraria.Content.Items.Projectiles
-{
-	public class LifeStealProjectile : ModProjectile
-	{
-		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/LifeStealProjectile";
+﻿﻿namespace PathOfTerraria.Content.Items.Projectiles;
 
-		public override void SetStaticDefaults()
-		{
-			// Total count animation frames
-			Main.projFrames[Projectile.type] = 4;
-		}
+ public class LifeStealProjectile : ModProjectile
+ {
+	 public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/LifeStealProjectile";
 
-		public override void SetDefaults()
-		{
-			Projectile.width = 40; // The width of projectile hitbox
-			Projectile.height = 40; // The height of projectile hitbox
+	 public override void SetStaticDefaults()
+	 {
+		 // Total count animation frames
+		 Main.projFrames[Projectile.type] = 4;
+	 }
 
-			Projectile.friendly = true; // Can the projectile deal damage to enemies?
-			Projectile.DamageType = DamageClass.Melee; // Is the projectile shoot by a ranged weapon?
-			Projectile.ignoreWater = true; // Does the projectile's speed be influenced by water?
-			Projectile.tileCollide = true; // Can the projectile collide with tiles?
+	 public override void SetDefaults()
+	 {
+		 Projectile.width = 40; // The width of projectile hitbox
+		 Projectile.height = 40; // The height of projectile hitbox
 
-			Projectile.alpha = 255; // How transparent to draw this projectile. 0 to 255. 255 is completely transparent.
-		}
+		 Projectile.friendly = true; // Can the projectile deal damage to enemies?
+		 Projectile.DamageType = DamageClass.Melee; // Is the projectile shoot by a ranged weapon?
+		 Projectile.ignoreWater = true; // Does the projectile's speed be influenced by water?
+		 Projectile.tileCollide = true; // Can the projectile collide with tiles?
 
-		public override Color? GetAlpha(Color lightColor)
-		{
-			// return Color.White;
-			return new Color(255, 255, 255, 0) * Projectile.Opacity;
-		}
+		 Projectile.alpha = 255; // How transparent to draw this projectile. 0 to 255. 255 is completely transparent.
+	 }
 
-		public override void AI()
-		{
-			// All projectiles have timers that help to delay certain events
-			// Projectile.ai[0], Projectile.ai[1] — timers that are automatically synchronized on the client and server
-			// Projectile.localAI[0], Projectile.localAI[0] — only on the client
-			// In this example, a timer is used to control the fade in / out and despawn of the projectile
-			Projectile.ai[0] += 1f;
+	 public override Color? GetAlpha(Color lightColor)
+	 {
+		 // return Color.White;
+		 return new Color(255, 255, 255, 0) * Projectile.Opacity;
+	 }
 
-			FadeInAndOut();
+	 public override void AI()
+	 {
+		 // All projectiles have timers that help to delay certain events
+		 // Projectile.ai[0], Projectile.ai[1] — timers that are automatically synchronized on the client and server
+		 // Projectile.localAI[0], Projectile.localAI[0] — only on the client
+		 // In this example, a timer is used to control the fade in / out and despawn of the projectile
+		 Projectile.ai[0] += 1f;
 
-			// Slow down
-			Projectile.velocity *= 0.98f;
+		 FadeInAndOut();
 
-			// Loop through the 4 animation frames, spending 5 ticks on each
-			// Projectile.frame — index of current frame
-			if (++Projectile.frameCounter >= 5)
-			{
-				Projectile.frameCounter = 0;
-				// Or more compactly Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
-				if (++Projectile.frame >= Main.projFrames[Projectile.type])
-					Projectile.frame = 0;
-			}
+		 // Slow down
+		 Projectile.velocity *= 0.98f;
 
-			// Despawn this projectile after 1 second (60 ticks)
-			// You can use Projectile.timeLeft = 60f in SetDefaults() for same goal
-			if (Projectile.ai[0] >= 60f)
-				Projectile.Kill();
+		 // Loop through the 4 animation frames, spending 5 ticks on each
+		 // Projectile.frame — index of current frame
+		 if (++Projectile.frameCounter >= 5)
+		 {
+			 Projectile.frameCounter = 0;
+			 // Or more compactly Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
+			 if (++Projectile.frame >= Main.projFrames[Projectile.type])
+				 Projectile.frame = 0;
+		 }
 
-			// Set both direction and spriteDirection to 1 or -1 (right and left respectively)
-			// Projectile.direction is automatically set correctly in Projectile.Update, but we need to set it here or the textures will draw incorrectly on the 1st frame.
-			Projectile.direction = Projectile.spriteDirection = (Projectile.velocity.X > 0f) ? 1 : -1;
+		 // Despawn this projectile after 1 second (60 ticks)
+		 // You can use Projectile.timeLeft = 60f in SetDefaults() for same goal
+		 if (Projectile.ai[0] >= 60f)
+			 Projectile.Kill();
 
-			Projectile.rotation = Projectile.velocity.ToRotation();
-			// Since our sprite has an orientation, we need to adjust rotation to compensate for the draw flipping
-			if (Projectile.spriteDirection == -1)
-			{
-				Projectile.rotation += MathHelper.Pi;
-				// For vertical sprites use MathHelper.PiOver2
-			}
-		}
+		 // Set both direction and spriteDirection to 1 or -1 (right and left respectively)
+		 // Projectile.direction is automatically set correctly in Projectile.Update, but we need to set it here or the textures will draw incorrectly on the 1st frame.
+		 Projectile.direction = Projectile.spriteDirection = (Projectile.velocity.X > 0f) ? 1 : -1;
 
-		// Many projectiles fade in so that when they spawn they don't overlap the gun muzzle they appear from
-		private void FadeInAndOut()
-		{
-			// If last less than 50 ticks — fade in, than more — fade out
-			if (Projectile.ai[0] <= 50f)
-			{
-				// Fade in
-				Projectile.alpha -= 25;
-				// Cap alpha before timer reaches 50 ticks
-				if (Projectile.alpha < 100)
-					Projectile.alpha = 100;
+		 Projectile.rotation = Projectile.velocity.ToRotation();
+		 // Since our sprite has an orientation, we need to adjust rotation to compensate for the draw flipping
+		 if (Projectile.spriteDirection == -1)
+		 {
+			 Projectile.rotation += MathHelper.Pi;
+			 // For vertical sprites use MathHelper.PiOver2
+		 }
+	 }
 
-				return;
-			}
+	 // Many projectiles fade in so that when they spawn they don't overlap the gun muzzle they appear from
+	 private void FadeInAndOut()
+	 {
+		 // If last less than 50 ticks — fade in, than more — fade out
+		 if (Projectile.ai[0] <= 50f)
+		 {
+			 // Fade in
+			 Projectile.alpha -= 25;
+			 // Cap alpha before timer reaches 50 ticks
+			 if (Projectile.alpha < 100)
+				 Projectile.alpha = 100;
 
-			// Fade out
-			Projectile.alpha += 25;
-			// Cal alpha to the maximum 255(complete transparent)
-			if (Projectile.alpha > 255)
-				Projectile.alpha = 255;
-		}
+			 return;
+		 }
 
-		// Some advanced drawing because the texture image isn't centered or symetrical
-		// If you dont want to manually drawing you can use vanilla projectile rendering offsets
-		// Here you can check it https://github.com/tModLoader/tModLoader/wiki/Basic-Projectile#horizontal-sprite-example
-		public override bool PreDraw(ref Color lightColor)
-		{
-			// SpriteEffects helps to flip texture horizontally and vertically
-			SpriteEffects spriteEffects = SpriteEffects.None;
-			if (Projectile.spriteDirection == -1)
-				spriteEffects = SpriteEffects.FlipHorizontally;
+		 // Fade out
+		 Projectile.alpha += 25;
+		 // Cal alpha to the maximum 255(complete transparent)
+		 if (Projectile.alpha > 255)
+			 Projectile.alpha = 255;
+	 }
 
-			// Getting texture of projectile
-			var texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
+	 // Some advanced drawing because the texture image isn't centered or symetrical
+	 // If you dont want to manually drawing you can use vanilla projectile rendering offsets
+	 // Here you can check it https://github.com/tModLoader/tModLoader/wiki/Basic-Projectile#horizontal-sprite-example
+	 public override bool PreDraw(ref Color lightColor)
+	 {
+		 // SpriteEffects helps to flip texture horizontally and vertically
+		 SpriteEffects spriteEffects = SpriteEffects.None;
+		 if (Projectile.spriteDirection == -1)
+			 spriteEffects = SpriteEffects.FlipHorizontally;
 
-			// Calculating frameHeight and current Y pos dependence of frame
-			// If texture without animation frameHeight is always texture.Height and startY is always 0
-			int frameHeight = texture.Height / Main.projFrames[Projectile.type];
-			int startY = frameHeight * Projectile.frame;
+		 // Getting texture of projectile
+		 var texture = (Texture2D)ModContent.Request<Texture2D>(Texture);
 
-			// Get this frame on texture
-			var sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
+		 // Calculating frameHeight and current Y pos dependence of frame
+		 // If texture without animation frameHeight is always texture.Height and startY is always 0
+		 int frameHeight = texture.Height / Main.projFrames[Projectile.type];
+		 int startY = frameHeight * Projectile.frame;
 
-			// Alternatively, you can skip defining frameHeight and startY and use this:
-			// Rectangle sourceRectangle = texture.Frame(1, Main.projFrames[Projectile.type], frameY: Projectile.frame);
+		 // Get this frame on texture
+		 var sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
 
-			Vector2 origin = sourceRectangle.Size() / 2f;
+		 // Alternatively, you can skip defining frameHeight and startY and use this:
+		 // Rectangle sourceRectangle = texture.Frame(1, Main.projFrames[Projectile.type], frameY: Projectile.frame);
 
-			// If image isn't centered or symmetrical you can specify origin of the sprite
-			// (0,0) for the upper-left corner
-			const float offsetX = 20f;
-			origin.X = Projectile.spriteDirection == 1 ? sourceRectangle.Width - offsetX : offsetX;
+		 Vector2 origin = sourceRectangle.Size() / 2f;
 
-			// If sprite is vertical
-			// float offsetY = 20f;
-			// origin.Y = (float)(Projectile.spriteDirection == 1 ? sourceRectangle.Height - offsetY : offsetY);
-			// Applying lighting and draw current frame
-			Color drawColor = Projectile.GetAlpha(lightColor);
-			Main.EntitySpriteDraw(texture,
-				Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
-				sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
+		 // If image isn't centered or symmetrical you can specify origin of the sprite
+		 // (0,0) for the upper-left corner
+		 const float offsetX = 20f;
+		 origin.X = Projectile.spriteDirection == 1 ? sourceRectangle.Width - offsetX : offsetX;
 
-			// It's important to return false, otherwise we also draw the original texture.
-			return false;
-		}
+		 // If sprite is vertical
+		 // float offsetY = 20f;
+		 // origin.Y = (float)(Projectile.spriteDirection == 1 ? sourceRectangle.Height - offsetY : offsetY);
+		 // Applying lighting and draw current frame
+		 Color drawColor = Projectile.GetAlpha(lightColor);
+		 Main.EntitySpriteDraw(texture,
+			 Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
+			 sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
 
-		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
-		{
-			Player player = Main.LocalPlayer;
-			player.Heal(15);
-		}
-	}
-}
+		 // It's important to return false, otherwise we also draw the original texture.
+		 return false;
+	 }
+
+	 public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	 {
+		 Player player = Main.LocalPlayer;
+		 player.Heal(15);
+	 }
+ }
