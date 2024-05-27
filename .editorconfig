@@ -109,7 +109,7 @@ csharp_using_directive_placement = outside_namespace:warning
 # New line preferences
 csharp_style_allow_blank_line_after_colon_in_constructor_initializer_experimental = false:warning
 csharp_style_allow_blank_lines_between_consecutive_braces_experimental = false:warning
-csharp_style_allow_embedded_statements_on_same_line_experimental = false:warning
+csharp_style_allow_embedded_statements_on_same_line_experimental = false
 
 #### C# Formatting Rules ####
 
@@ -235,3 +235,4 @@ tab_width = 4
 indent_size = 4
 end_of_line = crlf
 dotnet_style_predefined_type_for_member_access = true:warning
+resharper_csharp_place_simple_embedded_statement_on_same_line = true
