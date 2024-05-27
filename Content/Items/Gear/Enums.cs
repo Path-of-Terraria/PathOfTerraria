@@ -14,7 +14,16 @@
 		Chestplate = 1 << 7,
 		Leggings = 1 << 8,
 		Ring = 1 << 9,
-		Charm = 1 << 10
+		Charm = 1 << 10,
+
+		Armor = Helmet | Chestplate | Leggings,
+		Accessories = Ring | Charm,
+		Equipment = Armor | Accessories,
+
+		Meele = Sword | Spear,
+		Magic = Staff | Tome,
+		Ranged = Bow | Gun,
+		Weapon = Meele | Magic | Ranged,
 	}
 
 	public enum GearRarity

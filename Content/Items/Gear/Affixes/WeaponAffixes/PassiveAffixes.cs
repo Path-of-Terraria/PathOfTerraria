@@ -6,7 +6,7 @@
 		{
 			public RapidAffix()
 			{
-				PossibleTypes = GearType.Sword | GearType.Staff;
+				PossibleTypes = GearType.Weapon;
 			}
 
 			public override float GetModifierValue(Gear gear)
@@ -24,7 +24,7 @@
 		{
 			public SharpAffix()
 			{
-				PossibleTypes = GearType.Sword;
+				PossibleTypes = GearType.Meele;
 				ModifierType = ModifierType.Added;
 			}
 
