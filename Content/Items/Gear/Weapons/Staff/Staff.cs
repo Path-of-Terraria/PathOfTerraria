@@ -1,12 +1,14 @@
 ﻿using PathOfTerraria.Content.Projectiles.Magic;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.Localization;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons.Magic;
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
 internal class Staff : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapon/Staff/ExampleStaff";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Staff/ExampleStaff";
+	public override LocalizedText DisplayName => this.GetLocalization("Staff", PrettyPrintName);
 
 	public override float DropChance => 1f;
 

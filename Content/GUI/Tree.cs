@@ -10,14 +10,12 @@ namespace PathOfTerraria.Content.GUI;
 
 internal class Tree : SmartUIState
 {
-	public bool Populated = false;
+	public bool Populated;
 
 	private UIPanel _panel;
 	private UIImageButton _closeButton;
 
-#pragma warning disable IDE1006 // Naming Styles
-	public bool visible;
-#pragma warning restore IDE1006 // Naming Styles
+	public bool IsVisible;
 
 	private static TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
@@ -26,7 +24,7 @@ internal class Tree : SmartUIState
 	private const int PanelWidth = 900;
 	private const int PanelHeight = 800;
 
-	public override bool Visible => visible;
+	public override bool Visible => IsVisible;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -36,7 +34,7 @@ internal class Tree : SmartUIState
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		if (Main.LocalPlayer.controlInv)
-			visible = false;
+			IsVisible = false;
 
 		if (!Populated)
 		{
@@ -52,7 +50,7 @@ internal class Tree : SmartUIState
 			_closeButton.Top.Set(TopPadding + 10, 0.5f);
 			_closeButton.Width.Set(38, 0);
 			_closeButton.Height.Set(38, 0);
-			_closeButton.OnLeftClick += (a, b) => visible = false;
+			_closeButton.OnLeftClick += (a, b) => IsVisible = false;
 			_closeButton.SetVisibility(1, 1);
 			Append(_closeButton);
 
@@ -84,7 +82,7 @@ internal class InnerPanel : SmartUIElement
 {
 	private Vector2 _start;
 	private Vector2 _root;
-	private Vector2 LineOff;
+	private Vector2 _lineOff;
 
 	private UIElement Panel => Parent;
 
@@ -113,7 +111,7 @@ internal class InnerPanel : SmartUIElement
 
 			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.Start.TreePos, edge.End.TreePos) / 16))
 			{
-				Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + LineOff;
+				Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + _lineOff;
 				Main.spriteBatch.Draw(chainTex, pos, null, color, edge.Start.TreePos.DirectionTo(edge.End.TreePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 			}
 
@@ -134,7 +132,7 @@ internal class InnerPanel : SmartUIElement
 					float scale = 0.05f + rand.NextSingle() * 0.15f;
 
 					float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
-					Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + LineOff;
+					Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
 					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
 				}
@@ -157,7 +155,7 @@ internal class InnerPanel : SmartUIElement
 			if (_start == Vector2.Zero)
 			{
 				_start = Main.MouseScreen;
-				_root = LineOff;
+				_root = _lineOff;
 
 				foreach (UIElement element in Elements)
 				{
@@ -175,7 +173,7 @@ internal class InnerPanel : SmartUIElement
 				}
 			}
 
-			LineOff = _root + Main.MouseScreen - _start;
+			_lineOff = _root + Main.MouseScreen - _start;
 		}
 		else
 		{
@@ -196,7 +194,7 @@ internal class PassiveElement : SmartUIElement
 
 	public PassiveElement(Passive passive)
 	{
-		this._passive = passive;
+		_passive = passive;
 		Left.Set(passive.TreePos.X - passive.Width / 2, 0);
 		Top.Set(passive.TreePos.Y - passive.Height / 2, 0);
 		Width.Set(passive.Width, 0);
@@ -368,14 +366,12 @@ internal class PassiveElement : SmartUIElement
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
-		if (_passive.CanDeallocate(Main.LocalPlayer))
-		{
-			_passive.Level--;
-			Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;
+		if (!_passive.CanDeallocate(Main.LocalPlayer)) return;
+		_passive.Level--;
+		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;
 
-			_redFlashTimer = 20;
+		_redFlashTimer = 20;
 
-			SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
-		}
+		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
 }

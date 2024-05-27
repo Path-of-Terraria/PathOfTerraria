@@ -2,11 +2,11 @@
 using Terraria.Enums;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons.Magic;
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 
 internal class Wand : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapon/Staff/WandPlaceholder";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Wand/WandPlaceholder";
 
 	public override float DropChance => 1f;
 

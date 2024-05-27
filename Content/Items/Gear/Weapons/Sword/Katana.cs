@@ -1,8 +1,8 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Melee;
+﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class Katana : Sword
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapon/Sword/Katana";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Katana";
 	
 	public override void SetDefaults()
 	{
