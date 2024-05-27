@@ -8,6 +8,8 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Magic
 	{
 		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapon/Staff/ExampleStaff";
 
+		public override float DropChance => 1f;
+
 		public override void SetDefaults() {
 			// DefaultToStaff handles setting various Item values that magic staff weapons use.
 			// Hover over DefaultToStaff in Visual Studio to read the documentation!

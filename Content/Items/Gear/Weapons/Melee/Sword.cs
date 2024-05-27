@@ -8,6 +8,8 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Melee
 	{
 		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapon/Sword/Base";
 
+		public override float DropChance => 1f;
+
 		public override void SetDefaults()
 		{
 			Item.damage = 10;

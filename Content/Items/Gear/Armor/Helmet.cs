@@ -5,6 +5,8 @@
 	{
 		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
 
+		public override float DropChance => 1f;
+
 		public override void SetDefaults()
 		{
 			GearType = GearType.Helmet;
