@@ -7,25 +7,24 @@ using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Content.Items.Gear;
 using Terraria.ID;
 
-namespace PathOfTerraria
-{
-	public class PathOfTerraria : Mod
-	{
-		public static PathOfTerraria Instance;
-		public static readonly string ModName = "PathOfTerraria";
+namespace PathOfTerraria;
 
-		public PathOfTerraria()
-		{
-			Instance = this;
-		}
+public class PathOfTerraria : Mod
+{
+	public static PathOfTerraria Instance;
+	public static readonly string ModName = "PathOfTerraria";
+
+	public PathOfTerraria()
+	{
+		Instance = this;
+	}
 		
-		public override void Load()
+	public override void Load()
+	{
+		if (Main.netMode != NetmodeID.Server)
 		{
-			if (Main.netMode != NetmodeID.Server)
-			{
-				PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
-			}
-			Gear.GenerateGearList();
+			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 		}
+		Gear.GenerateGearList();
 	}
 }

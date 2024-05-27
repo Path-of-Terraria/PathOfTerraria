@@ -4,19 +4,19 @@ using System.Linq;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Projectiles.Magic
+namespace PathOfTerraria.Content.Projectiles.Magic;
+
+public class HomingProjectile : ModProjectile
 {
-	public class HomingProjectile : ModProjectile
-	{
-		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/HomingProjectile";
-		public override void SetDefaults() {
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/HomingProjectile";
+	public override void SetDefaults() {
 			Projectile.width = Projectile.height = 8;
 			Projectile.friendly = true;
 			Projectile.DamageType = DamageClass.Magic;
 			Projectile.timeLeft = 600;
 		}
 
-		public override void AI() {
+	public override void AI() {
 			IOrderedEnumerable<NPC> collection = Main.npc.Where(npc => npc.active && !npc.friendly && !npc.CountsAsACritter).OrderBy(npc => Projectile.Center.Distance(npc.Center));
 
 			if (collection.Count() > 0 )
@@ -36,11 +36,10 @@ namespace PathOfTerraria.Content.Projectiles.Magic
 			}
 		}
 
-		public override void OnKill(int timeLeft) {
+	public override void OnKill(int timeLeft) {
 			for (int k = 0; k < 5; k++) {
 				Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<Sparkle>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
 			}
 			SoundEngine.PlaySound(SoundID.Item25, Projectile.position);
 		}
-	}
 }

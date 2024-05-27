@@ -2,15 +2,15 @@
 using Terraria.Enums;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons.Magic
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Magic;
+
+internal class Wand : Gear
 {
-	internal class Wand : Gear
-	{
-		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapon/Staff/WandPlaceholder";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapon/Staff/WandPlaceholder";
 
-		public override float DropChance => 1f;
+	public override float DropChance => 1f;
 
-		public override void SetDefaults() {
+	public override void SetDefaults() {
 
 			Item.damage = 14;
 			Item.width = Item.height = 40;
@@ -29,8 +29,8 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Magic
 			Item.SetShopValues(ItemRarityColor.Green2, 10000);
 		}
 		
-		public override string GenerateName()
-		{
+	public override string GenerateName()
+	{
 			// didnt change this, is the same as wand
 			string prefix = Main.rand.Next(5) switch
 			{
@@ -63,5 +63,4 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Magic
 				_ => "Unknown Item"
 			};
 		}
-	}
 }
