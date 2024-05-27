@@ -15,13 +15,14 @@
 		Leggings = 1 << 8,
 		Ring = 1 << 9,
 		Charm = 1 << 10,
+		Wand = 1 << 11,
 
 		Armor = Helmet | Chestplate | Leggings,
 		Accessories = Ring | Charm,
 		Equipment = Armor | Accessories,
 
 		Meele = Sword | Spear,
-		Magic = Staff | Tome,
+		Magic = Staff | Tome | Wand,
 		Ranged = Bow | Gun,
 		Weapon = Meele | Magic | Ranged,
 	}
