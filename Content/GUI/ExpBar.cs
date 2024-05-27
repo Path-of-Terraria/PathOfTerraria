@@ -1,4 +1,5 @@
 using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 using Terraria.UI;
 
@@ -18,7 +19,7 @@ public class ExpBar : SmartUIState
 		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarEmpty").Value;
 		Texture2D fill = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarFill").Value;
 
-		Core.Systems.ExpModPlayer mp = Main.LocalPlayer.GetModPlayer<Core.Systems.ExpModPlayer>();
+		ExpModPlayer mp = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 
 		var pos = new Vector2(Main.screenWidth / 2, 10);
 		var target = new Rectangle((int)(pos.X - bar.Width / 2) + 6, (int)pos.Y + 14, (int)(mp.Exp / (float)mp.NextLevel * fill.Width), fill.Height);
@@ -43,6 +44,6 @@ public class ExpBar : SmartUIState
 		var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 
 		if (bounding.Contains(Main.MouseScreen.ToPoint()))
-			UILoader.GetUIState<Tree>().visible = true;
+			UILoader.GetUIState<Tree>().IsVisible = true;
 	}
 }

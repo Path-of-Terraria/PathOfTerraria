@@ -7,15 +7,13 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Core.Systems;
+namespace PathOfTerraria.Core.Systems.ModPlayers;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class ExpModPlayer : ModPlayer
 {
 	public int Level;
-#pragma warning disable IDE1006 // Naming Styles
 	public int Exp;
-#pragma warning restore IDE1006 // Naming Styles
 
 	public int NextLevel => Level == 100 ? 1 : Level * 250 + (int)(80 * Math.Pow(2, 1 + Level * 0.2f));
 
@@ -74,9 +72,6 @@ internal class KillExp : GlobalNPC
 				ExperienceTracker.SpawnExperience(amount, npc.Center, 6f, player.whoAmI);
 			else
 				Networking.Networking.SendSpawnExperienceOrbs(-1, player.whoAmI, amount, npc.Center, 6f);
-				
-			//player.GetModPlayer<ExpModPlayer>().Exp += amount;
-			//CombatText.NewText(player.Hitbox, new Color(145, 255, 160), $"+{amount}");
 		}
 	}
 }

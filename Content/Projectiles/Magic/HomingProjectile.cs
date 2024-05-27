@@ -9,37 +9,47 @@ namespace PathOfTerraria.Content.Projectiles.Magic;
 public class HomingProjectile : ModProjectile
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/HomingProjectile";
-	public override void SetDefaults() {
-			Projectile.width = Projectile.height = 8;
-			Projectile.friendly = true;
-			Projectile.DamageType = DamageClass.Magic;
-			Projectile.timeLeft = 600;
+
+	public override void SetDefaults()
+	{
+		Projectile.width = Projectile.height = 8;
+		Projectile.friendly = true;
+		Projectile.DamageType = DamageClass.Magic;
+		Projectile.timeLeft = 600;
+	}
+
+	public override void AI()
+	{
+		IOrderedEnumerable<NPC> collection = Main.npc
+			.Where(npc => npc.active && !npc.friendly && !npc.CountsAsACritter)
+			.OrderBy(npc => Projectile.Center.Distance(npc.Center));
+
+		if (collection.Any())
+		{
+			NPC target = collection.FirstOrDefault();
+
+			var targetVel = Vector2.Normalize(target.Center - Projectile.Center);
+			targetVel *= Projectile.velocity.Length();
+
+			if (Vector2.Dot(Vector2.Normalize(Projectile.velocity), targetVel) > 0)
+				Projectile.velocity = Projectile.velocity.RotateTowards(targetVel, 0.015f); // how much it turns.
 		}
 
-	public override void AI() {
-			IOrderedEnumerable<NPC> collection = Main.npc.Where(npc => npc.active && !npc.friendly && !npc.CountsAsACritter).OrderBy(npc => Projectile.Center.Distance(npc.Center));
+		if (Main.rand.NextBool(3))
+		{
+			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height,
+				ModContent.DustType<Sparkle>(), Projectile.velocity.X * 0.1f, Projectile.velocity.Y * 0.1f);
+		}
+	}
 
-			if (collection.Count() > 0 )
-			{
-				NPC target = collection.FirstOrDefault();
-
-				Vector2 targetVel = Vector2.Normalize(target.Center - Projectile.Center);
-				targetVel *= Projectile.velocity.Length();
-
-				if (Vector2.Dot(Vector2.Normalize(Projectile.velocity), targetVel) > 0)
-					Projectile.velocity = Projectile.velocity.RotateTowards(targetVel, 0.015f); // how much it turns.
-
-			}
-
-			if (Main.rand.NextBool(3)) {
-				Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<Sparkle>(), Projectile.velocity.X * 0.1f, Projectile.velocity.Y * 0.1f);
-			}
+	public override void OnKill(int timeLeft)
+	{
+		for (int k = 0; k < 5; k++)
+		{
+			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height,
+				ModContent.DustType<Sparkle>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
 		}
 
-	public override void OnKill(int timeLeft) {
-			for (int k = 0; k < 5; k++) {
-				Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<Sparkle>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
-			}
-			SoundEngine.PlaySound(SoundID.Item25, Projectile.position);
-		}
+		SoundEngine.PlaySound(SoundID.Item25, Projectile.position);
+	}
 }

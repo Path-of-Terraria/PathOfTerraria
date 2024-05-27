@@ -1,8 +1,8 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Melee;
+﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class Broadsword : Sword
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapon/Sword/Broadsword";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Broadsword";
 	
 	public override void SetDefaults()
 	{

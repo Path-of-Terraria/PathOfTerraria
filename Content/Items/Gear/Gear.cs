@@ -1,8 +1,4 @@
-﻿﻿using PathOfTerraria.Content.Items.Gear.Affixes;
- using PathOfTerraria.Content.Items.Gear.Armor;
- using PathOfTerraria.Content.Items.Gear.Weapons.Magic;
- using PathOfTerraria.Content.Items.Gear.Weapons.Melee;
-using PathOfTerraria.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Content.Items.Gear.Affixes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

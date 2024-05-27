@@ -4,8 +4,10 @@ global using System;
 global using Terraria;
 global using Terraria.ModLoader;
 using PathOfTerraria.API.GraphicsLib;
+using PathOfTerraria.Content.GUI;
 using PathOfTerraria.Content.Items.Gear;
 using Terraria.ID;
+using Terraria.UI;
 
 namespace PathOfTerraria;
 

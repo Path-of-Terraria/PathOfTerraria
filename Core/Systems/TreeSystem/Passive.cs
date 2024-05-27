@@ -43,6 +43,7 @@ internal abstract class Passive
 	/// Called on load to generate the tree edges
 	/// </summary>
 	/// <param name="all"></param>
+	/// <param name="player"></param>
 	public virtual void Connect(List<Passive> all, Player player) { }
 
 	/// <summary>
