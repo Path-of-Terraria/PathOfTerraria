@@ -388,7 +388,7 @@ internal abstract class Gear : ModItem
 		{
 			GearRarity.Normal => Item.Name,
 			GearRarity.Magic => $"{prefix} {Item.Name}",
-			GearRarity.Rare => $"{prefix} {suffix} {Item.Name}",
+			GearRarity.Rare => $"{prefix} {Item.Name} {suffix}",
 			GearRarity.Unique => Item.Name, // uniques might just want to override the GenerateName function
 			_ => "Unknown Item"
 		};
