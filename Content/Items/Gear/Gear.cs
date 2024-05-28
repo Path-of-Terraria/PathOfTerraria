@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Items.Gear.Affixes;
+﻿using log4net.Core;
+using PathOfTerraria.Content.Items.Gear.Affixes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -158,7 +159,7 @@ internal abstract class Gear : ModItem
 		{
 			var damageLine = new TooltipLine(Mod, "Damage",
 				$"[i:{ItemID.SilverBullet}] " + HighlightNumbers(
-					$"[{Item.damage * 0.8f}-{Item.damage * 1.2f}] Damage ({Item.DamageType.DisplayName})",
+					$"[{Math.Round(Item.damage * 0.8f, 2)}-{Math.Round(Item.damage * 1.2f, 2)}] Damage ({Item.DamageType.DisplayName})",
 					baseColor: "DDDDDD"));
 			tooltips.Add(damageLine);
 		}
@@ -461,18 +462,17 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	/// <param name="pos">Where to spawn the armor</param>
 	static MethodInfo method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
-	public static void SpawnItem(Vector2 pos)
+	public static void SpawnItem(Vector2 pos, int ilevel = 0)
 	{
 		float dropChanceSum = AllGear.Sum(x => x.Item1); // somehow apply magic find to raised unique drop chance
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
 		foreach (Tuple<float, Type> gear in AllGear)
-		{
 			cumulativeChance += gear.Item1;
 			if (choice < cumulativeChance)
 			{
-				method.MakeGenericMethod(gear.Item2).Invoke(null, [pos]);
+				method.MakeGenericMethod(gear.Item2).Invoke(null, [pos, ilevel]);
 				return;
 			}
 		}
@@ -483,12 +483,12 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	/// <typeparam name="T">The type of gear to drop</typeparam>
 	/// <param name="pos">Where to drop it in the world</param>
-	public static void SpawnGear<T>(Vector2 pos) where T : Gear
+	public static void SpawnGear<T>(Vector2 pos, int ilevel = 0) where T : Gear
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
 		var gear = item.ModItem as T;
-		gear.Roll(PickItemLevel());
+		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel);
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
 
