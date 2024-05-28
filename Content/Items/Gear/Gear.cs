@@ -425,7 +425,7 @@ internal abstract class Gear : ModItem
 			cumulativeChance += gear.Item1;
 			if (choice < cumulativeChance)
 			{
-				method.MakeGenericMethod(gear.Item2).Invoke(null, new object[] { pos });
+				method.MakeGenericMethod(gear.Item2).Invoke(null, [pos]);
 				return;
 			}
 		}

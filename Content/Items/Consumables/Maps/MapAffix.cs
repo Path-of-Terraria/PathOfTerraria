@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class MapAffix : Affix
+internal abstract class MapAffix : Affix
 {
 	public abstract string GetTooltip(Map map);
 	
