@@ -4,47 +4,37 @@ internal class DefenseAffixes
 {
 	internal class DefenseGearAffix : GearAffix
 	{
-		public DefenseGearAffix()
-		{
-			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
-		}
+		public override GearType PossibleTypes => GearType.Armor;
+		public override ModifierType ModifierType => ModifierType.Added;
+		public override string Tooltip => "# Defense";
+		public override bool Round => true;
 
-		public override float GetModifierValue(Gear gear)
+		protected override float internalModifierCalculation(Gear gear)
 		{
-			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
-		}
-
-		public override string GetTooltip(Player player, Gear gear)
-		{
-			return $"+{GetModifierValue(gear)} Additional Defense";
+			return 1 + Value * 5f + gear.ItemLevel / 50f;
 		}
 
 		public override void BuffPassive(Player player, Gear gear)
 		{
-			player.statDefense += 1 + (int)(Value * 5) + gear.ItemLevel / 50;
+			player.statDefense += GetModifierIValue(gear);
 		}
 	}
 
 	internal class EnduranceGearAffix : GearAffix
 	{
-		public EnduranceGearAffix()
-		{
-			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
-		}
+		public override GearType PossibleTypes => GearType.Armor;
+		public override ModifierType ModifierType => ModifierType.Added;
+		public override bool IsFlat => false;
+		public override string Tooltip => "# Damage Reduction";
 
-		public override float GetModifierValue(Gear gear)
+		protected override float internalModifierCalculation(Gear gear)
 		{
 			return 1 + (float)Math.Truncate((Value * 5 + gear.ItemLevel / 50) * 10)  / 10;
-		}
-			
-		public override string GetTooltip(Player player, Gear gear)
-		{
-			return $"+{GetModifierValue(gear)}% Damage Reduction";
 		}
 
 		public override void BuffPassive(Player player, Gear gear)
 		{
-			player.endurance += (float)Math.Truncate((Value * 5 + gear.ItemLevel / 50) * 10) / 10 / 100f;
+			player.endurance += GetModifierValue(gear) / 100f;
 		}
 	}
 }

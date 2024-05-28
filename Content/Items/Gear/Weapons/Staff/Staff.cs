@@ -25,10 +25,9 @@ internal class Staff : Gear
 		// Set rarity and value
 		Item.SetShopValues(ItemRarityColor.Green2, 10000);
 	}
-		
-	public override string GenerateName()
+	public override string GeneratePrefix()
 	{
-		string prefix = Main.rand.Next(5) switch
+		return Main.rand.Next(5) switch
 		{
 			0 => "Arcane",
 			1 => "Mystic",
@@ -37,8 +36,10 @@ internal class Staff : Gear
 			4 => "Sacred",
 			_ => "Unknown"
 		};
-
-		string suffix = Main.rand.Next(5) switch
+	}
+	public override string GenerateSuffix()
+	{
+		return Main.rand.Next(5) switch
 		{
 			0 => "Wrath",
 			1 => "Whisper",
@@ -46,17 +47,6 @@ internal class Staff : Gear
 			3 => "Veil",
 			4 => "Echo",
 			_ => "Unknown"
-		};
-
-
-		string item = GetType().ToString();
-		return Rarity switch
-		{
-			GearRarity.Normal => item,
-			GearRarity.Magic => $"{prefix} {item}",
-			GearRarity.Rare => $"{prefix} {suffix} {item}",
-			GearRarity.Unique => Item.Name,
-			_ => "Unknown Item"
 		};
 	}
 }

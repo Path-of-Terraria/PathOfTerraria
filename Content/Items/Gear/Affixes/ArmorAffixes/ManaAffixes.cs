@@ -2,118 +2,92 @@
 
  namespace PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes;
 
- internal class ManaGearAffix : GearAffix
- {
-	 public ManaGearAffix()
-	 {
-		 PossibleTypes = GearType.Armor;
-	 }
-		
-	 public override float GetModifierValue(Gear gear)
-	 {
-		 return 5 + (int)(Value * 20) + gear.ItemLevel / 20;
-	 }
+ internal class ManaAffix : GearAffix
+{
+	public override GearType PossibleTypes => GearType.Armor;
+	public override ModifierType ModifierType => ModifierType.Added;
+	public override string Tooltip => "# Maximum Mana";
+	public override bool Round => true;
 
-	 public override string GetTooltip(Player player, Gear gear)
-	 {
-		 return $"+{GetModifierValue(gear)} Maximum Mana";
-	 }
+	protected override float internalModifierCalculation(Gear gear)
+	{
+		return 5 + Value * 20 + gear.ItemLevel / 20;
+	}
 
-	 public override void BuffPassive(Player player, Gear gear)
-	 {
-		 player.statManaMax2 += 5 + (int)(Value * 20) + gear.ItemLevel / 20;
-	 }
- }
+	public override void BuffPassive(Player player, Gear gear)
+	{
+		player.statManaMax2 += GetModifierIValue(gear);
+	}
+}
 
- internal class ManaRegenGearAffix : GearAffix
- {
-	 public ManaRegenGearAffix()
-	 {
-		 PossibleTypes = GearType.Armor;
-	 }
-		
-	 public override float GetModifierValue(Gear gear)
-	 {
-		 return 1 + (int)(Value * 4) + gear.ItemLevel / 40;
-	 }
+ internal class ManaRegenAffix : GearAffix
+{
+	public override GearType PossibleTypes => GearType.Armor;
+	public override ModifierType ModifierType => ModifierType.Added;
+	public override string Tooltip => "# Mana Regeneration";
+	public override bool Round => true;
 
-	 public override string GetTooltip(Player player, Gear gear)
-	 {
-		 return $"+{GetModifierValue(gear)} Mana Regeneration";
-	 }
+	protected override float internalModifierCalculation(Gear gear)
+	{
+		return 1f + Value * 4f + gear.ItemLevel / 40f;
+	}
 
-	 public override void BuffPassive(Player player, Gear gear)
-	 {
-		 player.manaRegen += 1 + (int)(Value * 4) + gear.ItemLevel / 40;
-	 }
- }
+	public override void BuffPassive(Player player, Gear gear)
+	{
+		player.manaRegen += GetModifierIValue(gear);
+	}
+}
 
- internal class ManaPotionPowerGearAffix : GearAffix
- {
-	 public ManaPotionPowerGearAffix()
-	 {
-		 PossibleTypes = GearType.Armor;
-	 }
-		
-	 public override float GetModifierValue(Gear gear)
-	 {
-		 return 10 + (int)(Value * 10) + gear.ItemLevel / 20;
-	 }
+ internal class ManaPotionPowerAffix : GearAffix
+{
+	public override GearType PossibleTypes => GearType.Armor;
+	public override ModifierType ModifierType => ModifierType.Added;
+	public override string Tooltip => "Mana potions restore # more Mana";
+	public override bool Round => true;
 
-	 public override string GetTooltip(Player player, Gear gear)
-	 {
-		 return $"Mana potions restore {GetModifierValue(gear)} more Mana";
-	 }
+	protected override float internalModifierCalculation(Gear gear)
+	{
+		return 10f + Value * 10f + gear.ItemLevel / 20f;
+	}
 
-	 public override void BuffPassive(Player player, Gear gear)
-	 {
-		 player.GetModPlayer<PotionSystem>().ManaPower += 10 + (int)(Value * 10) + gear.ItemLevel / 20;
-	 }
- }
+	public override void BuffPassive(Player player, Gear gear)
+	{
+		player.GetModPlayer<PotionSystem>().ManaPower += GetModifierIValue(gear);
+	}
+}
 
- internal class ManaPotionCapGearAffix : GearAffix
- {
-	 public ManaPotionCapGearAffix()
-	 {
-		 PossibleTypes = GearType.Armor;
-	 }
-		
-	 public override float GetModifierValue(Gear gear)
-	 {
-		 return 1 + (int)Math.Round(Value, MidpointRounding.ToEven) + gear.ItemLevel / 100;
-	 }
+internal class ManaPotionCapAffix : GearAffix
+{
+	public override GearType PossibleTypes => GearType.Armor;
+	public override ModifierType ModifierType => ModifierType.Added;
+	public override bool Round => true;
+	public override string Tooltip => "You can hold # additional mana potions";
 
-	 public override string GetTooltip(Player player, Gear gear)
-	 {
-		 return $"You can hold {GetModifierValue(gear)} additional mana potions";
-	 }
+	protected override float internalModifierCalculation(Gear gear)
+	{
+		return 1 + Value + gear.ItemLevel / 100f;
+	}
 
-	 public override void BuffPassive(Player player, Gear gear)
-	 {
-		 player.GetModPlayer<PotionSystem>().MaxMana += 1 + (int)Math.Round(Value, MidpointRounding.ToEven) + gear.ItemLevel / 100;
-	 }
- }
+	public override void BuffPassive(Player player, Gear gear)
+	{
+		player.GetModPlayer<PotionSystem>().MaxMana += GetModifierIValue(gear);
+	}
+}
 
- internal class ManaPotionCooldownGearAffix : GearAffix
- {
-	 public ManaPotionCooldownGearAffix()
-	 {
-		 PossibleTypes = GearType.Armor;
-		 RequiredInfluence = GearInfluence.Solar;
-	 }
-		
-	 public override float GetModifierValue(Gear gear)
-	 {
-		 return 0.5f + Value * 0.5f;
-	 }
+internal class ManaPotionCooldownAffix : GearAffix
+{
+	public override GearType PossibleTypes => GearType.Armor;
+	public override ModifierType ModifierType => ModifierType.Added;
+	public override GearInfluence RequiredInfluence => GearInfluence.Solar;
+	public override string Tooltip => "Mana potions are ready # seconds sooner";
 
-	 public override string GetTooltip(Player player, Gear gear)
-	 {
-		 return $"Mana potions are ready {GetModifierValue(gear)} seconds sooner";
-	 }
+	protected override float internalModifierCalculation(Gear gear)
+	{
+		return 0.5f + Value * 0.5f;
+	}
 
-	 public override void BuffPassive(Player player, Gear gear)
-	 {
-		 player.GetModPlayer<PotionSystem>().ManaDelay -= (int)(60 * (0.5f + Value * 0.5f));
-	 }
- }
+	public override void BuffPassive(Player player, Gear gear)
+	{
+		player.GetModPlayer<PotionSystem>().ManaDelay -= (int)(60 * GetModifierValue(gear));
+	}
+}
