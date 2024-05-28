@@ -23,6 +23,7 @@ internal abstract class Gear : ModItem
 	public int ItemLevel;
 
 	private List<Affix> _affixes = new();
+	private int _implicits = 0;
 
 	public override void Load()
 	{
@@ -169,19 +170,32 @@ internal abstract class Gear : ModItem
 			tooltips.Add(defenseLine);
 		}
 
+		int index = 0;
 		foreach (Affix affix in _affixes)
 		{
 			string text = $"[i:{ItemID.MusketBall}] " +
-			              HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}");
+						  HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}");
+
+			if (index < _implicits)
+			{
+				text = $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", baseColor: "8B8000");
+				// idk colors...
+			}
 
 			if (affix.RequiredInfluence == GearInfluence.Solar)
+			{
 				text = $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "FFEE99", "CCB077");
+			}
 
 			if (affix.RequiredInfluence == GearInfluence.Lunar)
+			{
 				text = $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "BBDDFF", "99AADD");
+			}
 
 			var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", text);
 			tooltips.Add(affixLine);
+
+			index++;
 		}
 	}
 
@@ -280,6 +294,11 @@ internal abstract class Gear : ModItem
 				_influence = Main.rand.NextBool() ? GearInfluence.Solar : GearInfluence.Lunar;
 		}
 
+		_affixes = GenerateImplicits();
+		_affixes.ForEach(a => a.Roll());
+
+		_implicits = _affixes.Count();
+
 		RollAffixes();
 
 		PostRoll();
@@ -299,12 +318,12 @@ internal abstract class Gear : ModItem
 		if (possible is null)
 			return;
 
-		_affixes = Rarity switch
+		_affixes.AddRange(Rarity switch
 		{
 			GearRarity.Magic => GenerateAffixes(possible, 2),
 			GearRarity.Rare => GenerateAffixes(possible, Main.rand.Next(3, 5)),
-			_ => _affixes
-		};
+			_ => new List<Affix>()
+		});
 	}
 
 	/// <summary>
@@ -343,11 +362,36 @@ internal abstract class Gear : ModItem
 	}
 
 	/// <summary>
+	/// Before affix roll, allows you to add the implicit affixes that should exist on this type of gear.
+	/// </summary>
+	public virtual List<Affix> GenerateImplicits() { return new(); }
+
+	/// <summary>
+	/// Allows you to customize what prefixes this items can have, only visual
+	/// </summary>
+	public virtual string GenerateSuffix() { return ""; }
+
+	/// <summary>
+	/// Allows you to customize what suffixes this items can have, only visual
+	/// </summary>
+	public virtual string GeneratePrefix() { return ""; }
+
+	/// <summary>
 	/// Allows you to customize what this item's name can be
 	/// </summary>
 	public virtual string GenerateName()
 	{
-		return "Unnamed Item";
+		string prefix = GeneratePrefix();
+		string suffix = GenerateSuffix();
+
+		return Rarity switch
+		{
+			GearRarity.Normal => Item.Name,
+			GearRarity.Magic => $"{prefix} {Item.Name}",
+			GearRarity.Rare => $"{prefix} {suffix} {Item.Name}",
+			GearRarity.Unique => Item.Name, // uniques might just want to override the GenerateName function
+			_ => "Unknown Item"
+		};
 	}
 
 	public override void UpdateEquip(Player player)
@@ -360,7 +404,9 @@ internal abstract class Gear : ModItem
 		tag["type"] = (int)GearType;
 		tag["rarity"] = (int)Rarity;
 		tag["influence"] = (int)_influence;
-      
+
+		tag["implicits"] = _implicits;
+
 		tag["name"] = _name;
 		tag["power"] = ItemLevel;
 
@@ -380,6 +426,8 @@ internal abstract class Gear : ModItem
 		GearType = (GearType)tag.GetInt("type");
 		Rarity = (GearRarity)tag.GetInt("rarity");
 		_influence = (GearInfluence)tag.GetInt("influence");
+
+		_implicits = tag.GetInt("implicits");
 
 		_name = tag.GetString("name");
 		ItemLevel = tag.GetInt("power");
@@ -450,6 +498,7 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	private static int PickItemLevel()
 	{
+		return 200;
 		if (NPC.downedMoonlord)
 			return Main.rand.Next(150, 201);
 		if (NPC.downedAncientCultist)

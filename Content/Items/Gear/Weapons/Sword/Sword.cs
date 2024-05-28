@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Systems;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -65,9 +66,9 @@ internal class Sword : Gear
 		type = ModContent.ProjectileType<Projectiles.LifeStealProjectile>();
 	}
 
-	public override string GenerateName()
+	public override string GeneratePrefix()
 	{
-		string prefix = Main.rand.Next(5) switch
+		return Main.rand.Next(5) switch
 		{
 			0 => "Sharp",
 			1 => "Harmonic",
@@ -76,8 +77,10 @@ internal class Sword : Gear
 			4 => "Strange",
 			_ => "Unknown"
 		};
-
-		string suffix = Main.rand.Next(5) switch
+	}
+	public override string GenerateSuffix()
+	{
+		return Main.rand.Next(5) switch
 		{
 			0 => "Drape",
 			1 => "Dome",
@@ -85,16 +88,6 @@ internal class Sword : Gear
 			3 => "Vision",
 			4 => "Maw",
 			_ => "Unknown"
-		};
-
-		string item = GetType().ToString();
-		return Rarity switch
-		{
-			GearRarity.Normal => item,
-			GearRarity.Magic => $"{prefix} {item}",
-			GearRarity.Rare => $"{prefix} {suffix} {item}",
-			GearRarity.Unique => Item.Name,
-			_ => "Unknown Item"
 		};
 	}
 }

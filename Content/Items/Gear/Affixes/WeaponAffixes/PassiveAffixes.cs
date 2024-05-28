@@ -4,57 +4,37 @@ public class PassiveAffixes
 {
 	internal class RapidAffix : Affix
 	{
-		public RapidAffix()
-		{
-			PossibleTypes = GearType.Weapon;
-		}
-
-		public override float GetModifierValue(Gear gear)
+		public override GearType PossibleTypes => GearType.Melee;
+		public override ModifierType ModifierType => ModifierType.Added;
+		public override bool IsFlat => false;
+		public override string Tooltip => "# Attack Speed";
+		protected override float internalModifierCalculation(Gear gear)
 		{
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
-		}
-		
-		public override string GetTooltip(Player player, Gear gear)
-		{
-			return $"+{GetModifierValue(gear)} Attack Speed";
 		}
 	}
 		
 	internal class SharpAffix : Affix
 	{
-		public SharpAffix()
-		{
-			PossibleTypes = GearType.Melee;
-			ModifierType = ModifierType.Added;
-		}
+		public override GearType PossibleTypes => GearType.Melee;
+		public override ModifierType ModifierType => ModifierType.Added;
+		public override string Tooltip => "# Additional Damage";
 
-		public override float GetModifierValue(Gear gear)
+		protected override float internalModifierCalculation(Gear gear)
 		{
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
-		}
-		
-		public override string GetTooltip(Player player, Gear gear)
-		{
-			return $"+{GetModifierValue(gear)} Additional Damage";
 		}
 	}
 		
 	internal class ChargedAffix : Affix
 	{
-		public ChargedAffix()
-		{
-			PossibleTypes = GearType.Staff;
-			ModifierType = ModifierType.Added;
-		}
+		public override GearType PossibleTypes => GearType.Melee;
+		public override ModifierType ModifierType => ModifierType.Added;
+		public override string Tooltip => "# Additional Damage";
 
-		public override float GetModifierValue(Gear gear)
+		protected override float internalModifierCalculation(Gear gear)
 		{
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
-		}
-		
-		public override string GetTooltip(Player player, Gear gear)
-		{
-			return $"+{GetModifierValue(gear)} Additional Damage";
 		}
 	}
 }
