@@ -2,9 +2,9 @@
 
  namespace PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes;
 
- internal class ManaAffix : Affix
+ internal class ManaGearAffix : GearAffix
  {
-	 public ManaAffix()
+	 public ManaGearAffix()
 	 {
 		 PossibleTypes = GearType.Armor;
 	 }
@@ -25,9 +25,9 @@
 	 }
  }
 
- internal class ManaRegenAffix : Affix
+ internal class ManaRegenGearAffix : GearAffix
  {
-	 public ManaRegenAffix()
+	 public ManaRegenGearAffix()
 	 {
 		 PossibleTypes = GearType.Armor;
 	 }
@@ -48,9 +48,9 @@
 	 }
  }
 
- internal class ManaPotionPowerAffix : Affix
+ internal class ManaPotionPowerGearAffix : GearAffix
  {
-	 public ManaPotionPowerAffix()
+	 public ManaPotionPowerGearAffix()
 	 {
 		 PossibleTypes = GearType.Armor;
 	 }
@@ -71,9 +71,9 @@
 	 }
  }
 
- internal class ManaPotionCapAffix : Affix
+ internal class ManaPotionCapGearAffix : GearAffix
  {
-	 public ManaPotionCapAffix()
+	 public ManaPotionCapGearAffix()
 	 {
 		 PossibleTypes = GearType.Armor;
 	 }
@@ -94,9 +94,9 @@
 	 }
  }
 
- internal class ManaPotionCooldownAffix : Affix
+ internal class ManaPotionCooldownGearAffix : GearAffix
  {
-	 public ManaPotionCooldownAffix()
+	 public ManaPotionCooldownGearAffix()
 	 {
 		 PossibleTypes = GearType.Armor;
 		 RequiredInfluence = GearInfluence.Solar;

@@ -12,7 +12,7 @@ namespace PathOfTerraria.Content.Items.Gear;
 
 internal abstract class Gear : ModItem
 {
-	private static List<Tuple<float, Type>> _allGear = new List<Tuple<float, Type>>();
+	private static readonly List<Tuple<float, Type>> AllGear = [];
 
 	protected GearType GearType;
 	protected GearRarity Rarity;
@@ -22,7 +22,7 @@ internal abstract class Gear : ModItem
 	private string _name;
 	public int ItemLevel;
 
-	private List<Affix> _affixes = new();
+	private List<GearAffix> _affixes = [];
 
 	public override void Load()
 	{
@@ -169,7 +169,7 @@ internal abstract class Gear : ModItem
 			tooltips.Add(defenseLine);
 		}
 
-		foreach (Affix affix in _affixes)
+		foreach (GearAffix affix in _affixes)
 		{
 			string text = $"[i:{ItemID.MusketBall}] " +
 			              HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}");
@@ -294,7 +294,7 @@ internal abstract class Gear : ModItem
 		if (Rarity == GearRarity.Normal || Rarity == GearRarity.Unique)
 			return;
 
-		List<Affix> possible = AffixHandler.GetAffixes(GearType, _influence);
+		List<GearAffix> possible = AffixHandler.GetAffixes(GearType, _influence);
 
 		if (possible is null)
 			return;
@@ -313,22 +313,22 @@ internal abstract class Gear : ModItem
 	/// <param name="inputList">The list of affixes to pick from</param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	public static List<Affix> GenerateAffixes(List<Affix> inputList, int count)
+	public static List<GearAffix> GenerateAffixes(List<GearAffix> inputList, int count)
 	{
 		if (inputList.Count <= count)
 			return inputList;
 
-		var resultList = new List<Affix>(count);
+		var resultList = new List<GearAffix>(count);
 		var random = new Random();
 
 		for (int i = 0; i < count; i++)
 		{
 			int randomIndex = random.Next(i, inputList.Count);
 
-			Affix newAffix = inputList[randomIndex].Clone();
-			newAffix.Roll();
+			GearAffix newGearAffix = inputList[randomIndex].Clone();
+			newGearAffix.Roll();
 
-			resultList.Add(newAffix);
+			resultList.Add(newGearAffix);
 			inputList[randomIndex] = inputList[i];
 		}
 
@@ -364,8 +364,8 @@ internal abstract class Gear : ModItem
 		tag["name"] = _name;
 		tag["power"] = ItemLevel;
 
-		List<TagCompound> affixTags = new();
-		foreach (Affix affix in _affixes)
+		List<TagCompound> affixTags = [];
+		foreach (GearAffix affix in _affixes)
 		{
 			var newTag = new TagCompound();
 			affix.Save(newTag);
@@ -388,7 +388,7 @@ internal abstract class Gear : ModItem
 
 		foreach (TagCompound newTag in affixTags)
 		{
-			_affixes.Add(Affix.FromTag(newTag));
+			_affixes.Add(GearAffix.FromTag(newTag));
 		}
 
 		PostRoll();
@@ -400,12 +400,12 @@ internal abstract class Gear : ModItem
 	/// <param name="pos">Where to spawn the armor</param>
 	public static void GenerateGearList()
 	{
-		_allGear.Clear();
+		AllGear.Clear();
 		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Gear))) continue;
 			Gear instance = (Gear)Activator.CreateInstance(type);
-			_allGear.Add(new(instance.DropChance, type));
+			AllGear.Add(new(instance.DropChance, type));
 		}
 	}
 
@@ -416,11 +416,11 @@ internal abstract class Gear : ModItem
 	static MethodInfo method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
 	public static void SpawnItem(Vector2 pos)
 	{
-		float dropChanceSum = _allGear.Sum(x => x.Item1); // somehow apply magic find to raised unique drop chance
+		float dropChanceSum = AllGear.Sum(x => x.Item1); // somehow apply magic find to raised unique drop chance
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
-		foreach (Tuple<float, Type> gear in _allGear)
+		foreach (Tuple<float, Type> gear in AllGear)
 		{
 			cumulativeChance += gear.Item1;
 			if (choice < cumulativeChance)
@@ -538,7 +538,7 @@ internal abstract class Gear : ModItem
 		if (!_affixes.Any()) //We don't want to run if there are no affixes to modify anything
 			return;
 			
-		foreach (Affix affix in _affixes)
+		foreach (GearAffix affix in _affixes)
 		{
 			switch (affix.GetType().Name)
 			{

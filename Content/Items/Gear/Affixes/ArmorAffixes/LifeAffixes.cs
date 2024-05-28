@@ -2,9 +2,9 @@
 
  namespace PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes;
 
- internal class LifeAffix : Affix
+ internal class LifeGearAffix : GearAffix
  {
-	 public LifeAffix()
+	 public LifeGearAffix()
 	 {
 		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 	 }
@@ -25,9 +25,9 @@
 	 }
  }
 
- internal class LifeRegenAffix : Affix
+ internal class LifeRegenGearAffix : GearAffix
  {
-	 public LifeRegenAffix()
+	 public LifeRegenGearAffix()
 	 {
 		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 	 }
@@ -48,9 +48,9 @@
 	 }
  }
 
- internal class LifePotionPowerAffix : Affix
+ internal class LifePotionPowerGearAffix : GearAffix
  {
-	 public LifePotionPowerAffix()
+	 public LifePotionPowerGearAffix()
 	 {
 		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 	 }
@@ -71,9 +71,9 @@
 	 }
  }
 
- internal class LifePotionCapAffix : Affix
+ internal class LifePotionCapGearAffix : GearAffix
  {
-	 public LifePotionCapAffix()
+	 public LifePotionCapGearAffix()
 	 {
 		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 	 }
@@ -94,9 +94,9 @@
 	 }
  }
 
- internal class LifePotionCooldownAffix : Affix
+ internal class LifePotionCooldownGearAffix : GearAffix
  {
-	 public LifePotionCooldownAffix()
+	 public LifePotionCooldownGearAffix()
 	 {
 		 PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 		 RequiredInfluence = GearInfluence.Lunar;

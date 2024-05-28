@@ -2,9 +2,9 @@
 
 public class ModifyHitAffixes
 {
-	internal class PiercingAffix : Affix
+	internal class PiercingGearAffix : GearAffix
 	{
-		public PiercingAffix()
+		public PiercingGearAffix()
 		{
 			PossibleTypes = GearType.Melee;
 			ModifierType = ModifierType.Added;
@@ -21,9 +21,9 @@ public class ModifyHitAffixes
 		}
 	}
 
-	internal class AddedKnockbackAffix : Affix
+	internal class AddedKnockbackGearAffix : GearAffix
 	{
-		public AddedKnockbackAffix()
+		public AddedKnockbackGearAffix()
 		{
 			PossibleTypes = GearType.Weapon;
 			ModifierType = ModifierType.Added;
@@ -40,9 +40,9 @@ public class ModifyHitAffixes
 		}
 	}
 
-	internal class IncreasedKnockbackAffix : Affix
+	internal class IncreasedKnockbackGearAffix : GearAffix
 	{
-		public IncreasedKnockbackAffix()
+		public IncreasedKnockbackGearAffix()
 		{
 			PossibleTypes = GearType.Weapon;
 			ModifierType = ModifierType.Multiplier;

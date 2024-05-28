@@ -2,9 +2,9 @@
 
 internal class DefenseAffixes
 {
-	internal class DefenseAffix : Affix
+	internal class DefenseGearAffix : GearAffix
 	{
-		public DefenseAffix()
+		public DefenseGearAffix()
 		{
 			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 		}
@@ -25,9 +25,9 @@ internal class DefenseAffixes
 		}
 	}
 
-	internal class EnduranceAffix : Affix
+	internal class EnduranceGearAffix : GearAffix
 	{
-		public EnduranceAffix()
+		public EnduranceGearAffix()
 		{
 			PossibleTypes = GearType.Helmet | GearType.Chestplate | GearType.Leggings;
 		}

@@ -14,7 +14,7 @@
     <PackageReference Include="tModLoader.CodeAssist" Version="0.1.*" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Assets\Gear\" />
+    <Folder Include="Content\Items\Consumables\Maps\Affixes\" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SubworldLibrary">

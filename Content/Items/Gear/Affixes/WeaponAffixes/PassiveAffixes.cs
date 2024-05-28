@@ -2,9 +2,9 @@
 
 public class PassiveAffixes
 {
-	internal class RapidAffix : Affix
+	internal class RapidGearAffix : GearAffix
 	{
-		public RapidAffix()
+		public RapidGearAffix()
 		{
 			PossibleTypes = GearType.Weapon;
 		}
@@ -20,9 +20,9 @@ public class PassiveAffixes
 		}
 	}
 		
-	internal class SharpAffix : Affix
+	internal class SharpGearAffix : GearAffix
 	{
-		public SharpAffix()
+		public SharpGearAffix()
 		{
 			PossibleTypes = GearType.Melee;
 			ModifierType = ModifierType.Added;
@@ -39,9 +39,9 @@ public class PassiveAffixes
 		}
 	}
 		
-	internal class ChargedAffix : Affix
+	internal class ChargedGearAffix : GearAffix
 	{
-		public ChargedAffix()
+		public ChargedGearAffix()
 		{
 			PossibleTypes = GearType.Staff;
 			ModifierType = ModifierType.Added;
