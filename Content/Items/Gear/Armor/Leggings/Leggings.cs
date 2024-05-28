@@ -15,9 +15,9 @@ internal class Leggings : Gear
 	{
 		GearType = GearType.Leggings;
 	}
-	public override List<Affix> GenerateImplicits()
+	public override List<GearAffix> GenerateImplicits()
 	{
-		return new List<Affix>() { Affix.CreateAffix<MovementSpeed>(-0.2f) };
+		return new List<GearAffix>() { GearAffix.CreateAffix<MovementSpeed>(-0.2f) };
 	}
 
 	public override void PostRoll()

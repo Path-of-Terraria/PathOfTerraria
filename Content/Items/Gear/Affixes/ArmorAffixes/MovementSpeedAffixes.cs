@@ -2,7 +2,7 @@
 
  namespace PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes;
 
- internal class MovementSpeed : Affix
+ internal class MovementSpeed : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Leggings;
 	public override ModifierType ModifierType => ModifierType.Added;

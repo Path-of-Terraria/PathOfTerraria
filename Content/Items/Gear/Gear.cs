@@ -322,7 +322,7 @@ internal abstract class Gear : ModItem
 		{
 			GearRarity.Magic => GenerateAffixes(possible, 2),
 			GearRarity.Rare => GenerateAffixes(possible, Main.rand.Next(3, 5)),
-			_ => new List<Affix>()
+			_ => new List<GearAffix>()
 		});
 	}
 
@@ -364,7 +364,7 @@ internal abstract class Gear : ModItem
 	/// <summary>
 	/// Before affix roll, allows you to add the implicit affixes that should exist on this type of gear.
 	/// </summary>
-	public virtual List<Affix> GenerateImplicits() { return new(); }
+	public virtual List<GearAffix> GenerateImplicits() { return new(); }
 
 	/// <summary>
 	/// Allows you to customize what prefixes this items can have, only visual
@@ -469,6 +469,7 @@ internal abstract class Gear : ModItem
 
 		float cumulativeChance = 0;
 		foreach (Tuple<float, Type> gear in AllGear)
+		{
 			cumulativeChance += gear.Item1;
 			if (choice < cumulativeChance)
 			{
@@ -579,7 +580,7 @@ internal abstract class Gear : ModItem
 
 		return $" {influenceName}{rareName}{typeName}";
 	}
-		
+
 	public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
 	{
 		if (!_affixes.Any()) //We don't want to run if there are no affixes to modify anything
