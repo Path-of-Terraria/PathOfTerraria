@@ -49,7 +49,6 @@ public class ExpBar : SmartUIState
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		Console.WriteLine("A");
 		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarEmpty").Value;
 		var pos = new Vector2(Main.screenWidth / 2, 10);
 

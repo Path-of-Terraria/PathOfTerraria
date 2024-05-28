@@ -38,14 +38,20 @@ internal class TreePlayer : ModPlayer
 	private bool _lastState = false;
 	public override void PreUpdate()
 	{
-		if (!Main.mouseLeft) 
+		if (!Main.mouseLeft)
+		{
 			_blockMouse = false;
+		}
 
 		if (!_lastState && Main.mouseLeft)
+		{
 			Main.blockMouse = UILoader.GetUIState<Tree>().IsVisible &&
 						  UILoader.GetUIState<Tree>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
+		}
 		else
+		{
 			_blockMouse = UILoader.GetUIState<ExpBar>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
+		}
 
 		Main.blockMouse = Main.blockMouse || _blockMouse;
 		_lastState = Main.mouseLeft;
