@@ -49,6 +49,11 @@ Items: {
 		DisplayName: Wand
 		Tooltip: ""
 	}
+
+	LowTierMap: {
+		DisplayName: Low Tier Map
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

@@ -4,21 +4,19 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public class LowTierMap : Map
+internal class LowTierMap : Map
 {
-	public LowTierMap(int tier) {
-		Tier = tier;
-	}
-	
 	public override void SetDefaults()
 	{
-		Item.rare = ItemRarityID.Green;
+		base.SetDefaults();
+		Item.value = 1000;
 	}
-
-	public override void ModifyItemLoot(ItemLoot itemLoot)
+	
+	public override string GenerateName()
 	{
+		return "Low Tier Map";
 	}
-
+	
 	public override bool? UseItem(Player player)
 	{
 		SubworldSystem.Enter<TestSubworld>();
