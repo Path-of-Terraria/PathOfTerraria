@@ -44,10 +44,6 @@ internal abstract class GearAffix : Affix
 			bool positivMax = valueMax >= 0;
 			string textMax = valueMax.ToString();
 
-			Console.WriteLine("-----------");
-			Console.WriteLine(valueMin + " | " + valueMax);
-			Console.WriteLine(textMin + " | " + textMax);
-
 			range = $" [{textMin} - {textMax}]";
 
 			Value = oVal;
@@ -65,15 +61,12 @@ internal abstract class GearAffix : Affix
 			text += "%";
 		}
 
-		Console.WriteLine(text);
-
 		text = ModifierType switch
 		{
 			ModifierType.Added => positive ? "+" + text : "-" + text,
 			ModifierType.Multiplier => text + (positive ? " increased" : " decreased"),
 			_ => text
 		};
-		Console.WriteLine(text + " | " + Tooltip + " - " + Tooltip.Replace("#", text));
 
 		return Tooltip.Replace("#", text);
 	}
@@ -95,9 +88,9 @@ internal abstract class GearAffix : Affix
 	}
 	public int GetModifierIValue(Gear gear) { return (int)GetModifierValue(gear); }
 
-	public static Affix CreateAffix<T>(float externalMultiplier = 1, float value = -1)
+	public static GearAffix CreateAffix<T>(float externalMultiplier = 1, float value = -1)
 	{
-		Affix instance = (Affix)Activator.CreateInstance(typeof(T));
+		GearAffix instance = (GearAffix)Activator.CreateInstance(typeof(T));
 
 		instance._externalMultiplier = externalMultiplier;
 		if (value == -1)
@@ -123,19 +116,14 @@ internal abstract class GearAffix : Affix
 		return clone;
 	}
 
-	public virtual void Roll()
-	{
-		Value = Main.rand.Next((int)(_minValue * 10), (int)(_maxValue * 10)) / 10f;
-	}
-
-	public virtual void Save(TagCompound tag)
+	override public void Save(TagCompound tag)
 	{
 		tag["type"] = GetType().FullName;
 		tag["externalMultiplier"] = _externalMultiplier;
 		tag["value"] = Value;
 	}
 
-	public virtual void Load(TagCompound tag)
+	override public void Load(TagCompound tag)
 	{
 		_externalMultiplier = tag.GetFloat("externalMultiplier");
 		Value = tag.GetFloat("value");

@@ -19,7 +19,7 @@ public abstract class Affix
 		tag["value"] = Value;
 	}
 
-	protected virtual void Load(TagCompound tag)
+	public virtual void Load(TagCompound tag)
 	{
 		Value = tag.GetFloat("value");
 	}
