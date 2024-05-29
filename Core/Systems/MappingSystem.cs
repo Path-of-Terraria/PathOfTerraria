@@ -15,6 +15,7 @@ internal class MappingSystem : ModSystem
 
 	public static void EnterMap(Map map)
 	{
+		TriesLeft = 10;
 		Map = map;
 		SubworldSystem.Enter<TestSubworld>();
 	}
