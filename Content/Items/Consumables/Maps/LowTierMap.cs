@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Subworlds;
+using PathOfTerraria.Core.Systems;
 using SubworldLibrary;
 using Terraria.ID;
 
@@ -15,11 +16,5 @@ internal class LowTierMap : Map
 	public override string GenerateName()
 	{
 		return "Low Tier Map";
-	}
-	
-	public override bool? UseItem(Player player)
-	{
-		SubworldSystem.Enter<TestSubworld>();
-		return true;
 	}
 }

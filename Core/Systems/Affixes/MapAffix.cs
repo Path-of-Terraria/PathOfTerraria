@@ -1,11 +1,12 @@
-﻿using Terraria.ModLoader.IO;
+﻿using PathOfTerraria.Content.Items.Consumables.Maps;
+using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Content.Items.Consumables.Maps;
+namespace PathOfTerraria.Core.Systems.Affixes;
 
 internal abstract class MapAffix : Affix
 {
 	public abstract string GetTooltip(Map map);
-	
+
 	/// <summary>
 	/// Generates an affix from a tag, used on load to re-populate affixes
 	/// </summary>

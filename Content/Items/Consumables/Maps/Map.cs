@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.Systems.Affixes;
+using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -31,7 +33,12 @@ internal abstract class Map : ModItem
 	{
 		return "Unnamed Item";
 	}
-	
+	public override bool? UseItem(Player player)
+	{
+		MappingSystem.EnterMap(this);
+		return true;
+	}
+
 	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 	{
 		if (line.Mod == Mod.Name && line.Name == "Name")

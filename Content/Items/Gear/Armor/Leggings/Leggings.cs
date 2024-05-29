@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes;
-using PathOfTerraria.Content.Items.Gear.Affixes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
@@ -17,7 +17,7 @@ internal class Leggings : Gear
 	}
 	public override List<GearAffix> GenerateImplicits()
 	{
-		return new List<GearAffix>() { GearAffix.CreateAffix<MovementSpeed>(-0.2f) };
+		return new List<GearAffix>() { (GearAffix)Affix.CreateAffix<MovementSpeed>(0.8f) };
 	}
 
 	public override void PostRoll()

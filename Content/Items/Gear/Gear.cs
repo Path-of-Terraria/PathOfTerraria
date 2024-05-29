@@ -1,5 +1,5 @@
 ﻿using log4net.Core;
-using PathOfTerraria.Content.Items.Gear.Affixes;
+using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -13,12 +13,14 @@ namespace PathOfTerraria.Content.Items.Gear;
 
 internal abstract class Gear : ModItem
 {
-	private static readonly List<Tuple<float, Type>> AllGear = [];
+	private static readonly List<Tuple<float, bool, Type>> AllGear = [];
+	// <Drop chance, is unique?, type of item>
 
 	protected GearType GearType;
 	protected GearRarity Rarity;
 	private GearInfluence _influence;
 	public abstract float DropChance { get; }
+	public virtual bool IsUnique => false;
 
 	private string _name;
 	public int ItemLevel;
@@ -274,22 +276,31 @@ internal abstract class Gear : ModItem
 	/// <summary>
 	/// Rolls the randomized aspects of this piece of gear, for a given item level
 	/// </summary>
-	public void Roll(int itemLevel)
+	public void Roll(int itemLevel, float qualityIncrease = 0)
 	{
 		ItemLevel = itemLevel;
 
-		int rare = Main.rand.Next(100) - (int)(itemLevel / 10f);
+		float qualityModifier = MathF.Pow(qualityIncrease/10f + 1, -0.5f);
+		// ^^ would mean that at about ~30 total quality
+		// we would have 50% higher chance of rare magic and rare... ig...
+		// numbers subject to change, ofc.
+
+		float rare = (Main.rand.Next(100) - itemLevel / 10f) * qualityModifier;
 		Rarity = GearRarity.Normal;
 
-		if (rare < 25 + (int)(itemLevel / 10f))
+		if (rare < 25 + itemLevel / 10f)
 			Rarity = GearRarity.Magic;
 		if (rare < 5)
 			Rarity = GearRarity.Rare;
+		if (IsUnique)
+			Rarity = GearRarity.Unique;
 
 		// Only item level 50+ can get influence
-		if (itemLevel > 50)
+		if (itemLevel > 50 && !IsUnique)
 		{
 			int inf = Main.rand.Next(400) - itemLevel;
+			// quality dose not affect influence right now
+			// (might not need to, seems to generate plenty often for late game)
 
 			if (inf < 30)
 				_influence = Main.rand.NextBool() ? GearInfluence.Solar : GearInfluence.Lunar;
@@ -300,6 +311,11 @@ internal abstract class Gear : ModItem
 		_implicits = _affixes.Count();
 
 		RollAffixes();
+
+		List<GearAffix> extraAffixes = GenerateAffixes();
+		extraAffixes.ForEach(a => a.Roll());
+
+		_affixes.AddRange(extraAffixes);
 
 		PostRoll();
 		_name = GenerateName();
@@ -320,38 +336,10 @@ internal abstract class Gear : ModItem
 
 		_affixes.AddRange(Rarity switch
 		{
-			GearRarity.Magic => GenerateAffixes(possible, 2),
-			GearRarity.Rare => GenerateAffixes(possible, Main.rand.Next(3, 5)),
+			GearRarity.Magic => Affix.GenerateAffixes(possible, 2),
+			GearRarity.Rare => Affix.GenerateAffixes(possible, Main.rand.Next(3, 5)),
 			_ => new List<GearAffix>()
 		});
-	}
-
-	/// <summary>
-	/// Used to generate a list of random affixes
-	/// </summary>
-	/// <param name="inputList">The list of affixes to pick from</param>
-	/// <param name="count"></param>
-	/// <returns></returns>
-	public static List<GearAffix> GenerateAffixes(List<GearAffix> inputList, int count)
-	{
-		if (inputList.Count <= count)
-			return inputList;
-
-		var resultList = new List<GearAffix>(count);
-		var random = new Random();
-
-		for (int i = 0; i < count; i++)
-		{
-			int randomIndex = random.Next(i, inputList.Count);
-
-			GearAffix newGearAffix = inputList[randomIndex].Clone();
-			newGearAffix.Roll();
-
-			resultList.Add(newGearAffix);
-			inputList[randomIndex] = inputList[i];
-		}
-
-		return resultList;
 	}
 
 	/// <summary>
@@ -360,6 +348,11 @@ internal abstract class Gear : ModItem
 	public virtual void PostRoll()
 	{
 	}
+
+	/// <summary>
+	/// Applies after affixes have been placed, this is mainly for unique items.
+	/// </summary>
+	public virtual List<GearAffix> GenerateAffixes() { return new(); }
 
 	/// <summary>
 	/// Before affix roll, allows you to add the implicit affixes that should exist on this type of gear.
@@ -453,7 +446,7 @@ internal abstract class Gear : ModItem
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Gear))) continue;
 			Gear instance = (Gear)Activator.CreateInstance(type);
-			AllGear.Add(new(instance.DropChance, type));
+			AllGear.Add(new(instance.DropChance, instance.IsUnique, type));
 		}
 	}
 
@@ -462,18 +455,18 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	/// <param name="pos">Where to spawn the armor</param>
 	static MethodInfo method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
-	public static void SpawnItem(Vector2 pos, int ilevel = 0)
+	public static void SpawnItem(Vector2 pos, int ilevel = 0, float qualityIncrease = 0)
 	{
-		float dropChanceSum = AllGear.Sum(x => x.Item1); // somehow apply magic find to raised unique drop chance
+		float dropChanceSum = AllGear.Sum(x => x.Item1 * (x.Item2 ? (1f + MathF.Pow(qualityIncrease / 30f, 2f)) : 1f));
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
-		foreach (Tuple<float, Type> gear in AllGear)
+		foreach (Tuple<float, bool, Type> gear in AllGear)
 		{
-			cumulativeChance += gear.Item1;
+			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(qualityIncrease / 30f, 2f)) : 1f);
 			if (choice < cumulativeChance)
 			{
-				method.MakeGenericMethod(gear.Item2).Invoke(null, [pos, ilevel]);
+				method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, qualityIncrease]);
 				return;
 			}
 		}
@@ -484,12 +477,12 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	/// <typeparam name="T">The type of gear to drop</typeparam>
 	/// <param name="pos">Where to drop it in the world</param>
-	public static void SpawnGear<T>(Vector2 pos, int ilevel = 0) where T : Gear
+	public static void SpawnGear<T>(Vector2 pos, int ilevel = 0, float qualityIncrease = 0) where T : Gear
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
 		var gear = item.ModItem as T;
-		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel);
+		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel, qualityIncrease);
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
 

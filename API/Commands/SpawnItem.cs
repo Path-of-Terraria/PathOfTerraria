@@ -13,7 +13,7 @@ public class SpawnItem : ModCommand {
 
 	public override CommandType Type => CommandType.Chat;
 
-	public override string Usage => "[c/ff6a00:Usage: /spawnitem <relative X> <relative Y> <count> <ilevel> <geartype>]";
+	public override string Usage => "[c/ff6a00:Usage: /spawnitem <relative X> <relative Y> <count> <ilevel> <quality increase> <geartype>]";
 
 	public override string Description => "Spawns item(s) for testing items and loot generation, only x and y positions are neccecary.";
 
@@ -25,7 +25,7 @@ public class SpawnItem : ModCommand {
 			return;
 		}
 
-		string[] nArgs = new string[5];
+		string[] nArgs = new string[6];
 		for (int i = 0; i < args.Length; i++)
 		{
 			nArgs[i] = args[i];
@@ -56,12 +56,18 @@ public class SpawnItem : ModCommand {
 			ilevel = 0;
 		}
 
-		string geartype = args[4];
+		float qualityIncrease;
+		if (!float.TryParse(args[4], out qualityIncrease))
+		{
+			qualityIncrease = 0;
+		}
+
+		string geartype = args[5];
 		// need to impliment at some point.
 
 		for (int i = 0; i < count; i++)
 		{
-			Gear.SpawnItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel);
+			Gear.SpawnItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
 		}
 		caller.Reply($"Item(s) spawned!", Color.Green);
 	}

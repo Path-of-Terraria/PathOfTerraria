@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Content.Items.Gear.Affixes;
-using PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes;
+﻿using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
@@ -7,9 +7,9 @@ namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 [AutoloadEquip(EquipType.Legs)]
 internal class Boots : Leggings
 {
-	public override List<Affix> GenerateImplicits()
+	public override List<GearAffix> GenerateImplicits()
 	{
-		return new List<Affix>() { Affix.CreateAffix<MovementSpeed>(0.8f) };
+		return new List<GearAffix>() { (GearAffix)Affix.CreateAffix<MovementSpeed>(0.8f) };
 	}
 
 	public override void PostRoll()

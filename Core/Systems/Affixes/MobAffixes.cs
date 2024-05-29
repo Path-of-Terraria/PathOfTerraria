@@ -1,0 +1,54 @@
+﻿using PathOfTerraria.Content.Items;
+using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Gear;
+using Terraria.ModLoader.IO;
+
+namespace PathOfTerraria.Core.Systems.Affixes;
+
+internal abstract class MobAffix : Affix
+{
+	public virtual MobRarity MinimumRarity => MobRarity.Magic;
+	public virtual bool Allowed => true;
+	// would prefer ProgressionLock, but then you'd have to write !Main.moonlordDowned
+	// but its mainly for progression
+	public virtual float DropQuantityFlat => 0;
+	public virtual float DropQuantityMultiplier => 1f;
+	public virtual float DropQualityFlat => 0;
+	public virtual float DropQualityMultiplier => 1f;
+
+	/// <summary>
+	/// after the rarity buff has been applied
+	/// </summary>
+	public virtual void PostRarity(NPC npc) { }
+
+	/// <summary>
+	/// befre the rarity buff has been applied
+	/// </summary>
+	public virtual void PreRarity(NPC npc) { }
+
+	public virtual bool PreAI(NPC npc) { return true; }
+	public virtual void AI(NPC npc) { }
+	public virtual void PostAI(NPC npc) { }
+	public virtual bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return true; }
+	public virtual void OnKill(NPC npc) { }
+	public virtual bool PreKill(NPC npc) { return true; }
+
+	/// <summary>
+	/// Generates an affix from a tag, used on load to re-populate affixes
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	public static MobAffix FromTag(TagCompound tag)
+	{
+		var affix = (MobAffix)Activator.CreateInstance(typeof(MobAffix).Assembly.GetType(tag.GetString("type")));
+
+		if (affix is null)
+		{
+			PathOfTerraria.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			return null;
+		}
+
+		affix.Load(tag);
+		return affix;
+	}
+}

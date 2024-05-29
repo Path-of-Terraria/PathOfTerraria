@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Affixes.WeaponAffixes;
+﻿using PathOfTerraria.Content.Items.Gear;
+
+namespace PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.WeaponAffixes;
 
 public class PassiveAffixes
 {
@@ -13,7 +15,7 @@ public class PassiveAffixes
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
 		}
 	}
-		
+
 	internal class SharpGearAffix : GearAffix
 	{
 		public override GearType PossibleTypes => GearType.Melee;
@@ -25,7 +27,7 @@ public class PassiveAffixes
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
 		}
 	}
-		
+
 	internal class ChargedGearAffix : GearAffix
 	{
 		public override GearType PossibleTypes => GearType.Melee;
