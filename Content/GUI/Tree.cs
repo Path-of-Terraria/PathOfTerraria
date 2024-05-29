@@ -21,8 +21,8 @@ internal class Tree : SmartUIState
 
 	private const int TopPadding = -400;
 	private const int LeftPadding = -450;
-	private const int PanelWidth = 900;
-	private const int PanelHeight = 800;
+	private const int PanelWidth = 800;
+	private const int PanelHeight = 750;
 
 	public override bool Visible => IsVisible;
 
@@ -46,12 +46,12 @@ internal class Tree : SmartUIState
 			_panel = new UIPanel();
 			_panel.Left.Set(LeftPadding, 0.5f);
 			_panel.Top.Set(TopPadding, 0.5f);
-			_panel.Width.Set(PanelWidth, 0);
-			_panel.Height.Set(PanelHeight, 0);
+			_panel.Width.Set(PanelWidth, 0.15f);
+			_panel.Height.Set(PanelHeight, 0.15f);
 			Append(_panel);
 
 			_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/CloseButton"));
-			_closeButton.Left.Set(LeftPadding + PanelWidth - 60, 0.5f);
+			_closeButton.Left.Set(LeftPadding + PanelWidth - 120, 0.5f);
 			_closeButton.Top.Set(TopPadding + 10, 0.5f);
 			_closeButton.Width.Set(38, 0);
 			_closeButton.Height.Set(38, 0);
