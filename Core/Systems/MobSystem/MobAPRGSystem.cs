@@ -13,15 +13,15 @@ internal class MobAPRGSystem : GlobalNPC
 	public override bool InstancePerEntity => true;
 	public MobRarity Rarity = MobRarity.Magic;
 
-	public float DropQuality
+	public float DropRarity
 	// should somehow work together with magic find (that i assume we will have) to increase rarity / if its a unique
 	{
 		get
 		{
-			float dropQuality = 0;
-			_affixes.ForEach(a => dropQuality += a.DropQualityFlat);
-			_affixes.ForEach(a => dropQuality *= a.DropQualityMultiplier);
-			return dropQuality; // rounds down iirc
+			float dropRarity = 0;
+			_affixes.ForEach(a => dropRarity += a.DropRarityFlat);
+			_affixes.ForEach(a => dropRarity *= a.DropRarityMultiplier);
+			return dropRarity; // rounds down iirc
 		}
 	}
 
@@ -86,11 +86,11 @@ internal class MobAPRGSystem : GlobalNPC
 		while (rand > 99)
 		{
 			rand -= 100;
-			Gear.SpawnItem(npc.Center, qualityIncrease: DropQuality * magicFind);
+			Gear.SpawnItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
 		}
 
 		if (rand < 25) // 10
-			Gear.SpawnItem(npc.Center, qualityIncrease: DropQuality * magicFind);
+			Gear.SpawnItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
 	}
 	public override bool PreKill(NPC npc)
 	{

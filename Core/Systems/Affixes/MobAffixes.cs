@@ -13,8 +13,8 @@ internal abstract class MobAffix : Affix
 	// but its mainly for progression
 	public virtual float DropQuantityFlat => 0;
 	public virtual float DropQuantityMultiplier => 1f;
-	public virtual float DropQualityFlat => 0;
-	public virtual float DropQualityMultiplier => 1f;
+	public virtual float DropRarityFlat => 0;
+	public virtual float DropRarityMultiplier => 1f;
 
 	/// <summary>
 	/// after the rarity buff has been applied

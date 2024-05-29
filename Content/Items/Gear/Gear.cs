@@ -276,16 +276,16 @@ internal abstract class Gear : ModItem
 	/// <summary>
 	/// Rolls the randomized aspects of this piece of gear, for a given item level
 	/// </summary>
-	public void Roll(int itemLevel, float qualityIncrease = 0)
+	public void Roll(int itemLevel, float dropRarityModifier = 0)
 	{
 		ItemLevel = itemLevel;
 
-		float qualityModifier = MathF.Pow(qualityIncrease/10f + 1, -0.5f);
+		float rarityModifier = MathF.Pow(dropRarityModifier/10f + 1, -0.5f);
 		// ^^ would mean that at about ~30 total quality
 		// we would have 50% higher chance of rare magic and rare... ig...
 		// numbers subject to change, ofc.
 
-		float rare = (Main.rand.Next(100) - itemLevel / 10f) * qualityModifier;
+		float rare = (Main.rand.Next(100) - itemLevel / 10f) * rarityModifier;
 		Rarity = GearRarity.Normal;
 
 		if (rare < 25 + itemLevel / 10f)
@@ -455,18 +455,18 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	/// <param name="pos">Where to spawn the armor</param>
 	static MethodInfo method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
-	public static void SpawnItem(Vector2 pos, int ilevel = 0, float qualityIncrease = 0)
+	public static void SpawnItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
 	{
-		float dropChanceSum = AllGear.Sum(x => x.Item1 * (x.Item2 ? (1f + MathF.Pow(qualityIncrease / 30f, 2f)) : 1f));
+		float dropChanceSum = AllGear.Sum(x => x.Item1 * (x.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f));
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
 		foreach (Tuple<float, bool, Type> gear in AllGear)
 		{
-			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(qualityIncrease / 30f, 2f)) : 1f);
+			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f);
 			if (choice < cumulativeChance)
 			{
-				method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, qualityIncrease]);
+				method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
 				return;
 			}
 		}
@@ -477,12 +477,12 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	/// <typeparam name="T">The type of gear to drop</typeparam>
 	/// <param name="pos">Where to drop it in the world</param>
-	public static void SpawnGear<T>(Vector2 pos, int ilevel = 0, float qualityIncrease = 0) where T : Gear
+	public static void SpawnGear<T>(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0) where T : Gear
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
 		var gear = item.ModItem as T;
-		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel, qualityIncrease);
+		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel, dropRarityModifier);
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
 
