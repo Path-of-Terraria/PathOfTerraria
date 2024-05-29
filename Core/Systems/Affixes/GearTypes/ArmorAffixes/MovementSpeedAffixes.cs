@@ -1,8 +1,9 @@
-﻿﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems;
 
- namespace PathOfTerraria.Content.Items.Gear.Affixes.ArmorAffixes;
+namespace PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
 
- internal class MovementSpeed : GearAffix
+internal class MovementSpeed : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Leggings;
 	public override ModifierType ModifierType => ModifierType.Added;

@@ -1,18 +1,15 @@
-﻿using System;
+﻿using PathOfTerraria.Content.Items.Gear;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Chat.Commands;
 using Terraria.ModLoader.IO;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace PathOfTerraria.Content.Items.Gear.Affixes;
+namespace PathOfTerraria.Core.Systems.Affixes;
 
 internal abstract class GearAffix : Affix
 {
-	private float _minValue;
-	private float _maxValue = 1;
-	private float _externalMultiplier = 1;
-	protected float Value = 1;
 	public virtual ModifierType ModifierType => ModifierType.Passive;
 	public virtual bool IsFlat => true; // alternative is percent
 	public virtual bool Round => false;
@@ -72,7 +69,8 @@ internal abstract class GearAffix : Affix
 	}
 
 	protected abstract float internalModifierCalculation(Gear gear);
-	public float GetModifierValue(Gear gear) {
+	public float GetModifierValue(Gear gear)
+	{
 		float v = internalModifierCalculation(gear) * _externalMultiplier;
 
 		if (Round)
@@ -83,51 +81,11 @@ internal abstract class GearAffix : Affix
 		{
 			v = (float)Math.Round(v, 2);
 		}
-		
+
 		return v;
 	}
 	public int GetModifierIValue(Gear gear) { return (int)GetModifierValue(gear); }
 
-	public static GearAffix CreateAffix<T>(float externalMultiplier = 1, float value = -1)
-	{
-		GearAffix instance = (GearAffix)Activator.CreateInstance(typeof(T));
-
-		instance._externalMultiplier = externalMultiplier;
-		if (value == -1)
-		{
-			instance.Roll();
-		}
-		else
-		{
-			instance.Value = value;
-		}
-
-		return instance;
-	}
-
-	public GearAffix Clone()
-	{
-		var clone = (GearAffix)Activator.CreateInstance(GetType());
-
-		clone._minValue = _minValue;
-		clone._maxValue = _maxValue;
-		clone.Value = Value;
-
-		return clone;
-	}
-
-	override public void Save(TagCompound tag)
-	{
-		tag["type"] = GetType().FullName;
-		tag["externalMultiplier"] = _externalMultiplier;
-		tag["value"] = Value;
-	}
-
-	override public void Load(TagCompound tag)
-	{
-		_externalMultiplier = tag.GetFloat("externalMultiplier");
-		Value = tag.GetFloat("value");
-	}
 
 	/// <summary>
 	/// Generates an affix from a tag, used on load to re-populate affixes
@@ -146,41 +104,5 @@ internal abstract class GearAffix : Affix
 
 		affix.Load(tag);
 		return affix;
-	}
-}
-
-internal class AffixHandler : ILoadable
-{
-	private static List<GearAffix> _prototypes = [];
-
-	/// <summary>
-	/// Returns a list of affixes that are valid for the given type. Typically used to roll affixes.
-	/// </summary>
-	/// <param name="type"></param>
-	/// <param name="influence"></param>
-	/// <returns></returns>
-	public static List<GearAffix> GetAffixes(GearType type, GearInfluence influence)
-	{
-		return _prototypes
-			.Where(proto => proto.RequiredInfluence == GearInfluence.None || proto.RequiredInfluence == influence)
-			.Where(proto => (type & proto.PossibleTypes) == type)
-			.ToList();
-	}
-
-	public void Load(Mod mod)
-	{
-		_prototypes = [];
-
-		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
-		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(GearAffix))) continue;
-			object instance = Activator.CreateInstance(type);
-			_prototypes.Add(instance as GearAffix);
-		}
-	}
-
-	public void Unload()
-	{
-		_prototypes = null;
 	}
 }

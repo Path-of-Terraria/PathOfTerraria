@@ -53,7 +53,7 @@ internal class KillExp : GlobalNPC
 	{
 		int amount = (int)Math.Max(1, npc.lifeMax * 0.25f);
 
-		MobRaritySpawnSystem npcSystem = npc.GetGlobalNPC<MobRaritySpawnSystem>();
+		MobAPRGSystem npcSystem = npc.GetGlobalNPC<MobAPRGSystem>();
 		amount =
 			npcSystem.Rarity
 				switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?
