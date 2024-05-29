@@ -43,7 +43,7 @@ internal class ManaPotionPowerAffix : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Armor;
 	public override ModifierType ModifierType => ModifierType.Added;
-	public override string Tooltip => "Mana potions restore # more Mana";
+	public override string Tooltip => "# Potion Mana Restored";
 	public override bool Round => true;
 
 	protected override float internalModifierCalculation(Gear gear)
@@ -62,7 +62,7 @@ internal class ManaPotionCapAffix : GearAffix
 	public override GearType PossibleTypes => GearType.Armor;
 	public override ModifierType ModifierType => ModifierType.Added;
 	public override bool Round => true;
-	public override string Tooltip => "You can hold # additional mana potions";
+	public override string Tooltip => "# Max Mana Potions";
 
 	protected override float internalModifierCalculation(Gear gear)
 	{

@@ -41,7 +41,7 @@ internal class LifePotionPowerAffix : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Armor;
 	public override ModifierType ModifierType => ModifierType.Added;
-	public override string Tooltip => "# Life Regeneration";
+	public override string Tooltip => "# Potion Life Gain";
 	public override bool Round => true;
 	protected override float internalModifierCalculation(Gear gear)
 	{
@@ -57,7 +57,7 @@ internal class LifePotionCapAffix : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Armor;
 	public override ModifierType ModifierType => ModifierType.Added;
-	public override string Tooltip => "# Life Regeneration";
+	public override string Tooltip => "# Max Potions";
 	public override bool Round => true;
 
 	protected override float internalModifierCalculation(Gear gear)
@@ -75,7 +75,7 @@ internal class LifePotionCooldownAffix : GearAffix
 	public override GearType PossibleTypes => GearType.Armor;
 	public override ModifierType ModifierType => ModifierType.Added;
 	public override GearInfluence RequiredInfluence => GearInfluence.Lunar;
-	public override string Tooltip => "# Healing potions are ready # seconds sooner";
+	public override string Tooltip => "# Healing Potion Cooldown Rate";
 
 	protected override float internalModifierCalculation(Gear gear)
 	{
