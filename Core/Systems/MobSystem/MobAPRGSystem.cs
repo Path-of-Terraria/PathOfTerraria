@@ -73,7 +73,9 @@ internal class MobAPRGSystem : GlobalNPC
 		_affixes.ForEach(a => a.OnKill(npc));
 
 		if (npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss)
+		{
 			return;
+		}
 
 		int minDrop = (int)(DropQuantity * _minDropChanceScale * 100f);
 		int maxDrop = (int)(DropQuantity * 100f);
@@ -93,7 +95,9 @@ internal class MobAPRGSystem : GlobalNPC
 		}
 
 		if (rand < 25) // 10
+		{
 			Gear.SpawnItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+		}
 	}
 	public override bool PreKill(NPC npc)
 	{
@@ -105,8 +109,10 @@ internal class MobAPRGSystem : GlobalNPC
 	public override void OnSpawn(NPC npc, IEntitySource source)
 	{
 		if (npc.friendly || npc.boss) //We only want to trigger these changes on hostile non-boss mobs
+		{
 			return;
-		
+		}
+
 		MobData mobData = MobRegistry.TryGetMobData(npc.type);
 		if (mobData != null)
 		{
@@ -130,7 +136,10 @@ internal class MobAPRGSystem : GlobalNPC
 			_ => npc.GivenName
 		};
 
-		if (Rarity == MobRarity.Normal || Rarity == MobRarity.Unique) return;
+		if (Rarity == MobRarity.Normal || Rarity == MobRarity.Unique)
+		{
+			return;
+		}
 
 		List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
 		_affixes = Rarity switch

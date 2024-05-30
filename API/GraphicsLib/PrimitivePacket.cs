@@ -25,7 +25,9 @@ public class PrimitivePacket : IDisposable{
 	public void AddDraw(params VertexPositionColor[] additions){
 		void CheckError(int expected){
 			if(additions.Length != expected)
+			{
 				throw new ArgumentException($"Primitive drawing package ({type}) received an invalid amount of draw data to cache. Expected: {expected}, Received: {additions.Length}");
+			}
 		}
 
 		switch(type){

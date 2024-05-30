@@ -28,7 +28,9 @@ public static class Networking
 	public static void SendSpawnExperienceOrbs(int sender, int target, int xp, Vector2 spawn, float velocityLength)
 	{
 		if (xp <= 0)
+		{
 			return;
+		}
 
 		ModPacket packet = GetPacket(Message.SpawnExperienceOrb);
 

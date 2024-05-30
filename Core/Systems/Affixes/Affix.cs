@@ -68,7 +68,9 @@ internal abstract class Affix
 	public static List<T> GenerateAffixes<T>(List<T> inputList, int count) where T : Affix
 	{
 		if (inputList.Count <= count)
+		{
 			return inputList;
+		}
 
 		var resultList = new List<T>(count);
 
@@ -136,7 +138,10 @@ internal class AffixHandler : ILoadable
 
 		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(Affix))) continue;
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Affix)))
+			{
+				continue;
+			}
 
 			object instance = Activator.CreateInstance(type);
 

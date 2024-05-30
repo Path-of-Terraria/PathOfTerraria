@@ -17,9 +17,11 @@ public class Berserk : Skill
 
 	public override void UseSkill(Player player)
 	{
-		if (!CanUseSkill(player)) 
+		if (!CanUseSkill(player))
+		{
 			return;
-			
+		}
+
 		player.statMana -= ManaCost;
 		player.AddBuff(ModContent.BuffType<CustomRage>(), Duration);
 		Timer = Cooldown;

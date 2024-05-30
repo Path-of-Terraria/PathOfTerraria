@@ -12,7 +12,9 @@ class ShaderLoader : ILoadable
 	public void Load(Mod mod)
 	{
 		if (Main.dedServ)
+		{
 			return;
+		}
 
 		MethodInfo info = typeof(Mod).GetProperty("File", BindingFlags.NonPublic | BindingFlags.Instance).GetGetMethod(true);
 		var file = (TmodFile)info.Invoke(mod, null);

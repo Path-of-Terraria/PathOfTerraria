@@ -15,7 +15,9 @@ public abstract class SmartBuff : ModBuff
 	public bool Inflicted(NPC NPC)
 	{
 		if (ModContent.GetModBuff(Type) != null && NPC.buffImmune.Length > Type)
+		{
 			return NPC.active && NPC.HasBuff(Type);
+		}
 
 		return false;
 	}

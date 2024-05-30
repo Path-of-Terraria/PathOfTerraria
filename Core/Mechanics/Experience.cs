@@ -41,7 +41,9 @@ public sealed class Experience {
 
 		Vector2 size = GetSize();
 		if(size == Vector2.Zero)
+		{
 			throw new Exception("Invalid xp count: " + xp);
+		}
 
 		Center = startPosition;
 		_velocity = startVelocity;
@@ -90,7 +92,10 @@ public sealed class Experience {
 		};
 
 	public void Update(){
-		if(!Active) return;
+		if(!Active)
+		{
+			return;
+		}
 
 		_oldCollected = Collected;
 
@@ -98,7 +103,9 @@ public sealed class Experience {
 		Player player = Main.player[_target];
 
 		if(!player.active)
+		{
 			Collected = true;
+		}
 
 		if(Collected){
 			//Make the trail shrink
@@ -189,7 +196,11 @@ public sealed class Experience {
 		int trailColorCount = _oldCenters.Count + 1;
 		var colors = new Color[trailColorCount];
 
-		if (_oldCollected && _collectedTrail is not null) return;
+		if (_oldCollected && _collectedTrail is not null)
+		{
+			return;
+		}
+
 		colors[^1] = color;
 		int i = 0;
 		foreach(Vector2 _ in _oldCenters){
@@ -201,13 +212,22 @@ public sealed class Experience {
 	}
 
 	public void DrawTrail(){
-		if(!Active) return;
+		if(!Active)
+		{
+			return;
+		}
 
 		Vector2 size = GetSize();
-		if(size == Vector2.Zero) return;
+		if(size == Vector2.Zero)
+		{
+			return;
+		}
 
 		//No trail yet
-		if (_oldCenters.Count == 0) return;
+		if (_oldCenters.Count == 0)
+		{
+			return;
+		}
 
 		Color color = GetTrailColor();
 		int trailColorCount = _oldCenters.Count + 1;

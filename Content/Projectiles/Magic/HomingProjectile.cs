@@ -34,7 +34,9 @@ public class HomingProjectile : ModProjectile
 			targetVel *= Projectile.velocity.Length();
 
 			if (Vector2.Dot(Vector2.Normalize(Projectile.velocity), targetVel) > 0)
+			{
 				Projectile.velocity = Projectile.velocity.RotateTowards(targetVel, 0.015f); // how much it turns.
+			}
 		}
 
 		if (Main.rand.NextBool(3))

@@ -28,7 +28,10 @@ internal class MappingPlayer : ModPlayer
 	// apply map affixes here
 	public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
 	{
-		if (!MappingSystem.InMap) return;
+		if (!MappingSystem.InMap)
+		{
+			return;
+		}
 
 		MappingSystem.TriesLeft--;
 		if (MappingSystem.TriesLeft == 0)

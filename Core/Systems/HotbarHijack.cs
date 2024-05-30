@@ -33,8 +33,16 @@ internal class HotbarHijack : ModSystem
 			}
 
 			// The rest of the slots cannot be weapons or picks
-			if (slot < 2) return;
-			if (weapon || tool) return;
+			if (slot < 2)
+			{
+				return;
+			}
+
+			if (weapon || tool)
+			{
+				return;
+			}
+
 			orig(inv, context, slot);
 			return;
 		}

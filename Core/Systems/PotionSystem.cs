@@ -26,7 +26,11 @@ internal class PotionSystem : ModPlayer
 	{
 		PotionSystem mp = self.GetModPlayer<PotionSystem>();
 
-		if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness)) return;
+		if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness))
+		{
+			return;
+		}
+
 		self.HealEffect(mp.HealPower);
 		self.statLife += mp.HealPower;
 		self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
@@ -40,7 +44,11 @@ internal class PotionSystem : ModPlayer
 	{
 		PotionSystem mp = self.GetModPlayer<PotionSystem>();
 
-		if (mp.ManaLeft <= 0 || self.HasBuff(BuffID.ManaSickness)) return;
+		if (mp.ManaLeft <= 0 || self.HasBuff(BuffID.ManaSickness))
+		{
+			return;
+		}
+
 		self.ManaEffect(mp.ManaPower);
 		self.statMana += mp.ManaPower;
 		self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
@@ -53,10 +61,14 @@ internal class PotionSystem : ModPlayer
 	public override void ResetEffects()
 	{
 		if (HealingLeft > MaxHealing)
+		{
 			HealingLeft = MaxHealing;
+		}
 
 		if (ManaLeft > MaxMana)
+		{
 			ManaLeft = MaxMana;
+		}
 
 		MaxHealing = 3;
 		HealPower = 30;

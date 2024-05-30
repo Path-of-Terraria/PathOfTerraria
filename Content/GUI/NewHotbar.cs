@@ -30,29 +30,39 @@ internal class NewHotbar : SmartUIState
 		var hideTarget = new Rectangle(20, 20, 446, 52);
 
 		if (!Main.screenTarget.IsDisposed)
+		{
 			Main.spriteBatch.Draw(Main.screenTarget, hideTarget, hideTarget, Color.White);
+		}
 
 		float prog;
 
 		if (Main.LocalPlayer.selectedItem == 0)
 		{
 			if (_animation > 0)
+			{
 				_animation--;
+			}
 
 			prog = 1 - Ease((20 - _animation) / 20f);
 		}
 		else
 		{
 			if (_animation < 20)
+			{
 				_animation++;
+			}
 
 			prog = Ease(_animation / 20f);
 		}
 
 		if (Main.LocalPlayer.selectedItem >= 2)
+		{
 			_selectorTarget = 24 + 120 + 52 * (Main.LocalPlayer.selectedItem - 2);
+		}
 		else
+		{
 			_selectorTarget = 98;
+		}
 
 		_selectorX += (_selectorTarget - _selectorX) * 0.33f;
 
@@ -115,8 +125,11 @@ internal class NewHotbar : SmartUIState
 		}
 
 		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
-		if (skillPlayer.Skills == null) return;
-			
+		if (skillPlayer.Skills == null)
+		{
+			return;
+		}
+
 		if (skillPlayer.Skills[0] != null)
 		{
 			Skill skill = skillPlayer.Skills[0];
@@ -155,8 +168,11 @@ internal class NewHotbar : SmartUIState
 				new Rectangle(372, (int)(15 + off) + texture.Height - manaH, texture.Width + 18, 40),
 				new Rectangle(1, 2, texture.Width - 2, 13), Color.White * opacity);
 
-			if (skill.Timer <= 0) return;
-			
+			if (skill.Timer <= 0)
+			{
+				return;
+			}
+
 			spriteBatch.Draw(glow, new Vector2(394, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
 			Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(394, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
 		}
@@ -201,7 +217,11 @@ internal class NewHotbar : SmartUIState
 
 	private void DrawHotkeys(SpriteBatch spriteBatch)
 	{
-		if (!IsHoldingFirstHotbarItem()) return;
+		if (!IsHoldingFirstHotbarItem())
+		{
+			return;
+		}
+
 		List<string> quickHealHotkey = PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus["QuickHeal"];
 		List<string> quickManaHotkey = PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus["QuickMana"];
 		if (quickHealHotkey.Count > 0)

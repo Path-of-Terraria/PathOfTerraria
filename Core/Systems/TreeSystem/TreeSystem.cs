@@ -75,7 +75,11 @@ internal class TreePlayer : ModPlayer
 
 		foreach (Type type in Mod.Code.GetTypes())
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive))) continue;
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive)))
+			{
+				continue;
+			}
+
 			object instance = Activator.CreateInstance(type);
 			Nodes.Add(instance as Passive);
 		}

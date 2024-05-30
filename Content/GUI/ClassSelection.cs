@@ -29,7 +29,9 @@ public class ClassSelection : SmartUIState
 		    ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
 		    IsVisible = !mp.HasSelectedClass();
 		    if (!IsVisible)
+		    {
 			    return;
+		    }
 	    }
 
 	    if (!_populated)

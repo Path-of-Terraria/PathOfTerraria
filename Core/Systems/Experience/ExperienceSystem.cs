@@ -13,7 +13,10 @@ public class ExperienceTracker : ModSystem{
 
 	public override void PostUpdateNPCs()
 	{
-		foreach (Mechanics.Experience t in _trackedExp) t?.Update();
+		foreach (Mechanics.Experience t in _trackedExp)
+		{
+			t?.Update();
+		}
 	}
 
 	public override void PostDrawTiles(){
@@ -24,11 +27,17 @@ public class ExperienceTracker : ModSystem{
 		Texture2D texture = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Experience").Value;
 		foreach (Mechanics.Experience xp in _trackedExp)
 		{
-			if(xp is null || !xp.Active) continue;
+			if(xp is null || !xp.Active)
+			{
+				continue;
+			}
 
 			Vector2 size = xp.GetSize();
 				
-			if(size == Vector2.Zero || xp.Collected) continue;
+			if(size == Vector2.Zero || xp.Collected)
+			{
+				continue;
+			}
 
 			Rectangle source = xp.GetSourceRectangle();
 
@@ -37,11 +46,17 @@ public class ExperienceTracker : ModSystem{
 		batch.End();
 
 		//Draw the trails
-		foreach (Mechanics.Experience t in _trackedExp) t?.DrawTrail();
+		foreach (Mechanics.Experience t in _trackedExp)
+		{
+			t?.DrawTrail();
+		}
 	}
 
 	public static int[] SpawnExperience(int xp, Vector2 location, float velocityLength, int targetPlayer){
-		if (xp <= 0) return [];
+		if (xp <= 0)
+		{
+			return [];
+		}
 
 		List<Mechanics.Experience> spawned = [];
 		int totalLeft = xp;
@@ -93,7 +108,9 @@ public class ExperienceTracker : ModSystem{
 
 		int[] indices = new int[spawned.Count];
 		for(int i = 0; i < indices.Length; i++)
+		{
 			indices[i] = InsertExperience(spawned[i]);
+		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
@@ -107,7 +124,11 @@ public class ExperienceTracker : ModSystem{
 		for(int i = 0; i < _trackedExp.Length; i++){
 			Mechanics.Experience exp = _trackedExp[i];
 
-			if (exp is not null && exp.Active) continue;
+			if (exp is not null && exp.Active)
+			{
+				continue;
+			}
+
 			_trackedExp[i] = expNew;
 			return i;
 		}

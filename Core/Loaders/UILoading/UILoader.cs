@@ -25,7 +25,9 @@ class UILoader : ModSystem
 	public override void Load()
 	{
 		if (Main.dedServ)
+		{
 			return;
+		}
 
 		UserInterfaces = new List<UserInterface>();
 		UIStates = new List<SmartUIState>();
@@ -67,7 +69,9 @@ class UILoader : ModSystem
 			delegate
 			{
 				if (visible)
+				{
 					state.Draw(Main.spriteBatch);
+				}
 
 				return true;
 			}, scale));
@@ -82,7 +86,9 @@ class UILoader : ModSystem
 		foreach (UserInterface eachState in UserInterfaces)
 		{
 			if (eachState?.CurrentState != null && ((SmartUIState)eachState.CurrentState).Visible)
+			{
 				eachState.Update(gameTime);
+			}
 		}
 	}
 
