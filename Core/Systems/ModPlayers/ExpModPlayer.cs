@@ -1,10 +1,5 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.Experience;
-using PathOfTerraria.Core.Systems.MobSystem;
-using PathOfTerraria.Core.Systems.TreeSystem;
-using System.Linq;
+﻿using PathOfTerraria.Core.Systems.TreeSystem;
 using Terraria.Audio;
-using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.ModPlayers;

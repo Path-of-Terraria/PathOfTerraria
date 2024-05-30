@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Content.Projectiles.Magic;
 using Terraria.Enums;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 

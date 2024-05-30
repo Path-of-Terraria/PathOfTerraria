@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems;
 
 namespace PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
 

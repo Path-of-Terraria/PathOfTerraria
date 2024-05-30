@@ -1,10 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.Chat.Commands;
 using Terraria.ModLoader.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
@@ -31,12 +26,12 @@ internal abstract class GearAffix : Affix
 		{
 			float oVal = Value;
 
-			Value = _minValue;
+			Value = MinValue;
 			float valueMin = GetModifierValue(gear);
 			bool positivMin = valueMin >= 0;
 			string textMin = valueMin.ToString();
 
-			Value = _maxValue;
+			Value = MaxValue;
 			float valueMax = GetModifierValue(gear);
 			bool positivMax = valueMax >= 0;
 			string textMax = valueMax.ToString();
@@ -71,7 +66,7 @@ internal abstract class GearAffix : Affix
 	protected abstract float internalModifierCalculation(Gear gear);
 	public float GetModifierValue(Gear gear)
 	{
-		float v = internalModifierCalculation(gear) * _externalMultiplier;
+		float v = internalModifierCalculation(gear) * ExternalMultiplier;
 
 		if (Round)
 		{

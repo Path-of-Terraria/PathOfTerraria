@@ -7,6 +7,7 @@ namespace PathOfTerraria.Content.Projectiles.Magic;
 public class SparklingBall : ModProjectile
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/SparklingBall";
+
 	public override void SetDefaults() {
 		Projectile.width = 16;
 		Projectile.height = 16;
@@ -33,12 +34,15 @@ public class SparklingBall : ModProjectile
 			if (Projectile.velocity.X != oldVelocity.X) {
 				Projectile.velocity.X = -oldVelocity.X;
 			}
+
 			if (Projectile.velocity.Y != oldVelocity.Y) {
 				Projectile.velocity.Y = -oldVelocity.Y;
 			}
+
 			Projectile.velocity *= 0.75f;
 			SoundEngine.PlaySound(SoundID.Item10, Projectile.position);
 		}
+
 		return false;
 	}
 
@@ -46,6 +50,7 @@ public class SparklingBall : ModProjectile
 		for (int k = 0; k < 5; k++) {
 			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<Sparkle>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
 		}
+
 		SoundEngine.PlaySound(SoundID.Item25, Projectile.position);
 	}
 

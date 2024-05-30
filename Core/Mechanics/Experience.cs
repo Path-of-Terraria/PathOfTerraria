@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.API.GraphicsLib;
-using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 

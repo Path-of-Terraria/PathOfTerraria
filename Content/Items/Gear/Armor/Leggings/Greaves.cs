@@ -9,8 +9,9 @@ internal class Greaves : Leggings
 {
 	public override List<GearAffix> GenerateImplicits()
 	{
-		return new List<GearAffix>() { (GearAffix)Affix.CreateAffix<MovementSpeed>(0.5f) };
+		return [(GearAffix)Affix.CreateAffix<MovementSpeed>(0.5f)];
 	}
+
 	public override void PostRoll()
 	{
 		Item.defense = ItemLevel / 14 + 1;

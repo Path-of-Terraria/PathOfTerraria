@@ -1,10 +1,7 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Experience;
-using PathOfTerraria.Data;
-using PathOfTerraria.Data.Models;
 using System.Linq;
 using Terraria.ID;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.MobSystem;
 

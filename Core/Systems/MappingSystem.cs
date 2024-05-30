@@ -2,8 +2,6 @@
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Subworlds;
 using SubworldLibrary;
-using System.Collections.Generic;
-using System.Reflection;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Core.Systems;

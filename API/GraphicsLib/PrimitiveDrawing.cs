@@ -11,12 +11,9 @@ public static class PrimitiveDrawing{
 	}
 
 	public static void DrawLineStrip(Vector2[] points, Color color){
-		if(points is null)
-		{
-			throw new ArgumentNullException(nameof(points));
-		}
+		ArgumentNullException.ThrowIfNull(points);
 
-		if(points.Length < 2)
+		if (points.Length < 2)
 		{
 			throw new ArgumentException("Too few points provided to draw a line");
 		}

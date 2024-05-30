@@ -1,9 +1,4 @@
-﻿using PathOfTerraria.Content.GUI;
-using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Loaders.UILoading;
-using PathOfTerraria.Core.Systems.Experience;
-using PathOfTerraria.Core.Systems.ModPlayers;
-using System.CodeDom;
+﻿using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.API.Commands;
 
@@ -30,6 +25,7 @@ public class SpawnItem : ModCommand {
 		{
 			nArgs[i] = args[i];
 		}
+
 		args = nArgs;
 
 		if (!float.TryParse(args[0], out float relX))
@@ -44,20 +40,17 @@ public class SpawnItem : ModCommand {
 			return;
 		}
 
-		uint count;
-		if (!uint.TryParse(args[2], out count))
+		if (!uint.TryParse(args[2], out uint count))
 		{
 			count = 1;
 		}
 
-		uint ilevel;
-		if (!uint.TryParse(args[3], out ilevel))
+		if (!uint.TryParse(args[3], out uint ilevel))
 		{
 			ilevel = 0;
 		}
 
-		float qualityIncrease;
-		if (!float.TryParse(args[4], out qualityIncrease))
+		if (!float.TryParse(args[4], out float qualityIncrease))
 		{
 			qualityIncrease = 0;
 		}
@@ -69,6 +62,7 @@ public class SpawnItem : ModCommand {
 		{
 			Gear.SpawnItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
 		}
+
 		caller.Reply($"Item(s) spawned!", Color.Green);
 	}
 }

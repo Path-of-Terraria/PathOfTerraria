@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Content.Items;
-using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Content.Items.Gear;
+﻿using PathOfTerraria.Content.Items.Gear;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;

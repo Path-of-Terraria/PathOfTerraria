@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using PathOfTerraria.Data.Models;
 using System.Linq;
-using Terraria.ID;
+using PathOfTerraria.Data.Models;
 
 namespace PathOfTerraria.Data;
 

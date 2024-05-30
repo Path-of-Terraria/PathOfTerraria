@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Core.Systems;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 

@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using PathOfTerraria.Core.Systems.Affixes;
+﻿using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;

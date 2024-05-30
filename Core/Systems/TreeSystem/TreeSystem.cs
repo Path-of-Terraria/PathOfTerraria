@@ -1,10 +1,6 @@
-﻿using Microsoft.Build.Framework;
-using PathOfTerraria.Content.GUI;
+﻿using PathOfTerraria.Content.GUI;
 using PathOfTerraria.Core.Loaders.UILoading;
 using System.Collections.Generic;
-using Terraria.Audio;
-using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
