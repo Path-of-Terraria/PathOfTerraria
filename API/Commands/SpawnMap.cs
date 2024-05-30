@@ -13,6 +13,9 @@ public class SpawnMap : ModCommand{
 	public override string Description => "Spawns experience orbs relative to the player";
 
 	public override void Action(CommandCaller caller, string input, string[] args){
-		Map.SpawnItem(Main.LocalPlayer.Center);
+		for (int i = 0; i < 4; i++)
+		{
+			Map.SpawnItem(Main.LocalPlayer.Center);
+		}
 	}
 }

@@ -6,7 +6,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal abstract class Map : ModItem
+public abstract class Map : ModItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
@@ -23,16 +23,26 @@ internal abstract class Map : ModItem
 		Item.maxStack = 1;
 		Item.consumable = true;
 		Item.rare = ItemRarityID.Green;
+		Item.value = 1000;
 	}
-	
-	/// <summary>
-	/// Allows you to customize what this item's name can be
-	/// </summary>
-	public virtual string GenerateName()
+
+	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }
+
+    /// <summary>
+    /// Allows you to customize what this item's name can be
+    /// </summary>
+    public virtual string GenerateName()
+    {
+        return "Unnamed Item";
+    }
+
+    /// <summary>
+    /// Gets name and what tier the map is of as a singular string.
+    /// </summary>
+    public virtual string GetNameAndTier()
 	{
-		return "Unnamed Item";
+		return GenerateName() + ": " + _tier;
 	}
-	
 	public override bool? UseItem(Player player)
 	{
 		MappingSystem.EnterMap(this);
@@ -68,7 +78,7 @@ internal abstract class Map : ModItem
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
 		tooltips.Clear();
-		var nameLine = new TooltipLine(Mod, "Name", Name);
+		var nameLine = new TooltipLine(Mod, "Name", GenerateName());
 		tooltips.Add(nameLine);
 		
 		var mapLine = new TooltipLine(Mod, "Map", "Map");
@@ -89,6 +99,7 @@ internal abstract class Map : ModItem
 	public static void SpawnItem(Vector2 pos)
 	{
 		SpawnMap<LowTierMap>(pos);
+		SpawnMap<CaveMap>(pos);
 	}
 	
 	public static void SpawnMap<T>(Vector2 pos) where T : Map
@@ -98,7 +109,6 @@ internal abstract class Map : ModItem
 		if (item.ModItem is T map)
 		{
 			map._tier = 1;
-			map.GenerateName();
 		}
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
