@@ -50,35 +50,31 @@ public class MobRegistry
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 		};
-			
-		Stream pathsStream = PathOfTerraria.Instance.GetFileStream("Data/paths.txt");
-		var pathsReader = new StreamReader(pathsStream);
-		string[] paths = pathsReader.ReadToEnd().Split("\r\n", StringSplitOptions.RemoveEmptyEntries);
 
-		pathsReader.Dispose();
-		pathsStream.Dispose();
-			
-		foreach (string path in paths)
+		List<string> jsonFiles = PathOfTerraria.Instance.GetFileNames();
+
+		foreach (Stream jsonStream in from path in jsonFiles where path.StartsWith("Data/Vanilla") && path.EndsWith(".json") select PathOfTerraria.Instance.GetFileStream(path))
 		{
-			Stream jsonStream = PathOfTerraria.Instance.GetFileStream("Data/" + path);
-			var jsonReader = new StreamReader(jsonStream);
+			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();
 			MobData data = JsonSerializer.Deserialize<MobData>(json, options);
-			if (data != null)
+			if (data == null)
 			{
-				if (Enum.IsDefined(typeof(MobNetIdEnum), data.NetId))
-				{
-					int enumValue = data.NetId;
-					jsonDataMap.Add(enumValue, data);
-				}
-				else
-				{
-					Console.WriteLine("Invalid enum value");
-				}
+				continue;
 			}
 
-			jsonReader.Dispose();
-			jsonStream.Dispose();
+			if (Enum.IsDefined(typeof(MobNetIdEnum), data.NetId))
+			{
+				int enumValue = data.NetId;
+				if (!jsonDataMap.TryAdd(enumValue, data))
+				{
+					Console.WriteLine($"Duplicate NetId found: {enumValue}");
+				}
+			}
+			else
+			{
+				Console.WriteLine($"Invalid enum value: {data.NetId}");
+			}
 		}
 
 		return jsonDataMap;
