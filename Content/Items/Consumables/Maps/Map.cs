@@ -99,6 +99,7 @@ public abstract class Map : ModItem
 	public static void SpawnItem(Vector2 pos)
 	{
 		SpawnMap<LowTierMap>(pos);
+		SpawnMap<CaveMap>(pos);
 	}
 	
 	public static void SpawnMap<T>(Vector2 pos) where T : Map
