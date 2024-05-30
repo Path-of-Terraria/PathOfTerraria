@@ -30,6 +30,8 @@ public class CaveRoom
 /// </summary>
 public class CaveSystemWorld : MappingWorld
 {
+	public override int Width => 500;
+	public override int Height => 500;
 	public override List<GenPass> Tasks => [
 		new FillWorldPass(),
 		new FillPositionsPass(),
