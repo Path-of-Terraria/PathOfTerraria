@@ -6,7 +6,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal abstract class Map : ModItem
+public abstract class Map : ModItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
 	protected int Tier = 0;
@@ -24,14 +24,24 @@ internal abstract class Map : ModItem
 		Item.maxStack = 1;
 		Item.consumable = true;
 		Item.rare = ItemRarityID.Green;
+		Item.value = 1000;
 	}
-	
+
+	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }
+
 	/// <summary>
 	/// Allows you to customize what this item's name can be
 	/// </summary>
 	public virtual string GenerateName()
 	{
 		return "Unnamed Item";
+	}
+	/// <summary>
+	/// Gets name and what tier the map is of as a singular string.
+	/// </summary>
+	public virtual string GetNameAndTier()
+	{
+		return GenerateName() + ": " + Tier;
 	}
 	public override bool? UseItem(Player player)
 	{
