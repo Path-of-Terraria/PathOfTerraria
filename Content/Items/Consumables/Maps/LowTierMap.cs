@@ -1,6 +1,6 @@
 ﻿namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal class LowTierMap : CaveMap
+internal class LowTierMap : Map
 {
 
 }
