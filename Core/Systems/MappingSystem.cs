@@ -15,9 +15,23 @@ internal class MappingSystem : ModSystem
 
 	public static void EnterMap(Map map)
 	{
-		TriesLeft = 10;
+		Console.WriteLine("ENTER MAP");
+		TriesLeft = 10; // get from map
 		Map = map;
 		SubworldSystem.Enter<TestSubworld>();
+	}
+	public static void EnterCaveMap(CaveMap map)
+	{
+		CaveSystemWorld a = new CaveSystemWorld();
+		a.Tasks.ForEach(a => Console.WriteLine(a.Name));
+		Console.WriteLine(SubworldSystem.GetIndex<TestSubworld>() + " - " + SubworldSystem.GetIndex<CaveSystemWorld>());
+
+		Console.WriteLine("ENTER CAVE MAP");
+		TriesLeft = 10; // get from map
+		Map = map;
+		CaveSystemWorld.Map = map;
+		SubworldSystem.Enter<CaveSystemWorld>();
+
 	}
 
 	// apply map affixes here
