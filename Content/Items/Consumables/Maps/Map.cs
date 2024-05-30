@@ -41,7 +41,7 @@ public abstract class Map : ModItem
     /// </summary>
     public virtual string GetNameAndTier()
 	{
-		return GenerateName() + ": " + Tier;
+		return GenerateName() + ": " + _tier;
 	}
 	public override bool? UseItem(Player player)
 	{
@@ -78,7 +78,7 @@ public abstract class Map : ModItem
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
 		tooltips.Clear();
-		var nameLine = new TooltipLine(Mod, "Name", Name);
+		var nameLine = new TooltipLine(Mod, "Name", GenerateName());
 		tooltips.Add(nameLine);
 		
 		var mapLine = new TooltipLine(Mod, "Map", "Map");
@@ -109,7 +109,6 @@ public abstract class Map : ModItem
 		if (item.ModItem is T map)
 		{
 			map._tier = 1;
-			Name = map.GenerateName();
 		}
 
 		Item.NewItem(null, pos, Vector2.Zero, item);

@@ -173,7 +173,6 @@ internal class MobMappingSystem : ModSystem
 		_method.Invoke(null, [npc, source]);
 
 		_savedNpcs.Add(npc, npc.Center);
-		Console.WriteLine(_savedNpcs.Count);
 	}
 }
 

@@ -14,7 +14,6 @@ internal class CaveClearingPass() : GenPass("TerrainClear", 1)
 {
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Console.WriteLine("Start clearing cave with " + CaveSystemWorld.Lines.Count + " lines");
 		for (int x = 0; x < Main.maxTilesX; x++)
 		{
 			progress.Set(x / (float)Main.maxTilesX); // Controls the progress bar, should only be set between 0f and 1f

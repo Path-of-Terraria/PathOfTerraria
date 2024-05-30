@@ -9,7 +9,6 @@ public class FlatWorldPass() : GenPass("Terrain", 1)
 
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Console.WriteLine("why..?");
 		progress.Message = "ENTERING TIER X MAP"; // Sets the text displayed for this pass
 		Main.worldSurface = Main.maxTilesY - 42; // Hides the underground layer just out of bounds
 		Main.rockLayer = Main.maxTilesY; // Hides the cavern layer way out of bounds
