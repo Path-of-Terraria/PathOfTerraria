@@ -40,7 +40,10 @@ internal class CaveClearingPass() : GenPass("TerrainClear", 1)
 					}
 				}
 
-				if (!tile.HasTile) continue;
+				if (!tile.HasTile)
+				{
+					continue;
+				}
 
 				// line based clear
 				foreach (Tuple<Vector2, Vector2> line in CaveSystemWorld.Lines)

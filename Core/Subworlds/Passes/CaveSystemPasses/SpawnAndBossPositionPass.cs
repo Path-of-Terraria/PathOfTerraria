@@ -10,17 +10,13 @@ internal class SpawnAndBossPositionPass() : GenPass("BossAndSpawnRooms", 1)
 		float normalR = (r + MathF.PI * 1.25f) % (MathF.PI * 2f);
 		int edgeSide = (int)(normalR / (MathF.PI / 2));
 
-		switch (edgeSide)
+		return edgeSide switch
 		{
-			case 0:
-				return new(-widht, widht * MathF.Tan(-r)); // left edge
-			case 1:
-				return new(height / MathF.Tan(-r), -height); // down edge
-			case 2:
-				return new(widht, widht * MathF.Tan(r)); // right edge
-			default:
-				return new(height / MathF.Tan(r), height); // up edge
-		}
+			0 => new(-widht, widht * MathF.Tan(-r)),// left edge
+			1 => new(height / MathF.Tan(-r), -height),// down edge
+			2 => new(widht, widht * MathF.Tan(r)),// right edge
+			_ => new(height / MathF.Tan(r), height),// up edge
+		};
 	}
 
 	const float allowableDivergence = 0.3f;
@@ -49,7 +45,6 @@ internal class SpawnAndBossPositionPass() : GenPass("BossAndSpawnRooms", 1)
 		CaveSystemWorld.AddRoom(baseHalfSize + playerEdgePos, CaveSystemWorld.Map.SpawnRoomSize);
 		
 		CaveSystemWorld.AddRoom(baseHalfSize + bossEdgePos, CaveSystemWorld.Map.BossRoomSize);
-
 
 		Main.spawnTileX = (int)spawnPos.X;
 		Main.spawnTileY = (int)spawnPos.Y;

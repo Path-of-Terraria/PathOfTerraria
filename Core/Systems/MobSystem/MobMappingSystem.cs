@@ -74,7 +74,6 @@ internal class MobMappingSystem : ModSystem
 			return;
 		}
 
-
 		List<NPC> npcsToDespawn = [];
 		foreach (NPC npc in _npcs)
 		{
@@ -153,7 +152,6 @@ internal class MobMappingSystem : ModSystem
 		npc.ai[2] = 0f;
 		npc.ai[3] = 0f;
 		npc.target = 255;
-
 
 		/*
 		if (type == 50)

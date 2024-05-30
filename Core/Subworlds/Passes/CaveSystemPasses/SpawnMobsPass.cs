@@ -20,7 +20,6 @@ internal class SpawnMobsPass() : GenPass("MobSpawning", 1)
 		{
 			CaveRoom room = CaveSystemWorld.Rooms[i];
 
-
 			NPC n = NPC.NewNPCDirect(null, room.Position * 16f, NPCID.GreenSlime);
 		}
 
