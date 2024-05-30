@@ -54,6 +54,51 @@ Items: {
 		DisplayName: Low Tier Map
 		Tooltip: ""
 	}
+
+	BodyArmor: {
+		DisplayName: Body Armor
+		Tooltip: ""
+	}
+
+	Breastplate: {
+		DisplayName: Breastplate
+		Tooltip: ""
+	}
+
+	Crown: {
+		DisplayName: Crown
+		Tooltip: ""
+	}
+
+	Visor: {
+		DisplayName: Visor
+		Tooltip: ""
+	}
+
+	Boots: {
+		DisplayName: Boots
+		Tooltip: ""
+	}
+
+	BurningRedBoots: {
+		DisplayName: Burning Red Boots
+		Tooltip: ""
+	}
+
+	Greaves: {
+		DisplayName: Greaves
+		Tooltip: ""
+	}
+
+	Tassets: {
+		DisplayName: Tassets
+		Tooltip: ""
+	}
+
+	Treads: {
+		DisplayName: Treads
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

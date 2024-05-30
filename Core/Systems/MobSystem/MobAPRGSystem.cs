@@ -99,15 +99,6 @@ internal class MobAPRGSystem : GlobalNPC
 		return doKill;
 	}
 
-	public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
-	{
-		base.OnHitByItem(npc, player, item, hit, damageDone);
-	}
-	public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-	{
-		base.OnHitByProjectile(npc, projectile, hit, damageDone);
-	}
-
 	public override void OnSpawn(NPC npc, IEntitySource source)
 	{
 		if (npc.friendly || npc.boss) //We only want to trigger these changes on hostile non-boss mobs

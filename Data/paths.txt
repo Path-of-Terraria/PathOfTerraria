@@ -1,0 +1,2 @@
+Vanilla/None.json
+Vanilla/BlueSlime.json

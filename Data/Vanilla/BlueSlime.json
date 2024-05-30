@@ -1,0 +1,21 @@
+﻿{
+	"entries": [
+		{
+			"weight": 5.0,
+			"stats": {
+				"level": 1,
+				"xp": 1
+			},
+			"requirements": "PreHardmodeSurface"
+		},
+		{
+			"prefix": "Bulky",
+			"weight": 0.75,
+			"stats": {
+				"level": 3,
+				"xp": 5
+			},
+			"requirements": "PreHardmodeSurface"
+		}
+	]
+}

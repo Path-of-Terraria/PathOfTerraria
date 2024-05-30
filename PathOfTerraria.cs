@@ -4,10 +4,9 @@ global using System;
 global using Terraria;
 global using Terraria.ModLoader;
 using PathOfTerraria.API.GraphicsLib;
-using PathOfTerraria.Content.GUI;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Data;
 using Terraria.ID;
-using Terraria.UI;
 
 namespace PathOfTerraria;
 
@@ -27,6 +26,8 @@ public class PathOfTerraria : Mod
 		{
 			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 		}
+
+		MobRegistry.Load();
 		Gear.GenerateGearList();
 	}
 }
