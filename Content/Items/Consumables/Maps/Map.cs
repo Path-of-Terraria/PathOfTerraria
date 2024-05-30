@@ -109,7 +109,7 @@ public abstract class Map : ModItem
 		if (item.ModItem is T map)
 		{
 			map._tier = 1;
-			map.GenerateName();
+			Name = map.GenerateName();
 		}
 
 		Item.NewItem(null, pos, Vector2.Zero, item);

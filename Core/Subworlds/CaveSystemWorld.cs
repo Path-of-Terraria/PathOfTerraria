@@ -79,23 +79,4 @@ public class CaveSystemWorld : MappingWorld
 
 		AvailablePositions = AvailablePositions.Where(point => point.Distance(position) > size + Map.ExtraRoomDist + Map.RoomSizeMax).ToList();
 	}
-
-	/*
-	public override void Update()
-	{
-		foreach (Player player in Main.ActivePlayers)
-		{
-			foreach (CaveRoom room in Rooms.Where(r => !r.Spawned))
-			{
-				if (player.Center.Distance(room.Position) < room.Size + Main.screenWidth / 2f) // spawn condition needs to be re-evaluated at some point
-				{
-					room.Spawned = true;
-
-					// spawn mobs
-					// but if we want this to be neat, we might want to place mobs in the tunnels too...
-				}
-			}
-		}
-	}
-	*/
 }
