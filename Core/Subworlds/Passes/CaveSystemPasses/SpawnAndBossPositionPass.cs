@@ -1,8 +1,9 @@
-﻿using Terraria.IO;
+﻿using SubworldLibrary;
+using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds.Passes.CaveSystemPasses;
-internal class SpawnAndBossPositionPass() : GenPass("Terrain", 1)
+internal class SpawnAndBossPositionPass() : GenPass("BossAndSpawnRooms", 1)
 {
 	private Vector2 GetEdgePosition(float r, int height, int widht)
 	{
@@ -33,7 +34,7 @@ internal class SpawnAndBossPositionPass() : GenPass("Terrain", 1)
 		int width = Main.maxTilesX / 2;
 		int height = Main.maxTilesY / 2;
 
-		int widthP = width - CaveSystemWorld.Map.SpawnRoomSize;
+		int widthP = width - CaveSystemWorld.Map.SpawnRoomSize; // - some extra amount; // bc terraria is dumb, it'd seem
 		int heightP = height - CaveSystemWorld.Map.SpawnRoomSize;
 
 		int widthB = width - CaveSystemWorld.Map.BossRoomSize;
@@ -43,12 +44,14 @@ internal class SpawnAndBossPositionPass() : GenPass("Terrain", 1)
 		Vector2 playerEdgePos = GetEdgePosition(playerR, widthP, heightP);
 		Vector2 bossEdgePos = GetEdgePosition(bossR, widthB, heightB);
 
-		Console.WriteLine(baseHalfSize);
-		Console.WriteLine(playerEdgePos);
-		Console.WriteLine(bossEdgePos);
+		Vector2 spawnPos = baseHalfSize + playerEdgePos;
 
 		CaveSystemWorld.AddRoom(baseHalfSize + playerEdgePos, CaveSystemWorld.Map.SpawnRoomSize);
 		
 		CaveSystemWorld.AddRoom(baseHalfSize + bossEdgePos, CaveSystemWorld.Map.BossRoomSize);
+
+
+		Main.spawnTileX = (int)spawnPos.X;
+		Main.spawnTileY = (int)spawnPos.Y;
 	}
 }

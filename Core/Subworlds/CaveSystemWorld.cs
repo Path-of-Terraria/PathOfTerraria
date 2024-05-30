@@ -13,7 +13,9 @@ public class CaveRoom
 	public Vector2 Position;
 	public int Size;
 	public int Connections;
-	public List<CaveRoom> AllConnections = new List<CaveRoom>();
+	public List<CaveRoom> AllConnections = new();
+
+	// public bool Spawned = false;
 
 	public CaveRoom(Vector2 position, int size, int connections)
 	{
@@ -37,6 +39,7 @@ public class CaveSystemWorld : MappingWorld
 		new RemainingRoomLinkingPass(),
 		new CaveClearingPass(),
 		new RoomCorrectionPass(),
+		new SpawnMobsPass(),
 	];
 
 	// idk why im using tuples for everything, just too lazy to make a separate class/struct...
@@ -76,4 +79,23 @@ public class CaveSystemWorld : MappingWorld
 
 		AvailablePositions = AvailablePositions.Where(point => point.Distance(position) > size + Map.ExtraRoomDist + Map.RoomSizeMax).ToList();
 	}
+
+	/*
+	public override void Update()
+	{
+		foreach (Player player in Main.ActivePlayers)
+		{
+			foreach (CaveRoom room in Rooms.Where(r => !r.Spawned))
+			{
+				if (player.Center.Distance(room.Position) < room.Size + Main.screenWidth / 2f) // spawn condition needs to be re-evaluated at some point
+				{
+					room.Spawned = true;
+
+					// spawn mobs
+					// but if we want this to be neat, we might want to place mobs in the tunnels too...
+				}
+			}
+		}
+	}
+	*/
 }

@@ -1,6 +1,7 @@
 ﻿
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Subworlds;
+using PathOfTerraria.Core.Systems.MobSystem;
 using SubworldLibrary;
 using Terraria.DataStructures;
 
@@ -11,24 +12,24 @@ internal class MappingSystem : ModSystem
 	public static int TriesLeft = 10;
 	public static bool InMap => Map != null;
 
+	private static void EnterMap<T>(Map map) where T : Subworld
+	{
+		MobMappingSystem.OpenSubworld();
+		TriesLeft = 10; // get from map
+		Map = map;
+		SubworldSystem.Enter<T>();
+	}
+
 	public static void EnterMap(Map map)
 	{
 		Console.WriteLine("ENTER MAP");
-		TriesLeft = 10; // get from map
-		Map = map;
-		SubworldSystem.Enter<TestSubworld>();
+		EnterMap<TestSubworld>(map);
 	}
 	public static void EnterCaveMap(CaveMap map)
 	{
-		CaveSystemWorld a = new CaveSystemWorld();
-		a.Tasks.ForEach(a => Console.WriteLine(a.Name));
-		Console.WriteLine(SubworldSystem.GetIndex<TestSubworld>() + " - " + SubworldSystem.GetIndex<CaveSystemWorld>());
-
 		Console.WriteLine("ENTER CAVE MAP");
-		TriesLeft = 10; // get from map
-		Map = map;
 		CaveSystemWorld.Map = map;
-		SubworldSystem.Enter<CaveSystemWorld>();
+		EnterMap<CaveSystemWorld>(map);
 
 	}
 
