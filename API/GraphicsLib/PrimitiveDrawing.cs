@@ -2,11 +2,10 @@
 
 public static class PrimitiveDrawing{
 	private static BasicEffect _simpleVertexEffect;
+
 	internal static void Init(GraphicsDevice device){
-		Main.QueueMainThreadAction(() => {
-			_simpleVertexEffect = new BasicEffect(device){
-				VertexColorEnabled = true
-			};
+		Main.QueueMainThreadAction(() => _simpleVertexEffect = new BasicEffect(device){
+			VertexColorEnabled = true
 		});
 	}
 
@@ -127,28 +126,28 @@ public static class PrimitiveDrawing{
 		SubmitPacket(packet);
 	}
 
-	public static void DrawHollowRectangle(Vector2 coordTL, Vector2 coordBR, Color colorTL, Color colorTR, Color colorBL, Color colorBR){
-		var tr = new Vector2(coordBR.X, coordTL.Y);
-		var bl = new Vector2(coordTL.X, coordBR.Y);
+	public static void DrawHollowRectangle(Vector2 coordTl, Vector2 coordBr, Color colorTl, Color colorTr, Color colorBl, Color colorBr){
+		var tr = new Vector2(coordBr.X, coordTl.Y);
+		var bl = new Vector2(coordTl.X, coordBr.Y);
 
 		var packet = new PrimitivePacket(PrimitiveType.LineStrip);
 
-		packet.AddDraw(ToPrimitive(coordTL, colorTL), ToPrimitive(tr, colorTR));
-		packet.AddDraw(ToPrimitive(tr, colorTR),      ToPrimitive(coordBR, colorBR));
-		packet.AddDraw(ToPrimitive(coordBR, colorBR), ToPrimitive(bl, colorBL));
-		packet.AddDraw(ToPrimitive(bl, colorBL),      ToPrimitive(coordTL, colorTL));
+		packet.AddDraw(ToPrimitive(coordTl, colorTl), ToPrimitive(tr, colorTr));
+		packet.AddDraw(ToPrimitive(tr, colorTr),      ToPrimitive(coordBr, colorBr));
+		packet.AddDraw(ToPrimitive(coordBr, colorBr), ToPrimitive(bl, colorBl));
+		packet.AddDraw(ToPrimitive(bl, colorBl),      ToPrimitive(coordTl, colorTl));
 
 		SubmitPacket(packet);
 	}
 
-	public static void DrawFilledRectangle(Vector2 coordTL, Vector2 coordBR, Color colorTL, Color colorTR, Color colorBL, Color colorBR){
-		var tr = new Vector2(coordBR.X, coordTL.Y);
-		var bl = new Vector2(coordTL.X, coordBR.Y);
+	public static void DrawFilledRectangle(Vector2 coordTl, Vector2 coordBr, Color colorTl, Color colorTr, Color colorBl, Color colorBr){
+		var tr = new Vector2(coordBr.X, coordTl.Y);
+		var bl = new Vector2(coordTl.X, coordBr.Y);
 
 		var packet = new PrimitivePacket(PrimitiveType.TriangleList);
 
-		packet.AddDraw(ToPrimitive(coordTL, colorTL), ToPrimitive(tr, colorTR), ToPrimitive(bl, colorBL));
-		packet.AddDraw(ToPrimitive(bl, colorBL), ToPrimitive(tr, colorTR), ToPrimitive(coordBR, colorBR));
+		packet.AddDraw(ToPrimitive(coordTl, colorTl), ToPrimitive(tr, colorTr), ToPrimitive(bl, colorBl));
+		packet.AddDraw(ToPrimitive(bl, colorBl), ToPrimitive(tr, colorTr), ToPrimitive(coordBr, colorBr));
 
 		SubmitPacket(packet);
 	}
@@ -229,6 +228,7 @@ public static class PrimitiveDrawing{
 		{
 			throw new ArgumentException("Length of points array must be a multiple of 3", nameof(points));
 		}
+
 		if (colors.Length != points.Length)
 		{
 			throw new ArgumentException("Length of colors array must match length of points array", nameof(colors));
@@ -252,31 +252,31 @@ public static class PrimitiveDrawing{
 	private static void SubmitPacket(PrimitivePacket packet){
 		ArgumentNullException.ThrowIfNull(packet);
 
-		if (packet.draws is null)
+		if (packet.Draws is null)
 		{
-			throw new ArgumentNullException(nameof(packet) + "." + nameof(PrimitivePacket.draws));
+			throw new ArgumentNullException(nameof(packet) + "." + nameof(PrimitivePacket.Draws));
 		}
 
-		if(packet.draws.Count <= 0)
+		if(packet.Draws.Count <= 0)
 		{
 			throw new ArgumentOutOfRangeException("packet.draws.Count", "Packet does not have any primitive data attached to it");
 		}
 
-		var buffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), packet.draws.Count, BufferUsage.WriteOnly);
+		var buffer = new VertexBuffer(Main.graphics.GraphicsDevice, typeof(VertexPositionColor), packet.Draws.Count, BufferUsage.WriteOnly);
 
 		//Calculate the number of primitives that will be drawn
 		int count = packet.GetPrimitivesCount();
 
 		//Device must not have a buffer attached for a buffer to be given data
 		Main.graphics.GraphicsDevice.SetVertexBuffer(null);
-		buffer.SetData(packet.draws.ToArray());
+		buffer.SetData(packet.Draws.ToArray());
 
 		//Set the buffer
 		Main.graphics.GraphicsDevice.SetVertexBuffer(buffer);
 		_simpleVertexEffect.CurrentTechnique.Passes[0].Apply();
 
 		//Draw the vertices
-		Main.graphics.GraphicsDevice.DrawPrimitives(packet.type, 0, count);
+		Main.graphics.GraphicsDevice.DrawPrimitives(packet.Type, 0, count);
 	}
 
 	/// <summary>
@@ -298,5 +298,4 @@ public static class PrimitiveDrawing{
 
 		return new VertexPositionColor(pos, color);
 	}
-
 }

@@ -10,7 +10,7 @@ public class PassiveAffixes
 		public override ModifierType ModifierType => ModifierType.Added;
 		public override bool IsFlat => false;
 		public override string Tooltip => "# Attack Speed";
-		protected override float internalModifierCalculation(Gear gear)
+		protected override float InternalModifierCalculation(Gear gear)
 		{
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
 		}
@@ -22,7 +22,7 @@ public class PassiveAffixes
 		public override ModifierType ModifierType => ModifierType.Added;
 		public override string Tooltip => "# Additional Damage";
 
-		protected override float internalModifierCalculation(Gear gear)
+		protected override float InternalModifierCalculation(Gear gear)
 		{
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
 		}
@@ -34,7 +34,7 @@ public class PassiveAffixes
 		public override ModifierType ModifierType => ModifierType.Added;
 		public override string Tooltip => "# Additional Damage";
 
-		protected override float internalModifierCalculation(Gear gear)
+		protected override float InternalModifierCalculation(Gear gear)
 		{
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
 		}

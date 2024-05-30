@@ -14,8 +14,8 @@ public class MobExperienceSystem : GlobalNPC
 	public override void OnKill(NPC npc)
 	{
 
-		MobAPRGSystem npcSystem = npc.GetGlobalNPC<MobAPRGSystem>();
-		int amount = npcSystem._experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
+		MobAprgSystem npcSystem = npc.GetGlobalNPC<MobAprgSystem>();
+		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
 		amount =
 			npcSystem.Rarity
 				switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?

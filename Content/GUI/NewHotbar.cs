@@ -206,15 +206,6 @@ internal class NewHotbar : SmartUIState
 		return 1 + c3 * (float)Math.Pow(input - 1, 3) + c1 * (float)Math.Pow(input - 1, 2);
 	}
 
-	public override void SafeClick(UIMouseEvent evt)
-	{
-		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarEmpty").Value;
-		var pos = new Vector2(Main.screenWidth / 2, 10);
-
-		var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
-
-	}
-
 	private void DrawHotkeys(SpriteBatch spriteBatch)
 	{
 		if (!IsHoldingFirstHotbarItem())
@@ -229,7 +220,12 @@ internal class NewHotbar : SmartUIState
 			string assignedKey = quickHealHotkey[0];
 			DrawLetter(spriteBatch, assignedKey, new Vector2(472, 71), Color.White);
 		}
-		if (quickManaHotkey.Count > 0)
+
+		if (quickManaHotkey.Count <= 0)
+		{
+			return;
+		}
+
 		{
 			string assignedKey = quickManaHotkey[0];
 			DrawLetter(spriteBatch, assignedKey, new Vector2(523, 71), Color.White);

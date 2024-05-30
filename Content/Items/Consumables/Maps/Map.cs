@@ -9,9 +9,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 internal abstract class Map : ModItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
-	protected int Tier = 0;
-	private List<MapAffix> _affixes = [];
-	private string _name;
+	private int _tier;
+	private readonly List<MapAffix> _affixes = [];
 
 	public override void SetDefaults() {
 		Item.width = 32;
@@ -33,6 +32,7 @@ internal abstract class Map : ModItem
 	{
 		return "Unnamed Item";
 	}
+	
 	public override bool? UseItem(Player player)
 	{
 		MappingSystem.EnterMap(this);
@@ -74,7 +74,7 @@ internal abstract class Map : ModItem
 		var mapLine = new TooltipLine(Mod, "Map", "Map");
 		tooltips.Add(mapLine);
 
-		var rareLine = new TooltipLine(Mod, "Tier", "Tier: " + Tier);
+		var rareLine = new TooltipLine(Mod, "Tier", "Tier: " + _tier);
 		tooltips.Add(rareLine);
 
 		foreach (MapAffix affix in _affixes)
@@ -97,8 +97,8 @@ internal abstract class Map : ModItem
 		item.SetDefaults(ModContent.ItemType<T>());
 		if (item.ModItem is T map)
 		{
-			map.Tier = 1;
-			map._name = map.GenerateName();
+			map._tier = 1;
+			map.GenerateName();
 		}
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
@@ -106,7 +106,7 @@ internal abstract class Map : ModItem
 	
 	public override void SaveData(TagCompound tag)
 	{
-		tag["tier"] = Tier;
+		tag["tier"] = _tier;
 
 		List<TagCompound> affixTags = [];
 		foreach (MapAffix affix in _affixes)
@@ -121,7 +121,7 @@ internal abstract class Map : ModItem
 
 	public override void LoadData(TagCompound tag)
 	{
-		Tier = tag.GetInt("tier");
+		_tier = tag.GetInt("tier");
 
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
 

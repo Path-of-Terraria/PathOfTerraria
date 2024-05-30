@@ -12,6 +12,7 @@ public class MobRegistry
 	/// A map of MobData objects, with the key being the type from NPC.
 	/// </summary>
 	private static Dictionary<int, MobData> _mobData = new();
+
 	public static void Load()
 	{
 		_mobData = LoadJsonFilesToMapAsync();
@@ -37,8 +38,7 @@ public class MobRegistry
 			return null;
 		}
 	}
-
-
+	
 	/// <summary>
 	/// Loads the JSON files from the paths.txt file and returns a map of the data.
 	/// </summary>
@@ -76,6 +76,7 @@ public class MobRegistry
 					Console.WriteLine("Invalid enum value");
 				}
 			}
+
 			jsonReader.Dispose();
 			jsonStream.Dispose();
 		}

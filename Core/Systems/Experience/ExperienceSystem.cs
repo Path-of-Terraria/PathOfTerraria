@@ -43,6 +43,7 @@ public class ExperienceTracker : ModSystem{
 
 			batch.Draw(texture, xp.Center - Main.screenPosition, source, Color.White, xp.Rotation, size / 2f, 1f, SpriteEffects.None, 0);
 		}
+
 		batch.End();
 
 		//Draw the trails

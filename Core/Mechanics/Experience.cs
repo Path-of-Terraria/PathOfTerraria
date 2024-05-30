@@ -77,18 +77,21 @@ public sealed class Experience {
 	}
 
 	public Rectangle GetSourceRectangle()
-		=> _value switch{
-			Sizes.OrbSmallYellow =>  new Rectangle( 0,  0,  6,  6),
-			Sizes.OrbSmallGreen =>   new Rectangle( 8,  0,  6,  6),
-			Sizes.OrbSmallBlue =>    new Rectangle(16,  0,  6,  6),
-			Sizes.OrbMediumYellow => new Rectangle( 0,  8,  8,  8),
-			Sizes.OrbMediumGreen =>  new Rectangle(10,  8,  8,  8),
-			Sizes.OrbMediumBlue =>   new Rectangle(20,  8,  8,  8),
-			Sizes.OrbLargeYellow =>  new Rectangle( 0, 18, 10, 10),
-			Sizes.OrbLargeGreen =>   new Rectangle(12, 18, 10, 10),
-			Sizes.OrbLargeBlue =>    new Rectangle(24, 18, 10, 10),
+	{
+		return _value switch
+		{
+			Sizes.OrbSmallYellow => new Rectangle(0, 0, 6, 6),
+			Sizes.OrbSmallGreen => new Rectangle(8, 0, 6, 6),
+			Sizes.OrbSmallBlue => new Rectangle(16, 0, 6, 6),
+			Sizes.OrbMediumYellow => new Rectangle(0, 8, 8, 8),
+			Sizes.OrbMediumGreen => new Rectangle(10, 8, 8, 8),
+			Sizes.OrbMediumBlue => new Rectangle(20, 8, 8, 8),
+			Sizes.OrbLargeYellow => new Rectangle(0, 18, 10, 10),
+			Sizes.OrbLargeGreen => new Rectangle(12, 18, 10, 10),
+			Sizes.OrbLargeBlue => new Rectangle(24, 18, 10, 10),
 			_ => Rectangle.Empty
 		};
+	}
 
 	public void Update(){
 		if(!Active)
@@ -168,6 +171,7 @@ public sealed class Experience {
 					{
 						_velocity = Vector2.Zero;
 					}
+
 					break;
 				}
 		}

@@ -184,22 +184,22 @@ internal abstract class Gear : ModItem
 		foreach (GearAffix affix in _affixes)
 		{
 			string text = $"[i:{ItemID.MusketBall}] " +
-						  HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}");
+						  HighlightNumbers($"{affix.GetTooltip(this)}");
 
 			if (index < _implicits)
 			{
-				text = $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", baseColor: "8B8000");
+				text = $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", baseColor: "8B8000");
 				// idk colors...
 			}
 
 			if (affix.RequiredInfluence == GearInfluence.Solar)
 			{
-				text = $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "FFEE99", "CCB077");
+				text = $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "FFEE99", "CCB077");
 			}
 
 			if (affix.RequiredInfluence == GearInfluence.Lunar)
 			{
-				text = $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "BBDDFF", "99AADD");
+				text = $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "BBDDFF", "99AADD");
 			}
 
 			var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", text);
@@ -483,7 +483,8 @@ internal abstract class Gear : ModItem
 	/// Spawns a random piece of armor at the given position
 	/// </summary>
 	/// <param name="pos">Where to spawn the armor</param>
-	static MethodInfo method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
+	static readonly MethodInfo Method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
+	
 	public static void SpawnItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
 	{
 		float dropChanceSum = AllGear.Sum(x => x.Item1 * (x.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f));
@@ -495,7 +496,7 @@ internal abstract class Gear : ModItem
 			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f);
 			if (choice < cumulativeChance)
 			{
-				method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
+				Method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
 				return;
 			}
 		}
