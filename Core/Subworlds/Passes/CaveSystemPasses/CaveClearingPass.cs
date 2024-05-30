@@ -59,7 +59,7 @@ internal class CaveClearingPass() : GenPass("TerrainClear", 1)
 
 					float effectOnThisTile = closestPoint.Distance(point) * (0.4f + NoiseHelper.GetStaticNoise(point / 200f));
 
-					if (effectOnThisTile < 8)
+					if (effectOnThisTile < 6)
 					{
 						tile.HasTile = false;
 					}

@@ -40,7 +40,6 @@ public class CaveSystemWorld : MappingWorld
 		new SpawnToBossPass(),
 		new RemainingRoomLinkingPass(),
 		new CaveClearingPass(),
-		new RoomCorrectionPass(),
 		new SpawnMobsPass(),
 	];
 
