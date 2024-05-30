@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 
@@ -10,6 +12,7 @@ internal class MobAPRGSystem : GlobalNPC
 {
 	public List<MobAffix> _affixes = [];
 	private Player _lastPlayerHit = null;
+	public int? _experience;
 	public override bool InstancePerEntity => true;
 	public MobRarity Rarity = MobRarity.Magic;
 
@@ -103,6 +106,16 @@ internal class MobAPRGSystem : GlobalNPC
 	{
 		if (npc.friendly || npc.boss) //We only want to trigger these changes on hostile non-boss mobs
 			return;
+		
+		MobData mobData = MobRegistry.TryGetMobData(npc.type);
+		if (mobData != null)
+		{
+			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
+			if (entry != null)
+			{
+				_experience = entry.Stats.Experience;
+			}
+		}
 			
 		Rarity = Main.rand.Next(100) switch
 		{

@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Experience;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
 using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -8,15 +10,15 @@ namespace PathOfTerraria.Core.Systems.MobSystem;
 
 public class MobExperienceSystem : GlobalNPC
 {
-	private int _experience;
-	
-	public override bool InstancePerEntity => true;
-	
+	/// <summary>
+	/// Handles the experience gained from killing a mob
+	/// </summary>
+	/// <param name="npc"></param>
 	public override void OnKill(NPC npc)
 	{
-		int amount = (int)Math.Max(1, npc.lifeMax * 0.25f);
 
 		MobAPRGSystem npcSystem = npc.GetGlobalNPC<MobAPRGSystem>();
+		int amount = npcSystem._experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
 		amount =
 			npcSystem.Rarity
 				switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?
@@ -27,7 +29,7 @@ public class MobExperienceSystem : GlobalNPC
 					,
 					_ => amount
 				};
-
+		
 		foreach (Player player in Main.player.Where(n =>
 			         n.active && Vector2.DistanceSquared(n.Center, npc.Center) < Math.Pow(2000, 2)))
 		{
