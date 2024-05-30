@@ -7,7 +7,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class CaveMap : Map
+public class CaveMap : Map
 {
 	public int RoomSizeMin = 20;
 	public int RoomSizeMax = 44;
@@ -19,5 +19,10 @@ public abstract class CaveMap : Map
 	{
 		MappingSystem.EnterCaveMap(this);
 		return true;
+	}
+
+	public override string GenerateName()
+	{
+		return "Test Cave";
 	}
 }

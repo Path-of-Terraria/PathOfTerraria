@@ -10,7 +10,7 @@ using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds.Passes.CaveSystemPasses;
-internal class CaveClearingPass() : GenPass("Terrain", 1)
+internal class CaveClearingPass() : GenPass("TerrainClear", 1)
 {
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{

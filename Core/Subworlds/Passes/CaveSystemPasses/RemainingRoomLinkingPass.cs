@@ -8,7 +8,7 @@ using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds.Passes.CaveSystemPasses;
-internal class RemainingRoomLinkingPass() : GenPass("Terrain", 1)
+internal class RemainingRoomLinkingPass() : GenPass("RoomLinking", 1)
 {
 	const float dotMin = -0.4f;
 	const float dotMax = 0.4f;

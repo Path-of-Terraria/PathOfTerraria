@@ -8,7 +8,7 @@ using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds.Passes.CaveSystemPasses;
-internal class FillPositionsPass() : GenPass("Terrain", 1)
+internal class FillPositionsPass() : GenPass("TerrainFill", 1)
 {
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{
