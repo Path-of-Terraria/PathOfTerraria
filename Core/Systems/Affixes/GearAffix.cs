@@ -1,10 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.Chat.Commands;
 using Terraria.ModLoader.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
@@ -20,7 +15,8 @@ internal abstract class GearAffix : Affix
 	public virtual void BuffPassive(Player player, Gear gear) { }
 
 	public abstract string Tooltip { get; }
-	public string GetTooltip(Player player, Gear gear)
+
+	public string GetTooltip(Gear gear)
 	{
 		float value = GetModifierValue(gear);
 		bool positive = value >= 0;
@@ -31,14 +27,12 @@ internal abstract class GearAffix : Affix
 		{
 			float oVal = Value;
 
-			Value = _minValue;
+			Value = MinValue;
 			float valueMin = GetModifierValue(gear);
-			bool positivMin = valueMin >= 0;
 			string textMin = valueMin.ToString();
 
-			Value = _maxValue;
+			Value = MaxValue;
 			float valueMax = GetModifierValue(gear);
-			bool positivMax = valueMax >= 0;
 			string textMax = valueMax.ToString();
 
 			range = $" [{textMin} - {textMax}]";
@@ -46,7 +40,7 @@ internal abstract class GearAffix : Affix
 			Value = oVal;
 		}
 
-		text = text + range;
+		text += range;
 
 		if (IsFlat && ModifierType == ModifierType.Multiplier)
 		{
@@ -68,10 +62,11 @@ internal abstract class GearAffix : Affix
 		return Tooltip.Replace("#", text);
 	}
 
-	protected abstract float internalModifierCalculation(Gear gear);
+	protected abstract float InternalModifierCalculation(Gear gear);
+
 	public float GetModifierValue(Gear gear)
 	{
-		float v = internalModifierCalculation(gear) * _externalMultiplier;
+		float v = InternalModifierCalculation(gear) * ExternalMultiplier;
 
 		if (Round)
 		{
@@ -84,9 +79,9 @@ internal abstract class GearAffix : Affix
 
 		return v;
 	}
-	public int GetModifierIValue(Gear gear) { return (int)GetModifierValue(gear); }
 
-
+	protected int GetModifierIValue(Gear gear) { return (int)GetModifierValue(gear); }
+	
 	/// <summary>
 	/// Generates an affix from a tag, used on load to re-populate affixes
 	/// </summary>

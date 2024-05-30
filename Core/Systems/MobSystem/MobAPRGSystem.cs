@@ -1,19 +1,22 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Core.Systems.MobSystem;
 
-internal class MobAPRGSystem : GlobalNPC
+internal class MobAprgSystem : GlobalNPC
 {
-	public List<MobAffix> _affixes = [];
-	private Player _lastPlayerHit = null;
+	private List<MobAffix> _affixes = [];
+	private readonly Player _lastPlayerHit = null;
+	public int? Experience;
 	public override bool InstancePerEntity => true;
 	public MobRarity Rarity = MobRarity.Magic;
 
-	public float DropRarity
+	private float DropRarity
 	// should somehow work together with magic find (that i assume we will have) to increase rarity / if its a unique
 	{
 		get
@@ -25,7 +28,7 @@ internal class MobAPRGSystem : GlobalNPC
 		}
 	}
 
-	private const float _minDropChanceScale = 0.4f;
+	private const float MinDropChanceScale = 0.4f;
 	// if we have 3 DropQuantity, 0.4f would mean we can spawn somewhere between 1 and 3 items
 	// we would take the 3 * 0.4 = 1.2
 	// 1.2 * 100 = 120
@@ -34,7 +37,7 @@ internal class MobAPRGSystem : GlobalNPC
 	// every 100% is an item and the rest is chance for another droop
 	// so if we roll 120, we'd get 1 item and 20% chance for another
 
-	public float DropQuantity // max drop amount, should probably affect min a little too
+	private float DropQuantity // max drop amount, should probably affect min a little too
 	{
 		get
 		{
@@ -48,31 +51,37 @@ internal class MobAPRGSystem : GlobalNPC
 	public override bool PreAI(NPC npc)
 	{
 		bool doRunNormalAi = true;
-		_affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAI(npc));
+		_affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAi(npc));
 		return doRunNormalAi;
 	}
+
 	public override void AI(NPC npc)
 	{
-		_affixes.ForEach(a => a.AI(npc));
+		_affixes.ForEach(a => a.Ai(npc));
 	}
+
 	public override void PostAI(NPC npc)
 	{
-		_affixes.ForEach(a => a.PostAI(npc));
+		_affixes.ForEach(a => a.PostAi(npc));
 	}
+
 	public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		bool doDraw = true;
 		_affixes.ForEach(a => doDraw = doDraw && a.PreDraw(npc, spriteBatch, screenPos, drawColor));
 		return doDraw;
 	}
+
 	public override void OnKill(NPC npc)
 	{
 		_affixes.ForEach(a => a.OnKill(npc));
 
 		if (npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss)
+		{
 			return;
+		}
 
-		int minDrop = (int)(DropQuantity * _minDropChanceScale * 100f);
+		int minDrop = (int)(DropQuantity * MinDropChanceScale * 100f);
 		int maxDrop = (int)(DropQuantity * 100f);
 
 		int rand = Main.rand.Next(minDrop, maxDrop + 1);
@@ -90,8 +99,11 @@ internal class MobAPRGSystem : GlobalNPC
 		}
 
 		if (rand < 25) // 10
+		{
 			Gear.SpawnItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+		}
 	}
+
 	public override bool PreKill(NPC npc)
 	{
 		bool doKill = true;
@@ -99,19 +111,22 @@ internal class MobAPRGSystem : GlobalNPC
 		return doKill;
 	}
 
-	public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
-	{
-		base.OnHitByItem(npc, player, item, hit, damageDone);
-	}
-	public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-	{
-		base.OnHitByProjectile(npc, projectile, hit, damageDone);
-	}
-
 	public override void OnSpawn(NPC npc, IEntitySource source)
 	{
 		if (npc.friendly || npc.boss) //We only want to trigger these changes on hostile non-boss mobs
+		{
 			return;
+		}
+
+		MobData mobData = MobRegistry.TryGetMobData(npc.type);
+		if (mobData != null)
+		{
+			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
+			if (entry != null)
+			{
+				Experience = entry.Stats.Experience;
+			}
+		}
 			
 		Rarity = Main.rand.Next(100) switch
 		{
@@ -126,7 +141,10 @@ internal class MobAPRGSystem : GlobalNPC
 			_ => npc.GivenName
 		};
 
-		if (Rarity == MobRarity.Normal || Rarity == MobRarity.Unique) return;
+		if (Rarity == MobRarity.Normal || Rarity == MobRarity.Unique)
+		{
+			return;
+		}
 
 		List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
 		_affixes = Rarity switch

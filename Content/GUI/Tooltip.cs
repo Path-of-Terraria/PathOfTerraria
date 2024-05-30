@@ -47,7 +47,9 @@ public class Tooltip : SmartUIState, ILoadable
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		if (text == string.Empty)
+		{
 			return;
+		}
 
 		ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
 
@@ -59,14 +61,20 @@ public class Tooltip : SmartUIState, ILoadable
 		Vector2 pos;
 
 		if (Main.MouseScreen.X > Main.screenWidth - width)
+		{
 			pos = Main.MouseScreen - new Vector2(width + 20, 0);
+		}
 		else
+		{
 			pos = Main.MouseScreen + new Vector2(40, 0);
+		}
 
 		height += ChatManager.GetStringSize(font, "{Dummy}\n" + tooltip, Vector2.One).Y + 16;
 
 		if (pos.Y + height > Main.screenHeight)
+		{
 			pos.Y -= height;
+		}
 
 		Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(20, 20, 55) * 0.925f);
 

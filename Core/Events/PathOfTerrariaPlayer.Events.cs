@@ -234,7 +234,9 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 		bool result = false;
 
 		if (FreeDodgeEvent is null)
+		{
 			return result;
+		}
 
 		foreach (FreeDodgeDelegate del in FreeDodgeEvent.GetInvocationList())
 		{

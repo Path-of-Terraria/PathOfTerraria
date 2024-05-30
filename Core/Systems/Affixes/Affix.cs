@@ -1,33 +1,34 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Content.Items.Gear;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
 internal abstract class Affix
 {
-	protected float _minValue = 0f;
-	protected float _maxValue = 1f;
-	protected float _externalMultiplier = 1f;
+	protected float MinValue;
+	protected float MaxValue = 1f;
+	protected float ExternalMultiplier = 1f;
+
 	protected float Value = 1f;
 	// to a certain degree, none of the above is useable by the MobAffix...
 
 	public virtual void Roll()
 	{
-		Value = Main.rand.Next((int)(_minValue * 10), (int)(_maxValue * 10)) / 10f;
+		Value = Main.rand.Next((int)(MinValue * 10), (int)(MaxValue * 10)) / 10f;
 	}
 
 	public void Save(TagCompound tag)
 	{
 		tag["type"] = GetType().FullName;
-		tag["externalMultiplier"] = _externalMultiplier;
+		tag["externalMultiplier"] = ExternalMultiplier;
 		tag["value"] = Value;
 	}
 
-	public void Load(TagCompound tag)
+	protected void Load(TagCompound tag)
 	{
-		_externalMultiplier = tag.GetFloat("externalMultiplier");
+		ExternalMultiplier = tag.GetFloat("externalMultiplier");
 		Value = tag.GetFloat("value");
 	}
 
@@ -35,7 +36,7 @@ internal abstract class Affix
 	{
 		var instance = (Affix)Activator.CreateInstance(typeof(T));
 
-		instance._externalMultiplier = externalMultiplier;
+		instance.ExternalMultiplier = externalMultiplier;
 		if (value == -1)
 		{
 			instance.Roll();
@@ -47,13 +48,14 @@ internal abstract class Affix
 
 		return instance;
 	}
+
 	public T Clone<T>() where T : Affix
 	{
 		var clone = (T)Activator.CreateInstance(GetType());
 
-		clone._minValue = _minValue;
-		clone._maxValue = _maxValue;
-		clone._externalMultiplier = _externalMultiplier;
+		clone.MinValue = MinValue;
+		clone.MaxValue = MaxValue;
+		clone.ExternalMultiplier = ExternalMultiplier;
 		clone.Value = Value;
 
 		return clone;
@@ -68,7 +70,9 @@ internal abstract class Affix
 	public static List<T> GenerateAffixes<T>(List<T> inputList, int count) where T : Affix
 	{
 		if (inputList.Count <= count)
+		{
 			return inputList;
+		}
 
 		var resultList = new List<T>(count);
 
@@ -136,7 +140,10 @@ internal class AffixHandler : ILoadable
 
 		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(Affix))) continue;
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Affix)))
+			{
+				continue;
+			}
 
 			object instance = Activator.CreateInstance(type);
 

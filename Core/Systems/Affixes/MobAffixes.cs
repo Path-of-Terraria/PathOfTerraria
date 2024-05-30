@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Content.Items;
-using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Content.Items.Gear;
+﻿using PathOfTerraria.Content.Items.Gear;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
@@ -26,9 +24,9 @@ internal abstract class MobAffix : Affix
 	/// </summary>
 	public virtual void PreRarity(NPC npc) { }
 
-	public virtual bool PreAI(NPC npc) { return true; }
-	public virtual void AI(NPC npc) { }
-	public virtual void PostAI(NPC npc) { }
+	public virtual bool PreAi(NPC npc) { return true; }
+	public virtual void Ai(NPC npc) { }
+	public virtual void PostAi(NPC npc) { }
 	public virtual bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return true; }
 	public virtual void OnKill(NPC npc) { }
 	public virtual bool PreKill(NPC npc) { return true; }

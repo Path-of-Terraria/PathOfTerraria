@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.API.GraphicsLib;
-using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 
@@ -41,7 +40,9 @@ public sealed class Experience {
 
 		Vector2 size = GetSize();
 		if(size == Vector2.Zero)
+		{
 			throw new Exception("Invalid xp count: " + xp);
+		}
 
 		Center = startPosition;
 		_velocity = startVelocity;
@@ -76,21 +77,27 @@ public sealed class Experience {
 	}
 
 	public Rectangle GetSourceRectangle()
-		=> _value switch{
-			Sizes.OrbSmallYellow =>  new Rectangle( 0,  0,  6,  6),
-			Sizes.OrbSmallGreen =>   new Rectangle( 8,  0,  6,  6),
-			Sizes.OrbSmallBlue =>    new Rectangle(16,  0,  6,  6),
-			Sizes.OrbMediumYellow => new Rectangle( 0,  8,  8,  8),
-			Sizes.OrbMediumGreen =>  new Rectangle(10,  8,  8,  8),
-			Sizes.OrbMediumBlue =>   new Rectangle(20,  8,  8,  8),
-			Sizes.OrbLargeYellow =>  new Rectangle( 0, 18, 10, 10),
-			Sizes.OrbLargeGreen =>   new Rectangle(12, 18, 10, 10),
-			Sizes.OrbLargeBlue =>    new Rectangle(24, 18, 10, 10),
+	{
+		return _value switch
+		{
+			Sizes.OrbSmallYellow => new Rectangle(0, 0, 6, 6),
+			Sizes.OrbSmallGreen => new Rectangle(8, 0, 6, 6),
+			Sizes.OrbSmallBlue => new Rectangle(16, 0, 6, 6),
+			Sizes.OrbMediumYellow => new Rectangle(0, 8, 8, 8),
+			Sizes.OrbMediumGreen => new Rectangle(10, 8, 8, 8),
+			Sizes.OrbMediumBlue => new Rectangle(20, 8, 8, 8),
+			Sizes.OrbLargeYellow => new Rectangle(0, 18, 10, 10),
+			Sizes.OrbLargeGreen => new Rectangle(12, 18, 10, 10),
+			Sizes.OrbLargeBlue => new Rectangle(24, 18, 10, 10),
 			_ => Rectangle.Empty
 		};
+	}
 
 	public void Update(){
-		if(!Active) return;
+		if(!Active)
+		{
+			return;
+		}
 
 		_oldCollected = Collected;
 
@@ -98,7 +105,9 @@ public sealed class Experience {
 		Player player = Main.player[_target];
 
 		if(!player.active)
+		{
 			Collected = true;
+		}
 
 		if(Collected){
 			//Make the trail shrink
@@ -162,6 +171,7 @@ public sealed class Experience {
 					{
 						_velocity = Vector2.Zero;
 					}
+
 					break;
 				}
 		}
@@ -189,7 +199,11 @@ public sealed class Experience {
 		int trailColorCount = _oldCenters.Count + 1;
 		var colors = new Color[trailColorCount];
 
-		if (_oldCollected && _collectedTrail is not null) return;
+		if (_oldCollected && _collectedTrail is not null)
+		{
+			return;
+		}
+
 		colors[^1] = color;
 		int i = 0;
 		foreach(Vector2 _ in _oldCenters){
@@ -201,13 +215,22 @@ public sealed class Experience {
 	}
 
 	public void DrawTrail(){
-		if(!Active) return;
+		if(!Active)
+		{
+			return;
+		}
 
 		Vector2 size = GetSize();
-		if(size == Vector2.Zero) return;
+		if(size == Vector2.Zero)
+		{
+			return;
+		}
 
 		//No trail yet
-		if (_oldCenters.Count == 0) return;
+		if (_oldCenters.Count == 0)
+		{
+			return;
+		}
 
 		Color color = GetTrailColor();
 		int trailColorCount = _oldCenters.Count + 1;

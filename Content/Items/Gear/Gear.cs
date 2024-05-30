@@ -1,5 +1,4 @@
-﻿using log4net.Core;
-using PathOfTerraria.Core.Systems.Affixes;
+﻿using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -55,10 +54,14 @@ internal abstract class Gear : ModItem
 			ItemSlot.Draw(sb, ref inv[slot], 21, position);
         
 			if (gear._influence == GearInfluence.Solar)
+			{
 				DrawSolarSlot(sb, position);
+			}
 
 			if (gear._influence == GearInfluence.Lunar)
+			{
 				DrawLunarSlot(sb, position);
+			}
 		}
 		else
 		{
@@ -78,7 +81,9 @@ internal abstract class Gear : ModItem
 		Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
 
 		if (effect is null)
+		{
 			return;
+		}
 
 		effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f % 2f);
 		effect.Parameters["primary"].SetValue(new Vector3(1, 1, 0.2f) * 0.7f);
@@ -113,7 +118,9 @@ internal abstract class Gear : ModItem
 		Effect effect = Filters.Scene["LunarEffect"].GetShader().Shader;
 
 		if (effect is null)
+		{
 			return;
+		}
 
 		effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.006f % 2f);
 		effect.Parameters["primary"].SetValue(new Vector3(0.4f, 0.8f, 1f) * 0.7f);
@@ -177,22 +184,22 @@ internal abstract class Gear : ModItem
 		foreach (GearAffix affix in _affixes)
 		{
 			string text = $"[i:{ItemID.MusketBall}] " +
-						  HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}");
+						  HighlightNumbers($"{affix.GetTooltip(this)}");
 
 			if (index < _implicits)
 			{
-				text = $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", baseColor: "8B8000");
+				text = $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", baseColor: "8B8000");
 				// idk colors...
 			}
 
 			if (affix.RequiredInfluence == GearInfluence.Solar)
 			{
-				text = $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "FFEE99", "CCB077");
+				text = $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "FFEE99", "CCB077");
 			}
 
 			if (affix.RequiredInfluence == GearInfluence.Lunar)
 			{
-				text = $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(Main.LocalPlayer, this)}", "BBDDFF", "99AADD");
+				text = $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "BBDDFF", "99AADD");
 			}
 
 			var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", text);
@@ -231,9 +238,13 @@ internal abstract class Gear : ModItem
 			line.BaseScale = Vector2.One * 0.95f;
 
 			if (line.Name == "Damage" || line.Name == "Defense")
+			{
 				yOffset = 2;
+			}
 			else
+			{
 				yOffset = -4;
+			}
 
 			return true;
 		}
@@ -289,11 +300,19 @@ internal abstract class Gear : ModItem
 		Rarity = GearRarity.Normal;
 
 		if (rare < 25 + itemLevel / 10f)
+		{
 			Rarity = GearRarity.Magic;
+		}
+
 		if (rare < 5)
+		{
 			Rarity = GearRarity.Rare;
+		}
+
 		if (IsUnique)
+		{
 			Rarity = GearRarity.Unique;
+		}
 
 		// Only item level 50+ can get influence
 		if (itemLevel > 50 && !IsUnique)
@@ -303,7 +322,9 @@ internal abstract class Gear : ModItem
 			// (might not need to, seems to generate plenty often for late game)
 
 			if (inf < 30)
+			{
 				_influence = Main.rand.NextBool() ? GearInfluence.Solar : GearInfluence.Lunar;
+			}
 		}
 
 		_affixes = GenerateImplicits();
@@ -327,12 +348,16 @@ internal abstract class Gear : ModItem
 	public void RollAffixes()
 	{
 		if (Rarity == GearRarity.Normal || Rarity == GearRarity.Unique)
+		{
 			return;
+		}
 
 		List<GearAffix> possible = AffixHandler.GetAffixes(GearType, _influence);
 
 		if (possible is null)
+		{
 			return;
+		}
 
 		_affixes.AddRange(Rarity switch
 		{
@@ -444,7 +469,11 @@ internal abstract class Gear : ModItem
 		AllGear.Clear();
 		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(Gear))) continue;
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Gear)))
+			{
+				continue;
+			}
+
 			Gear instance = (Gear)Activator.CreateInstance(type);
 			AllGear.Add(new(instance.DropChance, instance.IsUnique, type));
 		}
@@ -454,7 +483,8 @@ internal abstract class Gear : ModItem
 	/// Spawns a random piece of armor at the given position
 	/// </summary>
 	/// <param name="pos">Where to spawn the armor</param>
-	static MethodInfo method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
+	static readonly MethodInfo Method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
+	
 	public static void SpawnItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
 	{
 		float dropChanceSum = AllGear.Sum(x => x.Item1 * (x.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f));
@@ -466,7 +496,7 @@ internal abstract class Gear : ModItem
 			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f);
 			if (choice < cumulativeChance)
 			{
-				method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
+				Method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
 				return;
 			}
 		}
@@ -492,23 +522,50 @@ internal abstract class Gear : ModItem
 	private static int PickItemLevel()
 	{
 		if (NPC.downedMoonlord)
+		{
 			return Main.rand.Next(150, 201);
+		}
+
 		if (NPC.downedAncientCultist)
+		{
 			return Main.rand.Next(110, 151);
+		}
+
 		if (NPC.downedGolemBoss)
+		{
 			return Main.rand.Next(95, 131);
+		}
+
 		if (NPC.downedPlantBoss)
+		{
 			return Main.rand.Next(80, 121);
+		}
+
 		if (NPC.downedMechBossAny)
+		{
 			return Main.rand.Next(75, 111);
+		}
+
 		if (Main.hardMode)
+		{
 			return Main.rand.Next(50, 91);
+		}
+
 		if (NPC.downedBoss3)
+		{
 			return Main.rand.Next(30, 50);
+		}
+
 		if (NPC.downedBoss2)
+		{
 			return Main.rand.Next(20, 41);
+		}
+
 		if (NPC.downedBoss1)
+		{
 			return Main.rand.Next(10, 26);
+		}
+
 		return Main.rand.Next(5, 21);
 	}
 
@@ -577,8 +634,10 @@ internal abstract class Gear : ModItem
 	public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
 	{
 		if (!_affixes.Any()) //We don't want to run if there are no affixes to modify anything
+		{
 			return;
-			
+		}
+
 		foreach (GearAffix affix in _affixes)
 		{
 			switch (affix.GetType().Name)

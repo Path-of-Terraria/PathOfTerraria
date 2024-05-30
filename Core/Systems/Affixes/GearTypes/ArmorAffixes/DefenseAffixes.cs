@@ -11,7 +11,7 @@ internal class DefenseAffixes
 		public override string Tooltip => "# Defense";
 		public override bool Round => true;
 
-		protected override float internalModifierCalculation(Gear gear)
+		protected override float InternalModifierCalculation(Gear gear)
 		{
 			return 1 + Value * 5f + gear.ItemLevel / 50f;
 		}
@@ -29,7 +29,7 @@ internal class DefenseAffixes
 		public override bool IsFlat => false;
 		public override string Tooltip => "# Damage Reduction";
 
-		protected override float internalModifierCalculation(Gear gear)
+		protected override float InternalModifierCalculation(Gear gear)
 		{
 			return 1 + (float)Math.Truncate((Value * 5 + gear.ItemLevel / 50) * 10) / 10;
 		}

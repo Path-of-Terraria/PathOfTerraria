@@ -1,9 +1,7 @@
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.Audio;
-using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
 
@@ -44,7 +42,9 @@ public class ExpBar : SmartUIState
 		var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 
 		if (bounding.Contains(Main.MouseScreen.ToPoint()))
+		{
 			Utils.DrawBorderString(spriteBatch, $"Level {mp.Level}\nExperience: {mp.Exp} / {mp.NextLevel} ({Math.Truncate(mp.Exp / (float)mp.NextLevel * 10000) / 100f}%)\n\nClick to open skill tree", Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
+		}
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
@@ -59,9 +59,13 @@ public class ExpBar : SmartUIState
 			UILoader.GetUIState<Tree>().IsVisible = !UILoader.GetUIState<Tree>().IsVisible;
 
 			if (UILoader.GetUIState<Tree>().IsVisible)
+			{
 				SoundEngine.PlaySound(SoundID.MenuOpen, Main.LocalPlayer.Center);
+			}
 			else
+			{
 				SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+			}
 
 			Main.playerInventory = false;
 		}

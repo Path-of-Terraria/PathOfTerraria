@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems;
 
 namespace PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
 
@@ -10,7 +9,7 @@ internal class ManaAffix : GearAffix
 	public override string Tooltip => "# Maximum Mana";
 	public override bool Round => true;
 
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 5 + Value * 20 + gear.ItemLevel / 20;
 	}
@@ -28,7 +27,7 @@ internal class ManaRegenAffix : GearAffix
 	public override string Tooltip => "# Mana Regeneration";
 	public override bool Round => true;
 
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 1f + Value * 4f + gear.ItemLevel / 40f;
 	}
@@ -46,7 +45,7 @@ internal class ManaPotionPowerAffix : GearAffix
 	public override string Tooltip => "# Potion Mana Restored";
 	public override bool Round => true;
 
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 10f + Value * 10f + gear.ItemLevel / 20f;
 	}
@@ -64,7 +63,7 @@ internal class ManaPotionCapAffix : GearAffix
 	public override bool Round => true;
 	public override string Tooltip => "# Max Mana Potions";
 
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 1 + Value + gear.ItemLevel / 100f;
 	}
@@ -82,7 +81,7 @@ internal class ManaPotionCooldownAffix : GearAffix
 	public override GearInfluence RequiredInfluence => GearInfluence.Solar;
 	public override string Tooltip => "Mana potions are ready # seconds sooner";
 
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 0.5f + Value * 0.5f;
 	}

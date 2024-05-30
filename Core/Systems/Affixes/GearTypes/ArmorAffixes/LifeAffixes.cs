@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems;
 
 namespace PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
 
@@ -9,7 +8,7 @@ internal class LifeAffix : GearAffix
 	public override ModifierType ModifierType => ModifierType.Added;
 	public override string Tooltip => "# Maximum Life";
 	public override bool Round => true;
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 10f + Value * 30f + gear.ItemLevel / 100f;
 	}
@@ -26,7 +25,7 @@ internal class LifeRegenAffix : GearAffix
 	public override ModifierType ModifierType => ModifierType.Added;
 	public override string Tooltip => "# Life Regeneration";
 	public override bool Round => true;
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 1f + Value * 4f + gear.ItemLevel / 40f;
 	}
@@ -43,7 +42,7 @@ internal class LifePotionPowerAffix : GearAffix
 	public override ModifierType ModifierType => ModifierType.Added;
 	public override string Tooltip => "# Potion Life Gain";
 	public override bool Round => true;
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 10f + Value * 10f + gear.ItemLevel / 20f;
 	}
@@ -60,7 +59,7 @@ internal class LifePotionCapAffix : GearAffix
 	public override string Tooltip => "# Max Potions";
 	public override bool Round => true;
 
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 1 + Value + gear.ItemLevel / 100f;
 	}
@@ -77,7 +76,7 @@ internal class LifePotionCooldownAffix : GearAffix
 	public override GearInfluence RequiredInfluence => GearInfluence.Lunar;
 	public override string Tooltip => "# Healing Potion Cooldown Rate";
 
-	protected override float internalModifierCalculation(Gear gear)
+	protected override float InternalModifierCalculation(Gear gear)
 	{
 		return 0.5f + Value * 0.5f;
 	}

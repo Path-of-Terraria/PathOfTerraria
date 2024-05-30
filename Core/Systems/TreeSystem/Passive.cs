@@ -23,20 +23,28 @@ internal abstract class Passive
 		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall").Value;
 
 		if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name))
+		{
 			tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name).Value;
+		}
 
 		Color color = Color.Gray;
 
 		if (CanAllocate(Main.LocalPlayer))
+		{
 			color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
+		}
 
 		if (Level > 0)
+		{
 			color = Color.White;
+		}
 
 		spriteBatch.Draw(tex, center, null, color, 0, tex.Size() / 2f, 1, 0, 0);
 
 		if (MaxLevel > 1)
+		{
 			Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", center + new Vector2(Width / 2f, Height / 2f), color, 1, 0.5f, 0.5f);
+		}
 	}
 
 	/// <summary>

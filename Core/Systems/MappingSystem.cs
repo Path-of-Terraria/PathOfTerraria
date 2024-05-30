@@ -2,8 +2,6 @@
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Subworlds;
 using SubworldLibrary;
-using System.Collections.Generic;
-using System.Reflection;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Core.Systems;
@@ -28,7 +26,10 @@ internal class MappingPlayer : ModPlayer
 	// apply map affixes here
 	public override void Kill(double damage, int hitDirection, bool pvp, PlayerDeathReason damageSource)
 	{
-		if (!MappingSystem.InMap) return;
+		if (!MappingSystem.InMap)
+		{
+			return;
+		}
 
 		MappingSystem.TriesLeft--;
 		if (MappingSystem.TriesLeft == 0)

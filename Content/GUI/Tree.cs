@@ -39,7 +39,9 @@ internal class Tree : SmartUIState
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		if (Main.LocalPlayer.controlInv)
+		{
 			IsVisible = false;
+		}
 
 		if (!Populated)
 		{
@@ -112,10 +114,14 @@ internal class InnerPanel : SmartUIElement
 			Color color = Color.Gray;
 
 			if (edge.End.CanAllocate(Main.LocalPlayer) && edge.Start.Level > 0)
+			{
 				color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
+			}
 
 			if (edge.End.Level > 0 && edge.Start.Level > 0)
+			{
 				color = Color.White;
+			}
 
 			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.Start.TreePos, edge.End.TreePos) / 16))
 			{
@@ -167,7 +173,9 @@ internal class InnerPanel : SmartUIElement
 			_isHovering = Panel.IsMouseHovering;
 		}
 		else if (!Main.mouseLeft)
+		{
 			_blockMouse = _isHovering= false;
+		}
 
 		if (_isHovering)
 		{
@@ -179,7 +187,9 @@ internal class InnerPanel : SmartUIElement
 				foreach (UIElement element in Elements)
 				{
 					if (element is PassiveElement ele)
+					{
 						ele.Root = new Vector2(ele.Left.Pixels, ele.Top.Pixels);
+					}
 				}
 			}
 
@@ -272,7 +282,9 @@ internal class PassiveElement : SmartUIElement
 			string name = _passive.Name;
 
 			if (_passive.MaxLevel > 1)
+			{
 				name += $" ({_passive.Level}/{_passive.MaxLevel})";
+			}
 
 			Tooltip.SetName(name);
 			Tooltip.SetTooltip(_passive.Tooltip);
@@ -388,7 +400,11 @@ internal class PassiveElement : SmartUIElement
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
-		if (!_passive.CanDeallocate(Main.LocalPlayer)) return;
+		if (!_passive.CanDeallocate(Main.LocalPlayer))
+		{
+			return;
+		}
+
 		_passive.Level--;
 		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;
 

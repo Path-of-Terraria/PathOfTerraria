@@ -60,7 +60,9 @@ internal static class GUIHelper
 
 		// Add the last word
 		if (!string.IsNullOrEmpty(cacheString))
+		{
 			words.Add(cacheString);
+		}
 
 		string line = "";
 		foreach (string str in words)

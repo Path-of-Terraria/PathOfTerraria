@@ -10,7 +10,7 @@ public class ModifyHitAffixes
 		public override ModifierType ModifierType => ModifierType.Added;
 		public override string Tooltip => "# Armor Penetration";
 
-		protected override float internalModifierCalculation(Gear gear)
+		protected override float InternalModifierCalculation(Gear gear)
 		{
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
 		}
@@ -22,7 +22,7 @@ public class ModifyHitAffixes
 		public override ModifierType ModifierType => ModifierType.Added;
 		public override string Tooltip => "# Added Knockback";
 
-		protected override float internalModifierCalculation(Gear gear)
+		protected override float InternalModifierCalculation(Gear gear)
 		{
 			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
 		}
@@ -33,7 +33,7 @@ public class ModifyHitAffixes
 		public override GearType PossibleTypes => GearType.Weapon;
 		public override ModifierType ModifierType => ModifierType.Multiplier;
 		public override string Tooltip => "# Increased Knockback";
-		protected override float internalModifierCalculation(Gear gear)
+		protected override float InternalModifierCalculation(Gear gear)
 		{
 			return (1 + (int)(Value * 5) + gear.ItemLevel / 50) * 0.01f;
 		}

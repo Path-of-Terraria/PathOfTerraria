@@ -7,6 +7,8 @@ public class AltUseSystem : ModPlayer
 	public override void ResetEffects()
 	{
 		if (AltFunctionCooldown > 0)
+		{
 			AltFunctionCooldown--;
+		}
 	}
 }

@@ -16,7 +16,9 @@ internal class SkillPlayer : ModPlayer
 	public override void Load()
 	{
 		if (Main.dedServ)
+		{
 			return;
+		}
 
 		_skill1Keybind = KeybindLoader.RegisterKeybind(Mod, "UseSkill1", Keys.D3);
 		_skill2Keybind = KeybindLoader.RegisterKeybind(Mod, "UseSkill2", Keys.D4);
@@ -30,31 +32,41 @@ internal class SkillPlayer : ModPlayer
 		if (_skill1Keybind.JustPressed && Skills[0] != null)
 		{
 			if (Skills[0].Timer == 0)
+			{
 				Skills[0]?.UseSkill(Main.LocalPlayer);
+			}
 		}
 
 		if (_skill2Keybind.JustPressed && Skills[1] != null)
 		{
 			if (Skills[1].Timer == 0)
-				Skills[1]?.UseSkill(Main.LocalPlayer);	
+			{
+				Skills[1]?.UseSkill(Main.LocalPlayer);
+			}
 		}
 
 		if (_skill3Keybind.JustPressed && Skills[2] != null)
 		{
 			if (Skills[2].Timer == 0)
-				Skills[2]?.UseSkill(Main.LocalPlayer);	
+			{
+				Skills[2]?.UseSkill(Main.LocalPlayer);
+			}
 		}
 	}
 
 	public override void ResetEffects()
 	{
 		if (Skills == null || !Skills.Any())
+		{
 			return;
-			
+		}
+
 		foreach (Skill skill in Skills)
 		{
 			if (skill != null && skill.Timer > 0)
+			{
 				skill.Timer--;
+			}
 		}
 	}
 }

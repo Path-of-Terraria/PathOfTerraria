@@ -1,7 +1,4 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.Affixes.Affixes;
-
-namespace PathOfTerraria.Core.Systems.Affixes.Affixes.Mob;
+﻿namespace PathOfTerraria.Core.Systems.Affixes.Affixes.Mob;
 
 internal class LifeAffixes
 {

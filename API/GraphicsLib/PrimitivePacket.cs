@@ -3,19 +3,18 @@
 namespace PathOfTerraria.API.GraphicsLib;
 
 public class PrimitivePacket : IDisposable{
-	public PrimitiveType type;
+	public readonly PrimitiveType Type;
 
-	internal List<VertexPositionColor> draws;
+	internal List<VertexPositionColor> Draws;
 
 	/// <summary>
 	/// Creates a new <seealso cref="PrimitivePacket"/> that <seealso cref="PrimitiveDrawing"/> will process
 	/// </summary>
 	/// <param name="type">The type of primitives this packet can cache</param>
-	/// <param name="drawDepth">The desired draw depth for all primitives submitted to this packet</param>
 	public PrimitivePacket(PrimitiveType type){
-		this.type = type;
+		Type = type;
 
-		draws = new List<VertexPositionColor>();
+		Draws = [];
 	}
 
 	/// <summary>
@@ -25,10 +24,12 @@ public class PrimitivePacket : IDisposable{
 	public void AddDraw(params VertexPositionColor[] additions){
 		void CheckError(int expected){
 			if(additions.Length != expected)
-				throw new ArgumentException($"Primitive drawing package ({type}) received an invalid amount of draw data to cache. Expected: {expected}, Received: {additions.Length}");
+			{
+				throw new ArgumentException($"Primitive drawing package ({Type}) received an invalid amount of draw data to cache. Expected: {expected}, Received: {additions.Length}");
+			}
 		}
 
-		switch(type){
+		switch(Type){
 			case PrimitiveType.LineList:
 				//LineList expects there to be two entries per line: the start and end points
 				/*
@@ -50,7 +51,7 @@ public class PrimitivePacket : IDisposable{
 				 *                        \
 				 *                         3----------------4
 				 */
-				CheckError(draws.Count == 0 ? 2 : 1);
+				CheckError(Draws.Count == 0 ? 2 : 1);
 				break;
 			case PrimitiveType.TriangleList:
 				//TriangleList expects there to be 3 entries per triangle: the three corners of the triangle drawn
@@ -80,36 +81,34 @@ public class PrimitivePacket : IDisposable{
 				 *           2           \ /
 				 *                        5
 				 */
-				CheckError(draws.Count == 0 ? 3 : 2);
+				CheckError(Draws.Count == 0 ? 3 : 2);
 				break;
 		}
 
-		for(int p = 0; p < additions.Length; p++){
-			var data = additions[p];
-			data.Position.Z = 0;
-
-			draws.Add(additions[p]);
+		foreach (VertexPositionColor t in additions)
+		{
+			Draws.Add(t);
 		}
 	}
 
-	public int GetPrimitivesCount(){
-		switch(type){
-			case PrimitiveType.LineList:
-				return draws.Count / 2;
-			case PrimitiveType.LineStrip:
-				return draws.Count - 1;
-			case PrimitiveType.TriangleList:
-				return draws.Count / 3;
-			case PrimitiveType.TriangleStrip:
-				return draws.Count - 2;
-			default:
-				return 0;
-		}
+	public int GetPrimitivesCount()
+	{
+		return Type switch
+		{
+			PrimitiveType.LineList => Draws.Count / 2,
+			PrimitiveType.LineStrip => Draws.Count - 1,
+			PrimitiveType.TriangleList => Draws.Count / 3,
+			PrimitiveType.TriangleStrip => Draws.Count - 2,
+			_ => 0
+		};
 	}
 
-	private bool disposed;
+	private bool _disposed;
 
-	~PrimitivePacket() => Dispose(false);
+	~PrimitivePacket()
+	{
+		Dispose(false);
+	}
 
 	public void Dispose(){
 		Dispose(true);
@@ -117,12 +116,12 @@ public class PrimitivePacket : IDisposable{
 	}
 
 	private void Dispose(bool disposing){
-		if(!disposed){
-			disposed = true;
+		if(!_disposed){
+			_disposed = true;
 
 			if(disposing){
-				draws.Clear();
-				draws = null;
+				Draws.Clear();
+				Draws = null;
 			}
 		}
 	}

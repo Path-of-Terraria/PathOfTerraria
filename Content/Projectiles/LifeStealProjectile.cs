@@ -49,13 +49,17 @@
 			 Projectile.frameCounter = 0;
 			 // Or more compactly Projectile.frame = ++Projectile.frame % Main.projFrames[Projectile.type];
 			 if (++Projectile.frame >= Main.projFrames[Projectile.type])
+			 {
 				 Projectile.frame = 0;
+			 }
 		 }
 
 		 // Despawn this projectile after 1 second (60 ticks)
 		 // You can use Projectile.timeLeft = 60f in SetDefaults() for same goal
 		 if (Projectile.ai[0] >= 60f)
+		 {
 			 Projectile.Kill();
+		 }
 
 		 // Set both direction and spriteDirection to 1 or -1 (right and left respectively)
 		 // Projectile.direction is automatically set correctly in Projectile.Update, but we need to set it here or the textures will draw incorrectly on the 1st frame.
@@ -80,7 +84,9 @@
 			 Projectile.alpha -= 25;
 			 // Cap alpha before timer reaches 50 ticks
 			 if (Projectile.alpha < 100)
+			 {
 				 Projectile.alpha = 100;
+			 }
 
 			 return;
 		 }
@@ -89,7 +95,9 @@
 		 Projectile.alpha += 25;
 		 // Cal alpha to the maximum 255(complete transparent)
 		 if (Projectile.alpha > 255)
+		 {
 			 Projectile.alpha = 255;
+		 }
 	 }
 
 	 // Some advanced drawing because the texture image isn't centered or symetrical
@@ -100,7 +108,9 @@
 		 // SpriteEffects helps to flip texture horizontally and vertically
 		 SpriteEffects spriteEffects = SpriteEffects.None;
 		 if (Projectile.spriteDirection == -1)
+		 {
 			 spriteEffects = SpriteEffects.FlipHorizontally;
+		 }
 
 		 // Getting texture of projectile
 		 var texture = (Texture2D)ModContent.Request<Texture2D>(Texture);

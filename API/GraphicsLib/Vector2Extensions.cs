@@ -10,7 +10,9 @@ public static class Vector2Extensions
 		float angleDifference = MathHelper.WrapAngle(angleTarget - angleCurrent);
 
 		if (Math.Abs(angleDifference) <= maxRadiansDelta)
+		{
 			return targetDirection;
+		}
 
 		angleDifference = MathHelper.Clamp(angleDifference, -maxRadiansDelta, maxRadiansDelta);
 

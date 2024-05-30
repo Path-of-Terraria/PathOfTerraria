@@ -1,10 +1,6 @@
-﻿using Microsoft.Build.Framework;
-using PathOfTerraria.Content.GUI;
+﻿using PathOfTerraria.Content.GUI;
 using PathOfTerraria.Core.Loaders.UILoading;
 using System.Collections.Generic;
-using Terraria.Audio;
-using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
@@ -75,7 +71,11 @@ internal class TreePlayer : ModPlayer
 
 		foreach (Type type in Mod.Code.GetTypes())
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive))) continue;
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive)))
+			{
+				continue;
+			}
+
 			object instance = Activator.CreateInstance(type);
 			Nodes.Add(instance as Passive);
 		}
