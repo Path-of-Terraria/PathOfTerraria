@@ -6,14 +6,14 @@ using PathOfTerraria.Data.Models;
 
 namespace PathOfTerraria.Data;
 
-public class MobRegistry
+public class MobRegistry : ILoadable
 {
 	/// <summary>
 	/// A map of MobData objects, with the key being the type from NPC.
 	/// </summary>
 	private static Dictionary<int, MobData> _mobData = new();
 
-	public static void Load()
+	private void RegisterMobs()
 	{
 		_mobData = LoadJsonFilesToMapAsync();
 		foreach (KeyValuePair<int, MobData> entry in _mobData.Where(entry => entry.Value.Entries.Count > 0))
@@ -21,6 +21,13 @@ public class MobRegistry
 			Console.WriteLine($"Mob With Key: {entry.Key} - Registered");
 		}
 	}
+	
+	public void Load(Mod mod)
+	{
+		RegisterMobs();
+	}
+	
+	public virtual void Unload() { }
 	
 	/// <summary>
 	/// Provides a safe way of getting MobData from the MobData map.

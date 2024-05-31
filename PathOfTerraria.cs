@@ -26,8 +26,7 @@ public class PathOfTerraria : Mod
 		{
 			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 		}
-
-		MobRegistry.Load();
+		
 		Gear.GenerateGearList();
 	}
 }

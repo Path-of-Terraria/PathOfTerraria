@@ -13,7 +13,6 @@ public class MobExperienceSystem : GlobalNPC
 	/// <param name="npc"></param>
 	public override void OnKill(NPC npc)
 	{
-
 		MobAprgSystem npcSystem = npc.GetGlobalNPC<MobAprgSystem>();
 		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
 		amount =
