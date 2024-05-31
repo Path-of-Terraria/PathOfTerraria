@@ -11,6 +11,7 @@ public class ClassSelection : SmartUIState
 	public bool IsVisible = true;
 	public override bool Visible => IsVisible;
 	private bool _populated;
+
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));

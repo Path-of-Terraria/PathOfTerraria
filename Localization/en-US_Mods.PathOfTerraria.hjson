@@ -99,6 +99,11 @@ Items: {
 		DisplayName: Treads
 		Tooltip: ""
 	}
+
+	CaveMap: {
+		DisplayName: Cave Map
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

@@ -81,6 +81,7 @@ internal class Sword : Gear
 			_ => "Unknown"
 		};
 	}
+
 	public override string GenerateSuffix()
 	{
 		return Main.rand.Next(5) switch
