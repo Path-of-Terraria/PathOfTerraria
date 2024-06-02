@@ -484,19 +484,29 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	/// <param name="pos">Where to spawn the armor</param>
 	static readonly MethodInfo Method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
-	
+
 	public static void SpawnItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
 	{
-		float dropChanceSum = AllGear.Sum(x => x.Item1 * (x.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f));
+		ilevel = ilevel == 0 ? PickItemLevel() : ilevel;  // Pick the item level if not provided
+
+		// Filter AllGear based on item level
+		var filteredGear = AllGear.Where(g => 
+		{
+			var gearInstance = Activator.CreateInstance(g.Item3) as Gear;
+			return gearInstance != null && gearInstance.ItemLevel <= ilevel;
+		}).ToList();
+
+		// Calculate dropChanceSum based on filtered gear
+		float dropChanceSum = filteredGear.Sum(x => x.Item1 * (x.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f));
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
-		foreach (Tuple<float, bool, Type> gear in AllGear)
+		foreach (Tuple<float, bool, Type> gear in filteredGear)
 		{
 			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f);
 			if (choice < cumulativeChance)
 			{
-				Method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
+				Method.MakeGenericMethod(gear.Item3).Invoke(null, new object[] { pos, ilevel, dropRarityModifier });
 				return;
 			}
 		}
@@ -515,6 +525,7 @@ internal abstract class Gear : ModItem
 		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel, dropRarityModifier);
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
+
 
 	/// <summary>
 	/// Selects an appropriate item level for a piece of gear to drop at based on world state
