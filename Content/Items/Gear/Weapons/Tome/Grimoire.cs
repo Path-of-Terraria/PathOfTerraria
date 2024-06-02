@@ -2,10 +2,7 @@
 
 internal class Grimoire : Spellbook
 {
-	public Grimoire()
-	{
-		ItemLevel = 80;
-	}
+	public override int ItemLevel => 80;
 	
 	public override void SetDefaults()
 	{

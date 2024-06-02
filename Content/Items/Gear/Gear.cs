@@ -22,7 +22,7 @@ internal abstract class Gear : ModItem
 	public virtual bool IsUnique => false;
 
 	private string _name;
-	public int ItemLevel;
+	public virtual int ItemLevel { get; set; }
 
 	private List<GearAffix> _affixes = [];
     private int _implicits = 0;
@@ -525,8 +525,7 @@ internal abstract class Gear : ModItem
 		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel, dropRarityModifier);
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
-
-
+	
 	/// <summary>
 	/// Selects an appropriate item level for a piece of gear to drop at based on world state
 	/// </summary>

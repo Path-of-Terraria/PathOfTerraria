@@ -2,10 +2,7 @@
 
 internal class Codex : Spellbook
 {
-	public Codex()
-	{
-		ItemLevel = 60;
-	}
+	public override int ItemLevel => 60;
 	
 	public override void SetDefaults()
 	{
