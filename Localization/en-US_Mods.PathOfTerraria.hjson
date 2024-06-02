@@ -104,12 +104,43 @@ Items: {
 		DisplayName: Cave Map
 		Tooltip: ""
 	}
+
+	Codex: {
+		DisplayName: Codex
+		Tooltip: ""
+	}
+
+	Grimouire: {
+		DisplayName: Grimouire
+		Tooltip: ""
+	}
+
+	Lexicon: {
+		DisplayName: Lexicon
+		Tooltip: ""
+	}
+
+	Manuscript: {
+		DisplayName: Manuscript
+		Tooltip: ""
+	}
+
+	Spellbook: {
+		DisplayName: Spellbook
+		Tooltip: ""
+	}
+
+	Grimoire: {
+		DisplayName: Grimoire
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
 	LifeStealProjectile.DisplayName: Life Steal Projectile
 	HomingProjectile.DisplayName: Homing Projectile
 	SparklingBall.DisplayName: Sparkling Ball
+	TomeProjectile.DisplayName: Tome Projectile
 }
 
 Keybinds: {

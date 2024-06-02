@@ -1,0 +1,60 @@
+﻿using PathOfTerraria.API.GraphicsLib;
+using PathOfTerraria.Content.Dusts;
+using System.Linq;
+using Terraria.Audio;
+using Terraria.ID;
+
+namespace PathOfTerraria.Content.Projectiles.Magic;
+
+public class TomeProjectile : ModProjectile
+{
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/HomingProjectile";
+
+	public override void SetDefaults()
+	{
+		Projectile.width = Projectile.height = 8;
+		Projectile.friendly = true;
+		Projectile.DamageType = DamageClass.Magic;
+		Projectile.timeLeft = 600;
+	}
+
+	public override void AI()
+	{
+		IOrderedEnumerable<NPC> collection = Main.npc
+			.Where(npc => npc.active && !npc.friendly && !npc.CountsAsACritter)
+			.OrderBy(npc => Projectile.Center.Distance(npc.Center));
+		
+		// might want to order by most surefire hit instead, meaning
+		// the npc that would require the least amount of rotation to hit
+
+		if (collection.Any())
+		{
+			NPC target = collection.FirstOrDefault();
+
+			var targetVel = Vector2.Normalize(target.Center - Projectile.Center);
+			targetVel *= Projectile.velocity.Length();
+
+			if (Vector2.Dot(Vector2.Normalize(Projectile.velocity), targetVel) > 0)
+			{
+				Projectile.velocity = Projectile.velocity.RotateTowards(targetVel, 0.035f); // how much it turns.
+			}
+		}
+
+		if (Main.rand.NextBool(3))
+		{
+			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height,
+				ModContent.DustType<Sparkle>(), Projectile.velocity.X * 0.1f, Projectile.velocity.Y * 0.1f);
+		}
+	}
+
+	public override void OnKill(int timeLeft)
+	{
+		for (int k = 0; k < 5; k++)
+		{
+			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height,
+				ModContent.DustType<Sparkle>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
+		}
+
+		SoundEngine.PlaySound(SoundID.Item25, Projectile.position);
+	}
+}
