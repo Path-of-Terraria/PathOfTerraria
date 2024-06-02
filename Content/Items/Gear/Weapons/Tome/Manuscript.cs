@@ -11,7 +11,5 @@ internal class Manuscript : Spellbook
 	{
 		base.SetDefaults();
 		Item.damage = 20;
-		
-		ItemLevel = 20;
 	}
 }
