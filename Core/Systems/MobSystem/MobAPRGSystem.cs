@@ -117,17 +117,7 @@ internal class MobAprgSystem : GlobalNPC
 		{
 			return;
 		}
-
-		MobData mobData = MobRegistry.TryGetMobData(npc.type);
-		if (mobData != null)
-		{
-			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
-			if (entry != null)
-			{
-				Experience = entry.Stats.Experience;
-			}
-		}
-			
+		
 		Rarity = Main.rand.Next(100) switch
 		{
 			<2 => MobRarity.Rare, //2% Rare
@@ -140,6 +130,25 @@ internal class MobAprgSystem : GlobalNPC
 			MobRarity.Unique => "UNIQUE MOB",
 			_ => npc.GivenName
 		};
+
+		MobData mobData = MobRegistry.TryGetMobData(npc.type);
+		if (mobData != null)
+		{
+			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
+			if (entry != null)
+			{
+				Experience = entry.Stats.Experience;
+				if (!string.IsNullOrEmpty(entry.Prefix))
+				{
+					npc.GivenName = $"{entry.Prefix} - {npc.GivenOrTypeName}";
+				}
+
+				if (entry.Scale != null)
+				{
+					npc.scale *= (float) entry.Scale;	
+				}
+			}
+		}
 
 		if (Rarity == MobRarity.Normal || Rarity == MobRarity.Unique)
 		{

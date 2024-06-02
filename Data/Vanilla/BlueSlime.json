@@ -12,11 +12,17 @@
 		{
 			"prefix": "Bulky",
 			"weight": 0.75,
+			"scale": 2,
 			"stats": {
 				"level": 3,
 				"experience": 5
 			},
-			"requirements": "PreHardmodeSurface"
+			"requirements": "PreHardmodeSurface",
+			"affixes": [
+				{
+					"name": "DoubleLife"
+				}
+			]
 		}
 	]
 }
