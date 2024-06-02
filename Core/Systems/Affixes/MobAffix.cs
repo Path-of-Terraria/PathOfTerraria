@@ -7,6 +7,7 @@ internal abstract class MobAffix : Affix
 {
 	public virtual MobRarity MinimumRarity => MobRarity.Magic;
 	public virtual bool Allowed => true;
+	
 	// would prefer ProgressionLock, but then you'd have to write !Main.moonlordDowned
 	// but its mainly for progression
 	public virtual float DropQuantityFlat => 0;
@@ -20,7 +21,7 @@ internal abstract class MobAffix : Affix
 	public virtual void PostRarity(NPC npc) { }
 
 	/// <summary>
-	/// befre the rarity buff has been applied
+	/// before the rarity buff has been applied
 	/// </summary>
 	public virtual void PreRarity(NPC npc) { }
 
