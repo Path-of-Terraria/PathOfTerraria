@@ -134,6 +134,31 @@ Items: {
 		DisplayName: Grimoire
 		Tooltip: ""
 	}
+
+	CopperBroadsword: {
+		DisplayName: Copper Broadsword
+		Tooltip: ""
+	}
+
+	IronBroadsword: {
+		DisplayName: Iron Broadsword
+		Tooltip: ""
+	}
+
+	SteelBroadsword: {
+		DisplayName: Steel Broadsword
+		Tooltip: ""
+	}
+
+	StoneSword: {
+		DisplayName: Stone Sword
+		Tooltip: ""
+	}
+
+	WoodenSword: {
+		DisplayName: Wooden Sword
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
