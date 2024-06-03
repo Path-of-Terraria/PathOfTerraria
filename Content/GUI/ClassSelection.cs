@@ -1,6 +1,8 @@
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -105,6 +107,19 @@ public class ClassSelection : SmartUIState
 
     private void SetPlayerClass(string className)
     {
+	    switch (className)
+	    {
+		    case "Summoner":
+			    break;
+		    case "Magic":
+			    break;
+		    case "Ranged":
+			    break;
+		    case "Melee":
+			    Gear.SpawnGear<WoodenSword>(Main.LocalPlayer.position, 1);
+			    break;
+	    }
+	    
 	    Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = className;
 	    Main.NewText($"Class selected: {className}");
 	    IsVisible = false;
