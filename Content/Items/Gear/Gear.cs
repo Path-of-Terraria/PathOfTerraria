@@ -506,7 +506,7 @@ internal abstract class Gear : ModItem
 			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f);
 			if (choice < cumulativeChance)
 			{
-				Method.MakeGenericMethod(gear.Item3).Invoke(null, new object[] { pos, ilevel, dropRarityModifier });
+				Method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
 				return;
 			}
 		}
@@ -517,6 +517,8 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	/// <typeparam name="T">The type of gear to drop</typeparam>
 	/// <param name="pos">Where to drop it in the world</param>
+	/// <param name="ilevel">The item level of the item to spawn</param>
+	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
 	public static void SpawnGear<T>(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0) where T : Gear
 	{
 		var item = new Item();
