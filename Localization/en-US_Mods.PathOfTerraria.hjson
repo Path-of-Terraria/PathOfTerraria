@@ -159,6 +159,16 @@ Items: {
 		DisplayName: Wooden Sword
 		Tooltip: ""
 	}
+
+	MapDevice: {
+		DisplayName: Map Device
+		Tooltip: ""
+	}
+
+	MapDeviceOn: {
+		DisplayName: Map Device On
+		Tooltip: ""
+	}
 }
 
 Projectiles: {

@@ -25,12 +25,12 @@ internal class MappingSystem : ModSystem
 		// Console.WriteLine("ENTER MAP");
 		EnterMap<TestSubworld>(map);
 	}
+	
 	public static void EnterCaveMap(CaveMap map)
 	{
 		// Console.WriteLine("ENTER CAVE MAP");
 		CaveSystemWorld.Map = map;
 		EnterMap<CaveSystemWorld>(map);
-
 	}
 
 	// apply map affixes here
