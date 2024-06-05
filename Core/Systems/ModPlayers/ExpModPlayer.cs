@@ -5,7 +5,7 @@ using Terraria.ModLoader.IO;
 namespace PathOfTerraria.Core.Systems.ModPlayers;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-internal class ExpModPlayer : ModPlayer
+public class ExpModPlayer : ModPlayer
 {
 	public int Level;
 	public int Exp;
