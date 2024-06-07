@@ -1,8 +1,24 @@
-﻿using PathOfTerraria.Core.Systems.Affixes;
+﻿using log4net.Core;
+using Microsoft.CodeAnalysis.Differencing;
+using Microsoft.CodeAnalysis.Host.Mef;
+using Microsoft.Xna.Framework.Input;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using PathOfTerraria.Content.Socketables;
+using PathOfTerraria.Content.Summonables.Vanilla;
+using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Core.Systems.ModPlayers;
+using Steamworks;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Terraria;
+using Terraria.GameContent;
+using Terraria.GameContent.Achievements;
+using Terraria.GameContent.UI.Elements;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -18,6 +34,7 @@ internal abstract class Gear : ModItem
 	protected GearType GearType;
 	protected GearRarity Rarity;
 	private GearInfluence _influence;
+
 	public abstract float DropChance { get; }
 	public virtual bool IsUnique => false;
 
@@ -27,7 +44,104 @@ internal abstract class Gear : ModItem
 	private List<GearAffix> _affixes = [];
     private int _implicits = 0;
 
-    public override void Load()
+	private Socketable[] _sockets = []; // [new Imps()];
+	private int _selectedSocket = 0;
+
+	public void EquipItem(Player player)
+	{
+		if (!UseSockets())
+		{
+			return;
+		}
+
+		_sockets.ToList().ForEach(s => s?.OnSocket(player, Item));
+	}
+
+	public void UnEquipItem(Player player)
+	{
+		if (!UseSockets())
+		{
+			return;
+		}
+
+		_sockets.ToList().ForEach(s => s?.OnUnSocket(player, Item));
+	}
+
+	public bool IsThisItemActive(Player player)
+	{
+		return player.inventory[0] == Item || player.armor.Contains(Item);
+	}
+	public static bool IsThisItemActive(Player player, Item item)
+	{
+		Console.WriteLine(item);
+		return player.inventory[0] == item || player.armor.Contains(item);
+	}
+
+	public bool UseSockets()
+	{
+		return _sockets.Length != 0;
+	}
+
+	public void NextSocket()
+	{
+		_selectedSocket++;
+		if (_selectedSocket >= _sockets.Length)
+		{
+			_selectedSocket = 0;
+		}
+	}
+	public void PrevSocket()
+	{
+		_selectedSocket--;
+		if (_selectedSocket < 0)
+		{
+			_selectedSocket = _sockets.Length - 1;
+		}
+	}
+
+	public void Socket(Player player, Socketable item)
+	{
+		if (_sockets.Length == 0)
+		{
+			return;
+		}
+
+		if (_sockets[_selectedSocket] is not null)
+		{
+			_sockets[_selectedSocket].OnUnSocket(player, Item);
+			Main.mouseItem = _sockets[_selectedSocket].Item;
+		}
+		else
+		{
+			Main.mouseItem = new Item();
+		}
+
+		_sockets[_selectedSocket] = item;
+
+		if (IsThisItemActive(player))
+		{
+			item.OnSocket(player, Item);
+		}
+	}
+
+	public void ShiftClick(Player player)
+	{
+		if (Main.mouseItem.active && Main.mouseItem.ModItem is Socketable)
+		{
+			Socket(player, Main.mouseItem.ModItem as Socketable);
+		}
+		else if (_sockets[_selectedSocket] is not null)
+		{
+			if (IsThisItemActive(player))
+			{
+				_sockets[_selectedSocket].OnUnSocket(player, Item);
+			}
+			Main.mouseItem = _sockets[_selectedSocket].Item;
+			_sockets[_selectedSocket] = null;
+		}
+	}
+
+	public override void Load()
 	{
 		On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
 	}
@@ -180,32 +294,92 @@ internal abstract class Gear : ModItem
 			tooltips.Add(defenseLine);
 		}
 
-		int index = 0;
+		// custom affixes
+		int affixIdx = 0;
 		foreach (GearAffix affix in _affixes)
 		{
-			string text = $"[i:{ItemID.MusketBall}] " +
-						  HighlightNumbers($"{affix.GetTooltip(this)}");
-
-			if (index < _implicits)
+			string text = affix.RequiredInfluence switch
 			{
-				text = $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", baseColor: "8B8000");
-				// idk colors...
-			}
+				GearInfluence.Solar => $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "FFEE99", "CCB077"),
+				GearInfluence.Lunar => $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "BBDDFF", "99AADD"),
+				_ => affixIdx < _implicits ?
+					$"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", baseColor: "8B8000") :
+					$"[i:{ItemID.MusketBall}] " +HighlightNumbers($"{affix.GetTooltip(this)}"),
+			};	
 
-			if (affix.RequiredInfluence == GearInfluence.Solar)
-			{
-				text = $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "FFEE99", "CCB077");
-			}
-
-			if (affix.RequiredInfluence == GearInfluence.Lunar)
-			{
-				text = $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "BBDDFF", "99AADD");
-			}
-
-			var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", text);
+			var affixLine = new TooltipLine(Mod, $"Affix{affixIdx}", text);
 			tooltips.Add(affixLine);
 
-			index++;
+			affixIdx++;
+		}
+
+		if (_sockets.Length > 0)
+		{
+			tooltips.Add(new TooltipLine(Mod, "Space", " "));
+		}
+		// sockets
+		for (int i = 0; i < _sockets.Length; i++)
+		{
+			string text = "";
+			if (_sockets[i] is not null)
+			{
+				text = _sockets[i].GenerateName();
+			}
+			var affixLine = new TooltipLine(Mod, $"Socket{i}",
+				$"[i:{(i == _selectedSocket ? ItemID.NanoBullet : ItemID.ChlorophyteBullet)}] " + text);
+			tooltips.Add(affixLine);
+		}
+
+
+		// change in stats if equipped
+		EntityModifier thisItemModifier = new EntityModifier();
+		_affixes.ForEach(n => n.ApplyAffix(thisItemModifier, this));
+
+		EntityModifier currentItemModifier = new EntityModifier();
+		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active)
+		{
+			(Main.LocalPlayer.armor[0].ModItem as Gear).ApplyAffixes(currentItemModifier);
+		}
+		else if (Item.bodySlot >= 0 && Main.LocalPlayer.armor[1].active)
+		{
+			(Main.LocalPlayer.armor[1].ModItem as Gear).ApplyAffixes(currentItemModifier);
+		}
+		else if (Item.legSlot >= 0 && Main.LocalPlayer.armor[2].active)
+		{
+			(Main.LocalPlayer.armor[2].ModItem as Gear).ApplyAffixes(currentItemModifier);
+		}
+		// missing accessories
+		else
+		{
+			if (Main.LocalPlayer.inventory[0].ModItem is Gear)
+			{
+				(Main.LocalPlayer.inventory[0].ModItem as Gear).ApplyAffixes(currentItemModifier);
+			}
+		}
+
+		List<string> red = new();
+		List<string> green = new();
+		currentItemModifier.GetDifference(thisItemModifier).ForEach(s => {
+			if (s[0] == '-' || s.Contains("decrease"))
+			{
+				red.Add(s);
+			}
+			else
+			{
+				green.Add(s);
+			}
+		});
+		if (red.Count + green.Count > 0)
+		{
+			tooltips.Add(new TooltipLine(Mod, "Space", " "));
+		}
+		foreach (string changes in green)
+		{
+			tooltips.Add(new TooltipLine(Mod, $"Change{affixIdx}", $"[c/00FF00:{changes}]"));
+		}
+		foreach (string changes in red)
+		{
+			tooltips.Add(new TooltipLine(Mod, $"Change{affixIdx}", $"[c/FF0000:{changes}]"));
 		}
 	}
 
@@ -233,7 +407,7 @@ internal abstract class Gear : ModItem
 		}
 
 		if (line.Mod == Mod.Name &&
-		    (line.Name.Contains("Affix") || line.Name == "Damage" || line.Name == "Defense"))
+			(line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense"))
 		{
 			line.BaseScale = Vector2.One * 0.95f;
 
@@ -245,6 +419,21 @@ internal abstract class Gear : ModItem
 			{
 				yOffset = -4;
 			}
+
+			return true;
+		}
+
+		if (line.Mod == Mod.Name && line.Name == "Space")
+		{
+			line.BaseScale *= 0f;
+			yOffset = -20;
+
+			return true;
+		}
+		if (line.Mod == Mod.Name && line.Name.Contains("Change"))
+		{
+			line.BaseScale = Vector2.One * 0.75f;
+			yOffset = -10;
 
 			return true;
 		}
@@ -326,6 +515,18 @@ internal abstract class Gear : ModItem
 				_influence = Main.rand.NextBool() ? GearInfluence.Solar : GearInfluence.Lunar;
 			}
 		}
+
+		_selectedSocket = 0;
+		int maxSockets = Rarity switch // what to do if we roll less sockets than what we have equipped?
+									// maby just not allow to roll if we have any sockets?
+		{
+			GearRarity.Normal => Main.rand.Next(2),
+			GearRarity.Magic => Main.rand.Next(1, 2),
+			GearRarity.Rare => Main.rand.Next(1, 3),
+			_ => 0,
+		};
+
+		_sockets = new Socketable[maxSockets];
 
 		_affixes = GenerateImplicits();
 
@@ -414,7 +615,14 @@ internal abstract class Gear : ModItem
 
 	public override void UpdateEquip(Player player)
 	{
-		_affixes.ForEach(n => n.BuffPassive(player, this));
+		_sockets.Where(s => s is not null).ToList().ForEach(s => s.UpdateEquip(player, Item));
+
+		ApplyAffixes(player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
+	}
+
+	public void ApplyAffixes(EntityModifier entityModifier)
+	{
+		_affixes.ForEach(n => n.ApplyAffix(entityModifier, this));
 	}
 
 	public override void SaveData(TagCompound tag)
@@ -423,6 +631,7 @@ internal abstract class Gear : ModItem
 		tag["rarity"] = (int)Rarity;
 		tag["influence"] = (int)_influence;
 
+		tag["socketCount"] = _sockets.Length;
 		tag["implicits"] = _implicits;
 
 		tag["name"] = _name;
@@ -437,6 +646,17 @@ internal abstract class Gear : ModItem
 		}
 
 		tag["affixes"] = affixTags;
+
+		for (int i = 0; i < _sockets.Length; i++)
+		{
+			Socketable socket = _sockets[i];
+			if (socket is not null)
+			{
+				var newTag = new TagCompound();
+				socket.Save(newTag);
+				tag.Add("Socket" + i, newTag);
+			}
+		}
 	}
 
 	public override void LoadData(TagCompound tag)
@@ -454,7 +674,26 @@ internal abstract class Gear : ModItem
 
 		foreach (TagCompound newTag in affixTags)
 		{
-			_affixes.Add(GearAffix.FromTag(newTag));
+			GearAffix g = GearAffix.FromTag(newTag);
+			if (g is not null)
+			{
+				_affixes.Add(g);
+			}
+		}
+
+		int socketCount = tag.GetInt("socketCount");
+		_sockets = new Socketable[socketCount];
+
+		for (int i = 0; i < _sockets.Length; i++)
+		{
+			if (tag.TryGet("Socket" + i, out TagCompound newTag))
+			{
+				Socketable g = Socketable.FromTag(newTag);
+				if (g is not null)
+				{
+					_sockets[i] = g;
+				}
+			}
 		}
 
 		PostRoll();
@@ -643,6 +882,7 @@ internal abstract class Gear : ModItem
 		return $" {influenceName}{rareName}{typeName}";
 	}
 
+	/* // think we can just apply this on equipment update... pretty sure this is for if you hit a certain target or anything like that.
 	public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)
 	{
 		if (!_affixes.Any()) //We don't want to run if there are no affixes to modify anything
@@ -666,4 +906,5 @@ internal abstract class Gear : ModItem
 			}
 		}
 	}
+	*/
 }
