@@ -1,7 +1,6 @@
 ﻿using Ionic.Zlib;
 using Newtonsoft.Json.Linq;
 using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Content.Summonables.Vanilla;
 using PathOfTerraria.Core.Systems.Affixes;
 using Steamworks;
 using System;
