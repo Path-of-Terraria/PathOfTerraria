@@ -1,14 +1,15 @@
-﻿using Microsoft.Xna.Framework.Input;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Content.Items.Gear;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using Terraria.GameContent.Achievements;
 using Terraria.UI;
 
-namespace PathOfTerraria.Core.Systems;
-
+namespace PathOfTerraria.Core.Systems.Sockets;
 public class UnAndEquipSocketSystem : ILoadable
 {
 	public void Load(Mod mod)
@@ -41,7 +42,7 @@ public class UnAndEquipSocketSystem : ILoadable
 					c.Emit(OpCodes.Ldarg, 0);
 					c.Emit(OpCodes.Ldarg, 2);
 					c.Emit(OpCodes.Ldelem_Ref);
-					c.EmitDelegate<Action<Item>>(PotentialGearEquip1);
+					c.EmitDelegate(PotentialGearEquip1);
 					i += 4;
 				}
 			}
@@ -68,7 +69,7 @@ public class UnAndEquipSocketSystem : ILoadable
 		c.Index = c.Body.CodeSize;
 		c.Emit(OpCodes.Ldarg, 0);
 		c.Emit(OpCodes.Ldarg, 1);
-		c.EmitDelegate<Action<Player, Item>>(PotentialGearEquip2);
+		c.EmitDelegate(PotentialGearEquip2);
 	}
 	public static void PotentialGearEquip2(Player player, Item item)
 	{
@@ -87,7 +88,7 @@ public class UnAndEquipSocketSystem : ILoadable
 		c.Index = c.Body.CodeSize - 1;
 		c.Emit(OpCodes.Ldarg, 0);
 		c.Emit(OpCodes.Ldloc, 2);
-		c.EmitDelegate<Action<Item, Item>>(PotentialGearEquip3);
+		c.EmitDelegate(PotentialGearEquip3);
 	}
 	public static void PotentialGearEquip3(Item itemEquip, Item itemUnEquip)
 	{
@@ -97,7 +98,6 @@ public class UnAndEquipSocketSystem : ILoadable
 			(itemEquip.ModItem as Gear).EquipItem(player);
 		}
 
-		Console.WriteLine(itemUnEquip);
 		if (itemUnEquip.active && itemUnEquip.ModItem is Gear)
 		{
 			(itemUnEquip.ModItem as Gear).UnEquipItem(player);
@@ -146,103 +146,3 @@ public class UnAndEquipSocketSystem : ILoadable
 		return nItem;
 	}
 }
-
-public class SocketPlayer : ModPlayer
-{
-	private static bool _blockUp = false;
-	private static bool _blockDown = false;
-	public override bool ShiftClickSlot(Item[] inventory, int context, int slot)
-	{
-		Item item = inventory[slot];
-		if (item.ModItem is not Gear
-			|| item.ModItem is Gear && !(item.ModItem as Gear).UseSockets()
-			|| inventory == Main.LocalPlayer.armor) // shift click is uneqip :/
-		{
-			return false;
-		}
-
-		Gear gear = item.ModItem as Gear;
-
-		gear.ShiftClick(Player);
-
-		return true;
-	}
-	public override bool HoverSlot(Item[] inventory, int context, int slot)
-	{
-		Item item = inventory[slot];
-		if (item.ModItem is Gear && !(item.ModItem as Gear).UseSockets())
-		{
-			return base.HoverSlot(inventory, context, slot);
-		}
-
-		if (Main.keyState.IsKeyDown(Keys.Up))
-		{
-			if (!_blockUp)
-			{
-				_blockUp = true;
-
-				if (item.ModItem is Gear)
-				{
-					(item.ModItem as Gear).NextSocket();
-				}
-			}
-		}
-		else
-		{
-			_blockUp = false;
-		}
-
-		if (Main.keyState.IsKeyDown(Keys.Down))
-		{
-			if (!_blockDown)
-			{
-				_blockDown = true;
-
-				if (item.ModItem is Gear)
-				{
-					(item.ModItem as Gear).PrevSocket();
-				}
-			}
-		}
-		else
-		{
-			_blockDown = false;
-		}
-
-		return base.HoverSlot(inventory, context, slot);
-	}
-
-	public override void OnEnterWorld()
-	{
-		Console.WriteLine("b");
-		ReEquip();
-	}
-
-	public override void OnRespawn()
-	{
-		Console.WriteLine("a");
-		ReEquip();
-	}
-
-	private void ReEquip()
-	{
-		List<Item> allEquipedGear = Player.armor.ToList();
-		allEquipedGear.Add(Player.inventory[0]);
-		allEquipedGear.ForEach(a =>
-		{
-			if (a.active && a.ModItem is Gear)
-			{
-				(a.ModItem as Gear).UnEquipItem(Player); // re-activate things when player respawns
-				(a.ModItem as Gear).EquipItem(Player);
-			}
-		});
-	}
-}
-
-/*
- 
-
-	public override void UpdateInventory(Player player)
-	{
-	}
- */

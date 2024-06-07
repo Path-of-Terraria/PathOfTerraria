@@ -14,8 +14,6 @@ internal class RemainingRoomLinkingPass() : GenPass("RoomLinking", 1)
 	const float dotMax = 0.4f;
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Console.WriteLine("Start fill");
-
 		float _dotMin = dotMin;
 		float _dotMax = dotMax;
 

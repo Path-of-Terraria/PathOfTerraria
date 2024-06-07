@@ -15,7 +15,6 @@ internal class SpawnToBossPass() : GenPass("BossAndSpawnRoomLinking", 1)
 	const float dotMax = 0.4f;
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Console.WriteLine("Start spawn to boss");
 		int currentRoom = 0; // Spawn
 
 		float _dotMin = dotMin;
@@ -62,7 +61,5 @@ internal class SpawnToBossPass() : GenPass("BossAndSpawnRoomLinking", 1)
 				_dotMax += 0.1f;
 			}
 		}
-
-		Console.WriteLine("End spawn to boss");
 	}
 }
