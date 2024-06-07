@@ -11,7 +11,7 @@ internal class StatOverlay : ModResourceOverlay
 {
 	private Color GetBarColor(int bar)
 	{
-		bar = bar + 6 * (bar % 2);
+		bar += 6 * (bar % 2);
 		return bar switch
 		{
 			0 => new(1, 0.65f, 0.55f),
