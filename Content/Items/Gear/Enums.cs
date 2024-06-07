@@ -25,6 +25,8 @@
 	 Magic = Staff | Tome | Wand,
 	 Ranged = Bow | Gun,
 	 Weapon = Melee | Magic | Ranged,
+
+	 All = Equipment | Weapon,
  }
 
  public enum GearRarity

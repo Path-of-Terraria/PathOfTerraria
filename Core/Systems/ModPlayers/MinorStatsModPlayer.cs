@@ -7,7 +7,7 @@ public class MinorStatsModPlayer : ModPlayer
 	/// -- currently only magic and rare and probablt unique mobs will benifit from this,
 	/// -- as normal mobs will have 0 item quality increase (well, maby maps will add more...)
 	/// </summary>
-	public StatModifier MagicFind = new();
+	public float MagicFind = 0f;
 
 	public override void ResetEffects()
 	{
