@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Input;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Content.Socketables;
-using PathOfTerraria.Content.Summonables.Vanilla;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
@@ -136,6 +135,7 @@ internal abstract class Gear : ModItem
 			{
 				_sockets[_selectedSocket].OnUnSocket(player, Item);
 			}
+
 			Main.mouseItem = _sockets[_selectedSocket].Item;
 			_sockets[_selectedSocket] = null;
 		}
@@ -325,11 +325,11 @@ internal abstract class Gear : ModItem
 			{
 				text = _sockets[i].GenerateName();
 			}
+
 			var affixLine = new TooltipLine(Mod, $"Socket{i}",
 				$"[i:{(i == _selectedSocket ? ItemID.NanoBullet : ItemID.ChlorophyteBullet)}] " + text);
 			tooltips.Add(affixLine);
 		}
-
 
 		// change in stats if equipped
 		EntityModifier thisItemModifier = new EntityModifier();
@@ -373,10 +373,12 @@ internal abstract class Gear : ModItem
 		{
 			tooltips.Add(new TooltipLine(Mod, "Space", " "));
 		}
+
 		foreach (string changes in green)
 		{
 			tooltips.Add(new TooltipLine(Mod, $"Change{affixIdx}", $"[c/00FF00:{changes}]"));
 		}
+
 		foreach (string changes in red)
 		{
 			tooltips.Add(new TooltipLine(Mod, $"Change{affixIdx}", $"[c/FF0000:{changes}]"));
@@ -430,6 +432,7 @@ internal abstract class Gear : ModItem
 
 			return true;
 		}
+
 		if (line.Mod == Mod.Name && line.Name.Contains("Change"))
 		{
 			line.BaseScale = Vector2.One * 0.75f;

@@ -46,6 +46,7 @@ public class UnAndEquipSocketSystem : ILoadable
 				}
 			}
 		}
+
 		MonoModHooks.DumpIL(ModContent.GetInstance<PathOfTerraria>(), il);
 	}
 	public static void PotentialGearEquip1(Item onSlot)
@@ -95,6 +96,7 @@ public class UnAndEquipSocketSystem : ILoadable
 		{
 			(itemEquip.ModItem as Gear).EquipItem(player);
 		}
+
 		Console.WriteLine(itemUnEquip);
 		if (itemUnEquip.active && itemUnEquip.ModItem is Gear)
 		{
@@ -122,6 +124,7 @@ public class UnAndEquipSocketSystem : ILoadable
 				}
 			}
 		}
+
 		c.Remove();
 		c.EmitDelegate(GetItemReplace);
 		c.Index -= 3;
@@ -157,6 +160,7 @@ public class SocketPlayer : ModPlayer
 		{
 			return false;
 		}
+
 		Gear gear = item.ModItem as Gear;
 
 		gear.ShiftClick(Player);
