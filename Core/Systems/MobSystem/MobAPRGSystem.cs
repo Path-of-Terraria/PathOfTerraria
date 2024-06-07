@@ -89,7 +89,7 @@ internal class MobAprgSystem : GlobalNPC
 		float magicFind = 0;
 		if (_lastPlayerHit != null)
 		{
-			magicFind = 1f + _lastPlayerHit.GetModPlayer<MinorStatsModPlayer>().MagicFind.ApplyTo(0);
+			magicFind = 1f + _lastPlayerHit.GetModPlayer<MinorStatsModPlayer>().MagicFind;
 		}
 
 		while (rand > 99)

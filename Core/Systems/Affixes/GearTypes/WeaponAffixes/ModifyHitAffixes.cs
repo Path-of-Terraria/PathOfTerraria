@@ -7,35 +7,45 @@ public class ModifyHitAffixes
 	internal class PiercingGearAffix : GearAffix
 	{
 		public override GearType PossibleTypes => GearType.Melee;
-		public override ModifierType ModifierType => ModifierType.Added;
-		public override string Tooltip => "# Armor Penetration";
-
-		protected override float InternalModifierCalculation(Gear gear)
+		public override void ApplyAffix(EntityModifier modifier, Gear gear)
 		{
-			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
+			modifier.ArmorPenetration.Base += Value * 5 + gear.ItemLevel / 50;
 		}
 	}
 
 	internal class AddedKnockbackGearAffix : GearAffix
 	{
 		public override GearType PossibleTypes => GearType.Weapon;
-		public override ModifierType ModifierType => ModifierType.Added;
-		public override string Tooltip => "# Added Knockback";
-
-		protected override float InternalModifierCalculation(Gear gear)
+		public override void ApplyAffix(EntityModifier modifier, Gear gear)
 		{
-			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
+			modifier.Knockback += (Value * 10 + gear.ItemLevel / 20)/100f;
 		}
 	}
 
 	internal class IncreasedKnockbackGearAffix : GearAffix
 	{
 		public override GearType PossibleTypes => GearType.Weapon;
-		public override ModifierType ModifierType => ModifierType.Multiplier;
-		public override string Tooltip => "# Increased Knockback";
-		protected override float InternalModifierCalculation(Gear gear)
+		public override void ApplyAffix(EntityModifier modifier, Gear gear)
 		{
-			return (1 + (int)(Value * 5) + gear.ItemLevel / 50) * 0.01f;
+			modifier.Knockback *= 1f + (Value * 10 + gear.ItemLevel / 20) / 100f;
+		}
+	}
+
+	internal class BaseKnockbackGearAffix : GearAffix
+	{
+		public override GearType PossibleTypes => GearType.Weapon;
+		public override void ApplyAffix(EntityModifier modifier, Gear gear)
+		{
+			modifier.Knockback.Base += Value * gear.ItemLevel / 100;
+		}
+	}
+
+	internal class FlatKnockbackGearAffix : GearAffix
+	{
+		public override GearType PossibleTypes => GearType.Weapon;
+		public override void ApplyAffix(EntityModifier modifier, Gear gear)
+		{
+			modifier.Knockback.Flat += Value * gear.ItemLevel / 60;
 		}
 	}
 }

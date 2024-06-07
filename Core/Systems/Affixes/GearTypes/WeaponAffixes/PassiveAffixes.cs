@@ -7,36 +7,27 @@ public class PassiveAffixes
 	internal class RapidGearAffix : GearAffix
 	{
 		public override GearType PossibleTypes => GearType.Melee;
-		public override ModifierType ModifierType => ModifierType.Added;
-		public override bool IsFlat => false;
-		public override string Tooltip => "# Attack Speed";
-		protected override float InternalModifierCalculation(Gear gear)
+		public override void ApplyAffix(EntityModifier modifier, Gear gear)
 		{
-			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
+			modifier.Attackspeed += (Value * 5 + Value * gear.ItemLevel / 10f) / 100f;
 		}
 	}
 
 	internal class SharpGearAffix : GearAffix
 	{
 		public override GearType PossibleTypes => GearType.Melee;
-		public override ModifierType ModifierType => ModifierType.Added;
-		public override string Tooltip => "# Additional Damage";
-
-		protected override float InternalModifierCalculation(Gear gear)
+		public override void ApplyAffix(EntityModifier modifier, Gear gear)
 		{
-			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
+			modifier.Damage += Value * 5 + Value * gear.ItemLevel / 20;
 		}
 	}
 
 	internal class ChargedGearAffix : GearAffix
 	{
 		public override GearType PossibleTypes => GearType.Melee;
-		public override ModifierType ModifierType => ModifierType.Added;
-		public override string Tooltip => "# Additional Damage";
-
-		protected override float InternalModifierCalculation(Gear gear)
+		public override void ApplyAffix(EntityModifier modifier, Gear gear)
 		{
-			return 1 + (int)(Value * 5) + gear.ItemLevel / 50;
+			modifier.Damage *= 1 + (Value * 5 + Value * gear.ItemLevel / 20) / 100f;
 		}
 	}
 }

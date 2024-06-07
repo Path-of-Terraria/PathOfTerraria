@@ -1,88 +1,76 @@
-﻿using PathOfTerraria.Content.Items.Gear;
+﻿using Newtonsoft.Json.Linq;
+using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Core.Systems;
+using Terraria.GameContent;
 
 namespace PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
 
-internal class LifeAffix : GearAffix
+internal class BaseLifeAffix : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Armor;
-	public override ModifierType ModifierType => ModifierType.Added;
-	public override string Tooltip => "# Maximum Life";
-	public override bool Round => true;
-	protected override float InternalModifierCalculation(Gear gear)
+	public override void ApplyAffix(EntityModifier modifier, Gear gear)
 	{
-		return 10f + Value * 30f + gear.ItemLevel / 100f;
+		modifier.MaximumLife.Base += 10f + Value * 30f + gear.ItemLevel / 100f;
 	}
-
-	public override void BuffPassive(Player player, Gear gear)
+}
+internal class AddedLifeAffix : GearAffix
+{
+	public override GearType PossibleTypes => GearType.Armor;
+	public override void ApplyAffix(EntityModifier modifier, Gear gear)
 	{
-		player.statLifeMax2 += GetModifierIValue(gear);
+		modifier.MaximumLife += (1f + Value) * gear.ItemLevel / 10f / 100f;
+	}
+}
+internal class MultipliedLifeAffix : GearAffix
+{
+	public override GearType PossibleTypes => GearType.Armor;
+	public override void ApplyAffix(EntityModifier modifier, Gear gear)
+	{
+		modifier.MaximumLife *= 1f + (1f + Value) * gear.ItemLevel / 20f / 100f;
+	}
+}
+internal class FlatLifeAffix : GearAffix
+{
+	public override GearType PossibleTypes => GearType.Armor;
+	public override void ApplyAffix(EntityModifier modifier, Gear gear)
+	{
+		modifier.MaximumLife.Flat += 4f + (Value + 0.5f) * gear.ItemLevel / 10;
 	}
 }
 
 internal class LifeRegenAffix : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Armor;
-	public override ModifierType ModifierType => ModifierType.Added;
-	public override string Tooltip => "# Life Regeneration";
-	public override bool Round => true;
-	protected override float InternalModifierCalculation(Gear gear)
+	public override void ApplyAffix(EntityModifier modifier, Gear gear)
 	{
-		return 1f + Value * 4f + gear.ItemLevel / 40f;
-	}
-
-	public override void BuffPassive(Player player, Gear gear)
-	{
-		player.lifeRegen += GetModifierIValue(gear);
+		modifier.LifeRegen.Base += 1f + Value * 4f + gear.ItemLevel / 40f;
 	}
 }
 
 internal class LifePotionPowerAffix : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Armor;
-	public override ModifierType ModifierType => ModifierType.Added;
-	public override string Tooltip => "# Potion Life Gain";
-	public override bool Round => true;
-	protected override float InternalModifierCalculation(Gear gear)
+	public override void ApplyAffix(EntityModifier modifier, Gear gear)
 	{
-		return 10f + Value * 10f + gear.ItemLevel / 20f;
-	}
-	public override void BuffPassive(Player player, Gear gear)
-	{
-		player.GetModPlayer<PotionSystem>().HealPower += GetModifierIValue(gear);
+		modifier.PotionHealPower.Base += 10f + Value * 10f + gear.ItemLevel / 20f;
 	}
 }
 
 internal class LifePotionCapAffix : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Armor;
-	public override ModifierType ModifierType => ModifierType.Added;
-	public override string Tooltip => "# Max Potions";
-	public override bool Round => true;
-
-	protected override float InternalModifierCalculation(Gear gear)
+	public override void ApplyAffix(EntityModifier modifier, Gear gear)
 	{
-		return 1 + Value + gear.ItemLevel / 100f;
-	}
-	public override void BuffPassive(Player player, Gear gear)
-	{
-		player.GetModPlayer<PotionSystem>().MaxHealing += GetModifierIValue(gear);
+		modifier.MaxHealthPotions.Base += 1 + Value + gear.ItemLevel / 100f;
 	}
 }
 
 internal class LifePotionCooldownAffix : GearAffix
 {
 	public override GearType PossibleTypes => GearType.Armor;
-	public override ModifierType ModifierType => ModifierType.Added;
-	public override GearInfluence RequiredInfluence => GearInfluence.Lunar;
-	public override string Tooltip => "# Healing Potion Cooldown Rate";
-
-	protected override float InternalModifierCalculation(Gear gear)
+	public override void ApplyAffix(EntityModifier modifier, Gear gear)
 	{
-		return 0.5f + Value * 0.5f;
-	}
-
-	public override void BuffPassive(Player player, Gear gear)
-	{
-		player.GetModPlayer<PotionSystem>().HealDelay -= (int)(60 * GetModifierValue(gear));
+		modifier.PotionHealDelay.Base -= 60 * (0.5f + Value * 0.5f);
 	}
 }

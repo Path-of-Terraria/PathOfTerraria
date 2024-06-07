@@ -1,86 +1,36 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
 internal abstract class GearAffix : Affix
 {
-	public virtual ModifierType ModifierType => ModifierType.Passive;
-	public virtual bool IsFlat => true; // alternative is percent
-	public virtual bool Round => false;
+	// public virtual ModifierType ModifierType => ModifierType.Passive;
+	// public virtual bool IsFlat => true; // alternative is percent
+	// public virtual bool Round => false;
 	public virtual GearInfluence RequiredInfluence => GearInfluence.None;
-
 	public abstract GearType PossibleTypes { get; }
 
-	public virtual void BuffPassive(Player player, Gear gear) { }
-
-	public abstract string Tooltip { get; }
+	public virtual void ApplyAffix(EntityModifier modifier, Gear gear) { }
 
 	public string GetTooltip(Gear gear)
 	{
-		float value = GetModifierValue(gear);
-		bool positive = value >= 0;
-		string text = MathF.Abs(value).ToString();
+		EntityModifier modifier = new();
+		ApplyAffix(modifier, gear);
 
-		string range = "";
-		if (Main.keyState.PressingShift())
+		string tooltip = "";
+
+		List<string> affixes = EntityModifier.GetChange(modifier);
+
+		if (affixes.Any())
 		{
-			float oVal = Value;
-
-			Value = MinValue;
-			float valueMin = GetModifierValue(gear);
-			string textMin = valueMin.ToString();
-
-			Value = MaxValue;
-			float valueMax = GetModifierValue(gear);
-			string textMax = valueMax.ToString();
-
-			range = $" [{textMin} - {textMax}]";
-
-			Value = oVal;
+			tooltip = affixes.First(); // idk if there will ever be more..?
 		}
 
-		text += range;
-
-		if (IsFlat && ModifierType == ModifierType.Multiplier)
-		{
-			text = (value * 100f).ToString("0.0") + range + "%";
-		}
-
-		if (!IsFlat)
-		{
-			text += "%";
-		}
-
-		text = ModifierType switch
-		{
-			ModifierType.Added => positive ? "+" + text : "-" + text,
-			ModifierType.Multiplier => text + (positive ? " increased" : " decreased"),
-			_ => text
-		};
-
-		return Tooltip.Replace("#", text);
+		return tooltip;
 	}
-
-	protected abstract float InternalModifierCalculation(Gear gear);
-
-	public float GetModifierValue(Gear gear)
-	{
-		float v = InternalModifierCalculation(gear) * ExternalMultiplier;
-
-		if (Round)
-		{
-			v = (float)Math.Round(v);
-		}
-		else
-		{
-			v = (float)Math.Round(v, 2);
-		}
-
-		return v;
-	}
-
-	protected int GetModifierIValue(Gear gear) { return (int)GetModifierValue(gear); }
 	
 	/// <summary>
 	/// Generates an affix from a tag, used on load to re-populate affixes
@@ -89,7 +39,14 @@ internal abstract class GearAffix : Affix
 	/// <returns></returns>
 	public static GearAffix FromTag(TagCompound tag)
 	{
-		var affix = (GearAffix)Activator.CreateInstance(typeof(GearAffix).Assembly.GetType(tag.GetString("type")));
+		Type t = typeof(GearAffix).Assembly.GetType(tag.GetString("type"));
+		if (t is null)
+		{
+			PathOfTerraria.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			return null;
+		}
+		
+		var affix = (GearAffix)Activator.CreateInstance(t);
 
 		if (affix is null)
 		{
