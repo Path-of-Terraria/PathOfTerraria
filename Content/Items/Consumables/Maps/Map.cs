@@ -43,7 +43,8 @@ public abstract class Map : ModItem
 	{
 		return GenerateName() + ": " + _tier;
 	}
-	public override bool? UseItem(Player player)
+	
+    public override bool? UseItem(Player player)
 	{
 		MappingSystem.EnterMap(this);
 		return true;

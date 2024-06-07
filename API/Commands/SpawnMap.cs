@@ -10,7 +10,7 @@ public class SpawnMap : ModCommand{
 
 	public override string Usage => "[c/ff6a00:Usage: /spawnmap ]";
 
-	public override string Description => "Spawns experience orbs relative to the player";
+	public override string Description => "Spawns a few maps for testing";
 
 	public override void Action(CommandCaller caller, string input, string[] args){
 		for (int i = 0; i < 4; i++)
