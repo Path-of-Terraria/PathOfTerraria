@@ -22,13 +22,11 @@ internal class MappingSystem : ModSystem
 
 	public static void EnterMap(Map map)
 	{
-		// Console.WriteLine("ENTER MAP");
 		EnterMap<TestSubworld>(map);
 	}
 	
 	public static void EnterCaveMap(CaveMap map)
 	{
-		// Console.WriteLine("ENTER CAVE MAP");
 		CaveSystemWorld.Map = map;
 		EnterMap<CaveSystemWorld>(map);
 	}

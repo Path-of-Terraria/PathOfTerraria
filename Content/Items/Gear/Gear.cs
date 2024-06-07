@@ -72,7 +72,6 @@ internal abstract class Gear : ModItem
 	}
 	public static bool IsThisItemActive(Player player, Item item)
 	{
-		Console.WriteLine(item);
 		return player.inventory[0] == item || player.armor.Contains(item);
 	}
 
