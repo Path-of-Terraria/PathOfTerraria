@@ -169,6 +169,11 @@ Items: {
 		DisplayName: Map Device On
 		Tooltip: ""
 	}
+
+	LeafWhip: {
+		DisplayName: Leaf Whip
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -176,6 +181,7 @@ Projectiles: {
 	HomingProjectile.DisplayName: Homing Projectile
 	SparklingBall.DisplayName: Sparkling Ball
 	TomeProjectile.DisplayName: Tome Projectile
+	WhipBaseProjectile.DisplayName: Whip Base Projectile
 }
 
 Keybinds: {
