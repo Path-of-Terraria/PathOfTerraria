@@ -129,7 +129,11 @@ internal class InnerPanel : SmartUIElement
 				Main.spriteBatch.Draw(chainTex, pos, null, color, edge.Start.TreePos.DirectionTo(edge.End.TreePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 			}
 
-			if (edge.End.Level > 0 && edge.Start.Level > 0)
+			if (edge.End.Level <= 0 || edge.Start.Level <= 0)
+			{
+				continue;
+			}
+
 			{
 				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowAlpha").Value;
 				var glowColor = new Color(255, 230, 150)
@@ -162,19 +166,21 @@ internal class InnerPanel : SmartUIElement
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
 	}
 
-	private bool _blockMouse = false;
-	private bool _isHovering = false;
-	private bool _lastState = false;
+	private bool _blockMouse;
+	private bool _isHovering;
+	private bool _lastState;
+	
 	public override void SafeUpdate(GameTime gameTime)
 	{
-		if (Main.mouseLeft && !_lastState)
+		switch (Main.mouseLeft)
 		{
-			_blockMouse = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
-			_isHovering = Panel.IsMouseHovering;
-		}
-		else if (!Main.mouseLeft)
-		{
-			_blockMouse = _isHovering= false;
+			case true when !_lastState:
+				_blockMouse = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
+				_isHovering = Panel.IsMouseHovering;
+				break;
+			case false:
+				_blockMouse = _isHovering= false;
+				break;
 		}
 
 		if (_isHovering)
@@ -195,11 +201,13 @@ internal class InnerPanel : SmartUIElement
 
 			foreach (UIElement element in Elements)
 			{
-				if (element is PassiveElement ele)
+				if (element is not PassiveElement ele)
 				{
-					element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0);
-					element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0);
+					continue;
 				}
+
+				element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0);
+				element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0);
 			}
 
 			_lineOff = _root + Main.MouseScreen - _start;
@@ -295,15 +303,19 @@ internal class PassiveElement : SmartUIElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		if (_passive.CanAllocate(Main.LocalPlayer))
+		if (!_passive.CanAllocate(Main.LocalPlayer))
 		{
-			_passive.Level++;
-			Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
+			return;
+		}
 
-			_flashTimer = 20;
+		_passive.Level++;
+		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
 
-			if (_passive.MaxLevel == 1)
-			{
+		_flashTimer = 20;
+
+		switch (_passive.MaxLevel)
+		{
+			case 1:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
@@ -311,10 +323,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 2)
-			{
+			case 2:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier2")); break;
@@ -323,10 +332,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 3)
-			{
+			case 3:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
@@ -336,10 +342,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 5)
-			{
+			case 5:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
@@ -351,10 +354,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 6)
-			{
+			case 6:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
@@ -367,10 +367,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 7)
-			{
+			case 7:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
@@ -384,17 +381,18 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
+			default:
+				switch (_passive.Level)
+				{
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier2")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier3")); break;
+					case 4: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier4")); break;
+					case 5: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
+				}
 
-			switch (_passive.Level)
-			{
-				case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
-				case 2: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier2")); break;
-				case 3: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier3")); break;
-				case 4: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier4")); break;
-				case 5: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
-				default: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
-			}
+				break;
 		}
 	}
 

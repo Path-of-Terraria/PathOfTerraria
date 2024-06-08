@@ -8,9 +8,9 @@ namespace PathOfTerraria.Core.Systems.SkillSystem;
 
 internal class SkillPlayer : ModPlayer
 {
-	private static ModKeybind _skill1Keybind;
-	private static ModKeybind _skill2Keybind;
-	private static ModKeybind _skill3Keybind;
+	public static ModKeybind _skill1Keybind;
+	public static ModKeybind _skill2Keybind;
+	public static ModKeybind _skill3Keybind;
 	public Skill[] Skills = new Skill[5];
 
 	public override void Load()

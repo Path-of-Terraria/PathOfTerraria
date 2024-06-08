@@ -3,9 +3,11 @@ using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.SkillSystem;
 using ReLogic.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
@@ -208,11 +210,13 @@ internal class NewHotbar : SmartUIState
 
 	private void DrawHotkeys(SpriteBatch spriteBatch)
 	{
+		//Don't draw hotkeys if the player isn't holding the first item in their inventory, as this is when these are visible
 		if (!IsHoldingFirstHotbarItem())
 		{
 			return;
 		}
 
+		//Draw Potion Hotkeys
 		List<string> quickHealHotkey = PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus["QuickHeal"];
 		List<string> quickManaHotkey = PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus["QuickMana"];
 		if (quickHealHotkey.Count > 0)
@@ -229,6 +233,26 @@ internal class NewHotbar : SmartUIState
 		{
 			string assignedKey = quickManaHotkey[0];
 			DrawLetter(spriteBatch, assignedKey, new Vector2(523, 71), Color.White);
+		}
+
+		// Draw Skill Hotkeys
+		string skill1Key = SkillPlayer._skill1Keybind.GetAssignedKeys().FirstOrDefault();
+		string skill2Key = SkillPlayer._skill2Keybind.GetAssignedKeys().FirstOrDefault();
+		string skill3Key = SkillPlayer._skill3Keybind.GetAssignedKeys().FirstOrDefault();
+
+		if (!string.IsNullOrEmpty(skill1Key))
+		{
+			DrawLetter(spriteBatch, skill1Key.Replace("D", ""), new Vector2(285, 71), Color.White);
+		}
+
+		if (!string.IsNullOrEmpty(skill2Key))
+		{
+			DrawLetter(spriteBatch, skill2Key.Replace("D", ""), new Vector2(338, 71), Color.White);
+		}
+
+		if (!string.IsNullOrEmpty(skill3Key))
+		{
+			DrawLetter(spriteBatch, skill3Key.Replace("D", ""), new Vector2(390, 71), Color.White);
 		}
 	}
 	

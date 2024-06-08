@@ -13,9 +13,11 @@ using System.Threading.Tasks;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Socketables;
+
 internal abstract class Socketable : ModItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Socketable/Placeholder";
+	
 	/// <summary>
 	/// will be run when socketed.
 	/// </summary>
@@ -45,12 +47,13 @@ internal abstract class Socketable : ModItem
 		SaveData(tag); // if i ever add anything, place it in there
 	}
 
-	protected void Load(TagCompound tag)
+	private void Load(TagCompound tag)
 	{
 		LoadData(tag);
 	}
 
 	private static readonly MethodInfo _getItemType = typeof(ModContent).GetMethod("ItemType", BindingFlags.Public | BindingFlags.Static);
+	
 	public static Socketable FromTag(TagCompound tag)
 	{
 		Type t = typeof(Socketable).Assembly.GetType(tag.GetString("type"));
@@ -65,7 +68,7 @@ internal abstract class Socketable : ModItem
 		var item = new Item();
 		item.SetDefaults((int)getItemTypeFromt.Invoke(null, []));
 
-		(item.ModItem as Socketable).Load(tag);
+		(item.ModItem as Socketable)?.Load(tag);
 		return item.ModItem as Socketable;
 	}
 }

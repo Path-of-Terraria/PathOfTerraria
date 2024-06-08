@@ -32,6 +32,7 @@ internal class TreePlayer : ModPlayer
 
 	private bool _blockMouse = false;
 	private bool _lastState = false;
+	
 	public override void PreUpdate()
 	{
 		if (!Main.mouseLeft)
