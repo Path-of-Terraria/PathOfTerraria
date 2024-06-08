@@ -169,6 +169,11 @@ Items: {
 		DisplayName: Map Device On
 		Tooltip: ""
 	}
+
+	WoodenBow: {
+		DisplayName: Wooden Bow
+		Tooltip: ""
+	}
 }
 
 Projectiles: {
@@ -176,6 +181,8 @@ Projectiles: {
 	HomingProjectile.DisplayName: Homing Projectile
 	SparklingBall.DisplayName: Sparkling Ball
 	TomeProjectile.DisplayName: Tome Projectile
+	BowProjectile.DisplayName: Bow Projectile
+	BowAltUseProjectile.DisplayName: Bow Alt Use Projectile
 }
 
 Keybinds: {

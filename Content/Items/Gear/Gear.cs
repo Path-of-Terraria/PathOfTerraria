@@ -1,23 +1,11 @@
-﻿using log4net.Core;
-using Microsoft.CodeAnalysis.Differencing;
-using Microsoft.CodeAnalysis.Host.Mef;
-using Microsoft.Xna.Framework.Input;
-using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using PathOfTerraria.Content.Socketables;
+﻿using PathOfTerraria.Content.Socketables;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
-using Steamworks;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Terraria;
-using Terraria.GameContent;
-using Terraria.GameContent.Achievements;
-using Terraria.GameContent.UI.Elements;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -70,6 +58,7 @@ internal abstract class Gear : ModItem
 	{
 		return player.inventory[0] == Item || player.armor.Contains(Item);
 	}
+	
 	public static bool IsThisItemActive(Player player, Item item)
 	{
 		return player.inventory[0] == item || player.armor.Contains(item);
@@ -88,6 +77,7 @@ internal abstract class Gear : ModItem
 			_selectedSocket = 0;
 		}
 	}
+	
 	public void PrevSocket()
 	{
 		_selectedSocket--;
@@ -316,6 +306,7 @@ internal abstract class Gear : ModItem
 		{
 			tooltips.Add(new TooltipLine(Mod, "Space", " "));
 		}
+		
 		// sockets
 		for (int i = 0; i < _sockets.Length; i++)
 		{
