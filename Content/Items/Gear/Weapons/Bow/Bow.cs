@@ -20,18 +20,37 @@ internal abstract class Bow : Gear
 		Item.useTime = 60;
 		Item.useAnimation = 50;
 		Item.useStyle = ItemUseStyleID.Shoot;
+		Item.channel = true;
 	}
-	
+
+	public override void HoldItem(Player player)
+	{
+		base.HoldItem(player);
+		if (player.altFunctionUse != 2 || !player.channel)
+		{
+			return;
+		}
+
+		// Perform channeling action while right-click is held down
+		if (!player.channel)
+		{
+			return;
+		}
+
+		//We are channeling - Begin the animation
+		//TODO - Hide the normal held item until channeling is finished
+		Projectile.NewProjectileDirect(
+			player.GetSource_ItemUse(Item), 
+			player.Center,
+			player.DirectionTo(Main.MouseWorld) * Item.shootSpeed,
+			ModContent.ProjectileType<BowDrawAnimationProjectile>(),
+			Item.damage,
+			Item.knockBack,
+			player.whoAmI);
+	}
+
 	public override bool AltFunctionUse(Player player)
 	{
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
-
-		if (modPlayer.AltFunctionCooldown > 0)
-		{
-			return false;
-		}
-		
-		modPlayer.AltFunctionCooldown = 180;
 		return true;
 	}
 
@@ -61,7 +80,7 @@ internal abstract class Bow : Gear
 			return;
 		}
 		
-		type = ModContent.ProjectileType<BowAltUseProjectile>();
+		type = ModContent.ProjectileType<BowDrawAnimationProjectile>();
 	}
 
 	public override string GeneratePrefix()

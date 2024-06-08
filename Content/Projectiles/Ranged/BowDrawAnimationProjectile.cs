@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Content.Projectiles.Ranged;
 
-internal class BowAltUseProjectile : ModProjectile
+internal class BowDrawAnimationProjectile : ModProjectile
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Bow/WoodenBowAnimated";
 	private Player Owner => Main.player[Projectile.owner];
@@ -24,7 +24,8 @@ internal class BowAltUseProjectile : ModProjectile
 	{
 		if (!Owner.channel)
 		{
-			Projectile.active = false;
+			//Todo: Figure out why channel is false when holding right-click
+			//Projectile.active = false;
 		}
 
 		Owner.itemAnimation = Owner.itemTime = 2;
@@ -52,6 +53,12 @@ internal class BowAltUseProjectile : ModProjectile
 			{
 				Shoot();
 			}
+
+			if (Projectile.frame == 6)
+			{
+				//Finished the animation, delete/stop the animation
+				Projectile.active = false;
+			}
 		}
 
 		if (Projectile.frame >= 6)
@@ -74,5 +81,6 @@ internal class BowAltUseProjectile : ModProjectile
 	private void Shoot()
 	{
 		Terraria.Audio.SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
+		//TODO Send a fast projectile from the base
 	}
 }
