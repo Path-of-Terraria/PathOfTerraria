@@ -1,11 +1,10 @@
 ﻿namespace PathOfTerraria.Content.Buffs;
 
-public abstract class SmartBuff : ModBuff
+public abstract class SmartBuff(string name, string tooltip, bool debuff, bool summon = false)
+	: ModBuff
 {
-	private readonly string ThisName;
-	private readonly string ThisTooltip;
-	private readonly bool Debuff;
-	private readonly bool Summon;
+	private readonly string ThisName = name;
+	private readonly string ThisTooltip = tooltip;
 
 	public bool Inflicted(Player Player)
 	{
@@ -24,19 +23,11 @@ public abstract class SmartBuff : ModBuff
 
 	public virtual void SafeSetDefaults() { }
 
-	protected SmartBuff(string name, string tooltip, bool debuff, bool summon = false)
-	{
-		ThisName = name;
-		ThisTooltip = tooltip;
-		Debuff = debuff;
-		Summon = summon;
-	}
-
 	public override void SetStaticDefaults()
 	{
-		Main.debuff[Type] = Debuff;
+		Main.debuff[Type] = debuff;
 
-		if (Summon)
+		if (summon)
 		{
 			Main.buffNoSave[Type] = true;
 			Main.buffNoTimeDisplay[Type] = true;
