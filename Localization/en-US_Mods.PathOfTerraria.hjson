@@ -183,6 +183,7 @@ Projectiles: {
 	TomeProjectile.DisplayName: Tome Projectile
 	BowProjectile.DisplayName: Bow Projectile
 	BowAltUseProjectile.DisplayName: Bow Alt Use Projectile
+	BowDrawAnimationProjectile.DisplayName: Bow Draw Animation Projectile
 }
 
 Keybinds: {

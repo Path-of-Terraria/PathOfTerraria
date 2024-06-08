@@ -11,14 +11,15 @@ internal abstract class Bow : Gear
 
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
+	private bool _isChanneling;
 	
 	public override void SetDefaults()
 	{
 		Item.CloneDefaults(ItemID.WoodenBow);
-		Item.width = 16;
+		Item.width = 32;
 		Item.height = 64;
 		Item.useTime = 60;
-		Item.useAnimation = 50;
+		Item.useAnimation = 60;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.channel = true;
 	}
@@ -28,19 +29,22 @@ internal abstract class Bow : Gear
 		base.HoldItem(player);
 		if (player.altFunctionUse != 2 || !player.channel)
 		{
+			_isChanneling = false;
+			Item.noUseGraphic = false;
 			return;
 		}
 
-		// Perform channeling action while right-click is held down
-		if (!player.channel)
+		//Check if we already started the animation
+		if (_isChanneling)
 		{
 			return;
 		}
 
-		//We are channeling - Begin the animation
-		//TODO - Hide the normal held item until channeling is finished
+		//We are starting to channel - Begin the animation
+		Item.noUseGraphic = true;
+		_isChanneling = true;
 		Projectile.NewProjectileDirect(
-			player.GetSource_ItemUse(Item), 
+			player.GetSource_ItemUse(Item),
 			player.Center,
 			player.DirectionTo(Main.MouseWorld) * Item.shootSpeed,
 			ModContent.ProjectileType<BowDrawAnimationProjectile>(),

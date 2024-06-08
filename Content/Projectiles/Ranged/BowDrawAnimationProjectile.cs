@@ -15,7 +15,7 @@ internal class BowDrawAnimationProjectile : ModProjectile
 	public override void SetDefaults()
 	{
 		Projectile.width = 32;
-		Projectile.height = 32;
+		Projectile.height = 64;
 		Projectile.tileCollide = false;
 		Projectile.friendly = false;
 	}
@@ -25,7 +25,7 @@ internal class BowDrawAnimationProjectile : ModProjectile
 		if (!Owner.channel)
 		{
 			//Todo: Figure out why channel is false when holding right-click
-			//Projectile.active = false;
+			//Projectile.Kill();;
 		}
 
 		Owner.itemAnimation = Owner.itemTime = 2;
@@ -57,7 +57,7 @@ internal class BowDrawAnimationProjectile : ModProjectile
 			if (Projectile.frame == 6)
 			{
 				//Finished the animation, delete/stop the animation
-				Projectile.active = false;
+				Projectile.Kill();
 			}
 		}
 
