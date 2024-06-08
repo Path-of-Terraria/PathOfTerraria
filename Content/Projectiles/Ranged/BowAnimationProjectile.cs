@@ -2,9 +2,8 @@
 
 namespace PathOfTerraria.Content.Projectiles.Ranged;
 
-internal class BowDrawAnimationProjectile : ModProjectile
+internal abstract class BowAnimationProjectile : ModProjectile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Bow/WoodenBowAnimated";
 	private Player Owner => Main.player[Projectile.owner];
 	
 	public override void SetStaticDefaults()

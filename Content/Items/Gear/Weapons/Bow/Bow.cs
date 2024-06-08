@@ -47,7 +47,7 @@ internal abstract class Bow : Gear
 			player.GetSource_ItemUse(Item),
 			player.Center,
 			player.DirectionTo(Main.MouseWorld) * Item.shootSpeed,
-			ModContent.ProjectileType<BowDrawAnimationProjectile>(),
+			ModContent.ProjectileType<WoodenBowAnimationProjectile>(),
 			Item.damage,
 			Item.knockBack,
 			player.whoAmI);
@@ -84,7 +84,7 @@ internal abstract class Bow : Gear
 			return;
 		}
 		
-		type = ModContent.ProjectileType<BowDrawAnimationProjectile>();
+		type = ModContent.ProjectileType<WoodenBowAnimationProjectile>();
 	}
 
 	public override string GeneratePrefix()
