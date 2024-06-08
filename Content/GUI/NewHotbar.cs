@@ -236,9 +236,9 @@ internal class NewHotbar : SmartUIState
 		}
 
 		// Draw Skill Hotkeys
-		string skill1Key = SkillPlayer._skill1Keybind.GetAssignedKeys().FirstOrDefault();
-		string skill2Key = SkillPlayer._skill2Keybind.GetAssignedKeys().FirstOrDefault();
-		string skill3Key = SkillPlayer._skill3Keybind.GetAssignedKeys().FirstOrDefault();
+		string skill1Key = SkillPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault();
+		string skill2Key = SkillPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault();
+		string skill3Key = SkillPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault();
 
 		if (!string.IsNullOrEmpty(skill1Key))
 		{
