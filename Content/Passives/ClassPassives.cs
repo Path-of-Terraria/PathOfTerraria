@@ -1,16 +1,19 @@
 ﻿using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Passives;
 
-internal class MeleePassive : Passive
+internal class MartialMasteryPassive : Passive
 {
-	public MeleePassive() : base()
+	public MartialMasteryPassive()
 	{
 		Name = "Martial Mastery";
 		Tooltip = "Increases your melee damage by 5% per level";
 		MaxLevel = 5;
 		TreePos = new Vector2(250, 300);
+		Classes = [PlayerClass.Melee];
 	}
 
 	public override void BuffPlayer(Player player)
@@ -20,19 +23,24 @@ internal class MeleePassive : Passive
 
 	public override void Connect(List<Passive> all, Player player)
 	{
-		Connect<CloseRangePassive>(all, player);
-		Connect<BleedPassive>(all, player);
+		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
+		if (mp.SelectedClass == PlayerClass.Melee)
+		{
+			Connect<CloseRangePassive>(all, player);
+			Connect<BleedPassive>(all, player);
+		}
 	}
 }
 
-internal class RangedPassive : Passive
+internal class MarksmanshipMasteryPassive : Passive
 {
-	public RangedPassive() : base()
+	public MarksmanshipMasteryPassive()
 	{
 		Name = "Marksmanship Mastery";
 		Tooltip = "Increases your ranged damage by 5% per level";
 		MaxLevel = 5;
 		TreePos = new Vector2(350, 250);
+		Classes = [PlayerClass.Ranged];
 	}
 
 	public override void BuffPlayer(Player player)
@@ -42,19 +50,24 @@ internal class RangedPassive : Passive
 
 	public override void Connect(List<Passive> all, Player player)
 	{
-		Connect<LongRangePassive>(all, player);
-		Connect<AmmoPassive>(all, player);
+		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
+		if (mp.SelectedClass == PlayerClass.Ranged)
+		{
+			Connect<LongRangePassive>(all, player);
+			Connect<AmmoPassive>(all, player);			
+		}
 	}
 }
 
-internal class MagicPassive : Passive
+internal class ArcaneMasteryPassive : Passive
 {
-	public MagicPassive() : base()
+	public ArcaneMasteryPassive()
 	{
 		Name = "Arcane Mastery";
 		Tooltip = "Increases your magic damage by 5% per level";
 		MaxLevel = 5;
 		TreePos = new Vector2(450, 250);
+		Classes = [PlayerClass.Magic];
 	}
 
 	public override void BuffPlayer(Player player)
@@ -64,19 +77,24 @@ internal class MagicPassive : Passive
 
 	public override void Connect(List<Passive> all, Player player)
 	{
-		Connect<LongRangePassive>(all, player);
-		Connect<ManaPassive>(all, player);
+		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
+		if (mp.SelectedClass == PlayerClass.Magic)
+		{
+			Connect<LongRangePassive>(all, player);
+			Connect<ManaPassive>(all, player);
+		}
 	}
 }
 
-internal class SummonPassive : Passive
+internal class SummoningMasteryPassive : Passive
 {
-	public SummonPassive() : base()
+	public SummoningMasteryPassive()
 	{
 		Name = "Summoning Mastery";
 		Tooltip = "Increases your summon damage by 5% per level";
 		MaxLevel = 5;
 		TreePos = new Vector2(550, 300);
+		Classes = [PlayerClass.Summoner];
 	}
 
 	public override void BuffPlayer(Player player)
@@ -86,7 +104,11 @@ internal class SummonPassive : Passive
 
 	public override void Connect(List<Passive> all, Player player)
 	{
-		Connect<MinionPassive>(all, player);
-		Connect<SentryPassive>(all, player);
+		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
+		if (mp.SelectedClass == PlayerClass.Summoner)
+		{ 
+			Connect<MinionPassive>(all, player);
+			Connect<SentryPassive>(all, player);
+		}
 	}
 }

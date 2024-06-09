@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.GUI;
+using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 
@@ -16,7 +17,7 @@ public class SwitchClass : ModCommand {
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = null;
+		Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = PlayerClass.None;
 		UILoader.GetUIState<ClassSelection>().IsVisible = true;
 	}
 }

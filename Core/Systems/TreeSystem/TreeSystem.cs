@@ -21,8 +21,8 @@ internal class TreePlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		UILoader.GetUIState<Tree>().RemoveAllChildren();
-		UILoader.GetUIState<Tree>().Populated = false;
+		UILoader.GetUIState<MeleePassiveTree>().RemoveAllChildren();
+		UILoader.GetUIState<MeleePassiveTree>().Populated = false;
 	}
 
 	public override void UpdateEquips()
@@ -32,6 +32,7 @@ internal class TreePlayer : ModPlayer
 
 	private bool _blockMouse = false;
 	private bool _lastState = false;
+	
 	public override void PreUpdate()
 	{
 		if (!Main.mouseLeft)
@@ -41,8 +42,8 @@ internal class TreePlayer : ModPlayer
 
 		if (!_lastState && Main.mouseLeft)
 		{
-			Main.blockMouse = UILoader.GetUIState<Tree>().IsVisible &&
-						  UILoader.GetUIState<Tree>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
+			Main.blockMouse = UILoader.GetUIState<MeleePassiveTree>().IsVisible &&
+						  UILoader.GetUIState<MeleePassiveTree>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
 		}
 		else
 		{
@@ -76,8 +77,8 @@ internal class TreePlayer : ModPlayer
 				continue;
 			}
 
-			object instance = Activator.CreateInstance(type);
-			Nodes.Add(instance as Passive);
+			var instance = (Passive) Activator.CreateInstance(type);
+			Nodes.Add(instance);
 		}
 
 		Nodes.ForEach(n => n.Connect(Nodes, Player));

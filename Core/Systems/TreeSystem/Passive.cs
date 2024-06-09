@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
 
@@ -15,6 +17,7 @@ internal abstract class Passive
 
 	public int Width = 50;
 	public int Height = 50;
+	public List<PlayerClass> Classes { get; set; }
 
 	public virtual void BuffPlayer(Player player) { }
 
@@ -60,8 +63,15 @@ internal abstract class Passive
 	/// </summary>
 	/// <typeparam name="T">The type of node to connect to</typeparam>
 	/// <param name="all">All nodes</param>
+	/// <param name="player">The player</param>
 	protected void Connect<T>(List<Passive> all, Player player) where T : Passive
 	{
+		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
+		if (Classes == null || !Classes.Contains(mp.SelectedClass))
+		{
+			return;
+		}
+		
 		TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
 		TreeSystem.Edges.Add(new(this, all.FirstOrDefault(n => n is T)));
 	}

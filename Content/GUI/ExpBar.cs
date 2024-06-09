@@ -1,6 +1,7 @@
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Gear;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -15,6 +16,7 @@ public class ExpBar : SmartUIState
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
+	
 	public Rectangle GetRectangle()
 	{
 		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/BarEmpty").Value;
@@ -54,20 +56,38 @@ public class ExpBar : SmartUIState
 
 		var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
 
-		if (bounding.Contains(Main.MouseScreen.ToPoint()))
+		if (!bounding.Contains(Main.MouseScreen.ToPoint()))
 		{
-			UILoader.GetUIState<Tree>().IsVisible = !UILoader.GetUIState<Tree>().IsVisible;
-
-			if (UILoader.GetUIState<Tree>().IsVisible)
-			{
-				SoundEngine.PlaySound(SoundID.MenuOpen, Main.LocalPlayer.Center);
-			}
-			else
-			{
-				SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-			}
-
-			Main.playerInventory = false;
+			return;
 		}
+		
+		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
+		bool visible = false;
+		switch (mp.SelectedClass)
+		{
+			case PlayerClass.None:
+				Main.NewText("No class chosen!");
+				return;
+			case PlayerClass.Melee:
+				UILoader.GetUIState<MeleePassiveTree>().IsVisible = !UILoader.GetUIState<MeleePassiveTree>().IsVisible;
+				visible = true;
+				break;
+			case PlayerClass.Ranged:
+				UILoader.GetUIState<RangedPassiveTree>().IsVisible = !UILoader.GetUIState<RangedPassiveTree>().IsVisible;
+				visible = true;
+				break;
+			case PlayerClass.Magic:
+				UILoader.GetUIState<MagicPassiveTree>().IsVisible = !UILoader.GetUIState<MagicPassiveTree>().IsVisible;
+				visible = true;
+				break;
+			case PlayerClass.Summoner:
+				UILoader.GetUIState<SummonerPassiveTree>().IsVisible = !UILoader.GetUIState<SummonerPassiveTree>().IsVisible;
+				visible = true;
+				break;
+		}
+
+		SoundEngine.PlaySound(visible ? SoundID.MenuOpen : SoundID.MenuClose, Main.LocalPlayer.Center);
+
+		Main.playerInventory = false;
 	}
 }
