@@ -8,9 +8,9 @@ namespace PathOfTerraria.Core.Systems.SkillSystem;
 
 internal class SkillPlayer : ModPlayer
 {
-	private static ModKeybind _skill1Keybind;
-	private static ModKeybind _skill2Keybind;
-	private static ModKeybind _skill3Keybind;
+	public static ModKeybind Skill1Keybind;
+	public static ModKeybind Skill2Keybind;
+	public static ModKeybind Skill3Keybind;
 	public Skill[] Skills = new Skill[5];
 
 	public override void Load()
@@ -20,16 +20,16 @@ internal class SkillPlayer : ModPlayer
 			return;
 		}
 
-		_skill1Keybind = KeybindLoader.RegisterKeybind(Mod, "UseSkill1", Keys.D3);
-		_skill2Keybind = KeybindLoader.RegisterKeybind(Mod, "UseSkill2", Keys.D4);
-		_skill3Keybind = KeybindLoader.RegisterKeybind(Mod, "UseSkill3", Keys.D5);
+		Skill1Keybind = KeybindLoader.RegisterKeybind(Mod, "UseSkill1", Keys.D3);
+		Skill2Keybind = KeybindLoader.RegisterKeybind(Mod, "UseSkill2", Keys.D4);
+		Skill3Keybind = KeybindLoader.RegisterKeybind(Mod, "UseSkill3", Keys.D5);
 	}
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
 		Skills[0] ??= new Berserk(1200, 1200, 1200, 1200, 5, GearType.Sword);
 			
-		if (_skill1Keybind.JustPressed && Skills[0] != null)
+		if (Skill1Keybind.JustPressed && Skills[0] != null)
 		{
 			if (Skills[0].Timer == 0)
 			{
@@ -37,7 +37,7 @@ internal class SkillPlayer : ModPlayer
 			}
 		}
 
-		if (_skill2Keybind.JustPressed && Skills[1] != null)
+		if (Skill2Keybind.JustPressed && Skills[1] != null)
 		{
 			if (Skills[1].Timer == 0)
 			{
@@ -45,7 +45,7 @@ internal class SkillPlayer : ModPlayer
 			}
 		}
 
-		if (_skill3Keybind.JustPressed && Skills[2] != null)
+		if (Skill3Keybind.JustPressed && Skills[2] != null)
 		{
 			if (Skills[2].Timer == 0)
 			{
