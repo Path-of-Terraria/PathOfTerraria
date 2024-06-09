@@ -21,14 +21,10 @@ internal class MartialMasteryPassive : Passive
 		player.GetDamage(DamageClass.Melee) += 0.05f * Level;
 	}
 
-	public override void Connect(List<Passive> all, Player player)
+	public override void ConnectMelee(List<Passive> all, Player player)
 	{
-		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
-		if (mp.SelectedClass == PlayerClass.Melee)
-		{
-			Connect<CloseRangePassive>(all, player);
-			Connect<BleedPassive>(all, player);
-		}
+		Connect<CloseRangePassive>(all, player);
+		Connect<BleedPassive>(all, player);
 	}
 }
 
@@ -48,14 +44,10 @@ internal class MarksmanshipMasteryPassive : Passive
 		player.GetDamage(DamageClass.Ranged) += 0.05f * Level;
 	}
 
-	public override void Connect(List<Passive> all, Player player)
+	public override void ConnectRanged(List<Passive> all, Player player)
 	{
-		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
-		if (mp.SelectedClass == PlayerClass.Ranged)
-		{
-			Connect<LongRangePassive>(all, player);
-			Connect<AmmoPassive>(all, player);			
-		}
+		Connect<LongRangePassive>(all, player);
+		Connect<AmmoPassive>(all, player);
 	}
 }
 
@@ -75,14 +67,10 @@ internal class ArcaneMasteryPassive : Passive
 		player.GetDamage(DamageClass.Magic) += 0.05f * Level;
 	}
 
-	public override void Connect(List<Passive> all, Player player)
+	public override void ConnectMagic(List<Passive> all, Player player)
 	{
-		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
-		if (mp.SelectedClass == PlayerClass.Magic)
-		{
-			Connect<LongRangePassive>(all, player);
-			Connect<ManaPassive>(all, player);
-		}
+		Connect<LongRangePassive>(all, player);
+		Connect<ManaPassive>(all, player);
 	}
 }
 
@@ -102,13 +90,9 @@ internal class SummoningMasteryPassive : Passive
 		player.GetDamage(DamageClass.Summon) += 0.05f * Level;
 	}
 
-	public override void Connect(List<Passive> all, Player player)
+	public override void ConnectSummoner(List<Passive> all, Player player)
 	{
-		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
-		if (mp.SelectedClass == PlayerClass.Summoner)
-		{ 
-			Connect<MinionPassive>(all, player);
-			Connect<SentryPassive>(all, player);
-		}
+		Connect<MinionPassive>(all, player);
+		Connect<SentryPassive>(all, player);
 	}
 }

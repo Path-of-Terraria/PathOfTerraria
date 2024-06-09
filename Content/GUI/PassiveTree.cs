@@ -1,6 +1,9 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿using Microsoft.Xna.Framework.Graphics;
+using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -8,10 +11,8 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
 
-abstract class PassiveTree : SmartUIState
+internal class PassiveTree : SmartUIState
 {
-	public bool Populated;
-
 	public UIPanel Panel;
 	public UIImageButton CloseButton;
 	public InnerPanel Inner;
@@ -26,6 +27,42 @@ abstract class PassiveTree : SmartUIState
 	protected const int PanelHeight = 750;
 
 	public override bool Visible => IsVisible;
+	private PlayerClass _currentDisplay = PlayerClass.None;
+	public void Toggle(PlayerClass newClass = PlayerClass.None)
+	{
+		if (newClass == PlayerClass.None || IsVisible)
+		{
+			IsVisible = false;
+			return;
+		}
+
+		if (_currentDisplay != newClass)
+		{
+			_currentDisplay = newClass;
+			RemoveAllChildren();
+			DrawPanel();
+			DrawCloseButton();
+			DrawInnerPanel();
+
+			TreeSystem.Nodes
+				.Where(x => x.Classes.Contains(_currentDisplay))
+				.ToList()
+				.ForEach(n => Inner.Append(new PassiveElement(n)));
+		}
+
+		IsVisible = true;
+	}
+	public override void Draw(SpriteBatch spriteBatch)
+	{
+		if (Main.LocalPlayer.controlInv)
+		{
+			IsVisible = false;
+		}
+
+		Recalculate();
+		base.Draw(spriteBatch);
+		DrawPanelText(spriteBatch);
+	}
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{

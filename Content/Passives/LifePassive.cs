@@ -21,24 +21,21 @@ internal class LifePassive : Passive
 		player.statLifeMax2 += 20 * Level;
 	}
 
-	public override void Connect(List<Passive> all, Player player)
+	public override void ConnectMelee(List<Passive> all, Player player)
 	{
-		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
-		switch (mp.SelectedClass)
-		{
-			case PlayerClass.Melee:
-				Connect<MartialMasteryPassive>(all, player);
-				break;
-			case PlayerClass.Ranged:
-				Connect<MarksmanshipMasteryPassive>(all, player);
-				Connect<CloseRangePassive>(all, player);
-				break;
-			case PlayerClass.Magic:
-				Connect<ArcaneMasteryPassive>(all, player);
-				break;
-			case PlayerClass.Summoner:
-				Connect<SummoningMasteryPassive>(all, player);
-				break;
-		}
+		Connect<MartialMasteryPassive>(all, player);
+	}
+	public override void ConnectRanged(List<Passive> all, Player player)
+	{
+		Connect<MarksmanshipMasteryPassive>(all, player);
+		Connect<CloseRangePassive>(all, player);
+	}
+	public override void ConnectMagic(List<Passive> all, Player player)
+	{
+		Connect<ArcaneMasteryPassive>(all, player);
+	}
+	public override void ConnectSummoner(List<Passive> all, Player player)
+	{
+		Connect<SummoningMasteryPassive>(all, player);
 	}
 }

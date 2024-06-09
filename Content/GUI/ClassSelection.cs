@@ -6,6 +6,7 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
+using PathOfTerraria.Core.Systems.TreeSystem;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -127,6 +128,9 @@ public class ClassSelection : SmartUIState
 	    }
 	    
 	    Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = playerClass;
-	    IsVisible = false;
-    }
+	    
+		IsVisible = false;
+
+		Main.LocalPlayer.GetModPlayer<TreePlayer>().ConnectNodes();
+	}
 }

@@ -62,31 +62,9 @@ public class ExpBar : SmartUIState
 		}
 		
 		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
-		bool visible = false;
-		switch (mp.SelectedClass)
-		{
-			case PlayerClass.None:
-				Main.NewText("No class chosen!");
-				return;
-			case PlayerClass.Melee:
-				UILoader.GetUIState<MeleePassiveTree>().IsVisible = !UILoader.GetUIState<MeleePassiveTree>().IsVisible;
-				visible = true;
-				break;
-			case PlayerClass.Ranged:
-				UILoader.GetUIState<RangedPassiveTree>().IsVisible = !UILoader.GetUIState<RangedPassiveTree>().IsVisible;
-				visible = true;
-				break;
-			case PlayerClass.Magic:
-				UILoader.GetUIState<MagicPassiveTree>().IsVisible = !UILoader.GetUIState<MagicPassiveTree>().IsVisible;
-				visible = true;
-				break;
-			case PlayerClass.Summoner:
-				UILoader.GetUIState<SummonerPassiveTree>().IsVisible = !UILoader.GetUIState<SummonerPassiveTree>().IsVisible;
-				visible = true;
-				break;
-		}
+		UILoader.GetUIState<PassiveTree>().Toggle(mp.SelectedClass);
 
-		SoundEngine.PlaySound(visible ? SoundID.MenuOpen : SoundID.MenuClose, Main.LocalPlayer.Center);
+		SoundEngine.PlaySound(mp.SelectedClass != PlayerClass.None ? SoundID.MenuOpen : SoundID.MenuClose, Main.LocalPlayer.Center);
 
 		Main.playerInventory = false;
 	}

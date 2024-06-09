@@ -11,6 +11,6 @@ internal class LongRangePassive : Passive
 		Tooltip = "Increases your damage against distant enemies by 10% per level";
 		MaxLevel = 3;
 		TreePos = new Vector2(400, 180);
-		Classes = [PlayerClass.Ranged];
+		Classes = [PlayerClass.Ranged, PlayerClass.Magic];
 	}
 }
