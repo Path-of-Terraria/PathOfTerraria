@@ -2,27 +2,17 @@
 
 namespace PathOfTerraria.Core.Systems.SkillSystem;
 
-public abstract class Skill
+public abstract class Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weaponType)
 {
-	public int Duration;
-	public int Timer;
+	public int Duration = duration;
+	public int Timer = timer;
 
-	public int MaxCooldown;
-	public int Cooldown;
+	public int MaxCooldown = maxCooldown;
+	public int Cooldown = cooldown;
 
-	public int ManaCost;
+	public int ManaCost = manaCost;
 
-	public GearType WeaponType;
-
-	protected Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weaponType)
-	{
-		Duration = duration;
-		Timer = timer;
-		MaxCooldown = maxCooldown;
-		Cooldown = cooldown;
-		ManaCost = manaCost;
-		WeaponType = weaponType;
-	}
+	public GearType WeaponType = weaponType;
 
 	public virtual string Name => GetType().Name;
 	public virtual string Texture => $"{PathOfTerraria.ModName}/Assets/Skills/" + GetType().Name;

@@ -14,6 +14,11 @@ public class MobExperienceSystem : GlobalNPC
 	public override void OnKill(NPC npc)
 	{
 		MobAprgSystem npcSystem = npc.GetGlobalNPC<MobAprgSystem>();
+		if (npcSystem.Experience == null)
+		{
+			Main.NewText($"No experience entry for {npc.FullName} - {npc.netID}");
+		}
+		
 		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
 		amount =
 			npcSystem.Rarity

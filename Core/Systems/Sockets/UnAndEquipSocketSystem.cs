@@ -20,14 +20,16 @@ public class UnAndEquipSocketSystem : ILoadable
 
 		IL_ItemSlot.OverrideLeftClick += OverrideLeftClick_IL;
 	}
+	
 	public void Unload()
 	{
 		IL_ItemSlot.LeftClick_ItemArray_int_int -= LeftClick_IL; // click unequip
 		IL_AchievementsHelper.HandleOnEquip -= HandleOnEquip_IL; // click equip
-		IL_ItemSlot.ArmorSwap += ArmorSwap_IL;
-
+		IL_ItemSlot.ArmorSwap -= ArmorSwap_IL;
+		
 		IL_ItemSlot.OverrideLeftClick -= OverrideLeftClick_IL;
 	}
+	
 	private void LeftClick_IL(ILContext il)
 	{
 		var c = new ILCursor(il);
@@ -50,6 +52,7 @@ public class UnAndEquipSocketSystem : ILoadable
 
 		MonoModHooks.DumpIL(ModContent.GetInstance<PathOfTerraria>(), il);
 	}
+	
 	public static void PotentialGearEquip1(Item onSlot)
 	{
 		Player player = Main.player[Main.myPlayer];
@@ -63,6 +66,7 @@ public class UnAndEquipSocketSystem : ILoadable
 			}
 		}
 	}
+	
 	private void HandleOnEquip_IL(ILContext il)
 	{
 		var c = new ILCursor(il);
@@ -71,6 +75,7 @@ public class UnAndEquipSocketSystem : ILoadable
 		c.Emit(OpCodes.Ldarg, 1);
 		c.EmitDelegate(PotentialGearEquip2);
 	}
+	
 	public static void PotentialGearEquip2(Player player, Item item)
 	{
 		if (item.active && item.ModItem is Gear)
@@ -90,6 +95,7 @@ public class UnAndEquipSocketSystem : ILoadable
 		c.Emit(OpCodes.Ldloc, 2);
 		c.EmitDelegate(PotentialGearEquip3);
 	}
+	
 	public static void PotentialGearEquip3(Item itemEquip, Item itemUnEquip)
 	{
 		Player player = Main.player[Main.myPlayer];
@@ -132,6 +138,7 @@ public class UnAndEquipSocketSystem : ILoadable
 		c.Index -= 6;
 		c.RemoveRange(3); // remove the class to call it on by default, as we do that below.
 	}
+	
 	public static Item GetItemReplace(int plr, Item[] inv, int slot, GetItemSettings settings)
 	{
 		Player player = Main.player[plr];

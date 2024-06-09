@@ -85,15 +85,19 @@ internal class PassiveElement : SmartUIElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		if (_passive.CanAllocate(Main.LocalPlayer))
+		if (!_passive.CanAllocate(Main.LocalPlayer))
 		{
-			_passive.Level++;
-			Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
+			return;
+		}
 
-			_flashTimer = 20;
+		_passive.Level++;
+		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
 
-			if (_passive.MaxLevel == 1)
-			{
+		_flashTimer = 20;
+
+		switch (_passive.MaxLevel)
+		{
+			case 1:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
@@ -101,10 +105,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 2)
-			{
+			case 2:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier2")); break;
@@ -113,10 +114,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 3)
-			{
+			case 3:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
@@ -126,10 +124,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 5)
-			{
+			case 5:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
@@ -141,10 +136,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 6)
-			{
+			case 6:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
@@ -157,10 +149,7 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
-
-			if (_passive.MaxLevel == 7)
-			{
+			case 7:
 				switch (_passive.Level)
 				{
 					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
@@ -174,17 +163,18 @@ internal class PassiveElement : SmartUIElement
 				}
 
 				return;
-			}
+			default:
+				switch (_passive.Level)
+				{
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier2")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier3")); break;
+					case 4: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier4")); break;
+					case 5: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
+				}
 
-			switch (_passive.Level)
-			{
-				case 1: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier1")); break;
-				case 2: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier2")); break;
-				case 3: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier3")); break;
-				case 4: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier4")); break;
-				case 5: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
-				default: SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5")); break;
-			}
+				break;
 		}
 	}
 
