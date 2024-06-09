@@ -72,8 +72,8 @@ internal abstract class Passive
 			return;
 		}
 		
-		TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
-		TreeSystem.Edges.Add(new(this, all.FirstOrDefault(n => n is T)));
+		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
+		treeSystem.Edges.Add(new(this, all.FirstOrDefault(n => n is T)));
 	}
 
 	/// <summary>
@@ -82,12 +82,12 @@ internal abstract class Passive
 	/// <returns></returns>
 	public bool CanAllocate(Player player)
 	{
-		TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
+		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
 
 		return
 			Level < MaxLevel &&
 			Main.LocalPlayer.GetModPlayer<TreePlayer>().Points > 0 &&
-			(TreeSystem.Edges.Any(n => n.Start.Level > 0 && n.End == this) || !TreeSystem.Edges.Any(n => n.End == this));
+			(treeSystem.Edges.Any(n => n.Start.Level > 0 && n.End == this) || treeSystem.Edges.All(n => n.End != this));
 	}
 
 	/// <summary>
@@ -96,10 +96,10 @@ internal abstract class Passive
 	/// <returns></returns>
 	public virtual bool CanDeallocate(Player player)
 	{
-		TreePlayer TreeSystem = player.GetModPlayer<TreePlayer>();
+		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
 
 		return
 			Level > 0 &&
-			!(Level == 1 && TreeSystem.Edges.Any(n => n.End.Level > 0 && n.Start == this && !TreeSystem.Edges.Any(a => a != n && a.End == n.End && a.Start.Level > 0)));
+			!(Level == 1 && treeSystem.Edges.Any(n => n.End.Level > 0 && n.Start == this && !treeSystem.Edges.Any(a => a != n && a.End == n.End && a.Start.Level > 0)));
 	}
 }

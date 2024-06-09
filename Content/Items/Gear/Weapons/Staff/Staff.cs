@@ -24,6 +24,7 @@ internal class Staff : Gear
 		// Set rarity and value
 		Item.SetShopValues(ItemRarityColor.Green2, 10000);
 	}
+	
 	public override string GeneratePrefix()
 	{
 		return Main.rand.Next(5) switch
@@ -36,6 +37,7 @@ internal class Staff : Gear
 			_ => "Unknown"
 		};
 	}
+	
 	public override string GenerateSuffix()
 	{
 		return Main.rand.Next(5) switch
