@@ -170,6 +170,21 @@ Items: {
 		Tooltip: ""
 	}
 
+	WoodenBow: {
+		DisplayName: Wooden Bow
+		Tooltip: ""
+	}
+
+	BasicWoodenBow: {
+		DisplayName: Basic Wooden Bow
+		Tooltip: ""
+	}
+
+	WoodenShortBow: {
+		DisplayName: Wooden Short Bow
+    Tooltip: ""
+  }
+
 	LeafWhip: {
 		DisplayName: Leaf Whip
 		Tooltip: ""
@@ -181,6 +196,11 @@ Projectiles: {
 	HomingProjectile.DisplayName: Homing Projectile
 	SparklingBall.DisplayName: Sparkling Ball
 	TomeProjectile.DisplayName: Tome Projectile
+	BowProjectile.DisplayName: Bow Projectile
+	BowAltUseProjectile.DisplayName: Bow Alt Use Projectile
+	BowDrawAnimationProjectile.DisplayName: Bow Draw Animation Projectile
+	BasicWoodenBowAnimationProjectile.DisplayName: Basic Wooden Bow Animation Projectile
+	WoodenBowAnimationProjectile.DisplayName: Wooden Bow Animation Projectile
 	WhipBaseProjectile.DisplayName: Whip Base Projectile
 }
 

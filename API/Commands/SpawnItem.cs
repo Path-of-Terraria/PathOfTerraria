@@ -10,7 +10,7 @@ public class SpawnItem : ModCommand {
 
 	public override string Usage => "[c/ff6a00:Usage: /spawnitem <relative X> <relative Y> <count> <ilevel> <quality increase> <geartype>]";
 
-	public override string Description => "Spawns item(s) for testing items and loot generation, only x and y positions are neccecary.";
+	public override string Description => "Spawns item(s) for testing items and loot generation, only x and y positions are necessary.";
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
