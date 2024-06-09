@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
 
@@ -9,6 +11,8 @@ internal abstract class Passive
 
 	public string Name = "Unknown";
 	public string Tooltip = "Who knows what this will do!";
+
+	public List<PlayerClass> Classes { get; set; }
 
 	public int Level;
 	public int MaxLevel;
@@ -52,7 +56,41 @@ internal abstract class Passive
 	/// </summary>
 	/// <param name="all"></param>
 	/// <param name="player"></param>
-	public virtual void Connect(List<Passive> all, Player player) { }
+	public virtual void Connect(List<Passive> all, Player player)
+	{
+		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
+		switch (mp.SelectedClass)
+		{
+			case PlayerClass.Melee: ConnectMelee(all, player); return;
+			case PlayerClass.Ranged: ConnectRanged(all, player); return;
+			case PlayerClass.Magic: ConnectMagic(all, player); return;
+			case PlayerClass.Summoner: ConnectSummoner(all, player); return;
+		}
+	}
+	/// <summary>
+	/// Called on load to generate the tree edges for melee
+	/// </summary>
+	/// <param name="all"></param>
+	/// <param name="player"></param>
+	public virtual void ConnectMelee(List<Passive> all, Player player) { }
+	/// <summary>
+	/// Called on load to generate the tree edges for ranged
+	/// </summary>
+	/// <param name="all"></param>
+	/// <param name="player"></param>
+	public virtual void ConnectRanged(List<Passive> all, Player player) { }
+	/// <summary>
+	/// Called on load to generate the tree edges for magic
+	/// </summary>
+	/// <param name="all"></param>
+	/// <param name="player"></param>
+	public virtual void ConnectMagic(List<Passive> all, Player player) { }
+	/// <summary>
+	/// Called on load to generate the tree edges for summoner
+	/// </summary>
+	/// <param name="all"></param>
+	/// <param name="player"></param>
+	public virtual void ConnectSummoner(List<Passive> all, Player player) { }
 
 	/// <summary>
 	/// Attaches a node to this node, starting at this node and ending at this node.
@@ -63,6 +101,12 @@ internal abstract class Passive
 	/// <param name="player">The player</param>
 	protected void Connect<T>(List<Passive> all, Player player) where T : Passive
 	{
+		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
+		if (Classes == null || !Classes.Contains(mp.SelectedClass))
+		{
+			return;
+		}
+		
 		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
 		treeSystem.Edges.Add(new(this, all.FirstOrDefault(n => n is T)));
 	}

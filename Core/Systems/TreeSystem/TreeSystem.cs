@@ -21,8 +21,15 @@ internal class TreePlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		UILoader.GetUIState<Tree>().RemoveAllChildren();
-		UILoader.GetUIState<Tree>().Populated = false;
+		UILoader.GetUIState<PassiveTree>().RemoveAllChildren(); // idk if this is necessary?
+		ConnectNodes();
+	}
+
+	public void ConnectNodes()
+	{
+		Edges = [];
+
+		Nodes.ForEach(n => n.Connect(Nodes, Player));
 	}
 
 	public override void UpdateEquips()
@@ -42,8 +49,8 @@ internal class TreePlayer : ModPlayer
 
 		if (!_lastState && Main.mouseLeft)
 		{
-			Main.blockMouse = UILoader.GetUIState<Tree>().IsVisible &&
-						  UILoader.GetUIState<Tree>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
+			Main.blockMouse = UILoader.GetUIState<PassiveTree>().IsVisible &&
+						  UILoader.GetUIState<PassiveTree>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
 		}
 		else
 		{
@@ -68,7 +75,6 @@ internal class TreePlayer : ModPlayer
 	{
 		// Reset tree
 		Nodes = [];
-		Edges = [];
 
 		foreach (Type type in Mod.Code.GetTypes())
 		{
@@ -77,11 +83,10 @@ internal class TreePlayer : ModPlayer
 				continue;
 			}
 
-			object instance = Activator.CreateInstance(type);
-			Nodes.Add(instance as Passive);
+			var instance = (Passive) Activator.CreateInstance(type);
+			Console.WriteLine(instance.Name);
+			Nodes.Add(instance);
 		}
-
-		Nodes.ForEach(n => n.Connect(Nodes, Player));
 
 		// Load tree
 		Points = tag.GetInt("points");

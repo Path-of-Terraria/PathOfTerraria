@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Gear;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -6,7 +7,7 @@ namespace PathOfTerraria.Core.Systems.ModPlayers;
 
 public class ClassModPlayer : ModPlayer
 {
-	public string SelectedClass;
+	public PlayerClass SelectedClass;
 	
 	/// <summary>
 	/// Overrides the vanilla starting inventory to clear it
@@ -32,21 +33,22 @@ public class ClassModPlayer : ModPlayer
 
 	public override void Initialize()
 	{
-		SelectedClass = "";
+		SelectedClass = PlayerClass.None;
 	}
 
 	public override void SaveData(TagCompound tag)
 	{
-		tag["selectedClass"] = SelectedClass;
+		tag["selectedClass"] = (int) SelectedClass;
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
-		SelectedClass = tag.GetString("selectedClass");
-	}
+		int selectedClassInt = tag.GetInt("selectedClass");
+		SelectedClass = (PlayerClass) selectedClassInt;
+	} 
 
 	public bool HasSelectedClass()
 	{
-		return !string.IsNullOrEmpty(SelectedClass);
+		return SelectedClass != PlayerClass.None;
 	}
 }

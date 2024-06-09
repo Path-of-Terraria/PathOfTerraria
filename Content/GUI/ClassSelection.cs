@@ -2,9 +2,11 @@ using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
+using PathOfTerraria.Core.Systems.TreeSystem;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -87,41 +89,48 @@ public class ClassSelection : SmartUIState
     
     private void SelectMeleeClass(UIMouseEvent evt, UIElement listeningElement)
     {
-        SetPlayerClass("Melee");
+        SetPlayerClass(PlayerClass.Melee);
     }
 
     private void SelectRangedClass(UIMouseEvent evt, UIElement listeningElement)
     {
-        SetPlayerClass("Ranged");
+        SetPlayerClass(PlayerClass.Ranged);
     }
 
     private void SelectMagicClass(UIMouseEvent evt, UIElement listeningElement)
     {
-        SetPlayerClass("Magic");
+        SetPlayerClass(PlayerClass.Magic);
     }
 
     private void SelectSummonerClass(UIMouseEvent evt, UIElement listeningElement)
     {
-        SetPlayerClass("Summoner");
+        SetPlayerClass(PlayerClass.Summoner);
     }
 
-    private void SetPlayerClass(string className)
+    private void SetPlayerClass(PlayerClass playerClass)
     {
-	    switch (className)
+	    switch (playerClass)
 	    {
-		    case "Summoner":
-			    break;
-		    case "Magic":
-			    break;
-		    case "Ranged":
-			    break;
-		    case "Melee":
+		    case PlayerClass.Melee:
 			    Gear.SpawnGear<WoodenSword>(Main.LocalPlayer.position, 1);
+			    Main.NewText($"Selected Melee class");
+			    break;
+		    case PlayerClass.Magic:
+			    Gear.SpawnGear<Staff>(Main.LocalPlayer.position, 1);
+			    Main.NewText($"Selected Magic class");
+			    break;
+		    case PlayerClass.Ranged:
+			    Main.NewText($"Selected Ranged class");
+			    break;
+		    case PlayerClass.Summoner:
+			    Main.NewText($"Selected Summoner class");
 			    break;
 	    }
 	    
-	    Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = className;
-	    Main.NewText($"Class selected: {className}");
-	    IsVisible = false;
-    }
+	    Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = playerClass;
+	    
+		IsVisible = false;
+
+		Main.LocalPlayer.GetModPlayer<TreePlayer>().ConnectNodes();
+	}
 }
