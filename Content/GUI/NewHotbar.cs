@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿using Microsoft.Xna.Framework.Graphics;
+using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.SkillSystem;
 using ReLogic.Graphics;
@@ -135,8 +136,8 @@ internal class NewHotbar : SmartUIState
 			Skill skill = skillPlayer.Skills[0];
 			Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
 			spriteBatch.Draw(texture,
-				new Rectangle(267, (int)(15 + off) + texture.Height - manaH, texture.Width + 18, 40),
-				new Rectangle(1, 2, texture.Width - 2, 13), Color.White * opacity);
+				new Rectangle(268, (int)(8 + off) + texture.Height - manaH, texture.Width, texture.Height),
+				new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
 				
 			if (skill.Timer > 0)
 			{
@@ -150,8 +151,8 @@ internal class NewHotbar : SmartUIState
 			Skill skill = skillPlayer.Skills[1];
 			Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
 			spriteBatch.Draw(texture,
-				new Rectangle(320, (int)(15 + off) + texture.Height - manaH, texture.Width + 18, 40),
-				new Rectangle(1, 2, texture.Width - 2, 13), Color.White * opacity);
+				new Rectangle(320, (int)(8 + off) + texture.Height - manaH, texture.Width, texture.Height),
+				new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
 				
 			if (skill.Timer > 0)
 			{
@@ -165,8 +166,8 @@ internal class NewHotbar : SmartUIState
 			Skill skill = skillPlayer.Skills[2];
 			Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
 			spriteBatch.Draw(texture,
-				new Rectangle(372, (int)(15 + off) + texture.Height - manaH, texture.Width + 18, 40),
-				new Rectangle(1, 2, texture.Width - 2, 13), Color.White * opacity);
+				new Rectangle(372, (int)(8 + off) + texture.Height - manaH, texture.Width, texture.Height),
+				new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
 
 			if (skill.Timer <= 0)
 			{
