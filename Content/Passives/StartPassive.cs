@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class StartPassive : Passive
 {
-	public StartPassive() : base()
+	public StartPassive()
 	{
 		Name = "Anchor";
 		Tooltip = "Your journey starts here";
@@ -14,7 +14,7 @@ internal class StartPassive : Passive
 
 		Width = 58;
 		Height = 58;
-		TreePos = new Vector2(400, 500);
+		TreePositions = [new Vector2(400, 500)];
 	}
 
 	public override void Connect(List<Passive> all, Player player)

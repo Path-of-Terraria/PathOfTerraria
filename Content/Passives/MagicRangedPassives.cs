@@ -4,11 +4,11 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class LongRangePassive : Passive
 {
-	public LongRangePassive() : base()
+	public LongRangePassive()
 	{
 		Name = "Sniper";
 		Tooltip = "Increases your damage against distant enemies by 10% per level";
 		MaxLevel = 3;
-		TreePos = new Vector2(400, 180);
+		TreePositions = [new Vector2(400, 180)];
 	}
 }

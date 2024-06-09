@@ -5,12 +5,15 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class LifePassive : Passive
 {
-	public LifePassive() : base()
+	public LifePassive()
 	{
 		Name = "Empowered Flesh";
 		Tooltip = "Increases your maximum life by 20 per level";
 		MaxLevel = 5;
-		TreePos = new Vector2(400, 400);
+		TreePositions = [
+			new Vector2(400, 400),
+			new Vector2(200, 600)
+		];
 	}
 
 	public override void BuffPlayer(Player player)

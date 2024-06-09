@@ -4,11 +4,11 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class AmmoPassive : Passive
 {
-	public AmmoPassive() : base()
+	public AmmoPassive()
 	{
 		Name = "Secret Compartment";
 		Tooltip = "5% chance to not consume ammo per level";
 		MaxLevel = 3;
-		TreePos = new Vector2(300, 180);
+		TreePositions = [new Vector2(300, 180)];
 	}
 }

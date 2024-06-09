@@ -70,8 +70,14 @@ internal class Tree : SmartUIState
 			inner.Width.Set(PanelWidth - 0, 0);
 			inner.Height.Set(PanelHeight - 0, 0);
 			_panel.Append(inner);
-
-			TreeSystem.Nodes.ForEach(n => inner.Append(new PassiveElement(n)));
+			
+			TreeSystem.Nodes.ForEach(node =>
+			{
+				for (int positionIndex = 0; positionIndex < node.TreePositions.Count; positionIndex += 1)
+				{
+					inner.Append(new PassiveElement(node, node.TreePositions[positionIndex]));
+				}
+			});
 			Populated = true;
 		}
 
@@ -123,32 +129,37 @@ internal class InnerPanel : SmartUIElement
 				color = Color.White;
 			}
 
-			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.Start.TreePos, edge.End.TreePos) / 16))
+			int maxPositions = Math.Min(edge.Start.TreePositions.Count, edge.End.TreePositions.Count);
+
+			for (int positionIndex = 0; positionIndex < maxPositions; positionIndex++)
 			{
-				Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + _lineOff;
-				Main.spriteBatch.Draw(chainTex, pos, null, color, edge.Start.TreePos.DirectionTo(edge.End.TreePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
-			}
-
-			if (edge.End.Level > 0 && edge.Start.Level > 0)
-			{
-				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowAlpha").Value;
-				var glowColor = new Color(255, 230, 150)
+				for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.Start.TreePositions[positionIndex], edge.End.TreePositions[positionIndex]) / 16))
 				{
-					A = 0
-				};
-
-				var rand = new Random(edge.GetHashCode());
-
-				for (int k = 0; k < 8; k++)
+					Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.Start.TreePositions[positionIndex], edge.End.TreePositions[positionIndex], k) + _lineOff;
+					Main.spriteBatch.Draw(chainTex, pos, null, color, edge.Start.TreePositions[positionIndex].DirectionTo(edge.End.TreePositions[positionIndex]).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
+				}
+				
+				if (edge.End.Level > 0 && edge.Start.Level > 0)
 				{
-					float dist = Vector2.Distance(edge.Start.TreePos, edge.End.TreePos);
-					float len = (40 + rand.Next(120)) * dist / 50;
-					float scale = 0.05f + rand.NextSingle() * 0.15f;
+					Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowAlpha").Value;
+					var glowColor = new Color(255, 230, 150)
+					{
+						A = 0
+					};
 
-					float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
-					Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
-					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
-					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
+					var rand = new Random(edge.GetHashCode());
+
+					for (int k = 0; k < 8; k++)
+					{
+						float dist = Vector2.Distance(edge.Start.TreePositions[positionIndex], edge.End.TreePositions[positionIndex]);
+						float len = (40 + rand.Next(120)) * dist / 50;
+						float scale = 0.05f + rand.NextSingle() * 0.15f;
+
+						float progress = (Main.GameUpdateCount + 15 * k) % len / len;
+						Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.Start.TreePositions[positionIndex], edge.End.TreePositions[positionIndex], progress) + _lineOff;
+						float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
+						spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
+					}
 				}
 			}
 		}
@@ -224,11 +235,11 @@ internal class PassiveElement : SmartUIElement
 	private int _flashTimer;
 	private int _redFlashTimer;
 
-	public PassiveElement(Passive passive)
+	public PassiveElement(Passive passive, Vector2 position)
 	{
 		_passive = passive;
-		Left.Set(passive.TreePos.X - passive.Width / 2, 0);
-		Top.Set(passive.TreePos.Y - passive.Height / 2, 0);
+		Left.Set(position.X - passive.Width / 2, 0);
+		Top.Set(position.Y - passive.Height / 2, 0);
 		Width.Set(passive.Width, 0);
 		Height.Set(passive.Height, 0);
 	}

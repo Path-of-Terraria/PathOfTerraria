@@ -59,7 +59,7 @@ internal class TreePlayer : ModPlayer
 
 		foreach (Passive passive in Nodes)
 		{
-			tag[passive.GetType().Name] = passive.Level;
+			tag[passive.Name] = passive.Level;
 		}
 	}
 
@@ -76,8 +76,26 @@ internal class TreePlayer : ModPlayer
 				continue;
 			}
 
-			object instance = Activator.CreateInstance(type);
-			Nodes.Add(instance as Passive);
+			var instance = (Passive) Activator.CreateInstance(type);
+			if (instance == null)
+			{
+				return;
+			}
+
+			int index = 0;
+			foreach (Vector2 position in instance.TreePositions)
+			{
+				var clonedInstance = (Passive) Activator.CreateInstance(type);
+				if (clonedInstance == null)
+				{
+					return;
+				}
+				
+				clonedInstance.IndividualPosition = position;
+				clonedInstance.Name += index;
+				Nodes.Add(clonedInstance);
+				index++;
+			}
 		}
 
 		Nodes.ForEach(n => n.Connect(Nodes, Player));

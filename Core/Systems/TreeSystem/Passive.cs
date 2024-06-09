@@ -5,7 +5,7 @@ namespace PathOfTerraria.Core.Systems.TreeSystem;
 
 internal abstract class Passive
 {
-	public Vector2 TreePos;
+	public List<Vector2> TreePositions;
 
 	public string Name = "Unknown";
 	public string Tooltip = "Who knows what this will do!";
@@ -15,6 +15,7 @@ internal abstract class Passive
 
 	public int Width = 50;
 	public int Height = 50;
+	public Vector2 IndividualPosition; 
 
 	public virtual void BuffPlayer(Player player) { }
 
