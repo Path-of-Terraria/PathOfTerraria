@@ -182,8 +182,8 @@ Items: {
 
 	WoodenShortBow: {
 		DisplayName: Wooden Short Bow
-    Tooltip: ""
-  }
+		Tooltip: ""
+	}
 
 	LeafWhip: {
 		DisplayName: Leaf Whip
