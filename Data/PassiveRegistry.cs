@@ -34,7 +34,7 @@ public class PassiveRegistry : ILoadable
 		} catch (KeyNotFoundException)
 		{
 			Console.WriteLine($"Passive with class {playerClass} not found");
-			return null;
+			return [];
 		}
 	}
 	
@@ -48,41 +48,27 @@ public class PassiveRegistry : ILoadable
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 		};
-		
-		//Melee
-		Stream meleeStream = PathOfTerraria.Instance.GetFileStream("Data/Passives/MeleePassives.json");
-		using var meleeReader = new StreamReader(meleeStream);
-		string meleeJson = meleeReader.ReadToEnd();
-		List<PassiveData> meleeData = JsonSerializer.Deserialize<List<PassiveData>>(meleeJson, options);
-		_passives.Add(PlayerClass.Melee, meleeData);
-		meleeStream.Close();
-		meleeReader.Close();
-		
-		//Ranged
-		Stream rangedStream = PathOfTerraria.Instance.GetFileStream("Data/Passives/RangedPassives.json");
-		using var rangedReader = new StreamReader(rangedStream);
-		string rangedJson = rangedReader.ReadToEnd();
-		List<PassiveData> rangedData = JsonSerializer.Deserialize<List<PassiveData>>(rangedJson, options);
-		_passives.Add(PlayerClass.Ranged, rangedData);
-		rangedStream.Close();
-		rangedReader.Close();
-		
-		//Magic
-		Stream magicStream = PathOfTerraria.Instance.GetFileStream("Data/Passives/MagicPassives.json");
-		using var magicReader = new StreamReader(magicStream);
-		string magicJson = magicReader.ReadToEnd();
-		List<PassiveData> magicData = JsonSerializer.Deserialize<List<PassiveData>>(magicJson, options);
-		_passives.Add(PlayerClass.Magic, magicData);
-		magicStream.Close();
-		magicReader.Close();
-		
-		//Summoner
-		Stream summonerStream = PathOfTerraria.Instance.GetFileStream("Data/Passives/SummonerPassives.json");
-		using var summonerReader = new StreamReader(summonerStream);
-		string summonerJson = summonerReader.ReadToEnd();
-		List<PassiveData> summonerData = JsonSerializer.Deserialize<List<PassiveData>>(summonerJson, options);
-		_passives.Add(PlayerClass.Summoner, summonerData);
-		summonerStream.Close();
-		summonerReader.Close();
+
+		foreach (Tuple<PlayerClass, string> tree in new List<Tuple<PlayerClass, string>> {
+			new(PlayerClass.Melee, "Melee"),
+			new(PlayerClass.Ranged, "Ranged"),
+			new(PlayerClass.Magic, "Magic"),
+			new(PlayerClass.Summoner, "Summoner")})
+		{
+			Stream passiveStream = PathOfTerraria.Instance.GetFileStream($"Data/Passives/{tree.Item2}Passives.json");
+			using var passiveReader = new StreamReader(passiveStream);
+			string passiveJson = passiveReader.ReadToEnd();
+			List<PassiveData> passiveData = JsonSerializer.Deserialize<List<PassiveData>>(passiveJson, options);
+
+			passiveData // no clue how to handle empty values, lol
+				.ForEach(d => {
+					d.Connections = d.Connections is null ? [] : d.Connections;
+					d.Position = d.Position is null ? [] : d.Position;
+				});
+
+			_passives.Add(tree.Item1, passiveData);
+			passiveStream.Close();
+			passiveReader.Close();
+		}
 	}
 }

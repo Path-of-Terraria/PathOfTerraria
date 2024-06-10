@@ -27,7 +27,8 @@ internal class PassiveTree : SmartUIState
 	protected const int PanelHeight = 750;
 
 	public override bool Visible => IsVisible;
-	private PlayerClass _currentDisplay = PlayerClass.None;
+	public PlayerClass CurrentDisplayClass = PlayerClass.None;
+
 	public void Toggle(PlayerClass newClass = PlayerClass.None)
 	{
 		if (newClass == PlayerClass.None || IsVisible)
@@ -36,18 +37,16 @@ internal class PassiveTree : SmartUIState
 			return;
 		}
 
-		if (_currentDisplay != newClass)
+		if (CurrentDisplayClass != newClass)
 		{
-			_currentDisplay = newClass;
+			CurrentDisplayClass = newClass;
 			RemoveAllChildren();
 			DrawPanel();
 			DrawCloseButton();
 			DrawInnerPanel();
 
-			TreeSystem.Nodes
-				.Where(x => x.Classes.Contains(_currentDisplay))
-				.ToList()
-				.ForEach(n => Inner.Append(new PassiveElement(n)));
+			TreeSystem.CreateTree();
+			TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
 		}
 
 		IsVisible = true;
@@ -157,7 +156,7 @@ internal class InnerPanel : SmartUIElement
 
 			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.Start.TreePos, edge.End.TreePos) / 16))
 			{
-				Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + _lineOff;
+				Vector2 pos = GetDimensions().Center() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + _lineOff;
 				Main.spriteBatch.Draw(chainTex, pos, null, color, edge.Start.TreePos.DirectionTo(edge.End.TreePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 			}
 
@@ -178,7 +177,7 @@ internal class InnerPanel : SmartUIElement
 					float scale = 0.05f + rand.NextSingle() * 0.15f;
 
 					float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
-					Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
+					Vector2 pos = GetDimensions().Center() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
 					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
 				}
@@ -230,8 +229,8 @@ internal class InnerPanel : SmartUIElement
 			{
 				if (element is PassiveElement ele)
 				{
-					element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0);
-					element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0);
+					element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0.5f);
+					element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0.5f);
 				}
 			}
 

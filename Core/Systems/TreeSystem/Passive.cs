@@ -2,25 +2,92 @@
 using System.Linq;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.ModPlayers;
+using PathOfTerraria.Data.Models;
+using Steamworks;
+using SteelSeries.GameSense.DeviceZone;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
 
+internal class PassiveLoader : ILoadable
+{
+	public void Load(Mod mod)
+	{
+		Passive.LoadPassives();
+	}
+
+	public void Unload()
+	{
+	}
+}
+
 internal abstract class Passive
 {
+	public static Dictionary<string, Type> Passives = [];
+	
 	public Vector2 TreePos;
 
-	public string Name = "Unknown";
-	public string Tooltip = "Who knows what this will do!";
+	public int Id;
 
-	public List<PlayerClass> Classes { get; set; }
+	public virtual string Name => "Unknown";
+	public virtual string Tooltip => "Who knows what this will do!";
 
 	public int Level;
 	public int MaxLevel;
 
-	public int Width = 50;
-	public int Height = 50;
+	private Vector2 _size;
+	public Vector2 Size
+	{
+		get
+		{
+			if (_size == Vector2.Zero)
+			{
+				Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+
+				if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name))
+				{
+					tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+				}
+
+				_size = tex.Size();
+			}
+
+			return _size;
+		}
+	}
 
 	public virtual void BuffPlayer(Player player) { }
+
+	public static void LoadPassives()
+	{
+		Passives.Clear();
+
+		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
+		{
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive)))
+			{
+				continue;
+			}
+
+			var instance = (Passive)Activator.CreateInstance(type);
+			Passives.Add(instance.Name, type);
+		}
+	}
+
+	public static Passive GetPassiveFromData(PassiveData data)
+	{
+		if (!Passives.ContainsKey(data.Passive))
+		{
+			return null;
+		}
+
+		Passive p = (Passive)Activator.CreateInstance(Passives[data.Passive]);
+
+		p.TreePos = new(data.Position.Count > 0 ? data.Position[0] : 0, data.Position.Count > 1 ? data.Position[1] : 0);
+		p.MaxLevel = data.MaxLevel;
+		p.Id = data.Id;
+
+		return p;
+	}
 
 	public void Draw(SpriteBatch spriteBatch, Vector2 center)
 	{
@@ -43,72 +110,12 @@ internal abstract class Passive
 			color = Color.White;
 		}
 
-		spriteBatch.Draw(tex, center, null, color, 0, tex.Size() / 2f, 1, 0, 0);
+		spriteBatch.Draw(tex, center, null, color, 0, Size / 2f, 1, 0, 0);
 
 		if (MaxLevel > 1)
 		{
-			Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", center + new Vector2(Width / 2f, Height / 2f), color, 1, 0.5f, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", center + Size / 2f, color, 1, 0.5f, 0.5f);
 		}
-	}
-
-	/// <summary>
-	/// Called on load to generate the tree edges
-	/// </summary>
-	/// <param name="all"></param>
-	/// <param name="player"></param>
-	public virtual void Connect(List<Passive> all, Player player)
-	{
-		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
-		switch (mp.SelectedClass)
-		{
-			case PlayerClass.Melee: ConnectMelee(all, player); return;
-			case PlayerClass.Ranged: ConnectRanged(all, player); return;
-			case PlayerClass.Magic: ConnectMagic(all, player); return;
-			case PlayerClass.Summoner: ConnectSummoner(all, player); return;
-		}
-	}
-	/// <summary>
-	/// Called on load to generate the tree edges for melee
-	/// </summary>
-	/// <param name="all"></param>
-	/// <param name="player"></param>
-	public virtual void ConnectMelee(List<Passive> all, Player player) { }
-	/// <summary>
-	/// Called on load to generate the tree edges for ranged
-	/// </summary>
-	/// <param name="all"></param>
-	/// <param name="player"></param>
-	public virtual void ConnectRanged(List<Passive> all, Player player) { }
-	/// <summary>
-	/// Called on load to generate the tree edges for magic
-	/// </summary>
-	/// <param name="all"></param>
-	/// <param name="player"></param>
-	public virtual void ConnectMagic(List<Passive> all, Player player) { }
-	/// <summary>
-	/// Called on load to generate the tree edges for summoner
-	/// </summary>
-	/// <param name="all"></param>
-	/// <param name="player"></param>
-	public virtual void ConnectSummoner(List<Passive> all, Player player) { }
-
-	/// <summary>
-	/// Attaches a node to this node, starting at this node and ending at this node.
-	/// Remember, the tree is directed!
-	/// </summary>
-	/// <typeparam name="T">The type of node to connect to</typeparam>
-	/// <param name="all">All nodes</param>
-	/// <param name="player">The player</param>
-	protected void Connect<T>(List<Passive> all, Player player) where T : Passive
-	{
-		ClassModPlayer mp = player.GetModPlayer<ClassModPlayer>();
-		if (Classes == null || !Classes.Contains(mp.SelectedClass))
-		{
-			return;
-		}
-		
-		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
-		treeSystem.Edges.Add(new(this, all.FirstOrDefault(n => n is T)));
 	}
 
 	/// <summary>

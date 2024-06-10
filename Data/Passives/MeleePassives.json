@@ -1,17 +1,37 @@
 ﻿[
 	{
 		"id": 1,
-		"passive": "Start",
-		"maxLevel": 1
+		"passive": "Anchor",
+		"maxLevel": 1,
+		"connections": [ 2 ],
+		"position": [ 0, 0 ]
 	},
 	{
 		"id": 2,
-		"passive": "LifePassive",
+		"passive": "Empowered Flesh",
 		"maxLevel": 5,
-		"connections": [
-			{
-				
-			}
-		]
+		"connections": [ 3 ],
+		"position": [ 100, 0 ]
+	},
+	{
+		"id": 3,
+		"passive": "Empowered Flesh",
+		"maxLevel": 5,
+		"connections": [ 4 ],
+		"position": [ 100, 100 ]
+	},
+	{
+		"id": 4,
+		"passive": "Empowered Flesh",
+		"maxLevel": 5,
+		"connections": [ 5 ],
+		"position": [ -100, 100 ]
+	},
+	{
+		"id": 5,
+		"passive": "Empowered Flesh",
+		"maxLevel": 5,
+		"connections": [ 1 ],
+		"position": [ -100, 0 ]
 	}
 ]

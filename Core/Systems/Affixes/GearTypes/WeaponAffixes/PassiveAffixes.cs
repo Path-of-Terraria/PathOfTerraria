@@ -18,7 +18,7 @@ public class PassiveAffixes
 		public override GearType PossibleTypes => GearType.Melee;
 		public override void ApplyAffix(EntityModifier modifier, Gear gear)
 		{
-			modifier.Damage += Value * 5 + Value * gear.ItemLevel / 20;
+			modifier.Damage += (Value * 5 + Value * gear.ItemLevel / 20) / 100f;
 		}
 	}
 

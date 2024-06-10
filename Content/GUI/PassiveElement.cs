@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
+using PathOfTerraria.Data.Models;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -16,11 +17,12 @@ internal class PassiveElement : SmartUIElement
 
 	public PassiveElement(Passive passive)
 	{
+		Console.WriteLine(passive.Size);
 		_passive = passive;
-		Left.Set(passive.TreePos.X - passive.Width / 2, 0);
-		Top.Set(passive.TreePos.Y - passive.Height / 2, 0);
-		Width.Set(passive.Width, 0);
-		Height.Set(passive.Height, 0);
+		Left.Set(passive.TreePos.X - passive.Size.X / 2f, 0.5f);
+		Top.Set(passive.TreePos.Y - passive.Size.Y / 2f, 0.5f);
+		Width.Set(passive.Size.X, 0);
+		Height.Set(passive.Size.Y, 0);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)

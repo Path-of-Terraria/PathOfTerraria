@@ -131,6 +131,6 @@ public class ClassSelection : SmartUIState
 	    
 		IsVisible = false;
 
-		Main.LocalPlayer.GetModPlayer<TreePlayer>().ConnectNodes();
+		Main.LocalPlayer.GetModPlayer<TreePlayer>().CreateTree();
 	}
 }

@@ -1,6 +1,11 @@
 ﻿using PathOfTerraria.Content.GUI;
 using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Systems.ModPlayers;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
+using Stubble.Core.Classes;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
@@ -16,25 +21,45 @@ internal class TreePlayer : ModPlayer
 {
 	public int Points;
 
-	public List<Passive> Nodes = [];
+	public List<Passive> ActiveNodes = [];
 	public List<PassiveEdge> Edges = [];
 
 	public override void OnEnterWorld()
 	{
-		UILoader.GetUIState<PassiveTree>().RemoveAllChildren(); // idk if this is necessary?
-		ConnectNodes();
+		UILoader.GetUIState<PassiveTree>().RemoveAllChildren(); // is this is necessary?
+		UILoader.GetUIState<PassiveTree>().CurrentDisplayClass = Content.Items.Gear.PlayerClass.None; // this is.
 	}
 
-	public void ConnectNodes()
+	public void CreateTree()
 	{
+		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
+
+		ActiveNodes = [];
 		Edges = [];
 
-		Nodes.ForEach(n => n.Connect(Nodes, Player));
+		Dictionary<int, Passive> passives = [];
+
+		List<PassiveData> data = PassiveRegistry.TryGetPassiveData(mp.SelectedClass);
+
+		data.ForEach(n => { passives.Add(n.Id, Passive.GetPassiveFromData(n)); ActiveNodes.Add(passives[n.Id]); });
+		data.ForEach(n => n.Connections.ForEach(id => Edges.Add(new(passives[n.Id], passives[id]))));
+
+		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
+
+		Points = expPlayer.Level;
+
+		foreach (Passive passive in ActiveNodes)
+		{
+			passive.Level = _saveData.TryGet(passive.Id.ToString(), out int level) ? level : passive.Id == 1 ? 1 : 0;
+			// standard is id 1 is anchor for now.
+			
+			Points -= passive.Level;
+		}
 	}
 
 	public override void UpdateEquips()
 	{
-		Nodes.ForEach(n => n.BuffPlayer(Player));
+		ActiveNodes.Where(n => n.Level != 0).ToList().ForEach(n => n.BuffPlayer(Player));
 	}
 
 	private bool _blockMouse = false;
@@ -63,37 +88,15 @@ internal class TreePlayer : ModPlayer
 
 	public override void SaveData(TagCompound tag)
 	{
-		tag["points"] = Points;
-
-		foreach (Passive passive in Nodes)
+		foreach (Passive passive in ActiveNodes)
 		{
-			tag[passive.GetType().Name] = passive.Level;
+			tag[passive.Id.ToString()] = passive.Level;
 		}
 	}
 
+	private TagCompound _saveData = new();
 	public override void LoadData(TagCompound tag)
 	{
-		// Reset tree
-		Nodes = [];
-
-		foreach (Type type in Mod.Code.GetTypes())
-		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive)))
-			{
-				continue;
-			}
-
-			var instance = (Passive) Activator.CreateInstance(type);
-			Console.WriteLine(instance.Name);
-			Nodes.Add(instance);
-		}
-
-		// Load tree
-		Points = tag.GetInt("points");
-
-		foreach (Passive passive in Nodes)
-		{
-			passive.Level = tag.TryGet(passive.GetType().Name, out int level) ? level : 0;
-		}
+		_saveData = tag;
 	}
 }

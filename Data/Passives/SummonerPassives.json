@@ -1,17 +1,14 @@
 ﻿[
 	{
 		"id": 1,
-		"passive": "Start",
+		"passive": "Anchor",
 		"maxLevel": 1
 	},
 	{
 		"id": 2,
-		"passive": "LifePassive",
+		"passive": "Empowered Flesh",
 		"maxLevel": 5,
-		"connections": [
-			{
-				
-			}
-		]
+		"connections": [ 1 ],
+		"position": [ 0, 100 ]
 	}
 ]

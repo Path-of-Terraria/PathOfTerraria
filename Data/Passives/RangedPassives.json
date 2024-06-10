@@ -1,12 +1,13 @@
 ﻿[
 	{
 		"id": 1,
-		"passive": "Start",
+		"passive": "Anchor",
 		"maxLevel": 1
 	},
 	{
 		"id": 2,
-		"passive": "LifePassive",
-		"maxLevel": 5
+		"passive": "Empowered Flesh",
+		"maxLevel": 5,
+		"position": [ 0, 100 ]
 	}
 ]
