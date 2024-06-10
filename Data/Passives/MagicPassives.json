@@ -1,0 +1,12 @@
+﻿[
+	{
+		"id": 1,
+		"passive": "Start",
+		"maxLevel": 1
+	},
+	{
+		"id": 2,
+		"passive": "LifePassive",
+		"maxLevel": 5
+	}
+]

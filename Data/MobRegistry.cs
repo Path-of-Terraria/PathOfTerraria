@@ -12,19 +12,14 @@ public class MobRegistry : ILoadable
 	/// A map of MobData objects, with the key being the type from NPC.
 	/// </summary>
 	private static Dictionary<int, MobData> _mobData = new();
-
-	private void RegisterMobs()
+	
+	public void Load(Mod mod)
 	{
 		_mobData = LoadJsonFilesToMapAsync();
 		foreach (KeyValuePair<int, MobData> entry in _mobData.Where(entry => entry.Value.Entries.Count > 0))
 		{
 			Console.WriteLine($"Mob With Key: {entry.Key} - Registered");
 		}
-	}
-	
-	public void Load(Mod mod)
-	{
-		RegisterMobs();
 	}
 	
 	public virtual void Unload() { }
@@ -60,7 +55,7 @@ public class MobRegistry : ILoadable
 
 		List<string> jsonFiles = PathOfTerraria.Instance.GetFileNames();
 
-		foreach (Stream jsonStream in from path in jsonFiles where path.StartsWith("Data/Vanilla") && path.EndsWith(".json") select PathOfTerraria.Instance.GetFileStream(path))
+		foreach (Stream jsonStream in from path in jsonFiles where path.StartsWith("Data/Mobs/Vanilla") && path.EndsWith(".json") select PathOfTerraria.Instance.GetFileStream(path))
 		{
 			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();

@@ -25,15 +25,18 @@ internal class LifePassive : Passive
 	{
 		Connect<MartialMasteryPassive>(all, player);
 	}
+	
 	public override void ConnectRanged(List<Passive> all, Player player)
 	{
 		Connect<MarksmanshipMasteryPassive>(all, player);
 		Connect<CloseRangePassive>(all, player);
 	}
+	
 	public override void ConnectMagic(List<Passive> all, Player player)
 	{
 		Connect<ArcaneMasteryPassive>(all, player);
 	}
+	
 	public override void ConnectSummoner(List<Passive> all, Player player)
 	{
 		Connect<SummoningMasteryPassive>(all, player);
