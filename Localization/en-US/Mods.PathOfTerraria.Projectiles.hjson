@@ -1,0 +1,10 @@
+LifeStealProjectile.DisplayName: Life Steal Projectile
+HomingProjectile.DisplayName: Homing Projectile
+SparklingBall.DisplayName: Sparkling Ball
+TomeProjectile.DisplayName: Tome Projectile
+BowProjectile.DisplayName: Bow Projectile
+BowAltUseProjectile.DisplayName: Bow Alt Use Projectile
+BowDrawAnimationProjectile.DisplayName: Bow Draw Animation Projectile
+BasicWoodenBowAnimationProjectile.DisplayName: Basic Wooden Bow Animation Projectile
+WoodenBowAnimationProjectile.DisplayName: Wooden Bow Animation Projectile
+WhipBaseProjectile.DisplayName: Whip Base Projectile

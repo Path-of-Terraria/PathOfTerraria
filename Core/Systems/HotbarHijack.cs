@@ -1,4 +1,7 @@
-﻿using Terraria.UI;
+﻿using PathOfTerraria.Content.GUI;
+using PathOfTerraria.Core.Loaders.UILoading;
+using System.Linq;
+using Terraria.UI;
 
 namespace PathOfTerraria.Core.Systems;
 
@@ -7,11 +10,24 @@ internal class HotbarHijack : ModSystem
 	public override void Load()
 	{
 		On_ItemSlot.LeftClick_ItemArray_int_int += StopHotbar;
+		On_Main.GUIHotbarDrawInner += StopHoverText;
+	}
+
+	private void StopHoverText(On_Main.orig_GUIHotbarDrawInner orig, Main self)
+	{
+		string lastHover = Main.hoverItemName;
+
+		orig(self);
+
+		if (Main.LocalPlayer.selectedItem == 0 && !Main.hoverItemName.StartsWith(Main.LocalPlayer.HeldItem.AffixName()))
+		{
+			Main.hoverItemName = lastHover;
+		}
 	}
 
 	private void StopHotbar(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 	{
-		if (context == 0 && !Main.mouseItem.IsAir && slot <= 9)
+		if (context == ItemSlot.Context.InventoryItem && !Main.mouseItem.IsAir && slot <= 9)
 		{
 			Item item = Main.mouseItem;
 
