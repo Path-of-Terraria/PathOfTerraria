@@ -39,7 +39,7 @@ internal class PassiveTree : SmartUIState
 			return;
 		}
 
-		if (CurrentDisplayClass != newClass || true)
+		if (CurrentDisplayClass != newClass)
 		{
 			TopLeftTree = Vector2.Zero;
 			BotRightTree = Vector2.Zero;
@@ -242,8 +242,8 @@ internal class InnerPanel : SmartUIElement
 
 			if (rec.Height < MathF.Abs(UITree.BotRightTree.Y) + MathF.Abs(UITree.TopLeftTree.Y))
 			{
-				yAbove = -MathF.Min(-yAbove, 0);
-				yBelow = -MathF.Max(-yBelow, 0);
+				yAbove = MathF.Max(yAbove, 0);
+				yBelow = MathF.Min(yBelow, 0);
 			}
 			else
 			{
@@ -253,8 +253,8 @@ internal class InnerPanel : SmartUIElement
 
 			if (rec.Width < MathF.Abs(UITree.BotRightTree.X) + MathF.Abs(UITree.TopLeftTree.X))
 			{
-				xAbove = -MathF.Min(-xAbove, 0);
-				xBelow = -MathF.Max(-xBelow, 0);
+				xAbove = MathF.Max(xAbove, 0);
+				xBelow = MathF.Min(xBelow, 0);
 			}
 			else
 			{
