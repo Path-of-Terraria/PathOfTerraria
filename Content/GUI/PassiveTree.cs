@@ -22,9 +22,9 @@ internal class PassiveTree : SmartUIState
 	protected static TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
 	protected const int TopPadding = -400;
+	protected const int PanelHeight = 800;
 	protected const int LeftPadding = -450;
-	protected const int PanelWidth = 800;
-	protected const int PanelHeight = 750;
+	protected const int PanelWidth = 900;
 
 	public override bool Visible => IsVisible;
 	public PlayerClass CurrentDisplayClass = PlayerClass.None;
@@ -42,8 +42,8 @@ internal class PassiveTree : SmartUIState
 			CurrentDisplayClass = newClass;
 			RemoveAllChildren();
 			DrawPanel();
-			DrawCloseButton();
 			DrawInnerPanel();
+			DrawCloseButton();
 
 			TreeSystem.CreateTree();
 			TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
@@ -73,24 +73,9 @@ internal class PassiveTree : SmartUIState
 		Panel = new UIPanel();
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
-		Panel.Width.Set(PanelWidth, 0.15f);
-		Panel.Height.Set(PanelHeight, 0.15f);
+		Panel.Width.Set(PanelWidth, 0);
+		Panel.Height.Set(PanelHeight, 0);
 		Append(Panel);
-	}
-
-	protected void DrawCloseButton()
-	{
-		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/CloseButton"));
-		CloseButton.Left.Set(LeftPadding + PanelWidth - 120, 0.5f);
-		CloseButton.Top.Set(TopPadding + 10, 0.5f);
-		CloseButton.Width.Set(38, 0);
-		CloseButton.Height.Set(38, 0);
-		CloseButton.OnLeftClick += (a, b) => {
-			IsVisible = false;
-			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-		};
-		CloseButton.SetVisibility(1, 1);
-		Append(CloseButton);
 	}
 	
 	protected void DrawInnerPanel()
@@ -98,9 +83,24 @@ internal class PassiveTree : SmartUIState
 		Inner = new InnerPanel();
 		Inner.Left.Set(0, 0);
 		Inner.Top.Set(0, 0);
-		Inner.Width.Set(PanelWidth - 0, 0);
-		Inner.Height.Set(PanelHeight - 0, 0);
+		Inner.Width.Set(0, 1);
+		Inner.Height.Set(0, 1);
 		Panel.Append(Inner);
+	}
+
+	protected void DrawCloseButton()
+	{
+		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/CloseButton"));
+		CloseButton.Left.Set(-38, 1f);
+		CloseButton.Top.Set(0, 0f);
+		CloseButton.Width.Set(38, 0);
+		CloseButton.Height.Set(38, 0);
+		CloseButton.OnLeftClick += (a, b) => {
+			IsVisible = false;
+			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+		};
+		CloseButton.SetVisibility(1, 1);
+		Inner.Append(CloseButton);
 	}
 
 	protected void DrawPanelText(SpriteBatch spriteBatch)
@@ -201,7 +201,7 @@ internal class InnerPanel : SmartUIElement
 	{
 		if (Main.mouseLeft && !_lastState)
 		{
-			_blockMouse = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
+			_blockMouse = Parent.GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
 			_isHovering = Panel.IsMouseHovering;
 		}
 		else if (!Main.mouseLeft)
