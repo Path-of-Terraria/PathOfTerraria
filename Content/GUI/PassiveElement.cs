@@ -15,6 +15,7 @@ internal class PassiveElement : SmartUIElement
 	private int _redFlashTimer;
 
 	private PassiveTree UITree => UILoader.GetUIState<PassiveTree>();
+	
 	public PassiveElement(Passive passive)
 	{
 		float halfSizeX = passive.Size.X / 2;
@@ -24,6 +25,7 @@ internal class PassiveElement : SmartUIElement
 		{
 			UITree.TopLeftTree.X = passive.TreePos.X - halfSizeX;
 		}
+		
 		if (passive.TreePos.Y - halfSizeY < UITree.TopLeftTree.Y)
 		{
 			UITree.TopLeftTree.Y = passive.TreePos.Y - halfSizeY;
@@ -33,6 +35,7 @@ internal class PassiveElement : SmartUIElement
 		{
 			UITree.BotRightTree.X = passive.TreePos.X + halfSizeX;
 		}
+		
 		if (passive.TreePos.Y + halfSizeY > UITree.BotRightTree.Y)
 		{
 			UITree.BotRightTree.Y = passive.TreePos.Y + halfSizeY;

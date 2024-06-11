@@ -4,7 +4,7 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class StartPassive : Passive
 {
-	public override int Id => 0;
+	public override string InternalIdentifier => "Anchor";
 	public override string Name => "Anchor";
 	public override string Tooltip => "Your journey starts here";
 	

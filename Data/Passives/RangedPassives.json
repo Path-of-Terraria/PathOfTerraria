@@ -1,11 +1,11 @@
 ﻿[
 	{
-		"id": 0,
+		"internalIdentifier": "Anchor",
 		"referenceId": 1,
 		"maxLevel": 1
 	},
 	{
-		"id": 1,
+		"internalIdentifier": "AddedLife",
 		"referenceId": 2,
 		"maxLevel": 5,
 		"connections": [

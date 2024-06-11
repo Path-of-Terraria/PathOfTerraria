@@ -18,12 +18,12 @@ internal class PassiveLoader : ILoadable
 
 internal abstract class Passive
 {
-	public static Dictionary<int, Type> Passives = [];
+	public static Dictionary<string, Type> Passives = [];
 	
 	public Vector2 TreePos;
 
 	//This is used to map the JSON data to the correct passive
-	public virtual int Id => 0;
+	public virtual string InternalIdentifier => "NONE";
 	
 	//This is used to create a reference to the created passive for connections
 	public int ReferenceId;
@@ -40,17 +40,19 @@ internal abstract class Passive
 	{
 		get
 		{
-			if (_size == Vector2.Zero)
+			if (_size != Vector2.Zero)
 			{
-				Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-
-				if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name))
-				{
-					tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-				}
-
-				_size = tex.Size();
+				return _size;
 			}
+
+			Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+
+			if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name))
+			{
+				tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+			}
+
+			_size = tex.Size();
 
 			return _size;
 		}
@@ -70,22 +72,22 @@ internal abstract class Passive
 			}
 
 			var instance = (Passive)Activator.CreateInstance(type);
-			Passives.Add(instance.Id, type);
+			Passives.Add(instance.InternalIdentifier, type);
 		}
 	}
 
 	public static Passive GetPassiveFromData(PassiveData data)
 	{
-		if (!Passives.ContainsKey(data.Id))
+		if (!Passives.ContainsKey(data.InternalIdentifier))
 		{
 			return null;
 		}
 
-		var p = (Passive) Activator.CreateInstance(Passives[data.Id]);
+		var p = (Passive) Activator.CreateInstance(Passives[data.InternalIdentifier]);
 
 		p.TreePos = new Vector2(data.Position.X, data.Position.Y);
 		p.MaxLevel = data.MaxLevel;
-		p.ReferenceId = data.Id;
+		p.ReferenceId = data.ReferenceId;
 
 		return p;
 	}

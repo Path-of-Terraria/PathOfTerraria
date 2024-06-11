@@ -11,7 +11,7 @@ public class PassiveRegistry : ILoadable
 	/// <summary>
 	/// A map of MobData objects, with the key being the type from NPC.
 	/// </summary>
-	private static Dictionary<PlayerClass, List<PassiveData>> _passives = new();
+	private static readonly Dictionary<PlayerClass, List<PassiveData>> Passives = new();
 	
 	public void Load(Mod mod)
 	{
@@ -29,7 +29,7 @@ public class PassiveRegistry : ILoadable
 	{
 		try
 		{
-			return _passives[playerClass];
+			return Passives[playerClass];
 		} catch (KeyNotFoundException)
 		{
 			Console.WriteLine($"Passive with class {playerClass} not found");
@@ -65,7 +65,7 @@ public class PassiveRegistry : ILoadable
 					d.Position ??= new PassivePosition();
 				});
 
-			_passives.Add(tree.Item1, passiveData);
+			Passives.Add(tree.Item1, passiveData);
 			passiveStream.Close();
 			passiveReader.Close();
 		}
