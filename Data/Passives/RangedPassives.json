@@ -1,0 +1,16 @@
+﻿[
+	{
+		"id": 0,
+		"referenceId": 1,
+		"maxLevel": 1
+	},
+	{
+		"id": 1,
+		"referenceId": 2,
+		"maxLevel": 5,
+		"position": {
+			"x": 0,
+			"y": 100
+		}
+	}
+]
