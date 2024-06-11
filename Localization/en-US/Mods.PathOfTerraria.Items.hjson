@@ -1,0 +1,190 @@
+HealingPotionPickup: {
+	DisplayName: Healing Potion Pickup
+	Tooltip: ""
+}
+
+ManaPotionPickup: {
+	DisplayName: Mana Potion Pickup
+	Tooltip: ""
+}
+
+Helmet: {
+	DisplayName: Helmet
+	Tooltip: ""
+}
+
+Chestplate: {
+	DisplayName: Chestplate
+	Tooltip: ""
+}
+
+Leggings: {
+	DisplayName: Leggings
+	Tooltip: ""
+}
+
+Sword: {
+	DisplayName: Sword
+	Tooltip: ""
+}
+
+Broadsword: {
+	DisplayName: Broadsword
+	Tooltip: ""
+}
+
+Katana: {
+	DisplayName: Katana
+	Tooltip: ""
+}
+
+Staff: {
+	DisplayName: Staff
+	Tooltip: ""
+	Staff: Staff
+}
+
+Wand: {
+	DisplayName: Wand
+	Tooltip: ""
+}
+
+LowTierMap: {
+	DisplayName: Low Tier Map
+	Tooltip: ""
+}
+
+BodyArmor: {
+	DisplayName: Body Armor
+	Tooltip: ""
+}
+
+Breastplate: {
+	DisplayName: Breastplate
+	Tooltip: ""
+}
+
+Crown: {
+	DisplayName: Crown
+	Tooltip: ""
+}
+
+Visor: {
+	DisplayName: Visor
+	Tooltip: ""
+}
+
+Boots: {
+	DisplayName: Boots
+	Tooltip: ""
+}
+
+BurningRedBoots: {
+	DisplayName: Burning Red Boots
+	Tooltip: ""
+}
+
+Greaves: {
+	DisplayName: Greaves
+	Tooltip: ""
+}
+
+Tassets: {
+	DisplayName: Tassets
+	Tooltip: ""
+}
+
+Treads: {
+	DisplayName: Treads
+	Tooltip: ""
+}
+
+CaveMap: {
+	DisplayName: Cave Map
+	Tooltip: ""
+}
+
+Codex: {
+	DisplayName: Codex
+	Tooltip: ""
+}
+
+Grimouire: {
+	DisplayName: Grimouire
+	Tooltip: ""
+}
+
+Lexicon: {
+	DisplayName: Lexicon
+	Tooltip: ""
+}
+
+Manuscript: {
+	DisplayName: Manuscript
+	Tooltip: ""
+}
+
+Spellbook: {
+	DisplayName: Spellbook
+	Tooltip: ""
+}
+
+Grimoire: {
+	DisplayName: Grimoire
+	Tooltip: ""
+}
+
+CopperBroadsword: {
+	DisplayName: Copper Broadsword
+	Tooltip: ""
+}
+
+IronBroadsword: {
+	DisplayName: Iron Broadsword
+	Tooltip: ""
+}
+
+SteelBroadsword: {
+	DisplayName: Steel Broadsword
+	Tooltip: ""
+}
+
+StoneSword: {
+	DisplayName: Stone Sword
+	Tooltip: ""
+}
+
+WoodenSword: {
+	DisplayName: Wooden Sword
+	Tooltip: ""
+}
+
+MapDevice: {
+	DisplayName: Map Device
+	Tooltip: ""
+}
+
+MapDeviceOn: {
+	DisplayName: Map Device On
+	Tooltip: ""
+}
+
+WoodenBow: {
+	DisplayName: Wooden Bow
+	Tooltip: ""
+}
+
+BasicWoodenBow: {
+	DisplayName: Basic Wooden Bow
+	Tooltip: ""
+}
+
+WoodenShortBow: {
+	DisplayName: Wooden Short Bow
+	Tooltip: ""
+}
+
+LeafWhip: {
+	DisplayName: Leaf Whip
+	Tooltip: ""
+}
