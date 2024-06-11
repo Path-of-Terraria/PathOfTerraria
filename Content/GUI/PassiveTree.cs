@@ -127,10 +127,52 @@ internal class InnerPanel : SmartUIElement
 	private Vector2 _start;
 	private Vector2 _root;
 	private Vector2 _lineOff;
+	private Rectangle _innerContainer;
+	private Point _containerSize;
 
 	private UIElement Panel => Parent;
 
 	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
+
+	public override void Recalculate()
+	{
+		Vector2 min = new(float.MaxValue);
+		Vector2 max = new(float.MinValue);
+
+		foreach (UIElement item in Children)
+		{
+			var rect = item.GetDimensions().ToRectangle();
+
+			if (item is PassiveElement pass)
+			{
+				rect.Width = 50;
+				rect.Height = 50;
+				rect.Inflate(-20, -20);
+			}
+
+			if (rect.Left < min.X)
+			{
+				min.X = rect.X;
+			}
+
+			if (rect.Right > max.X)
+			{
+				max.X = rect.Right;
+			}
+
+			if (rect.Top < min.Y)
+			{
+				min.Y = rect.Top;
+			}
+
+			if (rect.Bottom > max.Y)
+			{
+				max.Y = rect.Bottom;
+			}
+		}
+
+		_containerSize = new Point((int)(max.X - min.X), (int)(max.Y - min.Y));
+	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
@@ -228,39 +270,27 @@ internal class InnerPanel : SmartUIElement
 				}
 			}
 
-			Vector2 mouse = Main.MouseScreen;
-			Rectangle parent = Parent.GetDimensions().ToRectangle();
+			Vector2 containerPos = _root + Main.MouseScreen - _start;
+			_innerContainer = new Rectangle((int)containerPos.X + _containerSize.X / 2, (int)containerPos.Y + _containerSize.Y / 2 + 40, _containerSize.X, _containerSize.Y);
 
-			if (mouse.X < parent.Left)
-			{
-				mouse.X = parent.Left;
-			}
-			else if (mouse.X > parent.Right)
-			{
-				mouse.X = parent.Right;
-			}
+			// Use this if you want to visualize the container hitbox.
+			// Dust.QuickBox(_innerContainer.TopLeft() + Main.screenPosition, _innerContainer.BottomRight() + Main.screenPosition, 20, Color.White, null);
 
-			if (mouse.Y < parent.Top)
+			if (_innerContainer.Intersects(Parent.GetDimensions().ToRectangle()))
 			{
-				mouse.Y = parent.Top;
-			}
-			else if (mouse.Y > parent.Bottom)
-			{
-				mouse.Y = parent.Bottom;
-			}
-
-			foreach (UIElement element in Elements)
-			{
-				if (element is PassiveElement ele)
+				foreach (UIElement element in Elements)
 				{
-					Vector2 position = ele.Root + mouse - _start;
+					if (element is PassiveElement ele)
+					{
+						Vector2 position = ele.Root + Main.MouseScreen - _start;
 
-					element.Left.Set(position.X, 0);
-					element.Top.Set(position.Y, 0);
+						element.Left.Set(position.X, 0);
+						element.Top.Set(position.Y, 0);
+					}
 				}
-			}
 
-			_lineOff = _root + mouse - _start;
+				_lineOff = _root + Main.MouseScreen - _start;
+			}
 		}
 		else
 		{
