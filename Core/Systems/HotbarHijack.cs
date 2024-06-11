@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Content.GUI;
 using PathOfTerraria.Core.Loaders.UILoading;
 using System.Linq;
+using PathOfTerraria.Helpers;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.Systems;
@@ -31,7 +32,7 @@ internal class HotbarHijack : ModSystem
 		{
 			Item item = Main.mouseItem;
 
-			bool weapon = item.damage > 0 && item.pick <= 0;
+			bool weapon = item.IsWeapon();
 			bool tool = item.pick > 0;
 
 			// Slot 1 should be forced to be the equipped weapon
