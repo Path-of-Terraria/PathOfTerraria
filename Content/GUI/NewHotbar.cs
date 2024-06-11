@@ -110,6 +110,18 @@ internal class NewHotbar : SmartUIState
 			(potionPlayer.ManaLeft > 0 ? new Color(200, 220, 255) : Color.Gray) * opacity, 1f * opacity, 0.5f,
 			0.5f);
 
+		// Show hover text for Life Potions
+		if (new Rectangle(457, (int)(20 + off) + lifeTexture.Height - lifeH, 48, 48).Contains(Main.MouseScreen.ToPoint()))
+		{
+			Main.hoverItemName = "Life Potions";
+		}
+
+		// Show hover text for Mana Potions
+		if (new Rectangle(497, (int)(20 + off) + lifeTexture.Height - lifeH, 48, 48).Contains(Main.MouseScreen.ToPoint()))
+		{
+			Main.hoverItemName = "Mana Potions";
+		}
+
 		Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowSoft").Value;
 		if (Main.LocalPlayer.HasBuff(BuffID.PotionSickness))
 		{
