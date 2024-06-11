@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
-using PathOfTerraria.Data.Models;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;

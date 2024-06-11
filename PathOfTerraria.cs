@@ -5,7 +5,6 @@ global using Terraria;
 global using Terraria.ModLoader;
 using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Data;
 using Terraria.ID;
 
 namespace PathOfTerraria;

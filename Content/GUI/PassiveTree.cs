@@ -1,9 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using PathOfTerraria.Content.Items.Gear;
+﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;

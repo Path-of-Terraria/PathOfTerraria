@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using System.Linq;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Data.Models;
 
@@ -62,8 +61,8 @@ public class PassiveRegistry : ILoadable
 
 			passiveData // no clue how to handle empty values, lol
 				.ForEach(d => {
-					d.Connections = d.Connections is null ? [] : d.Connections;
-					d.Position = d.Position is null ? [] : d.Position;
+					d.Connections ??= [];
+					d.Position ??= new PassivePosition();
 				});
 
 			_passives.Add(tree.Item1, passiveData);

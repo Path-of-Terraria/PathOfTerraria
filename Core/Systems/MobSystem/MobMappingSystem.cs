@@ -1,17 +1,8 @@
-﻿using Mono.Cecil;
-using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Experience;
-using PathOfTerraria.Core.Systems.ModPlayers;
-using Steamworks;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Core.Systems.MobSystem;
 

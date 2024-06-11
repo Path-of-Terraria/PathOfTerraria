@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.GameContent.UI.ResourceSets;
-
-namespace PathOfTerraria.Core.Overlays;
+﻿namespace PathOfTerraria.Core.Overlays;
 internal class StatOverlay : ModResourceOverlay
 {
 	private Color GetBarColor(int bar)

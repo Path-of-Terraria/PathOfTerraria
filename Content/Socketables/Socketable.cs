@@ -1,15 +1,4 @@
-﻿using Ionic.Zlib;
-using Newtonsoft.Json.Linq;
-using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.Affixes;
-using Steamworks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Socketables;
