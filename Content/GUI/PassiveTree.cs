@@ -5,9 +5,11 @@ using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -192,6 +194,11 @@ internal class InnerPanel : SmartUIElement
 
 		spriteBatch.GraphicsDevice.ScissorRectangle = oldRect;
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "Egg", _lineOff, Color.White, 0f, Vector2.Zero, Vector2.One);
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "Egg", _lineOff + _root, Color.Red, 0f, Vector2.Zero, Vector2.One);
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "Egg", GetDimensions().Center(), Color.Blue, 0f, Vector2.Zero, Vector2.One);
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "Egg", _root, Color.Orange, 0f, Vector2.Zero, Vector2.One);
 	}
 
 	private bool _blockMouse = false;
@@ -207,15 +214,15 @@ internal class InnerPanel : SmartUIElement
 		}
 		else if (!Main.mouseLeft)
 		{
-			_blockMouse = _isHovering= false;
+			_blockMouse = _isHovering = false;
 		}
 
 		if (_isHovering)
 		{
 			if (_start == Vector2.Zero)
 			{
-				_start = Main.MouseScreen;
-				_root = _lineOff;
+				_start = Main.MouseScreen + new Vector2(60);
+				_root = _lineOff + new Vector2(60);
 
 				foreach (UIElement element in Elements)
 				{
@@ -226,16 +233,42 @@ internal class InnerPanel : SmartUIElement
 				}
 			}
 
+			Vector2 mouse = Main.MouseScreen;
+			Rectangle parent = Parent.GetDimensions().ToRectangle();
+			parent.Location = new Point(parent.X, parent.Y);
+
+			Dust.QuickBox(parent.Location.ToVector2() + Main.screenPosition, parent.BottomRight() + Main.screenPosition, 10, Color.White, (_) => { });
+
+			if (mouse.X < parent.Left)
+			{
+				mouse.X = parent.Left;
+			}
+			else if (mouse.X > parent.Right)
+			{
+				mouse.X = parent.Right;
+			}
+
+			if (mouse.Y < parent.Top)
+			{
+				mouse.Y = parent.Top;
+			}
+			else if (mouse.Y > parent.Bottom)
+			{
+				mouse.Y = parent.Bottom;
+			}
+
 			foreach (UIElement element in Elements)
 			{
 				if (element is PassiveElement ele)
 				{
-					element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0);
-					element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0);
+					Vector2 position = ele.Root + mouse - _start;
+
+					element.Left.Set(position.X, 0);
+					element.Top.Set(position.Y, 0);
 				}
 			}
 
-			_lineOff = _root + Main.MouseScreen - _start;
+			_lineOff = _root + mouse - _start;
 		}
 		else
 		{
