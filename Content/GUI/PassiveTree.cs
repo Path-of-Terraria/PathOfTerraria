@@ -194,11 +194,6 @@ internal class InnerPanel : SmartUIElement
 
 		spriteBatch.GraphicsDevice.ScissorRectangle = oldRect;
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
-
-		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "Egg", _lineOff, Color.White, 0f, Vector2.Zero, Vector2.One);
-		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "Egg", _lineOff + _root, Color.Red, 0f, Vector2.Zero, Vector2.One);
-		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "Egg", GetDimensions().Center(), Color.Blue, 0f, Vector2.Zero, Vector2.One);
-		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, "Egg", _root, Color.Orange, 0f, Vector2.Zero, Vector2.One);
 	}
 
 	private bool _blockMouse = false;
