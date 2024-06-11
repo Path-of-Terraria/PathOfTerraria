@@ -3,6 +3,7 @@ using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
 using Terraria.Audio;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -24,6 +25,9 @@ internal class PassiveTree : SmartUIState
 	protected const int LeftPadding = -450;
 	protected const int PanelWidth = 900;
 
+	public Vector2 TopLeftTree;
+	public Vector2 BotRightTree;
+
 	public override bool Visible => IsVisible;
 	public PlayerClass CurrentDisplayClass = PlayerClass.None;
 
@@ -35,8 +39,10 @@ internal class PassiveTree : SmartUIState
 			return;
 		}
 
-		if (CurrentDisplayClass != newClass)
+		if (CurrentDisplayClass != newClass || true)
 		{
+			TopLeftTree = Vector2.Zero;
+			BotRightTree = Vector2.Zero;
 			CurrentDisplayClass = newClass;
 			RemoveAllChildren();
 			DrawPanel();
@@ -126,6 +132,7 @@ internal class InnerPanel : SmartUIElement
 	private UIElement Panel => Parent;
 
 	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
+	private PassiveTree UITree => UILoader.GetUIState<PassiveTree>();
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
@@ -222,6 +229,43 @@ internal class InnerPanel : SmartUIElement
 					}
 				}
 			}
+
+			Rectangle rec = Parent.GetDimensions().ToRectangle();
+			Vector2 adjust = Vector2.Zero;
+			Vector2 newOffset = _root + Main.MouseScreen - _start;
+
+			float xAbove = newOffset.X + rec.Width / 2 + UITree.TopLeftTree.X;
+			float yAbove = newOffset.Y + rec.Height / 2 + UITree.TopLeftTree.Y;
+
+			float xBelow = newOffset.X - rec.Width / 2 + UITree.BotRightTree.X;
+			float yBelow = newOffset.Y - rec.Height / 2 + UITree.BotRightTree.Y;
+
+			if (rec.Height < MathF.Abs(UITree.BotRightTree.Y) + MathF.Abs(UITree.TopLeftTree.Y))
+			{
+				yAbove = -MathF.Min(-yAbove, 0);
+				yBelow = -MathF.Max(-yBelow, 0);
+			}
+			else
+			{
+				yAbove = MathF.Min(yAbove, 0);
+				yBelow = MathF.Max(yBelow, 0);
+			}
+
+			if (rec.Width < MathF.Abs(UITree.BotRightTree.X) + MathF.Abs(UITree.TopLeftTree.X))
+			{
+				xAbove = -MathF.Min(-xAbove, 0);
+				xBelow = -MathF.Max(-xBelow, 0);
+			}
+			else
+			{
+				xAbove = MathF.Min(xAbove, 0);
+				xBelow = MathF.Max(xBelow, 0);
+			}
+
+			adjust += new Vector2(xAbove, yAbove);
+			adjust += new Vector2(xBelow, yBelow);
+
+			_start += adjust;
 
 			foreach (UIElement element in Elements)
 			{

@@ -8,9 +8,14 @@
 		"id": 1,
 		"referenceId": 2,
 		"maxLevel": 5,
+		"connections": [
+			{
+				"referenceId": 1
+			}
+		],
 		"position": {
-			"x": 0,
-			"y": 100
+			"x": 2000,
+			"y": 2000
 		}
 	}
 ]
