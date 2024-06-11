@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Core.Systems;
-using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 

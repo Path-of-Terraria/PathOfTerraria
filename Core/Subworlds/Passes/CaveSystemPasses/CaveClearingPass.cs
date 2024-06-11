@@ -1,11 +1,4 @@
-﻿using PathOfTerraria.Core.Systems;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.GameContent.RGB;
+﻿using Terraria.GameContent.RGB;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 

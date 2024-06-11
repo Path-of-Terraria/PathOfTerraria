@@ -1,10 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Data.Models;
-using Steamworks;
-using SteelSeries.GameSense.DeviceZone;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
 
@@ -22,11 +18,15 @@ internal class PassiveLoader : ILoadable
 
 internal abstract class Passive
 {
-	public static Dictionary<string, Type> Passives = [];
+	public static Dictionary<int, Type> Passives = [];
 	
 	public Vector2 TreePos;
 
-	public int Id;
+	//This is used to map the JSON data to the correct passive
+	public virtual int Id => 0;
+	
+	//This is used to create a reference to the created passive for connections
+	public int ReferenceId;
 
 	public virtual string Name => "Unknown";
 	public virtual string Tooltip => "Who knows what this will do!";
@@ -35,6 +35,7 @@ internal abstract class Passive
 	public int MaxLevel;
 
 	private Vector2 _size;
+	
 	public Vector2 Size
 	{
 		get
@@ -69,22 +70,22 @@ internal abstract class Passive
 			}
 
 			var instance = (Passive)Activator.CreateInstance(type);
-			Passives.Add(instance.Name, type);
+			Passives.Add(instance.Id, type);
 		}
 	}
 
 	public static Passive GetPassiveFromData(PassiveData data)
 	{
-		if (!Passives.ContainsKey(data.Passive))
+		if (!Passives.ContainsKey(data.Id))
 		{
 			return null;
 		}
 
-		Passive p = (Passive)Activator.CreateInstance(Passives[data.Passive]);
+		var p = (Passive) Activator.CreateInstance(Passives[data.Id]);
 
-		p.TreePos = new(data.Position.Count > 0 ? data.Position[0] : 0, data.Position.Count > 1 ? data.Position[1] : 0);
+		p.TreePos = new Vector2(data.Position.X, data.Position.Y);
 		p.MaxLevel = data.MaxLevel;
-		p.Id = data.Id;
+		p.ReferenceId = data.Id;
 
 		return p;
 	}

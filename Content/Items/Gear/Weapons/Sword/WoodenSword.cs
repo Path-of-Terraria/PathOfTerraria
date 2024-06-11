@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Core.Systems;
-using Terraria.DataStructures;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 

@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using PathOfTerraria.Core.Loaders.UILoading;
+﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.SkillSystem;
 using ReLogic.Graphics;
@@ -8,7 +7,6 @@ using System.Linq;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;

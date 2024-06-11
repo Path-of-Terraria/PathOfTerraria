@@ -1,13 +1,16 @@
 ﻿[
 	{
-		"id": 1,
-		"passive": "Anchor",
+		"id": 0,
+		"referenceId": 1,
 		"maxLevel": 1
 	},
 	{
-		"id": 2,
-		"passive": "Empowered Flesh",
+		"id": 1,
+		"referenceId": 2,
 		"maxLevel": 5,
-		"position": [ 0, 100 ]
+		"position": {
+			"x": 0,
+			"y": 100
+		}
 	}
 ]

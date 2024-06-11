@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using PathOfTerraria.Content.Items.Consumables.Maps;
+﻿using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Subworlds.Passes;
 using PathOfTerraria.Core.Subworlds.Passes.CaveSystemPasses;
 using System.Collections.Generic;
