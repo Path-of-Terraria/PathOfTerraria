@@ -221,8 +221,8 @@ internal class InnerPanel : SmartUIElement
 		{
 			if (_start == Vector2.Zero)
 			{
-				_start = Main.MouseScreen + new Vector2(60);
-				_root = _lineOff + new Vector2(60);
+				_start = Main.MouseScreen;
+				_root = _lineOff;
 
 				foreach (UIElement element in Elements)
 				{
@@ -235,9 +235,6 @@ internal class InnerPanel : SmartUIElement
 
 			Vector2 mouse = Main.MouseScreen;
 			Rectangle parent = Parent.GetDimensions().ToRectangle();
-			parent.Location = new Point(parent.X, parent.Y);
-
-			Dust.QuickBox(parent.Location.ToVector2() + Main.screenPosition, parent.BottomRight() + Main.screenPosition, 10, Color.White, (_) => { });
 
 			if (mouse.X < parent.Left)
 			{
