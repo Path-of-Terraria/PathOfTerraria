@@ -26,3 +26,20 @@ internal class BleedPassive : Passive
 		Classes = [PlayerClass.Melee];
 	}
 }
+
+internal class DamageReductionPassive : Passive
+{
+	public DamageReductionPassive()
+	{
+		Name = "Iron Will";
+		Tooltip = "Gain 0.25% damage reduction per level.";
+		MaxLevel = 4;
+		TreePos = new Vector2(260, 180);
+		Classes = [PlayerClass.Melee];
+	}
+
+	public override void BuffPlayer(Player player)
+	{
+		player.endurance += 0.025f * Level;
+	}
+}

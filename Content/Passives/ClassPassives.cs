@@ -25,6 +25,7 @@ internal class MartialMasteryPassive : Passive
 	{
 		Connect<CloseRangePassive>(all, player);
 		Connect<BleedPassive>(all, player);
+		Connect<DamageReductionPassive>(all, player);
 	}
 }
 
