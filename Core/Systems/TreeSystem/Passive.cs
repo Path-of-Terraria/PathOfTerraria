@@ -22,10 +22,13 @@ internal abstract class Passive
 	
 	public Vector2 TreePos;
 
-	//This is used to map the JSON data to the correct passive
+	/// <summary>
+	/// This is used to map the JSON data to the correct passive.
+	/// This is also what's used to grab the texture of this passive.
+	/// </summary>
 	public virtual string InternalIdentifier => "NONE";
 	
-	//This is used to create a reference to the created passive for connections
+	// This is used to create a reference to the created passive for connections
 	public int ReferenceId;
 
 	public virtual string Name => "Unknown";
@@ -47,9 +50,9 @@ internal abstract class Passive
 
 			Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
-			if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name))
+			if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + InternalIdentifier))
 			{
-				tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+				tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + InternalIdentifier, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 			}
 
 			_size = tex.Size();
@@ -59,6 +62,8 @@ internal abstract class Passive
 	}
 
 	public virtual void BuffPlayer(Player player) { }
+
+	public virtual void OnLoad() { }
 
 	public static void LoadPassives()
 	{
@@ -72,18 +77,19 @@ internal abstract class Passive
 			}
 
 			var instance = (Passive)Activator.CreateInstance(type);
+			instance.OnLoad();
 			Passives.Add(instance.InternalIdentifier, type);
 		}
 	}
 
 	public static Passive GetPassiveFromData(PassiveData data)
 	{
-		if (!Passives.ContainsKey(data.InternalIdentifier))
+		if (!Passives.TryGetValue(data.InternalIdentifier, out Type value))
 		{
 			return null;
 		}
 
-		var p = (Passive) Activator.CreateInstance(Passives[data.InternalIdentifier]);
+		var p = (Passive) Activator.CreateInstance(value);
 
 		p.TreePos = new Vector2(data.Position.X, data.Position.Y);
 		p.MaxLevel = data.MaxLevel;
@@ -96,9 +102,9 @@ internal abstract class Passive
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall").Value;
 
-		if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name))
+		if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + InternalIdentifier))
 		{
-			tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + GetType().Name).Value;
+			tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + InternalIdentifier).Value;
 		}
 
 		Color color = Color.Gray;

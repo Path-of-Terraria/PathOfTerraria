@@ -23,7 +23,7 @@
 			}
 		],
 		"position": {
-			"x": 100,
+			"x": 120,
 			"y": 0
 		}
 	},
@@ -38,7 +38,7 @@
 		],
 		"position": {
 			"x": 100,
-			"y": 100
+			"y": 80
 		}
 	},
 	{
@@ -67,6 +67,34 @@
 		"position": {
 			"x": -100,
 			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedDamageReduction",
+		"referenceId": 6,
+		"maxLevel": 4,
+		"connections": [
+			{
+				"referenceId": 5
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": -200
+		}
+	},
+	{
+		"internalIdentifier": "AddedContactDamageReflection",
+		"referenceId": 7,
+		"maxLevel": 5,
+		"connections": [
+			{
+				"referenceId": 6
+			}
+		],
+		"position": {
+			"x": 100,
+			"y": -200
 		}
 	}
 ]
