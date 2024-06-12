@@ -1,5 +1,4 @@
-﻿using SubworldLibrary;
-using Terraria.IO;
+﻿using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds.Passes.CaveSystemPasses;

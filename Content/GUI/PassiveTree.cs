@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using PathOfTerraria.Content.Items.Gear;
+﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.Audio;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -22,12 +21,16 @@ internal class PassiveTree : SmartUIState
 	protected static TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
 	protected const int TopPadding = -400;
+	protected const int PanelHeight = 800;
 	protected const int LeftPadding = -450;
-	protected const int PanelWidth = 800;
-	protected const int PanelHeight = 750;
+	protected const int PanelWidth = 900;
+
+	public Vector2 TopLeftTree;
+	public Vector2 BotRightTree;
 
 	public override bool Visible => IsVisible;
-	private PlayerClass _currentDisplay = PlayerClass.None;
+	public PlayerClass CurrentDisplayClass = PlayerClass.None;
+
 	public void Toggle(PlayerClass newClass = PlayerClass.None)
 	{
 		if (newClass == PlayerClass.None || IsVisible)
@@ -36,18 +39,18 @@ internal class PassiveTree : SmartUIState
 			return;
 		}
 
-		if (_currentDisplay != newClass)
+		if (CurrentDisplayClass != newClass)
 		{
-			_currentDisplay = newClass;
+			TopLeftTree = Vector2.Zero;
+			BotRightTree = Vector2.Zero;
+			CurrentDisplayClass = newClass;
 			RemoveAllChildren();
 			DrawPanel();
-			DrawCloseButton();
 			DrawInnerPanel();
+			DrawCloseButton();
 
-			TreeSystem.Nodes
-				.Where(x => x.Classes.Contains(_currentDisplay))
-				.ToList()
-				.ForEach(n => Inner.Append(new PassiveElement(n)));
+			TreeSystem.CreateTree();
+			TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
 		}
 
 		IsVisible = true;
@@ -74,24 +77,9 @@ internal class PassiveTree : SmartUIState
 		Panel = new UIPanel();
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
-		Panel.Width.Set(PanelWidth, 0.15f);
-		Panel.Height.Set(PanelHeight, 0.15f);
+		Panel.Width.Set(PanelWidth, 0);
+		Panel.Height.Set(PanelHeight, 0);
 		Append(Panel);
-	}
-
-	protected void DrawCloseButton()
-	{
-		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/CloseButton"));
-		CloseButton.Left.Set(LeftPadding + PanelWidth - 120, 0.5f);
-		CloseButton.Top.Set(TopPadding + 10, 0.5f);
-		CloseButton.Width.Set(38, 0);
-		CloseButton.Height.Set(38, 0);
-		CloseButton.OnLeftClick += (a, b) => {
-			IsVisible = false;
-			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-		};
-		CloseButton.SetVisibility(1, 1);
-		Append(CloseButton);
 	}
 	
 	protected void DrawInnerPanel()
@@ -99,9 +87,24 @@ internal class PassiveTree : SmartUIState
 		Inner = new InnerPanel();
 		Inner.Left.Set(0, 0);
 		Inner.Top.Set(0, 0);
-		Inner.Width.Set(PanelWidth - 0, 0);
-		Inner.Height.Set(PanelHeight - 0, 0);
+		Inner.Width.Set(0, 1);
+		Inner.Height.Set(0, 1);
 		Panel.Append(Inner);
+	}
+
+	protected void DrawCloseButton()
+	{
+		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/CloseButton"));
+		CloseButton.Left.Set(-38, 1f);
+		CloseButton.Top.Set(0, 0f);
+		CloseButton.Width.Set(38, 0);
+		CloseButton.Height.Set(38, 0);
+		CloseButton.OnLeftClick += (a, b) => {
+			IsVisible = false;
+			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+		};
+		CloseButton.SetVisibility(1, 1);
+		Inner.Append(CloseButton);
 	}
 
 	protected void DrawPanelText(SpriteBatch spriteBatch)
@@ -129,6 +132,7 @@ internal class InnerPanel : SmartUIElement
 	private UIElement Panel => Parent;
 
 	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
+	private PassiveTree UITree => UILoader.GetUIState<PassiveTree>();
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
@@ -157,7 +161,7 @@ internal class InnerPanel : SmartUIElement
 
 			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.Start.TreePos, edge.End.TreePos) / 16))
 			{
-				Vector2 pos = GetDimensions().Position() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + _lineOff;
+				Vector2 pos = GetDimensions().Center() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + _lineOff;
 				Main.spriteBatch.Draw(chainTex, pos, null, color, edge.Start.TreePos.DirectionTo(edge.End.TreePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 			}
 
@@ -178,7 +182,7 @@ internal class InnerPanel : SmartUIElement
 					float scale = 0.05f + rand.NextSingle() * 0.15f;
 
 					float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
-					Vector2 pos = GetDimensions().Position() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
+					Vector2 pos = GetDimensions().Center() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
 					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
 				}
@@ -202,7 +206,7 @@ internal class InnerPanel : SmartUIElement
 	{
 		if (Main.mouseLeft && !_lastState)
 		{
-			_blockMouse = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
+			_blockMouse = Parent.GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
 			_isHovering = Panel.IsMouseHovering;
 		}
 		else if (!Main.mouseLeft)
@@ -226,12 +230,49 @@ internal class InnerPanel : SmartUIElement
 				}
 			}
 
+			Rectangle rec = Parent.GetDimensions().ToRectangle();
+			Vector2 adjust = Vector2.Zero;
+			Vector2 newOffset = _root + Main.MouseScreen - _start;
+
+			float xAbove = newOffset.X + rec.Width / 2 + UITree.TopLeftTree.X;
+			float yAbove = newOffset.Y + rec.Height / 2 + UITree.TopLeftTree.Y;
+
+			float xBelow = newOffset.X - rec.Width / 2 + UITree.BotRightTree.X;
+			float yBelow = newOffset.Y - rec.Height / 2 + UITree.BotRightTree.Y;
+
+			if (rec.Height < MathF.Abs(UITree.BotRightTree.Y) + MathF.Abs(UITree.TopLeftTree.Y))
+			{
+				yAbove = MathF.Max(yAbove, 0);
+				yBelow = MathF.Min(yBelow, 0);
+			}
+			else
+			{
+				yAbove = MathF.Min(yAbove, 0);
+				yBelow = MathF.Max(yBelow, 0);
+			}
+
+			if (rec.Width < MathF.Abs(UITree.BotRightTree.X) + MathF.Abs(UITree.TopLeftTree.X))
+			{
+				xAbove = MathF.Max(xAbove, 0);
+				xBelow = MathF.Min(xBelow, 0);
+			}
+			else
+			{
+				xAbove = MathF.Min(xAbove, 0);
+				xBelow = MathF.Max(xBelow, 0);
+			}
+
+			adjust += new Vector2(xAbove, yAbove);
+			adjust += new Vector2(xBelow, yBelow);
+
+			_start += adjust;
+
 			foreach (UIElement element in Elements)
 			{
 				if (element is PassiveElement ele)
 				{
-					element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0);
-					element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0);
+					element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0.5f);
+					element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0.5f);
 				}
 			}
 

@@ -1,6 +1,4 @@
-﻿using Terraria.ID;
-
-namespace PathOfTerraria.Content.Projectiles.Ranged;
+﻿namespace PathOfTerraria.Content.Projectiles.Ranged;
 
 internal class WoodenBowAnimationProjectile : BowAnimationProjectile
 {

@@ -7,6 +7,16 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
+  <PropertyGroup>
+    <ExecutablePath Condition=" Exists('/etc/NIXOS') ">steam-run</ExecutablePath>
+    <ExecutablePath Condition=" '$(ExecutablePath)' == '' ">$(DotNetName)</ExecutablePath>
+    <TMLCommandLineArgs Condition=" Exists('/etc/NIXOS') ">$(DotNetName) $(tMLPath)</TMLCommandLineArgs>
+    <TMLCommandLineArgs Condition=" '$(TMLCommandLineArgs)' == '' ">$(tMLPath)</TMLCommandLineArgs>
+    <TMLServerCommandLineArgs Condition=" Exists('/etc/NIXOS') ">$(DotNetName) $(tMLServerPath)</TMLServerCommandLineArgs>
+    <TMLServerCommandLineArgs Condition=" '$(TMLServerCommandLineArgs)' == '' ">$(tMLServerPath)</TMLServerCommandLineArgs>
+    <BuildCommand Condition=" Exists('/etc/NIXOS') ">steam-run dotnet</BuildCommand>
+    <BuildCommand Condition=" '$(BuildCommand)' == '' ">dotnet</BuildCommand>
+  </PropertyGroup>
   <ItemGroup>
     <Compile Update="JsonCreator\CreateMobJsonFiles.cs">
       <Link>ClassLibrary1\CreateMobJsonFiles.cs</Link>
@@ -14,10 +24,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Remove="Effects\LunarEffect.glsl" />
+    <None Remove="Localization\en-US\Mods.PathOfTerraria.Items.hjson" />
+    <None Remove="Localization\en-US\Mods.PathOfTerraria.Projectiles.hjson" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SubworldLibrary">
       <HintPath>Dependencies\SubworldLibrary.dll</HintPath>
     </Reference>
   </ItemGroup>
+	<Target Name="BuildMod" AfterTargets="Build">
+		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)"/>
+	</Target>
 </Project>
