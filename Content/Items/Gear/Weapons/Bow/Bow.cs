@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
-using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 

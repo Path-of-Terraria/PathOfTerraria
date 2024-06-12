@@ -1,8 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems;
-using Terraria.GameContent;
+﻿using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
 

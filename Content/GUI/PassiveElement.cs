@@ -14,13 +14,38 @@ internal class PassiveElement : SmartUIElement
 	private int _flashTimer;
 	private int _redFlashTimer;
 
+	private PassiveTree UITree => UILoader.GetUIState<PassiveTree>();
+	
 	public PassiveElement(Passive passive)
 	{
+		float halfSizeX = passive.Size.X / 2;
+		float halfSizeY = passive.Size.Y / 2;
+
+		if (passive.TreePos.X - halfSizeX < UITree.TopLeftTree.X)
+		{
+			UITree.TopLeftTree.X = passive.TreePos.X - halfSizeX;
+		}
+		
+		if (passive.TreePos.Y - halfSizeY < UITree.TopLeftTree.Y)
+		{
+			UITree.TopLeftTree.Y = passive.TreePos.Y - halfSizeY;
+		}
+
+		if (passive.TreePos.X + halfSizeX > UITree.BotRightTree.X)
+		{
+			UITree.BotRightTree.X = passive.TreePos.X + halfSizeX;
+		}
+		
+		if (passive.TreePos.Y + halfSizeY > UITree.BotRightTree.Y)
+		{
+			UITree.BotRightTree.Y = passive.TreePos.Y + halfSizeY;
+		}
+
 		_passive = passive;
-		Left.Set(passive.TreePos.X - passive.Width / 2, 0);
-		Top.Set(passive.TreePos.Y - passive.Height / 2, 0);
-		Width.Set(passive.Width, 0);
-		Height.Set(passive.Height, 0);
+		Left.Set(passive.TreePos.X - halfSizeX, 0.5f);
+		Top.Set(passive.TreePos.Y - halfSizeY, 0.5f);
+		Width.Set(passive.Size.X, 0);
+		Height.Set(passive.Size.Y, 0);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)

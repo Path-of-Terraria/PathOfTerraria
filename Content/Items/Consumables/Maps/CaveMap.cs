@@ -1,9 +1,4 @@
 ﻿using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
-using Terraria.ID;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 

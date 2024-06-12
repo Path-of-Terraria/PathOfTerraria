@@ -1,15 +1,8 @@
-﻿using Newtonsoft.Json.Linq;
-using PathOfTerraria.Core.Systems.ModPlayers;
-using System;
+﻿using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Security.Permissions;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using Terraria.GameContent.ObjectInteractions;
-using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Systems;
 internal class EntityModifier
