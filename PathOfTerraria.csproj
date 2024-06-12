@@ -25,6 +25,7 @@
   <ItemGroup>
     <None Remove="Effects\LunarEffect.glsl" />
     <None Remove="Localization\en-US\Mods.PathOfTerraria.Items.hjson" />
+    <None Remove="Localization\en-US\Mods.PathOfTerraria.Passives.hjson" />
     <None Remove="Localization\en-US\Mods.PathOfTerraria.Projectiles.hjson" />
   </ItemGroup>
   <ItemGroup>
@@ -33,6 +34,6 @@
     </Reference>
   </ItemGroup>
 	<Target Name="BuildMod" AfterTargets="Build">
-		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)"/>
+		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />
 	</Target>
 </Project>

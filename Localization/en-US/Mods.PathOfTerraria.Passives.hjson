@@ -1,0 +1,74 @@
+IncreasedMeleeDamage: {
+	Name: Martial Mastery
+	Tooltip: Increases your melee damage by 5% per level
+}
+
+IncreasedRangedDamage: {
+	Name: Marksmanship Mastery
+	Tooltip: Increases your ranged damage by 5% per level
+}
+
+IncreasedMagicDamage: {
+	Name: Arcane Mastery
+	Tooltip: Increases your magic damage by 5% per level
+}
+
+IncreasedSummoningDamage: {
+	Name: Summoning Mastery
+	Tooltip: Increases your summon damage by 5% per level
+}
+
+AddedLife: {
+	Name: Empowered Flesh
+	Tooltip: Increases your maximum life by 20 per level
+}
+
+AddedMana: {
+	Name: Open Mind
+	Tooltip: Increases your maximum mana by 20 per level
+}
+
+IncreasedDistantDamage: {
+	Name: Sniper
+	Tooltip: Increases your damage against distant enemies by 10% per level
+}
+
+IncreasedCloseDamage: {
+	Name: Close Combatant
+	Tooltip: Increases your damage against nearby enemies by 10% per level
+}
+
+BleedingDamageOverTime: {
+	Name: Crimson Dance
+	Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second per level
+}
+
+IncreasedDamageReduction: {
+	Name: Iron Will
+	Tooltip: Gain 0.25% damage reduction per level.
+}
+
+AddedContactDamageReflection: {
+	Name: Thorny Exterior
+	Tooltip: Reflect 10 more damage to enemies that deal contact damage per level.
+}
+
+AmmoEfficiency: {
+	Name: Secret Compartment
+	Tooltip: 5% chance to not consume ammo per level
+}
+
+Anchor: {
+	Name: Anchor
+	Tooltip: Your journey starts here
+}
+
+IncreasedMinionDamage: {
+	Name: Empowered Horde
+	Tooltip: Increases your minions' damage by 10% per level
+}
+
+IncreasedSentryDamage: {
+	Name: Steadfast Sentries
+	Tooltip: Increases your sentries' damage by 10% per level
+}
