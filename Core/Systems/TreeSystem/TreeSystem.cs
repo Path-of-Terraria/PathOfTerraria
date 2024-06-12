@@ -23,6 +23,8 @@ internal class TreePlayer : ModPlayer
 	public List<Passive> ActiveNodes = [];
 	public List<PassiveEdge> Edges = [];
 
+	private TagCompound _saveData = [];
+
 	public override void OnEnterWorld()
 	{
 		UILoader.GetUIState<PassiveTree>().RemoveAllChildren(); // is this is necessary?
@@ -93,9 +95,23 @@ internal class TreePlayer : ModPlayer
 		}
 	}
 
-	private TagCompound _saveData = new();
 	public override void LoadData(TagCompound tag)
 	{
 		_saveData = tag;
+	}
+
+	internal int GetCumulativeLevel(string internalIdentifier)
+	{
+		int level = 0;
+
+		foreach (Passive passive in ActiveNodes)
+		{
+			if (passive.InternalIdentifier == internalIdentifier)
+			{
+				level += passive.Level;
+			}
+		}
+
+		return level;
 	}
 }

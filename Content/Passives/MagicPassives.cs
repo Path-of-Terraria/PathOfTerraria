@@ -7,4 +7,9 @@ internal class ManaPassive : Passive
 	public override string InternalIdentifier => "AddedMana";
 	public override string Name => "Open Mind";
 	public override string Tooltip => "Increases your maximum mana by 20 per level";
+
+	public override void BuffPlayer(Player player)
+	{
+		player.statManaMax2 += 20 * Level;
+	}
 }
