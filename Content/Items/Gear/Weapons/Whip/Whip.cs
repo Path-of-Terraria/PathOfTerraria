@@ -8,7 +8,7 @@ internal abstract class Whip : Gear
 
 	public override float DropChance => 1f;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 10, 2, 4);
 		Item.channel = true;

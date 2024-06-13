@@ -4,9 +4,9 @@ internal class Grimoire : Spellbook
 {
 	public override int ItemLevel => 80;
 	
-	public override void SetDefaults()
+	public override void Defaults()
 	{
-		base.SetDefaults();
+		base.Defaults();
 		Item.damage = 75;
 	}
 }

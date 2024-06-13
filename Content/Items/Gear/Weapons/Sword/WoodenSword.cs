@@ -9,9 +9,9 @@ internal class WoodenSword : Sword
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
-		base.SetDefaults();
+		base.Defaults();
 		Item.damage = 4;
 		Item.UseSound = SoundID.Item1;
 		GearType = GearType.Sword;

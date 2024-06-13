@@ -5,9 +5,9 @@ internal class WoodenShortBow : Bow
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Bow/BasicWoodenBow";
 	public override float DropChance => 1f;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
-		base.SetDefaults();
+		base.Defaults();
 		Item.useTime = 45;
 		Item.useAnimation = 45;
 		Item.height = 48;

@@ -9,9 +9,9 @@ internal class IronBroadsword : Sword
 	public override float DropChance => 1f;
 	public override int ItemLevel => 11;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
-		base.SetDefaults();
+		base.Defaults();
 		Item.damage = 10;
 		Item.width = 46;
 		Item.height = 46;

@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
+﻿using Terraria.ID;
+
+namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 
 [AutoloadEquip(EquipType.Body)]
 internal class Chestplate : Gear
@@ -7,7 +9,7 @@ internal class Chestplate : Gear
 
 	public override float DropChance => 1f;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		GearType = GearType.Chestplate;
 	}

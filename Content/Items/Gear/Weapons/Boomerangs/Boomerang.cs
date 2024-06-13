@@ -12,7 +12,7 @@ internal abstract class Boomerang : Gear
 
 	protected virtual int BoomerangCount => 1;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Item.CloneDefaults(ItemID.WoodenBoomerang);
 		Item.width = 16;
@@ -21,8 +21,6 @@ internal abstract class Boomerang : Gear
 		Item.useAnimation = 10;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.channel = true;
-
-		Roll(PickItemLevel());
 	}
 
 	public override bool CanUseItem(Player player)
