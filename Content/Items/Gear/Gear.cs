@@ -23,6 +23,8 @@ internal abstract class Gear : ModItem
 	private static readonly List<Tuple<float, bool, Type>> AllGear = [];
 	// <Drop chance, is unique?, type of item>
 
+	private static bool AddedDetour = false;
+
 	protected GearType GearType;
 	protected GearRarity Rarity;
 	private GearInfluence _influence;
@@ -137,7 +139,16 @@ internal abstract class Gear : ModItem
 
 	public override void Load()
 	{
-		On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
+		if (!AddedDetour)
+		{
+			On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
+			AddedDetour = true;
+		}
+	}
+
+	public override void Unload()
+	{
+		AddedDetour = false;
 	}
 
 	private void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
