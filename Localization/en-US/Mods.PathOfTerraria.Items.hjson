@@ -188,3 +188,28 @@ LeafWhip: {
 	DisplayName: Leaf Whip
 	Tooltip: ""
 }
+
+WoodenBoomerang: {
+	DisplayName: Wooden Boomerang
+	Tooltip: ""
+}
+
+CopperBoomerang: {
+	DisplayName: Copper Boomerang
+	Tooltip: ""
+}
+
+IronBoomerang: {
+	DisplayName: Iron Boomerang
+	Tooltip: ""
+}
+
+SilverBoomerang: {
+	DisplayName: Silver Boomerang
+	Tooltip: ""
+}
+
+StoneBoomerang: {
+	DisplayName: Stone Boomerang
+	Tooltip: ""
+}
