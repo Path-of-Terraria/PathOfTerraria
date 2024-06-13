@@ -94,7 +94,7 @@ internal class PassiveElement : SmartUIElement
 
 		if (IsMouseHovering)
 		{
-			string name = _passive.DisplayName;
+			string name = _passive.Name;
 
 			if (_passive.MaxLevel > 1)
 			{
@@ -102,7 +102,7 @@ internal class PassiveElement : SmartUIElement
 			}
 
 			Tooltip.SetName(name);
-			Tooltip.SetTooltip(_passive.DisplayTooltip);
+			Tooltip.SetTooltip(_passive.Tooltip);
 		}
 
 		Recalculate();
