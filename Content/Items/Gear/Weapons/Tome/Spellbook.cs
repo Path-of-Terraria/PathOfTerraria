@@ -9,7 +9,7 @@ internal class Spellbook : Gear
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Tome/TomePlaceholder";
 	public override float DropChance => 1f;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Item.damage = 10;
 		Item.width = Item.height = 40;
@@ -24,7 +24,6 @@ internal class Spellbook : Gear
 		GearType = GearType.Wand;
 
 		Item.shoot = ModContent.ProjectileType<TomeProjectile>();
-
 		Item.SetShopValues(ItemRarityColor.Green2, 10000);
 	}
 	

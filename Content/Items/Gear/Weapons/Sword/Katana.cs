@@ -4,9 +4,9 @@ internal class Katana : Sword
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Katana";
 	
-	public override void SetDefaults()
+	public override void Defaults()
 	{
-		base.SetDefaults();
+		base.Defaults();
 		Item.damage = 20;
 		Item.useTime = 35; 
 		Item.useAnimation = 35;

@@ -4,9 +4,9 @@ internal class Broadsword : Sword
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Broadsword";
 	
-	public override void SetDefaults()
+	public override void Defaults()
 	{
-		base.SetDefaults();
+		base.Defaults();
 		Item.width = 52; 
 		Item.height = 52;
 		Item.damage = 35;

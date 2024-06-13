@@ -9,9 +9,9 @@ internal class CopperBroadsword : Sword
 	public override float DropChance => 1f;
 	public override int ItemLevel => 5;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
-		base.SetDefaults();
+		base.Defaults();
 		Item.damage = 8;
 		Item.width = 46;
 		Item.height = 46;

@@ -10,7 +10,7 @@ internal class Sword : Gear
 
 	public override float DropChance => 1f;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Item.damage = 10;
 		Item.width = 40;

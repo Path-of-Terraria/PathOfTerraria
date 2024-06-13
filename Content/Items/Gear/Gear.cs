@@ -15,6 +15,11 @@ namespace PathOfTerraria.Content.Items.Gear;
 
 internal abstract class Gear : ModItem
 {
+	/// <summary>
+	/// Spawns a random piece of armor at the given position.
+	/// </summary>
+	private static readonly MethodInfo SpawnGearMethod = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
+
 	private static readonly List<Tuple<float, bool, Type>> AllGear = [];
 	// <Drop chance, is unique?, type of item>
 
@@ -245,6 +250,18 @@ internal abstract class Gear : ModItem
 		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
 			Main.GameViewMatrix.TransformationMatrix);
 	}
+
+	public sealed override void SetDefaults()
+	{
+		Defaults();
+		Roll(PickItemLevel());
+	}
+
+	/// <summary>
+	/// Called in <see cref="SetDefaults"/> before <see cref="Roll(int, float)"/> is called.<br/>
+	/// This ensures Gear will always be set up properly. Otherwise, this works exactly like <see cref="ModItem.SetDefaults"/>.
+	/// </summary>
+	public virtual void Defaults() { }
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
@@ -711,12 +728,6 @@ internal abstract class Gear : ModItem
 		}
 	}
 
-	/// <summary>
-	/// Spawns a random piece of armor at the given position
-	/// </summary>
-	/// <param name="pos">Where to spawn the armor</param>
-	static readonly MethodInfo Method = typeof(Gear).GetMethod("SpawnGear", BindingFlags.Public | BindingFlags.Static);
-
 	public static void SpawnItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
 	{
 		ilevel = ilevel == 0 ? PickItemLevel() : ilevel;  // Pick the item level if not provided
@@ -738,7 +749,7 @@ internal abstract class Gear : ModItem
 			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f);
 			if (choice < cumulativeChance)
 			{
-				Method.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
+				SpawnGearMethod.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
 				return;
 			}
 		}

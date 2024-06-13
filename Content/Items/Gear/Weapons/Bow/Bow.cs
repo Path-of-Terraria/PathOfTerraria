@@ -12,7 +12,7 @@ internal abstract class Bow : Gear
 	public override int ItemLevel => 1;
 	private bool _isChanneling;
 	
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Item.CloneDefaults(ItemID.WoodenBow);
 		Item.width = 32;

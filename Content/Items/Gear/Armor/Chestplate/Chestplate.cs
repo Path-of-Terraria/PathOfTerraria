@@ -7,7 +7,7 @@ internal class Chestplate : Gear
 
 	public override float DropChance => 1f;
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		GearType = GearType.Chestplate;
 	}
