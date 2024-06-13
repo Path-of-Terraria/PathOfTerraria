@@ -774,7 +774,7 @@ internal abstract class Gear : ModItem
 	/// <summary>
 	/// Selects an appropriate item level for a piece of gear to drop at based on world state
 	/// </summary>
-	private static int PickItemLevel()
+	internal static int PickItemLevel()
 	{
 		if (NPC.downedMoonlord)
 		{

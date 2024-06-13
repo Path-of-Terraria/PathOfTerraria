@@ -31,8 +31,15 @@ internal abstract class Passive
 	// This is used to create a reference to the created passive for connections
 	public int ReferenceId;
 
-	public virtual string Name => "Unknown";
-	public virtual string Tooltip => "Who knows what this will do!";
+	/// <summary>
+	/// Name to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
+	/// </summary>
+	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.Passives." + InternalIdentifier + ".Name");
+
+	/// <summary>
+	/// Tooltip to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
+	/// </summary>
+	public virtual string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.Passives." + InternalIdentifier + ".Tooltip");
 
 	public int Level;
 	public int MaxLevel;
@@ -78,6 +85,11 @@ internal abstract class Passive
 
 			var instance = (Passive)Activator.CreateInstance(type);
 			instance.OnLoad();
+
+			// Automatically registers the given keys for each instance loaded, and sets Name to the class's name and Description to empty if they do not exist.
+			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.InternalIdentifier + ".Name", () => type.Name);
+			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.InternalIdentifier + ".Tooltip", () => "");
+
 			Passives.Add(instance.InternalIdentifier, type);
 		}
 	}
