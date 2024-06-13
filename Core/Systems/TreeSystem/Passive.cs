@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Data.Models;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
 
@@ -34,16 +33,6 @@ internal abstract class Passive
 
 	public virtual string Name => "Unknown";
 	public virtual string Tooltip => "Who knows what this will do!";
-
-	/// <summary>
-	/// Name to be used in ALL display situations. This is automatically populated by <see cref="Name"/> and <see cref="Language.GetOrRegister(string, Func{string})"/>.
-	/// </summary>
-	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.Passives." + InternalIdentifier + ".Name");
-
-	/// <summary>
-	/// Tooltip to be used in ALL display situations. This is automatically populated by <see cref="Tooltip"/> and <see cref="Language.GetOrRegister(string, Func{string})"/>.
-	/// </summary>
-	public virtual string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.Passives." + InternalIdentifier + ".Tooltip");
 
 	public int Level;
 	public int MaxLevel;
@@ -89,11 +78,6 @@ internal abstract class Passive
 
 			var instance = (Passive)Activator.CreateInstance(type);
 			instance.OnLoad();
-
-			// Automatically registers the given keys for each instance loaded, and sets them to their set name and tooltip if they do not exist.
-			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.InternalIdentifier + ".Name", () => instance.Name);
-			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.InternalIdentifier + ".Tooltip", () => instance.Tooltip);
-
 			Passives.Add(instance.InternalIdentifier, type);
 		}
 	}
