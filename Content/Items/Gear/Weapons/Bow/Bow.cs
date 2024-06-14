@@ -1,6 +1,9 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
+using PathOfTerraria.Core.Systems;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 
@@ -21,6 +24,7 @@ internal abstract class Bow : Gear
 		Item.useAnimation = 60;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.channel = true;
+		Item.UseSound = null;
 	}
 
 	public override void HoldItem(Player player)
@@ -54,38 +58,19 @@ internal abstract class Bow : Gear
 
 	public override bool AltFunctionUse(Player player)
 	{
-		return true;
+		return player.GetModPlayer<AltUseSystem>().AltFunctionCooldown <= 0;
 	}
 
-	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position,
-		Vector2 velocity, int type, int damage, float knockback)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (player.altFunctionUse != 2)
 		{
-			return base.Shoot(player, source, position, velocity, type, damage, knockback);
+			SoundEngine.PlaySound(SoundID.Item5, player.Center);
 		}
-		
-		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 
-		return false;
+		return player.altFunctionUse != 2;
 	}
 	
-	public override void ModifyShootStats(
-		Player player,
-		ref Vector2 position,
-		ref Vector2 velocity,
-		ref int type,
-		ref int damage,
-		ref float knockback)
-	{
-		if (player.altFunctionUse != 2)
-		{
-			return;
-		}
-		
-		type = ModContent.ProjectileType<WoodenBowAnimationProjectile>();
-	}
-
 	public override string GeneratePrefix()
 	{
 		return Main.rand.Next(5) switch
