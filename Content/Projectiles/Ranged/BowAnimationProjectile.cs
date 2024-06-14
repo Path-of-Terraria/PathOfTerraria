@@ -1,14 +1,18 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Core.Systems;
-using Terraria;
-using Terraria.GameContent;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Ranged;
 
-internal abstract class BowAnimationProjectile : ModProjectile
+internal class BowAnimationProjectile : ModProjectile
 {
+	public override string Texture => "Terraria/Images/NPC_0";
+
 	private Player Owner => Main.player[Projectile.owner];
+
+	private ref float AnimationSpeed => ref Projectile.ai[0];
+	private ref float Cooldown => ref Projectile.ai[1];
 	
 	public override void SetStaticDefaults()
 	{
@@ -36,19 +40,18 @@ internal abstract class BowAnimationProjectile : ModProjectile
 		Owner.direction = Math.Sign(Owner.DirectionTo(Main.MouseWorld).X);
 		Projectile.rotation = Owner.DirectionTo(Main.MouseWorld).ToRotation();
 		Projectile.velocity = Vector2.Zero;
-		Projectile.Center = Owner.Center + Owner.DirectionTo(Main.MouseWorld) * 20; // Move bow towards mouse so it looks like it's being held
+		// Move bow towards mouse so it looks like it's being held
+		Projectile.Center = Owner.Center - new Vector2(0, 8) + Owner.DirectionTo(Main.MouseWorld) * Owner.HeldItem.width * 0.5f;
+		Projectile.frameCounter++;
 		Owner.itemRotation = Projectile.rotation;
+		Owner.heldProj = Projectile.whoAmI;
 
 		if (Owner.direction != 1)
 		{
 			Owner.itemRotation -= 3.14f;
 		}
 
-		Owner.heldProj = Projectile.whoAmI;
-
-		Projectile.frameCounter++;
-
-		if (Projectile.frameCounter % 6 == 5)
+		if (Projectile.frameCounter % (int)AnimationSpeed == (int)AnimationSpeed - 1)
 		{
 			if (Projectile.frame < 6)
 			{
@@ -79,28 +82,31 @@ internal abstract class BowAnimationProjectile : ModProjectile
 	
 	private void Shoot()
 	{
-		if (Owner.whoAmI != Main.myPlayer && Owner.HeldItem.ModItem is not Bow bow)
+		if (Owner.whoAmI != Main.myPlayer || Owner.HeldItem.ModItem is not Bow bow)
 		{
 			return;
 		}
 
 		Terraria.Audio.SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
 		Owner.PickAmmo(Owner.HeldItem, out int type, out float speed, out int damage, out float kB, out int ammoUsed);
-		Owner.GetModPlayer<AltUseSystem>().AltFunctionCooldown = 5 * 60;
+		Owner.GetModPlayer<AltUseSystem>().AltFunctionCooldown = (int)(Cooldown * 60f);
 
 		damage = (int)(damage * 3f);
 		Vector2 vel = Projectile.DirectionTo(Main.MouseWorld) * speed * 1.5f;
-		Projectile.NewProjectile(Owner.GetSource_ItemUse_WithPotentialAmmo(Owner.HeldItem, ammoUsed), Projectile.Center, vel, ProjectileID.WoodenArrowFriendly, damage, kB, Owner.whoAmI);
+		IEntitySource src = Owner.GetSource_ItemUse_WithPotentialAmmo(Owner.HeldItem, ammoUsed);
+		Projectile.NewProjectile(src, Projectile.Center, vel, ProjectileID.WoodenArrowFriendly, damage, kB, Owner.whoAmI);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{
 		// Manually draw the projectile so it aligns properly when rotated
-		Texture2D tex = TextureAssets.Projectile[Type].Value;
+		Texture2D tex = Bow.BowProjectileSpritesById[Owner.HeldItem.type].Value;
 		int frameHeight = tex.Height / Main.projFrames[Type];
 		var src = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
+		Color color = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
+		Vector2 position = Projectile.Center - Main.screenPosition;// - new Vector2(0, Owner.HeldItem.height * 0.1f);
 
-		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition - new Vector2(0, 10), src, Color.White, Projectile.rotation, src.Size() / 2f, 1f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(tex, position, src, color, Projectile.rotation, src.Size() / 2f, 1f, SpriteEffects.None, 0);
 		return false;
 	}
 }
