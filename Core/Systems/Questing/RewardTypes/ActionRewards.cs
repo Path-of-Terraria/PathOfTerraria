@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PathOfTerraria.Core.Systems.Questing.RewardTypes;
-internal class ItemsReward(List<int> rewards) : QuestReward
+internal class ActionRewards(Action<Player, Vector2> rewards, string rewardString) : QuestReward
 {
-	private readonly List<int> _rewards = rewards;
+	private readonly Action<Player, Vector2> _rewards = rewards;
 	public override string RewardString()
 	{
-		return base.RewardString();
+		return rewardString;
 	}
 	public override void GiveReward(Player player, Vector2 dropPosition)
 	{
-		// drop rewards...
+		_rewards.Invoke(player, dropPosition);
 	}
 }

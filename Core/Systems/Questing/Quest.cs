@@ -1,6 +1,5 @@
 ﻿using Microsoft.Build.Construction;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest.SubQuests;
 using ReLogic.Threading;
 using Steamworks;
 using System;
@@ -24,6 +23,13 @@ abstract class Quest
 	public void StartQuest(Player player, int currentQuest = 0)
 	{
 		_currentQuest = currentQuest;
+
+		if (_currentQuest >= _subQuests.Count)
+		{
+			_completed = true;
+			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
+			return;
+		}
 
 		_activeQuest = _subQuests[_currentQuest];
 
