@@ -1,5 +1,6 @@
 ﻿﻿using System.Linq;
 using Terraria.DataStructures;
+using Terraria.UI;
 
 namespace PathOfTerraria.Core;
 
@@ -137,6 +138,11 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 
 	public static event PostUpdateDelegate PostUpdateEvent;
 
+	public override void PostUpdate()
+	{
+		PostUpdateEvent?.Invoke(Player);
+	}
+
 	public delegate void PostDrawDelegate(Player player, SpriteBatch spriteBatch);
 
 	public static event PostDrawDelegate PostDrawEvent;
@@ -245,7 +251,6 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 
 		return result;
 	}
-
 	public override void Unload()
 	{
 		CanUseItemEvent = null;

@@ -8,6 +8,9 @@ namespace PathOfTerraria.Core.Systems.ModPlayers;
 public class ExpModPlayer : ModPlayer
 {
 	public int Level;
+	public int QuestLevel;
+	public int EffectiveLevel => Level + QuestLevel;
+
 	public int Exp;
 
 	public int NextLevel => Level == 100 ? 1 : Level * 250 + (int)(80 * Math.Pow(2, 1 + Level * 0.2f));
@@ -34,12 +37,14 @@ public class ExpModPlayer : ModPlayer
 	public override void SaveData(TagCompound tag)
 	{
 		tag["level"] = Level;
+		tag["questLevel"] = QuestLevel;
 		tag["exp"] = Exp;
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
 		Level = tag.GetInt("level");
+		QuestLevel = tag.GetInt("questLevel");
 		Exp = tag.GetInt("exp");
 	}
 }
