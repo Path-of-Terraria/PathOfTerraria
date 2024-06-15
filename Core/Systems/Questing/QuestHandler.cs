@@ -28,7 +28,7 @@ internal class QuestHandler : ModPlayer
 
 	public override void PostUpdate()
 	{
-		_enabledQuests.ForEach(q => Console.WriteLine(q.CurrentQuestString()));
+		// _enabledQuests.ForEach(q => Console.WriteLine(q.CurrentQuestString()));
 	}
 
 	public override void SaveData(TagCompound tag)
