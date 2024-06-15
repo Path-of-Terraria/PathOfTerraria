@@ -104,7 +104,7 @@ internal class BowAnimationProjectile : ModProjectile
 		int frameHeight = tex.Height / Main.projFrames[Type];
 		var src = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 		Color color = Lighting.GetColor(Projectile.Center.ToTileCoordinates());
-		Vector2 position = Projectile.Center - Main.screenPosition;// - new Vector2(0, Owner.HeldItem.height * 0.1f);
+		Vector2 position = Projectile.Center - Main.screenPosition - Owner.HeldItem.ModItem.HoldoutOffset() ?? Vector2.Zero;
 
 		Main.spriteBatch.Draw(tex, position, src, color, Projectile.rotation, src.Size() / 2f, 1f, SpriteEffects.None, 0);
 		return false;
