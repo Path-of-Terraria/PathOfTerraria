@@ -37,7 +37,7 @@ internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
 			_completed.Add(false); // or skip the track if its completed from loaded data
 			int _i = i;
 
-			var temp = quests[_i];
+			QuestStep temp = quests[_i];
 			temp.Track(player, () =>
 			{
 				FinishSubTask(_i); // if we dont do this it just keeps a reference to i and calls this with Count+1.

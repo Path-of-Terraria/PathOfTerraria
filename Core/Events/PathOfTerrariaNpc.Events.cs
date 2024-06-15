@@ -51,6 +51,7 @@ public class PathOfTerrariaNpcEvents : GlobalNPC
 		{
 			OnKillByEvent?.Invoke(npc, player);
 		}
+
 		OnHitByItemEvent?.Invoke(npc, player, item, hit, damageDone);
 	}
 
@@ -65,6 +66,7 @@ public class PathOfTerrariaNpcEvents : GlobalNPC
 				OnKillByEvent?.Invoke(npc, Main.player[projectile.owner]);
 			}
 		}
+
 		OnHitByProjectileEvent?.Invoke(npc, projectile, hit, damageDone);
 	}
 
