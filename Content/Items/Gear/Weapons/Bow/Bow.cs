@@ -78,14 +78,14 @@ internal abstract class Bow : Gear
 
 	public override bool AltFunctionUse(Player player)
 	{
-		return true;// player.GetModPlayer<AltUseSystem>().AltFunctionCooldown <= 0;
+		return player.GetModPlayer<AltUseSystem>().AltFunctionCooldown <= 0;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (player.altFunctionUse != 2)
 		{
-			SoundEngine.PlaySound(SoundID.Item5, player.Center);
+			SoundEngine.PlaySound(SoundID.Item5, player.Center); // Play sound here to not make it play twice when alt firing
 		}
 
 		return player.altFunctionUse != 2;
