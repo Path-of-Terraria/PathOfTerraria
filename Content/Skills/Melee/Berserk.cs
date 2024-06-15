@@ -11,8 +11,11 @@ public class Berserk : Skill
 		Duration = duration;
 		Cooldown = cooldown;
 		MaxCooldown = maxCooldown;
-		Cooldown = cooldown;
 		ManaCost = manaCost;
+	}
+
+	public Berserk()
+	{
 	}
 
 	public override void UseSkill(Player player)
