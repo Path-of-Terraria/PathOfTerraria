@@ -297,8 +297,6 @@ internal abstract class Gear : ModItem
 
 		if (Item.damage > 0)
 		{
-			float damage1 = Main.LocalPlayer.GetDamage(DamageClass.Melee).ApplyTo(Item.damage);
-			float damage2 = Main.LocalPlayer.GetDamage(DamageClass.Generic).ApplyTo(Item.damage);
 			var damageLine = new TooltipLine(Mod, "Damage",
 				$"[i:{ItemID.SilverBullet}] " + HighlightNumbers(
 					$"[{Math.Round(Item.damage * 0.8f, 2)}-{Math.Round(Item.damage * 1.2f, 2)}] Damage ({Item.DamageType.DisplayName})",
