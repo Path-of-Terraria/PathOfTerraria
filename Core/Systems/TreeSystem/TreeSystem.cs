@@ -47,7 +47,7 @@ internal class TreePlayer : ModPlayer
 
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 
-		Points = expPlayer.Level;
+		Points = expPlayer.EffectiveLevel;
 
 		foreach (Passive passive in ActiveNodes)
 		{
