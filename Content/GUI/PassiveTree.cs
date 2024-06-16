@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
@@ -50,7 +51,17 @@ internal class PassiveTree : SmartUIState
 			DrawCloseButton();
 
 			TreeSystem.CreateTree();
-			TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
+			TreeSystem.ActiveNodes.ForEach(n =>
+			{
+				if (n is JewelSocket)
+				{
+					Inner.Append(new PassiveSocket(n as JewelSocket));
+				}
+				else
+				{
+					Inner.Append(new PassiveElement(n));
+				}
+			});
 		}
 
 		IsVisible = true;

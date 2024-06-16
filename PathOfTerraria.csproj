@@ -23,6 +23,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Remove="Assets\Passives\JewelSocket.png" />
     <None Remove="Effects\LunarEffect.glsl" />
     <None Remove="Localization\en-US\Mods.PathOfTerraria.Items.hjson" />
     <None Remove="Localization\en-US\Mods.PathOfTerraria.Projectiles.hjson" />
@@ -33,6 +34,6 @@
     </Reference>
   </ItemGroup>
 	<Target Name="BuildMod" AfterTargets="Build">
-		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)"/>
+		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />
 	</Target>
 </Project>
