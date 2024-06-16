@@ -231,9 +231,6 @@ internal class InnerPanel : SmartUIElement
 
 		BlockClickItem.Block = Parent.GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
 
-		
-
-
 		Vector2 offsetChange = Vector2.Zero;
 
 		if (_isHovering)
@@ -322,7 +319,6 @@ public class BlockClickItem : ILoadable
 						 BindingFlags.Static);
 		MethodInfo methodInfo = propertyInfo.GetGetMethod();
 
-
 		MonoModHooks.Add(methodInfo, hook);
 	}
 
@@ -332,6 +328,7 @@ public class BlockClickItem : ILoadable
 		{
 			return action();
 		}
+
 		return true;
 	}
 

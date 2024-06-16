@@ -220,6 +220,7 @@ public class UIDraggablePanel : UIPanel
 			{
 				Width.Pixels = MathF.Max(Main.mouseX - style.X, _minSize.X);
 			}
+
 			if (Scaling[1])
 			{
 				Height.Pixels = MathF.Max(Main.mouseY - style.Y, _minSize.Y);
