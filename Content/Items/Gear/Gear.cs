@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
+using PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.WeaponAffixes;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -34,6 +36,8 @@ internal abstract class Gear : ModItem
 
 	private string _name;
 	public virtual int ItemLevel { get; set; }
+	public virtual string AltUseDescription => "";
+	public virtual string Description => "";
 
 	private List<GearAffix> _affixes = [];
     private int _implicits = 0;
@@ -294,6 +298,11 @@ internal abstract class Gear : ModItem
 			OverrideColor = new Color(170, 170, 170)
 		};
 		tooltips.Add(powerLine);
+		
+		if (!string.IsNullOrWhiteSpace(AltUseDescription))
+		{
+			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", AltUseDescription));
+		}
 
 		if (Item.damage > 0)
 		{
@@ -400,6 +409,11 @@ internal abstract class Gear : ModItem
 		foreach (string changes in red)
 		{
 			tooltips.Add(new TooltipLine(Mod, $"Change{affixIdx}", $"[c/FF0000:{changes}]"));
+		}
+		
+		if (!string.IsNullOrWhiteSpace(Description))
+		{
+			tooltips.Add(new TooltipLine(Mod, "Description", Description));
 		}
 	}
 
@@ -569,7 +583,7 @@ internal abstract class Gear : ModItem
 	/// </summary>
 	public void RollAffixes()
 	{
-		if (Rarity == GearRarity.Normal || Rarity == GearRarity.Unique)
+		if (Rarity is GearRarity.Normal or GearRarity.Unique)
 		{
 			return;
 		}
@@ -922,4 +936,35 @@ internal abstract class Gear : ModItem
 		}
 	}
 	*/
+	
+	/// <summary>
+	/// Used to apply on hit effects for affixes that have them
+	/// </summary>
+	/// <param name="player"></param>
+	/// <param name="target"></param>
+	/// <param name="hit"></param>
+	/// <param name="damageDone"></param>
+	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (!_affixes.Any()) //We don't want to run if there are no affixes to modify anything
+		{
+			return;
+		}
+		
+		foreach (GearAffix affix in _affixes)
+		{
+			switch (affix.GetType().Name)
+			{
+				case "ChanceToApplyOnFireGearAffix":
+					if (affix is ModifyHitAffixes.ChanceToApplyOnFireGearAffix fireAffix)
+					{
+						fireAffix.TryApplyDebuff(target);
+					}
+
+					break;
+			}
+		}
+		
+		base.OnHitNPC(player, target, hit, damageDone);
+	}
 }

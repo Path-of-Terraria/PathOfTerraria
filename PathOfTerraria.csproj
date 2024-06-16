@@ -23,11 +23,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Remove="Effects\LunarEffect.glsl" />
-    <None Remove="Localization\en-US\Mods.PathOfTerraria.Items.hjson" />
-    <None Remove="Localization\en-US\Mods.PathOfTerraria.Projectiles.hjson" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="SubworldLibrary">
       <HintPath>Dependencies\SubworldLibrary.dll</HintPath>
     </Reference>
