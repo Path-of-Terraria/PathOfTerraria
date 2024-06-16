@@ -15,16 +15,16 @@ public class UnAndEquipSocketSystem : ILoadable
 
 		IL_ItemSlot.OverrideLeftClick += OverrideLeftClick_IL;
 	}
-	
+
 	public void Unload()
 	{
 		IL_ItemSlot.LeftClick_ItemArray_int_int -= LeftClick_IL; // click unequip
 		IL_AchievementsHelper.HandleOnEquip -= HandleOnEquip_IL; // click equip
 		IL_ItemSlot.ArmorSwap -= ArmorSwap_IL;
-		
+
 		IL_ItemSlot.OverrideLeftClick -= OverrideLeftClick_IL;
 	}
-	
+
 	private void LeftClick_IL(ILContext il)
 	{
 		var c = new ILCursor(il);

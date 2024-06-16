@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Steamworks;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
@@ -11,9 +13,12 @@ namespace PathOfTerraria.Content.GUI;
 public class UIDraggablePanel : UIPanel
 {
 	// Stores the offset from the top left of the UIPanel while dragging.
-	private Vector2 Offset { get; set; }
-
+	private Vector2 _mouseOffset { get; set; }
 	private bool Dragging { get; set; }
+
+	private bool[] Scaling = [false, false];
+
+	private Vector2 _minSize = new(400f, 400f);
 
 	private readonly bool _stopItemUse;
 
@@ -24,7 +29,7 @@ public class UIDraggablePanel : UIPanel
 	private readonly Dictionary<string, UIPanelTab> _menus;
 
 	public UIDraggablePanel(bool stopItemUse, bool showCloseButton,
-		IEnumerable<(string key, LocalizedText text)> menuOptions)
+		IEnumerable<(string key, LocalizedText text)> menuOptions, int panelHeight)
 	{
 		_stopItemUse = stopItemUse;
 
@@ -33,7 +38,7 @@ public class UIDraggablePanel : UIPanel
 		_header = new UIPanel();
 		_header.SetPadding(0);
 		_header.Width.Set(0, 1f);
-		_header.Height.Set(32, 0f);
+		_header.Height.Set(panelHeight, 0f);
 		_header.BackgroundColor.A = 255;
 		_header.OnLeftMouseDown += Header_MouseDown;
 		_header.OnLeftMouseUp += Header_MouseUp;
@@ -80,8 +85,34 @@ public class UIDraggablePanel : UIPanel
 
 			_header.Append(menu);
 		}
-		
+
+		_minSize.X = Math.Max(_minSize.X, left);
+
 		SetActivePage(_menus.Keys.First());
+	}
+
+	public override void RightMouseDown(UIMouseEvent evt)
+	{
+		CalculatedStyle style = GetDimensions();
+
+		float xGrabPoint = style.X + style.Width - evt.MousePosition.X;
+		if (xGrabPoint > 0 && xGrabPoint < 30)
+		{
+			Scaling[0] = true;
+		}
+
+		float yGrabPoint = style.Y + style.Height - evt.MousePosition.Y;
+		if (yGrabPoint > 0 && yGrabPoint < 30)
+		{
+			Scaling[1] = true;
+		}
+
+		base.RightMouseDown(evt);
+	}
+	public override void RightMouseUp(UIMouseEvent evt)
+	{
+		Scaling = [false, false];
+		base.RightMouseUp(evt);
 	}
 
 	public void SetActivePage(string page)
@@ -146,36 +177,22 @@ public class UIDraggablePanel : UIPanel
 	{
 		base.LeftMouseUp(evt);
 
-		DragEnd(evt);
+		Dragging = false;
+
+		if (GetDimensions().Y < 0)
+		{
+			Top.Pixels -= GetDimensions().Y;
+		}
 	}
 
 	private void DragStart(UIMouseEvent evt)
 	{
-		Offset = new Vector2(evt.MousePosition.X - Left.Pixels, evt.MousePosition.Y - Top.Pixels);
+		_mouseOffset = evt.MousePosition;
 		Dragging = true;
-	}
-
-	private void DragEnd(UIMouseEvent evt)
-	{
-		//A child element forced this to not move
-		if (!Dragging)
-		{
-			return;
-		}
-
-		Vector2 end = evt.MousePosition;
-		Dragging = false;
-
-		Left.Set(end.X - Offset.X, 0f);
-		Top.Set(end.Y - Offset.Y, 0f);
-
-		Recalculate();
 	}
 
 	public override void Update(GameTime gameTime)
 	{
-		base.Update(gameTime); // don't remove.
-
 		if (_uiDelay > 0)
 		{
 			_uiDelay--;
@@ -187,10 +204,27 @@ public class UIDraggablePanel : UIPanel
 			Main.LocalPlayer.mouseInterface = true;
 		}
 
-		if (Dragging)
+		if (Dragging || Scaling[0] || Scaling[1])
 		{
-			Left.Set(Main.mouseX - Offset.X, 0f); // Main.MouseScreen.X and Main.mouseX are the same.
-			Top.Set(Main.mouseY - Offset.Y, 0f);
+			CalculatedStyle style = GetDimensions();
+			
+			if (Dragging)
+			{
+				Vector2 difference = Main.MouseScreen - _mouseOffset;
+				_mouseOffset = Main.MouseScreen;
+				Left.Pixels += difference.X;
+				Top.Pixels += difference.Y;
+			}
+
+			if (Scaling[0])
+			{
+				Width.Pixels = MathF.Max(Main.mouseX - style.X, _minSize.X);
+			}
+			if (Scaling[1])
+			{
+				Height.Pixels = MathF.Max(Main.mouseY - style.Y, _minSize.Y);
+			}
+
 			Recalculate();
 		}
 
@@ -207,5 +241,7 @@ public class UIDraggablePanel : UIPanel
 			// Recalculate forces the UI system to do the positioning math again.
 			Recalculate();
 		}
+
+		base.Update(gameTime); // don't remove.
 	}
 }
