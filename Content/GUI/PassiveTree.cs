@@ -6,6 +6,7 @@ using Terraria.Audio;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
@@ -50,11 +51,15 @@ internal class PassiveTree : SmartUIState
 			DrawCloseButton();
 
 			TreeSystem.CreateTree();
-			TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
+			if (Inner != null)
+			{
+				TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
+			}
 		}
 
 		IsVisible = true;
 	}
+	
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		if (Main.LocalPlayer.controlInv)
@@ -74,7 +79,12 @@ internal class PassiveTree : SmartUIState
 
 	protected void DrawPanel()
 	{
-		Panel = new UIPanel();
+		var localizedTexts = new (string key, LocalizedText text)[]
+		{
+			("PassiveTree", Language.GetText("Mods.PathOfTerraria.GUI.PassiveTreeTab")),
+			("SkillTree", Language.GetText("Mods.PathOfTerraria.GUI.SkillTreeTab"))
+		};
+		Panel = new UIDraggablePanel(false, false, localizedTexts);
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
 		Panel.Width.Set(PanelWidth, 0);
@@ -86,9 +96,9 @@ internal class PassiveTree : SmartUIState
 	{
 		Inner = new InnerPanel();
 		Inner.Left.Set(0, 0);
-		Inner.Top.Set(0, 0);
-		Inner.Width.Set(0, 1);
-		Inner.Height.Set(0, 1);
+		Inner.Top.Set(32, 0);
+		Inner.Width.Set(0, 2f);
+		Inner.Height.Set(0, 2f);
 		Panel.Append(Inner);
 	}
 
@@ -104,7 +114,7 @@ internal class PassiveTree : SmartUIState
 			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 		};
 		CloseButton.SetVisibility(1, 1);
-		Inner.Append(CloseButton);
+		Panel.Append(CloseButton);
 	}
 
 	protected void DrawPanelText(SpriteBatch spriteBatch)
@@ -112,9 +122,9 @@ internal class PassiveTree : SmartUIState
 		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall").Value;
 		TreePlayer mp = Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
-		spriteBatch.Draw(tex, GetRectangle().TopLeft() + new Vector2(32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
-		Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", GetRectangle().TopLeft() + new Vector2(32, 32), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
-		Utils.DrawBorderStringBig(spriteBatch, $"Points remaining", GetRectangle().TopLeft() + new Vector2(170, 32), Color.White, 0.6f, 0.5f, 0.35f);
+		spriteBatch.Draw(tex, GetRectangle().TopLeft() + new Vector2(32, 56), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+		Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", GetRectangle().TopLeft() + new Vector2(32, 56), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
+		Utils.DrawBorderStringBig(spriteBatch, "Points remaining", GetRectangle().TopLeft() + new Vector2(170, 56), Color.White, 0.6f, 0.5f, 0.35f);
 	}
 
 	public Rectangle GetRectangle()
