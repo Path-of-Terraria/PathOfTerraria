@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
@@ -63,8 +64,15 @@ internal class PassiveTree : SmartUIState
 			TreeSystem.CreateTree();
 			if (Inner != null)
 			{
-				TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
-			}
+                if (n is JewelSocket)
+                {
+                    Inner.Append(new PassiveSocket(n as JewelSocket));
+                }
+                else
+                {
+                    Inner.Append(new PassiveElement(n));
+                }
+            }
 		}
 
 		IsVisible = true;
