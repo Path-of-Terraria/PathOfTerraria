@@ -303,12 +303,12 @@ internal class InnerPanel : SmartUIElement
 	}
 }
 
-public class BlockClickItem : ILoadable
+public class BlockClickItem : ModSystem
 {
 	// TODO: This is not blocking anything on the right. | or the open achivments button.
 
 	public static bool Block = false;
-	public void Load(Mod mod)
+	public override void Load()
 	{
 		On_ItemSlot.OverrideLeftClick += OverrideLeftClick_On;
 		On_ItemSlot.MouseHover_ItemArray_int_int += MouseHover_On;
@@ -322,6 +322,11 @@ public class BlockClickItem : ILoadable
 		MonoModHooks.Add(methodInfo, hook);
 	}
 
+	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+	{
+		Block = false;
+	}
+
 	private bool hook(Func<bool> action)
 	{
 		if (!Block)
@@ -331,8 +336,7 @@ public class BlockClickItem : ILoadable
 
 		return true;
 	}
-
-	public void Unload()
+	public override void Unload()
 	{
 		On_ItemSlot.OverrideLeftClick -= OverrideLeftClick_On;
 		On_ItemSlot.MouseHover_ItemArray_int_int -= MouseHover_On;
