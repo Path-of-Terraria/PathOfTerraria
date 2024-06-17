@@ -62,17 +62,17 @@ internal class PassiveTree : SmartUIState
 			AddCloseButton();
 
 			TreeSystem.CreateTree();
-			if (Inner != null)
+			TreeSystem.ActiveNodes.ForEach(n =>
 			{
-                if (n is JewelSocket)
-                {
-                    Inner.Append(new PassiveSocket(n as JewelSocket));
-                }
-                else
-                {
-                    Inner.Append(new PassiveElement(n));
-                }
-            }
+				if (n is JewelSocket)
+				{
+					Inner.Append(new PassiveSocket(n as JewelSocket));
+				}
+				else
+				{
+					Inner.Append(new PassiveElement(n));
+				}
+			});
 		}
 
 		IsVisible = true;
