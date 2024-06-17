@@ -1,4 +1,6 @@
 ﻿using Humanizer;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
@@ -54,9 +56,9 @@ internal class PassiveTree : SmartUIState
 			BotRightTree = Vector2.Zero;
 			CurrentDisplayClass = newClass;
 			RemoveAllChildren();
-			DrawPanel();
-			DrawInnerPanel();
-			DrawCloseButton();
+			CreateMainPanel();
+			AddInnerPanel();
+			AddCloseButton();
 
 			TreeSystem.CreateTree();
 			if (Inner != null)
@@ -80,7 +82,7 @@ internal class PassiveTree : SmartUIState
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
-	protected void DrawPanel()
+	protected void CreateMainPanel()
 	{
 		var localizedTexts = new (string key, LocalizedText text)[]
 		{
@@ -95,7 +97,7 @@ internal class PassiveTree : SmartUIState
 		Append(Panel);
 	}
 	
-	protected void DrawInnerPanel()
+	protected void AddInnerPanel()
 	{
 		Inner = new InnerPanel();
 		Inner.Left.Set(0, 0);
@@ -105,7 +107,7 @@ internal class PassiveTree : SmartUIState
 		Panel.Append(Inner);
 	}
 
-	protected void DrawCloseButton()
+	protected void AddCloseButton()
 	{
 		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/CloseButton"));
 		CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
@@ -310,24 +312,50 @@ public class BlockClickItem : ModSystem
 	public static bool Block = false;
 	public override void Load()
 	{
-		On_ItemSlot.OverrideLeftClick += OverrideLeftClick_On;
-		On_ItemSlot.MouseHover_ItemArray_int_int += MouseHover_On;
-		On_UIElement.MouseOver += MouseOver_On;
+		
+		IL_ItemSlot.OverrideLeftClick += IL_BlockIfBlockingRetTrue;
+		IL_ItemSlot.MouseHover_ItemArray_int_int += IL_BlockIfBlocking;
+		IL_UIElement.MouseOver += IL_BlockIfBlocking;
 
 		PropertyInfo propertyInfo = typeof(PlayerInput).GetProperty("IgnoreMouseInterface",
 						 BindingFlags.Public |
 						 BindingFlags.Static);
 		MethodInfo methodInfo = propertyInfo.GetGetMethod();
 
-		MonoModHooks.Add(methodInfo, hook);
+		MonoModHooks.Add(methodInfo, ForceIgnoreMouseInterface);
 	}
 
-	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+	public override void PostDrawInterface(SpriteBatch spriteBatch)
 	{
 		Block = false;
 	}
 
-	private bool hook(Func<bool> action)
+	private void IL_BlockIfBlocking(ILContext il)
+	{
+		var c = new ILCursor(il);
+		c.Emit(OpCodes.Ldsfld, typeof(BlockClickItem).GetField("Block"));
+
+		ILLabel trueLabel = il.DefineLabel();
+		c.Emit(OpCodes.Brfalse, trueLabel);
+
+		c.Emit(OpCodes.Ret);
+		c.MarkLabel(trueLabel);
+	}
+	private void IL_BlockIfBlockingRetTrue(ILContext il)
+	{
+		var c = new ILCursor(il);
+		c.Emit(OpCodes.Ldsfld, typeof(BlockClickItem).GetField("Block"));
+
+		ILLabel trueLabel = c.DefineLabel();
+		c.Emit(OpCodes.Brfalse, trueLabel);
+
+		c.Emit(OpCodes.Ldc_I4_1);
+		c.Emit(OpCodes.Ret);
+
+		c.MarkLabel(trueLabel);
+	}
+
+	private bool ForceIgnoreMouseInterface(Func<bool> action)
 	{
 		if (!Block)
 		{
@@ -335,37 +363,5 @@ public class BlockClickItem : ModSystem
 		}
 
 		return true;
-	}
-	public override void Unload()
-	{
-		On_ItemSlot.OverrideLeftClick -= OverrideLeftClick_On;
-		On_ItemSlot.MouseHover_ItemArray_int_int -= MouseHover_On;
-		On_UIElement.MouseOver -= MouseOver_On;
-	}
-
-	private void MouseOver_On(On_UIElement.orig_MouseOver orig, UIElement self, UIMouseEvent evt)
-	{
-		if (!Block)
-		{
-			orig(self, evt);
-		}
-	}
-
-	private bool OverrideLeftClick_On(On_ItemSlot.orig_OverrideLeftClick orig, Item[] inv, int context, int slot)
-	{
-		if (!Block)
-		{
-			return orig(inv, context, slot);
-		}
-
-		return true;
-	}
-
-	private void MouseHover_On(On_ItemSlot.orig_MouseHover_ItemArray_int_int orig, Item[] inv, int context, int slot)
-	{
-		if (!Block)
-		{
-			orig(inv, context, slot);
-		}
 	}
 }
