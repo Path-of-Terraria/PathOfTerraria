@@ -1,9 +1,10 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.SkillSystem;
 
-public abstract class Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weaponType, byte level = 1)
+public abstract class Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weaponType, byte level)
 {
 	public int Duration = duration;
 	public int Timer = timer;
@@ -20,10 +21,15 @@ public abstract class Skill(int duration, int timer, int maxCooldown, int cooldo
 	public virtual string Texture => $"{PathOfTerraria.ModName}/Assets/Skills/" + GetType().Name;
 
 	/// <summary>
-	/// Constructor that should be used in Activator.CreateInstance only. Otherwise, use <c>new Skill(int, int, int, int, int, GearType, byte)</c>.
+	/// Creates a default instance of the given <see cref="Skill"/> with 0 for all ctor parameters, aside from 1 for <see cref="Level"/>.
 	/// </summary>
-	public Skill() : this(0, 0, 0, 0, 0, 0, 0)
+	/// <param name="type">The type of skill to generate.</param>
+	/// <returns>The newly generated skill.</returns>
+	public static Skill ReflectSkillInstance(Type type)
 	{
+		ConstructorInfo ctor = type.GetConstructor([typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(GearType), typeof(byte)]);
+		var skill = ctor.Invoke([0, 0, 0, 0, 0, GearType.None, (byte)1]) as Skill;
+		return skill;
 	}
 
 	/// <summary>
@@ -51,7 +57,6 @@ public abstract class Skill(int duration, int timer, int maxCooldown, int cooldo
 
 	public virtual void LoadData(TagCompound tag)
 	{
-		// Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weaponType, int level = -1)
 		Duration = tag.GetShort(nameof(Duration));
 		Timer = tag.GetShort(nameof(Timer));
 		MaxCooldown = tag.GetShort(nameof(MaxCooldown));

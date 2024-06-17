@@ -158,8 +158,8 @@ internal class NewHotbar : SmartUIState
 
 		if (skill.Timer > 0)
 		{
-			spriteBatch.Draw(glow, new Vector2(291, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
-			Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(291, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+			spriteBatch.Draw(glow, new Vector2(291 + 52 * skillIndex, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
+			Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(291 + 52 * skillIndex, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
 		}
 	}
 

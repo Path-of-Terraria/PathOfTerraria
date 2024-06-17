@@ -3,6 +3,8 @@ using PathOfTerraria.Content.Skills.Melee;
 using Microsoft.Xna.Framework.Input;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;
+using log4net.Core;
+using System.Reflection;
 
 namespace PathOfTerraria.Core.Systems.SkillSystem;
 
@@ -103,7 +105,8 @@ internal class SkillPlayer : ModPlayer
 
 			TagCompound data = tag.GetCompound("skill" + i);
 			string type = data.GetString("type");
-			var skill = Activator.CreateInstance(Type.GetType(type)) as Skill;
+
+			var skill = Skill.ReflectSkillInstance(Type.GetType(type));
 			skill.LoadData(data);
 
 			Skills[i] = skill;
