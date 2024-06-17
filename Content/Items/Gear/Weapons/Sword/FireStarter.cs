@@ -45,14 +45,13 @@ internal class FireStarter : Sword
 	{
 		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
 
-		// If cooldown is still active, do not allow alt usage.
 		if (modPlayer.AltFunctionCooldown > 0)
 		{
 			return false;
 		}
-
-		// Otherwise, set the cooldown and allow alt usage.
+		
 		modPlayer.AltFunctionCooldown = 600;
+		modPlayer.AltFunctionActiveTimer = 180;
 		return true;
 	}
 	
@@ -60,8 +59,7 @@ internal class FireStarter : Sword
 	{
 		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
 		
-		// If cooldown is still active, do not allow alt usage.
-		if (modPlayer.AltFunctionCooldown > 0)
+		if (modPlayer.AltFunctionActiveTimer > 0)
 		{
 			target.AddBuff(BuffID.OnFire, 180);
 		}
@@ -73,5 +71,11 @@ internal class FireStarter : Sword
 		Vector2 velocity, int type, int damage, float knockback)
 	{
 		return false;
+	}
+	
+	public override void PostUpdate()
+	{
+		base.PostUpdate();
+		Item.SetDefaults(Item.type); // Update the item to ensure the texture is correct
 	}
 }
