@@ -7,6 +7,11 @@ Keybinds: {
 	WeaponSwap.DisplayName: Swap Weapons
 }
 
+GUI: {
+	PassiveTreeTab: Passives
+	SkillTreeTab: Skills
+}
+
 Buffs: {
 	CustomRage: {
 		DisplayName: Custom Rage

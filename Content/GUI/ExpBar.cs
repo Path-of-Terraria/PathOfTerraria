@@ -65,7 +65,5 @@ public class ExpBar : SmartUIState
 		UILoader.GetUIState<PassiveTree>().Toggle(mp.SelectedClass);
 
 		SoundEngine.PlaySound(mp.SelectedClass != PlayerClass.None ? SoundID.MenuOpen : SoundID.MenuClose, Main.LocalPlayer.Center);
-
-		Main.playerInventory = false;
 	}
 }
