@@ -11,6 +11,8 @@ public class AltUseSystem : ModPlayer
 	/// This is how long the alt use will be active for. This is meant for anything that has a duration.
 	/// </summary>
 	public int AltFunctionActiveTimer;
+	
+	public bool AltFunctionActive => AltFunctionActiveTimer > 0;
 
 	/// <summary>
 	/// Hits every tick to reduce the cooldown and active timer.

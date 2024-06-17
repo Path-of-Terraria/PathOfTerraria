@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.WeaponAffixes;
@@ -21,6 +22,7 @@ internal class FireStarter : Sword
 	{
 		base.Defaults();
 		Item.damage = 4;
+		Item.height = 52;
 		Item.UseSound = SoundID.Item1;
 		GearType = GearType.Sword;
 	}
@@ -45,21 +47,33 @@ internal class FireStarter : Sword
 	{
 		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
 
-		if (modPlayer.AltFunctionCooldown > 0)
+		if (modPlayer.AltFunctionActive)
 		{
 			return false;
 		}
 		
 		modPlayer.AltFunctionCooldown = 600;
+		if (Main.myPlayer == player.whoAmI)
+		{
+			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero,
+				ModContent.ProjectileType<FireStarterProjectile>(), 0, 0, player.whoAmI);
+		}
+		
 		modPlayer.AltFunctionActiveTimer = 180;
 		return true;
+	}
+	
+	public override bool CanUseItem(Player player)
+	{
+		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		return !modPlayer.AltFunctionActive; // Prevent the item from being used if the alt function is active to spawn projectile instead
 	}
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
 		
-		if (modPlayer.AltFunctionActiveTimer > 0)
+		if (modPlayer.AltFunctionActive)
 		{
 			target.AddBuff(BuffID.OnFire, 180);
 		}
