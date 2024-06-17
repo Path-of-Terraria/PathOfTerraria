@@ -6,12 +6,11 @@ namespace PathOfTerraria.Content.Skills.Melee;
 
 public class Berserk : Skill
 {
-	public Berserk(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weaponType) : base(duration, timer, maxCooldown, cooldown, manaCost, weaponType)
+	public Berserk(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weapon, byte level) : base(duration, timer, maxCooldown, cooldown, manaCost, weapon, level)
 	{
 		Duration = duration;
 		Cooldown = cooldown;
 		MaxCooldown = maxCooldown;
-		Cooldown = cooldown;
 		ManaCost = manaCost;
 	}
 
