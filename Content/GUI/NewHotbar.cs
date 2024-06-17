@@ -165,8 +165,7 @@ internal class NewHotbar : SmartUIState
 
 	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBuilding")
-			.Value;
+		Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBuilding").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
