@@ -325,7 +325,7 @@ public class BlockClickItem : ModSystem
 		MonoModHooks.Add(methodInfo, ForceIgnoreMouseInterface);
 	}
 
-	public override void PostDrawInterface(SpriteBatch spriteBatch)
+	public override void UpdateUI(GameTime gameTime)
 	{
 		Block = false;
 	}
