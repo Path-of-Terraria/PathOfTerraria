@@ -43,16 +43,30 @@ internal class FireStarter : Sword
 		return [sharpAffix, onFireAffix];
 	}
 	
+	private bool HasActiveProjectile(Player player)
+	{
+		for (int i = 0; i < Main.maxProjectiles; i++)
+		{
+			Projectile projectile = Main.projectile[i];
+			if (projectile.active && projectile.owner == player.whoAmI && projectile.type == ModContent.ProjectileType<FireStarterProjectile>())
+			{
+				return true;
+			}
+		}
+		
+		return false;
+	}
+	
 	public override bool AltFunctionUse(Player player)
 	{
 		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
 
-		if (modPlayer.AltFunctionActive)
+		if (modPlayer.OnCooldown)
 		{
 			return false;
 		}
 		
-		modPlayer.AltFunctionCooldown = 600;
+		modPlayer.AltFunctionCooldown = 300;
 		if (Main.myPlayer == player.whoAmI)
 		{
 			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero,
@@ -66,7 +80,19 @@ internal class FireStarter : Sword
 	public override bool CanUseItem(Player player)
 	{
 		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
-		return !modPlayer.AltFunctionActive; // Prevent the item from being used if the alt function is active to spawn projectile instead
+		bool altFunctionActive = modPlayer.AltFunctionActive; // Prevent the item from being used if the alt function is active to spawn projectile instead
+		if (!altFunctionActive)
+		{
+			return true;
+		}
+
+		if (!HasActiveProjectile(player))
+		{
+			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero,
+				ModContent.ProjectileType<FireStarterProjectile>(), Item.damage, Item.knockBack, player.whoAmI);
+		}
+		
+		return false;
 	}
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

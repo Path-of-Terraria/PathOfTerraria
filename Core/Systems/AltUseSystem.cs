@@ -13,6 +13,7 @@ public class AltUseSystem : ModPlayer
 	public int AltFunctionActiveTimer;
 	
 	public bool AltFunctionActive => AltFunctionActiveTimer > 0;
+	public bool OnCooldown => AltFunctionCooldown > 0;
 
 	/// <summary>
 	/// Hits every tick to reduce the cooldown and active timer.
