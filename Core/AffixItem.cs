@@ -88,6 +88,7 @@ internal abstract class PoTItem : ModItem
 				OverrideColor = new Color(170, 170, 170)
 			};
 		}
+
 		tooltips.Add(powerLine);
 
 		if (Item.damage > 0)
