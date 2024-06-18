@@ -12,10 +12,11 @@ internal abstract class Map : PoTItem
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
 
-	public virtual int ItemLevel
+	public override int ItemLevel
 	{
-		get { return _tier; }
-		set { _itemLevel = value; _tier = 1 + (int)Math.Floor(_itemLevel / 20f); }
+		get => InternalItemLevel;
+		set
+		{ InternalItemLevel = value; _tier = 1 + (int)Math.Floor(InternalItemLevel / 20f); }
 	}
 
 	public override void Defaults() {
@@ -35,14 +36,6 @@ internal abstract class Map : PoTItem
 	}
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }
-
-    /// <summary>
-    /// Allows you to customize what this item's name can be
-    /// </summary>
-    public virtual string GenerateName()
-    {
-        return "Unnamed Item";
-    }
 
     /// <summary>
     /// Gets name and what tier the map is of as a singular string.

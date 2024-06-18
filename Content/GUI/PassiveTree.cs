@@ -151,7 +151,6 @@ internal class PassiveTree : SmartUIState
 internal class InnerPanel : SmartUIElement
 {
 	private Vector2 _start;
-	private Vector2 _root;
 	private Vector2 _lineOff;
 
 	private UIElement Panel => Parent;

@@ -37,11 +37,11 @@ internal abstract class PoTItem : ModItem
 	public virtual bool IsUnique => false;
 
 	private string _name;
-	protected int _itemLevel;
+	protected int InternalItemLevel;
 	public virtual int ItemLevel
 	{
-		get { return _itemLevel; }
-		set { _itemLevel = value; }
+		get => InternalItemLevel;
+		set => InternalItemLevel = value;
 	}
 
 	public virtual int MinDropItemLevel => 0;
@@ -335,10 +335,10 @@ internal abstract class PoTItem : ModItem
 		// we would have 50% higher chance of rare magic and rare... ig...
 		// numbers subject to change, ofc.
 
-		float rare = (Main.rand.Next(100) - _itemLevel / 10f) * rarityModifier;
+		float rare = (Main.rand.Next(100) - InternalItemLevel / 10f) * rarityModifier;
 		Rarity = Rarity.Normal;
 
-		if (rare < 25 + _itemLevel / 10f)
+		if (rare < 25 + InternalItemLevel / 10f)
 		{
 			Rarity = Rarity.Magic;
 		}
@@ -354,9 +354,9 @@ internal abstract class PoTItem : ModItem
 		}
 
 		// Only item level 50+ gear can get influence
-		if (_itemLevel > 50 && !IsUnique && (ItemType & ItemType.AllGear) == ItemType.AllGear)
+		if (InternalItemLevel > 50 && !IsUnique && (ItemType & ItemType.AllGear) == ItemType.AllGear)
 		{
-			int inf = Main.rand.Next(400) - _itemLevel;
+			int inf = Main.rand.Next(400) - InternalItemLevel;
 			// quality dose not affect influence right now
 			// (might not need to, seems to generate plenty often for late game)
 
@@ -689,7 +689,7 @@ internal abstract class PoTItem : ModItem
 		tag["implicits"] = _implicits;
 
 		tag["name"] = _name;
-		tag["power"] = _itemLevel;
+		tag["power"] = InternalItemLevel;
 
 		List<TagCompound> affixTags = [];
 		foreach (ItemAffix affix in Affixes)
@@ -711,7 +711,7 @@ internal abstract class PoTItem : ModItem
 		_implicits = tag.GetInt("implicits");
 
 		_name = tag.GetString("name");
-		_itemLevel = tag.GetInt("power");
+		InternalItemLevel = tag.GetInt("power");
 
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
 

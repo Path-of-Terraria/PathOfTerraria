@@ -9,7 +9,6 @@ namespace PathOfTerraria.Content.GUI;
 internal class PassiveElement : SmartUIElement
 {
 	private readonly Passive _passive;
-	public Vector2 Root;
 
 	private int _flashTimer;
 	private int _redFlashTimer;

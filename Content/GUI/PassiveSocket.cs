@@ -19,10 +19,7 @@ internal class PassiveSocket : PassiveElement
 
 	public override void DrawOnto(SpriteBatch spriteBatch, Vector2 center)
 	{
-		if (_socketed is not null)
-		{
-			_socketed.Draw(spriteBatch, center);
-		}
+		_socketed?.Draw(spriteBatch, center);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
@@ -36,6 +33,7 @@ internal class PassiveSocket : PassiveElement
 				{
 					replace = _socketed.Item;
 				}
+
 				_socketed = Main.mouseItem.ModItem as Jewel;
 				Main.mouseItem = replace;
 			}
