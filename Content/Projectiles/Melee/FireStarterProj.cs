@@ -27,7 +27,7 @@ internal class FireStarterProjectile : ModProjectile
 		Projectile.direction = Owner.direction;
 
 		// Swing arc calculations
-		float swingArc = MathHelper.ToRadians(180f); // Swing arc in degrees
+		float swingArc = MathHelper.ToRadians(160f); // Swing arc in degrees
 
 		// Calculate swing position and rotation
 		float progress = (20f - Projectile.timeLeft) / 20f;

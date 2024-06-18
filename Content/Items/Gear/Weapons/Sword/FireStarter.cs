@@ -3,6 +3,7 @@ using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.WeaponAffixes;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -90,6 +91,7 @@ internal class FireStarter : Sword
 		{
 			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero,
 				ModContent.ProjectileType<FireStarterProjectile>(), Item.damage, Item.knockBack, player.whoAmI);
+			SoundEngine.PlaySound(SoundID.Item1, player.Center);
 		}
 		
 		return false;
