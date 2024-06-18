@@ -1,11 +1,10 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using Terraria.ModLoader.IO;
+﻿using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
 internal abstract class MobAffix : Affix
 {
-	public virtual MobRarity MinimumRarity => MobRarity.Magic;
+	public virtual Rarity MinimumRarity => Rarity.Magic;
 	public virtual bool Allowed => true;
 	
 	// would prefer ProgressionLock, but then you'd have to write !Main.moonlordDowned

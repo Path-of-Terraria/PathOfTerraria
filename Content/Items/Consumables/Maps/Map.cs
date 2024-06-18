@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -6,13 +7,18 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class Map : ModItem
+internal abstract class Map : PoTItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
-	private readonly List<MapAffix> _affixes = [];
 
-	public override void SetDefaults() {
+	public virtual int ItemLevel
+	{
+		get { return _tier; }
+		set { _itemLevel = value; _tier = 1 + (int)Math.Floor(_itemLevel / 20f); }
+	}
+
+	public override void Defaults() {
 		Item.width = 32;
 		Item.height = 32;
 		Item.useStyle = ItemUseStyleID.DrinkLiquid;
@@ -24,6 +30,8 @@ public abstract class Map : ModItem
 		Item.consumable = true;
 		Item.rare = ItemRarityID.Green;
 		Item.value = 1000;
+
+		ItemType = ItemType.Map;
 	}
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }
@@ -75,28 +83,7 @@ public abstract class Map : ModItem
 		
 		return true;
 	}
-	
-	public override void ModifyTooltips(List<TooltipLine> tooltips)
-	{
-		tooltips.Clear();
-		var nameLine = new TooltipLine(Mod, "Name", GenerateName());
-		tooltips.Add(nameLine);
-		
-		var mapLine = new TooltipLine(Mod, "Map", "Map");
-		tooltips.Add(mapLine);
 
-		var rareLine = new TooltipLine(Mod, "Tier", "Tier: " + _tier);
-		tooltips.Add(rareLine);
-
-		foreach (MapAffix affix in _affixes)
-		{
-			string text = $"[i:{ItemID.MusketBall}] " + affix.GetTooltip(this);
-
-			var affixLine = new TooltipLine(Mod, $"Affix{affix.GetHashCode()}", text);
-			tooltips.Add(affixLine);
-		}
-	}
-	
 	public static void SpawnItem(Vector2 pos)
 	{
 		SpawnMap<LowTierMap>(pos);
@@ -119,26 +106,13 @@ public abstract class Map : ModItem
 	{
 		tag["tier"] = _tier;
 
-		List<TagCompound> affixTags = [];
-		foreach (MapAffix affix in _affixes)
-		{
-			var newTag = new TagCompound();
-			affix.Save(newTag);
-			affixTags.Add(newTag);
-		}
-
-		tag["affixes"] = affixTags;
+		base.SaveData(tag);
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
 		_tier = tag.GetInt("tier");
 
-		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
-
-		foreach (TagCompound newTag in affixTags)
-		{
-			_affixes.Add(MapAffix.FromTag(newTag));
-		}
+		base.LoadData(tag);
 	}
 }

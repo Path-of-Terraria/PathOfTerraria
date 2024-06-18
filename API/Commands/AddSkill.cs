@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Content.Items.Gear;
+﻿using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems.SkillSystem;
 using System.Linq;
 using Terraria.ModLoader.Core;
@@ -44,7 +44,7 @@ public class AddSkill : ModCommand {
 		skill.ManaCost = 10;
 		skill.MaxCooldown = 400;
 		skill.Timer = 60;
-		skill.WeaponType = GearType.Sword;
+		skill.WeaponType = ItemType.Sword;
 
 		if (args.Length == 2)
 		{
@@ -112,7 +112,7 @@ public class AddSkill : ModCommand {
 			return;
 		}
 
-		bool weaponTypeValid = Enum.TryParse(args[7], out GearType weaponType);
+		bool weaponTypeValid = Enum.TryParse(args[7], out ItemType weaponType);
 
 		if (weaponTypeValid)
 		{

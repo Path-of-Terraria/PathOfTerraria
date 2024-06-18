@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.GUI;
+using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Data;
@@ -27,8 +28,8 @@ internal class TreePlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		UILoader.GetUIState<PassiveTree>().RemoveAllChildren(); // is this is necessary?
-		UILoader.GetUIState<PassiveTree>().CurrentDisplayClass = Content.Items.Gear.PlayerClass.None; // this is.
+		UILoader.GetUIState<PassiveTree>().RemoveAllChildren(); // is this really necessary?
+		UILoader.GetUIState<PassiveTree>().CurrentDisplayClass = PlayerClass.None;
 	}
 
 	public void CreateTree()
@@ -51,10 +52,22 @@ internal class TreePlayer : ModPlayer
 
 		foreach (Passive passive in ActiveNodes)
 		{
-			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.ReferenceId == 1 ? 1 : 0;
+			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.InternalIdentifier == "Anchor" ? 1 : 0;
 			// standard is id 1 is anchor for now.
+			// no handeling for multiple anchors..
 			
-			Points -= passive.Level;
+			if (passive is JewelSocket jsPassive)
+			{
+				if (_saveData.TryGet("_" + passive.ReferenceId.ToString(), out TagCompound tag))
+				{
+					jsPassive.LoadJewel(tag);
+				}
+			}
+
+			if (passive.InternalIdentifier != "Anchor")
+			{
+				Points -= passive.Level;
+			}
 		}
 	}
 
@@ -92,6 +105,12 @@ internal class TreePlayer : ModPlayer
 		foreach (Passive passive in ActiveNodes)
 		{
 			tag[passive.ReferenceId.ToString()] = passive.Level;
+			if (passive is JewelSocket jsPassive && jsPassive.Socketed is not null)
+			{
+				TagCompound jewelTag = new TagCompound();
+				jsPassive.SaveJewel(jewelTag);
+				tag["_" + passive.ReferenceId.ToString()] = jewelTag;
+			}
 		}
 	}
 

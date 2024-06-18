@@ -1,4 +1,5 @@
 ﻿
+using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System;
@@ -9,11 +10,8 @@ using System.Threading.Tasks;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Jewels;
-internal class IncreasedDamageJewel : Jewel
+internal class YellowJewel : Jewel
 {
 	public override string Texture => $"Terraria/Images/Item_{ItemID.GoldCoin}";
-	public override void BuffPlayer(Player player)
-	{
-		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.Damage += 0.1f;
-	}
+	public override float DropChance => 1f;
 }

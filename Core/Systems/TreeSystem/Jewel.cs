@@ -1,36 +1,60 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
+using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Data.Models;
+using Terraria.Chat.Commands;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
 
-internal abstract class Jewel : ModItem
+internal abstract class Jewel : PoTItem
 {
-	public virtual string InternalIdentifier => "NONE";
+	public virtual string EquppedTooltip
+	{
+		get
+		{
+			EntityModifier thisItemModifier = new EntityModifier();
+			ApplyAffixes(thisItemModifier);
 
-	/// <summary>
-	/// Name to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
-	/// </summary>
-	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.Jewels." + InternalIdentifier + ".Name");
+			string tooltip = "";
+			EntityModifier.GetChange(thisItemModifier).ForEach(s =>  tooltip += s + "\n");
 
-	/// <summary>
-	/// Tooltip to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
-	/// </summary>
-	public virtual string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.Jewels." + InternalIdentifier + ".Tooltip");
+			Console.WriteLine(EntityModifier.GetChange(thisItemModifier).Count);
+			return tooltip;
+		}
+	}
 
-	public virtual void BuffPlayer(Player player) { }
-
-	public virtual void OnLoad() { }
-
+	private static readonly MethodInfo _getItemType = typeof(ModContent).GetMethod("ItemType", BindingFlags.Public | BindingFlags.Static);
 	public static Jewel LoadFrom(TagCompound tag)
 	{
-		return null;
+		Type t = typeof(Jewel).Assembly.GetType(tag.GetString("jewelType"));
+		if (t is null)
+		{
+			PathOfTerraria.Instance.Logger.Error($"Could not load jewel {tag.GetString("type")}, was it removed?");
+			return null;
+		}
+
+		MethodInfo getItemTypeFromT = _getItemType.MakeGenericMethod([t]);
+
+		var item = new Item();
+		item.SetDefaults((int)getItemTypeFromT.Invoke(null, []));
+
+		(item.ModItem as Jewel)?.LoadData(tag);
+		return item.ModItem as Jewel;
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		tag["jewelType"] = GetType().FullName;
+		base.SaveData(tag);
 	}
 
 	public void Draw(SpriteBatch spriteBatch, Vector2 center)
 	{
-		
+		Texture2D tex = (Texture2D)ModContent.Request<Texture2D>(Texture);
+
+		spriteBatch.Draw(tex, center, null, Color.White, 0, tex.Size() / 2, 1f, SpriteEffects.None, 0f);
 	}
 }

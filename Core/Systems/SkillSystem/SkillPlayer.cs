@@ -1,10 +1,7 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Content.Skills.Melee;
+﻿using PathOfTerraria.Content.Skills.Melee;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
 using Terraria.GameInput;
-using Terraria.ModLoader.IO;
-using log4net.Core;
-using System.Reflection;
 
 namespace PathOfTerraria.Core.Systems.SkillSystem;
 
@@ -13,8 +10,7 @@ internal class SkillPlayer : ModPlayer
 	public static ModKeybind Skill1Keybind;
 	public static ModKeybind Skill2Keybind;
 	public static ModKeybind Skill3Keybind;
-
-	public Skill[] Skills = new Skill[3];
+	public Skill[] Skills = new Skill[5];
 
 	public override void Load()
 	{
@@ -30,8 +26,8 @@ internal class SkillPlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		//Skills[0] ??= new Berserk(1200, 1200, 1200, 1200, 5, GearType.Sword);
-
+		// Skills[0] ??= new Berserk(1200, 1200, 1200, 1200, 5, ItemType.Sword);
+			
 		if (Skill1Keybind.JustPressed && Skills[0] != null)
 		{
 			if (Skills[0].Timer == 0)
@@ -59,7 +55,7 @@ internal class SkillPlayer : ModPlayer
 
 	public override void ResetEffects()
 	{
-		if (Skills == null || Skills.Length == 0)
+		if (Skills == null || !Skills.Any())
 		{
 			return;
 		}
@@ -70,46 +66,6 @@ internal class SkillPlayer : ModPlayer
 			{
 				skill.Timer--;
 			}
-		}
-	}
-
-	public override void SaveData(TagCompound tag)
-	{
-		for (int i = 0; i < Skills.Length; i++)
-		{
-			Skill skill = Skills[i];
-
-			if (skill is null)
-			{
-				return;
-			}
-
-			TagCompound skillTag = new()
-			{
-				{ "type", skill.GetType().AssemblyQualifiedName }
-			};
-
-			skill.SaveData(skillTag);
-			tag.Add("skill" + i, skillTag);
-		}
-	}
-
-	public override void LoadData(TagCompound tag)
-	{
-		for (int i = 0; i < Skills.Length; ++i)
-		{
-			if (!tag.ContainsKey("skill" + i))
-			{
-				return;
-			}
-
-			TagCompound data = tag.GetCompound("skill" + i);
-			string type = data.GetString("type");
-
-			var skill = Skill.ReflectSkillInstance(Type.GetType(type));
-			skill.LoadData(data);
-
-			Skills[i] = skill;
 		}
 	}
 }

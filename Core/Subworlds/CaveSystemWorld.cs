@@ -51,7 +51,7 @@ public class CaveSystemWorld : MappingWorld
 	public static CaveRoom SpawnRoom => Rooms[0];
 	public static CaveRoom BossRoom => Rooms[1];
 
-	public static CaveMap Map = null;
+	internal static CaveMap Map = null;
 
 	public static void AddLine(int r1, int r2)
 	{

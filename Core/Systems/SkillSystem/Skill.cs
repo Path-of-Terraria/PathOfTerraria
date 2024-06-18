@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.SkillSystem;
 
-public abstract class Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, GearType weaponType, byte level)
+public abstract class Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, ItemType weaponType, byte level)
 {
 	public int Duration = duration;
 	public int Timer = timer;
@@ -14,7 +14,7 @@ public abstract class Skill(int duration, int timer, int maxCooldown, int cooldo
 
 	public int ManaCost = manaCost;
 
-	public GearType WeaponType = weaponType;
+	public ItemType WeaponType = weaponType;
 	public byte Level = level;
 
 	public virtual string Name => GetType().Name;
@@ -27,8 +27,8 @@ public abstract class Skill(int duration, int timer, int maxCooldown, int cooldo
 	/// <returns>The newly generated skill.</returns>
 	public static Skill ReflectSkillInstance(Type type)
 	{
-		ConstructorInfo ctor = type.GetConstructor([typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(GearType), typeof(byte)]);
-		var skill = ctor.Invoke([0, 0, 0, 0, 0, GearType.None, (byte)1]) as Skill;
+		ConstructorInfo ctor = type.GetConstructor([typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(ItemType), typeof(byte)]);
+		var skill = ctor.Invoke([0, 0, 0, 0, 0, ItemType.None, (byte)1]) as Skill;
 		return skill;
 	}
 
@@ -62,7 +62,7 @@ public abstract class Skill(int duration, int timer, int maxCooldown, int cooldo
 		MaxCooldown = tag.GetShort(nameof(MaxCooldown));
 		Cooldown = tag.GetShort(nameof(Cooldown));
 		ManaCost = tag.GetShort(nameof(ManaCost));
-		WeaponType = (GearType)tag.GetInt(nameof(WeaponType));
+		WeaponType = (ItemType)tag.GetInt(nameof(WeaponType));
 		Level = tag.GetByte(nameof(Level));
 	}
 

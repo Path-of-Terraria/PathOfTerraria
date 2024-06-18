@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
-using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core;
 using PathOfTerraria.Data.Models;
 
 namespace PathOfTerraria.Data;

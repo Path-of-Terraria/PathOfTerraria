@@ -1,8 +1,8 @@
 ﻿using Humanizer;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
