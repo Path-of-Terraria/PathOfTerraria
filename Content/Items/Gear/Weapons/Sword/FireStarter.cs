@@ -44,20 +44,6 @@ internal class FireStarter : Sword
 		return [sharpAffix, onFireAffix];
 	}
 	
-	private bool HasActiveProjectile(Player player)
-	{
-		for (int i = 0; i < Main.maxProjectiles; i++)
-		{
-			Projectile projectile = Main.projectile[i];
-			if (projectile.active && projectile.owner == player.whoAmI && projectile.type == ModContent.ProjectileType<FireStarterProjectile>())
-			{
-				return true;
-			}
-		}
-		
-		return false;
-	}
-	
 	public override bool AltFunctionUse(Player player)
 	{
 		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
@@ -67,14 +53,13 @@ internal class FireStarter : Sword
 			return false;
 		}
 		
-		modPlayer.AltFunctionCooldown = 300;
 		if (Main.myPlayer == player.whoAmI)
 		{
-			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero,
-				ModContent.ProjectileType<FireStarterProjectile>(), 0, 0, player.whoAmI);
+			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<FireStarterProjectile>(), Item.damage, 0, player.whoAmI);
 		}
 		
-		modPlayer.AltFunctionActiveTimer = 180;
+		modPlayer.AltFunctionCooldown = 300;
+		modPlayer.AltFunctionActiveTimer = 160;
 		return true;
 	}
 	
@@ -82,15 +67,20 @@ internal class FireStarter : Sword
 	{
 		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
 		bool altFunctionActive = modPlayer.AltFunctionActive; // Prevent the item from being used if the alt function is active to spawn projectile instead
+
 		if (!altFunctionActive)
 		{
+			Item.noUseGraphic = false;
+			Item.noMelee = false;
 			return true;
 		}
 
-		if (!HasActiveProjectile(player))
+		Item.noUseGraphic = true;
+		Item.noMelee = true;
+
+		if (player.ownedProjectileCounts[ModContent.ProjectileType<FireStarterProjectile>()] <= 0)
 		{
-			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero,
-				ModContent.ProjectileType<FireStarterProjectile>(), Item.damage, Item.knockBack, player.whoAmI);
+			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<FireStarterProjectile>(), Item.damage, Item.knockBack, player.whoAmI);
 			SoundEngine.PlaySound(SoundID.Item1, player.Center);
 		}
 		
@@ -113,11 +103,5 @@ internal class FireStarter : Sword
 		Vector2 velocity, int type, int damage, float knockback)
 	{
 		return false;
-	}
-	
-	public override void PostUpdate()
-	{
-		base.PostUpdate();
-		Item.SetDefaults(Item.type); // Update the item to ensure the texture is correct
 	}
 }

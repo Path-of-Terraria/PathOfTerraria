@@ -1,4 +1,4 @@
-﻿using System.Threading;
+﻿using Terraria.GameContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Melee;
@@ -10,9 +10,9 @@ internal class FireStarterProjectile : ModProjectile
 
 	public override void SetDefaults()
 	{
-		Projectile.width = 40;
-		Projectile.height = 76;
-		Projectile.aiStyle = 0;
+		Projectile.width = 60;
+		Projectile.height = 60;
+		Projectile.aiStyle = -1;
 		Projectile.friendly = true;
 		Projectile.penetrate = -1;
 		Projectile.timeLeft = 20; // Duration of the projectile - should match sword use time
@@ -25,28 +25,58 @@ internal class FireStarterProjectile : ModProjectile
 	public override void AI()
 	{
 		Projectile.direction = Owner.direction;
+		float rotation = GetCurrentSwingRotation();
 
+		if (Owner.direction == -1)
+		{
+			rotation *= -1;
+			rotation += MathHelper.PiOver2 * 3.2f;
+		}
+
+		// Adjust pivot point to the player's hand position
+		Projectile.Center = Owner.HandPosition ?? Vector2.Zero;
+		Projectile.rotation = rotation;
+
+		// Set the owner's information to match that of this projectile
+		Owner.heldProj = Projectile.whoAmI;
+		Owner.itemTime = Owner.itemAnimation = Projectile.timeLeft;
+
+		if (!Main.rand.NextBool(3)) // Spawn dust
+		{
+			Vector2 dustPos = Vector2.Lerp(Projectile.Center, GetProjectileTip(), Main.rand.NextFloat());
+			Dust.NewDust(dustPos, 1, 1, DustID.Torch);
+		}
+	}
+
+	private float GetCurrentSwingRotation()
+	{
 		// Swing arc calculations
 		float swingArc = MathHelper.ToRadians(160f); // Swing arc in degrees
 
 		// Calculate swing position and rotation
 		float progress = (20f - Projectile.timeLeft) / 20f;
 		float rotation = -swingArc / 2 + swingArc * progress;
+		return rotation;
+	}
 
-		// Adjust pivot point to the player's hand position
-		Vector2 handOffset = new Vector2(0, -20); // Adjust this based on where you want the pivot to be
-		Vector2 offset = new Vector2(Projectile.width / 2, 0).RotatedBy(rotation) * Projectile.direction;
-		Projectile.position = Owner.Center + handOffset + offset - new Vector2(Projectile.width / 2, Projectile.height / 2);
+	public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+	{
+		// Makes the hitbox much more accurate to the swung sword, and stops us from needing to position the hitbox alongside the sprite properly
+		return Collision.CheckAABBvLineCollision(targetHitbox.Location.ToVector2(), targetHitbox.Size(), Projectile.Center, GetProjectileTip());
+	}
 
-		Projectile.rotation = rotation * Projectile.direction;
+	private Vector2 GetProjectileTip()
+	{
+		// Note that the PiOver2 adjusts since the swing rotation is slightly off compared to the sprite, since the 
+		return Projectile.Center + (GetCurrentSwingRotation() - MathHelper.PiOver2).ToRotationVector2() * 78;
+	}
 
-		// Sync the projectile's position with the player's
-		Owner.heldProj = Projectile.whoAmI;
-		Owner.itemTime = Owner.itemAnimation = Projectile.timeLeft;
+	public override bool PreDraw(ref Color lightColor)
+	{
+		float rotation = Projectile.rotation;
+		Vector2 pos = Projectile.Center - Main.screenPosition;
 
-		if (Projectile.timeLeft <= 1)
-		{
-			Projectile.Kill();
-		}
+		Main.spriteBatch.Draw(TextureAssets.Projectile[Type].Value, pos, null, Color.White, rotation, new Vector2(0, 76), 1f, SpriteEffects.None, 0);
+		return false;
 	}
 }
