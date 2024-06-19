@@ -28,10 +28,14 @@ internal class EntityModifier
 	// PotionSystem:
 	public StatModifier MaxHealthPotions = new();
 	public StatModifier PotionHealPower = new();
+
+	[ReverseTooltip]
 	public StatModifier PotionHealDelay = new();
 
 	public StatModifier MaxManaPotions = new();
 	public StatModifier PotionManaPower = new();
+
+	[ReverseTooltip]
 	public StatModifier PotionManaDelay = new();
 
 	public void ApplyTo(NPC npc)
@@ -79,9 +83,9 @@ internal class EntityModifier
 	}
 
 	private readonly FieldInfo[] _fields = typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToArray();
-	public List<string> GetDifference(EntityModifier other)
+	public List<Tuple<string, bool>> GetDifference(EntityModifier other)
 	{
-		List<string> strings = new List<string>();
+		List<Tuple<string, bool>> strings = new List<Tuple<string, bool>>();
 
 		for (int i = 0; i < _fields.Length; i++)
 		{
@@ -90,18 +94,24 @@ internal class EntityModifier
 
 			if (thisField != otherField)
 			{
-				strings.AddRange(GetDifferences(thisField, otherField)
-					.Select(s => s.Replace("#", Regex.Replace(_fields[i].Name, "([a-z])([A-Z])", "$1 $2"))));
+				strings.AddRange(GetDifferences(thisField, otherField, _fields[i].GetCustomAttribute<ReverseTooltip>() is not null)
+					.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", Regex.Replace(_fields[i].Name, "([a-z])([A-Z])", "$1 $2")), s.Item2)));
 			}
 		}
 
 		return strings;
 	}
-
-	public static List<string> GetChange(EntityModifier changed) { return _default.GetDifference(changed); }
-	private string[] GetDifferences(StatModifier m1, StatModifier m2)
+	public List<string> GetDifferenceOnlyStrings(EntityModifier other)
 	{
-		List<string> differences = new List<string>();
+		return GetDifference(other).Select(s => s.Item1).ToList();
+	}
+
+	public static List<Tuple<string, bool>> GetChange(EntityModifier changed) { return _default.GetDifference(changed); }
+	public static List<string> GetChangeOnlyStrings(EntityModifier changed) { return _default.GetDifferenceOnlyStrings(changed); }
+	private List<Tuple<string, bool>> GetDifferences(StatModifier m1, StatModifier m2, bool reversed = false)
+	{
+		Console.WriteLine(reversed);
+		List<Tuple<string, bool>> differences = new List<Tuple<string, bool>>();
 
 		float baseDiff = m2.Base - m1.Base;
 		if (baseDiff != 0)
@@ -112,7 +122,9 @@ internal class EntityModifier
 				type = "";
 			}
 
-			differences.Add($"{type}{MathF.Round(baseDiff, 2)} base #");
+			bool isPositive = type == "+";
+			Console.WriteLine(isPositive + " | " + (reversed ? !isPositive : isPositive));
+			differences.Add(new($"{type}{MathF.Round(baseDiff, 2)} base #", reversed ? !isPositive : isPositive));
 		}
 
 		float addDiff = m2.Additive - m1.Additive;
@@ -124,7 +136,8 @@ internal class EntityModifier
 				type = "";
 			}
 
-			differences.Add($"{type}{MathF.Round(addDiff * 100f, 2)}% #");
+			bool isPositive = type == "+";
+			differences.Add(new($"{type}{MathF.Round(addDiff * 100f, 2)}% #", reversed ? ! : isPositive));
 		}
 
 		float multDiff = m2.Multiplicative - m1.Multiplicative;
@@ -135,8 +148,9 @@ internal class EntityModifier
 			{
 				type = "decreased";
 			}
+			bool isPositive = type == "increased";
 
-			differences.Add($"{MathF.Abs(MathF.Round(multDiff * 100f, 2))}% {type} #");
+			differences.Add(new($"{MathF.Abs(MathF.Round(multDiff * 100f, 2))}% {type} #", reversed ? !isPositive : isPositive));
 		}
 
 		float flatDiff = m2.Flat - m1.Flat;
@@ -148,9 +162,12 @@ internal class EntityModifier
 				type = "";
 			}
 
-			differences.Add($"{type}{MathF.Round(flatDiff, 2)} flat #");
+			bool isPositive = type == "+";
+			differences.Add(new($"{type}{MathF.Round(flatDiff, 2)} flat #", reversed ? !isPositive : isPositive));
 		}
 
-		return differences.ToArray();
+		return differences;
 	}
 }
+
+public class ReverseTooltip : Attribute {}

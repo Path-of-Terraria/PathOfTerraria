@@ -75,7 +75,7 @@ internal abstract class Gear : PoTItem
 			(Main.LocalPlayer.armor[2].ModItem as Gear).ApplyAffixes(SawpItemModifier);
 		}
 		// missing accessories
-		else
+		else if (Item.damage > 0)
 		{
 			if (Main.LocalPlayer.inventory[0].ModItem is Gear)
 			{
