@@ -378,6 +378,7 @@ internal abstract class PoTItem : ModItem
 				{
 					AllItems.Add(new(instance.DropChance * 0.70f, Rarity.Normal, type));
 				}
+
 				AllItems.Add(new(instance.DropChance * 0.25f, Rarity.Magic, type));
 				AllItems.Add(new(instance.DropChance * 0.05f, Rarity.Rare, type));
 			}
