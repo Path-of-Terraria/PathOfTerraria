@@ -77,3 +77,8 @@ IncreasedSentryDamage: {
 	Name: Steadfast Sentries
 	Tooltip: Increases your sentries' damage by 10% per level
 }
+
+JewelSocket: {
+	Name: JewelSocket
+	Tooltip: ""
+}

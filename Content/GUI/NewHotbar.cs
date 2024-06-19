@@ -1,13 +1,17 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿using Microsoft.Xna.Framework.Graphics;
+using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.SkillSystem;
 using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
+using Terraria.GameContent.UI;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -28,7 +32,7 @@ internal class NewHotbar : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		var hideTarget = new Rectangle(20, 20, Main.LocalPlayer.selectedItem > 10 ? 490 : 446, 52);
+		var hideTarget = new Rectangle(0, 0, Main.LocalPlayer.selectedItem > 10 ? 510 : 466, 72);
 
 		if (!Main.screenTarget.IsDisposed)
 		{
@@ -70,9 +74,24 @@ internal class NewHotbar : SmartUIState
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
 		DrawHotkeys(spriteBatch);
+		DrawHeldItemName(spriteBatch);
 	}
 
-	private void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
+	private static void DrawHeldItemName(SpriteBatch spriteBatch)
+	{
+		string text = Lang.inter[37].Value; // "Item" when no item is held
+
+		if (Main.LocalPlayer.HeldItem.Name != null && Main.LocalPlayer.HeldItem.Name != string.Empty)
+		{
+			text = Main.LocalPlayer.HeldItem.AffixName(); // Otherwise the name of the item
+		}
+
+		var itemNamePosition = new Vector2(266f - (FontAssets.MouseText.Value.MeasureString(text) / 2f).X, 6f);
+		Color itemNameColor = ItemRarity.GetColor(Main.LocalPlayer.HeldItem.rare);
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
+	}
+
+	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 	{
 		Texture2D combat = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarCombat").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
@@ -219,10 +238,8 @@ internal class NewHotbar : SmartUIState
 			return;
 		}
 
-		{
-			string assignedKey = quickManaHotkey[0];
-			DrawLetter(spriteBatch, assignedKey, new Vector2(523, 71), Color.White);
-		}
+		string assignedManaKey = quickManaHotkey[0];
+		DrawLetter(spriteBatch, assignedManaKey, new Vector2(523, 71), Color.White);
 
 		// Draw Skill Hotkeys
 		string skill1Key = SkillPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault();
@@ -260,5 +277,54 @@ internal class NewHotbar : SmartUIState
 		Item firstItem = player.inventory[0];
 		Item heldItem = Main.LocalPlayer.HeldItem;
 		return heldItem == firstItem;
+	}
+}
+
+public class HijackHotbarClick : ModSystem
+{
+	public override void Load()
+	{
+		On_Main.GUIHotbarDrawInner += StopClickOnHotbar;
+	}
+
+	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
+	{
+		bool hbLocked = Main.LocalPlayer.hbLocked; // Lock hotbar for the original method so we don't fight against vanilla
+		Main.LocalPlayer.hbLocked = true;
+		orig(self);
+		Main.LocalPlayer.hbLocked = hbLocked;
+
+		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
+		{
+			return;
+		}
+
+		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
+
+		for (int i = 2; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
+		{
+			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
+			{
+				var pos = new Rectangle(52 * (i + 1) - 4, 30, back.Width, back.Height);
+
+				if (pos.Contains(Main.MouseScreen.ToPoint()))
+				{
+					Main.LocalPlayer.mouseInterface = true;
+					Main.LocalPlayer.cursorItemIconEnabled = false;
+					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
+					Main.rare = Main.LocalPlayer.inventory[i].rare;
+
+					if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
+					{
+						Main.LocalPlayer.changeItem = i;
+					}
+
+					if (Main.LocalPlayer.inventory[i].stack > 1)
+					{
+						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
+					}
+				}
+			}
+		}
 	}
 }
