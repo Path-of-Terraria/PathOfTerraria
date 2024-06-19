@@ -1,13 +1,16 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿using Microsoft.Xna.Framework.Graphics;
+using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.SkillSystem;
 using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -28,7 +31,7 @@ internal class NewHotbar : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		var hideTarget = new Rectangle(20, 20, Main.LocalPlayer.selectedItem > 10 ? 490 : 446, 52);
+		var hideTarget = new Rectangle(0, 0, Main.LocalPlayer.selectedItem > 10 ? 510 : 466, 72);
 
 		if (!Main.screenTarget.IsDisposed)
 		{
@@ -70,6 +73,16 @@ internal class NewHotbar : SmartUIState
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
 		DrawHotkeys(spriteBatch);
+
+		string text = Lang.inter[37].Value;
+
+		if (Main.LocalPlayer.HeldItem.Name != null && Main.LocalPlayer.HeldItem.Name != string.Empty)
+		{
+			text = Main.LocalPlayer.HeldItem.AffixName();
+		}
+
+		var itemNamePosition = new Vector2(266f - (FontAssets.MouseText.Value.MeasureString(text) / 2f).X, 6f);
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, Color.White, 0f, Vector2.Zero, Vector2.One * 0.9f);
 	}
 
 	private void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
@@ -219,10 +232,8 @@ internal class NewHotbar : SmartUIState
 			return;
 		}
 
-		{
-			string assignedKey = quickManaHotkey[0];
-			DrawLetter(spriteBatch, assignedKey, new Vector2(523, 71), Color.White);
-		}
+		string assignedManaKey = quickManaHotkey[0];
+		DrawLetter(spriteBatch, assignedManaKey, new Vector2(523, 71), Color.White);
 
 		// Draw Skill Hotkeys
 		string skill1Key = SkillPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault();
@@ -260,5 +271,57 @@ internal class NewHotbar : SmartUIState
 		Item firstItem = player.inventory[0];
 		Item heldItem = Main.LocalPlayer.HeldItem;
 		return heldItem == firstItem;
+	}
+}
+
+public class HijackHotbarClick : ModSystem
+{
+	public override void Load()
+	{
+		On_Main.GUIHotbarDrawInner += StopClickOnHotbar;
+	}
+
+	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
+	{
+		bool hbLocked = Main.LocalPlayer.hbLocked;
+		Main.LocalPlayer.hbLocked = true;
+		orig(self);
+		Main.LocalPlayer.hbLocked = hbLocked;
+
+		if (Main.LocalPlayer.selectedItem == 0)
+		{
+			return;
+		}
+
+		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
+
+		for (int i = 2; i <= 9; i++)
+		{
+			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
+			{
+				Rectangle pos = new Rectangle(52 * (i + 1) - 4, 30, back.Width, back.Height);
+
+				if (pos.Contains(Main.MouseScreen.ToPoint()))
+				{
+					Main.LocalPlayer.mouseInterface = true;
+					Main.LocalPlayer.cursorItemIconEnabled = false;
+
+					if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
+					{
+						Main.LocalPlayer.changeItem = i;
+					}
+
+					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
+
+					if (Main.LocalPlayer.inventory[i].stack > 1)
+					{
+						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
+					}
+
+					Main.rare = Main.LocalPlayer.inventory[i].rare;
+				}
+			}
+		}
+
 	}
 }

@@ -213,3 +213,8 @@ StoneBoomerang: {
 	DisplayName: Stone Boomerang
 	Tooltip: ""
 }
+
+YellowJewel: {
+	DisplayName: Yellow Jewel
+	Tooltip: ""
+}
