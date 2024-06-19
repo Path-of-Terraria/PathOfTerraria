@@ -319,7 +319,6 @@ public class HijackHotbarClick : ModSystem
 						Main.LocalPlayer.changeItem = i;
 					}
 
-
 					if (Main.LocalPlayer.inventory[i].stack > 1)
 					{
 						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
