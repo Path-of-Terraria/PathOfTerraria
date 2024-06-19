@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
+using Terraria.GameContent.UI;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
@@ -73,19 +74,24 @@ internal class NewHotbar : SmartUIState
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
 		DrawHotkeys(spriteBatch);
+		DrawHeldItemName(spriteBatch);
+	}
 
-		string text = Lang.inter[37].Value;
+	private static void DrawHeldItemName(SpriteBatch spriteBatch)
+	{
+		string text = Lang.inter[37].Value; // "Item" when no item is held
 
 		if (Main.LocalPlayer.HeldItem.Name != null && Main.LocalPlayer.HeldItem.Name != string.Empty)
 		{
-			text = Main.LocalPlayer.HeldItem.AffixName();
+			text = Main.LocalPlayer.HeldItem.AffixName(); // Otherwise the name of the item
 		}
 
 		var itemNamePosition = new Vector2(266f - (FontAssets.MouseText.Value.MeasureString(text) / 2f).X, 6f);
-		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, Color.White, 0f, Vector2.Zero, Vector2.One * 0.9f);
+		Color itemNameColor = ItemRarity.GetColor(Main.LocalPlayer.HeldItem.rare);
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
 	}
 
-	private void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
+	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 	{
 		Texture2D combat = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarCombat").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
@@ -283,45 +289,43 @@ public class HijackHotbarClick : ModSystem
 
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
-		bool hbLocked = Main.LocalPlayer.hbLocked;
+		bool hbLocked = Main.LocalPlayer.hbLocked; // Lock hotbar for the original method so we don't fight against vanilla
 		Main.LocalPlayer.hbLocked = true;
 		orig(self);
 		Main.LocalPlayer.hbLocked = hbLocked;
 
-		if (Main.LocalPlayer.selectedItem == 0)
+		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
 		{
 			return;
 		}
 
 		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
 
-		for (int i = 2; i <= 9; i++)
+		for (int i = 2; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 		{
 			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
 			{
-				Rectangle pos = new Rectangle(52 * (i + 1) - 4, 30, back.Width, back.Height);
+				var pos = new Rectangle(52 * (i + 1) - 4, 30, back.Width, back.Height);
 
 				if (pos.Contains(Main.MouseScreen.ToPoint()))
 				{
 					Main.LocalPlayer.mouseInterface = true;
 					Main.LocalPlayer.cursorItemIconEnabled = false;
+					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
+					Main.rare = Main.LocalPlayer.inventory[i].rare;
 
 					if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
 					{
 						Main.LocalPlayer.changeItem = i;
 					}
 
-					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
 
 					if (Main.LocalPlayer.inventory[i].stack > 1)
 					{
 						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
 					}
-
-					Main.rare = Main.LocalPlayer.inventory[i].rare;
 				}
 			}
 		}
-
 	}
 }
