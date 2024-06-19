@@ -54,8 +54,8 @@ internal class PassiveElement : SmartUIElement
 
 		if (_flashTimer > 0)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowAlpha").Value;
-			Texture2D star = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/StarAlpha").Value;
+			Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowAlpha").Value;
+			Texture2D star = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/StarAlpha").Value;
 
 			float prog = _flashTimer / 20f;
 
@@ -74,8 +74,8 @@ internal class PassiveElement : SmartUIElement
 
 		if (_redFlashTimer > 0)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowAlpha").Value;
-			Texture2D star = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/StarAlpha").Value;
+			Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowAlpha").Value;
+			Texture2D star = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/StarAlpha").Value;
 
 			float prog = _redFlashTimer / 20f;
 
