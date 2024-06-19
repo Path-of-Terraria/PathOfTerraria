@@ -19,9 +19,8 @@ internal abstract class Jewel : PoTItem
 			ApplyAffixes(thisItemModifier);
 
 			string tooltip = "";
-			EntityModifier.GetChange(thisItemModifier).ForEach(s =>  tooltip += s + "\n");
+			EntityModifier.GetChangeOnlyStrings(thisItemModifier).ForEach(s => tooltip += s + "\n");
 
-			Console.WriteLine(EntityModifier.GetChange(thisItemModifier).Count);
 			return tooltip;
 		}
 	}
