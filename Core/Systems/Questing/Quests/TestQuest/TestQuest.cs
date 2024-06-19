@@ -33,8 +33,8 @@ internal class TestQuest : Quest
 		new ActionRewards((Player p, Vector2 v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 500;
-			Gear.SpawnItem(v);
-			Gear.SpawnGear<BurningRedBoots>(v);
+			PoTItem.SpawnRandomItem(v);
+			PoTItem.SpawnItem<BurningRedBoots>(v);
 		},"500 experience (POC giving experience)\nSome gear with an affix\nA unique item\nAgain, just for POC reasons"),
 	];
 }

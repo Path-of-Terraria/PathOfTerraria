@@ -4,14 +4,14 @@ using PathOfTerraria.Core;
 namespace PathOfTerraria.API.Commands;
 
 [Autoload]
-public class SpawnItem : ModCommand {
-	public override string Command => "spawnitem";
+public class SpawnUniqueItem : ModCommand {
+	public override string Command => "spawnuitem";
 
 	public override CommandType Type => CommandType.Chat;
 
-	public override string Usage => "[c/ff6a00:Usage: /spawnitem <relative X> <relative Y> <count> <ilevel> <quality increase> <geartype>]";
+	public override string Usage => "[c/ff6a00:Usage: /spawnuitem <relative X> <relative Y> <count> <ilevel> <quality increase> <geartype>]";
 
-	public override string Description => "Spawns item(s) for testing items and loot generation, only x and y positions are necessary.";
+	public override string Description => "Spawns unique item(s) for testing items and loot generation, only x and y positions are necessary.";
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
@@ -61,7 +61,7 @@ public class SpawnItem : ModCommand {
 
 		for (int i = 0; i < count; i++)
 		{
-			PoTItem.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
+			PoTItem.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), x => x.Item2 == Rarity.Unique, (int)ilevel, qualityIncrease);
 		}
 
 		caller.Reply($"Item(s) spawned!", Color.Green);

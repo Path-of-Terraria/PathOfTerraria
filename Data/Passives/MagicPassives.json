@@ -1,8 +1,13 @@
-﻿[
+[
 	{
 		"internalIdentifier": "Anchor",
 		"referenceId": 1,
-		"maxLevel": 1
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 6
+			}
+		]
 	},
 	{
 		"internalIdentifier": "AddedLife",
@@ -11,6 +16,12 @@
 		"connections": [
 			{
 				"referenceId": 1
+			},
+			{
+				"referenceId": 3
+			},
+			{
+				"referenceId": 4
 			}
 		],
 		"position": {
@@ -48,6 +59,15 @@
 		"position": {
 			"x": -100,
 			"y": 200
+		}
+	},
+	{
+		"internalIdentifier": "JewelSocket",
+		"referenceId": 6,
+		"maxLevel": 1,
+		"position": {
+			"x": 0,
+			"y": -100
 		}
 	}
 ]

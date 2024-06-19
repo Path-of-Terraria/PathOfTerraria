@@ -1,7 +1,8 @@
 ﻿using Humanizer;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
@@ -61,10 +62,17 @@ internal class PassiveTree : SmartUIState
 			AddCloseButton();
 
 			TreeSystem.CreateTree();
-			if (Inner != null)
+			TreeSystem.ActiveNodes.ForEach(n =>
 			{
-				TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
-			}
+				if (n is JewelSocket)
+				{
+					Inner.Append(new PassiveSocket(n as JewelSocket));
+				}
+				else
+				{
+					Inner.Append(new PassiveElement(n));
+				}
+			});
 		}
 
 		IsVisible = true;
@@ -143,7 +151,6 @@ internal class PassiveTree : SmartUIState
 internal class InnerPanel : SmartUIElement
 {
 	private Vector2 _start;
-	private Vector2 _root;
 	private Vector2 _lineOff;
 
 	private UIElement Panel => Parent;

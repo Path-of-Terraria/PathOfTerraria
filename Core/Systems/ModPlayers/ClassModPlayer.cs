@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Content.Items.Gear;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
