@@ -1,27 +1,17 @@
 ﻿using PathOfTerraria.Content.Socketables;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
-using Terraria.UI;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
 internal abstract class Gear : PoTItem
 {
 	private Socketable[] _sockets = []; // [new Imps()];
-	private int _selectedSocket = 0;
-	
-	public virtual string Description => "";
-	public virtual string AltUseDescription => "";
+	private int _selectedSocket;
 
 	public override void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier)
 	{
@@ -221,36 +211,5 @@ internal abstract class Gear : PoTItem
 				}
 			}
 		}
-	}
-	
-	/// <summary>
-	/// Used to apply on hit effects for affixes that have them
-	/// </summary>
-	/// <param name="player"></param>
-	/// <param name="target"></param>
-	/// <param name="hit"></param>
-	/// <param name="damageDone"></param>
-	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
-	{
-		if (!Affixes.Any()) //We don't want to run if there are no affixes to modify anything
-		{
-			return;
-		}
-
-		foreach (ItemAffix affix in Affixes)
-		{
-			switch (affix.GetType().Name)
-			{
-				case "ChanceToApplyOnFireGearAffix":
-					if (affix is ModifyHitAffixes.ChanceToApplyOnFireGearAffix fireAffix)
-					{
-						fireAffix.TryApplyDebuff(target);
-					}
-
-					break;
-			}
-		}
-
-		base.OnHitNPC(player, target, hit, damageDone);
 	}
 }

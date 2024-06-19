@@ -22,6 +22,7 @@ internal class EntityModifier
 	public StatModifier Attackspeed = new();
 	public StatModifier ArmorPenetration = new();
 	public StatModifier Knockback = new();
+	public StatModifier OnFireChance = new();
 
 	// MinorStatsModPlayer:
 	public StatModifier MagicFind = new();
@@ -79,6 +80,9 @@ internal class EntityModifier
 		ps.MaxMana = (int)MaxHealthPotions.ApplyTo(ps.MaxMana);
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
+		
+		UniversalBuffingPlayer universalBuffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
+		universalBuffingPlayer.OnFireChance = OnFireChance.ApplyTo(universalBuffingPlayer.OnFireChance);
 	}
 
 	private readonly FieldInfo[] _fields =

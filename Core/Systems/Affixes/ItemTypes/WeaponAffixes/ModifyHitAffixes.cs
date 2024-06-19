@@ -56,7 +56,12 @@ public class ModifyHitAffixes
 	
 	internal class ChanceToApplyOnFireGearAffix : ItemAffix
 	{
-		public override ItemType PossibleTypes => ItemType.Weapon;
+		public override ItemType PossibleTypes => ItemType.Ring;
+		
+		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
+		{
+			modifier.OnFireChance.Base += Value;
+		}
 
 		public void TryApplyDebuff(NPC target)
 		{
