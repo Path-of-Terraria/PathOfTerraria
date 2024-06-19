@@ -28,7 +28,7 @@ internal class NewHotbar : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		var hideTarget = new Rectangle(20, 20, 446, 52);
+		var hideTarget = new Rectangle(20, 20, Main.LocalPlayer.selectedItem > 10 ? 490 : 446, 52);
 
 		if (!Main.screenTarget.IsDisposed)
 		{
@@ -58,7 +58,7 @@ internal class NewHotbar : SmartUIState
 
 		if (Main.LocalPlayer.selectedItem >= 2)
 		{
-			_selectorTarget = 24 + 120 + 52 * (Main.LocalPlayer.selectedItem - 2);
+			_selectorTarget = 24 + 120 + 52 * (MathF.Min(Main.LocalPlayer.selectedItem, 10) - 2);
 		}
 		else
 		{
@@ -180,6 +180,13 @@ internal class NewHotbar : SmartUIState
 		Texture2D select = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarSelector").Value;
 		Main.spriteBatch.Draw(select, new Vector2(_selectorX, 21 + off), null,
 			Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
+
+		if (Main.LocalPlayer.selectedItem > 10)
+		{
+			Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBack").Value;
+			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
+		}
 	}
 
 	private static float Ease(float input)
