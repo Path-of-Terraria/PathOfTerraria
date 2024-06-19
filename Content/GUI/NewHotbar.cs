@@ -28,7 +28,7 @@ internal class NewHotbar : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		var hideTarget = new Rectangle(20, 20, 446, 52);
+		var hideTarget = new Rectangle(20, 20, Main.LocalPlayer.selectedItem > 10 ? 490 : 446, 52);
 
 		if (!Main.screenTarget.IsDisposed)
 		{
@@ -58,7 +58,7 @@ internal class NewHotbar : SmartUIState
 
 		if (Main.LocalPlayer.selectedItem >= 2)
 		{
-			_selectorTarget = 24 + 120 + 52 * (Main.LocalPlayer.selectedItem - 2);
+			_selectorTarget = 24 + 120 + 52 * (MathF.Min(Main.LocalPlayer.selectedItem, 10) - 2);
 		}
 		else
 		{
@@ -133,56 +133,39 @@ internal class NewHotbar : SmartUIState
 
 		if (skillPlayer.Skills[0] != null)
 		{
-			Skill skill = skillPlayer.Skills[0];
-			Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
-			spriteBatch.Draw(texture,
-				new Rectangle(268, (int)(8 + off) + texture.Height - manaH, texture.Width, texture.Height),
-				new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
-				
-			if (skill.Timer > 0)
-			{
-				spriteBatch.Draw(glow, new Vector2(291, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
-				Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(291, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
-			}
+			DrawSkill(spriteBatch, off, opacity, glow, 0);
 		}
-			
+
 		if (skillPlayer.Skills[1] != null)
 		{
-			Skill skill = skillPlayer.Skills[1];
-			Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
-			spriteBatch.Draw(texture,
-				new Rectangle(320, (int)(8 + off) + texture.Height - manaH, texture.Width, texture.Height),
-				new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
-				
-			if (skill.Timer > 0)
-			{
-				spriteBatch.Draw(glow, new Vector2(342, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
-				Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(342, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
-			}
+			DrawSkill(spriteBatch, off, opacity, glow, 1);
 		}
-			
+
 		if (skillPlayer.Skills[2] != null)
 		{
-			Skill skill = skillPlayer.Skills[2];
-			Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
-			spriteBatch.Draw(texture,
-				new Rectangle(372, (int)(8 + off) + texture.Height - manaH, texture.Width, texture.Height),
-				new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
+			DrawSkill(spriteBatch, off, opacity, glow, 2);
+		}
+	}
 
-			if (skill.Timer <= 0)
-			{
-				return;
-			}
+	private static void DrawSkill(SpriteBatch spriteBatch, float off, float opacity, Texture2D glow, int skillIndex)
+	{
+		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
+		Skill skill = skillPlayer.Skills[skillIndex];
+		Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
+		spriteBatch.Draw(texture,
+			new Rectangle(268 + 52 * skillIndex, (int)(8 + off) + texture.Height - 25, texture.Width, texture.Height),
+			new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
 
-			spriteBatch.Draw(glow, new Vector2(394, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
-			Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(394, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+		if (skill.Timer > 0)
+		{
+			spriteBatch.Draw(glow, new Vector2(291 + 52 * skillIndex, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
+			Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(291 + 52 * skillIndex, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
 		}
 	}
 
 	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBuilding")
-			.Value;
+		Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBuilding").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -197,6 +180,13 @@ internal class NewHotbar : SmartUIState
 		Texture2D select = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarSelector").Value;
 		Main.spriteBatch.Draw(select, new Vector2(_selectorX, 21 + off), null,
 			Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
+
+		if (Main.LocalPlayer.selectedItem > 10)
+		{
+			Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBack").Value;
+			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
+		}
 	}
 
 	private static float Ease(float input)

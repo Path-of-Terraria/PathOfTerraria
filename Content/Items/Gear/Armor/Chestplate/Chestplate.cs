@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Core;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 
@@ -11,7 +12,7 @@ internal class Chestplate : Gear
 
 	public override void Defaults()
 	{
-		GearType = GearType.Chestplate;
+		ItemType = ItemType.Chestplate;
 	}
 
 	public override void PostRoll()

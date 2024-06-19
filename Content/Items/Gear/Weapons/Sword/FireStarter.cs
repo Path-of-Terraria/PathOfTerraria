@@ -2,7 +2,7 @@
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.WeaponAffixes;
+using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -25,7 +25,6 @@ internal class FireStarter : Sword
 		Item.damage = 4;
 		Item.height = 52;
 		Item.UseSound = SoundID.Item1;
-		GearType = GearType.Sword;
 	}
 	
 	public override string GenerateName()
@@ -33,13 +32,13 @@ internal class FireStarter : Sword
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName")}]";
 	}
 	
-	public override List<GearAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var sharpAffix = (GearAffix)Affix.CreateAffix<PassiveAffixes.SharpGearAffix>();
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.SharpItemAffix>();
 		sharpAffix.MinValue = 1;
 		sharpAffix.MaxValue = 4;
 		
-		var onFireAffix = (GearAffix)Affix.CreateAffix<ModifyHitAffixes.ChanceToApplyOnFireGearAffix>();
+		var onFireAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.ChanceToApplyOnFireGearAffix>();
 		onFireAffix.Value = 0.1f;
 		return [sharpAffix, onFireAffix];
 	}

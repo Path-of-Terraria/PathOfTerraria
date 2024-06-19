@@ -1,10 +1,10 @@
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
-using PathOfTerraria.Content.Items.Gear;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
+using PathOfTerraria.Core;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -65,7 +65,5 @@ public class ExpBar : SmartUIState
 		UILoader.GetUIState<PassiveTree>().Toggle(mp.SelectedClass);
 
 		SoundEngine.PlaySound(mp.SelectedClass != PlayerClass.None ? SoundID.MenuOpen : SoundID.MenuClose, Main.LocalPlayer.Center);
-
-		Main.playerInventory = false;
 	}
 }

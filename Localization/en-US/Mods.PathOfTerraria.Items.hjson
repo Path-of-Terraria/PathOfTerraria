@@ -220,3 +220,8 @@ FireStarter: {
 	Description: A dry piece of wood I found in the forest. It's perfect for starting fires.
 	Tooltip: ""
 }
+
+YellowJewel: {
+	DisplayName: Yellow Jewel
+	Tooltip: ""
+}

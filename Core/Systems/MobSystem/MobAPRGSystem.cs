@@ -14,7 +14,7 @@ internal class MobAprgSystem : GlobalNPC
 	private readonly Player _lastPlayerHit = null;
 	public int? Experience;
 	public override bool InstancePerEntity => true;
-	public MobRarity Rarity = MobRarity.Magic;
+	public Rarity Rarity = Rarity.Magic;
 
 	private float DropRarity
 	// should somehow work together with magic find (that i assume we will have) to increase rarity / if its a unique
@@ -95,12 +95,12 @@ internal class MobAprgSystem : GlobalNPC
 		while (rand > 99)
 		{
 			rand -= 100;
-			Gear.SpawnItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+			PoTItem.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
 		}
 
 		if (rand < 25) // 10
 		{
-			Gear.SpawnItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+			PoTItem.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
 		}
 	}
 
@@ -120,14 +120,14 @@ internal class MobAprgSystem : GlobalNPC
 		
 		Rarity = Main.rand.Next(100) switch
 		{
-			<2 => MobRarity.Rare, //2% Rare
-			<17 => MobRarity.Magic, //15% Magic 
-			_ => MobRarity.Normal,
+			<2 => Rarity.Rare, //2% Rare
+			<17 => Rarity.Magic, //15% Magic 
+			_ => Rarity.Normal,
 		};
 		npc.GivenName = Rarity switch
 		{
-			MobRarity.Magic or MobRarity.Rare => $"{Enum.GetName(Rarity)} - {npc.GivenOrTypeName}",
-			MobRarity.Unique => "UNIQUE MOB",
+			Rarity.Magic or Rarity.Rare => $"{Enum.GetName(Rarity)} - {npc.GivenOrTypeName}",
+			Rarity.Unique => "UNIQUE MOB",
 			_ => npc.GivenName
 		};
 
@@ -150,7 +150,7 @@ internal class MobAprgSystem : GlobalNPC
 			}
 		}
 
-		if (Rarity == MobRarity.Normal || Rarity == MobRarity.Unique)
+		if (Rarity == Rarity.Normal || Rarity == Rarity.Unique)
 		{
 			return;
 		}
@@ -158,8 +158,8 @@ internal class MobAprgSystem : GlobalNPC
 		List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
 		_affixes = Rarity switch
 		{
-			MobRarity.Magic => Affix.GenerateAffixes(possible, Main.rand.Next(1, 3)),
-			MobRarity.Rare => Affix.GenerateAffixes(possible, Main.rand.Next(2, 5)),
+			Rarity.Magic => Affix.GenerateAffixes(possible, Main.rand.Next(1, 3)),
+			Rarity.Rare => Affix.GenerateAffixes(possible, Main.rand.Next(2, 5)),
 			_ => []
 		};
 
@@ -167,21 +167,21 @@ internal class MobAprgSystem : GlobalNPC
 
 		switch (Rarity)
 		{
-			case MobRarity.Normal:
+			case Rarity.Normal:
 				break;
-			case MobRarity.Magic:
+			case Rarity.Magic:
 				npc.color = new Color(0, 0, 255);
 				npc.lifeMax *= 2; //Magic mobs get 100% increased life
 				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
 				npc.damage = Convert.ToInt32(npc.damage * 1.1); //Magic mobs get 10% increase damage
 				break;
-			case MobRarity.Rare:
+			case Rarity.Rare:
 				npc.color = new Color(255, 255, 0);
 				npc.lifeMax *= 3; //Rare mobs get 200% Increased Life
 				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
 				npc.damage = Convert.ToInt32(npc.damage * 1.2); //Magic mobs get 20% increase damage
 				break;
-			case MobRarity.Unique:
+			case Rarity.Unique:
 				break;
 			default:
 				throw new ArgumentOutOfRangeException();

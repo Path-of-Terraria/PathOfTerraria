@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core;
 
 namespace PathOfTerraria.API.Commands;
 
@@ -60,7 +61,7 @@ public class SpawnItem : ModCommand {
 
 		for (int i = 0; i < count; i++)
 		{
-			Gear.SpawnItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
+			PoTItem.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
 		}
 
 		caller.Reply($"Item(s) spawned!", Color.Green);

@@ -1,11 +1,19 @@
-﻿using PathOfTerraria.Content.Items.Gear;
+﻿using Humanizer;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
+using System.Reflection;
 using Terraria.Audio;
+using Terraria.GameContent.Achievements;
 using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.GameContent.UI.Elements;
+using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
@@ -20,8 +28,12 @@ internal class PassiveTree : SmartUIState
 
 	protected static TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
+	protected const int PointsAndExitPadding = 10;
+
+	protected const int DraggablePanelHeight = 32;
+
 	protected const int TopPadding = -400;
-	protected const int PanelHeight = 800;
+	protected const int PanelHeight = 800 - DraggablePanelHeight;
 	protected const int LeftPadding = -450;
 	protected const int PanelWidth = 900;
 
@@ -45,23 +57,29 @@ internal class PassiveTree : SmartUIState
 			BotRightTree = Vector2.Zero;
 			CurrentDisplayClass = newClass;
 			RemoveAllChildren();
-			DrawPanel();
-			DrawInnerPanel();
-			DrawCloseButton();
+			CreateMainPanel();
+			AddInnerPanel();
+			AddCloseButton();
 
 			TreeSystem.CreateTree();
-			TreeSystem.ActiveNodes.ForEach(n => Inner.Append(new PassiveElement(n)));
+			TreeSystem.ActiveNodes.ForEach(n =>
+			{
+				if (n is JewelSocket)
+				{
+					Inner.Append(new PassiveSocket(n as JewelSocket));
+				}
+				else
+				{
+					Inner.Append(new PassiveElement(n));
+				}
+			});
 		}
 
 		IsVisible = true;
 	}
+	
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		if (Main.LocalPlayer.controlInv)
-		{
-			IsVisible = false;
-		}
-
 		Recalculate();
 		base.Draw(spriteBatch);
 		DrawPanelText(spriteBatch);
@@ -72,9 +90,14 @@ internal class PassiveTree : SmartUIState
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
-	protected void DrawPanel()
+	protected void CreateMainPanel()
 	{
-		Panel = new UIPanel();
+		var localizedTexts = new (string key, LocalizedText text)[]
+		{
+			("PassiveTree", Language.GetText("Mods.PathOfTerraria.GUI.PassiveTreeTab")),
+			("SkillTree", Language.GetText("Mods.PathOfTerraria.GUI.SkillTreeTab"))
+		};
+		Panel = new UIDraggablePanel(false, false, localizedTexts, DraggablePanelHeight);
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
 		Panel.Width.Set(PanelWidth, 0);
@@ -82,21 +105,21 @@ internal class PassiveTree : SmartUIState
 		Append(Panel);
 	}
 	
-	protected void DrawInnerPanel()
+	protected void AddInnerPanel()
 	{
 		Inner = new InnerPanel();
 		Inner.Left.Set(0, 0);
-		Inner.Top.Set(0, 0);
-		Inner.Width.Set(0, 1);
-		Inner.Height.Set(0, 1);
+		Inner.Top.Set(DraggablePanelHeight, 0);
+		Inner.Width.Set(0, 1f);
+		Inner.Height.Set(-DraggablePanelHeight, 1f);
 		Panel.Append(Inner);
 	}
 
-	protected void DrawCloseButton()
+	protected void AddCloseButton()
 	{
 		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/CloseButton"));
-		CloseButton.Left.Set(-38, 1f);
-		CloseButton.Top.Set(0, 0f);
+		CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
+		CloseButton.Top.Set(DraggablePanelHeight + PointsAndExitPadding, 0f);
 		CloseButton.Width.Set(38, 0);
 		CloseButton.Height.Set(38, 0);
 		CloseButton.OnLeftClick += (a, b) => {
@@ -104,7 +127,7 @@ internal class PassiveTree : SmartUIState
 			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 		};
 		CloseButton.SetVisibility(1, 1);
-		Inner.Append(CloseButton);
+		Panel.Append(CloseButton);
 	}
 
 	protected void DrawPanelText(SpriteBatch spriteBatch)
@@ -112,9 +135,11 @@ internal class PassiveTree : SmartUIState
 		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall").Value;
 		TreePlayer mp = Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
-		spriteBatch.Draw(tex, GetRectangle().TopLeft() + new Vector2(32, 32), null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
-		Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", GetRectangle().TopLeft() + new Vector2(32, 32), mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
-		Utils.DrawBorderStringBig(spriteBatch, $"Points remaining", GetRectangle().TopLeft() + new Vector2(170, 32), Color.White, 0.6f, 0.5f, 0.35f);
+		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) + tex.Size()/2;
+
+		spriteBatch.Draw(tex, GetRectangle().TopLeft() + pointsDrawPoin, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+		Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", GetRectangle().TopLeft() + pointsDrawPoin, mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
+		Utils.DrawBorderStringBig(spriteBatch, "Points remaining", GetRectangle().TopLeft() + pointsDrawPoin + new Vector2(138, 0), Color.White, 0.6f, 0.5f, 0.35f);
 	}
 
 	public Rectangle GetRectangle()
@@ -126,7 +151,6 @@ internal class PassiveTree : SmartUIState
 internal class InnerPanel : SmartUIElement
 {
 	private Vector2 _start;
-	private Vector2 _root;
 	private Vector2 _lineOff;
 
 	private UIElement Panel => Parent;
@@ -201,91 +225,150 @@ internal class InnerPanel : SmartUIElement
 	private bool _blockMouse = false;
 	private bool _isHovering = false;
 	private bool _lastState = false;
-	
+
 	public override void SafeUpdate(GameTime gameTime)
 	{
 		if (Main.mouseLeft && !_lastState)
 		{
 			_blockMouse = Parent.GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
-			_isHovering = Panel.IsMouseHovering;
+			_isHovering = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
 		}
 		else if (!Main.mouseLeft)
 		{
 			_blockMouse = _isHovering= false;
 		}
 
+		BlockClickItem.Block = Parent.GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
+
+		Vector2 offsetChange = Vector2.Zero;
+
 		if (_isHovering)
 		{
 			if (_start == Vector2.Zero)
 			{
 				_start = Main.MouseScreen;
-				_root = _lineOff;
-
-				foreach (UIElement element in Elements)
-				{
-					if (element is PassiveElement ele)
-					{
-						ele.Root = new Vector2(ele.Left.Pixels, ele.Top.Pixels);
-					}
-				}
 			}
 
-			Rectangle rec = Parent.GetDimensions().ToRectangle();
-			Vector2 adjust = Vector2.Zero;
-			Vector2 newOffset = _root + Main.MouseScreen - _start;
-
-			float xAbove = newOffset.X + rec.Width / 2 + UITree.TopLeftTree.X;
-			float yAbove = newOffset.Y + rec.Height / 2 + UITree.TopLeftTree.Y;
-
-			float xBelow = newOffset.X - rec.Width / 2 + UITree.BotRightTree.X;
-			float yBelow = newOffset.Y - rec.Height / 2 + UITree.BotRightTree.Y;
-
-			if (rec.Height < MathF.Abs(UITree.BotRightTree.Y) + MathF.Abs(UITree.TopLeftTree.Y))
-			{
-				yAbove = MathF.Max(yAbove, 0);
-				yBelow = MathF.Min(yBelow, 0);
-			}
-			else
-			{
-				yAbove = MathF.Min(yAbove, 0);
-				yBelow = MathF.Max(yBelow, 0);
-			}
-
-			if (rec.Width < MathF.Abs(UITree.BotRightTree.X) + MathF.Abs(UITree.TopLeftTree.X))
-			{
-				xAbove = MathF.Max(xAbove, 0);
-				xBelow = MathF.Min(xBelow, 0);
-			}
-			else
-			{
-				xAbove = MathF.Min(xAbove, 0);
-				xBelow = MathF.Max(xBelow, 0);
-			}
-
-			adjust += new Vector2(xAbove, yAbove);
-			adjust += new Vector2(xBelow, yBelow);
-
-			_start += adjust;
-
-			foreach (UIElement element in Elements)
-			{
-				if (element is PassiveElement ele)
-				{
-					element.Left.Set(ele.Root.X + Main.MouseScreen.X - _start.X, 0.5f);
-					element.Top.Set(ele.Root.Y + Main.MouseScreen.Y - _start.Y, 0.5f);
-				}
-			}
-
-			_lineOff = _root + Main.MouseScreen - _start;
+			offsetChange = Main.MouseScreen - _start;
+			_start = Main.MouseScreen;
 		}
 		else
 		{
 			_start = Vector2.Zero;
 		}
 
+		Rectangle rec = GetDimensions().ToRectangle();
+		Vector2 adjust = Vector2.Zero;
+		Vector2 newOffset = _lineOff + offsetChange;
+
+		float xAbove = newOffset.X + rec.Width / 2 + UITree.TopLeftTree.X;
+		float yAbove = newOffset.Y + rec.Height / 2 + UITree.TopLeftTree.Y;
+
+		float xBelow = newOffset.X - rec.Width / 2 + UITree.BotRightTree.X;
+		float yBelow = newOffset.Y - rec.Height / 2 + UITree.BotRightTree.Y;
+
+		if (rec.Height < MathF.Abs(UITree.BotRightTree.Y) + MathF.Abs(UITree.TopLeftTree.Y))
+		{
+			yAbove = MathF.Max(yAbove, 0);
+			yBelow = MathF.Min(yBelow, 0);
+		}
+		else
+		{
+			yAbove = MathF.Min(yAbove, 0);
+			yBelow = MathF.Max(yBelow, 0);
+		}
+
+		if (rec.Width < MathF.Abs(UITree.BotRightTree.X) + MathF.Abs(UITree.TopLeftTree.X))
+		{
+			xAbove = MathF.Max(xAbove, 0);
+			xBelow = MathF.Min(xBelow, 0);
+		}
+		else
+		{
+			xAbove = MathF.Min(xAbove, 0);
+			xBelow = MathF.Max(xBelow, 0);
+		}
+
+		adjust += new Vector2(xAbove, yAbove);
+		adjust += new Vector2(xBelow, yBelow);
+
+		offsetChange -= adjust;
+
+		foreach (UIElement element in Elements)
+		{
+			if (element is PassiveElement ele)
+			{
+				element.Left.Set(ele.Left.Pixels + offsetChange.X, 0.5f);
+				element.Top.Set(ele.Top.Pixels + offsetChange.Y, 0.5f);
+			}
+		}
+
+		_lineOff += offsetChange;
+
 		Main.blockMouse = _blockMouse;
 		_lastState = Main.mouseLeft;
 
 		Recalculate();
+	}
+}
+
+public class BlockClickItem : ModSystem
+{
+	// TODO: This is not blocking anything on the right. | or the open achivments button.
+
+	public static bool Block = false;
+	public override void Load()
+	{
+		
+		IL_ItemSlot.OverrideLeftClick += IL_BlockIfBlockingRetTrue;
+		IL_ItemSlot.MouseHover_ItemArray_int_int += IL_BlockIfBlocking;
+		IL_UIElement.MouseOver += IL_BlockIfBlocking;
+
+		PropertyInfo propertyInfo = typeof(PlayerInput).GetProperty("IgnoreMouseInterface",
+						 BindingFlags.Public |
+						 BindingFlags.Static);
+		MethodInfo methodInfo = propertyInfo.GetGetMethod();
+
+		MonoModHooks.Add(methodInfo, ForceIgnoreMouseInterface);
+	}
+
+	public override void UpdateUI(GameTime gameTime)
+	{
+		Block = false;
+	}
+
+	private void IL_BlockIfBlocking(ILContext il)
+	{
+		var c = new ILCursor(il);
+		c.Emit(OpCodes.Ldsfld, typeof(BlockClickItem).GetField("Block"));
+
+		ILLabel trueLabel = il.DefineLabel();
+		c.Emit(OpCodes.Brfalse, trueLabel);
+
+		c.Emit(OpCodes.Ret);
+		c.MarkLabel(trueLabel);
+	}
+	private void IL_BlockIfBlockingRetTrue(ILContext il)
+	{
+		var c = new ILCursor(il);
+		c.Emit(OpCodes.Ldsfld, typeof(BlockClickItem).GetField("Block"));
+
+		ILLabel trueLabel = c.DefineLabel();
+		c.Emit(OpCodes.Brfalse, trueLabel);
+
+		c.Emit(OpCodes.Ldc_I4_1);
+		c.Emit(OpCodes.Ret);
+
+		c.MarkLabel(trueLabel);
+	}
+
+	private bool ForceIgnoreMouseInterface(Func<bool> action)
+	{
+		if (!Block)
+		{
+			return action();
+		}
+
+		return true;
 	}
 }

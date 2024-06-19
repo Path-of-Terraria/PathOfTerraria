@@ -28,6 +28,6 @@
     </Reference>
   </ItemGroup>
 	<Target Name="BuildMod" AfterTargets="Build">
-		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)"/>
+		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />
 	</Target>
 </Project>

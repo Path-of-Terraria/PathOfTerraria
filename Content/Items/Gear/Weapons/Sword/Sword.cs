@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -25,7 +26,7 @@ internal class Sword : Gear
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.PurificationPowder;
 		Item.shootSpeed = 10f;
-		GearType = GearType.Sword;
+		ItemType = ItemType.Sword;
 	}
 
 	public override bool AltFunctionUse(Player player)
