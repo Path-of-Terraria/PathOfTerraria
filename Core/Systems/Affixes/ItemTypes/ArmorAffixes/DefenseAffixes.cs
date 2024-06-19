@@ -19,4 +19,24 @@ internal class DefenseAffixes
 			modifier.DamageReduction.Base += (float)Math.Truncate((Value * 5 + item.ItemLevel / 50) * 10) / 10;
 		}
 	}
+
+	internal class ResistanceHelmetAffix : ItemAffix
+	{
+		public override ItemType PossibleTypes => ItemType.Helmet;
+
+		public override void ApplyAffix(EntityModifier modifier, PoTItem item)
+		{
+			modifier.DebuffResistance *= 1 - (float)Math.Truncate((Value * 2 + item.ItemLevel / 450) * 5) / 300f;
+		}
+	}
+
+	internal class BuffBoostHelmetAffix : ItemAffix
+	{
+		public override ItemType PossibleTypes => ItemType.Helmet;
+
+		public override void ApplyAffix(EntityModifier modifier, PoTItem item)
+		{
+			modifier.BuffBonus *= 1 + (float)Math.Truncate((Value * 2 + item.ItemLevel / 450) * 5) / 300f;
+		}
+	}
 }

@@ -34,6 +34,10 @@ internal class EntityModifier
 	public StatModifier PotionManaPower = new();
 	public StatModifier PotionManaDelay = new();
 
+	// BufModifierPlayer:
+	public StatModifier DebuffResistance = new();
+	public StatModifier BuffBonus = new();
+
 	public void ApplyTo(NPC npc)
 	{
 		npc.life = (int)MaximumLife.ApplyTo(npc.life);
@@ -76,9 +80,14 @@ internal class EntityModifier
 		ps.MaxMana = (int)MaxHealthPotions.ApplyTo(ps.MaxMana);
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
+
+		BuffModifierPlayer buffPlayer = player.GetModPlayer<BuffModifierPlayer>();
+		buffPlayer.ResistanceStrength = DebuffResistance;
+		buffPlayer.BuffBonus = BuffBonus;
 	}
 
 	private readonly FieldInfo[] _fields = typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToArray();
+
 	public List<string> GetDifference(EntityModifier other)
 	{
 		List<string> strings = new List<string>();
@@ -99,6 +108,7 @@ internal class EntityModifier
 	}
 
 	public static List<string> GetChange(EntityModifier changed) { return _default.GetDifference(changed); }
+
 	private string[] GetDifferences(StatModifier m1, StatModifier m2)
 	{
 		List<string> differences = new List<string>();
