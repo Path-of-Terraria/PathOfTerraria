@@ -1,13 +1,17 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿using Microsoft.Xna.Framework.Graphics;
+using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.SkillSystem;
 using ReLogic.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameContent;
+using Terraria.GameContent.UI;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -28,7 +32,7 @@ internal class NewHotbar : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		var hideTarget = new Rectangle(20, 20, Main.LocalPlayer.selectedItem > 10 ? 490 : 446, 52);
+		var hideTarget = new Rectangle(0, 0, Main.LocalPlayer.selectedItem > 10 ? 510 : 466, 72);
 
 		if (!Main.screenTarget.IsDisposed)
 		{
@@ -70,11 +74,26 @@ internal class NewHotbar : SmartUIState
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
 		DrawHotkeys(spriteBatch);
+		DrawHeldItemName(spriteBatch);
 	}
 
-	private void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
+	private static void DrawHeldItemName(SpriteBatch spriteBatch)
 	{
-		Texture2D combat = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarCombat").Value;
+		string text = Lang.inter[37].Value; // "Item" when no item is held
+
+		if (Main.LocalPlayer.HeldItem.Name != null && Main.LocalPlayer.HeldItem.Name != string.Empty)
+		{
+			text = Main.LocalPlayer.HeldItem.AffixName(); // Otherwise the name of the item
+		}
+
+		var itemNamePosition = new Vector2(266f - (FontAssets.MouseText.Value.MeasureString(text) / 2f).X, 6f);
+		Color itemNameColor = ItemRarity.GetColor(Main.LocalPlayer.HeldItem.rare);
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
+	}
+
+	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
+	{
+		Texture2D combat = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarCombat").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -82,7 +101,7 @@ internal class NewHotbar : SmartUIState
 
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
-		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/EmptyPotion").Value;
+		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/EmptyPotion").Value;
 		Texture2D lifeTexture = TextureAssets.Item[ItemID.LesserHealingPotion].Value;
 		Texture2D manaTexture = TextureAssets.Item[ItemID.LesserManaPotion].Value;
 
@@ -108,7 +127,7 @@ internal class NewHotbar : SmartUIState
 			(potionPlayer.ManaLeft > 0 ? new Color(200, 220, 255) : Color.Gray) * opacity, 1f * opacity, 0.5f,
 			0.5f);
 
-		Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowSoft").Value;
+		Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowSoft").Value;
 		if (Main.LocalPlayer.HasBuff(BuffID.PotionSickness))
 		{
 			spriteBatch.Draw(glow, new Vector2(480, 60 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
@@ -165,7 +184,7 @@ internal class NewHotbar : SmartUIState
 
 	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBuilding").Value;
+		Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBuilding").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -177,13 +196,13 @@ internal class NewHotbar : SmartUIState
 				new Vector2(24 + 124 + 52 * (k - 2), 30 + off));
 		}
 
-		Texture2D select = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarSelector").Value;
+		Texture2D select = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarSelector").Value;
 		Main.spriteBatch.Draw(select, new Vector2(_selectorX, 21 + off), null,
 			Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
 
 		if (Main.LocalPlayer.selectedItem > 10)
 		{
-			Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBack").Value;
+			Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
 			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
 		}
@@ -219,10 +238,8 @@ internal class NewHotbar : SmartUIState
 			return;
 		}
 
-		{
-			string assignedKey = quickManaHotkey[0];
-			DrawLetter(spriteBatch, assignedKey, new Vector2(523, 71), Color.White);
-		}
+		string assignedManaKey = quickManaHotkey[0];
+		DrawLetter(spriteBatch, assignedManaKey, new Vector2(523, 71), Color.White);
 
 		// Draw Skill Hotkeys
 		string skill1Key = SkillPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault();
@@ -260,5 +277,54 @@ internal class NewHotbar : SmartUIState
 		Item firstItem = player.inventory[0];
 		Item heldItem = Main.LocalPlayer.HeldItem;
 		return heldItem == firstItem;
+	}
+}
+
+public class HijackHotbarClick : ModSystem
+{
+	public override void Load()
+	{
+		On_Main.GUIHotbarDrawInner += StopClickOnHotbar;
+	}
+
+	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
+	{
+		bool hbLocked = Main.LocalPlayer.hbLocked; // Lock hotbar for the original method so we don't fight against vanilla
+		Main.LocalPlayer.hbLocked = true;
+		orig(self);
+		Main.LocalPlayer.hbLocked = hbLocked;
+
+		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
+		{
+			return;
+		}
+
+		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
+
+		for (int i = 2; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
+		{
+			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
+			{
+				var pos = new Rectangle(52 * (i + 1) - 4, 30, back.Width, back.Height);
+
+				if (pos.Contains(Main.MouseScreen.ToPoint()))
+				{
+					Main.LocalPlayer.mouseInterface = true;
+					Main.LocalPlayer.cursorItemIconEnabled = false;
+					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
+					Main.rare = Main.LocalPlayer.inventory[i].rare;
+
+					if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
+					{
+						Main.LocalPlayer.changeItem = i;
+					}
+
+					if (Main.LocalPlayer.inventory[i].stack > 1)
+					{
+						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
+					}
+				}
+			}
+		}
 	}
 }

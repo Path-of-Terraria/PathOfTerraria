@@ -56,7 +56,7 @@ internal abstract class Passive
 				return _size;
 			}
 
-			Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+			Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PassiveFrameSmall", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 
 			if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + InternalIdentifier))
 			{
@@ -113,7 +113,7 @@ internal abstract class Passive
 
 	public void Draw(SpriteBatch spriteBatch, Vector2 center)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PassiveFrameSmall").Value;
 
 		if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + InternalIdentifier))
 		{

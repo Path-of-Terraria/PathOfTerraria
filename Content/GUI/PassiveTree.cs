@@ -117,7 +117,7 @@ internal class PassiveTree : SmartUIState
 
 	protected void AddCloseButton()
 	{
-		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/CloseButton"));
+		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
 		CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
 		CloseButton.Top.Set(DraggablePanelHeight + PointsAndExitPadding, 0f);
 		CloseButton.Width.Set(38, 0);
@@ -132,7 +132,7 @@ internal class PassiveTree : SmartUIState
 
 	protected void DrawPanelText(SpriteBatch spriteBatch)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/PassiveFrameSmall").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PassiveFrameSmall").Value;
 		TreePlayer mp = Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
 		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) + tex.Size()/2;
@@ -169,7 +169,7 @@ internal class InnerPanel : SmartUIElement
 
 		foreach (PassiveEdge edge in TreeSystem.Edges)
 		{
-			Texture2D chainTex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Link").Value;
+			Texture2D chainTex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/Link").Value;
 
 			Color color = Color.Gray;
 
@@ -191,7 +191,7 @@ internal class InnerPanel : SmartUIElement
 
 			if (edge.End.Level > 0 && edge.Start.Level > 0)
 			{
-				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowAlpha").Value;
+				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowAlpha").Value;
 				var glowColor = new Color(255, 230, 150)
 				{
 					A = 0
