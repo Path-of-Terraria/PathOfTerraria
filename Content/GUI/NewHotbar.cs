@@ -74,7 +74,7 @@ internal class NewHotbar : SmartUIState
 
 	private void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D combat = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarCombat").Value;
+		Texture2D combat = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarCombat").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -82,7 +82,7 @@ internal class NewHotbar : SmartUIState
 
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
-		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/EmptyPotion").Value;
+		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/EmptyPotion").Value;
 		Texture2D lifeTexture = TextureAssets.Item[ItemID.LesserHealingPotion].Value;
 		Texture2D manaTexture = TextureAssets.Item[ItemID.LesserManaPotion].Value;
 
@@ -108,7 +108,7 @@ internal class NewHotbar : SmartUIState
 			(potionPlayer.ManaLeft > 0 ? new Color(200, 220, 255) : Color.Gray) * opacity, 1f * opacity, 0.5f,
 			0.5f);
 
-		Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowSoft").Value;
+		Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowSoft").Value;
 		if (Main.LocalPlayer.HasBuff(BuffID.PotionSickness))
 		{
 			spriteBatch.Draw(glow, new Vector2(480, 60 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
@@ -165,7 +165,7 @@ internal class NewHotbar : SmartUIState
 
 	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBuilding").Value;
+		Texture2D building = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBuilding").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -177,13 +177,13 @@ internal class NewHotbar : SmartUIState
 				new Vector2(24 + 124 + 52 * (k - 2), 30 + off));
 		}
 
-		Texture2D select = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarSelector").Value;
+		Texture2D select = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarSelector").Value;
 		Main.spriteBatch.Draw(select, new Vector2(_selectorX, 21 + off), null,
 			Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
 
 		if (Main.LocalPlayer.selectedItem > 10)
 		{
-			Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/HotbarBack").Value;
+			Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
 			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
 		}

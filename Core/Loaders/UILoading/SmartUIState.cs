@@ -407,5 +407,15 @@ public abstract class SmartUIState : UIState
 		base.ScrollWheel(evt);
 		SafeScrollWheel(evt);
 	}
+	
 	#endregion
+	
+	/// <summary>
+	/// Refreshes the UI - Intended to be called on resolution changes.
+	/// </summary>
+	public virtual void Refresh()
+	{
+		RemoveAllChildren();
+		Recalculate();
+	}
 }
