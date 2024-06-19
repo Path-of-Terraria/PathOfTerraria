@@ -10,18 +10,14 @@ internal abstract class Whip : Gear
 	/// <summary>
 	/// Defines the draw data for a particular whip.
 	/// </summary>
-	/// <param name="baseSize"></param>
-	/// <param name="first"></param>
-	/// <param name="second"></param>
-	/// <param name="third"></param>
-	/// <param name="tip"></param>
-	public readonly struct WhipDrawData(Point baseSize, Rectangle first, Rectangle second, Rectangle third, Rectangle tip)
+	public readonly struct WhipDrawData(Point baseSize, Rectangle first, Rectangle second, Rectangle third, Rectangle tip, bool drawLine)
 	{ 
 		public readonly Point BaseSize = baseSize;
 		public readonly Rectangle FirstSegmentSource = first;
 		public readonly Rectangle SecondSegmentSource = second;
 		public readonly Rectangle ThirdSegmentSource = third;
 		public readonly Rectangle TipSource = tip;
+		public readonly bool DrawLine = drawLine;
 	}
 
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Whip/{GetType().Name}";
@@ -29,6 +25,7 @@ internal abstract class Whip : Gear
 	public override float DropChance => 1f;
 
 	public abstract WhipDrawData DrawData { get; }
+	public abstract WhipSettings WhipSettings { get; }
 
 	/// <summary>
 	/// Stores a Whip's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.

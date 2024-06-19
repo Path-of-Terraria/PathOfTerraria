@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Content.Items.Gear.Weapons.Whip;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -29,6 +27,8 @@ namespace PathOfTerraria.Content.Projectiles.Whip
 			get => Projectile.ai[2] == 1;
 			set => Projectile.ai[2] = value ? 1 : 0;
 		}
+
+		private bool _setSettings = false;
 
 		public override void AI()
 		{
@@ -73,6 +73,12 @@ namespace PathOfTerraria.Content.Projectiles.Whip
 		public override bool PreAI()
 		{
 			Player owner = Main.player[Projectile.owner];
+
+			if (!_setSettings)
+			{
+				Projectile.WhipSettings = (owner.HeldItem.ModItem as WhipItem).WhipSettings;
+				_setSettings = true;
+			}
 
 			if (AltUse || !owner.channel || ChargeTime >= 120)
 			{
@@ -131,14 +137,16 @@ namespace PathOfTerraria.Content.Projectiles.Whip
 			var list = new List<Vector2>();
 			Projectile.FillWhipControlPoints(Projectile, list);
 
-			DrawLine(list);
-
-			SpriteEffects flip = Projectile.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
 			Main.instance.LoadProjectile(Type);
 			Texture2D texture = WhipItem.WhipProjectileSpritesById[Main.player[Projectile.owner].HeldItem.type].Value;
 			WhipItem.WhipDrawData data = (Main.player[Projectile.owner].HeldItem.ModItem as WhipItem).DrawData;
 
+			if (data.DrawLine)
+			{
+				DrawLine(list);
+			}
+
+			SpriteEffects flip = Projectile.spriteDirection < 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 			Vector2 pos = list[0];
 
 			for (int i = 0; i < list.Count - 1; i++)
