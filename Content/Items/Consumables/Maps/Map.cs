@@ -14,7 +14,7 @@ internal abstract class Map : PoTItem
 
 	public override int ItemLevel
 	{
-		get => InternalItemLevel;
+		get => _tier;
 		set
 		{ InternalItemLevel = value; _tier = 1 + (int)Math.Floor(InternalItemLevel / 20f); }
 	}

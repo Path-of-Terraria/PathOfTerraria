@@ -397,6 +397,10 @@ internal abstract class PoTItem : ModItem
 
 	public static void SpawnRandomItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
 	{
+		SpawnRandomItem(pos, x => true, ilevel, dropRarityModifier);
+	}
+	public static void SpawnRandomItem(Vector2 pos, Func<Tuple<float, Rarity, Type>, bool> dropCondition, int ilevel = 0, float dropRarityModifier = 0)
+	{
 		ilevel = ilevel == 0 ? PickItemLevel() : ilevel;  // Pick the item level if not provided
 		dropRarityModifier += ilevel / 10f; // the effect of item level on "magic find"
 
@@ -408,12 +412,17 @@ internal abstract class PoTItem : ModItem
 		}).ToList();
 
 		// Calculate dropChanceSum based on filtered gear
-		float dropChanceSum = filteredGear.Sum((Tuple<float, Rarity, Type> x) => ApplyRarityModifier(x.Item1, dropRarityModifier));
+		float dropChanceSum = filteredGear.Where(x => dropCondition(x)).Sum((Tuple<float, Rarity, Type> x) => ApplyRarityModifier(x.Item1, dropRarityModifier));
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
 		foreach (Tuple<float, Rarity, Type> item in filteredGear)
 		{
+			if (!dropCondition(item))
+			{
+				continue;
+			}
+
 			cumulativeChance += ApplyRarityModifier(item.Item1, dropRarityModifier);
 			if (choice < cumulativeChance)
 			{
@@ -743,21 +752,14 @@ internal abstract class PoTItem : ModItem
 
 		_implicits = Affixes.Count();
 
-		if (Rarity == Rarity.Normal || Rarity == Rarity.Unique)
-		{
-			return;
-		}
-
 		List<ItemAffix> possible = AffixHandler.GetAffixes(this);
 
-		if (possible is null)
+		if (possible is not null)
 		{
-			return;
+			int AffixCount = GetAffixCount(Rarity);
+
+			Affixes.AddRange(Affix.GenerateAffixes(possible, AffixCount));
 		}
-
-		int AffixCount = GetAffixCount(Rarity);
-
-		Affixes.AddRange(Affix.GenerateAffixes(possible, AffixCount));
 
 		List<ItemAffix> extraAffixes = GenerateAffixes();
 		extraAffixes.ForEach(a => a.Roll());
