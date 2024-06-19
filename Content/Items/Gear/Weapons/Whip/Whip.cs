@@ -2,15 +2,33 @@
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.DataStructures;
-using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 
 internal abstract class Whip : Gear
 {
+	/// <summary>
+	/// Defines the draw data for a particular whip.
+	/// </summary>
+	/// <param name="baseSize"></param>
+	/// <param name="first"></param>
+	/// <param name="second"></param>
+	/// <param name="third"></param>
+	/// <param name="tip"></param>
+	public readonly struct WhipDrawData(Point baseSize, Rectangle first, Rectangle second, Rectangle third, Rectangle tip)
+	{ 
+		public readonly Point BaseSize = baseSize;
+		public readonly Rectangle FirstSegmentSource = first;
+		public readonly Rectangle SecondSegmentSource = second;
+		public readonly Rectangle ThirdSegmentSource = third;
+		public readonly Rectangle TipSource = tip;
+	}
+
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Whip/{GetType().Name}";
 
 	public override float DropChance => 1f;
+
+	public abstract WhipDrawData DrawData { get; }
 
 	/// <summary>
 	/// Stores a Whip's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.
@@ -19,8 +37,6 @@ internal abstract class Whip : Gear
 
 	public override void SetStaticDefaults()
 	{
-		ItemID.Sets.ItemsThatAllowRepeatedRightClick[Type] = true;
-
 		if (ModContent.HasAsset(Texture + "_Projectile"))
 		{
 			WhipProjectileSpritesById.Add(Type, ModContent.Request<Texture2D>(Texture + "_Projectile"));
@@ -29,7 +45,7 @@ internal abstract class Whip : Gear
 
 	public override void Defaults()
 	{
-		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 10, 2, 4);
+		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 5, 2, 4);
 		Item.channel = true;
 	}
 
