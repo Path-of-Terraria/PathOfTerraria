@@ -15,6 +15,7 @@ internal class PassiveSocket : PassiveElement
 	public PassiveSocket(JewelSocket passive) : base(passive)
 	{
 		_passive = passive;
+		_socketed = passive.Socketed;
 	}
 
 	public override void DrawOnto(SpriteBatch spriteBatch, Vector2 center)

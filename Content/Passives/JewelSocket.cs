@@ -22,6 +22,5 @@ internal class JewelSocket : Passive
 	public void LoadJewel(TagCompound tag)
 	{
 		Socketed = Jewel.LoadFrom(tag);
-		Socketed.LoadData(tag);
 	}
 }

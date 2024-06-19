@@ -15,6 +15,8 @@ using Terraria.ID;
 using PathOfTerraria.Content.Socketables;
 using Terraria.GameContent.Items;
 using PathOfTerraria.Core.Systems.ModPlayers;
+using System.Security.Cryptography;
+using PathOfTerraria.Core.Systems.TreeSystem;
 
 namespace PathOfTerraria.Core;
 internal abstract class PoTItem : ModItem
@@ -24,8 +26,8 @@ internal abstract class PoTItem : ModItem
 	/// </summary>
 	private static readonly MethodInfo SpawnItemMethod = typeof(PoTItem).GetMethod("SpawnItem", BindingFlags.Public | BindingFlags.Static);
 
-	private static readonly List<Tuple<float, bool, Type>> AllItems = [];
-	// <Drop chance, is unique?, type of item>
+	private static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
+	// <Drop chance, item rarity, type of item>
 
 	private static bool AddedDetour = false;
 
@@ -327,32 +329,9 @@ internal abstract class PoTItem : ModItem
 	/// <summary>
 	/// Rolls the randomized aspects of this piece of gear, for a given item level
 	/// </summary>
-	public void Roll(int itemLevel, float dropRarityModifier = 0)
+	public void Roll(int itemLevel)
 	{
 		ItemLevel = itemLevel;
-
-		float rarityModifier = MathF.Pow(dropRarityModifier / 10f + 1, -0.5f);
-		// ^^ would mean that at about ~30 total quality
-		// we would have 50% higher chance of rare magic and rare... ig...
-		// numbers subject to change, ofc.
-
-		float rare = (Main.rand.Next(100) - InternalItemLevel / 10f) * rarityModifier;
-		Rarity = Rarity.Normal;
-
-		if (rare < 25 + InternalItemLevel / 10f)
-		{
-			Rarity = Rarity.Magic;
-		}
-
-		if (rare < 5)
-		{
-			Rarity = Rarity.Rare;
-		}
-
-		if (IsUnique)
-		{
-			Rarity = Rarity.Unique;
-		}
 
 		// Only item level 50+ gear can get influence
 		if (InternalItemLevel > 50 && !IsUnique && (ItemType & ItemType.AllGear) == ItemType.AllGear)
@@ -367,16 +346,7 @@ internal abstract class PoTItem : ModItem
 			}
 		}
 
-		Affixes = GenerateImplicits();
-
-		_implicits = Affixes.Count();
-
 		RollAffixes();
-
-		List<ItemAffix> extraAffixes = GenerateAffixes();
-		extraAffixes.ForEach(a => a.Roll());
-
-		Affixes.AddRange(extraAffixes);
 
 		PostRoll();
 		_name = GenerateName();
@@ -397,13 +367,38 @@ internal abstract class PoTItem : ModItem
 			}
 
 			PoTItem instance = (PoTItem)Activator.CreateInstance(type);
-			AllItems.Add(new(instance.DropChance, instance.IsUnique, type));
+
+			if (instance.IsUnique)
+			{
+				AllItems.Add(new(instance.DropChance, Rarity.Unique, type));
+			}
+			else
+			{
+				if (!type.IsSubclassOf(typeof(Jewel)))
+				{
+					AllItems.Add(new(instance.DropChance * 0.70f, Rarity.Normal, type));
+				}
+				AllItems.Add(new(instance.DropChance * 0.25f, Rarity.Magic, type));
+				AllItems.Add(new(instance.DropChance * 0.05f, Rarity.Rare, type));
+			}
 		}
+	}
+
+	private const float _magicFindPowerDecrease = 100f;
+	private static float ApplyRarityModifier(float chance, float dropRarityModifier)
+	{
+		// this is just some arbitrary function from chat gpt, modified a little...
+		// it is pretty hard to get all this down when we dont know all the items we will have n such;
+
+		chance *= 100f; // to make it effective on <0.1; it works... ok?
+		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) / (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
+		return powerDecrease;
 	}
 
 	public static void SpawnRandomItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
 	{
 		ilevel = ilevel == 0 ? PickItemLevel() : ilevel;  // Pick the item level if not provided
+		dropRarityModifier += ilevel / 10f; // the effect of item level on "magic find"
 
 		// Filter AllGear based on item level
 		var filteredGear = AllItems.Where(g => 
@@ -413,16 +408,16 @@ internal abstract class PoTItem : ModItem
 		}).ToList();
 
 		// Calculate dropChanceSum based on filtered gear
-		float dropChanceSum = filteredGear.Sum(x => x.Item1 * (x.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f));
+		float dropChanceSum = filteredGear.Sum((Tuple<float, Rarity, Type> x) => ApplyRarityModifier(x.Item1, dropRarityModifier));
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
-		foreach (Tuple<float, bool, Type> gear in filteredGear)
+		foreach (Tuple<float, Rarity, Type> item in filteredGear)
 		{
-			cumulativeChance += gear.Item1 * (gear.Item2 ? (1f + MathF.Pow(dropRarityModifier / 30f, 2f)) : 1f);
+			cumulativeChance += ApplyRarityModifier(item.Item1, dropRarityModifier);
 			if (choice < cumulativeChance)
 			{
-				SpawnItemMethod.MakeGenericMethod(gear.Item3).Invoke(null, [pos, ilevel, dropRarityModifier]);
+				SpawnItemMethod.MakeGenericMethod(item.Item3).Invoke(null, [pos, ilevel, item.Item2]);
 				return;
 			}
 		}
@@ -435,12 +430,13 @@ internal abstract class PoTItem : ModItem
 	/// <param name="pos">Where to drop it in the world</param>
 	/// <param name="ilevel">The item level of the item to spawn</param>
 	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
-	public static void SpawnItem<T>(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0) where T : PoTItem
+	public static void SpawnItem<T>(Vector2 pos, int ilevel = 0, Rarity rarity = Rarity.Normal) where T : PoTItem
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
-		var gear = item.ModItem as T;
-		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel, dropRarityModifier);
+		T gear = item.ModItem as T;
+		gear.Rarity = rarity;
+		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel);
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
 	
@@ -728,11 +724,25 @@ internal abstract class PoTItem : ModItem
 		PostRoll();
 	}
 
+	public virtual int GetAffixCount(Rarity rarity)
+	{
+		return Rarity switch
+		{
+			Rarity.Magic => 2,
+			Rarity.Rare => Main.rand.Next(3, 5),
+			_ => 0
+		};
+	}
+
 	/// <summary>
 	/// Selects appropriate random affixes for this item, and applies them
 	/// </summary>
 	public void RollAffixes()
 	{
+		Affixes = GenerateImplicits();
+
+		_implicits = Affixes.Count();
+
 		if (Rarity == Rarity.Normal || Rarity == Rarity.Unique)
 		{
 			return;
@@ -745,11 +755,13 @@ internal abstract class PoTItem : ModItem
 			return;
 		}
 
-		Affixes.AddRange(Rarity switch
-		{
-			Rarity.Magic => Affix.GenerateAffixes(possible, 2),
-			Rarity.Rare => Affix.GenerateAffixes(possible, Main.rand.Next(3, 5)),
-			_ => new List<ItemAffix>()
-		});
+		int AffixCount = GetAffixCount(Rarity);
+
+		Affixes.AddRange(Affix.GenerateAffixes(possible, AffixCount));
+
+		List<ItemAffix> extraAffixes = GenerateAffixes();
+		extraAffixes.ForEach(a => a.Roll());
+
+		Affixes.AddRange(extraAffixes);
 	}
 }
