@@ -1,12 +1,21 @@
-﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems.SkillSystem;
+﻿using PathOfTerraria.Core.Systems.SkillSystem;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Melee;
 
-public class Nova(int duration, int timer, int maxCooldown, int cooldown, int manaCost, ItemType weapon, byte level) : Skill(duration, timer, maxCooldown, cooldown, manaCost, weapon, level)
+public class Nova : Skill
 {
+	public override int MaxLevel => 3;
+
+	public override void LevelTo(byte level)
+	{
+		Level = level;
+		Cooldown = MaxCooldown = (15 - Level) * 60;
+		ManaCost = 20 + 5 * Level;
+		Duration = 0;
+	}
+
 	public override void UseSkill(Player player)
 	{
 		if (!CanUseSkill(player))
@@ -17,12 +26,8 @@ public class Nova(int duration, int timer, int maxCooldown, int cooldown, int ma
 		player.statMana -= ManaCost;
 		Timer = Cooldown;
 
-		Projectile.NewProjectile(new EntitySource_Misc("NovaSkill"), player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), (int)(player.HeldItem.damage * 2.5f), 2);
-	}
-
-	public override string GetDescription(Player player)
-	{
-		return "Create a shockwave around you, dealing damage.";
+		int damage = (int)(player.HeldItem.damage * (2 + 0.5f * Level));
+		Projectile.NewProjectile(new EntitySource_Misc("NovaSkill"), player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, 2);
 	}
 
 	public override bool CanUseSkill(Player player)

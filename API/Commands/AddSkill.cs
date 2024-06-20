@@ -38,14 +38,8 @@ public class AddSkill : ModCommand {
 			return;
 		}
 
-		var skill = Skill.ReflectSkillInstance(skillType);
-		skill.Duration = 200;
-		skill.Cooldown = 400;
-		skill.ManaCost = 10;
-		skill.MaxCooldown = 400;
-		skill.Timer = 60;
-		skill.WeaponType = ItemType.Sword;
-
+		var skill = Skill.GetAndPrepareSkill(skillType);
+		
 		if (args.Length == 2)
 		{
 			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
