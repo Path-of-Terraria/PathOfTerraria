@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent;
+﻿using PathOfTerraria.Core.Systems;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Melee;
@@ -78,5 +79,17 @@ internal class FireStarterProjectile : ModProjectile
 
 		Main.spriteBatch.Draw(TextureAssets.Projectile[Type].Value, pos, null, Color.White, rotation, new Vector2(0, 76), 1f, SpriteEffects.None, 0);
 		return false;
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		AltUseSystem modPlayer = Owner.GetModPlayer<AltUseSystem>();
+
+		if (modPlayer.AltFunctionActive)
+		{
+			target.AddBuff(BuffID.OnFire, 180);
+		}
+
+		base.OnHitNPC(target, hit, damageDone);
 	}
 }

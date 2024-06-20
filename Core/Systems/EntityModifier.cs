@@ -82,7 +82,7 @@ internal class EntityModifier
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
 		
 		UniversalBuffingPlayer universalBuffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
-		universalBuffingPlayer.OnFireChance = OnFireChance.ApplyTo(universalBuffingPlayer.OnFireChance);
+		universalBuffingPlayer.OnFireChance = OnFireChance;
 	}
 
 	private readonly FieldInfo[] _fields =

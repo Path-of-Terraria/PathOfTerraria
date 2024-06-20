@@ -85,18 +85,6 @@ internal class FireStarter : Sword
 		
 		return false;
 	}
-	
-	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
-	{
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
-		
-		if (modPlayer.AltFunctionActive)
-		{
-			target.AddBuff(BuffID.OnFire, 180);
-		}
-		
-		base.OnHitNPC(player, target, hit, damageDone);
-	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position,
 		Vector2 velocity, int type, int damage, float knockback)

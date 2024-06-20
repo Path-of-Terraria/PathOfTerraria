@@ -63,10 +63,10 @@ public class ModifyHitAffixes
 			modifier.OnFireChance.Base += Value;
 		}
 
-		public void TryApplyDebuff(NPC target)
+		public void TryApplyDebuff(NPC target, float value)
 		{
 			float chance = Main.rand.NextFloat();
-			if (chance > Value)
+			if (chance > value)
 			{
 				return;
 			}

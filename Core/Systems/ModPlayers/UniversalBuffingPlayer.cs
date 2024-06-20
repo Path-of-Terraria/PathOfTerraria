@@ -5,7 +5,7 @@ namespace PathOfTerraria.Core.Systems.ModPlayers;
 internal class UniversalBuffingPlayer : ModPlayer
 {
 	public EntityModifier UniversalModifier;
-	public float OnFireChance = 0;
+	public StatModifier OnFireChance = StatModifier.Default;
 
 	public override void PostUpdateEquips()
 	{
@@ -19,6 +19,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 	public override void ResetEffects()
 	{
 		UniversalModifier = new EntityModifier();
+		OnFireChance = StatModifier.Default;
 	}
 	
 	/// <summary>
@@ -29,10 +30,10 @@ internal class UniversalBuffingPlayer : ModPlayer
 	/// <param name="damageDone"></param>
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (OnFireChance > 0)
+		if (OnFireChance.Base > 0)
 		{
 			var affix = new ModifyHitAffixes.ChanceToApplyOnFireGearAffix();
-			affix.TryApplyDebuff(target);
+			affix.TryApplyDebuff(target, OnFireChance.Base);
 		}
 
 		base.OnHitNPC(target, hit, damageDone);
