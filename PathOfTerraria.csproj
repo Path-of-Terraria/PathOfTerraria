@@ -32,6 +32,9 @@
     <Reference Include="SubworldLibrary">
       <HintPath>Dependencies\SubworldLibrary.dll</HintPath>
     </Reference>
+	  <Reference Include="TextCopy">
+		  <HintPath>lib\TextCopy.dll</HintPath>
+	  </Reference>
   </ItemGroup>
 	<Target Name="BuildMod" AfterTargets="Build">
 		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />

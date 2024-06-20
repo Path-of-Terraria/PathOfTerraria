@@ -17,8 +17,42 @@ using Terraria.GameContent.Items;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Security.Cryptography;
 using PathOfTerraria.Core.Systems.TreeSystem;
+using TextCopy;
+using Microsoft.Xna.Framework.Input;
+using Terraria.GameContent.UI.Elements;
+using log4net.Core;
 
 namespace PathOfTerraria.Core;
+
+internal class PoTItemMiddleMouseButtonClick : ILoadable
+{
+	public void Load(Mod mod)
+	{
+		On_ItemSlot.LeftClick_ItemArray_int_int += AddMiddleButtonEvent;
+	}
+	private void AddMiddleButtonEvent(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+	{
+		MiddleClick(inv, context, slot);
+		orig(inv, context, slot);
+	}
+
+	static bool _middleClickStatus = false;
+	public static void MiddleClick(Item[] inv, int context = 0, int slot = 0)
+	{
+		if (Mouse.GetState().MiddleButton == ButtonState.Pressed && _middleClickStatus)
+		{
+			if (inv[slot].active && inv[slot].ModItem is PoTItem potItem)
+			{
+				potItem.OnMiddleClicked();
+			}
+		}
+
+		_middleClickStatus = Mouse.GetState().MiddleButton == ButtonState.Released;
+	}
+
+	public void Unload() { }
+
+}
 internal abstract class PoTItem : ModItem
 {
 	/// <summary>
@@ -59,6 +93,51 @@ internal abstract class PoTItem : ModItem
 
 	public virtual void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier) { }
 	public virtual void SwapItemModifiers(EntityModifier SawpItemModifier) { }
+
+	public void OnMiddleClicked()
+	{
+		if (!Keyboard.GetState().PressingShift())
+		{
+			TagCompound tag = new TagCompound();
+
+			SaveData(tag);
+
+			ClipboardService.SetText(tag.ToString());
+		}
+#if DEBUG
+		else
+		{
+			string s = ClipboardService.GetText();
+			LoadData(StringToTag.TagFromString(s));
+		}
+#endif
+	}
+
+	/*
+	{
+	  int "type" = 1,
+	  int "rarity" = 2,
+	  int "influence" = 0,
+	  int "implicits" = 0,
+	  string "name" = "Harmonic Sword Maw",
+	  int "power" = 200,
+	  object "affixes" [
+		{
+		  string "type" = "PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes.ModifyHitAffixes+BaseKnockbackItemAffix",
+		  float "value" = 0.8
+		},
+		{
+		  string "type" = "PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes.ModifyHitAffixes+PiercingItemAffix",
+		  float "value" = 0.6
+		},
+		{
+		  string "type" = "PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes.PassiveAffixes+RapidItemAffix",
+		  float "value" = 0.4
+		}
+	  ],
+	  int "socketCount" = 0
+	}
+	 */
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
@@ -722,6 +801,7 @@ internal abstract class PoTItem : ModItem
 
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
 
+		Affixes.Clear();
 		foreach (TagCompound newTag in affixTags)
 		{
 			ItemAffix g = Affix.FromTag<ItemAffix>(newTag);
