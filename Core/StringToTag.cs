@@ -80,6 +80,7 @@ internal class StringToTag
 					s += c;
 				}
 			}
+
 			strings.Add(s);
 
 			List<TagCompound> tags = new List<TagCompound>();
@@ -89,6 +90,7 @@ internal class StringToTag
 				TagCompound val = TagFromString(tagS);
 				tags.Add(val);
 			}
+
 			return new(tag, tags);
 		}
 

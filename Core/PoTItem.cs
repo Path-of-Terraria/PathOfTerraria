@@ -51,7 +51,6 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 	}
 
 	public void Unload() { }
-
 }
 internal abstract class PoTItem : ModItem
 {
