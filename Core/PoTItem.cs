@@ -32,12 +32,12 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 	}
 	private void AddMiddleButtonEvent(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 	{
-		MiddleClick(inv, context, slot);
+		MiddleClick(inv, slot);
 		orig(inv, context, slot);
 	}
 
 	static bool _middleClickStatus = false;
-	public static void MiddleClick(Item[] inv, int context = 0, int slot = 0)
+	public static void MiddleClick(Item[] inv, int slot = 0)
 	{
 		if (Mouse.GetState().MiddleButton == ButtonState.Pressed && _middleClickStatus)
 		{
