@@ -36,6 +36,10 @@ internal class EntityModifier
 	public StatModifier PotionManaPower = new();
 	public StatModifier PotionManaDelay = new();
 
+	// BufModifierPlayer:
+	public StatModifier DebuffResistance = new();
+	public StatModifier BuffBonus = new();
+
 	public void ApplyTo(NPC npc)
 	{
 		npc.life = (int)MaximumLife.ApplyTo(npc.life);
@@ -80,9 +84,13 @@ internal class EntityModifier
 		ps.MaxMana = (int)MaxHealthPotions.ApplyTo(ps.MaxMana);
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
-		
+	
 		UniversalBuffingPlayer universalBuffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
 		universalBuffingPlayer.OnFireChance = OnFireChance;
+    
+    BuffModifierPlayer buffPlayer = player.GetModPlayer<BuffModifierPlayer>();
+		buffPlayer.ResistanceStrength = DebuffResistance;
+		buffPlayer.BuffBonus = BuffBonus;
 	}
 
 	private readonly FieldInfo[] _fields =
