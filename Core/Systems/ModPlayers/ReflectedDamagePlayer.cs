@@ -62,9 +62,11 @@ internal class ReflectedDamagePlayer : ModPlayer
 		// These values are approximated as they don't perfectly line up with how vanilla's system works.
 		if (player.turtleThorns)
 		{
+			player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ReflectedDamageModifier.Base += player.thorns * 40;
 			return 3;
 		}
 
+		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ReflectedDamageModifier.Base += player.thorns * 20;
 		return player.thorns + 1;
 	}
 }
