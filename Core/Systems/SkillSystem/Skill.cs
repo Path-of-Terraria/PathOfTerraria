@@ -1,21 +1,18 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using System.Reflection;
-using Terraria.ModLoader.IO;
+﻿using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.SkillSystem;
 
-public abstract class Skill(int duration, int timer, int maxCooldown, int cooldown, int manaCost, ItemType weaponType, byte level)
+public abstract class Skill
 {
-	public int Duration = duration;
-	public int Timer = timer;
+	public int Duration = 0;
+	public int Timer = 0;
+	public int MaxCooldown = 0;
+	public int Cooldown = 0;
+	public int ManaCost = 0;
+	public ItemType WeaponType = ItemType.None;
+	public byte Level = 1;
 
-	public int MaxCooldown = maxCooldown;
-	public int Cooldown = cooldown;
-
-	public int ManaCost = manaCost;
-
-	public ItemType WeaponType = weaponType;
-	public byte Level = level;
+	public abstract int MaxLevel { get; }
 
 	public virtual string Name => GetType().Name;
 	public virtual string Texture => $"{PathOfTerraria.ModName}/Assets/Skills/" + GetType().Name;
@@ -25,11 +22,24 @@ public abstract class Skill(int duration, int timer, int maxCooldown, int cooldo
 	/// </summary>
 	/// <param name="type">The type of skill to generate.</param>
 	/// <returns>The newly generated skill.</returns>
-	public static Skill ReflectSkillInstance(Type type)
+	public static Skill GetAndPrepareSkill(Type type)
 	{
-		ConstructorInfo ctor = type.GetConstructor([typeof(int), typeof(int), typeof(int), typeof(int), typeof(int), typeof(ItemType), typeof(byte)]);
-		var skill = ctor.Invoke([0, 0, 0, 0, 0, ItemType.None, (byte)1]) as Skill;
+		var skill = Activator.CreateInstance(type) as Skill;
+		skill.LevelTo(1);
 		return skill;
+	}
+
+	/// <inheritdoc cref="GetAndPrepareSkill(Type)"/>
+	public static Skill GetAndPrepareSkill<T>()
+	{
+		return GetAndPrepareSkill(typeof(T));
+	}
+
+	public abstract void LevelTo(byte level);
+
+	protected void IncreaseLevel()
+	{
+		LevelTo((byte)(Level + 1));
 	}
 
 	/// <summary>
@@ -37,13 +47,6 @@ public abstract class Skill(int duration, int timer, int maxCooldown, int cooldo
 	/// </summary>
 	/// <param name="player">The player using the skill</param>
 	public abstract void UseSkill(Player player);
-
-	/// <summary>
-	/// Gets the description of this skill
-	/// </summary>
-	/// <param name="player">The player that has the skill</param>
-	/// <returns>The skill's description</returns>
-	public abstract string GetDescription(Player player);
 
 	/// <summary>
 	/// If this skill should be able to be used. By default this is if the cooldown is over and the player has enough mana.
