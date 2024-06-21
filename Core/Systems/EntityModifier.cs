@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace PathOfTerraria.Core.Systems;
-internal class EntityModifier
+internal partial class EntityModifier
 {
 	private static readonly EntityModifier _default = new();
 	public StatModifier MaximumLife = new();
@@ -34,9 +34,12 @@ internal class EntityModifier
 	public StatModifier PotionManaPower = new();
 	public StatModifier PotionManaDelay = new();
 
-	// BufModifierPlayer:
+	// BuffModifierPlayer:
 	public StatModifier DebuffResistance = new();
 	public StatModifier BuffBonus = new();
+	
+	// ReflectedDamagePlayer:
+	public StatModifier ReflectedDamageModifier = new();
 
 	public void ApplyTo(NPC npc)
 	{
@@ -84,13 +87,19 @@ internal class EntityModifier
 		BuffModifierPlayer buffPlayer = player.GetModPlayer<BuffModifierPlayer>();
 		buffPlayer.ResistanceStrength = DebuffResistance;
 		buffPlayer.BuffBonus = BuffBonus;
+
+		// Apply reflected damage modifier with a base of 0. We need to use "Modifier.Base += x;" for this to be useful at all.
+		// We also apply vanilla Thorns buffs in order to make sure we get all the benefit we can.
+		ReflectedDamagePlayer reflectPlayer = player.GetModPlayer<ReflectedDamagePlayer>();
+		ReflectedDamageModifier *= ReflectedDamagePlayer.GetVanillaThornsModifier(player);
+		reflectPlayer.ReflectedDamage = (int)ReflectedDamageModifier.ApplyTo(0);
 	}
 
 	private readonly FieldInfo[] _fields = typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToArray();
 
 	public List<string> GetDifference(EntityModifier other)
 	{
-		List<string> strings = new List<string>();
+		List<string> strings = [];
 
 		for (int i = 0; i < _fields.Length; i++)
 		{
@@ -100,7 +109,7 @@ internal class EntityModifier
 			if (thisField != otherField)
 			{
 				strings.AddRange(GetDifferences(thisField, otherField)
-					.Select(s => s.Replace("#", Regex.Replace(_fields[i].Name, "([a-z])([A-Z])", "$1 $2"))));
+					.Select(s => s.Replace("#", DifferenceRegex().Replace(_fields[i].Name, "$1 $2"))));
 			}
 		}
 
@@ -111,7 +120,7 @@ internal class EntityModifier
 
 	private string[] GetDifferences(StatModifier m1, StatModifier m2)
 	{
-		List<string> differences = new List<string>();
+		List<string> differences = [];
 
 		float baseDiff = m2.Base - m1.Base;
 		if (baseDiff != 0)
@@ -161,6 +170,9 @@ internal class EntityModifier
 			differences.Add($"{type}{MathF.Round(flatDiff, 2)} flat #");
 		}
 
-		return differences.ToArray();
+		return [.. differences];
 	}
+
+	[GeneratedRegex("([a-z])([A-Z])")]
+	private static partial Regex DifferenceRegex();
 }
