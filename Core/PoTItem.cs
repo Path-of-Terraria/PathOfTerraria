@@ -21,6 +21,7 @@ using TextCopy;
 using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent.UI.Elements;
 using log4net.Core;
+using Stubble.Core.Classes;
 
 namespace PathOfTerraria.Core;
 
@@ -101,42 +102,19 @@ internal abstract class PoTItem : ModItem
 
 			SaveData(tag);
 
-			ClipboardService.SetText(tag.ToString());
+			ClipboardService.SetText(StringTagRelation.FromTag(tag));
 		}
 #if DEBUG
 		else
 		{
-			string s = ClipboardService.GetText();
-			LoadData(StringToTag.TagFromString(s));
+			TagCompound tag = new TagCompound();
+
+			SaveData(tag);
+
+			LoadData(StringTagRelation.FromString(ClipboardService.GetText(), tag));
 		}
 #endif
 	}
-
-	/*
-	{
-	  int "type" = 1,
-	  int "rarity" = 2,
-	  int "influence" = 0,
-	  int "implicits" = 0,
-	  string "name" = "Harmonic Sword Maw",
-	  int "power" = 200,
-	  object "affixes" [
-		{
-		  string "type" = "PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes.ModifyHitAffixes+BaseKnockbackItemAffix",
-		  float "value" = 0.8
-		},
-		{
-		  string "type" = "PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes.ModifyHitAffixes+PiercingItemAffix",
-		  float "value" = 0.6
-		},
-		{
-		  string "type" = "PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes.PassiveAffixes+RapidItemAffix",
-		  float "value" = 0.4
-		}
-	  ],
-	  int "socketCount" = 0
-	}
-	 */
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
