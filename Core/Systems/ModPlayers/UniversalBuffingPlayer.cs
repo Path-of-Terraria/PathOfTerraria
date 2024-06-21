@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
+using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems.ModPlayers;
 internal class UniversalBuffingPlayer : ModPlayer
@@ -32,8 +33,13 @@ internal class UniversalBuffingPlayer : ModPlayer
 	{
 		if (OnFireChance.Base > 0)
 		{
-			var affix = new ModifyHitAffixes.ChanceToApplyOnFireGearAffix();
-			affix.TryApplyDebuff(target, OnFireChance.Base);
+			float chance = Main.rand.NextFloat();
+			if (chance > OnFireChance.Base)
+			{
+				return;
+			}
+
+			target.AddBuff(BuffID.OnFire, 180); // 180 ticks = 3 seconds
 		}
 
 		base.OnHitNPC(target, hit, damageDone);

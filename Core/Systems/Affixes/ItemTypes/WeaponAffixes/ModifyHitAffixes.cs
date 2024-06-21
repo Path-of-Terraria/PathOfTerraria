@@ -62,16 +62,5 @@ public class ModifyHitAffixes
 		{
 			modifier.OnFireChance.Base += Value;
 		}
-
-		public void TryApplyDebuff(NPC target, float value)
-		{
-			float chance = Main.rand.NextFloat();
-			if (chance > value)
-			{
-				return;
-			}
-
-			target.AddBuff(BuffID.OnFire, 180); // 180 ticks = 3 seconds
-		}
 	}
 }
