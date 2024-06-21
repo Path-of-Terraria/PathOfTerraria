@@ -214,6 +214,13 @@ StoneBoomerang: {
 	Tooltip: ""
 }
 
+FireStarter: {
+	DisplayName: Fire Starter
+	AltUseDescription: 100% chance to apply On Fire! for 3 seconds
+	Description: A dry piece of wood I found in the forest. It's perfect for starting fires.
+	Tooltip: ""
+}
+
 YellowJewel: {
 	DisplayName: Yellow Jewel
 	Tooltip: ""

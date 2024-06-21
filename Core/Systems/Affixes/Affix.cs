@@ -6,15 +6,18 @@ namespace PathOfTerraria.Core.Systems.Affixes;
 
 internal abstract class Affix
 {
-	protected float MinValue;
-	protected float MaxValue = 1f;
+	public float MinValue;
+	public float MaxValue = 1f;
 
-	protected float Value = 1f;
+	public float Value = 1f;
 	// to a certain degree, none of the above is useable by the MobAffix...
 
 	public virtual void Roll()
 	{
-		Value = Main.rand.Next((int)(MinValue * 10), (int)(MaxValue * 10)) / 10f;
+		if (Value == 0)
+		{
+			Value = Main.rand.Next((int)(MinValue * 10), (int)(MaxValue * 10)) / 10f;	
+		}
 	}
 
 	public void Save(TagCompound tag)
@@ -113,6 +116,7 @@ internal abstract class Affix
 		return resultList;
 	}
 }
+
 internal class AffixHandler : ILoadable
 {
 	private static List<ItemAffix> _itemAffixes;

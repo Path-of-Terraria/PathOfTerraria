@@ -1,23 +1,17 @@
 ﻿using PathOfTerraria.Content.Socketables;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text.RegularExpressions;
-using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
-using Terraria.UI;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
 internal abstract class Gear : PoTItem
 {
 	private Socketable[] _sockets = []; // [new Imps()];
-	private int _selectedSocket = 0;
+	private int _selectedSocket;
 
 	public override void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier)
 	{
@@ -55,6 +49,7 @@ internal abstract class Gear : PoTItem
 
 		_sockets = new Socketable[maxSockets];
 	}
+	
 	public sealed override void ExtraUpdateEquips(Player player)
 	{
 		_sockets.Where(s => s is not null).ToList().ForEach(s => s.UpdateEquip(player, Item));

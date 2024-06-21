@@ -1,10 +1,7 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Affixes;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.ModLoader.IO;
 using Terraria.Graphics.Effects;
 using Terraria.UI;
@@ -12,10 +9,7 @@ using System.Reflection;
 using PathOfTerraria.Core.Systems;
 using System.Text.RegularExpressions;
 using Terraria.ID;
-using PathOfTerraria.Content.Socketables;
-using Terraria.GameContent.Items;
 using PathOfTerraria.Core.Systems.ModPlayers;
-using System.Security.Cryptography;
 using PathOfTerraria.Core.Systems.TreeSystem;
 
 namespace PathOfTerraria.Core;
@@ -29,7 +23,7 @@ internal abstract class PoTItem : ModItem
 	private static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
 	// <Drop chance, item rarity, type of item>
 
-	private static bool AddedDetour = false;
+	private static bool _addedDetour;
 
 	public ItemType ItemType;
 	public Rarity Rarity;
@@ -40,12 +34,15 @@ internal abstract class PoTItem : ModItem
 
 	private string _name;
 	protected int InternalItemLevel;
+	
 	public virtual int ItemLevel
 	{
 		get => InternalItemLevel;
 		set => InternalItemLevel = value;
 	}
-
+	
+	public virtual string Description => "";
+	public virtual string AltUseDescription => "";
 	public virtual int MinDropItemLevel => 0;
 
 	protected List<ItemAffix> Affixes = [];
@@ -92,6 +89,11 @@ internal abstract class PoTItem : ModItem
 		}
 
 		tooltips.Add(powerLine);
+		
+		if (!string.IsNullOrWhiteSpace(AltUseDescription))
+		{
+			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", AltUseDescription));
+		}
 
 		if (Item.damage > 0)
 		{
@@ -162,6 +164,11 @@ internal abstract class PoTItem : ModItem
 		foreach (string changes in red)
 		{
 			tooltips.Add(new TooltipLine(Mod, $"Change{affixIdx}", $"[c/FF0000:{changes}]"));
+		}
+		
+		if (!string.IsNullOrWhiteSpace(Description))
+		{
+			tooltips.Add(new TooltipLine(Mod, "Description", Description));
 		}
 	}
 
@@ -505,16 +512,16 @@ internal abstract class PoTItem : ModItem
 
 	public override void Load()
 	{
-		if (!AddedDetour)
+		if (!_addedDetour)
 		{
 			On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
-			AddedDetour = true;
+			_addedDetour = true;
 		}
 	}
 
 	public override void Unload()
 	{
-		AddedDetour = false;
+		_addedDetour = false;
 	}
 
 	private void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
