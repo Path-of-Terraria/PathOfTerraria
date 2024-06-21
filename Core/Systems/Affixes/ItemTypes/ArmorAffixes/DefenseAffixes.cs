@@ -39,4 +39,14 @@ internal class DefenseAffixes
 			modifier.BuffBonus *= 1 + (float)Math.Truncate((Value * 2 + item.ItemLevel / 450) * 5) / 300f;
 		}
 	}
+
+	internal class ThornyArmorAffix : ItemAffix
+	{
+		public override ItemType PossibleTypes => ItemType.Armor;
+
+		public override void ApplyAffix(EntityModifier modifier, PoTItem item)
+		{
+			modifier.ReflectedDamageModifier += Value * 0.1f;
+		}
+	}
 }
