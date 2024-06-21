@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 
 namespace PathOfTerraria.Core.Systems;
+
 internal partial class EntityModifier
 {
 	private static readonly EntityModifier _default = new();
@@ -21,6 +22,7 @@ internal partial class EntityModifier
 	public StatModifier Attackspeed = new();
 	public StatModifier ArmorPenetration = new();
 	public StatModifier Knockback = new();
+	public StatModifier OnFireChance = new();
 
 	// MinorStatsModPlayer:
 	public StatModifier MagicFind = new();
@@ -45,8 +47,9 @@ internal partial class EntityModifier
 	{
 		npc.life = (int)MaximumLife.ApplyTo(npc.life);
 		npc.lifeRegen = (int)LifeRegen.ApplyTo(npc.lifeRegen);
-		npc.defense = (int)Defense.ApplyTo(npc.defense); // npcs have no such thing as damage reduction, idk how we apply that.
-														 //	Can only think of a global npc.
+		npc.defense =
+			(int)Defense.ApplyTo(npc.defense); // npcs have no such thing as damage reduction, idk how we apply that.
+		//	Can only think of a global npc.
 		npc.damage = (int)Damage.ApplyTo(npc.damage);
 
 		// there are many things that would need a global npc to be applied.
@@ -58,19 +61,20 @@ internal partial class EntityModifier
 
 		player.lifeRegen = (int)LifeRegen.ApplyTo(player.lifeRegen); // dont know if this is the right value
 		player.statManaMax2 = (int)MaximumMana.ApplyTo(player.statManaMax2);
-		// player.statManaMax - for when the overlay gets implimented
+		// player.statManaMax - for when the overlay gets implemented
 
 		player.manaRegen = (int)ManaRegen.ApplyTo(player.manaRegen); // dont know if this is the right value
-		player.statDefense += (int)Defense.ApplyTo((int)player.statDefense) - (int)player.statDefense;
-		
+		player.statDefense += (int)Defense.ApplyTo((int)player.statDefense) - player.statDefense;
+
 		player.endurance *= (int)DamageReduction.ApplyTo(player.endurance); // i think this is right..?
 		player.moveSpeed = MovementSpeed.ApplyTo(player.moveSpeed);
 		player.GetDamage(DamageClass.Generic) = player.GetDamage(DamageClass.Generic).CombineWith(Damage);
 
 		player.GetAttackSpeed(DamageClass.Generic) = Attackspeed.ApplyTo(player.GetAttackSpeed(DamageClass.Generic));
-		
+
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
-		player.GetArmorPenetration(DamageClass.Generic) = Knockback.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
+		player.GetArmorPenetration(DamageClass.Generic) =
+			Knockback.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
 
 		MinorStatsModPlayer msmp = player.GetModPlayer<MinorStatsModPlayer>();
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);
@@ -83,8 +87,11 @@ internal partial class EntityModifier
 		ps.MaxMana = (int)MaxHealthPotions.ApplyTo(ps.MaxMana);
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
-
-		BuffModifierPlayer buffPlayer = player.GetModPlayer<BuffModifierPlayer>();
+	
+		UniversalBuffingPlayer universalBuffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
+		universalBuffingPlayer.OnFireChance = OnFireChance;
+    
+    BuffModifierPlayer buffPlayer = player.GetModPlayer<BuffModifierPlayer>();
 		buffPlayer.ResistanceStrength = DebuffResistance;
 		buffPlayer.BuffBonus = BuffBonus;
 
@@ -95,7 +102,8 @@ internal partial class EntityModifier
 		reflectPlayer.ReflectedDamage = (int)ReflectedDamageModifier.ApplyTo(0);
 	}
 
-	private readonly FieldInfo[] _fields = typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToArray();
+	private readonly FieldInfo[] _fields =
+		typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToArray();
 
 	public List<string> GetDifference(EntityModifier other)
 	{
