@@ -148,7 +148,6 @@ internal partial class EntityModifier
 			}
 
 			bool isPositive = type == "+";
-			Console.WriteLine(isPositive + " | " + (reversed ? !isPositive : isPositive));
 			differences.Add(new($"{type}{MathF.Round(baseDiff, 2)} base #", reversed ? !isPositive : isPositive));
 		}
 
