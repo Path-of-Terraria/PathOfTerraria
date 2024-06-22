@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core;
+﻿namespace PathOfTerraria.Core.Events;
 
 public class PathOfTerrariaNpcEvents : GlobalNPC
 {

@@ -1,8 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using PathOfTerraria.Core.Loaders.UILoading;
+﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using ReLogic.Graphics;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Core.Mechanics;

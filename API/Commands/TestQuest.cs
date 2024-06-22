@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Questing;
-using PathOfTerraria.Core.Systems.Questing.QuestingEventHandlers;
 using SubworldLibrary;
 
 namespace PathOfTerraria.API.Commands;

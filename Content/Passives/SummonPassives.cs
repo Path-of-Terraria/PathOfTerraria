@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Events;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using Terraria.ID;
 

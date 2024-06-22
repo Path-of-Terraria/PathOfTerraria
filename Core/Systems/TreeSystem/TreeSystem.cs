@@ -32,8 +32,8 @@ internal class TreePlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		UILoader.GetUIState<PassiveTree>().RemoveAllChildren(); // is this really necessary?
-		UILoader.GetUIState<PassiveTree>().CurrentDisplayClass = PlayerClass.None;
+		UILoader.GetUIState<TreeState>().RemoveAllChildren(); // is this really necessary?
+		UILoader.GetUIState<TreeState>().CurrentDisplayClass = PlayerClass.None;
 	}
 
 	public void CreateTree()
@@ -92,8 +92,8 @@ internal class TreePlayer : ModPlayer
 
 		if (!_lastState && Main.mouseLeft)
 		{
-			Main.blockMouse = UILoader.GetUIState<PassiveTree>().IsVisible &&
-						  UILoader.GetUIState<PassiveTree>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
+			Main.blockMouse = UILoader.GetUIState<TreeState>().IsVisible &&
+						  UILoader.GetUIState<TreeState>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
 		}
 		else
 		{
