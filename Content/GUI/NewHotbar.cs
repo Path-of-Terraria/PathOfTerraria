@@ -65,7 +65,7 @@ internal class NewHotbar : SmartUIState
 
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
-		DrawHotkeys(spriteBatch);
+		DrawHotkeys(spriteBatch, -prog * 80);
 		DrawHeldItemName(spriteBatch);
 	}
 
@@ -208,7 +208,7 @@ internal class NewHotbar : SmartUIState
 		return 1 + c3 * (float)Math.Pow(input - 1, 3) + c1 * (float)Math.Pow(input - 1, 2);
 	}
 
-	private void DrawHotkeys(SpriteBatch spriteBatch)
+	private void DrawHotkeys(SpriteBatch spriteBatch, float off)
 	{
 		//Don't draw hotkeys if the player isn't holding the first item in their inventory, as this is when these are visible
 		if (!IsHoldingFirstHotbarItem())
@@ -222,7 +222,7 @@ internal class NewHotbar : SmartUIState
 		if (quickHealHotkey.Count > 0)
 		{
 			string assignedKey = quickHealHotkey[0];
-			DrawLetter(spriteBatch, assignedKey, new Vector2(472, 71), Color.White);
+			DrawLetter(spriteBatch, assignedKey, new Vector2(472, 71 + off), Color.White);
 		}
 
 		if (quickManaHotkey.Count <= 0)
@@ -231,7 +231,7 @@ internal class NewHotbar : SmartUIState
 		}
 
 		string assignedManaKey = quickManaHotkey[0];
-		DrawLetter(spriteBatch, assignedManaKey, new Vector2(523, 71), Color.White);
+		DrawLetter(spriteBatch, assignedManaKey, new Vector2(523, 71 + off), Color.White);
 
 		// Draw Skill Hotkeys
 		string skill1Key = SkillPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault();
@@ -240,23 +240,23 @@ internal class NewHotbar : SmartUIState
 
 		if (!string.IsNullOrEmpty(skill1Key))
 		{
-			DrawLetter(spriteBatch, skill1Key.Replace("D", ""), new Vector2(285, 71), Color.White);
+			DrawLetter(spriteBatch, skill1Key.Replace("D", ""), new Vector2(285, 71 + off), Color.White);
 		}
 
 		if (!string.IsNullOrEmpty(skill2Key))
 		{
-			DrawLetter(spriteBatch, skill2Key.Replace("D", ""), new Vector2(338, 71), Color.White);
+			DrawLetter(spriteBatch, skill2Key.Replace("D", ""), new Vector2(338, 71 + off), Color.White);
 		}
 
 		if (!string.IsNullOrEmpty(skill3Key))
 		{
-			DrawLetter(spriteBatch, skill3Key.Replace("D", ""), new Vector2(390, 71), Color.White);
+			DrawLetter(spriteBatch, skill3Key.Replace("D", ""), new Vector2(390, 71 + off), Color.White);
 		}
 	}
 	
 	private void DrawLetter(SpriteBatch spriteBatch, string letter, Vector2 position, Color color)
 	{
-        spriteBatch.DrawString(_font, letter, position, color, 0f, Vector2.Zero, 0.43f, SpriteEffects.None, 0f);
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, _font, letter, position, color, 0f, Vector2.Zero, new Vector2(0.43f));
 	}
 
 	/// <summary>
