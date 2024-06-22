@@ -13,10 +13,6 @@ internal class HotbarHijack : ModSystem
 		On_Main.GUIHotbarDrawInner += StopVanillaHotbarDrawing;
 		On_ItemSlot.LeftClick_ItemArray_int_int += ReserveHotbarSlots_PreventLeftClickingItemsIntoHotbar;
 		On_Player.GetItem_FillEmptyInventorySlot += ReserveHotbarSlors_PreventFillingHotbarWithItems;
-
-		// mouseItem is held item
-		// selectedItem is item selected in inventory
-		// mouseItem is index 58
 	}
 
 	private static void StopVanillaHotbarDrawing(On_Main.orig_GUIHotbarDrawInner orig, Main self)
