@@ -1,8 +1,8 @@
-﻿using PathOfTerraria.Core.Systems.SkillSystem;
+﻿using PathOfTerraria.Core.Mechanics;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Skills.Melee;
+namespace PathOfTerraria.Content.Skills.Magic;
 
 public class Nova : Skill
 {
@@ -54,11 +54,11 @@ public class Nova : Skill
 
 		public override void AI()
 		{
-			const float MaxDustIterations = 61;
+			const float maxDustIterations = 61;
 
-			for (int i = 0; i < MaxDustIterations; ++i)
+			for (int i = 0; i < maxDustIterations; ++i)
 			{
-				Vector2 spread = new Vector2(Spread, 0).RotatedBy(i / MaxDustIterations * MathHelper.TwoPi);
+				Vector2 spread = new Vector2(Spread, 0).RotatedBy(i / maxDustIterations * MathHelper.TwoPi);
 				Vector2 position = Projectile.Center + spread;
 				Dust dust = Dust.NewDustPerfect(position, DustID.Astra, spread / Spread * 6);
 				dust.scale = 0.5f;
