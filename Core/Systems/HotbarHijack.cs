@@ -11,19 +11,25 @@ internal class HotbarHijack : ModSystem
 	public override void Load()
 	{
 		On_ItemSlot.LeftClick_ItemArray_int_int += StopHotbar;
-		On_Main.GUIHotbarDrawInner += StopHoverText;
+		On_Main.GUIHotbarDrawInner += StopVanillaHotbarDrawing;
 	}
 
-	private void StopHoverText(On_Main.orig_GUIHotbarDrawInner orig, Main self)
+	private void StopVanillaHotbarDrawing(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
-		string lastHover = Main.hoverItemName;
+		// This detour previously handled preventing the hover text that would
+		// draw when hovering over items in the hotbar.
+		// It has been reworked to prevent all associated drawing of the vanilla
+		// hotbar instead.
+		// This allows for other mods' detours to run if they hook this method
+		// while still sufficiently preventing the vanilla hotbar from drawing.
+
+		// Always set it to true to cause an early return in the vanilla method.
+		bool origPlayerInventory = Main.playerInventory;
+		Main.playerInventory = true;
 
 		orig(self);
 
-		if (Main.LocalPlayer.selectedItem == 0 && !Main.hoverItemName.StartsWith(Main.LocalPlayer.HeldItem.AffixName()))
-		{
-			Main.hoverItemName = lastHover;
-		}
+		Main.playerInventory = origPlayerInventory;
 	}
 
 	private void StopHotbar(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)

@@ -31,13 +31,6 @@ internal class NewHotbar : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		var hideTarget = new Rectangle(0, 0, Main.LocalPlayer.selectedItem > 10 ? 510 : 466, 72);
-
-		if (!Main.screenTarget.IsDisposed)
-		{
-			Main.spriteBatch.Draw(Main.screenTarget, hideTarget, hideTarget, Color.White);
-		}
-
 		float prog;
 
 		if (Main.LocalPlayer.selectedItem == 0)
