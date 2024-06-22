@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static PathOfTerraria.Core.PathOfTerrariaNpcEvents;
+using PathOfTerraria.Core.Events;
+using static PathOfTerraria.Core.Events.PathOfTerrariaNpcEvents;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing.QuestStepTypes;

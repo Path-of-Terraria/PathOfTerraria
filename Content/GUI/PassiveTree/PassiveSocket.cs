@@ -1,11 +1,10 @@
 ﻿using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI;
+namespace PathOfTerraria.Content.GUI.PassiveTree;
 
 internal class PassiveSocket : PassiveElement
 {

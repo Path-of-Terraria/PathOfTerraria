@@ -1,7 +1,6 @@
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
-using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using Terraria.GameContent.UI.Elements;

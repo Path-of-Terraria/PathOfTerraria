@@ -4,7 +4,7 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI;
+namespace PathOfTerraria.Content.GUI.PassiveTree;
 
 internal class PassiveElement : SmartUIElement
 {
@@ -13,31 +13,31 @@ internal class PassiveElement : SmartUIElement
 	private int _flashTimer;
 	private int _redFlashTimer;
 
-	private PassiveTree UITree => UILoader.GetUIState<PassiveTree>();
+	private TreeState UiTreeState => UILoader.GetUIState<TreeState>();
 	
 	public PassiveElement(Passive passive)
 	{
 		float halfSizeX = passive.Size.X / 2;
 		float halfSizeY = passive.Size.Y / 2;
 
-		if (passive.TreePos.X - halfSizeX < UITree.TopLeftTree.X)
+		if (passive.TreePos.X - halfSizeX < UiTreeState.TopLeftTree.X)
 		{
-			UITree.TopLeftTree.X = passive.TreePos.X - halfSizeX;
+			UiTreeState.TopLeftTree.X = passive.TreePos.X - halfSizeX;
 		}
 		
-		if (passive.TreePos.Y - halfSizeY < UITree.TopLeftTree.Y)
+		if (passive.TreePos.Y - halfSizeY < UiTreeState.TopLeftTree.Y)
 		{
-			UITree.TopLeftTree.Y = passive.TreePos.Y - halfSizeY;
+			UiTreeState.TopLeftTree.Y = passive.TreePos.Y - halfSizeY;
 		}
 
-		if (passive.TreePos.X + halfSizeX > UITree.BotRightTree.X)
+		if (passive.TreePos.X + halfSizeX > UiTreeState.BotRightTree.X)
 		{
-			UITree.BotRightTree.X = passive.TreePos.X + halfSizeX;
+			UiTreeState.BotRightTree.X = passive.TreePos.X + halfSizeX;
 		}
 		
-		if (passive.TreePos.Y + halfSizeY > UITree.BotRightTree.Y)
+		if (passive.TreePos.Y + halfSizeY > UiTreeState.BotRightTree.Y)
 		{
-			UITree.BotRightTree.Y = passive.TreePos.Y + halfSizeY;
+			UiTreeState.BotRightTree.Y = passive.TreePos.Y + halfSizeY;
 		}
 
 		_passive = passive;

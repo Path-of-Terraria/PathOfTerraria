@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.Overlays;
+﻿namespace PathOfTerraria.Core;
 internal class StatOverlay : ModResourceOverlay
 {
 	private Color GetBarColor(int bar)

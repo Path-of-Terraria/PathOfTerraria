@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems.SkillSystem;
 using System.Linq;
+using PathOfTerraria.Core.Mechanics;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.API.Commands;
@@ -124,29 +125,22 @@ public class AddSkill : ModCommand {
 		{
 			skill.Level = (byte)level;
 		}
-
-		if (SetSkillOrComplain(caller, args, skillSlot, skill, levelValid, 9, 8, "level"))
-		{
-			return;
-		}
 	}
 
 	private static bool SetSkillOrComplain(CommandCaller caller, string[] args, int skillSlot, Skill skill, bool valid, int argCount, int slot, string name)
 	{
-		if (args.Length == argCount)
+		if (args.Length != argCount)
 		{
-			if (valid)
-			{
-				Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
-				return true;
-			}
-			else
-			{
-				caller.Reply($"Argument {slot} ({name}) must be int!", Color.Red);
-				return true;
-			}
+			return false;
 		}
 
-		return false;
+		if (valid)
+		{
+			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
+			return true;
+		}
+
+		caller.Reply($"Argument {slot} ({name}) must be int!", Color.Red);
+		return true;
 	}
 }
