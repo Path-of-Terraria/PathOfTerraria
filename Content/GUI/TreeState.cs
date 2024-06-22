@@ -4,7 +4,9 @@ using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using System.Collections.Generic;
 using PathOfTerraria.Content.GUI.PassiveTree;
+using PathOfTerraria.Content.GUI.SkillsTree;
 using PathOfTerraria.Content.GUI.Utilities;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -17,7 +19,8 @@ internal class TreeState : SmartUIState
 {
 	public UIDraggablePanel Panel;
 	public UIImageButton CloseButton;
-	public InnerPanel Inner;
+	public PassiveTreeInnerPanel PassiveTreeInner;
+	public SkillsTreeInnerPanel SkillsTreeInner;
 
 	public bool IsVisible;
 
@@ -53,7 +56,8 @@ internal class TreeState : SmartUIState
 			CurrentDisplayClass = newClass;
 			RemoveAllChildren();
 			CreateMainPanel();
-			AddInnerPanel();
+			AddPassiveTreeInnerPanel();
+			AddSkillsTreeInnerPanel();
 			AddCloseButton();
 
 			TreeSystem.CreateTree();
@@ -61,11 +65,11 @@ internal class TreeState : SmartUIState
 			{
 				if (n is JewelSocket socket)
 				{
-					Inner.Append(new PassiveSocket(socket));
+					PassiveTreeInner.Append(new PassiveSocket(socket));
 				}
 				else
 				{
-					Inner.Append(new PassiveElement(n));
+					PassiveTreeInner.Append(new PassiveElement(n));
 				}
 			});
 		}
@@ -103,17 +107,37 @@ internal class TreeState : SmartUIState
 
 	private void HandleActiveTabChanged()
 	{
-		SoundEngine.PlaySound(SoundID.Bird, Main.LocalPlayer.Center);
+		switch (Panel.ActiveTab)
+		{
+			case "PassiveTree":
+				PassiveTreeInner.Visible = true;
+				SkillsTreeInner.Visible = false;
+				break;
+			case "SkillTree":
+				PassiveTreeInner.Visible = false;
+				SkillsTreeInner.Visible = true;
+				break;
+		}
 	}
 
-	protected void AddInnerPanel()
+	protected void AddPassiveTreeInnerPanel()
 	{
-		Inner = new InnerPanel();
-		Inner.Left.Set(0, 0);
-		Inner.Top.Set(DraggablePanelHeight, 0);
-		Inner.Width.Set(0, 1f);
-		Inner.Height.Set(-DraggablePanelHeight, 1f);
-		Panel.Append(Inner);
+		PassiveTreeInner = new PassiveTreeInnerPanel();
+		PassiveTreeInner.Left.Set(0, 0);
+		PassiveTreeInner.Top.Set(DraggablePanelHeight, 0);
+		PassiveTreeInner.Width.Set(0, 1f);
+		PassiveTreeInner.Height.Set(-DraggablePanelHeight, 1f);
+		Panel.Append(PassiveTreeInner);
+	}
+	
+	protected void AddSkillsTreeInnerPanel()
+	{
+		SkillsTreeInner = new SkillsTreeInnerPanel();
+		SkillsTreeInner.Left.Set(0, 0);
+		SkillsTreeInner.Top.Set(DraggablePanelHeight, 0);
+		SkillsTreeInner.Width.Set(0, 1f);
+		SkillsTreeInner.Height.Set(-DraggablePanelHeight, 1f);
+		Panel.Append(SkillsTreeInner);
 	}
 
 	protected void AddCloseButton()
@@ -121,7 +145,7 @@ internal class TreeState : SmartUIState
 		CloseButton =
 			new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
 		CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
-		CloseButton.Top.Set(DraggablePanelHeight + PointsAndExitPadding, 0f);
+		CloseButton.Top.Set(10, 0f);
 		CloseButton.Width.Set(38, 0);
 		CloseButton.Height.Set(38, 0);
 		CloseButton.OnLeftClick += (a, b) =>
@@ -136,15 +160,22 @@ internal class TreeState : SmartUIState
 	protected void DrawPanelText(SpriteBatch spriteBatch)
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PassiveFrameSmall").Value;
-		TreePlayer mp = Main.LocalPlayer.GetModPlayer<TreePlayer>();
+		TreePlayer treePlayer = Main.LocalPlayer.GetModPlayer<TreePlayer>();
+		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
 
 		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) +
 		                         tex.Size() / 2;
 
+		int points = Panel.ActiveTab switch
+		{
+			"PassiveTree" => treePlayer.Points,
+			"SkillTree" => skillPlayer.Points,
+			_ => 0
+		};
 		spriteBatch.Draw(tex, GetRectangle().TopLeft() + pointsDrawPoin, null, Color.White, 0, tex.Size() / 2f, 1, 0,
 			0);
-		Utils.DrawBorderStringBig(spriteBatch, $"{mp.Points}", GetRectangle().TopLeft() + pointsDrawPoin,
-			mp.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
+		Utils.DrawBorderStringBig(spriteBatch, $"{points}", GetRectangle().TopLeft() + pointsDrawPoin,
+			treePlayer.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
 		Utils.DrawBorderStringBig(spriteBatch, "Points remaining",
 			GetRectangle().TopLeft() + pointsDrawPoin + new Vector2(138, 0), Color.White, 0.6f, 0.5f, 0.35f);
 	}

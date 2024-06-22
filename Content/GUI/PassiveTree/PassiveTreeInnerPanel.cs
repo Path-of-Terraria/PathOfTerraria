@@ -5,7 +5,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.PassiveTree;
 
-internal class InnerPanel : SmartUIElement
+internal class PassiveTreeInnerPanel : SmartUIElement
 {
 	private Vector2 _start;
 	private Vector2 _lineOff;
@@ -14,9 +14,15 @@ internal class InnerPanel : SmartUIElement
 
 	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 	private TreeState UiTreeState => UILoader.GetUIState<TreeState>();
+	public bool Visible = true;
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
+		if (!Visible)
+		{
+			return;
+		}
+
 		Rectangle oldRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
 		spriteBatch.GraphicsDevice.ScissorRectangle = Panel.GetDimensions().ToRectangle();
@@ -32,7 +38,8 @@ internal class InnerPanel : SmartUIElement
 
 			if (edge.End.CanAllocate(Main.LocalPlayer) && edge.Start.Level > 0)
 			{
-				color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
+				color = Color.Lerp(Color.Gray, Color.White,
+					(float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 			}
 
 			if (edge.End.Level > 0 && edge.Start.Level > 0)
@@ -42,17 +49,17 @@ internal class InnerPanel : SmartUIElement
 
 			for (float k = 0; k <= 1; k += 1 / (Vector2.Distance(edge.Start.TreePos, edge.End.TreePos) / 16))
 			{
-				Vector2 pos = GetDimensions().Center() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) + _lineOff;
-				Main.spriteBatch.Draw(chainTex, pos, null, color, edge.Start.TreePos.DirectionTo(edge.End.TreePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
+				Vector2 pos = GetDimensions().Center() + Vector2.Lerp(edge.Start.TreePos, edge.End.TreePos, k) +
+				              _lineOff;
+				Main.spriteBatch.Draw(chainTex, pos, null, color,
+					edge.Start.TreePos.DirectionTo(edge.End.TreePos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 			}
 
 			if (edge.End.Level > 0 && edge.Start.Level > 0)
 			{
-				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowAlpha").Value;
-				var glowColor = new Color(255, 230, 150)
-				{
-					A = 0
-				};
+				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowAlpha")
+					.Value;
+				var glowColor = new Color(255, 230, 150) { A = 0 };
 
 				var rand = new Random(edge.GetHashCode());
 
@@ -63,7 +70,8 @@ internal class InnerPanel : SmartUIElement
 					float scale = 0.05f + rand.NextSingle() * 0.15f;
 
 					float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
-					Vector2 pos = GetDimensions().Center() + Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
+					Vector2 pos = GetDimensions().Center() +
+					              Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
 					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
 				}
@@ -79,9 +87,9 @@ internal class InnerPanel : SmartUIElement
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
 	}
 
-	private bool _blockMouse = false;
-	private bool _isHovering = false;
-	private bool _lastState = false;
+	private bool _blockMouse;
+	private bool _isHovering;
+	private bool _lastState;
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
@@ -92,7 +100,7 @@ internal class InnerPanel : SmartUIElement
 		}
 		else if (!Main.mouseLeft)
 		{
-			_blockMouse = _isHovering= false;
+			_blockMouse = _isHovering = false;
 		}
 
 		BlockClickItem.Block = Parent.GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
