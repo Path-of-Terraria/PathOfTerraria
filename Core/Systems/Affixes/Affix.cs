@@ -24,11 +24,15 @@ internal abstract class Affix
 	{
 		tag["type"] = GetType().FullName;
 		tag["value"] = Value;
+		tag["maxValue"] = MaxValue;
+		tag["minValue"] = MinValue;
 	}
 
 	protected void Load(TagCompound tag)
 	{
 		Value = tag.GetFloat("value");
+		MaxValue = tag.GetFloat("maxValue");
+		MinValue = tag.GetFloat("minValue");
 	}
 
 	public static Affix CreateAffix<T>(float value = -1, float minValue = 0f, float maxValue = 1f)
@@ -134,6 +138,10 @@ internal class AffixHandler : ILoadable
 			.Where(proto => proto.RequiredInfluence == Influence.None || proto.RequiredInfluence == item.Influence)
 			.Where(proto => (item.ItemType & proto.PossibleTypes) == item.ItemType)
 			.ToList();
+	}
+	public static List<ItemAffix> GetAffixes()
+	{
+		return _itemAffixes;
 	}
 
 	/// <summary>

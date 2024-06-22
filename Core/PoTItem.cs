@@ -11,8 +11,40 @@ using System.Text.RegularExpressions;
 using Terraria.ID;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.TreeSystem;
+using TextCopy;
+using Microsoft.Xna.Framework.Input;
+using Terraria.GameContent.UI.Elements;
+using log4net.Core;
+using Stubble.Core.Classes;
 
 namespace PathOfTerraria.Core;
+
+internal class PoTItemMiddleMouseButtonClick : ILoadable
+{
+	public static ModKeybind CopyItem { get; private set; }
+	public void Load(Mod mod)
+	{
+		CopyItem = KeybindLoader.RegisterKeybind(mod, "Copy Item Info", "I");
+		On_ItemSlot.LeftClick_ItemArray_int_int += AddKeybindPressEvent;
+	}
+
+	public void Unload()
+	{
+		CopyItem = null;
+	}
+	private void AddKeybindPressEvent(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+	{
+		if (CopyItem.JustPressed)
+		{
+			if (inv[slot].active && inv[slot].ModItem is PoTItem potItem)
+			{
+				potItem.TriggerCopyToClipboard();
+			}
+		}
+
+		orig(inv, context, slot);
+	}
+}
 internal abstract class PoTItem : ModItem
 {
 	/// <summary>
@@ -56,6 +88,28 @@ internal abstract class PoTItem : ModItem
 
 	public virtual void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier) { }
 	public virtual void SwapItemModifiers(EntityModifier SawpItemModifier) { }
+
+	public void TriggerCopyToClipboard()
+	{
+		if (!Keyboard.GetState().PressingShift())
+		{
+			TagCompound tag = new TagCompound();
+
+			SaveData(tag);
+
+			ClipboardService.SetText(StringTagRelation.FromTag(tag));
+		}
+#if DEBUG
+		else
+		{
+			TagCompound tag = new TagCompound();
+
+			SaveData(tag);
+
+			LoadData(StringTagRelation.FromString(ClipboardService.GetText(), tag));
+		}
+#endif
+	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
@@ -729,6 +783,7 @@ internal abstract class PoTItem : ModItem
 
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
 
+		Affixes.Clear();
 		foreach (TagCompound newTag in affixTags)
 		{
 			ItemAffix g = Affix.FromTag<ItemAffix>(newTag);
