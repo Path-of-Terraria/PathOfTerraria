@@ -4,9 +4,9 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Core.Systems;
 
-public class AltUseSystem : ModSystem
+public class AltUseUISystem : ModSystem
 {
-	public static AltUseSystem Instance => ModContent.GetInstance<AltUseSystem>();
+	public static AltUseUISystem Instance => ModContent.GetInstance<AltUseUISystem>();
 
 	private static Asset<Texture2D> AltBar = null;
 
