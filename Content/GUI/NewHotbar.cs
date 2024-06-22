@@ -256,7 +256,7 @@ internal class NewHotbar : SmartUIState
 	
 	private void DrawLetter(SpriteBatch spriteBatch, string letter, Vector2 position, Color color)
 	{
-        spriteBatch.DrawString(_font, letter, position, color, 0f, Vector2.Zero, 0.43f, SpriteEffects.None, 0f);
+		ChatManager.DrawColorCodedStringShadow(spriteBatch, _font, letter, position, color, 0f, Vector2.Zero, new Vector2(0.43f));
 	}
 
 	/// <summary>
