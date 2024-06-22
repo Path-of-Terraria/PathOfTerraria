@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.Systems.Affixes.Affixes.Mob;
+﻿namespace PathOfTerraria.Core.Systems.Affixes.MobTypes;
 
 internal class LifeAffixes
 {

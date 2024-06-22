@@ -1,24 +1,24 @@
-﻿using Steamworks;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI;
+namespace PathOfTerraria.Content.GUI.Utilities;
 
+// ReSharper disable once InconsistentNaming
 public class UIDraggablePanel : UIPanel
 {
 	// Stores the offset from the top left of the UIPanel while dragging.
+	// ReSharper disable once InconsistentNaming
 	private Vector2 _mouseOffset { get; set; }
 	private bool Dragging { get; set; }
 
-	private bool[] Scaling = [false, false];
+	private bool[] _scaling = [false, false];
 
-	private Vector2 _minSize = new(400f, 400f);
+	private readonly Vector2 _minSize = new(400f, 400f);
 
 	private readonly bool _stopItemUse;
 
@@ -27,6 +27,8 @@ public class UIDraggablePanel : UIPanel
 	private readonly UIPanel _header;
 
 	private readonly Dictionary<string, UIPanelTab> _menus;
+	public string ActiveTab = "";
+	public event Action OnActiveTabChanged;
 
 	public UIDraggablePanel(bool stopItemUse, bool showCloseButton,
 		IEnumerable<(string key, LocalizedText text)> menuOptions, int panelHeight)
@@ -98,20 +100,21 @@ public class UIDraggablePanel : UIPanel
 		float xGrabPoint = style.X + style.Width - evt.MousePosition.X;
 		if (xGrabPoint > 0 && xGrabPoint < 30)
 		{
-			Scaling[0] = true;
+			_scaling[0] = true;
 		}
 
 		float yGrabPoint = style.Y + style.Height - evt.MousePosition.Y;
 		if (yGrabPoint > 0 && yGrabPoint < 30)
 		{
-			Scaling[1] = true;
+			_scaling[1] = true;
 		}
 
 		base.RightMouseDown(evt);
 	}
+
 	public override void RightMouseUp(UIMouseEvent evt)
 	{
-		Scaling = [false, false];
+		_scaling = [false, false];
 		base.RightMouseUp(evt);
 	}
 
@@ -126,6 +129,9 @@ public class UIDraggablePanel : UIPanel
 		{
 			menuText.TextColor = Color.Yellow;
 		}
+		
+		ActiveTab = page;
+		OnActiveTabChanged?.Invoke();
 	}
 
 	public void HideTab(string page)
@@ -204,10 +210,10 @@ public class UIDraggablePanel : UIPanel
 			Main.LocalPlayer.mouseInterface = true;
 		}
 
-		if (Dragging || Scaling[0] || Scaling[1])
+		if (Dragging || _scaling[0] || _scaling[1])
 		{
 			CalculatedStyle style = GetDimensions();
-			
+
 			if (Dragging)
 			{
 				Vector2 difference = Main.MouseScreen - _mouseOffset;
@@ -216,12 +222,12 @@ public class UIDraggablePanel : UIPanel
 				Top.Pixels += difference.Y;
 			}
 
-			if (Scaling[0])
+			if (_scaling[0])
 			{
 				Width.Pixels = MathF.Max(Main.mouseX - style.X, _minSize.X);
 			}
 
-			if (Scaling[1])
+			if (_scaling[1])
 			{
 				Height.Pixels = MathF.Max(Main.mouseY - style.Y, _minSize.Y);
 			}

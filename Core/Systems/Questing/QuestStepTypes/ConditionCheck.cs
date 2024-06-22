@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PathOfTerraria.Core.Events;
 
 namespace PathOfTerraria.Core.Systems.Questing.QuestStepTypes;
 // maby we make a dialouge class that is for questing dialouge?

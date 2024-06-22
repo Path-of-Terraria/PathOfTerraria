@@ -5,8 +5,9 @@ using System.Linq;
 using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
+using PathOfTerraria.Core.Events;
 using Terraria.ModLoader.IO;
-using static PathOfTerraria.Core.PathOfTerrariaNpcEvents;
+using static PathOfTerraria.Core.Events.PathOfTerrariaNpcEvents;
 
 namespace PathOfTerraria.Core.Systems.Questing.QuestStepTypes;
 internal class KillCount(Func<NPC, bool> includes, int count, Func<string, string> displayText) : QuestStep

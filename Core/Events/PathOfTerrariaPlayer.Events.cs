@@ -1,8 +1,7 @@
-﻿﻿using System.Linq;
+﻿using System.Linq;
 using Terraria.DataStructures;
-using Terraria.UI;
 
-namespace PathOfTerraria.Core;
+namespace PathOfTerraria.Core.Events;
 
 public class PathOfTerrariaPlayerEvents : ModPlayer
 {

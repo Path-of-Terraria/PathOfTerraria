@@ -1,5 +1,6 @@
-﻿using PathOfTerraria.Core.Systems.SkillSystem;
-using System.Linq;
+﻿using System.Linq;
+using PathOfTerraria.Core.Mechanics;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.API.Commands;
@@ -39,6 +40,8 @@ public class AddSkillBasic : ModCommand {
 
 		var skill = Skill.GetAndPrepareSkill(skillType);
 		bool levelValid = int.TryParse(args[2], out int level);
+		SkillPlayer player = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
+		player.Points++;
 
 		if (levelValid)
 		{
