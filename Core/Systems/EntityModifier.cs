@@ -110,7 +110,6 @@ internal class EntityModifier
 	public static List<string> GetChangeOnlyStrings(EntityModifier changed) { return _default.GetDifferenceOnlyStrings(changed); }
 	private List<Tuple<string, bool>> GetDifferences(StatModifier m1, StatModifier m2, bool reversed = false)
 	{
-		Console.WriteLine(reversed);
 		List<Tuple<string, bool>> differences = new List<Tuple<string, bool>>();
 
 		float baseDiff = m2.Base - m1.Base;
@@ -123,7 +122,6 @@ internal class EntityModifier
 			}
 
 			bool isPositive = type == "+";
-			Console.WriteLine(isPositive + " | " + (reversed ? !isPositive : isPositive));
 			differences.Add(new($"{type}{MathF.Round(baseDiff, 2)} base #", reversed ? !isPositive : isPositive));
 		}
 

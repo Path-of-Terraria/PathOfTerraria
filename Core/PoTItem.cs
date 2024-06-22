@@ -57,12 +57,6 @@ internal abstract class PoTItem : ModItem
 	/// </summary>
 	public virtual void Defaults() { }
 
-#if DEBUG
-	public override void RightClick(Player player)
-	{
-	}
-#endif
-
 	public virtual void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier) { }
 	public virtual void SwapItemModifiers(EntityModifier SwapItemModifier) { }
 
