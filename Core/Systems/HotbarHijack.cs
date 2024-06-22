@@ -52,20 +52,15 @@ internal class HotbarHijack : ModSystem
 			return;
 		}
 
-		// Slot 2 should be forced to be the equipped pickaxe
+		// Slot 2 should be forced to be the equipped tool
 		if (tool && slot == 1)
 		{
 			orig(inv, context, slot);
 			return;
 		}
 
-		// The rest of the slots cannot be weapons or picks
-		if (slot < 2)
-		{
-			return;
-		}
-
-		if (weapon || tool)
+		// Tools can go elsewhere, weapons can't
+		if (weapon && !tool)
 		{
 			return;
 		}
@@ -96,14 +91,8 @@ internal class HotbarHijack : ModSystem
 			return orig(self, plr, newItem, settings, returnItem, i);
 		}
 
-		// Don't fill with any other items if they aren't tools or weapons..
-		if (i < 2)
-		{
-			return false;
-		}
-
-		// Tools and weapons can't go anywhere else in the hotbar.
-		if (weapon || tool)
+		// Tools can go elsewhere, weapons can't.
+		if (weapon && !tool)
 		{
 			return false;
 		}
