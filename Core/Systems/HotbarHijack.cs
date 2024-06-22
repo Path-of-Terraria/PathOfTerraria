@@ -10,11 +10,16 @@ internal class HotbarHijack : ModSystem
 {
 	public override void Load()
 	{
-		On_ItemSlot.LeftClick_ItemArray_int_int += StopHotbar;
 		On_Main.GUIHotbarDrawInner += StopVanillaHotbarDrawing;
+		On_ItemSlot.LeftClick_ItemArray_int_int += ReserveHotbarSlots_PreventLeftClickingItemsIntoHotbar;
+		On_Player.GetItem_FillEmptyInventorySlot += ReserveHotbarSlors_PreventFillingHotbarWithItems;
+
+		// mouseItem is held item
+		// selectedItem is item selected in inventory
+		// mouseItem is index 58
 	}
 
-	private void StopVanillaHotbarDrawing(On_Main.orig_GUIHotbarDrawInner orig, Main self)
+	private static void StopVanillaHotbarDrawing(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
 		// This detour previously handled preventing the hover text that would
 		// draw when hovering over items in the hotbar.
@@ -32,44 +37,91 @@ internal class HotbarHijack : ModSystem
 		Main.playerInventory = origPlayerInventory;
 	}
 
-	private void StopHotbar(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+	private static void ReserveHotbarSlots_PreventLeftClickingItemsIntoHotbar(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
 	{
-		if (context == ItemSlot.Context.InventoryItem && !Main.mouseItem.IsAir && slot <= 9)
+		if (context != ItemSlot.Context.InventoryItem || Main.mouseItem.IsAir || slot > 9)
 		{
-			Item item = Main.mouseItem;
-
-			bool weapon = item.IsWeapon();
-			bool tool = item.pick > 0;
-
-			// Slot 1 should be forced to be the equipped weapon
-			if (weapon && slot == 0)
-			{
-				orig(inv, context, slot);
-				return;
-			}
-
-			// Slot 2 should be forced to be the equipped pickaxe
-			if (tool && slot == 1)
-			{
-				orig(inv, context, slot);
-				return;
-			}
-
-			// The rest of the slots cannot be weapons or picks
-			if (slot < 2)
-			{
-				return;
-			}
-
-			if (weapon || tool)
-			{
-				return;
-			}
-
 			orig(inv, context, slot);
 			return;
 		}
 
+		Item item = Main.mouseItem;
+		bool weapon = IsWeapon(item);
+		bool tool = IsTool(item);
+
+		// Slot 1 should be forced to be the equipped weapon
+		if (weapon && slot == 0)
+		{
+			orig(inv, context, slot);
+			return;
+		}
+
+		// Slot 2 should be forced to be the equipped pickaxe
+		if (tool && slot == 1)
+		{
+			orig(inv, context, slot);
+			return;
+		}
+
+		// The rest of the slots cannot be weapons or picks
+		if (slot < 2)
+		{
+			return;
+		}
+
+		if (weapon || tool)
+		{
+			return;
+		}
+
 		orig(inv, context, slot);
+	}
+
+	private static bool ReserveHotbarSlors_PreventFillingHotbarWithItems(On_Player.orig_GetItem_FillEmptyInventorySlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
+	{
+		// If not part of the hotbar, we don't care.
+		if (i > 9)
+		{
+			return orig(self, plr, newItem, settings, returnItem, i);
+		}
+
+		bool weapon = IsWeapon(newItem);
+		bool tool = IsTool(newItem);
+
+		// Allow filling slot 1 with a weapon if there is no item.
+		if (weapon && i == 0)
+		{
+			return orig(self, plr, newItem, settings, returnItem, i);
+		}
+
+		// Allow filling slot 2 with a tool if there is no item.
+		if (tool && i == 1)
+		{
+			return orig(self, plr, newItem, settings, returnItem, i);
+		}
+
+		// Don't fill with any other items if they aren't tools or weapons..
+		if (i < 2)
+		{
+			return false;
+		}
+
+		// Tools and weapons can't go anywhere else in the hotbar.
+		if (weapon || tool)
+		{
+			return false;
+		}
+
+		return orig(self, plr, newItem, settings, returnItem, i);
+	}
+
+	private static bool IsWeapon(Item item)
+	{
+		return item.damage > 0;
+	}
+
+	private static bool IsTool(Item item)
+	{
+		return item.pick > 0 || item.axe > 0 || item.hammer > 0;
 	}
 }
