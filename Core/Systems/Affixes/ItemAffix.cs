@@ -22,7 +22,7 @@ internal abstract class ItemAffix : Affix
 
 		string tooltip = "";
 
-		List<string> affixes = EntityModifier.GetChange(modifier);
+		List<string> affixes = EntityModifier.GetChangeOnlyStrings(modifier);
 
 		if (affixes.Any())
 		{

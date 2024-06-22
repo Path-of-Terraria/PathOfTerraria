@@ -87,7 +87,7 @@ internal abstract class PoTItem : ModItem
 	public virtual void Defaults() { }
 
 	public virtual void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier) { }
-	public virtual void SwapItemModifiers(EntityModifier SawpItemModifier) { }
+	public virtual void SwapItemModifiers(EntityModifier SwapItemModifier) { }
 
 	public void TriggerCopyToClipboard()
 	{
@@ -196,13 +196,13 @@ internal abstract class PoTItem : ModItem
 		List<string> red = new();
 		List<string> green = new();
 		currentItemModifier.GetDifference(thisItemModifier).ForEach(s => {
-			if (s[0] == '-' || s.Contains("decrease"))
+			if (s.Item2)
 			{
-				red.Add(s);
+				green.Add(s.Item1);
 			}
 			else
 			{
-				green.Add(s);
+				red.Add(s.Item1);
 			}
 		});
 		if (red.Count + green.Count > 0)
