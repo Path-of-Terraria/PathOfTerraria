@@ -83,7 +83,7 @@ internal class FireStarterProjectile : ModProjectile
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		AltUseSystem modPlayer = Owner.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = Owner.GetModPlayer<AltUsePlayer>();
 
 		if (modPlayer.AltFunctionActive)
 		{

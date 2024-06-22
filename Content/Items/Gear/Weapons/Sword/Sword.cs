@@ -31,7 +31,7 @@ internal class Sword : Gear
 
 	public override bool AltFunctionUse(Player player)
 	{
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 
 		// If cooldown is still active, do not allow alt usage.
 		if (modPlayer.AltFunctionCooldown > 0 || !modPlayer.Player.CheckMana(5))
@@ -40,7 +40,7 @@ internal class Sword : Gear
 		}
 
 		// Otherwise, set the cooldown and allow alt usage.
-		modPlayer.AltFunctionCooldown = 180;
+		modPlayer.SetAltCooldown(180);
 		return true;
 	}
 
@@ -52,7 +52,7 @@ internal class Sword : Gear
 			return false;
 		}
 
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 		modPlayer.Player.statMana -= 5;
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 

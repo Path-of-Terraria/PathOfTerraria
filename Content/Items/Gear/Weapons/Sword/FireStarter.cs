@@ -45,7 +45,7 @@ internal class FireStarter : Sword
 	
 	public override bool AltFunctionUse(Player player)
 	{
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 
 		if (modPlayer.OnCooldown)
 		{
@@ -57,14 +57,13 @@ internal class FireStarter : Sword
 			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<FireStarterProjectile>(), Item.damage, 0, player.whoAmI);
 		}
 		
-		modPlayer.AltFunctionCooldown = 300;
-		modPlayer.AltFunctionActiveTimer = 160;
+		modPlayer.SetAltCooldown(300, 180);
 		return true;
 	}
 	
 	public override bool CanUseItem(Player player)
 	{
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 		bool altFunctionActive = modPlayer.AltFunctionActive; // Prevent the item from being used if the alt function is active to spawn projectile instead
 
 		if (!altFunctionActive)
