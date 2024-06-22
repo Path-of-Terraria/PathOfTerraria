@@ -21,23 +21,23 @@ namespace PathOfTerraria.Core;
 
 internal class Line(string _prefix, string _tagString, string _val)
 {
-	protected string prefix = _prefix;
-	protected string tagString = _tagString;
-	protected string val = _val;
+	protected string Prefix = _prefix;
+	protected string TagString = _tagString;
+	protected string Val = _val;
 
-	public int PrefixSize => prefix.Length;
-	public string Text => prefix.Length == 0 ? val.ToString() : prefix + ": " + val.ToString();
+	public int PrefixSize => Prefix.Length;
+	public string Text => Prefix.Length == 0 ? Val.ToString() : Prefix + ": " + Val.ToString();
 
 	public virtual void AddTo(TagCompound tag)
 	{
-		tag[tagString] = val;
+		tag[TagString] = Val;
 	}
 
 	public virtual void LoadString(string _prefix, string _tagString, string _val)
 	{
-		prefix = _prefix;
-		tagString = _tagString;
-		val = _prefix.Length == 0 ? _val : _val[(_prefix.Length + 2)..];
+		Prefix = _prefix;
+		TagString = _tagString;
+		Val = _prefix.Length == 0 ? _val : _val[(_prefix.Length + 2)..];
 	}
 }
 internal class Line<T>(string _prefix, string _tagString, object _val) : Line(_prefix, _tagString, _val is null ? "" : _val.ToString())
@@ -46,15 +46,15 @@ internal class Line<T>(string _prefix, string _tagString, object _val) : Line(_p
 	{
 		if (typeof(T) == typeof(int))
 		{
-			tag[tagString] = int.Parse(val);
+			tag[TagString] = int.Parse(Val);
 		}
 		else if (typeof(T) == typeof(float))
 		{
-			tag[tagString] = float.Parse(val);
+			tag[TagString] = float.Parse(Val);
 		}
 		else
 		{
-			tag[tagString] = val;
+			tag[TagString] = Val;
 		}
 	}
 }
@@ -62,9 +62,9 @@ internal class EnumLine<T>(string _prefix, string _tagString, object _val) : Lin
 {
 	public override void AddTo(TagCompound tag)
 	{
-		if (Enum.TryParse(val.ToString(), true, out T nVal))
+		if (Enum.TryParse(Val.ToString(), true, out T nVal))
 		{
-			tag[tagString] = Convert.ChangeType(nVal, typeof(int));
+			tag[TagString] = Convert.ChangeType(nVal, typeof(int));
 		}
 	}
 }
@@ -86,7 +86,7 @@ internal class StringTagRelationAffix(string name, float strength, float min, fl
 		tag["maxValue"] = max;
 	}
 
-	private static Regex regex = new("(^.+): (.+) \\| (.+) \\- (.+)");
+	private static readonly Regex regex = new("(^.+): (.+) \\| (.+) \\- (.+)");
 	public static StringTagRelationAffix FromString(string s)
 	{
 		string[] strings = regex.Split(s);
@@ -135,6 +135,7 @@ internal class StringTagRelationAffixList(int _implicits)
 			{
 				sb.AppendLine("[Affixes]");
 			}
+
 			sb.AppendLine(affix.Text);
 			implicitsLeft--;
 		}
@@ -158,6 +159,7 @@ internal class StringTagRelationAffixList(int _implicits)
 			{
 				ret.List.Add(StringTagRelationAffix.FromString(s));
 			}
+
 			implicits++;
 		}
 

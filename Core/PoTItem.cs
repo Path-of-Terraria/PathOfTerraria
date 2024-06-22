@@ -27,31 +27,29 @@ namespace PathOfTerraria.Core;
 
 internal class PoTItemMiddleMouseButtonClick : ILoadable
 {
+	public static ModKeybind CopyItem { get; private set; }
 	public void Load(Mod mod)
 	{
-		On_ItemSlot.LeftClick_ItemArray_int_int += AddMiddleButtonEvent;
-	}
-	private void AddMiddleButtonEvent(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
-	{
-		MiddleClick(inv, slot);
-		orig(inv, context, slot);
+		CopyItem = KeybindLoader.RegisterKeybind(mod, "Copy Item Info", "I");
+		On_ItemSlot.LeftClick_ItemArray_int_int += AddKeybindPressEvent;
 	}
 
-	static bool _middleClickStatus = false;
-	public static void MiddleClick(Item[] inv, int slot = 0)
+	public void Unload()
 	{
-		if (Mouse.GetState().MiddleButton == ButtonState.Pressed && _middleClickStatus)
+		CopyItem = null;
+	}
+	private void AddKeybindPressEvent(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+	{
+		if (CopyItem.JustPressed)
 		{
 			if (inv[slot].active && inv[slot].ModItem is PoTItem potItem)
 			{
-				potItem.OnMiddleClicked();
+				potItem.TriggerCopyToClipboard();
 			}
 		}
 
-		_middleClickStatus = Mouse.GetState().MiddleButton == ButtonState.Released;
+		orig(inv, context, slot);
 	}
-
-	public void Unload() { }
 }
 internal abstract class PoTItem : ModItem
 {
@@ -94,7 +92,7 @@ internal abstract class PoTItem : ModItem
 	public virtual void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier) { }
 	public virtual void SwapItemModifiers(EntityModifier SawpItemModifier) { }
 
-	public void OnMiddleClicked()
+	public void TriggerCopyToClipboard()
 	{
 		if (!Keyboard.GetState().PressingShift())
 		{
