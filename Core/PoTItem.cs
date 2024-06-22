@@ -24,7 +24,7 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 	public static ModKeybind CopyItem { get; private set; }
 	public void Load(Mod mod)
 	{
-		CopyItem = KeybindLoader.RegisterKeybind(mod, "Copy Item Info", "I");
+		CopyItem = KeybindLoader.RegisterKeybind(mod, "CopyItemInfo", "I");
 		On_ItemSlot.LeftClick_ItemArray_int_int += AddKeybindPressEvent;
 	}
 
