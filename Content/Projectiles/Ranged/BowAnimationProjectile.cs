@@ -89,7 +89,7 @@ internal class BowAnimationProjectile : ModProjectile
 
 		Terraria.Audio.SoundEngine.PlaySound(SoundID.Item5, Projectile.Center);
 		Owner.PickAmmo(Owner.HeldItem, out int type, out float speed, out int damage, out float kB, out int ammoUsed);
-		Owner.GetModPlayer<AltUseSystem>().AltFunctionCooldown = (int)(Cooldown * 60f);
+		Owner.GetModPlayer<AltUsePlayer>().SetAltCooldown((int)(Cooldown * 60f));
 
 		damage = (int)(damage * 3f);
 		Vector2 vel = Projectile.DirectionTo(Main.MouseWorld) * speed * 1.5f;
