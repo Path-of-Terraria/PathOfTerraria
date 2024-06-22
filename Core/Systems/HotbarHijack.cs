@@ -118,6 +118,6 @@ internal class HotbarHijack : ModSystem
 
 	private static bool IsTool(Item item)
 	{
-		return item.pick > 0;
+		return item.pick > 0 || item.axe > 0 || item.hammer > 0;
 	}
 }
