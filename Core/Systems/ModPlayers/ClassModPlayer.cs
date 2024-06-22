@@ -22,11 +22,11 @@ public class ClassModPlayer : ModPlayer
 
 		vanillaItems.Clear();
 		var item = new Item();
-		item.SetDefaults(ItemID.CopperPickaxe);
+		item.SetDefaults(ItemID.CopperAxe);
 		vanillaItems.Add(item);
 
 		item = new Item();
-		item.SetDefaults(ItemID.CopperAxe);
+		item.SetDefaults(ItemID.CopperPickaxe);
 		vanillaItems.Add(item);
 	}
 
