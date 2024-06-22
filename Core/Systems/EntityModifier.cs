@@ -109,7 +109,7 @@ internal partial class EntityModifier
 	private readonly FieldInfo[] _fields =
 		typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToArray();
 
-	public List<string> GetDifference(EntityModifier other)
+	public List<Tuple<string, bool>> GetDifference(EntityModifier other)
 	{
 		List<Tuple<string, bool>> strings = new List<Tuple<string, bool>>();
 
@@ -161,7 +161,7 @@ internal partial class EntityModifier
 			}
 
 			bool isPositive = type == "+";
-			differences.Add(new($"{type}{MathF.Round(addDiff * 100f, 2)}% #", reversed ? ! : isPositive));
+			differences.Add(new($"{type}{MathF.Round(addDiff * 100f, 2)}% #", reversed ? !isPositive : isPositive));
 		}
 
 		float multDiff = m2.Multiplicative - m1.Multiplicative;
@@ -172,8 +172,8 @@ internal partial class EntityModifier
 			{
 				type = "decreased";
 			}
-			bool isPositive = type == "increased";
 
+			bool isPositive = type == "increased";
 			differences.Add(new($"{MathF.Abs(MathF.Round(multDiff * 100f, 2))}% {type} #", reversed ? !isPositive : isPositive));
 		}
 
