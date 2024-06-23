@@ -1,29 +1,21 @@
-﻿using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest;
-using PathOfTerraria.Core.Systems.Questing.QuestStepTypes;
-using System;
+﻿using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Terraria.GameContent.UI.Chat;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing;
-internal class QuestHandler : ModPlayer
+internal class QuestModPlayer : ModPlayer
 {
 	// need a list of what npcs start what quests
-	private readonly List<Quest> _enabledQuests = [];
+	public readonly List<Quest> EnabledQuests = [];
 
 	public void RestartQuestTest()
 	{
-		_enabledQuests.Clear();
+		EnabledQuests.Clear();
 		Quest quest = new TestQuest();
 
 		quest.StartQuest(Player);
 
-		_enabledQuests.Add(quest);
+		EnabledQuests.Add(quest);
 	}
 
 	public override void PostUpdate()
@@ -34,7 +26,7 @@ internal class QuestHandler : ModPlayer
 	public override void SaveData(TagCompound tag)
 	{
 		List<TagCompound> questTags = [];
-		foreach (Quest quest in _enabledQuests)
+		foreach (Quest quest in EnabledQuests)
 		{
 			var newTag = new TagCompound();
 			quest.Save(newTag);
@@ -43,10 +35,11 @@ internal class QuestHandler : ModPlayer
 
 		tag.Add("questTags", questTags);
 	}
+	
 	public override void LoadData(TagCompound tag)
 	{
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
-		questTags.ForEach(tag => { Quest q = Quest.LoadFrom(tag, Player); if (q is not null) { _enabledQuests.Add(q); } });
+		questTags.ForEach(tag => { Quest q = Quest.LoadFrom(tag, Player); if (q is not null) { EnabledQuests.Add(q); } });
 	}
 }

@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿using System.Linq;
+using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Systems.Questing;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests;
@@ -15,15 +17,19 @@ internal class QuestsInProgressInnerPanel : SmartUIElement
 		{
 			return;
 		}
-
-		Utils.DrawBorderStringBig(
-			spriteBatch, 
-			"Quests In Progress - Placeholder",
-			GetRectangle().TopLeft() + new Vector2(180, 150),
-			Color.White,
-			0.6f,
-			0.5f,
-			0.35f);
+		
+		QuestModPlayer questModPlayer = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
+		foreach (Quest quest in questModPlayer.EnabledQuests.Where(x => x.Completed == false))
+		{
+			Utils.DrawBorderStringBig(
+				spriteBatch, 
+				quest.Name,
+				GetRectangle().TopLeft() + new Vector2(200, 150),
+				Color.White,
+				0.5f,
+				0.5f,
+				0.35f);
+		}
 	}
 	
 	public Rectangle GetRectangle()

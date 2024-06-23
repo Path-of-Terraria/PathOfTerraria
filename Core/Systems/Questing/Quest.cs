@@ -1,12 +1,4 @@
-﻿using Microsoft.Build.Construction;
-using PathOfTerraria.Core.Systems.Affixes;
-using ReLogic.Threading;
-using Steamworks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing;
@@ -16,8 +8,9 @@ abstract class Quest
 	protected abstract List<QuestStep> _subQuests { get; }
 	private QuestStep _activeQuest;
 	private int _currentQuest;
-	private bool _completed = false;
+	public bool Completed = false;
 	public abstract int NPCQuestGiver { get; }
+	public virtual string Name => "";
 	public abstract List<QuestReward> QuestRewards { get; }
 
 	public void StartQuest(Player player, int currentQuest = 0)
@@ -26,7 +19,7 @@ abstract class Quest
 
 		if (_currentQuest >= _subQuests.Count)
 		{
-			_completed = true;
+			Completed = true;
 			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
 			return;
 		}
@@ -48,7 +41,7 @@ abstract class Quest
 	public void Save(TagCompound tag)
 	{
 		tag.Add("type", GetType().FullName);
-		tag.Add("completed", _completed);
+		tag.Add("completed", Completed);
 		tag.Add("currentQuest", _currentQuest);
 
 		var newTag = new TagCompound();
@@ -58,9 +51,9 @@ abstract class Quest
 
 	public void Load(TagCompound tag, Player player)
 	{
-		if (_completed)
+		if (Completed)
 		{
-			_completed = true;
+			Completed = true;
 			return;
 		}
 

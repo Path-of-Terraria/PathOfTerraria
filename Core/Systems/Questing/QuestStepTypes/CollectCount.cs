@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PathOfTerraria.Core.Events;
-using static PathOfTerraria.Core.Events.PathOfTerrariaNpcEvents;
-using Terraria.ModLoader.IO;
+﻿using PathOfTerraria.Core.Events;
 
 namespace PathOfTerraria.Core.Systems.Questing.QuestStepTypes;
+
 internal class CollectCount(Func<Item, bool> includes, int count, Func<string, string> displayText) : QuestStep
 {
-	public CollectCount(int itemType, int count, Func<string, string> displayText) : this((Item item) => item.type == itemType, count, displayText) { }
+	public CollectCount(int itemType, int count, Func<string, string> displayText) : this(
+		(Item item) => item.type == itemType, count, displayText)
+	{
+	}
 
-	private int _total = 0;
+	private int _total;
 	private PathOfTerrariaPlayerEvents.PostUpdateDelegate tracker;
 
 	public override string QuestString()
@@ -49,6 +46,7 @@ internal class CollectCount(Func<Item, bool> includes, int count, Func<string, s
 
 		PathOfTerrariaPlayerEvents.PostUpdateEvent += tracker;
 	}
+
 	public override void UnTrack()
 	{
 		PathOfTerrariaPlayerEvents.PostUpdateEvent -= tracker;
