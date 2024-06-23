@@ -59,6 +59,11 @@ internal class HotbarHijack : ModSystem
 			return;
 		}
 
+		if (slot < 2)
+		{
+			return;
+		}
+
 		// Tools can go elsewhere, weapons can't
 		if (weapon && !tool)
 		{
@@ -89,6 +94,11 @@ internal class HotbarHijack : ModSystem
 		if (tool && i == 1)
 		{
 			return orig(self, plr, newItem, settings, returnItem, i);
+		}
+
+		if (i < 2)
+		{
+			return false;
 		}
 
 		// Tools can go elsewhere, weapons can't.
