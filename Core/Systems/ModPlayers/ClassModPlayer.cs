@@ -21,7 +21,14 @@ public class ClassModPlayer : ModPlayer
 		}
 
 		vanillaItems.Clear();
+
+		// We want the first slot to be empty so the chosen class' weapon can
+		// be placed there.
 		var item = new Item();
+		item.TurnToAir();
+		vanillaItems.Add(item);
+
+		item = new Item();
 		item.SetDefaults(ItemID.CopperPickaxe);
 		vanillaItems.Add(item);
 
