@@ -1,4 +1,7 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿using System.Collections.Generic;
+using System.Linq;
+using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Systems.Questing;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests;
@@ -6,6 +9,8 @@ namespace PathOfTerraria.Content.GUI.Quests;
 internal class QuestsCompletedInnerPanel : SmartUIElement
 {
 	private UIElement Panel => Parent;
+	private List<Quest> _quests = [];
+	public override string TabName => "QuestsCompleted";
 	
 	public bool Visible = false;
 
@@ -16,14 +21,18 @@ internal class QuestsCompletedInnerPanel : SmartUIElement
 			return;
 		}
 
-		Utils.DrawBorderStringBig(
-			spriteBatch, 
-			"Quests Completed - Placeholder",
-			GetRectangle().TopLeft() + new Vector2(180, 150),
-			Color.White,
-			0.6f,
-			0.5f,
-			0.35f);
+		_quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().EnabledQuests;	
+		foreach (Quest quest in _quests.Where(x => x.Completed))
+		{
+			Utils.DrawBorderStringBig(
+				spriteBatch, 
+				quest.Name,
+				GetRectangle().TopLeft() + new Vector2(25, 150),
+				Color.White,
+				0.5f,
+				0.5f,
+				0.35f);
+		}
 	}
 	
 	public Rectangle GetRectangle()

@@ -15,6 +15,7 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 	private TreeState UiTreeState => UILoader.GetUIState<TreeState>();
 	public bool Visible = true;
+	public override string TabName => "PassiveTree";
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{

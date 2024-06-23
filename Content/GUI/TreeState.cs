@@ -1,9 +1,10 @@
-﻿using PathOfTerraria.Content.Passives;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using PathOfTerraria.Content.GUI.PassiveTree;
 using PathOfTerraria.Content.GUI.SkillsTree;
-using PathOfTerraria.Content.GUI.Utilities;
+using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using Terraria.Localization;
 
@@ -11,8 +12,9 @@ namespace PathOfTerraria.Content.GUI;
 
 internal class TreeState : DraggableSmartUi
 {
-	private PassiveTreeInnerPanel _passiveTreeInner;
-	private SkillsTreeInnerPanel _skillsTreeInner;
+	private readonly PassiveTreeInnerPanel _passiveTreeInner = new();
+	private readonly SkillsTreeInnerPanel _skillsTreeInner = new();
+	public override List<SmartUIElement> TabPanels => [_passiveTreeInner, _skillsTreeInner];
 
 	protected static TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
@@ -35,9 +37,13 @@ internal class TreeState : DraggableSmartUi
 			BotRightTree = Vector2.Zero;
 			CurrentDisplayClass = newClass;
 			RemoveAllChildren();
-			CreateMainPanel();
-			AddPassiveTreeInnerPanel();
-			AddSkillsTreeInnerPanel();
+			var localizedTexts = new (string key, LocalizedText text)[]
+			{
+				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
+				(_skillsTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillsTreeInner.TabName}Tab"))
+			};
+			base.CreateMainPanel(localizedTexts, false);
+			base.AppendChildren();
 			AddCloseButton();
 
 			TreeSystem.CreateTree();
@@ -62,57 +68,6 @@ internal class TreeState : DraggableSmartUi
 		Recalculate();
 		base.Draw(spriteBatch);
 		DrawPanelText(spriteBatch);
-	}
-
-	protected void CreateMainPanel()
-	{
-		var localizedTexts = new (string key, LocalizedText text)[]
-		{
-			("PassiveTree", Language.GetText("Mods.PathOfTerraria.GUI.PassiveTreeTab")),
-			("SkillTree", Language.GetText("Mods.PathOfTerraria.GUI.SkillTreeTab"))
-		};
-		Panel = new UIDraggablePanel(false, false, localizedTexts, DraggablePanelHeight);
-		Panel.OnActiveTabChanged += HandleActiveTabChanged;
-		Panel.Left.Set(LeftPadding, 0.5f);
-		Panel.Top.Set(TopPadding, 0.5f);
-		Panel.Width.Set(PanelWidth, 0);
-		Panel.Height.Set(PanelHeight, 0);
-		Append(Panel);
-	}
-
-	private void HandleActiveTabChanged()
-	{
-		switch (Panel.ActiveTab)
-		{
-			case "PassiveTree":
-				_passiveTreeInner.Visible = true;
-				_skillsTreeInner.Visible = false;
-				break;
-			case "SkillTree":
-				_passiveTreeInner.Visible = false;
-				_skillsTreeInner.Visible = true;
-				break;
-		}
-	}
-
-	protected void AddPassiveTreeInnerPanel()
-	{
-		_passiveTreeInner = new PassiveTreeInnerPanel();
-		_passiveTreeInner.Left.Set(0, 0);
-		_passiveTreeInner.Top.Set(DraggablePanelHeight, 0);
-		_passiveTreeInner.Width.Set(0, 1f);
-		_passiveTreeInner.Height.Set(-DraggablePanelHeight, 1f);
-		Panel.Append(_passiveTreeInner);
-	}
-	
-	protected void AddSkillsTreeInnerPanel()
-	{
-		_skillsTreeInner = new SkillsTreeInnerPanel();
-		_skillsTreeInner.Left.Set(0, 0);
-		_skillsTreeInner.Top.Set(DraggablePanelHeight, 0);
-		_skillsTreeInner.Width.Set(0, 1f);
-		_skillsTreeInner.Height.Set(-DraggablePanelHeight, 1f);
-		Panel.Append(_skillsTreeInner);
 	}
 	
 	protected void DrawPanelText(SpriteBatch spriteBatch)
