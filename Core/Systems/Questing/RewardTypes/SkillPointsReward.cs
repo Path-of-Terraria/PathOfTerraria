@@ -13,6 +13,6 @@ internal class SkillPointsReward(int amount) : QuestReward
 
 	public override string RewardString()
 	{
-		return $"+{amount} passiv tree skill points";
+		return $"+{amount} passive tree skill points";
 	}
 }
