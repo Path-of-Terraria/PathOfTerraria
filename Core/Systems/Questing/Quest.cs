@@ -8,7 +8,7 @@ abstract class Quest
 	protected abstract List<QuestStep> _subQuests { get; }
 	private QuestStep _activeQuest;
 	private int _currentQuest;
-	public bool Completed = false;
+	public bool Completed;
 	public abstract int NPCQuestGiver { get; }
 	public virtual string Name => "";
 	public abstract List<QuestReward> QuestRewards { get; }
@@ -49,9 +49,9 @@ abstract class Quest
 		tag.Add("currentQuestTag", newTag);
 	}
 
-	public void Load(TagCompound tag, Player player)
+	private void Load(TagCompound tag, Player player)
 	{
-		if (Completed)
+		if (tag.GetBool("completed"))
 		{
 			Completed = true;
 			return;

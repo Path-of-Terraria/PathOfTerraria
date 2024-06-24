@@ -21,7 +21,7 @@ internal class QuestsInProgressInnerPanel : SmartUIElement
 			return;
 		}
 
-		_quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().EnabledQuests;	
+		_quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetIncompleteQuests();	
 		foreach (Quest quest in _quests.Where(x => !x.Completed))
 		{
 			Utils.DrawBorderStringBig(
