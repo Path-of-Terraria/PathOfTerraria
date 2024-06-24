@@ -149,7 +149,6 @@ internal partial class EntityModifier : EntityModifierSegment
 
 					if (thisField != otherField)
 					{
-						Console.WriteLine(modifier.Key);
 						strings.AddRange(GetDifferences(thisField, otherField, modifier.Key[0] == '+')
 							.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(modifier.Key[1..], "$1 $2")), s.Item2)));
 					}
@@ -170,7 +169,6 @@ internal partial class EntityModifier : EntityModifierSegment
 					.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(missing[1..], "$1 $2")), s.Item2)));
 			}
 		}
-
 
 		return strings;
 	}
