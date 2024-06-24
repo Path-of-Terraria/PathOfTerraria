@@ -1,12 +1,12 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems.ModPlayers;
 internal class UniversalBuffingPlayer : ModPlayer
 {
 	public EntityModifier UniversalModifier;
-	public StatModifier OnFireChance = StatModifier.Default;
 
 	public override void PostUpdateEquips()
 	{
@@ -20,7 +20,6 @@ internal class UniversalBuffingPlayer : ModPlayer
 	public override void ResetEffects()
 	{
 		UniversalModifier = new EntityModifier();
-		OnFireChance = StatModifier.Default;
 	}
 	
 	/// <summary>
@@ -31,17 +30,25 @@ internal class UniversalBuffingPlayer : ModPlayer
 	/// <param name="damageDone"></param>
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (OnFireChance.Base > 0)
+		foreach (KeyValuePair<int, Dictionary<int, StatModifier>> buff in UniversalModifier.Buffer)
 		{
-			float chance = Main.rand.NextFloat();
-			if (chance > OnFireChance.Base)
+			int id = buff.Key;
+			int time = 0;
+
+			float roll = Main.rand.NextFloat();
+
+			foreach (KeyValuePair<int, StatModifier> instance in buff.Value)
 			{
-				return;
+				if (roll <= (instance.Value.ApplyTo(1f) - 1f))
+				{
+					time = Math.Max(time, instance.Key);
+				}
 			}
 
-			target.AddBuff(BuffID.OnFire, 180); // 180 ticks = 3 seconds
+			if (time > 0)
+			{
+				target.AddBuff(id, time);
+			}
 		}
-
-		base.OnHitNPC(target, hit, damageDone);
 	}
 }

@@ -60,7 +60,7 @@ public class ModifyHitAffixes
 		
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
-			modifier.OnFireChance.Base += Value;
+			modifier.Buffer.Add(BuffID.OnFire, 180, 0.2f);
 		}
 	}
 }
