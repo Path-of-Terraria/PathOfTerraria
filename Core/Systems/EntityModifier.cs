@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Systems;
 
-internal partial class EntityModifier
+internal class EntityModifierSegment
+{
+	public virtual Dictionary<string, StatModifier> Modifiers => null;
+}
+
+internal partial class EntityModifier : EntityModifierSegment
 {
 	private static readonly EntityModifier _default = new();
 	public StatModifier MaximumLife = new();
@@ -22,7 +28,7 @@ internal partial class EntityModifier
 	public StatModifier Attackspeed = new();
 	public StatModifier ArmorPenetration = new();
 	public StatModifier Knockback = new();
-	public StatModifier OnFireChance = new();
+	public OnHitDeBuffer Buffer = new();
 
 	// MinorStatsModPlayer:
 	public StatModifier MagicFind = new();
@@ -91,11 +97,8 @@ internal partial class EntityModifier
 		ps.MaxMana = (int)MaxHealthPotions.ApplyTo(ps.MaxMana);
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
-	
-		UniversalBuffingPlayer universalBuffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
-		universalBuffingPlayer.OnFireChance = OnFireChance;
     
-    BuffModifierPlayer buffPlayer = player.GetModPlayer<BuffModifierPlayer>();
+		BuffModifierPlayer buffPlayer = player.GetModPlayer<BuffModifierPlayer>();
 		buffPlayer.ResistanceStrength = DebuffResistance;
 		buffPlayer.BuffBonus = BuffBonus;
 
@@ -106,24 +109,68 @@ internal partial class EntityModifier
 		reflectPlayer.ReflectedDamage = (int)ReflectedDamageModifier.ApplyTo(0);
 	}
 
-	private readonly FieldInfo[] _fields =
-		typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToArray();
+	public override Dictionary<string, StatModifier> Modifiers =>
+		typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).
+		ToDictionary(f => ((f.GetCustomAttribute<ReverseTooltip>() is not null) ? "+" : "-") + f.Name, f => (StatModifier)f.GetValue(this));
+
+	private readonly FieldInfo[] _segments =
+		typeof(EntityModifier).GetFields().Where(f => f.FieldType.IsSubclassOf(typeof(EntityModifierSegment))).ToArray();
 
 	public List<Tuple<string, bool>> GetDifference(EntityModifier other)
 	{
 		List<Tuple<string, bool>> strings = new List<Tuple<string, bool>>();
 
-		for (int i = 0; i < _fields.Length; i++)
+		if (this == other)
 		{
-			StatModifier thisField = (StatModifier)_fields[i].GetValue(this);
-			StatModifier otherField = (StatModifier)_fields[i].GetValue(other);
+			return strings;
+		}
 
-			if (thisField != otherField)
+		for (int i = 0; i < _segments.Length + 1; i++)
+		{
+			EntityModifierSegment thisSegment;
+			EntityModifierSegment otherSegment;
+			if (i == _segments.Length)
 			{
-				strings.AddRange(GetDifferences(thisField, otherField, _fields[i].GetCustomAttribute<ReverseTooltip>() is not null)
-					.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(_fields[i].Name, "$1 $2")), s.Item2)));
+				thisSegment = this;
+				otherSegment = other;
+			}
+			else
+			{
+				thisSegment = (EntityModifierSegment)_segments[i].GetValue(this);
+				otherSegment = (EntityModifierSegment)_segments[i].GetValue(other);
+			}
+
+			foreach (KeyValuePair<string, StatModifier> modifier in thisSegment.Modifiers)
+			{
+				if (otherSegment.Modifiers.ContainsKey(modifier.Key))
+				{
+					StatModifier thisField = modifier.Value;
+					StatModifier otherField = otherSegment.Modifiers[modifier.Key];
+
+					if (thisField != otherField)
+					{
+						Console.WriteLine(modifier.Key);
+						strings.AddRange(GetDifferences(thisField, otherField, modifier.Key[0] == '+')
+							.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(modifier.Key[1..], "$1 $2")), s.Item2)));
+					}
+				}
+			}
+
+			foreach (string missing in thisSegment.Modifiers.Keys.Except(otherSegment.Modifiers.Keys))
+			{
+				StatModifier thisField = thisSegment.Modifiers[missing];
+				strings.AddRange(GetDifferences(thisField, new(), missing[0] == '+')
+					.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(missing[1..], "$1 $2")), s.Item2)));
+			}
+
+			foreach (string missing in otherSegment.Modifiers.Keys.Except(thisSegment.Modifiers.Keys))
+			{
+				StatModifier thisField = otherSegment.Modifiers[missing];
+				strings.AddRange(GetDifferences(new(), thisField, missing[0] == '+')
+					.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(missing[1..], "$1 $2")), s.Item2)));
 			}
 		}
+
 
 		return strings;
 	}
