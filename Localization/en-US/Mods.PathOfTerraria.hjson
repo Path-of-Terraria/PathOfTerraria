@@ -20,4 +20,14 @@ Buffs: {
 		DisplayName: Custom Rage
 		Description: Mods.PathOfTerraria.Buffs.CustomRage.Description
 	}
+
+	BattleaxeBuff: {
+		DisplayName: Battleaxe Buff
+		Description: Mods.PathOfTerraria.Buffs.BattleaxeBuff.Description
+	}
+
+	RageBuff: {
+		DisplayName: Rage Buff
+		Description: Mods.PathOfTerraria.Buffs.RageBuff.Description
+	}
 }

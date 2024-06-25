@@ -3,7 +3,7 @@ using PathOfTerraria.Core.Events;
 
 namespace PathOfTerraria.Content.Buffs;
 
-class CustomRage() : SmartBuff("Rage", "Increased damage and greatly increased knockback", false)
+class RageBuff() : SmartBuff("Rage", "Increased damage and greatly increased knockback", false)
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Buffs/Base";
 

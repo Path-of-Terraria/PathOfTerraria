@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core;
+﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
 using Terraria.ID;
 
@@ -7,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 internal abstract class Battleaxe : Gear
 {
 	public override float DropChance => 1f;
+	public override string AltUseDescription => "Sacrifice 5 life to increase damage temporarily. Take more damage during the effect.";
 
 	public override void Defaults()
 	{
@@ -33,8 +35,9 @@ internal abstract class Battleaxe : Gear
 			return false;
 		}
 
-		modPlayer.SetAltCooldown(180);
+		modPlayer.SetAltCooldown(900);
 		player.statLife -= 5;
+		player.AddBuff(ModContent.BuffType<BattleaxeBuff>(), 300);
 		return true;
 	}
 
