@@ -10,6 +10,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
+		Player.lifeRegen = Player.lifeRegen;
 		(Player.inventory[0].ModItem as Gear)?.ApplyAffixes(UniversalModifier);
 
 		UniversalModifier.ApplyTo(Player);
