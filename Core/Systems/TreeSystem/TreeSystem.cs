@@ -80,30 +80,6 @@ internal class TreePlayer : ModPlayer
 		ActiveNodes.Where(n => n.Level != 0).ToList().ForEach(n => n.BuffPlayer(Player));
 	}
 
-	private bool _blockMouse;
-	private bool _lastState;
-	
-	public override void PreUpdate()
-	{
-		if (!Main.mouseLeft)
-		{
-			_blockMouse = false;
-		}
-
-		if (!_lastState && Main.mouseLeft)
-		{
-			Main.blockMouse = UILoader.GetUIState<TreeState>().IsVisible &&
-						  UILoader.GetUIState<TreeState>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
-		}
-		else
-		{
-			_blockMouse = UILoader.GetUIState<ExpBar>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
-		}
-
-		Main.blockMouse = Main.blockMouse || _blockMouse;
-		_lastState = Main.mouseLeft;
-	}
-
 	public override void SaveData(TagCompound tag)
 	{
 		foreach (Passive passive in ActiveNodes)

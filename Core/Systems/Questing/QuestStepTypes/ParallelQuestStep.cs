@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Terraria.ModLoader.IO;
-using static tModPorter.ProgressUpdate;
 
 namespace PathOfTerraria.Core.Systems.Questing.QuestStepTypes;
 internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep

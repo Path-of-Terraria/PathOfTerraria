@@ -47,7 +47,7 @@ internal class FireStarter : Sword
 	{
 		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 
-		if (modPlayer.OnCooldown)
+		if (modPlayer.AltFunctionAvailable)
 		{
 			return false;
 		}

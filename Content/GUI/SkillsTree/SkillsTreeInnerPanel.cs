@@ -6,16 +6,10 @@ namespace PathOfTerraria.Content.GUI.SkillsTree;
 internal class SkillsTreeInnerPanel : SmartUIElement
 {
 	private UIElement Panel => Parent;
-	
-	public bool Visible = false;
+	public override string TabName => "SkillTree";
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		if (!Visible)
-		{
-			return;
-		}
-
 		Utils.DrawBorderStringBig(
 			spriteBatch, 
 			"Skills - Placeholder",

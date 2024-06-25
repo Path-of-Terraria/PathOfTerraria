@@ -14,15 +14,10 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 
 	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 	private TreeState UiTreeState => UILoader.GetUIState<TreeState>();
-	public bool Visible = true;
+	public override string TabName => "PassiveTree";
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		if (!Visible)
-		{
-			return;
-		}
-
 		Rectangle oldRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
 		spriteBatch.GraphicsDevice.ScissorRectangle = Panel.GetDimensions().ToRectangle();
@@ -103,8 +98,6 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 			_blockMouse = _isHovering = false;
 		}
 
-		BlockClickItem.Block = Parent.GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
-
 		Vector2 offsetChange = Vector2.Zero;
 
 		if (_isHovering)
@@ -170,7 +163,6 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 
 		_lineOff += offsetChange;
 
-		Main.blockMouse = _blockMouse;
 		_lastState = Main.mouseLeft;
 
 		Recalculate();

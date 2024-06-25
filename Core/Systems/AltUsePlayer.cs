@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Content.GUI.Utilities;
+
+namespace PathOfTerraria.Core.Systems;
 
 public class AltUsePlayer : ModPlayer
 {
@@ -18,6 +20,7 @@ public class AltUsePlayer : ModPlayer
 	public int AltFunctionActiveTimer { get; private set; }
 
 	public bool AltFunctionActive => AltFunctionActiveTimer > 0;
+	public bool AltFunctionAvailable => !OnCooldown && !BlockClickItem.Block;
 	public bool OnCooldown => AltFunctionCooldown > 0;
 
 	public override void ResetEffects()
