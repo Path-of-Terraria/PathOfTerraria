@@ -27,7 +27,7 @@ internal class PlayerStatUIState : DraggableSmartUi
 				(_mainPanel.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_mainPanel.TabName}Tab")),
 			};
 
-			base.CreateMainPanel(localizedTexts);
+			base.CreateMainPanel(localizedTexts, panelSize: new Point(440, 400));
 			base.AppendChildren();
 		}
 

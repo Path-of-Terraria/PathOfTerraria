@@ -32,14 +32,16 @@ public abstract class DraggableSmartUi : SmartUIState
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
-	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true)
+	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true, Point? panelSize = null)
 	{
+		panelSize ??= new Point(PanelWidth, PanelHeight);
+
 		Panel = new UIDraggablePanel(false, false, tabs, DraggablePanelHeight);
 		Panel.OnActiveTabChanged += HandleActiveTabChanged;
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
-		Panel.Width.Set(PanelWidth, 0);
-		Panel.Height.Set(PanelHeight, 0);
+		Panel.Width.Set(panelSize.Value.X, 0);
+		Panel.Height.Set(panelSize.Value.Y, 0);
 		Append(Panel);
 		if (showCloseButton)
 		{

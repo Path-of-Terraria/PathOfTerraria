@@ -1,10 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using PathOfTerraria.Core.Loaders.UILoading;
+﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
-using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.PlayerStats;
