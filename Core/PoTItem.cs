@@ -248,6 +248,13 @@ internal abstract class PoTItem : ModItem
 			line.BaseScale = Vector2.One * 0.8f;
 			return true;
 		}
+		
+		if (line.Mod == Mod.Name && line.Name == "AltUseDescription")
+		{
+			yOffset = 2;
+			line.BaseScale = Vector2.One * 0.8f;
+			return true;
+		}
 
 		if (line.Mod == Mod.Name &&
 			(line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense"))
