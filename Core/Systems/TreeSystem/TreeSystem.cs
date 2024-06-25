@@ -80,13 +80,6 @@ internal class TreePlayer : ModPlayer
 		ActiveNodes.Where(n => n.Level != 0).ToList().ForEach(n => n.BuffPlayer(Player));
 	}
 
-	private bool _blockMouse;
-	private bool _lastState;
-	
-	public override void PreUpdate()
-	{
-	}
-
 	public override void SaveData(TagCompound tag)
 	{
 		foreach (Passive passive in ActiveNodes)

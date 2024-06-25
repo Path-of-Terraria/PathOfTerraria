@@ -73,6 +73,7 @@ public abstract class DraggableSmartUi : SmartUIState
 			tabPanel.Width.Set(0, 1f);
 			tabPanel.Height.Set(-DraggablePanelHeight, 1f);
 		}
+
 		HandleActiveTabChanged();
 	}
 
