@@ -96,5 +96,19 @@
 			"x": 100,
 			"y": -200
 		}
+	},
+	{
+		"internalIdentifier": "AddedLifeRegen",
+		"referenceId": 8,
+		"maxLevel": 5,
+		"connections": [
+			{
+				"referenceId": 6
+			}
+		],
+		"position": {
+			"x": 400,
+			"y": 0
+		}
 	}
 ]

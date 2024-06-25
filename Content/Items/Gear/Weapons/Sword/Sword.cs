@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core;
+﻿using PathOfTerraria.Content.GUI.Utilities;
+using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -33,8 +34,10 @@ internal class Sword : Gear
 	{
 		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 
+		Console.WriteLine(modPlayer.AltFunctionAvailable + " - " + BlockClickItem.Block);
+
 		// If cooldown is still active, do not allow alt usage.
-		if (modPlayer.AltFunctionCooldown > 0 || !modPlayer.Player.CheckMana(5))
+		if (!modPlayer.AltFunctionAvailable || !modPlayer.Player.CheckMana(5))
 		{
 			return false;
 		}

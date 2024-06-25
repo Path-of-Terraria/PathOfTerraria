@@ -1,18 +1,15 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.PortableExecutable;
-using System.Text;
-using System.Threading.Tasks;
-using PathOfTerraria.Core.Events;
+﻿using PathOfTerraria.Core.Events;
 using Terraria.ModLoader.IO;
 using static PathOfTerraria.Core.Events.PathOfTerrariaNpcEvents;
 
 namespace PathOfTerraria.Core.Systems.Questing.QuestStepTypes;
+
 internal class KillCount(Func<NPC, bool> includes, int count, Func<string, string> displayText) : QuestStep
 {
-	public KillCount(int npcId, int count, Func<string, string> displayText) : this((NPC npcKilled) => npcKilled.type == npcId, count, displayText) { }
+	public KillCount(int npcId, int count, Func<string, string> displayText) : this(
+		(NPC npcKilled) => npcKilled.type == npcId, count, displayText)
+	{
+	}
 
 	private int _remaining = count;
 	private OnKillByDelegate tracker;
@@ -44,6 +41,7 @@ internal class KillCount(Func<NPC, bool> includes, int count, Func<string, strin
 
 		PathOfTerrariaNpcEvents.OnKillByEvent += tracker;
 	}
+
 	public override void UnTrack()
 	{
 		PathOfTerrariaNpcEvents.OnKillByEvent -= tracker;

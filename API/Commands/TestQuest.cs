@@ -16,6 +16,6 @@ public class TestQuest : ModCommand {
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		Main.LocalPlayer.GetModPlayer<QuestHandler>().RestartQuestTest();
+		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().RestartQuestTest();
 	}
 }

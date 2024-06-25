@@ -30,6 +30,8 @@ public class UIDraggablePanel : UIPanel
 	public string ActiveTab = "";
 	public event Action OnActiveTabChanged;
 
+	public bool Blocked = true;
+
 	public UIDraggablePanel(bool stopItemUse, bool showCloseButton,
 		IEnumerable<(string key, LocalizedText text)> menuOptions, int panelHeight)
 	{
@@ -95,6 +97,11 @@ public class UIDraggablePanel : UIPanel
 
 	public override void RightMouseDown(UIMouseEvent evt)
 	{
+		if (Blocked)
+		{
+			return;
+		}
+
 		CalculatedStyle style = GetDimensions();
 
 		float xGrabPoint = style.X + style.Width - evt.MousePosition.X;
@@ -176,7 +183,10 @@ public class UIDraggablePanel : UIPanel
 	{
 		base.LeftMouseDown(evt);
 
-		DragStart(evt);
+		if (!Blocked)
+		{
+			DragStart(evt);
+		}
 	}
 
 	private void Header_MouseUp(UIMouseEvent evt, UIElement element)
@@ -249,6 +259,18 @@ public class UIDraggablePanel : UIPanel
 			Recalculate();
 		}
 
-		base.Update(gameTime); // don't remove.
+		if (!BlockClickItem.Block)
+		{
+			base.Update(gameTime); // don't remove.
+		}
+
+		Blocked = Main.blockMouse;
+
+		bool _blockMouse = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
+		if (_blockMouse)
+		{
+			BlockClickItem.Block = true;
+			Main.blockMouse = true;
+		}
 	}
 }
