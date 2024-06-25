@@ -21,8 +21,6 @@ internal abstract class Battleaxe : Gear
 		Item.knockBack = 8;
 		Item.crit = 12;
 		Item.UseSound = SoundID.Item1;
-		Item.shoot = ProjectileID.PurificationPowder;
-		Item.shootSpeed = 10f;
 		ItemType = ItemType.Sword;
 	}
 
@@ -44,11 +42,11 @@ internal abstract class Battleaxe : Gear
 	{
 		return Main.rand.Next(5) switch
 		{
-			0 => "Sharp",
-			1 => "Harmonic",
-			2 => "Enchanted",
-			3 => "Shiny",
-			4 => "Strange",
+			0 => "Brutal",
+			1 => "Savage",
+			2 => "Cleaving",
+			3 => "War",
+			4 => "Bloodthirsty",
 			_ => "Unknown"
 		};
 	}
@@ -57,11 +55,11 @@ internal abstract class Battleaxe : Gear
 	{
 		return Main.rand.Next(5) switch
 		{
-			0 => "Drape",
-			1 => "Dome",
-			2 => "Thought",
-			3 => "Vision",
-			4 => "Maw",
+			0 => "Fury",
+			1 => "Cleaver",
+			2 => "Ravage",
+			3 => "Hew",
+			4 => "Slayer",
 			_ => "Unknown"
 		};
 	}
