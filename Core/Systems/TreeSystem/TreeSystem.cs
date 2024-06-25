@@ -85,23 +85,6 @@ internal class TreePlayer : ModPlayer
 	
 	public override void PreUpdate()
 	{
-		if (!Main.mouseLeft)
-		{
-			_blockMouse = false;
-		}
-
-		if (!_lastState && Main.mouseLeft)
-		{
-			Main.blockMouse = UILoader.GetUIState<TreeState>().IsVisible &&
-						  UILoader.GetUIState<TreeState>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
-		}
-		else
-		{
-			_blockMouse = UILoader.GetUIState<ExpBar>().GetRectangle().Contains(Main.mouseX, Main.mouseY);
-		}
-
-		Main.blockMouse = Main.blockMouse || _blockMouse;
-		_lastState = Main.mouseLeft;
 	}
 
 	public override void SaveData(TagCompound tag)

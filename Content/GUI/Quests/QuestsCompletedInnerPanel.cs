@@ -11,16 +11,9 @@ internal class QuestsCompletedInnerPanel : SmartUIElement
 	private UIElement Panel => Parent;
 	private List<Quest> _quests = [];
 	public override string TabName => "QuestsCompleted";
-	
-	public bool Visible = false;
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		if (!Visible)
-		{
-			return;
-		}
-
 		_quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetCompletedQuests();	
 		foreach (Quest quest in _quests.Where(x => x.Completed))
 		{

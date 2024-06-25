@@ -12,9 +12,11 @@ namespace PathOfTerraria.Content.GUI;
 
 internal class TreeState : DraggableSmartUi
 {
-	private readonly PassiveTreeInnerPanel _passiveTreeInner = new();
-	private readonly SkillsTreeInnerPanel _skillsTreeInner = new();
+	private PassiveTreeInnerPanel _passiveTreeInner;
+	private SkillsTreeInnerPanel _skillsTreeInner;
 	public override List<SmartUIElement> TabPanels => [_passiveTreeInner, _skillsTreeInner];
+
+	public override int DepthPriority => 1;
 
 	protected static TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
 
@@ -33,10 +35,12 @@ internal class TreeState : DraggableSmartUi
 
 		if (CurrentDisplayClass != newClass)
 		{
+			_passiveTreeInner = new();
+			_skillsTreeInner = new();
+
 			TopLeftTree = Vector2.Zero;
 			BotRightTree = Vector2.Zero;
 			CurrentDisplayClass = newClass;
-			RemoveAllChildren();
 			var localizedTexts = new (string key, LocalizedText text)[]
 			{
 				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
@@ -45,6 +49,8 @@ internal class TreeState : DraggableSmartUi
 			base.CreateMainPanel(localizedTexts, false);
 			base.AppendChildren();
 			AddCloseButton();
+
+			_passiveTreeInner.RemoveAllChildren();
 
 			TreeSystem.CreateTree();
 			TreeSystem.ActiveNodes.ForEach(n =>

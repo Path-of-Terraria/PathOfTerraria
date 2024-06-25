@@ -66,6 +66,6 @@ public class AltUseUISystem : ModSystem
 		Main.spriteBatch.Draw(AltBar.Value, center, new Rectangle(0, 0, 52, 14), Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
 
 		Rectangle barSrc = new Rectangle(4, 14, (int)(44 * factor), 14);
-		Main.spriteBatch.Draw(AltBar.Value, center + new Vector2(4, 0), barSrc, Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
+		//Main.spriteBatch.Draw(AltBar.Value, center + new Vector2(4, 0), barSrc, Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
 	}
 }

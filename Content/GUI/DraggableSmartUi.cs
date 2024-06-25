@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PathOfTerraria.Content.GUI.Utilities;
 using PathOfTerraria.Core.Loaders.UILoading;
 using Terraria.Audio;
@@ -71,8 +72,8 @@ public abstract class DraggableSmartUi : SmartUIState
 			tabPanel.Top.Set(DraggablePanelHeight, 0);
 			tabPanel.Width.Set(0, 1f);
 			tabPanel.Height.Set(-DraggablePanelHeight, 1f);
-			Panel.Append(tabPanel);
 		}
+		HandleActiveTabChanged();
 	}
 
 	private void HandleActiveTabChanged()
