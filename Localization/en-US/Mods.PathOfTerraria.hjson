@@ -11,6 +11,8 @@ Keybinds: {
 GUI: {
 	PassiveTreeTab: Passives
 	SkillTreeTab: Skills
+	QuestsAvailableTab: Available
+	QuestsCompletedTab: Completed
 }
 
 Buffs: {

@@ -1,17 +1,9 @@
-﻿using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest;
-using PathOfTerraria.Core.Systems.Questing.QuestStepTypes;
-using System;
+﻿using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
-using Terraria.GameContent.UI.Chat;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing;
-internal class QuestHandler : ModPlayer
+internal class QuestModPlayer : ModPlayer
 {
 	// need a list of what npcs start what quests
 	private readonly List<Quest> _enabledQuests = [];
@@ -43,10 +35,21 @@ internal class QuestHandler : ModPlayer
 
 		tag.Add("questTags", questTags);
 	}
+	
 	public override void LoadData(TagCompound tag)
 	{
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
 		questTags.ForEach(tag => { Quest q = Quest.LoadFrom(tag, Player); if (q is not null) { _enabledQuests.Add(q); } });
+	}
+	
+	public List<Quest> GetCompletedQuests()
+	{
+		return _enabledQuests.FindAll(q => q.Completed);
+	}
+	
+	public List<Quest> GetIncompleteQuests()
+	{
+		return _enabledQuests.FindAll(q => !q.Completed);
 	}
 }

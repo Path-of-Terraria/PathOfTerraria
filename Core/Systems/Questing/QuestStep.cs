@@ -1,13 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.ModPlayers;
-using PathOfTerraria.Core.Systems.TreeSystem;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
-using Terraria.GameContent.Items;
-using Terraria.ModLoader.IO;
+﻿using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing;
 internal abstract class QuestStep
