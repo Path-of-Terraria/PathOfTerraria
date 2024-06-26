@@ -9,7 +9,6 @@ namespace PathOfTerraria.Content.GUI.PlayerStats;
 internal class PlayerStatInnerPanel : SmartUIElement
 {
 	private UIElement Panel => Parent;
-	private Player Player => Main.LocalPlayer;
 
 	public override string TabName => "PlayerStats";
 
@@ -18,25 +17,12 @@ internal class PlayerStatInnerPanel : SmartUIElement
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		if (_drawDummy == null)
-		{
-			_drawDummy = new UICharacter(Main.LocalPlayer, true, true, 1, true)
-			{
-				Width = StyleDimension.FromPixels(60),
-				Height = StyleDimension.FromPixels(60),
-				HAlign = 0.5f,
-				Top = StyleDimension.FromPixels(20)
-			};
-			Append(_drawDummy);
-		}
-		else
-		{
-			//_drawDummy.Left = Parent.Left;
-			//_drawDummy.Top = Parent.Top;
-			_drawDummy.Draw(spriteBatch);
-		}
-
 		_offset = 0;
+
+		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PlayerStatBack").Value;
+		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+
+		SetAndDrawPlayer(spriteBatch);
 
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
@@ -54,6 +40,23 @@ internal class PlayerStatInnerPanel : SmartUIElement
 		DrawSingleStat(spriteBatch, $"Endurance: {Main.LocalPlayer.endurance:#0.##}%");
 	}
 
+	private void SetAndDrawPlayer(SpriteBatch spriteBatch)
+	{
+		if (_drawDummy == null)
+		{
+			_drawDummy = new UICharacter(Main.LocalPlayer, true, true, 1, true)
+			{
+				Width = StyleDimension.FromPixels(60),
+				Height = StyleDimension.FromPixels(60),
+				HAlign = 0.5f,
+				Top = StyleDimension.FromPixels(30)
+			};
+			Append(_drawDummy);
+		}
+
+		_drawDummy.Draw(spriteBatch);
+	}
+
 	private void DrawSingleStat(SpriteBatch spriteBatch, string text)
 	{
 		Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Top() + new Vector2(10, 200 + 30 * _offset), Color.White, 0.5f, 0.5f, 0.35f);
@@ -64,60 +67,4 @@ internal class PlayerStatInnerPanel : SmartUIElement
 	{
 		return Panel.GetDimensions().ToRectangle();
 	}
-
-	//private void UpdateAnim()
-	//{
-	//	int num = (int)(Main.GlobalTimeWrappedHourly / 0.07f) % 14 + 6;
-	//	Player.bodyFrame.Y = (Player.legFrame.Y = (Player.headFrame.Y = num * 56));
-	//	Player.WingFrame(wingFlap: false);
-	//}
-
-	//protected override void DrawSelf(SpriteBatch spriteBatch)
-	//{
-	//	// Override the current player reference until the end of this method.
-	//	using var _currentPlr = new Main.CurrentPlayerOverride(Player);
-
-	//	CalculatedStyle dimensions = GetDimensions();
-	//	spriteBatch.Draw(Main.Assets.Request<Texture2D>("Images/UI/PlayerBackground").Value, dimensions.Position(), Color.White);
-
-	//	UpdateAnim();
-	//	DrawPets(spriteBatch);
-	//	Vector2 playerPosition = GetPlayerPosition(ref dimensions);
-	//	Item item = Player.inventory[Player.selectedItem];
-	//	Player.inventory[Player.selectedItem] = _blankItem;
-	//	Main.PlayerRenderer.DrawPlayer(Main.Camera, Player, playerPosition + Main.screenPosition, 0f, Vector2.Zero, 0f, _characterScale);
-	//	Player.inventory[Player.selectedItem] = item;
-	//}
-
-	//private Vector2 GetPlayerPosition(ref CalculatedStyle dimensions)
-	//{
-	//	Vector2 result = dimensions.Position() + new Vector2(dimensions.Width * 0.5f - (float)(Player.width >> 1), dimensions.Height * 0.5f - (float)(Player.height >> 1));
-	//	if (_petProjectiles.Length != 0)
-	//		result.X -= 10f;
-
-	//	return result;
-	//}
-
-	//public void DrawPets(SpriteBatch spriteBatch)
-	//{
-	//	CalculatedStyle dimensions = GetDimensions();
-	//	Vector2 playerPosition = GetPlayerPosition(ref dimensions);
-	//	for (int i = 0; i < _petProjectiles.Length; i++)
-	//	{
-	//		Projectile projectile = _petProjectiles[i];
-	//		Vector2 vector = playerPosition + new Vector2(0f, Player.height) + new Vector2(20f, 0f) + new Vector2(0f, -projectile.height);
-	//		projectile.position = vector + Main.screenPosition;
-	//		projectile.velocity = new Vector2(0.1f, 0f);
-	//		projectile.direction = 1;
-	//		projectile.owner = Main.myPlayer;
-	//		ProjectileID.Sets.CharacterPreviewAnimations[projectile.type].ApplyTo(projectile, _animated);
-	//		Player player = Main.player[Main.myPlayer];
-	//		Main.player[Main.myPlayer] = Player;
-	//		Main.instance.DrawProjDirect(projectile);
-	//		Main.player[Main.myPlayer] = player;
-	//	}
-
-	//	spriteBatch.End();
-	//	spriteBatch.Begin(SpriteSortMode.Immediate, spriteBatch.GraphicsDevice.BlendState, spriteBatch.GraphicsDevice.SamplerStates[0], spriteBatch.GraphicsDevice.DepthStencilState, spriteBatch.GraphicsDevice.RasterizerState, null, Main.UIScaleMatrix);
-	//}
 }
