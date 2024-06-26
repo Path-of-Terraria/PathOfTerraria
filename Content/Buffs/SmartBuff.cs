@@ -1,10 +1,10 @@
-﻿namespace PathOfTerraria.Content.Buffs;
+﻿using Terraria.Localization;
 
-public abstract class SmartBuff(string name, string tooltip, bool debuff, bool summon = false)
-	: ModBuff
+namespace PathOfTerraria.Content.Buffs;
+
+public abstract class SmartBuff(bool debuff, bool summon = false) : ModBuff
 {
-	private readonly string ThisName = name;
-	private readonly string ThisTooltip = tooltip;
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Buffs/{GetType().Name}";
 
 	public bool Inflicted(Player Player)
 	{
@@ -34,5 +34,8 @@ public abstract class SmartBuff(string name, string tooltip, bool debuff, bool s
 		}
 
 		SafeSetDefaults();
+
+		Language.GetOrRegister("Mods.PathOfTerraria.Buffs." + GetType().Name + ".DisplayName", () => GetType().Name);
+		Language.GetOrRegister("Mods.PathOfTerraria.Buffs." + GetType().Name + ".Description", () => "");
 	}
 }
