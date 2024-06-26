@@ -3,7 +3,7 @@ using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Buffs;
 
-class BattleaxeBuff() : SmartBuff("Rage", "Increased damage and increased taken damage", false)
+class BattleaxeBuff() : SmartBuff(false)
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Buffs/Base";
 
