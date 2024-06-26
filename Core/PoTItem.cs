@@ -643,13 +643,13 @@ internal abstract class PoTItem : ModItem
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
-			Main.GameViewMatrix.TransformationMatrix);
+			Main.UIScaleMatrix);
 
 		spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
-			Main.GameViewMatrix.TransformationMatrix);
+			Main.UIScaleMatrix);
 	}
 
 	/// <summary>
@@ -680,13 +680,13 @@ internal abstract class PoTItem : ModItem
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
-			Main.GameViewMatrix.TransformationMatrix);
+			Main.UIScaleMatrix);
 
 		spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
-			Main.GameViewMatrix.TransformationMatrix);
+			Main.UIScaleMatrix);
 	}
 
 	/// <summary>
