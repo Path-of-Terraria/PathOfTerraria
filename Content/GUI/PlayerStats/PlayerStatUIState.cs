@@ -1,12 +1,13 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
 using System.Collections.Generic;
 using Terraria.Localization;
+using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.PlayerStats;
 
 internal class PlayerStatUIState : DraggableSmartUi
 {
-	private readonly PlayerStatInnerPanel _mainPanel = new();
+	private readonly PlayerStatInnerPanel _mainPanel = new() { Width = StyleDimension.FromPixels(512), Height = StyleDimension.FromPixels(448), HAlign = 0.5f, VAlign = 0.55f };
 	public override List<SmartUIElement> TabPanels => [_mainPanel];
 
 	public override int DepthPriority => 2;
@@ -19,16 +20,10 @@ internal class PlayerStatUIState : DraggableSmartUi
 			return;
 		}
 
-		if (Panel is null)
+		if (!HasChild(_mainPanel))
 		{
 			RemoveAllChildren();
-			var localizedTexts = new (string key, LocalizedText text)[]
-			{
-				(_mainPanel.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_mainPanel.TabName}Tab")),
-			};
-
-			base.CreateMainPanel(localizedTexts, panelSize: new Point(506, 496), canResize: false);
-			base.AppendChildren();
+			Append(_mainPanel);
 		}
 
 		IsVisible = true;

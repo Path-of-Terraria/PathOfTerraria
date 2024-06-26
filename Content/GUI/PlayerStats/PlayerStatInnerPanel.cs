@@ -18,18 +18,17 @@ internal class PlayerStatInnerPanel : SmartUIElement
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		_offset = 0;
-
-		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PlayerStatBack").Value;
-		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
-
+		
+		DrawBack(spriteBatch);
 		SetAndDrawPlayer(spriteBatch);
 
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
-		string playerLine = $"{Main.LocalPlayer.name} lvl:{expPlayer.Level}";
-		Utils.DrawBorderStringBig(spriteBatch, playerLine, GetRectangle().Top() + new Vector2(10, 160), Color.White, 0.75f, 0.5f, 0.35f);
+		string playerLine = $"{Main.LocalPlayer.name}";
+		Utils.DrawBorderStringBig(spriteBatch, playerLine, GetRectangle().Center() + new Vector2(0, -60), Color.White, 0.7f, 0.5f, 0.35f);
 
 		float expPercent = expPlayer.Exp / (float)expPlayer.NextLevel * 100;
+		DrawSingleStat(spriteBatch, $"Level: {expPlayer.Level}");
 		DrawSingleStat(spriteBatch, $"Exp: {expPlayer.Exp}/{expPlayer.NextLevel} ({expPercent:#0.##}%)");
 		float lifePercent = Main.LocalPlayer.statLife / Main.LocalPlayer.statLifeMax2 * 100;
 		DrawSingleStat(spriteBatch, $"Life: {Main.LocalPlayer.statLife}/{Main.LocalPlayer.statLifeMax2} ({lifePercent:#0.##}%)");
@@ -38,6 +37,28 @@ internal class PlayerStatInnerPanel : SmartUIElement
 		DrawSingleStat(spriteBatch, $"Health Potions: {potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}");
 		DrawSingleStat(spriteBatch, $"Mana Potions: {potionPlayer.ManaLeft}/{potionPlayer.MaxMana}");
 		DrawSingleStat(spriteBatch, $"Damage Reduction: {Main.LocalPlayer.endurance:#0.##}%");
+	}
+
+	private void DrawBack(SpriteBatch spriteBatch)
+	{
+		Texture2D chain = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PlayerStatBackChain").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PlayerStatBack").Value;
+
+		for (int i = 0; i < 9; ++i)
+		{
+			Color color = Color.White;
+			float yOff = i * chain.Height + tex.Height / 2.2f;
+
+			if (i > 4)
+			{
+				color *= 1 - (i - 4) / 5f;
+			}
+
+			spriteBatch.Draw(chain, GetRectangle().Center() - new Vector2(180, yOff), null, color, 0f, chain.Size() / 2f, 1f, SpriteEffects.None, 0);
+			spriteBatch.Draw(chain, GetRectangle().Center() - new Vector2(-180, yOff), null, color, 0f, chain.Size() / 2f, 1f, SpriteEffects.None, 0);
+		}
+
+		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 	}
 
 	private void SetAndDrawPlayer(SpriteBatch spriteBatch)
@@ -52,6 +73,7 @@ internal class PlayerStatInnerPanel : SmartUIElement
 				Top = StyleDimension.FromPixels(30)
 			};
 			Append(_drawDummy);
+			Recalculate();
 		}
 
 		_drawDummy.Draw(spriteBatch);
@@ -59,7 +81,7 @@ internal class PlayerStatInnerPanel : SmartUIElement
 
 	private void DrawSingleStat(SpriteBatch spriteBatch, string text)
 	{
-		Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Top() + new Vector2(10, 200 + 30 * _offset), Color.White, 0.5f, 0.5f, 0.35f);
+		Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Center() + new Vector2(0, -20 + 30 * _offset), Color.White, 0.5f, 0.5f, 0.35f);
 		_offset++;
 	}
 
