@@ -18,9 +18,6 @@
     <BuildCommand Condition=" '$(BuildCommand)' == '' ">dotnet</BuildCommand>
   </PropertyGroup>
   <ItemGroup>
-    <None Remove="Localization\en-US\Mods.PathOfTerraria.Buffs.hjson" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Update="JsonCreator\CreateMobJsonFiles.cs">
       <Link>ClassLibrary1\CreateMobJsonFiles.cs</Link>
     </Compile>
