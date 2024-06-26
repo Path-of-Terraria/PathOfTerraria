@@ -225,3 +225,23 @@ YellowJewel: {
 	DisplayName: Yellow Jewel
 	Tooltip: ""
 }
+
+BarbedLeatherWhip: {
+	DisplayName: Barbed Leather Whip
+	Tooltip: ""
+}
+
+ChainWhip: {
+	DisplayName: Chain Whip
+	Tooltip: ""
+}
+
+LeatherWhip: {
+	DisplayName: Leather Whip
+	Tooltip: ""
+}
+
+WebWhip: {
+	DisplayName: Web Whip
+	Tooltip: ""
+}
