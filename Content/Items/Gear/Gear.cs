@@ -78,6 +78,11 @@ internal abstract class Gear : PoTItem
 			}
 		}
 	}
+	
+	public override bool AltFunctionUse(Player player)
+	{
+		return player.GetModPlayer<AltUsePlayer>().AltFunctionAvailable;
+	}
 
 	public void EquipItem(Player player)
 	{
