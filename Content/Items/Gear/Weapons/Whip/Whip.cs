@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Projectiles.Whip;
+using PathOfTerraria.Core.Systems;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -59,6 +60,8 @@ internal abstract class Whip : Gear
 			Main.projectile[proj].ai[2] = 1;
 			Item.useAnimation = 60;
 			player.itemAnimation = player.itemAnimationMax = 60;
+
+			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(300);
 			return false;
 		}
 
