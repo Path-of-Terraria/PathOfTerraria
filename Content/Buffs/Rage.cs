@@ -1,12 +1,9 @@
-﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Events;
+﻿using PathOfTerraria.Core.Events;
 
 namespace PathOfTerraria.Content.Buffs;
 
-class RageBuff() : SmartBuff("Rage", "Increased damage and greatly increased knockback", false)
+class RageBuff() : SmartBuff(false)
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Buffs/Base";
-
 	public override void Load()
 	{
 		PathOfTerrariaNpcEvents.ModifyHitPlayerEvent += TakeMoreDamage;
