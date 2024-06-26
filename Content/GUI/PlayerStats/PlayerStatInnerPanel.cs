@@ -70,7 +70,7 @@ internal class PlayerStatInnerPanel : SmartUIElement
 				Width = StyleDimension.FromPixels(60),
 				Height = StyleDimension.FromPixels(60),
 				HAlign = 0.5f,
-				Top = StyleDimension.FromPixels(30)
+				Top = StyleDimension.FromPixels(60)
 			};
 			Append(_drawDummy);
 			Recalculate();
