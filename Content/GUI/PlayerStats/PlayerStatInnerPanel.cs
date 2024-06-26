@@ -37,7 +37,7 @@ internal class PlayerStatInnerPanel : SmartUIElement
 		DrawSingleStat(spriteBatch, $"Mana: {Main.LocalPlayer.statMana}/{Main.LocalPlayer.statManaMax2} ({manaPercent:#0.##}%)");
 		DrawSingleStat(spriteBatch, $"Health Potions: {potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}");
 		DrawSingleStat(spriteBatch, $"Mana Potions: {potionPlayer.ManaLeft}/{potionPlayer.MaxMana}");
-		DrawSingleStat(spriteBatch, $"Endurance: {Main.LocalPlayer.endurance:#0.##}%");
+		DrawSingleStat(spriteBatch, $"Damage Reduction: {Main.LocalPlayer.endurance:#0.##}%");
 	}
 
 	private void SetAndDrawPlayer(SpriteBatch spriteBatch)
