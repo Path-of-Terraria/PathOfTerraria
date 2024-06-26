@@ -1,0 +1,9 @@
+BattleaxeBuff: {
+	DisplayName: Battle Rage
+	Description: Increased damage and increased taken damage
+}
+
+RageBuff: {
+	DisplayName: Berserk
+	Description: Increased damage and greatly increased knockback
+}

@@ -245,3 +245,23 @@ WebWhip: {
 	DisplayName: Web Whip
 	Tooltip: ""
 }
+
+CorruptedBattleaxe: {
+	DisplayName: Corrupted Battleaxe
+	Tooltip: ""
+}
+
+IronBattleaxe: {
+	DisplayName: Iron Battleaxe
+	Tooltip: ""
+}
+
+RustedBattleaxe: {
+	DisplayName: Rusted Battleaxe
+	Tooltip: ""
+}
+
+SteelBattleaxe: {
+	DisplayName: Steel Battleaxe
+	Tooltip: ""
+}
