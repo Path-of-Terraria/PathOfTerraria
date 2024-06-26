@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.Experience;
+﻿using PathOfTerraria.Core.Systems.Experience;
 using System.Linq;
 using Terraria.ID;
 
@@ -24,9 +23,9 @@ public class MobExperienceSystem : GlobalNPC
 			npcSystem.Rarity
 				switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?
 				{
-					MobRarity.Rare => Convert.ToInt32(amount * 1.1) //Rare mobs give 10% increase xp
+					Rarity.Rare => Convert.ToInt32(amount * 1.1) //Rare mobs give 10% increase xp
 					,
-					MobRarity.Magic => Convert.ToInt32(amount * 1.05) //Magic mobs give 5% increase xp
+					Rarity.Magic => Convert.ToInt32(amount * 1.05) //Magic mobs give 5% increase xp
 					,
 					_ => amount
 				};

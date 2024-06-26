@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Content.GUI;
-using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 

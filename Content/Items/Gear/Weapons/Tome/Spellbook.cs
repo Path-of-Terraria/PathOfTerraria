@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Projectiles.Magic;
+using PathOfTerraria.Core;
 using Terraria.Enums;
 using Terraria.ID;
 
@@ -21,7 +22,7 @@ internal class Spellbook : Gear
 		Item.UseSound = SoundID.Item20;
 		Item.shootSpeed = 25f;
 
-		GearType = GearType.Wand;
+		ItemType = ItemType.Wand;
 
 		Item.shoot = ModContent.ProjectileType<TomeProjectile>();
 		Item.SetShopValues(ItemRarityColor.Green2, 10000);

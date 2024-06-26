@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Content.GUI.Utilities;
+using PathOfTerraria.Core;
+using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -25,21 +27,23 @@ internal class Sword : Gear
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.PurificationPowder;
 		Item.shootSpeed = 10f;
-		GearType = GearType.Sword;
+		ItemType = ItemType.Sword;
 	}
 
 	public override bool AltFunctionUse(Player player)
 	{
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
+
+		Console.WriteLine(modPlayer.AltFunctionAvailable + " - " + BlockClickItem.Block);
 
 		// If cooldown is still active, do not allow alt usage.
-		if (modPlayer.AltFunctionCooldown > 0 || !modPlayer.Player.CheckMana(5))
+		if (!modPlayer.AltFunctionAvailable || !modPlayer.Player.CheckMana(5))
 		{
 			return false;
 		}
 
 		// Otherwise, set the cooldown and allow alt usage.
-		modPlayer.AltFunctionCooldown = 180;
+		modPlayer.SetAltCooldown(180);
 		return true;
 	}
 
@@ -51,7 +55,7 @@ internal class Sword : Gear
 			return false;
 		}
 
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 		modPlayer.Player.statMana -= 5;
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 

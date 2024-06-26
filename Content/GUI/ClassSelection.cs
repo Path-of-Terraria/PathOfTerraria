@@ -1,12 +1,12 @@
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
-using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 using PathOfTerraria.Core.Systems.TreeSystem;
+using PathOfTerraria.Core;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -112,11 +112,11 @@ public class ClassSelection : SmartUIState
 	    switch (playerClass)
 	    {
 		    case PlayerClass.Melee:
-			    Gear.SpawnGear<WoodenSword>(Main.LocalPlayer.position, 1);
+				PoTItem.SpawnItem<WoodenSword>(Main.LocalPlayer.position, 1);
 			    Main.NewText($"Selected Melee class");
 			    break;
 		    case PlayerClass.Magic:
-			    Gear.SpawnGear<Staff>(Main.LocalPlayer.position, 1);
+				PoTItem.SpawnItem<Staff>(Main.LocalPlayer.position, 1);
 			    Main.NewText($"Selected Magic class");
 			    break;
 		    case PlayerClass.Ranged:

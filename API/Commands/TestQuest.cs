@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Questing;
-using PathOfTerraria.Core.Systems.Questing.QuestingEventHandlers;
 using SubworldLibrary;
 
 namespace PathOfTerraria.API.Commands;
@@ -17,6 +16,6 @@ public class TestQuest : ModCommand {
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		Main.LocalPlayer.GetModPlayer<QuestHandler>().RestartQuestTest();
+		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().RestartQuestTest();
 	}
 }

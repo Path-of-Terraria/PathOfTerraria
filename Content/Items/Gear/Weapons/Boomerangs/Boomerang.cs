@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
+using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 
@@ -36,6 +38,12 @@ internal abstract class Boomerang : Gear
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<BoomerangProjectile>(), damage, knockback, player.whoAmI, player.altFunctionUse / 2, Type);
+
+		if (player.altFunctionUse == 2)
+		{
+			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(180);
+		}
+
 		return false;
 	}
 

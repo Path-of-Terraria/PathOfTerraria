@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
+﻿using PathOfTerraria.Core;
+
+namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
 [AutoloadEquip(EquipType.Head)]
 internal class Helmet : Gear
@@ -9,7 +11,7 @@ internal class Helmet : Gear
 
 	public override void Defaults()
 	{
-		GearType = GearType.Helmet;
+		ItemType = ItemType.Helmet;
 	}
 
 	public override void PostRoll()

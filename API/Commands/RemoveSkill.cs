@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.SkillSystem;
+﻿using PathOfTerraria.Core.Systems.ModPlayers;
 
 namespace PathOfTerraria.API.Commands;
 

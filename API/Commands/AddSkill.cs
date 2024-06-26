@@ -1,6 +1,7 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.SkillSystem;
+﻿using PathOfTerraria.Core;
 using System.Linq;
+using PathOfTerraria.Core.Mechanics;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.API.Commands;
@@ -38,14 +39,8 @@ public class AddSkill : ModCommand {
 			return;
 		}
 
-		var skill = Skill.ReflectSkillInstance(skillType);
-		skill.Duration = 200;
-		skill.Cooldown = 400;
-		skill.ManaCost = 10;
-		skill.MaxCooldown = 400;
-		skill.Timer = 60;
-		skill.WeaponType = GearType.Sword;
-
+		var skill = Skill.GetAndPrepareSkill(skillType);
+		
 		if (args.Length == 2)
 		{
 			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
@@ -112,7 +107,7 @@ public class AddSkill : ModCommand {
 			return;
 		}
 
-		bool weaponTypeValid = Enum.TryParse(args[7], out GearType weaponType);
+		bool weaponTypeValid = Enum.TryParse(args[7], out ItemType weaponType);
 
 		if (weaponTypeValid)
 		{
@@ -130,29 +125,22 @@ public class AddSkill : ModCommand {
 		{
 			skill.Level = (byte)level;
 		}
-
-		if (SetSkillOrComplain(caller, args, skillSlot, skill, levelValid, 9, 8, "level"))
-		{
-			return;
-		}
 	}
 
 	private static bool SetSkillOrComplain(CommandCaller caller, string[] args, int skillSlot, Skill skill, bool valid, int argCount, int slot, string name)
 	{
-		if (args.Length == argCount)
+		if (args.Length != argCount)
 		{
-			if (valid)
-			{
-				Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
-				return true;
-			}
-			else
-			{
-				caller.Reply($"Argument {slot} ({name}) must be int!", Color.Red);
-				return true;
-			}
+			return false;
 		}
 
-		return false;
+		if (valid)
+		{
+			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
+			return true;
+		}
+
+		caller.Reply($"Argument {slot} ({name}) must be int!", Color.Red);
+		return true;
 	}
 }

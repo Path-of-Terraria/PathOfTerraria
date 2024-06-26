@@ -78,7 +78,7 @@ internal abstract class Bow : Gear
 
 	public override bool AltFunctionUse(Player player)
 	{
-		return player.GetModPlayer<AltUseSystem>().AltFunctionCooldown <= 0;
+		return player.GetModPlayer<AltUsePlayer>().AltFunctionCooldown <= 0;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

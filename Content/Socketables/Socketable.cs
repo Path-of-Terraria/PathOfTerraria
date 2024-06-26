@@ -52,10 +52,10 @@ internal abstract class Socketable : ModItem
 			return null;
 		}
 
-		MethodInfo getItemTypeFromt = _getItemType.MakeGenericMethod([t]);
+		MethodInfo getItemTypeFromT = _getItemType.MakeGenericMethod([t]);
 
 		var item = new Item();
-		item.SetDefaults((int)getItemTypeFromt.Invoke(null, []));
+		item.SetDefaults((int)getItemTypeFromT.Invoke(null, []));
 
 		(item.ModItem as Socketable)?.Load(tag);
 		return item.ModItem as Socketable;

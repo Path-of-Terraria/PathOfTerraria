@@ -35,6 +35,8 @@ public abstract class SmartUIState : UIState
 	/// </summary>
 	public virtual void Unload() { }
 
+	public virtual int DepthPriority => 0;
+
 	// ===============================================================================================================================================
 	// Helpers for appending elements easily
 	// ===============================================================================================================================================
@@ -407,5 +409,15 @@ public abstract class SmartUIState : UIState
 		base.ScrollWheel(evt);
 		SafeScrollWheel(evt);
 	}
+	
 	#endregion
+	
+	/// <summary>
+	/// Refreshes the UI - Intended to be called on resolution changes.
+	/// </summary>
+	public virtual void Refresh()
+	{
+		RemoveAllChildren();
+		Recalculate();
+	}
 }

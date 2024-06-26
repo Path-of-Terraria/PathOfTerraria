@@ -5,11 +5,14 @@ Keybinds: {
 	UseSkill4.DisplayName: Use Skill4
 	UseSkill5.DisplayName: Use Skill5
 	WeaponSwap.DisplayName: Swap Weapons
+	CopyItemInfo.DisplayName: Copy Item Info
 }
 
 GUI: {
 	PassiveTreeTab: Passives
 	SkillTreeTab: Skills
+	QuestsAvailableTab: Available
+	QuestsCompletedTab: Completed
 }
 
 Buffs: {

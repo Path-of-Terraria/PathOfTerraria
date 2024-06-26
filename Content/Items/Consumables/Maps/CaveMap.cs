@@ -2,13 +2,15 @@
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public class CaveMap : Map
+internal class CaveMap : Map
 {
 	public int RoomSizeMin = 14;
 	public int RoomSizeMax = 22;
 	public int BossRoomSize = 30;
 	public int SpawnRoomSize = 10;
 	public int ExtraRoomDist = 10;
+
+	public override float DropChance => 1f;
 
 	public override bool? UseItem(Player player)
 	{

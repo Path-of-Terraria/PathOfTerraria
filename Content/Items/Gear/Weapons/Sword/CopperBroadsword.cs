@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Core;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
@@ -16,6 +17,6 @@ internal class CopperBroadsword : Sword
 		Item.width = 46;
 		Item.height = 46;
 		Item.UseSound = SoundID.Item1;
-		GearType = GearType.Sword;
+		ItemType = ItemType.Sword;
 	}
 }
