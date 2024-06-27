@@ -32,11 +32,11 @@ internal class PlayerStatUIState : DraggableSmartUi
 			RemoveAllChildren();
 			Append(_mainPanel);
 
-			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
-			CloseButton.Left.Set(-10, 0.8f);
-			CloseButton.Top.Set(40, 0f);
-			CloseButton.Width.Set(38, 0);
-			CloseButton.Height.Set(38, 0);
+			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PlayerStatClose"));
+			CloseButton.Left.Set(-40, 0.8f);
+			CloseButton.Top.Set(50, 0f);
+			CloseButton.Width.Set(64, 0);
+			CloseButton.Height.Set(64, 0);
 			CloseButton.OnLeftClick += (a, b) =>
 			{
 				IsVisible = false;
