@@ -1,14 +1,15 @@
-﻿namespace PathOfTerraria.Content.Projectiles.Melee;
+﻿using Terraria.Utilities;
+
+namespace PathOfTerraria.Content.Projectiles.Melee;
 
 public class CorruptedBattleaxeProjectile : ModProjectile
 {
-	private static readonly Random Random = new();
 	private bool _targetingPlayer;
 	
 	/// <summary>
 	/// The distance it will look to target the next entity when bouncing
 	/// </summary>
-	private readonly float _distance = 300f;
+	private readonly float _distance = 500f;
 
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Battleaxe/CorruptedBattleaxe";
         
@@ -30,7 +31,7 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 		
 		if (_targetingPlayer)
 		{
-			Player player = FindClosestPlayer(300f);
+			Player player = FindClosestPlayer(_distance);
 			if (player == null)
 			{
 				return;
@@ -45,7 +46,7 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 		}
 		else
 		{
-			NPC closestNpc = FindClosestNpc(500f);
+			NPC closestNpc = FindClosestNpc(_distance);
 			if (closestNpc == null)
 			{
 				return;
@@ -113,15 +114,14 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		bool shouldTargetPlayer = Random.Next(100) < 1;
 		// 1% chance to target the player
-		if (shouldTargetPlayer)
+		if (Main.rand.NextBool(100))
 		{
 			Player player = FindClosestPlayer(_distance);
 			if (player != null)
 			{
 				_targetingPlayer = true;
-				Projectile.damage %= 2;
+				Projectile.damage /= 2;
 				return;
 			}
 		}	
