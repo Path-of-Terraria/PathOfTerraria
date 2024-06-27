@@ -1,0 +1,199 @@
+Chestplate: {
+	Prefixes: {
+		0: Enduring
+		1: Dreadknight's
+		2: Dragon
+		3: Golem
+		4: Warden's
+		5: Protected
+	}
+
+	Suffixes: {
+		0: Core
+		1: Heart
+		2: Plate
+		3: Scale
+		4: Essence
+	}
+}
+
+Helmet: {
+	Prefixes: {
+		0: Adept
+		1: Tattered
+		2: Enchanted
+		3: Beautiful
+		4: Strange
+	}
+
+	Suffixes: {
+		0: Drape
+		1: Dome
+		2: Thought
+		3: Vision
+		4: Maw
+	}
+}
+
+Leggings: {
+	Prefixes: {
+		0: Eagle
+		1: Swift
+		2: Feathered
+		3: Spiked
+		4: Buckled
+	}
+
+	Suffixes: {
+		0: Boots
+		1: Treads
+		2: Greaves
+		3: Tassets
+		4: Leggings
+	}
+}
+
+Battleaxe: {
+	Prefixes: {
+		0: Brutal
+		1: Savage
+		2: Cleaving
+		3: War
+		4: Bloodthirsty
+	}
+
+	Suffixes: {
+		0: Fury
+		1: Cleaver
+		2: Ravage
+		3: Hew
+		4: Slayer
+	}
+}
+
+Boomerang: {
+	Prefixes: {
+		0: Spiraling
+		1: Quick
+		2: Razor
+		3: Enchanted
+		4: Storm
+	}
+
+	Suffixes: {
+		0: Return
+		1: Slice
+		2: Glide
+		3: Arc
+		4: Edge
+	}
+}
+
+Bow: {
+	Prefixes: {
+		0: Swift
+		1: Piercing
+		2: Hunter's
+		3: Gale
+		4: Vengeful
+	}
+
+	Suffixes: {
+		0: Flight
+		1: Song
+		2: Wind
+		3: Thorn
+		4: Sight
+	}
+}
+
+Staff: {
+	Prefixes: {
+		0: Arcane
+		1: Mystic
+		2: Eldritch
+		3: Luminous
+		4: Sacred
+	}
+
+	Suffixes: {
+		0: Wrath
+		1: Whisper
+		2: Beacon
+		3: Veil
+		4: Echo
+	}
+}
+
+Sword: {
+	Prefixes: {
+		0: Sharp
+		1: Harmonic
+		2: Enchanted
+		3: Shiny
+		4: Strange
+	}
+
+	Suffixes: {
+		0: Drape
+		1: Dome
+		2: Thought
+		3: Vision
+		4: Maw
+	}
+}
+
+# Spellbook and Wand are the same as Staff at the moment.
+Spellbook: {
+	Prefixes: {
+		0: Arcane
+		1: Mystic
+		2: Eldritch
+		3: Luminous
+		4: Sacred
+	}
+
+	Suffixes: {
+		0: Wrath
+		1: Whisper
+		2: Beacon
+		3: Veil
+		4: Echo
+	}
+}
+
+Wand: {
+	Prefixes: {
+		0: Arcane
+		1: Mystic
+		2: Eldritch
+		3: Luminous
+		4: Sacred
+	}
+
+	Suffixes: {
+		0: Wrath
+		1: Whisper
+		2: Beacon
+		3: Veil
+		4: Echo
+	}
+}
+
+Whip: {
+	Prefixes: {
+		0: Searing
+		1: Venomous
+		2: Barbed
+		3: Fiery
+		4: Thunderous
+	}
+
+	Suffixes: {
+		0: Lash
+		1: Fang
+		2: Scourge
+		3: Strike
+		4: Snap
+	}
+}
