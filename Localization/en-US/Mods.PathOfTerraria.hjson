@@ -16,10 +16,3 @@ GUI: {
 	QuestsCompletedTab: Completed
 	PlayerStatsTab: Stats
 }
-
-Buffs: {
-	CustomRage: {
-		DisplayName: Custom Rage
-		Description: Mods.PathOfTerraria.Buffs.CustomRage.Description
-	}
-}

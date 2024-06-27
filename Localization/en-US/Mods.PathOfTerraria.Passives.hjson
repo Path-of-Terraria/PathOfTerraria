@@ -82,3 +82,8 @@ JewelSocket: {
 	Name: JewelSocket
 	Tooltip: ""
 }
+
+AddedLifeRegen: {
+	Name: LifeRegenPassive
+	Tooltip: ""
+}

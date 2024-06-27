@@ -248,6 +248,13 @@ internal abstract class PoTItem : ModItem
 			line.BaseScale = Vector2.One * 0.8f;
 			return true;
 		}
+		
+		if (line.Mod == Mod.Name && line.Name == "AltUseDescription")
+		{
+			yOffset = 2;
+			line.BaseScale = Vector2.One * 0.8f;
+			return true;
+		}
 
 		if (line.Mod == Mod.Name &&
 			(line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense"))
@@ -643,13 +650,13 @@ internal abstract class PoTItem : ModItem
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
-			Main.GameViewMatrix.TransformationMatrix);
+			Main.UIScaleMatrix);
 
 		spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
-			Main.GameViewMatrix.TransformationMatrix);
+			Main.UIScaleMatrix);
 	}
 
 	/// <summary>
@@ -680,13 +687,13 @@ internal abstract class PoTItem : ModItem
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
-			Main.GameViewMatrix.TransformationMatrix);
+			Main.UIScaleMatrix);
 
 		spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
-			Main.GameViewMatrix.TransformationMatrix);
+			Main.UIScaleMatrix);
 	}
 
 	/// <summary>

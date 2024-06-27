@@ -1,3 +1,4 @@
+using PathOfTerraria.Content.GUI.PlayerStats;
 using PathOfTerraria.Core.Loaders.UILoading;
 
 namespace PathOfTerraria.Content.GUI.Utilities;
@@ -22,6 +23,7 @@ internal class UiStateRefresher : ModSystem
 	/// </summary>
 	public override void OnWorldLoad(){
 		UILoader.GetUIState<QuestPanelButton>().Refresh();
+		UILoader.GetUIState<PlayerStatButton>().Refresh();
 	}
 	
 	/// <summary>
@@ -32,5 +34,6 @@ internal class UiStateRefresher : ModSystem
 	private static void RefreshUi(Vector2 newSize)
 	{
 		UILoader.GetUIState<QuestPanelButton>().Refresh();
+		UILoader.GetUIState<PlayerStatButton>().Refresh();
 	}
 }
