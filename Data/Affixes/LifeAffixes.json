@@ -1,0 +1,236 @@
+[
+	{
+		"affixType": "BaseLifeAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "AddedLifeAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "MultipliedLifeAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "FlatLifeAffix",
+		"equipTypes": "Helmet",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "LifeRegenAffix",
+		"equipTypes": "Chestplate",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "LifeRegenMultiplierAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "LifePotionPowerAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "LifePotionCapAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "LifePotionCooldownAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	}
+]

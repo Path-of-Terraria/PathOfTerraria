@@ -6,8 +6,6 @@ public class ModifyHitAffixes
 {
 	internal class PiercingItemAffix : ItemAffix
 	{
-		public override ItemType PossibleTypes => ItemType.Melee;
-
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
 			modifier.ArmorPenetration.Base += Value * 5 + gear.ItemLevel / 50;
@@ -16,8 +14,6 @@ public class ModifyHitAffixes
 
 	internal class AddedKnockbackItemAffix : ItemAffix
 	{
-		public override ItemType PossibleTypes => ItemType.Weapon;
-
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
 			modifier.Knockback += (Value * 10 + gear.ItemLevel / 20) / 100f;
@@ -26,8 +22,6 @@ public class ModifyHitAffixes
 
 	internal class IncreasedKnockbackItemAffix : ItemAffix
 	{
-		public override ItemType PossibleTypes => ItemType.Weapon;
-
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
 			modifier.Knockback *= 1f + (Value * 10 + gear.ItemLevel / 20) / 100f;
@@ -36,8 +30,6 @@ public class ModifyHitAffixes
 
 	internal class BaseKnockbackItemAffix : ItemAffix
 	{
-		public override ItemType PossibleTypes => ItemType.Weapon;
-
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
 			modifier.Knockback.Base += Value * gear.ItemLevel / 100;
@@ -46,8 +38,6 @@ public class ModifyHitAffixes
 
 	internal class FlatKnockbackItemAffix : ItemAffix
 	{
-		public override ItemType PossibleTypes => ItemType.Weapon;
-
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
 			modifier.Knockback.Flat += Value * gear.ItemLevel / 60;
@@ -56,8 +46,6 @@ public class ModifyHitAffixes
 	
 	internal class ChanceToApplyOnFireGearAffix : ItemAffix
 	{
-		public override ItemType PossibleTypes => ItemType.Ring;
-		
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
 			modifier.Buffer.Add(BuffID.OnFire, 180, 0.2f);

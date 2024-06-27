@@ -1,0 +1,132 @@
+[
+	{
+		"affixType": "DefenseItemAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "EnduranceItemAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "ResistanceHelmetAffix",
+		"equipTypes": "Helmet",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "BuffBoostHelmetAffix",
+		"equipTypes": "Helmet",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "ThornyArmorAffix",
+		"equipTypes": "Armor",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	}
+]

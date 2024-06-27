@@ -1,0 +1,158 @@
+[
+	{
+		"affixType": "PiercingItemAffix",
+		"equipTypes": "Melee",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "AddedKnockbackItemAffix",
+		"equipTypes": "Melee",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedKnockbackItemAffix",
+		"equipTypes": "Melee",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "BaseKnockbackItemAffix",
+		"equipTypes": "Melee",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "FlatKnockbackItemAffix",
+		"equipTypes": "Melee",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	},
+	{
+		"affixType": "ChanceToApplyOnFireGearAffix",
+		"equipTypes": "Ring",
+		"tierDatas": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73
+			}
+		]
+	}
+]

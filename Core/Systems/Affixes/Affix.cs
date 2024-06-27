@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
-internal abstract class Affix
+public abstract class Affix
 {
 	public float MinValue;
 	public float MaxValue = 1f;

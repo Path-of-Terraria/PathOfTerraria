@@ -1,4 +1,6 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ModLoader.IO;
@@ -11,9 +13,19 @@ internal abstract class ItemAffix : Affix
 	// public virtual bool IsFlat => true; // alternative is percent
 	// public virtual bool Round => false;
 	public virtual Influence RequiredInfluence => Influence.None;
-	public abstract ItemType PossibleTypes { get; }
+
+	public ItemType PossibleTypes => GetData().GetEquipTypes();
 
 	public virtual void ApplyAffix(EntityModifier modifier, PoTItem gear) { }
+
+	/// <summary>
+	/// Retrieves the affix data for the current <see cref="ItemAffix"/> instance.
+	/// </summary>
+	/// <returns></returns>
+	public ItemAffixData GetData()
+	{
+		return AffixRegistry.TryGetAffixData(GetType());
+	}
 
 	public string GetTooltip(PoTItem gear)
 	{
