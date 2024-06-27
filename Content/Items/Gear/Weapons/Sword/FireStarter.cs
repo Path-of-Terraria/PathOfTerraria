@@ -34,7 +34,7 @@ internal class FireStarter : Sword
 	
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.SharpItemAffix>();
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.AddedDamageAffix>();
 		sharpAffix.MinValue = 1;
 		sharpAffix.MaxValue = 4;
 		
