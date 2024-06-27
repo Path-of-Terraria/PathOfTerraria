@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Core;
 using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PathOfTerraria.Data.Models;
 
@@ -11,6 +10,12 @@ public class ItemAffixData
 		public float MinValue { get; set; }
 		public float MaxValue { get; set; }
 		public int MinimumLevel { get; set; }
+		public float Weight { get; set; }
+
+		public override string ToString()
+		{
+			return $"Value Range: {MinValue}-{MaxValue}, Min. Level: {MinimumLevel}, Weight: {Weight}";
+		}
 	}
 
 	public string AffixType { get; set; }
@@ -76,5 +81,10 @@ public class ItemAffixData
 		}
 
 		return types;
+	}
+
+	public override string ToString()
+	{
+		return $"Type: {AffixType}, Equips: {EquipTypes}, Influences: {Influences}";
 	}
 }
