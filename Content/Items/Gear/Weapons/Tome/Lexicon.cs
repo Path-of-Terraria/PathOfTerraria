@@ -2,7 +2,7 @@
 
 internal class Lexicon : Spellbook
 {
-	public override int ItemLevel => 40;
+	public override int MinDropItemLevel => 40;
 	
 	public override void Defaults()
 	{

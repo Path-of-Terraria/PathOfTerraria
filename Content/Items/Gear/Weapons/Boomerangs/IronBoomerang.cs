@@ -3,7 +3,7 @@
 internal class IronBoomerang : Boomerang
 {
 	public override float DropChance => 1f;
-	public override int ItemLevel => 5;
+	public override int MinDropItemLevel => 5;
 
 	public override void Defaults()
 	{
