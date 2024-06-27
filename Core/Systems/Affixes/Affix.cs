@@ -139,6 +139,7 @@ internal class AffixHandler : ILoadable
 			.Where(proto => (item.ItemType & proto.PossibleTypes) == item.ItemType)
 			.ToList();
 	}
+
 	public static List<ItemAffix> GetAffixes()
 	{
 		return _itemAffixes;
@@ -170,15 +171,15 @@ internal class AffixHandler : ILoadable
 
 			object instance = Activator.CreateInstance(type);
 
-			if (type.IsSubclassOf(typeof(ItemAffix)))
+			if (instance is ItemAffix itemAffix)
 			{
-				_itemAffixes.Add(instance as ItemAffix);
+				_itemAffixes.Add(itemAffix);
 				continue;
 			}
 
-			if (type.IsSubclassOf(typeof(MobAffix)))
+			if (instance is MobAffix mobAffix)
 			{
-				_mobAffixes.Add(instance as MobAffix);
+				_mobAffixes.Add(mobAffix);
 				continue;
 			}
 		}

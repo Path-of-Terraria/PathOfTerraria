@@ -2,7 +2,7 @@
 	{
 		"affixType": "RapidItemAffix",
 		"equipTypes": "Melee",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -28,7 +28,7 @@
 	{
 		"affixType": "SharpItemAffix",
 		"equipTypes": "Melee",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -54,7 +54,7 @@
 	{
 		"affixType": "ChargedItemAffix",
 		"equipTypes": "Melee",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,

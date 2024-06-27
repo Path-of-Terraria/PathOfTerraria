@@ -2,7 +2,7 @@
 	{
 		"affixType": "MovementSpeed",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,

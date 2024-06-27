@@ -820,7 +820,7 @@ internal abstract class PoTItem : ModItem
 	{
 		Affixes = GenerateImplicits();
 
-		_implicits = Affixes.Count();
+		_implicits = Affixes.Count;
 
 		List<ItemAffix> possible = AffixHandler.GetAffixes(this);
 

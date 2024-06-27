@@ -2,7 +2,7 @@
 	{
 		"affixType": "DefenseItemAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -28,7 +28,7 @@
 	{
 		"affixType": "EnduranceItemAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -54,7 +54,7 @@
 	{
 		"affixType": "ResistanceHelmetAffix",
 		"equipTypes": "Helmet",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -80,7 +80,7 @@
 	{
 		"affixType": "BuffBoostHelmetAffix",
 		"equipTypes": "Helmet",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -106,7 +106,7 @@
 	{
 		"affixType": "ThornyArmorAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,

@@ -1,19 +1,13 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Data;
+﻿using PathOfTerraria.Data;
 using PathOfTerraria.Data.Models;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
 internal abstract class ItemAffix : Affix
 {
-	// public virtual ModifierType ModifierType => ModifierType.Passive;
-	// public virtual bool IsFlat => true; // alternative is percent
-	// public virtual bool Round => false;
-	public virtual Influence RequiredInfluence => Influence.None;
-
+	public Influence RequiredInfluence => GetData().GetInfluences();
 	public ItemType PossibleTypes => GetData().GetEquipTypes();
 
 	public virtual void ApplyAffix(EntityModifier modifier, PoTItem gear) { }
@@ -36,7 +30,7 @@ internal abstract class ItemAffix : Affix
 
 		List<string> affixes = EntityModifier.GetChangeOnlyStrings(modifier);
 
-		if (affixes.Any())
+		if (affixes.Count != 0)
 		{
 			tooltip = affixes.First(); // idk if there will ever be more..?
 		}

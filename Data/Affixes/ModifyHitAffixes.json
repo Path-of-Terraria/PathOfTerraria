@@ -2,7 +2,7 @@
 	{
 		"affixType": "PiercingItemAffix",
 		"equipTypes": "Melee",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -28,7 +28,7 @@
 	{
 		"affixType": "AddedKnockbackItemAffix",
 		"equipTypes": "Melee",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -54,7 +54,7 @@
 	{
 		"affixType": "IncreasedKnockbackItemAffix",
 		"equipTypes": "Melee",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -80,7 +80,7 @@
 	{
 		"affixType": "BaseKnockbackItemAffix",
 		"equipTypes": "Melee",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -106,7 +106,7 @@
 	{
 		"affixType": "FlatKnockbackItemAffix",
 		"equipTypes": "Melee",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -132,7 +132,7 @@
 	{
 		"affixType": "ChanceToApplyOnFireGearAffix",
 		"equipTypes": "Ring",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,

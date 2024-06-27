@@ -2,7 +2,7 @@
 	{
 		"affixType": "ManaAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -28,7 +28,7 @@
 	{
 		"affixType": "ManaRegenAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -54,7 +54,7 @@
 	{
 		"affixType": "ManaPotionPowerAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -80,7 +80,7 @@
 	{
 		"affixType": "ManaPotionCapAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -106,7 +106,7 @@
 	{
 		"affixType": "ManaPotionCooldownAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,

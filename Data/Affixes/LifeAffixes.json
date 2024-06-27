@@ -2,7 +2,7 @@
 	{
 		"affixType": "BaseLifeAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -28,7 +28,7 @@
 	{
 		"affixType": "AddedLifeAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -54,7 +54,7 @@
 	{
 		"affixType": "MultipliedLifeAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -80,7 +80,7 @@
 	{
 		"affixType": "FlatLifeAffix",
 		"equipTypes": "Helmet",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -106,7 +106,7 @@
 	{
 		"affixType": "LifeRegenAffix",
 		"equipTypes": "Chestplate",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -132,7 +132,7 @@
 	{
 		"affixType": "LifeRegenMultiplierAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -158,7 +158,7 @@
 	{
 		"affixType": "LifePotionPowerAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -184,7 +184,7 @@
 	{
 		"affixType": "LifePotionCapAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
@@ -210,7 +210,7 @@
 	{
 		"affixType": "LifePotionCooldownAffix",
 		"equipTypes": "Armor",
-		"tierDatas": [
+		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 4,
