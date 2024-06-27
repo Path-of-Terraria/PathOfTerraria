@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Content.Buffs;
+using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
 
@@ -61,6 +62,16 @@ public class ModifyHitAffixes
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
 			modifier.Buffer.Add(BuffID.OnFire, 180, 0.2f);
+		}
+	}
+	
+	internal class ChanceToApplyArmorShredGearAffix : ItemAffix
+	{
+		public override ItemType PossibleTypes => ItemType.None; //Only on unique items
+		
+		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
+		{
+			modifier.Buffer.Add(ModContent.BuffType<ArmorShredDebuff>(), Duration, Value);
 		}
 	}
 }
