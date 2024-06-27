@@ -10,7 +10,9 @@ internal class CorruptedBattleaxe : IronBattleaxe
 {
 	public override float DropChance => 1f;
 	public override bool IsUnique => true;
-	
+	public override string AltUseDescription => "Throw the axe to deal damage to enemies";
+	public override string Description => "Something doesn't feel right about this axe...";
+
 	public override void Defaults()
 	{
 		base.Defaults();
@@ -65,6 +67,10 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.IncreasedAttackSpeedAffix>();
 		attackSpeedAffix.Value = 0.1f;
-		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix];
+		
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.ChanceToApplyArmorShredGearAffix>();
+		armorShredAffix.Value = 1f;
+		armorShredAffix.Duration = 120;
+		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}
 }

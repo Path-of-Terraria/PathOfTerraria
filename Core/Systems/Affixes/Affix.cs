@@ -10,6 +10,8 @@ internal abstract class Affix
 	public float MaxValue = 1f;
 
 	public float Value = 1f;
+	
+	public int Duration = 180; //3 Seconds by default
 	// to a certain degree, none of the above is useable by the MobAffix...
 
 	public virtual void Roll()
