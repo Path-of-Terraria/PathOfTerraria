@@ -93,6 +93,7 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo info)
 	{
+		Projectile.damage *= 2;
 		_targetingPlayer = false;
 		NPC newTarget = FindClosestNpc(_distance);
 		if (newTarget != null)
@@ -120,6 +121,7 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 			if (player != null)
 			{
 				_targetingPlayer = true;
+				Projectile.damage %= 2;
 				return;
 			}
 		}	
