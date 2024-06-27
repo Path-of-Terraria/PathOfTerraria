@@ -183,6 +183,11 @@ internal abstract class PoTItem : ModItem
 
 			affixIdx++;
 		}
+		
+		if (!string.IsNullOrWhiteSpace(Description))
+		{
+			tooltips.Add(new TooltipLine(Mod, "Description", Description));
+		}
 
 		// change in stats if equipped
 		EntityModifier thisItemModifier = new EntityModifier();
@@ -219,45 +224,37 @@ internal abstract class PoTItem : ModItem
 		{
 			tooltips.Add(new TooltipLine(Mod, $"Change{affixIdx}", $"[c/FF0000:{changes}]"));
 		}
-		
-		if (!string.IsNullOrWhiteSpace(Description))
-		{
-			tooltips.Add(new TooltipLine(Mod, "Description", Description));
-		}
 	}
 
 	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 	{
-		if (line.Mod == Mod.Name && line.Name == "Name")
+		if (line.Mod != Mod.Name)
 		{
-			yOffset = -2;
-			line.BaseScale = Vector2.One * 1.1f;
-			return true;
-		}
-
-		if (line.Mod == Mod.Name && line.Name == "Rarity")
-		{
-			yOffset = -8;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
-
-		if (line.Mod == Mod.Name && line.Name == "Power")
-		{
-			yOffset = 2;
-			line.BaseScale = Vector2.One * 0.8f;
 			return true;
 		}
 		
-		if (line.Mod == Mod.Name && line.Name == "AltUseDescription")
+		switch (line.Name)
 		{
-			yOffset = 2;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
+			case "Name":
+				yOffset = -2;
+				line.BaseScale = Vector2.One * 1.1f;
+				return true;
+			case "Rarity":
+				yOffset = -8;
+				line.BaseScale = Vector2.One * 0.8f;
+				return true;
+			case "Power":
+				yOffset = 2;
+				line.BaseScale = Vector2.One * 0.8f;
+				return true;
+			case "AltUseDescription":
+			case "Description":
+				yOffset = 2;
+				line.BaseScale = Vector2.One * 0.8f;
+				return true;
 		}
 
-		if (line.Mod == Mod.Name &&
-			(line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense"))
+		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense")
 		{
 			line.BaseScale = Vector2.One * 0.95f;
 
@@ -273,7 +270,7 @@ internal abstract class PoTItem : ModItem
 			return true;
 		}
 
-		if (line.Mod == Mod.Name && line.Name == "Space")
+		if (line.Name == "Space")
 		{
 			line.BaseScale *= 0f;
 			yOffset = -20;
@@ -281,7 +278,7 @@ internal abstract class PoTItem : ModItem
 			return true;
 		}
 
-		if (line.Mod == Mod.Name && line.Name.Contains("Change"))
+		if (line.Name.Contains("Change"))
 		{
 			line.BaseScale = Vector2.One * 0.75f;
 			yOffset = -10;
