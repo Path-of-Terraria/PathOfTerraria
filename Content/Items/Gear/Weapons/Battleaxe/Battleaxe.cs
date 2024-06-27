@@ -2,6 +2,7 @@
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
@@ -9,7 +10,7 @@ internal abstract class Battleaxe : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Battleaxe/{GetType().Name}";
 	public override float DropChance => 1f;
-	public override string AltUseDescription => "Sacrifice 5 life to increase damage temporarily. Take more damage during the effect.";
+	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Battleaxe.AltUse");
 	protected override string GearLocalizationCategory => "Battleaxe";
 
 	public override void Defaults()

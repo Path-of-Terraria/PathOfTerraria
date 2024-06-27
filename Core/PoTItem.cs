@@ -73,8 +73,8 @@ internal abstract class PoTItem : ModItem
 		set => InternalItemLevel = value;
 	}
 	
-	public virtual string Description => "";
-	public virtual string AltUseDescription => "";
+	public virtual string Description => string.Empty;
+	public virtual string AltUseDescription => string.Empty;
 	public virtual int MinDropItemLevel => 0;
 
 	protected List<ItemAffix> Affixes = [];

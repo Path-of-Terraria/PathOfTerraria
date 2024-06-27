@@ -54,6 +54,8 @@ Leggings: {
 }
 
 Battleaxe: {
+	AltUse: Sacrifice 5 life to increase damage temporarily. Take more damage during the effect.
+
 	Prefixes: {
 		0: Brutal
 		1: Savage
