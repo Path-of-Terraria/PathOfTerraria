@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using PathOfTerraria.Core.Loaders.UILoading;
-using PathOfTerraria.Core.Systems.Questing;
+﻿using PathOfTerraria.Core.Loaders.UILoading;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests;
@@ -9,26 +6,21 @@ namespace PathOfTerraria.Content.GUI.Quests;
 internal class QuestsCompletedInnerPanel : SmartUIElement
 {
 	private UIElement Panel => Parent;
-	private List<Quest> _quests = [];
-	public override string TabName => "QuestsCompleted";
+
+	public override string TabName => "QuestBookMenu";
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		_quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetCompletedQuests();	
-		foreach (Quest quest in _quests.Where(x => x.Completed))
-		{
-			Utils.DrawBorderStringBig(
-				spriteBatch, 
-				quest.Name,
-				GetRectangle().TopLeft() + new Vector2(25, 150),
-				Color.White,
-				0.5f,
-				0.5f,
-				0.35f);
-		}
+		DrawBack(spriteBatch);
+	}
+
+	private void DrawBack(SpriteBatch spriteBatch)
+	{
+		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/QuestBookBackground").Value;
+		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 	}
 	
-	public Rectangle GetRectangle()
+	private Rectangle GetRectangle()
 	{
 		return Panel.GetDimensions().ToRectangle();
 	}

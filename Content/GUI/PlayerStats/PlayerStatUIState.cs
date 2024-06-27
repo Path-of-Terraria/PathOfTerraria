@@ -9,7 +9,7 @@ namespace PathOfTerraria.Content.GUI.PlayerStats;
 
 internal class PlayerStatUIState : DraggableSmartUi
 {
-	private readonly PlayerStatInnerPanel _mainPanel = new() { Width = StyleDimension.FromPixels(512), Height = StyleDimension.FromPixels(448), HAlign = 0.5f, VAlign = 0.5f };
+	private readonly PlayerStatInnerPanel _mainPanel = new();
 	public override List<SmartUIElement> TabPanels => [_mainPanel];
 
 	public override int DepthPriority => 2;
@@ -19,6 +19,7 @@ internal class PlayerStatUIState : DraggableSmartUi
 		if (IsVisible)
 		{
 			IsVisible = false;
+			_mainPanel.Remove();
 			return;
 		}
 
@@ -27,8 +28,7 @@ internal class PlayerStatUIState : DraggableSmartUi
 			Width = StyleDimension.FromPixels(512);
 			Height = StyleDimension.FromPixels(448);
 			HAlign = 0.5f;
-			VAlign = 0.5f;
-
+			VAlign = 0.3f;
 			RemoveAllChildren();
 			Append(_mainPanel);
 
