@@ -12,7 +12,7 @@ internal class WebWhip : Whip
 		RangeMultiplier = 1f,
 	};
 
-	public override int ItemLevel => 9;
+	public override int MinDropItemLevel => 9;
 
 	public override void Defaults()
 	{

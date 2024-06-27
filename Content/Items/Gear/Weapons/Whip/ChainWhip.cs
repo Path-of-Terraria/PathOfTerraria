@@ -12,7 +12,7 @@ internal class ChainWhip : Whip
 		RangeMultiplier = 1.05f,
 	};
 
-	public override int ItemLevel => 15;
+	public override int MinDropItemLevel => 15;
 
 	public override void Defaults()
 	{
