@@ -25,7 +25,7 @@ public class UIDraggablePanel : UIPanel
 	private int _uiDelay = -1;
 
 	private readonly UIPanel _header;
-
+	private readonly bool _canResize = true;
 	private readonly Dictionary<string, UIPanelTab> _menus;
 	public string ActiveTab = "";
 	public event Action OnActiveTabChanged;
@@ -33,7 +33,7 @@ public class UIDraggablePanel : UIPanel
 	public bool Blocked = true;
 
 	public UIDraggablePanel(bool stopItemUse, bool showCloseButton,
-		IEnumerable<(string key, LocalizedText text)> menuOptions, int panelHeight)
+		IEnumerable<(string key, LocalizedText text)> menuOptions, int panelHeight, bool canResize)
 	{
 		_stopItemUse = stopItemUse;
 
@@ -91,13 +91,14 @@ public class UIDraggablePanel : UIPanel
 		}
 
 		_minSize.X = Math.Max(_minSize.X, left);
+		_canResize = canResize;
 
 		SetActivePage(_menus.Keys.First());
 	}
 
 	public override void RightMouseDown(UIMouseEvent evt)
 	{
-		if (Blocked)
+		if (Blocked || !_canResize)
 		{
 			return;
 		}

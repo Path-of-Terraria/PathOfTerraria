@@ -2,7 +2,7 @@
 
 internal class Manuscript : Spellbook
 {
-	public override int ItemLevel => 20;
+	public override int MinDropItemLevel => 20;
 	
 	public override void Defaults()
 	{

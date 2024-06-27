@@ -22,6 +22,7 @@ namespace PathOfTerraria.Core;
 internal class PoTItemMiddleMouseButtonClick : ILoadable
 {
 	public static ModKeybind CopyItem { get; private set; }
+
 	public void Load(Mod mod)
 	{
 		CopyItem = KeybindLoader.RegisterKeybind(mod, "CopyItemInfo", "I");
@@ -32,7 +33,9 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 	{
 		CopyItem = null;
 	}
-	private void AddKeybindPressEvent(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
+
+	private void AddKeybindPressEvent(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context,
+		int slot)
 	{
 		if (CopyItem.JustPressed)
 		{
@@ -45,12 +48,14 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 		orig(inv, context, slot);
 	}
 }
+
 internal abstract class PoTItem : ModItem
 {
 	/// <summary>
 	/// Spawns a random piece of armor at the given position.
 	/// </summary>
-	private static readonly MethodInfo SpawnItemMethod = typeof(PoTItem).GetMethod("SpawnItem", BindingFlags.Public | BindingFlags.Static);
+	private static readonly MethodInfo SpawnItemMethod =
+		typeof(PoTItem).GetMethod("SpawnItem", BindingFlags.Public | BindingFlags.Static);
 
 	private static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
 	// <Drop chance, item rarity, type of item>
@@ -66,7 +71,7 @@ internal abstract class PoTItem : ModItem
 
 	private string _name;
 	protected int InternalItemLevel;
-	
+
 	public virtual int ItemLevel
 	{
 		get => InternalItemLevel;
@@ -75,6 +80,7 @@ internal abstract class PoTItem : ModItem
 	
 	public virtual string Description => string.Empty;
 	public virtual string AltUseDescription => string.Empty;
+
 	public virtual int MinDropItemLevel => 0;
 
 	protected List<ItemAffix> Affixes = [];
@@ -114,10 +120,7 @@ internal abstract class PoTItem : ModItem
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
 		tooltips.Clear();
-		var nameLine = new TooltipLine(Mod, "Name", _name)
-		{
-			OverrideColor = GetRarityColor(Rarity)
-		};
+		var nameLine = new TooltipLine(Mod, "Name", _name) { OverrideColor = GetRarityColor(Rarity) };
 		tooltips.Add(nameLine);
 
 		var rareLine = new TooltipLine(Mod, "Rarity", GetDescriptor(ItemType, Rarity, Influence))
@@ -143,7 +146,7 @@ internal abstract class PoTItem : ModItem
 		}
 
 		tooltips.Add(powerLine);
-		
+
 		if (!string.IsNullOrWhiteSpace(AltUseDescription))
 		{
 			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", AltUseDescription));
@@ -171,17 +174,24 @@ internal abstract class PoTItem : ModItem
 		{
 			string text = affix.RequiredInfluence switch
 			{
-				Influence.Solar => $"[i:{ItemID.IchorBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "FFEE99", "CCB077"),
-				Influence.Lunar => $"[i:{ItemID.CrystalBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", "BBDDFF", "99AADD"),
-				_ => affixIdx < _implicits ?
-					$"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", baseColor: "8B8000") :
-					$"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(this)}"),
+				Influence.Solar => $"[i:{ItemID.IchorBullet}] " +
+				                   HighlightNumbers($"{affix.GetTooltip(this)}", "FFEE99", "CCB077"),
+				Influence.Lunar => $"[i:{ItemID.CrystalBullet}] " +
+				                   HighlightNumbers($"{affix.GetTooltip(this)}", "BBDDFF", "99AADD"),
+				_ => affixIdx < _implicits
+					? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", baseColor: "8B8000")
+					: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(this)}"),
 			};
 
 			var affixLine = new TooltipLine(Mod, $"Affix{affixIdx}", text);
 			tooltips.Add(affixLine);
 
 			affixIdx++;
+		}
+
+		if (!string.IsNullOrWhiteSpace(Description))
+		{
+			tooltips.Add(new TooltipLine(Mod, "Description", Description));
 		}
 
 		// change in stats if equipped
@@ -195,7 +205,8 @@ internal abstract class PoTItem : ModItem
 
 		List<string> red = new();
 		List<string> green = new();
-		currentItemModifier.GetDifference(thisItemModifier).ForEach(s => {
+		currentItemModifier.GetDifference(thisItemModifier).ForEach(s =>
+		{
 			if (s.Item2)
 			{
 				green.Add(s.Item1);
@@ -219,45 +230,38 @@ internal abstract class PoTItem : ModItem
 		{
 			tooltips.Add(new TooltipLine(Mod, $"Change{affixIdx}", $"[c/FF0000:{changes}]"));
 		}
-		
-		if (!string.IsNullOrWhiteSpace(Description))
-		{
-			tooltips.Add(new TooltipLine(Mod, "Description", Description));
-		}
 	}
 
 	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 	{
-		if (line.Mod == Mod.Name && line.Name == "Name")
+		if (line.Mod != Mod.Name)
 		{
-			yOffset = -2;
-			line.BaseScale = Vector2.One * 1.1f;
 			return true;
 		}
 
-		if (line.Mod == Mod.Name && line.Name == "Rarity")
+		switch (line.Name)
 		{
-			yOffset = -8;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
+			case "Name":
+				yOffset = -2;
+				line.BaseScale = Vector2.One * 1.1f;
+				return true;
+			case "Rarity":
+				yOffset = -8;
+				line.BaseScale = Vector2.One * 0.8f;
+				return true;
+			case "Power":
+				yOffset = 2;
+				line.BaseScale = Vector2.One * 0.8f;
+				return true;
+			case "AltUseDescription":
+			case "Description":
+				yOffset = 2;
+				line.BaseScale = Vector2.One * 0.8f;
+				return true;
 		}
 
-		if (line.Mod == Mod.Name && line.Name == "Power")
-		{
-			yOffset = 2;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
-		
-		if (line.Mod == Mod.Name && line.Name == "AltUseDescription")
-		{
-			yOffset = 2;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
-
-		if (line.Mod == Mod.Name &&
-			(line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense"))
+		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" ||
+		    line.Name == "Defense")
 		{
 			line.BaseScale = Vector2.One * 0.95f;
 
@@ -273,7 +277,7 @@ internal abstract class PoTItem : ModItem
 			return true;
 		}
 
-		if (line.Mod == Mod.Name && line.Name == "Space")
+		if (line.Name == "Space")
 		{
 			line.BaseScale *= 0f;
 			yOffset = -20;
@@ -281,7 +285,7 @@ internal abstract class PoTItem : ModItem
 			return true;
 		}
 
-		if (line.Mod == Mod.Name && line.Name.Contains("Change"))
+		if (line.Name.Contains("Change"))
 		{
 			line.BaseScale = Vector2.One * 0.75f;
 			yOffset = -10;
@@ -454,13 +458,15 @@ internal abstract class PoTItem : ModItem
 	}
 
 	private const float _magicFindPowerDecrease = 100f;
+
 	private static float ApplyRarityModifier(float chance, float dropRarityModifier)
 	{
 		// this is just some arbitrary function from chat gpt, modified a little...
 		// it is pretty hard to get all this down when we dont know all the items we will have n such;
 
 		chance *= 100f; // to make it effective on <0.1; it works... ok?
-		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) / (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
+		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) /
+		                      (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
 		return powerDecrease;
 	}
 
@@ -468,20 +474,23 @@ internal abstract class PoTItem : ModItem
 	{
 		SpawnRandomItem(pos, x => true, ilevel, dropRarityModifier);
 	}
-	public static void SpawnRandomItem(Vector2 pos, Func<Tuple<float, Rarity, Type>, bool> dropCondition, int ilevel = 0, float dropRarityModifier = 0)
+
+	public static void SpawnRandomItem(Vector2 pos, Func<Tuple<float, Rarity, Type>, bool> dropCondition,
+		int ilevel = 0, float dropRarityModifier = 0)
 	{
-		ilevel = ilevel == 0 ? PickItemLevel() : ilevel;  // Pick the item level if not provided
+		ilevel = ilevel == 0 ? PickItemLevel() : ilevel; // Pick the item level if not provided
 		dropRarityModifier += ilevel / 10f; // the effect of item level on "magic find"
 
 		// Filter AllGear based on item level
-		var filteredGear = AllItems.Where(g => 
+		var filteredGear = AllItems.Where(g =>
 		{
 			var gearInstance = Activator.CreateInstance(g.Item3) as PoTItem;
 			return gearInstance != null && gearInstance.MinDropItemLevel <= ilevel;
 		}).ToList();
 
 		// Calculate dropChanceSum based on filtered gear
-		float dropChanceSum = filteredGear.Where(x => dropCondition(x)).Sum((Tuple<float, Rarity, Type> x) => ApplyRarityModifier(x.Item1, dropRarityModifier));
+		float dropChanceSum = filteredGear.Where(x => dropCondition(x)).Sum((Tuple<float, Rarity, Type> x) =>
+			ApplyRarityModifier(x.Item1, dropRarityModifier));
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
@@ -517,7 +526,7 @@ internal abstract class PoTItem : ModItem
 		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel);
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
-	
+
 	/// <summary>
 	/// Selects an appropriate item level for a piece of gear to drop at based on world state
 	/// </summary>
