@@ -8,7 +8,7 @@ internal class SteelBroadsword : Sword
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/SteelBroadsword";
 
 	public override float DropChance => 1f;
-	public override int ItemLevel => 20;
+	public override int MinDropItemLevel => 20;
 
 	public override void Defaults()
 	{
