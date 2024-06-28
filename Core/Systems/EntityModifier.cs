@@ -37,19 +37,17 @@ internal partial class EntityModifier : EntityModifierSegment
 	public StatModifier MaxHealthPotions = new();
 	public StatModifier PotionHealPower = new();
 
-	[ReverseTooltip]
-	public StatModifier PotionHealDelay = new();
+	[ReverseTooltip] public StatModifier PotionHealDelay = new();
 
 	public StatModifier MaxManaPotions = new();
 	public StatModifier PotionManaPower = new();
 
-	[ReverseTooltip]
-	public StatModifier PotionManaDelay = new();
+	[ReverseTooltip] public StatModifier PotionManaDelay = new();
 
 	// BuffModifierPlayer:
 	public StatModifier DebuffResistance = new();
 	public StatModifier BuffBonus = new();
-	
+
 	// ReflectedDamagePlayer:
 	public StatModifier ReflectedDamageModifier = new();
 
@@ -97,7 +95,7 @@ internal partial class EntityModifier : EntityModifierSegment
 		ps.MaxMana = (int)MaxHealthPotions.ApplyTo(ps.MaxMana);
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
-    
+
 		BuffModifierPlayer buffPlayer = player.GetModPlayer<BuffModifierPlayer>();
 		buffPlayer.ResistanceStrength = DebuffResistance;
 		buffPlayer.BuffBonus = BuffBonus;
@@ -110,11 +108,13 @@ internal partial class EntityModifier : EntityModifierSegment
 	}
 
 	public override Dictionary<string, StatModifier> Modifiers =>
-		typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).
-		ToDictionary(f => ((f.GetCustomAttribute<ReverseTooltip>() is not null) ? "+" : "-") + f.Name, f => (StatModifier)f.GetValue(this));
+		typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToDictionary(
+			f => ((f.GetCustomAttribute<ReverseTooltip>() is not null) ? "+" : "-") + f.Name,
+			f => (StatModifier)f.GetValue(this));
 
 	private readonly FieldInfo[] _segments =
-		typeof(EntityModifier).GetFields().Where(f => f.FieldType.IsSubclassOf(typeof(EntityModifierSegment))).ToArray();
+		typeof(EntityModifier).GetFields().Where(f => f.FieldType.IsSubclassOf(typeof(EntityModifierSegment)))
+			.ToArray();
 
 	public List<Tuple<string, bool>> GetDifference(EntityModifier other)
 	{
@@ -150,7 +150,10 @@ internal partial class EntityModifier : EntityModifierSegment
 					if (thisField != otherField)
 					{
 						strings.AddRange(GetDifferences(thisField, otherField, modifier.Key[0] == '+')
-							.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(modifier.Key[1..], "$1 $2")), s.Item2)));
+							.Select(s =>
+								new Tuple<string, bool>(
+									s.Item1.Replace("#", DifferenceRegex().Replace(modifier.Key[1..], "$1 $2")),
+									s.Item2)));
 					}
 				}
 			}
@@ -159,26 +162,39 @@ internal partial class EntityModifier : EntityModifierSegment
 			{
 				StatModifier thisField = thisSegment.Modifiers[missing];
 				strings.AddRange(GetDifferences(thisField, new(), missing[0] == '+')
-					.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(missing[1..], "$1 $2")), s.Item2)));
+					.Select(s =>
+						new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(missing[1..], "$1 $2")),
+							s.Item2)));
 			}
 
 			foreach (string missing in otherSegment.Modifiers.Keys.Except(thisSegment.Modifiers.Keys))
 			{
 				StatModifier thisField = otherSegment.Modifiers[missing];
 				strings.AddRange(GetDifferences(new(), thisField, missing[0] == '+')
-					.Select(s => new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(missing[1..], "$1 $2")), s.Item2)));
+					.Select(s =>
+						new Tuple<string, bool>(s.Item1.Replace("#", DifferenceRegex().Replace(missing[1..], "$1 $2")),
+							s.Item2)));
 			}
 		}
 
 		return strings;
 	}
+
 	public List<string> GetDifferenceOnlyStrings(EntityModifier other)
 	{
 		return GetDifference(other).Select(s => s.Item1).ToList();
 	}
 
-	public static List<Tuple<string, bool>> GetChange(EntityModifier changed) { return _default.GetDifference(changed); }
-	public static List<string> GetChangeOnlyStrings(EntityModifier changed) { return _default.GetDifferenceOnlyStrings(changed); }
+	public static List<Tuple<string, bool>> GetChange(EntityModifier changed)
+	{
+		return _default.GetDifference(changed);
+	}
+
+	public static List<string> GetChangeOnlyStrings(EntityModifier changed)
+	{
+		return _default.GetDifferenceOnlyStrings(changed);
+	}
+
 	private List<Tuple<string, bool>> GetDifferences(StatModifier m1, StatModifier m2, bool reversed = false)
 	{
 		List<Tuple<string, bool>> differences = new List<Tuple<string, bool>>();
@@ -219,7 +235,8 @@ internal partial class EntityModifier : EntityModifierSegment
 			}
 
 			bool isPositive = type == "increased";
-			differences.Add(new($"{MathF.Abs(MathF.Round(multDiff * 100f, 2))}% {type} #", reversed ? !isPositive : isPositive));
+			differences.Add(new($"{MathF.Abs(MathF.Round(multDiff * 100f, 2))}% {type} #",
+				reversed ? !isPositive : isPositive));
 		}
 
 		float flatDiff = m2.Flat - m1.Flat;
@@ -242,4 +259,6 @@ internal partial class EntityModifier : EntityModifierSegment
 	private static partial Regex DifferenceRegex();
 }
 
-public class ReverseTooltip : Attribute {}
+public class ReverseTooltip : Attribute
+{
+}

@@ -19,8 +19,8 @@ internal abstract class Battleaxe : Gear
 		Item.width = 48;
 		Item.height = 48;
 		Item.useStyle = ItemUseStyleID.Swing;
-		Item.useTime = 25;
-		Item.useAnimation = 25;
+		Item.useTime = 40;
+		Item.useAnimation = 40;
 		Item.autoReuse = true;
 		Item.DamageType = DamageClass.Melee;
 		Item.knockBack = 8;
