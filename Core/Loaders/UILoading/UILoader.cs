@@ -43,6 +43,8 @@ class UILoader : ModSystem
 
 				UIStates?.Add(state);
 				UserInterfaces?.Add(userInterface);
+				
+				state.Load();
 			}
 		}
 	}
