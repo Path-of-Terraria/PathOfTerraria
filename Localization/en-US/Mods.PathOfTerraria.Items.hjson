@@ -245,3 +245,8 @@ SteelBattleaxe: {
 	DisplayName: Steel Battleaxe
 	Tooltip: ""
 }
+
+GuardianAngel: {
+	DisplayName: Guardian Angel
+	Tooltip: ""
+}
