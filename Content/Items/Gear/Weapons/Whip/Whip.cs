@@ -27,6 +27,7 @@ internal abstract class Whip : Gear
 
 	public abstract WhipDrawData DrawData { get; }
 	public abstract WhipSettings WhipSettings { get; }
+	protected override string GearLocalizationCategory => "Whip";
 
 	/// <summary>
 	/// Stores a Whip's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.
@@ -63,31 +64,5 @@ internal abstract class Whip : Gear
 		player.itemAnimation = player.itemAnimationMax = 30;
 		Item.useAnimation = 30;
 		return true;
-	}
-
-	public override string GeneratePrefix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Searing",
-			1 => "Venomous",
-			2 => "Barbed",
-			3 => "Fiery",
-			4 => "Thunderous",
-			_ => "Unknown"
-		};
-	}
-
-	public override string GenerateSuffix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Lash",
-			1 => "Fang",
-			2 => "Scourge",
-			3 => "Strike",
-			4 => "Snap",
-			_ => "Unknown"
-		};
 	}
 }

@@ -21,6 +21,8 @@ internal abstract class Bow : Gear
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
 
+	protected override string GearLocalizationCategory => "Bow";
+
 	protected virtual int AnimationSpeed => 6;
 	protected virtual float CooldownTimeInSeconds => 5;
 
@@ -89,31 +91,5 @@ internal abstract class Bow : Gear
 		}
 
 		return player.altFunctionUse != 2;
-	}
-	
-	public override string GeneratePrefix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Swift",
-			1 => "Piercing",
-			2 => "Hunter's",
-			3 => "Gale",
-			4 => "Vengeful",
-			_ => "Unknown"
-		};
-	}
-	
-	public override string GenerateSuffix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Flight",
-			1 => "Song",
-			2 => "Wind",
-			3 => "Thorn",
-			4 => "Sight",
-			_ => "Unknown"
-		};
 	}
 }
