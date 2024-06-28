@@ -32,6 +32,11 @@ abstract class Quest
 			StartQuest(player, currentQuest + 1);
 		});
 	}
+	
+	public List<QuestStep> GetSteps()
+	{
+		return _subQuests;
+	}
 
 	public string CurrentQuestString()
 	{
