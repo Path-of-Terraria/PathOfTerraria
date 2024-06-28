@@ -10,6 +10,8 @@ internal class Spellbook : Gear
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Tome/TomePlaceholder";
 	public override float DropChance => 1f;
 
+	protected override string GearLocalizationCategory => "Spellbook";
+
 	public override void Defaults()
 	{
 		Item.damage = 10;
@@ -26,33 +28,5 @@ internal class Spellbook : Gear
 
 		Item.shoot = ModContent.ProjectileType<TomeProjectile>();
 		Item.SetShopValues(ItemRarityColor.Green2, 10000);
-	}
-	
-	public override string GeneratePrefix()
-	{
-		// didnt change this, is the same as staff
-		return Main.rand.Next(5) switch
-		{
-			0 => "Arcane",
-			1 => "Mystic",
-			2 => "Eldritch",
-			3 => "Luminous",
-			4 => "Sacred",
-			_ => "Unknown"
-		};
-	}
-
-	public override string GenerateSuffix()
-	{
-		// didnt change this, is the same as staff
-		return Main.rand.Next(5) switch
-		{
-			0 => "Wrath",
-			1 => "Whisper",
-			2 => "Beacon",
-			3 => "Veil",
-			4 => "Echo",
-			_ => "Unknown"
-		};
 	}
 }

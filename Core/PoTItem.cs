@@ -77,9 +77,10 @@ internal abstract class PoTItem : ModItem
 		get => InternalItemLevel;
 		set => InternalItemLevel = value;
 	}
+	
+	public virtual string Description => string.Empty;
+	public virtual string AltUseDescription => string.Empty;
 
-	public virtual string Description => "";
-	public virtual string AltUseDescription => "";
 	public virtual int MinDropItemLevel => 0;
 
 	protected List<ItemAffix> Affixes = [];
@@ -714,12 +715,12 @@ internal abstract class PoTItem : ModItem
 	/// <summary>
 	/// Applies after affixes have been placed, this is mainly for unique items.
 	/// </summary>
-	public virtual List<ItemAffix> GenerateAffixes() { return new(); }
+	public virtual List<ItemAffix> GenerateAffixes() { return []; }
 
 	/// <summary>
 	/// Before affix roll, allows you to add the implicit affixes that should exist on this type of gear.
 	/// </summary>
-	public virtual List<ItemAffix> GenerateImplicits() { return new(); }
+	public virtual List<ItemAffix> GenerateImplicits() { return []; }
 
 	/// <summary>
 	/// Allows you to customize what prefixes this items can have, only visual
@@ -736,14 +737,11 @@ internal abstract class PoTItem : ModItem
 	/// </summary>
 	public virtual string GenerateName()
 	{
-		string prefix = GeneratePrefix();
-		string suffix = GenerateSuffix();
-
 		return Rarity switch
 		{
 			Rarity.Normal => Item.Name,
-			Rarity.Magic => $"{prefix} {Item.Name}",
-			Rarity.Rare => $"{prefix} {Item.Name} {suffix}",
+			Rarity.Magic => $"{GeneratePrefix()} {Item.Name}",
+			Rarity.Rare => $"{GeneratePrefix()} {Item.Name} {GenerateSuffix()}",
 			Rarity.Unique => Item.Name, // uniques might just want to override the GenerateName function
 			_ => "Unknown Item"
 		};

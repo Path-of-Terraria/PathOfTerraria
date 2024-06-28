@@ -13,6 +13,7 @@ internal abstract class Boomerang : Gear
 	public override int ItemLevel => 1;
 
 	protected virtual int BoomerangCount => 1;
+	protected override string GearLocalizationCategory => "Boomerang";
 
 	public override void Defaults()
 	{
@@ -45,31 +46,5 @@ internal abstract class Boomerang : Gear
 		}
 
 		return false;
-	}
-
-	public override string GeneratePrefix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Spiraling",
-			1 => "Quick",
-			2 => "Razor",
-			3 => "Enchanted",
-			4 => "Storm",
-			_ => "Unknown"
-		};
-	}
-
-	public override string GenerateSuffix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Return",
-			1 => "Slice",
-			2 => "Glide",
-			3 => "Arc",
-			4 => "Edge",
-			_ => "Unknown"
-		};
 	}
 }
