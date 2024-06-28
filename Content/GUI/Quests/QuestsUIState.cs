@@ -1,21 +1,23 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
 using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Systems.Questing;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests
 {
     internal class QuestsUIState : DraggableSmartUi
     {
+	    private static readonly Asset<Texture2D> Texture = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/ArrowExtraSmall");
         private readonly QuestsCompletedInnerPanel _mainPanel = new() { Width = StyleDimension.FromPixels(1200), Height = StyleDimension.FromPixels(900), HAlign = 0.5f, VAlign = 0.5f };
-        private readonly UIImageButton _rightArrow = new(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/ArrowSmall"));
-        private readonly FlippableUIImageButton _leftArrow = new(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/ArrowSmall")) { FlipHorizontally = true };
-        public override List<SmartUIElement> TabPanels => new List<SmartUIElement> { _mainPanel };
+        private readonly UIImageButton _rightArrow = new(Texture);
+        private readonly FlippableUIImageButton _leftArrow = new(Texture) { FlipHorizontally = true };
+        public List<Quest> _quests = [];
+        public override List<SmartUIElement> TabPanels => [_mainPanel];
+        private int currentQuestIndex = 0;
 
         public override int DepthPriority => 2;
 
@@ -30,6 +32,16 @@ namespace PathOfTerraria.Content.GUI.Quests
 
             if (!HasChild(_mainPanel))
             {
+	            _mainPanel.Width = StyleDimension.FromPixels(1200);
+	            _mainPanel.Height = StyleDimension.FromPixels(900);
+	            _mainPanel.HAlign = 0.5f;
+	            _mainPanel.VAlign = 0.5f;
+	            _quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
+	            if (_quests.Count > 0)
+	            {
+		            _mainPanel.ViewingQuest = _quests[currentQuestIndex];
+	            }
+	            
                 RemoveAllChildren();
                 Append(_mainPanel);
 
@@ -50,19 +62,32 @@ namespace PathOfTerraria.Content.GUI.Quests
                 _rightArrow.Height.Set(128, 0);
                 _rightArrow.OnLeftClick += (a, b) =>
                 {
+	                if (currentQuestIndex == _quests.Count - 1)
+	                {
+		                return;
+	                }
+	                
                     SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+                    currentQuestIndex++;
+                    _mainPanel.ViewingQuest = _quests[currentQuestIndex];
                 };
                 _mainPanel.Append(_rightArrow);
                 _mainPanel.Append(CloseButton);
 
-                // Setup the left arrow
                 _leftArrow.Left.Set(145, 0f);
                 _leftArrow.Top.Set(-180, 1f);
                 _leftArrow.Width.Set(128, 0);
                 _leftArrow.Height.Set(128, 0);
                 _leftArrow.OnLeftClick += (a, b) =>
                 {
-                    SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+	                if (currentQuestIndex == 0)
+	                {
+		                return;
+	                }
+                    
+	                SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+                    currentQuestIndex--;
+                    _mainPanel.ViewingQuest = _quests[currentQuestIndex];
                 };
                 _mainPanel.Append(_leftArrow);
             }
@@ -76,8 +101,15 @@ namespace PathOfTerraria.Content.GUI.Quests
             base.Draw(spriteBatch);
 
             CloseButton.Draw(spriteBatch);
-            _rightArrow.Draw(spriteBatch);
-            _leftArrow.Draw(spriteBatch);
+            if (currentQuestIndex != 0)
+            {
+	            _leftArrow.Draw(spriteBatch);
+            }
+
+            if (currentQuestIndex != _quests.Count - 1)
+            {
+	            _rightArrow.Draw(spriteBatch);   
+            }
         }
     }
 }
@@ -85,13 +117,14 @@ namespace PathOfTerraria.Content.GUI.Quests
 
 public class FlippableUIImageButton(Asset<Texture2D> texture) : UIImageButton(texture)
 {
+	private readonly Asset<Texture2D> _texture1 = texture;
 	public bool FlipHorizontally { get; set; }
 
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
 		if (FlipHorizontally)
 		{
-			spriteBatch.Draw(texture.Value, GetDimensions().ToRectangle(), null, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
+			spriteBatch.Draw(_texture1.Value, GetDimensions().ToRectangle(), null, Color.White, 0f, Vector2.Zero, SpriteEffects.FlipHorizontally, 0f);
 		}
 		else
 		{

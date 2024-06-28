@@ -1,17 +1,41 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Systems.Questing;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests;
 
-internal class QuestsCompletedInnerPanel : SmartUIElement
+internal class QuestsCompletedInnerPanel() : SmartUIElement
 {
 	private UIElement Panel => Parent;
+	public Quest ViewingQuest;
 
 	public override string TabName => "QuestBookMenu";
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		DrawBack(spriteBatch);
+		if (ViewingQuest is not null)
+		{
+			Utils.DrawBorderStringBig(
+				spriteBatch, 
+				ViewingQuest.Name,
+				GetRectangle().Center() + new Vector2(-220, -385),
+				Color.White, 
+				0.5f, 
+				0.5f, 
+				0.35f);
+		}
+		else
+		{
+			Utils.DrawBorderStringBig(
+				spriteBatch,
+				"NO QUESTS",
+				GetRectangle().Center() + new Vector2(0, -20),
+				Color.White, 
+				0.5f, 
+				0.5f, 
+				0.35f);
+		}
 	}
 
 	private void DrawBack(SpriteBatch spriteBatch)

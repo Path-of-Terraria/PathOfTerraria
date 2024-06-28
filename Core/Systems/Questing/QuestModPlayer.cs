@@ -12,10 +12,13 @@ internal class QuestModPlayer : ModPlayer
 	{
 		_enabledQuests.Clear();
 		Quest quest = new TestQuest();
+		Quest quest2 = new TestQuestTwo();
 
 		quest.StartQuest(Player);
+		quest2.StartQuest(Player);
 
 		_enabledQuests.Add(quest);
+		_enabledQuests.Add(quest2);
 	}
 
 	public override void PostUpdate()
@@ -41,6 +44,11 @@ internal class QuestModPlayer : ModPlayer
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
 		questTags.ForEach(tag => { Quest q = Quest.LoadFrom(tag, Player); if (q is not null) { _enabledQuests.Add(q); } });
+	}
+	
+	public List<Quest> GetAllQuests()
+	{
+		return _enabledQuests;
 	}
 	
 	public List<Quest> GetCompletedQuests()
