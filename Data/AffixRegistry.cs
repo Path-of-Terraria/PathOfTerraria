@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using System.Linq;
+using PathOfTerraria.Core;
 using PathOfTerraria.Data.Models;
 using PathOfTerraria.Core.Systems.Affixes;
 using Terraria.ModLoader.Core;
@@ -13,31 +14,31 @@ public class AffixRegistry : ILoadable
 	/// <summary>
 	/// A map of AffixData objects, with the key being the type from NPC.
 	/// </summary>
-	private static Dictionary<Type, ItemAffixData> _itemAffixData = [];
-	
+	public static Dictionary<Type, ItemAffixData> ItemAffixData = [];
+
 	public void Load(Mod mod)
 	{
-		_itemAffixData = LoadJsonFilesToMapAsync();
+		ItemAffixData = LoadJsonFilesToMapAsync();
 
-		foreach (KeyValuePair<Type, ItemAffixData> entry in _itemAffixData)
+		foreach (KeyValuePair<Type, ItemAffixData> entry in ItemAffixData)
 		{
 			Console.WriteLine($"Affix with type key: \"{entry.Key}\" registered.");
 		}
 	}
-	
+
 	public virtual void Unload() { }
 
 	/// <summary>
 	/// Provides a safe way of getting ItemAffixData from the ItemAffixData map.
 	/// </summary>
 	/// <param name="type">Type to look for.</param>
-	/// <returns><see cref="ItemAffixData"/> instance of the given type.</returns>
+	/// <returns><see cref="Models.ItemAffixData"/> instance of the given type.</returns>
 	public static ItemAffixData TryGetAffixData(Type type)
 	{
 		try
 		{
-			return _itemAffixData[type];
-		} 
+			return ItemAffixData[type];
+		}
 		catch (KeyNotFoundException exception)
 		{
 			Console.WriteLine($"ItemAffixData with type {type.Name} not found.\n\n{exception}");
@@ -49,12 +50,12 @@ public class AffixRegistry : ILoadable
 	/// Provides a safe way of getting ItemAffixData from the ItemAffixData map.
 	/// </summary>
 	/// <typeparam name="T">Type to look for.</typeparam>
-	/// <returns><see cref="ItemAffixData"/> instance of the given type.</returns>
+	/// <returns><see cref="Models.ItemAffixData"/> instance of the given type.</returns>
 	public static ItemAffixData TryGetAffixData<T>() where T : Affix
 	{
 		return TryGetAffixData(typeof(T));
 	}
-	
+
 	/// <summary>
 	/// Loads the JSON files from the paths.txt file and returns a map of the data.
 	/// </summary>
@@ -62,15 +63,15 @@ public class AffixRegistry : ILoadable
 	private static Dictionary<Type, ItemAffixData> LoadJsonFilesToMapAsync()
 	{
 		var jsonDataMap = new Dictionary<Type, ItemAffixData>();
-		var options = new JsonSerializerOptions
-		{
-			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-		};
+		var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
 		List<string> jsonFiles = PathOfTerraria.Instance.GetFileNames();
-		IEnumerable<Type> types = AssemblyManager.GetLoadableTypes(ModContent.GetInstance<PathOfTerraria>().Code).Where(x => typeof(Affix).IsAssignableFrom(x) && !x.IsAbstract);
+		IEnumerable<Type> types = AssemblyManager.GetLoadableTypes(ModContent.GetInstance<PathOfTerraria>().Code)
+			.Where(x => typeof(Affix).IsAssignableFrom(x) && !x.IsAbstract);
 
-		foreach (Stream jsonStream in from path in jsonFiles where path.StartsWith("Data/Affixes") && path.EndsWith(".json") select PathOfTerraria.Instance.GetFileStream(path))
+		foreach (Stream jsonStream in from path in jsonFiles
+		         where path.StartsWith("Data/Affixes") && path.EndsWith(".json")
+		         select PathOfTerraria.Instance.GetFileStream(path))
 		{
 			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();
@@ -96,42 +97,82 @@ public class AffixRegistry : ILoadable
 	}
 	
 	/// <summary>
-	/// Using the weight system, grabs an entry from the mob data provided the mobId
+	/// Convert ItemAffixData to ItemAffix instance based on affix type.
 	/// </summary>
-	/// <param name="mobId"></param>
-	/// <returns></returns>
-	//public static MobEntry SelectMobEntry(int mobId)
-	//{
-	//	if (!_itemAffixData.TryGetValue(mobId, out MobData mobData))
-	//	{
-	//		return null;
-	//	}
+	/// <param name="affixData">ItemAffixData containing affix details.</param>
+	/// <returns>Instance of ItemAffix corresponding to the affix data.</returns>
+	internal static ItemAffix ConvertToItemAffix(ItemAffixData affixData)
+	{
+		// Determine the type of ItemAffix based on AffixType
+		var affixType = Type.GetType($"PathOfTerraria.Core.Systems.Affixes.{affixData.AffixType}");
 
-	//	List<MobEntry> entries = mobData.Entries;
-	//	if (entries == null || entries.Count == 0)
-	//	{
-	//		return null;
-	//	}
+		if (affixType == null || !typeof(ItemAffix).IsAssignableFrom(affixType))
+		{
+			return null; // Handle case where affix type isn't found or isn't a valid ItemAffix
+		}
 
-	//	// Calculate total weight
-	//	decimal totalWeight = entries.Sum(e => e.Weight);
+		var affixInstance = (ItemAffix)Activator.CreateInstance(affixType);
 
-	//	// Generate a random number between 0 and total weight
-	//	var random = new Random();
-	//	decimal randomWeight = (decimal)random.NextDouble() * totalWeight;
+		// Optionally, you can initialize additional properties of ItemAffix based on affixData
+		// Example: affixInstance.EquipTypes = affixData.EquipTypes;
 
-	//	// Select the entry based on the random number
-	//	decimal cumulativeWeight = 0;
-	//	foreach (MobEntry entry in entries)
-	//	{
-	//		cumulativeWeight += entry.Weight;
-	//		if (randomWeight <= cumulativeWeight)
-	//		{
-	//			return entry;
-	//		}
-	//	}
+		return affixInstance;
+	}
+	
+	/// <summary>
+	/// Filters ItemAffixData dictionary by ItemType and selects a random affix.
+	/// </summary>
+	/// <param name="itemType">The ItemType to filter by.</param>
+	/// <returns>Random ItemAffixData entry matching the ItemType.</returns>
+	public static ItemAffixData GetRandomAffixDataByItemType(ItemType itemType)
+	{
+		List<ItemAffixData> filteredAffixData = ItemAffixData.Values
+			.Where(affixData => affixData.EquipTypes.Contains(itemType.ToString(), StringComparison.OrdinalIgnoreCase))
+			.ToList();
 
-	//	// Fallback, should not reach here
-	//	return entries.Last();
-	//}
+		if (filteredAffixData.Count == 0)
+			return null; // No matching affix found
+
+		// Select a random affix from the filtered list
+		Random random = new Random();
+		int randomIndex = random.Next(0, filteredAffixData.Count);
+
+		return filteredAffixData[randomIndex];
+	}
+	
+	/// <summary>
+	/// Retrieves a random affix value for the given ItemAffix.
+	/// </summary>
+	/// <param name="affix">The ItemAffix instance.</param>
+	/// <param name="itemLevel">The level of the item for determining appropriate tier.</param>
+	/// <returns>Random affix value.</returns>
+	internal static float GetRandomAffixValue(ItemAffix affix, int itemLevel)
+	{
+		// Get the corresponding ItemAffixData for the affix's type
+		Type affixType = affix.GetType();
+		if (!ItemAffixData.TryGetValue(affixType, out ItemAffixData affixData))
+		{
+			throw new ArgumentException($"ItemAffixData not found for affix type: {affixType.Name}");
+		}
+
+		// Get the appropriate TierData based on itemLevel
+		ItemAffixData.TierData tierData = affixData.GetAppropriateTierData(itemLevel);
+
+		// Generate a random value within the specified range
+		float randomValue = GenerateRandomValue(tierData.MinValue, tierData.MaxValue);
+
+		return randomValue;
+	}
+
+	/// <summary>
+	/// Generates a random value within the specified range.
+	/// </summary>
+	/// <param name="min">Minimum value (inclusive).</param>
+	/// <param name="max">Maximum value (inclusive).</param>
+	/// <returns>Random value within the range.</returns>
+	private static float GenerateRandomValue(float min, float max)
+	{
+		Random random = new Random();
+		return (float)(random.NextDouble() * (max - min) + min);
+	}
 }

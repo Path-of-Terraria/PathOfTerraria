@@ -55,8 +55,6 @@ public class ModifyHitAffixes
 	
 	internal class ChanceToApplyArmorShredGearAffix : ItemAffix
 	{
-		public override ItemType PossibleTypes => ItemType.None; //Only on unique items
-		
 		public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 		{
 			modifier.Buffer.Add(ModContent.BuffType<ArmorShredDebuff>(), Duration, Value);

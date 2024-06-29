@@ -15,6 +15,8 @@ using TextCopy;
 using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent.UI.Elements;
 using log4net.Core;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
 using Stubble.Core.Classes;
 
 namespace PathOfTerraria.Core;
@@ -827,15 +829,10 @@ internal abstract class PoTItem : ModItem
 		Affixes = GenerateImplicits();
 
 		_implicits = Affixes.Count;
-
-		List<ItemAffix> possible = AffixHandler.GetAffixes(this);
-
-		if (possible is not null)
-		{
-			int AffixCount = GetAffixCount(Rarity);
-
-			Affixes.AddRange(Affix.GenerateAffixes(possible, AffixCount));
-		}
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(ItemType);
+		ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
+		affix.Value = AffixRegistry.GetRandomAffixValue(affix, ItemLevel);
+		Affixes.Add(affix);
 
 		List<ItemAffix> extraAffixes = GenerateAffixes();
 		extraAffixes.ForEach(a => a.Roll());
