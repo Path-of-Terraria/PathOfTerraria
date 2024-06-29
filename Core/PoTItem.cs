@@ -847,9 +847,9 @@ internal abstract class PoTItem : ModItem
 			Affixes.Add(affix);
 		}
 
-		//List<ItemAffix> extraAffixes = GenerateAffixes();
-		//extraAffixes.ForEach(a => a.Roll());
-
-		//Affixes.AddRange(extraAffixes);
+		if (IsUnique)
+		{
+			Affixes.AddRange(GenerateAffixes());
+		}
 	}
 }
