@@ -14,5 +14,5 @@ GUI: {
 	SkillTreeTab: Skills
 	QuestsAvailableTab: Available
 	QuestsCompletedTab: Completed
-  PlayerStatsTab: Stats
+	PlayerStatsTab: Stats
 }
