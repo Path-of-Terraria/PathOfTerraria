@@ -8,7 +8,7 @@ internal class CopperBroadsword : Sword
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/CopperBroadsword";
 
 	public override float DropChance => 1f;
-	public override int ItemLevel => 5;
+	public override int MinDropItemLevel => 5;
 
 	public override void Defaults()
 	{

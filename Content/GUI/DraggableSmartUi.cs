@@ -32,15 +32,18 @@ public abstract class DraggableSmartUi : SmartUIState
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
-	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true)
+	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true, Point? panelSize = null, bool canResize = true)
 	{
-		Panel = new UIDraggablePanel(false, false, tabs, DraggablePanelHeight);
+		panelSize ??= new Point(PanelWidth, PanelHeight);
+
+		Panel = new UIDraggablePanel(false, false, tabs, DraggablePanelHeight, canResize);
 		Panel.OnActiveTabChanged += HandleActiveTabChanged;
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
-		Panel.Width.Set(PanelWidth, 0);
-		Panel.Height.Set(PanelHeight, 0);
+		Panel.Width.Set(panelSize.Value.X, 0);
+		Panel.Height.Set(panelSize.Value.Y, 0);
 		Append(Panel);
+
 		if (showCloseButton)
 		{
 			AddCloseButton();	
@@ -49,8 +52,7 @@ public abstract class DraggableSmartUi : SmartUIState
 	
 	protected void AddCloseButton()
 	{
-		CloseButton =
-			new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
+		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
 		CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
 		CloseButton.Top.Set(10, 0f);
 		CloseButton.Width.Set(38, 0);

@@ -6,6 +6,7 @@ Keybinds: {
 	UseSkill5.DisplayName: Use Skill5
 	WeaponSwap.DisplayName: Swap Weapons
 	CopyItemInfo.DisplayName: Copy Item Info
+	StatUIKey.DisplayName: Toggle Stat Page
 }
 
 GUI: {
@@ -13,4 +14,5 @@ GUI: {
 	SkillTreeTab: Skills
 	QuestsAvailableTab: Available
 	QuestsCompletedTab: Completed
+    PlayerStatsTab: Stats
 }
