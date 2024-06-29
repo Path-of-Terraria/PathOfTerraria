@@ -58,19 +58,19 @@ internal class CorruptedBattleaxe : IronBattleaxe
 	
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.AddedDamageAffix>();
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;
 		addedDamageAffix.MaxValue = 4;
 		
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.IncreasedDamageAffix>();
+		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>();
 		increasedDamageAffix.MaxValue = 0.1f;
 		increasedDamageAffix.MinValue = 0.1f;
 		
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.IncreasedAttackSpeedAffix>();
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
 		attackSpeedAffix.MaxValue = 0.1f;
 		attackSpeedAffix.MinValue = 0.1f;
 		
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.ChanceToApplyArmorShredGearAffix>();
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyArmorShredGearAffix>();
 		armorShredAffix.MaxValue = 1f;
 		armorShredAffix.MinValue = 0.1f;
 		armorShredAffix.Duration = 120;

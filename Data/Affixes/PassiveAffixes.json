@@ -91,7 +91,7 @@
 	},
 	{
 		"affixType": "IncreasedDamageAffix",
-		"equipTypes": "Melee",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 1,

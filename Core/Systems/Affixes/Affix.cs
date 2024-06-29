@@ -175,16 +175,14 @@ internal class AffixHandler : ILoadable
 
 			object instance = Activator.CreateInstance(type);
 
-			if (instance is ItemAffix itemAffix)
+			switch (instance)
 			{
-				_itemAffixes.Add(itemAffix);
-				continue;
-			}
-
-			if (instance is MobAffix mobAffix)
-			{
-				_mobAffixes.Add(mobAffix);
-				continue;
+				case ItemAffix itemAffix:
+					_itemAffixes.Add(itemAffix);
+					continue;
+				case MobAffix mobAffix:
+					_mobAffixes.Add(mobAffix);
+					break;
 			}
 		}
 	}

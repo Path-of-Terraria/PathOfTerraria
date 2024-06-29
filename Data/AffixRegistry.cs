@@ -103,8 +103,9 @@ public class AffixRegistry : ILoadable
 	/// <returns>Instance of ItemAffix corresponding to the affix data.</returns>
 	internal static ItemAffix ConvertToItemAffix(ItemAffixData affixData)
 	{
-		// Determine the type of ItemAffix based on AffixType
-		var affixType = Type.GetType($"PathOfTerraria.Core.Systems.Affixes.{affixData.AffixType}");
+		string typeName = $"PathOfTerraria.Core.Systems.Affixes.ItemTypes.ArmorAffixes.{affixData.AffixType}";
+
+		var affixType = Type.GetType(typeName);
 
 		if (affixType == null || !typeof(ItemAffix).IsAssignableFrom(affixType))
 		{
@@ -113,11 +114,9 @@ public class AffixRegistry : ILoadable
 
 		var affixInstance = (ItemAffix)Activator.CreateInstance(affixType);
 
-		// Optionally, you can initialize additional properties of ItemAffix based on affixData
-		// Example: affixInstance.EquipTypes = affixData.EquipTypes;
-
 		return affixInstance;
 	}
+
 	
 	/// <summary>
 	/// Filters ItemAffixData dictionary by ItemType and selects a random affix.
@@ -127,7 +126,7 @@ public class AffixRegistry : ILoadable
 	public static ItemAffixData GetRandomAffixDataByItemType(ItemType itemType)
 	{
 		var filteredAffixData = ItemAffixData.Values
-			.Where(affixData => affixData.EquipTypes.Contains(itemType.ToString(), StringComparison.OrdinalIgnoreCase))
+			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None)
 			.ToList();
 
 		if (filteredAffixData.Count == 0)
@@ -139,6 +138,7 @@ public class AffixRegistry : ILoadable
 
 		return filteredAffixData[randomIndex];
 	}
+
 	
 	/// <summary>
 	/// Retrieves a random affix value for the given ItemAffix.

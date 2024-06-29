@@ -811,7 +811,7 @@ internal abstract class PoTItem : ModItem
 		PostRoll();
 	}
 
-	public virtual int GetAffixCount(Rarity rarity)
+	public virtual int GetAffixCount()
 	{
 		return Rarity switch
 		{
@@ -829,7 +829,7 @@ internal abstract class PoTItem : ModItem
 		Affixes = GenerateImplicits();
 
 		_implicits = Affixes.Count;
-		foreach (int i in Enumerable.Range(0, GetAffixCount(Rarity)))
+		for (int i = 0; i < GetAffixCount(); i++)
 		{
 			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(ItemType);
 			if (chosenAffix is null)
