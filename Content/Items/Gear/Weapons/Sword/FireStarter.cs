@@ -39,7 +39,8 @@ internal class FireStarter : Sword
 		sharpAffix.MaxValue = 4;
 		
 		var onFireAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.ChanceToApplyOnFireGearAffix>();
-		onFireAffix.Value = 0.1f;
+		onFireAffix.MinValue = 0.1f;
+		onFireAffix.MaxValue = 0.1f;
 		return [sharpAffix, onFireAffix];
 	}
 	

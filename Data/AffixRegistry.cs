@@ -14,7 +14,7 @@ public class AffixRegistry : ILoadable
 	/// <summary>
 	/// A map of AffixData objects, with the key being the type from NPC.
 	/// </summary>
-	public static Dictionary<Type, ItemAffixData> ItemAffixData = [];
+	private static Dictionary<Type, ItemAffixData> ItemAffixData = [];
 
 	public void Load(Mod mod)
 	{
@@ -126,16 +126,16 @@ public class AffixRegistry : ILoadable
 	/// <returns>Random ItemAffixData entry matching the ItemType.</returns>
 	public static ItemAffixData GetRandomAffixDataByItemType(ItemType itemType)
 	{
-		List<ItemAffixData> filteredAffixData = ItemAffixData.Values
+		var filteredAffixData = ItemAffixData.Values
 			.Where(affixData => affixData.EquipTypes.Contains(itemType.ToString(), StringComparison.OrdinalIgnoreCase))
 			.ToList();
 
 		if (filteredAffixData.Count == 0)
+		{
 			return null; // No matching affix found
+		}
 
-		// Select a random affix from the filtered list
-		Random random = new Random();
-		int randomIndex = random.Next(0, filteredAffixData.Count);
+		int randomIndex = Main.rand.Next(0, filteredAffixData.Count);
 
 		return filteredAffixData[randomIndex];
 	}
@@ -172,7 +172,6 @@ public class AffixRegistry : ILoadable
 	/// <returns>Random value within the range.</returns>
 	private static float GenerateRandomValue(float min, float max)
 	{
-		Random random = new Random();
-		return (float)(random.NextDouble() * (max - min) + min);
+		return (float)(Main.rand.NextDouble() * (max - min) + min);
 	}
 }

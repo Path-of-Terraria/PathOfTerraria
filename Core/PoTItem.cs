@@ -829,14 +829,27 @@ internal abstract class PoTItem : ModItem
 		Affixes = GenerateImplicits();
 
 		_implicits = Affixes.Count;
-		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(ItemType);
-		ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
-		affix.Value = AffixRegistry.GetRandomAffixValue(affix, ItemLevel);
-		Affixes.Add(affix);
+		foreach (int i in Enumerable.Range(0, GetAffixCount(Rarity)))
+		{
+			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(ItemType);
+			if (chosenAffix is null)
+			{
+				continue;
+			}
+			
+			ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
+			if (affix is null)
+			{
+				continue;
+			}
+			
+			affix.Value = AffixRegistry.GetRandomAffixValue(affix, ItemLevel);
+			Affixes.Add(affix);
+		}
 
-		List<ItemAffix> extraAffixes = GenerateAffixes();
-		extraAffixes.ForEach(a => a.Roll());
+		//List<ItemAffix> extraAffixes = GenerateAffixes();
+		//extraAffixes.ForEach(a => a.Roll());
 
-		Affixes.AddRange(extraAffixes);
+		//Affixes.AddRange(extraAffixes);
 	}
 }
