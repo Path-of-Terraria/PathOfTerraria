@@ -14,7 +14,7 @@ internal class QuestsInProgressInnerPanel : SmartUIElement
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		_quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetIncompleteQuests();	
+		// _quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetIncompleteQuests();	
 		foreach (Quest quest in _quests.Where(x => !x.Completed))
 		{
 			Utils.DrawBorderStringBig(

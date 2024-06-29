@@ -43,6 +43,18 @@ abstract class Quest
 		return _activeQuest.QuestString();
 	}
 
+	public string AllQuestStrings()
+	{
+		string s = "";
+		
+		for (int i = 0; i < _currentQuest; i++)
+		{
+			s += _subQuests[i].QuestCompleteString() + "\n";
+		}
+
+		return s + _activeQuest.QuestString();
+	}
+
 	public void Save(TagCompound tag)
 	{
 		tag.Add("type", GetType().FullName);

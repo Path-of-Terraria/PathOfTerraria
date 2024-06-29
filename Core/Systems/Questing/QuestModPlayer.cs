@@ -1,12 +1,13 @@
 ﻿using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing;
 internal class QuestModPlayer : ModPlayer
 {
 	// need a list of what npcs start what quests
-	private readonly List<Quest> _enabledQuests = [];
+	private readonly Dictionary<string, Quest> _enabledQuests = [];
 
 	public void RestartQuestTest()
 	{
@@ -17,22 +18,27 @@ internal class QuestModPlayer : ModPlayer
 		quest.StartQuest(Player);
 		quest2.StartQuest(Player);
 
-		_enabledQuests.Add(quest);
-		_enabledQuests.Add(quest2);
+		_enabledQuests.Add(quest.Name, quest);
+		_enabledQuests.Add(quest2.Name, quest2);
 	}
 
-	public override void PostUpdate()
+	public string GetQuestSteps(string name)
 	{
-		// _enabledQuests.ForEach(q => Console.WriteLine(q.CurrentQuestString()));
+		return _enabledQuests[name].AllQuestStrings();
+	}
+
+	public string GetQuestStep(string name)
+	{
+		return _enabledQuests[name].CurrentQuestString();
 	}
 
 	public override void SaveData(TagCompound tag)
 	{
 		List<TagCompound> questTags = [];
-		foreach (Quest quest in _enabledQuests)
+		foreach (KeyValuePair<string, Quest> quest in _enabledQuests)
 		{
 			var newTag = new TagCompound();
-			quest.Save(newTag);
+			quest.Value.Save(newTag);
 			questTags.Add(newTag);
 		}
 
@@ -43,21 +49,34 @@ internal class QuestModPlayer : ModPlayer
 	{
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
-		questTags.ForEach(tag => { Quest q = Quest.LoadFrom(tag, Player); if (q is not null) { _enabledQuests.Add(q); } });
+		questTags.ForEach(tag => { Quest q = Quest.LoadFrom(tag, Player); if (q is not null) { _enabledQuests.Add(q.Name, q); } });
 	}
-	
+
+	public List<string> GetQuests()
+	{
+		return _enabledQuests.ToList().Select(q => q.Key).ToList();
+	}
+
+	public int GetQuestCount()
+	{
+		return _enabledQuests.Count;
+	}
+
 	public List<Quest> GetAllQuests()
 	{
-		return _enabledQuests;
+		return null;
+		// return _enabledQuests;
 	}
 	
 	public List<Quest> GetCompletedQuests()
 	{
-		return _enabledQuests.FindAll(q => q.Completed);
+		return null;
+		// return _enabledQuests.ToList().Select().FindAll(q => q.Completed);
 	}
 	
 	public List<Quest> GetIncompleteQuests()
 	{
-		return _enabledQuests.FindAll(q => !q.Completed);
+		return null;
+		// return _enabledQuests.ToList().FindAll(q => !q.Completed);
 	}
 }
