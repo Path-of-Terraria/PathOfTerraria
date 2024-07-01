@@ -53,7 +53,7 @@ internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
 
 		for (int i = 0; i < quests.Count; i++)
 		{
-			if (_completed[i])
+			if (_completed != null && _completed[i])
 			{
 				s += quests[i].QuestCompleteString() + "\n";
 			}

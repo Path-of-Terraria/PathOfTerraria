@@ -1,5 +1,6 @@
 ﻿namespace PathOfTerraria.Core.Systems.Questing;
-internal abstract class QuestReward
+
+public abstract class QuestReward
 {
 	/// <summary>
 	/// Gives the reward to the player.

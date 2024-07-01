@@ -19,6 +19,7 @@ internal class PlayerStatUIState : DraggableSmartUi
 		if (IsVisible)
 		{
 			IsVisible = false;
+			_mainPanel.Remove();
 			return;
 		}
 
@@ -27,7 +28,7 @@ internal class PlayerStatUIState : DraggableSmartUi
 			Width = StyleDimension.FromPixels(512);
 			Height = StyleDimension.FromPixels(448);
 			HAlign = 0.5f;
-			VAlign = 0.5f;
+			VAlign = 0.25f;
 
 			RemoveAllChildren();
 			Append(_mainPanel);

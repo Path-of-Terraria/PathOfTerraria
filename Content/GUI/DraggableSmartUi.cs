@@ -86,7 +86,7 @@ public abstract class DraggableSmartUi : SmartUIState
 			if (tabPanel.TabName != Panel.ActiveTab)
 			{
 				tabPanel.Remove();
-				break;
+				continue;
 			}
 			
 			Panel.Append(tabPanel);
