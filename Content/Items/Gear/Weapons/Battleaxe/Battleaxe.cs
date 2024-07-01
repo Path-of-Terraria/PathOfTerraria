@@ -1,8 +1,12 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.WorldGeneration.TownGeneration;
+using PathOfTerraria.Core.WorldGeneration.TownGeneration.Buildings;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
@@ -32,6 +36,10 @@ internal abstract class Battleaxe : Gear
 	public override bool AltFunctionUse(Player player)
 	{
 		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
+
+		Point mouse = Main.MouseWorld.ToTileCoordinates();
+		new CanopyTown().Place(new Rectangle(mouse.X, mouse.Y, 60, 80), true, Presets.BasicHut(16, 8), Presets.BasicHut(12, 10));
+		return true;
 
 		if (modPlayer.AltFunctionCooldown > 0 || player.statLife <= 5)
 		{
