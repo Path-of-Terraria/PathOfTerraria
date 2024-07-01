@@ -265,3 +265,10 @@ SteelBattleaxe: {
 	DisplayName: Steel Battleaxe
 	Tooltip: ""
 }
+
+GuardianAngel: {
+	DisplayName: Guardian Angel
+	Tooltip: ""
+	AltUseDescription: Right click to apply a ring to nearby enemies
+	Description: Holy light fills you with strength
+}
