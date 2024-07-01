@@ -149,7 +149,6 @@ internal partial class EntityModifier : EntityModifierSegment
 
 					if (thisField != otherField)
 					{
-						Console.WriteLine(modifier.Key);
 						strings.AddRange(GetDifferences(thisField, otherField, modifier.Key[0] == '+')
 							.Select(s =>
 								new Tuple<string, bool>(
