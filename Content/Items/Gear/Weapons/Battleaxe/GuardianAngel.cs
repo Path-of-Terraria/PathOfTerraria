@@ -56,13 +56,16 @@ internal class GuardianAngel : SteelBattleaxe
 		addedDamageAffix.MaxValue = 4;
 		
 		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.BaseKnockbackItemAffix>();
-		increasedDamageAffix.Value = 0.1f;
-		
+		addedDamageAffix.MinValue = 0.1f;
+		addedDamageAffix.MaxValue = 0.1f;
+
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.IncreasedAttackSpeedAffix>();
-		attackSpeedAffix.Value = 0.1f;
-		
+		addedDamageAffix.MinValue = 0.1f;
+		addedDamageAffix.MaxValue = 0.1f;
+
 		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.AddedKnockbackItemAffix>();
-		armorShredAffix.Value = 1f;
+		addedDamageAffix.MinValue = 0.1f;
+		addedDamageAffix.MaxValue = 0.1f;
 		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}
 
