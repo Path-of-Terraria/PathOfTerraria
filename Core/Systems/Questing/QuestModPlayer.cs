@@ -57,26 +57,39 @@ internal class QuestModPlayer : ModPlayer
 		return _enabledQuests.ToList().Select(q => q.Key).ToList();
 	}
 
+	/// <summary>
+	/// Get the number of quests for the player
+	/// </summary>
+	/// <returns></returns>
 	public int GetQuestCount()
 	{
 		return _enabledQuests.Count;
 	}
 
+	/// <summary>
+	/// Gets all quests the player for the player
+	/// </summary>
+	/// <returns></returns>
 	public List<Quest> GetAllQuests()
 	{
-		return null;
-		// return _enabledQuests;
+		return _enabledQuests.Values.ToList();
 	}
 	
+	/// <summary>
+	/// Gets all completed quests for the player
+	/// </summary>
+	/// <returns></returns>
 	public List<Quest> GetCompletedQuests()
 	{
-		return null;
-		// return _enabledQuests.ToList().Select().FindAll(q => q.Completed);
+		return _enabledQuests.Values.ToList().FindAll(q => q.Completed);
 	}
 	
+	/// <summary>
+	/// Gets all incomplete quests for the player
+	/// </summary>
+	/// <returns></returns>
 	public List<Quest> GetIncompleteQuests()
 	{
-		return null;
-		// return _enabledQuests.ToList().FindAll(q => !q.Completed);
+		return _enabledQuests.Values.ToList().FindAll(q => !q.Completed);
 	}
 }

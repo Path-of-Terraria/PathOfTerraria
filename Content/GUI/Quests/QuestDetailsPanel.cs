@@ -86,6 +86,7 @@ internal class QuestDetailsPanel : SmartUIElement
 			string text = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestSteps(name);
 			Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Center() + new Vector2(-220, -265), Color.White, 0.5f, 0.5f, 0.35f);
 		}
+		
 		base.Draw(spriteBatch);
 	}
 

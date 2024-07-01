@@ -29,13 +29,17 @@ internal class QuestsUIState : DraggableSmartUi
 		{
 			RemoveAllChildren();
 
-			_mainPanel = new()
+			_mainPanel = new QuestDetailsPanel
 			{
 				Width = StyleDimension.FromPixels(1200),
 				Height = StyleDimension.FromPixels(900),
 				HAlign = 0.5f,
 				VAlign = 0.5f
 			};
+			Width = StyleDimension.FromPixels(1200);
+			Height = StyleDimension.FromPixels(900);
+			HAlign = 0.5f;
+			VAlign = 0.5f;
 
 			Append(_mainPanel);
 
