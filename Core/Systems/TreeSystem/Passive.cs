@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using PathOfTerraria.Data.Models;
+using Terraria.DataStructures;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
@@ -151,7 +153,7 @@ internal abstract class Passive
 		return
 			Level < MaxLevel &&
 			Main.LocalPlayer.GetModPlayer<TreePlayer>().Points > 0 &&
-			(treeSystem.Edges.Any(n => n.Start.Level > 0 && n.End == this) || treeSystem.Edges.All(n => n.End != this));
+			treeSystem.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
 	}
 
 	/// <summary>
@@ -160,10 +162,13 @@ internal abstract class Passive
 	/// <returns></returns>
 	public virtual bool CanDeallocate(Player player)
 	{
+		if (InternalIdentifier == "Anchor")
+		{
+			return false;
+		}
+
 		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
 
-		return
-			Level > 0 &&
-			!(Level == 1 && treeSystem.Edges.Any(n => n.End.Level > 0 && n.Start == this && !treeSystem.Edges.Any(a => a != n && a.End == n.End && a.Start.Level > 0)));
+		return Level > 0 && (Level > 1 || treeSystem.FullyLinkedWithout(this));
 	}
 }
