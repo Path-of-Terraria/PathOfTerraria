@@ -109,7 +109,7 @@ internal partial class EntityModifier : EntityModifierSegment
 
 	public override Dictionary<string, StatModifier> Modifiers =>
 		typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToDictionary(
-			f => ((f.GetCustomAttribute<ReverseTooltip>() is not null) ? "+" : "-") + f.Name,
+			f => ((f.GetCustomAttribute<ReverseTooltip>() is not null) ? "-" : "+") + f.Name,
 			f => (StatModifier)f.GetValue(this));
 
 	private readonly FieldInfo[] _segments =
@@ -209,7 +209,7 @@ internal partial class EntityModifier : EntityModifierSegment
 			}
 
 			bool isPositive = type == "+";
-			differences.Add(new($"{type}{MathF.Round(baseDiff, 2)} base #", reversed ? !isPositive : isPositive));
+			differences.Add(new($"{type}{MathF.Round(baseDiff, 2)} base #", reversed ?isPositive : !isPositive));
 		}
 
 		float addDiff = m2.Additive - m1.Additive;
@@ -222,7 +222,7 @@ internal partial class EntityModifier : EntityModifierSegment
 			}
 
 			bool isPositive = type == "+";
-			differences.Add(new($"{type}{MathF.Round(addDiff * 100f, 2)}% #", reversed ? !isPositive : isPositive));
+			differences.Add(new($"{type}{MathF.Round(addDiff * 100f, 2)}% #", reversed ? isPositive : !isPositive));
 		}
 
 		float multDiff = m2.Multiplicative - m1.Multiplicative;
@@ -249,7 +249,7 @@ internal partial class EntityModifier : EntityModifierSegment
 			}
 
 			bool isPositive = type == "+";
-			differences.Add(new($"{type}{MathF.Round(flatDiff, 2)} flat #", reversed ? !isPositive : isPositive));
+			differences.Add(new($"{type}{MathF.Round(flatDiff, 2)} flat #", reversed ? isPositive : !isPositive));
 		}
 
 		return differences;
