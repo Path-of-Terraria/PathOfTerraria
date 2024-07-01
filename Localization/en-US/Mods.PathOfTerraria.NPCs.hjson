@@ -1,0 +1,10 @@
+Blacksmith: {
+	DisplayName: Thrain Ironfist
+
+	Dialogue: {
+		0: Forged in steel, I am. Care to buy some?
+		1: Sometimes, I miss the caverns. Rock and stone, brother, rock and stone.
+		2: Nothing quite like a blade that cuts through bone like air. Makes sandwiches easy!
+		3: I could easily beat you in an arm wrestle - the exercise of steelforging is effective.
+	}
+}
