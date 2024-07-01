@@ -12,6 +12,7 @@ internal class TestQuestTwo : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override string Name => "Test Quest 2";
+	public override string Description => "This is another test quest. Simply used for testing purposes";
 
 	protected override List<QuestStep> _subQuests =>
 	[

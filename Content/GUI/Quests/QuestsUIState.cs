@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.Questing;
-using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -9,10 +8,16 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests;
 
-internal class QuestsUIState : DraggableSmartUi
+public class QuestsUIState : DraggableSmartUi
 {
-	private QuestDetailsPanel _mainPanel;
-	public override List<SmartUIElement> TabPanels => [_mainPanel];
+	private QuestDetailsPanel _questDetails;
+	public const float SELECTED_OPACITY = 0.25f;
+	public const float HOVERED_OPACITY = 0.1f;
+	
+	public override int InsertionIndex(List<GameInterfaceLayer> layers)
+	{
+		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+	}
 
 	public override int DepthPriority => 2;
 
@@ -21,30 +26,26 @@ internal class QuestsUIState : DraggableSmartUi
 		if (IsVisible)
 		{
 			IsVisible = false;
-			_mainPanel.Remove();
+			_questDetails.Remove();
 			return;
 		}
 
-		if (!HasChild(_mainPanel))
+		if (!HasChild(_questDetails))
 		{
 			RemoveAllChildren();
 
-			_mainPanel = new QuestDetailsPanel
+			_questDetails = new QuestDetailsPanel
 			{
 				Width = StyleDimension.FromPixels(1200),
 				Height = StyleDimension.FromPixels(900),
 				HAlign = 0.5f,
 				VAlign = 0.5f
 			};
-			Width = StyleDimension.FromPixels(1200);
-			Height = StyleDimension.FromPixels(900);
-			HAlign = 0.5f;
-			VAlign = 0.5f;
 
-			Append(_mainPanel);
+			Append(_questDetails);
 
 			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
-			CloseButton.Left.Set(-200, 1f);
+			CloseButton.Left.Set(-450, 1f);
 			CloseButton.Top.Set(80, 0f);
 			CloseButton.Width.Set(38, 0);
 			CloseButton.Height.Set(38, 0);
@@ -59,5 +60,26 @@ internal class QuestsUIState : DraggableSmartUi
 		}
 
 		IsVisible = true;
+		DrawQuests();
+	}
+	
+	private void DrawQuests()
+	{
+		int offset = 0;
+		QuestModPlayer player = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
+		foreach (Quest quest in player.GetAllQuests())
+		{
+			UISelectableQuest selectableQuest = new(quest, this);
+			selectableQuest.Left.Set(200, 0);
+			selectableQuest.Top.Set(200 + offset, 0);
+			selectableQuest.Width = StyleDimension.FromPixels(200);
+			_questDetails.Append(selectableQuest);
+			offset += 22;
+		}
+	}
+	
+	public void SelectQuest(Quest quest)
+	{
+		_questDetails.ViewedQuest = quest;
 	}
 }

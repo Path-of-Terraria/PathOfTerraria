@@ -92,4 +92,14 @@ internal class QuestModPlayer : ModPlayer
 	{
 		return _enabledQuests.Values.ToList().FindAll(q => !q.Completed);
 	}
+	
+	/// <summary>
+	/// Get a quest by name
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
+	public Quest GetQuest(string name)
+	{
+		return _enabledQuests[name];
+	}
 }

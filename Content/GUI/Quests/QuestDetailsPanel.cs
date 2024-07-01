@@ -1,11 +1,11 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
+﻿using PathOfTerraria.Content.GUI.Utilities;
+using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.Questing;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Content.GUI.Quests;
 
@@ -15,12 +15,13 @@ internal class QuestDetailsPanel : SmartUIElement
 		ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/ArrowExtraSmall");
 
 	private UIElement Panel => Parent;
-	private int currentQuestIndex = 0;
+	public Quest ViewedQuest { get; set; }
+	private int _currentQuestIndex;
 
 	public QuestDetailsPanel()
 	{
-		FlippableUIImageButton rightArrow = new(Texture);
-		FlippableUIImageButton leftArrow = new(Texture) { FlipHorizontally = true };
+		UiFlippableImageButton rightArrow = new(Texture, this);
+		UiFlippableImageButton leftArrow = new(Texture, this) { FlipHorizontally = true };
 
 		rightArrow.Left.Set(-230, 1f);
 		rightArrow.Top.Set(-180, 1f);
@@ -28,22 +29,22 @@ internal class QuestDetailsPanel : SmartUIElement
 		rightArrow.Height.Set(128, 0);
 		rightArrow.OnLeftClick += (a, b) =>
 		{
-			if (currentQuestIndex == Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() - 1)
+			if (_currentQuestIndex == Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() - 1)
 			{
 				return;
 			}
 
 			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-			currentQuestIndex++;
+			_currentQuestIndex++;
 
 			Append(leftArrow);
 
-			if (currentQuestIndex == Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() - 1)
+			if (_currentQuestIndex == Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() - 1)
 			{
 				rightArrow.Remove();
 			}
 		};
-		if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() != 0 && currentQuestIndex != Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() - 1)
+		if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() != 0 && _currentQuestIndex != Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() - 1)
 		{
 			Append(rightArrow);
 		}
@@ -54,22 +55,22 @@ internal class QuestDetailsPanel : SmartUIElement
 		leftArrow.Height.Set(128, 0);
 		leftArrow.OnLeftClick += (a, b) =>
 		{
-			if (currentQuestIndex == 0)
+			if (_currentQuestIndex == 0)
 			{
 				return;
 			}
 
 			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-			currentQuestIndex--;
+			_currentQuestIndex--;
 
-			if (currentQuestIndex == 0)
+			if (_currentQuestIndex == 0)
 			{
 				leftArrow.Remove();
 			}
 
 			Append(rightArrow);
 		};
-		if (currentQuestIndex != 0)
+		if (_currentQuestIndex != 0)
 		{
 			Append(leftArrow);
 		}
@@ -82,9 +83,9 @@ internal class QuestDetailsPanel : SmartUIElement
 		DrawBack(spriteBatch);
 		if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() != 0)
 		{
-			string name = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuests()[currentQuestIndex];
+			string name = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuests()[_currentQuestIndex];
 			string text = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestSteps(name);
-			Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Center() + new Vector2(-220, -265), Color.White, 0.5f, 0.5f, 0.35f);
+			Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Center() + new Vector2(200, -265), Color.White, 0.5f, 0.5f, 0.35f);
 		}
 		
 		base.Draw(spriteBatch);
@@ -99,24 +100,5 @@ internal class QuestDetailsPanel : SmartUIElement
 	private Rectangle GetRectangle()
 	{
 		return Panel.GetDimensions().ToRectangle();
-	}
-}
-
-public class FlippableUIImageButton(Asset<Texture2D> texture) : UIImageButton(texture)
-{
-	private readonly Asset<Texture2D> _texture1 = texture;
-	public bool FlipHorizontally { get; set; }
-
-	protected override void DrawSelf(SpriteBatch spriteBatch)
-	{
-		if (FlipHorizontally)
-		{
-			spriteBatch.Draw(_texture1.Value, GetDimensions().ToRectangle(), null, Color.White, 0f, Vector2.Zero,
-				SpriteEffects.FlipHorizontally, 0f);
-		}
-		else
-		{
-			base.DrawSelf(spriteBatch);
-		}
 	}
 }

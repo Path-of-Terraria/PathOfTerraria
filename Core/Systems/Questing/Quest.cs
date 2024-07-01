@@ -2,7 +2,8 @@
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing;
-abstract class Quest
+
+public abstract class Quest
 {
 	public abstract QuestTypes QuestType { get; }
 	protected abstract List<QuestStep> _subQuests { get; }
@@ -11,6 +12,7 @@ abstract class Quest
 	public bool Completed;
 	public abstract int NPCQuestGiver { get; }
 	public virtual string Name => "";
+	public virtual string Description => "";
 	public abstract List<QuestReward> QuestRewards { get; }
 
 	public void StartQuest(Player player, int currentQuest = 0)
