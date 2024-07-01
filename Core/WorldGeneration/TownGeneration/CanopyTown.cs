@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 
 namespace PathOfTerraria.Core.WorldGeneration.TownGeneration;
 
@@ -40,7 +39,6 @@ internal class CanopyTown : TownGenerationBase
 					break;
 				}
 			} while (PlacedBuildings.Any(x => x.Intersects(new Rectangle(location.X, location.Y, building.Size.X, building.Size.Y))));
-
 
 			if (attempts > 500)
 			{
