@@ -8,7 +8,7 @@ public class AltUseUISystem : ModSystem
 {
 	public static AltUseUISystem Instance => ModContent.GetInstance<AltUseUISystem>();
 
-	private static Asset<Texture2D> AltBar = null;
+	private static Asset<Texture2D> AltBar;
 
 	float _fadeBar = 0;
 
@@ -19,8 +19,11 @@ public class AltUseUISystem : ModSystem
 
 	public override void Unload()
 	{
-		AltBar.Dispose();
-		AltBar = null;
+		Main.RunOnMainThread(() =>
+		{
+			AltBar.Dispose();
+			AltBar = null;
+		});
 	}
 
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
