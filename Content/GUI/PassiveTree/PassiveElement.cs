@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using Terraria.Audio;
 using Terraria.ID;

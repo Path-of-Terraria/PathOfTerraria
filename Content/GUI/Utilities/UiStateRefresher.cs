@@ -1,5 +1,6 @@
 using PathOfTerraria.Content.GUI.PlayerStats;
 using PathOfTerraria.Core.Loaders.UILoading;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.GUI.Utilities;
 
@@ -21,9 +22,9 @@ internal class UiStateRefresher : ModSystem
 	/// <summary>
 	/// Forces the refresh a single time for when the world is loaded and the UI needs refreshing
 	/// </summary>
-	public override void OnWorldLoad()
-	{
-		if (!Main.dedServ)
+
+	public override void OnWorldLoad(){
+		if (Main.netMode != NetmodeID.Server)
 		{
 			UILoader.GetUIState<QuestPanelButton>().Refresh();
 			UILoader.GetUIState<PlayerStatButton>().Refresh();
