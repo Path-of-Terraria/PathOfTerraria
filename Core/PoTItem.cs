@@ -784,7 +784,6 @@ internal abstract class PoTItem : ModItem
 		tag["affixes"] = affixTags;
 	}
 
-
 	public override void NetSend(BinaryWriter writer)
 	{
 		writer.Write((int)ItemType);
