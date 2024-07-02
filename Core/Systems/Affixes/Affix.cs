@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
-internal abstract class Affix
+public abstract class Affix
 {
 	public float MinValue;
 	public float MaxValue = 1f;
@@ -141,6 +143,7 @@ internal class AffixHandler : ILoadable
 			.Where(proto => (item.ItemType & proto.PossibleTypes) == item.ItemType)
 			.ToList();
 	}
+
 	public static List<ItemAffix> GetAffixes()
 	{
 		return _itemAffixes;
@@ -172,16 +175,14 @@ internal class AffixHandler : ILoadable
 
 			object instance = Activator.CreateInstance(type);
 
-			if (type.IsSubclassOf(typeof(ItemAffix)))
+			switch (instance)
 			{
-				_itemAffixes.Add(instance as ItemAffix);
-				continue;
-			}
-
-			if (type.IsSubclassOf(typeof(MobAffix)))
-			{
-				_mobAffixes.Add(instance as MobAffix);
-				continue;
+				case ItemAffix itemAffix:
+					_itemAffixes.Add(itemAffix);
+					continue;
+				case MobAffix mobAffix:
+					_mobAffixes.Add(mobAffix);
+					break;
 			}
 		}
 	}

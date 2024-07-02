@@ -15,6 +15,8 @@ using TextCopy;
 using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent.UI.Elements;
 using log4net.Core;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
 using Stubble.Core.Classes;
 
 namespace PathOfTerraria.Core;
@@ -809,7 +811,7 @@ internal abstract class PoTItem : ModItem
 		PostRoll();
 	}
 
-	public virtual int GetAffixCount(Rarity rarity)
+	public virtual int GetAffixCount()
 	{
 		return Rarity switch
 		{
@@ -826,20 +828,28 @@ internal abstract class PoTItem : ModItem
 	{
 		Affixes = GenerateImplicits();
 
-		_implicits = Affixes.Count();
-
-		List<ItemAffix> possible = AffixHandler.GetAffixes(this);
-
-		if (possible is not null)
+		_implicits = Affixes.Count;
+		for (int i = 0; i < GetAffixCount(); i++)
 		{
-			int AffixCount = GetAffixCount(Rarity);
-
-			Affixes.AddRange(Affix.GenerateAffixes(possible, AffixCount));
+			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(ItemType);
+			if (chosenAffix is null)
+			{
+				continue;
+			}
+			
+			ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
+			if (affix is null)
+			{
+				continue;
+			}
+			
+			affix.Value = AffixRegistry.GetRandomAffixValue(affix, ItemLevel);
+			Affixes.Add(affix);
 		}
 
-		List<ItemAffix> extraAffixes = GenerateAffixes();
-		extraAffixes.ForEach(a => a.Roll());
-
-		Affixes.AddRange(extraAffixes);
+		if (IsUnique)
+		{
+			Affixes.AddRange(GenerateAffixes());
+		}
 	}
 }
