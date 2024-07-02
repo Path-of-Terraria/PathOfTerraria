@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using MonoMod.Cil;
+using PathOfTerraria.Content.GUI.UIItemSlots;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Helpers;
 using ReLogic.Content;
@@ -14,7 +15,7 @@ internal class NewArmorPage : SmartUIState
 	private UIItemSlot _headSlot;
 	private UIItemSlot _bodySlot;
 	private UIItemSlot _legSlot;
-	private UICustomItemSlot _weaponSlot;
+	private UIWeaponSlot _weaponSlot;
 	
 	public override bool Visible => Main.playerInventory && Main.EquipPage == 0;
 	
@@ -49,10 +50,7 @@ internal class NewArmorPage : SmartUIState
 		_legSlot = new UIItemSlot(Main.CurrentPlayer.armor, 2, ItemSlot.Context.EquipArmor) { HAlign = 0.5f, VAlign = 0.7f };
 		Append(_legSlot);
 
-		_weaponSlot = new UICustomItemSlot(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Slots/NormalBack", AssetRequestMode.ImmediateLoad), ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Slots/Icons/Weapon", AssetRequestMode.ImmediateLoad), Color.Red * 0.7f) { HAlign = 0.4f, VAlign = 0.6f };
-		_weaponSlot.CanItemBeInserted = (item, currentItem) => item.IsWeapon() || item.IsAir;
-		_weaponSlot.GetItem = () => Main.CurrentPlayer.inventory[0];
-		_weaponSlot.SetItem = item => Main.CurrentPlayer.inventory[0] = item; 
+		_weaponSlot = new UIWeaponSlot(Color.Red * 0.7f) { HAlign = 0.4f, VAlign = 0.6f };
 		Append(_weaponSlot);
 	}
 }
