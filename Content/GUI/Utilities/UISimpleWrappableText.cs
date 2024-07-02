@@ -9,8 +9,8 @@ namespace PathOfTerraria.Content.GUI.Utilities;
 public class UISimpleWrappableText : UIElement
 {
 	private TextSnippet[] _array;
-	protected string _text;
-	protected string _pageText;
+	private string _text;
+	private string _pageText;
 
 	public string Text
 	{
@@ -22,16 +22,16 @@ public class UISimpleWrappableText : UIElement
 		}
 	}
 
-	private bool centered;
-	protected bool _wrappable;
+	private bool _centered;
+	private bool _wrappable;
 	private Color _colour;
 
 	public bool Centered
 	{
-		get => centered;
+		get => _centered;
 		set
 		{
-			centered = value;
+			_centered = value;
 			UpdateText();
 		}
 	}
@@ -46,7 +46,7 @@ public class UISimpleWrappableText : UIElement
 		}
 	}
 
-	public float Scale
+	private float Scale
 	{
 		get => scale;
 		set
@@ -56,8 +56,8 @@ public class UISimpleWrappableText : UIElement
 		}
 	}
 
-	public int MaxLines { get; set; } = 99;
-	public bool Large { get; set; }
+	private int MaxLines { get; set; } = 99;
+	private bool Large { get; set; }
 	public bool Border { get; set; }
 
 	public int Page
@@ -70,7 +70,7 @@ public class UISimpleWrappableText : UIElement
 		}
 	}
 
-	public int MaxPage { get; protected set; }
+	private int MaxPage { get; set; }
 
 	public bool Wrappable
 	{
@@ -83,7 +83,7 @@ public class UISimpleWrappableText : UIElement
 	}
 
 	public Color BorderColour { get; set; }
-	public DynamicSpriteFont Font => Large ? FontAssets.DeathText.Value : FontAssets.MouseText.Value;
+	private DynamicSpriteFont Font => Large ? FontAssets.DeathText.Value : FontAssets.MouseText.Value;
 	private float _drawOffsetX;
 	private int page = 0;
 	private float scale;
@@ -99,7 +99,7 @@ public class UISimpleWrappableText : UIElement
 		UpdateText();
 	}
 
-	public void UpdateText()
+	private void UpdateText()
 	{
 		if (string.IsNullOrEmpty(_text))
 		{
@@ -144,7 +144,7 @@ public class UISimpleWrappableText : UIElement
 		}
 	}
 
-	public static string WrapText(DynamicSpriteFont font, string text, float maxLineWidth, float fontScale = 1f)
+	private static string WrapText(DynamicSpriteFont font, string text, float maxLineWidth, float fontScale = 1f)
 	{
 		if (string.IsNullOrEmpty(text))
 		{
@@ -185,7 +185,6 @@ public class UISimpleWrappableText : UIElement
 		return newText;
 	}
 
-
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
 		if (_array == null)
@@ -195,7 +194,7 @@ public class UISimpleWrappableText : UIElement
 		}
 
 		// get positions
-		var style = GetDimensions();
+		CalculatedStyle style = GetDimensions();
 		Vector2 tl = style.Position();
 		if (Centered)
 		{
@@ -217,25 +216,23 @@ public class UISimpleWrappableText : UIElement
 			maxWidth);
 	}
 
-	public static void DrawColorCodedStringShadow(SpriteBatch spriteBatch, DynamicSpriteFont font,
+	private static void DrawColorCodedStringShadow(SpriteBatch spriteBatch, DynamicSpriteFont font,
 		TextSnippet[] snippets, Vector2 position, Color baseColor, float rotation, Vector2 origin, Vector2 baseScale,
 		float maxWidth = -1f, float spread = 2f)
 	{
-		int num;
-		for (int i = 0; i < ChatManager.ShadowDirections.Length; i++)
+		foreach (Vector2 t in ChatManager.ShadowDirections)
 		{
-			DrawColorCodedString(spriteBatch, font, snippets, position + (ChatManager.ShadowDirections[i] * spread),
-				baseColor, rotation, origin, baseScale, out num, maxWidth, true);
+			DrawColorCodedString(spriteBatch, font, snippets, position + t * spread,
+				baseColor, rotation, origin, baseScale, out int _, maxWidth, true);
 		}
 	}
 
-	public static Vector2 DrawColorCodedString(SpriteBatch spriteBatch, DynamicSpriteFont font, TextSnippet[] snippets,
+	private static Vector2 DrawColorCodedString(SpriteBatch spriteBatch, DynamicSpriteFont font, TextSnippet[] snippets,
 		Vector2 position, Color baseColor, float rotation, Vector2 origin, Vector2 baseScale, out int hoveredSnippet,
 		float maxWidth, bool ignoreColors = false)
 	{
-		Vector2 vector2;
 		int num = -1;
-		Vector2 vector21 = new Vector2(Main.mouseX, Main.mouseY);
+		var vector21 = new Vector2(Main.mouseX, Main.mouseY);
 		Vector2 x = position;
 		Vector2 vector22 = x;
 		float single = font.MeasureString(" ").X;
@@ -251,13 +248,13 @@ public class UISimpleWrappableText : UIElement
 			}
 
 			float scale = textSnippet.Scale;
-			if (!textSnippet.UniqueDraw(false, out vector2, spriteBatch, x, visibleColor, scale))
+			if (!textSnippet.UniqueDraw(false, out Vector2 vector2, spriteBatch, x, visibleColor, scale))
 			{
-				string[] strArrays = textSnippet.Text.Split(new char[] { '\n' });
+				string[] strArrays = textSnippet.Text.Split(['\n']);
 				string[] strArrays1 = strArrays;
 				for (int j = 0; j < strArrays1.Length; j++)
 				{
-					string[] strArrays2 = strArrays1[j].Split(new char[] { ' ' });
+					string[] strArrays2 = strArrays1[j].Split([' ']);
 					for (int k = 0; k < strArrays2.Length; k++)
 					{
 						if (k != 0)
@@ -282,7 +279,7 @@ public class UISimpleWrappableText : UIElement
 						}
 
 						DynamicSpriteFontExtensionMethods.DrawString(spriteBatch, font, strArrays2[k], x, visibleColor,
-							rotation, origin, (baseScale * textSnippet.Scale) * scale, SpriteEffects.None, 0f);
+							rotation, origin, baseScale * textSnippet.Scale * scale, SpriteEffects.None, 0f);
 						Vector2 vector23 = font.MeasureString(strArrays2[k]);
 						if (vector21.Between(x, x + vector23))
 						{

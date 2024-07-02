@@ -33,7 +33,7 @@ public class QuestsUIState : DraggableSmartUi
 		if (!HasChild(_questDetails))
 		{
 			RemoveAllChildren();
-
+			Left = StyleDimension.FromPixels(500);
 			_questDetails = new QuestDetailsPanel
 			{
 				Width = StyleDimension.FromPixels(1200),
@@ -71,7 +71,7 @@ public class QuestsUIState : DraggableSmartUi
 		{
 			UISelectableQuest selectableQuest = new(quest, this);
 			selectableQuest.Left.Set(200, 0);
-			selectableQuest.Top.Set(200 + offset, 0);
+			selectableQuest.Top.Set(140 + offset, 0);
 			selectableQuest.Width = StyleDimension.FromPixels(200);
 			_questDetails.Append(selectableQuest);
 			offset += 22;
