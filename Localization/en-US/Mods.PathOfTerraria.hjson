@@ -15,4 +15,5 @@ GUI: {
 	QuestsAvailableTab: Available
 	QuestsCompletedTab: Completed
 	PlayerStatsTab: Stats
+	TownNPCQuestsTab: Quests
 }
