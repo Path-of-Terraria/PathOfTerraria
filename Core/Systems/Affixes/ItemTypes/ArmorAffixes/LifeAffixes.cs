@@ -4,28 +4,28 @@ internal class BaseLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaximumLife.Base += 10f + Value * 30f + item.ItemLevel / 100f;
+		modifier.MaximumLife.Base += Value;
 	}
 }
 internal class AddedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaximumLife += (1f + Value) * item.ItemLevel / 10f / 100f;
+		modifier.MaximumLife += Value;
 	}
 }
 internal class MultipliedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaximumLife *= 1f + (1f + Value) * item.ItemLevel / 20f / 100f;
+		modifier.MaximumLife *= Value;
 	}
 }
 internal class FlatLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaximumLife.Flat += 4f + (Value + 0.5f) * item.ItemLevel / 10;
+		modifier.MaximumLife.Flat += Value;
 	}
 }
 
@@ -33,7 +33,7 @@ internal class LifeRegenAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.LifeRegen.Base += 1f + Value * 4f + item.ItemLevel / 40f;
+		modifier.LifeRegen.Base += Value;
 	}
 }
 
@@ -41,7 +41,7 @@ internal class LifeRegenMultiplierAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.LifeRegen += (1f + Value + item.ItemLevel) / 170f;
+		modifier.LifeRegen += Value;
 	}
 }
 

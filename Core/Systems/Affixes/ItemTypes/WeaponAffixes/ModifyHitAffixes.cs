@@ -7,7 +7,7 @@ internal class PiercingItemAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 	{
-		modifier.ArmorPenetration.Base += Value * 5 + gear.ItemLevel / 50;
+		modifier.ArmorPenetration.Base += Value;
 	}
 }
 
@@ -15,7 +15,7 @@ internal class AddedKnockbackItemAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 	{
-		modifier.Knockback += (Value * 10 + gear.ItemLevel / 20) / 100f;
+		modifier.Knockback += Value;
 	}
 }
 
@@ -23,7 +23,7 @@ internal class IncreasedKnockbackItemAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 	{
-		modifier.Knockback *= 1f + (Value * 10 + gear.ItemLevel / 20) / 100f;
+		modifier.Knockback *= Value;
 	}
 }
 
@@ -31,7 +31,7 @@ internal class BaseKnockbackItemAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 	{
-		modifier.Knockback.Base += Value * gear.ItemLevel / 100;
+		modifier.Knockback.Base += Value;
 	}
 }
 
@@ -39,7 +39,7 @@ internal class FlatKnockbackItemAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 	{
-		modifier.Knockback.Flat += Value * gear.ItemLevel / 60;
+		modifier.Knockback.Flat += Value;
 	}
 }
 	
@@ -47,7 +47,7 @@ internal class ChanceToApplyOnFireGearAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 	{
-		modifier.Buffer.Add(BuffID.OnFire, 180, 0.2f);
+		modifier.Buffer.Add(BuffID.OnFire, Duration, Value);
 	}
 }
 	
