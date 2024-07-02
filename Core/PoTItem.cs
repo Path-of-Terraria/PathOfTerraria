@@ -130,6 +130,8 @@ internal abstract class PoTItem : ModItem
 		};
 		tooltips.Add(rareLine);
 
+		Console.WriteLine(InternalItemLevel + " - " + ItemLevel + " | " + GetType());
+
 		TooltipLine powerLine;
 		if (ItemType == ItemType.Map)
 		{
@@ -786,17 +788,17 @@ internal abstract class PoTItem : ModItem
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		writer.Write((int)ItemType);
-		writer.Write((int)Rarity);
-		writer.Write((int)Influence);
+		writer.Write((byte)ItemType);
+		writer.Write((byte)Rarity);
+		writer.Write((byte)Influence);
 
-		writer.Write(_implicits);
+		writer.Write((byte)_implicits);
 
 		writer.Write(_name); // unsure if this is neccecary...
-		// we should probably save the name as GeneratePrefix-ID (Item.Name can probably be omitted) GenerateSuffix-ID
-		writer.Write(InternalItemLevel);
+		// we should probably save the name as 'GeneratePrefix-ID (Item.Name can probably be omitted) GenerateSuffix-ID'
+		writer.Write((byte)InternalItemLevel);
 
-		writer.Write(Affixes.Count);
+		writer.Write((byte)Affixes.Count);
 
 		foreach (ItemAffix affix in Affixes)
 		{
@@ -832,16 +834,16 @@ internal abstract class PoTItem : ModItem
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		ItemType = (ItemType)reader.ReadInt32();
-		Rarity = (Rarity)reader.ReadInt32();
-		Influence = (Influence)reader.ReadInt32();
+		ItemType = (ItemType)reader.ReadByte();
+		Rarity = (Rarity)reader.ReadByte();
+		Influence = (Influence)reader.ReadByte();
 
-		_implicits = reader.ReadInt32();
+		_implicits = reader.ReadByte();
 
 		_name = reader.ReadString();
-		InternalItemLevel = reader.ReadInt32();
+		InternalItemLevel = reader.ReadByte();
 
-		int affixes = reader.ReadInt32();
+		int affixes = reader.ReadByte();
 
 		Affixes.Clear();
 		for (int i = 0; i <  affixes; i++)
