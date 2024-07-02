@@ -1,8 +1,12 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.WorldGeneration.TownGeneration;
+using PathOfTerraria.Core.WorldGeneration.TownGeneration.Buildings;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
