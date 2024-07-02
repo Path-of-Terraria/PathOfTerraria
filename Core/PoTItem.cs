@@ -125,8 +125,6 @@ internal abstract class PoTItem : ModItem
 		};
 		tooltips.Add(rareLine);
 
-		Console.WriteLine(InternalItemLevel + " - " + ItemLevel + " | " + GetType());
-
 		TooltipLine powerLine;
 		if (ItemType == ItemType.Map)
 		{
