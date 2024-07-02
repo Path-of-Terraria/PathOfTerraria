@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.GUI;
+﻿using Microsoft.Build.Framework;
+using PathOfTerraria.Content.GUI;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
@@ -7,6 +8,7 @@ using PathOfTerraria.Data.Models;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ModLoader.IO;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
 
@@ -14,6 +16,19 @@ internal class PassiveEdge(Passive start, Passive end)
 {
 	public readonly Passive Start = start;
 	public readonly Passive End = end;
+
+	public bool Contains(Passive p)
+	{
+		return p == Start || p == End;
+	}
+
+	/// <summary>
+	/// Assuming that p is either start or end - Contains returned true.
+	/// </summary>
+	public Passive Other(Passive p)
+	{
+		return p == Start ? End : Start;
+	}
 }
 
 // ReSharper disable once ClassNeverInstantiated.Global
@@ -33,19 +48,16 @@ internal class TreePlayer : ModPlayer
 	public override void OnEnterWorld()
 	{
 		UILoader.GetUIState<TreeState>().RemoveAllChildren(); // is this really necessary?
-		UILoader.GetUIState<TreeState>().CurrentDisplayClass = PlayerClass.None;
 	}
 
 	public void CreateTree()
 	{
-		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
-
 		ActiveNodes = [];
 		Edges = [];
 
 		Dictionary<int, Passive> passives = [];
 
-		List<PassiveData> data = PassiveRegistry.TryGetPassiveData(mp.SelectedClass);
+		List<PassiveData> data = PassiveRegistry.GetPassiveData();
 
 		data.ForEach(n => { passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n)); ActiveNodes.Add(passives[n.ReferenceId]); });
 		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new PassiveEdge(passives[n.ReferenceId], passives[connection.ReferenceId]))));
@@ -115,5 +127,69 @@ internal class TreePlayer : ModPlayer
 		}
 
 		return level;
+	}
+
+	public bool FullyLinkedWithout(Passive passive)
+	{
+		HashSet<Passive> autoComplete = [];
+
+		foreach (PassiveEdge e in Edges)
+		{
+			if (!e.Contains(passive) || e.Other(passive).Level <= 0)
+			{
+				continue;
+			}
+
+			Tuple<bool, HashSet<Passive>> ret = CanFindAnchor(e.Other(passive), autoComplete, passive);
+
+			if (!ret.Item1)
+			{
+				return false;
+			}
+
+			foreach (Passive p in ret.Item2)
+			{
+				if (p != passive)
+				{
+					autoComplete.Add(p);
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private Tuple<bool, HashSet<Passive>> CanFindAnchor(Passive from, HashSet<Passive> autoComplete, Passive removed)
+	{
+		if (autoComplete.Contains(from) || from.InternalIdentifier == "Anchor")
+		{
+			return new(true, []);
+		}
+
+		HashSet<Passive> passed = [from, removed];
+		List<Passive> toCheck = [from];
+
+		while (toCheck.Count != 0)
+		{
+			Passive p = toCheck[0];
+			if (Edges.Any(e => e.Contains(p) && autoComplete.Contains(e.Other(p))))
+			{
+				return new(true, passed);
+			}
+
+			IEnumerable<Passive> add = Edges.Where(e => e.Contains(p) && e.Other(p).Level > 0 && !passed.Contains(e.Other(p))).Select(e => e.Other(p));
+
+			if (add.Any(p => p.InternalIdentifier == "Anchor"))
+			{
+				return new(true, passed);
+			}
+
+			toCheck.AddRange(add);
+
+			passed.Add(p);
+			toCheck.RemoveAt(0);
+		}
+
+		return new(false, []);
 	}
 }
