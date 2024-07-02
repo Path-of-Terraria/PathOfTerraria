@@ -17,6 +17,7 @@ using Terraria.GameContent.UI.Elements;
 using log4net.Core;
 using Stubble.Core.Classes;
 using Terraria.DataStructures;
+using System.IO;
 
 namespace PathOfTerraria.Core;
 
@@ -531,6 +532,12 @@ internal abstract class PoTItem : ModItem
 	{
 		var item = new Item(type);
 		var gear = item.ModItem as PoTItem;
+
+		if (gear.IsUnique)
+		{
+			rarity = Rarity.Unique;
+		}
+
 		gear.Rarity = rarity;
 		gear.Roll(itemLevel == 0 ? PickItemLevel() : itemLevel);
 
@@ -595,6 +602,17 @@ internal abstract class PoTItem : ModItem
 		}
 
 		return Main.rand.Next(5, 21);
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		// Sync rarity so it's consistent between clients (and server if necessary)
+		writer.Write((byte)Rarity);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		Rarity = (Rarity)reader.ReadByte();
 	}
 
 	public override void Load()
