@@ -35,7 +35,7 @@ public class Hunter : ModNPC
 
 		NPCID.Sets.AttackFrameCount[Type] = NPCID.Sets.AttackFrameCount[NPCID.BestiaryGirl];
 		NPCID.Sets.DangerDetectRange[Type] = 400;
-		NPCID.Sets.AttackType[Type] = 0;
+		NPCID.Sets.AttackType[Type] = 1;
 		NPCID.Sets.AttackTime[Type] = 10;
 		NPCID.Sets.AttackAverageChance[Type] = 5;
 		
@@ -74,14 +74,14 @@ public class Hunter : ModNPC
 	
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
 	{
-		damage = 10;
+		damage = 15;
 		knockback = 1f;
 	}
 
 	public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
 	{
-		cooldown = 10;
-		randExtraCooldown = 5;
+		cooldown = 30;
+		randExtraCooldown = 1;
 	}
 
 	public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
@@ -92,10 +92,18 @@ public class Hunter : ModNPC
 
 	public override void TownNPCAttackProjSpeed(ref float multiplier, ref float gravityCorrection, ref float randomOffset)
 	{
-		multiplier = 15f;
-		randomOffset = 1f;
+		multiplier = 10f;
+		randomOffset = 0.5f;
 	}
 	
+	public override void DrawTownAttackGun(ref Texture2D item, ref Rectangle itemFrame, ref float scale, ref int horizontalHoldoutOffset)
+	{
+		var asset = TextureAssets.Item[ModContent.ItemType<WoodenBow>()];
+		
+		item = asset.Value;
+		itemFrame = asset.Frame();
+	}
+
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
