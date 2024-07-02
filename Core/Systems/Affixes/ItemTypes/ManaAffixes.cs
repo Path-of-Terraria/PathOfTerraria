@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes.ArmorAffixes;
+﻿namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
 internal class ManaAffix : ItemAffix
 {

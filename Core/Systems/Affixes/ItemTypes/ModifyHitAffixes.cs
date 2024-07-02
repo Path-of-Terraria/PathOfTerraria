@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
+namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
 internal class PiercingItemAffix : ItemAffix
 {

@@ -103,7 +103,7 @@ public class AffixRegistry : ILoadable
 	/// <returns>Instance of ItemAffix corresponding to the affix data.</returns>
 	internal static ItemAffix ConvertToItemAffix(ItemAffixData affixData)
 	{
-		string typeName = $"PathOfTerraria.Core.Systems.Affixes.ItemTypes.ArmorAffixes.{affixData.AffixType}";
+		string typeName = $"PathOfTerraria.Core.Systems.Affixes.ItemTypes.{affixData.AffixType}";
 
 		var affixType = Type.GetType(typeName);
 

@@ -120,7 +120,7 @@
 		]
 	},
 	{
-		"affixType": "ChargedItemAffix",
+		"affixType": "IncreasedDamageAffix",
 		"equipTypes": "Melee",
 		"tiers": [
 			{

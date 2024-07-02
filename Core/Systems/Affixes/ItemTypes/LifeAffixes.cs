@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes.ArmorAffixes;
+﻿namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
 internal class BaseLifeAffix : ItemAffix
 {
@@ -11,14 +11,14 @@ internal class AddedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaximumLife += Value;
+		modifier.MaximumLife += Value / 10;
 	}
 }
 internal class MultipliedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaximumLife *= Value;
+		modifier.MaximumLife *= Value / 10;
 	}
 }
 internal class FlatLifeAffix : ItemAffix
@@ -41,7 +41,7 @@ internal class LifeRegenMultiplierAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.LifeRegen += Value;
+		modifier.LifeRegen += Value / 10;
 	}
 }
 
@@ -49,7 +49,7 @@ internal class LifePotionPowerAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.PotionHealPower.Base += 10f + Value * 10f + item.ItemLevel / 20f;
+		modifier.PotionHealPower.Base += Value;
 	}
 }
 
@@ -57,7 +57,7 @@ internal class LifePotionCapAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaxHealthPotions.Base += 1 + Value + item.ItemLevel / 100f;
+		modifier.MaxHealthPotions.Base += Value;
 	}
 }
 
@@ -65,6 +65,6 @@ internal class LifePotionCooldownAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.PotionHealDelay.Base -= 60 * (0.5f + Value * 0.5f);
+		modifier.PotionHealDelay.Base -= Value;
 	}
 }

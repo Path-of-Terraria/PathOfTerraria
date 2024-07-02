@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes.ArmorAffixes;
+using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 

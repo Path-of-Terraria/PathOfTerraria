@@ -12,7 +12,7 @@ public abstract class Affix
 	public float MaxValue = 1f;
 
 	public float Value = 1f;
-	
+
 	public int Duration = 180; //3 Seconds by default
 	// to a certain degree, none of the above is useable by the MobAffix...
 
@@ -20,7 +20,7 @@ public abstract class Affix
 	{
 		if (Value == 0)
 		{
-			Value = Main.rand.Next((int)(MinValue * 10), (int)(MaxValue * 10)) / 10f;	
+			Value = (float)(Main.rand.NextDouble() * (MaxValue - MinValue) + MinValue);
 		}
 	}
 
