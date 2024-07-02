@@ -10,12 +10,23 @@ internal class QuestModPlayer : ModPlayer
 
 	public void RestartQuestTest()
 	{
-		_enabledQuests.Clear();
-		Quest quest = new TestQuest();
+		StartQuest<TestQuest>(true);
+	}
+
+	public void StartQuest(Quest quest, bool clearQuests = false)
+	{
+		if (clearQuests)
+		{
+			_enabledQuests.Clear();
+		}
 
 		quest.StartQuest(Player);
-
 		_enabledQuests.Add(quest);
+	}
+
+	public void StartQuest<T>(bool clearQuests = false) where T : Quest
+	{
+		StartQuest(Activator.CreateInstance(typeof(T)) as Quest, clearQuests);
 	}
 
 	public override void PostUpdate()

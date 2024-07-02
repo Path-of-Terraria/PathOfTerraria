@@ -1,14 +1,13 @@
-using ReLogic.Content;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.GameContent;
-using Terraria.GameContent.Personalities;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.GameContent.Bestiary;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Helpers.Extensions;
+using PathOfTerraria.Core.Systems.Questing;
+using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -119,6 +118,11 @@ public class Blacksmith : ModNPC
 		if (firstButton)
 		{
 			shopName = "Shop";
+		}
+		else
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Blacksmith.Dialogue.Quest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
 		}
 	}
 
