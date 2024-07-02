@@ -16,6 +16,7 @@ using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent.UI.Elements;
 using log4net.Core;
 using Stubble.Core.Classes;
+using System.IO;
 
 namespace PathOfTerraria.Core;
 
@@ -783,6 +784,27 @@ internal abstract class PoTItem : ModItem
 		tag["affixes"] = affixTags;
 	}
 
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((int)ItemType);
+		writer.Write((int)Rarity);
+		writer.Write((int)Influence);
+
+		writer.Write(_implicits);
+
+		writer.Write(_name); // unsure if this is neccecary...
+		// we should probably save the name as GeneratePrefix-ID (Item.Name can probably be omitted) GenerateSuffix-ID
+		writer.Write(InternalItemLevel);
+
+		writer.Write(Affixes.Count);
+
+		foreach (ItemAffix affix in Affixes)
+		{
+			affix.NetSend(writer);
+		}
+	}
+
 	public override void LoadData(TagCompound tag)
 	{
 		ItemType = (ItemType)tag.GetInt("type");
@@ -804,6 +826,28 @@ internal abstract class PoTItem : ModItem
 			{
 				Affixes.Add(g);
 			}
+		}
+
+		PostRoll();
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		ItemType = (ItemType)reader.ReadInt32();
+		Rarity = (Rarity)reader.ReadInt32();
+		Influence = (Influence)reader.ReadInt32();
+
+		_implicits = reader.ReadInt32();
+
+		_name = reader.ReadString();
+		InternalItemLevel = reader.ReadInt32();
+
+		int affixes = reader.ReadInt32();
+
+		Affixes.Clear();
+		for (int i = 0; i <  affixes; i++)
+		{
+			Affixes.Add(Affix.FromBReader(reader));
 		}
 
 		PostRoll();

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
@@ -30,11 +32,27 @@ internal abstract class Affix
 		tag["minValue"] = MinValue;
 	}
 
-	protected void Load(TagCompound tag)
+	public void Load(TagCompound tag)
 	{
 		Value = tag.GetFloat("value");
 		MaxValue = tag.GetFloat("maxValue");
 		MinValue = tag.GetFloat("minValue");
+	}
+
+	public void NetSend(BinaryWriter writer)
+	{
+		writer.Write(GetType().FullName); // this feels like it could simply be an id instead, but for now its this.
+										  // if we used my data driven affix idea this would be so easy to make an id...
+		writer.Write(Value);
+		writer.Write(MaxValue);			  // it seems that min and max get swapped here...
+		writer.Write(MinValue);
+	}
+
+	public void NetReceive(BinaryReader reader)
+	{
+		Value = reader.ReadSingle();
+		MaxValue = reader.ReadSingle();
+		MinValue = reader.ReadSingle();
 	}
 
 	public static Affix CreateAffix<T>(float value = -1, float minValue = 0f, float maxValue = 1f)
@@ -79,6 +97,34 @@ internal abstract class Affix
 		}
 
 		affix.Load(tag);
+		return affix;
+	}
+
+	/// <summary>
+	/// Generates an affix from a binary reader, used on load to re-populate affixes
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	public static ItemAffix FromBReader(BinaryReader reader)
+	{
+		string type = reader.ReadString();
+
+		Type t = typeof(ItemAffix).Assembly.GetType(type);
+		if (t is null)
+		{
+			PathOfTerraria.Instance.Logger.Error($"Could not load affix {type}, was it removed?");
+			return null;
+		}
+
+		var affix = (ItemAffix)Activator.CreateInstance(t);
+
+		if (affix is null)
+		{
+			PathOfTerraria.Instance.Logger.Error($"Could not load affix {type}, was it removed?");
+			return null;
+		}
+
+		affix.NetReceive(reader);
 		return affix;
 	}
 
