@@ -21,9 +21,13 @@ internal class UiStateRefresher : ModSystem
 	/// <summary>
 	/// Forces the refresh a single time for when the world is loaded and the UI needs refreshing
 	/// </summary>
-	public override void OnWorldLoad(){
-		UILoader.GetUIState<QuestPanelButton>().Refresh();
-		UILoader.GetUIState<PlayerStatButton>().Refresh();
+	public override void OnWorldLoad()
+	{
+		if (!Main.dedServ)
+		{
+			UILoader.GetUIState<QuestPanelButton>().Refresh();
+			UILoader.GetUIState<PlayerStatButton>().Refresh();
+		}
 	}
 	
 	/// <summary>
