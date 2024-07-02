@@ -13,6 +13,12 @@ public class MobExperienceSystem : GlobalNPC
 	public override void OnKill(NPC npc)
 	{
 		MobAprgSystem npcSystem = npc.GetGlobalNPC<MobAprgSystem>();
+
+		if (npcSystem is null)
+		{
+			return;
+		}
+
 		if (npcSystem.Experience == null)
 		{
 			Main.NewText($"No experience entry for {npc.FullName} - {npc.netID}");
