@@ -20,7 +20,7 @@ internal class ResistanceHelmetAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.DebuffResistance *= Value / 10;
+		modifier.DebuffResistance *= Value / 100;
 	}
 }
 
@@ -28,7 +28,7 @@ internal class BuffBoostHelmetAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.BuffBonus *= Value / 10;
+		modifier.BuffBonus *= Value / 100;
 	}
 }
 

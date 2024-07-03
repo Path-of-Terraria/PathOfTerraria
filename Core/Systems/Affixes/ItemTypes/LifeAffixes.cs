@@ -11,14 +11,14 @@ internal class AddedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaximumLife += Value / 10;
+		modifier.MaximumLife += Value / 100;
 	}
 }
 internal class MultipliedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.MaximumLife *= Value / 10;
+		modifier.MaximumLife *= Value / 100;
 	}
 }
 internal class FlatLifeAffix : ItemAffix
@@ -41,7 +41,7 @@ internal class LifeRegenMultiplierAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
 	{
-		modifier.LifeRegen += Value / 10;
+		modifier.LifeRegen += Value / 100;
 	}
 }
 
