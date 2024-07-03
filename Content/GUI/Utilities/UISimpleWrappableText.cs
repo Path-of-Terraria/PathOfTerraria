@@ -6,10 +6,11 @@ using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Content.GUI.Utilities;
 
+// ReSharper disable once InconsistentNaming
 public class UISimpleWrappableText : UIElement
 {
 	private TextSnippet[] _array;
-	private string _text;
+	private readonly string _text;
 	private string _pageText;
 
 	private bool _centered;

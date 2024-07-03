@@ -4,7 +4,8 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests;
 
-    public class UISelectableQuest : UISelectableOutlineRectPanel
+// ReSharper disable once InconsistentNaming
+public class UISelectableQuest : UISelectableOutlineRectPanel
 	{
 		private Quest Quest { get; set; }
 		private UISimpleWrappableText Title { get; set; }
@@ -19,7 +20,7 @@ namespace PathOfTerraria.Content.GUI.Quests;
 			SelectedFillColour = new Color(102, 86, 67) * QuestsUIState.SELECTED_OPACITY;
 			HoverFillColour = new Color(102, 86, 67) * QuestsUIState.HOVERED_OPACITY; 
 			Height.Set(22f, 0f);
-			Width.Set(0f, 1f);
+			Width.Set(375, 0f);
 
 			// text
 			Title = new UISimpleWrappableText(quest.Name, 0.7f);

@@ -8,7 +8,7 @@ public abstract class Quest
 	public abstract QuestTypes QuestType { get; }
 	protected abstract List<QuestStep> _subQuests { get; }
 	private QuestStep _activeQuest;
-	private int _currentQuest;
+	public int CurrentQuest;
 	public bool Completed;
 	public abstract int NPCQuestGiver { get; }
 	public virtual string Name => "";
@@ -17,16 +17,16 @@ public abstract class Quest
 
 	public void StartQuest(Player player, int currentQuest = 0)
 	{
-		_currentQuest = currentQuest;
+		CurrentQuest = currentQuest;
 
-		if (_currentQuest >= _subQuests.Count)
+		if (CurrentQuest >= _subQuests.Count)
 		{
 			Completed = true;
 			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
 			return;
 		}
 
-		_activeQuest = _subQuests[_currentQuest];
+		_activeQuest = _subQuests[CurrentQuest];
 
 		_activeQuest.Track(player, () =>
 		{
@@ -34,7 +34,7 @@ public abstract class Quest
 			StartQuest(player, currentQuest + 1);
 		});
 	}
-	
+
 	public List<QuestStep> GetSteps()
 	{
 		return _subQuests;
@@ -48,8 +48,8 @@ public abstract class Quest
 	public string AllQuestStrings()
 	{
 		string s = "";
-		
-		for (int i = 0; i < _currentQuest; i++)
+
+		for (int i = 0; i < CurrentQuest; i++)
 		{
 			s += _subQuests[i].QuestCompleteString() + "\n";
 		}
@@ -61,7 +61,7 @@ public abstract class Quest
 	{
 		tag.Add("type", GetType().FullName);
 		tag.Add("completed", Completed);
-		tag.Add("currentQuest", _currentQuest);
+		tag.Add("currentQuest", CurrentQuest);
 
 		var newTag = new TagCompound();
 		_activeQuest.Save(newTag);

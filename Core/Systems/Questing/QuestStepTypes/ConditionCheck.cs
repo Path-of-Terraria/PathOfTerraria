@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Core.Events;
 
 namespace PathOfTerraria.Core.Systems.Questing.QuestStepTypes;
+
 // maby we make a dialouge class that is for questing dialouge?
 // *so that we can talk with the npc*
 internal class ConditionCheck(Func<Player, bool> condition, string displayText, string completeText) : QuestStep
@@ -29,6 +30,7 @@ internal class ConditionCheck(Func<Player, bool> condition, string displayText, 
 
 		PathOfTerrariaPlayerEvents.PostUpdateEvent += tracker;
 	}
+
 	public override void UnTrack()
 	{
 		PathOfTerrariaPlayerEvents.PostUpdateEvent -= tracker;

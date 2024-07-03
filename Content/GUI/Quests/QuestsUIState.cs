@@ -39,10 +39,14 @@ public class QuestsUIState : DraggableSmartUi
 				Width = StyleDimension.FromPixels(1200),
 				Height = StyleDimension.FromPixels(900),
 				HAlign = 0.5f,
-				VAlign = 0.5f
+				VAlign = 0.5f,
+				ViewedQuest = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests()[0]
 			};
-
-			Append(_questDetails);
+			if (_questDetails.ViewedQuest != null)
+			{
+				Append(_questDetails);
+				_questDetails.PopulateQuestSteps();
+			}
 
 			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
 			CloseButton.Left.Set(-450, 1f);
@@ -72,7 +76,6 @@ public class QuestsUIState : DraggableSmartUi
 			UISelectableQuest selectableQuest = new(quest, this);
 			selectableQuest.Left.Set(200, 0);
 			selectableQuest.Top.Set(140 + offset, 0);
-			selectableQuest.Width = StyleDimension.FromPixels(200);
 			_questDetails.Append(selectableQuest);
 			offset += 22;
 		}
