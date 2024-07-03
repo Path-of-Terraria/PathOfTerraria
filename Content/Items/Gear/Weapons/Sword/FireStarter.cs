@@ -2,7 +2,7 @@
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
+using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -34,12 +34,13 @@ internal class FireStarter : Sword
 	
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.AddedDamageAffix>();
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		sharpAffix.MinValue = 1;
 		sharpAffix.MaxValue = 4;
 		
-		var onFireAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.ChanceToApplyOnFireGearAffix>();
-		onFireAffix.Value = 0.1f;
+		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>();
+		onFireAffix.MinValue = 0.1f;
+		onFireAffix.MaxValue = 0.1f;
 		return [sharpAffix, onFireAffix];
 	}
 	

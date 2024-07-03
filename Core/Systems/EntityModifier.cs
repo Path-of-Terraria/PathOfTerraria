@@ -7,12 +7,12 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Systems;
 
-internal class EntityModifierSegment
+public class EntityModifierSegment
 {
 	public virtual Dictionary<string, StatModifier> Modifiers => null;
 }
 
-internal partial class EntityModifier : EntityModifierSegment
+public partial class EntityModifier : EntityModifierSegment
 {
 	private static readonly EntityModifier _default = new();
 	public StatModifier MaximumLife = new();

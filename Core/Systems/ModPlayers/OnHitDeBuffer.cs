@@ -11,7 +11,7 @@ namespace PathOfTerraria.Core.Systems.ModPlayers;
 /// <summary>
 /// This is for either buffs or debuffs, as its the same in terraria; but mainly debuffs.
 /// </summary>
-internal class OnHitDeBuffer : EntityModifierSegment, IEnumerable<KeyValuePair<int, Dictionary<int, StatModifier>>>
+public class OnHitDeBuffer : EntityModifierSegment, IEnumerable<KeyValuePair<int, Dictionary<int, StatModifier>>>
 {
 	private readonly Dictionary<int, Dictionary<int, StatModifier>> Buffs = [];
 	
