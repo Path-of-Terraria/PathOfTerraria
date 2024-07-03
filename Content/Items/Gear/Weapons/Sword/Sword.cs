@@ -9,8 +9,9 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 internal class Sword : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Base";
-
 	public override float DropChance => 1f;
+
+	protected override string GearLocalizationCategory => "Sword";
 
 	public override void Defaults()
 	{
@@ -71,31 +72,5 @@ internal class Sword : Gear
 		ref float knockback)
 	{
 		type = ModContent.ProjectileType<Projectiles.LifeStealProjectile>();
-	}
-
-	public override string GeneratePrefix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Sharp",
-			1 => "Harmonic",
-			2 => "Enchanted",
-			3 => "Shiny",
-			4 => "Strange",
-			_ => "Unknown"
-		};
-	}
-
-	public override string GenerateSuffix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Drape",
-			1 => "Dome",
-			2 => "Thought",
-			3 => "Vision",
-			4 => "Maw",
-			_ => "Unknown"
-		};
 	}
 }

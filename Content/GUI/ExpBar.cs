@@ -62,7 +62,7 @@ public class ExpBar : SmartUIState
 		}
 		
 		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
-		UILoader.GetUIState<TreeState>().Toggle(mp.SelectedClass);
+		UILoader.GetUIState<TreeState>().Toggle();
 
 		SoundEngine.PlaySound(mp.SelectedClass != PlayerClass.None ? SoundID.MenuOpen : SoundID.MenuClose, Main.LocalPlayer.Center);
 	}

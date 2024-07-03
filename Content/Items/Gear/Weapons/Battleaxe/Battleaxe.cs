@@ -1,7 +1,12 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.WorldGeneration.TownGeneration;
+using PathOfTerraria.Core.WorldGeneration.TownGeneration.Buildings;
+using Terraria.Graphics.Shaders;
 using Terraria.ID;
+using Terraria.Localization;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
@@ -9,7 +14,8 @@ internal abstract class Battleaxe : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Battleaxe/{GetType().Name}";
 	public override float DropChance => 1f;
-	public override string AltUseDescription => "Sacrifice 5 life to increase damage temporarily. Take more damage during the effect.";
+	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Battleaxe.AltUse");
+	protected override string GearLocalizationCategory => "Battleaxe";
 
 	public override void Defaults()
 	{
@@ -40,31 +46,5 @@ internal abstract class Battleaxe : Gear
 		player.statLife -= 5;
 		player.AddBuff(ModContent.BuffType<BattleaxeBuff>(), 300);
 		return true;
-	}
-
-	public override string GeneratePrefix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Brutal",
-			1 => "Savage",
-			2 => "Cleaving",
-			3 => "War",
-			4 => "Bloodthirsty",
-			_ => "Unknown"
-		};
-	}
-
-	public override string GenerateSuffix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Fury",
-			1 => "Cleaver",
-			2 => "Ravage",
-			3 => "Hew",
-			4 => "Slayer",
-			_ => "Unknown"
-		};
 	}
 }

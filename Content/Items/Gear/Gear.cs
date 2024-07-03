@@ -4,12 +4,15 @@ using PathOfTerraria.Core.Systems;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
 internal abstract class Gear : PoTItem
 {
+	protected virtual string GearLocalizationCategory => GetType().Name;
+
 	private Socketable[] _sockets = []; // [new Imps()];
 	private int _selectedSocket;
 
@@ -77,6 +80,11 @@ internal abstract class Gear : PoTItem
 				(Main.LocalPlayer.inventory[0].ModItem as Gear).ApplyAffixes(SawpItemModifier);
 			}
 		}
+	}
+	
+	public override bool AltFunctionUse(Player player)
+	{
+		return player.GetModPlayer<AltUsePlayer>().AltFunctionAvailable;
 	}
 
 	public void EquipItem(Player player)
@@ -173,6 +181,22 @@ internal abstract class Gear : PoTItem
 			Main.mouseItem = _sockets[_selectedSocket].Item;
 			_sockets[_selectedSocket] = null;
 		}
+	}
+
+	public override string GeneratePrefix()
+	{
+		string str = Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, true)).Value;
+		return str;
+	}
+
+	public override string GenerateSuffix()
+	{
+		return Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, false)).Value;
+	}
+
+	private bool BasicAffixSearchFilter(string key, bool isPrefix)
+	{
+		return key.StartsWith("Mods.PathOfTerraria.Gear." + GearLocalizationCategory + (isPrefix ? ".Prefixes" : ".Suffixes"));
 	}
 
 	public override void SaveData(TagCompound tag)
