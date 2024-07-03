@@ -37,12 +37,4 @@ namespace PathOfTerraria.Content.GUI.Quests;
 
 			_state.SelectQuest(Quest);
 		}
-		
-		public override void RecalculateChildren()
-		{
-			foreach (UIElement t in Elements)
-			{
-				t.Recalculate();
-			}
-		}
 	}

@@ -27,7 +27,7 @@ internal class TestQuest : Quest
 		new KillCount(x => x.lifeMax > 100, 10, remaining => $"Kill {remaining} mobs with 100+ max life")
 	];
 
-	public override int NPCQuestGiver => throw new NotImplementedException();
+	public override int NPCQuestGiver => -1;
 
 	public override List<QuestReward> QuestRewards =>
 	[
