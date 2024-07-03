@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.Networking.Modules;
+﻿using PathOfTerraria.Core.Systems.Networking.Handlers;
 using System.Collections.Generic;
 using Terraria.ID;
 
@@ -75,8 +75,8 @@ public class ExperienceTracker : ModSystem
 
 		if (Main.netMode == NetmodeID.Server && !fromNet) // Syncs the spawn of all orbs - only does so if not from the server
 		{
-			new SpawnExpOrbModule((byte)targetPlayer, xp, location, baseVelocity).Send(runLocally: false);
-			return [];
+			//ExperienceHandler.SendExperience(targetPlayer, xp, location, baseVelocity, true);
+			//return [];
 		}
 
 		List<Mechanics.Experience> spawned = [];
@@ -136,9 +136,9 @@ public class ExperienceTracker : ModSystem
 			indices[i] = InsertExperience(spawned[i]);
 		}
 
-		if (Main.netMode == NetmodeID.MultiplayerClient && !fromNet) // Syncs the spawn of all orbs - only does so if not from the server
+		if (Main.netMode != NetmodeID.SinglePlayer && !fromNet) // Syncs the spawn of all orbs - only does so if not from the server
 		{
-			new SpawnExpOrbModule((byte)targetPlayer, xp, location, baseVelocity).Send(runLocally: false);
+			ExperienceHandler.SendExperience((byte)targetPlayer, xp, location, baseVelocity, false);
 		}
 
 		return indices;

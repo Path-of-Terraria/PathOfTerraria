@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Networking.Modules;
+using PathOfTerraria.Core.Systems.Networking.Handlers;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -36,7 +36,7 @@ internal class HealingPotionPickup : ModItem
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			new SetHotbarPotionModule((byte)player.whoAmI, true, player.GetModPlayer<PotionSystem>().HealingLeft).Send(runLocally: false);
+			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, true, (byte)player.GetModPlayer<PotionSystem>().HealingLeft);
 		}
 
 		CombatText.NewText(player.Hitbox, new Color(255, 150, 150), "Healing Potion");

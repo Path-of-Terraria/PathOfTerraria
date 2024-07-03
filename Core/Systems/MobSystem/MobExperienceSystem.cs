@@ -1,8 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
-using PathOfTerraria.Core.Systems.Experience;
-using PathOfTerraria.Core.Systems.Networking.Modules;
-using System.Linq;
-using Terraria.ID;
+﻿using PathOfTerraria.Core.Systems.Experience;
 
 namespace PathOfTerraria.Core.Systems.MobSystem;
 

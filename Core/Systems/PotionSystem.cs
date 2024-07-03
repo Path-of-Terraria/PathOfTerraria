@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.Networking.Modules;
+﻿using PathOfTerraria.Core.Systems.Networking.Handlers;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -42,7 +42,7 @@ internal class PotionSystem : ModPlayer
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			new SetHotbarPotionModule((byte)self.whoAmI, true, mp.HealingLeft).Send(runLocally: false);
+			HotbarPotionHandler.SendHotbarPotionUse((byte)self.whoAmI, true, (byte)mp.HealingLeft, runLocally: false);
 		}
 	}
 
@@ -65,7 +65,7 @@ internal class PotionSystem : ModPlayer
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			new SetHotbarPotionModule((byte)self.whoAmI, false, mp.ManaLeft).Send();
+			HotbarPotionHandler.SendHotbarPotionUse((byte)self.whoAmI, false, (byte)mp.ManaLeft, runLocally: false);
 		}
 	}
 

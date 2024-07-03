@@ -5,6 +5,7 @@ global using Terraria;
 global using Terraria.ModLoader;
 using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems.Networking;
 using System.IO;
 using Terraria.ID;
 
@@ -30,13 +31,8 @@ public class PathOfTerraria : Mod
 		Gear.GenerateItemList();
 	}
 
-	public override void PostSetupContent()
-	{
-		NetEasy.NetEasy.Register(this);
-	}
-
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
 	{
-		NetEasy.NetEasy.HandleModule(reader, whoAmI);
+		Networking.HandlePacket(reader, whoAmI);
 	}
 }

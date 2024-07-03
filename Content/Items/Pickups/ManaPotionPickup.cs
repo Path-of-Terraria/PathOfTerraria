@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Networking.Modules;
+using PathOfTerraria.Core.Systems.Networking.Handlers;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -36,7 +36,7 @@ internal class ManaPotionPickup : ModItem
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			new SetHotbarPotionModule((byte)player.whoAmI, false, player.GetModPlayer<PotionSystem>().ManaLeft).Send(runLocally: false);
+			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, false, (byte)player.GetModPlayer<PotionSystem>().ManaLeft);
 		}
 
 		CombatText.NewText(player.Hitbox, new Color(150, 190, 255), "Mana Potion");
