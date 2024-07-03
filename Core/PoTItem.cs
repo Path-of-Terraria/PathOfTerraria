@@ -604,17 +604,6 @@ internal abstract class PoTItem : ModItem
 		return Main.rand.Next(5, 21);
 	}
 
-	public override void NetSend(BinaryWriter writer)
-	{
-		// Sync rarity so it's consistent between clients (and server if necessary)
-		writer.Write((byte)Rarity);
-	}
-
-	public override void NetReceive(BinaryReader reader)
-	{
-		Rarity = (Rarity)reader.ReadByte();
-	}
-
 	public override void Load()
 	{
 		if (!_addedDetour)
@@ -818,6 +807,26 @@ internal abstract class PoTItem : ModItem
 		tag["affixes"] = affixTags;
 	}
 
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((byte)ItemType);
+		writer.Write((byte)Rarity);
+		writer.Write((byte)Influence);
+
+		writer.Write((byte)_implicits);
+
+		writer.Write(_name); // unsure if this is neccecary...
+		// we should probably save the name as 'GeneratePrefix-ID (Item.Name can probably be omitted) GenerateSuffix-ID'
+		writer.Write((byte)InternalItemLevel);
+
+		writer.Write((byte)Affixes.Count);
+
+		foreach (ItemAffix affix in Affixes)
+		{
+			affix.NetSend(writer);
+		}
+	}
+
 	public override void LoadData(TagCompound tag)
 	{
 		ItemType = (ItemType)tag.GetInt("type");
@@ -839,6 +848,28 @@ internal abstract class PoTItem : ModItem
 			{
 				Affixes.Add(g);
 			}
+		}
+
+		PostRoll();
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		ItemType = (ItemType)reader.ReadByte();
+		Rarity = (Rarity)reader.ReadByte();
+		Influence = (Influence)reader.ReadByte();
+
+		_implicits = reader.ReadByte();
+
+		_name = reader.ReadString();
+		InternalItemLevel = reader.ReadByte();
+
+		int affixes = reader.ReadByte();
+
+		Affixes.Clear();
+		for (int i = 0; i <  affixes; i++)
+		{
+			Affixes.Add(Affix.FromBReader(reader));
 		}
 
 		PostRoll();

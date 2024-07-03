@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
@@ -30,11 +32,27 @@ internal abstract class Affix
 		tag["minValue"] = MinValue;
 	}
 
-	protected void Load(TagCompound tag)
+	public void Load(TagCompound tag)
 	{
 		Value = tag.GetFloat("value");
 		MaxValue = tag.GetFloat("maxValue");
 		MinValue = tag.GetFloat("minValue");
+	}
+
+	public void NetSend(BinaryWriter writer)
+	{
+		writer.Write(AffixHandler.IndexFromItemAffix(this));
+
+		writer.Write(Value);
+		writer.Write(MaxValue);			  // it seems that min and max get swapped here...
+		writer.Write(MinValue);
+	}
+
+	public void NetReceive(BinaryReader reader)
+	{
+		Value = reader.ReadSingle();
+		MaxValue = reader.ReadSingle();
+		MinValue = reader.ReadSingle();
 	}
 
 	public static Affix CreateAffix<T>(float value = -1, float minValue = 0f, float maxValue = 1f)
@@ -72,13 +90,28 @@ internal abstract class Affix
 
 		var affix = (T)Activator.CreateInstance(t);
 
-		if (affix is null)
+		affix.Load(tag);
+		return affix;
+	}
+
+	/// <summary>
+	/// Generates an affix from a binary reader, used on load to re-populate affixes
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	public static ItemAffix FromBReader(BinaryReader reader)
+	{
+		int aId = reader.ReadInt32();
+		Type t = AffixHandler.ItemAffixTypeFromIndex(aId);
+		if (t is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			PathOfTerraria.Instance.Logger.Error($"Could not load affix of internal id {aId}");
 			return null;
 		}
 
-		affix.Load(tag);
+		var affix = (ItemAffix)Activator.CreateInstance(t);
+
+		affix.NetReceive(reader);
 		return affix;
 	}
 
@@ -146,6 +179,23 @@ internal class AffixHandler : ILoadable
 		return _itemAffixes;
 	}
 
+	public static Type ItemAffixTypeFromIndex(int idx)
+	{
+		return _itemAffixes[idx].GetType();
+	}
+
+	public static int IndexFromItemAffix(Affix affix)
+	{
+		ItemAffix a = _itemAffixes.First(a => affix.GetType() == a.GetType());
+		
+		if (a is null)
+		{
+			return 0;
+		}
+
+		return _itemAffixes.IndexOf(a);
+	}
+
 	/// <summary>
 	/// Returns a list of mob affixes that are valid for the given type. Typically used to roll affixes.
 	/// </summary>
@@ -184,6 +234,9 @@ internal class AffixHandler : ILoadable
 				continue;
 			}
 		}
+
+		_itemAffixes.Sort((a1, a2) => a1.GetType().FullName.CompareTo(a2.GetType().FullName));
+		_mobAffixes.Sort((a1, a2) => a1.GetType().FullName.CompareTo(a2.GetType().FullName));
 	}
 
 	public void Unload()
