@@ -4,17 +4,19 @@ using System.Collections.Generic;
 
 namespace PathOfTerraria.Core.Mechanics;
 
-public sealed class Experience {
-	public static class Sizes{
-		public const int OrbSmallYellow =      1;
-		public const int OrbSmallGreen =       5;
-		public const int OrbSmallBlue =       10;
-		public const int OrbMediumYellow =    50;
-		public const int OrbMediumGreen =    100;
-		public const int OrbMediumBlue =     500;
-		public const int OrbLargeYellow =   1000;
-		public const int OrbLargeGreen =    5000;
-		public const int OrbLargeBlue =    10000;
+public sealed class Experience
+{
+	public static class Sizes
+	{
+		public const int OrbSmallYellow = 1;
+		public const int OrbSmallGreen = 5;
+		public const int OrbSmallBlue = 10;
+		public const int OrbMediumYellow = 50;
+		public const int OrbMediumGreen = 100;
+		public const int OrbMediumBlue = 500;
+		public const int OrbLargeYellow = 1000;
+		public const int OrbLargeGreen = 5000;
+		public const int OrbLargeBlue = 10000;
 	}
 
 	private readonly int _value;
@@ -35,11 +37,12 @@ public sealed class Experience {
 
 	public readonly float Rotation;
 
-	public Experience(int xp, Vector2 startPosition, Vector2 startVelocity, int targetPlayer){
+	public Experience(int xp, Vector2 startPosition, Vector2 startVelocity, int targetPlayer)
+	{
 		_value = xp;
 
 		Vector2 size = GetSize();
-		if(size == Vector2.Zero)
+		if (size == Vector2.Zero)
 		{
 			throw new Exception("Invalid xp count: " + xp);
 		}
@@ -56,7 +59,8 @@ public sealed class Experience {
 		Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 	}
 
-	public Vector2 GetSize(){
+	public Vector2 GetSize()
+	{
 		return _value switch
 		{
 			Sizes.OrbSmallYellow or Sizes.OrbSmallGreen or Sizes.OrbSmallBlue => new Vector2(6),
@@ -66,7 +70,8 @@ public sealed class Experience {
 		};
 	}
 
-	private Color GetTrailColor(){
+	private Color GetTrailColor()
+	{
 		return _value switch
 		{
 			Sizes.OrbSmallYellow or Sizes.OrbMediumYellow or Sizes.OrbLargeYellow => Color.Yellow,
@@ -93,8 +98,9 @@ public sealed class Experience {
 		};
 	}
 
-	public void Update(){
-		if(!Active)
+	public void Update()
+	{
+		if (!Active)
 		{
 			return;
 		}
@@ -104,22 +110,23 @@ public sealed class Experience {
 		//Home in on the player, unless they've disconnected
 		Player player = Main.player[_target];
 
-		if(!player.active)
+		if (!player.active)
 		{
 			Collected = true;
 		}
 
-		if(Collected){
+		if (Collected)
+		{
 			//Make the trail shrink
 			if (_oldCenters.Count == 0)
 			{
-				Active = false;	
+				Active = false;
 			}
 			else
 			{
 				for (int i = 0; i < ExtraUpdates + 1; i++)
 				{
-					_oldCenters.Dequeue();	
+					_oldCenters.Dequeue();
 				}
 			}
 
@@ -128,11 +135,12 @@ public sealed class Experience {
 
 		for (int i = 0; i < ExtraUpdates + 1; i++)
 		{
-			InnerUpdate();	
+			InnerUpdate();
 		}
 	}
 
-	private void InnerUpdate(){
+	private void InnerUpdate()
+	{
 		Player player = Main.player[_target];
 
 		Vector2 direction = player.DirectionFrom(Center);
@@ -146,7 +154,8 @@ public sealed class Experience {
 						_velocity = _velocity.RotateTowards(direction, MathHelper.ToRadians(270) / 60f / (ExtraUpdates + 1));
 					}
 
-					if(Vector2.DistanceSquared(Center, player.Center) >= Vector2.DistanceSquared(Center + _velocity / (ExtraUpdates + 1), player.Center)) {
+					if (Vector2.DistanceSquared(Center, player.Center) >= Vector2.DistanceSquared(Center + _velocity / (ExtraUpdates + 1), player.Center))
+					{
 						_velocity += Vector2.Normalize(_velocity) * 5f / 60f / (ExtraUpdates + 1);
 
 						const float vel = 30 * 16;
@@ -179,14 +188,17 @@ public sealed class Experience {
 		if (_oldCenters.Count < 30 * (ExtraUpdates + 1))
 		{
 			_oldCenters.Enqueue(Center);
-		} else {
+		}
+		else
+		{
 			_oldCenters.Dequeue();
 			_oldCenters.Enqueue(Center);
 		}
 
 		Center += _velocity / (ExtraUpdates + 1);
 
-		if(!Collected && !player.dead && player.Hitbox.Contains(Center.ToPoint())){
+		if (!Collected && !player.dead && player.Hitbox.Contains(Center.ToPoint()))
+		{
 			ExpModPlayer statPlayer = player.GetModPlayer<ExpModPlayer>();
 			statPlayer.Exp += _value;
 			CombatText.NewText(player.Hitbox, new Color(145, 255, 160), $"+{_value}");
@@ -206,7 +218,8 @@ public sealed class Experience {
 
 		colors[^1] = color;
 		int i = 0;
-		foreach(Vector2 _ in _oldCenters){
+		foreach (Vector2 _ in _oldCenters)
+		{
 			colors[i] = Color.Lerp(color, Color.Transparent, 1f - i / (float)trailColorCount);
 			i++;
 		}
@@ -214,14 +227,15 @@ public sealed class Experience {
 		_collectedTrail = colors;
 	}
 
-	public void DrawTrail(){
-		if(!Active)
+	public void DrawTrail()
+	{
+		if (!Active)
 		{
 			return;
 		}
 
 		Vector2 size = GetSize();
-		if(size == Vector2.Zero)
+		if (size == Vector2.Zero)
 		{
 			return;
 		}
@@ -236,16 +250,18 @@ public sealed class Experience {
 		int trailColorCount = _oldCenters.Count + 1;
 		var colors = new Color[trailColorCount];
 
-		if(!_oldCollected){
+		if (!_oldCollected)
+		{
 			//Manually set the colors
 			colors[^1] = color;
 			int i = 0;
-			foreach(Vector2 _ in _oldCenters){
+			foreach (Vector2 _ in _oldCenters)
+			{
 				colors[i] = Color.Lerp(color, Color.Transparent, 1f - i / (float)trailColorCount);
 				i++;
 			}
 		}
-		else 
+		else
 		{
 			Array.Copy(_collectedTrail, _collectedTrail.Length - trailColorCount, colors, 0, trailColorCount);
 		}

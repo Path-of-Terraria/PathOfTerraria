@@ -1,5 +1,5 @@
 displayName = Path of Terraria
 author = ScalarVector & ScottieKnowz
 modReferences = SubworldLibrary
-dllReferences = TextCopy
+dllReferences = TextCopy, NetEasy_v0.1.8, NetSerializer
 version = 0.1
