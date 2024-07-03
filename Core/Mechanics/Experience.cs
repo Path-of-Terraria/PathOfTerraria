@@ -8,15 +8,15 @@ public sealed class Experience
 {
 	public static class Sizes
 	{
-		public const int OrbSmallYellow = 1;
-		public const int OrbSmallGreen = 5;
-		public const int OrbSmallBlue = 10;
-		public const int OrbMediumYellow = 50;
-		public const int OrbMediumGreen = 100;
-		public const int OrbMediumBlue = 500;
-		public const int OrbLargeYellow = 1000;
-		public const int OrbLargeGreen = 5000;
-		public const int OrbLargeBlue = 10000;
+		public const int OrbSmallYellow =      1;
+		public const int OrbSmallGreen =       5;
+		public const int OrbSmallBlue =       10;
+		public const int OrbMediumYellow =    50;
+		public const int OrbMediumGreen =    100;
+		public const int OrbMediumBlue =     500;
+		public const int OrbLargeYellow =   1000;
+		public const int OrbLargeGreen =    5000;
+		public const int OrbLargeBlue =    10000;
 	}
 
 	private readonly int _value;
