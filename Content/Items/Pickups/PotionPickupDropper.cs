@@ -32,8 +32,8 @@ internal class PotionPickupDropper : GlobalNPC
 
 							for (int j = 0; j < count; ++j)
 							{
-								int index = Item.NewItem(npc.GetSource_FromThis(), npc.Hitbox, ModContent.ItemType<HealingPotionPickup>());
-								Main.item[index].velocity = Vector2.UnitX.RotatedBy(j / (float)amount * MathHelper.TwoPi) * 10;
+								int index = Item.NewItem(npc.GetSource_FromThis(), npc.position + new Vector2(Main.rand.Next(npc.width), Main.rand.Next(npc.height)), ModContent.ItemType<HealingPotionPickup>());
+								Main.item[index].velocity = Vector2.UnitX.RotatedBy(i / (float)amount * MathHelper.TwoPi + j * MathHelper.PiOver4) * 10;
 
 								NetMessage.SendData(MessageID.SyncItem, -1, -1, null, index);
 							}
@@ -47,7 +47,7 @@ internal class PotionPickupDropper : GlobalNPC
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
 		LeadingConditionRule notBoss = new LeadingConditionRule(new Conditions.LegacyHack_IsABoss());
-		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 20, 1, 1));
-		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 20, 1, 1));
+		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 1, 1, 1));
+		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 1, 1, 1));
 	}
 }
