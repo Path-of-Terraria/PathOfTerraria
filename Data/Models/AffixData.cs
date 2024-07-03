@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Core;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace PathOfTerraria.Data.Models;
 
@@ -23,20 +24,32 @@ public class ItemAffixData
 	public string Influences { get; set; }
 	public List<TierData> Tiers { get; set; }
 
-	public TierData GetAppropriateTierData(int level)
-	{
-		TierData data = null;
+    public TierData GetAppropriateTierData(int level)
+    {
+        var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
 
-		foreach (TierData tier in Tiers)
-		{
-			if (tier.MinimumLevel < level && (data is null || data.MinimumLevel < tier.MinimumLevel))
-			{
-				data = tier;
-			}
-		}
+        if (eligibleTiers.Count == 0)
+        {
+            return null;
+        }
 
-		return data;
-	}
+        float totalWeight = eligibleTiers.Sum(t => t.Weight);
+
+        float randomWeight = (float) Main.rand.NextDouble() * totalWeight;
+        float cumulativeWeight = 0;
+
+        foreach (TierData tier in eligibleTiers)
+        {
+            cumulativeWeight += tier.Weight;
+
+            if (randomWeight <= cumulativeWeight)
+            {
+                return tier;
+            }
+        }
+
+        return eligibleTiers.Last(); //Just in case we don't return a tier?
+    }
 
 	public ItemType GetEquipTypes()
 	{
