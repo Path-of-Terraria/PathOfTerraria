@@ -34,6 +34,8 @@ internal class PotionPickupDropper : GlobalNPC
 							{
 								int index = Item.NewItem(npc.GetSource_FromThis(), npc.Hitbox, ModContent.ItemType<HealingPotionPickup>());
 								Main.item[index].velocity = Vector2.UnitX.RotatedBy(j / (float)amount * MathHelper.TwoPi) * 10;
+
+								NetMessage.SendData(MessageID.SyncItem, -1, -1, null, index);
 							}
 						}
 					}
