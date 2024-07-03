@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
-internal abstract class ItemAffix : Affix
+public abstract class ItemAffix : Affix
 {
 	public Influence RequiredInfluence => GetData().GetInfluences();
 	public ItemType PossibleTypes => GetData().GetEquipTypes();
