@@ -54,19 +54,15 @@ internal class GuardianAngel : SteelBattleaxe
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;
 		addedDamageAffix.MaxValue = 4;
-		
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<BaseKnockbackItemAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
 
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
+		attackSpeedAffix.MinValue = 0.1f;
+		attackSpeedAffix.MaxValue = 0.1f;
 
 		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
-		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
+		armorShredAffix.MinValue = 0.1f;
+		armorShredAffix.MaxValue = 0.1f;
+		return [addedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}
 
 	internal class AngelRingNPC : GlobalNPC

@@ -12,16 +12,6 @@ public class UISimpleWrappableText : UIElement
 	private string _text;
 	private string _pageText;
 
-	public string Text
-	{
-		get => _text;
-		set
-		{
-			_text = value;
-			UpdateText();
-		}
-	}
-
 	private bool _centered;
 	private bool _wrappable;
 	private Color _colour;
@@ -57,7 +47,6 @@ public class UISimpleWrappableText : UIElement
 	}
 
 	private int MaxLines { get; set; } = 99;
-	private bool Large { get; set; }
 	public bool Border { get; set; }
 
 	public int Page
@@ -83,18 +72,16 @@ public class UISimpleWrappableText : UIElement
 	}
 
 	public Color BorderColour { get; set; }
-	private DynamicSpriteFont Font => Large ? FontAssets.DeathText.Value : FontAssets.MouseText.Value;
+	private DynamicSpriteFont Font => FontAssets.MouseText.Value;
 	private float _drawOffsetX;
-	private int page = 0;
+	private int page;
 	private float scale;
 
-	public UISimpleWrappableText(string text, float textScale = 1f, bool large = false, bool wrappable = false)
+	public UISimpleWrappableText(string text, float textScale = 1f)
 	{
 		_text = text;
-		_wrappable = wrappable;
 		_colour = Color.White;
 		Scale = textScale;
-		Large = large;
 
 		UpdateText();
 	}
@@ -120,7 +107,7 @@ public class UISimpleWrappableText : UIElement
 		if (lines.Length > MaxLines)
 		{
 			int startLine = MaxLines * Page;
-			StringBuilder builder = new StringBuilder();
+			var builder = new StringBuilder();
 			for (int i = startLine; i < startLine + MaxLines && i < lines.Length; i++)
 			{
 				builder.AppendLine(lines[i]);
@@ -227,7 +214,7 @@ public class UISimpleWrappableText : UIElement
 		}
 	}
 
-	private static Vector2 DrawColorCodedString(SpriteBatch spriteBatch, DynamicSpriteFont font, TextSnippet[] snippets,
+	private static void DrawColorCodedString(SpriteBatch spriteBatch, DynamicSpriteFont font, TextSnippet[] snippets,
 		Vector2 position, Color baseColor, float rotation, Vector2 origin, Vector2 baseScale, out int hoveredSnippet,
 		float maxWidth, bool ignoreColors = false)
 	{
@@ -317,6 +304,5 @@ public class UISimpleWrappableText : UIElement
 		}
 
 		hoveredSnippet = num;
-		return vector22;
 	}
 }
