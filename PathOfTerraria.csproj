@@ -23,12 +23,6 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="NetEasy">
-      <HintPath>lib\NetEasy_v0.1.8.dll</HintPath>
-    </Reference>
-    <Reference Include="NetSerializer">
-      <HintPath>lib\NetSerializer.dll</HintPath>
-    </Reference>
     <Reference Include="SubworldLibrary">
       <HintPath>Dependencies\SubworldLibrary.dll</HintPath>
     </Reference>
