@@ -20,7 +20,7 @@ public class UISelectableQuest : UISelectableOutlineRectPanel
 			SelectedFillColour = new Color(102, 86, 67) * QuestsUIState.SELECTED_OPACITY;
 			HoverFillColour = new Color(102, 86, 67) * QuestsUIState.HOVERED_OPACITY; 
 			Height.Set(22f, 0f);
-			Width.Set(375, 0f);
+			Width.Set(325, 0f);
 
 			// text
 			Title = new UISimpleWrappableText(quest.Name, 0.7f);

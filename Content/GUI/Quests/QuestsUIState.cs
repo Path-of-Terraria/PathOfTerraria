@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.Questing;
 using Terraria.Audio;
@@ -33,24 +34,27 @@ public class QuestsUIState : DraggableSmartUi
 		if (!HasChild(_questDetails))
 		{
 			RemoveAllChildren();
-			Left = StyleDimension.FromPixels(500);
-			_questDetails = new QuestDetailsPanel
+			List<Quest> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
+			if (quests.Count > 0)
 			{
-				Width = StyleDimension.FromPixels(1200),
-				Height = StyleDimension.FromPixels(900),
-				HAlign = 0.5f,
-				VAlign = 0.5f,
-				ViewedQuest = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests()[0]
-			};
-			if (_questDetails.ViewedQuest != null)
-			{
-				Append(_questDetails);
-				_questDetails.PopulateQuestSteps();
+				_questDetails = new QuestDetailsPanel
+				{
+					Width = StyleDimension.FromPixels(1000),
+					Height = StyleDimension.FromPixels(750),
+					HAlign = 0.5f,
+					VAlign = 0.5f,
+					ViewedQuest = quests.First()
+				};
+				if (_questDetails.ViewedQuest != null)
+				{
+					Append(_questDetails);
+					_questDetails.PopulateQuestSteps();
+				}    
 			}
 
 			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
-			CloseButton.Left.Set(-450, 1f);
-			CloseButton.Top.Set(80, 0f);
+			CloseButton.Left.Set(GetCloseButtonLeft(), 0.73f);
+			CloseButton.Top.Set(GetCloseButtonTop(), 0f);
 			CloseButton.Width.Set(38, 0);
 			CloseButton.Height.Set(38, 0);
 			CloseButton.OnLeftClick += (a, b) =>
@@ -74,13 +78,65 @@ public class QuestsUIState : DraggableSmartUi
 		foreach (Quest quest in player.GetAllQuests())
 		{
 			UISelectableQuest selectableQuest = new(quest, this);
-			selectableQuest.Left.Set(200, 0);
-			selectableQuest.Top.Set(140 + offset, 0);
+			selectableQuest.Left.Set(GetQuestNameLeft(), 0);
+			selectableQuest.Top.Set(GetQuestNameTop() + offset, 0);
 			_questDetails.Append(selectableQuest);
 			offset += 22;
 		}
 	}
+
+	private static float GetQuestNameLeft()
+	{
+		float screenWidth = Main.screenWidth / 1.12f;
+		return screenWidth switch
+		{
+			//4k or 4k Wide
+			>= 2160 => 360,
+			//1440p+
+			>= 1440 => 250,
+			_ => 150
+		};
+	}
 	
+	private static float GetQuestNameTop()
+	{
+		float screenWidth = Main.screenWidth / 1.12f;
+		return screenWidth switch
+		{
+			//4k or 4k Wide
+			>= 2160 => 325,
+			//1440p+
+			>= 1440 => 250,
+			_ => 130
+		};
+	}
+	
+	private static float GetCloseButtonTop()
+	{
+		float screenWidth = Main.screenWidth / 1.12f;
+		return screenWidth switch
+		{
+			//4k or 4k Wide
+			>= 2160 => 330,
+			//1440p+
+			>= 1440 => 235,
+			_ => 135
+		};
+	}
+	
+	private static float GetCloseButtonLeft()
+	{
+		float screenWidth = Main.screenWidth / 1.12f;
+		return screenWidth switch
+		{
+			//4k or 4k Wide
+			>= 2160 => 200,
+			//1440p+
+			>= 1440 => 100,
+			_ => 0
+		};
+	}
+
 	public void SelectQuest(Quest quest)
 	{
 		_questDetails.ViewedQuest = quest;
