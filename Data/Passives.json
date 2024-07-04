@@ -1,0 +1,112 @@
+[
+	{
+		"internalIdentifier": "JewelSocket",
+		"referenceId": 0,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 6
+			}
+		],
+		"position": {
+			"x": 100,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "Anchor",
+		"referenceId": 1,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 6
+			}
+		]
+	},
+	{
+		"internalIdentifier": "AddedLife",
+		"referenceId": 2,
+		"maxLevel": 5,
+		"connections": [
+			{
+				"referenceId": 1
+			},
+			{
+				"referenceId": 3
+			},
+			{
+				"referenceId": 4
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": 100
+		}
+	},
+	{
+		"internalIdentifier": "AddedLife",
+		"referenceId": 3,
+		"maxLevel": 5,
+		"connections": [
+			{
+				"referenceId": 0
+			},
+			{
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": 100,
+			"y": 100
+		}
+	},
+	{
+		"internalIdentifier": "AddedLife",
+		"referenceId": 4,
+		"maxLevel": 5,
+		"connections": [
+			{
+				"referenceId": 5
+			},
+			{
+				"referenceId": 1
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": 100
+		}
+	},
+	{
+		"internalIdentifier": "AddedLife",
+		"referenceId": 5,
+		"maxLevel": 5,
+		"position": {
+			"x": -100,
+			"y": 200
+		}
+	},
+	{
+		"internalIdentifier": "JewelSocket",
+		"referenceId": 6,
+		"maxLevel": 1,
+		"position": {
+			"x": 0,
+			"y": -100
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamage",
+		"referenceId": 7,
+		"maxLevel": 10,
+		"connections": [
+			{
+				"referenceId": 5
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": 300
+		}
+	}
+]

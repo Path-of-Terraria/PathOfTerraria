@@ -213,3 +213,62 @@ StoneBoomerang: {
 	DisplayName: Stone Boomerang
 	Tooltip: ""
 }
+
+FireStarter: {
+	DisplayName: Fire Starter
+	AltUseDescription: 100% chance to apply On Fire! for 3 seconds
+	Description: A dry piece of wood I found in the forest. It's perfect for starting fires.
+	Tooltip: ""
+}
+
+YellowJewel: {
+	DisplayName: Yellow Jewel
+	Tooltip: ""
+}
+
+BarbedLeatherWhip: {
+	DisplayName: Barbed Leather Whip
+	Tooltip: ""
+}
+
+ChainWhip: {
+	DisplayName: Chain Whip
+	Tooltip: ""
+}
+
+LeatherWhip: {
+	DisplayName: Leather Whip
+	Tooltip: ""
+}
+
+WebWhip: {
+	DisplayName: Web Whip
+	Tooltip: ""
+}
+
+CorruptedBattleaxe: {
+	DisplayName: Corrupted Battleaxe
+	Tooltip: ""
+}
+
+IronBattleaxe: {
+	DisplayName: Iron Battleaxe
+	Tooltip: ""
+}
+
+RustedBattleaxe: {
+	DisplayName: Rusted Battleaxe
+	Tooltip: ""
+}
+
+SteelBattleaxe: {
+	DisplayName: Steel Battleaxe
+	Tooltip: ""
+}
+
+GuardianAngel: {
+	DisplayName: Guardian Angel
+	Tooltip: ""
+	AltUseDescription: Right click to apply a ring to nearby enemies
+	Description: Holy light fills you with strength
+}

@@ -1,0 +1,9 @@
+Nova: {
+	Name: Nova
+	Description: Create a shockwave around you, dealing damage
+}
+
+Berserk: {
+	Name: Berserk
+	Description: Deal 150% more Damage while taking 5 more damage each time hit
+}

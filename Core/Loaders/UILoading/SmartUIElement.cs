@@ -7,6 +7,7 @@ namespace PathOfTerraria.Core.Loaders.UILoading;
 /// </summary>
 public class SmartUIElement : UIElement
 {
+	public virtual string TabName => "";
 	#region XButton1
 	/// <summary>
 	/// A Safe wrapper around XButton1MouseUp that allows both an override and the OnXButton1MouseUp event to be used together

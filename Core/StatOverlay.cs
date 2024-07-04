@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.Overlays;
+﻿namespace PathOfTerraria.Core;
 internal class StatOverlay : ModResourceOverlay
 {
 	private Color GetBarColor(int bar)
@@ -17,7 +17,7 @@ internal class StatOverlay : ModResourceOverlay
 	{
 		if (context.texture.Name == "Images\\UI\\PlayerResourceSets\\FancyClassic\\Heart_Fill")
 		{
-			Texture2D texture = (Texture2D)ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Heart_Fill_Replace");
+			Texture2D texture = (Texture2D)ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/Heart_Fill_Replace");
 
 			float life = Main.LocalPlayer.statLife;
 			int bars = (int)(life / 400);

@@ -5,11 +5,14 @@ Keybinds: {
 	UseSkill4.DisplayName: Use Skill4
 	UseSkill5.DisplayName: Use Skill5
 	WeaponSwap.DisplayName: Swap Weapons
+	CopyItemInfo.DisplayName: Copy Item Info
+	StatUIKey.DisplayName: Toggle Stat Page
 }
 
-Buffs: {
-	CustomRage: {
-		DisplayName: Custom Rage
-		Description: Mods.PathOfTerraria.Buffs.CustomRage.Description
-	}
+GUI: {
+	PassiveTreeTab: Passives
+	SkillTreeTab: Skills
+	QuestsAvailableTab: Available
+	QuestsCompletedTab: Completed
+	PlayerStatsTab: Stats
 }

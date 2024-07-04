@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.TreeSystem;
 
 namespace PathOfTerraria.Content.Passives;
@@ -27,14 +28,8 @@ internal class DamageReflectionPassive : Passive
 {
 	public override string InternalIdentifier => "AddedContactDamageReflection";
 
-	public override void OnLoad()
+	public override void BuffPlayer(Player player)
 	{
-		PathOfTerrariaPlayerEvents.OnHitByNPCEvent += ReflectHitByNPC;
-	}
-
-	private void ReflectHitByNPC(Player player, NPC npc, Player.HurtInfo hurtInfo)
-	{
-		int dir = player.Center.X < npc.Center.X ? 1 : -1;
-		npc.SimpleStrikeNPC(10 * player.GetModPlayer<TreePlayer>().GetCumulativeLevel(InternalIdentifier), dir, false, 1);
+		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ReflectedDamageModifier.Base += 10 * Level;
 	}
 }

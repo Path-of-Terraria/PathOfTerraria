@@ -9,3 +9,9 @@ BasicWoodenBowAnimationProjectile.DisplayName: Basic Wooden Bow Animation Projec
 WoodenBowAnimationProjectile.DisplayName: Wooden Bow Animation Projectile
 WhipBaseProjectile.DisplayName: Whip Base Projectile
 BoomerangProjectile.DisplayName: Boomerang Projectile
+BowAnimationProjectile.DisplayName: Bow Animation Projectile
+FireStarterProjectile.DisplayName: Fire Starter Projectile
+NovaProjectile.DisplayName: Nova Projectile
+CorruptedBattleaxeProjectile.DisplayName: Corrupted Battleaxe Projectile
+GuardianAngelProjectile.DisplayName: Guardian Angel Projectile
+GuardianAngelRay.DisplayName: Guardian Angel Ray

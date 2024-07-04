@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.Systems.Networking.Handlers;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -33,6 +34,11 @@ internal class HealingPotionPickup : ModItem
 	{
 		player.GetModPlayer<PotionSystem>().HealingLeft++;
 
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, true, (byte)player.GetModPlayer<PotionSystem>().HealingLeft);
+		}
+
 		CombatText.NewText(player.Hitbox, new Color(255, 150, 150), "Healing Potion");
 
 		for (int k = 0; k < 10; k++)
@@ -53,7 +59,7 @@ internal class HealingPotionPickup : ModItem
 	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 	{
 		Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-		Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GlowAlpha").Value;
+		Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowAlpha").Value;
 
 		var glowColor = new Color(255, 50, 50)
 		{

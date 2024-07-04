@@ -1,15 +1,15 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.Affixes.GearTypes.ArmorAffixes;
+using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
 [AutoloadEquip(EquipType.Legs)]
 internal class Greaves : Leggings
 {
-	public override List<GearAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateImplicits()
 	{
-		return [(GearAffix)Affix.CreateAffix<MovementSpeed>(0.5f)];
+		return [(ItemAffix)Affix.CreateAffix<MovementSpeed>(0.5f)];
 	}
 
 	public override void PostRoll()

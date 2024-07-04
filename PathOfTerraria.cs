@@ -5,6 +5,8 @@ global using Terraria;
 global using Terraria.ModLoader;
 using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems.Networking;
+using System.IO;
 using Terraria.ID;
 
 namespace PathOfTerraria;
@@ -25,7 +27,12 @@ public class PathOfTerraria : Mod
 		{
 			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 		}
-		
-		Gear.GenerateGearList();
+
+		Core.PoTItem.GenerateItemList();
+	}
+
+	public override void HandlePacket(BinaryReader reader, int whoAmI)
+	{
+		Networking.HandlePacket(reader);
 	}
 }

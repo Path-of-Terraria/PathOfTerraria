@@ -2,7 +2,7 @@
 
 internal class Codex : Spellbook
 {
-	public override int ItemLevel => 60;
+	public override int MinDropItemLevel => 60;
 	
 	public override void Defaults()
 	{

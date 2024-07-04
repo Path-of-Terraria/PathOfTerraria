@@ -3,7 +3,7 @@
 internal class CopperBoomerang : Boomerang
 {
 	public override float DropChance => 1f;
-	public override int ItemLevel => 8;
+	public override int MinDropItemLevel => 8;
 
 	public override void Defaults()
 	{

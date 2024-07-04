@@ -3,7 +3,7 @@
 internal class SilverBoomerang : Boomerang
 {
 	public override float DropChance => 1f;
-	public override int ItemLevel => 14;
+	public override int MinDropItemLevel => 14;
 
 	public override void Defaults()
 	{

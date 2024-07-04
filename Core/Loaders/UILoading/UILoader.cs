@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.UI;
 
@@ -37,15 +38,20 @@ class UILoader : ModSystem
 			if (!t.IsAbstract && t.IsSubclassOf(typeof(SmartUIState)))
 			{
 				var state = (SmartUIState)Activator.CreateInstance(t, null);
-				var userInterface = new UserInterface();
-				userInterface.SetState(state);
-				state.UserInterface = userInterface;
-
 				UIStates?.Add(state);
-				UserInterfaces?.Add(userInterface);
-				
-				state.Load();
 			}
+		}
+
+		Comparison<SmartUIState> comp = new Comparison<SmartUIState>((s1, s2) => s2.DepthPriority - s1.DepthPriority);
+		UIStates.Sort(comp);
+
+		for (int k = 0; k < UIStates.Count; k++)
+		{
+			SmartUIState state = UIStates[k];
+			var userInterface = new UserInterface();
+			userInterface.SetState(state);
+			state.UserInterface = userInterface;
+			UserInterfaces?.Add(userInterface);
 		}
 	}
 
@@ -67,7 +73,7 @@ class UILoader : ModSystem
 	public static void AddLayer(List<GameInterfaceLayer> layers, UIState state, int index, bool visible, InterfaceScaleType scale)
 	{
 		string name = state == null ? "Unknown" : state.ToString();
-		layers.Insert(index, new LegacyGameInterfaceLayer("BrickAndMortar: " + name,
+		layers.Insert(index + 1, new LegacyGameInterfaceLayer("BrickAndMortar: " + name,
 			delegate
 			{
 				if (visible)

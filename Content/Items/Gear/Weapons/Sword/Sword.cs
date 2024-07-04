@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Content.GUI.Utilities;
+using PathOfTerraria.Core;
+using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -7,8 +9,9 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 internal class Sword : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Base";
-
 	public override float DropChance => 1f;
+
+	protected override string GearLocalizationCategory => "Sword";
 
 	public override void Defaults()
 	{
@@ -25,21 +28,23 @@ internal class Sword : Gear
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.PurificationPowder;
 		Item.shootSpeed = 10f;
-		GearType = GearType.Sword;
+		ItemType = ItemType.Sword;
 	}
 
 	public override bool AltFunctionUse(Player player)
 	{
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
+
+		Console.WriteLine(modPlayer.AltFunctionAvailable + " - " + BlockClickItem.Block);
 
 		// If cooldown is still active, do not allow alt usage.
-		if (modPlayer.AltFunctionCooldown > 0 || !modPlayer.Player.CheckMana(5))
+		if (!modPlayer.AltFunctionAvailable || !modPlayer.Player.CheckMana(5))
 		{
 			return false;
 		}
 
 		// Otherwise, set the cooldown and allow alt usage.
-		modPlayer.AltFunctionCooldown = 180;
+		modPlayer.SetAltCooldown(180);
 		return true;
 	}
 
@@ -51,7 +56,7 @@ internal class Sword : Gear
 			return false;
 		}
 
-		AltUseSystem modPlayer = player.GetModPlayer<AltUseSystem>();
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 		modPlayer.Player.statMana -= 5;
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 
@@ -67,31 +72,5 @@ internal class Sword : Gear
 		ref float knockback)
 	{
 		type = ModContent.ProjectileType<Projectiles.LifeStealProjectile>();
-	}
-
-	public override string GeneratePrefix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Sharp",
-			1 => "Harmonic",
-			2 => "Enchanted",
-			3 => "Shiny",
-			4 => "Strange",
-			_ => "Unknown"
-		};
-	}
-
-	public override string GenerateSuffix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Drape",
-			1 => "Dome",
-			2 => "Thought",
-			3 => "Vision",
-			4 => "Maw",
-			_ => "Unknown"
-		};
 	}
 }

@@ -1,17 +1,41 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
+using PathOfTerraria.Core.Systems;
+using ReLogic.Content;
+using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 
 internal abstract class Bow : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Bow/WoodenBow";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Bow/{GetType().Name}";
+
+	/// <summary>
+	/// Stores a Bow's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.
+	/// </summary>
+	public static Dictionary<int, Asset<Texture2D>> BowProjectileSpritesById = [];
 
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
+
+	protected override string GearLocalizationCategory => "Bow";
+
+	protected virtual int AnimationSpeed => 6;
+	protected virtual float CooldownTimeInSeconds => 5;
+
 	private bool _isChanneling;
-	
+
+	public override void SetStaticDefaults()
+	{
+		if (ModContent.HasAsset(Texture + "Animated"))
+		{
+			BowProjectileSpritesById.Add(Type, ModContent.Request<Texture2D>(Texture + "Animated"));
+		}
+	}
+
 	public override void Defaults()
 	{
 		Item.CloneDefaults(ItemID.WoodenBow);
@@ -21,6 +45,7 @@ internal abstract class Bow : Gear
 		Item.useAnimation = 60;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.channel = true;
+		Item.UseSound = null;
 	}
 
 	public override void HoldItem(Player player)
@@ -42,73 +67,29 @@ internal abstract class Bow : Gear
 		//We are starting to channel - Begin the animation
 		Item.noUseGraphic = true;
 		_isChanneling = true;
-		Projectile.NewProjectileDirect(
-			player.GetSource_ItemUse(Item),
-			player.Center,
-			player.DirectionTo(Main.MouseWorld) * Item.shootSpeed,
-			ModContent.ProjectileType<WoodenBowAnimationProjectile>(),
-			Item.damage,
-			Item.knockBack,
-			player.whoAmI);
+
+		if (Main.myPlayer != player.whoAmI)
+		{
+			return;
+		}
+
+		Vector2 vel = player.DirectionTo(Main.MouseWorld) * Item.shootSpeed;
+		int type = ModContent.ProjectileType<BowAnimationProjectile>();
+		Projectile.NewProjectileDirect(player.GetSource_ItemUse(Item), player.Center, vel, type, Item.damage, Item.knockBack, player.whoAmI, AnimationSpeed, CooldownTimeInSeconds);
 	}
 
 	public override bool AltFunctionUse(Player player)
 	{
-		return true;
+		return player.GetModPlayer<AltUsePlayer>().AltFunctionCooldown <= 0;
 	}
 
-	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position,
-		Vector2 velocity, int type, int damage, float knockback)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (player.altFunctionUse != 2)
 		{
-			return base.Shoot(player, source, position, velocity, type, damage, knockback);
+			SoundEngine.PlaySound(SoundID.Item5, player.Center); // Play sound here to not make it play twice when alt firing
 		}
-		
-		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 
-		return false;
-	}
-	
-	public override void ModifyShootStats(
-		Player player,
-		ref Vector2 position,
-		ref Vector2 velocity,
-		ref int type,
-		ref int damage,
-		ref float knockback)
-	{
-		if (player.altFunctionUse != 2)
-		{
-			return;
-		}
-		
-		type = ModContent.ProjectileType<WoodenBowAnimationProjectile>();
-	}
-
-	public override string GeneratePrefix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Swift",
-			1 => "Piercing",
-			2 => "Hunter's",
-			3 => "Gale",
-			4 => "Vengeful",
-			_ => "Unknown"
-		};
-	}
-	
-	public override string GenerateSuffix()
-	{
-		return Main.rand.Next(5) switch
-		{
-			0 => "Flight",
-			1 => "Song",
-			2 => "Wind",
-			3 => "Thorn",
-			4 => "Sight",
-			_ => "Unknown"
-		};
+		return player.altFunctionUse != 2;
 	}
 }
