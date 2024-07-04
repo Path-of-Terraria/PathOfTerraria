@@ -8,8 +8,25 @@ internal static class Networking
 {
 	public enum Message : byte
 	{
+		/// <summary>
+		/// Spawns experience. Signature:<br/>
+		/// <c>byte target, int xpValue, Vector2 position, Vector2 velocity, bool spawnLocally = false</c>
+		/// </summary>
 		SpawnExperience,
+
+		/// <summary>
+		/// Syncs the usage of hotbar potions. Signature:<br/>
+		/// <c>byte playerWhoAmI, bool isHealingPotion, byte newValue, bool runLocally = false</c>
+		/// </summary>
 		SetHotbarPotionUse,
+
+		/// <summary>
+		/// Syncs the rings of the Guardian Angel's hits. Signature:<br/>
+		/// <c>byte playerWhoAmI, short npcWho, bool runLocally = false</c>
+		/// </summary>
+		SyncGuardianAngelHit,
+
+		ApplyMobRarity,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -21,11 +38,11 @@ internal static class Networking
 			case Message.SpawnExperience:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					ExperienceHandler.ServerRecieveExperience(reader);
+					ExperienceHandler.ServerRecieve(reader);
 				}
 				else
 				{
-					ExperienceHandler.ClientRecieveExperience(reader);
+					ExperienceHandler.ServerRecieve(reader);
 				}
 
 				break;
@@ -33,11 +50,35 @@ internal static class Networking
 			case Message.SetHotbarPotionUse:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					HotbarPotionHandler.ServerRecieveHotbarPotion(reader);
+					HotbarPotionHandler.ServerRecieve(reader);
 				}
 				else
 				{
 					HotbarPotionHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.SyncGuardianAngelHit:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SyncGuardianAngelHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					SyncGuardianAngelHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.ApplyMobRarity:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					MobRarityHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					MobRarityHandler.ClientRecieve(reader);
 				}
 
 				break;

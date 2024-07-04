@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Core.Systems.Networking.Handlers;
 using ReLogic.Content;
+using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
@@ -36,7 +41,7 @@ internal class GuardianAngel : SteelBattleaxe
 		{
 			if (npc.CanBeChasedBy() && npc.DistanceSQ(player.Center) < 400 * 400)
 			{
-				npc.GetGlobalNPC<AngelRingNPC>().ApplyRing(player.whoAmI);
+				npc.GetGlobalNPC<AngelRingNPC>().ApplyRing(npc, player.whoAmI);
 			}
 		}
 
@@ -46,7 +51,7 @@ internal class GuardianAngel : SteelBattleaxe
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		target.GetGlobalNPC<AngelRingNPC>().ApplyRing(player.whoAmI);
+		target.GetGlobalNPC<AngelRingNPC>().ApplyRing(target, player.whoAmI);
 	}
 
 	public override List<ItemAffix> GenerateAffixes()
@@ -81,6 +86,20 @@ internal class GuardianAngel : SteelBattleaxe
 		private int _ringTime = 0;
 		private int _lastPlayerWhoAmI = 0;
 
+		//public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+		//{
+		//	binaryWriter.Write((short)_ringTime);
+		//	binaryWriter.Write((byte)_ringCount);
+		//	binaryWriter.Write((byte)_lastPlayerWhoAmI);
+		//}
+
+		//public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+		//{
+		//	_ringTime = binaryReader.ReadInt16();
+		//	_ringCount = binaryReader.ReadByte();
+		//	_lastPlayerWhoAmI = binaryReader.ReadByte();
+		//}
+
 		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
 		{
 			return !entity.friendly && !entity.townNPC;
@@ -105,11 +124,16 @@ internal class GuardianAngel : SteelBattleaxe
 			}
 		}
 
-		public void ApplyRing(int playerWho)
+		public void ApplyRing(NPC npc, int playerWho, bool fromNet = false)
 		{
 			_ringCount++;
 			_ringTime = 5 * 60;
 			_lastPlayerWhoAmI = playerWho;
+
+			if (Main.netMode != NetmodeID.SinglePlayer && !fromNet)
+			{
+				SyncGuardianAngelHandler.Send((byte)playerWho, (short)npc.whoAmI);
+			}
 		}
 
 		private void DoLightBeam(NPC npc)
