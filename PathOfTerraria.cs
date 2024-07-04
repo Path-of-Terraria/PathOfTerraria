@@ -27,12 +27,12 @@ public class PathOfTerraria : Mod
 		{
 			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 		}
-		
-		Gear.GenerateItemList();
+
+		Core.PoTItem.GenerateItemList();
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
 	{
-		Networking.HandlePacket(reader, whoAmI);
+		Networking.HandlePacket(reader);
 	}
 }

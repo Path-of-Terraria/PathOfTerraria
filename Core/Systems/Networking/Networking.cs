@@ -12,7 +12,7 @@ internal static class Networking
 		SetHotbarPotionUse,
 	}
 
-	internal static void HandlePacket(BinaryReader reader, int whoAmI)
+	internal static void HandlePacket(BinaryReader reader)
 	{
 		var message = (Message)reader.ReadByte();
 
