@@ -15,7 +15,11 @@ using TextCopy;
 using Microsoft.Xna.Framework.Input;
 using Terraria.GameContent.UI.Elements;
 using log4net.Core;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
 using Stubble.Core.Classes;
+using Terraria.DataStructures;
+using System.IO;
 
 namespace PathOfTerraria.Core;
 
@@ -49,14 +53,8 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 	}
 }
 
-internal abstract class PoTItem : ModItem
+public abstract class PoTItem : ModItem
 {
-	/// <summary>
-	/// Spawns a random piece of armor at the given position.
-	/// </summary>
-	private static readonly MethodInfo SpawnItemMethod =
-		typeof(PoTItem).GetMethod("SpawnItem", BindingFlags.Public | BindingFlags.Static);
-
 	private static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
 	// <Drop chance, item rarity, type of item>
 
@@ -504,7 +502,10 @@ internal abstract class PoTItem : ModItem
 			cumulativeChance += ApplyRarityModifier(item.Item1, dropRarityModifier);
 			if (choice < cumulativeChance)
 			{
-				SpawnItemMethod.MakeGenericMethod(item.Item3).Invoke(null, [pos, ilevel, item.Item2]);
+				// Spawn the item
+				string itemName = (Activator.CreateInstance(item.Item3) as ModItem).Name;
+				int itemType = ModLoader.GetMod("PathOfTerraria").Find<ModItem>(itemName).Type;
+				SpawnItem(itemType, pos, ilevel, item.Item2);
 				return;
 			}
 		}
@@ -515,16 +516,41 @@ internal abstract class PoTItem : ModItem
 	/// </summary>
 	/// <typeparam name="T">The type of gear to drop</typeparam>
 	/// <param name="pos">Where to drop it in the world</param>
-	/// <param name="ilevel">The item level of the item to spawn</param>
+	/// <param name="itemLevel">The item level of the item to spawn</param>
 	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
-	public static void SpawnItem<T>(Vector2 pos, int ilevel = 0, Rarity rarity = Rarity.Normal) where T : PoTItem
+	public static void SpawnItem<T>(Vector2 pos, int itemLevel = 0, Rarity rarity = Rarity.Normal) where T : PoTItem
 	{
-		var item = new Item();
-		item.SetDefaults(ModContent.ItemType<T>());
-		T gear = item.ModItem as T;
+		SpawnItem(ModContent.ItemType<T>(), pos, itemLevel, rarity);
+	}
+
+	/// <summary>
+	/// Spawns a random piece of gear of the given base type at the given position
+	/// </summary>
+	/// <typeparam name="T">The type of gear to drop</typeparam>
+	/// <param name="pos">Where to drop it in the world</param>
+	/// <param name="itemLevel">The item level of the item to spawn</param>
+	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
+	public static void SpawnItem(int type, Vector2 pos, int itemLevel = 0, Rarity rarity = Rarity.Normal)
+	{
+		var item = new Item(type);
+		var gear = item.ModItem as PoTItem;
+
+		if (gear.IsUnique)
+		{
+			rarity = Rarity.Unique;
+		}
+
 		gear.Rarity = rarity;
-		gear.Roll(ilevel == 0 ? PickItemLevel() : ilevel);
-		Item.NewItem(null, pos, Vector2.Zero, item);
+		gear.Roll(itemLevel == 0 ? PickItemLevel() : itemLevel);
+
+		if (Main.netMode == NetmodeID.SinglePlayer)
+		{
+			Item.NewItem(null, pos, Vector2.Zero, item);
+		}
+		else if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"), item);
+		}
 	}
 
 	/// <summary>
@@ -783,6 +809,26 @@ internal abstract class PoTItem : ModItem
 		tag["affixes"] = affixTags;
 	}
 
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((byte)ItemType);
+		writer.Write((byte)Rarity);
+		writer.Write((byte)Influence);
+
+		writer.Write((byte)_implicits);
+
+		writer.Write(_name); // unsure if this is neccecary...
+		// we should probably save the name as 'GeneratePrefix-ID (Item.Name can probably be omitted) GenerateSuffix-ID'
+		writer.Write((byte)InternalItemLevel);
+
+		writer.Write((byte)Affixes.Count);
+
+		foreach (ItemAffix affix in Affixes)
+		{
+			affix.NetSend(writer);
+		}
+	}
+
 	public override void LoadData(TagCompound tag)
 	{
 		ItemType = (ItemType)tag.GetInt("type");
@@ -809,7 +855,29 @@ internal abstract class PoTItem : ModItem
 		PostRoll();
 	}
 
-	public virtual int GetAffixCount(Rarity rarity)
+	public override void NetReceive(BinaryReader reader)
+	{
+		ItemType = (ItemType)reader.ReadByte();
+		Rarity = (Rarity)reader.ReadByte();
+		Influence = (Influence)reader.ReadByte();
+
+		_implicits = reader.ReadByte();
+
+		_name = reader.ReadString();
+		InternalItemLevel = reader.ReadByte();
+
+		int affixes = reader.ReadByte();
+
+		Affixes.Clear();
+		for (int i = 0; i <  affixes; i++)
+		{
+			Affixes.Add(Affix.FromBReader(reader));
+		}
+
+		PostRoll();
+	}
+
+	public virtual int GetAffixCount()
 	{
 		return Rarity switch
 		{
@@ -826,20 +894,30 @@ internal abstract class PoTItem : ModItem
 	{
 		Affixes = GenerateImplicits();
 
-		_implicits = Affixes.Count();
-
-		List<ItemAffix> possible = AffixHandler.GetAffixes(this);
-
-		if (possible is not null)
+		_implicits = Affixes.Count;
+		for (int i = 0; i < GetAffixCount(); i++)
 		{
-			int AffixCount = GetAffixCount(Rarity);
-
-			Affixes.AddRange(Affix.GenerateAffixes(possible, AffixCount));
+			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(ItemType);
+			if (chosenAffix is null)
+			{
+				continue;
+			}
+			
+			ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
+			if (affix is null)
+			{
+				continue;
+			}
+			
+			affix.Value = AffixRegistry.GetRandomAffixValue(affix, ItemLevel);
+			Affixes.Add(affix);
 		}
 
-		List<ItemAffix> extraAffixes = GenerateAffixes();
-		extraAffixes.ForEach(a => a.Roll());
-
-		Affixes.AddRange(extraAffixes);
+		if (IsUnique)
+		{
+			List<ItemAffix> uniqueItemAffixes = GenerateAffixes();
+			uniqueItemAffixes.ForEach(a => a.Roll());
+			Affixes.AddRange(uniqueItemAffixes);
+		}
 	}
 }

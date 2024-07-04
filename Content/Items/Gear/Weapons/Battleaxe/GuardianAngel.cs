@@ -2,7 +2,7 @@
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
+using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using ReLogic.Content;
 using Terraria.Localization;
 
@@ -51,19 +51,19 @@ internal class GuardianAngel : SteelBattleaxe
 
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.AddedDamageAffix>();
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;
 		addedDamageAffix.MaxValue = 4;
 		
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.BaseKnockbackItemAffix>();
+		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<BaseKnockbackItemAffix>();
 		addedDamageAffix.MinValue = 0.1f;
 		addedDamageAffix.MaxValue = 0.1f;
 
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.IncreasedAttackSpeedAffix>();
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
 		addedDamageAffix.MinValue = 0.1f;
 		addedDamageAffix.MaxValue = 0.1f;
 
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.AddedKnockbackItemAffix>();
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>();
 		addedDamageAffix.MinValue = 0.1f;
 		addedDamageAffix.MaxValue = 0.1f;
 		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];

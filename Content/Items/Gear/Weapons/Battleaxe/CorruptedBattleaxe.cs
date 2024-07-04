@@ -2,7 +2,7 @@
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
+using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
@@ -58,18 +58,21 @@ internal class CorruptedBattleaxe : IronBattleaxe
 	
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.AddedDamageAffix>();
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;
 		addedDamageAffix.MaxValue = 4;
 		
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.IncreasedDamageAffix>();
-		increasedDamageAffix.Value = 0.1f;
+		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>();
+		increasedDamageAffix.MaxValue = 0.1f;
+		increasedDamageAffix.MinValue = 0.1f;
 		
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.IncreasedAttackSpeedAffix>();
-		attackSpeedAffix.Value = 0.1f;
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
+		attackSpeedAffix.MaxValue = 0.1f;
+		attackSpeedAffix.MinValue = 0.1f;
 		
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.ChanceToApplyArmorShredGearAffix>();
-		armorShredAffix.Value = 1f;
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyArmorShredGearAffix>();
+		armorShredAffix.MaxValue = 0.1f;
+		armorShredAffix.MinValue = 0.05f;
 		armorShredAffix.Duration = 120;
 		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}

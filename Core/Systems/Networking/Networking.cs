@@ -1,65 +1,53 @@
-﻿using PathOfTerraria.Core.Systems.Experience;
+﻿using PathOfTerraria.Core.Systems.Networking.Handlers;
 using System.IO;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems.Networking;
 
-public static class Networking
+internal static class Networking
 {
-	private enum Message
+	public enum Message : byte
 	{
-		SpawnExperienceOrb
+		SpawnExperience,
+		SetHotbarPotionUse,
 	}
 
-	public static void HandlePacket(BinaryReader reader, int sender)
+	internal static void HandlePacket(BinaryReader reader)
 	{
 		var message = (Message)reader.ReadByte();
 
 		switch (message)
 		{
-			case Message.SpawnExperienceOrb:
-				ReceiveSpawnExperienceOrb(reader, sender);
+			case Message.SpawnExperience:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					ExperienceHandler.ServerRecieveExperience(reader);
+				}
+				else
+				{
+					ExperienceHandler.ClientRecieveExperience(reader);
+				}
+
 				break;
+
+			case Message.SetHotbarPotionUse:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					HotbarPotionHandler.ServerRecieveHotbarPotion(reader);
+				}
+				else
+				{
+					HotbarPotionHandler.ClientRecieve(reader);
+				}
+
+				break;
+
 			default:
-				throw new ArgumentOutOfRangeException();
+				throw null;
 		}
 	}
 
-	public static void SendSpawnExperienceOrbs(int sender, int target, int xp, Vector2 spawn, float velocityLength)
-	{
-		if (xp <= 0)
-		{
-			return;
-		}
-
-		ModPacket packet = GetPacket(Message.SpawnExperienceOrb);
-
-		packet.Write((byte)target);
-		packet.Write(xp);
-		packet.WriteVector2(spawn);
-		packet.Write(velocityLength);
-
-		packet.Send(ignoreClient: sender);
-	}
-
-	private static void ReceiveSpawnExperienceOrb(BinaryReader reader, int sender)
-	{
-		byte target = reader.ReadByte();
-		int xp = reader.ReadInt32();
-		Vector2 spawn = reader.ReadVector2();
-		float velocityLength = reader.ReadSingle();
-
-		if (Main.netMode == NetmodeID.Server)
-		{
-			SendSpawnExperienceOrbs(sender, target, xp, spawn, velocityLength);
-		}
-		else
-		{
-			ExperienceTracker.SpawnExperience(xp, spawn, velocityLength, target);
-		}
-	}
-
-	private static ModPacket GetPacket(Message type)
+	internal static ModPacket GetPacket(Message type)
 	{
 		ModPacket packet = PathOfTerraria.Instance.GetPacket();
 		packet.Write((byte)type);

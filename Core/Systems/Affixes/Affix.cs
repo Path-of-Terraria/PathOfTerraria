@@ -1,16 +1,20 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using PathOfTerraria.Data;
+using PathOfTerraria.Data.Models;
+using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
 
-internal abstract class Affix
+public abstract class Affix
 {
 	public float MinValue;
 	public float MaxValue = 1f;
 
 	public float Value = 1f;
-	
+
 	public int Duration = 180; //3 Seconds by default
 	// to a certain degree, none of the above is useable by the MobAffix...
 
@@ -18,7 +22,7 @@ internal abstract class Affix
 	{
 		if (Value == 0)
 		{
-			Value = Main.rand.Next((int)(MinValue * 10), (int)(MaxValue * 10)) / 10f;	
+			Value = (float)(Main.rand.NextDouble() * (MaxValue - MinValue) + MinValue);
 		}
 	}
 
@@ -30,11 +34,27 @@ internal abstract class Affix
 		tag["minValue"] = MinValue;
 	}
 
-	protected void Load(TagCompound tag)
+	public void Load(TagCompound tag)
 	{
 		Value = tag.GetFloat("value");
 		MaxValue = tag.GetFloat("maxValue");
 		MinValue = tag.GetFloat("minValue");
+	}
+
+	public void NetSend(BinaryWriter writer)
+	{
+		writer.Write(AffixHandler.IndexFromItemAffix(this));
+
+		writer.Write(Value);
+		writer.Write(MaxValue);			  // it seems that min and max get swapped here...
+		writer.Write(MinValue);
+	}
+
+	public void NetReceive(BinaryReader reader)
+	{
+		Value = reader.ReadSingle();
+		MaxValue = reader.ReadSingle();
+		MinValue = reader.ReadSingle();
 	}
 
 	public static Affix CreateAffix<T>(float value = -1, float minValue = 0f, float maxValue = 1f)
@@ -72,13 +92,28 @@ internal abstract class Affix
 
 		var affix = (T)Activator.CreateInstance(t);
 
-		if (affix is null)
+		affix.Load(tag);
+		return affix;
+	}
+
+	/// <summary>
+	/// Generates an affix from a binary reader, used on load to re-populate affixes
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	public static ItemAffix FromBReader(BinaryReader reader)
+	{
+		int aId = reader.ReadInt32();
+		Type t = AffixHandler.ItemAffixTypeFromIndex(aId);
+		if (t is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			PathOfTerraria.Instance.Logger.Error($"Could not load affix of internal id {aId}");
 			return null;
 		}
 
-		affix.Load(tag);
+		var affix = (ItemAffix)Activator.CreateInstance(t);
+
+		affix.NetReceive(reader);
 		return affix;
 	}
 
@@ -141,9 +176,27 @@ internal class AffixHandler : ILoadable
 			.Where(proto => (item.ItemType & proto.PossibleTypes) == item.ItemType)
 			.ToList();
 	}
+
 	public static List<ItemAffix> GetAffixes()
 	{
 		return _itemAffixes;
+	}
+
+	public static Type ItemAffixTypeFromIndex(int idx)
+	{
+		return _itemAffixes[idx].GetType();
+	}
+
+	public static int IndexFromItemAffix(Affix affix)
+	{
+		ItemAffix a = _itemAffixes.First(a => affix.GetType() == a.GetType());
+		
+		if (a is null)
+		{
+			return 0;
+		}
+
+		return _itemAffixes.IndexOf(a);
 	}
 
 	/// <summary>
@@ -172,18 +225,19 @@ internal class AffixHandler : ILoadable
 
 			object instance = Activator.CreateInstance(type);
 
-			if (type.IsSubclassOf(typeof(ItemAffix)))
+			switch (instance)
 			{
-				_itemAffixes.Add(instance as ItemAffix);
-				continue;
-			}
-
-			if (type.IsSubclassOf(typeof(MobAffix)))
-			{
-				_mobAffixes.Add(instance as MobAffix);
-				continue;
+				case ItemAffix itemAffix:
+					_itemAffixes.Add(itemAffix);
+					continue;
+				case MobAffix mobAffix:
+					_mobAffixes.Add(mobAffix);
+					break;
 			}
 		}
+
+		_itemAffixes.Sort((a1, a2) => a1.GetType().FullName.CompareTo(a2.GetType().FullName));
+		_mobAffixes.Sort((a1, a2) => a1.GetType().FullName.CompareTo(a2.GetType().FullName));
 	}
 
 	public void Unload()
