@@ -23,7 +23,7 @@ public class SpawnOrbs : ModCommand{
 			return;
 		}
 
-		int[] indices = ExperienceTracker.SpawnExperience((int)xp, caller.Player.Center + new Vector2(100, 100), 6f, caller.Player.whoAmI);
+		int[] indices = ExperienceTracker.SpawnExperience((int)xp, caller.Player.Center + new Vector2(100, 100), Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * 6, caller.Player.whoAmI);
 		caller.Reply($"Spawned {indices.Length} experience orbs!", Color.Green);
 	}
 }

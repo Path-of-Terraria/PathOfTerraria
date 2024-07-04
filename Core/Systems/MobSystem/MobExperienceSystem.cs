@@ -1,6 +1,4 @@
 ﻿using PathOfTerraria.Core.Systems.Experience;
-using System.Linq;
-using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems.MobSystem;
 
@@ -29,24 +27,19 @@ public class MobExperienceSystem : GlobalNPC
 			npcSystem.Rarity
 				switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?
 				{
-					Rarity.Rare => Convert.ToInt32(amount * 1.1) //Rare mobs give 10% increase xp
-					,
-					Rarity.Magic => Convert.ToInt32(amount * 1.05) //Magic mobs give 5% increase xp
-					,
+					Rarity.Rare => Convert.ToInt32(amount * 1.1), //Rare mobs give 10% increase xp
+					Rarity.Magic => Convert.ToInt32(amount * 1.05), //Magic mobs give 5% increase xp
 					_ => amount
 				};
 		
-		foreach (Player player in Main.player.Where(n =>
-			         n.active && Vector2.DistanceSquared(n.Center, npc.Center) < Math.Pow(2000, 2)))
+		foreach (Player player in Main.ActivePlayers)
 		{
-			if (Main.netMode == NetmodeID.SinglePlayer)
+			if (Vector2.DistanceSquared(player.Center, npc.Center) > 2000 * 2000)
 			{
-				ExperienceTracker.SpawnExperience(amount, npc.Center, 6f, player.whoAmI);
+				continue;
 			}
-			else
-			{
-				Networking.Networking.SendSpawnExperienceOrbs(-1, player.whoAmI, amount, npc.Center, 6f);
-			}
+
+			ExperienceTracker.SpawnExperience(amount, npc.Center, Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * 6f, player.whoAmI);
 		}
 	}
 }
