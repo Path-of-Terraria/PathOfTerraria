@@ -1,11 +1,19 @@
 ﻿using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Content.GUI.Quests;
+using PathOfTerraria.Core.Loaders.UILoading;
+using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing;
+
 internal class QuestModPlayer : ModPlayer
 {
+	// ReSharper disable once InconsistentNaming
+	private static ModKeybind ToggleQuestUIKey;
+	
 	// need a list of what npcs start what quests
 	private readonly Dictionary<string, Quest> _enabledQuests = [];
 
@@ -21,7 +29,30 @@ internal class QuestModPlayer : ModPlayer
 		_enabledQuests.Add(quest.Name, quest);
 		_enabledQuests.Add(quest2.Name, quest2);
 	}
+	
+	public override void Load()
+	{
+		if (Main.dedServ)
+		{
+			return;
+		}
 
+		ToggleQuestUIKey = KeybindLoader.RegisterKeybind(Mod, "QuestUIKey", Keys.L);
+	}
+
+	public override void ProcessTriggers(TriggersSet triggersSet)
+	{
+		if (ToggleQuestUIKey.JustPressed)
+		{
+			UILoader.GetUIState<QuestsUIState>().Toggle();
+		}
+	}
+	
+	/// <summary>
+	/// Returns the quest string with return spacing for each quest step completed
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns></returns>
 	public string GetQuestSteps(string name)
 	{
 		return _enabledQuests[name].AllQuestStrings();
