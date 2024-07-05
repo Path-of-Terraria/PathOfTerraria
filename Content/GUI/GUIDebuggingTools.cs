@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Config;
+using Terraria.GameContent;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
@@ -22,8 +23,7 @@ public class GUIDebuggingTools
 		borderColor ??= Color.Red;
 		int borderThickness = 2;
 
-		var pixelTexture = new Texture2D(Main.graphics.GraphicsDevice, 1, 1);
-		pixelTexture.SetData([Color.White]);
+		Texture2D pixelTexture = TextureAssets.MagicPixel.Value;
 		// Draw the top border
 		spriteBatch.Draw(pixelTexture, new Rectangle((int)dimensions.X, (int)dimensions.Y, (int)dimensions.Width, borderThickness), (Color) borderColor);
 		// Draw the bottom border

@@ -18,6 +18,7 @@ public class QuestsUIState : CloseableSmartUi
 	public override int PanelHeight => 1000;
 	public override int LeftPadding => 0;
 	public override int PanelWidth => 750;
+	public override bool IsCentered => true;
 	
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
