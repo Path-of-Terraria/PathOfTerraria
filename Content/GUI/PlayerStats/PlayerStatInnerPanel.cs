@@ -20,8 +20,6 @@ internal class PlayerStatInnerPanel : SmartUIElement
 		Main.blockMouse = true;
 		Main.isMouseLeftConsumedByUI = true;
 		Main.LocalPlayer.mouseInterface = true;
-
-		Main.NewText("egg");
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
