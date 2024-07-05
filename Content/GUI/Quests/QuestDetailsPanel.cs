@@ -54,8 +54,8 @@ internal class QuestDetailsPanel : SmartUIElement
 			}
 
 			var stepUI = new UISelectableQuestStep(step);
-			stepUI.Left.Set(550, 0f);
-			stepUI.Top.Set(205 + index * 22, 0f);
+			stepUI.Left.Set(530, 0f);
+			stepUI.Top.Set(100 + index * 22, 0f);
 			Append(stepUI);
 			index++;
 		}

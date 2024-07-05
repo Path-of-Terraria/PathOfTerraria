@@ -41,7 +41,6 @@ public class QuestsUIState : CloseableSmartUi
 		{
 			IsVisible = false;
 			_questDetails.Remove();
-			Visible = false;
 			return;
 		}
 		
