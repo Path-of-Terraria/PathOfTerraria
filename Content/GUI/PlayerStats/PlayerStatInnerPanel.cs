@@ -15,8 +15,18 @@ internal class PlayerStatInnerPanel : SmartUIElement
 	private UICharacter _drawDummy = null;
 	private int _offset = 0;
 
+	public override void SafeMouseOver(UIMouseEvent evt)
+	{
+		Main.blockMouse = true;
+		Main.isMouseLeftConsumedByUI = true;
+		Main.LocalPlayer.mouseInterface = true;
+
+		Main.NewText("egg");
+	}
+
 	public override void Draw(SpriteBatch spriteBatch)
 	{
+		Main.NewText(Main.blockMouse);
 		_offset = 0;
 		
 		DrawBack(spriteBatch);
@@ -37,6 +47,10 @@ internal class PlayerStatInnerPanel : SmartUIElement
 		DrawSingleStat(spriteBatch, $"Health Potions: {potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}");
 		DrawSingleStat(spriteBatch, $"Mana Potions: {potionPlayer.ManaLeft}/{potionPlayer.MaxMana}");
 		DrawSingleStat(spriteBatch, $"Damage Reduction: {Main.LocalPlayer.endurance:#0.##}%");
+
+#if DEBUG
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.LavenderBlush);
+#endif
 	}
 
 	private void DrawBack(SpriteBatch spriteBatch)

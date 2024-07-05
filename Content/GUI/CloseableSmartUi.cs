@@ -33,7 +33,11 @@ public abstract class CloseableSmartUi : SmartUIState
         base.DrawSelf(spriteBatch);
 #if DEBUG
         GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Purple);
-        GUIDebuggingTools.DrawGuiBorder(spriteBatch, Panel.GetDimensions(), Color.Yellow);
+
+		if (Panel is not null)
+		{
+			GUIDebuggingTools.DrawGuiBorder(spriteBatch, Panel.GetDimensions(), Color.Yellow);
+		}
 #endif
     }
 
