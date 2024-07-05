@@ -13,8 +13,15 @@ public class GUIDebuggingTools
 	/// <param name="spriteBatch"></param>
 	/// <param name="dimensions"></param>
 	/// <param name="borderColor"></param>
-	public static void DrawGuiBorder(SpriteBatch spriteBatch, CalculatedStyle dimensions, Color? borderColor)
+	public static void DrawGuiBorder(SpriteBatch spriteBatch, UIElement element, Color? borderColor)
 	{
+		if (element is null)
+		{
+			return;
+		}
+
+		CalculatedStyle dimensions = element.GetDimensions();
+
 		if (!ModContent.GetInstance<DeveloperConfig>().DrawGuiBorders || Main.LocalPlayer.controlUp)
 		{
 			return;

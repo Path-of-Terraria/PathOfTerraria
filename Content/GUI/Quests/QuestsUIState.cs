@@ -14,6 +14,7 @@ public class QuestsUIState : CloseableSmartUi
 	public const float SelectedOpacity = 0.25f;
 	public const float HoveredOpacity = 0.1f;
 	private UIImageButton _closeButton;
+
 	public override int TopPadding => 0;
 	public override int PanelHeight => 1000;
 	public override int LeftPadding => 0;
@@ -29,7 +30,7 @@ public class QuestsUIState : CloseableSmartUi
 	{
 		base.DrawSelf(spriteBatch);
 #if DEBUG
-		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Green);
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Green);
 #endif
 	}
 

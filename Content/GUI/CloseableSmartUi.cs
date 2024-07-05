@@ -31,9 +31,10 @@ public abstract class CloseableSmartUi : SmartUIState
     protected override void DrawSelf(SpriteBatch spriteBatch)
     {
         base.DrawSelf(spriteBatch);
+
 #if DEBUG
-        GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Purple);
-        GUIDebuggingTools.DrawGuiBorder(spriteBatch, Panel.GetDimensions(), Color.Yellow);
+        GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Purple);
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, Panel, Color.Yellow);
 #endif
     }
 

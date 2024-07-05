@@ -26,7 +26,7 @@ internal class QuestDetailsPanel : SmartUIElement
 			Utils.DrawBorderStringBig(spriteBatch, ViewedQuest.Name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
 		}
 #if DEBUG
-		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Red);
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Red);
 #endif
 		base.Draw(spriteBatch);
 	}
