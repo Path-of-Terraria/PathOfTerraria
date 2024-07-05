@@ -12,7 +12,7 @@ public class CaveRoom
 	public Vector2 Position;
 	public int Size;
 	public int Connections;
-	public List<CaveRoom> AllConnections = new();
+	public List<CaveRoom> AllConnections = [];
 
 	// public bool Spawned = false;
 
@@ -43,10 +43,10 @@ public class CaveSystemWorld : MappingWorld
 	];
 
 	// idk why im using tuples for everything, just too lazy to make a separate class/struct...
-	public static List<Vector2> AvailablePositions = new();
-	public static List<CaveRoom> Rooms = new();
+	public static List<Vector2> AvailablePositions = [];
+	public static List<CaveRoom> Rooms = [];
 	// <pos, size, connections>
-	public static List<Tuple<Vector2, Vector2>> Lines = new();
+	public static List<Tuple<Vector2, Vector2>> Lines = [];
 
 	public static CaveRoom SpawnRoom => Rooms[0];
 	public static CaveRoom BossRoom => Rooms[1];

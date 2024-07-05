@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.Questing;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
@@ -9,15 +8,28 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests;
 
-public class QuestsUIState : DraggableSmartUi
+public class QuestsUIState : CloseableSmartUi
 {
 	private QuestDetailsPanel _questDetails;
-	public const float SELECTED_OPACITY = 0.25f;
-	public const float HOVERED_OPACITY = 0.1f;
+	public const float SelectedOpacity = 0.25f;
+	public const float HoveredOpacity = 0.1f;
+	private UIImageButton _closeButton;
+	public override int TopPadding => 0;
+	public override int PanelHeight => 1000;
+	public override int LeftPadding => 0;
+	public override int PanelWidth => 750;
 	
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+	}
+	
+	protected override void DrawSelf(SpriteBatch spriteBatch)
+	{
+		base.DrawSelf(spriteBatch);
+#if DEBUG
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Green);
+#endif
 	}
 
 	public override int DepthPriority => 2;
@@ -28,46 +40,44 @@ public class QuestsUIState : DraggableSmartUi
 		{
 			IsVisible = false;
 			_questDetails.Remove();
+			Visible = false;
 			return;
 		}
-
-		if (!HasChild(_questDetails))
+		
+		base.CreateMainPanel(false, null, false);
+		RemoveAllChildren();
+		List<Quest> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
+		if (quests.Count > 0)
 		{
-			RemoveAllChildren();
-			List<Quest> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
-			if (quests.Count > 0)
+			_questDetails = new QuestDetailsPanel
 			{
-				_questDetails = new QuestDetailsPanel
-				{
-					Width = StyleDimension.FromPixels(1000),
-					Height = StyleDimension.FromPixels(750),
-					HAlign = 0.5f,
-					VAlign = 0.5f,
-					ViewedQuest = quests.First()
-				};
-				if (_questDetails.ViewedQuest != null)
-				{
-					Append(_questDetails);
-					_questDetails.PopulateQuestSteps();
-				}    
-			}
-
-			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
-			CloseButton.Left.Set(GetCloseButtonLeft(), 0.73f);
-			CloseButton.Top.Set(GetCloseButtonTop(), 0f);
-			CloseButton.Width.Set(38, 0);
-			CloseButton.Height.Set(38, 0);
-			CloseButton.OnLeftClick += (a, b) =>
-			{
-				IsVisible = false;
-				SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+				Width = StyleDimension.FromPercent(1),
+				Height = StyleDimension.FromPercent(1),
+				ViewedQuest = quests.First()
 			};
-			CloseButton.SetVisibility(1, 1);
-
-			Append(CloseButton);
+			if (_questDetails.ViewedQuest != null)
+			{
+				Append(_questDetails);
+				_questDetails.PopulateQuestSteps();
+			}    
 		}
 
+		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
+		_closeButton.Left.Set(GetCloseButtonLeft(), 0.73f);
+		_closeButton.Top.Set(GetCloseButtonTop(), 0f);
+		_closeButton.Width.Set(38, 0);
+		_closeButton.Height.Set(38, 0);
+		_closeButton.OnLeftClick += (a, b) =>
+		{
+			IsVisible = false;
+			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+		};
+		_closeButton.SetVisibility(1, 1);
+		Append(_questDetails);
+		Append(_closeButton);
+
 		IsVisible = true;
+		Visible = true;
 		DrawQuests();
 	}
 	

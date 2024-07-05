@@ -82,7 +82,7 @@ internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
 	{
 		tag.Add("completed", _completed);
 
-		List<TagCompound> subStepTags = new List<TagCompound>();
+		List<TagCompound> subStepTags = [];
 		foreach (QuestStep step in postTrackQuests)
 		{
 			var newTag = new TagCompound();

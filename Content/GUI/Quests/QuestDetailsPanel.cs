@@ -18,14 +18,16 @@ internal class QuestDetailsPanel : SmartUIElement
 		{
 			Utils.DrawBorderStringBig(spriteBatch, ViewedQuest.Name, GetRectangle().Center() + GetQuestNamePosition(), Color.White, 0.5f, 0.5f, 0.35f);
 		}
-
+#if DEBUG
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Red);
+#endif
 		base.Draw(spriteBatch);
 	}
 
 	private void DrawBack(SpriteBatch spriteBatch)
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/QuestBookBackground").Value;
-		spriteBatch.Draw(tex, GetRectangle().Center() + GetBackPosition(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 	}
 	
 	private static Vector2 GetQuestNamePosition()
@@ -38,19 +40,6 @@ internal class QuestDetailsPanel : SmartUIElement
 			//1440p+
 			>= 1440 => new Vector2(225, -225),
 			_ => new Vector2(175, -320)
-		};
-	}
-	
-	private static Vector2 GetBackPosition()
-	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
-		{
-			//4k or 4k Wide
-			>= 2160 => new Vector2(200, 200),
-			//1440p+
-			>= 1440 => new Vector2(100, 100),
-			_ => new Vector2(0, 0)
 		};
 	}
 	

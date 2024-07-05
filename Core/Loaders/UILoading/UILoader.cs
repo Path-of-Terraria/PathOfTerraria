@@ -13,12 +13,12 @@ class UILoader : ModSystem
 	/// <summary>
 	/// The collection of automatically craetaed UserInterfaces for SmartUIStates.
 	/// </summary>
-	public static List<UserInterface> UserInterfaces = new();
+	public static List<UserInterface> UserInterfaces = [];
 
 	/// <summary>
 	/// The collection of all automatically loaded SmartUIStates.
 	/// </summary>
-	public static List<SmartUIState> UIStates = new();
+	public static List<SmartUIState> UIStates = [];
 
 	/// <summary>
 	/// Uses reflection to scan through and find all types extending SmartUIState that arent abstract, and loads an instance of them.
@@ -30,8 +30,8 @@ class UILoader : ModSystem
 			return;
 		}
 
-		UserInterfaces = new List<UserInterface>();
-		UIStates = new List<SmartUIState>();
+		UserInterfaces = [];
+		UIStates = [];
 
 		foreach (Type t in Mod.Code.GetTypes())
 		{

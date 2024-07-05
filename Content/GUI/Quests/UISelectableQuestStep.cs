@@ -13,8 +13,8 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 	public UISelectableQuestStep(QuestStep step)
 	{
 		DrawFilled = true;
-		SelectedFillColour = new Color(102, 86, 67) * QuestsUIState.SELECTED_OPACITY;
-		HoverFillColour = new Color(102, 86, 67) * QuestsUIState.HOVERED_OPACITY;
+		SelectedFillColour = new Color(102, 86, 67) * QuestsUIState.SelectedOpacity;
+		HoverFillColour = new Color(102, 86, 67) * QuestsUIState.HoveredOpacity;
 		Height.Set(22f, 0f);
 		Width.Set(325, 0f);
 
