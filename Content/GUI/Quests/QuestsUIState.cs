@@ -45,8 +45,8 @@ public class QuestsUIState : CloseableSmartUi
 			return;
 		}
 		
-		base.CreateMainPanel(false, null, false);
 		RemoveAllChildren();
+		base.CreateMainPanel(false, new Point(970, 715), false, true);
 		List<Quest> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
 		if (quests.Count > 0)
 		{
@@ -58,14 +58,14 @@ public class QuestsUIState : CloseableSmartUi
 			};
 			if (_questDetails.ViewedQuest != null)
 			{
-				Append(_questDetails);
+				Panel.Append(_questDetails);
 				_questDetails.PopulateQuestSteps();
 			}    
 		}
 
 		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
-		_closeButton.Left.Set(GetCloseButtonLeft(), 0.73f);
-		_closeButton.Top.Set(GetCloseButtonTop(), 0f);
+		_closeButton.Left.Set(0, 0.73f);
+		_closeButton.Top.Set(0, 0f);
 		_closeButton.Width.Set(38, 0);
 		_closeButton.Height.Set(38, 0);
 		_closeButton.OnLeftClick += (a, b) =>
@@ -74,12 +74,12 @@ public class QuestsUIState : CloseableSmartUi
 			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 		};
 		_closeButton.SetVisibility(1, 1);
-		Append(_questDetails);
-		Append(_closeButton);
+		Panel.Append(_closeButton);
 
 		IsVisible = true;
 		Visible = true;
 		DrawQuests();
+		Recalculate();
 	}
 	
 	private void DrawQuests()
@@ -89,63 +89,11 @@ public class QuestsUIState : CloseableSmartUi
 		foreach (Quest quest in player.GetAllQuests())
 		{
 			UISelectableQuest selectableQuest = new(quest, this);
-			selectableQuest.Left.Set(GetQuestNameLeft(), 0);
-			selectableQuest.Top.Set(GetQuestNameTop() + offset, 0);
+			selectableQuest.Left.Set(0, 0.15f);
+			selectableQuest.Top.Set(120 + offset, 0);
 			_questDetails.Append(selectableQuest);
 			offset += 22;
 		}
-	}
-
-	private static float GetQuestNameLeft()
-	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
-		{
-			//4k or 4k Wide
-			>= 2160 => 360,
-			//1440p+
-			>= 1440 => 250,
-			_ => 150
-		};
-	}
-	
-	private static float GetQuestNameTop()
-	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
-		{
-			//4k or 4k Wide
-			>= 2160 => 325,
-			//1440p+
-			>= 1440 => 250,
-			_ => 130
-		};
-	}
-	
-	private static float GetCloseButtonTop()
-	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
-		{
-			//4k or 4k Wide
-			>= 2160 => 330,
-			//1440p+
-			>= 1440 => 235,
-			_ => 135
-		};
-	}
-	
-	private static float GetCloseButtonLeft()
-	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
-		{
-			//4k or 4k Wide
-			>= 2160 => 200,
-			//1440p+
-			>= 1440 => 100,
-			_ => 0
-		};
 	}
 
 	public void SelectQuest(Quest quest)

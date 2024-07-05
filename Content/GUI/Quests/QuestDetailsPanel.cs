@@ -11,12 +11,19 @@ internal class QuestDetailsPanel : SmartUIElement
 
 	public override string TabName => "QuestBookMenu";
 
+	public override void SafeMouseOver(UIMouseEvent evt)
+	{
+		Main.blockMouse = true;
+		Main.isMouseLeftConsumedByUI = true;
+		Main.LocalPlayer.mouseInterface = true;
+	}
+
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		DrawBack(spriteBatch);
 		if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() != 0)
 		{
-			Utils.DrawBorderStringBig(spriteBatch, ViewedQuest.Name, GetRectangle().Center() + GetQuestNamePosition(), Color.White, 0.5f, 0.5f, 0.35f);
+			Utils.DrawBorderStringBig(spriteBatch, ViewedQuest.Name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
 		}
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Red);
@@ -30,45 +37,6 @@ internal class QuestDetailsPanel : SmartUIElement
 		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 	}
 	
-	private static Vector2 GetQuestNamePosition()
-	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
-		{
-			//4k or 4k Wide
-			>= 2160 => new Vector2(325, -130),
-			//1440p+
-			>= 1440 => new Vector2(225, -225),
-			_ => new Vector2(175, -320)
-		};
-	}
-	
-	private static float GetQuestStepLeft()
-	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
-		{
-			//4k or 4k Wide
-			>= 2160 => 740,
-			//1440p+
-			>= 1440 => 640,
-			_ => 550
-		};
-	}
-	
-	private static float GetQuestStepTop()
-	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
-		{
-			//4k or 4k Wide
-			>= 2160 => 325,
-			//1440p+
-			>= 1440 => 240,
-			_ => 125
-		};
-	}
-
 	private Rectangle GetRectangle()
 	{
 		return Panel.GetDimensions().ToRectangle();
@@ -76,8 +44,8 @@ internal class QuestDetailsPanel : SmartUIElement
 
 	public void PopulateQuestSteps()
 	{
-		int offset = 0;
 		int index = 0;
+
 		foreach (QuestStep step in ViewedQuest.GetSteps())
 		{
 			if (index > ViewedQuest.CurrentQuest)
@@ -86,10 +54,9 @@ internal class QuestDetailsPanel : SmartUIElement
 			}
 
 			var stepUI = new UISelectableQuestStep(step);
-			stepUI.Top.Set(GetQuestStepTop() + offset, 0f);
-			stepUI.Left.Set(GetQuestStepLeft(), 0f);
+			stepUI.Left.Set(550, 0f);
+			stepUI.Top.Set(205 + index * 22, 0f);
 			Append(stepUI);
-			offset += 22;
 			index++;
 		}
 	}

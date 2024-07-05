@@ -23,9 +23,15 @@ public class UICloseablePanel : UIPanel
 	private readonly bool _canResize = true;
 
 	public bool Blocked = true;
+	public bool Visible = true;
 	
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
+		if (!Visible)
+		{
+			return;
+		}
+
 		base.DrawSelf(spriteBatch);
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Blue);
@@ -54,14 +60,6 @@ public class UICloseablePanel : UIPanel
 			closeButton.BackgroundColor.A = 255;
 			_header.Append(closeButton);
 		}
-
-		UIPanel viewArea = new();
-		viewArea.Top.Set(38, 0);
-		viewArea.Width.Set(0, 1f);
-		viewArea.Height.Set(0, 1f);
-		viewArea.BackgroundColor = Color.Transparent;
-		viewArea.BorderColor = Color.Aquamarine;
-		Append(viewArea);
 
 		float left = 0;
 
