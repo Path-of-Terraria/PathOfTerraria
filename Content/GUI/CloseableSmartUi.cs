@@ -41,7 +41,7 @@ public abstract class CloseableSmartUi : SmartUIState
     {
         panelSize ??= new Point(PanelWidth, PanelHeight);
 
-        Panel = new UICloseablePanel(false, false, canResize);
+        Panel = new UICloseablePanel(false, false, canResize, invisible);
 
         if (IsCentered)
         {

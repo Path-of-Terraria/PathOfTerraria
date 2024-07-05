@@ -24,7 +24,7 @@ public class UICloseablePanel : UIPanel
 
 	public bool Blocked = true;
 	public bool Visible = true;
-	
+
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
 		if (!Visible)
@@ -38,7 +38,7 @@ public class UICloseablePanel : UIPanel
 #endif
 	}
 
-	public UICloseablePanel(bool stopItemUse, bool showCloseButton, bool canResize)
+	public UICloseablePanel(bool stopItemUse, bool showCloseButton, bool canResize, bool invisible)
 	{
 		_stopItemUse = stopItemUse;
 
@@ -49,7 +49,11 @@ public class UICloseablePanel : UIPanel
 		_header.Width.Set(0, 0f);
 		_header.Height.Set(0, 0f);
 		_header.BackgroundColor.A = 255;
-		Append(_header);
+
+		if (!invisible)
+		{
+			Append(_header);
+		}
 
 		if (showCloseButton)
 		{

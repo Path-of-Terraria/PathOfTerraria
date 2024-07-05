@@ -64,8 +64,8 @@ public class QuestsUIState : CloseableSmartUi
 		}
 
 		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
-		_closeButton.Left.Set(0, 0.73f);
-		_closeButton.Top.Set(0, 0f);
+		_closeButton.Left.Set(0, 0.83f);
+		_closeButton.Top.Set(40, 0f);
 		_closeButton.Width.Set(38, 0);
 		_closeButton.Height.Set(38, 0);
 		_closeButton.OnLeftClick += (a, b) =>
