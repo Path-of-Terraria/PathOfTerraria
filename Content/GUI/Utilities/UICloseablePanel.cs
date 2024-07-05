@@ -34,7 +34,7 @@ public class UICloseablePanel : UIPanel
 
 		base.DrawSelf(spriteBatch);
 #if DEBUG
-		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Blue);
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Blue);
 #endif
 	}
 

@@ -47,7 +47,7 @@ internal class PlayerStatInnerPanel : SmartUIElement
 		DrawSingleStat(spriteBatch, $"Damage Reduction: {Main.LocalPlayer.endurance:#0.##}%");
 
 #if DEBUG
-		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.LavenderBlush);
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.LavenderBlush);
 #endif
 	}
 

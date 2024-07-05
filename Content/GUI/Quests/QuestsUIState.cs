@@ -30,7 +30,7 @@ public class QuestsUIState : CloseableSmartUi
 	{
 		base.DrawSelf(spriteBatch);
 #if DEBUG
-		GUIDebuggingTools.DrawGuiBorder(spriteBatch, GetDimensions(), Color.Green);
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Green);
 #endif
 	}
 
