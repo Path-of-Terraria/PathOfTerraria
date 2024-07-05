@@ -99,7 +99,7 @@ internal class TreePlayer : ModPlayer
 			tag[passive.ReferenceId.ToString()] = passive.Level;
 			if (passive is JewelSocket jsPassive && jsPassive.Socketed is not null)
 			{
-				TagCompound jewelTag = new TagCompound();
+				TagCompound jewelTag = [];
 				jsPassive.SaveJewel(jewelTag);
 				tag["_" + passive.ReferenceId] = jewelTag;
 			}

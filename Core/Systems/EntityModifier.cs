@@ -118,7 +118,7 @@ public partial class EntityModifier : EntityModifierSegment
 
 	public List<Tuple<string, bool>> GetDifference(EntityModifier other)
 	{
-		List<Tuple<string, bool>> strings = new List<Tuple<string, bool>>();
+		List<Tuple<string, bool>> strings = [];
 
 		if (this == other)
 		{
@@ -197,7 +197,7 @@ public partial class EntityModifier : EntityModifierSegment
 
 	private List<Tuple<string, bool>> GetDifferences(StatModifier m1, StatModifier m2, bool reversed = false)
 	{
-		List<Tuple<string, bool>> differences = new List<Tuple<string, bool>>();
+		List<Tuple<string, bool>> differences = [];
 
 		float baseDiff = m2.Base - m1.Base;
 		if (baseDiff != 0)

@@ -19,7 +19,7 @@ internal class SpawnToBossPass() : GenPass("BossAndSpawnRoomLinking", 1)
 		{
 			float startBossDist = Vector2.Distance(CaveSystemWorld.BossRoom.Position, CaveSystemWorld.Rooms[currentRoom].Position);
 
-			List<Tuple<float, int>> allowed = new();
+			List<Tuple<float, int>> allowed = [];
 
 			for (int i = 0; i < CaveSystemWorld.Rooms.Count; i++)
 			{

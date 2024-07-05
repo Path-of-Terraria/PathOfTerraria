@@ -15,7 +15,7 @@ internal class RemainingRoomLinkingPass() : GenPass("RoomLinking", 1)
 
 		while (true)
 		{
-			List<Tuple<float, int>> allowed = new();
+			List<Tuple<float, int>> allowed = [];
 
 			IEnumerable<CaveRoom> activeRooms = CaveSystemWorld.Rooms.Where(r => r.Connections != 0);
 

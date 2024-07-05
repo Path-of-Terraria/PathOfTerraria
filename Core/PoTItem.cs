@@ -97,7 +97,7 @@ public abstract class PoTItem : ModItem
 	{
 		if (!Keyboard.GetState().PressingShift())
 		{
-			TagCompound tag = new TagCompound();
+			TagCompound tag = [];
 
 			SaveData(tag);
 
@@ -106,7 +106,7 @@ public abstract class PoTItem : ModItem
 #if DEBUG
 		else
 		{
-			TagCompound tag = new TagCompound();
+			TagCompound tag = [];
 
 			SaveData(tag);
 
@@ -201,8 +201,8 @@ public abstract class PoTItem : ModItem
 		EntityModifier currentItemModifier = new EntityModifier();
 		SwapItemModifiers(currentItemModifier);
 
-		List<string> red = new();
-		List<string> green = new();
+		List<string> red = [];
+		List<string> green = [];
 		currentItemModifier.GetDifference(thisItemModifier).ForEach(s =>
 		{
 			if (s.Item2)
