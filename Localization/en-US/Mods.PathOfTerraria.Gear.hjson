@@ -74,6 +74,8 @@ Battleaxe: {
 }
 
 Boomerang: {
+	AltUse: Send the boomerang in a quick spiral around you.
+
 	Prefixes: {
 		0: Spiraling
 		1: Quick
@@ -92,6 +94,8 @@ Boomerang: {
 }
 
 Bow: {
+	AltUse: Charge and fire a significantly stronger and faster shot.
+
 	Prefixes: {
 		0: Swift
 		1: Piercing
@@ -128,6 +132,8 @@ Staff: {
 }
 
 Sword: {
+	AltUse: Summon a spirit from your blade that lunges forward, healing you for 15 health on hitting an enemy.
+
 	Prefixes: {
 		0: Sharp
 		1: Harmonic
@@ -183,6 +189,8 @@ Wand: {
 }
 
 Whip: {
+	AltUse: Whip once in front of and once behind you in quick succession.
+
 	Prefixes: {
 		0: Searing
 		1: Venomous
