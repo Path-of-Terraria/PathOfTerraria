@@ -1,0 +1,4 @@
+Experience: {
+	LevelUp: You've reached level {0}!
+	SkillUp: You have gained 1 skill point. Click the experience bar to open the skill tree.
+}
