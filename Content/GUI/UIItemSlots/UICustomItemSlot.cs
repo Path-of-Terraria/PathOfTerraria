@@ -1,74 +1,142 @@
 using ReLogic.Content;
 using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.UIItemSlots;
 
-/// <summary>
-/// Used to allow items to be inserted. If null, defaults to true
-/// </summary>
-internal delegate bool CanItemBeInsertedDelegate(Item newItem, Item currentItem);
-
-internal class UICustomItemSlot : UIElement
+public class UICustomItemSlot : UIElement
 {
-	internal CanItemBeInsertedDelegate CanItemBeInserted = null;
+	// TODO: Document delegates, callbacks and predicates.
+	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
-	internal virtual Item Item
+	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
+
+	public ItemInsertionPredicate? InsertionCallback;
+
+	// TODO: Implement callbacks.
+	public event ItemInsertionCallback? OnInsertItem;
+	public event ItemInsertionCallback? OnRemoveItem;
+
+	public virtual Item Item
 	{
-		get => _item;
-		set => _item = value;
+		get => item;
+		set => item = value;
 	}
 
-	private Item _item = new();
-	private readonly Asset<Texture2D> _slotBackground;
-	private readonly Color _slotBackgroundColor;
-	private readonly Asset<Texture2D> _slotIcon;
-	private readonly int _itemSlotContext;
-	private readonly float _scale;
+	private Item item = new();
 
-	public UICustomItemSlot(Asset<Texture2D> slotBackground, Asset<Texture2D> slotIcon, Color? slotBackgroundColor = null, int itemSlotContext = ItemSlot.Context.InventoryItem, float scale = 1f)
+	/// <summary>
+	///		The background of the item slot.
+	/// </summary>
+	public readonly UIImage Background;
+	
+	/// <summary>
+	///		The icon of the item slot.
+	/// </summary>
+	public readonly UIImage Icon;
+	
+	/// <summary>
+	///		The color used to render the background of the item slot.
+	/// </summary>
+	/// <remarks>
+	///		Defaults to <see cref="Color.White"/>.
+	/// </remarks>
+	public readonly Color BackgroundColor;
+	
+	/// <summary>
+	///		The context for the item slot.
+	/// </summary>
+	/// <remarks>
+	///		Defaults to <see cref="ItemSlot.Context.InventoryItem"/>.
+	/// </remarks>
+	public readonly int Context;
+	
+	/// <summary>
+	///		The scale of the item slot.
+	/// </summary>
+	/// <remarks>
+	///		Defaults to <c>1f</c>.
+	/// </remarks>
+	public readonly float Scale;
+
+	// TODO: Consider moving initialization logic to OnInitialize.
+	public UICustomItemSlot(Asset<Texture2D> background, Asset<Texture2D> icon, Color? backgroundColor = null, int context = ItemSlot.Context.InventoryItem, float scale = 1f)
 	{
-		_slotBackground = slotBackground;
-		_slotBackgroundColor = slotBackgroundColor ?? Color.White;
-		_slotIcon = slotIcon;
-		_itemSlotContext = itemSlotContext;
-		_scale = scale;
+		BackgroundColor = backgroundColor ?? Color.White;	
+		Context = context;
+		Scale = scale;
 		
-		Width.Set(slotBackground.Width() * scale, 0f);
-		Height.Set(slotBackground.Width() * scale, 0f);
+		Width.Set(background.Width() * scale, 0f);
+		Height.Set(background.Height() * scale, 0f);
+		
+		Background = new UIImage(background)
+		{
+			OverrideSamplerState = SamplerState.PointClamp,
+			Color = BackgroundColor,
+			HAlign = 0.5f,
+			VAlign = 0.5f,
+			Width = StyleDimension.FromPixels(background.Width() * scale),
+			Height = StyleDimension.FromPixels(background.Height() * scale),
+		};
+		
+		Append(Background);
+
+		Icon = new UIImage(icon)
+		{
+			OverrideSamplerState = SamplerState.PointClamp,
+			HAlign = 0.5f,
+			VAlign = 0.5f,
+			Width = StyleDimension.FromPixels(icon.Width() * scale),
+			Height = StyleDimension.FromPixels(icon.Height() * scale)
+		};
+		
+		Background.Append(Icon);
 	}
 
-	internal void ForceSetItem(Item newItem)
+	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Item = newItem ?? new Item();
+		base.Draw(spriteBatch);
+		
+		UpdateInteraction();
+		UpdateSlotIcon();
+		
+		spriteBatch.End();
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
+		
+		ItemSlot.DrawItemIcon(Item, Context, spriteBatch, GetDimensions().Center(), Scale * Item.scale, 32f, Color.White);
+		
+		spriteBatch.End();
+		spriteBatch.Begin();
 	}
 
-	private void HandleInteraction()
+	private void UpdateSlotIcon()
 	{
+		if (Item.IsAir && !Background.HasChild(Icon))
+		{
+			Background.Append(Icon);
+		}
+		else if (!Item.IsAir && Background.HasChild(Icon))
+		{
+			Background.RemoveChild(Icon);
+		}
+	}
+	
+	private void UpdateInteraction() 
+	{
+		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface || InsertionCallback?.Invoke(Main.mouseItem, Item) == false)
+		{
+			return;
+		}
+		
 		Main.CurrentPlayer.mouseInterface = true;
 
 		Item item = Item;
-		ItemSlot.Handle(ref item, _itemSlotContext);
-		Item = item;
-	}
-	
-	protected override void DrawSelf(SpriteBatch spriteBatch)
-	{
-		base.DrawSelf(spriteBatch);
-		
-		if (IsMouseHovering && !PlayerInput.IgnoreMouseInterface && CanItemBeInserted?.Invoke(Main.mouseItem, Item) != false)
-		{
-		    HandleInteraction();
-		}
 
-		Vector2 position = GetDimensions().ToRectangle().TopLeft();
-		spriteBatch.Draw(_slotBackground.Value, position, null, _slotBackgroundColor, 0f, Vector2.Zero, _scale, SpriteEffects.None, 0);
-		if (Item.IsAir)
-		{
-		    spriteBatch.Draw(_slotIcon.Value, position + (_slotBackground.Size() / 2f) * _scale, null, Color.White * 0.35f, 0f, _slotIcon.Size() / 2f, _scale, SpriteEffects.None, 0);
-		}
-		ItemSlot.DrawItemIcon(Item, _itemSlotContext, spriteBatch, GetDimensions().Center(), _scale * Item.scale, 32, Color.White);
+		ItemSlot.Handle(ref item, Context);
+
+		Item = item;
 	}
 }
