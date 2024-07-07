@@ -28,15 +28,18 @@ public class UICustomItemSlot : UIElement
 
 	private Item item = new();
 
+	private readonly Asset<Texture2D> backgroundTexture;
+	private readonly Asset<Texture2D> iconTexture;
+
 	/// <summary>
 	///		The background of the item slot.
 	/// </summary>
-	public readonly UIImage Background;
+	public UIImage Background { get; private set; }
 	
 	/// <summary>
 	///		The icon of the item slot.
 	/// </summary>
-	public readonly UIImage Icon;
+	public UIImage Icon { get; private set; }
 	
 	/// <summary>
 	///		The color used to render the background of the item slot.
@@ -47,7 +50,7 @@ public class UICustomItemSlot : UIElement
 	public readonly Color BackgroundColor;
 	
 	/// <summary>
-	///		The context for the item slot.
+	///		The context of the item slot.
 	/// </summary>
 	/// <remarks>
 	///		Defaults to <see cref="ItemSlot.Context.InventoryItem"/>.
@@ -63,39 +66,53 @@ public class UICustomItemSlot : UIElement
 	public readonly float Scale;
 
 	// TODO: Consider moving initialization logic to OnInitialize.
-	public UICustomItemSlot(Asset<Texture2D> background, Asset<Texture2D> icon, Color? backgroundColor = null, int context = ItemSlot.Context.InventoryItem, float scale = 1f)
+	public UICustomItemSlot(
+		Asset<Texture2D> background,
+		Asset<Texture2D> icon,
+		Color? backgroundColor = null,
+		int context = ItemSlot.Context.InventoryItem,
+		float scale = 1f
+	)
 	{
-		BackgroundColor = backgroundColor ?? Color.White;	
+		backgroundTexture = background;
+		iconTexture = icon;
+		
+		BackgroundColor = backgroundColor ?? Color.White;
 		Context = context;
 		Scale = scale;
+	}
+
+	public override void OnInitialize()
+	{
+		base.OnInitialize();
 		
-		Width.Set(background.Width() * scale, 0f);
-		Height.Set(background.Height() * scale, 0f);
+		Width.Set(backgroundTexture.Width() * Scale, 0f);
+		Height.Set(backgroundTexture.Height() * Scale, 0f);
 		
-		Background = new UIImage(background)
+		Background = new UIImage(backgroundTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
 			Color = BackgroundColor,
 			HAlign = 0.5f,
 			VAlign = 0.5f,
-			Width = StyleDimension.FromPixels(background.Width() * scale),
-			Height = StyleDimension.FromPixels(background.Height() * scale),
+			Width = StyleDimension.FromPixels(backgroundTexture.Width() * Scale),
+			Height = StyleDimension.FromPixels(backgroundTexture.Height() * Scale),
 		};
-		
+
 		Append(Background);
 
-		Icon = new UIImage(icon)
+		Icon = new UIImage(iconTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
 			HAlign = 0.5f,
 			VAlign = 0.5f,
-			Width = StyleDimension.FromPixels(icon.Width() * scale),
-			Height = StyleDimension.FromPixels(icon.Height() * scale)
+			Width = StyleDimension.FromPixels(iconTexture.Width() * Scale),
+			Height = StyleDimension.FromPixels(iconTexture.Height() * Scale)
 		};
-		
+
 		Background.Append(Icon);
 	}
-
+	
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		base.Draw(spriteBatch);
