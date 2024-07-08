@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
+using Terraria.GameContent.RGB;
 
 namespace PathOfTerraria.Core.Mechanics;
 
@@ -19,23 +20,22 @@ public sealed class Experience
 		public const int OrbLargeBlue =    10000;
 	}
 
-	private readonly int _value;
-
-	public Vector2 Center;
-	private Vector2 _velocity;
-
-	private readonly int _target;
-
-	private readonly Queue<Vector2> _oldCenters;
-	private Color[] _collectedTrail;
-
-	public bool Active;
-	public bool Collected;
-	private bool _oldCollected;
-
 	private const int ExtraUpdates = 7;
 
 	public readonly float Rotation;
+
+	private readonly Queue<Vector2> _oldCenters;
+	private readonly int _value;
+	private readonly float _magnitude;
+	private readonly int _target;
+
+	public Vector2 Center;
+	public bool Active;
+	public bool Collected;
+
+	private Vector2 _velocity;
+	private Color[] _collectedTrail;
+	private bool _oldCollected;
 
 	public Experience(int xp, Vector2 startPosition, Vector2 startVelocity, int targetPlayer)
 	{
@@ -48,15 +48,13 @@ public sealed class Experience
 		}
 
 		Center = startPosition;
-		_velocity = startVelocity;
-
-		_target = targetPlayer;
-
-		_oldCenters = new Queue<Vector2>();
-
 		Active = true;
-
 		Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+
+		_velocity = startVelocity;
+		_target = targetPlayer;
+		_magnitude = startVelocity.Length();
+		_oldCenters = new Queue<Vector2>();
 	}
 
 	public Vector2 GetSize()
@@ -143,57 +141,20 @@ public sealed class Experience
 	{
 		Player player = Main.player[_target];
 
-		Vector2 direction = player.DirectionFrom(Center);
+		// Lazily home towards player
+		_velocity += player.DirectionFrom(Center) * 0.1f;
 
-		switch (player.dead)
+		if (_velocity.LengthSquared() > _magnitude * _magnitude) // Cap speed to original magnitude
 		{
-			case false when !Collected:
-				{
-					if (_velocity != Vector2.Zero)
-					{
-						_velocity = _velocity.RotateTowards(direction, MathHelper.ToRadians(270) / 60f / (ExtraUpdates + 1));
-					}
-
-					if (Vector2.DistanceSquared(Center, player.Center) >= Vector2.DistanceSquared(Center + _velocity / (ExtraUpdates + 1), player.Center))
-					{
-						_velocity += Vector2.Normalize(_velocity) * 5f / 60f / (ExtraUpdates + 1);
-
-						const float vel = 30 * 16;
-						if (_velocity.LengthSquared() > vel * vel)
-						{
-							_velocity = Vector2.Normalize(_velocity) * vel;
-						}
-					}
-					else
-					{
-						_velocity *= 1f - 3.57f / 60f / (ExtraUpdates + 1);
-					}
-
-					break;
-				}
-			case true:
-				{
-					//Slow down
-					_velocity *= 1f - 0.37f / 60f;
-
-					if (_velocity.LengthSquared() < 0.5f * 0.5f)
-					{
-						_velocity = Vector2.Zero;
-					}
-
-					break;
-				}
+			_velocity = Vector2.Normalize(_velocity) * _magnitude;
 		}
 
-		if (_oldCenters.Count < 30 * (ExtraUpdates + 1))
-		{
-			_oldCenters.Enqueue(Center);
-		}
-		else
+		if (_oldCenters.Count >= 30 * (ExtraUpdates + 1))
 		{
 			_oldCenters.Dequeue();
-			_oldCenters.Enqueue(Center);
 		}
+
+		_oldCenters.Enqueue(Center);
 
 		Center += _velocity / (ExtraUpdates + 1);
 
