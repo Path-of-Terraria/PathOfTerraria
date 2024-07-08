@@ -58,7 +58,7 @@ internal class BloodOath : Sword
 		sharpAffix.MinValue = 1;
 		sharpAffix.MaxValue = 4;
 		
-		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>();
+		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(); // Add 10% life
 		lifeAffix.MinValue = lifeAffix.MaxValue = lifeAffix.Value = 10f;
 		return [sharpAffix, lifeAffix];
 	}
