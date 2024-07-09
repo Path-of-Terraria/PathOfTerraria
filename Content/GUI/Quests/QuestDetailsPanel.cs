@@ -6,7 +6,6 @@ namespace PathOfTerraria.Content.GUI.Quests;
 
 internal class QuestDetailsPanel : SmartUIElement
 {
-	private UIElement Panel => Parent;
 	public Quest ViewedQuest { get; set; }
 
 	public override string TabName => "QuestBookMenu";
@@ -35,11 +34,6 @@ internal class QuestDetailsPanel : SmartUIElement
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/QuestBookBackground").Value;
 		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
-	}
-	
-	private Rectangle GetRectangle()
-	{
-		return Panel.GetDimensions().ToRectangle();
 	}
 
 	public void PopulateQuestSteps()

@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using PathOfTerraria.Data.Models;
+using PathOfTerraria.Helpers;
 using Terraria.DataStructures;
 using Terraria.Localization;
 
@@ -58,15 +59,8 @@ internal abstract class Passive
 				return _size;
 			}
 
-			Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PassiveFrameSmall", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-
-			if (ModContent.HasAsset($"{PathOfTerraria.ModName}/Assets/Passives/" + InternalIdentifier))
-			{
-				tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Passives/" + InternalIdentifier, ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
-			}
-
-			_size = tex.Size();
-
+			_size = GUIHelper.GetSizeOfTexture($"Assets/Passives/{InternalIdentifier}") ?? GUIHelper.GetSizeOfTexture("Assets/GUI/PassiveFrameSmall") ?? new Vector2();
+				
 			return _size;
 		}
 	}

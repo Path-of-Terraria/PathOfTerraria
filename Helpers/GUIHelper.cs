@@ -96,4 +96,21 @@ internal static class GUIHelper
 
 		return output;
 	}
+
+
+	/// <summary>
+	/// Gets the size of a texture
+	/// </summary>
+	/// <param name="texturePath"></param>
+	/// <returns></returns>
+	public static Vector2? GetSizeOfTexture(string texturePath)
+	{
+		if (!ModContent.HasAsset($"{PathOfTerraria.ModName}/{texturePath}"))
+		{
+			return null;
+		}
+		
+		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/{texturePath}", ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
+		return tex.Size();
+	}
 }

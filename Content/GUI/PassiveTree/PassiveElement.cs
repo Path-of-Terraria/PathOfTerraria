@@ -48,8 +48,6 @@ internal class PassiveElement : SmartUIElement
 		Height.Set(passive.Size.Y, 0);
 	}
 
-	public virtual void DrawOnto(SpriteBatch spriteBatch, Vector2 center) { }
-
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		_passive.Draw(spriteBatch, GetDimensions().Center());

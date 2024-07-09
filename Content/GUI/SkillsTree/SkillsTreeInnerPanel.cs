@@ -1,12 +1,13 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
-using Terraria.UI;
+﻿using PathOfTerraria.Content.Skills.Melee;
+using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Mechanics;
 
 namespace PathOfTerraria.Content.GUI.SkillsTree;
 
 internal class SkillsTreeInnerPanel : SmartUIElement
 {
-	private UIElement Panel => Parent;
 	public override string TabName => "SkillTree";
+	private bool _drewSkills = false;
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
@@ -18,10 +19,25 @@ internal class SkillsTreeInnerPanel : SmartUIElement
 			0.6f,
 			0.5f,
 			0.35f);
+		
+		if (!_drewSkills)
+		{
+			_drewSkills = true;
+			DrawAllSkills();
+		}
 	}
-	
-	public Rectangle GetRectangle()
+
+	private void DrawAllSkills()
 	{
-		return Panel.GetDimensions().ToRectangle();
+		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
+		{
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Skill)))
+			{
+				continue;
+			}
+			
+			var element = new SkillElement((Skill)Activator.CreateInstance(type));
+			Append(element);
+		}
 	}
 }
