@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.GUI.PlayerStats;
 
 internal class PlayerStatUIState : CloseableSmartUi
 {
-	public override int DepthPriority => 2;
+	public override int DepthPriority => 3;
 	public override bool IsCentered => true;
 
 	private PlayerStatInnerPanel statPanel = null;
