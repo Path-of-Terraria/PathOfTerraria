@@ -54,12 +54,8 @@ internal class BloodOath : Sword
 
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
-		sharpAffix.MinValue = 1;
-		sharpAffix.MaxValue = 4;
-		
-		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(); // Add 10% life
-		lifeAffix.MinValue = lifeAffix.MaxValue = lifeAffix.Value = 10f;
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(0, 2, 5);
+		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(0, 10, 10); // Add 10% life
 		return [sharpAffix, lifeAffix];
 	}
 	
