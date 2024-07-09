@@ -13,6 +13,8 @@ public class Tooltip : SmartUIState, ILoadable
 	private static string text = string.Empty;
 	private static string tooltip = string.Empty;
 
+	public override int DepthPriority => 2;
+
 	public override bool Visible => true;
 
 	public void Load(Mod mod)

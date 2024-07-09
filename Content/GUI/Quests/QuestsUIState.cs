@@ -34,7 +34,7 @@ public class QuestsUIState : CloseableSmartUi
 #endif
 	}
 
-	public override int DepthPriority => 2;
+	public override int DepthPriority => 3;
 
 	public void Toggle()
 	{
