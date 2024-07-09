@@ -1,9 +1,14 @@
 Nova: {
 	Name: Nova
-	Description: Create a shockwave around you, dealing damage
+	Description: Create a shockwave around you based on your held magic weapon's damage
 }
 
 Berserk: {
 	Name: Berserk
 	Description: Deal 150% more Damage while taking 5 more damage each time hit
+}
+
+RainOfArrows: {
+	Name: Flurry
+	Description: Shoot a flurry of projectiles based on your held ranged weapon towards the cursor after a short delay
 }
