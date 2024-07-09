@@ -9,21 +9,29 @@ namespace PathOfTerraria.Content.GUI.UIItemSlots;
 
 public class UICustomItemSlot : UIElement
 {
-	// TODO: Document delegates, callbacks and predicates.
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
 	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
 
-	public ItemInsertionPredicate? InsertionCallback;
+	/// <summary>
+	///		Can be used to determine whether an item can be inserted into the slot or not.
+	/// </summary>
+	public ItemInsertionPredicate? InsertionPredicate;
 
-	// TODO: Implement callbacks.
+	/// <summary>
+	///		Can be used to register a callback to execute logic when an item is inserted into the slot.
+	/// </summary>
 	public event ItemInsertionCallback? OnInsertItem;
-	public event ItemInsertionCallback? OnRemoveItem;
 
 	public virtual Item Item
 	{
 		get => item;
-		set => item = value;
+		set
+		{
+			OnInsertItem?.Invoke(value, item);
+			
+			item = value;
+		}
 	}
 
 	private Item item = new();
@@ -134,16 +142,20 @@ public class UICustomItemSlot : UIElement
 		if (Item.IsAir && !Background.HasChild(Icon))
 		{
 			Background.Append(Icon);
+			
+			Recalculate();
 		}
 		else if (!Item.IsAir && Background.HasChild(Icon))
 		{
 			Background.RemoveChild(Icon);
+			
+			Recalculate();
 		}
 	}
 	
 	private void UpdateInteraction() 
 	{
-		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface || InsertionCallback?.Invoke(Main.mouseItem, Item) == false)
+		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface || InsertionPredicate?.Invoke(Main.mouseItem, Item) == false)
 		{
 			return;
 		}
@@ -153,7 +165,7 @@ public class UICustomItemSlot : UIElement
 		Item item = Item;
 
 		ItemSlot.Handle(ref item, Context);
-
+		
 		Item = item;
 	}
 }

@@ -7,6 +7,7 @@ using PathOfTerraria.Content.GUI.UIItemSlots;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Helpers.Extensions;
 using ReLogic.Content;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
@@ -79,17 +80,13 @@ public sealed class NewArmorPage : SmartUIState
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame",
 			AssetRequestMode.ImmediateLoad
 		);
-		
-		var area = new UIElement
-		{
-			HAlign = 1f,
-			VAlign = 0.65f,
-			Width = StyleDimension.FromPixels(frame.Width() * HorizontalSlots + Margin * HorizontalSlots),
-			Height = StyleDimension.FromPixels(frame.Height() * VerticalSlots + Margin * VerticalSlots)
-		};
 
-		Append(area);
-		
+		HAlign = 1f;
+		VAlign = 0.5f;
+
+		Width = StyleDimension.FromPixels(frame.Width() * HorizontalSlots + Margin * HorizontalSlots);
+		Height = StyleDimension.FromPixels(frame.Height() * VerticalSlots + Margin * VerticalSlots);
+
 		Asset<Texture2D> icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Wings",
 			AssetRequestMode.ImmediateLoad
@@ -102,7 +99,7 @@ public sealed class NewArmorPage : SmartUIState
 		wings.HAlign = 0f;
 		wings.VAlign = 0f;
 
-		area.Append(wings);
+		Append(wings);
 		
 		icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Helmet",
@@ -116,7 +113,7 @@ public sealed class NewArmorPage : SmartUIState
 		helmet.HAlign = 0.5f;
 		helmet.VAlign = 0f;
 
-		area.Append(helmet);
+		Append(helmet);
 		
 		icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Necklace",
@@ -130,7 +127,7 @@ public sealed class NewArmorPage : SmartUIState
 		necklace.HAlign = 1f;
 		necklace.VAlign = 0f;
 
-		area.Append(necklace);
+		Append(necklace);
 		
 		icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Left_Hand", 
@@ -144,7 +141,7 @@ public sealed class NewArmorPage : SmartUIState
 		left.HAlign = 0f;
 		left.VAlign = 0.5f;
 
-		area.Append(left);
+		Append(left);
 
 		icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Chest", 
@@ -158,7 +155,7 @@ public sealed class NewArmorPage : SmartUIState
 		chest.HAlign = 0.5f;
 		chest.VAlign = 0.5f;
 
-		area.Append(chest);
+		Append(chest);
 
 		icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Right_Hand", 
@@ -172,7 +169,7 @@ public sealed class NewArmorPage : SmartUIState
 		right.HAlign = 1f;
 		right.VAlign = 0.5f;
 
-		area.Append(right);
+		Append(right);
 		
 		icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring", 
@@ -186,7 +183,7 @@ public sealed class NewArmorPage : SmartUIState
 		leftRing.HAlign = 0f;
 		leftRing.VAlign = 1f;
 
-		area.Append(leftRing);
+		Append(leftRing);
 		
 		icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Legs", 
@@ -200,7 +197,7 @@ public sealed class NewArmorPage : SmartUIState
 		legs.HAlign = 0.5f;
 		legs.VAlign = 1f;
 
-		area.Append(legs);
+		Append(legs);
 		
 		icon = ModContent.Request<Texture2D>(
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring", 
@@ -214,6 +211,6 @@ public sealed class NewArmorPage : SmartUIState
 		rightRing.HAlign = 1f;
 		rightRing.VAlign = 1f;
 
-		area.Append(rightRing);
+		Append(rightRing);
 	}
 }
