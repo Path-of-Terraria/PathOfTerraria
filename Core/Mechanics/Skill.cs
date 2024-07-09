@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader.IO;
+﻿using PathOfTerraria.Content.Skills.Melee;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Mechanics;
 
@@ -24,7 +25,20 @@ public abstract class Skill
 	/// <returns>The newly generated skill.</returns>
 	public static Skill GetAndPrepareSkill(Type type)
 	{
+		if (type is null)
+		{
+			ModContent.GetInstance<PathOfTerraria>().Logger.Error($"Loading Skill not found. Defaulting to Berserk.");
+			return new Berserk();
+		}
+
 		var skill = Activator.CreateInstance(type) as Skill;
+
+		if (skill is null)
+		{
+			ModContent.GetInstance<PathOfTerraria>().Logger.Error($"Skill of type {type} not found. Defaulting to Berserk.");
+			return new Berserk();
+		}
+
 		skill.LevelTo(1);
 		return skill;
 	}

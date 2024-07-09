@@ -24,7 +24,6 @@ internal class PlayerStatInnerPanel : SmartUIElement
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Main.NewText(Main.blockMouse);
 		_offset = 0;
 		
 		DrawBack(spriteBatch);
