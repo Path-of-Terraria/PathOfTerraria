@@ -8,12 +8,14 @@ namespace PathOfTerraria.Content.GUI.SkillsTree;
 internal class SkillElement : UIElement
 {
 	private readonly Skill _skill;
-	
-	public SkillElement(Skill skill)
+
+	public SkillElement(Skill skill, int index)
 	{
 		_skill = skill;
 		Width.Set(skill.Size.X, 0);
 		Height.Set(skill.Size.Y, 0);
+		Top.Set(150, 0);
+		Left.Set(25 + 75 * index, 0);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
