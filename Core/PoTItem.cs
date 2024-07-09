@@ -916,7 +916,12 @@ public abstract class PoTItem : ModItem
 		if (IsUnique)
 		{
 			List<ItemAffix> uniqueItemAffixes = GenerateAffixes();
-			uniqueItemAffixes.ForEach(a => a.Roll());
+			
+			foreach (ItemAffix item in uniqueItemAffixes)
+			{
+				item.Roll();
+			}
+
 			Affixes.AddRange(uniqueItemAffixes);
 		}
 	}

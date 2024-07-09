@@ -9,5 +9,6 @@ internal class IronBattleaxe : Battleaxe
 	{
 		base.Defaults();
 		Item.damage = 16;
+		Item.Size = new Vector2(34);
 	}
 }

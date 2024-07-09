@@ -19,8 +19,8 @@ internal class GuardianAngel : SteelBattleaxe
 	public override void Defaults()
 	{
 		base.Defaults();
-		Item.width = 94;
-		Item.height = 108;
+		Item.width = 54;
+		Item.height = 54;
 	}
 	
 	public override bool AltFunctionUse(Player player)
@@ -41,7 +41,7 @@ internal class GuardianAngel : SteelBattleaxe
 		}
 
 		modPlayer.SetAltCooldown(180, 0);
-		return true;
+		return false;
 	}
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
