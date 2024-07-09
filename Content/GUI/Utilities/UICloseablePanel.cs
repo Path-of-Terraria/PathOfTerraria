@@ -128,18 +128,8 @@ public class UICloseablePanel : UIPanel
 			Recalculate();
 		}
 
-		if (!BlockClickItem.Block)
-		{
-			base.Update(gameTime); // don't remove.
-		}
+		base.Update(gameTime); // don't remove.
 
 		Blocked = Main.blockMouse;
-
-		bool _blockMouse = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
-		if (_blockMouse)
-		{
-			BlockClickItem.Block = true;
-			Main.blockMouse = true;
-		}
 	}
 }

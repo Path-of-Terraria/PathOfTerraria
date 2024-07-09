@@ -2,12 +2,29 @@
 
 namespace PathOfTerraria.Core.Loaders.UILoading;
 
+public class MouseContainedState
+{
+	public bool Left = false;
+	public bool Right = false;
+}
+
 /// <summary>
 /// Wrapper class that enforces Safe interoperability between event listeners and virtual methods for UI elements
 /// </summary>
 public class SmartUIElement : UIElement
 {
 	public virtual string TabName => "";
+	public MouseContainedState MouseContained = new();
+
+	public bool CheckMouseContained()
+	{
+		if (Parent is SmartUIElement p)
+		{
+			return p.CheckMouseContained();
+		}
+
+		return MouseContained.Left || MouseContained.Right;
+	}
 	#region XButton1
 	/// <summary>
 	/// A Safe wrapper around XButton1MouseUp that allows both an override and the OnXButton1MouseUp event to be used together
