@@ -3,6 +3,7 @@ using PathOfTerraria.Core.Systems;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 
@@ -28,6 +29,7 @@ internal abstract class Whip : Gear
 	public abstract WhipDrawData DrawData { get; }
 	public abstract WhipSettings WhipSettings { get; }
 	protected override string GearLocalizationCategory => "Whip";
+	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Whip.AltUse");
 
 	/// <summary>
 	/// Stores a Whip's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.

@@ -8,7 +8,7 @@ public class AltUseUISystem : ModSystem
 {
 	public static AltUseUISystem Instance => ModContent.GetInstance<AltUseUISystem>();
 
-	private static Asset<Texture2D> AltBar = null;
+	private static Asset<Texture2D> AltBar;
 
 	float _fadeBar = 0;
 
@@ -19,8 +19,11 @@ public class AltUseUISystem : ModSystem
 
 	public override void Unload()
 	{
-		AltBar.Dispose();
-		AltBar = null;
+		Main.RunOnMainThread(() =>
+		{
+			AltBar.Dispose();
+			AltBar = null;
+		});
 	}
 
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -61,6 +64,13 @@ public class AltUseUISystem : ModSystem
 		}
 
 		float factor = alt.AltFunctionCooldown / (float)alt.MaxAltCooldown;
+
+		// Check for NaN when the max alt cooldown is 0 (i.e. x/0).
+		if (float.IsNaN(factor))
+		{
+			return;
+		}
+
 		Vector2 center = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + Vector2.UnitY * player.height;
 
 		Main.spriteBatch.Draw(AltBar.Value, center, new Rectangle(0, 0, 52, 14), Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);

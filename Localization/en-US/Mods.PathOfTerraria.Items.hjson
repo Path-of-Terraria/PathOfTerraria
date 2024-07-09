@@ -269,6 +269,18 @@ SteelBattleaxe: {
 GuardianAngel: {
 	DisplayName: Guardian Angel
 	Tooltip: ""
-	AltUseDescription: Right click to apply a ring to nearby enemies
+	AltUseDescription: Right click to apply a holy ring to nearby enemies.
 	Description: Holy light fills you with strength
+}
+
+BloodOath: {
+	DisplayName: Blood Oath
+	Tooltip: ""
+	AltUseDescription:
+		'''
+		Right click to pledge. Every hit does 1 damage to you and adds an Oath to the enemy.
+		Right click again after hitting enemies to heal 5 damage per stack per enemy.
+		'''
+	Description: Teeth fill your peripherals, but dissipate when you focus on them
+	DeathReason: "{0} pledged too much."
 }

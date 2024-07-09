@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
 using System.Collections.Generic;
 using Terraria.ID;
 

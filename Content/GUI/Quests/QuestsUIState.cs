@@ -1,14 +1,38 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Core.Loaders.UILoading;
-using Terraria.Localization;
+using System.Linq;
+using PathOfTerraria.Core.Systems.Questing;
+using Terraria.Audio;
+using Terraria.GameContent.UI.Elements;
+using Terraria.ID;
+using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Quests;
 
-internal class QuestsUIState : DraggableSmartUi
+public class QuestsUIState : CloseableSmartUi
 {
-	private readonly QuestsCompletedInnerPanel _questsCompletedInnerPanel = new();
-	private readonly QuestsInProgressInnerPanel _questsInProgressInnerPanel = new();
-	public override List<SmartUIElement> TabPanels => [_questsInProgressInnerPanel, _questsCompletedInnerPanel];
+	private QuestDetailsPanel _questDetails;
+	public const float SelectedOpacity = 0.25f;
+	public const float HoveredOpacity = 0.1f;
+	private UIImageButton _closeButton;
+
+	public override int TopPadding => 0;
+	public override int PanelHeight => 1000;
+	public override int LeftPadding => 0;
+	public override int PanelWidth => 750;
+	public override bool IsCentered => true;
+	
+	public override int InsertionIndex(List<GameInterfaceLayer> layers)
+	{
+		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+	}
+	
+	protected override void DrawSelf(SpriteBatch spriteBatch)
+	{
+		base.DrawSelf(spriteBatch);
+#if DEBUG
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Green);
+#endif
+	}
 
 	public override int DepthPriority => 2;
 
@@ -17,28 +41,63 @@ internal class QuestsUIState : DraggableSmartUi
 		if (IsVisible)
 		{
 			IsVisible = false;
+			_questDetails.Remove();
 			return;
 		}
-
-		if (Panel is null)
+		
+		RemoveAllChildren();
+		base.CreateMainPanel(false, new Point(970, 715), false, true);
+		List<Quest> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
+		if (quests.Count > 0)
 		{
-			RemoveAllChildren();
-			var localizedTexts = new (string key, LocalizedText text)[]
+			_questDetails = new QuestDetailsPanel
 			{
-			(_questsInProgressInnerPanel.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_questsInProgressInnerPanel.TabName}Tab")),
-			(_questsCompletedInnerPanel.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_questsCompletedInnerPanel.TabName}Tab")),
+				Width = StyleDimension.FromPercent(1),
+				Height = StyleDimension.FromPercent(1),
+				ViewedQuest = quests.First()
 			};
-
-			base.CreateMainPanel(localizedTexts);
-			base.AppendChildren();
+			if (_questDetails.ViewedQuest != null)
+			{
+				Panel.Append(_questDetails);
+				_questDetails.PopulateQuestSteps();
+			}    
 		}
 
+		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
+		_closeButton.Left.Set(0, 0.83f);
+		_closeButton.Top.Set(40, 0f);
+		_closeButton.Width.Set(38, 0);
+		_closeButton.Height.Set(38, 0);
+		_closeButton.OnLeftClick += (a, b) =>
+		{
+			IsVisible = false;
+			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+		};
+		_closeButton.SetVisibility(1, 1);
+		Panel.Append(_closeButton);
+
 		IsVisible = true;
+		Visible = true;
+		DrawQuests();
+		Recalculate();
+	}
+	
+	private void DrawQuests()
+	{
+		int offset = 0;
+		QuestModPlayer player = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
+		foreach (Quest quest in player.GetAllQuests())
+		{
+			UISelectableQuest selectableQuest = new(quest, this);
+			selectableQuest.Left.Set(0, 0.15f);
+			selectableQuest.Top.Set(120 + offset, 0);
+			_questDetails.Append(selectableQuest);
+			offset += 22;
+		}
 	}
 
-	public override void Draw(SpriteBatch spriteBatch)
+	public void SelectQuest(Quest quest)
 	{
-		Recalculate();
-		base.Draw(spriteBatch);
+		_questDetails.ViewedQuest = quest;
 	}
 }

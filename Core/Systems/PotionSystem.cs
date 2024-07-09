@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using PathOfTerraria.Core.Systems.Networking.Handlers;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems;
@@ -38,6 +39,11 @@ internal class PotionSystem : ModPlayer
 
 		SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
 		SoundEngine.PlaySound(SoundID.Item3);
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			HotbarPotionHandler.SendHotbarPotionUse((byte)self.whoAmI, true, (byte)mp.HealingLeft, runLocally: false);
+		}
 	}
 
 	private static void QuickMana(On_Player.orig_QuickMana orig, Player self)
@@ -56,6 +62,11 @@ internal class PotionSystem : ModPlayer
 
 		SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
 		SoundEngine.PlaySound(SoundID.Item3);
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			HotbarPotionHandler.SendHotbarPotionUse((byte)self.whoAmI, false, (byte)mp.ManaLeft, runLocally: false);
+		}
 	}
 
 	public override void ResetEffects()

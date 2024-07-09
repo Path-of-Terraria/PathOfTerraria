@@ -2,7 +2,7 @@
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes.WeaponAffixes;
+using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using ReLogic.Content;
 using Terraria.Localization;
 
@@ -19,8 +19,8 @@ internal class GuardianAngel : SteelBattleaxe
 	public override void Defaults()
 	{
 		base.Defaults();
-		Item.width = 94;
-		Item.height = 108;
+		Item.width = 54;
+		Item.height = 54;
 	}
 	
 	public override bool AltFunctionUse(Player player)
@@ -41,7 +41,7 @@ internal class GuardianAngel : SteelBattleaxe
 		}
 
 		modPlayer.SetAltCooldown(180, 0);
-		return true;
+		return false;
 	}
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
@@ -51,22 +51,18 @@ internal class GuardianAngel : SteelBattleaxe
 
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.AddedDamageAffix>();
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;
 		addedDamageAffix.MaxValue = 4;
-		
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.BaseKnockbackItemAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
 
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<PassiveAffixes.IncreasedAttackSpeedAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
+		attackSpeedAffix.MinValue = 0.1f;
+		attackSpeedAffix.MaxValue = 0.1f;
 
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ModifyHitAffixes.AddedKnockbackItemAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
-		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>();
+		armorShredAffix.MinValue = 0.1f;
+		armorShredAffix.MaxValue = 0.1f;
+		return [addedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}
 
 	internal class AngelRingNPC : GlobalNPC

@@ -22,25 +22,22 @@ internal class TreeState : DraggableSmartUi
 
 	public Vector2 TopLeftTree;
 	public Vector2 BotRightTree;
-	
-	public PlayerClass CurrentDisplayClass = PlayerClass.None;
 
-	public void Toggle(PlayerClass newClass = PlayerClass.None)
+	public void Toggle()
 	{
-		if (newClass == PlayerClass.None || IsVisible)
+		if (IsVisible)
 		{
 			IsVisible = false;
 			return;
 		}
 
-		if (CurrentDisplayClass != newClass)
+		if (_passiveTreeInner == null)
 		{
 			_passiveTreeInner = new();
 			_skillsTreeInner = new();
 
 			TopLeftTree = Vector2.Zero;
 			BotRightTree = Vector2.Zero;
-			CurrentDisplayClass = newClass;
 			var localizedTexts = new (string key, LocalizedText text)[]
 			{
 				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),

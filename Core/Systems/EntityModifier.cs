@@ -7,12 +7,12 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Systems;
 
-internal class EntityModifierSegment
+public class EntityModifierSegment
 {
 	public virtual Dictionary<string, StatModifier> Modifiers => null;
 }
 
-internal partial class EntityModifier : EntityModifierSegment
+public partial class EntityModifier : EntityModifierSegment
 {
 	private static readonly EntityModifier _default = new();
 	public StatModifier MaximumLife = new();
@@ -109,7 +109,7 @@ internal partial class EntityModifier : EntityModifierSegment
 
 	public override Dictionary<string, StatModifier> Modifiers =>
 		typeof(EntityModifier).GetFields().Where(f => f.FieldType == typeof(StatModifier)).ToDictionary(
-			f => ((f.GetCustomAttribute<ReverseTooltip>() is not null) ? "+" : "-") + f.Name,
+			f => ((f.GetCustomAttribute<ReverseTooltip>() is not null) ? "-" : "+") + f.Name,
 			f => (StatModifier)f.GetValue(this));
 
 	private readonly FieldInfo[] _segments =
@@ -118,7 +118,7 @@ internal partial class EntityModifier : EntityModifierSegment
 
 	public List<Tuple<string, bool>> GetDifference(EntityModifier other)
 	{
-		List<Tuple<string, bool>> strings = new List<Tuple<string, bool>>();
+		List<Tuple<string, bool>> strings = [];
 
 		if (this == other)
 		{
@@ -197,7 +197,7 @@ internal partial class EntityModifier : EntityModifierSegment
 
 	private List<Tuple<string, bool>> GetDifferences(StatModifier m1, StatModifier m2, bool reversed = false)
 	{
-		List<Tuple<string, bool>> differences = new List<Tuple<string, bool>>();
+		List<Tuple<string, bool>> differences = [];
 
 		float baseDiff = m2.Base - m1.Base;
 		if (baseDiff != 0)
@@ -209,7 +209,7 @@ internal partial class EntityModifier : EntityModifierSegment
 			}
 
 			bool isPositive = type == "+";
-			differences.Add(new($"{type}{MathF.Round(baseDiff, 2)} base #", reversed ? !isPositive : isPositive));
+			differences.Add(new($"{type}{MathF.Round(baseDiff, 2)} base #", reversed ?isPositive : !isPositive));
 		}
 
 		float addDiff = m2.Additive - m1.Additive;
@@ -222,7 +222,7 @@ internal partial class EntityModifier : EntityModifierSegment
 			}
 
 			bool isPositive = type == "+";
-			differences.Add(new($"{type}{MathF.Round(addDiff * 100f, 2)}% #", reversed ? !isPositive : isPositive));
+			differences.Add(new($"{type}{MathF.Round(addDiff * 100f, 2)}% #", reversed ? isPositive : !isPositive));
 		}
 
 		float multDiff = m2.Multiplicative - m1.Multiplicative;
@@ -249,7 +249,7 @@ internal partial class EntityModifier : EntityModifierSegment
 			}
 
 			bool isPositive = type == "+";
-			differences.Add(new($"{type}{MathF.Round(flatDiff, 2)} flat #", reversed ? !isPositive : isPositive));
+			differences.Add(new($"{type}{MathF.Round(flatDiff, 2)} flat #", reversed ? isPositive : !isPositive));
 		}
 
 		return differences;

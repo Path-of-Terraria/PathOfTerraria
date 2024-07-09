@@ -13,7 +13,7 @@ internal class WoodenSword : Sword
 	public override void Defaults()
 	{
 		base.Defaults();
-		Item.height = 52;
+		Item.Size = new(38);
 		Item.damage = 4;
 		Item.UseSound = SoundID.Item1;
 		ItemType = ItemType.Sword;

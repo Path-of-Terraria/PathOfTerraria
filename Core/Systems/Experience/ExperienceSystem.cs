@@ -1,13 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Core.Systems.Networking.Handlers;
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems.Experience;
 
 // ReSharper disable once ClassNeverInstantiated.Global
-public class ExperienceTracker : ModSystem{
+public class ExperienceTracker : ModSystem
+{
 	private static Mechanics.Experience[] _trackedExp;
 
-	public override void OnWorldLoad(){
+	public override void OnWorldLoad()
+	{
 		_trackedExp = new Mechanics.Experience[1000];
 	}
 
@@ -19,7 +22,8 @@ public class ExperienceTracker : ModSystem{
 		}
 	}
 
-	public override void PostDrawTiles(){
+	public override void PostDrawTiles()
+	{
 		SpriteBatch batch = Main.spriteBatch;
 		batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
@@ -27,14 +31,14 @@ public class ExperienceTracker : ModSystem{
 		Texture2D texture = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Experience").Value;
 		foreach (Mechanics.Experience xp in _trackedExp)
 		{
-			if(xp is null || !xp.Active)
+			if (xp is null || !xp.Active)
 			{
 				continue;
 			}
 
 			Vector2 size = xp.GetSize();
-				
-			if(size == Vector2.Zero || xp.Collected)
+
+			if (size == Vector2.Zero || xp.Collected)
 			{
 				continue;
 			}
@@ -53,16 +57,35 @@ public class ExperienceTracker : ModSystem{
 		}
 	}
 
-	public static int[] SpawnExperience(int xp, Vector2 location, float velocityLength, int targetPlayer){
+	/// <summary>
+	/// Spawns experience for the local player and sends a <see cref="SpawnExpOrbModule"/> to sync it to other clients.
+	/// </summary>
+	/// <param name="xp">The amount of (in value) to spawn. This will automatically be split into many smaller orbs as necessary.</param>
+	/// <param name="location">Location of the orb(s).</param>
+	/// <param name="baseVelocity">The base velocity of the exp. Rotated deterministically per orb for variety.</param>
+	/// <param name="targetPlayer">The player they're aiming for.</param>
+	/// <param name="fromNet">Whether the orb was spawned from net, such to skip sending another <see cref="SpawnExpOrbModule"/>.</param>
+	/// <returns></returns>
+	public static int[] SpawnExperience(int xp, Vector2 location, Vector2 baseVelocity, int targetPlayer, bool fromNet = false)
+	{
 		if (xp <= 0)
 		{
 			return [];
 		}
 
+		if (Main.netMode == NetmodeID.Server && !fromNet) // Syncs the spawn of all orbs - only does so if not from the server
+		{
+			//ExperienceHandler.SendExperience(targetPlayer, xp, location, baseVelocity, true);
+			//return [];
+		}
+
 		List<Mechanics.Experience> spawned = [];
 		int totalLeft = xp;
-		while(totalLeft > 0){
+
+		while (totalLeft > 0)
+		{
 			int toSpawn;
+
 			switch (totalLeft)
 			{
 				case >= Mechanics.Experience.Sizes.OrbLargeBlue:
@@ -103,26 +126,28 @@ public class ExperienceTracker : ModSystem{
 					break;
 			}
 
-			var thing = new Mechanics.Experience(toSpawn, location, Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * velocityLength, targetPlayer);
+			var thing = new Mechanics.Experience(toSpawn, location, baseVelocity.RotatedBy(totalLeft * MathHelper.PiOver2 * 1.22f), targetPlayer);
 			spawned.Add(thing);
 		}
 
 		int[] indices = new int[spawned.Count];
-		for(int i = 0; i < indices.Length; i++)
+		for (int i = 0; i < indices.Length; i++)
 		{
 			indices[i] = InsertExperience(spawned[i]);
 		}
 
-		if (Main.netMode == NetmodeID.MultiplayerClient)
+		if (Main.netMode != NetmodeID.SinglePlayer && !fromNet) // Syncs the spawn of all orbs - only does so if not from the server
 		{
-			Networking.Networking.SendSpawnExperienceOrbs(Main.myPlayer, targetPlayer, xp, location, velocityLength);	
+			ExperienceHandler.SendExperience((byte)targetPlayer, xp, location, baseVelocity, false);
 		}
 
 		return indices;
 	}
 
-	private static int InsertExperience(Mechanics.Experience expNew){
-		for(int i = 0; i < _trackedExp.Length; i++){
+	private static int InsertExperience(Mechanics.Experience expNew)
+	{
+		for (int i = 0; i < _trackedExp.Length; i++)
+		{
 			Mechanics.Experience exp = _trackedExp[i];
 
 			if (exp is not null && exp.Active)

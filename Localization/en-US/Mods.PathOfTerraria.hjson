@@ -7,6 +7,7 @@ Keybinds: {
 	WeaponSwap.DisplayName: Swap Weapons
 	CopyItemInfo.DisplayName: Copy Item Info
 	StatUIKey.DisplayName: Toggle Stat Page
+	QuestUIKey.DisplayName: Quest UI Key
 }
 
 GUI: {
@@ -16,3 +17,12 @@ GUI: {
 	QuestsCompletedTab: Completed
 	PlayerStatsTab: Stats
 }
+
+DeveloperConfig: {
+	DrawGuiBorders: {
+		Label: Draw GUI Borders
+		Tooltip: Draws borders around GUI elements to help with layout debugging.
+	}
+}
+
+Configs.DeveloperConfig.DisplayName: Developer Config

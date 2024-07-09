@@ -1,36 +1,45 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
-using System.Collections.Generic;
-using Terraria.Audio;
+﻿using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.PlayerStats;
 
-internal class PlayerStatUIState : DraggableSmartUi
+internal class PlayerStatUIState : CloseableSmartUi
 {
-	private readonly PlayerStatInnerPanel _mainPanel = new() { Width = StyleDimension.FromPixels(512), Height = StyleDimension.FromPixels(448), HAlign = 0.5f, VAlign = 0.5f };
-	public override List<SmartUIElement> TabPanels => [_mainPanel];
-
 	public override int DepthPriority => 2;
+	public override bool IsCentered => true;
+
+	private PlayerStatInnerPanel statPanel = null;
 
 	public void Toggle()
 	{
 		if (IsVisible)
 		{
 			IsVisible = false;
+			Panel?.Remove();
 			return;
 		}
 
-		if (!HasChild(_mainPanel))
+		if (!HasChild(Panel))
 		{
 			Width = StyleDimension.FromPixels(512);
 			Height = StyleDimension.FromPixels(448);
 			HAlign = 0.5f;
-			VAlign = 0.5f;
+			VAlign = 0.25f;
 
 			RemoveAllChildren();
-			Append(_mainPanel);
+
+			base.CreateMainPanel(false, new Point(512, 448), false, true);
+
+			statPanel = new()
+			{
+				Width = StyleDimension.FromPixels(512),
+				Height = StyleDimension.FromPixels(448),
+				HAlign = 0.5f,
+				VAlign = 0.5f
+			};
+			Panel.Append(statPanel);
 
 			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PlayerStatClose"));
 			CloseButton.Left.Set(-40, 0.8f);
@@ -43,15 +52,15 @@ internal class PlayerStatUIState : DraggableSmartUi
 				SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 			};
 			CloseButton.SetVisibility(1, 1);
-			_mainPanel.Append(CloseButton);
+			statPanel.Append(CloseButton);
 		}
 
 		IsVisible = true;
+		Recalculate();
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Recalculate();
 		base.Draw(spriteBatch);
 
 		CloseButton.Draw(spriteBatch);
