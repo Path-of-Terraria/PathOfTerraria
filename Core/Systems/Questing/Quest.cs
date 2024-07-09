@@ -63,6 +63,11 @@ public abstract class Quest
 		tag.Add("completed", Completed);
 		tag.Add("currentQuest", CurrentQuest);
 
+		if (_activeQuest is null)
+		{
+			return;
+		}
+
 		var newTag = new TagCompound();
 		_activeQuest.Save(newTag);
 		tag.Add("currentQuestTag", newTag);

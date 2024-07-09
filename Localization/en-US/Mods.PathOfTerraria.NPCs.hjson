@@ -1,0 +1,14 @@
+Shop: Shop
+Quest: Quest
+
+Blacksmith: {
+	DisplayName: Thrain Ironfist
+
+	Dialogue: {
+		0: Forged in steel, I am. Care to buy some?
+		1: Sometimes, I miss the caverns. Rock and stone, brother, rock and stone.
+		2: Nothing quite like a blade that cuts through bone like air. Makes sandwiches easy!
+		3: I could easily beat you in an arm wrestle - the exercise of steelforging is effective.
+		Quest: As you can see, some terrible event happened that simply obliterated my forge. What happened? I don't know, I sleep like a rock...anyhow. I'd love some help gathering materials, the town's metal has run dry for a while now. And maybe some wood while you're at it.
+	}
+}
