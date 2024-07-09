@@ -113,7 +113,7 @@ internal class PassiveElement : SmartUIElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		if (!_passive.CanAllocate(Main.LocalPlayer))
+		if (!_passive.CanAllocate(Main.LocalPlayer) || !CheckMouseContained())
 		{
 			return;
 		}
@@ -208,7 +208,7 @@ internal class PassiveElement : SmartUIElement
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
-		if (!_passive.CanDeallocate(Main.LocalPlayer))
+		if (!_passive.CanDeallocate(Main.LocalPlayer) || !CheckMouseContained())
 		{
 			return;
 		}

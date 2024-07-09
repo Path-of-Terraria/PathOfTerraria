@@ -82,25 +82,11 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
 	}
 
-	private bool _blockMouse;
-	private bool _isHovering;
-	private bool _lastState;
-
 	public override void SafeUpdate(GameTime gameTime)
 	{
-		if (Main.mouseLeft && !_lastState)
-		{
-			_blockMouse = Parent.GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
-			_isHovering = GetDimensions().ToRectangle().Contains(Main.mouseX, Main.mouseY);
-		}
-		else if (!Main.mouseLeft)
-		{
-			_blockMouse = _isHovering = false;
-		}
-
 		Vector2 offsetChange = Vector2.Zero;
 
-		if (_isHovering)
+		if (MouseContained.Left)
 		{
 			if (_start == Vector2.Zero)
 			{
@@ -162,8 +148,6 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 		}
 
 		_lineOff += offsetChange;
-
-		_lastState = Main.mouseLeft;
 
 		Recalculate();
 	}
