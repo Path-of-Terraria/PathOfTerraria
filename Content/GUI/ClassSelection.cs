@@ -112,11 +112,11 @@ public class ClassSelection : SmartUIState
 	    switch (playerClass)
 	    {
 		    case PlayerClass.Melee:
-				PoTItem.SpawnItem<WoodenSword>(Main.LocalPlayer.position, 1);
+				ItemSpawner.SpawnItem<WoodenSword>(Main.LocalPlayer.position, 1);
 			    Main.NewText($"Selected Melee class");
 			    break;
 		    case PlayerClass.Magic:
-				PoTItem.SpawnItem<Staff>(Main.LocalPlayer.position, 1);
+				ItemSpawner.SpawnItem<Staff>(Main.LocalPlayer.position, 1);
 			    Main.NewText($"Selected Magic class");
 			    break;
 		    case PlayerClass.Ranged:

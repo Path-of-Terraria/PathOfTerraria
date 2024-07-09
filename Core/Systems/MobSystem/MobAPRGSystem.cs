@@ -95,12 +95,12 @@ internal class MobAprgSystem : GlobalNPC
 		while (rand > 99)
 		{
 			rand -= 100;
-			PoTItem.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+			ItemSpawner.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
 		}
 
 		if (rand < 25) // 10
 		{
-			PoTItem.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+			ItemSpawner.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
 		}
 	}
 

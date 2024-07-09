@@ -53,10 +53,13 @@ public class Blacksmith : ModNPC
 	{
 		if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 		{
-			//Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Adventurer1").Type);
-			//Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Adventurer2").Type);
-			//Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Adventurer3").Type);
-			//Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Adventurer4").Type);
+			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Blacksmith_0").Type);
+
+			for (int i = 0; i < 2; ++i)
+			{
+				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Blacksmith_1").Type);
+				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Blacksmith_2").Type);
+			}
 		}
 	}
 
@@ -110,7 +113,7 @@ public class Blacksmith : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = "Quest";// Language.GetTextValue("Mods.SpiritMod.Quests.QuestBook");
+		button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)

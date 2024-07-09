@@ -17,9 +17,19 @@ internal class QuestModPlayer : ModPlayer
 	// need a list of what npcs start what quests
 	private readonly Dictionary<string, Quest> _enabledQuests = [];
 
+	public void StartQuest<T>() where T : Quest
+	{
+		_enabledQuests.Clear();
+
+		var quest = Activator.CreateInstance(typeof(T)) as Quest;
+		quest.StartQuest(Player);
+		_enabledQuests.Add(quest.Name, quest);
+	}
+
 	public void RestartQuestTest()
 	{
 		_enabledQuests.Clear();
+
 		Quest quest = new TestQuest();
 		Quest quest2 = new TestQuestTwo();
 
