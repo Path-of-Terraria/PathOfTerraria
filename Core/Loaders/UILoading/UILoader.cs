@@ -54,6 +54,16 @@ class UILoader : ModSystem
 			state.UserInterface = userInterface;
 			UserInterfaces?.Add(userInterface);
 		}
+
+		Main.OnResolutionChanged += UpdateUIStateForResolutionChange;
+	}
+
+	private void UpdateUIStateForResolutionChange(Vector2 obj)
+	{
+		foreach (SmartUIState item in UIStates)
+		{
+			item.Recalculate();
+		}
 	}
 
 	public override void Unload()
