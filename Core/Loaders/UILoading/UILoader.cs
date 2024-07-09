@@ -128,10 +128,7 @@ class UILoader : ModSystem
 
 					if (se is not null)
 					{
-						if (_blockAtE is null)
-						{
-							_blockAtE = se;
-						}
+						_blockAtE ??= se;
 
 						_blockAtE.MouseContained.Right = Main.mouseRight;
 						_blockAtE.MouseContained.Left = Main.mouseLeft;
@@ -150,6 +147,7 @@ class UILoader : ModSystem
 			{
 				_blockAtE.MouseContained = new();
 			}
+
 			_blockAtE = null;
 		}
 	}

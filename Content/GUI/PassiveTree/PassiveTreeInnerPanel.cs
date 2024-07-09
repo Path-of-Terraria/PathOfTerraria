@@ -82,10 +82,6 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
 	}
 
-	private bool _blockMouse;
-	private bool _isHovering;
-	private bool _lastState;
-
 	public override void SafeUpdate(GameTime gameTime)
 	{
 		Vector2 offsetChange = Vector2.Zero;
@@ -152,8 +148,6 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 		}
 
 		_lineOff += offsetChange;
-
-		_lastState = Main.mouseLeft;
 
 		Recalculate();
 	}
