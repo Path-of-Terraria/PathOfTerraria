@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Skills.Melee;
+using PathOfTerraria.Helpers;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Mechanics;
@@ -70,6 +71,23 @@ public abstract class Skill
 	public virtual bool CanUseSkill(Player player)
 	{
 		return Timer <= 0 && player.CheckMana(ManaCost);
+	}
+	
+	private Vector2 _size;
+	
+	public Vector2 Size
+	{
+		get
+		{
+			if (_size != Vector2.Zero)
+			{
+				return _size;
+			}
+
+			_size = GUIHelper.GetSizeOfTexture($"Assets/Skills/{GetType().Name}") ?? new Vector2();
+				
+			return _size;
+		}
 	}
 
 	public virtual void LoadData(TagCompound tag)

@@ -27,6 +27,8 @@ internal class TreeState : DraggableSmartUi
 	{
 		if (IsVisible)
 		{
+			RemoveAllChildren(); //Temporary thing to update the GUI when toggling
+			_passiveTreeInner = null;
 			IsVisible = false;
 			return;
 		}
