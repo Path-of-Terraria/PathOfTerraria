@@ -146,8 +146,7 @@ internal class MobAprgSystem : GlobalNPC
 			_ => npc.GivenName
 		};
 
-		MobData mobData = MobRegistry.TryGetMobData(npc.type);
-		if (mobData != null)
+		if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 		{
 			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
 			if (entry != null)
@@ -164,6 +163,12 @@ internal class MobAprgSystem : GlobalNPC
 				}
 			}
 		}
+#if DEBUG
+		else
+		{
+			Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({Lang.GetNPCNameValue(npc.type)})!", Color.Red);
+		}
+#endif
 
 		if (Rarity == Rarity.Normal || Rarity == Rarity.Unique)
 		{
