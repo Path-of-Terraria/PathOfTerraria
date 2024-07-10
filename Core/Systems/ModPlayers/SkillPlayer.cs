@@ -139,6 +139,7 @@ internal class SkillPlayer : ModPlayer
 			if (Skills[i] == null)
 			{
 				Skills[i] = skill;
+				Skills[i].LevelTo(Skills[i].Level);
 				Main.NewText("Skill added successfully.");
 				return true;
 			}
