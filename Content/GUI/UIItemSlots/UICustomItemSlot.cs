@@ -39,6 +39,8 @@ public class UICustomItemSlot : UIElement
 	private readonly Asset<Texture2D> backgroundTexture;
 	private readonly Asset<Texture2D> iconTexture;
 
+	private bool iconActive;
+
 	/// <summary>
 	///		The background of the item slot.
 	/// </summary>
@@ -144,13 +146,24 @@ public class UICustomItemSlot : UIElement
 			Background.Append(Icon);
 			
 			Recalculate();
+
+			iconActive = true;
 		}
 		else if (!Item.IsAir && Background.HasChild(Icon))
 		{
-			Background.RemoveChild(Icon);
-			
-			Recalculate();
+			iconActive = false;
 		}
+
+		Icon.Color = Color.Lerp(Icon.Color, iconActive ? Color.White : Color.Transparent, 0.2f);
+		
+		if (Icon.Color != Color.Transparent)
+		{
+			return;
+		}
+			
+		Background.RemoveChild(Icon);
+
+		Recalculate();
 	}
 	
 	private void UpdateInteraction() 
@@ -164,7 +177,7 @@ public class UICustomItemSlot : UIElement
 
 		Item item = Item;
 
-		ItemSlot.Handle(ref item, Context);
+		ItemSlot.Handle(ref item, ItemSlot.Context.ChestItem);
 		
 		Item = item;
 	}

@@ -92,7 +92,7 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 		
-		var wings = new UICustomItemSlot(frame, icon);
+		var wings = new UIArmorItemSlot(frame, icon);
 
 		wings.SetMargin(Margin);
 
@@ -106,8 +106,8 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 		
-		var helmet = new UICustomItemSlot(frame, icon);
-
+		var helmet = new UIArmorItemSlot(frame, icon);
+		
 		helmet.SetMargin(Margin);
 
 		helmet.HAlign = 0.5f;
@@ -120,7 +120,7 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var necklace = new UICustomItemSlot(frame, icon);
+		var necklace = new UIArmorItemSlot(frame, icon);
 
 		necklace.SetMargin(Margin);
 
@@ -134,7 +134,7 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var left = new UICustomItemSlot(frame, icon);
+		var left = new UIArmorItemSlot(frame, icon);
 
 		left.SetMargin(Margin);
 
@@ -148,7 +148,7 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var chest = new UICustomItemSlot(frame, icon);
+		var chest = new UIArmorItemSlot(frame, icon);
 
 		chest.SetMargin(Margin);
 
@@ -162,7 +162,7 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 		
-		var right = new UICustomItemSlot(frame, icon);
+		var right = new UIArmorItemSlot(frame, icon);
 
 		right.SetMargin(Margin);
 
@@ -176,7 +176,7 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var leftRing = new UICustomItemSlot(frame, icon);
+		var leftRing = new UIArmorItemSlot(frame, icon);
 
 		leftRing.SetMargin(Margin);
 
@@ -190,7 +190,7 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var legs = new UICustomItemSlot(frame, icon);
+		var legs = new UIArmorItemSlot(frame, icon);
 
 		legs.SetMargin(Margin);
 
@@ -204,7 +204,7 @@ public sealed class NewArmorPage : SmartUIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var rightRing = new UICustomItemSlot(frame, icon);
+		var rightRing = new UIArmorItemSlot(frame, icon);
 
 		rightRing.SetMargin(Margin);
 
