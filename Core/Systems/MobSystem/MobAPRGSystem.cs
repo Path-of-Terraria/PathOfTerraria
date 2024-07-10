@@ -59,11 +59,11 @@ internal class MobAprgSystem : GlobalNPC
 
 	public override bool PreAI(NPC npc)
 	{
-		if (!_synced && Rarity != Rarity.Unique && Rarity != Rarity.Normal && Main.netMode == NetmodeID.Server)
-		{
-			MobRarityHandler.Send((short)npc.whoAmI, (byte)Rarity, true);
-			_synced = true;
-		}
+		//if (!_synced && Rarity != Rarity.Unique && Rarity != Rarity.Normal && Main.netMode == NetmodeID.Server)
+		//{
+		//	MobRarityHandler.Send((short)npc.whoAmI, (byte)Rarity, true);
+		//	_synced = true;
+		//}
 
 		bool doRunNormalAi = true;
 		_affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAi(npc));
@@ -143,6 +143,7 @@ internal class MobAprgSystem : GlobalNPC
 			};
 
 			ApplyRarity(npc);
+			npc.netUpdate = true;
 		}
 	}
 
@@ -230,5 +231,10 @@ internal class MobAprgSystem : GlobalNPC
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
 		Rarity = (Rarity)binaryReader.ReadByte();
+
+		if (Rarity != Rarity.Normal && !_synced)
+		{
+			ApplyRarity(npc, true);
+		}
 	}
 }
