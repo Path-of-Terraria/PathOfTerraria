@@ -25,8 +25,6 @@ internal static class Networking
 		/// <c>byte playerWhoAmI, short npcWho, bool runLocally = false</c>
 		/// </summary>
 		SyncGuardianAngelHit,
-
-		ApplyMobRarity,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -70,18 +68,6 @@ internal static class Networking
 				}
 
 				break;
-
-			//case Message.ApplyMobRarity:
-			//	if (Main.netMode == NetmodeID.Server)
-			//	{
-			//		MobRarityHandler.ServerRecieve(reader);
-			//	}
-			//	else
-			//	{
-			//		MobRarityHandler.ClientRecieve(reader);
-			//	}
-
-			//	break;
 
 			default:
 				throw null;

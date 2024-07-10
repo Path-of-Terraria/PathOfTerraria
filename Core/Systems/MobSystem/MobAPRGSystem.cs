@@ -118,7 +118,7 @@ internal class MobAprgSystem : GlobalNPC
 
 	public override void SetDefaults(NPC npc)
 	{
-		if (npc.friendly || npc.boss || Main.gameMenu) //We only want to trigger these changes on hostile non-boss mobs
+		if (npc.friendly || npc.boss || Main.gameMenu) //We only want to trigger these changes on hostile non-boss mobs in-game
 		{
 			return;
 		}
@@ -215,6 +215,8 @@ internal class MobAprgSystem : GlobalNPC
 	{
 		Rarity = (Rarity)binaryReader.ReadByte();
 
+		// Only apply rarity the first time the rarity is sent. 
+		// This may need to be changed if we want variable rarity for some reason.
 		if (Rarity != Rarity.Normal && !_synced)
 		{
 			ApplyRarity(npc);

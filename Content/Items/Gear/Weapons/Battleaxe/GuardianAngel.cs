@@ -82,20 +82,6 @@ internal class GuardianAngel : SteelBattleaxe
 		private int _ringTime = 0;
 		private int _lastPlayerWhoAmI = 0;
 
-		//public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
-		//{
-		//	binaryWriter.Write((short)_ringTime);
-		//	binaryWriter.Write((byte)_ringCount);
-		//	binaryWriter.Write((byte)_lastPlayerWhoAmI);
-		//}
-
-		//public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
-		//{
-		//	_ringTime = binaryReader.ReadInt16();
-		//	_ringCount = binaryReader.ReadByte();
-		//	_lastPlayerWhoAmI = binaryReader.ReadByte();
-		//}
-
 		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
 		{
 			return !entity.friendly && !entity.townNPC;
@@ -147,7 +133,6 @@ internal class GuardianAngel : SteelBattleaxe
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			// Draw rings 
-
 			for (int i = 0; i < 3; i++)
 			{
 				if (_ringCount > i)
@@ -160,7 +145,6 @@ internal class GuardianAngel : SteelBattleaxe
 				}
 
 				// Skip drawing ring if too transparent
-
 				if (_ringFadeIn[i] < 0.01f)
 				{
 					continue;
