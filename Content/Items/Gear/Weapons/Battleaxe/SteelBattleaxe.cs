@@ -9,5 +9,7 @@ internal class SteelBattleaxe : Battleaxe
 	{
 		base.Defaults();
 		Item.damage = 26;
+		Item.width = 40;
+		Item.height = 40;
 	}
 }

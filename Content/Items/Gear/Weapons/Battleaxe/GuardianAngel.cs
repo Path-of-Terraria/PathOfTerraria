@@ -24,8 +24,8 @@ internal class GuardianAngel : SteelBattleaxe
 	public override void Defaults()
 	{
 		base.Defaults();
-		Item.width = 94;
-		Item.height = 108;
+		Item.width = 54;
+		Item.height = 54;
 	}
 	
 	public override bool AltFunctionUse(Player player)
@@ -46,7 +46,7 @@ internal class GuardianAngel : SteelBattleaxe
 		}
 
 		modPlayer.SetAltCooldown(180, 0);
-		return true;
+		return false;
 	}
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
@@ -59,19 +59,15 @@ internal class GuardianAngel : SteelBattleaxe
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;
 		addedDamageAffix.MaxValue = 4;
-		
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<BaseKnockbackItemAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
 
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
+		attackSpeedAffix.MinValue = 0.1f;
+		attackSpeedAffix.MaxValue = 0.1f;
 
 		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
-		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
+		armorShredAffix.MinValue = 0.1f;
+		armorShredAffix.MaxValue = 0.1f;
+		return [addedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}
 
 	internal class AngelRingNPC : GlobalNPC

@@ -1,8 +1,8 @@
-﻿using PathOfTerraria.Content.GUI.Utilities;
-using PathOfTerraria.Core;
+﻿using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
@@ -10,6 +10,7 @@ internal class Sword : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Base";
 	public override float DropChance => 1f;
+	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Sword.AltUse");
 
 	protected override string GearLocalizationCategory => "Sword";
 
@@ -34,8 +35,6 @@ internal class Sword : Gear
 	public override bool AltFunctionUse(Player player)
 	{
 		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
-
-		Console.WriteLine(modPlayer.AltFunctionAvailable + " - " + BlockClickItem.Block);
 
 		// If cooldown is still active, do not allow alt usage.
 		if (!modPlayer.AltFunctionAvailable || !modPlayer.Player.CheckMana(5))

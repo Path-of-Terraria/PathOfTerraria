@@ -1,27 +1,37 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
-using Terraria.UI;
+using PathOfTerraria.Core.Mechanics;
 
 namespace PathOfTerraria.Content.GUI.SkillsTree;
 
 internal class SkillsTreeInnerPanel : SmartUIElement
 {
-	private UIElement Panel => Parent;
 	public override string TabName => "SkillTree";
 
+	private bool _drewSkills;
+	
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Utils.DrawBorderStringBig(
-			spriteBatch, 
-			"Skills - Placeholder",
-			GetRectangle().TopLeft() + new Vector2(138, 150),
-			Color.White,
-			0.6f,
-			0.5f,
-			0.35f);
+		base.Draw(spriteBatch);
+		if (!_drewSkills)
+		{
+			_drewSkills = true;
+			AppendAllSkills();
+		}
 	}
-	
-	public Rectangle GetRectangle()
+
+	private void AppendAllSkills()
 	{
-		return Panel.GetDimensions().ToRectangle();
+		int index = 0;
+		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
+		{
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(Skill)))
+			{
+				continue;
+			}
+			
+			var element = new SkillElement((Skill)Activator.CreateInstance(type), index);
+			Append(element);
+			index += 1;
+		}
 	}
 }

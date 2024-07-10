@@ -11,7 +11,7 @@ public class PassiveRegistry : ILoadable
 	/// <summary>
 	/// A map of MobData objects, with the key being the type from NPC.
 	/// </summary>
-	private static readonly List<PassiveData> Passives = new();
+	private static readonly List<PassiveData> Passives = [];
 	
 	public void Load(Mod mod)
 	{

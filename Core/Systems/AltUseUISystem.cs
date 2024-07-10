@@ -64,11 +64,18 @@ public class AltUseUISystem : ModSystem
 		}
 
 		float factor = alt.AltFunctionCooldown / (float)alt.MaxAltCooldown;
+
+		// Check for NaN when the max alt cooldown is 0 (i.e. x/0).
+		if (float.IsNaN(factor))
+		{
+			return;
+		}
+
 		Vector2 center = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + Vector2.UnitY * player.height;
 
 		Main.spriteBatch.Draw(AltBar.Value, center, new Rectangle(0, 0, 52, 14), Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
 
 		Rectangle barSrc = new Rectangle(4, 14, (int)(44 * factor), 14);
-		//Main.spriteBatch.Draw(AltBar.Value, center + new Vector2(4, 0), barSrc, Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(AltBar.Value, center + new Vector2(4, 0), barSrc, Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿namespace PathOfTerraria.Core.Systems.Questing;
-internal enum QuestTypes
+
+public enum QuestTypes
 {
 	MainStoryQuestAct1,
 	MainStoryQuestAct2,

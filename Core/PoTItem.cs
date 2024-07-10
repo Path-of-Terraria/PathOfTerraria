@@ -55,7 +55,7 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 
 public abstract class PoTItem : ModItem
 {
-	private static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
+	internal static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
 	// <Drop chance, item rarity, type of item>
 
 	private static bool _addedDetour;
@@ -97,7 +97,7 @@ public abstract class PoTItem : ModItem
 	{
 		if (!Keyboard.GetState().PressingShift())
 		{
-			TagCompound tag = new TagCompound();
+			TagCompound tag = [];
 
 			SaveData(tag);
 
@@ -106,7 +106,7 @@ public abstract class PoTItem : ModItem
 #if DEBUG
 		else
 		{
-			TagCompound tag = new TagCompound();
+			TagCompound tag = [];
 
 			SaveData(tag);
 
@@ -201,8 +201,8 @@ public abstract class PoTItem : ModItem
 		EntityModifier currentItemModifier = new EntityModifier();
 		SwapItemModifiers(currentItemModifier);
 
-		List<string> red = new();
-		List<string> green = new();
+		List<string> red = [];
+		List<string> green = [];
 		currentItemModifier.GetDifference(thisItemModifier).ForEach(s =>
 		{
 			if (s.Item2)
@@ -407,7 +407,7 @@ public abstract class PoTItem : ModItem
 		if (InternalItemLevel > 50 && !IsUnique && (ItemType & ItemType.AllGear) == ItemType.AllGear)
 		{
 			int inf = Main.rand.Next(400) - InternalItemLevel;
-			// quality dose not affect influence right now
+			// quality does not affect influence right now
 			// (might not need to, seems to generate plenty often for late game)
 
 			if (inf < 30)
@@ -457,7 +457,7 @@ public abstract class PoTItem : ModItem
 
 	private const float _magicFindPowerDecrease = 100f;
 
-	private static float ApplyRarityModifier(float chance, float dropRarityModifier)
+	internal static float ApplyRarityModifier(float chance, float dropRarityModifier)
 	{
 		// this is just some arbitrary function from chat gpt, modified a little...
 		// it is pretty hard to get all this down when we dont know all the items we will have n such;
@@ -466,91 +466,6 @@ public abstract class PoTItem : ModItem
 		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) /
 		                      (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
 		return powerDecrease;
-	}
-
-	public static void SpawnRandomItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
-	{
-		SpawnRandomItem(pos, x => true, ilevel, dropRarityModifier);
-	}
-
-	public static void SpawnRandomItem(Vector2 pos, Func<Tuple<float, Rarity, Type>, bool> dropCondition,
-		int ilevel = 0, float dropRarityModifier = 0)
-	{
-		ilevel = ilevel == 0 ? PickItemLevel() : ilevel; // Pick the item level if not provided
-		dropRarityModifier += ilevel / 10f; // the effect of item level on "magic find"
-
-		// Filter AllGear based on item level
-		var filteredGear = AllItems.Where(g =>
-		{
-			var gearInstance = Activator.CreateInstance(g.Item3) as PoTItem;
-			return gearInstance != null && gearInstance.MinDropItemLevel <= ilevel;
-		}).ToList();
-
-		// Calculate dropChanceSum based on filtered gear
-		float dropChanceSum = filteredGear.Where(x => dropCondition(x)).Sum((Tuple<float, Rarity, Type> x) =>
-			ApplyRarityModifier(x.Item1, dropRarityModifier));
-		float choice = Main.rand.NextFloat(dropChanceSum);
-
-		float cumulativeChance = 0;
-		foreach (Tuple<float, Rarity, Type> item in filteredGear)
-		{
-			if (!dropCondition(item))
-			{
-				continue;
-			}
-
-			cumulativeChance += ApplyRarityModifier(item.Item1, dropRarityModifier);
-			if (choice < cumulativeChance)
-			{
-				// Spawn the item
-				string itemName = (Activator.CreateInstance(item.Item3) as ModItem).Name;
-				int itemType = ModLoader.GetMod("PathOfTerraria").Find<ModItem>(itemName).Type;
-				SpawnItem(itemType, pos, ilevel, item.Item2);
-				return;
-			}
-		}
-	}
-
-	/// <summary>
-	/// Spawns a random piece of gear of the given base type at the given position
-	/// </summary>
-	/// <typeparam name="T">The type of gear to drop</typeparam>
-	/// <param name="pos">Where to drop it in the world</param>
-	/// <param name="itemLevel">The item level of the item to spawn</param>
-	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
-	public static void SpawnItem<T>(Vector2 pos, int itemLevel = 0, Rarity rarity = Rarity.Normal) where T : PoTItem
-	{
-		SpawnItem(ModContent.ItemType<T>(), pos, itemLevel, rarity);
-	}
-
-	/// <summary>
-	/// Spawns a random piece of gear of the given base type at the given position
-	/// </summary>
-	/// <typeparam name="T">The type of gear to drop</typeparam>
-	/// <param name="pos">Where to drop it in the world</param>
-	/// <param name="itemLevel">The item level of the item to spawn</param>
-	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
-	public static void SpawnItem(int type, Vector2 pos, int itemLevel = 0, Rarity rarity = Rarity.Normal)
-	{
-		var item = new Item(type);
-		var gear = item.ModItem as PoTItem;
-
-		if (gear.IsUnique)
-		{
-			rarity = Rarity.Unique;
-		}
-
-		gear.Rarity = rarity;
-		gear.Roll(itemLevel == 0 ? PickItemLevel() : itemLevel);
-
-		if (Main.netMode == NetmodeID.SinglePlayer)
-		{
-			Item.NewItem(null, pos, Vector2.Zero, item);
-		}
-		else if (Main.netMode == NetmodeID.MultiplayerClient)
-		{
-			Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"), item);
-		}
 	}
 
 	/// <summary>
@@ -916,7 +831,12 @@ public abstract class PoTItem : ModItem
 		if (IsUnique)
 		{
 			List<ItemAffix> uniqueItemAffixes = GenerateAffixes();
-			uniqueItemAffixes.ForEach(a => a.Roll());
+			
+			foreach (ItemAffix item in uniqueItemAffixes)
+			{
+				item.Roll();
+			}
+
 			Affixes.AddRange(uniqueItemAffixes);
 		}
 	}
