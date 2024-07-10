@@ -3,6 +3,7 @@ using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
