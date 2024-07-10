@@ -15,11 +15,11 @@ internal class SkillsTreeInnerPanel : SmartUIElement
 		if (!_drewSkills)
 		{
 			_drewSkills = true;
-			DrawAllSkills();
+			AppendAllSkills();
 		}
 	}
 
-	private void DrawAllSkills()
+	private void AppendAllSkills()
 	{
 		int index = 0;
 		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())

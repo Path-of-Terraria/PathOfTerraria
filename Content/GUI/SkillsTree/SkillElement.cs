@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Mechanics;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -35,11 +36,15 @@ internal class SkillElement : UIElement
 	
 	public override void LeftClick(UIMouseEvent evt)
 	{
+		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
 		Main.NewText("Clicked on " + _skill.Name);
+		skillPlayer.TryAddSkill(_skill);
 	}
 
 	public override void RightClick(UIMouseEvent evt)
 	{
 		Main.NewText("Right Clicked on " + _skill.Name);
+		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
+		skillPlayer.TryRemoveSkill(_skill);
 	}
 }

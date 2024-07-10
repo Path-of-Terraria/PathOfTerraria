@@ -99,7 +99,7 @@ internal static class GUIHelper
 	}
 	
 	/// <summary>
-	/// Gets the size of a texture
+	/// Gets the size of a texture - The mod name is automatically prepended to the texture path.
 	/// </summary>
 	/// <param name="texturePath"></param>
 	/// <returns></returns>
