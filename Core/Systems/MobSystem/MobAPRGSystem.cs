@@ -123,7 +123,7 @@ internal class MobAprgSystem : GlobalNPC
 			return;
 		}
 
-		if (Main.netMode != NetmodeID.MultiplayerClient && npc.CanBeChasedBy())
+		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			Rarity = Main.rand.Next(100) switch
 			{
