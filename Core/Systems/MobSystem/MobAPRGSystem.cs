@@ -1,14 +1,10 @@
 ﻿using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
-using PathOfTerraria.Core.Systems.Networking.Handlers;
 using PathOfTerraria.Data;
 using PathOfTerraria.Data.Models;
 using System.Collections.Generic;
 using System.IO;
-using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.MobSystem;
@@ -18,7 +14,7 @@ internal class MobAprgSystem : GlobalNPC
 	public override bool InstancePerEntity => true;
 
 	public int? Experience;
-	public Rarity Rarity = Rarity.Magic;
+	public Rarity Rarity = Rarity.Normal;
 
 	private readonly Player _lastPlayerHit = null;
 
@@ -59,12 +55,6 @@ internal class MobAprgSystem : GlobalNPC
 
 	public override bool PreAI(NPC npc)
 	{
-		//if (!_synced && Rarity != Rarity.Unique && Rarity != Rarity.Normal && Main.netMode == NetmodeID.Server)
-		//{
-		//	MobRarityHandler.Send((short)npc.whoAmI, (byte)Rarity, true);
-		//	_synced = true;
-		//}
-
 		bool doRunNormalAi = true;
 		_affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAi(npc));
 		return doRunNormalAi;
@@ -133,7 +123,7 @@ internal class MobAprgSystem : GlobalNPC
 			return;
 		}
 
-		if (Main.netMode != NetmodeID.MultiplayerClient)
+		if (Main.netMode != NetmodeID.MultiplayerClient && npc.CanBeChasedBy())
 		{
 			Rarity = Main.rand.Next(100) switch
 			{
@@ -147,10 +137,8 @@ internal class MobAprgSystem : GlobalNPC
 		}
 	}
 
-	public void ApplyRarity(NPC npc, bool fromNet = false)
+	public void ApplyRarity(NPC npc)
 	{
-		Main.NewText(Rarity);
-
 		npc.GivenName = Rarity switch
 		{
 			Rarity.Magic or Rarity.Rare => $"{Enum.GetName(Rarity)} - {npc.GivenOrTypeName}",
@@ -216,11 +204,6 @@ internal class MobAprgSystem : GlobalNPC
 
 		_affixes.ForEach(a => a.PostRarity(npc));
 		_synced = true;
-
-		//if (!fromNet && Main.netMode == NetmodeID.Server)
-		//{
-		//	MobRarityHandler.Send((byte)Main.myPlayer, (short)npc.whoAmI, (byte)Rarity);
-		//}
 	}
 
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
@@ -234,7 +217,7 @@ internal class MobAprgSystem : GlobalNPC
 
 		if (Rarity != Rarity.Normal && !_synced)
 		{
-			ApplyRarity(npc, true);
+			ApplyRarity(npc);
 		}
 	}
 }

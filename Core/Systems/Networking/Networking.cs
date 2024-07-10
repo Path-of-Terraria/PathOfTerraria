@@ -71,17 +71,17 @@ internal static class Networking
 
 				break;
 
-			case Message.ApplyMobRarity:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					MobRarityHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					MobRarityHandler.ClientRecieve(reader);
-				}
+			//case Message.ApplyMobRarity:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		MobRarityHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		MobRarityHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
 			default:
 				throw null;
