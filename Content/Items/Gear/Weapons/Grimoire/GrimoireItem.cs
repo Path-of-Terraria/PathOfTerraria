@@ -1,11 +1,10 @@
 ﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
-using PathOfTerraria.Content.GUI.PlayerStats;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using Terraria.ID;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 
 internal class GrimoireItem : Gear
 {

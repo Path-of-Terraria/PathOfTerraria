@@ -291,3 +291,13 @@ GrimoireItem: {
 	Description: A small books holds big secrets.
 	Tooltip: ""
 }
+
+BatWings: {
+	DisplayName: Bat Wings
+	Tooltip: ""
+}
+
+OwlFeather: {
+	DisplayName: Owl Feather
+	Tooltip: ""
+}
