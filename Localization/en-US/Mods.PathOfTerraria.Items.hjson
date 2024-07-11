@@ -287,5 +287,7 @@ BloodOath: {
 
 GrimoireItem: {
 	DisplayName: Grimoire
-	Tooltip: A small books holds big secrets.
+	AltUseDescription: Right click to open up the Menagerie.
+	Description: A small books holds big secrets.
+	Tooltip: ""
 }

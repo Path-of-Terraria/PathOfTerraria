@@ -1,6 +1,7 @@
-﻿using PathOfTerraria.Content.Buffs;
+﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
+using PathOfTerraria.Content.GUI.PlayerStats;
 using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.Loaders.UILoading;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -10,7 +11,8 @@ internal class GrimoireItem : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Grimoire/{GetType().Name}";
 	public override float DropChance => 1f;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Grimoire.AltUse");
+	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.AltUseDescription");
+	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.Description");
 	protected override string GearLocalizationCategory => "Grimoire";
 
 	public override void Defaults()
@@ -28,5 +30,21 @@ internal class GrimoireItem : Gear
 		Item.UseSound = SoundID.Item1;
 
 		ItemType = ItemType.Magic;
+	}
+
+	public override bool AltFunctionUse(Player player)
+	{
+		return true;
+	}
+
+	public override bool CanUseItem(Player player)
+	{
+		if (player.altFunctionUse == 2)
+		{
+			UILoader.GetUIState<GrimoireSelectionUIState>().Toggle();
+			return false;
+		}
+
+		return true;
 	}
 }
