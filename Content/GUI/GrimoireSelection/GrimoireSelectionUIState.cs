@@ -93,6 +93,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			VAlign = -0.2f
 		};
 		_sacrificePanel.Append(_currentSummon);
+		SetCurrentSummonImage();
 	}
 
 	private static void BuildSummonSelect(UICloseablePanel panel)
@@ -105,10 +106,12 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		panel.Append(mainPanel);
 
-		mainPanel.Append(new UIImage(TextureAssets.Item[ModContent.ItemType<GrimoireItem>()])
+		mainPanel.Append(new UIImage(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GrimoireButton"))
 		{
-			VAlign = -0.1f,
-			HAlign = 0.5f
+			VAlign = -0.24f,
+			HAlign = 0.5f,
+			Width = StyleDimension.FromPixels(64),
+			Height = StyleDimension.FromPixels(64),
 		});
 
 		var gridPanel = new UIPanel()
@@ -295,7 +298,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 		foreach (TooltipLine line in moddedTooltips)
 		{
-			if (line.Text.Trim() == string.Empty)
+			if (line.Text.Trim() == string.Empty || line.FullName == "PathOfTerraria/Name")
 			{
 				continue;
 			}

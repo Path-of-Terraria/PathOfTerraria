@@ -29,3 +29,13 @@ BatSummon: {
 	DisplayName: Bat Summon
 	Description: "{$OwlSummon.Description}"
 }
+
+PoacherSummon: {
+	DisplayName: Poacher Summon
+	Description:
+		'''
+		Chases your cursor
+		Jumps toward your cursor if the cursor is above it
+		Deals damage on contact
+		'''
+}

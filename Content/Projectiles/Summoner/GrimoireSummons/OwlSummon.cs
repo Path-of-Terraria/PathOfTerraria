@@ -54,7 +54,6 @@ internal class OwlSummon : GrimoireSummon
 
 	public override bool OnTileCollide(Vector2 oldVelocity)
 	{
-
 		return false;
 	}
 

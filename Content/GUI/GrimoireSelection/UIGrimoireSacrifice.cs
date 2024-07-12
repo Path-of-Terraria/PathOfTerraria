@@ -76,8 +76,8 @@ internal class UIGrimoireSacrifice : UIElement
 			0 => new Vector2(0, 50),
 			1 => new Vector2(80, 26),
 			2 => new Vector2(-80, 26),
-			3 => new Vector2(62, -54),
-			_ => new Vector2(-62, -54)
+			3 => new Vector2(62, -34),
+			_ => new Vector2(-62, -34)
 		};
 	}
 }

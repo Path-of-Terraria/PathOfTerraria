@@ -40,6 +40,11 @@ internal abstract class GrimoireSummon : ModProjectile
 
 	public virtual void StaticDefaults() { }
 
+	public override bool? CanCutTiles()
+	{
+		return false;
+	}
+
 	public sealed override bool PreAI()
 	{
 		if (Owner.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId != Type || Owner.HeldItem.type != ModContent.ItemType<GrimoireItem>())
