@@ -82,7 +82,8 @@ internal class PoacherSummon : GrimoireSummon
 		}
 		else
 		{
-			Projectile.frame = (int)((AnimationTimer += 0.2f) % 5) + 4;
+			AnimationTimer += 0.2f * Math.Abs(Projectile.velocity.X / 16f + 0.5f);
+			Projectile.frame = (int)(AnimationTimer % 5) + 4;
 		}
 
 		DrawOriginOffsetY = !WallClimb ? -40 : 0;

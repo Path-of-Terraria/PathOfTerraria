@@ -43,11 +43,11 @@ internal class GrimoireSummonPlayer : ModPlayer
 
 	public override void LoadData(TagCompound tag)
 	{
-		int count = tag.GetInt("count");
+		//int count = tag.GetInt("count");
 
-		for (int i = 0; i < count; i++)
-		{
-			UnlockedSummons.Add(tag.GetString("summon" + i));
-		}
+		//for (int i = 0; i < count; i++)
+		//{
+		//	UnlockedSummons.Add(tag.GetString("summon" + i));
+		//}
 	}
 }

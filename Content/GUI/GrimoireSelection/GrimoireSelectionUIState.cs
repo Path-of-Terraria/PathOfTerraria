@@ -4,6 +4,7 @@ using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -25,6 +26,18 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	public static Asset<Texture2D> EmptySummonTexture = null;
 
+	private static Item EmptyItem
+	{
+		get 
+		{
+			var item = new Item(ItemID.None);
+			item.TurnToAir();
+			return item;
+		}
+	}
+
+	private readonly static Item[] _parts = [EmptyItem, EmptyItem, EmptyItem, EmptyItem, EmptyItem];
+
 	private static UIGrid _storageGrid = null;
 	private static UIGrid _summonGrid = null;
 	private static UIGrimoireSacrifice _sacrificePanel = null;
@@ -34,10 +47,18 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	{
 		base.SafeUpdate(gameTime);
 
-		if (IsVisible && Main.LocalPlayer.HeldItem.ModItem is not GrimoireItem)
+		if (IsVisible && (Main.LocalPlayer.HeldItem.ModItem is not GrimoireItem || !Main.playerInventory))
 		{
 			Toggle();
 		}
+	}
+
+	public override void Draw(SpriteBatch spriteBatch)
+	{
+		float invSize = Main.inventoryScale;
+		Main.inventoryScale = 0.8f;
+		base.Draw(spriteBatch);
+		Main.inventoryScale = invSize;
 	}
 
 	internal void Toggle()
@@ -55,7 +76,10 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			return;
 		}
 
+		Main.playerInventory = true;
+
 		CreateMainPanel(false, new Point(900, 550), false, true);
+		Panel.VAlign = 0.7f;
 		BuildSummonSelect(Panel);
 		BuildStorage(Panel);
 		BuildSacrifice(Panel);
@@ -94,6 +118,22 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		_sacrificePanel.Append(_currentSummon);
 		SetCurrentSummonImage();
+
+		for (int i = 0; i < 5; ++i)
+		{
+			var pos = UIGrimoireSacrifice.GetSlotPosition(i).ToPoint();
+			var slot = new UIItemSlot(_parts, i, ItemSlot.Context.ChestItem)
+			{
+				Width = StyleDimension.FromPixels(32),
+				Height = StyleDimension.FromPixels(32),
+				HAlign = 0.5f,
+				VAlign = 0.5f,
+				Left = StyleDimension.FromPixels(pos.X),
+				Top = StyleDimension.FromPixels(pos.Y),
+			};
+
+			_sacrificePanel.Append(slot);
+		}
 	}
 
 	private static void BuildSummonSelect(UICloseablePanel panel)
@@ -189,15 +229,19 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		else
 		{
 			summoner.UnlockSummon(summon.Type);
-			Main.NewText("Obtained!");
+
+			for (int i = 0; i < 16; ++i)
+			{
+				Dust.NewDust(Main.LocalPlayer.position, Player.defaultWidth, Player.defaultHeight, DustID.Confetti + Main.rand.Next(4), 0, -6);
+			}
 		}
 	}
 
 	private static void SetCurrentSummonImage()
 	{
 		int id = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
-
 		_currentSummon.SetImage(id == -1 ? EmptySummonTexture : GrimoireSummon.IconsById[id]);
+		_currentSummon.Recalculate();
 	}
 
 	private static void UpdateSummonIcon(UIColoredImageButton self, GrimoireSummon item)

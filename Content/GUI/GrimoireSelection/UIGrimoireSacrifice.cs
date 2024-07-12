@@ -74,10 +74,10 @@ internal class UIGrimoireSacrifice : UIElement
 		return slot switch
 		{
 			0 => new Vector2(0, 50),
-			1 => new Vector2(80, 26),
-			2 => new Vector2(-80, 26),
-			3 => new Vector2(62, -34),
-			_ => new Vector2(-62, -34)
+			1 => new Vector2(80, 20),
+			2 => new Vector2(-80, 20),
+			3 => new Vector2(52, -34),
+			_ => new Vector2(-52, -34)
 		};
 	}
 }
