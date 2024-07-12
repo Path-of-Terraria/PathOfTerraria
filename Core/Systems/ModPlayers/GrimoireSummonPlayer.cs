@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -7,6 +8,9 @@ namespace PathOfTerraria.Core.Systems.ModPlayers;
 
 internal class GrimoireSummonPlayer : ModPlayer
 {
+	public readonly Item[] StoredParts = [GrimoireSelectionUIState.EmptyItem, GrimoireSelectionUIState.EmptyItem, GrimoireSelectionUIState.EmptyItem, 
+		GrimoireSelectionUIState.EmptyItem, GrimoireSelectionUIState.EmptyItem];
+
 	internal readonly HashSet<string> UnlockedSummons = [];
 
 	public int CurrentSummonId = -1;
@@ -43,11 +47,11 @@ internal class GrimoireSummonPlayer : ModPlayer
 
 	public override void LoadData(TagCompound tag)
 	{
-		//int count = tag.GetInt("count");
+		int count = tag.GetInt("count");
 
-		//for (int i = 0; i < count; i++)
-		//{
-		//	UnlockedSummons.Add(tag.GetString("summon" + i));
-		//}
+		for (int i = 0; i < count; i++)
+		{
+			UnlockedSummons.Add(tag.GetString("summon" + i));
+		}
 	}
 }

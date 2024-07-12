@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
+using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -27,6 +28,7 @@ internal abstract class GrimoireSummon : ModProjectile
 
 	protected Player Owner => Main.player[Projectile.owner];
 	protected bool Channeling => Owner.channel;
+	protected List<Affix> PartAffixes = [];
 
 	public sealed override void SetStaticDefaults()
 	{

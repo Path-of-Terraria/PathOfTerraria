@@ -26,7 +26,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	public static Asset<Texture2D> EmptySummonTexture = null;
 
-	private static Item EmptyItem
+	public static Item EmptyItem
 	{
 		get 
 		{
@@ -47,6 +47,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	{
 		base.SafeUpdate(gameTime);
 
+		foreach (var item in _parts)
+		{
+
+		}
+
 		if (IsVisible && (Main.LocalPlayer.HeldItem.ModItem is not GrimoireItem || !Main.playerInventory))
 		{
 			Toggle();
@@ -66,8 +71,12 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		RemoveAllChildren();
 
 		EmptySummonTexture ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/Projectiles/Summoner/GrimoireSummons/Empty_Icon");
-
 		IsVisible = !IsVisible;
+
+		for (int i = 0; i < _parts.Length; i++)
+		{
+			_parts[i] = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().StoredParts[i];
+		}
 
 		if (!IsVisible)
 		{
@@ -132,8 +141,13 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 				Top = StyleDimension.FromPixels(pos.Y),
 			};
 
+			slot.OnLeftClick += PutSlotItemInStorage;
 			_sacrificePanel.Append(slot);
 		}
+	}
+
+	private static void PutSlotItemInStorage(UIMouseEvent evt, UIElement listeningElement)
+	{
 	}
 
 	private static void BuildSummonSelect(UICloseablePanel panel)
@@ -320,10 +334,38 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			_storageGrid.Add(storageIcon);
 
 			storageIcon.OnUpdate += (self) => HoverOverStorage(self, item);
+			storageIcon.OnLeftClick += (_, self) => ClickStorageItem(item);
 		}
 
 		_storageGrid.Recalculate();
 		_storageGrid.Recalculate();
+	}
+
+	private static void ClickStorageItem(Item item)
+	{
+		GrimoireSummonPlayer grimSummoner = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>();
+		GrimoireStoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>();
+
+		for (int i = 0; i < _parts.Length; ++i)
+		{
+			Item part = _parts[i];
+
+			if (part == item)
+			{
+				_parts[i] = EmptyItem.Clone();
+				break;
+			}
+
+			if (part.IsAir)
+			{
+				storagePlayer.Storage.Remove(item);
+				_parts[i] = item;
+				RefreshStorage();
+				break;
+			}
+		}
+
+		_parts.CopyTo(grimSummoner.StoredParts, 0);
 	}
 
 	private static void HoverOverStorage(UIElement self, Item item)
