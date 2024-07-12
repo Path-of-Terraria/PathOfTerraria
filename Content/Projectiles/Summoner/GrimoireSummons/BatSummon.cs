@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 
-internal class OwlSummon : GrimoireSummon
+internal class BatSummon : GrimoireSummon
 {
 	public override void SetDefaults()
 	{
@@ -39,7 +39,7 @@ internal class OwlSummon : GrimoireSummon
 	{
 		return new Dictionary<int, int>()
 		{
-			{ ModContent.ItemType<OwlFeather>(), 2}, { ModContent.ItemType<BatWings>(), 1}
+			{ ModContent.ItemType<OwlFeather>(), 1}, { ModContent.ItemType<BatWings>(), 2}
 		};
 	}
 }

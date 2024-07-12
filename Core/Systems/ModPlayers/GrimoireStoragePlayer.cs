@@ -27,4 +27,20 @@ internal class GrimoireStoragePlayer : ModPlayer
 			Storage.Add(ItemIO.Load(tag.GetCompound("item" + i)));
 		}	
 	}
+
+	internal Dictionary<int, int> GetStoredCount()
+	{
+		List<Item> storage = Player.GetModPlayer<GrimoireStoragePlayer>().Storage;
+		Dictionary<int, int> stacksById = [];
+
+		foreach (Item item in storage)
+		{
+			if (!stacksById.TryAdd(item.type, item.stack))
+			{
+				stacksById[item.type] += item.stack;
+			}
+		}
+
+		return stacksById;
+	}
 }

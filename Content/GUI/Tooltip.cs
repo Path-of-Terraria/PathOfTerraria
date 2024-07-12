@@ -88,10 +88,9 @@ public class Tooltip : SmartUIState, ILoadable
 
 	private void Reset(On_Main.orig_Update orig, Main self, GameTime gameTime)
 	{
-		orig(self, gameTime);
-
-		//reset
 		text = string.Empty;
 		tooltip = string.Empty;
+
+		orig(self, gameTime);
 	}
 }

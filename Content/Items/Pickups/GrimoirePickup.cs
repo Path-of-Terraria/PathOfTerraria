@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
-using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
@@ -45,7 +44,7 @@ internal abstract class GrimoirePickup : PoTItem
 
 		if (player.whoAmI == Main.myPlayer && UILoader.GetUIState<GrimoireSelectionUIState>().IsVisible)
 		{
-			GrimoireSelectionUIState.UpdateGrid();
+			GrimoireSelectionUIState.RefreshStorage();
 		}
 
 		return false;

@@ -15,4 +15,17 @@ NovaProjectile.DisplayName: Nova Projectile
 CorruptedBattleaxeProjectile.DisplayName: Corrupted Battleaxe Projectile
 GuardianAngelProjectile.DisplayName: Guardian Angel Projectile
 GuardianAngelRay.DisplayName: Guardian Angel Ray
-OwlSummon.DisplayName: Owl Summon
+
+OwlSummon: {
+	DisplayName: Owl Summon
+	Description:
+		'''
+		Flies towards your cursor
+		Deals damage on contact
+		'''
+}
+
+BatSummon: {
+	DisplayName: Bat Summon
+	Description: "{$OwlSummon.Description}"
+}

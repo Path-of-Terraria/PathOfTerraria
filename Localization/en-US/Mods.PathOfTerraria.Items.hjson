@@ -294,10 +294,10 @@ GrimoireItem: {
 
 BatWings: {
 	DisplayName: Bat Wings
-	Tooltip: ""
+	Tooltip: "{$Mods.PathOfTerraria.Misc.GrimoireMaterial}"
 }
 
 OwlFeather: {
 	DisplayName: Owl Feather
-	Tooltip: ""
+	Tooltip: "{$Mods.PathOfTerraria.Misc.GrimoireMaterial}"
 }

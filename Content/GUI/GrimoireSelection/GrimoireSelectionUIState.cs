@@ -1,12 +1,15 @@
 ﻿using PathOfTerraria.Content.GUI.Utilities;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
+using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
@@ -22,6 +25,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	}
 
 	private static UIGrid _storageGrid = null;
+	private static UIGrid _summonGrid = null;
 
 	internal void Toggle()
 	{
@@ -42,7 +46,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		BuildSacrifice(Panel);
 
 		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
-		CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
+		CloseButton.Left.Set(PointsAndExitPadding, 0);
 		CloseButton.Top.Set(10, 0f);
 		CloseButton.Width.Set(38, 0);
 		CloseButton.Height.Set(38, 0);
@@ -83,6 +87,98 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			VAlign = -0.1f,
 			HAlign = 0.5f
 		});
+
+		var gridPanel = new UIPanel()
+		{
+			Width = StyleDimension.FromPixelsAndPercent(-24, 1),
+			Height = StyleDimension.FromPixelsAndPercent(-20, 1),
+			VAlign = 1f
+		};
+		mainPanel.Append(gridPanel);
+
+		_summonGrid = new()
+		{
+			Width = StyleDimension.Fill,
+			Height = StyleDimension.Fill
+		};
+		gridPanel.Append(_summonGrid);
+
+		var scrollBar = new UIScrollbar()
+		{
+			Width = StyleDimension.FromPixels(20),
+			Height = StyleDimension.FromPixelsAndPercent(-20, 1f),
+			HAlign = 1f,
+			VAlign = 1f
+		};
+		mainPanel.Append(scrollBar);
+		_summonGrid.SetScrollbar(scrollBar);
+
+		foreach (int item in ModContent.GetInstance<GrimoireSummonLoader>().SummonIds)
+		{
+			var summon = ContentSamples.ProjectilesByType[item].ModProjectile as GrimoireSummon;
+
+			var summonIcon = new UIColoredImageButton(GrimoireSummon.IconsById[summon.Type])
+			{
+				Width = StyleDimension.FromPixels(36),
+				Height = StyleDimension.FromPixels(36)
+			};
+			_summonGrid.Add(summonIcon);
+
+			summonIcon.OnUpdate += (self) => UpdateSummonIcon(self as UIColoredImageButton, summon);
+			summonIcon.OnLeftClick += (_, _) => ClickSummon(summon);
+		}
+
+		_summonGrid.Recalculate();
+	}
+
+	private static void ClickSummon(GrimoireSummon summon)
+	{
+		if (Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().HasSummon(summon.Type))
+		{
+			return;
+		}
+
+		Dictionary<int, int> storage = Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().GetStoredCount();
+		bool cantUnlock = false;
+
+		foreach (KeyValuePair<int, int> item in ModContent.GetInstance<GrimoireSummonLoader>().RequiredPartsByProjectileId[summon.Type])
+		{
+			if (!storage.TryGetValue(item.Key, out int value) || value < item.Value)
+			{
+				cantUnlock = true;
+				break;
+			}
+		}
+
+		if (cantUnlock)
+		{
+			Main.NewText("Missing some materials.");
+		}
+		else
+		{
+			Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().UnlockSummon(summon.Type);
+			Main.NewText("Obtained!");
+		}
+	}
+
+	private static void UpdateSummonIcon(UIColoredImageButton self, GrimoireSummon item)
+	{
+		if (Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().HasSummon(item.Type))
+		{
+			self.SetColor(Color.White);
+		}
+		else
+		{
+			self.SetColor(Color.DarkGray);
+		}
+
+		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()))
+		{
+			return;
+		}
+
+		Tooltip.SetName(item.DisplayName.Value);
+		Tooltip.SetTooltip(Language.GetTextValue($"Mods.{item.Mod.Name}.Projectiles.{item.Name}.Description"));
 	}
 
 	private static void BuildStorage(UICloseablePanel panel)
@@ -124,23 +220,44 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		mainPanel.Append(scrollBar);
 		_storageGrid.SetScrollbar(scrollBar);
 
-		UpdateGrid();
+		RefreshStorage();
 	}
 
-	internal static void UpdateGrid()
+	internal static void RefreshStorage()
 	{
 		_storageGrid.Clear();
 
 		foreach (Item item in Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage)
 		{
-			_storageGrid.Add(new UIItemIcon(item, false)
+			var storageIcon = new UIItemIcon(item, false)
 			{
 				Width = StyleDimension.FromPixels(31),
 				Height = StyleDimension.FromPixels(31)
-			});
+			};
+			_storageGrid.Add(storageIcon);
+
+			storageIcon.OnUpdate += (self) => HoverOverStorage(self, item);
 		}
 
 		_storageGrid.Recalculate();
 		_storageGrid.Recalculate();
+	}
+
+	private static void HoverOverStorage(UIElement self, Item item)
+	{
+		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()))
+		{
+			return;
+		}
+
+		Tooltip.SetName(item.Name);
+		string tooltip = string.Empty;
+
+		for (int i = 0; i < item.ToolTip.Lines; ++i)
+		{
+			tooltip += item.ToolTip.GetLine(i);
+		}
+
+		Tooltip.SetTooltip(tooltip);
 	}
 }
