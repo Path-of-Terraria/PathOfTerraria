@@ -13,7 +13,7 @@ internal abstract class GrimoirePickup : PoTItem
 	/// <summary>
 	/// These materials shouldn't drop through the typical <see cref="PoTItem"/> system. These will manually add their drops to their respective NPC(s).
 	/// </summary>
-	public sealed override float DropChance => 0;
+	public sealed override float DropChance => 20;
 
 	public abstract Point Size { get; }
 
@@ -21,6 +21,8 @@ internal abstract class GrimoirePickup : PoTItem
 	{
 		Item.width = Size.X;
 		Item.height = Size.Y;
+
+		ItemType = ItemType.Weapon;
 	}
 
 	public override bool ItemSpace(Player player)

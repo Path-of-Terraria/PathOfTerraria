@@ -13,6 +13,11 @@ public class Tooltip : SmartUIState, ILoadable
 	private static string text = string.Empty;
 	private static string tooltip = string.Empty;
 
+	/// <summary>
+	/// Width of the drawn tooltip. Defaults and resets to 200 every frame.
+	/// </summary>
+	public static int DrawWidth { get; set; } = 200;
+
 	public override int DepthPriority => 2;
 
 	public override bool Visible => true;
@@ -28,7 +33,7 @@ public class Tooltip : SmartUIState, ILoadable
 	}
 
 	/// <summary>
-	/// Sets the brightly colored main line of the tooltip. This should be a short descriptor of what you're hovering over, like its name
+	/// Sets the brightly colored main line of the tooltip. This should be a short descriptor of what you're hovering over, like its name.
 	/// </summary>
 	/// <param name="name"></param>
 	public static void SetName(string name)
@@ -43,7 +48,7 @@ public class Tooltip : SmartUIState, ILoadable
 	public static void SetTooltip(string newTooltip)
 	{
 		ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-		tooltip = Helpers.GUIHelper.WrapString(newTooltip, 200, font, 1);
+		tooltip = Helpers.GUIHelper.WrapString(newTooltip, DrawWidth * 2, font, 1);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -79,7 +84,6 @@ public class Tooltip : SmartUIState, ILoadable
 		}
 
 		Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(20, 20, 55) * 0.925f);
-
 		Utils.DrawBorderString(Main.spriteBatch, text, pos, Color.White);
 		pos.Y += ChatManager.GetStringSize(font, text, Vector2.One).Y + 4;
 
@@ -90,6 +94,7 @@ public class Tooltip : SmartUIState, ILoadable
 	{
 		text = string.Empty;
 		tooltip = string.Empty;
+		DrawWidth = 200;
 
 		orig(self, gameTime);
 	}

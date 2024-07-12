@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
+using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -22,11 +24,13 @@ internal class GrimoireItem : Gear
 		Item.useStyle = ItemUseStyleID.HoldUp;
 		Item.useTime = 40;
 		Item.useAnimation = 40;
-		Item.autoReuse = true;
+		Item.autoReuse = false;
 		Item.DamageType = DamageClass.Summon;
 		Item.knockBack = 8;
 		Item.crit = 12;
 		Item.UseSound = SoundID.Item1;
+		Item.shoot = ProjectileID.PurificationPowder; // The value here is irrelevant
+		Item.channel = true;
 
 		ItemType = ItemType.Magic;
 	}
@@ -44,6 +48,12 @@ internal class GrimoireItem : Gear
 			return false;
 		}
 
-		return true;
+		return player.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId != -1;
+	}
+
+	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+	{
+		type = player.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
+		damage = (ContentSamples.ProjectilesByType[type].ModProjectile as GrimoireSummon).BaseDamage;
 	}
 }

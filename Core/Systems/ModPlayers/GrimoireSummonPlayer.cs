@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Projectiles.Summoner;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -9,6 +8,8 @@ namespace PathOfTerraria.Core.Systems.ModPlayers;
 internal class GrimoireSummonPlayer : ModPlayer
 {
 	internal readonly HashSet<string> UnlockedSummons = [];
+
+	public int CurrentSummonId = -1;
 
 	public bool HasSummon<T>() where T : ModProjectile
 	{

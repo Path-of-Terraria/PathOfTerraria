@@ -294,10 +294,27 @@ GrimoireItem: {
 
 BatWings: {
 	DisplayName: Bat Wings
-	Tooltip: "{$Mods.PathOfTerraria.Misc.GrimoireMaterial}"
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Surprisingly strong.'
+		'''
 }
 
 OwlFeather: {
 	DisplayName: Owl Feather
-	Tooltip: "{$Mods.PathOfTerraria.Misc.GrimoireMaterial}"
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Soft to the touch.'
+		'''
+}
+
+ScorpionTail: {
+	DisplayName: Scorpion Tail
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'It still twitches, sometimes.'
+		'''
 }
