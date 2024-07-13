@@ -1,19 +1,38 @@
+using PathOfTerraria.Content.GUI.UIItemSlots;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI.UIItemSlots;
+namespace PathOfTerraria.Content.GUI.Armor.Elements;
 
 public class UIArmorItemSlot : UICustomItemSlot
 {
-	public const float ActiveScale = 1.2f;
+	public override Item Item
+	{
+		get => InventoryIndex == -1 ? item : Main.CurrentPlayer.armor[InventoryIndex];
+		set
+		{
+			if (InventoryIndex == -1)
+			{
+				item = value;
+			}
+			else
+			{
+				Main.CurrentPlayer.armor[InventoryIndex] = value;
+			}
+		}
+	}
 
-	public const float InactiveScale = 1f;
+	public int InventoryIndex = -1;
+	
+	public float ActiveScale { get; set; } = 1.15f;
 
-	public const float ActiveRotation = MathHelper.Pi / 8f;
+	public float InactiveScale { get; set; } = 1f;
 
-	public const float InactiveRotation = 1f;
+	public float ActiveRotation { get; set; } = MathHelper.ToRadians(2.5f);
+
+	public float InactiveRotation { get; set; } = 0f;
 	
 	public UIArmorItemSlot(
 		Asset<Texture2D> background,
@@ -32,7 +51,7 @@ public class UIArmorItemSlot : UICustomItemSlot
 		Background.ImageScale = MathHelper.SmoothStep(Background.ImageScale, scale, 0.3f);
 		Icon.ImageScale = MathHelper.SmoothStep(Background.ImageScale, scale, 0.1f);
 
-		var rotation = IsMouseHovering ? MathHelper.ToRadians(5f) : 0f;
+		var rotation = IsMouseHovering ? ActiveRotation : InactiveRotation;
 
 		Background.Rotation = MathHelper.SmoothStep(Background.Rotation, rotation, 0.3f);
 		Icon.Rotation = MathHelper.SmoothStep(Icon.Rotation, rotation, 0.1f);
@@ -44,7 +63,7 @@ public class UIArmorItemSlot : UICustomItemSlot
 
 		SoundEngine.PlaySound(SoundID.MenuTick with
 		{
-			Pitch = 0.1f,
+			Pitch = 0.15f,
 			MaxInstances = 1
 		});
 	}
