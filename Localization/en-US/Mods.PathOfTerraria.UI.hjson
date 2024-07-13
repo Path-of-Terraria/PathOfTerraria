@@ -1,0 +1,12 @@
+Armor: {
+	Tooltips: {
+		Wings: Wings
+		Helmet: Helmet
+		Necklace: Necklace
+		Weapon: Weapon
+		Chest: Chest
+		Offhand: Offhand
+		Ring: Ring
+		Legs: Legs
+	}
+}

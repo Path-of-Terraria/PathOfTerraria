@@ -3,12 +3,12 @@ using System.Reflection;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
-using PathOfTerraria.Content.GUI.Armor.Elements;
-using PathOfTerraria.Content.GUI.UIItemSlots;
+using PathOfTerraria.Content.GUI.Elements;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Helpers.Extensions;
 using ReLogic.Content;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
@@ -40,14 +40,16 @@ public sealed class UIArmorInventory : UIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var wings = new UIArmorItemSlot(frame, icon) { InventoryIndex = 3 };
+		var wings = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Wings")
+		{
+			HAlign = 0f,
+			VAlign = 0f
+		};
 
 		wings.SetMargin(Margin);
 
-		wings.HAlign = 0f;
-		wings.VAlign = 0f;
-
-		wings.InsertionPredicate = (item, _) => item.wingSlot > 0;
+		wings.ItemGetter = (player) => ref player.armor[4];
+		wings.Predicate = (item, _) => item.wingSlot > 0;
 
 		Append(wings);
 		
@@ -55,15 +57,17 @@ public sealed class UIArmorInventory : UIState
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Helmet",
 			AssetRequestMode.ImmediateLoad
 		);
-		
-		var helmet = new UIArmorItemSlot(frame, icon) { InventoryIndex = 0 };
+
+		var helmet = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Helmet")
+		{
+			HAlign = 0.5f,
+			VAlign = 0f
+		};
 		
 		helmet.SetMargin(Margin);
 
-		helmet.HAlign = 0.5f;
-		helmet.VAlign = 0f;
-
-		helmet.InsertionPredicate = (item, _) => item.headSlot > 0;
+		helmet.ItemGetter = (player) => ref player.armor[0];
+		helmet.Predicate = (item, _) => item.headSlot > 0;
 
 		Append(helmet);
 		
@@ -72,14 +76,16 @@ public sealed class UIArmorInventory : UIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var necklace = new UIArmorItemSlot(frame, icon) { InventoryIndex = 4 };
+		var necklace = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Necklace")
+		{
+			HAlign = 1f,
+			VAlign = 0f
+		};
 
 		necklace.SetMargin(Margin);
-
-		necklace.HAlign = 1f;
-		necklace.VAlign = 0f;
-
-		necklace.InsertionPredicate = (item, _) => item.accessory && item.wingSlot <= 0;
+		
+		necklace.ItemGetter = (player) => ref player.armor[4];
+		necklace.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 		Append(necklace);
 		
@@ -88,12 +94,16 @@ public sealed class UIArmorInventory : UIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var left = new UIArmorItemSlot(frame, icon);
+		var left = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Weapon")
+		{
+			HAlign = 0f,
+			VAlign = 0.5f
+		};
 
 		left.SetMargin(Margin);
 
-		left.HAlign = 0f;
-		left.VAlign = 0.5f;
+		left.ItemGetter = (player) => ref player.inventory[0];
+		left.Predicate = (item, _) => item.damage > 0;
 
 		Append(left);
 
@@ -102,14 +112,16 @@ public sealed class UIArmorInventory : UIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var chest = new UIArmorItemSlot(frame, icon) { InventoryIndex = 1 };
+		var chest = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Chest")
+		{
+			HAlign = 0.5f,
+			VAlign = 0.5f
+		};
 
 		chest.SetMargin(Margin);
 
-		chest.HAlign = 0.5f;
-		chest.VAlign = 0.5f;
-
-		chest.InsertionPredicate = (item, _) => item.bodySlot > 0;
+		chest.ItemGetter = (player) => ref player.armor[1];
+		chest.Predicate = (item, _) => item.bodySlot > 0;
 
 		Append(chest);
 
@@ -117,13 +129,17 @@ public sealed class UIArmorInventory : UIState
 			$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Right_Hand", 
 			AssetRequestMode.ImmediateLoad
 		);
-		
-		var right = new UIArmorItemSlot(frame, icon);
+
+		var right = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Offhand")
+		{
+			HAlign = 1f,
+			VAlign = 0.5f
+		};
 
 		right.SetMargin(Margin);
-
-		right.HAlign = 1f;
-		right.VAlign = 0.5f;
+		
+		right.ItemGetter = (player) => ref player.inventory[2];
+		right.Predicate = (item, _) => item.pick > 0;
 
 		Append(right);
 		
@@ -132,14 +148,16 @@ public sealed class UIArmorInventory : UIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var leftRing = new UIArmorItemSlot(frame, icon) { InventoryIndex = 5 };
+		var leftRing = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Ring")
+		{
+			HAlign = 0f,
+			VAlign = 1f
+		};
 
 		leftRing.SetMargin(Margin);
-
-		leftRing.HAlign = 0f;
-		leftRing.VAlign = 1f;
 		
-		leftRing.InsertionPredicate = (item, _) =>  item.accessory && item.wingSlot <= 0;
+		leftRing.ItemGetter = (player) => ref player.armor[5];
+		leftRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 		Append(leftRing);
 		
@@ -148,14 +166,16 @@ public sealed class UIArmorInventory : UIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var legs = new UIArmorItemSlot(frame, icon) { InventoryIndex = 2 };
+		var legs = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Legs")
+		{
+			HAlign = 0.5f,
+			VAlign = 1f
+		};
 
 		legs.SetMargin(Margin);
-
-		legs.HAlign = 0.5f;
-		legs.VAlign = 1f;
-
-		legs.InsertionPredicate = (item, _) => item.legSlot > 0;
+		
+		legs.ItemGetter = (player) => ref player.armor[2];
+		legs.Predicate = (item, _) => item.legSlot > 0;
 
 		Append(legs);
 		
@@ -164,21 +184,18 @@ public sealed class UIArmorInventory : UIState
 			AssetRequestMode.ImmediateLoad
 		);
 
-		var rightRing = new UIArmorItemSlot(frame, icon) { InventoryIndex = 6 };
+		var rightRing = new UIDynamicItemSlot(frame, icon, $"Mods.{nameof(PathOfTerraria)}.UI.Armor.Tooltips.Ring")
+		{
+			HAlign = 1f,
+			VAlign = 1f
+		};
 
 		rightRing.SetMargin(Margin);
-
-		rightRing.HAlign = 1f;
-		rightRing.VAlign = 1f;
 		
-		rightRing.InsertionPredicate = (item, _) => item.accessory && item.wingSlot <= 0;
+		rightRing.ItemGetter = (player) => ref player.armor[6];
+		rightRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 		Append(rightRing);
-	}
-
-	public override void Draw(SpriteBatch spriteBatch)
-	{
-		base.Draw(spriteBatch);
 	}
 
 	public override void Update(GameTime gameTime)
