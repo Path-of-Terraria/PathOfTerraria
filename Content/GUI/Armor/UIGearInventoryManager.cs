@@ -14,13 +14,17 @@ public sealed class UIGearInventoryManager : ModSystem
 	public override void Load()
 	{
 		UserInterface = new UserInterface();
-		UserInterface.SetState(new UIGearInventory());
 	}
 
 	public override void Unload()
 	{
 		UserInterface?.SetState(null);
 		UserInterface = null;
+	}
+
+	public override void OnWorldLoad()
+	{
+		UserInterface.SetState(new UIGearInventory());
 	}
 
 	public override void UpdateUI(GameTime gameTime)

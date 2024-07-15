@@ -17,11 +17,71 @@ namespace PathOfTerraria.Content.GUI;
 
 public sealed class UIGearInventory : UIState
 {
-	public static readonly Asset<Texture2D> LeftButtonTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/LeftButton",
+	public static readonly Asset<Texture2D> DefaultFrameTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame_Default",
 		AssetRequestMode.ImmediateLoad
 	);
 	
+	public static readonly Asset<Texture2D> VanityFrameTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame_Vanity",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> DyeFrameTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame_Dye",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> LeftButtonTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Button_Left",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> RightButtonTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Button_Right",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> HelmetIconTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Helmet",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> ChestIconTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Chest",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> LegsIconTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Legs",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> WeaponIconTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Weapon",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> OffhandIconTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Offhand",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> RingIconTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> NecklaceIconTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Necklace",
+		AssetRequestMode.ImmediateLoad
+	);
+	
+	public static readonly Asset<Texture2D> WingsIconTexture = ModContent.Request<Texture2D>(
+		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Wings",
+		AssetRequestMode.ImmediateLoad
+	);
+
 	public const float InventoryWidth = 160f;
 	public const float InventoryHeight = 190f;
 
@@ -32,11 +92,8 @@ public sealed class UIGearInventory : UIState
 	public const float InactiveScale = 1f;
 
 	public const float Smoothness = 0.3f;
-
-	private UIElement root;
-	private UIElement[] pages = { BuildDefaultInventory(), BuildVanityInventory(), BuildDyeInventory() };
-
-	private int currentPage;
+	
+	private static Player Player => Main.LocalPlayer;
  
 	/// <summary>
 	///		The index of the current gear page. <br></br>
@@ -70,6 +127,11 @@ public sealed class UIGearInventory : UIState
 			}
 		}
 	}
+	
+	private int currentPage;
+	
+	private UIElement root;
+	private UIElement[] pages = { BuildDefaultInventory(), BuildVanityInventory(), BuildDyeInventory() };
 
 	public override void OnInitialize()
 	{
@@ -100,7 +162,7 @@ public sealed class UIGearInventory : UIState
 		
 		root.Append(leftButton);
 		
-		var rightButton = new UIImage(LeftButtonTexture)
+		var rightButton = new UIImage(RightButtonTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
 			NormalizedOrigin = new Vector2(0.5f),
@@ -240,33 +302,17 @@ public sealed class UIGearInventory : UIState
 			Height = StyleDimension.FromPixels(InventoryHeight)
 		};
 
-		Asset<Texture2D> frame = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame",
-	        AssetRequestMode.ImmediateLoad
-	    );
-	    
-	    Asset<Texture2D> icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Wings",
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var wings = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipAccessory) { Slot = 4 };
+	    var wings = new UICustomItemSlot(DefaultFrameTexture, WingsIconTexture, ref Player.armor, 4, ItemSlot.Context.EquipAccessory);
 	    
 	    wings.OnMouseOver += UpdateMouseOver;
 	    wings.OnMouseOut += UpdateMouseOut;
 	    wings.OnUpdate += UpdateSlotHoverEffects;
 
-	    wings.InventoryGetter = (player) => ref player.armor;
 	    wings.Predicate = (item, _) => item.wingSlot > 0;
 
 	    inventory.Append(wings);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Helmet",
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var helmet = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipArmor)
+	    var helmet = new UICustomItemSlot(DefaultFrameTexture, HelmetIconTexture, ref Player.armor, 0, ItemSlot.Context.EquipArmor)
 	    {
 	        HAlign = 0.5f,
 	        VAlign = 0f
@@ -276,38 +322,25 @@ public sealed class UIGearInventory : UIState
 	    helmet.OnMouseOut += UpdateMouseOut;
 	    helmet.OnUpdate += UpdateSlotHoverEffects;
 	    
-	    helmet.InventoryGetter = (player) => ref player.armor;
 	    helmet.Predicate = (item, _) => item.headSlot > 0;
 
 	    inventory.Append(helmet);
 	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Necklace",
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var necklace = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipAccessory)
+	    var necklace = new UICustomItemSlot(DefaultFrameTexture, NecklaceIconTexture, ref Player.armor, 5, ItemSlot.Context.EquipAccessory)
 	    {
 	        HAlign = 1f,
 	        VAlign = 0f,
-	        Slot = 5
 	    };
 
 	    necklace.OnMouseOver += UpdateMouseOver;
 	    necklace.OnMouseOut += UpdateMouseOut;
 	    necklace.OnUpdate += UpdateSlotHoverEffects;
 
-	    necklace.InventoryGetter = (player) => ref player.armor;
 	    necklace.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 	    inventory.Append(necklace);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Left_Hand", 
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var weapon = new UICustomItemSlot(frame, icon)
+	    var weapon = new UICustomItemSlot(DefaultFrameTexture, WeaponIconTexture, ref Player.inventory, 0)
 	    {
 	        HAlign = 0f,
 	        VAlign = 0.5f
@@ -317,112 +350,76 @@ public sealed class UIGearInventory : UIState
 	    weapon.OnMouseOut += UpdateMouseOut;
 	    weapon.OnUpdate += UpdateSlotHoverEffects;
 
-	    weapon.InventoryGetter = (player) => ref player.inventory;
 	    weapon.Predicate = (item, _) => item.damage > 0;
 
 	    inventory.Append(weapon);
 
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Chest", 
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var chest = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipArmor)
+	    var chest = new UICustomItemSlot(DefaultFrameTexture, ChestIconTexture, ref Player.armor, 1, ItemSlot.Context.EquipArmor)
 	    {
 	        HAlign = 0.5f,
-	        VAlign = 0.5f,
-	        Slot = 1
+	        VAlign = 0.5f
 	    };
 
 	    chest.OnMouseOver += UpdateMouseOver;
 	    chest.OnMouseOut += UpdateMouseOut;
 	    chest.OnUpdate += UpdateSlotHoverEffects;
-
-	    chest.InventoryGetter = (player) => ref player.armor;
+	    
 	    chest.Predicate = (item, _) => item.bodySlot > 0;
 
 	    inventory.Append(chest);
 
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Right_Hand", 
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var offhand = new UICustomItemSlot(frame, icon)
+	    var offhand = new UICustomItemSlot(DefaultFrameTexture, OffhandIconTexture, ref Player.armor, 6, ItemSlot.Context.EquipAccessory)
 	    {
 	        HAlign = 1f,
-	        VAlign = 0.5f,
-	        Slot = 2
+	        VAlign = 0.5f
 	    };
 
 	    offhand.OnMouseOver += UpdateMouseOver;
 	    offhand.OnMouseOut += UpdateMouseOut;
 	    offhand.OnUpdate += UpdateSlotHoverEffects;
 	    
-	    offhand.InventoryGetter = (player) => ref player.inventory;
 	    offhand.Predicate = (item, _) => item.pick > 0;
 
 	    inventory.Append(offhand);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring", 
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var leftRing = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipAccessory)
+	    var leftRing = new UICustomItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 7, ItemSlot.Context.EquipAccessory)
 	    {
 	        HAlign = 0f,
 	        VAlign = 1f,
-	        Slot = 6
 	    };
 
 	    leftRing.OnMouseOver += UpdateMouseOver;
 	    leftRing.OnMouseOut += UpdateMouseOut;
 	    leftRing.OnUpdate += UpdateSlotHoverEffects;
 
-	    leftRing.InventoryGetter = (player) => ref player.armor;
 	    leftRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 	    inventory.Append(leftRing);
 	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Legs", 
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var legs = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipArmor)
+	    var legs = new UICustomItemSlot(DefaultFrameTexture, LegsIconTexture, ref Player.armor, 2, ItemSlot.Context.EquipArmor)
 	    {
 	        HAlign = 0.5f,
-	        VAlign = 1f,
-	        Slot = 2
+	        VAlign = 1f
 	    };
 
 	    legs.OnMouseOver += UpdateMouseOver;
 	    legs.OnMouseOut += UpdateMouseOut;
 	    legs.OnUpdate += UpdateSlotHoverEffects;
-
-	    legs.InventoryGetter = (player) => ref player.armor;
+	    
 	    legs.Predicate = (item, _) => item.legSlot > 0;
 
 	    inventory.Append(legs);
 	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring", 
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var rightRing = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipAccessory)
+	    var rightRing = new UICustomItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 8, ItemSlot.Context.EquipAccessory)
 	    {
 	        HAlign = 1f,
-	        VAlign = 1f,
-	        Slot = 7
+	        VAlign = 1f
 	    };
 
 	    rightRing.OnMouseOver += UpdateMouseOver;
 	    rightRing.OnMouseOut += UpdateMouseOut;
 	    rightRing.OnUpdate += UpdateSlotHoverEffects;
 
-	    rightRing.InventoryGetter = (player) => ref player.armor;
 	    rightRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 	    inventory.Append(rightRing);
@@ -438,149 +435,110 @@ public sealed class UIGearInventory : UIState
 			Height = StyleDimension.FromPixels(InventoryHeight)
 		};
 
-		Asset<Texture2D> frame = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame_Vanity",
-	        AssetRequestMode.ImmediateLoad
-	    );
-	    
-	    Asset<Texture2D> icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Wings",
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var wings = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipAccessoryVanity) { Slot = 14 };
+	    var wings = new UICustomItemSlot(VanityFrameTexture, WingsIconTexture, ref Player.armor, 14, ItemSlot.Context.EquipAccessoryVanity);
 	    
 	    wings.OnMouseOver += UpdateMouseOver;
 	    wings.OnMouseOut += UpdateMouseOut;
 	    wings.OnUpdate += UpdateSlotHoverEffects;
 
-	    wings.InventoryGetter = (player) => ref player.armor;
 	    wings.Predicate = (item, _) => item.wingSlot > 0;
 
 	    inventory.Append(wings);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Helmet",
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var helmet = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipArmorVanity)
+	    var helmet = new UICustomItemSlot(VanityFrameTexture, HelmetIconTexture, ref Player.armor, 10, ItemSlot.Context.EquipArmorVanity)
 	    {
 	        HAlign = 0.5f,
-	        VAlign = 0f,
-	        Slot = 10
+	        VAlign = 0f
 	    };
 
 	    helmet.OnMouseOver += UpdateMouseOver;
 	    helmet.OnMouseOut += UpdateMouseOut;
 	    helmet.OnUpdate += UpdateSlotHoverEffects;
 
-	    helmet.InventoryGetter = (player) => ref player.armor;
 	    helmet.Predicate = (item, _) => item.headSlot > 0;
 
 	    inventory.Append(helmet);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Necklace",
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var necklace = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipAccessoryVanity)
+	    var necklace = new UICustomItemSlot(VanityFrameTexture, NecklaceIconTexture, ref Player.armor, 15, ItemSlot.Context.EquipAccessoryVanity)
 	    {
 	        HAlign = 1f,
 	        VAlign = 0f,
-	        Slot = 15
 	    };
 
 	    necklace.OnMouseOver += UpdateMouseOver;
 	    necklace.OnMouseOut += UpdateMouseOut;
 	    necklace.OnUpdate += UpdateSlotHoverEffects;
 
-	    necklace.InventoryGetter = (player) => ref player.armor;
 	    necklace.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 	    inventory.Append(necklace);
 
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Chest", 
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var chest = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipArmorVanity)
+	    var chest = new UICustomItemSlot(VanityFrameTexture, ChestIconTexture, ref Player.armor, 11, ItemSlot.Context.EquipArmorVanity)
 	    {
 	        HAlign = 0.5f,
-	        VAlign = 0.5f,
-	        Slot = 11
+	        VAlign = 0.5f
 	    };
 
 	    chest.OnMouseOver += UpdateMouseOver;
 	    chest.OnMouseOut += UpdateMouseOut;
 	    chest.OnUpdate += UpdateSlotHoverEffects;
 
-	    chest.InventoryGetter = (player) => ref player.armor;
 	    chest.Predicate = (item, _) => item.bodySlot > 0;
 
 	    inventory.Append(chest);
+	    
+	    var offhand = new UICustomItemSlot(VanityFrameTexture, OffhandIconTexture, ref Player.armor, 16, ItemSlot.Context.EquipAccessoryVanity)
+	    {
+		    HAlign = 1f,
+		    VAlign = 0.5f
+	    };
 
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring", 
-	        AssetRequestMode.ImmediateLoad
-	    );
+	    offhand.OnMouseOver += UpdateMouseOver;
+	    offhand.OnMouseOut += UpdateMouseOut;
+	    offhand.OnUpdate += UpdateSlotHoverEffects;
+	    
+	    offhand.Predicate = (item, _) => item.pick > 0;
+	    
+	    inventory.Append(offhand);
 
-	    var leftRing = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipAccessoryVanity)
+	    var leftRing = new UICustomItemSlot(VanityFrameTexture, RingIconTexture, ref Player.armor, 16, ItemSlot.Context.EquipAccessoryVanity)
 	    {
 	        HAlign = 0f,
-	        VAlign = 1f,
-	        Slot = 16
+	        VAlign = 1f
 	    };
 
 	    leftRing.OnMouseOver += UpdateMouseOver;
 	    leftRing.OnMouseOut += UpdateMouseOut;
 	    leftRing.OnUpdate += UpdateSlotHoverEffects;
 
-	    leftRing.InventoryGetter = (player) => ref player.armor;
 	    leftRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 	    inventory.Append(leftRing);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Legs", 
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var legs = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipArmorVanity)
+	    var legs = new UICustomItemSlot(VanityFrameTexture, LegsIconTexture, ref Player.armor, 12, ItemSlot.Context.EquipArmorVanity)
 	    {
 	        HAlign = 0.5f,
-	        VAlign = 1f,
-	        Slot = 12
+	        VAlign = 1f
 	    };
 
 	    legs.OnMouseOver += UpdateMouseOver;
 	    legs.OnMouseOut += UpdateMouseOut;
 	    legs.OnUpdate += UpdateSlotHoverEffects;
 
-	    legs.InventoryGetter = (player) => ref player.armor;
 	    legs.Predicate = (item, _) => item.legSlot > 0;
 
 	    inventory.Append(legs);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring", 
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var rightRing = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipAccessoryVanity)
+	    var rightRing = new UICustomItemSlot(VanityFrameTexture, RingIconTexture, ref Player.armor, 18, ItemSlot.Context.EquipAccessoryVanity)
 	    {
 	        HAlign = 1f,
-	        VAlign = 1f,
-	        Slot = 17
+	        VAlign = 1f
 	    };
 
 	    rightRing.OnMouseOver += UpdateMouseOver;
 	    rightRing.OnMouseOut += UpdateMouseOut;
 	    rightRing.OnUpdate += UpdateSlotHoverEffects;
 
-	    rightRing.InventoryGetter = (player) => ref player.armor;
 	    rightRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 	    inventory.Append(rightRing);
@@ -596,33 +554,17 @@ public sealed class UIGearInventory : UIState
 			Height = StyleDimension.FromPixels(InventoryHeight)
 		};
 
-		Asset<Texture2D> frame = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame_Dye",
-	        AssetRequestMode.ImmediateLoad
-	    );
-	    
-	    Asset<Texture2D> icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Wings",
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var wings = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipDye) { Slot = 4 };
+	    var wings = new UICustomItemSlot(DyeFrameTexture, WingsIconTexture, ref Player.dye, 4, ItemSlot.Context.EquipDye);
 	    
 	    wings.OnMouseOver += UpdateMouseOver;
 	    wings.OnMouseOut += UpdateMouseOut;
 	    wings.OnUpdate += UpdateSlotHoverEffects;
 
-	    wings.InventoryGetter = (player) => ref player.dye;
 	    wings.Predicate = (item, _) => item.dye > 0;
 
 	    inventory.Append(wings);
 	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Helmet",
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var helmet = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipDye)
+	    var helmet = new UICustomItemSlot(DyeFrameTexture, HelmetIconTexture, ref Player.dye, 0, ItemSlot.Context.EquipDye)
 	    {
 	        HAlign = 0.5f,
 	        VAlign = 0f
@@ -632,112 +574,90 @@ public sealed class UIGearInventory : UIState
 	    helmet.OnMouseOut += UpdateMouseOut;
 	    helmet.OnUpdate += UpdateSlotHoverEffects;
 	    
-	    helmet.InventoryGetter = (player) => ref player.dye;
 	    helmet.Predicate = (item, _) => item.dye > 0;
 
 	    inventory.Append(helmet);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Necklace",
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var necklace = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipDye)
+	    var necklace = new UICustomItemSlot(DyeFrameTexture, NecklaceIconTexture, ref Player.dye, 5, ItemSlot.Context.EquipDye)
 	    {
 	        HAlign = 1f,
-	        VAlign = 0f,
-	        Slot = 5
+	        VAlign = 0f
 	    };
 
 	    necklace.OnMouseOver += UpdateMouseOver;
 	    necklace.OnMouseOut += UpdateMouseOut;
 	    necklace.OnUpdate += UpdateSlotHoverEffects;
 
-	    necklace.InventoryGetter = (player) => ref player.dye;
 	    necklace.Predicate = (item, _) => item.dye > 0;
 
 	    inventory.Append(necklace);
 
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Chest", 
-	        AssetRequestMode.ImmediateLoad
-	    );
-
-	    var chest = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipDye)
+	    var chest = new UICustomItemSlot(DyeFrameTexture, ChestIconTexture, ref Player.dye, 1, ItemSlot.Context.EquipDye)
 	    {
 	        HAlign = 0.5f,
-	        VAlign = 0.5f,
-	        Slot = 1
+	        VAlign = 0.5f
 	    };
 
 	    chest.OnMouseOver += UpdateMouseOver;
 	    chest.OnMouseOut += UpdateMouseOut;
 	    chest.OnUpdate += UpdateSlotHoverEffects;
 
-	    chest.InventoryGetter = (player) => ref player.dye;
 	    chest.Predicate = (item, _) => item.dye > 0;
-
+	    
 	    inventory.Append(chest);
 
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring", 
-	        AssetRequestMode.ImmediateLoad
-	    );
+	    var offhand = new UICustomItemSlot(DyeFrameTexture, OffhandIconTexture, ref Player.dye, 6, ItemSlot.Context.EquipAccessory)
+	    {
+		    HAlign = 1f,
+		    VAlign = 0.5f
+	    };
 
-	    var leftRing = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipDye)
+	    offhand.OnMouseOver += UpdateMouseOver;
+	    offhand.OnMouseOut += UpdateMouseOut;
+	    offhand.OnUpdate += UpdateSlotHoverEffects;
+	    
+	    offhand.Predicate = (item, _) => item.pick > 0;
+
+	    inventory.Append(offhand);
+
+	    var leftRing = new UICustomItemSlot(DyeFrameTexture, RingIconTexture, ref Player.dye, 7, ItemSlot.Context.EquipDye)
 	    {
 	        HAlign = 0f,
-	        VAlign = 1f,
-	        Slot = 6
+	        VAlign = 1f
 	    };
 
 	    leftRing.OnMouseOver += UpdateMouseOver;
 	    leftRing.OnMouseOut += UpdateMouseOut;
 	    leftRing.OnUpdate += UpdateSlotHoverEffects;
 
-	    leftRing.InventoryGetter = (player) => ref player.dye;
 	    leftRing.Predicate = (item, _) => item.dye > 0;
 
 	    inventory.Append(leftRing);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Legs", 
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var legs = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipDye)
+	    var legs = new UICustomItemSlot(DyeFrameTexture, LegsIconTexture, ref Player.dye, 2, ItemSlot.Context.EquipDye)
 	    {
 	        HAlign = 0.5f,
-	        VAlign = 1f,
-	        Slot = 2
+	        VAlign = 1f
 	    };
 
 	    legs.OnMouseOver += UpdateMouseOver;
 	    legs.OnMouseOut += UpdateMouseOut;
 	    legs.OnUpdate += UpdateSlotHoverEffects;
 
-	    legs.InventoryGetter = (player) => ref player.dye;
 	    legs.Predicate = (item, _) => item.dye > 0;
 
 	    inventory.Append(legs);
-	    
-	    icon = ModContent.Request<Texture2D>(
-	        $"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring", 
-	        AssetRequestMode.ImmediateLoad
-	    );
 
-	    var rightRing = new UICustomItemSlot(frame, icon, ItemSlot.Context.EquipDye)
+	    var rightRing = new UICustomItemSlot(DyeFrameTexture, RingIconTexture, ref Player.dye, 8, ItemSlot.Context.EquipDye)
 	    {
 	        HAlign = 1f,
-	        VAlign = 1f,
-	        Slot = 7
+	        VAlign = 1f
 	    };
 
 	    rightRing.OnMouseOver += UpdateMouseOver;
 	    rightRing.OnMouseOut += UpdateMouseOut;
 	    rightRing.OnUpdate += UpdateSlotHoverEffects;
 	    
-	    rightRing.InventoryGetter = (player) => ref player.dye;
 	    rightRing.Predicate = (item, _) => item.dye > 0;
 
 	    inventory.Append(rightRing);

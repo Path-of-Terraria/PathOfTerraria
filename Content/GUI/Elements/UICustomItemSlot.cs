@@ -20,8 +20,6 @@ public class UICustomItemSlot : UIElement
 
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
-	public delegate ref Item[]? ItemInventoryGetter(Player player);
-	
 	/// <summary>
 	///		The item that this slot wraps itself around.
 	/// </summary>
@@ -31,19 +29,28 @@ public class UICustomItemSlot : UIElement
 	/// </remarks>
 	public Item? Item
 	{
-		get => InventoryGetter?.Invoke(Main.CurrentPlayer)[Slot] ?? item;
+		get => WrapsAroundInventory ? Inventory[Slot] : item;
 		set
 		{
-			if (InventoryGetter == null)
+			if (WrapsAroundInventory)
 			{
-				item = value;
+				OnInsertItem?.Invoke(value, Inventory[Slot]);
+				
+				Inventory[Slot] = value;
 			}
 			else
 			{
-				InventoryGetter.Invoke(Main.CurrentPlayer)[Slot] = value;
+				OnInsertItem?.Invoke(value, item);
+				
+				item = value;
 			}
 		}
 	}
+
+	/// <summary>
+	///		Whether the item slot wraps itself around an inventory or not.
+	/// </summary>
+	public bool WrapsAroundInventory => Inventory != null && Slot > -1;
 
 	/// <summary>
 	///     The background of the item slot.
@@ -64,19 +71,23 @@ public class UICustomItemSlot : UIElement
 	public float Scale = 1f;
 	
 	/// <summary>
-	///		The index of the item that this slots wraps itself around.
+	///		The index of the item that the slots wraps itself around.
 	/// </summary>
 	/// <remarks>
-	///		Defaults to <c>0</c>. Will not have any effect if <see cref="InventoryGetter"/>
-	///		is not provided.
+	///		Will not have any effect if <see cref="Inventory"/> is <c>null</c> or not provided.
 	/// </remarks>
-	public int Slot;
+	public readonly int Slot;
+	
+	/// <summary>
+	///		The inventory that the slots wraps itself around.
+	/// </summary>
+	public readonly Item[]? Inventory;
 	
 	/// <summary>
 	///     The context of the item slot.
 	/// </summary>
 	/// <remarks>
-	///     Defaults to <see cref="ItemSlot.Context.InventoryItem" />.
+	///     Defaults to <see cref="ItemSlot.Context.InventoryItem"/>.
 	/// </remarks>
 	public readonly int Context;
 	
@@ -89,17 +100,12 @@ public class UICustomItemSlot : UIElement
 	///     Can be used to determine whether an item can be inserted into the slot or not.
 	/// </summary>
 	public ItemInsertionPredicate? Predicate;
-	
-	/// <summary>
-	///		Can be used to specify which item this slot should wrap itself around.
-	/// </summary>
-	public ItemInventoryGetter? InventoryGetter;
-	
+
 	/// <summary>
 	///     Can be used to register a callback to execute logic when an item is inserted into the slot.
 	/// </summary>
 	public event ItemInsertionCallback? OnInsertItem;
-
+	
 	public UICustomItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
@@ -110,6 +116,18 @@ public class UICustomItemSlot : UIElement
 		this.iconTexture = iconTexture;
 
 		Context = context;
+	}
+	
+	public UICustomItemSlot(
+		Asset<Texture2D> backgroundTexture,
+		Asset<Texture2D> iconTexture,
+		ref Item[]? inventory,
+		int slot,
+		int context = ItemSlot.Context.InventoryItem
+	) : this(backgroundTexture, iconTexture, context)
+	{
+		Inventory = inventory;
+		Slot = slot;
 	}
 
 	public override void OnInitialize()
@@ -142,8 +160,6 @@ public class UICustomItemSlot : UIElement
 		};
 
 		Background.Append(Icon);
-
-		OnInsertItem += (newItem, currentItem) => Icon.SetImage(newItem.IsAir ? iconTexture : TextureAssets.Item[newItem.type]);
 	}
 
 	public override void Update(GameTime gameTime)
@@ -159,28 +175,28 @@ public class UICustomItemSlot : UIElement
 		base.Draw(spriteBatch);
 
 		UpdateInteraction();
+		
+		Icon.SetImage(Item.IsAir ? iconTexture : TextureAssets.Item[Item.type]);
 	}
 
 	private void UpdateInteraction()
 	{
-		var canInsert = Main.mouseItem.IsAir || Predicate?.Invoke(Main.mouseItem, Item) == true;
-		
-		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface || !canInsert)
+		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface || (!Main.mouseItem.IsAir && Predicate?.Invoke(Main.mouseItem, Item) == false))
 		{
 			return;
 		}
 
-		if (InventoryGetter == null)
+		if (WrapsAroundInventory)
+		{
+			ItemSlot.Handle(Inventory, Context, Slot);
+		}
+		else
 		{
 			Item item = Item;
 			
 			ItemSlot.Handle(ref item, Context);
 			
 			Item = item;
-		}
-		else
-		{
-			ItemSlot.Handle(InventoryGetter.Invoke(Main.CurrentPlayer), Context, Slot);
 		}
 		
 		Main.CurrentPlayer.mouseInterface = true;
