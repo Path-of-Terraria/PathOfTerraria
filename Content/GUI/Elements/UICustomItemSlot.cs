@@ -55,6 +55,8 @@ public class UIItemSlot : UIElement
 	///     Defaults to <c>1f</c>.
 	/// </remarks>
 	public float Scale = 1f;
+	
+	protected Item item = new();
 
 	/// <summary>
 	///     The context of the item slot.
@@ -84,8 +86,6 @@ public class UIItemSlot : UIElement
 	/// </summary>
 	public event ItemInsertionCallback? OnInsertItem;
 
-	protected Item item = new();
-
 	public UIItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
@@ -108,6 +108,7 @@ public class UIItemSlot : UIElement
 		Background = new UIImage(backgroundTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
+			NormalizedOrigin = new Vector2(0.5f),
 			HAlign = 0.5f,
 			VAlign = 0.5f,
 			Width = StyleDimension.FromPixels(backgroundTexture.Width() * Scale),
@@ -119,6 +120,7 @@ public class UIItemSlot : UIElement
 		Icon = new UIImage(iconTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
+			NormalizedOrigin = new Vector2(0.5f),
 			HAlign = 0.5f,
 			VAlign = 0.5f,
 			Width = StyleDimension.FromPixels(iconTexture.Width() * Scale),
@@ -192,7 +194,7 @@ public class UIItemSlot : UIElement
 
 		Item item = Item;
 
-		ItemSlot.Handle(ref item, ItemSlot.Context.ChestItem);
+		ItemSlot.Handle(ref item, Context);
 
 		Item = item;
 	}
