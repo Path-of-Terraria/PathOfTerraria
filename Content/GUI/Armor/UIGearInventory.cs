@@ -15,7 +15,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI;
 
-public sealed class UIArmorInventory : UIState
+public sealed class UIGearInventory : UIState
 {
 	public static readonly Asset<Texture2D> LeftButtonTexture = ModContent.Request<Texture2D>(
 		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/LeftButton",
@@ -39,12 +39,14 @@ public sealed class UIArmorInventory : UIState
 	private int currentPage;
  
 	/// <summary>
-	///		The index of the current gear page.
+	///		The index of the current gear page. <br></br>
+	///		<c>0</c> - Default <br></br>
+	///		<c>1</c> - Vanity <br></br>
+	///		<c>2</c> - Dye
 	/// </summary>
 	/// <remarks>
-	///		<c>0</c> - Default
-	///		<c>1</c> - Vanity
-	///		<c>2</c> - Dye
+	///		This will be reset to 2 if you go out of negative bounds, and 0 out of
+	///		positive bounds.
 	/// </remarks>
 	public int CurrentPage
 	{

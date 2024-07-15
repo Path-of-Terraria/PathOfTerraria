@@ -1,4 +1,5 @@
 using ReLogic.Content;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.UI;
@@ -8,32 +9,38 @@ namespace PathOfTerraria.Content.GUI.Elements;
 /// <summary>
 ///		Provides an item slot wrapper as a <see cref="UIElement"/>.
 /// </summary>
-public class UIItemSlot : UIElement
+/// <remarks>
+///		This wrapper allows you to have an independant item for the slot, or to
+///		wrap around an existing array of items at a given index through
+///		<see cref="InventoryGetter"/> and <see cref="Slot"/>.
+/// </remarks>
+public class UICustomItemSlot : UIElement
 {
 	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
 
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
-	public delegate ref Item? ItemGetterCallback(Player player);
+	public delegate ref Item[]? ItemInventoryGetter(Player player);
 	
 	/// <summary>
 	///		The item that this slot wraps itself around.
 	/// </summary>
 	/// <remarks>
-	///		Defaults to a new item if <see cref="ItemGetter"/> is not specified.
+	///		Defaults to a new item with <see cref="ItemID.None"/> as its identity if
+	///		<see cref="InventoryGetter"/> and <see cref="Slot"/> are not provided.
 	/// </remarks>
 	public Item? Item
 	{
-		get => ItemGetter?.Invoke(Main.CurrentPlayer) ?? item;
+		get => InventoryGetter?.Invoke(Main.CurrentPlayer)[Slot] ?? item;
 		set
 		{
-			if (ItemGetter == null)
+			if (InventoryGetter == null)
 			{
 				item = value;
 			}
 			else
 			{
-				ItemGetter.Invoke(Main.CurrentPlayer) = value;
+				InventoryGetter.Invoke(Main.CurrentPlayer)[Slot] = value;
 			}
 		}
 	}
@@ -56,8 +63,15 @@ public class UIItemSlot : UIElement
 	/// </remarks>
 	public float Scale = 1f;
 	
-	protected Item item = new();
-
+	/// <summary>
+	///		The index of the item that this slots wraps itself around.
+	/// </summary>
+	/// <remarks>
+	///		Defaults to <c>0</c>. Will not have any effect if <see cref="InventoryGetter"/>
+	///		is not provided.
+	/// </remarks>
+	public int Slot;
+	
 	/// <summary>
 	///     The context of the item slot.
 	/// </summary>
@@ -66,10 +80,10 @@ public class UIItemSlot : UIElement
 	/// </remarks>
 	public readonly int Context;
 	
+	private Item item = new();
+	
 	private readonly Asset<Texture2D> backgroundTexture;
 	private readonly Asset<Texture2D> iconTexture;
-
-	private bool iconActive = true;
 
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
@@ -79,14 +93,14 @@ public class UIItemSlot : UIElement
 	/// <summary>
 	///		Can be used to specify which item this slot should wrap itself around.
 	/// </summary>
-	public ItemGetterCallback? ItemGetter;
+	public ItemInventoryGetter? InventoryGetter;
 	
 	/// <summary>
 	///     Can be used to register a callback to execute logic when an item is inserted into the slot.
 	/// </summary>
 	public event ItemInsertionCallback? OnInsertItem;
 
-	public UIItemSlot(
+	public UICustomItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
 		int context = ItemSlot.Context.InventoryItem
@@ -128,6 +142,8 @@ public class UIItemSlot : UIElement
 		};
 
 		Background.Append(Icon);
+
+		OnInsertItem += (newItem, currentItem) => Icon.SetImage(newItem.IsAir ? iconTexture : TextureAssets.Item[newItem.type]);
 	}
 
 	public override void Update(GameTime gameTime)
@@ -143,42 +159,6 @@ public class UIItemSlot : UIElement
 		base.Draw(spriteBatch);
 
 		UpdateInteraction();
-		UpdateSlotIcon();
-
-		spriteBatch.End();
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, default, default);
-
-		ItemSlot.DrawItemIcon(Item, Context, spriteBatch, GetDimensions().Center(), Scale * Item.scale, 32f, Color.White);
-
-		spriteBatch.End();
-		spriteBatch.Begin();
-	}
-
-	private void UpdateSlotIcon()
-	{
-		if (Item.IsAir && !Background.HasChild(Icon))
-		{
-			Background.Append(Icon);
-
-			Recalculate();
-
-			iconActive = true;
-		}
-		else if (!Item.IsAir && Background.HasChild(Icon))
-		{
-			iconActive = false;
-		}
-
-		Icon.Color = Color.Lerp(Icon.Color, iconActive ? Color.White : Color.Transparent, 0.2f);
-
-		if (Icon.Color != Color.Transparent)
-		{
-			return;
-		}
-
-		Background.RemoveChild(Icon);
-
-		Recalculate();
 	}
 
 	private void UpdateInteraction()
@@ -190,12 +170,19 @@ public class UIItemSlot : UIElement
 			return;
 		}
 
+		if (InventoryGetter == null)
+		{
+			Item item = Item;
+			
+			ItemSlot.Handle(ref item, Context);
+			
+			Item = item;
+		}
+		else
+		{
+			ItemSlot.Handle(InventoryGetter.Invoke(Main.CurrentPlayer), Context, Slot);
+		}
+		
 		Main.CurrentPlayer.mouseInterface = true;
-
-		Item item = Item;
-
-		ItemSlot.Handle(ref item, Context);
-
-		Item = item;
 	}
 }

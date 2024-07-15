@@ -4,7 +4,7 @@ using Terraria.UI;
 namespace PathOfTerraria.Content.GUI;
 
 [Autoload(Side = ModSide.Client)]
-public sealed class UIArmorInventoryManager : ModSystem
+public sealed class UIGearInventoryManager : ModSystem
 {
 	// Terraria doesn't provide any game time instance during rendering, so we keep track of it ourselves.
 	private static GameTime lastGameTime;
@@ -14,7 +14,7 @@ public sealed class UIArmorInventoryManager : ModSystem
 	public override void Load()
 	{
 		UserInterface = new UserInterface();
-		UserInterface.SetState(new UIArmorInventory());
+		UserInterface.SetState(new UIGearInventory());
 	}
 
 	public override void Unload()
@@ -42,7 +42,7 @@ public sealed class UIArmorInventoryManager : ModSystem
 		layers.Insert(
 			index, 
 			new LegacyGameInterfaceLayer(
-				$"{nameof(PathOfTerraria)}:{nameof(UIArmorInventory)}",
+				$"{nameof(PathOfTerraria)}:{nameof(UIGearInventory)}",
 				() =>
 				{
 					UserInterface.Draw(Main.spriteBatch, lastGameTime);

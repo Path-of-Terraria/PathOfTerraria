@@ -21,6 +21,9 @@
     <Compile Update="JsonCreator\CreateMobJsonFiles.cs">
       <Link>ClassLibrary1\CreateMobJsonFiles.cs</Link>
     </Compile>
+    <Compile Remove="Content\GUI\Armor\UIVanityArmorInventory.cs" />
+    <Compile Remove="Content\GUI\Armor\UIDyeArmorInventory.cs" />
+    <Compile Remove="Content\GUI\Armor\UIArmorPage.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="SubworldLibrary">
