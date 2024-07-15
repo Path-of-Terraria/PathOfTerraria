@@ -1,4 +1,6 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
+using PathOfTerraria.Content.Items.Pickups;
+using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
@@ -62,6 +64,21 @@ internal abstract class GrimoireSummon : ModProjectile
 
 		Owner.SetDummyItemTime(2);
 		AnimateSelf();
+
+		var modifier = new EntityModifier();
+
+		foreach (Item part in Owner.GetModPlayer<GrimoireSummonPlayer>().StoredParts)
+		{
+			if (part.ModItem is null)
+			{
+				continue;
+			}	
+
+			var pickup = part.ModItem as GrimoirePickup;
+			pickup.ApplyAffixes(modifier);
+		}
+
+		modifier.ApplyTo(Projectile);
 
 		if (Despawning)
 		{

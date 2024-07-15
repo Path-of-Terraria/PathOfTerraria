@@ -47,11 +47,6 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	{
 		base.SafeUpdate(gameTime);
 
-		foreach (var item in _parts)
-		{
-
-		}
-
 		if (IsVisible && (Main.LocalPlayer.HeldItem.ModItem is not GrimoireItem || !Main.playerInventory))
 		{
 			Toggle();
@@ -89,6 +84,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 		CreateMainPanel(false, new Point(900, 550), false, true);
 		Panel.VAlign = 0.7f;
+
 		BuildSummonSelect(Panel);
 		BuildStorage(Panel);
 		BuildSacrifice(Panel);
@@ -141,13 +137,19 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 				Top = StyleDimension.FromPixels(pos.Y),
 			};
 
-			slot.OnLeftClick += PutSlotItemInStorage;
+			int currentSlot = i;
+			slot.OnLeftClick += (_, _) => PutSlotItemInStorage(currentSlot);
+			slot.OnUpdate += (self) => HoverOverItem(self, _parts[currentSlot]);
 			_sacrificePanel.Append(slot);
 		}
 	}
 
-	private static void PutSlotItemInStorage(UIMouseEvent evt, UIElement listeningElement)
+	private static void PutSlotItemInStorage(int partsSlot)
 	{
+		Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(_parts[partsSlot].Clone());
+		Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().StoredParts[partsSlot] = EmptyItem;
+		_parts[partsSlot] = EmptyItem;
+		RefreshStorage();
 	}
 
 	private static void BuildSummonSelect(UICloseablePanel panel)
@@ -302,7 +304,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 		_storageGrid = new UIGrid()
 		{
-			Width = StyleDimension.FromPixelsAndPercent(0, 1),
+			Width = StyleDimension.Fill,
 			Height = StyleDimension.Fill,
 		};
 		storagePanel.Append(_storageGrid);
@@ -312,10 +314,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			Width = StyleDimension.FromPixels(20),
 			Height = StyleDimension.FromPixelsAndPercent(-54, 1f),
 			HAlign = 1f,
-			VAlign = 1f
+			VAlign = 1f,
+			ViewPosition = 10f
 		};
-		mainPanel.Append(scrollBar);
 		_storageGrid.SetScrollbar(scrollBar);
+		mainPanel.Append(scrollBar);
 
 		RefreshStorage();
 	}
@@ -333,7 +336,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			};
 			_storageGrid.Add(storageIcon);
 
-			storageIcon.OnUpdate += (self) => HoverOverStorage(self, item);
+			storageIcon.OnUpdate += (self) => HoverOverItem(self, item);
 			storageIcon.OnLeftClick += (_, self) => ClickStorageItem(item);
 		}
 
@@ -368,9 +371,9 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		_parts.CopyTo(grimSummoner.StoredParts, 0);
 	}
 
-	private static void HoverOverStorage(UIElement self, Item item)
+	private static void HoverOverItem(UIElement self, Item item)
 	{
-		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()))
+		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) || item.IsAir || item.type == ItemID.None)
 		{
 			return;
 		}

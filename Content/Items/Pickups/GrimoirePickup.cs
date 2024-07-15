@@ -1,7 +1,11 @@
 ﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
+using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
+using ReLogic.Content;
+using System.Runtime.CompilerServices;
+using Terraria.GameContent;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Pickups;
@@ -33,6 +37,12 @@ internal abstract class GrimoirePickup : PoTItem
 	public override bool OnPickup(Player player)
 	{
 		player.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(Item);
+		int projType = ModContent.ProjectileType<GrimoireVisageEffect>();
+		
+		if (player.ownedProjectileCounts[projType] <= 0)
+		{
+			Projectile.NewProjectile(player.GetSource_FromAI(), player.Top - Vector2.UnitY * 40, Vector2.Zero, projType, 0, 0, player.whoAmI);
+		}
 
 		var request = new AdvancedPopupRequest
 		{
@@ -52,11 +62,31 @@ internal abstract class GrimoirePickup : PoTItem
 		return false;
 	}
 
+	public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+	{
+		if (Affixes.Count > 0)
+		{
+			spriteBatch.Draw(GrimoirePickupLoader.AffixIconTex.Value, position - origin * 0.9f, Color.White);
+		}
+	}
+
 	public abstract void AddDrops(NPC npc, ref NPCLoot loot);
 }
 
 internal class GrimoirePickupLoader : GlobalNPC
 {
+	public static Asset<Texture2D> AffixIconTex = null;
+
+	public override void Load()
+	{
+		AffixIconTex = ModContent.Request<Texture2D>("PathOfTerraria/Assets/Projectiles/Summoner/GrimoireSummons/AffixIcon");
+	}
+
+	public override void Unload()
+	{
+		AffixIconTex = null;
+	}
+
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
 		for (int i = 0; i < ItemLoader.ItemCount; ++i)

@@ -31,6 +31,7 @@ internal class GrimoireItem : Gear
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.PurificationPowder; // The value here is irrelevant
 		Item.channel = true;
+		Item.noMelee = true;
 
 		ItemType = ItemType.Magic;
 	}

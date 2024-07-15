@@ -39,3 +39,5 @@ PoacherSummon: {
 		Deals damage on contact
 		'''
 }
+
+GrimoireVisageEffect.DisplayName: Grimoire Visage Effect

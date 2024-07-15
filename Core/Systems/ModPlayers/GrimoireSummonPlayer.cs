@@ -43,6 +43,11 @@ internal class GrimoireSummonPlayer : ModPlayer
 		{
 			tag.Add("summon" + i, UnlockedSummons.ElementAt(i));
 		}
+
+		for (int i = 0; i < StoredParts.Length; i++)
+		{
+			tag.Add("part" + i, StoredParts[i]);
+		}
 	}
 
 	public override void LoadData(TagCompound tag)
@@ -52,6 +57,11 @@ internal class GrimoireSummonPlayer : ModPlayer
 		for (int i = 0; i < count; i++)
 		{
 			UnlockedSummons.Add(tag.GetString("summon" + i));
+		}
+
+		for (int i = 0; i < StoredParts.Length; i++)
+		{
+			StoredParts[i] = ItemIO.Load(tag.GetCompound("part" + i));
 		}
 	}
 }

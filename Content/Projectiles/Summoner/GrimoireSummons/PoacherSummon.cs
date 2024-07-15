@@ -82,7 +82,7 @@ internal class PoacherSummon : GrimoireSummon
 		}
 		else
 		{
-			AnimationTimer += 0.2f * Math.Abs(Projectile.velocity.X / 16f + 0.5f);
+			AnimationTimer += 0.2f * Math.Abs(Projectile.velocity.X / 16f) + 0.2f;
 			Projectile.frame = (int)(AnimationTimer % 5) + 4;
 		}
 
