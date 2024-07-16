@@ -4,8 +4,6 @@ using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
-using System.Runtime.CompilerServices;
-using Terraria.GameContent;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Pickups;

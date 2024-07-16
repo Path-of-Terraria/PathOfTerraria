@@ -315,7 +315,6 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			Height = StyleDimension.FromPixelsAndPercent(-54, 1f),
 			HAlign = 1f,
 			VAlign = 1f,
-			ViewPosition = 10f
 		};
 		_storageGrid.SetScrollbar(scrollBar);
 		mainPanel.Append(scrollBar);
