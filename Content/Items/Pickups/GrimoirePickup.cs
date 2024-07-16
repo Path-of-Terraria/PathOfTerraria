@@ -4,6 +4,9 @@ using PathOfTerraria.Core;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Pickups;
@@ -15,7 +18,7 @@ internal abstract class GrimoirePickup : PoTItem
 	/// <summary>
 	/// These materials shouldn't drop through the typical <see cref="PoTItem"/> system. These will manually add their drops to their respective NPC(s).
 	/// </summary>
-	public sealed override float DropChance => 20;
+	public sealed override float DropChance => 0;
 
 	public abstract Point Size { get; }
 
@@ -23,6 +26,7 @@ internal abstract class GrimoirePickup : PoTItem
 	{
 		Item.width = Size.X;
 		Item.height = Size.Y;
+		Item.maxStack = 1;
 
 		ItemType = ItemType.Weapon;
 	}
@@ -34,7 +38,20 @@ internal abstract class GrimoirePickup : PoTItem
 
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(Item);
+		List<Item> storage = player.GetModPlayer<GrimoireStoragePlayer>().Storage;
+		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Item.Name).Value;
+		Color textColor = Color.IndianRed;
+
+		if (storage.Count(x => x.type == Type) >= 5)
+		{
+			spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireBoon").WithFormatArgs(Item.Name).Value;
+			textColor = Color.Silver;
+
+			Item.SetDefaults(ItemID.SilverCoin);
+			Item.stack = 20;
+		}
+
+		storage.Add(Item);
 		int projType = ModContent.ProjectileType<GrimoireVisageEffect>();
 		
 		if (player.ownedProjectileCounts[projType] <= 0)
@@ -44,20 +61,20 @@ internal abstract class GrimoirePickup : PoTItem
 
 		var request = new AdvancedPopupRequest
 		{
-			Text = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Item.Name).Value,
+			Text = spawnText,
 			DurationInFrames = 60,
 			Velocity = Vector2.UnitY * -10,
-			Color = Color.IndianRed
+			Color = textColor
 		};
 
 		PopupText.NewText(request, player.Center);
 
-		if (player.whoAmI == Main.myPlayer && UILoader.GetUIState<GrimoireSelectionUIState>().IsVisible)
+		if (Item.type != ItemID.SilverCoin && player.whoAmI == Main.myPlayer && UILoader.GetUIState<GrimoireSelectionUIState>().IsVisible)
 		{
 			GrimoireSelectionUIState.RefreshStorage();
 		}
 
-		return false;
+		return Item.type == ItemID.SilverCoin;
 	}
 
 	public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)

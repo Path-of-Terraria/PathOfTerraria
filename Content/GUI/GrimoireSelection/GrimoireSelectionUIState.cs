@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Content.GUI.Utilities;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Projectiles.Summoner;
+using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -64,6 +65,9 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	internal void Toggle()
 	{
 		RemoveAllChildren();
+
+		Width = StyleDimension.Fill;
+		Height = StyleDimension.Fill;
 
 		EmptySummonTexture ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/Projectiles/Summoner/GrimoireSummons/Empty_Icon");
 		IsVisible = !IsVisible;
@@ -183,6 +187,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			Width = StyleDimension.Fill,
 			Height = StyleDimension.Fill
 		};
+		_summonGrid.OnUpdate += SpamRecalculate;
 		gridPanel.Append(_summonGrid);
 
 		var scrollBar = new UIScrollbar()
@@ -309,7 +314,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		storagePanel.Append(_storageGrid);
 
-		var scrollBar = new UIScrollbar()
+		var scrollBar = new Terraria.ModLoader.UI.Elements.FixedUIScrollbar(UILoader.GetUIState<GrimoireSelectionUIState>().UserInterface)
 		{
 			Width = StyleDimension.FromPixels(20),
 			Height = StyleDimension.FromPixelsAndPercent(-54, 1f),
@@ -317,9 +322,18 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			VAlign = 1f,
 		};
 		_storageGrid.SetScrollbar(scrollBar);
+		_storageGrid.OnUpdate += SpamRecalculate;
 		mainPanel.Append(scrollBar);
 
 		RefreshStorage();
+	}
+
+	/// <summary>
+	/// Used on both <see cref="_storageGrid"/> and <see cref="_summonGrid"/> since they don't use scroll properly otherwise.
+	/// </summary>
+	private static void SpamRecalculate(UIElement affectedElement)
+	{
+		affectedElement.Recalculate();
 	}
 
 	internal static void RefreshStorage()
