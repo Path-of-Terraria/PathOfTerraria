@@ -284,3 +284,8 @@ BloodOath: {
 	Description: Teeth fill your peripherals, but dissipate when you focus on them
 	DeathReason: "{0} pledged too much."
 }
+
+AshWoodSword: {
+	DisplayName: Ash Wood Sword
+	Tooltip: ""
+}
