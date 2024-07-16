@@ -3,6 +3,7 @@ using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -13,8 +14,19 @@ internal abstract class Gear : PoTItem
 {
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
-	private Socketable[] _sockets = []; // [new Imps()];
+	private Socketable[] _sockets = [];
 	private int _selectedSocket;
+	
+	public override void OnCreated(ItemCreationContext context)
+	{
+		if (context is RecipeItemCreationContext && Item.ModItem is null) // If crafted && a vanilla item
+		{
+			if (GearAlternatives.HasGear(Item.type))
+			{
+				Roll(PickItemLevel());
+			}
+		}
+	}
 
 	public override void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier)
 	{
@@ -183,12 +195,20 @@ internal abstract class Gear : PoTItem
 		}
 	}
 
+	/// <summary>
+	/// Selects a prefix to be added to the name of the item from the provided Prefixes in localization files
+	/// </summary>
+	/// <returns></returns>
 	public override string GeneratePrefix()
 	{
 		string str = Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, true)).Value;
 		return str;
 	}
 
+	/// <summary>
+	/// Selects a suffix to be added to the name of the item from the provided Suffixes in localization files
+	/// </summary>
+	/// <returns></returns>
 	public override string GenerateSuffix()
 	{
 		return Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, false)).Value;

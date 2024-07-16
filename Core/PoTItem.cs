@@ -1,11 +1,9 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.ModLoader.IO;
 using Terraria.Graphics.Effects;
 using Terraria.UI;
-using System.Reflection;
 using PathOfTerraria.Core.Systems;
 using System.Text.RegularExpressions;
 using Terraria.ID;
@@ -13,12 +11,8 @@ using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using TextCopy;
 using Microsoft.Xna.Framework.Input;
-using Terraria.GameContent.UI.Elements;
-using log4net.Core;
 using PathOfTerraria.Data;
 using PathOfTerraria.Data.Models;
-using Stubble.Core.Classes;
-using Terraria.DataStructures;
 using System.IO;
 
 namespace PathOfTerraria.Core;
