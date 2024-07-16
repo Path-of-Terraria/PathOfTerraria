@@ -63,6 +63,11 @@ public partial class EntityModifier : EntityModifierSegment
 		// there are many things that would need a global npc to be applied.
 	}
 
+	public void ApplyTo(Projectile proj)
+	{
+		proj.damage = (int)Damage.ApplyTo(proj.originalDamage);
+	}
+
 	public void ApplyTo(Player player)
 	{
 		player.statLifeMax2 = (int)MaximumLife.ApplyTo(player.statLifeMax2);

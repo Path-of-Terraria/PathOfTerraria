@@ -27,6 +27,7 @@ internal class UiStateRefresher : ModSystem
 		{
 			UILoader.GetUIState<QuestPanelButton>().Refresh();
 			UILoader.GetUIState<PlayerStatButton>().Refresh();
+			UILoader.GetUIState<GrimoireInvButton>().Refresh();
 		}
 	}
 	
@@ -39,5 +40,6 @@ internal class UiStateRefresher : ModSystem
 	{
 		UILoader.GetUIState<QuestPanelButton>().Refresh();
 		UILoader.GetUIState<PlayerStatButton>().Refresh();
+		UILoader.GetUIState<GrimoireInvButton>().Refresh();
 	}
 }

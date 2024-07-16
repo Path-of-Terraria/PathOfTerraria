@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.Items.Pickups;
 
 internal class HealingPotionPickup : ModItem
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/HealingPotionPickup";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Pickups/HealingPotionPickup";
 
 	public override void SetDefaults()
 	{

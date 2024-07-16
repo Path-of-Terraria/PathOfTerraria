@@ -285,6 +285,40 @@ BloodOath: {
 	DeathReason: "{0} pledged too much."
 }
 
+GrimoireItem: {
+	DisplayName: Grimoire
+	AltUseDescription: Right click to open up the Menagerie.
+	Description: A small books holds big secrets.
+	Tooltip: ""
+}
+
+BatWings: {
+	DisplayName: Bat Wings
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Surprisingly strong.'
+		'''
+}
+
+OwlFeather: {
+	DisplayName: Owl Feather
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Soft to the touch.'
+		'''
+}
+
+ScorpionTail: {
+	DisplayName: Scorpion Tail
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'It still twitches, sometimes.'
+		'''
+}
+
 AshWoodSword: {
 	DisplayName: Ash Wood Sword
 	Tooltip: ""
