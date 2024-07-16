@@ -121,23 +121,23 @@ public abstract class PoTItem : ModItem
 		};
 		tooltips.Add(rareLine);
 
-		TooltipLine powerLine;
+		TooltipLine itemLevelLine;
 		if (ItemType == ItemType.Map)
 		{
-			powerLine = new TooltipLine(Mod, "Power", $" Tier: [c/CCCCFF:{ItemLevel}]")
+			itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" Tier: [c/CCCCFF:{ItemLevel}]")
 			{
 				OverrideColor = new Color(170, 170, 170)
 			};
 		}
 		else
 		{
-			powerLine = new TooltipLine(Mod, "Power", $" Item level: [c/CCCCFF:{ItemLevel}]")
+			itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" Item level: [c/CCCCFF:{ItemLevel}]")
 			{
 				OverrideColor = new Color(170, 170, 170)
 			};
 		}
 
-		tooltips.Add(powerLine);
+		tooltips.Add(itemLevelLine);
 
 		if (!string.IsNullOrWhiteSpace(AltUseDescription))
 		{
@@ -241,7 +241,7 @@ public abstract class PoTItem : ModItem
 				yOffset = -8;
 				line.BaseScale = Vector2.One * 0.8f;
 				return true;
-			case "Power":
+			case "ItemLevel":
 				yOffset = 2;
 				line.BaseScale = Vector2.One * 0.8f;
 				return true;
@@ -388,6 +388,16 @@ public abstract class PoTItem : ModItem
 		Roll(PickItemLevel());
 	}
 
+	/// <summary>
+	/// Clears the affixes and roll the item
+	/// </summary>
+	protected void Reroll()
+	{
+		Affixes.Clear();
+		Defaults();
+		Roll(PickItemLevel());
+	}
+	
 	public virtual void ExtraRolls() { }
 
 	/// <summary>
@@ -705,7 +715,7 @@ public abstract class PoTItem : ModItem
 		tag["implicits"] = _implicits;
 
 		tag["name"] = _name;
-		tag["power"] = InternalItemLevel;
+		tag["ItemLevel"] = InternalItemLevel;
 
 		List<TagCompound> affixTags = [];
 		foreach (ItemAffix affix in Affixes)
@@ -747,7 +757,7 @@ public abstract class PoTItem : ModItem
 		_implicits = tag.GetInt("implicits");
 
 		_name = tag.GetString("name");
-		InternalItemLevel = tag.GetInt("power");
+		InternalItemLevel = tag.GetInt("ItemLevel");
 
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
 

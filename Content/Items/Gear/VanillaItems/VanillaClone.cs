@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using Mono.Cecil;
+using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems;

@@ -19,13 +19,14 @@ internal abstract class Gear : PoTItem
 	
 	public override void OnCreated(ItemCreationContext context)
 	{
-		if (context is RecipeItemCreationContext && Item.ModItem is null) // If crafted && a vanilla item
+		base.OnCreated(context);
+		if (context is not RecipeItemCreationContext)
 		{
-			if (GearAlternatives.HasGear(Item.type))
-			{
-				Roll(PickItemLevel());
-			}
+			return;
 		}
+		
+		Affixes.Clear();
+		Roll(PickItemLevel());
 	}
 
 	public override void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier)
