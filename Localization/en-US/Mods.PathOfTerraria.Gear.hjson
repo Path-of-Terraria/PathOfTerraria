@@ -207,3 +207,23 @@ Whip: {
 		4: Snap
 	}
 }
+
+Javelin: {
+	AltUse: Dash towards the cursor, stabbing the first enemy you hit for high damage.
+
+	Prefixes: {
+		0: Piercing
+		1: Sharp
+		2: Barbed
+		3: Sleek
+		4: Powerful
+	}
+
+	Suffixes: {
+		0: Lash
+		1: Fang
+		2: Scourge
+		3: Strike
+		4: Snap
+	}
+}
