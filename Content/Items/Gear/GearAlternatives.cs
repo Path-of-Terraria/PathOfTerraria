@@ -38,13 +38,7 @@ internal class GearAlternativeGlobalItem : GlobalItem
 				item.SetDefaults(GearAlternatives.VanillaAlternativeToGear[item.type]);
 			}
 
-			if (item.ModItem is null)
-			{
-				return;
-			}
-
-			Type type = item.ModItem.GetType();
-			if (!type.IsAbstract && type.IsSubclassOf(typeof(VanillaClone)))
+			if (item.ModItem is VanillaClone)
 			{
 				item.CloneDefaults(GearAlternatives.GearToVanillaAlternative[item.type]);
 			}
