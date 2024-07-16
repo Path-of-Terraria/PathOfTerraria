@@ -78,7 +78,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedLife",
+		"internalIdentifier": "DecreasedManaCost",
 		"referenceId": 5,
 		"maxLevel": 5,
 		"position": {

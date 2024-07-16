@@ -100,6 +100,12 @@ internal abstract class Passive
 
 		var p = (Passive) Activator.CreateInstance(value);
 
+		if (p is null)
+		{
+			Console.WriteLine("Failed to create passive from data: " + data.InternalIdentifier);
+			return null;
+		}
+
 		p.TreePos = new Vector2(data.Position.X, data.Position.Y);
 		p.MaxLevel = data.MaxLevel;
 		p.ReferenceId = data.ReferenceId;

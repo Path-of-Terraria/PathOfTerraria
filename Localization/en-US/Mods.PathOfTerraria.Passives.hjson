@@ -87,3 +87,8 @@ AddedLifeRegen: {
 	Name: LifeRegenPassive
 	Tooltip: ""
 }
+
+DecreasedManaCost: {
+	Name: Decreased Mana Cost
+	Tooltip: Decreases mana cost by 3% per level
+}

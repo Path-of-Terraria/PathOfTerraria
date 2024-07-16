@@ -318,3 +318,8 @@ ScorpionTail: {
 		'It still twitches, sometimes.'
 		'''
 }
+
+AshWoodSword: {
+	DisplayName: Ash Wood Sword
+	Tooltip: ""
+}

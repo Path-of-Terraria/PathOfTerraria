@@ -14,7 +14,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class Blacksmith : ModNPC
 {
-	public override string Texture => "PathOfTerraria/Assets/NPCs/Town/Blacksmith";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/NPCs/Town/Blacksmith";
 
 	public override void SetStaticDefaults()
 	{

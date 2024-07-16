@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Core.Mechanics;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
 
@@ -44,7 +46,6 @@ public class RainOfArrows : Skill
 			int proj = Projectile.NewProjectile(new EntitySource_Misc("RainOfArrows"), pos, velocity, projToShoot, damage, 2);
 
 			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj]);
-
 		}
 	}
 
@@ -89,6 +90,8 @@ public class RainOfArrows : Skill
 						Vector2 velocity = -projectile.velocity.RotatedByRandom(0.2f) * 0.3f;
 						Dust.NewDust(projectile.Center, 1, 1, DustID.AncientLight, velocity.X, velocity.Y);
 					}
+
+					projectile.netUpdate = true;
 				}
 
 				if (projectile.Center.Y > RainTarget.Y)
@@ -109,6 +112,33 @@ public class RainOfArrows : Skill
 			_rainTimer = 0;
 
 			projectile.tileCollide = false;
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);
+			}
+		}
+
+		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
+		{
+			bitWriter.WriteBit(IsRainProjectile);
+
+			if (IsRainProjectile)
+			{
+				binaryWriter.WriteVector2(RainTarget);
+				binaryWriter.Write((Half)_originalMagnitude);
+			}
+		}
+
+		public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
+		{
+			IsRainProjectile = bitReader.ReadBit();
+
+			if (IsRainProjectile)
+			{
+				RainTarget = binaryReader.ReadVector2();
+				_originalMagnitude = (float)binaryReader.ReadHalf();
+			}
 		}
 	}
 }
