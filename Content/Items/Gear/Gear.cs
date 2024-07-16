@@ -24,7 +24,8 @@ internal abstract class Gear : PoTItem
 		{
 			return;
 		}
-		
+
+		Rarity = Rarity.Magic; //All crafted items are magic rarity
 		Affixes.Clear();
 		Roll(PickItemLevel());
 	}

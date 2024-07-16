@@ -46,7 +46,7 @@ internal class GearAlternativeGlobalItem : GlobalItem
 			Type type = item.ModItem.GetType();
 			if (!type.IsAbstract && type.IsSubclassOf(typeof(VanillaClone)))
 			{
-				item.SetDefaults(GearAlternatives.GearToVanillaAlternative[item.type]);
+				item.CloneDefaults(GearAlternatives.GearToVanillaAlternative[item.type]);
 			}
 		}
 	}

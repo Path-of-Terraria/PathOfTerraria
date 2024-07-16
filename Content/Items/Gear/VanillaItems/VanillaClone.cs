@@ -27,6 +27,11 @@ internal abstract class VanillaClone : Gear
 		return "";
 	}
 
+	public override void AddRecipes()
+	{
+		CloneRecipes(VanillaItemId, Type);
+	}
+	
 	/// <summary>
 	/// Clones the original item's recipes to the new item.
 	/// </summary>
@@ -40,7 +45,7 @@ internal abstract class VanillaClone : Gear
 			{
 				continue;
 			}
-
+			
 			var newRecipe = Recipe.Create(newItemId, recipe.createItem.stack);
 
 			foreach (Item ingredient in recipe.requiredItem)
@@ -57,6 +62,7 @@ internal abstract class VanillaClone : Gear
 			}
 
 			newRecipe.Register();
+			recipe.DisableRecipe();
 		}
 	}
 }
