@@ -2,16 +2,16 @@
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
-internal class IronPilum : Javelin
+internal class IronAngon : Javelin
 {
-	public override Vector2 ItemSize => new(78);
+	public override Vector2 ItemSize => new(76);
 	public override int DeathDustType => DustID.Iron;
-	public override int MinDropItemLevel => 5;
+	public override int MinDropItemLevel => 12;
 
 	public override void Defaults()
 	{
 		base.Defaults();
 
-		Item.damage = 8;
+		Item.damage = 12;
 	}
 }

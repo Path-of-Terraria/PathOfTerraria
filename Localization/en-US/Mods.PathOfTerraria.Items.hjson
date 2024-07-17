@@ -304,3 +304,13 @@ LeadDangpa: {
 	DisplayName: Lead Dangpa
 	Tooltip: ""
 }
+
+IronAngon: {
+	DisplayName: Iron Angon
+	Tooltip: ""
+}
+
+PlatinumGlaive: {
+	DisplayName: Platinum Glaive
+	Tooltip: ""
+}
