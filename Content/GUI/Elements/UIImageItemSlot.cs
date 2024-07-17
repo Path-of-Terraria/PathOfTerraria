@@ -2,6 +2,7 @@ using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Elements;
@@ -10,11 +11,11 @@ namespace PathOfTerraria.Content.GUI.Elements;
 ///		Provides an item slot wrapper as a <see cref="UIElement"/>.
 /// </summary>
 /// <remarks>
-///		This wrapper allows you to have an independant item for the slot, or to
-///		wrap around an existing array of items at a given index through
-///		<see cref="InventoryGetter"/> and <see cref="Slot"/>.
+///		This wrapper allows you to wrap around a singular item through
+///		<see cref="Item"/>, or to wrap around an existing array of items
+///		at a given index through <see cref="Inventory"/> and <see cref="Slot"/>.
 /// </remarks>
-public class UICustomItemSlot : UIElement
+public class UIImageItemSlot : UIElement
 {
 	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
 
@@ -48,40 +49,32 @@ public class UICustomItemSlot : UIElement
 	}
 
 	/// <summary>
-	///		Whether the item slot wraps itself around an inventory or not.
+	///		Whether the item slot wraps around an inventory or not.
 	/// </summary>
-	public bool WrapsAroundInventory => Inventory != null && Slot > -1;
-
+	public bool WrapsAroundInventory => Inventory != null && Slot >= 0;
+	
 	/// <summary>
 	///     The background of the item slot.
 	/// </summary>
-	public UIImage Background { get; private set; }
+	public UIImage? Background { get; protected set; }
 
 	/// <summary>
 	///     The icon of the item slot.
 	/// </summary>
-	public UIImage Icon { get; private set; }
+	public UIImage? Icon { get; protected set; }
 
-	/// <summary>
-	///     The scale of the item slot.
-	/// </summary>
-	/// <remarks>
-	///     Defaults to <c>1f</c>.
-	/// </remarks>
-	public float Scale = 1f;
-	
 	/// <summary>
 	///		The index of the item that the slots wraps itself around.
 	/// </summary>
 	/// <remarks>
 	///		Will not have any effect if <see cref="Inventory"/> is <c>null</c> or not provided.
 	/// </remarks>
-	public readonly int Slot;
+	public int Slot;
 	
 	/// <summary>
 	///		The inventory that the slots wraps itself around.
 	/// </summary>
-	public readonly Item[]? Inventory;
+	public Item[]? Inventory;
 	
 	/// <summary>
 	///     The context of the item slot.
@@ -89,12 +82,12 @@ public class UICustomItemSlot : UIElement
 	/// <remarks>
 	///     Defaults to <see cref="ItemSlot.Context.InventoryItem"/>.
 	/// </remarks>
-	public readonly int Context;
+	public int Context;
+
+	protected Item item = new(ItemID.None);
 	
-	private Item item = new();
-	
-	private readonly Asset<Texture2D> backgroundTexture;
-	private readonly Asset<Texture2D> iconTexture;
+	protected Asset<Texture2D> BackgroundTexture;
+	protected Asset<Texture2D> IconTexture;
 
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
@@ -106,68 +99,60 @@ public class UICustomItemSlot : UIElement
 	/// </summary>
 	public event ItemInsertionCallback? OnInsertItem;
 	
-	public UICustomItemSlot(
+	public UIImageItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
 		int context = ItemSlot.Context.InventoryItem
 	)
 	{
-		this.backgroundTexture = backgroundTexture;
-		this.iconTexture = iconTexture;
+		this.BackgroundTexture = backgroundTexture;
+		this.IconTexture = iconTexture;
 
 		Context = context;
 	}
 	
-	public UICustomItemSlot(
+	public UIImageItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
 		ref Item[]? inventory,
 		int slot,
 		int context = ItemSlot.Context.InventoryItem
-	) : this(backgroundTexture, iconTexture, context)
+	) 
 	{
+		this.BackgroundTexture = backgroundTexture;
+		this.IconTexture = iconTexture;
+
 		Inventory = inventory;
 		Slot = slot;
+		Context = context;
 	}
 
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
 
-		Width.Set(backgroundTexture.Width() * Scale, 0f);
-		Height.Set(backgroundTexture.Height() * Scale, 0f);
-
-		Background = new UIImage(backgroundTexture)
+		Width.Set(BackgroundTexture.Width(), 0f);
+		Height.Set(BackgroundTexture.Height(), 0f);
+		
+		Background = new UIImage(BackgroundTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
 			NormalizedOrigin = new Vector2(0.5f),
 			HAlign = 0.5f,
-			VAlign = 0.5f,
-			Width = StyleDimension.FromPixels(backgroundTexture.Width() * Scale),
-			Height = StyleDimension.FromPixels(backgroundTexture.Height() * Scale)
+			VAlign = 0.5f
 		};
 
 		Append(Background);
 
-		Icon = new UIImage(iconTexture)
+		Icon = new UIImage(IconTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
 			NormalizedOrigin = new Vector2(0.5f),
 			HAlign = 0.5f,
-			VAlign = 0.5f,
-			Width = StyleDimension.FromPixels(iconTexture.Width() * Scale),
-			Height = StyleDimension.FromPixels(iconTexture.Height() * Scale)
+			VAlign = 0.5f
 		};
 
 		Background.Append(Icon);
-	}
-
-	public override void Update(GameTime gameTime)
-	{
-		base.Update(gameTime);
-
-		Background.ImageScale = Scale;
-		Icon.ImageScale = Scale;
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -176,7 +161,7 @@ public class UICustomItemSlot : UIElement
 
 		UpdateInteraction();
 		
-		Icon.SetImage(Item.IsAir ? iconTexture : TextureAssets.Item[Item.type]);
+		Icon.SetImage(Item.IsAir ? IconTexture : TextureAssets.Item[Item.type]);
 	}
 
 	private void UpdateInteraction()
@@ -199,6 +184,6 @@ public class UICustomItemSlot : UIElement
 			Item = item;
 		}
 		
-		Main.CurrentPlayer.mouseInterface = true;
+		Main.LocalPlayer.mouseInterface = true;
 	}
 }
