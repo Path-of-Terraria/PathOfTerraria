@@ -289,3 +289,18 @@ AshWoodSword: {
 	DisplayName: Ash Wood Sword
 	Tooltip: ""
 }
+
+SharpenedStick: {
+	DisplayName: Sharpened Stick
+	Tooltip: ""
+}
+
+IronPilum: {
+	DisplayName: Iron Pilum
+	Tooltip: ""
+}
+
+LeadDangpa: {
+	DisplayName: Lead Dangpa
+	Tooltip: ""
+}
