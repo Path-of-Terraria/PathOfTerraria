@@ -28,6 +28,9 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier Attackspeed = new();
 	public StatModifier ArmorPenetration = new();
 	public StatModifier Knockback = new();
+	public StatModifier CriticalChance = new();
+	public StatModifier CriticalDamage = new();
+	public StatModifier CriticalMultiplier = new();
 	public OnHitDeBuffer Buffer = new();
 
 	// MinorStatsModPlayer:

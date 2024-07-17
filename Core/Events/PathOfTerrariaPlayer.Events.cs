@@ -58,19 +58,33 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 	{
 		OnHitByProjectileEvent?.Invoke(Player, proj, hurtInfo);
 	}
+	
+	/// <summary>
+	/// Use this event for the Player hitting an NPC
+	/// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
+	/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect beyond editting ref variables.
+	/// </summary>
+	public static event ModifyHitNPCDelegate ModifyHitNPCEvent;
+
+	public delegate void ModifyHitNPCDelegate(NPC target, ref NPC.HitModifiers modifiers);
+
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+	{
+		ModifyHitNPCEvent?.Invoke(target, ref modifiers);
+	}
 
 	/// <summary>
 	/// Use this event for the Player hitting an NPC with an Item directly (true melee).
 	/// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
 	/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect beyond editting ref variables.
 	/// </summary>
-	public static event ModifyHitNPCDelegate ModifyHitNPCEvent;
+	public static event ModifyHitNPCWithItemDelegate ModifyHitNPCWithItemEvent;
 
-	public delegate void ModifyHitNPCDelegate(Player player, Item Item, NPC target, ref NPC.HitModifiers modifiers);
+	public delegate void ModifyHitNPCWithItemDelegate(Player player, Item item, NPC target, ref NPC.HitModifiers modifiers);
 
 	public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
 	{
-		ModifyHitNPCEvent?.Invoke(Player, item, target, ref modifiers);
+		ModifyHitNPCWithItemEvent?.Invoke(Player, item, target, ref modifiers);
 	}
 
 	/// <summary>
@@ -94,7 +108,7 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 	/// </summary>
 	public static event OnHitNPCDelegate OnHitNPCEvent;
 
-	public delegate void OnHitNPCDelegate(Player player, Item Item, NPC target, NPC.HitInfo hit, int damageDone);
+	public delegate void OnHitNPCDelegate(Player player, Item item, NPC target, NPC.HitInfo hit, int damageDone);
 
 	public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 	{
@@ -250,6 +264,7 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 
 		return result;
 	}
+	
 	public override void Unload()
 	{
 		CanUseItemEvent = null;
