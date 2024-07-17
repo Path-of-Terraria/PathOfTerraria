@@ -4,7 +4,7 @@ using Terraria.Chat;
 using Terraria.Localization;
 using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems.VanillaModifications;
+namespace PathOfTerraria.Core.Systems.VanillaModifications.BossItemRemovals;
 
 internal class DisableEvilOrbBossSpawning : ModSystem
 {

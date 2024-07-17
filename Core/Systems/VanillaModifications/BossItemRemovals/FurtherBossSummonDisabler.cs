@@ -1,6 +1,6 @@
 ﻿using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems.VanillaModifications;
+namespace PathOfTerraria.Core.Systems.VanillaModifications.BossItemRemovals;
 
 internal class FurtherBossSummonDisabler : ModSystem
 {

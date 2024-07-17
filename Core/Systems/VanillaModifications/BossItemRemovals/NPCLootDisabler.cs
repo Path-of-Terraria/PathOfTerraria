@@ -1,6 +1,6 @@
 ﻿using Terraria.GameContent.ItemDropRules;
 
-namespace PathOfTerraria.Core.Systems.VanillaModifications;
+namespace PathOfTerraria.Core.Systems.VanillaModifications.BossItemRemovals;
 
 internal class NPCLootDisabler : GlobalNPC
 {
