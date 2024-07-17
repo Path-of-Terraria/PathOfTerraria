@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\tModLoader.targets"/>
+	<Import Project="..\tModLoader.targets" />
 	<PropertyGroup>
 		<AssemblyName>PathOfTerraria</AssemblyName>
 		<TargetFramework>net8.0</TargetFramework>
@@ -34,6 +34,6 @@
     </Reference>
 	</ItemGroup>
 	<Target Name="BuildMod" AfterTargets="Build">
-		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)"/>
+		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />
 	</Target>
 </Project>
