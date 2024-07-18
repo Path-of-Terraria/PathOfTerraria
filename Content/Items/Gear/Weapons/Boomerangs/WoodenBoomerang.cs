@@ -1,8 +1,17 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
+﻿using Terraria.ID;
+
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 
 internal class WoodenBoomerang : Boomerang
 {
 	public override float DropChance => 1f;
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		GearAlternatives.Register(Type, ItemID.WoodenBoomerang);
+	}
 
 	public override void Defaults()
 	{

@@ -49,8 +49,14 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 
 public abstract class PoTItem : ModItem
 {
-	internal static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
 	// <Drop chance, item rarity, type of item>
+	internal static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
+
+	/// <summary>
+	/// Same as above, but should be used through <see cref="ManuallyLoadPoTItem(Mod, PoTItem)"/>.<br/>
+	/// Otherwise, used to append manually-added items through <see cref="Mod.AddContent(ILoadable)"/>.
+	/// </summary>
+	private static readonly List<(float dropChance, Type itemType)> ManuallyLoadedItems = [];
 
 	private static bool _addedDetour;
 
@@ -433,9 +439,10 @@ public abstract class PoTItem : ModItem
 	public static void GenerateItemList()
 	{
 		AllItems.Clear();
+
 		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(PoTItem)))
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(PoTItem)) || Attribute.IsDefined(type, typeof(ManuallyLoadPoTItemAttribute)))
 			{
 				continue;
 			}
@@ -457,6 +464,21 @@ public abstract class PoTItem : ModItem
 				AllItems.Add(new(instance.DropChance * 0.05f, Rarity.Rare, type));
 			}
 		}
+
+		foreach ((float dropChance, Type itemType) in ManuallyLoadedItems) 
+		{
+			AllItems.Add(new(dropChance * 0.7f, Rarity.Normal, itemType));
+			AllItems.Add(new(dropChance * 0.25f, Rarity.Magic, itemType));
+			AllItems.Add(new(dropChance * 0.5f, Rarity.Rare, itemType));
+		}
+
+		ManuallyLoadedItems.Clear();
+	}
+
+	public static void ManuallyLoadPoTItem(Mod mod, PoTItem instance)
+	{
+		mod.AddContent(instance);
+		ManuallyLoadedItems.Add((instance.DropChance, instance.GetType()));
 	}
 
 	private const float _magicFindPowerDecrease = 100f;
