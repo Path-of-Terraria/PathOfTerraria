@@ -225,6 +225,8 @@ Javelin: {
 		2: Scourge
 		3: Strike
 		4: Snap
+	}
+}
 
 Grimoire: {
 	AltUse: Command your conjurations to go towards your cursor.
