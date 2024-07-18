@@ -18,7 +18,7 @@ internal class MiscellaneousLoader : ModSystem
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.MonkStaffT1, ItemType.Ranged, "SleepyOctopod"));
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.ScourgeoftheCorruptor, ItemType.Ranged, "ScourgeOfTheCorruptor"));
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.ShadowJoustingLance, ItemType.Ranged, "ShadowJoustingLance"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.MonkStaffT3, ItemType.Ranged, "SkyDragon'sFury"));
+		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.MonkStaffT3, ItemType.Ranged, "SkyDragonsFury"));
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.DayBreak, ItemType.Ranged, "Daybreak"));
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Zenith, ItemType.Ranged, "Zenith"));
 	}

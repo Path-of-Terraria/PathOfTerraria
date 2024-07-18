@@ -449,11 +449,6 @@ Starlight: {
 	Tooltip: ""
 }
 
-"SkyDragon'sFury": {
-	DisplayName: Sky Dragon's Fury
-	Tooltip: ""
-}
-
 Daybreak: {
 	DisplayName: Daybreak
 	Tooltip: ""
@@ -466,5 +461,85 @@ SolarEruption: {
 
 Zenith: {
 	DisplayName: Zenith
+	Tooltip: ""
+}
+
+Mace: {
+	DisplayName: Mace
+	Tooltip: ""
+}
+
+FlamingMace: {
+	DisplayName: Flaming Mace
+	Tooltip: ""
+}
+
+BallOHurt: {
+	DisplayName: Ball O Hurt
+	Tooltip: ""
+}
+
+TheMeatball: {
+	DisplayName: The Meatball
+	Tooltip: ""
+}
+
+BlueMoon: {
+	DisplayName: Blue Moon
+	Tooltip: ""
+}
+
+Sunfury: {
+	DisplayName: Sunfury
+	Tooltip: ""
+}
+
+ChainKnife: {
+	DisplayName: Chain Knife
+	Tooltip: ""
+}
+
+DripplerCrippler: {
+	DisplayName: Drippler Crippler
+	Tooltip: ""
+}
+
+DaoOfPow: {
+	DisplayName: Dao Of Pow
+	Tooltip: ""
+}
+
+FlowerPow: {
+	DisplayName: Flower Pow
+	Tooltip: ""
+}
+
+Anchor: {
+	DisplayName: Anchor
+	Tooltip: ""
+}
+
+ChainGuillotines: {
+	DisplayName: Chain Guillotines
+	Tooltip: ""
+}
+
+KOCannon: {
+	DisplayName: K O Cannon
+	Tooltip: ""
+}
+
+GolemFist: {
+	DisplayName: Golem Fist
+	Tooltip: ""
+}
+
+Flairon: {
+	DisplayName: Flairon
+	Tooltip: ""
+}
+
+SkyDragonsFury: {
+	DisplayName: Sky Dragon's Fury
 	Tooltip: ""
 }
