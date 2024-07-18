@@ -15,6 +15,11 @@ NovaProjectile.DisplayName: Nova Projectile
 CorruptedBattleaxeProjectile.DisplayName: Corrupted Battleaxe Projectile
 GuardianAngelProjectile.DisplayName: Guardian Angel Projectile
 GuardianAngelRay.DisplayName: Guardian Angel Ray
+SharpenedStickThrown.DisplayName: Sharpened Stick
+IronPilumThrown.DisplayName: Iron Pilum
+LeadDangpaThrown.DisplayName: Lead Dangpa
+IronAngonThrown.DisplayName: Iron Angon
+PlatinumGlaiveThrown.DisplayName: Platinum Glaive
 
 OwlSummon: {
 	DisplayName: Owl Summon
