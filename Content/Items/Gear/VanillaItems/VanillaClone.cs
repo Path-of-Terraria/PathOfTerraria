@@ -16,7 +16,14 @@ internal abstract class VanillaClone : Gear
 		base.SetStaticDefaults();
 		GearAlternatives.Register(Type, VanillaItemId);
 	}
-	
+
+	public override void Defaults()
+	{
+		base.Defaults();
+
+		Item.CloneDefaults(VanillaItemId);
+	}
+
 	public override string GeneratePrefix()
 	{
 		return "";

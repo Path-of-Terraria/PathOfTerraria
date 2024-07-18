@@ -323,3 +323,78 @@ AshWoodSword: {
 	DisplayName: Ash Wood Sword
 	Tooltip: ""
 }
+
+EnchantedBoomerang: {
+	DisplayName: Enchanted Boomerang
+	Tooltip: ""
+}
+
+FruitcakeChakram: {
+	DisplayName: Fruitcake Chakram
+	Tooltip: ""
+}
+
+BloodyMachete: {
+	DisplayName: Bloody Machete
+	Tooltip: ""
+}
+
+Shroomerang: {
+	DisplayName: Shroomerang
+	Tooltip: ""
+}
+
+IceBoomerang: {
+	DisplayName: Ice Boomerang
+	Tooltip: ""
+}
+
+ThornChakram: {
+	DisplayName: Thorn Chakram
+	Tooltip: ""
+}
+
+CombatWrench: {
+	DisplayName: Combat Wrench
+	Tooltip: ""
+}
+
+Trimarang: {
+	DisplayName: Trimarang
+	Tooltip: ""
+}
+
+Flamarang: {
+	DisplayName: Flamarang
+	Tooltip: ""
+}
+
+FlyingKnife: {
+	DisplayName: Flying Knife
+	Tooltip: ""
+}
+
+SergeantUnitedShield: {
+	DisplayName: Sergeant United Shield
+	Tooltip: ""
+}
+
+LightDisc: {
+	DisplayName: Light Disc
+	Tooltip: ""
+}
+
+Bananarang: {
+	DisplayName: Bananarang
+	Tooltip: ""
+}
+
+PossessedHatchet: {
+	DisplayName: Possessed Hatchet
+	Tooltip: ""
+}
+
+PaladinsHammer: {
+	DisplayName: Paladins Hammer
+	Tooltip: ""
+}
