@@ -62,7 +62,6 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 	/// <summary>
 	/// Use this event for the Player hitting an NPC
 	/// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
-	/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect beyond editting ref variables.
 	/// </summary>
 	public static event ModifyHitNPCDelegate ModifyHitNPCEvent;
 
@@ -76,7 +75,6 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 	/// <summary>
 	/// Use this event for the Player hitting an NPC with an Item directly (true melee).
 	/// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
-	/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect beyond editting ref variables.
 	/// </summary>
 	public static event ModifyHitNPCWithItemDelegate ModifyHitNPCWithItemEvent;
 
@@ -90,7 +88,6 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 	/// <summary>
 	/// Use this event for Projectile hitting NPCs for situations where a Projectile should be owned by a Player.
 	/// This happens before the onHit hook and should be used if the effect modifies the any of the ref variables otherwise stick to the onHit.
-	/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect beyond editting ref variables.
 	/// </summary>
 	public static event ModifyHitNPCWithProjDelegate ModifyHitNPCWithProjEvent;
 
@@ -104,7 +101,6 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 
 	/// <summary>
 	/// Use this event for the Player hitting an NPC with an Item directly (true melee).
-	/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect for multiPlayer.
 	/// </summary>
 	public static event OnHitNPCDelegate OnHitNPCEvent;
 
@@ -117,7 +113,6 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 
 	/// <summary>
 	/// Use this event for Projectile hitting NPCs for situations where a Projectile should be owned by a Player.
-	/// call StarlightPlayer.SetHitPacketStatus to sync if this has an effect for multiPlayer.
 	/// </summary>
 	public static event OnHitNPCWithProjDelegate OnHitNPCWithProjEvent;
 

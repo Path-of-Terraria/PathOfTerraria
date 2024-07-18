@@ -9,7 +9,7 @@ namespace PathOfTerraria.Content.Passives;
 internal class AddedCriticalStrikeChance : Passive
 {
 	public override string InternalIdentifier => "AddedCriticalStrikeChance";
-	private float AmountPerLevel => 1.02f;
+	private const float AmountPerLevel = 1.02f;
 	
 	public override void BuffPlayer(Player player)
 	{
@@ -23,8 +23,8 @@ internal class AddedCriticalStrikeChance : Passive
 internal class IncreasedCriticalStrikeChance : Passive
 {
 	public override string InternalIdentifier => "IncreasedCriticalStrikeChance";
-	private float AmountPerLevel => 1.05f;
-	
+	private const float AmountPerLevel = 1.05f;
+
 	public override void BuffPlayer(Player player)
 	{
 		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) * (1 + AmountPerLevel * Level);
@@ -38,7 +38,7 @@ internal class IncreasedCriticalStrikeChance : Passive
 internal class IncreasedCriticalStrikeMultiplier : Passive
 {
 	public override string InternalIdentifier => "IncreasedCriticalStrikeMultiplier";
-	private float AmountPerLevel => 1.05f;
+	private const float AmountPerLevel = 1.05f;
 	
 	public override void OnLoad()
 	{
