@@ -348,3 +348,8 @@ PlatinumGlaive: {
 	DisplayName: Platinum Glaive
 	Tooltip: ""
 }
+
+MoltenDangpa: {
+	DisplayName: Molten Dangpa
+	Tooltip: ""
+}

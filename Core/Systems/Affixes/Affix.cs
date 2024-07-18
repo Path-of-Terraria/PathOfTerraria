@@ -22,6 +22,24 @@ public abstract class Affix
 		}
 	}
 
+	/// <summary>
+	/// Called during <see cref="AffixHandler.Load(Mod)"/> on the prototype instance for the instance, 
+	/// stored in <see cref="AffixHandler._itemAffixes"/> or <see cref="AffixHandler._mobAffixes"/>.<br/>
+	/// Should be used for one-time loading tasks, like subscribing to detours or adding content.
+	/// </summary>
+	public virtual void OnLoad()
+	{
+	}
+
+	/// <summary>
+	/// Called during <see cref="AffixHandler.Unload()"/> on the prototype instance for the instance, 
+	/// stored in <see cref="AffixHandler._itemAffixes"/> or <see cref="AffixHandler._mobAffixes"/>.<br/>
+	/// Should be used for one-time unloading tasks, like unsubscribing to detours or removing.
+	/// </summary>
+	public virtual void OnUnload()
+	{
+	}
+
 	public void Save(TagCompound tag)
 	{
 		tag["type"] = GetType().FullName;
@@ -238,6 +256,16 @@ internal class AffixHandler : ILoadable
 
 	public void Unload()
 	{
+		foreach (ItemAffix item in _itemAffixes)
+		{
+			item.OnUnload();
+		}
+
+		foreach (MobAffix item in _mobAffixes)
+		{
+			item.OnUnload();
+		}
+
 		_itemAffixes = null;
 		_mobAffixes = null;
 	}

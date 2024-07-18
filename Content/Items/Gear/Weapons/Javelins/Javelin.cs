@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
+using PathOfTerraria.Core.Systems;
 using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -23,11 +24,17 @@ internal abstract class Javelin : Gear
 	/// </summary>
 	public abstract int DeathDustType { get; }
 
+	public virtual bool AutoloadProjectile => true;
+	public virtual bool UseChargeAlt => true;
+
 	protected override string GearLocalizationCategory => "Javelin";
 
 	public override void Load()
 	{
-		Mod.AddContent(new JavelinThrown(GetType().Name + "Thrown", ItemSize, DeathDustType));
+		if (AutoloadProjectile)
+		{
+			Mod.AddContent(new JavelinThrown(GetType().Name + "Thrown", ItemSize, DeathDustType));
+		}
 	}
 
 	public override void Defaults()
@@ -53,7 +60,11 @@ internal abstract class Javelin : Gear
 		if (player.altFunctionUse == 2)
 		{
 			altUsePlayer.SetAltCooldown(4 * 60, 15);
-			player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
+
+			if (UseChargeAlt)
+			{
+				player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
+			}
 		}
 
 		return true;
@@ -74,23 +85,11 @@ internal abstract class Javelin : Gear
 	{
 		public Vector2 StoredVelocity = Vector2.Zero;
 
-		public override void PostUpdateRunSpeeds()
-		{
-			AltUsePlayer altUsePlayer = Player.GetModPlayer<AltUsePlayer>();
-
-			if (!altUsePlayer.AltFunctionActive)
-			{
-				return;
-			}
-
-			Player.maxFallSpeed = StoredVelocity.Y;
-		}
-
 		public override void PreUpdateMovement()
 		{
 			AltUsePlayer altUsePlayer = Player.GetModPlayer<AltUsePlayer>();
 
-			if (!altUsePlayer.AltFunctionActive)
+			if (!altUsePlayer.AltFunctionActive || Player.HeldItem.ModItem is not Javelin javelin || !javelin.UseChargeAlt)
 			{
 				return;
 			}
