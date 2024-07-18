@@ -475,7 +475,7 @@ FlamingMace: {
 }
 
 BallOHurt: {
-	DisplayName: Ball O Hurt
+	DisplayName: Ball o' Hurt
 	Tooltip: ""
 }
 
@@ -525,7 +525,7 @@ ChainGuillotines: {
 }
 
 KOCannon: {
-	DisplayName: K O Cannon
+	DisplayName: KO Cannon
 	Tooltip: ""
 }
 
