@@ -323,3 +323,8 @@ AshWoodSword: {
 	DisplayName: Ash Wood Sword
 	Tooltip: ""
 }
+
+FlareGun: {
+	DisplayName: Flare Gun
+	Tooltip: ""
+}

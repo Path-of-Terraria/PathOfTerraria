@@ -706,6 +706,11 @@ public abstract class PoTItem : ModItem
 		Affixes.ForEach(n => n.ApplyAffix(entityModifier, this));
 	}
 
+	public void ClearAffixes()
+	{
+		Affixes.Clear();
+	}
+
 	public override void SaveData(TagCompound tag)
 	{
 		tag["type"] = (int)ItemType;

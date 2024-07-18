@@ -95,15 +95,15 @@ DecreasedManaCost: {
 
 AddedCriticalStrikeChance: {
 	Name: Added Critical Strike Chance
-	Tooltip: "Adds 2% flat crit strike chance per level"
+	Tooltip: Adds 2% flat crit strike chance per level
 }
 
 IncreasedCriticalStrikeChance: {
 	Name: Increased Critical Strike Chance
-	Tooltip: "Adds 5% increased crit strike chance per level"
+	Tooltip: Adds 5% increased crit strike chance per level
 }
 
 IncreasedCriticalStrikeMultiplier: {
 	Name: Increased Critical Strike Multiplier
-	Tooltip: "Adds 5% crit strike multipler per level"
+	Tooltip: Adds 5% crit strike multipler per level
 }
