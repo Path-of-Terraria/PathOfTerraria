@@ -2,3 +2,9 @@ Experience: {
 	LevelUp: You've reached level {0}!
 	SkillUp: You have gained 1 skill point. Click the experience bar to open the skill tree.
 }
+
+GrimoireConsume: "{0} consumed!"
+GrimoireMaterial: Used for the Grimoire's Menagerie.
+GrimoireBoon: Traded {0} for coin!
+# This is used for disabling EoW/BoC spawns, instead of spawning the boss it fails and says this.
+EvilBossFailedToSummon: The distant screams fade.

@@ -20,3 +20,29 @@ IronPilumThrown.DisplayName: Iron Pilum
 LeadDangpaThrown.DisplayName: Lead Dangpa
 IronAngonThrown.DisplayName: Iron Angon
 PlatinumGlaiveThrown.DisplayName: Platinum Glaive
+
+OwlSummon: {
+	DisplayName: Owl Summon
+	Description:
+		'''
+		Flies towards your cursor
+		Deals damage on contact
+		'''
+}
+
+BatSummon: {
+	DisplayName: Bat Summon
+	Description: "{$OwlSummon.Description}"
+}
+
+PoacherSummon: {
+	DisplayName: Poacher Summon
+	Description:
+		'''
+		Chases your cursor
+		Jumps toward your cursor if the cursor is above it
+		Deals damage on contact
+		'''
+}
+
+GrimoireVisageEffect.DisplayName: Grimoire Visage Effect

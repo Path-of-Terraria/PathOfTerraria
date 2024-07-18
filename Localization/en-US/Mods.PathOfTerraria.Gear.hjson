@@ -225,5 +225,23 @@ Javelin: {
 		2: Scourge
 		3: Strike
 		4: Snap
+
+Grimoire: {
+	AltUse: Command your conjurations to go towards your cursor.
+
+	Prefixes: {
+		0: Ancient
+		1: Forsaken
+		2: Cursed
+		3: Vile
+		4: Jealous
+	}
+
+	Suffixes: {
+		0: of Sin
+		1: of Death
+		2: of Fury
+		3: of Limbo
+		4: of Hell
 	}
 }
