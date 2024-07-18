@@ -398,3 +398,73 @@ PaladinsHammer: {
 	DisplayName: Paladins Hammer
 	Tooltip: ""
 }
+
+Terragrim: {
+	DisplayName: Terragrim
+	Tooltip: ""
+}
+
+Arkhalis: {
+	DisplayName: Arkhalis
+	Tooltip: ""
+}
+
+JoustingLance: {
+	DisplayName: Jousting Lance
+	Tooltip: ""
+}
+
+ShadowFlameKnife: {
+	DisplayName: Shadow Flame Knife
+	Tooltip: ""
+}
+
+HallowedJoustingLance: {
+	DisplayName: Hallowed Jousting Lance
+	Tooltip: ""
+}
+
+SleepyOctopod: {
+	DisplayName: Sleepy Octopod
+	Tooltip: ""
+}
+
+ScourgeOfTheCorruptor: {
+	DisplayName: Scourge of the Corruptor
+	Tooltip: ""
+}
+
+VampireKnives: {
+	DisplayName: Vampire Knives
+	Tooltip: ""
+}
+
+ShadowJoustingLance: {
+	DisplayName: Shadow Jousting Lance
+	Tooltip: ""
+}
+
+Starlight: {
+	DisplayName: Starlight
+	Tooltip: ""
+}
+
+"SkyDragon'sFury": {
+	DisplayName: Sky Dragon's Fury
+	Tooltip: ""
+}
+
+Daybreak: {
+	DisplayName: Daybreak
+	Tooltip: ""
+}
+
+SolarEruption: {
+	DisplayName: Solar Eruption
+	Tooltip: ""
+}
+
+Zenith: {
+	DisplayName: Zenith
+	Tooltip: ""
+}
