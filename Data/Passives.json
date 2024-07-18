@@ -108,5 +108,47 @@
 			"x": 0,
 			"y": 300
 		}
+	},
+	{
+		"internalIdentifier": "AddedCriticalStrikeChance",
+		"referenceId": 8,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 3
+			}
+		],
+		"position": {
+			"x": 100,
+			"y": 300
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedCriticalStrikeMultiplier",
+		"referenceId": 9,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 8
+			}
+		],
+		"position": {
+			"x": 200,
+			"y": 300
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedCriticalStrikeChance",
+		"referenceId": 10,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 9
+			}
+		],
+		"position": {
+			"x": 300,
+			"y": 300
+		}
 	}
 ]
