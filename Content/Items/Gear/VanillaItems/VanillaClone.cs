@@ -2,6 +2,7 @@
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
@@ -10,7 +11,10 @@ internal abstract class VanillaClone : Gear
 	public override float DropChance => 0f;
 	protected virtual short VanillaItemId => ItemID.None;
 	public override string Texture => "Terraria/Images/Item_" + VanillaItemId;
-	
+
+	public override LocalizedText DisplayName => Lang.GetItemName(VanillaItemId);
+	public override LocalizedText Tooltip => LocalizedText.Empty;
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
