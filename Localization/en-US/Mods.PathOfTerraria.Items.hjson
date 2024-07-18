@@ -323,3 +323,223 @@ AshWoodSword: {
 	DisplayName: Ash Wood Sword
 	Tooltip: ""
 }
+
+EnchantedBoomerang: {
+	DisplayName: Enchanted Boomerang
+	Tooltip: ""
+}
+
+FruitcakeChakram: {
+	DisplayName: Fruitcake Chakram
+	Tooltip: ""
+}
+
+BloodyMachete: {
+	DisplayName: Bloody Machete
+	Tooltip: ""
+}
+
+Shroomerang: {
+	DisplayName: Shroomerang
+	Tooltip: ""
+}
+
+IceBoomerang: {
+	DisplayName: Ice Boomerang
+	Tooltip: ""
+}
+
+ThornChakram: {
+	DisplayName: Thorn Chakram
+	Tooltip: ""
+}
+
+CombatWrench: {
+	DisplayName: Combat Wrench
+	Tooltip: ""
+}
+
+Trimarang: {
+	DisplayName: Trimarang
+	Tooltip: ""
+}
+
+Flamarang: {
+	DisplayName: Flamarang
+	Tooltip: ""
+}
+
+FlyingKnife: {
+	DisplayName: Flying Knife
+	Tooltip: ""
+}
+
+SergeantUnitedShield: {
+	DisplayName: Sergeant United Shield
+	Tooltip: ""
+}
+
+LightDisc: {
+	DisplayName: Light Disc
+	Tooltip: ""
+}
+
+Bananarang: {
+	DisplayName: Bananarang
+	Tooltip: ""
+}
+
+PossessedHatchet: {
+	DisplayName: Possessed Hatchet
+	Tooltip: ""
+}
+
+PaladinsHammer: {
+	DisplayName: Paladins Hammer
+	Tooltip: ""
+}
+
+Terragrim: {
+	DisplayName: Terragrim
+	Tooltip: ""
+}
+
+Arkhalis: {
+	DisplayName: Arkhalis
+	Tooltip: ""
+}
+
+JoustingLance: {
+	DisplayName: Jousting Lance
+	Tooltip: ""
+}
+
+ShadowFlameKnife: {
+	DisplayName: Shadow Flame Knife
+	Tooltip: ""
+}
+
+HallowedJoustingLance: {
+	DisplayName: Hallowed Jousting Lance
+	Tooltip: ""
+}
+
+SleepyOctopod: {
+	DisplayName: Sleepy Octopod
+	Tooltip: ""
+}
+
+ScourgeOfTheCorruptor: {
+	DisplayName: Scourge of the Corruptor
+	Tooltip: ""
+}
+
+VampireKnives: {
+	DisplayName: Vampire Knives
+	Tooltip: ""
+}
+
+ShadowJoustingLance: {
+	DisplayName: Shadow Jousting Lance
+	Tooltip: ""
+}
+
+Starlight: {
+	DisplayName: Starlight
+	Tooltip: ""
+}
+
+Daybreak: {
+	DisplayName: Daybreak
+	Tooltip: ""
+}
+
+SolarEruption: {
+	DisplayName: Solar Eruption
+	Tooltip: ""
+}
+
+Zenith: {
+	DisplayName: Zenith
+	Tooltip: ""
+}
+
+Mace: {
+	DisplayName: Mace
+	Tooltip: ""
+}
+
+FlamingMace: {
+	DisplayName: Flaming Mace
+	Tooltip: ""
+}
+
+BallOHurt: {
+	DisplayName: Ball o' Hurt
+	Tooltip: ""
+}
+
+TheMeatball: {
+	DisplayName: The Meatball
+	Tooltip: ""
+}
+
+BlueMoon: {
+	DisplayName: Blue Moon
+	Tooltip: ""
+}
+
+Sunfury: {
+	DisplayName: Sunfury
+	Tooltip: ""
+}
+
+ChainKnife: {
+	DisplayName: Chain Knife
+	Tooltip: ""
+}
+
+DripplerCrippler: {
+	DisplayName: Drippler Crippler
+	Tooltip: ""
+}
+
+DaoOfPow: {
+	DisplayName: Dao Of Pow
+	Tooltip: ""
+}
+
+FlowerPow: {
+	DisplayName: Flower Pow
+	Tooltip: ""
+}
+
+Anchor: {
+	DisplayName: Anchor
+	Tooltip: ""
+}
+
+ChainGuillotines: {
+	DisplayName: Chain Guillotines
+	Tooltip: ""
+}
+
+KOCannon: {
+	DisplayName: KO Cannon
+	Tooltip: ""
+}
+
+GolemFist: {
+	DisplayName: Golem Fist
+	Tooltip: ""
+}
+
+Flairon: {
+	DisplayName: Flairon
+	Tooltip: ""
+}
+
+SkyDragonsFury: {
+	DisplayName: Sky Dragon's Fury
+	Tooltip: ""
+}
