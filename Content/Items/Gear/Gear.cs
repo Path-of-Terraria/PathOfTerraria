@@ -72,26 +72,26 @@ internal abstract class Gear : PoTItem
 		_sockets.Where(s => s is not null).ToList().ForEach(s => s.UpdateEquip(player, Item));
 	}
 
-	public sealed override void SwapItemModifiers(EntityModifier SawpItemModifier)
+	public sealed override void SwapItemModifiers(EntityModifier SwapItemModifier)
 	{
 		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active)
 		{
-			(Main.LocalPlayer.armor[0].ModItem as Gear).ApplyAffixes(SawpItemModifier);
+			(Main.LocalPlayer.armor[0].ModItem as Gear).ApplyAffixes(SwapItemModifier, Main.LocalPlayer);
 		}
 		else if (Item.bodySlot >= 0 && Main.LocalPlayer.armor[1].active)
 		{
-			(Main.LocalPlayer.armor[1].ModItem as Gear).ApplyAffixes(SawpItemModifier);
+			(Main.LocalPlayer.armor[1].ModItem as Gear).ApplyAffixes(SwapItemModifier, Main.LocalPlayer);
 		}
 		else if (Item.legSlot >= 0 && Main.LocalPlayer.armor[2].active)
 		{
-			(Main.LocalPlayer.armor[2].ModItem as Gear).ApplyAffixes(SawpItemModifier);
+			(Main.LocalPlayer.armor[2].ModItem as Gear).ApplyAffixes(SwapItemModifier, Main.LocalPlayer);
 		}
 		// missing accessories
 		else if (Item.damage > 0)
 		{
 			if (Main.LocalPlayer.inventory[0].ModItem is Gear)
 			{
-				(Main.LocalPlayer.inventory[0].ModItem as Gear).ApplyAffixes(SawpItemModifier);
+				(Main.LocalPlayer.inventory[0].ModItem as Gear).ApplyAffixes(SwapItemModifier, Main.LocalPlayer);
 			}
 		}
 	}
