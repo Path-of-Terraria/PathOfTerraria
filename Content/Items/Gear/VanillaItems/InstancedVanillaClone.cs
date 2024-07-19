@@ -9,6 +9,7 @@ internal class InstancedVanillaClone(short itemId, ItemType itemType, string nam
 	protected override bool CloneNewInstances => true;
 	public override string Name => InstanceName;
 	public override float DropChance => 0f;
+	public override bool IsUnique => true;
 
 	protected string InstanceName = name;
 	protected short ItemId = itemId;
