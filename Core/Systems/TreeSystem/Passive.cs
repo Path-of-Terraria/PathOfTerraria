@@ -30,7 +30,7 @@ internal abstract class Passive
 	/// This is used to map the JSON data to the correct passive.
 	/// This is also what's used to grab the texture of this passive.
 	/// </summary>
-	public virtual string InternalIdentifier => "NONE";
+	public virtual string InternalIdentifier => GetType().Name;
 	
 	// This is used to create a reference to the created passive for connections
 	public int ReferenceId;

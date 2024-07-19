@@ -150,5 +150,19 @@
 			"x": 300,
 			"y": 300
 		}
+	},
+	{
+		"internalIdentifier": "ArmorPenetrationPassive",
+		"referenceId": 11,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 4
+			}
+		],
+		"position": {
+			"x": 300,
+			"y": 100
+		}
 	}
 ]
