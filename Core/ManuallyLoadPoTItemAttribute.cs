@@ -1,6 +1,6 @@
 ﻿namespace PathOfTerraria.Core;
 
-[AttributeUsage(AttributeTargets.Class)]
+[AttributeUsage(AttributeTargets.Class, Inherited = true)]
 internal class ManuallyLoadPoTItemAttribute : Attribute
 {
 }
