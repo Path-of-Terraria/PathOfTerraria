@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Mechanics;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -28,6 +29,8 @@ public class Nova : Skill
 
 		int damage = (int)(player.HeldItem.damage * (2 + 0.5f * Level));
 		Projectile.NewProjectile(new EntitySource_Misc("NovaSkill"), player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, 2);
+
+		SoundEngine.PlaySound(player.HeldItem.UseSound, player.Center);
 	}
 
 	public override bool CanUseSkill(Player player)

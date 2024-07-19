@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Core.Mechanics;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -34,6 +35,8 @@ public class RainOfArrows : Skill
 		player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int _, true);
 		damage = (int)(damage * (0.7f + Level * 0.15f));
 
+		SoundEngine.PlaySound(player.HeldItem.UseSound, player.Center);
+
 		if (projToShoot <= 0)
 		{
 			return;
@@ -46,6 +49,12 @@ public class RainOfArrows : Skill
 			int proj = Projectile.NewProjectile(new EntitySource_Misc("RainOfArrows"), pos, velocity, projToShoot, damage, 2);
 
 			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj]);
+			Main.projectile[proj].extraUpdates--;
+
+			if (Main.projectile[proj].extraUpdates < 0)
+			{
+				Main.projectile[proj].extraUpdates = 0;
+			}
 		}
 	}
 
@@ -85,10 +94,15 @@ public class RainOfArrows : Skill
 					projectile.Center = RainTarget + offset * 400;
 					projectile.velocity = -offset * _originalMagnitude;
 
-					for (int i = 0; i < 3; ++i)
+					if (Main.netMode != NetmodeID.Server)
 					{
-						Vector2 velocity = -projectile.velocity.RotatedByRandom(0.2f) * 0.3f;
-						Dust.NewDust(projectile.Center, 1, 1, DustID.AncientLight, velocity.X, velocity.Y);
+						SoundEngine.PlaySound(SoundID.Item7, projectile.Center);
+
+						for (int i = 0; i < 3; ++i)
+						{
+							Vector2 velocity = -projectile.velocity.RotatedByRandom(0.2f) * 0.3f;
+							Dust.NewDust(projectile.Center, 1, 1, DustID.AncientLight, velocity.X, velocity.Y);
+						}
 					}
 
 					projectile.netUpdate = true;

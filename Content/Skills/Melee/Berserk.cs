@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core.Mechanics;
+using Terraria.Audio;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Melee;
 
@@ -10,7 +12,7 @@ public class Berserk : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = (60 - 5 * Level) * 60;
+		Cooldown = MaxCooldown = 2;// (60 - 5 * Level) * 60;
 		Timer = 0;
 		ManaCost = 10 + 5 * level;
 		Duration = (15 + 5 * Level) * 60;
@@ -27,5 +29,7 @@ public class Berserk : Skill
 		player.statMana -= ManaCost;
 		player.AddBuff(ModContent.BuffType<RageBuff>(), Duration);
 		Timer = Cooldown;
+
+		SoundEngine.PlaySound(SoundID.DD2_OgreAttack with { Volume = 0.5f, PitchRange = (0.6f, 0.8f)}, player.Center);
 	}
 }
