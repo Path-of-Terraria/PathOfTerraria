@@ -34,5 +34,6 @@ internal class SwordLoader : ModSystem
 		AddBroadsword(ItemID.AshWoodSword, "AshWoodSword");
 		AddBroadsword(ItemID.BatBat, "BatBat");
 		AddBroadsword(ItemID.BeamSword, "BeamSword");
+		AddBroadsword(ItemID.BeeKeeper, "BeeKeeper");
 	}
 }
