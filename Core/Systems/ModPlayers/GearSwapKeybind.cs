@@ -1,3 +1,5 @@
+using Microsoft.Xna.Framework.Input;
+
 namespace PathOfTerraria.Core.Systems.ModPlayers;
 
 public sealed class GearSwapKeybind : ModSystem
@@ -6,7 +8,7 @@ public sealed class GearSwapKeybind : ModSystem
 
 	public override void Load()
 	{
-		SwapKeybind = KeybindLoader.RegisterKeybind(Mod, $"{nameof(PathOfTerraria)}:{nameof(GearSwapKeybind)}", "P");
+		SwapKeybind = KeybindLoader.RegisterKeybind(Mod, $"{nameof(PathOfTerraria)}:{nameof(GearSwapKeybind)}", Keys.Z);
 	}
 
 	public override void Unload()

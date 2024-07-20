@@ -5,12 +5,12 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.GUI.Elements;
 
 /// <summary>
-///		Provides a <see cref="UIImage"/> that displays a tooltip on hover.
+///     Provides a <see cref="UIImage" /> that displays a tooltip on hover.
 /// </summary>
 public class UITooltipImage : UIImage
 {
 	/// <summary>
-	///		The localization key for the image's tooltip.
+	///     The localization key for the image's tooltip.
 	/// </summary>
 	public string Key;
 
@@ -27,7 +27,7 @@ public class UITooltipImage : UIImage
 		{
 			return;
 		}
-		
+
 		Main.instance.MouseText(Language.GetTextValue(Key));
 	}
 }
