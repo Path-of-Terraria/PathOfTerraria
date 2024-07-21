@@ -72,9 +72,6 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 
 		Background.Rotation = MathHelper.SmoothStep(Background.Rotation, IsMouseHovering ? ActiveRotation : InactiveRotation, Smoothness);
 		Background.ImageScale = MathHelper.SmoothStep(Background.ImageScale, IsMouseHovering ? ActiveScale : InactiveScale, Smoothness);
-
-		Icon.Rotation = MathHelper.SmoothStep(Icon.Rotation, IsMouseHovering ? ActiveRotation : InactiveRotation, Smoothness);
-		Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, IsMouseHovering ? ActiveScale : InactiveScale, Smoothness);
 	}
 
 	protected override void UpdateIcon()
@@ -82,11 +79,16 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 		if (!Item.IsAir)
 		{
 			Texture2D texture = TextureAssets.Item[Item.type].Value;
-			Rectangle frame = ((Main.itemAnimations[Item.type] == null) ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture));
+			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
 			
 			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 24f, ref frame, out _, out var finalDrawScale);
 
 			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, finalDrawScale, Smoothness);
+		}
+		else
+		{
+			Icon.Rotation = MathHelper.SmoothStep(Icon.Rotation, IsMouseHovering ? ActiveRotation : InactiveRotation, Smoothness);
+			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, IsMouseHovering ? ActiveScale : InactiveScale, Smoothness);
 		}
 
 		Icon.SetImage(Item.IsAir ? IconTexture : TextureAssets.Item[Item.type]);

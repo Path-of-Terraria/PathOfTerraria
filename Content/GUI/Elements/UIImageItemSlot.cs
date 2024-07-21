@@ -173,7 +173,7 @@ public class UIImageItemSlot : UIElement
 		if (!Item.IsAir)
 		{
 			Texture2D texture = TextureAssets.Item[Item.type].Value;
-			Rectangle frame = ((Main.itemAnimations[Item.type] == null) ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture));
+			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
 			
 			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 32f, ref frame, out _, out var finalDrawScale);
 
