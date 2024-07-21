@@ -1,6 +1,5 @@
 using System.Linq;
 using PathOfTerraria.Core.Systems.ModPlayers;
-using PathOfTerraria.Helpers;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -17,10 +16,10 @@ namespace PathOfTerraria.Core.Systems.Players;
 public sealed class GearSwapManager : ModPlayer
 {
 	/// <summary>
-	///		The player's gear inventory, reserved for a weapon and an offhand accessory.
+	///     The player's gear inventory, reserved for a weapon and an offhand accessory.
 	/// </summary>
-	public Item?[] Inventory = new[] { new Item(ItemID.None), new Item(ItemID.None) };
-	
+	public Item?[] Inventory = { new Item(ItemID.None), new Item(ItemID.None) };
+
 	public override void UpdateEquips()
 	{
 		if (!GearSwapKeybind.SwapKeybind.JustPressed)
@@ -28,15 +27,15 @@ public sealed class GearSwapManager : ModPlayer
 			return;
 		}
 
-		var previousWeapon = Player.inventory[0];
-		var previousOffhand = Player.armor[6];
+		Item previousWeapon = Player.inventory[0];
+		Item previousOffhand = Player.armor[6];
 
 		Player.inventory[0] = Inventory[0];
 		Player.armor[6] = Inventory[1];
 
 		Inventory[0] = previousWeapon;
 		Inventory[1] = previousOffhand;
-		
+
 		SoundEngine.PlaySound(
 			SoundID.MenuTick with
 			{

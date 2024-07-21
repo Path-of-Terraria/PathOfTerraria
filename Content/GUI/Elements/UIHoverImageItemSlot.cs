@@ -80,8 +80,8 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 		{
 			Texture2D texture = TextureAssets.Item[Item.type].Value;
 			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
-			
-			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 24f, ref frame, out _, out var finalDrawScale);
+
+			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 24f, ref frame, out _, out float finalDrawScale);
 
 			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, finalDrawScale, Smoothness);
 		}

@@ -157,7 +157,7 @@ public class UIImageItemSlot : UIElement
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
-		
+
 		UpdateIcon();
 	}
 
@@ -174,8 +174,8 @@ public class UIImageItemSlot : UIElement
 		{
 			Texture2D texture = TextureAssets.Item[Item.type].Value;
 			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
-			
-			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 32f, ref frame, out _, out var finalDrawScale);
+
+			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 32f, ref frame, out _, out float finalDrawScale);
 
 			Icon.ImageScale = finalDrawScale;
 		}
