@@ -834,10 +834,7 @@ public sealed class UIGearInventory : UIState
 
 		firstLoadout.OnUpdate += (_) => UpdateLoadoutIcon(firstLoadout, 0);
 
-		firstLoadout.OnLeftClick += (_, _) =>
-		{
-			Player.TrySwitchingLoadout(0);
-		};
+		firstLoadout.OnLeftClick += (_, _) => Player.TrySwitchingLoadout(0);
 
 		loadoutRoot.Append(firstLoadout);
 
@@ -850,10 +847,7 @@ public sealed class UIGearInventory : UIState
 
 		secondLoadout.OnUpdate += (_) => UpdateLoadoutIcon(secondLoadout, 1);
 
-		secondLoadout.OnLeftClick += (_, _) =>
-		{
-			Player.TrySwitchingLoadout(1);
-		};
+		secondLoadout.OnLeftClick += (_, _) => Player.TrySwitchingLoadout(1);
 
 		loadoutRoot.Append(secondLoadout);
 
@@ -866,10 +860,7 @@ public sealed class UIGearInventory : UIState
 
 		thirdLoadout.OnUpdate += (_) => UpdateLoadoutIcon(thirdLoadout, 2);
 
-		thirdLoadout.OnLeftClick += (_, _) =>
-		{
-			Player.TrySwitchingLoadout(2);
-		};
+		thirdLoadout.OnLeftClick += (_, _) => Player.TrySwitchingLoadout(2);
 
 		loadoutRoot.Append(thirdLoadout);
 

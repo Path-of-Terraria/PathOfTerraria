@@ -80,7 +80,7 @@ public class UIImageItemSlot : UIElement
 	/// </summary>
 	public Item[]? Inventory;
 
-	protected Item item = new(ItemID.None);
+	private Item item = new(ItemID.None);
 
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
