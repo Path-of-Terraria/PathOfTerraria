@@ -8,7 +8,7 @@ public sealed class GearSwapKeybind : ModSystem
 
 	public override void Load()
 	{
-		SwapKeybind = KeybindLoader.RegisterKeybind(Mod, $"{nameof(PathOfTerraria)}:{nameof(GearSwapKeybind)}", Keys.Z);
+		SwapKeybind = KeybindLoader.RegisterKeybind(Mod, "GearSwap", Keys.Z);
 	}
 
 	public override void Unload()
