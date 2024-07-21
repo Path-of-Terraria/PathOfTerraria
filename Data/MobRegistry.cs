@@ -23,22 +23,15 @@ public class MobRegistry : ILoadable
 	}
 	
 	public virtual void Unload() { }
-	
+
 	/// <summary>
 	/// Provides a safe way of getting MobData from the MobData map.
 	/// </summary>
 	/// <param name="id"></param>
 	/// <returns></returns>
-	public static MobData TryGetMobData(int id)
+	public static bool TryGetMobData(int id, out MobData data)
 	{
-		try
-		{
-			return _mobData[id];
-		} catch (KeyNotFoundException)
-		{
-			Console.WriteLine($"MobData with path {id} not found");
-			return null;
-		}
+		return _mobData.TryGetValue(id, out data);
 	}
 	
 	/// <summary>

@@ -131,4 +131,37 @@ internal class SkillPlayer : ModPlayer
 			Skills[i] = skill;
 		}
 	}
+	
+	public bool TryAddSkill(Skill skill)
+	{
+		for (int i = 0; i < Skills.Length; i++)
+		{
+			if (Skills[i] == null)
+			{
+				Skills[i] = skill;
+				Skills[i].LevelTo(Skills[i].Level);
+				Main.NewText("Skill added successfully.");
+				return true;
+			}
+		}
+
+		Main.NewText("No available space to add the skill.");
+		return false;
+	}
+
+	public bool TryRemoveSkill(Skill skill)
+	{
+		for (int i = 0; i < Skills.Length; i++)
+		{
+			if (Skills[i] != null && Skills[i].GetType() == skill.GetType())
+			{
+				Skills[i] = null;
+				Main.NewText("Skill removed successfully.");
+				return true;
+			}
+		}
+
+		Main.NewText("Skill not found in the current skill set.");
+		return false;
+	}
 }

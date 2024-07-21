@@ -14,8 +14,8 @@ internal class CopperBroadsword : Sword
 	{
 		base.Defaults();
 		Item.damage = 8;
-		Item.width = 46;
-		Item.height = 46;
+		Item.width = 42;
+		Item.height = 42;
 		Item.UseSound = SoundID.Item1;
 		ItemType = ItemType.Sword;
 	}

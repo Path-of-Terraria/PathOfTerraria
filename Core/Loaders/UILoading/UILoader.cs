@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PathOfTerraria.Content.GUI.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.UI;
@@ -13,12 +14,12 @@ class UILoader : ModSystem
 	/// <summary>
 	/// The collection of automatically craetaed UserInterfaces for SmartUIStates.
 	/// </summary>
-	public static List<UserInterface> UserInterfaces = new();
+	public static List<UserInterface> UserInterfaces = [];
 
 	/// <summary>
 	/// The collection of all automatically loaded SmartUIStates.
 	/// </summary>
-	public static List<SmartUIState> UIStates = new();
+	public static List<SmartUIState> UIStates = [];
 
 	/// <summary>
 	/// Uses reflection to scan through and find all types extending SmartUIState that arent abstract, and loads an instance of them.
@@ -30,8 +31,8 @@ class UILoader : ModSystem
 			return;
 		}
 
-		UserInterfaces = new List<UserInterface>();
-		UIStates = new List<SmartUIState>();
+		UserInterfaces = [];
+		UIStates = [];
 
 		foreach (Type t in Mod.Code.GetTypes())
 		{
@@ -52,6 +53,16 @@ class UILoader : ModSystem
 			userInterface.SetState(state);
 			state.UserInterface = userInterface;
 			UserInterfaces?.Add(userInterface);
+		}
+
+		Main.OnResolutionChanged += UpdateUIStateForResolutionChange;
+	}
+
+	private void UpdateUIStateForResolutionChange(Vector2 obj)
+	{
+		foreach (SmartUIState item in UIStates)
+		{
+			item.Recalculate();
 		}
 	}
 
@@ -85,6 +96,25 @@ class UILoader : ModSystem
 			}, scale));
 	}
 
+	private SmartUIElement GetSmartUiParent(UIElement e)
+	{
+		if (e is null)
+		{
+			return null;
+		}
+
+		if (e is SmartUIElement es && e.Parent is not SmartUIElement)
+		{
+			return es;
+		}
+
+		return GetSmartUiParent(e.Parent);
+	}
+
+	private bool _mouseState = false;
+	private UIState _blockAt = null;
+	private SmartUIElement _blockAtE = null;
+
 	/// <summary>
 	/// Handles updating the UI states correctly
 	/// </summary>
@@ -96,7 +126,39 @@ class UILoader : ModSystem
 			if (eachState?.CurrentState != null && ((SmartUIState)eachState.CurrentState).Visible)
 			{
 				eachState.Update(gameTime);
+
+				UIElement e = eachState.CurrentState.GetElementAt(Main.MouseScreen);
+				SmartUIElement se = GetSmartUiParent(e);
+
+				if (_blockAt == eachState.CurrentState || e is not null && e is not UIState)
+				{
+					Main.blockMouse = true;
+					BlockClickItem.Block = true;
+					_blockAt = eachState.CurrentState;
+
+					if (se is not null)
+					{
+						_blockAtE ??= se;
+
+						_blockAtE.MouseContained.Right = Main.mouseRight;
+						_blockAtE.MouseContained.Left = Main.mouseLeft;
+					}
+				}
 			}
+		}
+
+		_mouseState = Main.mouseLeft || Main.mouseRight;
+
+		if (!_mouseState)
+		{
+			_blockAt = null;
+
+			if (_blockAtE is not null)
+			{
+				_blockAtE.MouseContained = new();
+			}
+
+			_blockAtE = null;
 		}
 	}
 

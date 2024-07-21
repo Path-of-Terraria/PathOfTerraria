@@ -33,3 +33,11 @@ internal class DamageReflectionPassive : Passive
 		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ReflectedDamageModifier.Base += 10 * Level;
 	}
 }
+
+internal class ArmorPenetrationPassive : Passive
+{
+	public override void BuffPlayer(Player player)
+	{
+		player.GetArmorPenetration(DamageClass.Melee) *= 1 + 0.15f * Level;
+	}
+}

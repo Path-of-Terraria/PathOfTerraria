@@ -1,23 +1,28 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Systems.Affixes;
+﻿using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Data;
 using PathOfTerraria.Data.Models;
 using System.Collections.Generic;
-using Terraria.DataStructures;
+using System.IO;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.MobSystem;
 
 internal class MobAprgSystem : GlobalNPC
 {
-	private List<MobAffix> _affixes = [];
-	private readonly Player _lastPlayerHit = null;
-	public int? Experience;
 	public override bool InstancePerEntity => true;
-	public Rarity Rarity = Rarity.Magic;
 
-	private float DropRarity
+	public int? Experience;
+	public Rarity Rarity = Rarity.Normal;
+
+	private readonly Player _lastPlayerHit = null;
+
+	private List<MobAffix> _affixes = [];
+	private bool _synced = false;
+
 	// should somehow work together with magic find (that i assume we will have) to increase rarity / if its a unique
+	private float DropRarity
 	{
 		get
 		{
@@ -95,12 +100,12 @@ internal class MobAprgSystem : GlobalNPC
 		while (rand > 99)
 		{
 			rand -= 100;
-			PoTItem.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+			ItemSpawner.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
 		}
 
 		if (rand < 25) // 10
 		{
-			PoTItem.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+			ItemSpawner.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
 		}
 	}
 
@@ -111,19 +116,29 @@ internal class MobAprgSystem : GlobalNPC
 		return doKill;
 	}
 
-	public override void OnSpawn(NPC npc, IEntitySource source)
+	public override void SetDefaults(NPC npc)
 	{
-		if (npc.friendly || npc.boss) //We only want to trigger these changes on hostile non-boss mobs
+		if (npc.friendly || npc.boss || Main.gameMenu) //We only want to trigger these changes on hostile non-boss mobs in-game
 		{
 			return;
 		}
-		
-		Rarity = Main.rand.Next(100) switch
+
+		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			<2 => Rarity.Rare, //2% Rare
-			<17 => Rarity.Magic, //15% Magic 
-			_ => Rarity.Normal,
-		};
+			Rarity = Main.rand.Next(100) switch
+			{
+				< 2 => Rarity.Rare, //2% Rare
+				< 17 => Rarity.Magic, //15% Magic 
+				_ => Rarity.Normal,
+			};
+
+			ApplyRarity(npc);
+			npc.netUpdate = true;
+		}
+	}
+
+	public void ApplyRarity(NPC npc)
+	{
 		npc.GivenName = Rarity switch
 		{
 			Rarity.Magic or Rarity.Rare => $"{Enum.GetName(Rarity)} - {npc.GivenOrTypeName}",
@@ -131,8 +146,7 @@ internal class MobAprgSystem : GlobalNPC
 			_ => npc.GivenName
 		};
 
-		MobData mobData = MobRegistry.TryGetMobData(npc.type);
-		if (mobData != null)
+		if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 		{
 			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
 			if (entry != null)
@@ -145,10 +159,16 @@ internal class MobAprgSystem : GlobalNPC
 
 				if (entry.Scale != null)
 				{
-					npc.scale *= (float) entry.Scale;	
+					npc.scale *= (float)entry.Scale;
 				}
 			}
 		}
+#if DEBUG
+		else
+		{
+			Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({Lang.GetNPCNameValue(npc.type)})!", Color.Red);
+		}
+#endif
 
 		if (Rarity == Rarity.Normal || Rarity == Rarity.Unique)
 		{
@@ -173,20 +193,38 @@ internal class MobAprgSystem : GlobalNPC
 				npc.color = new Color(0, 0, 255);
 				npc.lifeMax *= 2; //Magic mobs get 100% increased life
 				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
-				npc.damage = Convert.ToInt32(npc.damage * 1.1); //Magic mobs get 10% increase damage
+				npc.damage = (int)(npc.damage * 1.1f); //Magic mobs get 10% increase damage
 				break;
 			case Rarity.Rare:
 				npc.color = new Color(255, 255, 0);
 				npc.lifeMax *= 3; //Rare mobs get 200% Increased Life
 				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
-				npc.damage = Convert.ToInt32(npc.damage * 1.2); //Magic mobs get 20% increase damage
+				npc.damage = (int)(npc.damage * 1.2f); //Magic mobs get 20% increase damage
 				break;
 			case Rarity.Unique:
 				break;
 			default:
-				throw new ArgumentOutOfRangeException();
+				throw new InvalidOperationException("Invalid rarity!");
 		}
 
 		_affixes.ForEach(a => a.PostRarity(npc));
+		_synced = true;
+	}
+
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+	{
+		binaryWriter.Write((byte)Rarity);
+	}
+
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+	{
+		Rarity = (Rarity)binaryReader.ReadByte();
+
+		// Only apply rarity the first time the rarity is sent. 
+		// This may need to be changed if we want variable rarity for some reason.
+		if (Rarity != Rarity.Normal && !_synced)
+		{
+			ApplyRarity(npc);
+		}
 	}
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
@@ -20,9 +21,9 @@ internal abstract class Bow : Gear
 
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
+	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Bow.AltUse");
 
 	protected override string GearLocalizationCategory => "Bow";
-
 	protected virtual int AnimationSpeed => 6;
 	protected virtual float CooldownTimeInSeconds => 5;
 

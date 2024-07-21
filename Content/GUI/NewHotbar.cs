@@ -285,15 +285,49 @@ public class HijackHotbarClick : ModSystem
 		Main.LocalPlayer.hbLocked = true;
 		orig(self);
 		Main.LocalPlayer.hbLocked = hbLocked;
+		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
 
 		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
 		{
+			DrawMainItemHover(hbLocked);
+
 			return;
 		}
 
-		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
+		DrawBuildingHotbarTooltips(hbLocked, back);
+	}
 
-		for (int i = 2; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
+	private static void DrawMainItemHover(bool hbLocked)
+	{
+		const int FirstSlot = 0;
+
+		if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
+		{
+			var pos = new Rectangle(26 * (FirstSlot + 1) - 4, 30, 60, 60);
+
+			if (pos.Contains(Main.MouseScreen.ToPoint()))
+			{
+				Main.LocalPlayer.mouseInterface = true;
+				Main.LocalPlayer.cursorItemIconEnabled = false;
+				Main.hoverItemName = Main.LocalPlayer.inventory[FirstSlot].AffixName();
+				Main.rare = Main.LocalPlayer.inventory[FirstSlot].rare;
+
+				if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
+				{
+					Main.LocalPlayer.changeItem = FirstSlot;
+				}
+
+				if (Main.LocalPlayer.inventory[FirstSlot].stack > 1)
+				{
+					Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[FirstSlot].stack + ")";
+				}
+			}
+		}
+	}
+
+	private static void DrawBuildingHotbarTooltips(bool hbLocked, Texture2D back)
+	{
+		for (int i = 1; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 		{
 			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
 			{

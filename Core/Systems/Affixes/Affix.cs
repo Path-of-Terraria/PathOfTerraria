@@ -1,9 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using PathOfTerraria.Data;
-using PathOfTerraria.Data.Models;
-using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Affixes;
@@ -12,17 +9,16 @@ public abstract class Affix
 {
 	public float MinValue;
 	public float MaxValue = 1f;
-
-	public float Value = 1f;
-
+	public float Value = 0;
 	public int Duration = 180; //3 Seconds by default
+
 	// to a certain degree, none of the above is useable by the MobAffix...
 
 	public virtual void Roll()
 	{
 		if (Value == 0)
 		{
-			Value = (float)(Main.rand.NextDouble() * (MaxValue - MinValue) + MinValue);
+			Value = Main.rand.NextFloat(MinValue, MaxValue);
 		}
 	}
 

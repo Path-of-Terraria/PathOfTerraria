@@ -1,11 +1,9 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.ModLoader.IO;
 using Terraria.Graphics.Effects;
 using Terraria.UI;
-using System.Reflection;
 using PathOfTerraria.Core.Systems;
 using System.Text.RegularExpressions;
 using Terraria.ID;
@@ -13,12 +11,8 @@ using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using TextCopy;
 using Microsoft.Xna.Framework.Input;
-using Terraria.GameContent.UI.Elements;
-using log4net.Core;
 using PathOfTerraria.Data;
 using PathOfTerraria.Data.Models;
-using Stubble.Core.Classes;
-using Terraria.DataStructures;
 using System.IO;
 
 namespace PathOfTerraria.Core;
@@ -55,8 +49,14 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 
 public abstract class PoTItem : ModItem
 {
-	private static readonly List<Tuple<float, Rarity, Type>> AllItems = [];
-	// <Drop chance, item rarity, type of item>
+	// <Drop chance, item rarity, item id of item>
+	internal static readonly List<Tuple<float, Rarity, int>> AllItems = [];
+
+	/// <summary>
+	/// Same as above, but should be used through <see cref="ManuallyLoadPoTItem(Mod, PoTItem)"/>.<br/>
+	/// Otherwise, used to append manually-added items through <see cref="Mod.AddContent(ILoadable)"/>.
+	/// </summary>
+	private static readonly List<(float dropChance, int itemId)> ManuallyLoadedItems = [];
 
 	private static bool _addedDetour;
 
@@ -97,7 +97,7 @@ public abstract class PoTItem : ModItem
 	{
 		if (!Keyboard.GetState().PressingShift())
 		{
-			TagCompound tag = new TagCompound();
+			TagCompound tag = [];
 
 			SaveData(tag);
 
@@ -106,7 +106,7 @@ public abstract class PoTItem : ModItem
 #if DEBUG
 		else
 		{
-			TagCompound tag = new TagCompound();
+			TagCompound tag = [];
 
 			SaveData(tag);
 
@@ -127,23 +127,23 @@ public abstract class PoTItem : ModItem
 		};
 		tooltips.Add(rareLine);
 
-		TooltipLine powerLine;
+		TooltipLine itemLevelLine;
 		if (ItemType == ItemType.Map)
 		{
-			powerLine = new TooltipLine(Mod, "Power", $" Tier: [c/CCCCFF:{ItemLevel}]")
+			itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" Tier: [c/CCCCFF:{ItemLevel}]")
 			{
 				OverrideColor = new Color(170, 170, 170)
 			};
 		}
 		else
 		{
-			powerLine = new TooltipLine(Mod, "Power", $" Item level: [c/CCCCFF:{ItemLevel}]")
+			itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" Item level: [c/CCCCFF:{ItemLevel}]")
 			{
 				OverrideColor = new Color(170, 170, 170)
 			};
 		}
 
-		tooltips.Add(powerLine);
+		tooltips.Add(itemLevelLine);
 
 		if (!string.IsNullOrWhiteSpace(AltUseDescription))
 		{
@@ -201,8 +201,8 @@ public abstract class PoTItem : ModItem
 		EntityModifier currentItemModifier = new EntityModifier();
 		SwapItemModifiers(currentItemModifier);
 
-		List<string> red = new();
-		List<string> green = new();
+		List<string> red = [];
+		List<string> green = [];
 		currentItemModifier.GetDifference(thisItemModifier).ForEach(s =>
 		{
 			if (s.Item2)
@@ -247,7 +247,7 @@ public abstract class PoTItem : ModItem
 				yOffset = -8;
 				line.BaseScale = Vector2.One * 0.8f;
 				return true;
-			case "Power":
+			case "ItemLevel":
 				yOffset = 2;
 				line.BaseScale = Vector2.One * 0.8f;
 				return true;
@@ -394,6 +394,16 @@ public abstract class PoTItem : ModItem
 		Roll(PickItemLevel());
 	}
 
+	/// <summary>
+	/// Clears the affixes and roll the item
+	/// </summary>
+	protected void Reroll()
+	{
+		Affixes.Clear();
+		Defaults();
+		Roll(PickItemLevel());
+	}
+	
 	public virtual void ExtraRolls() { }
 
 	/// <summary>
@@ -407,7 +417,7 @@ public abstract class PoTItem : ModItem
 		if (InternalItemLevel > 50 && !IsUnique && (ItemType & ItemType.AllGear) == ItemType.AllGear)
 		{
 			int inf = Main.rand.Next(400) - InternalItemLevel;
-			// quality dose not affect influence right now
+			// quality does not affect influence right now
 			// (might not need to, seems to generate plenty often for late game)
 
 			if (inf < 30)
@@ -429,35 +439,53 @@ public abstract class PoTItem : ModItem
 	public static void GenerateItemList()
 	{
 		AllItems.Clear();
+
 		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(PoTItem)))
+			if (type.IsAbstract || !type.IsSubclassOf(typeof(PoTItem)) || Attribute.IsDefined(type, typeof(ManuallyLoadPoTItemAttribute)))
 			{
 				continue;
 			}
 
-			PoTItem instance = (PoTItem)Activator.CreateInstance(type);
+			var instance = (PoTItem)Activator.CreateInstance(type);
+			int id = ModLoader.GetMod(PathOfTerraria.ModName).Find<ModItem>(instance.Name).Type;
 
 			if (instance.IsUnique)
 			{
-				AllItems.Add(new(instance.DropChance, Rarity.Unique, type));
+				AllItems.Add(new(instance.DropChance, Rarity.Unique, id));
 			}
 			else
 			{
+
 				if (!type.IsSubclassOf(typeof(Jewel)))
 				{
-					AllItems.Add(new(instance.DropChance * 0.70f, Rarity.Normal, type));
+					AllItems.Add(new(instance.DropChance * 0.70f, Rarity.Normal, id));
 				}
 
-				AllItems.Add(new(instance.DropChance * 0.25f, Rarity.Magic, type));
-				AllItems.Add(new(instance.DropChance * 0.05f, Rarity.Rare, type));
+				AllItems.Add(new(instance.DropChance * 0.25f, Rarity.Magic, id));
+				AllItems.Add(new(instance.DropChance * 0.05f, Rarity.Rare, id));
 			}
 		}
+
+		foreach ((float dropChance, int itemType) in ManuallyLoadedItems) 
+		{
+			AllItems.Add(new(dropChance * 0.7f, Rarity.Normal, itemType));
+			AllItems.Add(new(dropChance * 0.25f, Rarity.Magic, itemType));
+			AllItems.Add(new(dropChance * 0.5f, Rarity.Rare, itemType));
+		}
+
+		ManuallyLoadedItems.Clear();
+	}
+
+	public static void ManuallyLoadPoTItem(Mod mod, PoTItem instance)
+	{
+		mod.AddContent(instance);
+		ManuallyLoadedItems.Add((instance.DropChance, instance.Type));
 	}
 
 	private const float _magicFindPowerDecrease = 100f;
 
-	private static float ApplyRarityModifier(float chance, float dropRarityModifier)
+	internal static float ApplyRarityModifier(float chance, float dropRarityModifier)
 	{
 		// this is just some arbitrary function from chat gpt, modified a little...
 		// it is pretty hard to get all this down when we dont know all the items we will have n such;
@@ -466,91 +494,6 @@ public abstract class PoTItem : ModItem
 		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) /
 		                      (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
 		return powerDecrease;
-	}
-
-	public static void SpawnRandomItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
-	{
-		SpawnRandomItem(pos, x => true, ilevel, dropRarityModifier);
-	}
-
-	public static void SpawnRandomItem(Vector2 pos, Func<Tuple<float, Rarity, Type>, bool> dropCondition,
-		int ilevel = 0, float dropRarityModifier = 0)
-	{
-		ilevel = ilevel == 0 ? PickItemLevel() : ilevel; // Pick the item level if not provided
-		dropRarityModifier += ilevel / 10f; // the effect of item level on "magic find"
-
-		// Filter AllGear based on item level
-		var filteredGear = AllItems.Where(g =>
-		{
-			var gearInstance = Activator.CreateInstance(g.Item3) as PoTItem;
-			return gearInstance != null && gearInstance.MinDropItemLevel <= ilevel;
-		}).ToList();
-
-		// Calculate dropChanceSum based on filtered gear
-		float dropChanceSum = filteredGear.Where(x => dropCondition(x)).Sum((Tuple<float, Rarity, Type> x) =>
-			ApplyRarityModifier(x.Item1, dropRarityModifier));
-		float choice = Main.rand.NextFloat(dropChanceSum);
-
-		float cumulativeChance = 0;
-		foreach (Tuple<float, Rarity, Type> item in filteredGear)
-		{
-			if (!dropCondition(item))
-			{
-				continue;
-			}
-
-			cumulativeChance += ApplyRarityModifier(item.Item1, dropRarityModifier);
-			if (choice < cumulativeChance)
-			{
-				// Spawn the item
-				string itemName = (Activator.CreateInstance(item.Item3) as ModItem).Name;
-				int itemType = ModLoader.GetMod("PathOfTerraria").Find<ModItem>(itemName).Type;
-				SpawnItem(itemType, pos, ilevel, item.Item2);
-				return;
-			}
-		}
-	}
-
-	/// <summary>
-	/// Spawns a random piece of gear of the given base type at the given position
-	/// </summary>
-	/// <typeparam name="T">The type of gear to drop</typeparam>
-	/// <param name="pos">Where to drop it in the world</param>
-	/// <param name="itemLevel">The item level of the item to spawn</param>
-	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
-	public static void SpawnItem<T>(Vector2 pos, int itemLevel = 0, Rarity rarity = Rarity.Normal) where T : PoTItem
-	{
-		SpawnItem(ModContent.ItemType<T>(), pos, itemLevel, rarity);
-	}
-
-	/// <summary>
-	/// Spawns a random piece of gear of the given base type at the given position
-	/// </summary>
-	/// <typeparam name="T">The type of gear to drop</typeparam>
-	/// <param name="pos">Where to drop it in the world</param>
-	/// <param name="itemLevel">The item level of the item to spawn</param>
-	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
-	public static void SpawnItem(int type, Vector2 pos, int itemLevel = 0, Rarity rarity = Rarity.Normal)
-	{
-		var item = new Item(type);
-		var gear = item.ModItem as PoTItem;
-
-		if (gear.IsUnique)
-		{
-			rarity = Rarity.Unique;
-		}
-
-		gear.Rarity = rarity;
-		gear.Roll(itemLevel == 0 ? PickItemLevel() : itemLevel);
-
-		if (Main.netMode == NetmodeID.SinglePlayer)
-		{
-			Item.NewItem(null, pos, Vector2.Zero, item);
-		}
-		else if (Main.netMode == NetmodeID.MultiplayerClient)
-		{
-			Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"), item);
-		}
 	}
 
 	/// <summary>
@@ -787,6 +730,11 @@ public abstract class PoTItem : ModItem
 		Affixes.ForEach(n => n.ApplyAffix(entityModifier, this));
 	}
 
+	public void ClearAffixes()
+	{
+		Affixes.Clear();
+	}
+
 	public override void SaveData(TagCompound tag)
 	{
 		tag["type"] = (int)ItemType;
@@ -796,7 +744,7 @@ public abstract class PoTItem : ModItem
 		tag["implicits"] = _implicits;
 
 		tag["name"] = _name;
-		tag["power"] = InternalItemLevel;
+		tag["ItemLevel"] = InternalItemLevel;
 
 		List<TagCompound> affixTags = [];
 		foreach (ItemAffix affix in Affixes)
@@ -838,7 +786,7 @@ public abstract class PoTItem : ModItem
 		_implicits = tag.GetInt("implicits");
 
 		_name = tag.GetString("name");
-		InternalItemLevel = tag.GetInt("power");
+		InternalItemLevel = tag.GetInt("ItemLevel");
 
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
 
@@ -916,7 +864,12 @@ public abstract class PoTItem : ModItem
 		if (IsUnique)
 		{
 			List<ItemAffix> uniqueItemAffixes = GenerateAffixes();
-			uniqueItemAffixes.ForEach(a => a.Roll());
+			
+			foreach (ItemAffix item in uniqueItemAffixes)
+			{
+				item.Roll();
+			}
+
 			Affixes.AddRange(uniqueItemAffixes);
 		}
 	}
