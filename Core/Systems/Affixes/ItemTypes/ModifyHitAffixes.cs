@@ -15,7 +15,7 @@ internal class AddedKnockbackItemAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 	{
-		modifier.Knockback += Value;
+		modifier.Knockback.Base += Value;
 	}
 }
 
@@ -23,15 +23,7 @@ internal class IncreasedKnockbackItemAffix : ItemAffix
 {
 	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
 	{
-		modifier.Knockback *= Value;
-	}
-}
-
-internal class BaseKnockbackItemAffix : ItemAffix
-{
-	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
-	{
-		modifier.Knockback.Base += Value;
+		modifier.Knockback *= Value / 100;
 	}
 }
 

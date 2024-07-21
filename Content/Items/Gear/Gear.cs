@@ -3,6 +3,7 @@ using PathOfTerraria.Core;
 using PathOfTerraria.Core.Systems;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -13,8 +14,21 @@ internal abstract class Gear : PoTItem
 {
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
-	private Socketable[] _sockets = []; // [new Imps()];
+	private Socketable[] _sockets = [];
 	private int _selectedSocket;
+	
+	public override void OnCreated(ItemCreationContext context)
+	{
+		base.OnCreated(context);
+		if (context is not RecipeItemCreationContext)
+		{
+			return;
+		}
+
+		Rarity = Rarity.Magic; //All crafted items are magic rarity
+		Affixes.Clear();
+		Roll(PickItemLevel());
+	}
 
 	public override void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier)
 	{
@@ -58,26 +72,26 @@ internal abstract class Gear : PoTItem
 		_sockets.Where(s => s is not null).ToList().ForEach(s => s.UpdateEquip(player, Item));
 	}
 
-	public sealed override void SwapItemModifiers(EntityModifier SawpItemModifier)
+	public sealed override void SwapItemModifiers(EntityModifier swapItemModifier)
 	{
-		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active)
+		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active && Main.LocalPlayer.armor[0].ModItem is Gear headGear)
 		{
-			(Main.LocalPlayer.armor[0].ModItem as Gear).ApplyAffixes(SawpItemModifier);
+			headGear.ApplyAffixes(swapItemModifier);
 		}
-		else if (Item.bodySlot >= 0 && Main.LocalPlayer.armor[1].active)
+		else if (Item.bodySlot >= 0 && Main.LocalPlayer.armor[1].active && Main.LocalPlayer.armor[0].ModItem is Gear bodyGear)
 		{
-			(Main.LocalPlayer.armor[1].ModItem as Gear).ApplyAffixes(SawpItemModifier);
+			bodyGear.ApplyAffixes(swapItemModifier);
 		}
-		else if (Item.legSlot >= 0 && Main.LocalPlayer.armor[2].active)
+		else if (Item.legSlot >= 0 && Main.LocalPlayer.armor[2].active && Main.LocalPlayer.armor[0].ModItem is Gear legsGear)
 		{
-			(Main.LocalPlayer.armor[2].ModItem as Gear).ApplyAffixes(SawpItemModifier);
+			legsGear.ApplyAffixes(swapItemModifier);
 		}
 		// missing accessories
 		else if (Item.damage > 0)
 		{
-			if (Main.LocalPlayer.inventory[0].ModItem is Gear)
+			if (Main.LocalPlayer.inventory[0].ModItem is Gear gear)
 			{
-				(Main.LocalPlayer.inventory[0].ModItem as Gear).ApplyAffixes(SawpItemModifier);
+				gear.ApplyAffixes(swapItemModifier);
 			}
 		}
 	}
@@ -183,12 +197,20 @@ internal abstract class Gear : PoTItem
 		}
 	}
 
+	/// <summary>
+	/// Selects a prefix to be added to the name of the item from the provided Prefixes in localization files
+	/// </summary>
+	/// <returns></returns>
 	public override string GeneratePrefix()
 	{
 		string str = Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, true)).Value;
 		return str;
 	}
 
+	/// <summary>
+	/// Selects a suffix to be added to the name of the item from the provided Suffixes in localization files
+	/// </summary>
+	/// <returns></returns>
 	public override string GenerateSuffix()
 	{
 		return Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, false)).Value;

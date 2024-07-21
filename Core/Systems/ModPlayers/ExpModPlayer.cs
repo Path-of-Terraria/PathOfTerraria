@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Core.Systems.TreeSystem;
 using Terraria.Audio;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.ModPlayers;
@@ -27,9 +28,8 @@ public class ExpModPlayer : ModPlayer
 		Exp -= NextLevel;
 		Level++;
 
-		Main.NewText($"You've reached level {Level}!", new Color(145, 255, 160));
-		Main.NewText($"You have gained 1 skill point. Click the experience bar to open the skill tree.",
-			new Color(255, 255, 160));
+		Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.LevelUp").WithFormatArgs(Level).Value, new Color(145, 255, 160));
+		Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.SkillUp"), new Color(255, 255, 160));
 
 		Player.GetModPlayer<TreePlayer>().Points++;
 	}

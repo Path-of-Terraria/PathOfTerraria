@@ -11,6 +11,7 @@ internal class TestQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override string Name => "Test Quest";
+	public override string Description => "This is a test quest. It is used to test the quest system.";
 
 	protected override List<QuestStep> _subQuests =>
 	[
@@ -26,15 +27,15 @@ internal class TestQuest : Quest
 		new KillCount(x => x.lifeMax > 100, 10, remaining => $"Kill {remaining} mobs with 100+ max life")
 	];
 
-	public override int NPCQuestGiver => throw new NotImplementedException();
+	public override int NPCQuestGiver => -1;
 
 	public override List<QuestReward> QuestRewards =>
 	[
 		new ActionRewards((p, v) =>
 			{
 				p.GetModPlayer<ExpModPlayer>().Exp += 500;
-				PoTItem.SpawnRandomItem(v);
-				PoTItem.SpawnItem<BurningRedBoots>(v);
+				ItemSpawner.SpawnRandomItem(v);
+				ItemSpawner.SpawnItem<BurningRedBoots>(v);
 			},
 			"500 experience (POC giving experience)\nSome gear with an affix\nA unique item\nAgain, just for POC reasons"),
 	];

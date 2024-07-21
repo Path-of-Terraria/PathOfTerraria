@@ -23,7 +23,7 @@ internal class FireStarter : Sword
 	{
 		base.Defaults();
 		Item.damage = 4;
-		Item.height = 52;
+		Item.Size = new(38);
 		Item.UseSound = SoundID.Item1;
 	}
 	
@@ -48,7 +48,7 @@ internal class FireStarter : Sword
 	{
 		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 
-		if (modPlayer.AltFunctionAvailable)
+		if (!modPlayer.AltFunctionAvailable)
 		{
 			return false;
 		}

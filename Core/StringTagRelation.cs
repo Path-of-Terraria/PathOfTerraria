@@ -112,7 +112,7 @@ internal class StringTagRelationAffixList(int _implicits)
 
 		foreach(StringTagRelationAffix rel in List)
 		{
-			TagCompound nTag = new();
+			TagCompound nTag = [];
 			rel.AddTo(nTag);
 			tags.Add(nTag);
 		}
@@ -200,7 +200,7 @@ internal class StringTagRelation
 
 	private TagCompound ToTagCompound()
 	{
-		TagCompound tag = new();
+		TagCompound tag = [];
 		
 		foreach(Line line in lines)
 		{

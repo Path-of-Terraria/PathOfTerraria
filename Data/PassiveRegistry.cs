@@ -11,7 +11,12 @@ public class PassiveRegistry : ILoadable
 	/// <summary>
 	/// A map of MobData objects, with the key being the type from NPC.
 	/// </summary>
-	private static readonly List<PassiveData> Passives = new();
+	private static readonly List<PassiveData> Passives = [];
+
+	private static JsonSerializerOptions Options { get; set; } = new()
+	{
+		PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+	};
 	
 	public void Load(Mod mod)
 	{
@@ -36,15 +41,10 @@ public class PassiveRegistry : ILoadable
 	/// <returns></returns>
 	private static void LoadJsonFilesToMapAsync()
 	{
-		var options = new JsonSerializerOptions
-		{
-			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-		};
-
 		Stream passiveStream = PathOfTerraria.Instance.GetFileStream($"Data/Passives.json");
 		using var passiveReader = new StreamReader(passiveStream);
 		string passiveJson = passiveReader.ReadToEnd();
-		List<PassiveData> passiveData = JsonSerializer.Deserialize<List<PassiveData>>(passiveJson, options);
+		List<PassiveData> passiveData = JsonSerializer.Deserialize<List<PassiveData>>(passiveJson, Options);
 
 		passiveData // no clue how to handle empty values, lol
 			.ForEach(d => {

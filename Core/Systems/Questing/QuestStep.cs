@@ -1,7 +1,8 @@
 ﻿using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.Questing;
-internal abstract class QuestStep
+
+public abstract class QuestStep
 {
 	public virtual void Track(Player player, Action onCompletion) { }
 	public virtual void UnTrack() { }

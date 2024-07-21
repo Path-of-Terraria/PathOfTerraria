@@ -11,8 +11,8 @@ internal class FireStarterProjectile : ModProjectile
 
 	public override void SetDefaults()
 	{
-		Projectile.width = 60;
-		Projectile.height = 60;
+		Projectile.width = 50;
+		Projectile.height = 50;
 		Projectile.aiStyle = -1;
 		Projectile.friendly = true;
 		Projectile.penetrate = -1;
@@ -69,7 +69,7 @@ internal class FireStarterProjectile : ModProjectile
 	private Vector2 GetProjectileTip()
 	{
 		// Note that the PiOver2 adjusts since the swing rotation is slightly off compared to the sprite, since the 
-		return Projectile.Center + (GetCurrentSwingRotation() - MathHelper.PiOver2).ToRotationVector2() * 78;
+		return Projectile.Center + (GetCurrentSwingRotation() - MathHelper.PiOver4).ToRotationVector2() * 70;
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -77,7 +77,7 @@ internal class FireStarterProjectile : ModProjectile
 		float rotation = Projectile.rotation;
 		Vector2 pos = Projectile.Center - Main.screenPosition;
 
-		Main.spriteBatch.Draw(TextureAssets.Projectile[Type].Value, pos, null, Color.White, rotation, new Vector2(0, 76), 1f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(TextureAssets.Projectile[Type].Value, pos, null, Color.White, rotation, new Vector2(0, 50), 1f, SpriteEffects.None, 0);
 		return false;
 	}
 
