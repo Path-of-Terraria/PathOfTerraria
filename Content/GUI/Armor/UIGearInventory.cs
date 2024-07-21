@@ -764,7 +764,7 @@ public sealed class UIGearInventory : UIState
 			VAlign = 0.5f
 		};
 
-		pageText.OnUpdate += _ =>
+		pageText.OnUpdate += (_) =>
 		{
 			string key = CurrentPage switch
 			{
@@ -798,7 +798,7 @@ public sealed class UIGearInventory : UIState
 			VAlign = 0.5f
 		};
 
-		defenseText.OnUpdate += _ =>
+		defenseText.OnUpdate += (_) =>
 		{
 			defenseText.SetText(Player.statDefense.ToString());
 		};
@@ -832,7 +832,7 @@ public sealed class UIGearInventory : UIState
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
 
-		firstLoadout.OnUpdate += _ => UpdateLoadoutIcon(firstLoadout, 0);
+		firstLoadout.OnUpdate += (_) => UpdateLoadoutIcon(firstLoadout, 0);
 
 		firstLoadout.OnLeftClick += (_, _) =>
 		{
@@ -848,7 +848,7 @@ public sealed class UIGearInventory : UIState
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
 
-		secondLoadout.OnUpdate += _ => UpdateLoadoutIcon(secondLoadout, 1);
+		secondLoadout.OnUpdate += (_) => UpdateLoadoutIcon(secondLoadout, 1);
 
 		secondLoadout.OnLeftClick += (_, _) =>
 		{
@@ -864,7 +864,7 @@ public sealed class UIGearInventory : UIState
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
 
-		thirdLoadout.OnUpdate += _ => UpdateLoadoutIcon(thirdLoadout, 2);
+		thirdLoadout.OnUpdate += (_) => UpdateLoadoutIcon(thirdLoadout, 2);
 
 		thirdLoadout.OnLeftClick += (_, _) =>
 		{
