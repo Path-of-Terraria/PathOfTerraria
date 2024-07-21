@@ -170,6 +170,10 @@ public sealed class UIGearInventory : UIState
 	}
 
 	private static Player Player => Main.LocalPlayer;
+	
+	private string previousDefense;
+	
+	private bool fadingButton;
 
 	private int currentPage;
 	private readonly UIElement[] pages = { BuildDefaultInventory(), BuildVanityInventory(), BuildDyeInventory() };
@@ -782,7 +786,7 @@ public sealed class UIGearInventory : UIState
 		return buttonRoot;
 	}
 
-	private static UIElement BuildDefenseCounter()
+	private UIElement BuildDefenseCounter()
 	{
 		var defenseRoot = new UIElement
 		{
@@ -798,9 +802,33 @@ public sealed class UIGearInventory : UIState
 			VAlign = 0.5f
 		};
 
+		// TODO: This is nasty, find a better way to handle UI movement.
 		defenseText.OnUpdate += (_) =>
 		{
-			defenseText.SetText(Player.statDefense.ToString());
+			string defense = Player.statDefense.ToString();
+			
+			if (defense != previousDefense)
+			{
+				fadingButton = true;
+			}
+			
+			if (fadingButton) 
+			{				
+				if (MathF.Floor(defenseText.Left.Pixels) == DefensePadding)
+				{
+					defenseText.SetText(Player.statDefense.ToString());
+					
+					fadingButton = false;
+				}
+				
+				defenseText.Left.Set(MathHelper.SmoothStep(defenseText.Left.Pixels, DefensePadding, Smoothness), 0f);
+			}
+			else
+			{
+				defenseText.Left.Set(MathHelper.SmoothStep(defenseText.Left.Pixels, DefenseCounterTexture.Width() + 8f, Smoothness), 0f);
+			}
+			
+			previousDefense = defense;
 		};
 
 		defenseRoot.Append(defenseText);
