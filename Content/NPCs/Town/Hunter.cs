@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Core.Systems.Questing;
+using PathOfTerraria.Helpers.Extensions;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -65,7 +66,7 @@ public class Hunter : ModNPC
 
 	public override ITownNPCProfile TownNPCProfile()
 	{
-		return new Profiles.DefaultNPCProfile(Texture, ModContent.GetModHeadSlot(HeadTexture));
+		return this.GetDefaultTownProfile();
 	}
 
 	public override List<string> SetNPCNameList()
@@ -147,7 +148,6 @@ public class Hunter : ModNPC
 			.Register();
 	}
 
-	// TODO: Implement gore.
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		int amount = NPC.life > 0 ? 3 : 10;
@@ -156,5 +156,22 @@ public class Hunter : ModNPC
 		{
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood);
 		}
+
+		if (NPC.life > 0 || Main.netMode == NetmodeID.Server)
+		{
+			return;
+		}
+		
+		for (int i = 0; i < 3; i++) {
+			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>($"{Name}_{i}").Type);
+		}
+		
+		int hat = NPC.GetPartyHatGore();
+
+		if (hat <= 0) {
+			return;
+		}
+
+		Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, hat);
 	}
 }
