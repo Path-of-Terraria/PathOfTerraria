@@ -57,6 +57,14 @@ internal class SwordLoader : ModSystem
 		AddBroadsword(ItemID.IceSickle, "IceSickle");
 		AddBroadsword(ItemID.InfluxWaver, "InfluxWaver");
 		AddBroadsword(ItemID.LeadBroadsword, "LeadBroadsword");
+		AddBroadsword(ItemID.AntlionClaw, "MandibleBlade");
+		AddBroadsword(ItemID.MythrilSword, "MythrilSword");
+		AddBroadsword(ItemID.OrichalcumSword, "OrichalcumSword");
+		AddBroadsword(ItemID.PalladiumSword, "PalladiumSword");
+		AddBroadsword(ItemID.PalmWoodSword, "PalmWoodSword");
+		AddBroadsword(ItemID.PearlwoodSword, "PearlwoodSword");
+		AddBroadsword(ItemID.PlatinumBroadsword, "PlatinumBroadsword");
+		AddBroadsword(ItemID.PurpleClubberfish, "PurpleClubberfish");
 	}
 
 	public override void PostSetupContent()

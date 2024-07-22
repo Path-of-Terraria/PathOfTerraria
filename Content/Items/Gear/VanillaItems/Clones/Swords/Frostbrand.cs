@@ -1,5 +1,4 @@
-﻿using System.Reflection;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;

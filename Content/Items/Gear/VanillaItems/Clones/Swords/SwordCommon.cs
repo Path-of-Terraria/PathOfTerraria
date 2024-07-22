@@ -102,4 +102,33 @@ internal static class SwordCommon
 
 		return flag;
 	}
+
+	public static bool GetZenithTarget(Player player, Vector2 searchCenter, float maxDistance, out int npcTargetIndex)
+	{
+		npcTargetIndex = 0;
+		int? index = null;
+		float currentDistance = maxDistance;
+
+		for (int i = 0; i < 200; i++)
+		{
+			NPC nPC = Main.npc[i];
+			if (nPC.CanBeChasedBy(player))
+			{
+				float num3 = searchCenter.Distance(nPC.Center);
+				if (!(currentDistance <= num3))
+				{
+					index = i;
+					currentDistance = num3;
+				}
+			}
+		}
+
+		if (!index.HasValue)
+		{
+			return false;
+		}
+
+		npcTargetIndex = index.Value;
+		return true;
+	}
 }
