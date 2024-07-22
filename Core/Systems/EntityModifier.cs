@@ -28,6 +28,9 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier Attackspeed = new();
 	public StatModifier ArmorPenetration = new();
 	public StatModifier Knockback = new();
+	public StatModifier CriticalChance = new();
+	public StatModifier CriticalDamage = new();
+	public StatModifier CriticalMultiplier = new();
 	public OnHitDeBuffer Buffer = new();
 
 	// MinorStatsModPlayer:
@@ -61,6 +64,11 @@ public partial class EntityModifier : EntityModifierSegment
 		npc.damage = (int)Damage.ApplyTo(npc.damage);
 
 		// there are many things that would need a global npc to be applied.
+	}
+
+	public void ApplyTo(Projectile proj)
+	{
+		proj.damage = (int)Damage.ApplyTo(proj.originalDamage);
 	}
 
 	public void ApplyTo(Player player)
@@ -118,7 +126,7 @@ public partial class EntityModifier : EntityModifierSegment
 
 	public List<Tuple<string, bool>> GetDifference(EntityModifier other)
 	{
-		List<Tuple<string, bool>> strings = new List<Tuple<string, bool>>();
+		List<Tuple<string, bool>> strings = [];
 
 		if (this == other)
 		{
@@ -197,7 +205,7 @@ public partial class EntityModifier : EntityModifierSegment
 
 	private List<Tuple<string, bool>> GetDifferences(StatModifier m1, StatModifier m2, bool reversed = false)
 	{
-		List<Tuple<string, bool>> differences = new List<Tuple<string, bool>>();
+		List<Tuple<string, bool>> differences = [];
 
 		float baseDiff = m2.Base - m1.Base;
 		if (baseDiff != 0)

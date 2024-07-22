@@ -2,6 +2,7 @@
 using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
@@ -11,10 +12,11 @@ internal abstract class Boomerang : Gear
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Boomerangs/{GetType().Name}";
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
+	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Boomerang.AltUse");
 
 	protected virtual int BoomerangCount => 1;
 	protected override string GearLocalizationCategory => "Boomerang";
-
+	
 	public override void Defaults()
 	{
 		Item.CloneDefaults(ItemID.WoodenBoomerang);

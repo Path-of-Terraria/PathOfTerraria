@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Core.Systems.Networking.Handlers;
 using ReLogic.Content;
+using Terraria;
+using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
@@ -19,8 +24,8 @@ internal class GuardianAngel : SteelBattleaxe
 	public override void Defaults()
 	{
 		base.Defaults();
-		Item.width = 94;
-		Item.height = 108;
+		Item.width = 54;
+		Item.height = 54;
 	}
 	
 	public override bool AltFunctionUse(Player player)
@@ -36,17 +41,17 @@ internal class GuardianAngel : SteelBattleaxe
 		{
 			if (npc.CanBeChasedBy() && npc.DistanceSQ(player.Center) < 400 * 400)
 			{
-				npc.GetGlobalNPC<AngelRingNPC>().ApplyRing(player.whoAmI);
+				npc.GetGlobalNPC<AngelRingNPC>().ApplyRing(npc, player.whoAmI);
 			}
 		}
 
 		modPlayer.SetAltCooldown(180, 0);
-		return true;
+		return false;
 	}
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		target.GetGlobalNPC<AngelRingNPC>().ApplyRing(player.whoAmI);
+		target.GetGlobalNPC<AngelRingNPC>().ApplyRing(target, player.whoAmI);
 	}
 
 	public override List<ItemAffix> GenerateAffixes()
@@ -54,19 +59,15 @@ internal class GuardianAngel : SteelBattleaxe
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;
 		addedDamageAffix.MaxValue = 4;
-		
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<BaseKnockbackItemAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
 
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
+		attackSpeedAffix.MinValue = 0.1f;
+		attackSpeedAffix.MaxValue = 0.1f;
 
 		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>();
-		addedDamageAffix.MinValue = 0.1f;
-		addedDamageAffix.MaxValue = 0.1f;
-		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
+		armorShredAffix.MinValue = 0.1f;
+		armorShredAffix.MaxValue = 0.1f;
+		return [addedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}
 
 	internal class AngelRingNPC : GlobalNPC
@@ -105,11 +106,16 @@ internal class GuardianAngel : SteelBattleaxe
 			}
 		}
 
-		public void ApplyRing(int playerWho)
+		public void ApplyRing(NPC npc, int playerWho, bool fromNet = false)
 		{
 			_ringCount++;
 			_ringTime = 5 * 60;
 			_lastPlayerWhoAmI = playerWho;
+
+			if (Main.netMode != NetmodeID.SinglePlayer && !fromNet)
+			{
+				SyncGuardianAngelHandler.Send((byte)playerWho, (short)npc.whoAmI);
+			}
 		}
 
 		private void DoLightBeam(NPC npc)
@@ -127,7 +133,6 @@ internal class GuardianAngel : SteelBattleaxe
 		public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
 			// Draw rings 
-
 			for (int i = 0; i < 3; i++)
 			{
 				if (_ringCount > i)
@@ -140,7 +145,6 @@ internal class GuardianAngel : SteelBattleaxe
 				}
 
 				// Skip drawing ring if too transparent
-
 				if (_ringFadeIn[i] < 0.01f)
 				{
 					continue;

@@ -1,0 +1,403 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>NPCUtils</name>
+    </assembly>
+    <members>
+        <member name="T:NPCUtils.AutoloadBannerAttribute">
+            <summary>
+            Apply this to a ModNPC's class to autoload their items as NPCNameBanner and NPCNameBannerItem.
+            </summary>
+        </member>
+        <member name="T:NPCUtils.AutoloadCritterAttribute">
+            <summary>
+            Autoloads the given critter item if placed on an NPC.
+            </summary>
+        </member>
+        <member name="T:NPCUtils.CritterItem">
+            <summary>
+            Defines a critter item that spawns a critter.
+            </summary>
+            <param name="name"></param>
+            <param name="npcKey"></param>
+            <param name="texture"></param>
+        </member>
+        <member name="M:NPCUtils.CritterItem.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Defines a critter item that spawns a critter.
+            </summary>
+            <param name="name"></param>
+            <param name="npcKey"></param>
+            <param name="texture"></param>
+        </member>
+        <member name="P:NPCUtils.CritterItem.Name">
+            <summary>
+            Overrides name with the internal name.
+            </summary>
+        </member>
+        <member name="P:NPCUtils.CritterItem.CloneNewInstances">
+            <summary>
+            New instances must be cloned.
+            </summary>
+        </member>
+        <member name="P:NPCUtils.CritterItem.Texture">
+            <summary>
+            Overrides texture to be the original texture path with "Item" appended.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.CritterItem.Clone(Terraria.Item)">
+            <summary>
+            Clones the item.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.CritterItem.SetStaticDefaults">
+            <summary>
+            Sets <see cref="P:Terraria.Item.ResearchUnlockCount"/> to 3, and sets the associated NPC's type's <see cref="F:Terraria.Main.npcCatchable"/> and <see cref="F:Terraria.ID.NPCID.Sets.CountsAsCritter"/> to true.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.CritterItem.SetDefaults">
+            <summary>
+            Sets the item to the following:
+            <code>        
+            var modNPC = ModContent.Find{ModNPC}(_npcKey);
+            Item.Size = modNPC.NPC.Size;
+            Item.useAnimation = 16;
+            Item.useTime = 16;
+            Item.damage = 0;
+            Item.rare = ItemRarityID.White;
+            Item.maxStack = Item.CommonMaxStack;
+            Item.noUseGraphic = true;
+            Item.noMelee = false;
+            Item.useStyle = ItemUseStyleID.Swing;
+            Item.makeNPC = (short) modNPC.Type;
+            Item.autoReuse = true;
+            Item.consumable = true;
+            </code>
+            </summary>
+        </member>
+        <member name="T:NPCUtils.AutoloadedContentLoader">
+            <summary>
+            Loads all banners, critter items, and detours <see cref="T:Terraria.ModLoader.NPCLoader"/>'s SetDefaults to set <see cref="P:Terraria.ModLoader.ModNPC.Banner"/> and <see cref="P:Terraria.ModLoader.ModNPC.BannerItem"/>.
+            </summary>
+        </member>
+        <member name="T:NPCUtils.BaseBannerTile">
+            <summary>
+            Defines a banner tile to be autoloaded by <see cref="T:NPCUtils.AutoloadBannerAttribute"/>.
+            </summary>
+        </member>
+        <member name="F:NPCUtils.BaseBannerTile.NPCType">
+            <summary>
+            The NPC this banner is associated with.
+            </summary>
+        </member>
+        <member name="F:NPCUtils.BaseBannerTile.InternalName">
+            <summary>
+            The internal name of this banner, which is NPCNameBanner.
+            </summary>
+        </member>
+        <member name="P:NPCUtils.BaseBannerTile.Name">
+            <summary>
+            Overrides the internal name to use the <see cref="F:NPCUtils.BaseBannerTile.InternalName"/>.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.BaseBannerTile.#ctor">
+            <summary>
+            Creates a banner tile with no name and no internal name.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.BaseBannerTile.#ctor(System.Int32,System.String)">
+            <summary>
+            Creates a banner tile with the given name and internal name.
+            </summary>
+            <param name="npcType">The associated NPC ID.</param>
+            <param name="internalName">The internal name of the banner.</param>
+        </member>
+        <member name="M:NPCUtils.BaseBannerTile.IsLoadingEnabled(Terraria.ModLoader.Mod)">
+            <summary>
+            Disables loading if NPCType is invalid.
+            </summary>
+            <param name="mod"></param>
+            <returns></returns>
+        </member>
+        <member name="M:NPCUtils.BaseBannerTile.SetStaticDefaults">
+            <summary>
+            Sets defaults to a normal banner.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.BaseBannerTile.NearbyEffects(System.Int32,System.Int32,System.Boolean)">
+            <summary>
+            Sets banner buff and hasBanner flags.
+            </summary>
+            <param name="i"><inheritdoc/></param>x
+            <param name="j"><inheritdoc/></param>
+            <param name="closer"><inheritdoc/></param>
+        </member>
+        <member name="M:NPCUtils.BaseBannerTile.SetSpriteEffects(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteEffects@)">
+            <inheritdoc/>
+        </member>
+        <member name="T:NPCUtils.BaseBannerItem">
+            <summary>
+            Defines the base of a banner item.
+            </summary>
+        </member>
+        <member name="P:NPCUtils.BaseBannerItem.CloneNewInstances">
+            <summary>
+            New banners must be cloned.
+            </summary>
+        </member>
+        <member name="P:NPCUtils.BaseBannerItem.Name">
+            <summary>
+            New banners must use the internal name.
+            </summary>
+        </member>
+        <member name="P:NPCUtils.BaseBannerItem.Tooltip">
+            <summary>
+            New banners use only the BannerBonus tooltip line.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.BaseBannerItem.#ctor">
+            <summary>
+            Creates a banner item with default values.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.BaseBannerItem.#ctor(System.String,System.Int32,System.Int32)">
+            <summary>
+            Creates a banner item with the given values.
+            </summary>
+            <param name="internalName">The given internal name.</param>
+            <param name="placeID">The banner ID to place.</param>
+            <param name="npcType">The NPC type associated with the banner. Used for the tooltip.</param>
+        </member>
+        <member name="M:NPCUtils.BaseBannerItem.ModifyTooltips(System.Collections.Generic.List{Terraria.ModLoader.TooltipLine})">
+            <summary>
+            Adds the name of the associated NPC to the BannerBuff tooltip.
+            </summary>
+            <param name="tooltips"></param>
+        </member>
+        <member name="M:NPCUtils.BaseBannerItem.IsLoadingEnabled(Terraria.ModLoader.Mod)">
+            <summary>
+            Disables loading if this item places only dirt.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.BaseBannerItem.SetDefaults">
+            <summary>
+            Sets the defaults of the banner item to be a 12x30 tile placing item with a Blue rarity.
+            </summary>
+        </member>
+        <member name="T:NPCUtils.BestiaryHelper">
+            <summary>
+            Handles Bestiary automation and ease-of-use.
+            </summary>
+        </member>
+        <member name="P:NPCUtils.BestiaryHelper.Self">
+            <summary>
+            The current instance of <see cref="T:NPCUtils.BestiaryHelper"/>.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.BestiaryHelper.BuildEntry(Terraria.ModLoader.ModNPC,System.String)">
+            <summary>
+            Builds a BestiaryInfoElement for the given NPC with the given conditions.<br/>
+            Also automatically generates a bestiary entry for the NPC, defaults to <see cref="F:System.String.Empty"/>.
+            </summary>
+            <param name="npc"></param>
+            <param name="conditions"></param>
+            <returns></returns>
+        </member>
+        <member name="T:NPCUtils.BestiaryExtensions">
+            <summary>
+            Used to simplify bestiary entry writing by extending a method onto <see cref="T:Terraria.GameContent.Bestiary.BestiaryEntry"/>.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.BestiaryExtensions.AddInfo(Terraria.GameContent.Bestiary.BestiaryEntry,Terraria.ModLoader.ModNPC,System.String)">
+            <summary>
+            Automatically applies the localized entry and conditions to the npc.<br/><br/>
+            Valid entries are as follows:<br/><b>Biomes:</b><br/><c>TheCorruption TheCrimson Surface Graveyard UndergroundJungle TheUnderworld TheDungeon Underground TheHallow UndergroundMushroom
+            Jungle Caverns UndergroundSnow Ocean SurfaceMushroom UndergroundDesert Snow Desert Meteor Oasis SpiderNest TheTemple CorruptUndergroundDesert CrimsonUndergroundDesert
+            HallowUndergroundDesert HallowDesert CorruptDesert CrimsonDesert Granite UndergroundCorruption UndergroundCrimson UndergroundHallow Marble CorruptIce HallowIce CrimsonIce
+            Sky NebulaPillar VortexPillar StardustPillar SolarPillar</c><br/>
+            <b>Times:</b><br/><c>DayTime NightTime</c><br/>
+            <b>Events:</b><br/><c>Rain SlimeRain WindyDay BloodMoon Halloween Christmas Eclipse Party Blizzard Sandstorm</c><br/><br/>
+            For example, adding an entry could be like this:<br/><br/>
+            <code>entry.AddInfo(this, "NightTime Snow");</code>
+            </summary>
+            <param name="bestiaryEntry">The entry to modify.</param>
+            <param name="npc">The NPC this entry is attatched to.</param>
+            <param name="conditions">The conditions of the entry.</param>
+        </member>
+        <member name="T:NPCUtils.LootExtensions">
+            <summary>
+            Extends <see cref="T:Terraria.ModLoader.ILoot"/> and <see cref="T:Terraria.GameContent.ItemDropRules.LeadingConditionRule"/> to add ease-of-use methods, such as <see cref="M:NPCUtils.LootExtensions.AddCommon(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32,System.Int32)"/>.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.Add(Terraria.ModLoader.ILoot,Terraria.GameContent.ItemDropRules.IItemDropRule[])">
+            <summary>
+            Adds the given list of drop rules to the <see cref="T:Terraria.ModLoader.ILoot"/>.
+            </summary>
+            <param name="loot"><see cref="T:Terraria.ModLoader.ILoot"/> object to add to.</param>
+            <param name="rules">Array of rules to add.</param>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddCommon(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Adds an <see cref="M:Terraria.GameContent.ItemDropRules.ItemDropRule.Common(System.Int32,System.Int32,System.Int32,System.Int32)"/> to the given <see cref="T:Terraria.ModLoader.ILoot"/>.
+            </summary>
+            <param name="loot"><see cref="T:Terraria.ModLoader.ILoot"/> object to add to.</param>
+            <param name="itemID">Item ID to drop.</param>
+            <param name="chanceDenominator">1/x chance to drop.</param>
+            <param name="minStack">Minimum stack.</param>
+            <param name="maxStack">Maximum stack.</param>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddFood(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Almost exactly the same as <see cref="M:NPCUtils.LootExtensions.AddCommon(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32,System.Int32)"/>, but uses <see cref="M:Terraria.GameContent.ItemDropRules.ItemDropRule.Food(System.Int32,System.Int32,System.Int32,System.Int32)"/> instead.
+            </summary>
+            <param name="loot"><see cref="T:Terraria.ModLoader.ILoot"/> object to add to.</param>
+            <param name="itemID">Item ID to drop.</param>
+            <param name="chanceDenominator">1/x chance to drop.</param>
+            <param name="minStack">Minimum stack.</param>
+            <param name="maxStack">Maximum stack.</param>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions(Terraria.ModLoader.ILoot,System.Int32,System.Int32[])">
+            <summary>
+            Adds an <see cref="M:Terraria.GameContent.ItemDropRules.ItemDropRule.OneFromOptions(System.Int32,System.Int32[])"/> to the given <see cref="T:Terraria.ModLoader.ILoot"/>.
+            </summary>
+            <param name="loot"><see cref="T:Terraria.ModLoader.ILoot"/> object to add to.</param>
+            <param name="chanceDenominator">1/x chance to drop.</param>
+            <param name="types">Array of item IDs to choose one from</param>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddBossBag(Terraria.ModLoader.ILoot,System.Int32)">
+            <summary>
+            Adds a <see cref="M:Terraria.GameContent.ItemDropRules.ItemDropRule.BossBag(System.Int32)"/> to the given <see cref="T:Terraria.ModLoader.ILoot"/>.
+            </summary>
+            <param name="loot"><see cref="T:Terraria.ModLoader.ILoot"/> object to add to.</param>
+            <param name="itemID">Item ID to drop.</param>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddFood(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddFood(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32,System.Int32[])">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions(Terraria.ModLoader.ILoot,System.Int32,System.Int32[])"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddBossBag(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddBossBag(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddCommon``1(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddCommon(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32,System.Int32)"/> <typeparamref name="TItem"/> parameter is the ModItem to use instead of typing the ID manually.
+            </summary>
+            <typeparam name="TItem">ModItem class to reference for the item ID.</typeparam>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddFood``1(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddFood(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32,System.Int32)"/> <typeparamref name="TItem"/> parameter is the ModItem to use instead of typing the ID manually.
+            </summary>
+            <typeparam name="TItem">ModItem class to reference for the item ID.</typeparam>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddBossBag``1(Terraria.ModLoader.ILoot)">
+            <summary>
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddBossBag(Terraria.ModLoader.ILoot,System.Int32)"/> <typeparamref name="TItem"/> parameter is the ModItem to use instead of typing the ID manually.
+            </summary>
+            <typeparam name="TItem">ModItem class to reference for the item ID.</typeparam>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddMasterModeCommonDrop``1(Terraria.ModLoader.ILoot)">
+            <summary>
+            Adds a <see cref="M:Terraria.GameContent.ItemDropRules.ItemDropRule.MasterModeCommonDrop(System.Int32)"/> to the given <see cref="T:Terraria.ModLoader.ILoot"/>. <typeparamref name="TItem"/> parameter is the ModItem to use instead of typing the ID manually.
+            </summary>
+            <typeparam name="TItem">ModItem class to reference for the item ID.</typeparam>
+            <param name="loot"><see cref="T:Terraria.ModLoader.ILoot"/> object to add to.</param>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddMasterModeDropOnAllPlayers``1(Terraria.ModLoader.ILoot,System.Int32)">
+            <summary>
+            Adds a <see cref="M:Terraria.GameContent.ItemDropRules.ItemDropRule.MasterModeDropOnAllPlayers(System.Int32,System.Int32)"/> to the given <see cref="T:Terraria.ModLoader.ILoot"/>. <typeparamref name="TItem"/> parameter is the ModItem to use instead of typing the ID manually.
+            </summary>
+            <typeparam name="TItem">ModItem class to reference for the item ID.</typeparam>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddMasterModeRelicAndPet``2(Terraria.ModLoader.ILoot)">
+            <summary>
+            Adds a <see cref="M:Terraria.GameContent.ItemDropRules.ItemDropRule.MasterModeCommonDrop(System.Int32)"/> to the given <see cref="T:Terraria.ModLoader.ILoot"/>. The <typeparamref name="TRelic"/> and <typeparamref name="TPet"/> parameters are the ModItems to use instead of typing the IDs manually.
+            </summary>
+            <typeparam name="TRelic">ModItem class to reference for the relic's item ID.</typeparam>
+            <typeparam name="TPet">ModItem class to reference for the pet's item ID.</typeparam>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddCommon``1(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddCommon``1(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddFood``1(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32,System.Int32,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddFood``1(Terraria.ModLoader.ILoot,System.Int32,System.Int32,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddBossBag``1(Terraria.GameContent.ItemDropRules.LeadingConditionRule)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddBossBag``1(Terraria.ModLoader.ILoot)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddMasterModeCommonDrop``1(Terraria.GameContent.ItemDropRules.LeadingConditionRule)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddMasterModeCommonDrop``1(Terraria.ModLoader.ILoot)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddMasterModeDropOnAllPlayers``1(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddMasterModeCommonDrop``1(Terraria.ModLoader.ILoot)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)">
+            <summary>
+            Adds a <see cref="M:Terraria.GameContent.ItemDropRules.ItemDropRule.OneFromOptions(System.Int32,System.Int32[])"/> to the given <see cref="T:Terraria.ModLoader.ILoot"/>
+            </summary>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``3(Terraria.ModLoader.ILoot,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``4(Terraria.ModLoader.ILoot,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``5(Terraria.ModLoader.ILoot,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``6(Terraria.ModLoader.ILoot,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``7(Terraria.ModLoader.ILoot,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``3(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``4(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``5(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``6(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="M:NPCUtils.LootExtensions.AddOneFromOptions``7(Terraria.GameContent.ItemDropRules.LeadingConditionRule,System.Int32)">
+            <inheritdoc cref="M:NPCUtils.LootExtensions.AddOneFromOptions``2(Terraria.ModLoader.ILoot,System.Int32)"/>
+        </member>
+        <member name="T:NPCUtils.NPCUtils">
+            <summary>
+            The mod. Used for loading all utilities contained in the mod.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.NPCUtils.TryLoadBestiaryHelper">
+            <summary>
+            Loads <see cref="T:NPCUtils.BestiaryHelper"/> if it's not yet loaded. This should be called in <see cref="M:Terraria.ModLoader.Mod.Load"/>, alongside <see cref="M:NPCUtils.NPCUtils.UnloadBestiaryHelper"/> in <see cref="M:Terraria.ModLoader.Mod.Unload"/>.
+            </summary>
+        </member>
+        <member name="M:NPCUtils.NPCUtils.UnloadBestiaryHelper">
+            <summary>
+            Unloads <see cref="T:NPCUtils.BestiaryHelper"/> if no other mod is using it. 
+            </summary>
+        </member>
+        <member name="M:NPCUtils.NPCUtils.AutoloadModBannersAndCritters(Terraria.ModLoader.Mod)">
+            <summary>
+            Autoloads all banners and critter items in the mod, given that the associated NPC uses <see cref="T:NPCUtils.AutoloadBannerAttribute"/> or <see cref="T:NPCUtils.AutoloadCritterAttribute"/>.<br/>
+            Make sure to use <see cref="M:NPCUtils.NPCUtils.UnloadMod(Terraria.ModLoader.Mod)"/> if you use this in order to properly reload content if needed.
+            </summary>
+            <param name="mod">The mod to autoload banners from.</param>
+        </member>
+        <member name="M:NPCUtils.NPCUtils.UnloadMod(Terraria.ModLoader.Mod)">
+            <summary>
+            Removes the flag for having autoloaded content for the given mod, allowing rebuilds to add content again properly.
+            </summary>
+            <param name="mod">The mod to remove the flag from.</param>
+        </member>
+    </members>
+</doc>

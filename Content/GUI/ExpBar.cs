@@ -16,14 +16,6 @@ public class ExpBar : SmartUIState
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
-	
-	public Rectangle GetRectangle()
-	{
-		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/BarEmpty").Value;
-		var pos = new Vector2(Main.screenWidth / 2, 10);
-
-		return new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);
-	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
