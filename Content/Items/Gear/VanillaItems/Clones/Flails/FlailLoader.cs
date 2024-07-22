@@ -22,8 +22,6 @@ internal class FlailLoader : ModSystem
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.FlowerPow, ItemType.Ranged, "FlowerPow"));
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Anchor, ItemType.Ranged, "Anchor"));
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.ChainGuillotines, ItemType.Ranged, "ChainGuillotines"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.KOCannon, ItemType.Ranged, "KOCannon"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.GolemFist, ItemType.Ranged, "GolemFist"));
 		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Flairon, ItemType.Ranged, "Flairon"));
 	}
 }
