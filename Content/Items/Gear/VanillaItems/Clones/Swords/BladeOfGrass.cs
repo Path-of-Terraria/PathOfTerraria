@@ -1,7 +1,7 @@
 ﻿using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Miscellaneous;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
 
 internal class BladeOfGrass : VanillaClone
 {

@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using Terraria;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
@@ -34,6 +35,32 @@ internal class SwordLoader : ModSystem
 		AddBroadsword(ItemID.AshWoodSword, "AshWoodSword");
 		AddBroadsword(ItemID.BatBat, "BatBat");
 		AddBroadsword(ItemID.BeamSword, "BeamSword");
-		AddBroadsword(ItemID.BeeKeeper, "BeeKeeper");
+		AddBroadsword(ItemID.BladedGlove, "BladedGlove"); // This has a "Only gets 50% of any melee speed bonus" effect I can't find
+		AddBroadsword(ItemID.BoneSword, "BoneSword");
+		AddBroadsword(ItemID.BorealWoodSword, "BorealWoodSword");
+		AddBroadsword(ItemID.CactusSword, "CactusSword");
+		AddBroadsword(ItemID.CandyCaneSword, "CandyCaneSword");
+		AddBroadsword(ItemID.ChlorophyteClaymore, "ChlorophyteClaymore");
+		AddBroadsword(ItemID.ChlorophyteSaber, "ChlorophyteSaber");
+		AddBroadsword(ItemID.ChristmasTreeSword, "ChristmasTreeSword");
+		AddBroadsword(ItemID.TaxCollectorsStickOfDoom, "ClassyCane");
+		AddBroadsword(ItemID.CobaltSword, "CobaltSword");
+		AddBroadsword(ItemID.Cutlass, "Cutlass");
+		AddBroadsword(ItemID.DeathSickle, "DeathSickle");
+		AddBroadsword(ItemID.EbonwoodSword, "EbonwoodSword");
+		AddBroadsword(ItemID.EnchantedSword, "EnchantedSword");
+		AddBroadsword(ItemID.DyeTradersScimitar, "DyeTradersScimitar");
+		AddBroadsword(ItemID.FalconBlade, "FalconBlade");
+		AddBroadsword(ItemID.FetidBaghnakhs, "FetidBaghnakhs");
+		AddBroadsword(ItemID.DD2SquireBetsySword, "FlyingDragon");
+		AddBroadsword(ItemID.GoldBroadsword, "GoldBroadsword");
+		AddBroadsword(ItemID.IceSickle, "IceSickle");
+		AddBroadsword(ItemID.InfluxWaver, "InfluxWaver");
+		AddBroadsword(ItemID.LeadBroadsword, "LeadBroadsword");
+	}
+
+	public override void PostSetupContent()
+	{
+		Item.claw[Mod.Find<ModItem>("BladedGlove").Type] = true;
 	}
 }
