@@ -24,6 +24,7 @@ public class Hunter : ModNPC
 	public override string HeadTexture { get; } = $"{nameof(PathOfTerraria)}/Assets/NPCs/Town/Hunter_Head";
 
 	public override string Texture { get; } = $"{nameof(PathOfTerraria)}/Assets/NPCs/Town/Hunter";
+
 	private int dialogue;
 
 	public override void SetStaticDefaults()
@@ -127,7 +128,6 @@ public class Hunter : ModNPC
 			return;
 		}
 
-		// TODO: Implement quest.
 		modPlayer.RestartQuestTest();
 	}
 
@@ -161,14 +161,16 @@ public class Hunter : ModNPC
 		{
 			return;
 		}
-		
-		for (int i = 0; i < 3; i++) {
+
+		for (int i = 0; i < 3; i++)
+		{
 			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>($"{Name}_{i}").Type);
 		}
-		
+
 		int hat = NPC.GetPartyHatGore();
 
-		if (hat <= 0) {
+		if (hat <= 0)
+		{
 			return;
 		}
 
