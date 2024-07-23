@@ -3,7 +3,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Socketables;
 
-internal abstract class Socketable : ModItem
+public abstract class Socketable : ModItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Socketable/Placeholder";
 	

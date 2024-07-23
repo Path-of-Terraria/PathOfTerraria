@@ -30,7 +30,7 @@ internal class SwordLoader : ModSystem
 			PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(itemId, ItemType.Sword, name));
 		}
 
-		// Broadswords, Prehardmode
+		// Broadswords, Alphabetically (by in-game name)
 		AddBroadsword(ItemID.AdamantiteSword, "AdamantiteSword");
 		AddBroadsword(ItemID.AshWoodSword, "AshWoodSword");
 		AddBroadsword(ItemID.BatBat, "BatBat");
@@ -65,6 +65,16 @@ internal class SwordLoader : ModSystem
 		AddBroadsword(ItemID.PearlwoodSword, "PearlwoodSword");
 		AddBroadsword(ItemID.PlatinumBroadsword, "PlatinumBroadsword");
 		AddBroadsword(ItemID.PurpleClubberfish, "PurpleClubberfish");
+		AddBroadsword(ItemID.RichMahoganySword, "RichMahoganySword");
+		AddBroadsword(ItemID.Seedler, "Seedler");
+		AddBroadsword(ItemID.ShadewoodSword, "ShadewoodSword");
+		AddBroadsword(ItemID.SilverBroadsword, "SilverBroadsword");
+		AddBroadsword(ItemID.SlapHand, "SlapHand");
+		AddBroadsword(ItemID.StylistKilLaKillScissorsIWish, "StylishScissors");
+		AddBroadsword(ItemID.TinBroadsword, "TinBroadsword");
+		AddBroadsword(ItemID.TitaniumSword, "TitaniumSword");
+		AddBroadsword(ItemID.TungstenBroadsword, "TungstenBroadsword");
+		AddBroadsword(ItemID.ZombieArm, "ZombieArm");
 	}
 
 	public override void PostSetupContent()

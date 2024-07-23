@@ -10,6 +10,13 @@ internal class WoodenSword : Sword
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		GearAlternatives.Register(Type, ItemID.WoodenSword);
+	}
+
 	public override void Defaults()
 	{
 		base.Defaults();

@@ -24,9 +24,6 @@ internal class PsychoKnife : VanillaClone
 		c.Emit(OpCodes.Pop);
 		c.Emit(OpCodes.Ldarg_0);
 		c.EmitDelegate(ResetStealthIfNeeded);
-
-		c.Index++;
-		c.Emit(OpCodes.Ldarg_0);
 	}
 	
 	public static float ResetStealthIfNeeded(Player player)

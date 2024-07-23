@@ -10,7 +10,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
-internal abstract class Gear : PoTItem
+public abstract class Gear : PoTItem
 {
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
