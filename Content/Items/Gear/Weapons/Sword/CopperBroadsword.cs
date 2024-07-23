@@ -10,6 +10,13 @@ internal class CopperBroadsword : Sword
 	public override float DropChance => 1f;
 	public override int MinDropItemLevel => 5;
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		GearAlternatives.Register(Type, ItemID.CopperBroadsword);
+	}
+
 	public override void Defaults()
 	{
 		base.Defaults();

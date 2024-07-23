@@ -10,6 +10,13 @@ internal class IronBroadsword : Sword
 	public override float DropChance => 1f;
 	public override int MinDropItemLevel => 11;
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		GearAlternatives.Register(Type, ItemID.IronBroadsword);
+	}
+
 	public override void Defaults()
 	{
 		base.Defaults();

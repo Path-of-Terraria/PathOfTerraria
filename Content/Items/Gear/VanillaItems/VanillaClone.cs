@@ -1,12 +1,10 @@
-﻿using Mono.Cecil;
-using System.Linq;
-using Terraria.DataStructures;
+﻿using System.Linq;
 using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
-internal abstract class VanillaClone : Gear
+public abstract class VanillaClone : Gear
 {
 	public override float DropChance => 0f;
 	protected virtual short VanillaItemId => ItemID.None;
