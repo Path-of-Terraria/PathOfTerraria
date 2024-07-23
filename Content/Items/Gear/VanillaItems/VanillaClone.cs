@@ -42,7 +42,13 @@ internal abstract class VanillaClone : Gear
 	{
 		CloneRecipes(VanillaItemId, Type);
 	}
-	
+
+	// Disable alt function use by default since most vanilla clones don't have alt uses
+	public override bool AltFunctionUse(Player player)
+	{
+		return false;
+	}
+
 	/// <summary>
 	/// Clones the original item's recipes to the new item.
 	/// </summary>
