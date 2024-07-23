@@ -4,9 +4,9 @@ Keybinds: {
 	UseSkill3.DisplayName: Use Skill3
 	UseSkill4.DisplayName: Use Skill4
 	UseSkill5.DisplayName: Use Skill5
-	WeaponSwap.DisplayName: Swap Weapons
 	CopyItemInfo.DisplayName: Copy Item Info
 	StatUIKey.DisplayName: Toggle Stat Page
+	GearSwap.DisplayName: Swap Gear
 	QuestUIKey.DisplayName: Quest UI Key
 }
 

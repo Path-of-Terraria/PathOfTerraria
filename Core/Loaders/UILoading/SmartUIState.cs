@@ -31,6 +31,11 @@ public abstract class SmartUIState : UIState
 	public virtual InterfaceScaleType Scale { get; set; } = InterfaceScaleType.UI;
 
 	/// <summary>
+	/// Allows you to perform any loading tasks
+	/// </summary>
+	public virtual void Load() { }
+
+	/// <summary>
 	/// Allows you to unload anything that might need to be unloaded
 	/// </summary>
 	public virtual void Unload() { }

@@ -1,0 +1,12 @@
+Gear: {
+	Buttons: {
+		Previous: Previous
+		Next: Next
+	}
+
+	Pages: {
+		Gear: Gear
+		Vanity: Vanity
+		Dyes: Dyes
+	}
+}
