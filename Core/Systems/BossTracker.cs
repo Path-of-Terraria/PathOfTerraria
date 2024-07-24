@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using System.IO;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems;
@@ -20,6 +21,18 @@ internal class BossTracker : ModSystem
 		DownedBrainOfCthulhu = tag.GetBool(nameof(DownedBrainOfCthulhu));
 	}
 
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write(DownedEaterOfWorlds);
+		writer.Write(DownedBrainOfCthulhu);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		DownedEaterOfWorlds = reader.ReadBoolean();
+		DownedBrainOfCthulhu = reader.ReadBoolean();
+	}
+
 	public class BossTrackerNPC : GlobalNPC
 	{
 		public override void OnKill(NPC npc)
@@ -28,6 +41,11 @@ internal class BossTracker : ModSystem
 			{
 				// EoW is dumb and won't register as a boss before death so this is the workaround
 				DownedEaterOfWorlds = true;
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					NetMessage.SendData(MessageID.WorldData);
+				}
 			}
 
 			if (!npc.boss)
@@ -38,6 +56,11 @@ internal class BossTracker : ModSystem
 			if (npc.type == NPCID.BrainofCthulhu)
 			{
 				DownedBrainOfCthulhu = true;
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					NetMessage.SendData(MessageID.WorldData);
+				}
 			}
 		}
 	}
