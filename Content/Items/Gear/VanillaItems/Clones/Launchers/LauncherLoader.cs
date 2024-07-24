@@ -15,7 +15,6 @@ internal class LauncherLoader : ModSystem
 		LoadLauncher(ItemID.JackOLanternLauncher, "JackOLanternLauncher");
 		LoadLauncher(ItemID.SnowmanCannon, "SnowmanCannon");
 		LoadLauncher(ItemID.ElectrosphereLauncher, "ElectrosphereLauncher");
-		LoadLauncher(ItemID.Celeb2, "CelebrationMK2");
 
 		void LoadLauncher(short itemId, string name)
 		{
