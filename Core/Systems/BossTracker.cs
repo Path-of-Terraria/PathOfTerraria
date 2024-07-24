@@ -6,31 +6,29 @@ namespace PathOfTerraria.Core.Systems;
 
 internal class BossTracker : ModSystem
 {
-	public static bool DownedEaterOfWorlds = false;
-	public static bool DownedBrainOfCthulhu = false;
+	public static BitsByte DownedFlags = new();
+
+	public static bool DownedEaterOfWorlds { get => DownedFlags[0]; set => DownedFlags[0] = value; }
+	public static bool DownedBrainOfCthulhu { get => DownedFlags[1]; set => DownedFlags[1] = value; }
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		tag.Add(nameof(DownedEaterOfWorlds), DownedEaterOfWorlds);
-		tag.Add(nameof(DownedBrainOfCthulhu), DownedBrainOfCthulhu);
+		tag.Add(nameof(DownedFlags), (byte)DownedFlags);
 	}
 
 	public override void LoadWorldData(TagCompound tag)
 	{
-		DownedEaterOfWorlds = tag.GetBool(nameof(DownedEaterOfWorlds));
-		DownedBrainOfCthulhu = tag.GetBool(nameof(DownedBrainOfCthulhu));
+		DownedFlags = tag.GetByte(nameof(DownedFlags));
 	}
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		writer.Write(DownedEaterOfWorlds);
-		writer.Write(DownedBrainOfCthulhu);
+		writer.Write((byte)DownedFlags);
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		DownedEaterOfWorlds = reader.ReadBoolean();
-		DownedBrainOfCthulhu = reader.ReadBoolean();
+		DownedFlags = reader.ReadByte();
 	}
 
 	public class BossTrackerNPC : GlobalNPC
