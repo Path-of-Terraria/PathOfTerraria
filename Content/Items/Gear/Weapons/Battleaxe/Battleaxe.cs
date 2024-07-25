@@ -1,6 +1,8 @@
-﻿using PathOfTerraria.Content.Buffs;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Common.Systems;
 using Terraria.ID;
 using Terraria.Localization;
 

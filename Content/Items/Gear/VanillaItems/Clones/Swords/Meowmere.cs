@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Common.Enums;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
 
@@ -8,7 +9,7 @@ internal class Meowmere : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		ItemType = ItemType.Melee;
 		base.Defaults();
 	}
 

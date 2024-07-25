@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Content.Items.Pickups;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;

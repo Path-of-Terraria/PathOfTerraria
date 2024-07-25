@@ -3,12 +3,13 @@ global using Microsoft.Xna.Framework.Graphics;
 global using System;
 global using Terraria;
 global using Terraria.ModLoader;
-using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Sources;
-using PathOfTerraria.Core.Systems.Networking;
 using ReLogic.Content.Sources;
 using System.IO;
+using PathOfTerraria.Common;
+using PathOfTerraria.Common.Systems.Networking;
+using PathOfTerraria.Core.Graphics;
+using PathOfTerraria.Core.Sources;
 using Terraria.ID;
 
 namespace PathOfTerraria;
@@ -30,7 +31,7 @@ public class PathOfTerraria : Mod
 			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 		}
 
-		Core.PoTItem.GenerateItemList();
+		PoTItem.GenerateItemList();
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)

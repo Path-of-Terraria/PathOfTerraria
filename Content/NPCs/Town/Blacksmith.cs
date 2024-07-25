@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -6,8 +8,6 @@ using Terraria.GameContent.Bestiary;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Helpers.Extensions;
-using PathOfTerraria.Core.Systems.Questing;
-using PathOfTerraria.Core.Systems.Questing.Quests.TestQuest;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

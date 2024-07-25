@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Systems.TreeSystem;
 
 namespace PathOfTerraria.Content.Passives;
 

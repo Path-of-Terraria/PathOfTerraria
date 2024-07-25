@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Events;
+﻿using PathOfTerraria.Common.Events;
 
 namespace PathOfTerraria.Content.Buffs;
 

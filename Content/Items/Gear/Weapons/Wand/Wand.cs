@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Projectiles.Magic;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Content.Projectiles.Magic;
 using PathOfTerraria.Core;
 using Terraria.Enums;
 using Terraria.ID;

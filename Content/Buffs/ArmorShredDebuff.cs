@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Core.Events;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Buffs;
 

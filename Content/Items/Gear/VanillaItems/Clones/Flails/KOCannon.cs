@@ -1,6 +1,7 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Common.Enums;
+using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Miscellaneous;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Flails;
 
 internal class KOCannon : VanillaClone
 {
@@ -8,7 +9,7 @@ internal class KOCannon : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		ItemType = ItemType.Melee;
 		base.Defaults();
 	}
 

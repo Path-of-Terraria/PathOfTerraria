@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 

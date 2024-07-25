@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Core;
+﻿using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core;
 using Terraria;
 using Terraria.ID;
 

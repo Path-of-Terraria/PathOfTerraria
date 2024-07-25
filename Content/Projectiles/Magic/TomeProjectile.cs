@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.API.GraphicsLib;
-using PathOfTerraria.Content.Dusts;
+﻿using PathOfTerraria.Content.Dusts;
 using System.Linq;
+using PathOfTerraria.Core.Graphics;
 using Terraria.Audio;
 using Terraria.ID;
 

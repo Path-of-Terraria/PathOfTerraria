@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems.ModPlayers;
-using PathOfTerraria.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.TreeSystem;
+using PathOfTerraria.Core;
 
 namespace PathOfTerraria.Content.Passives;
 

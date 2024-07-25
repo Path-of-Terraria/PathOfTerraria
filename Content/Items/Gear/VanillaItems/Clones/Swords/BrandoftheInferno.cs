@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using PathOfTerraria.Common.Enums;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
@@ -40,7 +41,7 @@ internal class BrandoftheInferno : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		ItemType = ItemType.Melee;
 		base.Defaults();
 	}
 

@@ -1,7 +1,8 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Enums;
+using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Miscellaneous;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Guns;
 
 internal class OnyxBlaster : VanillaClone
 {
@@ -9,7 +10,7 @@ internal class OnyxBlaster : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		ItemType = ItemType.Melee;
 		base.Defaults();
 	}
 

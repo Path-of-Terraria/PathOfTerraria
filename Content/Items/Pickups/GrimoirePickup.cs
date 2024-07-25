@@ -1,11 +1,13 @@
-﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
-using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
+﻿using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using PathOfTerraria.Core;
-using PathOfTerraria.Core.Loaders.UILoading;
-using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Loaders.UILoading;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.UI.GrimoireSelection;
 using Terraria.ID;
 using Terraria.Localization;
 

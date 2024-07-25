@@ -1,12 +1,11 @@
 ﻿
-using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.ModPlayers;
-using PathOfTerraria.Core.Systems.TreeSystem;
+using PathOfTerraria.Common.Systems;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PathOfTerraria.Common.Systems.TreeSystem;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Jewels;

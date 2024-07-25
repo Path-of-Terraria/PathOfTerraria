@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Enums;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Bows;
@@ -9,7 +10,7 @@ internal class ChlorophyteShotbow : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Ranged;
+		ItemType = ItemType.Ranged;
 		base.Defaults();
 	}
 

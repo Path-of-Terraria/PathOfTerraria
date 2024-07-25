@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
+using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 

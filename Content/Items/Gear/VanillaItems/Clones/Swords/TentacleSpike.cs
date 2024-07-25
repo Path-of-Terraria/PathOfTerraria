@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using PathOfTerraria.Common.Enums;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
@@ -25,7 +26,7 @@ internal class TentacleSpike : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		ItemType = ItemType.Melee;
 		base.Defaults();
 	}
 

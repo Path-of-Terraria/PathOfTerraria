@@ -1,4 +1,5 @@
 ﻿using System.Drawing;
+using PathOfTerraria.Common.Enums;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -10,7 +11,7 @@ internal class BloodRainBow : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Ranged;
+		ItemType = ItemType.Ranged;
 		base.Defaults();
 	}
 

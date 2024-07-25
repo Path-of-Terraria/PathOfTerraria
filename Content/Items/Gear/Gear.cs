@@ -1,8 +1,11 @@
 ﻿using PathOfTerraria.Content.Socketables;
 using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -25,12 +28,12 @@ public abstract class Gear : PoTItem
 			return;
 		}
 
-		Rarity = Rarity.Magic; //All crafted items are magic rarity
+		Rarity = ItemRarity.Magic; //All crafted items are magic rarity
 		Affixes.Clear();
 		Roll(PickItemLevel());
 	}
 
-	public override void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier)
+	public override void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, Common.Systems.EntityModifier thisItemModifier)
 	{
 		if (_sockets.Length > 0)
 		{
@@ -58,9 +61,9 @@ public abstract class Gear : PoTItem
 		int maxSockets = Rarity switch // what to do if we roll less sockets than what we have equipped?
 									   // maby just not allow to roll if we have any sockets?
 		{
-			Rarity.Normal => Main.rand.Next(2),
-			Rarity.Magic => Main.rand.Next(1, 2),
-			Rarity.Rare => Main.rand.Next(1, 3),
+			ItemRarity.Normal => Main.rand.Next(2),
+			ItemRarity.Magic => Main.rand.Next(1, 2),
+			ItemRarity.Rare => Main.rand.Next(1, 3),
 			_ => 0,
 		};
 
@@ -72,7 +75,7 @@ public abstract class Gear : PoTItem
 		_sockets.Where(s => s is not null).ToList().ForEach(s => s.UpdateEquip(player, Item));
 	}
 
-	public sealed override void SwapItemModifiers(EntityModifier swapItemModifier)
+	public sealed override void SwapItemModifiers(Common.Systems.EntityModifier swapItemModifier)
 	{
 		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active && Main.LocalPlayer.armor[0].ModItem is Gear headGear)
 		{

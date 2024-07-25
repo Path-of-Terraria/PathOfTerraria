@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
@@ -11,7 +12,7 @@ internal class Zenith : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		ItemType = ItemType.Melee;
 		base.Defaults();
 	}
 

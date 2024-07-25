@@ -1,5 +1,6 @@
-﻿using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems;
 using Terraria.Audio;
 using Terraria.ID;
 

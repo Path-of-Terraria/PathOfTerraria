@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Content.Items.Gear.VanillaItems;
 using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -70,11 +70,11 @@ internal class GearAlternativeChestReplacement : ModSystem
 
 					if (item.ModItem is PoTItem pot)
 					{
-						pot.Rarity = Rarity.Magic;
+						pot.Rarity = ItemRarity.Magic;
 
 						if (WorldGen.genRand.NextBool(10))
 						{
-							pot.Rarity = Rarity.Rare;
+							pot.Rarity = ItemRarity.Rare;
 						}
 
 						pot.ClearAffixes();

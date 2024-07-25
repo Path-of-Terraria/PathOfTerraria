@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using PathOfTerraria.Common.Enums;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -10,7 +11,7 @@ internal class LightsBane : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		ItemType = ItemType.Melee;
 		base.Defaults();
 	}
 

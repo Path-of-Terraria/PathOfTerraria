@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using Terraria.DataStructures;
 using Terraria.ID;
 

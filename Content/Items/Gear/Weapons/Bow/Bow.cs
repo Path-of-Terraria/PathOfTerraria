@@ -1,7 +1,8 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
-using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Common.Systems;
 using ReLogic.Content;
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;

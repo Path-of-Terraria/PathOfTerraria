@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Core.Events;
-using PathOfTerraria.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Events;
+using PathOfTerraria.Common.Systems.TreeSystem;
 
 namespace PathOfTerraria.Content.Passives;
 

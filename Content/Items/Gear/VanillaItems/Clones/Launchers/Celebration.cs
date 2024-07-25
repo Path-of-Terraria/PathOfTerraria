@@ -1,7 +1,8 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Enums;
+using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Miscellaneous;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Launchers;
 
 internal class Celebration : VanillaClone
 {
@@ -9,7 +10,7 @@ internal class Celebration : VanillaClone
 
 	public override void Defaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		ItemType = ItemType.Melee;
 		base.Defaults();
 	}
 

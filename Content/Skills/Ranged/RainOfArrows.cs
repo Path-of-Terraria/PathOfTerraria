@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Core.Mechanics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using PathOfTerraria.Common.Mechanics;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;

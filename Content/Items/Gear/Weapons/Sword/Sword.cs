@@ -1,5 +1,7 @@
-﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Core;
+using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;

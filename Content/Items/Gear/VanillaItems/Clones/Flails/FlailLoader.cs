@@ -1,7 +1,9 @@
-﻿using PathOfTerraria.Core;
+﻿using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Miscellaneous;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Flails;
 
 internal class FlailLoader : ModSystem
 {

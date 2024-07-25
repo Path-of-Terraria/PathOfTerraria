@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Projectiles.Melee;
-using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
