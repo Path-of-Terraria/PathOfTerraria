@@ -57,7 +57,7 @@ internal abstract class Passive
 				return _size;
 			}
 
-			_size = GUIHelper.GetSizeOfTexture($"Assets/Passives/{InternalIdentifier}") ?? GUIHelper.GetSizeOfTexture("Assets/GUI/PassiveFrameSmall") ?? new Vector2();
+			_size = StringUtils.GetSizeOfTexture($"Assets/Passives/{InternalIdentifier}") ?? StringUtils.GetSizeOfTexture("Assets/GUI/PassiveFrameSmall") ?? new Vector2();
 				
 			return _size;
 		}

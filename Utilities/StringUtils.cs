@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace PathOfTerraria.Helpers;
 
-internal static class GUIHelper
+public static class StringUtils
 {
 	/// <summary>
 	/// Wraps a string to a given maximum width, by forcibly adding newlines. Normal newlines will be removed, put the text 'NEWBLOCK' in your string to break a paragraph if needed.
@@ -32,7 +32,7 @@ internal static class GUIHelper
 			}
 
 			// Single CJK character just get directly added to the list
-			if (LocalizationHelper.IsCjkCharacter(input[i]))
+			if (LocalizationUtils.IsCjkCharacter(input[i]))
 			{
 				if (cacheString != string.Empty)
 				{
@@ -42,8 +42,8 @@ internal static class GUIHelper
 
 				// If the next character is a CJK punctuation, we add both characters as a single word
 				// Unless the next character is a right close CJK punctuation (e.g. left brackets), in which case we add only the current character
-				if (i + 1 < input.Length && LocalizationHelper.IsCjkPunctuation(input[i + 1]) &&
-				    !LocalizationHelper.IsRightCloseCjkPunctuation(input[i + 1]))
+				if (i + 1 < input.Length && LocalizationUtils.IsCjkPunctuation(input[i + 1]) &&
+				    !LocalizationUtils.IsRightCloseCjkPunctuation(input[i + 1]))
 				{
 					words.Add(input[i].ToString() + input[i + 1]);
 					i++;

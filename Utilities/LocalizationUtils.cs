@@ -3,7 +3,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Helpers;
 
-internal static class LocalizationHelper
+public static class LocalizationUtils
 {
 	/// <summary>
 	/// Gets a localized text value of the mod.
@@ -14,7 +14,7 @@ internal static class LocalizationHelper
 	/// <returns>the text should be displayed</returns>
 	public static string GetText(string key, params object[] args)
 	{
-		return Language.Exists($"Mods.DragonLens.{key}") ? Language.GetTextValue($"Mods.DragonLens.{key}", args) : key;
+		return Language.Exists($"Mods.{nameof(PathOfTerraria)}.{key}") ? Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.{key}", args) : key;
 	}
 
 	public static string GetGUIText(string key, params object[] args)

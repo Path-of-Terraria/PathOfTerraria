@@ -85,7 +85,7 @@ public abstract class Skill
 				return _size;
 			}
 
-			_size = GUIHelper.GetSizeOfTexture($"Assets/Skills/{GetType().Name}") ?? new Vector2();
+			_size = StringUtils.GetSizeOfTexture($"Assets/Skills/{GetType().Name}") ?? new Vector2();
 				
 			return _size;
 		}
