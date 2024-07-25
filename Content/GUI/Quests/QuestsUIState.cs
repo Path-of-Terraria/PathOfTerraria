@@ -48,19 +48,16 @@ public class QuestsUIState : CloseableSmartUi
 		RemoveAllChildren();
 		base.CreateMainPanel(false, new Point(970, 715), false, true);
 		List<Quest> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
-		if (quests.Count > 0)
+		_questDetails = new QuestDetailsPanel
 		{
-			_questDetails = new QuestDetailsPanel
-			{
-				Width = StyleDimension.FromPercent(1),
-				Height = StyleDimension.FromPercent(1),
-				ViewedQuest = quests.First()
-			};
-			if (_questDetails.ViewedQuest != null)
-			{
-				Panel.Append(_questDetails);
-				_questDetails.PopulateQuestSteps();
-			}    
+			Width = StyleDimension.FromPercent(1),
+			Height = StyleDimension.FromPercent(1),
+			ViewedQuest = quests.FirstOrDefault()
+		};
+		if (_questDetails.ViewedQuest != null)
+		{
+			Panel.Append(_questDetails);
+			_questDetails.PopulateQuestSteps();
 		}
 
 		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));

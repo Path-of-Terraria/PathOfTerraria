@@ -20,7 +20,7 @@ internal class QuestDetailsPanel : SmartUIElement
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		DrawBack(spriteBatch);
-		if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() != 0)
+		if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() != 0 && ViewedQuest is not null)
 		{
 			Utils.DrawBorderStringBig(spriteBatch, ViewedQuest.Name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
 		}
@@ -38,6 +38,11 @@ internal class QuestDetailsPanel : SmartUIElement
 
 	public void PopulateQuestSteps()
 	{
+		if (ViewedQuest is null)
+		{
+			return;
+		}
+
 		int index = 0;
 
 		foreach (QuestStep step in ViewedQuest.GetSteps())
