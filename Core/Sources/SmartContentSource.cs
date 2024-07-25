@@ -2,6 +2,7 @@
 using ReLogic.Content.Sources;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace PathOfTerraria.Core.Sources;
 
@@ -61,18 +62,18 @@ internal sealed class SmartContentSource(IContentSource source) : IContentSource
 		return path;
 	}
 
-	public IEnumerable<string> EnumerateAssets()
+	IEnumerable<string> IContentSource.EnumerateAssets()
 	{
-		throw new NotImplementedException();
+		return source.EnumerateAssets().Select(RewritePath);
 	}
 
-	public string GetExtension(string assetName)
+	string IContentSource.GetExtension(string assetName)
 	{
-		throw new NotImplementedException();
+		return source.GetExtension(RewritePath(assetName));
 	}
 
-	public Stream OpenStream(string fullAssetName)
+	Stream IContentSource.OpenStream(string fullAssetName)
 	{
-		throw new NotImplementedException();
+		return source.OpenStream(RewritePath(fullAssetName));
 	}
 }
