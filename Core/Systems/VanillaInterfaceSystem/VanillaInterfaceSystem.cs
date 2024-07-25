@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 
 namespace PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 
@@ -100,8 +100,15 @@ internal abstract class AbstractVanillaInterfaceHandler<T> : ILoadable
 /// </summary>
 public static class VanillaInterfaceHelper
 {
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static bool TryGetInterface<TType, TInterface>(this TType instance, [NotNullWhen(returnValue: true)] TInterface value)
 	{
 		return AbstractVanillaInterfaceHandler<TType>.Instance.TryGetInterface(instance, out value);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static void AddItemInterface<TInterface>(int itemType, TInterface value)
+	{
+		AbstractVanillaInterfaceHandler<Item>.AddInterface(itemType, value);
 	}
 }
