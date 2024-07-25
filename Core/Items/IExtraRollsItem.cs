@@ -2,5 +2,5 @@
 
 public interface IExtraRollsItem
 {
-	void ExtraRolls();
+	void ExtraRolls(Item item);
 }

@@ -1,6 +1,10 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.Items;
@@ -31,6 +35,123 @@ internal sealed class PoTGlobalItem : GlobalItem
 		base.SetDefaults(entity);
 	}
 
+	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+	{
+		base.ModifyTooltips(item, tooltips);
+
+		tooltips.Clear();
+
+		PoTInstanceItemData data = item.GetInstanceData();
+
+		var nameLine = new TooltipLine(Mod, "Name", data.SpecialName)
+		{
+			OverrideColor = GetRarityColor(data.Rarity)
+		};
+		tooltips.Add(nameLine);
+
+		var rarityLine = new TooltipLine(Mod, "Rarity", GetDescriptor(data.ItemType, data.Rarity, data.Influence))
+		{
+			OverrideColor = Color.Lerp(GetRarityColor(data.Rarity), Color.White, 0.5f)
+		};
+		tooltips.Add(rarityLine);
+
+		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {(data.ItemType == ItemType.Map ? "Tier" : "Item level")}: [c/CCCCFF:{data.ItemLevel}]")
+		{
+			OverrideColor = new Color(170, 170, 170)
+		};
+		tooltips.Add(itemLevelLine);
+
+		if (!string.IsNullOrWhiteSpace(data.AltUseDescription))
+		{
+			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", data.AltUseDescription));
+		}
+
+		if (item.damage > 0)
+		{
+			// TODO: Slice first space in damage type display name...
+			string highlightNumbers = HighlightNumbers(
+				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] Damage ({item.DamageType.DisplayName})",
+				baseColor: "DDDDDD");
+			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] ");
+			tooltips.Add(damageLine);
+		}
+
+		if (item.defense > 0)
+		{
+			var defenseLine = new TooltipLine(Mod, "Defense", $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"+{item.defense} Defense", baseColor: "DDDDDD"));
+			tooltips.Add(defenseLine);
+		}
+
+		for (int i = 0; i < data.Affixes.Count; i++)
+		{
+			ItemAffix affix = data.Affixes[i];
+			string text = affix.RequiredInfluence switch
+			{
+				Influence.Solar => $"[i:{ItemID.IchorBullet}] " +
+								   HighlightNumbers($"{affix.GetTooltip(item)}", "FFEE99", "CCB077"),
+				Influence.Lunar => $"[i:{ItemID.CrystalBullet}] " +
+								   HighlightNumbers($"{affix.GetTooltip(item)}", "BBDDFF", "99AADD"),
+				_ => i < data.ImplicitCount
+				? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(item)}", baseColor: "8B8000")
+				: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(item)}"),
+			};
+
+			var affixLine = new TooltipLine(Mod, $"Affix{i}", text);
+			tooltips.Add(affixLine);
+		}
+
+		if (!string.IsNullOrWhiteSpace(data.Description))
+		{
+			tooltips.Add(new TooltipLine(Mod, "Description", data.Description));
+		}
+
+		// Change in stats if equipped.
+		var thisItemModifier = new EntityModifier();
+		ApplyAffixes(thisItemModifier);
+
+		if (item.TryGetInterface(out IInsertAdditionalTooltipLinesItem insertAdditionalTooltipLinesItem))
+		{
+			insertAdditionalTooltipLinesItem.InsertAdditionalTooltipLines(item, tooltips, thisItemModifier);
+		}
+
+		var currentItemModifier = new EntityModifier();
+		if (item.TryGetInterface(out ISwapItemModifiersItem swapItemModifiersItem))
+		{
+			swapItemModifiersItem.SwapItemModifiers(item, currentItemModifier);
+		}
+
+		List<string> red = [];
+		List<string> green = [];
+		currentItemModifier.GetDifference(thisItemModifier).ForEach(s =>
+		{
+			if (s.Item2)
+			{
+				green.Add(s.Item1);
+			}
+			else
+			{
+				red.Add(s.Item1);
+			}
+		});
+
+		if (red.Count + green.Count > 0)
+		{
+			tooltips.Add(new TooltipLine(Mod, "Space", " "));
+		}
+
+		int changeCount = 0;
+
+		foreach (string changes in green)
+		{
+			tooltips.Add(new TooltipLine(Mod, $"Change{changeCount++}", $"[c/00FF00:{changes}]"));
+		}
+
+		foreach (string changes in red)
+		{
+			tooltips.Add(new TooltipLine(Mod, $"Change{changeCount++}", $"[c/FF0000:{changes}]"));
+		}
+	}
+
 	public static PoTStaticItemData GetStaticData(int type)
 	{
 		if (_staticData.TryGetValue(type, out PoTStaticItemData data))
@@ -40,6 +161,8 @@ internal sealed class PoTGlobalItem : GlobalItem
 
 		return _staticData[type] = new PoTStaticItemData();
 	}
+
+	private static Color GetRarityColor(Rarity rarity) { }
 
 	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)

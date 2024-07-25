@@ -4,5 +4,5 @@ namespace PathOfTerraria.Core.Items;
 
 public interface ISwapItemModifiersItem
 {
-	void SwapItemModifiers(EntityModifier SwapItemModifier);
+	void SwapItemModifiers(Item item, EntityModifier SwapItemModifier);
 }

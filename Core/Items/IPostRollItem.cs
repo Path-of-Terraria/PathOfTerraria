@@ -2,5 +2,5 @@
 
 public interface IPostRollItem
 {
-	void PostRoll();
+	void PostRoll(Item item);
 }
