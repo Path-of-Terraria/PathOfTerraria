@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 using TextCopy;
@@ -26,7 +27,7 @@ public interface ICopyToClipboardItem
 		{
 			Item item = inv[slot];
 
-			if (_copyItemKeybind.JustPressed && item.active && item.ModItem is ICopyToClipboardItem copyToClipboardItem)
+			if (_copyItemKeybind.JustPressed && item.active && item.TryGetInterface(out ICopyToClipboardItem copyToClipboardItem))
 			{
 				copyToClipboardItem.CopyToClipboard(item);
 			}

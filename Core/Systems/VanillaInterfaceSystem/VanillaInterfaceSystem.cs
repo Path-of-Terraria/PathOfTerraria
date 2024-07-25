@@ -101,7 +101,7 @@ internal abstract class AbstractVanillaInterfaceHandler<T> : ILoadable
 public static class VanillaInterfaceHelper
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool TryGetInterface<TType, TInterface>(this TType instance, [NotNullWhen(returnValue: true)] TInterface value)
+	public static bool TryGetInterface<TType, TInterface>(this TType instance, [NotNullWhen(returnValue: true)] out TInterface value)
 	{
 		return AbstractVanillaInterfaceHandler<TType>.Instance.TryGetInterface(instance, out value);
 	}
