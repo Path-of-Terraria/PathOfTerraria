@@ -290,6 +290,7 @@ public class HijackHotbarClick : ModSystem
 		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
 		{
 			DrawMainItemHover(hbLocked);
+			DrawPotionHotbarTooltips(hbLocked);
 
 			return;
 		}
@@ -322,6 +323,40 @@ public class HijackHotbarClick : ModSystem
 					Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[FirstSlot].stack + ")";
 				}
 			}
+		}
+	}
+
+	private static void DrawPotionHotbarTooltips(bool hbLocked)
+	{
+		if (hbLocked)
+		{
+			return;
+		}
+
+		const int HotbarOffX = 20;
+		const int HotbarOffY = 20;
+		const int InnerHotbarOffX = 436;
+		const int InnerHotbarOffY = 12;
+		const int RealHotbarOffX = HotbarOffX + InnerHotbarOffX;
+		const int RealHotbarOffY = HotbarOffY + InnerHotbarOffY;
+		const int SlotSize = 48;
+		const int SeparatorWidth = 4;
+
+		int offX = RealHotbarOffX;
+		int offY = RealHotbarOffY;
+
+		for (int i = 0; i < 2; i++)
+		{
+			var pos = new Rectangle(offX, offY, SlotSize, SlotSize);
+
+			if (pos.Contains(Main.MouseScreen.ToPoint()))
+			{
+				Main.LocalPlayer.mouseInterface = true;
+				Main.LocalPlayer.cursorItemIconEnabled = false;
+				Main.hoverItemName = i == 0 ? "Healing Potion" : "Mana Potion";
+			}
+
+			offX += SlotSize + SeparatorWidth;
 		}
 	}
 
