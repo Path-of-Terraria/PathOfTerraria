@@ -9,8 +9,10 @@ namespace PathOfTerraria.Content.GUI.PlayerStats;
 
 internal class PlayerStatInnerPanel : SmartUIElement
 {
-	// This is a "less dangerous" (and arguably More Correct) fix to hair being
-	// rendered as black, but it's bugged (see: TML-4317). 
+	// This is the correct approach at correctly rendering the player in the stat
+	// panel, since it's in-game and needs lighting.  This is bugged (see:
+	// TML-4317), so we use a temporary patch (GetHairColorPatch) to fix the most
+	// immediately obvious issue.
 	/*private sealed class StatPanelRendererPlayer : ModPlayer
 	{
 		public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
@@ -26,7 +28,6 @@ internal class PlayerStatInnerPanel : SmartUIElement
 		}
 	}*/
 
-	// Instead, we'll settle for a detour...
 	private sealed class GetHairColorPatch : ModSystem
 	{
 		public override void Load()
