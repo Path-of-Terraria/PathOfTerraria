@@ -285,15 +285,6 @@ public abstract class PoTItem : ModItem
 		};
 	}
 
-	public virtual void ExtraUpdateEquips(Player player) { }
-
-	public override void UpdateEquip(Player player)
-	{
-		ExtraUpdateEquips(player);
-
-		ApplyAffixes(player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
-	}
-
 	public override void SaveData(TagCompound tag)
 	{
 		tag["type"] = (int)ItemType;

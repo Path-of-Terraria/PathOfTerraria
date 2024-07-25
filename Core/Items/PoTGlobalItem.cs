@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
@@ -151,6 +152,13 @@ internal sealed class PoTGlobalItem : GlobalItem
 		{
 			tooltips.Add(new TooltipLine(Mod, $"Change{changeCount++}", $"[c/FF0000:{changes}]"));
 		}
+	}
+
+	public override void UpdateEquip(Item item, Player player)
+	{
+		base.UpdateEquip(item, player);
+
+		ApplyAffixes(item, item.GetInstanceData().Affixes, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
 	}
 
 	public void ApplyAffixes(Item item, List<ItemAffix> affixes, EntityModifier entityModifier)
