@@ -11,6 +11,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -353,11 +354,21 @@ public class HijackHotbarClick : ModSystem
 			{
 				Main.LocalPlayer.mouseInterface = true;
 				Main.LocalPlayer.cursorItemIconEnabled = false;
-				Main.hoverItemName = i == 0 ? "Healing Potion" : "Mana Potion";
+				Main.hoverItemName = GetHealthOrManaTooltip(i == 0);
 			}
 
 			offX += SlotSize + SeparatorWidth;
 		}
+	}
+
+	private static string GetHealthOrManaTooltip(bool health)
+	{
+		string type = health ? "Health" : "Mana";
+		PotionSystem potions = Main.LocalPlayer.GetModPlayer<PotionSystem>();
+
+		return Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip")
+			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
+			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00"));
 	}
 
 	private static void DrawBuildingHotbarTooltips(bool hbLocked, Texture2D back)
