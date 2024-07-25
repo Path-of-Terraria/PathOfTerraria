@@ -2,8 +2,6 @@
 
  public class LifeStealProjectile : ModProjectile
  {
-	 public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/LifeStealProjectile";
-
 	 public override void SetStaticDefaults()
 	 {
 		 // Total count animation frames

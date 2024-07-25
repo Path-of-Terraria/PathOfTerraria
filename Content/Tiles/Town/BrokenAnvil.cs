@@ -5,8 +5,6 @@ namespace PathOfTerraria.Content.Tiles.Town;
 
 internal class BrokenAnvil : ModTile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Tiles/Town/BrokenAnvil";
-
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;

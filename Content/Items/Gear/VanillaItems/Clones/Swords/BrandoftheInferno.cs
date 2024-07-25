@@ -7,9 +7,6 @@ namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
 internal class BrandoftheInferno : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.DD2SquireDemonSword;
-
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/VanillaItems/Clones/Swords/BrandoftheInferno";
-
 	public override void Load()
 	{
 		IL_Player.ItemCheck_ManageRightClickFeatures_ShieldRaise += AddModdedShieldRaiseItem;

@@ -12,7 +12,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class FireStarter : Sword
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/FireStarter";
 	public override float DropChance => 5f;
 	public override int ItemLevel => 1;
 	public override bool IsUnique => true;

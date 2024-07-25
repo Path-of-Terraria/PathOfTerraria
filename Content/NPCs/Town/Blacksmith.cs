@@ -14,8 +14,6 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class Blacksmith : ModNPC
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/NPCs/Town/Blacksmith";
-
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
