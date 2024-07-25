@@ -11,6 +11,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -290,6 +291,7 @@ public class HijackHotbarClick : ModSystem
 		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
 		{
 			DrawMainItemHover(hbLocked);
+			DrawPotionHotbarTooltips(hbLocked);
 
 			return;
 		}
@@ -323,6 +325,50 @@ public class HijackHotbarClick : ModSystem
 				}
 			}
 		}
+	}
+
+	private static void DrawPotionHotbarTooltips(bool hbLocked)
+	{
+		if (hbLocked)
+		{
+			return;
+		}
+
+		const int HotbarOffX = 20;
+		const int HotbarOffY = 20;
+		const int InnerHotbarOffX = 436;
+		const int InnerHotbarOffY = 12;
+		const int RealHotbarOffX = HotbarOffX + InnerHotbarOffX;
+		const int RealHotbarOffY = HotbarOffY + InnerHotbarOffY;
+		const int SlotSize = 48;
+		const int SeparatorWidth = 4;
+
+		int offX = RealHotbarOffX;
+		int offY = RealHotbarOffY;
+
+		for (int i = 0; i < 2; i++)
+		{
+			var pos = new Rectangle(offX, offY, SlotSize, SlotSize);
+
+			if (pos.Contains(Main.MouseScreen.ToPoint()))
+			{
+				Main.LocalPlayer.mouseInterface = true;
+				Main.LocalPlayer.cursorItemIconEnabled = false;
+				Main.hoverItemName = GetHealthOrManaTooltip(i == 0);
+			}
+
+			offX += SlotSize + SeparatorWidth;
+		}
+	}
+
+	private static string GetHealthOrManaTooltip(bool health)
+	{
+		string type = health ? "Health" : "Mana";
+		PotionSystem potions = Main.LocalPlayer.GetModPlayer<PotionSystem>();
+
+		return Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip")
+			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
+			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00"));
 	}
 
 	private static void DrawBuildingHotbarTooltips(bool hbLocked, Texture2D back)
