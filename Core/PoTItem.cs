@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Data;
 using PathOfTerraria.Data.Models;
 using System.IO;
+using System.Runtime.CompilerServices;
 
 namespace PathOfTerraria.Core;
 
@@ -107,14 +108,10 @@ public sealed class PoTInstanceItemData : GlobalItem
 }
 
 /// <summary>
-///		Generic Path of Terraria-related item data that should be stored as
-///		singleton-like data that does not vary between instances of items of
-///		the same type.
-/// </summary>
-public sealed class PoTStaticItemData : GlobalItem
+///		Per-instance item data such as fields normally set in
+///		<see cref="ModItem.SetDefaults"/>.
+public sealed class PoTStaticItemData
 {
-	public override bool InstancePerEntity => true;
-
 	/// <summary>
 	///		The drop chance of this item.
 	/// </summary>
@@ -132,15 +129,22 @@ public sealed class PoTStaticItemData : GlobalItem
 }
 
 /// <summary>
-///		Implementation using data sourced from
-///		<see cref="PoTInstanceItemData"/> and <see cref="PoTStaticItemData"/>
-///		to handle generalized tasks such as rolling, rendering tooltips, etc.
+///		Per-type item data such as fields normally set in
+///		<see cref="ModType.SetStaticDefaults"/>.
 /// </summary>
 internal sealed class PoTGlobalItem : GlobalItem
 {
+	private static Dictionary<int, PoTStaticItemData> _staticData = [];
+
 	public override void Load()
 	{
 		On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
+	}
+
+	public override void Unload()
+	{
+		_staticData.Clear();
+		_staticData = null;
 	}
 
 	// IMPORTANT: Called *after* ModItem::SetDefaults.
@@ -150,12 +154,24 @@ internal sealed class PoTGlobalItem : GlobalItem
 		base.SetDefaults(entity);
 	}
 
+	public static PoTStaticItemData GetStaticData(int type)
+	{
+		if (_staticData.TryGetValue(type, out PoTStaticItemData data))
+		{
+			return data;
+		}
+
+		return _staticData[type] = new PoTStaticItemData();
+	}
+
 	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)
 	{
 		if (inv[slot].ModItem is Gear gear && context != 21)
 		{
-			string rareName = gear.Rarity switch
+			PoTInstanceItemData data = gear.GetInstanceData();
+
+			string rareName = data.Rarity switch
 			{
 				Rarity.Normal => "Normal",
 				Rarity.Magic => "Magic",
@@ -171,12 +187,12 @@ internal sealed class PoTGlobalItem : GlobalItem
 			sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
 			ItemSlot.Draw(sb, ref inv[slot], 21, position);
 
-			if (gear.Influence == Influence.Solar)
+			if (data.Influence == Influence.Solar)
 			{
 				DrawSolarSlot(sb, position);
 			}
 
-			if (gear.Influence == Influence.Lunar)
+			if (data.Influence == Influence.Lunar)
 			{
 				DrawLunarSlot(sb, position);
 			}
@@ -185,6 +201,108 @@ internal sealed class PoTGlobalItem : GlobalItem
 		{
 			orig(sb, inv, context, slot, position, color);
 		}
+	}
+
+	/// <summary>
+	/// Draws the shader overlay for solar items
+	/// </summary>
+	/// <param name="spriteBatch"></param>
+	/// <param name="pos"></param>
+	private static void DrawSolarSlot(SpriteBatch spriteBatch, Vector2 pos)
+	{
+		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Slots/SlotMap").Value;
+
+		Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
+
+		if (effect is null)
+		{
+			return;
+		}
+
+		effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f % 2f);
+		effect.Parameters["primary"].SetValue(new Vector3(1, 1, 0.2f) * 0.7f);
+		effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1.3f, 1));
+		effect.Parameters["secondary"].SetValue(new Vector3(0.85f, 0.6f, 0.35f) * 0.7f);
+
+		effect.Parameters["sampleTexture"]
+			.SetValue(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Misc/SwirlNoise").Value);
+		effect.Parameters["mapTexture"]
+			.SetValue(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Misc/SwirlNoise").Value);
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
+			Main.UIScaleMatrix);
+
+		spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
+			Main.UIScaleMatrix);
+	}
+
+	/// <summary>
+	/// Draws the shader overlay for lunar items
+	/// </summary>
+	/// <param name="spriteBatch"></param>
+	/// <param name="pos"></param>
+	private static void DrawLunarSlot(SpriteBatch spriteBatch, Vector2 pos)
+	{
+		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Slots/SlotMap").Value;
+
+		Effect effect = Filters.Scene["LunarEffect"].GetShader().Shader;
+
+		if (effect is null)
+		{
+			return;
+		}
+
+		effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.006f % 2f);
+		effect.Parameters["primary"].SetValue(new Vector3(0.4f, 0.8f, 1f) * 0.7f);
+		effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1.1f, 1));
+		effect.Parameters["secondary"].SetValue(new Vector3(0.4f, 0.4f, 0.9f) * 0.7f);
+
+		effect.Parameters["sampleTexture"]
+			.SetValue(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Misc/ShaderNoise").Value);
+		effect.Parameters["mapTexture"]
+			.SetValue(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Misc/ShaderNoise").Value);
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
+			Main.UIScaleMatrix);
+
+		spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
+
+		spriteBatch.End();
+		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
+			Main.UIScaleMatrix);
+	}
+}
+
+// TEMPORARY UNTIL PR READY FOR MERGE
+public static class PoTItemHelper
+{
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PoTInstanceItemData GetInstanceData(this Item item)
+	{
+		return item.GetGlobalItem<PoTInstanceItemData>();
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PoTInstanceItemData GetInstanceData(this ModItem item)
+	{
+		return item.Item.GetInstanceData();
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PoTStaticItemData GetStaticData(this Item item)
+	{
+		return PoTGlobalItem.GetStaticData(item.type);
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static PoTStaticItemData GetStaticData(this ModItem item)
+	{
+		return item.Item.GetStaticData();
 	}
 }
 
@@ -662,80 +780,6 @@ public abstract class PoTItem : ModItem
 		}
 
 		return Main.rand.Next(5, 21);
-	}
-
-	/// <summary>
-	/// Draws the shader overlay for solar items
-	/// </summary>
-	/// <param name="spriteBatch"></param>
-	/// <param name="pos"></param>
-	private void DrawSolarSlot(SpriteBatch spriteBatch, Vector2 pos)
-	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Slots/SlotMap").Value;
-
-		Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
-
-		if (effect is null)
-		{
-			return;
-		}
-
-		effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.015f % 2f);
-		effect.Parameters["primary"].SetValue(new Vector3(1, 1, 0.2f) * 0.7f);
-		effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1.3f, 1));
-		effect.Parameters["secondary"].SetValue(new Vector3(0.85f, 0.6f, 0.35f) * 0.7f);
-
-		effect.Parameters["sampleTexture"]
-			.SetValue(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Misc/SwirlNoise").Value);
-		effect.Parameters["mapTexture"]
-			.SetValue(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Misc/SwirlNoise").Value);
-
-		spriteBatch.End();
-		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
-			Main.UIScaleMatrix);
-
-		spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
-
-		spriteBatch.End();
-		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
-			Main.UIScaleMatrix);
-	}
-
-	/// <summary>
-	/// Draws the shader overlay for lunar items
-	/// </summary>
-	/// <param name="spriteBatch"></param>
-	/// <param name="pos"></param>
-	private void DrawLunarSlot(SpriteBatch spriteBatch, Vector2 pos)
-	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Slots/SlotMap").Value;
-
-		Effect effect = Filters.Scene["LunarEffect"].GetShader().Shader;
-
-		if (effect is null)
-		{
-			return;
-		}
-
-		effect.Parameters["u_time"].SetValue(Main.GameUpdateCount * 0.006f % 2f);
-		effect.Parameters["primary"].SetValue(new Vector3(0.4f, 0.8f, 1f) * 0.7f);
-		effect.Parameters["primaryScaling"].SetValue(new Vector3(1, 1.1f, 1));
-		effect.Parameters["secondary"].SetValue(new Vector3(0.4f, 0.4f, 0.9f) * 0.7f);
-
-		effect.Parameters["sampleTexture"]
-			.SetValue(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Misc/ShaderNoise").Value);
-		effect.Parameters["mapTexture"]
-			.SetValue(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Misc/ShaderNoise").Value);
-
-		spriteBatch.End();
-		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
-			Main.UIScaleMatrix);
-
-		spriteBatch.Draw(tex, pos, null, Color.White, 0, Vector2.Zero, Main.inventoryScale, 0, 0);
-
-		spriteBatch.End();
-		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
-			Main.UIScaleMatrix);
 	}
 
 	/// <summary>
