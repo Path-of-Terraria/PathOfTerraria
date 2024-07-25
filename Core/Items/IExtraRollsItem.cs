@@ -1,6 +1,6 @@
 ﻿namespace PathOfTerraria.Core.Items;
 
-public interface IExtraRolls
+public interface IExtraRollsItem
 {
 	void ExtraRolls();
 }

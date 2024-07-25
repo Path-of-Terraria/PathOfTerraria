@@ -1,6 +1,6 @@
 ﻿namespace PathOfTerraria.Core.Items;
 
-public interface IPostRoll
+public interface IPostRollItem
 {
 	void PostRoll();
 }

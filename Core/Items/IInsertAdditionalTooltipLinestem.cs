@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace PathOfTerraria.Core.Items;
 
-public interface IInsertAdditionalTooltipLines
+public interface IInsertAdditionalTooltipLinestem
+
 {
 	void InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier);
 }
