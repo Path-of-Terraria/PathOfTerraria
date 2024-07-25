@@ -294,16 +294,6 @@ public abstract class PoTItem : ModItem
 		ApplyAffixes(player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
 	}
 
-	public void ApplyAffixes(EntityModifier entityModifier)
-	{
-		Affixes.ForEach(n => n.ApplyAffix(entityModifier, this));
-	}
-
-	public void ClearAffixes()
-	{
-		Affixes.Clear();
-	}
-
 	public override void SaveData(TagCompound tag)
 	{
 		tag["type"] = (int)ItemType;
