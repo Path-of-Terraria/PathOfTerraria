@@ -47,6 +47,101 @@ internal class PoTItemMiddleMouseButtonClick : ILoadable
 	}
 }
 
+/// <summary>
+///		Generic Path of Terraria-related item data that should be stored on each
+///		item, including vanilla items.
+/// </summary>
+public sealed class PoTInstanceItemData : GlobalItem
+{
+	public override bool InstancePerEntity => true;
+
+	/// <summary>
+	///		The type of item this is, not to be confused with
+	///		<see cref="Item.type"/>.
+	/// </summary>
+	public ItemType ItemType { get; set; }
+
+	/// <summary>
+	///		The custom Path of Terraria-style <see cref="Core.Rarity"/>.
+	/// </summary>
+	public Rarity Rarity { get; set; }
+
+	/// <summary>
+	///		The influence of this item.
+	/// </summary>
+	public Influence Influence { get; set; }
+
+	/// <summary>
+	///		The formatted, post-rolled name containing formatting for rarities.
+	/// </summary>
+	public string SpecialName { get; set; } = string.Empty;
+
+	// TODO: Lost functionality when porting; can no longer be overridden.
+	// We should consider an interface to restore behavior if needed.
+	/// <summary>
+	///		The level of the item.
+	/// </summary>
+	public int ItemLevel { get; set; }
+
+	/// <summary>
+	///		The item's description.
+	/// </summary>
+	public string Description { get; set; } = string.Empty;
+
+	/// <summary>
+	///		The item's description for alternate use (right-clicking).
+	/// </summary>
+	public string AltUseDescription { get; set; } = string.Empty;
+
+	/// <summary>
+	///		The affixes of the item.
+	/// </summary>
+	public List<ItemAffix> Affixes { get; } = [];
+
+	/// <summary>
+	///		The amount of implicit affixes preceding rolled ones.
+	/// </summary>
+	internal int ImplicitCount { get; set; }
+}
+
+/// <summary>
+///		Generic Path of Terraria-related item data that should be stored as
+///		singleton-like data that does not vary between instances of items of
+///		the same type.
+/// </summary>
+public sealed class PoTStaticItemData : GlobalItem
+{
+	/// <summary>
+	///		The drop chance of this item.
+	/// </summary>
+	public float DropChance { get; set; }
+
+	/// <summary>
+	///		Whether this item is <see cref="Rarity.Unique"/>.
+	/// </summary>
+	public bool IsUnique { get; set; }
+
+	/// <summary>
+	///		The minimum level this item needs to be to drop.
+	/// </summary>
+	public int MinDropItemLevel { get; set; }
+}
+
+/// <summary>
+///		Implementation using data sourced from
+///		<see cref="PoTInstanceItemData"/> and <see cref="PoTStaticItemData"/>
+///		to handle generalized tasks such as rolling, rendering tooltips, etc.
+/// </summary>
+internal sealed class PoTGlobalItem : GlobalItem
+{
+	// IMPORTANT: Called *after* ModItem::SetDefaults.
+	// https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/Core/GlobalLoaderUtils.cs#L20
+	public override void SetDefaults(Item entity)
+	{
+		base.SetDefaults(entity);
+	}
+}
+
 public abstract class PoTItem : ModItem
 {
 	// <Drop chance, item rarity, item id of item>
@@ -59,30 +154,6 @@ public abstract class PoTItem : ModItem
 	private static readonly List<(float dropChance, int itemId)> ManuallyLoadedItems = [];
 
 	private static bool _addedDetour;
-
-	public ItemType ItemType;
-	public Rarity Rarity;
-	public Influence Influence;
-
-	public abstract float DropChance { get; }
-	public virtual bool IsUnique => false;
-
-	private string _name;
-	protected int InternalItemLevel;
-
-	public virtual int ItemLevel
-	{
-		get => InternalItemLevel;
-		set => InternalItemLevel = value;
-	}
-	
-	public virtual string Description => string.Empty;
-	public virtual string AltUseDescription => string.Empty;
-
-	public virtual int MinDropItemLevel => 0;
-
-	protected List<ItemAffix> Affixes = [];
-	private int _implicits = 0;
 
 	/// <summary>
 	/// Called in <see cref="SetDefaults"/> before <see cref="Roll(int, float)"/> is called.<br/>
