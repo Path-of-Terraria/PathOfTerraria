@@ -4,9 +4,9 @@ using System.Collections.Generic;
 namespace PathOfTerraria.Core.Items;
 
 /// <summary>
-///		Generic Path of Terraria-related item data that should be stored on each
-///		item, including vanilla items.
-/// </summary>
+///		Per-instance item data such as fields normally set in
+///		<see cref="ModItem.SetDefaults"/>.
+///	</summary>
 public sealed class PoTInstanceItemData : GlobalItem
 {
 	public override bool InstancePerEntity => true;
@@ -63,8 +63,9 @@ public sealed class PoTInstanceItemData : GlobalItem
 }
 
 /// <summary>
-///		Per-instance item data such as fields normally set in
-///		<see cref="ModItem.SetDefaults"/>.
+///		Per-type item data such as fields normally set in
+///		<see cref="ModType.SetStaticDefaults"/>.
+/// </summary>
 public sealed class PoTStaticItemData
 {
 	/// <summary>
