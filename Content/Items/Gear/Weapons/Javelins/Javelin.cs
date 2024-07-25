@@ -9,7 +9,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
 internal abstract class Javelin : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Javelin.AltUse");
 	public override float DropChance => 1f;
 

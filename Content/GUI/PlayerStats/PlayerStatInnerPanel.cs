@@ -87,7 +87,32 @@ internal class PlayerStatInnerPanel : SmartUIElement
 			Recalculate();
 		}
 
+		// The correct approach at correctly rendering the player in the stat
+		// panel would be the following (with drawingPlayer defined):
+		/*private sealed class StatPanelRendererPlayer : ModPlayer
+		{
+			public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+			{
+				base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
+
+				// Force fullBright if rendering the player so hair draws
+				// correctly.
+				if (drawingPlayer)
+				{
+					fullBright = true;
+				}
+			}
+		}*/
+		// We aren't so lucky, though. Instead, we have to trick
+		// Lighting::GetColor into thinking we're in the game menu so it always
+		// returns White instead of the real color. This emulates full-bright
+		// (ignores in-world lighting) until we can correctly set the
+		// `fullBright` parameter in Player::DrawEffects (see: TML-4317).
+
+		bool origGameMenu = Main.gameMenu;
+		Main.gameMenu = true;
 		_drawDummy.Draw(spriteBatch);
+		Main.gameMenu = origGameMenu;
 	}
 
 	private void DrawSingleStat(SpriteBatch spriteBatch, string text)

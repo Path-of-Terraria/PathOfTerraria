@@ -12,7 +12,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 
 internal abstract class Bow : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Bow/{GetType().Name}";
 
 	/// <summary>
 	/// Stores a Bow's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.

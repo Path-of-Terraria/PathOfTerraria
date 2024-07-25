@@ -47,7 +47,7 @@ public sealed class GearSwapManager : ModPlayer
 
 	public override void SaveData(TagCompound tag)
 	{
-		tag["inventory"] = Inventory.Select(ItemIO.Save).ToArray();
+		tag["inventory"] = Inventory.Select(ItemIO.Save).ToList();
 	}
 
 	public override void LoadData(TagCompound tag)

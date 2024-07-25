@@ -7,8 +7,6 @@ public class ArmorShredDebuff() : SmartBuff(false)
 {
 	private const int DefenseReductionPercent = 25;
 	public static readonly float DefenseMultiplier = 1 - DefenseReductionPercent / 100f;
-	
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Buffs/ArmorShredDebuff";
 }
 
 public class ArmorShredDebuffNpc : GlobalNPC

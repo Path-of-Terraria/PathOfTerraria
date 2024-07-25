@@ -10,8 +10,6 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class Barkeep : ModNPC
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/NPCs/Town/Barkeep";
-
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
