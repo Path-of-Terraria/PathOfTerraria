@@ -72,7 +72,7 @@ public class Hunter : ModNPC
 
 	public override List<string> SetNPCNameList()
 	{
-		return [DisplayName.Value];
+		return [];
 	}
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
