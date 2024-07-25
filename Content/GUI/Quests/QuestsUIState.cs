@@ -54,11 +54,8 @@ public class QuestsUIState : CloseableSmartUi
 			Height = StyleDimension.FromPercent(1),
 			ViewedQuest = quests.FirstOrDefault()
 		};
-		if (_questDetails.ViewedQuest != null)
-		{
-			Panel.Append(_questDetails);
-			_questDetails.PopulateQuestSteps();
-		}
+		Panel.Append(_questDetails);
+		_questDetails.PopulateQuestSteps();
 
 		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/CloseButton"));
 		_closeButton.Left.Set(0, 0.83f);
