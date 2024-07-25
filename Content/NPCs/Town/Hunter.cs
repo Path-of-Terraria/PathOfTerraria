@@ -101,7 +101,9 @@ public class Hunter : ModNPC
 
 	public override void DrawTownAttackGun(ref Texture2D item, ref Rectangle itemFrame, ref float scale, ref int horizontalHoldoutOffset)
 	{
-		Asset<Texture2D> asset = TextureAssets.Item[ModContent.ItemType<WoodenBow>()];
+		int type = ModContent.ItemType<WoodenBow>();
+		Main.instance.LoadItem(type);
+		Asset<Texture2D> asset = TextureAssets.Item[type];
 
 		item = asset.Value;
 		itemFrame = asset.Frame();
