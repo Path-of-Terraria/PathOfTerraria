@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 using Terraria.UI;
 using TextCopy;
 
-namespace PathOfTerraria.Core.Items;
+namespace PathOfTerraria.Core.Items.Hooks;
 
 public interface ICopyToClipboardItem
 {

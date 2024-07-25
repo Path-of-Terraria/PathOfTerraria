@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Core.Systems;
 
-namespace PathOfTerraria.Core.Items;
+namespace PathOfTerraria.Core.Items.Hooks;
 
 public interface ISwapItemModifiersItem
 {

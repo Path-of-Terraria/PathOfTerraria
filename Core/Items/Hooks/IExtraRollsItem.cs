@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.Items;
+﻿namespace PathOfTerraria.Core.Items.Hooks;
 
 public interface IExtraRollsItem
 {
