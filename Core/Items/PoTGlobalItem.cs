@@ -108,7 +108,7 @@ internal sealed class PoTGlobalItem : GlobalItem
 
 		// Change in stats if equipped.
 		var thisItemModifier = new EntityModifier();
-		ApplyAffixes(thisItemModifier);
+		ApplyAffixes(item, data.Affixes, thisItemModifier);
 
 		if (item.TryGetInterface(out IInsertAdditionalTooltipLinesItem insertAdditionalTooltipLinesItem))
 		{
@@ -151,6 +151,19 @@ internal sealed class PoTGlobalItem : GlobalItem
 		{
 			tooltips.Add(new TooltipLine(Mod, $"Change{changeCount++}", $"[c/FF0000:{changes}]"));
 		}
+	}
+
+	public void ApplyAffixes(Item item, List<ItemAffix> affixes, EntityModifier entityModifier)
+	{
+		foreach (ItemAffix affix in affixes)
+		{
+			affix.ApplyAffix(entityModifier, item);
+		}
+	}
+
+	public void ClearAffixes(List<ItemAffix> affixes)
+	{
+		affixes.Clear();
 	}
 
 	public static PoTStaticItemData GetStaticData(int type)
