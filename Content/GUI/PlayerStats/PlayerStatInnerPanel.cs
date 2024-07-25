@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
+using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -8,6 +9,23 @@ namespace PathOfTerraria.Content.GUI.PlayerStats;
 
 internal class PlayerStatInnerPanel : SmartUIElement
 {
+	private sealed class StatPanelRendererPlayer : ModPlayer
+	{
+		public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+		{
+			base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
+
+			// Force fullBright if rendering the player so hair draws
+			// correctly.
+			if (drawingPlayer)
+			{
+				fullBright = true;
+			}
+		}
+	}
+
+	private static bool drawingPlayer;
+
 	private UIElement Panel => Parent;
 
 	public override string TabName => "PlayerStats";
@@ -87,7 +105,9 @@ internal class PlayerStatInnerPanel : SmartUIElement
 			Recalculate();
 		}
 
+		drawingPlayer = true;
 		_drawDummy.Draw(spriteBatch);
+		drawingPlayer = false;
 	}
 
 	private void DrawSingleStat(SpriteBatch spriteBatch, string text)
