@@ -91,12 +91,6 @@ public abstract class PoTItem : ModItem
 		return true;
 	}
 
-	public sealed override void SetDefaults()
-	{
-		Defaults();
-		Roll(PickItemLevel());
-	}
-
 	/// <summary>
 	/// Clears the affixes and roll the item
 	/// </summary>
@@ -105,32 +99,6 @@ public abstract class PoTItem : ModItem
 		Affixes.Clear();
 		Defaults();
 		Roll(PickItemLevel());
-	}
-
-	/// <summary>
-	/// Rolls the randomized aspects of this piece of gear, for a given item level
-	/// </summary>
-	public void Roll(int itemLevel)
-	{
-		ItemLevel = itemLevel;
-
-		// Only item level 50+ gear can get influence
-		if (InternalItemLevel > 50 && !IsUnique && (ItemType & ItemType.AllGear) == ItemType.AllGear)
-		{
-			int inf = Main.rand.Next(400) - InternalItemLevel;
-			// quality does not affect influence right now
-			// (might not need to, seems to generate plenty often for late game)
-
-			if (inf < 30)
-			{
-				Influence = Main.rand.NextBool() ? Influence.Solar : Influence.Lunar;
-			}
-		}
-
-		RollAffixes();
-
-		PostRoll();
-		_name = GenerateName();
 	}
 
 	/// <summary>
