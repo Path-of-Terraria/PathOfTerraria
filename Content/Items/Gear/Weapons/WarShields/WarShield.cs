@@ -23,7 +23,6 @@ internal abstract class WarShield : Gear, IParryItem
 		public readonly int BashDust = bashDust;
 	}
 
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/WarShields/{GetType().Name}";
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.WarShield.AltUse");
