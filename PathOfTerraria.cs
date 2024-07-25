@@ -5,7 +5,9 @@ global using Terraria;
 global using Terraria.ModLoader;
 using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Sources;
 using PathOfTerraria.Core.Systems.Networking;
+using ReLogic.Content.Sources;
 using System.IO;
 using Terraria.ID;
 
@@ -34,5 +36,17 @@ public class PathOfTerraria : Mod
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
 	{
 		Networking.HandlePacket(reader);
+	}
+
+	public override IContentSource CreateDefaultContentSource()
+	{
+		// Use our own SmartContentSource which wraps IContentSource with additional
+		// behavior.
+		var source = new SmartContentSource(base.CreateDefaultContentSource());
+
+		// Redirects requests for ModName/Content/... to ModName/Assets/...
+		source.AddDirectoryRedirect("Content", "Assets");
+
+		return source;
 	}
 }

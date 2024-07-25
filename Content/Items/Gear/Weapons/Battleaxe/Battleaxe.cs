@@ -8,7 +8,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal abstract class Battleaxe : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Battleaxe/{GetType().Name}";
 	public override float DropChance => 1f;
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Battleaxe.AltUse");
 	protected override string GearLocalizationCategory => "Battleaxe";

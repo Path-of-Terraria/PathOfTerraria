@@ -2,8 +2,6 @@
 
 internal class Katana : Sword
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Katana";
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

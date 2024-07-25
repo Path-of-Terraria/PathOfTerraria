@@ -10,7 +10,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 
 internal class GrimoireItem : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Grimoire/{GetType().Name}";
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.AltUseDescription");
 	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.Description");
 	public override float DropChance => 0;

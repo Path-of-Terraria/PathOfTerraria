@@ -5,8 +5,6 @@ namespace PathOfTerraria.Content.Tiles.Town;
 
 internal class BrokenFurnace : ModTile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Tiles/Town/BrokenFurnace";
-
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
