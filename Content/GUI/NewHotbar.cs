@@ -352,23 +352,22 @@ public class HijackHotbarClick : ModSystem
 
 			if (pos.Contains(Main.MouseScreen.ToPoint()))
 			{
-				Main.LocalPlayer.mouseInterface = true;
-				Main.LocalPlayer.cursorItemIconEnabled = false;
-				Main.hoverItemName = GetHealthOrManaTooltip(i == 0);
+				SetHealthOrManaTooltip(i == 0);
 			}
 
 			offX += SlotSize + SeparatorWidth;
 		}
 	}
 
-	private static string GetHealthOrManaTooltip(bool health)
+	private static void SetHealthOrManaTooltip(bool health)
 	{
 		string type = health ? "Health" : "Mana";
 		PotionSystem potions = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
-		return Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip")
-			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
-			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00"));
+		Tooltip.SetName(Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"));
+		Tooltip.SetTooltip(
+			Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
+			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00")));
 	}
 
 	private static void DrawBuildingHotbarTooltips(bool hbLocked, Texture2D back)
