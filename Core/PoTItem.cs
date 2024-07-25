@@ -55,6 +55,8 @@ public sealed class PoTInstanceItemData : GlobalItem
 {
 	public override bool InstancePerEntity => true;
 
+	protected override bool CloneNewInstances => true;
+
 	/// <summary>
 	///		The type of item this is, not to be confused with
 	///		<see cref="Item.type"/>.
@@ -111,6 +113,8 @@ public sealed class PoTInstanceItemData : GlobalItem
 /// </summary>
 public sealed class PoTStaticItemData : GlobalItem
 {
+	public override bool InstancePerEntity => true;
+
 	/// <summary>
 	///		The drop chance of this item.
 	/// </summary>
@@ -134,11 +138,53 @@ public sealed class PoTStaticItemData : GlobalItem
 /// </summary>
 internal sealed class PoTGlobalItem : GlobalItem
 {
+	public override void Load()
+	{
+		On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
+	}
+
 	// IMPORTANT: Called *after* ModItem::SetDefaults.
 	// https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/Core/GlobalLoaderUtils.cs#L20
 	public override void SetDefaults(Item entity)
 	{
 		base.SetDefaults(entity);
+	}
+
+	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
+		Item[] inv, int context, int slot, Vector2 position, Color color)
+	{
+		if (inv[slot].ModItem is Gear gear && context != 21)
+		{
+			string rareName = gear.Rarity switch
+			{
+				Rarity.Normal => "Normal",
+				Rarity.Magic => "Magic",
+				Rarity.Rare => "Rare",
+				Rarity.Unique => "Unique",
+				_ => "Normal"
+			};
+
+			Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Slots/{rareName}Back")
+				.Value;
+			Color backcolor = Color.White * 0.75f;
+
+			sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
+			ItemSlot.Draw(sb, ref inv[slot], 21, position);
+
+			if (gear.Influence == Influence.Solar)
+			{
+				DrawSolarSlot(sb, position);
+			}
+
+			if (gear.Influence == Influence.Lunar)
+			{
+				DrawLunarSlot(sb, position);
+			}
+		}
+		else
+		{
+			orig(sb, inv, context, slot, position, color);
+		}
 	}
 }
 
@@ -152,8 +198,6 @@ public abstract class PoTItem : ModItem
 	/// Otherwise, used to append manually-added items through <see cref="Mod.AddContent(ILoadable)"/>.
 	/// </summary>
 	private static readonly List<(float dropChance, int itemId)> ManuallyLoadedItems = [];
-
-	private static bool _addedDetour;
 
 	/// <summary>
 	/// Called in <see cref="SetDefaults"/> before <see cref="Roll(int, float)"/> is called.<br/>
@@ -618,57 +662,6 @@ public abstract class PoTItem : ModItem
 		}
 
 		return Main.rand.Next(5, 21);
-	}
-
-	public override void Load()
-	{
-		if (!_addedDetour)
-		{
-			On_ItemSlot.Draw_SpriteBatch_ItemArray_int_int_Vector2_Color += DrawSpecial;
-			_addedDetour = true;
-		}
-	}
-
-	public override void Unload()
-	{
-		_addedDetour = false;
-	}
-
-	private void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
-		Item[] inv, int context, int slot, Vector2 position, Color color)
-	{
-		if (inv[slot].ModItem is Gear gear && context != 21)
-		{
-			string rareName = gear.Rarity switch
-			{
-				Rarity.Normal => "Normal",
-				Rarity.Magic => "Magic",
-				Rarity.Rare => "Rare",
-				Rarity.Unique => "Unique",
-				_ => "Normal"
-			};
-
-			Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Slots/{rareName}Back")
-				.Value;
-			Color backcolor = Color.White * 0.75f;
-
-			sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
-			ItemSlot.Draw(sb, ref inv[slot], 21, position);
-
-			if (gear.Influence == Influence.Solar)
-			{
-				DrawSolarSlot(sb, position);
-			}
-
-			if (gear.Influence == Influence.Lunar)
-			{
-				DrawLunarSlot(sb, position);
-			}
-		}
-		else
-		{
-			orig(sb, inv, context, slot, position, color);
-		}
 	}
 
 	/// <summary>
