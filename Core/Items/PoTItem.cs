@@ -27,9 +27,6 @@ public abstract class PoTItem : ModItem
 	/// </summary>
 	private static readonly List<(float dropChance, int itemId)> ManuallyLoadedItems = [];
 
-	public virtual void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier) { }
-	public virtual void SwapItemModifiers(EntityModifier SwapItemModifier) { }
-
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
 		tooltips.Clear();
@@ -318,8 +315,6 @@ public abstract class PoTItem : ModItem
 		Defaults();
 		Roll(PickItemLevel());
 	}
-	
-	public virtual void ExtraRolls() { }
 
 	/// <summary>
 	/// Rolls the randomized aspects of this piece of gear, for a given item level
@@ -462,13 +457,6 @@ public abstract class PoTItem : ModItem
 		}
 
 		return Main.rand.Next(5, 21);
-	}
-
-	/// <summary>
-	/// This occurs after power has been set and rarity/influence has been rolled, Initialize stats here
-	/// </summary>
-	public virtual void PostRoll()
-	{
 	}
 
 	/// <summary>
