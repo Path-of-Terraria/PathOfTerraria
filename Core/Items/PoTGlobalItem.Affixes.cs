@@ -12,17 +12,17 @@ namespace PathOfTerraria.Core.Items;
 partial class PoTGlobalItem
 {
 	#region Affix methods
-	public void ApplyAffixes(Item item, List<ItemAffix> affixes, EntityModifier entityModifier)
+	public void ApplyAffixes(Item item, EntityModifier entityModifier)
 	{
-		foreach (ItemAffix affix in affixes)
+		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyAffix(entityModifier, item);
 		}
 	}
 
-	public void ClearAffixes(List<ItemAffix> affixes)
+	public void ClearAffixes(Item item)
 	{
-		affixes.Clear();
+		item.GetInstanceData().Affixes.Clear();
 	}
 	#endregion
 
@@ -30,6 +30,6 @@ partial class PoTGlobalItem
 	{
 		base.UpdateEquip(item, player);
 
-		ApplyAffixes(item, item.GetInstanceData().Affixes, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
+		ApplyAffixes(item, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
 	}
 }

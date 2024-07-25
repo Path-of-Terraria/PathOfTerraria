@@ -98,7 +98,7 @@ partial class PoTGlobalItem
 
 		// Change in stats if equipped.
 		var thisItemModifier = new EntityModifier();
-		ApplyAffixes(item, data.Affixes, thisItemModifier);
+		ApplyAffixes(item, thisItemModifier);
 
 		if (item.TryGetInterface(out IInsertAdditionalTooltipLinesItem insertAdditionalTooltipLinesItem))
 		{
