@@ -3,8 +3,8 @@ using PathOfTerraria.Common.Enums;
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class SpawnUniqueItem : ModCommand {
+public sealed class SpawnUniqueItem : ModCommand
+{
 	public override string Command => "spawnuitem";
 
 	public override CommandType Type => CommandType.Chat;
@@ -22,6 +22,7 @@ public class SpawnUniqueItem : ModCommand {
 		}
 
 		string[] nArgs = new string[6];
+		
 		for (int i = 0; i < args.Length; i++)
 		{
 			nArgs[i] = args[i];
@@ -57,13 +58,19 @@ public class SpawnUniqueItem : ModCommand {
 		}
 
 		string geartype = args[5];
-		// need to impliment at some point.
+		
+		// TODO: Implementation.
 
 		for (int i = 0; i < count; i++)
 		{
-			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), x => x.Item2 == ItemRarity.Unique, (int)ilevel, qualityIncrease);
+			ItemSpawner.SpawnRandomItem(
+				caller.Player.Center + new Vector2(relX, relY),
+				x => x.Item2 == ItemRarity.Unique,
+				(int)ilevel,
+				qualityIncrease
+			);
 		}
 
-		caller.Reply($"Item(s) spawned!", Color.Green);
+		caller.Reply("Item(s) spawned!", Color.Green);
 	}
 }

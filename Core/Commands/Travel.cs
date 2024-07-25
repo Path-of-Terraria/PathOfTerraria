@@ -2,8 +2,8 @@
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class TravelCommand : ModCommand {
+public sealed class Travel : ModCommand
+{
 	public override string Command => "travel";
 
 	public override CommandType Type => CommandType.Chat;
@@ -20,6 +20,7 @@ public class TravelCommand : ModCommand {
 		}
 
 		string worldName = string.Join(" ", args);
+		
 		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(WorldNavigation)))
@@ -39,7 +40,7 @@ public class TravelCommand : ModCommand {
 				return;
 			}
 		}
-		
+
 		Main.NewText("World not found.");
 	}
 }

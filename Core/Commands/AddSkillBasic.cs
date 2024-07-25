@@ -5,8 +5,8 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class AddSkillBasic : ModCommand {
+public sealed class AddSkillBasic : ModCommand
+{
 	public override string Command => "addskill_b";
 
 	public override CommandType Type => CommandType.Chat;
@@ -24,7 +24,8 @@ public class AddSkillBasic : ModCommand {
 		}
 
 		Type[] asmTypes = AssemblyManager.GetLoadableTypes(Mod.Code);
-		Type skillType = asmTypes.FirstOrDefault(x => typeof(Skill).IsAssignableFrom(x) && x.Name.Equals(args[0], StringComparison.OrdinalIgnoreCase));
+		Type skillType =
+			asmTypes.FirstOrDefault(x => typeof(Skill).IsAssignableFrom(x) && x.Name.Equals(args[0], StringComparison.OrdinalIgnoreCase));
 
 		if (skillType == null)
 		{
@@ -40,8 +41,13 @@ public class AddSkillBasic : ModCommand {
 
 		var skill = Skill.GetAndPrepareSkill(skillType);
 		bool levelValid = int.TryParse(args[2], out int level);
-		SkillPlayer player = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
-		player.Points++;
+
+		if (!caller.Player.TryGetModPlayer(out SkillPlayer skillPlayer))
+		{
+			return;
+		}
+		
+		skillPlayer.Points++;
 
 		if (levelValid)
 		{

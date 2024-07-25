@@ -2,8 +2,8 @@
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class SpawnItem : ModCommand {
+public sealed class SpawnItem : ModCommand
+{
 	public override string Command => "spawnitem";
 
 	public override CommandType Type => CommandType.Chat;
@@ -21,6 +21,7 @@ public class SpawnItem : ModCommand {
 		}
 
 		string[] nArgs = new string[6];
+		
 		for (int i = 0; i < args.Length; i++)
 		{
 			nArgs[i] = args[i];
@@ -63,6 +64,6 @@ public class SpawnItem : ModCommand {
 			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
 		}
 
-		caller.Reply($"Item(s) spawned!", Color.Green);
+		caller.Reply("Item(s) spawned!", Color.Green);
 	}
 }

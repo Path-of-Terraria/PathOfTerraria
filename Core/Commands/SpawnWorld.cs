@@ -3,8 +3,8 @@ using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class SpawnWorld : ModCommand {
+public sealed class SpawnWorld : ModCommand
+{
 	public override string Command => "newworld";
 
 	public override CommandType Type => CommandType.Chat;
@@ -13,7 +13,8 @@ public class SpawnWorld : ModCommand {
 
 	public override string Description => "Generates a new subworld";
 
-	public override void Action(CommandCaller caller, string input, string[] args){
+	public override void Action(CommandCaller caller, string input, string[] args)
+	{
 		SubworldSystem.Enter<TestSubworld>();
 	}
 }

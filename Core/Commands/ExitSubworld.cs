@@ -3,8 +3,8 @@ using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class ExitSubworld : ModCommand {
+public sealed class ExitSubworld : ModCommand
+{
 	public override string Command => "exitworld";
 
 	public override CommandType Type => CommandType.Chat;
@@ -16,6 +16,7 @@ public class ExitSubworld : ModCommand {
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
 		SubworldSystem.Exit();
+		
 		MappingSystem.Map = null;
 	}
 }

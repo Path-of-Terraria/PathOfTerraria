@@ -6,13 +6,14 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class AddSkill : ModCommand {
+public class AddSkill : ModCommand
+{
 	public override string Command => "addskill";
 
 	public override CommandType Type => CommandType.Chat;
 
-	public override string Usage => "[c/ff6a00:Usage: /addskill <skillName> <skillSlot> <duration> <timer> <maxCooldown> <coolDown> <manaCost> <weaponType> <level>]";
+	public override string Usage
+		=> "[c/ff6a00:Usage: /addskill <skillName> <skillSlot> <duration> <timer> <maxCooldown> <coolDown> <manaCost> <weaponType> <level>]";
 
 	public override string Description => "Replaces the skill at the given slot with the new skill.";
 
@@ -25,7 +26,8 @@ public class AddSkill : ModCommand {
 		}
 
 		Type[] asmTypes = AssemblyManager.GetLoadableTypes(Mod.Code);
-		Type skillType = asmTypes.FirstOrDefault(x => typeof(Skill).IsAssignableFrom(x) && x.Name.Equals(args[0], StringComparison.OrdinalIgnoreCase));
+		Type skillType =
+			asmTypes.FirstOrDefault(x => typeof(Skill).IsAssignableFrom(x) && x.Name.Equals(args[0], StringComparison.OrdinalIgnoreCase));
 
 		if (skillType == null)
 		{
@@ -40,7 +42,7 @@ public class AddSkill : ModCommand {
 		}
 
 		var skill = Skill.GetAndPrepareSkill(skillType);
-		
+
 		if (args.Length == 2)
 		{
 			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
@@ -127,7 +129,16 @@ public class AddSkill : ModCommand {
 		}
 	}
 
-	private static bool SetSkillOrComplain(CommandCaller caller, string[] args, int skillSlot, Skill skill, bool valid, int argCount, int slot, string name)
+	private static bool SetSkillOrComplain(
+		CommandCaller caller,
+		string[] args,
+		int skillSlot,
+		Skill skill,
+		bool valid,
+		int argCount,
+		int slot,
+		string name
+	)
 	{
 		if (args.Length != argCount)
 		{

@@ -1,13 +1,12 @@
-﻿using PathOfTerraria.Common;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI;
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class SwitchClass : ModCommand {
+public sealed class SwitchClass : ModCommand
+{
 	public override string Command => "switchclass";
 
 	public override CommandType Type => CommandType.Chat;
@@ -18,7 +17,13 @@ public class SwitchClass : ModCommand {
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = PlayerClass.None;
+		if (!caller.Player.TryGetModPlayer(out ClassModPlayer classPlayer))
+		{
+			return;
+		}
+
+		classPlayer.SelectedClass = PlayerClass.None;
+		
 		UILoader.GetUIState<ClassSelection>().IsVisible = true;
 	}
 }

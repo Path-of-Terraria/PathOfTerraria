@@ -2,8 +2,8 @@
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class TestQuest : ModCommand {
+public sealed class TestQuest : ModCommand
+{
 	public override string Command => "testquest";
 
 	public override CommandType Type => CommandType.Chat;
@@ -14,6 +14,11 @@ public class TestQuest : ModCommand {
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().RestartQuestTest();
+		if (!caller.Player.TryGetModPlayer(out QuestModPlayer questPlayer))
+		{
+			return;
+		}
+		
+		questPlayer.RestartQuestTest();
 	}
 }

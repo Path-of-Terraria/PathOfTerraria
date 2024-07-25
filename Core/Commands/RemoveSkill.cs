@@ -2,8 +2,8 @@
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class RemoveSkill : ModCommand {
+public sealed class RemoveSkill : ModCommand
+{
 	public override string Command => "removeskill";
 
 	public override CommandType Type => CommandType.Chat;
@@ -22,10 +22,15 @@ public class RemoveSkill : ModCommand {
 
 		if (!int.TryParse(args[0], out int slot) || slot < 0 || slot > 2)
 		{
-			caller.Reply($"Argument 0 (slot) must be an int between 0 and 2, inclusive!", Color.Red);
+			caller.Reply("Argument 0 (slot) must be an int between 0 and 2, inclusive!", Color.Red);
 			return;
 		}
 
-		Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[slot] = null;
+		if (!caller.Player.TryGetModPlayer(out SkillPlayer skillPlayer))
+		{
+			return;
+		}
+		
+		skillPlayer.Skills[slot] = null;
 	}
 }

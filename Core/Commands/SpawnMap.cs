@@ -2,8 +2,8 @@
 
 namespace PathOfTerraria.Core.Commands;
 
-[Autoload]
-public class SpawnMap : ModCommand{
+public sealed class SpawnMap : ModCommand
+{
 	public override string Command => "spawnmap";
 
 	public override CommandType Type => CommandType.Chat;
@@ -12,10 +12,11 @@ public class SpawnMap : ModCommand{
 
 	public override string Description => "Spawns a few maps for testing";
 
-	public override void Action(CommandCaller caller, string input, string[] args){
+	public override void Action(CommandCaller caller, string input, string[] args)
+	{
 		for (int i = 0; i < 4; i++)
 		{
-			Map.SpawnItem(Main.LocalPlayer.Center);
+			Map.SpawnItem(caller.Player.Center);
 		}
 	}
 }
