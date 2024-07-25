@@ -9,18 +9,36 @@ namespace PathOfTerraria.Content.GUI.PlayerStats;
 
 internal class PlayerStatInnerPanel : SmartUIElement
 {
-	private sealed class StatPanelRendererPlayer : ModPlayer
+	// This is a "less dangerous" (and arguably More Correct) fix to hair being
+	// rendered as black, but it's bugged (see: TML-4317). 
+	/*private sealed class StatPanelRendererPlayer : ModPlayer
 	{
 		public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
 		{
 			base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
-
+	
 			// Force fullBright if rendering the player so hair draws
 			// correctly.
 			if (drawingPlayer)
 			{
 				fullBright = true;
 			}
+		}
+	}*/
+
+	// Instead, we'll settle for a detour...
+	private sealed class GetHairColorPatch : ModSystem
+	{
+		public override void Load()
+		{
+			base.Load();
+
+			On_Player.GetHairColor += GetHairColorWithoutLighting;
+		}
+
+		private static Color GetHairColorWithoutLighting(On_Player.orig_GetHairColor orig, Player self, bool useLighting)
+		{
+			return orig(self, useLighting && !drawingPlayer);
 		}
 	}
 
