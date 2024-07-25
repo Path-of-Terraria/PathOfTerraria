@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.Buffs;
 
 class BattleaxeBuff() : SmartBuff(false)
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Buffs/Base";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Buffs/Base";
 
 	public override void Load()
 	{

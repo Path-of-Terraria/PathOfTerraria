@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI;

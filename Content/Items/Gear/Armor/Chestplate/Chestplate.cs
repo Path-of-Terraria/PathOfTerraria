@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 [AutoloadEquip(EquipType.Body)]
 internal class Chestplate : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Body/Base";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Armor/Body/Base";
 
 	protected override string GearLocalizationCategory => "Chestplate";
 	public override float DropChance => 1f;

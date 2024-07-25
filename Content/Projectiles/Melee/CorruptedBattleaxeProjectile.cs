@@ -11,7 +11,7 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 	/// </summary>
 	private readonly float _distance = 500f;
 
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Battleaxe/CorruptedBattleaxe";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Battleaxe/CorruptedBattleaxe";
         
 	public override void SetDefaults()
 	{

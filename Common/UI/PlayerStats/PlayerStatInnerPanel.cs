@@ -52,8 +52,8 @@ internal class PlayerStatInnerPanel : SmartUIElement
 
 	private void DrawBack(SpriteBatch spriteBatch)
 	{
-		Texture2D chain = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PlayerStatBackChain").Value;
-		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/PlayerStatBack").Value;
+		Texture2D chain = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/PlayerStatBackChain").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/PlayerStatBack").Value;
 
 		for (int i = 0; i < 9; ++i)
 		{

@@ -15,7 +15,7 @@ namespace PathOfTerraria.Content.Items.Pickups;
 
 internal abstract class GrimoirePickup : PoTItem
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
 
 	/// <summary>
 	/// These materials shouldn't drop through the typical <see cref="PoTItem"/> system. These will manually add their drops to their respective NPC(s).

@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
 internal class Staff : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Staff/ExampleStaff";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Staff/ExampleStaff";
 	public override float DropChance => 1f;
 
 	protected override string GearLocalizationCategory => "Staff";

@@ -45,7 +45,7 @@ internal class HealingPotionPickup : ModItem
 			Dust.NewDustPerfect(Item.Center, DustID.PortalBoltTrail, Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 150), 0.5f);
 		}
 
-		var style = new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion")
+		var style = new SoundStyle($"{nameof(PathOfTerraria)}/Sounds/PickupPotion")
 		{
 			Pitch = -0.2f
 		};
@@ -58,7 +58,7 @@ internal class HealingPotionPickup : ModItem
 	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 	{
 		Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-		Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowAlpha").Value;
+		Texture2D glow = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/GlowAlpha").Value;
 
 		var glowColor = new Color(255, 50, 50)
 		{

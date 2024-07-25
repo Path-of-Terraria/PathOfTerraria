@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using Terraria.Audio;
@@ -18,8 +19,8 @@ public class ExpBar : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/BarEmpty").Value;
-		Texture2D fill = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/BarFill").Value;
+		Texture2D bar = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/BarEmpty").Value;
+		Texture2D fill = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/BarFill").Value;
 
 		ExpModPlayer mp = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 
@@ -42,7 +43,7 @@ public class ExpBar : SmartUIState
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		Texture2D bar = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/BarEmpty").Value;
+		Texture2D bar = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/BarEmpty").Value;
 		var pos = new Vector2(Main.screenWidth / 2, 10);
 
 		var bounding = new Rectangle((int)(pos.X - bar.Width / 2f), (int)pos.Y, bar.Width, bar.Height);

@@ -28,7 +28,7 @@ public class ExperienceTracker : ModSystem
 		batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.Default, RasterizerState.CullNone, null, Main.GameViewMatrix.ZoomMatrix);
 
 		//Draw the orbs
-		Texture2D texture = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Experience").Value;
+		Texture2D texture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Experience").Value;
 		foreach (Mechanics.Experience xp in _trackedExp)
 		{
 			if (xp is null || !xp.Active)

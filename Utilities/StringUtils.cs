@@ -105,12 +105,12 @@ public static class StringUtils
 	/// <returns></returns>
 	public static Vector2? GetSizeOfTexture(string texturePath)
 	{
-		if (!ModContent.HasAsset($"{PathOfTerraria.ModName}/{texturePath}"))
+		if (!ModContent.HasAsset($"{nameof(PathOfTerraria)}/{texturePath}"))
 		{
 			return null;
 		}
 
-		Texture2D tex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/{texturePath}",
+		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/{texturePath}",
 			ReLogic.Content.AssetRequestMode.ImmediateLoad).Value;
 		return tex.Size();
 	}

@@ -14,16 +14,10 @@ using Terraria.ID;
 
 namespace PathOfTerraria;
 
-public class PathOfTerraria : Mod
+public sealed class PathOfTerraria : Mod
 {
-	public static PathOfTerraria Instance;
-	public static readonly string ModName = "PathOfTerraria";
-
-	public PathOfTerraria()
-	{
-		Instance = this;
-	}
-		
+	public static PathOfTerraria Instance => ModContent.GetInstance<PathOfTerraria>();
+	
 	public override void Load()
 	{
 		if (Main.netMode != NetmodeID.Server)

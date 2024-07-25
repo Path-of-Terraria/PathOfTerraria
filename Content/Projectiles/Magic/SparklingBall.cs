@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Projectiles.Magic;
 
 public class SparklingBall : ModProjectile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/SparklingBall";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Projectiles/SparklingBall";
 
 	public override void SetDefaults() {
 		Projectile.width = 16;

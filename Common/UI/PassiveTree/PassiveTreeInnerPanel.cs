@@ -26,7 +26,7 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 
 		foreach (PassiveEdge edge in TreeSystem.Edges)
 		{
-			Texture2D chainTex = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/Link").Value;
+			Texture2D chainTex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/Link").Value;
 
 			Color color = Color.Gray;
 
@@ -51,7 +51,7 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 
 			if (edge.End.Level > 0 && edge.Start.Level > 0)
 			{
-				Texture2D glow = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/GlowAlpha")
+				Texture2D glow = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/GlowAlpha")
 					.Value;
 				var glowColor = new Color(255, 230, 150) { A = 0 };
 

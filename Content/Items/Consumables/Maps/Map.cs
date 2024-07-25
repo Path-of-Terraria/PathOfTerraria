@@ -11,7 +11,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
 internal abstract class Map : PoTItem
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
 
 	public override int ItemLevel

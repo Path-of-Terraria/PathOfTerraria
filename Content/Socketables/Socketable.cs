@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.Socketables;
 
 public abstract class Socketable : ModItem
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Socketable/Placeholder";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Socketable/Placeholder";
 	
 	/// <summary>
 	/// will be run when socketed.

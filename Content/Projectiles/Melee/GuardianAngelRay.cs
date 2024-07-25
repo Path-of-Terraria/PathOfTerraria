@@ -9,7 +9,7 @@ public class GuardianAngelRay : ModProjectile
 	public NPC Target => Main.npc[(int)Projectile.ai[0]];
 	public ref float Time => ref Projectile.ai[1];
 
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Misc/VFX/AngelRay";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Misc/VFX/AngelRay";
         
 	public override void SetDefaults()
 	{

@@ -18,7 +18,7 @@ public abstract class Skill
 	public abstract int MaxLevel { get; }
 
 	public virtual string Name => GetType().Name;
-	public virtual string Texture => $"{PathOfTerraria.ModName}/Assets/Skills/" + GetType().Name;
+	public virtual string Texture => $"{nameof(PathOfTerraria)}/Assets/Skills/" + GetType().Name;
 
 	/// <summary>
 	/// Creates a default instance of the given <see cref="Skill"/> with 0 for all ctor parameters, aside from 1 for <see cref="Level"/>.

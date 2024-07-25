@@ -9,7 +9,7 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 {
 	protected override bool CloneNewInstances => true;
 	public override string Name => name;
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/{name.Replace("Thrown", "")}";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/{name.Replace("Thrown", "")}";
 
 	public bool Stabbing
 	{

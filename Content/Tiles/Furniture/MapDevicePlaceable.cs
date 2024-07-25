@@ -12,7 +12,7 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 
 public class MapDevicePlaceable : ModTile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Placeable/MapDeviceBase";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Placeable/MapDeviceBase";
 	private Map InsertedMap { get; set; }
 
 	private const int FrameWidth = 18 * 3;
@@ -26,7 +26,7 @@ public class MapDevicePlaceable : ModTile
 	private Asset<Texture2D> _relicTexture;
 
 	/// This is the portal that will appear above
-	protected virtual string Portal => $"{PathOfTerraria.ModName}/Assets/Items/Placeable/Portal";
+	protected virtual string Portal => $"{nameof(PathOfTerraria)}/Assets/Items/Placeable/Portal";
 
 	public override void Load()
 	{

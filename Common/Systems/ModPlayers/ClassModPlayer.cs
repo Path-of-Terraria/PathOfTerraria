@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 

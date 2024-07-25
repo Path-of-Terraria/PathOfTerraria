@@ -56,7 +56,7 @@ internal class PassiveSocket : PassiveElement
 		_passive.Level++;
 		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
 
-		SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/Tier5"));
+		SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Sounds/Tier5"));
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)

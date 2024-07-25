@@ -8,7 +8,7 @@ namespace PathOfTerraria.Content.Projectiles.Magic;
 
 public class TomeProjectile : ModProjectile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/HomingProjectile";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Projectiles/HomingProjectile";
 
 	public override void SetDefaults()
 	{

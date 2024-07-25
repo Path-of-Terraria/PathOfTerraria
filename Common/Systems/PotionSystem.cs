@@ -37,7 +37,7 @@ internal class PotionSystem : ModPlayer
 		self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
 		mp.HealingLeft--;
 
-		SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
+		SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Sounds/PickupPotion"));
 		SoundEngine.PlaySound(SoundID.Item3);
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
@@ -60,7 +60,7 @@ internal class PotionSystem : ModPlayer
 		self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
 		mp.ManaLeft--;
 
-		SoundEngine.PlaySound(new SoundStyle($"{PathOfTerraria.ModName}/Sounds/PickupPotion"));
+		SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Sounds/PickupPotion"));
 		SoundEngine.PlaySound(SoundID.Item3);
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
