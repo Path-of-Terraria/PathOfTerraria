@@ -3,6 +3,7 @@ using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.UI;
@@ -162,8 +163,6 @@ internal sealed class PoTGlobalItem : GlobalItem
 		return _staticData[type] = new PoTStaticItemData();
 	}
 
-	private static Color GetRarityColor(Rarity rarity) { }
-
 	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)
 	{
@@ -275,5 +274,76 @@ internal sealed class PoTGlobalItem : GlobalItem
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, RasterizerState.CullNone, default,
 			Main.UIScaleMatrix);
+	}
+
+	private static string HighlightNumbers(string input, string numColor = "CCCCFF", string baseColor = "A0A0A0")
+	{
+		// TODO: Use regex source generator
+		var regex = new Regex(@"(\d+)|(\D+)");
+
+		return regex.Replace(input, match =>
+		{
+			if (match.Groups[1].Success)
+			{
+				return $"[c/{numColor}:{match.Value}]";
+			}
+
+			if (match.Groups[2].Success)
+			{
+				return $"[c/{baseColor}:{match.Value}]";
+			}
+
+			return match.Value;
+		});
+	}
+
+	private static Color GetRarityColor(Rarity rarity)
+	{
+		return rarity switch
+		{
+			Rarity.Normal => Color.White,
+			Rarity.Magic => new Color(110, 160, 255),
+			Rarity.Rare => new Color(255, 255, 50),
+			Rarity.Unique => new Color(25, 255, 25),
+			_ => Color.White,
+		};
+	}
+
+	private static string GetDescriptor(ItemType type, Rarity rare, Influence influence)
+	{
+		string typeName = type switch
+		{
+			ItemType.Sword => "Sword",
+			ItemType.Spear => "Spear",
+			ItemType.Bow => "Bow",
+			ItemType.Gun => "Guns",
+			ItemType.Staff => "Staff",
+			ItemType.Tome => "Tome",
+			ItemType.Helmet => "Helmet",
+			ItemType.Chestplate => "Chestplate",
+			ItemType.Leggings => "Leggings",
+			ItemType.Ring => "Ring",
+			ItemType.Charm => "Charm",
+			_ => ""
+		};
+
+		string rareName = rare switch
+		{
+			Rarity.Normal => "",
+			Rarity.Magic => "Magic ",
+			Rarity.Rare => "Rare ",
+			Rarity.Unique => "Unique ",
+			_ => ""
+		};
+
+		string influenceName = influence switch
+		{
+			Influence.None => "",
+			Influence.Solar => "Solar ",
+			Influence.Lunar => "Lunar ",
+			_ => ""
+		};
+
+		return $" {influenceName}{rareName}{typeName}";
 	}
 }
