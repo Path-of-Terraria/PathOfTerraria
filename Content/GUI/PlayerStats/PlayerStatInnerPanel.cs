@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
-using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -9,42 +8,6 @@ namespace PathOfTerraria.Content.GUI.PlayerStats;
 
 internal class PlayerStatInnerPanel : SmartUIElement
 {
-	// This is the correct approach at correctly rendering the player in the stat
-	// panel, since it's in-game and needs lighting.  This is bugged (see:
-	// TML-4317), so we use a temporary patch (GetHairColorPatch) to fix the most
-	// immediately obvious issue.
-	/*private sealed class StatPanelRendererPlayer : ModPlayer
-	{
-		public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
-		{
-			base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
-	
-			// Force fullBright if rendering the player so hair draws
-			// correctly.
-			if (drawingPlayer)
-			{
-				fullBright = true;
-			}
-		}
-	}*/
-
-	private sealed class GetHairColorPatch : ModSystem
-	{
-		public override void Load()
-		{
-			base.Load();
-
-			On_Player.GetHairColor += GetHairColorWithoutLighting;
-		}
-
-		private static Color GetHairColorWithoutLighting(On_Player.orig_GetHairColor orig, Player self, bool useLighting)
-		{
-			return orig(self, useLighting && !drawingPlayer);
-		}
-	}
-
-	private static bool drawingPlayer;
-
 	private UIElement Panel => Parent;
 
 	public override string TabName => "PlayerStats";
@@ -124,9 +87,32 @@ internal class PlayerStatInnerPanel : SmartUIElement
 			Recalculate();
 		}
 
-		drawingPlayer = true;
+		// The correct approach at correctly rendering the player in the stat
+		// panel would be the following (with drawingPlayer defined):
+		/*private sealed class StatPanelRendererPlayer : ModPlayer
+		{
+			public override void DrawEffects(PlayerDrawSet drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
+			{
+				base.DrawEffects(drawInfo, ref r, ref g, ref b, ref a, ref fullBright);
+
+				// Force fullBright if rendering the player so hair draws
+				// correctly.
+				if (drawingPlayer)
+				{
+					fullBright = true;
+				}
+			}
+		}*/
+		// We aren't so lucky, though. Instead, we have to trick
+		// Lighting::GetColor into thinking we're in the game menu so it always
+		// returns White instead of the real color. This emulates full-bright
+		// (ignores in-world lighting) until we can correctly set the
+		// `fullBright` parameter in Player::DrawEffects (see: TML-4317).
+
+		bool origGameMenu = Main.gameMenu;
+		Main.gameMenu = true;
 		_drawDummy.Draw(spriteBatch);
-		drawingPlayer = false;
+		Main.gameMenu = origGameMenu;
 	}
 
 	private void DrawSingleStat(SpriteBatch spriteBatch, string text)
