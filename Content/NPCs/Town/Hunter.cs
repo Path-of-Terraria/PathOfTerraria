@@ -21,9 +21,9 @@ public class Hunter : ModNPC
 		set => dialogue = value > 2 ? 0 : value;
 	}
 
-	public override string HeadTexture { get; } = $"{nameof(PathOfTerraria)}/Assets/NPCs/Town/Hunter_Head";
+	public override string HeadTexture => $"{nameof(PathOfTerraria)}/Assets/NPCs/Town/Hunter_Head";
 
-	public override string Texture { get; } = $"{nameof(PathOfTerraria)}/Assets/NPCs/Town/Hunter";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/NPCs/Town/Hunter";
 
 	private int dialogue;
 

@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 
 public class DeerTrophy : ModTile
 {
-	public override string Texture { get; } = $"{nameof(PathOfTerraria)}/Assets/Tiles/Furniture/{nameof(DeerTrophy)}";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Tiles/Furniture/{nameof(DeerTrophy)}";
 
 	public override void SetStaticDefaults()
 	{
