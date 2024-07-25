@@ -1,6 +1,4 @@
-﻿using Mono.Cecil.Cil;
-using MonoMod.Cil;
-using PathOfTerraria.Core.Systems.VanillaModifications;
+﻿using PathOfTerraria.Core.Systems.VanillaModifications;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
@@ -8,8 +6,6 @@ namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
 internal class BrandoftheInferno : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.DD2SquireDemonSword;
-
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/VanillaItems/Clones/Swords/BrandoftheInferno";
 
 	public override void SetStaticDefaults()
 	{

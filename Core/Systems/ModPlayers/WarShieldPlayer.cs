@@ -27,6 +27,7 @@ internal class WarShieldPlayer : ModPlayer
 		Player.SetDummyItemTime(2);
 		Player.SetImmuneTimeForAllTypes(2);
 		Player.velocity = StoredVelocity;
+		Player.direction = Math.Sign(StoredVelocity.X);
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
