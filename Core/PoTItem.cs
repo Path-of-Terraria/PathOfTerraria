@@ -317,12 +317,6 @@ public abstract class PoTItem : ModItem
 	/// </summary>
 	private static readonly List<(float dropChance, int itemId)> ManuallyLoadedItems = [];
 
-	/// <summary>
-	/// Called in <see cref="SetDefaults"/> before <see cref="Roll(int, float)"/> is called.<br/>
-	/// This ensures Gear will always be set up properly. Otherwise, this works exactly like <see cref="ModItem.SetDefaults"/>.
-	/// </summary>
-	public virtual void Defaults() { }
-
 	public virtual void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier) { }
 	public virtual void SwapItemModifiers(EntityModifier SwapItemModifier) { }
 
