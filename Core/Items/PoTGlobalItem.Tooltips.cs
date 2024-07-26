@@ -102,7 +102,7 @@ partial class PoTGlobalItem
 		};
 		tooltips.Add(rarityLine);
 
-		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {(data.ItemType == ItemType.Map ? "Tier" : "Item level")}: [c/CCCCFF:{data.ItemLevel}]")
+		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {(data.ItemType == ItemType.Map ? "Tier" : "Item level")}: [c/CCCCFF:{IItemLevelControllerItem.GetLevel(item)}]")
 		{
 			OverrideColor = new Color(170, 170, 170)
 		};

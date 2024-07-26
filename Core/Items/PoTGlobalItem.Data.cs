@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core.Systems.Affixes;
+﻿using PathOfTerraria.Core.Items.Hooks;
+using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Core.Items;
@@ -36,13 +37,6 @@ public sealed class PoTInstanceItemData : GlobalItem
 	/// </summary>
 	public string SpecialName { get; set; } = string.Empty;
 
-	// TODO: Lost functionality when porting; can no longer be overridden.
-	// We should consider an interface to restore behavior if needed.
-	/// <summary>
-	///		The level of the item.
-	/// </summary>
-	public int ItemLevel { get; set; }
-
 	/// <summary>
 	///		The item's description.
 	/// </summary>
@@ -62,6 +56,13 @@ public sealed class PoTInstanceItemData : GlobalItem
 	///		The amount of implicit affixes preceding rolled ones.
 	/// </summary>
 	internal int ImplicitCount { get; set; }
+
+	internal int RealLevel { get; set; }
+
+	public void SetItemLevel(Item item, int level)
+	{
+		IItemLevelControllerItem.SetLevel(item, level);
+	}
 }
 
 /// <summary>

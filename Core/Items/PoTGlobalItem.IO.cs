@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems.Affixes;
+using Stubble.Core.Classes;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.ModLoader.IO;
@@ -21,7 +22,7 @@ partial class PoTGlobalItem : GlobalItem
 		tag["implicits"] = data.ImplicitCount;
 
 		tag["name"] = data.SpecialName;
-		tag["ItemLevel"] = data.ItemLevel;
+		tag["ItemLevel"] = IItemLevelControllerItem.GetLevel(item);
 
 		List<TagCompound> affixTags = [];
 		foreach (ItemAffix affix in data.Affixes)
@@ -45,7 +46,7 @@ partial class PoTGlobalItem : GlobalItem
 		data.ImplicitCount = tag.GetInt("implicits");
 
 		data.SpecialName = tag.GetString("name");
-		data.ItemLevel = tag.GetInt("ItemLevel");
+		IItemLevelControllerItem.SetLevel(item, tag.GetInt("ItemLevel"));
 
 		data.Affixes.Clear();
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
@@ -74,7 +75,7 @@ partial class PoTGlobalItem : GlobalItem
 		// Probably should save the name as
 		// `GenericPrefix-ID (Item.Name can probably be omitted) GenericSuffix-ID`.
 		writer.Write(data.SpecialName);
-		writer.Write((byte)data.ItemLevel);
+		writer.Write((byte)IItemLevelControllerItem.GetLevel(item));
 
 		writer.Write(data.Affixes.Count);
 		foreach (ItemAffix affix in data.Affixes)
@@ -94,7 +95,7 @@ partial class PoTGlobalItem : GlobalItem
 		data.ImplicitCount = reader.ReadByte();
 
 		data.SpecialName = reader.ReadString();
-		data.ItemLevel = reader.ReadByte();
+		IItemLevelControllerItem.SetLevel(item, reader.ReadByte());
 
 		data.Affixes.Clear();
 		int affixes = reader.ReadByte();
