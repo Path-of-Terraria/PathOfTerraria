@@ -12,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
-public abstract class Gear : ModItem, ExtraRolls.IItem, IGenerateAffixesItem, IGenerateImplicitsItem, IGeneratePrefixItem, IGenerateSuffixItem, IInsertAdditionalTooltipLinesItem, IPostRollItem, ISwapItemModifiersItem
+public abstract class Gear : ModItem, ExtraRolls.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, GeneratePrefix.IItem, GenerateSuffix.IItem, InsertAdditionalTooltipLines.IItem, PostRoll.IItem, SwapItemModifiers.IItem
 {
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
@@ -34,7 +34,7 @@ public abstract class Gear : ModItem, ExtraRolls.IItem, IGenerateAffixesItem, IG
 		PoTItemHelper.Roll(Item, PoTItemHelper.PickItemLevel());
 	}
 
-	public virtual void InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier)
+	public virtual void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier)
 	{
 		if (_sockets.Length > 0)
 		{
@@ -78,7 +78,7 @@ public abstract class Gear : ModItem, ExtraRolls.IItem, IGenerateAffixesItem, IG
 		_sockets.Where(s => s is not null).ToList().ForEach(s => s.UpdateEquip(player, Item));
 	}
 
-	public virtual void SwapItemModifiers(Item item, EntityModifier swapItemModifier)
+	public virtual void SwapItemModifiers(EntityModifier swapItemModifier)
 	{
 		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active && Main.LocalPlayer.armor[0].ModItem is Gear headGear)
 		{
@@ -207,17 +207,16 @@ public abstract class Gear : ModItem, ExtraRolls.IItem, IGenerateAffixesItem, IG
 	/// Selects a prefix to be added to the name of the item from the provided Prefixes in localization files
 	/// </summary>
 	/// <returns></returns>
-	public virtual string GeneratePrefix(Item item)
+	public virtual string GeneratePrefix(string defaultPrefix)
 	{
-		string str = Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, true)).Value;
-		return str;
+		return Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, true)).Value;
 	}
 
 	/// <summary>
 	/// Selects a suffix to be added to the name of the item from the provided Suffixes in localization files
 	/// </summary>
 	/// <returns></returns>
-	public virtual string GenerateSuffix(Item item)
+	public virtual string GenerateSuffix(string defaultSuffix)
 	{
 		return Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, false)).Value;
 	}
@@ -265,17 +264,15 @@ public abstract class Gear : ModItem, ExtraRolls.IItem, IGenerateAffixesItem, IG
 		}
 	}
 
-	public virtual List<ItemAffix> GenerateAffixes(Item item)
+	public virtual List<ItemAffix> GenerateAffixes()
 	{
 		return [];
 	}
 
-	public virtual List<ItemAffix> GenerateImplicits(Item item)
+	public virtual List<ItemAffix> GenerateImplicits()
 	{
 		return [];
 	}
 
-	public virtual void PostRoll(Item item)
-	{
-	}
+	public virtual void PostRoll() { }
 }

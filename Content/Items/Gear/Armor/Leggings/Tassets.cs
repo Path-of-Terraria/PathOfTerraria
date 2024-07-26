@@ -5,8 +5,8 @@ namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 [AutoloadEquip(EquipType.Legs)]
 internal class Tassets : Leggings
 {
-	public override void PostRoll(Item item)
+	public override void PostRoll()
 	{
-		Item.defense = GetItemLevel.Invoke(item) / 14 + 1;
+		Item.defense = GetItemLevel.Invoke(Item) / 14 + 1;
 	}
 }

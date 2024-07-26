@@ -62,7 +62,7 @@ internal class GuardianAngel : SteelBattleaxe
 		target.GetGlobalNPC<AngelRingNPC>().ApplyRing(target, player.whoAmI);
 	}
 
-	public override List<ItemAffix> GenerateAffixes(Item item)
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;

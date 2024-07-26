@@ -7,7 +7,7 @@ using PathOfTerraria.Core.Items;
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
 [AutoloadEquip(EquipType.Legs)]
-internal class BurningRedBoots : Leggings, IGenerateImplicitsItem, GenerateName.IItem
+internal class BurningRedBoots : Leggings, GenerateName.IItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -18,7 +18,7 @@ internal class BurningRedBoots : Leggings, IGenerateImplicitsItem, GenerateName.
 		staticData.IsUnique = true;
 	}
 
-	public override List<ItemAffix> GenerateAffixes(Item item)
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		return
 		[
@@ -33,8 +33,8 @@ internal class BurningRedBoots : Leggings, IGenerateImplicitsItem, GenerateName.
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BurningRedBoots.DisplayName")}]";
 	}
 
-	public override void PostRoll(Item item)
+	public override void PostRoll()
 	{
-		Item.defense = GetItemLevel.Invoke(item) / 12;
+		Item.defense = GetItemLevel.Invoke(Item) / 12;
 	}
 }

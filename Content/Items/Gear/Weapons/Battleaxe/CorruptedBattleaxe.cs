@@ -65,7 +65,7 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		return false;
 	}
 	
-	public override List<ItemAffix> GenerateAffixes(Item item)
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;

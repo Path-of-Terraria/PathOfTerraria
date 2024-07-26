@@ -26,8 +26,8 @@ internal class Helmet : Gear
 		data.ItemType = ItemType.Helmet;
 	}
 
-	public override void PostRoll(Item item)
+	public override void PostRoll()
 	{
-		Item.defense = GetItemLevel.Invoke(item) / 10 + 1;
+		Item.defense = GetItemLevel.Invoke(Item) / 10 + 1;
 	}
 }

@@ -4,7 +4,7 @@ using PathOfTerraria.Core.Items;
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 
 [AutoloadEquip(EquipType.Body)]
-internal class Chestplate : Gear, IPostRollItem
+internal class Chestplate : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Body/Base";
 
@@ -26,8 +26,8 @@ internal class Chestplate : Gear, IPostRollItem
 		data.ItemType = ItemType.Chestplate;
 	}
 
-	public override void PostRoll(Item item)
+	public override void PostRoll()
 	{
-		Item.defense = GetItemLevel.Invoke(item) / 6 + 1;
+		Item.defense = GetItemLevel.Invoke(Item) / 6 + 1;
 	}
 }
