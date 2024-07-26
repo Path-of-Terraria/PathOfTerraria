@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Projectiles.Whip;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -22,8 +23,6 @@ internal abstract class Whip : Gear
 		public readonly bool DrawLine = drawLine;
 	}
 
-	public override float DropChance => 1f;
-
 	public abstract WhipDrawData DrawData { get; }
 	public abstract WhipSettings WhipSettings { get; }
 	protected override string GearLocalizationCategory => "Whip";
@@ -36,6 +35,11 @@ internal abstract class Whip : Gear
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+
 		if (ModContent.HasAsset(Texture + "_Projectile"))
 		{
 			WhipProjectileSpritesById.Add(Type, ModContent.Request<Texture2D>(Texture + "_Projectile"));

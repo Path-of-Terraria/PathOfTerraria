@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Content.Projectiles.Magic;
 using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.Enums;
 using Terraria.ID;
 
@@ -8,9 +9,16 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 internal class Wand : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Wand/WandPlaceholder";
-	public override float DropChance => 1f;
 
 	protected override string GearLocalizationCategory => "Wand";
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
 
 	public override void SetDefaults()
 	{

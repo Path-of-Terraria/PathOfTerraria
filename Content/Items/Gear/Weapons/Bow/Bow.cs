@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -18,7 +19,6 @@ internal abstract class Bow : Gear
 	/// </summary>
 	public static Dictionary<int, Asset<Texture2D>> BowProjectileSpritesById = [];
 
-	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Bow.AltUse");
 
@@ -30,6 +30,11 @@ internal abstract class Bow : Gear
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+
 		if (ModContent.HasAsset(Texture + "Animated"))
 		{
 			BowProjectileSpritesById.Add(Type, ModContent.Request<Texture2D>(Texture + "Animated"));

@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Content.Projectiles.Magic;
 using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.Enums;
 using Terraria.ID;
 
@@ -8,9 +9,16 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Tome;
 internal class Spellbook : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Tome/TomePlaceholder";
-	public override float DropChance => 1f;
 
 	protected override string GearLocalizationCategory => "Spellbook";
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
 
 	public override void SetDefaults()
 	{
@@ -24,7 +32,8 @@ internal class Spellbook : Gear
 		Item.UseSound = SoundID.Item20;
 		Item.shootSpeed = 25f;
 
-		ItemType = ItemType.Wand;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Wand;
 
 		Item.shoot = ModContent.ProjectileType<TomeProjectile>();
 		Item.SetShopValues(ItemRarityColor.Green2, 10000);

@@ -10,7 +10,14 @@ internal class Chestplate : Gear, IPostRollItem
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Body/Base";
 
 	protected override string GearLocalizationCategory => "Chestplate";
-	public override float DropChance => 1f;
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
 
 	public override void SetDefaults()
 	{

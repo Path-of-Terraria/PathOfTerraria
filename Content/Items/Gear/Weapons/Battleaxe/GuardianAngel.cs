@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using PathOfTerraria.Content.Projectiles.Melee;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
@@ -15,11 +16,18 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal class GuardianAngel : SteelBattleaxe
 {
-	public override float DropChance => 1f;
 	public override bool IsUnique => true;
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.AltUseDescription");
 	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.Description");
-	public override int MinDropItemLevel => 25;
+	
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.MinDropItemLevel = 25;
+	}
 
 	public override void SetDefaults()
 	{

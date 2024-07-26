@@ -1,10 +1,18 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
+﻿using PathOfTerraria.Core.Items;
+
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal class SteelBattleaxe : Battleaxe
 {
-	public override float DropChance => 1f;
-	public override int MinDropItemLevel => 18;
-	
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.MinDropItemLevel = 18;
+	}
+
 	public override void SetDefaults()
 	{
 		Item.damage = 26;

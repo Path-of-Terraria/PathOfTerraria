@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -9,10 +10,17 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 internal class Sword : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Base";
-	public override float DropChance => 1f;
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Sword.AltUse");
 
 	protected override string GearLocalizationCategory => "Sword";
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
 
 	public override void SetDefaults()
 	{

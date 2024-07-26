@@ -16,12 +16,16 @@ internal abstract class GrimoirePickup : ModItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
 
-	/// <summary>
-	/// These materials shouldn't drop through the typical <see cref="PoTItem"/> system. These will manually add their drops to their respective NPC(s).
-	/// </summary>
-	public sealed override float DropChance => 0;
-
 	public abstract Point Size { get; }
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		// These materials shouldn't drop through the typical item system. These will manually add their drops to their respective NPC(s).
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0f;
+	}
 
 	public override void SetDefaults()
 	{

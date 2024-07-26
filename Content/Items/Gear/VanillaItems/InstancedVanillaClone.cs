@@ -9,7 +9,6 @@ internal class InstancedVanillaClone(short itemId, ItemType itemType, string nam
 	protected override short VanillaItemId => ItemId;
 	protected override bool CloneNewInstances => true;
 	public override string Name => InstanceName;
-	public override float DropChance => 0f;
 	public override bool IsUnique => true;
 
 	protected string InstanceName = name;
@@ -25,6 +24,14 @@ internal class InstancedVanillaClone(short itemId, ItemType itemType, string nam
 		inst.GetInstanceData().ItemType = this.GetInstanceData().ItemType;
 		inst.InstanceName = InstanceName;
 		return clone;
+	}
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0f;
 	}
 
 	public override void SetDefaults()

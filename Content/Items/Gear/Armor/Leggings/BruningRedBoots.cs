@@ -3,14 +3,22 @@ using System.Collections.Generic;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using Terraria.Localization;
 using PathOfTerraria.Core.Items.Hooks;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
 [AutoloadEquip(EquipType.Legs)]
 internal class BurningRedBoots : Leggings, IGenerateImplicitsItem, IGenerateNameItem
 {
-	public override float DropChance => 0.01f;
 	public override bool IsUnique => true;
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0.01f;
+	}
 
 	public override List<ItemAffix> GenerateAffixes(Item item)
 	{

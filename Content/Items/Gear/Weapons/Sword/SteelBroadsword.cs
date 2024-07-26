@@ -6,8 +6,14 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class SteelBroadsword : Sword
 {
-	public override float DropChance => 1f;
-	public override int MinDropItemLevel => 20;
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.MinDropItemLevel = 20;
+	}
 
 	public override void SetDefaults()
 	{

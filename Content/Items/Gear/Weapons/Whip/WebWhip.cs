@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Projectiles.Whip;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 
@@ -12,7 +13,13 @@ internal class WebWhip : Whip
 		RangeMultiplier = 1f,
 	};
 
-	public override int MinDropItemLevel => 9;
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.MinDropItemLevel = 9;
+	}
 
 	public override void SetDefaults()
 	{

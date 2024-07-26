@@ -9,7 +9,14 @@ internal class Helmet : Gear
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
 
 	protected override string GearLocalizationCategory => "Helmet";
-	public override float DropChance => 1f;
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
 
 	public override void SetDefaults()
 	{
