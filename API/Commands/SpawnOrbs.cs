@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.Experience;
+﻿using PathOfTerraria.Core.Systems.ExperienceSystem;
 
 namespace PathOfTerraria.API.Commands;
 
@@ -23,7 +23,7 @@ public class SpawnOrbs : ModCommand{
 			return;
 		}
 
-		int[] indices = ExperienceTracker.SpawnExperience((int)xp, caller.Player.Center + new Vector2(100, 100), Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * 6, caller.Player.whoAmI);
+		int[] indices = ExperienceModSystem.SpawnExperience((int)xp, caller.Player.Center + new Vector2(100, 100), Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * 6, caller.Player.whoAmI);
 		caller.Reply($"Spawned {indices.Length} experience orbs!", Color.Green);
 	}
 }
