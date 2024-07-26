@@ -154,16 +154,6 @@ public abstract class PoTItem : ModItem
 		return Main.rand.Next(5, 21);
 	}
 
-	/// <summary>
-	/// Applies after affixes have been placed, this is mainly for unique items.
-	/// </summary>
-	public virtual List<ItemAffix> GenerateAffixes() { return []; }
-
-	/// <summary>
-	/// Before affix roll, allows you to add the implicit affixes that should exist on this type of gear.
-	/// </summary>
-	public virtual List<ItemAffix> GenerateImplicits() { return []; }
-
 	public override void SaveData(TagCompound tag)
 	{
 		tag["type"] = (int)ItemType;
