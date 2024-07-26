@@ -378,3 +378,8 @@ StoneWarShield: {
 	DisplayName: Stone War Shield
 	Tooltip: ""
 }
+
+SteelWarShield: {
+	DisplayName: Steel War Shield
+	Tooltip: ""
+}

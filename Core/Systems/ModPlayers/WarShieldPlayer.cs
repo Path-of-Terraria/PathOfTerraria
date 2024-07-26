@@ -34,7 +34,7 @@ internal class WarShieldPlayer : ModPlayer
 			if (npc.Hitbox.Intersects(Player.Hitbox))
 			{
 				bool isCrit = Main.rand.NextFloat() < (Player.HeldItem.crit + 4) * 0.01f;
-				npc.SimpleStrikeNPC((int)(Player.HeldItem.damage * 1.5f), Math.Sign(StoredVelocity.X), isCrit, Player.HeldItem.knockBack);
+				npc.SimpleStrikeNPC(Player.HeldItem.damage, Math.Sign(StoredVelocity.X), isCrit, Player.HeldItem.knockBack);
 
 				for (int i = 0; i < 5; ++i)
 				{
