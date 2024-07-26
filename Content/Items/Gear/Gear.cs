@@ -12,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
-public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRolls, IGenerateAffixesItem, IGenerateImplicitsItem, IGeneratePrefixItem, IGenerateSuffixItem, IInsertAdditionalTooltipLinesItem, IPostRollItem, ISwapItemModifiersItem
+public abstract class Gear : ModItem, ICopyToClipboardItem, ExtraRolls.IItem, IGenerateAffixesItem, IGenerateImplicitsItem, IGeneratePrefixItem, IGenerateSuffixItem, IInsertAdditionalTooltipLinesItem, IPostRollItem, ISwapItemModifiersItem
 {
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
@@ -56,9 +56,9 @@ public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRolls, IGenera
 		}
 	}
 
-	public virtual void ExtraRolls(Item item)
+	void ExtraRolls.IItem.ExtraRolls()
 	{
-		PoTInstanceItemData data = item.GetInstanceData();
+		PoTInstanceItemData data = Item.GetInstanceData();
 		
 		_selectedSocket = 0;
 		int maxSockets = data.Rarity switch // what to do if we roll less sockets than what we have equipped?
