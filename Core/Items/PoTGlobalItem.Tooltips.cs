@@ -100,7 +100,7 @@ partial class PoTGlobalItem
 		string rarityDesc = GetDescriptor(data.ItemType, data.Rarity, data.Influence);
 		if (!string.IsNullOrWhiteSpace(rarityDesc))
 		{
-			var rarityLine = new TooltipLine(Mod, "Rarity", )
+			var rarityLine = new TooltipLine(Mod, "Rarity", rarityDesc)
 			{
 				OverrideColor = Color.Lerp(GetRarityColor(data.Rarity), Color.White, 0.5f)
 			};
