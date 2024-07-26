@@ -36,7 +36,7 @@ internal abstract class Bow : Gear
 		}
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.CloneDefaults(ItemID.WoodenBow);
 		Item.width = 32;

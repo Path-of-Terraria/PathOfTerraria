@@ -6,10 +6,9 @@ internal class Marrow : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.Marrow;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Ranged;
-		base.Defaults();
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)

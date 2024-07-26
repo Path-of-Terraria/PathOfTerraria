@@ -13,7 +13,7 @@ namespace PathOfTerraria.Core.Items;
 partial class PoTGlobalItem
 {
 	#region Affix methods
-	public void ApplyAffixes(Item item, EntityModifier entityModifier)
+	public static void ApplyAffixes(Item item, EntityModifier entityModifier)
 	{
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
@@ -21,7 +21,7 @@ partial class PoTGlobalItem
 		}
 	}
 
-	public void ClearAffixes(Item item)
+	public static void ClearAffixes(Item item)
 	{
 		item.GetInstanceData().Affixes.Clear();
 	}

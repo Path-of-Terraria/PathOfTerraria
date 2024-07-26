@@ -6,9 +6,8 @@ internal class WoodenShortBow : Bow
 	protected override int AnimationSpeed => 5;
 	protected override float CooldownTimeInSeconds => 3.5f;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.useTime = 45;
 		Item.useAnimation = 45;
 		Item.width = 18;

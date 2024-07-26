@@ -16,7 +16,7 @@ internal abstract class Boomerang : Gear
 	protected virtual int BoomerangCount => 1;
 	protected override string GearLocalizationCategory => "Boomerang";
 	
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.CloneDefaults(ItemID.WoodenBoomerang);
 		Item.width = 16;

@@ -13,6 +13,11 @@ public interface IGenerateNameItem
 			return generateNameItem.GenerateName(item);
 		}
 
+		return GetDefaultName(item);
+	}
+
+	public static string GetDefaultName(Item item)
+	{
 		return item.GetInstanceData().Rarity switch
 		{
 			Rarity.Normal => item.Name,

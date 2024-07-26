@@ -7,12 +7,12 @@ namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 [AutoloadEquip(EquipType.Legs)]
 internal class Greaves : Leggings
 {
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateImplicits(Item item)
 	{
 		return [(ItemAffix)Affix.CreateAffix<MovementSpeed>(0.5f)];
 	}
 
-	public override void PostRoll()
+	public override void PostRoll(Item item)
 	{
 		Item.defense = ItemLevel / 14 + 1;
 	}

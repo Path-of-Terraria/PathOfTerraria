@@ -7,10 +7,10 @@ internal class Frostbrand : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.Frostbrand;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
+		
 		Item.shootsEveryUse = true;
 	}
 

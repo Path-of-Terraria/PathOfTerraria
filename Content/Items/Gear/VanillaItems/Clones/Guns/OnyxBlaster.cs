@@ -7,10 +7,9 @@ internal class OnyxBlaster : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.OnyxBlaster;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 pos, Vector2 vel, int type, int damage, float knockback)

@@ -14,9 +14,8 @@ internal class CorruptedBattleaxe : IronBattleaxe
 	public override string AltUseDescription => "Throw the axe to deal damage to enemies";
 	public override string Description => "Something doesn't feel right about this axe...";
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.width = 52;
 		Item.height = 52;
 	}
@@ -57,7 +56,7 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		return false;
 	}
 	
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateAffixes(Item item)
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;

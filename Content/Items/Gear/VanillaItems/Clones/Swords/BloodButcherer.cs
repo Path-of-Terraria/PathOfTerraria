@@ -29,10 +29,9 @@ internal class BloodButcherer : VanillaClone
 		vanillaButcherFlag = null;
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override void HoldItem(Player player)

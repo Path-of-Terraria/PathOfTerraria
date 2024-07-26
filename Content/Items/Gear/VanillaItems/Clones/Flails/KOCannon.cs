@@ -6,10 +6,9 @@ internal class KOCannon : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.KOCannon;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override Vector2? HoldoutOffset()

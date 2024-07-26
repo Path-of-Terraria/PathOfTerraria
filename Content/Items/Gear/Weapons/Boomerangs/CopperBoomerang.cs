@@ -1,13 +1,20 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
+﻿using PathOfTerraria.Core.Items;
+
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 
 internal class CopperBoomerang : Boomerang
 {
-	public override float DropChance => 1f;
-	public override int MinDropItemLevel => 8;
-
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
-		base.Defaults();
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.MinDropItemLevel = 8;
+	}
+
+	public override void SetDefaults()
+	{
 		Item.damage = 12;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;

@@ -14,7 +14,7 @@ internal class ChainWhip : Whip
 
 	public override int MinDropItemLevel => 15;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 13, 2, 4);
 		Item.channel = true;

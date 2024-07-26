@@ -7,10 +7,9 @@ internal class StarWrath : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.StarWrath;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override void MeleeEffects(Player player, Rectangle box)

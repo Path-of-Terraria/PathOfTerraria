@@ -13,9 +13,8 @@ internal class WoodenBoomerang : Boomerang
 		GearAlternatives.Register(Type, ItemID.WoodenBoomerang);
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.damage = 5;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;

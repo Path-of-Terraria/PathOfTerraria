@@ -1,13 +1,12 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal abstract class Map : PoTItem
+internal abstract class Map : ModItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
@@ -19,7 +18,7 @@ internal abstract class Map : PoTItem
 		{ InternalItemLevel = value; _tier = 1 + (int)Math.Floor(InternalItemLevel / 20f); }
 	}
 
-	public override void Defaults() {
+	public override void SetDefaults() {
 		Item.width = 32;
 		Item.height = 32;
 		Item.useStyle = ItemUseStyleID.DrinkLiquid;
@@ -32,7 +31,8 @@ internal abstract class Map : PoTItem
 		Item.rare = ItemRarityID.Green;
 		Item.value = 1000;
 
-		ItemType = ItemType.Map;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Map;
 	}
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }

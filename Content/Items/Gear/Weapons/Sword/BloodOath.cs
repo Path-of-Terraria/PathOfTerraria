@@ -36,9 +36,8 @@ internal class BloodOath : Sword
 		return clone;
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.damage = 8;
 		Item.width = 58;
 		Item.height = 58;
@@ -51,7 +50,7 @@ internal class BloodOath : Sword
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateAffixes(Item item)
 	{
 		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(0, 2, 5);
 		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(0, 10, 10); // Add 10% life

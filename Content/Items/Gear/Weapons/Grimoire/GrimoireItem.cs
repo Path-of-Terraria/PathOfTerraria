@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using Terraria.ID;
@@ -12,10 +13,17 @@ internal class GrimoireItem : Gear
 {
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.AltUseDescription");
 	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.Description");
-	public override float DropChance => 0;
 	protected override string GearLocalizationCategory => "Grimoire";
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0f;
+	}
+
+	public override void SetDefaults()
 	{
 		Item.damage = 10;
 		Item.width = 30;

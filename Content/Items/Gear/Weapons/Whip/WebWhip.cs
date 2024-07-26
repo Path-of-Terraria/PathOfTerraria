@@ -14,7 +14,7 @@ internal class WebWhip : Whip
 
 	public override int MinDropItemLevel => 9;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 9, 2, 4);
 		Item.channel = true;

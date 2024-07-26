@@ -23,10 +23,9 @@ internal class TentacleSpike : VanillaClone
 		spikesMax5Field = null;
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override bool? UseItem(Player player)

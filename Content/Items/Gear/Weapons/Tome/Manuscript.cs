@@ -4,9 +4,8 @@ internal class Manuscript : Spellbook
 {
 	public override int MinDropItemLevel => 20;
 	
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.damage = 20;
 	}
 }

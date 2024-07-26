@@ -8,9 +8,8 @@ internal class SteelBroadsword : Sword
 	public override float DropChance => 1f;
 	public override int MinDropItemLevel => 20;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.damage = 12;
 		Item.width = 46;
 		Item.height = 46;

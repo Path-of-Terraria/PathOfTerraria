@@ -6,10 +6,9 @@ internal class Meowmere : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.Meowmere;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override void MeleeEffects(Player player, Rectangle hitbox)

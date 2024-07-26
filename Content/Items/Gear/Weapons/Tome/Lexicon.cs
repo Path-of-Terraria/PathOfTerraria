@@ -4,9 +4,8 @@ internal class Lexicon : Spellbook
 {
 	public override int MinDropItemLevel => 40;
 	
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.damage = 35;
 	}
 }

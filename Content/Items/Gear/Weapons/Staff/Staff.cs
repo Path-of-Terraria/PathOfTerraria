@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Projectiles.Magic;
+using PathOfTerraria.Core.Items;
 using Terraria.Enums;
 using Terraria.ID;
 
@@ -7,11 +8,19 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 internal class Staff : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Staff/ExampleStaff";
-	public override float DropChance => 1f;
 
 	protected override string GearLocalizationCategory => "Staff";
 
-	public override void Defaults() {
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
+
+	public override void SetDefaults()
+	{
 		// DefaultToStaff handles setting various Item values that magic staff weapons use.
 		// Hover over DefaultToStaff in Visual Studio to read the documentation!
 		Item.DefaultToStaff(ModContent.ProjectileType<SparklingBall>(), 16, 25, 12);

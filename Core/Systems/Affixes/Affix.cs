@@ -1,3 +1,4 @@
+using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -165,11 +166,11 @@ internal class AffixHandler : ILoadable
 	/// <param name="type"></param>
 	/// <param name="influence"></param>
 	/// <returns></returns>
-	public static List<ItemAffix> GetAffixes(PoTItem item)
+	public static List<ItemAffix> GetAffixes(Item item)
 	{
 		return _itemAffixes
-			.Where(proto => proto.RequiredInfluence == Influence.None || proto.RequiredInfluence == item.Influence)
-			.Where(proto => (item.ItemType & proto.PossibleTypes) == item.ItemType)
+			.Where(proto => proto.RequiredInfluence == Influence.None || proto.RequiredInfluence == item.GetInstanceData().Influence)
+			.Where(proto => (item.GetInstanceData().ItemType & proto.PossibleTypes) == item.GetInstanceData().ItemType)
 			.ToList();
 	}
 

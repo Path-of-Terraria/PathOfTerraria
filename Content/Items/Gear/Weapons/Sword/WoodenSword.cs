@@ -15,9 +15,8 @@ internal class WoodenSword : Sword
 		GearAlternatives.Register(Type, ItemID.WoodenSword);
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.Size = new(38);
 		Item.damage = 4;
 		Item.UseSound = SoundID.Item1;

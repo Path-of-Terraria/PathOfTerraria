@@ -6,10 +6,9 @@ internal class Umbrella : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.Umbrella;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	// Umbrella functionality is super hardcoded because vanilla is fun

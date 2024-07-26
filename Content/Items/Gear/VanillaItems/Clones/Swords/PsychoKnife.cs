@@ -36,10 +36,9 @@ internal class PsychoKnife : VanillaClone
 		return 1f;
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

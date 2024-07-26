@@ -6,10 +6,10 @@ internal class IceBlade : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.IceBlade;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
+		
 		Item.shootsEveryUse = true;
 	}
 

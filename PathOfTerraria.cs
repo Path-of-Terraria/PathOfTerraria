@@ -30,7 +30,7 @@ public class PathOfTerraria : Mod
 			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
 		}
 
-		Core.PoTItem.GenerateItemList();
+		// Core.PoTItem.GenerateItemList();
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)

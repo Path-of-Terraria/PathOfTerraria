@@ -1,6 +1,9 @@
 ﻿using PathOfTerraria.Content.Socketables;
 using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -10,7 +13,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
-public abstract class Gear : PoTItem
+public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRollsItem, IGenerateAffixesItem, IGenerateImplicitsItem, IGeneratePrefixItem, IGenerateSuffixItem, IInsertAdditionalTooltipLinesItem, IPostRollItem, ISwapItemModifiersItem
 {
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
@@ -25,12 +28,14 @@ public abstract class Gear : PoTItem
 			return;
 		}
 
-		Rarity = Rarity.Magic; //All crafted items are magic rarity
-		Affixes.Clear();
-		Roll(PickItemLevel());
+		PoTInstanceItemData data = this.GetInstanceData();
+
+		data.Rarity = Rarity.Magic; //All crafted items are magic rarity
+		data.Affixes.Clear();
+		PoTGlobalItem.Roll(Item, PoTGlobalItem.PickItemLevel());
 	}
 
-	public override void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier)
+	public virtual void InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier)
 	{
 		if (_sockets.Length > 0)
 		{
@@ -52,11 +57,13 @@ public abstract class Gear : PoTItem
 		}
 	}
 
-	public sealed override void ExtraRolls()
+	public virtual void ExtraRolls(Item item)
 	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		
 		_selectedSocket = 0;
-		int maxSockets = Rarity switch // what to do if we roll less sockets than what we have equipped?
-									   // maby just not allow to roll if we have any sockets?
+		int maxSockets = data.Rarity switch // what to do if we roll less sockets than what we have equipped?
+									        // maby just not allow to roll if we have any sockets?
 		{
 			Rarity.Normal => Main.rand.Next(2),
 			Rarity.Magic => Main.rand.Next(1, 2),
@@ -66,32 +73,32 @@ public abstract class Gear : PoTItem
 
 		_sockets = new Socketable[maxSockets];
 	}
-	
-	public sealed override void ExtraUpdateEquips(Player player)
+
+	public override void UpdateEquip(Player player)
 	{
 		_sockets.Where(s => s is not null).ToList().ForEach(s => s.UpdateEquip(player, Item));
 	}
 
-	public sealed override void SwapItemModifiers(EntityModifier swapItemModifier)
+	public virtual void SwapItemModifiers(Item item, EntityModifier swapItemModifier)
 	{
 		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active && Main.LocalPlayer.armor[0].ModItem is Gear headGear)
 		{
-			headGear.ApplyAffixes(swapItemModifier);
+			PoTGlobalItem.ApplyAffixes(headGear.Item, swapItemModifier);
 		}
 		else if (Item.bodySlot >= 0 && Main.LocalPlayer.armor[1].active && Main.LocalPlayer.armor[0].ModItem is Gear bodyGear)
 		{
-			bodyGear.ApplyAffixes(swapItemModifier);
+			PoTGlobalItem.ApplyAffixes(bodyGear.Item, swapItemModifier);
 		}
 		else if (Item.legSlot >= 0 && Main.LocalPlayer.armor[2].active && Main.LocalPlayer.armor[0].ModItem is Gear legsGear)
 		{
-			legsGear.ApplyAffixes(swapItemModifier);
+			PoTGlobalItem.ApplyAffixes(legsGear.Item, swapItemModifier);
 		}
 		// missing accessories
 		else if (Item.damage > 0)
 		{
 			if (Main.LocalPlayer.inventory[0].ModItem is Gear gear)
 			{
-				gear.ApplyAffixes(swapItemModifier);
+				PoTGlobalItem.ApplyAffixes(gear.Item, swapItemModifier);
 			}
 		}
 	}
@@ -201,7 +208,7 @@ public abstract class Gear : PoTItem
 	/// Selects a prefix to be added to the name of the item from the provided Prefixes in localization files
 	/// </summary>
 	/// <returns></returns>
-	public override string GeneratePrefix()
+	public virtual string GeneratePrefix(Item item)
 	{
 		string str = Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, true)).Value;
 		return str;
@@ -211,7 +218,7 @@ public abstract class Gear : PoTItem
 	/// Selects a suffix to be added to the name of the item from the provided Suffixes in localization files
 	/// </summary>
 	/// <returns></returns>
-	public override string GenerateSuffix()
+	public virtual string GenerateSuffix(Item item)
 	{
 		return Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, false)).Value;
 	}
@@ -257,5 +264,19 @@ public abstract class Gear : PoTItem
 				}
 			}
 		}
+	}
+
+	public virtual List<ItemAffix> GenerateAffixes(Item item)
+	{
+		return [];
+	}
+
+	public virtual List<ItemAffix> GenerateImplicits(Item item)
+	{
+		return [];
+	}
+
+	public virtual void PostRoll(Item item)
+	{
 	}
 }

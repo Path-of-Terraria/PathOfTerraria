@@ -28,9 +28,8 @@ internal class BreathingReed : VanillaClone
 		}
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 }

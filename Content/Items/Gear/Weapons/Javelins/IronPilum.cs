@@ -8,10 +8,8 @@ internal class IronPilum : Javelin
 	public override int DeathDustType => DustID.Iron;
 	public override int MinDropItemLevel => 5;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
-
 		Item.damage = 8;
 	}
 }

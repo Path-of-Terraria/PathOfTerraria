@@ -5,10 +5,8 @@ internal class RustedBattleaxe : Battleaxe
 {
 	public override float DropChance => 1f;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
-
 		Item.width = 38;
 		Item.height = 38;
 	}

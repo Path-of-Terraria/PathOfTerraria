@@ -14,7 +14,7 @@ internal class Sword : Gear
 
 	protected override string GearLocalizationCategory => "Sword";
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.damage = 10;
 		Item.width = 40;

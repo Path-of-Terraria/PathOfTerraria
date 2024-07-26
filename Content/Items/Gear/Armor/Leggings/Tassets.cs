@@ -3,7 +3,7 @@
 [AutoloadEquip(EquipType.Legs)]
 internal class Tassets : Leggings
 {
-	public override void PostRoll()
+	public override void PostRoll(Item item)
 	{
 		Item.defense = ItemLevel / 14 + 1;
 	}

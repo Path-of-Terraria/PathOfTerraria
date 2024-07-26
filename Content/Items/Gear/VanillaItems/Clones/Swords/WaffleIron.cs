@@ -6,10 +6,9 @@ internal class WaffleIron : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.WaffleIron;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

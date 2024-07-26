@@ -7,10 +7,9 @@ internal class VampireKnives : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.VampireKnives;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Ranged;
-		base.Defaults();
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

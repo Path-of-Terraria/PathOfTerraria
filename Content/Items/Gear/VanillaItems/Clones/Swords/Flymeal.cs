@@ -6,10 +6,9 @@ internal class Flymeal : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.Flymeal;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override bool? CanHitNPC(Player player, NPC target)

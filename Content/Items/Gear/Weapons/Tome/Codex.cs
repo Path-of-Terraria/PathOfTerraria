@@ -4,9 +4,8 @@ internal class Codex : Spellbook
 {
 	public override int MinDropItemLevel => 60;
 	
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.damage = 50;
 	}
 }

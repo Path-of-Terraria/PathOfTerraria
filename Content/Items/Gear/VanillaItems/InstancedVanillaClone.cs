@@ -25,9 +25,8 @@ internal class InstancedVanillaClone(short itemId, ItemType itemType, string nam
 		return clone;
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = InstancedItemType;
-		base.Defaults();
 	}
 }

@@ -10,12 +10,12 @@ internal class Helmet : Gear
 	protected override string GearLocalizationCategory => "Helmet";
 	public override float DropChance => 1f;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = ItemType.Helmet;
 	}
 
-	public override void PostRoll()
+	public override void PostRoll(Item item)
 	{
 		Item.defense = ItemLevel / 10 + 1;
 	}

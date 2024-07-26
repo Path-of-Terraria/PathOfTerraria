@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Data.Models;
 using Terraria.Chat.Commands;
@@ -9,14 +10,14 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Systems.TreeSystem;
 
-internal abstract class Jewel : PoTItem
+internal abstract class Jewel : ModItem
 {
 	public virtual string EquppedTooltip
 	{
 		get
 		{
 			EntityModifier thisItemModifier = new EntityModifier();
-			ApplyAffixes(thisItemModifier);
+			PoTGlobalItem.ApplyAffixes(Item, thisItemModifier);
 
 			string tooltip = "";
 			EntityModifier.GetChangeOnlyStrings(thisItemModifier).ForEach(s => tooltip += s + "\n");

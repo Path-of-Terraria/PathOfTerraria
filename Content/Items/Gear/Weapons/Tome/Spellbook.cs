@@ -12,7 +12,7 @@ internal class Spellbook : Gear
 
 	protected override string GearLocalizationCategory => "Spellbook";
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.damage = 10;
 		Item.width = Item.height = 40;

@@ -21,9 +21,8 @@ internal class GuardianAngel : SteelBattleaxe
 	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.Description");
 	public override int MinDropItemLevel => 25;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.width = 54;
 		Item.height = 54;
 	}
@@ -54,7 +53,7 @@ internal class GuardianAngel : SteelBattleaxe
 		target.GetGlobalNPC<AngelRingNPC>().ApplyRing(target, player.whoAmI);
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateAffixes(Item item)
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		addedDamageAffix.MinValue = 1;

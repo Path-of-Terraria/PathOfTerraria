@@ -5,13 +5,13 @@ namespace PathOfTerraria.Core.Items.Hooks;
 
 public interface IGenerateAffixesItem
 {
-	List<ItemAffix> GenerateAffixes();
+	List<ItemAffix> GenerateAffixes(Item item);
 
 	public static List<ItemAffix> Invoke(Item item)
 	{
 		if (item.ModItem is IGenerateAffixesItem generateAffixesItem)
 		{
-			return generateAffixesItem.GenerateAffixes();
+			return generateAffixesItem.GenerateAffixes(item);
 		}
 
 		return [];

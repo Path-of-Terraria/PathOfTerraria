@@ -18,9 +18,8 @@ internal class FireStarter : Sword
 	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.Description");
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.AltUseDescription");
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.damage = 4;
 		Item.Size = new(38);
 		Item.UseSound = SoundID.Item1;
@@ -31,7 +30,7 @@ internal class FireStarter : Sword
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName")}]";
 	}
 	
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateAffixes(Item item)
 	{
 		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
 		sharpAffix.MinValue = 1;

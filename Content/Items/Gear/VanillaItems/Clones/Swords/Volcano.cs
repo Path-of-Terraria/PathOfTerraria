@@ -8,10 +8,9 @@ internal class FieryGreatsword : VanillaClone
 
 	private bool spawnBurstFlag = false;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override bool? UseItem(Player player)

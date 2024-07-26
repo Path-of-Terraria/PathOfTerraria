@@ -7,10 +7,9 @@ internal class Starfury : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.Starfury;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override void MeleeEffects(Player player, Rectangle box)

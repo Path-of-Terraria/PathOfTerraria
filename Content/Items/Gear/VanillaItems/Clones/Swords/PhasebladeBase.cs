@@ -4,10 +4,9 @@ namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
 
 public abstract class PhasebladeBase : VanillaClone
 {
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override void HoldItem(Player player)

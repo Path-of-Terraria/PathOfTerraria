@@ -13,9 +13,8 @@ internal class WoodenBow : Bow
 		GearAlternatives.Register(Type, ItemID.WoodenBow);
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
 		Item.damage = 10;
 		Item.Size = new Vector2(24, 46);
 	}

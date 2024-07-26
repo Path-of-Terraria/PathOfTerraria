@@ -17,7 +17,7 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 		Roll(entity, PickItemLevel());
 	}
 
-	public void Roll(Item item, int itemLevel)
+	public static void Roll(Item item, int itemLevel)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 		PoTStaticItemData staticData = item.GetStaticData();

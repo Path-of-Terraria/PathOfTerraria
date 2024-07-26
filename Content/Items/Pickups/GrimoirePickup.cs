@@ -11,7 +11,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
-internal abstract class GrimoirePickup : PoTItem
+internal abstract class GrimoirePickup : ModItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
 
@@ -22,7 +22,7 @@ internal abstract class GrimoirePickup : PoTItem
 
 	public abstract Point Size { get; }
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.width = Size.X;
 		Item.height = Size.Y;

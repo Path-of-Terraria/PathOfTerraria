@@ -12,7 +12,7 @@ internal abstract class Battleaxe : Gear
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Battleaxe.AltUse");
 	protected override string GearLocalizationCategory => "Battleaxe";
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.damage = 10;
 		Item.width = 48;

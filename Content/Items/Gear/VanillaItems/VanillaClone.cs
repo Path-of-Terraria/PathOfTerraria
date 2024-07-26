@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items.Hooks;
+using System.Linq;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -6,7 +8,6 @@ namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
 public abstract class VanillaClone : Gear
 {
-	public override float DropChance => 0f;
 	protected virtual short VanillaItemId => ItemID.None;
 	public override string Texture => "Terraria/Images/Item_" + VanillaItemId;
 
@@ -17,21 +18,21 @@ public abstract class VanillaClone : Gear
 	{
 		base.SetStaticDefaults();
 		GearAlternatives.Register(Type, VanillaItemId);
+
+		this.GetStaticData().DropChance = 0f;
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
-
 		Item.CloneDefaults(VanillaItemId);
 	}
 
-	public override string GeneratePrefix()
+	public override string GeneratePrefix(Item item)
 	{
 		return "";
 	}
 
-	public override string GenerateSuffix()
+	public override string GenerateSuffix(Item item)
 	{
 		return "";
 	}

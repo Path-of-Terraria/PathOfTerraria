@@ -12,7 +12,7 @@ internal class Wand : Gear
 
 	protected override string GearLocalizationCategory => "Wand";
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		Item.damage = 14;
 		Item.width = Item.height = 40;

@@ -6,10 +6,9 @@ internal class BreakerBlade : VanillaClone
 {
 	protected override short VanillaItemId => ItemID.BreakerBlade;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)

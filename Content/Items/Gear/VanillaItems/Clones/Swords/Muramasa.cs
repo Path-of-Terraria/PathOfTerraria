@@ -8,10 +8,9 @@ internal class Muramasa : VanillaClone
 
 	private bool spawnSlashFlag = false;
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
 		ItemType = Core.ItemType.Melee;
-		base.Defaults();
 	}
 
 	public override bool? UseItem(Player player)
