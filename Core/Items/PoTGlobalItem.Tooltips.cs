@@ -25,7 +25,63 @@ partial class PoTGlobalItem
 		void ILoadable.Unload() { }
 	}
 
-	#region Modify tooltips
+	#region Modify tooltips and rendering
+	public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
+	{
+		// Don't mess with tooltip lines that we aren't responsible for.
+		if (line.Mod != Mod.Name)
+		{
+			return true;
+		}
+
+		switch (line.Name)
+		{
+			case "Name":
+				yOffset = -2;
+				line.BaseScale = new Vector2(1.1f);
+				return true;
+
+			case "Rarity":
+				yOffset = -8;
+				line.BaseScale = new Vector2(0.8f);
+				return true;
+
+			case "ItemLevel":
+				yOffset = 2;
+				line.BaseScale = new Vector2(0.8f);
+				return true;
+
+			case "AltUseDescription":
+			case "Description":
+				yOffset = 2;
+				line.BaseScale = new Vector2(0.8f);
+				return true;
+		}
+
+		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense")
+		{
+			line.BaseScale = new Vector2(0.95f);
+			yOffset = line.Name == "Damage" || line.Name == "Defense" ? 2 : -4;
+			return true;
+		}
+
+		if (line.Name == "Space")
+		{
+			line.BaseScale *= 0f;
+			yOffset = -20;
+			return true;
+		}
+
+		if (line.Name.Contains("Change"))
+		{
+			line.BaseScale = new Vector2(0.75f);
+			yOffset = -10;
+			return true;
+		}
+
+		return base.PreDrawTooltipLine(item, line, ref yOffset);
+	}
+
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
 		base.ModifyTooltips(item, tooltips);
@@ -217,7 +273,7 @@ partial class PoTGlobalItem
 	private static partial Regex NumberHighlightRegex();
 	#endregion
 
-	#region Special rendering
+	#region Special rendering for raritie sand influences
 	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)
 	{
@@ -240,9 +296,9 @@ partial class PoTGlobalItem
 
 		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/Slots/{rareName}Back")
 			.Value;
-		Color backcolor = Color.White * 0.75f;
+		Color backColor = Color.White * 0.75f;
 
-		sb.Draw(back, position, null, backcolor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
+		sb.Draw(back, position, null, backColor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
 		ItemSlot.Draw(sb, ref inv[slot], 21, position);
 
 		if (data.Influence == Influence.Solar)
