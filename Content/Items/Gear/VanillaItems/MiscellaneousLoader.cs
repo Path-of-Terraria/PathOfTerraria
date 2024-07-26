@@ -2,12 +2,17 @@
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
 internal class MiscellaneousLoader : ModSystem
 {
 	public override void Load()
 	{
+		ItemDatabase.RegisterVanillaItem(ItemID.SolarEruption, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.PiercingStarlight, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.VampireKnives, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.Zenith, ItemType.Melee);
+
 		// Prehardmode
 		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Terragrim, ItemType.Ranged);
 

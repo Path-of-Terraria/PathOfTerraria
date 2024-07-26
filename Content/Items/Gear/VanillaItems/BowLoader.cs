@@ -2,12 +2,28 @@
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
 internal class BowLoader : ModSystem
 {
 	public override void Load()
 	{
+		ItemDatabase.RegisterVanillaItem(ItemID.DD2BetsyBow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.BloodRainBow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.ChlorophyteShotbow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.DaedalusStormbow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.FairyQueenRangedItem, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.HellwingBow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.IceBow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.Marrow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.MoltenFury, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.Phantasm, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.DD2PhoenixBow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.PulseBow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.ShadowFlameBow, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.BeesKnees, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.Tsunami, ItemType.Ranged);
+
 		// Prehardmode
 		LoadBow(ItemID.BorealWoodBow, "BorealWoodBow");
 		LoadBow(ItemID.CopperBow, "CopperBow");

@@ -2,7 +2,7 @@
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
 internal class BoomerangLoader : ModSystem
 {

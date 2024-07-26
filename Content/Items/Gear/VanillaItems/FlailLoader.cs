@@ -2,12 +2,15 @@
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
 internal class FlailLoader : ModSystem
 {
 	public override void Load()
 	{
+		ItemDatabase.RegisterVanillaItem(ItemID.GolemFist, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.KOCannon, ItemType.Melee);
+
 		// Prehardmode
 		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Mace, ItemType.Melee);
 		ItemDatabase.RegisterUniqueVanillaItem(ItemID.FlamingMace, ItemType.Melee);

@@ -2,12 +2,15 @@
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
 internal class LauncherLoader : ModSystem
 {
 	public override void Load()
 	{
+		ItemDatabase.RegisterVanillaItem(ItemID.FireworksLauncher, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.Celeb2, ItemType.Ranged);
+
 		LoadLauncher(ItemID.GrenadeLauncher, "GrenadeLauncher");
 		LoadLauncher(ItemID.ProximityMineLauncher, "ProximityMineLauncher");
 		LoadLauncher(ItemID.RocketLauncher, "RocketLauncher");

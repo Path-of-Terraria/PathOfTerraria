@@ -1,14 +1,57 @@
 ﻿using PathOfTerraria.Core;
 using PathOfTerraria.Core.Items;
-using Terraria;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
 internal class SwordLoader : ModSystem
 {
 	public override void Load()
 	{
+		ItemDatabase.RegisterVanillaItem(ItemID.BeeKeeper, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.BladeofGrass, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Bladetongue, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.BloodButcherer, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.DD2SquireDemonSword, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.BreakerBlade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.BreathingReed, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Excalibur, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Flymeal, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Frostbrand, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.HamBat, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.IceBlade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Keybrand, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.LightsBane, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Meowmere, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Muramasa, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.NightsEdge, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.BluePhaseblade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.GreenPhaseblade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.RedPhaseblade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.YellowPhaseblade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.PurplePhaseblade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.WhitePhaseblade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.OrangePhaseblade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.BluePhasesaber, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.GreenPhasesaber, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.RedPhasesaber, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.YellowPhasesaber, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.PurplePhasesaber, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.WhitePhasesaber, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.OrangePhasesaber, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.PsychoKnife, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Starfury, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.StarWrath, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.TentacleSpike, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.TerraBlade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.TheHorsemansBlade, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.TragicUmbrella, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.TrueExcalibur, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.TrueNightsEdge, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.Umbrella, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.FieryGreatsword, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.WaffleIron, ItemType.Melee);
+
 		void AddShortsword(short itemId, string material, bool onlyMat = false)
 		{
 			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Sword);
