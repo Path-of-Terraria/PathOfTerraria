@@ -80,6 +80,6 @@ internal class SwordLoader : ModSystem
 
 	public override void PostSetupContent()
 	{
-		Item.claw[Mod.Find<ModItem>("BladedGlove").Type] = true;
+		// Item.claw[Mod.Find<ModItem>("BladedGlove").Type] = true;
 	}
 }

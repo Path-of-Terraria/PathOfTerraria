@@ -15,9 +15,9 @@ partial class PoTGlobalItem : GlobalItem
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 
-		tag["type"] = data.ItemType;
-		tag["rarity"] = data.Rarity;
-		tag["influence"] = data.Influence;
+		tag["type"] = (int)data.ItemType;
+		tag["rarity"] = (int)data.Rarity;
+		tag["influence"] = (int)data.Influence;
 
 		tag["implicits"] = data.ImplicitCount;
 

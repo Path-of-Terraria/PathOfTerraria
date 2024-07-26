@@ -45,9 +45,9 @@ internal abstract class AbstractVanillaInterfaceHandler<T> : ILoadable
 
 	private static Dictionary<int, Dictionary<Type, object>> _interfaceTypeMap = [];
 
-	public AbstractVanillaInterfaceHandler()
+	static AbstractVanillaInterfaceHandler()
 	{
-		Instance = this;
+		AbstractVanillaInterfaceHandler<Item>.Instance = new ItemVanillaInterfaceHandler();
 	}
 
 	public bool TryGetInterface<TInterface>(T instance, [NotNullWhen(returnValue: true)] out TInterface value)
