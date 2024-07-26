@@ -27,9 +27,9 @@ public interface ICopyToClipboardItem
 		{
 			Item item = inv[slot];
 
-			if (_copyItemKeybind.JustPressed && item.active && item.TryGetInterface(out ICopyToClipboardItem copyToClipboardItem))
+			if (_copyItemKeybind.JustPressed && item.active)
 			{
-				copyToClipboardItem.CopyToClipboard(item);
+				ICopyToClipboardItem.Invoke(item);
 			}
 
 			orig(inv, context, slot);
@@ -62,4 +62,12 @@ public interface ICopyToClipboardItem
 		}
 	}
 #endif
+
+	public static void Invoke(Item item)
+	{
+		if (item.TryGetInterface(out ICopyToClipboardItem instance))
+		{
+			instance.CopyToClipboard(item);
+		}
+	}
 }

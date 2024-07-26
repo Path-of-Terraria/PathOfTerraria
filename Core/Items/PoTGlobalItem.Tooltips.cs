@@ -155,17 +155,10 @@ partial class PoTGlobalItem
 		// Change in stats if equipped.
 		var thisItemModifier = new EntityModifier();
 		ApplyAffixes(item, thisItemModifier);
-
-		if (item.TryGetInterface(out IInsertAdditionalTooltipLinesItem insertAdditionalTooltipLinesItem))
-		{
-			insertAdditionalTooltipLinesItem.InsertAdditionalTooltipLines(item, tooltips, thisItemModifier);
-		}
+		IInsertAdditionalTooltipLinesItem.Invoke(item, tooltips, thisItemModifier);
 
 		var currentItemModifier = new EntityModifier();
-		if (item.TryGetInterface(out ISwapItemModifiersItem swapItemModifiersItem))
-		{
-			swapItemModifiersItem.SwapItemModifiers(item, currentItemModifier);
-		}
+		ISwapItemModifiersItem.Invoke(item, currentItemModifier);
 
 		List<string> red = [];
 		List<string> green = [];

@@ -35,12 +35,7 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 		}
 
 		RollAffixes();
-
-		if (item.TryGetInterface(out IPostRollItem postRollItem))
-		{
-			postRollItem.PostRoll(item);
-		}
-
+		IPostRollItem.Invoke(item);
 		data.SpecialName = GenerateName();
 	}
 }
