@@ -1,9 +1,8 @@
 ﻿using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
-using Terraria.GameContent.RGB;
 
-namespace PathOfTerraria.Core.Mechanics;
+namespace PathOfTerraria.Core.Systems.Exp;
 
 public sealed class Experience
 {
