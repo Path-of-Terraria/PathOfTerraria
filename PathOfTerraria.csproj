@@ -18,6 +18,9 @@
 		<BuildCommand Condition=" '$(BuildCommand)' == '' ">dotnet</BuildCommand>
 	</PropertyGroup>
 	<ItemGroup>
+	  <None Remove="content\items\gear\vanillaitems\clones\bows\TODO.txt" />
+	</ItemGroup>
+	<ItemGroup>
 		<Compile Update="JsonCreator\CreateMobJsonFiles.cs">
 			<Link>ClassLibrary1\CreateMobJsonFiles.cs</Link>
 		</Compile>

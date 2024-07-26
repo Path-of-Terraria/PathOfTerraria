@@ -1,0 +1,15 @@
+AerialBane DD2BetsyBow Ranged
+BloodRainBow BloodRainBow Ranged
+ChlorophyteShotbow ChlorophyteShotbow Ranged
+DaedalusStormbow DaedalusStormbow Ranged
+Eventide FairyQueenRangedItem Ranged
+HellwingBow HellwingBow Ranged
+IceBow IceBow Ranged
+Marrow Marrow Ranged
+MoltenFury MoltenFury Ranged
+Phantasm Phantasm Ranged
+PhantomPhoenix PhantomPhoenix Ranged
+PulseBow PulseBow Ranged
+ShadowflameBow ShadowflameBow Ranged
+TheBeesKnees BeesKnees Ranged
+Tsunami Tsunami Ranged
