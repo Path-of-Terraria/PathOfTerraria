@@ -1,22 +1,25 @@
 ﻿using PathOfTerraria.Core;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal abstract class Map : ModItem, IItemLevelControllerItem, IGenerateNameItem
+internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, IGenerateNameItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
 
-	public int ItemLevel
+	int GetItemLevel.IItem.GetItemLevel(int realLevel)
 	{
-		get => _tier;
-		set
-		{ this.GetInstanceData().RealLevel = value; _tier = 1 + (int)Math.Floor(this.GetInstanceData().RealLevel / 20f); }
+		return _tier;
+	}
+
+	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
+	{
+		realLevel = level;
+		_tier = 1 + (int)Math.Floor(realLevel / 20f);
 	}
 
 	public override void SetDefaults() {

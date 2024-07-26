@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Core;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.Items.Hooks;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 
@@ -29,6 +28,6 @@ internal class Chestplate : Gear, IPostRollItem
 
 	public override void PostRoll(Item item)
 	{
-		Item.defense = IItemLevelControllerItem.GetLevel(item) / 6 + 1;
+		Item.defense = GetItemLevel.Invoke(item) / 6 + 1;
 	}
 }

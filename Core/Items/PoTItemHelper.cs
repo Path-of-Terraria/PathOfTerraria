@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Core.Items.Hooks;
-using PathOfTerraria.Core.Systems.Affixes;
+﻿using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Data.Models;
 using PathOfTerraria.Data;
 using System.Collections.Generic;
@@ -46,7 +45,7 @@ public static class PoTItemHelper
 		PoTInstanceItemData data = item.GetInstanceData();
 		PoTStaticItemData staticData = item.GetStaticData();
 
-		IItemLevelControllerItem.SetLevel(item, itemLevel);
+		SetItemLevel.Invoke(item, itemLevel);
 
 		// Only level 50+ gear can get influence.
 		if (data.RealLevel > 50 && !staticData.IsUnique && (data.ItemType & ItemType.AllGear) == ItemType.AllGear)
@@ -62,8 +61,8 @@ public static class PoTItemHelper
 		}
 
 		RollAffixes(item);
-		IPostRollItem.Invoke(item);
-		data.SpecialName = IGenerateNameItem.Invoke(item);
+		PostRoll.Invoke(item);
+		data.SpecialName = GenerateName.Invoke(item);
 	}
 
 	public static void Reroll(Item item)
@@ -80,7 +79,7 @@ public static class PoTItemHelper
 		PoTStaticItemData staticData = item.GetStaticData();
 
 		data.Affixes.Clear();
-		data.Affixes.AddRange(IGenerateAffixesItem.Invoke(item));
+		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
 
 		data.ImplicitCount = data.Affixes.Count;
 		for (int i = 0; i < GetAffixCount(item); i++)
@@ -97,13 +96,13 @@ public static class PoTItemHelper
 				continue;
 			}
 
-			affix.Value = AffixRegistry.GetRandomAffixValue(affix, IItemLevelControllerItem.GetLevel(item));
+			affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
 			data.Affixes.Add(affix);
 		}
 
 		if (staticData.IsUnique)
 		{
-			List<ItemAffix> uniqueItemAffixes = IGenerateAffixesItem.Invoke(item);
+			List<ItemAffix> uniqueItemAffixes = GenerateAffixes.Invoke(item);
 
 			foreach (ItemAffix affix in uniqueItemAffixes)
 			{

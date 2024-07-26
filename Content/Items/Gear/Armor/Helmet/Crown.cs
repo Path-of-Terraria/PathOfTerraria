@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Items.Hooks;
+﻿using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
@@ -7,6 +7,6 @@ internal class Crown : Helmet
 {
 	public override void PostRoll(Item item)
 	{
-		Item.defense = IItemLevelControllerItem.GetLevel(item) / 10 + 1;
+		Item.defense = GetItemLevel.Invoke(item) / 10 + 1;
 	}
 }

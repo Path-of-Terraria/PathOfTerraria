@@ -3,7 +3,6 @@ using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;

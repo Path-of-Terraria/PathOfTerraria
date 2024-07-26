@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Items.Hooks;
+﻿using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
@@ -7,6 +7,6 @@ internal class Treads : Leggings
 {
 	public override void PostRoll(Item item)
 	{
-		Item.defense = IItemLevelControllerItem.GetLevel(item) / 14 + 1;
+		Item.defense = GetItemLevel.Invoke(item) / 14 + 1;
 	}
 }

@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Core.Items.Hooks;
-using PathOfTerraria.Core.Systems.Affixes;
+﻿using PathOfTerraria.Core.Systems.Affixes;
 using Stubble.Core.Classes;
 using System.Collections.Generic;
 using System.IO;
@@ -58,7 +57,7 @@ partial class PoTGlobalItem : GlobalItem
 			}
 		}
 
-		IPostRollItem.Invoke(item);
+		PostRoll.Invoke(item);
 	}
 
 	public override void NetSend(Item item, BinaryWriter writer)
@@ -104,6 +103,6 @@ partial class PoTGlobalItem : GlobalItem
 			data.Affixes.Add(Affix.FromBReader(reader));
 		}
 
-		IPostRollItem.Invoke(item);
+		PostRoll.Invoke(item);
 	}
 }

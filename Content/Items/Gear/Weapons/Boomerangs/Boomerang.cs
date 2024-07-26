@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -8,12 +7,11 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 
-internal abstract class Boomerang : Gear, IItemLevelControllerItem
+internal abstract class Boomerang : Gear, GetItemLevel.IItem
 {
-	public int ItemLevel
+	int GetItemLevel.IItem.GetItemLevel(int realLevel)
 	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+		return 1;
 	}
 
 	protected virtual int BoomerangCount => 1;

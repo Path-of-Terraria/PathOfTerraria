@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 using PathOfTerraria.Core.Systems;
@@ -103,7 +102,7 @@ partial class PoTGlobalItem
 		};
 		tooltips.Add(rarityLine);
 
-		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {(data.ItemType == ItemType.Map ? "Tier" : "Item level")}: [c/CCCCFF:{IItemLevelControllerItem.GetLevel(item)}]")
+		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {(data.ItemType == ItemType.Map ? "Tier" : "Item level")}: [c/CCCCFF:{GetItemLevel.Invoke(item)}]")
 		{
 			OverrideColor = new Color(170, 170, 170)
 		};
@@ -156,10 +155,10 @@ partial class PoTGlobalItem
 		// Change in stats if equipped.
 		var thisItemModifier = new EntityModifier();
 		PoTItemHelper.ApplyAffixes(item, thisItemModifier);
-		IInsertAdditionalTooltipLinesItem.Invoke(item, tooltips, thisItemModifier);
+		InsertAdditionalTooltipLines.Invoke(item, tooltips, thisItemModifier);
 
 		var currentItemModifier = new EntityModifier();
-		ISwapItemModifiersItem.Invoke(item, currentItemModifier);
+		SwapItemModifiers.Invoke(item, currentItemModifier);
 
 		List<string> red = [];
 		List<string> green = [];

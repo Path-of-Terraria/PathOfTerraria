@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.VanillaModifications;
@@ -8,7 +7,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.WarShields;
 
-internal abstract class WarShield : Gear, IParryItem, IItemLevelControllerItem
+internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 {
 	/// <summary>
 	/// Stores shield data, namely how long the dash is, how long the cooldown is, and the speed of the dash.
@@ -25,11 +24,11 @@ internal abstract class WarShield : Gear, IParryItem, IItemLevelControllerItem
 		public readonly int BashDust = bashDust;
 	}
 
-	public int ItemLevel
+	int GetItemLevel.IItem.GetItemLevel(int realLevel)
 	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+		return 1;
 	}
+
 	public virtual ShieldData Data => new(15, 100, 12, DustID.WoodFurniture);
 
 	protected virtual int BoomerangCount => 1;

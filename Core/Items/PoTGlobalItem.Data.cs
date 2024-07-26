@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Core.Items.Hooks;
-using PathOfTerraria.Core.Systems.Affixes;
+﻿using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Core.Items;
@@ -48,11 +47,6 @@ public sealed class PoTInstanceItemData : GlobalItem
 	internal int ImplicitCount { get; set; }
 
 	internal int RealLevel { get; set; }
-
-	public void SetItemLevel(Item item, int level)
-	{
-		IItemLevelControllerItem.SetLevel(item, level);
-	}
 }
 
 /// <summary>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using Terraria.Localization;
-using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
@@ -36,6 +35,6 @@ internal class BurningRedBoots : Leggings, IGenerateImplicitsItem, IGenerateName
 
 	public override void PostRoll(Item item)
 	{
-		Item.defense = IItemLevelControllerItem.GetLevel(item) / 12;
+		Item.defense = GetItemLevel.Invoke(item) / 12;
 	}
 }

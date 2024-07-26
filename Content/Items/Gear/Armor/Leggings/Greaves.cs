@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Core.Items.Hooks;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
@@ -15,6 +15,6 @@ internal class Greaves : Leggings
 
 	public override void PostRoll(Item item)
 	{
-		Item.defense = IItemLevelControllerItem.GetLevel(item) / 14 + 1;
+		Item.defense = GetItemLevel.Invoke(item) / 14 + 1;
 	}
 }

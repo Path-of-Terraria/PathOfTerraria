@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Content.Socketables;
 using PathOfTerraria.Core;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
