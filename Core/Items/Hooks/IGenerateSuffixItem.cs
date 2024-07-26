@@ -8,9 +8,14 @@ public interface IGenerateSuffixItem
 
 	public static string Invoke(Item item)
 	{
-		if (item.TryGetInterface(out IGenerateSuffixItem generateSuffixItem))
+		if (item.TryGetInterfaces(out IGenerateSuffixItem[] generateSuffixItem))
 		{
-			return generateSuffixItem.GenerateSuffix(item);
+			if (generateSuffixItem.Length != 1)
+			{
+				throw new Exception("Cannot have more than one IGenerateSuffixItem interface on a single item");
+			}
+
+			return generateSuffixItem[0].GenerateSuffix(item);
 		}
 
 		return "";

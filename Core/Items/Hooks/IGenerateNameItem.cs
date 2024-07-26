@@ -8,9 +8,15 @@ public interface IGenerateNameItem
 
 	public static string Invoke(Item item)
 	{
-		if (item.TryGetInterface(out IGenerateNameItem generateNameItem))
+		if (item.TryGetInterfaces(out IGenerateNameItem[] generateNameItem))
 		{
-			return generateNameItem.GenerateName(item);
+			// TODO
+			if (generateNameItem.Length != 1)
+			{
+				throw new Exception("Cannot have more than one IGenerateNameItem interface on a single item");
+			}
+
+			return generateNameItem[0].GenerateName(item);
 		}
 
 		return GetDefaultName(item);

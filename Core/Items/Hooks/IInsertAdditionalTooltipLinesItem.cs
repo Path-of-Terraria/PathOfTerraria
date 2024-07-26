@@ -10,9 +10,12 @@ public interface IInsertAdditionalTooltipLinesItem
 
 	public static void Invoke(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier)
 	{
-		if (item.TryGetInterface(out IInsertAdditionalTooltipLinesItem instance))
+		if (item.TryGetInterfaces(out IInsertAdditionalTooltipLinesItem[] instances))
 		{
-			instance.InsertAdditionalTooltipLines(item, tooltips, thisItemModifier);
+			foreach (IInsertAdditionalTooltipLinesItem instance in instances)
+			{
+				instance.InsertAdditionalTooltipLines(item, tooltips, thisItemModifier);
+			}
 		}
 	}
 }

@@ -8,9 +8,12 @@ public interface IExtraRollsItem
 
 	public static void Invoke(Item item)
 	{
-		if (item.TryGetInterface(out IExtraRollsItem instance))
+		if (item.TryGetInterfaces(out IExtraRollsItem[] instances))
 		{
-			instance.ExtraRolls(item);
+			foreach (IExtraRollsItem instance in instances)
+			{
+				instance.ExtraRolls(item);
+			}
 		}
 	}
 }

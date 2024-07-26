@@ -8,9 +8,12 @@ public interface IPostRollItem
 
 	public static void Invoke(Item item)
 	{
-		if (item.TryGetInterface(out IPostRollItem instance))
+		if (item.TryGetInterfaces(out IPostRollItem[] instances))
 		{
-			instance.PostRoll(item);
+			foreach (IPostRollItem instance in instances)
+			{
+				instance.PostRoll(item);
+			}
 		}
 	}
 }

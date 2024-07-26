@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Core.Items.Hooks;
@@ -9,9 +10,16 @@ public interface IGenerateAffixesItem
 
 	public static List<ItemAffix> Invoke(Item item)
 	{
-		if (item.ModItem is IGenerateAffixesItem generateAffixesItem)
+		if (item.TryGetInterfaces(out IGenerateAffixesItem[] instances))
 		{
-			return generateAffixesItem.GenerateAffixes(item);
+			List<ItemAffix> affixes = [];
+
+			foreach (IGenerateAffixesItem instance in instances)
+			{
+				affixes.AddRange(instance.GenerateAffixes(item));
+			}
+
+			return affixes;
 		}
 
 		return [];

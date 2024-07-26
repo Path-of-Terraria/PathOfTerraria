@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
 namespace PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
@@ -17,6 +18,17 @@ internal abstract class AbstractVanillaInterfaceHandler<T> : ILoadable
 
 			value = default;
 			return false;
+		}
+
+		protected override void AddGlobalInterfaces<TInterface>(Item instance, List<TInterface> interfaces)
+		{
+			foreach (GlobalItem global in instance.Globals)
+			{
+				if (global is TInterface @interface)
+				{
+					interfaces.Add(@interface);
+				}
+			}
 		}
 
 		protected override int GetType(Item instance)
@@ -50,28 +62,49 @@ internal abstract class AbstractVanillaInterfaceHandler<T> : ILoadable
 		AbstractVanillaInterfaceHandler<Item>.Instance = new ItemVanillaInterfaceHandler();
 	}
 
-	public bool TryGetInterface<TInterface>(T instance, [NotNullWhen(returnValue: true)] out TInterface value)
+	public bool TryGetInterfaces<TInterface>(T instance, [NotNullWhen(returnValue: true)] out TInterface[] value)
 	{
-		if (TryGetModInterface(instance, out value))
+		List<TInterface> interfaces = [];
+		if (GetBaseInterface<TInterface>(instance) is { } baseInterface)
 		{
-			return true;
+			interfaces.Add(baseInterface);
+		}
+
+		AddGlobalInterfaces(instance, interfaces);
+
+		if (interfaces.Count == 0)
+		{
+			value = null;
+			return false;
+		}
+
+		value = [.. interfaces];
+		return true;
+	}
+
+	private TInterface GetBaseInterface<TInterface>(T instance)
+	{
+		if (TryGetModInterface(instance, out TInterface value))
+		{
+			return value;
 		}
 
 		if (!_interfaceTypeMap.TryGetValue(GetType(instance), out Dictionary<Type, object> interfaceMap))
 		{
-			return false;
+			return default;
 		}
 
 		if (!interfaceMap.TryGetValue(typeof(TInterface), out object interfaceValue))
 		{
-			return false;
+			return default;
 		}
 
-		value = (TInterface)interfaceValue;
-		return true;
+		return (TInterface)interfaceValue;
 	}
 
 	protected abstract bool TryGetModInterface<TInterface>(T instance, [NotNullWhen(returnValue: true)] out TInterface value);
+
+	protected abstract void AddGlobalInterfaces<TInterface>(T instance, List<TInterface> interfaces);
 
 	protected abstract int GetType(T instance);
 

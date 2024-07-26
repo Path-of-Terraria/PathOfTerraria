@@ -8,9 +8,14 @@ public interface IGeneratePrefixItem
 
 	public static string Invoke(Item item)
 	{
-		if (item.TryGetInterface(out IGeneratePrefixItem generatePrefixItem))
+		if (item.TryGetInterfaces(out IGeneratePrefixItem[] generatePrefixItem))
 		{
-			return generatePrefixItem.GeneratePrefix(item);
+			if (generatePrefixItem.Length != 1)
+			{
+				throw new Exception("Cannot have more than one IGeneratePrefixItem interface on a single item");
+			}
+
+			return generatePrefixItem[0].GeneratePrefix(item);
 		}
 
 		return "";

@@ -10,9 +10,9 @@ namespace PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 public static class VanillaInterfaceHelper
 {
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
-	public static bool TryGetInterface<TType, TInterface>(this TType instance, [NotNullWhen(returnValue: true)] out TInterface value)
+	public static bool TryGetInterfaces<TType, TInterface>(this TType instance, [NotNullWhen(returnValue: true)] out TInterface[] value)
 	{
-		return AbstractVanillaInterfaceHandler<TType>.Instance.TryGetInterface(instance, out value);
+		return AbstractVanillaInterfaceHandler<TType>.Instance.TryGetInterfaces(instance, out value);
 	}
 
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]

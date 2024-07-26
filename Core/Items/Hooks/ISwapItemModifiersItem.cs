@@ -9,9 +9,12 @@ public interface ISwapItemModifiersItem
 
 	public static void Invoke(Item item, EntityModifier swapItemModifier)
 	{
-		if (item.TryGetInterface(out ISwapItemModifiersItem instance))
+		if (item.TryGetInterfaces(out ISwapItemModifiersItem[] instances))
 		{
-			instance.SwapItemModifiers(item, swapItemModifier);
+			foreach (ISwapItemModifiersItem instance in instances)
+			{
+				instance.SwapItemModifiers(item, swapItemModifier);
+			}
 		}
 	}
 }

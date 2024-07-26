@@ -65,9 +65,12 @@ public interface ICopyToClipboardItem
 
 	public static void Invoke(Item item)
 	{
-		if (item.TryGetInterface(out ICopyToClipboardItem instance))
+		if (item.TryGetInterfaces(out ICopyToClipboardItem[] instances))
 		{
-			instance.CopyToClipboard(item);
+			foreach (ICopyToClipboardItem instance in instances)
+			{
+				instance.CopyToClipboard(item);
+			}
 		}
 	}
 }
