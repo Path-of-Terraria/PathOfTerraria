@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Core.Items;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Miscellaneous;
@@ -9,7 +10,8 @@ internal class Xenopopper : VanillaClone
 
 	public override void SetDefaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Core.ItemType.Melee;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

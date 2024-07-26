@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
@@ -20,6 +21,8 @@ internal class WoodenSword : Sword
 		Item.Size = new(38);
 		Item.damage = 4;
 		Item.UseSound = SoundID.Item1;
-		ItemType = ItemType.Sword;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Sword;
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using PathOfTerraria.Core.Items;
+using System.Drawing;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -10,7 +11,8 @@ internal class BloodRainBow : VanillaClone
 
 	public override void SetDefaults()
 	{
-		ItemType = Core.ItemType.Ranged;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Core.ItemType.Ranged;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -38,7 +39,8 @@ internal class PsychoKnife : VanillaClone
 
 	public override void SetDefaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Core.ItemType.Melee;
 	}
 
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)

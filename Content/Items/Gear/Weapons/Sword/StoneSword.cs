@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
@@ -12,6 +13,8 @@ internal class StoneSword : Sword
 	{
 		Item.damage = 6;
 		Item.UseSound = SoundID.Item1;
-		ItemType = ItemType.Sword;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Sword;
 	}
 }

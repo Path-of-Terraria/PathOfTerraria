@@ -23,6 +23,8 @@ internal class CopperBroadsword : Sword
 		Item.width = 42;
 		Item.height = 42;
 		Item.UseSound = SoundID.Item1;
-		ItemType = ItemType.Sword;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Sword;
 	}
 }

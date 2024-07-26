@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems;
 using Terraria.ID;
 using Terraria.Localization;
@@ -25,7 +26,9 @@ internal abstract class Battleaxe : Gear
 		Item.knockBack = 8;
 		Item.crit = 12;
 		Item.UseSound = SoundID.Item1;
-		ItemType = ItemType.Sword;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Sword;
 	}
 
 	public override bool AltFunctionUse(Player player)

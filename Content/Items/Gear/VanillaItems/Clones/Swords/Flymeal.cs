@@ -8,7 +8,8 @@ internal class Flymeal : VanillaClone
 
 	public override void SetDefaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Core.ItemType.Melee;
 	}
 
 	public override bool? CanHitNPC(Player player, NPC target)

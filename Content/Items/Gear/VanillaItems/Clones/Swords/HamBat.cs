@@ -8,7 +8,8 @@ internal class HamBat : VanillaClone
 
 	public override void SetDefaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Core.ItemType.Melee;
 	}
 
 	public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)

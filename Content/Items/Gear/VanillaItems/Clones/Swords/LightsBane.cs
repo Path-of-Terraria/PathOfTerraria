@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using PathOfTerraria.Core.Items;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -10,7 +11,8 @@ internal class LightsBane : VanillaClone
 
 	public override void SetDefaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Core.ItemType.Melee;
 	}
 
 	public override void MeleeEffects(Player player, Rectangle hitbox)

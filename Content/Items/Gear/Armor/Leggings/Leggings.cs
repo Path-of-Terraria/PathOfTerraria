@@ -18,12 +18,14 @@ internal class Leggings : Gear, IGenerateImplicitsItem
 	{
 		base.SetStaticDefaults();
 
-		this.GetStaticData().DropChance = 1f;
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
 	}
 
 	public override void SetDefaults()
 	{
-		this.GetInstanceData().ItemType = ItemType.Leggings;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Leggings;
 	}
 
 	public override List<ItemAffix> GenerateImplicits(Item item)

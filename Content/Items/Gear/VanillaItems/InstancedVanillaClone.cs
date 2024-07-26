@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
@@ -17,16 +18,18 @@ internal class InstancedVanillaClone(short itemId, ItemType itemType, string nam
 
 	public override ModItem Clone(Item newEntity)
 	{
+		// TODO: bruh what
 		ModItem clone = base.Clone(newEntity);
 		var inst = (InstancedVanillaClone)clone;
 		inst.ItemId = ItemId;
-		inst.ItemType = ItemType;
+		inst.GetInstanceData().ItemType = this.GetInstanceData().ItemType;
 		inst.InstanceName = InstanceName;
 		return clone;
 	}
 
 	public override void SetDefaults()
 	{
-		ItemType = InstancedItemType;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = InstancedItemType;
 	}
 }

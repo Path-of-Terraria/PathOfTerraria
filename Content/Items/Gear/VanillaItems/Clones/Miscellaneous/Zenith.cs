@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
+using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.Graphics;
 using Terraria.ID;
@@ -11,7 +12,8 @@ internal class Zenith : VanillaClone
 
 	public override void SetDefaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Core.ItemType.Melee;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

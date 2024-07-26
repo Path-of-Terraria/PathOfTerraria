@@ -15,7 +15,8 @@ internal class CaveMap : Map
 	{
 		base.SetStaticDefaults();
 
-		this.GetStaticData().DropChance = 1f;
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
 	}
 
 	public override bool? UseItem(Player player)

@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
@@ -12,7 +13,8 @@ internal class Helmet : Gear
 
 	public override void SetDefaults()
 	{
-		ItemType = ItemType.Helmet;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Helmet;
 	}
 
 	public override void PostRoll(Item item)

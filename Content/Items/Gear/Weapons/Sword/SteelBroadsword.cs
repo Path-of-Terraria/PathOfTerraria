@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
@@ -14,6 +15,8 @@ internal class SteelBroadsword : Sword
 		Item.width = 46;
 		Item.height = 46;
 		Item.UseSound = SoundID.Item1;
-		ItemType = ItemType.Sword;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Sword;
 	}
 }

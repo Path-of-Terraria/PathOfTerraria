@@ -19,7 +19,8 @@ public abstract class VanillaClone : Gear
 		base.SetStaticDefaults();
 		GearAlternatives.Register(Type, VanillaItemId);
 
-		this.GetStaticData().DropChance = 0f;
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0f;
 	}
 
 	public override void SetDefaults()

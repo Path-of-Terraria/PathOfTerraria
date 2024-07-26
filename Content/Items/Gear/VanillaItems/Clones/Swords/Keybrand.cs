@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent.Drawing;
+﻿using PathOfTerraria.Core.Items;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
@@ -9,7 +10,8 @@ internal class Keybrand : VanillaClone
 
 	public override void SetDefaults()
 	{
-		ItemType = Core.ItemType.Melee;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Core.ItemType.Melee;
 	}
 
 	public override void ModifyHitNPC(Player player, NPC target, ref NPC.HitModifiers modifiers)

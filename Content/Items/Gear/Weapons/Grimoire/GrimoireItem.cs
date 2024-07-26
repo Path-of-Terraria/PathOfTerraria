@@ -40,7 +40,8 @@ internal class GrimoireItem : Gear
 		Item.channel = true;
 		Item.noMelee = true;
 
-		ItemType = ItemType.Magic;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Magic;
 	}
 
 	public override bool AltFunctionUse(Player player)

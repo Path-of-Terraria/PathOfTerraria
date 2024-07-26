@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Loaders.UILoading;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
@@ -28,7 +29,8 @@ internal abstract class GrimoirePickup : ModItem
 		Item.height = Size.Y;
 		Item.maxStack = 1;
 
-		ItemType = ItemType.Weapon;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Weapon;
 	}
 
 	public override bool ItemSpace(Player player)
@@ -79,7 +81,7 @@ internal abstract class GrimoirePickup : ModItem
 
 	public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{
-		if (Affixes.Count > 0)
+		if (this.GetInstanceData().Affixes.Count > 0)
 		{
 			spriteBatch.Draw(GrimoirePickupLoader.AffixIconTex.Value, position - origin * 0.9f, Color.White);
 		}
