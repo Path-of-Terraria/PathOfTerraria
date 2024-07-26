@@ -9,16 +9,30 @@ namespace PathOfTerraria.Core.Items;
 /// </summary>
 public sealed class ItemDatabase : ModSystem
 {
+	private sealed class VanillaItemHandler : GlobalItem
+	{
+		public override void SetDefaults(Item entity)
+		{
+			base.SetDefaults(entity);
+
+			if (_vanillaItems.TryGetValue(entity.type, out ItemType itemType))
+			{
+				entity.GetInstanceData().ItemType = itemType;
+			}
+		}
+	}
+
 	/// <summary>
 	///		An item record within the database.
 	/// </summary>
 	public readonly record struct ItemRecord(float DropChance, Rarity Rarity, int ItemId);
 
-	private static List<ItemRecord> items = [];
+	private static List<ItemRecord> _items = [];
+	private static Dictionary<int, ItemType> _vanillaItems = [];
 
 	private const float _magicFindPowerDecrease = 100f;
 
-	public static IReadOnlyCollection<ItemRecord> AllItems => items;
+	public static IReadOnlyCollection<ItemRecord> AllItems => _items;
 
 	public override void PostSetupContent()
 	{
@@ -62,12 +76,13 @@ public sealed class ItemDatabase : ModSystem
 	{
 		base.Unload();
 
-		items = null;
+		_items = null;
+		_vanillaItems = null;
 	}
 
 	public static void AddItem(float dropChance, Rarity rarity, int itemId)
 	{
-		items.Add(new ItemRecord(dropChance, rarity, itemId));
+		_items.Add(new ItemRecord(dropChance, rarity, itemId));
 	}
 
 	public static void AddItemWithVariableRarity(float dropChance, int itemId)
@@ -86,5 +101,10 @@ public sealed class ItemDatabase : ModSystem
 		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) /
 							  (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
 		return powerDecrease;
+	}
+
+	public static void RegisterVanillaItem(int itemId, ItemType itemType)
+	{
+		_vanillaItems[itemId] = itemType;
 	}
 }
