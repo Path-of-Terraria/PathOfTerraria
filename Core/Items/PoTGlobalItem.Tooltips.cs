@@ -97,11 +97,15 @@ partial class PoTGlobalItem
 		};
 		tooltips.Add(nameLine);
 
-		var rarityLine = new TooltipLine(Mod, "Rarity", GetDescriptor(data.ItemType, data.Rarity, data.Influence))
+		string rarityDesc = GetDescriptor(data.ItemType, data.Rarity, data.Influence);
+		if (!string.IsNullOrWhiteSpace(rarityDesc))
 		{
-			OverrideColor = Color.Lerp(GetRarityColor(data.Rarity), Color.White, 0.5f)
-		};
-		tooltips.Add(rarityLine);
+			var rarityLine = new TooltipLine(Mod, "Rarity", )
+			{
+				OverrideColor = Color.Lerp(GetRarityColor(data.Rarity), Color.White, 0.5f)
+			};
+			tooltips.Add(rarityLine);
+		}
 
 		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {(data.ItemType == ItemType.Map ? "Tier" : "Item level")}: [c/CCCCFF:{GetItemLevel.Invoke(item)}]")
 		{
