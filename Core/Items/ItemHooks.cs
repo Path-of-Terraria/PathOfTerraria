@@ -1,6 +1,4 @@
-﻿using log4net.Core;
-using PathOfTerraria.Core.Items.Hooks;
-using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using System.Collections.Generic;
 using Terraria.ModLoader.Core;
@@ -39,7 +37,6 @@ public sealed class ExtraRolls : ILoadable
 			gl.ExtraRolls(item);
 		}
 	}
-
 
 	void ILoadable.Load(Mod mod) { }
 
@@ -154,7 +151,7 @@ public sealed class GenerateAffixes : ILoadable
 
 	public interface IGlobal
 	{
-		bool ModifyAffixes(Item item, List<ItemAffix> affixes);
+		void ModifyAffixes(Item item, List<ItemAffix> affixes);
 	}
 
 	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).ModifyAffixes));
@@ -237,7 +234,7 @@ public sealed class GenerateName : ILoadable
 {
 	public interface IItem
 	{
-		string GenerateName();
+		string GenerateName(string defaultName);
 	}
 
 	public interface IGlobal
@@ -253,7 +250,7 @@ public sealed class GenerateName : ILoadable
 
 		if (item.ModItem is IItem i)
 		{
-			name = i.GenerateName();
+			name = i.GenerateName(name);
 		}
 
 		foreach (GlobalItem g in _hook.Enumerate(item))
@@ -293,7 +290,7 @@ public sealed class GeneratePrefix : ILoadable
 {
 	public interface IItem
 	{
-		string GeneratePrefix();
+		string GeneratePrefix(string defaultPrefix);
 	}
 
 	public interface IGlobal
@@ -309,7 +306,7 @@ public sealed class GeneratePrefix : ILoadable
 
 		if (item.ModItem is IItem i)
 		{
-			prefix = i.GeneratePrefix();
+			prefix = i.GeneratePrefix(prefix);
 		}
 
 		foreach (GlobalItem g in _hook.Enumerate(item))
@@ -342,7 +339,7 @@ public sealed class GenerateSuffix : ILoadable
 {
 	public interface IItem
 	{
-		string GenerateSuffix();
+		string GenerateSuffix(string defaultSuffix);
 	}
 
 	public interface IGlobal
@@ -358,7 +355,7 @@ public sealed class GenerateSuffix : ILoadable
 
 		if (item.ModItem is IItem i)
 		{
-			suffix = i.GenerateSuffix();
+			suffix = i.GenerateSuffix(suffix);
 		}
 
 		foreach (GlobalItem g in _hook.Enumerate(item))
@@ -436,10 +433,10 @@ public sealed class GetItemLevel : ILoadable
 
 	public interface IGlobal
 	{
-		void GetItemLevel(Item item, int realLevel, ref int level);
+		void ModifyGetItemLevel(Item item, int realLevel, ref int level);
 	}
 
-	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).HookName));
+	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).ModifyGetItemLevel));
 
 	public static int Invoke(Item item)
 	{
@@ -458,7 +455,7 @@ public sealed class GetItemLevel : ILoadable
 				continue;
 			}
 
-			gl.GetItemLevel(item, realLevel, ref level);
+			gl.ModifyGetItemLevel(item, realLevel, ref level);
 		}
 
 		return level;
@@ -481,14 +478,15 @@ public sealed class SetItemLevel : ILoadable
 
 	public interface IGlobal
 	{
-		void SetItemLevel(Item item, int level, ref int realLevel);
+		void ModifySetItemLevel(Item item, int level, int realLevelBeforeSet, ref int realLevel);
 	}
 
-	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).HookName));
+	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).ModifySetItemLevel));
 
 	public static void Invoke(Item item, int level)
 	{
 		int realLevel = item.GetInstanceData().RealLevel;
+		int realLevelBeforeSet = realLevel;
 
 		if (item.ModItem is IItem i)
 		{
@@ -502,7 +500,7 @@ public sealed class SetItemLevel : ILoadable
 				continue;
 			}
 
-			gl.SetItemLevel(item, level, ref realLevel);
+			gl.ModifySetItemLevel(item, level, realLevelBeforeSet, ref realLevel);
 		}
 
 		item.GetInstanceData().RealLevel = realLevel;
