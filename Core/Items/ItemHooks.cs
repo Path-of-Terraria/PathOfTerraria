@@ -464,6 +464,10 @@ public sealed class SetItemLevel : ILoadable
 		{
 			i.SetItemLevel(level, ref realLevel);
 		}
+		else
+		{
+			realLevel = level;
+		}
 
 		foreach (GlobalItem g in _hook.Enumerate(item))
 		{
