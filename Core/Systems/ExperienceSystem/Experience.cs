@@ -2,7 +2,7 @@
 using PathOfTerraria.Core.Systems.ModPlayers;
 using System.Collections.Generic;
 
-namespace PathOfTerraria.Core.Systems.Exp;
+namespace PathOfTerraria.Core.Systems.ExperienceSystem;
 
 public sealed class Experience
 {

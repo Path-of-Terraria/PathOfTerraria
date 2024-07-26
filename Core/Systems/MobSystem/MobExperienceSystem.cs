@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.Experience;
+﻿using PathOfTerraria.Core.Systems.ExperienceSystem;
 
 namespace PathOfTerraria.Core.Systems.MobSystem;
 
@@ -39,7 +39,7 @@ public class MobExperienceSystem : GlobalNPC
 				continue;
 			}
 
-			ExperienceTracker.SpawnExperience(amount, npc.Center, Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * 6f, player.whoAmI);
+			ExperienceModSystem.SpawnExperience(amount, npc.Center, Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * 6f, player.whoAmI);
 		}
 	}
 }
