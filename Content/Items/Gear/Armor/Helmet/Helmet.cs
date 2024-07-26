@@ -21,6 +21,8 @@ internal class Helmet : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+		
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Helmet;
 	}

@@ -24,6 +24,8 @@ internal class Leggings : Gear, IGenerateImplicitsItem
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Leggings;
 	}

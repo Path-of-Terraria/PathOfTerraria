@@ -23,6 +23,8 @@ internal class CorruptedBattleaxe : IronBattleaxe
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.width = 52;
 		Item.height = 52;
 	}

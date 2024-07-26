@@ -17,6 +17,8 @@ internal class WoodenBoomerang : Boomerang
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 5;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;

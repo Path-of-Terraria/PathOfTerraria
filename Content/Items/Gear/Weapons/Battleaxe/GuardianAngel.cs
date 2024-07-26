@@ -30,6 +30,8 @@ internal class GuardianAngel : SteelBattleaxe
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.width = 54;
 		Item.height = 54;
 	}

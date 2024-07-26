@@ -16,6 +16,8 @@ internal class IronBattleaxe : Battleaxe
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 16;
 		Item.Size = new Vector2(34);
 	}

@@ -23,6 +23,8 @@ internal class ChainWhip : Whip
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 13, 2, 4);
 		Item.channel = true;
 	}

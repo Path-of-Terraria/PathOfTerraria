@@ -33,6 +33,8 @@ internal class FireStarter : Sword, IGenerateNameItem
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 4;
 		Item.Size = new(38);
 		Item.UseSound = SoundID.Item1;

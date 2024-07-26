@@ -4,6 +4,8 @@ internal class Broadsword : Sword
 {
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.width = 52; 
 		Item.height = 52;
 		Item.damage = 35;

@@ -9,6 +9,8 @@ internal class HealingPotionPickup : ModItem
 {
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.width = 16;
 		Item.height = 16;
 	}

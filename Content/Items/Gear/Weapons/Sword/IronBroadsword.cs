@@ -20,6 +20,8 @@ internal class IronBroadsword : Sword
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 		Item.width = 46;
 		Item.height = 46;

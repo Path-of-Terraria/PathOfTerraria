@@ -15,6 +15,8 @@ internal class SilverBoomerang : Boomerang
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 15;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;

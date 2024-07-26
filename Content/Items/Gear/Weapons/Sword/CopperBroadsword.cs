@@ -19,6 +19,8 @@ internal class CopperBroadsword : Sword
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 8;
 		Item.width = 42;
 		Item.height = 42;

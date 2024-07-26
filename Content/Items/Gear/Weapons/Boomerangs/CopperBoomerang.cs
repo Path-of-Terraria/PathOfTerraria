@@ -15,6 +15,8 @@ internal class CopperBoomerang : Boomerang
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 12;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;

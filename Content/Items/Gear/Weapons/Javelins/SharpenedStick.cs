@@ -10,6 +10,8 @@ internal class SharpenedStick : Javelin
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 5;
 	}
 }

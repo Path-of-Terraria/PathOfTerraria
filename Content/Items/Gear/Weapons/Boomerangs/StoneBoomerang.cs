@@ -14,6 +14,8 @@ internal class StoneBoomerang : Boomerang
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 7;
 		Item.shootSpeed = 11;
 		Item.autoReuse = true;

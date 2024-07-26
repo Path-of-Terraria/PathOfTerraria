@@ -15,6 +15,8 @@ internal class IronBoomerang : Boomerang
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 9;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;

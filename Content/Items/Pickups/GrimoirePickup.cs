@@ -29,6 +29,8 @@ internal abstract class GrimoirePickup : ModItem
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.width = Size.X;
 		Item.height = Size.Y;
 		Item.maxStack = 1;

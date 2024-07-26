@@ -20,6 +20,8 @@ internal abstract class Map : ModItem, IItemLevelControllerItem, IGenerateNameIt
 	}
 
 	public override void SetDefaults() {
+		base.SetDefaults();
+
 		Item.width = 32;
 		Item.height = 32;
 		Item.useStyle = ItemUseStyleID.DrinkLiquid;

@@ -18,6 +18,8 @@ internal class IronPilum : Javelin
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 8;
 	}
 }

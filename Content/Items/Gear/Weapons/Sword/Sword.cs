@@ -25,6 +25,8 @@ internal class Sword : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 		Item.width = 40;
 		Item.height = 40;

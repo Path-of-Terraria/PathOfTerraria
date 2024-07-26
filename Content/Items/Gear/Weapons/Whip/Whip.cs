@@ -48,6 +48,8 @@ internal abstract class Whip : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 5, 2, 4);
 		Item.channel = true;
 	}

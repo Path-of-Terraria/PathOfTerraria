@@ -22,6 +22,8 @@ internal abstract class Battleaxe : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 		Item.width = 48;
 		Item.height = 48;

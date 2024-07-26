@@ -17,6 +17,8 @@ internal class WoodenBow : Bow
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 		Item.Size = new Vector2(24, 46);
 	}

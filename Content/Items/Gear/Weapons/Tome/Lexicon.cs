@@ -14,6 +14,8 @@ internal class Lexicon : Spellbook
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 35;
 	}
 }

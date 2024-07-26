@@ -22,6 +22,8 @@ internal class StoneSword : Sword
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 6;
 		Item.UseSound = SoundID.Item1;
 

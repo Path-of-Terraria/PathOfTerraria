@@ -25,6 +25,8 @@ internal class GrimoireItem : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 		Item.width = 30;
 		Item.height = 34;

@@ -18,6 +18,8 @@ internal class LeadDangpa : Javelin
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 	}
 }

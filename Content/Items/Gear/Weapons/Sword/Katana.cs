@@ -11,6 +11,8 @@ internal class Katana : Sword
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 20;
 		Item.useTime = 35; 
 		Item.useAnimation = 35;

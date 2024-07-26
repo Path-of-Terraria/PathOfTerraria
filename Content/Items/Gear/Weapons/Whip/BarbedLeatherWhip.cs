@@ -19,6 +19,8 @@ internal class BarbedLeatherWhip : Whip
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 7, 2, 4);
 		Item.channel = true;
 	}

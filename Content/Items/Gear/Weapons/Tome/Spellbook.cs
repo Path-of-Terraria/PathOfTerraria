@@ -22,6 +22,8 @@ internal class Spellbook : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 		Item.width = Item.height = 40;
 		Item.useTime = Item.useAnimation = 20;

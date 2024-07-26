@@ -52,6 +52,8 @@ internal class BloodOath : Sword, IGenerateNameItem
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 8;
 		Item.width = 58;
 		Item.height = 58;

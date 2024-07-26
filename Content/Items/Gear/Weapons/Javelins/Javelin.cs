@@ -38,6 +38,8 @@ internal abstract class Javelin : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.DefaultToThrownWeapon(Mod.Find<ModProjectile>(GetType().Name + "Thrown").Type, 50, 7, true);
 		Item.consumable = false;
 		Item.SetWeaponValues(3, 1);

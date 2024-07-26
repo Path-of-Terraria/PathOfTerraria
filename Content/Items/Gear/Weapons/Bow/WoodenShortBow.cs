@@ -17,6 +17,8 @@ internal class WoodenShortBow : Bow
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.useTime = 45;
 		Item.useAnimation = 45;
 		Item.width = 18;

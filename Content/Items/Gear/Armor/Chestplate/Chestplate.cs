@@ -21,6 +21,8 @@ internal class Chestplate : Gear, IPostRollItem
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Chestplate;
 	}

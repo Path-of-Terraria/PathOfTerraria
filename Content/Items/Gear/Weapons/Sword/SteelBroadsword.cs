@@ -17,6 +17,8 @@ internal class SteelBroadsword : Sword
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 12;
 		Item.width = 46;
 		Item.height = 46;

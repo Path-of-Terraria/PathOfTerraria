@@ -31,6 +31,8 @@ internal abstract class Boomerang : Gear, IItemLevelControllerItem
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.CloneDefaults(ItemID.WoodenBoomerang);
 		Item.width = 16;
 		Item.height = 28;

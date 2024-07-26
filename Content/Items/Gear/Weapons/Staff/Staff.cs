@@ -21,6 +21,8 @@ internal class Staff : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		// DefaultToStaff handles setting various Item values that magic staff weapons use.
 		// Hover over DefaultToStaff in Visual Studio to read the documentation!
 		Item.DefaultToStaff(ModContent.ProjectileType<SparklingBall>(), 16, 25, 12);

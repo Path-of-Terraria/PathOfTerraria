@@ -22,6 +22,8 @@ internal class Wand : Gear
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 14;
 		Item.width = Item.height = 40;
 		Item.useTime = Item.useAnimation = 16;

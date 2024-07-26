@@ -23,6 +23,8 @@ internal class WebWhip : Whip
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 9, 2, 4);
 		Item.channel = true;
 	}

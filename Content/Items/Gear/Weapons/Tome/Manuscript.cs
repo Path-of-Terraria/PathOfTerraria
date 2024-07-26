@@ -14,6 +14,8 @@ internal class Manuscript : Spellbook
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 20;
 	}
 }
