@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items.Hooks;
+using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.VanillaModifications;
 using Terraria.ID;
@@ -6,7 +8,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.WarShields;
 
-internal abstract class WarShield : Gear, IParryItem
+internal abstract class WarShield : Gear, IParryItem, IItemLevelControllerItem
 {
 	/// <summary>
 	/// Stores shield data, namely how long the dash is, how long the cooldown is, and the speed of the dash.
@@ -23,9 +25,11 @@ internal abstract class WarShield : Gear, IParryItem
 		public readonly int BashDust = bashDust;
 	}
 
-	public override float DropChance => 1f;
-	public override int ItemLevel => 1;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.WarShield.AltUse");
+	public int ItemLevel
+	{
+		get => 1;
+		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+	}
 	public virtual ShieldData Data => new(15, 100, 12, DustID.WoodFurniture);
 
 	protected virtual int BoomerangCount => 1;
@@ -39,11 +43,19 @@ internal abstract class WarShield : Gear, IParryItem
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.WarShield.AltUse");
+
 		AddValidShieldParryItems.AddParryItem(Type);
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.CloneDefaults(ItemID.AdamantiteSword);
 		Item.width = 16;
 		Item.height = 28;
