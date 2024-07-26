@@ -10,14 +10,13 @@ namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 [AutoloadEquip(EquipType.Legs)]
 internal class BurningRedBoots : Leggings, IGenerateImplicitsItem, IGenerateNameItem
 {
-	public override bool IsUnique => true;
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 0.01f;
+		staticData.IsUnique = true;
 	}
 
 	public override List<ItemAffix> GenerateAffixes(Item item)
@@ -37,6 +36,6 @@ internal class BurningRedBoots : Leggings, IGenerateImplicitsItem, IGenerateName
 
 	public override void PostRoll(Item item)
 	{
-		Item.defense = ItemLevel / 12;
+		Item.defense = IItemLevelControllerItem.GetLevel(item) / 12;
 	}
 }

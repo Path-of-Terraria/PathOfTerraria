@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Content.Projectiles.Melee;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
@@ -9,10 +10,16 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal class CorruptedBattleaxe : IronBattleaxe
 {
-	public override float DropChance => 1f;
-	public override bool IsUnique => true;
-	public override string AltUseDescription => "Throw the axe to deal damage to enemies";
-	public override string Description => "Something doesn't feel right about this axe...";
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.IsUnique = true;
+		staticData.AltUseDescription = "Throw the axe to deal damage to enemies";
+		staticData.Description = "Something doesn't feel right about this axe...";
+	}
 
 	public override void SetDefaults()
 	{

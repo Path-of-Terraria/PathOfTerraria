@@ -27,6 +27,6 @@ internal class Chestplate : Gear, IPostRollItem
 
 	public override void PostRoll(Item item)
 	{
-		Item.defense = ItemLevel / 6 + 1;
+		Item.defense = IItemLevelControllerItem.GetLevel(item) / 6 + 1;
 	}
 }

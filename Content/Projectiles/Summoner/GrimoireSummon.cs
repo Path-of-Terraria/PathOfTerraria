@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Items.Pickups;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.ModPlayers;
@@ -73,7 +74,7 @@ internal abstract class GrimoireSummon : ModProjectile
 			}	
 
 			var pickup = part.ModItem as GrimoirePickup;
-			pickup.ApplyAffixes(modifier);
+			PoTGlobalItem.ApplyAffixes(pickup.Item, modifier);
 		}
 
 		modifier.ApplyTo(Projectile);

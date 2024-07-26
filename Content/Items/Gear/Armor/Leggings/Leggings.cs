@@ -35,6 +35,6 @@ internal class Leggings : Gear, IGenerateImplicitsItem
 
 	public override void PostRoll(Item item)
 	{
-		Item.defense = ItemLevel / 12 + 1;
+		Item.defense = IItemLevelControllerItem.GetLevel(item) / 12 + 1;
 	}
 }

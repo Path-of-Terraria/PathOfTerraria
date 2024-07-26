@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -8,10 +9,13 @@ using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 
-internal abstract class Boomerang : Gear
+internal abstract class Boomerang : Gear, IItemLevelControllerItem
 {
-	public override int ItemLevel => 1;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Boomerang.AltUse");
+	public int ItemLevel
+	{
+		get => 1;
+		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+	}
 
 	protected virtual int BoomerangCount => 1;
 	protected override string GearLocalizationCategory => "Boomerang";
@@ -22,6 +26,7 @@ internal abstract class Boomerang : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Boomerang.AltUse");
 	}
 
 	public override void SetDefaults()

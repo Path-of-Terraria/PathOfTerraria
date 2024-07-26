@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core.Systems.ModPlayers;
+﻿using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.TreeSystem;
 using Terraria.ModLoader.IO;
 
@@ -12,7 +13,10 @@ internal class JewelSocket : Passive
 	
 	public override void BuffPlayer(Player player)
 	{
-		Socketed?.ApplyAffixes(player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
+		if (Socketed is not null)
+		{
+			PoTGlobalItem.ApplyAffixes(Socketed.Item, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
+		}
 	}
 
 	public void SaveJewel(TagCompound tag)

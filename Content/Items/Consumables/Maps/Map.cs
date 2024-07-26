@@ -1,21 +1,22 @@
 ﻿using PathOfTerraria.Core;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal abstract class Map : ModItem
+internal abstract class Map : ModItem, IItemLevelControllerItem, IGenerateNameItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
 
-	public override int ItemLevel
+	public int ItemLevel
 	{
 		get => _tier;
 		set
-		{ InternalItemLevel = value; _tier = 1 + (int)Math.Floor(InternalItemLevel / 20f); }
+		{ this.GetInstanceData().RealLevel = value; _tier = 1 + (int)Math.Floor(this.GetInstanceData().RealLevel / 20f); }
 	}
 
 	public override void SetDefaults() {
@@ -42,7 +43,7 @@ internal abstract class Map : ModItem
     /// </summary>
     public virtual string GetNameAndTier()
 	{
-		return GenerateName() + ": " + _tier;
+		return GenerateName(Item) + ": " + _tier;
 	}
 	
     public override bool? UseItem(Player player)
@@ -108,4 +109,6 @@ internal abstract class Map : ModItem
 
 		base.LoadData(tag);
 	}
+
+	public abstract string GenerateName(Item item);
 }

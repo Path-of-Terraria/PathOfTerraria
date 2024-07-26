@@ -89,6 +89,7 @@ partial class PoTGlobalItem
 		tooltips.Clear();
 
 		PoTInstanceItemData data = item.GetInstanceData();
+		PoTStaticItemData staticData = item.GetStaticData();
 
 		var nameLine = new TooltipLine(Mod, "Name", data.SpecialName)
 		{
@@ -108,9 +109,9 @@ partial class PoTGlobalItem
 		};
 		tooltips.Add(itemLevelLine);
 
-		if (!string.IsNullOrWhiteSpace(data.AltUseDescription))
+		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription))
 		{
-			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", data.AltUseDescription));
+			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription));
 		}
 
 		if (item.damage > 0)
@@ -147,9 +148,9 @@ partial class PoTGlobalItem
 			tooltips.Add(affixLine);
 		}
 
-		if (!string.IsNullOrWhiteSpace(data.Description))
+		if (!string.IsNullOrWhiteSpace(staticData.Description))
 		{
-			tooltips.Add(new TooltipLine(Mod, "Description", data.Description));
+			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description));
 		}
 
 		// Change in stats if equipped.

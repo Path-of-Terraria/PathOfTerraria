@@ -38,16 +38,6 @@ public sealed class PoTInstanceItemData : GlobalItem
 	public string SpecialName { get; set; } = string.Empty;
 
 	/// <summary>
-	///		The item's description.
-	/// </summary>
-	public string Description { get; set; } = string.Empty;
-
-	/// <summary>
-	///		The item's description for alternate use (right-clicking).
-	/// </summary>
-	public string AltUseDescription { get; set; } = string.Empty;
-
-	/// <summary>
 	///		The affixes of the item.
 	/// </summary>
 	public List<ItemAffix> Affixes { get; } = [];
@@ -85,6 +75,16 @@ public sealed class PoTStaticItemData
 	///		The minimum level this item needs to be to drop.
 	/// </summary>
 	public int MinDropItemLevel { get; set; }
+
+	/// <summary>
+	///		The item's description.
+	/// </summary>
+	public string Description { get; set; } = string.Empty;
+
+	/// <summary>
+	///		The item's description for alternate use (right-clicking).
+	/// </summary>
+	public string AltUseDescription { get; set; } = string.Empty;
 }
 
 partial class PoTGlobalItem

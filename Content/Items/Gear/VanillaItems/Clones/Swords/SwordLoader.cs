@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria;
 using Terraria.ID;
 
@@ -10,7 +11,8 @@ internal class SwordLoader : ModSystem
 	{
 		void AddShortsword(short itemId, string material, bool onlyMat = false)
 		{
-			PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(itemId, ItemType.Sword, onlyMat ? material : material + "Shortsword"));
+			// PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(itemId, ItemType.Sword, onlyMat ? material : material + "Shortsword"));
+			ItemDatabase.AddItem();
 		}
 
 		// Shortswords

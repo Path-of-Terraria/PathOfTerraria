@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Gear.VanillaItems;
 using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.DataStructures;
@@ -68,18 +69,16 @@ internal class GearAlternativeChestReplacement : ModSystem
 					item.SetDefaults(value);
 					item.stack = 1;
 
-					if (item.ModItem is PoTItem pot)
+					PoTInstanceItemData data = item.GetInstanceData();
+					data.Rarity = Rarity.Magic;
+
+					if (WorldGen.genRand.NextBool(10))
 					{
-						pot.Rarity = Rarity.Magic;
-
-						if (WorldGen.genRand.NextBool(10))
-						{
-							pot.Rarity = Rarity.Rare;
-						}
-
-						pot.ClearAffixes();
-						pot.Roll(PoTItem.PickItemLevel());
+						data.Rarity = Rarity.Rare;
 					}
+
+					PoTGlobalItem.ClearAffixes(item);
+					PoTGlobalItem.Roll(item, PoTGlobalItem.PickItemLevel());
 				}
 			}
 		}

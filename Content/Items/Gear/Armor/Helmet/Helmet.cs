@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Core;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items.Hooks;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
@@ -26,6 +27,6 @@ internal class Helmet : Gear
 
 	public override void PostRoll(Item item)
 	{
-		Item.defense = ItemLevel / 10 + 1;
+		Item.defense = IItemLevelControllerItem.GetLevel(item) / 10 + 1;
 	}
 }

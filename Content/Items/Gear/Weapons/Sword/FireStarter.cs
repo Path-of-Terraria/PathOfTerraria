@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Content.Projectiles.Melee;
+using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
@@ -10,13 +12,24 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class FireStarter : Sword
+internal class FireStarter : Sword, IGenerateNameItem
 {
-	public override float DropChance => 5f;
-	public override int ItemLevel => 1;
-	public override bool IsUnique => true;
-	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.Description");
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.AltUseDescription");
+	public int ItemLevel
+	{
+		get => 1;
+		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+	}
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 5f;
+		staticData.IsUnique = true;
+		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.Description");
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.AltUseDescription");
+	}
 
 	public override void SetDefaults()
 	{
@@ -25,7 +38,7 @@ internal class FireStarter : Sword
 		Item.UseSound = SoundID.Item1;
 	}
 	
-	public override string GenerateName()
+	public string GenerateName(Item item)
 	{
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName")}]";
 	}

@@ -1,14 +1,16 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Core.Items;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 
 internal class WoodenBow : Bow
 {
-	public override float DropChance => 1f;
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
 
 		GearAlternatives.Register(Type, ItemID.WoodenBow);
 	}

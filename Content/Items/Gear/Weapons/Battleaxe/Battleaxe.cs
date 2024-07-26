@@ -9,7 +9,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal abstract class Battleaxe : Gear
 {
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Battleaxe.AltUse");
 	protected override string GearLocalizationCategory => "Battleaxe";
 
 	public override void SetStaticDefaults()
@@ -18,6 +17,7 @@ internal abstract class Battleaxe : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Battleaxe.AltUse");
 	}
 
 	public override void SetDefaults()

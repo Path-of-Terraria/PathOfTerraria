@@ -19,8 +19,11 @@ internal abstract class Bow : Gear
 	/// </summary>
 	public static Dictionary<int, Asset<Texture2D>> BowProjectileSpritesById = [];
 
-	public override int ItemLevel => 1;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Bow.AltUse");
+	public int ItemLevel
+	{
+		get => 1;
+		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+	}
 
 	protected override string GearLocalizationCategory => "Bow";
 	protected virtual int AnimationSpeed => 6;
@@ -34,6 +37,7 @@ internal abstract class Bow : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Bow.AltUse");
 
 		if (ModContent.HasAsset(Texture + "Animated"))
 		{

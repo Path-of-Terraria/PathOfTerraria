@@ -26,7 +26,6 @@ internal abstract class Whip : Gear
 	public abstract WhipDrawData DrawData { get; }
 	public abstract WhipSettings WhipSettings { get; }
 	protected override string GearLocalizationCategory => "Whip";
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Whip.AltUse");
 
 	/// <summary>
 	/// Stores a Whip's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.
@@ -39,6 +38,7 @@ internal abstract class Whip : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Whip.AltUse");
 
 		if (ModContent.HasAsset(Texture + "_Projectile"))
 		{

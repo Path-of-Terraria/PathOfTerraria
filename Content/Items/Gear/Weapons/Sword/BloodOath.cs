@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using PathOfTerraria.Content.Projectiles.Melee;
+using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items.Hooks;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
@@ -13,13 +15,14 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class BloodOath : Sword
+internal class BloodOath : Sword, IGenerateNameItem
 {
-	public override float DropChance => 5f;
-	public override int ItemLevel => 1;
-	public override bool IsUnique => true;
-	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.Description");
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.AltUseDescription");
+	public int ItemLevel
+	{
+		get => 1;
+		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+	}
+
 	protected override bool CloneNewInstances => true;
 
 	private readonly HashSet<int> _hitNpcs = [];
@@ -36,6 +39,17 @@ internal class BloodOath : Sword
 		return clone;
 	}
 
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 5f;
+		staticData.IsUnique = true;
+		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.Description");
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.AltUseDescription");
+	}
+
 	public override void SetDefaults()
 	{
 		Item.damage = 8;
@@ -45,7 +59,7 @@ internal class BloodOath : Sword
 		Item.shoot = ProjectileID.None;
 	}
 	
-	public override string GenerateName()
+	public string GenerateName(Item item)
 	{
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
 	}

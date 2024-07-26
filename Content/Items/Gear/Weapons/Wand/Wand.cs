@@ -32,7 +32,8 @@ internal class Wand : Gear
 		Item.UseSound = SoundID.Item20;
 		Item.shootSpeed = 20f;
 
-		ItemType = ItemType.Wand;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Wand;
 
 		Item.shoot = ModContent.ProjectileType<HomingProjectile>();
 		Item.SetShopValues(ItemRarityColor.Green2, 10000);

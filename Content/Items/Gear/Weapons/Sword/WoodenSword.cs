@@ -6,12 +6,18 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class WoodenSword : Sword
 {
-	public override float DropChance => 1f;
-	public override int ItemLevel => 1;
+	public int ItemLevel
+	{
+		get => 1;
+		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+	}
 
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
 
 		GearAlternatives.Register(Type, ItemID.WoodenSword);
 	}

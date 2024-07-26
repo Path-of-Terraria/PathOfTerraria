@@ -11,8 +11,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 
 internal class GrimoireItem : Gear
 {
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.AltUseDescription");
-	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.Description");
 	protected override string GearLocalizationCategory => "Grimoire";
 
 	public override void SetStaticDefaults()
@@ -21,6 +19,8 @@ internal class GrimoireItem : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 0f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.AltUseDescription");
+		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.Description");
 	}
 
 	public override void SetDefaults()

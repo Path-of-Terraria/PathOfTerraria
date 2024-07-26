@@ -16,10 +16,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal class GuardianAngel : SteelBattleaxe
 {
-	public override bool IsUnique => true;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.AltUseDescription");
-	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.Description");
-	
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -27,6 +23,9 @@ internal class GuardianAngel : SteelBattleaxe
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
 		staticData.MinDropItemLevel = 25;
+		staticData.IsUnique = true;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.AltUseDescription");
+		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.Description");
 	}
 
 	public override void SetDefaults()

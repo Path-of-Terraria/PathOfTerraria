@@ -10,8 +10,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
 internal abstract class Javelin : Gear
 {
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Javelin.AltUse");
-
 	/// <summary>
 	/// Used to define the size of the item and associated projectile in load time.
 	/// </summary>
@@ -35,6 +33,7 @@ internal abstract class Javelin : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Javelin.AltUse");
 	}
 
 	public override void SetDefaults()

@@ -1,9 +1,17 @@
 ﻿
+using PathOfTerraria.Core.Items;
+
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal class RustedBattleaxe : Battleaxe
 {
-	public override float DropChance => 1f;
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
 
 	public override void SetDefaults()
 	{

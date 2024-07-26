@@ -10,7 +10,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 internal class Sword : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Base";
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Sword.AltUse");
 
 	protected override string GearLocalizationCategory => "Sword";
 
@@ -20,6 +19,8 @@ internal class Sword : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Sword.AltUse");
+
 	}
 
 	public override void SetDefaults()
@@ -37,7 +38,9 @@ internal class Sword : Gear
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.PurificationPowder;
 		Item.shootSpeed = 10f;
-		ItemType = ItemType.Sword;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Sword;
 	}
 
 	public override bool AltFunctionUse(Player player)
