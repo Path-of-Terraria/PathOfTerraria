@@ -10,7 +10,11 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
-		PoTGlobalItem.ApplyAffixes(Player.inventory[0], UniversalModifier);
+		if (!Player.inventory[0].IsAir)
+		{
+			PoTGlobalItem.ApplyAffixes(Player.inventory[0], UniversalModifier);
+
+		}
 
 		UniversalModifier.ApplyTo(Player);
 
