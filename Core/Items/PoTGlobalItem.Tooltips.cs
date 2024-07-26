@@ -120,7 +120,7 @@ partial class PoTGlobalItem
 			string highlightNumbers = HighlightNumbers(
 				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] Damage ({item.DamageType.DisplayName})",
 				baseColor: "DDDDDD");
-			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] ");
+			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
 			tooltips.Add(damageLine);
 		}
 
