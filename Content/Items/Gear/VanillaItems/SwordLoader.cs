@@ -3,7 +3,7 @@ using PathOfTerraria.Core.Items;
 using Terraria;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Swords;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones;
 
 internal class SwordLoader : ModSystem
 {

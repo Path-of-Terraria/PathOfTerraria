@@ -2,7 +2,7 @@
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Bows;
+namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones;
 
 internal class BowLoader : ModSystem
 {
