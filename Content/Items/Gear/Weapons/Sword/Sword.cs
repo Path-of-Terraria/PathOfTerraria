@@ -7,7 +7,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class Sword : Gear
+internal abstract class Sword : Gear
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/Base";
 
