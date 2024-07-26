@@ -29,6 +29,7 @@ public sealed class ItemDatabase : ModSystem
 
 	private static List<ItemRecord> _items = [];
 	private static Dictionary<int, ItemType> _vanillaItems = [];
+	private static HashSet<int> _uniqueVanillaItems = [];
 
 	private const float _magicFindPowerDecrease = 100f;
 
@@ -42,6 +43,17 @@ public sealed class ItemDatabase : ModSystem
 		{
 			Item item = ContentSamples.ItemsByType[i];
 			PoTStaticItemData staticData = item.GetStaticData();
+
+			if (_vanillaItems.ContainsKey(i))
+			{
+				staticData.DropChance = 0f;
+
+				if (_uniqueVanillaItems.Contains(i))
+				{
+					staticData.IsUnique = true;
+
+				}
+			}
 
 			// If the drop chance is null (the default value), then this item does not
 			// specify a drop chance AT ALL (DIFFERENT from 0%), and should not be
@@ -78,6 +90,7 @@ public sealed class ItemDatabase : ModSystem
 
 		_items = null;
 		_vanillaItems = null;
+		_uniqueVanillaItems = null;
 	}
 
 	public static void AddItem(float dropChance, Rarity rarity, int itemId)
@@ -106,5 +119,11 @@ public sealed class ItemDatabase : ModSystem
 	public static void RegisterVanillaItem(int itemId, ItemType itemType)
 	{
 		_vanillaItems[itemId] = itemType;
+	}
+
+	public static void RegisterUniqueVanillaItem(int itemId, ItemType itemType)
+	{
+		RegisterVanillaItem(itemId, itemType);
+		_uniqueVanillaItems.Add(itemId);
 	}
 }
