@@ -12,7 +12,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 	{
 		if (!Player.inventory[0].IsAir)
 		{
-			PoTGlobalItem.ApplyAffixes(Player.inventory[0], UniversalModifier);
+			PoTItemHelper.ApplyAffixes(Player.inventory[0], UniversalModifier);
 
 		}
 

@@ -15,7 +15,7 @@ internal class JewelSocket : Passive
 	{
 		if (Socketed is not null)
 		{
-			PoTGlobalItem.ApplyAffixes(Socketed.Item, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
+			PoTItemHelper.ApplyAffixes(Socketed.Item, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
 		}
 	}
 

@@ -32,7 +32,7 @@ public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRollsItem, IGe
 
 		data.Rarity = Rarity.Magic; //All crafted items are magic rarity
 		data.Affixes.Clear();
-		PoTGlobalItem.Roll(Item, PoTItemHelper.PickItemLevel());
+		PoTItemHelper.Roll(Item, PoTItemHelper.PickItemLevel());
 	}
 
 	public virtual void InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier)
@@ -83,22 +83,22 @@ public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRollsItem, IGe
 	{
 		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active && Main.LocalPlayer.armor[0].ModItem is Gear headGear)
 		{
-			PoTGlobalItem.ApplyAffixes(headGear.Item, swapItemModifier);
+			PoTItemHelper.ApplyAffixes(headGear.Item, swapItemModifier);
 		}
 		else if (Item.bodySlot >= 0 && Main.LocalPlayer.armor[1].active && Main.LocalPlayer.armor[0].ModItem is Gear bodyGear)
 		{
-			PoTGlobalItem.ApplyAffixes(bodyGear.Item, swapItemModifier);
+			PoTItemHelper.ApplyAffixes(bodyGear.Item, swapItemModifier);
 		}
 		else if (Item.legSlot >= 0 && Main.LocalPlayer.armor[2].active && Main.LocalPlayer.armor[0].ModItem is Gear legsGear)
 		{
-			PoTGlobalItem.ApplyAffixes(legsGear.Item, swapItemModifier);
+			PoTItemHelper.ApplyAffixes(legsGear.Item, swapItemModifier);
 		}
 		// missing accessories
 		else if (Item.damage > 0)
 		{
 			if (Main.LocalPlayer.inventory[0].ModItem is Gear gear)
 			{
-				PoTGlobalItem.ApplyAffixes(gear.Item, swapItemModifier);
+				PoTItemHelper.ApplyAffixes(gear.Item, swapItemModifier);
 			}
 		}
 	}

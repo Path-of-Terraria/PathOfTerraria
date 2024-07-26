@@ -77,8 +77,8 @@ internal class GearAlternativeChestReplacement : ModSystem
 						data.Rarity = Rarity.Rare;
 					}
 
-					PoTGlobalItem.ClearAffixes(item);
-					PoTGlobalItem.Roll(item, PoTItemHelper.PickItemLevel());
+					PoTItemHelper.ClearAffixes(item);
+					PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 				}
 			}
 		}

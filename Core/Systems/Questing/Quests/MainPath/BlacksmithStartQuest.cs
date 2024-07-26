@@ -39,7 +39,7 @@ internal class BlacksmithStartQuest : Quest
 				{
 					Item item = Main.item[sword];
 					item.GetInstanceData().Rarity = Rarity.Magic;
-					PoTGlobalItem.Roll(item, Main.rand.Next(6, 11));
+					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
 				}
 				
 				int axe = ItemSpawner.SpawnItemFromCategory<Battleaxe>(v);
@@ -48,7 +48,7 @@ internal class BlacksmithStartQuest : Quest
 				{
 					Item item = Main.item[axe];
 					item.GetInstanceData().Rarity = Rarity.Magic;
-					PoTGlobalItem.Roll(item, Main.rand.Next(6, 11));
+					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
 				}
 			},
 			"500 experience (POC giving experience)\nSome gear with an affix\nA unique item\nAgain, just for POC reasons"),

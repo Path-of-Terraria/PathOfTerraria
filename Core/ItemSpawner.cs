@@ -97,7 +97,7 @@ internal class ItemSpawner
 		}
 
 		data.Rarity = rarity;
-		PoTGlobalItem.Roll(item, itemLevel == 0 ? PoTGlobalItem.PickItemLevel() : itemLevel);
+		PoTItemHelper.Roll(item, itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel);
 
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
