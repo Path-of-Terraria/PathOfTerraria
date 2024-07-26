@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 using PathOfTerraria.Core.Systems;
 using System.Collections.Generic;
 using Terraria.Graphics.Effects;
