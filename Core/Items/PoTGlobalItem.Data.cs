@@ -73,7 +73,7 @@ public sealed class PoTStaticItemData
 	/// <summary>
 	///		The drop chance of this item.
 	/// </summary>
-	public float DropChance { get; set; }
+	public float? DropChance { get; set; }
 
 	/// <summary>
 	///		Whether this item is <see cref="Rarity.Unique"/>.

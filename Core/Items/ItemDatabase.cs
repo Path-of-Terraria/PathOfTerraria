@@ -29,20 +29,31 @@ public sealed class ItemDatabase : ModSystem
 			Item item = ContentSamples.ItemsByType[i];
 			PoTStaticItemData staticData = item.GetStaticData();
 
+			// If the drop chance is null (the default value), then this item does not
+			// specify a drop chance AT ALL (DIFFERENT from 0%), and should not be
+			// registered.  This is most prominent in things like vanilla items we
+			// haven't intended to every drop.
+			if (!staticData.DropChance.HasValue)
+			{
+				continue;
+			}
+
+			float dropChance = staticData.DropChance.Value;
+
 			if (staticData.IsUnique)
 			{
-				AddItem(staticData.DropChance, Rarity.Unique, i);
+				AddItem(dropChance, Rarity.Unique, i);
 			}
 			else
 			{
 				// TODO: Hardcoded :(
 				if (item.ModItem is not Jewel)
 				{
-					AddItem(staticData.DropChance * 0.7f, Rarity.Normal, i);
+					AddItem(dropChance * 0.7f, Rarity.Normal, i);
 				}
 
-				AddItem(staticData.DropChance * 0.25f, Rarity.Magic, i);
-				AddItem(staticData.DropChance * 0.05f, Rarity.Rare, i);
+				AddItem(dropChance * 0.25f, Rarity.Magic, i);
+				AddItem(dropChance * 0.05f, Rarity.Rare, i);
 			}
 		}
 	}
