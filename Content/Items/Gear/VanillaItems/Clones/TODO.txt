@@ -20,3 +20,21 @@ Tsunami Tsunami Ranged
 # Flails
 GolemFist GolemFist Melee
 KOCannon KOCannon Melee
+
+# Guns
+Boomstick Boomstick Ranged
+ChainGun ChainGun Ranged
+Gatligator Gatligator Ranged
+Megashark Megashark Ranged
+Minishark Minishark Ranged
+OnyxBlaster OnyxBlaster Ranged
+PewMaticHorn PewMaticHorn Ranged
+QuadBarrelShotgun QuadBarrelShotgun Ranged
+SDMG SDMG Ranged
+Shotgun Shotgun Ranged
+SniperRifle SniperRifle Ranged
+TacticalShotgun TacticalShotgun Ranged
+Uzi Uzi Ranged
+VenusMagnum VenusMagnum Ranged
+VortexBeater VortexBeater Ranged
+Xenopopper Xenopopper Ranged
