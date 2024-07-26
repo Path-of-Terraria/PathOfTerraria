@@ -62,6 +62,7 @@ internal abstract class Javelin : Gear
 		{
 			altUsePlayer.SetAltCooldown(4 * 60, 15);
 			player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
+			player.GetModPlayer<JavelinDashPlayer>().JavelinAltUsed = true;
 		}
 
 		return true;
@@ -81,9 +82,15 @@ internal abstract class Javelin : Gear
 	public class JavelinDashPlayer : ModPlayer
 	{
 		public Vector2 StoredVelocity = Vector2.Zero;
+		public bool JavelinAltUsed = false;
 
 		public override void PostUpdateRunSpeeds()
 		{
+			if (!JavelinAltUsed)
+			{
+				return;
+			}
+
 			AltUsePlayer altUsePlayer = Player.GetModPlayer<AltUsePlayer>();
 
 			if (!altUsePlayer.AltFunctionActive)
@@ -96,10 +103,16 @@ internal abstract class Javelin : Gear
 
 		public override void PreUpdateMovement()
 		{
+			if (!JavelinAltUsed)
+			{
+				return;
+			}
+
 			AltUsePlayer altUsePlayer = Player.GetModPlayer<AltUsePlayer>();
 
 			if (!altUsePlayer.AltFunctionActive)
 			{
+				JavelinAltUsed = false;
 				return;
 			}
 
@@ -116,6 +129,7 @@ internal abstract class Javelin : Gear
 
 					altUsePlayer.SetAltCooldown(altUsePlayer.AltFunctionCooldown, 0);
 					Player.velocity = -StoredVelocity;
+					JavelinAltUsed = true;
 				}
 			}
 		}
