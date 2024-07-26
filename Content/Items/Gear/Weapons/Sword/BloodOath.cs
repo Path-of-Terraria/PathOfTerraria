@@ -14,7 +14,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class BloodOath : Sword, IGenerateNameItem
+internal class BloodOath : Sword, GenerateName.IItem
 {
 	public int ItemLevel
 	{
@@ -60,7 +60,7 @@ internal class BloodOath : Sword, IGenerateNameItem
 		Item.shoot = ProjectileID.None;
 	}
 	
-	public string GenerateName(Item item)
+	string GenerateName.IItem.GenerateName(string defaultName)
 	{
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
 	}

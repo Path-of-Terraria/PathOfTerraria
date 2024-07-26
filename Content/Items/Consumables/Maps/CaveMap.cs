@@ -25,7 +25,7 @@ internal class CaveMap : Map
 		return true;
 	}
 
-	public override string GenerateName(Item item)
+	public override string GenerateName(string defaultName)
 	{
 		return "Test Cave";
 	}

@@ -47,7 +47,7 @@ public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRolls, IGenera
 			string text = "";
 			if (_sockets[i] is not null)
 			{
-				text = _sockets[i].GenerateName();
+				text = GenerateName.Invoke(_sockets[i].Item);
 			}
 
 			var affixLine = new TooltipLine(Mod, $"Socket{i}",

@@ -11,7 +11,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class FireStarter : Sword, IGenerateNameItem
+internal class FireStarter : Sword, GenerateName.IItem
 {
 	public int ItemLevel
 	{
@@ -39,7 +39,7 @@ internal class FireStarter : Sword, IGenerateNameItem
 		Item.UseSound = SoundID.Item1;
 	}
 	
-	public string GenerateName(Item item)
+	string GenerateName.IItem.GenerateName(string defaultName)
 	{
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName")}]";
 	}

@@ -6,7 +6,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, IGenerateNameItem
+internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
 {
 	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
@@ -43,15 +43,15 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, I
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }
 
-    /// <summary>
-    /// Gets name and what tier the map is of as a singular string.
-    /// </summary>
-    public virtual string GetNameAndTier()
+	/// <summary>
+	/// Gets name and what tier the map is of as a singular string.
+	/// </summary>
+	public virtual string GetNameAndTier()
 	{
-		return GenerateName(Item) + ": " + _tier;
+		return Core.Items.GenerateName.Invoke(Item) + ": " + _tier;
 	}
 	
-    public override bool? UseItem(Player player)
+	public override bool? UseItem(Player player)
 	{
 		MappingSystem.EnterMap(this);
 		return true;
@@ -115,5 +115,5 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, I
 		base.LoadData(tag);
 	}
 
-	public abstract string GenerateName(Item item);
+	public abstract string GenerateName(string defaultName);
 }

@@ -12,8 +12,8 @@ internal class LowTierMap : Map
 		staticData.DropChance = 1f;
 	}
 
-	public override string GenerateName(Item item)
+	public override string GenerateName(string defaultName)
 	{
-		return IGenerateNameItem.GetDefaultName(item);
+		return defaultName;
 	}
 }
