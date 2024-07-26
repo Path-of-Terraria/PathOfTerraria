@@ -3,7 +3,6 @@ using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Data.Models;
 using PathOfTerraria.Data;
 using System.Collections.Generic;
-using Stubble.Core.Classes;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -26,11 +25,11 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 		IItemLevelControllerItem.SetLevel(item, itemLevel);
 
 		// Only level 50+ gear can get influence.
-		if (IItemLevelControllerItem.GetLevel(item) > 50 && !staticData.IsUnique && (data.ItemType & ItemType.AllGear) == ItemType.AllGear)
+		if (data.RealLevel > 50 && !staticData.IsUnique && (data.ItemType & ItemType.AllGear) == ItemType.AllGear)
 		{
 			// Quality does not affect influence right now.
 			// Might not need to, seems to generaet plenty often late game.
-			int inf = Main.rand.Next(400) - IItemLevelControllerItem.GetLevel(item);
+			int inf = Main.rand.Next(400) - data.RealLevel;
 
 			if (inf < 30)
 			{
