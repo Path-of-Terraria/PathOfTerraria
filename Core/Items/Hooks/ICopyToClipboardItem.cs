@@ -61,4 +61,5 @@ public interface ICopyToClipboardItem
 			item.ModItem.LoadData(StringTagRelation.FromString(ClipboardService.GetText(), tag));
 		}
 	}
+#endif
 }
