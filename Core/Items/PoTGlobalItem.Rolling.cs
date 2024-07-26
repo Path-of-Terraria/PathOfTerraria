@@ -1,4 +1,8 @@
 ﻿using PathOfTerraria.Core.Items.Hooks;
+using PathOfTerraria.Core.Systems.Affixes;
+using PathOfTerraria.Data.Models;
+using PathOfTerraria.Data;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -33,7 +37,7 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 			}
 		}
 
-		RollAffixes();
+		RollAffixes(item);
 		IPostRollItem.Invoke(item);
 		data.SpecialName = IGenerateNameItem.Invoke(item);
 	}
@@ -44,6 +48,46 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 		item.GetInstanceData().Affixes.Clear();
 		item.ModItem?.SetDefaults();
 		Roll(item, PickItemLevel());
+	}
+
+	private static void RollAffixes(Item item)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		PoTStaticItemData staticData = item.GetStaticData();
+
+		data.Affixes.Clear();
+		data.Affixes.AddRange(IGenerateAffixesItem.Invoke(item));
+
+		data.ImplicitCount = data.Affixes.Count;
+		for (int i = 0; i < GetAffixCount(item); i++)
+		{
+			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
+			if (chosenAffix is null)
+			{
+				continue;
+			}
+
+			ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
+			if (affix is null)
+			{
+				continue;
+			}
+
+			affix.Value = AffixRegistry.GetRandomAffixValue(affix, data.ItemLevel);
+			data.Affixes.Add(affix);
+		}
+
+		if (staticData.IsUnique)
+		{
+			List<ItemAffix> uniqueItemAffixes = IGenerateAffixesItem.Invoke(item);
+
+			foreach (ItemAffix affix in uniqueItemAffixes)
+			{
+				affix.Roll();
+			}
+
+			data.Affixes.AddRange(uniqueItemAffixes);
+		}
 	}
 
 	// TODO: Un-hardcode? Or at least move it elsewhere!

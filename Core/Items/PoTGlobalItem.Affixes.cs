@@ -8,6 +8,7 @@ namespace PathOfTerraria.Core.Items;
 // Manages affixes.
 // NOTE: Some invocations of methods defined here lie elsewhere, where
 // appropriate.
+// NOTE: Affix rolling logic is in PoTGlobalItem.Rolling.cs.
 
 partial class PoTGlobalItem
 {
@@ -23,6 +24,17 @@ partial class PoTGlobalItem
 	public void ClearAffixes(Item item)
 	{
 		item.GetInstanceData().Affixes.Clear();
+	}
+
+	// Removed ability to override; restore?
+	public static int GetAffixCount(Item item)
+	{
+		return item.GetInstanceData().Rarity switch
+		{
+			Rarity.Magic => 2,
+			Rarity.Rare => Main.rand.Next(3, 5),
+			_ => 0
+		};
 	}
 	#endregion
 

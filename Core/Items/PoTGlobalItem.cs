@@ -1,3 +1,6 @@
 ﻿namespace PathOfTerraria.Core.Items;
 
-internal sealed partial class PoTGlobalItem : GlobalItem;
+internal sealed partial class PoTGlobalItem : GlobalItem
+{
+
+}

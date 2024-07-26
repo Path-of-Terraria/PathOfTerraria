@@ -1,18 +1,5 @@
-﻿using PathOfTerraria.Core.Systems.Affixes;
-using System.Collections.Generic;
-using Terraria.ModLoader.IO;
-using Terraria.UI;
-using PathOfTerraria.Core.Systems;
-using System.Text.RegularExpressions;
-using Terraria.ID;
-using PathOfTerraria.Core.Systems.ModPlayers;
+﻿using System.Collections.Generic;
 using PathOfTerraria.Core.Systems.TreeSystem;
-using TextCopy;
-using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Data;
-using PathOfTerraria.Data.Models;
-using System.IO;
-using System.Runtime.CompilerServices;
 
 namespace PathOfTerraria.Core;
 
@@ -76,67 +63,5 @@ public abstract class PoTItem : ModItem
 	{
 		mod.AddContent(instance);
 		ManuallyLoadedItems.Add((instance.DropChance, instance.Type));
-	}
-
-	private const float _magicFindPowerDecrease = 100f;
-
-	internal static float ApplyRarityModifier(float chance, float dropRarityModifier)
-	{
-		// this is just some arbitrary function from chat gpt, modified a little...
-		// it is pretty hard to get all this down when we dont know all the items we will have n such;
-
-		chance *= 100f; // to make it effective on <0.1; it works... ok?
-		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) /
-		                      (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
-		return powerDecrease;
-	}
-
-	public virtual int GetAffixCount()
-	{
-		return Rarity switch
-		{
-			Rarity.Magic => 2,
-			Rarity.Rare => Main.rand.Next(3, 5),
-			_ => 0
-		};
-	}
-
-	/// <summary>
-	/// Selects appropriate random affixes for this item, and applies them
-	/// </summary>
-	public void RollAffixes()
-	{
-		Affixes = GenerateImplicits();
-
-		_implicits = Affixes.Count;
-		for (int i = 0; i < GetAffixCount(); i++)
-		{
-			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(ItemType);
-			if (chosenAffix is null)
-			{
-				continue;
-			}
-			
-			ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
-			if (affix is null)
-			{
-				continue;
-			}
-			
-			affix.Value = AffixRegistry.GetRandomAffixValue(affix, ItemLevel);
-			Affixes.Add(affix);
-		}
-
-		if (IsUnique)
-		{
-			List<ItemAffix> uniqueItemAffixes = GenerateAffixes();
-			
-			foreach (ItemAffix item in uniqueItemAffixes)
-			{
-				item.Roll();
-			}
-
-			Affixes.AddRange(uniqueItemAffixes);
-		}
 	}
 }
