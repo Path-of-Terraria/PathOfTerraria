@@ -90,34 +90,6 @@ public sealed class CopyToClipboard : ILoadable
 
 	public static void Invoke(Item item)
 	{
-		/*
-	void CopyToClipboard(Item item)
-	{
-		if (item.ModItem is null)
-		{
-			return;
-		}
-
-		if (!Keyboard.GetState().PressingShift())
-		{
-			TagCompound tag = [];
-
-			item.ModItem.SaveData(tag);
-
-			ClipboardService.SetText(StringTagRelation.FromTag(tag));
-		}
-#if DEBUG
-		else
-		{
-			TagCompound tag = [];
-
-			item.ModItem.SaveData(tag);
-
-			item.ModItem.LoadData(StringTagRelation.FromString(ClipboardService.GetText(), tag));
-		}
-	}
-#endif
-		 */
 		if (item.ModItem is IItem i)
 		{
 			i.CopyToClipboard();
