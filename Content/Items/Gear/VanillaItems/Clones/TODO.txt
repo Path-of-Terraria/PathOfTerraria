@@ -1,3 +1,6 @@
+# Boomerangs
+
+# Bows
 AerialBane DD2BetsyBow Ranged
 BloodRainBow BloodRainBow Ranged
 ChlorophyteShotbow ChlorophyteShotbow Ranged
@@ -13,3 +16,7 @@ PulseBow PulseBow Ranged
 ShadowflameBow ShadowflameBow Ranged
 TheBeesKnees BeesKnees Ranged
 Tsunami Tsunami Ranged
+
+# Flails
+GolemFist GolemFist Melee
+KOCannon KOCannon Melee
