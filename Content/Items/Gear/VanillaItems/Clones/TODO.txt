@@ -42,3 +42,9 @@ Xenopopper Xenopopper Ranged
 # Launchers
 Celebration FireworksLauncher Ranged
 CelebrationMK2 Celeb2 Ranged
+
+# Miscellaneous
+SolarEruption SolarEruption Melee
+Starlight PiercingStarlight Melee
+VampireKnives VampireKnives Ranged
+Zenith Zenith Melee
