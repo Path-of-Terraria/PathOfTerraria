@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Miscellaneous;
@@ -8,20 +9,20 @@ internal class FlailLoader : ModSystem
 	public override void Load()
 	{
 		// Prehardmode
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Mace, ItemType.Melee, "Mace"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.FlamingMace, ItemType.Melee, "FlamingMace"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.BallOHurt, ItemType.Melee, "BallOHurt"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.TheMeatball, ItemType.Melee, "TheMeatball"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.BlueMoon, ItemType.Melee, "BlueMoon"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Sunfury, ItemType.Melee, "Sunfury"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.ChainKnife, ItemType.Melee, "ChainKnife"));
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Mace, ItemType.Melee);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.FlamingMace, ItemType.Melee);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.BallOHurt, ItemType.Melee);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.TheMeatball, ItemType.Melee);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.BlueMoon, ItemType.Melee);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Sunfury, ItemType.Melee);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ChainKnife, ItemType.Melee);
 
 		// Hardmode
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.DripplerFlail, ItemType.Ranged, "DripplerCrippler"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.DaoofPow, ItemType.Ranged, "DaoOfPow"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.FlowerPow, ItemType.Ranged, "FlowerPow"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Anchor, ItemType.Ranged, "Anchor"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.ChainGuillotines, ItemType.Ranged, "ChainGuillotines"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Flairon, ItemType.Ranged, "Flairon"));
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.DripplerFlail, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.DaoofPow, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.FlowerPow, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Anchor, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ChainGuillotines, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Flairon, ItemType.Ranged);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using Terraria.ID;
 
@@ -9,7 +10,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
-		(Player.inventory[0].ModItem as Gear)?.ApplyAffixes(UniversalModifier);
+		PoTGlobalItem.ApplyAffixes(Player.inventory[0], UniversalModifier);
 
 		UniversalModifier.ApplyTo(Player);
 

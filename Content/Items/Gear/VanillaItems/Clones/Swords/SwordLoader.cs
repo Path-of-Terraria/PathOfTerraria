@@ -11,8 +11,7 @@ internal class SwordLoader : ModSystem
 	{
 		void AddShortsword(short itemId, string material, bool onlyMat = false)
 		{
-			// PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(itemId, ItemType.Sword, onlyMat ? material : material + "Shortsword"));
-			ItemDatabase.AddItem();
+			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Sword);
 		}
 
 		// Shortswords
@@ -29,7 +28,7 @@ internal class SwordLoader : ModSystem
 
 		void AddBroadsword(short itemId, string name)
 		{
-			PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(itemId, ItemType.Sword, name));
+			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Sword);
 		}
 
 		// Broadswords, Alphabetically (by in-game name)

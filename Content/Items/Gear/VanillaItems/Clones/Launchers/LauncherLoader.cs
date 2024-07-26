@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Launchers;
@@ -18,7 +19,7 @@ internal class LauncherLoader : ModSystem
 
 		void LoadLauncher(short itemId, string name)
 		{
-			PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(itemId, ItemType.Ranged, name));
+			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Ranged);
 		}
 	}
 }

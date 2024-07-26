@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems.Clones.Miscellaneous;
@@ -8,17 +9,17 @@ internal class MiscellaneousLoader : ModSystem
 	public override void Load()
 	{
 		// Prehardmode
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Terragrim, ItemType.Ranged, "Terragrim"));
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Terragrim, ItemType.Ranged);
 
 		// Hardmode
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.Arkhalis, ItemType.Ranged, "Arkhalis"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.JoustingLance, ItemType.Ranged, "JoustingLance"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.ShadowFlameKnife, ItemType.Ranged, "ShadowFlameKnife"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.HallowJoustingLance, ItemType.Ranged, "HallowedJoustingLance"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.MonkStaffT1, ItemType.Ranged, "SleepyOctopod"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.ScourgeoftheCorruptor, ItemType.Ranged, "ScourgeOfTheCorruptor"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.ShadowJoustingLance, ItemType.Ranged, "ShadowJoustingLance"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.MonkStaffT3, ItemType.Ranged, "SkyDragonsFury"));
-		PoTItem.ManuallyLoadPoTItem(Mod, new InstancedVanillaClone(ItemID.DayBreak, ItemType.Ranged, "Daybreak"));
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Arkhalis, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.JoustingLance, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ShadowFlameKnife, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.HallowJoustingLance, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.MonkStaffT1, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ScourgeoftheCorruptor, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ShadowJoustingLance, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.MonkStaffT3, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.DayBreak, ItemType.Ranged);
 	}
 }
