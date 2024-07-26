@@ -78,7 +78,7 @@ internal class GearAlternativeChestReplacement : ModSystem
 					}
 
 					PoTGlobalItem.ClearAffixes(item);
-					PoTGlobalItem.Roll(item, PoTGlobalItem.PickItemLevel());
+					PoTGlobalItem.Roll(item, PoTItemHelper.PickItemLevel());
 				}
 			}
 		}

@@ -32,7 +32,7 @@ public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRollsItem, IGe
 
 		data.Rarity = Rarity.Magic; //All crafted items are magic rarity
 		data.Affixes.Clear();
-		PoTGlobalItem.Roll(Item, PoTGlobalItem.PickItemLevel());
+		PoTGlobalItem.Roll(Item, PoTItemHelper.PickItemLevel());
 	}
 
 	public virtual void InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier)

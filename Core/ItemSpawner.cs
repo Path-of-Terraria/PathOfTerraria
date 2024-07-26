@@ -16,7 +16,7 @@ internal class ItemSpawner
 	public static int SpawnRandomItem(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition,
 		int ilevel = 0, float dropRarityModifier = 0)
 	{
-		ilevel = ilevel == 0 ? PoTGlobalItem.PickItemLevel() : ilevel; // Pick the item level if not provided
+		ilevel = ilevel == 0 ? PoTItemHelper.PickItemLevel() : ilevel; // Pick the item level if not provided
 
 		// Filter AllGear based on item level
 		var filteredGear = ItemDatabase.AllItems.Where(g => ContentSamples.ItemsByType[g.ItemId].GetStaticData().MinDropItemLevel <= ilevel).ToList();
