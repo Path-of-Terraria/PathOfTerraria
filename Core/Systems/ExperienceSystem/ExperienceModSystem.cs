@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems.Exp;
+namespace PathOfTerraria.Core.Systems.ExperienceSystem;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class ExperienceModSystem : ModSystem

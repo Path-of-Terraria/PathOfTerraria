@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.Experience;
+﻿using PathOfTerraria.Core.Systems.ExperienceSystem;
 using System.IO;
 
 namespace PathOfTerraria.Core.Systems.Networking.Handlers;
@@ -7,7 +7,7 @@ internal static class ExperienceHandler
 {
 	/// <summary>
 	/// Spawns an orb on all clients but <paramref name="target"/>. 
-	/// Generally, this should only be called by <see cref="ExperienceTracker.SpawnExperience(int, Vector2, Vector2, int, bool)"/>.
+	/// Generally, this should only be called by <see cref="ExperienceModSystem.SpawnExperience(int, Vector2, Vector2, int, bool)"/>.
 	/// </summary>
 	/// <param name="target">Target for the exp to aim for.</param>
 	/// <param name="xp">Amount of XP to spawn.</param>
@@ -25,7 +25,7 @@ internal static class ExperienceHandler
 
 		if (spawnLocally)
 		{
-			ExperienceTracker.SpawnExperience(xpValue, position, velocity, target, true);
+			ExperienceModSystem.SpawnExperience(xpValue, position, velocity, target, true);
 		}
 	}
 
@@ -48,6 +48,6 @@ internal static class ExperienceHandler
 		Vector2 position = reader.ReadVector2();
 		Vector2 velocity = reader.ReadVector2();
 
-		ExperienceTracker.SpawnExperience(xp, position, velocity, target, true);
+		ExperienceModSystem.SpawnExperience(xp, position, velocity, target, true);
 	}
 }
