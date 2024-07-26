@@ -13,7 +13,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
-public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRollsItem, IGenerateAffixesItem, IGenerateImplicitsItem, IGeneratePrefixItem, IGenerateSuffixItem, IInsertAdditionalTooltipLinesItem, IPostRollItem, ISwapItemModifiersItem
+public abstract class Gear : ModItem, ICopyToClipboardItem, IExtraRolls, IGenerateAffixesItem, IGenerateImplicitsItem, IGeneratePrefixItem, IGenerateSuffixItem, IInsertAdditionalTooltipLinesItem, IPostRollItem, ISwapItemModifiersItem
 {
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
