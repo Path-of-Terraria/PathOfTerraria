@@ -19,6 +19,7 @@ public class RainOfArrows : Skill
 		Cooldown = MaxCooldown = 10 * 60;
 		ManaCost = 20;
 		Duration = 0;
+		WeaponType = Core.ItemType.Ranged;
 	}
 
 	public override void UseSkill(Player player)
