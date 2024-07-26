@@ -164,31 +164,6 @@ public abstract class PoTItem : ModItem
 	/// </summary>
 	public virtual List<ItemAffix> GenerateImplicits() { return []; }
 
-	/// <summary>
-	/// Allows you to customize what prefixes this items can have, only visual
-	/// </summary>
-	public virtual string GenerateSuffix() { return ""; }
-
-	/// <summary>
-	/// Allows you to customize what suffixes this items can have, only visual
-	/// </summary>
-	public virtual string GeneratePrefix() { return ""; }
-
-	/// <summary>
-	/// Allows you to customize what this item's name can be
-	/// </summary>
-	public virtual string GenerateName()
-	{
-		return Rarity switch
-		{
-			Rarity.Normal => Item.Name,
-			Rarity.Magic => $"{GeneratePrefix()} {Item.Name}",
-			Rarity.Rare => $"{GeneratePrefix()} {Item.Name} {GenerateSuffix()}",
-			Rarity.Unique => Item.Name, // uniques might just want to override the GenerateName function
-			_ => "Unknown Item"
-		};
-	}
-
 	public override void SaveData(TagCompound tag)
 	{
 		tag["type"] = (int)ItemType;
