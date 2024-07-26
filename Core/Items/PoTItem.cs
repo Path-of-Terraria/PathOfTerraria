@@ -28,16 +28,6 @@ public abstract class PoTItem : ModItem
 	private static readonly List<(float dropChance, int itemId)> ManuallyLoadedItems = [];
 
 	/// <summary>
-	/// Clears the affixes and roll the item
-	/// </summary>
-	protected void Reroll()
-	{
-		Affixes.Clear();
-		Defaults();
-		Roll(PickItemLevel());
-	}
-
-	/// <summary>
 	/// Readies all types of gear to be dropped on enemy kill.
 	/// </summary>
 	/// <param name="pos">Where to spawn the armor</param>
@@ -99,59 +89,6 @@ public abstract class PoTItem : ModItem
 		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) /
 		                      (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
 		return powerDecrease;
-	}
-
-	/// <summary>
-	/// Selects an appropriate item level for a piece of gear to drop at based on world state
-	/// </summary>
-	internal static int PickItemLevel()
-	{
-		if (NPC.downedMoonlord)
-		{
-			return Main.rand.Next(150, 201);
-		}
-
-		if (NPC.downedAncientCultist)
-		{
-			return Main.rand.Next(110, 151);
-		}
-
-		if (NPC.downedGolemBoss)
-		{
-			return Main.rand.Next(95, 131);
-		}
-
-		if (NPC.downedPlantBoss)
-		{
-			return Main.rand.Next(80, 121);
-		}
-
-		if (NPC.downedMechBossAny)
-		{
-			return Main.rand.Next(75, 111);
-		}
-
-		if (Main.hardMode)
-		{
-			return Main.rand.Next(50, 91);
-		}
-
-		if (NPC.downedBoss3)
-		{
-			return Main.rand.Next(30, 50);
-		}
-
-		if (NPC.downedBoss2)
-		{
-			return Main.rand.Next(20, 41);
-		}
-
-		if (NPC.downedBoss1)
-		{
-			return Main.rand.Next(10, 26);
-		}
-
-		return Main.rand.Next(5, 21);
 	}
 
 	public override void SaveData(TagCompound tag)

@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Core.Items.Hooks;
-using PathOfTerraria.Core.Systems.VanillaInterfaceSystem;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -36,6 +35,65 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 
 		RollAffixes();
 		IPostRollItem.Invoke(item);
-		data.SpecialName = GenerateName();
+		data.SpecialName = IGenerateNameItem.Invoke(item);
+	}
+
+	public void Reroll(Item item)
+	{
+		// TODO: Don't call ANY variant of SetDefaults here... please?
+		item.GetInstanceData().Affixes.Clear();
+		item.ModItem?.SetDefaults();
+		Roll(item, PickItemLevel());
+	}
+
+	// TODO: Un-hardcode? Or at least move it elsewhere!
+	internal static int PickItemLevel()
+	{
+		if (NPC.downedMoonlord)
+		{
+			return Main.rand.Next(150, 201);
+		}
+
+		if (NPC.downedAncientCultist)
+		{
+			return Main.rand.Next(110, 151);
+		}
+
+		if (NPC.downedGolemBoss)
+		{
+			return Main.rand.Next(95, 131);
+		}
+
+		if (NPC.downedPlantBoss)
+		{
+			return Main.rand.Next(80, 121);
+		}
+
+		if (NPC.downedMechBossAny)
+		{
+			return Main.rand.Next(75, 111);
+		}
+
+		if (Main.hardMode)
+		{
+			return Main.rand.Next(50, 91);
+		}
+
+		if (NPC.downedBoss3)
+		{
+			return Main.rand.Next(30, 50);
+		}
+
+		if (NPC.downedBoss2)
+		{
+			return Main.rand.Next(20, 41);
+		}
+
+		if (NPC.downedBoss1)
+		{
+			return Main.rand.Next(10, 26);
+		}
+
+		return Main.rand.Next(5, 21);
 	}
 }
