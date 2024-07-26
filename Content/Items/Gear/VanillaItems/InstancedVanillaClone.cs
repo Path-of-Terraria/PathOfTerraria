@@ -3,7 +3,6 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
-[ManuallyLoadPoTItem]
 internal class InstancedVanillaClone(short itemId, ItemType itemType, string name) : VanillaClone
 {
 	protected override short VanillaItemId => ItemId;
