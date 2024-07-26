@@ -27,7 +27,6 @@ partial class PoTGlobalItem
 	#region Modify tooltips and rendering
 	public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
 	{
-		return true;
 		// Don't mess with tooltip lines that we aren't responsible for.
 		if (line.Mod != Mod.Name)
 		{
