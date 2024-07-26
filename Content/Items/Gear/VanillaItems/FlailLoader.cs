@@ -8,24 +8,24 @@ internal class FlailLoader : ModSystem
 {
 	public override void Load()
 	{
-		ItemDatabase.RegisterVanillaItem(ItemID.GolemFist, ItemType.Melee);
-		ItemDatabase.RegisterVanillaItem(ItemID.KOCannon, ItemType.Melee);
+		ItemDatabase.RegisterVanillaItem(ItemID.GolemFist, ItemType.MeleeFlail);
+		ItemDatabase.RegisterVanillaItem(ItemID.KOCannon, ItemType.MeleeFlail);
 
 		// Prehardmode
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Mace, ItemType.Melee);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.FlamingMace, ItemType.Melee);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.BallOHurt, ItemType.Melee);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.TheMeatball, ItemType.Melee);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.BlueMoon, ItemType.Melee);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Sunfury, ItemType.Melee);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ChainKnife, ItemType.Melee);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Mace, ItemType.MeleeFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.FlamingMace, ItemType.MeleeFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.BallOHurt, ItemType.MeleeFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.TheMeatball, ItemType.MeleeFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.BlueMoon, ItemType.MeleeFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Sunfury, ItemType.MeleeFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ChainKnife, ItemType.MeleeFlail);
 
 		// Hardmode
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.DripplerFlail, ItemType.Ranged);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.DaoofPow, ItemType.Ranged);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.FlowerPow, ItemType.Ranged);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Anchor, ItemType.Ranged);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ChainGuillotines, ItemType.Ranged);
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Flairon, ItemType.Ranged);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.DripplerFlail, ItemType.RangedFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.DaoofPow, ItemType.RangedFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.FlowerPow, ItemType.RangedFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Anchor, ItemType.RangedFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ChainGuillotines, ItemType.RangedFlail);
+		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Flairon, ItemType.RangedFlail);
 	}
 }

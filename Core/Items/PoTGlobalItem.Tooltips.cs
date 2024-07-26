@@ -6,6 +6,7 @@ using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.UI;
 using System.Text.RegularExpressions;
+using PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -26,6 +27,7 @@ partial class PoTGlobalItem
 	#region Modify tooltips and rendering
 	public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
 	{
+		return true;
 		// Don't mess with tooltip lines that we aren't responsible for.
 		if (line.Mod != Mod.Name)
 		{
@@ -238,6 +240,10 @@ partial class PoTGlobalItem
 			ItemType.Leggings => "Leggings",
 			ItemType.Ring => "Ring",
 			ItemType.Charm => "Charm",
+			ItemType.Boomerang => "Boomerand",
+			ItemType.MeleeFlail => "Flail (Melee)",
+			ItemType.RangedFlail => "Flail (Ranged)",
+			ItemType.Launcher => "Launcher",
 			_ => ""
 		};
 

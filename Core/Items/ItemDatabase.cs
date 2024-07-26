@@ -51,7 +51,6 @@ public sealed class ItemDatabase : ModSystem
 				if (_uniqueVanillaItems.Contains(i))
 				{
 					staticData.IsUnique = true;
-
 				}
 			}
 

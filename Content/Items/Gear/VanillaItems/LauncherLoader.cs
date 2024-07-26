@@ -8,8 +8,8 @@ internal class LauncherLoader : ModSystem
 {
 	public override void Load()
 	{
-		ItemDatabase.RegisterVanillaItem(ItemID.FireworksLauncher, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.Celeb2, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.FireworksLauncher, ItemType.Launcher);
+		ItemDatabase.RegisterVanillaItem(ItemID.Celeb2, ItemType.Launcher);
 
 		LoadLauncher(ItemID.GrenadeLauncher, "GrenadeLauncher");
 		LoadLauncher(ItemID.ProximityMineLauncher, "ProximityMineLauncher");
@@ -22,7 +22,7 @@ internal class LauncherLoader : ModSystem
 
 		void LoadLauncher(short itemId, string name)
 		{
-			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Ranged);
+			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Launcher);
 		}
 	}
 }

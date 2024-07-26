@@ -8,22 +8,22 @@ internal class GunsLoader : ModSystem
 {
 	public override void Load()
 	{
-		ItemDatabase.RegisterVanillaItem(ItemID.Boomstick, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.ChainGun, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.Gatligator, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.Megashark, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.Minishark, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.OnyxBlaster, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.PewMaticHorn, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.QuadBarrelShotgun, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.SDMG, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.Shotgun, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.SniperRifle, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.TacticalShotgun, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.Uzi, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.VenusMagnum, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.VortexBeater, ItemType.Ranged);
-		ItemDatabase.RegisterVanillaItem(ItemID.Xenopopper, ItemType.Ranged);
+		ItemDatabase.RegisterVanillaItem(ItemID.Boomstick, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.ChainGun, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.Gatligator, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.Megashark, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.Minishark, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.OnyxBlaster, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.PewMaticHorn, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.QuadBarrelShotgun, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.SDMG, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.Shotgun, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.SniperRifle, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.TacticalShotgun, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.Uzi, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.VenusMagnum, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.VortexBeater, ItemType.Gun);
+		ItemDatabase.RegisterVanillaItem(ItemID.Xenopopper, ItemType.Gun);
 
 		// Prehardmode
 		LoadGun(ItemID.RedRyder, "RedRyder");
@@ -40,7 +40,7 @@ internal class GunsLoader : ModSystem
 
 		void LoadGun(short itemId, string name)
 		{
-			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Ranged);
+			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Gun);
 		}
 	}
 }
