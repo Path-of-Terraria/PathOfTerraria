@@ -38,3 +38,7 @@ Uzi Uzi Ranged
 VenusMagnum VenusMagnum Ranged
 VortexBeater VortexBeater Ranged
 Xenopopper Xenopopper Ranged
+
+# Launchers
+Celebration FireworksLauncher Ranged
+CelebrationMK2 Celeb2 Ranged
