@@ -1,7 +1,4 @@
-﻿using PathOfTerraria.Common.Events;
-using Terraria.DataStructures;
-
-namespace PathOfTerraria.Content.Buffs;
+﻿namespace PathOfTerraria.Content.Buffs;
 
 public class Battleaxe : ModBuff
 {

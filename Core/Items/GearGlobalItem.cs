@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Items;
 

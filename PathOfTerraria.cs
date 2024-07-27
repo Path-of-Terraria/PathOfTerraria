@@ -1,11 +1,7 @@
-using PathOfTerraria.Content.Items.Gear;
 using ReLogic.Content.Sources;
 using System.IO;
-using PathOfTerraria.Common;
 using PathOfTerraria.Common.Systems.Networking;
-using PathOfTerraria.Core.Graphics;
 using PathOfTerraria.Core.Sources;
-using Terraria.ID;
 
 namespace PathOfTerraria;
 

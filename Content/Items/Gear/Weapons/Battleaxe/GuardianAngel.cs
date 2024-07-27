@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;

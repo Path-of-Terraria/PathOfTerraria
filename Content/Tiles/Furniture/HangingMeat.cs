@@ -1,7 +1,5 @@
-using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ObjectData;
 

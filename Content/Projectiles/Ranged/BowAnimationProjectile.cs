@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
-using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 

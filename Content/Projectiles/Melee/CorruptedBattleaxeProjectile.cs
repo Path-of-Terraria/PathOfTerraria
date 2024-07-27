@@ -1,6 +1,4 @@
-﻿using Terraria.Utilities;
-
-namespace PathOfTerraria.Content.Projectiles.Melee;
+﻿namespace PathOfTerraria.Content.Projectiles.Melee;
 
 public class CorruptedBattleaxeProjectile : ModProjectile
 {

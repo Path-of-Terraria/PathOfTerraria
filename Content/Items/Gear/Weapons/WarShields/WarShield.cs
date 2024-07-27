@@ -1,6 +1,5 @@
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using PathOfTerraria.Core.Systems.VanillaModifications;
 using Terraria.ID;

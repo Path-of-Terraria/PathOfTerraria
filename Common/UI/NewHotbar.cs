@@ -12,7 +12,6 @@ using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.UI;
 
 namespace PathOfTerraria.Common.UI;
 

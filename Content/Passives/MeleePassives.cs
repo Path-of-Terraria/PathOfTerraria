@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.TreeSystem;
-using PathOfTerraria.Core;
 
 namespace PathOfTerraria.Content.Passives;
 

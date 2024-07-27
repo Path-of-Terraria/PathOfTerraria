@@ -1,6 +1,5 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Items;
 using Terraria.GameContent.Achievements;
 using Terraria.UI;

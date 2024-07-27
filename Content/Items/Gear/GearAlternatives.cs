@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;

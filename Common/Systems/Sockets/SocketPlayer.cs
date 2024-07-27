@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.Systems.Sockets;

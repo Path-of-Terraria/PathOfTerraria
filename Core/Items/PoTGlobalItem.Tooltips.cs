@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Items.Gear;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.Graphics.Effects;
 using Terraria.ID;
 using Terraria.UI;

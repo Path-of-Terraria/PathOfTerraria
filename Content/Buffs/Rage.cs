@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Events;
-
-namespace PathOfTerraria.Content.Buffs;
+﻿namespace PathOfTerraria.Content.Buffs;
 
 public class Rage : ModBuff
 {

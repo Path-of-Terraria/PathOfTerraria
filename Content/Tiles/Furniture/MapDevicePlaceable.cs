@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Common.Systems;
 using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.Enums;

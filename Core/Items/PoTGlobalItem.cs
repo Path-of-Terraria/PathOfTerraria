@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Core.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Items;
 
