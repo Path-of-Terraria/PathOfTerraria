@@ -12,11 +12,27 @@ using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
-internal class NewHotbar : SmartUIState
+internal sealed class NewHotbar : SmartUIState
 {
+	/// <summary>
+	///		Offsets the rendering of buffs to render below our custom hotbar.
+	/// </summary>
+	private sealed class OffsetBuffRendering : GlobalBuff
+	{
+		public override bool PreDraw(SpriteBatch spriteBatch, int type, int buffIndex, ref BuffDrawParams drawParams)
+		{
+			// TODO: Make constant when a good value is found.
+			int buffPositionOffsetY = 20;
+			drawParams.Position = new Vector2(drawParams.Position.X, drawParams.Position.Y + buffPositionOffsetY);
+			drawParams.MouseRectangle.Y += buffPositionOffsetY;
+			return true;
+		}
+	}
+
 	private int _animation;
 
 	private float _selectorX;
