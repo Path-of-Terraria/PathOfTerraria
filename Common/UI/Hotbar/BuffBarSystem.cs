@@ -1,6 +1,6 @@
 ﻿using Terraria.DataStructures;
 
-namespace PathOfTerraria.Common.Systems.BuffBarSystem;
+namespace PathOfTerraria.Common.UI.Hotbar;
 
 public class BuffBarSystem : GlobalBuff
 {

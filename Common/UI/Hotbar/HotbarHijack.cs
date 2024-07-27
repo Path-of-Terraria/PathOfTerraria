@@ -1,6 +1,6 @@
 ﻿using Terraria.UI;
 
-namespace PathOfTerraria.Common.Systems;
+namespace PathOfTerraria.Common.UI.Hotbar;
 
 internal class HotbarHijack : ModSystem
 {
