@@ -13,7 +13,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 
-namespace PathOfTerraria.Common.UI;
+namespace PathOfTerraria.Common.UI.Hotbar;
 
 internal class NewHotbar : SmartUIState
 {
