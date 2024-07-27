@@ -21,7 +21,7 @@ public class SparklingBall : ModProjectile
 	public override void AI() {
 		Projectile.velocity.Y += Projectile.ai[0];
 		if (Main.rand.NextBool(3)) {
-			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<Sparkle>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
+			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<SparkleDust>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
 		}
 	}
 
@@ -49,7 +49,7 @@ public class SparklingBall : ModProjectile
 
 	public override void OnKill(int timeLeft) {
 		for (int k = 0; k < 5; k++) {
-			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<Sparkle>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
+			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<SparkleDust>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
 		}
 
 		SoundEngine.PlaySound(SoundID.Item25, Projectile.position);

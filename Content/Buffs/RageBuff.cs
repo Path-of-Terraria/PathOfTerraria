@@ -18,7 +18,7 @@ public sealed class RageBuff : ModBuff
 	}
 
 	public override void Update(Player player, ref int buffIndex)
-	{ 
+	{
 		player.GetDamage(DamageClass.Generic) += 1.5f;
 	}
 }
