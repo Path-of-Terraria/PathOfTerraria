@@ -123,6 +123,21 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		_optInGearItems = null;
 	}
 
+	public static bool IsActive(Player player, Item item)
+	{
+		return player.inventory[0] == item || player.armor.Contains(item);
+	}
+
+	public static void MarkItemAsGear(int type)
+	{
+		_optInGearItems.Add(type);
+	}
+
+	public static bool IsGearItem(Item item)
+	{
+		return item.ModItem is Gear || _optInGearItems.Contains(item.type);
+	}
+
 	public override void OnCreated(Item item, ItemCreationContext context)
 	{
 		base.OnCreated(item, context);
@@ -141,21 +156,6 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		data.Rarity = ItemRarity.Magic;
 		data.Affixes.Clear();
 		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
-	}
-
-	public static bool IsActive(Player player, Item item)
-	{
-		return player.inventory[0] == item || player.armor.Contains(item);
-	}
-
-	public static void MarkItemAsGear(int type)
-	{
-		_optInGearItems.Add(type);
-	}
-
-	public static bool IsGearItem(Item item)
-	{
-		return item.ModItem is Gear || _optInGearItems.Contains(item.type);
 	}
 
 	void InsertAdditionalTooltipLines.IGlobal.InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier)
