@@ -20,18 +20,27 @@ public class TomeProjectile : ModProjectile
 
 	public override void AI()
 	{
-		IOrderedEnumerable<NPC> collection = Main.npc
-			.Where(npc => npc.active && !npc.friendly && !npc.CountsAsACritter)
-			.OrderBy(npc => Projectile.Center.Distance(npc.Center));
-		
-		// might want to order by most surefire hit instead, meaning
-		// the npc that would require the least amount of rotation to hit
+		NPC closestNpc = null;
+		float closestDistanceSq = float.MaxValue;
 
-		if (collection.Any())
+		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			NPC target = collection.FirstOrDefault();
+			if (npc.friendly || npc.CountsAsACritter)
+			{
+				continue;
+			}
 
-			var targetVel = Vector2.Normalize(target.Center - Projectile.Center);
+			float distanceSQ = Projectile.Center.DistanceSQ(npc.Center);
+			if (distanceSQ < closestDistanceSq)
+			{
+				closestNpc = npc;
+				closestDistanceSq = distanceSQ;
+			}
+		}
+
+		if (closestNpc != null)
+		{
+			var targetVel = Vector2.Normalize(closestNpc.Center - Projectile.Center);
 			targetVel *= Projectile.velocity.Length();
 
 			if (Vector2.Dot(Vector2.Normalize(Projectile.velocity), targetVel) > 0)
