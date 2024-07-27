@@ -7,6 +7,8 @@ namespace PathOfTerraria.Content.Items.Gear;
 
 public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.IItem, GeneratePrefix.IItem, GenerateSuffix.IItem, PostRoll.IItem
 {
+	// TODO: Figure out how to decouple this logic?
+
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
 	/// <summary>
