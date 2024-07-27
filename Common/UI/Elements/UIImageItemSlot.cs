@@ -150,6 +150,8 @@ public class UIImageItemSlot : UIElement
 			HAlign = 0.5f,
 			VAlign = 0.5f
 		};
+		Icon.Width.Set(BackgroundTexture.Width(), 0f);
+		Icon.Height.Set(BackgroundTexture.Width(), 0f);
 
 		Background.Append(Icon);
 	}
@@ -157,6 +159,13 @@ public class UIImageItemSlot : UIElement
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
+
+		Asset<Texture2D> tex = Item.IsAir ? IconTexture : TextureAssets.Item[Item.type];
+
+		if (tex.Width() > BackgroundTexture.Width())
+		{
+			Icon.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
+		}
 
 		UpdateIcon();
 	}

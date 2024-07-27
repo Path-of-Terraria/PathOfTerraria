@@ -83,7 +83,7 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 
 			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 24f, ref frame, out _, out float finalDrawScale);
 
-			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, finalDrawScale, Smoothness);
+			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, finalDrawScale * (IsMouseHovering ? ActiveScale : InactiveScale), Smoothness);
 		}
 		else
 		{
