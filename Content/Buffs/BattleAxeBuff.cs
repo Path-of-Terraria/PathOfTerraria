@@ -4,7 +4,7 @@ namespace PathOfTerraria.Content.Buffs;
 
 public sealed class BattleAxeBuff : ModBuff
 {
-	private sealed class BattleAxeGlobalNpc : GlobalNPC
+	private sealed class GlobalNPCImpl : GlobalNPC
 	{
 		public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
 		{
@@ -20,7 +20,7 @@ public sealed class BattleAxeBuff : ModBuff
 		}
 	}
 
-	private sealed class BattleAxeBuffPlayer : ModPlayer
+	private sealed class ModPlayerImpl : ModPlayer
 	{
 		public override void ModifyDrawInfo(ref PlayerDrawSet drawInfo)
 		{

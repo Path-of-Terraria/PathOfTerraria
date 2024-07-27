@@ -2,7 +2,7 @@
 
 public sealed class RageBuff : ModBuff
 {
-	private sealed class RageBuffGlobalNpc : GlobalNPC
+	private sealed class GlobalNPCImpl : GlobalNPC
 	{
 		public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
 		{
