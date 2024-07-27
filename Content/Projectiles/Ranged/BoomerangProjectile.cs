@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent;
+﻿using PathOfTerraria.Utilities;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Ranged;
@@ -102,8 +103,7 @@ internal class BoomerangProjectile : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		Main.instance.LoadItem((int)ItemId); // Load & use the given item's texture
-		Texture2D tex = TextureAssets.Item[(int)ItemId].Value;
+		Texture2D tex = TextureUtils.LoadAndGetItem((int)ItemId).Value;
 
 		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, 1, SpriteEffects.None, 0);
 		return false;

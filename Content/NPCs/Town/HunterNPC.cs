@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Helpers.Extensions;
+using PathOfTerraria.Utilities;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -83,8 +84,7 @@ public class HunterNPC : ModNPC
 	public override void DrawTownAttackGun(ref Texture2D item, ref Rectangle itemFrame, ref float scale, ref int horizontalHoldoutOffset)
 	{
 		int type = ModContent.ItemType<WoodenBow>();
-		Main.instance.LoadItem(type);
-		Asset<Texture2D> asset = TextureAssets.Item[type];
+		Asset<Texture2D> asset = TextureUtils.LoadAndGetItem(type);
 		item = asset.Value;
 		itemFrame = asset.Frame();
 	}
