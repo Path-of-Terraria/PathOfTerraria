@@ -166,13 +166,16 @@ public class UIImageItemSlot : UIElement
 		// portion of the frame, causing the right side of the item to protrude out
 		// and offsetting it.  This offset messes up the traditional logic for
 		// scaling and centering the item, so we have to manually offset the item
-		// left to counteract this automatic positioning.  **THIS WILL BE REQUIRED
-		// VERTICALLY AS WELL**, though I'm not aware of any items that definitely
-		// trigger this vertically.
+		// left to counteract this automatic positioning.
 		Asset<Texture2D> tex = GetIconToDraw();
 		if (tex.Width() > BackgroundTexture.Width())
 		{
 			Icon.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
+		}
+
+		if (tex.Height() > BackgroundTexture.Height())
+		{
+			Icon.Top = StyleDimension.FromPixels(-(tex.Height() - BackgroundTexture.Height()) / 2f);
 		}
 
 		UpdateIcon();
