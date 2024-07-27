@@ -50,7 +50,7 @@ internal abstract class Battleaxe : Gear
 
 		modPlayer.SetAltCooldown(900);
 		player.statLife -= 5;
-		player.AddBuff(ModContent.BuffType<Buffs.Battleaxe>(), 300);
+		player.AddBuff(ModContent.BuffType<Buffs.BattleAxeBuff>(), 300);
 		return true;
 	}
 }

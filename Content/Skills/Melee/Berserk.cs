@@ -26,7 +26,7 @@ public class Berserk : Skill
 		}
 
 		player.statMana -= ManaCost;
-		player.AddBuff(ModContent.BuffType<Rage>(), Duration);
+		player.AddBuff(ModContent.BuffType<RageBuff>(), Duration);
 		Timer = Cooldown;
 	}
 }
