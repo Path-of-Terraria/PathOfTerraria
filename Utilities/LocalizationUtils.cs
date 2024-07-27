@@ -14,7 +14,9 @@ public static class LocalizationUtils
 	/// <returns>the text should be displayed</returns>
 	public static string GetText(string key, params object[] args)
 	{
-		return Language.Exists($"Mods.{nameof(PathOfTerraria)}.{key}") ? Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.{key}", args) : key;
+		// Exists check is redundant; GetTextValue already handles this.
+		// return Language.Exists($"Mods.{nameof(PathOfTerraria)}.{key}") ? Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.{key}", args) : key;
+		return Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.{key}", args);
 	}
 
 	public static string GetGUIText(string key, params object[] args)
