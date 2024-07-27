@@ -70,7 +70,7 @@ public class AffixRegistry : ILoadable
 			.Where(x => typeof(Affix).IsAssignableFrom(x) && !x.IsAbstract);
 
 		foreach (Stream jsonStream in from path in jsonFiles
-		         where path.StartsWith("Data/Affixes") && path.EndsWith(".json")
+		         where path.StartsWith("Common/Data/Affixes") && path.EndsWith(".json")
 		         select PathOfTerraria.Instance.GetFileStream(path))
 		{
 			using var jsonReader = new StreamReader(jsonStream);
