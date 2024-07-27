@@ -6,13 +6,10 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class MinionPassive : Passive
 {
-	public override string InternalIdentifier => "IncreasedMinionDamage";
 }
 
 internal class SentryPassive : Passive
 {
-	public override string InternalIdentifier => "IncreasedSentryDamage";
-
 	public override void OnLoad()
 	{
 		PathOfTerrariaPlayerEvents.ModifyHitNPCWithProjEvent += BuffSentries;
