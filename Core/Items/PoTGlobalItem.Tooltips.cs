@@ -285,13 +285,13 @@ partial class PoTGlobalItem
 	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)
 	{
-		if (inv[slot].ModItem is not Gear gear || context == 21)
+		if (!GearGlobalItem.IsGearItem(inv[slot]) || context == 21)
 		{
 			orig(sb, inv, context, slot, position, color);
 			return;
 		}
 
-		PoTInstanceItemData data = gear.GetInstanceData();
+		PoTInstanceItemData data = inv[slot].GetInstanceData();
 
 		string rareName = data.Rarity switch
 		{

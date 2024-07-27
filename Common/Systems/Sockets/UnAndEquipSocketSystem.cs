@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Items;
 using Terraria.GameContent.Achievements;
 using Terraria.UI;
 
@@ -44,11 +45,11 @@ public class UnAndEquipSocketSystem : ILoadable
 		Player player = Main.player[Main.myPlayer];
 		Item inHand = Main.mouseItem;
 
-		if (onSlot.active && onSlot.ModItem is Gear)
+		if (onSlot.active && GearGlobalItem.IsGearItem(onSlot))
 		{
-			if ((onSlot.ModItem as Gear).IsThisItemActive(player))
+			if (GearGlobalItem.IsActive(player, onSlot))
 			{
-				(onSlot.ModItem as Gear).UnEquipItem(player);
+				GearGlobalItem.UnequipItem(onSlot, player);
 			}
 		}
 	}
@@ -64,11 +65,11 @@ public class UnAndEquipSocketSystem : ILoadable
 	
 	public static void PotentialGearEquip2(Player player, Item item)
 	{
-		if (item.active && item.ModItem is Gear)
+		if (item.active && GearGlobalItem.IsGearItem(item))
 		{
-			if ((item.ModItem as Gear).IsThisItemActive(player))
+			if (GearGlobalItem.IsActive(player, item))
 			{
-				(item.ModItem as Gear).EquipItem(player);
+				GearGlobalItem.EquipItem(item, player);
 			}
 		}
 	}
@@ -85,14 +86,14 @@ public class UnAndEquipSocketSystem : ILoadable
 	public static void PotentialGearEquip3(Item itemEquip, Item itemUnEquip)
 	{
 		Player player = Main.player[Main.myPlayer];
-		if (itemEquip.active && itemEquip.ModItem is Gear)
+		if (itemEquip.active && GearGlobalItem.IsGearItem(itemEquip))
 		{
-			(itemEquip.ModItem as Gear).EquipItem(player);
+			GearGlobalItem.EquipItem(itemEquip, player);
 		}
 
-		if (itemUnEquip.active && itemUnEquip.ModItem is Gear)
+		if (itemUnEquip.active && GearGlobalItem.IsGearItem(itemUnEquip))
 		{
-			(itemUnEquip.ModItem as Gear).UnEquipItem(player);
+			GearGlobalItem.UnequipItem(itemUnEquip, player);
 		}
 	}
 
@@ -131,9 +132,9 @@ public class UnAndEquipSocketSystem : ILoadable
 		Item moveItem = inv[slot];
 		Item nItem = player.GetItem(plr, moveItem, settings);
 
-		if (inv == player.armor && moveItem.ModItem is Gear)
+		if (inv == player.armor && GearGlobalItem.IsGearItem(moveItem))
 		{
-			(moveItem.ModItem as Gear).UnEquipItem(player);
+			GearGlobalItem.UnequipItem(moveItem, player);
 		}
 
 		return nItem;

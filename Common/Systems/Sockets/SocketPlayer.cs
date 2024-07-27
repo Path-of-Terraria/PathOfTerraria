@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.Systems.Sockets;
 public class SocketPlayer : ModPlayer
@@ -10,23 +11,20 @@ public class SocketPlayer : ModPlayer
 	public override bool ShiftClickSlot(Item[] inventory, int context, int slot)
 	{
 		Item item = inventory[slot];
-		if (item.ModItem is not Gear
-			|| item.ModItem is Gear && !(item.ModItem as Gear).UseSockets()
+		if (!GearGlobalItem.IsGearItem(item)
+			|| !GearGlobalItem.UseSockets(item)
 			|| inventory == Main.LocalPlayer.armor) // shift click is uneqip :/
 		{
 			return false;
 		}
 
-		var gear = item.ModItem as Gear;
-
-		gear.ShiftClick(Player);
-
+		GearGlobalItem.ShiftClick(item, Player);
 		return true;
 	}
 	public override bool HoverSlot(Item[] inventory, int context, int slot)
 	{
 		Item item = inventory[slot];
-		if (item.ModItem is Gear && !(item.ModItem as Gear).UseSockets())
+		if (GearGlobalItem.IsGearItem(item) && !GearGlobalItem.UseSockets(item))
 		{
 			return base.HoverSlot(inventory, context, slot);
 		}
@@ -37,9 +35,9 @@ public class SocketPlayer : ModPlayer
 			{
 				_blockUp = true;
 
-				if (item.ModItem is Gear)
+				if (GearGlobalItem.IsGearItem(item))
 				{
-					(item.ModItem as Gear).NextSocket();
+					GearGlobalItem.NextSocket(item);
 				}
 			}
 		}
@@ -54,9 +52,9 @@ public class SocketPlayer : ModPlayer
 			{
 				_blockDown = true;
 
-				if (item.ModItem is Gear)
+				if (GearGlobalItem.IsGearItem(item))
 				{
-					(item.ModItem as Gear).PrevSocket();
+					GearGlobalItem.PrevSocket(item);
 				}
 			}
 		}
@@ -84,10 +82,10 @@ public class SocketPlayer : ModPlayer
 		allEquipedGear.Add(Player.inventory[0]);
 		allEquipedGear.ForEach(a =>
 		{
-			if (a.active && a.ModItem is Gear)
+			if (a.active && GearGlobalItem.IsGearItem(a))
 			{
-				(a.ModItem as Gear).UnEquipItem(Player); // re-activate things when player respawns
-				(a.ModItem as Gear).EquipItem(Player);
+				GearGlobalItem.UnequipItem(a, Player); // re-activate things when player respawns
+				GearGlobalItem.EquipItem(a, Player);
 			}
 		});
 	}
