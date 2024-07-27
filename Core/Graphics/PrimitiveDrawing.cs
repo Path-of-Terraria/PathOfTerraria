@@ -1,9 +1,18 @@
 ﻿namespace PathOfTerraria.Core.Graphics;
 
-public static class PrimitiveDrawing{
+[Autoload(Side = ModSide.Client)]
+public sealed class PrimitiveDrawing : ModSystem
+{
 	private static BasicEffect _simpleVertexEffect;
 
-	internal static void Init(GraphicsDevice device){
+	public override void Load()
+	{
+		base.Load();
+
+		Init(Main.graphics.GraphicsDevice);
+	}
+
+	private static void Init(GraphicsDevice device){
 		Main.QueueMainThreadAction(() => _simpleVertexEffect = new BasicEffect(device){
 			VertexColorEnabled = true
 		});
