@@ -9,8 +9,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal abstract class Sword : Gear
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Sword/Base";
-
 	protected override string GearLocalizationCategory => "Sword";
 
 	public override void SetStaticDefaults()
