@@ -26,7 +26,7 @@ internal class Staff : Gear
 
 		// DefaultToStaff handles setting various Item values that magic staff weapons use.
 		// Hover over DefaultToStaff in Visual Studio to read the documentation!
-		Item.DefaultToStaff(ModContent.ProjectileType<SparklingBall>(), 16, 25, 12);
+		Item.DefaultToStaff(ModContent.ProjectileType<SparklingBallProjectile>(), 16, 25, 12);
 
 		// Customize the UseSound. DefaultToStaff sets UseSound to SoundID.Item43, but we want SoundID.Item20
 		Item.UseSound = SoundID.Item20;

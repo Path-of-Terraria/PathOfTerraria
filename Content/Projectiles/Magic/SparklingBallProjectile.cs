@@ -4,9 +4,9 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Magic;
 
-public class SparklingBall : ModProjectile
+public sealed class SparklingBallProjectile : ModProjectile
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Projectiles/SparklingBall";
+	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Projectiles/SparklingBallProjectile";
 
 	public override void SetDefaults()
 	{
@@ -18,25 +18,34 @@ public class SparklingBall : ModProjectile
 		Projectile.timeLeft = 600;
 	}
 
-	public override void AI() {
+	public override void AI()
+	{
 		Projectile.velocity.Y += Projectile.ai[0];
-		if (Main.rand.NextBool(3)) {
+
+		if (Main.rand.NextBool(3))
+		{
 			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<SparkleDust>(), Projectile.velocity.X * 0.5f, Projectile.velocity.Y * 0.5f);
 		}
 	}
 
-	public override bool OnTileCollide(Vector2 oldVelocity) {
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
 		Projectile.penetrate--;
-		if (Projectile.penetrate <= 0) {
+
+		if (Projectile.penetrate <= 0)
+		{
 			Projectile.Kill();
 		}
-		else {
+		else
+		{
 			Projectile.ai[0] += 0.1f;
-			if (Projectile.velocity.X != oldVelocity.X) {
+			if (Projectile.velocity.X != oldVelocity.X)
+			{
 				Projectile.velocity.X = -oldVelocity.X;
 			}
 
-			if (Projectile.velocity.Y != oldVelocity.Y) {
+			if (Projectile.velocity.Y != oldVelocity.Y)
+			{
 				Projectile.velocity.Y = -oldVelocity.Y;
 			}
 
@@ -47,15 +56,18 @@ public class SparklingBall : ModProjectile
 		return false;
 	}
 
-	public override void OnKill(int timeLeft) {
-		for (int k = 0; k < 5; k++) {
+	public override void OnKill(int timeLeft)
+	{
+		for (int k = 0; k < 5; k++)
+		{
 			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height, ModContent.DustType<SparkleDust>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
 		}
 
 		SoundEngine.PlaySound(SoundID.Item25, Projectile.position);
 	}
 
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) {
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
 		Projectile.ai[0] += 0.1f;
 		Projectile.velocity *= 0.75f;
 	}
