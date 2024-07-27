@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 
@@ -9,15 +9,25 @@ internal class Chestplate : Gear
 	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Armor/Body/Base";
 
 	protected override string GearLocalizationCategory => "Chestplate";
-	public override float DropChance => 1f;
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
-		ItemType = ItemType.Chestplate;
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Chestplate;
 	}
 
 	public override void PostRoll()
 	{
-		Item.defense = ItemLevel / 6 + 1;
+		Item.defense = GetItemLevel.Invoke(Item) / 6 + 1;
 	}
 }

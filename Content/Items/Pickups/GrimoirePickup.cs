@@ -1,9 +1,8 @@
 ﻿using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
-using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Common;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -13,24 +12,31 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
-internal abstract class GrimoirePickup : PoTItem
+internal abstract class GrimoirePickup : ModItem
 {
 	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
 
-	/// <summary>
-	/// These materials shouldn't drop through the typical <see cref="PoTItem"/> system. These will manually add their drops to their respective NPC(s).
-	/// </summary>
-	public sealed override float DropChance => 0;
-
 	public abstract Point Size { get; }
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		// These materials shouldn't drop through the typical item system. These will manually add their drops to their respective NPC(s).
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0f;
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.width = Size.X;
 		Item.height = Size.Y;
 		Item.maxStack = 1;
 
-		ItemType = ItemType.Weapon;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Weapon;
 	}
 
 	public override bool ItemSpace(Player player)
@@ -81,7 +87,7 @@ internal abstract class GrimoirePickup : PoTItem
 
 	public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{
-		if (Affixes.Count > 0)
+		if (this.GetInstanceData().Affixes.Count > 0)
 		{
 			spriteBatch.Draw(GrimoirePickupLoader.AffixIconTex.Value, position - origin * 0.9f, Color.White);
 		}

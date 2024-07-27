@@ -32,6 +32,8 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Projectile.CloneDefaults(ProjectileID.JavelinFriendly);
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 10;

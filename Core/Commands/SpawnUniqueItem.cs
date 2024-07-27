@@ -63,12 +63,7 @@ public sealed class SpawnUniqueItem : ModCommand
 
 		for (int i = 0; i < count; i++)
 		{
-			ItemSpawner.SpawnRandomItem(
-				caller.Player.Center + new Vector2(relX, relY),
-				x => x.Item2 == ItemRarity.Unique,
-				(int)ilevel,
-				qualityIncrease
-			);
+			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), x => x.Rarity == ItemRarity.Unique, (int)ilevel, qualityIncrease);
 		}
 
 		caller.Reply("Item(s) spawned!", Color.Green);

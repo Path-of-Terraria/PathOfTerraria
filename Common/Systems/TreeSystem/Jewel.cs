@@ -1,16 +1,17 @@
 ﻿using System.Reflection;
+using PathOfTerraria.Core.Items;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.TreeSystem;
 
-internal abstract class Jewel : PoTItem
+internal abstract class Jewel : ModItem
 {
 	public virtual string EquppedTooltip
 	{
 		get
 		{
 			EntityModifier thisItemModifier = new EntityModifier();
-			ApplyAffixes(thisItemModifier);
+			PoTItemHelper.ApplyAffixes(Item, thisItemModifier);
 
 			string tooltip = "";
 			EntityModifier.GetChangeOnlyStrings(thisItemModifier).ForEach(s => tooltip += s + "\n");

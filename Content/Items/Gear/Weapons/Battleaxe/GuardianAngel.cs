@@ -5,26 +5,31 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Content.Projectiles.Melee;
-using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal class GuardianAngel : SteelBattleaxe
 {
-	public override float DropChance => 1f;
-	public override bool IsUnique => true;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.AltUseDescription");
-	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.Description");
-	public override int MinDropItemLevel => 25;
-
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
-		base.Defaults();
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.MinDropItemLevel = 25;
+		staticData.IsUnique = true;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.AltUseDescription");
+		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.Description");
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.width = 54;
 		Item.height = 54;
 	}

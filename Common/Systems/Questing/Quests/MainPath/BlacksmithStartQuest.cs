@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
@@ -36,18 +37,18 @@ internal class BlacksmithStartQuest : Quest
 
 				if (sword != -1)
 				{
-					var swordItem = Main.item[sword].ModItem as PoTItem;
-					swordItem.Rarity = ItemRarity.Magic;
-					swordItem.Roll(Main.rand.Next(6, 11));
+					Item item = Main.item[sword];
+					item.GetInstanceData().Rarity = ItemRarity.Magic;
+					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
 				}
 				
 				int axe = ItemSpawner.SpawnItemFromCategory<Battleaxe>(v);
 
 				if (axe != -1)
 				{
-					var axeItem = Main.item[axe].ModItem as PoTItem;
-					axeItem.Rarity = ItemRarity.Magic;
-					axeItem.Roll(Main.rand.Next(6, 11));
+					Item item = Main.item[axe];
+					item.GetInstanceData().Rarity = ItemRarity.Magic;
+					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
 				}
 			},
 			"500 experience (POC giving experience)\nSome gear with an affix\nA unique item\nAgain, just for POC reasons"),

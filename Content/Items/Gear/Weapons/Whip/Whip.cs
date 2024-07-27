@@ -2,9 +2,9 @@
 using PathOfTerraria.Common.Systems;
 using ReLogic.Content;
 using System.Collections.Generic;
-using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using Terraria.Localization;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 
@@ -23,12 +23,9 @@ internal abstract class Whip : Gear
 		public readonly bool DrawLine = drawLine;
 	}
 
-	public override float DropChance => 1f;
-
 	public abstract WhipDrawData DrawData { get; }
 	public abstract WhipSettings WhipSettings { get; }
 	protected override string GearLocalizationCategory => "Whip";
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Whip.AltUse");
 
 	/// <summary>
 	/// Stores a Whip's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.
@@ -37,14 +34,22 @@ internal abstract class Whip : Gear
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Whip.AltUse");
+
 		if (ModContent.HasAsset(Texture + "_Projectile"))
 		{
 			WhipProjectileSpritesById.Add(Type, ModContent.Request<Texture2D>(Texture + "_Projectile"));
 		}
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 5, 2, 4);
 		Item.channel = true;
 	}

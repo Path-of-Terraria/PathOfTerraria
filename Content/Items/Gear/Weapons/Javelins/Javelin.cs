@@ -1,6 +1,5 @@
-﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems;
-using Terraria;
+﻿using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -10,9 +9,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
 internal abstract class Javelin : Gear
 {
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Javelin.AltUse");
-	public override float DropChance => 1f;
-
 	/// <summary>
 	/// Used to define the size of the item and associated projectile in load time.
 	/// </summary>
@@ -30,8 +26,19 @@ internal abstract class Javelin : Gear
 		Mod.AddContent(new JavelinThrown(GetType().Name + "Thrown", ItemSize, DeathDustType));
 	}
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Javelin.AltUse");
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.DefaultToThrownWeapon(Mod.Find<ModProjectile>(GetType().Name + "Thrown").Type, 50, 7, true);
 		Item.consumable = false;
 		Item.SetWeaponValues(3, 1);

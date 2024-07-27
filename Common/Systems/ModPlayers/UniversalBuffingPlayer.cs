@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 internal class UniversalBuffingPlayer : ModPlayer
@@ -8,7 +8,11 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
-		(Player.inventory[0].ModItem as Gear)?.ApplyAffixes(UniversalModifier);
+		if (!Player.inventory[0].IsAir)
+		{
+			PoTItemHelper.ApplyAffixes(Player.inventory[0], UniversalModifier);
+
+		}
 
 		UniversalModifier.ApplyTo(Player);
 

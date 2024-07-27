@@ -2,9 +2,10 @@
 
 internal class Broadsword : Sword
 {
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
+		base.SetDefaults();
+
 		Item.width = 52; 
 		Item.height = 52;
 		Item.damage = 35;

@@ -1,9 +1,10 @@
-﻿using System.Reflection;
+﻿using PathOfTerraria.Core.Items;
+using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Socketables;
 
-public abstract class Socketable : ModItem
+public abstract class Socketable : ModItem, GenerateName.IItem
 {
 	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Socketable/Placeholder";
 	
@@ -28,7 +29,7 @@ public abstract class Socketable : ModItem
 	/// <param name="item">the item this is socketed into.</param>
 	public virtual void UpdateEquip(Player player, Item item) { }
 
-	public virtual string GenerateName() { return "Unknown Socket"; }
+	public virtual string GenerateName(string defaultName) { return "Unknown Socket"; }
 
 	public void Save(TagCompound tag)
 	{

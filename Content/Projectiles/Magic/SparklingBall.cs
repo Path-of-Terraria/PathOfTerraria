@@ -8,7 +8,8 @@ public class SparklingBall : ModProjectile
 {
 	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Projectiles/SparklingBall";
 
-	public override void SetDefaults() {
+	public override void SetDefaults()
+	{
 		Projectile.width = 16;
 		Projectile.height = 16;
 		Projectile.friendly = true;

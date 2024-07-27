@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
-using PathOfTerraria.Core;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -11,13 +11,22 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 
 internal class GrimoireItem : Gear
 {
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.AltUseDescription");
-	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.Description");
-	public override float DropChance => 0;
 	protected override string GearLocalizationCategory => "Grimoire";
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.AltUseDescription");
+		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.Description");
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 		Item.width = 30;
 		Item.height = 34;
@@ -33,7 +42,8 @@ internal class GrimoireItem : Gear
 		Item.channel = true;
 		Item.noMelee = true;
 
-		ItemType = ItemType.Magic;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Magic;
 	}
 
 	public override bool AltFunctionUse(Player player)
