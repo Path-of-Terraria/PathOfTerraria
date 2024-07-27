@@ -22,7 +22,7 @@ public class HomingProjectile : ModProjectile
 	{
 		IOrderedEnumerable<NPC> collection = Main.npc
 			.Where(npc => npc.active && !npc.friendly && !npc.CountsAsACritter)
-			.OrderBy(npc => Projectile.Center.Distance(npc.Center));
+			.OrderBy(npc => Projectile.Center.DistanceSQ(npc.Center));
 		// might want to order by most surefire hit instead, meaning
 		// the npc that would require the least amount of rotation to hit
 
