@@ -38,6 +38,18 @@ public static class PoTItemHelper
 	{
 		return item.Item.GetStaticData();
 	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static GearInstanceData GetGearData(this Item item)
+	{
+		return item.GetGlobalItem<GearInstanceData>();
+	}
+
+	[MethodImpl(MethodImplOptions.AggressiveInlining)]
+	public static GearInstanceData GetGearData(this ModItem item)
+	{
+		return item.Item.GetGearData();
+	}
 	#endregion
 
 	#region Rolling

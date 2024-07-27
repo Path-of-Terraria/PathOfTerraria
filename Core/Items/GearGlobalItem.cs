@@ -10,15 +10,11 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Items;
 
-internal sealed class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.IGlobal, ExtraRolls.IGlobal, SwapItemModifiers.IGlobal
+internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.IGlobal, ExtraRolls.IGlobal, SwapItemModifiers.IGlobal
 {
 	private static HashSet<int> _optInGearItems = [];
 
 	public override bool InstancePerEntity => true;
-
-	public Socketable[] Sockets { get; private set; } = [];
-
-	public int SelectedSocket { get; set; }
 
 	public void EquipItem(Player player, Item item)
 	{
@@ -161,14 +157,16 @@ internal sealed class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.
 			return;
 		}
 
-		if (Sockets.Length > 0)
+		GearInstanceData gearData = item.GetGearData();
+
+		if (gearData.Sockets.Length > 0)
 		{
 			tooltips.Add(new TooltipLine(Mod, "Space", " "));
 		}
 
-		for (int i = 0; i < Sockets.Length; i++)
+		for (int i = 0; i < gearData.Sockets.Length; i++)
 		{
-			Socketable socket = Sockets[i];
+			Socketable socket = gearData.Sockets[i];
 			string text = "";
 
 			if (socket is not null)
@@ -177,7 +175,7 @@ internal sealed class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.
 			}
 
 			var affixLine = new TooltipLine(Mod, $"Socket{i}",
-				$"[i:{(i == SelectedSocket ? ItemID.NanoBullet : ItemID.ChlorophyteBullet)}] " + text);
+				$"[i:{(i == gearData.SelectedSocket ? ItemID.NanoBullet : ItemID.ChlorophyteBullet)}] " + text);
 			tooltips.Add(affixLine);
 		}
 	}
@@ -189,7 +187,8 @@ internal sealed class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.
 			return;
 		}
 
-		SelectedSocket = 0;
+		GearInstanceData gearData = item.GetGearData();
+		gearData.SelectedSocket = 0;
 
 		PoTInstanceItemData data = item.GetInstanceData();
 
@@ -200,7 +199,7 @@ internal sealed class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.
 			ItemRarity.Rare => Main.rand.Next(1, 3),
 			_ => 0,
 		};
-		Sockets = new Socketable[maxSockets];
+		gearData.Sockets = new Socketable[maxSockets];
 	}
 
 	public override void UpdateEquip(Item item, Player player)
@@ -212,7 +211,9 @@ internal sealed class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.
 			return;
 		}
 
-		foreach (Socketable socket in Sockets.Where(s => s is not null))
+		GearInstanceData gearData = item.GetGearData();
+
+		foreach (Socketable socket in gearData.Sockets.Where(s => s is not null))
 		{
 			socket.UpdateEquip(player, item);
 		}
@@ -255,44 +256,5 @@ internal sealed class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.
 		}
 
 		return player.GetModPlayer<AltUsePlayer>().AltFunctionAvailable;
-	}
-
-	public override void SaveData(Item item, TagCompound tag)
-	{
-		base.SaveData(item, tag);
-
-		tag["socketCount"] = Sockets.Length;
-
-		for (int i = 0; i < Sockets.Length; i++)
-		{
-			if (Sockets[i] is not { } socket)
-			{
-				continue;
-			}
-
-			var newTag = new TagCompound();
-			socket.Save(newTag);
-			tag.Add("Socket" + i, newTag);
-		}
-	}
-
-	public override void LoadData(Item item, TagCompound tag)
-	{
-		base.LoadData(item, tag);
-
-		int socketCount = tag.GetInt("socketCount");
-		Sockets = new Socketable[socketCount];
-
-		for (int i = 0; i < Sockets.Length; i++)
-		{
-			if (tag.TryGet("Socket" + i, out TagCompound newTag))
-			{
-				var g = Socketable.FromTag(newTag);
-				if (g is not null)
-				{
-					Sockets[i] = g;
-				}
-			}
-		}
 	}
 }
