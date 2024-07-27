@@ -58,7 +58,7 @@ internal class ManaPotionPickup : ModItem
 	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 	{
 		Texture2D tex = ModContent.Request<Texture2D>(Texture).Value;
-		Texture2D glow = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/GlowAlpha").Value;
+		Texture2D glow = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/GlowAlpha").Value;
 
 		var glowColor = new Color(50, 90, 255)
 		{

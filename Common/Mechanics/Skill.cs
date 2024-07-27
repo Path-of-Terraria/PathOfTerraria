@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Content.Skills.Melee;
 using PathOfTerraria.Helpers;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
@@ -19,6 +20,9 @@ public abstract class Skill
 
 	public virtual string Name => GetType().Name;
 	public virtual string Texture => $"{nameof(PathOfTerraria)}/Assets/Skills/" + GetType().Name;
+
+	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria.Skills." + Name + ".Name");
+	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria.Skills." + Name + ".Description");
 
 	/// <summary>
 	/// Creates a default instance of the given <see cref="Skill"/> with 0 for all ctor parameters, aside from 1 for <see cref="Level"/>.

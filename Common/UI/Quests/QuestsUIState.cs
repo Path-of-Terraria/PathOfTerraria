@@ -57,7 +57,7 @@ public class QuestsUIState : CloseableSmartUi
 		Panel.Append(_questDetails);
 		_questDetails.PopulateQuestSteps();
 
-		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/CloseButton"));
+		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/CloseButton"));
 		_closeButton.Left.Set(0, 0.83f);
 		_closeButton.Top.Set(40, 0f);
 		_closeButton.Width.Set(38, 0);

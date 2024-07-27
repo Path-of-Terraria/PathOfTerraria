@@ -8,9 +8,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class Sword : Gear
+internal abstract class Sword : Gear
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Sword/Base";
 	public override float DropChance => 1f;
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Sword.AltUse");
 

@@ -46,92 +46,92 @@ public sealed class UIGearInventory : UIState
 	public const float LoadoutPadding = 8f;
 
 	public static readonly Asset<Texture2D> DefaultFrameTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame_Default",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Frame_Default",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> VanityFrameTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame_Vanity",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Frame_Vanity",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> DyeFrameTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Frame_Dye",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Frame_Dye",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> LeftButtonTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Button_Left",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Button_Left",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> RightButtonTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Button_Right",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Button_Right",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> HelmetIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Helmet",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Helmet",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> ChestIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Chest",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Chest",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> LegsIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Legs",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Legs",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> WeaponIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Weapon",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Weapon",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> OffhandIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Offhand",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Offhand",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> RingIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Ring",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Ring",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> NecklaceIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Necklace",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Necklace",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> WingsIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Wings",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Wings",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> DyeIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Dye",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Dye",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> DefenseCounterTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/Defense",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/Defense",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> FirstLoadoutIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/FirstLoadout",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/FirstLoadout",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> SecondLoadoutIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/SecondLoadout",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/SecondLoadout",
 		AssetRequestMode.ImmediateLoad
 	);
 
 	public static readonly Asset<Texture2D> ThirdLoadoutIconTexture = ModContent.Request<Texture2D>(
-		$"{nameof(PathOfTerraria)}/Assets/GUI/Inventory/ThirdLoadout",
+		$"{nameof(PathOfTerraria)}/Assets/UI/Inventory/ThirdLoadout",
 		AssetRequestMode.ImmediateLoad
 	);
 

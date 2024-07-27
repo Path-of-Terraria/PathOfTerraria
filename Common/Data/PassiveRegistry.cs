@@ -40,7 +40,7 @@ public class PassiveRegistry : ILoadable
 	/// <returns></returns>
 	private static void LoadJsonFilesToMapAsync()
 	{
-		Stream passiveStream = PathOfTerraria.Instance.GetFileStream($"Data/Passives.json");
+		Stream passiveStream = PathOfTerraria.Instance.GetFileStream($"Common/Data/Passives.json");
 		using var passiveReader = new StreamReader(passiveStream);
 		string passiveJson = passiveReader.ReadToEnd();
 		List<PassiveData> passiveData = JsonSerializer.Deserialize<List<PassiveData>>(passiveJson, Options);

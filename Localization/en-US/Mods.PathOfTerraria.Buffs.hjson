@@ -3,12 +3,27 @@ BattleaxeBuff: {
 	Description: Increased damage and increased taken damage
 }
 
+Battleaxe: {
+	DisplayName: Battleaxe
+	Description: Mods.PathOfTerraria.Buffs.Battleaxe.Description
+}
+
 RageBuff: {
 	DisplayName: Berserk
 	Description: Increased damage and greatly increased knockback
 }
 
+Rage: {
+	DisplayName: Rage
+	Description: Mods.PathOfTerraria.Buffs.Rage.Description
+}
+
 ArmorShredDebuff: {
 	DisplayName: Armor Shred Debuff
 	Description: ""
+}
+
+ArmorShred: {
+	DisplayName: Armor Shred
+	Description: Mods.PathOfTerraria.Buffs.ArmorShred.Description
 }

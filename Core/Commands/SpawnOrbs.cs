@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Experience;
+using PathOfTerraria.Common.Systems.Experience;
 
 namespace PathOfTerraria.Core.Commands;
 
@@ -32,7 +32,6 @@ public sealed class SpawnOrbs : ModCommand
 			Vector2.UnitX.RotatedByRandom(MathHelper.Pi) * 6,
 			caller.Player.whoAmI
 		);
-		
 		caller.Reply($"Spawned {indices.Length} experience orbs!", Color.Green);
 	}
 }

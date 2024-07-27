@@ -18,7 +18,7 @@ public class GrimoireInvButton : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Texture2D texture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/GrimoireButton").Value;
+		Texture2D texture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/GrimoireButton").Value;
 		Vector2 pos = new(GetTextureXPosition(), 220);
 		spriteBatch.Draw(texture, pos, null, Color.White, 0, new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
 	}

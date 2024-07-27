@@ -57,7 +57,7 @@ internal abstract class Passive
 				return _size;
 			}
 
-			_size = StringUtils.GetSizeOfTexture($"Assets/Passives/{InternalIdentifier}") ?? StringUtils.GetSizeOfTexture("Assets/GUI/PassiveFrameSmall") ?? new Vector2();
+			_size = StringUtils.GetSizeOfTexture($"Assets/Passives/{InternalIdentifier}") ?? StringUtils.GetSizeOfTexture("Assets/UI/PassiveFrameSmall") ?? new Vector2();
 				
 			return _size;
 		}
@@ -113,7 +113,7 @@ internal abstract class Passive
 
 	public void Draw(SpriteBatch spriteBatch, Vector2 center)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/PassiveFrameSmall").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/PassiveFrameSmall").Value;
 
 		if (ModContent.HasAsset($"{nameof(PathOfTerraria)}/Assets/Passives/" + InternalIdentifier))
 		{

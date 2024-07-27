@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Experience;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;

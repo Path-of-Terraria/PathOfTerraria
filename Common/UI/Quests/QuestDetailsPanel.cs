@@ -32,7 +32,7 @@ internal class QuestDetailsPanel : SmartUIElement
 
 	private void DrawBack(SpriteBatch spriteBatch)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/QuestBookBackground").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/QuestBookBackground").Value;
 		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 	}
 

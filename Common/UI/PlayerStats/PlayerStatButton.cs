@@ -17,14 +17,14 @@ public class PlayerStatButton : SmartUIState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Texture2D texture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/PlayerStatButton").Value;
+		Texture2D texture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/PlayerStatButton").Value;
 		Vector2 pos = new(GetTextureXPosition(), 150);
 		spriteBatch.Draw(texture, pos, null, Color.White, 0, new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		Texture2D texture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/GUI/PlayerStatButton").Value;
+		Texture2D texture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/PlayerStatButton").Value;
 		Vector2 pos = new(GetTextureXPosition(), 150);
 
 		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f), (int)pos.Y, texture.Width, texture.Height);

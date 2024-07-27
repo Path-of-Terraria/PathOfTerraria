@@ -1,5 +1,5 @@
-﻿using System.IO;
 using PathOfTerraria.Common.Systems.Experience;
+using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
@@ -7,7 +7,7 @@ internal static class ExperienceHandler
 {
 	/// <summary>
 	/// Spawns an orb on all clients but <paramref name="target"/>. 
-	/// Generally, this should only be called by <see cref="ExperienceTracker.SpawnExperience(int, Vector2, Vector2, int, bool)"/>.
+	/// Generally, this should only be called by <see cref="ExperienceModSystem.SpawnExperience(int, Vector2, Vector2, int, bool)"/>.
 	/// </summary>
 	/// <param name="target">Target for the exp to aim for.</param>
 	/// <param name="xp">Amount of XP to spawn.</param>

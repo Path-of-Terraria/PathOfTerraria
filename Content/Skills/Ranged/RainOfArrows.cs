@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -19,6 +20,7 @@ public class RainOfArrows : Skill
 		Cooldown = MaxCooldown = 10 * 60;
 		ManaCost = 20;
 		Duration = 0;
+		WeaponType = ItemType.Ranged;
 	}
 
 	public override void UseSkill(Player player)

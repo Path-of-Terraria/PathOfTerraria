@@ -4,7 +4,6 @@ using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 

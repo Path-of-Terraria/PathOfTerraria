@@ -14,7 +14,7 @@ public class AltUseUISystem : ModSystem
 
 	public override void Load()
 	{
-		AltBar = ModContent.Request<Texture2D>("PathOfTerraria/Assets/GUI/AltBar");
+		AltBar = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/AltBar");
 	}
 
 	public override void Unload()
