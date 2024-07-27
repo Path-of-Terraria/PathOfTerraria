@@ -12,14 +12,6 @@ namespace PathOfTerraria;
 public sealed class PathOfTerraria : Mod
 {
 	public static PathOfTerraria Instance => ModContent.GetInstance<PathOfTerraria>();
-	
-	public override void Load()
-	{
-		if (Main.netMode != NetmodeID.Server)
-		{
-			PrimitiveDrawing.Init(Main.graphics.GraphicsDevice);
-		}
-	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
 	{
