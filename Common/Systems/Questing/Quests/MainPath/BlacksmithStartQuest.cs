@@ -26,7 +26,7 @@ internal class BlacksmithStartQuest : Quest
 		new CollectCount(ItemID.Wood, 20, s => $"Collect {s} wood."),
 	];
 
-	public override int NPCQuestGiver => ModContent.NPCType<Blacksmith>();
+	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[

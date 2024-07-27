@@ -1,7 +1,7 @@
 Shop: Shop
 Quest: Quest
 
-Blacksmith: {
+BlacksmithNPC: {
 	DisplayName: Thrain Ironfist
 
 	Dialogue: {
@@ -13,7 +13,7 @@ Blacksmith: {
 	}
 }
 
-Barkeep: {
+BarkeepNPC: {
 	DisplayName: Brom Hardy
 
 	Dialogue: {
@@ -24,7 +24,7 @@ Barkeep: {
 	}
 }
 
-Hunter: {
+HunterNPC: {
 	DisplayName: Elara
 
 	Dialogue: {

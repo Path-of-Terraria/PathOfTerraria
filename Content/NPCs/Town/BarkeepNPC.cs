@@ -1,14 +1,13 @@
-using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.GameContent.Bestiary;
 using PathOfTerraria.Helpers.Extensions;
+using PathOfTerraria.Utilities;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class Barkeep : ModNPC
+public sealed class BarkeepNPC : ModNPC
 {
 	public override void SetStaticDefaults()
 	{
@@ -38,49 +37,30 @@ public class Barkeep : ModNPC
 		AnimationType = NPCID.Guide;
 	}
 
-	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-	{
-		//bestiaryEntry.AddInfo(this, "Surface");
-	}
-
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 		{
-			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Barkeep_0").Type);
+			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BarkeepNPC_0").Type);
 
 			for (int i = 0; i < 2; ++i)
 			{
-				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Barkeep_1").Type);
-				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Barkeep_2").Type);
+				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BarkeepNPC_1").Type);
+				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BarkeepNPC_2").Type);
 			}
 		}
 	}
 
-	public override List<string> SetNPCNameList()
-	{
-		return [""];
-	}
-
 	public override string GetChat()
 	{
-		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.Barkeep.Dialogue." + Main.rand.Next(4));
+		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.BarkeepNPC.Dialogue." + Main.rand.Next(4));
 	}
 
 	public override void AddShops()
 	{
-		// Copies the vanilla DD2Bartender (Tavernkeep) to this NPC
-
-		if (NPCShopDatabase.TryGetNPCShop("Terraria/DD2Bartender/Shop", out AbstractNPCShop shop))
+		if (!ShopUtils.TryCloneNpcShop("Terraria/DD2Bartender/Shop", Type))
 		{
-			var selfShop = new NPCShop(Type);
-
-			foreach (AbstractNPCShop.Entry item in shop.ActiveEntries)
-			{
-				selfShop.Add(new NPCShop.Entry(item.Item, [.. item.Conditions]));
-			}
-
-			selfShop.Register();
+			Mod.Logger.Error($"Failed to clone shop 'Terraria/DD2Bartender/Shop' to NPC '{Name}'!");
 		}
 	}
 
@@ -116,7 +96,7 @@ public class Barkeep : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		//button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		// button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -125,11 +105,11 @@ public class Barkeep : ModNPC
 		{
 			shopName = "Shop";
 		}
-		//else
-		//{
-		//	Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Blacksmith.Dialogue.Quest");
-		//	Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
-		//}
+		/*else
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Blacksmith.Dialogue.Quest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
+		}*/
 	}
 
 	private float animCounter;

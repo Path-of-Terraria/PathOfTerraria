@@ -10,7 +10,7 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class Hunter : ModNPC
+public class HunterNPC : ModNPC
 {
 	/// <summary>
 	///     The index of the current dialogue sentence.
@@ -21,27 +21,19 @@ public class Hunter : ModNPC
 		set => dialogue = value > 2 ? 0 : value;
 	}
 
-	public override string HeadTexture => $"{nameof(PathOfTerraria)}/Assets/NPCs/Town/Hunter_Head";
-
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/NPCs/Town/Hunter";
-
 	private int dialogue;
 
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 23;
-
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
-
 		NPCID.Sets.DangerDetectRange[Type] = 400;
-
 		NPCID.Sets.AttackFrameCount[Type] = 4;
 		NPCID.Sets.AttackType[Type] = 1;
 		NPCID.Sets.AttackTime[Type] = 60;
 		NPCID.Sets.AttackAverageChance[Type] = 10;
 
 		NPCID.Sets.NPCBestiaryDrawModifiers modifiers = new() { Velocity = 1f };
-
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, modifiers);
 	}
 
@@ -49,30 +41,19 @@ public class Hunter : ModNPC
 	{
 		NPC.townNPC = true;
 		NPC.friendly = true;
-
 		NPC.lifeMax = 250;
-
 		NPC.width = 30;
 		NPC.height = 50;
-
 		NPC.knockBackResist = 0.4f;
-
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
-
 		NPC.aiStyle = NPCAIStyleID.Passive;
-
 		AnimationType = NPCID.BestiaryGirl;
 	}
 
 	public override ITownNPCProfile TownNPCProfile()
 	{
 		return this.DefaultProfile();
-	}
-
-	public override List<string> SetNPCNameList()
-	{
-		return [];
 	}
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
@@ -104,7 +85,6 @@ public class Hunter : ModNPC
 		int type = ModContent.ItemType<WoodenBow>();
 		Main.instance.LoadItem(type);
 		Asset<Texture2D> asset = TextureAssets.Item[type];
-
 		item = asset.Value;
 		itemFrame = asset.Frame();
 	}

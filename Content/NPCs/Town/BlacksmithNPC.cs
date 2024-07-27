@@ -1,10 +1,8 @@
-using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.GameContent.Bestiary;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Helpers.Extensions;
@@ -12,7 +10,7 @@ using PathOfTerraria.Helpers.Extensions;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class Blacksmith : ModNPC
+public class BlacksmithNPC : ModNPC
 {
 	public override void SetStaticDefaults()
 	{
@@ -42,33 +40,23 @@ public class Blacksmith : ModNPC
 		AnimationType = NPCID.Guide;
 	}
 
-	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-	{
-		//bestiaryEntry.AddInfo(this, "Surface");
-	}
-
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
 		{
-			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Blacksmith_0").Type);
+			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BlacksmithNPC_0").Type);
 
 			for (int i = 0; i < 2; ++i)
 			{
-				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Blacksmith_1").Type);
-				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("Blacksmith_2").Type);
+				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BlacksmithNPC_1").Type);
+				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BlacksmithNPC_2").Type);
 			}
 		}
 	}
 
-	public override List<string> SetNPCNameList()
-	{
-		return [""];
-	}
-
 	public override string GetChat()
 	{
-		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.Blacksmith.Dialogue." + Main.rand.Next(4));
+		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue." + Main.rand.Next(4));
 	}
 
 	public override void AddShops()
@@ -122,7 +110,7 @@ public class Blacksmith : ModNPC
 		}
 		else
 		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Blacksmith.Dialogue.Quest");
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
 		}
 	}
