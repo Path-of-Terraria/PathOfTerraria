@@ -9,23 +9,23 @@ internal class MiscellaneousLoader : ModSystem
 {
 	public override void Load()
 	{
-		ItemDatabase.RegisterVanillaItem(ItemID.SolarEruption, ItemType.Spear);
-		ItemDatabase.RegisterVanillaItem(ItemID.PiercingStarlight, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.VampireKnives, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterVanillaItem(ItemID.Zenith, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.SolarEruption, ItemType.Spear);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.PiercingStarlight, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.VampireKnives, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Zenith, ItemType.Sword);
 
 		// Prehardmode
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Terragrim, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.Terragrim, ItemType.Ranged); // TODO
 
 		// Hardmode
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.Arkhalis, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.JoustingLance, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ShadowFlameKnife, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.HallowJoustingLance, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.MonkStaffT1, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ScourgeoftheCorruptor, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.ShadowJoustingLance, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.MonkStaffT3, ItemType.Ranged); // TODO
-		ItemDatabase.RegisterUniqueVanillaItem(ItemID.DayBreak, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.Arkhalis, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.JoustingLance, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.ShadowFlameKnife, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.HallowJoustingLance, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.MonkStaffT1, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.ScourgeoftheCorruptor, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.ShadowJoustingLance, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.MonkStaffT3, ItemType.Ranged); // TODO
+		ItemDatabase.RegisterUniqueVanillaItemAsGear(ItemID.DayBreak, ItemType.Ranged); // TODO
 	}
 }

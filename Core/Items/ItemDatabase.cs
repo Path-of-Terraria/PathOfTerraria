@@ -116,14 +116,15 @@ public sealed class ItemDatabase : ModSystem
 		return powerDecrease;
 	}
 
-	public static void RegisterVanillaItem(int itemId, ItemType itemType)
+	public static void RegisterVanillaItemAsGear(int itemId, ItemType itemType)
 	{
+		GearGlobalItem.MarkItemAsGear(itemId);
 		_vanillaItems[itemId] = itemType;
 	}
 
-	public static void RegisterUniqueVanillaItem(int itemId, ItemType itemType)
+	public static void RegisterUniqueVanillaItemAsGear(int itemId, ItemType itemType)
 	{
-		RegisterVanillaItem(itemId, itemType);
+		RegisterVanillaItemAsGear(itemId, itemType);
 		_uniqueVanillaItems.Add(itemId);
 	}
 }

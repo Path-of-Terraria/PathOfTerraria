@@ -8,53 +8,53 @@ internal class SwordLoader : ModSystem
 {
 	public override void Load()
 	{
-		ItemDatabase.RegisterVanillaItem(ItemID.BeeKeeper, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.BladeofGrass, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Bladetongue, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.BloodButcherer, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.DD2SquireDemonSword, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.BreakerBlade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.BreathingReed, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Excalibur, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Flymeal, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Frostbrand, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.HamBat, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.IceBlade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Keybrand, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.LightsBane, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Meowmere, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Muramasa, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.NightsEdge, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.BluePhaseblade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.GreenPhaseblade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.RedPhaseblade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.YellowPhaseblade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.PurplePhaseblade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.WhitePhaseblade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.OrangePhaseblade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.BluePhasesaber, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.GreenPhasesaber, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.RedPhasesaber, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.YellowPhasesaber, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.PurplePhasesaber, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.WhitePhasesaber, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.OrangePhasesaber, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.PsychoKnife, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Starfury, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.StarWrath, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.TentacleSpike, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.TerraBlade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.TheHorsemansBlade, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.TragicUmbrella, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.TrueExcalibur, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.TrueNightsEdge, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.Umbrella, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.FieryGreatsword, ItemType.Sword);
-		ItemDatabase.RegisterVanillaItem(ItemID.WaffleIron, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BeeKeeper, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BladeofGrass, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Bladetongue, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BloodButcherer, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.DD2SquireDemonSword, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BreakerBlade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BreathingReed, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Excalibur, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Flymeal, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Frostbrand, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.HamBat, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.IceBlade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Keybrand, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.LightsBane, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Meowmere, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Muramasa, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.NightsEdge, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BluePhaseblade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.GreenPhaseblade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.RedPhaseblade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.YellowPhaseblade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.PurplePhaseblade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.WhitePhaseblade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.OrangePhaseblade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BluePhasesaber, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.GreenPhasesaber, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.RedPhasesaber, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.YellowPhasesaber, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.PurplePhasesaber, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.WhitePhasesaber, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.OrangePhasesaber, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.PsychoKnife, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Starfury, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.StarWrath, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.TentacleSpike, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.TerraBlade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.TheHorsemansBlade, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.TragicUmbrella, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.TrueExcalibur, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.TrueNightsEdge, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Umbrella, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.FieryGreatsword, ItemType.Sword);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.WaffleIron, ItemType.Sword);
 
 		void AddShortsword(short itemId, string material, bool onlyMat = false)
 		{
-			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Sword);
+			ItemDatabase.RegisterUniqueVanillaItemAsGear(itemId, ItemType.Sword);
 		}
 
 		// Shortswords
@@ -71,7 +71,7 @@ internal class SwordLoader : ModSystem
 
 		void AddBroadsword(short itemId, string name)
 		{
-			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Sword);
+			ItemDatabase.RegisterUniqueVanillaItemAsGear(itemId, ItemType.Sword);
 		}
 
 		// Broadswords, Alphabetically (by in-game name)

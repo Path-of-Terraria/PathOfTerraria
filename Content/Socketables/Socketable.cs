@@ -20,7 +20,7 @@ public abstract class Socketable : ModItem, GenerateName.IItem
 	/// </summary>
 	/// <param name="player">the player wielding the weapon this is socketed into.</param>
 	/// <param name="item">the item this is socketed into.</param>
-	public virtual void OnUnSocket(Player player, Item item) { }
+	public virtual void OnUnsocket(Player player, Item item) { }
 
 	/// <summary>
 	/// Updates every frame, only activates when socketed

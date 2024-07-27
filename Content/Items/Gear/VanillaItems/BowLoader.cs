@@ -8,21 +8,21 @@ internal class BowLoader : ModSystem
 {
 	public override void Load()
 	{
-		ItemDatabase.RegisterVanillaItem(ItemID.DD2BetsyBow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.BloodRainBow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.ChlorophyteShotbow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.DaedalusStormbow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.FairyQueenRangedItem, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.HellwingBow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.IceBow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.Marrow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.MoltenFury, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.Phantasm, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.DD2PhoenixBow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.PulseBow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.ShadowFlameBow, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.BeesKnees, ItemType.Bow);
-		ItemDatabase.RegisterVanillaItem(ItemID.Tsunami, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.DD2BetsyBow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BloodRainBow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.ChlorophyteShotbow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.DaedalusStormbow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.FairyQueenRangedItem, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.HellwingBow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.IceBow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Marrow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.MoltenFury, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Phantasm, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.DD2PhoenixBow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.PulseBow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.ShadowFlameBow, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.BeesKnees, ItemType.Bow);
+		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Tsunami, ItemType.Bow);
 
 		// Prehardmode
 		LoadBow(ItemID.BorealWoodBow, "BorealWoodBow");
@@ -55,7 +55,7 @@ internal class BowLoader : ModSystem
 
 		void LoadBow(short itemId, string name)
 		{
-			ItemDatabase.RegisterUniqueVanillaItem(itemId, ItemType.Bow);
+			ItemDatabase.RegisterUniqueVanillaItemAsGear(itemId, ItemType.Bow);
 		}
 	}
 }
