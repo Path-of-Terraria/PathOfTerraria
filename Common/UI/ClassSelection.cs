@@ -12,8 +12,7 @@ namespace PathOfTerraria.Common.UI;
 
 public class ClassSelection : SmartUIState
 {
-	public bool IsVisible = true;
-	public override bool Visible => IsVisible;
+	public override bool Visible => !Main.LocalPlayer?.GetModPlayer<ClassModPlayer>().HasSelectedClass() ?? false;
 	private bool _populated;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -29,16 +28,6 @@ public class ClassSelection : SmartUIState
     
     public override void Draw(SpriteBatch spriteBatch)
     {
-	    if (Main.LocalPlayer != null)
-	    {
-		    ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
-		    IsVisible = !mp.HasSelectedClass();
-		    if (!IsVisible)
-		    {
-			    return;
-		    }
-	    }
-
 	    if (!_populated)
 	    {
 		    _panel = new UIPanel();
@@ -128,8 +117,6 @@ public class ClassSelection : SmartUIState
 	    }
 	    
 	    Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = playerClass;
-	    
-		IsVisible = false;
 
 		Main.LocalPlayer.GetModPlayer<TreePlayer>().CreateTree();
 	}

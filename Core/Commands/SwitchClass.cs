@@ -23,7 +23,5 @@ public sealed class SwitchClass : ModCommand
 		}
 
 		classPlayer.SelectedClass = PlayerClass.None;
-		
-		UILoader.GetUIState<ClassSelection>().IsVisible = true;
 	}
 }
