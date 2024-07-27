@@ -14,73 +14,77 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 {
 	private static HashSet<int> _optInGearItems = [];
 
-	public void EquipItem(Player player, Item item)
+	public static void EquipItem(Item item, Player player)
 	{
-		if (!UseSockets())
+		if (!UseSockets(item))
 		{
 			return;
 		}
 
-		foreach (Socketable socket in Sockets)
+		foreach (Socketable socket in item.GetGearData().Sockets)
 		{
 			socket.OnSocket(player, item);
 		}
 	}
 
-	public void UnequipItem(Player player, Item item)
+	public static void UnequipItem(Item item, Player player)
 	{
-		if (!UseSockets())
+		if (!UseSockets(item))
 		{
 			return;
 		}
 
-		foreach (Socketable socket in Sockets)
+		foreach (Socketable socket in item.GetGearData().Sockets)
 		{
 			socket.OnUnsocket(player, item);
 		}
 	}
 
-	public bool UseSockets()
+	public static bool UseSockets(Item item)
 	{
-		return Sockets.Length > 0;
+		return IsGearItem(item) && item.GetGearData().Sockets.Length > 0;
 	}
 
-	public void NextSocket()
+	public static void NextSocket(Item item)
 	{
-		SelectedSocket++;
-		if (SelectedSocket >= Sockets.Length)
+		GearInstanceData gearData = item.GetGearData();
+		gearData.SelectedSocket++;
+		if (gearData.SelectedSocket >= gearData.Sockets.Length)
 		{
-			SelectedSocket = 0;
+			gearData.SelectedSocket = 0;
 		}
 	}
 
-	public void PrevSocket()
+	public static void PrevSocket(Item item)
 	{
-		SelectedSocket--;
-		if (SelectedSocket < 0)
+		GearInstanceData gearData = item.GetGearData();
+		gearData.SelectedSocket--;
+		if (gearData.SelectedSocket < 0)
 		{
-			SelectedSocket = Sockets.Length - 1;
+			gearData.SelectedSocket = gearData.Sockets.Length - 1;
 		}
 	}
 
-	public void Socket(Player player, Socketable socket)
+	public static void Socket(Socketable socket, Player player)
 	{
-		if (Sockets.Length == 0)
+		GearInstanceData gearData = socket.Item.GetGearData();
+
+		if (gearData.Sockets.Length == 0)
 		{
 			return;
 		}
 
-		if (Sockets[SelectedSocket] is not null)
+		if (gearData.Sockets[gearData.SelectedSocket] is not null)
 		{
-			Sockets[SelectedSocket].OnUnsocket(player, socket.Item);
-			Main.mouseItem = Sockets[SelectedSocket].Item;
+			gearData.Sockets[gearData.SelectedSocket].OnUnsocket(player, socket.Item);
+			Main.mouseItem = gearData.Sockets[gearData.SelectedSocket].Item;
 		}
 		else
 		{
 			Main.mouseItem = new Item();
 		}
 
-		Sockets[SelectedSocket] = socket;
+		gearData.Sockets[gearData.SelectedSocket] = socket;
 
 		if (IsActive(player, socket.Item))
 		{
@@ -88,21 +92,27 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		}
 	}
 
-	public void ShiftClick(Player player, Item item)
+	public static void ShiftClick(Item item, Player player)
 	{
+		if (!IsGearItem(item) && Main.mouseItem.ModItem is not Socketable)
+		{
+			return;
+		}
+
+		GearInstanceData gearData = item.GetGearData();
 		if (Main.mouseItem.active && Main.mouseItem.ModItem is Socketable)
 		{
-			Socket(player, Main.mouseItem.ModItem as Socketable);
+			Socket(Main.mouseItem.ModItem as Socketable, player);
 		}
-		else if (Sockets[SelectedSocket] is not null)
+		else if (gearData.Sockets[gearData.SelectedSocket] is not null)
 		{
 			if (IsActive(player, item))
 			{
-				Sockets[SelectedSocket].OnUnsocket(player, item);
+				gearData.Sockets[gearData.SelectedSocket].OnUnsocket(player, item);
 			}
 
-			Main.mouseItem = Sockets[SelectedSocket].Item;
-			Sockets[SelectedSocket] = null;
+			Main.mouseItem = gearData.Sockets[gearData.SelectedSocket].Item;
+			gearData.Sockets[gearData.SelectedSocket] = null;
 		}
 	}
 
