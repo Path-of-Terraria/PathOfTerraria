@@ -94,6 +94,24 @@ internal sealed class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.
 		}
 	}
 
+	public void ShiftClick(Player player, Item item)
+	{
+		if (Main.mouseItem.active && Main.mouseItem.ModItem is Socketable)
+		{
+			Socket(player, Main.mouseItem.ModItem as Socketable);
+		}
+		else if (Sockets[SelectedSocket] is not null)
+		{
+			if (IsActive(player, item))
+			{
+				Sockets[SelectedSocket].OnUnsocket(player, item);
+			}
+
+			Main.mouseItem = Sockets[SelectedSocket].Item;
+			Sockets[SelectedSocket] = null;
+		}
+	}
+
 	public override void Unload()
 	{
 		base.Unload();
