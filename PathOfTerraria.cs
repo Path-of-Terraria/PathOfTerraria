@@ -1,8 +1,3 @@
-global using Microsoft.Xna.Framework;
-global using Microsoft.Xna.Framework.Graphics;
-global using System;
-global using Terraria;
-global using Terraria.ModLoader;
 using PathOfTerraria.Content.Items.Gear;
 using ReLogic.Content.Sources;
 using System.IO;
