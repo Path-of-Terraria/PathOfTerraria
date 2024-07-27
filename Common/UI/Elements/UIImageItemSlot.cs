@@ -160,8 +160,16 @@ public class UIImageItemSlot : UIElement
 	{
 		base.Update(gameTime);
 
-		Asset<Texture2D> tex = Item.IsAir ? IconTexture : TextureAssets.Item[Item.type];
-
+		// FIX: This offsets the icon being drawn to the left in order to center it
+		// relative to the background frame.  By default, it's positioned in such a
+		// way that the leftmost portion of the item is aligned with the leftmost
+		// portion of the frame, causing the right side of the item to protrude out
+		// and offsetting it.  This offset messes up the traditional logic for
+		// scaling and centering the item, so we have to manually offset the item
+		// left to counteract this automatic positioning.  **THIS WILL BE REQUIRED
+		// VERTICALLY AS WELL**, though I'm not aware of any items that definitely
+		// trigger this vertically.
+		Asset<Texture2D> tex = GetIconToDraw();
 		if (tex.Width() > BackgroundTexture.Width())
 		{
 			Icon.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
@@ -193,7 +201,7 @@ public class UIImageItemSlot : UIElement
 			Icon.ImageScale = 1f;
 		}
 
-		Icon.SetImage(Item.IsAir ? IconTexture : TextureAssets.Item[Item.type]);
+		Icon.SetImage(GetIconToDraw());
 	}
 
 	protected virtual void UpdateInteraction()
@@ -217,5 +225,11 @@ public class UIImageItemSlot : UIElement
 		}
 
 		Main.LocalPlayer.mouseInterface = true;
+	}
+
+	// Because we can't access the texture being used by the UIImage.
+	protected virtual Asset<Texture2D> GetIconToDraw()
+	{
+		return Item.IsAir ? IconTexture : TextureAssets.Item[Item.type];
 	}
 }
