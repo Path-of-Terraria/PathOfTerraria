@@ -14,8 +14,6 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 {
 	private static HashSet<int> _optInGearItems = [];
 
-	public override bool InstancePerEntity => true;
-
 	public void EquipItem(Player player, Item item)
 	{
 		if (!UseSockets())
