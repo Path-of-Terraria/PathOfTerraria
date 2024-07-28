@@ -3,7 +3,6 @@ using Terraria.UI;
 using PathOfTerraria.Common.Loaders.UILoading;
 using Terraria.DataStructures;
 using PathOfTerraria.Common.UI.Hotbar.Components;
-using PathOfTerraria.Common.UI.Hotbar.Components.Sets;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
