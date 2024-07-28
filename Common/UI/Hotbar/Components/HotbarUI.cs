@@ -1,4 +1,5 @@
-﻿using Terraria.UI;
+﻿using System.Collections.Generic;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Hotbar.Components;
 
@@ -7,10 +8,10 @@ namespace PathOfTerraria.Common.UI.Hotbar.Components;
 /// </summary>
 internal sealed class HotbarUI : UIElement
 {
-	private readonly HotbarSetUI[] sets;
+	private readonly List<HotbarSetUI> sets = [];
 
-	public HotbarUI(params HotbarSetUI[] sets)
+	public void AddSet(HotbarSetUI set)
 	{
-		this.sets = sets;
+		sets.Add(set);
 	}
 }

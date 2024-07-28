@@ -53,7 +53,10 @@ internal sealed class NewHotbar : SmartUIState
 	{
 		base.OnInitialize();
 
-		Append(new HotbarUI(new HotbarCombatSetUI(), new HotbarBuildingSetUI()));
+		var hotbar = new HotbarUI();
+		hotbar.AddSet(new HotbarCombatSetUI());
+		hotbar.AddSet(new HotbarBuildingSetUI());
+		Append(hotbar);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
