@@ -23,7 +23,7 @@ SummoningMasteryPassive: {
 	Tooltip: Increases your summon damage by 5% per level
 }
 
-AddedLife: {
+LifePassive: {
 	Name: Empowered Flesh
 	Tooltip: Increases your maximum life by 20 per level
 }
