@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Utilities;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Ranged;

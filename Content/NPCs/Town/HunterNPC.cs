@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Helpers.Extensions;
