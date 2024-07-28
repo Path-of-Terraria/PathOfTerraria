@@ -1,7 +1,7 @@
 ﻿using ReLogic.Content;
 using Terraria.GameContent;
 
-namespace PathOfTerraria.Utilities;
+namespace PathOfTerraria.Common.Utilities;
 
 internal static class TextureUtils
 {

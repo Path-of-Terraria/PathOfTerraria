@@ -1,4 +1,4 @@
-namespace PathOfTerraria.Helpers.Extensions;
+namespace PathOfTerraria.Common.Utilities.Extensions;
 
 public static class ItemExtensions
 {

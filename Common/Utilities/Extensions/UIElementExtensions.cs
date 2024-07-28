@@ -1,6 +1,6 @@
 using Terraria.UI;
 
-namespace PathOfTerraria.Helpers.Extensions;
+namespace PathOfTerraria.Common.Utilities.Extensions;
 
 /// <summary>
 ///		Basic <see cref="UIElement"/> extensions.

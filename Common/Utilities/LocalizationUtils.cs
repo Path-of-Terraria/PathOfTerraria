@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Helpers;
+namespace PathOfTerraria.Common.Utilities;
 
 public static class LocalizationUtils
 {

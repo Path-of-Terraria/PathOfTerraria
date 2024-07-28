@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Utilities;
+﻿namespace PathOfTerraria.Common.Utilities;
 
 internal static class ShopUtils
 {
