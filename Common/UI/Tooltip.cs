@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Loaders.UILoading;
+using PathOfTerraria.Common.Utilities;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
@@ -48,7 +49,7 @@ public class Tooltip : SmartUIState, ILoadable
 	public static void SetTooltip(string newTooltip)
 	{
 		ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
-		tooltip = PathOfTerraria.Common.Utilities.StringUtils.WrapString(newTooltip, DrawWidth * 2, font, 1);
+		tooltip = StringUtils.WrapString(newTooltip, DrawWidth * 2, font, 1);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
