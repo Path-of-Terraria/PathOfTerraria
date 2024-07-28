@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common;
 using Terraria.ModLoader.IO;
-using TextCopy;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -20,7 +19,7 @@ internal sealed class CopyToClipboardGlobalItem : GlobalItem, CopyToClipboard.IG
 
 			item.ModItem.SaveData(tag);
 
-			ClipboardService.SetText(StringTagRelation.FromTag(tag));
+			SetText(StringTagRelation.FromTag(tag));
 		}
 #if DEBUG
 		else
@@ -29,8 +28,20 @@ internal sealed class CopyToClipboardGlobalItem : GlobalItem, CopyToClipboard.IG
 
 			item.ModItem.SaveData(tag);
 
-			item.ModItem.LoadData(StringTagRelation.FromString(ClipboardService.GetText(), tag));
+			item.ModItem.LoadData(StringTagRelation.FromString(GetText(), tag));
 		}
 	}
 #endif
+
+	// We should be using the provided Re-Logic clipboard services, but they're
+	// allegedly broken on Linux.
+	private static void SetText(string text)
+	{
+		SDL2.SDL.SDL_SetClipboardText(text);
+	}
+
+	private static string GetText()
+	{
+		return SDL2.SDL.SDL_GetClipboardText();
+	}
 }
