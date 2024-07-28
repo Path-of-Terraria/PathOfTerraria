@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Terraria.UI;
 using PathOfTerraria.Common.Loaders.UILoading;
 using Terraria.DataStructures;
+using PathOfTerraria.Common.UI.Hotbar.Components;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -46,6 +47,13 @@ internal sealed class NewHotbar : SmartUIState
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+	}
+
+	public override void OnInitialize()
+	{
+		base.OnInitialize();
+
+		Append(new HotbarUI(new HotbarCombatSetUI(), new HotbarBuildingSetUI()));
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
