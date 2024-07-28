@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Data.Models;
-using PathOfTerraria.Helpers;
+using PathOfTerraria.Common.Utilities;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.TreeSystem;

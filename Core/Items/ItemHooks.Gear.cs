@@ -14,7 +14,7 @@ public sealed class GearLocalizationCategory : ILoadable
 		void ModifyGearLocalizationCategory(Item item, ref string defaultCategory);
 	}
 
-	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).GearLocalizationCategory));
+	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).ModifyGearLocalizationCategory));
 
 	public static string Invoke(Item item)
 	{

@@ -1,7 +1,7 @@
 using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
-using PathOfTerraria.Helpers.Extensions;
-using PathOfTerraria.Utilities;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.ID;

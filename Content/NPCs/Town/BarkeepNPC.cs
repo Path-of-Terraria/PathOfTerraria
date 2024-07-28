@@ -1,8 +1,8 @@
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Helpers.Extensions;
-using PathOfTerraria.Utilities;
+using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Common.Utilities.Extensions;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

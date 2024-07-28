@@ -5,7 +5,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
-using PathOfTerraria.Helpers.Extensions;
+using PathOfTerraria.Common.Utilities.Extensions;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

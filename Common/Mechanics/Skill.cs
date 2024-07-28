@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Skills.Melee;
-using PathOfTerraria.Helpers;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
