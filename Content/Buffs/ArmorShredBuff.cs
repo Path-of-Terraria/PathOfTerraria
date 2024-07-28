@@ -3,7 +3,7 @@ namespace PathOfTerraria.Content.Buffs;
 
 public sealed class ArmorShredBuff : ModBuff
 {
-	private sealed class GlobalNPCImpl : GlobalNPC
+	private sealed class ArmorShredGlobalNPCImpl : GlobalNPC
 	{
 		public override void ModifyHitByItem(NPC npc, Player player, Item item, ref NPC.HitModifiers modifiers)
 		{
