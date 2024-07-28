@@ -8,9 +8,9 @@ namespace PathOfTerraria.Common.UI.Hotbar.Components;
 /// </summary>
 internal sealed class HotbarUI : UIElement
 {
-	private readonly List<HotbarSet> sets = [];
+	private readonly List<HotbarSetUI> sets = [];
 
-	public void AddSet(HotbarSet set)
+	public void AddSet(HotbarSetUI set)
 	{
 		sets.Add(set);
 	}

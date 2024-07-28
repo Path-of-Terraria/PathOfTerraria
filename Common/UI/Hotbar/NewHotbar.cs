@@ -54,8 +54,8 @@ internal sealed class NewHotbar : SmartUIState
 		base.OnInitialize();
 
 		var hotbar = new HotbarUI();
-		hotbar.AddSet(new CombatSet());
-		hotbar.AddSet(new BuildingSet());
+		hotbar.AddSet(new HotbarCombatSetUI());
+		hotbar.AddSet(new HotbarBuildingSetUI());
 		Append(hotbar);
 	}
 

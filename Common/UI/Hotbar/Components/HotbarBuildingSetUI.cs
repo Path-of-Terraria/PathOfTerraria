@@ -1,5 +1,5 @@
 ﻿namespace PathOfTerraria.Common.UI.Hotbar.Components;
 
-internal abstract class HotbarSet
+internal sealed class HotbarBuildingSetUI : HotbarSetUI
 {
 }
