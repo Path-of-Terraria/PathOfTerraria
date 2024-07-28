@@ -6,10 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Core.Items;
 
-internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.IGlobal, ExtraRolls.IGlobal, SwapItemModifiers.IGlobal
+internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.IGlobal, ExtraRolls.IGlobal, SwapItemModifiers.IGlobal, GeneratePrefix.IGlobal, GenerateSuffix.IGlobal
 {
 	private static HashSet<int> _optInGearItems = [];
 
@@ -263,5 +264,20 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		}
 
 		return player.GetModPlayer<AltUsePlayer>().AltFunctionAvailable;
+	}
+
+	void GeneratePrefix.IGlobal.ModifyPrefix(Item item, ref string prefix)
+	{
+		prefix = Language.SelectRandom((key, _) => BasicAffixSearchFilter(item, key, true)).Value;
+	}
+
+	void GenerateSuffix.IGlobal.ModifySuffix(Item item, ref string suffix)
+	{
+		suffix = Language.SelectRandom((key, _) => BasicAffixSearchFilter(item, key, false)).Value;
+	}
+
+	private static bool BasicAffixSearchFilter(Item item, string key, bool isPrefix)
+	{
+		return key.StartsWith("Mods.PathOfTerraria.Gear." + GearLocalizationCategory.Invoke(item) + (isPrefix ? ".Prefixes" : ".Suffixes"));
 	}
 }

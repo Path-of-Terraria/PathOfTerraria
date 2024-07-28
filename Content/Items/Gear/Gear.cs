@@ -5,29 +5,11 @@ using PathOfTerraria.Common.Systems.Affixes;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
-public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.IItem, GeneratePrefix.IItem, GenerateSuffix.IItem, PostRoll.IItem
+public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.IItem, PostRoll.IItem, GearLocalizationCategory.IItem
 {
 	// TODO: Figure out how to decouple this logic?
 
 	protected virtual string GearLocalizationCategory => GetType().Name;
-
-	/// <summary>
-	/// Selects a prefix to be added to the name of the item from the provided Prefixes in localization files
-	/// </summary>
-	/// <returns></returns>
-	public virtual string GeneratePrefix(string defaultPrefix)
-	{
-		return Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, true)).Value;
-	}
-
-	/// <summary>
-	/// Selects a suffix to be added to the name of the item from the provided Suffixes in localization files
-	/// </summary>
-	/// <returns></returns>
-	public virtual string GenerateSuffix(string defaultSuffix)
-	{
-		return Language.SelectRandom((key, _) => BasicAffixSearchFilter(key, false)).Value;
-	}
 
 	private bool BasicAffixSearchFilter(string key, bool isPrefix)
 	{
@@ -45,4 +27,9 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 	}
 
 	public virtual void PostRoll() { }
+
+	string GearLocalizationCategory.IItem.GetGearLocalizationCategory(string defaultCategory)
+	{
+		return GearLocalizationCategory;
+	}
 }
