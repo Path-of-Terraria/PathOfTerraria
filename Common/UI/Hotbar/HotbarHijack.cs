@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
-internal class HotbarHijack : ModSystem
+internal sealed class HotbarHijack : ModSystem
 {
 	public override void Load()
 	{
