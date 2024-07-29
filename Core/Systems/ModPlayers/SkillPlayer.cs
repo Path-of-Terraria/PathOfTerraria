@@ -89,6 +89,25 @@ internal class SkillPlayer : ModPlayer
 		}
 	}
 
+	public override void PostUpdate()
+	{
+		for (int i = 0; i < Skills.Length; i++)
+		{
+			Skill skill = Skills[i];
+
+			if (skill is not null)
+			{
+				//skill.UpdateEquipped(Player);
+
+				if (!skill.CanEquipSkill(Player))
+				{
+					Skills[i] = null;
+					continue;
+				}
+			}
+		}
+	}
+
 	public override void SaveData(TagCompound tag)
 	{
 		for (int i = 0; i < Skills.Length; i++)
@@ -127,13 +146,39 @@ internal class SkillPlayer : ModPlayer
 
 			var skill = Skill.GetAndPrepareSkill(Type.GetType(type));
 			skill.LoadData(data);
+			skill.LevelTo(skill.Level);
 
 			Skills[i] = skill;
 		}
 	}
+
+	public bool TryGetSkill<T>(out Skill skill) where T : Skill
+	{
+		skill = null;
+
+		for (int i = 0; i < Skills.Length; i++)
+		{
+			if (Skills[i] is not null && Skills[i].GetType() == typeof(T))
+			{
+				skill = Skills[i];
+				return true;
+			}
+		}
+
+		return false;
+	}
 	
 	public bool TryAddSkill(Skill skill)
 	{
+		for (int i = 0; i < Skills.Length; ++i)
+		{
+			if (Skills[i].Name == skill.Name)
+			{
+				Main.NewText("Skill already added.");
+				return false;
+			}
+		}
+
 		for (int i = 0; i < Skills.Length; i++)
 		{
 			if (Skills[i] == null)

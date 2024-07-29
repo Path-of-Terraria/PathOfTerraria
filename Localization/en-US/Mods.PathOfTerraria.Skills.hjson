@@ -12,3 +12,8 @@ RainOfArrows: {
 	Name: Flurry
 	Description: Shoot a flurry of projectiles based on your held ranged weapon towards the cursor after a short delay
 }
+
+MoltenShield: {
+	Name: ""
+	Description: ""
+}

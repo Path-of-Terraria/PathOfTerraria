@@ -20,7 +20,7 @@ public abstract class Skill
 	public virtual string Texture => $"{PathOfTerraria.ModName}/Assets/Skills/" + GetType().Name;
 
 	/// <summary>
-	/// Creates a default instance of the given <see cref="Skill"/> with 0 for all ctor parameters, aside from 1 for <see cref="Level"/>.
+	/// Creates a default instance of the given <see cref="Skill"/> at <see cref="Level"/> 1.
 	/// </summary>
 	/// <param name="type">The type of skill to generate.</param>
 	/// <returns>The newly generated skill.</returns>
@@ -71,6 +71,18 @@ public abstract class Skill
 	public virtual bool CanUseSkill(Player player)
 	{
 		return Timer <= 0 && player.CheckMana(ManaCost);
+	}
+
+	/// <summary>
+	/// Whether the player can have the current skill equipped or not.<br/>
+	/// This will remove the skill automatically if they have it equipped but the condition is false.
+	/// Returns true by default.
+	/// </summary>
+	/// <param name="player">The player who is trying to equip or has the skill equipped.</param>
+	/// <returns>If the player can have this skill equipped.</returns>
+	public virtual bool CanEquipSkill(Player player)
+	{
+		return true;
 	}
 	
 	private Vector2 _size;

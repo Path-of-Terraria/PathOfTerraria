@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
-using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using System.Collections.Generic;
@@ -29,7 +28,8 @@ internal class MoltenDangpa : LeadDangpa
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(-1, 0.05f, 0.1f);
 		var healKillBurnAffix = (ItemAffix)Affix.CreateAffix<HealOnKillingBurningEnemiesAffix>(-1, 1f, 4f);
-		return [addedDamageAffix, attackSpeedAffix, healKillBurnAffix];
+		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<MoltenShellAffix>(1, 1, 1);
+		return [addedDamageAffix, attackSpeedAffix, healKillBurnAffix, moltenShellAffix];
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
