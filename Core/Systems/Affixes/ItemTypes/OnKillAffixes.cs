@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Events;
+using Terraria.ID;
 
 namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
@@ -6,13 +7,22 @@ internal class HealOnKillingBurningEnemiesAffix : ItemAffix
 {
 	public override void OnLoad()
 	{
-		PathOfTerrariaNpcEvents.OnHitByProjectileEvent += ApplyLifeStealOnBurningEnemies;
+		PathOfTerrariaNpcEvents.OnHitByProjectileEvent += ApplyLifeStealOnDeadBurningEnemies;
 	}
 
-	private void ApplyLifeStealOnBurningEnemies(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+	private void ApplyLifeStealOnDeadBurningEnemies(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 	{
+		if (!npc.HasBuff(BuffID.OnFire) && !npc.HasBuff(BuffID.OnFire3) || npc.life > 0)
+		{
+			return;
+		}
+
 		Player owner = Main.player[projectile.owner];
 		float value = owner.GetModPlayer<AffixPlayer>().StrengthOf<HealOnKillingBurningEnemiesAffix>();
-		owner.Heal((int)(value * 2));
+
+		if (value != 0)
+		{
+			owner.Heal((int)(value * 2));
+		}
 	}
 }
