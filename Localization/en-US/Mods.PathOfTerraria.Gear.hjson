@@ -247,3 +247,24 @@ Grimoire: {
 		4: of Hell
 	}
 }
+
+WarShield: {
+	AltUse: Block or reflect projectiles and incoming hits, dealing damage in return.
+
+	Prefixes: {
+		0: Hardened
+		1: Worn
+		2: Blessed
+		3: Reinforced
+		4: Great
+	}
+
+	# TBD
+	Suffixes: {
+		0: of Sin
+		1: of Death
+		2: of Fury
+		3: of Limbo
+		4: of Hell
+	}
+}

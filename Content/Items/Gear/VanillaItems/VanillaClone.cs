@@ -1,12 +1,10 @@
-﻿using Mono.Cecil;
-using System.Linq;
-using Terraria.DataStructures;
+﻿using System.Linq;
 using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.VanillaItems;
 
-internal abstract class VanillaClone : Gear
+public abstract class VanillaClone : Gear
 {
 	public override float DropChance => 0f;
 	protected virtual short VanillaItemId => ItemID.None;
@@ -42,7 +40,13 @@ internal abstract class VanillaClone : Gear
 	{
 		CloneRecipes(VanillaItemId, Type);
 	}
-	
+
+	// Disable alt function use by default since most vanilla clones don't have alt uses
+	public override bool AltFunctionUse(Player player)
+	{
+		return false;
+	}
+
 	/// <summary>
 	/// Clones the original item's recipes to the new item.
 	/// </summary>

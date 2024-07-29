@@ -5,8 +5,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class StoneSword : Sword
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/StoneSword";
-
 	public override float DropChance => 1f;
 	public override int ItemLevel => 1;
 

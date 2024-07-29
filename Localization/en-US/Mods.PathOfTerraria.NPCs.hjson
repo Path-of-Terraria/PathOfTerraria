@@ -23,3 +23,14 @@ Barkeep: {
 		3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
 	}
 }
+
+Hunter: {
+	DisplayName: Elara
+
+	Dialogue: {
+		0: Greetings, traveler. Need a keen eye and a steady hand?
+		1: I've tracked a beast through these woods. Care to join the hunt?
+		2: Be cautious out there. The forest hides many secrets.
+		Quest: (Quest has not been implemented/conceptualized)
+	}
+}

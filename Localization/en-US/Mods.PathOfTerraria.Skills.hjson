@@ -1,3 +1,11 @@
+# These are used for the hotbar hover in NewHotbar.cs.
+LevelLine: (Level {0}/{1})
+ManaLine: Costs {0} mana
+WeaponLine: Must use a {0} weapon
+DurationLine: Lasts {0} seconds
+CooldownLine: "{0} second cooldown"
+
+# These are the actual localization lines for skills.
 Nova: {
 	Name: Nova
 	Description: Create a shockwave around you based on your held magic weapon's damage

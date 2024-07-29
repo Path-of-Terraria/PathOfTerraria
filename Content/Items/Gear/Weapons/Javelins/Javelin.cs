@@ -10,7 +10,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
 internal abstract class Javelin : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Javelin.AltUse");
 	public override float DropChance => 1f;
 
@@ -64,8 +63,9 @@ internal abstract class Javelin : Gear
 
 			if (UseChargeAlt)
 			{
-				player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
-			}
+        player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
+			  player.GetModPlayer<JavelinDashPlayer>().JavelinAltUsed = true;
+      }
 		}
 
 		return true;
@@ -85,13 +85,37 @@ internal abstract class Javelin : Gear
 	public class JavelinDashPlayer : ModPlayer
 	{
 		public Vector2 StoredVelocity = Vector2.Zero;
+		public bool JavelinAltUsed = false;
+
+		public override void PostUpdateRunSpeeds()
+		{
+			if (!JavelinAltUsed)
+			{
+				return;
+			}
+
+			AltUsePlayer altUsePlayer = Player.GetModPlayer<AltUsePlayer>();
+
+			if (!altUsePlayer.AltFunctionActive)
+			{
+				return;
+			}
+
+			Player.maxFallSpeed = StoredVelocity.Y;
+		}
 
 		public override void PreUpdateMovement()
 		{
+			if (!JavelinAltUsed)
+			{
+				return;
+			}
+
 			AltUsePlayer altUsePlayer = Player.GetModPlayer<AltUsePlayer>();
 
 			if (!altUsePlayer.AltFunctionActive || Player.HeldItem.ModItem is not Javelin javelin || !javelin.UseChargeAlt)
 			{
+				JavelinAltUsed = false;
 				return;
 			}
 
@@ -108,6 +132,7 @@ internal abstract class Javelin : Gear
 
 					altUsePlayer.SetAltCooldown(altUsePlayer.AltFunctionCooldown, 0);
 					Player.velocity = -StoredVelocity;
+					JavelinAltUsed = true;
 				}
 			}
 		}

@@ -7,12 +7,18 @@ namespace PathOfTerraria.Core;
 
 internal class ItemSpawner
 {
+	public static Type GetTypeFromId(int id)
+	{
+		ArgumentOutOfRangeException.ThrowIfLessThan(id, ItemID.Count);
+		return ContentSamples.ItemsByType[id].ModItem.GetType();
+	}
+
 	public static void SpawnRandomItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
 	{
 		SpawnRandomItem(pos, x => true, ilevel, dropRarityModifier);
 	}
 
-	public static int SpawnRandomItem(Vector2 pos, Func<Tuple<float, Rarity, Type>, bool> dropCondition,
+	public static int SpawnRandomItem(Vector2 pos, Func<Tuple<float, Rarity, int>, bool> dropCondition,
 		int ilevel = 0, float dropRarityModifier = 0)
 	{
 		ilevel = ilevel == 0 ? PoTItem.PickItemLevel() : ilevel; // Pick the item level if not provided
@@ -20,26 +26,38 @@ internal class ItemSpawner
 		// Filter AllGear based on item level
 		var filteredGear = PoTItem.AllItems.Where(g =>
 		{
-			var gearInstance = Activator.CreateInstance(g.Item3) as PoTItem;
+			Type type = GetTypeFromId(g.Item3);
+			bool needsClone = Attribute.IsDefined(type, typeof(ManuallyLoadPoTItemAttribute));
+			PoTItem gearInstance;
+
+			if (!needsClone)
+			{
+				gearInstance = Activator.CreateInstance(type) as PoTItem;
+			}
+			else
+			{
+				gearInstance = ContentSamples.ItemsByType[g.Item3].Clone().ModItem as PoTItem;
+			}
+
 			return gearInstance != null && gearInstance.MinDropItemLevel <= ilevel;
 		}).ToList();
 
 		return SpawnItemFromList(pos, dropCondition, ilevel, dropRarityModifier, filteredGear);
 	}
 
-	private static int SpawnItemFromList(Vector2 pos, Func<Tuple<float, Rarity, Type>, bool> dropCondition, int ilevel,
-		float dropRarityModifier, List<Tuple<float, Rarity, Type>> filteredGear)
+	private static int SpawnItemFromList(Vector2 pos, Func<Tuple<float, Rarity, int>, bool> dropCondition, int ilevel,
+		float dropRarityModifier, List<Tuple<float, Rarity, int>> filteredGear)
 	{
 		dropRarityModifier += ilevel / 10f; // the effect of item level on "magic find"
 
 		// Calculate dropChanceSum based on filtered gear
-		float dropChanceSum = filteredGear.Where(x => dropCondition(x)).Sum((Tuple<float, Rarity, Type> x) =>
+		float dropChanceSum = filteredGear.Where(x => dropCondition(x)).Sum((Tuple<float, Rarity, int> x) =>
 			PoTItem.ApplyRarityModifier(x.Item1, dropRarityModifier));
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
 		float cumulativeChance = 0;
 
-		foreach (Tuple<float, Rarity, Type> item in filteredGear)
+		foreach (Tuple<float, Rarity, int> item in filteredGear)
 		{
 			if (!dropCondition(item))
 			{
@@ -50,7 +68,7 @@ internal class ItemSpawner
 			if (choice < cumulativeChance)
 			{
 				// Spawn the item
-				string itemName = (Activator.CreateInstance(item.Item3) as ModItem).Name;
+				string itemName = (Activator.CreateInstance(GetTypeFromId(item.Item3)) as ModItem).Name;
 				int itemType = ModLoader.GetMod("PathOfTerraria").Find<ModItem>(itemName).Type;
 				return SpawnItem(itemType, pos, ilevel, item.Item2); ;
 			}

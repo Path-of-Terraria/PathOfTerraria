@@ -107,3 +107,8 @@ IncreasedCriticalStrikeMultiplier: {
 	Name: Increased Critical Strike Multiplier
 	Tooltip: Adds 5% crit strike multipler per level
 }
+
+ArmorPenetrationPassive: {
+	Name: Increased Armor Penetration (Melee)
+	Tooltip: Adds 15% more armor penetration per level
+}

@@ -19,6 +19,7 @@ public class RainOfArrows : Skill
 		Cooldown = MaxCooldown = 10 * 60;
 		ManaCost = 20;
 		Duration = 0;
+		WeaponType = Core.ItemType.Ranged;
 	}
 
 	public override void UseSkill(Player player)
@@ -32,6 +33,13 @@ public class RainOfArrows : Skill
 		Timer = Cooldown;
 
 		player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int _, true);
+
+		if (player.HeldItem.ModItem is not null)
+		{
+			Vector2 throwaway = Vector2.Zero;
+			ItemLoader.ModifyShootStats(player.HeldItem, player, ref throwaway, ref throwaway, ref projToShoot, ref damage, ref knockBack);
+		}
+
 		damage = (int)(damage * (0.7f + Level * 0.15f));
 
 		if (projToShoot <= 0)

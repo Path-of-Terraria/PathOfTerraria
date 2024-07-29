@@ -351,5 +351,40 @@ PlatinumGlaive: {
 
 MoltenDangpa: {
 	DisplayName: Molten Dangpa
+  Tooltip: ""
+}
+
+WoodPlank: {
+	DisplayName: Wood Plank
+	Tooltip: ""
+}
+
+IronWarShield: {
+	DisplayName: Iron War Shield
+	Tooltip: ""
+}
+
+LeadBattleBulwark: {
+	DisplayName: Lead Battle Bulwark
+	Tooltip: ""
+}
+
+GoldenBattleBulwark: {
+	DisplayName: Golden Battle Bulwark
+	Tooltip: ""
+}
+
+PlatinumWarShield: {
+	DisplayName: Platinum War Shield
+	Tooltip: ""
+}
+
+StoneWarShield: {
+	DisplayName: Stone War Shield
+	Tooltip: ""
+}
+
+SteelWarShield: {
+	DisplayName: Steel War Shield
 	Tooltip: ""
 }

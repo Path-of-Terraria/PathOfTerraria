@@ -22,8 +22,6 @@ internal abstract class Whip : Gear
 		public readonly bool DrawLine = drawLine;
 	}
 
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Whip/{GetType().Name}";
-
 	public override float DropChance => 1f;
 
 	public abstract WhipDrawData DrawData { get; }

@@ -11,6 +11,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.GUI;
 
@@ -142,35 +143,52 @@ internal class NewHotbar : SmartUIState
 			return;
 		}
 
-		if (skillPlayer.Skills[0] != null)
-		{
-			DrawSkill(spriteBatch, off, opacity, glow, 0);
-		}
-
-		if (skillPlayer.Skills[1] != null)
-		{
-			DrawSkill(spriteBatch, off, opacity, glow, 1);
-		}
-
-		if (skillPlayer.Skills[2] != null)
-		{
-			DrawSkill(spriteBatch, off, opacity, glow, 2);
-		}
+		DrawSkill(spriteBatch, off, opacity, glow, 0);
+		DrawSkill(spriteBatch, off, opacity, glow, 1);
+		DrawSkill(spriteBatch, off, opacity, glow, 2);
 	}
 
 	private static void DrawSkill(SpriteBatch spriteBatch, float off, float opacity, Texture2D glow, int skillIndex)
 	{
 		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
+
+		if (skillPlayer.Skills[skillIndex] is null)
+		{
+			return;
+		}
+
 		Skill skill = skillPlayer.Skills[skillIndex];
 		Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
+		var skillRect = new Rectangle(268 + 52 * skillIndex, (int)(8 + off) + texture.Height - 25, texture.Width, texture.Height);
 		spriteBatch.Draw(texture,
-			new Rectangle(268 + 52 * skillIndex, (int)(8 + off) + texture.Height - 25, texture.Width, texture.Height),
+			skillRect,
 			new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
 
 		if (skill.Timer > 0)
 		{
 			spriteBatch.Draw(glow, new Vector2(291 + 52 * skillIndex, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
 			Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(291 + 52 * skillIndex, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+		}
+
+		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
+		{
+			string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
+			Tooltip.SetName(skill.DisplayName.Value + " " + level);
+
+			string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.ManaCost).Value;
+			string weapon = Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value;
+			string tooltip = skill.Description.Value + $"\n{manaCost}\n{weapon}";
+
+			if (skill.Duration != 0)
+			{
+				string duration = Language.GetText("Mods.PathOfTerraria.Skills.DurationLine").WithFormatArgs($"{skill.Duration / 60f:#0.##}").Value;
+				tooltip += "\n" + duration;
+			}
+
+			string cooldown = Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value;
+			tooltip += "\n" + cooldown;
+
+			Tooltip.SetTooltip(tooltip);
 		}
 	}
 
@@ -285,15 +303,93 @@ public class HijackHotbarClick : ModSystem
 		Main.LocalPlayer.hbLocked = true;
 		orig(self);
 		Main.LocalPlayer.hbLocked = hbLocked;
+		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
 
 		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
+		{
+			DrawMainItemHover(hbLocked);
+			DrawPotionHotbarTooltips(hbLocked);
+
+			return;
+		}
+
+		DrawBuildingHotbarTooltips(hbLocked, back);
+	}
+
+	private static void DrawMainItemHover(bool hbLocked)
+	{
+		const int FirstSlot = 0;
+
+		if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
+		{
+			var pos = new Rectangle(26 * (FirstSlot + 1) - 4, 30, 60, 60);
+
+			if (pos.Contains(Main.MouseScreen.ToPoint()))
+			{
+				Main.LocalPlayer.mouseInterface = true;
+				Main.LocalPlayer.cursorItemIconEnabled = false;
+				Main.hoverItemName = Main.LocalPlayer.inventory[FirstSlot].AffixName();
+				Main.rare = Main.LocalPlayer.inventory[FirstSlot].rare;
+
+				if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
+				{
+					Main.LocalPlayer.changeItem = FirstSlot;
+				}
+
+				if (Main.LocalPlayer.inventory[FirstSlot].stack > 1)
+				{
+					Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[FirstSlot].stack + ")";
+				}
+			}
+		}
+	}
+
+	private static void DrawPotionHotbarTooltips(bool hbLocked)
+	{
+		if (hbLocked)
 		{
 			return;
 		}
 
-		Texture2D back = ModContent.Request<Texture2D>($"{PathOfTerraria.ModName}/Assets/GUI/HotbarBack").Value;
+		const int HotbarOffX = 20;
+		const int HotbarOffY = 20;
+		const int InnerHotbarOffX = 436;
+		const int InnerHotbarOffY = 12;
+		const int RealHotbarOffX = HotbarOffX + InnerHotbarOffX;
+		const int RealHotbarOffY = HotbarOffY + InnerHotbarOffY;
+		const int SlotSize = 48;
+		const int SeparatorWidth = 4;
 
-		for (int i = 2; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
+		int offX = RealHotbarOffX;
+		int offY = RealHotbarOffY;
+
+		for (int i = 0; i < 2; i++)
+		{
+			var pos = new Rectangle(offX, offY, SlotSize, SlotSize);
+
+			if (pos.Contains(Main.MouseScreen.ToPoint()))
+			{
+				SetHealthOrManaTooltip(i == 0);
+			}
+
+			offX += SlotSize + SeparatorWidth;
+		}
+	}
+
+	private static void SetHealthOrManaTooltip(bool health)
+	{
+		string type = health ? "Health" : "Mana";
+		PotionSystem potions = Main.LocalPlayer.GetModPlayer<PotionSystem>();
+
+		Tooltip.SetName(Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"));
+		Tooltip.SetTooltip(
+			Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
+			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00")));
+	}
+
+	private static void DrawBuildingHotbarTooltips(bool hbLocked, Texture2D back)
+	{
+		for (int i = 1; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 		{
 			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
 			{

@@ -10,8 +10,6 @@ namespace PathOfTerraria.Content.Projectiles.Summoner;
 
 internal abstract class GrimoireSummon : ModProjectile
 {
-	public override string Texture => $"PathOfTerraria/Assets/Projectiles/Summoner/GrimoireSummons/{GetType().Name}";
-
 	public static Dictionary<int, Asset<Texture2D>> IconsById = [];
 
 	public abstract int BaseDamage { get; }

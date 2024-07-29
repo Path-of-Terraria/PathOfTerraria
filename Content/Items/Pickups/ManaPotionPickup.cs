@@ -7,8 +7,6 @@ namespace PathOfTerraria.Content.Items.Pickups;
 
 internal class ManaPotionPickup : ModItem
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Pickups/ManaPotionPickup";
-
 	public override void SetDefaults()
 	{
 		Item.width = 16;
