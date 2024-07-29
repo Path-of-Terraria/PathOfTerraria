@@ -76,22 +76,22 @@ public abstract class Gear : PoTItem
 	{
 		if (Item.headSlot >= 0 && Main.LocalPlayer.armor[0].active && Main.LocalPlayer.armor[0].ModItem is Gear headGear)
 		{
-			headGear.ApplyAffixes(swapItemModifier);
+			headGear.ApplyAffixes(swapItemModifier, Main.LocalPlayer);
 		}
 		else if (Item.bodySlot >= 0 && Main.LocalPlayer.armor[1].active && Main.LocalPlayer.armor[0].ModItem is Gear bodyGear)
 		{
-			bodyGear.ApplyAffixes(swapItemModifier);
+			bodyGear.ApplyAffixes(swapItemModifier, Main.LocalPlayer);
 		}
 		else if (Item.legSlot >= 0 && Main.LocalPlayer.armor[2].active && Main.LocalPlayer.armor[0].ModItem is Gear legsGear)
 		{
-			legsGear.ApplyAffixes(swapItemModifier);
+			legsGear.ApplyAffixes(swapItemModifier, Main.LocalPlayer);
 		}
 		// missing accessories
 		else if (Item.damage > 0)
 		{
 			if (Main.LocalPlayer.inventory[0].ModItem is Gear gear)
 			{
-				gear.ApplyAffixes(swapItemModifier);
+				gear.ApplyAffixes(swapItemModifier, Main.LocalPlayer);
 			}
 		}
 	}
