@@ -21,3 +21,9 @@ MoltenShieldBuff: {
 		Gain a small amount of defense
 		'''
 }
+
+BloodclotDebuff: {
+	DisplayName: BloodclotDebuff
+	Description: ""
+	DeathText: "{0} couldn't stop the bleeding"
+}
