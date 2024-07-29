@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
@@ -13,13 +14,21 @@ internal class Bloodclotter : PlatinumGlaive
 	public override int DeathDustType => DustID.Blood;
 	public override bool IsUnique => true;
 	public override bool UseChargeAlt => false;
+	public override bool AutoloadProjectile => false;
 
 	public override List<ItemAffix> GenerateAffixes()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
-		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<MoltenShellAffix>(1, 1, 1);
+		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<BloodSiphonAffix>(1, 1, 1);
 		var bloodclotAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyBloodclotItemAffix>(1, 1, 1);
 		return [addedDamageAffix, moltenShellAffix, bloodclotAffix];
+	}
+
+	public override void Defaults()
+	{
+		base.Defaults();
+
+		Item.shoot = ModContent.ProjectileType<BloodclotterThrown>();
 	}
 
 	public override bool CanUseItem(Player player)
@@ -29,7 +38,7 @@ internal class Bloodclotter : PlatinumGlaive
 		if (player.altFunctionUse == 2 && altUsePlayer.AltFunctionAvailable)
 		{
 			player.AddBuff(ModContent.BuffType<BloodclotDebuff>(), 5 * 60);
-			altUsePlayer.SetAltCooldown(5 * 60, 5 * 60);
+			altUsePlayer.SetAltCooldown(20 * 60, 5 * 60);
 
 			for (int i = 0; i < 18; ++i)
 			{

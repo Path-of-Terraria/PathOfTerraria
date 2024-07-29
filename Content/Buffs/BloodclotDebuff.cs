@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using PathOfTerraria.Content.Skills.Melee;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -16,9 +17,12 @@ public class BloodclotDebuff() : SmartBuff(true)
 			Dust.NewDust(npc.position, npc.width, npc.height, DustID.Blood);
 		}
 
-		if (Main.time % 60 == 0)
+		if (++npc.GetGlobalNPC<SiphonNPC>().BuffDrainTime % 60 == 0)
 		{
+			int def = npc.defense;
+			npc.defense = 0;
 			npc.SimpleStrikeNPC(3, 0, false, 0, null, false, 0, true);
+			npc.defense = def;
 		}
 	}
 
@@ -34,7 +38,7 @@ public class BloodclotDebuff() : SmartBuff(true)
 		if (Main.time % 60 == 0)
 		{
 			string deathText = Language.GetText("Mods.PathOfTerraria.Buffs.BloodclotDebuff.DeathText").WithFormatArgs(player.name).Value;
-			player.Hurt(PlayerDeathReason.ByCustomReason(deathText), 3, 0, false, false, -1, false, 0, 1, 0);
+			player.Hurt(PlayerDeathReason.ByCustomReason(deathText), 3, 0, false, false, ImmunityCooldownID.TileContactDamage, false, 0, 1, 0);
 		}
 	}
 }
