@@ -63,9 +63,9 @@ internal abstract class Javelin : Gear
 
 			if (UseChargeAlt)
 			{
-        player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
-			  player.GetModPlayer<JavelinDashPlayer>().JavelinAltUsed = true;
-      }
+				player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
+				player.GetModPlayer<JavelinDashPlayer>().JavelinAltUsed = true;
+			}
 		}
 
 		return true;
