@@ -1,13 +1,10 @@
 ﻿using PathOfTerraria.Core.Loaders.UILoading;
-using PathOfTerraria.Core.Systems.ModPlayers;
-using PathOfTerraria.Core;
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.UI;
 using PathOfTerraria.Content.Buffs;
 
 namespace PathOfTerraria.Content.GUI.Misc;
+
 internal class MoltenHealthUI : SmartUIState
 {
 	public override bool Visible => true;

@@ -1,8 +1,4 @@
-﻿using PathOfTerraria.Content.GUI;
-using PathOfTerraria.Core.Loaders.UILoading;
-using System.Linq;
-using PathOfTerraria.Helpers;
-using Terraria.UI;
+﻿using Terraria.UI;
 
 namespace PathOfTerraria.Core.Systems;
 

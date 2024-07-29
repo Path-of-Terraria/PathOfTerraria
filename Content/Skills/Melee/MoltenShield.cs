@@ -26,6 +26,9 @@ public class MoltenShield : Skill
 			return;
 		}
 
+		// Level to the strength of all MoltenShellAffixes
+		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<MoltenShellAffix>());
+
 		player.statMana -= ManaCost;
 		player.GetModPlayer<MoltenShieldBuff.MoltenShieldPlayer>().SetBuff(Level, Duration);
 		Timer = Cooldown;

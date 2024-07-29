@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Content.Skills.Melee;
-using PathOfTerraria.Core.Mechanics;
-using PathOfTerraria.Core.Systems.DrawLayers;
+﻿using PathOfTerraria.Core.Systems.DrawLayers;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Buffs;
