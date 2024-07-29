@@ -3,6 +3,7 @@ using System.Linq;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Utilities;
 using Terraria.Localization;
+using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Systems.TreeSystem;
 
@@ -71,7 +72,7 @@ internal abstract class Passive
 	{
 		Passives.Clear();
 
-		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
+		foreach (Type type in AssemblyManager.GetLoadableTypes(PathOfTerraria.Instance.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive)))
 			{

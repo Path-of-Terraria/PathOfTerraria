@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
+using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -214,7 +215,7 @@ internal class AffixHandler : ILoadable
 		_itemAffixes = [];
 		_mobAffixes = [];
 
-		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
+		foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Affix)))
 			{

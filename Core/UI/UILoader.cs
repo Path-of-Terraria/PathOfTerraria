@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.UI.Utilities;
+using Terraria.ModLoader.Core;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.Loaders.UILoading;
@@ -33,7 +34,7 @@ class UILoader : ModSystem
 		UserInterfaces = [];
 		UIStates = [];
 
-		foreach (Type t in Mod.Code.GetTypes())
+		foreach (Type t in AssemblyManager.GetLoadableTypes(Mod.Code))
 		{
 			if (!t.IsAbstract && t.IsSubclassOf(typeof(SmartUIState)))
 			{

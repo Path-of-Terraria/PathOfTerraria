@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Mechanics;
+using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
@@ -22,7 +23,7 @@ internal class SkillsTreeInnerPanel : SmartUIElement
 	private void AppendAllSkills()
 	{
 		int index = 0;
-		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
+		foreach (Type type in AssemblyManager.GetLoadableTypes(PathOfTerraria.Instance.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Skill)))
 			{

@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.WorldNavigation;
+using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
@@ -21,7 +22,7 @@ public sealed class Travel : ModCommand
 
 		string worldName = string.Join(" ", args);
 		
-		foreach (Type type in PathOfTerraria.Instance.Code.GetTypes())
+		foreach (Type type in AssemblyManager.GetLoadableTypes(PathOfTerraria.Instance.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(WorldNavigation)))
 			{
