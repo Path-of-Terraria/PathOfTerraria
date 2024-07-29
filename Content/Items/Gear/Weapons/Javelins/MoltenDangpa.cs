@@ -13,7 +13,7 @@ internal class MoltenDangpa : LeadDangpa
 	public override bool IsUnique => true;
 	public override bool AutoloadProjectile => false;
 	public override bool UseChargeAlt => false;
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/LeadDangpa";
+	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/MoltenDangpa_Cold";
 
 	public override void Defaults()
 	{
