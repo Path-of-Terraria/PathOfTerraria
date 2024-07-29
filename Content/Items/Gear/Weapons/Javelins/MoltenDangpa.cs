@@ -19,7 +19,6 @@ internal class MoltenDangpa : LeadDangpa
 	{
 		base.Defaults();
 
-		Item.damage = 5;
 		Item.shoot = ModContent.ProjectileType<MoltenDangpaThrown>();
 	}
 
