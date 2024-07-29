@@ -12,7 +12,7 @@ public class MoltenShield : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = 3 * 60;
+		Cooldown = 10 * 60;
 		Timer = 0;
 		ManaCost = 10 + 5 * level;
 		Duration = 5 * 60;
