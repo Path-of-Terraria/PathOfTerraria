@@ -50,3 +50,11 @@ internal class ChanceToApplyArmorShredGearAffix : ItemAffix
 		modifier.Buffer.Add(ModContent.BuffType<ArmorShredDebuff>(), Duration, Value);
 	}
 }
+
+internal class ChanceToApplyBloodclotItemAffix : ItemAffix
+{
+	public override void ApplyAffix(EntityModifier modifier, PoTItem gear)
+	{
+		modifier.Buffer.Add(ModContent.BuffType<BloodclotDebuff>(), Duration, Value);
+	}
+}

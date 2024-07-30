@@ -1,9 +1,6 @@
-﻿using PathOfTerraria.Core.Events;
-using Terraria.DataStructures;
+﻿namespace PathOfTerraria.Content.Buffs;
 
-namespace PathOfTerraria.Content.Buffs;
-
-public class ArmorShredDebuff() : SmartBuff(false)
+public class ArmorShredDebuff() : SmartBuff(true)
 {
 	private const int DefenseReductionPercent = 25;
 	public static readonly float DefenseMultiplier = 1 - DefenseReductionPercent / 100f;

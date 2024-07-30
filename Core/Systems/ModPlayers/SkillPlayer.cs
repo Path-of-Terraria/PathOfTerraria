@@ -172,7 +172,7 @@ internal class SkillPlayer : ModPlayer
 	{
 		for (int i = 0; i < Skills.Length; ++i)
 		{
-			if (Skills[i].Name == skill.Name)
+			if (Skills[i] != null && Skills[i].Name == skill.Name)
 			{
 				Main.NewText("Skill already added.");
 				return false;

@@ -20,3 +20,20 @@ internal class MoltenShellAffix : ItemAffix
 		}
 	}
 }
+
+internal class BloodSiphonAffix : ItemAffix
+{
+	public override void OnLoad()
+	{
+		OnSwapPlayer.OnSwapMainItem += EnableBloodSiphonIfOpen;
+	}
+
+	private void EnableBloodSiphonIfOpen(Player self, Item newItem, Item oldItem)
+	{
+		if (newItem.type == ModContent.ItemType<Bloodclotter>())
+		{
+			SkillPlayer skillPlayer = self.GetModPlayer<SkillPlayer>();
+			skillPlayer.TryAddSkill(new BloodSiphon());
+		}
+	}
+}

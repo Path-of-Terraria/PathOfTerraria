@@ -388,3 +388,8 @@ SteelWarShield: {
 	DisplayName: Steel War Shield
 	Tooltip: ""
 }
+
+Bloodclotter: {
+	DisplayName: Bloodclotter
+	Tooltip: ""
+}

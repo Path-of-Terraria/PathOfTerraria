@@ -38,7 +38,9 @@ internal abstract class Javelin : Gear
 
 	public override void Defaults()
 	{
-		Item.DefaultToThrownWeapon(Mod.Find<ModProjectile>(GetType().Name + "Thrown").Type, 50, 7, true);
+		// Default to ThrowingKnife to placehold until the manually loaded projectile is added
+		int shotId = AutoloadProjectile ? Mod.Find<ModProjectile>(GetType().Name + "Thrown").Type : ProjectileID.ThrowingKnife;
+		Item.DefaultToThrownWeapon(shotId, 50, 7, true);
 		Item.maxStack = 1;
 		Item.consumable = false;
 		Item.SetWeaponValues(3, 1);
