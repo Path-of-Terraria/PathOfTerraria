@@ -69,13 +69,15 @@ internal sealed class NewHotbar : SmartUIState
 			prog = Ease(_animation / 20f);
 		}
 
-		if (Main.LocalPlayer.selectedItem >= 2)
+		if (Main.LocalPlayer.selectedItem < 2)
 		{
-			_selectorTarget = 24 + 120 + 52 * (MathF.Min(Main.LocalPlayer.selectedItem, 10) - 2);
+			// 20 derived from 20 - 4 because the frame has two pixels of
+			// leftmost padding.
+			_selectorTarget = 20 + Utils.Clamp(Main.LocalPlayer.selectedItem, 0, 1) * 62;
 		}
 		else
 		{
-			_selectorTarget = 98;
+			_selectorTarget = 24 + 120 + 52 * (MathF.Min(Main.LocalPlayer.selectedItem, 10) - 2);
 		}
 
 		_selectorX += (_selectorTarget - _selectorX) * 0.33f;
@@ -83,6 +85,7 @@ internal sealed class NewHotbar : SmartUIState
 		DrawSpecial(spriteBatch);
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
+		DrawSelector(spriteBatch);
 		DrawHotkeys(spriteBatch, -prog * 80);
 		DrawHeldItemName(spriteBatch);
 	}
@@ -255,16 +258,17 @@ internal sealed class NewHotbar : SmartUIState
 				new Vector2(24 + 124 + 52 * (k - 2), 30 + off));
 		}
 
-		Texture2D select = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSelector").Value;
-		Main.spriteBatch.Draw(select, new Vector2(_selectorX, 20 + off), null,
-			Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
-
 		if (Main.LocalPlayer.selectedItem > 10)
 		{
 			Texture2D back = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBack").Value;
 			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
 		}
+	}
+
+	private void DrawSelector(SpriteBatch spriteBatch) {
+		Texture2D select = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSelector").Value;
+		spriteBatch.Draw(select, new Vector2(_selectorX, 20), null, Color.White);
 	}
 
 	private static float Ease(float input)
