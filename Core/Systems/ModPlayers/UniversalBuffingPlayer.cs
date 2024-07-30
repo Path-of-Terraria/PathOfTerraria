@@ -9,7 +9,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
-		(Player.inventory[0].ModItem as Gear)?.ApplyAffixes(UniversalModifier);
+		(Player.inventory[0].ModItem as Gear)?.ApplyAffixes(UniversalModifier, Player);
 
 		UniversalModifier.ApplyTo(Player);
 

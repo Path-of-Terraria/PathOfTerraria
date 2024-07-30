@@ -1,7 +1,5 @@
-﻿using PathOfTerraria.Core.Loaders.UILoading;
-using PathOfTerraria.Core.Mechanics;
+﻿using PathOfTerraria.Core.Mechanics;
 using PathOfTerraria.Core.Systems.ModPlayers;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.SkillsTree;
@@ -31,7 +29,7 @@ internal class SkillElement : UIElement
 		}
 
 		Vector2 position = GetDimensions().Position() + new Vector2(Width.Pixels / 2, Height.Pixels / 2);
-		spriteBatch.Draw(tex, position, null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
 	}
 	
 	public override void LeftClick(UIMouseEvent evt)

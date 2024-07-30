@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core.Mechanics;
 
 namespace PathOfTerraria.Content.Skills.Melee;

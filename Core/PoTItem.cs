@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Data;
 using PathOfTerraria.Data.Models;
 using System.IO;
+using rail;
 
 namespace PathOfTerraria.Core;
 
@@ -194,7 +195,7 @@ public abstract class PoTItem : ModItem
 
 		// change in stats if equipped
 		EntityModifier thisItemModifier = new EntityModifier();
-		ApplyAffixes(thisItemModifier);
+		ApplyAffixes(thisItemModifier, null);
 
 		InsertAdditionalTooltipLines(tooltips, thisItemModifier);
 
@@ -722,12 +723,25 @@ public abstract class PoTItem : ModItem
 	{
 		ExtraUpdateEquips(player);
 
-		ApplyAffixes(player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
+		ApplyAffixes(player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier, player);
 	}
 
-	public void ApplyAffixes(EntityModifier entityModifier)
+	/// <summary>
+	/// Applies affixes to the given <see cref="EntityModifier"/>.<br/>
+	/// <paramref name="player"/> should usually be set to whatever player this is applying to.
+	/// But if you do not want the modifications to apply to the player at all, set it to null,<br/>
+	/// such as in <see cref="Content.Projectiles.Summoner.GrimoireSummon.PreAI"/> or <see cref="PoTItem.ModifyTooltips(List{TooltipLine})"/>.<br/>
+	/// They both don't actually modify the player, and thus should take no player.
+	/// </summary>
+	/// <param name="entityModifier"></param>
+	/// <param name="player"></param>
+	public void ApplyAffixes(EntityModifier entityModifier, Player player)
 	{
-		Affixes.ForEach(n => n.ApplyAffix(entityModifier, this));
+		Affixes.ForEach(n =>
+		{
+			n.ApplyAffix(entityModifier, this);
+			player?.GetModPlayer<AffixPlayer>().AddStrength(n.GetType().AssemblyQualifiedName, n.Value);
+		});
 	}
 
 	public void ClearAffixes()

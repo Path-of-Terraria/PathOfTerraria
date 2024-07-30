@@ -1,3 +1,4 @@
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,6 +21,24 @@ public abstract class Affix
 		{
 			Value = Main.rand.NextFloat(MinValue, MaxValue);
 		}
+	}
+
+	/// <summary>
+	/// Called during <see cref="AffixHandler.Load(Mod)"/> on the prototype instance for the instance, 
+	/// stored in <see cref="AffixHandler._itemAffixes"/> or <see cref="AffixHandler._mobAffixes"/>.<br/>
+	/// Should be used for one-time loading tasks, like subscribing to detours or adding content.
+	/// </summary>
+	public virtual void OnLoad()
+	{
+	}
+
+	/// <summary>
+	/// Called during <see cref="AffixHandler.Unload()"/> on the prototype instance for the instance, 
+	/// stored in <see cref="AffixHandler._itemAffixes"/> or <see cref="AffixHandler._mobAffixes"/>.<br/>
+	/// Should be used for one-time unloading tasks, like unsubscribing to detours or removing.
+	/// </summary>
+	public virtual void OnUnload()
+	{
 	}
 
 	public void Save(TagCompound tag)
@@ -219,7 +238,8 @@ internal class AffixHandler : ILoadable
 				continue;
 			}
 
-			object instance = Activator.CreateInstance(type);
+			var instance = Activator.CreateInstance(type) as Affix;
+			instance.OnLoad();
 
 			switch (instance)
 			{
@@ -238,6 +258,16 @@ internal class AffixHandler : ILoadable
 
 	public void Unload()
 	{
+		foreach (ItemAffix item in _itemAffixes)
+		{
+			item.OnUnload();
+		}
+
+		foreach (MobAffix item in _mobAffixes)
+		{
+			item.OnUnload();
+		}
+
 		_itemAffixes = null;
 		_mobAffixes = null;
 	}

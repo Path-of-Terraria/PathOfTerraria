@@ -12,7 +12,7 @@ internal class JewelSocket : Passive
 	
 	public override void BuffPlayer(Player player)
 	{
-		Socketed?.ApplyAffixes(player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
+		Socketed?.ApplyAffixes(player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier, player);
 	}
 
 	public void SaveJewel(TagCompound tag)
