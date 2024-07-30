@@ -33,11 +33,23 @@ internal sealed class NewHotbar : SmartUIState
 		}
 	}
 
-	private int _animation;
+	private sealed class Selector
+	{
+		public float X { get; private set; }
 
-	private float _selectorX;
-	private float _selectorTarget;
+		public float Target { get; set; }
+
+		public void EasePosition()
+		{
+			X += (Target - X) * 0.33f;
+		}
+	}
+
+	private readonly Selector specialSelector = new();
+	private readonly Selector buildingSelector = new();
 	private readonly DynamicSpriteFont _font = FontAssets.DeathText.Value;
+
+	private int _animation;
 
 	public override bool Visible => !Main.playerInventory;
 
@@ -69,23 +81,21 @@ internal sealed class NewHotbar : SmartUIState
 			prog = Ease(_animation / 20f);
 		}
 
-		if (Main.LocalPlayer.selectedItem < 2)
-		{
-			// 20 derived from 20 - 4 because the frame has two pixels of
-			// leftmost padding.
-			_selectorTarget = 20 + Utils.Clamp(Main.LocalPlayer.selectedItem, 0, 1) * 62;
-		}
-		else
-		{
-			_selectorTarget = 24 + 120 + 52 * (MathF.Min(Main.LocalPlayer.selectedItem, 10) - 2);
-		}
+		// 20 derived from 20 - 4 because the frame has two pixels of leftmost
+		// padding.
+		specialSelector.Target = 20 + Utils.Clamp(Main.LocalPlayer.selectedItem, 0, 1) * 62;
 
-		_selectorX += (_selectorTarget - _selectorX) * 0.33f;
+		// If the selected item isn't within the target range of slots (less
+		// than 2), we set it to 98 for it to rest.
+		buildingSelector.Target = Main.LocalPlayer.selectedItem >= 2 ? 24 + 120 + 52 * (MathF.Min(Main.LocalPlayer.selectedItem, 10) - 2) : 98;
+
+		specialSelector.EasePosition();
+		buildingSelector.EasePosition();
 
 		DrawSpecial(spriteBatch);
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
-		DrawSelector(spriteBatch);
+		DrawSelector(spriteBatch, prog);
 		DrawHotkeys(spriteBatch, -prog * 80);
 		DrawHeldItemName(spriteBatch);
 	}
@@ -266,9 +276,14 @@ internal sealed class NewHotbar : SmartUIState
 		}
 	}
 
-	private void DrawSelector(SpriteBatch spriteBatch) {
+	private void DrawSelector(SpriteBatch spriteBatch, float opacity) {
 		Texture2D select = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSelector").Value;
-		spriteBatch.Draw(select, new Vector2(_selectorX, 20), null, Color.White);
+
+		// Render the special selector, which is always visible.
+		spriteBatch.Draw(select, new Vector2(specialSelector.X, 20), null, Color.White);
+
+		// Render the building selector, which is conditionally visible.
+		spriteBatch.Draw(select, new Vector2(buildingSelector.X, 20), null, Color.White * opacity * (buildingSelector.Target == 98 ? (buildingSelector.X - 98) / 30f : 1f));
 	}
 
 	private static float Ease(float input)
