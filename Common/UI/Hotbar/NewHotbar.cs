@@ -118,7 +118,7 @@ internal sealed class NewHotbar : SmartUIState
 	///		Draws the two leftmost slots, which should always be visible and
 	///		won't move as part of the hotbar transition.
 	/// </summary>
-	private static void DrawSpecial(SpriteBatch spriteBatch)
+	private void DrawSpecial(SpriteBatch spriteBatch)
 	{
 		// The inactive texture contains the special, textured "inactive"
 		// hotbar slots, which are silver and contain icons for the items they
@@ -134,7 +134,8 @@ internal sealed class NewHotbar : SmartUIState
 		//     cleanly transition within context of the position of the
 		//     selector.
 
-		Texture2D specialInactive = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Inactive").Value;
+		Texture2D specialInactiveCombat = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Inactive_Combat").Value;
+		Texture2D specialInactiveBuilding = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Inactive_Building").Value;
 		Texture2D specialActive = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Active").Value;
 		Main.inventoryScale = 1f; // 36 / 52f * 52f / 36f * 1 computes to 1...
 
@@ -144,6 +145,13 @@ internal sealed class NewHotbar : SmartUIState
 		// Draw item slot items.
 		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30));
 		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30));
+
+		// Render inactive slot textures OVER active textures and items.
+		const int Height = 72;
+		float normalizedLeftmostPos = specialSelector.X - 20f;
+		float spaceToTheRight = -(specialSelector.X - 22f - 60f);
+		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
+		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + normalizedLeftmostPos, 20f), new Rectangle(Math.Clamp(60 - (int)MathF.Round(spaceToTheRight), 0, 60), 0, Math.Clamp((int)MathF.Round(spaceToTheRight), 0, 60), Height), Color.White);
 	}
 
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
