@@ -282,7 +282,7 @@ internal sealed class NewHotbar : SmartUIState
 		for (int k = 2; k <= 9; k++)
 		{
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21,
-				new Vector2(24 + 124 + 52 * (k - 2), 30 + off));
+				new Vector2(24 + 124 + 52 * (k - 2), 30 + off), Color.White * opacity);
 		}
 
 		if (Main.LocalPlayer.selectedItem > 10)
