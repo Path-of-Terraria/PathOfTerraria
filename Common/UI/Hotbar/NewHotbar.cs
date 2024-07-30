@@ -13,7 +13,6 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using PathOfTerraria.Core.UI;
-using PathOfTerraria.Common.Utilities;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -286,20 +285,17 @@ internal sealed class NewHotbar : SmartUIState
 			return;
 		}
 
-		using (new SpriteBatchOriginOverrideController(new Vector2(0.5f)))
+		for (int k = 2; k <= 9; k++)
 		{
-			for (int k = 2; k <= 9; k++)
-			{
-				ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21,
-					new Vector2(24 + 124 + 52 * (k - 2), 30 + off), Color.White * opacity);
-			}
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21,
+				new Vector2(24 + 124 + 52 * (k - 2), 30 + off), Color.White * opacity);
+		}
 
-			if (Main.LocalPlayer.selectedItem > 10)
-			{
-				Texture2D back = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBack").Value;
-				spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
-				ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
-			}
+		if (Main.LocalPlayer.selectedItem > 10)
+		{
+			Texture2D back = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBack").Value;
+			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
 		}
 	}
 
