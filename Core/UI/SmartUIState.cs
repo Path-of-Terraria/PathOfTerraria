@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.Loaders.UILoading;
+namespace PathOfTerraria.Core.UI;
 
 /// <summary>
 /// An auto-loaded UI State, that knows information about its own visibility.
@@ -414,9 +414,9 @@ public abstract class SmartUIState : UIState
 		base.ScrollWheel(evt);
 		SafeScrollWheel(evt);
 	}
-	
+
 	#endregion
-	
+
 	/// <summary>
 	/// Refreshes the UI - Intended to be called on resolution changes.
 	/// </summary>

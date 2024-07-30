@@ -1,6 +1,6 @@
 ﻿using Terraria.UI;
 
-namespace PathOfTerraria.Common.Loaders.UILoading;
+namespace PathOfTerraria.Core.UI;
 
 public class MouseContainedState
 {
@@ -17,7 +17,7 @@ public class SmartUIElement : UIElement
 	{
 		return Parent.GetDimensions().ToRectangle();
 	}
-	
+
 	public virtual string TabName => "";
 	public MouseContainedState MouseContained = new();
 

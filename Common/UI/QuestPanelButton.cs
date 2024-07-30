@@ -1,6 +1,6 @@
 using System.Collections.Generic;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.UI.Quests;
+using PathOfTerraria.Core.UI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;

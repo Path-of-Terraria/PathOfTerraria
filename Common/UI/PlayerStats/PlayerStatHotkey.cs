@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.Loaders.UILoading;
+using PathOfTerraria.Core.UI;
 using Terraria.GameInput;
 
 namespace PathOfTerraria.Common.UI.PlayerStats;

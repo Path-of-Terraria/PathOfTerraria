@@ -1,10 +1,10 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
+using PathOfTerraria.Core.UI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 

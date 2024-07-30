@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common.Loaders.UILoading;
-using PathOfTerraria.Common.Systems.Questing;
+﻿using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Core.UI;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;

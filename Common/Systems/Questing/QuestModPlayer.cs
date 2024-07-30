@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.Questing.Quests.TestQuest;
 using PathOfTerraria.Common.UI.Quests;
+using PathOfTerraria.Core.UI;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 

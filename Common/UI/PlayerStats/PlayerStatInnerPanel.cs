@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Common.Loaders.UILoading;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Core.UI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 

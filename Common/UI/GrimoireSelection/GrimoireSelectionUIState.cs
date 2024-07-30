@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Projectiles.Summoner;
+using PathOfTerraria.Core.UI;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;

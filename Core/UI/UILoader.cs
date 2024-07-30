@@ -4,7 +4,7 @@ using PathOfTerraria.Common.UI.Utilities;
 using Terraria.ModLoader.Core;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.Loaders.UILoading;
+namespace PathOfTerraria.Core.UI;
 
 /// <summary>
 /// Automatically loads SmartUIStates ala IoC.
@@ -43,7 +43,7 @@ class UILoader : ModSystem
 			}
 		}
 
-		Comparison<SmartUIState> comp = new Comparison<SmartUIState>((s1, s2) => s2.DepthPriority - s1.DepthPriority);
+		var comp = new Comparison<SmartUIState>((s1, s2) => s2.DepthPriority - s1.DepthPriority);
 		UIStates.Sort(comp);
 
 		for (int k = 0; k < UIStates.Count; k++)

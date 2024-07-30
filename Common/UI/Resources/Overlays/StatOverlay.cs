@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Common;
+﻿namespace PathOfTerraria.Common.UI.Resources.Overlays;
 
 public sealed class StatOverlay : ModResourceOverlay
 {
@@ -6,7 +6,7 @@ public sealed class StatOverlay : ModResourceOverlay
 	{
 		if (context.texture.Name == @"Images\UI\PlayerResourceSets\FancyClassic\Heart_Fill")
 		{
-			Texture2D texture = (Texture2D)ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/Heart_Fill_Replace");
+			var texture = (Texture2D)ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/Heart_Fill_Replace");
 
 			float life = Main.LocalPlayer.statLife;
 			int bars = (int)(life / 400);
@@ -36,11 +36,11 @@ public sealed class StatOverlay : ModResourceOverlay
 
 		return true;
 	}
-	
+
 	private static Color GetBarColor(int bar)
 	{
 		bar += 6 * (bar % 2);
-		
+
 		return bar switch
 		{
 			0 => new(1, 0.65f, 0.55f),

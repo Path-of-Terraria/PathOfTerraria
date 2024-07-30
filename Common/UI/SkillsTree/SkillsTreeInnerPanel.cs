@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common.Loaders.UILoading;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Core.UI;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;

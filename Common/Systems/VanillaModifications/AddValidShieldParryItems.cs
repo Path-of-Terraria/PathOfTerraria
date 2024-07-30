@@ -2,12 +2,12 @@
 using MonoMod.Cil;
 using System.Collections.Generic;
 
-namespace PathOfTerraria.Core.Systems.VanillaModifications;
+namespace PathOfTerraria.Common.Systems.VanillaModifications;
 
 internal class AddValidShieldParryItems : ModSystem
 {
 	private static readonly HashSet<int> ValidShieldParryItems = [];
-	
+
 	private static Projectile storedProj = null;
 
 	public override void Load()
@@ -124,7 +124,7 @@ public interface IParryItem
 	/// <param name="player">The player that is trying to raise their shield.</param>
 	/// <returns>Whether the player can raise the shield.</returns>
 	bool CanRaiseShield(Player player);
-	
+
 	/// <summary>
 	/// Called when raising the shield successfully. Note: this is called every frame the shield is up, not just the first time.
 	/// </summary>

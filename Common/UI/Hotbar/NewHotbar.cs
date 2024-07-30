@@ -8,11 +8,11 @@ using Terraria.ID;
 using Terraria.UI;
 using Terraria.UI.Chat;
 using Terraria.Localization;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
+using PathOfTerraria.Core.UI;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 

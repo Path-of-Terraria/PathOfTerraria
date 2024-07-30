@@ -4,11 +4,11 @@ using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using Terraria.ID;
 using Terraria.Localization;
+using PathOfTerraria.Core.UI;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 

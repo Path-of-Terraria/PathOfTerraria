@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Core.UI;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.UI;

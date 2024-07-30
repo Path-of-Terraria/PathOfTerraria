@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Core.UI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;

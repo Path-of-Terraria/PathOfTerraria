@@ -1,9 +1,9 @@
 ﻿using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.UI;
 using Terraria.ID;
 using Terraria.Localization;
 

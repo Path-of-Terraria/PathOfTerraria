@@ -1,6 +1,6 @@
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Common.UI.PlayerStats;
+using PathOfTerraria.Core.UI;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.UI.Utilities;

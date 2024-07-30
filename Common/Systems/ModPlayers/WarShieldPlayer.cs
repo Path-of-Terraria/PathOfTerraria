@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Weapons.WarShields;
 using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems.ModPlayers;
+namespace PathOfTerraria.Common.Systems.ModPlayers;
 
 internal class WarShieldPlayer : ModPlayer
 {
@@ -23,7 +23,7 @@ internal class WarShieldPlayer : ModPlayer
 			return;
 		}
 
-		WarShield shield = Player.HeldItem.ModItem as WarShield;
+		var shield = Player.HeldItem.ModItem as WarShield;
 		Player.SetDummyItemTime(2);
 		Player.SetImmuneTimeForAllTypes(2);
 		Player.velocity = StoredVelocity;

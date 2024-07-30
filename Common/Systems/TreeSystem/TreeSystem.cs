@@ -2,10 +2,10 @@
 using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
-using PathOfTerraria.Common.Loaders.UILoading;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Passives;
+using PathOfTerraria.Core.UI;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.TreeSystem;

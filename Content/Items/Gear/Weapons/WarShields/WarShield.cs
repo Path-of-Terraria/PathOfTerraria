@@ -1,7 +1,7 @@
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.Systems.ModPlayers;
-using PathOfTerraria.Core.Systems.VanillaModifications;
 using Terraria.ID;
 using Terraria.Localization;
 
