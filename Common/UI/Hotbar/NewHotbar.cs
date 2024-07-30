@@ -256,7 +256,7 @@ internal sealed class NewHotbar : SmartUIState
 		}
 
 		Texture2D select = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSelector").Value;
-		Main.spriteBatch.Draw(select, new Vector2(_selectorX, 21 + off), null,
+		Main.spriteBatch.Draw(select, new Vector2(_selectorX, 20 + off), null,
 			Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
 
 		if (Main.LocalPlayer.selectedItem > 10)
