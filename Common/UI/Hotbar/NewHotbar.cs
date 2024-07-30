@@ -153,10 +153,21 @@ internal sealed class NewHotbar : SmartUIState
 		int rightXOffset = Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60);
 		int spaceToTheRightRounded = (int)MathF.Round(spaceToTheRight);
 		int spaceToTheRightClamped = Math.Clamp(spaceToTheRightRounded, 0, 60);
-		int inverseSpaceToTheRightClamped = Math.Clamp(60 - Math.Clamp(spaceToTheRightRounded, 0, 60), 0, 60);
+		int inverseSpaceToTheRight = 60 - spaceToTheRightClamped;
+		int annoyingOffsetFix = 0;
+		if (82 + rightXOffset - inverseSpaceToTheRight + spaceToTheRightClamped != 142)
+		{
+			if (rightXOffset > 2)
+			{
+				rightXOffset -= 2;
+			}
+		}
+		if (inverseSpaceToTheRight + spaceToTheRightClamped != 60) {
+			;
+		}
+		Main.NewText(82 + rightXOffset - inverseSpaceToTheRight + spaceToTheRightClamped);
 		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
-		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRightClamped, 0, spaceToTheRightClamped, Height), Color.White);
-		Main.NewText(82f + rightXOffset - inverseSpaceToTheRightClamped + spaceToTheRightClamped);
+		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
 	}
 
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
