@@ -166,7 +166,7 @@ internal sealed class NewHotbar : SmartUIState
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 	{
 		Texture2D combat = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarCombat").Value;
-		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
+		Main.inventoryScale = opacity;
 
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
 		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30 + off));
@@ -274,7 +274,7 @@ internal sealed class NewHotbar : SmartUIState
 	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
 		Texture2D building = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBuilding").Value;
-		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
+		Main.inventoryScale = Math.Max(opacity, 0f);
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
 		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30 + off));
