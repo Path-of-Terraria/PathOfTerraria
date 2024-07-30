@@ -13,8 +13,6 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using PathOfTerraria.Core.UI;
-using System;
-using PathOfTerraria.Common.Utilities;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -159,7 +157,7 @@ internal sealed class NewHotbar : SmartUIState
 		int hackyTotal = 82 + rightXOffset + spaceToTheRightClamped;
 		if (hackyTotal != 142)
 		{
-			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal;
+			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal; 
 		}
 		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
 		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
@@ -277,7 +275,6 @@ internal sealed class NewHotbar : SmartUIState
 	{
 		Texture2D building = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBuilding").Value;
 		Main.inventoryScale = Math.Max(opacity, 0f);
-		Main.inventoryScale = 0.5f;
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
 		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30 + off));
@@ -290,16 +287,8 @@ internal sealed class NewHotbar : SmartUIState
 
 		for (int k = 2; k <= 9; k++)
 		{
-			Texture2D value = TextureUtils.LoadAndGetItem(Main.LocalPlayer.inventory[k].type).Value;
-			Rectangle frame = (Main.itemAnimations[Main.LocalPlayer.inventory[k].type] == null) ? value.Frame() : Main.itemAnimations[Main.LocalPlayer.inventory[k].type].GetFrame(value);
-			float realScale = GetRealScale(Main.inventoryScale, Main.LocalPlayer.inventory[k].type, frame, 32f); ;
-
-			float inverseScale = 1f - Main.inventoryScale;
-			var pos = new Vector2(24 + 124 + 52 * (k - 2), 30 + off);
-			pos.X += frame.Width * inverseScale;
-			pos.Y += frame.Height * inverseScale;
-
-			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21, pos, Color.White * opacity);
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21,
+				new Vector2(24 + 124 + 52 * (k - 2), 30 + off), Color.White * opacity);
 		}
 
 		if (Main.LocalPlayer.selectedItem > 10)
@@ -310,30 +299,7 @@ internal sealed class NewHotbar : SmartUIState
 		}
 	}
 
-	private static float GetRealScale(float scale, int type, Rectangle frame, float sizeLimit)
-	{
-		float scale2 = 1f;
-
-		if (type != 5128 && ItemID.Sets.ItemIconPulse[type])
-		{
-			scale2 = Main.essScale;
-		}
-		else if (type == 58 || type == 184 || type == 4143)
-		{
-			scale2 = Main.essScale * 0.25f + 0.75f;
-		}
-
-		float num = 1f;
-		if (frame.Width > sizeLimit || frame.Height > sizeLimit)
-		{
-			num = (frame.Width <= frame.Height) ? (sizeLimit / frame.Height) : (sizeLimit / frame.Width);
-		}
-
-		return scale * num * scale2;
-	}
-
-	private void DrawSelector(SpriteBatch spriteBatch, float opacity)
-	{
+	private void DrawSelector(SpriteBatch spriteBatch, float opacity) {
 		Texture2D select = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSelector").Value;
 
 		// Render the special selector, which is always visible.
