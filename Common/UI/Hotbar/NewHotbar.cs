@@ -33,11 +33,23 @@ internal sealed class NewHotbar : SmartUIState
 		}
 	}
 
-	private int _animation;
+	private sealed class Selector
+	{
+		public float X { get; private set; }
 
-	private float _selectorX;
-	private float _selectorTarget;
+		public float Target { get; set; }
+
+		public void EasePosition()
+		{
+			X += (Target - X) * 0.33f;
+		}
+	}
+
+	private readonly Selector specialSelector = new();
+	private readonly Selector buildingSelector = new();
 	private readonly DynamicSpriteFont _font = FontAssets.DeathText.Value;
+
+	private int _animation;
 
 	public override bool Visible => !Main.playerInventory;
 
@@ -69,19 +81,21 @@ internal sealed class NewHotbar : SmartUIState
 			prog = Ease(_animation / 20f);
 		}
 
-		if (Main.LocalPlayer.selectedItem >= 2)
-		{
-			_selectorTarget = 24 + 120 + 52 * (MathF.Min(Main.LocalPlayer.selectedItem, 10) - 2);
-		}
-		else
-		{
-			_selectorTarget = 98;
-		}
+		// 20 derived from 20 - 4 because the frame has two pixels of leftmost
+		// padding.
+		specialSelector.Target = 20 + Utils.Clamp(Main.LocalPlayer.selectedItem, 0, 1) * 62;
 
-		_selectorX += (_selectorTarget - _selectorX) * 0.33f;
+		// If the selected item isn't within the target range of slots (less
+		// than 2), we set it to 98 for it to rest.
+		buildingSelector.Target = Main.LocalPlayer.selectedItem >= 2 ? 24 + 120 + 52 * (MathF.Min(Main.LocalPlayer.selectedItem, 10) - 2) : 98;
 
+		specialSelector.EasePosition();
+		buildingSelector.EasePosition();
+
+		DrawSpecial(spriteBatch);
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
+		DrawSelector(spriteBatch, prog);
 		DrawHotkeys(spriteBatch, -prog * 80);
 		DrawHeldItemName(spriteBatch);
 	}
@@ -100,13 +114,62 @@ internal sealed class NewHotbar : SmartUIState
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
 	}
 
+	/// <summary>
+	///		Draws the two leftmost slots, which should always be visible and
+	///		won't move as part of the hotbar transition.
+	/// </summary>
+	private void DrawSpecial(SpriteBatch spriteBatch)
+	{
+		// The inactive texture contains the special, textured "inactive"
+		// hotbar slots, which are silver and contain icons for the items they
+		// are supposed to hold.  The active texture just contains the color
+		// for the background of the hotbar frames.  This is because we use the
+		// selector's frame as the hotbar frame.
+		// ItemSlot::Draw unfortunately does not provide a scissor/source
+		// rectangle API, so we most draw it in this manner:
+		// - render active slot textures (hotbar background)
+		// - render item slot items,
+		// - render inactive slot textures OVER active textures and items,
+		//   - these *are* rendered with a source rectangle, allowing us to
+		//     cleanly transition within context of the position of the
+		//     selector.
+
+		Texture2D specialInactiveCombat = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Inactive_Combat").Value;
+		Texture2D specialInactiveBuilding = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Inactive_Building").Value;
+		Texture2D specialActive = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Active").Value;
+		Main.inventoryScale = 1f; // 36 / 52f * 52f / 36f * 1 computes to 1...
+
+		// Draw active slot textures (hotbar background).
+		Main.spriteBatch.Draw(specialActive, new Vector2(20f), null, Color.White);
+
+		// Draw item slot items.
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30));
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62f, 30));
+
+		// Render inactive slot textures OVER active textures and items.
+		const int Height = 72;
+		float normalizedLeftmostPos = specialSelector.X - 20f;
+		float spaceToTheRight = -(specialSelector.X - 22f - 60f);
+		int rightXOffset = Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60);
+		int spaceToTheRightRounded = (int)MathF.Round(spaceToTheRight);
+		int spaceToTheRightClamped = Math.Clamp(spaceToTheRightRounded, 0, 60);
+		int inverseSpaceToTheRight = 60 - spaceToTheRightClamped;
+		int hackyTotal = 82 + rightXOffset + spaceToTheRightClamped;
+		if (hackyTotal != 142)
+		{
+			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal; 
+		}
+		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
+		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
+	}
+
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 	{
 		Texture2D combat = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarCombat").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30 + off));
+		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30 + off));
 
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
@@ -214,7 +277,7 @@ internal sealed class NewHotbar : SmartUIState
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30 + off));
+		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30 + off));
 
 		for (int k = 2; k <= 9; k++)
 		{
@@ -222,16 +285,22 @@ internal sealed class NewHotbar : SmartUIState
 				new Vector2(24 + 124 + 52 * (k - 2), 30 + off));
 		}
 
-		Texture2D select = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSelector").Value;
-		Main.spriteBatch.Draw(select, new Vector2(_selectorX, 21 + off), null,
-			Color.White * opacity * (_selectorTarget == 98 ? (_selectorX - 98) / 30f : 1));
-
 		if (Main.LocalPlayer.selectedItem > 10)
 		{
 			Texture2D back = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBack").Value;
 			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
 		}
+	}
+
+	private void DrawSelector(SpriteBatch spriteBatch, float opacity) {
+		Texture2D select = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSelector").Value;
+
+		// Render the special selector, which is always visible.
+		spriteBatch.Draw(select, new Vector2(specialSelector.X, 20), null, Color.White);
+
+		// Render the building selector, which is conditionally visible.
+		spriteBatch.Draw(select, new Vector2(buildingSelector.X, 20), null, Color.White * opacity * (buildingSelector.Target == 98 ? (buildingSelector.X - 98) / 30f : 1f));
 	}
 
 	private static float Ease(float input)
