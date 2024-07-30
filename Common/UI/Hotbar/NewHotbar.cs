@@ -144,14 +144,19 @@ internal sealed class NewHotbar : SmartUIState
 
 		// Draw item slot items.
 		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30));
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30));
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62f, 30));
 
 		// Render inactive slot textures OVER active textures and items.
 		const int Height = 72;
 		float normalizedLeftmostPos = specialSelector.X - 20f;
 		float spaceToTheRight = -(specialSelector.X - 22f - 60f);
+		int rightXOffset = Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60);
+		int spaceToTheRightRounded = (int)MathF.Round(spaceToTheRight);
+		int spaceToTheRightClamped = Math.Clamp(spaceToTheRightRounded, 0, 60);
+		int inverseSpaceToTheRightClamped = Math.Clamp(60 - Math.Clamp(spaceToTheRightRounded, 0, 60), 0, 60);
 		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
-		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + normalizedLeftmostPos, 20f), new Rectangle(Math.Clamp(60 - (int)MathF.Round(spaceToTheRight), 0, 60), 0, Math.Clamp((int)MathF.Round(spaceToTheRight), 0, 60), Height), Color.White);
+		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRightClamped, 0, spaceToTheRightClamped, Height), Color.White);
+		Main.NewText(82f + rightXOffset - inverseSpaceToTheRightClamped + spaceToTheRightClamped);
 	}
 
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
