@@ -393,3 +393,8 @@ Bloodclotter: {
 	DisplayName: Bloodclotter
 	Tooltip: ""
 }
+
+ArcaneObeliskItem: {
+	DisplayName: Arcane Obelisk Item
+	Tooltip: ""
+}
