@@ -24,10 +24,8 @@ public class BloodSiphon : Skill
 
 	public override void UseSkill(Player player)
 	{
-		if (!CanUseSkill(player))
-		{
-			return;
-		}
+		// Level to the strength of all BloodSiphonAffix
+		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>());
 
 		int remainingStacksToPop = 20 + Level * 5;
 

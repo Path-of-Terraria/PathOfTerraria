@@ -15,6 +15,7 @@ public class EntityModifierSegment
 public partial class EntityModifier : EntityModifierSegment
 {
 	private static readonly EntityModifier _default = new();
+
 	public StatModifier MaximumLife = new();
 	public StatModifier LifeRegen = new();
 	public StatModifier MaximumMana = new();
@@ -40,12 +41,14 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier MaxHealthPotions = new();
 	public StatModifier PotionHealPower = new();
 
-	[ReverseTooltip] public StatModifier PotionHealDelay = new();
+	[ReverseTooltip] 
+	public StatModifier PotionHealDelay = new();
 
 	public StatModifier MaxManaPotions = new();
 	public StatModifier PotionManaPower = new();
 
-	[ReverseTooltip] public StatModifier PotionManaDelay = new();
+	[ReverseTooltip] 
+	public StatModifier PotionManaDelay = new();
 
 	// BuffModifierPlayer:
 	public StatModifier DebuffResistance = new();
@@ -267,6 +270,7 @@ public partial class EntityModifier : EntityModifierSegment
 	private static partial Regex DifferenceRegex();
 }
 
+[AttributeUsage(AttributeTargets.Field)]
 public class ReverseTooltip : Attribute
 {
 }

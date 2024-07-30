@@ -48,28 +48,19 @@ internal class SkillPlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		if (Skill1Keybind.JustPressed && Skills[0] != null)
+		if (Skill1Keybind.JustPressed && Skills[0] != null && Skills[0].CanUseSkill(Player))
 		{
-			if (Skills[0].Timer == 0)
-			{
-				Skills[0]?.UseSkill(Main.LocalPlayer);
-			}
+			Skills[0]?.UseSkill(Player);
 		}
 
-		if (Skill2Keybind.JustPressed && Skills[1] != null)
+		if (Skill2Keybind.JustPressed && Skills[1] != null && Skills[1].CanUseSkill(Player))
 		{
-			if (Skills[1].Timer == 0)
-			{
-				Skills[1]?.UseSkill(Main.LocalPlayer);
-			}
+			Skills[1]?.UseSkill(Player);
 		}
 
-		if (Skill3Keybind.JustPressed && Skills[2] != null)
+		if (Skill3Keybind.JustPressed && Skills[2] != null && Skills[2].CanUseSkill(Player))
 		{
-			if (Skills[2].Timer == 0)
-			{
-				Skills[2]?.UseSkill(Main.LocalPlayer);
-			}
+			Skills[2]?.UseSkill(Player);
 		}
 	}
 

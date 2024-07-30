@@ -65,11 +65,11 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 	/// </summary>
 	public static event ModifyHitNPCDelegate ModifyHitNPCEvent;
 
-	public delegate void ModifyHitNPCDelegate(NPC target, ref NPC.HitModifiers modifiers);
+	public delegate void ModifyHitNPCDelegate(Player self, NPC target, ref NPC.HitModifiers modifiers);
 
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		ModifyHitNPCEvent?.Invoke(target, ref modifiers);
+		ModifyHitNPCEvent?.Invoke(Player, target, ref modifiers);
 	}
 
 	/// <summary>
