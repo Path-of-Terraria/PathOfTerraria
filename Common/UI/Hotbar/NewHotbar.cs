@@ -154,18 +154,11 @@ internal sealed class NewHotbar : SmartUIState
 		int spaceToTheRightRounded = (int)MathF.Round(spaceToTheRight);
 		int spaceToTheRightClamped = Math.Clamp(spaceToTheRightRounded, 0, 60);
 		int inverseSpaceToTheRight = 60 - spaceToTheRightClamped;
-		int annoyingOffsetFix = 0;
-		if (82 + rightXOffset - inverseSpaceToTheRight + spaceToTheRightClamped != 142)
+		int hackyTotal = 82 + rightXOffset + spaceToTheRightClamped;
+		if (hackyTotal != 142)
 		{
-			if (rightXOffset > 2)
-			{
-				rightXOffset -= 2;
-			}
+			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal; 
 		}
-		if (inverseSpaceToTheRight + spaceToTheRightClamped != 60) {
-			;
-		}
-		Main.NewText(82 + rightXOffset - inverseSpaceToTheRight + spaceToTheRightClamped);
 		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
 		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
 	}
