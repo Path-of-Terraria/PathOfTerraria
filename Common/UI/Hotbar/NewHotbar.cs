@@ -279,6 +279,12 @@ internal sealed class NewHotbar : SmartUIState
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
 		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30 + off));
 
+		// Let's not draw items if they aren't big enough since they look weird.
+		if (opacity < 0.5f)
+		{
+			return;
+		}
+
 		for (int k = 2; k <= 9; k++)
 		{
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21,
