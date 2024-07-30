@@ -80,6 +80,7 @@ internal sealed class NewHotbar : SmartUIState
 
 		_selectorX += (_selectorTarget - _selectorX) * 0.33f;
 
+		DrawSpecial(spriteBatch);
 		DrawCombat(spriteBatch, -prog * 80, 1 - prog);
 		DrawBuilding(spriteBatch, 80 - prog * 80, prog);
 		DrawHotkeys(spriteBatch, -prog * 80);
@@ -100,13 +101,45 @@ internal sealed class NewHotbar : SmartUIState
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
 	}
 
+	/// <summary>
+	///		Draws the two leftmost slots, which should always be visible and
+	///		won't move as part of the hotbar transition.
+	/// </summary>
+	private static void DrawSpecial(SpriteBatch spriteBatch)
+	{
+		// The inactive texture contains the special, textured "inactive"
+		// hotbar slots, which are silver and contain icons for the items they
+		// are supposed to hold.  The active texture just contains the color
+		// for the background of the hotbar frames.  This is because we use the
+		// selector's frame as the hotbar frame.
+		// ItemSlot::Draw unfortunately does not provide a scissor/source
+		// rectangle API, so we most draw it in this manner:
+		// - render active slot textures (hotbar background)
+		// - render item slot items,
+		// - render inactive slot textures OVER active textures and items,
+		//   - these *are* rendered with a source rectangle, allowing us to
+		//     cleanly transition within context of the position of the
+		//     selector.
+
+		Texture2D specialInactive = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Inactive").Value;
+		Texture2D specialActive = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Active").Value;
+		Main.inventoryScale = 1f; // 36 / 52f * 52f / 36f * 1 computes to 1...
+
+		// Draw active slot textures (hotbar background).
+		Main.spriteBatch.Draw(specialActive, new Vector2(20f), null, Color.White);
+
+		// Draw item slot items.
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30));
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30));
+	}
+
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 	{
 		Texture2D combat = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarCombat").Value;
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30 + off));
+		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30 + off));
 
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
@@ -214,7 +247,7 @@ internal sealed class NewHotbar : SmartUIState
 		Main.inventoryScale = 36 / 52f * 52f / 36f * opacity;
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30 + off));
+		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62, 30 + off));
 
 		for (int k = 2; k <= 9; k++)
 		{
