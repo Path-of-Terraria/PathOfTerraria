@@ -46,9 +46,9 @@ PoacherSummon: {
 }
 
 GrimoireVisageEffect.DisplayName: Grimoire Visage Effect
-MoltenDangpaThrown.DisplayName: Molten Dangpa Thrown
-MoltenDangpaBubbles.DisplayName: Molten Dangpa Bubbles
-BloodclotterThrown.DisplayName: Bloodclotter Thrown
-RottenboneThrown.DisplayName: Rottenbone Thrown
+MoltenDangpaThrown.DisplayName: Molten Dangpa
+MoltenDangpaBubbles.DisplayName: Molten Bubbles
+BloodclotterThrown.DisplayName: Bloodclotter
+RottenboneThrown.DisplayName: Rottenbone
 RottenboneChunks.DisplayName: Rottenbone Chunks
 CarapaceChunk.DisplayName: Carapace Chunk

@@ -29,9 +29,4 @@ internal class Rottenbone : PlatinumGlaive
 
 		Item.shoot = ModContent.ProjectileType<RottenboneThrown>();
 	}
-
-	public override bool CanUseItem(Player player)
-	{
-		return base.CanUseItem(player);
-	}
 }
