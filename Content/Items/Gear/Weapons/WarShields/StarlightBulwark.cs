@@ -11,6 +11,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 
 	private int _projTimer = 0;
 	private int _lastProj = -1;
+	private int _lastAltClick = 0;
 
 	public override void Defaults()
 	{
@@ -26,7 +27,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 		{
 			if (_projTimer++ % 3 == 0)
 			{
-				Vector2 vel = (player.velocity * Main.rand.NextFloat(0.4f, 0.8f) * 0.8f).RotatedByRandom(0.6f);
+				Vector2 vel = (player.velocity * Main.rand.NextFloat(0.4f, 0.8f) * 0.8f).RotatedByRandom(1f);
 				int type = ModContent.ProjectileType<StarlightBulwarkStar>();
 				_lastProj = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, vel, type, 20, 0, player.whoAmI, _lastProj);
 			}
@@ -35,12 +36,24 @@ internal class StarlightBulwark : LeadBattleBulwark
 		{
 			_lastProj = -1;
 		}
+
+		_lastAltClick--;
+
+		if (player.whoAmI == Main.myPlayer && Main.mouseRight && Main.mouseRightRelease)
+		{
+			if (_lastAltClick > 0)
+			{
+
+			}
+
+			_lastAltClick = 15;
+		}
 	}
 
 	public override bool ParryProjectile(Player player, Projectile projectile)
 	{
-		Vector2 vel = -(projectile.velocity * Main.rand.NextFloat(0.4f, 1.2f)).RotatedByRandom(0.6f);
-		int type = ModContent.ProjectileType<StarlightBulwarkStar>();
+		Vector2 vel = -(projectile.velocity * Main.rand.NextFloat(0.4f, 0.7f)).RotatedByRandom(0.6f);
+		int type = ModContent.ProjectileType<StarlightBulwarkComet>();
 		_lastProj = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, vel, type, projectile.damage, 0, player.whoAmI, _lastProj);
 
 		base.ParryProjectile(player, projectile);
@@ -112,6 +125,34 @@ internal class StarlightBulwark : LeadBattleBulwark
 			var scale = new Vector2(Projectile.Distance(LastStarProj.Center) / tex.Width * 0.9f, 0.5f);
 			Main.spriteBatch.Draw(tex, position - Main.screenPosition, null, Color.Pink * opacity * 0.85f, rotation, tex.Size() / 2f, scale, SpriteEffects.None, 0);
 			return true;
+		}
+	}
+
+	public class StarlightBulwarkComet : ModProjectile
+	{
+		public override void SetDefaults()
+		{
+			Projectile.CloneDefaults(ProjectileID.Bullet);
+			Projectile.aiStyle = -1;
+			Projectile.Opacity = 1f;
+			Projectile.Size = new(18);
+		}
+
+		public override void AI()
+		{
+			Projectile.rotation = Projectile.velocity.ToRotation();
+			Projectile.velocity.Y += 0.1f;
+
+			if (Main.rand.NextBool(15))
+			{
+				int dust = Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.PurpleCrystalShard);
+				Main.dust[dust].noGravity = true;
+			}
+
+			if (Projectile.timeLeft < 60)
+			{
+				Projectile.Opacity = Projectile.timeLeft / 60f;
+			}
 		}
 	}
 }
