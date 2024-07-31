@@ -1,3 +1,4 @@
+using PathOfTerraria.Content.GUI.GrimoireSelection;
 using PathOfTerraria.Content.GUI.PlayerStats;
 using PathOfTerraria.Core.Loaders.UILoading;
 using Terraria.ID;

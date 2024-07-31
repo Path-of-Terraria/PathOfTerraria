@@ -1,12 +1,11 @@
-﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
+﻿using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Core.Loaders.UILoading;
-using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI.PlayerStats;
+namespace PathOfTerraria.Content.GUI.GrimoireSelection;
 
 public class GrimoireInvButton : SmartUIState
 {

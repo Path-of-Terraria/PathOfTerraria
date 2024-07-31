@@ -3,7 +3,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 
-namespace PathOfTerraria.Content.GUI;
+namespace PathOfTerraria.Content.GUI.Armor;
 
 public sealed class UIGearInventoryHooks : ILoadable
 {

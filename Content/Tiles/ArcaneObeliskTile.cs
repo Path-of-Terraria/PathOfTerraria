@@ -42,22 +42,21 @@ public class ArcaneObeliskTile : ModTile
 	{
 		num = fail ? 1 : 3;
 	}
+	
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+    {
+		b = 0.2f;
+   	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
 	{
-		
 		return true;
 	}
 	
-	public override void MouseOver(int i, int j) {
+	public override void MouseOver(int i, int j) 
+	{
 		Main.LocalPlayer.cursorItemIconEnabled = true;
 		Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<ArcaneObeliskItem>();
-	}
-
-	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-	{
-		b = 0.4f;
-		g = 0.1f;
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

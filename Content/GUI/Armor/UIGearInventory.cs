@@ -6,7 +6,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI;
+namespace PathOfTerraria.Content.GUI.Armor;
 
 public sealed class UIGearInventory : UIState
 {
