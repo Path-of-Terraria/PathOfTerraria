@@ -46,6 +46,8 @@ PoacherSummon: {
 }
 
 GrimoireVisageEffect.DisplayName: Grimoire Visage Effect
+StarlightBulwarkStar.DisplayName: Starlight Bulwark Star
+StarlightBulwarkComet.DisplayName: Starlight Bulwark Comet
 MoltenDangpaThrown.DisplayName: Molten Dangpa
 MoltenDangpaBubbles.DisplayName: Molten Bubbles
 BloodclotterThrown.DisplayName: Bloodclotter

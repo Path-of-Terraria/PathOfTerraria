@@ -174,12 +174,12 @@ public abstract class PoTItem : ModItem
 			string text = affix.RequiredInfluence switch
 			{
 				Influence.Solar => $"[i:{ItemID.IchorBullet}] " +
-				                   HighlightNumbers($"{affix.GetTooltip(this)}", "FFEE99", "CCB077"),
+				                   HighlightNumbers($"{affix.GetTooltip(this, Main.LocalPlayer)}", "FFEE99", "CCB077"),
 				Influence.Lunar => $"[i:{ItemID.CrystalBullet}] " +
-				                   HighlightNumbers($"{affix.GetTooltip(this)}", "BBDDFF", "99AADD"),
+				                   HighlightNumbers($"{affix.GetTooltip(this, Main.LocalPlayer)}", "BBDDFF", "99AADD"),
 				_ => affixIdx < _implicits
-					? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(this)}", baseColor: "8B8000")
-					: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(this)}"),
+					? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(this, Main.LocalPlayer)}", baseColor: "8B8000")
+					: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(this, Main.LocalPlayer)}"),
 			};
 
 			var affixLine = new TooltipLine(Mod, $"Affix{affixIdx}", text);
@@ -730,7 +730,7 @@ public abstract class PoTItem : ModItem
 	/// Applies affixes to the given <see cref="EntityModifier"/>.<br/>
 	/// <paramref name="player"/> should usually be set to whatever player this is applying to.
 	/// But if you do not want the modifications to apply to the player at all, set it to null,<br/>
-	/// such as in <see cref="Content.Projectiles.Summoner.GrimoireSummon.PreAI"/> or <see cref="PoTItem.ModifyTooltips(List{TooltipLine})"/>.<br/>
+	/// such as in <see cref="Content.Projectiles.Summoner.GrimoireSummon.PreAI"/> or <see cref="ModifyTooltips(List{TooltipLine})"/>.<br/>
 	/// They both don't actually modify the player, and thus should take no player.
 	/// </summary>
 	/// <param name="entityModifier"></param>
@@ -739,7 +739,7 @@ public abstract class PoTItem : ModItem
 	{
 		Affixes.ForEach(n =>
 		{
-			n.ApplyAffix(entityModifier, this);
+			n.ApplyAffix(player, entityModifier, this);
 			player?.GetModPlayer<AffixPlayer>().AddStrength(n.GetType().AssemblyQualifiedName, n.Value);
 		});
 	}
