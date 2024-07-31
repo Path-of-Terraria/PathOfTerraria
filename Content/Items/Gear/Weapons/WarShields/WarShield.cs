@@ -83,13 +83,13 @@ internal abstract class WarShield : Gear, IParryItem
 		return true;
 	}
 
-	public bool CanRaiseShield(Player player)
+	public virtual bool CanRaiseShield(Player player)
 	{
 		AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 		return altUsePlayer.AltFunctionAvailable || altUsePlayer.AltFunctionActive;
 	}
 
-	public void OnRaiseShield(Player player)
+	public virtual void OnRaiseShield(Player player)
 	{
 		AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 

@@ -1,39 +1,12 @@
-﻿using PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
-using PathOfTerraria.Content.Skills.Melee;
-using PathOfTerraria.Core.Systems.ModPlayers;
+﻿namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
-namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
-
-internal class MoltenShellAffix : ItemAffix
+internal class NoFallDamageAffix : ItemAffix
 {
-	public override void OnLoad()
+	public override void ApplyAffix(Player player, EntityModifier modifier, PoTItem gear)
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableMoltenShellIfOpen;
-	}
-
-	private void EnableMoltenShellIfOpen(Player self, Item newItem, Item oldItem)
-	{
-		if (newItem.type == ModContent.ItemType<MoltenDangpa>())
+		if (player != null)
 		{
-			SkillPlayer skillPlayer = self.GetModPlayer<SkillPlayer>();
-			skillPlayer.TryAddSkill(new MoltenShield());
-		}
-	}
-}
-
-internal class BloodSiphonAffix : ItemAffix
-{
-	public override void OnLoad()
-	{
-		OnSwapPlayer.OnSwapMainItem += EnableBloodSiphonIfOpen;
-	}
-
-	private void EnableBloodSiphonIfOpen(Player self, Item newItem, Item oldItem)
-	{
-		if (newItem.type == ModContent.ItemType<Bloodclotter>())
-		{
-			SkillPlayer skillPlayer = self.GetModPlayer<SkillPlayer>();
-			skillPlayer.TryAddSkill(new BloodSiphon());
+			player.noFallDmg = true;
 		}
 	}
 }
