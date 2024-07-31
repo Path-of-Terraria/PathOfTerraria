@@ -31,10 +31,20 @@ internal class StarlightBulwark : LeadBattleBulwark
 				_lastProj = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, vel, type, 20, 0, player.whoAmI, _lastProj);
 			}
 		}
-		else
+		else if (player.whoAmI != Main.myPlayer || !Main.mouseRight)
 		{
 			_lastProj = -1;
 		}
+	}
+
+	public override bool ParryProjectile(Player player, Projectile projectile)
+	{
+		Vector2 vel = -(projectile.velocity * Main.rand.NextFloat(0.4f, 1.2f)).RotatedByRandom(0.6f);
+		int type = ModContent.ProjectileType<StarlightBulwarkStar>();
+		_lastProj = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, vel, type, projectile.damage, 0, player.whoAmI, _lastProj);
+
+		base.ParryProjectile(player, projectile);
+		return true;
 	}
 
 	public class StarlightBulwarkStar : ModProjectile
@@ -72,6 +82,14 @@ internal class StarlightBulwark : LeadBattleBulwark
 			if (Projectile.timeLeft < 60)
 			{
 				Projectile.Opacity = Projectile.timeLeft / 60f;
+			}
+
+			if (LastStar != -1)
+			{
+				if (!LastStarProj.active || LastStarProj.type != Type)
+				{
+					LastStar = -1;
+				}
 			}
 		}
 

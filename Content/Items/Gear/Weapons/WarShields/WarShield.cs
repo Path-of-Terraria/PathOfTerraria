@@ -105,7 +105,7 @@ internal abstract class WarShield : Gear, IParryItem
 		return altUsePlayer.AltFunctionActive;
 	}
 
-	public bool ParryProjectile(Player player, Projectile projectile)
+	public virtual bool ParryProjectile(Player player, Projectile projectile)
 	{
 		projectile.velocity *= -1;
 		projectile.friendly = true;
