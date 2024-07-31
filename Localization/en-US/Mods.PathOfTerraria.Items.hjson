@@ -393,3 +393,8 @@ Bloodclotter: {
 	DisplayName: Bloodclotter
 	Tooltip: ""
 }
+
+Rottenbone: {
+	DisplayName: Rottenbone
+	Tooltip: ""
+}
