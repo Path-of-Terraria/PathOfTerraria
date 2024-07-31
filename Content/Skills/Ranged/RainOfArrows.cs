@@ -24,11 +24,6 @@ public class RainOfArrows : Skill
 
 	public override void UseSkill(Player player)
 	{
-		if (!CanUseSkill(player))
-		{
-			return;
-		}
-
 		player.statMana -= ManaCost;
 		Timer = Cooldown;
 
