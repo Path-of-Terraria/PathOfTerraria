@@ -4,8 +4,9 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds.Passes;
 
-public class FlatWorldPass() : GenPass("Terrain", 1)
+public class FlatWorldPass(int floorY = 500) : GenPass("Terrain", 1)
 {
+	public readonly int FloorY = floorY;
 
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -18,7 +19,7 @@ public class FlatWorldPass() : GenPass("Terrain", 1)
 			{
 				progress.Set((y + x * Main.maxTilesY) / (float)(Main.maxTilesX * Main.maxTilesY)); // Controls the progress bar, should only be set between 0f and 1f
 				Tile tile = Main.tile[x, y];
-				if (y <= 500)
+				if (y <= FloorY)
 				{
 					continue; //We don't want any tiles below y = 500
 				}

@@ -23,6 +23,9 @@
 		</Compile>
 	</ItemGroup>
 	<ItemGroup>
+		<Reference Include="StructureHelper">
+		  <HintPath>lib\StructureHelper.dll</HintPath>
+		</Reference>
 		<Reference Include="SubworldLibrary">
 			<HintPath>Dependencies\SubworldLibrary.dll</HintPath>
 		</Reference>

@@ -1,6 +1,9 @@
 ﻿using PathOfTerraria.Core.Subworlds.Passes;
 using SubworldLibrary;
 using System.Collections.Generic;
+using Terraria.DataStructures;
+using Terraria.GameContent.Generation;
+using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds;

@@ -14,6 +14,6 @@ public class SpawnWorld : ModCommand {
 	public override string Description => "Generates a new subworld";
 
 	public override void Action(CommandCaller caller, string input, string[] args){
-		SubworldSystem.Enter<TestSubworld>();
+		SubworldSystem.Enter<KingSlimeDomain>();
 	}
 }
