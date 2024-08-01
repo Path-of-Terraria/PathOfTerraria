@@ -396,9 +396,9 @@ Bloodclotter: {
 
 StarlightBulwark: {
 	DisplayName: Starlight Bulwark
-  Tooltip: ""
+	Tooltip: ""
 }
-  
+
 Rottenbone: {
 	DisplayName: Rottenbone
 	Tooltip: ""

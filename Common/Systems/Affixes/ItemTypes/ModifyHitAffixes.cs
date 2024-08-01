@@ -47,7 +47,7 @@ internal class ChanceToApplyArmorShredGearAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(ModContent.BuffType<ArmorShredBuff>(), Duration, Value);
+		modifier.Buffer.Add(ModContent.BuffType<ArmorShredDebuff>(), Duration, Value);
 	}
 }
 

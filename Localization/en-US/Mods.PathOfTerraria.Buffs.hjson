@@ -8,11 +8,6 @@ RageBuff: {
 	Description: Increased damage and greatly increased knockback
 }
 
-ArmorShredBuff: {
-	DisplayName: Armor Shred Debuff
-	Description: ""
-}
-
 MoltenShieldBuff: {
 	DisplayName: Molten Shell
 	Description:
@@ -26,4 +21,9 @@ BloodclotDebuff: {
 	DisplayName: BloodclotDebuff
 	Description: ""
 	DeathText: "{0} couldn't stop the bleeding"
+}
+
+ArmorShredDebuff: {
+	DisplayName: Armor Shred Debuff
+	Description: ""
 }
