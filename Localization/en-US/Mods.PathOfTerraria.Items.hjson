@@ -383,3 +383,8 @@ SteelWarShield: {
 	DisplayName: Steel War Shield
 	Tooltip: ""
 }
+
+MoltenDangpa: {
+	DisplayName: Molten Dangpa
+	Tooltip: ""
+}
