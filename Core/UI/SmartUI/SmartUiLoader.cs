@@ -1,25 +1,24 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using JetBrains.Annotations;
 using PathOfTerraria.Common.UI.Utilities;
 using Terraria.ModLoader.Core;
 using Terraria.UI;
 
-namespace PathOfTerraria.Core.UI;
+namespace PathOfTerraria.Core.UI.SmartUI;
 
-/// <summary>
-/// Automatically loads SmartUIStates ala IoC.
-/// </summary>
-class UILoader : ModSystem
+[UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
+internal sealed class UiLoader : ModSystem
 {
 	/// <summary>
 	/// The collection of automatically craetaed UserInterfaces for SmartUIStates.
 	/// </summary>
-	public static List<UserInterface> UserInterfaces = [];
+	private static List<UserInterface> userInterfaces = [];
 
 	/// <summary>
 	/// The collection of all automatically loaded SmartUIStates.
 	/// </summary>
-	public static List<SmartUIState> UIStates = [];
+	private static List<SmartUiState> uiStates = [];
 
 	/// <summary>
 	/// Uses reflection to scan through and find all types extending SmartUIState that arent abstract, and loads an instance of them.
@@ -31,28 +30,28 @@ class UILoader : ModSystem
 			return;
 		}
 
-		UserInterfaces = [];
-		UIStates = [];
+		userInterfaces = [];
+		uiStates = [];
 
 		foreach (Type t in AssemblyManager.GetLoadableTypes(Mod.Code))
 		{
-			if (!t.IsAbstract && t.IsSubclassOf(typeof(SmartUIState)))
+			if (!t.IsAbstract && t.IsSubclassOf(typeof(SmartUiState)))
 			{
-				var state = (SmartUIState)Activator.CreateInstance(t, null);
-				UIStates?.Add(state);
+				var state = (SmartUiState)Activator.CreateInstance(t, null);
+				uiStates?.Add(state);
 			}
 		}
 
-		var comp = new Comparison<SmartUIState>((s1, s2) => s2.DepthPriority - s1.DepthPriority);
-		UIStates.Sort(comp);
+		var comp = new Comparison<SmartUiState>((s1, s2) => s2.DepthPriority - s1.DepthPriority);
+		uiStates.Sort(comp);
 
-		for (int k = 0; k < UIStates.Count; k++)
+		for (int k = 0; k < uiStates.Count; k++)
 		{
-			SmartUIState state = UIStates[k];
+			SmartUiState state = uiStates[k];
 			var userInterface = new UserInterface();
 			userInterface.SetState(state);
 			state.UserInterface = userInterface;
-			UserInterfaces?.Add(userInterface);
+			userInterfaces?.Add(userInterface);
 		}
 
 		Main.OnResolutionChanged += UpdateUIStateForResolutionChange;
@@ -60,7 +59,7 @@ class UILoader : ModSystem
 
 	private void UpdateUIStateForResolutionChange(Vector2 obj)
 	{
-		foreach (SmartUIState item in UIStates)
+		foreach (SmartUiState item in uiStates)
 		{
 			item.Recalculate();
 		}
@@ -68,9 +67,9 @@ class UILoader : ModSystem
 
 	public override void Unload()
 	{
-		UIStates.ForEach(n => n.Unload());
-		UserInterfaces = null;
-		UIStates = null;
+		uiStates.ForEach(n => n.Unload());
+		userInterfaces = null;
+		uiStates = null;
 	}
 
 	/// <summary>
@@ -96,14 +95,14 @@ class UILoader : ModSystem
 			}, scale));
 	}
 
-	private SmartUIElement GetSmartUiParent(UIElement e)
+	private SmartUiElement GetSmartUiParent(UIElement e)
 	{
 		if (e is null)
 		{
 			return null;
 		}
 
-		if (e is SmartUIElement es && e.Parent is not SmartUIElement)
+		if (e is SmartUiElement es && e.Parent is not SmartUiElement)
 		{
 			return es;
 		}
@@ -113,7 +112,7 @@ class UILoader : ModSystem
 
 	private bool _mouseState = false;
 	private UIState _blockAt = null;
-	private SmartUIElement _blockAtE = null;
+	private SmartUiElement _blockAtE = null;
 
 	/// <summary>
 	/// Handles updating the UI states correctly
@@ -121,14 +120,14 @@ class UILoader : ModSystem
 	/// <param name="gameTime"></param>
 	public override void UpdateUI(GameTime gameTime)
 	{
-		foreach (UserInterface eachState in UserInterfaces)
+		foreach (UserInterface eachState in userInterfaces)
 		{
-			if (eachState?.CurrentState != null && ((SmartUIState)eachState.CurrentState).Visible)
+			if (eachState?.CurrentState != null && ((SmartUiState)eachState.CurrentState).Visible)
 			{
 				eachState.Update(gameTime);
 
 				UIElement e = eachState.CurrentState.GetElementAt(Main.MouseScreen);
-				SmartUIElement se = GetSmartUiParent(e);
+				SmartUiElement se = GetSmartUiParent(e);
 
 				if (_blockAt == eachState.CurrentState || e is not null && e is not UIState)
 				{
@@ -167,21 +166,21 @@ class UILoader : ModSystem
 	/// </summary>
 	/// <typeparam name="T">The SmartUIState subclass to get the instance of</typeparam>
 	/// <returns>The autoloaded instance of the desired SmartUIState</returns>
-	public static T GetUIState<T>() where T : SmartUIState
+	public static T GetUIState<T>() where T : SmartUiState
 	{
-		return UIStates.FirstOrDefault(n => n is T) as T;
+		return uiStates.FirstOrDefault(n => n is T) as T;
 	}
 
 	/// <summary>
 	/// Forcibly reloads a SmartUIState and it's associated UserInterface
 	/// </summary>
 	/// <typeparam name="T">The SmartUIState subclass to reload</typeparam>
-	public static void ReloadState<T>() where T : SmartUIState
+	public static void ReloadState<T>() where T : SmartUiState
 	{
-		int index = UIStates.IndexOf(GetUIState<T>());
-		UIStates[index] = (T)Activator.CreateInstance(typeof(T), null);
-		UserInterfaces[index] = new UserInterface();
-		UserInterfaces[index].SetState(UIStates[index]);
+		int index = uiStates.IndexOf(GetUIState<T>());
+		uiStates[index] = (T)Activator.CreateInstance(typeof(T), null);
+		userInterfaces[index] = new UserInterface();
+		userInterfaces[index].SetState(uiStates[index]);
 	}
 
 	/// <summary>
@@ -190,9 +189,9 @@ class UILoader : ModSystem
 	/// <param name="layers"></param>
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 	{
-		for (int k = 0; k < UIStates.Count; k++)
+		for (int k = 0; k < uiStates.Count; k++)
 		{
-			SmartUIState state = UIStates[k];
+			SmartUiState state = uiStates[k];
 			AddLayer(layers, state, state.InsertionIndex(layers), state.Visible, state.Scale);
 		}
 	}

@@ -6,7 +6,7 @@ namespace PathOfTerraria.Core.UI;
 /// <summary>
 /// An auto-loaded UI State, that knows information about its own visibility.
 /// </summary>
-public abstract class SmartUIState : UIState
+public abstract class SmartUiState : UIState
 {
 	/// <summary>
 	/// The UserInterface automatically assigned to this UIState on load.

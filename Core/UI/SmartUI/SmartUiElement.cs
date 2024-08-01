@@ -11,7 +11,7 @@ public class MouseContainedState
 /// <summary>
 /// Wrapper class that enforces Safe interoperability between event listeners and virtual methods for UI elements
 /// </summary>
-public class SmartUIElement : UIElement
+public class SmartUiElement : UIElement
 {
 	public Rectangle GetRectangle()
 	{
@@ -25,7 +25,7 @@ public class SmartUIElement : UIElement
 
 	public bool CheckMouseContained()
 	{
-		if (Parent is SmartUIElement p)
+		if (Parent is SmartUiElement p)
 		{
 			return p.CheckMouseContained();
 		}
