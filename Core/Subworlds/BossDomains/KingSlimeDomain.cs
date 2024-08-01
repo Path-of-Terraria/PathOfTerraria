@@ -18,24 +18,75 @@ public class KingSlimeDomain : MappingWorld
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
 
-	public override List<GenPass> Tasks => [new FlatWorldPass(0), new PassLegacy("Spawn Prefab", SpawnKingArena), new PassLegacy("Tunnel", TunnelGen)];
+	public override List<GenPass> Tasks => [new FlatWorldPass(0, true), new PassLegacy("Tunnel", TunnelGen)];
+
+	public override void OnEnter()
+	{
+		BossSpawned = false;
+	}
 
 	private void TunnelGen(GenerationProgress progress, GameConfiguration configuration)
 	{
+		Point16 size = Point16.Zero;
+		StructureHelper.Generator.GetDimensions("Data/Structures/KingSlimeArena", Mod, ref size);
+
+		Arena = new Rectangle((250 - size.X / 2) * 16, (120 - size.Y / 2) * 16, size.X * 16, (size.Y - 4) * 16);
+		ArenaEntrance = new Point16(255, 120 + size.Y / 2);
+
 		Main.spawnTileX = 250;
 		Main.spawnTileY = 500;
 
-		WorldGen.digTunnel(250, 500, 0, 0, 230, 15, false);
+		int noiseX = 0;
+		var pos = new Vector2(Main.spawnTileX, Main.spawnTileY);
+		var noise = new FastNoiseLite(WorldGen._genRandSeed);
+		noise.SetFrequency(0.08f);
+		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+
+		Queue<Vector2> queue = [];
+		queue.Enqueue(new Vector2(Main.rand.Next(100, 400), Main.rand.Next(420, 450)));
+		queue.Enqueue(new Vector2(Main.rand.Next(100, 400), Main.rand.Next(350, 380)));
+		queue.Enqueue(new Vector2(Main.rand.Next(100, 400), Main.rand.Next(280, 320)));
+		queue.Enqueue(ArenaEntrance.ToVector2());
+
+		DigThroughTo(ref noiseX, pos, noise, queue);
+
+		StructureHelper.Generator.GenerateStructure("Data/Structures/KingSlimeArena", new Point16(250 - size.X / 2, 120 - size.Y / 2), Mod);
 	}
 
-	private void SpawnKingArena(GenerationProgress progress, GameConfiguration configuration)
+	private void DigThroughTo(ref int noiseX, Vector2 pos, FastNoiseLite noise, Queue<Vector2> stopPoints)
 	{
-		Point16 size = Point16.Zero;
-		StructureHelper.Generator.GetDimensions("Data/Structures/KingSlimeArena", Mod, ref size);
-		StructureHelper.Generator.GenerateStructure("Data/Structures/KingSlimeArena", new Point16(250 - size.X / 2, 120 - size.Y / 2), Mod);
+		Vector2 end = stopPoints.Dequeue();
 
-		Arena = new Rectangle((250 - size.X / 2) * 16, (120 - size.Y / 2) * 16, size.X * 16, (size.Y - 4) * 16);
-		ArenaEntrance = new Point16(250, 120 + size.Y / 2);
+		while (true)
+		{
+			TunnelSpot(pos, noise.GetNoise(noiseX++, 0) * 16 + 8);
+
+			pos += Vector2.Normalize(end - pos);
+
+			if (Vector2.DistanceSquared(pos, end) < 4)
+			{
+				if (stopPoints.Count == 0)
+				{
+					return;
+				}
+
+				end = stopPoints.Dequeue();
+			}
+		}
+	}
+
+	private void TunnelSpot(Vector2 pos, float size)
+	{
+		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
+		{
+			for (int j = (int)(pos.Y - size); j < (int)pos.Y + size; ++j)
+			{
+				if (Vector2.DistanceSquared(pos, new Vector2(i, j)) < size * size)
+				{
+					WorldGen.KillTile(i, j);
+				}
+			}
+		}
 	}
 
 	public override void Update()
@@ -54,7 +105,7 @@ public class KingSlimeDomain : MappingWorld
 
 		if (!BossSpawned && allInArena)
 		{
-			for (int i = -1; i < 11; ++i)
+			for (int i = -6; i < 11; ++i)
 			{
 				WorldGen.PlaceTile(ArenaEntrance.X + i, ArenaEntrance.Y - 1, TileID.SlimeBlock, true, true);
 			}
