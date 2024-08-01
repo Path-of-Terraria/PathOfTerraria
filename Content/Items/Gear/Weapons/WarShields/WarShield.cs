@@ -36,7 +36,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 
 	public override void Load()
 	{
-		string texture = $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/WarShields/{GetType().Name}_Shield";
+		string texture = $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/WarShields/{GetType().Name}_Shield";
 		EquipLoader.AddEquipTexture(Mod, texture, EquipType.Shield, this, $"{GetType().Name}_Shield");
 	}
 

@@ -23,7 +23,7 @@ public class ExpModPlayer : ModPlayer
 			return;
 		}
 
-		SoundEngine.PlaySound(new SoundStyle($"{nameof(PathOfTerraria)}/Sounds/Tier5"));
+		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5"));
 
 		Exp -= NextLevel;
 		Level++;

@@ -17,7 +17,7 @@ internal class MoltenDangpa : LeadDangpa
 	public override int DeathDustType => DustID.MinecartSpark;
 	public override bool AutoloadProjectile => false;
 	public override bool UseChargeAlt => false;
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/MoltenDangpa_Cold";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/MoltenDangpa_Cold";
 
 	public override void SetStaticDefaults()
 	{

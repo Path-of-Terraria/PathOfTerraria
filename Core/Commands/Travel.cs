@@ -22,7 +22,7 @@ public sealed class Travel : ModCommand
 
 		string worldName = string.Join(" ", args);
 		
-		foreach (Type type in AssemblyManager.GetLoadableTypes(PathOfTerraria.Instance.Code))
+		foreach (Type type in AssemblyManager.GetLoadableTypes(PoTMod.Instance.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(WorldNavigation)))
 			{

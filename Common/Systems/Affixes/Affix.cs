@@ -103,7 +103,7 @@ public abstract class Affix
 		Type t = typeof(ItemAffix).Assembly.GetType(tag.GetString("type"));
 		if (t is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
 			return null;
 		}
 
@@ -124,7 +124,7 @@ public abstract class Affix
 		Type t = AffixHandler.ItemAffixTypeFromIndex(aId);
 		if (t is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load affix of internal id {aId}");
+			PoTMod.Instance.Logger.Error($"Could not load affix of internal id {aId}");
 			return null;
 		}
 

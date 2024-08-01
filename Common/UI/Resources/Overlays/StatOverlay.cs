@@ -6,7 +6,7 @@ public sealed class StatOverlay : ModResourceOverlay
 	{
 		if (context.texture.Name == @"Images\UI\PlayerResourceSets\FancyClassic\Heart_Fill")
 		{
-			var texture = (Texture2D)ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/Heart_Fill_Replace");
+			var texture = (Texture2D)ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Heart_Fill_Replace");
 
 			float life = Main.LocalPlayer.statLife;
 			int bars = (int)(life / 400);

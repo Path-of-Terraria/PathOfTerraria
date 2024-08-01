@@ -76,7 +76,7 @@ internal static class Networking
 
 	internal static ModPacket GetPacket(Message type)
 	{
-		ModPacket packet = PathOfTerraria.Instance.GetPacket();
+		ModPacket packet = PoTMod.Instance.GetPacket();
 		packet.Write((byte)type);
 		return packet;
 	}

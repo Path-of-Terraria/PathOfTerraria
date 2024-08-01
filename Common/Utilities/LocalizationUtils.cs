@@ -15,8 +15,8 @@ public static class LocalizationUtils
 	public static string GetText(string key, params object[] args)
 	{
 		// Exists check is redundant; GetTextValue already handles this.
-		// return Language.Exists($"Mods.{nameof(PathOfTerraria)}.{key}") ? Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.{key}", args) : key;
-		return Language.GetTextValue($"Mods.{nameof(PathOfTerraria)}.{key}", args);
+		// return Language.Exists($"Mods.{PathOfTerraria.ModName}.{key}") ? Language.GetTextValue($"Mods.{PathOfTerraria.ModName}.{key}", args) : key;
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.{key}", args);
 	}
 
 	public static string GetGUIText(string key, params object[] args)

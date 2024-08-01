@@ -43,7 +43,7 @@ internal abstract class MobAffix : Affix
 
 		if (affix is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
 			return null;
 		}
 

@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Projectiles.Magic;
 
 public sealed class SparklingBallProjectile : ModProjectile
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Projectiles/SparklingBallProjectile";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Projectiles/SparklingBallProjectile";
 
 	public override void SetDefaults()
 	{

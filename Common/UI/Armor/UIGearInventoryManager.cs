@@ -46,7 +46,7 @@ public sealed class UIGearInventoryManager : ModSystem
 		layers.Insert(
 			index,
 			new LegacyGameInterfaceLayer(
-				$"{nameof(PathOfTerraria)}:{nameof(UIGearInventory)}",
+				$"{PoTMod.ModName}:{nameof(UIGearInventory)}",
 				() =>
 				{
 					UserInterface.Draw(Main.spriteBatch, lastGameTime);

@@ -76,7 +76,7 @@ internal class TreeState : DraggableSmartUi
 	
 	protected void DrawPanelText(SpriteBatch spriteBatch)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/PassiveFrameSmall").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
 		TreePlayer treePlayer = Main.LocalPlayer.GetModPlayer<TreePlayer>();
 		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
 

@@ -14,7 +14,7 @@ namespace PathOfTerraria.Content.Items.Pickups;
 
 internal abstract class GrimoirePickup : ModItem
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
 
 	public abstract Point Size { get; }
 

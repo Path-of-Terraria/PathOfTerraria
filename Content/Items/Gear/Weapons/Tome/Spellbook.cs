@@ -8,7 +8,7 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Tome;
 
 internal class Spellbook : Gear
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Tome/TomePlaceholder";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Tome/TomePlaceholder";
 
 	protected override string GearLocalizationCategory => "Spellbook";
 

@@ -72,7 +72,7 @@ internal abstract class Passive
 	{
 		Passives.Clear();
 
-		foreach (Type type in AssemblyManager.GetLoadableTypes(PathOfTerraria.Instance.Code))
+		foreach (Type type in AssemblyManager.GetLoadableTypes(PoTMod.Instance.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive)))
 			{
@@ -114,11 +114,11 @@ internal abstract class Passive
 
 	public void Draw(SpriteBatch spriteBatch, Vector2 center)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/PassiveFrameSmall").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
 
-		if (ModContent.HasAsset($"{nameof(PathOfTerraria)}/Assets/Passives/" + InternalIdentifier))
+		if (ModContent.HasAsset($"{PoTMod.ModName}/Assets/Passives/" + InternalIdentifier))
 		{
-			tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Passives/" + InternalIdentifier).Value;
+			tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Passives/" + InternalIdentifier).Value;
 		}
 
 		Color color = Color.Gray;

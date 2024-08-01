@@ -301,7 +301,7 @@ partial class PoTGlobalItem
 			_ => "Normal"
 		};
 
-		Texture2D back = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Slots/{rareName}Back")
+		Texture2D back = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/{rareName}Back")
 			.Value;
 		Color backColor = Color.White * 0.75f;
 
@@ -326,7 +326,7 @@ partial class PoTGlobalItem
 	/// <param name="pos"></param>
 	private static void DrawSolarSlot(SpriteBatch spriteBatch, Vector2 pos)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Slots/SlotMap").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/SlotMap").Value;
 
 		Effect effect = Filters.Scene["ColoredFire"].GetShader().Shader;
 
@@ -341,9 +341,9 @@ partial class PoTGlobalItem
 		effect.Parameters["secondary"].SetValue(new Vector3(0.85f, 0.6f, 0.35f) * 0.7f);
 
 		effect.Parameters["sampleTexture"]
-			.SetValue(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/SwirlNoise").Value);
+			.SetValue(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/SwirlNoise").Value);
 		effect.Parameters["mapTexture"]
-			.SetValue(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/SwirlNoise").Value);
+			.SetValue(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/SwirlNoise").Value);
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,
@@ -363,7 +363,7 @@ partial class PoTGlobalItem
 	/// <param name="pos"></param>
 	private static void DrawLunarSlot(SpriteBatch spriteBatch, Vector2 pos)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Slots/SlotMap").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/SlotMap").Value;
 
 		Effect effect = Filters.Scene["LunarEffect"].GetShader().Shader;
 
@@ -378,9 +378,9 @@ partial class PoTGlobalItem
 		effect.Parameters["secondary"].SetValue(new Vector3(0.4f, 0.4f, 0.9f) * 0.7f);
 
 		effect.Parameters["sampleTexture"]
-			.SetValue(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/ShaderNoise").Value);
+			.SetValue(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/ShaderNoise").Value);
 		effect.Parameters["mapTexture"]
-			.SetValue(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/Misc/ShaderNoise").Value);
+			.SetValue(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Misc/ShaderNoise").Value);
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, BlendState.Additive, default, default, RasterizerState.CullNone, effect,

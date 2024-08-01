@@ -26,7 +26,7 @@ internal abstract class Jewel : ModItem
 		Type t = typeof(Jewel).Assembly.GetType(tag.GetString("jewelType"));
 		if (t is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load jewel {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load jewel {tag.GetString("type")}, was it removed?");
 			return null;
 		}
 

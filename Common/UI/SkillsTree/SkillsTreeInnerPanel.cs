@@ -23,7 +23,7 @@ internal class SkillsTreeInnerPanel : SmartUIElement
 	private void AppendAllSkills()
 	{
 		int index = 0;
-		foreach (Type type in AssemblyManager.GetLoadableTypes(PathOfTerraria.Instance.Code))
+		foreach (Type type in AssemblyManager.GetLoadableTypes(PoTMod.Instance.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Skill)))
 			{

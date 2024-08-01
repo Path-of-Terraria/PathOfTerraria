@@ -134,9 +134,9 @@ internal sealed class NewHotbar : SmartUIState
 		//     cleanly transition within context of the position of the
 		//     selector.
 
-		Texture2D specialInactiveCombat = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Inactive_Combat").Value;
-		Texture2D specialInactiveBuilding = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Inactive_Building").Value;
-		Texture2D specialActive = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSpecial_Active").Value;
+		Texture2D specialInactiveCombat = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Combat").Value;
+		Texture2D specialInactiveBuilding = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Building").Value;
+		Texture2D specialActive = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Active").Value;
 		Main.inventoryScale = 1f; // 36 / 52f * 52f / 36f * 1 computes to 1...
 
 		// Draw active slot textures (hotbar background).
@@ -165,7 +165,7 @@ internal sealed class NewHotbar : SmartUIState
 
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D combat = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarCombat").Value;
+		Texture2D combat = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarCombat").Value;
 		Main.inventoryScale = opacity;
 
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -173,7 +173,7 @@ internal sealed class NewHotbar : SmartUIState
 
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
-		Texture2D bottleTex = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/EmptyPotion").Value;
+		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/EmptyPotion").Value;
 		Texture2D lifeTexture = TextureAssets.Item[ItemID.LesserHealingPotion].Value;
 		Texture2D manaTexture = TextureAssets.Item[ItemID.LesserManaPotion].Value;
 
@@ -199,7 +199,7 @@ internal sealed class NewHotbar : SmartUIState
 			(potionPlayer.ManaLeft > 0 ? new Color(200, 220, 255) : Color.Gray) * opacity, 1f * opacity, 0.5f,
 			0.5f);
 
-		Texture2D glow = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/GlowSoft").Value;
+		Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowSoft").Value;
 		if (Main.LocalPlayer.HasBuff(BuffID.PotionSickness))
 		{
 			spriteBatch.Draw(glow, new Vector2(480, 60 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
@@ -273,7 +273,7 @@ internal sealed class NewHotbar : SmartUIState
 
 	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D building = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBuilding").Value;
+		Texture2D building = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBuilding").Value;
 		Main.inventoryScale = Math.Max(opacity, 0f);
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -293,14 +293,14 @@ internal sealed class NewHotbar : SmartUIState
 
 		if (Main.LocalPlayer.selectedItem > 10)
 		{
-			Texture2D back = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBack").Value;
+			Texture2D back = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBack").Value;
 			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
 		}
 	}
 
 	private void DrawSelector(SpriteBatch spriteBatch, float opacity) {
-		Texture2D select = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarSelector").Value;
+		Texture2D select = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSelector").Value;
 
 		// Render the special selector, which is always visible.
 		spriteBatch.Draw(select, new Vector2(specialSelector.X, 20), null, Color.White);
@@ -394,7 +394,7 @@ public class HijackHotbarClick : ModSystem
 		Main.LocalPlayer.hbLocked = true;
 		orig(self);
 		Main.LocalPlayer.hbLocked = hbLocked;
-		Texture2D back = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/HotbarBack").Value;
+		Texture2D back = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBack").Value;
 
 		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
 		{

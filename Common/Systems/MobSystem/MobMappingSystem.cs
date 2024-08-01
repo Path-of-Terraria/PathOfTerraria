@@ -10,7 +10,7 @@ internal class NoMapSpawns : GlobalNPC // no spawns for now; might want to have 
 {
 	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
 	{
-		if (SubworldSystem.AnyActive(PathOfTerraria.Instance))
+		if (SubworldSystem.AnyActive(PoTMod.Instance))
 		{
 			pool.Clear();
 		}

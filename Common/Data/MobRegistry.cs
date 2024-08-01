@@ -46,9 +46,9 @@ public class MobRegistry : ILoadable
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 		};
 
-		List<string> jsonFiles = PathOfTerraria.Instance.GetFileNames();
+		List<string> jsonFiles = PoTMod.Instance.GetFileNames();
 
-		foreach (Stream jsonStream in from path in jsonFiles where path.StartsWith("Common/Data/Mobs/Vanilla") && path.EndsWith(".json") select PathOfTerraria.Instance.GetFileStream(path))
+		foreach (Stream jsonStream in from path in jsonFiles where path.StartsWith("Common/Data/Mobs/Vanilla") && path.EndsWith(".json") select PoTMod.Instance.GetFileStream(path))
 		{
 			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();

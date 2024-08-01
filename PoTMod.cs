@@ -5,9 +5,20 @@ using PathOfTerraria.Core.Sources;
 
 namespace PathOfTerraria;
 
-public sealed class PathOfTerraria : Mod
+/// <summary>
+///		Path of Terraria <see cref="Mod"/> implementation.
+/// </summary>
+public sealed class PoTMod : Mod
 {
-	public static PathOfTerraria Instance => ModContent.GetInstance<PathOfTerraria>();
+	/// <summary>
+	///		The internal name of the mod.
+	/// </summary>
+	public const string ModName = "PathOfTerraria";
+	
+	/// <summary>
+	///		A static reference to the current instance of the mod.
+	/// </summary>
+	internal static PoTMod Instance => ModContent.GetInstance<PoTMod>();
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
 	{

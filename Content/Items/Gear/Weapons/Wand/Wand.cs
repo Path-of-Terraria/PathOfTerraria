@@ -8,7 +8,7 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 
 internal class Wand : Gear
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Wand/WandPlaceholder";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Wand/WandPlaceholder";
 
 	protected override string GearLocalizationCategory => "Wand";
 

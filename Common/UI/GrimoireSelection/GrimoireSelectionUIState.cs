@@ -91,7 +91,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		BuildStorage(Panel);
 		BuildSacrifice(Panel);
 
-		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/CloseButton"));
+		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
 		CloseButton.Left.Set(PointsAndExitPadding, 0);
 		CloseButton.Top.Set(10, 0f);
 		CloseButton.Width.Set(38, 0);
@@ -164,7 +164,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		panel.Append(mainPanel);
 
-		mainPanel.Append(new UIImage(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/GrimoireButton"))
+		mainPanel.Append(new UIImage(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GrimoireButton"))
 		{
 			VAlign = -0.24f,
 			HAlign = 0.5f,

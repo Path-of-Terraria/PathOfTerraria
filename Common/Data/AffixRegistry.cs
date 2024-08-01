@@ -65,13 +65,13 @@ public class AffixRegistry : ILoadable
 		var jsonDataMap = new Dictionary<Type, ItemAffixData>();
 		var options = new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
 
-		List<string> jsonFiles = PathOfTerraria.Instance.GetFileNames();
-		IEnumerable<Type> types = AssemblyManager.GetLoadableTypes(ModContent.GetInstance<PathOfTerraria>().Code)
+		List<string> jsonFiles = PoTMod.Instance.GetFileNames();
+		IEnumerable<Type> types = AssemblyManager.GetLoadableTypes(ModContent.GetInstance<PoTMod>().Code)
 			.Where(x => typeof(Affix).IsAssignableFrom(x) && !x.IsAbstract);
 
 		foreach (Stream jsonStream in from path in jsonFiles
 		         where path.StartsWith("Common/Data/Affixes") && path.EndsWith(".json")
-		         select PathOfTerraria.Instance.GetFileStream(path))
+		         select PoTMod.Instance.GetFileStream(path))
 		{
 			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();

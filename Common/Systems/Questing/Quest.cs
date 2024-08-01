@@ -91,7 +91,7 @@ public abstract class Quest
 
 		if (t is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load quest of {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load quest of {tag.GetString("type")}, was it removed?");
 			return null;
 		}
 

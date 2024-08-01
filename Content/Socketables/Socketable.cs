@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Socketables;
 
 public abstract class Socketable : ModItem, GenerateName.IItem
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Socketable/Placeholder";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Socketable/Placeholder";
 	
 	/// <summary>
 	/// will be run when socketed.
@@ -49,7 +49,7 @@ public abstract class Socketable : ModItem, GenerateName.IItem
 		Type t = typeof(Socketable).Assembly.GetType(tag.GetString("type"));
 		if (t is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load socketable {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load socketable {tag.GetString("type")}, was it removed?");
 			return null;
 		}
 

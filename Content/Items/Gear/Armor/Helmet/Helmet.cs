@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 [AutoloadEquip(EquipType.Head)]
 internal class Helmet : Gear
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Armor/Helmet/Base";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
 
 	protected override string GearLocalizationCategory => "Helmet";
 

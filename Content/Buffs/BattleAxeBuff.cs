@@ -45,7 +45,7 @@ public sealed class BattleAxeBuff : ModBuff
 
 	private static readonly Color _playerDrawColor = Color.Red;
 
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Buffs/Base";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Buffs/Base";
 
 	public override void Update(Player player, ref int buffIndex)
 	{

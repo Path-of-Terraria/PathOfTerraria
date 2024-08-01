@@ -114,7 +114,7 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 
 	public class MoltenDangpaBubbles : ModProjectile
 	{
-		public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
+		public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 
 		public bool Stuck
 		{

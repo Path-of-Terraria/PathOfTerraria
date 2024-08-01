@@ -91,7 +91,7 @@ public class HunterNPC : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = Language.GetOrRegister($"Mods.{nameof(PathOfTerraria)}.NPCs.Quest").Value;
+		button2 = Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)

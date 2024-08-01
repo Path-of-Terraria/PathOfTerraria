@@ -19,7 +19,7 @@ public abstract class Skill
 	public abstract int MaxLevel { get; }
 
 	public virtual string Name => GetType().Name;
-	public virtual string Texture => $"{nameof(PathOfTerraria)}/Assets/Skills/" + GetType().Name;
+	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
 
 	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria.Skills." + Name + ".Name");
 	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria.Skills." + Name + ".Description");
@@ -33,7 +33,7 @@ public abstract class Skill
 	{
 		if (type is null)
 		{
-			ModContent.GetInstance<PathOfTerraria>().Logger.Error($"Loading Skill not found. Defaulting to Berserk.");
+			ModContent.GetInstance<PoTMod>().Logger.Error($"Loading Skill not found. Defaulting to Berserk.");
 			return new Berserk();
 		}
 
@@ -41,7 +41,7 @@ public abstract class Skill
 
 		if (skill is null)
 		{
-			ModContent.GetInstance<PathOfTerraria>().Logger.Error($"Skill of type {type} not found. Defaulting to Berserk.");
+			ModContent.GetInstance<PoTMod>().Logger.Error($"Skill of type {type} not found. Defaulting to Berserk.");
 			return new Berserk();
 		}
 

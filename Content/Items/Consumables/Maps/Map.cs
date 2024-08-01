@@ -8,7 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
 internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Consumables/Maps/Map";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
 
 	int GetItemLevel.IItem.GetItemLevel(int realLevel)

@@ -41,7 +41,7 @@ internal class PlayerStatUIState : CloseableSmartUi
 			};
 			Panel.Append(statPanel);
 
-			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/PlayerStatClose"));
+			CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PlayerStatClose"));
 			CloseButton.Left.Set(-40, 0.8f);
 			CloseButton.Top.Set(50, 0f);
 			CloseButton.Width.Set(64, 0);

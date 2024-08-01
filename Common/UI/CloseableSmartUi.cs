@@ -67,7 +67,7 @@ public abstract class CloseableSmartUi : SmartUIState
 
     protected void AddCloseButton()
     {
-        CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/CloseButton"));
+        CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
         CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
         CloseButton.Top.Set(10, 0f);
         CloseButton.Width.Set(38, 0);

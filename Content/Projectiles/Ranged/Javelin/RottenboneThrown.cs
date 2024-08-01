@@ -54,7 +54,7 @@ internal class RottenboneThrown() : JavelinThrown("RottenboneThrown", new(116), 
 
 	internal class RottenboneChunks : ModProjectile
 	{
-		public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
+		public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 
 		private bool IsChunk => Projectile.ai[0] == 1;
 

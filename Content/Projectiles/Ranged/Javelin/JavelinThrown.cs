@@ -10,7 +10,7 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 	
 	public override string Name => InstanceName;
 	
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/{name.Replace("Thrown", "")}";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/{name.Replace("Thrown", "")}";
 
 	public bool UsingAlt
 	{

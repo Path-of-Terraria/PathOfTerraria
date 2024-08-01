@@ -65,7 +65,7 @@ public class FetidCarapace : Skill
 
 	internal class CarapaceChunk : ModProjectile
 	{
-		public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
+		public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 
 		public bool SentOut
 		{

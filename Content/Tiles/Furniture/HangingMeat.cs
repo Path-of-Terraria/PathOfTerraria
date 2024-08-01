@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 
 public class HangingMeat : ModTile
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Tiles/Furniture/{nameof(HangingMeat)}";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Tiles/Furniture/{nameof(HangingMeat)}";
 
 	public override void SetStaticDefaults()
 	{
