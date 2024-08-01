@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
+using PathOfTerraria.Core.Systems.Affixes;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -128,11 +129,12 @@ public static class PoTItemHelper
 	#endregion
 
 	#region Affixes
-	public static void ApplyAffixes(Item item, EntityModifier entityModifier)
+	public static void ApplyAffixes(Item item, EntityModifier entityModifier, Player player)
 	{
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
-			affix.ApplyAffix(entityModifier, item);
+			affix.ApplyAffix(player, entityModifier, item);
+			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}
 

@@ -2,30 +2,32 @@
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
+namespace PathOfTerraria.Content.Projectiles.Ranged.Javelin;
 
 public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModProjectile
 {
 	protected override bool CloneNewInstances => true;
-	public override string Name => name;
+	
+	public override string Name => InstanceName;
+	
 	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/{name.Replace("Thrown", "")}";
 
-	public bool Stabbing
+	public bool UsingAlt
 	{
 		get => Projectile.ai[2] == 1;
 		set => Projectile.ai[2] = value ? 1 : 0;
 	}
 
-	private string name = name;
-	private Vector2 itemSize = itemSize;
-	private int dustType = dustType;
+	protected string InstanceName = name;
+	protected Vector2 ItemSize = itemSize;
+	protected int DustType = dustType;
 
 	public override ModProjectile Clone(Projectile newEntity)
 	{
 		var proj = base.Clone(newEntity) as JavelinThrown;
-		proj.name = name;
-		proj.itemSize = itemSize;
-		proj.dustType = dustType;
+		proj.InstanceName = InstanceName;
+		proj.ItemSize = ItemSize;
+		proj.DustType = DustType;
 		return proj;
 	}
 
@@ -41,18 +43,18 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 
 	public override bool? CanDamage()
 	{
-		return !Stabbing;
+		return !UsingAlt;
 	}
 
 	public override void AI()
 	{
-		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 - 0.05f;
 		Projectile.velocity.Y -= 0.05f;
 
-		if (Stabbing)
+		if (UsingAlt)
 		{
 			Player player = Main.player[Projectile.owner];
-			Javelin.JavelinDashPlayer javelinDashPlayer = player.GetModPlayer<Javelin.JavelinDashPlayer>();
+			Items.Gear.Weapons.Javelins.Javelin.JavelinDashPlayer javelinDashPlayer = player.GetModPlayer<Items.Gear.Weapons.Javelins.Javelin.JavelinDashPlayer>();
 			Vector2 storedVel = javelinDashPlayer.StoredVelocity;
 			Projectile.rotation = storedVel.ToRotation() + MathHelper.PiOver4;
 			Projectile.Center = player.Center + storedVel;
@@ -67,11 +69,11 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 	public override void OnKill(int timeLeft)
 	{
 		Vector2 location = Projectile.Center;
-		Vector2 tip = itemSize.RotatedBy(Projectile.rotation + MathHelper.PiOver2);
+		Vector2 tip = ItemSize.RotatedBy(Projectile.rotation + MathHelper.PiOver2);
 
-		for (int i = 0; i < 12; ++i)
+		for (int i = 0; i < 16; ++i)
 		{
-			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, dustType);
+			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, DustType, Scale: Main.rand.NextFloat(1, 1.5f));
 		}
 	}
 

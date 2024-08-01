@@ -1,4 +1,4 @@
-﻿using Terraria.UI;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 

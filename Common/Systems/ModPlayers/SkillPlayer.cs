@@ -48,28 +48,19 @@ internal class SkillPlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		if (Skill1Keybind.JustPressed && Skills[0] != null)
+		if (Skill1Keybind.JustPressed && Skills[0] != null && Skills[0].CanUseSkill(Player))
 		{
-			if (Skills[0].Timer == 0)
-			{
-				Skills[0]?.UseSkill(Main.LocalPlayer);
-			}
+			Skills[0]?.UseSkill(Player);
 		}
 
-		if (Skill2Keybind.JustPressed && Skills[1] != null)
+		if (Skill2Keybind.JustPressed && Skills[1] != null && Skills[1].CanUseSkill(Player))
 		{
-			if (Skills[1].Timer == 0)
-			{
-				Skills[1]?.UseSkill(Main.LocalPlayer);
-			}
+			Skills[1]?.UseSkill(Player);
 		}
 
-		if (Skill3Keybind.JustPressed && Skills[2] != null)
+		if (Skill3Keybind.JustPressed && Skills[2] != null && Skills[2].CanUseSkill(Player))
 		{
-			if (Skills[2].Timer == 0)
-			{
-				Skills[2]?.UseSkill(Main.LocalPlayer);
-			}
+			Skills[2]?.UseSkill(Player);
 		}
 	}
 
@@ -85,6 +76,25 @@ internal class SkillPlayer : ModPlayer
 			if (skill is { Timer: > 0 })
 			{
 				skill.Timer--;
+			}
+		}
+	}
+
+	public override void PostUpdate()
+	{
+		for (int i = 0; i < Skills.Length; i++)
+		{
+			Skill skill = Skills[i];
+
+			if (skill is not null)
+			{
+				//skill.UpdateEquipped(Player);
+
+				if (!skill.CanEquipSkill(Player))
+				{
+					Skills[i] = null;
+					continue;
+				}
 			}
 		}
 	}
@@ -127,13 +137,39 @@ internal class SkillPlayer : ModPlayer
 
 			var skill = Skill.GetAndPrepareSkill(Type.GetType(type));
 			skill.LoadData(data);
+			skill.LevelTo(skill.Level);
 
 			Skills[i] = skill;
 		}
 	}
+
+	public bool TryGetSkill<T>(out Skill skill) where T : Skill
+	{
+		skill = null;
+
+		for (int i = 0; i < Skills.Length; i++)
+		{
+			if (Skills[i] is not null && Skills[i].GetType() == typeof(T))
+			{
+				skill = Skills[i];
+				return true;
+			}
+		}
+
+		return false;
+	}
 	
 	public bool TryAddSkill(Skill skill)
 	{
+		for (int i = 0; i < Skills.Length; ++i)
+		{
+			if (Skills[i] != null && Skills[i].Name == skill.Name)
+			{
+				Main.NewText("Skill already added.");
+				return false;
+			}
+		}
+
 		for (int i = 0; i < Skills.Length; i++)
 		{
 			if (Skills[i] == null)

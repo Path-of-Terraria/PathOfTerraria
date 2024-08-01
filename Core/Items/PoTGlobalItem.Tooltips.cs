@@ -145,12 +145,12 @@ partial class PoTGlobalItem
 			string text = affix.RequiredInfluence switch
 			{
 				Influence.Solar => $"[i:{ItemID.IchorBullet}] " +
-								   HighlightNumbers($"{affix.GetTooltip(item)}", "FFEE99", "CCB077"),
+								   HighlightNumbers($"{affix.GetTooltip(item, null)}", "FFEE99", "CCB077"),
 				Influence.Lunar => $"[i:{ItemID.CrystalBullet}] " +
-								   HighlightNumbers($"{affix.GetTooltip(item)}", "BBDDFF", "99AADD"),
+								   HighlightNumbers($"{affix.GetTooltip(item, null)}", "BBDDFF", "99AADD"),
 				_ => i < data.ImplicitCount
-				? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(item)}", baseColor: "8B8000")
-				: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(item)}"),
+				? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(item, null)}", baseColor: "8B8000")
+				: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(item, null)}"),
 			};
 
 			var affixLine = new TooltipLine(Mod, $"Affix{i}", text);
@@ -164,7 +164,7 @@ partial class PoTGlobalItem
 
 		// Change in stats if equipped.
 		var thisItemModifier = new EntityModifier();
-		PoTItemHelper.ApplyAffixes(item, thisItemModifier);
+		PoTItemHelper.ApplyAffixes(item, thisItemModifier, Main.LocalPlayer);
 		InsertAdditionalTooltipLines.Invoke(item, tooltips, thisItemModifier);
 
 		var currentItemModifier = new EntityModifier();

@@ -236,22 +236,22 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 
 		if (item.headSlot >= 0 && Main.LocalPlayer.armor[0].active && Main.LocalPlayer.armor[0].ModItem is Gear headGear)
 		{
-			PoTItemHelper.ApplyAffixes(headGear.Item, swapItemModifier);
+			PoTItemHelper.ApplyAffixes(headGear.Item, swapItemModifier, Main.LocalPlayer);
 		}
 		else if (item.bodySlot >= 0 && Main.LocalPlayer.armor[1].active && Main.LocalPlayer.armor[0].ModItem is Gear bodyGear)
 		{
-			PoTItemHelper.ApplyAffixes(bodyGear.Item, swapItemModifier);
+			PoTItemHelper.ApplyAffixes(bodyGear.Item, swapItemModifier, Main.LocalPlayer);
 		}
 		else if (item.legSlot >= 0 && Main.LocalPlayer.armor[2].active && Main.LocalPlayer.armor[0].ModItem is Gear legsGear)
 		{
-			PoTItemHelper.ApplyAffixes(legsGear.Item, swapItemModifier);
+			PoTItemHelper.ApplyAffixes(legsGear.Item, swapItemModifier, Main.LocalPlayer);
 		}
 		// missing accessories
 		else if (item.damage > 0)
 		{
 			if (Main.LocalPlayer.inventory[0].ModItem is Gear gear)
 			{
-				PoTItemHelper.ApplyAffixes(gear.Item, swapItemModifier);
+				PoTItemHelper.ApplyAffixes(gear.Item, swapItemModifier, Main.LocalPlayer);
 			}
 		}
 	}

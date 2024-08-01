@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Events;
+
 using Terraria.ModLoader.IO;
-using static PathOfTerraria.Common.Events.PathOfTerrariaNpcEvents;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
@@ -12,7 +12,7 @@ internal class KillCount(Func<NPC, bool> includes, int count, Func<string, strin
 	}
 
 	private int _remaining = count;
-	private OnKillByDelegate tracker;
+	private PathOfTerrariaNpcEvents.OnKillByDelegate tracker;
 
 	public override string QuestString()
 	{
