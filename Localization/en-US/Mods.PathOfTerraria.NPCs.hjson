@@ -8,7 +8,7 @@ BlacksmithNPC: {
 		0: Forged in steel, I am. Care to buy some?
 		1: Sometimes, I miss the caverns. Rock and stone, brother, rock and stone.
 		2: Nothing quite like a blade that cuts through bone like air. Makes sandwiches easy!
-		3: I could easily beat you in an arm wrestle - the exercise of steelforging is effective.
+		3: I could easily beat you in an arm wrestle - the exercise of steel forging is effective.
 		Quest: As you can see, some terrible event happened that simply obliterated my forge. What happened? I don't know, I sleep like a rock...anyhow. I'd love some help gathering materials, the town's metal has run dry for a while now. And maybe some wood while you're at it.
 	}
 }
@@ -18,7 +18,7 @@ BarkeepNPC: {
 
 	Dialogue: {
 		0: Got some old friends back in Eternia. Miss 'em every day.
-		1: "'Tavernkeep'? Sure do! What'cha lookin' for?"
+		1: "'Tavernkeep'? Sure do! Whatcha lookin' for?"
 		2: Between you and I - I'm rather lightweight on drinks. Battle? Heh...yeah, way lightweight in that too, why d'you think I barkeep?
 		3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
 	}

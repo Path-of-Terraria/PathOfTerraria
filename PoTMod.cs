@@ -1,5 +1,6 @@
 using ReLogic.Content.Sources;
 using System.IO;
+using JetBrains.Annotations;
 using PathOfTerraria.Common.Systems.Networking;
 using PathOfTerraria.Core.Sources;
 
@@ -8,13 +9,14 @@ namespace PathOfTerraria;
 /// <summary>
 ///		Path of Terraria <see cref="Mod"/> implementation.
 /// </summary>
+[UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature | ImplicitUseKindFlags.Access)]
 public sealed class PoTMod : Mod
 {
 	/// <summary>
 	///		The internal name of the mod.
 	/// </summary>
 	public const string ModName = "PathOfTerraria";
-	
+
 	/// <summary>
 	///		A static reference to the current instance of the mod.
 	/// </summary>
