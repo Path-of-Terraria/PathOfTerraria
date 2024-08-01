@@ -164,7 +164,7 @@ partial class PoTGlobalItem
 
 		// Change in stats if equipped.
 		var thisItemModifier = new EntityModifier();
-		PoTItemHelper.ApplyAffixes(item, thisItemModifier);
+		PoTItemHelper.ApplyAffixes(item, thisItemModifier, Main.LocalPlayer);
 		InsertAdditionalTooltipLines.Invoke(item, tooltips, thisItemModifier);
 
 		var currentItemModifier = new EntityModifier();

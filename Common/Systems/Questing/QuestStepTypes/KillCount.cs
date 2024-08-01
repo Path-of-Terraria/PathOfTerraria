@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Events;
-using Terraria.ModLoader.IO;
-using static PathOfTerraria.Common.Events.PathOfTerrariaNpcEvents;
+﻿using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 

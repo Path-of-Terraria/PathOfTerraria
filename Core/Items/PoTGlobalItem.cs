@@ -17,6 +17,6 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 	{
 		base.UpdateEquip(item, player);
 
-		PoTItemHelper.ApplyAffixes(item, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier);
+		PoTItemHelper.ApplyAffixes(item, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier, player);
 	}
 }

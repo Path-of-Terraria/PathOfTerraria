@@ -16,9 +16,4 @@ internal class HealOnKillingBurningEnemiesAffix : ItemAffix
 		float value = owner.GetModPlayer<AffixPlayer>().StrengthOf<HealOnKillingBurningEnemiesAffix>();
 		owner.Heal((int)(value * 2));
 	}
-
-	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
-	{
-		modifier.Defense.Base += Value;
-	}
 }
