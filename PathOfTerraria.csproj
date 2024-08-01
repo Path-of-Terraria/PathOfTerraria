@@ -26,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Reference Include="Dependencies\SubworldLibrary.dll"/>
+		<Reference Include="lib\SubworldLibrary.dll"/>
 		<Reference Include="lib\NPCUtils.dll"/>
 	</ItemGroup>
 
