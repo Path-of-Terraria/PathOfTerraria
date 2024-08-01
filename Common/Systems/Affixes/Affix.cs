@@ -240,7 +240,8 @@ internal class AffixHandler : ILoadable
 				continue;
 			}
 
-			object instance = Activator.CreateInstance(type);
+			var instance = Activator.CreateInstance(type) as Affix;
+			instance.OnLoad();
 
 			switch (instance)
 			{

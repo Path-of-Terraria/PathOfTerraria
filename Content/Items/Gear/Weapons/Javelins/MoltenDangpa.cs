@@ -28,7 +28,8 @@ internal class MoltenDangpa : LeadDangpa
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(-1, 0.05f, 0.1f);
-		return [addedDamageAffix, attackSpeedAffix];
+		var healKillBurnAffix = (ItemAffix)Affix.CreateAffix<HealOnKillingBurningEnemiesAffix>(-1, 1f, 4f);
+		return [addedDamageAffix, attackSpeedAffix, healKillBurnAffix];
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)

@@ -28,6 +28,11 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		CheckExplode();
+
+		if (UsingAlt)
+		{
+			target.AddBuff(BuffID.OnFire, 180);
+		}
 	}
 
 	private void CheckExplode()
