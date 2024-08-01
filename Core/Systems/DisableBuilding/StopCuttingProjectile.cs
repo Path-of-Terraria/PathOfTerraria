@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Core.Systems.DisableBuilding;
+﻿using Terraria.ID;
+
+namespace PathOfTerraria.Core.Systems.DisableBuilding;
 
 internal class StopCuttingProjectile : GlobalProjectile
 {
@@ -16,8 +18,11 @@ internal class StopCuttingProjectile : GlobalProjectile
 	{
 		if (projectile.owner != 255 && Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding)
 		{
-			// This stops the Sandgun from dropping sand everywhere
-			projectile.noDropItem = true;
+			if (projectile.type == ProjectileID.SandBallGun)
+			{
+				// This stops the Sandgun from dropping sand everywhere
+				projectile.noDropItem = true;
+			}
 		}
 
 		return true;

@@ -1,15 +1,12 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Systems;
 using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Systems.Networking.Handlers;
 using ReLogic.Content;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 

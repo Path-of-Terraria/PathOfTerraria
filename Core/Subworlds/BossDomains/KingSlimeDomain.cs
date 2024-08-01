@@ -3,20 +3,20 @@ using PathOfTerraria.Core.Systems.DisableBuilding;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
+using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds;
 
-/// <summary>
-/// This is a world that can be manipulated for testing new world generations through the "newworld" command
-/// </summary>
 public class KingSlimeDomain : MappingWorld
 {
 	public override int Width => 500;
 	public override int Height => 600;
 
 	public Point16 ArenaEntrance = Point16.Zero;
+	public Rectangle Arena = Rectangle.Empty;
+	public bool BossSpawned = false;
 
 	public override List<GenPass> Tasks => [new FlatWorldPass(0), new PassLegacy("Spawn Prefab", SpawnKingArena), new PassLegacy("Tunnel", TunnelGen)];
 
@@ -34,14 +34,33 @@ public class KingSlimeDomain : MappingWorld
 		StructureHelper.Generator.GetDimensions("Data/Structures/KingSlimeArena", Mod, ref size);
 		StructureHelper.Generator.GenerateStructure("Data/Structures/KingSlimeArena", new Point16(250 - size.X / 2, 120 - size.Y / 2), Mod);
 
-		ArenaEntrance = new Point16(250 - size.X / 2, 120 + size.Y / 2);
+		Arena = new Rectangle((250 - size.X / 2) * 16, (120 - size.Y / 2) * 16, size.X * 16, (size.Y - 4) * 16);
+		ArenaEntrance = new Point16(250, 120 + size.Y / 2);
 	}
 
 	public override void Update()
 	{
+		bool allInArena = true;
+
 		foreach (Player player in Main.ActivePlayers)
 		{
 			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
+
+			if (allInArena && !Arena.Intersects(player.Hitbox))
+			{
+				allInArena = false;
+			}
+		}
+
+		if (!BossSpawned && allInArena)
+		{
+			for (int i = -1; i < 11; ++i)
+			{
+				WorldGen.PlaceTile(ArenaEntrance.X + i, ArenaEntrance.Y - 1, TileID.SlimeBlock, true, true);
+			}
+
+			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y, NPCID.KingSlime);
+			BossSpawned = true;
 		}
 	}
 }

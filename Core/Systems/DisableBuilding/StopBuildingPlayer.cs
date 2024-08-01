@@ -45,7 +45,7 @@ internal class StopBuildingPlayer : ModPlayer
 	public override bool CanUseItem(Item item)
 	{
 		if (item.createTile >= TileID.Dirt || item.createWall > WallID.None || item.type == ItemID.IceRod || item.tileWand >= 0)
-		{
+		{ 
 			return !LastStopBuilding;
 		}
 
