@@ -133,7 +133,7 @@ public static class PoTItemHelper
 	{
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
-			affix.ApplyAffix(entityModifier, item);
+			affix.ApplyAffix(player, entityModifier, item);
 			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}

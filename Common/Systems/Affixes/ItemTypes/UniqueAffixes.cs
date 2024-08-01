@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 using PathOfTerraria.Content.Skills.Melee;
 using PathOfTerraria.Core.Systems.ModPlayers;
+
 namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
 internal class NoFallDamageAffix : ItemAffix

@@ -69,16 +69,16 @@ internal class ChanceToApplyPoisonItemAffix : ItemAffix
 
 internal class BuffPoisonedHitsAffix : ItemAffix
 {
-	public override void OnLoad()
+	private sealed class BuffPoisonedHitsAffixModPlayer : ModPlayer
 	{
-		PathOfTerrariaPlayerEvents.ModifyHitNPCEvent += BoostPoisonedDamage;
-	}
-
-	private void BoostPoisonedDamage(Player self, NPC target, ref NPC.HitModifiers modifiers)
-	{
-		if (target.HasBuff(BuffID.Poisoned))
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			modifiers.FinalDamage += self.GetModPlayer<AffixPlayer>().StrengthOf<BuffPoisonedHitsAffix>();
+			base.ModifyHitNPC(target, ref modifiers);
+			
+			if (target.HasBuff(BuffID.Poisoned))
+			{
+				modifiers.FinalDamage += Player.GetModPlayer<AffixPlayer>().StrengthOf<BuffPoisonedHitsAffix>();
+			}
 		}
 	}
 }

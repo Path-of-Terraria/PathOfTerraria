@@ -4,6 +4,13 @@ using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Systems.ModPlayers;
 using ReLogic.Content;
 using System.Collections.Generic;
+
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Core.Items;
+
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -12,8 +19,7 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.WarShields;
 internal class StarlightBulwark : LeadBattleBulwark
 {
 	public static Asset<Texture2D> GlowTexture;
-
-	public override bool IsUnique => true;
+	
 	public override ShieldData Data => new(15, 160, 14f, DustID.YellowStarDust);
 
 	private int _projTimer = 0;
@@ -23,7 +29,12 @@ internal class StarlightBulwark : LeadBattleBulwark
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+		
 		GlowTexture = ModContent.Request<Texture2D>(Texture + "Shine");
+		
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.IsUnique = true;
 	}
 
 	public override List<ItemAffix> GenerateAffixes()
@@ -34,9 +45,9 @@ internal class StarlightBulwark : LeadBattleBulwark
 		return [addedDamageAffix, attackSpeedAffix, noFallDamageAffix];
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
+		base.SetDefaults();
 
 		Item.Size = new(34);
 		Item.knockBack = 10;

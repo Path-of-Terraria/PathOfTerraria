@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Events;
+using PathOfTerraria.Common.Systems.TreeSystem;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Passives;

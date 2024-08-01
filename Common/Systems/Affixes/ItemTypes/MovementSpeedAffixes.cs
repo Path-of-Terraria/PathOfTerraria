@@ -2,7 +2,7 @@
 
 internal class MovementSpeed : ItemAffix
 {
-	public override void ApplyAffix(EntityModifier modifier, Item item)
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MovementSpeed += Value / 100;
 	}

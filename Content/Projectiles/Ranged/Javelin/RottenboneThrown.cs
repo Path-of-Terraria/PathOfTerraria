@@ -34,7 +34,7 @@ internal class RottenboneThrown() : JavelinThrown("RottenboneThrown", new(116), 
 				};
 
 				int proj = Projectile.NewProjectile(source, position, Projectile.velocity, type, Projectile.damage / 2, Projectile.knockBack, Projectile.owner, isChunk);
-				
+
 				Main.projectile[proj].scale = i switch
 				{
 					7 or 6 => 0.8f,
@@ -54,7 +54,7 @@ internal class RottenboneThrown() : JavelinThrown("RottenboneThrown", new(116), 
 
 	internal class RottenboneChunks : ModProjectile
 	{
-		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
+		public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 
 		private bool IsChunk => Projectile.ai[0] == 1;
 

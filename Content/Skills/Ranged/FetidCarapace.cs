@@ -1,5 +1,6 @@
-﻿using PathOfTerraria.Core.Mechanics;
-using PathOfTerraria.Core.Systems.Affixes;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using Terraria.ID;
 
@@ -16,7 +17,7 @@ public class FetidCarapace : Skill
 		Timer = 0;
 		ManaCost = 20;
 		Duration = (6 + Level * 4) * 60;
-		WeaponType = Core.ItemType.Ranged;
+		WeaponType = ItemType.Ranged;
 	}
 
 	public override void UseSkill(Player player)
@@ -64,7 +65,7 @@ public class FetidCarapace : Skill
 
 	internal class CarapaceChunk : ModProjectile
 	{
-		public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
+		public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 
 		public bool SentOut
 		{

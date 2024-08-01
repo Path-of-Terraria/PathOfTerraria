@@ -1,9 +1,16 @@
 ﻿namespace PathOfTerraria.Content.Buffs;
 
-public class ArmorShredDebuff() : SmartBuff(true)
+public class ArmorShredDebuff : ModBuff
 {
 	private const int DefenseReductionPercent = 25;
 	public static readonly float DefenseMultiplier = 1 - DefenseReductionPercent / 100f;
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		Main.debuff[Type] = true;
+	}
 }
 
 public class ArmorShredDebuffNpc : GlobalNPC

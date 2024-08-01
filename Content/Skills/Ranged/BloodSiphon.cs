@@ -1,9 +1,12 @@
 ﻿using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Core.Mechanics;
-using PathOfTerraria.Core.Systems.Affixes;
 using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using ReLogic.Content;
 using System.Collections.Generic;
+
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Affixes;
+
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Melee;
@@ -19,7 +22,7 @@ public class BloodSiphon : Skill
 		Timer = 0;
 		ManaCost = 20;
 		Duration = 0;
-		WeaponType = Core.ItemType.Ranged;
+		WeaponType = ItemType.Ranged;
 	}
 
 	public override void UseSkill(Player player)

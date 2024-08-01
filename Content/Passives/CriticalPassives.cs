@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Events;
+using PathOfTerraria.Common.Systems.TreeSystem;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -41,7 +42,7 @@ internal class IncreasedCriticalStrikeMultiplier : Passive
 		PathOfTerrariaPlayerEvents.ModifyHitNPCEvent += BuffCritStrikeDamageMultiplier;
 	}
 	
-	private void BuffCritStrikeDamageMultiplier(Player self, NPC target, ref NPC.HitModifiers modifiers)
+	private void BuffCritStrikeDamageMultiplier(NPC target, ref NPC.HitModifiers modifiers)
 	{
 		int level = Main.LocalPlayer.GetModPlayer<TreePlayer>().GetCumulativeLevel(InternalIdentifier);
 
