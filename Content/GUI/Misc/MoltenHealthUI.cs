@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Terraria.UI;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core.UI;
 
 namespace PathOfTerraria.Content.GUI.Misc;
+
 internal class MoltenHealthUI : SmartUIState
 {
 	public override bool Visible => true;

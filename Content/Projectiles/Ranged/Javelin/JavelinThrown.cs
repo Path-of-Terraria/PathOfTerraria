@@ -48,7 +48,7 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 
 	public override void AI()
 	{
-		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 - 0.05f;
 		Projectile.velocity.Y -= 0.05f;
 
 		if (UsingAlt)

@@ -349,6 +349,11 @@ PlatinumGlaive: {
 	Tooltip: ""
 }
 
+MoltenDangpa: {
+	DisplayName: Molten Dangpa
+	Tooltip: ""
+}
+
 WoodPlank: {
 	DisplayName: Wood Plank
 	Tooltip: ""
@@ -384,7 +389,17 @@ SteelWarShield: {
 	Tooltip: ""
 }
 
-MoltenDangpa: {
-	DisplayName: Molten Dangpa
+Bloodclotter: {
+	DisplayName: Bloodclotter
+	Tooltip: ""
+}
+
+StarlightBulwark: {
+	DisplayName: Starlight Bulwark
+  Tooltip: ""
+}
+  
+Rottenbone: {
+	DisplayName: Rottenbone
 	Tooltip: ""
 }

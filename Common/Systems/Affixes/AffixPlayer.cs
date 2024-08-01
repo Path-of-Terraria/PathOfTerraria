@@ -23,7 +23,7 @@ internal class AffixPlayer : ModPlayer
 		}
 	}
 
-	public float StrengthOf<T>()
+	public float StrengthOf<T>() where T : Affix
 	{
 		return StrengthOf(typeof(T).AssemblyQualifiedName);
 	}

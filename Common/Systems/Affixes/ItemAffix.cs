@@ -11,7 +11,7 @@ public abstract class ItemAffix : Affix
 	public Influence RequiredInfluence => GetData().GetInfluences();
 	public ItemType PossibleTypes => GetData().GetEquipTypes();
 
-	public virtual void ApplyAffix(EntityModifier modifier, Item gear) { }
+	public virtual void ApplyAffix(Player player, EntityModifier modifier, Item item) { }
 
 	/// <summary>
 	/// Retrieves the affix data for the current <see cref="ItemAffix"/> instance.
@@ -22,10 +22,10 @@ public abstract class ItemAffix : Affix
 		return AffixRegistry.TryGetAffixData(GetType());
 	}
 
-	public string GetTooltip(Item gear)
+	public string GetTooltip(Item gear, Player player)
 	{
 		EntityModifier modifier = new();
-		ApplyAffix(modifier, gear);
+		ApplyAffix(player, modifier, gear);
 
 		string tooltip = "";
 

@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent;
+﻿using PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
+using Terraria.GameContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Ranged.Javelin;
@@ -11,6 +12,11 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
 			Projectile.velocity.Y -= 0.05f;
+		}
+
+		if (UsingAlt && Main.rand.NextBool(6))
+		{
+			Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch);
 		}
 	}
 
@@ -26,6 +32,16 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		CheckExplode();
+
+		if (UsingAlt)
+		{
+			target.AddBuff(BuffID.OnFire, 180);
+		}
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo info)
 	{
 		CheckExplode();
 
@@ -87,9 +103,9 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		int leadId = Mod.Find<ModProjectile>("LeadDangpaThrown").Type;
-		Main.instance.LoadProjectile(leadId);
-		Texture2D tex = UsingAlt ? TextureAssets.Projectile[Type].Value : TextureAssets.Projectile[leadId].Value;
+		int moltenId = ModContent.ItemType<MoltenDangpa>();
+		Main.instance.LoadItem(moltenId);
+		Texture2D tex = UsingAlt ? TextureAssets.Projectile[Type].Value : TextureAssets.Item[moltenId].Value;
 		Color color = lightColor * Projectile.Opacity;
 		Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, tex.Size() * new Vector2(0.75f, 0.25f), 1f, SpriteEffects.None, 0);
 
@@ -114,7 +130,7 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 		public override void SetDefaults()
 		{
 			Projectile.CloneDefaults(ProjectileID.SpikyBall);
-			Projectile.timeLeft = 600;
+			Projectile.timeLeft = 500;
 			Projectile.Size = new Vector2(18);
 			Projectile.penetrate = -1;
 		}
