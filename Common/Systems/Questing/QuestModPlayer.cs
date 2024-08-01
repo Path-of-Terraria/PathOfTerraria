@@ -3,7 +3,7 @@ using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems.Questing.Quests.TestQuest;
 using PathOfTerraria.Common.UI.Quests;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 
@@ -54,7 +54,7 @@ internal class QuestModPlayer : ModPlayer
 	{
 		if (ToggleQuestUIKey.JustPressed)
 		{
-			UILoader.GetUIState<QuestsUIState>().Toggle();
+			SmartUiLoader.GetUiState<QuestsUIState>().Toggle();
 		}
 	}
 	

@@ -1,8 +1,5 @@
 ﻿using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
-using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using System.Collections.Generic;
 
 using PathOfTerraria.Common.Systems;

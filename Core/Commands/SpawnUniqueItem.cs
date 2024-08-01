@@ -15,6 +15,11 @@ public sealed class SpawnUniqueItem : ModCommand
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
+		_ = new Color(50, 100, 200);
+		_ = new Color(50, 100, 200, 155);
+		_ = new Color(0.25f, 0.5f, 0.75f);
+		_ = new Color(0.25f, 0.5f, 0.75f, 0.1f);
+		
 		if (args.Length < 2)
 		{
 			caller.Reply("Command expected 2 arguments", Color.Red);

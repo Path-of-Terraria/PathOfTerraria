@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameInput;
 
 namespace PathOfTerraria.Common.UI.PlayerStats;
@@ -22,7 +22,7 @@ internal class PlayerStatHotkey : ModPlayer
 	{
 		if (ToggleStatUIKey.JustPressed)
 		{
-			UILoader.GetUIState<PlayerStatUIState>().Toggle();
+			SmartUiLoader.GetUiState<PlayerStatUIState>().Toggle();
 		}
 	}
 }

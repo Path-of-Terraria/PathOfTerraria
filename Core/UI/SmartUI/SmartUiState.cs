@@ -1,46 +1,40 @@
 ﻿using System.Collections.Generic;
 using Terraria.UI;
 
-namespace PathOfTerraria.Core.UI;
+namespace PathOfTerraria.Core.UI.SmartUI;
 
 /// <summary>
-/// An auto-loaded UI State, that knows information about its own visibility.
+///		An automatically-loaded <see cref="UIState"/> that lives as a singleton
+///		and whose visibility to known to itself and controllable.
 /// </summary>
 public abstract class SmartUiState : UIState
 {
 	/// <summary>
 	/// The UserInterface automatically assigned to this UIState on load.
 	/// </summary>
-	protected internal virtual UserInterface UserInterface { get; set; }
+	protected internal UserInterface? UserInterface { get; internal set; }
 
 	/// <summary>
-	/// Where this UI state should be inserted relative to the vanilla UI layers.
+	/// Whether the UI should be visible and interactable.
+	/// </summary>
+	public virtual bool Visible { get; set; } = false;
+
+	public virtual int DepthPriority => 0;
+
+	/// <summary>
+	///		Where this UI state should be inserted relative to the vanilla UI
+	///		layers.
 	/// </summary>
 	/// <param name="layers">The vanilla UI layers</param>
 	/// <returns>The insertion index of this UI state</returns>
 	public abstract int InsertionIndex(List<GameInterfaceLayer> layers);
 
-	/// <summary>
-	/// If the UI should be visible and interactable or not
-	/// </summary>
-	public virtual bool Visible { get; set; } = false;
+	public InterfaceScaleType Scale { get; set; } = InterfaceScaleType.UI;
 
-	/// <summary>
-	/// What scale setting this UI should scale with
-	/// </summary>
-	public virtual InterfaceScaleType Scale { get; set; } = InterfaceScaleType.UI;
-
-	/// <summary>
-	/// Allows you to perform any loading tasks
-	/// </summary>
 	public virtual void Load() { }
 
-	/// <summary>
-	/// Allows you to unload anything that might need to be unloaded
-	/// </summary>
 	public virtual void Unload() { }
 
-	public virtual int DepthPriority => 0;
 
 	// ===============================================================================================================================================
 	// Helpers for appending elements easily
@@ -128,7 +122,7 @@ public abstract class SmartUiState : UIState
 	// We have to duplicate the SmartSmartUIElement wrappers here unfortunately as we have to maintain the vanilla inheritence tree for compatability
 	// ===============================================================================================================================================
 
-	#region XButton1
+#region XButton1
 	/// <summary>
 	/// A Safe wrapper around XButton1MouseUp that allows both an override and the OnXButton1MouseUp event to be used together
 	/// </summary>
@@ -176,9 +170,9 @@ public abstract class SmartUiState : UIState
 		base.XButton1DoubleClick(evt);
 		SafeXButton1DoubleClick(evt);
 	}
-	#endregion
+#endregion
 
-	#region XButton2
+#region XButton2
 	/// <summary>
 	/// A Safe wrapper around XButton2MouseUp that allows both an override and the OnXButton2MouseUp event to be used together
 	/// </summary>
@@ -226,9 +220,9 @@ public abstract class SmartUiState : UIState
 		base.XButton2DoubleClick(evt);
 		SafeXButton2DoubleClick(evt);
 	}
-	#endregion
+#endregion
 
-	#region LMB
+#region LMB
 	/// <summary>
 	/// A Safe wrapper around MouseUp that allows both an override and the OnMouseUp event to be used together
 	/// </summary>
@@ -276,9 +270,9 @@ public abstract class SmartUiState : UIState
 		base.LeftDoubleClick(evt);
 		SafeDoubleClick(evt);
 	}
-	#endregion
+#endregion
 
-	#region RMB
+#region RMB
 	/// <summary>
 	/// A Safe wrapper around RightMouseUp that allows both an override and the OnRightMouseUp event to be used together
 	/// </summary>
@@ -326,9 +320,9 @@ public abstract class SmartUiState : UIState
 		base.RightDoubleClick(evt);
 		SafeRightDoubleClick(evt);
 	}
-	#endregion
+#endregion
 
-	#region MMB
+#region MMB
 	/// <summary>
 	/// A Safe wrapper around MiddleMouseUp that allows both an override and the OnMiddleMouseUp event to be used together
 	/// </summary>
@@ -376,9 +370,9 @@ public abstract class SmartUiState : UIState
 		base.MiddleDoubleClick(evt);
 		SafeMiddleDoubleClick(evt);
 	}
-	#endregion
+#endregion
 
-	#region Misc
+#region Misc
 	/// <summary>
 	/// A Safe wrapper around MouseOver that allows both an override and the OnMouseOver event to be used together
 	/// </summary>
@@ -414,8 +408,7 @@ public abstract class SmartUiState : UIState
 		base.ScrollWheel(evt);
 		SafeScrollWheel(evt);
 	}
-
-	#endregion
+#endregion
 
 	/// <summary>
 	/// Refreshes the UI - Intended to be called on resolution changes.

@@ -1,6 +1,6 @@
 ﻿using Terraria.DataStructures;
 
-namespace PathOfTerraria.Core.Systems.DrawLayers;
+namespace PathOfTerraria.Common.Systems.DrawLayers;
 
 internal class MiscDrawLayer : PlayerDrawLayer
 {

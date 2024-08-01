@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
@@ -9,7 +9,7 @@ namespace PathOfTerraria.Common.UI;
 /// <summary>
 /// Draws the popup tooltip when various elements of the UI are hovered over.
 /// </summary>
-public class Tooltip : SmartUIState, ILoadable
+public class Tooltip : SmartUiState, ILoadable
 {
 	private static string text = string.Empty;
 	private static string tooltip = string.Empty;

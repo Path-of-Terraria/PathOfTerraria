@@ -1,10 +1,10 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
 
-internal class QuestDetailsPanel : SmartUIElement
+internal class QuestDetailsPanel : SmartUiElement
 {
 	public Quest ViewedQuest { get; set; }
 

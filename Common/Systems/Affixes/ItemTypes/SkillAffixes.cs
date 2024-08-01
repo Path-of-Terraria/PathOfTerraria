@@ -1,10 +1,9 @@
-﻿using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 using PathOfTerraria.Content.Skills.Melee;
-using PathOfTerraria.Core.Systems.ModPlayers;
+using PathOfTerraria.Content.Skills.Ranged;
 
-namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 internal class MoltenShellAffix : ItemAffix
 {

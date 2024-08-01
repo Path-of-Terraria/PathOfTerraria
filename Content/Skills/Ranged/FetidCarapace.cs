@@ -1,10 +1,10 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Skills.Melee;
+namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class FetidCarapace : Skill
 {

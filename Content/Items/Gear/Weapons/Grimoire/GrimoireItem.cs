@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -55,7 +55,7 @@ internal class GrimoireItem : Gear
 	{
 		if (player.altFunctionUse == 2)
 		{
-			UILoader.GetUIState<GrimoireSelectionUIState>().Toggle();
+			SmartUiLoader.GetUiState<GrimoireSelectionUIState>().Toggle();
 			return false;
 		}
 

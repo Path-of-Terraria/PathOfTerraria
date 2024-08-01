@@ -5,7 +5,7 @@ using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.TreeSystem;
@@ -45,7 +45,7 @@ internal class TreePlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		UILoader.GetUIState<TreeState>().RemoveAllChildren(); // is this really necessary?
+		SmartUiLoader.GetUiState<TreeState>().RemoveAllChildren(); // is this really necessary?
 	}
 
 	public void CreateTree()

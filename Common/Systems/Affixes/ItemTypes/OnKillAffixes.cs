@@ -1,7 +1,6 @@
-using PathOfTerraria.Common.Systems.Affixes;
 using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 internal class HealOnKillingBurningEnemiesAffix : ItemAffix
 {

@@ -4,13 +4,13 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
-public class ClassSelection : SmartUIState
+public class ClassSelection : SmartUiState
 {
 	public override bool Visible => !Main.LocalPlayer?.GetModPlayer<ClassModPlayer>().HasSelectedClass() ?? false;
 	private bool _populated;

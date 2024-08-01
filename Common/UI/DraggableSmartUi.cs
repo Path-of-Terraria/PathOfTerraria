@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.UI.Utilities;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -9,7 +9,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
-public abstract class DraggableSmartUi : SmartUIState
+public abstract class DraggableSmartUi : SmartUiState
 {
 	public UIDraggablePanel Panel;
 	public UIImageButton CloseButton;
@@ -24,7 +24,7 @@ public abstract class DraggableSmartUi : SmartUIState
 	protected const int LeftPadding = -450;
 	protected const int PanelWidth = 900;
 	public override bool Visible => IsVisible;
-	public virtual List<SmartUIElement> TabPanels => [];
+	public virtual List<SmartUiElement> TabPanels => [];
 	
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -67,7 +67,7 @@ public abstract class DraggableSmartUi : SmartUIState
 
 	public virtual void AppendChildren()
 	{
-		foreach (SmartUIElement tabPanel in TabPanels)
+		foreach (SmartUiElement tabPanel in TabPanels)
 		{
 			tabPanel.Left.Set(0, 0);
 			tabPanel.Top.Set(DraggablePanelHeight, 0);
@@ -80,7 +80,7 @@ public abstract class DraggableSmartUi : SmartUIState
 
 	private void HandleActiveTabChanged()
 	{
-		foreach (SmartUIElement tabPanel in TabPanels)
+		foreach (SmartUiElement tabPanel in TabPanels)
 		{
 			if (tabPanel.TabName != Panel.ActiveTab)
 			{

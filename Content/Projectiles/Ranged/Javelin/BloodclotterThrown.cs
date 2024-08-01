@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Content.Skills.Melee;
+﻿using PathOfTerraria.Content.Skills.Ranged;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Ranged.Javelin;

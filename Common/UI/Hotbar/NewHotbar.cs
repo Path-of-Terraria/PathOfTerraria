@@ -12,11 +12,11 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
-internal sealed class NewHotbar : SmartUIState
+internal sealed class NewHotbar : SmartUiState
 {
 	/// <summary>
 	///		Offsets the rendering of buffs to render below our custom hotbar.

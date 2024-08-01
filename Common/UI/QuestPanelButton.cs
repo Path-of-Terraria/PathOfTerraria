@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.UI.Quests;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
-public class QuestPanelButton : SmartUIState
+public class QuestPanelButton : SmartUiState
 {
 	public override bool Visible => Main.playerInventory;
 
@@ -36,7 +36,7 @@ public class QuestPanelButton : SmartUIState
 		}
 
 		SoundEngine.PlaySound(SoundID.MenuOpen);
-		UILoader.GetUIState<QuestsUIState>().Toggle();
+		SmartUiLoader.GetUiState<QuestsUIState>().Toggle();
 	}
 
 	private float GetTextureXPosition()

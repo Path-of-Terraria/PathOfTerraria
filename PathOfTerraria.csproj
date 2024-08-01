@@ -3,10 +3,9 @@
 	<Import Project="..\tModLoader.targets"/>
 
 	<PropertyGroup>
-		<AssemblyName>PathOfTerraria</AssemblyName>
 		<TargetFramework>net8.0</TargetFramework>
-		<PlatformTarget>AnyCPU</PlatformTarget>
 		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
 	<PropertyGroup>

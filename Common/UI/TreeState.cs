@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.UI;
@@ -13,7 +13,7 @@ internal class TreeState : DraggableSmartUi
 {
 	private PassiveTreeInnerPanel _passiveTreeInner;
 	private SkillsTreeInnerPanel _skillsTreeInner;
-	public override List<SmartUIElement> TabPanels => [_passiveTreeInner, _skillsTreeInner];
+	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillsTreeInner];
 
 	public override int DepthPriority => 1;
 

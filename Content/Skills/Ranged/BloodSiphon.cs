@@ -1,15 +1,13 @@
-﻿using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
-using ReLogic.Content;
-using System.Collections.Generic;
-
+﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
-
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Content.Buffs;
+using ReLogic.Content;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Skills.Melee;
+namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class BloodSiphon : Skill
 {

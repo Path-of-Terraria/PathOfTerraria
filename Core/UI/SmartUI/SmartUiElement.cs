@@ -1,6 +1,6 @@
 ﻿using Terraria.UI;
 
-namespace PathOfTerraria.Core.UI;
+namespace PathOfTerraria.Core.UI.SmartUI;
 
 public class MouseContainedState
 {

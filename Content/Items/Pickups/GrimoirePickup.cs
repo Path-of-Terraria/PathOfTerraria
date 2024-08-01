@@ -8,7 +8,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
@@ -77,7 +77,7 @@ internal abstract class GrimoirePickup : ModItem
 
 		PopupText.NewText(request, player.Center);
 
-		if (Item.type != ItemID.SilverCoin && player.whoAmI == Main.myPlayer && UILoader.GetUIState<GrimoireSelectionUIState>().IsVisible)
+		if (Item.type != ItemID.SilverCoin && player.whoAmI == Main.myPlayer && SmartUiLoader.GetUiState<GrimoireSelectionUIState>().IsVisible)
 		{
 			GrimoireSelectionUIState.RefreshStorage();
 		}

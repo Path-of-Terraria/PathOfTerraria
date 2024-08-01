@@ -1,10 +1,10 @@
 ﻿using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
-internal class SkillsTreeInnerPanel : SmartUIElement
+internal class SkillsTreeInnerPanel : SmartUiElement
 {
 	public override string TabName => "SkillTree";
 

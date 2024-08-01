@@ -1,12 +1,12 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PlayerStats;
 
-internal class PlayerStatInnerPanel : SmartUIElement
+internal class PlayerStatInnerPanel : SmartUiElement
 {
 	private UIElement Panel => Parent;
 

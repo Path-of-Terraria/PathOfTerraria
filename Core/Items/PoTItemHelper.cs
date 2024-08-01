@@ -5,7 +5,6 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
-using PathOfTerraria.Core.Systems.Affixes;
 
 namespace PathOfTerraria.Core.Items;
 

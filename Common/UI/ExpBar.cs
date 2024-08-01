@@ -1,14 +1,14 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
-public class ExpBar : SmartUIState
+public class ExpBar : SmartUiState
 {
 	public override bool Visible => true;
 
@@ -54,7 +54,7 @@ public class ExpBar : SmartUIState
 		}
 		
 		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
-		UILoader.GetUIState<TreeState>().Toggle();
+		SmartUiLoader.GetUiState<TreeState>().Toggle();
 
 		SoundEngine.PlaySound(mp.SelectedClass != PlayerClass.None ? SoundID.MenuOpen : SoundID.MenuClose, Main.LocalPlayer.Center);
 	}

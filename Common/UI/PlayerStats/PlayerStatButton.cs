@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PlayerStats;
 
-public class PlayerStatButton : SmartUIState
+public class PlayerStatButton : SmartUiState
 {
 	public override bool Visible => Main.playerInventory;
 
@@ -35,7 +35,7 @@ public class PlayerStatButton : SmartUIState
 		}
 
 		SoundEngine.PlaySound(SoundID.MenuOpen);
-		UILoader.GetUIState<PlayerStatUIState>().Toggle();
+		SmartUiLoader.GetUiState<PlayerStatUIState>().Toggle();
 	}
 
 	private static float GetTextureXPosition()

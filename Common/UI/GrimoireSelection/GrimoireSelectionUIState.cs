@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Projectiles.Summoner;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
@@ -312,7 +312,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		storagePanel.Append(_storageGrid);
 
-		var scrollBar = new Terraria.ModLoader.UI.Elements.FixedUIScrollbar(UILoader.GetUIState<GrimoireSelectionUIState>().UserInterface)
+		var scrollBar = new Terraria.ModLoader.UI.Elements.FixedUIScrollbar(SmartUiLoader.GetUiState<GrimoireSelectionUIState>().UserInterface)
 		{
 			Width = StyleDimension.FromPixels(20),
 			Height = StyleDimension.FromPixelsAndPercent(-54, 1f),

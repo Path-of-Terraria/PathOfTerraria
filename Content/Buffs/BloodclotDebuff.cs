@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Skills.Melee;
-using Terraria;
+﻿using PathOfTerraria.Content.Skills.Ranged;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;

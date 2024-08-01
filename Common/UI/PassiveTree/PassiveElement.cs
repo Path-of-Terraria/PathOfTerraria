@@ -1,19 +1,19 @@
 ﻿using PathOfTerraria.Common.Systems.TreeSystem;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PassiveTree;
 
-internal class PassiveElement : SmartUIElement
+internal class PassiveElement : SmartUiElement
 {
 	private readonly Passive _passive;
 
 	private int _flashTimer;
 	private int _redFlashTimer;
 
-	private TreeState UiTreeState => UILoader.GetUIState<TreeState>();
+	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
 	
 	public PassiveElement(Passive passive)
 	{

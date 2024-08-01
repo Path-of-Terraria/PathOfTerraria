@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.Systems.ModPlayers;
+﻿namespace PathOfTerraria.Common.Systems.ModPlayers;
 
 /// <summary>
 /// Used for running stuff when items are swapped. 

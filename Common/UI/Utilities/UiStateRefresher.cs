@@ -1,6 +1,6 @@
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Common.UI.PlayerStats;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.UI.Utilities;
@@ -26,9 +26,9 @@ internal class UiStateRefresher : ModSystem
 	public override void OnWorldLoad(){
 		if (Main.netMode != NetmodeID.Server)
 		{
-			UILoader.GetUIState<QuestPanelButton>().Refresh();
-			UILoader.GetUIState<PlayerStatButton>().Refresh();
-			UILoader.GetUIState<GrimoireInvButton>().Refresh();
+			SmartUiLoader.GetUiState<QuestPanelButton>().Refresh();
+			SmartUiLoader.GetUiState<PlayerStatButton>().Refresh();
+			SmartUiLoader.GetUiState<GrimoireInvButton>().Refresh();
 		}
 	}
 	
@@ -39,8 +39,8 @@ internal class UiStateRefresher : ModSystem
 	/// <param name="newSize"></param>
 	private static void RefreshUi(Vector2 newSize)
 	{
-		UILoader.GetUIState<QuestPanelButton>().Refresh();
-		UILoader.GetUIState<PlayerStatButton>().Refresh();
-		UILoader.GetUIState<GrimoireInvButton>().Refresh();
+		SmartUiLoader.GetUiState<QuestPanelButton>().Refresh();
+		SmartUiLoader.GetUiState<PlayerStatButton>().Refresh();
+		SmartUiLoader.GetUiState<GrimoireInvButton>().Refresh();
 	}
 }

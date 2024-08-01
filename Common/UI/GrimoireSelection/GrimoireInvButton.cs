@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
-public class GrimoireInvButton : SmartUIState
+public class GrimoireInvButton : SmartUiState
 {
 	public override bool Visible => Main.playerInventory;
 
@@ -49,7 +49,7 @@ public class GrimoireInvButton : SmartUIState
 
 		// Set held item to Grimoire so the UI doesn't instantly close
 		Main.LocalPlayer.selectedItem = index;
-		UILoader.GetUIState<GrimoireSelectionUIState>().Toggle();
+		SmartUiLoader.GetUiState<GrimoireSelectionUIState>().Toggle();
 	}
 
 	private static float GetTextureXPosition()

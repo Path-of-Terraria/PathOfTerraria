@@ -1,10 +1,10 @@
 ﻿using PathOfTerraria.Common.Systems.TreeSystem;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PassiveTree;
 
-internal class PassiveTreeInnerPanel : SmartUIElement
+internal class PassiveTreeInnerPanel : SmartUiElement
 {
 	private Vector2 _start;
 	private Vector2 _lineOff;
@@ -12,7 +12,7 @@ internal class PassiveTreeInnerPanel : SmartUIElement
 	private UIElement Panel => Parent;
 
 	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
-	private TreeState UiTreeState => UILoader.GetUIState<TreeState>();
+	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
 	public override string TabName => "PassiveTree";
 
 	public override void Draw(SpriteBatch spriteBatch)

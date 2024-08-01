@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.UI.Utilities;
-using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -8,7 +8,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
-public abstract class CloseableSmartUi : SmartUIState
+public abstract class CloseableSmartUi : SmartUiState
 {
     public UICloseablePanel Panel;
     public UIImageButton CloseButton;
