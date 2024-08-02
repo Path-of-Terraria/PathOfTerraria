@@ -1,5 +1,7 @@
-﻿using PathOfTerraria.Core.Subworlds.Passes;
+﻿using PathOfTerraria.Content.Projectiles;
+using PathOfTerraria.Core.Subworlds.Passes;
 using PathOfTerraria.Core.Systems.DisableBuilding;
+using PathOfTerraria.Core.WorldGeneration;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -17,49 +19,147 @@ public class KingSlimeDomain : MappingWorld
 	public Point16 ArenaEntrance = Point16.Zero;
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
+	public bool ReadyToExit = false;
 
-	public override List<GenPass> Tasks => [new FlatWorldPass(0, true), new PassLegacy("Tunnel", TunnelGen)];
+	public override List<GenPass> Tasks => [new FlatWorldPass(0, true), new PassLegacy("Tunnel", TunnelGen), new PassLegacy("Decor", DecorGen)];
 
 	public override void OnEnter()
 	{
 		BossSpawned = false;
+		ReadyToExit = false;
+	}
+
+	private void DecorGen(GenerationProgress progress, GameConfiguration configuration)
+	{
+		for (int i = 60; i < Main.maxTilesX - 60; ++i)
+		{
+			for (int j = 100; j < Main.maxTilesY - 100; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (!tile.HasTile)
+				{
+					continue;
+				}
+
+				if (tile.Slope == SlopeType.Solid)
+				{
+					PlaceDecorOnTile(i, j, tile);
+				}
+			}
+		}
+	}
+
+	private void PlaceDecorOnTile(int i, int j, Tile tile)
+	{
+		if (tile.TileType == TileID.Stone)
+		{
+			if (Main.tile[i, j + 1].HasTile && WorldGen.genRand.NextBool(14))
+			{
+				WorldGen.PlaceTile(i, j + 2, TileID.Stalactite);
+			}
+
+			if (Main.tile[i, j - 1].HasTile && WorldGen.genRand.NextBool(14))
+			{
+				WorldGen.PlaceSmallPile(i, j - 1, 2, 0);
+			}
+		}
 	}
 
 	private void TunnelGen(GenerationProgress progress, GameConfiguration configuration)
 	{
+		WorldGen._genRand = new Terraria.Utilities.UnifiedRandom(Main.rand.Next());
+
+		Main.spawnTileX = 250;
+		Main.spawnTileY = 500;
+
 		Point16 size = Point16.Zero;
 		StructureHelper.Generator.GetDimensions("Data/Structures/KingSlimeArena", Mod, ref size);
 
 		Arena = new Rectangle((250 - size.X / 2) * 16, (120 - size.Y / 2) * 16, size.X * 16, (size.Y - 4) * 16);
 		ArenaEntrance = new Point16(255, 120 + size.Y / 2);
 
-		Main.spawnTileX = 250;
-		Main.spawnTileY = 500;
+		bool flip = false;
 
-		int noiseX = 0;
-		var pos = new Vector2(Main.spawnTileX, Main.spawnTileY);
-		var noise = new FastNoiseLite(WorldGen._genRandSeed);
-		noise.SetFrequency(0.08f);
-		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+		Vector2[] points = [new Vector2(Main.spawnTileX, Main.spawnTileY),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(420, 450)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(360, 390)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(300, 330)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(240, 270)),
+			ArenaEntrance.ToVector2()];
+		Vector2[] results = Spline.InterpolateXY(points, 60);
+		results = CreateEquidistantSet(results, 10);
 
-		Queue<Vector2> queue = [];
-		queue.Enqueue(new Vector2(Main.rand.Next(100, 400), Main.rand.Next(420, 450)));
-		queue.Enqueue(new Vector2(Main.rand.Next(100, 400), Main.rand.Next(350, 380)));
-		queue.Enqueue(new Vector2(Main.rand.Next(100, 400), Main.rand.Next(280, 320)));
-		queue.Enqueue(ArenaEntrance.ToVector2());
-
-		DigThroughTo(ref noiseX, pos, noise, queue);
+		foreach (Vector2 item in results)
+		{
+			TunnelSpot(item, 6);
+		}
 
 		StructureHelper.Generator.GenerateStructure("Data/Structures/KingSlimeArena", new Point16(250 - size.X / 2, 120 - size.Y / 2), Mod);
+
+		static int GenerateEdgeX(ref bool flip)
+		{
+			flip = !flip;
+			return 250 + WorldGen.genRand.Next(150, 200) * (flip ? -1 : 1);
+		}
 	}
 
-	private void DigThroughTo(ref int noiseX, Vector2 pos, FastNoiseLite noise, Queue<Vector2> stopPoints)
+	private Vector2[] CreateEquidistantSet(Vector2[] results, float distance)
 	{
-		Vector2 end = stopPoints.Dequeue();
+		List<Vector2> points = [];
+		Queue<Vector2> remainingPoints = new(results);
+		Vector2 start = remainingPoints.Dequeue();
+		Vector2 current = start;
+		Vector2 next = remainingPoints.Dequeue();
+		float factor = 0;
 
 		while (true)
 		{
-			TunnelSpot(pos, noise.GetNoise(noiseX++, 0) * 16 + 8);
+			float dist = current.Distance(next);
+
+			while (true)
+			{
+				points.Add(Vector2.Lerp(start, next, factor));
+				factor += MathF.Min(1, distance / dist);
+
+				if (factor > 1f)
+				{
+					break;
+				}
+			}
+
+			if (remainingPoints.Count == 0)
+			{
+				return [.. points];
+			}
+
+			start = next;
+			next = remainingPoints.Dequeue();
+			factor--;
+		}
+	}
+
+	private void Excavate(Vector2 pos, Queue<Vector2> queue, int repeats, int fuzzSize)
+	{
+		for (int i = 0; i < repeats; ++i)
+		{
+			DigThroughTo(pos, new(queue), 4, fuzzSize);
+		}
+		DigThroughTo(pos, queue, 5);
+	}
+
+	private void DigThroughTo(Vector2 pos, Queue<Vector2> stopPoints, int size, int? fuzz = null)
+	{
+		Vector2 end = stopPoints.Dequeue();
+
+		if (fuzz.HasValue)
+		{
+			end += new Vector2(WorldGen.genRand.Next(-fuzz.Value, fuzz.Value), WorldGen.genRand.Next(-fuzz.Value, fuzz.Value));
+		}
+
+		while (true)
+		{
+			TunnelSpot(pos, size);
 
 			pos += Vector2.Normalize(end - pos);
 
@@ -71,11 +171,21 @@ public class KingSlimeDomain : MappingWorld
 				}
 
 				end = stopPoints.Dequeue();
+
+				if (fuzz.HasValue)
+				{
+					end += new Vector2(WorldGen.genRand.Next(-fuzz.Value, fuzz.Value), WorldGen.genRand.Next(-fuzz.Value, fuzz.Value));
+				}
 			}
 		}
 	}
 
-	private void TunnelSpot(Vector2 pos, float size)
+	/// <summary>
+	/// Super placeholder dig method for the subworld. Really needs fancifying.
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="size"></param>
+	private static void TunnelSpot(Vector2 pos, float size)
 	{
 		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
 		{
@@ -112,6 +222,14 @@ public class KingSlimeDomain : MappingWorld
 
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y, NPCID.KingSlime);
 			BossSpawned = true;
+		}
+
+		if (BossSpawned && !NPC.AnyNPCs(NPCID.KingSlime) && !ReadyToExit)
+		{
+			Vector2 pos = Arena.Center() + new Vector2(0, 350);
+			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+
+			ReadyToExit = true;
 		}
 	}
 }
