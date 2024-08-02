@@ -4,26 +4,24 @@ namespace PathOfTerraria.Core.UI.SmartUI;
 
 public class MouseContainedState
 {
-	public bool Left = false;
-	public bool Right = false;
+	public bool Left { get; set; }
+
+	public bool Right { get; set; }
 }
 
 /// <summary>
-/// Wrapper class that enforces Safe interoperability between event listeners and virtual methods for UI elements
+///		Wrapper class that enforces safe interoperability between event
+///		listeners and virtual methods for UI elements.
 /// </summary>
 public class SmartUiElement : UIElement
 {
-	public Rectangle GetRectangle()
-	{
-		return Parent.GetDimensions().ToRectangle();
-	}
-
 	public virtual string TabName => "";
-	public MouseContainedState MouseContained = new();
 
-	public virtual void DrawOnto(SpriteBatch spriteBatch, Vector2 center) { }
+	public MouseContainedState MouseContained { get; internal set; } = new();
 
-	public bool CheckMouseContained()
+	protected virtual void DrawOnto(SpriteBatch spriteBatch, Vector2 center) { }
+
+	protected bool CheckMouseContained()
 	{
 		if (Parent is SmartUiElement p)
 		{
@@ -33,8 +31,12 @@ public class SmartUiElement : UIElement
 		return MouseContained.Left || MouseContained.Right;
 	}
 
-	#region XButton1
+	protected Rectangle GetRectangle()
+	{
+		return Parent.GetDimensions().ToRectangle();
+	}
 
+#region XButton1
 	/// <summary>
 	/// A Safe wrapper around XButton1MouseUp that allows both an override and the OnXButton1MouseUp event to be used together
 	/// </summary>
@@ -82,11 +84,9 @@ public class SmartUiElement : UIElement
 		base.XButton1DoubleClick(evt);
 		SafeXButton1DoubleClick(evt);
 	}
+#endregion
 
-	#endregion
-
-	#region XButton2
-
+#region XButton2
 	/// <summary>
 	/// A Safe wrapper around XButton2MouseUp that allows both an override and the OnXButton2MouseUp event to be used together
 	/// </summary>
@@ -134,11 +134,9 @@ public class SmartUiElement : UIElement
 		base.XButton2DoubleClick(evt);
 		SafeXButton2DoubleClick(evt);
 	}
+#endregion
 
-	#endregion
-
-	#region LMB
-
+#region LMB
 	/// <summary>
 	/// A Safe wrapper around MouseUp that allows both an override and the OnMouseUp event to be used together
 	/// </summary>
@@ -186,11 +184,9 @@ public class SmartUiElement : UIElement
 		base.LeftDoubleClick(evt);
 		SafeDoubleClick(evt);
 	}
+#endregion
 
-	#endregion
-
-	#region RMB
-
+#region RMB
 	/// <summary>
 	/// A Safe wrapper around RightMouseUp that allows both an override and the OnRightMouseUp event to be used together
 	/// </summary>
@@ -238,11 +234,9 @@ public class SmartUiElement : UIElement
 		base.RightDoubleClick(evt);
 		SafeRightDoubleClick(evt);
 	}
+#endregion
 
-	#endregion
-
-	#region MMB
-
+#region MMB
 	/// <summary>
 	/// A Safe wrapper around MiddleMouseUp that allows both an override and the OnMiddleMouseUp event to be used together
 	/// </summary>
@@ -290,11 +284,9 @@ public class SmartUiElement : UIElement
 		base.MiddleDoubleClick(evt);
 		SafeMiddleDoubleClick(evt);
 	}
+#endregion
 
-	#endregion
-
-	#region Misc
-
+#region Misc
 	/// <summary>
 	/// A Safe wrapper around MouseOver that allows both an override and the OnMouseOver event to be used together
 	/// </summary>
@@ -330,6 +322,5 @@ public class SmartUiElement : UIElement
 		base.ScrollWheel(evt);
 		SafeScrollWheel(evt);
 	}
-
-	#endregion
+#endregion
 }

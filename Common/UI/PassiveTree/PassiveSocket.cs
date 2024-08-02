@@ -17,7 +17,7 @@ internal class PassiveSocket : PassiveElement
 		_socketed = passive.Socketed;
 	}
 
-	public override void DrawOnto(SpriteBatch spriteBatch, Vector2 center)
+	protected override void DrawOnto(SpriteBatch spriteBatch, Vector2 center)
 	{
 		_socketed?.Draw(spriteBatch, center);
 	}
