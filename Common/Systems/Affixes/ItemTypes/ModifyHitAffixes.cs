@@ -61,6 +61,7 @@ internal class ChanceToApplyBloodclotItemAffix : ItemAffix
 
 internal class ChanceToApplyPoisonItemAffix : ItemAffix
 {
+
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.Buffer.Add(BuffID.Poisoned, Duration, Value);
