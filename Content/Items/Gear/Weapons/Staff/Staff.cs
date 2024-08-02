@@ -9,7 +9,6 @@ internal class Staff : Gear
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Staff/ExampleStaff";
 
-
 	protected override string GearLocalizationCategory => "Staff";
 
 	public override void SetStaticDefaults()

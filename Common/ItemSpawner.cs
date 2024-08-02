@@ -24,8 +24,7 @@ internal class ItemSpawner
 
 		return SpawnItemFromList(pos, dropCondition, ilevel, dropRarityModifier, filteredGear);
 	}
-
-
+	
 	private static int SpawnItemFromList(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition, int ilevel,
 		float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)
 	{

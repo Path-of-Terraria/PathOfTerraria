@@ -25,35 +25,35 @@ internal class BowLoader : ModSystem
 		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Tsunami, ItemType.Bow);
 
 		// Prehardmode
-		LoadBow(ItemID.BorealWoodBow, "BorealWoodBow");
-		LoadBow(ItemID.CopperBow, "CopperBow");
-		LoadBow(ItemID.PalmWoodBow, "PalmWoodBow");
-		LoadBow(ItemID.RichMahoganyBow, "RichMahoganyBow");
-		LoadBow(ItemID.TinBow, "TinBow");
-		LoadBow(ItemID.EbonwoodBow, "EbonwoodBow");
-		LoadBow(ItemID.IronBow, "IronBow");
-		LoadBow(ItemID.ShadewoodBow, "ShadewoodBow");
-		LoadBow(ItemID.LeadBow, "LeadBow");
-		LoadBow(ItemID.SilverBow, "SilverBow");
-		LoadBow(ItemID.TungstenBow, "TungstenBow");
-		LoadBow(ItemID.AshWoodBow, "AshWoodBow");
-		LoadBow(ItemID.GoldBow, "GoldBow");
-		LoadBow(ItemID.PlatinumBow, "PlatinumBow");
-		LoadBow(ItemID.DemonBow, "DemonBow");
-		LoadBow(ItemID.TendonBow, "TendonBow");
+		LoadBow(ItemID.BorealWoodBow);
+		LoadBow(ItemID.CopperBow);
+		LoadBow(ItemID.PalmWoodBow);
+		LoadBow(ItemID.RichMahoganyBow);
+		LoadBow(ItemID.TinBow);
+		LoadBow(ItemID.EbonwoodBow);
+		LoadBow(ItemID.IronBow);
+		LoadBow(ItemID.ShadewoodBow);
+		LoadBow(ItemID.LeadBow);
+		LoadBow(ItemID.SilverBow);
+		LoadBow(ItemID.TungstenBow);
+		LoadBow(ItemID.AshWoodBow);
+		LoadBow(ItemID.GoldBow);
+		LoadBow(ItemID.PlatinumBow);
+		LoadBow(ItemID.DemonBow);
+		LoadBow(ItemID.TendonBow);
 
 		// Hardmode
-		LoadBow(ItemID.PearlwoodBow, "PearlwoodBow");
-		LoadBow(ItemID.CobaltRepeater, "CobaltRepeater");
-		LoadBow(ItemID.PalladiumRepeater, "PalladiumRepeater");
-		LoadBow(ItemID.MythrilRepeater, "MythrilRepeater");
-		LoadBow(ItemID.OrichalcumRepeater, "OrichalcumRepeater");
-		LoadBow(ItemID.AdamantiteRepeater, "AdamantiteRepeater");
-		LoadBow(ItemID.TitaniumRepeater, "TitaniumRepeater");
-		LoadBow(ItemID.HallowedRepeater, "HallowedRepeater");
-		LoadBow(ItemID.StakeLauncher, "StakeLauncher");
+		LoadBow(ItemID.PearlwoodBow);
+		LoadBow(ItemID.CobaltRepeater);
+		LoadBow(ItemID.PalladiumRepeater);
+		LoadBow(ItemID.MythrilRepeater);
+		LoadBow(ItemID.OrichalcumRepeater);
+		LoadBow(ItemID.AdamantiteRepeater);
+		LoadBow(ItemID.TitaniumRepeater);
+		LoadBow(ItemID.HallowedRepeater);
+		LoadBow(ItemID.StakeLauncher);
 
-		void LoadBow(short itemId, string name)
+		static void LoadBow(short itemId)
 		{
 			ItemDatabase.RegisterUniqueVanillaItemAsGear(itemId, ItemType.Bow);
 		}

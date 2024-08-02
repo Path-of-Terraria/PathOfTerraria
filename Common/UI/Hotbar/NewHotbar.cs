@@ -155,10 +155,14 @@ internal sealed class NewHotbar : SmartUiState
 		int spaceToTheRightClamped = Math.Clamp(spaceToTheRightRounded, 0, 60);
 		int inverseSpaceToTheRight = 60 - spaceToTheRightClamped;
 		int hackyTotal = 82 + rightXOffset + spaceToTheRightClamped;
+		
+		// I'd like to replace this with a more elegant solution, but I don't
+		// want to waste time determining what causes strange offsets.
 		if (hackyTotal != 142)
 		{
 			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal; 
 		}
+
 		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
 		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
 	}

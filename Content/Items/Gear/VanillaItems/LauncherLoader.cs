@@ -11,16 +11,16 @@ internal class LauncherLoader : ModSystem
 		ItemDatabase.RegisterVanillaItemAsGear(ItemID.FireworksLauncher, ItemType.Launcher);
 		ItemDatabase.RegisterVanillaItemAsGear(ItemID.Celeb2, ItemType.Launcher);
 
-		LoadLauncher(ItemID.GrenadeLauncher, "GrenadeLauncher");
-		LoadLauncher(ItemID.ProximityMineLauncher, "ProximityMineLauncher");
-		LoadLauncher(ItemID.RocketLauncher, "RocketLauncher");
-		LoadLauncher(ItemID.NailGun, "NailGun");
-		LoadLauncher(ItemID.Stynger, "Stynger");
-		LoadLauncher(ItemID.JackOLanternLauncher, "JackOLanternLauncher");
-		LoadLauncher(ItemID.SnowmanCannon, "SnowmanCannon");
-		LoadLauncher(ItemID.ElectrosphereLauncher, "ElectrosphereLauncher");
+		LoadLauncher(ItemID.GrenadeLauncher);
+		LoadLauncher(ItemID.ProximityMineLauncher);
+		LoadLauncher(ItemID.RocketLauncher);
+		LoadLauncher(ItemID.NailGun);
+		LoadLauncher(ItemID.Stynger);
+		LoadLauncher(ItemID.JackOLanternLauncher);
+		LoadLauncher(ItemID.SnowmanCannon);
+		LoadLauncher(ItemID.ElectrosphereLauncher);
 
-		void LoadLauncher(short itemId, string name)
+		static void LoadLauncher(short itemId)
 		{
 			ItemDatabase.RegisterUniqueVanillaItemAsGear(itemId, ItemType.Launcher);
 		}
