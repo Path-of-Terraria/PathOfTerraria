@@ -28,7 +28,7 @@ public class FlatWorldPass(int floorY = 500, bool spawnWalls = false) : GenPass(
 				tile.HasTile = true;
 				tile.TileType = TileID.Stone;
 
-				if (SpawnWalls)
+				if (SpawnWalls && y > FloorY + 1)
 				{
 					tile.WallType = WallID.Stone;
 				}

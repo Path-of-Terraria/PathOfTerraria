@@ -24,12 +24,13 @@ public class KingSlimeDomain : MappingWorld
 	public override int Width => 500;
 	public override int Height => 600;
 
-	public Point16 ArenaEntrance = Point16.Zero;
+	public static Point16 ArenaEntrance = Point16.Zero;
+
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 
-	public override List<GenPass> Tasks => [new FlatWorldPass(0, true), new PassLegacy("Tunnel", TunnelGen), new PassLegacy("Decor", DecorGen)];
+	public override List<GenPass> Tasks => [new FlatWorldPass(100, true), new PassLegacy("Tunnel", TunnelGen), new PassLegacy("Decor", DecorGen)];
 
 	public override void OnEnter()
 	{
@@ -85,48 +86,77 @@ public class KingSlimeDomain : MappingWorld
 	{
 		if (Main.tile[position].TileType == TileID.Stone)
 		{
-			if (flags.HasFlag(Open.Below) && WorldGen.genRand.NextBool(14))
+			if (flags.HasFlag(Open.Below))
 			{
-				WorldGen.PlaceTile(position.X, position.Y + 1, TileID.Stalactite);
+				if (WorldGen.genRand.NextBool(14))
+				{
+					WorldGen.PlaceTile(position.X, position.Y + 1, TileID.Stalactite);
+				}
+				else if (WorldGen.genRand.NextBool(60))
+				{
+					WorldGen.PlaceObject(position.X, position.Y + 1, TileID.Banners, false, WorldGen.genRand.NextBool(2) ? 0 : 2);
+				}
 			}
 
-			if (flags.HasFlag(Open.Above) && WorldGen.genRand.NextBool(14))
+			if (flags.HasFlag(Open.Above))
 			{
-				int pile = WorldGen.genRand.Next(3) switch
+				if (WorldGen.genRand.NextBool(14))
 				{
-					0 => 0,
-					1 => 28,
-					_ => 11
-				};
-				WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(6), 0);
+					int pile = WorldGen.genRand.Next(3) switch
+					{
+						0 => 0,
+						1 => 28,
+						_ => 11
+					};
+					WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(6), 0);
+				}
+				else if (WorldGen.genRand.NextBool(60))
+				{
+					WorldGen.PlaceObject(position.X, position.Y - 2, TileID.Tombstones, true, WorldGen.genRand.Next(6));
+				}
+			}
+
+			int chance = 90;
+			float dist = Vector2.Distance(position.ToVector2(), ArenaEntrance.ToVector2());
+			
+			if (dist < 90)
+			{
+				chance = (int)Math.Max(dist / 2 - 10, 1);
+			}
+
+			if (WorldGen.genRand.NextBool(chance))
+			{
+				WorldGen.TileRunner(position.X, position.Y, WorldGen.genRand.Next(6, 20), 8, TileID.SlimeBlock, false, 0, 0, false);
 			}
 		}
 	}
 
 	private void TunnelGen(GenerationProgress progress, GameConfiguration configuration)
 	{
+		const int ArenaY = 500;
+
 		// Reseed RNG since that's not done automatically for some reason
 		int seed = new Random().Next();
 		WorldGen.genRand.SetSeed(seed);
 		WorldGen._genRandSeed = seed;
 
 		Main.spawnTileX = 250;
-		Main.spawnTileY = 500;
+		Main.spawnTileY = 60;
 
 		Point16 size = Point16.Zero;
 		StructureHelper.Generator.GetDimensions("Data/Structures/KingSlimeArena", Mod, ref size);
 
-		Arena = new Rectangle((250 - size.X / 2) * 16, (120 - size.Y / 2) * 16, size.X * 16, (size.Y - 4) * 16);
-		ArenaEntrance = new Point16(255, 120 + size.Y / 2);
+		Arena = new Rectangle((250 - size.X / 2) * 16, (ArenaY - size.Y / 2) * 16, size.X * 16, (size.Y - 4) * 16);
+		ArenaEntrance = new Point16(255, ArenaY - size.Y / 2);
 
 		bool flip = WorldGen.genRand.NextBool();
 
 		// Generate base points
 		Vector2[] points = [new Vector2(Main.spawnTileX, Main.spawnTileY),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(420, 450)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(360, 390)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(300, 330)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(240, 270)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(200, 230)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(260, 290)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(320, 350)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(380, 410)),
 			ArenaEntrance.ToVector2()];
 
 		// Generate "slime arenas" TBD
@@ -139,7 +169,7 @@ public class KingSlimeDomain : MappingWorld
 
 			Vector2 item = points[i];
 
-			WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, 14);
+			WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, 18);
 		}
 
 		points = AddVariationToPoints(points);
@@ -152,18 +182,18 @@ public class KingSlimeDomain : MappingWorld
 		// Actually dig tunnel
 		foreach (Vector2 item in results)
 		{
-			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y));
-			TunnelSpot(item, 4 * mul);
-			TunnelSpot(item, WorldGen.genRand.Next(2, 7) * mul);
+			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * 1.2f;
+			TunnelSpot(item, 5 * mul);
+			TunnelSpot(item, WorldGen.genRand.Next(3, 7) * mul);
 
 			if (WorldGen.genRand.NextBool(3, 5))
 			{
-				WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, (int)(Main.rand.NextFloat(1, 7) * mul));
+				WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, (int)(Main.rand.NextFloat(1, 8) * mul));
 			}
 		}
 
 		// Place arena
-		StructureHelper.Generator.GenerateStructure("Data/Structures/KingSlimeArena", new Point16(250 - size.X / 2, 120 - size.Y / 2), Mod);
+		StructureHelper.Generator.GenerateStructure("Data/Structures/KingSlimeArena", new Point16(250 - size.X / 2, ArenaY - size.Y / 2), Mod);
 
 		static int GenerateEdgeX(ref bool flip)
 		{
@@ -197,7 +227,7 @@ public class KingSlimeDomain : MappingWorld
 			{
 				const int Variance = 40;
 
-				newPoints.Add(item + new Vector2(Main.rand.Next(-Variance, Variance), Main.rand.Next(-Variance, 0)));
+				newPoints.Add(item + new Vector2(Main.rand.Next(-Variance, Variance), Main.rand.Next(Variance)));
 			}
 		}
 
@@ -279,13 +309,13 @@ public class KingSlimeDomain : MappingWorld
 				WorldGen.PlaceTile(ArenaEntrance.X + i, ArenaEntrance.Y - 1, TileID.SlimeBlock, true, true);
 			}
 
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y, NPCID.KingSlime);
+			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y + 400, NPCID.KingSlime);
 			BossSpawned = true;
 		}
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.KingSlime) && !ReadyToExit)
 		{
-			Vector2 pos = Arena.Center() + new Vector2(0, 350);
+			Vector2 pos = Arena.Center() + new Vector2(0, 150);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			ReadyToExit = true;
