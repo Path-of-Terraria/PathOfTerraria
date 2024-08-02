@@ -23,8 +23,10 @@ public sealed class PoTMod : Mod
 	/// </summary>
 	internal static PoTMod Instance => ModContent.GetInstance<PoTMod>();
 
-	public PoTMod()
+	public override void Load()
 	{
+		base.Load();
+
 		Debug.Assert(Name == ModName, "Internal mod name does not much expected contsant.");
 	}
 
