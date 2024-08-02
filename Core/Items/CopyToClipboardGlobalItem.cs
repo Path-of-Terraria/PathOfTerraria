@@ -4,6 +4,9 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Core.Items;
 
+/// <summary>
+///		Implements tag compound data copying for modded items.
+/// </summary>
 internal sealed class CopyToClipboardGlobalItem : GlobalItem, CopyToClipboard.IGlobal
 {
 	void CopyToClipboard.IGlobal.CopyToClipboard(Item item)
