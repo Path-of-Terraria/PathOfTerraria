@@ -7,6 +7,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Core.Subworlds;
@@ -30,7 +31,15 @@ public class KingSlimeDomain : MappingWorld
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 
-	public override List<GenPass> Tasks => [new FlatWorldPass(100, true), new PassLegacy("Tunnel", TunnelGen), new PassLegacy("Decor", DecorGen)];
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new FlatWorldPass(100, true), 
+		new PassLegacy("Tunnel", TunnelGen), new PassLegacy("Decor", DecorGen)];
+
+	private void ResetStep(GenerationProgress progress, GameConfiguration configuration)
+	{
+		WorldGen._lastSeed = DateTime.Now.Second;
+		WorldGen._genRand = new UnifiedRandom(DateTime.Now.Second);
+		WorldGen._genRand.SetSeed(DateTime.Now.Second);
+	}
 
 	public override void OnEnter()
 	{
@@ -80,6 +89,8 @@ public class KingSlimeDomain : MappingWorld
 		}
 
 		tiles.Clear();
+
+		WorldGen.PlaceTile(ArenaEntrance.X, ArenaEntrance.Y, TileID.Meteorite, true, true);
 	}
 
 	private static void PlaceDecorOnTile(Open flags, Point16 position)
@@ -133,30 +144,25 @@ public class KingSlimeDomain : MappingWorld
 
 	private void TunnelGen(GenerationProgress progress, GameConfiguration configuration)
 	{
-		const int ArenaY = 500;
+		const int ArenaY = 490;
 
-		// Reseed RNG since that's not done automatically for some reason
-		int seed = new Random().Next();
-		WorldGen.genRand.SetSeed(seed);
-		WorldGen._genRandSeed = seed;
-
-		Main.spawnTileX = 250;
-		Main.spawnTileY = 60;
+		Main.spawnTileX = WorldGen.genRand.NextBool() ? 150 : 350;
+		Main.spawnTileY = 95;
 
 		Point16 size = Point16.Zero;
 		StructureHelper.Generator.GetDimensions("Data/Structures/KingSlimeArena", Mod, ref size);
 
-		Arena = new Rectangle((250 - size.X / 2) * 16, (ArenaY - size.Y / 2) * 16, size.X * 16, (size.Y - 4) * 16);
-		ArenaEntrance = new Point16(255, ArenaY - size.Y / 2);
+		Arena = new Rectangle((250 - size.X / 2) * 16, (ArenaY - size.Y / 2 + 4) * 16, size.X * 16, (size.Y - 4) * 16);
+		ArenaEntrance = new Point16(248, ArenaY - size.Y / 2);
 
-		bool flip = WorldGen.genRand.NextBool();
+		bool flip = WorldGen.genRand.NextBool(2);
 
 		// Generate base points
-		Vector2[] points = [new Vector2(Main.spawnTileX, Main.spawnTileY),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(200, 230)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(260, 290)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(320, 350)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(380, 410)),
+		Vector2[] points = [new Vector2(250, Main.spawnTileY),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(160, 190)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(220, 250)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(280, 310)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(340, 370)),
 			ArenaEntrance.ToVector2()];
 
 		// Generate "slime arenas" TBD
@@ -186,9 +192,14 @@ public class KingSlimeDomain : MappingWorld
 			TunnelSpot(item, 5 * mul);
 			TunnelSpot(item, WorldGen.genRand.Next(3, 7) * mul);
 
+			if (WorldGen.genRand.NextBool(8))
+			{
+				TunnelWallSpot(item, WorldGen.genRand.Next(4, 7));
+			}
+
 			if (WorldGen.genRand.NextBool(3, 5))
 			{
-				WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, (int)(Main.rand.NextFloat(1, 8) * mul));
+				WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, (int)(WorldGen.genRand.NextFloat(1, 8) * mul));
 			}
 		}
 
@@ -198,7 +209,7 @@ public class KingSlimeDomain : MappingWorld
 		static int GenerateEdgeX(ref bool flip)
 		{
 			flip = !flip;
-			return 250 + WorldGen.genRand.Next(100, 200) * (flip ? -1 : 1);
+			return 250 + WorldGen.genRand.Next(80, 160) * (flip ? -1 : 1);
 		}
 	}
 
@@ -227,7 +238,7 @@ public class KingSlimeDomain : MappingWorld
 			{
 				const int Variance = 40;
 
-				newPoints.Add(item + new Vector2(Main.rand.Next(-Variance, Variance), Main.rand.Next(Variance)));
+				newPoints.Add(item + new Vector2(WorldGen.genRand.Next(-Variance, Variance), WorldGen.genRand.Next(Variance)));
 			}
 		}
 
@@ -288,6 +299,25 @@ public class KingSlimeDomain : MappingWorld
 		}
 	}
 
+	/// <summary>
+	/// Super placeholder dig method for the subworld. Really needs fancifying.
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="size"></param>
+	private static void TunnelWallSpot(Vector2 pos, float size)
+	{
+		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
+		{
+			for (int j = (int)(pos.Y - size); j < (int)pos.Y + size; ++j)
+			{
+				if (Vector2.DistanceSquared(pos, new Vector2(i, j)) < size * size)
+				{
+					WorldGen.KillWall(i, j);
+				}
+			}
+		}
+	}
+
 	public override void Update()
 	{
 		bool allInArena = true;
@@ -306,7 +336,7 @@ public class KingSlimeDomain : MappingWorld
 		{
 			for (int i = -6; i < 11; ++i)
 			{
-				WorldGen.PlaceTile(ArenaEntrance.X + i, ArenaEntrance.Y - 1, TileID.SlimeBlock, true, true);
+				WorldGen.PlaceTile(ArenaEntrance.X + i, ArenaEntrance.Y, TileID.SlimeBlock, true, true);
 			}
 
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y + 400, NPCID.KingSlime);
