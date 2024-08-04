@@ -1,3 +1,5 @@
+using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using Terraria.GameContent;
@@ -38,20 +40,17 @@ public class BlacksmithNPC : ModNPC
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = 0.4f;
 		AnimationType = NPCID.Guide;
-	}
-
-	public override void HitEffect(NPC.HitInfo hit)
-	{
-		if (NPC.life <= 0 && Main.netMode != NetmodeID.Server)
-		{
-			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BlacksmithNPC_0").Type);
-
-			for (int i = 0; i < 2; ++i)
+		
+		NPC.TryEnableComponent<NPCDeathEffects>(
+			c =>
 			{
-				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BlacksmithNPC_1").Type);
-				Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>("BlacksmithNPC_2").Type);
+				c.AddGore($"{Name}_0", 1);
+				c.AddGore($"{Name}_1", 2);
+				c.AddGore($"{Name}_2", 2);
+				
+				c.AddDust(DustID.Blood, 20);
 			}
-		}
+		);
 	}
 
 	public override string GetChat()

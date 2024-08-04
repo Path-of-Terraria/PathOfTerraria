@@ -1,3 +1,5 @@
+using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
@@ -49,6 +51,17 @@ public class HunterNPC : ModNPC
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.aiStyle = NPCAIStyleID.Passive;
 		AnimationType = NPCID.BestiaryGirl;
+
+		NPC.TryEnableComponent<NPCDeathEffects>(
+			c =>
+			{
+				c.AddGore($"{Name}_0", 1);
+				c.AddGore($"{Name}_1", 2);
+				c.AddGore($"{Name}_2", 2);
+				
+				c.AddDust(DustID.Blood, 20);
+			}
+		);
 	}
 
 	public override ITownNPCProfile TownNPCProfile()
@@ -127,34 +140,5 @@ public class HunterNPC : ModNPC
 			.Add<WoodenBow>()
 			.Add<WoodenShortBow>()
 			.Register();
-	}
-
-	public override void HitEffect(NPC.HitInfo hit)
-	{
-		int amount = NPC.life > 0 ? 3 : 10;
-
-		for (int i = 0; i < amount; i++)
-		{
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood);
-		}
-
-		if (NPC.life > 0 || Main.netMode == NetmodeID.Server)
-		{
-			return;
-		}
-
-		for (int i = 0; i < 3; i++)
-		{
-			Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, Mod.Find<ModGore>($"{Name}_{i}").Type);
-		}
-
-		int hat = NPC.GetPartyHatGore();
-
-		if (hat <= 0)
-		{
-			return;
-		}
-
-		Gore.NewGore(NPC.GetSource_Death(), NPC.position, NPC.velocity, hat);
 	}
 }
