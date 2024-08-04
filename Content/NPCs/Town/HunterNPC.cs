@@ -53,7 +53,7 @@ public class HunterNPC : ModNPC
 
 	public override ITownNPCProfile TownNPCProfile()
 	{
-		return this.DefaultProfile();
+		return this.GetDefaultProfile();
 	}
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)

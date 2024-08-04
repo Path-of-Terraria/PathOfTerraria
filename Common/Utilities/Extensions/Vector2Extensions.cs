@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.Graphics;
+﻿namespace PathOfTerraria.Common.Utilities.Extensions;
 
 public static class Vector2Extensions
 {

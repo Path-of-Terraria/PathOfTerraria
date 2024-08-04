@@ -93,7 +93,7 @@ public class BlacksmithNPC : ModNPC
 
 	public override ITownNPCProfile TownNPCProfile()
 	{
-		return this.DefaultProfile();
+		return this.GetDefaultProfile();
 	}
 
 	public override void SetChatButtons(ref string button, ref string button2)

@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Buffs;
 
-public class BloodclotDebuff : ModBuff
+public sealed class BloodclotDebuff : ModBuff
 {
 	public override void SetStaticDefaults()
 	{

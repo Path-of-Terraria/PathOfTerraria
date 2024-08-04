@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Core.Commands;
 
-public sealed class TestQuest : ModCommand
+public sealed class TestQuestCommand : ModCommand
 {
 	public override string Command => "testquest";
 

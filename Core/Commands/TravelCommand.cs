@@ -3,7 +3,7 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
-public sealed class Travel : ModCommand
+public sealed class TravelCommand : ModCommand
 {
 	public override string Command => "travel";
 

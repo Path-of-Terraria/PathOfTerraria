@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Dusts;
+﻿using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Dusts;
 using PathOfTerraria.Core.Graphics;
 using Terraria.Audio;
 using Terraria.ID;

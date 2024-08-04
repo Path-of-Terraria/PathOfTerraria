@@ -22,7 +22,7 @@ public class GUIDebuggingTools
 
 		CalculatedStyle dimensions = element.GetDimensions();
 
-		if (!ModContent.GetInstance<DeveloperConfig>().DrawGuiBorders || Main.LocalPlayer.controlUp)
+		if (!ModContent.GetInstance<DeveloperConfig>().DrawUIBorders || Main.LocalPlayer.controlUp)
 		{
 			return;
 		}

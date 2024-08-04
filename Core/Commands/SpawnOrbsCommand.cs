@@ -2,7 +2,7 @@ using PathOfTerraria.Common.Systems.Experience;
 
 namespace PathOfTerraria.Core.Commands;
 
-public sealed class SpawnOrbs : ModCommand
+public sealed class SpawnOrbsCommand : ModCommand
 {
 	public override string Command => "orb";
 

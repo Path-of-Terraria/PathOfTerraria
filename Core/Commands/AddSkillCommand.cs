@@ -6,7 +6,7 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
-public class AddSkill : ModCommand
+public sealed class AddSkillCommand : ModCommand
 {
 	public override string Command => "addskill";
 
