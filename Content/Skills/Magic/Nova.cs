@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core.Mechanics;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Mechanics;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -14,7 +15,7 @@ public class Nova : Skill
 		Cooldown = MaxCooldown = (15 - Level) * 60;
 		ManaCost = 20 + 5 * Level;
 		Duration = 0;
-		WeaponType = Core.ItemType.Magic;
+		WeaponType = ItemType.Magic;
 	}
 
 	public override void UseSkill(Player player)

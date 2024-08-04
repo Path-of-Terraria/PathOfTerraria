@@ -1,21 +1,32 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
 [AutoloadEquip(EquipType.Legs)]
 internal class Leggings : Gear
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Armor/Legs/Base";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Legs/Base";
 
 	protected override string GearLocalizationCategory => "Leggings";
-	public override float DropChance => 1f;
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
-		ItemType = ItemType.Leggings;
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Leggings;
 	}
 
 	public override List<ItemAffix> GenerateImplicits()
@@ -25,6 +36,6 @@ internal class Leggings : Gear
 
 	public override void PostRoll()
 	{
-		Item.defense = ItemLevel / 12 + 1;
+		Item.defense = GetItemLevel.Invoke(Item) / 12 + 1;
 	}
 }

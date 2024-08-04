@@ -1,22 +1,35 @@
-﻿using PathOfTerraria.Content.Projectiles.Ranged;
-using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Content.Projectiles.Ranged;
+using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 
-internal abstract class Boomerang : Gear
+internal abstract class Boomerang : Gear, GetItemLevel.IItem
 {
-	public override float DropChance => 1f;
-	public override int ItemLevel => 1;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Boomerang.AltUse");
+	int GetItemLevel.IItem.GetItemLevel(int realLevel)
+	{
+		return 1;
+	}
 
 	protected virtual int BoomerangCount => 1;
 	protected override string GearLocalizationCategory => "Boomerang";
-	
-	public override void Defaults()
+
+	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Boomerang.AltUse");
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.CloneDefaults(ItemID.WoodenBoomerang);
 		Item.width = 16;
 		Item.height = 28;

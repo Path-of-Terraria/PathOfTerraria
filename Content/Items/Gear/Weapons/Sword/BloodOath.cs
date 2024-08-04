@@ -1,25 +1,23 @@
 ﻿using System.Collections.Generic;
-using Microsoft.Xna.Framework.Graphics;
-using Newtonsoft.Json.Linq;
-using PathOfTerraria.Content.Projectiles.Melee;
-using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class BloodOath : Sword
+internal class BloodOath : Sword, GenerateName.IItem
 {
-	public override float DropChance => 5f;
-	public override int ItemLevel => 1;
-	public override bool IsUnique => true;
-	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.Description");
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.AltUseDescription");
+	public int ItemLevel
+	{
+		get => 1;
+		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+	}
+
 	protected override bool CloneNewInstances => true;
 
 	private readonly HashSet<int> _hitNpcs = [];
@@ -36,9 +34,21 @@ internal class BloodOath : Sword
 		return clone;
 	}
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
-		base.Defaults();
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 5f;
+		staticData.IsUnique = true;
+		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.Description");
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.AltUseDescription");
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.damage = 8;
 		Item.width = 58;
 		Item.height = 58;
@@ -46,7 +56,7 @@ internal class BloodOath : Sword
 		Item.shoot = ProjectileID.None;
 	}
 	
-	public override string GenerateName()
+	string GenerateName.IItem.GenerateName(string defaultName)
 	{
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
 	}

@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Projectiles.Melee;
 
 internal class FireStarterProjectile : ModProjectile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Sword/FireStarterProj";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Sword/FireStarterProj";
 	private Player Owner => Main.player[Projectile.owner];
 
 	public override void SetDefaults()

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -10,7 +11,13 @@ internal class CaveMap : Map
 	public int SpawnRoomSize = 10;
 	public int ExtraRoomDist = 10;
 
-	public override float DropChance => 1f;
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+	}
 
 	public override bool? UseItem(Player player)
 	{
@@ -18,7 +25,7 @@ internal class CaveMap : Map
 		return true;
 	}
 
-	public override string GenerateName()
+	public override string GenerateName(string defaultName)
 	{
 		return "Test Cave";
 	}

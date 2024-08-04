@@ -9,9 +9,10 @@ internal class Katana : Sword
 		GearAlternatives.Register(Type, Terraria.ID.ItemID.Katana);
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
+		base.SetDefaults();
+
 		Item.damage = 20;
 		Item.useTime = 35; 
 		Item.useAnimation = 35;

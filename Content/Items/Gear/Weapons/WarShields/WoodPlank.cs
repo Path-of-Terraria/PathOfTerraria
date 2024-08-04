@@ -2,9 +2,9 @@
 
 internal class WoodPlank : WarShield
 {
-	public override void Defaults()
+	public override void SetDefaults()
 	{
-		base.Defaults();
+		base.SetDefaults();
 
 		Item.damage = 7;
 		Item.Size = new(22, 26);

@@ -1,6 +1,4 @@
-﻿using Terraria.Utilities;
-
-namespace PathOfTerraria.Content.Projectiles.Melee;
+﻿namespace PathOfTerraria.Content.Projectiles.Melee;
 
 public class CorruptedBattleaxeProjectile : ModProjectile
 {
@@ -11,7 +9,7 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 	/// </summary>
 	private readonly float _distance = 500f;
 
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Battleaxe/CorruptedBattleaxe";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Battleaxe/CorruptedBattleaxe";
         
 	public override void SetDefaults()
 	{

@@ -1,11 +1,12 @@
-﻿using System.Reflection;
+﻿using PathOfTerraria.Core.Items;
+using System.Reflection;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Socketables;
 
-public abstract class Socketable : ModItem
+public abstract class Socketable : ModItem, GenerateName.IItem
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Socketable/Placeholder";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Socketable/Placeholder";
 	
 	/// <summary>
 	/// will be run when socketed.
@@ -19,7 +20,7 @@ public abstract class Socketable : ModItem
 	/// </summary>
 	/// <param name="player">the player wielding the weapon this is socketed into.</param>
 	/// <param name="item">the item this is socketed into.</param>
-	public virtual void OnUnSocket(Player player, Item item) { }
+	public virtual void OnUnsocket(Player player, Item item) { }
 
 	/// <summary>
 	/// Updates every frame, only activates when socketed
@@ -28,7 +29,7 @@ public abstract class Socketable : ModItem
 	/// <param name="item">the item this is socketed into.</param>
 	public virtual void UpdateEquip(Player player, Item item) { }
 
-	public virtual string GenerateName() { return "Unknown Socket"; }
+	public virtual string GenerateName(string defaultName) { return "Unknown Socket"; }
 
 	public void Save(TagCompound tag)
 	{
@@ -48,7 +49,7 @@ public abstract class Socketable : ModItem
 		Type t = typeof(Socketable).Assembly.GetType(tag.GetString("type"));
 		if (t is null)
 		{
-			PathOfTerraria.Instance.Logger.Error($"Could not load socketable {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load socketable {tag.GetString("type")}, was it removed?");
 			return null;
 		}
 
