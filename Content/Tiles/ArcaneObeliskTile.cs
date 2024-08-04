@@ -1,3 +1,4 @@
+using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Content.Items.Placeable;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -23,7 +24,7 @@ public class ArcaneObeliskTile : ModTile
 		
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 
-		TileObjectData.newTile.DrawYOffset = 2;
+		TileObjectData.newTile.DrawYOffset = 4;
 		
 		TileObjectData.newTile.Height = 5;
 		TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16, 16, 16 };
@@ -52,8 +53,8 @@ public class ArcaneObeliskTile : ModTile
 	{
 		return true;
 	}
-	
-	public override void MouseOver(int i, int j) 
+
+	public override void MouseOver(int i, int j)
 	{
 		Main.LocalPlayer.cursorItemIconEnabled = true;
 		Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<ArcaneObeliskItem>();
@@ -62,22 +63,17 @@ public class ArcaneObeliskTile : ModTile
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		var tile = Framing.GetTileSafely(i, j);
-
-		if (!tile.HasTile || tile.TileType != Type)
-		{
-			return;
-		}
-		
-		var texture = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 		
 		var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 18, 18);
-
 		var data = TileObjectData.GetTileData(tile);
 
-		var offset = new Vector2(data.DrawXOffset, data.DrawYOffset);
-		var zero = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-		var position = new Vector2(i, j) * 16f - Main.screenPosition + zero + offset;
+		var texture = ModContent.Request<Texture2D>(Texture + "_Glow").Value;
 		
-		spriteBatch.Draw(texture, position, frame, new Color(255, 255, 255, 0));
+		var dataOffset = new Vector2(data.DrawXOffset, data.DrawYOffset);
+		var screenOffset = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
+		
+		var position = new Vector2(i, j) * 16f - Main.screenPosition + screenOffset + dataOffset;
+		
+		spriteBatch.Draw(texture, position, frame, Color.White);
 	}
 }
