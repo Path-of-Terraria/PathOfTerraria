@@ -3,7 +3,7 @@ using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
-public sealed class SpawnWorld : ModCommand
+public sealed class SpawnWorldCommand : ModCommand
 {
 	public override string Command => "newworld";
 

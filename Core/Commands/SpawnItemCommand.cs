@@ -1,25 +1,19 @@
 ﻿using PathOfTerraria.Common;
-using PathOfTerraria.Common.Enums;
 
 namespace PathOfTerraria.Core.Commands;
 
-public sealed class SpawnUniqueItem : ModCommand
+public sealed class SpawnItemCommand : ModCommand
 {
-	public override string Command => "spawnuitem";
+	public override string Command => "spawnitem";
 
 	public override CommandType Type => CommandType.Chat;
 
-	public override string Usage => "[c/ff6a00:Usage: /spawnuitem <relative X> <relative Y> <count> <ilevel> <quality increase> <geartype>]";
+	public override string Usage => "[c/ff6a00:Usage: /spawnitem <relative X> <relative Y> <count> <ilevel> <quality increase> <geartype>]";
 
-	public override string Description => "Spawns unique item(s) for testing items and loot generation, only x and y positions are necessary.";
+	public override string Description => "Spawns item(s) for testing items and loot generation, only x and y positions are necessary.";
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		_ = new Color(50, 100, 200);
-		_ = new Color(50, 100, 200, 155);
-		_ = new Color(0.25f, 0.5f, 0.75f);
-		_ = new Color(0.25f, 0.5f, 0.75f, 0.1f);
-		
 		if (args.Length < 2)
 		{
 			caller.Reply("Command expected 2 arguments", Color.Red);
@@ -63,12 +57,11 @@ public sealed class SpawnUniqueItem : ModCommand
 		}
 
 		string geartype = args[5];
-		
-		// TODO: Implementation.
+		// need to impliment at some point.
 
 		for (int i = 0; i < count; i++)
 		{
-			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), x => x.Rarity == ItemRarity.Unique, (int)ilevel, qualityIncrease);
+			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
 		}
 
 		caller.Reply("Item(s) spawned!", Color.Green);
