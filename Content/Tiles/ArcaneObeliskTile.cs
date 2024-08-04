@@ -9,11 +9,8 @@ namespace PathOfTerraria.Content.Tiles;
 
 public class ArcaneObeliskTile : ModTile
 {
-	public override string Texture => base.Texture.Replace("Content", "Assets");
-
 	public override void SetStaticDefaults()
 	{
-		Main.tileLighted[Type] = true;
 		Main.tileLavaDeath[Type] = false;
 		Main.tileWaterDeath[Type] = false;
 		Main.tileBlockLight[Type] = true;
@@ -42,11 +39,6 @@ public class ArcaneObeliskTile : ModTile
 	{
 		num = fail ? 1 : 3;
 	}
-	
-	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
-    {
-		b = 0.2f;
-   	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
 	{

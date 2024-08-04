@@ -389,10 +389,10 @@ Bloodclotter: {
 	Tooltip: ""
 }
 
-<<<<<<< HEAD
 ArcaneObeliskItem: {
-	DisplayName: Arcane Obelisk Item
-=======
+	DisplayName: Arcane Obelisk
+}
+
 StarlightBulwark: {
 	DisplayName: Starlight Bulwark
 	Tooltip: ""
@@ -400,6 +400,5 @@ StarlightBulwark: {
 
 Rottenbone: {
 	DisplayName: Rottenbone
->>>>>>> main
 	Tooltip: ""
 }
