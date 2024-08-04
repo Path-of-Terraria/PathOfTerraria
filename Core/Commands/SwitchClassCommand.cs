@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Commands;
 
-public sealed class SwitchClass : ModCommand
+public sealed class SwitchClassCommand : ModCommand
 {
 	public override string Command => "switchclass";
 

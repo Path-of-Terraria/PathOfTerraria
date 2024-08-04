@@ -3,7 +3,7 @@ using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Buffs;
 
-class MoltenShieldBuff : ModBuff
+public sealed class MoltenShieldBuff : ModBuff
 {
 	public override void Load()
 	{

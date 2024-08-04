@@ -27,7 +27,7 @@ public sealed class PoTMod : Mod
 	{
 		base.Load();
 
-		Debug.Assert(Name == ModName, "Internal mod name does not much expected contsant.");
+		Debug.Assert(Name == ModName, "Internal mod name does not match expected contsant.");
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)

@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Core.Commands;
 
-public sealed class RemoveSkill : ModCommand
+public sealed class RemoveSkillCommand : ModCommand
 {
 	public override string Command => "removeskill";
 

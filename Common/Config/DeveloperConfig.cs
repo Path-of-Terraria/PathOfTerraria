@@ -2,12 +2,12 @@
 using Terraria.ModLoader.Config;
 
 namespace PathOfTerraria.Common.Config;
-public class DeveloperConfig : ModConfig
+
+public sealed class DeveloperConfig : ModConfig
 {
 	public override ConfigScope Mode => ConfigScope.ClientSide;
-	
-	[LabelKey("$Mods.PathOfTerraria.DeveloperConfig.DrawGuiBorders.Label")]
-	[TooltipKey("$Mods.PathOfTerraria.DeveloperConfig.DrawGuiBorders.Tooltip")]
+
+	[Header("Graphics")]
 	[DefaultValue(true)]
-	public bool DrawGuiBorders;
+	public bool DrawUIBorders { get; set; } = true;
 }

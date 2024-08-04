@@ -18,6 +18,8 @@ public sealed class ArmorShredDebuff : ModBuff
 
 		public override void ModifyHitByProjectile(NPC npc, Projectile projectile, ref NPC.HitModifiers modifiers)
 		{
+			base.ModifyHitByProjectile(npc, projectile, ref modifiers);
+			
 			if (!npc.HasBuff(ModContent.BuffType<ArmorShredDebuff>()))
 			{
 				return;

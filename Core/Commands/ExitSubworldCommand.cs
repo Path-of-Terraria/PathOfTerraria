@@ -3,7 +3,7 @@ using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
-public sealed class ExitSubworld : ModCommand
+public sealed class ExitSubworldCommand : ModCommand
 {
 	public override string Command => "exitworld";
 

@@ -2,9 +2,12 @@
 
 namespace PathOfTerraria.Common.Utilities.Extensions;
 
-public static class NPCExtensions
+/// <summary>
+///		Provides basic <see cref="NPC"/> extension methods.
+/// </summary>
+public static class ModNPCExtensions
 {
-	public static ITownNPCProfile DefaultProfile(this ModNPC npc)
+	public static ITownNPCProfile GetDefaultProfile(this ModNPC npc)
 	{
 		return new Profiles.DefaultNPCProfile(npc.Texture, ModContent.GetModHeadSlot(npc.HeadTexture));
 	}
