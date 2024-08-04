@@ -1,7 +1,8 @@
-﻿using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Core.Mechanics;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Content.Buffs;
 
 namespace PathOfTerraria.Content.Skills.Melee;
 
@@ -16,16 +17,11 @@ public class MoltenShield : Skill
 		Timer = 0;
 		ManaCost = 10 + 5 * level;
 		Duration = 5 * 60;
-		WeaponType = Core.ItemType.Sword;
+		WeaponType = ItemType.Sword;
 	}
 
 	public override void UseSkill(Player player)
 	{
-		if (!CanUseSkill(player))
-		{
-			return;
-		}
-
 		// Level to the strength of all MoltenShellAffixes
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<MoltenShellAffix>());
 

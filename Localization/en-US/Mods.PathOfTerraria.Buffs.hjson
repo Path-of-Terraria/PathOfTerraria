@@ -1,4 +1,4 @@
-BattleaxeBuff: {
+BattleAxeBuff: {
 	DisplayName: Battle Rage
 	Description: Increased damage and increased taken damage
 }
@@ -6,11 +6,6 @@ BattleaxeBuff: {
 RageBuff: {
 	DisplayName: Berserk
 	Description: Increased damage and greatly increased knockback
-}
-
-ArmorShredDebuff: {
-	DisplayName: Armor Shred Debuff
-	Description: ""
 }
 
 MoltenShieldBuff: {
@@ -26,4 +21,9 @@ BloodclotDebuff: {
 	DisplayName: BloodclotDebuff
 	Description: ""
 	DeathText: "{0} couldn't stop the bleeding"
+}
+
+ArmorShredDebuff: {
+	DisplayName: Armor Shred Debuff
+	Description: ""
 }

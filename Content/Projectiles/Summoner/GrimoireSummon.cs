@@ -1,10 +1,10 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Items.Pickups;
-using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.ModPlayers;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Projectiles.Summoner;
 
@@ -63,7 +63,7 @@ internal abstract class GrimoireSummon : ModProjectile
 		Owner.SetDummyItemTime(2);
 		AnimateSelf();
 
-		var modifier = new EntityModifier();
+		var modifier = new Common.Systems.EntityModifier();
 
 		foreach (Item part in Owner.GetModPlayer<GrimoireSummonPlayer>().StoredParts)
 		{
@@ -73,7 +73,8 @@ internal abstract class GrimoireSummon : ModProjectile
 			}	
 
 			var pickup = part.ModItem as GrimoirePickup;
-			pickup.ApplyAffixes(modifier, null);
+			PoTItemHelper.ApplyAffixes(pickup.Item, modifier, null);
+
 		}
 
 		modifier.ApplyTo(Projectile);

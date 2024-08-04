@@ -1,4 +1,3 @@
-using PathOfTerraria.API.GraphicsLib;
 using PathOfTerraria.Content.Items.Placeable;
 using Terraria.DataStructures;
 using Terraria.GameContent;

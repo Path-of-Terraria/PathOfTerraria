@@ -1,19 +1,15 @@
-﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Events;
-using PathOfTerraria.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Events;
+using PathOfTerraria.Common.Systems.TreeSystem;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Passives;
 
 internal class MinionPassive : Passive
 {
-	public override string InternalIdentifier => "IncreasedMinionDamage";
 }
 
 internal class SentryPassive : Passive
 {
-	public override string InternalIdentifier => "IncreasedSentryDamage";
-
 	public override void OnLoad()
 	{
 		PathOfTerrariaPlayerEvents.ModifyHitNPCWithProjEvent += BuffSentries;

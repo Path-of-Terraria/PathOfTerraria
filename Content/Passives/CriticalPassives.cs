@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Core.Events;
-using PathOfTerraria.Core.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Events;
+using PathOfTerraria.Common.Systems.TreeSystem;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -8,9 +8,8 @@ namespace PathOfTerraria.Content.Passives;
 /// </summary>
 internal class AddedCriticalStrikeChance : Passive
 {
-	public override string InternalIdentifier => "AddedCriticalStrikeChance";
 	private const float AmountPerLevel = 1.02f;
-	
+
 	public override void BuffPlayer(Player player)
 	{
 		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) + AmountPerLevel * Level;
@@ -22,7 +21,6 @@ internal class AddedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeChance : Passive
 {
-	public override string InternalIdentifier => "IncreasedCriticalStrikeChance";
 	private const float AmountPerLevel = 1.05f;
 
 	public override void BuffPlayer(Player player)
@@ -37,9 +35,8 @@ internal class IncreasedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeMultiplier : Passive
 {
-	public override string InternalIdentifier => "IncreasedCriticalStrikeMultiplier";
 	private const float AmountPerLevel = 1.05f;
-	
+
 	public override void OnLoad()
 	{
 		PathOfTerrariaPlayerEvents.ModifyHitNPCEvent += BuffCritStrikeDamageMultiplier;

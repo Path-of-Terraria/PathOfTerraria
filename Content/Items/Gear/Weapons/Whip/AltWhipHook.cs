@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Content.Projectiles.Whip;
-using PathOfTerraria.Helpers;
+﻿using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Content.Projectiles.Whip;
 using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Whip;

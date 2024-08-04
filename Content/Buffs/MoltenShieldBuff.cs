@@ -1,9 +1,9 @@
-﻿using PathOfTerraria.Core.Systems.DrawLayers;
+﻿using PathOfTerraria.Common.Systems.DrawLayers;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Buffs;
 
-class MoltenShieldBuff() : SmartBuff(false)
+class MoltenShieldBuff : ModBuff
 {
 	public override void Load()
 	{

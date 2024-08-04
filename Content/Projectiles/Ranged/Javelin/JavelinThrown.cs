@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -7,8 +7,10 @@ namespace PathOfTerraria.Content.Projectiles.Ranged.Javelin;
 public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModProjectile
 {
 	protected override bool CloneNewInstances => true;
+	
 	public override string Name => InstanceName;
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/{InstanceName.Replace("Thrown", "")}";
+	
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/{name.Replace("Thrown", "")}";
 
 	public bool UsingAlt
 	{
@@ -31,6 +33,8 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Projectile.CloneDefaults(ProjectileID.JavelinFriendly);
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 10;
@@ -44,7 +48,7 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 
 	public override void AI()
 	{
-		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4;
+		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver4 - 0.05f;
 		Projectile.velocity.Y -= 0.05f;
 
 		if (UsingAlt)

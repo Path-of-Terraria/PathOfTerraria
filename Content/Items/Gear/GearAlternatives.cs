@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Content.Items.Gear.VanillaItems;
-using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.VanillaModifications.BossItemRemovals;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
-using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
@@ -42,10 +39,10 @@ internal class GearAlternativeGlobalItem : GlobalItem
 				item.SetDefaults(GearAlternatives.VanillaAlternativeToGear[item.type]);
 			}
 
-			if (item.ModItem is VanillaClone)
+			/*if (item.ModItem is VanillaClone)
 			{
 				item.CloneDefaults(GearAlternatives.GearToVanillaAlternative[item.type]);
-			}
+			}*/
 		}
 	}
 }
@@ -68,18 +65,16 @@ internal class GearAlternativeChestReplacement : ModSystem
 					item.SetDefaults(value);
 					item.stack = 1;
 
-					if (item.ModItem is PoTItem pot)
+					PoTInstanceItemData data = item.GetInstanceData();
+					data.Rarity = ItemRarity.Magic;
+
+					if (WorldGen.genRand.NextBool(10))
 					{
-						pot.Rarity = Rarity.Magic;
-
-						if (WorldGen.genRand.NextBool(10))
-						{
-							pot.Rarity = Rarity.Rare;
-						}
-
-						pot.ClearAffixes();
-						pot.Roll(PoTItem.PickItemLevel());
+						data.Rarity = ItemRarity.Rare;
 					}
+
+					PoTItemHelper.ClearAffixes(item);
+					PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 				}
 			}
 		}

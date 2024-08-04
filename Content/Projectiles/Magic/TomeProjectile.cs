@@ -1,6 +1,5 @@
-﻿using PathOfTerraria.API.GraphicsLib;
-using PathOfTerraria.Content.Dusts;
-using System.Linq;
+﻿using PathOfTerraria.Content.Dusts;
+using PathOfTerraria.Core.Graphics;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -8,7 +7,7 @@ namespace PathOfTerraria.Content.Projectiles.Magic;
 
 public class TomeProjectile : ModProjectile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Projectiles/HomingProjectile";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Projectiles/HomingProjectile";
 
 	public override void SetDefaults()
 	{
@@ -20,18 +19,27 @@ public class TomeProjectile : ModProjectile
 
 	public override void AI()
 	{
-		IOrderedEnumerable<NPC> collection = Main.npc
-			.Where(npc => npc.active && !npc.friendly && !npc.CountsAsACritter)
-			.OrderBy(npc => Projectile.Center.Distance(npc.Center));
-		
-		// might want to order by most surefire hit instead, meaning
-		// the npc that would require the least amount of rotation to hit
+		NPC closestNpc = null;
+		float closestDistanceSq = float.MaxValue;
 
-		if (collection.Any())
+		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			NPC target = collection.FirstOrDefault();
+			if (npc.friendly || npc.CountsAsACritter)
+			{
+				continue;
+			}
 
-			var targetVel = Vector2.Normalize(target.Center - Projectile.Center);
+			float distanceSQ = Projectile.Center.DistanceSQ(npc.Center);
+			if (distanceSQ < closestDistanceSq)
+			{
+				closestNpc = npc;
+				closestDistanceSq = distanceSQ;
+			}
+		}
+
+		if (closestNpc != null)
+		{
+			var targetVel = Vector2.Normalize(closestNpc.Center - Projectile.Center);
 			targetVel *= Projectile.velocity.Length();
 
 			if (Vector2.Dot(Vector2.Normalize(Projectile.velocity), targetVel) > 0)
@@ -43,7 +51,7 @@ public class TomeProjectile : ModProjectile
 		if (Main.rand.NextBool(3))
 		{
 			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height,
-				ModContent.DustType<Sparkle>(), Projectile.velocity.X * 0.1f, Projectile.velocity.Y * 0.1f);
+				ModContent.DustType<SparkleDust>(), Projectile.velocity.X * 0.1f, Projectile.velocity.Y * 0.1f);
 		}
 	}
 
@@ -52,7 +60,7 @@ public class TomeProjectile : ModProjectile
 		for (int k = 0; k < 5; k++)
 		{
 			Dust.NewDust(Projectile.position + Projectile.velocity, Projectile.width, Projectile.height,
-				ModContent.DustType<Sparkle>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
+				ModContent.DustType<SparkleDust>(), Projectile.oldVelocity.X * 0.5f, Projectile.oldVelocity.Y * 0.5f);
 		}
 
 		SoundEngine.PlaySound(SoundID.Item25, Projectile.position);

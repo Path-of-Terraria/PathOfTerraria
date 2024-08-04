@@ -109,11 +109,6 @@ Codex: {
 	Tooltip: ""
 }
 
-Grimouire: {
-	DisplayName: Grimouire
-	Tooltip: ""
-}
-
 Lexicon: {
 	DisplayName: Lexicon
 	Tooltip: ""
@@ -394,7 +389,17 @@ Bloodclotter: {
 	Tooltip: ""
 }
 
+<<<<<<< HEAD
 ArcaneObeliskItem: {
 	DisplayName: Arcane Obelisk Item
+=======
+StarlightBulwark: {
+	DisplayName: Starlight Bulwark
+	Tooltip: ""
+}
+
+Rottenbone: {
+	DisplayName: Rottenbone
+>>>>>>> main
 	Tooltip: ""
 }
