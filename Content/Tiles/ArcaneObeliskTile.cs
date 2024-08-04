@@ -1,3 +1,4 @@
+using PathOfTerraria.Content.GUI.Waypoints;
 using PathOfTerraria.Content.Items.Placeable;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -11,6 +12,8 @@ public class ArcaneObeliskTile : ModTile
 {
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+		
 		Main.tileLavaDeath[Type] = false;
 		Main.tileWaterDeath[Type] = false;
 		Main.tileBlockLight[Type] = true;
@@ -37,6 +40,8 @@ public class ArcaneObeliskTile : ModTile
 
 	public override void NumDust(int i, int j, bool fail, ref int num)
 	{
+		base.NumDust(i, j, fail, ref num);
+		
 		num = fail ? 1 : 3;
 	}
 
@@ -45,14 +50,32 @@ public class ArcaneObeliskTile : ModTile
 		return true;
 	}
 
+	public override bool RightClick(int i, int j)
+	{
+		if (UIWaypointManager.UserInterface.CurrentState != null)
+		{
+			UIWaypointManager.UserInterface.SetState(new UIWaypointMenu());
+		}
+		else
+		{
+			UIWaypointManager.UserInterface.SetState(null);
+		}
+		
+		return true;
+	}
+
 	public override void MouseOver(int i, int j)
 	{
+		base.MouseOver(i, j);
+		
 		Main.LocalPlayer.cursorItemIconEnabled = true;
 		Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<ArcaneObeliskItem>();
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
+		base.PostDraw(i, j, spriteBatch);
+		
 		var tile = Framing.GetTileSafely(i, j);
 		
 		var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 18, 18);

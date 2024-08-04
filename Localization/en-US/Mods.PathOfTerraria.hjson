@@ -26,4 +26,3 @@ DeveloperConfig: {
 }
 
 Configs.DeveloperConfig.DisplayName: Developer Config
-Tiles.ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile
