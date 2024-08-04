@@ -87,7 +87,7 @@ public sealed class NPCDeathEffects : NPCComponent
 	/// <param name="amount">The amount of gore to add.</param>
 	public void AddGore(string name, int amount = 1)
 	{
-		int type = Mod.Find<ModGore>(name).Type;
+		int type = ModContent.Find<ModGore>(name).Type;
 
 		AddGore(type, amount);
 	}

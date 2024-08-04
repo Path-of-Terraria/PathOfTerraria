@@ -44,9 +44,9 @@ public class BlacksmithNPC : ModNPC
 		NPC.TryEnableComponent<NPCDeathEffects>(
 			c =>
 			{
-				c.AddGore($"{Name}_0", 1);
-				c.AddGore($"{Name}_1", 2);
-				c.AddGore($"{Name}_2", 2);
+				c.AddGore($"{PoTMod.ModName}/{Name}_0", 1);
+				c.AddGore($"{PoTMod.ModName}/{Name}_1", 2);
+				c.AddGore($"{PoTMod.ModName}/{Name}_2", 2);
 				
 				c.AddDust(DustID.Blood, 20);
 			}
