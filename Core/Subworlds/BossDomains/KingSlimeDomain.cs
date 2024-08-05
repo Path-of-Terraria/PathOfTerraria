@@ -28,7 +28,7 @@ public class KingSlimeDomain : MappingWorld
 	public override int Width => 500;
 	public override int Height => 600;
 
-	public static Point16 ArenaEntrance = Point16.Zero;
+	internal static Point16 ArenaEntrance = Point16.Zero;
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
@@ -226,12 +226,12 @@ public class KingSlimeDomain : MappingWorld
 		foreach (Vector2 item in results)
 		{
 			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * 1.2f;
-			TunnelSpot(item, 5 * mul);
-			TunnelSpot(item, WorldGen.genRand.Next(3, 7) * mul);
+			Digging.CircleOpening(item, 5 * mul);
+			Digging.CircleOpening(item, WorldGen.genRand.Next(3, 7) * mul);
 
 			if (WorldGen.genRand.NextBool(8))
 			{
-				TunnelWallSpot(item, WorldGen.genRand.Next(4, 7));
+				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7));
 			}
 
 			if (WorldGen.genRand.NextBool(3, 5))
@@ -247,44 +247,6 @@ public class KingSlimeDomain : MappingWorld
 		{
 			flip = !flip;
 			return 250 + WorldGen.genRand.Next(80, 160) * (flip ? -1 : 1);
-		}
-	}
-
-	/// <summary>
-	/// Super placeholder dig method for the subworld. Really needs fancifying.
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="size"></param>
-	private static void TunnelSpot(Vector2 pos, float size)
-	{
-		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
-		{
-			for (int j = (int)(pos.Y - size); j < (int)pos.Y + size; ++j)
-			{
-				if (Vector2.DistanceSquared(pos, new Vector2(i, j)) < size * size)
-				{
-					WorldGen.KillTile(i, j);
-				}
-			}
-		}
-	}
-
-	/// <summary>
-	/// Super placeholder dig method for the subworld. Really needs fancifying.
-	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="size"></param>
-	private static void TunnelWallSpot(Vector2 pos, float size)
-	{
-		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
-		{
-			for (int j = (int)(pos.Y - size); j < (int)pos.Y + size; ++j)
-			{
-				if (Vector2.DistanceSquared(pos, new Vector2(i, j)) < size * size)
-				{
-					WorldGen.KillWall(i, j);
-				}
-			}
 		}
 	}
 
