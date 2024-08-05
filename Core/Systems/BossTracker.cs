@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using PathOfTerraria.Core.Subworlds;
+using SubworldLibrary;
+using System.Collections.Generic;
+using System.IO;
+using System.Reflection;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -6,10 +10,45 @@ namespace PathOfTerraria.Core.Systems;
 
 internal class BossTracker : ModSystem
 {
+	public static HashSet<int> CachedBossesDowned = [];
 	public static BitsByte DownedFlags = new();
+
+	private static readonly MethodInfo DoDeathEventsInfo = typeof(NPC).GetMethod("DoDeathEvents", BindingFlags.Instance | BindingFlags.NonPublic);
 
 	public static bool DownedEaterOfWorlds { get => DownedFlags[0]; set => DownedFlags[0] = value; }
 	public static bool DownedBrainOfCthulhu { get => DownedFlags[1]; set => DownedFlags[1] = value; }
+
+	public override void Load()
+	{
+		On_NPC.DoDeathEvents += HijackDeathEffects;
+	}
+
+	private void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
+	{
+		if (SubworldSystem.Current is BossDomainSubworld)
+		{
+			self.type = NPCID.None;
+			self.boss = false;
+		}
+
+		orig(self, closestPlayer);
+	}
+
+	public override void PreUpdateEntities()
+	{
+		if (SubworldSystem.Current is null && CachedBossesDowned.Count > 0)
+		{
+			foreach (int type in CachedBossesDowned)
+			{
+				var npc = new NPC();
+				npc.SetDefaults(type);
+				npc.Center = Main.player[0].Center;
+				DoDeathEventsInfo.Invoke(npc, [Main.player[0]]);
+			}
+
+			CachedBossesDowned.Clear();
+		}
+	}
 
 	public override void SaveWorldData(TagCompound tag)
 	{
