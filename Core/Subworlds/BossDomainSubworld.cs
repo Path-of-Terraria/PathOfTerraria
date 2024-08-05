@@ -1,9 +1,9 @@
-﻿using PathOfTerraria.Core.Subworlds.Passes;
-using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.WorldBuilding;
 
-namespace PathOfTerraria.Core.Subworlds;
+namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
 /// This is used to stop bosses from doing special death effects (like King Slime spawning the town slime, WoF spawning hardmode) automatically.<br/>

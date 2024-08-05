@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Content.Projectiles;
 using PathOfTerraria.Content.Tiles.BossDomain;
-using PathOfTerraria.Core.Subworlds.Passes;
-using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Systems.DisableBuilding;
 using PathOfTerraria.Core.Systems.FastNoise;
 using PathOfTerraria.Core.WorldGeneration;
@@ -14,7 +14,7 @@ using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
-namespace PathOfTerraria.Core.Subworlds;
+namespace PathOfTerraria.Common.Subworlds;
 
 public class KingSlimeDomain : BossDomainSubworld
 {

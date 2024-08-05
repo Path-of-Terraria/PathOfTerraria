@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using JetBrains.Annotations;
 using PathOfTerraria.Common.UI.Utilities;
 using Terraria.UI;
 
@@ -9,7 +8,6 @@ namespace PathOfTerraria.Core.UI.SmartUI;
 ///		Automatically loads <see cref="SmartUiState"/> singletons.
 /// </summary>
 [Autoload(Side = ModSide.Client)]
-[UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature)]
 internal sealed partial class SmartUiLoader : ModSystem
 {
 	private readonly List<UserInterface> userInterfaces = [];

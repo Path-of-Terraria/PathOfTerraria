@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Subworlds;
+﻿using PathOfTerraria.Common.Subworlds;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;

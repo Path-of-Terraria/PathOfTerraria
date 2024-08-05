@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.GUI;
+﻿using PathOfTerraria.Common.UI;
+using PathOfTerraria.Content.GUI;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;

@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using ReLogic.Content.Sources;
 using System.IO;
-using JetBrains.Annotations;
 using PathOfTerraria.Common.Systems.Networking;
 using PathOfTerraria.Core.Sources;
 
@@ -10,7 +9,6 @@ namespace PathOfTerraria;
 /// <summary>
 ///		Path of Terraria <see cref="Mod"/> implementation.
 /// </summary>
-[UsedImplicitly(ImplicitUseKindFlags.InstantiatedWithFixedConstructorSignature | ImplicitUseKindFlags.Access)]
 public sealed class PoTMod : Mod
 {
 	/// <summary>
