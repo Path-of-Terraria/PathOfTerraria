@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.WorldGeneration;
+﻿using PathOfTerraria.Common.World.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;

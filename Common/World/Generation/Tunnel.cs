@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace PathOfTerraria.Core.WorldGeneration;
+namespace PathOfTerraria.Common.World.Generation;
 
 internal static class Tunnel
 {

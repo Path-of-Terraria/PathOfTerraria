@@ -3,7 +3,6 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Systems.DisableBuilding;
-using PathOfTerraria.Core.WorldGeneration;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -12,6 +11,7 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
+using PathOfTerraria.Common.World.Generation;
 
 namespace PathOfTerraria.Common.Subworlds;
 

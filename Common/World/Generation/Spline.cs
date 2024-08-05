@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 
-namespace PathOfTerraria.Core.WorldGeneration;
+namespace PathOfTerraria.Common.World.Generation;
 
 /// <summary>
 /// Adapted from https://swharden.com/blog/2022-01-22-spline-interpolation/.

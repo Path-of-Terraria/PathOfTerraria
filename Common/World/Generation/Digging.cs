@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Core.WorldGeneration;
+﻿namespace PathOfTerraria.Common.World.Generation;
 
 /// <summary>
 /// Stores a bunch of digging tools.
