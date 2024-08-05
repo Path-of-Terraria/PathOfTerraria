@@ -1,6 +1,6 @@
 LifeStealProjectile.DisplayName: Life Steal Projectile
 HomingProjectile.DisplayName: Homing Projectile
-SparklingBall.DisplayName: Sparkling Ball
+SparklingBallProjectile.DisplayName: Sparkling Ball
 TomeProjectile.DisplayName: Tome Projectile
 BowProjectile.DisplayName: Bow Projectile
 BowAltUseProjectile.DisplayName: Bow Alt Use Projectile

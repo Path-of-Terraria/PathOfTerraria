@@ -3,77 +3,77 @@
 # Tooltip:
 # You do not need to generate these yourself, run the mod and it'll add the keys automatically.
 
-IncreasedMeleeDamage: {
+MartialMasteryPassive: {
 	Name: Martial Mastery
 	Tooltip: Increases your melee damage by 5% per level
 }
 
-IncreasedRangedDamage: {
+MarksmanshipMasteryPassive: {
 	Name: Marksmanship Mastery
 	Tooltip: Increases your ranged damage by 5% per level
 }
 
-IncreasedMagicDamage: {
+ArcaneMasteryPassive: {
 	Name: Arcane Mastery
 	Tooltip: Increases your magic damage by 5% per level
 }
 
-IncreasedSummoningDamage: {
+SummoningMasteryPassive: {
 	Name: Summoning Mastery
 	Tooltip: Increases your summon damage by 5% per level
 }
 
-AddedLife: {
+LifePassive: {
 	Name: Empowered Flesh
 	Tooltip: Increases your maximum life by 20 per level
 }
 
-AddedMana: {
+ManaPassive: {
 	Name: Open Mind
 	Tooltip: Increases your maximum mana by 20 per level
 }
 
-IncreasedDistantDamage: {
+LongRangePassive: {
 	Name: Sniper
 	Tooltip: Increases your damage against distant enemies by 10% per level
 }
 
-IncreasedCloseDamage: {
+CloseRangePassive: {
 	Name: Close Combatant
 	Tooltip: Increases your damage against nearby enemies by 10% per level
 }
 
-BleedingDamageOverTime: {
+BleedPassive: {
 	Name: Crimson Dance
 	Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second per level
 }
 
-IncreasedDamageReduction: {
+DamageReductionPassive: {
 	Name: Iron Will
 	Tooltip: Gain 0.25% damage reduction per level.
 }
 
-AddedContactDamageReflection: {
+DamageReflectionPassive: {
 	Name: Thorny Exterior
 	Tooltip: Reflect 10 more damage to enemies that deal contact damage per level.
 }
 
-AmmoEfficiency: {
+AmmoPassive: {
 	Name: Secret Compartment
 	Tooltip: 5% chance to not consume ammo per level
 }
 
-Anchor: {
+StartPassive: {
 	Name: Anchor
 	Tooltip: Your journey starts here
 }
 
-IncreasedMinionDamage: {
+MinionPassive: {
 	Name: Empowered Horde
 	Tooltip: Increases your minions' damage by 10% per level
 }
 
-IncreasedSentryDamage: {
+SentryPassive: {
 	Name: Steadfast Sentries
 	Tooltip: Increases your sentries' damage by 10% per level
 }
@@ -83,29 +83,29 @@ JewelSocket: {
 	Tooltip: ""
 }
 
-AddedLifeRegen: {
+LifeRegenPassive: {
 	Name: LifeRegenPassive
 	Tooltip: ""
 }
 
-DecreasedManaCost: {
+DecreasedManaCostPassive: {
 	Name: Decreased Mana Cost
 	Tooltip: Decreases mana cost by 3% per level
 }
 
 AddedCriticalStrikeChance: {
 	Name: Added Critical Strike Chance
-	Tooltip: Adds 2% flat crit strike chance per level
+	Tooltip: Adds 2% flat critical strike chance per level
 }
 
 IncreasedCriticalStrikeChance: {
 	Name: Increased Critical Strike Chance
-	Tooltip: Adds 5% increased crit strike chance per level
+	Tooltip: Adds 5% increased critical strike chance per level
 }
 
 IncreasedCriticalStrikeMultiplier: {
 	Name: Increased Critical Strike Multiplier
-	Tooltip: Adds 5% crit strike multipler per level
+	Tooltip: Adds 5% critical strike multiplier per level
 }
 
 ArmorPenetrationPassive: {

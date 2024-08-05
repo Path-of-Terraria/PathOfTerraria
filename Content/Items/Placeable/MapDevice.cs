@@ -4,7 +4,10 @@ namespace PathOfTerraria.Content.Items.Placeable;
 
 public class MapDevice : ModItem
 {
-	public override void SetDefaults() {
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.DefaultToPlaceableTile(ModContent.TileType<MapDevicePlaceable>());
 		Item.width = 60;
 		Item.height = 38;

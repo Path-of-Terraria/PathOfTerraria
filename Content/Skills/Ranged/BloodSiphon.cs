@@ -1,12 +1,13 @@
-﻿using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Core.Mechanics;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
-using System.Collections.Generic;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Skills.Melee;
+namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class BloodSiphon : Skill
 {
@@ -19,7 +20,7 @@ public class BloodSiphon : Skill
 		Timer = 0;
 		ManaCost = 20;
 		Duration = 0;
-		WeaponType = Core.ItemType.Ranged;
+		WeaponType = ItemType.Ranged;
 	}
 
 	public override void UseSkill(Player player)

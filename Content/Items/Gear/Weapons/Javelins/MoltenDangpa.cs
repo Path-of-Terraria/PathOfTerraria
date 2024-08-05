@@ -1,7 +1,10 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 using System.Collections.Generic;
+
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Core.Items;
+
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
@@ -10,14 +13,21 @@ internal class MoltenDangpa : LeadDangpa
 {
 	public override Vector2 ItemSize => new(94);
 	public override int DeathDustType => DustID.MinecartSpark;
-	public override bool IsUnique => true;
 	public override bool AutoloadProjectile => false;
 	public override bool UseChargeAlt => false;
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Gear/Weapons/Javelins/MoltenDangpa_Cold";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/MoltenDangpa_Cold";
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
-		base.Defaults();
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.IsUnique = true;
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
 
 		Item.shoot = ModContent.ProjectileType<MoltenDangpaThrown>();
 	}
