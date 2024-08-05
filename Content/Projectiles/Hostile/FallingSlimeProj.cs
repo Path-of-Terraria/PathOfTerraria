@@ -21,6 +21,8 @@ public class FallingSlimeProj : ModProjectile
 
 	public override void AI()
 	{
+		Projectile.ai[0] = 1; // This all stops it from being controlled like a Dirt Rod projectile, which is default functionality for some reason
+		Projectile.velocity.X = 0;
 		Projectile.velocity.Y += Projectile.ai[0];
 
 		if (Main.rand.NextBool(10))
