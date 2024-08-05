@@ -1,6 +1,6 @@
 LifeStealProjectile.DisplayName: Life Steal Projectile
 HomingProjectile.DisplayName: Homing Projectile
-SparklingBallProjectile.DisplayName: Sparkling Ball
+SparklingBall.DisplayName: Sparkling Ball
 TomeProjectile.DisplayName: Tome Projectile
 BowProjectile.DisplayName: Bow Projectile
 BowAltUseProjectile.DisplayName: Bow Alt Use Projectile
@@ -55,4 +55,5 @@ RottenboneThrown.DisplayName: Rottenbone
 RottenboneChunks.DisplayName: Rottenbone Chunks
 CarapaceChunk.DisplayName: Carapace Chunk
 ExitPortal.DisplayName: Exit Portal
-FallingSlimeProj.DisplayName: Falling Slime
+FallingSlimeProj.DisplayName: Falling Slime Proj
+SparklingBallProjectile.DisplayName: Sparkling Ball Projectile

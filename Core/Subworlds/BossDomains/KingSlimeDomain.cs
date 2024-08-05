@@ -191,7 +191,7 @@ public class KingSlimeDomain : BossDomainSubworld
 		Main.spawnTileY = 95;
 
 		Point16 size = Point16.Zero;
-		StructureHelper.Generator.GetDimensions("Data/Structures/KingSlimeArena", Mod, ref size);
+		StructureHelper.Generator.GetDimensions("Assets/Structures/KingSlimeArena", Mod, ref size);
 
 		Arena = new Rectangle((250 - size.X / 2) * 16, (ArenaY - size.Y / 2 + 4) * 16, size.X * 16, (size.Y - 4) * 16);
 		ArenaEntrance = new Point16(248, ArenaY - size.Y / 2);
@@ -241,12 +241,12 @@ public class KingSlimeDomain : BossDomainSubworld
 		}
 
 		// Place arena
-		StructureHelper.Generator.GenerateStructure("Data/Structures/KingSlimeArena", new Point16(250 - size.X / 2, ArenaY - size.Y / 2), Mod);
+		StructureHelper.Generator.GenerateStructure("Assets/Structures/KingSlimeArena", new Point16(250 - size.X / 2, ArenaY - size.Y / 2), Mod);
 
 		static int GenerateEdgeX(ref bool flip)
 		{
 			flip = !flip;
-			return 250 + WorldGen.genRand.Next(80, 160) * (flip ? -1 : 1);
+			return 250 + WorldGen.genRand.Next(70, 160) * (flip ? -1 : 1);
 		}
 	}
 

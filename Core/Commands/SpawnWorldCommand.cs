@@ -15,6 +15,6 @@ public sealed class SpawnWorldCommand : ModCommand
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		SubworldSystem.Enter<TestSubworld>();
+		SubworldSystem.Enter<KingSlimeDomain>();
 	}
 }
