@@ -3,7 +3,6 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Systems.DisableBuilding;
-using PathOfTerraria.Core.Systems.FastNoise;
 using PathOfTerraria.Core.WorldGeneration;
 using System.Collections.Generic;
 using System.Linq;

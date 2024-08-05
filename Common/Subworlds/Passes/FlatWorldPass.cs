@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Core.Systems.FastNoise;
+﻿using PathOfTerraria.Core.WorldGeneration;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
