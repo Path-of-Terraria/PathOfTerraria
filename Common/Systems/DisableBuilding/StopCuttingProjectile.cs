@@ -1,6 +1,6 @@
 ﻿using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems.DisableBuilding;
+namespace PathOfTerraria.Common.Systems.DisableBuilding;
 
 internal class StopCuttingProjectile : GlobalProjectile
 {

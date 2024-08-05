@@ -49,7 +49,6 @@
 
 using System.Runtime.CompilerServices;
 
-
 //using FNLfloat = System.Double;
 
 // Switch between using floats or doubles for input position

@@ -2,7 +2,7 @@
 using MonoMod.Cil;
 using Terraria.ID;
 
-namespace PathOfTerraria.Core.Systems.DisableBuilding;
+namespace PathOfTerraria.Common.Systems.DisableBuilding;
 
 internal class StopBuildingPlayer : ModPlayer
 {
@@ -45,8 +45,13 @@ internal class StopBuildingPlayer : ModPlayer
 	public override bool CanUseItem(Item item)
 	{
 		if (item.createTile >= TileID.Dirt || item.createWall > WallID.None || item.type == ItemID.IceRod || item.tileWand >= 0)
-		{ 
-			return !LastStopBuilding;
+		{
+			bool isRope = Main.tileRope[item.createTile];
+
+			if (!isRope)
+			{
+				return !LastStopBuilding;
+			}
 		}
 
 		return true;
