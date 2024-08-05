@@ -1,8 +1,9 @@
-﻿namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+﻿
+namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
 internal class IncreasedAttackSpeedAffix : ItemAffix
 {
-	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
+	public override void ApplyAffix(Player player, EntityModifier modifier, PoTItem item)
 	{
 		modifier.Attackspeed += Value / 100;
 	}
@@ -10,7 +11,7 @@ internal class IncreasedAttackSpeedAffix : ItemAffix
 
 internal class AddedAttackSpeedAffix : ItemAffix
 {
-	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
+	public override void ApplyAffix(Player player, EntityModifier modifier, PoTItem item)
 	{
 		modifier.Attackspeed.Base += Value;
 	}
@@ -18,7 +19,7 @@ internal class AddedAttackSpeedAffix : ItemAffix
 
 internal class AddedDamageAffix : ItemAffix
 {
-	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
+	public override void ApplyAffix(Player player, EntityModifier modifier, PoTItem item)
 	{
 		modifier.Damage.Base += Value;
 	}
@@ -26,7 +27,7 @@ internal class AddedDamageAffix : ItemAffix
 
 internal class IncreasedDamageAffix : ItemAffix
 {
-	public override void ApplyAffix(EntityModifier modifier, PoTItem item)
+	public override void ApplyAffix(Player player, EntityModifier modifier, PoTItem item)
 	{
 		modifier.Damage += Value / 100;
 	}

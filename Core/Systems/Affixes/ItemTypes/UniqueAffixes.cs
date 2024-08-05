@@ -1,39 +1,29 @@
-﻿using PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
-using PathOfTerraria.Content.Skills.Melee;
-using PathOfTerraria.Core.Systems.ModPlayers;
+﻿namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
 
-namespace PathOfTerraria.Core.Systems.Affixes.ItemTypes;
-
-internal class MoltenShellAffix : ItemAffix
+internal class NoFallDamageAffix : ItemAffix
 {
-	public override void OnLoad()
+	public override void ApplyAffix(Player player, EntityModifier modifier, PoTItem gear)
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableMoltenShellIfOpen;
-	}
-
-	private void EnableMoltenShellIfOpen(Player self, Item newItem, Item oldItem)
-	{
-		if (newItem.type == ModContent.ItemType<MoltenDangpa>())
+		if (player != null)
 		{
-			SkillPlayer skillPlayer = self.GetModPlayer<SkillPlayer>();
-			skillPlayer.TryAddSkill(new MoltenShield());
+			player.noFallDmg = true;
 		}
 	}
 }
 
-internal class BloodSiphonAffix : ItemAffix
+internal class FetidCarapaceAffix : ItemAffix
 {
 	public override void OnLoad()
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableBloodSiphonIfOpen;
+		OnSwapPlayer.OnSwapMainItem += EnableFetidCarapaceIfOpen;
 	}
 
-	private void EnableBloodSiphonIfOpen(Player self, Item newItem, Item oldItem)
+	private void EnableFetidCarapaceIfOpen(Player self, Item newItem, Item oldItem)
 	{
-		if (newItem.type == ModContent.ItemType<Bloodclotter>())
+		if (newItem.type == ModContent.ItemType<Rottenbone>())
 		{
 			SkillPlayer skillPlayer = self.GetModPlayer<SkillPlayer>();
-			skillPlayer.TryAddSkill(new BloodSiphon());
+			skillPlayer.TryAddSkill(new FetidCarapace());
 		}
 	}
 }

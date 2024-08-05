@@ -19,11 +19,7 @@ public class AltUseUISystem : ModSystem
 
 	public override void Unload()
 	{
-		Main.RunOnMainThread(() =>
-		{
-			AltBar.Dispose();
-			AltBar = null;
-		});
+		AltBar = null;
 	}
 
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -71,7 +67,7 @@ public class AltUseUISystem : ModSystem
 			return;
 		}
 
-		Vector2 center = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + Vector2.UnitY * player.height;
+		Vector2 center = player.Center - Main.screenPosition + Vector2.UnitY * player.height;
 
 		Main.spriteBatch.Draw(AltBar.Value, center, new Rectangle(0, 0, 52, 14), Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
 

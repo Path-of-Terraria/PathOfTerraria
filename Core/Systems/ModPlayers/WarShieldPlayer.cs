@@ -31,7 +31,7 @@ internal class WarShieldPlayer : ModPlayer
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			if (npc.Hitbox.Intersects(Player.Hitbox))
+			if (npc.Hitbox.Intersects(Player.Hitbox) && !npc.friendly && !npc.townNPC)
 			{
 				bool isCrit = Main.rand.NextFloat() < (Player.HeldItem.crit + 4) * 0.01f;
 				npc.SimpleStrikeNPC(Player.HeldItem.damage, Math.Sign(StoredVelocity.X), isCrit, Player.HeldItem.knockBack);

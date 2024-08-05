@@ -1,6 +1,6 @@
 [
 	{
-		"affixType": "NoFallDamageAffix",
+		"affixType": "MoltenShellAffix",
 		"equipTypes": "Weapon",
 		"influences": "None",
 		"tiers": [
@@ -31,7 +31,7 @@
 		]
 	},
 	{
-		"affixType": "FetidCarapaceAffix",
+		"affixType": "BloodSiphonAffix",
 		"equipTypes": "Weapon",
 		"influences": "None",
 		"tiers": [

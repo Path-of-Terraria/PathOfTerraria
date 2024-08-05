@@ -46,8 +46,11 @@ PoacherSummon: {
 }
 
 GrimoireVisageEffect.DisplayName: Grimoire Visage Effect
-MoltenDangpaThrown.DisplayName: Molten Dangpa Thrown
-MoltenDangpaBubbles.DisplayName: Molten Dangpa Bubbles
-BloodclotterThrown.DisplayName: Bloodclotter Thrown
-ExitPortal.DisplayName: Exit Portal
-FallingSlimeProj.DisplayName: Falling Slime
+StarlightBulwarkStar.DisplayName: Starlight Bulwark Star
+StarlightBulwarkComet.DisplayName: Starlight Bulwark Comet
+MoltenDangpaThrown.DisplayName: Molten Dangpa
+MoltenDangpaBubbles.DisplayName: Molten Bubbles
+BloodclotterThrown.DisplayName: Bloodclotter
+RottenboneThrown.DisplayName: Rottenbone
+RottenboneChunks.DisplayName: Rottenbone Chunks
+CarapaceChunk.DisplayName: Carapace Chunk
