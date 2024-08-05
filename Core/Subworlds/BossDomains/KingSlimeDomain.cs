@@ -1,8 +1,11 @@
 ﻿using PathOfTerraria.Content.Projectiles;
+using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Core.Subworlds.Passes;
 using PathOfTerraria.Core.Systems.DisableBuilding;
+using PathOfTerraria.Core.Systems.FastNoise;
 using PathOfTerraria.Core.WorldGeneration;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -30,9 +33,17 @@ public class KingSlimeDomain : MappingWorld
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
+	public List<Vector2> SlimePositions = [];
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new FlatWorldPass(100, true), 
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new FlatWorldPass(100, true, GetGenNoise()), 
 		new PassLegacy("Tunnel", TunnelGen), new PassLegacy("Decor", DecorGen)];
+
+	private static FastNoiseLite GetGenNoise()
+	{
+		var noise = new FastNoiseLite();
+		noise.SetFrequency(0.03f);
+		return noise;
+	}
 
 	private void ResetStep(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -45,6 +56,7 @@ public class KingSlimeDomain : MappingWorld
 	{
 		BossSpawned = false;
 		ReadyToExit = false;
+		SlimePositions.Clear();
 	}
 
 	private void DecorGen(GenerationProgress progress, GameConfiguration configuration)
@@ -85,59 +97,88 @@ public class KingSlimeDomain : MappingWorld
 
 		foreach ((Point16 position, Open tile) in tiles)
 		{
-			PlaceDecorOnTile(tile, position);
+			PlaceDecorOnTile(tile, position, false);
+		}
+
+		foreach ((Point16 position, Open tile) in tiles)
+		{
+			PlaceDecorOnTile(tile, position, true);
 		}
 
 		tiles.Clear();
-
-		WorldGen.PlaceTile(ArenaEntrance.X, ArenaEntrance.Y, TileID.Meteorite, true, true);
 	}
 
-	private static void PlaceDecorOnTile(Open flags, Point16 position)
+	private void PlaceDecorOnTile(Open flags, Point16 position, bool late)
 	{
 		if (Main.tile[position].TileType == TileID.Stone)
 		{
-			if (flags.HasFlag(Open.Below))
+			if (!late)
 			{
-				if (WorldGen.genRand.NextBool(14))
-				{
-					WorldGen.PlaceTile(position.X, position.Y + 1, TileID.Stalactite);
-				}
-				else if (WorldGen.genRand.NextBool(60))
-				{
-					WorldGen.PlaceObject(position.X, position.Y + 1, TileID.Banners, false, WorldGen.genRand.NextBool(2) ? 0 : 2);
-				}
-			}
+				bool nearSlimePosition = SlimePositions.Any(x => x.DistanceSQ(position.ToVector2()) < 50 * 50);
 
-			if (flags.HasFlag(Open.Above))
-			{
-				if (WorldGen.genRand.NextBool(14))
+				if (flags.HasFlag(Open.Below))
 				{
-					int pile = WorldGen.genRand.Next(3) switch
+					if (nearSlimePosition && WorldGen.genRand.NextBool(10))
 					{
-						0 => 0,
-						1 => 28,
-						_ => 11
-					};
-					WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(6), 0);
+						WorldGen.PlaceTile(position.X, position.Y + 1, ModContent.TileType<FallingSlime>());
+					}
+					else if (WorldGen.genRand.NextBool(14))
+					{
+						WorldGen.PlaceTile(position.X, position.Y + 1, TileID.Stalactite);
+					}
+					else if (WorldGen.genRand.NextBool(60))
+					{
+						WorldGen.PlaceObject(position.X, position.Y + 1, TileID.Banners, true, WorldGen.genRand.NextBool(2) ? 0 : 2);
+					}
 				}
-				else if (WorldGen.genRand.NextBool(60))
+
+				if (flags.HasFlag(Open.Above))
 				{
-					WorldGen.PlaceObject(position.X, position.Y - 2, TileID.Tombstones, true, WorldGen.genRand.Next(6));
+					if (nearSlimePosition && WorldGen.genRand.NextBool(5))
+					{
+						WorldGen.PlaceObject(position.X, position.Y - 1, ModContent.TileType<EmbeddedSlimes>(), true, WorldGen.genRand.Next(3));
+					}
+					else if (WorldGen.genRand.NextBool(14))
+					{
+						int pile = WorldGen.genRand.Next(3) switch
+						{
+							0 => 0,
+							1 => 28,
+							_ => 11
+						};
+						WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(6), 0);
+					}
+					else if (WorldGen.genRand.NextBool(60))
+					{
+						WorldGen.PlaceObject(position.X, position.Y - 2, TileID.Tombstones, true, WorldGen.genRand.Next(6));
+					}
 				}
 			}
-
-			int chance = 90;
-			float dist = Vector2.Distance(position.ToVector2(), ArenaEntrance.ToVector2());
-			
-			if (dist < 90)
+			else
 			{
-				chance = (int)Math.Max(dist / 2 - 10, 1);
-			}
+				if (flags.HasFlag(Open.Below) && WorldGen.genRand.NextBool(20))
+				{
+					int y = position.Y + 1;
 
-			if (WorldGen.genRand.NextBool(chance))
-			{
-				WorldGen.TileRunner(position.X, position.Y, WorldGen.genRand.Next(6, 20), 8, TileID.SlimeBlock, false, 0, 0, false);
+					while (!WorldGen.SolidTile(position.X, y))
+					{
+						Tile tile = Main.tile[position.X, y++];
+						tile.WallType = WallID.GoldBrick;
+					}
+				}
+
+				int chance = 90;
+				float dist = Vector2.Distance(position.ToVector2(), ArenaEntrance.ToVector2());
+
+				if (dist < 150)
+				{
+					chance = (int)Math.Max(dist / 2 - 30, 1);
+				}
+
+				if (WorldGen.genRand.NextBool(chance))
+				{
+					WorldGen.TileRunner(position.X, position.Y, WorldGen.genRand.Next(6, 20), 8, TileID.SlimeBlock, false, 0, 0, false);
+				}
 			}
 		}
 	}
@@ -162,10 +203,9 @@ public class KingSlimeDomain : MappingWorld
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(160, 190)),
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(220, 250)),
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(280, 310)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(340, 370)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(330, 360)),
 			ArenaEntrance.ToVector2()];
 
-		// Generate "slime arenas" TBD
 		for (int i = 0; i < points.Length; i++)
 		{
 			if (i == points.Length - 1)
@@ -174,13 +214,10 @@ public class KingSlimeDomain : MappingWorld
 			}
 
 			Vector2 item = points[i];
-
-			WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, 18);
+			SlimePositions.Add(item);
 		}
 
-		points = AddVariationToPoints(points);
-		Vector2[] results = Spline.InterpolateXY(points, 60);
-		results = CreateEquidistantSet(results, 10);
+		Vector2[] results = Tunnel.GeneratePoints(points, 60, 10);
 
 		var noise = new FastNoiseLite(WorldGen._genRandSeed);
 		noise.SetFrequency(0.01f);
@@ -210,73 +247,6 @@ public class KingSlimeDomain : MappingWorld
 		{
 			flip = !flip;
 			return 250 + WorldGen.genRand.Next(80, 160) * (flip ? -1 : 1);
-		}
-	}
-
-	private Vector2[] AddVariationToPoints(Vector2[] points)
-	{
-		List<Vector2> newPoints = [];
-
-		for (int i = 0; i < points.Length; i++)
-		{
-			Vector2 item = points[i];
-			newPoints.Add(item);
-
-			if (i == points.Length - 1)
-			{
-				continue;
-			}
-
-			if (i < points.Length - 1 && WorldGen.genRand.NextBool())
-			{
-				var startLerp = Vector2.Lerp(item, points[i + 1], WorldGen.genRand.NextFloat(0.3f, 0.7f));
-				startLerp += item.DirectionTo(points[i + 1]).RotatedBy(MathHelper.Pi * (WorldGen.genRand.NextBool() ? -1 : 1)).RotatedByRandom(0.1f) 
-					* WorldGen.genRand.NextFloat(10, 20);
-				newPoints.Add(startLerp);
-			}
-			else
-			{
-				const int Variance = 40;
-
-				newPoints.Add(item + new Vector2(WorldGen.genRand.Next(-Variance, Variance), WorldGen.genRand.Next(Variance)));
-			}
-		}
-
-		return [.. newPoints];
-	}
-
-	private Vector2[] CreateEquidistantSet(Vector2[] results, float distance)
-	{
-		List<Vector2> points = [];
-		Queue<Vector2> remainingPoints = new(results);
-		Vector2 start = remainingPoints.Dequeue();
-		Vector2 current = start;
-		Vector2 next = remainingPoints.Dequeue();
-		float factor = 0;
-
-		while (true)
-		{
-			float dist = current.Distance(next);
-
-			while (true)
-			{
-				points.Add(Vector2.Lerp(start, next, factor));
-				factor += MathF.Min(1, distance / dist);
-
-				if (factor > 1f)
-				{
-					break;
-				}
-			}
-
-			if (remainingPoints.Count == 0)
-			{
-				return [.. points];
-			}
-
-			start = next;
-			next = remainingPoints.Dequeue();
-			factor--;
 		}
 	}
 
