@@ -17,3 +17,5 @@ GUI: {
 	QuestsCompletedTab: Completed
 	PlayerStatsTab: Stats
 }
+
+Tiles.ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile

@@ -391,6 +391,7 @@ Bloodclotter: {
 
 ArcaneObeliskItem: {
 	DisplayName: Arcane Obelisk
+	Tooltip: ""
 }
 
 StarlightBulwark: {

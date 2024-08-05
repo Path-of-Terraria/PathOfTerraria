@@ -11,6 +11,17 @@ public sealed class UIGearInventoryManager : ModSystem
 
 	public static UserInterface UserInterface { get; private set; }
 	
+	public override void Load()
+    {
+    	UserInterface = new UserInterface();
+    }
+
+    public override void Unload()
+    {
+    	UserInterface?.SetState(null);
+    	UserInterface = null;
+    }
+	
 	public override void OnWorldLoad()
 	{
 		UserInterface.SetState(new UIGearInventory());
