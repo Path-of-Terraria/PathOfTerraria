@@ -14,12 +14,4 @@ public sealed class UIGearInventoryManager : ModSystem
 	{
 		UIManager.Enable(Identifier, "Vanilla: Inventory", new UIGearInventory(), 1);
 	}
-
-	public override void PostUpdateInput()
-	{
-		if (Main.keyState.IsKeyDown(Keys.F) && !Main.oldKeyState.IsKeyDown(Keys.F))
-		{
-			Main.NewText(UIManager.TryToggle<UIGearInventory>(Identifier));
-		}
-	}
 }
