@@ -14,7 +14,7 @@ internal class GenerationSystem : ModSystem
 
 			if (index >= 0)
 			{
-				tasks.Insert(index, new PassLegacy(item.GenName, item.Generate));
+				tasks.Insert(index, new PassLegacy(item.Name, item.Generate));
 			}
 		}
 	}

@@ -1,5 +1,4 @@
-﻿using Microsoft.Build.Framework;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -8,75 +7,141 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.World.Passes;
 
+public class RavencrestMicrobiome : MicroBiome
+{
+	public override bool Place(Point origin, StructureMap structures)
+	{
+		Mod mod = ModContent.GetInstance<PoTMod>();
+
+		var size = new Point16();
+		StructureHelper.Generator.GetDimensions("Assets/Structures/RavencrestEntrance", mod, ref size);
+		StructureHelper.Generator.GenerateStructure("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), mod);
+		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
+		FitBase((short)origin.X, origin.Y + size.Y - 1, size.X);
+		return true;
+	}
+
+	/// <summary>
+	/// Adds ground beneath the structure.
+	/// </summary>
+	/// <param name="x">Left side of the structure.</param>
+	/// <param name="y">Bottom of the structure.</param>
+	/// <param name="width">Width of the structure.</param>
+	private static void FitBase(short x, int y, short width)
+	{
+		for (int i = x; i < x + width; ++i)
+		{
+			int newY = y;
+
+			while (!WorldGen.SolidTile(i, ++newY) || Main.tile[i, newY].TileType == TileID.Grass)
+			{
+				bool edge = i == x || i == x + width - 1;
+				WorldGen.PlaceTile(i, newY, edge ? TileID.Grass : TileID.Dirt, true, true);
+				WorldGen.SlopeTile(i, newY, 0, true);
+
+				if (!edge) // Place walls if this isn't either edge
+				{
+					WorldGen.PlaceWall(i, newY, WallID.DirtUnsafe);
+				}
+			}
+		}
+	}
+}
+
 internal class RavencrestEntrancePass : AutoGenStep
 {
 	public override void Generate(GenerationProgress progress, GameConfiguration config)
 	{
-		Point16 pos = FindPlacement();
-		StructureHelper.Generator.GenerateStructure("Assets/Structures/RavencrestEntrance", pos, Mod);
+		progress.Message = GenTitle;
+
+		var size = new Point16();
+		StructureHelper.Generator.GetDimensions("Assets/Structures/RavencrestEntrance", Mod, ref size);
+		Point16 pos = FindPlacement(size);
+		new RavencrestMicrobiome().Place(pos.ToPoint(), GenVars.structures);
 	}
 
-	public static bool FindPlacement(int x, int y, out Point16 position)
-	{
-		position = new Point16(x, y);
-
-		while (!WorldGen.SolidTile(x, ++y))
-		{
-		}
-
-		Tile tile = Main.tile[x, y];
-
-		if (tile.TileType != TileID.Grass)
-		{
-			return false;
-		}
-
-		int averageHeight = AverageHeights(x, y, 75, 16, 10, out bool valid, [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone],
-			TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin);
-
-		if (valid && averageHeight < 15)
-		{
-			position = new Point16(x, y - 38);
-			return true;
-		}
-
-		return false;
-	}
-
-	private static Point16 FindPlacement()
+	private static Point16 FindPlacement(Point16 size)
 	{
 		while (true)
 		{
-			int x = WorldGen.genRand.Next(150, Main.maxTilesX - 150);
+			int x = WorldGen.genRand.Next(150, Main.maxTilesX - 150); // Anywhere in the world, but ocean
 
-			while (Math.Abs(x - Main.spawnTileX) < 150)
+			while (Math.Abs(x - Main.spawnTileX) < 225) // Place away from spawn
 			{
 				x = WorldGen.genRand.Next(150, Main.maxTilesX - 150);
 			}
 
-			int y = (int)(Main.worldSurface * 0.35f);
+			int y = (int)(Main.worldSurface * 0.35f); // Start at bottom of space,
 
-			while (!WorldGen.SolidTile(x, ++y))
+			while (!WorldGen.SolidTile(x, ++y)) // and dig down.
 			{
 			}
 
-			Tile tile = Main.tile[x, y];
-
-			if (tile.TileType != TileID.Grass)
+			// Place only if this overlaps very few tiles and overlaps no structure.
+			int tileCount = CountTiles(x, y - size.Y, size.X, size.Y);
+			if (tileCount > 12 && !GenVars.structures.CanPlace(new Rectangle(x, y, size.X, size.Y)))
 			{
 				continue;
 			}
 
-			int averageHeight = AverageHeights(x, y, 73, 20, 4, out bool valid, [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone], 
-				TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone);
+			Tile tile = Main.tile[x, y];
 
-			if (valid && Math.Abs(averageHeight) < 5)
+			if (tile.TileType != TileID.Grass) // Place only on grass.
 			{
-				return new Point16(x, y - 38 + averageHeight);
+				continue;
+			}
+
+			// Get average height, with a whitelist and blacklist for nearby tiles and preferred average depth of ground.
+			int averageHeight = AverageHeights(x, y, 76, 4, 30, out bool valid, [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone], 
+				TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone);
+			 
+			// Only place if average height difference is less than 2.
+			if (valid && Math.Abs(averageHeight) <= 1)
+			{
+				return new Point16(x, y - size.Y);
 			}
 		}
 	}
 
+	/// <summary>
+	/// Counts the number of tiles in an area.
+	/// </summary>
+	/// <param name="x">Left of the area.</param>
+	/// <param name="y">Top of the area.</param>
+	/// <param name="width">Width of the area.</param>
+	/// <param name="height">Height of the area.</param>
+	/// <returns>Number of solid tiles in the area.</returns>
+	public static int CountTiles(int x, int y, int width, int height)
+	{
+		int count = 0;
+
+		for (int i = x; i < x + width; ++i)
+		{
+			for (int j = y; j < y + height; ++j)
+			{
+				if (WorldGen.SolidOrSlopedTile(i, j))
+				{
+					count++;
+				}
+			}
+		}
+
+		return count;
+	}
+
+	/// <summary>
+	/// Determines flatness & depth placement of an area. Returns average heights; use <paramref name="valid"/> to check if the space is valid.<br/>
+	/// This needs a lot of tweaking to get perfect.
+	/// </summary>
+	/// <param name="x">Left of the area.</param>
+	/// <param name="y">Bottom of the area.</param>
+	/// <param name="width">Width of the area.</param>
+	/// <param name="validSkips">How many times non-<paramref name="allowedIds"/> tiles can be scanned before invalidating the area.</param>
+	/// <param name="depth">The desired average depth for the area.</param>
+	/// <param name="valid">Whether the area could be valid.</param>
+	/// <param name="hardAvoidIds">If a tile of any of these types are scanned, the area is automatically invalid.</param>
+	/// <param name="allowedIds">Tiles that do not increment skips when scanned.</param>
+	/// <returns>Average height.</returns>
 	private static int AverageHeights(int x, int y, int width, int validSkips, int depth, out bool valid, int[] hardAvoidIds, params int[] allowedIds)
 	{
 		int heights = 0;
@@ -133,6 +198,6 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 	public override int GenIndex(List<GenPass> tasks)
 	{
-		return tasks.FindIndex(x => x.Name == "Spawn Point") + 1;
+		return tasks.FindIndex(x => x.Name == "Micro Biomes") + 1;
 	}
 }
