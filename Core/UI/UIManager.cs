@@ -17,7 +17,7 @@ namespace PathOfTerraria.Core.UI;
 [Autoload(Side = ModSide.Client)]
 public sealed class UIManager : ModSystem
 {
-	private sealed class UIStateData<T> where T : UIState
+	private sealed class UIStateData<T>(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI) where T : UIState
 	{
 		/// <summary>
 		///		Whether the state is enabled or not.
@@ -28,21 +28,21 @@ public sealed class UIManager : ModSystem
 		///		The <see cref="UserInterface"/> instance associated with the <see cref="UIState"/>.
 		/// </summary>
 		public UserInterface UserInterface;
-		
+
 		/// <summary>
 		///		The identifier of the <see cref="UIState"/>.
 		/// </summary>
-		public readonly string Identifier;
-		
+		public readonly string Identifier = identifier;
+
 		/// <summary>
 		///		The layer at which to insert the <see cref="UIState"/>.
 		/// </summary>
-		public readonly string Layer;
+		public readonly string Layer = layer;
 
 		/// <summary>
 		///		The value of the <see cref="UIState"/>.
 		/// </summary>
-		public readonly T? Value;
+		public readonly T? Value = value;
 
 		/// <summary>
 		///		The index offset within the specified insertion layer. 
@@ -50,7 +50,7 @@ public sealed class UIManager : ModSystem
 		/// <remarks>
 		///		Defaults to <c>0</c>.
 		/// </remarks>
-		public readonly int Offset;
+		public readonly int Offset = offset;
 
 		/// <summary>
 		///		The interface scale type of the <see cref="UIState"/>. 
@@ -58,16 +58,7 @@ public sealed class UIManager : ModSystem
 		/// <remarks>
 		///		Defaults to <see cref="InterfaceScaleType.UI"/>.
 		/// </remarks>
-		public readonly InterfaceScaleType Type;
-		
-		public UIStateData(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI)
-		{
-			Identifier = identifier;
-			Layer = layer;
-			Value = value;
-			Offset = offset;
-			Type = type;
-		}
+		public readonly InterfaceScaleType Type = type;
 	}
 
 	private static class UITypeData<T> where T : UIState
