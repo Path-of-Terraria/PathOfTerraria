@@ -28,7 +28,7 @@ public sealed class UISystem : ModSystem
 	{
 		public UserInterface UserInterface = new();
 
-		public bool Enabled = true;
+		public bool Enabled;
 	}
 
 	private static class UITypeData<T> where T : UIState
@@ -59,11 +59,6 @@ public sealed class UISystem : ModSystem
 			{
 				UIStateData<T> data = Data[i];
 
-				if (!data.Enabled)
-				{
-					continue;
-				}
-
 				data.UserInterface.Update(gameTime);
 			}
 		}
@@ -73,11 +68,6 @@ public sealed class UISystem : ModSystem
 			for (int i = 0; i < Data.Count; i++)
 			{
 				UIStateData<T> data = Data[i];
-				
-				if (!data.Enabled)
-				{
-					continue;
-				}
 
 				int index = layers.FindIndex(l => l.Name == data.Layer);
 
@@ -131,6 +121,23 @@ public sealed class UISystem : ModSystem
 	}
 
 	/// <summary>
+	///		Attempts to retrieve a <see cref="UIState"/> instance by its identifier.
+	/// </summary>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/> to retrieve.</param>
+	/// <param name="value">
+	///		When this method returns, contains the <see cref="UIState"/> instance associated with the specified identifier,
+	///		if the identifier is found; otherwise, <c>null</c>. This parameter is passed uninitialized.
+	/// </param>
+	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
+	/// <returns><c>true</c> if a <see cref="UIState"/> with the specified identifier was found; otherwise, <c>false</c>.</returns>
+	public static bool TryGet<T>(string identifier, [MaybeNullWhen(false)] out T? value) where T : UIState
+	{
+		value = Get<T>(identifier);
+
+		return value == null;
+	}
+
+	/// <summary>
 	///		Retrieves a registered <see cref="UIState"/> instance by its identifier.
 	/// </summary>
 	/// <param name="identifier">The identifier of the <see cref="UIState"/> to retrieve.</param>
@@ -164,7 +171,11 @@ public sealed class UISystem : ModSystem
 	{
 		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
 
-		var data = new UIStateData<T>(identifier, layer, offset, value, type);
+		var data = new UIStateData<T>(identifier, layer, offset, value, type)
+		{
+			UserInterface = new UserInterface(),
+			Enabled = true
+		};
 
 		data.UserInterface.SetState(value);
 		
@@ -179,41 +190,45 @@ public sealed class UISystem : ModSystem
 	}
 
 	/// <summary>
-	///		Disables a <see cref="UIState"/> instance.
+	///		Attemps to disable a <see cref="UIState"/> instance by its identifier.
 	/// </summary>
 	/// <remarks>
 	///		This method does nothing if the instance is already disabled or cannot be found.
 	/// </remarks>
 	/// <param name="identifier">The unique identifier of the <see cref="UIState"/> to disable.</param>
 	/// <typeparam name="T">The type of the <see cref="UIState"/> to disable.</typeparam>
-	public static void Disable<T>(string identifier) where T : UIState
+	/// <returns><c>true</c> if the state was successfully disabled; otherwise, <c>false</c>.</returns>
+	public static bool TryDisable<T>(string identifier) where T : UIState
 	{
 		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
 
 		if (index < 0)
 		{
-			return;
+			return false;
 		}
-		
-		UITypeData<T>.Data[index].UserInterface.SetState(null);
 
-		UITypeData<T>.Data.RemoveAt(index);
+		UITypeData<T>.Data[index].Enabled = false;
+
+		return true;
 	}
-
+	
 	/// <summary>
-	///		Toggles the enabled state of a <see cref="UIState"/> instance.
+	///		Attemps to toggle the enabled state of a <see cref="UIState"/> instance by its identifier.
 	/// </summary>
 	/// <param name="identifier">The unique identifier of the <see cref="UIState"/> to enable.</param>
 	/// <typeparam name="T">The type of the <see cref="UIState"/> to enable.</typeparam>
-	public static void Toggle<T>(string identifier) where T : UIState
+	/// <returns><c>true</c> if the state was successfully toggled; otherwise, <c>false</c>.</returns>
+	public static bool TryToggle<T>(string identifier) where T : UIState
 	{
 		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
 
 		if (index < 0)
 		{
-			return;
+			return false;
 		}
-
+		
 		UITypeData<T>.Data[index].Enabled = !UITypeData<T>.Data[index].Enabled;
+
+		return true;
 	}
 }
