@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using Terraria.UI;
 
-// TODO: TryX safe alternatives to the current methods (TryGet, TryEnable, TryDisable, TryToggle).
 namespace PathOfTerraria.Core.UI;
 
 /// <summary>
@@ -10,25 +9,65 @@ namespace PathOfTerraria.Core.UI;
 /// </summary>
 /// <remarks>
 ///		Registered <see cref="UIState"/> instances are identified by a unique identifier, which determines
-///		their behavior and associated data.
+///		their behavior and associated data. They will be automatically unloaded when no longer needed.
+///		<br />
 ///		This system allows multiple entries of the same <see cref="UIState"/> type, provided each entry has
 ///		a distinct identifier.
 /// </remarks>
 [Autoload(Side = ModSide.Client)]
-public sealed class UISystem : ModSystem
+public sealed class UIManager : ModSystem
 {
-	// TODO: Consider making this public, and implement alternatives to retrieve the data of a state.
-	private record class UIStateData<T>(
-		string Identifier,
-		string Layer,
-		int Offset,
-		T? Value,
-		InterfaceScaleType Type = InterfaceScaleType.UI
-	) where T : UIState
+	private sealed class UIStateData<T> where T : UIState
 	{
-		public UserInterface UserInterface = new();
-
+		/// <summary>
+		///		Whether the state is enabled or not.
+		/// </summary>
 		public bool Enabled;
+		
+		/// <summary>
+		///		The <see cref="UserInterface"/> instance associated with the <see cref="UIState"/>.
+		/// </summary>
+		public UserInterface UserInterface;
+		
+		/// <summary>
+		///		The identifier of the <see cref="UIState"/>.
+		/// </summary>
+		public readonly string Identifier;
+		
+		/// <summary>
+		///		The layer at which to insert the <see cref="UIState"/>.
+		/// </summary>
+		public readonly string Layer;
+
+		/// <summary>
+		///		The value of the <see cref="UIState"/>.
+		/// </summary>
+		public readonly T? Value;
+
+		/// <summary>
+		///		The index offset within the specified insertion layer. 
+		/// </summary>
+		/// <remarks>
+		///		Defaults to <c>0</c>.
+		/// </remarks>
+		public readonly int Offset;
+
+		/// <summary>
+		///		The interface scale type of the <see cref="UIState"/>. 
+		/// </summary>
+		/// <remarks>
+		///		Defaults to <see cref="InterfaceScaleType.UI"/>.
+		/// </remarks>
+		public readonly InterfaceScaleType Type;
+		
+		public UIStateData(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI)
+		{
+			Identifier = identifier;
+			Layer = layer;
+			Value = value;
+			Offset = offset;
+			Type = type;
+		}
 	}
 
 	private static class UITypeData<T> where T : UIState
@@ -47,7 +86,7 @@ public sealed class UISystem : ModSystem
 			for (int i = 0; i < Data.Count; i++)
 			{
 				UIStateData<T> data = Data[i];
-
+				
 				data.UserInterface?.SetState(null);
 				data.UserInterface = null;
 			}
@@ -59,6 +98,11 @@ public sealed class UISystem : ModSystem
 			{
 				UIStateData<T> data = Data[i];
 
+				if (!data.Enabled)
+				{
+					continue;
+				}
+				
 				data.UserInterface.Update(gameTime);
 			}
 		}
@@ -68,6 +112,11 @@ public sealed class UISystem : ModSystem
 			for (int i = 0; i < Data.Count; i++)
 			{
 				UIStateData<T> data = Data[i];
+				
+				if (!data.Enabled)
+				{
+					continue;
+				}
 
 				int index = layers.FindIndex(l => l.Name == data.Layer);
 
@@ -161,17 +210,17 @@ public sealed class UISystem : ModSystem
 	/// <remarks>
 	///		If another instance with the same identifier already exists, this will refresh its properties.
 	/// </remarks>
-	/// <param name="identifier">The unique identifier of the <see cref="UIState"/> to enable.</param>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/> to enable.</param>
 	/// <param name="layer">The layer at which to insert the <see cref="UIState"/>.</param>
-	/// <param name="offset">The index offset within the specified insertion layer.</param>
 	/// <param name="value">The value of the <see cref="UIState"/>.</param>
+	/// <param name="offset">The index offset within the specified insertion layer. Defaults to <c>0</c>.</param>
 	/// <param name="type">The interface scale type of the <see cref="UIState"/>. Defaults to <see cref="InterfaceScaleType.UI"/>.</param>
 	/// <typeparam name="T">The type of the <see cref="UIState"/> to enable.</typeparam>
-	public static void Enable<T>(string identifier, string layer, int offset, T? value, InterfaceScaleType type = InterfaceScaleType.UI) where T : UIState
+	public static void Enable<T>(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI) where T : UIState
 	{
 		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
 
-		var data = new UIStateData<T>(identifier, layer, offset, value, type)
+		var data = new UIStateData<T>(identifier, layer, value, offset, type)
 		{
 			UserInterface = new UserInterface(),
 			Enabled = true
