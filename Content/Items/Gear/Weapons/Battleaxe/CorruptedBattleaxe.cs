@@ -4,6 +4,8 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Items;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
@@ -26,27 +28,25 @@ internal class CorruptedBattleaxe : IronBattleaxe
 
 		Item.width = 52;
 		Item.height = 52;
+		Item.shoot = ProjectileID.PurificationPowder; // Could be anything really
 	}
 	
 	public override bool AltFunctionUse(Player player)
 	{
 		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
-
-		if (!modPlayer.AltFunctionAvailable)
-		{
-			return false;
-		}
-		
-		if (Main.myPlayer == player.whoAmI)
-		{
-			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<CorruptedBattleaxeProjectile>(), Item.damage, 0, player.whoAmI);
-		}
-		
-		modPlayer.SetAltCooldown(300, 180);
-		return true;
+	
+		return modPlayer.AltFunctionAvailable;
 	}
 	
 	public override bool CanUseItem(Player player)
+	{
+		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
+		bool altFunctionActive = modPlayer.AltFunctionActive; // Prevent the item from being used if the alt function is active to spawn projectile instead
+
+		return !altFunctionActive;
+	}
+
+	public override bool? UseItem(Player player)
 	{
 		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
 		bool altFunctionActive = modPlayer.AltFunctionActive; // Prevent the item from being used if the alt function is active to spawn projectile instead
@@ -55,15 +55,29 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		{
 			Item.noUseGraphic = false;
 			Item.noMelee = false;
-			return true;
+			return null;
 		}
 
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
-		
-		return false;
+		return true;
 	}
-	
+
+	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+	{
+		if (player.altFunctionUse == 2)
+		{
+			type = ModContent.ProjectileType<CorruptedBattleaxeProjectile>();
+			AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
+			modPlayer.SetAltCooldown(300, 180);
+		}
+	}
+
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		return type == ModContent.ProjectileType<CorruptedBattleaxeProjectile>();	
+	}
+
 	public override List<ItemAffix> GenerateAffixes()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();

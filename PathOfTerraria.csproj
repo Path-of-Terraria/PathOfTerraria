@@ -1,13 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
 	<Import Project="..\tModLoader.targets" />
-
 	<PropertyGroup>
+		<AssemblyName>PathOfTerraria</AssemblyName>
 		<TargetFramework>net8.0</TargetFramework>
+		<PlatformTarget>AnyCPU</PlatformTarget>
 		<LangVersion>latest</LangVersion>
-		<Nullable>enable</Nullable>
 	</PropertyGroup>
-
 	<PropertyGroup>
 		<ExecutablePath Condition=" Exists('/etc/NIXOS') ">steam-run</ExecutablePath>
 		<ExecutablePath Condition=" '$(ExecutablePath)' == '' ">$(DotNetName)</ExecutablePath>
@@ -18,22 +17,28 @@
 		<BuildCommand Condition=" Exists('/etc/NIXOS') ">steam-run dotnet</BuildCommand>
 		<BuildCommand Condition=" '$(BuildCommand)' == '' ">dotnet</BuildCommand>
 	</PropertyGroup>
-
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
+		<Compile Update="JsonCreator\CreateMobJsonFiles.cs">
+			<Link>ClassLibrary1\CreateMobJsonFiles.cs</Link>
+		</Compile>
 	</ItemGroup>
-
 	<ItemGroup>
-		<Reference Include="lib\SubworldLibrary.dll" />
-		<Reference Include="lib\NPCUtils.dll" />
 		<Reference Include="StructureHelper">
 		  <HintPath>lib\StructureHelper.dll</HintPath>
 		</Reference>
+		<Reference Include="SubworldLibrary">
+			<HintPath>Dependencies\SubworldLibrary.dll</HintPath>
+		</Reference>
+		<Reference Include="TextCopy">
+			<HintPath>lib\TextCopy.dll</HintPath>
+		</Reference>
+    <Reference Include="NPCUtils">
+      <HintPath>lib\NPCUtils.dll</HintPath>
+    </Reference>
 	</ItemGroup>
-
-	<ItemGroup>
-		<AdditionalFiles Include="$(MSBuildThisFileDirectory)BannedSymbols.txt" />
-	</ItemGroup>
-
+	<Target Name="BuildMod" AfterTargets="Build">
+		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />
+	</Target>
 </Project>
