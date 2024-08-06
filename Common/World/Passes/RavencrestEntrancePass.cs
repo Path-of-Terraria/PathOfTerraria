@@ -70,9 +70,9 @@ internal class RavencrestEntrancePass : AutoGenStep
 			int averageHeight = AverageHeights(x, y, 73, 20, 4, out bool valid, [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone], 
 				TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone);
 
-			if (valid && averageHeight < 5)
+			if (valid && Math.Abs(averageHeight) < 5)
 			{
-				return new Point16(x, y - 38);
+				return new Point16(x, y - 38 + averageHeight);
 			}
 		}
 	}
@@ -102,7 +102,8 @@ internal class RavencrestEntrancePass : AutoGenStep
 				}
 			}
 
-			heights += useY - y;
+			int heightDif = useY - y;
+			heights += heightDif;
 
 			int digY = useY;
 
@@ -110,7 +111,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 			{
 			}
 
-			avgDepth += digY - useY;
+			avgDepth += digY - useY + heightDif;
 
 			if (hardAvoidIds.Contains(Main.tile[i, useY].TileType))
 			{
