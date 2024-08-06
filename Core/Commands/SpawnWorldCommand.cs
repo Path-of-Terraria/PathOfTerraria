@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;

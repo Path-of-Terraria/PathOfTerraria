@@ -13,7 +13,7 @@ using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 
-namespace PathOfTerraria.Common.Subworlds;
+namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
 public class KingSlimeDomain : BossDomainSubworld
 {
@@ -35,8 +35,10 @@ public class KingSlimeDomain : BossDomainSubworld
 	public bool ReadyToExit = false;
 	public List<Vector2> SlimePositions = [];
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new FlatWorldPass(100, true, GetGenNoise()), 
-		new PassLegacy("Tunnel", TunnelGen), new PassLegacy("Decor", DecorGen)];
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
+		new FlatWorldPass(100, true, GetGenNoise()),
+		new PassLegacy("Tunnel", TunnelGen),
+		new PassLegacy("Decor", DecorGen)];
 
 	private static FastNoiseLite GetGenNoise()
 	{
