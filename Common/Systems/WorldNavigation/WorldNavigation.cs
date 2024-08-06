@@ -13,8 +13,8 @@ public abstract class WorldNavigation : ModSystem
 	{
 		if (!File.Exists(Path.Combine(ModLoader.ModPath, $"{WorldFileName}.wld")) || !File.Exists(Path.Combine(ModLoader.ModPath, $"{WorldFileName}.twld")))
 		{
-			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, $"{WorldFileName}.wld"), Mod.GetFileBytes($"Worlds/{WorldFileName}.wld"));
-			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, $"{WorldFileName}.twld"), Mod.GetFileBytes($"Worlds/{WorldFileName}.twld"));
+			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, $"{WorldFileName}.wld"), Mod.GetFileBytes($"Assets/Worlds/{WorldFileName}.wld"));
+			File.WriteAllBytes(Path.Combine(ModLoader.ModPath, $"{WorldFileName}.twld"), Mod.GetFileBytes($"Assets/Worlds/{WorldFileName}.twld"));
 		}
 	}
 
