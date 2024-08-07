@@ -1,10 +1,10 @@
-﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Content.Items.Consumables.Maps;
+﻿using PathOfTerraria.Content.Items.Consumables.Maps;
 using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.Furniture;
@@ -12,7 +12,6 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 public class MapDevicePlaceable : ModTile
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Placeable/MapDeviceBase";
-	private Map InsertedMap { get; set; }
 
 	private const int FrameWidth = 18 * 3;
 	private const int FrameHeight = 18 * 4;
@@ -35,33 +34,26 @@ public class MapDevicePlaceable : ModTile
 
 	public override void SetStaticDefaults()
 	{
-		Main.tileShine[Type] = 400; // Responsible for golden particles
-		Main.tileFrameImportant[Type] = true; // Any multitile requires this
-		TileID.Sets.InteractibleByNPCs[Type] = true; // Town NPCs will palm their hand at this tile
+		Main.tileShine[Type] = 400;
+		Main.tileFrameImportant[Type] = true;
+
+		TileID.Sets.InteractibleByNPCs[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
-		TileObjectData.newTile.LavaDeath = false; // Does not break when lava touches it
-		TileObjectData.newTile.DrawYOffset = 2; // So the tile sinks into the ground
-		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft; // Player faces to the left
-		TileObjectData.newTile.StyleHorizontal = false; // Based on how the alternate sprites are positioned on the sprite (by default, true)
-
-		// This controls how styles are laid out in the texture file. This tile is special in that all styles will use the same texture section to draw the pedestal.
+		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<MapDeviceEntity>().Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.LavaDeath = false;
+		TileObjectData.newTile.DrawYOffset = 2;
+		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
+		TileObjectData.newTile.StyleHorizontal = false;
 		TileObjectData.newTile.StyleWrapLimitVisualOverride = 2;
 		TileObjectData.newTile.StyleMultiplier = 2;
 		TileObjectData.newTile.StyleWrapLimit = 2;
-		TileObjectData.newTile.styleLineSkipVisualOverride =
-			0; // This forces the tile preview to draw as if drawing the 1st style.
-
-		// Register an alternate tile data with flipped direction
-		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile); // Copy everything from above, saves us some code
-		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight; // Player faces to the right
+		TileObjectData.newTile.styleLineSkipVisualOverride = 0;
+		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
 		TileObjectData.addAlternate(1);
-
-		// Register the tile data itself
 		TileObjectData.addTile(Type);
 
-		// Register map name and color
-		// "MapObject.Relic" refers to the translation key for the vanilla "Relic" text
 		AddMapEntry(new Color(233, 207, 94), Language.GetText("MapObject.MapDevice"));
 	}
 
@@ -78,14 +70,24 @@ public class MapDevicePlaceable : ModTile
 		tileFrameY %= FrameHeight * 2; // Clamps the frameY (two horizontally aligned place styles, hence * 2)
 	}
 
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
+	{
+		Tile tile = Main.tile[i, j];
+		i -= tile.TileFrameX / 18;
+		j -= tile.TileFrameY / 18;
+		ModContent.GetInstance<MapDeviceEntity>().Kill(i, j);
+	}
+
 	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
 	{
-		if (InsertedMap == null)
+		if (!TryGetEntity(ref i, ref j, out MapDeviceEntity entity) || entity.StoredMap == null)
 		{
 			return;
 		}
-		
-		if (drawData.tileFrameX % FrameWidth == 0 && drawData.tileFrameY % FrameHeight == 0)
+
+		Tile tile = Main.tile[i, j];
+
+		if (tile.TileFrameX == 0 && tile.TileFrameY == 0)
 		{
 			Main.instance.TilesRenderer.AddSpecialLegacyPoint(i, j);
 		}
@@ -93,17 +95,13 @@ public class MapDevicePlaceable : ModTile
 
 	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (InsertedMap == null)
+		if (!TryGetEntity(ref i, ref j, out MapDeviceEntity entity) || entity.StoredMap == null)
 		{
 			return;
 		}
 		
 		// This is lighting-mode specific, always include this if you draw tiles manually
-		var offScreen = new Vector2(Main.offScreenRange);
-		if (Main.drawToScreen)
-		{
-			offScreen = Vector2.Zero;
-		}
+		var offScreen = new Vector2(Main.drawToScreen ? 0 : Main.offScreenRange);
 
 		// Take the tile, check if it actually exists
 		var p = new Point(i, j);
@@ -115,15 +113,11 @@ public class MapDevicePlaceable : ModTile
 
 		// Get the initial draw parameters
 		Texture2D texture = _relicTexture.Value;
-
 		int frameY = tile.TileFrameX / FrameWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(HorizontalFrames, VerticalFrames, 0, frameY);
-
 		Vector2 origin = frame.Size() / 2f;
 		Vector2 worldPos = p.ToWorldCoordinates(24f, 64f);
-
 		Color color = Lighting.GetColor(p.X, p.Y);
-
 		bool direction =
 			tile.TileFrameY / FrameHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -150,28 +144,88 @@ public class MapDevicePlaceable : ModTile
 
 	public override bool RightClick(int i, int j)
 	{
-		if (InsertedMap != null)
+		if (TryGetEntity(ref i, ref j, out MapDeviceEntity entity))
 		{
-			InsertedMap = null;
-			MappingSystem.EnterMap(InsertedMap);
+			entity.TryPlaceMap();
+		}
+
+		return true;
+	}
+
+	private static bool TryGetEntity(ref int i, ref int j, out MapDeviceEntity entity)
+	{
+		Tile tile = Main.tile[i, j];
+		i -= tile.TileFrameX / 18;
+		j -= tile.TileFrameY / 18;
+
+		if (TileEntity.ByPosition.TryGetValue(new(i, j), out TileEntity tileEntity) && tileEntity is MapDeviceEntity mapEntity)
+		{
+			entity = mapEntity;
 			return true;
+		}
+
+		entity = null;
+		return false;
+	}
+}
+
+internal class MapDeviceEntity : ModTileEntity
+{
+	public Item StoredMap = null;
+
+	public override bool IsTileValidForEntity(int x, int y)
+	{
+		return Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<MapDevicePlaceable>();
+	}
+
+	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
+	{
+		Tile tile = Main.tile[i, j];
+		i -= tile.TileFrameX / 18;
+		j -= tile.TileFrameY / 18;
+		return Place(i, j);
+	}
+
+	public override void OnKill()
+	{
+		Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), StoredMap);
+		StoredMap = null;
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		if (StoredMap is not null)
+		{
+			tag.Add("item", ItemIO.Save(StoredMap));
+		}
+	}
+
+	public override void LoadData(TagCompound tag)
+	{
+		if (tag.TryGet("item", out TagCompound itemTag))
+		{
+			StoredMap = ItemIO.Load(itemTag);
+		}
+	}
+
+	internal void TryPlaceMap()
+	{
+		if (StoredMap is not null)
+		{
+			(StoredMap.ModItem as Map).OpenMap();
+			StoredMap = null;
+			return;
 		}
 
 		Item heldItem = Main.LocalPlayer.HeldItem;
 		if (heldItem.ModItem is not Map)
 		{
-			return false;
+			return;
 		}
 
-		InsertMap();
-		return true;
-	}
-
-	private void InsertMap()
-	{
-		Player player = Main.LocalPlayer;
-		Item heldItem = player.HeldItem;
-		InsertedMap = (Map)heldItem.ModItem;
+		Item clone = heldItem.Clone();
+		clone.stack = 1;
+		StoredMap = clone;
 		heldItem.stack--;
 
 		// If the stack is empty, remove the item from the player's inventory

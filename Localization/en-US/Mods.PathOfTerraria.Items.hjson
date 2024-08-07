@@ -398,3 +398,8 @@ Rottenbone: {
 	DisplayName: Rottenbone
 	Tooltip: ""
 }
+
+KingSlimeMap: {
+	DisplayName: King Slime Map
+	Tooltip: ""
+}

@@ -41,7 +41,9 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 		data.ItemType = ItemType.Map;
 	}
 
-	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }
+	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone; }
+
+	public abstract void OpenMap();
 
 	/// <summary>
 	/// Gets name and what tier the map is of as a singular string.

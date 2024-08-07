@@ -29,9 +29,6 @@
 		<Reference Include="SubworldLibrary">
 			<HintPath>Dependencies\SubworldLibrary.dll</HintPath>
 		</Reference>
-		<Reference Include="TextCopy">
-			<HintPath>lib\TextCopy.dll</HintPath>
-		</Reference>
     <Reference Include="NPCUtils">
       <HintPath>lib\NPCUtils.dll</HintPath>
     </Reference>

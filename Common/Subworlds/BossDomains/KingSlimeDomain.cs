@@ -255,6 +255,7 @@ public class KingSlimeDomain : BossDomainSubworld
 	public override void Update()
 	{
 		bool allInArena = true;
+		bool allAlive = true;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
@@ -263,6 +264,11 @@ public class KingSlimeDomain : BossDomainSubworld
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;
+			}
+
+			if (player.dead || player.ghost)
+			{
+				allAlive = false;
 			}
 		}
 
@@ -273,11 +279,13 @@ public class KingSlimeDomain : BossDomainSubworld
 				WorldGen.PlaceTile(ArenaEntrance.X + i, ArenaEntrance.Y, TileID.SlimeBlock, true, true);
 			}
 
+			Main.spawnTileX = Arena.Center.X / 16;
+			Main.spawnTileY = Arena.Center.Y / 16;
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y + 400, NPCID.KingSlime);
 			BossSpawned = true;
 		}
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.KingSlime) && !ReadyToExit)
+		if (BossSpawned && !NPC.AnyNPCs(NPCID.KingSlime) && !ReadyToExit && allAlive)
 		{
 			Vector2 pos = Arena.Center() + new Vector2(0, 150);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);

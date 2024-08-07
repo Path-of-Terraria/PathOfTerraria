@@ -1,9 +1,11 @@
-﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Core.Items;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Core.Items;
+using SubworldLibrary;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal class LowTierMap : Map
+internal class KingSlimeMap : Map
 {
 	public override void SetStaticDefaults()
 	{
@@ -15,11 +17,11 @@ internal class LowTierMap : Map
 
 	public override void OpenMap()
 	{
-		MappingSystem.EnterMap(this);
+		SubworldSystem.Enter<KingSlimeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)
 	{
-		return defaultName;
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Items.{Name}.DisplayName");
 	}
 }

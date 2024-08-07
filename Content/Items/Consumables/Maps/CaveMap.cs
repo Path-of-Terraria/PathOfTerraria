@@ -19,10 +19,9 @@ internal class CaveMap : Map
 		staticData.DropChance = 1f;
 	}
 
-	public override bool? UseItem(Player player)
+	public override void OpenMap()
 	{
 		MappingSystem.EnterCaveMap(this);
-		return true;
 	}
 
 	public override string GenerateName(string defaultName)
