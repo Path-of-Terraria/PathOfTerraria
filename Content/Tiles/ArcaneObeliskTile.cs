@@ -1,5 +1,6 @@
 using PathOfTerraria.Content.GUI.Waypoints;
 using PathOfTerraria.Content.Items.Placeable;
+using PathOfTerraria.Core.UI;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.ObjectInteractions;
@@ -44,26 +45,7 @@ public class ArcaneObeliskTile : ModTile
 		
 		num = fail ? 1 : 3;
 	}
-
-	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
-	{
-		return true;
-	}
-
-	public override bool RightClick(int i, int j)
-	{
-		if (UIWaypointManager.UserInterface.CurrentState != null)
-		{
-			UIWaypointManager.UserInterface.SetState(new UIWaypointMenu());
-		}
-		else
-		{
-			UIWaypointManager.UserInterface.SetState(null);
-		}
-		
-		return true;
-	}
-
+	
 	public override void MouseOver(int i, int j)
 	{
 		base.MouseOver(i, j);
@@ -72,6 +54,18 @@ public class ArcaneObeliskTile : ModTile
 		Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<ArcaneObeliskItem>();
 	}
 
+	public override bool RightClick(int i, int j)
+	{
+		UIManager.TryToggleOrRegister("PoT:Waypoints", "Vanilla: Mouse Text", new UIWaypointBrowser(), 1);
+		
+		return true;
+	}
+	
+	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
+	{
+		return true;
+	}
+	
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		base.PostDraw(i, j, spriteBatch);

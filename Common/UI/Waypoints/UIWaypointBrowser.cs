@@ -3,7 +3,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Content.GUI.Waypoints;
 
-public sealed class UIWaypointMenu : UIState
+public sealed class UIWaypointBrowser : UIState
 {
 	public static readonly Asset<Texture2D> HomeIconTexture = ModContent.Request<Texture2D>(
 		$"{PoTMod.ModName}/Assets/UI/Waypoints/Home",
@@ -13,5 +13,11 @@ public sealed class UIWaypointMenu : UIState
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
+		
+		Append(new UIWaypointPreview()
+		{
+			HAlign = 0.5f,
+			VAlign = 0.5f
+		});
 	}
 }

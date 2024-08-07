@@ -1,6 +1,16 @@
+using Terraria.UI;
+
 namespace PathOfTerraria.Content.GUI.Waypoints;
 
-public class UIWaypointPreview
+public sealed class UIWaypointPreview : UIElement
 {
-	
+	public override void OnInitialize()
+	{
+		base.OnInitialize();
+	}
+
+	public override void Update(GameTime gameTime)
+	{
+		base.Update(gameTime);
+	}
 }

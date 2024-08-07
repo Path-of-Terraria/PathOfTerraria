@@ -12,6 +12,6 @@ public sealed class UIGearInventoryManager : ModSystem
 
 	public override void OnWorldLoad()
 	{
-		UIManager.Enable(Identifier, "Vanilla: Inventory", new UIGearInventory(), 1);
+		UIManager.TryEnableOrRegister(Identifier, "Vanilla: Inventory", new UIGearInventory(), 1);
 	}
 }

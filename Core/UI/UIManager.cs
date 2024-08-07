@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata;
+using PathOfTerraria.Core.UI;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI;
@@ -15,7 +17,7 @@ namespace PathOfTerraria.Core.UI;
 ///		a distinct identifier.
 /// </remarks>
 [Autoload(Side = ModSide.Client)]
-public sealed class UIManager : ModSystem
+public sealed partial class UIManager : ModSystem
 {
 	private sealed class UIStateData<T>(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI) where T : UIState
 	{
@@ -194,20 +196,20 @@ public sealed class UIManager : ModSystem
 
 		return UITypeData<T>.Data[index].Value;
 	}
-
+	
 	/// <summary>
-	///		Enables a <see cref="UIState"/> instance.
+	///		Registers a <see cref="UIState"/> instance.
 	/// </summary>
 	/// <remarks>
 	///		If another instance with the same identifier already exists, this will refresh its properties.
 	/// </remarks>
-	/// <param name="identifier">The identifier of the <see cref="UIState"/> to enable.</param>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
 	/// <param name="layer">The layer at which to insert the <see cref="UIState"/>.</param>
 	/// <param name="value">The value of the <see cref="UIState"/>.</param>
 	/// <param name="offset">The index offset within the specified insertion layer. Defaults to <c>0</c>.</param>
 	/// <param name="type">The interface scale type of the <see cref="UIState"/>. Defaults to <see cref="InterfaceScaleType.UI"/>.</param>
-	/// <typeparam name="T">The type of the <see cref="UIState"/> to enable.</typeparam>
-	public static void Enable<T>(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI) where T : UIState
+	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
+	public static void Register<T>(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI) where T : UIState
 	{
 		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
 
@@ -230,13 +232,54 @@ public sealed class UIManager : ModSystem
 	}
 
 	/// <summary>
+	///		Attemps to enable a <see cref="UIState"/> instance by its identifier.
+	/// </summary>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
+	/// <returns><c>true</c> if the state was successfully enabled; otherwise, <c>false</c>.</returns>
+	public static bool TryEnable<T>(string identifier) where T : UIState
+	{
+		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
+
+		if (index < 0)
+		{
+			return false;
+		}
+
+		UITypeData<T>.Data[index].Enabled = true;
+
+		return true;
+	}
+	
+	/// <summary>
+	///		Attempts to enable a <see cref="UIState"/> instance. If it doesn't exist, registers it and then enables it.
+	/// </summary>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <param name="layer">The layer at which to insert the <see cref="UIState"/>.</param>
+	/// <param name="value">The value of the <see cref="UIState"/>.</param>
+	/// <param name="offset">The index offset within the specified insertion layer. Defaults to <c>0</c>.</param>
+	/// <param name="type">The interface scale type of the <see cref="UIState"/>. Defaults to <see cref="InterfaceScaleType.UI"/>.</param>
+	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
+	public static bool TryEnableOrRegister<T>(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI) where T : UIState
+	{
+		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
+
+		if (index < 0)
+		{
+			Register(identifier, layer, value, offset, type);
+		}
+
+		return TryEnable<T>(identifier);
+	}
+	
+	/// <summary>
 	///		Attemps to disable a <see cref="UIState"/> instance by its identifier.
 	/// </summary>
 	/// <remarks>
 	///		This method does nothing if the instance is already disabled or cannot be found.
 	/// </remarks>
-	/// <param name="identifier">The unique identifier of the <see cref="UIState"/> to disable.</param>
-	/// <typeparam name="T">The type of the <see cref="UIState"/> to disable.</typeparam>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
 	/// <returns><c>true</c> if the state was successfully disabled; otherwise, <c>false</c>.</returns>
 	public static bool TryDisable<T>(string identifier) where T : UIState
 	{
@@ -255,8 +298,8 @@ public sealed class UIManager : ModSystem
 	/// <summary>
 	///		Attemps to toggle the enabled state of a <see cref="UIState"/> instance by its identifier.
 	/// </summary>
-	/// <param name="identifier">The unique identifier of the <see cref="UIState"/> to enable.</param>
-	/// <typeparam name="T">The type of the <see cref="UIState"/> to enable.</typeparam>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
 	/// <returns><c>true</c> if the state was successfully toggled; otherwise, <c>false</c>.</returns>
 	public static bool TryToggle<T>(string identifier) where T : UIState
 	{
@@ -270,5 +313,26 @@ public sealed class UIManager : ModSystem
 		UITypeData<T>.Data[index].Enabled = !UITypeData<T>.Data[index].Enabled;
 
 		return true;
+	}
+	
+	/// <summary>
+	///		Attempts to toggle a <see cref="UIState"/> instance. If it doesn't exist, registers it and then toggles it.
+	/// </summary>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <param name="layer">The layer at which to insert the <see cref="UIState"/>.</param>
+	/// <param name="value">The value of the <see cref="UIState"/>.</param>
+	/// <param name="offset">The index offset within the specified insertion layer. Defaults to <c>0</c>.</param>
+	/// <param name="type">The interface scale type of the <see cref="UIState"/>. Defaults to <see cref="InterfaceScaleType.UI"/>.</param>
+	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
+	public static bool TryToggleOrRegister<T>(string identifier, string layer, T? value, int offset = 0, InterfaceScaleType type = InterfaceScaleType.UI) where T : UIState
+	{
+		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
+
+		if (index < 0)
+		{
+			Register(identifier, layer, value, offset, type);
+		}
+		
+		return TryToggle<T>(identifier);
 	}
 }

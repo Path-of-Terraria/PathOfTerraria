@@ -4,13 +4,12 @@ using JetBrains.Annotations;
 using PathOfTerraria.Core.UI;
 using Terraria.UI;
 
-[assembly: MetadataUpdateHandler(typeof(UIHotReloadManager))]
+[assembly: MetadataUpdateHandler(typeof(UIHotReloadUpdateHandler))]
 
 namespace PathOfTerraria.Core.UI;
 
-internal static class UIHotReloadManager
+internal static class UIHotReloadUpdateHandler
 {        
-	[UsedImplicitly]
 	internal static void UpdateApplication(Type[]? updatedTypes)
 	{	
 		Main.QueueMainThreadAction(
