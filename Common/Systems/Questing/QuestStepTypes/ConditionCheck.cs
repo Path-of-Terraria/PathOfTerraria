@@ -6,8 +6,6 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 // *so that we can talk with the npc*
 internal class ConditionCheck(Func<Player, bool> condition, string displayText, string completeText) : QuestStep
 {
-	private PathOfTerrariaPlayerEvents.PostUpdateDelegate tracker;
-
 	public override string QuestString()
 	{
 		return displayText;
@@ -18,21 +16,8 @@ internal class ConditionCheck(Func<Player, bool> condition, string displayText, 
 		return completeText;
 	}
 
-	public override void Track(Player player, Action onCompletion)
+	public override bool Track(Player player)
 	{
-		tracker = (Player p) =>
-		{
-			if (condition(p))
-			{
-				onCompletion();
-			}
-		};
-
-		PathOfTerrariaPlayerEvents.PostUpdateEvent += tracker;
-	}
-
-	public override void UnTrack()
-	{
-		PathOfTerrariaPlayerEvents.PostUpdateEvent -= tracker;
+		return condition(player);
 	}
 }

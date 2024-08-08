@@ -10,7 +10,6 @@ namespace PathOfTerraria.Common.UI.Utilities;
 public class UISimpleWrappableText : UIElement
 {
 	private TextSnippet[] _array;
-	private readonly string _text;
 	private string _pageText;
 
 	private bool _centered;
@@ -73,16 +72,26 @@ public class UISimpleWrappableText : UIElement
 	}
 
 	public Color BorderColour { get; set; }
+
 	private DynamicSpriteFont Font => FontAssets.MouseText.Value;
+
 	private float _drawOffsetX;
 	private int page;
 	private float scale;
+	private string _text;
 
 	public UISimpleWrappableText(string text, float textScale = 1f)
 	{
 		_text = text;
 		_colour = Color.White;
 		Scale = textScale;
+
+		UpdateText();
+	}
+
+	public void SetText(string text)
+	{
+		_text = text;
 
 		UpdateText();
 	}

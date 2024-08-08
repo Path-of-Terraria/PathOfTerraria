@@ -13,9 +13,9 @@ internal class TestQuestTwo : Quest
 	public override string Name => "Test Quest 2";
 	public override string Description => "This is another test quest. Simply used for testing purposes";
 
-	protected override List<QuestStep> _subQuests =>
+	public override List<QuestStep> QuestSteps =>
 	[
-		new CollectCount(ItemID.StoneBlock, 50, s => $"Collect {s} stone."),
+		new CollectCount(ItemID.StoneBlock, 2, Lang.GetItemNameValue(ItemID.StoneBlock)),
 		new KillCount(x => x.lifeMax > 100, 10, remaining => $"Kill {remaining} mobs with 100+ max life")
 	];
 

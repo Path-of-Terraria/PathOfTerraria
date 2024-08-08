@@ -52,7 +52,7 @@ public class QuestsUIState : CloseableSmartUi
 		{
 			Width = StyleDimension.FromPercent(1),
 			Height = StyleDimension.FromPercent(1),
-			ViewedQuest = quests.FirstOrDefault()
+			ViewedQuestName = quests.FirstOrDefault().Name
 		};
 		Panel.Append(_questDetails);
 		_questDetails.PopulateQuestSteps();
@@ -92,6 +92,18 @@ public class QuestsUIState : CloseableSmartUi
 
 	public void SelectQuest(Quest quest)
 	{
-		_questDetails.ViewedQuest = quest;
+		_questDetails.ViewedQuestName = quest.Name;
+
+		// Clear steps to repopulate later
+		for (int i = 0; i < _questDetails.Children.Count(); ++i)
+		{
+			if (_questDetails.Children.ElementAt(i) is UISelectableQuestStep)
+			{
+				_questDetails.RemoveChild(_questDetails.Children.ElementAt(i));
+				i--;
+			}
+		}
+
+		_questDetails.PopulateQuestSteps(); 
 	}
 }

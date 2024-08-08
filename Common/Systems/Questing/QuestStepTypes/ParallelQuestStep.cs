@@ -5,7 +5,7 @@ using Terraria.ModLoader.IO;
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
 {
-	private List<bool> _completed;
+	private bool[] _completed;
 
 	private Action _onCompletion;
 	readonly List<QuestStep> postTrackQuests = [];
@@ -20,31 +20,36 @@ internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
 		}
 	}
 
-	public override void Track(Player player, Action onCompletion)
+	public override bool Track(Player player)
 	{
-		_completed = []; // or load data if there is any
+		// TODO
+		return false;
+		//_completed = new bool[quests.Count]; // or load data if there is any
 
-		_onCompletion = onCompletion;
+		//for (int i = 0; i < quests.Count; ++i)
+		//{
+		//	_completed[i] = false;
+		//}
 
-		for (int i = 0; i < quests.Count; i++) 
-		{
-			if (_completed.Count > i && _completed[i])
-			{
-				continue;
-			}
+		//_onCompletion = onCompletion;
 
-			_completed.Add(false); // or skip the track if its completed from loaded data
-			int _i = i;
+		//for (int i = 0; i < quests.Count; i++) 
+		//{
+		//	if (_completed.Length > i && _completed[i])
+		//	{
+		//		continue;
+		//	}
 
-			QuestStep temp = quests[_i];
-			temp.Track(player, () =>
-			{
-				FinishSubTask(_i); // if we dont do this it just keeps a reference to i and calls this with Count+1.
-				temp.UnTrack();
-			});
+		//	QuestStep temp = quests[i];
 
-			postTrackQuests.Add(temp);
-		}
+		//	if (temp.Track(player))
+		//	{
+		//		FinishSubTask(i);
+		//		temp.UnTrack();
+		//	};
+
+		//	postTrackQuests.Add(temp);
+		//}
 	}
 
 	public override string QuestString()
@@ -80,7 +85,7 @@ internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
 
 	public override void Save(TagCompound tag)
 	{
-		tag.Add("completed", _completed);
+		tag.Add("completed", _completed.ToList());
 
 		List<TagCompound> subStepTags = [];
 		foreach (QuestStep step in postTrackQuests)
@@ -95,7 +100,7 @@ internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
 
 	public override void Load(TagCompound tag)
 	{
-		_completed = tag.Get<List<bool>>("completed");
+		_completed = [.. tag.Get<List<bool>>("completed")];
 
 		List<TagCompound> subStepTags = tag.Get<List<TagCompound>>("subSteps");
 		for (int i = 0; i < subStepTags.Count; i++)

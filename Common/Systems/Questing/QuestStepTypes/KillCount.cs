@@ -24,27 +24,22 @@ internal class KillCount(Func<NPC, bool> includes, int count, Func<string, strin
 		return displayText(count + "/" + count);
 	}
 
-	public override void Track(Player player, Action onCompletion)
+	// TODO
+	public override bool Track(Player player)
 	{
-		tracker = (NPC n, Player p) =>
-		{
-			if (p == player && includes(n))
-			{
-				_remaining--;
-			}
+		return false;
+		//tracker = (NPC n, Player p) =>
+		//{
+		//	if (p == player && includes(n))
+		//	{
+		//		_remaining--;
+		//	}
 
-			if (_remaining <= 0)
-			{
-				onCompletion();
-			}
-		};
-
-		PathOfTerrariaNpcEvents.OnKillByEvent += tracker;
-	}
-
-	public override void UnTrack()
-	{
-		PathOfTerrariaNpcEvents.OnKillByEvent -= tracker;
+		//	if (_remaining <= 0)
+		//	{
+		//		onCompletion();
+		//	}
+		//};
 	}
 
 	public override void Save(TagCompound tag)

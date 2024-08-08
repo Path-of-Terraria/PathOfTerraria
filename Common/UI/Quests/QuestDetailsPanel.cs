@@ -6,7 +6,9 @@ namespace PathOfTerraria.Common.UI.Quests;
 
 internal class QuestDetailsPanel : SmartUiElement
 {
-	public Quest ViewedQuest { get; set; }
+	public static QuestModPlayer QuestPlayer => Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
+
+	public string ViewedQuestName { get; set; }
 
 	public override string TabName => "QuestBookMenu";
 
@@ -20,13 +22,16 @@ internal class QuestDetailsPanel : SmartUiElement
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		DrawBack(spriteBatch);
-		if (Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetQuestCount() != 0 && ViewedQuest is not null)
+		
+		if (QuestPlayer.GetQuestCount() != 0 && !string.IsNullOrEmpty(ViewedQuestName))
 		{
-			Utils.DrawBorderStringBig(spriteBatch, ViewedQuest.Name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
+			Utils.DrawBorderStringBig(spriteBatch, QuestPlayer.GetQuest(ViewedQuestName).Name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
 		}
+
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Red);
 #endif
+
 		base.Draw(spriteBatch);
 	}
 
@@ -38,21 +43,24 @@ internal class QuestDetailsPanel : SmartUiElement
 
 	public void PopulateQuestSteps()
 	{
-		if (ViewedQuest is null)
+		if (string.IsNullOrEmpty(ViewedQuestName) || ViewedQuestName is null)
 		{
 			return;
 		}
 
+		Quest quest = QuestPlayer.GetQuest(ViewedQuestName);
 		int index = 0;
 
-		foreach (QuestStep step in ViewedQuest.GetSteps())
+		for (int i = 0; i < quest.QuestSteps.Count; i++)
 		{
-			if (index > ViewedQuest.CurrentQuest)
+			QuestStep step = quest.QuestSteps[i];
+
+			if (index > quest.CurrentQuest)
 			{
 				continue;
 			}
 
-			var stepUI = new UISelectableQuestStep(step);
+			var stepUI = new UISelectableQuestStep(i, quest);
 			stepUI.Left.Set(530, 0f);
 			stepUI.Top.Set(100 + index * 22, 0f);
 			Append(stepUI);

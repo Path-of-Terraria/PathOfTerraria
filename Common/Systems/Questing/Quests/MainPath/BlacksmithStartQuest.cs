@@ -16,14 +16,14 @@ internal class BlacksmithStartQuest : Quest
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override string Name => "Forging a New Blade";
 
-	protected override List<QuestStep> _subQuests =>
+	public override List<QuestStep> QuestSteps =>
 	[
 		new ParallelQuestStep([
-			new CollectCount(item => item.type == ItemID.IronOre || item.type == ItemID.LeadOre, 20, s => $"Collect {s} iron ore."),
-			new CollectCount(item => item.type == ItemID.IronHammer || item.type == ItemID.LeadHammer, 1, s => $"Collect {s} iron hammer."),
+			new CollectCount(item => item.type == ItemID.IronOre || item.type == ItemID.LeadOre, 20, Lang.GetItemNameValue(ItemID.IronOre)),
+			new CollectCount(item => item.type == ItemID.IronHammer || item.type == ItemID.LeadHammer, 1, Lang.GetItemNameValue(ItemID.IronHammer)),
 		]),
-		new CollectCount(ItemID.StoneBlock, 50, s => $"Collect {s} stone."),
-		new CollectCount(ItemID.Wood, 20, s => $"Collect {s} wood."),
+		new CollectCount(ItemID.StoneBlock, 50, Lang.GetItemNameValue(ItemID.StoneBlock)),
+		new CollectCount(ItemID.Wood, 20, Lang.GetItemNameValue(ItemID.Wood)),
 	];
 
 	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();

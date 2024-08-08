@@ -13,9 +13,9 @@ internal class TestQuest : Quest
 	public override string Name => "Test Quest";
 	public override string Description => "This is a test quest. It is used to test the quest system.";
 
-	protected override List<QuestStep> _subQuests =>
+	public override List<QuestStep> QuestSteps =>
 	[
-		new CollectCount(ItemID.StoneBlock, 50, s => $"Collect {s} stone."),
+		new CollectCount(ItemID.StoneBlock, 50, Lang.GetItemNameValue(ItemID.StoneBlock)),
 		new ConditionCheck(p => p.ZoneSnow, "Go to the ice/snow biome", "Has gone to the ice/snow biome."),
 		new KillCount(x => x.type == NPCID.Zombie || x.type == NPCID.BlueSlime, 3,
 			remaining => $"Kill {remaining} of slimes and zombies."),

@@ -1,54 +1,38 @@
-﻿using PathOfTerraria.Common.Events;
+﻿namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
-namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
-
-internal class CollectCount(Func<Item, bool> includes, int count, Func<string, string> displayText) : QuestStep
+internal class CollectCount(Func<Item, bool> includes, int count, string name) : QuestStep
 {
-	public CollectCount(int itemType, int count, Func<string, string> displayText) : this(
-		(Item item) => item.type == itemType, count, displayText)
+	public CollectCount(int itemType, int count, string name) : this(
+		(Item item) => item.type == itemType, count, name)
 	{
 	}
 
-	private int _total;
-	private PathOfTerrariaPlayerEvents.PostUpdateDelegate tracker;
+	private readonly string Name = name;
+
+	private int _total = 0;
 
 	public override string QuestString()
 	{
-		return displayText(_total + "/" + count);
+		return "Collect " + _total + "/" + count + " " + Name;
 	}
 
 	public override string QuestCompleteString()
 	{
-		return displayText(count + "/" + count);
+		return "Collect " + count + "/" + count + " " + Name;
 	}
 
-	public override void Track(Player player, Action onCompletion)
+	public override bool Track(Player player)
 	{
-		tracker = (Player p) =>
+		_total = 0;
+
+		foreach (Item i in player.inventory)
 		{
-			if (p == player)
+			if (includes(i))
 			{
-				_total = 0;
-				foreach (Item i in p.inventory)
-				{
-					if (includes(i))
-					{
-						_total += i.stack;
-					}
-				}
+				_total += i.stack;
 			}
+		}
 
-			if (_total >= count)
-			{
-				onCompletion();
-			}
-		};
-
-		PathOfTerrariaPlayerEvents.PostUpdateEvent += tracker;
-	}
-
-	public override void UnTrack()
-	{
-		PathOfTerrariaPlayerEvents.PostUpdateEvent -= tracker;
+		return _total >= count;
 	}
 }

@@ -93,6 +93,14 @@ internal class QuestModPlayer : ModPlayer
 		questTags.ForEach(tag => { Quest q = Quest.LoadFrom(tag, Player); if (q is not null) { _enabledQuests.Add(q.Name, q); } });
 	}
 
+	public override void PostUpdateMiscEffects()
+	{
+		foreach (Quest quest in _enabledQuests.Values)
+		{
+			quest.Update(Player);
+		}
+	}
+
 	public List<string> GetQuests()
 	{
 		return _enabledQuests.ToList().Select(q => q.Key).ToList();
@@ -113,7 +121,7 @@ internal class QuestModPlayer : ModPlayer
 	/// <returns></returns>
 	public List<Quest> GetAllQuests()
 	{
-		return _enabledQuests.Values.ToList();
+		return [.. _enabledQuests.Values];
 	}
 	
 	/// <summary>

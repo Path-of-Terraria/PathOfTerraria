@@ -1,8 +1,8 @@
-﻿namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
-internal class BringCount(int itemId, int count, int npcid) : QuestStep 
-{
+﻿//namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
+//internal class BringCount(int itemId, int count, int npcid) : QuestStep 
+//{
 
-}
+//}
 
 // this is basically collect + interact with npc...
 // idk if its needed or if it should just be the two from above
