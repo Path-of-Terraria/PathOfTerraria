@@ -9,9 +9,9 @@ namespace PathOfTerraria.Common.UI.Armor;
 public sealed class UIGearInventoryManager : ModSystem
 {
 	public const string Identifier = $"{PoTMod.ModName}:Inventory";
-	
+
 	public override void OnWorldLoad()
 	{
-		UIManager.Enable(Identifier, "Vanilla: Inventory", new UIGearInventory(), 1);
+		UIManager.TryEnableOrRegister(Identifier, "Vanilla: Inventory", new UIGearInventory(), 1);
 	}
 }
