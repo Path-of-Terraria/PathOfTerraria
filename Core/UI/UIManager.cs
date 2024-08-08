@@ -301,7 +301,7 @@ public sealed partial class UIManager : ModSystem
 	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
 	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
 	/// <returns><c>true</c> if the state was successfully toggled; otherwise, <c>false</c>.</returns>
-	public static bool TryToggle<T>(string identifier) where T : UIState
+	public static bool TryToggle<T>(string identifier, bool refresh = true) where T : UIState
 	{
 		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
 
@@ -334,5 +334,33 @@ public sealed partial class UIManager : ModSystem
 		}
 		
 		return TryToggle<T>(identifier);
+	}
+
+	/// <summary>
+	///		Attempts to refresh a <see cref="UIState"/> instance.
+	/// </summary>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
+	/// <returns><c>true</c> if the state was successfully refreshed; otherwise, <c>false</c>.</returns>
+	public static bool TryRefresh<T>(string identifier) where T : UIState
+	{
+		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
+
+		if (index < 0)
+		{
+			return false;
+		}
+
+		UIStateData<T> data = UITypeData<T>.Data[index];
+		
+		data.Value?.RemoveAllChildren();
+			
+		data.Value?.OnActivate();
+		data.Value?.OnInitialize();
+			
+		data.UserInterface?.SetState(null);
+		data.UserInterface?.SetState(data.Value);
+
+		return true;
 	}
 }
