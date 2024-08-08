@@ -41,7 +41,7 @@ internal static class ExperienceHandler
 		packet.Send(-1, target);
 	}
 
-	internal static void ClientReceiveExperience(BinaryReader reader)
+	internal static void ClientReceive(BinaryReader reader)
 	{
 		int target = reader.ReadByte();
 		int xp = reader.ReadInt32();

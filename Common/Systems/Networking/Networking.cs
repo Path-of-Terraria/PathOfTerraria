@@ -52,7 +52,7 @@ internal static class Networking
 				}
 				else
 				{
-					ExperienceHandler.ServerReceive(reader);
+					ExperienceHandler.ClientReceive(reader);
 				}
 
 				break;
