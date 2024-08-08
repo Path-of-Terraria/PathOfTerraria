@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Networking.Handlers.MapDevice;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Networking;
@@ -25,6 +26,14 @@ internal static class Networking
 		/// <c>byte playerWhoAmI, short npcWho, bool runLocally = false</c>
 		/// </summary>
 		SyncGuardianAngelHit,
+
+		/// <summary>
+		/// Syncs placing an item in a map device. Signature:<br/>
+		/// <c>byte fromWho, short itemId, Point16 entityKey</c>
+		/// </summary>
+		SyncMapDevicePlaceMap,
+
+		ConsumeMapOffOfDevice,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -65,6 +74,30 @@ internal static class Networking
 				else
 				{
 					SyncGuardianAngelHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.SyncMapDevicePlaceMap:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					PlaceMapInDeviceHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					PlaceMapInDeviceHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.ConsumeMapOffOfDevice:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					ConsumeMapDeviceHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					ConsumeMapDeviceHandler.ClientRecieve(reader);
 				}
 
 				break;

@@ -11,6 +11,8 @@ internal class CaveMap : Map
 	public int SpawnRoomSize = 10;
 	public int ExtraRoomDist = 10;
 
+	public override int MaxUses => 1;
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

@@ -87,6 +87,11 @@ public sealed class NPCDeathEffects : NPCComponent
 	/// <param name="amount">The amount of gore to add.</param>
 	public void AddGore(string name, int amount = 1)
 	{
+		if (Main.netMode == NetmodeID.Server)
+		{
+			return;
+		}
+
 		int type = ModContent.Find<ModGore>(name).Type;
 
 		AddGore(type, amount);
@@ -99,6 +104,11 @@ public sealed class NPCDeathEffects : NPCComponent
 	/// <param name="amount">The amount of gore to add.</param>
 	public void AddGore(int type, int amount = 1)
 	{
+		if (Main.netMode == NetmodeID.Server)
+		{
+			return;
+		}
+
 		GorePool.Add(new GoreSpawnParameters(type, amount));
 	}
 

@@ -21,7 +21,7 @@ public sealed class GearSwapManager : ModPlayer
 
 	public override void UpdateEquips()
 	{
-		if (!GearSwapKeybind.SwapKeybind.JustPressed)
+		if (Main.dedServ || !GearSwapKeybind.SwapKeybind.JustPressed)
 		{
 			return;
 		}

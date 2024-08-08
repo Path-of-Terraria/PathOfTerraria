@@ -86,7 +86,7 @@ internal class BossDomainPlayer : ModPlayer
 		_livesLeft = GetLivesPerPlayer();
 	}
 
-	private static int GetLivesPerPlayer()
+	public static int GetLivesPerPlayer()
 	{
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
@@ -98,7 +98,8 @@ internal class BossDomainPlayer : ModPlayer
 		return plr switch
 		{
 			1 => 6,
-			2 or 3 => 3,
+			2 => 3,
+			3 => 2,
 			_ => 1
 		};
 	}

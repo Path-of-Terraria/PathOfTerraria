@@ -5,6 +5,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
 internal class LowTierMap : Map
 {
+	public override int MaxUses => 1;
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

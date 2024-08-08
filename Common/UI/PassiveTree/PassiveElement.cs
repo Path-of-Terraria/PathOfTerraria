@@ -125,78 +125,78 @@ internal class PassiveElement : SmartUiElement
 			case 1:
 				switch (_passive.Level)
 				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
 				}
 
 				return;
 			case 2:
 				switch (_passive.Level)
 				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier2")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
 				}
 
 				return;
 			case 3:
 				switch (_passive.Level)
 				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier3")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
 				}
 
 				return;
 			case 5:
 				switch (_passive.Level)
 				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier2")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier3")); break;
+					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier4")); break;
+					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
 				}
 
 				return;
 			case 6:
 				switch (_passive.Level)
 				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					case 6: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier2")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier3")); break;
+					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier4")); break;
+					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
+					case 6: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier1")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
 				}
 
 				return;
 			case 7:
 				switch (_passive.Level)
 				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					case 6: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 7: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier2")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier3")); break;
+					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier4")); break;
+					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
+					case 6: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier2")); break;
+					case 7: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier1")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
 				}
 
 				return;
 			default:
 				switch (_passive.Level)
 				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
+					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier1")); break;
+					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier2")); break;
+					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier3")); break;
+					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier4")); break;
+					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
+					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5")); break;
 				}
 
 				break;
