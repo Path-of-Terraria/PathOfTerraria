@@ -280,7 +280,7 @@ internal class MapDeviceEntity : ModTileEntity
 
 		if (StoredMap is not null)
 		{
-			if (Main.netMode == NetmodeID.MultiplayerClient)
+			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
 				ConsumeMapDeviceHandler.Send((byte)Main.myPlayer, new Point16(i, j));
 			}
@@ -315,7 +315,7 @@ internal class MapDeviceEntity : ModTileEntity
 			heldItem.TurnToAir();
 		}
 
-		if (Main.netMode == NetmodeID.MultiplayerClient)
+		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
 			PlaceMapInDeviceHandler.Send((byte)Main.myPlayer, (short)clone.type, new Point16(i, j));
 		}
