@@ -33,6 +33,9 @@ internal static class Networking
 		/// </summary>
 		SyncMapDevicePlaceMap,
 
+		/// <summary>
+		/// 
+		/// </summary>
 		ConsumeMapOffOfDevice,
 	}
 
@@ -45,11 +48,11 @@ internal static class Networking
 			case Message.SpawnExperience:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					ExperienceHandler.ServerRecieve(reader);
+					ExperienceHandler.ServerReceive(reader);
 				}
 				else
 				{
-					ExperienceHandler.ServerRecieve(reader);
+					ExperienceHandler.ServerReceive(reader);
 				}
 
 				break;
@@ -57,11 +60,11 @@ internal static class Networking
 			case Message.SetHotbarPotionUse:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					HotbarPotionHandler.ServerRecieve(reader);
+					HotbarPotionHandler.ServerReceive(reader);
 				}
 				else
 				{
-					HotbarPotionHandler.ClientRecieve(reader);
+					HotbarPotionHandler.ClientReceive(reader);
 				}
 
 				break;
@@ -69,11 +72,11 @@ internal static class Networking
 			case Message.SyncGuardianAngelHit:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					SyncGuardianAngelHandler.ServerRecieve(reader);
+					SyncGuardianAngelHandler.ServerReceive(reader);
 				}
 				else
 				{
-					SyncGuardianAngelHandler.ClientRecieve(reader);
+					SyncGuardianAngelHandler.ClientReceive(reader);
 				}
 
 				break;
@@ -81,11 +84,11 @@ internal static class Networking
 			case Message.SyncMapDevicePlaceMap:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					PlaceMapInDeviceHandler.ServerRecieve(reader);
+					PlaceMapInDeviceHandler.ServerReceive(reader);
 				}
 				else
 				{
-					PlaceMapInDeviceHandler.ClientRecieve(reader);
+					PlaceMapInDeviceHandler.ClientReceive(reader);
 				}
 
 				break;
@@ -93,11 +96,11 @@ internal static class Networking
 			case Message.ConsumeMapOffOfDevice:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					ConsumeMapDeviceHandler.ServerRecieve(reader);
+					ConsumeMapDeviceHandler.ServerReceive(reader);
 				}
 				else
 				{
-					ConsumeMapDeviceHandler.ClientRecieve(reader);
+					ConsumeMapDeviceHandler.ClientReceive(reader);
 				}
 
 				break;

@@ -29,7 +29,7 @@ internal static class ExperienceHandler
 		}
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal static void ServerReceive(BinaryReader reader)
 	{
 		ModPacket packet = Networking.GetPacket(Networking.Message.SpawnExperience);
 		int target = reader.ReadByte();
@@ -41,7 +41,7 @@ internal static class ExperienceHandler
 		packet.Send(-1, target);
 	}
 
-	internal static void ClientRecieveExperience(BinaryReader reader)
+	internal static void ClientReceiveExperience(BinaryReader reader)
 	{
 		int target = reader.ReadByte();
 		int xp = reader.ReadInt32();
