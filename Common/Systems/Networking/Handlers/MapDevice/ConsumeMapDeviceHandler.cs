@@ -38,7 +38,6 @@ internal static class ConsumeMapDeviceHandler
 
 	internal static void ClientRecieve(BinaryReader reader)
 	{
-		short fromWho = reader.ReadByte();
 		short x = reader.ReadInt16();
 		short y = reader.ReadInt16();
 

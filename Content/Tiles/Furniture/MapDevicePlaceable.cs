@@ -6,6 +6,8 @@ using System.IO;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
+using Terraria.GameContent.Drawing;
+using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -18,7 +20,7 @@ public class MapDevicePlaceable : ModTile
 	private const int FrameWidth = 18 * 3;
 	private const int FrameHeight = 18 * 4 + 20;
 
-	private Asset<Texture2D> _relicTexture;
+	private static Asset<Texture2D> _portalTex;
 
 	/// This is the portal that will appear above
 	protected virtual string Portal => $"{PoTMod.ModName}/Assets/Items/Placeable/Portal";
@@ -26,7 +28,7 @@ public class MapDevicePlaceable : ModTile
 	public override void Load()
 	{
 		// Cache the extra texture displayed on the pedestal
-		_relicTexture = ModContent.Request<Texture2D>(Portal);
+		_portalTex = ModContent.Request<Texture2D>(Portal);
 	}
 
 	public override void SetStaticDefaults()
@@ -94,7 +96,7 @@ public class MapDevicePlaceable : ModTile
 		}
 
 		// Get the initial draw parameters
-		Texture2D texture = _relicTexture.Value;
+		Texture2D texture = _portalTex.Value;
 		int frameY = tile.TileFrameX / FrameWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
