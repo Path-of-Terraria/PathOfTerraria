@@ -3,6 +3,7 @@ using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
 using ReLogic.Content;
 using System.IO;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -191,7 +192,23 @@ internal class MapDeviceEntity : ModTileEntity
 		Tile tile = Main.tile[i, j];
 		i -= tile.TileFrameX / 18;
 		j -= tile.TileFrameY / 18 % 5;
-		return Place(i, j);
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			// Sync the entire multitile's area.
+			NetMessage.SendTileSquare(Main.myPlayer, i, j, 3, 5);
+
+			// Sync the placement of the tile entity with other clients. Needs to match Place() coordinates
+			// The "type" parameter refers to the tile type which placed the tile entity, so "Type" (the type of the tile entity) needs to be used here instead
+			NetMessage.SendData(MessageID.TileEntityPlacement, number: i, number2: j, number3: Type);
+			return -1;
+		}
+
+		// ModTileEntity.Place() handles checking if the entity can be placed, then places it for you
+		// Set "tileOrigin" to the same value you set TileObjectData.newTile.Origin to in the ModTile
+		int placedEntity = Place(i, j);
+
+		return placedEntity;
 	}
 
 	public override void OnKill()
@@ -256,8 +273,18 @@ internal class MapDeviceEntity : ModTileEntity
 
 	internal void TryPlaceMap(int i, int j)
 	{
+		//if (Main.netMode == NetmodeID.MultiplayerClient)
+		//{
+		//	NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Main.myPlayer, i,);
+		//}
+
 		if (StoredMap is not null)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				ConsumeMapDeviceHandler.Send((byte)Main.myPlayer, new Point16(i, j));
+			}
+
 			var map = StoredMap.ModItem as Map;
 			map.OpenMap();
 			map.RemainingUses--;

@@ -27,7 +27,7 @@ internal static class ConsumeMapDeviceHandler
 	internal static void ServerRecieve(BinaryReader reader)
 	{
 		ModPacket packet = Networking.GetPacket(Networking.Message.ConsumeMapOffOfDevice);
-		short fromWho = reader.ReadByte();
+		byte fromWho = reader.ReadByte();
 		short x = reader.ReadInt16();
 		short y = reader.ReadInt16();
 
