@@ -15,7 +15,7 @@ internal class TestQuest : Quest
 
 	public override List<QuestStep> QuestSteps =>
 	[
-		new CollectCount(ItemID.StoneBlock, 50, Lang.GetItemNameValue(ItemID.StoneBlock)),
+		new CollectCount(ItemID.StoneBlock, 50),
 		new ConditionCheck(p => p.ZoneSnow, "Go to the ice/snow biome", "Has gone to the ice/snow biome."),
 		new KillCount(x => x.type == NPCID.Zombie || x.type == NPCID.BlueSlime, 3,
 			remaining => $"Kill {remaining} of slimes and zombies."),

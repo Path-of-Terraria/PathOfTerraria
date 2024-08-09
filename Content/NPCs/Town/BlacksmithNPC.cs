@@ -110,7 +110,7 @@ public class BlacksmithNPC : ModNPC
 		else
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest(nameof(BlacksmithStartQuest));
 		}
 	}
 

@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
-using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
-public abstract class Quest
+public abstract class Quest : ILoadable
 {
+	private static readonly Dictionary<string, Quest> QuestsByName = [];
+
 	public abstract QuestTypes QuestType { get; }
 	public abstract int NPCQuestGiver { get; }
 	public virtual string Name => "";
@@ -17,6 +18,16 @@ public abstract class Quest
 
 	public int CurrentQuest;
 	public bool Completed;
+
+	public static Quest GetQuest(string name)
+	{
+		return QuestsByName[name];
+	}
+
+	public void Load(Mod mod)
+	{
+		QuestsByName.Add(Name, this);
+	}
 
 	public void StartQuest(Player player, int currentQuest = 0)
 	{
@@ -99,10 +110,12 @@ public abstract class Quest
 			return null;
 		}
 
-		Quest quest = (Quest)Activator.CreateInstance(t);
+		var quest = (Quest)Activator.CreateInstance(t);
+		GetQuest(quest.Name).Load(tag, player);
+		return GetQuest(quest.Name);
+	}
 
-		quest.Load(tag, player);
-
-		return quest;
+	public void Unload()
+	{
 	}
 }

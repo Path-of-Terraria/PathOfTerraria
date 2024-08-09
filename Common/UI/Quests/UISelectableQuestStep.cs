@@ -38,8 +38,10 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 	private void UpdateText(UIElement affectedElement)
 	{
 		var text = affectedElement as UISimpleWrappableText;
-		text.SetText(Step.IsDone ? Step.QuestCompleteString() : Step.QuestString());
+		text.SetText(Step.QuestString());
 		text.Colour = Step.IsDone ? new Color(50, 120, 10) : new Color(43, 28, 17);
+
+		text.Recalculate();
 	}
 
 	public override void LeftMouseDown(UIMouseEvent evt)

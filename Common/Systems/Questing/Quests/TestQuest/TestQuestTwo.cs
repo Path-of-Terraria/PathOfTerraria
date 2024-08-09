@@ -15,7 +15,7 @@ internal class TestQuestTwo : Quest
 
 	public override List<QuestStep> QuestSteps =>
 	[
-		new CollectCount(ItemID.StoneBlock, 2, Lang.GetItemNameValue(ItemID.StoneBlock)),
+		new CollectCount(ItemID.StoneBlock, 2),
 		new KillCount(x => x.lifeMax > 100, 10, remaining => $"Kill {remaining} mobs with 100+ max life")
 	];
 

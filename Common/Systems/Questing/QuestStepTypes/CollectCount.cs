@@ -1,19 +1,21 @@
-﻿namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
+﻿using Terraria.Localization;
 
-internal class CollectCount(Func<Item, bool> includes, int count, string name) : QuestStep
+namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
+
+internal class CollectCount(Func<Item, bool> includes, int count, LocalizedText name) : QuestStep
 {
-	public CollectCount(int itemType, int count, string name) : this(
-		(Item item) => item.type == itemType, count, name)
+	public CollectCount(int itemType, int count) : this(
+		(Item item) => item.type == itemType, count, Lang.GetItemName(itemType))
 	{
 	}
 
-	private readonly string Name = name;
+	private readonly LocalizedText Name = name;
 
-	private int _total = 0;
+	public int Total = 0;
 
 	public override string QuestString()
 	{
-		return "Collect " + _total + "/" + count + " " + Name;
+		return "Collect " + (IsDone ? count : Total) + "/" + count + " " + Name.Value;
 	}
 
 	public override string QuestCompleteString()
@@ -23,16 +25,22 @@ internal class CollectCount(Func<Item, bool> includes, int count, string name) :
 
 	public override bool Track(Player player)
 	{
-		_total = 0;
+		Total = TrackItemCount(includes, player);
+		return Total >= count;
+	}
+
+	private static int TrackItemCount(Func<Item, bool> includes, Player player)
+	{
+		int total = 0;
 
 		foreach (Item i in player.inventory)
 		{
 			if (includes(i))
 			{
-				_total += i.stack;
+				total += i.stack;
 			}
 		}
 
-		return _total >= count;
+		return total;
 	}
 }
