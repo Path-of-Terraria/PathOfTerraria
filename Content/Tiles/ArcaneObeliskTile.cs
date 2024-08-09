@@ -1,4 +1,4 @@
-using PathOfTerraria.Content.GUI.Waypoints;
+using PathOfTerraria.Common.UI.Waypoints;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.UI;
 using Terraria.DataStructures;
@@ -56,8 +56,7 @@ public class ArcaneObeliskTile : ModTile
 
 	public override bool RightClick(int i, int j)
 	{
-		UIManager.TryToggleOrRegister(UIWaypointBrowser.Identifier, "Vanilla: Mouse Text", new UIWaypointBrowser(), 1);
-		UIManager.TryRefresh<UIWaypointBrowser>(UIWaypointBrowser.Identifier);
+		UIManager.TryToggleOrRegister(UIWaypointBrowser.Identifier, "Vanilla: Mouse Text", new UIWaypointBrowser(new Point(i, j)), 1);
 		
 		return true;
 	}

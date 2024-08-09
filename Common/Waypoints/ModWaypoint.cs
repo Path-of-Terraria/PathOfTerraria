@@ -1,5 +1,5 @@
+using PathOfTerraria.Common.UI.Waypoints;
 using Terraria.Localization;
-using PathOfTerraria.Content.GUI.Waypoints;
 
 namespace PathOfTerraria.Common.Waypoints;
 

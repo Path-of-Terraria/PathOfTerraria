@@ -245,8 +245,11 @@ public sealed partial class UIManager : ModSystem
 		{
 			return false;
 		}
+		
+		UIStateData<T> data = UITypeData<T>.Data[index];
 
-		UITypeData<T>.Data[index].Enabled = true;
+		data.UserInterface?.CurrentState?.Activate();
+		data.Enabled = true;
 
 		return true;
 	}
@@ -290,7 +293,10 @@ public sealed partial class UIManager : ModSystem
 			return false;
 		}
 
-		UITypeData<T>.Data[index].Enabled = false;
+		UIStateData<T> data = UITypeData<T>.Data[index];
+
+		data.UserInterface?.CurrentState?.Deactivate();
+		data.Enabled = false;
 
 		return true;
 	}
@@ -310,9 +316,7 @@ public sealed partial class UIManager : ModSystem
 			return false;
 		}
 		
-		UITypeData<T>.Data[index].Enabled = !UITypeData<T>.Data[index].Enabled;
-
-		return true;
+		return UITypeData<T>.Data[index].Enabled ? TryDisable<T>(identifier) : TryEnable<T>(identifier);
 	}
 	
 	/// <summary>
@@ -334,33 +338,5 @@ public sealed partial class UIManager : ModSystem
 		}
 		
 		return TryToggle<T>(identifier);
-	}
-
-	/// <summary>
-	///		Attempts to refresh a <see cref="UIState"/> instance.
-	/// </summary>
-	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
-	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
-	/// <returns><c>true</c> if the state was successfully refreshed; otherwise, <c>false</c>.</returns>
-	public static bool TryRefresh<T>(string identifier) where T : UIState
-	{
-		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
-
-		if (index < 0)
-		{
-			return false;
-		}
-
-		UIStateData<T> data = UITypeData<T>.Data[index];
-		
-		data.Value?.RemoveAllChildren();
-			
-		data.Value?.OnActivate();
-		data.Value?.OnInitialize();
-			
-		data.UserInterface?.SetState(null);
-		data.UserInterface?.SetState(data.Value);
-
-		return true;
 	}
 }

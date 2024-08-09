@@ -1,6 +1,6 @@
 using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI.Waypoints;
+namespace PathOfTerraria.Common.UI.Waypoints;
 
 public sealed class UIWaypointPreview : UIElement
 {

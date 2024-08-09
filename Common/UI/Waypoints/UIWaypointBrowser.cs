@@ -1,10 +1,7 @@
-using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Common.Waypoints;
 using ReLogic.Content;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI.Waypoints;
+namespace PathOfTerraria.Common.UI.Waypoints;
 
 public sealed class UIWaypointBrowser : UIState
 {
@@ -20,14 +17,19 @@ public sealed class UIWaypointBrowser : UIState
 		AssetRequestMode.ImmediateLoad
 	);
 
+	/// <summary>
+	///		The position of the arcane obelisk instance in tile coordinates.
+	/// </summary>
+	public readonly Point Coordinates;
+
+	public UIWaypointBrowser(Point coordinates)
+	{
+		Coordinates = coordinates;
+	}
+
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
-
-		foreach (ModWaypoint waypoint in ModContent.GetContent<ModWaypoint>())
-		{
-			Asset<Texture2D> icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
-		}
 	}
 
 	public override void Update(GameTime gameTime)
