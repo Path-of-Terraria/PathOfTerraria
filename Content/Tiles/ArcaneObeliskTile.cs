@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.UI.Waypoints;
+using PathOfTerraria.Common.Waypoints.UI;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.UI;
 using Terraria.DataStructures;

@@ -91,11 +91,6 @@ public sealed partial class UIManager : ModSystem
 			{
 				UIStateData<T> data = Data[i];
 
-				if (!data.Enabled)
-				{
-					continue;
-				}
-				
 				data.UserInterface.Update(gameTime);
 			}
 		}
@@ -105,11 +100,6 @@ public sealed partial class UIManager : ModSystem
 			for (int i = 0; i < Data.Count; i++)
 			{
 				UIStateData<T> data = Data[i];
-				
-				if (!data.Enabled)
-				{
-					continue;
-				}
 
 				int index = layers.FindIndex(l => l.Name == data.Layer);
 
