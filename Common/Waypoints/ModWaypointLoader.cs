@@ -13,6 +13,14 @@ public static class ModWaypointLoader
 	public static readonly List<ModWaypoint> Waypoints = new();
 
 	/// <summary>
+	///		The total amount of registered <see cref="ModWaypoint"/> instances.
+	/// </summary>
+	/// <remarks>
+	///		Shorthand for <c>ModWaypointLoader.Waypoints.Count</c>.
+	/// </remarks>
+	public static int WaypointCount => Waypoints.Count;
+	
+	/// <summary>
 	///		Registers a <see cref="ModWaypoint"/> instance.
 	/// </summary>
 	/// <param name="waypoint">The value of the <see cref="ModWaypoint"/>.</param>
