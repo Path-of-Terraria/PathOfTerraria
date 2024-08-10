@@ -36,6 +36,8 @@ public abstract class ModWaypoint : ModType, ILocalizedModType
 	
 	protected sealed override void Register()
 	{
+		ModWaypointLoader.Register(this);
+		
 		ModTypeLookup<ModWaypoint>.Register(this);
 	}
 

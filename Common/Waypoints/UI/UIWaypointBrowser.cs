@@ -6,6 +6,9 @@ namespace PathOfTerraria.Common.Waypoints.UI;
 
 public sealed class UIWaypointBrowser : UIState
 {
+	/// <summary>
+	///		The unique identifier of this state.
+	/// </summary>
 	public const string Identifier = $"{PoTMod.ModName}:{nameof(UIWaypointBrowser)}";
 
 	/// <summary>
@@ -15,14 +18,32 @@ public sealed class UIWaypointBrowser : UIState
 
 	private float _progress;
 
+	/// <summary>
+	///		The animation progress of the browser.
+	/// </summary>
+	/// <remarks>
+	///		This ranges from <c>0</c> (Inactive) - <c>1</c> (Active).
+	/// </remarks>
 	public float Progress
 	{
 		get => _progress;
-		set => _progress = MathHelper.Clamp(_progress, 0f, 1f);
+		set => _progress = MathHelper.Clamp(value, 0f, 1f);
 	}
 
-	private bool activated;
-
+	private float _targetProgress;
+	
+	/// <summary>
+	///		The target value for the animation progress of the browser.
+	/// </summary>
+	/// <remarks>
+	///		This ranges from <c>0</c> (Inactive) - <c>1</c> (Active).
+	/// </remarks>
+	public float TargetProgress 
+	{
+		get => _targetProgress;
+		set => _targetProgress = MathHelper.Clamp(value, 0f, 1f);
+	}
+	
 	public UIWaypointBrowser(Point coordinates)
 	{
 		Coordinates = coordinates;
@@ -32,23 +53,21 @@ public sealed class UIWaypointBrowser : UIState
 	{
 		base.OnActivate();
 
-		Progress = 0f;
-		
-		activated = true;
+		TargetProgress = 1f;
 	}
 
 	public override void OnDeactivate()
 	{
 		base.OnDeactivate();
 
-		activated = false;
+		TargetProgress = 0f;
 	}
 
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
 
-		_progress = MathHelper.SmoothStep(_progress, activated ? 1f : 0f, 0.2f);
+		Progress = MathHelper.SmoothStep(Progress, TargetProgress, 0.2f);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -58,21 +77,15 @@ public sealed class UIWaypointBrowser : UIState
 		var tileOffset = new Vector2(1, 2) * 16f + new Vector2(TileUtils.TilePixelSize / 2f);
 		var heightOffset = new Vector2(0f, 64f * Progress);
 		
-		var center = new Vector2(Coordinates.X, Coordinates.Y) * 16f - Main.screenPosition - tileOffset - heightOffset;
+		var position = new Vector2(Coordinates.X, Coordinates.Y) * 16f - Main.screenPosition - tileOffset - heightOffset;
 
-		float horizontalOffset = 0f;
-		
-		foreach (ModWaypoint waypoint in ModContent.GetContent<ModWaypoint>())
+		for (int i = 0; i < ModWaypointLoader.Waypoints.Count; i++)
 		{
+			ModWaypoint waypoint = ModWaypointLoader.Waypoints[i];
+			
 			Asset<Texture2D> icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
 			
-			spriteBatch.Draw(
-				icon.Value,
-				center + new Vector2(horizontalOffset, 0f),
-				Color.White * Progress
-			);
-
-			horizontalOffset += icon.Width() + 4f;
+			// TODO: Implement drawing logic.
 		}
 	}
 }

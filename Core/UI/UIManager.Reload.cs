@@ -9,18 +9,17 @@ public sealed partial class UIManager : ModSystem
 	///		Attempts to refresh a <see cref="UIState"/> instance.
 	/// </summary>
 	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
-	/// <typeparam name="T">The type of the <see cref="UIState"/>.</typeparam>
 	/// <returns><c>true</c> if the state was successfully refreshed; otherwise, <c>false</c>.</returns>
-	internal static bool TryRefresh<T>(string identifier) where T : UIState
+	internal static bool TryRefresh(string identifier)
 	{
-		int index = UITypeData<T>.Data.FindIndex(s => s.Identifier == identifier);
+		int index = Data.FindIndex(s => s.Identifier == identifier);
 
 		if (index < 0)
 		{
 			return false;
 		}
 
-		UIStateData<T> data = UITypeData<T>.Data[index];
+		UIStateData data = Data[index];
 		
 		data.Value?.RemoveAllChildren();
 			
@@ -36,12 +35,11 @@ public sealed partial class UIManager : ModSystem
 	/// <summary>
 	///		Refreshes all registered <see cref="UIState"/> instances by their type.
 	/// </summary>
-	/// <typeparam name="T">The type of the <see cref="UIState"/> instances.</typeparam>
-	internal static void RefreshAllStates<T>() where T : UIState
+	internal static void RefreshAllStates()
 	{
-		for (int i = 0; i < UITypeData<T>.Data.Count; i++)
+		for (int i = 0; i < Data.Count; i++)
 		{
-			UIManager.TryRefresh<T>(UITypeData<T>.Data[i].Identifier);
+			UIManager.TryRefresh(Data[i].Identifier);
 		}	
 	}
 }

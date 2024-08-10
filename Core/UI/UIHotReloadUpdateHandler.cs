@@ -22,10 +22,7 @@ internal static class UIHotReloadUpdateHandler
 						continue;
 					}
 					
-					MethodInfo? methodInfo = typeof(UIManager).GetMethod("RefreshStates", BindingFlags.NonPublic | BindingFlags.Static);
-					MethodInfo? generatedMethodInfo = methodInfo?.MakeGenericMethod(type);
-					
-					generatedMethodInfo?.Invoke(null, null);
+					UIManager.RefreshAllStates();
 				}
 			}
 		);

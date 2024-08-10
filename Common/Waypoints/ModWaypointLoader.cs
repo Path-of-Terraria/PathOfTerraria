@@ -1,6 +1,24 @@
+using System.Collections.Generic;
+
 namespace PathOfTerraria.Common.Waypoints;
 
-public class ModWaypointLoader
+/// <summary>
+///		Manages the registration of <see cref="ModWaypoint"/> instances.
+/// </summary>
+public static class ModWaypointLoader
 {
-	
+	/// <summary>
+	///		The list of registered <see cref="ModWaypoint"/> instances.
+	/// </summary>
+	public static readonly List<ModWaypoint> Waypoints = new();
+
+	/// <summary>
+	///		Registers a <see cref="ModWaypoint"/> instance.
+	/// </summary>
+	/// <param name="waypoint">The value of the <see cref="ModWaypoint"/>.</param>
+	/// <typeparam name="T">The type of the <see cref="ModWaypoint"/>.</typeparam>
+	public static void Register<T>(T waypoint) where T : ModWaypoint
+	{
+		Waypoints.Add(waypoint);
+	}
 }
