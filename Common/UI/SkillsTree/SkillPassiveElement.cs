@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.TreeSystem;
+using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
@@ -122,87 +123,7 @@ internal class SkillPassiveElement : SmartUiElement
 
 		_flashTimer = 20;
 
-		switch (_passive.MaxLevel)
-		{
-			case 1:
-				switch (_passive.Level)
-				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-				}
-
-				return;
-			case 2:
-				switch (_passive.Level)
-				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-				}
-
-				return;
-			case 3:
-				switch (_passive.Level)
-				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-				}
-
-				return;
-			case 5:
-				switch (_passive.Level)
-				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-				}
-
-				return;
-			case 6:
-				switch (_passive.Level)
-				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					case 6: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-				}
-
-				return;
-			case 7:
-				switch (_passive.Level)
-				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					case 6: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 7: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-				}
-
-				return;
-			default:
-				switch (_passive.Level)
-				{
-					case 1: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier1")); break;
-					case 2: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier2")); break;
-					case 3: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier3")); break;
-					case 4: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier4")); break;
-					case 5: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-					default: SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5")); break;
-				}
-
-				break;
-		}
+		TreeSoundEngine.PlaySoundForTreeAllocation(_passive.MaxLevel, _passive.Level);
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)
