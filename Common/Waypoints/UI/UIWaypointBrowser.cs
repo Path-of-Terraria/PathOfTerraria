@@ -1,6 +1,9 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.Utilities;
 using ReLogic.Content;
+using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.UI;
 
@@ -9,7 +12,7 @@ namespace PathOfTerraria.Common.Waypoints.UI;
 public sealed class UIWaypointBrowser : UIState
 {
 	private const int KeyInitialDelay = 30;
-	private const int KeyRepeatDelay = 2;
+	private const int KeyRepeatDelay = 15;
 	
 	/// <summary>
 	///		The unique identifier of this state.
@@ -64,7 +67,7 @@ public sealed class UIWaypointBrowser : UIState
 		set
 		{
 			int min = 0;
-			int max = ModWaypointLoader.WaypointCount;
+			int max = ModWaypointLoader.WaypointCount - 1;
 			
 			if (value < min)
 			{
@@ -81,24 +84,103 @@ public sealed class UIWaypointBrowser : UIState
 		}
 	}
 
-	private int inputTimer;
-	
-	public UIWaypointBrowser(Point coordinates)
+	public override void OnInitialize()
 	{
-		Coordinates = coordinates;
+		base.OnInitialize();
+
+		var root = new UIElement
+		{
+			HAlign = 0.5f,
+			VAlign = 0.5f
+		};
+		
+		root.Width.Set(400f, 0f);
+		root.Height.Set(600f, 0f);
+
+		Append(root);
+
+		var panel = new UIPanel();
+		
+		panel.Width.Set(400f, 0f);
+		panel.Height.Set(600f, 0f);
+		
+		root.Append(panel);
+
+		var header = new UIText("Waypoints")
+		{
+			HAlign = 0.5f
+		};
+		
+		header.Top.Set(16f, 0f);
+		
+		root.Append(header);
+
+		var list = new UIList();
+		
+		list.Top.Set(32f, 0f);
+		
+		list.Width.Set(400f, 0f);
+		list.Height.Set(600f - 32f, 0f);
+
+		foreach (ModWaypoint? waypoint in ModContent.GetContent<ModWaypoint>())
+		{
+			var element = new UIElement();
+			
+			element.Width.Set(400f, 0f);
+			element.Height.Set(48f, 0f);
+
+			var icon = new UIHoverImage(ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad))
+			{
+				VAlign = 0.5f,
+				ActiveScale = 1.25f,
+				InactiveScale = 1f,
+				ActiveRotation = MathHelper.ToRadians(2.5f),
+				InactiveRotation = 0f,
+				OverrideSamplerState = SamplerState.PointClamp
+			};
+			
+			icon.Left.Set(16f, 0f);
+			
+			element.Append(icon);
+
+			var text = new UIText(waypoint.DisplayName.Value, 0.8f) { VAlign = 0.5f };
+			
+			text.Left.Set(64f, 0f);
+			
+			element.Append(text);
+			
+			list.Add(element);
+		}
+		
+		list.ListPadding = 4f;
+
+		root.Append(list);
+
+		var scrollbar = new UIScrollbar();
+		
+		scrollbar.Width.Set(8f, 0f);
+		scrollbar.Height.Set(0f, 0.825f);
+		
+		scrollbar.Left.Set(-16f, 1f);
+		scrollbar.Top.Set(0f, 0.1f);
+		
+		list.Append(scrollbar);
+		list.SetScrollbar(scrollbar);
 	}
 
 	public override void OnActivate()
 	{
 		base.OnActivate();
-
+		
+		OnInitialize();
+		
 		TargetProgress = 1f;
 	}
 
 	public override void OnDeactivate()
 	{
 		base.OnDeactivate();
-
+RemoveAllChildren();
 		TargetProgress = 0f;
 	}
 
@@ -106,75 +188,11 @@ public sealed class UIWaypointBrowser : UIState
 	{
 		base.Update(gameTime);
 
-		UpdateWaypointSelection();
-		
 		Progress = MathHelper.SmoothStep(Progress, TargetProgress, 0.2f);
-	}
-
-	private void UpdateWaypointSelection()
-	{
-		if (Main.keyState.IsKeyDown(Keys.Right))
-		{
-			if (inputTimer == 0 || (inputTimer > KeyInitialDelay && inputTimer % 5 == 0))
-			{
-				SelectedWaypoint++;
-			}
-
-			inputTimer++;
-		}
-		else if (Main.keyState.IsKeyDown(Keys.Left))
-		{
-			if (inputTimer == 0 || (inputTimer > KeyInitialDelay && inputTimer % 5 == 0))
-			{
-				SelectedWaypoint--;
-			}
-
-			inputTimer++;
-		}
-		else if (PlayerInput.ScrollWheelDeltaForUI != 0)
-		{
-			if (inputTimer == 0 || (inputTimer > KeyInitialDelay && inputTimer % 5 == 0))
-			{
-				SelectedWaypoint += Math.Sign(PlayerInput.ScrollWheelDeltaForUI);
-			}
-
-			inputTimer++;
-		}
-		else
-		{
-			inputTimer = 0;
-		}
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		base.Draw(spriteBatch);
-
-		const float IconOffset = 48f;
-		
-		var tileOffset = new Vector2(1, 2) * 16f + new Vector2(TileUtils.TilePixelSize / 2f);
-		var heightOffset = new Vector2(0f, 80f * Progress);
-		
-		var drawPosition = new Vector2(Coordinates.X, Coordinates.Y) * 16f - Main.screenPosition - tileOffset - heightOffset;
-		
-		for (int i = 0; i < ModWaypointLoader.WaypointCount; i++)
-		{
-			ModWaypoint waypoint = ModWaypointLoader.Waypoints[i];
-
-			Asset<Texture2D> icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
-
-			if (i == SelectedWaypoint)
-			{
-				spriteBatch.Draw(icon.Value, drawPosition + icon.Size() / 2f, Color.White * Progress);
-			}
-			else if (i == SelectedWaypoint - 1)
-			{
-				spriteBatch.Draw(icon.Value, drawPosition + icon.Size() / 2f - new Vector2(IconOffset, 0f), Color.White * 0.4f * Progress);
-			}
-			else if (i == SelectedWaypoint + 1)
-			{
-				spriteBatch.Draw(icon.Value, drawPosition + icon.Size() / 2f + new Vector2(IconOffset, 0f), Color.White * 0.4f * Progress);
-			}
-		}
 	}
 }

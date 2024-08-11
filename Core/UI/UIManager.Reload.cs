@@ -21,13 +21,13 @@ public sealed partial class UIManager : ModSystem
 
 		UIStateData data = Data[index];
 		
-		data.Value?.RemoveAllChildren();
+		data.Value.RemoveAllChildren();
 			
-		data.Value?.OnActivate();
-		data.Value?.OnInitialize();
+		data.Value.OnActivate();
+		data.Value.OnInitialize();
 			
-		data.UserInterface?.SetState(null);
-		data.UserInterface?.SetState(data.Value);
+		data.UserInterface.SetState(null);
+		data.UserInterface.SetState(data.Value);
 
 		return true;
 	}

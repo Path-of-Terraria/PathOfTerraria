@@ -10,6 +10,8 @@ namespace PathOfTerraria.Core.UI;
 
 internal static class UIHotReloadUpdateHandler
 {        
+	internal static void ClearCache(Type[]? types) { }
+	
 	internal static void UpdateApplication(Type[]? updatedTypes)
 	{	
 		Main.QueueMainThreadAction(

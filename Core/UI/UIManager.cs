@@ -146,8 +146,7 @@ public sealed partial class UIManager : ModSystem
 
 		var data = new UIStateData(identifier, layer, value, offset, type)
 		{
-			UserInterface = new UserInterface(),
-			Enabled = true
+			UserInterface = new UserInterface()
 		};
 
 		data.UserInterface.SetState(value);
@@ -242,7 +241,7 @@ public sealed partial class UIManager : ModSystem
 		{
 			return false;
 		}
-		
+
 		return Data[index].Enabled ? TryDisable(identifier) : TryEnable(identifier);
 	}
 	
