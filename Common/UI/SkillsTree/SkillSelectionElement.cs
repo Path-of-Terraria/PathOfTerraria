@@ -7,10 +7,12 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 internal class SkillSelectionElement : UIElement
 {
 	private readonly Skill _skill;
+	private readonly SkillSelectionPanel _parentPanel;
 
-	public SkillSelectionElement(Skill skill, int index)
+	public SkillSelectionElement(Skill skill, int index, SkillSelectionPanel parentPanel)
 	{
 		_skill = skill;
+		_parentPanel = parentPanel;
 		Width.Set(skill.Size.X, 0);
 		Height.Set(skill.Size.Y, 0);
 		Top.Set(150, 0);
@@ -37,6 +39,8 @@ internal class SkillSelectionElement : UIElement
 		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
 		Main.NewText("Clicked on " + _skill.Name);
 		skillPlayer.TryAddSkill(_skill);
+		_parentPanel.SelectedSkill = _skill;
+		_parentPanel.DrawSkillTree();
 	}
 
 	public override void RightClick(UIMouseEvent evt)

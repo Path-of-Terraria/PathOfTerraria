@@ -6,14 +6,16 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 
 internal class SkillSelectionPanel : SmartUiElement
 {
+	private SkillTreeInnerPanel _skillTreeInnerPanel;
 	public override string TabName => "SkillTree";
 
 	private bool _drewSkills;
+	public Skill SelectedSkill { get; set; }
 	
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		base.Draw(spriteBatch);
-		if (!_drewSkills)
+		if (!_drewSkills && SelectedSkill == null)
 		{
 			_drewSkills = true;
 			AppendAllSkills();
@@ -29,10 +31,24 @@ internal class SkillSelectionPanel : SmartUiElement
 			{
 				continue;
 			}
-			
-			var element = new SkillSelectionElement((Skill)Activator.CreateInstance(type), index);
+
+			var skill = (Skill) Activator.CreateInstance(type);
+			var element = new SkillSelectionElement(skill, index, this);
 			Append(element);
 			index += 1;
+		}
+	}
+
+	public void DrawSkillTree()
+	{
+		if (_skillTreeInnerPanel == null)
+		{
+			_skillTreeInnerPanel = new();
+			SelectedSkill.CreateTree();
+			SelectedSkill.Passives.ForEach(n =>
+			{
+				_skillTreeInnerPanel.Append(new SkillPassiveElement(n));
+			});
 		}
 	}
 }

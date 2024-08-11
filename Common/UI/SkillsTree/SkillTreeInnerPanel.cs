@@ -1,6 +1,4 @@
 ﻿using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.UI;
@@ -16,7 +14,7 @@ internal class SkillTreeInnerPanel : SmartUiElement
 	private Skill _selectedSkill = null;
 
 	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
-	public override string TabName => "PassiveTree";
+	public override string TabName => "SelectedSkillTree";
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
