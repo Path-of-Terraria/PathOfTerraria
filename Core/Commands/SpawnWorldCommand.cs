@@ -3,6 +3,7 @@ using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class SpawnWorldCommand : ModCommand
 {
 	public override string Command => "newworld";
@@ -18,3 +19,4 @@ public sealed class SpawnWorldCommand : ModCommand
 		SubworldSystem.Enter<KingSlimeDomain>();
 	}
 }
+#endif

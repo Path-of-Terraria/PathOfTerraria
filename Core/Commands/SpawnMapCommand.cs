@@ -2,6 +2,7 @@
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class SpawnMapCommand : ModCommand
 {
 	public override string Command => "spawnmap";
@@ -20,3 +21,4 @@ public sealed class SpawnMapCommand : ModCommand
 		}
 	}
 }
+#endif

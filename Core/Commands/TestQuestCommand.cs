@@ -2,6 +2,7 @@
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class TestQuestCommand : ModCommand
 {
 	public override string Command => "testquest";
@@ -22,3 +23,4 @@ public sealed class TestQuestCommand : ModCommand
 		questPlayer.RestartQuestTest();
 	}
 }
+#endif

@@ -3,6 +3,7 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class TravelCommand : ModCommand
 {
 	public override string Command => "travel";
@@ -45,3 +46,4 @@ public sealed class TravelCommand : ModCommand
 		Main.NewText("World not found.");
 	}
 }
+#endif
