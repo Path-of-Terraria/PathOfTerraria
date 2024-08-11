@@ -4,7 +4,7 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
-internal class SkillsTreeInnerPanel : SmartUiElement
+internal class SkillSelectionPanel : SmartUiElement
 {
 	public override string TabName => "SkillTree";
 
@@ -30,7 +30,7 @@ internal class SkillsTreeInnerPanel : SmartUiElement
 				continue;
 			}
 			
-			var element = new SkillElement((Skill)Activator.CreateInstance(type), index);
+			var element = new SkillSelectionElement((Skill)Activator.CreateInstance(type), index);
 			Append(element);
 			index += 1;
 		}

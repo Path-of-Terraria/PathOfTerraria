@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Systems.TreeSystem;
 using Terraria.Audio;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;

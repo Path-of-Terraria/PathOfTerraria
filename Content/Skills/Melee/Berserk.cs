@@ -7,6 +7,7 @@ namespace PathOfTerraria.Content.Skills.Melee;
 public class Berserk : Skill
 {
 	public override int MaxLevel => 3;
+	public override SkillPassive[] Passives => [];
 
 	public override void LevelTo(byte level)
 	{

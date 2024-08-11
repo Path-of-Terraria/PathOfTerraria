@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Data.Models;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Utilities;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
@@ -19,7 +20,7 @@ internal class PassiveLoader : ILoadable
 	}
 }
 
-internal abstract class Passive
+public abstract class Passive
 {
 	public static Dictionary<string, Type> Passives = [];
 	

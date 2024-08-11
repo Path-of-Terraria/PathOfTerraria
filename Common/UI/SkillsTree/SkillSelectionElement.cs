@@ -4,11 +4,11 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
-internal class SkillElement : UIElement
+internal class SkillSelectionElement : UIElement
 {
 	private readonly Skill _skill;
 
-	public SkillElement(Skill skill, int index)
+	public SkillSelectionElement(Skill skill, int index)
 	{
 		_skill = skill;
 		Width.Set(skill.Size.X, 0);

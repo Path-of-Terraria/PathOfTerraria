@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
@@ -12,8 +13,8 @@ namespace PathOfTerraria.Common.UI;
 internal class TreeState : DraggableSmartUi
 {
 	private PassiveTreeInnerPanel _passiveTreeInner;
-	private SkillsTreeInnerPanel _skillsTreeInner;
-	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillsTreeInner];
+	private SkillSelectionPanel _skillSelection;
+	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillSelection];
 
 	public override int DepthPriority => 1;
 
@@ -35,14 +36,14 @@ internal class TreeState : DraggableSmartUi
 		if (_passiveTreeInner == null)
 		{
 			_passiveTreeInner = new();
-			_skillsTreeInner = new();
+			_skillSelection = new();
 
 			TopLeftTree = Vector2.Zero;
 			BotRightTree = Vector2.Zero;
 			var localizedTexts = new (string key, LocalizedText text)[]
 			{
 				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
-				(_skillsTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillsTreeInner.TabName}Tab"))
+				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
 			};
 			base.CreateMainPanel(localizedTexts, false);
 			base.AppendChildren();

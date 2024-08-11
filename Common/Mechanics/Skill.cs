@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Skills.Melee;
 using Terraria.Localization;
@@ -15,6 +16,8 @@ public abstract class Skill
 	public int ManaCost;
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
+	public abstract SkillPassive[] Passives { get; }
+	public PassiveEdge[] Edges = [];
 
 	public abstract int MaxLevel { get; }
 
