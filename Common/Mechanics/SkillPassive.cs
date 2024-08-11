@@ -1,34 +1,17 @@
-﻿using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.Skills.Melee;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-internal class SkillPassiveEdge(SkillPassive start, SkillPassive end)
-{
-	public readonly SkillPassive Start = start;
-	public readonly SkillPassive End = end;
-
-	public bool Contains(SkillPassive p)
-	{
-		return p == Start || p == End;
-	}
-
-	/// <summary>
-	/// Assuming that p is either start or end - Contains returned true.
-	/// </summary>
-	public SkillPassive Other(SkillPassive p)
-	{
-		return p == Start ? End : Start;
-	}
-}
-
 public abstract class SkillPassive
 {
-	public byte Level = 1;
-	public Vector2 TreePos;
+	public abstract Skill Skill { get; }
+	public virtual List<SkillPassive> Connections { get; set; }
+	public abstract int ReferenceId { get; }
+	public int Level;
+	public abstract Vector2 TreePos { get; }
 
 	public abstract int MaxLevel { get; }
 
@@ -53,5 +36,21 @@ public abstract class SkillPassive
 	public virtual void SaveData(TagCompound tag)
 	{
 		tag.Add(nameof(Level), Level);
+	}
+
+	public bool HasAllocated()
+	{
+		return Level > 0;
+	}
+	
+	/// <summary>
+	/// If this passive is able to be allocated or not
+	/// </summary>
+	/// <returns></returns>
+	public bool CanAllocate()
+	{
+		return
+			Level < MaxLevel &&
+			Skill.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
 	}
 }

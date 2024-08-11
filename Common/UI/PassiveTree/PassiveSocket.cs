@@ -55,7 +55,7 @@ internal class PassiveSocket : PassiveElement
 		}
 
 		_passive.Level++;
-		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points--;
 
 		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5"));
 	}
@@ -68,7 +68,7 @@ internal class PassiveSocket : PassiveElement
 		}
 
 		_passive.Level--;
-		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points++;
 
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}

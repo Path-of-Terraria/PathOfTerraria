@@ -18,7 +18,7 @@ internal class SentryPassive : Passive
 
 	private void BuffSentries(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 	{
-		int level = player.GetModPlayer<TreePlayer>().GetCumulativeLevel(InternalIdentifier);
+		int level = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(InternalIdentifier);
 
 		if (proj.sentry || ProjectileID.Sets.SentryShot[proj.type])
 		{

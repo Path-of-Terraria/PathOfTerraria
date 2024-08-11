@@ -27,13 +27,13 @@ internal class SkillTreeInnerPanel : SmartUiElement
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-		foreach (PassiveEdge edge in _selectedSkill.Edges)
+		foreach (SkillPassiveEdge edge in _selectedSkill.Edges)
 		{
 			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 
 			Color color = Color.Gray;
 
-			if (edge.End.CanAllocate(Main.LocalPlayer) && edge.Start.Level > 0)
+			if (edge.End.CanAllocate() && edge.Start.Level > 0)
 			{
 				color = Color.Lerp(Color.Gray, Color.White,
 					(float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);

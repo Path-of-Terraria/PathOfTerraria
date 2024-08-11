@@ -38,11 +38,6 @@
       <HintPath>lib\NPCUtils.dll</HintPath>
     </Reference>
 	</ItemGroup>
-	<ItemGroup>
-	  <Folder Include="Common\Systems\SkillTreeSystem\" />
-	  <Folder Include="Content\SkillPassives\Melee\" />
-	  <Folder Include="Content\SkillPassives\Ranged\" />
-	</ItemGroup>
 	<Target Name="BuildMod" AfterTargets="Build">
 		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />
 	</Target>

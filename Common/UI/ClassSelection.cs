@@ -119,6 +119,6 @@ public class ClassSelection : SmartUiState
 	    
 	    Main.LocalPlayer.GetModPlayer<ClassModPlayer>().SelectedClass = playerClass;
 
-		Main.LocalPlayer.GetModPlayer<TreePlayer>().CreateTree();
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().CreateTree();
 	}
 }

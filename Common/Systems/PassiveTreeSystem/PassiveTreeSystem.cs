@@ -31,7 +31,7 @@ public class PassiveEdge(Passive start, Passive end)
 }
 
 // ReSharper disable once ClassNeverInstantiated.Global
-internal class TreePlayer : ModPlayer
+internal class PassiveTreePlayer : ModPlayer
 {
 	/// <summary>
 	/// This should be equal to your level + any extra points you have.

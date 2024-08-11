@@ -12,7 +12,7 @@ internal class PassiveTreeInnerPanel : SmartUiElement
 
 	private UIElement Panel => Parent;
 
-	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
+	private PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
 	public override string TabName => "PassiveTree";
 
@@ -25,7 +25,7 @@ internal class PassiveTreeInnerPanel : SmartUiElement
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-		foreach (PassiveEdge edge in TreeSystem.Edges)
+		foreach (PassiveEdge edge in PassiveTreeSystem.Edges)
 		{
 			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 

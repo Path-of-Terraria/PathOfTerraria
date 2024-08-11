@@ -1,5 +1,7 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.SkillPassives.Magic;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -10,9 +12,12 @@ public class Nova : Skill
 {
 	public override int MaxLevel => 3;
 	
-	public override SkillPassive[] Passives =>
+	public override List<SkillPassive> Passives =>
 	[
-		new LightningNovaSkillPassive()
+		new SkillPassiveAnchor(),
+		new LightningNovaSkillPassive(),
+		new FireNovaSkillPassive(),
+		new IceNovaSkillPassive()
 	];
 
 	public override void LevelTo(byte level)

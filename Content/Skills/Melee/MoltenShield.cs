@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -9,7 +10,7 @@ namespace PathOfTerraria.Content.Skills.Melee;
 public class MoltenShield : Skill
 {
 	public override int MaxLevel => 3;
-	public override SkillPassive[] Passives => [];
+	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{

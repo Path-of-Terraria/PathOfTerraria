@@ -32,7 +32,7 @@ public class ExpModPlayer : ModPlayer
 		Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.LevelUp").WithFormatArgs(Level).Value, new Color(145, 255, 160));
 		Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.SkillUp"), new Color(255, 255, 160));
 
-		Player.GetModPlayer<TreePlayer>().Points++;
+		Player.GetModPlayer<PassiveTreePlayer>().Points++;
 	}
 
 	public override void SaveData(TagCompound tag)

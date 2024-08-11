@@ -117,7 +117,7 @@ internal class PassiveElement : SmartUiElement
 		}
 
 		_passive.Level++;
-		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points--;
 
 		_flashTimer = 20;
 
@@ -212,7 +212,7 @@ internal class PassiveElement : SmartUiElement
 		}
 
 		_passive.Level--;
-		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points++;
 
 		_redFlashTimer = 20;
 

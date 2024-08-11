@@ -148,12 +148,12 @@ public abstract class Passive
 	/// <returns></returns>
 	public bool CanAllocate(Player player)
 	{
-		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
+		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		return
 			Level < MaxLevel &&
-			Main.LocalPlayer.GetModPlayer<TreePlayer>().Points > 0 &&
-			treeSystem.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
+			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
+			passiveTreeSystem.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
 	}
 
 	/// <summary>
@@ -167,8 +167,8 @@ public abstract class Passive
 			return false;
 		}
 
-		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
+		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
-		return Level > 0 && (Level > 1 || treeSystem.FullyLinkedWithout(this));
+		return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
 	}
 }

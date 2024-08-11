@@ -13,7 +13,7 @@ public class RainOfArrows : Skill
 	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Sandgun];
 
 	public override int MaxLevel => 3;
-	public override SkillPassive[] Passives => [];
+	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
