@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -162,9 +163,13 @@ partial class PoTGlobalItem
 			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description));
 		}
 
-		// Change in stats if equipped.
 		var thisItemModifier = new EntityModifier();
 		PoTItemHelper.ApplyAffixes(item, thisItemModifier, Main.LocalPlayer);
+		InsertAdditionalTooltipLines.Invoke(item, tooltips, thisItemModifier);
+		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler.ModifyTooltips(item, tooltips);
+		return;
+
+		// Change in stats if equipped.
 		InsertAdditionalTooltipLines.Invoke(item, tooltips, thisItemModifier);
 
 		var currentItemModifier = new EntityModifier();

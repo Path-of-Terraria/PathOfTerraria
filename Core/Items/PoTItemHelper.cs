@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -133,6 +134,7 @@ public static class PoTItemHelper
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyAffix(player, entityModifier, item);
+			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
 			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}

@@ -1,0 +1,49 @@
+DeveloperConfig: {
+	DisplayName: Developer Configuration [i:509]
+
+	DrawUIBorders: {
+		Label: Draw User Interface Borders
+		Tooltip: Draws borders around user interface elements to help with layout debugging.
+	}
+
+	Headers.Graphics: Graphics Header
+}
+
+DefenseItemAffix.Description: +{0} to stat
+EnduranceItemAffix.Description: +{0} to stat
+ResistanceHelmetAffix.Description: +{0} to stat
+BuffBoostHelmetAffix.Description: +{0} to stat
+ThornyArmorAffix.Description: +{0} to stat
+BaseLifeAffix.Description: +{0} to stat
+AddedLifeAffix.Description: +{0} to stat
+MultipliedLifeAffix.Description: +{0} to stat
+FlatLifeAffix.Description: +{0} to stat
+LifeRegenAffix.Description: +{0} to stat
+LifeRegenMultiplierAffix.Description: +{0} to stat
+LifePotionPowerAffix.Description: +{0} to stat
+LifePotionCapAffix.Description: +{0} to stat
+LifePotionCooldownAffix.Description: +{0} to stat
+ManaAffix.Description: +{0} to stat
+ManaRegenAffix.Description: +{0} to stat
+ManaPotionPowerAffix.Description: +{0} to stat
+ManaPotionCapAffix.Description: +{0} to stat
+ManaPotionCooldownAffix.Description: +{0} to stat
+PiercingItemAffix.Description: +{0} to stat
+AddedKnockbackItemAffix.Description: +{0} to stat
+IncreasedKnockbackItemAffix.Description: +{0} to stat
+FlatKnockbackItemAffix.Description: +{0} to stat
+ChanceToApplyOnFireGearAffix.Description: +{0} to stat
+ChanceToApplyArmorShredGearAffix.Description: +{0} to stat
+ChanceToApplyBloodclotItemAffix.Description: +{0} to stat
+ChanceToApplyPoisonItemAffix.Description: +{0} to stat
+BuffPoisonedHitsAffix.Description: +{0} to stat
+MovementSpeed.Description: +{0} to stat
+HealOnKillingBurningEnemiesAffix.Description: +{0} to stat
+IncreasedAttackSpeedAffix.Description: +{0} to stat
+AddedAttackSpeedAffix.Description: +{0} to stat
+AddedDamageAffix.Description: +{0} to stat
+IncreasedDamageAffix.Description: +{0} to stat
+MoltenShellAffix.Description: +{0} to stat
+BloodSiphonAffix.Description: +{0} to stat
+FetidCarapaceAffix.Description: +{0} to stat
+NoFallDamageAffix.Description: +{0} to stat

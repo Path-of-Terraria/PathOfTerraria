@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 internal class UniversalBuffingPlayer : ModPlayer
 {
 	public EntityModifier UniversalModifier;
+	public AffixTooltipsHandler AffixTooltipHandler = new();
 
 	public override void PostUpdateEquips()
 	{
@@ -21,6 +23,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 	public override void ResetEffects()
 	{
 		UniversalModifier = new EntityModifier();
+		AffixTooltipHandler.Reset();
 	}
 	
 	/// <summary>
