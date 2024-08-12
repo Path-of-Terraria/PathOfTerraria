@@ -90,6 +90,11 @@ internal class TreeState : DraggableSmartUi
 			"SkillTree" => skillPlayer.Points,
 			_ => 0
 		};
+		if (Panel.ActiveTab != "PassiveTree") //Temp to only draw for passive tree
+		{
+			return;
+		}
+		
 		spriteBatch.Draw(tex, GetRectangle().TopLeft() + pointsDrawPoin, null, Color.White, 0, tex.Size() / 2f, 1, 0,
 			0);
 		Utils.DrawBorderStringBig(spriteBatch, $"{points}", GetRectangle().TopLeft() + pointsDrawPoin,

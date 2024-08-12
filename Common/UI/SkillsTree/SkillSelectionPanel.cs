@@ -41,14 +41,13 @@ internal class SkillSelectionPanel : SmartUiElement
 
 	public void DrawSkillTree()
 	{
-		if (_skillTreeInnerPanel == null)
+		RemoveAllChildren();
+		_skillTreeInnerPanel = null;
+		_skillTreeInnerPanel = new();
+		SelectedSkill.CreateTree();
+		SelectedSkill.ActiveNodes.ForEach(n =>
 		{
-			_skillTreeInnerPanel = new();
-			SelectedSkill.CreateTree();
-			SelectedSkill.Passives.ForEach(n =>
-			{
-				_skillTreeInnerPanel.Append(new SkillPassiveElement(n));
-			});
-		}
+			_skillTreeInnerPanel.Append(new SkillPassiveElement(n));
+		});
 	}
 }

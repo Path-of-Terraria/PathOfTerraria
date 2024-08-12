@@ -37,6 +37,7 @@ public abstract class Skill
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
 	public abstract List<SkillPassive> Passives { get; }
+	public List<SkillPassive> ActiveNodes = [];
 	public List<SkillPassiveEdge> Edges = [];
 
 	public abstract int MaxLevel { get; }
@@ -156,10 +157,17 @@ public abstract class Skill
 	public void CreateTree()
 	{
 		Edges = [];
-		
+		ActiveNodes = [];
+
+
 		foreach (SkillPassive passive in Passives)
 		{
-			foreach (var connection in passive.Connections)
+			if (passive.Connections == null)
+			{
+				continue;
+			}
+			
+			foreach (SkillPassive connection in passive.Connections)
 			{
 				Edges.Add(new SkillPassiveEdge(passive, connection));
 			}
@@ -168,6 +176,8 @@ public abstract class Skill
 			{
 				Points -= passive.Level;
 			}
+			
+			ActiveNodes.Add(passive);
 		}
 	}
 }
