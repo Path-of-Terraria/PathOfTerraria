@@ -3,37 +3,36 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
-public abstract class Quest : ILoadable
+public abstract class Quest : ModType
 {
 	private static readonly Dictionary<string, Quest> QuestsByName = [];
 
 	public abstract QuestTypes QuestType { get; }
 	public abstract int NPCQuestGiver { get; }
-	public virtual string Name => "";
 	public virtual string Description => "";
 
 	public abstract List<QuestReward> QuestRewards { get; }
 	public abstract List<QuestStep> QuestSteps { get; }
-	public QuestStep ActiveStep => QuestSteps[CurrentQuest];
 
-	public int CurrentQuest;
+	public QuestStep ActiveStep = null;
+
+	public int CurrentStep;
 	public bool Completed;
+	public bool Active = false;
 
-	public static Quest GetQuest(string name)
+	protected override void Register()
 	{
-		return QuestsByName[name];
-	}
-
-	public void Load(Mod mod)
-	{
-		QuestsByName.Add(Name, this);
+		ModTypeLookup<Quest>.Register(this);
+		QuestsByName.Add(FullName, this);
 	}
 
 	public void StartQuest(Player player, int currentQuest = 0)
 	{
-		CurrentQuest = currentQuest;
+		CurrentStep = currentQuest;
+		ActiveStep = QuestSteps[CurrentStep];
+		Active = true;
 
-		if (CurrentQuest >= QuestSteps.Count)
+		if (CurrentStep >= QuestSteps.Count)
 		{
 			Completed = true;
 			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
@@ -46,7 +45,7 @@ public abstract class Quest : ILoadable
 		if (ActiveStep.Track(player))
 		{
 			ActiveStep.OnComplete();
-			StartQuest(player, CurrentQuest + 1);
+			StartQuest(player, CurrentStep + 1);
 		}
 	}
 
@@ -64,7 +63,7 @@ public abstract class Quest : ILoadable
 	{
 		string s = "";
 
-		for (int i = 0; i < CurrentQuest; i++)
+		for (int i = 0; i < CurrentStep; i++)
 		{
 			s += QuestSteps[i].QuestCompleteString() + "\n";
 		}
@@ -74,9 +73,9 @@ public abstract class Quest : ILoadable
 
 	public void Save(TagCompound tag)
 	{
-		tag.Add("type", GetType().FullName);
+		tag.Add("type", FullName);
 		tag.Add("completed", Completed);
-		tag.Add("currentQuest", CurrentQuest);
+		tag.Add("currentQuest", CurrentStep);
 
 		if (ActiveStep is null)
 		{
@@ -100,7 +99,7 @@ public abstract class Quest : ILoadable
 		ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
 	}
 
-	public static Quest LoadFrom(TagCompound tag, Player player)
+	public static string LoadFrom(TagCompound tag, Player player)
 	{
 		Type t = typeof(Quest).Assembly.GetType(tag.GetString("type"));
 
@@ -110,12 +109,15 @@ public abstract class Quest : ILoadable
 			return null;
 		}
 
-		var quest = (Quest)Activator.CreateInstance(t);
-		GetQuest(quest.Name).Load(tag, player);
-		return GetQuest(quest.Name);
+		string fullName = tag.GetString("type");
+		ModContent.Find<Quest>(fullName).Load(tag, player);
+		return fullName;
 	}
+}
 
-	public void Unload()
+public class QuestUpdater : ModSystem
+{
+	public override void PostUpdateEverything()
 	{
 	}
 }

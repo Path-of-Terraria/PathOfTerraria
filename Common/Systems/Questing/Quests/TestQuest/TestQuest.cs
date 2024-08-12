@@ -10,7 +10,6 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.TestQuest;
 internal class TestQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override string Name => "Test Quest";
 	public override string Description => "This is a test quest. It is used to test the quest system.";
 
 	public override List<QuestStep> QuestSteps =>

@@ -54,8 +54,8 @@ public class QuestsUIState : CloseableSmartUi
 			Height = StyleDimension.FromPercent(1),
 			ViewedQuestName = quests.FirstOrDefault()
 		};
-		Panel.Append(_questDetails);
 		_questDetails.PopulateQuestSteps();
+		Panel.Append(_questDetails);
 
 		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
 		_closeButton.Left.Set(0, 0.83f);

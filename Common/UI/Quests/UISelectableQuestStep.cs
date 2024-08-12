@@ -8,15 +8,12 @@ namespace PathOfTerraria.Common.UI.Quests;
 public class UISelectableQuestStep : UISelectableOutlineRectPanel
 {
 	private UISimpleWrappableText Title { get; set; }
-	private QuestStep Step => _quest.QuestSteps[_stepIndex];
+	
+	private QuestStep step;
 
-	private readonly int _stepIndex = 0;
-	private readonly Quest _quest = null;
-
-	public UISelectableQuestStep(int stepIndex, Quest quest)
+	public UISelectableQuestStep(int stepIndex, string quest)
 	{
-		_stepIndex = stepIndex;
-		_quest = quest;
+		step = ModContent.Find<Quest>(quest).QuestSteps[stepIndex];
 
 		DrawFilled = true;
 		SelectedFillColour = new Color(102, 86, 67) * QuestsUIState.SelectedOpacity;
@@ -25,7 +22,7 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 		Width.Set(325, 0f);
 
 		// text
-		Title = new UISimpleWrappableText(Step.QuestString(), 0.7f);
+		Title = new UISimpleWrappableText(step.QuestString(), 0.7f);
 		Title.Left.Set(14f, 0f);
 		Title.Top.Set(-8f, 0f);
 		Title.Colour = new Color(43, 28, 17);
@@ -38,8 +35,8 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 	private void UpdateText(UIElement affectedElement)
 	{
 		var text = affectedElement as UISimpleWrappableText;
-		text.SetText(Step.QuestString());
-		text.Colour = Step.IsDone ? new Color(50, 120, 10) : new Color(43, 28, 17);
+		text.SetText(step.QuestString());
+		text.Colour = step.IsDone ? new Color(50, 120, 10) : new Color(43, 28, 17);
 
 		text.Recalculate();
 	}

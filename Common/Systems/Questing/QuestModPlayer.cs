@@ -21,15 +21,16 @@ internal class QuestModPlayer : ModPlayer
 	{
 		_enabledQuests.Clear();
 
-		var quest = Quest.GetQuest(name);
+		Quest quest = ModContent.Find<Quest>(name);
 		quest.StartQuest(Player);
-		_enabledQuests.Add(quest.Name);
+		_enabledQuests.Add(quest.FullName);
 	}
 
 	public void RestartQuestTest()
 	{
 		_enabledQuests.Clear();
 
+		StartQuest("PathOfTerraria/TestQuest");
 	}
 	
 	public override void Load()
@@ -72,7 +73,7 @@ internal class QuestModPlayer : ModPlayer
 		foreach (string quest in _enabledQuests)
 		{
 			var newTag = new TagCompound();
-			Quest.GetQuest(quest).Save(newTag);
+			ModContent.Find<Quest>(quest).Save(newTag);
 			questTags.Add(newTag);
 		}
 
@@ -85,20 +86,25 @@ internal class QuestModPlayer : ModPlayer
 
 		questTags.ForEach(tag => 
 		{ 
-			var q = Quest.LoadFrom(tag, Player); 
+			string quest = Quest.LoadFrom(tag, Player); 
 			
-			if (q is not null) 
+			if (quest is not null) 
 			{ 
-				_enabledQuests.Add(q.Name); 
+				_enabledQuests.Add(quest); 
 			} 
 		});
 	}
 
 	public override void PostUpdateMiscEffects()
 	{
-		foreach (string quest in _enabledQuests)
+		IEnumerable<Quest> quest = ModContent.GetContent<Quest>();
+
+		foreach (Quest q in quest)
 		{
-			Quest.GetQuest(quest).Update(Player);
+			if (q.Active)
+			{
+				q.Update(Player);
+			}
 		}
 	}
 

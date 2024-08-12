@@ -14,7 +14,6 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 internal class BlacksmithStartQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override string Name => "Forging a New Blade";
 
 	public override List<QuestStep> QuestSteps =>
 	[
