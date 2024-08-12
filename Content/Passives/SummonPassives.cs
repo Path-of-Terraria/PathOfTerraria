@@ -7,6 +7,9 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class MinionPassive : Passive
 {
+	public override void BuffPlayer(Player player)
+	{
+	}
 }
 
 internal class SentryPassive : Passive

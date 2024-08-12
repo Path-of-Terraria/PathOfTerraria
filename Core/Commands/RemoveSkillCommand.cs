@@ -2,6 +2,7 @@
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class RemoveSkillCommand : ModCommand
 {
 	public override string Command => "removeskill";
@@ -34,3 +35,4 @@ public sealed class RemoveSkillCommand : ModCommand
 		skillPlayer.Skills[slot] = null;
 	}
 }
+#endif
