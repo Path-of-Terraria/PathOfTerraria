@@ -2,6 +2,10 @@
 
 namespace PathOfTerraria.Content.Passives;
 
+internal class AnchorPassive : Passive
+{
+}
+
 internal class MartialMasteryPassive : Passive
 {
 	public override void BuffPlayer(Player player)

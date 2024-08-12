@@ -112,3 +112,8 @@ ArmorPenetrationPassive: {
 	Name: Increased Armor Penetration (Melee)
 	Tooltip: Adds 15% more armor penetration per level
 }
+
+AnchorPassive: {
+	Name: AnchorPassive
+	Tooltip: ""
+}
