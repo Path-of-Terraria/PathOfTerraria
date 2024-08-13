@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Enums;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
@@ -15,7 +16,14 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 
 	public virtual List<ItemAffix> GenerateAffixes()
 	{
-		return [];
+		int count = Item.GetInstanceData().Rarity switch
+		{
+			ItemRarity.Magic => 2,
+			ItemRarity.Rare => 4,
+			_ => 0,
+		};
+
+		return Affix.GenerateAffixes(AffixHandler.GetAffixes(Item), count);
 	}
 
 	public virtual List<ItemAffix> GenerateImplicits()
