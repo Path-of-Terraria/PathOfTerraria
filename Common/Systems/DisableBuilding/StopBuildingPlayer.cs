@@ -46,7 +46,7 @@ internal class StopBuildingPlayer : ModPlayer
 	{
 		if (item.createTile >= TileID.Dirt || item.createWall > WallID.None || item.type == ItemID.IceRod || item.tileWand >= 0)
 		{
-			bool isRope = Main.tileRope[item.createTile];
+			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile];
 
 			if (!isRope)
 			{
