@@ -94,8 +94,8 @@ public static class PoTItemHelper
 
 		data.Affixes.Clear();
 		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
-
 		data.ImplicitCount = data.Affixes.Count;
+
 		for (int i = 0; i < GetAffixCount(item); i++)
 		{
 			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
@@ -116,7 +116,7 @@ public static class PoTItemHelper
 
 		if (staticData.IsUnique)
 		{
-			List<ItemAffix> uniqueItemAffixes = GenerateAffixes.Invoke(item);
+			List<ItemAffix> uniqueItemAffixes = GenerateImplicits.Invoke(item);
 
 			foreach (ItemAffix affix in uniqueItemAffixes)
 			{

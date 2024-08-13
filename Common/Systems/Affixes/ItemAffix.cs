@@ -47,6 +47,6 @@ public abstract class ItemAffix : Affix
 
 	internal override void CreateLocalization()
 	{
-		Language.GetOrRegister($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description", () => "+{0} to stat");
+		Language.GetOrRegister($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description", () => "\"{1}{0} to stat\"");
 	}
 }

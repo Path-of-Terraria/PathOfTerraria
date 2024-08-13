@@ -13,6 +13,6 @@ public class AffixTooltip
 
 	public string Get()
 	{
-		return OverrideString is not null ? OverrideString(Value, Text) : Text.WithFormatArgs(Value).Value;
+		return OverrideString is not null ? OverrideString(Value, Text) : Text.WithFormatArgs(Value, Value >= 0 ? "+" : "-").Value;
 	}
 }
