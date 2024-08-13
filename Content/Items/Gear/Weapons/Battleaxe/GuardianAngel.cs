@@ -56,7 +56,10 @@ internal class GuardianAngel : SteelBattleaxe
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		target.GetGlobalNPC<AngelRingNPC>().ApplyRing(target, player.whoAmI);
+		if (target.TryGetGlobalNPC(out AngelRingNPC ringNPC))
+		{
+			ringNPC.ApplyRing(target, player.whoAmI);
+		}
 	}
 
 	public override List<ItemAffix> GenerateAffixes()
@@ -89,7 +92,7 @@ internal class GuardianAngel : SteelBattleaxe
 
 		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
 		{
-			return !entity.friendly && !entity.townNPC;
+			return !entity.friendly && !entity.townNPC && entity.damage > 0;
 		}
 
 		public override void SetStaticDefaults()

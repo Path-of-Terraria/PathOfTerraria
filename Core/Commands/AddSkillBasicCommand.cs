@@ -5,6 +5,7 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class AddSkillBasicCommand : ModCommand
 {
 	public override string Command => "addskill_b";
@@ -60,3 +61,4 @@ public sealed class AddSkillBasicCommand : ModCommand
 		}
 	}
 }
+#endif

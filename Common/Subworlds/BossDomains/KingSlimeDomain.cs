@@ -17,14 +17,6 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
 public class KingSlimeDomain : BossDomainSubworld
 {
-	[Flags]
-	public enum Open
-	{
-		None = 0,
-		Above,
-		Below
-	}
-
 	public override int Width => 500;
 	public override int Height => 600;
 

@@ -2,6 +2,7 @@
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class SpawnItemCommand : ModCommand
 {
 	public override string Command => "spawnitem";
@@ -67,3 +68,4 @@ public sealed class SpawnItemCommand : ModCommand
 		caller.Reply("Item(s) spawned!", Color.Green);
 	}
 }
+#endif

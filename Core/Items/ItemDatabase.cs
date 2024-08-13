@@ -40,7 +40,7 @@ public sealed class ItemDatabase : ModSystem
 	{
 		base.PostSetupContent();
 
-		for (int i = 0; i < ItemID.Count; i++)
+		for (int i = 0; i < ItemLoader.ItemCount; i++)
 		{
 			Item item = ContentSamples.ItemsByType[i];
 			PoTStaticItemData staticData = item.GetStaticData();
@@ -57,7 +57,7 @@ public sealed class ItemDatabase : ModSystem
 
 			// If the drop chance is null (the default value), then this item does not
 			// specify a drop chance AT ALL (DIFFERENT from 0%), and should not be
-			// registered.  This is most prominent in things like vanilla items we
+			// registered. This is most prominent in things like vanilla items we
 			// haven't intended to every drop.
 			if (!staticData.DropChance.HasValue)
 			{

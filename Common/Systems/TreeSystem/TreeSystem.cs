@@ -54,14 +54,17 @@ internal class TreePlayer : ModPlayer
 		Edges = [];
 
 		Dictionary<int, Passive> passives = [];
-
 		List<PassiveData> data = PassiveRegistry.GetPassiveData();
 
-		data.ForEach(n => { passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n)); ActiveNodes.Add(passives[n.ReferenceId]); });
+		data.ForEach(n => 
+		{
+			passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n)); 
+			ActiveNodes.Add(passives[n.ReferenceId]); 
+		});
+
 		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new PassiveEdge(passives[n.ReferenceId], passives[connection.ReferenceId]))));
 
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
-
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
 
 		foreach (Passive passive in ActiveNodes)
