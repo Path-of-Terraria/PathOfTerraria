@@ -13,8 +13,21 @@ namespace PathOfTerraria.Core.Items;
 public sealed class PoTInstanceItemData : GlobalItem
 {
 	public override bool InstancePerEntity => true;
-
 	protected override bool CloneNewInstances => true;
+
+	public override GlobalItem Clone(Item from, Item to)
+	{
+		var clone = base.Clone(from, to) as PoTInstanceItemData;
+		clone.ItemType = ItemType;
+		clone.Rarity = Rarity;
+		clone.Influence = Influence;
+		clone.SpecialName = SpecialName;
+		clone.ImplicitCount = ImplicitCount;
+		clone.RealLevel = RealLevel;
+		clone.Affixes = [];
+		clone.Affixes.AddRange(Affixes);
+		return clone;
+	}
 
 	/// <summary>
 	///		The type of item this is, not to be confused with
@@ -40,7 +53,7 @@ public sealed class PoTInstanceItemData : GlobalItem
 	/// <summary>
 	///		The affixes of the item.
 	/// </summary>
-	public List<ItemAffix> Affixes { get; } = [];
+	public List<ItemAffix> Affixes { get; private set; } = [];
 
 	/// <summary>
 	///		The amount of implicit affixes preceding rolled ones.
