@@ -16,14 +16,7 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 
 	public virtual List<ItemAffix> GenerateAffixes()
 	{
-		int count = Item.GetInstanceData().Rarity switch
-		{
-			ItemRarity.Magic => 2,
-			ItemRarity.Rare => 4,
-			_ => 0,
-		};
-
-		return Affix.GenerateAffixes(AffixHandler.GetAffixes(Item), count);
+		return [];
 	}
 
 	public virtual List<ItemAffix> GenerateImplicits()

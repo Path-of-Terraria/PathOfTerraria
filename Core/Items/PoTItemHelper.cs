@@ -93,8 +93,8 @@ public static class PoTItemHelper
 
 		data.Affixes.Clear();
 		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
-
 		data.ImplicitCount = data.Affixes.Count;
+
 		for (int i = 0; i < GetAffixCount(item); i++)
 		{
 			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
