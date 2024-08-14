@@ -77,4 +77,11 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 		AffixTooltipHandler.ModifyTooltips(tooltips);
 	}
+
+	public override void Unload()
+	{
+		AffixTooltipHandler.Reset();
+		AffixTooltipHandler = null;
+		UniversalModifier = null;
+	}
 }
