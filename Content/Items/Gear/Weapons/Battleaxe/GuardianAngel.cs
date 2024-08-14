@@ -21,8 +21,8 @@ internal class GuardianAngel : SteelBattleaxe
 		staticData.DropChance = 1f;
 		staticData.MinDropItemLevel = 25;
 		staticData.IsUnique = true;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.AltUseDescription");
-		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.Description");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()

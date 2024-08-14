@@ -19,8 +19,8 @@ internal class GrimoireItem : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 0f;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.AltUseDescription");
-		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.GrimoireItem.Description");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()

@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using System.Collections.Generic;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -87,12 +88,12 @@ public sealed class PoTStaticItemData
 	/// <summary>
 	///		The item's description.
 	/// </summary>
-	public string Description { get; set; } = string.Empty;
+	public LocalizedText Description { get; set; } = LocalizedText.Empty;
 
 	/// <summary>
 	///		The item's description for alternate use (right-clicking).
 	/// </summary>
-	public string AltUseDescription { get; set; } = string.Empty;
+	public LocalizedText AltUseDescription { get; set; } = LocalizedText.Empty;
 }
 
 partial class PoTGlobalItem

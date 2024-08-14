@@ -119,9 +119,9 @@ partial class PoTGlobalItem
 		};
 		tooltips.Add(itemLevelLine);
 
-		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription))
+		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
 		{
-			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription));
+			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription.Value));
 		}
 
 		if (item.damage > 0)
@@ -147,9 +147,9 @@ partial class PoTGlobalItem
 		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().PrepareComparisonTooltips(tooltips, item);
 		AffixTooltipsHandler.DefaultColor = Color.White; // Resets color
 
-		if (!string.IsNullOrWhiteSpace(staticData.Description))
+		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
 		{
-			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description));
+			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description.Value));
 		}
 	}
 

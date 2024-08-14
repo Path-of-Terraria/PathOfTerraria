@@ -23,7 +23,7 @@ internal class Rottenbone : PlatinumGlaive
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.IsUnique = true;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.Rottenbone.AltUseDescription");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 	}
 
 	public override List<ItemAffix> GenerateImplicits()

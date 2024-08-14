@@ -19,8 +19,8 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
 		staticData.IsUnique = true;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.CorruptedBattleaxe.AltUseDescription");
-		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.CorruptedBattleaxe.Description");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()

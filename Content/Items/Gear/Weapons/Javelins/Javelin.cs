@@ -39,7 +39,7 @@ internal abstract class Javelin : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Javelin.AltUse");
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Javelin.AltUse");
 	}
 
 	public override void SetDefaults()

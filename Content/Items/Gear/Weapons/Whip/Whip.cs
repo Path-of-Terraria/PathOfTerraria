@@ -38,7 +38,7 @@ internal abstract class Whip : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Whip.AltUse");
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Whip.AltUse");
 
 		if (ModContent.HasAsset(Texture + "_Projectile"))
 		{

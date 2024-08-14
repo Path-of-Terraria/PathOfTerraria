@@ -26,8 +26,8 @@ internal class FireStarter : Sword, GenerateName.IItem
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 5f;
 		staticData.IsUnique = true;
-		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.Description");
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 	}
 
 	public override void SetDefaults()
