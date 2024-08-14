@@ -6,7 +6,6 @@ using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
@@ -19,8 +18,8 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
 		staticData.IsUnique = true;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.CorruptedBattleaxe.AltUseDescription");
-		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.CorruptedBattleaxe.Description");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()

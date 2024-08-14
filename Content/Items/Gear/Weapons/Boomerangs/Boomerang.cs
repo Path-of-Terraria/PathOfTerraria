@@ -23,7 +23,7 @@ internal abstract class Boomerang : Gear, GetItemLevel.IItem
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Boomerang.AltUse");
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Boomerang.AltUse");
 	}
 
 	public override void SetDefaults()

@@ -16,7 +16,7 @@ internal abstract class Battleaxe : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Battleaxe.AltUse");
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Battleaxe.AltUse");
 	}
 
 	public override void SetDefaults()

@@ -24,7 +24,8 @@ internal class MoltenDangpa : LeadDangpa
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.IsUnique = true;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.MoltenDangpa.AltUseDescription");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()
