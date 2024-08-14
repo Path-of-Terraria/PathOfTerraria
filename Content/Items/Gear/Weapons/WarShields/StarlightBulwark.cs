@@ -33,7 +33,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 		staticData.IsUnique = true;
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ManaAffix>(-1, 15, 20);

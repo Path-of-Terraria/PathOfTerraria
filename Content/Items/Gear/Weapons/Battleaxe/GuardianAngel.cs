@@ -64,19 +64,10 @@ internal class GuardianAngel : SteelBattleaxe
 
 	public override List<ItemAffix> GenerateImplicits()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
-		addedDamageAffix.MinValue = 1;
-		addedDamageAffix.MaxValue = 4;
-
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
-		attackSpeedAffix.MinValue = 1f;
-		attackSpeedAffix.MaxValue = 233f;
-
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>();
-		armorShredAffix.MinValue = 0.1f;
-		armorShredAffix.MaxValue = 0.1f;		
-		
-		var noFallDamage = (ItemAffix)Affix.CreateAffix<NoFallDamageAffix>();
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(-1, 0.2f, 0.6f);
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>(-1, 0.1f, 0.2f);
+		var noFallDamage = (ItemAffix)Affix.CreateAffix<NoFallDamageAffix>(1);
 		return [addedDamageAffix, attackSpeedAffix, armorShredAffix, noFallDamage];
 	}
 

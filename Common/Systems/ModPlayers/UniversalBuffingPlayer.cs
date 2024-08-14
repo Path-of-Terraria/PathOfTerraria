@@ -57,22 +57,22 @@ internal class UniversalBuffingPlayer : ModPlayer
 		}
 	}
 
+	/// <summary>
+	/// Compares all existing affix bonuses to what is on the <paramref name="item"/>, and adds the tooltip lines.
+	/// </summary>
+	/// <param name="tooltips">List to add to.</param>
+	/// <param name="item">Item to compare to.</param>
 	public void PrepareComparisonTooltips(List<TooltipLine> tooltips, Item item)
 	{
 		List<ItemAffix> affixes = item.GetInstanceData().Affixes;
-		List<Type> removals = [];
+		AffixTooltip.AffixSource source = AffixTooltipsHandler.DetermineItemSource(item);
 
 		foreach (KeyValuePair<Type, AffixTooltip> line in AffixTooltipHandler.Tooltips)
 		{
 			if (!affixes.Any(x => x.GetType() == line.Key))
 			{
-				removals.Add(line.Key);
+				line.Value.ClearValues(source);
 			}
-		}
-
-		foreach (Type type in removals)
-		{
-			AffixTooltipHandler.Tooltips.Remove(type);
 		}
 
 		AffixTooltipHandler.ModifyTooltips(tooltips);

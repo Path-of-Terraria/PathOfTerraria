@@ -1,9 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using System.Collections.Generic;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
+/// <summary>
+/// Controls an individual affix's tooltip. Includes tooling for comparison, overriding display text, and tracking sources.
+/// </summary>
 public class AffixTooltip
 {
 	public enum AffixSource : byte 
@@ -21,15 +24,19 @@ public class AffixTooltip
 	public delegate string OverrideStringDelegate(AffixTooltip self, float value, float difference, float originalValue, LocalizedText text);
 
 	public string DisplayValue => AggregateValue().ToString("#0.##");
-	public string DisplayDifference => AggregateDifference().ToString("+#0.##;-#0.##");
+	public string DisplayDifference => AggregateDifference().ToString("+#0.##;-#0.##;0");
 	public string DisplaySign => AggregateValue() >= 0 ? "+" : "-";
 
 	public LocalizedText Text;
 	public Dictionary<AffixSource, float> ValueBySource = [];
 	public Dictionary<AffixSource, float> OriginalValueBySource = [];
 	public OverrideStringDelegate OverrideString = null;
-	public Color Color = Color.Green;
+	public Color Color = Color.WhiteSmoke;
 
+	/// <summary>
+	/// Total value of this <see cref="AffixTooltip"/>.
+	/// </summary>
+	/// <returns>Total value from all sources.</returns>
 	public float AggregateValue()
 	{
 		float value = 0;
@@ -42,6 +49,10 @@ public class AffixTooltip
 		return value;
 	}
 
+	/// <summary>
+	/// Total original value of this <see cref="AffixTooltip"/>. Used for comparisons.
+	/// </summary>
+	/// <returns>Total original value from all sources.</returns>
 	public float AggregateOriginalValue()
 	{
 		float value = 0;
@@ -54,6 +65,10 @@ public class AffixTooltip
 		return value;
 	}
 
+	/// <summary>
+	/// Total difference between original and current value on this <see cref="AffixTooltip"/>. Used for comparisons.
+	/// </summary>
+	/// <returns>Total difference from all sources.</returns>
 	public float AggregateDifference()
 	{
 		float value = 0;
@@ -73,12 +88,17 @@ public class AffixTooltip
 		return value;
 	}
 
+	/// <summary>
+	/// Returns the final display string for this given <see cref="AffixTooltip"/>. <br/>
+	/// The return of this may be overriden with <see cref="OverrideString"/>. See <see cref="NoFallDamageAffix"/> for implementation.
+	/// </summary>
+	/// <returns>Final display string.</returns>
 	public string Get()
 	{
 		float realValue = AggregateValue();
 		float differenceValue = AggregateDifference();
 		bool hasOverride = OverrideString is not null;
-
+		
 		if (hasOverride)
 		{
 			return OverrideString(this, realValue, differenceValue, AggregateOriginalValue(), Text);
@@ -94,11 +114,18 @@ public class AffixTooltip
 		return baseText;
 	}
 
-	internal void ClearValues()
+	/// <summary>
+	/// Resets all values on this <see cref="AffixTooltip"/>.
+	/// </summary>
+	internal void ClearValues(AffixSource source)
 	{
-		foreach (AffixSource key in ValueBySource.Keys)
+		if (!ValueBySource.ContainsKey(source))
 		{
-			ValueBySource[key] = 0;
+			return;
 		}
+
+		float originalValue = AggregateValue();
+		ValueBySource[source] = 0;
+		Color = originalValue < AggregateValue() ? Color.Green : Color.Red;
 	}
 }

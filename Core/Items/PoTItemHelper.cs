@@ -139,6 +139,15 @@ public static class PoTItemHelper
 		}
 	}
 
+	public static void ApplyAffixTooltips(Item item, Player player)
+	{
+		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
+		{
+			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
+			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
+		}
+	}
+
 	public static void ClearAffixes(Item item)
 	{
 		item.GetInstanceData().Affixes.Clear();

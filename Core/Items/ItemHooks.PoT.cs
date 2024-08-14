@@ -361,21 +361,21 @@ public sealed class InsertAdditionalTooltipLines : ILoadable
 {
 	public interface IItem
 	{
-		void InsertAdditionalTooltipLines(List<TooltipLine> tooltips, EntityModifier thisItemModifier);
+		void InsertAdditionalTooltipLines(List<TooltipLine> tooltips);
 	}
 
 	public interface IGlobal
 	{
-		void InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier);
+		void InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips);
 	}
 
 	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).InsertAdditionalTooltipLines));
 
-	public static void Invoke(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier)
+	public static void Invoke(Item item, List<TooltipLine> tooltips)
 	{
 		if (item.ModItem is IItem i)
 		{
-			i.InsertAdditionalTooltipLines(tooltips, thisItemModifier);
+			i.InsertAdditionalTooltipLines(tooltips);
 		}
 
 		foreach (GlobalItem g in _hook.Enumerate(item))
@@ -385,7 +385,7 @@ public sealed class InsertAdditionalTooltipLines : ILoadable
 				continue;
 			}
 
-			gl.InsertAdditionalTooltipLines(item, tooltips, thisItemModifier);
+			gl.InsertAdditionalTooltipLines(item, tooltips);
 		}
 	}
 

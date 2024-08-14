@@ -151,10 +151,10 @@ public partial class EntityModifier : EntityModifierSegment
 
 			foreach (KeyValuePair<string, StatModifier> modifier in thisSegment.Modifiers)
 			{
-				if (otherSegment.Modifiers.ContainsKey(modifier.Key))
+				if (otherSegment.Modifiers.TryGetValue(modifier.Key, out StatModifier value))
 				{
 					StatModifier thisField = modifier.Value;
-					StatModifier otherField = otherSegment.Modifiers[modifier.Key];
+					StatModifier otherField = value;
 
 					if (thisField != otherField)
 					{

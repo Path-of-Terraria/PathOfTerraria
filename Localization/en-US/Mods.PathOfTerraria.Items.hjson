@@ -244,6 +244,8 @@ WebWhip: {
 CorruptedBattleaxe: {
 	DisplayName: Corrupted Battleaxe
 	Tooltip: ""
+	AltUseDescription: Right click to have the axe chase everything it can kill.
+	Description: Something doesn't feel right about this axe...
 }
 
 IronBattleaxe: {
