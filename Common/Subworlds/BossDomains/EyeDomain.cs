@@ -1,9 +1,7 @@
 ﻿using PathOfTerraria.Content.Projectiles;
 using PathOfTerraria.Content.Tiles.BossDomain;
-using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -12,7 +10,6 @@ using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.Systems.DisableBuilding;
-using Humanizer;
 using SubworldLibrary;
 using Terraria.Enums;
 
