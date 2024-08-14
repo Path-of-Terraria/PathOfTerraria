@@ -16,7 +16,7 @@ public abstract class ItemAffix : Affix
 
 	public virtual void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), item, Value, Language.GetText($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description"), null);
+		handler.AddOrModify(GetType(), item, Value, this.GetLocalization("Description"), null);
 	}
 
 	/// <summary>
@@ -47,6 +47,6 @@ public abstract class ItemAffix : Affix
 
 	internal override void CreateLocalization()
 	{
-		Language.GetOrRegister($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description", () => "{1}{0} to stat");
+		Language.GetOrRegister(this.GetLocalizationKey("Description"), () => "{1}{0} to stat");
 	}
 }

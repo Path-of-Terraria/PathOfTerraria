@@ -103,7 +103,7 @@ public class AffixRegistry : ILoadable
 	/// <returns>Instance of ItemAffix corresponding to the affix data.</returns>
 	internal static ItemAffix ConvertToItemAffix(ItemAffixData affixData)
 	{
-		string typeName = $"PathOfTerraria.Common.Systems.Affixes.ItemTypes.{affixData.AffixType}";
+		string typeName = $"{PoTMod.ModName}.Common.Systems.Affixes.ItemTypes.{affixData.AffixType}";
 		var affixType = Type.GetType(typeName);
 
 		if (affixType == null || !typeof(ItemAffix).IsAssignableFrom(affixType))
