@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
@@ -23,6 +24,7 @@ internal class MoltenDangpa : LeadDangpa
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.IsUnique = true;
+		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.MoltenDangpa.AltUseDescription");
 	}
 
 	public override void SetDefaults()
@@ -32,7 +34,7 @@ internal class MoltenDangpa : LeadDangpa
 		Item.shoot = ModContent.ProjectileType<MoltenDangpaThrown>();
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(-1, 0.05f, 0.1f);

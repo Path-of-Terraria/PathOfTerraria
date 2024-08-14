@@ -1,0 +1,46 @@
+# Each Affix comes with a standard, pre-generated line:
+# "{1}{0} to stat"
+# The {0} is the value of the affix, and the {1} is the sign.
+# An in-game line would look like: -5.58 to stat
+IncreasedDamageAffix.Description: "{1}{0}% damage"
+DefenseItemAffix.Description: "{1}{0} increased defense"
+EnduranceItemAffix.Description: "{1}{0}% increased damage resistance"
+ResistanceHelmetAffix.Description: "{1}{0}% shorter debuffs"
+BuffBoostHelmetAffix.Description: "{1}{0}% longer beneficial buffs"
+ThornyArmorAffix.Description: "{1}{0} reflected flat damage"
+BaseLifeAffix.Description: "{1}{0} max health"
+AddedLifeAffix.Description: "{1}{0}% max health"
+MultipliedLifeAffix.Description: "{1}{0}% max health multiplier"
+FlatLifeAffix.Description: "{1}{0} flat max life"
+LifeRegenAffix.Description: "{1}{0}% life regeneration"
+LifeRegenMultiplierAffix.Description: "{1}{0}% life regeneration multiplier"
+LifePotionPowerAffix.Description: "{1}{0}% stronger healing potions"
+LifePotionCapAffix.Description: "{1}{0} max health potions"
+LifePotionCooldownAffix.Description: "{1}{0}% mana potion cooldown"
+ManaAffix.Description: "{1}{0} max mana"
+ManaRegenAffix.Description: "{1}{0}% mana regeneration"
+ManaPotionPowerAffix.Description: "{1}{0}% stronger mana potions"
+ManaPotionCapAffix.Description: "{1}{0} max mana potions"
+ManaPotionCooldownAffix.Description: "{1}{0}% shorter mana potion cooldown"
+PiercingItemAffix.Description: "{1}{0}% defense piercing"
+AddedKnockbackItemAffix.Description: "{1}{0} knockback"
+IncreasedKnockbackItemAffix.Description: "{1}{0}% knockback"
+FlatKnockbackItemAffix.Description: "{1}{0} flat knockback"
+ChanceToApplyOnFireGearAffix.Description: "{1}{0} chance to apply On Fire!"
+ChanceToApplyArmorShredGearAffix.Description: "{1}{0} chance to apply Armor Shred"
+ChanceToApplyBloodclotItemAffix.Description: "{1}{0}% chance to apply Bloodclot"
+ChanceToApplyPoisonItemAffix.Description: "{1}{0}% chance to apply Poisoned"
+BuffPoisonedHitsAffix.Description: "{1}{0}% damage to poisoned enemies"
+MovementSpeed.Description: "{1}{0}% movement speed"
+HealOnKillingBurningEnemiesAffix.Description: "{1}{0} health gained on killing a burned enemy"
+IncreasedAttackSpeedAffix.Description: "{1}{0}% faster attack speed"
+AddedAttackSpeedAffix.Description: "{1}{0} reduced attack speed"
+AddedDamageAffix.Description: "{1}{0} flat damage"
+MoltenShellAffix.Description: "{1}{0} to Molten Shell"
+BloodSiphonAffix.Description: "{1}{0} to Blood Siphon"
+FetidCarapaceAffix.Description: "{1}{0} to Fetid Carapace"
+
+NoFallDamageAffix: {
+	Description: Immunity to fall damage
+	Removed: Vulnerable to fall damage
+}

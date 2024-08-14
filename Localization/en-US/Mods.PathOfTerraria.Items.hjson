@@ -244,6 +244,8 @@ WebWhip: {
 CorruptedBattleaxe: {
 	DisplayName: Corrupted Battleaxe
 	Tooltip: ""
+	AltUseDescription: Right click to have the axe chase everything it can kill.
+	Description: Something doesn't feel right about this axe...
 }
 
 IronBattleaxe: {
@@ -347,6 +349,7 @@ PlatinumGlaive: {
 MoltenDangpa: {
 	DisplayName: Molten Dangpa
 	Tooltip: ""
+	AltUseDescription: Right click to melt your weapon and throw it, guaranteeing On Fire! on every enemy and splashing a few magma bubbles around.
 }
 
 WoodPlank: {
@@ -387,6 +390,7 @@ SteelWarShield: {
 Bloodclotter: {
 	DisplayName: Bloodclotter
 	Tooltip: ""
+	AltUseDescription: Right click to bleed, powering up your weapon's damage by 50%.
 }
 
 StarlightBulwark: {
@@ -397,4 +401,5 @@ StarlightBulwark: {
 Rottenbone: {
 	DisplayName: Rottenbone
 	Tooltip: ""
+	AltUseDescription: Right click to throw your weapon, which quickly splits into many pieces, each dealing additional damage or applying Poisoned.
 }

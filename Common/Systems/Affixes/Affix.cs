@@ -5,6 +5,7 @@ using System.Linq;
 using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -173,6 +174,10 @@ public abstract class Affix
 
 		return resultList;
 	}
+
+	internal virtual void CreateLocalization()
+	{
+	}
 }
 
 internal class AffixHandler : ILoadable
@@ -242,6 +247,7 @@ internal class AffixHandler : ILoadable
 
 			var instance = Activator.CreateInstance(type) as Affix;
 			instance.OnLoad();
+			instance.CreateLocalization();
 
 			switch (instance)
 			{
