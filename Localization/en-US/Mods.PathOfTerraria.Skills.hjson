@@ -22,16 +22,16 @@ RainOfArrows: {
 }
 
 MoltenShield: {
-	Name: ""
-	Description: ""
+	Name: Molten Shield
+	Description: Gain a temporary health buffer that stops 75% of incoming damage until broken.
 }
 
 BloodSiphon: {
-	Name: ""
-	Description: ""
+	Name: Blood Siphon
+	Description: Consume all nearby Bloodclot stacks to heal 3 health per stack. Max of 30 stacks.
 }
 
 FetidCarapace: {
-	Name: ""
-	Description: ""
+	Name: Fetid Carapace
+	Description: Gain some orbital projectiles that protect you from enemies and their projectiles.
 }
