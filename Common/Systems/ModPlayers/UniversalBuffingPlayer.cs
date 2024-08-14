@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Core.Items;
 
@@ -54,5 +55,26 @@ internal class UniversalBuffingPlayer : ModPlayer
 				target.AddBuff(id, time);
 			}
 		}
+	}
+
+	public void PrepareComparisonTooltips(List<TooltipLine> tooltips, Item item)
+	{
+		List<ItemAffix> affixes = item.GetInstanceData().Affixes;
+		List<Type> removals = [];
+
+		foreach (KeyValuePair<Type, AffixTooltip> line in AffixTooltipHandler.Tooltips)
+		{
+			if (!affixes.Any(x => x.GetType() == line.Key))
+			{
+				removals.Add(line.Key);
+			}
+		}
+
+		foreach (Type type in removals)
+		{
+			AffixTooltipHandler.Tooltips.Remove(type);
+		}
+
+		AffixTooltipHandler.ModifyTooltips(tooltips);
 	}
 }

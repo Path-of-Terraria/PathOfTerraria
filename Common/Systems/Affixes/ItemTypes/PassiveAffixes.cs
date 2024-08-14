@@ -6,12 +6,12 @@ internal class IncreasedAttackSpeedAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Attackspeed += Value / 100;
+		modifier.Attackspeed += Value;
 	}
 
 	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), Value / 100, Language.GetText($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description"), null);
+		handler.AddOrModify(GetType(), item,Value * 100, Language.GetText($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description"), null);
 	}
 }
 
@@ -40,6 +40,6 @@ internal class IncreasedDamageAffix : ItemAffix
 
 	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), Value / 100, Language.GetText($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description"), null);
+		handler.AddOrModify(GetType(), item,Value / 100, Language.GetText($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description"), null);
 	}
 }

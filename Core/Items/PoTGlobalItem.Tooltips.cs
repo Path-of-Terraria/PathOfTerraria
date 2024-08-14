@@ -140,33 +140,33 @@ partial class PoTGlobalItem
 			tooltips.Add(defenseLine);
 		}
 
-		for (int i = 0; i < data.Affixes.Count; i++)
-		{
-			ItemAffix affix = data.Affixes[i];
-			string text = affix.RequiredInfluence switch
-			{
-				Influence.Solar => $"[i:{ItemID.IchorBullet}] " +
-								   HighlightNumbers($"{affix.GetTooltip(item, null)}", "FFEE99", "CCB077"),
-				Influence.Lunar => $"[i:{ItemID.CrystalBullet}] " +
-								   HighlightNumbers($"{affix.GetTooltip(item, null)}", "BBDDFF", "99AADD"),
-				_ => i < data.ImplicitCount
-				? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(item, null)}", baseColor: "8B8000")
-				: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(item, null)}"),
-			};
+		var thisItemModifier = new EntityModifier();
+		InsertAdditionalTooltipLines.Invoke(item, tooltips, thisItemModifier);
+		PoTItemHelper.ApplyAffixes(item, thisItemModifier, Main.LocalPlayer);
+		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().PrepareComparisonTooltips(tooltips, item);
 
-			var affixLine = new TooltipLine(Mod, $"Affix{i}", text);
-			tooltips.Add(affixLine);
-		}
+		//for (int i = 0; i < data.Affixes.Count; i++)
+		//{
+		//	ItemAffix affix = data.Affixes[i];
+		//	string text = affix.RequiredInfluence switch
+		//	{
+		//		Influence.Solar => $"[i:{ItemID.IchorBullet}] " +
+		//						   HighlightNumbers($"{affix.GetTooltip(item, null)}", "FFEE99", "CCB077"),
+		//		Influence.Lunar => $"[i:{ItemID.CrystalBullet}] " +
+		//						   HighlightNumbers($"{affix.GetTooltip(item, null)}", "BBDDFF", "99AADD"),
+		//		_ => i < data.ImplicitCount
+		//		? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(item, null)}", baseColor: "8B8000")
+		//		: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(item, null)}"),
+		//	};
+
+		//	var affixLine = new TooltipLine(Mod, $"Affix{i}", text);
+		//	tooltips.Add(affixLine);
+		//}
 
 		if (!string.IsNullOrWhiteSpace(staticData.Description))
 		{
 			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description));
 		}
-
-		var thisItemModifier = new EntityModifier();
-		PoTItemHelper.ApplyAffixes(item, thisItemModifier, Main.LocalPlayer);
-		InsertAdditionalTooltipLines.Invoke(item, tooltips, thisItemModifier);
-		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler.ModifyTooltips(item, tooltips);
 		return;
 
 		// Change in stats if equipped.

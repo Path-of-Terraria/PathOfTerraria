@@ -16,7 +16,7 @@ public abstract class ItemAffix : Affix
 
 	public virtual void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), Value, Language.GetText($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description"), null);
+		handler.AddOrModify(GetType(), item, Value, Language.GetText($"Mods.PathOfTerraria.Affixes.{GetType().Name}.Description"), null);
 	}
 
 	/// <summary>
