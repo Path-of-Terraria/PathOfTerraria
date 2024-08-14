@@ -6,7 +6,6 @@ using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 

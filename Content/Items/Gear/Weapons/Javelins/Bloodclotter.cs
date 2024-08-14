@@ -34,6 +34,7 @@ internal class Bloodclotter : PlatinumGlaive
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.IsUnique = true;
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()
