@@ -147,11 +147,11 @@ public class EaterDomain : BossDomainSubworld
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 80 : Main.maxTilesX - 80;
-		Main.spawnTileY = 210;
+		Main.spawnTileY = 110;
 		Main.worldSurface = 230;
 		Main.rockLayer = 299;
 
-		float baseY = 200;
+		float baseY = 120;
 
 		FastNoiseLite noise = GetGenNoise();
 		DemonitePositions = [];
@@ -161,6 +161,12 @@ public class EaterDomain : BossDomainSubworld
 		{
 			float noiseOffset = noise.GetNoise(x, 0) * 3;
 			float useY = baseY + noiseOffset;
+			int difference = Math.Abs(x - 400);
+
+			if (difference < 200)
+			{
+				useY += (200 - difference) / 4;
+			}
 
 			for (int y = (int)useY; y < Main.maxTilesY; ++y)
 			{
@@ -168,7 +174,7 @@ public class EaterDomain : BossDomainSubworld
 
 				if (y > useY + 4)
 				{
-					WorldGen.PlaceWall(x, y, y > useY + 30 ? WallID.EbonstoneUnsafe : WallID.DirtUnsafe, true);
+					WorldGen.PlaceWall(x, y, WallID.EbonstoneUnsafe, true);
 				}
 
 				if (y > 400 + noiseOffset && WorldGen.genRand.NextBool(1600))

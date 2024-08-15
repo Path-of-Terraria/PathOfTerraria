@@ -10,8 +10,9 @@ using ReLogic.Graphics;
 namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
-/// This is used to stop bosses from doing special death effects (like King Slime spawning the town slime, WoF spawning hardmode) automatically.<br/>
-/// That effect is cached in <see cref="BossTracker.CachedBossesDowned"/>.
+/// This is used to stop bosses from doing special death effects (like King Slime spawning the town slime, WoF spawning hardmode) automatically,<br/>
+/// using a nicer loading screen dialogue, and setting <see cref="WorldGenerator.CurrentGenerationProgress"/> as it's not set by default.<br/>
+/// The death effect system is in <see cref="BossTracker.CachedBossesDowned"/>.
 /// </summary>
 public abstract class BossDomainSubworld : MappingWorld
 {
