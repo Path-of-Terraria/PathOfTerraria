@@ -33,7 +33,7 @@ public class EyeDomain : BossDomainSubworld
 
 	private void PlaceGrassAndDecor(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Dictionary<Point16, Open> tiles = [];
+		Dictionary<Point16, OpenFlags> tiles = [];
 
 		for (int i = 0; i < Main.maxTilesX; ++i)
 		{
@@ -46,19 +46,9 @@ public class EyeDomain : BossDomainSubworld
 					continue;
 				}
 
-				Open flags = Open.None;
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
 
-				if (!Main.tile[i, j - 1].HasTile)
-				{
-					flags |= Open.Above;
-				}
-
-				if (!Main.tile[i, j + 1].HasTile)
-				{
-					flags |= Open.Below;
-				}
-
-				if (flags == Open.None)
+				if (flags == OpenFlags.None)
 				{
 					continue;
 				}
@@ -70,7 +60,7 @@ public class EyeDomain : BossDomainSubworld
 		int arenaY = 0;
 		HashSet<Point16> grasses = [];
 
-		foreach ((Point16 position, Open tile) in tiles)
+		foreach ((Point16 position, OpenFlags tile) in tiles)
 		{
 			TrySpreadGrassOnTile(tile, position, grasses);
 
@@ -113,11 +103,11 @@ public class EyeDomain : BossDomainSubworld
 		Arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
 	}
 
-	private static void TrySpreadGrassOnTile(Open adjacencies, Point16 position, HashSet<Point16> grasses)
+	private static void TrySpreadGrassOnTile(OpenFlags adjacencies, Point16 position, HashSet<Point16> grasses)
 	{
 		Tile tile = Main.tile[position];
 
-		if (adjacencies == Open.Above)
+		if (adjacencies == OpenFlags.Above)
 		{
 			tile.TileType = TileID.Grass;
 
@@ -166,16 +156,9 @@ public class EyeDomain : BossDomainSubworld
 
 	private static FastNoiseLite GetGenNoise()
 	{
-		var noise = new FastNoiseLite();
+		var noise = new FastNoiseLite(WorldGen._genRandSeed);
 		noise.SetFrequency(0.01f);
 		return noise;
-	}
-
-	private void ResetStep(GenerationProgress progress, GameConfiguration configuration)
-	{
-		WorldGen._lastSeed = DateTime.Now.Second;
-		WorldGen._genRand = new UnifiedRandom(DateTime.Now.Second);
-		WorldGen._genRand.SetSeed(DateTime.Now.Second);
 	}
 
 	public override void OnEnter()

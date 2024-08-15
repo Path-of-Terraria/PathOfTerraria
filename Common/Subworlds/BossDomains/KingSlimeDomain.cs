@@ -34,16 +34,9 @@ public class KingSlimeDomain : BossDomainSubworld
 
 	private static FastNoiseLite GetGenNoise()
 	{
-		var noise = new FastNoiseLite();
+		var noise = new FastNoiseLite(WorldGen._genRandSeed);
 		noise.SetFrequency(0.03f);
 		return noise;
-	}
-
-	private void ResetStep(GenerationProgress progress, GameConfiguration configuration)
-	{
-		WorldGen._lastSeed = DateTime.Now.Second;
-		WorldGen._genRand = new UnifiedRandom(DateTime.Now.Second);
-		WorldGen._genRand.SetSeed(DateTime.Now.Second);
 	}
 
 	public override void OnEnter()
@@ -55,7 +48,7 @@ public class KingSlimeDomain : BossDomainSubworld
 
 	private void DecorGen(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Dictionary<Point16, Open> tiles = [];
+		Dictionary<Point16, OpenFlags> tiles = [];
 
 		for (int i = 60; i < Main.maxTilesX - 60; ++i)
 		{
@@ -68,19 +61,9 @@ public class KingSlimeDomain : BossDomainSubworld
 					continue;
 				}
 
-				Open flags = Open.None;
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
 
-				if (!Main.tile[i, j - 1].HasTile)
-				{
-					flags |= Open.Above;
-				}
-
-				if (!Main.tile[i, j + 1].HasTile)
-				{
-					flags |= Open.Below;
-				}
-
-				if (flags == Open.None)
+				if (flags == OpenFlags.None)
 				{
 					continue;
 				}
@@ -89,12 +72,12 @@ public class KingSlimeDomain : BossDomainSubworld
 			}
 		}
 
-		foreach ((Point16 position, Open tile) in tiles)
+		foreach ((Point16 position, OpenFlags tile) in tiles)
 		{
 			PlaceDecorOnTile(tile, position, false);
 		}
 
-		foreach ((Point16 position, Open tile) in tiles)
+		foreach ((Point16 position, OpenFlags tile) in tiles)
 		{
 			PlaceDecorOnTile(tile, position, true);
 		}
@@ -102,7 +85,7 @@ public class KingSlimeDomain : BossDomainSubworld
 		tiles.Clear();
 	}
 
-	private void PlaceDecorOnTile(Open flags, Point16 position, bool late)
+	private void PlaceDecorOnTile(OpenFlags flags, Point16 position, bool late)
 	{
 		if (Main.tile[position].TileType == TileID.Stone)
 		{
@@ -110,7 +93,7 @@ public class KingSlimeDomain : BossDomainSubworld
 			{
 				bool nearSlimePosition = SlimePositions.Any(x => x.DistanceSQ(position.ToVector2()) < 50 * 50);
 
-				if (flags.HasFlag(Open.Below))
+				if (flags.HasFlag(OpenFlags.Below))
 				{
 					if (nearSlimePosition && WorldGen.genRand.NextBool(10))
 					{
@@ -126,7 +109,7 @@ public class KingSlimeDomain : BossDomainSubworld
 					}
 				}
 
-				if (flags.HasFlag(Open.Above))
+				if (flags.HasFlag(OpenFlags.Above))
 				{
 					if (nearSlimePosition && WorldGen.genRand.NextBool(5))
 					{
@@ -150,7 +133,7 @@ public class KingSlimeDomain : BossDomainSubworld
 			}
 			else
 			{
-				if (flags.HasFlag(Open.Below) && WorldGen.genRand.NextBool(20))
+				if (flags.HasFlag(OpenFlags.Below) && WorldGen.genRand.NextBool(20))
 				{
 					int y = position.Y + 1;
 
