@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.Skills.Melee;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -41,7 +42,7 @@ public abstract class Skill
 	public List<SkillPassiveEdge> Edges = [];
 
 	public abstract int MaxLevel { get; }
-	public int Points { get; set; } = 1;
+	public int PassivePoints { get; set; } = 1;
 
 	public virtual string Name => GetType().Name;
 	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
@@ -157,8 +158,10 @@ public abstract class Skill
 	public void CreateTree()
 	{
 		Edges = [];
-		ActiveNodes = [];
-
+		ActiveNodes =
+		[
+			new SkillPassiveAnchor()
+		];
 
 		foreach (SkillPassive passive in Passives)
 		{
@@ -174,7 +177,7 @@ public abstract class Skill
 			
 			if (passive.ReferenceId != 1) //Not anchor
 			{
-				Points -= passive.Level;
+				PassivePoints -= passive.Level;
 			}
 			
 			ActiveNodes.Add(passive);

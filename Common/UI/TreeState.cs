@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Content.Passives;
@@ -34,7 +33,7 @@ internal class TreeState : DraggableSmartUi
 			return;
 		}
 
-		if (_passiveTreeInner == null)
+		if (_passiveTreeInner == null || _skillSelection == null)
 		{
 			_passiveTreeInner = new PassiveTreeInnerPanel();
 			_skillSelection = new SkillSelectionPanel();

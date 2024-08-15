@@ -64,7 +64,7 @@ internal class PassiveTreeInnerPanel : SmartUiElement
 					float len = (40 + rand.Next(120)) * dist / 50;
 					float scale = 0.05f + rand.NextSingle() * 0.15f;
 
-					float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
+					float progress = (Main.GameUpdateCount + 15 * k) % len / len;
 					Vector2 pos = GetDimensions().Center() +
 					              Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
 					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);

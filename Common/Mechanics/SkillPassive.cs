@@ -19,13 +19,13 @@ public abstract class SkillPassive
 	public virtual string Name => GetType().Name;
 	public virtual string Texture => $"{PoTMod.ModName}/Assets/SkillPassives/" + Name;
 
-	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillPassive." + Name + ".Name");
-	public virtual string Description => Language.GetTextValue("Mods.PathOfTerraria.SkillPassive." + Name + ".Description");
+	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Name");
+	public virtual string Description => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Description");
 	
 	/// <summary>
 	/// Tooltip to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
 	/// </summary>
-	public virtual string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassive." + Name + ".Tooltip");
+	public virtual string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Tooltip");
 
 	public abstract void LevelTo(byte level);
 	
