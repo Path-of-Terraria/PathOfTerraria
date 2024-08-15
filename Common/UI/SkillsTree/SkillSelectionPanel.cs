@@ -41,9 +41,21 @@ internal class SkillSelectionPanel : SmartUiElement
 
 	public void DrawSkillTree()
 	{
+		if (SelectedSkill == null)
+		{
+			return;
+		}
+		
+		if (SelectedSkill.Passives.Count == 0)
+		{
+			Main.NewText("This skill has no passives.");
+			return;
+		}
+		
 		RemoveAllChildren();
 		_skillTreeInnerPanel = null;
-		_skillTreeInnerPanel = new();
+		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
+		Append(_skillTreeInnerPanel);
 		SelectedSkill.CreateTree();
 		SelectedSkill.ActiveNodes.ForEach(n =>
 		{

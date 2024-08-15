@@ -29,14 +29,15 @@ internal class TreeState : DraggableSmartUi
 		{
 			RemoveAllChildren(); //Temporary thing to update the GUI when toggling
 			_passiveTreeInner = null;
+			_skillSelection = null;
 			IsVisible = false;
 			return;
 		}
 
 		if (_passiveTreeInner == null)
 		{
-			_passiveTreeInner = new();
-			_skillSelection = new();
+			_passiveTreeInner = new PassiveTreeInnerPanel();
+			_skillSelection = new SkillSelectionPanel();
 
 			TopLeftTree = Vector2.Zero;
 			BotRightTree = Vector2.Zero;

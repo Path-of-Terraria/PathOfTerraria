@@ -5,13 +5,12 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
-internal class SkillTreeInnerPanel : SmartUiElement
+internal class SkillTreeInnerPanel(Skill skill) : SmartUiElement
 {
 	private Vector2 _start;
 	private Vector2 _lineOff;
 
 	private UIElement Panel => Parent;
-	private Skill _selectedSkill = null;
 
 	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
 	public override string TabName => "SelectedSkillTree";
@@ -25,7 +24,7 @@ internal class SkillTreeInnerPanel : SmartUiElement
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-		foreach (SkillPassiveEdge edge in _selectedSkill.Edges)
+		foreach (SkillPassiveEdge edge in skill.Edges)
 		{
 			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 
