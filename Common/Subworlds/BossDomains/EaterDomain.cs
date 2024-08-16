@@ -13,6 +13,7 @@ using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using Terraria.GameContent;
 using ReLogic.Graphics;
+using PathOfTerraria.Content.Tiles.BossDomain;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -213,6 +214,11 @@ public class EaterDomain : BossDomainSubworld
 
 		// Opening before the arena
 		WorldGen.digTunnel(400, Height - 210, 0, 0, 20, 20);
+
+		foreach (Vector2 item in breakthroughs)
+		{
+			WorldGen.TileRunner((int)item.X, (int)item.Y, 26, WorldGen.genRand.Next(4, 20), ModContent.TileType<WeakMalaise>(), true);
+		}
 	}
 
 	private static void GetRandomPoint(List<Vector2> breakthroughs, Vector2[] horizontalPoints)

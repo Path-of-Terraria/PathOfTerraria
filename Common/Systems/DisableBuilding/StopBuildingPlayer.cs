@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
@@ -20,11 +21,39 @@ internal class StopBuildingPlayer : ModPlayer
 	public override void Load()
 	{
 		IL_Player.PickTile += DisableMining;
-		IL_Player.PickWall += DisableMining;
-		IL_Player.ItemCheck_CutTiles += DisableMining;
+		IL_Player.PickWall += DisableMiningWall;
+		IL_Player.ItemCheck_CutTiles += DisableCut;
 	}
 
 	private static void DisableMining(ILContext il)
+	{
+		ILCursor c = new(il);
+		ILLabel label = c.DefineLabel();
+
+		c.Emit(OpCodes.Ldarg_0);
+		c.Emit(OpCodes.Ldarg_1);
+		c.Emit(OpCodes.Ldarg_2);
+		c.EmitDelegate((Player player, int x, int y) => player.GetModPlayer<StopBuildingPlayer>().CanDig(x, y, false));
+		c.Emit(OpCodes.Brfalse, label);
+		c.Emit(OpCodes.Ret);
+		c.MarkLabel(label);
+	}
+
+	private static void DisableMiningWall(ILContext il)
+	{
+		ILCursor c = new(il);
+		ILLabel label = c.DefineLabel();
+
+		c.Emit(OpCodes.Ldarg_0);
+		c.Emit(OpCodes.Ldarg_1);
+		c.Emit(OpCodes.Ldarg_2);
+		c.EmitDelegate((Player player, int x, int y) => player.GetModPlayer<StopBuildingPlayer>().CanDig(x, y, true));
+		c.Emit(OpCodes.Brfalse, label);
+		c.Emit(OpCodes.Ret);
+		c.MarkLabel(label);
+	}
+
+	private static void DisableCut(ILContext il)
 	{
 		ILCursor c = new(il);
 		ILLabel label = c.DefineLabel();
@@ -34,6 +63,23 @@ internal class StopBuildingPlayer : ModPlayer
 		c.Emit(OpCodes.Brfalse, label);
 		c.Emit(OpCodes.Ret);
 		c.MarkLabel(label);
+	}
+
+	private object CanDig(int x, int y, bool isWall)
+	{
+		if (!LastStopBuilding)
+		{
+			return false;
+		}
+
+		Tile tile = Main.tile[x, y];
+
+		if (!isWall)
+		{
+			return tile.TileType == ModContent.TileType<WeakMalaise>();
+		}
+
+		return true;
 	}
 
 	public override void ResetEffects()
