@@ -57,9 +57,9 @@ internal class SkillSelectionPanel : SmartUiElement
 		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 		Append(_skillTreeInnerPanel);
 		SelectedSkill.CreateTree();
-		SelectedSkill.ActiveNodes.ForEach(n =>
+		foreach (SkillPassive n in SelectedSkill.ActiveNodes)
 		{
 			_skillTreeInnerPanel.Append(new SkillPassiveElement(n));
-		});
+		}
 	}
 }

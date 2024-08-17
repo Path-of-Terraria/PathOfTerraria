@@ -15,7 +15,7 @@ internal class SkillSelectionElement : UIElement
 		_parentPanel = parentPanel;
 		Width.Set(skill.Size.X, 0);
 		Height.Set(skill.Size.Y, 0);
-		Top.Set(150, 0);
+		Top.Set(60, 0);
 		Left.Set(25 + 75 * index, 0);
 	}
 

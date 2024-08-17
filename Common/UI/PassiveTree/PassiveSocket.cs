@@ -57,7 +57,7 @@ internal class PassiveSocket : PassiveElement
 		_passive.Level++;
 		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points--;
 
-		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5"));
+		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5"));
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)

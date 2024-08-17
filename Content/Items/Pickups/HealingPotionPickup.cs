@@ -46,7 +46,7 @@ internal class HealingPotionPickup : ModItem
 			Dust.NewDustPerfect(Item.Center, DustID.PortalBoltTrail, Main.rand.NextVector2Circular(3, 3), 0, new Color(255, 150, 150), 0.5f);
 		}
 
-		var style = new SoundStyle($"{PoTMod.ModName}/Sounds/PickupPotion")
+		var style = new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/PickupPotion")
 		{
 			Pitch = -0.2f
 		};

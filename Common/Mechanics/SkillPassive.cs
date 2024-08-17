@@ -102,6 +102,7 @@ public abstract class SkillPassive
 	public bool CanAllocate()
 	{
 		return
+			Name == "Anchor" || 
 			Level < MaxLevel &&
 			Skill.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
 	}
