@@ -1,8 +1,4 @@
-using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.UI.Elements;
-using PathOfTerraria.Common.Utilities;
-using ReLogic.Content;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.UI;
@@ -13,24 +9,27 @@ public sealed class UIWaypointBrowser : UIState
 {
 	private const int KeyInitialDelay = 30;
 	private const int KeyRepeatDelay = 15;
-	
+
 	/// <summary>
-	///		The unique identifier of this state.
+	///     The unique identifier of this state.
 	/// </summary>
 	public const string Identifier = $"{PoTMod.ModName}:{nameof(UIWaypointBrowser)}";
 
 	/// <summary>
-	///		The position of the arcane obelisk instance in tile coordinates.
+	///     The width of this state in pixels.
 	/// </summary>
-	public readonly Point Coordinates;
-
-	private float _progress;
+	public const float FullWidth = 300f;
 
 	/// <summary>
-	///		The animation progress of the browser.
+	///     The height of this state in pixels.
+	/// </summary>
+	public const float FullHeight = 400f;
+
+	/// <summary>
+	///     The animation progress of this state.
 	/// </summary>
 	/// <remarks>
-	///		This ranges from <c>0</c> (Inactive) - <c>1</c> (Active).
+	///     This ranges from <c>0f</c> (Inactive) - <c>1f</c> (Active).
 	/// </remarks>
 	public float Progress
 	{
@@ -38,51 +37,36 @@ public sealed class UIWaypointBrowser : UIState
 		set => _progress = MathHelper.Clamp(value, 0f, 1f);
 	}
 
-	private float _targetProgress;
-	
 	/// <summary>
-	///		The target value for the animation progress of the browser.
+	///     The target value for the animation progress of this state.
 	/// </summary>
 	/// <remarks>
-	///		This ranges from <c>0</c> (Inactive) - <c>1</c> (Active).
+	///     This ranges from <c>0f</c> (Inactive) - <c>1f</c> (Active).
 	/// </remarks>
-	public float TargetProgress 
+	public float TargetProgress
 	{
 		get => _targetProgress;
 		set => _targetProgress = MathHelper.Clamp(value, 0f, 1f);
 	}
 
-	private int _selectedWaypoint;
-
 	/// <summary>
-	///		The index of the currently selected waypoint.
+	///     The index of the currently selected waypoint.
 	/// </summary>
-	/// <remarks>
-	///		This will be set to the first element index if it goes out of bounds positively,
-	///		and set to the last element index if it goes out of bounds negatively.
-	/// </remarks>
 	public int SelectedWaypoint
 	{
 		get => _selectedWaypoint;
-		set
-		{
-			int min = 0;
-			int max = ModWaypointLoader.WaypointCount - 1;
-			
-			if (value < min)
-			{
-				_selectedWaypoint = max;
-			}
-			else if (value > max)
-			{
-				_selectedWaypoint = min;
-			}
-			else
-			{
-				_selectedWaypoint = (int)MathHelper.Clamp(value, min, max);
-			}
-		}
+		set => _selectedWaypoint = (int)MathHelper.Clamp(value, 0, ModWaypointLoader.WaypointCount - 1);
 	}
+
+	private float _progress;
+
+	private int _selectedWaypoint;
+
+	private float _targetProgress;
+
+	private int holdDelayTimer;
+
+	private UIImage previewIndicator;
 
 	public override void OnInitialize()
 	{
@@ -90,97 +74,79 @@ public sealed class UIWaypointBrowser : UIState
 
 		var root = new UIElement
 		{
-			HAlign = 0.5f,
-			VAlign = 0.5f
+			HAlign = 0.5f
 		};
-		
-		root.Width.Set(400f, 0f);
-		root.Height.Set(600f, 0f);
+
+		root.Width.Set(FullWidth, 0f);
+		root.Height.Set(FullHeight, 0f);
 
 		Append(root);
 
-		var panel = new UIPanel();
-		
-		panel.Width.Set(400f, 0f);
-		panel.Height.Set(600f, 0f);
-		
+		var panel = new UIPanel(
+			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBackground"),
+			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBorder"),
+			13
+		)
+		{
+			BackgroundColor = new Color(41, 66, 133) * 0.8f,
+			BorderColor = new Color(13, 13, 15),
+			OverrideSamplerState = SamplerState.PointClamp
+		};
+
+		panel.Width.Set(FullWidth, 0f);
+		panel.Height.Set(FullHeight, 0f);
+
 		root.Append(panel);
 
-		var header = new UIText("Waypoints")
-		{
-			HAlign = 0.5f
-		};
-		
-		header.Top.Set(16f, 0f);
-		
-		root.Append(header);
+		var list = new UIList { OverrideSamplerState = SamplerState.PointClamp };
 
-		var list = new UIList();
-		
-		list.Top.Set(32f, 0f);
-		
-		list.Width.Set(400f, 0f);
-		list.Height.Set(600f - 32f, 0f);
+		list.Top.Set(50f, 0f);
 
-		foreach (ModWaypoint? waypoint in ModContent.GetContent<ModWaypoint>())
-		{
-			var element = new UIElement();
-			
-			element.Width.Set(400f, 0f);
-			element.Height.Set(48f, 0f);
+		list.Width.Set(FullWidth, 0f);
+		list.Height.Set(FullHeight - list.Top.Pixels, 0f);
 
-			var icon = new UIHoverImage(ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad))
-			{
-				VAlign = 0.5f,
-				ActiveScale = 1.25f,
-				InactiveScale = 1f,
-				ActiveRotation = MathHelper.ToRadians(2.5f),
-				InactiveRotation = 0f,
-				OverrideSamplerState = SamplerState.PointClamp
-			};
-			
-			icon.Left.Set(16f, 0f);
-			
-			element.Append(icon);
-
-			var text = new UIText(waypoint.DisplayName.Value, 0.8f) { VAlign = 0.5f };
-			
-			text.Left.Set(64f, 0f);
-			
-			element.Append(text);
-			
-			list.Add(element);
-		}
-		
-		list.ListPadding = 4f;
+		list.ListPadding = 0f;
 
 		root.Append(list);
 
-		var scrollbar = new UIScrollbar();
-		
-		scrollbar.Width.Set(8f, 0f);
-		scrollbar.Height.Set(0f, 0.825f);
-		
-		scrollbar.Left.Set(-16f, 1f);
-		scrollbar.Top.Set(0f, 0.1f);
-		
-		list.Append(scrollbar);
-		list.SetScrollbar(scrollbar);
+		var scroll = new UIScrollbar { OverrideSamplerState = SamplerState.PointClamp };
+
+		scroll.Left.Set(FullWidth - 16f, 0f);
+
+		scroll.Width.Set(20f, 0f);
+		scroll.Height.Set(list.Height.Pixels, 0f);
+
+		list.Append(scroll);
+		list.SetScrollbar(scroll);
+
+		for (int i = 0; i < ModWaypointLoader.WaypointCount; i++)
+		{
+			ModWaypoint? waypoint = ModWaypointLoader.Waypoints[i];
+			
+			var tab = new UIWaypointTab(waypoint, i);
+
+			tab.Left.Set(12f, 0f);
+
+			tab.Height.Set(48f, 0f);
+			tab.Width.Set(FullWidth - 38f, 0f);
+
+			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypoint;
+
+			list.Add(tab);
+		}
 	}
 
 	public override void OnActivate()
 	{
 		base.OnActivate();
-		
-		OnInitialize();
-		
+
 		TargetProgress = 1f;
 	}
 
 	public override void OnDeactivate()
 	{
 		base.OnDeactivate();
-RemoveAllChildren();
+
 		TargetProgress = 0f;
 	}
 
@@ -188,11 +154,48 @@ RemoveAllChildren();
 	{
 		base.Update(gameTime);
 
-		Progress = MathHelper.SmoothStep(Progress, TargetProgress, 0.2f);
+		UpdateSelectionInput();
+		
+		Progress = MathHelper.SmoothStep(Progress, TargetProgress, 0.3f);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		base.Draw(spriteBatch);
+	}
+
+	private void UpdateSelectionInput()
+	{
+		if (Main.keyState.IsKeyDown(Keys.Down))
+		{
+			if (holdDelayTimer == 0 || holdDelayTimer > KeyInitialDelay && holdDelayTimer % KeyRepeatDelay == 0)
+			{
+				SelectedWaypoint++;
+			}
+
+			holdDelayTimer++;
+		}
+		else if (Main.keyState.IsKeyDown(Keys.Up))
+		{
+			if (holdDelayTimer == 0 || holdDelayTimer > KeyInitialDelay && holdDelayTimer % KeyRepeatDelay == 0)
+			{
+				SelectedWaypoint--;
+			}
+
+			holdDelayTimer++;
+		}
+		else if (PlayerInput.ScrollWheelDeltaForUI != 0)
+		{
+			if (holdDelayTimer == 0 || holdDelayTimer > KeyInitialDelay && holdDelayTimer % KeyRepeatDelay == 0)
+			{
+				SelectedWaypoint -= Math.Sign(PlayerInput.ScrollWheelDeltaForUI);
+			}
+
+			holdDelayTimer++;
+		}
+		else
+		{
+			holdDelayTimer = 0;
+		}
 	}
 }
