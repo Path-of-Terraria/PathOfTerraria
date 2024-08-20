@@ -25,7 +25,6 @@ public class EaterDomain : BossDomainSubworld
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
-	public List<Vector2> SlimePositions = [];
 
 	private HashSet<Point16> DemonitePositions = [];
 
@@ -381,7 +380,6 @@ public class EaterDomain : BossDomainSubworld
 	{
 		BossSpawned = false;
 		ReadyToExit = false;
-		SlimePositions.Clear();
 
 		Main.dayTime = true;
 		Main.time = Main.dayLength - 1800;
