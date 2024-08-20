@@ -119,7 +119,8 @@ internal class MobAprgSystem : GlobalNPC
 
 	public override void SetDefaults(NPC npc)
 	{
-		if (npc.friendly || npc.boss || Main.gameMenu) //We only want to trigger these changes on hostile non-boss mobs in-game
+		//We only want to trigger these changes on hostile non-boss, non Eater of Worlds mobs in-game
+		if (npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail)
 		{
 			return;
 		}
