@@ -21,7 +21,7 @@ public class EyeDomain : BossDomainSubworld
 	public const int ArenaX = 620;
 
 	public override int Width => 800;
-	public override int Height => 400;
+	public override int Height => 280;
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
@@ -38,7 +38,7 @@ public class EyeDomain : BossDomainSubworld
 
 		for (int i = 0; i < Main.maxTilesX; ++i)
 		{
-			for (int j = 80; j < Main.maxTilesY - 60; ++j)
+			for (int j = 80; j < Main.maxTilesY - 50; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 
@@ -91,7 +91,6 @@ public class EyeDomain : BossDomainSubworld
 
 					string type = "Assets/Structures/EoCDomain/" + typeId switch
 					{
-						0 => "Cemetary",
 						1 => "Flesh",
 						2 => "Shrine",
 						_ => "Wound"
