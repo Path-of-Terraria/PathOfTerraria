@@ -16,7 +16,7 @@ internal class CorruptSacks : ModTile
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.newTile.DrawYOffset = 2;
-		TileObjectData.newTile.Origin = new Point16(1);
+		TileObjectData.newTile.Origin = new Point16(1); // This breaks when stuff is placed near it. Too bad! It works in-context.
 		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.EmptyTile | AnchorType.SolidTile | AnchorType.None, 3, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.EmptyTile | AnchorType.SolidTile | AnchorType.None, 3, 0);
 		TileObjectData.addTile(Type);
@@ -28,7 +28,7 @@ internal class CorruptSacks : ModTile
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (closer && Main.LocalPlayer.DistanceSQ(new Vector2(i, j).ToWorldCoordinates()) < 200 * 200)
+		if (closer && Main.LocalPlayer.DistanceSQ(new Vector2(i, j).ToWorldCoordinates()) < 250 * 250)
 		{
 			WorldGen.KillTile(i, j);
 		}
