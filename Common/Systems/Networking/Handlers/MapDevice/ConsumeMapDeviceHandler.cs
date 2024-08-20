@@ -7,13 +7,11 @@ namespace PathOfTerraria.Common.Systems.Networking.Handlers.MapDevice;
 internal static class ConsumeMapDeviceHandler
 {
 	/// <summary>
-	/// Spawns an orb on all clients but <paramref name="target"/>. 
-	/// Generally, this should only be called by <see cref="ExperienceModSystem.SpawnExperience(int, Vector2, Vector2, int, bool)"/>.
+	/// Map device packet <paramref name="target"/>. 
+	/// Generally, this should only be called by <see cref="MapDevicePlaceable.TryPlaceMap"/>.
 	/// </summary>
-	/// <param name="target">Target for the exp to aim for.</param>
-	/// <param name="xp">Amount of XP to spawn.</param>
-	/// <param name="spawn">Where it spawns.</param>
-	/// <param name="velocity">The base velocity of the spawned exp.</param>
+	/// <param name="fromWho">The person entering the map.</param>
+	/// <param name="entityKey">The key for the entity</param>
 	public static void Send(byte fromWho, Point16 entityKey)
 	{
 		ModPacket packet = Networking.GetPacket(Networking.Message.ConsumeMapOffOfDevice);
@@ -24,7 +22,7 @@ internal static class ConsumeMapDeviceHandler
 		packet.Send();
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal static void ServerReceive(BinaryReader reader)
 	{
 		ModPacket packet = Networking.GetPacket(Networking.Message.ConsumeMapOffOfDevice);
 		byte fromWho = reader.ReadByte();
@@ -41,7 +39,7 @@ internal static class ConsumeMapDeviceHandler
 		}
 	}
 
-	internal static void ClientRecieve(BinaryReader reader)
+	internal static void ClientReceive(BinaryReader reader)
 	{
 		short x = reader.ReadInt16();
 		short y = reader.ReadInt16();

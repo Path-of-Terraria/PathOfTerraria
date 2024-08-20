@@ -19,7 +19,7 @@ internal static class SyncGuardianAngelHandler
 		}
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal static void ServerReceive(BinaryReader reader)
 	{
 		byte who = reader.ReadByte();
 		short npcWho = reader.ReadInt16();
@@ -33,7 +33,7 @@ internal static class SyncGuardianAngelHandler
 		packet.Send(-1, who);
 	}
 	
-	internal static void ClientRecieve(BinaryReader reader)
+	internal static void ClientReceive(BinaryReader reader)
 	{
 		HitGuardianAngel(reader.ReadByte(), reader.ReadInt16());
 	}
