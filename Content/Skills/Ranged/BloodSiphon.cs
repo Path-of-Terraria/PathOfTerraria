@@ -12,6 +12,7 @@ namespace PathOfTerraria.Content.Skills.Ranged;
 public class BloodSiphon : Skill
 {
 	public override int MaxLevel => 3;
+	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{

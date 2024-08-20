@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Data.Models;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Utilities;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
@@ -19,7 +20,7 @@ internal class PassiveLoader : ILoadable
 	}
 }
 
-internal abstract class Passive
+public abstract class Passive
 {
 	public static Dictionary<string, Type> Passives = [];
 	
@@ -147,12 +148,12 @@ internal abstract class Passive
 	/// <returns></returns>
 	public bool CanAllocate(Player player)
 	{
-		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
+		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		return
 			Level < MaxLevel &&
-			Main.LocalPlayer.GetModPlayer<TreePlayer>().Points > 0 &&
-			treeSystem.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
+			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
+			passiveTreeSystem.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
 	}
 
 	/// <summary>
@@ -166,8 +167,8 @@ internal abstract class Passive
 			return false;
 		}
 
-		TreePlayer treeSystem = player.GetModPlayer<TreePlayer>();
+		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
-		return Level > 0 && (Level > 1 || treeSystem.FullyLinkedWithout(this));
+		return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
 	}
 }

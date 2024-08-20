@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -6,18 +7,18 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.UI.PassiveTree;
+namespace PathOfTerraria.Common.UI.SkillsTree;
 
-internal class PassiveElement : SmartUiElement
+internal class SkillPassiveElement : SmartUiElement
 {
-	private readonly Passive _passive;
+	private readonly SkillPassive _passive;
 
 	private int _flashTimer;
 	private int _redFlashTimer;
 
 	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
 	
-	public PassiveElement(Passive passive)
+	public SkillPassiveElement(SkillPassive passive)
 	{
 		float halfSizeX = passive.Size.X / 2;
 		float halfSizeY = passive.Size.Y / 2;
@@ -112,7 +113,7 @@ internal class PassiveElement : SmartUiElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		if (!_passive.CanAllocate(Main.LocalPlayer) || !CheckMouseContained())
+		if (!_passive.CanAllocate() || !CheckMouseContained())
 		{
 			return;
 		}
@@ -127,7 +128,7 @@ internal class PassiveElement : SmartUiElement
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
-		if (!_passive.CanDeallocate(Main.LocalPlayer) || !CheckMouseContained())
+		if (!_passive.CanDeallocate() || !CheckMouseContained())
 		{
 			return;
 		}
