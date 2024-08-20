@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.UI;
 
@@ -11,7 +12,7 @@ internal class PassiveTreeInnerPanel : SmartUiElement
 
 	private UIElement Panel => Parent;
 
-	private TreePlayer TreeSystem => Main.LocalPlayer.GetModPlayer<TreePlayer>();
+	private PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
 	public override string TabName => "PassiveTree";
 
@@ -24,7 +25,7 @@ internal class PassiveTreeInnerPanel : SmartUiElement
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-		foreach (PassiveEdge edge in TreeSystem.Edges)
+		foreach (PassiveEdge edge in PassiveTreeSystem.Edges)
 		{
 			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 
@@ -63,7 +64,7 @@ internal class PassiveTreeInnerPanel : SmartUiElement
 					float len = (40 + rand.Next(120)) * dist / 50;
 					float scale = 0.05f + rand.NextSingle() * 0.15f;
 
-					float progress = (Main.GameUpdateCount + 15 * k) % len / (float)len;
+					float progress = (Main.GameUpdateCount + 15 * k) % len / len;
 					Vector2 pos = GetDimensions().Center() +
 					              Vector2.SmoothStep(edge.Start.TreePos, edge.End.TreePos, progress) + _lineOff;
 					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
