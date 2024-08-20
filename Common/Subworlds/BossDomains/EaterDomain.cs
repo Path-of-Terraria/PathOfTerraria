@@ -274,8 +274,8 @@ public class EaterDomain : BossDomainSubworld
 		StructureHelper.Generator.GetDimensions("Assets/Structures/EaterArena", Mod, ref size);
 		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 250, 0.2f), 12, 10);
 		breakthroughs[1] = chasm[chasm.Length / 8];
-		DigChasm(noise, chasm, null);
-		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, Height - 260, 400, Height - 120, 0.1f), 12, 10), null);
+		DigChasm(noise, chasm, null, 1.6f);
+		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, Height - 260, 400, Height - 120, 0.1f), 12, 10), null, 2f);
 
 		progress.Value = 1f;
 		// Opening before the arena
@@ -321,7 +321,7 @@ public class EaterDomain : BossDomainSubworld
 	{
 		foreach (Vector2 item in positions)
 		{
-			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * sizeMul;
+			float mul = MathF.Max(1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * sizeMul, 0.3f);
 
 			if (smoothInOut.HasValue)
 			{

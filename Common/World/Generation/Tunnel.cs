@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.Operations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace PathOfTerraria.Common.World.Generation;
@@ -22,7 +21,7 @@ internal static class Tunnel
 			Vector2 item = points[i];
 			newPoints.Add(item);
 
-			if (i == points.Length - 1)
+			if (i == points.Length - 1 || item == points[i + 1])
 			{
 				continue;
 			}
@@ -42,7 +41,14 @@ internal static class Tunnel
 			}
 		}
 
-		return [.. newPoints];
+		HashSet<Vector2> uniques = [];
+
+		foreach (Vector2 pos in newPoints)
+		{
+			uniques.Add(pos);
+		}
+
+		return [.. uniques];
 	}
 
 	public static Vector2[] CreateEquidistantSet(Vector2[] results, float distance)
