@@ -9,7 +9,6 @@ public class FireNovaSkillPassive : SkillPassive
 	public override Skill Skill => new Nova();
 	public override int ReferenceId => 1;
 	public override int MaxLevel => 1;
-	public override string Name => "Fire Nova";
 	public override Vector2 TreePos => new(100, 0);
 
 	public override List<SkillPassive> Connections =>

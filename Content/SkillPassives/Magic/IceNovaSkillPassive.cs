@@ -10,7 +10,6 @@ public class IceNovaSkillPassive : SkillPassive
 	public override Skill Skill => new Nova();
 	public override int ReferenceId => 2;
 	public override int MaxLevel => 1;
-	public override string Name => "Ice Nova";
 	public override Vector2 TreePos => new(0, 100);
 	
 	public override List<SkillPassive> Connections =>

@@ -9,7 +9,6 @@ public class LightningNovaSkillPassive : SkillPassive
 	public override Skill Skill => new Nova();
 	public override int ReferenceId => 3;
 	public override int MaxLevel => 1;
-	public override string Name => "Lightning Nova";
 	public override Vector2 TreePos => new(0, -100);
 	
 	public override List<SkillPassive> Connections =>
