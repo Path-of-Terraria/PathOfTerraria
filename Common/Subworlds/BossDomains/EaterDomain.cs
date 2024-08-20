@@ -4,25 +4,23 @@ using System.Collections.Generic;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.DataStructures;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
-using Terraria.GameContent;
-using ReLogic.Graphics;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using Terraria.Localization;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
 public class EaterDomain : BossDomainSubworld
 {
-	internal static bool SpawningEoW = false;
-
 	public override int Width => 800;
 	public override int Height => 1000;
+	public override int[] WhitelistedTiles => [ModContent.TileType<WeakMalaise>(), ModContent.TileType<TeethSpikes>()];
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
@@ -38,11 +36,12 @@ public class EaterDomain : BossDomainSubworld
 
 	private void PlaceGrassAndDecor(GenerationProgress progress, GameConfiguration configuration)
 	{
-		progress.Message = "Populating world...";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
 		Dictionary<Point16, OpenFlags> tiles = [];
+		HashSet<Point16> empty = [];
 
-		for (int i = 1; i < Main.maxTilesX - 1; ++i)
+		for (int i = 6; i < Main.maxTilesX - 6; ++i)
 		{
 			for (int j = 80; j < Main.maxTilesY - 60; ++j)
 			{
@@ -50,6 +49,11 @@ public class EaterDomain : BossDomainSubworld
 
 				if (!tile.HasTile || tiles.ContainsKey(new Point16(i, j)))
 				{
+					if (j > 200 && j < Height - 200)
+					{
+						empty.Add(new Point16(i, j));
+					}
+
 					continue;
 				}
 
@@ -62,8 +66,55 @@ public class EaterDomain : BossDomainSubworld
 
 				tiles.Add(new Point16(i, j), flags);
 			}
+
+			progress.Value = (float)i / Main.maxTilesX;
 		}
-		
+
+		foreach (Point16 pos in empty)
+		{
+			if (WorldGen.genRand.NextBool(2200))
+			{
+				WorldGen.PlaceObject(pos.X + 1, pos.Y + 1, (ushort)ModContent.TileType<CorruptSacks>(), true, WorldGen.genRand.Next(3));
+			}
+		}
+
+		HashSet<Point16> boneSpikes = [];
+
+		foreach (KeyValuePair<Point16, OpenFlags> item in tiles)
+		{
+			if (item.Key.Y > 260 && item.Key.Y < Height - 200 && WorldGen.genRand.NextBool(200))
+			{
+				boneSpikes.Add(item.Key);
+			}
+		}
+
+		List<Point16> newSpikes = [];
+
+		foreach (Point16 position in boneSpikes)
+		{
+			tiles.Remove(position);
+			int distance = WorldGen.genRand.Next(12, 20);
+
+			foreach (KeyValuePair<Point16, OpenFlags> tile in tiles)
+			{
+				if (Vector2.DistanceSquared(tile.Key.ToVector2(), position.ToVector2()) < distance)
+				{
+					newSpikes.Add(tile.Key);
+				}
+			}
+		}
+
+		foreach (Point16 item in newSpikes)
+		{
+			tiles.Remove(item);
+			boneSpikes.Add(item);
+		}
+
+		foreach (Point16 position in boneSpikes)
+		{
+			WorldGen.PlaceTile(position.X, position.Y, ModContent.TileType<TeethSpikes>(), true, true);
+		}
+
 		foreach (KeyValuePair<Point16, OpenFlags> item in tiles)
 		{
 			Tile tile = Main.tile[item.Key];
@@ -76,11 +127,16 @@ public class EaterDomain : BossDomainSubworld
 			PlaceDecor(item.Key, item.Value);
 		}
 
-		foreach (Point16 positions in DemonitePositions)
+		foreach (Point16 pos in DemonitePositions)
 		{
 			ushort type = WorldGen.genRand.NextBool(5) ? TileID.Gold : TileID.Demonite;
-			WorldGen.TileRunner(positions.X, positions.Y, WorldGen.genRand.Next(6, 16), WorldGen.genRand.Next(4, 20), type);
+			WorldGen.TileRunner(pos.X, pos.Y, WorldGen.genRand.Next(6, 16), WorldGen.genRand.Next(4, 20), type);
 		}
+	}
+
+	private static void SpawnBoneSpikes(Point16 position)
+	{
+		WorldGen.TileRunner(position.X, position.Y, WorldGen.genRand.Next(6, 16), WorldGen.genRand.Next(4, 20), ModContent.TileType<TeethSpikes>());
 	}
 
 	private static void PlaceDecor(Point16 position, OpenFlags flags)
@@ -123,7 +179,8 @@ public class EaterDomain : BossDomainSubworld
 				}
 			}
 		}
-		else if (flags.HasFlag(OpenFlags.Below))
+		
+		if (flags.HasFlag(OpenFlags.Below))
 		{
 			if (tile.TileType == TileID.Ebonstone)
 			{
@@ -156,7 +213,7 @@ public class EaterDomain : BossDomainSubworld
 
 		FastNoiseLite noise = GetGenNoise();
 		DemonitePositions = [];
-		progress.Message = "Generating terrain";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
 		for (int x = 0; x < Main.maxTilesX; ++x)
 		{
@@ -187,37 +244,47 @@ public class EaterDomain : BossDomainSubworld
 			progress.Value = (float)x / Main.maxTilesX;
 		}
 
-		progress.Message = "Digging tunnels";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
+		progress.Value = 0;
 
 		// Chasm one
 		List<Vector2> breakthroughs = [];
 		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, baseY, 400, baseY + 200), 26, 6), null);
 
 		// Tunnel one
+		progress.Value = 0.2f;
 		Vector2[] horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(100, baseY + 200, 700, baseY + 200), 20, 10, 0.3f);
 		DigChasm(noise, horizontalPoints, (120, 680, 20), 2.4f, true);
 		GetRandomPoint(breakthroughs, horizontalPoints);
 
 		// Chasm two
-		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[0].X, (int)breakthroughs[0].Y, 400, (int)breakthroughs[0].Y + 200), 26, 10), null);
+		progress.Value = 0.4f;
+		Vector2[] chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[0].X, (int)breakthroughs[0].Y - 20, 400, (int)breakthroughs[0].Y + 200), 26, 10);
+		DigChasm(noise, chasm, null);
 
 		// Tunnel two
+		progress.Value = 0.6f;
 		horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(100, (int)breakthroughs[0].Y + 200, 700, (int)breakthroughs[0].Y + 200), 15, 10, 0.3f);
 		DigChasm(noise, horizontalPoints, (120, 680, 20), 2.4f, true);
 		breakthroughs.Add(WorldGen.genRand.Next(horizontalPoints));
+		breakthroughs[0] = chasm[chasm.Length / 5];
 
 		// Last chasm
+		progress.Value = 0.8f;
 		Point16 size = Point16.Zero;
 		StructureHelper.Generator.GetDimensions("Assets/Structures/EaterArena", Mod, ref size);
-		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y, 400, Height - 250, 0.2f), 12, 10), null);
+		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 250, 0.2f), 12, 10);
+		breakthroughs[1] = chasm[chasm.Length / 8];
+		DigChasm(noise, chasm, null);
 		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, Height - 260, 400, Height - 120, 0.1f), 12, 10), null);
 
+		progress.Value = 1f;
 		// Opening before the arena
-		WorldGen.digTunnel(400, Height - 210, 0, 0, 20, 20);
+		WorldGen.digTunnel(403, Height - 200, 0, 0, 20, 20);
 
 		foreach (Vector2 item in breakthroughs)
 		{
-			WorldGen.TileRunner((int)item.X, (int)item.Y, 26, WorldGen.genRand.Next(4, 20), ModContent.TileType<WeakMalaise>(), true);
+			WorldGen.TileRunner((int)item.X, (int)item.Y, 40, WorldGen.genRand.Next(20, 40), ModContent.TileType<WeakMalaise>(), true);
 		}
 	}
 
@@ -344,21 +411,32 @@ public class EaterDomain : BossDomainSubworld
 				WorldGen.PlaceTile(Arena.X / 16 + i + 4, Arena.Y / 16 - 3, TileID.FleshBlock, true, true);
 			}
 
-			SpawningEoW = true;
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X + 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X - 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
-			SpawningEoW = false;
 			BossSpawned = true;
 		}
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.EaterofWorldsHead) && !ReadyToExit)
+		if (BossSpawned && NoEoW() && !ReadyToExit)
 		{
-			Vector2 pos = Arena.Center() + new Vector2(-130, -300);
+			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.CachedBossesDowned.Add(NPCID.EaterofWorldsHead);
 			ReadyToExit = true;
 		}
+	}
+
+	private static bool NoEoW()
+	{
+		foreach (NPC npc in Main.ActiveNPCs)
+		{
+			if (npc.type == NPCID.EaterofWorldsBody || npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail)
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
 
@@ -389,9 +467,9 @@ public class EaterEdit : ILoadable
 		c.Emit(OpCodes.Ldarg_0);
 		c.EmitDelegate((NPC npc) =>
 		{
-			if (EaterDomain.SpawningEoW)
+			if (SubworldSystem.Current is EaterDomain)
 			{
-				npc.ai[2] = Main.expertMode ? 34 : 30;
+				npc.ai[2] = Main.expertMode ? 28 : 24;
 			}
 		});
 	}

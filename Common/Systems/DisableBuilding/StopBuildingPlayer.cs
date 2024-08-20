@@ -1,6 +1,5 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
@@ -65,7 +64,7 @@ internal class StopBuildingPlayer : ModPlayer
 		c.MarkLabel(label);
 	}
 
-	private object CanDig(int x, int y, bool isWall)
+	private bool CanDig(int x, int y, bool isWall)
 	{
 		if (!LastStopBuilding)
 		{
@@ -76,7 +75,7 @@ internal class StopBuildingPlayer : ModPlayer
 
 		if (!isWall)
 		{
-			return tile.TileType == ModContent.TileType<WeakMalaise>();
+			return !BuildingWhitelist.InWhitelist(tile.TileType);
 		}
 
 		return true;
@@ -93,8 +92,9 @@ internal class StopBuildingPlayer : ModPlayer
 		if (item.createTile >= TileID.Dirt || item.createWall > WallID.None || item.type == ItemID.IceRod || item.tileWand >= 0)
 		{
 			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile];
+			bool isTorch = item.createTile >= TileID.Dirt && TileID.Sets.Torch[item.createTile];
 
-			if (!isRope)
+			if (!isRope && !isTorch)
 			{
 				return !LastStopBuilding;
 			}

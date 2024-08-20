@@ -97,13 +97,9 @@ public class MapDevicePlaceable : ModTile
 		{
 			return;
 		}
-		
+
 		// This is lighting-mode specific, always include this if you draw tiles manually
-		var offScreen = new Vector2(Main.offScreenRange);
-		if (Main.drawToScreen)
-		{
-			offScreen = Vector2.Zero;
-		}
+		Vector2 offScreen = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
 
 		// Take the tile, check if it actually exists
 		var p = new Point(i, j);

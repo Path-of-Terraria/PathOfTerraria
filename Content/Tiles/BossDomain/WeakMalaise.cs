@@ -6,6 +6,10 @@ internal class WeakMalaise : ModTile
 {
 	public override void SetStaticDefaults()
 	{
+		TileID.Sets.CanBeClearedDuringGeneration[Type] = false;
+		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
+		TileID.Sets.CanBeDugByShovel[Type] = true;
+
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 		Main.tileLighted[Type] = true;

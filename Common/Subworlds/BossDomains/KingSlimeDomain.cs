@@ -8,10 +8,10 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -49,6 +49,7 @@ public class KingSlimeDomain : BossDomainSubworld
 	private void DecorGen(GenerationProgress progress, GameConfiguration configuration)
 	{
 		Dictionary<Point16, OpenFlags> tiles = [];
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
 		for (int i = 60; i < Main.maxTilesX - 60; ++i)
 		{
@@ -70,6 +71,8 @@ public class KingSlimeDomain : BossDomainSubworld
 
 				tiles.Add(new Point16(i, j), flags);
 			}
+
+			progress.Value = (float)i / Main.maxTilesX;
 		}
 
 		foreach ((Point16 position, OpenFlags tile) in tiles)
@@ -166,6 +169,8 @@ public class KingSlimeDomain : BossDomainSubworld
 
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 150 : 350;
 		Main.spawnTileY = 95;
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
+		progress.Value = 0;
 
 		Point16 size = Point16.Zero;
 		StructureHelper.Generator.GetDimensions("Assets/Structures/KingSlimeArena", Mod, ref size);
@@ -194,14 +199,16 @@ public class KingSlimeDomain : BossDomainSubworld
 			SlimePositions.Add(item);
 		}
 
+		progress.Value = 0.25f;
 		Vector2[] results = Tunnel.GeneratePoints(points, 60, 10);
 
 		var noise = new FastNoiseLite(WorldGen._genRandSeed);
 		noise.SetFrequency(0.01f);
 
 		// Actually dig tunnel
-		foreach (Vector2 item in results)
+		for (int i = 0; i < results.Length; i++)
 		{
+			Vector2 item = results[i];
 			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * 1.2f;
 			Digging.CircleOpening(item, 5 * mul);
 			Digging.CircleOpening(item, WorldGen.genRand.Next(3, 7) * mul);
@@ -215,6 +222,8 @@ public class KingSlimeDomain : BossDomainSubworld
 			{
 				WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, (int)(WorldGen.genRand.NextFloat(1, 8) * mul));
 			}
+
+			progress.Value = i / (results.Length - 1f);
 		}
 
 		// Place arena
