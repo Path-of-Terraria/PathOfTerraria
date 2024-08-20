@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.TreeSystem;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Content.Passives;
 using Terraria.Audio;
 using Terraria.ID;
@@ -54,9 +55,9 @@ internal class PassiveSocket : PassiveElement
 		}
 
 		_passive.Level++;
-		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points--;
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points--;
 
-		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Sounds/Tier5"));
+		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5"));
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)
@@ -67,7 +68,7 @@ internal class PassiveSocket : PassiveElement
 		}
 
 		_passive.Level--;
-		Main.LocalPlayer.GetModPlayer<TreePlayer>().Points++;
+		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points++;
 
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
