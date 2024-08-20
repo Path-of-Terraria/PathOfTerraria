@@ -6,6 +6,7 @@ using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Localization;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
@@ -73,8 +74,19 @@ internal class TreeState : DraggableSmartUi
 		Recalculate();
 		base.Draw(spriteBatch);
 		DrawPanelText(spriteBatch);
+
+		if (GetRectangle().Contains(Main.MouseScreen.ToPoint()))
+		{
+			Main.isMouseLeftConsumedByUI = true;
+			Main.LocalPlayer.mouseInterface = true;
+			Main.mouseText = false;
+		}
 	}
-	
+
+	public override void SafeUpdate(GameTime gameTime)
+	{
+	}
+
 	protected void DrawPanelText(SpriteBatch spriteBatch)
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
