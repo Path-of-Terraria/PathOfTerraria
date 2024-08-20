@@ -19,7 +19,7 @@ internal static class UIHotReloadUpdateHandler
 			{
 				foreach (Type type in updatedTypes)
 				{
-					if (!typeof(UIState).IsAssignableFrom(type))
+					if (!typeof(UIState).IsAssignableFrom(type) || !typeof(UIElement).IsAssignableFrom(type))
 					{
 						continue;
 					}
