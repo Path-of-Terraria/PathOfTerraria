@@ -61,7 +61,7 @@ internal class CorruptSacks : ModTile
 
 		if (frameX == 1 && frameY == 1)
 		{
-			float sine = MathF.Max(0, 3 * MathF.Sin(i + j + 0.09f * Main.GameUpdateCount)) * 0.36f;
+			float sine = MathF.Max(0, 3 * MathF.Sin(i + j + 0.02f * Main.GameUpdateCount)) * 0.36f;
 			(r, g, b) = (sine * 0.5f, sine * 0.3f, sine);
 		}
 	}
