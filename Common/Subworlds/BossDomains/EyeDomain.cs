@@ -73,11 +73,47 @@ public class EyeDomain : BossDomainSubworld
 			}
 		}
 
+		int structureX = 0;
+
 		foreach (Point16 position in grasses)
 		{
-			if (Main.tile[position].TileType == TileID.FleshBlock && WorldGen.genRand.NextBool(20))
-			{ 
-				WorldGen.PlaceObject(position.X, position.Y - 1, ModContent.TileType<EmbeddedEye>(), true, WorldGen.genRand.Next(2));
+			if (Main.tile[position].TileType == TileID.FleshBlock)
+			{
+				if (position.X - structureX > 60 && position.X < ArenaX - 20 && WorldGen.genRand.NextBool(20) && !WorldGen.SolidOrSlopedTile(position.X, position.Y - 1))
+				{
+					int typeId = WorldGen.genRand.Next(3);
+					string subType = typeId switch
+					{
+						0 => "Flesh",
+						1 => "Shrine",
+						_ => "Wound"
+					};
+
+					string type = "Assets/Structures/EoCDomain/" + typeId switch
+					{
+						0 => "Cemetary",
+						1 => "Flesh",
+						2 => "Shrine",
+						_ => "Wound"
+					};
+
+					type += WorldGen.genRand.Next(typeId switch
+					{
+						0 or 2 => 3,
+						1 => 2,
+						_ => 4
+					});
+
+					var pos = new Point16(position.X, position.Y + 4);
+					StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f));
+					structureX = pos.X;
+				}
+
+				if (WorldGen.genRand.NextBool(20))
+				{
+					WorldGen.PlaceObject(position.X, position.Y - 1, ModContent.TileType<EmbeddedEye>(), true, WorldGen.genRand.Next(2));
+				}
+
 				continue;
 			}
 
