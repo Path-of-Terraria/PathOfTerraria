@@ -34,6 +34,11 @@ internal static class ConsumeMapDeviceHandler
 		packet.Write(x);
 		packet.Write(y);
 		packet.Send(-1, fromWho);
+
+		if (TileEntity.ByPosition.TryGetValue(new(x, y), out TileEntity tileEntity) && tileEntity is MapDeviceEntity mapEntity)
+		{
+			mapEntity.ConsumeMap();
+		}
 	}
 
 	internal static void ClientRecieve(BinaryReader reader)

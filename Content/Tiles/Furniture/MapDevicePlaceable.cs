@@ -273,11 +273,6 @@ internal class MapDeviceEntity : ModTileEntity
 
 	internal void TryPlaceMap(int i, int j)
 	{
-		//if (Main.netMode == NetmodeID.MultiplayerClient)
-		//{
-		//	NetMessage.SendData(MessageID.TileEntitySharing, -1, -1, null, Main.myPlayer, i,);
-		//}
-
 		if (StoredMap is not null)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)

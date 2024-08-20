@@ -19,7 +19,7 @@ internal class KingSlimeMap : Map
 				def = Main.CurrentFrameFlags.ActivePlayersCount;
 			}
 
-			return 2;// def;
+			return def;
 		}
 	}
 
