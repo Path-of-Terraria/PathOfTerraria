@@ -16,7 +16,7 @@ public sealed class SpawnWorldCommand : ModCommand
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		SubworldSystem.Enter<EaterDomain>();
+		SubworldSystem.Enter<EyeDomain>();
 	}
 }
 #endif
