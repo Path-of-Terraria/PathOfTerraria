@@ -82,15 +82,10 @@ public class EyeDomain : BossDomainSubworld
 				if (position.X - structureX > 60 && position.X < ArenaX - 20 && WorldGen.genRand.NextBool(20) && !WorldGen.SolidOrSlopedTile(position.X, position.Y - 1))
 				{
 					int typeId = WorldGen.genRand.Next(3);
-					string subType = typeId switch
-					{
-						0 => "Flesh",
-						1 => "Shrine",
-						_ => "Wound"
-					};
 
 					string type = "Assets/Structures/EoCDomain/" + typeId switch
 					{
+						0 => "Graveyard",
 						1 => "Flesh",
 						2 => "Shrine",
 						_ => "Wound"
@@ -104,6 +99,12 @@ public class EyeDomain : BossDomainSubworld
 					});
 
 					var pos = new Point16(position.X, position.Y + 4);
+
+					if (typeId == 0)
+					{
+						pos = new Point16(position.X, position.Y + 1);
+					}
+
 					StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f));
 					structureX = pos.X;
 				}
