@@ -3,8 +3,10 @@ using JetBrains.Annotations;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
+using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
@@ -14,25 +16,23 @@ public sealed class UIWaypointList : UIElement
 	private const int KeyInitialDelay = 30;
 	private const int KeyRepeatDelay = 15;
 
-	public const float Padding = 4f;
-	
 	/// <summary>
-	///     The width of this element's panel in pixels.
+	///		The vertical margin of this element in pixels.
 	/// </summary>
-	public const float PanelWidth = 280f;
+	public const float VerticalMargin = 50f;
 
 	/// <summary>
-	///		The full width of this element in pixels.
+	///     The width of this element in pixels.
 	/// </summary>
-	public const float FullWidth = PanelWidth + 20f + Padding;
+	public const float FullWidth = 280f;
 
 	/// <summary>
-	///     The height of this element in pixels.
+	///		The height of this element in pixels.
 	/// </summary>
-	public const float FullHeight = 400f;
-	
+	public const float FullHeight = UIWaypointBrowser.FullHeight;
+
 	/// <summary>
-	///     The index of the currently selected waypoint.
+	///     The index of the currently selected waypoint tab.
 	/// </summary>
 	public int SelectedWaypointIndex
 	{
@@ -40,6 +40,9 @@ public sealed class UIWaypointList : UIElement
 		set => _selectedWaypointIndex = (int)MathHelper.Clamp(value, 0, ModWaypointLoader.WaypointCount - 1);
 	}
 
+	/// <summary>
+	///		The instance of the currently selected waypoint tab.
+	/// </summary>
 	public UIWaypointTab SelectedTab => tabs[SelectedWaypointIndex];
 	
 	private int _selectedWaypointIndex;
@@ -54,7 +57,24 @@ public sealed class UIWaypointList : UIElement
 		
 		Width.Set(FullWidth, 0f);
 		Height.Set(FullHeight, 0f);
+
+		Append(BuildPanel());
+
+		var list = BuildList();
 		
+		PopulateList(list);
+		Append(list);
+	}
+	
+	public override void Update(GameTime gameTime)
+	{
+		base.Update(gameTime);
+		
+		UpdateInput();
+	}
+
+	private UIPanel BuildPanel()
+	{
 		var panel = new UIPanel(
 			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBackground"),
 			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBorder"),
@@ -63,120 +83,102 @@ public sealed class UIWaypointList : UIElement
 		{
 			BackgroundColor = new Color(41, 66, 133) * 0.8f,
 			BorderColor = new Color(13, 13, 15),
-			OverrideSamplerState = SamplerState.PointClamp
+			OverrideSamplerState = SamplerState.PointClamp,
+			Width = { Pixels = FullWidth },
+			Height = { Pixels = FullHeight }
 		};
 
-		panel.Width.Set(PanelWidth, 0f);
-		panel.Height.Set(FullHeight, 0f);
+		return panel;
+	}
 
-		Append(panel);
-
-		var list = new UIList { OverrideSamplerState = SamplerState.PointClamp };
-
-		list.Top.Set(50f, 0f);
-
-		list.Width.Set(PanelWidth, 0f);
-		list.Height.Set(FullHeight - list.Top.Pixels, 0f);
-
-		list.ListPadding = 0f;
+	private UIList BuildList()
+	{
+		var list = new UIList
+		{
+			OverrideSamplerState = SamplerState.PointClamp,
+			ListPadding = 0f,
+			Top = { Pixels = VerticalMargin },
+			Width = { Pixels = FullWidth },
+			Height = { Pixels = FullHeight - VerticalMargin }
+		};
 
 		Append(list);
 
-		var scroll = new UIScrollbar { OverrideSamplerState = SamplerState.PointClamp };
-
-		scroll.Left.Set(PanelWidth - 16f, 0f);
-
-		scroll.Width.Set(20f, 0f);
-		scroll.Height.Set(list.Height.Pixels, 0f);
+		var scroll = new UIScrollbar
+		{
+			OverrideSamplerState = SamplerState.PointClamp,
+			Left = { Pixels = FullWidth - 16f },
+			Width = { Pixels = 20f },
+			Height = { Pixels = FullHeight - VerticalMargin }
+		};
 
 		list.Append(scroll);
 		list.SetScrollbar(scroll);
 
+		return list;
+	}
+
+	private void PopulateList(UIList list)
+	{
 		for (int i = 0; i < ModWaypointLoader.WaypointCount; i++)
 		{
 			ModWaypoint? waypoint = ModWaypointLoader.Waypoints[i];
 			
-			var tab = new UIWaypointTab(waypoint, i);
+			Asset<Texture2D>? icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
 
-			tab.Left.Set(2f, 0f);
-
-			tab.Height.Set(48f, 0f);
-			
-			// Hardcoded value to make it centered relative to the scrollbar.
-			tab.Width.Set(PanelWidth - 18f, 0f);
+			var tab = new UIWaypointTab(icon, waypoint.DisplayName, i) { Left = { Pixels = 2f } };
 
 			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypointIndex;
 
 			list.Add(tab);
 			
+			// We keep track of the tabs separately from the list so we can provide the currently selected tab.
 			tabs.Add(tab);
 		}
-
-		var indicator = new UIHoverImage(
-			ModContent.Request<Texture2D>(
-				$"{PoTMod.ModName}/Assets/UI/Inventory/Button_Right",
-				AssetRequestMode.ImmediateLoad
-			)
-		)
-		{
-			OverrideSamplerState = SamplerState.PointClamp,
-			Color = Color.White * 0.8f,
-			ActiveScale = 1.25f
-		};
-		
-		indicator.Left.Set(PanelWidth + Padding, 0f);
-
-		indicator.OnUpdate += (_) =>
-		{
-			indicator.Top.Pixels = MathHelper.SmoothStep(
-				indicator.Top.Pixels,
-				list.Top.Pixels + SelectedTab.Top.Pixels + 10f,
-				0.3f
-			);
-		};
-		
-		Append(indicator);
 	}
 
-	public override void Update(GameTime gameTime)
-	{
-		base.Update(gameTime);
-		
-		UpdateSelectionInput();
-	}
-
-	private void UpdateSelectionInput()
+	private void UpdateInput()
 	{
 		if (Main.keyState.IsKeyDown(Keys.Down))
 		{
-			if (holdDelayTimer == 0 || holdDelayTimer > KeyInitialDelay && holdDelayTimer % KeyRepeatDelay == 0)
-			{
-				SelectedWaypointIndex++;
-			}
-
-			holdDelayTimer++;
+			ProcessInput(1);
 		}
 		else if (Main.keyState.IsKeyDown(Keys.Up))
 		{
-			if (holdDelayTimer == 0 || holdDelayTimer > KeyInitialDelay && holdDelayTimer % KeyRepeatDelay == 0)
-			{
-				SelectedWaypointIndex--;
-			}
-
-			holdDelayTimer++;
+			ProcessInput(-1);
 		}
 		else if (PlayerInput.ScrollWheelDeltaForUI != 0)
 		{
-			if (holdDelayTimer == 0 || holdDelayTimer > KeyInitialDelay && holdDelayTimer % KeyRepeatDelay == 0)
-			{
-				SelectedWaypointIndex -= Math.Sign(PlayerInput.ScrollWheelDeltaForUI);
-			}
-
-			holdDelayTimer++;
+			ProcessInput(-Math.Sign(PlayerInput.ScrollWheelDeltaForUI));
 		}
 		else
 		{
 			holdDelayTimer = 0;
 		}
+	}
+
+	private void ProcessInput(int direction)
+	{
+		if (!CanProcessInput() || !ContainsPoint(Main.MouseScreen))
+		{
+			return;
+		}
+		
+		SoundEngine.PlaySound(
+			SoundID.MenuTick with
+			{
+				Pitch = 0.25f,
+				MaxInstances = 1
+			}
+		);
+
+		holdDelayTimer++;
+
+		SelectedWaypointIndex += direction;
+	}
+	
+	private bool CanProcessInput()
+	{
+		return holdDelayTimer == 0 || holdDelayTimer > KeyInitialDelay && holdDelayTimer % KeyRepeatDelay == 0;
 	}
 }

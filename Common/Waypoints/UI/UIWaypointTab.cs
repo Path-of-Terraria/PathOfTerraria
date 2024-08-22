@@ -4,6 +4,7 @@ using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
@@ -16,6 +17,16 @@ public sealed class UIWaypointTab : UIElement
 	public const float Margin = 16f;
 
 	/// <summary>
+	///		The width of this element in pixels.
+	/// </summary>
+	public const float FullWidth = UIWaypointList.FullWidth - 18f;
+	
+	/// <summary>
+	///		The height of this element in pixels.
+	/// </summary>
+	public const float FullHeight = 48f;
+
+	/// <summary>
 	///     Whether this element is selected or not.
 	/// </summary>
 	public bool Selected { get; set; }
@@ -26,23 +37,38 @@ public sealed class UIWaypointTab : UIElement
 	public readonly int Index;
 
 	/// <summary>
-	///     The waypoint of this element.
+	///		The display name of this tab.
 	/// </summary>
-	public readonly ModWaypoint? Waypoint;
+	public readonly LocalizedText Name;
 
-	private UIPanel panel;
-
-	public UIWaypointTab(ModWaypoint? waypoint, int index)
+	/// <summary>
+	///		The icon of this tab.
+	/// </summary>
+	public readonly Asset<Texture2D> Icon;
+	
+	public UIWaypointTab(Asset<Texture2D> icon, LocalizedText name, int index)
 	{
-		Waypoint = waypoint;
+		Icon = icon;
+		Name = name;
 		Index = index;
 	}
 
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
+		
+		Width.Set(FullWidth, 0f);
+		Height.Set(FullHeight, 0f);
 
-		panel = new UIPanel(
+		Append(BuildPanel());
+		Append(BuildIcon());
+		Append(BuildText());
+		Append(BuildSeparator());
+	}
+
+	private UIPanel BuildPanel()
+	{
+		var panel = new UIPanel(
 			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBackground"),
 			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBorder"),
 			13
@@ -50,68 +76,63 @@ public sealed class UIWaypointTab : UIElement
 		{
 			BackgroundColor = new Color(68, 97, 175) * 0.8f,
 			BorderColor = new Color(68, 97, 175) * 0.8f,
-			OverrideSamplerState = SamplerState.PointClamp
+			OverrideSamplerState = SamplerState.PointClamp,
+			Width = { Pixels = FullWidth },
+			Height = { Pixels = FullHeight }
 		};
 
-		panel.Width.Set(Width.Pixels, 0f);
-		panel.Height.Set(Height.Pixels, 0f);
+		panel.OnUpdate += UpdatePanel;
+		
+		return panel;
+	}
 
-		Append(panel);
-
-		Asset<Texture2D> texture = ModContent.Request<Texture2D>(Waypoint.IconPath, AssetRequestMode.ImmediateLoad);
-
-		var icon = new UIHoverImage(texture)
+	private UIImage BuildIcon()
+	{
+		var icon = new UIImage(Icon)
 		{
-			ActiveScale = 1.15f,
 			VAlign = 0.5f,
 			OverrideSamplerState = SamplerState.PointClamp
 		};
 
 		icon.Left.Set(Margin, 0f);
 
-		icon.OnMouseOver += static (_, _) => SoundEngine.PlaySound(
-			SoundID.MenuTick with
-			{
-				Pitch = 0.25f,
-				MaxInstances = 1
-			}
-		);
+		return icon;
+	}
 
-		icon.OnMouseOut += static (_, _) => SoundEngine.PlaySound(
-			SoundID.MenuTick with
-			{
-				Pitch = -0.25f,
-				MaxInstances = 1
-			}
-		);
+	private UIText BuildText()
+	{
+		var text = new UIText(Name, 0.8f)
+		{
+			VAlign = 0.5f,
+			Left = { Pixels = Margin + Icon.Width() + (32f - Icon.Width()) + Margin }
+		};
 
-		Append(icon);
+		return text;
+	}
 
-		var text = new UIText(Waypoint.DisplayName, 0.8f) { VAlign = 0.5f };
-
-		text.Left.Set(icon.Left.Pixels + texture.Width() + (32f - texture.Width()) + Margin, 0f);
-
-		Append(text);
-
+	private UIImage BuildSeparator()
+	{
 		var separator = new UIImage(TextureAssets.MagicPixel)
 		{
-			ScaleToFit = true,
 			Color = Color.White * 0.8f,
+			ScaleToFit = true,
 			HAlign = 0.5f,
 			VAlign = 1f,
+			Width = { Pixels = FullWidth },
+			Height = { Pixels = 2f },
 			OverrideSamplerState = SamplerState.PointClamp
 		};
 
-		separator.Width.Set(Width.Pixels, 0f);
-		separator.Height.Set(2f, 0f);
-
-		Append(separator);
+		return separator;
 	}
 
-	public override void Update(GameTime gameTime)
+	private void UpdatePanel(UIElement element)
 	{
-		base.Update(gameTime);
-
+		if (element is not UIPanel panel)
+		{
+			return;
+		}
+		
 		panel.BorderColor = Color.Lerp(panel.BorderColor, Selected ? Color.White : new Color(68, 97, 175), 0.3f) * 0.8f;
 	}
 }
