@@ -78,12 +78,20 @@ public class EaterDomain : BossDomainSubworld
 		}
 
 		HashSet<Point16> boneSpikes = [];
+		HashSet<Point16> eggs = [];
 
 		foreach (KeyValuePair<Point16, OpenFlags> item in tiles)
 		{
-			if (item.Key.Y > 260 && item.Key.Y < Height - 200 && WorldGen.genRand.NextBool(200))
+			if (item.Key.Y > 260 && item.Key.Y < Height - 200)
 			{
-				boneSpikes.Add(item.Key);
+				if (WorldGen.genRand.NextBool(200))
+				{
+					boneSpikes.Add(item.Key);
+				}
+				else if (WorldGen.genRand.NextBool(900))
+				{
+					eggs.Add(item.Key);
+				}
 			}
 		}
 
@@ -92,7 +100,7 @@ public class EaterDomain : BossDomainSubworld
 		foreach (Point16 position in boneSpikes)
 		{
 			tiles.Remove(position);
-			int distance = WorldGen.genRand.Next(12, 20);
+			int distance = WorldGen.genRand.Next(12, 22);
 
 			foreach (KeyValuePair<Point16, OpenFlags> tile in tiles)
 			{
@@ -114,6 +122,13 @@ public class EaterDomain : BossDomainSubworld
 			WorldGen.PlaceTile(position.X, position.Y, ModContent.TileType<TeethSpikes>(), true, true);
 		}
 
+		foreach (Point16 position in eggs)
+		{
+			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/Egg" + WorldGen.genRand.Next(3), position, new Vector2(0.5f, 0.5f), null, false);
+		}
+
+		HashSet<Point16> grasses = [];
+
 		foreach (KeyValuePair<Point16, OpenFlags> item in tiles)
 		{
 			Tile tile = Main.tile[item.Key];
@@ -121,6 +136,7 @@ public class EaterDomain : BossDomainSubworld
 			if (tile.TileType == TileID.Dirt)
 			{
 				tile.TileType = TileID.CorruptGrass;
+				grasses.Add(item.Key);
 			}
 
 			PlaceDecor(item.Key, item.Value);
@@ -130,6 +146,25 @@ public class EaterDomain : BossDomainSubworld
 		{
 			ushort type = WorldGen.genRand.NextBool(5) ? TileID.Gold : TileID.Demonite;
 			WorldGen.TileRunner(pos.X, pos.Y, WorldGen.genRand.Next(6, 16), WorldGen.genRand.Next(4, 20), type);
+		}
+
+		int lastStrX = 0;
+
+		foreach (Point16 pos in grasses)
+		{
+			if (Math.Abs(pos.X - lastStrX) > 50 && Math.Abs(pos.X - 400) > 210 && WorldGen.genRand.NextBool(90))
+			{
+				int typeId = WorldGen.genRand.Next(2);
+				string type = "Assets/Structures/EaterDomain/" + typeId switch
+				{
+					0 => "Ruin",
+					_ => "Graveyard"
+				};
+
+				type += WorldGen.genRand.Next(3) + WorldGen.genRand.Next(typeId + 1);
+				StructureTools.PlaceByOrigin(type, new Point16(pos.X, pos.Y + 1), new Vector2(0.5f, 1f));
+				lastStrX = pos.X;
+			}
 		}
 	}
 
@@ -143,6 +178,12 @@ public class EaterDomain : BossDomainSubworld
 		if (WorldGen.genRand.NextBool(8))
 		{
 			Tile.SmoothSlope(position.X, position.Y, true);
+			return;
+		}
+
+		if (CanPlaceGraveyard(position) && WorldGen.genRand.NextBool(12) && position.Y > 300)
+		{
+			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/UGGraveyard" + WorldGen.genRand.Next(3), position, new Vector2(0f, 1f));
 			return;
 		}
 
@@ -189,6 +230,27 @@ public class EaterDomain : BossDomainSubworld
 				}
 			}
 		}
+	}
+
+	private static bool CanPlaceGraveyard(Point16 position)
+	{
+		for (int i = position.X; i < position.X + 10; ++i)
+		{
+			for (int j = position.Y; j > position.Y - 5; --j)
+			{
+				if (j == position.Y && !WorldGen.SolidTile(i, j))
+				{
+					return false;
+				}
+
+				if (j < position.Y && WorldGen.SolidTile(i, j))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 	private void SpawnArena(GenerationProgress progress, GameConfiguration configuration)
