@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Projectiles;
-using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -13,6 +12,7 @@ using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;
+using PathOfTerraria.Common.World;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -21,7 +21,7 @@ public class BrainDomain : BossDomainSubworld
 	public const int ArenaX = 620;
 
 	public override int Width => 800;
-	public override int Height => 1000;
+	public override int Height => 1500;
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
@@ -41,10 +41,10 @@ public class BrainDomain : BossDomainSubworld
 	private void GenSurface(GenerationProgress progress, GameConfiguration configuration)
 	{
 		Main.spawnTileX = 80;
-		Main.spawnTileY = 810;
-		Main.worldSurface = 810;
-		Main.rockLayer = 830;
-		float baseY = 800;
+		Main.spawnTileY = Height - 180;
+		Main.worldSurface = Height - 180;
+		Main.rockLayer = Height - 190;
+		float baseY = Height - 200;
 		FastNoiseLite noise = GetGenNoise();
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
@@ -60,6 +60,84 @@ public class BrainDomain : BossDomainSubworld
 
 			progress.Value = (float)x / Main.maxTilesX;
 		}
+
+		GenerateSteps(progress, configuration);
+	}
+
+	private void GenerateSteps(GenerationProgress progress, GameConfiguration configuration)
+	{
+		int lineCount = 5;
+		int x = 400 + WorldGen.genRand.Next(1, 5) * (WorldGen.genRand.NextBool(2) ? -1 : 1);
+		int y = Height - 210;
+		Queue<(Point16, Point16)> lines = [];
+
+		for (int i = 0; i < lineCount; ++i)
+		{
+			if (i != 0)
+			{
+				if (x > 400)
+				{
+					x -= WorldGen.genRand.Next(120, 160);
+				}
+				else
+				{
+					x += WorldGen.genRand.Next(120, 160);
+				}
+
+				y -= WorldGen.genRand.Next(16, 50);
+			}
+
+			Point16 begin = new(x, y);
+			int nextX = x;
+			int nextY = y;
+
+			if (x > 400)
+			{
+				nextX = WorldGen.genRand.Next(80, 300);
+			}
+			else
+			{
+				nextX = WorldGen.genRand.Next(500, 720);
+			}
+
+			nextY -= WorldGen.genRand.Next(120, 160);
+			lines.Enqueue((begin, new Point16(nextX, nextY)));
+			x = nextX;
+			y = nextY;
+
+			progress.Value = i / (lineCount - 1f);
+		}
+
+		(Point16 lastStart, Point16 lastEnd) = lines.Peek();
+
+		foreach ((Point16 start, Point16 end) in lines) 
+		{
+			Vector2[] basePoints = [start.ToVector2(), Vector2.Lerp(start.ToVector2(), end.ToVector2(), 0.5f), end.ToVector2()];
+			Vector2[] points = Tunnel.CreateEquidistantSet(basePoints, 46);
+			float startSize = WorldGen.genRand.NextFloat(80, 110);
+			float endSize = WorldGen.genRand.NextFloat(80, 110);
+			float startAngle = basePoints[0].AngleTo(basePoints[2]) - MathHelper.PiOver2;
+			float endAngle = startAngle + WorldGen.genRand.NextFloat(MathHelper.PiOver2);
+
+			for (int i = 0; i < points.Length; i++)
+			{
+				float factor = i / (points.Length - 1f);
+				GenOval(points[i], MathHelper.Lerp(startSize, endSize, factor), MathHelper.Lerp(startAngle, endAngle, factor));
+			}
+
+
+			progress.Value += 1 / (float)lines.Count;
+		}
+
+		Vector2 pos = Vector2.Lerp(lastStart.ToVector2(), lastEnd.ToVector2(), 1.1f);
+		//Structure
+	}
+
+	private static void GenOval(Vector2 origin, float size, float angle)
+	{
+		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
+		List<Point16> results = [];
+		Ellipse.Fill((x, y) => WorldGen.PlaceTile(x, y, TileID.Crimstone), origin.ToPoint16(), size, size / WorldGen.genRand.NextFloat(2, 3), angle - MathHelper.PiOver2, ref results);
 	}
 
 	private static FastNoiseLite GetGenNoise()
@@ -79,7 +157,7 @@ public class BrainDomain : BossDomainSubworld
 	{
 		if (!Main.tile[x, y].HasTile)
 		{
-			color = Vector3.Max(color, new Vector3(0.4f, 0.1f, 0.1f));
+			color = Vector3.Max(color, Color.White.ToVector3());
 		}
 
 		return true;
