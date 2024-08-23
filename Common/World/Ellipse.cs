@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.World.Generation;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.World;
@@ -90,21 +92,29 @@ internal static class Ellipse
 		}
 	}
 
-	public static void Fill(Action<int, int> action, Point16 origin, float widthSize, float heightSize, float angle, ref List<Point16> points)
+	public static void Fill(Action<int, int> action, Point16 origin, float widthSize, float heightSize, float angle, ref List<Point16> points, Func<int, int, float> offset)
 	{
 		float size = MathF.Max(widthSize, heightSize);
+		float dist = size / 3.5f;
+		size *= 2f;
 
-		for (int i = origin.X - (int)size * 2; i < origin.Y + size * 2; ++i)
+		for (int i = origin.X - (int)size; i < origin.X + size; ++i)
 		{
-			for (int j = origin.X - (int)size * 2; j < origin.Y + size * 2; ++j)
+			for (int j = origin.Y - (int)size; j < origin.Y + size; ++j)
 			{
+				if (!WorldGen.InWorld(i, j, 10))
+				{
+					continue;
+				}
+
 				int x = i - origin.X;
 				int y = j - origin.Y;
-				Vector2 offset = new Vector2(x, y).RotatedBy(angle) + origin.ToVector2();
+				Vector2 offsetPos = new Vector2(x, y).RotatedBy(angle) + origin.ToVector2();
 
-				float distance = MathF.Sqrt(MathF.Pow(offset.X - origin.X, 2) * (heightSize / widthSize) + MathF.Pow(offset.Y - origin.Y, 2) * (widthSize / heightSize));
+				float distance = MathF.Sqrt(MathF.Pow(offsetPos.X - origin.X, 2) * (heightSize / widthSize) + MathF.Pow(offsetPos.Y - origin.Y, 2) * (widthSize / heightSize));
+				float noiseValue = offset is null ? 0 : offset(i, j);
 
-				if (distance < size / 3.5f)
+				if (distance < dist + noiseValue)
 				{
 					action(i, j);
 					points.Add(new(i, j));
