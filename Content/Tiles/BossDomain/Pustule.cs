@@ -42,7 +42,7 @@ internal class Pustule : ModTile
 			for (int k = 0; k < length; ++k)
 			{
 				int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, ModContent.NPCType<Minera>(), 1);
-				Main.npc[npc].velocity = new Vector2(0, -Main.rand.NextFloat(5, 8)).RotatedByRandom(0.2f);
+				Main.npc[npc].velocity = new Vector2(0, -Main.rand.NextFloat(5, 8)).RotatedByRandom(0.9f);
 				Main.npc[npc].netUpdate = true;
 			}
 		}

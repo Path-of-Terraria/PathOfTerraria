@@ -24,7 +24,7 @@ public class FallingPusBlock : ModProjectile
 
 	public override void AI()
 	{
-		Projectile.velocity.Y += 0.6f;
+		Projectile.velocity.Y += 0.5f;
 
 		if (Main.rand.NextBool(10))
 		{

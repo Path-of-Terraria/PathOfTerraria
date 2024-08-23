@@ -15,6 +15,8 @@ using Terraria.Localization;
 using PathOfTerraria.Common.World;
 using System.Linq;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using Terraria.Audio;
+using Terraria;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -97,7 +99,7 @@ public class BrainDomain : BossDomainSubworld
 
 	private static void PlaceGrassDecor(Point16 position, OpenFlags flags)
 	{
-		if (!WorldGen.SolidOrSlopedTile(position.X, position.Y - 1))
+		if (!Main.tile[position.X, position.Y - 1].HasTile)
 		{
 			if (WorldGen.genRand.NextBool(12))
 			{
@@ -112,7 +114,11 @@ public class BrainDomain : BossDomainSubworld
 			{
 				WorldGen.PlaceTile(position.X, position.Y - 1, ModContent.TileType<Pustule>(), style: WorldGen.genRand.Next(2));
 			}
-			else if (!Main.tile[position.X, position.Y - 1].HasTile)
+			else if (WorldGen.genRand.NextBool(30))
+			{
+				WorldGen.PlacePot(position.X, position.Y - 1, TileID.Pots, WorldGen.genRand.Next(22, 25));
+			}
+			else
 			{
 				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.CrimsonPlants, true);
 			}
@@ -318,7 +324,7 @@ public class BrainDomain : BossDomainSubworld
 	{
 		if (!Main.tile[x, y].HasTile)
 		{
-			color = Vector3.Max(color, Color.White.ToVector3());
+			color = Vector3.Max(color, Color.PaleVioletRed.ToVector3());
 		}
 
 		if (Main.tile[x, y].WallType != WallID.None && !WallID.Sets.Transparent[Main.tile[x, y].WallType])
@@ -388,6 +394,66 @@ public class BrainDomain : BossDomainSubworld
 		public override bool IsSceneEffectActive(Player player)
 		{
 			return SubworldSystem.Current is BrainDomain;
+		}
+	}
+
+	public class BrainDoubleJump : ExtraJump
+	{
+		public override Position GetDefaultPosition()
+		{
+			return new Before(CloudInABottle);
+		}
+
+		public override float GetDurationMultiplier(Player player)
+		{
+			return 1.2f;
+		}
+
+		public override void UpdateHorizontalSpeeds(Player player)
+		{
+			player.runAcceleration *= 1.5f;
+			player.maxRunSpeed *= 1.5f;
+		}
+
+		public override void OnRefreshed(Player player)
+		{
+			player.GetModPlayer<BrainJumpPlayer>().JumpsRemaining = 2;
+		}
+
+		public override void OnStarted(Player player, ref bool playSound)
+		{
+			playSound = false;
+			SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0, PitchVariance = 0.04f }, player.Bottom);
+
+			ref int jumps = ref player.GetModPlayer<BrainJumpPlayer>().JumpsRemaining;
+
+			jumps--;
+
+			if (jumps > 0)
+			{
+				player.GetJumpState(this).Available = true;
+			}
+
+			for (int i = 0; i < 30; i++)
+			{
+				Vector2 position = player.BottomLeft + new Vector2(Main.rand.NextFloat(player.width), 0);
+				Vector2 velocity = -(player.velocity * new Vector2(0.5f, 1)).RotatedByRandom(0.9f) * Main.rand.NextFloat(0.8f, 1.5f);
+				var dust = Dust.NewDustPerfect(position, Main.rand.NextBool() ? DustID.Crimslime : DustID.Crimson, velocity, Scale: Main.rand.NextFloat(2, 3));
+				dust.noGravity = true;
+			}
+		}
+	}
+
+	public class BrainJumpPlayer : ModPlayer
+	{
+		public int JumpsRemaining;
+
+		public override void ResetEffects()
+		{
+			if (SubworldSystem.Current is BrainDomain)
+			{
+				Player.GetJumpState<BrainDoubleJump>().Enable();
+			}
 		}
 	}
 }

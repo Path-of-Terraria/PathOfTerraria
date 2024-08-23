@@ -55,13 +55,18 @@ internal class StopBuildingPlayer : ModPlayer
 	private static void DisableCut(ILContext il)
 	{
 		ILCursor c = new(il);
-		ILLabel label = c.DefineLabel();
 
-		c.Emit(OpCodes.Ldarg_0);
-		c.EmitDelegate((Player player) => player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding);
-		c.Emit(OpCodes.Brfalse, label);
-		c.Emit(OpCodes.Ret);
-		c.MarkLabel(label);
+		if (!c.TryGotoNext(x => x.MatchCall<WorldGen>(nameof(WorldGen.CanCutTile))))
+		{
+			return;
+		}
+
+		ILLabel label = null;
+
+		if (!c.TryGotoPrev(x => x.MatchBrtrue(out label)))
+		{
+			return;
+		}
 	}
 
 	private bool CanDig(int x, int y, bool isWall)
