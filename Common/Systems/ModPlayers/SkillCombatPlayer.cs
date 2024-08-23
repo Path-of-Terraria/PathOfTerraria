@@ -9,13 +9,14 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 
-internal class SkillPlayer : ModPlayer
+internal class SkillCombatPlayer : ModPlayer
 {
 	public static ModKeybind Skill1Keybind;
 	public static ModKeybind Skill2Keybind;
 	public static ModKeybind Skill3Keybind;
 
-	public Skill[] Skills = new Skill[3];
+	public readonly Skill[] HotbarSkills = new Skill[3];
+	public Skill[] UnlockedSkills = [];
 	
 	public int Points;
 
@@ -48,30 +49,30 @@ internal class SkillPlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		if (Skill1Keybind.JustPressed && Skills[0] != null && Skills[0].CanUseSkill(Player))
+		if (Skill1Keybind.JustPressed && HotbarSkills[0] != null && HotbarSkills[0].CanUseSkill(Player))
 		{
-			Skills[0]?.UseSkill(Player);
+			HotbarSkills[0]?.UseSkill(Player);
 		}
 
-		if (Skill2Keybind.JustPressed && Skills[1] != null && Skills[1].CanUseSkill(Player))
+		if (Skill2Keybind.JustPressed && HotbarSkills[1] != null && HotbarSkills[1].CanUseSkill(Player))
 		{
-			Skills[1]?.UseSkill(Player);
+			HotbarSkills[1]?.UseSkill(Player);
 		}
 
-		if (Skill3Keybind.JustPressed && Skills[2] != null && Skills[2].CanUseSkill(Player))
+		if (Skill3Keybind.JustPressed && HotbarSkills[2] != null && HotbarSkills[2].CanUseSkill(Player))
 		{
-			Skills[2]?.UseSkill(Player);
+			HotbarSkills[2]?.UseSkill(Player);
 		}
 	}
 
 	public override void ResetEffects()
 	{
-		if (Skills == null || Skills.Length == 0)
+		if (HotbarSkills == null || HotbarSkills.Length == 0)
 		{
 			return;
 		}
 
-		foreach (Skill skill in Skills)
+		foreach (Skill skill in HotbarSkills)
 		{
 			if (skill is { Timer: > 0 })
 			{
@@ -82,9 +83,9 @@ internal class SkillPlayer : ModPlayer
 
 	public override void PostUpdate()
 	{
-		for (int i = 0; i < Skills.Length; i++)
+		for (int i = 0; i < HotbarSkills.Length; i++)
 		{
-			Skill skill = Skills[i];
+			Skill skill = HotbarSkills[i];
 
 			if (skill is not null)
 			{
@@ -92,7 +93,7 @@ internal class SkillPlayer : ModPlayer
 
 				if (!skill.CanEquipSkill(Player))
 				{
-					Skills[i] = null;
+					HotbarSkills[i] = null;
 					continue;
 				}
 			}
@@ -101,9 +102,9 @@ internal class SkillPlayer : ModPlayer
 
 	public override void SaveData(TagCompound tag)
 	{
-		for (int i = 0; i < Skills.Length; i++)
+		for (int i = 0; i < HotbarSkills.Length; i++)
 		{
-			Skill skill = Skills[i];
+			Skill skill = HotbarSkills[i];
 
 			if (skill is null)
 			{
@@ -124,8 +125,7 @@ internal class SkillPlayer : ModPlayer
 
 	public override void LoadData(TagCompound tag)
 	{
-		Points = tag.GetInt("points");
-		for (int i = 0; i < Skills.Length; ++i)
+		for (int i = 0; i < HotbarSkills.Length; ++i)
 		{
 			if (!tag.ContainsKey("skill" + i))
 			{
@@ -139,7 +139,7 @@ internal class SkillPlayer : ModPlayer
 			skill.LoadData(data);
 			skill.LevelTo(skill.Level);
 
-			Skills[i] = skill;
+			HotbarSkills[i] = skill;
 		}
 	}
 
@@ -147,11 +147,11 @@ internal class SkillPlayer : ModPlayer
 	{
 		skill = null;
 
-		for (int i = 0; i < Skills.Length; i++)
+		for (int i = 0; i < HotbarSkills.Length; i++)
 		{
-			if (Skills[i] is not null && Skills[i].GetType() == typeof(T))
+			if (HotbarSkills[i] is not null && HotbarSkills[i].GetType() == typeof(T))
 			{
-				skill = Skills[i];
+				skill = HotbarSkills[i];
 				return true;
 			}
 		}
@@ -161,21 +161,21 @@ internal class SkillPlayer : ModPlayer
 	
 	public bool TryAddSkill(Skill skill)
 	{
-		for (int i = 0; i < Skills.Length; ++i)
+		for (int i = 0; i < HotbarSkills.Length; ++i)
 		{
-			if (Skills[i] != null && Skills[i].Name == skill.Name)
+			if (HotbarSkills[i] != null && HotbarSkills[i].Name == skill.Name)
 			{
 				Main.NewText("Skill already added.");
 				return false;
 			}
 		}
 
-		for (int i = 0; i < Skills.Length; i++)
+		for (int i = 0; i < HotbarSkills.Length; i++)
 		{
-			if (Skills[i] == null)
+			if (HotbarSkills[i] == null)
 			{
-				Skills[i] = skill;
-				Skills[i].LevelTo(Skills[i].Level);
+				HotbarSkills[i] = skill;
+				HotbarSkills[i].LevelTo(HotbarSkills[i].Level);
 				Main.NewText("Skill added successfully.");
 				return true;
 			}
@@ -187,11 +187,11 @@ internal class SkillPlayer : ModPlayer
 
 	public bool TryRemoveSkill(Skill skill)
 	{
-		for (int i = 0; i < Skills.Length; i++)
+		for (int i = 0; i < HotbarSkills.Length; i++)
 		{
-			if (Skills[i] != null && Skills[i].GetType() == skill.GetType())
+			if (HotbarSkills[i] != null && HotbarSkills[i].GetType() == skill.GetType())
 			{
-				Skills[i] = null;
+				HotbarSkills[i] = null;
 				Main.NewText("Skill removed successfully.");
 				return true;
 			}

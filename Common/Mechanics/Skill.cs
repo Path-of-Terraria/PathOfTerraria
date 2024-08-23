@@ -87,6 +87,21 @@ public abstract class Skill
 	{
 		LevelTo((byte)(Level + 1));
 	}
+	
+	public override bool Equals(object obj)
+	{
+		if (obj is Skill otherSkill)
+		{
+			return Name == otherSkill.Name;
+		}
+
+		return false;
+	}
+	
+	public override int GetHashCode()
+	{
+		return Name.GetHashCode(); // Again, you can use other properties here if needed
+	}
 
 	/// <summary>
 	/// What this skill actually does

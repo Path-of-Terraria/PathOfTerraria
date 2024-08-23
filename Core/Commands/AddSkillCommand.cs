@@ -46,7 +46,7 @@ public sealed class AddSkillCommand : ModCommand
 
 		if (args.Length == 2)
 		{
-			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
+			Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills[skillSlot] = skill;
 			return;
 		}
 
@@ -148,7 +148,7 @@ public sealed class AddSkillCommand : ModCommand
 
 		if (valid)
 		{
-			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
+			Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills[skillSlot] = skill;
 			return true;
 		}
 

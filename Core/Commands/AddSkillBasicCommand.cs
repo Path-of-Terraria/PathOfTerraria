@@ -43,7 +43,7 @@ public sealed class AddSkillBasicCommand : ModCommand
 		var skill = Skill.GetAndPrepareSkill(skillType);
 		bool levelValid = int.TryParse(args[2], out int level);
 
-		if (!caller.Player.TryGetModPlayer(out SkillPlayer skillPlayer))
+		if (!caller.Player.TryGetModPlayer(out SkillCombatPlayer skillPlayer))
 		{
 			return;
 		}
@@ -53,7 +53,7 @@ public sealed class AddSkillBasicCommand : ModCommand
 		if (levelValid)
 		{
 			skill.LevelTo((byte)Math.Clamp(level, 0, skill.MaxLevel));
-			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
+			Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills[skillSlot] = skill;
 		}
 		else
 		{
