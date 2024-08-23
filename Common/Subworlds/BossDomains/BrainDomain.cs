@@ -108,11 +108,11 @@ public class BrainDomain : BossDomainSubworld
 					WorldGen.KillTile(position.X, position.Y - 1);
 				}
 			}
-			else if (WorldGen.genRand.NextBool(40))
+			else if (WorldGen.genRand.NextBool(40) && Math.Abs(position.X - Main.spawnTileX) > 40)
 			{
-				WorldGen.PlaceObject(position.X, position.Y, ModContent.TileType<Pustule>());
+				WorldGen.PlaceTile(position.X, position.Y - 1, ModContent.TileType<Pustule>(), style: WorldGen.genRand.Next(2));
 			}
-			else
+			else if (!Main.tile[position.X, position.Y - 1].HasTile)
 			{
 				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.CrimsonPlants, true);
 			}
