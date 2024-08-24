@@ -6,7 +6,7 @@ using Terraria.ModLoader.Core;
 namespace PathOfTerraria.Core.Commands;
 
 #if DEBUG
-public sealed class GrnatSkillPassiveCommand : ModCommand
+public sealed class GrantSkillPassiveCommand : ModCommand
 {
 	public override string Command => "grantskillpassive";
 
