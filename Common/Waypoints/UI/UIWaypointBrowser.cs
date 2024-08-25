@@ -1,10 +1,5 @@
-using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
-using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.GameContent.UI.Elements;
-using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 
@@ -18,15 +13,27 @@ public sealed class UIWaypointBrowser : UIState
 	public const string Identifier = $"{PoTMod.ModName}:{nameof(UIWaypointBrowser)}";
 
 	/// <summary>
-	///     The height of this element in pixels.
+	///     The width of this state in pixels.
+	/// </summary>
+	public const float FullWidth = UIWaypointList.FullWidth + UIWaypointPreview.FullWidth + UIWaypointPreviewInfo.FullWidth + ElementPadding * 2f;
+
+	/// <summary>
+	///     The height of this state in pixels.
 	/// </summary>
 	public const float FullHeight = 400f;
-	
+
 	/// <summary>
-	///		Whether this state is enabled or not.
+	///     The padding of each element of this state in pixels.
+	/// </summary>
+	public const float ElementPadding = 12f;
+
+	/// <summary>
+	///     Whether this state is enabled or not.
 	/// </summary>
 	public bool Enabled { get; set; }
-	
+
+	private UIWaypointList list;
+
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
@@ -35,34 +42,35 @@ public sealed class UIWaypointBrowser : UIState
 		{
 			HAlign = 0.5f,
 			VAlign = 0.5f,
-			Width = { Pixels = UIWaypointList.FullWidth + UIWaypointPreview.FullWidth + 8f },
+			Width = { Pixels = FullWidth },
 			Height = { Pixels = FullHeight }
 		};
-		
+
 		root.OnUpdate += RootUpdateEvent;
-		
+
 		Append(root);
 
-		var list = new UIWaypointList
-		{
-			VAlign = 0.5f
-		};
-		
+		list = new UIWaypointList { VAlign = 0.5f };
+
 		root.Append(list);
 
-		var preview = new UIWaypointPreview(TextureAssets.Item[ItemID.HermesBoots])
+		var preview = new UIWaypointPreview
 		{
-			HAlign = 1f
+			VAlign = 0.5f,
+			Left = { Pixels = UIWaypointList.FullWidth + ElementPadding }
 		};
 		
-		root.Append(preview);
-	}
+		preview.OnUpdate += PreviewUpdateEvent;
 
-	private void RootUpdateEvent(UIElement element)
-	{
-		var target = Enabled ? 0f : Main.screenHeight;
-		
-		element.Top.Pixels = MathHelper.SmoothStep(element.Top.Pixels, target, 0.3f);
+		root.Append(preview);
+
+		var info = new UIWaypointPreviewInfo
+		{
+			VAlign = 0.5f,
+			Left = { Pixels = FullWidth - UIWaypointPreviewInfo.FullWidth }
+		};
+
+		root.Append(info);
 	}
 
 	public override void OnActivate()
@@ -75,7 +83,31 @@ public sealed class UIWaypointBrowser : UIState
 	public override void OnDeactivate()
 	{
 		base.OnDeactivate();
-		
+
 		Enabled = false;
+	}
+	
+	private void RootUpdateEvent(UIElement element)
+	{
+		float target = Enabled ? 0f : Main.screenHeight;
+
+		element.Top.Pixels = MathHelper.SmoothStep(element.Top.Pixels, target, 0.3f);
+	}
+	
+	private void PreviewUpdateEvent(UIElement element)
+	{
+		if (element is not UIWaypointPreview preview)
+		{
+			return;
+		}
+
+		ModWaypoint? waypoint = ModWaypointLoader.Waypoints[list.SelectedWaypointIndex];
+
+		if (waypoint == null)
+		{
+			return;
+		}
+		
+		preview.SetThumbnail(ModContent.Request<Texture2D>(waypoint.PreviewPath, AssetRequestMode.ImmediateLoad));
 	}
 }

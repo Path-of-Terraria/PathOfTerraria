@@ -2,6 +2,7 @@ using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.Waypoints.UI;
 using Terraria.Localization;
 
+// TODO: Implement info attributes for the UI's info tab.
 namespace PathOfTerraria.Common.Waypoints;
 
 /// <summary>

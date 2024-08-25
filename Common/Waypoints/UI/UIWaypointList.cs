@@ -1,10 +1,7 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
 using Terraria.Audio;
-using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -18,7 +15,7 @@ public sealed class UIWaypointList : UIElement
 	private const int KeyRepeatDelay = 15;
 
 	/// <summary>
-	///		The vertical margin of this element in pixels.
+	///     The vertical margin of this element in pixels.
 	/// </summary>
 	public const float VerticalMargin = 50f;
 
@@ -28,7 +25,7 @@ public sealed class UIWaypointList : UIElement
 	public const float FullWidth = 300f;
 
 	/// <summary>
-	///		The height of this element in pixels.
+	///     The height of this element in pixels.
 	/// </summary>
 	public const float FullHeight = UIWaypointBrowser.FullHeight;
 
@@ -42,35 +39,35 @@ public sealed class UIWaypointList : UIElement
 	}
 
 	/// <summary>
-	///		The instance of the currently selected waypoint tab.
+	///     The instance of the currently selected waypoint tab.
 	/// </summary>
-	public UIWaypointTab SelectedTab => tabs[SelectedWaypointIndex];
-	
+	public UIWaypointListTab SelectedListTab => tabs[SelectedWaypointIndex];
+
 	private int _selectedWaypointIndex;
-	
+
 	private int holdDelayTimer;
 
-	private List<UIWaypointTab> tabs = new();
-	
+	private readonly List<UIWaypointListTab> tabs = new();
+
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
-		
+
 		Width.Set(FullWidth, 0f);
 		Height.Set(FullHeight, 0f);
 
 		Append(BuildPanel());
 
-		var list = BuildList();
-		
+		UIList list = BuildList();
+
 		PopulateList(list);
 		Append(list);
 	}
-	
+
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
-		
+
 		UpdateInput();
 	}
 
@@ -124,15 +121,15 @@ public sealed class UIWaypointList : UIElement
 		for (int i = 0; i < ModWaypointLoader.WaypointCount; i++)
 		{
 			ModWaypoint? waypoint = ModWaypointLoader.Waypoints[i];
-			
+
 			Asset<Texture2D>? icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
 
-			var tab = new UIWaypointTab(icon, waypoint.DisplayName, i) { Left = { Pixels = 2f } };
+			var tab = new UIWaypointListTab(icon, waypoint.DisplayName, i) { Left = { Pixels = 2f } };
 
 			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypointIndex;
 
 			list.Add(tab);
-			
+
 			// We keep track of the tabs separately from the list so we can provide the currently selected tab.
 			tabs.Add(tab);
 		}
@@ -164,7 +161,7 @@ public sealed class UIWaypointList : UIElement
 		{
 			return;
 		}
-		
+
 		SoundEngine.PlaySound(
 			SoundID.MenuTick with
 			{
@@ -177,7 +174,7 @@ public sealed class UIWaypointList : UIElement
 
 		SelectedWaypointIndex += direction;
 	}
-	
+
 	private bool CanProcessInput()
 	{
 		return holdDelayTimer == 0 || holdDelayTimer > KeyInitialDelay && holdDelayTimer % KeyRepeatDelay == 0;

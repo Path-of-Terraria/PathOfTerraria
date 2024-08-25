@@ -1,39 +1,41 @@
 using System.Reflection;
-using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
-using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
 
-public sealed class UIWaypointTab : UIElement
+public sealed class UIWaypointListTab : UIElement
 {
+	/// <summary>
+	///     The width of this element in pixels.
+	/// </summary>
+	public const float FullWidth = UIWaypointList.FullWidth - 18f;
+
+	/// <summary>
+	///     The height of this element in pixels.
+	/// </summary>
+	public const float FullHeight = 48f;
+
 	/// <summary>
 	///     The margin of this element in pixels.
 	/// </summary>
-	public const float Margin = 16f;
+	public const float ElementMargin = 16f;
 
-	/// <summary>
-	///		The width of this element in pixels.
-	/// </summary>
-	public const float FullWidth = UIWaypointList.FullWidth - 18f;
-	
-	/// <summary>
-	///		The height of this element in pixels.
-	/// </summary>
-	public const float FullHeight = 48f;
+	// This is a temporary solution; ideally we would want to create our own UIText that doesn't have such limitations.
+	private static readonly FieldInfo UITextTextScaleInfo = typeof(UIText).GetField("_textScale", BindingFlags.NonPublic | BindingFlags.Instance);
 
 	/// <summary>
 	///     Whether this element is selected or not.
 	/// </summary>
 	public bool Selected { get; set; }
 
-	// This is a temporary solution; ideally we would want to create our own UIText that doesn't have such limitations.
-	private static readonly FieldInfo UITextTextScaleInfo = typeof(UIText).GetField("_textScale", BindingFlags.NonPublic | BindingFlags.Instance);
+	/// <summary>
+	///     The icon of this tab.
+	/// </summary>
+	public readonly Asset<Texture2D> Icon;
 
 	/// <summary>
 	///     The index of this element in a <see cref="UIList" />.
@@ -41,16 +43,11 @@ public sealed class UIWaypointTab : UIElement
 	public readonly int Index;
 
 	/// <summary>
-	///		The display name of this tab.
+	///     The display name of this tab.
 	/// </summary>
 	public readonly LocalizedText Name;
 
-	/// <summary>
-	///		The icon of this tab.
-	/// </summary>
-	public readonly Asset<Texture2D> Icon;
-	
-	public UIWaypointTab(Asset<Texture2D> icon, LocalizedText name, int index)
+	public UIWaypointListTab(Asset<Texture2D> icon, LocalizedText name, int index)
 	{
 		Icon = icon;
 		Name = name;
@@ -60,7 +57,7 @@ public sealed class UIWaypointTab : UIElement
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
-		
+
 		Width.Set(FullWidth, 0f);
 		Height.Set(FullHeight, 0f);
 
@@ -86,7 +83,7 @@ public sealed class UIWaypointTab : UIElement
 		};
 
 		panel.OnUpdate += PanelUpdateEvent;
-		
+
 		return panel;
 	}
 
@@ -95,7 +92,7 @@ public sealed class UIWaypointTab : UIElement
 		var icon = new UIImage(Icon)
 		{
 			VAlign = 0.5f,
-			Left = { Pixels = Margin },
+			Left = { Pixels = ElementMargin },
 			OverrideSamplerState = SamplerState.PointClamp
 		};
 
@@ -109,9 +106,9 @@ public sealed class UIWaypointTab : UIElement
 		var text = new UIText(Name, 0.8f)
 		{
 			VAlign = 0.5f,
-			Left = { Pixels = Margin + Icon.Width() + (32f - Icon.Width()) + Margin }
+			Left = { Pixels = ElementMargin + Icon.Width() + (32f - Icon.Width()) + ElementMargin }
 		};
-		
+
 		text.OnUpdate += TextUpdateEvent;
 
 		return text;
@@ -132,7 +129,7 @@ public sealed class UIWaypointTab : UIElement
 
 		return separator;
 	}
-	
+
 	private void TextUpdateEvent(UIElement element)
 	{
 		if (element is not UIText text)
@@ -140,13 +137,13 @@ public sealed class UIWaypointTab : UIElement
 			return;
 		}
 
-		var value = UITextTextScaleInfo.GetValue(text);
+		object value = UITextTextScaleInfo.GetValue(text);
 
 		if (value is not float scale)
 		{
 			return;
 		}
-		
+
 		UITextTextScaleInfo.SetValue(text, MathHelper.SmoothStep(scale, Selected ? 1f : 0.8f, 0.3f));
 	}
 
@@ -156,10 +153,10 @@ public sealed class UIWaypointTab : UIElement
 		{
 			return;
 		}
-		
+
 		panel.BorderColor = Color.Lerp(panel.BorderColor, Selected ? Color.White : new Color(68, 97, 175), 0.3f) * 0.8f;
 	}
-	
+
 	private void IconUpdateEvent(UIElement element)
 	{
 		if (element is not UIImage image)
