@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.UI.PassiveTree;
 using PathOfTerraria.Common.UI.SkillsTree;
+using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Localization;
@@ -91,7 +92,7 @@ internal class TreeState : DraggableSmartUi
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
 		PassiveTreePlayer passiveTreePlayer = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
-		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
+		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 
 		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) +
 		                         tex.Size() / 2;
@@ -99,7 +100,7 @@ internal class TreeState : DraggableSmartUi
 		int points = Panel.ActiveTab switch
 		{
 			"PassiveTree" => passiveTreePlayer.Points,
-			"SkillTree" => skillPlayer.Points,
+			"SkillTree" => skillCombatPlayer.Points,
 			_ => 0
 		};
 		if (Panel.ActiveTab != "PassiveTree") //Temp to only draw for passive tree
@@ -107,12 +108,7 @@ internal class TreeState : DraggableSmartUi
 			return;
 		}
 		
-		spriteBatch.Draw(tex, GetRectangle().TopLeft() + pointsDrawPoin, null, Color.White, 0, tex.Size() / 2f, 1, 0,
-			0);
-		Utils.DrawBorderStringBig(spriteBatch, $"{points}", GetRectangle().TopLeft() + pointsDrawPoin,
-			passiveTreePlayer.Points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
-		Utils.DrawBorderStringBig(spriteBatch, "Points remaining",
-			GetRectangle().TopLeft() + pointsDrawPoin + new Vector2(138, 0), Color.White, 0.6f, 0.5f, 0.35f);
+		AvailablePassivePointsText.DrawAvailablePassivePoint(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin);
 	}
 
 	public Rectangle GetRectangle()

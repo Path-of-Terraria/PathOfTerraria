@@ -1,4 +1,6 @@
 ﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.UI;
 
@@ -22,6 +24,9 @@ internal class SkillTreeInnerPanel : SmartUiElement
 		Rectangle oldRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
 		spriteBatch.GraphicsDevice.ScissorRectangle = Panel.GetDimensions().ToRectangle();
+		
+		int availablePoints = Main.LocalPlayer.GetModPlayer<SkillPassivePlayer>().GetAvailablePoints(_skill);
+		AvailablePassivePointsText.DrawAvailablePassivePoint(spriteBatch, availablePoints, GetRectangle().TopLeft() + new Vector2(35, 35));
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);

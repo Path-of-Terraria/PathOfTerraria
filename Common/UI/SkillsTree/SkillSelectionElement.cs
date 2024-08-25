@@ -36,9 +36,9 @@ internal class SkillSelectionElement : UIElement
 	
 	public override void LeftClick(UIMouseEvent evt)
 	{
-		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
+		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 		Main.NewText("Clicked on " + _skill.Name);
-		skillPlayer.TryAddSkill(_skill);
+		skillCombatPlayer.TryAddSkill(_skill);
 		_parentPanel.SelectedSkill = _skill;
 		_parentPanel.DrawSkillTree();
 	}
@@ -46,7 +46,7 @@ internal class SkillSelectionElement : UIElement
 	public override void RightClick(UIMouseEvent evt)
 	{
 		Main.NewText("Right Clicked on " + _skill.Name);
-		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
-		skillPlayer.TryRemoveSkill(_skill);
+		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
+		skillCombatPlayer.TryRemoveSkill(_skill);
 	}
 }

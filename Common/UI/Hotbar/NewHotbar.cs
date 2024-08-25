@@ -220,8 +220,8 @@ internal sealed class NewHotbar : SmartUiState
 				new Vector2(534, 60 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
 		}
 
-		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
-		if (skillPlayer.Skills == null)
+		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
+		if (skillCombatPlayer.HotbarSkills == null)
 		{
 			return;
 		}
@@ -233,14 +233,14 @@ internal sealed class NewHotbar : SmartUiState
 
 	private static void DrawSkill(SpriteBatch spriteBatch, float off, float opacity, Texture2D glow, int skillIndex)
 	{
-		SkillPlayer skillPlayer = Main.LocalPlayer.GetModPlayer<SkillPlayer>();
+		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 
-		if (skillPlayer.Skills[skillIndex] is null)
+		if (skillCombatPlayer.HotbarSkills[skillIndex] is null)
 		{
 			return;
 		}
 
-		Skill skill = skillPlayer.Skills[skillIndex];
+		Skill skill = skillCombatPlayer.HotbarSkills[skillIndex];
 		Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
 		var skillRect = new Rectangle(268 + 52 * skillIndex, (int)(8 + off) + texture.Height - 25, texture.Width, texture.Height);
 		spriteBatch.Draw(texture,
@@ -347,9 +347,9 @@ internal sealed class NewHotbar : SmartUiState
 		DrawLetter(spriteBatch, assignedManaKey, new Vector2(523, 71 + off), Color.White);
 
 		// Draw Skill Hotkeys
-		string skill1Key = SkillPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault();
-		string skill2Key = SkillPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault();
-		string skill3Key = SkillPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault();
+		string skill1Key = SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault();
+		string skill2Key = SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault();
+		string skill3Key = SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault();
 
 		if (!string.IsNullOrEmpty(skill1Key))
 		{
