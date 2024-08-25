@@ -8,17 +8,17 @@ Anchor: {
 	Tooltip: Your journey starts here
 }
 
-LightningNova: {
+LightningNovaSkillPassive: {
 	Name: Lightning Nova
 	Tooltip: Turns your Nova into the Lightning Nova skill
 }
 
-FireNova: {
+FireNovaSkillPassive: {
 	Name: Fire Nova
 	Tooltip: Turns your Nova into the Fire Nova skill
 }
 
-IceNova: {
+IceNovaSkillPassive: {
 	Name: Ice Nova
 	Tooltip: Turns your Nova into the Ice Nova skill
 }

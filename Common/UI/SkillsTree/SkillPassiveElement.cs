@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Core.Sounds;
@@ -118,11 +119,14 @@ internal class SkillPassiveElement : SmartUiElement
 			return;
 		}
 
+
+		if (!Main.LocalPlayer.GetModPlayer<SkillPassivePlayer>().AllocatePassivePoint(_passive.Skill, _passive))
+		{
+			return;
+		}
+
 		_passive.Level++;
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points--;
-
 		_flashTimer = 20;
-
 		TreeSoundEngine.PlaySoundForTreeAllocation(_passive.MaxLevel, _passive.Level);
 	}
 
@@ -134,7 +138,7 @@ internal class SkillPassiveElement : SmartUiElement
 		}
 
 		_passive.Level--;
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points++;
+		Main.LocalPlayer.GetModPlayer<SkillPassivePlayer>().DeallocatePassivePoint(_passive.Skill, _passive);
 
 		_redFlashTimer = 20;
 

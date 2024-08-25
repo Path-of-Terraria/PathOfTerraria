@@ -175,7 +175,7 @@ public abstract class Skill
 		Edges = [];
 		ActiveNodes =
 		[
-			new SkillPassiveAnchor()
+			new SkillPassiveAnchor(this)
 		];
 
 		foreach (SkillPassive passive in Passives)
