@@ -1,3 +1,4 @@
+using System.Reflection;
 using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
 using Terraria.Audio;
@@ -30,6 +31,9 @@ public sealed class UIWaypointTab : UIElement
 	///     Whether this element is selected or not.
 	/// </summary>
 	public bool Selected { get; set; }
+
+	// This is a temporary solution; ideally we would want to create our own UIText that doesn't have such limitations.
+	private static readonly FieldInfo UITextTextScaleInfo = typeof(UIText).GetField("_textScale", BindingFlags.NonPublic | BindingFlags.Instance);
 
 	/// <summary>
 	///     The index of this element in a <see cref="UIList" />.
@@ -81,7 +85,7 @@ public sealed class UIWaypointTab : UIElement
 			Height = { Pixels = FullHeight }
 		};
 
-		panel.OnUpdate += UpdatePanel;
+		panel.OnUpdate += PanelUpdateEvent;
 		
 		return panel;
 	}
@@ -91,10 +95,11 @@ public sealed class UIWaypointTab : UIElement
 		var icon = new UIImage(Icon)
 		{
 			VAlign = 0.5f,
+			Left = { Pixels = Margin },
 			OverrideSamplerState = SamplerState.PointClamp
 		};
 
-		icon.Left.Set(Margin, 0f);
+		icon.OnUpdate += IconUpdateEvent;
 
 		return icon;
 	}
@@ -106,6 +111,8 @@ public sealed class UIWaypointTab : UIElement
 			VAlign = 0.5f,
 			Left = { Pixels = Margin + Icon.Width() + (32f - Icon.Width()) + Margin }
 		};
+		
+		text.OnUpdate += TextUpdateEvent;
 
 		return text;
 	}
@@ -125,8 +132,25 @@ public sealed class UIWaypointTab : UIElement
 
 		return separator;
 	}
+	
+	private void TextUpdateEvent(UIElement element)
+	{
+		if (element is not UIText text)
+		{
+			return;
+		}
 
-	private void UpdatePanel(UIElement element)
+		var value = UITextTextScaleInfo.GetValue(text);
+
+		if (value is not float scale)
+		{
+			return;
+		}
+		
+		UITextTextScaleInfo.SetValue(text, MathHelper.SmoothStep(scale, Selected ? 1f : 0.8f, 0.3f));
+	}
+
+	private void PanelUpdateEvent(UIElement element)
 	{
 		if (element is not UIPanel panel)
 		{
@@ -134,5 +158,15 @@ public sealed class UIWaypointTab : UIElement
 		}
 		
 		panel.BorderColor = Color.Lerp(panel.BorderColor, Selected ? Color.White : new Color(68, 97, 175), 0.3f) * 0.8f;
+	}
+	
+	private void IconUpdateEvent(UIElement element)
+	{
+		if (element is not UIImage image)
+		{
+			return;
+		}
+
+		image.ImageScale = MathHelper.SmoothStep(image.ImageScale, Selected ? 1.25f : 1f, 0.3f);
 	}
 }

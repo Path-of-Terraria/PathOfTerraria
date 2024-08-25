@@ -9,7 +9,12 @@ public sealed class UIWaypointPreview : UIElement
 	/// <summary>
 	///		The width of this element in pixels.
 	/// </summary>
-	public const float FullWidth = 600f;
+	public const float FullWidth = 500f;
+	
+	/// <summary>
+	///		The height of this element in pixels.
+	/// </summary>
+	public const float FullHeight = UIWaypointBrowser.FullHeight;
 	
 	public readonly Asset<Texture2D> Thumbnail;
 	
@@ -23,8 +28,14 @@ public sealed class UIWaypointPreview : UIElement
 		base.OnInitialize();
 		
 		Width.Set(FullWidth, 0f);
-		Height.Set(UIWaypointBrowser.FullHeight, 0f);
-		
+		Height.Set(FullHeight, 0f);
+
+		Append(BuildPanel());
+		Append(BuildThumbnail());
+	}
+
+	private UIPanel BuildPanel()
+	{
 		var panel = new UIPanel(
 			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBackground"),
 			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBorder"),
@@ -33,12 +44,28 @@ public sealed class UIWaypointPreview : UIElement
 		{
 			BackgroundColor = new Color(41, 66, 133) * 0.8f,
 			BorderColor = new Color(13, 13, 15),
-			OverrideSamplerState = SamplerState.PointClamp
+			OverrideSamplerState = SamplerState.PointClamp,
+			Width = { Pixels = FullWidth },
+			Height = { Pixels = FullHeight }
+		};
+		
+		return panel;
+	}
+
+	private UIImage BuildThumbnail()
+	{
+		var image = new UIImage(Thumbnail)
+		{
+			AllowResizingDimensions = true,
+			ScaleToFit = true,
+			Color = Color.White * 0.8f,
+			HAlign = 0.5f,
+			VAlign = 0.5f,
+			OverrideSamplerState = SamplerState.PointClamp,
+			Width = { Pixels = FullWidth - 50f },
+			Height = { Pixels = FullHeight - 100f }
 		};
 
-		panel.Width.Set(FullWidth, 0f);
-		panel.Height.Set(UIWaypointBrowser.FullHeight, 0f);
-
-		Append(panel);
+		return image;
 	}
 }

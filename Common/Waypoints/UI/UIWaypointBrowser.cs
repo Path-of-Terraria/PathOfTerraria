@@ -23,33 +23,10 @@ public sealed class UIWaypointBrowser : UIState
 	public const float FullHeight = 400f;
 	
 	/// <summary>
-	///     The animation progress of this state.
+	///		Whether this state is enabled or not.
 	/// </summary>
-	/// <remarks>
-	///     This ranges from <c>0f</c> (Inactive) - <c>1f</c> (Active).
-	/// </remarks>
-	public float Progress
-	{
-		get => _progress;
-		set => _progress = MathHelper.Clamp(value, 0f, 1f);
-	}
+	public bool Enabled { get; set; }
 	
-	private float _progress;
-
-	/// <summary>
-	///     The target value for the animation progress of this state.
-	/// </summary>
-	/// <remarks>
-	///     This ranges from <c>0f</c> (Inactive) - <c>1f</c> (Active).
-	/// </remarks>
-	public float TargetProgress
-	{
-		get => _targetProgress;
-		set => _targetProgress = MathHelper.Clamp(value, 0f, 1f);
-	}
-
-	private float _targetProgress;
-
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
@@ -58,9 +35,11 @@ public sealed class UIWaypointBrowser : UIState
 		{
 			HAlign = 0.5f,
 			VAlign = 0.5f,
-			Width = { Pixels = UIWaypointList.FullWidth + 32f },
+			Width = { Pixels = UIWaypointList.FullWidth + UIWaypointPreview.FullWidth + 8f },
 			Height = { Pixels = FullHeight }
 		};
+		
+		root.OnUpdate += RootUpdateEvent;
 		
 		Append(root);
 
@@ -70,83 +49,33 @@ public sealed class UIWaypointBrowser : UIState
 		};
 		
 		root.Append(list);
-		
-		var indicator = new UIHoverImage(
-			ModContent.Request<Texture2D>(
-				$"{PoTMod.ModName}/Assets/Waypoints/Indicator",
-				AssetRequestMode.ImmediateLoad
-			)
-		)
-		{
-			OverrideSamplerState = SamplerState.PointClamp,
-			Color = Color.White * 0.8f,
-			ActiveScale = 1.25f,
-			Left = { Pixels = UIWaypointList.FullWidth + 4f }
-		};
 
-		indicator.OnMouseOver += (_, _) =>
+		var preview = new UIWaypointPreview(TextureAssets.Item[ItemID.HermesBoots])
 		{
-			SoundEngine.PlaySound(
-				SoundID.MenuTick with
-				{
-					Pitch = 0.15f,
-					MaxInstances = 1
-				}
-			);
-		};
-
-		indicator.OnMouseOut += (_, _) =>
-		{
-			SoundEngine.PlaySound(
-				SoundID.MenuTick with
-				{
-					Pitch = -0.25f,
-					MaxInstances = 1
-				}
-			);
-		};
-
-		indicator.OnLeftClick += (_, _) =>
-		{
-			root.Append(new UIWaypointPreview(TextureAssets.Item[ItemID.HermesBoots]));
+			HAlign = 1f
 		};
 		
-		indicator.OnUpdate += (_) =>
-		{
-			indicator.Top.Pixels = MathHelper.SmoothStep(
-				indicator.Top.Pixels,
-				50f + list.SelectedTab.Top.Pixels + 24f - 10f,
-				0.3f
-			);
-		};
+		root.Append(preview);
+	}
+
+	private void RootUpdateEvent(UIElement element)
+	{
+		var target = Enabled ? 0f : Main.screenHeight;
 		
-		root.Append(indicator);
+		element.Top.Pixels = MathHelper.SmoothStep(element.Top.Pixels, target, 0.3f);
 	}
 
 	public override void OnActivate()
 	{
 		base.OnActivate();
-		
-		// Temporary until animations are implemented.
-		OnInitialize();
 
-		TargetProgress = 1f;
+		Enabled = true;
 	}
 
 	public override void OnDeactivate()
 	{
 		base.OnDeactivate();
 		
-		// Temporary until animations are implemented.
-		RemoveAllChildren();
-
-		TargetProgress = 0f;
-	}
-
-	public override void Update(GameTime gameTime)
-	{
-		base.Update(gameTime);
-
-		Progress = MathHelper.SmoothStep(Progress, TargetProgress, 0.3f);
+		Enabled = false;
 	}
 }

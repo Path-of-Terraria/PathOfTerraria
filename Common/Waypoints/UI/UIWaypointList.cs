@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
@@ -24,7 +25,7 @@ public sealed class UIWaypointList : UIElement
 	/// <summary>
 	///     The width of this element in pixels.
 	/// </summary>
-	public const float FullWidth = 280f;
+	public const float FullWidth = 300f;
 
 	/// <summary>
 	///		The height of this element in pixels.
