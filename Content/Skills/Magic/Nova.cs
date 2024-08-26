@@ -14,10 +14,10 @@ public class Nova : Skill
 	
 	public override List<SkillPassive> Passives =>
 	[
-		new SkillPassiveAnchor(),
-		new LightningNovaSkillPassive(),
-		new FireNovaSkillPassive(),
-		new IceNovaSkillPassive()
+		new SkillPassiveAnchor(this),
+		new LightningNovaSkillPassive(this),
+		new FireNovaSkillPassive(this),
+		new IceNovaSkillPassive(this)
 	];
 
 	public override void LevelTo(byte level)

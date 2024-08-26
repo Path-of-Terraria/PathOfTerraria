@@ -32,28 +32,36 @@ public class SkillPassivePlayer : ModPlayer
 
 	public bool AllocatePassivePoint(Skill skill, SkillPassive passive)
 	{
-		if (AllocatedPassivePoints.ContainsKey(skill) && AllocatedPassivePoints[skill] < AcquiredPassivePoints[skill])
+		if (passive.Level > passive.MaxLevel)
 		{
-			if (!AllocatedPassives.ContainsKey(skill))
-			{
-				AllocatedPassives[skill] = new List<SkillPassive>();
-			}
-
-			if (AllocatedPassives[skill].Contains(passive))
-			{
-				return false; // Already allocated this passive
-			}
-
-			AllocatedPassives[skill].Add(passive);
-			AllocatedPassivePoints[skill]++;
-			return true;
+			return false; // Passive is not leveled or already maxed
+		}
+		
+		AllocatedPassivePoints.TryAdd(skill, 0);
+		AcquiredPassivePoints.TryAdd(skill, 0);
+		
+		if (AllocatedPassivePoints[skill] >= AcquiredPassivePoints[skill])
+		{
+			return false; // Not enough points or already allocated
 		}
 
-		return false; // Not enough points or already allocated
+		if (!AllocatedPassives.ContainsKey(skill))
+		{
+			AllocatedPassives[skill] = [];
+		}
+
+		AllocatedPassives[skill].Add(passive);
+		AllocatedPassivePoints[skill]++;
+		return true;
 	}
 
 	public void DeallocatePassivePoint(Skill skill, SkillPassive passive)
 	{
+		if (passive.Name == "Anchor")
+		{
+			return; // Anchor passive cannot be unallocated
+		}
+		
 		if (AllocatedPassives.ContainsKey(skill) && AllocatedPassives[skill].Contains(passive))
 		{
 			AllocatedPassives[skill].Remove(passive);

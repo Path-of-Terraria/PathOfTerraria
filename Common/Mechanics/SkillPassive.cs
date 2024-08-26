@@ -6,9 +6,9 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class SkillPassive
+public abstract class SkillPassive(Skill skill)
 {
-	public abstract Skill Skill { get; }
+	public Skill Skill { get; set; } = skill;
 	public virtual List<SkillPassive> Connections { get; set; }
 	public abstract int ReferenceId { get; }
 	public int Level;
@@ -18,6 +18,8 @@ public abstract class SkillPassive
 
 	public virtual string Name => GetType().Name;
 	public virtual string Texture => $"{PoTMod.ModName}/Assets/SkillPassives/" + Name;
+	
+	// New constructor
 
 	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Name");
 	public virtual string Description => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Description");
