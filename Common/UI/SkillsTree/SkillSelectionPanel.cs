@@ -39,7 +39,7 @@ internal class SkillSelectionPanel : SmartUiElement
 		}
 	}
 
-	public void DrawSkillTree()
+	public void RebuildTree()
 	{
 		if (SelectedSkill == null)
 		{
