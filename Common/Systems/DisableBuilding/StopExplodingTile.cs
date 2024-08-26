@@ -7,6 +7,6 @@ internal class StopExplodingTile : GlobalTile
 {
 	public override bool CanExplode(int i, int j, int type)
 	{
-		return SubworldSystem.Current is not BossDomainSubworld || BuildingWhitelist.InWhitelist(type);
+		return SubworldSystem.Current is not BossDomainSubworld || BuildingWhitelist.InMiningWhitelist(type);
 	}
 }

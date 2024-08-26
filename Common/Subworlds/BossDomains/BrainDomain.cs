@@ -16,7 +16,6 @@ using PathOfTerraria.Common.World;
 using System.Linq;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.Audio;
-using Terraria;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -24,6 +23,8 @@ public class BrainDomain : BossDomainSubworld
 {
 	public override int Width => 800;
 	public override int Height => 1300;
+	public override int[] WhitelistedCutTiles => [TileID.Pots, TileID.CrimsonThorns];
+	public override int DropItemLevel => 20;
 
 	public Rectangle Arena = Rectangle.Empty;
 	public Vector2 ProjectilePosition = Vector2.Zero;
