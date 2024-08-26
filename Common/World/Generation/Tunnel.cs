@@ -55,8 +55,7 @@ internal static class Tunnel
 	{
 		List<Vector2> points = [];
 		Queue<Vector2> remainingPoints = new(results);
-		Vector2 start = remainingPoints.Dequeue();
-		Vector2 current = start;
+		Vector2 current = remainingPoints.Dequeue();
 		Vector2 next = remainingPoints.Dequeue();
 		float factor = 0;
 
@@ -71,8 +70,8 @@ internal static class Tunnel
 
 			while (true)
 			{
-				points.Add(Vector2.Lerp(start, next, factor));
-				factor += MathF.Min(1, distance / dist);
+				points.Add(Vector2.Lerp(current, next, factor));
+				factor += distance / dist;
 
 				if (factor > 1f || float.IsNaN(dist))
 				{
@@ -85,9 +84,17 @@ internal static class Tunnel
 				return [.. points];
 			}
 
-			start = next;
-			next = remainingPoints.Dequeue();
-			factor--;
+			while (factor > 1f)
+			{
+				if (remainingPoints.Count == 0)
+				{
+					return [.. points];
+				}
+
+				current = next;
+				next = remainingPoints.Dequeue();
+				factor--;
+			}
 		}
 	}
 }

@@ -52,16 +52,32 @@ internal class StopBuildingPlayer : ModPlayer
 		c.MarkLabel(label);
 	}
 
-	private static void DisableCut(ILContext il)
+	internal static void DisableCut(ILContext il)
 	{
 		ILCursor c = new(il);
-		ILLabel label = c.DefineLabel();
+
+		if (!c.TryGotoNext(x => x.MatchCall<WorldGen>(nameof(WorldGen.CanCutTile))))
+		{
+			return;
+		}
+
+		ILLabel label = null;
+
+		if (!c.TryGotoPrev(MoveType.After, x => x.MatchBrtrue(out label)))
+		{
+			return;
+		}
 
 		c.Emit(OpCodes.Ldarg_0);
-		c.EmitDelegate((Player player) => player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding);
+		c.Emit(OpCodes.Ldloc_S, (byte)4);
+		c.Emit(OpCodes.Ldloc_S, (byte)5);
+		c.EmitDelegate(CanCutTile);
 		c.Emit(OpCodes.Brfalse, label);
-		c.Emit(OpCodes.Ret);
-		c.MarkLabel(label);
+	}
+
+	public static bool CanCutTile(Player player, int i, int j)
+	{
+		return BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
 	}
 
 	private bool CanDig(int x, int y, bool isWall)
@@ -75,7 +91,7 @@ internal class StopBuildingPlayer : ModPlayer
 
 		if (!isWall)
 		{
-			return !BuildingWhitelist.InWhitelist(tile.TileType);
+			return !BuildingWhitelist.InMiningWhitelist(tile.TileType);
 		}
 
 		return true;

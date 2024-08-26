@@ -3,8 +3,11 @@ using System.IO;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using Steamworks;
+using SubworldLibrary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -89,24 +92,29 @@ internal class MobAprgSystem : GlobalNPC
 
 		int minDrop = (int)(DropQuantity * MinDropChanceScale * 100f);
 		int maxDrop = (int)(DropQuantity * 100f);
-
 		int rand = Main.rand.Next(minDrop, maxDrop + 1);
-
 		float magicFind = 0;
+		int itemLevel = 0;
+
 		if (_lastPlayerHit != null)
 		{
 			magicFind = 1f + _lastPlayerHit.GetModPlayer<MinorStatsModPlayer>().MagicFind;
 		}
 
+		if (SubworldSystem.Current is BossDomainSubworld domain)
+		{
+			itemLevel = domain.DropItemLevel;
+		}
+
 		while (rand > 99)
 		{
 			rand -= 100;
-			ItemSpawner.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+			ItemSpawner.SpawnRandomItem(npc.Center, itemLevel, DropRarity * magicFind);
 		}
 
 		if (rand < 25) // 10
 		{
-			ItemSpawner.SpawnRandomItem(npc.Center, dropRarityModifier: DropRarity * magicFind);
+			ItemSpawner.SpawnRandomItem(npc.Center, itemLevel, DropRarity * magicFind);
 		}
 	}
 
@@ -192,13 +200,13 @@ internal class MobAprgSystem : GlobalNPC
 			case ItemRarity.Normal:
 				break;
 			case ItemRarity.Magic:
-				npc.color = new Color(0, 0, 255);
+				npc.color = Color.Lerp(npc.color, new Color(125, 125, 255), 0.5f);
 				npc.lifeMax *= 2; //Magic mobs get 100% increased life
 				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
 				npc.damage = (int)(npc.damage * 1.1f); //Magic mobs get 10% increase damage
 				break;
 			case ItemRarity.Rare:
-				npc.color = new Color(255, 255, 0);
+				npc.color = Color.Lerp(npc.color, new Color(255, 255, 0), 0.5f);
 				npc.lifeMax *= 3; //Rare mobs get 200% Increased Life
 				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
 				npc.damage = (int)(npc.damage * 1.2f); //Magic mobs get 20% increase damage
