@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.TreeSystem;
+using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
@@ -47,6 +48,12 @@ internal class PassiveElement : SmartUiElement
 		Top.Set(passive.TreePos.Y - halfSizeY, 0.5f);
 		Width.Set(passive.Size.X, 0);
 		Height.Set(passive.Size.Y, 0);
+
+		// Anchor passive should always be "unlocked", thus this hardcoding
+		if (_passive is AnchorPassive)
+		{
+			_passive.Level = 1;
+		}
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
