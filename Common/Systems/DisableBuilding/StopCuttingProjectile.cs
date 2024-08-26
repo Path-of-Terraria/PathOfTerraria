@@ -64,18 +64,6 @@ internal class StopCuttingProjectile : GlobalProjectile
 		Cutting = false;
 	}
 
-	public override bool? CanCutTiles(Projectile projectile)
-	{
-		return null;
-
-		if (projectile.owner != 255)
-		{
-			return Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding ? false : null;
-		}
-
-		return base.CanCutTiles(projectile);
-	}
-
 	public override bool PreKill(Projectile projectile, int timeLeft)
 	{
 		if (projectile.owner != 255 && Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding)
