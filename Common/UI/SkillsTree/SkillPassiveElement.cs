@@ -119,7 +119,6 @@ internal class SkillPassiveElement : SmartUiElement
 			return;
 		}
 
-
 		if (!Main.LocalPlayer.GetModPlayer<SkillPassivePlayer>().AllocatePassivePoint(_passive.Skill, _passive))
 		{
 			return;
