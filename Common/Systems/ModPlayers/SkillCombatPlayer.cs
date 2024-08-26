@@ -158,9 +158,28 @@ internal class SkillCombatPlayer : ModPlayer
 
 		return false;
 	}
-	
+
+	public bool HasSkill(string name)
+	{
+		for (int i = 0; i < HotbarSkills.Length; i++)
+		{
+			if (HotbarSkills[i] is not null && HotbarSkills[i].Name == name)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public bool TryAddSkill(Skill skill)
 	{
+		if (!skill.CanEquipSkill(Player))
+		{
+			Main.NewText("Skill cannot be added.");
+			return false;
+		}
+
 		for (int i = 0; i < HotbarSkills.Length; ++i)
 		{
 			if (HotbarSkills[i] != null && HotbarSkills[i].Name == skill.Name)
