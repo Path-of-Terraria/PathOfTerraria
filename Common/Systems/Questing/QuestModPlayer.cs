@@ -47,21 +47,6 @@ internal class QuestModPlayer : ModPlayer
 			SmartUiLoader.GetUiState<QuestsUIState>().Toggle();
 		}
 	}
-	
-	///// <summary>
-	///// Returns the quest string with return spacing for each quest step completed
-	///// </summary>
-	///// <param name="name"></param>
-	///// <returns></returns>
-	//public string GetQuestSteps(string name)
-	//{
-	//	return _enabledQuests[name].AllQuestStrings();
-	//}
-
-	//public string GetQuestStep(string name)
-	//{
-	//	return _enabledQuests[name].CurrentQuestString();
-	//}
 
 	public override void SaveData(TagCompound tag)
 	{
@@ -147,32 +132,4 @@ internal class QuestModPlayer : ModPlayer
 	{
 		return _enabledQuests;
 	}
-	
-	///// <summary>
-	///// Gets all completed quests for the player
-	///// </summary>
-	///// <returns></returns>
-	//public List<Quest> GetCompletedQuests()
-	//{
-	//	return _enabledQuests.Values.ToList().FindAll(q => q.Completed);
-	//}
-	
-	///// <summary>
-	///// Gets all incomplete quests for the player
-	///// </summary>
-	///// <returns></returns>
-	//public List<Quest> GetIncompleteQuests()
-	//{
-	//	return _enabledQuests.Values.ToList().FindAll(q => !q.Completed);
-	//}
-	
-	///// <summary>
-	///// Get a quest by name
-	///// </summary>
-	///// <param name="name"></param>
-	///// <returns></returns>
-	//public Quest GetQuest(string name)
-	//{
-	//	return _enabledQuests[name];
-	//}
 }
