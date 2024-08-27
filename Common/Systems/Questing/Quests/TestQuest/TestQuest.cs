@@ -4,30 +4,31 @@ using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.TestQuest;
 
 internal class TestQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override string Name => "Test Quest";
-	public override string Description => "This is a test quest. It is used to test the quest system.";
-
-	protected override List<QuestStep> _subQuests =>
-	[
-		new CollectCount(ItemID.StoneBlock, 50, s => $"Collect {s} stone."),
-		new ConditionCheck(p => p.ZoneSnow, "Go to the ice/snow biome", "Has gone to the ice/snow biome."),
-		new KillCount(x => x.type == NPCID.Zombie || x.type == NPCID.BlueSlime, 3,
-			remaining => $"Kill {remaining} of slimes and zombies."),
-		new KillCount(NPCID.BlueSlime, 1, remaining => $"Kill {remaining} slime."),
-		new ParallelQuestStep([
-			new KillCount(NPCID.BlueSlime, 1, remaining => $"Kill {remaining} slime."),
-			new KillCount(NPCID.Zombie, 1, remaining => $"Kill {remaining} zombie."),
-		]),
-		new KillCount(x => x.lifeMax > 100, 10, remaining => $"Kill {remaining} mobs with 100+ max life")
-	];
-
 	public override int NPCQuestGiver => -1;
+
+	public override List<QuestStep> SetSteps()
+	{
+		return
+		[
+			new CollectCount(ItemID.StoneBlock, 50),
+			new ConditionCheck(p => p.ZoneSnow, 30 * 60, Language.GetText($"Mods.{PoTMod.ModName}.Quests.Exploration.Ice")),
+			new KillCount(x => x.type == NPCID.Zombie || x.type == NPCID.BlueSlime, 3, Localize("Kill.SlimeZombies")),
+			new KillCount(NPCID.BlueSlime, 1, Localize("Kill.Slime")),
+			new ParallelQuestStep(
+			[
+				new KillCount(NPCID.BlueSlime, 1, Localize("Kill.Slime")),
+				new KillCount(NPCID.Zombie, 1, Localize("Kill.Zombies")),
+			]),
+			new KillCount(x => x.lifeMax > 100, 10, Localize("Kill.HighHealth"))
+		];
+	}
 
 	public override List<QuestReward> QuestRewards =>
 	[
