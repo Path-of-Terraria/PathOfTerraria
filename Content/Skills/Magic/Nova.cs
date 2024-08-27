@@ -236,7 +236,7 @@ public class Nova : Skill
 				Vector2 lastSpread = new Vector2(Spread, 0).RotatedBy((i - 1) / dustIterations * MathHelper.TwoPi) * Main.rand.NextFloat(0.8f, 1.2f);
 				float scale = Main.rand.NextFloat(0.9f, 1.5f) * (1 - Projectile.timeLeft / 30f);
 
-				for (int j = 0; j < 14; ++j)
+				for (int j = 0; j < 13; ++j)
 				{
 					var useSpread = Vector2.Lerp(lastSpread, spread, j / 14f);
 					var dust = Dust.NewDustPerfect(Projectile.Center + useSpread, DustID.Electric, useSpread.DirectionTo(Projectile.Center), Scale: scale);
