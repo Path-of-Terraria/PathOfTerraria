@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Tiles.Furniture;
-using PathOfTerraria.Content.Tiles.Town;
 
 namespace PathOfTerraria.Content.Items.Placeable;
 
@@ -9,7 +8,7 @@ public class MapDevice : ModItem
 	{
 		base.SetDefaults();
 
-		Item.DefaultToPlaceableTile(ModContent.TileType<WallClock>());
+		Item.DefaultToPlaceableTile(ModContent.TileType<MapDevicePlaceable>());
 		Item.width = 60;
 		Item.height = 38;
 		Item.value = 0;
