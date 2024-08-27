@@ -25,7 +25,7 @@ internal class QuestDetailsPanel : SmartUiElement
 		
 		if (QuestPlayer.GetQuestCount() != 0 && !string.IsNullOrEmpty(ViewedQuestName))
 		{
-			Utils.DrawBorderStringBig(spriteBatch, ModContent.Find<Quest>(ViewedQuestName).Name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
+			Utils.DrawBorderStringBig(spriteBatch, Quest.GetQuest(ViewedQuestName).Name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
 		}
 
 #if DEBUG
@@ -48,8 +48,9 @@ internal class QuestDetailsPanel : SmartUiElement
 			return;
 		}
 
-		var quest = ModContent.Find<Quest>(ViewedQuestName);
+		var quest = Quest.GetQuest(ViewedQuestName);
 		int index = 0;
+		int offset = 0;
 
 		for (int i = 0; i < quest.QuestSteps.Count; i++)
 		{
@@ -62,8 +63,9 @@ internal class QuestDetailsPanel : SmartUiElement
 
 			var stepUI = new UISelectableQuestStep(i, ViewedQuestName);
 			stepUI.Left.Set(530, 0f);
-			stepUI.Top.Set(100 + index * 22, 0f);
+			stepUI.Top.Set(100 + offset * 22, 0f);
 			Append(stepUI);
+			offset += step.LineCount;
 			index++;
 		}
 	}

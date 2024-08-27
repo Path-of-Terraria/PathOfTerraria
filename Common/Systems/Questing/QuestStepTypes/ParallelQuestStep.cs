@@ -3,92 +3,64 @@ using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
-internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
+internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
 {
-	private bool[] _completed;
+	public override int LineCount => steps.Count + 2;
 
-	private Action _onCompletion;
-	readonly List<QuestStep> postTrackQuests = [];
+	readonly List<QuestStep> steps = stepsLists;
 
 	public void FinishSubTask(int id)
 	{
-		_completed[id] = true;
+		steps[id].IsDone = true;
 
-		if (_completed.All((completed) => completed))
+		if (steps.All(x => x.IsDone))
 		{
-			_onCompletion();
+			IsDone = true;
 		}
 	}
 
 	public override bool Track(Player player)
 	{
-		// TODO
-		return false;
-		//_completed = new bool[quests.Count]; // or load data if there is any
+		for (int i = 0; i < steps.Count; i++)
+		{
+			if (steps[i].Track(player))
+			{
+				FinishSubTask(i);
+			};
+		}
 
-		//for (int i = 0; i < quests.Count; ++i)
-		//{
-		//	_completed[i] = false;
-		//}
-
-		//_onCompletion = onCompletion;
-
-		//for (int i = 0; i < quests.Count; i++) 
-		//{
-		//	if (_completed.Length > i && _completed[i])
-		//	{
-		//		continue;
-		//	}
-
-		//	QuestStep temp = quests[i];
-
-		//	if (temp.Track(player))
-		//	{
-		//		FinishSubTask(i);
-		//		temp.UnTrack();
-		//	};
-
-		//	postTrackQuests.Add(temp);
-		//}
+		return IsDone;
 	}
 
 	public override string QuestString()
 	{
 		string s = "--\n";
 
-		for (int i = 0; i < quests.Count; i++)
+		for (int i = 0; i < steps.Count; i++)
 		{
-			if (_completed != null && _completed[i])
+			s += i + 1 + ": " + steps[i].QuestString();
+
+			if (i != steps.Count - 1)
 			{
-				s += quests[i].QuestCompleteString() + "\n";
-			}
-			else
-			{
-				s += quests[i].QuestString() + "\n";
+				s += "\n";
 			}
 		}
 
 		return s + "\n--";
 	}
 
-	public override string QuestCompleteString()
+	public override void OnKillNPC(Player player, NPC target, NPC.HitInfo hitInfo, int damageDone)
 	{
-		string s = "--\n";
-
-		for (int i = 0; i < quests.Count; i++)
+		foreach (QuestStep step in steps)
 		{
-			s += quests[i].QuestCompleteString() + "\n";
+			step.OnKillNPC(player, target, hitInfo, damageDone);
 		}
-
-		return s + "\n--";
 	}
 
 	public override void Save(TagCompound tag)
 	{
-		tag.Add("completed", _completed.ToList());
-
 		List<TagCompound> subStepTags = [];
-		foreach (QuestStep step in postTrackQuests)
+		foreach (QuestStep step in steps)
 		{
 			var newTag = new TagCompound();
 			step.Save(newTag);
@@ -100,12 +72,10 @@ internal class ParallelQuestStep(List<QuestStep> quests) : QuestStep
 
 	public override void Load(TagCompound tag)
 	{
-		_completed = [.. tag.Get<List<bool>>("completed")];
-
 		List<TagCompound> subStepTags = tag.Get<List<TagCompound>>("subSteps");
 		for (int i = 0; i < subStepTags.Count; i++)
 		{
-			quests[i].Load(subStepTags[i]);
+			steps[i].Load(subStepTags[i]);
 		}
 	}
 }

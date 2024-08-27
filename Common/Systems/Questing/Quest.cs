@@ -12,7 +12,7 @@ public abstract class Quest : ModType
 	public virtual string Description => "";
 
 	public abstract List<QuestReward> QuestRewards { get; }
-	public abstract List<QuestStep> QuestSteps { get; }
+	public List<QuestStep> QuestSteps { get; } = null;
 
 	public QuestStep ActiveStep = null;
 
@@ -20,17 +20,26 @@ public abstract class Quest : ModType
 	public bool Completed;
 	public bool Active = false;
 
+	public Quest()
+	{
+		QuestSteps = SetSteps();
+	}
+
+	public abstract List<QuestStep> SetSteps();
+
 	protected override void Register()
 	{
-		ModTypeLookup<Quest>.Register(this);
 		QuestsByName.Add(FullName, this);
+	}
+
+	public static Quest GetQuest(string name)
+	{
+		return QuestsByName[name];
 	}
 
 	public void StartQuest(Player player, int currentQuest = 0)
 	{
 		CurrentStep = currentQuest;
-		ActiveStep = QuestSteps[CurrentStep];
-		Active = true;
 
 		if (CurrentStep >= QuestSteps.Count)
 		{
@@ -38,6 +47,9 @@ public abstract class Quest : ModType
 			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
 			return;
 		}
+
+		ActiveStep = QuestSteps[CurrentStep];
+		Active = true;
 	}
 
 	public void Update(Player player)
@@ -57,18 +69,6 @@ public abstract class Quest : ModType
 	public string CurrentQuestString()
 	{
 		return ActiveStep.QuestString();
-	}
-
-	public string AllQuestStrings()
-	{
-		string s = "";
-
-		for (int i = 0; i < CurrentStep; i++)
-		{
-			s += QuestSteps[i].QuestCompleteString() + "\n";
-		}
-
-		return s + ActiveStep.QuestString();
 	}
 
 	public void Save(TagCompound tag)
@@ -110,7 +110,7 @@ public abstract class Quest : ModType
 		}
 
 		string fullName = tag.GetString("type");
-		ModContent.Find<Quest>(fullName).Load(tag, player);
+		GetQuest(fullName).Load(tag, player);
 		return fullName;
 	}
 }

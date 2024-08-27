@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.Systems.Questing.Quests.TestQuest;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.GameInput;
@@ -20,8 +18,7 @@ internal class QuestModPlayer : ModPlayer
 	public void StartQuest(string name)
 	{
 		_enabledQuests.Clear();
-
-		Quest quest = ModContent.Find<Quest>(name);
+		var quest = Quest.GetQuest(name);
 		quest.StartQuest(Player);
 		_enabledQuests.Add(quest.FullName);
 	}
@@ -73,7 +70,7 @@ internal class QuestModPlayer : ModPlayer
 		foreach (string quest in _enabledQuests)
 		{
 			var newTag = new TagCompound();
-			ModContent.Find<Quest>(quest).Save(newTag);
+			Quest.GetQuest(quest).Save(newTag);
 			questTags.Add(newTag);
 		}
 
@@ -97,13 +94,33 @@ internal class QuestModPlayer : ModPlayer
 
 	public override void PostUpdateMiscEffects()
 	{
-		IEnumerable<Quest> quest = ModContent.GetContent<Quest>();
+		HashSet<string> removals = [];
 
-		foreach (Quest q in quest)
+		foreach (string q in _enabledQuests)
 		{
-			if (q.Active)
+			var quest = Quest.GetQuest(q);
+			quest.Update(Player); // Quests in enabledQuests are necessarily active
+
+			if (quest.Completed)
 			{
-				q.Update(Player);
+				removals.Add(q);
+			}
+		}
+
+		foreach (string quest in removals)
+		{
+			_enabledQuests.Remove(quest);
+		}
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (target.life <= 0)
+		{
+			foreach (string q in _enabledQuests)
+			{
+				var quest = Quest.GetQuest(q);
+				quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone); // Quests in enabledQuests are necessarily active
 			}
 		}
 	}

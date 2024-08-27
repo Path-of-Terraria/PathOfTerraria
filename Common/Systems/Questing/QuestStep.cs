@@ -4,7 +4,9 @@ namespace PathOfTerraria.Common.Systems.Questing;
 
 public abstract class QuestStep
 {
-	public bool IsDone { get; protected set; }
+	public virtual int LineCount => 1;
+
+	public bool IsDone { get; internal set; }
 
 	/// <summary>
 	/// Called every frame on the player. This should be used to complete steps, check conditions, so on and so on.
@@ -14,9 +16,9 @@ public abstract class QuestStep
 	public abstract bool Track(Player player);
 
 	public virtual string QuestString() { return ""; }
-	public virtual string QuestCompleteString() { return "Step completed"; }
 	public virtual void Save(TagCompound tag) { }
 	public virtual void Load(TagCompound tag) { }
+	public virtual void OnKillNPC(Player player, NPC target, NPC.HitInfo hitInfo, int damageDone) { }
 
 	public virtual void OnComplete()
 	{

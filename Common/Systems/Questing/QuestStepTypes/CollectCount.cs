@@ -4,8 +4,7 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
 internal class CollectCount(Func<Item, bool> includes, int count, LocalizedText name) : QuestStep
 {
-	public CollectCount(int itemType, int count) : this(
-		(Item item) => item.type == itemType, count, Lang.GetItemName(itemType))
+	public CollectCount(int itemType, int count) : this(item => item.type == itemType, count, Lang.GetItemName(itemType))
 	{
 	}
 
@@ -13,14 +12,14 @@ internal class CollectCount(Func<Item, bool> includes, int count, LocalizedText 
 
 	public int Total = 0;
 
+	public override string ToString()
+	{
+		return QuestString();
+	}
+
 	public override string QuestString()
 	{
 		return "Collect " + (IsDone ? count : Total) + "/" + count + " " + Name.Value;
-	}
-
-	public override string QuestCompleteString()
-	{
-		return "Collect " + count + "/" + count + " " + Name;
 	}
 
 	public override bool Track(Player player)

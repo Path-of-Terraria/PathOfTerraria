@@ -1,0 +1,5 @@
+Exploration.Ice: Explore the Ice/Snow biome ({0}%)
+
+Kill: {
+	Default: "Kill {0} {1}"
+}
