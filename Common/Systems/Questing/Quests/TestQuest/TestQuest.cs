@@ -11,7 +11,6 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.TestQuest;
 internal class TestQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override string Description => "This is a test quest. It is used to test the quest system.";
 	public override int NPCQuestGiver => -1;
 
 	public override List<QuestStep> SetSteps()
@@ -19,14 +18,15 @@ internal class TestQuest : Quest
 		return
 		[
 			new CollectCount(ItemID.StoneBlock, 50),
-			//new ConditionCheck(p => p.ZoneSnow, 30 * 60, Language.GetText($"Mods.{PoTMod.ModName}.Quests.Exploration.Ice")),
-			new KillCount(x => x.type == NPCID.Zombie || x.type == NPCID.BlueSlime, 3, remaining => $"Kill {remaining} of slimes and zombies."),
-			new KillCount(NPCID.BlueSlime, 1, remaining => $"Kill {remaining} slime."),
-			new ParallelQuestStep([
-			new KillCount(NPCID.BlueSlime, 1, remaining => $"Kill {remaining} slime."),
-				new KillCount(NPCID.Zombie, 1, remaining => $"Kill {remaining} zombie."),
+			new ConditionCheck(p => p.ZoneSnow, 30 * 60, Language.GetText($"Mods.{PoTMod.ModName}.Quests.Exploration.Ice")),
+			new KillCount(x => x.type == NPCID.Zombie || x.type == NPCID.BlueSlime, 3, Localize("Kill.SlimeZombies")),
+			new KillCount(NPCID.BlueSlime, 1, Localize("Kill.Slime")),
+			new ParallelQuestStep(
+			[
+				new KillCount(NPCID.BlueSlime, 1, Localize("Kill.Slime")),
+				new KillCount(NPCID.Zombie, 1, Localize("Kill.Zombies")),
 			]),
-			new KillCount(x => x.lifeMax > 100, 10, remaining => $"Kill {remaining} mobs with 100+ max life")
+			new KillCount(x => x.lifeMax > 100, 10, Localize("Kill.HighHealth"))
 		];
 	}
 

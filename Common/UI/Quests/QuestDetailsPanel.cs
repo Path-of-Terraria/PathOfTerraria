@@ -25,7 +25,8 @@ internal class QuestDetailsPanel : SmartUiElement
 		
 		if (QuestPlayer.GetQuestCount() != 0 && !string.IsNullOrEmpty(ViewedQuestName))
 		{
-			Utils.DrawBorderStringBig(spriteBatch, Quest.GetQuest(ViewedQuestName).Name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
+			string name = Quest.GetQuest(ViewedQuestName).DisplayName.Value;
+			Utils.DrawBorderStringBig(spriteBatch, name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
 		}
 
 #if DEBUG
@@ -56,7 +57,7 @@ internal class QuestDetailsPanel : SmartUiElement
 		{
 			QuestStep step = quest.QuestSteps[i];
 
-			if (index > quest.CurrentStep)
+			if (step.NoUI)
 			{
 				continue;
 			}

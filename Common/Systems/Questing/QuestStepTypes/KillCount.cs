@@ -6,9 +6,9 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// <summary>
 /// Counts up kills that fit under the <paramref name="includes"/> condition.
 /// </summary>
-/// <param name="includes"></param>
-/// <param name="count"></param>
-/// <param name="displayText"></param>
+/// <param name="includes">Whether a kill counts.</param>
+/// <param name="count">How many kills to track.</param>
+/// <param name="displayText">The text to display.</param>
 internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText displayText) : QuestStep
 {
 	public KillCount(int npcId, int count, LocalizedText displayText) : this(
@@ -22,7 +22,7 @@ internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText disp
 
 	private int _remaining = count;
 
-	public override string QuestString()
+	public override string DisplayString()
 	{
 		return Display.WithFormatArgs(MaxRemaining - _remaining + "/" + MaxRemaining).Value;
 	}
@@ -35,7 +35,6 @@ internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText disp
 		}
 	}
 
-	// TODO
 	public override bool Track(Player player)
 	{
 		return _remaining <= 0;

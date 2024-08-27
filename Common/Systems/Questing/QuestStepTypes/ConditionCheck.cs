@@ -16,7 +16,7 @@ internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, L
 
 	private float _explore = 0;
 
-	public override string QuestString()
+	public override string DisplayString()
 	{
 		return displayText.WithFormatArgs(IsDone ? 100 : (_explore / ExploreTime * 100).ToString("#0.##")).Value;
 	}

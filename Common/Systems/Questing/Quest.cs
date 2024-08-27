@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
@@ -9,7 +10,9 @@ public abstract class Quest : ModType
 
 	public abstract QuestTypes QuestType { get; }
 	public abstract int NPCQuestGiver { get; }
-	public virtual string Description => "";
+
+	public LocalizedText DisplayName { get; private set; } 
+	public LocalizedText Description { get; private set; } 
 
 	public abstract List<QuestReward> QuestRewards { get; }
 	public List<QuestStep> QuestSteps { get; } = null;
@@ -23,6 +26,9 @@ public abstract class Quest : ModType
 	public Quest()
 	{
 		QuestSteps = SetSteps();
+
+		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
+		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
 	}
 
 	public abstract List<QuestStep> SetSteps();
@@ -35,6 +41,16 @@ public abstract class Quest : ModType
 	public static Quest GetQuest(string name)
 	{
 		return QuestsByName[name];
+	}
+
+	public static LocalizedText Localize(string postfix)
+	{
+		return Language.GetText($"Mods.{PoTMod.ModName}.Quests." + postfix);
+	}
+
+	public static string LocalizeValue(string postfix)
+	{
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests." + postfix);
 	}
 
 	public void StartQuest(Player player, int currentQuest = 0)
@@ -68,7 +84,7 @@ public abstract class Quest : ModType
 
 	public string CurrentQuestString()
 	{
-		return ActiveStep.QuestString();
+		return ActiveStep.DisplayString();
 	}
 
 	public void Save(TagCompound tag)

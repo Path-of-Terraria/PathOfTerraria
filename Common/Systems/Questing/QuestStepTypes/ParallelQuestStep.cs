@@ -3,6 +3,11 @@ using System.Linq;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
+
+/// <summary>
+/// Wraps around two or more steps to do in parallel. For example, getting 10 Iron Bars, killing the Eye and exploring the Jungle.
+/// </summary>
+/// <param name="stepsLists">The steps to run in parallel.</param>
 internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
 {
 	public override int LineCount => steps.Count + 2;
@@ -23,7 +28,7 @@ internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
 	{
 		for (int i = 0; i < steps.Count; i++)
 		{
-			if (steps[i].Track(player))
+			if (!steps[i].IsDone && steps[i].Track(player))
 			{
 				FinishSubTask(i);
 			};
@@ -32,13 +37,13 @@ internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
 		return IsDone;
 	}
 
-	public override string QuestString()
+	public override string DisplayString()
 	{
 		string s = "--\n";
 
 		for (int i = 0; i < steps.Count; i++)
 		{
-			s += i + 1 + ": " + steps[i].QuestString();
+			s += i + 1 + ": " + steps[i].DisplayString();
 
 			if (i != steps.Count - 1)
 			{
@@ -53,7 +58,10 @@ internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
 	{
 		foreach (QuestStep step in steps)
 		{
-			step.OnKillNPC(player, target, hitInfo, damageDone);
+			if (!step.IsDone)
+			{
+				step.OnKillNPC(player, target, hitInfo, damageDone);
+			}
 		}
 	}
 

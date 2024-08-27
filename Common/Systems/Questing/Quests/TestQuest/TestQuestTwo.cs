@@ -4,13 +4,13 @@ using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.TestQuest;
 
 internal class TestQuestTwo : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override string Description => "This is another test quest. Simply used for testing purposes";
 	public override int NPCQuestGiver => -1;
 
 	public override List<QuestReward> QuestRewards =>
@@ -28,8 +28,10 @@ internal class TestQuestTwo : Quest
 	{
 		return 
 		[
-			new CollectCount(ItemID.StoneBlock, 2),
-			new KillCount(x => x.lifeMax > 100, 10, remaining => $"Kill {remaining} mobs with 100+ max life")
+			new CollectCount(ItemID.DirtBlock, 10),
+			new KillCount(x => x.lifeMax > 100, 2, Localize("Kill.HighHealth")),
+			new ActionStep((player, step) => player.velocity.Y = -20),
+			new InteractWithNPC(NPCID.Guide, Localize("Exploration.Ice"))
 		];
 	}
 }

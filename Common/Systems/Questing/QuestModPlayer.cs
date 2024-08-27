@@ -17,7 +17,6 @@ internal class QuestModPlayer : ModPlayer
 
 	public void StartQuest(string name)
 	{
-		_enabledQuests.Clear();
 		var quest = Quest.GetQuest(name);
 		quest.StartQuest(Player);
 		_enabledQuests.Add(quest.FullName);
@@ -28,6 +27,7 @@ internal class QuestModPlayer : ModPlayer
 		_enabledQuests.Clear();
 
 		StartQuest("PathOfTerraria/TestQuest");
+		StartQuest("PathOfTerraria/TestQuestTwo");
 	}
 	
 	public override void Load()
