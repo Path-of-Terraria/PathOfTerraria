@@ -14,7 +14,7 @@ public class SkillPassivePlayer : ModPlayer
 	public Dictionary<Skill, int> AllocatedPassivePoints = new();
 
 	// A dictionary to store the actual allocated skill passives for each skill.
-	public Dictionary<Skill, List<SkillPassive>> AllocatedPassives = new();
+	public Dictionary<Skill, Dictionary<string, SkillPassive>> AllocatedPassives = new();
 
 	public override void Initialize()
 	{
@@ -50,7 +50,7 @@ public class SkillPassivePlayer : ModPlayer
 			AllocatedPassives[skill] = [];
 		}
 
-		AllocatedPassives[skill].Add(passive);
+		AllocatedPassives[skill].Add(passive.Name, passive);
 		AllocatedPassivePoints[skill]++;
 		return true;
 	}
@@ -62,9 +62,9 @@ public class SkillPassivePlayer : ModPlayer
 			return; // Anchor passive cannot be unallocated
 		}
 		
-		if (AllocatedPassives.ContainsKey(skill) && AllocatedPassives[skill].Contains(passive))
+		if (AllocatedPassives.TryGetValue(skill, out Dictionary<string, SkillPassive> value) && value.ContainsValue(passive))
 		{
-			AllocatedPassives[skill].Remove(passive);
+			value.Remove(passive.Name);
 			AllocatedPassivePoints[skill]--;
 		}
 	}
@@ -93,7 +93,7 @@ public class SkillPassivePlayer : ModPlayer
 
 		var allocatedPassiveKeys = AllocatedPassives.Keys.Select(skill => skill.Name).ToList();
 		var allocatedPassiveValues = AllocatedPassives.Values.Select(
-			passives => passives.Select(p => p.ReferenceId).ToList()
+			passives => passives.Select(p => p.Value.ReferenceId).ToList()
 		).ToList();
 		tag["AllocatedPassiveKeys"] = allocatedPassiveKeys;
 		tag["AllocatedPassiveValues"] = allocatedPassiveValues;
@@ -133,10 +133,11 @@ public class SkillPassivePlayer : ModPlayer
 			List<List<int>> allocatedPassiveValues = tag.Get<List<List<int>>>("AllocatedPassiveValues");
 			for (int i = 0; i < allocatedPassiveKeys.Count; i++)
 			{
-				var skill = Skill.GetAndPrepareSkill(Type.GetType(allocatedPassiveKeys[i]));
-				AllocatedPassives[skill] = allocatedPassiveValues[i].Select(
-					id => skill.Passives.FirstOrDefault(p => p.ReferenceId == id)
-				).ToList();
+				// TODO
+				//var skill = Skill.GetAndPrepareSkill(Type.GetType(allocatedPassiveKeys[i]));
+				//AllocatedPassives[skill] = allocatedPassiveValues[i].Select(
+				//	id => skill.Passives.FirstOrDefault(p => p..ReferenceId == id)
+				//).ToList();
 			}
 		}
 	}
