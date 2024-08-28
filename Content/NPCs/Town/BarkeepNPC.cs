@@ -38,12 +38,12 @@ public sealed class BarkeepNPC : ModNPC
 		NPC.knockBackResist = 0.4f;
 		AnimationType = NPCID.Guide;
 		
-		NPC.TryEnableComponent<NPCDeathEffects>(
+		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore($"{PoTMod.ModName}/{Name}_0", 1);
-				c.AddGore($"{PoTMod.ModName}/{Name}_1", 2);
-				c.AddGore($"{PoTMod.ModName}/{Name}_2", 2);
+				c.AddGore($"{PoTMod.ModName}/{Name}_0", 1, static npc => npc.life <= 0);
+				c.AddGore($"{PoTMod.ModName}/{Name}_1", 2, static npc => npc.life <= 0);
+				c.AddGore($"{PoTMod.ModName}/{Name}_2", 2, static npc => npc.life <= 0);
 				
 				c.AddDust(DustID.Blood, 20);
 			}
