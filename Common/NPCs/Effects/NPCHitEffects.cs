@@ -100,7 +100,7 @@ public sealed class NPCHitEffects : NPCComponent
 			initializer
 		) { }
 
-		public DustSpawnParameters(string type, int minAmount, int maxAmount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) :
+		public DustSpawnParameters(string type, int minAmount, int maxAmount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) : 
 			this(ModContent.Find<ModDust>(type).Type, minAmount, maxAmount, predicate, initializer) { }
 
 		public DustSpawnParameters(string type, int amount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) : this(
@@ -127,7 +127,7 @@ public sealed class NPCHitEffects : NPCComponent
 	public readonly List<GoreSpawnParameters> GorePool = [];
 
 	/// <summary>
-	///		Adds a new gore spawn entry to the spawn pool.
+	///     Adds a new gore spawn entry to the spawn pool.
 	/// </summary>
 	/// <param name="parameters">The parameters that define how the gore should be spawned.</param>
 	public void AddGore(in GoreSpawnParameters parameters)
@@ -136,7 +136,7 @@ public sealed class NPCHitEffects : NPCComponent
 	}
 
 	/// <summary>
-	///		Adds a new dust spawn entry to the spawn pool.
+	///     Adds a new dust spawn entry to the spawn pool.
 	/// </summary>
 	/// <param name="parameters">The parameters that define how the dust should be spawned.</param>
 	public void AddDust(in DustSpawnParameters parameters)
@@ -164,7 +164,7 @@ public sealed class NPCHitEffects : NPCComponent
 
 		foreach (GoreSpawnParameters pool in GorePool)
 		{
-			bool canSpawn = pool.Predicate == null ? true : pool.Predicate.Invoke(npc);
+			bool canSpawn = pool.Predicate?.Invoke(npc) ?? true;
 
 			if (pool.MinAmount <= 0 || !canSpawn)
 			{
@@ -208,7 +208,7 @@ public sealed class NPCHitEffects : NPCComponent
 
 		foreach (DustSpawnParameters pool in DustPool)
 		{
-			bool canSpawn = pool.Predicate == null ? true : pool.Predicate.Invoke(npc);
+			bool canSpawn = pool.Predicate?.Invoke(npc) ?? true;
 
 			if (pool.MinAmount <= 0 || !canSpawn)
 			{

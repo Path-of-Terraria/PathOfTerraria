@@ -94,7 +94,7 @@ public sealed class NPCTownDialogue : NPCComponent
 		{
 			DialogueEntry entry = Pool[i];
 
-			if (entry.Predicate == null || entry.Predicate?.Invoke() == true)
+			if (entry.Predicate?.Invoke() ?? true)
 			{
 				success = true;
 				break;
