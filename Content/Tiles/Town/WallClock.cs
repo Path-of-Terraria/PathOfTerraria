@@ -39,7 +39,7 @@ public class WallClock : ModTile
 			double time = Main.time;
 		
 			int hours = (Main.dayTime ? (int)(time / 3600) : (int)((time + 54000) / 3600)) - 1;
-			int minutes = (int)((time % 3600) / 60);
+			int minutes = (int)(time % 3600) / 60;
 
 			hourRotation = MathHelper.ToRadians((float)(hours * 30f));
 			minuteRotation = MathHelper.ToRadians((float)(minutes * 6f));
