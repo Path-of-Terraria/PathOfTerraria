@@ -100,8 +100,13 @@ public sealed class NPCHitEffects : NPCComponent
 			initializer
 		) { }
 
-		public DustSpawnParameters(string type, int minAmount, int maxAmount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) :
-			this(ModContent.Find<ModDust>(type).Type, minAmount, maxAmount, predicate, initializer) { }
+		public DustSpawnParameters(string type, int minAmount, int maxAmount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) : this(
+			ModContent.Find<ModDust>(type).Type,
+			minAmount,
+			maxAmount,
+			predicate, 
+			initializer
+		) { }
 
 		public DustSpawnParameters(string type, int amount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) : this(
 			ModContent.Find<ModDust>(type).Type,
