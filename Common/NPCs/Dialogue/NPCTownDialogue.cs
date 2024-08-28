@@ -3,7 +3,6 @@ using JetBrains.Annotations;
 using PathOfTerraria.Common.NPCs.Components;
 using Terraria.Localization;
 
-// This may not work for vanilla NPCs, but I believe we will not need that anyways.
 namespace PathOfTerraria.Common.NPCs.Dialogue;
 
 /// <summary>
