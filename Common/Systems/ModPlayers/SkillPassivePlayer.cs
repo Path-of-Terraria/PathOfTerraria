@@ -14,7 +14,7 @@ public class SkillPassivePlayer : ModPlayer
 	public Dictionary<Skill, int> AllocatedPassivePoints = new();
 
 	// A dictionary to store the actual allocated skill passives for each skill.
-	public Dictionary<Skill, List<SkillPassive>> AllocatedPassives = new();
+	public Dictionary<Skill, Dictionary<string, SkillPassive>> AllocatedPassives = new();
 
 	public override void Initialize()
 	{
@@ -30,7 +30,7 @@ public class SkillPassivePlayer : ModPlayer
 		AcquiredPassivePoints[skill]++;
 	}
 
-	public bool AllocatePassivePoint(Skill skill, SkillPassive passive)
+	public bool AllocatePassivePoint(Skill skill, SkillPassive passive, bool fromLoad = false)
 	{
 		if (passive.Level > passive.MaxLevel)
 		{
@@ -40,7 +40,7 @@ public class SkillPassivePlayer : ModPlayer
 		AllocatedPassivePoints.TryAdd(skill, 0);
 		AcquiredPassivePoints.TryAdd(skill, 0);
 		
-		if (AllocatedPassivePoints[skill] >= AcquiredPassivePoints[skill])
+		if (!fromLoad && AllocatedPassivePoints[skill] >= AcquiredPassivePoints[skill])
 		{
 			return false; // Not enough points or already allocated
 		}
@@ -50,8 +50,13 @@ public class SkillPassivePlayer : ModPlayer
 			AllocatedPassives[skill] = [];
 		}
 
-		AllocatedPassives[skill].Add(passive);
-		AllocatedPassivePoints[skill]++;
+		AllocatedPassives[skill].Add(passive.Name, passive);
+
+		if (!fromLoad)
+		{
+			AllocatedPassivePoints[skill]++;
+		}
+
 		return true;
 	}
 
@@ -62,9 +67,9 @@ public class SkillPassivePlayer : ModPlayer
 			return; // Anchor passive cannot be unallocated
 		}
 		
-		if (AllocatedPassives.ContainsKey(skill) && AllocatedPassives[skill].Contains(passive))
+		if (AllocatedPassives.TryGetValue(skill, out Dictionary<string, SkillPassive> value) && value.ContainsValue(passive))
 		{
-			AllocatedPassives[skill].Remove(passive);
+			value.Remove(passive.Name);
 			AllocatedPassivePoints[skill]--;
 		}
 	}
@@ -81,20 +86,19 @@ public class SkillPassivePlayer : ModPlayer
 
 	public override void SaveData(TagCompound tag)
 	{
-		var acquiredPointKeys = AcquiredPassivePoints.Keys.Select(skill => skill.Name).ToList();
+		var acquiredPointKeys = AcquiredPassivePoints.Keys.Select(skill => skill.GetType().FullName).ToList();
 		var acquiredPointValues = AcquiredPassivePoints.Values.ToList();
 		tag["AcquiredPointKeys"] = acquiredPointKeys;
 		tag["AcquiredPointValues"] = acquiredPointValues;
 
-		var allocatedPointKeys = AllocatedPassivePoints.Keys.Select(skill => skill.Name).ToList();
+		var allocatedPointKeys = AllocatedPassivePoints.Keys.Select(skill => skill.GetType().FullName).ToList();
 		var allocatedPointValues = AllocatedPassivePoints.Values.ToList();
 		tag["AllocatedPointKeys"] = allocatedPointKeys;
 		tag["AllocatedPointValues"] = allocatedPointValues;
 
-		var allocatedPassiveKeys = AllocatedPassives.Keys.Select(skill => skill.Name).ToList();
-		var allocatedPassiveValues = AllocatedPassives.Values.Select(
-			passives => passives.Select(p => p.ReferenceId).ToList()
-		).ToList();
+		var allocatedPassiveKeys = AllocatedPassives.Keys.Select(skill => skill.GetType().FullName).ToList();
+		var allocatedPassiveValues = AllocatedPassives.Values
+			.Select(passives => passives.Select(p => p.Value.GetType().FullName).ToList()).ToList();
 		tag["AllocatedPassiveKeys"] = allocatedPassiveKeys;
 		tag["AllocatedPassiveValues"] = allocatedPassiveValues;
 	}
@@ -111,7 +115,7 @@ public class SkillPassivePlayer : ModPlayer
 			List<int> acquiredPointValues = tag.Get<List<int>>("AcquiredPointValues");
 			for (int i = 0; i < acquiredPointKeys.Count; i++)
 			{
-				var skill = Skill.GetAndPrepareSkill(Type.GetType(acquiredPointKeys[i]));
+				var skill = Skill.GetAndPrepareSkill(Mod.Code.GetType(acquiredPointKeys[i]));
 				AcquiredPassivePoints[skill] = acquiredPointValues[i];
 			}
 		}
@@ -122,7 +126,7 @@ public class SkillPassivePlayer : ModPlayer
 			List<int> allocatedPointValues = tag.Get<List<int>>("AllocatedPointValues");
 			for (int i = 0; i < allocatedPointKeys.Count; i++)
 			{
-				var skill = Skill.GetAndPrepareSkill(Type.GetType(allocatedPointKeys[i]));
+				var skill = Skill.GetAndPrepareSkill(Mod.Code.GetType(allocatedPointKeys[i]));
 				AllocatedPassivePoints[skill] = allocatedPointValues[i];
 			}
 		}
@@ -130,13 +134,25 @@ public class SkillPassivePlayer : ModPlayer
 		if (tag.ContainsKey("AllocatedPassiveKeys") && tag.ContainsKey("AllocatedPassiveValues"))
 		{
 			List<string> allocatedPassiveKeys = tag.Get<List<string>>("AllocatedPassiveKeys");
-			List<List<int>> allocatedPassiveValues = tag.Get<List<List<int>>>("AllocatedPassiveValues");
+			List<List<string>> allocatedPassiveValues = tag.Get<List<List<string>>>("AllocatedPassiveValues");
+
 			for (int i = 0; i < allocatedPassiveKeys.Count; i++)
 			{
-				var skill = Skill.GetAndPrepareSkill(Type.GetType(allocatedPassiveKeys[i]));
-				AllocatedPassives[skill] = allocatedPassiveValues[i].Select(
-					id => skill.Passives.FirstOrDefault(p => p.ReferenceId == id)
-				).ToList();
+				var skill = Skill.GetAndPrepareSkill(Mod.Code.GetType(allocatedPassiveKeys[i]));
+				AllocatedPassives.Add(skill, []);
+
+				var passives = allocatedPassiveValues[i]
+					.Select(name => skill.Passives.FirstOrDefault(p => p.GetType().FullName == name)).ToList();
+
+				foreach (SkillPassive passive in passives)
+				{
+					if (passive is null)
+					{
+						continue;
+					}
+
+					AllocatePassivePoint(skill, passive, true);
+				}
 			}
 		}
 	}
