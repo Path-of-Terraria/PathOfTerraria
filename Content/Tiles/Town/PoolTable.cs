@@ -11,6 +11,7 @@ public class PoolTable : ModTile
 		Main.tileLavaDeath[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
+		TileObjectData.newTile.Width = 4;
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.WoodFurniture;

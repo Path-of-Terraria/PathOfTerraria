@@ -18,7 +18,7 @@ public class Ale : ModTile
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.Glass;
-		HitSound = SoundID.Tink;
+		HitSound = SoundID.Shatter;
 	}
 	
 	public override void NumDust(int i, int j, bool fail, ref int num)
