@@ -262,6 +262,10 @@ public class Nova : Skill
 			{
 				target.AddBuff(ModContent.BuffType<ShockDebuff>(), 5 * 60);
 			}
+			else if (NovaType == NovaType.Ice)
+			{
+				target.AddBuff(BuffID.Chilled, 5 * 60);
+			}
 		}
 	}
 }
