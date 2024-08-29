@@ -9,6 +9,9 @@ namespace PathOfTerraria.Core.UI;
 
 internal static class UIHotReloadUpdateHandler
 {        
+	// This method is required for the handler to work, despite not doing anything.
+	internal static void ClearCache(Type[]? updatedTypes) { }
+	
 	internal static void UpdateApplication(Type[]? updatedTypes)
 	{	
 		Main.QueueMainThreadAction(
