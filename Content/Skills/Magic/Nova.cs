@@ -122,7 +122,7 @@ public class Nova : Skill
 		}
 		else if (type == NovaType.Ice)
 		{
-			damage = (int)(damage * 0.1f);
+			damage = (int)(damage * 0.9f);
 		}
 
 		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
