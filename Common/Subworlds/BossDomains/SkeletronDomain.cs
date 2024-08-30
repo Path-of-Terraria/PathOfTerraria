@@ -17,6 +17,8 @@ public class SkeletronDomain : BossDomainSubworld
 	public override int Width => 800;
 	public override int Height => 1000;
 
+	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
+
 	public Rectangle Arena = Rectangle.Empty;
 	public Point WellBottom = Point.Zero;
 	public bool BossSpawned = false;
@@ -58,7 +60,6 @@ public class SkeletronDomain : BossDomainSubworld
 
 		int corridorEnd = WellBottom.X - WorldGen.genRand.Next(90, 120);
 		RunCorridor(WellBottom.X, WellBottom.Y + Depth + 2, corridorEnd, WellBottom.Y + Depth + 2 + WorldGen.genRand.Next(-10, 10));
-		
 	}
 
 	private static void RunCorridor(int x, int y, int endX, int endY)
@@ -191,6 +192,7 @@ public class SkeletronDomain : BossDomainSubworld
 	{
 		Main.dayTime = false;
 		Main.time = Main.nightLength / 2;
+		Wiring.UpdateMech();
 
 		bool allInArena = true;
 

@@ -1,24 +1,36 @@
-﻿using PathOfTerraria.Common.World.Generation;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
 
-public readonly struct SpikeballInfo(Point16 position, float length, bool? spinClockwise)
+public readonly struct SpikeballInfo(Point16 position, float length, bool? spinClockwise = null, float? spinSpeed = null)
 {
 	public readonly Point16 Position = position;
 	public readonly float Length = length;
 	public readonly bool? SpinClockwise = spinClockwise;
+	public readonly float SpinSpeed = spinSpeed ?? 0.06f;
 }
 
-public readonly struct RoomData(WireColor color, OpeningType opening, Point openingLoc, Point wireLoc, List<SpikeballInfo> spikeBalls)
+public class EngageTimerInfo(Point16 position, int ticks)
+{
+	public readonly Point16 Position = position;
+
+	public int Ticks = ticks;
+}
+
+public readonly struct RoomData(WireColor color, OpeningType opening, Point openingLoc, Point wireLoc, List<SpikeballInfo> spikeBalls = null, List<EngageTimerInfo> timers = null)
 {
 	public readonly WireColor Wire = color;
 	public readonly OpeningType Opening = opening;
 	public readonly Point OpeningLocation = openingLoc;
 	public readonly Point WireConnection = wireLoc;
-	public readonly List<SpikeballInfo> Spikeballs = spikeBalls;
+	public readonly List<SpikeballInfo> Spikeballs = spikeBalls ?? [];
+	public readonly List<EngageTimerInfo> Timers = timers ?? [];
 
 	public void PlaceRoom(int x, int y, int id, Vector2 origin)
 	{
@@ -26,17 +38,21 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 
 		foreach (SpikeballInfo info in Spikeballs)
 		{
-			int whoAmI = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (x + info.Position.X) * 16 + 6, (y + info.Position.Y) * 16 - 8, NPCID.SpikeBall);
-			NPC npc = Main.npc[whoAmI];
-			SpikeballNPC ball = npc.GetGlobalNPC<SpikeballNPC>();
-			npc.ai[1] = npc.Center.X;
-			npc.ai[2] = npc.Center.Y;
-			ball.Length = info.Length;
+			IEntitySource source = Entity.GetSource_NaturalSpawn();
+			int type = ModContent.NPCType<ControllableSpikeball>();
+			int whoAmI = NPC.NewNPC(source, (x + info.Position.X) * 16 + 6, (y + info.Position.Y) * 16 - 8, type, 0, info.SpinSpeed, 0, 0, info.Length);
+		}
 
-			if (info.SpinClockwise is not null)
+		if (Timers.Count > 0)
+		{
+			List<EngageTimerInfo> adjustedTimers = [];
+
+			foreach (EngageTimerInfo info in Timers)
 			{
-				ball.Direction = info.SpinClockwise.Value ? 1 : -1;
+				adjustedTimers.Add(new EngageTimerInfo(new Point16(info.Position.X + x, info.Position.Y + y), info.Ticks));
 			}
+
+			ModContent.GetInstance<RoomDatabase>().AddTimerInfo(adjustedTimers);
 		}
 	}
 }
