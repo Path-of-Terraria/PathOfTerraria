@@ -3,6 +3,8 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -53,7 +55,9 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 	
 	public override bool? UseItem(Player player)
 	{
-		MappingSystem.EnterMap(this);
+		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
+		ModContent.GetInstance<RoomDatabase>().DataByRoomIndex[1].PlaceRoom(pos.X, pos.Y, 1, new Vector2(0));
+		//MappingSystem.EnterMap(this);
 		return true;
 	}
 

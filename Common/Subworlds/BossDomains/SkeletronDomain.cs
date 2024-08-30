@@ -9,13 +9,12 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.DataStructures;
 using Terraria.Localization;
-using Steamworks;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
 public class SkeletronDomain : BossDomainSubworld
 {
-	public override int Width => 600;
+	public override int Width => 800;
 	public override int Height => 1000;
 
 	public Rectangle Arena = Rectangle.Empty;
@@ -55,10 +54,39 @@ public class SkeletronDomain : BossDomainSubworld
 			WellBottom.X += (int)(noise.GetNoise(0, y) * 2);
 		}
 
-		CreateRoom(WellBottom.X, WellBottom.Y + Depth, WorldGen.genRand.Next(17, 23), WorldGen.genRand.Next(12, 16), true);
+		CreatePlainRoom(WellBottom.X, WellBottom.Y + Depth, WorldGen.genRand.Next(17, 23), WorldGen.genRand.Next(12, 16), true);
+
+		int corridorEnd = WellBottom.X - WorldGen.genRand.Next(90, 120);
+		RunCorridor(WellBottom.X, WellBottom.Y + Depth + 2, corridorEnd, WellBottom.Y + Depth + 2 + WorldGen.genRand.Next(-10, 10));
+		
 	}
 
-	private static void CreateRoom(int x, int y, int width, int height, bool dontPlace)
+	private static void RunCorridor(int x, int y, int endX, int endY)
+	{
+		int dif = Math.Abs(endX - x);
+		int sign = Math.Sign(endX - x);
+
+		for (int i = x; i != endX; i += sign) 
+		{
+			int baseY = (int)MathHelper.Lerp(y, endY, MathF.Abs(x - i) / dif);
+
+			for (int j = baseY - 7; j < baseY + 8; j++)
+			{
+				Tile tile = Main.tile[i, j];
+				tile.WallType = WallID.BlueDungeonUnsafe;
+
+				if (j > baseY - 4 && j < baseY + 4)
+				{
+					tile.ClearTile();
+					continue;
+				}
+
+				tile.TileType = TileID.BlueDungeonBrick;
+			}
+		}
+	}
+
+	private static void CreatePlainRoom(int x, int y, int width, int height, bool dontPlace)
 	{
 		ShapeData shapeData = new();
 		x -= width / 2;
