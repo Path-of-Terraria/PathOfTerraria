@@ -34,6 +34,7 @@ public sealed class ControllableSpikeball : ModNPC
 		NPC.aiStyle = -1;
 		NPC.Size = new Vector2(46);
 		NPC.scale = 1f;
+		NPC.ShowNameOnHover = false;
 	}
 
 	public override void AI()

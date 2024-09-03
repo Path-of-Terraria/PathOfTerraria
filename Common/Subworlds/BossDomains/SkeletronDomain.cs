@@ -11,6 +11,7 @@ using Terraria.DataStructures;
 using Terraria.Localization;
 using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
 using System.Linq;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -41,12 +42,14 @@ public class SkeletronDomain : BossDomainSubworld
 	const int BaseTunnelDepth = 90;
 
 	private readonly static Dictionary<int, FloorActuatorInfo> ActuatorInfoByFloor = [];
+	private readonly static HashSet<Point> CorridorTiles = [];
 
-	public static int Floor = 0;
+	private static int Floor = 0;
 
 	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
 
 	public Rectangle Arena = Rectangle.Empty;
+	public Point PortalLocation = Point.Zero;
 	public Point WellBottom = Point.Zero;
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
@@ -57,7 +60,166 @@ public class SkeletronDomain : BossDomainSubworld
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Surface", GenTerrain),
 		new PassLegacy("Arena", SpawnArena),
-		new PassLegacy("Tunnels", DigTunnels)];
+		new PassLegacy("Tunnels", DigTunnels),
+		new PassLegacy("Decor", AddDecor)];
+
+	private void AddDecor(GenerationProgress progress, GameConfiguration configuration)
+	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
+
+		HashSet<Point> blackList = [];
+
+		foreach (PlacedRoom room in SpecialRooms)
+		{
+			for (int i = room.Area.X; i < room.Area.Right; ++i)
+			{
+				for (int j = room.Area.Y; j < room.Area.Bottom; ++j)
+				{
+					blackList.Add(new Point(i, j));
+				}
+			}
+
+			continue;
+		}
+
+		foreach (Point point in CorridorTiles)
+		{
+			if (blackList.Contains(point))
+			{
+				continue;
+			}
+
+			if (WorldGen.genRand.NextBool(600))
+			{
+				WorldGen.TileRunner(point.X, point.Y, WorldGen.genRand.Next(5, 12), 8, TileID.BoneBlock);
+			}
+		}
+
+		foreach (Point point in CorridorTiles)
+		{
+			if (blackList.Contains(point))
+			{
+				continue;
+			}
+
+			if (WorldGen.genRand.NextBool(180))
+			{
+				WorldGen.PlaceObject(point.X, point.Y, TileID.Painting3X3, true, WorldGen.genRand.Next(16, 18));
+			}
+			else if (WorldGen.genRand.NextBool(80))
+			{
+				WeightedRandom<int> styles = new(WorldGen.genRand);
+				styles.Add(0, 1);
+				styles.Add(4, 0.05f);
+				WorldGen.PlaceObject(point.X, point.Y, TileID.HangingLanterns, true, styles);
+			}
+			else if (WorldGen.genRand.NextBool(150))
+			{
+				WorldGen.PlaceObject(point.X, point.Y, TileID.Chandeliers, true, 27);
+			}
+			else if (WorldGen.genRand.NextBool(60))
+			{
+				WorldGen.PlaceObject(point.X, point.Y, TileID.Statues, true, 46);
+			}
+			else if (WorldGen.genRand.NextBool(800))
+			{
+				WorldGen.PlaceObject(point.X, point.Y, TileID.BewitchingTable, true);
+			}
+			else if (WorldGen.genRand.NextBool(200))
+			{
+				WorldGen.PlaceObject(point.X, point.Y, TileID.GrandfatherClocks, true, 30);
+			}
+			else if (WorldGen.genRand.NextBool(180))
+			{
+				if (WorldGen.PlaceObject(point.X, point.Y, TileID.Bookcases, true, 1))
+				{
+					int type = WorldGen.genRand.NextBool(3) ? TileID.WaterCandle : TileID.Candles;
+					int style = type == TileID.WaterCandle || WorldGen.genRand.NextBool(3) ? 0 : 1;
+					WorldGen.PlaceObject(point.X + WorldGen.genRand.Next(-1, 2), point.Y - 4, type, true, style);
+				}
+			}
+			else if (WorldGen.genRand.NextBool(180))
+			{
+				WeightedRandom<int> styles = new(WorldGen.genRand);
+				styles.Add(2, 1);
+				styles.Add(10, 1);
+				styles.Add(11, 1);
+
+				WorldGen.PlaceObject(point.X, point.Y, TileID.Banners, true, styles);
+			}
+			else if (WorldGen.genRand.NextBool(420))
+			{
+				PlaceSpikes(point.X, point.Y);
+			}
+		}
+
+		for (int i = 10; i < Width - 10; ++i)
+		{
+			for (int j = 50; j < 200; ++j)
+			{
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
+
+				if (flags == OpenFlags.None)
+				{
+					continue;
+				}
+
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType == TileID.Dirt)
+				{
+					tile.TileType = TileID.Grass;
+
+					PlaceGrassStuff(i, j);
+				}
+			}
+		}
+	}
+
+	private static void PlaceSpikes(int x, int y)
+	{
+		int width = WorldGen.genRand.Next(3, 8);
+		int dir = WorldGen.genRand.NextBool() ? -1 : 1;
+
+		while (!WorldGen.SolidOrSlopedTile(x, y))
+		{
+			y += dir;
+		}
+
+		for (int i = 0; i < width; ++i)
+		{
+			if (WorldGen.SolidOrSlopedTile(x + i, y + dir))
+			{
+				WorldGen.PlaceTile(x + i, y + dir, TileID.Spikes, true, true);
+			}
+
+			if (WorldGen.SolidOrSlopedTile(x + i, y + i % 2 * 2 * dir))
+			{
+				WorldGen.PlaceTile(x + i, y + i % 2 * 2 * dir, TileID.Spikes, true, true);
+			}
+		}
+	}
+
+	private static void PlaceGrassStuff(int i, int j)
+	{
+		if (!WorldGen.genRand.NextBool(3))
+		{
+			WorldGen.PlaceTile(i, j - 1, TileID.Plants);
+		}
+		else if (WorldGen.genRand.NextBool(6))
+		{
+			WorldGen.PlaceTile(i, j - 1, TileID.Saplings);
+
+			if (!WorldGen.GrowTree(i, j - 1))
+			{
+				WorldGen.KillTile(i, j - 1);
+			}
+		}
+		else if (WorldGen.genRand.NextBool(4))
+		{
+			WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(10), 0);
+		}
+	}
 
 	private void DigTunnels(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -71,7 +233,7 @@ public class SkeletronDomain : BossDomainSubworld
 		ActuatorInfoByFloor.Clear();
 	}
 
-	private static int DigChasm(int startY, int endY, int baseX, int wallDepth, int tunnelWidth, bool spawnActuatedWall = false, 
+	private static int DigChasm(int startY, int endY, float baseX, int wallDepth, int tunnelWidth, bool spawnActuatedWall = false, 
 		int tileType = TileID.GrayBrick, int wallType = WallID.GrayBrick, int actuatedWallCount = 2)
 	{
 		FastNoiseLite noise = GetGenNoise();
@@ -89,7 +251,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 		for (int y = startY; y < endY; ++y)
 		{
-			for (int x = baseX - halfWidth; x < baseX + halfWidth; ++x)
+			for (int x = (int)baseX - halfWidth; x < baseX + halfWidth; ++x)
 			{
 				Tile tile = Main.tile[x, y];
 
@@ -100,28 +262,55 @@ public class SkeletronDomain : BossDomainSubworld
 					tile.TileType = (ushort)tileType;
 					tile.HasTile = true;
 				}
-				else if (spawnActuatedWall && pregeneratedActuatedWallYs.ContainsKey(y))
+				else
 				{
-					tile.TileType = (ushort)tileType;
-					tile.HasTile = true;
-					tile.HasActuator = true;
-					tile.IsActuated = false;
-
-					if (!ActuatorInfoByFloor.ContainsKey(Floor))
+					if (spawnActuatedWall && pregeneratedActuatedWallYs.TryGetValue(y, out int value))
 					{
-						ActuatorInfoByFloor.Add(Floor, new FloorActuatorInfo(Floor + 2));
-					}
+						tile.TileType = (ushort)tileType;
+						tile.HasTile = true;
+						tile.HasActuator = true;
+						tile.IsActuated = false;
 
-					ActuatorInfoByFloor[Floor].AddActuatedTile(pregeneratedActuatedWallYs[y], new Point(x, y));
+						if (!ActuatorInfoByFloor.ContainsKey(Floor))
+						{
+							ActuatorInfoByFloor.Add(Floor, new FloorActuatorInfo(Floor + 2));
+						}
+
+						ActuatorInfoByFloor[Floor].AddActuatedTile(value, new Point(x, y));
+					}
+					
+					if ((!spawnActuatedWall || y > startY + actuatedWallCount * 4) && y % 10 == 0)
+					{
+						tile.TileType = TileID.Platforms;
+						tile.HasTile = true;
+						tile.TileFrameY = (short)((short)(tileType == TileID.GrayBrick ? 43 : 6) * 18);
+
+						if (WorldGen.genRand.NextBool(20) && tileType != TileID.GrayBrick)
+						{
+							int type = WorldGen.genRand.NextBool(3) ? TileID.WaterCandle : TileID.Candles;
+							int style = type == TileID.WaterCandle || WorldGen.genRand.NextBool(3) ? 0 : 1;
+							WorldGen.PlaceObject(x + WorldGen.genRand.Next(-1, 2), y - 1, type, true, style);
+						}
+					}
 				}
 
 				tile.WallType = (ushort)wallType;
 			}
 
-			baseX += (int)(noise.GetNoise(0, y) * 2);
+			baseX += (int)(noise.GetNoise(0, y) * 2) / 2f;
+
+			// Cap it so the chasms don't let the rooms go off world
+			if (baseX > 500)
+			{
+				baseX = 500;
+			}
+			else if (baseX < 300)
+			{
+				baseX = 300;
+			}
 		}
 
-		return baseX;
+		return (int)baseX;
 	}
 
 	private Point GenerateFirstFloor()
@@ -143,8 +332,8 @@ public class SkeletronDomain : BossDomainSubworld
 		RunCorridor(WellBottom.X, WellBottom.Y + BaseTunnelDepth + 2, corridorEnd, corridorEndY);
 		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, corridorEndY));
 
-		int chasmBottom = WellBottom.Y + BaseTunnelDepth + 2 + 120;
-		int lastX = DigChasm(WellBottom.Y + BaseTunnelDepth + 2 + roomHeight / 2 - 1, chasmBottom, WellBottom.X, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 2);
+		int chasmBottom = WellBottom.Y + BaseTunnelDepth + 2 + 180;
+		int lastX = DigChasm(WellBottom.Y + BaseTunnelDepth + 2 + roomHeight / 2 - 2, chasmBottom, WellBottom.X, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 2);
 
 		WireRoomsToChasms(ActuatorInfoByFloor[Floor], RoomsToWire);
 		return new Point(lastX, chasmBottom);
@@ -157,8 +346,8 @@ public class SkeletronDomain : BossDomainSubworld
 		int roomHeight = WorldGen.genRand.Next(16, 21);
 		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true);
 
-		int corridorEnd = x - WorldGen.genRand.Next(150, 180);
 		bool left = WorldGen.genRand.NextBool();
+		int corridorEnd = x - (left ? WorldGen.genRand.Next(150, 180) : WorldGen.genRand.Next(50, 80));
 
 		RunCorridor(x, y, corridorEnd, y);
 
@@ -169,7 +358,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y));
 
-		corridorEnd = x + WorldGen.genRand.Next(150, 180);
+		corridorEnd = x + (!left ? WorldGen.genRand.Next(150, 180) : WorldGen.genRand.Next(50, 80));
 
 		RunCorridor(x, y, corridorEnd, y);
 		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y));
@@ -179,19 +368,19 @@ public class SkeletronDomain : BossDomainSubworld
 			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3));
 		}
 
-		int lastX = DigChasm(y + roomHeight / 2 - 1, y + 120, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 3);
+		int lastX = DigChasm(y + roomHeight / 2 - 2, y + 220, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 3);
 		WireRoomsToChasms(ActuatorInfoByFloor[1], RoomsToWire);
-		return new Point(lastX, y + BaseTunnelDepth + 2 + 120);
+		return new Point(lastX, y + 220);
 	}
 
-	private Point GenerateThirdFloor(int x, int y)
+	private void GenerateThirdFloor(int x, int y)
 	{
 		Floor = 2;
 
 		int roomHeight = WorldGen.genRand.Next(16, 21);
 		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true);
 
-		int corridorEnd = x - WorldGen.genRand.Next(150, 180);
+		int corridorEnd = x - WorldGen.genRand.Next(140, 170);
 		bool left = WorldGen.genRand.NextBool();
 
 		RunCorridor(x, y, corridorEnd, y);
@@ -199,15 +388,17 @@ public class SkeletronDomain : BossDomainSubworld
 		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4));
 		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y));
 
-		corridorEnd = x + WorldGen.genRand.Next(150, 180);
+		corridorEnd = x + WorldGen.genRand.Next(140, 170);
 
 		RunCorridor(x, y, corridorEnd, y);
 		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y));
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4));
 
-		int lastX = DigChasm(y + roomHeight / 2 - 1, y + 120, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 4);
-		WireRoomsToChasms(ActuatorInfoByFloor[1], RoomsToWire);
-		return new Point(lastX, y + BaseTunnelDepth + 2 + 120);
+		int lastX = DigChasm(y + roomHeight / 2 - 2, y + 120, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 4);
+		WireRoomsToChasms(ActuatorInfoByFloor[2], RoomsToWire);
+		CreatePlainRoom(lastX, y + 120, WorldGen.genRand.Next(23, 34), roomHeight, true);
+
+		PortalLocation = new Point(lastX, y + 124);
 	}
 
 	private void AddRoom(PlacedRoom room)
@@ -235,7 +426,7 @@ public class SkeletronDomain : BossDomainSubworld
 			}
 
 			Point loc = roomsToWire[i].Area.Location;
-			Point wirePosition = new Point(loc.X + data.WireConnection.X - 1, loc.Y + data.WireConnection.Y - 1);
+			var wirePosition = new Point(loc.X + data.WireConnection.X - 1, loc.Y + data.WireConnection.Y - 1);
 			Point point = floorActuatorInfo.ActuatedTilesByWall[i].First();
 
 			SetWireOnTile(data, Main.tile[wirePosition.X + 1, wirePosition.Y]);
@@ -310,6 +501,7 @@ public class SkeletronDomain : BossDomainSubworld
 				if (j > baseY - 4 && j < baseY + 4)
 				{
 					tile.ClearTile();
+					CorridorTiles.Add(new Point(i, j));
 					continue;
 				}
 
@@ -337,7 +529,7 @@ public class SkeletronDomain : BossDomainSubworld
 				{
 					Tile tile = Main.tile[i, j];
 
-					if (dontPlace && !tile.HasTile)
+					if (dontPlace && !WorldGen.SolidOrSlopedTile(i, j))
 					{
 						continue;
 					}
@@ -371,6 +563,9 @@ public class SkeletronDomain : BossDomainSubworld
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
+		SpecialRooms.Clear();
+		CorridorTiles.Clear();
+
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 80 : Main.maxTilesX - 80;
 		Main.spawnTileY = 110;
 		Main.worldSurface = 230;
@@ -424,6 +619,23 @@ public class SkeletronDomain : BossDomainSubworld
 		Main.dayTime = false;
 		Main.time = Main.nightLength / 2;
 		Wiring.UpdateMech();
+
+		bool hasProj = false;
+
+		foreach (Projectile proj in Main.ActiveProjectiles)
+		{
+			if (proj.type == ModContent.ProjectileType<Teleportal>())
+			{
+				hasProj = true;
+			}
+		}
+
+		if (!hasProj)
+		{
+			int type = ModContent.ProjectileType<Teleportal>();
+			Vector2 position = PortalLocation.ToWorldCoordinates();
+			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), position, Vector2.Zero, type, 0, 0, -1, Width / 2 * 16, (Height - 140) * 16);
+		}
 
 		bool allInArena = true;
 

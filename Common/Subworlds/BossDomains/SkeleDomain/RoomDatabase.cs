@@ -47,8 +47,8 @@ internal class RoomDatabase : ModSystem
 		DataByRoomIndex.Add(0, new RoomData(WireColor.Yellow, OpeningType.Right, new Point(44, 29), new Point(23, 39), null, [new EngageTimerInfo(new Point16(41, 5), 0)]));
 
 		DataByRoomIndex.Add(1, new RoomData(WireColor.Blue, OpeningType.Left, new Point(0, 11), new Point(89, 56), 
-			[new SpikeballInfo(new Point16(21, 47), 80, false, 0.05f), new(new Point16(36, 47), 80, false, 0.05f), new(new Point16(49, 47), 80, false, 0.05f), 
-				new SpikeballInfo(new Point16(64, 47), 80, false, 0.05f)],
+			[new SpikeballInfo(new Point16(21, 47), 80, true, 0.05f), new(new Point16(36, 47), 80, true, 0.05f), new(new Point16(49, 47), 80, true, 0.05f), 
+				new SpikeballInfo(new Point16(64, 47), 80, true, 0.05f)],
 			[new EngageTimerInfo(new Point16(87, 5), 0), new EngageTimerInfo(new Point16(90, 11), 60)]));
 
 		DataByRoomIndex.Add(2, new RoomData(WireColor.Green, OpeningType.Above, new Point(33, 0), new Point(33, 85),
