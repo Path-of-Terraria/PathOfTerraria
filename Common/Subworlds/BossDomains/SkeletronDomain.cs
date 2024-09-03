@@ -9,13 +9,40 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.DataStructures;
 using Terraria.Localization;
+using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
+using System.Linq;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
 public class SkeletronDomain : BossDomainSubworld
 {
+	public class FloorActuatorInfo(int actuatedWallCount)
+	{
+		public readonly int ActuatedWallCount = actuatedWallCount;
+
+		public Dictionary<int, HashSet<Point>> ActuatedTilesByWall = [];
+
+		public void AddActuatedTile(int wall, Point position)
+		{
+			if (ActuatedTilesByWall.TryGetValue(wall, out HashSet<Point> tiles))
+			{
+				tiles.Add(position);
+			}
+			else
+			{
+				ActuatedTilesByWall.Add(wall, [position]);
+			}
+		}
+	}
+
 	public override int Width => 800;
 	public override int Height => 1000;
+
+	const int BaseTunnelDepth = 90;
+
+	private readonly static Dictionary<int, FloorActuatorInfo> ActuatorInfoByFloor = [];
+
+	public static int Floor = 0;
 
 	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
 
@@ -24,6 +51,9 @@ public class SkeletronDomain : BossDomainSubworld
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 
+	private readonly List<PlacedRoom> SpecialRooms = [];
+	private readonly List<PlacedRoom> RoomsToWire = [];
+
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Surface", GenTerrain),
 		new PassLegacy("Arena", SpawnArena),
@@ -31,35 +61,236 @@ public class SkeletronDomain : BossDomainSubworld
 
 	private void DigTunnels(GenerationProgress progress, GameConfiguration configuration)
 	{
-		const int Depth = 90;
-
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
-		FastNoiseLite noise = GetGenNoise();
 
-		for (int y = WellBottom.Y - 1; y < WellBottom.Y + Depth; ++y)
+		WellBottom.X = DigChasm(WellBottom.Y - 1, WellBottom.Y + BaseTunnelDepth, WellBottom.X, 4, 6);
+		Point secondFloorStart = GenerateFirstFloor();
+		Point thirdFloorStart = GenerateSecondFloor(secondFloorStart.X, secondFloorStart.Y);
+		GenerateThirdFloor(thirdFloorStart.X, thirdFloorStart.Y);
+
+		ActuatorInfoByFloor.Clear();
+	}
+
+	private static int DigChasm(int startY, int endY, int baseX, int wallDepth, int tunnelWidth, bool spawnActuatedWall = false, 
+		int tileType = TileID.GrayBrick, int wallType = WallID.GrayBrick, int actuatedWallCount = 2)
+	{
+		FastNoiseLite noise = GetGenNoise();
+		int halfWidth = wallDepth + tunnelWidth / 2;
+
+		Dictionary<int, int> pregeneratedActuatedWallYs = [];
+
+		if (spawnActuatedWall)
 		{
-			for (int x = WellBottom.X - 5; x < WellBottom.X + 5; ++x)
+			for (int i = 0; i < actuatedWallCount; ++i)
+			{
+				pregeneratedActuatedWallYs.Add(startY + (i + 1) * 4, i);
+			}
+		}
+
+		for (int y = startY; y < endY; ++y)
+		{
+			for (int x = baseX - halfWidth; x < baseX + halfWidth; ++x)
 			{
 				Tile tile = Main.tile[x, y];
 
 				tile.ClearEverything();
-				
-				if (x < WellBottom.X - 3 || x >= WellBottom.X + 3)
+
+				if (x < baseX - halfWidth + wallDepth || x >= baseX + halfWidth - wallDepth)
 				{
-					tile.TileType = TileID.GrayBrick;
+					tile.TileType = (ushort)tileType;
 					tile.HasTile = true;
 				}
+				else if (spawnActuatedWall && pregeneratedActuatedWallYs.ContainsKey(y))
+				{
+					tile.TileType = (ushort)tileType;
+					tile.HasTile = true;
+					tile.HasActuator = true;
+					tile.IsActuated = false;
 
-				tile.WallType = WallID.GrayBrick;
+					if (!ActuatorInfoByFloor.ContainsKey(Floor))
+					{
+						ActuatorInfoByFloor.Add(Floor, new FloorActuatorInfo(Floor + 2));
+					}
+
+					ActuatorInfoByFloor[Floor].AddActuatedTile(pregeneratedActuatedWallYs[y], new Point(x, y));
+				}
+
+				tile.WallType = (ushort)wallType;
 			}
 
-			WellBottom.X += (int)(noise.GetNoise(0, y) * 2);
+			baseX += (int)(noise.GetNoise(0, y) * 2);
 		}
 
-		CreatePlainRoom(WellBottom.X, WellBottom.Y + Depth, WorldGen.genRand.Next(17, 23), WorldGen.genRand.Next(12, 16), true);
+		return baseX;
+	}
 
-		int corridorEnd = WellBottom.X - WorldGen.genRand.Next(90, 120);
-		RunCorridor(WellBottom.X, WellBottom.Y + Depth + 2, corridorEnd, WellBottom.Y + Depth + 2 + WorldGen.genRand.Next(-10, 10));
+	private Point GenerateFirstFloor()
+	{
+		Floor = 0;
+
+		int roomHeight = WorldGen.genRand.Next(12, 16);
+		CreatePlainRoom(WellBottom.X, WellBottom.Y + BaseTunnelDepth, WorldGen.genRand.Next(17, 23), roomHeight, true);
+
+		int corridorEnd = WellBottom.X - WorldGen.genRand.Next(50, 80);
+		int corridorEndY = WellBottom.Y + BaseTunnelDepth + 2 + WorldGen.genRand.Next(-6, 6);
+
+		RunCorridor(WellBottom.X, WellBottom.Y + BaseTunnelDepth + 2, corridorEnd, corridorEndY);
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, corridorEndY));
+
+		corridorEnd = WellBottom.X + WorldGen.genRand.Next(50, 80);
+		corridorEndY = WellBottom.Y + BaseTunnelDepth + 2 + WorldGen.genRand.Next(-6, 6);
+
+		RunCorridor(WellBottom.X, WellBottom.Y + BaseTunnelDepth + 2, corridorEnd, corridorEndY);
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, corridorEndY));
+
+		int chasmBottom = WellBottom.Y + BaseTunnelDepth + 2 + 120;
+		int lastX = DigChasm(WellBottom.Y + BaseTunnelDepth + 2 + roomHeight / 2 - 1, chasmBottom, WellBottom.X, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 2);
+
+		WireRoomsToChasms(ActuatorInfoByFloor[Floor], RoomsToWire);
+		return new Point(lastX, chasmBottom);
+	}
+
+	private Point GenerateSecondFloor(int x, int y)
+	{
+		Floor = 1;
+
+		int roomHeight = WorldGen.genRand.Next(16, 21);
+		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true);
+
+		int corridorEnd = x - WorldGen.genRand.Next(150, 180);
+		bool left = WorldGen.genRand.NextBool();
+
+		RunCorridor(x, y, corridorEnd, y);
+
+		if (left)
+		{
+			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4));
+		}
+
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y));
+
+		corridorEnd = x + WorldGen.genRand.Next(150, 180);
+
+		RunCorridor(x, y, corridorEnd, y);
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y));
+
+		if (!left)
+		{
+			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3));
+		}
+
+		int lastX = DigChasm(y + roomHeight / 2 - 1, y + 120, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 3);
+		WireRoomsToChasms(ActuatorInfoByFloor[1], RoomsToWire);
+		return new Point(lastX, y + BaseTunnelDepth + 2 + 120);
+	}
+
+	private Point GenerateThirdFloor(int x, int y)
+	{
+		Floor = 2;
+
+		int roomHeight = WorldGen.genRand.Next(16, 21);
+		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true);
+
+		int corridorEnd = x - WorldGen.genRand.Next(150, 180);
+		bool left = WorldGen.genRand.NextBool();
+
+		RunCorridor(x, y, corridorEnd, y);
+
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y));
+
+		corridorEnd = x + WorldGen.genRand.Next(150, 180);
+
+		RunCorridor(x, y, corridorEnd, y);
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3));
+
+		int lastX = DigChasm(y + roomHeight / 2 - 1, y + 120, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 4);
+		WireRoomsToChasms(ActuatorInfoByFloor[1], RoomsToWire);
+		return new Point(lastX, y + BaseTunnelDepth + 2 + 120);
+	}
+
+	private void AddRoom(PlacedRoom room)
+	{
+		SpecialRooms.Add(room);
+		RoomsToWire.Add(room);
+	}
+
+	private void WireRoomsToChasms(FloorActuatorInfo floorActuatorInfo, List<PlacedRoom> roomsToWire)
+	{
+		if (floorActuatorInfo.ActuatedWallCount != roomsToWire.Count)
+		{
+			throw new Exception($"Wall count doesn't match room count. Expected: {floorActuatorInfo.ActuatedWallCount}, Room Count: {roomsToWire.Count}");
+		}
+
+		for (int i = 0; i < floorActuatorInfo.ActuatedWallCount; i++)
+		{
+			RoomData data = roomsToWire[i].Data;
+
+			foreach (Point position in floorActuatorInfo.ActuatedTilesByWall[i])
+			{
+				Tile tile = Main.tile[position];
+
+				SetWireOnTile(data, tile);
+			}
+
+			Point loc = roomsToWire[i].Area.Location;
+			Point wirePosition = new Point(loc.X + data.WireConnection.X - 1, loc.Y + data.WireConnection.Y - 1);
+			Point point = floorActuatorInfo.ActuatedTilesByWall[i].First();
+
+			SetWireOnTile(data, Main.tile[wirePosition.X + 1, wirePosition.Y]);
+
+			int xDir = Math.Sign(point.X - wirePosition.X);
+
+			while (wirePosition.X != point.X)
+			{
+				SetWireOnTile(data, Main.tile[wirePosition]);
+
+				wirePosition.X += xDir;
+
+				if (SpecialRooms.Any(x => x.Area.Contains(wirePosition)))
+				{
+					wirePosition.X -= xDir;
+					wirePosition.Y++;
+				}
+			}
+
+			int yDir = Math.Sign(point.Y - wirePosition.Y);
+
+			while (wirePosition.Y != point.Y)
+			{
+				SetWireOnTile(data, Main.tile[wirePosition]);
+
+				wirePosition.Y += yDir;
+			}
+		}
+
+		roomsToWire.Clear();
+	}
+
+	private static void SetWireOnTile(RoomData data, Tile tile)
+	{
+		switch (data.Wire)
+		{
+			case WireColor.Red:
+				tile.RedWire = true;
+				break;
+
+			case WireColor.Yellow:
+				tile.YellowWire = true;
+				break;
+
+			case WireColor.Blue:
+				tile.BlueWire = true;
+				break;
+
+			case WireColor.Green:
+				tile.GreenWire = true;
+				break;
+
+			default:
+				throw new Exception("Invalid wire type.");
+		}
 	}
 
 	private static void RunCorridor(int x, int y, int endX, int endY)

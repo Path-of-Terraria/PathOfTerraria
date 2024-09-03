@@ -56,7 +56,7 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 	public override bool? UseItem(Player player)
 	{
 		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		ModContent.GetInstance<RoomDatabase>().PlaceRoom(2, pos.X, pos.Y, new Vector2(0));
+		ModContent.GetInstance<RoomDatabase>().PlaceRoom(0, pos.X, pos.Y, new Vector2(0));
 		//MappingSystem.EnterMap(this);
 		return true;
 	}

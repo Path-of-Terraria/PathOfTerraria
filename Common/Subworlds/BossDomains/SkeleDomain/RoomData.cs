@@ -1,6 +1,6 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
+﻿using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.NPCs.BossDomain.SkeletronDomain;
+using StructureHelper;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.DataStructures;
@@ -34,8 +34,26 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 
 	public void PlaceRoom(int x, int y, int id, Vector2 origin)
 	{
-		Point16 position = StructureTools.PlaceByOrigin("Assets/Structures/SkeletronDomain/Room_" + id, new Point16(x, y), origin);
+		Point16 position = StructureTools.PlaceByOrigin("Assets/Structures/SkeletronDomain/Room_" + id, new Point16(x, y), origin, null, false);
+		AddSpawns(x, y);
+	}
 
+	public Rectangle PlaceRoom(int x, int y, int id, Point origin)
+	{
+		x -= origin.X;
+		y -= origin.Y;
+
+		string structure = "Assets/Structures/SkeletronDomain/Room_" + id;
+		Point16 position = StructureTools.PlaceByOrigin(structure, new Point16(x, y), Vector2.Zero, null, false);
+		var size = new Point16();
+		Generator.GetDimensions(structure, PoTMod.Instance, ref size);
+		AddSpawns(x, y);
+
+		return new Rectangle(x, y, size.X, size.Y);
+	}
+
+	private void AddSpawns(int x, int y)
+	{
 		foreach (SpikeballInfo info in Spikeballs)
 		{
 			IEntitySource source = Entity.GetSource_NaturalSpawn();
