@@ -16,7 +16,8 @@ internal class RoomDatabase : ModSystem
 	{
 		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
 		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening);
-		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(WorldGen.genRand.Next(roomDatas.Count()));
+		int roomId = WorldGen.genRand.Next(roomDatas.Count());
+		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
 
 		if (opening == OpeningType.Right) // Right-placed is adjusted poorly
 		{
@@ -56,6 +57,10 @@ internal class RoomDatabase : ModSystem
 			[new EngageTimerInfo(new Point16(18, 27), 0), new EngageTimerInfo(new Point16(20, 27), 45), new EngageTimerInfo(new Point16(22, 27), 90),
 				new EngageTimerInfo(new Point16(24, 27), 135), 
 				new EngageTimerInfo(new Point16(39, 34), 0), new EngageTimerInfo(new Point16(40, 34), 60), new EngageTimerInfo(new Point16(41, 34), 120)]));
+
+		DataByRoomIndex.Add(3, new RoomData(WireColor.Red, OpeningType.Right, new Point(97, 13), new Point(93, 54),
+			[new SpikeballInfo(new(30, 33), 90), new(new(53, 33), 90), new(new(76, 33), 90), new(new(30, 45), 90), new(new(53, 45), 90), new(new(76, 45), 90)],
+			[new EngageTimerInfo(new(6, 6), 0), new(new(8, 8), 60), new(new(13, 48), 0)]));
 	}
 
 	public override void PreUpdateWorld()

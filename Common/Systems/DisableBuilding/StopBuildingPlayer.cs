@@ -77,7 +77,7 @@ internal class StopBuildingPlayer : ModPlayer
 
 	public static bool CanCutTile(Player player, int i, int j)
 	{
-		return BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
+		return !player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding || BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
 	}
 
 	private bool CanDig(int x, int y, bool isWall)

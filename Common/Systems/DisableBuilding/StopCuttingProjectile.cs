@@ -14,7 +14,7 @@ internal class StopCuttingProjectile : GlobalProjectile
 	{
 		On_Projectile.CutTiles += AddCutCheck;
 		IL_Projectile.CutTilesAt += AddNewCheck;
-		On_DelegateMethods.CutTiles += CutCheck;
+		On_DelegateMethods.CutTiles += CutCheck; // Unsure if this is needed; most projectiles don't use this.
 	}
 
 	private void AddNewCheck(ILContext il)
@@ -42,7 +42,7 @@ internal class StopCuttingProjectile : GlobalProjectile
 
 	public static bool CanCutTile(Projectile projectile, int i, int j)
 	{
-		return BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
+		return !Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding || BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
 	}
 
 	private bool CutCheck(On_DelegateMethods.orig_CutTiles orig, int x, int y)
