@@ -41,9 +41,24 @@ public class SkeletronDomain : BossDomainSubworld
 
 	const int BaseTunnelDepth = 90;
 
+	/// <summary>
+	/// Per floor, the actuator info needed to wire rooms to the chasms.
+	/// </summary>
 	private readonly static Dictionary<int, FloorActuatorInfo> ActuatorInfoByFloor = [];
+
+	/// <summary>
+	/// Used to populate the randomly generated halls and falls with stuff.
+	/// </summary>
 	private readonly static HashSet<Point> CorridorTiles = [];
 
+	/// <summary>
+	/// Stops bone clusters from spawning in chasms.
+	/// </summary>
+	private readonly static HashSet<Point> ChasmTiles = [];
+
+	/// <summary>
+	/// Current floor.
+	/// </summary>
 	private static int Floor = 0;
 
 	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
@@ -90,7 +105,7 @@ public class SkeletronDomain : BossDomainSubworld
 				continue;
 			}
 
-			if (WorldGen.genRand.NextBool(600))
+			if (WorldGen.genRand.NextBool(600) && !ChasmTiles.Contains(point))
 			{
 				WorldGen.TileRunner(point.X, point.Y, WorldGen.genRand.Next(5, 12), 8, TileID.BoneBlock);
 			}
@@ -286,7 +301,7 @@ public class SkeletronDomain : BossDomainSubworld
 						tile.HasTile = true;
 						tile.TileFrameY = (short)((short)(tileType == TileID.GrayBrick ? 43 : 6) * 18);
 
-						if (!WorldGen.genRand.NextBool(3) && tileType != TileID.GrayBrick)
+						if (!WorldGen.genRand.NextBool(6) && tileType != TileID.GrayBrick)
 						{
 							int type = !WorldGen.genRand.NextBool(15) ? TileID.Books : 
 								WorldGen.genRand.NextBool(3) ? TileID.WaterCandle : TileID.Candles;
@@ -302,6 +317,7 @@ public class SkeletronDomain : BossDomainSubworld
 					}
 					else if (tileType != TileID.GrayBrick)
 					{
+						ChasmTiles.Add(new Point(x, y)); // Chasm tiles stop bone clusters from blocking passages
 						CorridorTiles.Add(new Point(x, y));
 					}
 				}
@@ -585,6 +601,7 @@ public class SkeletronDomain : BossDomainSubworld
 	{
 		SpecialRooms.Clear();
 		CorridorTiles.Clear();
+		ChasmTiles.Clear();
 
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 80 : Main.maxTilesX - 80;
 		Main.spawnTileY = 110;

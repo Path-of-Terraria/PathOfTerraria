@@ -19,7 +19,7 @@ internal class DungeonConversion
 	internal static void Convert(GenerationProgress progress, GameConfiguration configuration)
 #pragma warning restore IDE0060 // Remove unused parameter
 	{
-		var color = (DungeonColor)Main.rand.Next((int)DungeonColor.Count);
+		var color = DungeonColor.Green; //(DungeonColor)Main.rand.Next((int)DungeonColor.Count);
 
 		if (color == DungeonColor.Blue)
 		{
@@ -93,7 +93,7 @@ internal class DungeonConversion
 				}
 				else if (t.TileType == TileID.Lamps && t.TileFrameY >= 1298 && t.TileFrameY < 1350 && t.TileFrameX < 34) // Lamps
 				{
-					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 52);
 				}
 				else if (t.TileType == TileID.ClosedDoor && t.TileFrameY >= 864 && t.TileFrameY < 918 && t.TileFrameX < 72) // Door (C)
 				{
