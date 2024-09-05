@@ -61,7 +61,8 @@ public class SkeletronDomain : BossDomainSubworld
 		new PassLegacy("Surface", GenTerrain),
 		new PassLegacy("Arena", SpawnArena),
 		new PassLegacy("Tunnels", DigTunnels),
-		new PassLegacy("Decor", AddDecor)];
+		new PassLegacy("Decor", AddDecor),
+		new PassLegacy("Convert", DungeonConversion.Convert)];
 
 	private void AddDecor(GenerationProgress progress, GameConfiguration configuration)
 	{
