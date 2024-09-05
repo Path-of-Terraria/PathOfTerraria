@@ -40,73 +40,73 @@ internal class DungeonConversion
 		{
 			for (int j = 2; j < Main.maxTilesY - 2; j++)
 			{
-				Tile tile = Main.tile[i, j];
+				Tile t = Main.tile[i, j];
 
-				if (tile.TileType == TileID.BlueDungeonBrick) // Brick
+				if (t.TileType == TileID.BlueDungeonBrick) // Brick
 				{
-					tile.TileType = color == DungeonColor.Pink ? TileID.PinkDungeonBrick : TileID.GreenDungeonBrick;
+					t.TileType = color == DungeonColor.Pink ? TileID.PinkDungeonBrick : TileID.GreenDungeonBrick;
 				}
-				else if (tile.TileType == TileID.Platforms && tile.TileFrameY == 6 * 18) // Platforms
+				else if (t.TileType == TileID.Platforms && t.TileFrameY == 6 * 18) // Platforms
 				{
-					tile.TileFrameY = (short)(color == DungeonColor.Pink ? 7 * 18 : 8 * 18);
-				} // Bookcase
-				else if (tile.TileType == TileID.Bookcases && tile.TileFrameX >= 54 && tile.TileFrameX < 108 && tile.TileFrameY < 72)
-				{
-					tile.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameY = (short)(color == DungeonColor.Pink ? 7 * 18 : 8 * 18);
 				}
-				else if (tile.TileType == TileID.WorkBenches && tile.TileFrameX >= 396 && tile.TileFrameX < 432) // Workbenches
+				else if (t.TileType == TileID.Bookcases && t.TileFrameX >= 54 && t.TileFrameX < 108 && t.TileFrameY < 72) // Bookcase
 				{
-					tile.TileFrameX += (short)(color == DungeonColor.Pink ? 72 : 36);
+					t.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
-				else if (tile.TileType == TileID.Chairs && tile.TileFrameY >= 520 && tile.TileFrameX < 560) // Chairs
+				else if (t.TileType == TileID.WorkBenches && t.TileFrameX >= 396 && t.TileFrameX < 432) // Workbenches
 				{
-					tile.TileFrameY += (short)(color == DungeonColor.Pink ? 80 : 40);
+					t.TileFrameX += (short)(color == DungeonColor.Pink ? 72 : 36);
 				}
-				else if (tile.TileType == TileID.Tables && tile.TileFrameY >= 540 && tile.TileFrameX < 594 && tile.TileFrameY < 38) // Tables
+				else if (t.TileType == TileID.Chairs && t.TileFrameY >= 520 && t.TileFrameX < 560) // Chairs
 				{
-					tile.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameY += (short)(color == DungeonColor.Pink ? 80 : 40);
 				}
-				else if (tile.TileType == TileID.Chandeliers && tile.TileFrameY >= 1458 && tile.TileFrameY < 1512 && tile.TileFrameX < 108) // Chandeliers
+				else if (t.TileType == TileID.Tables && t.TileFrameY >= 540 && t.TileFrameX < 594 && t.TileFrameY < 38) // Tables
 				{
-					tile.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
-				else if (tile.TileType == TileID.Statues && tile.TileFrameX >= 1656 && tile.TileFrameX < 1692 && // Vases
-					(tile.TileFrameY <= 54 || tile.TileFrameY >= 162 && tile.TileFrameY < 216))
+				else if (t.TileType == TileID.Chandeliers && t.TileFrameY >= 1458 && t.TileFrameY < 1512 && t.TileFrameX < 108) // Chandeliers
 				{
-					tile.TileFrameX += (short)(color == DungeonColor.Pink ? 72 : 36);
+					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
-				else if (tile.TileType == TileID.GrandfatherClocks && tile.TileFrameX >= 1080 && tile.TileFrameX < 1116) // Clocks
+				else if (t.TileType == TileID.Statues && t.TileFrameX >= 1656 && t.TileFrameX < 1692 && // Vases
+					(t.TileFrameY <= 54 || t.TileFrameY >= 162 && t.TileFrameY < 216))
 				{
-					tile.TileFrameX += (short)(color == DungeonColor.Pink ? 72 : 36);
+					t.TileFrameX += (short)(color == DungeonColor.Pink ? 72 : 36);
 				}
-				else if (tile.TileType == TileID.Benches && tile.TileFrameX >= 324 && tile.TileFrameX < 378 && tile.TileFrameY < 36) // Benches
+				else if (t.TileType == TileID.GrandfatherClocks && t.TileFrameX >= 1080 && t.TileFrameX < 1116) // Clocks
 				{
-					tile.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameX += (short)(color == DungeonColor.Pink ? 72 : 36);
 				}
-				else if (tile.TileType == TileID.Pianos && tile.TileFrameX >= 594 && tile.TileFrameX < 468 && tile.TileFrameY < 36) // Pianos
+				else if (t.TileType == TileID.Benches && t.TileFrameX >= 324 && t.TileFrameX < 378 && t.TileFrameY < 36) // Benches
 				{
-					tile.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
-				else if (tile.TileType == TileID.Candles && tile.TileFrameY >= 22 && tile.TileFrameY < 44) // Candles
+				else if (t.TileType == TileID.Pianos && t.TileFrameX >= 594 && t.TileFrameX < 468 && t.TileFrameY < 36) // Pianos
 				{
-					tile.TileFrameY += (short)(color == DungeonColor.Pink ? 44 : 22);
+					t.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
-				else if (tile.TileType == TileID.Lamps && tile.TileFrameY >= 1298 && tile.TileFrameY < 1350 && tile.TileFrameX < 34) // Lamps
+				else if (t.TileType == TileID.Candles && t.TileFrameY >= 22 && t.TileFrameY < 44) // Candles
 				{
-					tile.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameY += (short)(color == DungeonColor.Pink ? 44 : 22);
 				}
-				else if (tile.TileType == TileID.ClosedDoor && tile.TileFrameY >= 864 && tile.TileFrameY < 918 && tile.TileFrameX < 72) // Door (C)
+				else if (t.TileType == TileID.Lamps && t.TileFrameY >= 1298 && t.TileFrameY < 1350 && t.TileFrameX < 34) // Lamps
 				{
-					tile.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
-				else if (tile.TileType == TileID.OpenDoor && tile.TileFrameY >= 864 && tile.TileFrameY < 918 && tile.TileFrameX < 54) // Door (0)
+				else if (t.TileType == TileID.ClosedDoor && t.TileFrameY >= 864 && t.TileFrameY < 918 && t.TileFrameX < 72) // Door (C)
 				{
-					tile.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
+					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
+				}
+				else if (t.TileType == TileID.OpenDoor && t.TileFrameY >= 864 && t.TileFrameY < 918 && t.TileFrameX < 54) // Door (0)
+				{
+					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
 
-				if (WallToAlt.TryGetValue(tile.WallType, out int id))
+				if (WallToAlt.TryGetValue(t.WallType, out int id))
 				{
-					tile.WallType = (ushort)id;
+					t.WallType = (ushort)id;
 				}
 			}
 

@@ -43,9 +43,9 @@ public abstract class BossDomainSubworld : MappingWorld
 	{
 		WorldGenerator.CurrentGenerationProgress = progress;
 
-		int seed = new Random().Next();
-		WorldGen._genRandSeed = seed - 2;
-		WorldGen._lastSeed = seed;
+		//int seed = new Random().Next();
+		WorldGen._genRandSeed = 2 - 2;
+		WorldGen._lastSeed = 6;
 	}
 
 	public override void DrawMenu(GameTime gameTime)
