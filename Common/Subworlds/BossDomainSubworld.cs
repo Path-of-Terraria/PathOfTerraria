@@ -45,7 +45,6 @@ public abstract class BossDomainSubworld : MappingWorld
 		int seed = DateTime.Now.Millisecond;
 		WorldGen._lastSeed = seed;
 		WorldGen._genRand = new UnifiedRandom(seed);
-		WorldGen._genRand.SetSeed(seed);
 	}
 
 	public override void DrawMenu(GameTime gameTime)

@@ -16,12 +16,14 @@ internal class RoomDatabase : ModSystem
 	{
 		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
 		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening);
-		int roomId = WorldGen.genRand.Next(roomDatas.Count());
+		int roomId = roomDatas.Count() - 1;// WorldGen.genRand.Next(roomDatas.Count());
 		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
 
 		if (opening == OpeningType.Right) // Right-placed is adjusted poorly
 		{
 			x++;
+
+			PoTMod.Instance.Logger.Info("Room ID: " + roomId);
 		}
 
 		return new PlacedRoom(roomData.Value, instance.PlaceRoom(roomData.Key, x, y, roomData.Value.OpeningLocation));
@@ -59,8 +61,9 @@ internal class RoomDatabase : ModSystem
 				new EngageTimerInfo(new Point16(39, 34), 0), new EngageTimerInfo(new Point16(40, 34), 60), new EngageTimerInfo(new Point16(41, 34), 120)]));
 
 		DataByRoomIndex.Add(3, new RoomData(WireColor.Red, OpeningType.Right, new Point(97, 13), new Point(93, 54),
-			[new SpikeballInfo(new(30, 33), 90), new(new(53, 33), 90), new(new(76, 33), 90), new(new(30, 45), 90), new(new(53, 45), 90), new(new(76, 45), 90)],
-			[new EngageTimerInfo(new(6, 6), 0), new(new(8, 8), 60), new(new(13, 48), 0)]));
+			[new SpikeballInfo(new(30, 33), 90), new(new(53, 33), 90), new(new(76, 33), 90), new(new(30, 45), 90), new(new(53, 45), 90), new(new(76, 45), 90),
+				new SpikeballInfo(new(75, 14), 90)],
+			[new EngageTimerInfo(new(5, 7), 0), new(new(7, 9), 60), new(new(12, 49), 0)]));
 	}
 
 	public override void PreUpdateWorld()
@@ -75,7 +78,6 @@ internal class RoomDatabase : ModSystem
 			{
 				Tile tile = Main.tile[info.Position];
 				tile.TileFrameY = 18;
-				//tile.TileType = TileID.Meteorite;
 
 				Wiring.CheckMech(info.Position.X, info.Position.Y, 18000);
 			}
