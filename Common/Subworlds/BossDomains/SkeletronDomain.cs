@@ -41,9 +41,24 @@ public class SkeletronDomain : BossDomainSubworld
 
 	const int BaseTunnelDepth = 90;
 
+	/// <summary>
+	/// Per floor, the actuator info needed to wire rooms to the chasms.
+	/// </summary>
 	private readonly static Dictionary<int, FloorActuatorInfo> ActuatorInfoByFloor = [];
+
+	/// <summary>
+	/// Used to populate the randomly generated halls and falls with stuff.
+	/// </summary>
 	private readonly static HashSet<Point> CorridorTiles = [];
 
+	/// <summary>
+	/// Stops bone clusters from spawning in chasms.
+	/// </summary>
+	private readonly static HashSet<Point> ChasmTiles = [];
+
+	/// <summary>
+	/// Current floor.
+	/// </summary>
 	private static int Floor = 0;
 
 	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
@@ -61,7 +76,8 @@ public class SkeletronDomain : BossDomainSubworld
 		new PassLegacy("Surface", GenTerrain),
 		new PassLegacy("Arena", SpawnArena),
 		new PassLegacy("Tunnels", DigTunnels),
-		new PassLegacy("Decor", AddDecor)];
+		new PassLegacy("Decor", AddDecor),
+		new PassLegacy("Convert", DungeonConversion.Convert)];
 
 	private void AddDecor(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -89,7 +105,7 @@ public class SkeletronDomain : BossDomainSubworld
 				continue;
 			}
 
-			if (WorldGen.genRand.NextBool(600))
+			if (WorldGen.genRand.NextBool(600) && !ChasmTiles.Contains(point))
 			{
 				WorldGen.TileRunner(point.X, point.Y, WorldGen.genRand.Next(5, 12), 8, TileID.BoneBlock);
 			}
@@ -285,12 +301,24 @@ public class SkeletronDomain : BossDomainSubworld
 						tile.HasTile = true;
 						tile.TileFrameY = (short)((short)(tileType == TileID.GrayBrick ? 43 : 6) * 18);
 
-						if (WorldGen.genRand.NextBool(20) && tileType != TileID.GrayBrick)
+						if (!WorldGen.genRand.NextBool(6) && tileType != TileID.GrayBrick)
 						{
-							int type = WorldGen.genRand.NextBool(3) ? TileID.WaterCandle : TileID.Candles;
-							int style = type == TileID.WaterCandle || WorldGen.genRand.NextBool(3) ? 0 : 1;
-							WorldGen.PlaceObject(x + WorldGen.genRand.Next(-1, 2), y - 1, type, true, style);
+							int type = !WorldGen.genRand.NextBool(15) ? TileID.Books : 
+								WorldGen.genRand.NextBool(3) ? TileID.WaterCandle : TileID.Candles;
+							int style = type != TileID.Candles || WorldGen.genRand.NextBool(3) ? 0 : 1;
+
+							if (type == TileID.Books)
+							{
+								style = WorldGen.genRand.Next(6);
+							}
+
+							WorldGen.PlaceObject(x, y - 1, type, true, style);
 						}
+					}
+					else if (tileType != TileID.GrayBrick)
+					{
+						ChasmTiles.Add(new Point(x, y)); // Chasm tiles stop bone clusters from blocking passages
+						CorridorTiles.Add(new Point(x, y));
 					}
 				}
 
@@ -318,7 +346,7 @@ public class SkeletronDomain : BossDomainSubworld
 		Floor = 0;
 
 		int roomHeight = WorldGen.genRand.Next(12, 16);
-		CreatePlainRoom(WellBottom.X, WellBottom.Y + BaseTunnelDepth, WorldGen.genRand.Next(17, 23), roomHeight, true);
+		CreatePlainRoom(WellBottom.X, WellBottom.Y + BaseTunnelDepth, WorldGen.genRand.Next(17, 23), roomHeight, true, true);
 
 		int corridorEnd = WellBottom.X - WorldGen.genRand.Next(50, 80);
 		int corridorEndY = WellBottom.Y + BaseTunnelDepth + 2 + WorldGen.genRand.Next(-6, 6);
@@ -344,7 +372,7 @@ public class SkeletronDomain : BossDomainSubworld
 		Floor = 1;
 
 		int roomHeight = WorldGen.genRand.Next(16, 21);
-		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true);
+		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true, true);
 
 		bool left = WorldGen.genRand.NextBool();
 		int corridorEnd = x - (left ? WorldGen.genRand.Next(150, 180) : WorldGen.genRand.Next(50, 80));
@@ -378,7 +406,7 @@ public class SkeletronDomain : BossDomainSubworld
 		Floor = 2;
 
 		int roomHeight = WorldGen.genRand.Next(16, 21);
-		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true);
+		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true, true);
 
 		int corridorEnd = x - WorldGen.genRand.Next(140, 170);
 		bool left = WorldGen.genRand.NextBool();
@@ -396,7 +424,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 		int lastX = DigChasm(y + roomHeight / 2 - 2, y + 120, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 4);
 		WireRoomsToChasms(ActuatorInfoByFloor[2], RoomsToWire);
-		CreatePlainRoom(lastX, y + 120, WorldGen.genRand.Next(23, 34), roomHeight, true);
+		CreatePlainRoom(lastX, y + 120, WorldGen.genRand.Next(23, 34), roomHeight, true, true);
 
 		PortalLocation = new Point(lastX, y + 124);
 	}
@@ -510,7 +538,7 @@ public class SkeletronDomain : BossDomainSubworld
 		}
 	}
 
-	private static void CreatePlainRoom(int x, int y, int width, int height, bool dontPlace)
+	private static void CreatePlainRoom(int x, int y, int width, int height, bool dontPlace, bool addToCorridorTiles = false)
 	{
 		ShapeData shapeData = new();
 		x -= width / 2;
@@ -520,6 +548,14 @@ public class SkeletronDomain : BossDomainSubworld
 			new Actions.Clear().Output(shapeData),
 			new Actions.PlaceWall(WallID.BlueDungeon)
 		));
+
+		if (addToCorridorTiles)
+		{
+			foreach (Point16 point in shapeData.GetData())
+			{
+				CorridorTiles.Add(new Point(point.X + x, point.Y + y));
+			}
+		}
 
 		for (int i = x - 6; i <= x + width + 6; ++i)
 		{
@@ -565,6 +601,7 @@ public class SkeletronDomain : BossDomainSubworld
 	{
 		SpecialRooms.Clear();
 		CorridorTiles.Clear();
+		ChasmTiles.Clear();
 
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 80 : Main.maxTilesX - 80;
 		Main.spawnTileY = 110;
