@@ -19,11 +19,9 @@ internal class RoomDatabase : ModSystem
 		int roomId = roomDatas.Count() - 1;// WorldGen.genRand.Next(roomDatas.Count());
 		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
 
-		if (opening == OpeningType.Right) // Right-placed is adjusted poorly
+		if (opening == OpeningType.Right) // Right-placed needs to be adjusted
 		{
 			x++;
-
-			PoTMod.Instance.Logger.Info("Room ID: " + roomId);
 		}
 
 		return new PlacedRoom(roomData.Value, instance.PlaceRoom(roomData.Key, x, y, roomData.Value.OpeningLocation));

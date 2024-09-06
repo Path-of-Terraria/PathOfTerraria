@@ -26,7 +26,7 @@ internal class DungeonConversion
 			return;
 		}
 
-		Dictionary<int, int> WallToAlt = new Dictionary<int, int>()
+		var WallToAlt = new Dictionary<int, int>()
 		{
 			{ WallID.BlueDungeon, color == DungeonColor.Pink ? WallID.PinkDungeonUnsafe : WallID.GreenDungeonUnsafe },
 			{ WallID.BlueDungeonUnsafe, color == DungeonColor.Pink ? WallID.PinkDungeonUnsafe : WallID.GreenDungeonUnsafe },
@@ -62,7 +62,7 @@ internal class DungeonConversion
 				{
 					t.TileFrameY += (short)(color == DungeonColor.Pink ? 80 : 40);
 				}
-				else if (t.TileType == TileID.Tables && t.TileFrameY >= 540 && t.TileFrameX < 594 && t.TileFrameY < 38) // Tables
+				else if (t.TileType == TileID.Tables && t.TileFrameX >= 540 && t.TileFrameX < 594 && t.TileFrameY < 38) // Tables
 				{
 					t.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
@@ -83,7 +83,7 @@ internal class DungeonConversion
 				{
 					t.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
-				else if (t.TileType == TileID.Pianos && t.TileFrameX >= 594 && t.TileFrameX < 468 && t.TileFrameY < 36) // Pianos
+				else if (t.TileType == TileID.Pianos && t.TileFrameX >= 594 && t.TileFrameX < 648 && t.TileFrameY < 36) // Pianos
 				{
 					t.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
@@ -91,9 +91,9 @@ internal class DungeonConversion
 				{
 					t.TileFrameY += (short)(color == DungeonColor.Pink ? 44 : 22);
 				}
-				else if (t.TileType == TileID.Lamps && t.TileFrameY >= 1298 && t.TileFrameY < 1350 && t.TileFrameX < 34) // Lamps
+				else if (t.TileType == TileID.Lamps && t.TileFrameY >= 1296 && t.TileFrameY < 1350 && t.TileFrameX < 34) // Lamps
 				{
-					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 52);
+					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
 				else if (t.TileType == TileID.ClosedDoor && t.TileFrameY >= 864 && t.TileFrameY < 918 && t.TileFrameX < 72) // Door (C)
 				{
