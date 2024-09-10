@@ -16,7 +16,7 @@ internal class RoomDatabase : ModSystem
 	{
 		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
 		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening);
-		int roomId = roomDatas.Count() - 1;// WorldGen.genRand.Next(roomDatas.Count());
+		int roomId = WorldGen.genRand.Next(roomDatas.Count());
 		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
 
 		if (opening == OpeningType.Right) // Right-placed needs to be adjusted
@@ -60,7 +60,7 @@ internal class RoomDatabase : ModSystem
 
 		DataByRoomIndex.Add(3, new RoomData(WireColor.Red, OpeningType.Right, new Point(97, 13), new Point(93, 54),
 			[new SpikeballInfo(new(30, 33), 90), new(new(53, 33), 90), new(new(76, 33), 90), new(new(30, 45), 90), new(new(53, 45), 90), new(new(76, 45), 90),
-				new SpikeballInfo(new(75, 14), 90)],
+				new SpikeballInfo(new(74, 14), 90)],
 			[new EngageTimerInfo(new(5, 7), 0), new(new(7, 9), 60), new(new(12, 49), 0)]));
 	}
 

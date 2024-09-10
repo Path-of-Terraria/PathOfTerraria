@@ -309,7 +309,12 @@ public class SkeletronDomain : BossDomainSubworld
 
 							if (type == TileID.Books)
 							{
-								style = WorldGen.genRand.Next(6);
+								style = WorldGen.genRand.Next(5);
+
+								if (WorldGen.genRand.NextBool(60))
+								{
+									style = 5;
+								}
 							}
 
 							WorldGen.PlaceObject(x, y - 1, type, true, style);

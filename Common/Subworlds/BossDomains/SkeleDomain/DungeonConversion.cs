@@ -19,7 +19,7 @@ internal class DungeonConversion
 	internal static void Convert(GenerationProgress progress, GameConfiguration configuration)
 #pragma warning restore IDE0060 // Remove unused parameter
 	{
-		var color = DungeonColor.Green; //(DungeonColor)Main.rand.Next((int)DungeonColor.Count);
+		var color = (DungeonColor)Main.rand.Next((int)DungeonColor.Count);
 
 		if (color == DungeonColor.Blue)
 		{
