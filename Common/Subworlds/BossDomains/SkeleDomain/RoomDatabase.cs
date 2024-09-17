@@ -12,6 +12,28 @@ internal class RoomDatabase : ModSystem
 
 	private readonly List<EngageTimerInfo> _timers = [];
 
+	public static PlacedRoom PlaceRandomRoom(OpeningType opening, int x, int y, List<WireColor> usedColors)
+	{
+		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
+		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening);
+
+		int roomId = WorldGen.genRand.Next(roomDatas.Count());
+		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
+
+		while (usedColors.Contains(roomData.Value.Wire))
+		{
+			roomId = WorldGen.genRand.Next(roomDatas.Count());
+			roomData = roomDatas.ElementAt(roomId);
+		}
+
+		if (opening == OpeningType.Right) // Right-placed needs to be adjusted
+		{
+			x++;
+		}
+
+		return new PlacedRoom(roomData.Value, instance.PlaceRoom(roomData.Key, x, y, roomData.Value.OpeningLocation));
+	}
+
 	public static PlacedRoom PlaceRandomRoom(OpeningType opening, int x, int y)
 	{
 		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
@@ -64,8 +86,9 @@ internal class RoomDatabase : ModSystem
 			[new EngageTimerInfo(new(5, 7), 0), new(new(7, 9), 60), new(new(12, 49), 0)]));
 
 		DataByRoomIndex.Add(4, new RoomData(WireColor.Yellow, OpeningType.Above, new Point(14, 0), new Point(73, 72),
-			[new SpikeballInfo(new(54, 35), 90), new(new(37, 35), 90), new(new(13, 35), 90)],
-			[new EngageTimerInfo(new(69, 25), 0), new(new(70, 25), 90), new(new(66, 67), 0), new(new(67, 67), 60), new(new(68, 67), 120), new(new(69, 67), 180)]));
+			[new SpikeballInfo(new(53, 37), 90, true, 0.04f), new(new(36, 37), 90), new(new(12, 37), 90)],
+			[new EngageTimerInfo(new(68, 25), 0), new(new(69, 25), 90), new(new(65, 67), 0), new(new(66, 67), 60), new(new(67, 67), 120), 
+				new EngageTimerInfo(new(68, 67), 180)]));
 	}
 
 	public override void PreUpdateWorld()

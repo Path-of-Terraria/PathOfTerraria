@@ -349,6 +349,7 @@ public class SkeletronDomain : BossDomainSubworld
 	private Point GenerateFirstFloor()
 	{
 		Floor = 0;
+		List<WireColor> usedColors = [];
 
 		int roomHeight = WorldGen.genRand.Next(12, 16);
 		CreatePlainRoom(WellBottom.X, WellBottom.Y + BaseTunnelDepth, WorldGen.genRand.Next(17, 23), roomHeight, true, true);
@@ -357,13 +358,13 @@ public class SkeletronDomain : BossDomainSubworld
 		int corridorEndY = WellBottom.Y + BaseTunnelDepth + 2 + WorldGen.genRand.Next(-6, 6);
 
 		RunCorridor(WellBottom.X, WellBottom.Y + BaseTunnelDepth + 2, corridorEnd, corridorEndY);
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, corridorEndY));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, corridorEndY, usedColors));
 
 		corridorEnd = WellBottom.X + WorldGen.genRand.Next(50, 80);
 		corridorEndY = WellBottom.Y + BaseTunnelDepth + 2 + WorldGen.genRand.Next(-6, 6);
 
 		RunCorridor(WellBottom.X, WellBottom.Y + BaseTunnelDepth + 2, corridorEnd, corridorEndY);
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, corridorEndY));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, corridorEndY, usedColors));
 
 		int chasmBottom = WellBottom.Y + BaseTunnelDepth + 2 + 180;
 		int lastX = DigChasm(WellBottom.Y + BaseTunnelDepth + 2 + roomHeight / 2 - 2, chasmBottom, WellBottom.X, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 2);
@@ -375,6 +376,7 @@ public class SkeletronDomain : BossDomainSubworld
 	private Point GenerateSecondFloor(int x, int y)
 	{
 		Floor = 1;
+		List<WireColor> usedColors = [];
 
 		int roomHeight = WorldGen.genRand.Next(16, 21);
 		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true, true);
@@ -386,19 +388,19 @@ public class SkeletronDomain : BossDomainSubworld
 
 		if (left)
 		{
-			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4));
+			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors));
 		}
 
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y, usedColors));
 
 		corridorEnd = x + (!left ? WorldGen.genRand.Next(150, 180) : WorldGen.genRand.Next(50, 80));
 
 		RunCorridor(x, y, corridorEnd, y);
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y, usedColors));
 
 		if (!left)
 		{
-			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3));
+			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3, usedColors));
 		}
 
 		int lastX = DigChasm(y + roomHeight / 2 - 2, y + 220, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 3);
@@ -409,6 +411,7 @@ public class SkeletronDomain : BossDomainSubworld
 	private void GenerateThirdFloor(int x, int y)
 	{
 		Floor = 2;
+		List<WireColor> usedColors = [];
 
 		int roomHeight = WorldGen.genRand.Next(16, 21);
 		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true, true);
@@ -418,14 +421,14 @@ public class SkeletronDomain : BossDomainSubworld
 
 		RunCorridor(x, y, corridorEnd, y);
 
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4));
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y, usedColors));
 
 		corridorEnd = x + WorldGen.genRand.Next(140, 170);
 
 		RunCorridor(x, y, corridorEnd, y);
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y));
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y, usedColors));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors));
 
 		int lastX = DigChasm(y + roomHeight / 2 - 2, y + 120, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 4);
 		WireRoomsToChasms(ActuatorInfoByFloor[2], RoomsToWire);

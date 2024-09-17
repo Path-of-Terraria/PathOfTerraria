@@ -6,6 +6,14 @@ using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
 
+/// <summary>
+/// Stores all the info needed for a spikeball. <paramref name="spinClockwise"/> defaults to random, 
+/// <paramref name="spinSpeed"/> defaults to 0.06f.
+/// </summary>
+/// <param name="position">Position of the spikeball. This is offset by 2 tiles up.</param>
+/// <param name="length">Length of the spikeball's chain.</param>
+/// <param name="spinClockwise">Which way the spikeball rotates. Defaults to random.</param>
+/// <param name="spinSpeed">How quickly the spikeball spins. Defaults to 0.06f.</param>
 public readonly struct SpikeballInfo(Point16 position, float length, bool? spinClockwise = null, float? spinSpeed = null)
 {
 	public readonly Point16 Position = position;
