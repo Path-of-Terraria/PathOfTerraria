@@ -61,6 +61,10 @@ internal class RoomDatabase : ModSystem
 		DataByRoomIndex.Add(3, new RoomData(WireColor.Red, OpeningType.Right, new Point(97, 13), new Point(93, 54),
 			[new SpikeballInfo(new(30, 33), 90), new(new(53, 33), 90), new(new(76, 33), 90), new(new(30, 45), 90), new(new(53, 45), 90), new(new(76, 45), 90)],
 			[new EngageTimerInfo(new(6, 6), 0), new(new(8, 8), 60), new(new(13, 48), 0)]));
+
+		DataByRoomIndex.Add(4, new RoomData(WireColor.Yellow, OpeningType.Above, new Point(14, 0), new Point(73, 72),
+			[new SpikeballInfo(new(54, 35), 90), new(new(37, 35), 90), new(new(13, 35), 90)],
+			[new EngageTimerInfo(new(69, 25), 0), new(new(70, 25), 90), new(new(66, 67), 0), new(new(67, 67), 60), new(new(68, 67), 120), new(new(69, 67), 180)]));
 	}
 
 	public override void PreUpdateWorld()
