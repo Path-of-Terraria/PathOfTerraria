@@ -103,6 +103,10 @@ internal class DungeonConversion
 				{
 					t.TileFrameY += (short)(color == DungeonColor.Pink ? 108 : 54);
 				}
+				else if (t.TileType == TileID.Dressers && t.TileFrameX >= 270 && t.TileFrameX < 324 && t.TileFrameY < 36) // Dressers
+				{
+					t.TileFrameX += (short)(color == DungeonColor.Pink ? 108 : 54);
+				}
 
 				if (WallToAlt.TryGetValue(t.WallType, out int id))
 				{

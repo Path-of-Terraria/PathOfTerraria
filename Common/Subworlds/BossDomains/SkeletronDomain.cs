@@ -36,7 +36,7 @@ public class SkeletronDomain : BossDomainSubworld
 		}
 	}
 
-	public override int Width => 800;
+	public override int Width => 900;
 	public override int Height => 1000;
 
 	const int BaseTunnelDepth = 90;
@@ -601,7 +601,6 @@ public class SkeletronDomain : BossDomainSubworld
 		StructureHelper.Generator.GetDimensions("Assets/Structures/SkeletronArena", Mod, ref size);
 		var position = new Point16(Width / 2 - size.X / 2, Height - 150 - size.Y / 2);
 		StructureHelper.Generator.GenerateStructure("Assets/Structures/SkeletronArena", position, Mod);
-
 		Arena = new Rectangle(position.X * 16, position.Y * 16, size.X * 16, size.Y * 16);
 	}
 
@@ -611,7 +610,7 @@ public class SkeletronDomain : BossDomainSubworld
 		CorridorTiles.Clear();
 		ChasmTiles.Clear();
 
-		Main.spawnTileX = WorldGen.genRand.NextBool() ? 80 : Main.maxTilesX - 80;
+		Main.spawnTileX = WorldGen.genRand.NextBool() ? 180 : Main.maxTilesX - 180;
 		Main.spawnTileY = 110;
 		Main.worldSurface = 230;
 		Main.rockLayer = 299;
