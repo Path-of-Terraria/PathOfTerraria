@@ -19,7 +19,7 @@ internal class RoomDatabase : ModSystem
 		int roomId = WorldGen.genRand.Next(roomDatas.Count());
 		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
 
-		if (opening == OpeningType.Right) // Right-placed is adjusted poorly
+		if (opening == OpeningType.Right) // Right-placed needs to be adjusted
 		{
 			x++;
 		}
@@ -79,7 +79,6 @@ internal class RoomDatabase : ModSystem
 			{
 				Tile tile = Main.tile[info.Position];
 				tile.TileFrameY = 18;
-				//tile.TileType = TileID.Meteorite;
 
 				Wiring.CheckMech(info.Position.X, info.Position.Y, 18000);
 			}
