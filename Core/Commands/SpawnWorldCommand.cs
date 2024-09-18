@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.BossDomains;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
@@ -16,7 +17,22 @@ public sealed class SpawnWorldCommand : ModCommand
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		SubworldSystem.Enter<BrainDomain>();
+		if (args.Length == 0) // Debug quickenter
+		{
+			SubworldSystem.Enter<BrainDomain>();
+		}
+
+		if (args.Length == 2)
+		{
+			throw new ArgumentException("Command takes only one parameter!", nameof(args));
+		}
+
+		string param = args[0].ToLower();
+
+		if (BossDomainSubworld.NameToSubworld.TryGetValue(param, out BossDomainSubworld subworld))
+		{
+			SubworldSystem.Enter($"{PoTMod.ModName}/{subworld.Name}");
+		}
 	}
 }
 #endif

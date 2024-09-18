@@ -22,6 +22,7 @@ public class EyeDomain : BossDomainSubworld
 
 	public override int Width => 800;
 	public override int Height => 280;
+	public override string[] DebugKeys => ["eye", "eoc", "eyeofcthulhu"];
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;

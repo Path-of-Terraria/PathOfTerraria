@@ -21,6 +21,7 @@ public class EaterDomain : BossDomainSubworld
 	public override int Width => 800;
 	public override int Height => 1000;
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<WeakMalaise>(), ModContent.TileType<TeethSpikes>()];
+	public override string[] DebugKeys => ["eow", "eater", "eaterofworlds"];
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;

@@ -29,13 +29,13 @@ internal class TestQuestTwo : Quest
 		return 
 		[
 			new CollectCount(ItemID.DirtBlock, 10),
-			new KillCount(x => x.lifeMax > 100, 2, Localize("Kill.HighHealth")),
+			new KillCount(x => x.lifeMax > 100, 2, QuestLocalization("Kill.HighHealth")),
 			new ActionStep((player, step) =>
 			{
 				player.velocity.Y = -20;
 				return true;
 			}),
-			new InteractWithNPC(NPCID.Guide, Localize("Exploration.Ice"))
+			new InteractWithNPC(NPCID.Guide, QuestLocalization("Exploration.Ice"))
 		];
 	}
 }

@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
-public abstract class Quest : ModType
+public abstract class Quest : ModType, ILocalizedModType
 {
 	private static readonly Dictionary<string, Quest> QuestsByName = [];
 
@@ -15,7 +15,9 @@ public abstract class Quest : ModType
 	public LocalizedText Description { get; private set; } 
 
 	public abstract List<QuestReward> QuestRewards { get; }
-	public List<QuestStep> QuestSteps { get; } = null;
+	public List<QuestStep> QuestSteps { get; protected set; } = null;
+
+	public string LocalizationCategory => $"Quests.Quest";
 
 	public QuestStep ActiveStep = null;
 
@@ -23,12 +25,16 @@ public abstract class Quest : ModType
 	public bool Completed;
 	public bool Active = false;
 
-	public Quest()
+	public sealed override void SetupContent()
+	{
+		SetStaticDefaults();
+	}
+
+	public override void SetStaticDefaults()
 	{
 		QuestSteps = SetSteps();
-
-		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
-		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
+		DisplayName = Language.GetOrRegister($"Mods.{Mod.Name}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
+		Description = Language.GetOrRegister($"Mods.{Mod.Name}.Quests.Quest.{GetType().Name}.Description", () => "");
 	}
 
 	public abstract List<QuestStep> SetSteps();
@@ -43,12 +49,12 @@ public abstract class Quest : ModType
 		return QuestsByName[name];
 	}
 
-	public static LocalizedText Localize(string postfix)
+	public static LocalizedText QuestLocalization(string postfix)
 	{
 		return Language.GetText($"Mods.{PoTMod.ModName}.Quests." + postfix);
 	}
 
-	public static string LocalizeValue(string postfix)
+	public static string QuestLocalizationValue(string postfix)
 	{
 		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests." + postfix);
 	}

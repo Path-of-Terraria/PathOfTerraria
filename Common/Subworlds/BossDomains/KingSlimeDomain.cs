@@ -19,6 +19,7 @@ public class KingSlimeDomain : BossDomainSubworld
 {
 	public override int Width => 500;
 	public override int Height => 600;
+	public override string[] DebugKeys => ["slime", "king", "ks", "kingslime"];
 
 	internal static Point16 ArenaEntrance = Point16.Zero;
 

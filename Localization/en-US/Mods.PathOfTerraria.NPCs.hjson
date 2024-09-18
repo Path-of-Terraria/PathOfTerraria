@@ -36,3 +36,15 @@ HunterNPC: {
 }
 
 Minera.DisplayName: Minera
+
+GarrickNPC: {
+	DisplayName: Garrick
+
+	Dialogue: {
+		0: The ground shakes uncontrollably in the King's domain. As if slime seeps into the rock.
+		1: Adventurers often fail to tell you of how slimy adventuring is. I am not one of those adventurers. It's extremely slimy.
+		2: Watch your head. Generally, but mostly with the King's domain.
+		3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
+		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; it'll take you right to him.
+	}
+}

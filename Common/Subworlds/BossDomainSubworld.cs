@@ -16,6 +16,8 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public abstract class BossDomainSubworld : MappingWorld
 {
+	public static Dictionary<string, BossDomainSubworld> NameToSubworld = [];
+
 	public override bool ShouldSave => false;
 	public override bool NoPlayerSaving => false;
 
@@ -30,12 +32,25 @@ public abstract class BossDomainSubworld : MappingWorld
 	public virtual int[] WhitelistedCutTiles => [];
 
 	/// <summary>
+	/// These tiles are allowed to be cut by the player with melee or projectiles.
+	/// </summary>
+	public virtual string[] DebugKeys => [];
+
+	/// <summary>
 	/// The level of dropped <see cref="Content.Items.Gear.Gear"/> in the domain. 0 will roll default level formula.
 	/// </summary>
 	public virtual int DropItemLevel => 0;
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
+
+	public override void Load()
+	{
+		foreach (string item in DebugKeys)
+		{
+			NameToSubworld.Add(item, this);
+		}
+	}
 
 #pragma warning disable IDE0060 // Remove unused parameter
 	protected static void ResetStep(GenerationProgress progress, GameConfiguration configuration)

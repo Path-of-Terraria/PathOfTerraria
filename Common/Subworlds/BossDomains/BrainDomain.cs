@@ -25,6 +25,7 @@ public class BrainDomain : BossDomainSubworld
 	public override int Height => 1300;
 	public override int[] WhitelistedCutTiles => [TileID.Pots, TileID.CrimsonThorns];
 	public override int DropItemLevel => 20;
+	public override string[] DebugKeys => ["brain", "boc", "brainofcthulhu"];
 
 	public Rectangle Arena = Rectangle.Empty;
 	public Vector2 ProjectilePosition = Vector2.Zero;
