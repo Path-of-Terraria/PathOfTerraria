@@ -627,11 +627,13 @@ public class SkeletronDomain : BossDomainSubworld
 
 			for (int y = (int)useY; y < Main.maxTilesY; ++y)
 			{
-				WorldGen.PlaceTile(x, y, y > 400 + noiseOffset ? TileID.Stone : TileID.Dirt);
+				Tile tile = Main.tile[x, y];
+				tile.TileType = y > 400 + noiseOffset ? TileID.Stone : TileID.Dirt;
+				tile.HasTile = true;
 
 				if (y > useY + 4)
 				{
-					WorldGen.PlaceWall(x, y, WallID.Stone, true);
+					tile.WallType = WallID.Stone;
 				}
 			}
 

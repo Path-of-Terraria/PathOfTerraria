@@ -3,7 +3,6 @@ using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.IO;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using ReLogic.Graphics;
 
