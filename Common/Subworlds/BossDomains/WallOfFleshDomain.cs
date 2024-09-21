@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Content.Projectiles;
+using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -18,17 +18,60 @@ public class WallOfFleshDomain : BossDomainSubworld
 {
 	public override int Width => 1800;
 	public override int Height => 250;
-	public override int[] WhitelistedCutTiles => [TileID.Pots, TileID.CrimsonThorns];
+	public override int[] WhitelistedCutTiles => [TileID.Pots, TileID.CrimsonThorns, ModContent.TileType<FrayedRope>()];
+	public override int[] WhitelistedMiningTiles => [ModContent.TileType<FrayedRope>()];
 	public override int DropItemLevel => 30;
 
-	public Rectangle Arena = Rectangle.Empty;
-	public Vector2 ProjectilePosition = Vector2.Zero;
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
+	public bool LeftBlocked = true;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new	PassLegacy("Base Terrain", Terrain),
-		new PassLegacy("Settle Liquids", SettleLiquids)];
-	
+		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids)];
+
+	private void SpawnArenas(GenerationProgress progress, GameConfiguration configuration)
+	{
+		int minX = 0;
+		int maxX = Main.spawnTileX;
+
+		if (LeftBlocked)
+		{
+			minX = Main.spawnTileX;
+			maxX = Width;
+		}
+
+		int sixth = (maxX - minX) / 6;
+
+		for (int i = 0; i < 4; ++i)
+		{
+			int x = minX + sixth * (i + 1);
+
+			PlaceArena(x);
+		}
+	}
+
+	private void PlaceArena(int x)
+	{
+		int id = 0;
+
+		Point16 size = new();
+		StructureHelper.Generator.GetDimensions("Assets/Structures/WoFDomain/Arena_" + id, Mod, ref size);
+
+		x -= size.X / 2;
+
+		for (int i = x; i < x + size.X; ++i)
+		{
+			for (int j = 0; j < Height; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				tile.HasTile = true;
+				tile.TileType = TileID.ObsidianBrick;
+			}
+		}
+
+		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Arena_" + id, new Point16(x, (int)(Height * 0.35f)), Vector2.Zero, null, false);
+	}
+
 	/// <summary>
 	/// Copied from vanilla's Settle Liquids generation step.
 	/// </summary>
@@ -91,6 +134,8 @@ public class WallOfFleshDomain : BossDomainSubworld
 		Liquid.quickSettle = false;
 		Liquid.worldGenTilesIgnoreWater(ignoreSolids: false);
 		Main.tileSolid[484] = false;
+
+		AddCrucible();
 	}
 
 	public override void OnEnter()
@@ -108,7 +153,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 		Main.rockLayer = 6;
 		Main.spawnTileY += 15;
 
-		GetNoises(out FastNoiseLite noise, out FastNoiseLite softNoise, out FastNoiseLite wallNoise, 
+		GetNoises(out FastNoiseLite noise, out FastNoiseLite softNoise, out FastNoiseLite wallNoise,
 			out FastNoiseLite smallWallNoise, out FastNoiseLite wallTypeNoise);
 
 		HashSet<Point> hellStonePoints = [];
@@ -116,14 +161,16 @@ public class WallOfFleshDomain : BossDomainSubworld
 		HashSet<Point> lavaLocations = [];
 		HashSet<Point> fleshLocations = [];
 
-		bool leftBlocked = WorldGen.genRand.NextBool();
+		LeftBlocked = WorldGen.genRand.NextBool();
+		BossSpawned = false;
+		ReadyToExit = false;
 
 		for (int i = 0; i < Width; ++i)
 		{
 			int minY = Main.maxTilesY - 160 + (int)(noise.GetNoise(i, 0) * 40);
 			int maxY = Main.maxTilesY - (int)(noise.GetNoise(i, 1200) * 80) - 120;
 			int offsetY = (int)(wallTypeNoise.GetNoise(i, -200) * 18f);
-			
+
 			minY = Math.Max(Main.maxTilesY - 150 + (int)(softNoise.GetNoise(i, 0) * 60), minY) + offsetY;
 			maxY = Math.Min(Main.maxTilesY - (int)(softNoise.GetNoise(i, 1200) * 80) - 120, maxY) + (int)(wallTypeNoise.GetNoise(i, 200) * 18f);
 
@@ -133,7 +180,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (IsWallX(i, leftBlocked))
+				if (IsWallX(i, LeftBlocked))
 				{
 					fleshLocations.Add(new Point(i, j));
 				}
@@ -143,7 +190,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 					tile.HasTile = true;
 					tile.TileType = TileID.Ash;
 
-					if (IsWallX(i, leftBlocked))
+					if (IsWallX(i, LeftBlocked))
 					{
 						float mul;
 						int absOffset = (int)(Math.Abs(j - (Main.maxTilesY - 130)) * 0.65f);
@@ -252,8 +299,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			}
 		}
 
-		StructureHelper.Generator.GenerateStructure("Assets/Structures/WoFDomain/Spawn", new Point16(Main.spawnTileX - 8, Main.spawnTileY + 3), Mod);
-
+		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Spawn", new Point16(Main.spawnTileX, Main.spawnTileY), new Vector2(0.5f, 0), null, false);
 		return;
 
 		static int GetWallType(FastNoiseLite wallTypeNoise, int i, int j)
@@ -274,7 +320,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			int absOffset = Math.Abs(j - (Main.maxTilesY - 130));
 			float noise = wallNoise.GetNoise(i, j + 200);
 
-			if (!IsBehindWall(i, leftBlocked))
+			if (!IsBehindWall(i, LeftBlocked))
 			{
 				float mul;
 
@@ -293,6 +339,46 @@ public class WallOfFleshDomain : BossDomainSubworld
 			{
 				return noise;
 			}
+		}
+	}
+
+	private void AddCrucible()
+	{
+		int crucibleX = LeftBlocked ? Width - 70 : 70;
+		int crucibleY = Main.spawnTileY;
+
+		while (!WorldGen.SolidTile(crucibleX, crucibleY) && Main.tile[crucibleX, crucibleY].LiquidAmount <= 50)
+		{
+			crucibleY++;
+		}
+
+		crucibleY -= 10;
+		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Crucible", new Point16(crucibleX, crucibleY), new Vector2(0.5f, 0.5f), null, false);
+
+		crucibleX--;
+		crucibleY -= 5;
+		int count = 0;
+
+		while (!WorldGen.SolidTile(crucibleX, crucibleY))
+		{
+			if (count == 0)
+			{
+				for (int i = 0; i < 2; ++i)
+				{
+					Tile tile = Main.tile[crucibleX, crucibleY + i];
+					tile.TileType = (ushort)ModContent.TileType<VoodooRope>();
+					tile.HasTile = true;
+				}
+			}
+			else
+			{
+				Tile tile = Main.tile[crucibleX, crucibleY];
+				tile.TileType = (ushort)(count == 16 ? ModContent.TileType<FrayedRope>() : TileID.Rope);
+				tile.HasTile = true;
+			}
+
+			crucibleY--;
+			count++;
 		}
 	}
 
@@ -359,52 +445,74 @@ public class WallOfFleshDomain : BossDomainSubworld
 	{
 		Liquid.UpdateLiquid();
 
-		bool hasProj = false;
-
-		foreach (Projectile proj in Main.ActiveProjectiles)
-		{
-			if (proj.type == ModContent.ProjectileType<Teleportal>())
-			{
-				hasProj = true;
-			}
-		}
-
-		if (!hasProj)
-		{
-			int type = ModContent.ProjectileType<Teleportal>();
-			Vector2 position = ProjectilePosition.ToWorldCoordinates() - new Vector2(10, 80);
-			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), position, Vector2.Zero, type, 0, 0, -1, 400 * 16, 200 * 16);
-		}
-
 		Main.dayTime = false;
 		Main.time = Main.nightLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
 
-		bool allInArena = true;
-
 		foreach (Player player in Main.ActivePlayers)
 		{
 			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
-			if (allInArena && !Arena.Intersects(player.Hitbox))
-			{
-				allInArena = false;
-			}
 		}
 
-		if (!BossSpawned && allInArena)
+		if (NPC.AnyNPCs(NPCID.WallofFlesh))
 		{
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y - 400, NPCID.WallofFlesh);
+			if (!BossSpawned) // Remove all flesh blocks
+			{
+				for (int i = Main.spawnTileX - 100; i < Main.spawnTileX + 100; i++)
+				{
+					for (int j = 0; j < Height; ++j)
+					{
+						Tile tile = Main.tile[i, j];
+
+						if (tile.TileType == TileID.FleshBlock)
+						{
+							tile.HasTile = false;
+
+							if (Main.netMode == NetmodeID.Server)
+							{
+								NetMessage.SendTileSquare(-1, i, j);
+							}
+
+							WorldGen.SquareTileFrame(i, j, true);
+						}
+					}
+				}
+			}
+			
 			BossSpawned = true;
 		}
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.WallofFlesh) && !ReadyToExit)
 		{
-			Vector2 pos = Arena.Center() + new Vector2(30, 100);
-			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-
-			BossTracker.CachedBossesDowned.Add(NPCID.BrainofCthulhu);
+			BossTracker.CachedBossesDowned.Add(NPCID.WallofFlesh);
 			ReadyToExit = true;
+		}
+	}
+
+	/// <summary>
+	/// Used to clamp camera to hide the other side of the domain for a "wow" factor.
+	/// </summary>
+	public class WoFDomainSystem : ModSystem
+	{
+		public override void ModifyScreenPosition()
+		{
+			if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.BossSpawned)
+			{
+				if (domain.LeftBlocked)
+				{
+					if (Main.screenPosition.X / 16f < Main.spawnTileX - 70)
+					{
+						Main.screenPosition.X = (Main.spawnTileX - 70) * 16;
+					}
+				}
+				else
+				{
+					if ((Main.screenPosition.X + Main.screenWidth) / 16f > Main.spawnTileX + 70)
+					{
+						Main.screenPosition.X = (Main.spawnTileX + 70) * 16 - Main.screenWidth;
+					}
+				}
+			}
 		}
 	}
 }
