@@ -24,7 +24,18 @@ internal class VoodooRope : ModTile
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (Main.tile[i, j - 1].TileType == Type)
+		bool anyProj = false;
+
+		foreach (Projectile proj in Main.ActiveProjectiles)
+		{
+			if (proj.type == ModContent.ProjectileType<VoodooRopeProj>())
+			{
+				anyProj = true;
+				break;
+			}
+		}
+
+		if (anyProj)
 		{
 			return;
 		}

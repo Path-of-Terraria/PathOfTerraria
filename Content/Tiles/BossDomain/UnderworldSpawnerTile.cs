@@ -1,4 +1,6 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+using Terraria.DataStructures;
+using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -14,7 +16,8 @@ internal class UnderworldSpawnerTile : ModTile
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.CoordinateHeights = [16];
-		TileObjectData.newTile.AnchorTop = new AnchorData(Terraria.Enums.AnchorType.SolidTile, 2, 0);
+		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.EmptyTile, 2, 0);
+		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.addTile(Type);
 
@@ -38,10 +41,19 @@ internal class UnderworldSpawnerTile : ModTile
 			0 => NPCID.LavaSlime,
 			1 => NPCID.Demon,
 			2 => NPCID.FireImp,
-			_ => NPCID.Lavabat
+			3 => NPCID.Lavabat,
+			_ => NPCID.RedDevil
 		};
 
-		int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 3) * 16, type, 1);
+		int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 1);
 		Main.npc[npc].netUpdate = true;
+		Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
 	}
+
+#if !DEBUG
+	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		return false;
+	}
+#endif
 }

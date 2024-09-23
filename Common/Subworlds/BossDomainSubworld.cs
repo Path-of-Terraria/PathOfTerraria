@@ -42,10 +42,7 @@ public abstract class BossDomainSubworld : MappingWorld
 #pragma warning restore IDE0060 // Remove unused parameter
 	{
 		WorldGenerator.CurrentGenerationProgress = progress;
-		int seed = DateTime.Now.Millisecond;
-		WorldGen._lastSeed = seed;
-		WorldGen._genRand = new UnifiedRandom(seed);
-		WorldGen._genRand.SetSeed(seed);
+		Main.ActiveWorldFileData.SetSeedToRandom();
 	}
 
 	public override void DrawMenu(GameTime gameTime)

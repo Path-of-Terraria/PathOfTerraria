@@ -408,3 +408,33 @@ Rottenbone: {
 	AltUseDescription: Right click to throw your weapon, which quickly splits into many pieces, each dealing additional damage or applying Poisoned.
 	Description: It's genuinely unpleasant to touch. More unpleasant for your opponents, though.
 }
+
+DemonTriggerItem: {
+	DisplayName: Demon Trigger Item
+	Tooltip: ""
+}
+
+ImpTriggerItem: {
+	DisplayName: Imp Trigger Item
+	Tooltip: ""
+}
+
+LavaBatTriggerItem: {
+	DisplayName: Lava Bat Trigger Item
+	Tooltip: ""
+}
+
+LavaSlimeTriggerItem: {
+	DisplayName: Lava Slime Trigger Item
+	Tooltip: ""
+}
+
+ArenaBlockerItem: {
+	DisplayName: Arena Blocker Item
+	Tooltip: ""
+}
+
+DevilTriggerItem: {
+	DisplayName: Devil Trigger Item
+	Tooltip: ""
+}

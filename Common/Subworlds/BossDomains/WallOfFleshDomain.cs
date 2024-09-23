@@ -4,6 +4,7 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.Xml.Linq;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.Generation;
@@ -18,7 +19,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 {
 	public override int Width => 1800;
 	public override int Height => 250;
-	public override int[] WhitelistedCutTiles => [TileID.Pots, TileID.CrimsonThorns, ModContent.TileType<FrayedRope>()];
+	public override int[] WhitelistedCutTiles => [ModContent.TileType<FrayedRope>()];
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<FrayedRope>()];
 	public override int DropItemLevel => 30;
 
@@ -40,19 +41,30 @@ public class WallOfFleshDomain : BossDomainSubworld
 			maxX = Width;
 		}
 
-		int sixth = (maxX - minX) / 6;
+		int sixth = (maxX - minX) / 5;
+		HashSet<int> usedIds = [];
 
 		for (int i = 0; i < 4; ++i)
 		{
 			int x = minX + sixth * (i + 1);
+			x += WorldGen.genRand.Next(-10, 10);
 
-			PlaceArena(x);
+			PlaceArena(x, usedIds);
 		}
 	}
 
-	private void PlaceArena(int x)
+	private void PlaceArena(int x, HashSet<int> usedIds)
 	{
-		int id = 0;
+		const int MaxArenas = 7;
+
+		int id = WorldGen.genRand.Next(MaxArenas);
+
+		while (usedIds.Contains(id))
+		{
+			id = WorldGen.genRand.Next(MaxArenas);
+		}
+
+		usedIds.Add(id);
 
 		Point16 size = new();
 		StructureHelper.Generator.GetDimensions("Assets/Structures/WoFDomain/Arena_" + id, Mod, ref size);
@@ -69,7 +81,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			}
 		}
 
-		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Arena_" + id, new Point16(x, (int)(Height * 0.35f)), Vector2.Zero, null, false);
+		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Arena_" + id, new Point16(x, (int)(Height * 0.52f) - size.Y / 2), Vector2.Zero, null, false);
 	}
 
 	/// <summary>
@@ -356,7 +368,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Crucible", new Point16(crucibleX, crucibleY), new Vector2(0.5f, 0.5f), null, false);
 
 		crucibleX--;
-		crucibleY -= 5;
+		crucibleY -= 10;
 		int count = 0;
 
 		while (!WorldGen.SolidTile(crucibleX, crucibleY))
@@ -444,6 +456,15 @@ public class WallOfFleshDomain : BossDomainSubworld
 	public override void Update()
 	{
 		Liquid.UpdateLiquid();
+		Wiring.UpdateMech();
+
+		TileEntity.UpdateStart();
+		foreach (TileEntity te in TileEntity.ByID.Values)
+		{
+			te.Update();
+		}
+
+		TileEntity.UpdateEnd();
 
 		Main.dayTime = false;
 		Main.time = Main.nightLength / 2;
