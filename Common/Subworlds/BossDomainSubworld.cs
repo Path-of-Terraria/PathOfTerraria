@@ -30,6 +30,11 @@ public abstract class BossDomainSubworld : MappingWorld
 	public virtual int[] WhitelistedCutTiles => [];
 
 	/// <summary>
+	/// These tiles are allowed to be placed by the player. These should also be in <see cref="WhitelistedMiningTiles"/>.
+	/// </summary>
+	public virtual int[] WhitelistedPlaceableTiles => [];
+
+	/// <summary>
 	/// The level of dropped <see cref="Content.Items.Gear.Gear"/> in the domain. 0 will roll default level formula.
 	/// </summary>
 	public virtual int DropItemLevel => 0;

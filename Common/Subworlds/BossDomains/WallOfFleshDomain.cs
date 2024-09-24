@@ -4,7 +4,6 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.Generation;
@@ -20,7 +19,8 @@ public class WallOfFleshDomain : BossDomainSubworld
 	public override int Width => 1800;
 	public override int Height => 250;
 	public override int[] WhitelistedCutTiles => [ModContent.TileType<FrayedRope>()];
-	public override int[] WhitelistedMiningTiles => [ModContent.TileType<FrayedRope>()];
+	public override int[] WhitelistedMiningTiles => [ModContent.TileType<FrayedRope>(), TileID.Platforms];
+	public override int[] WhitelistedPlaceableTiles => [TileID.Platforms];
 	public override int DropItemLevel => 30;
 
 	public bool BossSpawned = false;
@@ -39,6 +39,8 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 	private void SpawnPathway(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Pathway");
+
 		int minX = 10;
 		int maxX = Main.spawnTileX - 80;
 
