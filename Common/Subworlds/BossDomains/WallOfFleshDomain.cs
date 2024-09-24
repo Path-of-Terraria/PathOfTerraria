@@ -4,6 +4,7 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
 using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.Generation;
@@ -27,10 +28,202 @@ public class WallOfFleshDomain : BossDomainSubworld
 	public bool LeftBlocked = true;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new	PassLegacy("Base Terrain", Terrain),
-		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids)];
+		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids), new PassLegacy("Pathway", SpawnPathway)];
+
+	public override void OnEnter()
+	{
+		base.OnEnter();
+
+		SubworldSystem.hideUnderworld = false;
+	}
+
+	private void SpawnPathway(GenerationProgress progress, GameConfiguration configuration)
+	{
+		int minX = 10;
+		int maxX = Main.spawnTileX - 80;
+
+		if (!LeftBlocked)
+		{
+			minX = Main.spawnTileX + 80;
+			maxX = Width - 10;
+		}
+
+		int y = Height / 2;
+		int lastTime = 0;
+		int dir = 0;
+		int stopTime = 0;
+		int straightCount = 0;
+		Point16 lastFlat = new();
+
+		HashSet<(Point16, Point16)> flatPlatformAreas = [];
+		HashSet<Point16> platforms = [];
+
+		for (int x = minX; x < maxX; ++x)
+		{
+			Tile tile = Main.tile[x, y];
+			tile.HasTile = true;
+			tile.TileType = TileID.Platforms;
+			tile.TileFrameY = 234;
+
+			platforms.Add(new Point16(x, y));
+			lastTime--;
+
+			if (SolidOrLava(x + 10, y))
+			{
+				lastTime = -stopTime;
+			}
+
+			if (lastTime <= -stopTime)
+			{
+				lastTime = WorldGen.genRand.Next(10, 26);
+
+				int off = 0;
+
+				while (!SolidOrLava(x, y + off))
+				{
+					off++;
+				}
+
+				dir = off < lastTime ? -1 : 1;
+				stopTime = WorldGen.genRand.Next(30, 80);
+			}
+
+			if (lastTime > 0)
+			{
+				if (straightCount > 6)
+				{
+					flatPlatformAreas.Add((lastFlat, new(x, y)));
+				}
+
+				y += dir;
+				straightCount = 0;
+			}
+			else
+			{
+				if (lastTime == 0)
+				{
+					lastFlat = new Point16(x, y);
+				}
+
+				straightCount++;
+			}
+		}
+
+		foreach (Point16 position in platforms)
+		{
+			if (!Main.tile[position.X - 1, position.Y].HasTile || !Main.tile[position.X + 1, position.Y].HasTile)
+			{
+				PoundPlatform(position.X, position.Y);
+			}
+		}
+
+		foreach ((Point16 start, Point16 end) in flatPlatformAreas)
+		{
+			int spaces = 4;
+			int dist = end.X - start.X;
+
+			if (dist < 10)
+			{
+				spaces = 2;
+			}
+			else if (dist < 35)
+			{
+				spaces = 3;
+			}
+
+			int spacing = 0;
+			HashSet<int> pillars = [];
+
+			for (int i = 0; i <= spaces; ++i)
+			{
+				int x = (int)MathHelper.Lerp(start.X, end.X, i / (float)spaces);
+
+				for (int j = -1; j < 2; ++j)
+				{
+					pillars.Add(x + j);
+				}
+			}
+
+			for (int i = start.X + 2; i < end.X - 1; ++i)
+			{
+				int depth = 3;
+
+				if (pillars.Contains(i))
+				{
+					depth = Height - end.Y;
+
+					if (!pillars.Contains(i - 1) || !pillars.Contains(i + 1))
+					{
+						WorldGen.PlaceObject(i, end.Y - 1, TileID.Lamps, true, 23);
+					}
+				}
+
+				for (int j = end.Y; j < end.Y + depth; ++j)
+				{
+					Tile tile = Main.tile[i, j];
+					tile.TileType = TileID.ObsidianBrick;
+					tile.HasTile = true;
+				}
+				
+				WorldGen.TileFrame(i, end.Y, true);
+				spacing++;
+			}
+		}
+
+		static bool SolidOrLava(int i, int j)
+		{
+			return WorldGen.SolidOrSlopedTile(i, j) || Main.tile[i, j].LiquidAmount > 0;
+		}
+	}
+
+	/// <summary>
+	/// Copied from vanilla hammer functionality. <see cref="WorldGen.PoundPlatform(int, int)"/> doesn't work properly for some reason.
+	/// All multiplayer syncing has been removed as that's automatic for the subworld.
+	/// </summary>
+	private static void PoundPlatform(short x, short y)
+	{
+		Tile tile = Main.tile[x, y];
+
+		if (tile.IsHalfBlock)
+		{
+			WorldGen.PoundTile(x, y);
+		}
+		else
+		{
+			SlopeType doSlope = SlopeType.SlopeDownLeft;
+			int slope = 2;
+
+			if (TileID.Sets.Platforms[Main.tile[x + 1, y - 1].TileType] || TileID.Sets.Platforms[Main.tile[x - 1, y + 1].TileType] || 
+				WorldGen.SolidTile(x + 1, y) && !WorldGen.SolidTile(x - 1, y))
+			{
+				doSlope = SlopeType.SlopeDownRight;
+				slope = 1;
+			}
+
+			if (Main.tile[x, y].Slope == SlopeType.Solid)
+			{
+				WorldGen.SlopeTile(x, y, (int)doSlope);
+				SlopeType newSlope = Main.tile[x, y].Slope;
+			}
+			else if (Main.tile[x, y].Slope == doSlope)
+			{
+				WorldGen.SlopeTile(x, y, slope);
+				SlopeType newSlope = Main.tile[x, y].Slope;
+			}
+			else
+			{
+				WorldGen.SlopeTile(x, y);
+				WorldGen.PoundTile(x, y);
+			}
+		}
+
+		WorldGen.TileFrame(x, y);
+	}
 
 	private void SpawnArenas(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Arenas");
+
 		int minX = 0;
 		int maxX = Main.spawnTileX;
 
@@ -147,13 +340,6 @@ public class WallOfFleshDomain : BossDomainSubworld
 		Main.tileSolid[484] = false;
 
 		AddCrucible();
-	}
-
-	public override void OnEnter()
-	{
-		base.OnEnter();
-
-		SubworldSystem.hideUnderworld = false;
 	}
 
 	private void Terrain(GenerationProgress progress, GameConfiguration configuration)
