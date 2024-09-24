@@ -6,6 +6,7 @@ using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using ReLogic.Graphics;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -48,6 +49,13 @@ public abstract class BossDomainSubworld : MappingWorld
 	{
 		WorldGenerator.CurrentGenerationProgress = progress;
 		Main.ActiveWorldFileData.SetSeedToRandom();
+	}
+
+	public override void OnEnter()
+	{
+		base.OnEnter();
+
+		SubworldSystem.noReturn = true;
 	}
 
 	public override void DrawMenu(GameTime gameTime)

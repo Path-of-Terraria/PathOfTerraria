@@ -1,9 +1,11 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Projectiles;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.Generation;
@@ -617,7 +619,8 @@ public class WallOfFleshDomain : BossDomainSubworld
 		return true;
 	}
 
-	private static void GetNoises(out FastNoiseLite noise, out FastNoiseLite softNoise, out FastNoiseLite wallNoise, out FastNoiseLite smallWallNoise, out FastNoiseLite wallTypeNoise)
+	private static void GetNoises(out FastNoiseLite noise, out FastNoiseLite softNoise, out FastNoiseLite wallNoise, 
+		out FastNoiseLite smallWallNoise, out FastNoiseLite wallTypeNoise)
 	{
 		noise = new FastNoiseLite(WorldGen._genRandSeed);
 		noise.SetFrequency(0.03f);
@@ -692,6 +695,10 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.WallofFlesh) && !ReadyToExit)
 		{
+			Player player = Main.rand.Next(Main.player.Where(x => x.active).ToArray());
+			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center - new Vector2(0, 80), 
+				Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+
 			BossTracker.CachedBossesDowned.Add(NPCID.WallofFlesh);
 			ReadyToExit = true;
 		}
