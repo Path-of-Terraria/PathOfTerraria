@@ -4,7 +4,6 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
 using System.Collections.Generic;
-using System.Xml.Linq;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent.Generation;
@@ -55,7 +54,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 	private void PlaceArena(int x, HashSet<int> usedIds)
 	{
-		const int MaxArenas = 7;
+		const int MaxArenas = 8;
 
 		int id = WorldGen.genRand.Next(MaxArenas);
 
@@ -81,7 +80,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			}
 		}
 
-		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Arena_" + id, new Point16(x, (int)(Height * 0.52f) - size.Y / 2), Vector2.Zero, null, false);
+		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Arena_" + id, new Point16(x, (int)(Height * 0.48f) - size.Y / 2), Vector2.Zero, null, false);
 	}
 
 	/// <summary>

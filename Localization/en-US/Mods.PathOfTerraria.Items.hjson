@@ -410,31 +410,31 @@ Rottenbone: {
 }
 
 DemonTriggerItem: {
-	DisplayName: Demon Trigger Item
+	DisplayName: Demon Trigger
 	Tooltip: ""
 }
 
 ImpTriggerItem: {
-	DisplayName: Imp Trigger Item
+	DisplayName: Imp Trigger
 	Tooltip: ""
 }
 
 LavaBatTriggerItem: {
-	DisplayName: Lava Bat Trigger Item
+	DisplayName: Lava Bat Trigger
 	Tooltip: ""
 }
 
 LavaSlimeTriggerItem: {
-	DisplayName: Lava Slime Trigger Item
+	DisplayName: Lava Slime Trigger
 	Tooltip: ""
 }
 
 ArenaBlockerItem: {
-	DisplayName: Arena Blocker Item
+	DisplayName: Cursed Brick
 	Tooltip: ""
 }
 
 DevilTriggerItem: {
-	DisplayName: Devil Trigger Item
+	DisplayName: Devil Trigger
 	Tooltip: ""
 }
