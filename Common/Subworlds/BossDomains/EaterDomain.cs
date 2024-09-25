@@ -440,6 +440,8 @@ public class EaterDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
+
 		BossSpawned = false;
 		ReadyToExit = false;
 

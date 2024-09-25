@@ -14,7 +14,7 @@ namespace PathOfTerraria.Content.Skills.Magic;
 
 public class Nova : Skill
 {
-	private enum NovaType : byte
+	public enum NovaType : byte
 	{
 		Normal,
 		Fire,
@@ -59,10 +59,15 @@ public class Nova : Skill
 
 	private NovaType GetNovaType()
 	{
+		return GetNovaType(this);
+	}
+
+	public static NovaType GetNovaType(Nova nova)
+	{
 		Player player = Main.LocalPlayer;
 		SkillPassivePlayer skillPassive = player.GetModPlayer<SkillPassivePlayer>();
 
-		if (skillPassive.AllocatedPassives.TryGetValue(this, out Dictionary<string, SkillPassive> passives))
+		if (skillPassive.AllocatedPassives.TryGetValue(nova, out Dictionary<string, SkillPassive> passives))
 		{
 			if (passives.ContainsKey(nameof(FireNovaSkillPassive)))
 			{
