@@ -110,7 +110,7 @@ internal class StopBuildingPlayer : ModPlayer
 			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile];
 			bool isTorch = item.createTile >= TileID.Dirt && TileID.Sets.Torch[item.createTile];
 
-			if (!isRope && !isTorch)
+			if (!isRope && !isTorch && !BuildingWhitelist.InPlacingWhitelist(item.createTile))
 			{
 				return !LastStopBuilding;
 			}

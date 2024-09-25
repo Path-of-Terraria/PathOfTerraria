@@ -39,8 +39,7 @@ internal class SkillTreeInnerPanel : SmartUiElement
 
 			if (edge.End.CanAllocate() && edge.Start.Level > 0)
 			{
-				color = Color.Lerp(Color.Gray, Color.White,
-					(float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
+				color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 			}
 
 			if (edge.End.Level > 0 && edge.Start.Level > 0)
