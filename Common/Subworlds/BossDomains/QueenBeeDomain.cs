@@ -19,7 +19,6 @@ public class QueenBeeDomain : BossDomainSubworld
 	public override int Height => 600;
 	public override int[] WhitelistedCutTiles => [TileID.BeeHive];
 
-	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 
@@ -46,7 +45,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			progress.Value = (float)x / Main.maxTilesX;
 		}
 
-		StructureTools.PlaceByOrigin("Assets/Structures/BeeDomain/Arena_0", new Point16(Width / 2, Height / 2), new(0.5f));
+		StructureTools.PlaceByOrigin("Assets/Structures/BeeDomain/Arena_" + WorldGen.genRand.Next(2), new Point16(Width / 2, Height / 2), new(0.5f));
 	}
 
 	public override void OnEnter()
@@ -61,35 +60,22 @@ public class QueenBeeDomain : BossDomainSubworld
 		Main.time = Main.dayLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
 
-		bool allInArena = true;
-
 		foreach (Player player in Main.ActivePlayers)
 		{
 			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
-			if (allInArena && !Arena.Intersects(player.Hitbox))
-			{
-				allInArena = false;
-			}
 		}
 
-		if (!BossSpawned && allInArena)
+		if (!BossSpawned && NPC.AnyNPCs(NPCID.QueenBee))
 		{
-			for (int i = 0; i < 20; ++i)
-			{
-				WorldGen.PlaceTile(Arena.X / 16 + i + 4, Arena.Y / 16 - 3, TileID.FleshBlock, true, true);
-			}
-
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X - 130, Arena.Center.Y - 400, NPCID.EyeofCthulhu);
 			BossSpawned = true;
 		}
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.EyeofCthulhu) && !ReadyToExit)
+		if (BossSpawned && !NPC.AnyNPCs(NPCID.QueenBee) && !ReadyToExit)
 		{
-			Vector2 pos = Arena.Center() + new Vector2(-130, -300);
+			Vector2 pos = new Vector2(Width / 2, Height / 2 - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.EyeofCthulhu);
+			BossTracker.CachedBossesDowned.Add(NPCID.QueenBee);
 			ReadyToExit = true;
 		}
 	}
