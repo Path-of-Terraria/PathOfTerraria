@@ -11,8 +11,8 @@ namespace PathOfTerraria.Common.Systems;
 internal class BossTracker : ModSystem
 {
 	public static HashSet<int> CachedBossesDowned = [];
-	public static BitsByte DownedFlags = new();
-	public static bool SkipWoFBox = false;
+	public static BitsByte DownedFlags;
+	public static bool SkipWoFBox;
 
 	private static readonly MethodInfo DoDeathEventsInfo = typeof(NPC).GetMethod("DoDeathEvents", BindingFlags.Instance | BindingFlags.NonPublic);
 
