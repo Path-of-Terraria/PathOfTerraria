@@ -146,9 +146,7 @@ public class QueenBeeDomain : BossDomainSubworld
 
 			if (breakTime > -1)
 			{
-				breakTime--;
-
-				if (breakTime == 0)
+				if (--breakTime == 0) // Makes sure the opening continues a little bit into the hive
 				{
 					break;
 				}
@@ -157,7 +155,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			WorldGen.digTunnel(pos.X, pos.Y, 0, 0, 5, (int)(noise.GetNoise(pos.X, pos.Y) * 4) + 8);
 		}
 
-		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{WorldGen.genRand.Next(1)}", original, new(left ? 1 : 0, 0.5f));
+		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{WorldGen.genRand.Next(2)}", original, new(left ? 1 : 0, 0.5f));
 	}
 
 	public override void OnEnter()

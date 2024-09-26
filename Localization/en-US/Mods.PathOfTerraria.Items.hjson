@@ -458,3 +458,13 @@ MossHornetTriggerItem: {
 	DisplayName: Moss Hornet Trigger Item
 	Tooltip: ""
 }
+
+RoyalJelly: {
+	DisplayName: Royal Jelly
+	Tooltip: ""
+}
+
+RoyalJellyClump: {
+	DisplayName: Royal Jelly Clump
+	Tooltip: ""
+}
