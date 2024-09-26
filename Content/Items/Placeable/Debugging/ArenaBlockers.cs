@@ -18,4 +18,19 @@ internal class ArenaBlockerItem : ModItem
 		Item.height = 16;
 	}
 }
+
+internal class HiveBlockerItem : ModItem
+{
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.DisableAutomaticPlaceableDrop[Type] = true;
+	}
+
+	public override void SetDefaults()
+	{
+		Item.DefaultToPlaceableTile(ModContent.TileType<HiveBlocker>());
+		Item.width = 16;
+		Item.height = 16;
+	}
+}
 #endif

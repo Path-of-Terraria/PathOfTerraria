@@ -8,14 +8,8 @@ internal class ArenaBlocker : ModTile
 {
 	public static Asset<Texture2D> GlowTexture = null;
 
-	private static float FadeOut = 0;
-
 	public override void SetStaticDefaults()
 	{
-		TileID.Sets.CanBeClearedDuringGeneration[Type] = false;
-		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
-		TileID.Sets.CanBeDugByShovel[Type] = true;
-
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
@@ -24,13 +18,75 @@ internal class ArenaBlocker : ModTile
 
 		AddMapEntry(new Color(175, 56, 76));
 
-		DustType = DustID.PurpleMoss;
+		DustType = DustID.Obsidian;
 		HitSound = SoundID.NPCHit1;
 
 		GlowTexture ??= ModContent.Request<Texture2D>(Texture + "_Glow");
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		BlockerSystem.DrawGlow(i, j, Type, spriteBatch, GlowTexture.Value, Color.Red);
+	}
+}
+
+internal class HiveBlocker : ModTile
+{
+	public static Asset<Texture2D> GlowTexture = null;
+
+	public override void SetStaticDefaults()
+	{
+		Main.tileSolid[Type] = true;
+		Main.tileBlockLight[Type] = true;
+
+		Main.tileMerge[Type][TileID.Hive] = true;
+		Main.tileMerge[TileID.Hive][Type] = true;
+
+		AddMapEntry(new Color(175, 56, 76));
+
+		DustType = DustID.Hive;
+		HitSound = SoundID.NPCHit1;
+
+		GlowTexture ??= ModContent.Request<Texture2D>(Texture + "_Glow");
+	}
+
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		BlockerSystem.DrawGlow(i, j, Type, spriteBatch, GlowTexture.Value, Color.Orange);
+	}
+}
+
+public class BlockerSystem : ModSystem
+{
+	public static float FadeOut = 0;
+
+	public override void PreUpdateWorld()
+	{
+		bool anyArenas = false;
+
+		foreach (NPC npc in Main.ActiveNPCs)
+		{
+			if (npc.GetGlobalNPC<ArenaEnemyNPC>().Arena)
+			{
+				anyArenas = true;
+				break;
+			}
+		}
+
+		Main.tileSolid[ModContent.TileType<HiveBlocker>()] = anyArenas;
+		Main.tileSolid[ModContent.TileType<ArenaBlocker>()] = anyArenas;
+
+		if (anyArenas)
+		{
+			FadeOut = MathHelper.Lerp(FadeOut, 1, 0.06f);
+		}
+		else
+		{
+			FadeOut = MathHelper.Lerp(FadeOut, 0, 0.06f);
+		}
+	}
+
+	public static void DrawGlow(int i, int j, int type, SpriteBatch spriteBatch, Texture2D texture, Color fadeColor)
 	{
 		if (FadeOut > 0)
 		{
@@ -41,44 +97,16 @@ internal class ArenaBlocker : ModTile
 			float colorAmount = MathHelper.Lerp(MathF.Sin(i + j + Main.GameUpdateCount * 0.05f), 1, 0.5f);
 			float fade = 0.5f * FadeOut;
 
-			if (!Main.tile[i, j - 1].HasTile || Main.tile[i, j - 1].TileType != Type)
+			if (!Main.tile[i, j - 1].HasTile || Main.tile[i, j - 1].TileType != type)
 			{
 				fade *= 0.5f;
 			}
-			else if (!Main.tile[i, j + 1].HasTile || Main.tile[i, j + 1].TileType != Type)
+			else if (!Main.tile[i, j + 1].HasTile || Main.tile[i, j + 1].TileType != type)
 			{
 				fade *= 0.5f;
 			}
 
-			spriteBatch.Draw(GlowTexture.Value, position, source, Color.Lerp(Color.White, Color.Red, colorAmount) * fade);
-		}
-	}
-
-	class BlockerSystem : ModSystem
-	{
-		public override void PreUpdateWorld()
-		{
-			bool anyArenas = false;
-
-			foreach (NPC npc in Main.ActiveNPCs)
-			{
-				if (npc.GetGlobalNPC<ArenaEnemyNPC>().Arena)
-				{
-					anyArenas = true;
-					break;
-				}
-			}
-
-			Main.tileSolid[ModContent.TileType<ArenaBlocker>()] = anyArenas;
-
-			if (anyArenas)
-			{
-				FadeOut = MathHelper.Lerp(FadeOut, 1, 0.06f);
-			}
-			else
-			{
-				FadeOut = MathHelper.Lerp(FadeOut, 0, 0.06f);
-			}
+			spriteBatch.Draw(texture, position, source, Color.Lerp(Color.White, fadeColor, colorAmount) * fade);
 		}
 	}
 }

@@ -438,3 +438,23 @@ DevilTriggerItem: {
 	DisplayName: Devil Trigger
 	Tooltip: ""
 }
+
+HiveBlockerItem: {
+	DisplayName: Hive Blocker Item
+	Tooltip: ""
+}
+
+BeeTriggerItem: {
+	DisplayName: Bee Trigger Item
+	Tooltip: ""
+}
+
+HornetTriggerItem: {
+	DisplayName: Hornet Trigger Item
+	Tooltip: ""
+}
+
+MossHornetTriggerItem: {
+	DisplayName: Moss Hornet Trigger Item
+	Tooltip: ""
+}
