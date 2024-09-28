@@ -1,4 +1,13 @@
 {
   "netId": 594,
-  "entries": []
+  "entries": [
+	  {
+		  "weight": 1.0,
+		  "stats": {
+			  "level": 1,
+			  "experience": 0
+		  },
+		  "requirements": "PreHardmodeSurface"
+	  }
+  ]
 }
