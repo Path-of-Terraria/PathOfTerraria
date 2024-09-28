@@ -1,0 +1,122 @@
+[
+	{
+		"affixType": "PercentageIncreasedCriticalStrikeChance",
+		"equipTypes": "Weapon",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 25,
+				"maxValue": 25,
+				"minimumLevel": 25,
+				"weight": 1
+			},
+			{
+				"minValue": 50,
+				"maxValue": 50,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 100,
+				"maxValue": 100,
+				"minimumLevel": 100,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "PercentageCriticalStrikeMultiplier",
+		"equipTypes": "Weapon",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 25,
+				"maxValue": 25,
+				"minimumLevel": 25,
+				"weight": 1
+			},
+			{
+				"minValue": 50,
+				"maxValue": 50,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 100,
+				"maxValue": 100,
+				"minimumLevel": 100,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "FlatCriticalStrikeChance",
+		"equipTypes": "Weapon",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 25,
+				"maxValue": 25,
+				"minimumLevel": 25,
+				"weight": 1
+			},
+			{
+				"minValue": 50,
+				"maxValue": 50,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 100,
+				"maxValue": 100,
+				"minimumLevel": 100,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "PercentageIncreasedCriticalStrikeDamage",
+		"equipTypes": "Weapon",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 1,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 25,
+				"maxValue": 25,
+				"minimumLevel": 25,
+				"weight": 1
+			},
+			{
+				"minValue": 50,
+				"maxValue": 50,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 100,
+				"maxValue": 100,
+				"minimumLevel": 100,
+				"weight": 1
+			}
+		]
+	}
+]
