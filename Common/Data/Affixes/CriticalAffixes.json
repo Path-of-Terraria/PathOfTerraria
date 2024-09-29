@@ -1,6 +1,6 @@
 [
 	{
-		"affixType": "PercentageIncreasedCriticalStrikeChance",
+		"affixType": "PercentageIncreasedCriticalStrikeChanceAffix",
 		"equipTypes": "Weapon",
 		"tiers": [
 			{
@@ -30,7 +30,7 @@
 		]
 	},
 	{
-		"affixType": "PercentageCriticalStrikeMultiplier",
+		"affixType": "PercentageCriticalStrikeMultiplierAffix",
 		"equipTypes": "Weapon",
 		"tiers": [
 			{
@@ -60,7 +60,7 @@
 		]
 	},
 	{
-		"affixType": "FlatCriticalStrikeChance",
+		"affixType": "FlatCriticalStrikeChanceAffix",
 		"equipTypes": "Weapon",
 		"tiers": [
 			{
@@ -90,7 +90,7 @@
 		]
 	},
 	{
-		"affixType": "PercentageIncreasedCriticalStrikeDamage",
+		"affixType": "PercentageIncreasedCriticalStrikeDamageAffix",
 		"equipTypes": "Weapon",
 		"tiers": [
 			{
