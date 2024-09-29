@@ -1,6 +1,6 @@
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class PercentageIncreasedCriticalStrikeChance : ItemAffix
+internal class PercentageIncreasedCriticalStrikeChanceAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -8,7 +8,7 @@ internal class PercentageIncreasedCriticalStrikeChance : ItemAffix
 	}
 }
 
-internal class PercentageCriticalStrikeMultiplier : ItemAffix
+internal class PercentageCriticalStrikeMultiplierAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -16,7 +16,7 @@ internal class PercentageCriticalStrikeMultiplier : ItemAffix
 	}
 }
 
-internal class FlatCriticalStrikeChance : ItemAffix
+internal class FlatCriticalStrikeChanceAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
@@ -24,7 +24,7 @@ internal class FlatCriticalStrikeChance : ItemAffix
 	}
 }
 
-internal class PercentageIncreasedCriticalStrikeDamage : ItemAffix
+internal class PercentageIncreasedCriticalStrikeDamageAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
