@@ -468,3 +468,8 @@ RoyalJellyClump: {
 	DisplayName: Royal Jelly Clump
 	Tooltip: ""
 }
+
+RoyalJellyClumpPlacer: {
+	DisplayName: Royal Jelly Clump Placer
+	Tooltip: ""
+}
