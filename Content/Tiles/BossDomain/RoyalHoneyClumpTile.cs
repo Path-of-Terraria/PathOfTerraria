@@ -1,4 +1,7 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Common.Systems.MiscUtilities;
+using PathOfTerraria.Content.Items.BossDomain;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain;
 
@@ -22,7 +25,16 @@ internal class RoyalHoneyClumpTile : ModTile
 
 		if (tile.TileFrameY == 0)
 		{
-			tile.TileFrameY = 0;
+			tile.TileFrameY = 18;
+		}
+	}
+
+	public override void NearbyEffects(int i, int j, bool closer)
+	{
+		if (Main.tile[i, j].TileFrameY > 0 && !BlockerSystem.HasArenaEnemies)
+		{
+			 Item.NewItem(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(), ModContent.ItemType<RoyalJellyClump>());
+			WorldGen.KillTile(i, j);
 		}
 	}
 }

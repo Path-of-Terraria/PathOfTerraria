@@ -17,7 +17,7 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains;
 public class QueenBeeDomain : BossDomainSubworld
 {
 	public override int Width => 800;
-	public override int Height => 400;
+	public override int Height => 800;
 	public override int[] WhitelistedCutTiles => [TileID.BeeHive, TileID.JungleVines];
 
 	public bool BossSpawned = false;
@@ -36,7 +36,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (tile.TileType == TileID.Mud)
+				if (tile.TileType == TileID.Mud && tile.HasTile)
 				{
 					OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
 
@@ -71,7 +71,7 @@ public class QueenBeeDomain : BossDomainSubworld
 
 		if (flags.HasFlag(OpenFlags.Below) && !WorldGen.genRand.NextBool(5))
 		{
-			int length = WorldGen.genRand.Next(2, 7);
+			int length = WorldGen.genRand.Next(5, 12);
 
 			for (int k = 1; k < length; ++k)
 			{
@@ -88,7 +88,7 @@ public class QueenBeeDomain : BossDomainSubworld
 	private void GenTiles(GenerationProgress progress, GameConfiguration configuration)
 	{
 		Main.spawnTileX = Width / 2;
-		Main.spawnTileY = Height / 2 - 20;
+		Main.spawnTileY = Height / 4 - 20;
 		Main.worldSurface = 230;
 		Main.rockLayer = 299;
 
@@ -107,7 +107,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			progress.Value = (float)x / Main.maxTilesX;
 		}
 
-		StructureTools.PlaceByOrigin("Assets/Structures/BeeDomain/Arena_" + WorldGen.genRand.Next(2), new Point16(Width / 2, Height / 2), new(0.5f));
+		StructureTools.PlaceByOrigin("Assets/Structures/BeeDomain/Arena_" + WorldGen.genRand.Next(2), new Point16(Width / 2, Height / 4), new(0.5f));
 
 		// Replace hive with unsafe hive wall so it's not destroyed by the tunnel
 		for (int i = 1; i < Width - 1; ++i)
@@ -123,16 +123,16 @@ public class QueenBeeDomain : BossDomainSubworld
 			}
 		}
 
-		DigTunnel(Width / 4, Height / 2 - WorldGen.genRand.Next(-50, 50), true);
-		DigTunnel((int)(Width * 0.75f), Height / 2 - WorldGen.genRand.Next(-50, 50), false);
+		DigTunnel(Width / 4, Height / 4 - WorldGen.genRand.Next(-50, 50), true);
+		DigTunnel((int)(Width * 0.75f), Height / 4 - WorldGen.genRand.Next(-50, 50), false);
 	}
 
 	private void DigTunnel(int x, int y, bool left)
 	{
 		var original = new Point16(x, y);
 
-		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Height / 2), 0.5f) 
-			+ new Vector2(WorldGen.genRand.Next(-12, 12), WorldGen.genRand.Next(-12, 12)), new(Width / 2, Height / 2)], 8, 6);
+		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Height / 4), 0.5f) 
+			+ new Vector2(WorldGen.genRand.Next(-2, 3), WorldGen.genRand.Next(-2, 3)), new(Width / 2, Height / 4)], 8, 6);
 		
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		int breakTime = -1;
@@ -152,7 +152,14 @@ public class QueenBeeDomain : BossDomainSubworld
 				}
 			}
 
-			WorldGen.digTunnel(pos.X, pos.Y, 0, 0, 5, (int)(noise.GetNoise(pos.X, pos.Y) * 4) + 8);
+			float mul = 1f + MathF.Abs(noise.GetNoise(pos.X, pos.Y)) * 1.2f;
+			Digging.CircleOpening(pos, 5 * mul);
+			Digging.CircleOpening(pos, WorldGen.genRand.Next(3, 7) * mul);
+
+			if (WorldGen.genRand.NextBool(3, 5))
+			{
+				WorldGen.digTunnel(pos.X, pos.Y, 0, 0, 5, (int)(WorldGen.genRand.NextFloat(1, 8) * mul));
+			}
 		}
 
 		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{WorldGen.genRand.Next(2)}", original, new(left ? 1 : 0, 0.5f));
