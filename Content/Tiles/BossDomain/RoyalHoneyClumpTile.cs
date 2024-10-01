@@ -1,8 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.DisableBuilding;
-using PathOfTerraria.Common.Systems.MiscUtilities;
 using PathOfTerraria.Content.Items.BossDomain;
 using System.Collections.Generic;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
