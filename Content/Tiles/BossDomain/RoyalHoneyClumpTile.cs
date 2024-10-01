@@ -56,12 +56,13 @@ internal class RoyalHoneyClumpTile : ModTile, ICanCutTile
 		Vector2 position = new Vector2(i, j).ToWorldCoordinates(0, 0) - Main.screenPosition + offScreen + new Vector2(8, 16);
 		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 		float sine = MathF.Max(0, 3 * MathF.Sin(-i - j + 0.05f * Main.GameUpdateCount)) * 0.05f;
-		Color color = Color.Lerp(Lighting.GetColor(i, j), Color.White, 0.8f);
+		var color = Color.Lerp(Lighting.GetColor(i, j), Color.White, 0.8f);
 
 		for (int l = 0; l < 3; l++)
 		{
 			spriteBatch.Draw(tex, position, source, color * (1 - l / 3f), 0f, new Vector2(8, 16), 1f + sine * MathF.Pow(l, 2), SpriteEffects.None, 0);
 		}
+
 		return false;
 	}
 }
