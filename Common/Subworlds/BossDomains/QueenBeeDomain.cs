@@ -11,6 +11,7 @@ using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation;
 using Terraria.DataStructures;
 using PathOfTerraria.Common.World.Passes;
+using PathOfTerraria.Content.Tiles.BossDomain;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -18,7 +19,8 @@ public class QueenBeeDomain : BossDomainSubworld
 {
 	public override int Width => 800;
 	public override int Height => 800;
-	public override int[] WhitelistedCutTiles => [TileID.BeeHive, TileID.JungleVines];
+	public override int[] WhitelistedCutTiles => [TileID.BeeHive, TileID.JungleVines, ModContent.TileType<RoyalHoneyClumpTile>()];
+	public override int[] WhitelistedMiningTiles => [ModContent.TileType<RoyalHoneyClumpTile>()];
 
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
@@ -152,7 +154,7 @@ public class QueenBeeDomain : BossDomainSubworld
 				}
 			}
 
-			float mul = 1f + MathF.Abs(noise.GetNoise(pos.X, pos.Y)) * 1.2f;
+			float mul = 0.8f + MathF.Abs(noise.GetNoise(pos.X, pos.Y)) * 1.2f;
 			Digging.CircleOpening(pos, 5 * mul);
 			Digging.CircleOpening(pos, WorldGen.genRand.Next(3, 7) * mul);
 
@@ -162,7 +164,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			}
 		}
 
-		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{WorldGen.genRand.Next(2)}", original, new(left ? 1 : 0, 0.5f));
+		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{3}", original, new(left ? 1 : 0, 0.5f));
 	}
 
 	public override void OnEnter()
@@ -200,7 +202,7 @@ public class QueenBeeDomain : BossDomainSubworld
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.QueenBee) && !ReadyToExit)
 		{
-			Vector2 pos = new Vector2(Width / 2, Height / 2 - 8) * 16;
+			Vector2 pos = new Vector2(Width / 2, Height / 4 - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.CachedBossesDowned.Add(NPCID.QueenBee);
