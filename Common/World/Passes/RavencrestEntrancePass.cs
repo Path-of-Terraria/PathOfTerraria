@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Systems.WorldNavigation;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -58,6 +59,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 		StructureHelper.Generator.GetDimensions("Assets/Structures/RavencrestEntrance", Mod, ref size);
 		Point16 pos = FindPlacement(size);
 		new RavencrestMicrobiome().Place(pos.ToPoint(), GenVars.structures);
+		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(pos.X + size.X / 2, pos.Y + size.Y / 2);
 	}
 
 	private static Point16 FindPlacement(Point16 size)

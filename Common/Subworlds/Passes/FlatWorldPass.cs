@@ -5,11 +5,14 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.Passes;
 
-public class FlatWorldPass(int floorY = 500, bool spawnWalls = false, FastNoiseLite surfaceNoise = null) : GenPass("Terrain", 1)
+public class FlatWorldPass(int floorY = 500, bool spawnWalls = false, FastNoiseLite surfaceNoise = null, 
+	int tileType = TileID.Stone, int wallType = WallID.Stone) : GenPass("Terrain", 1)
 {
 	public readonly int FloorY = floorY;
 	public readonly bool SpawnWalls = spawnWalls;
 	public readonly FastNoiseLite Noise = surfaceNoise;
+	public readonly int TileType = tileType;
+	public readonly int WallType = wallType;
 
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -30,11 +33,11 @@ public class FlatWorldPass(int floorY = 500, bool spawnWalls = false, FastNoiseL
 				}
 
 				tile.HasTile = true;
-				tile.TileType = TileID.Stone;
+				tile.TileType = (ushort)TileType;
 
 				if (SpawnWalls && y > floorY + 1)
 				{
-					tile.WallType = WallID.Stone;
+					tile.WallType = (ushort)WallType;
 				}
 			}
 		}
