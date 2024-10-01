@@ -116,6 +116,11 @@ public sealed class NPCHitEffects : NPCComponent
 		) { }
 	}
 
+	public static bool OnDeath(NPC npc)
+	{
+		return npc.life <= 0;
+	}
+
 	/// <summary>
 	///     Whether to spawn the party hat gore for town NPCs during a party or not. Defaults to <c>true</c>.
 	/// </summary>

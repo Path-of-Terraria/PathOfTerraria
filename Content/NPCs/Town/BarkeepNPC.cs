@@ -42,9 +42,9 @@ public sealed class BarkeepNPC : ModNPC
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, static npc => npc.life <= 0));
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, static npc => npc.life <= 0));
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 2, static npc => npc.life <= 0));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 2, NPCHitEffects.OnDeath));
 				
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 20));
 			}
