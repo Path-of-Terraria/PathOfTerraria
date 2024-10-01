@@ -40,7 +40,6 @@ public sealed class RavenNPC : ModNPC
 				NPC.noTileCollide = false;
 				NPC.ai[0] = 0;
 			}
-
 		}
 		
 		if (NPC.direction != Math.Sign(entrancePosition.X - NPC.Center.X))
