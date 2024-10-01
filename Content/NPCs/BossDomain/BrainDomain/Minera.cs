@@ -20,6 +20,10 @@ public sealed class Minera : ModNPC
 		AnimationType = NPCID.Crimera;
 		AIType = NPCID.Crimera;
 
-		//NPC.TryEnableComponent<NPCDeathEffects>(c => c.AddDust(DustID.Blood, 12));
+		NPC.TryEnableComponent<NPCHitEffects>(c => 
+		{
+			c.AddDust(new(DustID.Blood, 4));
+			c.AddDust(new(DustID.Blood, 15, NPCHitEffects.OnDeath));
+		});
 	}
 }
