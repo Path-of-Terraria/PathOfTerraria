@@ -105,7 +105,7 @@ public class EyeDomain : BossDomainSubworld
 						pos = new Point16(position.X, position.Y + 1);
 					}
 
-					StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f));
+					StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f), null, true);
 					structureX = pos.X;
 				}
 

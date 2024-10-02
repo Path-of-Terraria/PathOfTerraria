@@ -1,10 +1,9 @@
-﻿#if DEBUG
-using PathOfTerraria.Content.Tiles.BossDomain;
+﻿using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Placeable.Debugging;
 
-internal class ArenaBlockerItem : ModItem
+internal class RoyalJellyClumpPlacer : ModItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -13,9 +12,6 @@ internal class ArenaBlockerItem : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToPlaceableTile(ModContent.TileType<ArenaBlocker>());
-		Item.width = 16;
-		Item.height = 16;
+		Item.DefaultToPlaceableTile(ModContent.TileType<RoyalHoneyClumpTile>());
 	}
 }
-#endif
