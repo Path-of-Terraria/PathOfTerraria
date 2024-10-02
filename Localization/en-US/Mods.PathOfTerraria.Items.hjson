@@ -438,3 +438,8 @@ DevilTriggerItem: {
 	DisplayName: Devil Trigger
 	Tooltip: ""
 }
+
+RavenStatueItem: {
+	DisplayName: Ravencrest Statue
+	Tooltip: ""
+}

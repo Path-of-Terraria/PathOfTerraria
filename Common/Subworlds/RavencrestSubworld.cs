@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -34,6 +35,14 @@ internal class RavencrestSubworld : MappingWorld
 		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(Width / 2, 188), new(0.5f));
 		Main.spawnTileX = Width / 2;
 		Main.spawnTileY = 188;
+	}
+
+	public override void Update()
+	{
+		foreach (Player player in Main.ActivePlayers)
+		{
+			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
+		}
 	}
 
 	public class RavencrestNPC : GlobalNPC 
