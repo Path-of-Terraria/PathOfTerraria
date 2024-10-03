@@ -12,6 +12,7 @@ using Terraria.DataStructures;
 using PathOfTerraria.Common.Subworlds.Passes;
 using SubworldLibrary;
 using Terraria.Utilities;
+using System.Linq;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -29,7 +30,20 @@ public class DeerclopsDomain : BossDomainSubworld
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), 
 		new FlatWorldPass(Surface, true, GetSurfaceNoise(), TileID.SnowBlock, WallID.SnowWallUnsafe), 
-		new PassLegacy("Tunnels", Tunnels)];
+		new PassLegacy("Tunnels", Tunnels),
+		new PassLegacy("Walls", Walls)];
+
+	private void Walls(GenerationProgress progress, GameConfiguration configuration)
+	{
+		for (int i = 0; i < Width; ++i)
+		{
+			for (int j = Surface + 20; j < Height; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				tile.WallType = WallID.SnowWallUnsafe;
+			}
+		}
+	}
 
 	public override void Load()
 	{
@@ -55,14 +69,37 @@ public class DeerclopsDomain : BossDomainSubworld
 
 		int firstTunnelXStart = Main.spawnTileX + WorldGen.genRand.Next(40, 80) * (WorldGen.genRand.NextBool() ? -1 : 1);
 		Vector2[] points = Tunnel.GeneratePoints([new(Main.spawnTileX, Main.spawnTileY), new(firstTunnelXStart, Main.spawnTileY - 60)], 6, 4);
-		DigThrough(points, noise);
+		DigThrough(points, noise, 1);
+		Vector2 last = points.Last();
+		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 4);
+		DigThrough(points, noise, 3);
+		last = points.Last();
+
+		// Second tunnel
+		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 4);
+		DigThrough(points, noise, 1);
+		last = points.Last();
+		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 4);
+		DigThrough(points, noise, 3);
 	}
 
-	private static void DigThrough(Vector2[] points, FastNoiseLite noise)
+	private float GetOppositeX(float x)
+	{
+		if (x > Width / 2)
+		{
+			return MathF.Max(x - 400, 80);
+		}
+		else
+		{
+			return MathF.Min(x + 400, 80);
+		}
+	}
+
+	private static void DigThrough(Vector2[] points, FastNoiseLite noise, float size)
 	{
 		foreach (Vector2 item in points)
 		{
-			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * 1.2f;
+			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * 1.2f * size;
 			Digging.CircleOpening(item, 5 * mul);
 			Digging.CircleOpening(item, WorldGen.genRand.Next(3, 7) * mul);
 
@@ -167,7 +204,7 @@ public class DeerclopsDomain : BossDomainSubworld
 			{
 				LightTime++;
 
-				if (LightTime > 5 * 60 && LightTime % (3 * 60) == 0)
+				if (LightTime > 5 * 60 && LightTime % (1f * 90) == 0)
 				{
 					Vector2 projPos = Player.Center + Main.rand.NextVector2CircularEdge(160, 160);
 					Projectile.RandomizeInsanityShadowFor(Main.player[Player.whoAmI], true, out Vector2 spawnPosition, out Vector2 vel, out float ai, out float ai2);
