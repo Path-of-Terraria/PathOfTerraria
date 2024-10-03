@@ -1,14 +1,17 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using SubworldLibrary;
 using System.Collections.Generic;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
 
 internal class BuildingWhitelist
 {
+	public static HashSet<int> DefaultWhitelist = [TileID.Torches, TileID.Rope];
+
 	public static HashSet<int> GetMiningWhitelist()
 	{
-		HashSet<int> whitelist = [];
+		HashSet<int> whitelist = new(DefaultWhitelist);
 
 		if (SubworldSystem.Current is BossDomainSubworld domain)
 		{
