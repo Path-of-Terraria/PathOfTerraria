@@ -7,13 +7,11 @@ using Terraria.IO;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.Enums;
-using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation;
 using Terraria.DataStructures;
 using PathOfTerraria.Common.Subworlds.Passes;
 using SubworldLibrary;
 using Terraria.Utilities;
-using System.Drawing.Printing;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -29,7 +27,8 @@ public class DeerclopsDomain : BossDomainSubworld
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new FlatWorldPass(Surface, true, GetSurfaceNoise()), 
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), 
+		new FlatWorldPass(Surface, true, GetSurfaceNoise(), TileID.SnowBlock, WallID.SnowWallUnsafe), 
 		new PassLegacy("Tunnels", Tunnels)];
 
 	public override void Load()

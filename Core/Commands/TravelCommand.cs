@@ -36,7 +36,7 @@ public sealed class TravelCommand : ModCommand
 
 		if (args[0].Equals("-t", StringComparison.CurrentCultureIgnoreCase))
 		{
-			SubworldSystem.Enter<QueenBeeDomain>();
+			SubworldSystem.Enter<DeerclopsDomain>();
 			return;
 		}
 
