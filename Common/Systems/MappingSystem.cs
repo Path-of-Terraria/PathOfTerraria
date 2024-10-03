@@ -13,7 +13,7 @@ internal class MappingSystem : ModSystem
 
 	private static void EnterMap<T>(Map map) where T : Subworld
 	{
-		MobMappingSystem.OpenSubworld();
+		//MobMappingSystem.OpenSubworld();
 		TriesLeft = 10; // get from map
 		Map = map;
 		SubworldSystem.Enter<T>();

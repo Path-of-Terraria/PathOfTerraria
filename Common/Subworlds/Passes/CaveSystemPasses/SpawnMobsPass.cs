@@ -24,11 +24,11 @@ internal class SpawnMobsPass() : GenPass("MobSpawning", 1)
 
 			for (int i = 0; i < npcsToSpawn; i++)
 			{
-				MobMappingSystem.MakeNPC((line.Item2 + dir * Main.rand.NextFloat() * diff.Length()) * 16f, NPCID.GreenSlime);
+				//MobMappingSystem.MakeNPC((line.Item2 + dir * Main.rand.NextFloat() * diff.Length()) * 16f, NPCID.GreenSlime);
 			}
 		}
 
-		MobMappingSystem.MakeNPC(CaveSystemWorld.BossRoom.Position * 16f, NPCID.KingSlime);
+		//MobMappingSystem.MakeNPC(CaveSystemWorld.BossRoom.Position * 16f, NPCID.KingSlime);
 
 		// might want to save the npcs in the future for things, idk...
 		// espetially the boss; as killing the boss means clearing the map
