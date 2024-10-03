@@ -52,4 +52,26 @@ internal class BuildingWhitelist
 	{
 		return GetCuttingWhitelist().Contains(tileType);
 	}
+
+	public static HashSet<int> GetPlacingWhitelist()
+	{
+		HashSet<int> whitelist = [];
+
+		if (SubworldSystem.Current is BossDomainSubworld domain)
+		{
+			int[] tiles = domain.WhitelistedPlaceableTiles;
+
+			foreach (int value in tiles)
+			{
+				whitelist.Add(value);
+			}
+		}
+
+		return whitelist;
+	}
+
+	internal static bool InPlacingWhitelist(int tileType)
+	{
+		return GetPlacingWhitelist().Contains(tileType);
+	}
 }

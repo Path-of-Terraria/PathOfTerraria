@@ -13,6 +13,7 @@ internal class SlowDownNPC : GlobalNPC
 
 	public override void AI(NPC npc)
 	{
+		SlowDown = Math.Clamp(SlowDown, 0, 1);
 		npc.position -= npc.velocity * SlowDown;
 	}
 }

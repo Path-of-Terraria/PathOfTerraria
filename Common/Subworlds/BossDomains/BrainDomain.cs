@@ -174,10 +174,10 @@ public class BrainDomain : BossDomainSubworld
 		}
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Steps");
-		GenerateSteps(progress, configuration);
+		GenerateSteps(progress);
 	}
 
-	private void GenerateSteps(GenerationProgress progress, GameConfiguration configuration)
+	private void GenerateSteps(GenerationProgress progress)
 	{
 		int lineCount = 4;
 		int x = Main.spawnTileX >= 400 ? 420 : 380;
@@ -317,6 +317,8 @@ public class BrainDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
+
 		BossSpawned = false;
 		ReadyToExit = false;
 	}

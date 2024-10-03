@@ -628,8 +628,8 @@ public class SkeletronDomain : BossDomainSubworld
 			for (int y = (int)useY; y < Main.maxTilesY; ++y)
 			{
 				Tile tile = Main.tile[x, y];
-				tile.HasTile = true;
 				tile.TileType = y > 400 + noiseOffset ? TileID.Stone : TileID.Dirt;
+				tile.HasTile = true;
 
 				if (y > useY + 4)
 				{

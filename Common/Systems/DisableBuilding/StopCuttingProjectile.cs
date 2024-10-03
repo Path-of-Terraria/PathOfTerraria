@@ -42,7 +42,8 @@ internal class StopCuttingProjectile : GlobalProjectile
 
 	public static bool CanCutTile(Projectile projectile, int i, int j)
 	{
-		return !Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding || BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
+		bool cantCutWhitelist = Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding && !BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
+		return !cantCutWhitelist && (ModContent.GetModTile(Main.tile[i, j].TileType) is not ICanCutTile cutTile || cutTile.CanCut(i, j));
 	}
 
 	private bool CutCheck(On_DelegateMethods.orig_CutTiles orig, int x, int y)

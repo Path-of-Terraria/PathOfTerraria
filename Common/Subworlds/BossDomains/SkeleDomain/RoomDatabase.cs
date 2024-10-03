@@ -85,13 +85,20 @@ internal class RoomDatabase : ModSystem
 				new SpikeballInfo(new(74, 14), 90)],
 			[new EngageTimerInfo(new(5, 7), 0), new(new(7, 9), 60), new(new(12, 49), 0)]));
 
-		DataByRoomIndex.Add(4, new RoomData(WireColor.Yellow, OpeningType.Above, new Point(14, 0), new Point(73, 72),
+		// This room's entrance is offset by 10 tiles to make sure it doesn't overlap the chasms by offsetting origin.
+		DataByRoomIndex.Add(4, new RoomData(WireColor.Yellow, OpeningType.Above, new Point(24, 0), new Point(73, 72),
 			[new SpikeballInfo(new(53, 37), 90, true, 0.04f), new(new(36, 37), 90), new(new(12, 37), 90)],
 			[new EngageTimerInfo(new(68, 25), 0), new(new(69, 25), 90), new(new(65, 67), 0), new(new(66, 67), 60), new(new(67, 67), 120), 
 				new EngageTimerInfo(new(68, 67), 180)]));
 
 		DataByRoomIndex.Add(5, new RoomData(WireColor.Blue, OpeningType.Left, new Point(1, 8), new Point(14, 78),
-			[new SpikeballInfo(new(26, 48), 90, true, 0.04f), new(new(26, 48), 180, false), new(new(26, 48), 270, true)], []));
+			[new SpikeballInfo(new(26, 48), 90, true, 0.04f), new(new(26, 48), 180, false), new(new(26, 48), 270, true)], null));
+
+		DataByRoomIndex.Add(6, new RoomData(WireColor.Green, OpeningType.Left, new Point(1, 44), new Point(6, 51), null,
+			[new EngageTimerInfo(new(61, 33), 0), new(new(63, 35), 120), new(new(60, 23), 0), new(new(61, 23), 60), new(new(62, 23), 120), new(new(63, 23), 180),
+				new EngageTimerInfo(new(60, 25), 240), new(new(61, 25), 300), new(new(62, 25), 360), new(new(63, 25), 420), new(new(60, 31), 720), new(new(61, 31), 780), 
+				new EngageTimerInfo(new(62, 31), 840), new(new(63, 31), 900), new(new(52, 7), 0), new(new(53, 7), 75), new(new(54, 7), 150), new(new(55, 7), 225), 
+				new(new(60, 44), 0)]));
 	}
 
 	public override void PreUpdateWorld()
