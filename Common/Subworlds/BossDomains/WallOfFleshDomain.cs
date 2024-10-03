@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
@@ -280,69 +281,9 @@ public class WallOfFleshDomain : BossDomainSubworld
 		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Arena_" + id, new Point16(x, (int)(Height * 0.48f) - size.Y / 2), Vector2.Zero, null, false);
 	}
 
-	/// <summary>
-	/// Copied from vanilla's Settle Liquids generation step.
-	/// </summary>
-	/// <param name="progress"></param>
-	/// <param name="configuration"></param>
 	private void SettleLiquids(GenerationProgress progress, GameConfiguration configuration)
 	{
-		progress.Message = Lang.gen[27].Value;
-		
-		Liquid.worldGenTilesIgnoreWater(ignoreSolids: true);
-		Liquid.QuickWater(3);
-		WorldGen.WaterCheck();
-		Liquid.quickSettle = true;
-
-		int repeats = 0;
-		int maxRepeats = 10;
-
-		while (repeats < maxRepeats)
-		{
-			int liquidAmount = Liquid.numLiquid + LiquidBuffer.numLiquidBuffer;
-			repeats++;
-			double currentSteps = 0.0;
-			int forcedStop = liquidAmount * 5;
-			while (Liquid.numLiquid > 0)
-			{
-				forcedStop--;
-				if (forcedStop < 0)
-				{
-					break;
-				}
-
-				double stepsRemaining = (double)(liquidAmount - (Liquid.numLiquid + LiquidBuffer.numLiquidBuffer)) / liquidAmount;
-
-				if (Liquid.numLiquid + LiquidBuffer.numLiquidBuffer > liquidAmount)
-				{
-					liquidAmount = Liquid.numLiquid + LiquidBuffer.numLiquidBuffer;
-				}
-
-				if (stepsRemaining > currentSteps)
-				{
-					currentSteps = stepsRemaining;
-				}
-				else
-				{
-					stepsRemaining = currentSteps;
-				}
-
-				if (repeats == 1)
-				{
-					progress.Set(stepsRemaining / 3.0 + 0.33);
-				}
-
-				Liquid.UpdateLiquid();
-			}
-
-			WorldGen.WaterCheck();
-			progress.Set(repeats * 0.1 / 3.0 + 0.66);
-		}
-
-		Liquid.quickSettle = false;
-		Liquid.worldGenTilesIgnoreWater(ignoreSolids: false);
-		Main.tileSolid[484] = false;
-
+		SettleLiquidsStep.Generation(progress, configuration);
 		AddCrucible();
 	}
 
