@@ -31,6 +31,9 @@ public class ClassModPlayer : ModPlayer
 
 		item = new Item(ItemID.WoodenSword);
 		vanillaItems.Add(item);
+		
+		item = new Item(ItemID.CopperPickaxe);
+		vanillaItems.Add(item);
 
 		item = new Item(ItemID.WoodenBow);
 		vanillaItems.Add(item);
