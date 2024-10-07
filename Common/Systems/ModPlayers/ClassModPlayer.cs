@@ -29,12 +29,13 @@ public class ClassModPlayer : ModPlayer
 		item.TurnToAir();
 		vanillaItems.Add(item);
 
-		item = new Item();
-		item.SetDefaults(ItemID.CopperPickaxe);
+		item = new Item(ItemID.WoodenSword);
 		vanillaItems.Add(item);
 
-		item = new Item();
-		item.SetDefaults(ItemID.CopperAxe);
+		item = new Item(ItemID.WoodenBow);
+		vanillaItems.Add(item);
+
+		item = new Item(ItemID.WoodenArrow, 500);
 		vanillaItems.Add(item);
 	}
 
