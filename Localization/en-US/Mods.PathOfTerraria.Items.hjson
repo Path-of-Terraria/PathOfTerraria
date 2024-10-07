@@ -439,6 +439,11 @@ DevilTriggerItem: {
 	Tooltip: ""
 }
 
+RavenStatueItem: {
+	DisplayName: Ravencrest Statue
+	Tooltip: ""
+}
+
 HiveBlockerItem: {
 	DisplayName: Hive Blocker Item
 	Tooltip: ""
