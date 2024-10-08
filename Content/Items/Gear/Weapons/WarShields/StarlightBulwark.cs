@@ -31,9 +31,11 @@ internal class StarlightBulwark : LeadBattleBulwark
 		
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.IsUnique = true;
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ManaAffix>(-1, 15, 20);

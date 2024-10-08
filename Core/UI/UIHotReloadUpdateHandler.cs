@@ -1,6 +1,5 @@
 using System.Reflection;
 using System.Reflection.Metadata;
-using JetBrains.Annotations;
 using PathOfTerraria.Core.UI;
 using Terraria.UI;
 

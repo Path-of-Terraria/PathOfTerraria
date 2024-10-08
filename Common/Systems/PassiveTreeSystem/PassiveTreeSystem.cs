@@ -3,14 +3,15 @@ using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Systems.TreeSystem;
+namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
-internal class PassiveEdge(Passive start, Passive end)
+public class PassiveEdge(Passive start, Passive end)
 {
 	public readonly Passive Start = start;
 	public readonly Passive End = end;
@@ -30,12 +31,16 @@ internal class PassiveEdge(Passive start, Passive end)
 }
 
 // ReSharper disable once ClassNeverInstantiated.Global
-internal class TreePlayer : ModPlayer
+internal class PassiveTreePlayer : ModPlayer
 {
-	//This should be equal to your level + any extra points you have.
+	/// <summary>
+	/// This should be equal to your level + any extra points you have.
+	/// </summary>
 	public int Points;
 	
-	// For means of getting points that are not equal to your level. Such as quest rewards or other things.
+	/// <summary>
+	/// For means of getting points that are not equal to your level. Such as quest rewards or other things.
+	/// </summary>
 	public int ExtraPoints;
 
 	public List<Passive> ActiveNodes = [];
@@ -54,14 +59,17 @@ internal class TreePlayer : ModPlayer
 		Edges = [];
 
 		Dictionary<int, Passive> passives = [];
-
 		List<PassiveData> data = PassiveRegistry.GetPassiveData();
 
-		data.ForEach(n => { passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n)); ActiveNodes.Add(passives[n.ReferenceId]); });
+		data.ForEach(n => 
+		{
+			passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n)); 
+			ActiveNodes.Add(passives[n.ReferenceId]); 
+		});
+
 		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new PassiveEdge(passives[n.ReferenceId], passives[connection.ReferenceId]))));
 
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
-
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
 
 		foreach (Passive passive in ActiveNodes)

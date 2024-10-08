@@ -18,7 +18,7 @@ internal class BurningRedBoots : Leggings, GenerateName.IItem
 		staticData.IsUnique = true;
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
 		return
 		[

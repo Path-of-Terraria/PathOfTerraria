@@ -1,0 +1,31 @@
+Bring: {
+	Collect: Collect
+	GiveItTo: and give it to the {0}
+}
+
+TalkTo: Talk to {0}
+Exploration.Ice: Explore the Ice/Snow biome ({0}%)
+
+Kill: {
+	SlimeZombies: Kill {0} slimes or zombies
+	Slime: Kill {0} slimes
+	Zombies: Kill {0} zombies
+	HighHealth: Kill {0} enemies with more than 100 health
+}
+
+Quest: {
+	TestQuest: {
+		Name: Test Quest
+		Description: Used to test quests.
+	}
+
+	TestQuestTwo: {
+		Name: Test 2: Electric Boogaloo
+		Description: Test harder.
+	}
+
+	BlacksmithStartQuest: {
+		Name: Forging a New Blade
+		Description: ""
+	}
+}

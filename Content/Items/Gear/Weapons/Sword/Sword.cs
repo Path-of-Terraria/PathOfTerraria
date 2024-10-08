@@ -17,7 +17,7 @@ internal abstract class Sword : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Sword.AltUse");
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Sword.AltUse");
 
 	}
 

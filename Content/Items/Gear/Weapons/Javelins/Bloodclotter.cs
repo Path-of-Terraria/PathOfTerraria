@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
@@ -18,7 +19,7 @@ internal class Bloodclotter : PlatinumGlaive
 	public override bool UseChargeAlt => false;
 	public override bool AutoloadProjectile => false;
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
 		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<BloodSiphonAffix>(1, 1, 1);
@@ -32,6 +33,8 @@ internal class Bloodclotter : PlatinumGlaive
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.IsUnique = true;
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()

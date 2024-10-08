@@ -20,8 +20,8 @@ internal class StopBuildingPlayer : ModPlayer
 	public override void Load()
 	{
 		IL_Player.PickTile += DisableMining;
-		IL_Player.PickWall += DisableMining;
-		IL_Player.ItemCheck_CutTiles += DisableMining;
+		IL_Player.PickWall += DisableMiningWall;
+		IL_Player.ItemCheck_CutTiles += DisableCut;
 	}
 
 	private static void DisableMining(ILContext il)
@@ -30,10 +30,71 @@ internal class StopBuildingPlayer : ModPlayer
 		ILLabel label = c.DefineLabel();
 
 		c.Emit(OpCodes.Ldarg_0);
-		c.EmitDelegate((Player player) => player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding);
+		c.Emit(OpCodes.Ldarg_1);
+		c.Emit(OpCodes.Ldarg_2);
+		c.EmitDelegate((Player player, int x, int y) => player.GetModPlayer<StopBuildingPlayer>().CanDig(x, y, false));
 		c.Emit(OpCodes.Brfalse, label);
 		c.Emit(OpCodes.Ret);
 		c.MarkLabel(label);
+	}
+
+	private static void DisableMiningWall(ILContext il)
+	{
+		ILCursor c = new(il);
+		ILLabel label = c.DefineLabel();
+
+		c.Emit(OpCodes.Ldarg_0);
+		c.Emit(OpCodes.Ldarg_1);
+		c.Emit(OpCodes.Ldarg_2);
+		c.EmitDelegate((Player player, int x, int y) => player.GetModPlayer<StopBuildingPlayer>().CanDig(x, y, true));
+		c.Emit(OpCodes.Brfalse, label);
+		c.Emit(OpCodes.Ret);
+		c.MarkLabel(label);
+	}
+
+	internal static void DisableCut(ILContext il)
+	{
+		ILCursor c = new(il);
+
+		if (!c.TryGotoNext(x => x.MatchCall<WorldGen>(nameof(WorldGen.CanCutTile))))
+		{
+			return;
+		}
+
+		ILLabel label = null;
+
+		if (!c.TryGotoPrev(MoveType.After, x => x.MatchBrtrue(out label)))
+		{
+			return;
+		}
+
+		c.Emit(OpCodes.Ldarg_0);
+		c.Emit(OpCodes.Ldloc_S, (byte)4);
+		c.Emit(OpCodes.Ldloc_S, (byte)5);
+		c.EmitDelegate(CanCutTile);
+		c.Emit(OpCodes.Brfalse, label);
+	}
+
+	public static bool CanCutTile(Player player, int i, int j)
+	{
+		return BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
+	}
+
+	private bool CanDig(int x, int y, bool isWall)
+	{
+		if (!LastStopBuilding)
+		{
+			return false;
+		}
+
+		Tile tile = Main.tile[x, y];
+
+		if (!isWall)
+		{
+			return !BuildingWhitelist.InMiningWhitelist(tile.TileType);
+		}
+
+		return true;
 	}
 
 	public override void ResetEffects()
@@ -46,9 +107,10 @@ internal class StopBuildingPlayer : ModPlayer
 	{
 		if (item.createTile >= TileID.Dirt || item.createWall > WallID.None || item.type == ItemID.IceRod || item.tileWand >= 0)
 		{
-			bool isRope = Main.tileRope[item.createTile];
+			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile];
+			bool isTorch = item.createTile >= TileID.Dirt && TileID.Sets.Torch[item.createTile];
 
-			if (!isRope)
+			if (!isRope && !isTorch)
 			{
 				return !LastStopBuilding;
 			}

@@ -158,7 +158,7 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 	}
 
-	void InsertAdditionalTooltipLines.IGlobal.InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips, EntityModifier thisItemModifier)
+	void InsertAdditionalTooltipLines.IGlobal.InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips)
 	{
 		if (!IsGearItem(item))
 		{

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -118,9 +119,9 @@ partial class PoTGlobalItem
 		};
 		tooltips.Add(itemLevelLine);
 
-		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription))
+		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
 		{
-			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription));
+			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription.Value));
 		}
 
 		if (item.damage > 0)
@@ -139,66 +140,16 @@ partial class PoTGlobalItem
 			tooltips.Add(defenseLine);
 		}
 
-		for (int i = 0; i < data.Affixes.Count; i++)
+		// Affix tooltips
+		InsertAdditionalTooltipLines.Invoke(item, tooltips);
+		AffixTooltipsHandler.DefaultColor = Color.Green; // Makes any new affixes from this item show as green as they are new and beneficial by default
+		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer); // Adds in affix tooltips from this item without applying effects
+		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().PrepareComparisonTooltips(tooltips, item);
+		AffixTooltipsHandler.DefaultColor = Color.White; // Resets color
+
+		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
 		{
-			ItemAffix affix = data.Affixes[i];
-			string text = affix.RequiredInfluence switch
-			{
-				Influence.Solar => $"[i:{ItemID.IchorBullet}] " +
-								   HighlightNumbers($"{affix.GetTooltip(item, null)}", "FFEE99", "CCB077"),
-				Influence.Lunar => $"[i:{ItemID.CrystalBullet}] " +
-								   HighlightNumbers($"{affix.GetTooltip(item, null)}", "BBDDFF", "99AADD"),
-				_ => i < data.ImplicitCount
-				? $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"{affix.GetTooltip(item, null)}", baseColor: "8B8000")
-				: $"[i:{ItemID.MusketBall}] " + HighlightNumbers($"{affix.GetTooltip(item, null)}"),
-			};
-
-			var affixLine = new TooltipLine(Mod, $"Affix{i}", text);
-			tooltips.Add(affixLine);
-		}
-
-		if (!string.IsNullOrWhiteSpace(staticData.Description))
-		{
-			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description));
-		}
-
-		// Change in stats if equipped.
-		var thisItemModifier = new EntityModifier();
-		PoTItemHelper.ApplyAffixes(item, thisItemModifier, Main.LocalPlayer);
-		InsertAdditionalTooltipLines.Invoke(item, tooltips, thisItemModifier);
-
-		var currentItemModifier = new EntityModifier();
-		SwapItemModifiers.Invoke(item, currentItemModifier);
-
-		List<string> red = [];
-		List<string> green = [];
-		currentItemModifier.GetDifference(thisItemModifier).ForEach(s =>
-		{
-			if (s.Item2)
-			{
-				green.Add(s.Item1);
-			}
-			else
-			{
-				red.Add(s.Item1);
-			}
-		});
-
-		if (red.Count + green.Count > 0)
-		{
-			tooltips.Add(new TooltipLine(Mod, "Space", " "));
-		}
-
-		int changeCount = 0;
-
-		foreach (string changes in green)
-		{
-			tooltips.Add(new TooltipLine(Mod, $"Change{changeCount++}", $"[c/00FF00:{changes}]"));
-		}
-
-		foreach (string changes in red)
-		{
-			tooltips.Add(new TooltipLine(Mod, $"Change{changeCount++}", $"[c/FF0000:{changes}]"));
+			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description.Value));
 		}
 	}
 

@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -93,8 +94,8 @@ public static class PoTItemHelper
 
 		data.Affixes.Clear();
 		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
-
 		data.ImplicitCount = data.Affixes.Count;
+
 		for (int i = 0; i < GetAffixCount(item); i++)
 		{
 			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
@@ -115,7 +116,7 @@ public static class PoTItemHelper
 
 		if (staticData.IsUnique)
 		{
-			List<ItemAffix> uniqueItemAffixes = GenerateAffixes.Invoke(item);
+			List<ItemAffix> uniqueItemAffixes = GenerateImplicits.Invoke(item);
 
 			foreach (ItemAffix affix in uniqueItemAffixes)
 			{
@@ -133,6 +134,16 @@ public static class PoTItemHelper
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyAffix(player, entityModifier, item);
+			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
+			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
+		}
+	}
+
+	public static void ApplyAffixTooltips(Item item, Player player)
+	{
+		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
+		{
+			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
 			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}

@@ -46,7 +46,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.WarShield.AltUse");
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.WarShield.AltUse");
 
 		AddValidShieldParryItems.AddParryItem(Type);
 	}

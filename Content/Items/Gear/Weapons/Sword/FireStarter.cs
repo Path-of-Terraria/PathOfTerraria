@@ -26,8 +26,8 @@ internal class FireStarter : Sword, GenerateName.IItem
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 5f;
 		staticData.IsUnique = true;
-		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.Description");
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 	}
 
 	public override void SetDefaults()
@@ -44,15 +44,10 @@ internal class FireStarter : Sword, GenerateName.IItem
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName")}]";
 	}
 	
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
-		sharpAffix.MinValue = 1;
-		sharpAffix.MaxValue = 4;
-		
-		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>();
-		onFireAffix.MinValue = 0.1f;
-		onFireAffix.MaxValue = 0.1f;
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
+		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(-1, 0.1f, 0.15f);
 		return [sharpAffix, onFireAffix];
 	}
 	

@@ -20,7 +20,11 @@ internal class ItemSpawner
 		ilevel = ilevel == 0 ? PoTItemHelper.PickItemLevel() : ilevel; // Pick the item level if not provided
 
 		// Filter AllGear based on item level
-		var filteredGear = ItemDatabase.AllItems.Where(g => ContentSamples.ItemsByType[g.ItemId].GetStaticData().MinDropItemLevel <= ilevel).ToList();
+		var filteredGear = ItemDatabase.AllItems.Where(g => 
+		{
+			PoTStaticItemData staticData = ContentSamples.ItemsByType[g.ItemId].GetStaticData();
+			return staticData.MinDropItemLevel <= ilevel;
+		}).ToList();
 
 		return SpawnItemFromList(pos, dropCondition, ilevel, dropRarityModifier, filteredGear);
 	}

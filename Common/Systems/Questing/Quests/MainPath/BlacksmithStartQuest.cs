@@ -14,18 +14,6 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 internal class BlacksmithStartQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override string Name => "Forging a New Blade";
-
-	protected override List<QuestStep> _subQuests =>
-	[
-		new ParallelQuestStep([
-			new CollectCount(item => item.type == ItemID.IronOre || item.type == ItemID.LeadOre, 20, s => $"Collect {s} iron ore."),
-			new CollectCount(item => item.type == ItemID.IronHammer || item.type == ItemID.LeadHammer, 1, s => $"Collect {s} iron hammer."),
-		]),
-		new CollectCount(ItemID.StoneBlock, 50, s => $"Collect {s} stone."),
-		new CollectCount(ItemID.Wood, 20, s => $"Collect {s} wood."),
-	];
-
 	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
 
 	public override List<QuestReward> QuestRewards =>
@@ -53,4 +41,17 @@ internal class BlacksmithStartQuest : Quest
 			},
 			"500 experience (POC giving experience)\nSome gear with an affix\nA unique item\nAgain, just for POC reasons"),
 	];
+
+	public override List<QuestStep> SetSteps()
+	{
+		return 
+		[
+			new ParallelQuestStep([
+				new CollectCount(item => item.type == ItemID.IronOre || item.type == ItemID.LeadOre, 20, Lang.GetItemName(ItemID.IronOre)),
+				new CollectCount(item => item.type == ItemID.IronHammer || item.type == ItemID.LeadHammer, 1, Lang.GetItemName(ItemID.IronHammer)),
+			]),
+			new CollectCount(ItemID.StoneBlock, 50),
+			new CollectCount(ItemID.Wood, 20),
+		];
+	}
 }

@@ -9,6 +9,21 @@ CooldownLine: "{0} second cooldown"
 Nova: {
 	Name: Nova
 	Description: Create a shockwave around you based on your held magic weapon's damage
+
+	Fire: {
+		Name: Fire Burst
+		Description: Create an aura of flame based on your held magic weapon's damage, inflicting On Fire!
+	}
+
+	Ice: {
+		Name: Ice Wave
+		Description: Create a wave of ice based on your held magic weapon's damage, inflicting Chilled
+	}
+
+	Lightning: {
+		Name: Thunder Shock
+		Description: Create a pulse of electricity based on your held magic weapon's damage, dealing a wider range of damage and inflicting Shocked
+	}
 }
 
 Berserk: {
@@ -22,16 +37,16 @@ RainOfArrows: {
 }
 
 MoltenShield: {
-	Name: ""
-	Description: ""
+	Name: Molten Shield
+	Description: Gain a temporary health buffer that stops 75% of incoming damage until broken.
 }
 
 BloodSiphon: {
-	Name: ""
-	Description: ""
+	Name: Blood Siphon
+	Description: Consume all nearby Bloodclot stacks to heal 3 health per stack. Max of 30 stacks.
 }
 
 FetidCarapace: {
-	Name: ""
-	Description: ""
+	Name: Fetid Carapace
+	Description: Gain some orbital projectiles that protect you from enemies and their projectiles.
 }

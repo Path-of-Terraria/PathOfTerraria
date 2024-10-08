@@ -87,7 +87,6 @@ public partial class EntityModifier : EntityModifierSegment
 		player.endurance *= (int)DamageReduction.ApplyTo(player.endurance); // i think this is right..?
 		player.moveSpeed = MovementSpeed.ApplyTo(player.moveSpeed);
 		player.GetDamage(DamageClass.Generic) = player.GetDamage(DamageClass.Generic).CombineWith(Damage);
-
 		player.GetAttackSpeed(DamageClass.Generic) = Attackspeed.ApplyTo(player.GetAttackSpeed(DamageClass.Generic));
 
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
@@ -152,10 +151,10 @@ public partial class EntityModifier : EntityModifierSegment
 
 			foreach (KeyValuePair<string, StatModifier> modifier in thisSegment.Modifiers)
 			{
-				if (otherSegment.Modifiers.ContainsKey(modifier.Key))
+				if (otherSegment.Modifiers.TryGetValue(modifier.Key, out StatModifier value))
 				{
 					StatModifier thisField = modifier.Value;
-					StatModifier otherField = otherSegment.Modifiers[modifier.Key];
+					StatModifier otherField = value;
 
 					if (thisField != otherField)
 					{

@@ -2,6 +2,7 @@ using PathOfTerraria.Common.Systems.Experience;
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class SpawnOrbsCommand : ModCommand
 {
 	public override string Command => "orb";
@@ -35,3 +36,4 @@ public sealed class SpawnOrbsCommand : ModCommand
 		caller.Reply($"Spawned {indices.Length} experience orbs!", Color.Green);
 	}
 }
+#endif

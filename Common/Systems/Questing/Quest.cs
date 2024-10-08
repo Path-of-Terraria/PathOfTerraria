@@ -1,75 +1,105 @@
 ﻿using System.Collections.Generic;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
-public abstract class Quest
+public abstract class Quest : ModType
 {
+	private static readonly Dictionary<string, Quest> QuestsByName = [];
+
 	public abstract QuestTypes QuestType { get; }
-	protected abstract List<QuestStep> _subQuests { get; }
-	private QuestStep _activeQuest;
-	public int CurrentQuest;
-	public bool Completed;
 	public abstract int NPCQuestGiver { get; }
-	public virtual string Name => "";
-	public virtual string Description => "";
+
+	public LocalizedText DisplayName { get; private set; } 
+	public LocalizedText Description { get; private set; } 
+
 	public abstract List<QuestReward> QuestRewards { get; }
+	public List<QuestStep> QuestSteps { get; } = null;
+
+	public QuestStep ActiveStep = null;
+
+	public int CurrentStep;
+	public bool Completed;
+	public bool Active = false;
+
+	public Quest()
+	{
+		QuestSteps = SetSteps();
+
+		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
+		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
+	}
+
+	public abstract List<QuestStep> SetSteps();
+
+	protected override void Register()
+	{
+		QuestsByName.Add(FullName, this);
+	}
+
+	public static Quest GetQuest(string name)
+	{
+		return QuestsByName[name];
+	}
+
+	public static LocalizedText Localize(string postfix)
+	{
+		return Language.GetText($"Mods.{PoTMod.ModName}.Quests." + postfix);
+	}
+
+	public static string LocalizeValue(string postfix)
+	{
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests." + postfix);
+	}
 
 	public void StartQuest(Player player, int currentQuest = 0)
 	{
-		CurrentQuest = currentQuest;
+		CurrentStep = currentQuest;
 
-		if (CurrentQuest >= _subQuests.Count)
+		if (CurrentStep >= QuestSteps.Count)
 		{
 			Completed = true;
 			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
 			return;
 		}
 
-		_activeQuest = _subQuests[CurrentQuest];
+		ActiveStep = QuestSteps[CurrentStep];
+		Active = true;
+	}
 
-		_activeQuest.Track(player, () =>
+	public void Update(Player player)
+	{
+		if (ActiveStep.Track(player))
 		{
-			_activeQuest.UnTrack();
-			StartQuest(player, currentQuest + 1);
-		});
+			ActiveStep.OnComplete();
+			StartQuest(player, CurrentStep + 1);
+		}
 	}
 
 	public List<QuestStep> GetSteps()
 	{
-		return _subQuests;
+		return QuestSteps;
 	}
 
 	public string CurrentQuestString()
 	{
-		return _activeQuest.QuestString();
-	}
-
-	public string AllQuestStrings()
-	{
-		string s = "";
-
-		for (int i = 0; i < CurrentQuest; i++)
-		{
-			s += _subQuests[i].QuestCompleteString() + "\n";
-		}
-
-		return s + _activeQuest.QuestString();
+		return ActiveStep.DisplayString();
 	}
 
 	public void Save(TagCompound tag)
 	{
-		tag.Add("type", GetType().FullName);
+		tag.Add("type", FullName);
 		tag.Add("completed", Completed);
-		tag.Add("currentQuest", CurrentQuest);
+		tag.Add("currentQuest", CurrentStep);
 
-		if (_activeQuest is null)
+		if (ActiveStep is null)
 		{
 			return;
 		}
 
 		var newTag = new TagCompound();
-		_activeQuest.Save(newTag);
+		ActiveStep.Save(newTag);
 		tag.Add("currentQuestTag", newTag);
 	}
 
@@ -82,10 +112,10 @@ public abstract class Quest
 		}
 
 		StartQuest(player, tag.GetInt("currentQuest"));
-		_activeQuest.Load(tag.Get<TagCompound>("currentQuestTag"));
+		ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
 	}
 
-	public static Quest LoadFrom(TagCompound tag, Player player)
+	public static string LoadFrom(TagCompound tag, Player player)
 	{
 		Type t = typeof(Quest).Assembly.GetType(tag.GetString("type"));
 
@@ -95,10 +125,15 @@ public abstract class Quest
 			return null;
 		}
 
-		Quest quest = (Quest)Activator.CreateInstance(t);
+		string fullName = tag.GetString("type");
+		GetQuest(fullName).Load(tag, player);
+		return fullName;
+	}
+}
 
-		quest.Load(tag, player);
-
-		return quest;
+public class QuestUpdater : ModSystem
+{
+	public override void PostUpdateEverything()
+	{
 	}
 }

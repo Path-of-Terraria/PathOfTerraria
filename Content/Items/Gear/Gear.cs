@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Enums;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
