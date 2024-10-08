@@ -493,3 +493,8 @@ PolarIceThrowerItem: {
 	DisplayName: Polar Ice Thrower Item
 	Tooltip: ""
 }
+
+RopeClumpItem: {
+	DisplayName: Rope Clump Item
+	Tooltip: ""
+}

@@ -71,7 +71,7 @@ internal class LightBallProjectile : ModProjectile
 	{
 		if (velDir == 1)
 		{
-			Projectile.position.X -= Projectile.velocity.X * xDist;
+			Projectile.position.X -= MathHelper.Lerp(Projectile.velocity.X * xDist, 0, 0.9f);
 		}
 		else
 		{

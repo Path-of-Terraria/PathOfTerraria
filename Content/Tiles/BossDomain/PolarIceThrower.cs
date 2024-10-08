@@ -38,7 +38,7 @@ internal class PolarIceThrower : ModTile
 
 	public class ThrowerTE : ModTileEntity
 	{
-		private int _timer = 0;
+		private int _timer = 14 * 16;
 
 		public override bool IsTileValidForEntity(int x, int y)
 		{
@@ -55,7 +55,7 @@ internal class PolarIceThrower : ModTile
 			{
 				int side = Main.tile[Position].TileFrameX < 36 ? -1 : 1;
 				Vector2 position = worldPos + new Vector2(side == -1 ? -20 : 36, 10);
-				Projectile.NewProjectile(null, position, new Vector2(side, 0), ModContent.ProjectileType<LightBallProjectile>(), 40, 0, Main.myPlayer);
+				Projectile.NewProjectile(null, position, new Vector2(side * 1.2f, 0), ModContent.ProjectileType<LightBallProjectile>(), 40, 0, Main.myPlayer);
 				_timer = 0;
 			}
 		}
