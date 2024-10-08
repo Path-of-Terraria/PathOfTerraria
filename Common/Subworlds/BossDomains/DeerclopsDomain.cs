@@ -15,7 +15,6 @@ using Terraria.Utilities;
 using System.Linq;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Content;
-using System.Runtime.InteropServices;
 using PathOfTerraria.Common.World.Passes;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
@@ -29,7 +28,8 @@ public class DeerclopsDomain : BossDomainSubworld
 	public override int Width => 800;
 	public override int Height => 800;
 	public override int[] WhitelistedCutTiles => [TileID.BreakableIce];
-	public override int[] WhitelistedMiningTiles => [TileID.BreakableIce, ModContent.TileType<RopeClump>()];
+	public override int[] WhitelistedMiningTiles => [TileID.BreakableIce, ModContent.TileType<RopeClump>(), TileID.Platforms];
+	public override int[] WhitelistedPlaceableTiles => [TileID.Platforms];
 
 	internal static float LightMultiplier = 0;
 
@@ -68,6 +68,8 @@ public class DeerclopsDomain : BossDomainSubworld
 		stoneNoise.SetNoiseType(FastNoiseLite.NoiseType.ValueCubic);
 		stoneNoise.SetFrequency(0.08f);
 
+		HashSet<Point16> structures = [];
+
 		for (int i = 0; i < Width; ++i)
 		{
 			for (int j = 20; j < Height; ++j)
@@ -87,6 +89,11 @@ public class DeerclopsDomain : BossDomainSubworld
 					if (stone > 0.25f)
 					{
 						tile.TileType = TileID.IceBlock;
+					}
+
+					if (WorldGen.genRand.NextBool(300) && j < Surface + 5 && OpenExtensions.GetOpenings(i, j).HasFlag(OpenFlags.Above))
+					{
+						structures.Add(new Point16(i, j));
 					}
 				}
 			}
@@ -136,6 +143,13 @@ public class DeerclopsDomain : BossDomainSubworld
 				}
 			}
 		}
+
+		foreach (Point16 pos in structures)
+		{
+			int id = WorldGen.genRand.Next(4);
+			var origin = new Vector2(0, 1);
+			StructureTools.PlaceByOrigin("Assets/Structures/DeerclopsDomain/Surface_" + id, new Point16(pos.X, pos.Y + 4), origin, null, true);
+		}
 	}
 
 	private void Tunnels(GenerationProgress progress, GameConfiguration configuration)
@@ -151,26 +165,26 @@ public class DeerclopsDomain : BossDomainSubworld
 		StartTunnel(noise, firstTunnelXStart, out Vector2[] points, out Vector2 last);
 
 		// Second tunnel
-		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 4, 0.5f);
+		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 3.5f, 0.5f);
 		DigThrough(points, noise, 1);
 		AddLanterns(points);
 		last = points.Last();
 		var chasmPoints = points.Clone() as Vector2[];
-		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 4);
+		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 3.5f);
 		last = CreateHorizontalTunnel(noise, points, chasmPoints);
 
 		// Third tunnel
-		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 4, 0.5f);
+		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 3.5f, 0.5f);
 		DigThrough(points, noise, 1);
 		AddLanterns(points);
 		last = points.Last();
 		chasmPoints = points.Clone() as Vector2[];
-		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 4);
+		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 3.5f);
 		CreateHorizontalTunnel(noise, points, chasmPoints);
 		last = points.Last();
 
 		// To surface
-		points = Tunnel.GeneratePoints([last, new(Width / 2, Surface), new(Width / 2, Surface - 20)], 6, 4, 0.5f);
+		points = Tunnel.GeneratePoints([last, new(Width / 2, Surface), new(Width / 2, Surface - 20)], 6, 3.5f, 0.5f);
 		DigThrough(points, noise, 1);
 		AddLanterns(points, 8);
 	}
@@ -240,7 +254,7 @@ public class DeerclopsDomain : BossDomainSubworld
 				break;
 			}
 
-			int pond = WorldGen.genRand.Next(2);
+			int pond = WorldGen.genRand.Next(3);
 			Vector2 pos = Main.rand.Next(points);
 			int x = (int)pos.X;
 			int y = (int)pos.Y;
