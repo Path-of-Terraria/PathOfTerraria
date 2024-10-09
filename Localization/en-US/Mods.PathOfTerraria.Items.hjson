@@ -478,3 +478,23 @@ RoyalJellyClumpPlacer: {
 	DisplayName: Royal Jelly Clump Placer
 	Tooltip: ""
 }
+
+PolarIceLanternItem: {
+	DisplayName: Polar Ice Lantern
+	Tooltip: Glows in the oppressive darkness of Deerclop's domain
+}
+
+PolarIceLampItem: {
+	DisplayName: Polar Ice Lamp Item
+	Tooltip: ""
+}
+
+PolarIceThrowerItem: {
+	DisplayName: Polar Ice Thrower Item
+	Tooltip: ""
+}
+
+RopeClumpItem: {
+	DisplayName: Rope Clump Item
+	Tooltip: ""
+}

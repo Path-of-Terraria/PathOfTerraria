@@ -48,6 +48,7 @@ public abstract class BossDomainSubworld : MappingWorld
 	{
 		WorldGenerator.CurrentGenerationProgress = progress;
 		Main.ActiveWorldFileData.SetSeedToRandom();
+		GenVars.structures = new();
 	}
 
 	public override void OnEnter()
