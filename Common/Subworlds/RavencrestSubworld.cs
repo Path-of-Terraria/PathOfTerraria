@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -47,12 +48,15 @@ internal class RavencrestSubworld : MappingWorld
 
 	public class RavencrestNPC : GlobalNPC 
 	{
-		public override void OnSpawn(NPC npc, IEntitySource source)
+		public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
 		{
-			if (SubworldSystem.Current is RavencrestSubworld && npc.type == NPCID.GoblinScout)
+			if (Main.invasionType == InvasionID.GoblinArmy && Main.invasionSize > 0)
 			{
-				npc.active = false;
+				return;
 			}
+
+			pool.Clear();
+			pool.Add(ModContent.NPCType<TownScoutNPC>(), ModContent.GetInstance<TownScoutNPC>().SpawnChance(spawnInfo));
 		}
 	}
 }

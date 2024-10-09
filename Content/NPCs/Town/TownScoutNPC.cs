@@ -47,9 +47,18 @@ public sealed class TownScoutNPC : ModNPC
 				}
 			}
 
-			if (Math.Abs(NPC.Center.X / 16 - Main.maxTilesX / 2) > 250)
+			if (NPC.life < NPC.lifeMax)
 			{
-				NPC.velocity.X = NPC.Center.X >= Main.maxTilesX * 8 ? -3 : 3;
+				HasPlayerBeenNear = true;
+			}
+
+			if (Math.Abs(NPC.Center.X / 16 - Main.maxTilesX / 2) > 220)
+			{
+				NPC.velocity.X = NPC.Center.X / 16 >= Main.maxTilesX / 2 ? -2 : 2;
+			}
+			else
+			{
+				NPC.velocity.X = 0;
 			}
 		}
 		else
@@ -57,6 +66,7 @@ public sealed class TownScoutNPC : ModNPC
 			NPC.velocity.X = NPC.Center.X < Main.maxTilesX * 8 ? -3 : 3;
 		}
 
+		NPC.direction = NPC.spriteDirection = Math.Sign(NPC.velocity.X);
 		ModContent.GetInstance<RavencrestSystem>().SpawnedScout = true;
 		return false;
 	}
@@ -69,7 +79,7 @@ public sealed class TownScoutNPC : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		bool anyHealthyPlayer = false;
+		bool anyHealthyPlayer = true;
 
 		foreach (Player plr in Main.ActivePlayers)
 		{
