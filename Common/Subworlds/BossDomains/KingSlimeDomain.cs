@@ -88,6 +88,8 @@ public class KingSlimeDomain : BossDomainSubworld
 		}
 
 		tiles.Clear();
+
+		NetMessage.SendData(MessageID.WorldData);
 	}
 
 	private void PlaceDecorOnTile(OpenFlags flags, Point16 position, bool late)
@@ -240,12 +242,10 @@ public class KingSlimeDomain : BossDomainSubworld
 
 	public override void Update()
 	{
-		bool allInArena = true;
+		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;
@@ -259,7 +259,18 @@ public class KingSlimeDomain : BossDomainSubworld
 				WorldGen.PlaceTile(ArenaEntrance.X + i, ArenaEntrance.Y, TileID.SlimeBlock, true, true);
 			}
 
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y + 400, NPCID.KingSlime);
+			int npc = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y + 400, NPCID.KingSlime);
+
+			Main.spawnTileX = Arena.Center.X;
+			Main.spawnTileY = Arena.Center.Y;
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+				NetMessage.SendTileSquare(-1, ArenaEntrance.X - 6, ArenaEntrance.Y, 16, 1);
+				NetMessage.SendData(MessageID.WorldData);
+			}
+
 			BossSpawned = true;
 		}
 

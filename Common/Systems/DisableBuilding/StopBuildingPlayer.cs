@@ -1,5 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using PathOfTerraria.Common.Subworlds;
+using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
@@ -101,6 +103,11 @@ internal class StopBuildingPlayer : ModPlayer
 	{
 		LastStopBuilding = ConstantStopBuilding;
 		ConstantStopBuilding = false;
+
+		if (SubworldSystem.Current is BossDomainSubworld)
+		{
+			ConstantStopBuilding = true;
+		}
 	}
 
 	public override bool CanUseItem(Item item)
