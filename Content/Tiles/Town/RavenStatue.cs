@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using SubworldLibrary;
 using Terraria;
 using Terraria.ID;
@@ -36,6 +37,7 @@ internal class RavenStatue : ModTile
 
 	public override bool RightClick(int i, int j)
 	{
+		Main.LocalPlayer.GetModPlayer<PersistentReturningPlayer>().ReturnPosition = Main.LocalPlayer.Center;
 		SubworldSystem.Enter<RavencrestSubworld>();
 		return true;
 	}
