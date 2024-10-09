@@ -37,12 +37,16 @@ internal static class ConsumeMapDeviceHandler
 		{
 			mapEntity.ConsumeMap();
 		}
+
+		ModContent.GetInstance<PoTMod>().Logger.Debug($"GOT: x:{x} - y:{y} - from:{fromWho}");
 	}
 
 	internal static void ClientReceive(BinaryReader reader)
 	{
 		short x = reader.ReadInt16();
 		short y = reader.ReadInt16();
+
+		ModContent.GetInstance<PoTMod>().Logger.Debug($"GOT: x:{x} - y:{y} - EXISTS:{TileEntity.ByPosition.TryGetValue(new(x, y), out TileEntity _)}");
 
 		if (TileEntity.ByPosition.TryGetValue(new(x, y), out TileEntity tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
