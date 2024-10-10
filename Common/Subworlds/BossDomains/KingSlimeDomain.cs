@@ -10,7 +10,6 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
@@ -19,6 +18,7 @@ public class KingSlimeDomain : BossDomainSubworld
 {
 	public override int Width => 500;
 	public override int Height => 600;
+	public override int[] WhitelistedCutTiles => [ModContent.TileType<EmbeddedSlimes>(), ModContent.TileType<FallingSlime>()];
 
 	internal static Point16 ArenaEntrance = Point16.Zero;
 
@@ -59,6 +59,11 @@ public class KingSlimeDomain : BossDomainSubworld
 			{
 				Tile tile = Main.tile[i, j];
 
+				if (WorldGen.genRand.NextBool())
+				{
+					Tile.SmoothSlope(i, j, false);
+				}
+
 				if (!tile.HasTile || tile.TileType != TileID.Stone || tiles.ContainsKey(new Point16(i, j)))
 				{
 					continue;
@@ -79,24 +84,22 @@ public class KingSlimeDomain : BossDomainSubworld
 
 		foreach ((Point16 position, OpenFlags tile) in tiles)
 		{
-			PlaceDecorOnTile(tile, position, false);
+			PlaceDecorOnTile(tile, position, true);
 		}
 
 		foreach ((Point16 position, OpenFlags tile) in tiles)
 		{
-			PlaceDecorOnTile(tile, position, true);
+			PlaceDecorOnTile(tile, position, false);
 		}
 
 		tiles.Clear();
-
-		NetMessage.SendData(MessageID.WorldData);
 	}
 
-	private void PlaceDecorOnTile(OpenFlags flags, Point16 position, bool late)
+	private void PlaceDecorOnTile(OpenFlags flags, Point16 position, bool replaceTiles)
 	{
 		if (Main.tile[position].TileType == TileID.Stone)
 		{
-			if (!late)
+			if (!replaceTiles)
 			{
 				bool nearSlimePosition = SlimePositions.Any(x => x.DistanceSQ(position.ToVector2()) < 50 * 50);
 
@@ -189,7 +192,7 @@ public class KingSlimeDomain : BossDomainSubworld
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(160, 190)),
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(220, 250)),
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(280, 310)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(330, 360)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(330, 350)),
 			ArenaEntrance.ToVector2()];
 
 		for (int i = 0; i < points.Length; i++)
@@ -204,7 +207,7 @@ public class KingSlimeDomain : BossDomainSubworld
 		}
 
 		progress.Value = 0.25f;
-		Vector2[] results = Tunnel.GeneratePoints(points, 60, 10);
+		Vector2[] results = Tunnel.GeneratePoints(points, 60, 4);
 
 		var noise = new FastNoiseLite(WorldGen._genRandSeed);
 		noise.SetFrequency(0.01f);

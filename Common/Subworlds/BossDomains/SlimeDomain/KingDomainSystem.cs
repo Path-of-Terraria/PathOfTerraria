@@ -1,5 +1,6 @@
 ﻿using SubworldLibrary;
 using System.IO;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.SlimeDomain;
 
@@ -7,6 +8,25 @@ internal class KingDomainSystem : ModSystem
 {
 	public static bool InDomain => SubworldSystem.Current is KingSlimeDomain;
 	public static KingSlimeDomain Domain => SubworldSystem.Current as KingSlimeDomain;
+
+	public override void Load()
+	{
+		On_FileUtilities.WriteTagCompound += On_FileUtilities_WriteTagCompound;
+	}
+
+	private bool On_FileUtilities_WriteTagCompound(On_FileUtilities.orig_WriteTagCompound orig, string path, bool isCloud, Terraria.ModLoader.IO.TagCompound tag)
+	{
+		try
+		{
+			return orig(path, isCloud, tag);
+		}
+		catch (ArgumentNullException e)
+		{
+			int count = tag.Count;
+			e.ToString();
+			throw;
+		}
+	}
 
 	public override void NetSend(BinaryWriter writer)
 	{
