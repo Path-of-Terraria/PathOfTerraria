@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class WoodenSword : Sword
+internal class MagicWoodenSword : Sword
 {
 	public int ItemLevel
 	{
@@ -32,5 +32,10 @@ internal class WoodenSword : Sword
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;
+	}
+	
+	public override bool MagicPrefix()
+	{
+		return true;
 	}
 }

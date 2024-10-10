@@ -31,13 +31,13 @@ public class ClassModPlayer : ModPlayer
 		item.TurnToAir();
 		vanillaItems.Add(item);
 
-		item = new Item(ModContent.ItemType<WoodenSword>());
+		item = new Item(ModContent.ItemType<MagicWoodenSword>());
 		vanillaItems.Add(item);
 		
 		item = new Item(ItemID.CopperPickaxe);
 		vanillaItems.Add(item);
 
-		item = new Item(ModContent.ItemType<WoodenBow>());
+		item = new Item(ModContent.ItemType<MagicWoodenBow>());
 		vanillaItems.Add(item);
 
 		item = new Item(ItemID.WoodenArrow, 500);

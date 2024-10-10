@@ -3,7 +3,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 
-internal class WoodenBow : Bow
+internal class MagicWoodenBow : Bow
 {
 	public override void SetStaticDefaults()
 	{
@@ -19,7 +19,12 @@ internal class WoodenBow : Bow
 	{
 		base.SetDefaults();
 
-		Item.damage = 10;
-		Item.Size = new Vector2(24, 46);
+		Item.damage = 8;
+		Item.Size = new Vector2(24, 42);
+	}
+	
+	public override bool MagicPrefix()
+	{
+		return true;
 	}
 }
