@@ -33,4 +33,9 @@ internal class WoodenSword : Sword
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;
 	}
+	
+	public override bool MagicPrefix()
+	{
+		return true;
+	}
 }

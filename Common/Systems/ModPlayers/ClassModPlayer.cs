@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -29,12 +31,16 @@ public class ClassModPlayer : ModPlayer
 		item.TurnToAir();
 		vanillaItems.Add(item);
 
-		item = new Item();
-		item.SetDefaults(ItemID.CopperPickaxe);
+		item = new Item(ModContent.ItemType<WoodenSword>());
+		vanillaItems.Add(item);
+		
+		item = new Item(ItemID.CopperPickaxe);
 		vanillaItems.Add(item);
 
-		item = new Item();
-		item.SetDefaults(ItemID.CopperAxe);
+		item = new Item(ModContent.ItemType<WoodenBow>());
+		vanillaItems.Add(item);
+
+		item = new Item(ItemID.WoodenArrow, 500);
 		vanillaItems.Add(item);
 	}
 

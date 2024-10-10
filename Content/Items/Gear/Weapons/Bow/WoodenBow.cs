@@ -22,4 +22,9 @@ internal class WoodenBow : Bow
 		Item.damage = 10;
 		Item.Size = new Vector2(24, 46);
 	}
+	
+	public override bool MagicPrefix()
+	{
+		return true;
+	}
 }
