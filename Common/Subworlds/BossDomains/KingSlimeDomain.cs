@@ -264,8 +264,8 @@ public class KingSlimeDomain : BossDomainSubworld
 
 			int npc = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y + 400, NPCID.KingSlime);
 
-			Main.spawnTileX = Arena.Center.X;
-			Main.spawnTileY = Arena.Center.Y;
+			Main.spawnTileX = Arena.Center.X / 16;
+			Main.spawnTileY = Arena.Center.Y / 16;
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
