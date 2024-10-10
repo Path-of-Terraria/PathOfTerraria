@@ -52,7 +52,7 @@ internal class PassiveElement : SmartUiElement
 		// Anchor passive should always be "unlocked", thus this hardcoding
 		if (_passive is AnchorPassive)
 		{
-			_passive.Level = 0;
+			_passive.Level = 1;
 		}
 	}
 
