@@ -25,6 +25,12 @@ internal static class Networking
 		/// <c>byte playerWhoAmI, short npcWho, bool runLocally = false</c>
 		/// </summary>
 		SyncGuardianAngelHit,
+
+		/// <summary>
+		/// Spawns an NPC on the server. Signature:<br/>
+		/// <c>short npcId, Vector2 position</c>
+		/// </summary>
+		SpawnNPCOnServer,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -65,6 +71,14 @@ internal static class Networking
 				else
 				{
 					SyncGuardianAngelHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.SpawnNPCOnServer:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SpawnNPCOnServerHandler.ServerRecieve(reader);
 				}
 
 				break;

@@ -9,8 +9,6 @@ internal class PersistentReturningPlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		Main.NewText(ReturnPosition);
-
 		if (ReturnPosition != Vector2.Zero && CheckInMainWorld && SubworldSystem.Current is null)
 		{
 			Player.Center = ReturnPosition;

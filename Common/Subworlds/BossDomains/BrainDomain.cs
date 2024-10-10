@@ -379,8 +379,6 @@ public class BrainDomain : BossDomainSubworld
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;

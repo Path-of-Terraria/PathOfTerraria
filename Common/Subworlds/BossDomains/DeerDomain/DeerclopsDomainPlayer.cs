@@ -13,6 +13,11 @@ public class DeerclopsDomainPlayer : ModPlayer
 
 	public override void UpdateEquips()
 	{
+		if (Main.dedServ)
+		{
+			return;
+		}
+
 		Point16 center = Player.Center.ToTileCoordinates16();
 		float bright = Lighting.Brightness(center.X, center.Y);
 
@@ -36,7 +41,13 @@ public class DeerclopsDomainPlayer : ModPlayer
 				{
 					Vector2 projPos = Player.Center + Main.rand.NextVector2CircularEdge(160, 160);
 					Projectile.RandomizeInsanityShadowFor(Main.player[Player.whoAmI], true, out Vector2 spawnPosition, out Vector2 vel, out float ai, out float ai2);
-					Projectile.NewProjectile(Terraria.Entity.GetSource_NaturalSpawn(), spawnPosition, vel, ProjectileID.InsanityShadowHostile, 60, 6, Main.myPlayer, ai, ai2);
+					IEntitySource source = Terraria.Entity.GetSource_NaturalSpawn();
+					int proj = Projectile.NewProjectile(source, spawnPosition, vel, ProjectileID.InsanityShadowHostile, 60, 6, Main.myPlayer, ai, ai2);
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+					}
 				}
 			}
 		}

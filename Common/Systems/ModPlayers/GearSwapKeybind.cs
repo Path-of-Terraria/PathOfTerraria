@@ -8,7 +8,10 @@ public sealed class GearSwapKeybind : ModSystem
 
 	public override void Load()
 	{
-		SwapKeybind = KeybindLoader.RegisterKeybind(Mod, "GearSwap", Keys.Z);
+		if (!Main.dedServ)
+		{
+			SwapKeybind = KeybindLoader.RegisterKeybind(Mod, "GearSwap", Keys.Z);
+		}
 	}
 
 	public override void Unload()
