@@ -56,7 +56,7 @@ public class ArcaneObeliskTile : ModTile
 
 	public override bool RightClick(int i, int j)
 	{
-		UIManager.TryToggleOrRegister(UIWaypointBrowser.Identifier, "Vanilla: Mouse Text", new UIWaypointBrowser(), 1);
+		UIManager.TryToggleOrRegister(UIWaypointMenu.Identifier, "Vanilla: Mouse Text", new UIWaypointMenu(), 1);
 		
 		return true;
 	}

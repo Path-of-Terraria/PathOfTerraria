@@ -7,12 +7,12 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
 
-public sealed class UIWaypointListTab : UIElement
+public sealed class UIWaypointListElement : UIElement
 {
 	/// <summary>
 	///     The width of this element in pixels.
 	/// </summary>
-	public const float FullWidth = UIWaypointList.FullWidth - 18f;
+	public const float FullWidth = UIWaypointMenu.FullWidth - 18f;
 
 	/// <summary>
 	///     The height of this element in pixels.
@@ -47,7 +47,7 @@ public sealed class UIWaypointListTab : UIElement
 	/// </summary>
 	public readonly LocalizedText Name;
 
-	public UIWaypointListTab(Asset<Texture2D> icon, LocalizedText name, int index)
+	public UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index)
 	{
 		Icon = icon;
 		Name = name;
@@ -103,7 +103,7 @@ public sealed class UIWaypointListTab : UIElement
 
 	private UIText BuildText()
 	{
-		var text = new UIText(Name, 0.8f)
+		var text = new UIText(Name, 0.7f)
 		{
 			VAlign = 0.5f,
 			Left = { Pixels = ElementMargin + Icon.Width() + (32f - Icon.Width()) + ElementMargin }
@@ -144,7 +144,7 @@ public sealed class UIWaypointListTab : UIElement
 			return;
 		}
 
-		UITextTextScaleInfo.SetValue(text, MathHelper.SmoothStep(scale, Selected ? 1f : 0.8f, 0.3f));
+		UITextTextScaleInfo.SetValue(text, MathHelper.SmoothStep(scale, Selected ? 0.9f : 0.7f, 0.3f));
 	}
 
 	private void PanelUpdateEvent(UIElement element)
