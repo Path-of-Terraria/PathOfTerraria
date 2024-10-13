@@ -8,13 +8,13 @@ namespace PathOfTerraria.Common.Systems.ModPlayers;
 public class SkillPassivePlayer : ModPlayer
 {
 	// A dictionary to store the acquired passive points for each skill.
-	public Dictionary<Skill, int> AcquiredPassivePoints = new();
+	public Dictionary<Skill, int> AcquiredPassivePoints = [];
 
 	// A dictionary to store the allocated passive points for each skill.
-	public Dictionary<Skill, int> AllocatedPassivePoints = new();
+	public Dictionary<Skill, int> AllocatedPassivePoints = [];
 
 	// A dictionary to store the actual allocated skill passives for each skill.
-	public Dictionary<Skill, Dictionary<string, SkillPassive>> AllocatedPassives = new();
+	public Dictionary<Skill, Dictionary<string, SkillPassive>> AllocatedPassives = [];
 
 	public override void Initialize()
 	{

@@ -3,6 +3,8 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -33,7 +35,7 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 		Item.useTurn = true;
 		Item.UseSound = SoundID.Item3;
 		Item.maxStack = 1;
-		Item.consumable = true;
+		Item.consumable = false;
 		Item.rare = ItemRarityID.Green;
 		Item.value = 1000;
 

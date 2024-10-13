@@ -164,5 +164,19 @@
 			"x": 300,
 			"y": 100
 		}
+	},
+	{
+		"internalIdentifier": "StrongerChillPassive",
+		"referenceId": 12,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": -300,
+			"y": 100
+		}
 	}
 ]

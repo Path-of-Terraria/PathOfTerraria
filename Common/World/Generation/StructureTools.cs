@@ -4,7 +4,14 @@ namespace PathOfTerraria.Common.World.Generation;
 
 internal static class StructureTools
 {
-	public static void PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = true)
+	public static Point16 GetSize(string structure, Mod mod = null)
+	{
+		Point16 size = new();
+		StructureHelper.Generator.GetDimensions(structure, mod ?? ModContent.GetInstance<PoTMod>(), ref size);
+		return size;
+	}
+
+	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false)
 	{
 		mod ??= ModContent.GetInstance<PoTMod>();
 		var dims = new Point16();
@@ -17,6 +24,7 @@ internal static class StructureTools
 		}
 
 		StructureHelper.Generator.GenerateStructure(structure, position, mod);
+		return position;
 	}
 
 	private static void CullLine(Point16 position, Point16 dims)

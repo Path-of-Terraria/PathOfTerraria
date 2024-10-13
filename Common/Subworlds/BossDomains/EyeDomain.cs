@@ -29,10 +29,11 @@ public class EyeDomain : BossDomainSubworld
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Surface", GenSurface),
-		new PassLegacy("Grass", PlaceGrassAndDecor)];
+		new PassLegacy("Grass", (progress, _) => PlaceGrassAndDecor(progress, true, Mod, out Arena))];
 
-	private void PlaceGrassAndDecor(GenerationProgress progress, GameConfiguration configuration)
+	public static void PlaceGrassAndDecor(GenerationProgress progress, bool includeFleshStuff, Mod mod, out Rectangle arena)
 	{
+		arena = Rectangle.Empty;
 		Dictionary<Point16, OpenFlags> tiles = [];
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
@@ -65,7 +66,7 @@ public class EyeDomain : BossDomainSubworld
 
 		foreach ((Point16 position, OpenFlags tile) in tiles)
 		{
-			TrySpreadGrassOnTile(tile, position, grasses);
+			TrySpreadGrassOnTile(tile, position, grasses, includeFleshStuff);
 
 			if (position.X == ArenaX && Main.tile[position].HasTile && Main.tile[position].TileType == TileID.Grass)
 			{
@@ -77,7 +78,7 @@ public class EyeDomain : BossDomainSubworld
 
 		foreach (Point16 position in grasses)
 		{
-			if (Main.tile[position].TileType == TileID.FleshBlock)
+			if (includeFleshStuff && Main.tile[position].TileType == TileID.FleshBlock)
 			{
 				if (position.X - structureX > 60 && position.X < ArenaX - 20 && WorldGen.genRand.NextBool(20) && !WorldGen.SolidOrSlopedTile(position.X, position.Y - 1))
 				{
@@ -105,7 +106,7 @@ public class EyeDomain : BossDomainSubworld
 						pos = new Point16(position.X, position.Y + 1);
 					}
 
-					StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f));
+					StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f), null, true);
 					structureX = pos.X;
 				}
 
@@ -136,13 +137,16 @@ public class EyeDomain : BossDomainSubworld
 			}
 		}
 
-		var dims = new Point16();
-		StructureHelper.Generator.GetDimensions("Assets/Structures/EyeArena", Mod, ref dims);
-		StructureHelper.Generator.GenerateStructure("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), Mod);
-		Arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
+		if (includeFleshStuff)
+		{
+			var dims = new Point16();
+			StructureHelper.Generator.GetDimensions("Assets/Structures/EyeArena", mod, ref dims);
+			StructureHelper.Generator.GenerateStructure("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), mod);
+			arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
+		}
 	}
 
-	private static void TrySpreadGrassOnTile(OpenFlags adjacencies, Point16 position, HashSet<Point16> grasses)
+	private static void TrySpreadGrassOnTile(OpenFlags adjacencies, Point16 position, HashSet<Point16> grasses, bool includeFlesh)
 	{
 		Tile tile = Main.tile[position];
 
@@ -150,7 +154,7 @@ public class EyeDomain : BossDomainSubworld
 		{
 			tile.TileType = TileID.Grass;
 
-			if (!StepX(position.X) && position.X > 150 && WorldGen.genRand.NextBool(15))
+			if (includeFlesh && !StepX(position.X) && position.X > 150 && WorldGen.genRand.NextBool(15))
 			{
 				WorldGen.TileRunner(position.X, position.Y, WorldGen.genRand.NextFloat(12, 26), WorldGen.genRand.Next(12, 40), TileID.FleshBlock);
 			}
@@ -204,6 +208,8 @@ public class EyeDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
+
 		BossSpawned = false;
 		ReadyToExit = false;
 	}

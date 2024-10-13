@@ -124,7 +124,7 @@ public class EaterDomain : BossDomainSubworld
 
 		foreach (Point16 position in eggs)
 		{
-			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/Egg" + WorldGen.genRand.Next(3), position, new Vector2(0.5f, 0.5f), null, false);
+			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/Egg" + WorldGen.genRand.Next(3), position, new Vector2(0.5f, 0.5f), null);
 		}
 
 		HashSet<Point16> grasses = [];
@@ -183,7 +183,7 @@ public class EaterDomain : BossDomainSubworld
 
 		if (CanPlaceGraveyard(position) && WorldGen.genRand.NextBool(12) && position.Y > 300)
 		{
-			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/UGGraveyard" + WorldGen.genRand.Next(3), position, new Vector2(0f, 1f));
+			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/UGGraveyard" + WorldGen.genRand.Next(3), position, new Vector2(0f, 1f), null, true);
 			return;
 		}
 
@@ -440,6 +440,8 @@ public class EaterDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
+
 		BossSpawned = false;
 		ReadyToExit = false;
 
