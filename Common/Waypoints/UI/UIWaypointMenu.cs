@@ -229,6 +229,7 @@ public sealed class UIWaypointMenu : UIState
 
 		buttonPanel.BorderColor = Color.Lerp(buttonPanel.BorderColor, buttonElement.IsMouseHovering ? Color.White : new Color(68, 97, 175), 0.3f)
 			* 0.8f;
+
 		buttonText.Scale = MathHelper.SmoothStep(buttonText.Scale, buttonElement.IsMouseHovering ? 1.2f : 1f, 0.3f);
 	}
 
