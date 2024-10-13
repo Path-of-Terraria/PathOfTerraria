@@ -88,11 +88,10 @@ public sealed class UIWaypointMenu : UIState
 		listRootElement = new UIElement
 		{
 			Width = { Pixels = ListFullWidth },
-			Height = { Pixels = ListFullHeight }
+			Height = { Pixels = ListFullHeight },
+			PaddingLeft = 8f,
+			PaddingRight = 8f
 		};
-
-		listRootElement.PaddingLeft = 8f;
-		listRootElement.PaddingRight = 8f;
 
 		rootElement.Append(listRootElement);
 
@@ -158,10 +157,9 @@ public sealed class UIWaypointMenu : UIState
 		{
 			Left = { Pixels = ListFullWidth + ElementPadding },
 			Width = { Pixels = InfoFullWidth },
-			Height = { Pixels = InfoFullHeight }
+			Height = { Pixels = InfoFullHeight },
+			PaddingRight = 8f
 		};
-
-		infoRoot.PaddingRight = 8f;
 
 		rootElement.Append(infoRoot);
 

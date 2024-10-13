@@ -25,7 +25,7 @@ public sealed partial class UIManager : ModSystem
 		///		Whether the state is enabled or not.
 		/// </summary>
 		public bool Enabled;
-		
+
 		/// <summary>
 		///		The <see cref="UserInterface"/> instance associated with the <see cref="UIState"/>.
 		/// </summary>
@@ -47,7 +47,7 @@ public sealed partial class UIManager : ModSystem
 		public readonly UIState? Value = value;
 
 		/// <summary>
-		///		The index offset within the specified insertion layer. 
+		///		The index offset within the specified insertion layer.
 		/// </summary>
 		/// <remarks>
 		///		Defaults to <c>0</c>.
@@ -55,7 +55,7 @@ public sealed partial class UIManager : ModSystem
 		public readonly int Offset = offset;
 
 		/// <summary>
-		///		The interface scale type of the <see cref="UIState"/>. 
+		///		The interface scale type of the <see cref="UIState"/>.
 		/// </summary>
 		/// <remarks>
 		///		Defaults to <see cref="InterfaceScaleType.UI"/>.
@@ -65,7 +65,7 @@ public sealed partial class UIManager : ModSystem
 
 	// Terraria doesn't provide any game time instance during rendering, so we keep track of it ourselves.
 	private static GameTime? lastGameTime;
-	
+
 	/// <summary>
 	///		The list of data from registered <see cref="UIState"/> instances.
 	/// </summary>
@@ -74,15 +74,15 @@ public sealed partial class UIManager : ModSystem
 	public override void Unload()
 	{
 		base.Unload();
-		
+
 		for (int i = 0; i < Data.Count; i++)
 		{
 			UIStateData data = Data[i];
-				
+
 			data.UserInterface?.SetState(null);
 			data.UserInterface = null;
 		}
-		
+
 		Data?.Clear();
 		Data = null;
 	}
@@ -94,7 +94,7 @@ public sealed partial class UIManager : ModSystem
 		for (int i = 0; i < Data.Count; i++)
 		{
 			UIStateData data = Data[i];
-			
+
 			data.UserInterface.Update(gameTime);
 		}
 
@@ -128,7 +128,7 @@ public sealed partial class UIManager : ModSystem
 			layers.Insert(index + data.Offset, layer);
 		}
 	}
-	
+
 	/// <summary>
 	///		Registers a <see cref="UIState"/> instance.
 	/// </summary>
@@ -150,7 +150,7 @@ public sealed partial class UIManager : ModSystem
 		};
 
 		data.UserInterface.SetState(value);
-		
+
 		if (index < 0)
 		{
 			Data.Add(data);
@@ -174,7 +174,7 @@ public sealed partial class UIManager : ModSystem
 		{
 			return false;
 		}
-		
+
 		UIStateData data = Data[index];
 
 		data.UserInterface.CurrentState.Activate();
@@ -182,7 +182,7 @@ public sealed partial class UIManager : ModSystem
 
 		return true;
 	}
-	
+
 	/// <summary>
 	///		Attempts to enable a <see cref="UIState"/> instance. If it doesn't exist, registers it and then enables it.
 	/// </summary>
@@ -202,7 +202,7 @@ public sealed partial class UIManager : ModSystem
 
 		return TryEnable(identifier);
 	}
-	
+
 	/// <summary>
 	///		Attempts to disable a <see cref="UIState"/> instance by its identifier.
 	/// </summary>
@@ -227,13 +227,13 @@ public sealed partial class UIManager : ModSystem
 
 		return true;
 	}
-	
+
 	/// <summary>
 	///		Attempts to toggle the enabled state of a <see cref="UIState"/> instance by its identifier.
 	/// </summary>
 	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
 	/// <returns><c>true</c> if the state was successfully toggled; otherwise, <c>false</c>.</returns>
-	public static bool TryToggle(string identifier, bool refresh = true)
+	public static bool TryToggle(string identifier)
 	{
 		int index = Data.FindIndex(s => s.Identifier == identifier);
 
@@ -244,7 +244,7 @@ public sealed partial class UIManager : ModSystem
 
 		return Data[index].Enabled ? TryDisable(identifier) : TryEnable(identifier);
 	}
-	
+
 	/// <summary>
 	///		Attempts to toggle a <see cref="UIState"/> instance. If it doesn't exist, registers it and then toggles it.
 	/// </summary>
@@ -261,7 +261,7 @@ public sealed partial class UIManager : ModSystem
 		{
 			Register(identifier, layer, value, offset, type);
 		}
-		
+
 		return TryToggle(identifier);
 	}
 }

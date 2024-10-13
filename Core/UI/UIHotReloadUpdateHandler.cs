@@ -14,11 +14,6 @@ internal static class UIHotReloadUpdateHandler
 	internal static void ClearCache(Type[]? updatedTypes) { }
 #pragma warning restore IDE0060 // Remove unused parameter
 
-	// This method is required for the handler to work, despite not doing anything.
-#pragma warning disable IDE0060 // Remove unused parameter
-	internal static void ClearCache(Type[]? updatedTypes) { }
-#pragma warning restore IDE0060 // Remove unused parameter
-
 	internal static void UpdateApplication(Type[]? updatedTypes)
 	{
 		Main.QueueMainThreadAction(
