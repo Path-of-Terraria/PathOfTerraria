@@ -7,52 +7,25 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
 
-public sealed class UIWaypointListElement : UIElement
+public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index) : UIElement
 {
-	/// <summary>
-	///     The width of this element in pixels.
-	/// </summary>
 	public const float FullWidth = UIWaypointMenu.FullWidth - 18f;
 
-	/// <summary>
-	///     The height of this element in pixels.
-	/// </summary>
 	public const float FullHeight = 48f;
 
-	/// <summary>
-	///     The margin of this element in pixels.
-	/// </summary>
 	public const float ElementMargin = 16f;
 
-	// This is a temporary solution; ideally we would want to create our own UIText that doesn't have such limitations.
-	private static readonly FieldInfo UITextTextScaleInfo = typeof(UIText).GetField("_textScale", BindingFlags.NonPublic | BindingFlags.Instance);
+	public bool Selected;
 
-	/// <summary>
-	///     Whether this element is selected or not.
-	/// </summary>
-	public bool Selected { get; set; }
+	public readonly Asset<Texture2D> Icon = icon;
 
-	/// <summary>
-	///     The icon of this tab.
-	/// </summary>
-	public readonly Asset<Texture2D> Icon;
+	public readonly int Index = index;
 
-	/// <summary>
-	///     The index of this element in a <see cref="UIList" />.
-	/// </summary>
-	public readonly int Index;
+	public readonly LocalizedText Name = name;
 
-	/// <summary>
-	///     The display name of this tab.
-	/// </summary>
-	public readonly LocalizedText Name;
-
-	public UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index)
-	{
-		Icon = icon;
-		Name = name;
-		Index = index;
-	}
+	private UIPanel panel;
+	private UIImage icon;
+	private UIScalingText text;
 
 	public override void OnInitialize()
 	{
@@ -61,13 +34,45 @@ public sealed class UIWaypointListElement : UIElement
 		Width.Set(FullWidth, 0f);
 		Height.Set(FullHeight, 0f);
 
-		Append(BuildPanel());
-		Append(BuildIcon());
-		Append(BuildText());
+		Append(panel = BuildPanel());
+		Append(icon = BuildIcon());
+		Append(text = BuildText());
 		Append(BuildSeparator());
 	}
 
-	private UIPanel BuildPanel()
+	public override void Update(GameTime gameTime)
+	{
+		base.Update(gameTime);
+
+		panel.BorderColor = Color.Lerp(panel.BorderColor, Selected ? Color.White : new Color(68, 97, 175), 0.3f) * 0.8f;
+		icon.ImageScale = MathHelper.SmoothStep(icon.ImageScale, Selected ? 1.25f : 1f, 0.3f);
+		text.Scale = MathHelper.SmoothStep(text.Scale, Selected ? 0.9f : 0.7f, 0.3f);
+	}
+
+	private UIImage BuildIcon()
+	{
+		var icon = new UIImage(Icon)
+		{
+			VAlign = 0.5f,
+			Left = { Pixels = ElementMargin },
+			OverrideSamplerState = SamplerState.PointClamp
+		};
+
+		return icon;
+	}
+
+	private UIScalingText BuildText()
+	{
+		var text = new UIScalingText(Name, 0.7f)
+		{
+			VAlign = 0.5f,
+			Left = { Pixels = ElementMargin + Icon.Width() + (32f - Icon.Width()) + ElementMargin }
+		};
+
+		return text;
+	}
+
+	private static UIPanel BuildPanel()
 	{
 		var panel = new UIPanel(
 			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBackground"),
@@ -82,39 +87,10 @@ public sealed class UIWaypointListElement : UIElement
 			Height = { Pixels = FullHeight }
 		};
 
-		panel.OnUpdate += PanelUpdateEvent;
-
 		return panel;
 	}
 
-	private UIImage BuildIcon()
-	{
-		var icon = new UIImage(Icon)
-		{
-			VAlign = 0.5f,
-			Left = { Pixels = ElementMargin },
-			OverrideSamplerState = SamplerState.PointClamp
-		};
-
-		icon.OnUpdate += IconUpdateEvent;
-
-		return icon;
-	}
-
-	private UIText BuildText()
-	{
-		var text = new UIText(Name, 0.7f)
-		{
-			VAlign = 0.5f,
-			Left = { Pixels = ElementMargin + Icon.Width() + (32f - Icon.Width()) + ElementMargin }
-		};
-
-		text.OnUpdate += TextUpdateEvent;
-
-		return text;
-	}
-
-	private UIImage BuildSeparator()
+	private static UIImage BuildSeparator()
 	{
 		var separator = new UIImage(TextureAssets.MagicPixel)
 		{
@@ -128,42 +104,5 @@ public sealed class UIWaypointListElement : UIElement
 		};
 
 		return separator;
-	}
-
-	private void TextUpdateEvent(UIElement element)
-	{
-		if (element is not UIText text)
-		{
-			return;
-		}
-
-		object value = UITextTextScaleInfo.GetValue(text);
-
-		if (value is not float scale)
-		{
-			return;
-		}
-
-		UITextTextScaleInfo.SetValue(text, MathHelper.SmoothStep(scale, Selected ? 0.9f : 0.7f, 0.3f));
-	}
-
-	private void PanelUpdateEvent(UIElement element)
-	{
-		if (element is not UIPanel panel)
-		{
-			return;
-		}
-
-		panel.BorderColor = Color.Lerp(panel.BorderColor, Selected ? Color.White : new Color(68, 97, 175), 0.3f) * 0.8f;
-	}
-
-	private void IconUpdateEvent(UIElement element)
-	{
-		if (element is not UIImage image)
-		{
-			return;
-		}
-
-		image.ImageScale = MathHelper.SmoothStep(image.ImageScale, Selected ? 1.25f : 1f, 0.3f);
 	}
 }

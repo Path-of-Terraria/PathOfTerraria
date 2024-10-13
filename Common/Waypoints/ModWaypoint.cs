@@ -14,11 +14,6 @@ public abstract class ModWaypoint : ModType, ILocalizedModType
 	public virtual LocalizedText DisplayName => this.GetLocalization(nameof(DisplayName), PrettyPrintName);
 
 	/// <summary>
-	///		The translations for the description of this waypoint.
-	/// </summary>
-	public virtual LocalizedText Description => this.GetLocalization(nameof(Description), PrettyPrintName);
-
-	/// <summary>
 	///		The qualified path to the icon texture of this waypoint.
 	/// </summary>
 	public virtual string IconPath => GetType().FullName.Replace('.', '/') + "_Icon";
@@ -27,12 +22,6 @@ public abstract class ModWaypoint : ModType, ILocalizedModType
 	///		The qualified path to the preview texture of this waypoint.
 	/// </summary>
 	public virtual string PreviewPath => GetType().FullName.Replace('.', '/') + "_Preview";
-
-	public override void SetStaticDefaults()
-	{
-		_ = DisplayName;
-		_ = Description;
-	}
 
 	protected sealed override void Register()
 	{

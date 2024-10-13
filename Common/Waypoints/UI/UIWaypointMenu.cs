@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Core.UI;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -33,6 +35,12 @@ public sealed class UIWaypointMenu : UIState
 
 	public const float ElementPadding = 12f;
 
+	private static readonly Asset<Texture2D> PanelBackgroundTexture =
+		ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBackground");
+
+	private static readonly Asset<Texture2D> PanelBorderTexture =
+		ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBorder");
+
 	public int SelectedWaypointIndex
 	{
 		get => _selectedWaypointIndex;
@@ -50,14 +58,22 @@ public sealed class UIWaypointMenu : UIState
 
 	private int holdDelayTimer;
 
+	private UIText waypointText;
+	private UIScalingText buttonText;
+
 	private UIImage thumbnailImage;
-	private UIText waypointHeader;
+
+	private UIPanel buttonPanel;
+
+	private UIElement rootElement;
+	private UIElement buttonElement;
+	private UIElement listRootElement;
 
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
 
-		var root = new UIElement
+		rootElement = new UIElement
 		{
 			HAlign = 0.5f,
 			VAlign = 0.5f,
@@ -66,22 +82,20 @@ public sealed class UIWaypointMenu : UIState
 			Height = { Pixels = FullHeight }
 		};
 
-		root.OnUpdate += RootUpdateEvent;
+		rootElement.Append(BuildPanel());
 
-		root.Append(BuildPanel());
+		Append(rootElement);
 
-		Append(root);
-
-		var listRoot = new UIElement
+		listRootElement = new UIElement
 		{
 			Width = { Pixels = ListFullWidth },
 			Height = { Pixels = ListFullHeight }
 		};
 
-		listRoot.PaddingLeft = 8f;
-		listRoot.PaddingRight = 8f;
+		listRootElement.PaddingLeft = 8f;
+		listRootElement.PaddingRight = 8f;
 
-		root.Append(listRoot);
+		rootElement.Append(listRootElement);
 
 		var header = new UIText("Waypoints", 1.2f)
 		{
@@ -89,36 +103,45 @@ public sealed class UIWaypointMenu : UIState
 			Top = { Pixels = HeaderMargin / 4f }
 		};
 
-		listRoot.Append(header);
+		listRootElement.Append(header);
 
 		UIList list = BuildList();
 
-		listRoot.Append(list);
+		listRootElement.Append(list);
 
-		var panel = new UIPanel(
-			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBackground"),
-			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBorder"),
-			13
-		)
+		buttonElement = new UIElement
 		{
-			BackgroundColor = new Color(68, 97, 175) * 0.8f,
-			BorderColor = Color.White * 0.8f,
-			OverrideSamplerState = SamplerState.PointClamp,
 			Width = { Pixels = FullWidth },
 			Height = { Pixels = 48f },
 			VAlign = 1f,
 			Top = { Pixels = -8f }
 		};
 
-		listRoot.Append(panel);
+		buttonElement.OnMouseOver += HandleMouseOverSound;
+		buttonElement.OnMouseOut += HandleMouseOutSound;
 
-		var text = new UIText("Travel")
+		buttonElement.OnLeftClick += (_, _) => SelectedListWaypoint.Teleport(Main.LocalPlayer);
+
+		listRootElement.Append(buttonElement);
+
+		buttonPanel = new UIPanel(PanelBackgroundTexture, PanelBorderTexture, 13)
+		{
+			BackgroundColor = new Color(68, 97, 175) * 0.8f,
+			BorderColor = new Color(68, 97, 175) * 0.8f,
+			OverrideSamplerState = SamplerState.PointClamp,
+			Width = { Pixels = FullWidth },
+			Height = { Pixels = 48f }
+		};
+
+		buttonElement.Append(buttonPanel);
+
+		buttonText = new UIScalingText("Travel")
 		{
 			HAlign = 0.5f,
 			VAlign = 0.5f
 		};
 
-		panel.Append(text);
+		buttonElement.Append(buttonText);
 
 		var separator = new UIImage(TextureAssets.MagicPixel)
 		{
@@ -130,7 +153,7 @@ public sealed class UIWaypointMenu : UIState
 			Color = Color.White * 0.5f
 		};
 
-		root.Append(separator);
+		rootElement.Append(separator);
 
 		var infoRoot = new UIElement
 		{
@@ -141,7 +164,7 @@ public sealed class UIWaypointMenu : UIState
 
 		infoRoot.PaddingRight = 8f;
 
-		root.Append(infoRoot);
+		rootElement.Append(infoRoot);
 
 		thumbnailImage = new UIImage(ModContent.Request<Texture2D>(SelectedListWaypoint.PreviewPath, AssetRequestMode.ImmediateLoad))
 		{
@@ -154,15 +177,26 @@ public sealed class UIWaypointMenu : UIState
 
 		infoRoot.Append(thumbnailImage);
 
-		waypointHeader = new UIText(SelectedListWaypoint.DisplayName, 1.2f)
+		waypointText = new UIText(SelectedListWaypoint.DisplayName, 1.2f)
 		{
 			HAlign = 0.5f,
 			Top = { Pixels = HeaderMargin / 4f }
 		};
 
-		infoRoot.Append(waypointHeader);
+		infoRoot.Append(waypointText);
 
+		var closeImage = new UIHoverTooltipImage(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/Close_Icon"), "")
+		{
+			HAlign = 1f,
+			ActiveScale = 1.1f
+		};
 
+		closeImage.OnMouseOut += HandleMouseOutSound;
+		closeImage.OnMouseOver += HandleMouseOverSound;
+
+		closeImage.OnLeftClick += (_, _) => Enabled = false;
+
+		rootElement.Append(closeImage);
 	}
 
 	public override void OnActivate()
@@ -184,22 +218,18 @@ public sealed class UIWaypointMenu : UIState
 		base.Update(gameTime);
 
 		UpdateInput();
-	}
 
-	private void RootUpdateEvent(UIElement element)
-	{
 		float target = Enabled ? 0f : Main.screenHeight;
 
-		element.Top.Pixels = MathHelper.SmoothStep(element.Top.Pixels, target, 0.3f);
+		rootElement.Top.Pixels = MathHelper.SmoothStep(rootElement.Top.Pixels, target, 0.3f);
+
+		buttonPanel.BorderColor = Color.Lerp(buttonPanel.BorderColor, buttonElement.IsMouseHovering ? Color.White : new Color(68, 97, 175), 0.3f) * 0.8f;
+		buttonText.Scale = MathHelper.SmoothStep(buttonText.Scale, buttonElement.IsMouseHovering ? 1.2f : 1f, 0.3f);
 	}
 
 	private static UIPanel BuildPanel()
 	{
-		var panel = new UIPanel(
-			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBackground"),
-			ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/PanelBorder"),
-			13
-		)
+		var panel = new UIPanel(PanelBackgroundTexture, PanelBorderTexture, 13)
 		{
 			BackgroundColor = new Color(41, 66, 133) * 0.8f,
 			BorderColor = new Color(13, 13, 15),
@@ -227,6 +257,28 @@ public sealed class UIWaypointMenu : UIState
 		list.SetScrollbar(new UIScrollbar());
 
 		return list;
+	}
+
+	private static void HandleMouseOverSound(UIMouseEvent @event, UIElement element)
+	{
+		SoundEngine.PlaySound(
+			SoundID.MenuTick with
+			{
+				Pitch = 0.15f,
+				MaxInstances = 1
+			}
+		);
+	}
+
+	private static void HandleMouseOutSound(UIMouseEvent @event, UIElement element)
+	{
+		SoundEngine.PlaySound(
+			SoundID.MenuTick with
+			{
+				Pitch = -0.25f,
+				MaxInstances = 1
+			}
+		);
 	}
 
 	private void PopulateList(UIList list)
@@ -269,7 +321,7 @@ public sealed class UIWaypointMenu : UIState
 
 	private void ProcessInput(int direction)
 	{
-		if (!CanProcessInput() || !ContainsPoint(Main.MouseScreen))
+		if (!CanProcessInput() || !listRootElement.ContainsPoint(Main.MouseScreen))
 		{
 			return;
 		}
@@ -293,8 +345,8 @@ public sealed class UIWaypointMenu : UIState
 
 		SelectedWaypointIndex = nextIndex;
 
-		thumbnailImage.SetImage(ModContent.Request<Texture2D>(SelectedListWaypoint.PreviewPath));
-		waypointHeader.SetText(SelectedListWaypoint.DisplayName);
+		thumbnailImage.SetImage(ModContent.Request<Texture2D>(SelectedListWaypoint.PreviewPath, AssetRequestMode.ImmediateLoad));
+		waypointText.SetText(SelectedListWaypoint.DisplayName);
 	}
 
 	private bool CanProcessInput()
