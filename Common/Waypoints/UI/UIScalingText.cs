@@ -1,7 +1,6 @@
 using System.Reflection;
 using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
-using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
 
@@ -19,7 +18,7 @@ public class UIScalingText : UIText
 	{
 		base.Update(gameTime);
 
-		var value = UITextTextScaleInfo.GetValue(this);
+		object value = UITextTextScaleInfo.GetValue(this);
 
 		if (value is float scale && scale == Scale)
 		{

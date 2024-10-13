@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.UI.Elements;
-using PathOfTerraria.Core.UI;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -53,21 +52,21 @@ public sealed class UIWaypointMenu : UIState
 	private readonly List<UIWaypointListElement> tabs = [];
 
 	private int _selectedWaypointIndex;
+	private UIElement buttonElement;
+
+	private UIPanel buttonPanel;
+	private UIScalingText buttonText;
 
 	public bool Enabled;
 
 	private int holdDelayTimer;
+	private UIElement listRootElement;
 
-	private UIText waypointText;
-	private UIScalingText buttonText;
+	private UIElement rootElement;
 
 	private UIImage thumbnailImage;
 
-	private UIPanel buttonPanel;
-
-	private UIElement rootElement;
-	private UIElement buttonElement;
-	private UIElement listRootElement;
+	private UIText waypointText;
 
 	public override void OnInitialize()
 	{
@@ -228,7 +227,8 @@ public sealed class UIWaypointMenu : UIState
 
 		rootElement.Top.Pixels = MathHelper.SmoothStep(rootElement.Top.Pixels, target, 0.3f);
 
-		buttonPanel.BorderColor = Color.Lerp(buttonPanel.BorderColor, buttonElement.IsMouseHovering ? Color.White : new Color(68, 97, 175), 0.3f) * 0.8f;
+		buttonPanel.BorderColor = Color.Lerp(buttonPanel.BorderColor, buttonElement.IsMouseHovering ? Color.White : new Color(68, 97, 175), 0.3f)
+			* 0.8f;
 		buttonText.Scale = MathHelper.SmoothStep(buttonText.Scale, buttonElement.IsMouseHovering ? 1.2f : 1f, 0.3f);
 	}
 

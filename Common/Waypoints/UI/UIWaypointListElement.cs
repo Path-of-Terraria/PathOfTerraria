@@ -1,4 +1,3 @@
-using System.Reflection;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -15,16 +14,16 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 
 	public const float ElementMargin = 16f;
 
-	public bool Selected;
-
 	public readonly Asset<Texture2D> Icon = icon;
 
 	public readonly int Index = index;
 
 	public readonly LocalizedText Name = name;
+	private UIImage icon;
 
 	private UIPanel panel;
-	private UIImage icon;
+
+	public bool Selected;
 	private UIScalingText text;
 
 	public override void OnInitialize()

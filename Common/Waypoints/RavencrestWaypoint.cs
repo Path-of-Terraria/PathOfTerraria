@@ -1,5 +1,3 @@
-using PathOfTerraria.Common.Systems.WorldNavigation;
-
 namespace PathOfTerraria.Common.Waypoints;
 
 public sealed class RavencrestWaypoint : ModWaypoint
@@ -8,7 +6,5 @@ public sealed class RavencrestWaypoint : ModWaypoint
 
 	public override string PreviewPath => base.PreviewPath.Replace("Common", "Assets");
 
-	public override void Teleport(Player player)
-	{
-	}
+	public override void Teleport(Player player) { }
 }
