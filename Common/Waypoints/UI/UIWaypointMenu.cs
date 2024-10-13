@@ -217,6 +217,11 @@ public sealed class UIWaypointMenu : UIState
 	{
 		base.Update(gameTime);
 
+		if (rootElement.ContainsPoint(Main.MouseScreen))
+		{
+			Main.LocalPlayer.mouseInterface = true;
+		}
+
 		UpdateInput();
 
 		float target = Enabled ? 0f : Main.screenHeight;
