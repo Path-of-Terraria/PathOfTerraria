@@ -18,9 +18,9 @@ public sealed class GrantSkillPassiveCommand : ModCommand
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		if (args.Length != 1)
+		if (args.Length < 1 || args.Length > 2)
 		{
-			caller.Reply("Command expected 1 arguments (<string skillName>)", Color.Red);
+			caller.Reply("Command expected 1 or 2 arguments (<string skillName>, <int points = 1>)", Color.Red);
 			return;
 		}
 
@@ -39,9 +39,20 @@ public sealed class GrantSkillPassiveCommand : ModCommand
 		{
 			return;
 		}
-		
-		skillPassivePlayer.AwardPassivePoint(skill);
-		caller.Reply($"Granted skill point for {skill.Name}");
+
+		int count = 1;
+
+		if (args.Length == 2 && int.TryParse(args[1], out int newCount))
+		{
+			count = Math.Max(1, newCount);
+		}
+
+		for (int i = 0; i < count; ++i)
+		{
+			skillPassivePlayer.AwardPassivePoint(skill);
+		}
+
+		caller.Reply($"Granted {count} skill point(s) for {skill.Name}");
 	}
 }
 #endif

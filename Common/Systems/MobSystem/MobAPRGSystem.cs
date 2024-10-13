@@ -6,7 +6,6 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using Steamworks;
 using SubworldLibrary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -228,6 +227,12 @@ internal class MobAprgSystem : GlobalNPC
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
+		// TODO: Find cause of read overflow/underflow in subworlds
+		if (npc.life <= 0 && SubworldSystem.Current is not null)
+		{
+			return;
+		}
+
 		Rarity = (ItemRarity)binaryReader.ReadByte();
 
 		// Only apply rarity the first time the rarity is sent. 

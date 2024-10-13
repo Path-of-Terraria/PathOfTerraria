@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -8,6 +9,7 @@ internal class EmbeddedSlimes : ModTile
 {
 	public override void SetStaticDefaults()
 	{
+		Main.tileCut[Type] = true;
 		Main.tileFrameImportant[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
@@ -31,7 +33,15 @@ internal class EmbeddedSlimes : ModTile
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		short type = frameX < 36 ? NPCID.GreenSlime : (frameX < 72 ? NPCID.BlueSlime : NPCID.RedSlime);
-		NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 0);
+
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 0);
+		}
+		else
+		{
+			SpawnNPCOnServerHandler.Send(type, new((i + 1) * 16, (j + 1) * 16));
+		}
 
 		for (int k = 0; k < 16; k++)
 		{

@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Data.Models;
-using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Content.Skills.Magic;
+﻿using PathOfTerraria.Common.Mechanics;
 
 namespace PathOfTerraria.Content.SkillPassives.Magic;
 

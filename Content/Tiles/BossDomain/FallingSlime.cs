@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Projectiles.Hostile;
-using Steamworks;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;

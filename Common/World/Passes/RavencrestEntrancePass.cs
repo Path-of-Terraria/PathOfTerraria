@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Systems.WorldNavigation;
+using PathOfTerraria.Content.NPCs.Town;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -48,6 +50,38 @@ public class RavencrestMicrobiome : MicroBiome
 	}
 }
 
+internal class RavenPass : AutoGenStep
+{
+	public override void Generate(GenerationProgress progress, GameConfiguration config)
+	{
+		int x = Main.spawnTileX + WorldGen.genRand.Next(50, 80) * (WorldGen.genRand.NextBool() ? -1 : 1);
+		int y = Main.spawnTileY;
+
+		// Move the NPC up if it's in tiles, and down if it's not.
+		if (Collision.SolidCollision(new Vector2(x, y) * 16, 20, 20)) 
+		{
+			while (Collision.SolidCollision(new Vector2(x, y) * 16, 20, 20))
+			{
+				y--;
+			}
+		}
+		else
+		{
+			while (!Collision.SolidCollision(new Vector2(x, y) * 16, 20, 20))
+			{
+				y++;
+			}
+		}
+
+		NPC.NewNPC(Entity.GetSource_NaturalSpawn(), x * 16, y * 16, ModContent.NPCType<RavenNPC>());
+	}
+
+	public override int GenIndex(List<GenPass> tasks)
+	{
+		return tasks.Count - 1;
+	}
+}
+
 internal class RavencrestEntrancePass : AutoGenStep
 {
 	public override void Generate(GenerationProgress progress, GameConfiguration config)
@@ -58,6 +92,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 		StructureHelper.Generator.GetDimensions("Assets/Structures/RavencrestEntrance", Mod, ref size);
 		Point16 pos = FindPlacement(size);
 		new RavencrestMicrobiome().Place(pos.ToPoint(), GenVars.structures);
+		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(pos.X + size.X / 2, pos.Y + size.Y / 2);
 	}
 
 	private static Point16 FindPlacement(Point16 size)
@@ -79,7 +114,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 			// Place only if this overlaps very few tiles and overlaps no structure.
 			int tileCount = CountTiles(x, y - size.Y, size.X, size.Y);
-			if (tileCount > 12 && !GenVars.structures.CanPlace(new Rectangle(x, y, size.X, size.Y)))
+			if (tileCount > 12 || !GenVars.structures.CanPlace(new Rectangle(x, y, size.X, size.Y)))
 			{
 				continue;
 			}

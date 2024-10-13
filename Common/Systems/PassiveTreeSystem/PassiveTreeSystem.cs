@@ -86,7 +86,7 @@ internal class PassiveTreePlayer : ModPlayer
 				}
 			}
 
-			if (passive.InternalIdentifier != "Anchor")
+			if (passive.InternalIdentifier != "AnchorPassive" && passive.Level > 0)
 			{
 				Points -= passive.Level;
 			}
