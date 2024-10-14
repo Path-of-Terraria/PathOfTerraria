@@ -269,7 +269,6 @@ public class KingSlimeDomain : BossDomainSubworld
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
-				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
 				NetMessage.SendTileSquare(-1, ArenaEntrance.X - 6, ArenaEntrance.Y, 16, 1);
 				NetMessage.SendData(MessageID.WorldData);
 			}

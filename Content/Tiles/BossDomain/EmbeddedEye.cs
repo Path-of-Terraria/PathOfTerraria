@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -23,17 +24,31 @@ internal class EmbeddedEye : ModTile
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (closer && Main.LocalPlayer.DistanceSQ(new Vector2(i, j).ToWorldCoordinates()) < 200 * 200)
+		Tile tile = Main.tile[i, j];
+
+		if (tile.TileFrameX % 36 == 0 && tile.TileFrameY == 0 && closer && Main.LocalPlayer.DistanceSQ(new Vector2(i, j).ToWorldCoordinates()) < 200 * 200)
 		{
 			WorldGen.KillTile(i, j);
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendTileSquare(-1, i, j, 2, 2);
+			}
 		}
 	}
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, NPCID.DemonEye, 0);
-		Main.npc[npc].velocity = new Vector2(0, -6);
-		Main.npc[npc].netUpdate = true;
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, NPCID.DemonEye, 0);
+			Main.npc[npc].velocity = new Vector2(0, -6).RotatedByRandom(0.2f);
+			Main.npc[npc].netUpdate = true;
+		}
+		else
+		{
+			SpawnNPCOnServerHandler.Send(NPCID.DemonEye, new((i + 1) * 16, (j + 1) * 16), new Vector2(0, -6).RotatedByRandom(0.2f));
+		}
 
 		for (int k = 0; k < 16; k++)
 		{
