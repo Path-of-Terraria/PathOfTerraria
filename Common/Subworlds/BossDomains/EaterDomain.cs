@@ -13,6 +13,7 @@ using Mono.Cecil.Cil;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.Localization;
 using SubworldLibrary;
+using Terraria;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -88,7 +89,7 @@ public class EaterDomain : BossDomainSubworld
 				{
 					boneSpikes.Add(item.Key);
 				}
-				else if (WorldGen.genRand.NextBool(900))
+				else if (WorldGen.genRand.NextBool(900) && item.Value != OpenFlags.None)
 				{
 					eggs.Add(item.Key);
 				}
@@ -124,7 +125,12 @@ public class EaterDomain : BossDomainSubworld
 
 		foreach (Point16 position in eggs)
 		{
-			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/Egg" + WorldGen.genRand.Next(3), position, new Vector2(0.5f, 0.5f), null);
+			OpenFlags flags = OpenExtensions.GetOpenings(position.X, position.Y, false, false);
+			float angle = GetAngleFromFlags(flags);
+			Vector2 angleOffset = -new Vector2(0, -10).RotatedBy(angle);
+			var placePos = new Point16(position.X + (int)angleOffset.X, position.Y + (int)angleOffset.Y);
+
+			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/Egg" + WorldGen.genRand.Next(3), placePos, new Vector2(0.5f, 0.5f), null);
 		}
 
 		HashSet<Point16> grasses = [];
@@ -166,6 +172,86 @@ public class EaterDomain : BossDomainSubworld
 				lastStrX = pos.X;
 			}
 		}
+
+		CheckForSigns(new Point16(10, 100), new Point16(Main.maxTilesX - 20, Main.maxTilesY - 120));
+	}
+
+	private static void CheckForSigns(Point16 pos, Point16 size)
+	{
+		for (int i = pos.X; i < pos.X + size.X; ++i)
+		{
+			for (int j = pos.Y; j < pos.Y + size.Y; ++j)
+			{
+				WorldGen.TileFrame(i, j);
+
+				int sign = Sign.ReadSign(i, j, true);
+
+				if (sign != -1)
+				{
+					Sign.TextSign(sign, Language.GetText("Mods.PathOfTerraria.Generation.EaterSign." + WorldGen.genRand.Next(4))
+						.WithFormatArgs(Language.GetText("Mods.PathOfTerraria.Generation.EaterSign.Names." + WorldGen.genRand.Next(9)).Value).Value);
+				}
+			}
+		}
+	}
+
+	private float GetAngleFromFlags(OpenFlags flags)
+	{
+		List<float> angles = [];
+
+		if (flags == OpenFlags.None)
+		{
+			return float.NaN;
+		}
+
+		if (flags.HasFlag(OpenFlags.Left))
+		{
+			angles.Add(-MathHelper.PiOver2);
+		}
+
+		if (flags.HasFlag(OpenFlags.Right))
+		{
+			angles.Add(MathHelper.PiOver2);
+		}
+
+		if (flags.HasFlag(OpenFlags.Above))
+		{
+			angles.Add(0);
+		}
+
+		if (flags.HasFlag(OpenFlags.Below))
+		{
+			angles.Add(MathHelper.Pi);
+		}
+
+		if (flags.HasFlag(OpenFlags.UpLeft))
+		{
+			angles.Add(-MathHelper.PiOver4);
+		}
+
+		if (flags.HasFlag(OpenFlags.DownLeft))
+		{
+			angles.Add(-(MathHelper.PiOver2 + MathHelper.PiOver4));
+		}
+
+		if (flags.HasFlag(OpenFlags.UpRight))
+		{
+			angles.Add(MathHelper.PiOver4);
+		}
+
+		if (flags.HasFlag(OpenFlags.DownRight))
+		{
+			angles.Add(MathHelper.PiOver2 + MathHelper.PiOver4);
+		}
+
+		float angle = 0;
+
+		foreach (float ang in angles)
+		{
+			angle += ang;
+		}
+
+		return angle / angles.Count;
 	}
 
 	private static void SpawnBoneSpikes(Point16 position)
@@ -454,12 +540,10 @@ public class EaterDomain : BossDomainSubworld
 		Main.dayTime = true;
 		Main.time = Main.dayLength - 1800;
 
-		bool allInArena = true;
+		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;
@@ -473,8 +557,17 @@ public class EaterDomain : BossDomainSubworld
 				WorldGen.PlaceTile(Arena.X / 16 + i + 4, Arena.Y / 16 - 3, TileID.FleshBlock, true, true);
 			}
 
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X + 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X - 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
+			int headOne = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X + 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
+			int headTwo = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X - 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, headOne);
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, headTwo);
+				NetMessage.SendData(MessageID.WorldData);
+				NetMessage.SendTileSquare(-1, Arena.X / 16 + 4, Arena.Y - 3, 20, 1);
+			}
+
 			BossSpawned = true;
 		}
 
