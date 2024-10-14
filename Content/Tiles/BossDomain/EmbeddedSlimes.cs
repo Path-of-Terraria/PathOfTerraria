@@ -24,9 +24,16 @@ internal class EmbeddedSlimes : ModTile
 
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (closer && Main.LocalPlayer.DistanceSQ(new Vector2(i, j).ToWorldCoordinates()) < 200 * 200)
+		Tile tile = Main.tile[i, j];
+
+		if (tile.TileFrameX % 36 == 0 && tile.TileFrameY == 0 && closer && Main.LocalPlayer.DistanceSQ(new Vector2(i, j).ToWorldCoordinates()) < 200 * 200)
 		{
 			WorldGen.KillTile(i, j);
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendTileSquare(-1, i, j, 2, 2);
+			}
 		}
 	}
 

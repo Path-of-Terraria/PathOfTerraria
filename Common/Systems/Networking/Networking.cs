@@ -27,8 +27,9 @@ internal static class Networking
 		SyncGuardianAngelHit,
 
 		/// <summary>
-		/// Spawns an NPC on the server. Signature:<br/>
-		/// <c>short npcId, Vector2 position</c>
+		/// Spawns an NPC on the server. Signatures:<br/>
+		/// <c>short npcId, Vector2 position</c><br/>
+		/// <c>short npcId, Vector2 position, Vector2 velocity</c>
 		/// </summary>
 		SpawnNPCOnServer,
 	}
