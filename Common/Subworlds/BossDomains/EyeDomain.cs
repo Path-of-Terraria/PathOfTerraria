@@ -22,6 +22,7 @@ public class EyeDomain : BossDomainSubworld
 
 	public override int Width => 800;
 	public override int Height => 280;
+	public override (int time, bool isDay) ForceTime => ((int)(Main.nightLength / 2.0), false);
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
@@ -106,7 +107,8 @@ public class EyeDomain : BossDomainSubworld
 						pos = new Point16(position.X, position.Y + 1);
 					}
 
-					StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f), null, true);
+					Point16 size = StructureTools.GetSize(type);
+					pos = StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f), null, true);
 					structureX = pos.X;
 				}
 
@@ -143,6 +145,27 @@ public class EyeDomain : BossDomainSubworld
 			StructureHelper.Generator.GetDimensions("Assets/Structures/EyeArena", mod, ref dims);
 			StructureHelper.Generator.GenerateStructure("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), mod);
 			arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
+		}
+
+		CheckForSigns(new Point16(10, 10), new Point16(Main.maxTilesX - 20, Main.maxTilesY - 20));
+	}
+
+	private static void CheckForSigns(Point16 pos, Point16 size)
+	{
+		for (int i = pos.X; i < pos.X + size.X; ++i)
+		{
+			for (int j = pos.Y; j < pos.Y + size.Y; ++j)
+			{
+				WorldGen.TileFrame(i, j);
+
+				int sign = Sign.ReadSign(i, j, true);
+
+				if (sign != -1)
+				{
+					Sign.TextSign(sign, Language.GetText("Mods.PathOfTerraria.Generation.EyeSign." + WorldGen.genRand.Next(4))
+						.WithFormatArgs(Language.GetText("Mods.PathOfTerraria.Generation.EyeSign.Names." + WorldGen.genRand.Next(9)).Value).Value);
+				}
+			}
 		}
 	}
 
@@ -234,11 +257,9 @@ public class EyeDomain : BossDomainSubworld
 		}
 
 		TileEntity.UpdateEnd();
-		Main.dayTime = false;
-		Main.time = Main.nightLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
 
-		bool allInArena = true;
+		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
@@ -259,6 +280,15 @@ public class EyeDomain : BossDomainSubworld
 
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X - 130, Arena.Center.Y - 400, NPCID.EyeofCthulhu);
 			BossSpawned = true;
+
+			Main.spawnTileX = Arena.Center.X / 16;
+			Main.spawnTileY = Arena.Center.Y / 16;
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendTileSquare(-1, Arena.X / 16 + 4, Arena.Y / 16 - 3, 20, 1);
+				NetMessage.SendData(MessageID.WorldData);
+			}
 		}
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.EyeofCthulhu) && !ReadyToExit)
