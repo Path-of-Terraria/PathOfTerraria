@@ -47,13 +47,15 @@ public sealed class NPCHitEffects : NPCComponent
 			minAmount,
 			maxAmount,
 			predicate
-		) { }
+		)
+		{ }
 
 		public GoreSpawnParameters(string type, int amount, Func<NPC, bool>? predicate = null) : this(
 			ModContent.Find<ModGore>(type).Type,
 			amount,
 			predicate
-		) { }
+		)
+		{ }
 	}
 
 	public readonly struct DustSpawnParameters
@@ -98,22 +100,25 @@ public sealed class NPCHitEffects : NPCComponent
 			amount,
 			predicate,
 			initializer
-		) { }
+		)
+		{ }
 
 		public DustSpawnParameters(string type, int minAmount, int maxAmount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) : this(
 			ModContent.Find<ModDust>(type).Type,
 			minAmount,
 			maxAmount,
-			predicate, 
+			predicate,
 			initializer
-		) { }
+		)
+		{ }
 
 		public DustSpawnParameters(string type, int amount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) : this(
 			ModContent.Find<ModDust>(type).Type,
 			amount,
 			predicate,
 			initializer
-		) { }
+		)
+		{ }
 	}
 
 	public static bool OnDeath(NPC npc)
@@ -134,14 +139,7 @@ public sealed class NPCHitEffects : NPCComponent
 	/// <summary>
 	///     The list of registered <see cref="GoreSpawnParameters" /> instances in this component.
 	/// </summary>
-	/// <param name="name">The name of the gore to add.</param>
-	/// <param name="amount">The amount of gore to add.</param>
-	public void AddGore(string name, int amount = 1)
-	{
-		int type = ModContent.Find<ModGore>(name).Type;
-
-		AddGore(type, amount);
-	}
+	public readonly List<GoreSpawnParameters> GorePool = [];
 
 	/// <summary>
 	///     Adds a new gore spawn entry to the spawn pool.
@@ -149,7 +147,7 @@ public sealed class NPCHitEffects : NPCComponent
 	/// <param name="parameters">The parameters that define how the gore should be spawned.</param>
 	public void AddGore(in GoreSpawnParameters parameters)
 	{
-		GorePool.Add(new GoreSpawnParameters(type, amount));
+		GorePool.Add(parameters);
 	}
 
 	/// <summary>
