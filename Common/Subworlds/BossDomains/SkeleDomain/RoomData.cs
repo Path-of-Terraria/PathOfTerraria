@@ -3,6 +3,7 @@ using PathOfTerraria.Content.NPCs.BossDomain.SkeletronDomain;
 using StructureHelper;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
 
@@ -65,7 +66,12 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 			IEntitySource source = Entity.GetSource_NaturalSpawn();
 			int type = ModContent.NPCType<ControllableSpikeball>();
 			int dir = info.SpinClockwise is null ? Main.rand.NextBool(2) ? -1 : 1 : (info.SpinClockwise.Value ? -1 : 1);
-			int whoAmI = NPC.NewNPC(source, (x + info.Position.X) * 16 + 6, (y + info.Position.Y) * 16 - 8, type, 0, info.SpinSpeed * dir, 0, 0, info.Length);
+			int whoAmI = NPC.NewNPC(source, (x + info.Position.X) * 16 + 6, (y + info.Position.Y) * 16 - 8, type, 1, info.SpinSpeed * dir, 0, 0, info.Length);
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, whoAmI);
+			}
 		}
 
 		if (Timers.Count > 0)

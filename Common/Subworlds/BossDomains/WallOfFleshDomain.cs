@@ -601,11 +601,6 @@ public class WallOfFleshDomain : BossDomainSubworld
 		Main.time = Main.nightLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
 
-		foreach (Player player in Main.ActivePlayers)
-		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-		}
-
 		if (NPC.AnyNPCs(NPCID.WallofFlesh))
 		{
 			if (!BossSpawned) // Remove all flesh blocks
@@ -642,33 +637,6 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 			BossTracker.CachedBossesDowned.Add(NPCID.WallofFlesh);
 			ReadyToExit = true;
-		}
-	}
-
-	/// <summary>
-	/// Used to clamp camera to hide the other side of the domain for a "wow" factor.
-	/// </summary>
-	public class WoFDomainSystem : ModSystem
-	{
-		public override void ModifyScreenPosition()
-		{
-			if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.BossSpawned)
-			{
-				if (domain.LeftBlocked)
-				{
-					if (Main.screenPosition.X / 16f < Main.spawnTileX - 70)
-					{
-						Main.screenPosition.X = (Main.spawnTileX - 70) * 16;
-					}
-				}
-				else
-				{
-					if ((Main.screenPosition.X + Main.screenWidth) / 16f > Main.spawnTileX + 70)
-					{
-						Main.screenPosition.X = (Main.spawnTileX + 70) * 16 - Main.screenWidth;
-					}
-				}
-			}
 		}
 	}
 }

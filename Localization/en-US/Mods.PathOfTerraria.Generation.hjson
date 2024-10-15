@@ -6,7 +6,7 @@ Arenas: Building arenas
 Pathway: Discovering pathway
 RavenPass: Nevermore
 
-EaterSigns: {
+EaterSign: {
 	0: "{0} was instantly devoured."
 	1: "{0} fell into an Eater's jaws."
 	2: The Eater found {0}'s flesh very tasty.

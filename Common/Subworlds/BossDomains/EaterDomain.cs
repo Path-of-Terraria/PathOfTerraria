@@ -6,14 +6,12 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.DataStructures;
 using MonoMod.Cil;
 using Mono.Cecil.Cil;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.Localization;
 using SubworldLibrary;
-using Terraria;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -22,6 +20,7 @@ public class EaterDomain : BossDomainSubworld
 	public override int Width => 800;
 	public override int Height => 1000;
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<WeakMalaise>(), ModContent.TileType<TeethSpikes>()];
+	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength - 1800, true);
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
@@ -89,7 +88,7 @@ public class EaterDomain : BossDomainSubworld
 				{
 					boneSpikes.Add(item.Key);
 				}
-				else if (WorldGen.genRand.NextBool(900) && item.Value != OpenFlags.None)
+				else if (WorldGen.genRand.NextBool(1200) && (item.Value == OpenFlags.Above || item.Value == OpenFlags.Below) && item.Value != (OpenFlags.Above | OpenFlags.Below))
 				{
 					eggs.Add(item.Key);
 				}
@@ -204,16 +203,6 @@ public class EaterDomain : BossDomainSubworld
 			return float.NaN;
 		}
 
-		if (flags.HasFlag(OpenFlags.Left))
-		{
-			angles.Add(-MathHelper.PiOver2);
-		}
-
-		if (flags.HasFlag(OpenFlags.Right))
-		{
-			angles.Add(MathHelper.PiOver2);
-		}
-
 		if (flags.HasFlag(OpenFlags.Above))
 		{
 			angles.Add(0);
@@ -222,26 +211,6 @@ public class EaterDomain : BossDomainSubworld
 		if (flags.HasFlag(OpenFlags.Below))
 		{
 			angles.Add(MathHelper.Pi);
-		}
-
-		if (flags.HasFlag(OpenFlags.UpLeft))
-		{
-			angles.Add(-MathHelper.PiOver4);
-		}
-
-		if (flags.HasFlag(OpenFlags.DownLeft))
-		{
-			angles.Add(-(MathHelper.PiOver2 + MathHelper.PiOver4));
-		}
-
-		if (flags.HasFlag(OpenFlags.UpRight))
-		{
-			angles.Add(MathHelper.PiOver4);
-		}
-
-		if (flags.HasFlag(OpenFlags.DownRight))
-		{
-			angles.Add(MathHelper.PiOver2 + MathHelper.PiOver4);
 		}
 
 		float angle = 0;
@@ -560,12 +529,13 @@ public class EaterDomain : BossDomainSubworld
 			int headOne = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X + 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
 			int headTwo = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X - 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
 
+			Main.spawnTileX = Arena.Center.X / 16;
+			Main.spawnTileY = Arena.Center.Y / 16;
+
 			if (Main.netMode == NetmodeID.Server)
 			{
-				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, headOne);
-				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, headTwo);
 				NetMessage.SendData(MessageID.WorldData);
-				NetMessage.SendTileSquare(-1, Arena.X / 16 + 4, Arena.Y - 3, 20, 1);
+				NetMessage.SendTileSquare(-1, Arena.X / 16 + 4, Arena.Y / 16 - 3, 20, 1);
 			}
 
 			BossSpawned = true;

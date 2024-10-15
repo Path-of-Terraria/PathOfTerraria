@@ -8,13 +8,13 @@ public class BlockerSystem : ModSystem
 	internal static float FadeOut = 0;
 	internal static bool HasArenaEnemies = false;
 
-	public override void PreUpdateWorld()
+	public override void PreUpdatePlayers()
 	{
 		HasArenaEnemies = false;
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			if (npc.GetGlobalNPC<ArenaEnemyNPC>().Arena)
+			if (npc.TryGetGlobalNPC(out ArenaEnemyNPC enemy) && enemy.Arena)
 			{
 				HasArenaEnemies = true;
 				break;

@@ -38,16 +38,17 @@ internal class CorruptSacks : ModTile
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		int type = Main.rand.NextBool(6) ? NPCID.DevourerHead : NPCID.EaterofSouls;
+		Vector2 velocity = AwayFromNearestPlayer(i, j) * Main.rand.NextFloat(5, 8);
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 1);
-			Main.npc[npc].velocity = AwayFromNearestPlayer(i, j) * Main.rand.NextFloat(5, 8);
+			Main.npc[npc].velocity = velocity;
 			Main.npc[npc].netUpdate = true;
 		}
 		else
 		{
-			SpawnNPCOnServerHandler.Send((short)type, new((i + 1) * 16, (j + 1) * 16));
+			SpawnNPCOnServerHandler.Send((short)type, new((i + 1) * 16, (j + 1) * 16), velocity);
 		}
 
 		for (int k = 0; k < 16; k++)

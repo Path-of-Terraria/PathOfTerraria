@@ -30,6 +30,7 @@ public class DeerclopsDomain : BossDomainSubworld
 	public override int[] WhitelistedCutTiles => [TileID.BreakableIce];
 	public override int[] WhitelistedMiningTiles => [TileID.BreakableIce, ModContent.TileType<RopeClump>(), TileID.Platforms];
 	public override int[] WhitelistedPlaceableTiles => [TileID.Platforms];
+	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
 	internal static float LightMultiplier = 0;
 
@@ -144,11 +145,19 @@ public class DeerclopsDomain : BossDomainSubworld
 			}
 		}
 
-		foreach (Point16 pos in structures)
+		foreach (Point16 position in structures)
 		{
+			Point16 pos = position;
 			int id = WorldGen.genRand.Next(4);
 			var origin = new Vector2(0, 1);
-			StructureTools.PlaceByOrigin("Assets/Structures/DeerclopsDomain/Surface_" + id, new Point16(pos.X, pos.Y + 4), origin, null, true);
+
+			if (id == 2)
+			{
+				origin.Y = 0;
+				pos = new Point16(pos.X, pos.Y - 2);
+			}
+
+			StructureTools.PlaceByOrigin("Assets/Structures/DeerclopsDomain/Surface_" + id, new Point16(pos.X, pos.Y + 2), origin, null, true);
 		}
 	}
 
@@ -487,18 +496,15 @@ public class DeerclopsDomain : BossDomainSubworld
 
 		TileEntity.UpdateEnd();
 
-		Main.dayTime = true;
-		Main.time = Main.dayLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
-		bool playersOnSurface = true;
+		bool playersOnSurface = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
-			if (playersOnSurface && player.Center.Y > Surface * 16)
+			if (player.Center.Y > Surface * 16)
 			{
 				playersOnSurface = false;
+				break;
 			}
 		}
 
@@ -506,6 +512,14 @@ public class DeerclopsDomain : BossDomainSubworld
 		{
 			BossSpawned = true;
 			NPC.SpawnOnPlayer(0, NPCID.Deerclops);
+
+			Main.spawnTileX = Width / 2 + Main.rand.Next(20, 25) + (Main.rand.NextBool() ? -1 : 1);
+			Main.spawnTileY = Surface - 10;
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendData(MessageID.WorldData);
+			}
 		}
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.Deerclops) && !ReadyToExit)
