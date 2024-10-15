@@ -8,7 +8,6 @@ using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;
@@ -25,6 +24,7 @@ public class BrainDomain : BossDomainSubworld
 	public override int Height => 1300;
 	public override int[] WhitelistedCutTiles => [TileID.Pots, TileID.CrimsonThorns];
 	public override int DropItemLevel => 20;
+	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
 	public Rectangle Arena = Rectangle.Empty;
 	public Vector2 ProjectilePosition = Vector2.Zero;
@@ -364,18 +364,16 @@ public class BrainDomain : BossDomainSubworld
 			}
 		}
 
-		if (!hasProj)
+		if (!hasProj && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
 			int type = ModContent.ProjectileType<Teleportal>();
 			Vector2 position = ProjectilePosition.ToWorldCoordinates() - new Vector2(10, 80);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), position, Vector2.Zero, type, 0, 0, -1, 400 * 16, 200 * 16);
 		}
 
-		Main.dayTime = false;
-		Main.time = Main.nightLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
 
-		bool allInArena = true;
+		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
@@ -389,12 +387,20 @@ public class BrainDomain : BossDomainSubworld
 		{
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y - 400, NPCID.BrainofCthulhu);
 			BossSpawned = true;
+
+			Main.spawnTileX = Arena.Center.X / 16;
+			Main.spawnTileY = Arena.Center.Y / 16;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.WorldData);
+			}
 		}
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.BrainofCthulhu) && !ReadyToExit)
 		{
 			Vector2 pos = Arena.Center() + new Vector2(30, 100);
-			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+			int proj = Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.CachedBossesDowned.Add(NPCID.BrainofCthulhu);
 			ReadyToExit = true;

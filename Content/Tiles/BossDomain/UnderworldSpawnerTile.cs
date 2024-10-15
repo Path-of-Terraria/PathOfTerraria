@@ -32,6 +32,11 @@ internal class UnderworldSpawnerTile : ModTile
 
 		WorldGen.KillTile(i, j);
 		Wiring.SkipWire(i, j);
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendTileSquare(-1, i, j);
+		}
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
