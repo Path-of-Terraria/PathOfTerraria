@@ -12,12 +12,12 @@ public abstract class ModWaypoint : ModType, ILocalizedModType
 	/// <summary>
 	///     The qualified path to the icon texture of this waypoint.
 	/// </summary>
-	public virtual string IconPath => GetType().FullName.Replace('.', '/') + "_Icon";
+	public virtual string IconPath => GetType().FullName.Replace('.', '/').Replace("Content", "Assets") + "_Icon";
 
 	/// <summary>
 	///     The qualified path to the preview texture of this waypoint.
 	/// </summary>
-	public virtual string PreviewPath => GetType().FullName.Replace('.', '/') + "_Preview";
+	public virtual string PreviewPath => GetType().FullName.Replace('.', '/').Replace("Content", "Assets") + "_Preview";
 
 	public virtual string LocalizationCategory { get; } = "Waypoints";
 
