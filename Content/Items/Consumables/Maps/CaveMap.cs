@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Items;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -21,6 +22,9 @@ internal class CaveMap : Map
 
 	public override bool? UseItem(Player player)
 	{
+		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
+		Main.NewText(pos);
+		return true;
 		MappingSystem.EnterCaveMap(this);
 		return true;
 	}

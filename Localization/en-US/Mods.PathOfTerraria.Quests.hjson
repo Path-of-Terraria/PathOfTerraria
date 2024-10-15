@@ -10,7 +10,8 @@ Kill: {
 	SlimeZombies: Kill {0} slimes or zombies
 	Slime: Kill {0} slimes
 	Zombies: Kill {0} zombies
-	HighHealth: Kill {0} enemies with more than 100 health
+	HighHealth: Kill {0} enemies with more than 100 health,
+	FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
 }
 
 Quest: {
@@ -26,6 +27,11 @@ Quest: {
 
 	BlacksmithStartQuest: {
 		Name: Forging a New Blade
+		Description: ""
+	}
+
+	HunterStartQuest: {
+		Name: HunterStartQuest
 		Description: ""
 	}
 }

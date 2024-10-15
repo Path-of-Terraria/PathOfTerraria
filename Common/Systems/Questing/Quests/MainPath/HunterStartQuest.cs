@@ -5,9 +5,11 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
+using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Skills.Melee;
+using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -15,10 +17,10 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
-internal class BlacksmithStartQuest : Quest
+internal class HunterStartQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
+	public override int NPCQuestGiver => ModContent.NPCType<HunterNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
@@ -50,37 +52,28 @@ internal class BlacksmithStartQuest : Quest
 	{
 		return 
 		[
-			new ParallelQuestStep([
-				new CollectCount(item => item.type == ItemID.IronOre || item.type == ItemID.LeadOre, 20, Lang.GetItemName(ItemID.IronOre)),
-				new CollectCount(item => item.type == ItemID.IronHammer || item.type == ItemID.LeadHammer, 1, Lang.GetItemName(ItemID.IronHammer)),
-			]),
-			new CollectCount(ItemID.StoneBlock, 50),
-			new CollectCount(ItemID.Wood, 20),
-			new ActionStep((_, _) => 
-			{
-				RavencrestSystem.UpgradeBuilding("Forge");
-				return true;
-			}),
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2")),
-			new ActionStep((_, _) => {
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<BlacksmithNPC>());
-				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
-				return true;
-			}),
-			new ParallelQuestStep([
-				new CollectCount(ItemID.StoneBlock, 50),
-				new CollectCount(ItemID.Wood, 50),
-				new KillCount(NPCID.Zombie, 15, Localize("Kill.Zombies")),
-			]),
+			new ActionStep((_, _) => true),
+			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"),
+			[
+				(ItemID.Silk, 20), (ItemID.Wood, 50), (ItemID.StoneBlock, 50),
+			], true),
 			new ActionStep((_, _) =>
 			{
-				RavencrestSystem.UpgradeBuilding("Forge");
+				RavencrestSystem.UpgradeBuilding("Lodge", 1);
+
+				int npc = NPC.FindFirstNPC(ModContent.NPCType<HunterNPC>());
+				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<WoodenBow>());
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3")),
+			new KillCount(npc => npc.type is NPCID.DemonEye or NPCID.Crimera or NPCID.EaterofSouls, 10, Localize("Kill.FloatingMisc")),
+			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest3"),
+			[
+				(ItemID.Wood, 40), (ItemID.Gel, 10), (ItemID.StoneBlock, 20)
+			], true),
 			new ActionStep((_, _) =>
 			{
-				Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().TryAddSkill(new Berserk());
+				RavencrestSystem.UpgradeBuilding("Lodge", 2);
+				Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().TryAddSkill(new RainOfArrows());
 				return true;
 			})
 		];

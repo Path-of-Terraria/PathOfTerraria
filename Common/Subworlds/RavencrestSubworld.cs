@@ -17,6 +17,7 @@ internal class RavencrestSubworld : MappingWorld
 {
 	public override int Width => 600;
 	public override int Height => 400;
+	public override bool ShouldSave => true;
 
 	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), new PassLegacy("World", SpawnWorld),
 		new PassLegacy("Grass", (progress, _) => EyeDomain.PlaceGrassAndDecor(progress, false, Mod, out Rectangle throwaway))];
@@ -36,13 +37,16 @@ internal class RavencrestSubworld : MappingWorld
 		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(Width / 2, 188), new(0.5f));
 		Main.spawnTileX = Width / 2;
 		Main.spawnTileY = 188;
+
+		NPC.NewNPC(Entity.GetSource_TownSpawn(), Main.maxTilesX * 8, Main.maxTilesY * 8 - 200, ModContent.NPCType<BlacksmithNPC>());
+		NPC.NewNPC(Entity.GetSource_TownSpawn(), Main.maxTilesX * 8, Main.maxTilesY * 8 - 200, ModContent.NPCType<HunterNPC>());
 	}
 
 	public override void Update()
 	{
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
+			//player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
 		}
 	}
 

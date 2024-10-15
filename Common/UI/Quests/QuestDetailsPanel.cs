@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
@@ -50,8 +51,13 @@ internal class QuestDetailsPanel : SmartUiElement
 		}
 
 		var quest = Quest.GetQuest(ViewedQuestName);
-		int index = 0;
-		int offset = 0;
+		var list = new UIList()
+		{
+			Left = StyleDimension.FromPixels(530),
+			Top = StyleDimension.FromPixels(100),
+			Width = StyleDimension.FromPixels(300),
+			Height = StyleDimension.FromPixelsAndPercent(-120, 1)
+		};
 
 		for (int i = 0; i < quest.QuestSteps.Count; i++)
 		{
@@ -62,12 +68,16 @@ internal class QuestDetailsPanel : SmartUiElement
 				continue;
 			}
 
-			var stepUI = new UISelectableQuestStep(i, ViewedQuestName);
-			stepUI.Left.Set(530, 0f);
-			stepUI.Top.Set(100 + offset * 22, 0f);
-			Append(stepUI);
-			offset += step.LineCount;
-			index++;
+			var stepUI = new UISelectableQuestStep(i, ViewedQuestName)
+			{
+				Width = StyleDimension.Fill,
+				Height = StyleDimension.FromPixels(step.LineCount * 22)
+			};
+
+			stepUI.UpdateText();
+			list.Add(stepUI);
 		}
+
+		Append(list);
 	}
 }

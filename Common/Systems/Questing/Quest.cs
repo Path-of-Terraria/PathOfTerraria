@@ -15,7 +15,7 @@ public abstract class Quest : ModType
 	public LocalizedText Description { get; private set; } 
 
 	public abstract List<QuestReward> QuestRewards { get; }
-	public List<QuestStep> QuestSteps { get; } = null;
+	public List<QuestStep> QuestSteps { get; protected set; } = null;
 
 	public QuestStep ActiveStep = null;
 
@@ -25,8 +25,6 @@ public abstract class Quest : ModType
 
 	public Quest()
 	{
-		QuestSteps = SetSteps();
-
 		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
 		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
 	}
@@ -36,6 +34,18 @@ public abstract class Quest : ModType
 	protected override void Register()
 	{
 		QuestsByName.Add(FullName, this);
+		ModTypeLookup<Quest>.Register(this);
+	}
+
+	public override void SetupContent()
+	{
+		SetStaticDefaults();
+	}
+
+	public override void SetStaticDefaults()
+	{
+		// Must be initialized here so that NPC types are populated properly.
+		QuestSteps = SetSteps();
 	}
 
 	public static Quest GetQuest(string name)
