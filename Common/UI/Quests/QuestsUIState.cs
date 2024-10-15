@@ -47,15 +47,15 @@ public class QuestsUIState : CloseableSmartUi
 		
 		RemoveAllChildren();
 		base.CreateMainPanel(false, new Point(970, 715), false, true);
-		List<Quest> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
+		HashSet<string> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
 		_questDetails = new QuestDetailsPanel
 		{
 			Width = StyleDimension.FromPercent(1),
 			Height = StyleDimension.FromPercent(1),
-			ViewedQuest = quests.FirstOrDefault()
+			ViewedQuestName = quests.FirstOrDefault()
 		};
-		Panel.Append(_questDetails);
 		_questDetails.PopulateQuestSteps();
+		Panel.Append(_questDetails);
 
 		_closeButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
 		_closeButton.Left.Set(0, 0.83f);
@@ -72,26 +72,42 @@ public class QuestsUIState : CloseableSmartUi
 
 		IsVisible = true;
 		Visible = true;
-		DrawQuests();
+		AppendQuests();
 		Recalculate();
 	}
 	
-	private void DrawQuests()
+	private void AppendQuests()
 	{
 		int offset = 0;
 		QuestModPlayer player = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
-		foreach (Quest quest in player.GetAllQuests())
+
+		foreach (string quest in player.GetAllQuests())
 		{
-			UISelectableQuest selectableQuest = new(quest, this);
+			UISelectableQuest selectableQuest = new(quest);
 			selectableQuest.Left.Set(0, 0.15f);
 			selectableQuest.Top.Set(120 + offset, 0);
+			selectableQuest.OnLeftClick += (_, _) => SelectQuest(quest);
 			_questDetails.Append(selectableQuest);
+
 			offset += 22;
 		}
 	}
 
-	public void SelectQuest(Quest quest)
+	public void SelectQuest(string questName)
 	{
-		_questDetails.ViewedQuest = quest;
+		_questDetails.ViewedQuestName = questName;
+
+		// Clear steps to repopulate later
+		for (int i = 0; i < _questDetails.Children.Count(); ++i)
+		{
+			if (_questDetails.Children.ElementAt(i) is UISelectableQuestStep)
+			{
+				_questDetails.RemoveChild(_questDetails.Children.ElementAt(i));
+				i--;
+			}
+		}
+
+		_questDetails.PopulateQuestSteps();
+		Recalculate();
 	}
 }

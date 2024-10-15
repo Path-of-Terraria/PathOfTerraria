@@ -14,7 +14,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "Anchor",
+		"internalIdentifier": "AnchorPassive",
 		"referenceId": 1,
 		"maxLevel": 1,
 		"connections": [
@@ -24,7 +24,7 @@
 		]
 	},
 	{
-		"internalIdentifier": "AddedLife",
+		"internalIdentifier": "LifePassive",
 		"referenceId": 2,
 		"maxLevel": 5,
 		"connections": [
@@ -44,7 +44,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedLife",
+		"internalIdentifier": "LifePassive",
 		"referenceId": 3,
 		"maxLevel": 5,
 		"connections": [
@@ -61,7 +61,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedLife",
+		"internalIdentifier": "LifePassive",
 		"referenceId": 4,
 		"maxLevel": 5,
 		"connections": [
@@ -78,7 +78,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "DecreasedManaCost",
+		"internalIdentifier": "DecreasedManaCostPassive",
 		"referenceId": 5,
 		"maxLevel": 5,
 		"position": {
@@ -96,7 +96,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMinionDamage",
+		"internalIdentifier": "MinionPassive",
 		"referenceId": 7,
 		"maxLevel": 10,
 		"connections": [
@@ -162,6 +162,20 @@
 		],
 		"position": {
 			"x": 300,
+			"y": 100
+		}
+	},
+	{
+		"internalIdentifier": "StrongerChillPassive",
+		"referenceId": 12,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": -300,
 			"y": 100
 		}
 	}

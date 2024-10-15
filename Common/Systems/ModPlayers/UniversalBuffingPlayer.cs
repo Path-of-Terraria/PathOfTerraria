@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 internal class UniversalBuffingPlayer : ModPlayer
 {
 	public EntityModifier UniversalModifier;
+	public AffixTooltipsHandler AffixTooltipHandler = new();
 
 	public override void PostUpdateEquips()
 	{
@@ -21,6 +24,7 @@ internal class UniversalBuffingPlayer : ModPlayer
 	public override void ResetEffects()
 	{
 		UniversalModifier = new EntityModifier();
+		AffixTooltipHandler.Reset();
 	}
 	
 	/// <summary>
@@ -51,5 +55,33 @@ internal class UniversalBuffingPlayer : ModPlayer
 				target.AddBuff(id, time);
 			}
 		}
+	}
+
+	/// <summary>
+	/// Compares all existing affix bonuses to what is on the <paramref name="item"/>, and adds the tooltip lines.
+	/// </summary>
+	/// <param name="tooltips">List to add to.</param>
+	/// <param name="item">Item to compare to.</param>
+	public void PrepareComparisonTooltips(List<TooltipLine> tooltips, Item item)
+	{
+		List<ItemAffix> affixes = item.GetInstanceData().Affixes;
+		AffixTooltip.AffixSource source = AffixTooltipsHandler.DetermineItemSource(item);
+
+		foreach (KeyValuePair<Type, AffixTooltip> line in AffixTooltipHandler.Tooltips)
+		{
+			if (!affixes.Any(x => x.GetType() == line.Key))
+			{
+				line.Value.ClearValues(source);
+			}
+		}
+
+		AffixTooltipHandler.ModifyTooltips(tooltips);
+	}
+
+	public override void Unload()
+	{
+		AffixTooltipHandler.Reset();
+		AffixTooltipHandler = null;
+		UniversalModifier = null;
 	}
 }

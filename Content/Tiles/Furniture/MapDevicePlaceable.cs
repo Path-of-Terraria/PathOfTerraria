@@ -84,7 +84,7 @@ public class MapDevicePlaceable : ModTile
 		{
 			return;
 		}
-		
+
 		// This is lighting-mode specific, always include this if you draw tiles manually
 		var offScreen = new Vector2(Main.drawToScreen ? 0 : Main.offScreenRange);
 

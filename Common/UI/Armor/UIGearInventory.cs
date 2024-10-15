@@ -265,6 +265,11 @@ public sealed class UIGearInventory : UIState
 
 	private static void UpdateLoadoutIcon(UIImage image, int index)
 	{
+		if (image.ContainsPoint(Main.MouseScreen))
+		{
+			Main.LocalPlayer.mouseInterface = true;
+		}
+		
 		if (Player.CurrentLoadoutIndex == index)
 		{
 			image.Color = Color.White;

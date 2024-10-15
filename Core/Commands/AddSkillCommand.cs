@@ -6,6 +6,7 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class AddSkillCommand : ModCommand
 {
 	public override string Command => "addskill";
@@ -45,7 +46,7 @@ public sealed class AddSkillCommand : ModCommand
 
 		if (args.Length == 2)
 		{
-			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
+			Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills[skillSlot] = skill;
 			return;
 		}
 
@@ -147,7 +148,7 @@ public sealed class AddSkillCommand : ModCommand
 
 		if (valid)
 		{
-			Main.LocalPlayer.GetModPlayer<SkillPlayer>().Skills[skillSlot] = skill;
+			Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills[skillSlot] = skill;
 			return true;
 		}
 
@@ -155,3 +156,4 @@ public sealed class AddSkillCommand : ModCommand
 		return true;
 	}
 }
+#endif

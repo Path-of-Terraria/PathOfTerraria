@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Enums;
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class SpawnUniqueItemCommand : ModCommand
 {
 	public override string Command => "spawnuitem";
@@ -74,3 +75,4 @@ public sealed class SpawnUniqueItemCommand : ModCommand
 		caller.Reply("Item(s) spawned!", Color.Green);
 	}
 }
+#endif

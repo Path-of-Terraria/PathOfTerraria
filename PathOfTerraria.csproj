@@ -18,6 +18,8 @@
 		<BuildCommand Condition=" '$(BuildCommand)' == '' ">dotnet</BuildCommand>
 	</PropertyGroup>
 	<ItemGroup>
+		<PackageReference Include="JetBrains.Annotations" Version="2024.2.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
 		<Compile Update="JsonCreator\CreateMobJsonFiles.cs">
 			<Link>ClassLibrary1\CreateMobJsonFiles.cs</Link>
 		</Compile>

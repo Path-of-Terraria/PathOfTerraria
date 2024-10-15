@@ -11,7 +11,8 @@ namespace PathOfTerraria.Common.Systems;
 internal class BossTracker : ModSystem
 {
 	public static HashSet<int> CachedBossesDowned = [];
-	public static BitsByte DownedFlags = new();
+	public static BitsByte DownedFlags;
+	public static bool SkipWoFBox;
 
 	private static readonly MethodInfo DoDeathEventsInfo = typeof(NPC).GetMethod("DoDeathEvents", BindingFlags.Instance | BindingFlags.NonPublic);
 
@@ -21,6 +22,17 @@ internal class BossTracker : ModSystem
 	public override void Load()
 	{
 		On_NPC.DoDeathEvents += HijackDeathEffects;
+		On_NPC.CreateBrickBoxForWallOfFlesh += StopBrickBox;
+	}
+
+	private void StopBrickBox(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
+	{
+		if (SkipWoFBox)
+		{
+			return;
+		}
+
+		orig(self);
 	}
 
 	private void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
@@ -43,7 +55,9 @@ internal class BossTracker : ModSystem
 				var npc = new NPC();
 				npc.SetDefaults(type);
 				npc.Center = Main.player[0].Center;
+				SkipWoFBox = true;
 				DoDeathEventsInfo.Invoke(npc, [Main.player[0]]);
+				SkipWoFBox = false;
 			}
 
 			CachedBossesDowned.Clear();

@@ -1,0 +1,24 @@
+# Passives will always be in the format
+# Name:
+# Tooltip:
+# You do not need to generate these yourself, run the mod and it'll add the keys automatically.
+
+Anchor: {
+	Name: Anchor
+	Tooltip: Your journey starts here
+}
+
+LightningNovaSkillPassive: {
+	Name: Lightning Nova
+	Tooltip: Turns your Nova into the Lightning Nova skill
+}
+
+FireNovaSkillPassive: {
+	Name: Fire Nova
+	Tooltip: Turns your Nova into the Fire Nova skill
+}
+
+IceNovaSkillPassive: {
+	Name: Ice Nova
+	Tooltip: Turns your Nova into the Ice Nova skill
+}

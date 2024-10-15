@@ -16,8 +16,8 @@ internal class MoltenShellAffix : ItemAffix
 	{
 		if (newItem.type == ModContent.ItemType<MoltenDangpa>())
 		{
-			SkillPlayer skillPlayer = self.GetModPlayer<SkillPlayer>();
-			skillPlayer.TryAddSkill(new MoltenShield());
+			SkillCombatPlayer skillCombatPlayer = self.GetModPlayer<SkillCombatPlayer>();
+			skillCombatPlayer.TryAddSkill(new MoltenShield());
 		}
 	}
 }
@@ -33,8 +33,8 @@ internal class BloodSiphonAffix : ItemAffix
 	{
 		if (newItem.type == ModContent.ItemType<Bloodclotter>())
 		{
-			SkillPlayer skillPlayer = self.GetModPlayer<SkillPlayer>();
-			skillPlayer.TryAddSkill(new BloodSiphon());
+			SkillCombatPlayer skillCombatPlayer = self.GetModPlayer<SkillCombatPlayer>();
+			skillCombatPlayer.TryAddSkill(new BloodSiphon());
 		}
 	}
 }
@@ -50,8 +50,8 @@ internal class FetidCarapaceAffix : ItemAffix
 	{
 		if (newItem.type == ModContent.ItemType<Rottenbone>())
 		{
-			SkillPlayer skillPlayer = self.GetModPlayer<SkillPlayer>();
-			skillPlayer.TryAddSkill(new FetidCarapace());
+			SkillCombatPlayer skillCombatPlayer = self.GetModPlayer<SkillCombatPlayer>();
+			skillCombatPlayer.TryAddSkill(new FetidCarapace());
 		}
 	}
 }

@@ -19,4 +19,9 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 
 		PoTItemHelper.ApplyAffixes(item, player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier, player);
 	}
+
+	public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+	{
+		return entity.damage > 0 || entity.defense > 0 || entity.accessory || entity.ModItem is IPoTGlobalItem;
+	}
 }

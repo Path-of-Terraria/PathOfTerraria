@@ -28,6 +28,13 @@ internal static class Networking
 		SyncGuardianAngelHit,
 
 		/// <summary>
+		/// Spawns an NPC on the server. Signatures:<br/>
+		/// <c>short npcId, Vector2 position</c><br/>
+		/// <c>short npcId, Vector2 position, Vector2 velocity</c>
+		/// </summary>
+		SpawnNPCOnServer,
+
+		/// <summary>
 		/// Syncs placing an item in a map device. Signature:<br/>
 		/// <c>byte fromWho, short itemId, Point16 entityKey</c>
 		/// </summary>
@@ -101,6 +108,14 @@ internal static class Networking
 				else
 				{
 					ConsumeMapDeviceHandler.ClientReceive(reader);
+				}
+
+				break;
+
+			case Message.SpawnNPCOnServer:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SpawnNPCOnServerHandler.ServerRecieve(reader);
 				}
 
 				break;

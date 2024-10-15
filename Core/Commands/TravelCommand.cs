@@ -1,8 +1,9 @@
-﻿using PathOfTerraria.Common.Systems.WorldNavigation;
-using Terraria.ModLoader.Core;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
+#if DEBUG
 public sealed class TravelCommand : ModCommand
 {
 	public override string Command => "travel";
@@ -11,37 +12,48 @@ public sealed class TravelCommand : ModCommand
 
 	public override string Usage => "[c/ff6a00:Usage: /travel <worldname>]";
 
-	public override string Description => "Travels to the world";
+	public override string Description => "Travels to the given world";
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
 		if (args.Length == 0)
 		{
-			throw new UsageException("You must specify a world name.");
+			throw new UsageException("You must specify a subworld name.");
 		}
 
-		string worldName = string.Join(" ", args);
-		
-		foreach (Type type in AssemblyManager.GetLoadableTypes(PoTMod.Instance.Code))
+		if (args[0].Equals("-list", StringComparison.CurrentCultureIgnoreCase))
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(WorldNavigation)))
+			string name = "";
+
+			foreach (Subworld world in ModContent.GetContent<Subworld>())
 			{
-				continue;
+				name += world.FullName + "\n";
 			}
 
-			if (type.Name.ToLower() == worldName.ToLower())
-			{
-				if (Activator.CreateInstance(type) is not WorldNavigation world)
-				{
-					throw new UsageException($"World '{worldName}' not found.");
-				}
+			Main.NewText(name);
+			return;
+		}
 
-				world.LoadWorld();
-				caller.Player.Teleport(world.SpawnPosition);
+		if (args[0].Equals("-t", StringComparison.CurrentCultureIgnoreCase))
+		{
+			SubworldSystem.Enter<DeerclopsDomain>();
+			return;
+		}
+
+		string subworldName = string.Join(" ", args);
+
+		foreach (Subworld world in ModContent.GetContent<Subworld>())
+		{
+			if (world.Name.Equals(subworldName, StringComparison.CurrentCultureIgnoreCase) || 
+				world.Name.Replace("Domain", "").Equals(subworldName, StringComparison.CurrentCultureIgnoreCase) ||
+				world.Name.Replace("Subworld", "").Equals(subworldName, StringComparison.CurrentCultureIgnoreCase))
+			{
+				SubworldSystem.Enter(world.FullName);
 				return;
 			}
 		}
 
-		Main.NewText("World not found.");
+		Main.NewText("World not found.", Color.Red);
 	}
 }
+#endif

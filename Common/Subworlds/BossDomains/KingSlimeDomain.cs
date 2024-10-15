@@ -8,25 +8,17 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.Systems.DisableBuilding;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
 public class KingSlimeDomain : BossDomainSubworld
 {
-	[Flags]
-	public enum Open
-	{
-		None = 0,
-		Above,
-		Below
-	}
-
 	public override int Width => 500;
 	public override int Height => 600;
+	public override int[] WhitelistedCutTiles => [ModContent.TileType<EmbeddedSlimes>(), ModContent.TileType<FallingSlime>()];
 
 	internal static Point16 ArenaEntrance = Point16.Zero;
 
@@ -42,20 +34,15 @@ public class KingSlimeDomain : BossDomainSubworld
 
 	private static FastNoiseLite GetGenNoise()
 	{
-		var noise = new FastNoiseLite();
+		var noise = new FastNoiseLite(WorldGen._genRandSeed);
 		noise.SetFrequency(0.03f);
 		return noise;
 	}
 
-	private void ResetStep(GenerationProgress progress, GameConfiguration configuration)
-	{
-		WorldGen._lastSeed = DateTime.Now.Second;
-		WorldGen._genRand = new UnifiedRandom(DateTime.Now.Second);
-		WorldGen._genRand.SetSeed(DateTime.Now.Second);
-	}
-
 	public override void OnEnter()
 	{
+		base.OnEnter();
+
 		BossSpawned = false;
 		ReadyToExit = false;
 		SlimePositions.Clear();
@@ -63,7 +50,8 @@ public class KingSlimeDomain : BossDomainSubworld
 
 	private void DecorGen(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Dictionary<Point16, Open> tiles = [];
+		Dictionary<Point16, OpenFlags> tiles = [];
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
 		for (int i = 60; i < Main.maxTilesX - 60; ++i)
 		{
@@ -71,54 +59,51 @@ public class KingSlimeDomain : BossDomainSubworld
 			{
 				Tile tile = Main.tile[i, j];
 
+				if (WorldGen.genRand.NextBool())
+				{
+					Tile.SmoothSlope(i, j, false);
+				}
+
 				if (!tile.HasTile || tile.TileType != TileID.Stone || tiles.ContainsKey(new Point16(i, j)))
 				{
 					continue;
 				}
 
-				Open flags = Open.None;
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
 
-				if (!Main.tile[i, j - 1].HasTile)
-				{
-					flags |= Open.Above;
-				}
-
-				if (!Main.tile[i, j + 1].HasTile)
-				{
-					flags |= Open.Below;
-				}
-
-				if (flags == Open.None)
+				if (flags == OpenFlags.None)
 				{
 					continue;
 				}
 
 				tiles.Add(new Point16(i, j), flags);
 			}
+
+			progress.Value = (float)i / Main.maxTilesX;
 		}
 
-		foreach ((Point16 position, Open tile) in tiles)
-		{
-			PlaceDecorOnTile(tile, position, false);
-		}
-
-		foreach ((Point16 position, Open tile) in tiles)
+		foreach ((Point16 position, OpenFlags tile) in tiles)
 		{
 			PlaceDecorOnTile(tile, position, true);
+		}
+
+		foreach ((Point16 position, OpenFlags tile) in tiles)
+		{
+			PlaceDecorOnTile(tile, position, false);
 		}
 
 		tiles.Clear();
 	}
 
-	private void PlaceDecorOnTile(Open flags, Point16 position, bool late)
+	private void PlaceDecorOnTile(OpenFlags flags, Point16 position, bool replaceTiles)
 	{
 		if (Main.tile[position].TileType == TileID.Stone)
 		{
-			if (!late)
+			if (!replaceTiles)
 			{
 				bool nearSlimePosition = SlimePositions.Any(x => x.DistanceSQ(position.ToVector2()) < 50 * 50);
 
-				if (flags.HasFlag(Open.Below))
+				if (flags.HasFlag(OpenFlags.Below))
 				{
 					if (nearSlimePosition && WorldGen.genRand.NextBool(10))
 					{
@@ -134,7 +119,7 @@ public class KingSlimeDomain : BossDomainSubworld
 					}
 				}
 
-				if (flags.HasFlag(Open.Above))
+				if (flags.HasFlag(OpenFlags.Above))
 				{
 					if (nearSlimePosition && WorldGen.genRand.NextBool(5))
 					{
@@ -158,7 +143,7 @@ public class KingSlimeDomain : BossDomainSubworld
 			}
 			else
 			{
-				if (flags.HasFlag(Open.Below) && WorldGen.genRand.NextBool(20))
+				if (flags.HasFlag(OpenFlags.Below) && WorldGen.genRand.NextBool(20))
 				{
 					int y = position.Y + 1;
 
@@ -191,6 +176,8 @@ public class KingSlimeDomain : BossDomainSubworld
 
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 150 : 350;
 		Main.spawnTileY = 95;
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
+		progress.Value = 0;
 
 		Point16 size = Point16.Zero;
 		StructureHelper.Generator.GetDimensions("Assets/Structures/KingSlimeArena", Mod, ref size);
@@ -205,7 +192,7 @@ public class KingSlimeDomain : BossDomainSubworld
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(160, 190)),
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(220, 250)),
 			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(280, 310)),
-			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(330, 360)),
+			new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(330, 350)),
 			ArenaEntrance.ToVector2()];
 
 		for (int i = 0; i < points.Length; i++)
@@ -219,14 +206,16 @@ public class KingSlimeDomain : BossDomainSubworld
 			SlimePositions.Add(item);
 		}
 
-		Vector2[] results = Tunnel.GeneratePoints(points, 60, 10);
+		progress.Value = 0.25f;
+		Vector2[] results = Tunnel.GeneratePoints(points, 60, 4);
 
 		var noise = new FastNoiseLite(WorldGen._genRandSeed);
 		noise.SetFrequency(0.01f);
 
 		// Actually dig tunnel
-		foreach (Vector2 item in results)
+		for (int i = 0; i < results.Length; i++)
 		{
+			Vector2 item = results[i];
 			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * 1.2f;
 			Digging.CircleOpening(item, 5 * mul);
 			Digging.CircleOpening(item, WorldGen.genRand.Next(3, 7) * mul);
@@ -240,6 +229,8 @@ public class KingSlimeDomain : BossDomainSubworld
 			{
 				WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, (int)(WorldGen.genRand.NextFloat(1, 8) * mul));
 			}
+
+			progress.Value = i / (results.Length - 1f);
 		}
 
 		// Place arena
@@ -254,21 +245,13 @@ public class KingSlimeDomain : BossDomainSubworld
 
 	public override void Update()
 	{
-		bool allInArena = true;
-		bool allAlive = true;
+		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;
-			}
-
-			if (player.dead || player.ghost)
-			{
-				allAlive = false;
 			}
 		}
 
@@ -279,13 +262,21 @@ public class KingSlimeDomain : BossDomainSubworld
 				WorldGen.PlaceTile(ArenaEntrance.X + i, ArenaEntrance.Y, TileID.SlimeBlock, true, true);
 			}
 
+			int npc = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y + 400, NPCID.KingSlime);
+
 			Main.spawnTileX = Arena.Center.X / 16;
 			Main.spawnTileY = Arena.Center.Y / 16;
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y + 400, NPCID.KingSlime);
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendTileSquare(-1, ArenaEntrance.X - 6, ArenaEntrance.Y, 16, 1);
+				NetMessage.SendData(MessageID.WorldData);
+			}
+
 			BossSpawned = true;
 		}
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.KingSlime) && !ReadyToExit && allAlive)
+		if (BossSpawned && !NPC.AnyNPCs(NPCID.KingSlime) && !ReadyToExit)
 		{
 			Vector2 pos = Arena.Center() + new Vector2(0, 150);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);

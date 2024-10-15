@@ -1,54 +1,52 @@
-﻿using PathOfTerraria.Common.Events;
+﻿using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
-internal class CollectCount(Func<Item, bool> includes, int count, Func<string, string> displayText) : QuestStep
+/// <summary>
+/// Counts up that you've obtained enough items that fit the <paramref name="includes"/> condition.<br/>
+/// <paramref name="itemDescription"/> should describe what you're obtaining; for example, "Items that sell for at least 20 silver."
+/// </summary>
+/// <param name="includes">The condition(s) for if an item is valid.</param>
+/// <param name="count">How many items to get.</param>
+/// <param name="itemDescription">Appended to the display string to describe what the player needs to get.</param>
+internal class CollectCount(Func<Item, bool> includes, int count, LocalizedText itemDescription) : QuestStep
 {
-	public CollectCount(int itemType, int count, Func<string, string> displayText) : this(
-		(Item item) => item.type == itemType, count, displayText)
+	public CollectCount(int itemType, int count) : this(item => item.type == itemType, count, Lang.GetItemName(itemType))
 	{
 	}
 
-	private int _total;
-	private PathOfTerrariaPlayerEvents.PostUpdateDelegate tracker;
+	private readonly LocalizedText ItemDescription = itemDescription;
 
-	public override string QuestString()
+	public int Total = 0;
+
+	public override string ToString()
 	{
-		return displayText(_total + "/" + count);
+		return DisplayString();
 	}
 
-	public override string QuestCompleteString()
+	public override string DisplayString()
 	{
-		return displayText(count + "/" + count);
+		return "Collect " + (IsDone ? count : Total) + "/" + count + " " + ItemDescription.Value;
 	}
 
-	public override void Track(Player player, Action onCompletion)
+	public override bool Track(Player player)
 	{
-		tracker = (Player p) =>
+		Total = TrackItemCount(includes, player);
+		return Total >= count;
+	}
+
+	private static int TrackItemCount(Func<Item, bool> includes, Player player)
+	{
+		int total = 0;
+
+		foreach (Item i in player.inventory)
 		{
-			if (p == player)
+			if (includes(i))
 			{
-				_total = 0;
-				foreach (Item i in p.inventory)
-				{
-					if (includes(i))
-					{
-						_total += i.stack;
-					}
-				}
+				total += i.stack;
 			}
+		}
 
-			if (_total >= count)
-			{
-				onCompletion();
-			}
-		};
-
-		PathOfTerrariaPlayerEvents.PostUpdateEvent += tracker;
-	}
-
-	public override void UnTrack()
-	{
-		PathOfTerrariaPlayerEvents.PostUpdateEvent -= tracker;
+		return total;
 	}
 }

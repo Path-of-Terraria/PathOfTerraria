@@ -1,50 +1,43 @@
-﻿using PathOfTerraria.Common.Events;
-
+﻿using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
-internal class KillCount(Func<NPC, bool> includes, int count, Func<string, string> displayText) : QuestStep
+/// <summary>
+/// Counts up kills that fit under the <paramref name="includes"/> condition.
+/// </summary>
+/// <param name="includes">Whether a kill counts.</param>
+/// <param name="count">How many kills to track.</param>
+/// <param name="displayText">The text to display.</param>
+internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText displayText) : QuestStep
 {
-	public KillCount(int npcId, int count, Func<string, string> displayText) : this(
+	public KillCount(int npcId, int count, LocalizedText displayText) : this(
 		(NPC npcKilled) => npcKilled.type == npcId, count, displayText)
 	{
 	}
 
+	private readonly LocalizedText Display = displayText;
+	private readonly int MaxRemaining = count;
+	private readonly Func<NPC, bool> countsAsKill = includes;
+
 	private int _remaining = count;
-	private PathOfTerrariaNpcEvents.OnKillByDelegate tracker;
 
-	public override string QuestString()
+	public override string DisplayString()
 	{
-		return displayText(count - _remaining + "/" + count);
+		return Display.WithFormatArgs(MaxRemaining - _remaining + "/" + MaxRemaining).Value;
 	}
 
-	public override string QuestCompleteString()
+	public override void OnKillNPC(Player player, NPC target, NPC.HitInfo hitInfo, int damageDone)
 	{
-		return displayText(count + "/" + count);
-	}
-
-	public override void Track(Player player, Action onCompletion)
-	{
-		tracker = (NPC n, Player p) =>
+		if (player.whoAmI == Main.myPlayer && countsAsKill(target))
 		{
-			if (p == player && includes(n))
-			{
-				_remaining--;
-			}
-
-			if (_remaining <= 0)
-			{
-				onCompletion();
-			}
-		};
-
-		PathOfTerrariaNpcEvents.OnKillByEvent += tracker;
+			_remaining--;
+		}
 	}
 
-	public override void UnTrack()
+	public override bool Track(Player player)
 	{
-		PathOfTerrariaNpcEvents.OnKillByEvent -= tracker;
+		return _remaining <= 0;
 	}
 
 	public override void Save(TagCompound tag)

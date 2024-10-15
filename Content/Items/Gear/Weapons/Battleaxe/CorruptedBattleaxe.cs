@@ -18,8 +18,8 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
 		staticData.IsUnique = true;
-		staticData.AltUseDescription = "Throw the axe to deal damage to enemies";
-		staticData.Description = "Something doesn't feel right about this axe...";
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
 	}
 
 	public override void SetDefaults()
@@ -78,23 +78,12 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		return type == ModContent.ProjectileType<CorruptedBattleaxeProjectile>();	
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
-		addedDamageAffix.MinValue = 1;
-		addedDamageAffix.MaxValue = 4;
-		
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>();
-		increasedDamageAffix.MaxValue = 0.1f;
-		increasedDamageAffix.MinValue = 0.1f;
-		
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
-		attackSpeedAffix.MaxValue = 0.1f;
-		attackSpeedAffix.MinValue = 0.1f;
-		
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyArmorShredGearAffix>();
-		armorShredAffix.MaxValue = 0.1f;
-		armorShredAffix.MinValue = 0.05f;
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
+		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15f, 25f);
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(0.1f);
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyArmorShredGearAffix>(-1, 0.1f, 0.2f);
 		armorShredAffix.Duration = 120;
 		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}

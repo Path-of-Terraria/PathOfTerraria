@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
-﻿using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 

@@ -23,6 +23,7 @@ public abstract class DraggableSmartUi : SmartUiState
 	protected const int PanelHeight = 800 - DraggablePanelHeight;
 	protected const int LeftPadding = -450;
 	protected const int PanelWidth = 900;
+	
 	public override bool Visible => IsVisible;
 	public virtual List<SmartUiElement> TabPanels => [];
 	

@@ -57,3 +57,8 @@ CarapaceChunk.DisplayName: Carapace Chunk
 ExitPortal.DisplayName: Exit Portal
 FallingSlimeProj.DisplayName: Falling Slime Proj
 SparklingBallProjectile.DisplayName: Sparkling Ball Projectile
+Teleportal.DisplayName: Teleportal
+FallingPusBlock.DisplayName: Falling Pus Block
+VoodooRopeProj.DisplayName: Voodoo Rope Proj
+LightBallProjectile.DisplayName: Light Ball Projectile
+IcicleProjectile.DisplayName: Icicle Projectile

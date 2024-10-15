@@ -92,7 +92,6 @@ partial class PoTGlobalItem : GlobalItem
 		data.Influence = (Influence)reader.ReadByte();
 
 		data.ImplicitCount = reader.ReadByte();
-
 		data.SpecialName = reader.ReadString();
 		data.RealLevel = reader.ReadByte();
 

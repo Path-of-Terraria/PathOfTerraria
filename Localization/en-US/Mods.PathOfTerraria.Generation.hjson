@@ -1,0 +1,26 @@
+Terrain: Generating terrain
+Tunnels: Digging tunnels
+PopulatingWorld: Populating world
+Steps: Building steps
+Arenas: Building arenas
+Pathway: Discovering pathway
+RavenPass: Nevermore
+
+EyeSign: {
+	0: "{0} couldn't stare back."
+	1: The Eye devoured {0}.
+	2: "{0} was overseen and overwhelmed."
+	3: "{0} couldn't handle the audience."
+
+	Names: {
+		0: Wilken
+		1: Jimmy
+		2: Cammy
+		3: Samarah
+		4: Pyotir
+		5: Aabria
+		6: Izzy
+		7: Gabe
+		8: Roald
+	}
+}

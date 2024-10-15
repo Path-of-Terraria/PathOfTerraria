@@ -41,8 +41,8 @@ internal class BloodOath : Sword, GenerateName.IItem
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 5f;
 		staticData.IsUnique = true;
-		staticData.Description = Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.Description");
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 	}
 
 	public override void SetDefaults()
@@ -61,7 +61,7 @@ internal class BloodOath : Sword, GenerateName.IItem
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
 		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(0, 2, 5);
 		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(0, 10, 10); // Add 10% life

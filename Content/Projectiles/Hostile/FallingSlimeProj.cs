@@ -17,6 +17,7 @@ public class FallingSlimeProj : ModProjectile
 		Projectile.friendly = true;
 		Projectile.hostile = true;
 		Projectile.Opacity = 1;
+		Projectile.penetrate = -1;
 	}
 
 	public override void AI()

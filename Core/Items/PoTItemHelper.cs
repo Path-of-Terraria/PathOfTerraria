@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -15,6 +16,7 @@ namespace PathOfTerraria.Core.Items;
 public static class PoTItemHelper
 {
 	#region Data retrieval
+
 	[MethodImpl(MethodImplOptions.AggressiveInlining)]
 	public static PoTInstanceItemData GetInstanceData(this Item item)
 	{
@@ -50,9 +52,11 @@ public static class PoTItemHelper
 	{
 		return item.Item.GetGearData();
 	}
+
 	#endregion
 
 	#region Rolling
+
 	public static void Roll(Item item, int itemLevel)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
@@ -93,8 +97,8 @@ public static class PoTItemHelper
 
 		data.Affixes.Clear();
 		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
-
 		data.ImplicitCount = data.Affixes.Count;
+
 		for (int i = 0; i < GetAffixCount(item); i++)
 		{
 			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
@@ -115,7 +119,7 @@ public static class PoTItemHelper
 
 		if (staticData.IsUnique)
 		{
-			List<ItemAffix> uniqueItemAffixes = GenerateAffixes.Invoke(item);
+			List<ItemAffix> uniqueItemAffixes = GenerateImplicits.Invoke(item);
 
 			foreach (ItemAffix affix in uniqueItemAffixes)
 			{
@@ -125,14 +129,26 @@ public static class PoTItemHelper
 			data.Affixes.AddRange(uniqueItemAffixes);
 		}
 	}
+
 	#endregion
 
 	#region Affixes
+
 	public static void ApplyAffixes(Item item, EntityModifier entityModifier, Player player)
 	{
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyAffix(player, entityModifier, item);
+			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
+			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
+		}
+	}
+
+	public static void ApplyAffixTooltips(Item item, Player player)
+	{
+		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
+		{
+			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
 			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}
@@ -151,6 +167,7 @@ public static class PoTItemHelper
 			_ => 0
 		};
 	}
+
 	#endregion
 
 	// TODO: Un-hardcode?
@@ -183,24 +200,44 @@ public static class PoTItemHelper
 
 		if (Main.hardMode)
 		{
-			return Main.rand.Next(50, 91);
+			return 50;
 		}
 
-		if (NPC.downedBoss3)
+		if (NPC.downedBoss3) //Skeletron
 		{
-			return Main.rand.Next(30, 50);
+			return 40;
 		}
-
-		if (NPC.downedBoss2)
+		
+		if (NPC.downedDeerclops)
 		{
-			return Main.rand.Next(20, 41);
+			return 35;
 		}
+		
+		if (NPC.downedQueenBee)
+        {
+        	return 30;
+        }
 
-		if (NPC.downedBoss1)
+		if (BossTracker.DownedBrainOfCthulhu)
 		{
-			return Main.rand.Next(10, 26);
+			return 25;
 		}
 
-		return Main.rand.Next(5, 21);
+		if (BossTracker.DownedEaterOfWorlds)
+		{
+			return 20;
+		}
+
+		if (NPC.downedBoss1) //Eye of Cthulhu
+		{
+			return 15;
+		}
+
+		if (NPC.downedSlimeKing)
+		{
+			return 10;
+		}
+
+		return 5;
 	}
 }

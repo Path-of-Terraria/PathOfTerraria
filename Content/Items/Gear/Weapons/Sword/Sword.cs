@@ -17,8 +17,7 @@ internal abstract class Sword : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.AltUseDescription = Language.GetTextValue("Mods.PathOfTerraria.Gear.Sword.AltUse");
-
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Sword.AltUse");
 	}
 
 	public override void SetDefaults()
@@ -29,8 +28,8 @@ internal abstract class Sword : Gear
 		Item.width = 40;
 		Item.height = 40;
 		Item.useStyle = ItemUseStyleID.Swing;
-		Item.useTime = 20;
-		Item.useAnimation = 20;
+		Item.useTime = 25;
+		Item.useAnimation = 25;
 		Item.autoReuse = true;
 		Item.DamageType = DamageClass.Melee;
 		Item.knockBack = 6;

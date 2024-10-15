@@ -10,8 +10,8 @@ internal static class ExperienceHandler
 	/// Generally, this should only be called by <see cref="ExperienceModSystem.SpawnExperience(int, Vector2, Vector2, int, bool)"/>.
 	/// </summary>
 	/// <param name="target">Target for the exp to aim for.</param>
-	/// <param name="xp">Amount of XP to spawn.</param>
-	/// <param name="spawn">Where it spawns.</param>
+	/// <param name="xpValue">Amount of XP to spawn.</param>
+	/// <param name="position">Where it spawns.</param>
 	/// <param name="velocity">The base velocity of the spawned exp.</param>
 	public static void SendExperience(byte target, int xpValue, Vector2 position, Vector2 velocity, bool spawnLocally = false)
 	{

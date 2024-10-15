@@ -8,12 +8,17 @@ using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
-public abstract class Affix
+public abstract class Affix : ILocalizedModType
 {
 	public float MinValue;
 	public float MaxValue = 1f;
 	public float Value = 0;
 	public int Duration = 180; //3 Seconds by default
+
+	public string LocalizationCategory => "Affixes";
+	public Mod Mod => PoTMod.Instance; // TODO: Cross mod compat?
+	public string Name => GetType().Name;
+	public string FullName => Mod.Name + "/" + Name;
 
 	// to a certain degree, none of the above is useable by the MobAffix...
 
@@ -63,7 +68,7 @@ public abstract class Affix
 		writer.Write(AffixHandler.IndexFromItemAffix(this));
 
 		writer.Write(Value);
-		writer.Write(MaxValue);			  // it seems that min and max get swapped here...
+		writer.Write(MaxValue); // it seems that min and max get swapped here...
 		writer.Write(MinValue);
 	}
 
@@ -173,6 +178,10 @@ public abstract class Affix
 
 		return resultList;
 	}
+
+	internal virtual void CreateLocalization()
+	{
+	}
 }
 
 internal class AffixHandler : ILoadable
@@ -242,6 +251,7 @@ internal class AffixHandler : ILoadable
 
 			var instance = Activator.CreateInstance(type) as Affix;
 			instance.OnLoad();
+			instance.CreateLocalization();
 
 			switch (instance)
 			{
