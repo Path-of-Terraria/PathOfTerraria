@@ -31,7 +31,7 @@ Quest: {
 	}
 
 	HunterStartQuest: {
-		Name: HunterStartQuest
+		Name: Drawing the Bow
 		Description: ""
 	}
 }

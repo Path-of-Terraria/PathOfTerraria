@@ -67,7 +67,7 @@ public class HunterNPC : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = ModContent.GetInstance<HunterStartQuest>().Completed ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+		button2 = !ModContent.GetInstance<HunterStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -78,7 +78,7 @@ public class HunterNPC : ModNPC
 			return;
 		}
 
-		Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Hunter.Dialogue.Quest");
+		Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest");
 		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(HunterStartQuest)}");
 	}
 	

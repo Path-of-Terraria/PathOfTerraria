@@ -8,7 +8,6 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
-using PathOfTerraria.Content.Skills.Melee;
 using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
@@ -55,7 +54,7 @@ internal class HunterStartQuest : Quest
 			new ActionStep((_, _) => true),
 			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"),
 			[
-				(ItemID.Silk, 20), (ItemID.Wood, 50), (ItemID.StoneBlock, 50),
+				new GiveItem(20, ItemID.Silk), new(50, ItemID.Wood), new(50, ItemID.StoneBlock),
 			], true),
 			new ActionStep((_, _) =>
 			{
@@ -68,7 +67,7 @@ internal class HunterStartQuest : Quest
 			new KillCount(npc => npc.type is NPCID.DemonEye or NPCID.Crimera or NPCID.EaterofSouls, 10, Localize("Kill.FloatingMisc")),
 			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest3"),
 			[
-				(ItemID.Wood, 40), (ItemID.Gel, 10), (ItemID.StoneBlock, 20)
+				new GiveItem(40, ItemID.Wood), new(10, ItemID.Gel), new(20, ItemID.IronBar, ItemID.LeadBar)
 			], true),
 			new ActionStep((_, _) =>
 			{

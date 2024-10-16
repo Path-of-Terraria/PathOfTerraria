@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Core.UI.SmartUI;
+using System.Linq;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
@@ -48,6 +49,13 @@ internal class QuestDetailsPanel : SmartUiElement
 		if (string.IsNullOrEmpty(ViewedQuestName) || ViewedQuestName is null)
 		{
 			return;
+		}
+
+		UIElement oldList = Children.FirstOrDefault(x => x is UIList);
+
+		if (oldList is not null)
+		{
+			RemoveChild(oldList);
 		}
 
 		var quest = Quest.GetQuest(ViewedQuestName);

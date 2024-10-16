@@ -50,36 +50,26 @@ internal class BlacksmithStartQuest : Quest
 	{
 		return 
 		[
-			new ParallelQuestStep([
-				new CollectCount(item => item.type == ItemID.IronOre || item.type == ItemID.LeadOre, 20, Lang.GetItemName(ItemID.IronOre)),
-				new CollectCount(item => item.type == ItemID.IronHammer || item.type == ItemID.LeadHammer, 1, Lang.GetItemName(ItemID.IronHammer)),
-			]),
-			new CollectCount(ItemID.StoneBlock, 50),
-			new CollectCount(ItemID.Wood, 20),
+			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2"),
+			[
+				new GiveItem(20, ItemID.IronOre, ItemID.LeadOre), new(1, ItemID.IronHammer, ItemID.LeadHammer), new(50, ItemID.StoneBlock), new(20, ItemID.Wood)
+			], true),
 			new ActionStep((_, _) => 
 			{
 				RavencrestSystem.UpgradeBuilding("Forge");
-				return true;
-			}),
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2")),
-			new ActionStep((_, _) => {
+
 				int npc = NPC.FindFirstNPC(ModContent.NPCType<BlacksmithNPC>());
 				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
 				return true;
 			}),
-			new ParallelQuestStep([
-				new CollectCount(ItemID.StoneBlock, 50),
-				new CollectCount(ItemID.Wood, 50),
-				new KillCount(NPCID.Zombie, 15, Localize("Kill.Zombies")),
-			]),
+			new KillCount(NPCID.Zombie, 15, Localize("Kill.Zombies")),
+			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3"),
+			[
+				new GiveItem(30, ItemID.StoneBlock), new(50, ItemID.Wood), new(10, ItemID.GoldBar, ItemID.PlatinumBar)
+			], true),
 			new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Forge");
-				return true;
-			}),
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3")),
-			new ActionStep((_, _) =>
-			{
 				Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().TryAddSkill(new Berserk());
 				return true;
 			})

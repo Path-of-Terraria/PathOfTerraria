@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
@@ -20,7 +22,49 @@ internal class RavencrestSubworld : MappingWorld
 	public override bool ShouldSave => true;
 
 	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), new PassLegacy("World", SpawnWorld),
-		new PassLegacy("Grass", (progress, _) => EyeDomain.PlaceGrassAndDecor(progress, false, Mod, out Rectangle throwaway))];
+		new PassLegacy("Grass", GrowGrass)];
+
+	private void GrowGrass(GenerationProgress progress, GameConfiguration configuration)
+	{
+		Dictionary<Point16, OpenFlags> tiles = [];
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
+
+		for (int i = 0; i < Main.maxTilesX; ++i)
+		{
+			for (int j = 80; j < Main.maxTilesY - 50; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (!tile.HasTile || tile.TileType != TileID.Dirt)
+				{
+					continue;
+				}
+
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
+
+				if (flags == OpenFlags.None)
+				{
+					continue;
+				}
+
+				tiles.Add(new Point16(i, j), flags);
+			}
+
+			progress.Value = (float)i / Main.maxTilesX;
+		}
+
+		HashSet<Point16> grasses = [];
+
+		foreach ((Point16 position, OpenFlags tile) in tiles)
+		{
+			Decoration.GrowGrass(position, grasses);
+		}
+
+		foreach (Point16 position in grasses)
+		{
+			Decoration.OnPurityGrass(position);
+		}
+	}
 
 	public override void CopyMainWorldData()
 	{

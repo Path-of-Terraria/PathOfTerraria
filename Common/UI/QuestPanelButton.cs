@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -11,21 +12,42 @@ public class QuestPanelButton : SmartUiState
 {
 	public override bool Visible => Main.playerInventory;
 
+	private static Asset<Texture2D> BookTexture = null;
+
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
+	public override void OnInitialize()
+	{
+		BookTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/QuestBookUi");
+	}
+
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		base.SafeUpdate(gameTime);
+
+		Vector2 pos = new(GetTextureXPosition(), 80);
+		Texture2D texture = BookTexture.Value;
+		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f), (int)pos.Y, texture.Width, texture.Height);
+
+		if (bounding.Contains(Main.MouseScreen.ToPoint()))
+		{
+			Main.LocalPlayer.mouseInterface = true;
+		}
+	}
+
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Texture2D texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/QuestBookUi").Value;
+		Texture2D texture = BookTexture.Value;
 		Vector2 pos = new(GetTextureXPosition(), 80);
 		spriteBatch.Draw(texture, pos, null, Color.White, 0, new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		Texture2D texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/QuestBookUi").Value;
+		Texture2D texture = BookTexture.Value;
 		Vector2 pos = new(GetTextureXPosition(), 80);
 
 		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f), (int)pos.Y, texture.Width, texture.Height);
