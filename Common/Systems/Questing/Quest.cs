@@ -154,10 +154,3 @@ public abstract class Quest : ModType
 		return quest;
 	}
 }
-
-public class QuestUpdater : ModSystem
-{
-	public override void PostUpdateEverything()
-	{
-	}
-}
