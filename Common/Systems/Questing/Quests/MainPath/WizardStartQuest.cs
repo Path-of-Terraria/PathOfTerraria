@@ -42,7 +42,7 @@ internal class WizardStartQuest : Quest
 			{
 				ConditionalDropHandler.RemoveId(ModContent.ItemType<TomeOfTheElders>());
 				return true;
-			}),
+			}) { CountsAsCompletedOnMarker = true },
 		];
 	}
 }

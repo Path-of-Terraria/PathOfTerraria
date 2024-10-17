@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
@@ -14,7 +15,7 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class HunterNPC : ModNPC
+public class HunterNPC : ModNPC, IQuestMarkerNPC
 {
 	public override void SetStaticDefaults()
 	{
@@ -127,5 +128,11 @@ public class HunterNPC : ModNPC
 		
 		item = asset.Value;
 		itemFrame = asset.Frame();
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<HunterStartQuest>();
+		return !quest.Completed;
 	}
 }

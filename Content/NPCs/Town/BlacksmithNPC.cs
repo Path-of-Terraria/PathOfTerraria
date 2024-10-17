@@ -9,11 +9,12 @@ using Terraria.Localization;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class BlacksmithNPC : ModNPC
+public class BlacksmithNPC : ModNPC, IQuestMarkerNPC
 {
 	public override void SetStaticDefaults()
 	{
@@ -142,5 +143,11 @@ public class BlacksmithNPC : ModNPC
 
 		int frame = (int)animCounter;
 		NPC.frame.Y = frame * frameHeight;
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<BlacksmithStartQuest>();
+		return !quest.Completed;
 	}
 }
