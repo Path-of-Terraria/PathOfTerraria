@@ -59,6 +59,7 @@ public class RavencrestSystem : ModSystem
 			RavencrestBuildingIndex.Send(name, level);
 			return;
 		}
+
 		ImprovableStructure structure = ModContent.GetInstance<RavencrestSystem>().structures[name];
 		level = level == -1 ? structure.StructureIndex + 1 : level;
 		structure.Change(level);
