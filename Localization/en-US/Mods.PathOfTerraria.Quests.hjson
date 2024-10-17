@@ -34,4 +34,9 @@ Quest: {
 		Name: Drawing the Bow
 		Description: ""
 	}
+
+	WizardStartQuest: {
+		Name: Magical Returnal
+		Description: ""
+	}
 }

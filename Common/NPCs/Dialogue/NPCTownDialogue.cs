@@ -57,12 +57,17 @@ public sealed class NPCTownDialogue : NPCComponent
 
 	public override void GetChat(NPC npc, ref string chat)
 	{
-		if (TryGetDialogue(out chat))
+		if (Enabled)
 		{
-			return;
+			if (TryGetDialogue(out chat))
+			{
+				return;
+			}
+			else
+			{
+				throw null;
+			}
 		}
-
-		throw new Exception();
 	}
 	
 	private bool TryGetDialogue(out string dialogue)
