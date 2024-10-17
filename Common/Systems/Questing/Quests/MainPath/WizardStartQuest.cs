@@ -31,7 +31,7 @@ internal class WizardStartQuest : Quest
 		[
 			new ActionStep((player, _) => 
 			{
-				SyncedCustomDrops.AddId(ModContent.ItemType<TomeOfTheElders>());
+				ConditionalDropHandler.AddId(ModContent.ItemType<TomeOfTheElders>());
 				return true;
 			}),
 			new InteractWithNPC(ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
@@ -40,7 +40,7 @@ internal class WizardStartQuest : Quest
 			], true),
 			new ActionStep((player, _) =>
 			{
-				SyncedCustomDrops.RemoveId(ModContent.ItemType<TomeOfTheElders>());
+				ConditionalDropHandler.RemoveId(ModContent.ItemType<TomeOfTheElders>());
 				return true;
 			}),
 		];

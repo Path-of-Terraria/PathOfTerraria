@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Items.Quest;
+﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Content.Items.Quest;
 using System.Collections.Generic;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -6,12 +7,18 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.NPCs;
 
-internal class SyncedCustomDrops : GlobalNPC
+internal class ConditionalDropHandler : GlobalNPC
 {
 	private static readonly Dictionary<int, int> PlayerCountByItemIds = [];
 	
 	public static void AddId(int id)
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			SyncConditionalDropHandler.Send(id, true);
+			return;
+		}
+
 		if (PlayerCountByItemIds.TryGetValue(id, out int count))
 		{
 			PlayerCountByItemIds[id] = ++count;
@@ -24,6 +31,12 @@ internal class SyncedCustomDrops : GlobalNPC
 
 	public static void RemoveId(int id)
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			SyncConditionalDropHandler.Send(id, false);
+			return;
+		}
+
 		if (PlayerCountByItemIds.TryGetValue(id, out int value))
 		{
 			PlayerCountByItemIds[id] = --value;
