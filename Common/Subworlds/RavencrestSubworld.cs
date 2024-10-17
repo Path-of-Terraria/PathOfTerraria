@@ -84,14 +84,7 @@ internal class RavencrestSubworld : MappingWorld
 
 		NPC.NewNPC(Entity.GetSource_TownSpawn(), Main.maxTilesX * 8, Main.maxTilesY * 8 - 200, ModContent.NPCType<BlacksmithNPC>());
 		NPC.NewNPC(Entity.GetSource_TownSpawn(), Main.maxTilesX * 8, Main.maxTilesY * 8 - 200, ModContent.NPCType<HunterNPC>());
-	}
-
-	public override void Update()
-	{
-		foreach (Player player in Main.ActivePlayers)
-		{
-			//player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-		}
+		NPC.NewNPC(Entity.GetSource_TownSpawn(), Main.maxTilesX * 8, Main.maxTilesY * 8 - 200, ModContent.NPCType<WizardNPC>());
 	}
 
 	public class RavencrestNPC : GlobalNPC 
