@@ -57,13 +57,11 @@ public class RavencrestSystem : ModSystem
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			RavencrestBuildingIndex.Send(name, level);
+			return;
 		}
-		else
-		{
-			ImprovableStructure structure = ModContent.GetInstance<RavencrestSystem>().structures[name];
-			level = level == -1 ? structure.StructureIndex + 1 : level;
-			structure.Change(level);
-		}
+		ImprovableStructure structure = ModContent.GetInstance<RavencrestSystem>().structures[name];
+		level = level == -1 ? structure.StructureIndex + 1 : level;
+		structure.Change(level);
 	}
 
 	public override void PostUpdateEverything()
