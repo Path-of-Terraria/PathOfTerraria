@@ -1,5 +1,6 @@
 ﻿using Terraria.Localization;
 using Terraria.ModLoader.IO;
+using PathOfTerraria.Common.NPCs;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
@@ -9,6 +10,12 @@ public abstract class QuestStep
 	public virtual bool NoUI => false;
 
 	public bool IsDone { get; internal set; }
+
+	/// <summary>
+	/// This means the current step will make the marker show as completed on the <see cref="IQuestMarkerNPC"/>.<br/>
+	/// Set this on every step that is either completed automatically or requires only talking to the NPC.
+	/// </summary>
+	public bool CountsAsCompletedOnMarker { get; init; }
 
 	/// <summary>
 	/// Called every frame on the player. This should be used to complete steps, check conditions, so on and so on.
