@@ -39,3 +39,14 @@ Minera.DisplayName: Minera
 TownScoutNPC.DisplayName: Goblin Surveyor
 RavenNPC.DisplayName: Ephemeral Raven
 ControllableSpikeball.DisplayName: Spikeball
+
+WitchNPC.DisplayName: {
+	DisplayName: Morgana
+
+	Dialogue: {
+		Common0: Yes...the brew speaks!...it says you're looking to buy? Hm? Are you?
+		Common1: Mix! Mix! I say, making the most peculiar brews you've heard of. Yes, more Strange than Strange Brews.
+		Common2: The tail of a rat! The wings of a bat! And to this, I say - rhyme? What's that? 
+		Common3: Betwixt toil and trouble, I reside. Care for a concoction of devilish proportions? Do you? Do you?
+	}
+}
