@@ -2,6 +2,7 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
@@ -17,11 +18,11 @@ public class WitchNPC : ModNPC
 {
 	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[Type] = 23;
+		Main.npcFrameCount[Type] = 21;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
 		NPCID.Sets.DangerDetectRange[Type] = 400;
-		NPCID.Sets.AttackFrameCount[Type] = 4;
-		NPCID.Sets.AttackType[Type] = 1;
+		NPCID.Sets.AttackFrameCount[Type] = 2;
+		NPCID.Sets.AttackType[Type] = 2;
 		NPCID.Sets.AttackTime[Type] = 60;
 		NPCID.Sets.AttackAverageChance[Type] = 10;
 
@@ -40,7 +41,8 @@ public class WitchNPC : ModNPC
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.aiStyle = NPCAIStyleID.Passive;
-		AnimationType = NPCID.Guide;
+
+		AnimationType = NPCID.Dryad;
 
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
@@ -50,7 +52,7 @@ public class WitchNPC : ModNPC
 				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 2, NPCHitEffects.OnDeath));
 				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_3", 1, NPCHitEffects.OnDeath));
 				
-				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 20));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 15));
 			}
 		);
 
@@ -60,14 +62,15 @@ public class WitchNPC : ModNPC
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common0"));
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common1"));
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common2"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
 			}
 		);
 	}
-	
+
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+		button2 = !ModContent.GetInstance<WitchStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -78,16 +81,10 @@ public class WitchNPC : ModNPC
 			return;
 		}
 
-		Main.npcChatText = this.GetLocalizedValue("Dialogue.Quest");
-
-		if (!Main.LocalPlayer.TryGetModPlayer(out QuestModPlayer modPlayer))
-		{
-			return;
-		}
-
-		modPlayer.RestartQuestTest();
+		Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest");
+		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WitchStartQuest)}");
 	}
-	
+
 	public override void AddShops()
 	{
 		new NPCShop(Type)
@@ -123,15 +120,5 @@ public class WitchNPC : ModNPC
 	{
 		multiplier = 10f;
 		randomOffset = 0.5f;
-	}
-
-	public override void DrawTownAttackGun(ref Texture2D item, ref Rectangle itemFrame, ref float scale, ref int horizontalHoldoutOffset)
-	{
-		int type = ModContent.ItemType<WoodenBow>();
-		
-		Asset<Texture2D> asset = TextureUtils.LoadAndGetItem(type);
-		
-		item = asset.Value;
-		itemFrame = asset.Frame();
 	}
 }

@@ -34,4 +34,9 @@ Quest: {
 		Name: Drawing the Bow
 		Description: ""
 	}
+
+	WitchStartQuest: {
+		Name: WitchStartQuest
+		Description: ""
+	}
 }
