@@ -1,0 +1,45 @@
+Terrain: Generating terrain
+Tunnels: Digging tunnels
+PopulatingWorld: Populating world
+Steps: Building steps
+Arenas: Building arenas
+Pathway: Discovering pathway
+RavenPass: Nevermore
+
+EaterSign: {
+	0: "{0} was instantly devoured."
+	1: "{0} fell into an Eater's jaws."
+	2: The Eater found {0}'s flesh very tasty.
+	3: "{0} was digested."
+
+	Names: {
+		0: Ronny
+		1: Jameson
+		2: Evan
+		3: Polly
+		4: Sylvia
+		5: Liara
+		6: Svetlana
+		7: Obie
+		8: Jane-Ashley
+	}
+}
+
+EyeSign: {
+	0: "{0} couldn't stare back."
+	1: The Eye devoured {0}.
+	2: "{0} was overseen and overwhelmed."
+	3: "{0} couldn't handle the audience."
+
+	Names: {
+		0: Wilken
+		1: Jimmy
+		2: Cammy
+		3: Samarah
+		4: Pyotir
+		5: Aabria
+		6: Izzy
+		7: Gabe
+		8: Roald
+	}
+}

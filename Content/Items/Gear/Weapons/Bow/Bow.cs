@@ -1,12 +1,12 @@
 ﻿using PathOfTerraria.Content.Projectiles.Ranged;
-using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 
@@ -18,9 +18,11 @@ internal abstract class Bow : Gear
 	/// </summary>
 	public static Dictionary<int, Asset<Texture2D>> BowProjectileSpritesById = [];
 
-	public override float DropChance => 1f;
-	public override int ItemLevel => 1;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Bow.AltUse");
+	public int ItemLevel
+	{
+		get => 1;
+		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
+	}
 
 	protected override string GearLocalizationCategory => "Bow";
 	protected virtual int AnimationSpeed => 6;
@@ -30,14 +32,22 @@ internal abstract class Bow : Gear
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Bow.AltUse");
+
 		if (ModContent.HasAsset(Texture + "Animated"))
 		{
 			BowProjectileSpritesById.Add(Type, ModContent.Request<Texture2D>(Texture + "Animated"));
 		}
 	}
 
-	public override void Defaults()
+	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.CloneDefaults(ItemID.WoodenBow);
 		Item.width = 32;
 		Item.height = 64;

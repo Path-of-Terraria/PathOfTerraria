@@ -1,29 +1,33 @@
 ﻿using System.Collections.Generic;
-using System.IO;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Content.Projectiles.Melee;
-using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
-using PathOfTerraria.Core.Systems.Networking.Handlers;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
-using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal class GuardianAngel : SteelBattleaxe
 {
-	public override float DropChance => 1f;
-	public override bool IsUnique => true;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.AltUseDescription");
-	public override string Description => Language.GetTextValue("Mods.PathOfTerraria.Items.GuardianAngel.Description");
-	public override int MinDropItemLevel => 25;
-
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
-		base.Defaults();
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.MinDropItemLevel = 25;
+		staticData.IsUnique = true;
+		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+		staticData.Description = this.GetLocalization("Description");
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.width = 54;
 		Item.height = 54;
 	}
@@ -51,23 +55,19 @@ internal class GuardianAngel : SteelBattleaxe
 	
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		target.GetGlobalNPC<AngelRingNPC>().ApplyRing(target, player.whoAmI);
+		if (target.TryGetGlobalNPC(out AngelRingNPC ringNPC))
+		{
+			ringNPC.ApplyRing(target, player.whoAmI);
+		}
 	}
 
-	public override List<ItemAffix> GenerateAffixes()
+	public override List<ItemAffix> GenerateImplicits()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>();
-		addedDamageAffix.MinValue = 1;
-		addedDamageAffix.MaxValue = 4;
-
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>();
-		attackSpeedAffix.MinValue = 0.1f;
-		attackSpeedAffix.MaxValue = 0.1f;
-
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>();
-		armorShredAffix.MinValue = 0.1f;
-		armorShredAffix.MaxValue = 0.1f;
-		return [addedDamageAffix, attackSpeedAffix, armorShredAffix];
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(-1, 0.2f, 0.6f);
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>(-1, 0.1f, 0.2f);
+		var noFallDamage = (ItemAffix)Affix.CreateAffix<NoFallDamageAffix>(1);
+		return [addedDamageAffix, attackSpeedAffix, armorShredAffix, noFallDamage];
 	}
 
 	internal class AngelRingNPC : GlobalNPC
@@ -84,7 +84,7 @@ internal class GuardianAngel : SteelBattleaxe
 
 		public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
 		{
-			return !entity.friendly && !entity.townNPC;
+			return !entity.friendly && !entity.townNPC && entity.damage > 0;
 		}
 
 		public override void SetStaticDefaults()

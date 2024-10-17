@@ -1,25 +1,32 @@
-﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems;
-using PathOfTerraria.Core.Systems.Affixes;
-using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal abstract class Map : PoTItem
+internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Consumables/Maps/Map";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Consumables/Maps/Map";
 	private int _tier;
 
-	public override int ItemLevel
+	int GetItemLevel.IItem.GetItemLevel(int realLevel)
 	{
-		get => _tier;
-		set
-		{ InternalItemLevel = value; _tier = 1 + (int)Math.Floor(InternalItemLevel / 20f); }
+		return _tier;
 	}
 
-	public override void Defaults() {
+	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
+	{
+		realLevel = level;
+		_tier = 1 + (int)Math.Floor(realLevel / 20f);
+	}
+
+	public override void SetDefaults() {
+		base.SetDefaults();
+
 		Item.width = 32;
 		Item.height = 32;
 		Item.useStyle = ItemUseStyleID.DrinkLiquid;
@@ -28,24 +35,25 @@ internal abstract class Map : PoTItem
 		Item.useTurn = true;
 		Item.UseSound = SoundID.Item3;
 		Item.maxStack = 1;
-		Item.consumable = true;
+		Item.consumable = false;
 		Item.rare = ItemRarityID.Green;
 		Item.value = 1000;
 
-		ItemType = ItemType.Map;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Map;
 	}
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }
 
-    /// <summary>
-    /// Gets name and what tier the map is of as a singular string.
-    /// </summary>
-    public virtual string GetNameAndTier()
+	/// <summary>
+	/// Gets name and what tier the map is of as a singular string.
+	/// </summary>
+	public virtual string GetNameAndTier()
 	{
-		return GenerateName() + ": " + _tier;
+		return Core.Items.GenerateName.Invoke(Item) + ": " + _tier;
 	}
 	
-    public override bool? UseItem(Player player)
+	public override bool? UseItem(Player player)
 	{
 		MappingSystem.EnterMap(this);
 		return true;
@@ -108,4 +116,6 @@ internal abstract class Map : PoTItem
 
 		base.LoadData(tag);
 	}
+
+	public abstract string GenerateName(string defaultName);
 }

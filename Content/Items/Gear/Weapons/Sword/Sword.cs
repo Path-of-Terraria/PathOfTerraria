@@ -1,5 +1,6 @@
-﻿using PathOfTerraria.Core;
-using PathOfTerraria.Core.Systems;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -8,19 +9,27 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal abstract class Sword : Gear
 {
-	public override float DropChance => 1f;
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Sword.AltUse");
-
 	protected override string GearLocalizationCategory => "Sword";
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Sword.AltUse");
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.damage = 10;
 		Item.width = 40;
 		Item.height = 40;
 		Item.useStyle = ItemUseStyleID.Swing;
-		Item.useTime = 20;
-		Item.useAnimation = 20;
+		Item.useTime = 25;
+		Item.useAnimation = 25;
 		Item.autoReuse = true;
 		Item.DamageType = DamageClass.Melee;
 		Item.knockBack = 6;
@@ -28,7 +37,9 @@ internal abstract class Sword : Gear
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.PurificationPowder;
 		Item.shootSpeed = 10f;
-		ItemType = ItemType.Sword;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Sword;
 	}
 
 	public override bool AltFunctionUse(Player player)

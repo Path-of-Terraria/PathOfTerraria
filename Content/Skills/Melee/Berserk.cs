@@ -1,11 +1,14 @@
-﻿using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Core.Mechanics;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Content.Buffs;
 
 namespace PathOfTerraria.Content.Skills.Melee;
 
 public class Berserk : Skill
 {
 	public override int MaxLevel => 3;
+	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
@@ -14,16 +17,11 @@ public class Berserk : Skill
 		Timer = 0;
 		ManaCost = 10 + 5 * level;
 		Duration = (15 + 5 * Level) * 60;
-		WeaponType = Core.ItemType.Sword;
+		WeaponType = ItemType.Sword;
 	}
 
 	public override void UseSkill(Player player)
 	{
-		if (!CanUseSkill(player))
-		{
-			return;
-		}
-
 		player.statMana -= ManaCost;
 		player.AddBuff(ModContent.BuffType<RageBuff>(), Duration);
 		Timer = Cooldown;

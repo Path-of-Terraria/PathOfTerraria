@@ -1,0 +1,1 @@
+M:System.Reflection.Assembly.GetTypes(); Use AssemblyManager.GetLoadableTypes(Assembly) instead; Assembly.GetTypes() triggers the runtime to attempt some validation on type metadata which may fail in weakref scenarios.

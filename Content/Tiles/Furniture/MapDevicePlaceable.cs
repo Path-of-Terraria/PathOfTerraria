@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Core.Systems;
+﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -11,7 +11,7 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 
 public class MapDevicePlaceable : ModTile
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Placeable/MapDeviceBase";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Placeable/MapDeviceBase";
 	private Map InsertedMap { get; set; }
 
 	private const int FrameWidth = 18 * 3;
@@ -25,7 +25,7 @@ public class MapDevicePlaceable : ModTile
 	private Asset<Texture2D> _relicTexture;
 
 	/// This is the portal that will appear above
-	protected virtual string Portal => $"{PathOfTerraria.ModName}/Assets/Items/Placeable/Portal";
+	protected virtual string Portal => $"{PoTMod.ModName}/Assets/Items/Placeable/Portal";
 
 	public override void Load()
 	{
@@ -97,13 +97,9 @@ public class MapDevicePlaceable : ModTile
 		{
 			return;
 		}
-		
+
 		// This is lighting-mode specific, always include this if you draw tiles manually
-		var offScreen = new Vector2(Main.offScreenRange);
-		if (Main.drawToScreen)
-		{
-			offScreen = Vector2.Zero;
-		}
+		Vector2 offScreen = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
 
 		// Take the tile, check if it actually exists
 		var p = new Point(i, j);
@@ -129,8 +125,7 @@ public class MapDevicePlaceable : ModTile
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 		// Some math magic to make it smoothly move up and down over time
-		const float twoPi = (float)Math.PI * 2f;
-		float offset = (float)Math.Sin(Main.GlobalTimeWrappedHourly * twoPi / 5f);
+		float offset = (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 5f);
 		Vector2 drawPos = worldPos + offScreen - Main.screenPosition + new Vector2(0f, -40f) +
 		                  new Vector2(0f, offset * 4f);
 
@@ -138,13 +133,13 @@ public class MapDevicePlaceable : ModTile
 		spriteBatch.Draw(texture, drawPos, frame, color, 0f, origin, 1f, effects, 0f);
 
 		// Draw the periodic glow effect
-		float scale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * twoPi / 2f) * 0.3f + 0.7f;
+		float scale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 2f) * 0.3f + 0.7f;
 		Color effectColor = color;
 		effectColor.A = 0;
 		effectColor = effectColor * 0.1f * scale;
 		for (float num5 = 0f; num5 < 1f; num5 += 355f / (678f * (float)Math.PI))
 		{
-			spriteBatch.Draw(texture, drawPos + (twoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame,
+			spriteBatch.Draw(texture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset * 2f), frame,
 				effectColor, 0f, origin, 1f, effects, 0f);
 		}
 	}

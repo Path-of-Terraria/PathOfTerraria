@@ -1,5 +1,6 @@
-﻿using PathOfTerraria.Core.Systems;
-using Terraria;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Core.Items;
+using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -9,9 +10,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
 internal abstract class Javelin : Gear
 {
-	public override string AltUseDescription => Language.GetTextValue("Mods.PathOfTerraria.Gear.Javelin.AltUse");
-	public override float DropChance => 1f;
-
 	/// <summary>
 	/// Used to define the size of the item and associated projectile in load time.
 	/// </summary>
@@ -22,16 +20,37 @@ internal abstract class Javelin : Gear
 	/// </summary>
 	public abstract int DeathDustType { get; }
 
+	public virtual bool AutoloadProjectile => true;
+	public virtual bool UseChargeAlt => true;
+
 	protected override string GearLocalizationCategory => "Javelin";
 
 	public override void Load()
 	{
-		Mod.AddContent(new JavelinThrown(GetType().Name + "Thrown", ItemSize, DeathDustType));
+		if (AutoloadProjectile)
+		{
+			Mod.AddContent(new JavelinThrown(GetType().Name + "Thrown", ItemSize, DeathDustType));
+		}
 	}
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
-		Item.DefaultToThrownWeapon(Mod.Find<ModProjectile>(GetType().Name + "Thrown").Type, 50, 7, true);
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Javelin.AltUse");
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
+		// Default to ThrowingKnife to placehold until the manually loaded projectile is added
+		int shotId = AutoloadProjectile ? Mod.Find<ModProjectile>(GetType().Name + "Thrown").Type : ProjectileID.ThrowingKnife;
+		Item.DefaultToThrownWeapon(shotId, 50, 7, true);
+
+		Item.maxStack = 1;
 		Item.consumable = false;
 		Item.SetWeaponValues(3, 1);
 		Item.SetShopValues(ItemRarityColor.Green2, Item.buyPrice(0, 0, 1, 0));
@@ -52,8 +71,12 @@ internal abstract class Javelin : Gear
 		if (player.altFunctionUse == 2)
 		{
 			altUsePlayer.SetAltCooldown(4 * 60, 15);
-			player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
-			player.GetModPlayer<JavelinDashPlayer>().JavelinAltUsed = true;
+
+			if (UseChargeAlt)
+			{
+				player.GetModPlayer<JavelinDashPlayer>().StoredVelocity = player.DirectionTo(Main.MouseWorld) * 15;
+				player.GetModPlayer<JavelinDashPlayer>().JavelinAltUsed = true;
+			}
 		}
 
 		return true;
@@ -101,7 +124,7 @@ internal abstract class Javelin : Gear
 
 			AltUsePlayer altUsePlayer = Player.GetModPlayer<AltUsePlayer>();
 
-			if (!altUsePlayer.AltFunctionActive)
+			if (!altUsePlayer.AltFunctionActive || Player.HeldItem.ModItem is not Javelin javelin || !javelin.UseChargeAlt)
 			{
 				JavelinAltUsed = false;
 				return;

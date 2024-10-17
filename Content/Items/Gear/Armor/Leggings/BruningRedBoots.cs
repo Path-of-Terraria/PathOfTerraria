@@ -1,17 +1,24 @@
-﻿using PathOfTerraria.Core.Systems.Affixes;
-using System.Collections.Generic;
-using PathOfTerraria.Core.Systems.Affixes.ItemTypes;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.Localization;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
 [AutoloadEquip(EquipType.Legs)]
-internal class BurningRedBoots : Leggings
+internal class BurningRedBoots : Leggings, GenerateName.IItem
 {
-	public override float DropChance => 0.01f;
-	public override bool IsUnique => true;
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
 
-	public override List<ItemAffix> GenerateAffixes()
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0.01f;
+		staticData.IsUnique = true;
+	}
+
+	public override List<ItemAffix> GenerateImplicits()
 	{
 		return
 		[
@@ -21,13 +28,13 @@ internal class BurningRedBoots : Leggings
 		];
 	}
 
-	public override string GenerateName()
+	string GenerateName.IItem.GenerateName(string defaultName)
 	{
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BurningRedBoots.DisplayName")}]";
 	}
 
 	public override void PostRoll()
 	{
-		Item.defense = ItemLevel / 12;
+		Item.defense = GetItemLevel.Invoke(Item) / 12;
 	}
 }

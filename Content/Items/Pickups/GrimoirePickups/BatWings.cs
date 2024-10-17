@@ -1,7 +1,7 @@
 ﻿using NPCUtils;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Items.Pickups;
+namespace PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 
 internal class BatWings : GrimoirePickup
 {

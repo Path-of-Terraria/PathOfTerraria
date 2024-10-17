@@ -1,7 +1,5 @@
-using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.Enums;
-using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -9,8 +7,6 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 
 public class HangingMeat : ModTile
 {
-	public override string Texture => $"{nameof(PathOfTerraria)}/Assets/Tiles/Furniture/{nameof(HangingMeat)}";
-
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;

@@ -1,0 +1,10 @@
+DeveloperConfig: {
+	DisplayName: Developer Configuration [i:509]
+
+	DrawUIBorders: {
+		Label: Draw User Interface Borders
+		Tooltip: Draws borders around user interface elements to help with layout debugging.
+	}
+
+	Headers.Graphics: Graphics Header
+}

@@ -1,34 +1,42 @@
-﻿using PathOfTerraria.Content.GUI.GrimoireSelection;
-using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
-using PathOfTerraria.Core;
-using PathOfTerraria.Core.Loaders.UILoading;
-using PathOfTerraria.Core.Systems.ModPlayers;
+﻿using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.UI.GrimoireSelection;
 using Terraria.ID;
 using Terraria.Localization;
+using PathOfTerraria.Core.UI.SmartUI;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
-internal abstract class GrimoirePickup : PoTItem
+internal abstract class GrimoirePickup : ModItem
 {
-	public override string Texture => $"{PathOfTerraria.ModName}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
-
-	/// <summary>
-	/// These materials shouldn't drop through the typical <see cref="PoTItem"/> system. These will manually add their drops to their respective NPC(s).
-	/// </summary>
-	public sealed override float DropChance => 0;
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
 
 	public abstract Point Size { get; }
 
-	public override void Defaults()
+	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
+		// These materials shouldn't drop through the typical item system. These will manually add their drops to their respective NPC(s).
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0f;
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
 		Item.width = Size.X;
 		Item.height = Size.Y;
 		Item.maxStack = 1;
 
-		ItemType = ItemType.Weapon;
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = ItemType.Weapon;
 	}
 
 	public override bool ItemSpace(Player player)
@@ -69,7 +77,7 @@ internal abstract class GrimoirePickup : PoTItem
 
 		PopupText.NewText(request, player.Center);
 
-		if (Item.type != ItemID.SilverCoin && player.whoAmI == Main.myPlayer && UILoader.GetUIState<GrimoireSelectionUIState>().IsVisible)
+		if (Item.type != ItemID.SilverCoin && player.whoAmI == Main.myPlayer && SmartUiLoader.GetUiState<GrimoireSelectionUIState>().IsVisible)
 		{
 			GrimoireSelectionUIState.RefreshStorage();
 		}
@@ -79,7 +87,7 @@ internal abstract class GrimoirePickup : PoTItem
 
 	public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{
-		if (Affixes.Count > 0)
+		if (this.GetInstanceData().Affixes.Count > 0)
 		{
 			spriteBatch.Draw(GrimoirePickupLoader.AffixIconTex.Value, position - origin * 0.9f, Color.White);
 		}

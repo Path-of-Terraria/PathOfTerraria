@@ -46,3 +46,19 @@ PoacherSummon: {
 }
 
 GrimoireVisageEffect.DisplayName: Grimoire Visage Effect
+StarlightBulwarkStar.DisplayName: Starlight Bulwark Star
+StarlightBulwarkComet.DisplayName: Starlight Bulwark Comet
+MoltenDangpaThrown.DisplayName: Molten Dangpa
+MoltenDangpaBubbles.DisplayName: Molten Bubbles
+BloodclotterThrown.DisplayName: Bloodclotter
+RottenboneThrown.DisplayName: Rottenbone
+RottenboneChunks.DisplayName: Rottenbone Chunks
+CarapaceChunk.DisplayName: Carapace Chunk
+ExitPortal.DisplayName: Exit Portal
+FallingSlimeProj.DisplayName: Falling Slime Proj
+SparklingBallProjectile.DisplayName: Sparkling Ball Projectile
+Teleportal.DisplayName: Teleportal
+FallingPusBlock.DisplayName: Falling Pus Block
+VoodooRopeProj.DisplayName: Voodoo Rope Proj
+LightBallProjectile.DisplayName: Light Ball Projectile
+IcicleProjectile.DisplayName: Icicle Projectile

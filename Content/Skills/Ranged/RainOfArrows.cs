@@ -1,6 +1,7 @@
-﻿using PathOfTerraria.Core.Mechanics;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Mechanics;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -12,6 +13,7 @@ public class RainOfArrows : Skill
 	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Sandgun];
 
 	public override int MaxLevel => 3;
+	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
@@ -19,16 +21,11 @@ public class RainOfArrows : Skill
 		Cooldown = MaxCooldown = 10 * 60;
 		ManaCost = 20;
 		Duration = 0;
-		WeaponType = Core.ItemType.Ranged;
+		WeaponType = ItemType.Ranged;
 	}
 
 	public override void UseSkill(Player player)
 	{
-		if (!CanUseSkill(player))
-		{
-			return;
-		}
-
 		player.statMana -= ManaCost;
 		Timer = Cooldown;
 
