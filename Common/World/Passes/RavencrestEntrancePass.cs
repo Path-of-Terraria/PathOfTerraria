@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.WorldNavigation;
+﻿using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Content.NPCs.Town;
 using System.Collections.Generic;
 using System.Linq;

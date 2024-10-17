@@ -8,18 +8,18 @@ public class AltUseUISystem : ModSystem
 {
 	public static AltUseUISystem Instance => ModContent.GetInstance<AltUseUISystem>();
 
-	private static Asset<Texture2D> AltBar;
+	private static Asset<Texture2D> _altBar;
 
 	float _fadeBar = 0;
 
 	public override void Load()
 	{
-		AltBar = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/AltBar");
+		_altBar = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/AltBar");
 	}
 
 	public override void Unload()
 	{
-		AltBar = null;
+		_altBar = null;
 	}
 
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
@@ -34,8 +34,7 @@ public class AltUseUISystem : ModSystem
 				{
 					DrawChargeBar();
 					return true;
-				},
-				InterfaceScaleType.UI)
+				})
 			);
 		}
 	}
@@ -68,10 +67,10 @@ public class AltUseUISystem : ModSystem
 		}
 
 		Vector2 center = player.Center - Main.screenPosition + Vector2.UnitY * player.height;
-
-		Main.spriteBatch.Draw(AltBar.Value, center, new Rectangle(0, 0, 52, 14), Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
+		
+		Main.spriteBatch.Draw(_altBar.Value, center, new Rectangle(0, 0, 52, 14), Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
 
 		Rectangle barSrc = new Rectangle(4, 14, (int)(44 * factor), 14);
-		Main.spriteBatch.Draw(AltBar.Value, center + new Vector2(4, 0), barSrc, Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(_altBar.Value, center + new Vector2(4, 0), barSrc, Color.White * _fadeBar, 0f, new Vector2(26, 7), 1f, SpriteEffects.None, 0);
 	}
 }

@@ -104,7 +104,7 @@ public class BlacksmithNPC : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !ModContent.GetInstance<BlacksmithStartQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -116,7 +116,7 @@ public class BlacksmithNPC : ModNPC
 		else
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest(nameof(BlacksmithStartQuest));
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(BlacksmithStartQuest)}");
 		}
 	}
 

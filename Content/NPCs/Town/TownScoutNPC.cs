@@ -1,7 +1,7 @@
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.WorldNavigation;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using SubworldLibrary;
 using Terraria.ID;
 
