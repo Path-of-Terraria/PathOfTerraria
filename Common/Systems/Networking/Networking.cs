@@ -32,6 +32,12 @@ internal static class Networking
 		/// <c>short npcId, Vector2 position, Vector2 velocity</c>
 		/// </summary>
 		SpawnNPCOnServer,
+
+		/// <summary>
+		/// Sets the index of a given Ravencrest structure. Signature:<br/>
+		/// <c>string name, int index</c><br/>
+		/// </summary>
+		SetRavencrestBuildingIndex,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -80,6 +86,14 @@ internal static class Networking
 				if (Main.netMode == NetmodeID.Server)
 				{
 					SpawnNPCOnServerHandler.ServerRecieve(reader);
+				}
+
+				break;
+
+			case Message.SetRavencrestBuildingIndex:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					RavencrestBuildingIndex.ServerRecieve(reader);
 				}
 
 				break;
