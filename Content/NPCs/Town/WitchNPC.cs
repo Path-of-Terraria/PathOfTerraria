@@ -6,7 +6,9 @@ using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
+using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using ReLogic.Content;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -81,6 +83,7 @@ public class WitchNPC : ModNPC
 			return;
 		}
 
+		Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<GrimoireItem>());
 		Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest");
 		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WitchStartQuest)}");
 	}

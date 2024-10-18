@@ -54,7 +54,7 @@ internal class WitchStartQuest : Quest
 				Dictionary<int, int> storage = plr.GetModPlayer<GrimoireStoragePlayer>().GetStoredCount();
 
 				return storage.TryGetValue(ModContent.ItemType<BatWings>(), out int wing) && storage.TryGetValue(ModContent.ItemType<OwlFeather>(), out int feather)
-					&& wing > 2 && feather > 2;
+					&& wing > 0 && feather > 1;
 			}, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.WitchNPC.QuestCondition")),
 			new InteractWithNPC(ModContent.NPCType<WitchNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest2")),
 			new ConditionCheck(p => p.ownedProjectileCounts[ModContent.ProjectileType<OwlSummon>()] > 0, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.WitchNPC.SummonCondition")),
