@@ -66,13 +66,13 @@ internal class BlacksmithStartQuest : Quest
 			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3"),
 			[
 				new GiveItem(30, ItemID.StoneBlock), new(50, ItemID.Wood), new(10, ItemID.GoldBar, ItemID.PlatinumBar)
-			], true),
+			], true) { CountsAsCompletedOnMarker = true },
 			new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Forge");
 				Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().TryAddSkill(new Berserk());
 				return true;
-			})
+			}) { CountsAsCompletedOnMarker = true }
 		];
 	}
 }

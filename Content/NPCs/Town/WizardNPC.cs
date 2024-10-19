@@ -10,11 +10,12 @@ using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Quest;
+using PathOfTerraria.Common.NPCs;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class WizardNPC : ModNPC
+public class WizardNPC : ModNPC, IQuestMarkerNPC
 {
 	public override void SetStaticDefaults()
 	{
@@ -144,5 +145,11 @@ public class WizardNPC : ModNPC
 
 		int frame = (int)animCounter;
 		NPC.frame.Y = frame * frameHeight;
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<WizardStartQuest>();
+		return !quest.Completed;
 	}
 }
