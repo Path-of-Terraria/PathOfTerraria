@@ -21,6 +21,15 @@ public class MobRegistry : ILoadable
 			Console.WriteLine($"Mob With Key: {entry.Key} - Registered");
 		}
 	}
+
+	/// <summary>
+	/// Provides mod NPC data for the Mob Registry.
+    ///
+    /// Note: In order to succeed, this method must be called in a PostSetup method.
+	/// </summary>
+    public void PostLoad()
+    {
+    }
 	
 	public virtual void Unload() { }
 
