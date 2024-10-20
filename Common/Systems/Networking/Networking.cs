@@ -27,10 +27,23 @@ internal static class Networking
 		SyncGuardianAngelHit,
 
 		/// <summary>
-		/// Spawns an NPC on the server. Signature:<br/>
-		/// <c>short npcId, Vector2 position</c>
+		/// Spawns an NPC on the server. Signatures:<br/>
+		/// <c>short npcId, Vector2 position</c><br/>
+		/// <c>short npcId, Vector2 position, Vector2 velocity</c>
 		/// </summary>
 		SpawnNPCOnServer,
+
+		/// <summary>
+		/// Sets the index of a given Ravencrest structure. Signature:<br/>
+		/// <c>string name, int index</c>
+		/// </summary>
+		SetRavencrestBuildingIndex,
+		
+		/// <summary>
+		/// Syncs a condition drop to the server. Signature:<br/>
+		/// <c>int id, bool add</c>
+		/// </summary>
+		SyncConditionalDrop,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -79,6 +92,14 @@ internal static class Networking
 				if (Main.netMode == NetmodeID.Server)
 				{
 					SpawnNPCOnServerHandler.ServerRecieve(reader);
+				}
+
+				break;
+
+			case Message.SetRavencrestBuildingIndex:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					RavencrestBuildingIndex.ServerRecieve(reader);
 				}
 
 				break;

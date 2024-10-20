@@ -1,7 +1,9 @@
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
@@ -13,7 +15,7 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class HunterNPC : ModNPC
+public class HunterNPC : ModNPC, IQuestMarkerNPC
 {
 	public override void SetStaticDefaults()
 	{
@@ -66,7 +68,7 @@ public class HunterNPC : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+		button2 = !ModContent.GetInstance<HunterStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -77,14 +79,8 @@ public class HunterNPC : ModNPC
 			return;
 		}
 
-		Main.npcChatText = this.GetLocalizedValue("Dialogue.Quest");
-
-		if (!Main.LocalPlayer.TryGetModPlayer(out QuestModPlayer modPlayer))
-		{
-			return;
-		}
-
-		modPlayer.RestartQuestTest();
+		Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest");
+		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(HunterStartQuest)}");
 	}
 	
 	public override void AddShops()
@@ -132,5 +128,11 @@ public class HunterNPC : ModNPC
 		
 		item = asset.Value;
 		itemFrame = asset.Frame();
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<HunterStartQuest>();
+		return !quest.Completed;
 	}
 }

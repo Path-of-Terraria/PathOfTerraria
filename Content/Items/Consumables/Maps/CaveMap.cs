@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Items;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 

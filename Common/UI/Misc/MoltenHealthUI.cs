@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using Terraria.UI;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.UI;
 
-namespace PathOfTerraria.Content.GUI.Misc;
+namespace PathOfTerraria.Common.UI.Misc;
 
 internal class MoltenHealthUI : SmartUiState
 {

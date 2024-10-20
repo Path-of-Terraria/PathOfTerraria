@@ -104,7 +104,7 @@ internal class StopBuildingPlayer : ModPlayer
 		LastStopBuilding = ConstantStopBuilding;
 		ConstantStopBuilding = false;
 
-		if (SubworldSystem.Current is BossDomainSubworld)
+		if (SubworldSystem.Current is MappingWorld)
 		{
 			ConstantStopBuilding = true;
 		}

@@ -21,6 +21,7 @@ public class QueenBeeDomain : BossDomainSubworld
 	public override int Height => 800;
 	public override int[] WhitelistedCutTiles => [TileID.BeeHive, TileID.JungleVines, ModContent.TileType<RoyalHoneyClumpTile>()];
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<RoyalHoneyClumpTile>()];
+	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
@@ -164,7 +165,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			}
 		}
 
-		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{3}", original, new(left ? 1 : 0, 0.5f));
+		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{WorldGen.genRand.Next(4)}", original, new(left ? 1 : 0, 0.5f));
 	}
 
 	public override void OnEnter()
@@ -185,15 +186,7 @@ public class QueenBeeDomain : BossDomainSubworld
 		}
 
 		TileEntity.UpdateEnd();
-
-		Main.dayTime = true;
-		Main.time = Main.dayLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
-
-		foreach (Player player in Main.ActivePlayers)
-		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-		}
 
 		if (!BossSpawned && NPC.AnyNPCs(NPCID.QueenBee))
 		{

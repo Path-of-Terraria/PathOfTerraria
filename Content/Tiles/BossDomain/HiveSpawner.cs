@@ -1,4 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -32,6 +35,11 @@ internal class HiveSpawner : ModTile
 
 		WorldGen.KillTile(i, j);
 		Wiring.SkipWire(i, j);
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendTileSquare(-1, i, j);
+		}
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
@@ -53,8 +61,8 @@ internal class HiveSpawner : ModTile
 		for (int k = 0; k < repeats; ++k)
 		{
 			int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 1);
-			Main.npc[npc].netUpdate = true;
 			Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+			Main.npc[npc].netUpdate = true;
 
 			if (type == NPCID.Bee)
 			{

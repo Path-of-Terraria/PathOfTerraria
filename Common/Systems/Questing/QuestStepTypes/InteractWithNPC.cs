@@ -2,34 +2,128 @@
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
+public readonly struct GiveItem(int stack, params int[] ids)
+{
+	public string Names
+	{
+		get
+		{
+			string names = "";
+
+			for (int i = 0; i < Ids.Length; i++)
+			{
+				int id = Ids[i];
+				names += Lang.GetItemNameValue(id) + (i != Ids.Length - 1 ? " or " : "");
+			}
+
+			return names;
+		}
+	}
+
+	public readonly int[] Ids = ids;
+	public readonly int Stack = stack;
+}
+
 /// <summary>
-/// A step that simply has you talk to an NPC. <paramref name="npcDialogue"/> can be set if you want the NPC to reply with something.
+/// A step that has you talk to an NPC and optionally show or give them items.<br/>
+/// <paramref name="dialogue"/> can be set if you want the NPC to reply with something.<br/>
+/// <paramref name="reqItems"/> can be set if you want the NPC to require the player to have items; and <paramref name="removeItems"/> will take those items if true.
 /// </summary>
 /// <param name="npcId">NPC ID to talk to.</param>
-/// <param name="npcDialogue">NPC's dialogue. If null, dialog will not be replaced.</param>
-internal class InteractWithNPC(int npcId, LocalizedText npcDialogue = null) : QuestStep
+/// <param name="dialogue">NPC's dialogue. If null, dialog will not be replaced.</param>
+/// <param name="reqItems">If not null, the items required to be held by the player when talking to the NPC.</param>
+/// <param name="removeItems">If true, and <paramref name="reqItems"/> is not null, all <paramref name="reqItems"/> will be taken up to the required stack.</param>
+internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveItem[] reqItems = null, bool removeItems = false) : QuestStep
 {
 	private static LocalizedText TalkToText = null;
 
 	private readonly int NpcId = npcId;
-	private readonly LocalizedText NpcDialogue = npcDialogue;
+	private readonly LocalizedText NpcDialogue = dialogue;
+	private readonly GiveItem[] RequiredItems = reqItems;
+	private readonly bool RemoveItems = removeItems;
+
+	public override int LineCount => RequiredItems is not null ? 1 + RequiredItems.Length : 1;
 
 	public override string DisplayString()
 	{
 		TalkToText ??= Language.GetText($"Mods.{PoTMod.ModName}.Quests.TalkTo");
+		string baseText = TalkToText.Format(Lang.GetNPCNameValue(NpcId));
 
-		return TalkToText.Format(Lang.GetNPCNameValue(NpcId));
+		if (RequiredItems is not null)
+		{
+			baseText += " and give them:";
+			int id = 0;
+
+			foreach (GiveItem item in RequiredItems)
+			{
+				baseText += $"\n{id++}. {item.Stack}x {item.Names}";
+			}
+		}
+		
+		return baseText;
 	}
 
 	public override bool Track(Player player)
 	{
 		bool talkingToNpc = player.TalkNPC is not null && player.TalkNPC.type == NpcId;
+		bool hasAllItems = true;
+		bool goodToGo = false;
 
-		if (talkingToNpc && NpcDialogue is not null)
+		if (talkingToNpc)
 		{
+			if (RequiredItems is not null)
+			{
+				foreach (GiveItem item in RequiredItems)
+				{
+					int count = 0;
+
+					for (int i = 0; i < item.Ids.Length; ++i)
+					{
+						count += player.CountItem(item.Ids[i]);
+					}
+
+					if (count < item.Stack)
+					{
+						hasAllItems = false;
+						break;
+					}
+				}
+
+				if (hasAllItems)
+				{
+					goodToGo = true;
+
+					if (RemoveItems)
+					{
+						foreach (GiveItem item in RequiredItems)
+						{
+							int totalCount = item.Stack;
+
+							for (int i = 0; i < item.Ids.Length; ++i)
+							{
+								int count = Math.Min(totalCount, player.CountItem(item.Ids[i]));
+								totalCount -= count;
+							
+								for (int j = 0; j < count; ++j)
+								{
+									player.ConsumeItem(item.Ids[i]);
+								}
+							}
+						}
+					}
+				}
+			}
+			else
+			{
+				goodToGo = true;
+			}
+		}
+
+		if (talkingToNpc && goodToGo && NpcDialogue is not null)
+		{ 
 			Main.npcChatText = NpcDialogue.Value;
 		}
 
-		return talkingToNpc;
+		return talkingToNpc && goodToGo;
 	}
 }

@@ -395,6 +395,11 @@ Bloodclotter: {
 	Description: Its form shifts and dances in place, hiding some power you can only barely see.
 }
 
+ArcaneObeliskItem: {
+	DisplayName: Arcane Obelisk
+	Tooltip: ""
+}
+
 StarlightBulwark: {
 	DisplayName: Starlight Bulwark
 	Tooltip: ""
@@ -497,4 +502,9 @@ PolarIceThrowerItem: {
 RopeClumpItem: {
 	DisplayName: Rope Clump Item
 	Tooltip: ""
+}
+
+TomeOfTheElders: {
+	DisplayName: Tome Of The Elders
+	Tooltip: Holds secrets unknowable to most, enlightening to few.
 }

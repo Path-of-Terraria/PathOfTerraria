@@ -9,11 +9,12 @@ using Terraria.Localization;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class BlacksmithNPC : ModNPC
+public class BlacksmithNPC : ModNPC, IQuestMarkerNPC
 {
 	public override void SetStaticDefaults()
 	{
@@ -104,7 +105,7 @@ public class BlacksmithNPC : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !ModContent.GetInstance<BlacksmithStartQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -116,7 +117,7 @@ public class BlacksmithNPC : ModNPC
 		else
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest(nameof(BlacksmithStartQuest));
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(BlacksmithStartQuest)}");
 		}
 	}
 
@@ -142,5 +143,11 @@ public class BlacksmithNPC : ModNPC
 
 		int frame = (int)animCounter;
 		NPC.frame.Y = frame * frameHeight;
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<BlacksmithStartQuest>();
+		return !quest.Completed;
 	}
 }
