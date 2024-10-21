@@ -50,6 +50,32 @@ BarkeepNPC: {
 		Common2: Between you and I - I'm rather lightweight on drinks. Battle? Heh...yeah, way lightweight in that too, why d'you think I barkeep?
 		Common3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
 	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Keepin' the bar, bar the keepin'...
+			1: Maybe I can make a new drink...
+			2: Hopin' for a good night of business.
+		}
+
+		Night: {
+			0: Oh! A big tip! Thank ya, stranger. Whoever you were.
+			1: "'A guy walks into a bar?' I should use that one sometime."
+			2: I love my job.
+		}
+
+		Goblins: {
+			0: Those DANG goblins better stay away from MY drink.
+			1: I've made a molotov a couple a times. What's another spin?
+			2: If another glass breaks I swear I'll finally pick up the blade again.
+		}
+
+		Rain: {
+			0: A bar with rain ambiance. Lovely!
+			1: I hope the barrels ain't getting soaked through again.
+			2: Less business, more relaxin'? Don't mind if I do!
+		}
+	}
 }
 
 HunterNPC: {
