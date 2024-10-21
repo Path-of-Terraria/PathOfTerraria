@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using ItemRarity = Terraria.GameContent.UI.ItemRarity;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 
@@ -30,12 +32,18 @@ public class ClassModPlayer : ModPlayer
 		vanillaItems.Add(item);
 
 		item = new Item(ItemID.WoodenSword);
+		PoTInstanceItemData data = item.GetInstanceData();
+		data.Rarity = Enums.ItemRarity.Magic;
+		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 		vanillaItems.Add(item);
 		
 		item = new Item(ItemID.CopperPickaxe);
 		vanillaItems.Add(item);
 
 		item = new Item(ItemID.WoodenBow);
+		data = item.GetInstanceData();
+		data.Rarity = Enums.ItemRarity.Magic;
+		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 		vanillaItems.Add(item);
 
 		item = new Item(ItemID.WoodenArrow, 500);
