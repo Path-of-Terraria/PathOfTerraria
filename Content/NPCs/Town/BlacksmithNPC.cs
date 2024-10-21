@@ -11,13 +11,15 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.NPCs;
 using Terraria.DataStructures;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
+public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	public Point16 TileSpawn => new(255, 170);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new(255, 170);
+	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	public override void SetStaticDefaults()
 	{
