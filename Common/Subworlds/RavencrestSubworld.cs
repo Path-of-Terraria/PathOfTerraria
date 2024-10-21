@@ -16,7 +16,7 @@ internal class RavencrestSubworld : MappingWorld
 {
 	public override int Width => 600;
 	public override int Height => 400;
-	public override bool ShouldSave => false;
+	public override bool ShouldSave => true;
 
 	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), 
 		new PassLegacy("World", SpawnWorld), new PassLegacy("Smooth", SmoothPass)];
