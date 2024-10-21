@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using ReLogic.Content;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -15,8 +16,10 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class HunterNPC : ModNPC, IQuestMarkerNPC
+public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
+	public Point16 TileSpawn => new(319, 163);
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 23;
