@@ -9,7 +9,6 @@ using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using PathOfTerraria.Core.Items;
-using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
