@@ -42,7 +42,7 @@ public class RavencrestSystem : ModSystem
 		structures.Add("Lodge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Lodge_",
-			Position = new Point(298, 135),
+			Position = new Point(300, 134),
 		});
 
 		structures.Add("Forge", new ImprovableStructure(2)

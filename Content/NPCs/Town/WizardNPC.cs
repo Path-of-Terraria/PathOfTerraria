@@ -11,12 +11,17 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class WizardNPC : ModNPC, IQuestMarkerNPC
+public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
+	public Point16 TileSpawn => new(110, 173);
+
+	private float animCounter;
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 23;
@@ -122,8 +127,6 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WizardStartQuest)}");
 		}
 	}
-
-	private float animCounter;
 
 	public override void FindFrame(int frameHeight)
 	{

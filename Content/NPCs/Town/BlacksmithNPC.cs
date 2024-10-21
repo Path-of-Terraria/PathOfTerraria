@@ -10,12 +10,15 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.NPCs;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class BlacksmithNPC : ModNPC, IQuestMarkerNPC
+public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
+	public Point16 TileSpawn => new(255, 170);
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
