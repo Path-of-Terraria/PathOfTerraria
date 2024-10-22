@@ -14,7 +14,7 @@ namespace PathOfTerraria.Common.Subworlds;
 
 internal class RavencrestSubworld : MappingWorld
 {
-	public override int Width => 600;
+	public override int Width => 800;
 	public override int Height => 400;
 	public override bool ShouldSave => true;
 
@@ -44,7 +44,7 @@ internal class RavencrestSubworld : MappingWorld
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
-		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(Main.maxTilesX / 2, Main.maxTilesY / 2 - 30), new(0.5f));
+		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(20, Main.maxTilesY / 2 - 30), new(0, 0.5f));
 		Main.spawnTileX = Width / 2;
 		Main.spawnTileY = 160;
 

@@ -22,6 +22,8 @@ internal class CaveMap : Map
 
 	public override bool? UseItem(Player player)
 	{
+		Main.NewText(Main.MouseWorld.ToTileCoordinates());
+		return true;
 		MappingSystem.EnterCaveMap(this);
 		return true;
 	}
