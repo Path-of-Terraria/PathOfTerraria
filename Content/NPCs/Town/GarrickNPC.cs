@@ -40,14 +40,14 @@ public sealed class GarrickNPC : ModNPC
 		NPC.knockBackResist = 0.4f;
 		AnimationType = NPCID.Guide;
 		
-		NPC.TryEnableComponent<NPCDeathEffects>(
+		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore($"{PoTMod.ModName}/{Name}_0", 1);
-				c.AddGore($"{PoTMod.ModName}/{Name}_1", 2);
-				c.AddGore($"{PoTMod.ModName}/{Name}_2", 2);
+				c.AddGore(new($"{PoTMod.ModName}/{Name}_0", 1));
+				c.AddGore(new($"{PoTMod.ModName}/{Name}_1", 2));
+				c.AddGore(new($"{PoTMod.ModName}/{Name}_2", 2));
 				
-				c.AddDust(DustID.Blood, 20);
+				c.AddDust(new(DustID.Blood, 20));
 			}
 		);
 	}

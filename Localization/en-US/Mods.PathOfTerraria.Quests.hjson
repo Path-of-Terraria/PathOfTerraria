@@ -29,6 +29,7 @@ Quest: {
 	BlacksmithStartQuest: {
 		Name: Forging a New Blade
 		Description: ""
+		Kill.Zombies: Mods.PathOfTerraria.Quests.Quest.BlacksmithStartQuest.Kill.Zombies
 	}
 
 	KingSlimeQuest: {
@@ -41,6 +42,7 @@ Quest: {
 	HunterStartQuest: {
 		Name: Drawing the Bow
 		Description: ""
+		Kill.FloatingMisc: Mods.PathOfTerraria.Quests.Quest.HunterStartQuest.Kill.FloatingMisc
 	}
 
 	WizardStartQuest: {

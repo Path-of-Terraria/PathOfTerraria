@@ -130,6 +130,7 @@ GarrickNPC: {
 		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; it'll take you right to him.
 	}
 }
+
 TownScoutNPC.DisplayName: Goblin Surveyor
 RavenNPC.DisplayName: Ephemeral Raven
 ControllableSpikeball.DisplayName: Spikeball
