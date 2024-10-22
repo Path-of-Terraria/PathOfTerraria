@@ -118,7 +118,11 @@ public sealed class UIWaypointMenu : UIState
 		buttonElement.OnMouseOver += HandleMouseOverSound;
 		buttonElement.OnMouseOut += HandleMouseOutSound;
 
-		buttonElement.OnLeftClick += (_, _) => SelectedListWaypoint.Teleport(Main.LocalPlayer);
+		buttonElement.OnLeftClick += (_, _) =>
+		{
+			SelectedListWaypoint.Teleport(Main.LocalPlayer);
+			Enabled = false;
+		};
 
 		listRootElement.Append(buttonElement);
 
@@ -184,16 +188,17 @@ public sealed class UIWaypointMenu : UIState
 
 		var closeImage = new UIHoverTooltipImage(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Waypoints/Close_Icon"), "")
 		{
-			HAlign = 1f,
-			ActiveScale = 1.1f
+			Left = new StyleDimension(-16, 1),
+			ActiveScale = 1.1f,
+			Width = StyleDimension.FromPixels(20),
+			Height = StyleDimension.FromPixels(20)
 		};
 
 		closeImage.OnMouseOut += HandleMouseOutSound;
 		closeImage.OnMouseOver += HandleMouseOverSound;
-
 		closeImage.OnLeftClick += (_, _) => Enabled = false;
 
-		rootElement.Append(closeImage);
+		infoRoot.Append(closeImage);
 	}
 
 	public override void OnActivate()
@@ -296,6 +301,7 @@ public sealed class UIWaypointMenu : UIState
 			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i);
 
 			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypointIndex;
+			tab.OnLeftClick += (_, _) => SelectedWaypointIndex = tab.Index;
 
 			list.Add(tab);
 

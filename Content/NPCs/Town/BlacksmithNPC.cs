@@ -18,7 +18,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => new(255, 170);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new(255, 164);
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	public override void SetStaticDefaults()

@@ -141,6 +141,11 @@ public class EyeDomain : BossDomainSubworld
 		{
 			for (int j = pos.Y; j < pos.Y + size.Y; ++j)
 			{
+				if (!WorldGen.InWorld(i, j))
+				{
+					continue;
+				}
+
 				WorldGen.TileFrame(i, j);
 
 				int sign = Sign.ReadSign(i, j, true);
@@ -195,7 +200,9 @@ public class EyeDomain : BossDomainSubworld
 
 			for (int y = (int)useY; y < Main.maxTilesY; ++y)
 			{
-				WorldGen.PlaceTile(x, y, TileID.Dirt);
+				Tile tile = Main.tile[x, y];
+				tile.HasTile = true;
+				tile.TileType = TileID.Dirt;
 			}
 
 			progress.Value = (float)x / Main.maxTilesX;
