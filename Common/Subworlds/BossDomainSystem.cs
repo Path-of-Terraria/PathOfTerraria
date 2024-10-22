@@ -10,8 +10,8 @@ internal class BossDomainSystem : ModSystem
 		{
 			if (domain.ForceTime.time != -1)
 			{
-				//Main.time = domain.ForceTime.time;
-				//Main.dayTime = domain.ForceTime.isDay;
+				Main.time = domain.ForceTime.time;
+				Main.dayTime = domain.ForceTime.isDay;
 			}
 		}
 	}
