@@ -12,7 +12,6 @@ Kill: {
 	Zombies: Kill {0} zombies
 	HighHealth: Kill {0} enemies with more than 100 health
 	KingSlime: Kill the King Slime
-	HighHealth: Kill {0} enemies with more than 100 health,
 	FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
 }
 
