@@ -16,8 +16,6 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public abstract class BossDomainSubworld : MappingWorld
 {
-	public static Dictionary<string, BossDomainSubworld> NameToSubworld = [];
-
 	public override bool ShouldSave => false;
 	public override bool NoPlayerSaving => false;
 
@@ -48,14 +46,6 @@ public abstract class BossDomainSubworld : MappingWorld
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
-
-	public override void Load()
-	{
-		foreach (string item in DebugKeys)
-		{
-			NameToSubworld.Add(item, this);
-		}
-	}
 
 #pragma warning disable IDE0060 // Remove unused parameter
 	protected static void ResetStep(GenerationProgress progress, GameConfiguration configuration)
