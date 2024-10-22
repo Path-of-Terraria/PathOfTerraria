@@ -1,9 +1,8 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
+using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -114,16 +113,19 @@ internal class SkillPassiveElement : SmartUiElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
+		SkillPassivePlayer passivePlayer = Main.LocalPlayer.GetModPlayer<SkillPassivePlayer>();
+
 		if (!_passive.CanAllocate() || !CheckMouseContained())
 		{
 			return;
 		}
 
-		if (!Main.LocalPlayer.GetModPlayer<SkillPassivePlayer>().AllocatePassivePoint(_passive.Skill, _passive))
+		if (!passivePlayer.AllocatePassivePoint(_passive.Skill, _passive))
 		{
 			return;
 		}
 
+		_passive.OnAllocate();
 		_passive.Level++;
 		_flashTimer = 20;
 		TreeSoundEngine.PlaySoundForTreeAllocation(_passive.MaxLevel, _passive.Level);
@@ -131,7 +133,7 @@ internal class SkillPassiveElement : SmartUiElement
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
-		if (!_passive.CanDeallocate() || !CheckMouseContained())
+		if (!_passive.CanDeallocate() || !CheckMouseContained() || !_passive.HasAllocated())
 		{
 			return;
 		}

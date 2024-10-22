@@ -13,6 +13,7 @@ using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;
+using PathOfTerraria.Common.World.Generation.Tools;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -22,7 +23,7 @@ public class EyeDomain : BossDomainSubworld
 
 	public override int Width => 800;
 	public override int Height => 280;
-	public override string[] DebugKeys => ["eye", "eoc", "eyeofcthulhu"];
+	public override (int time, bool isDay) ForceTime => ((int)(Main.nightLength / 2.0), false);
 
 	public Rectangle Arena = Rectangle.Empty;
 	public bool BossSpawned = false;
@@ -30,10 +31,11 @@ public class EyeDomain : BossDomainSubworld
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Surface", GenSurface),
-		new PassLegacy("Grass", PlaceGrassAndDecor)];
+		new PassLegacy("Grass", (progress, _) => PlaceGrassAndDecor(progress, true, Mod, out Arena))];
 
-	private void PlaceGrassAndDecor(GenerationProgress progress, GameConfiguration configuration)
+	public static void PlaceGrassAndDecor(GenerationProgress progress, bool includeFleshStuff, Mod mod, out Rectangle arena)
 	{
+		arena = Rectangle.Empty;
 		Dictionary<Point16, OpenFlags> tiles = [];
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
@@ -66,7 +68,7 @@ public class EyeDomain : BossDomainSubworld
 
 		foreach ((Point16 position, OpenFlags tile) in tiles)
 		{
-			TrySpreadGrassOnTile(tile, position, grasses);
+			TrySpreadGrassOnTile(tile, position, grasses, includeFleshStuff);
 
 			if (position.X == ArenaX && Main.tile[position].HasTile && Main.tile[position].TileType == TileID.Grass)
 			{
@@ -78,7 +80,7 @@ public class EyeDomain : BossDomainSubworld
 
 		foreach (Point16 position in grasses)
 		{
-			if (Main.tile[position].TileType == TileID.FleshBlock)
+			if (includeFleshStuff && Main.tile[position].TileType == TileID.FleshBlock)
 			{
 				if (position.X - structureX > 60 && position.X < ArenaX - 20 && WorldGen.genRand.NextBool(20) && !WorldGen.SolidOrSlopedTile(position.X, position.Y - 1))
 				{
@@ -106,7 +108,8 @@ public class EyeDomain : BossDomainSubworld
 						pos = new Point16(position.X, position.Y + 1);
 					}
 
-					StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f));
+					Point16 size = StructureTools.GetSize(type);
+					pos = StructureTools.PlaceByOrigin(type, pos, new Vector2(0.5f, 1f), null, true);
 					structureX = pos.X;
 				}
 
@@ -118,32 +121,40 @@ public class EyeDomain : BossDomainSubworld
 				continue;
 			}
 
-			if (!WorldGen.genRand.NextBool(3))
-			{
-				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Plants);
-			}
-			else if (WorldGen.genRand.NextBool(6) && position.X is > 20 and < 760)
-			{
-				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Saplings);
-				
-				if (!WorldGen.GrowTree(position.X, position.Y - 1))
-				{
-					WorldGen.KillTile(position.X, position.Y - 1);
-				}
-			}
-			else if (WorldGen.genRand.NextBool(4))
-			{
-				WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(10), 0);
-			}
+			Decoration.OnPurityGrass(position);
 		}
 
-		var dims = new Point16();
-		StructureHelper.Generator.GetDimensions("Assets/Structures/EyeArena", Mod, ref dims);
-		StructureHelper.Generator.GenerateStructure("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), Mod);
-		Arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
+		if (includeFleshStuff)
+		{
+			var dims = new Point16();
+			StructureHelper.Generator.GetDimensions("Assets/Structures/EyeArena", mod, ref dims);
+			StructureHelper.Generator.GenerateStructure("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), mod);
+			arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
+		}
+
+		CheckForSigns(new Point16(10, 10), new Point16(Main.maxTilesX - 20, Main.maxTilesY - 20));
 	}
 
-	private static void TrySpreadGrassOnTile(OpenFlags adjacencies, Point16 position, HashSet<Point16> grasses)
+	private static void CheckForSigns(Point16 pos, Point16 size)
+	{
+		for (int i = pos.X; i < pos.X + size.X; ++i)
+		{
+			for (int j = pos.Y; j < pos.Y + size.Y; ++j)
+			{
+				WorldGen.TileFrame(i, j);
+
+				int sign = Sign.ReadSign(i, j, true);
+
+				if (sign != -1)
+				{
+					Sign.TextSign(sign, Language.GetText("Mods.PathOfTerraria.Generation.EyeSign." + WorldGen.genRand.Next(4))
+						.WithFormatArgs(Language.GetText("Mods.PathOfTerraria.Generation.EyeSign.Names." + WorldGen.genRand.Next(9)).Value).Value);
+				}
+			}
+		}
+	}
+
+	private static void TrySpreadGrassOnTile(OpenFlags adjacencies, Point16 position, HashSet<Point16> grasses, bool includeFlesh)
 	{
 		Tile tile = Main.tile[position];
 
@@ -151,7 +162,7 @@ public class EyeDomain : BossDomainSubworld
 		{
 			tile.TileType = TileID.Grass;
 
-			if (!StepX(position.X) && position.X > 150 && WorldGen.genRand.NextBool(15))
+			if (includeFlesh && !StepX(position.X) && position.X > 150 && WorldGen.genRand.NextBool(15))
 			{
 				WorldGen.TileRunner(position.X, position.Y, WorldGen.genRand.NextFloat(12, 26), WorldGen.genRand.Next(12, 40), TileID.FleshBlock);
 			}
@@ -205,6 +216,8 @@ public class EyeDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
+
 		BossSpawned = false;
 		ReadyToExit = false;
 	}
@@ -229,16 +242,12 @@ public class EyeDomain : BossDomainSubworld
 		}
 
 		TileEntity.UpdateEnd();
-		Main.dayTime = false;
-		Main.time = Main.nightLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
 
-		bool allInArena = true;
+		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;
@@ -254,6 +263,15 @@ public class EyeDomain : BossDomainSubworld
 
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X - 130, Arena.Center.Y - 400, NPCID.EyeofCthulhu);
 			BossSpawned = true;
+
+			Main.spawnTileX = Arena.Center.X / 16;
+			Main.spawnTileY = Arena.Center.Y / 16;
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendTileSquare(-1, Arena.X / 16 + 4, Arena.Y / 16 - 3, 20, 1);
+				NetMessage.SendData(MessageID.WorldData);
+			}
 		}
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.EyeofCthulhu) && !ReadyToExit)

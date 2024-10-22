@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.Utilities;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -103,12 +105,42 @@ public abstract class SkillPassive(Skill skill)
 	/// <returns></returns>
 	public bool CanAllocate()
 	{
-		return
-			Name == "Anchor" || 
+		bool baseCheck = Name == "Anchor" ||
 			Level < MaxLevel &&
 			Skill.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
+
+		return !AnyBlockers(this) && baseCheck && InternalCanAllocate();
 	}
-	
+
+	internal static bool AnyBlockers(SkillPassive skill)
+	{
+		foreach (KeyValuePair<string, SkillPassiveBlocker> blocker in SkillPassiveBlocker.LoadedBlockers)
+		{
+			if (blocker.Value.BlockAllocation(skill))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/// <summary>
+	/// Additional conditions for if the skill passive can be allocated.
+	/// </summary>
+	/// <returns>True if the passive can be allocated.</returns>
+	protected virtual bool InternalCanAllocate()
+	{
+		return true;
+	}
+
+	/// <summary>
+	/// Called when the passive is allocated.
+	/// </summary>
+	public virtual void OnAllocate()
+	{
+	}
+
 	/// <summary>
 	/// If this passive can be refunded or not
 	/// </summary>

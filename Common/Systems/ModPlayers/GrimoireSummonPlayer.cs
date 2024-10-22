@@ -14,6 +14,7 @@ internal class GrimoireSummonPlayer : ModPlayer
 	internal readonly HashSet<string> UnlockedSummons = [];
 
 	public int CurrentSummonId = -1;
+	public bool HasObtainedGrimoire = false;
 
 	public bool HasSummon<T>() where T : ModProjectile
 	{
@@ -37,6 +38,7 @@ internal class GrimoireSummonPlayer : ModPlayer
 
 	public override void SaveData(TagCompound tag)
 	{
+		tag.Add("hasGrimoire", HasObtainedGrimoire);
 		tag.Add("count", UnlockedSummons.Count);
 
 		for (int i = 0; i < UnlockedSummons.Count; i++)
@@ -52,6 +54,7 @@ internal class GrimoireSummonPlayer : ModPlayer
 
 	public override void LoadData(TagCompound tag)
 	{
+		HasObtainedGrimoire = tag.TryGet("hasGrimoire", out bool hasGrimoire) && hasGrimoire;
 		int count = tag.GetInt("count");
 
 		for (int i = 0; i < count; i++)

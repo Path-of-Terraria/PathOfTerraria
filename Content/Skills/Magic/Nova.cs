@@ -14,7 +14,7 @@ namespace PathOfTerraria.Content.Skills.Magic;
 
 public class Nova : Skill
 {
-	private enum NovaType : byte
+	public enum NovaType : byte
 	{
 		Normal,
 		Fire,
@@ -59,10 +59,15 @@ public class Nova : Skill
 
 	private NovaType GetNovaType()
 	{
+		return GetNovaType(this);
+	}
+
+	public static NovaType GetNovaType(Nova nova)
+	{
 		Player player = Main.LocalPlayer;
 		SkillPassivePlayer skillPassive = player.GetModPlayer<SkillPassivePlayer>();
 
-		if (skillPassive.AllocatedPassives.TryGetValue(this, out Dictionary<string, SkillPassive> passives))
+		if (skillPassive.AllocatedPassives.TryGetValue(nova, out Dictionary<string, SkillPassive> passives))
 		{
 			if (passives.ContainsKey(nameof(FireNovaSkillPassive)))
 			{
@@ -92,11 +97,6 @@ public class Nova : Skill
 
 	public override void UseSkill(Player player)
 	{
-		if (!CanUseSkill(player))
-		{
-			return;
-		}
-
 		player.statMana -= ManaCost;
 		Timer = Cooldown;
 
@@ -122,7 +122,7 @@ public class Nova : Skill
 		}
 		else if (type == NovaType.Ice)
 		{
-			damage = (int)(damage * 0.1f);
+			damage = (int)(damage * 0.9f);
 		}
 
 		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);

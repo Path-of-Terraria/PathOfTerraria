@@ -141,7 +141,7 @@ public class UISimpleWrappableText : UIElement
 		}
 	}
 
-	private static string WrapText(DynamicSpriteFont font, string text, float maxLineWidth, float fontScale = 1f)
+	public static string WrapText(DynamicSpriteFont font, string text, float maxLineWidth, float fontScale = 1f)
 	{
 		if (string.IsNullOrEmpty(text))
 		{

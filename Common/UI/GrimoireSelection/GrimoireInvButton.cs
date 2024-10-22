@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
@@ -9,7 +10,7 @@ namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
 public class GrimoireInvButton : SmartUiState
 {
-	public override bool Visible => Main.playerInventory;
+	public override bool Visible => Main.playerInventory && Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().HasObtainedGrimoire;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{

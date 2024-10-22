@@ -1,16 +1,22 @@
 using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class BarkeepNPC : ModNPC
+public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC
 {
+	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
+	private float animCounter;
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
@@ -38,21 +44,26 @@ public sealed class BarkeepNPC : ModNPC
 		NPC.knockBackResist = 0.4f;
 		AnimationType = NPCID.Guide;
 		
-		NPC.TryEnableComponent<NPCDeathEffects>(
+		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore($"{PoTMod.ModName}/{Name}_0", 1);
-				c.AddGore($"{PoTMod.ModName}/{Name}_1", 2);
-				c.AddGore($"{PoTMod.ModName}/{Name}_2", 2);
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 2, NPCHitEffects.OnDeath));
 				
-				c.AddDust(DustID.Blood, 20);
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 20));
 			}
 		);
-	}
-
-	public override string GetChat()
-	{
-		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.BarkeepNPC.Dialogue." + Main.rand.Next(4));
+		
+		NPC.TryEnableComponent<NPCTownDialogue>(
+			c =>
+			{
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common0"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common1"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common2"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
+			}
+		);
 	}
 
 	public override void AddShops()
@@ -110,8 +121,6 @@ public sealed class BarkeepNPC : ModNPC
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
 		}*/
 	}
-
-	private float animCounter;
 
 	public override void FindFrame(int frameHeight)
 	{

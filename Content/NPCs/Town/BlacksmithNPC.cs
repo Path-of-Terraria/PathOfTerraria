@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
@@ -8,12 +9,18 @@ using Terraria.Localization;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs;
+using Terraria.DataStructures;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class BlacksmithNPC : ModNPC
+public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new(255, 170);
+	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
@@ -41,21 +48,26 @@ public class BlacksmithNPC : ModNPC
 		NPC.knockBackResist = 0.4f;
 		AnimationType = NPCID.Guide;
 		
-		NPC.TryEnableComponent<NPCDeathEffects>(
+		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore($"{PoTMod.ModName}/{Name}_0", 1);
-				c.AddGore($"{PoTMod.ModName}/{Name}_1", 2);
-				c.AddGore($"{PoTMod.ModName}/{Name}_2", 2);
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 2, NPCHitEffects.OnDeath));
 				
-				c.AddDust(DustID.Blood, 20);
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 20));
 			}
 		);
-	}
-
-	public override string GetChat()
-	{
-		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue." + Main.rand.Next(4));
+		
+		NPC.TryEnableComponent<NPCTownDialogue>(
+			c =>
+			{
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common0"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common1"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common2"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
+			}
+		);
 	}
 
 	public override void AddShops()
@@ -98,7 +110,7 @@ public class BlacksmithNPC : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !ModContent.GetInstance<BlacksmithStartQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -110,7 +122,7 @@ public class BlacksmithNPC : ModNPC
 		else
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest(nameof(BlacksmithStartQuest));
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(BlacksmithStartQuest)}");
 		}
 	}
 
@@ -136,5 +148,11 @@ public class BlacksmithNPC : ModNPC
 
 		int frame = (int)animCounter;
 		NPC.frame.Y = frame * frameHeight;
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<BlacksmithStartQuest>();
+		return !quest.Completed;
 	}
 }

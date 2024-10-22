@@ -5,11 +5,39 @@ BlacksmithNPC: {
 	DisplayName: Thrain Ironfist
 
 	Dialogue: {
-		0: Forged in steel, I am. Care to buy some?
-		1: Sometimes, I miss the caverns. Rock and stone, brother, rock and stone.
-		2: Nothing quite like a blade that cuts through bone like air. Makes sandwiches easy!
-		3: I could easily beat you in an arm wrestle - the exercise of steel forging is effective.
+		Common0: Forged in steel, I am. Care to buy some?
+		Common1: Sometimes, I miss the caverns. Rock and stone, brother, rock and stone.
+		Common2: Nothing quite like a blade that cuts through bone like air. Makes sandwiches easy!
+		Common3: I could easily beat you in an arm wrestle - the exercise of steel forging is effective.
 		Quest: As you can see, some terrible event happened that simply obliterated my forge. What happened? I don't know, I sleep like a rock...anyhow. I'd love some help gathering materials, the town's metal has run dry for a while now. And maybe some wood while you're at it.
+		Quest2: Fantastic! I'll fix the old forge up quick as I can. Here, take this sword. It's a test I made right before the attack. I'd like for you to test it on some zombies; those buggers are awful to deal with. If you'd be so kind, I'd also enjoy some more materials. Then I think we can get the Iron Anvil truly back to her feet!
+		Quest3: It almost brings a tear to the eye. The Iron Forge is almost ready for work! Here, this is a lesson I've got from my history in battle: Sometimes, you gotta go crazy. Just be careful! And come back whenever you wish - you've been a great help!
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Nothing like a day at the forge.
+			1: Love the smell of molten metal in the morning.
+			2: The caverns call...not today though.
+		}
+
+		Night: {
+			0: The cold night breeze. Who needs anything more?
+			1: The best part of metalsmithing is when you wait for it to set.
+			2: I hope I didn't leave the forge on!
+		}
+
+		Goblins: {
+			0: These guys better not break any doors again.
+			1: Hey! Knock it off! I'm forging here!
+			2: I'll show these nitwits what a strong hammer can do!
+		}
+
+		Rain: {
+			0: Forge's still moving. Nothing can stop that, rain or otherwise.
+			1: You ever tried cooling a blade in rain? Don't. It doesn't work.
+			2: Sometimes, I look at the flowers...and smash them with my well-crafted hammer. Hurrah!
+		}
 	}
 }
 
@@ -17,10 +45,36 @@ BarkeepNPC: {
 	DisplayName: Brom Hardy
 
 	Dialogue: {
-		0: Got some old friends back in Eternia. Miss 'em every day.
-		1: "'Tavernkeep'? Sure do! Whatcha lookin' for?"
-		2: Between you and I - I'm rather lightweight on drinks. Battle? Heh...yeah, way lightweight in that too, why d'you think I barkeep?
-		3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
+		Common0: Got some old friends back in Eternia. Miss 'em every day.
+		Common1: "'Tavernkeep'? Sure do! Whatcha lookin' for?"
+		Common2: Between you and I - I'm rather lightweight on drinks. Battle? Heh...yeah, way lightweight in that too, why d'you think I barkeep?
+		Common3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Keepin' the bar, bar the keepin'...
+			1: Maybe I can make a new drink...
+			2: Hopin' for a good night of business.
+		}
+
+		Night: {
+			0: Oh! A big tip! Thank ya, stranger. Whoever you were.
+			1: "'A guy walks into a bar?' I should use that one sometime."
+			2: I love my job.
+		}
+
+		Goblins: {
+			0: Those DANG goblins better stay away from MY drink.
+			1: I've made a molotov a couple a times. What's another spin?
+			2: If another glass breaks I swear I'll finally pick up the blade again.
+		}
+
+		Rain: {
+			0: A bar with rain ambiance. Lovely!
+			1: I hope the barrels ain't getting soaked through again.
+			2: Less business, more relaxin'? Don't mind if I do!
+		}
 	}
 }
 
@@ -28,10 +82,38 @@ HunterNPC: {
 	DisplayName: Elara
 
 	Dialogue: {
-		0: Greetings, traveler. Need a keen eye and a steady hand?
-		1: I've tracked a beast through these woods. Care to join the hunt?
-		2: Be cautious out there. The forest hides many secrets.
-		Quest: (Quest has not been implemented/conceptualized)
+		Common0: Greetings, traveler. Need a keen eye and a steady hand?
+		Common1: I've tracked a beast through these woods. Care to join the hunt?
+		Common2: Be cautious out there. The forest hides many secrets.
+		Quest: You've surely seen the damage here. Much like my fellow townsmen, I don't know what happened. But we repair anyhow. Would I bother you to grab some supplies? I've got to check inventory for a while.
+		Quest2: Oh my, so soon? Infinite thanks, my friend. I'll get right to repairing; next time you come back, you should see a nicer Lodge. Not...perfect, though. Take this bow. It's a trusty one. May you be so kind as to kill a few airborne hostiles for me? Ravencrest would appreciate it, as would I. And, if I may be so bold, could I also ask for a bit more building materials? The shop would enjoy that.
+		Quest3: How wonderful. The Lodge will return to its former glory, thanks to you. Feel free to come when you wish; I will support you as I can. Say, take this; I trained for many years as a ranger. The Rain of Arrows has helped me many times. May it help you too.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Where'd my arrows go?
+			1: Preparation waits for no one.
+			2: Let's hope the forest is kind.
+		}
+
+		Night: {
+			0: The night; a time of relaxation. I'm the hunter, not the hunted.
+			1: You can never be too safe with your fletching. Polish away.
+			2: A moment of clarity can save anyone quite a lot of trouble.
+		}
+
+		Goblins: {
+			0: Shoot to kill.
+			1: A sorcerer is frail and defenseless; attack with no mercy.
+			2: Those spiked balls do not work for bows, do not use them.
+		}
+
+		Rain: {
+			0: The wood dampens. I will not be hunting today.
+			1: The dance of the rain is nice, if bothersome.
+			2: How quaint.
+		}
 	}
 }
 
@@ -46,5 +128,47 @@ GarrickNPC: {
 		2: Watch your head. Generally, but mostly with the King's domain.
 		3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
 		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; it'll take you right to him.
+	}
+}
+TownScoutNPC.DisplayName: Goblin Surveyor
+RavenNPC.DisplayName: Ephemeral Raven
+ControllableSpikeball.DisplayName: Spikeball
+
+WizardNPC: {
+	DisplayName: Alaric
+
+	Dialogue: {
+		Common0: Magic is scary. Once, I saw someone turn their hand into a rat. What's the lesson? I don't know.
+		Common1: Wisdom holds many powers. Angel Statues once did something. It was...well...so...ahem. Time can only tell.
+		Common2: I've seen the throughline of your destiny. I cannot, for the life of me, put it to words.
+		Common3: Ah! I almost turned you into a mole the size of a god. Beware my strength!
+		Quest: Hm. You saw the damage everywhere. Alas! My powers cannot reconstitute the world. I'm far busier on...my...projects. Yes! Alas, I have something more pressing. A goblin burglar took one of my tomes. Powerful as it is, it has to be harnessed by a strong wizard. I suspect they are looking through the tome to learn its secrets...so with haste, return it! I will grant you powers beyond imagination.
+		Quest2: Aha! Thank you kindly. Your kindness will be rewarded greatly! My powers will push you forward at all times. Here, take a mote of power; a Nova is but a portion of my strength!
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Should I try to push the sun forward!?...no, not again.
+			1: What should I showcase next...?
+			2: Did I open the drawer too hard again? Should I start using my hands? Hah, good one Alaric.
+		}
+
+		Night: {
+			0: Maybe I can make some time for some nice shut eye.
+			1: I impress even myself! This sandwich is delicious!
+			2: If only I could grab that star...I could...but...alas. I'm too tired!
+		}
+
+		Goblins: {
+			0: My powers aren't just for show.
+			1: Explosions are always a fun display!
+			2: I politely declined their entry! I simply had to shock them with every lightning imaginable!
+		}
+
+		Rain: {
+			0: Remember that time you put all the rain water into the house next door? Hah...yeah. Good times.
+			1: Don't freeze the rain, don't freeze the rain, don't freeze the -
+			2: Perhaps I...no...that'd do too much damage. Dang!
+		}
 	}
 }

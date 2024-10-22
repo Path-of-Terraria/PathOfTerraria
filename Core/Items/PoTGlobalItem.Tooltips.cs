@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using System.Linq;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -34,6 +35,14 @@ partial class PoTGlobalItem
 
 	public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
 	{
+		// Reduce size of tooltips to fit the "Description"s we add in
+		if (line.Name.StartsWith("Tooltip"))
+		{
+			yOffset = -2;
+			line.BaseScale = new Vector2(0.8f);
+			return true;
+		}
+
 		// Don't mess with tooltip lines that we aren't responsible for.
 		if (line.Mod != Mod.Name)
 		{
@@ -91,6 +100,8 @@ partial class PoTGlobalItem
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
 		base.ModifyTooltips(item, tooltips);
+
+		List<TooltipLine> oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 
 		tooltips.Clear();
 
@@ -151,6 +162,8 @@ partial class PoTGlobalItem
 		{
 			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description.Value));
 		}
+
+		tooltips.AddRange(oldTooltips);
 	}
 
 	private static string HighlightNumbers(string input, string numColor = "CCCCFF", string baseColor = "A0A0A0")

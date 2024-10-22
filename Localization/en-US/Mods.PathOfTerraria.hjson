@@ -19,21 +19,9 @@ GUI: {
 }
 
 Generation.RavencrestEntrancePass: Opening Ravencrest
+Tiles.ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile
 
-Mods: {
-	PathOfTerraria: {
-		Quests: {
-			Quest: {
-				KingSlimeQuest: {
-					KingSlimeQuest: {
-						EnterDomain: Mods.PathOfTerraria.Mods.PathOfTerraria.Quests.Quest.KingSlimeQuest.KingSlimeQuest.EnterDomain
-						KillKing: Mods.PathOfTerraria.Mods.PathOfTerraria.Quests.Quest.KingSlimeQuest.KingSlimeQuest.KillKing
-					}
-
-					EnterDomain: Mods.PathOfTerraria.Mods.PathOfTerraria.Quests.Quest.KingSlimeQuest.EnterDomain
-					KillKing: Mods.PathOfTerraria.Mods.PathOfTerraria.Quests.Quest.KingSlimeQuest.KillKing
-				}
-			}
-		}
-	}
+Waypoints: {
+	RavencrestWaypoint.DisplayName: Ravencrest
+	HomeWaypoint.DisplayName: Home
 }

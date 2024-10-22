@@ -15,10 +15,10 @@ internal class QuestModPlayer : ModPlayer
 	// need a list of what npcs start what quests
 	private readonly HashSet<string> _enabledQuests = [];
 
-	public void StartQuest(string name)
+	public void StartQuest(string name, int step = -1)
 	{
 		var quest = Quest.GetQuest(name);
-		quest.StartQuest(Player);
+		quest.StartQuest(Player, step == -1 ? 0 : step);
 		_enabledQuests.Add(quest.FullName);
 	}
 
@@ -51,12 +51,16 @@ internal class QuestModPlayer : ModPlayer
 	public override void SaveData(TagCompound tag)
 	{
 		List<TagCompound> questTags = [];
+		IEnumerable<Quest> quests = ModContent.GetContent<Quest>();
 
-		foreach (string quest in _enabledQuests)
+		foreach (Quest quest in quests)
 		{
-			var newTag = new TagCompound();
-			Quest.GetQuest(quest).Save(newTag);
-			questTags.Add(newTag);
+			if (quest.Active)
+			{
+				var newTag = new TagCompound();
+				quest.Save(newTag);
+				questTags.Add(newTag);
+			}
 		}
 
 		tag.Add("questTags", questTags);
@@ -68,11 +72,11 @@ internal class QuestModPlayer : ModPlayer
 
 		questTags.ForEach(tag => 
 		{ 
-			string quest = Quest.LoadFrom(tag, Player); 
+			var quest = Quest.LoadFrom(tag, Player); 
 			
 			if (quest is not null) 
 			{ 
-				_enabledQuests.Add(quest); 
+				StartQuest(quest.FullName, quest.CurrentStep);
 			} 
 		});
 	}
