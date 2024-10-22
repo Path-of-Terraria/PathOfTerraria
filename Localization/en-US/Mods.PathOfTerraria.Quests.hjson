@@ -49,4 +49,9 @@ Quest: {
 		Name: Magical Returnal
 		Description: ""
 	}
+
+	WitchStartQuest: {
+		Name: WitchStartQuest
+		Description: ""
+	}
 }
