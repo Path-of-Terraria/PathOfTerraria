@@ -6,12 +6,17 @@ using Terraria.ID;
 using Terraria.Localization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class BarkeepNPC : ModNPC
+public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC
 {
+	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
+	private float animCounter;
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
@@ -116,8 +121,6 @@ public sealed class BarkeepNPC : ModNPC
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
 		}*/
 	}
-
-	private float animCounter;
 
 	public override void FindFrame(int frameHeight)
 	{

@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
@@ -16,9 +17,10 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
+public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	public Point16 TileSpawn => new(319, 163);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new(319, 163);
+	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	public override void SetStaticDefaults()
 	{
