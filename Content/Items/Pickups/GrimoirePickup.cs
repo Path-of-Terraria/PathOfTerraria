@@ -12,7 +12,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
-internal abstract class GrimoirePickup : ModItem
+internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Pickups/GrimoirePickups/{GetType().Name}";
 
