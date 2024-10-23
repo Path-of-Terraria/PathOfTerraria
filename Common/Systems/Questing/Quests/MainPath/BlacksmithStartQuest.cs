@@ -62,7 +62,7 @@ internal class BlacksmithStartQuest : Quest
 				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
 				return true;
 			}),
-			new KillCount(NPCID.Zombie, 15, Localize("Kill.Zombies")),
+			new KillCount(NPCID.Zombie, 15, this.GetLocalization("Kill.Zombies")),
 			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3"),
 			[
 				new GiveItem(30, ItemID.StoneBlock), new(50, ItemID.Wood), new(10, ItemID.GoldBar, ItemID.PlatinumBar)

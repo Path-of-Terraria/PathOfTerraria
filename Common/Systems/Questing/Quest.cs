@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
-public abstract class Quest : ModType
+public abstract class Quest : ModType, ILocalizedModType
 {
 	private static readonly Dictionary<string, Quest> QuestsByName = [];
 
@@ -19,16 +19,25 @@ public abstract class Quest : ModType
 
 	public bool CanBeStarted => !Completed && !Active;
 
+	public string LocalizationCategory => $"Quests.Quest";
+
 	public QuestStep ActiveStep = null;
 
 	public int CurrentStep;
 	public bool Completed;
 	public bool Active = false;
 
-	public Quest()
+	public sealed override void SetupContent()
 	{
+		SetStaticDefaults();
+	}
+
+	public override void SetStaticDefaults()
+	{
+		// Must be initialized here so that NPC types are populated properly.
 		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
 		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
+		QuestSteps = SetSteps();
 	}
 
 	public abstract List<QuestStep> SetSteps();
@@ -39,28 +48,17 @@ public abstract class Quest : ModType
 		ModTypeLookup<Quest>.Register(this);
 	}
 
-	public override void SetupContent()
-	{
-		SetStaticDefaults();
-	}
-
-	public override void SetStaticDefaults()
-	{
-		// Must be initialized here so that NPC types are populated properly.
-		QuestSteps = SetSteps();
-	}
-
 	public static Quest GetQuest(string name)
 	{
 		return QuestsByName[name];
 	}
 
-	public static LocalizedText Localize(string postfix)
+	public static LocalizedText QuestLocalization(string postfix)
 	{
 		return Language.GetText($"Mods.{PoTMod.ModName}.Quests." + postfix);
 	}
 
-	public static string LocalizeValue(string postfix)
+	public static string QuestLocalizationValue(string postfix)
 	{
 		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests." + postfix);
 	}
