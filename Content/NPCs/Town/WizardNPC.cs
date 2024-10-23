@@ -12,13 +12,15 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs;
 using Terraria.DataStructures;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
+public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	public Point16 TileSpawn => new(110, 173);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new (110, 173);
+	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	private float animCounter;
 

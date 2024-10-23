@@ -7,12 +7,18 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class GarrickNPC : ModNPC
+public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 {
+	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
+	private float animCounter;
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
@@ -40,14 +46,14 @@ public sealed class GarrickNPC : ModNPC
 		NPC.knockBackResist = 0.4f;
 		AnimationType = NPCID.Guide;
 		
-		NPC.TryEnableComponent<NPCDeathEffects>(
+		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore($"{PoTMod.ModName}/{Name}_0", 1);
-				c.AddGore($"{PoTMod.ModName}/{Name}_1", 2);
-				c.AddGore($"{PoTMod.ModName}/{Name}_2", 2);
+				c.AddGore(new($"{PoTMod.ModName}/{Name}_0", 1));
+				c.AddGore(new($"{PoTMod.ModName}/{Name}_1", 2));
+				c.AddGore(new($"{PoTMod.ModName}/{Name}_2", 2));
 				
-				c.AddDust(DustID.Blood, 20);
+				c.AddDust(new(DustID.Blood, 20));
 			}
 		);
 	}
@@ -110,10 +116,11 @@ public sealed class GarrickNPC : ModNPC
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(KingSlimeQuest)}");
+			
+			// Add map in the future
+			// Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), );
 		}
 	}
-
-	private float animCounter;
 
 	public override void FindFrame(int frameHeight)
 	{
@@ -135,5 +142,11 @@ public sealed class GarrickNPC : ModNPC
 
 		int frame = (int)animCounter;
 		NPC.frame.Y = frame * frameHeight;
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<KingSlimeQuest>();
+		return !quest.Completed;
 	}
 }

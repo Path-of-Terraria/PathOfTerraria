@@ -1,24 +1,23 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
+using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.NPCs.Town;
-using PathOfTerraria.Content.Skills.Melee;
+using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using PathOfTerraria.Core.Items;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
-internal class BlacksmithStartQuest : Quest
+internal class WitchStartQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
+	public override int NPCQuestGiver => ModContent.NPCType<WitchNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
@@ -50,29 +49,16 @@ internal class BlacksmithStartQuest : Quest
 	{
 		return 
 		[
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2"),
-			[
-				new GiveItem(20, ItemID.IronOre, ItemID.LeadOre), new(1, ItemID.IronHammer, ItemID.LeadHammer), new(50, ItemID.StoneBlock), new(20, ItemID.Wood)
-			], true),
-			new ActionStep((_, _) => 
+			new ConditionCheck(plr =>
 			{
-				RavencrestSystem.UpgradeBuilding("Forge");
+				Dictionary<int, int> storage = plr.GetModPlayer<GrimoireStoragePlayer>().GetStoredCount();
 
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<BlacksmithNPC>());
-				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
-				return true;
-			}),
-			new KillCount(NPCID.Zombie, 15, this.GetLocalization("Kill.Zombies")),
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3"),
-			[
-				new GiveItem(30, ItemID.StoneBlock), new(50, ItemID.Wood), new(10, ItemID.GoldBar, ItemID.PlatinumBar)
-			], true) { CountsAsCompletedOnMarker = true },
-			new ActionStep((_, _) =>
-			{
-				RavencrestSystem.UpgradeBuilding("Forge");
-				Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().TryAddSkill(new Berserk());
-				return true;
-			}) { CountsAsCompletedOnMarker = true }
+				return storage.TryGetValue(ModContent.ItemType<BatWings>(), out int wing) && storage.TryGetValue(ModContent.ItemType<OwlFeather>(), out int feather)
+					&& wing > 2 && feather > 2;
+			}, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.WitchNPC.QuestCondition")),
+			new InteractWithNPC(ModContent.NPCType<WitchNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest2")),
+			new ConditionCheck(p => p.ownedProjectileCounts[ModContent.ProjectileType<OwlSummon>()] > 0, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.WitchNPC.SummonCondition")),
+			new InteractWithNPC(ModContent.NPCType<WitchNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest3")),
 		];
 	}
 }

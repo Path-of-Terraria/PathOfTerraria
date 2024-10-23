@@ -17,6 +17,10 @@ public abstract class Quest : ModType, ILocalizedModType
 	public abstract List<QuestReward> QuestRewards { get; }
 	public List<QuestStep> QuestSteps { get; protected set; } = null;
 
+	public bool CanBeStarted => !Completed && !Active;
+
+	public string LocalizationCategory => $"Quests.Quest";
+
 	public QuestStep ActiveStep = null;
 
 	public int CurrentStep;
@@ -30,10 +34,10 @@ public abstract class Quest : ModType, ILocalizedModType
 
 	public override void SetStaticDefaults()
 	{
-		QuestSteps = SetSteps();
-
+		// Must be initialized here so that NPC types are populated properly.
 		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
 		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
+		QuestSteps = SetSteps();
 	}
 
 	public abstract List<QuestStep> SetSteps();
@@ -42,17 +46,6 @@ public abstract class Quest : ModType, ILocalizedModType
 	{
 		QuestsByName.Add(FullName, this);
 		ModTypeLookup<Quest>.Register(this);
-	}
-
-	public override void SetupContent()
-	{
-		SetStaticDefaults();
-	}
-
-	public override void SetStaticDefaults()
-	{
-		// Must be initialized here so that NPC types are populated properly.
-		QuestSteps = SetSteps();
 	}
 
 	public static Quest GetQuest(string name)

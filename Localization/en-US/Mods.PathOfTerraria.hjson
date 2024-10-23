@@ -19,3 +19,9 @@ GUI: {
 }
 
 Generation.RavencrestEntrancePass: Opening Ravencrest
+Tiles.ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile
+
+Waypoints: {
+	RavencrestWaypoint.DisplayName: Ravencrest
+	HomeWaypoint.DisplayName: Home
+}

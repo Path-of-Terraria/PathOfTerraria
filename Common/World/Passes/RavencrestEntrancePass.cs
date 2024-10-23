@@ -1,4 +1,7 @@
-﻿using PathOfTerraria.Common.Subworlds.RavencrestContent;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Town;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,8 +22,60 @@ public class RavencrestMicrobiome : MicroBiome
 		StructureHelper.Generator.GetDimensions("Assets/Structures/RavencrestEntrance", mod, ref size);
 		StructureHelper.Generator.GenerateStructure("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), mod);
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
-		FitBase((short)origin.X, origin.Y + size.Y - 1, size.X);
+		HashSet<Point16> tiles = FitBase((short)origin.X, origin.Y + size.Y - 1, size.X);
+		CleanBase(tiles);
 		return true;
+	}
+
+	/// <summary>
+	/// Cleans up the base and adds in grass and decor.
+	/// </summary>
+	/// <param name="tiles">Tiles to update.</param>
+	private static void CleanBase(HashSet<Point16> tiles)
+	{
+		foreach (Point16 pos in tiles)
+		{
+			Tile tile = Main.tile[pos];
+			OpenFlags flag = OpenExtensions.GetOpenings(pos.X, pos.Y, false, false);
+
+			if (flag != OpenFlags.None && tile.TileType is TileID.Dirt or TileID.Grass && tile.HasTile)
+			{
+				if (!WorldGen.genRand.NextBool(3) || !tiles.Contains(new(pos.X, pos.Y - 1)))
+				{
+					tile.WallType = WallID.None;
+
+					if (tile.TileType == TileID.Dirt)
+					{
+						tile.TileType = TileID.Grass;
+
+						Decoration.OnPurityGrass(new Point16(pos.X, pos.Y - 1));
+					}
+				}
+				else
+				{
+					tile.HasTile = false;
+					tile.WallType = WallID.None;
+
+					Tile top = Main.tile[pos.X, pos.Y - 1];
+					top.WallType = WallID.None;
+
+					Tile bottom = Main.tile[pos.X, pos.Y + 1];
+					bottom.WallType = WallID.None;
+
+					Tile left = Main.tile[pos.X - 1, pos.Y];
+					left.WallType = WallID.None;
+
+					Tile right = Main.tile[pos.X + 1, pos.Y];
+					right.WallType = WallID.None;
+				}
+			}
+			else if (flag == OpenFlags.None)
+			{
+				tile.WallType = WallID.Dirt;
+			}
+
+			WorldGen.SquareTileFrame(pos.X, pos.Y, true);
+		}
 	}
 
 	/// <summary>
@@ -29,24 +84,39 @@ public class RavencrestMicrobiome : MicroBiome
 	/// <param name="x">Left side of the structure.</param>
 	/// <param name="y">Bottom of the structure.</param>
 	/// <param name="width">Width of the structure.</param>
-	private static void FitBase(short x, int y, short width)
+	private static HashSet<Point16> FitBase(short x, int y, short width)
 	{
-		for (int i = x; i < x + width; ++i)
+		HashSet<Point16> tiles = [];
+
+		for (int i = x - 20; i < x + width + 20; ++i)
 		{
-			int newY = y;
+			float baseY = y;
+
+			if (i < x)
+			{
+				baseY += MathF.Pow(x - i, 1.1f);
+			}
+			else if (i > x + width)
+			{
+				int increase = i - (x + width);
+				baseY += MathF.Pow(increase * 1.5f, 1.1f);
+			}
+
+			int newY = (int)baseY;
 
 			while (!WorldGen.SolidTile(i, ++newY) || Main.tile[i, newY].TileType == TileID.Grass)
 			{
-				bool edge = i == x || i == x + width - 1;
-				WorldGen.PlaceTile(i, newY, edge ? TileID.Grass : TileID.Dirt, true, true);
-				WorldGen.SlopeTile(i, newY, 0, true);
+				Tile tile = Main.tile[i, newY];
 
-				if (!edge) // Place walls if this isn't either edge
-				{
-					WorldGen.PlaceWall(i, newY, WallID.DirtUnsafe);
-				}
+				tile.HasTile = true;
+				tile.TileType = TileID.Dirt;
+
+				WorldGen.SlopeTile(i, newY, 0, true);
+				tiles.Add(new Point16(i, newY));
 			}
 		}
+
+		return tiles;
 	}
 }
 
@@ -88,8 +158,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 	{
 		progress.Message = GenTitle;
 
-		var size = new Point16();
-		StructureHelper.Generator.GetDimensions("Assets/Structures/RavencrestEntrance", Mod, ref size);
+		Point16 size = StructureTools.GetSize("Assets/Structures/RavencrestEntrance");
 		Point16 pos = FindPlacement(size);
 		new RavencrestMicrobiome().Place(pos.ToPoint(), GenVars.structures);
 		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(pos.X + size.X / 2, pos.Y + size.Y / 2);
@@ -114,7 +183,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 			// Place only if this overlaps very few tiles and overlaps no structure.
 			int tileCount = CountTiles(x, y - size.Y, size.X, size.Y);
-			if (tileCount > 12 || !GenVars.structures.CanPlace(new Rectangle(x, y, size.X, size.Y)))
+			if (tileCount > 8 || !GenVars.structures.CanPlace(new Rectangle(x, y, size.X, size.Y)))
 			{
 				continue;
 			}
@@ -129,13 +198,26 @@ internal class RavencrestEntrancePass : AutoGenStep
 			// Get average height, with a whitelist and blacklist for nearby tiles and preferred average depth of ground.
 			int averageHeight = AverageHeights(x, y, 76, 4, 30, out bool valid, [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone], 
 				TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone);
-			 
+
 			// Only place if average height difference is less than 2.
-			if (valid && Math.Abs(averageHeight) <= 1)
+			if (valid && Math.Abs(averageHeight) <= 2)
 			{
-				return new Point16(x, y - size.Y);
+				return new Point16(x, y - size.Y + Math.Abs(averageHeight));
 			}
 		}
+	}
+
+	private static bool IsSolidGround(int x, int y, Point16 size, int passableNonSolidTileCount)
+	{
+		for (int i = x; i < x + size.X; i++)
+		{
+			if (!WorldGen.SolidOrSlopedTile(i, y + size.Y))
+			{
+				passableNonSolidTileCount--;
+			}
+		}
+
+		return passableNonSolidTileCount > 0;
 	}
 
 	/// <summary>
