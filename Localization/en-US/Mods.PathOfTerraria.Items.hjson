@@ -503,3 +503,8 @@ RopeClumpItem: {
 	DisplayName: Rope Clump Item
 	Tooltip: ""
 }
+
+TomeOfTheElders: {
+	DisplayName: Tome Of The Elders
+	Tooltip: Holds secrets unknowable to most, enlightening to few.
+}

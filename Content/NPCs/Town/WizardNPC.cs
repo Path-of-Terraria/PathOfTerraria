@@ -6,9 +6,10 @@ using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
-using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
+using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
+using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs;
 using Terraria.DataStructures;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
@@ -16,17 +17,19 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
+public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => new(255, 170);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new (110, 173);
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
+	private float animCounter;
 
 	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[NPC.type] = 25;
+		Main.npcFrameCount[NPC.type] = 23;
 
 		NPCID.Sets.ExtraFramesCount[NPC.type] = 9;
-		NPCID.Sets.AttackFrameCount[NPC.type] = 4;
+		NPCID.Sets.AttackFrameCount[NPC.type] = 2;
 		NPCID.Sets.DangerDetectRange[NPC.type] = 500;
 		NPCID.Sets.AttackType[NPC.type] = 0;
 		NPCID.Sets.AttackTime[NPC.type] = 16;
@@ -36,7 +39,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 
 	public override void SetDefaults()
 	{
-		NPC.CloneDefaults(NPCID.Guide);
+		NPC.CloneDefaults(NPCID.Wizard);
 		NPC.townNPC = true;
 		NPC.friendly = true;
 		NPC.aiStyle = 7;
@@ -46,7 +49,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.knockBackResist = 0.4f;
-		AnimationType = NPCID.Guide;
+		AnimationType = NPCID.Wizard;
 		
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
@@ -73,15 +76,15 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 	public override void AddShops()
 	{
 		var shop = new NPCShop(Type);
-		shop.Add<RustedBattleaxe>();
-		shop.Add<StoneSword>();
+		shop.Add<Staff>();
+		shop.Add<Wand>();
 		shop.Register();
 	}
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
 	{
-		damage = 13;
-		knockback = 3f;
+		damage = 30;
+		knockback = 8;
 	}
 
 	public override void TownNPCAttackCooldown(ref int cooldown, ref int randExtraCooldown)
@@ -92,13 +95,13 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 
 	public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
 	{
-		projType = 507;
+		projType = Main.rand.NextBool() ? ProjectileID.SpectreWrath : ProjectileID.InfernoFriendlyBlast;
 		attackDelay = 1;
 	}
 
 	public override void TownNPCAttackProjSpeed(ref float multiplier, ref float gravityCorrection, ref float randomOffset)
 	{
-		multiplier = 11f;
+		multiplier = 4f;
 		randomOffset = 2f;
 	}
 
@@ -110,7 +113,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !ModContent.GetInstance<BlacksmithStartQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !ModContent.GetInstance<WizardStartQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -121,12 +124,11 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		}
 		else
 		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(BlacksmithStartQuest)}");
+			Main.npcChatCornerItem = ModContent.ItemType<TomeOfTheElders>();
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WizardStartQuest)}");
 		}
 	}
-
-	private float animCounter;
 
 	public override void FindFrame(int frameHeight)
 	{
@@ -152,7 +154,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = ModContent.GetInstance<BlacksmithStartQuest>();
+		quest = ModContent.GetInstance<WizardStartQuest>();
 		return !quest.Completed;
 	}
 }

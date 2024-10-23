@@ -27,14 +27,25 @@ internal class ImprovableStructure(int maxIndex)
 		}
 	}
 
+	/// <summary>
+	/// Places the structure at <see cref="Position"/>, reframes the area, and syncs if on server.
+	/// </summary>
 	public void Place()
 	{
-		StructureTools.PlaceByOrigin(StructurePath + StructureIndex, new Point16(Position.X, Position.Y), Vector2.Zero);
+		Point16 pos = StructureTools.PlaceByOrigin(StructurePath + StructureIndex, new Point16(Position.X, Position.Y), Vector2.Zero);
+		Point16 size = StructureTools.GetSize(StructurePath + StructureIndex);
 
 		if (Main.netMode == NetmodeID.Server)
 		{
-			Point16 size = StructureTools.GetSize(StructurePath + StructureIndex);
 			NetMessage.SendTileSquare(-1, Position.X, Position.Y, size.X, size.Y);
+		}
+
+		for (int i = pos.X - 1; i < pos.X + size.X + 1; ++i)
+		{
+			for (int j = pos.Y - 1; j < pos.Y + size.Y + 1; ++j)
+			{
+				WorldGen.TileFrame(i, j, true);
+			}
 		}
 	}
 }

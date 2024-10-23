@@ -37,6 +37,11 @@ Quest: {
 
 	WitchStartQuest: {
 		Name: WitchStartQuest
+    Description:
+  }
+  
+	WizardStartQuest: {
+		Name: Magical Returnal
 		Description: ""
 	}
 }

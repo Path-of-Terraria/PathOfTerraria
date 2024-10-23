@@ -1,3 +1,5 @@
+using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
@@ -7,6 +9,7 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using ReLogic.Content;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -14,8 +17,11 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class HunterNPC : ModNPC
+public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new(319, 163);
+	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 23;
@@ -128,5 +134,11 @@ public class HunterNPC : ModNPC
 		
 		item = asset.Value;
 		itemFrame = asset.Frame();
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<HunterStartQuest>();
+		return !quest.Completed;
 	}
 }

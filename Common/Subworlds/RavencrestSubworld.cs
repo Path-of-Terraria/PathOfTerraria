@@ -1,8 +1,6 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.Passes;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -10,7 +8,6 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.Localization;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
@@ -21,48 +18,17 @@ internal class RavencrestSubworld : MappingWorld
 	public override int Height => 400;
 	public override bool ShouldSave => true;
 
-	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), new PassLegacy("World", SpawnWorld),
-		new PassLegacy("Grass", GrowGrass)];
+	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), 
+		new PassLegacy("World", SpawnWorld), new PassLegacy("Smooth", SmoothPass)];
 
-	private void GrowGrass(GenerationProgress progress, GameConfiguration configuration)
+	private void SmoothPass(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Dictionary<Point16, OpenFlags> tiles = [];
-		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
-
 		for (int i = 0; i < Main.maxTilesX; ++i)
 		{
-			for (int j = 80; j < Main.maxTilesY - 50; ++j)
+			for (int j = 0; j < Main.maxTilesY; ++j) 
 			{
-				Tile tile = Main.tile[i, j];
-
-				if (!tile.HasTile || tile.TileType != TileID.Dirt)
-				{
-					continue;
-				}
-
-				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
-
-				if (flags == OpenFlags.None)
-				{
-					continue;
-				}
-
-				tiles.Add(new Point16(i, j), flags);
+				WorldGen.TileFrame(i, j, true);
 			}
-
-			progress.Value = (float)i / Main.maxTilesX;
-		}
-
-		HashSet<Point16> grasses = [];
-
-		foreach ((Point16 position, OpenFlags tile) in tiles)
-		{
-			Decoration.GrowGrass(position, grasses);
-		}
-
-		foreach (Point16 position in grasses)
-		{
-			Decoration.OnPurityGrass(position);
 		}
 	}
 
@@ -78,19 +44,15 @@ internal class RavencrestSubworld : MappingWorld
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
-		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(Width / 2, 188), new(0.5f));
+		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(Main.maxTilesX / 2, Main.maxTilesY / 2 - 30), new(0.5f));
 		Main.spawnTileX = Width / 2;
-		Main.spawnTileY = 188;
+		Main.spawnTileY = 160;
 
-		NPC.NewNPC(Entity.GetSource_TownSpawn(), Main.maxTilesX * 8, Main.maxTilesY * 8 - 200, ModContent.NPCType<BlacksmithNPC>());
-		NPC.NewNPC(Entity.GetSource_TownSpawn(), Main.maxTilesX * 8, Main.maxTilesY * 8 - 200, ModContent.NPCType<HunterNPC>());
-	}
-
-	public override void Update()
-	{
-		foreach (Player player in Main.ActivePlayers)
+		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{
-			//player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
+			int x = npc.TileSpawn.X * 16;
+			int y = npc.TileSpawn.Y * 16;
+			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
 		}
 	}
 
