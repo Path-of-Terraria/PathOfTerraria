@@ -9,7 +9,6 @@ using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using PathOfTerraria.Core.Items;
-using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
@@ -54,7 +53,7 @@ internal class WitchStartQuest : Quest
 				Dictionary<int, int> storage = plr.GetModPlayer<GrimoireStoragePlayer>().GetStoredCount();
 
 				return storage.TryGetValue(ModContent.ItemType<BatWings>(), out int wing) && storage.TryGetValue(ModContent.ItemType<OwlFeather>(), out int feather)
-					&& wing > 2 && feather > 2;
+					&& wing > 0 && feather > 1;
 			}, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.WitchNPC.QuestCondition")),
 			new InteractWithNPC(ModContent.NPCType<WitchNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest2")),
 			new ConditionCheck(p => p.ownedProjectileCounts[ModContent.ProjectileType<OwlSummon>()] > 0, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.WitchNPC.SummonCondition")),

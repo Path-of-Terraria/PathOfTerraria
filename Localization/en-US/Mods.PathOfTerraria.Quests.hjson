@@ -45,6 +45,11 @@ Quest: {
 		Kill.FloatingMisc: Mods.PathOfTerraria.Quests.Quest.HunterStartQuest.Kill.FloatingMisc
 	}
 
+	WitchStartQuest: {
+		Name: WitchStartQuest
+    Description:
+  }
+  
 	WizardStartQuest: {
 		Name: Magical Returnal
 		Description: ""
