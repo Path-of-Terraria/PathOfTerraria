@@ -37,7 +37,7 @@ public class MobRegistry : ILoadable
 		List<string> jsonFiles = PoTMod.Instance.GetFileNames();
         string pathToMobData = "Common/Data/Mobs/PathOfTerraria";
         string fileExtension = ".json";
-		foreach (var (filePath, jsonStream) in from path in jsonFiles where path.StartsWith(pathToMobData) && path.EndsWith(fileExtension) select (path, PoTMod.Instance.GetFileStream(path)))
+		foreach ((string filePath, Stream jsonStream) in from path in jsonFiles where path.StartsWith(pathToMobData) && path.EndsWith(fileExtension) select (path, PoTMod.Instance.GetFileStream(path)))
 		{
 			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();
