@@ -19,14 +19,14 @@ internal class TestQuest : Quest
 		[
 			new CollectCount(ItemID.StoneBlock, 50),
 			new ConditionCheck(p => p.ZoneSnow, 30 * 60, Language.GetText($"Mods.{PoTMod.ModName}.Quests.Exploration.Ice")),
-			new KillCount(x => x.type == NPCID.Zombie || x.type == NPCID.BlueSlime, 3, Localize("Kill.SlimeZombies")),
-			new KillCount(NPCID.BlueSlime, 1, Localize("Kill.Slime")),
+			new KillCount(x => x.type == NPCID.Zombie || x.type == NPCID.BlueSlime, 3, QuestLocalization("Kill.SlimeZombies")),
+			new KillCount(NPCID.BlueSlime, 1, QuestLocalization("Kill.Slime")),
 			new ParallelQuestStep(
 			[
-				new KillCount(NPCID.BlueSlime, 1, Localize("Kill.Slime")),
-				new KillCount(NPCID.Zombie, 1, Localize("Kill.Zombies")),
+				new KillCount(NPCID.BlueSlime, 1, QuestLocalization("Kill.Slime")),
+				new KillCount(NPCID.Zombie, 1, QuestLocalization("Kill.Zombies")),
 			]),
-			new KillCount(x => x.lifeMax > 100, 10, Localize("Kill.HighHealth"))
+			new KillCount(x => x.lifeMax > 100, 10, QuestLocalization("Kill.HighHealth"))
 		];
 	}
 

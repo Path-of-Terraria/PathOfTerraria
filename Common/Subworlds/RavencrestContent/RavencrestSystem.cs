@@ -1,5 +1,8 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
+using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -34,7 +37,20 @@ public class RavencrestSystem : ModSystem
 			}
 
 			ReplacedBuildings = true;
+
+			if (!NPC.AnyNPCs(ModContent.NPCType<GarrickNPC>()) && AnyClassQuestDone())
+			{
+				var hunterNPC = ModContent.GetInstance<HunterNPC>() as ISpawnInRavencrestNPC;
+				Point16 pos = hunterNPC.TileSpawn;
+				NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, ModContent.NPCType<GarrickNPC>());
+			}
 		}
+	}
+
+	private static bool AnyClassQuestDone()
+	{
+		return ModContent.GetInstance<BlacksmithStartQuest>().Completed || ModContent.GetInstance<HunterStartQuest>().Completed
+			|| ModContent.GetInstance<WitchStartQuest>().Completed || ModContent.GetInstance<WizardStartQuest>().Completed;
 	}
 
 	public override void Load()

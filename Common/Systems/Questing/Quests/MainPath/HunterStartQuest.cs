@@ -64,7 +64,7 @@ internal class HunterStartQuest : Quest
 				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<WoodenBow>());
 				return true;
 			}),
-			new KillCount(npc => npc.type is NPCID.DemonEye or NPCID.Crimera or NPCID.EaterofSouls, 10, Localize("Kill.FloatingMisc")),
+			new KillCount(npc => npc.type is NPCID.DemonEye or NPCID.Crimera or NPCID.EaterofSouls, 10, this.GetLocalization("Kill.FloatingMisc")),
 			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest3"),
 			[
 				new GiveItem(40, ItemID.Wood), new(10, ItemID.Gel), new(20, ItemID.IronBar, ItemID.LeadBar)

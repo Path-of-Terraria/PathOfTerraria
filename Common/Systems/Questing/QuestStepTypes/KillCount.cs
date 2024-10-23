@@ -12,7 +12,7 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText displayText) : QuestStep
 {
 	public KillCount(int npcId, int count, LocalizedText displayText) : this(
-		(NPC npcKilled) => npcKilled.type == npcId, count, displayText)
+		(NPC npcKilled) => npcKilled.netID == npcId, count, displayText)
 	{
 	}
 

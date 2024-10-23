@@ -119,14 +119,53 @@ HunterNPC: {
 }
 
 Minera.DisplayName: Minera
+
+GarrickNPC: {
+	DisplayName: Garrick
+
+	Dialogue: {
+		0: The ground shakes uncontrollably in the King's domain. As if slime seeps into the rock.
+		1: Adventurers often fail to tell you of how slimy adventuring is. I am not one of those adventurers. It's extremely slimy.
+		2: Watch your head. Generally good active, but especially in the King's domain.
+		3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
+		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; it'll take you right to him.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: The sun shines...one day the King's crown won't.
+			1: Ah...the wounds are clear. Gah...
+			2: Curse you, King!
+		}
+
+		Night: {
+			0: I must rest...
+			1: I see his jiggly blue carapace, still...
+			2: Does anyone have a healing potion?
+		}
+
+		Goblins: {
+			0: I must busy myself with others but the King, to practice.
+			1: En garde! I cannot lose again!
+			2: You cannot best me forever, King!
+		}
+
+		Rain: {
+			0: Rain cleans the wounds. It's nice.
+			1: A moment for me and my thoughts.
+			2: I hope he's dissolving.
+		}
+	}
+}
+
 TownScoutNPC.DisplayName: Goblin Surveyor
 RavenNPC.DisplayName: Ephemeral Raven
 ControllableSpikeball.DisplayName: Spikeball
 
 WitchNPC: {
+  DisplayName: Morgana
 	QuestCondition: Collect 2 Owl Feathers and 1 Bat Wing
 	SummonCondition: Summon the Owl with the Grimoire
-	DisplayName: Morgana
 
 	Dialogue: {
 		Common0: Yes...the brew speaks!...it says you're looking to buy! Hm? Are you?
