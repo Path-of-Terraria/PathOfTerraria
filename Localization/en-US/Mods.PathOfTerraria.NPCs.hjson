@@ -175,6 +175,7 @@ WitchNPC: {
 		Quest: Your guiles intruigue me, stranger. I've summoned the most twisted of creatures before...do you wish to do the same? Do you? If your conviction holds; bring me the the feather of an owl, the wings of a bat, and a scorpion. Then we may start on your new journey.
 		Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon the Owl! Not a ghastly beast, but one that'll help you regardless! Be well, and may the phoenix find you well!
 		Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder.
+	}
 }
 
 WizardNPC: {
@@ -216,4 +217,4 @@ WizardNPC: {
 	}
 }
 
-WitchNPC.DisplayName: Witch N P C
+WitchNPC.DisplayName: Morgana
