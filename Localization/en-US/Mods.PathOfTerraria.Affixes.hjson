@@ -44,3 +44,8 @@ NoFallDamageAffix: {
 	Description: Immunity to fall damage
 	Removed: Vulnerable to fall damage
 }
+
+PercentageIncreasedCriticalStrikeChanceAffix.Description: "{1}{0} to stat"
+PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0} to stat"
+FlatCriticalStrikeChanceAffix.Description: "{1}{0} to stat"
+PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0} to stat"

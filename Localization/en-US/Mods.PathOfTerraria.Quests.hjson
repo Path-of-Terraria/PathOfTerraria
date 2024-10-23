@@ -12,6 +12,7 @@ Kill: {
 	Zombies: Kill {0} zombies
 	HighHealth: Kill {0} enemies with more than 100 health
 	KingSlime: Kill the King Slime
+	FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
 }
 
 Quest: {
@@ -35,5 +36,15 @@ Quest: {
 		Description: ""
 		EnterDomain: Enter the King's Domain
 		ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surprass me again. My thanks, however, are in order.
+	}
+
+	HunterStartQuest: {
+		Name: Drawing the Bow
+		Description: ""
+	}
+
+	WizardStartQuest: {
+		Name: Magical Returnal
+		Description: ""
 	}
 }

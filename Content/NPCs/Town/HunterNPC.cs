@@ -1,10 +1,14 @@
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using ReLogic.Content;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -12,18 +16,9 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class HunterNPC : ModNPC
+public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
-	/// <summary>
-	///     The index of the current dialogue sentence.
-	/// </summary>
-	public int Dialogue
-	{
-		get => dialogue;
-		set => dialogue = value > 2 ? 0 : value;
-	}
-
-	private int dialogue;
+	public Point16 TileSpawn => new(319, 163);
 
 	public override void SetStaticDefaults()
 	{
@@ -52,16 +47,51 @@ public class HunterNPC : ModNPC
 		NPC.aiStyle = NPCAIStyleID.Passive;
 		AnimationType = NPCID.BestiaryGirl;
 
-		NPC.TryEnableComponent<NPCDeathEffects>(
+		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore($"{PoTMod.ModName}/{Name}_0", 1);
-				c.AddGore($"{PoTMod.ModName}/{Name}_1", 2);
-				c.AddGore($"{PoTMod.ModName}/{Name}_2", 2);
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 2, NPCHitEffects.OnDeath));
 				
-				c.AddDust(DustID.Blood, 20);
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 20));
 			}
 		);
+
+		NPC.TryEnableComponent<NPCTownDialogue>(
+			c =>
+			{
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common0"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common1"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common2"));
+			}
+		);
+	}
+	
+	public override void SetChatButtons(ref string button, ref string button2)
+	{
+		button = Language.GetTextValue("LegacyInterface.28");
+		button2 = !ModContent.GetInstance<HunterStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+	}
+
+	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
+	{
+		if (firstButton)
+		{
+			shopName = "Shop";
+			return;
+		}
+
+		Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest");
+		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(HunterStartQuest)}");
+	}
+	
+	public override void AddShops()
+	{
+		new NPCShop(Type)
+			.Add<WoodenBow>()
+			.Add<WoodenShortBow>()
+			.Register();
 	}
 
 	public override ITownNPCProfile TownNPCProfile()
@@ -96,49 +126,16 @@ public class HunterNPC : ModNPC
 	public override void DrawTownAttackGun(ref Texture2D item, ref Rectangle itemFrame, ref float scale, ref int horizontalHoldoutOffset)
 	{
 		int type = ModContent.ItemType<WoodenBow>();
+		
 		Asset<Texture2D> asset = TextureUtils.LoadAndGetItem(type);
+		
 		item = asset.Value;
 		itemFrame = asset.Frame();
 	}
 
-	public override void SetChatButtons(ref string button, ref string button2)
+	public bool HasQuestMarker(out Quest quest)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
-	}
-
-	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
-	{
-		if (firstButton)
-		{
-			shopName = "Shop";
-			return;
-		}
-
-		Main.npcChatText = this.GetLocalizedValue("Dialogue.Quest");
-
-		if (!Main.LocalPlayer.TryGetModPlayer(out QuestModPlayer modPlayer))
-		{
-			return;
-		}
-
-		modPlayer.RestartQuestTest();
-	}
-
-	public override string GetChat()
-	{
-		string dialogue = this.GetLocalizedValue("Dialogue." + Dialogue);
-
-		Dialogue++;
-
-		return dialogue;
-	}
-
-	public override void AddShops()
-	{
-		new NPCShop(Type)
-			.Add<WoodenBow>()
-			.Add<WoodenShortBow>()
-			.Register();
+		quest = ModContent.GetInstance<HunterStartQuest>();
+		return !quest.Completed;
 	}
 }

@@ -1,5 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using PathOfTerraria.Common.Subworlds;
+using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
@@ -77,7 +79,7 @@ internal class StopBuildingPlayer : ModPlayer
 
 	public static bool CanCutTile(Player player, int i, int j)
 	{
-		return BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
+		return !player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding || BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
 	}
 
 	private bool CanDig(int x, int y, bool isWall)
@@ -101,16 +103,30 @@ internal class StopBuildingPlayer : ModPlayer
 	{
 		LastStopBuilding = ConstantStopBuilding;
 		ConstantStopBuilding = false;
+
+		if (SubworldSystem.Current is MappingWorld)
+		{
+			ConstantStopBuilding = true;
+		}
 	}
 
 	public override bool CanUseItem(Item item)
 	{
+		// Disable wiring stuff
+		if (item.type == ItemID.Wrench || item.type == ItemID.BlueWrench || item.type == ItemID.GreenWrench || 
+			item.type == ItemID.YellowWrench || item.type == ItemID.MulticolorWrench || item.type == ItemID.WireKite 
+			|| item.type == ItemID.ActuationRod)
+		{
+			return !LastStopBuilding;
+		}	
+
+		// Disable placement, aside from ropes and torches
 		if (item.createTile >= TileID.Dirt || item.createWall > WallID.None || item.type == ItemID.IceRod || item.tileWand >= 0)
 		{
 			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile];
 			bool isTorch = item.createTile >= TileID.Dirt && TileID.Sets.Torch[item.createTile];
 
-			if (!isRope && !isTorch)
+			if (!isRope && !isTorch && !BuildingWhitelist.InPlacingWhitelist(item.createTile))
 			{
 				return !LastStopBuilding;
 			}

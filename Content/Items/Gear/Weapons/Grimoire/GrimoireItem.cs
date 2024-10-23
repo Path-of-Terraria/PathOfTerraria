@@ -67,4 +67,10 @@ internal class GrimoireItem : Gear
 		type = player.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
 		damage = (ContentSamples.ProjectilesByType[type].ModProjectile as GrimoireSummon).BaseDamage;
 	}
+
+	public override bool OnPickup(Player player)
+	{
+		player.GetModPlayer<GrimoireSummonPlayer>().HasObtainedGrimoire = true;
+		return true;
+	}
 }

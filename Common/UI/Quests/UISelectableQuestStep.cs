@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Utilities;
+using Terraria.GameContent;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI.Quests;
 
@@ -19,6 +21,8 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 	private readonly string questName;
 	private readonly int index;
 
+	private bool _setSize = false;
+
 	public UISelectableQuestStep(int stepIndex, string quest)
 	{
 		questName = quest;
@@ -36,27 +40,30 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 		Title.Top.Set(-8f, 0f);
 		Title.Colour = new Color(43, 28, 17);
 
-		Title.OnUpdate += UpdateText;
+		Title.OnUpdate += _ => UpdateText();
 
 		Append(Title);
 	}
 
-	private void UpdateText(UIElement affectedElement)
+	public void UpdateText()
 	{
-		var text = affectedElement as UISimpleWrappableText;
-
-		if (Step.IsDone && text.Colour.R == 50) // Stop if the step is done
+		if (Step.IsDone && Title.Colour.R == 50 && !_setSize) // Stop if the step is done
 		{
 			return;
 		}
 
-		text.SetText(Step.DisplayString()); // Update text, and set color 
-		text.Colour = Step.IsDone ? new Color(50, 120, 10) : new Color(43, 28, 17);
+		string textString = Step.DisplayString();
+		Title.SetText(textString); // Update text, and set color 
+		Title.Colour = Step.IsDone ? new Color(50, 120, 10) : new Color(43, 28, 17);
+		Vector2 stringSize = ChatManager.GetStringSize(FontAssets.ItemStack.Value, textString, Vector2.One);
+		Title.Height = StyleDimension.FromPixels(stringSize.Y);
 
 		if (Quest.CurrentStep < index) // Gray out steps that haven't been approached yet
 		{
-			text.Colour = new Color(43, 28, 17) * 0.25f;
+			Title.Colour = new Color(43, 28, 17) * 0.25f;
 		}
+
+		_setSize = true;
 	}
 
 	public override void LeftMouseDown(UIMouseEvent evt)

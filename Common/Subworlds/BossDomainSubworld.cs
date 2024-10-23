@@ -3,9 +3,9 @@ using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.IO;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using ReLogic.Graphics;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -32,14 +32,14 @@ public abstract class BossDomainSubworld : MappingWorld
 	public virtual int[] WhitelistedCutTiles => [];
 
 	/// <summary>
-	/// These tiles are allowed to be cut by the player with melee or projectiles.
-	/// </summary>
-	public virtual string[] DebugKeys => [];
-
-	/// <summary>
 	/// The level of dropped <see cref="Content.Items.Gear.Gear"/> in the domain. 0 will roll default level formula.
 	/// </summary>
 	public virtual int DropItemLevel => 0;
+
+	/// <summary>
+	/// Forces the time to be the given time, and it to be night/day. Defaults to (-1, true), which ignores this.
+	/// </summary>
+	public virtual (int time, bool isDay) ForceTime => (-1, true);
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
@@ -57,10 +57,15 @@ public abstract class BossDomainSubworld : MappingWorld
 #pragma warning restore IDE0060 // Remove unused parameter
 	{
 		WorldGenerator.CurrentGenerationProgress = progress;
-		int seed = DateTime.Now.Millisecond;
-		WorldGen._lastSeed = seed;
-		WorldGen._genRand = new UnifiedRandom(seed);
-		WorldGen._genRand.SetSeed(seed);
+		Main.ActiveWorldFileData.SetSeedToRandom();
+		GenVars.structures = new();
+	}
+
+	public override void OnEnter()
+	{
+		base.OnEnter();
+
+		SubworldSystem.noReturn = true;
 	}
 
 	public override void DrawMenu(GameTime gameTime)

@@ -8,7 +8,6 @@ using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;
@@ -25,7 +24,6 @@ public class BrainDomain : BossDomainSubworld
 	public override int Height => 1300;
 	public override int[] WhitelistedCutTiles => [TileID.Pots, TileID.CrimsonThorns];
 	public override int DropItemLevel => 20;
-	public override string[] DebugKeys => ["brain", "boc", "brainofcthulhu"];
 
 	public Rectangle Arena = Rectangle.Empty;
 	public Vector2 ProjectilePosition = Vector2.Zero;
@@ -175,10 +173,10 @@ public class BrainDomain : BossDomainSubworld
 		}
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Steps");
-		GenerateSteps(progress, configuration);
+		GenerateSteps(progress);
 	}
 
-	private void GenerateSteps(GenerationProgress progress, GameConfiguration configuration)
+	private void GenerateSteps(GenerationProgress progress)
 	{
 		int lineCount = 4;
 		int x = Main.spawnTileX >= 400 ? 420 : 380;
@@ -298,8 +296,22 @@ public class BrainDomain : BossDomainSubworld
 		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
 		List<Point16> results = [];
 		float ySize = size / WorldGen.genRand.NextFloat(2, 3);
-		Ellipse.Fill(!isWall ? (x, y) => WorldGen.PlaceTile(x, y, TileID.Crimstone) : (x, y) => WorldGen.PlaceWall(x, y, WallID.CrimstoneUnsafe), 
+		Ellipse.Fill(!isWall ? (x, y) => FastPlaceTile(x, y, TileID.Crimstone) : (x, y) => FastPlaceWall(x, y, WallID.CrimstoneUnsafe), 
 			origin.ToPoint16(), size, ySize, angle - MathHelper.PiOver2, ref results, (x, y) => GetGenNoise().GetNoise(x, y) * 10);
+	}
+
+	public static void FastPlaceTile(int x, int y, int type)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.TileType = (ushort)type;
+		tile.HasTile = true;
+	}
+
+	public static void FastPlaceWall(int x, int y, int type)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.WallType = (ushort)type;
+		tile.HasTile = true;
 	}
 
 	private static FastNoiseLite GetGenNoise()
@@ -318,6 +330,8 @@ public class BrainDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
+		base.OnEnter();
+
 		BossSpawned = false;
 		ReadyToExit = false;
 	}
@@ -349,23 +363,19 @@ public class BrainDomain : BossDomainSubworld
 			}
 		}
 
-		if (!hasProj)
+		if (!hasProj && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
 			int type = ModContent.ProjectileType<Teleportal>();
 			Vector2 position = ProjectilePosition.ToWorldCoordinates() - new Vector2(10, 80);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), position, Vector2.Zero, type, 0, 0, -1, 400 * 16, 200 * 16);
 		}
 
-		Main.dayTime = false;
-		Main.time = Main.nightLength / 2;
 		Main.moonPhase = (int)MoonPhase.Full;
 
-		bool allInArena = true;
+		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;
@@ -376,12 +386,20 @@ public class BrainDomain : BossDomainSubworld
 		{
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y - 400, NPCID.BrainofCthulhu);
 			BossSpawned = true;
+
+			Main.spawnTileX = Arena.Center.X / 16;
+			Main.spawnTileY = Arena.Center.Y / 16;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.WorldData);
+			}
 		}
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.BrainofCthulhu) && !ReadyToExit)
 		{
 			Vector2 pos = Arena.Center() + new Vector2(30, 100);
-			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+			int proj = Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.CachedBossesDowned.Add(NPCID.BrainofCthulhu);
 			ReadyToExit = true;

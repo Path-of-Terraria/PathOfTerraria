@@ -19,21 +19,3 @@ GUI: {
 }
 
 Generation.RavencrestEntrancePass: Opening Ravencrest
-
-Mods: {
-	PathOfTerraria: {
-		Quests: {
-			Quest: {
-				KingSlimeQuest: {
-					KingSlimeQuest: {
-						EnterDomain: Mods.PathOfTerraria.Mods.PathOfTerraria.Quests.Quest.KingSlimeQuest.KingSlimeQuest.EnterDomain
-						KillKing: Mods.PathOfTerraria.Mods.PathOfTerraria.Quests.Quest.KingSlimeQuest.KingSlimeQuest.KillKing
-					}
-
-					EnterDomain: Mods.PathOfTerraria.Mods.PathOfTerraria.Quests.Quest.KingSlimeQuest.EnterDomain
-					KillKing: Mods.PathOfTerraria.Mods.PathOfTerraria.Quests.Quest.KingSlimeQuest.KillKing
-				}
-			}
-		}
-	}
-}

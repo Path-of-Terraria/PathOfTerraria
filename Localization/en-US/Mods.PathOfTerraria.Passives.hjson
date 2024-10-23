@@ -114,6 +114,11 @@ ArmorPenetrationPassive: {
 }
 
 AnchorPassive: {
-	Name: AnchorPassive
-	Tooltip: ""
+	Name: Anchor
+	Tooltip: The journey starts here.
+}
+
+StrongerChillPassive: {
+	Name: Stronger Chill
+	Tooltip: Chilled debuff slows down enemies 10% more.
 }
