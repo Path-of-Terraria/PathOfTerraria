@@ -38,6 +38,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 	public override int Width => 900;
 	public override int Height => 1000;
+	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
 	const int BaseTunnelDepth = 90;
 
@@ -655,15 +656,10 @@ public class SkeletronDomain : BossDomainSubworld
 	{
 		BossSpawned = false;
 		ReadyToExit = false;
-
-		Main.dayTime = false;
-		Main.time = Main.nightLength / 2;
 	}
 
 	public override void Update()
 	{
-		Main.dayTime = false;
-		Main.time = Main.nightLength / 2;
 		Wiring.UpdateMech();
 
 		bool hasProj = false;
@@ -683,12 +679,10 @@ public class SkeletronDomain : BossDomainSubworld
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), position, Vector2.Zero, type, 0, 0, -1, Width / 2 * 16, (Height - 140) * 16);
 		}
 
-		bool allInArena = true;
+		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;
@@ -699,6 +693,14 @@ public class SkeletronDomain : BossDomainSubworld
 		{
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y, NPCID.SkeletronHead, 1);
 			BossSpawned = true;
+
+			Main.spawnTileX = Arena.Center.X / 16;
+			Main.spawnTileY = Arena.Center.Y / 16;
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendData(MessageID.WorldData);
+			}
 		}
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.SkeletronHead) && !ReadyToExit)

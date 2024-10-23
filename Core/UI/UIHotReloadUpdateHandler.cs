@@ -15,21 +15,16 @@ internal static class UIHotReloadUpdateHandler
 #pragma warning restore IDE0060 // Remove unused parameter
 
 	internal static void UpdateApplication(Type[]? updatedTypes)
-	{	
+	{
 		Main.QueueMainThreadAction(
 			() =>
 			{
 				foreach (Type type in updatedTypes)
 				{
-					if (!typeof(UIState).IsAssignableFrom(type))
+					if (typeof(UIState).IsAssignableFrom(type) || typeof(UIElement).IsAssignableFrom(type))
 					{
-						continue;
+						UIManager.RefreshAllStates();
 					}
-					
-					MethodInfo? methodInfo = typeof(UIManager).GetMethod("RefreshStates", BindingFlags.NonPublic | BindingFlags.Static);
-					MethodInfo? generatedMethodInfo = methodInfo?.MakeGenericMethod(type);
-					
-					generatedMethodInfo?.Invoke(null, null);
 				}
 			}
 		);

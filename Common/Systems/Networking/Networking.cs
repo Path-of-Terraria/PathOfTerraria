@@ -44,6 +44,18 @@ internal static class Networking
 		/// 
 		/// </summary>
 		ConsumeMapOffOfDevice,
+
+		/// <summary>
+		/// Sets the index of a given Ravencrest structure. Signature:<br/>
+		/// <c>string name, int index</c>
+		/// </summary>
+		SetRavencrestBuildingIndex,
+		
+		/// <summary>
+		/// Syncs a condition drop to the server. Signature:<br/>
+		/// <c>int id, bool add</c>
+		/// </summary>
+		SyncConditionalDrop,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -116,6 +128,14 @@ internal static class Networking
 				if (Main.netMode == NetmodeID.Server)
 				{
 					SpawnNPCOnServerHandler.ServerRecieve(reader);
+				}
+
+				break;
+
+			case Message.SetRavencrestBuildingIndex:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					RavencrestBuildingIndex.ServerRecieve(reader);
 				}
 
 				break;

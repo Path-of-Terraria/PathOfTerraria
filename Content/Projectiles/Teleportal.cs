@@ -16,6 +16,7 @@ internal class Teleportal : ModProjectile
 		Projectile.tileCollide = false;
 		Projectile.Size = new Vector2(80, 80);
 		Projectile.Opacity = 0f;
+		Projectile.netImportant = true;
 	}
 
 	public override bool? CanDamage()

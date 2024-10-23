@@ -97,11 +97,6 @@ public class Nova : Skill
 
 	public override void UseSkill(Player player)
 	{
-		if (!CanUseSkill(player))
-		{
-			return;
-		}
-
 		player.statMana -= ManaCost;
 		Timer = Cooldown;
 

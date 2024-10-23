@@ -25,7 +25,7 @@ internal class GrimoireStoragePlayer : ModPlayer
 		for (int i = 0; i < count; i++)
 		{
 			Storage.Add(ItemIO.Load(tag.GetCompound("item" + i)));
-		}	
+		}
 	}
 
 	internal Dictionary<int, int> GetStoredCount()

@@ -46,7 +46,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	{
 		base.SafeUpdate(gameTime);
 
-		if (IsVisible && (Main.LocalPlayer.HeldItem.ModItem is not GrimoireItem || !Main.playerInventory))
+		bool offItem = Main.LocalPlayer.HeldItem.ModItem is not GrimoireItem && !Main.LocalPlayer.controlTorch;
+		if (IsVisible && (offItem || !Main.playerInventory))
 		{
 			Toggle();
 		}

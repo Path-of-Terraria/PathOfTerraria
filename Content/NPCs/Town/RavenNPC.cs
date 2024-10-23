@@ -1,6 +1,6 @@
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using PathOfTerraria.Common.Systems.WorldNavigation;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Town;

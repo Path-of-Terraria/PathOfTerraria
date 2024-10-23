@@ -6,7 +6,8 @@ using Terraria.WorldBuilding;
 namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
-/// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.
+/// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.<br/>
+/// Additionally, it also makes <see cref="Systems.DisableBuilding.StopBuildingPlayer"/> disable world modification.
 /// </summary>
 public abstract class MappingWorld : Subworld
 {
@@ -22,7 +23,7 @@ public abstract class MappingWorld : Subworld
 	// Sets the time to the middle of the day whenever the subworld loads
 	public override void OnLoad()
 	{
-		Main.dayTime = true;
-		Main.time = 27000;
+		//Main.dayTime = true;
+		//Main.time = 27000;
 	}
 }

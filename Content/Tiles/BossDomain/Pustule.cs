@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
+﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
 using PathOfTerraria.Content.Projectiles.Hostile;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -41,9 +42,17 @@ internal class Pustule : ModTile
 
 			for (int k = 0; k < length; ++k)
 			{
-				int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, ModContent.NPCType<Minera>(), 1);
-				Main.npc[npc].velocity = new Vector2(0, -Main.rand.NextFloat(5, 8)).RotatedByRandom(0.9f);
-				Main.npc[npc].netUpdate = true;
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, ModContent.NPCType<Minera>(), 1);
+					Main.npc[npc].velocity = new Vector2(0, -Main.rand.NextFloat(5, 8)).RotatedByRandom(0.9f);
+					Main.npc[npc].netUpdate = true;
+				}
+				else
+				{
+					Vector2 vel = new Vector2(0, -Main.rand.NextFloat(5, 8)).RotatedByRandom(0.9f);
+					SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<Minera>(), new Vector2((i + 1) * 16, (j + 1) * 16), vel);
+				}
 			}
 		}
 		else 

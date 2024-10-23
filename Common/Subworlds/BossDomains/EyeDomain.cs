@@ -13,6 +13,7 @@ using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;
+using PathOfTerraria.Common.World.Generation.Tools;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -120,23 +121,7 @@ public class EyeDomain : BossDomainSubworld
 				continue;
 			}
 
-			if (!WorldGen.genRand.NextBool(3))
-			{
-				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Plants);
-			}
-			else if (WorldGen.genRand.NextBool(6) && position.X is > 20 and < 760)
-			{
-				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Saplings);
-				
-				if (!WorldGen.GrowTree(position.X, position.Y - 1))
-				{
-					WorldGen.KillTile(position.X, position.Y - 1);
-				}
-			}
-			else if (WorldGen.genRand.NextBool(4))
-			{
-				WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(10), 0);
-			}
+			Decoration.OnPurityGrass(position);
 		}
 
 		if (includeFleshStuff)
@@ -156,6 +141,11 @@ public class EyeDomain : BossDomainSubworld
 		{
 			for (int j = pos.Y; j < pos.Y + size.Y; ++j)
 			{
+				if (!WorldGen.InWorld(i, j))
+				{
+					continue;
+				}
+
 				WorldGen.TileFrame(i, j);
 
 				int sign = Sign.ReadSign(i, j, true);
@@ -210,7 +200,9 @@ public class EyeDomain : BossDomainSubworld
 
 			for (int y = (int)useY; y < Main.maxTilesY; ++y)
 			{
-				WorldGen.PlaceTile(x, y, TileID.Dirt);
+				Tile tile = Main.tile[x, y];
+				tile.HasTile = true;
+				tile.TileType = TileID.Dirt;
 			}
 
 			progress.Value = (float)x / Main.maxTilesX;
@@ -263,8 +255,6 @@ public class EyeDomain : BossDomainSubworld
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			player.GetModPlayer<StopBuildingPlayer>().ConstantStopBuilding = true;
-
 			if (allInArena && !Arena.Intersects(player.Hitbox))
 			{
 				allInArena = false;

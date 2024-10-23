@@ -35,13 +35,14 @@ public sealed class ControllableSpikeball : ModNPC
 		NPC.Size = new Vector2(46);
 		NPC.scale = 1f;
 		NPC.ShowNameOnHover = false;
+		NPC.netAlways = true;
 	}
 
 	public override void AI()
 	{
-		if (!IsInitialized)
+		if (!IsInitialized && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			Anchor = NPC.Center;
+			Anchor = NPC.position - new Vector2(8, 2);
 
 			if (Length == 0f)
 			{

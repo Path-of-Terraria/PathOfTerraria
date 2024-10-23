@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
-public abstract class Quest : ModType
+public abstract class Quest : ModType, ILocalizedModType
 {
 	private static readonly Dictionary<string, Quest> QuestsByName = [];
 
@@ -15,7 +15,11 @@ public abstract class Quest : ModType
 	public LocalizedText Description { get; private set; } 
 
 	public abstract List<QuestReward> QuestRewards { get; }
-	public List<QuestStep> QuestSteps { get; } = null;
+	public List<QuestStep> QuestSteps { get; protected set; } = null;
+
+	public bool CanBeStarted => !Completed && !Active;
+
+	public string LocalizationCategory => $"Quests.Quest";
 
 	public QuestStep ActiveStep = null;
 
@@ -23,12 +27,17 @@ public abstract class Quest : ModType
 	public bool Completed;
 	public bool Active = false;
 
-	public Quest()
+	public sealed override void SetupContent()
 	{
-		QuestSteps = SetSteps();
+		SetStaticDefaults();
+	}
 
+	public override void SetStaticDefaults()
+	{
+		// Must be initialized here so that NPC types are populated properly.
 		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
 		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
+		QuestSteps = SetSteps();
 	}
 
 	public abstract List<QuestStep> SetSteps();
@@ -36,6 +45,7 @@ public abstract class Quest : ModType
 	protected override void Register()
 	{
 		QuestsByName.Add(FullName, this);
+		ModTypeLookup<Quest>.Register(this);
 	}
 
 	public static Quest GetQuest(string name)
@@ -43,12 +53,12 @@ public abstract class Quest : ModType
 		return QuestsByName[name];
 	}
 
-	public static LocalizedText Localize(string postfix)
+	public static LocalizedText QuestLocalization(string postfix)
 	{
 		return Language.GetText($"Mods.{PoTMod.ModName}.Quests." + postfix);
 	}
 
-	public static string LocalizeValue(string postfix)
+	public static string QuestLocalizationValue(string postfix)
 	{
 		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests." + postfix);
 	}
@@ -111,29 +121,34 @@ public abstract class Quest : ModType
 			return;
 		}
 
-		StartQuest(player, tag.GetInt("currentQuest"));
+		int step = tag.GetInt("currentQuest");
+		StartQuest(player, step);
+
+		for (int i = 0; i < step; ++i)
+		{
+			QuestSteps[i].IsDone = true;
+		}
+
 		ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
 	}
 
-	public static string LoadFrom(TagCompound tag, Player player)
+	/// <summary>
+	/// Loads a quest given the tag and player. This returns the singleton instance of the quest for convenience, if found.
+	/// </summary>
+	/// <param name="tag">The tag data for the quest.</param>
+	/// <param name="player">The player this is loading on.</param>
+	/// <returns>The quest singleton, if it was found.</returns>
+	public static Quest LoadFrom(TagCompound tag, Player player)
 	{
-		Type t = typeof(Quest).Assembly.GetType(tag.GetString("type"));
+		string name = tag.GetString("type");
 
-		if (t is null)
+		if (!ModContent.TryFind(name, out Quest quest))
 		{
-			PoTMod.Instance.Logger.Error($"Could not load quest of {tag.GetString("type")}, was it removed?");
+			PoTMod.Instance.Logger.Error($"Could not load quest of {name}, was it removed?");
 			return null;
 		}
 
-		string fullName = tag.GetString("type");
-		GetQuest(fullName).Load(tag, player);
-		return fullName;
-	}
-}
-
-public class QuestUpdater : ModSystem
-{
-	public override void PostUpdateEverything()
-	{
+		quest.Load(tag, player);
+		return quest;
 	}
 }

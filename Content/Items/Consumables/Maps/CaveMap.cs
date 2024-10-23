@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Items;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -23,6 +24,8 @@ internal class CaveMap : Map
 
 	public override void OpenMap()
 	{
+		Main.NewText(Main.MouseWorld.ToTileCoordinates());
+		return true;
 		MappingSystem.EnterCaveMap(this);
 	}
 
