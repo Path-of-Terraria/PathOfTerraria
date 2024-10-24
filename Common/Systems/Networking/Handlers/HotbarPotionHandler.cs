@@ -19,7 +19,7 @@ internal static class HotbarPotionHandler
 		}
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal static void ServerReceive(BinaryReader reader)
 	{
 		byte who = reader.ReadByte();
 		bool isHeal = reader.ReadBoolean();
@@ -35,7 +35,7 @@ internal static class HotbarPotionHandler
 		packet.Send(-1, who);
 	}
 	
-	internal static void ClientRecieve(BinaryReader reader)
+	internal static void ClientReceive(BinaryReader reader)
 	{
 		SetHotbarPotion(reader.ReadByte(), reader.ReadBoolean(), reader.ReadByte());
 	}

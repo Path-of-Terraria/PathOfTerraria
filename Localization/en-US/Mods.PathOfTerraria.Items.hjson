@@ -504,6 +504,11 @@ RopeClumpItem: {
 	Tooltip: ""
 }
 
+KingSlimeMap: {
+	DisplayName: King Slime Map
+	Tooltip: ""
+}
+
 TomeOfTheElders: {
 	DisplayName: Tome Of The Elders
 	Tooltip: Holds secrets unknowable to most, enlightening to few.

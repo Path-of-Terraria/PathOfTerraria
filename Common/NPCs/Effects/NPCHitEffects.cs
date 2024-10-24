@@ -47,13 +47,15 @@ public sealed class NPCHitEffects : NPCComponent
 			minAmount,
 			maxAmount,
 			predicate
-		) { }
+		)
+		{ }
 
 		public GoreSpawnParameters(string type, int amount, Func<NPC, bool>? predicate = null) : this(
 			ModContent.Find<ModGore>(type).Type,
 			amount,
 			predicate
-		) { }
+		)
+		{ }
 	}
 
 	public readonly struct DustSpawnParameters
@@ -98,22 +100,25 @@ public sealed class NPCHitEffects : NPCComponent
 			amount,
 			predicate,
 			initializer
-		) { }
+		)
+		{ }
 
 		public DustSpawnParameters(string type, int minAmount, int maxAmount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) : this(
 			ModContent.Find<ModDust>(type).Type,
 			minAmount,
 			maxAmount,
-			predicate, 
+			predicate,
 			initializer
-		) { }
+		)
+		{ }
 
 		public DustSpawnParameters(string type, int amount, Func<NPC, bool>? predicate = null, Action<Dust>? initializer = null) : this(
 			ModContent.Find<ModDust>(type).Type,
 			amount,
 			predicate,
 			initializer
-		) { }
+		)
+		{ }
 	}
 
 	public static bool OnDeath(NPC npc)
