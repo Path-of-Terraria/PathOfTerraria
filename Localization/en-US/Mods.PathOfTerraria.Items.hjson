@@ -508,3 +508,28 @@ TomeOfTheElders: {
 	DisplayName: Tome Of The Elders
 	Tooltip: Holds secrets unknowable to most, enlightening to few.
 }
+
+WoodenWand: {
+	DisplayName: Wooden Wand
+	Tooltip: Smells of the forest
+}
+
+MahoganyWand: {
+	DisplayName: Mahogany Wand
+	Tooltip: Smells of the jungle
+}
+
+EbonwoodWand: {
+	DisplayName: Ebonwood Wand
+	Tooltip: Smells of something evil
+}
+
+ShadewoodWand: {
+	DisplayName: Shadewood Wand
+	Tooltip: Smells of something disgusting
+}
+
+GemWand: {
+	DisplayName: Gem Wand
+	Tooltip: Smells of riches
+}

@@ -46,18 +46,18 @@ internal abstract class Boomerang : Gear, GetItemLevel.IItem
 
 	public override bool AltFunctionUse(Player player)
 	{
-		return true;
+		return !player.GetModPlayer<AltUsePlayer>().OnCooldown;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<BoomerangProjectile>(), damage, knockback, player.whoAmI, player.altFunctionUse / 2, Type);
-
 		if (player.altFunctionUse == 2)
 		{
 			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(180);
+			damage = (int)(damage * 1.5f);
 		}
 
+		Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<BoomerangProjectile>(), damage, knockback, player.whoAmI, player.altFunctionUse / 2, Type);
 		return false;
 	}
 }
