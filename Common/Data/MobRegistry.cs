@@ -27,16 +27,16 @@ public class MobRegistry : ILoadable
     ///
     /// Note: Must be called within a PostSetupContent() method belonging to a Mod or ModSystem class.
 	/// </summary>
-    public static void PostLoad(string pathToMobData)
+    public static void PostLoad(Mod myModInstance, string pathToMobData)
     {
 		var options = new JsonSerializerOptions
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
 		};
 
-		List<string> jsonFiles = PoTMod.Instance.GetFileNames();
+		List<string> jsonFiles = myModInstance.GetFileNames();
         string fileExtension = ".json";
-		foreach ((string filePath, Stream jsonStream) in from path in jsonFiles where path.StartsWith(pathToMobData) && path.EndsWith(fileExtension) select (path, PoTMod.Instance.GetFileStream(path)))
+		foreach ((string filePath, Stream jsonStream) in from path in jsonFiles where path.StartsWith(pathToMobData) && path.EndsWith(fileExtension) select (path, myModInstance.GetFileStream(path)))
 		{
 			using var jsonReader = new StreamReader(jsonStream);
 			string json = jsonReader.ReadToEnd();
@@ -51,11 +51,11 @@ public class MobRegistry : ILoadable
             int idValue;
             try
             {
-                idValue = ModContent.Find<ModNPC>($"{PoTMod.ModName}/{npcName}").Type;
+                idValue = ModContent.Find<ModNPC>($"{myModInstance.Name}/{npcName}").Type;
             }
             catch (KeyNotFoundException ex)
             {
-                Console.WriteLine($"{PoTMod.ModName}/{npcName} not found in ModContent");
+                Console.WriteLine($"{myModInstance.Name}/{npcName} not found in ModContent");
                 continue;
             }
             // Add the associated data into the Mob Registry
@@ -165,6 +165,6 @@ public class MobRegistryLoader: ModSystem
 	public override void PostSetupContent()
     {
         Console.WriteLine($"Adding PathOfTerraria NPC's to MobRegistry");
-        MobRegistry.PostLoad("Common/Data/Mobs/PathOfTerraria");
+        MobRegistry.PostLoad(PoTMod.Instance, "Common/Data/Mobs/PathOfTerraria");
     }
 }
