@@ -27,7 +27,7 @@ public class MobRegistry : ILoadable
     ///
     /// Note: Must be called within a PostSetupContent() method belonging to a Mod or ModSystem class.
 	/// </summary>
-    public static void PostLoad()
+    public static void PostLoad(string pathToMobData)
     {
 		var options = new JsonSerializerOptions
 		{
@@ -35,7 +35,6 @@ public class MobRegistry : ILoadable
 		};
 
 		List<string> jsonFiles = PoTMod.Instance.GetFileNames();
-        string pathToMobData = "Common/Data/Mobs/PathOfTerraria";
         string fileExtension = ".json";
 		foreach ((string filePath, Stream jsonStream) in from path in jsonFiles where path.StartsWith(pathToMobData) && path.EndsWith(fileExtension) select (path, PoTMod.Instance.GetFileStream(path)))
 		{
@@ -166,6 +165,6 @@ public class MobRegistryLoader: ModSystem
 	public override void PostSetupContent()
     {
         Console.WriteLine($"Adding PathOfTerraria NPC's to MobRegistry");
-        MobRegistry.PostLoad();
+        MobRegistry.PostLoad("Common/Data/Mobs/PathOfTerraria");
     }
 }
