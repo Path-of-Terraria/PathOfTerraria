@@ -14,7 +14,7 @@ namespace PathOfTerraria.Common.Subworlds;
 
 internal class RavencrestSubworld : MappingWorld
 {
-	public override int Width => 600;
+	public override int Width => 800;
 	public override int Height => 400;
 	public override bool ShouldSave => true;
 
@@ -35,18 +35,22 @@ internal class RavencrestSubworld : MappingWorld
 	public override void CopyMainWorldData()
 	{
 		SubworldSystem.CopyWorldData("smashedOrb", WorldGen.shadowOrbSmashed); // Copies this bool over since TownScoutNPC needs this
+		SubworldSystem.CopyWorldData("time", Main.time); // Keeps time consistent
+		SubworldSystem.CopyWorldData("dayTime", Main.dayTime); // Keeps time consistent
 	}
 
 	public override void ReadCopiedMainWorldData()
 	{
 		WorldGen.shadowOrbSmashed = SubworldSystem.ReadCopiedWorldData<bool>("smashedOrb");
+		Main.time = SubworldSystem.ReadCopiedWorldData<double>("time");
+		Main.dayTime = SubworldSystem.ReadCopiedWorldData<bool>("dayTime");
 	}
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
-		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(Main.maxTilesX / 2, Main.maxTilesY / 2 - 30), new(0.5f));
-		Main.spawnTileX = Width / 2;
-		Main.spawnTileY = 160;
+		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(41, 112), new(0));
+		Main.spawnTileX = 398;
+		Main.spawnTileY = 181;
 
 		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{
@@ -54,6 +58,10 @@ internal class RavencrestSubworld : MappingWorld
 			int y = npc.TileSpawn.Y * 16;
 			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
 		}
+	}
+
+	public override void Update()
+	{
 	}
 
 	public class RavencrestNPC : GlobalNPC 

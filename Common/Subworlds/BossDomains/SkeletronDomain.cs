@@ -656,9 +656,6 @@ public class SkeletronDomain : BossDomainSubworld
 	{
 		BossSpawned = false;
 		ReadyToExit = false;
-
-		Main.dayTime = false;
-		Main.time = Main.nightLength / 2;
 	}
 
 	public override void Update()

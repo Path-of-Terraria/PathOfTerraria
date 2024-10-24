@@ -499,16 +499,10 @@ public class EaterDomain : BossDomainSubworld
 
 		BossSpawned = false;
 		ReadyToExit = false;
-
-		Main.dayTime = true;
-		Main.time = Main.dayLength - 1800;
 	}
 
 	public override void Update()
 	{
-		Main.dayTime = true;
-		Main.time = Main.dayLength - 1800;
-
 		bool allInArena = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
 		foreach (Player player in Main.ActivePlayers)

@@ -597,10 +597,6 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 		TileEntity.UpdateEnd();
 
-		Main.dayTime = false;
-		Main.time = Main.nightLength / 2;
-		Main.moonPhase = (int)MoonPhase.Full;
-
 		if (NPC.AnyNPCs(NPCID.WallofFlesh))
 		{
 			if (!BossSpawned) // Remove all flesh blocks
