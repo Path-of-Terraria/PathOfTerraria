@@ -62,3 +62,8 @@ FallingPusBlock.DisplayName: Falling Pus Block
 VoodooRopeProj.DisplayName: Voodoo Rope Proj
 LightBallProjectile.DisplayName: Light Ball Projectile
 IcicleProjectile.DisplayName: Icicle Projectile
+WoodenWandProjectile.DisplayName: Wooden Wand Projectile
+MahoganyWandProjectile.DisplayName: Mahogany Wand Projectile
+EbonwoodWandProjectile.DisplayName: Ebonwood Wand Projectile
+ShadewoodWandProjectile.DisplayName: Shadewood Wand Projectile
+GemWandProjectile.DisplayName: Gem Wand Projectile

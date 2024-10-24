@@ -171,6 +171,8 @@ Spellbook: {
 }
 
 Wand: {
+	AltUse: Summon 4x the normal mana cost to send a flurry of projectiles forward
+
 	Prefixes: {
 		0: Arcane
 		1: Mystic
