@@ -163,6 +163,7 @@ RavenNPC.DisplayName: Ephemeral Raven
 ControllableSpikeball.DisplayName: Spikeball
 
 WitchNPC: {
+  DisplayName: Morgana
 	QuestCondition: Collect 2 Owl Feathers and 1 Bat Wing
 	SummonCondition: Summon the Owl with the Grimoire
 
@@ -175,8 +176,6 @@ WitchNPC: {
 		Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon the Owl! Not a ghastly beast, but one that'll help you regardless! Be well, and may the phoenix find you well!
 		Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder.
 	}
-
-	DisplayName: Morgana
 }
 
 WizardNPC: {

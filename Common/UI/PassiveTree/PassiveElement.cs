@@ -11,13 +11,13 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 
 internal class PassiveElement : SmartUiElement
 {
+	private static TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
+
 	private readonly Passive _passive;
 
 	private int _flashTimer;
 	private int _redFlashTimer;
 
-	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
-	
 	public PassiveElement(Passive passive)
 	{
 		float halfSizeX = passive.Size.X / 2;
