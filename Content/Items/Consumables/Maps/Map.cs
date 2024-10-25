@@ -10,7 +10,12 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
 internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
 {
-	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Consumables/Maps/Map";
+	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Consumables/Maps/{GetType().Name}";
+
+	public abstract int MaxUses { get; }
+
+	public int RemainingUses = 0;
+
 	private int _tier;
 
 	int GetItemLevel.IItem.GetItemLevel(int realLevel)
@@ -29,11 +34,6 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 
 		Item.width = 32;
 		Item.height = 32;
-		Item.useStyle = ItemUseStyleID.DrinkLiquid;
-		Item.useAnimation = 15;
-		Item.useTime = 15;
-		Item.useTurn = true;
-		Item.UseSound = SoundID.Item3;
 		Item.maxStack = 1;
 		Item.consumable = false;
 		Item.rare = ItemRarityID.Green;
@@ -43,7 +43,9 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 		data.ItemType = ItemType.Map;
 	}
 
-	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone;  }
+	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone; }
+
+	public abstract void OpenMap();
 
 	/// <summary>
 	/// Gets name and what tier the map is of as a singular string.
@@ -51,12 +53,6 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 	public virtual string GetNameAndTier()
 	{
 		return Core.Items.GenerateName.Invoke(Item) + ": " + _tier;
-	}
-	
-	public override bool? UseItem(Player player)
-	{
-		MappingSystem.EnterMap(this);
-		return true;
 	}
 
 	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
@@ -106,15 +102,13 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 	public override void SaveData(TagCompound tag)
 	{
 		tag["tier"] = _tier;
-
-		base.SaveData(tag);
+		tag.Add("usesLeft", (byte)RemainingUses);
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
 		_tier = tag.GetInt("tier");
-
-		base.LoadData(tag);
+		RemainingUses = tag.GetByte("usesLeft");
 	}
 
 	public abstract string GenerateName(string defaultName);

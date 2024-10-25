@@ -12,6 +12,8 @@ internal class CaveMap : Map
 	public int SpawnRoomSize = 10;
 	public int ExtraRoomDist = 10;
 
+	public override int MaxUses => 1;
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -20,12 +22,11 @@ internal class CaveMap : Map
 		staticData.DropChance = 1f;
 	}
 
-	public override bool? UseItem(Player player)
+	public override void OpenMap()
 	{
 		Main.NewText(Main.MouseWorld.ToTileCoordinates());
 		return true;
 		MappingSystem.EnterCaveMap(this);
-		return true;
 	}
 
 	public override string GenerateName(string defaultName)

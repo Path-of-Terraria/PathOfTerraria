@@ -56,7 +56,7 @@
 			}
 		],
 		"position": {
-			"x": 100,
+			"x": 150,
 			"y": 100
 		}
 	},
@@ -171,12 +171,12 @@
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 7
+				"referenceId": 4
 			}
 		],
 		"position": {
-			"x": -300,
-			"y": 100
+			"x": -100,
+			"y": 0
 		}
 	}
 ]

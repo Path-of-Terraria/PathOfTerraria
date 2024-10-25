@@ -15,6 +15,7 @@ internal class SkillSelectionPanel : SmartUiElement
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		base.Draw(spriteBatch);
+
 		if (!_drewSkills && SelectedSkill == null)
 		{
 			_drewSkills = true;
