@@ -29,6 +29,7 @@ public class MobRegistry : ILoadable
 	/// </summary>
     public static void PostLoad(Mod myModInstance, string pathToMobData)
     {
+        Console.WriteLine($"Loading mob data from mod: {mod.Name}");
 		var options = new JsonSerializerOptions
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
@@ -164,7 +165,7 @@ public class MobRegistryLoader: ModSystem
 {
 	public override void PostSetupContent()
     {
-        Console.WriteLine($"Adding PathOfTerraria NPC's to MobRegistry");
+        Console.WriteLine($"Adding Mod NPC's to MobRegistry");
         MobRegistry.PostLoad(PoTMod.Instance, "Common/Data/Mobs/PathOfTerraria");
     }
 }
