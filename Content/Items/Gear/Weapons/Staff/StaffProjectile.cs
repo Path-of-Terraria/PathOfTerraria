@@ -93,15 +93,20 @@ internal abstract class StaffProjectile : ModProjectile
 		{
 			Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * Owner.HeldItem.shootSpeed;
 			LetGo = true;
-		}
 
-		if (Charge == MaxCharge)
-		{
 			if (!Owner.CheckMana(Owner.HeldItem.mana, true))
 			{
 				Projectile.Kill();
 				Owner.channel = false;
 				return;
+			}
+		}
+
+		if (Charge == MaxCharge)
+		{
+			if (Owner.GetModPlayer<StaffPlayer>().Empowered)
+			{
+				Owner.channel = false;
 			}
 
 			for (int i = 0; i < 4; ++i)

@@ -114,7 +114,7 @@ Bow: {
 }
 
 Staff: {
-	AltUse: Overcharge your mana for a short time, summoning projectiles four times faster
+	AltUse: Overcharge your mana for a short time, summoning projectiles four times faster and automatically firing them
 
 	Prefixes: {
 		0: Arcane

@@ -24,8 +24,6 @@ internal class CaveMap : Map
 
 	public override void OpenMap()
 	{
-		Main.NewText(Main.MouseWorld.ToTileCoordinates());
-		return;
 		MappingSystem.EnterCaveMap(this);
 	}
 
