@@ -1,13 +1,18 @@
-﻿using PathOfTerraria.Content.Projectiles.Magic;
+﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Content.Projectiles.Magic;
 using PathOfTerraria.Core.Items;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
-internal class Staff : Gear
+internal abstract class Staff : Gear
 {
-	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Staff/ExampleStaff";
+	public const int AltActiveTime = 60 * 4;
+	public const int AltCooldownTime = 60 * 14;
 
 	protected override string GearLocalizationCategory => "Staff";
 
@@ -17,23 +22,64 @@ internal class Staff : Gear
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
+		staticData.AltUseDescription = Language.GetText("Mods.PathOfTerraria.Gear.Staff.AltUse");
+
+		Item.staff[Type] = true;
 	}
 
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
-		// DefaultToStaff handles setting various Item values that magic staff weapons use.
-		// Hover over DefaultToStaff in Visual Studio to read the documentation!
-		Item.DefaultToStaff(ModContent.ProjectileType<SparklingBallProjectile>(), 16, 25, 12);
-
-		// Customize the UseSound. DefaultToStaff sets UseSound to SoundID.Item43, but we want SoundID.Item20
+		// Base shoot is set to BeeArrow so it's obvious if the user misses setting the shot projectile ID
+		Item.DefaultToStaff(ProjectileID.BeeArrow, 16, 25, 12);
 		Item.UseSound = SoundID.Item20;
+		Item.SetWeaponValues(20, 1);
+		Item.SetShopValues(ItemRarityColor.Green2, 150);
+		Item.useStyle = ItemUseStyleID.Shoot;
+		Item.noUseGraphic = true;
+		Item.channel = true;
+		Item.autoReuse = true;
+		Item.mana = 12;
+	}
 
-		// Set damage and knockBack
-		Item.SetWeaponValues(20, 5);
+	public override bool? CanAutoReuseItem(Player player)
+	{
+		return player.GetModPlayer<StaffPlayer>().Empowered;
+	}
 
-		// Set rarity and value
-		Item.SetShopValues(ItemRarityColor.Green2, 10000);
+	public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
+	{
+		mult = 0;
+	}
+
+	public override bool AltFunctionUse(Player player)
+	{
+		return !player.GetModPlayer<AltUsePlayer>().OnCooldown;
+	}
+
+	public override bool CanUseItem(Player player)
+	{
+		if (player.altFunctionUse == 2)
+		{
+			player.GetModPlayer<StaffPlayer>().EmpoweredStaffTime = AltActiveTime;
+			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime, AltActiveTime);
+
+			if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				SyncStaffAltHandler.Send((byte)player.whoAmI);
+			}
+
+			return false;
+		}
+
+		return true;
+	}
+
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<StaffHeldProjectile>(), 0, 0, player.whoAmI, Item.type);
+
+		return true;
 	}
 }

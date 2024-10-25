@@ -163,7 +163,7 @@ RavenNPC.DisplayName: Ephemeral Raven
 ControllableSpikeball.DisplayName: Spikeball
 
 WitchNPC: {
-  DisplayName: Morgana
+	DisplayName: Morgana
 	QuestCondition: Collect 2 Owl Feathers and 1 Bat Wing
 	SummonCondition: Summon the Owl with the Grimoire
 
