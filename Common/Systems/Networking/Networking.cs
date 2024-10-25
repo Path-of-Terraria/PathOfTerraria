@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Networking.Handlers.MapDevice;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Networking;
@@ -34,6 +35,17 @@ internal static class Networking
 		SpawnNPCOnServer,
 
 		/// <summary>
+		/// Syncs placing an item in a map device. Signature:<br/>
+		/// <c>byte fromWho, short itemId, Point16 entityKey</c>
+		/// </summary>
+		SyncMapDevicePlaceMap,
+
+		/// <summary>
+		/// 
+		/// </summary>
+		ConsumeMapOffOfDevice,
+
+		/// <summary>
 		/// Sets the index of a given Ravencrest structure. Signature:<br/>
 		/// <c>string name, int index</c>
 		/// </summary>
@@ -55,11 +67,11 @@ internal static class Networking
 			case Message.SpawnExperience:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					ExperienceHandler.ServerRecieve(reader);
+					ExperienceHandler.ServerReceive(reader);
 				}
 				else
 				{
-					ExperienceHandler.ServerRecieve(reader);
+					ExperienceHandler.ClientReceive(reader);
 				}
 
 				break;
@@ -67,11 +79,11 @@ internal static class Networking
 			case Message.SetHotbarPotionUse:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					HotbarPotionHandler.ServerRecieve(reader);
+					HotbarPotionHandler.ServerReceive(reader);
 				}
 				else
 				{
-					HotbarPotionHandler.ClientRecieve(reader);
+					HotbarPotionHandler.ClientReceive(reader);
 				}
 
 				break;
@@ -79,11 +91,35 @@ internal static class Networking
 			case Message.SyncGuardianAngelHit:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					SyncGuardianAngelHandler.ServerRecieve(reader);
+					SyncGuardianAngelHandler.ServerReceive(reader);
 				}
 				else
 				{
-					SyncGuardianAngelHandler.ClientRecieve(reader);
+					SyncGuardianAngelHandler.ClientReceive(reader);
+				}
+
+				break;
+
+			case Message.SyncMapDevicePlaceMap:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					PlaceMapInDeviceHandler.ServerReceive(reader);
+				}
+				else
+				{
+					PlaceMapInDeviceHandler.ClientReceive(reader);
+				}
+
+				break;
+
+			case Message.ConsumeMapOffOfDevice:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					ConsumeMapDeviceHandler.ServerReceive(reader);
+				}
+				else
+				{
+					ConsumeMapDeviceHandler.ClientReceive(reader);
 				}
 
 				break;

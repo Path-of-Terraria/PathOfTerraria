@@ -62,3 +62,8 @@ FallingPusBlock.DisplayName: Falling Pus Block
 VoodooRopeProj.DisplayName: Voodoo Rope Proj
 LightBallProjectile.DisplayName: Light Ball Projectile
 IcicleProjectile.DisplayName: Icicle Projectile
+WoodenWandProjectile.DisplayName: Clump of Leaves
+MahoganyWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+EbonwoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+ShadewoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+GemWandProjectile.DisplayName: Gem

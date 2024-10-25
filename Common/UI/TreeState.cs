@@ -15,6 +15,7 @@ internal class TreeState : DraggableSmartUi
 {
 	private PassiveTreeInnerPanel _passiveTreeInner;
 	private SkillSelectionPanel _skillSelection;
+
 	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillSelection];
 
 	public override int DepthPriority => 1;
@@ -44,30 +45,34 @@ internal class TreeState : DraggableSmartUi
 			BotRightTree = Vector2.Zero;
 			var localizedTexts = new (string key, LocalizedText text)[]
 			{
-				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
-				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
+			(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
+			(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
 			};
 			base.CreateMainPanel(localizedTexts, false);
 			base.AppendChildren();
 			AddCloseButton();
-
-			_passiveTreeInner.RemoveAllChildren();
-
-			PassiveTreeSystem.CreateTree();
-			PassiveTreeSystem.ActiveNodes.ForEach(n =>
-			{
-				if (n is JewelSocket socket)
-				{
-					_passiveTreeInner.Append(new PassiveSocket(socket));
-				}
-				else
-				{
-					_passiveTreeInner.Append(new PassiveElement(n));
-				}
-			});
+			ResetTree();
 		}
 
 		IsVisible = true;
+	}
+
+	internal void ResetTree()
+	{
+		_passiveTreeInner.RemoveAllChildren();
+
+		PassiveTreeSystem.CreateTree();
+		PassiveTreeSystem.ActiveNodes.ForEach(n =>
+		{
+			if (n is JewelSocket socket)
+			{
+				_passiveTreeInner.Append(new PassiveSocket(socket));
+			}
+			else
+			{
+				_passiveTreeInner.Append(new PassiveElement(n));
+			}
+		});
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
