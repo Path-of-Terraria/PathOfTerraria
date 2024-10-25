@@ -127,7 +127,6 @@ internal abstract class StaffProjectile : ModProjectile
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType, vel.X, vel.Y);
 			}
 
-
 			PassedCharge = true;
 		}
 	}
