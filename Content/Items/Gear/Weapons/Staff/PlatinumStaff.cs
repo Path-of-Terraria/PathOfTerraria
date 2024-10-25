@@ -5,8 +5,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
 internal class PlatinumStaff : Staff
 {
-	protected override int StaffType => ModContent.ProjectileType<PlatinumStaffHeld>();
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -38,9 +36,5 @@ internal class PlatinumStaff : Staff
 			Projectile.penetrate = 3;
 			Projectile.Size = new Vector2(24);
 		}
-	}
-
-	public class PlatinumStaffHeld : StaffHeldProjectile
-	{
 	}
 }

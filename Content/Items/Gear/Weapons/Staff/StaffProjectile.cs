@@ -24,6 +24,12 @@ internal abstract class StaffProjectile : ModProjectile
 		set => Projectile.ai[1] = value ? 1 : 0;
 	}
 
+	private bool PassedCharge
+	{
+		get => Projectile.ai[2] == 1;
+		set => Projectile.ai[2] = value ? 1 : 0;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 5;
@@ -56,7 +62,7 @@ internal abstract class StaffProjectile : ModProjectile
 		TorchID.TorchColor(TorchType, out float r, out float g, out float b);
 		Lighting.AddLight(Projectile.Center, new Vector3(r, g, b) * 0.25f);
 
-		if (Main.rand.NextBool(16))
+		if (Main.rand.NextBool((int)MathHelper.Lerp(30, 16, Projectile.scale)))
 		{
 			Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType);
 		}
@@ -79,34 +85,40 @@ internal abstract class StaffProjectile : ModProjectile
 
 		if (Owner.GetModPlayer<StaffPlayer>().Empowered)
 		{
-			Charge += 3;
+			Charge += 7;
 		}
 
 		if (++Charge < MaxCharge || Owner.channel)
 		{
 			Projectile.timeLeft++;
 			Projectile.scale = Math.Min(1, Charge / MaxCharge);
-			Projectile.Center = Vector2.Lerp(Projectile.Center, Owner.Center + Projectile.DirectionTo(Main.MouseWorld) * ChargeOffset, 0.2f);
+
+			if (Main.myPlayer == Projectile.owner)
+			{
+				Projectile.Center = Vector2.Lerp(Projectile.Center, Owner.Center + Projectile.DirectionTo(Main.MouseWorld) * ChargeOffset, 0.2f);
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+				}
+			}
+
 			Projectile.Opacity = Charge / MaxCharge;
 		}
 		else if (!Owner.channel && !LetGo)
 		{
-			Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * Owner.HeldItem.shootSpeed;
-			LetGo = true;
-
-			if (!Owner.CheckMana(Owner.HeldItem.mana, true))
-			{
-				Projectile.Kill();
-				Owner.channel = false;
-				return;
-			}
+			ReleaseProjectile();
 		}
 
-		if (Charge == MaxCharge)
+		if (!PassedCharge && Charge >= MaxCharge)
 		{
-			if (Owner.GetModPlayer<StaffPlayer>().Empowered)
+			if (Owner.GetModPlayer<StaffPlayer>().Empowered) // Automatically release projectile for easier spam
 			{
-				Owner.channel = false;
+				ReleaseProjectile();
+			}
+			else // Don't play sound when empowered, it's annoying
+			{
+				SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
 			}
 
 			for (int i = 0; i < 4; ++i)
@@ -115,7 +127,30 @@ internal abstract class StaffProjectile : ModProjectile
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType, vel.X, vel.Y);
 			}
 
-			SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
+
+			PassedCharge = true;
+		}
+	}
+
+	public void ReleaseProjectile()
+	{
+		if (Main.myPlayer == Projectile.owner)
+		{
+			Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * Owner.HeldItem.shootSpeed;
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+			}
+		}
+
+		LetGo = true;
+
+		if (!Owner.CheckMana(Owner.HeldItem.mana, true))
+		{
+			Projectile.Kill();
+			Owner.channel = false;
+			return;
 		}
 	}
 

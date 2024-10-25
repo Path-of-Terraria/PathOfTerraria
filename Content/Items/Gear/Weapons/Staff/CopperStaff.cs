@@ -2,8 +2,6 @@
 
 internal class CopperStaff : Staff
 {
-	protected override int StaffType => ModContent.ProjectileType<CopperStaffHeld>();
-
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
@@ -12,10 +10,6 @@ internal class CopperStaff : Staff
 	}
 
 	public class CopperStaffProjectile : StaffProjectile
-	{
-	}
-
-	public class CopperStaffHeld : StaffHeldProjectile
 	{
 	}
 }

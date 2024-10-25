@@ -5,8 +5,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
 internal class SilverStaff : Staff
 {
-	protected override int StaffType => ModContent.ProjectileType<SilverStaffHeld>();
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -30,9 +28,5 @@ internal class SilverStaff : Staff
 		public override int DustType => DustID.GemEmerald;
 		public override int MaxCharge => 70;
 		public override int TorchType => TorchID.Green;
-	}
-
-	public class SilverStaffHeld : StaffHeldProjectile
-	{
 	}
 }

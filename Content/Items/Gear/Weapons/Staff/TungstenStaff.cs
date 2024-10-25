@@ -5,8 +5,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
 internal class TungstenStaff : Staff
 {
-	protected override int StaffType => ModContent.ProjectileType<TungstenStaffHeld>();
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -37,9 +35,5 @@ internal class TungstenStaff : Staff
 
 			Projectile.penetrate = 3;
 		}
-	}
-
-	public class TungstenStaffHeld : StaffHeldProjectile
-	{
 	}
 }

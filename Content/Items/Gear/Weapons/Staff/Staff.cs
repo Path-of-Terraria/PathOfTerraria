@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Content.Projectiles.Magic;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
@@ -10,7 +11,8 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
 internal abstract class Staff : Gear
 {
-	protected abstract int StaffType { get; }
+	public const int AltActiveTime = 60 * 4;
+	public const int AltCooldownTime = 60 * 14;
 
 	protected override string GearLocalizationCategory => "Staff";
 
@@ -29,15 +31,21 @@ internal abstract class Staff : Gear
 	{
 		base.SetDefaults();
 
-		Item.DefaultToStaff(ModContent.ProjectileType<SparklingBallProjectile>(), 16, 25, 12);
+		// Base shoot is set to BeeArrow so it's obvious if the user misses setting the shot projectile ID
+		Item.DefaultToStaff(ProjectileID.BeeArrow, 16, 25, 12);
 		Item.UseSound = SoundID.Item20;
 		Item.SetWeaponValues(20, 1);
 		Item.SetShopValues(ItemRarityColor.Green2, 150);
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.noUseGraphic = true;
 		Item.channel = true;
-		Item.autoReuse = false;
+		Item.autoReuse = true;
 		Item.mana = 12;
+	}
+
+	public override bool? CanAutoReuseItem(Player player)
+	{
+		return player.GetModPlayer<StaffPlayer>().Empowered;
 	}
 
 	public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
@@ -54,10 +62,14 @@ internal abstract class Staff : Gear
 	{
 		if (player.altFunctionUse == 2)
 		{
-			const int ActiveTime = 120;
+			player.GetModPlayer<StaffPlayer>().EmpoweredStaffTime = AltActiveTime;
+			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime, AltActiveTime);
 
-			player.GetModPlayer<StaffPlayer>().EmpoweredStaffTime = ActiveTime;
-			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(60 * 10, ActiveTime);
+			if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				SyncStaffAltHandler.Send((byte)player.whoAmI);
+			}
+
 			return false;
 		}
 
@@ -66,7 +78,7 @@ internal abstract class Staff : Gear
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		Projectile.NewProjectile(source, player.Center, Vector2.Zero, StaffType, 0, 0, player.whoAmI);
+		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<StaffHeldProjectile>(), 0, 0, player.whoAmI, Item.type);
 
 		return true;
 	}

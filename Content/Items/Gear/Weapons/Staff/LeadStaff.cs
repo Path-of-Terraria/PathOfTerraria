@@ -5,8 +5,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
 internal class LeadStaff : Staff
 {
-	protected override int StaffType => ModContent.ProjectileType<LeadStaffHeld>();
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -37,9 +35,5 @@ internal class LeadStaff : Staff
 
 			Projectile.penetrate = 2;
 		}
-	}
-
-	public class LeadStaffHeld : StaffHeldProjectile
-	{
 	}
 }

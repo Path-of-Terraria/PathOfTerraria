@@ -5,8 +5,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 
 internal class IronStaff : Staff
 {
-	protected override int StaffType => ModContent.ProjectileType<IronStaffHeld>();
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -29,9 +27,5 @@ internal class IronStaff : Staff
 	{
 		public override int DustType => DustID.GemTopaz;
 		public override int TorchType => TorchID.Yellow;
-	}
-
-	public class IronStaffHeld : StaffHeldProjectile
-	{
 	}
 }
