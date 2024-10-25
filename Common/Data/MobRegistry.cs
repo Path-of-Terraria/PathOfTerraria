@@ -29,7 +29,7 @@ public class MobRegistry : ILoadable
 	/// </summary>
     public static void PostLoad(Mod myModInstance, string pathToMobData)
     {
-        Console.WriteLine($"Loading mob data from mod: {mod.Name}");
+        Console.WriteLine($"Loading mob data from mod: {myModInstance.Name}");
 		var options = new JsonSerializerOptions
 		{
 			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
