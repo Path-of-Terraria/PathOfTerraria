@@ -67,3 +67,17 @@ MahoganyWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
 EbonwoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
 ShadewoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
 GemWandProjectile.DisplayName: Gem
+CopperStaffProjectile.DisplayName: Copper Staff Projectile
+CopperStaffHeld.DisplayName: Copper Staff Held
+IronStaffHeld.DisplayName: Iron Staff Held
+IronStaffProjectile.DisplayName: Iron Staff Projectile
+LeadStaffHeld.DisplayName: Lead Staff Held
+LeadStaffProjectile.DisplayName: Lead Staff Projectile
+SilverStaffHeld.DisplayName: Silver Staff Held
+SilverStaffProjectile.DisplayName: Silver Staff Projectile
+TungstenStaffHeld.DisplayName: Tungsten Staff Held
+TungstenStaffProjectile.DisplayName: Tungsten Staff Projectile
+GoldStaffHeld.DisplayName: Gold Staff Held
+GoldStaffProjectile.DisplayName: Gold Staff Projectile
+PlatinumStaffHeld.DisplayName: Platinum Staff Held
+PlatinumStaffProjectile.DisplayName: Platinum Staff Projectile

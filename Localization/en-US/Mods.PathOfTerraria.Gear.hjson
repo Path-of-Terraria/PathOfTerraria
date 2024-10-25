@@ -114,6 +114,8 @@ Bow: {
 }
 
 Staff: {
+	AltUse: Overcharge your mana for a short time, summoning projectiles four times faster
+
 	Prefixes: {
 		0: Arcane
 		1: Mystic
