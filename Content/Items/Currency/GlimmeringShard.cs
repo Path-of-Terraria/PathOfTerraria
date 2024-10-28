@@ -24,9 +24,6 @@ internal class GlimmeringShard : ModItem
 		{
 			player.HeldItem.GetInstanceData().Affixes.Clear();
 			PoTItemHelper.Roll(player.HeldItem, player.HeldItem.GetInstanceData().RealLevel);
-
-			foreach (var s in player.HeldItem.GetInstanceData().Affixes)
-			Main.NewText(s.Name);
 		}
 		else
 		{
