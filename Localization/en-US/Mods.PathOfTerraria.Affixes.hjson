@@ -45,7 +45,7 @@ NoFallDamageAffix: {
 	Removed: Vulnerable to fall damage
 }
 
-PercentageIncreasedCriticalStrikeChanceAffix.Description: "{1}{0} to stat"
-PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0} to stat"
-FlatCriticalStrikeChanceAffix.Description: "{1}{0} to stat"
-PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0} to stat"
+PercentageIncreasedCriticalStrikeChanceAffix.Description: "{1}{0}% critical strike chance"
+PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% critical strike multiplier"
+FlatCriticalStrikeChanceAffix.Description: "{1}{0} flat critical strike chance"
+PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% critical strike damage"

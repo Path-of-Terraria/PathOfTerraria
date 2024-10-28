@@ -573,3 +573,13 @@ PlatinumStaff: {
 	DisplayName: Platinum Staff
 	Tooltip: ""
 }
+
+GlimmeringShard: {
+	DisplayName: Glimmering Shard
+	Tooltip:
+		'''
+		Rerolls the affixes on Magic rarity items
+		Hold an item then right click this Shard to reroll the item
+		'Glimmers and shines unnaturally'
+		'''
+}
