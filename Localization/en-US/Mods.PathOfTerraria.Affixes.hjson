@@ -46,6 +46,6 @@ NoFallDamageAffix: {
 }
 
 PercentageIncreasedCriticalStrikeChanceAffix.Description: "{1}{0}% critical strike chance"
-PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% critical strike chance"
+PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% critical strike multiplier"
 FlatCriticalStrikeChanceAffix.Description: "{1}{0} flat critical strike chance"
 PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% critical strike damage"
