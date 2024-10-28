@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.GameContent;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
@@ -85,10 +86,10 @@ public class Tooltip : SmartUiState, ILoadable
 		}
 
 		Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(20, 20, 55) * 0.925f);
-		Utils.DrawBorderString(Main.spriteBatch, text, pos, Color.White);
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, pos, Color.White, 0f, Vector2.Zero, Vector2.One);
 		pos.Y += ChatManager.GetStringSize(font, text, Vector2.One).Y + 4;
 
-		Utils.DrawBorderString(Main.spriteBatch, tooltip, pos, Color.LightGray, 0.9f);
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, tooltip, pos, Color.White, 0f, Vector2.Zero, new(0.9f));
 	}
 
 	private void Reset(On_Main.orig_Update orig, Main self, GameTime gameTime)

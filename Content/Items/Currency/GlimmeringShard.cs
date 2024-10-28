@@ -3,7 +3,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
-internal class GlimmeringShard : ModItem
+internal class GlimmeringShard : CurrencyShard
 {
 	public override void SetDefaults()
 	{
