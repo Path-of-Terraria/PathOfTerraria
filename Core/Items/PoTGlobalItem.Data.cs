@@ -25,8 +25,7 @@ public sealed class PoTInstanceItemData : GlobalItem
 		clone.SpecialName = SpecialName;
 		clone.ImplicitCount = ImplicitCount;
 		clone.RealLevel = RealLevel;
-		clone.Affixes = [];
-		clone.Affixes.AddRange(Affixes);
+		clone.Affixes = Affixes;
 		return clone;
 	}
 

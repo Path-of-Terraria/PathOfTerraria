@@ -10,20 +10,27 @@ internal class GlimmeringShard : ModItem
 		Item.CloneDefaults(ItemID.Silk);
 		Item.Size = new Vector2(30, 28);
 		Item.rare = ItemRarityID.Green;
+		Item.consumable = true; // Purely for the tooltip line
 	}
 
-	private class GlimmeringShardRightClickCheck : GlobalItem
+	public override bool CanRightClick()
 	{
-		public override void RightClick(Item item, Player player)
-		{
-			item.stack++;
+		return true;
+	}
 
-			if (player.HeldItem.type == ModContent.ItemType<GlimmeringShard>() && item.TryGetGlobalItem(out PoTGlobalItem potGlobal) 
-				&& item.GetInstanceData().Rarity == Common.Enums.ItemRarity.Magic)
-			{
-				item.GetInstanceData().Affixes.Clear();
-				PoTItemHelper.Roll(item, item.GetInstanceData().RealLevel);
-			}
+	public override void RightClick(Player player)
+	{
+		if (player.HeldItem.TryGetGlobalItem(out PoTGlobalItem _) && player.HeldItem.GetInstanceData().Rarity == Common.Enums.ItemRarity.Magic)
+		{
+			player.HeldItem.GetInstanceData().Affixes.Clear();
+			PoTItemHelper.Roll(player.HeldItem, player.HeldItem.GetInstanceData().RealLevel);
+
+			foreach (var s in player.HeldItem.GetInstanceData().Affixes)
+			Main.NewText(s.Name);
+		}
+		else
+		{
+			Item.stack++;
 		}
 	}
 }
