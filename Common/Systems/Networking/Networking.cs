@@ -41,7 +41,7 @@ internal static class Networking
 		SyncMapDevicePlaceMap,
 
 		/// <summary>
-		/// 
+		/// Takes 1 "use" off of a given map device.
 		/// </summary>
 		ConsumeMapOffOfDevice,
 
@@ -56,6 +56,12 @@ internal static class Networking
 		/// <c>int id, bool add</c>
 		/// </summary>
 		SyncConditionalDrop,
+
+		/// <summary>
+		/// Syncs the usage of a staff's alt use. This is invariable and always sets to the same value. Signature:<br/>
+		/// <c>byte whoAmI</c>
+		/// </summary>
+		SyncUseStaffAltUse,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -67,11 +73,11 @@ internal static class Networking
 			case Message.SpawnExperience:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					ExperienceHandler.ServerReceive(reader);
+					ExperienceHandler.ServerRecieve(reader);
 				}
 				else
 				{
-					ExperienceHandler.ClientReceive(reader);
+					ExperienceHandler.ClientRecieve(reader);
 				}
 
 				break;
@@ -79,11 +85,11 @@ internal static class Networking
 			case Message.SetHotbarPotionUse:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					HotbarPotionHandler.ServerReceive(reader);
+					HotbarPotionHandler.ServerRecieve(reader);
 				}
 				else
 				{
-					HotbarPotionHandler.ClientReceive(reader);
+					HotbarPotionHandler.ClientRecieve(reader);
 				}
 
 				break;
@@ -103,11 +109,11 @@ internal static class Networking
 			case Message.SyncMapDevicePlaceMap:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					PlaceMapInDeviceHandler.ServerReceive(reader);
+					PlaceMapInDeviceHandler.ServerRecieve(reader);
 				}
 				else
 				{
-					PlaceMapInDeviceHandler.ClientReceive(reader);
+					PlaceMapInDeviceHandler.ClientRecieve(reader);
 				}
 
 				break;
@@ -115,11 +121,11 @@ internal static class Networking
 			case Message.ConsumeMapOffOfDevice:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					ConsumeMapDeviceHandler.ServerReceive(reader);
+					ConsumeMapDeviceHandler.ServerRecieve(reader);
 				}
 				else
 				{
-					ConsumeMapDeviceHandler.ClientReceive(reader);
+					ConsumeMapDeviceHandler.ClientRecieve(reader);
 				}
 
 				break;
@@ -136,6 +142,18 @@ internal static class Networking
 				if (Main.netMode == NetmodeID.Server)
 				{
 					RavencrestBuildingIndex.ServerRecieve(reader);
+				}
+
+				break;
+
+			case Message.SyncUseStaffAltUse:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SyncStaffAltHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					SyncStaffAltHandler.ClientRecieve(reader);
 				}
 
 				break;

@@ -34,11 +34,8 @@ internal static class SpawnNPCOnServerHandler
 		Vector2 pos = reader.ReadVector2();
 		Vector2 velocity = default;
 
-		PoTMod.Instance.Logger.Debug("GOT NPC: PARAMCOUNT: " + paramCount);
-
 		if (paramCount > 2)
 		{
-			PoTMod.Instance.Logger.Debug("READING VELOCITY: " + velocity);
 			velocity = reader.ReadVector2();
 		}
 

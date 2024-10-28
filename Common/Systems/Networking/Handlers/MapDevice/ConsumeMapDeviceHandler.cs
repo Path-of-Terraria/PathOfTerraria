@@ -22,7 +22,7 @@ internal static class ConsumeMapDeviceHandler
 		packet.Send();
 	}
 
-	internal static void ServerReceive(BinaryReader reader)
+	internal static void ServerRecieve(BinaryReader reader)
 	{
 		ModPacket packet = Networking.GetPacket(Networking.Message.ConsumeMapOffOfDevice);
 		byte fromWho = reader.ReadByte();
@@ -41,7 +41,7 @@ internal static class ConsumeMapDeviceHandler
 		ModContent.GetInstance<PoTMod>().Logger.Debug($"GOT: x:{x} - y:{y} - from:{fromWho}");
 	}
 
-	internal static void ClientReceive(BinaryReader reader)
+	internal static void ClientRecieve(BinaryReader reader)
 	{
 		short x = reader.ReadInt16();
 		short y = reader.ReadInt16();

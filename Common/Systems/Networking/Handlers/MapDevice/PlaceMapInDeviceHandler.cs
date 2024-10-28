@@ -23,7 +23,7 @@ internal static class PlaceMapInDeviceHandler
 		packet.Send();
 	}
 
-	internal static void ServerReceive(BinaryReader reader)
+	internal static void ServerRecieve(BinaryReader reader)
 	{
 		ModPacket packet = Networking.GetPacket(Networking.Message.SyncMapDevicePlaceMap);
 		short fromWho = reader.ReadByte();
@@ -42,7 +42,7 @@ internal static class PlaceMapInDeviceHandler
 		}
 	}
 
-	internal static void ClientReceive(BinaryReader reader)
+	internal static void ClientRecieve(BinaryReader reader)
 	{
 		short itemId = reader.ReadInt16();
 		short x = reader.ReadInt16();

@@ -538,3 +538,38 @@ GemWand: {
 	DisplayName: Gem Wand
 	Tooltip: Smells of riches
 }
+
+CopperStaff: {
+	DisplayName: Copper Staff
+	Tooltip: Uses
+}
+
+IronStaff: {
+	DisplayName: Iron Staff
+	Tooltip: ""
+}
+
+LeadStaff: {
+	DisplayName: Lead Staff
+	Tooltip: ""
+}
+
+SilverStaff: {
+	DisplayName: Silver Staff
+	Tooltip: ""
+}
+
+TungstenStaff: {
+	DisplayName: Tungsten Staff
+	Tooltip: ""
+}
+
+GoldStaff: {
+	DisplayName: Gold Staff
+	Tooltip: ""
+}
+
+PlatinumStaff: {
+	DisplayName: Platinum Staff
+	Tooltip: ""
+}

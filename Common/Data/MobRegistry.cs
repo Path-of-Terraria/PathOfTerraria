@@ -21,6 +21,51 @@ public class MobRegistry : ILoadable
 			Console.WriteLine($"Mob With Key: {entry.Key} - Registered");
 		}
 	}
+
+	/// <summary>
+	/// Provides mod NPC data for the Mob Registry.
+    ///
+    /// Note: Must be called within a PostSetupContent() method belonging to a Mod or ModSystem class.
+	/// </summary>
+    public static void PostLoad(Mod myModInstance, string pathToMobData)
+    {
+        Console.WriteLine($"Loading mob data from mod: {myModInstance.Name}");
+		var options = new JsonSerializerOptions
+		{
+			PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+		};
+
+		List<string> jsonFiles = myModInstance.GetFileNames();
+        string fileExtension = ".json";
+		foreach ((string filePath, Stream jsonStream) in from path in jsonFiles where path.StartsWith(pathToMobData) && path.EndsWith(fileExtension) select (path, myModInstance.GetFileStream(path)))
+		{
+			using var jsonReader = new StreamReader(jsonStream);
+			string json = jsonReader.ReadToEnd();
+			MobData data = JsonSerializer.Deserialize<MobData>(json, options);
+			if (data == null)
+			{
+				continue;
+			}
+
+            // Extract the name of the npc from the file name
+            string npcName = filePath[(pathToMobData.Length+1)..(filePath.Length - fileExtension.Length)];
+            int idValue;
+            try
+            {
+                idValue = ModContent.Find<ModNPC>($"{myModInstance.Name}/{npcName}").Type;
+            }
+            catch (KeyNotFoundException ex)
+            {
+                Console.WriteLine($"{myModInstance.Name}/{npcName} not found in ModContent");
+                continue;
+            }
+            // Add the associated data into the Mob Registry
+            if (!_mobData.TryAdd(idValue, data))
+            {
+                Console.WriteLine($"Duplicate NetId found: {idValue}");
+            }
+		}
+    }
 	
 	public virtual void Unload() { }
 
@@ -114,4 +159,13 @@ public class MobRegistry : ILoadable
 		// Fallback, should not reach here
 		return entries.Last();
 	}
+}
+
+public class MobRegistryLoader: ModSystem
+{
+	public override void PostSetupContent()
+    {
+        Console.WriteLine($"Adding Mod NPC's to MobRegistry");
+        MobRegistry.PostLoad(PoTMod.Instance, "Common/Data/Mobs/PathOfTerraria");
+    }
 }

@@ -109,8 +109,7 @@ public class MapDevicePlaceable : ModTile
 
 		// Some math magic to make it smoothly move up and down over time
 		float offset = MathF.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 5f);
-		Vector2 drawPos = worldPos + offScreen - Main.screenPosition + new Vector2(0f, -36f) +
-		                  new Vector2(0f, offset * 7f);
+		Vector2 drawPos = worldPos + offScreen - Main.screenPosition + new Vector2(0f, -36f) + new Vector2(0f, offset * 7f);
 
 		// Draw the main texture
 		for (int k = 0; k < 3; ++k)
