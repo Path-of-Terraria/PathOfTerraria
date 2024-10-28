@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Core.Items;
-using Terraria;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -25,20 +25,12 @@ internal class GlimmeringShard : CurrencyShard
 
 	public override bool CanRightClick()
 	{
-		return Main.LocalPlayer.HeldItem.TryGetGlobalItem(out PoTGlobalItem _) && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity == Common.Enums.ItemRarity.Magic;
+		return Main.LocalPlayer.HeldItem.TryGetGlobalItem(out PoTGlobalItem _) && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity == ItemRarity.Magic;
 	}
 
 	public override void RightClick(Player player)
 	{
-		if (player.HeldItem.TryGetGlobalItem(out PoTGlobalItem _) && player.HeldItem.GetInstanceData().Rarity == Common.Enums.ItemRarity.Magic)
-		{
-			// Clear and reroll affixes
-			player.HeldItem.GetInstanceData().Affixes.Clear();
-			PoTItemHelper.Roll(player.HeldItem, player.HeldItem.GetInstanceData().RealLevel);
-		}
-		else
-		{
-			Item.stack++;
-		}
+		player.HeldItem.GetInstanceData().Affixes.Clear();
+		PoTItemHelper.Roll(player.HeldItem, player.HeldItem.GetInstanceData().RealLevel);
 	}
 }
