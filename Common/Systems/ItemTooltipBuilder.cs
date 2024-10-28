@@ -6,7 +6,7 @@ namespace PathOfTerraria.Common.Systems;
 /// <summary>
 /// Helper class for building an item's tooltips easily.
 /// </summary>
-internal class ItemTooltipBuilder
+internal static class ItemTooltipBuilder
 {
 	/// <summary>
 	/// Builds and returns an item's tooltips.
