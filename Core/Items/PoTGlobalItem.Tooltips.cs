@@ -4,10 +4,11 @@ using Terraria.ID;
 using Terraria.UI;
 using System.Text.RegularExpressions;
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Linq;
+using Terraria.Localization;
+using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -100,13 +101,16 @@ partial class PoTGlobalItem
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
 		base.ModifyTooltips(item, tooltips);
-
-		List<TooltipLine> oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
-
+		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		tooltips.Clear();
 
 		PoTInstanceItemData data = item.GetInstanceData();
 		PoTStaticItemData staticData = item.GetStaticData();
+
+		if (data.SpecialName == string.Empty) // Make sure SpecialName generated if it hasn't already for some reason
+		{
+			data.SpecialName = GenerateName.Invoke(item);
+		}
 
 		var nameLine = new TooltipLine(Mod, "Name", data.SpecialName)
 		{
@@ -115,6 +119,13 @@ partial class PoTGlobalItem
 		tooltips.Add(nameLine);
 
 		string rarityDesc = GetDescriptor(data.ItemType, data.Rarity, data.Influence);
+
+		if (item.ModItem is GearLocalizationCategory.IItem gear)
+		{
+			string name = Language.GetTextValue("Mods.PathOfTerraria.Gear." + GearLocalizationCategory.Invoke(item) + ".Name");
+			rarityDesc = GetDescriptor(name, data.Rarity, data.Influence);
+		}
+
 		if (!string.IsNullOrWhiteSpace(rarityDesc))
 		{
 			var rarityLine = new TooltipLine(Mod, "Rarity", rarityDesc)
@@ -198,45 +209,30 @@ partial class PoTGlobalItem
 		};
 	}
 
+	/// <summary>
+	/// Gets the name of an item in the format Prefix ItemName Suffix.
+	/// </summary>
+	/// <param name="type">Type of the item.</param>
+	/// <param name="rare">Rarity of the item.</param>
+	/// <param name="influence">Influence of the item.</param>
+	/// <returns>The full name of the item.</returns>
 	private static string GetDescriptor(ItemType type, ItemRarity rare, Influence influence)
 	{
-		string typeName = type switch
-		{
-			ItemType.Sword => "Sword",
-			ItemType.Spear => "Spear",
-			ItemType.Bow => "Bow",
-			ItemType.Gun => "Guns",
-			ItemType.Staff => "Staff",
-			ItemType.Tome => "Tome",
-			ItemType.Helmet => "Helmet",
-			ItemType.Chestplate => "Chestplate",
-			ItemType.Leggings => "Leggings",
-			ItemType.Ring => "Ring",
-			ItemType.Charm => "Charm",
-			ItemType.Boomerang => "Boomerand",
-			ItemType.MeleeFlail => "Flail (Melee)",
-			ItemType.RangedFlail => "Flail (Ranged)",
-			ItemType.Launcher => "Launcher",
-			_ => ""
-		};
+		string typeName = Language.GetOrRegister("Mods.PathOfTerraria.Gear." + type + ".Name", () => "").Value;
+		return GetDescriptor(typeName, rare, influence);
+	}
 
-		string rareName = rare switch
-		{
-			ItemRarity.Normal => "",
-			ItemRarity.Magic => "Magic ",
-			ItemRarity.Rare => "Rare ",
-			ItemRarity.Unique => "Unique ",
-			_ => ""
-		};
-
-		string influenceName = influence switch
-		{
-			Influence.None => "",
-			Influence.Solar => "Solar ",
-			Influence.Lunar => "Lunar ",
-			_ => ""
-		};
-
+	/// <summary>
+	/// Gets the name of an item in the format Prefix ItemName Suffix.
+	/// </summary>
+	/// <param name="typeName">Base name of the item.</param>
+	/// <param name="rare">Rarity of the item.</param>
+	/// <param name="influence">Influence of the item.</param>
+	/// <returns>The full name of the item.</returns>
+	private static string GetDescriptor(string typeName, ItemRarity rare, Influence influence)
+	{
+		string rareName = Language.GetTextValue("Mods.PathOfTerraria.Gear.Rarity." + rare, () => "");
+		string influenceName = Language.GetTextValue("Mods.PathOfTerraria.Gear.Influence." + influence, () => "");
 		return $" {influenceName}{rareName}{typeName}";
 	}
 

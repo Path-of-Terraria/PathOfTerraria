@@ -10,7 +10,8 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 	{
 		base.SetDefaults(entity);
 
-		PoTItemHelper.Roll(entity, PoTItemHelper.PickItemLevel());
+		// Makes Affixes use a new reference so that rerolling or updating Affixes in another instance doesn't share the reference
+		entity.GetInstanceData().Affixes = [];
 	}
 
 	public override void UpdateEquip(Item item, Player player)
@@ -22,6 +23,9 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 
 	public override bool AppliesToEntity(Item entity, bool lateInstantiation)
 	{
-		return entity.damage > 0 || entity.defense > 0 || entity.accessory || entity.ModItem is IPoTGlobalItem;
+		bool anyValidTrait = entity.damage > 0 || entity.defense > 0 || entity.accessory || entity.headSlot > 0 || entity.bodySlot > 0 || 
+			entity.legSlot > 0 || entity.ModItem is IPoTGlobalItem;
+
+		return anyValidTrait && !entity.vanity;
 	}
 }

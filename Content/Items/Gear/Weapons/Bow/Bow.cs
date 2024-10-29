@@ -56,11 +56,15 @@ internal abstract class Bow : Gear
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.channel = true;
 		Item.UseSound = null;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Bow;
 	}
 
 	public override void HoldItem(Player player)
 	{
 		base.HoldItem(player);
+
 		if (player.altFunctionUse != 2 || !player.channel)
 		{
 			_isChanneling = false;

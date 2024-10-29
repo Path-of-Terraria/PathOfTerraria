@@ -78,7 +78,7 @@ internal class BuffPoisonedHitsAffix : ItemAffix
 			
 			if (target.HasBuff(BuffID.Poisoned))
 			{
-				modifiers.FinalDamage += Player.GetModPlayer<AffixPlayer>().StrengthOf<BuffPoisonedHitsAffix>();
+				modifiers.FinalDamage += Player.GetModPlayer<AffixPlayer>().StrengthOf<BuffPoisonedHitsAffix>() * 0.01f;
 			}
 		}
 	}

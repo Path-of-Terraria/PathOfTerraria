@@ -52,6 +52,9 @@ internal abstract class Whip : Gear
 
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 5, 2, 4);
 		Item.channel = true;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Whip;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

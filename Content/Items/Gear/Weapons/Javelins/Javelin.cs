@@ -57,6 +57,9 @@ internal abstract class Javelin : Gear
 		Item.noUseGraphic = true;
 		Item.Size = new(12);
 		Item.useAmmo = AmmoID.None;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Javelin;
 	}
 
 	public override bool CanUseItem(Player player)

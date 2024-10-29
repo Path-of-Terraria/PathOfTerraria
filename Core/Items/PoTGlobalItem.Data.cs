@@ -53,7 +53,7 @@ public sealed class PoTInstanceItemData : GlobalItem
 	/// <summary>
 	///		The affixes of the item.
 	/// </summary>
-	public List<ItemAffix> Affixes { get; private set; } = [];
+	public List<ItemAffix> Affixes { get; internal set; } = [];
 
 	/// <summary>
 	///		The amount of implicit affixes preceding rolled ones.
