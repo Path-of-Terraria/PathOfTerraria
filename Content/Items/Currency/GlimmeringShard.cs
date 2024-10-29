@@ -25,13 +25,7 @@ internal class GlimmeringShard : CurrencyShard
 
 	public override bool CanRightClick()
 	{
-		if (!Main.LocalPlayer.HeldItem.TryGetGlobalItem(out PoTGlobalItem _))
-		{
-			return false;
-		}
-
-		PoTInstanceItemData data = Main.LocalPlayer.HeldItem.GetInstanceData();
-		return data.Rarity == ItemRarity.Magic && !data.Corrupted;
+		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity == ItemRarity.Magic;
 	}
 
 	public override void RightClick(Player player)

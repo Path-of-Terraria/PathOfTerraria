@@ -29,24 +29,15 @@ internal class CorruptShard : CurrencyShard
 		Item.consumable = true; // Purely for the tooltip line
 	}
 
-	public override bool CanRightClick()
-	{
-		if (!Main.LocalPlayer.HeldItem.TryGetGlobalItem(out PoTGlobalItem _))
-		{
-			return false;
-		}
-
-		return !Main.LocalPlayer.HeldItem.GetInstanceData().Corrupted;
-	}
-
 	public override void RightClick(Player player)
 	{
+		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
+		data.Corrupted = true;
+
 		if (Main.rand.NextBool(2)) // 50% chance to do nothing
 		{
 			return;
 		}
-
-		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
 
 		if (data.Rarity == ItemRarity.Unique)
 		{
@@ -88,6 +79,5 @@ internal class CorruptShard : CurrencyShard
 		affixes.Add((ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(5), 0.01f);
 
 		data.Affixes.Add(affixes.Get());
-		data.Corrupted = true;
 	}
 }
