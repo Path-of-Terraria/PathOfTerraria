@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Utilities;
 using GearItem = PathOfTerraria.Content.Items.Gear.Gear;
@@ -16,8 +17,8 @@ internal class CorruptShard : CurrencyShard
 	{
 		base.SetStaticDefaults();
 
-		//ItemID.Sets.AnimatesAsSoul[Item.type] = true;
-		//Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
+		ItemID.Sets.AnimatesAsSoul[Item.type] = true;
+		Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
 	}
 
 	public override void SetDefaults()
@@ -30,7 +31,12 @@ internal class CorruptShard : CurrencyShard
 
 	public override bool CanRightClick()
 	{
-		return Main.LocalPlayer.HeldItem.TryGetGlobalItem(out PoTGlobalItem _);
+		if (!Main.LocalPlayer.HeldItem.TryGetGlobalItem(out PoTGlobalItem _))
+		{
+			return false;
+		}
+
+		return !Main.LocalPlayer.HeldItem.GetInstanceData().Corrupted;
 	}
 
 	public override void RightClick(Player player)
@@ -57,11 +63,6 @@ internal class CorruptShard : CurrencyShard
 				data.Rarity = ItemRarity.Rare;
 				data.RealLevel = oldLevel;
 				PoTItemHelper.Roll(player.HeldItem, data.RealLevel);
-
-				if (player.selectedItem == 58)
-				{
-					Main.mouseItem = player.HeldItem;
-				}
 			}
 			else
 			{
@@ -72,6 +73,11 @@ internal class CorruptShard : CurrencyShard
 		{
 			AddAffix(data);
 		}
+
+		if (player.selectedItem == 58) // mouseItem copies over HeldItem otherwise
+		{
+			Main.mouseItem = player.HeldItem;
+		}
 	}
 
 	private static void AddAffix(PoTInstanceItemData data)
@@ -81,6 +87,7 @@ internal class CorruptShard : CurrencyShard
 		affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(-1, 4, 6), 1);
 		affixes.Add((ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(5), 0.01f);
 
-		data.Affixes.Add(affixes.Get());	
+		data.Affixes.Add(affixes.Get());
+		data.Corrupted = true;
 	}
 }

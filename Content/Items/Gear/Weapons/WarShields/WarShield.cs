@@ -32,7 +32,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 	public virtual ShieldData Data => new(15, 100, 12, DustID.WoodFurniture);
 
 	protected virtual int BoomerangCount => 1;
-	protected override string GearLocalizationCategory => "Warshield";
+	protected override string GearLocalizationCategory => "WarShield";
 
 	public override void Load()
 	{

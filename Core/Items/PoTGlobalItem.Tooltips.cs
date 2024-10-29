@@ -57,7 +57,7 @@ partial class PoTGlobalItem
 				line.BaseScale = new Vector2(1.1f);
 				return true;
 
-			case "Rarity":
+			case "Rarity" or "Corrupted":
 				yOffset = -8;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
@@ -117,6 +117,14 @@ partial class PoTGlobalItem
 			OverrideColor = GetRarityColor(data.Rarity)
 		};
 		tooltips.Add(nameLine);
+
+		if (data.Corrupted)
+		{
+			tooltips.Add(new TooltipLine(Mod, "Corrupted", " Corrupted")
+			{
+				OverrideColor = Color.Lerp(Color.Purple, Color.White, 0.4f)
+			});
+		}
 
 		string rarityDesc = GetDescriptor(data.ItemType, data.Rarity, data.Influence);
 
