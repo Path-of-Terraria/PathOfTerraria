@@ -583,3 +583,15 @@ GlimmeringShard: {
 		'Glimmers and shines unnaturally'
 		'''
 }
+
+CorruptShard: {
+	DisplayName: Corrupt Shard
+	Tooltip:
+		'''
+		Chaotic and unstable
+		Has a chance to add in an additional affix and corrupt any item, disabling any future item interactions
+		Has a chance to reduce Uniques into Rare items of the same kind, rerolling them at the same level
+		Has a large chance to do nothing
+		'Pulses with malaise'
+		'''
+}

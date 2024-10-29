@@ -26,6 +26,7 @@ public sealed class PoTInstanceItemData : GlobalItem
 		clone.ImplicitCount = ImplicitCount;
 		clone.RealLevel = RealLevel;
 		clone.Affixes = Affixes;
+		clone.Corrupted = Corrupted;
 		return clone;
 	}
 
@@ -54,6 +55,11 @@ public sealed class PoTInstanceItemData : GlobalItem
 	///		The affixes of the item.
 	/// </summary>
 	public List<ItemAffix> Affixes { get; internal set; } = [];
+
+	/// <summary>
+	///		If the item is corrupt or not. Corrupted items cannot be modified with any currency shards.
+	/// </summary>
+	public bool Corrupted { get; set; } = false;
 
 	/// <summary>
 	///		The amount of implicit affixes preceding rolled ones.
