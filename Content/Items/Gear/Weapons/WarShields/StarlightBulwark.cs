@@ -63,6 +63,8 @@ internal class StarlightBulwark : LeadBattleBulwark
 
 	public override void HoldItem(Player player)
 	{
+		base.HoldItem(player);
+
 		if (player.GetModPlayer<WarShieldPlayer>().Bashing)
 		{
 			if (_projTimer++ % (_specialAlt ? 6 : 3) == 0)

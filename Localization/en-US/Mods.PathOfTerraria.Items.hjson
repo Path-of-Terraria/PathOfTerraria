@@ -541,7 +541,7 @@ GemWand: {
 
 CopperStaff: {
 	DisplayName: Copper Staff
-	Tooltip: Uses
+	Tooltip: ""
 }
 
 IronStaff: {

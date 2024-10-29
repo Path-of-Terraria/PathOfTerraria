@@ -37,6 +37,9 @@ internal abstract class Boomerang : Gear, GetItemLevel.IItem
 		Item.useAnimation = 10;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.channel = true;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Boomerang;
 	}
 
 	public override bool CanUseItem(Player player)

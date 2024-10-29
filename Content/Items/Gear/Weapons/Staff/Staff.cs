@@ -41,6 +41,9 @@ internal abstract class Staff : Gear
 		Item.channel = true;
 		Item.autoReuse = true;
 		Item.mana = 12;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Staff;
 	}
 
 	public override bool? CanAutoReuseItem(Player player)

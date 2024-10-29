@@ -86,6 +86,12 @@ public class AffixTooltipsHandler
 	{
 		if (Tooltips.TryGetValue(type, out AffixTooltip tooltip))
 		{
+			if (!tooltip.ValueBySource.ContainsKey(source))
+			{
+				tooltip.OriginalValueBySource.Add(source, value);
+				tooltip.ValueBySource.Add(source, 0);
+			}
+
 			tooltip.ValueBySource[source] = value;
 
 			if (tooltip.ValueBySource[source] == tooltip.OriginalValueBySource[source])

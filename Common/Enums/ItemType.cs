@@ -22,15 +22,20 @@ public enum ItemType : long
 	MeleeFlail = 1 << 15,
 	RangedFlail = 1 << 16,
 	Launcher = 1 << 17,
+	Javelin = 1 << 18,
+	Whip = 1 << 19,
+	WarShield = 1 << 20,
+	Grimoire = 1 << 21,
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Ring | Charm,
 	Equipment = Armor | Accessories,
 
-	Melee = Sword | Spear | MeleeFlail,
+	Melee = Sword | Spear | MeleeFlail | WarShield,
 	Magic = Staff | Tome | Wand,
-	Ranged = Bow | Gun | Boomerang | RangedFlail | Launcher,
-	Weapon = Melee | Magic | Ranged,
+	Ranged = Bow | Gun | Boomerang | RangedFlail | Launcher | Javelin,
+	Summoner = Whip | Grimoire,
+	Weapon = Melee | Magic | Ranged | Whip,
 
 	AllGear = Equipment | Weapon,
 

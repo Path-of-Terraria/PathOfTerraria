@@ -67,6 +67,9 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 		Item.noUseGraphic = true;
 		Item.crit = 6;
 		Item.knockBack = 8;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.WarShield;
 	}
 
 	public override bool CanUseItem(Player player)

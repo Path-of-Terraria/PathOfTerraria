@@ -99,6 +99,8 @@ internal class BloodOath : Sword, GenerateName.IItem
 
 	public override void HoldItem(Player player)
 	{
+		base.HoldItem(player);
+
 		if (_specialOn && Main.rand.NextBool(12))
 		{ 
 			Dust.NewDust(player.GetFrontHandPosition(Player.CompositeArmStretchAmount.None, 4f) + new Vector2(0, 4), 1, 1, DustID.Firework_Red);

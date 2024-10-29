@@ -160,9 +160,14 @@ public static class PoTItemHelper
 
 	public static int GetAffixCount(Item item)
 	{
-		return item.GetInstanceData().Rarity switch
+		return GetAffixCount(item.GetInstanceData().Rarity);
+	}
+
+	public static int GetAffixCount(ItemRarity rarity)
+	{
+		return rarity switch
 		{
-			ItemRarity.Magic => 2,
+			ItemRarity.Magic => Main.rand.Next(1, 3),
 			ItemRarity.Rare => Main.rand.Next(3, 5),
 			_ => 0
 		};

@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -187,8 +188,8 @@ internal class MobAprgSystem : GlobalNPC
 		List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
 		_affixes = Rarity switch
 		{
-			ItemRarity.Magic => Affix.GenerateAffixes(possible, Main.rand.Next(1, 3)),
-			ItemRarity.Rare => Affix.GenerateAffixes(possible, Main.rand.Next(2, 5)),
+			ItemRarity.Magic => Affix.GenerateAffixes(possible, PoTItemHelper.GetAffixCount(Rarity)),
+			ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTItemHelper.GetAffixCount(Rarity)),
 			_ => []
 		};
 
