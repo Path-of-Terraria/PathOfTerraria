@@ -129,6 +129,7 @@ GarrickNPC: {
 		2: Watch your head. Generally good active, but especially in the King's domain.
 		3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
 		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; it'll take you right to him.
+		EoCQuestLine: Oh, the Eye you say? Formidable. I recall Eldric speaking of it, though he almost certainly undersold it. Here, I've been tasked with keeping this. Now is the time to use it.
 	}
 
 	BubbleDialogue: {
@@ -213,6 +214,46 @@ WizardNPC: {
 			0: Remember that time you put all the rain water into the house next door? Hah...yeah. Good times.
 			1: Don't freeze the rain, don't freeze the rain, don't freeze the -
 			2: Perhaps I...no...that'd do too much damage. Dang!
+		}
+	}
+}
+
+EldricNPC: {
+	DisplayName: Eldric
+
+	Dialogue: {
+		Common0: The world's tumultuous, isn't it?
+		Common1: Stay calm, even if the land around isn't.
+		Common2: Would you ever enjoy a tea? I certainly would.
+		Common3: Magic is but one solution. Practicality is another. Bear this in mind.
+		Quest: My poor observatory...it seems an eye is looking down at us. The last time it passed by was when I was a child. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
+		QuestLunar: Thank you. Talk to Garrick and we'll be on our way.
+		Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will repair my observatory while you battle. Best of luck.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: How pleasant.
+			1: The trees dance, good.
+			2: Hm...looking jovial.
+		}
+
+		Night: {
+			0: The stars are...imperfect.
+			1: It's so different these nights.
+			2: How curious...
+		}
+
+		Goblins: {
+			0: Powers beyond your knowledge play with you, fools.
+			1: If only we could talk.
+			2: Alas.
+		}
+
+		Rain: {
+			0: May the flowers grow.
+			1: The preamble to petrichor.
+			2: A soft patter is wonderful.
 		}
 	}
 }

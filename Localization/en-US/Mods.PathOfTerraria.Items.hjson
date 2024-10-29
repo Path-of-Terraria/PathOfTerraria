@@ -595,3 +595,26 @@ CorruptShard: {
 		'Pulses with malaise'
 		'''
 }
+
+LunarLiquid: {
+	DisplayName: Lunar Liquid
+	Tooltip:
+		'''
+		Distorts reality for a short time
+		'Tastes terrible'
+		'''
+}
+
+LunarShard: {
+	DisplayName: Lunar Shard
+	Tooltip: ""
+}
+
+LunarObject: {
+	DisplayName: Lunar Object
+	Tooltip:
+		'''
+		Drop it on the ground to open a portal to the Eye's domain
+		'Smells of stardust and death'
+		'''
+}

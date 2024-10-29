@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Projectiles;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -12,6 +11,7 @@ using Terraria.Localization;
 using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
 using System.Linq;
 using Terraria.Utilities;
+using PathOfTerraria.Content.Projectiles.Utility;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 

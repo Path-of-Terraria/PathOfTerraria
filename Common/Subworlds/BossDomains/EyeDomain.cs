@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Projectiles;
-using PathOfTerraria.Content.Tiles.BossDomain;
+﻿using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -14,6 +13,7 @@ using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Content.Projectiles.Utility;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 

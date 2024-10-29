@@ -2,7 +2,7 @@
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.Projectiles;
+namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class Teleportal : ModProjectile
 {
