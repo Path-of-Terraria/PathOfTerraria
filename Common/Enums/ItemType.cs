@@ -26,12 +26,13 @@ public enum ItemType : long
 	Whip = 1 << 19,
 	WarShield = 1 << 20,
 	Grimoire = 1 << 21,
+	Battleaxe = 1 << 22,
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Ring | Charm,
 	Equipment = Armor | Accessories,
 
-	Melee = Sword | Spear | MeleeFlail | WarShield,
+	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe,
 	Magic = Staff | Tome | Wand,
 	Ranged = Bow | Gun | Boomerang | RangedFlail | Launcher | Javelin,
 	Summoner = Whip | Grimoire,

@@ -36,7 +36,7 @@ internal abstract class Battleaxe : Gear
 		Item.UseSound = SoundID.Item1;
 
 		PoTInstanceItemData data = this.GetInstanceData();
-		data.ItemType = ItemType.Sword;
+		data.ItemType = ItemType.Battleaxe;
 	}
 
 	public override bool AltFunctionUse(Player player)

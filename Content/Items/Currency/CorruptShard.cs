@@ -1,0 +1,86 @@
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.ID;
+using Terraria.Utilities;
+using GearItem = PathOfTerraria.Content.Items.Gear.Gear;
+
+namespace PathOfTerraria.Content.Items.Currency;
+
+internal class CorruptShard : CurrencyShard
+{
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		//ItemID.Sets.AnimatesAsSoul[Item.type] = true;
+		//Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
+	}
+
+	public override void SetDefaults()
+	{
+		Item.CloneDefaults(ItemID.Silk);
+		Item.Size = new Vector2(30, 28);
+		Item.rare = ItemRarityID.Green;
+		Item.consumable = true; // Purely for the tooltip line
+	}
+
+	public override bool CanRightClick()
+	{
+		return Main.LocalPlayer.HeldItem.TryGetGlobalItem(out PoTGlobalItem _);
+	}
+
+	public override void RightClick(Player player)
+	{
+		if (Main.rand.NextBool(2)) // 50% chance to do nothing
+		{
+			return;
+		}
+
+		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
+
+		if (data.Rarity == ItemRarity.Unique)
+		{
+			bool delevel = Main.rand.NextBool(2);
+
+			if (delevel)
+			{
+				IEnumerable<GearItem> gear = ModContent.GetContent<GearItem>().Where(x => x.GetInstanceData().ItemType == data.ItemType);
+				GearItem chosenItem = gear.ElementAt(Main.rand.Next(gear.Count()));
+				int oldLevel = data.RealLevel;
+
+				player.HeldItem.SetDefaults(chosenItem.Type);
+				data = player.HeldItem.GetInstanceData();
+				data.Rarity = ItemRarity.Rare;
+				data.RealLevel = oldLevel;
+				PoTItemHelper.Roll(player.HeldItem, data.RealLevel);
+
+				if (player.selectedItem == 58)
+				{
+					Main.mouseItem = player.HeldItem;
+				}
+			}
+			else
+			{
+				AddAffix(data);
+			}
+		}
+		else
+		{
+			AddAffix(data);
+		}
+	}
+
+	private static void AddAffix(PoTInstanceItemData data)
+	{
+		WeightedRandom<ItemAffix> affixes = new();
+		affixes.Add((ItemAffix)Affix.CreateAffix<FlatLifeAffix>(-1, 10, 20), 1);
+		affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(-1, 4, 6), 1);
+		affixes.Add((ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(5), 0.01f);
+
+		data.Affixes.Add(affixes.Get());	
+	}
+}

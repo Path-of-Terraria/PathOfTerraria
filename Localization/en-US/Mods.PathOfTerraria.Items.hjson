@@ -583,3 +583,8 @@ GlimmeringShard: {
 		'Glimmers and shines unnaturally'
 		'''
 }
+
+CorruptShard: {
+	DisplayName: Corrupt Shard
+	Tooltip: ""
+}
