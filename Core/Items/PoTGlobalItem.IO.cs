@@ -71,6 +71,7 @@ partial class PoTGlobalItem : GlobalItem
 		writer.Write((byte)data.Influence);
 
 		writer.Write((byte)data.ImplicitCount);
+		writer.Write(data.Corrupted);
 
 		// Is this necessary?
 		// Probably should save the name as
@@ -94,6 +95,7 @@ partial class PoTGlobalItem : GlobalItem
 		data.Influence = (Influence)reader.ReadByte();
 
 		data.ImplicitCount = reader.ReadByte();
+		data.Corrupted = reader.ReadBoolean();
 		data.SpecialName = reader.ReadString();
 		data.RealLevel = reader.ReadByte();
 
