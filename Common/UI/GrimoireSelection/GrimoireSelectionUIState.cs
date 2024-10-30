@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
@@ -16,6 +17,8 @@ namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
 internal class GrimoireSelectionUIState : CloseableSmartUi
 {
+	public static readonly Point MainPanelSize = new(900, 550);
+
 	public override bool IsCentered => true;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -41,6 +44,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	private static UIGrid _summonGrid = null;
 	private static UIGrimoireSacrifice _sacrificePanel = null;
 	private static UIImage _currentSummon = null;
+	private static Item _trashItem = null;
+	private static UIItemIcon _trashSlot = null;
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
@@ -85,7 +90,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 		Main.playerInventory = true;
 
-		CreateMainPanel(false, new Point(900, 550), false, true);
+		CreateMainPanel(false, MainPanelSize, false, true);
 		Panel.VAlign = 0.7f;
 
 		BuildSummonSelect(Panel);
@@ -149,6 +154,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void PutSlotItemInStorage(int partsSlot)
 	{
+		if (_parts[partsSlot].IsAir)
+		{
+			return;
+		}
+
 		Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(_parts[partsSlot].Clone());
 		Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().StoredParts[partsSlot] = EmptyItem;
 		_parts[partsSlot] = EmptyItem;
@@ -325,6 +335,13 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		mainPanel.Append(scrollBar);
 
 		RefreshStorage();
+
+		if (_trashItem is null || _trashItem.IsAir)
+		{
+			_trashItem = new Item(ItemID.TrashCan);
+		}
+
+		BuildTrashSlot(false);
 	}
 
 	/// <summary>
@@ -358,8 +375,19 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void ClickStorageItem(Item item)
 	{
-		GrimoireSummonPlayer grimSummoner = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>();
 		GrimoireStoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>();
+
+		if (Main.LocalPlayer.controlTorch)
+		{
+			storagePlayer.Storage.Remove(item);
+			_trashItem = item.Clone();
+			item.TurnToAir();
+			RefreshStorage();
+			BuildTrashSlot(true);
+			return;
+		}
+
+		GrimoireSummonPlayer grimSummoner = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>();
 
 		for (int i = 0; i < _parts.Length; ++i)
 		{
@@ -383,6 +411,41 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		_parts.CopyTo(grimSummoner.StoredParts, 0);
 	}
 
+	private static void BuildTrashSlot(bool remove)
+	{
+		UICloseablePanel panel = SmartUiLoader.GetUiState<GrimoireSelectionUIState>().Panel;
+
+		if (remove)
+		{
+			panel.RemoveChild(_trashSlot);
+		}
+
+		_trashSlot = new UIItemIcon(_trashItem, false)
+		{
+			Width = StyleDimension.FromPixels(31),
+			Height = StyleDimension.FromPixels(31),
+			Top = StyleDimension.FromPixelsAndPercent(34, 0.5f),
+			Left = StyleDimension.FromPixelsAndPercent(-38, 0.5f)
+		};
+
+		_trashSlot.OnLeftClick += (_, _) => PutTrashBackInStorage();
+		panel.Append(_trashSlot);
+	}
+
+	private static void PutTrashBackInStorage()
+	{
+		if (_trashItem.IsAir || _trashItem.type == ItemID.TrashCan)
+		{
+			return;
+		}
+
+		Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(_trashItem.Clone());
+		_trashItem = new Item(ItemID.TrashCan);
+
+		BuildTrashSlot(true);
+		RefreshStorage();
+	}
+
 	private static void HoverOverItem(UIElement self, Item item)
 	{
 		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) || item.IsAir || item.type == ItemID.None)
@@ -390,35 +453,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			return;
 		}
 
-		Tooltip.DrawWidth = 500;
-		Tooltip.SetName(item.Name);
-		string tooltip = string.Empty;
-
-		List<TooltipLine> moddedTooltips = [];
-		item.ModItem.ModifyTooltips(moddedTooltips);
-
-		foreach (TooltipLine line in moddedTooltips)
-		{
-			if (line.Text.Trim() == string.Empty || line.FullName == "PathOfTerraria/Name")
-			{
-				continue;
-			}
-
-			tooltip += line.Text + "\n";
-		}
-
-		for (int i = 0; i < item.ToolTip.Lines; ++i)
-		{
-			string line = item.ToolTip.GetLine(i);
-
-			if (line.Trim() == string.Empty)
-			{
-				continue;
-			}
-
-			tooltip += line + "\n";
-		}
-
-		Tooltip.SetTooltip(tooltip);
+		List<DrawableTooltipLine> tooltips = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
+		Tooltip.SetFancyTooltip(tooltips[1..]);
+		Tooltip.SetName(tooltips[0].Text);
 	}
 }

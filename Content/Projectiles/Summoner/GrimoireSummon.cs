@@ -73,7 +73,7 @@ internal abstract class GrimoireSummon : ModProjectile
 			}	
 
 			var pickup = part.ModItem as GrimoirePickup;
-			PoTItemHelper.ApplyAffixes(pickup.Item, modifier, null);
+			PoTItemHelper.ApplyAffixes(pickup.Item, modifier, Owner);
 
 		}
 

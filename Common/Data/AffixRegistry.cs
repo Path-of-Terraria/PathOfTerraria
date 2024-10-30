@@ -5,6 +5,7 @@ using System.Text.Json;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Data;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
@@ -9,6 +10,8 @@ internal class GrimoireStoragePlayer : ModPlayer
 
 	public override void SaveData(TagCompound tag)
 	{
+		Storage.RemoveAll(x => x.IsAir || x.type == ItemID.None || x.stack == 0);
+
 		tag.Add("count", Storage.Count);
 
 		for (int i = 0; i < Storage.Count; i++)

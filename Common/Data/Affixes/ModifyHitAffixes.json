@@ -212,7 +212,7 @@
 	},
 	{
 		"affixType": "ChanceToApplyPoisonItemAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Grimoire",
 		"influences": "None",
 		"tiers": [
 			{
