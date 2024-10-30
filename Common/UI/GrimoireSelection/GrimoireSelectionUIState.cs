@@ -16,6 +16,8 @@ namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
 internal class GrimoireSelectionUIState : CloseableSmartUi
 {
+	public static readonly Point MainPanelSize = new(900, 550);
+
 	public override bool IsCentered => true;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -41,6 +43,9 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	private static UIGrid _summonGrid = null;
 	private static UIGrimoireSacrifice _sacrificePanel = null;
 	private static UIImage _currentSummon = null;
+	private static Item _trashItem = null;
+	private static UIItemIcon _trashSlot = null;
+	private static UIPanel _storagePanel = null;
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
@@ -85,7 +90,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 		Main.playerInventory = true;
 
-		CreateMainPanel(false, new Point(900, 550), false, true);
+		CreateMainPanel(false, MainPanelSize, false, true);
 		Panel.VAlign = 0.7f;
 
 		BuildSummonSelect(Panel);
@@ -149,6 +154,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void PutSlotItemInStorage(int partsSlot)
 	{
+		if (_parts[partsSlot].IsAir)
+		{
+			return;
+		}
+
 		Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(_parts[partsSlot].Clone());
 		Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().StoredParts[partsSlot] = EmptyItem;
 		_parts[partsSlot] = EmptyItem;
@@ -286,14 +296,14 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void BuildStorage(UICloseablePanel panel)
 	{
-		var mainPanel = new UIPanel()
+		_storagePanel = new UIPanel()
 		{
 			Width = StyleDimension.FromPixels(398),
 			Height = StyleDimension.Fill,
 		};
-		panel.Append(mainPanel);
+		panel.Append(_storagePanel);
 
-		mainPanel.Append(new UIText("Storage", 1, true)
+		_storagePanel.Append(new UIText("Storage", 1, true)
 		{
 			HAlign = 0.5f,
 		});
@@ -304,7 +314,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			Width = StyleDimension.FromPixelsAndPercent(-24, 1),
 			VAlign = 1f
 		};
-		mainPanel.Append(storagePanel);
+		_storagePanel.Append(storagePanel);
 
 		_storageGrid = new UIGrid()
 		{
@@ -322,9 +332,16 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		_storageGrid.SetScrollbar(scrollBar);
 		_storageGrid.OnUpdate += SpamRecalculate;
-		mainPanel.Append(scrollBar);
+		_storagePanel.Append(scrollBar);
 
 		RefreshStorage();
+
+		if (_trashItem is null || _trashItem.IsAir)
+		{
+			_trashItem = new Item(ItemID.TrashCan);
+		}
+
+		BuildTrashSlot(false);
 	}
 
 	/// <summary>
@@ -358,8 +375,19 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void ClickStorageItem(Item item)
 	{
-		GrimoireSummonPlayer grimSummoner = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>();
 		GrimoireStoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>();
+
+		if (Main.LocalPlayer.controlTorch)
+		{
+			storagePlayer.Storage.Remove(item);
+			_trashItem = item.Clone();
+			item.TurnToAir();
+			RefreshStorage();
+			BuildTrashSlot(true);
+			return;
+		}
+
+		GrimoireSummonPlayer grimSummoner = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>();
 
 		for (int i = 0; i < _parts.Length; ++i)
 		{
@@ -381,6 +409,41 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		}
 
 		_parts.CopyTo(grimSummoner.StoredParts, 0);
+	}
+
+	private static void BuildTrashSlot(bool remove)
+	{
+		UICloseablePanel panel = SmartUiLoader.GetUiState<GrimoireSelectionUIState>().Panel;
+
+		if (remove)
+		{
+			panel.RemoveChild(_trashSlot);
+		}
+
+		_trashSlot = new UIItemIcon(_trashItem, false)
+		{
+			Width = StyleDimension.FromPixels(31),
+			Height = StyleDimension.FromPixels(31),
+			Top = StyleDimension.FromPixelsAndPercent(34, 0.5f),
+			Left = StyleDimension.FromPixelsAndPercent(-38, 0.5f)
+		};
+
+		_trashSlot.OnLeftClick += (_, _) => PutTrashBackInStorage();
+		panel.Append(_trashSlot);
+	}
+
+	private static void PutTrashBackInStorage()
+	{
+		if (_trashItem.IsAir || _trashItem.type == ItemID.TrashCan)
+		{
+			return;
+		}
+
+		Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(_trashItem.Clone());
+		_trashItem = new Item(ItemID.TrashCan);
+
+		BuildTrashSlot(true);
+		RefreshStorage();
 	}
 
 	private static void HoverOverItem(UIElement self, Item item)
