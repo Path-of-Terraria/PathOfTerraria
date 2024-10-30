@@ -1,5 +1,7 @@
 ﻿using ReLogic.Content;
+using ReLogic.Utilities;
 using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -21,6 +23,7 @@ internal class EoCRitualProj : ModProjectile
 	private ref float Timer => ref Projectile.ai[1];
 	
 	private readonly List<StarParticle> _particles = [];
+	private SlotId RiserSlot = default;
 
 	public override void SetStaticDefaults()
 	{
@@ -50,6 +53,8 @@ internal class EoCRitualProj : ModProjectile
 		{
 			HasInit = true;
 
+			RiserSlot = SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/StarRiser") { IsLooped = true }, Projectile.Center);
+
 			for (int i = 0; i < 80; ++i)
 			{
 				var color = Color.Lerp(Color.White, Color.Yellow, Main.rand.NextFloat());
@@ -69,6 +74,8 @@ internal class EoCRitualProj : ModProjectile
 			}
 		}
 
+		UpdateRiser();
+
 		Timer++;
 
 		if (_particles.Count == 0)
@@ -79,7 +86,9 @@ internal class EoCRitualProj : ModProjectile
 			{
 				IEntitySource src = Projectile.GetSource_Death();
 				int type = ModContent.ProjectileType<EyePortal>();
-				Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -6), type, 0, 0, Main.myPlayer);
+				Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -4), type, 0, 0, Main.myPlayer);
+
+				SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/PortalAppear"), Projectile.Center);
 			}
 
 			return;
@@ -127,6 +136,25 @@ internal class EoCRitualProj : ModProjectile
 		if (Timer > 120)
 		{
 			_particles.RemoveAll(x => x.Opacity == 0);
+		}
+	}
+
+	private void UpdateRiser()
+	{
+		if (SoundEngine.TryGetActiveSound(RiserSlot, out ActiveSound sound))
+		{
+			sound.Pitch = 1 - _particles.Count / 80f * 2;
+			sound.Volume = _particles.Count / 80f * 0.75f + 0.25f;
+
+			if (Timer <= 30)
+			{
+				sound.Volume = Timer / 30f;
+			}
+
+			if (_particles.Count == 0)
+			{
+				sound.Stop();
+			}
 		}
 	}
 

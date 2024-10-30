@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.UI;
+using ReLogic.Utilities;
 using SubworldLibrary;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -31,7 +33,15 @@ internal class EyePortal : ModProjectile
 		Projectile.timeLeft++;
 		Projectile.rotation += 0.15f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.05f);
-		Projectile.velocity *= 0.94f;
+		Projectile.velocity *= 0.96f;
+		
+		if (Timer++ == 48)
+		{
+			for (int i = 0; i < 20; ++i)
+			{
+				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Firework_Red);
+			}
+		}
 
 		if (Main.rand.NextBool(14))
 		{
