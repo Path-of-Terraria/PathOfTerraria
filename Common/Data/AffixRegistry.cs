@@ -87,11 +87,6 @@ public class AffixRegistry : ILoadable
 			{
 				Type type = types.FirstOrDefault(x => x.Name == data.AffixType);
 
-				if (type == typeof(ChanceToApplyPoisonItemAffix))
-				{
-					int i = 0;
-				}
-
 				if (type is null || !jsonDataMap.TryAdd(type, data))
 				{
 					Console.WriteLine($"Affix of type {data.AffixType} not found.");

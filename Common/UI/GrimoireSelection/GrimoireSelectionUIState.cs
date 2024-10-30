@@ -6,16 +6,12 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
-using Steamworks;
-using StructureHelper.GUI;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
-using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
@@ -50,7 +46,6 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	private static UIImage _currentSummon = null;
 	private static Item _trashItem = null;
 	private static UIItemIcon _trashSlot = null;
-	private static UIPanel _storagePanel = null;
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
@@ -301,14 +296,14 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void BuildStorage(UICloseablePanel panel)
 	{
-		_storagePanel = new UIPanel()
+		var mainPanel = new UIPanel()
 		{
 			Width = StyleDimension.FromPixels(398),
 			Height = StyleDimension.Fill,
 		};
-		panel.Append(_storagePanel);
+		panel.Append(mainPanel);
 
-		_storagePanel.Append(new UIText("Storage", 1, true)
+		mainPanel.Append(new UIText("Storage", 1, true)
 		{
 			HAlign = 0.5f,
 		});
@@ -319,7 +314,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			Width = StyleDimension.FromPixelsAndPercent(-24, 1),
 			VAlign = 1f
 		};
-		_storagePanel.Append(storagePanel);
+		mainPanel.Append(storagePanel);
 
 		_storageGrid = new UIGrid()
 		{
@@ -337,7 +332,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		_storageGrid.SetScrollbar(scrollBar);
 		_storageGrid.OnUpdate += SpamRecalculate;
-		_storagePanel.Append(scrollBar);
+		mainPanel.Append(scrollBar);
 
 		RefreshStorage();
 
@@ -458,39 +453,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			return;
 		}
 
-		float width = 0;
-		string tooltip = string.Empty;
 		List<DrawableTooltipLine> tooltips = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
-
-		Tooltip.DrawWidth = (int)width;
 		Tooltip.SetFancyTooltip(tooltips[1..]);
 		Tooltip.SetName(tooltips[0].Text);
-
-		//List<TooltipLine> moddedTooltips = [];
-		//item.ModItem.ModifyTooltips(moddedTooltips);
-
-		//foreach (TooltipLine line in moddedTooltips)
-		//{
-		//	if (line.Text.Trim() == string.Empty || line.FullName == "PathOfTerraria/Name")
-		//	{
-		//		continue;
-		//	}
-
-		//	tooltip += line.Text + "\n";
-		//}
-
-		//for (int i = 0; i < item.ToolTip.Lines; ++i)
-		//{
-		//	string line = item.ToolTip.GetLine(i);
-
-		//	if (line.Trim() == string.Empty)
-		//	{
-		//		continue;
-		//	}
-
-		//	tooltip += line + "\n";
-		//}
-
-		//Tooltip.SetTooltip(tooltip);
 	}
 }
