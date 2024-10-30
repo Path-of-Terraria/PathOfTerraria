@@ -611,7 +611,7 @@ LunarShard: {
 }
 
 LunarObject: {
-	DisplayName: Lunar Object
+	DisplayName: Lunar Concoction
 	Tooltip:
 		'''
 		Drop it on the ground to open a portal to the Eye's domain

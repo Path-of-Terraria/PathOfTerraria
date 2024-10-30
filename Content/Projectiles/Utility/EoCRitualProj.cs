@@ -1,6 +1,5 @@
 ﻿using ReLogic.Content;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -86,18 +85,20 @@ internal class EoCRitualProj : ModProjectile
 			return;
 		}
 
+		const float WaitTime = 180f;
+
 		for (int i = 0; i < _particles.Count; i++)
 		{
 			StarParticle particle = _particles[i];
 
-			if (Timer < 120f + particle.TimerOffset)
+			if (Timer < WaitTime + particle.TimerOffset)
 			{
 				particle.Velocity = new Vector2(0, Timer / 45f).RotatedBy(Main.GlobalTimeWrappedHourly * 0.5f + i);
-				particle.Opacity = Timer / 120f;
+				particle.Opacity = Timer / WaitTime;
 			}
 			else
 			{
-				float adjFactor = (Timer - 120) / 300f;
+				float adjFactor = (Timer - WaitTime) / 300f;
 				particle.Velocity = Vector2.Lerp(particle.Velocity, particle.Position.DirectionTo(Projectile.Center) * 20, 0.015f);
 
 				float dist = particle.Position.Distance(Projectile.Center);

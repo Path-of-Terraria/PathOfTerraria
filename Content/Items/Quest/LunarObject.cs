@@ -30,6 +30,20 @@ internal class LunarObject : ModItem
 
 			SoundEngine.PlaySound(SoundID.Shatter, Item.Center);
 			Projectile.NewProjectile(Item.GetSource_Death(), Item.Center, Vector2.Zero, ModContent.ProjectileType<EoCRitualProj>(), 0, 0, Main.myPlayer);
+
+			if (Main.netMode != NetmodeID.Server)
+			{
+				for (int i = 0; i < 2; ++i)
+				{
+					Gore.NewGore(Item.GetSource_Death(), Item.position, Item.velocity, ModContent.Find<ModGore>($"{PoTMod.ModName}/LunarConcoction_" + i).Type);
+				}
+
+				for (int i = 0; i < 60; ++i)
+				{
+					Vector2 vel = new Vector2(0, -Main.rand.NextFloat(9, 12f)).RotatedByRandom(MathHelper.Pi / 3);
+					Dust.NewDustPerfect(Item.Center, DustID.YellowStarDust, vel, Scale: Main.rand.NextFloat(0.8f, 1.2f));
+				}
+			}
 		}
 	}
 }

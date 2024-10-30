@@ -38,7 +38,7 @@ internal class EyePortal : ModProjectile
 			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Firework_Red);
 		}
 
-		Lighting.AddLight(Projectile.Center, TorchID.Blue);
+		Lighting.AddLight(Projectile.Center, TorchID.Red);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
