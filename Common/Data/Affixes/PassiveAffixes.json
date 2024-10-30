@@ -61,7 +61,7 @@
 	},
 	{
 		"affixType": "AddedDamageAffix",
-		"equipTypes": "Melee",
+		"equipTypes": "Melee Grimoire",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -91,7 +91,7 @@
 	},
 	{
 		"affixType": "IncreasedDamageAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Grimoire",
 		"tiers": [
 			{
 				"minValue": 1,

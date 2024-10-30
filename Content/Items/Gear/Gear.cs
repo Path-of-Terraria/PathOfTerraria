@@ -35,25 +35,7 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 		{
 			string tooltip = string.Empty;
 			List<DrawableTooltipLine> tooltipLines = ItemTooltipBuilder.BuildTooltips(Item, player);
-			float width = 0;
-			
-			// Skip the first line as that's the name.
-			// Add the name in later.
-
-			for (int i = 1; i < tooltipLines.Count; ++i)
-			{
-				DrawableTooltipLine line = tooltipLines[i];
-				tooltip += line.Text + (i != tooltipLines.Count - 1 ? "\n" : "");
-				Vector2 size = ChatManager.GetStringSize(line.Font, line.Text, Vector2.One);
-
-				if (size.X > width)
-				{
-					width = size.X;
-				}
-			}
-
-			TooltipUI.DrawWidth = (int)width;
-			TooltipUI.SetTooltip(tooltip);
+			TooltipUI.SetFancyTooltip(tooltipLines[1..]);
 			TooltipUI.SetName($"[c/{tooltipLines[0].Color.Hex3()}:{tooltipLines[0].Text}]");
 		}
 	}
