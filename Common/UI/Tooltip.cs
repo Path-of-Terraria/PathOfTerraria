@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Graphics;
 using Terraria.GameContent;
 using Terraria.UI;
 using Terraria.UI.Chat;
@@ -14,6 +16,7 @@ public class Tooltip : SmartUiState, ILoadable
 {
 	private static string text = string.Empty;
 	private static string tooltip = string.Empty;
+	private static List<DrawableTooltipLine> fancyTooltips = [];
 
 	/// <summary>
 	/// Width of the drawn tooltip. Defaults and resets to 200 every frame.
@@ -49,8 +52,13 @@ public class Tooltip : SmartUiState, ILoadable
 	/// <param name="newTooltip"></param>
 	public static void SetTooltip(string newTooltip)
 	{
-		ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.MouseText.Value;
 		tooltip = StringUtils.WrapString(newTooltip, DrawWidth * 2, font, 1);
+	}
+
+	public static void SetFancyTooltip(List<DrawableTooltipLine> newTooltip)
+	{
+		fancyTooltips = newTooltip;
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -60,12 +68,17 @@ public class Tooltip : SmartUiState, ILoadable
 			return;
 		}
 
-		ReLogic.Graphics.DynamicSpriteFont font = Terraria.GameContent.FontAssets.MouseText.Value;
+		DynamicSpriteFont font = FontAssets.MouseText.Value;
 
 		float nameWidth = ChatManager.GetStringSize(font, text, Vector2.One).X;
 		float tipWidth = ChatManager.GetStringSize(font, tooltip, Vector2.One).X * 0.9f;
-
 		float width = Math.Max(nameWidth, tipWidth);
+
+		if (tooltip == string.Empty && fancyTooltips.Count > 0)
+		{
+			width = fancyTooltips.Max(x => ChatManager.GetStringSize(FontAssets.MouseText.Value, x.Text, Vector2.One).X);
+		}
+
 		float height = -16;
 		Vector2 pos;
 
@@ -80,6 +93,11 @@ public class Tooltip : SmartUiState, ILoadable
 
 		height += ChatManager.GetStringSize(font, "{Dummy}\n" + tooltip, Vector2.One).Y + 16;
 
+		if (tooltip == string.Empty && fancyTooltips.Count > 0)
+		{
+			height = fancyTooltips.Count * 32;
+		}
+
 		if (pos.Y + height > Main.screenHeight)
 		{
 			pos.Y -= height;
@@ -89,7 +107,19 @@ public class Tooltip : SmartUiState, ILoadable
 		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, pos, Color.White, 0f, Vector2.Zero, Vector2.One);
 		pos.Y += ChatManager.GetStringSize(font, text, Vector2.One).Y + 4;
 
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, tooltip, pos, Color.White, 0f, Vector2.Zero, new(0.9f));
+		if (tooltip != string.Empty)
+		{
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, tooltip, pos, Color.White, 0f, Vector2.Zero, new(0.9f));
+		}
+		else if (fancyTooltips.Count > 0)
+		{
+			for (int i = 0; i < fancyTooltips.Count; ++i)
+			{
+				DrawableTooltipLine line = fancyTooltips[i];
+
+				ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, line.Text, pos + new Vector2(0, 30 * i), line.OverrideColor ?? line.Color, 0f, Vector2.Zero, new(0.9f));
+			}
+		}
 	}
 
 	private void Reset(On_Main.orig_Update orig, Main self, GameTime gameTime)

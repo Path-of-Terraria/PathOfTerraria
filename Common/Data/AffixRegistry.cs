@@ -5,6 +5,7 @@ using System.Text.Json;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Data;
@@ -85,6 +86,11 @@ public class AffixRegistry : ILoadable
 			foreach (ItemAffixData data in datas)
 			{
 				Type type = types.FirstOrDefault(x => x.Name == data.AffixType);
+
+				if (type == typeof(ChanceToApplyPoisonItemAffix))
+				{
+					int i = 0;
+				}
 
 				if (type is null || !jsonDataMap.TryAdd(type, data))
 				{

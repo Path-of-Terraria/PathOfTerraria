@@ -1,16 +1,21 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
+using Steamworks;
+using StructureHelper.GUI;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
@@ -453,35 +458,39 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			return;
 		}
 
-		Tooltip.DrawWidth = 500;
-		Tooltip.SetName(item.Name);
+		float width = 0;
 		string tooltip = string.Empty;
+		List<DrawableTooltipLine> tooltips = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
 
-		List<TooltipLine> moddedTooltips = [];
-		item.ModItem.ModifyTooltips(moddedTooltips);
+		Tooltip.DrawWidth = (int)width;
+		Tooltip.SetFancyTooltip(tooltips[1..]);
+		Tooltip.SetName(tooltips[0].Text);
 
-		foreach (TooltipLine line in moddedTooltips)
-		{
-			if (line.Text.Trim() == string.Empty || line.FullName == "PathOfTerraria/Name")
-			{
-				continue;
-			}
+		//List<TooltipLine> moddedTooltips = [];
+		//item.ModItem.ModifyTooltips(moddedTooltips);
 
-			tooltip += line.Text + "\n";
-		}
+		//foreach (TooltipLine line in moddedTooltips)
+		//{
+		//	if (line.Text.Trim() == string.Empty || line.FullName == "PathOfTerraria/Name")
+		//	{
+		//		continue;
+		//	}
 
-		for (int i = 0; i < item.ToolTip.Lines; ++i)
-		{
-			string line = item.ToolTip.GetLine(i);
+		//	tooltip += line.Text + "\n";
+		//}
 
-			if (line.Trim() == string.Empty)
-			{
-				continue;
-			}
+		//for (int i = 0; i < item.ToolTip.Lines; ++i)
+		//{
+		//	string line = item.ToolTip.GetLine(i);
 
-			tooltip += line + "\n";
-		}
+		//	if (line.Trim() == string.Empty)
+		//	{
+		//		continue;
+		//	}
 
-		Tooltip.SetTooltip(tooltip);
+		//	tooltip += line + "\n";
+		//}
+
+		//Tooltip.SetTooltip(tooltip);
 	}
 }

@@ -9,6 +9,8 @@ using PathOfTerraria.Common.UI.GrimoireSelection;
 using Terraria.ID;
 using Terraria.Localization;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.DataStructures;
+using Terraria;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
@@ -36,7 +38,22 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 		Item.maxStack = 1;
 
 		PoTInstanceItemData data = this.GetInstanceData();
-		data.ItemType = ItemType.Weapon;
+		data.ItemType = ItemType.Grimoire;
+	}
+
+	public override void OnSpawn(IEntitySource source)
+	{
+		base.OnSpawn(source);
+
+		Item.GetInstanceData().Rarity = Main.rand.NextFloat() switch
+		{
+			> 0.3f => ItemRarity.Normal,
+			> 0.05f => ItemRarity.Magic,
+			_ => ItemRarity.Rare
+		};
+
+		// TODO: Make sure this works in Multiplayer
+		PoTItemHelper.Roll(Item, PoTItemHelper.PickItemLevel());
 	}
 
 	public override bool ItemSpace(Player player)
@@ -49,16 +66,6 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 		List<Item> storage = player.GetModPlayer<GrimoireStoragePlayer>().Storage;
 		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Item.Name).Value;
 		Color textColor = Color.IndianRed;
-
-		if (storage.Count(x => x.type == Type) >= 5)
-		{
-			spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireBoon").WithFormatArgs(Item.Name).Value;
-			textColor = Color.Silver;
-
-			Item.SetDefaults(ItemID.SilverCoin);
-			Item.stack = 20;
-		}
-
 		storage.Add(Item);
 		int projType = ModContent.ProjectileType<GrimoireVisageEffect>();
 		

@@ -1,7 +1,7 @@
 [
 	{
 		"affixType": "HealOnKillingBurningEnemiesAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Grimoire",
 		"tiers": [
 			{
 				"minValue": 1,
