@@ -1,5 +1,6 @@
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -80,6 +81,6 @@ internal abstract class Sword : Gear
 		ref int damage,
 		ref float knockback)
 	{
-		type = ModContent.ProjectileType<Projectiles.LifeStealProjectile>();
+		type = ModContent.ProjectileType<LifeStealProjectile>();
 	}
 }

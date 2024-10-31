@@ -1,3 +1,13 @@
+MapCommon: {
+	PlaceOnDevice: Place this on a Map Device to use it
+	BossUses: Can be used a certain amount of times depending on player count
+	BossBase:
+		'''
+		{$PlaceOnDevice}
+		{$BossUses}
+		'''
+}
+
 HealingPotionPickup: {
 	DisplayName: Healing Potion Pickup
 	Tooltip: ""
@@ -506,7 +516,7 @@ RopeClumpItem: {
 
 KingSlimeMap: {
 	DisplayName: King Slime Map
-	Tooltip: ""
+	Tooltip: "{$MapCommon.BossBase}"
 }
 
 TomeOfTheElders: {
@@ -594,4 +604,32 @@ CorruptShard: {
 		Has a large chance to do nothing
 		'Pulses with malaise'
 		'''
+}
+
+LunarLiquid: {
+	DisplayName: Lunar Liquid
+	Tooltip:
+		'''
+		Distorts reality for a short time
+		'Tastes terrible'
+		'''
+}
+
+LunarShard: {
+	DisplayName: Lunar Shard
+	Tooltip: ""
+}
+
+LunarObject: {
+	DisplayName: Lunar Concoction
+	Tooltip:
+		'''
+		Drop it on the ground to open a portal to the Eye's domain
+		'Smells of stardust and death'
+		'''
+}
+
+EoCMap: {
+	DisplayName: Eye of Cthulhu Map
+	Tooltip: "{$MapCommon.BossBase}"
 }

@@ -33,7 +33,9 @@ public readonly struct GiveItem(int stack, params int[] ids)
 /// <param name="dialogue">NPC's dialogue. If null, dialog will not be replaced.</param>
 /// <param name="reqItems">If not null, the items required to be held by the player when talking to the NPC.</param>
 /// <param name="removeItems">If true, and <paramref name="reqItems"/> is not null, all <paramref name="reqItems"/> will be taken up to the required stack.</param>
-internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveItem[] reqItems = null, bool removeItems = false) : QuestStep
+/// <param name="onSuccessfulInteraction">An action that is run when the interaction is successful (the step is completed).</param>
+internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveItem[] reqItems = null, 
+	bool removeItems = false, Action<NPC> onSuccess = null) : QuestStep
 {
 	private static LocalizedText TalkToText = null;
 
@@ -41,6 +43,7 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 	private readonly LocalizedText NpcDialogue = dialogue;
 	private readonly GiveItem[] RequiredItems = reqItems;
 	private readonly bool RemoveItems = removeItems;
+	private readonly Action<NPC> OnSuccess = onSuccess;
 
 	public override int LineCount => RequiredItems is not null ? 1 + RequiredItems.Length : 1;
 
@@ -124,6 +127,13 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 			Main.npcChatText = NpcDialogue.Value;
 		}
 
-		return talkingToNpc && goodToGo;
+		bool finished = talkingToNpc && goodToGo;
+
+		if (finished)
+		{
+			OnSuccess?.Invoke(player.TalkNPC);
+		}
+
+		return finished;
 	}
 }

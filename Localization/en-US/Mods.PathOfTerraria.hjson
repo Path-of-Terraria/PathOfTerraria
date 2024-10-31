@@ -25,3 +25,11 @@ Waypoints: {
 	RavencrestWaypoint.DisplayName: Ravencrest
 	HomeWaypoint.DisplayName: Home
 }
+
+Condition: {
+	BossDowned: {
+		Drop: Drops only after {0} has been defeated
+		AnyMech: Any mech boss
+		The: "the "
+	}
+}
