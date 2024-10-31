@@ -32,6 +32,7 @@ public class AffixTooltip
 	public Dictionary<AffixSource, float> OriginalValueBySource = [];
 	public OverrideStringDelegate OverrideString = null;
 	public Color Color = Color.WhiteSmoke;
+	public bool Corrupt = false;
 
 	/// <summary>
 	/// Total value of this <see cref="AffixTooltip"/>.

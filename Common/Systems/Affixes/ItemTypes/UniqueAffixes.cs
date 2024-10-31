@@ -16,7 +16,7 @@ internal class NoFallDamageAffix : ItemAffix
 
 	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), item, 1, this.GetLocalization("Description"), ModifyTooltip);
+		handler.AddOrModify(GetType(), item, 1, this.GetLocalization("Description"), IsCorruptedAffix, ModifyTooltip);
 	}
 
 	private string ModifyTooltip(AffixTooltip self, float value, float difference, float originalValue, LocalizedText text)
