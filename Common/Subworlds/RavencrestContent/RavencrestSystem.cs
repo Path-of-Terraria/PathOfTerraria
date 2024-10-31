@@ -26,20 +26,23 @@ public class RavencrestSystem : ModSystem
 
 	public override void PreUpdateTime()
 	{
+		if (SubworldSystem.Current is not RavencrestSubworld)
+		{
+			return;
+		}
+
 		if (Main.netMode != NetmodeID.MultiplayerClient && !ReplacedBuildings && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
-			if (SubworldSystem.Current is RavencrestSubworld)
+			foreach (ImprovableStructure structure in structures.Values)
 			{
-				foreach (ImprovableStructure structure in structures.Values)
-				{
-					structure.Place();
-				}
+				structure.Place();
 			}
 
 			ReplacedBuildings = true;
 
 			if (!NPC.AnyNPCs(ModContent.NPCType<GarrickNPC>()) && AnyClassQuestDone())
 			{
+				// Spawn in the same place as the Hunter
 				var hunterNPC = ModContent.GetInstance<HunterNPC>() as ISpawnInRavencrestNPC;
 				Point16 pos = hunterNPC.TileSpawn;
 				NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, ModContent.NPCType<GarrickNPC>());

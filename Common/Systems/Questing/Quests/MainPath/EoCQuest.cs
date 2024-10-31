@@ -46,7 +46,7 @@ internal class EoCQuest : Quest
 				return true;
 			}),
 			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"), 
-				null, false, (npc) => 
+				[ new GiveItem(1, ModContent.ItemType<LunarLiquid>()) ], true, (npc) => 
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LunarObject>());
 					Main.item[item].shimmered = true; // So it doesn't immediately shatter + cool effect
