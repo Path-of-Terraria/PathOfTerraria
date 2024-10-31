@@ -22,6 +22,8 @@ public sealed class RavenNPC : ModNPC
 		NPC.width = 26;
 		NPC.dontTakeDamage = true;
 		NPC.dontTakeDamageFromHostiles = true;
+		NPC.netAlways = true;
+		NPC.netUpdate2 = true;
 
 		AnimationType = NPCID.Bird;
 		AIType = NPCID.Bird;
