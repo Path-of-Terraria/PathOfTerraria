@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using JetBrains.Annotations;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Enums;
@@ -101,20 +102,7 @@ public static class PoTItemHelper
 
 		for (int i = 0; i < GetAffixCount(item); i++)
 		{
-			ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
-			if (chosenAffix is null)
-			{
-				continue;
-			}
-
-			ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
-			if (affix is null)
-			{
-				continue;
-			}
-
-			affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
-			data.Affixes.Add(affix);
+			AddNewAffix(item, data);
 		}
 
 		if (staticData.IsUnique)
@@ -128,6 +116,35 @@ public static class PoTItemHelper
 
 			data.Affixes.AddRange(uniqueItemAffixes);
 		}
+	}
+
+	///  <summary>
+	/// 		Adds a new random affix to an item. This is used for things like the ascendant shard.
+	///  </summary>
+	///  <param name="item"></param>
+	///  <param name="data"></param>
+	public static void AddNewAffix(Item item, [CanBeNull] PoTInstanceItemData data = null)
+	{
+		data ??= item.GetInstanceData();
+		if (data.Affixes.Count >= GetAffixCount(item))
+		{
+			return;
+		}
+
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
+		if (chosenAffix is null)
+		{
+			return;
+		}
+
+		ItemAffix affix = AffixRegistry.ConvertToItemAffix(chosenAffix);
+		if (affix is null)
+		{
+			return;
+		}
+
+		affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+		data.Affixes.Add(affix);
 	}
 
 	#endregion
@@ -167,10 +184,26 @@ public static class PoTItemHelper
 	{
 		return rarity switch
 		{
-			ItemRarity.Magic => Main.rand.Next(1, 3),
-			ItemRarity.Rare => Main.rand.Next(3, 5),
+			ItemRarity.Magic => Main.rand.Next(1, GetMaxAffixCounts(rarity) + 1),
+			ItemRarity.Rare => Main.rand.Next(3, GetMaxAffixCounts(rarity) + 1),
 			_ => 0
 		};
+	}
+
+	public static int GetMaxAffixCounts(ItemRarity rarity)
+	{
+		return rarity switch
+		{
+			ItemRarity.Magic => 2,
+			ItemRarity.Rare => 4,
+			_ => 0
+		};
+	}
+
+	public static bool HasMaxAffixesForRarity(Item item)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		return data.Affixes.Count >= GetMaxAffixCounts(data.Rarity);
 	}
 
 	#endregion
@@ -212,16 +245,16 @@ public static class PoTItemHelper
 		{
 			return 40;
 		}
-		
+
 		if (NPC.downedDeerclops)
 		{
 			return 35;
 		}
-		
+
 		if (NPC.downedQueenBee)
-        {
-        	return 30;
-        }
+		{
+			return 30;
+		}
 
 		if (BossTracker.DownedBrainOfCthulhu)
 		{
