@@ -38,11 +38,6 @@ internal class AscendantShard : CurrencyShard
 
 	public override void RightClick(Player player)
 	{
-		if (player.HeldItem == null)
-		{
-			return;
-		}
-		
 		PoTItemHelper.AddNewAffix(player.HeldItem);
 	}
 }
