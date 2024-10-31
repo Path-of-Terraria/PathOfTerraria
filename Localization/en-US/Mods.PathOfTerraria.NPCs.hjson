@@ -229,6 +229,7 @@ EldricNPC: {
 		Quest: My poor observatory...it seems an eye is looking down at us. The last time it passed by was when I was a child. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
 		QuestLunar: Thank you. Talk to Garrick and we'll be on our way.
 		Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will repair my observatory while you battle. Best of luck.
+		Quest3: Just as I thought. The Eye returns to...wherever it happens to hide. Regrow? Whatever. I'm able to relax now. Hopefully you'll see this observatory up and running soon. Stop by, if you'd like.
 	}
 
 	BubbleDialogue: {

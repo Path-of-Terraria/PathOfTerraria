@@ -13,6 +13,7 @@ Kill: {
 	HighHealth: Kill {0} enemies with more than 100 health
 	KingSlime: Kill the King Slime
 	FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
+	EoC: Defeat the Eye of Cthulhu
 }
 
 Quest: {
@@ -58,5 +59,6 @@ Quest: {
 	EoCQuest: {
 		Name: EoCQuest
 		Description: ""
+		Kill.EoC: Mods.PathOfTerraria.Quests.Quest.EoCQuest.Kill.EoC
 	}
 }

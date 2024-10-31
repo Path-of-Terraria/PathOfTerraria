@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -20,8 +18,7 @@ internal class EoCQuest : Quest
 
 	public override List<QuestReward> QuestRewards =>
 	[
-		new ActionRewards((p, v) => p.GetModPlayer<ExpModPlayer>().Exp += 500,
-			"500 experience (POC giving experience)\nSome gear with an affix\nA unique item\nAgain, just for POC reasons"),
+		new ActionRewards((p, v) => p.GetModPlayer<ExpModPlayer>().Exp += 5000, ""),
 	];
 
 	public override List<QuestStep> SetSteps()
@@ -44,11 +41,22 @@ internal class EoCQuest : Quest
 			]),
 			new ActionStep((_, _) => 
 			{
+				// Fix Eldric's house pt 1
 				SyncedCustomDrops.RemoveId<LunarShard>();
 				return true;
 			}),
 			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"), 
-				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarObject>()))
+				null, false, (npc) => 
+				{
+					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LunarObject>());
+					Main.item[item].shimmered = true; // So it doesn't immediately shatter + cool effect
+				}),
+			new KillCount(NPCID.EyeofCthulhu, 1, this.GetLocalization("Kill.EoC")),
+			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest3"))
+			{
+				CountsAsCompletedOnMarker = true
+			},
+			// ActionStep for fixing Eldric's house pt 2
 		];
 	}
 }

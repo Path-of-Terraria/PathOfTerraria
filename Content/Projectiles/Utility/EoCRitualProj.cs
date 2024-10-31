@@ -127,7 +127,7 @@ internal class EoCRitualProj : ModProjectile
 
 			particle.Position += particle.Velocity;
 
-			if (Main.rand.NextBool(120))
+			if (Main.rand.NextBool(130))
 			{
 				Dust.NewDustPerfect(particle.Position, DustID.YellowStarDust, particle.Velocity.RotatedBy(0.3f) * Main.rand.NextFloat(0.8f, 1f));
 			}

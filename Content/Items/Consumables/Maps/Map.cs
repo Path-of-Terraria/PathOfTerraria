@@ -5,6 +5,7 @@ using Terraria.ID;
 using Terraria.ModLoader.IO;
 using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
 using Terraria.DataStructures;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -112,4 +113,16 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 	}
 
 	public abstract string GenerateName(string defaultName);
+
+	public static int GetBossUseCount()
+	{
+		int def = 6 / BossDomainPlayer.GetLivesPerPlayer();
+
+		if (Main.CurrentFrameFlags.ActivePlayersCount > 6)
+		{
+			def = Main.CurrentFrameFlags.ActivePlayersCount;
+		}
+
+		return def;
+	}
 }

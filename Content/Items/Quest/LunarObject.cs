@@ -24,7 +24,7 @@ internal class LunarObject : ModItem
 
 	public override void Update(ref float gravity, ref float maxFallSpeed)
 	{
-		if (Collision.SolidCollision(Item.BottomLeft, Item.width, 6, true) && Item.velocity.Y > 0)
+		if (Collision.SolidCollision(Item.BottomLeft, Item.width, 6, true) && Item.velocity.Y > 0.3f)
 		{
 			Item.active = false;
 
