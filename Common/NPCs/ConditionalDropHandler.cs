@@ -29,6 +29,11 @@ internal class ConditionalDropHandler : GlobalNPC
 		}
 	}
 
+	public static void AddId<T>() where T : ModItem
+	{
+		AddId(ModContent.ItemType<T>());
+	}
+
 	public static void RemoveId(int id)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -46,6 +51,11 @@ internal class ConditionalDropHandler : GlobalNPC
 				PlayerCountByItemIds.Remove(id);
 			}
 		}
+	}
+
+	public static void RemoveId<T>() where T : ModItem
+	{
+		RemoveId(ModContent.ItemType<T>());
 	}
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)

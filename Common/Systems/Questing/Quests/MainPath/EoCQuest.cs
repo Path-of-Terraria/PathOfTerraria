@@ -27,7 +27,7 @@ internal class EoCQuest : Quest
 		[
 			new ActionStep((_, _) => 
 			{
-				SyncedCustomDrops.AddId<LunarShard>();
+				ConditionalDropHandler.AddId<LunarShard>();
 				return true;
 			}),
 			new ParallelQuestStep(
@@ -42,7 +42,7 @@ internal class EoCQuest : Quest
 			new ActionStep((_, _) => 
 			{
 				// Fix Eldric's house pt 1
-				SyncedCustomDrops.RemoveId<LunarShard>();
+				ConditionalDropHandler.RemoveId<LunarShard>();
 				return true;
 			}),
 			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"), 

@@ -20,11 +20,11 @@ internal static class SyncCustomDropHandler
 
 		if (add)
 		{
-			SyncedCustomDrops.AddId(id);
+			ConditionalDropHandler.AddId(id);
 		}
 		else
 		{
-			SyncedCustomDrops.RemoveId(id);
+			ConditionalDropHandler.RemoveId(id);
 		}
 	}
 }
