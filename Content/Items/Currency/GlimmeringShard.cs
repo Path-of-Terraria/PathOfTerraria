@@ -30,6 +30,11 @@ internal class GlimmeringShard : CurrencyShard
 
 	public override void RightClick(Player player)
 	{
+		if (player.HeldItem == null)
+		{
+			return;
+		}
+		
 		PoTItemHelper.Roll(player.HeldItem, player.HeldItem.GetInstanceData().RealLevel);
 	}
 }

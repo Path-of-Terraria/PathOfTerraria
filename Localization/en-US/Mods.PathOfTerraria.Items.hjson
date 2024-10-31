@@ -595,3 +595,13 @@ CorruptShard: {
 		'Pulses with malaise'
 		'''
 }
+
+AscendantShard: {
+	DisplayName: Ascendant Shard
+	Tooltip:
+		'''
+		Adds a new affix to an item
+		Hold an item then right click this Shard to add a new affix
+		'A strong sense of power emanates from it'
+		'''
+}

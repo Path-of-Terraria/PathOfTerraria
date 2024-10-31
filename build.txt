@@ -1,5 +1,5 @@
 displayName = Path of Terraria
-author = ScalarVector & ScottieKnowz
+author = ScottieKnowz & GabeHasWon
 modReferences = SubworldLibrary
 dllReferences = NPCUtils, StructureHelper
-version = 0.1
+version = 0.1.2

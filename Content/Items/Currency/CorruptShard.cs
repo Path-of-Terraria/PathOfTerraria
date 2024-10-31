@@ -78,6 +78,8 @@ internal class CorruptShard : CurrencyShard
 		affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(-1, 4, 6), 1);
 		affixes.Add((ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(5), 0.01f);
 
-		data.Affixes.Add(affixes.Get());
+		ItemAffix chosenAffix = affixes.Get();
+		chosenAffix.IsCorruptedAffix = true;
+		data.Affixes.Add(chosenAffix);
 	}
 }
