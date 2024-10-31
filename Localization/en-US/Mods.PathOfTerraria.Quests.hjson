@@ -54,4 +54,10 @@ Quest: {
 		Name: Magical Returnal
 		Description: ""
 	}
+
+	EoCQuest: {
+		Name: The Rising Omen
+		Description: ""
+		Kill.EoC: Defeat the Eye of Cthulhu
+	}
 }

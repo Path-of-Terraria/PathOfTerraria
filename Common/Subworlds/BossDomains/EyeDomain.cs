@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Projectiles;
-using PathOfTerraria.Content.Tiles.BossDomain;
+﻿using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -9,11 +8,11 @@ using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Content.Projectiles.Utility;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -132,7 +131,7 @@ public class EyeDomain : BossDomainSubworld
 			arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
 		}
 
-		CheckForSigns(new Point16(10, 10), new Point16(Main.maxTilesX - 20, Main.maxTilesY - 20));
+		CheckForSigns(new Point16(20, 20), new Point16(Main.maxTilesX - 60, Main.maxTilesY - 60));
 	}
 
 	private static void CheckForSigns(Point16 pos, Point16 size)

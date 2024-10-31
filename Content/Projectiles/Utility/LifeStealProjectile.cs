@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Content.Projectiles;
+﻿namespace PathOfTerraria.Content.Projectiles.Utility;
 
 public class LifeStealProjectile : ModProjectile
 {

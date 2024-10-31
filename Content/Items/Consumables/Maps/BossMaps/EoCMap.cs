@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal class KingSlimeMap : Map
+internal class EoCMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 
@@ -21,12 +21,12 @@ internal class KingSlimeMap : Map
 	{
 		base.SetDefaults();
 
-		Item.Size = new Vector2(44, 36);
+		Item.Size = new Vector2(44, 30);
 	}
 
 	public override void OpenMap()
 	{
-		SubworldSystem.Enter<KingSlimeDomain>();
+		SubworldSystem.Enter<EyeDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

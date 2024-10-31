@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
-using PathOfTerraria.Content.Projectiles;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
 using System.Collections.Generic;

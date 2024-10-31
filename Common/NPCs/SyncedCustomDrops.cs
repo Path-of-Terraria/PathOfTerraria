@@ -27,6 +27,11 @@ internal class SyncedCustomDrops : GlobalNPC
 		}
 	}
 
+	public static void AddId<T>() where T : ModItem
+	{
+		AddId(ModContent.ItemType<T>());
+	}
+
 	public static void RemoveId(int id)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -45,11 +50,20 @@ internal class SyncedCustomDrops : GlobalNPC
 		}
 	}
 
+	public static void RemoveId<T>() where T : ModItem
+	{
+		RemoveId(ModContent.ItemType<T>());
+	}
+
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
 		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior)
 		{
 			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<TomeOfTheElders>(), 10);
+		}
+		else if (npc.type is NPCID.Zombie)
+		{
+			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<LunarShard>(), 5);
 		}
 	}
 

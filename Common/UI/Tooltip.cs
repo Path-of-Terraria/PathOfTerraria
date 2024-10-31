@@ -126,6 +126,7 @@ public class Tooltip : SmartUiState, ILoadable
 	{
 		text = string.Empty;
 		tooltip = string.Empty;
+		fancyTooltips.Clear();
 		DrawWidth = 200;
 
 		orig(self, gameTime);
