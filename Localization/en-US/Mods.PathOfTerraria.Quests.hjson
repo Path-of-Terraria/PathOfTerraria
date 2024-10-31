@@ -1,3 +1,11 @@
+Popups: {
+	Line1: Open up the Quest Book to see progress & steps for the quests you take.
+	Line2: The Quest Book is always next to the map in the inventory.
+	Line3: You can also press {0} to open the Book.
+	NoKey: (None assigned - default L)
+	NewQuest: New Quest:
+}
+
 Bring: {
 	Collect: Collect
 	GiveItTo: and give it to the {0}

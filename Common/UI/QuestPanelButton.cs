@@ -10,7 +10,7 @@ namespace PathOfTerraria.Common.UI;
 
 public class QuestPanelButton : SmartUiState
 {
-	public override bool Visible => Main.playerInventory;
+	public override bool Visible => Main.playerInventory || UIQuestPopupState.FlashQuestButton > 0;
 
 	private static Asset<Texture2D> BookTexture = null;
 
@@ -42,7 +42,19 @@ public class QuestPanelButton : SmartUiState
 	{
 		Texture2D texture = BookTexture.Value;
 		Vector2 pos = new(GetTextureXPosition(), 80);
-		spriteBatch.Draw(texture, pos, null, Color.White, 0, new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
+		Color color = Color.White;
+
+		if (!Main.playerInventory && UIQuestPopupState.FlashQuestButton > 0)
+		{
+			color *= MathF.Pow(MathF.Sin(Main.GlobalTimeWrappedHourly), 2);
+
+			if (UIQuestPopupState.FlashQuestButton <= 30f)
+			{
+				color *= UIQuestPopupState.FlashQuestButton / 30f;
+			}
+		}
+
+		spriteBatch.Draw(texture, pos, null, color, 0, new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
