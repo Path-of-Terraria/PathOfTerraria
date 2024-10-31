@@ -22,7 +22,7 @@ public class AffixTooltipsHandler
 	/// <param name="text">Localized text of the new tooltip.</param>
 	/// <param name="overrideString">Overriden functionality of the tooltip's result. Defaults to null, which uses default functionality.</param>
 	/// <exception cref="ArgumentException"></exception>
-	public void Add(Type type, AffixTooltip.AffixSource source, float value, LocalizedText text, AffixTooltip.OverrideStringDelegate overrideString = null)
+	public void Add(Type type, AffixTooltip.AffixSource source, float value, LocalizedText text, bool corrupt, AffixTooltip.OverrideStringDelegate overrideString = null)
 	{
 		if (!typeof(ItemAffix).IsAssignableFrom(type))
 		{
@@ -35,7 +35,8 @@ public class AffixTooltipsHandler
 			ValueBySource = new Dictionary<AffixTooltip.AffixSource, float>() { { source, value } },
 			OriginalValueBySource = new Dictionary<AffixTooltip.AffixSource, float>() { { source, value } },
 			OverrideString = overrideString,
-			Color = DefaultColor
+			Color = DefaultColor,
+			Corrupt = corrupt
 		});
 	}
 
@@ -47,9 +48,9 @@ public class AffixTooltipsHandler
 	/// <param name="value">Initial value of the new tooltip.</param>
 	/// <param name="text">Localized text of the new tooltip.</param>
 	/// <param name="overrideString">Overriden functionality of the tooltip's result. Defaults to null, which uses default functionality.</param>
-	public void AddOrModify(Type type, Item source, float value, LocalizedText text, AffixTooltip.OverrideStringDelegate overrideString = null)
+	public void AddOrModify(Type type, Item source, float value, LocalizedText text, bool corrupt, AffixTooltip.OverrideStringDelegate overrideString = null)
 	{
-		AddOrModify(type, DetermineItemSource(source), value, text, overrideString);
+		AddOrModify(type, DetermineItemSource(source), value, text, corrupt, overrideString);
 	}
 
 	/// <summary>
@@ -82,7 +83,7 @@ public class AffixTooltipsHandler
 		return AffixTooltip.AffixSource.MainItem;
 	}
 
-	public void AddOrModify(Type type, AffixTooltip.AffixSource source, float value, LocalizedText text, AffixTooltip.OverrideStringDelegate overrideString = null)
+	public void AddOrModify(Type type, AffixTooltip.AffixSource source, float value, LocalizedText text, bool corrupt, AffixTooltip.OverrideStringDelegate overrideString = null)
 	{
 		if (Tooltips.TryGetValue(type, out AffixTooltip tooltip))
 		{
@@ -105,7 +106,7 @@ public class AffixTooltipsHandler
 		}
 		else
 		{
-			Add(type, source, value, text, overrideString);
+			Add(type, source, value, text, corrupt, overrideString);
 		}
 	}
 
@@ -121,7 +122,7 @@ public class AffixTooltipsHandler
 		{
 			tooltips.Add(new TooltipLine(ModContent.GetInstance<PoTMod>(), "Affix" + tipNum++, $"[i:{ItemID.MusketBall}] " + tip.Value.Get())
 			{
-				OverrideColor = tip.Value.Color,
+				OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
 			});
 		}
 	}
