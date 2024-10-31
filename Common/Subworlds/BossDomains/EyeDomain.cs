@@ -8,7 +8,6 @@ using Terraria.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.Enums;
 using Terraria.Localization;

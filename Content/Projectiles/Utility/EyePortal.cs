@@ -1,8 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.UI;
-using ReLogic.Utilities;
 using SubworldLibrary;
-using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 

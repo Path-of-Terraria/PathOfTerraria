@@ -1,10 +1,7 @@
-﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
-using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
-using Terraria.DataStructures;
 using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
