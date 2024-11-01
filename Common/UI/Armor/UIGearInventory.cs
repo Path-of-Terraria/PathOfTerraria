@@ -178,11 +178,11 @@ public sealed class UIGearInventory : UIState
 	private int currentPage;
 	private readonly UIElement[] pages = { BuildDefaultInventory(), BuildVanityInventory(), BuildDyeInventory() };
 
-	internal UIElement root;
+	internal UIElement Root;
 
 	public override void OnInitialize()
 	{
-		root = new UIElement
+		Root = new UIElement
 		{
 			Width = StyleDimension.FromPixels(ArmorPageWidth + LoadoutPadding + FirstLoadoutIconTexture.Width() + RootPadding),
 			Height = StyleDimension.FromPixels(ArmorPageHeight + LeftButtonTexture.Height() + DefenseCounterTexture.Height() + RootPadding * 2f),
@@ -190,12 +190,12 @@ public sealed class UIGearInventory : UIState
 			Top = StyleDimension.FromPixels(Main.mapStyle == 1 ? 436f : 180f)
 		};
 
-		Append(root);
+		Append(Root);
 
-		root.Append(BuildGearPages());
-		root.Append(BuildPageButtons());
-		root.Append(BuildDefenseCounter());
-		root.Append(BuildLoadouts());
+		Root.Append(BuildGearPages());
+		Root.Append(BuildPageButtons());
+		Root.Append(BuildDefenseCounter());
+		Root.Append(BuildLoadouts());
 	}
 
 	public override void Update(GameTime gameTime)
@@ -233,8 +233,8 @@ public sealed class UIGearInventory : UIState
 
 		float top = Main.mapStyle == 1 ? 446f : 190f;
 
-		root.Left.Set(MathHelper.SmoothStep(root.Left.Pixels, left, Smoothness), 0f);
-		root.Top.Set(MathHelper.SmoothStep(root.Top.Pixels, top, Smoothness), 0f);
+		Root.Left.Set(MathHelper.SmoothStep(Root.Left.Pixels, left, Smoothness), 0f);
+		Root.Top.Set(MathHelper.SmoothStep(Root.Top.Pixels, top, Smoothness), 0f);
 	}
 
 	private void HandleLeftPageClick(UIMouseEvent @event, UIElement element)
@@ -715,7 +715,7 @@ public sealed class UIGearInventory : UIState
 			Left = StyleDimension.FromPixels(FirstLoadoutIconTexture.Width() + RootPadding)
 		};
 
-		root.Append(gearRoot);
+		Root.Append(gearRoot);
 
 		for (int i = 0; i < pages.Length; i++)
 		{
