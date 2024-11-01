@@ -69,7 +69,7 @@ public sealed partial class UIManager : ModSystem
 	/// <summary>
 	///		The list of data from registered <see cref="UIState"/> instances.
 	/// </summary>
-	public static List<UIStateData> Data { get; set; } = new();
+	public static List<UIStateData> Data { get; set; } = [];
 
 	public override void Unload()
 	{

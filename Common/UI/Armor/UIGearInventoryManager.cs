@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Core.UI;
-using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Armor;
 
