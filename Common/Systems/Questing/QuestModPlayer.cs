@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 
@@ -26,6 +27,8 @@ internal class QuestModPlayer : ModPlayer
 		if (Main.myPlayer == Player.whoAmI && !fromLoad)
 		{
 			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(Quest.GetQuest(name).DisplayName, 300, 1f, 1.2f);
+
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.2f });
 
 			if (_firstQuest) // Only display first quest popup on first quest (wow!)
 			{
