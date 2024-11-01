@@ -178,7 +178,7 @@ public sealed class UIGearInventory : UIState
 	private int currentPage;
 	private readonly UIElement[] pages = { BuildDefaultInventory(), BuildVanityInventory(), BuildDyeInventory() };
 
-	private UIElement root;
+	internal UIElement root;
 
 	public override void OnInitialize()
 	{
