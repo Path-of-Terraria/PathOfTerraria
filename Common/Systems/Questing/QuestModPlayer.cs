@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 
@@ -10,16 +11,32 @@ namespace PathOfTerraria.Common.Systems.Questing;
 internal class QuestModPlayer : ModPlayer
 {
 	// ReSharper disable once InconsistentNaming
-	private static ModKeybind ToggleQuestUIKey;
+	public static ModKeybind ToggleQuestUIKey;
 	
 	// need a list of what npcs start what quests
 	private readonly HashSet<string> _enabledQuests = [];
 
-	public void StartQuest(string name, int step = -1)
+	private bool _firstQuest = true;
+
+	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
 		var quest = Quest.GetQuest(name);
 		quest.StartQuest(Player, step == -1 ? 0 : step);
 		_enabledQuests.Add(quest.FullName);
+
+		if (Main.myPlayer == Player.whoAmI && !fromLoad)
+		{
+			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(Quest.GetQuest(name).DisplayName, 300, 1f, 1.2f);
+
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.2f });
+
+			if (_firstQuest) // Only display first quest popup on first quest (wow!)
+			{
+				UIQuestPopupState.FlashQuestButton = 600;
+
+				_firstQuest = false;
+			}
+		}
 	}
 
 	public void RestartQuestTest()
@@ -64,10 +81,16 @@ internal class QuestModPlayer : ModPlayer
 		}
 
 		tag.Add("questTags", questTags);
+
+		if (!_firstQuest)
+		{
+			tag.Add("firstQuest", false);
+		}
 	}
 	
 	public override void LoadData(TagCompound tag)
 	{
+		_firstQuest = !tag.ContainsKey("firstQuest"); // If we have the tag, the first quest is false
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
 		questTags.ForEach(tag => 
@@ -76,7 +99,7 @@ internal class QuestModPlayer : ModPlayer
 			
 			if (quest is not null) 
 			{ 
-				StartQuest(quest.FullName, quest.CurrentStep);
+				StartQuest(quest.FullName, quest.CurrentStep, true);
 			} 
 		});
 	}
