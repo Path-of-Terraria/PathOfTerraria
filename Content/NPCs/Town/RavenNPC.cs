@@ -57,11 +57,17 @@ public sealed class RavenNPC : ModNPC
 
 		if (Math.Abs(NPC.Center.X - entrancePosition.X) < 8)
 		{
-			NPC.active = false;
+			NPC.Opacity -= 0.05f;
+			NPC.velocity.X *= 0.5f;
 
-			for (int i = 0; i < 15; ++i)
+			if (NPC.Opacity < 0.05f)
 			{
-				Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool() ? DustID.GemDiamond : DustID.Phantasmal);
+				NPC.active = false;
+
+				for (int i = 0; i < 15; ++i)
+				{
+					Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool() ? DustID.GemDiamond : DustID.Phantasmal);
+				}
 			}
 		}
 
