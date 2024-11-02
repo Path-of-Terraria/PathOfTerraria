@@ -258,3 +258,40 @@ EldricNPC: {
 		}
 	}
 }
+
+MorvenNPC: {
+	DisplayName: Morven
+
+	Dialogue: {
+		Common0: Any discoveries of late? Always have an ear on science!
+		Common1: Have you seen any Goblins? I had a guy in there that knew tons of fun science.
+		Common2: You wouldn't happen to have any advanced medical science on you, would you?
+		Common3: I bet you don't even know how lamp posts work. Poor soul...
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: I must soon harness the sun...
+			1: Aha! This tree works on water!
+			2: So many fools surround me...
+		}
+
+		Night: {
+			0: Now is the time of ingenuity!
+			1: The moon...time's greatest trickster.
+			2: Sleep science is perhaps the greatest science of all. At least right now.
+		}
+
+		Goblins: {
+			0: Hey! Do you know a guy that has these fancy boots!...they aren't listening.
+			1: Tch. You damage something, morons, and I'll have your head!
+			2: Where's my charged plasma rifle...
+		}
+
+		Rain: {
+			0: Stupid rain. Go elsewhere!
+			1: Tch...how displeasant.
+			2: The only thing rain brings is lightning!
+		}
+	}
+}
