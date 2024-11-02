@@ -7,7 +7,13 @@ internal class GlimmeringShard : CurrencyShard
 {
 	public override bool CanRightClick()
 	{
-		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity == ItemRarity.Magic;
+		if (Main.LocalPlayer.HeldItem.GetInstanceData().Rarity == ItemRarity.Magic)
+		{
+			return base.CanRightClick();
+		}
+
+		Main.NewText("Item must be of Magic rarity");
+		return false;
 	}
 
 	public override void RightClick(Player player)
