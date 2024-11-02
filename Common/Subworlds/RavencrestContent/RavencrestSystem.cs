@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
@@ -119,5 +120,15 @@ public class RavencrestSystem : ModSystem
 		{
 			tag.Add(structure.Key + "Name", (byte)structure.Value.StructureIndex);
 		}
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.WriteVector2(EntrancePosition.ToVector2());
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		EntrancePosition = reader.ReadVector2().ToPoint16();
 	}
 }
