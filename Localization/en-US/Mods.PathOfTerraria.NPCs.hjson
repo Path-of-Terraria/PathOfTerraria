@@ -298,5 +298,19 @@ MorvenNPC: {
 			1: Tch...how displeasant.
 			2: The only thing rain brings is lightning!
 		}
+
+		Escort: {
+			0: Let's keep it moving, you know?
+			1: Chop chop, stranger.
+			2: I hope you appreciate the additional firepower.
+			3: Rocket Boots are awesome.
+			4: Those Devourers can be intimidating, huh?
+		}
+
+		EscortAttack: {
+			0: Keep it moving, this thing's no big deal.
+			1: You gonna help me out?
+			2: Trusty ol' gun...
+		}
 	}
 }

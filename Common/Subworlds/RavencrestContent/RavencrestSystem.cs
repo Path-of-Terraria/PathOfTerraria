@@ -13,6 +13,8 @@ namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 public class RavencrestSystem : ModSystem
 {
+	public readonly HashSet<string> HasOverworldNPC = [];
+
 	private readonly Dictionary<string, ImprovableStructure> structures = [];
 
 	public bool SpawnedScout = false;
@@ -46,6 +48,17 @@ public class RavencrestSystem : ModSystem
 				var hunterNPC = ModContent.GetInstance<HunterNPC>() as ISpawnInRavencrestNPC;
 				Point16 pos = hunterNPC.TileSpawn;
 				NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, ModContent.NPCType<GarrickNPC>());
+			}
+
+			foreach (string npcName in HasOverworldNPC)
+			{
+				int type = ModContent.Find<ModNPC>(npcName).Type;
+
+				if (!NPC.AnyNPCs(type))
+				{
+					var pos = new Point16(Main.spawnTileX, Main.spawnTileY);
+					NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, type);
+				}
 			}
 		}
 	}
