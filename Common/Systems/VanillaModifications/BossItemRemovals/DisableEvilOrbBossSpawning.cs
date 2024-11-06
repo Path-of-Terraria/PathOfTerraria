@@ -105,11 +105,11 @@ internal class DisableEvilOrbBossSpawning : ModSystem
 		{
 			int x = i + dir * l;
 
-			for (int k = -5; k < 5; ++k)
+			for (int k = -6; k < 6; ++k)
 			{
 				int y = j + k;
 
-				if (k >= -2 && k < 2)
+				if (k >= -3 && k < 3)
 				{
 					WorldGen.KillTile(x, y);
 				}
