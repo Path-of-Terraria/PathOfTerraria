@@ -122,6 +122,13 @@ public class RavencrestSystem : ModSystem
 				structure.Value.Change(index);
 			}
 		}
+
+		int count = tag.GetShort("overworldNPCCount");
+
+		for (int i = 0; i < count; ++i)
+		{
+			HasOverworldNPC.Add(tag.GetString("overworldNPC" + i));
+		}
 	}
 
 	public override void SaveWorldData(TagCompound tag)
@@ -132,5 +139,19 @@ public class RavencrestSystem : ModSystem
 		{
 			tag.Add(structure.Key + "Name", (byte)structure.Value.StructureIndex);
 		}
+
+		int npcNum = 0;
+		tag.Add("overworldNPCCount", (short)HasOverworldNPC.Count);
+
+		foreach (string npc in HasOverworldNPC)
+		{
+			tag.Add("overworldNPC" + npcNum++, npc);
+		}
+	}
+
+	public override void ClearWorld()
+	{
+		HasOverworldNPC.Clear();
+		structures.Clear();
 	}
 }

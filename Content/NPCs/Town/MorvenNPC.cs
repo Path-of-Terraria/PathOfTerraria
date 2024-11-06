@@ -8,12 +8,15 @@ using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Pathfinding;
 using System.Linq;
 using System.Collections.Generic;
 using PathOfTerraria.Content.Tiles.Town;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using Terraria.DataStructures;
+using Terraria.Audio;
+using SubworldLibrary;
+using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -27,10 +30,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	public Player FollowPlayer => Main.player[followPlayer];
 
 	private float animCounter;
-
 	private bool doPathing = false;
 	private byte followPlayer;
 	private bool teleportingToRavencrest = false;
+
+	// Sound timers
+	private int walkTime = 0;
+	private int rocketTime = 0;
 
 	// Dialogue stuff
 	private bool surfaceDialogue = true;
@@ -86,7 +92,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 		if (teleportingToRavencrest)
 		{
-			NPC.Opacity -= 0.0095f;
+			NPC.Opacity -= 0.0015f;
 			NPC.velocity *= 0.85f;
 
 			if (NPC.Opacity <= 0)
@@ -155,6 +161,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			attackTime = atkCool * 60 + Main.rand.Next(randCool * 60);
 			attackTime /= 8;
 			attackDir = Math.Sign(velocity.X);
+
+			SoundEngine.PlaySound(SoundID.Item11, NPC.Center);
 		}
 
 		if (--attackingTime > 0)
@@ -178,9 +186,20 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			}
 		}
 
-		pathfinder.CheckDrawPath((NPC.Top + new Vector2(0, 6)).ToTileCoordinates16(), target.ToTileCoordinates16(), new Vector2(0.75f, 1.8f), null, null);
+		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
+		Point16 pathEnd = target.ToTileCoordinates16();
+		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.1f), null, new(-NPC.width / 2, 0));
 
 		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+
+		if (!canPath) // Retry pathing but slightly offset
+		{
+			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
+			pathEnd = target.ToTileCoordinates16();
+			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.1f), null, new(-NPC.width / 2, 0));
+
+			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+		}
 
 		if (canPath && NPC.DistanceSQ(target) > 160 * 160)
 		{
@@ -220,18 +239,59 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			RocketBootDust();
 		}
 
+		RunDustEffects();
+
 		if (Math.Abs(NPC.velocity.X) > 0.1f)
 		{
 			NPC.direction = NPC.spriteDirection = MathF.Sign(NPC.velocity.X);
 		}
 	}
 
+	private void RunDustEffects()
+	{
+		bool ground = NPC.velocity.Y == 0 || NPC.velocity.Y == 0.1f;
+		int chance = 6 - (int)Math.Min(5, Math.Abs(NPC.velocity.X));
+
+		if (ground && Collision.SolidCollision(NPC.BottomLeft, NPC.width, 6) && (chance < 1 || Main.rand.NextBool(chance)) && Math.Abs(NPC.velocity.X) > 2)
+		{
+			Point floorPos = NPC.Center.ToTileCoordinates();
+
+			while (!WorldGen.SolidOrSlopedTile(floorPos.X, floorPos.Y))
+			{
+				floorPos.Y++;
+			}
+
+			Vector2 dustPos = floorPos.ToWorldCoordinates() + new Vector2(Main.rand.NextFloat(NPC.width), NPC.gfxOffY - 8);
+			Vector2 vel = new Vector2(-NPC.velocity.X * 0.1f, Main.rand.NextFloat(-0.5f, 0.5f)).RotatedByRandom(0.2f);
+			Dust.NewDustPerfect(dustPos, DustID.Cloud, vel, Scale: Main.rand.NextFloat(1.2f, 1.8f));
+
+			walkTime += (int)Math.Abs(NPC.velocity.X);
+
+			if (walkTime > 40)
+			{
+				SoundEngine.PlaySound(SoundID.Run with { Volume = 0.8f, PitchRange = (-0.1f, 0.1f) }, NPC.Bottom);
+
+				walkTime = 0;
+			}
+		}
+	}
+
 	private void RocketBootDust()
 	{
-		for (int i = 0; i < 2; ++i)
+		if (!Main.rand.NextBool(3))
 		{
-			var vector = new Vector2((i % 2 == 0 ? -1 : 1) - NPC.velocity.X * 0.3f, 2f - NPC.velocity.Y * 0.3f);
-			Dust.NewDustPerfect(NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), 0), DustID.Torch, vector, 0, default, Main.rand.NextFloat(1, 1.5f));
+			for (int i = 0; i < 2; ++i)
+			{
+				var vector = new Vector2((i % 2 == 0 ? -1 : 1) - NPC.velocity.X * 0.3f, 2f - NPC.velocity.Y * 0.3f);
+				Dust.NewDustPerfect(NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), 0), DustID.Torch, vector, 0, default, Main.rand.NextFloat(2, 2.5f));
+			}
+		}
+
+		if (rocketTime++ >= 20)
+		{
+			SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.6f, PitchRange = (-0.1f, 0.1f) }, NPC.Bottom);
+
+			rocketTime = 0;
 		}
 	}
 
@@ -241,7 +301,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 		foreach (Pathfinder.FoundPoint point in foundPoints)
 		{
-			dir += Pathfinder.ToVector(point.Direction).ToVector2() * new Vector2(1.6f, 1);
+			dir += Pathfinder.ToVector(point.Direction).ToVector2() * new Vector2(3f, 1);
 		}
 
 		return dir / foundPoints.Count;
@@ -288,7 +348,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = /*!ModContent.GetInstance<EoCQuest>().CanBeStarted ? "" :*/ Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = /*!ModContent.GetInstance<EoWQuest>().CanBeStarted ? "" :*/ Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -310,19 +370,20 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	public override string GetChat()
 	{
-		if (NPC.Center.Y / 16 < Main.worldSurface && surfaceDialogue)
+		if (NPC.Center.Y / 16 < Main.worldSurface && surfaceDialogue && SubworldSystem.Current is null)
 		{
 			surfaceDialogue = false;
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Aboveground");
 		}
 
-		if (ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Contains(FullName) && postOrbPreEoWDialogue)
+		if (ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Contains(FullName) && postOrbPreEoWDialogue && DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2)
 		{
 			postOrbPreEoWDialogue = false;
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.BeforeBeatingEoW");
 		}
 
-		return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common" + Main.rand.Next(4));
+		string isFollow = doPathing ? "Follow" : "Common";
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue." + isFollow + + Main.rand.Next(4));
 	}
 
 	public override void FindFrame(int frameHeight)

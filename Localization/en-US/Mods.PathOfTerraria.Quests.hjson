@@ -70,10 +70,10 @@ Quest: {
 	}
 
 	EoWQuest: {
-		Name: EoWQuest
+		Name: Whispers of the Deep
 		Description: ""
 		MorvenRaven: Get Morven to Ravencrest
 		SmashOrbs: Smash 3 Shadow Orbs
-		KillEoW: Mods.PathOfTerraria.Quests.Quest.EoWQuest.KillEoW
+		KillEoW: Defeat the Eater of Worlds
 	}
 }

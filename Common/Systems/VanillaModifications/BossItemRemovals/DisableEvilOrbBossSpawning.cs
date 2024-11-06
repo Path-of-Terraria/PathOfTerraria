@@ -3,14 +3,32 @@ using MonoMod.Cil;
 using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 
 internal class DisableEvilOrbBossSpawning : ModSystem
 {
+	public static int ActualOrbsSmashed = 0;
+
 	public override void Load()
 	{
 		IL_WorldGen.CheckOrb += StopBossSpawningOnOrb;
+	}
+
+	public override void SaveWorldData(TagCompound tag)
+	{
+		tag.Add("orbsSmashed", (short)ActualOrbsSmashed);
+	}
+
+	public override void LoadWorldData(TagCompound tag)
+	{
+		ActualOrbsSmashed = tag.GetShort("orbsSmashed");
+	}
+
+	public override void ClearWorld()
+	{
+		ActualOrbsSmashed = 0;
 	}
 
 	private void StopBossSpawningOnOrb(ILContext il)
@@ -40,7 +58,9 @@ internal class DisableEvilOrbBossSpawning : ModSystem
 
 	public static void ResetOrbCountIfHigh()
 	{
-		LocalizedText localizedText = WorldGen.shadowOrbCount switch
+		ActualOrbsSmashed++;
+
+		LocalizedText localizedText = (ActualOrbsSmashed % 3) switch
 		{
 			1 => Lang.misc[10],
 			2 => Lang.misc[11],
