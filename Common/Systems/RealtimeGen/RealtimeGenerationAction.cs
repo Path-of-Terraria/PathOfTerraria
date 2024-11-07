@@ -12,30 +12,36 @@ namespace PathOfTerraria.Common.Systems.RealtimeGen;
 /// <returns></returns>
 public delegate bool RealtimeAction(int x, int y);
 
-internal class RealtimeGenerationAction(IEnumerable<RealtimeAction> actions, float placeSpeedInSeconds, Point16 placePos)
+public readonly record struct RealtimeStep(RealtimeAction Action, Point16 Position);
+
+internal class RealtimeGenerationAction(IEnumerable<RealtimeStep> actions, float placeSpeedInSeconds)
 {
 	public bool Done => Actions.Count == 0;
 
-	public readonly Queue<RealtimeAction> Actions = new(actions);
+	public readonly Queue<RealtimeStep> Actions = new(actions);
 	public readonly float PlaceSpeedInSeconds = placeSpeedInSeconds;
-	public readonly Point16 PlacePosition = placePos;
 
-	private int _timer = 0;
+	private float _timer = 0;
 
 	public void Update()
 	{
 		_timer++;
 
-		if (_timer > PlaceSpeedInSeconds * 60)
+		while (!Done && _timer > PlaceSpeedInSeconds * 60)
 		{
-			RealtimeAction action = Actions.Dequeue();
+			RealtimeStep action = Actions.Dequeue();
 
-			while (!action.Invoke(PlacePosition.X, PlacePosition.Y))
+			while (!action.Action.Invoke(action.Position.X, action.Position.Y))
 			{
+				if (Done)
+				{
+					break;
+				}
+
 				action = Actions.Dequeue();
 			}
 
-			_timer = 0;
+			_timer -= PlaceSpeedInSeconds * 60;
 		}
 	}
 }

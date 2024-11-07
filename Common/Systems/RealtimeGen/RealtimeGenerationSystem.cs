@@ -19,5 +19,7 @@ internal class RealtimeGenerationSystem : ModSystem
 		{
 			action.Update();
 		}
+
+		GenerationActions.RemoveAll(x => x.Done);
 	}
 }

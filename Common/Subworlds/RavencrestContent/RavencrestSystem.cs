@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
+using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -28,37 +29,58 @@ public class RavencrestSystem : ModSystem
 
 	public override void PreUpdateTime()
 	{
-		if (SubworldSystem.Current is not RavencrestSubworld)
-		{
-			return;
-		}
-
 		if (Main.netMode != NetmodeID.MultiplayerClient && !ReplacedBuildings && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
-			foreach (ImprovableStructure structure in structures.Values)
+			if (SubworldSystem.Current is not RavencrestSubworld)
 			{
-				structure.Place();
+				RavencrestOneTimeChecks();
 			}
-
-			ReplacedBuildings = true;
-
-			if (!NPC.AnyNPCs(ModContent.NPCType<GarrickNPC>()) && AnyClassQuestDone())
+			else if (SubworldSystem.Current is null)
 			{
-				// Spawn in the same place as the Hunter
-				var hunterNPC = ModContent.GetInstance<HunterNPC>() as ISpawnInRavencrestNPC;
-				Point16 pos = hunterNPC.TileSpawn;
-				NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, ModContent.NPCType<GarrickNPC>());
+				OverworldOneTimeChecks();
 			}
+		}
+	}
 
-			foreach (string npcName in HasOverworldNPC)
+	private void OverworldOneTimeChecks()
+	{
+		if (NPC.downedSlimeKing)
+		{
+			while (true)
 			{
-				int type = ModContent.Find<ModNPC>(npcName).Type;
+				int x = Main.rand.Next(Main.maxTilesX / 5, Main.maxTilesX / 5 * 4);
+				int y = Main.rand.Next((int)Main.worldSurface, Main.maxTilesY / 2);
 
-				if (!NPC.AnyNPCs(type))
-				{
-					var pos = new Point16(Main.spawnTileX, Main.spawnTileY);
-					NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, type);
-				}
+				//WorldGen.PlaceObject(x, y, ModContent.TileType<Stuck>);
+			}
+		}
+	}
+
+	private void RavencrestOneTimeChecks()
+	{
+		foreach (ImprovableStructure structure in structures.Values)
+		{
+			structure.Place();
+		}
+
+		ReplacedBuildings = true;
+
+		if (!NPC.AnyNPCs(ModContent.NPCType<GarrickNPC>()) && AnyClassQuestDone())
+		{
+			// Spawn in the same place as the Hunter
+			var hunterNPC = ModContent.GetInstance<HunterNPC>() as ISpawnInRavencrestNPC;
+			Point16 pos = hunterNPC.TileSpawn;
+			NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, ModContent.NPCType<GarrickNPC>());
+		}
+
+		foreach (string npcName in HasOverworldNPC)
+		{
+			int type = ModContent.Find<ModNPC>(npcName).Type;
+
+			if (!NPC.AnyNPCs(type))
+			{
+				var pos = new Point16(Main.spawnTileX, Main.spawnTileY);
+				NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, type);
 			}
 		}
 	}

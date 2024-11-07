@@ -1,4 +1,6 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Quest;
 
@@ -19,5 +21,12 @@ internal class LunarLiquid : ModItem
 		Item.buffType = BuffID.VortexDebuff;
 		Item.useTime = Item.useAnimation = 30;
 		Item.useStyle = ItemUseStyleID.DrinkLiquid;
+	}
+
+	public override bool? UseItem(Player player)
+	{
+		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
+		DisableEvilOrbBossSpawning.SpawnChasm(pos.X, pos.Y);
+		return true;
 	}
 }

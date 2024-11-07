@@ -92,7 +92,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 		if (teleportingToRavencrest)
 		{
-			NPC.Opacity -= 0.0015f;
+			NPC.Opacity -= 0.015f;
 			NPC.velocity *= 0.85f;
 
 			if (NPC.Opacity <= 0)
@@ -173,22 +173,22 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	private void PathedMovement()
 	{
-		Vector2 target = FollowPlayer.Center - new Vector2(FollowPlayer.direction * 32, 18);
-		Vector2 secondTarget = FollowPlayer.Center - new Vector2(-FollowPlayer.direction * 32, 18);
+		Vector2 target = FindFollowingPosition(); /*FollowPlayer.Center - new Vector2(FollowPlayer.direction * 32, 18);*/
+		//Vector2 secondTarget = FollowPlayer.Center - new Vector2(-FollowPlayer.direction * 32, 18);
 
-		while (Collision.SolidCollision(target, 16, 16))
-		{
-			target = Vector2.Lerp(target, secondTarget, 0.1f);
+		//while (Collision.SolidCollision(target, 16, 16))
+		//{
+		//	target = Vector2.Lerp(target, secondTarget, 0.1f);
 
-			if (target.DistanceSQ(secondTarget) < 2 * 2)
-			{
-				break;
-			}
-		}
+		//	if (target.DistanceSQ(secondTarget) < 2 * 2)
+		//	{
+		//		break;
+		//	}
+		//}
 
 		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
-		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.1f), null, new(-NPC.width / 2, 0));
+		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
 
 		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 
@@ -196,7 +196,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		{
 			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
 			pathEnd = target.ToTileCoordinates16();
-			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.1f), null, new(-NPC.width / 2, 0));
+			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
 
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		}
@@ -207,7 +207,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			List<Pathfinder.FoundPoint> checkPoints = pathfinder.Path[^(Math.Min(pathfinder.Path.Count, 6))..];
 			Vector2 direction = -AveragePathDirection(checkPoints) * 2;
 
-			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, direction.X, 0.05f);
+			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, direction.X, 0.08f);
 			NPC.velocity.Y += 0.1f;
 
 			if (direction.Y < 0)
@@ -245,6 +245,12 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		{
 			NPC.direction = NPC.spriteDirection = MathF.Sign(NPC.velocity.X);
 		}
+	}
+
+	private Vector2 FindFollowingPosition()
+	{
+		Vector2 target = FollowPlayer.position;
+		return target;
 	}
 
 	private void RunDustEffects()

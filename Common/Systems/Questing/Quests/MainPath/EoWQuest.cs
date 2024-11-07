@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Content.NPCs.Town;
+using SubworldLibrary;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
@@ -29,11 +30,14 @@ internal class EoWQuest : Quest
 			new ActionStep((_, _) =>
 			{
 				DisableOrbBreaking.BreakableOrbSystem.CanBreakOrb = true;
-				return true;
+				return SubworldSystem.Current is null;
 			}),
 			new ConditionCheck((_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2, 1, this.GetLocalization("SmashOrbs")),
 			new ConditionCheck((_) => NPC.downedBoss2, 1, this.GetLocalization("KillEoW")),
-			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.AfterBeatingEoW")),
+			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.AfterBeatingEoW"))
+			{
+				CountsAsCompletedOnMarker = true
+			},
 		];
 	}
 }
