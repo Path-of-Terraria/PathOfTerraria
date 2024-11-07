@@ -173,19 +173,25 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	private void PathedMovement()
 	{
-		Vector2 target = FindFollowingPosition(); /*FollowPlayer.Center - new Vector2(FollowPlayer.direction * 32, 18);*/
-		//Vector2 secondTarget = FollowPlayer.Center - new Vector2(-FollowPlayer.direction * 32, 18);
+		Vector2 target = FollowPlayer.position;
 
-		//while (Collision.SolidCollision(target, 16, 16))
-		//{
-		//	target = Vector2.Lerp(target, secondTarget, 0.1f);
+		// If the player is too far away from the NPC, teleport the NPC and hurt him.
+		// This reduces pathfinding load, especially if the player becomes fully blocked off somehow.
+		if (Vector2.DistanceSquared(target, NPC.Center) > MathF.Pow(250 * 16, 2))
+		{
+			TeleportEffects();
 
-		//	if (target.DistanceSQ(secondTarget) < 2 * 2)
-		//	{
-		//		break;
-		//	}
-		//}
+			NPC.Center = target;
+			NPC.SimpleStrikeNPC((int)(NPC.lifeMax / 3f), 0, true, noPlayerInteraction: true);
 
+			TeleportEffects();
+
+			string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
+			((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+			return;
+		}
+
+		// Determines path using a slightly adjusted position and hitbox size.
 		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
 		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
@@ -220,13 +226,20 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
-			foreach (Pathfinder.FoundPoint item in pathfinder.Path)
+			// Debugging to show the calculated path.
+			// This'll only show in DEBUG, for the local player and if the player is holding (usually) escape.
+#if DEBUG
+			if (Main.myPlayer == followPlayer && FollowPlayer.controlInv)
 			{
-				var vel = Pathfinder.ToVector(item.Direction).ToVector2();
-				int id = checkPoints.Contains(item) ? item == checkPoints.Last() ? DustID.Poisoned : DustID.GreenFairy : DustID.YellowStarDust;
-				var dust = Dust.NewDustPerfect(item.Position.ToWorldCoordinates(), id, vel * 2);
-				dust.noGravity = true;
+				foreach (Pathfinder.FoundPoint item in pathfinder.Path)
+				{
+					var vel = Pathfinder.ToVector(item.Direction).ToVector2();
+					int id = checkPoints.Contains(item) ? item == checkPoints.Last() ? DustID.Poisoned : DustID.GreenFairy : DustID.YellowStarDust;
+					var dust = Dust.NewDustPerfect(item.Position.ToWorldCoordinates(), id, vel * 2);
+					dust.noGravity = true;
+				}
 			}
+#endif
 		}
 		else
 		{
@@ -247,10 +260,14 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 	}
 
-	private Vector2 FindFollowingPosition()
+	private void TeleportEffects()
 	{
-		Vector2 target = FollowPlayer.position;
-		return target;
+		SoundEngine.PlaySound(SoundID.Item6, NPC.Center);
+
+		for (int i = 0; i < 20; ++i)
+		{
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Teleporter);
+		}
 	}
 
 	private void RunDustEffects()

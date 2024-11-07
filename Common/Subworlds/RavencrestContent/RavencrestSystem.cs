@@ -2,14 +2,20 @@
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
+using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using ReLogic.Graphics;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
@@ -22,7 +28,55 @@ public class RavencrestSystem : ModSystem
 	public bool SpawnedScout = false;
 	public Point16 EntrancePosition;
 	public bool ReplacedBuildings = false;
-	public bool SpawnedMorven = false;
+	public Point16? SpawnedMorvenPos = null;
+
+	public override void Load()
+	{
+		structures.Add("Lodge", new ImprovableStructure(2)
+		{
+			StructurePath = "Assets/Structures/RavencrestBuildings/Lodge_",
+			Position = new Point(259, 134),
+		});
+
+		structures.Add("Forge", new ImprovableStructure(2)
+		{
+			StructurePath = "Assets/Structures/RavencrestBuildings/Forge_",
+			Position = new Point(195, 148)
+		});
+
+		structures.Add("Burrow", new ImprovableStructure(2)
+		{
+			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
+			Position = new Point(673, 182)
+		});
+
+		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
+	}
+
+	private void DrawDistantMorvenDialogue(SpriteBatch spriteBatch)
+	{
+		if (!SpawnedMorvenPos.HasValue || !Main.tile[SpawnedMorvenPos.Value].HasTile || Main.GameUpdateCount % 300 > 270)
+		{
+			return;
+		}
+
+		Vector2 position = SpawnedMorvenPos.Value.ToWorldCoordinates() + new Vector2(0, -40);
+		float opacity = 1 - MathHelper.Clamp(position.Distance(Main.LocalPlayer.Center) / (250 * 16), 0, 1);
+
+		if (opacity <= 0)
+		{
+			return;
+		}
+
+		DynamicSpriteFont font = FontAssets.MouseText.Value;
+		int talkId = (int)(Main.GameUpdateCount % 900 / 300);
+		string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Stuck." + talkId);
+		Vector2 size = ChatManager.GetStringSize(font, text, Vector2.One);
+		Vector2 bufferSize = size * new Vector2(1, 2f);
+		position = Vector2.Clamp(position, Main.screenPosition + bufferSize, Main.screenPosition + Main.ScreenSize.ToVector2() - bufferSize);
+
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position - Main.screenPosition, Color.White * opacity, 0f, size / 2f, new(1.2f));
+	}
 
 	public override void OnWorldLoad()
 	{
@@ -31,6 +85,11 @@ public class RavencrestSystem : ModSystem
 
 	public override void PreUpdateTime()
 	{
+		if (NPC.downedBoss2 && !DisableOrbBreaking.CanBreakOrb)
+		{
+			DisableOrbBreaking.CanBreakOrb = true;
+		}
+
 		if (Main.netMode != NetmodeID.MultiplayerClient && !ReplacedBuildings && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
 			if (SubworldSystem.Current is RavencrestSubworld)
@@ -48,10 +107,8 @@ public class RavencrestSystem : ModSystem
 
 	private void OverworldOneTimeChecks()
 	{
-		if (NPC.downedSlimeKing && !SpawnedMorven)
+		if (NPC.downedSlimeKing && SpawnedMorvenPos is null)
 		{
-			SpawnedMorven = true;
-
 			while (true)
 			{
 				int x = Main.rand.Next(Main.maxTilesX / 5, Main.maxTilesX / 5 * 4);
@@ -73,6 +130,7 @@ public class RavencrestSystem : ModSystem
 
 				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<MorvenStuck>())
 				{
+					SpawnedMorvenPos = new	Point16(x, y);
 					break;
 				}
 			}
@@ -112,27 +170,6 @@ public class RavencrestSystem : ModSystem
 			|| ModContent.GetInstance<WitchStartQuest>().Completed || ModContent.GetInstance<WizardStartQuest>().Completed;
 	}
 
-	public override void Load()
-	{
-		structures.Add("Lodge", new ImprovableStructure(2)
-		{
-			StructurePath = "Assets/Structures/RavencrestBuildings/Lodge_",
-			Position = new Point(259, 134),
-		});
-
-		structures.Add("Forge", new ImprovableStructure(2)
-		{
-			StructurePath = "Assets/Structures/RavencrestBuildings/Forge_",
-			Position = new Point(195, 148)
-		});
-
-		structures.Add("Burrow", new ImprovableStructure(2)
-		{
-			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
-			Position = new Point(673, 182)
-		});
-	}
-
 	public static void UpgradeBuilding(string name, int level = -1)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -156,7 +193,11 @@ public class RavencrestSystem : ModSystem
 
 	public override void LoadWorldData(TagCompound tag)
 	{
-		SpawnedMorven = tag.ContainsKey("morven");
+		if (tag.TryGet("morven", out Point16 morven))
+		{
+			SpawnedMorvenPos = morven;
+		}
+
 		EntrancePosition = tag.Get<Point16>("entrance");
 
 		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)
@@ -177,9 +218,9 @@ public class RavencrestSystem : ModSystem
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		if (SpawnedMorven)
+		if (SpawnedMorvenPos is not null)
 		{
-			tag.Add("morven", true);
+			tag.Add("morven", SpawnedMorvenPos.Value);
 		}
 
 		tag.Add("entrance", EntrancePosition);

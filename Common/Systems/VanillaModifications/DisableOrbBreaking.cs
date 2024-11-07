@@ -6,6 +6,12 @@ namespace PathOfTerraria.Common.Systems.VanillaModifications;
 
 public class DisableOrbBreaking : GlobalTile
 {
+	public static bool CanBreakOrb 
+	{
+		get => BreakableOrbSystem.CanBreakOrb;
+		set => BreakableOrbSystem.CanBreakOrb = value;
+	}
+
 	public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)
 	{
 		Tile tile = Main.tile[i, j];

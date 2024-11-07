@@ -316,5 +316,17 @@ MorvenNPC: {
 			1: You gonna help me out?
 			2: Trusty ol' gun...
 		}
+
+		Teleport: {
+			0: OW...you gotta be too careful going too far, fool.
+			1: Don't leave me behind! This teleporter barely works!
+			2: Hey! Hey! Slow down! This teleporter hurts to use!
+		}
+	}
+
+	Stuck: {
+		0: Hey! Anyone up there!
+		1: Help a guy out!
+		2: Oh man...
 	}
 }

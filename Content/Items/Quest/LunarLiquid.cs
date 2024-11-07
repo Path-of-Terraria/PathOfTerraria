@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
+﻿using PathOfTerraria.Common.Systems.RealtimeGen.Generation;
+using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -26,7 +27,7 @@ internal class LunarLiquid : ModItem
 	public override bool? UseItem(Player player)
 	{
 		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		DisableEvilOrbBossSpawning.SpawnChasm(pos.X, pos.Y);
+		EoWChasmGeneration.SpawnChasm(pos.X, pos.Y);
 		return true;
 	}
 }

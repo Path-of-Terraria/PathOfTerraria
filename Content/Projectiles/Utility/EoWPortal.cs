@@ -35,10 +35,10 @@ internal class EoWPortal : ModProjectile
 		if (Main.rand.NextBool(14))
 		{
 			Vector2 vel = new Vector2(-Main.rand.NextFloat(4, 8), 0).RotatedBy(Projectile.rotation);
-			Dust.NewDustPerfect(Projectile.Center + new Vector2(8, Main.rand.NextFloat(-16, 16)), DustID.RedTorch, vel);
+			Dust.NewDustPerfect(Projectile.Center + new Vector2(8, Main.rand.NextFloat(-16, 16)), DustID.PurpleTorch, vel);
 		}
 
-		Lighting.AddLight(Projectile.Center, TorchID.Red);
+		Lighting.AddLight(Projectile.Center, TorchID.Purple);
 
 		foreach (Player player in Main.ActivePlayers)
 		{
