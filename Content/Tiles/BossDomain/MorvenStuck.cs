@@ -15,6 +15,7 @@ internal class MorvenStuck : ModTile
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
+		TileObjectData.newTile.Origin = new Point16(1, 1);
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.addTile(Type);
 

@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Content.NPCs.Town;
+using PathOfTerraria.Content.Tiles.BossDomain;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -21,6 +22,7 @@ public class RavencrestSystem : ModSystem
 	public bool SpawnedScout = false;
 	public Point16 EntrancePosition;
 	public bool ReplacedBuildings = false;
+	public bool SpawnedMorven = false;
 
 	public override void OnWorldLoad()
 	{
@@ -31,7 +33,7 @@ public class RavencrestSystem : ModSystem
 	{
 		if (Main.netMode != NetmodeID.MultiplayerClient && !ReplacedBuildings && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
-			if (SubworldSystem.Current is not RavencrestSubworld)
+			if (SubworldSystem.Current is RavencrestSubworld)
 			{
 				RavencrestOneTimeChecks();
 			}
@@ -39,19 +41,40 @@ public class RavencrestSystem : ModSystem
 			{
 				OverworldOneTimeChecks();
 			}
+
+			ReplacedBuildings = true;
 		}
 	}
 
 	private void OverworldOneTimeChecks()
 	{
-		if (NPC.downedSlimeKing)
+		if (NPC.downedSlimeKing && !SpawnedMorven)
 		{
+			SpawnedMorven = true;
+
 			while (true)
 			{
 				int x = Main.rand.Next(Main.maxTilesX / 5, Main.maxTilesX / 5 * 4);
 				int y = Main.rand.Next((int)Main.worldSurface, Main.maxTilesY / 2);
+				int checkY = y;
 
-				//WorldGen.PlaceObject(x, y, ModContent.TileType<Stuck>);
+				while (!WorldGen.SolidTile(x, checkY))
+				{
+					checkY++;
+				}
+
+				if (!Main.tile[x, y].HasTile || Main.tile[x, y].TileType != TileID.Ebonstone)
+				{
+					continue;
+				}
+
+				y = checkY - 2;
+				WorldGen.PlaceObject(x, y, ModContent.TileType<MorvenStuck>());
+
+				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<MorvenStuck>())
+				{
+					break;
+				}
 			}
 		}
 	}
@@ -62,8 +85,6 @@ public class RavencrestSystem : ModSystem
 		{
 			structure.Place();
 		}
-
-		ReplacedBuildings = true;
 
 		if (!NPC.AnyNPCs(ModContent.NPCType<GarrickNPC>()) && AnyClassQuestDone())
 		{
@@ -135,6 +156,7 @@ public class RavencrestSystem : ModSystem
 
 	public override void LoadWorldData(TagCompound tag)
 	{
+		SpawnedMorven = tag.ContainsKey("morven");
 		EntrancePosition = tag.Get<Point16>("entrance");
 
 		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)
@@ -155,6 +177,11 @@ public class RavencrestSystem : ModSystem
 
 	public override void SaveWorldData(TagCompound tag)
 	{
+		if (SpawnedMorven)
+		{
+			tag.Add("morven", true);
+		}
+
 		tag.Add("entrance", EntrancePosition);
 
 		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)
