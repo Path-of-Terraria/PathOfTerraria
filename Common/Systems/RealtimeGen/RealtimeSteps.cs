@@ -1,4 +1,7 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.World.Generation;
+using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.Systems.RealtimeGen;
 
@@ -38,7 +41,7 @@ public static class RealtimeSteps
 
 	/// <summary>
 	/// Wraps around <see cref="Tile.SmoothSlope(int, int, bool, bool)"/>.<br/>
-	/// Returns true by default, unless <paramref name="quickSkip"/> is true.
+	/// The step returns true by default, unless <paramref name="quickSkip"/> is true.
 	/// </summary>
 	/// <param name="x">X position.</param>
 	/// <param name="y">Y position.</param>
@@ -55,19 +58,48 @@ public static class RealtimeSteps
 
 	/// <summary>
 	/// Wraps around <see cref="WorldGen.PlaceWall(int, int, int, bool)"/>.<br/>
-	/// Returns if the tile 
+	/// The step returns if the wall successfully placed.
 	/// </summary>
-	/// <param name="x"></param>
-	/// <param name="y"></param>
-	/// <param name="wall"></param>
-	/// <param name="quickSkip"></param>
-	/// <returns></returns>
+	/// <param name="x">X position.</param>
+	/// <param name="y">Y position.</param>
+	/// <param name="wall">Wall ID to place.</param>
+	/// <param name="quickSkip">If true, this step will return false for quicker placement.</param>
+	/// <returns>A realtime step that places a tile.</returns>
 	public static RealtimeStep PlaceWall(int x, int y, int wall, bool quickSkip = false)
 	{
 		return new RealtimeStep((i, j) =>
 		{
 			WorldGen.PlaceWall(i, j, wall);
 			return !quickSkip || Main.tile[i, j].WallType == wall;
+		}, new Point16(x, y));
+	}
+
+	/// <summary>
+	/// Wraps around <see cref="GenPlacement.PlaceStalactite(int, int, bool, int, UnifiedRandom)"/>.<br/>
+	/// The step returns if the stalactite was placed properly.
+	/// </summary>
+	/// <param name="x">X position.</param>
+	/// <param name="y">Y position.</param>
+	/// <param name="preferSmall">If true, the stalactite will be a 1x1 stalactite.</param>
+	/// <param name="baseVariant"><inheritdoc cref="GenPlacement.PlaceStalactite(int, int, bool, int, UnifiedRandom)"/></param>
+	/// <param name="random">Random to use when choosing the 3 variants of each stalactite. Defaults to <see cref="Main.rand"/>.</param>
+	/// <param name="reframeSquare">
+	/// If true, reframes the square around the base of the stalactite. 
+	/// Usually, this makes the stalactite look nicer as the tile above/below them merges nicely.
+	/// </param>
+	/// <returns>A realtime step that places a stalactite.</returns>
+	public static RealtimeStep PlaceStalactite(int x, int y, bool preferSmall, int baseVariant, UnifiedRandom random = null, bool reframeSquare = true)
+	{
+		return new RealtimeStep((i, j) =>
+		{
+			GenPlacement.PlaceStalactite(i, j, preferSmall, baseVariant, random);
+
+			if (reframeSquare)
+			{
+				WorldGen.SquareTileFrame(i, j, true);
+			}
+
+			return Main.tile[i, j].TileType == TileID.Stalactite && Main.tile[i, j].HasTile;
 		}, new Point16(x, y));
 	}
 }

@@ -99,7 +99,7 @@ internal class Pathfinder(int refreshTime)
 			end = cachedLocations.end;
 		}
 
-		if (objectSize == default ? (Solid(start) || Solid(end)) : (SolidBig(start, objectSize, posOffset) || SolidBig(end, objectSize, posOffset)))
+		if (objectSize == default ? (Solid(start) || Solid(end)) : (SolidBig(start, objectSize, posOffset, Direction.Below) || SolidBig(end, objectSize, posOffset, Direction.Below)))
 		{
 			return false;
 		}
@@ -198,16 +198,19 @@ internal class Pathfinder(int refreshTime)
 	/// </summary>
 	/// <param name="position">Position of the tile.</param>
 	/// <returns>If the tile is invalid or not.</returns>
-	public bool InvalidTile(Point16 position)
+	public bool InvalidTile(Point16 position, Direction direction)
 	{
-		return !checkingRectangle.Contains(position.ToPoint()) || (objectSize == default ? Solid(position) : SolidBig(position, objectSize, posOffset)) 
+		return !checkingRectangle.Contains(position.ToPoint()) || (objectSize == default ? Solid(position) : SolidBig(position, objectSize, posOffset, direction)) 
 			|| found.ContainsKey(position);
 	}
 
-	private static bool SolidBig(Point16 position, Vector2 objectSize, Vector2 positionOffset)
+	private static bool SolidBig(Point16 position, Vector2 objectSize, Vector2 positionOffset, Direction direction)
 	{
 		Vector2 pos = position.ToWorldCoordinates() + positionOffset;
-		return Collision.SolidCollision(pos, (int)objectSize.X * 16, (int)objectSize.Y * 16);
+		Vector2 vel = ToVector(direction).ToVector2().RotatedBy(MathHelper.Pi) * 4;
+		Vector2 col = Collision.TileCollision(pos, vel, (int)(objectSize.X * 16), (int)(objectSize.Y * 16));
+		return col != vel;
+		//return Collision.SolidCollision(pos, (int)objectSize.X * 16, (int)objectSize.Y * 16);
 	}
 
 	/// <summary>
@@ -218,22 +221,22 @@ internal class Pathfinder(int refreshTime)
 	/// <param name="currentWeight">Current weight of the algorithm.</param>
 	private void AddSurrounds(Point16 end, Point16 pos, float currentWeight)
 	{
-		if (!InvalidTile(new Point16(pos.X, pos.Y + 1)))
+		if (!InvalidTile(new Point16(pos.X, pos.Y + 1), Direction.Above))
 		{
 			AddPoint(end, new Point16(pos.X, pos.Y + 1), Direction.Above, currentWeight);
 		}
 
-		if (!InvalidTile(new Point16(pos.X, pos.Y - 1)))
+		if (!InvalidTile(new Point16(pos.X, pos.Y - 1), Direction.Below))
 		{
 			AddPoint(end, new Point16(pos.X, pos.Y - 1), Direction.Below, currentWeight);
 		}
 
-		if (!InvalidTile(new Point16(pos.X + 1, pos.Y)))
+		if (!InvalidTile(new Point16(pos.X + 1, pos.Y), Direction.Left))
 		{
 			AddPoint(end, new Point16(pos.X + 1, pos.Y), Direction.Left, currentWeight);
 		}
 
-		if (!InvalidTile(new Point16(pos.X - 1, pos.Y)))
+		if (!InvalidTile(new Point16(pos.X - 1, pos.Y), Direction.Right))
 		{
 			AddPoint(end, new Point16(pos.X - 1, pos.Y), Direction.Right, currentWeight);
 		}

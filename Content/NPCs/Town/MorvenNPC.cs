@@ -229,7 +229,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			// Debugging to show the calculated path.
 			// This'll only show in DEBUG, for the local player and if the player is holding (usually) escape.
 #if DEBUG
-			if (Main.myPlayer == followPlayer && FollowPlayer.controlInv)
+			if (Main.myPlayer == followPlayer)// && FollowPlayer.controlInv)
 			{
 				foreach (Pathfinder.FoundPoint item in pathfinder.Path)
 				{

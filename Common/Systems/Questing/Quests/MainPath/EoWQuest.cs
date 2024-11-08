@@ -18,7 +18,7 @@ internal class EoWQuest : Quest
 
 	public override List<QuestReward> QuestRewards =>
 	[
-		new ActionRewards((p, v) => p.GetModPlayer<ExpModPlayer>().Exp += 5000, ""),
+		new ActionRewards((p, v) => p.GetModPlayer<ExpModPlayer>().Exp += 7500, ""),
 	];
 
 	public override List<QuestStep> SetSteps()

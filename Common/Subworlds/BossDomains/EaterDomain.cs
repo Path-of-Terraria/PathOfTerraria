@@ -12,6 +12,7 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.Localization;
 using SubworldLibrary;
 using PathOfTerraria.Content.Projectiles.Utility;
+using System;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -270,7 +271,8 @@ public class EaterDomain : BossDomainSubworld
 				}
 				else if (WorldGen.genRand.NextBool(3))
 				{
-					WorldGen.PlaceUncheckedStalactite(position.X, position.Y - 1, WorldGen.genRand.NextBool(4), WorldGen.genRand.Next(15, 19), false);
+					GenPlacement.PlaceStalagmite(position.X, position.Y - 1, Main.rand.NextBool(4), 5, null);
+					//WorldGen.PlaceUncheckedStalactite(position.X, position.Y - 1, WorldGen.genRand.NextBool(4), WorldGen.genRand.Next(15, 19), false);
 				}
 			}
 		}
@@ -281,7 +283,7 @@ public class EaterDomain : BossDomainSubworld
 			{
 				if (WorldGen.genRand.NextBool(3))
 				{
-					WorldGen.PlaceUncheckedStalactite(position.X, position.Y + 1, WorldGen.genRand.NextBool(4), WorldGen.genRand.Next(15, 19), false);
+					GenPlacement.PlaceStalactite(position.X, position.Y, WorldGen.genRand.NextBool(4), 5);
 				}
 			}
 		}
@@ -365,7 +367,7 @@ public class EaterDomain : BossDomainSubworld
 
 		// Chasm one
 		List<Vector2> breakthroughs = [];
-		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, baseY, 400, baseY + 200), 26, 6), null);
+		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, baseY, 400, baseY + 220), 26, 6), null);
 
 		// Tunnel one
 		progress.Value = 0.2f;

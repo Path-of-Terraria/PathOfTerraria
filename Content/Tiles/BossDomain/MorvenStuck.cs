@@ -21,7 +21,7 @@ internal class MorvenStuck : ModTile
 
 		DustType = DustID.Stone;
 
-		AddMapEntry(new Color(128, 128, 128));
+		AddMapEntry(Color.LightPink);
 	}
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)

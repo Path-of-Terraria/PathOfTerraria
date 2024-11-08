@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.World.Generation;
+﻿using Microsoft.VisualBasic;
+using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Walls;
@@ -56,6 +57,7 @@ internal static class EoWChasmGeneration
 
 				if (k >= wallStart && k < wallEnd && l < depth - 4)
 				{
+					// Digs tunnel
 					steps.Enqueue(RealtimeSteps.KillTile(x, y), QuickDistance(x, y));
 					walls.Add(new Point16(x, y));
 				}
@@ -69,6 +71,7 @@ internal static class EoWChasmGeneration
 						isMalaise = Main.rand.NextBool(Math.Max(5 - (l - cutoffStart), 1));
 					}
 
+					// Places tiles
 					steps.Enqueue(new RealtimeStep((int i, int j) =>
 					{
 						int type = isMalaise ? ModContent.TileType<WeakMalaise>() : TileID.Ebonstone;
@@ -125,12 +128,14 @@ internal static class EoWChasmGeneration
 				steps.Enqueue(RealtimeSteps.PlaceWall(point.X, point.Y, wallType, true), QuickDistance(point.X, point.Y));
 			}
 
-			if (Main.rand.NextBool(3))
+			if (!tiles.Contains(new Point16(point.X, point.Y + 1)) && Main.rand.NextBool(3))
 			{
-				continue;
+				lateSteps.Add(RealtimeSteps.PlaceStalactite(point.X, point.Y + 1, Main.rand.NextBool(4), 5, null, true));
 			}
-
-			lateSteps.Add(RealtimeSteps.SmoothSlope(point.X, point.Y, true));
+			else
+			{
+				lateSteps.Add(RealtimeSteps.SmoothSlope(point.X, point.Y, true));
+			}
 		}
 		
 		// Adds in walls.

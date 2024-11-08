@@ -61,7 +61,7 @@ public class RavencrestSystem : ModSystem
 		}
 
 		Vector2 position = SpawnedMorvenPos.Value.ToWorldCoordinates() + new Vector2(0, -40);
-		float opacity = 1 - MathHelper.Clamp(position.Distance(Main.LocalPlayer.Center) / (250 * 16), 0, 1);
+		float opacity = 1 - MathHelper.Clamp(position.Distance(Main.LocalPlayer.Center) / (225 * 16), 0, 1);
 
 		if (opacity <= 0)
 		{
@@ -76,11 +76,6 @@ public class RavencrestSystem : ModSystem
 		position = Vector2.Clamp(position, Main.screenPosition + bufferSize, Main.screenPosition + Main.ScreenSize.ToVector2() - bufferSize);
 
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position - Main.screenPosition, Color.White * opacity, 0f, size / 2f, new(1.2f));
-	}
-
-	public override void OnWorldLoad()
-	{
-		ReplacedBuildings = false;
 	}
 
 	public override void PreUpdateTime()
@@ -107,7 +102,7 @@ public class RavencrestSystem : ModSystem
 
 	private void OverworldOneTimeChecks()
 	{
-		if (NPC.downedSlimeKing && SpawnedMorvenPos is null)
+		if (NPC.downedBoss1 && SpawnedMorvenPos is null)
 		{
 			while (true)
 			{
@@ -130,7 +125,7 @@ public class RavencrestSystem : ModSystem
 
 				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<MorvenStuck>())
 				{
-					SpawnedMorvenPos = new	Point16(x, y);
+					SpawnedMorvenPos = new Point16(x, y);
 					break;
 				}
 			}
@@ -243,5 +238,7 @@ public class RavencrestSystem : ModSystem
 	{
 		HasOverworldNPC.Clear();
 		structures.Clear();
+		ReplacedBuildings = false;
+		SpawnedMorvenPos = null;
 	}
 }
