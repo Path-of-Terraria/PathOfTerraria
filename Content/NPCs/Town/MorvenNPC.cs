@@ -19,6 +19,7 @@ using SubworldLibrary;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
 using System.IO;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -36,6 +37,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	private byte followPlayer;
 	private bool teleportingToRavencrest = false;
 	private bool abandoned = false;
+	private short syncTimer = 0;
 
 	// Sound timers
 	private int walkTime = 0;
@@ -157,7 +159,11 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			NPCLoader.TownNPCAttackStrength(NPC, ref damage, ref knockback);
 
 			Vector2 velocity = NPC.DirectionTo(first.Center).RotatedByRandom(offset * 0.2f) * velMul;
-			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, velocity, projId, damage, knockback, Main.myPlayer);
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, velocity, projId, damage, knockback, Main.myPlayer);
+			}
 
 			attackingTime = NPCID.Sets.AttackTime[NPC.type];
 			attackRotation = velocity.ToRotation();
@@ -176,6 +182,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	private void PathedMovement()
 	{
+		// Once every few seconds, sync the npc - bandaid on pathfinder in mp
+		if (++syncTimer > 240)
+		{
+			NPC.netUpdate = true;
+			syncTimer = 0;
+		}
+
 		Vector2 target = FollowPlayer.position;
 
 		// If the player is too far away from the NPC, teleport the NPC and hurt him.
@@ -374,7 +387,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !ModContent.GetInstance<EoWQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = /*!ModContent.GetInstance<EoWQuest>().CanBeStarted ? "" :*/ Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -385,10 +398,16 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 		else
 		{
-			followPlayer = 0;
-			doPathing = true;
-			NPC.netUpdate = true;
-			
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				followPlayer = 0;
+				doPathing = true;
+			}
+			else
+			{
+				MorvenFollowHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI);
+			}
+
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(EoWQuest)}");
 		}
@@ -562,5 +581,11 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 
 		return Language.GetTextValue(baseNPC + "Night." + Main.rand.Next(3));
+	}
+
+	internal void SetFollow(byte player)
+	{
+		followPlayer = player;
+		doPathing = true;
 	}
 }
