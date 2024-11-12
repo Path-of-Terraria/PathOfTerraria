@@ -3,8 +3,19 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common;
 
+/// <summary>
+/// Currently unused, but has code that may be useful in the future.
+/// </summary>
 internal class CollisionHooks
 {
+	/// <summary>
+	/// Tries to properly deterimine if the given hitbox has tile collision, taking into account sloped tiled.
+	/// </summary>
+	/// <param name="pos">World position of the hitbox.</param>
+	/// <param name="width">Width of the hitbox.</param>
+	/// <param name="height">Height of the hitbox.</param>
+	/// <returns>If collision was detected.</returns>
+	/// <exception cref="ArgumentException"/>
 	public static bool ActualSolidCollision(Vector2 pos, int width, int height)
 	{
 		var hitbox = new Rectangle((int)pos.X, (int)pos.Y, width, height);
@@ -89,6 +100,9 @@ internal class CollisionHooks
 		return false;
 	}
 
+	/// <summary>
+	/// Doesn't work, will need a rewrite.
+	/// </summary>
 	public static bool CheckTriangleLine(Vector2 current, Vector2 next, Rectangle hitbox, float minY, float maxY)
 	{
 		float slope = (next.Y - current.Y) / (next.X - current.X);
