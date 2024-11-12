@@ -18,6 +18,7 @@ using Terraria.Audio;
 using SubworldLibrary;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
+using System.IO;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -431,6 +432,43 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		surfaceDialogue = tag.GetBool("surfaceDialogue");
 		postOrbPreEoWDialogue = tag.GetBool("postOrbPreEowDialogue");
 		teleportingToRavencrest = tag.GetBool("teleportingToRavencrest");
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		byte packed = 0;
+
+		if (doPathing)
+		{
+			packed |= 0b_1;
+		}
+
+		if (surfaceDialogue)
+		{
+			packed |= 0b_10;
+		}
+
+		if (postOrbPreEoWDialogue)
+		{
+			packed |= 0b_100;
+		}
+
+		if (teleportingToRavencrest)
+		{
+			packed |= 0b_1000;
+		}
+
+		writer.Write(packed);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		byte packed = reader.ReadByte();
+
+		doPathing = (packed & 0b_1) == 0b_1;
+		surfaceDialogue = (packed & 0b_10) == 0b_10;
+		postOrbPreEoWDialogue = (packed & 0b_100) == 0b_100;
+		teleportingToRavencrest = (packed & 0b_1000) == 0b_1000;
 	}
 
 	public override void FindFrame(int frameHeight)
