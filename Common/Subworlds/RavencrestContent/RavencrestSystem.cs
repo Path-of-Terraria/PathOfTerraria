@@ -3,13 +3,13 @@ using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;
-using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -240,5 +240,26 @@ public class RavencrestSystem : ModSystem
 		structures.Clear();
 		ReplacedBuildings = false;
 		SpawnedMorvenPos = null;
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((short)HasOverworldNPC.Count);
+
+		foreach (string npc in HasOverworldNPC)
+		{
+			writer.Write(npc);
+		}
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		HasOverworldNPC.Clear();
+		short count = reader.ReadInt16();
+
+		for (int i = 0; i < count; ++i)
+		{
+			HasOverworldNPC.Add(reader.ReadString());
+		}
 	}
 }

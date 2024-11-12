@@ -4,8 +4,14 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
+/// <summary>
+/// Handles misc overlay UIs.
+/// </summary>
 internal class MiscOverlayUI : SmartUiState
 {
+	/// <summary>
+	/// Draws under all other UI but over all world visuals. Scales by <see cref="InterfaceScaleType.Game"/> scale, not by <see cref="InterfaceScaleType.UI"/> scale.
+	/// </summary>
 	public static event Action<SpriteBatch> DrawOverlay;
 
 	public override void Unload()
