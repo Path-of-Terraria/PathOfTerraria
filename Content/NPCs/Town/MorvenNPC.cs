@@ -17,6 +17,7 @@ using Terraria.DataStructures;
 using Terraria.Audio;
 using SubworldLibrary;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -33,6 +34,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	private bool doPathing = false;
 	private byte followPlayer;
 	private bool teleportingToRavencrest = false;
+	private bool abandoned = false;
 
 	// Sound timers
 	private int walkTime = 0;
@@ -227,13 +229,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
 			// Debugging to show the calculated path.
-			// This'll only show in DEBUG, for the local player and if the player is holding (usually) escape.
+			// This'll only show in DEBUG, for the local player.
 #if DEBUG
-			if (Main.myPlayer == followPlayer)// && FollowPlayer.controlInv)
+			if (Main.myPlayer == followPlayer)
 			{
 				foreach (Pathfinder.FoundPoint item in pathfinder.Path)
 				{
-					var vel = Pathfinder.ToVector(item.Direction).ToVector2();
+					var vel = Pathfinder.ToVector2(item.Direction);
 					int id = checkPoints.Contains(item) ? item == checkPoints.Last() ? DustID.Poisoned : DustID.GreenFairy : DustID.YellowStarDust;
 					var dust = Dust.NewDustPerfect(item.Position.ToWorldCoordinates(), id, vel * 2);
 					dust.noGravity = true;
@@ -246,7 +248,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			NPC.velocity *= 0.9f;
 		}
 
-		if (NPC.velocity.Y > 0 && !Collision.SolidCollision(NPC.BottomLeft, NPC.width, 90))
+		if (NPC.velocity.Y > 0 && !Collision.SolidCollision(NPC.BottomLeft, NPC.width, 60))
 		{
 			NPC.velocity.Y -= canPath ? 0.3f : 0.2f;
 			RocketBootDust();
@@ -324,7 +326,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 		foreach (Pathfinder.FoundPoint point in foundPoints)
 		{
-			dir += Pathfinder.ToVector(point.Direction).ToVector2() * new Vector2(3f, 1);
+			dir += Pathfinder.ToVector2(point.Direction) * new Vector2(3.2f, 1);
 		}
 
 		return dir / foundPoints.Count;
@@ -371,7 +373,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = /*!ModContent.GetInstance<EoWQuest>().CanBeStarted ? "" :*/ Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !ModContent.GetInstance<EoWQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -393,6 +395,12 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	public override string GetChat()
 	{
+		if (abandoned)
+		{
+			abandoned = false;
+			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Abandoned");
+		}
+
 		if (NPC.Center.Y / 16 < Main.worldSurface && surfaceDialogue && SubworldSystem.Current is null)
 		{
 			surfaceDialogue = false;
@@ -406,7 +414,23 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 
 		string isFollow = doPathing ? "Follow" : "Common";
-		return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue." + isFollow + + Main.rand.Next(4));
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue." + isFollow + Main.rand.Next(4));
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		tag.Add("pathing", doPathing);
+		tag.Add("surfaceDialogue", surfaceDialogue);
+		tag.Add("postOrbPreEoWDialogue", postOrbPreEoWDialogue);
+		tag.Add("teleportingToRavencrest", teleportingToRavencrest);
+	}
+
+	public override void LoadData(TagCompound tag)
+	{
+		abandoned = tag.GetBool("pathing"); // If left while pathing, activate "abandoned" dialogue
+		surfaceDialogue = tag.GetBool("surfaceDialogue");
+		postOrbPreEoWDialogue = tag.GetBool("postOrbPreEowDialogue");
+		teleportingToRavencrest = tag.GetBool("teleportingToRavencrest");
 	}
 
 	public override void FindFrame(int frameHeight)

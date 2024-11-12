@@ -20,7 +20,17 @@ public static class RealtimeSteps
 	/// <returns>A realtime step that places a tile.</returns>
 	public static RealtimeStep PlaceTile(int x, int y, int type)
 	{
-		return new RealtimeStep((i, j) => WorldGen.PlaceTile(i, j, type), new Point16(x, y));
+		return new RealtimeStep((i, j) =>
+		{
+			bool value = WorldGen.PlaceTile(i, j, type);
+
+			if (value && Main.netMode != NetmodeID.SinglePlayer) 
+			{
+				NetMessage.SendTileSquare(-1, i, j);
+			}
+
+			return value;
+		}, new Point16(x, y));
 	}
 
 	/// <summary>
@@ -35,7 +45,14 @@ public static class RealtimeSteps
 		return new RealtimeStep((i, j) =>
 		{
 			WorldGen.KillTile(i, j);
-			return !Main.tile[i, j].HasTile;
+			bool value = !Main.tile[i, j].HasTile;
+
+			if (value && Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendTileSquare(-1, i, j);
+			}
+
+			return value;
 		}, new Point16(x, y));
 	}
 
@@ -52,6 +69,12 @@ public static class RealtimeSteps
 		return new RealtimeStep((i, j) =>
 		{
 			Tile.SmoothSlope(i, j);
+			
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendTileSquare(-1, i, j);
+			}
+
 			return !quickSkip;
 		}, new Point16(x, y));
 	}
@@ -70,6 +93,12 @@ public static class RealtimeSteps
 		return new RealtimeStep((i, j) =>
 		{
 			WorldGen.PlaceWall(i, j, wall);
+
+			if (Main.netMode != NetmodeID.SinglePlayer && Main.tile[i, j].WallType == wall)
+			{
+				NetMessage.SendTileSquare(-1, i, j);
+			}
+
 			return !quickSkip || Main.tile[i, j].WallType == wall;
 		}, new Point16(x, y));
 	}
@@ -99,7 +128,14 @@ public static class RealtimeSteps
 				WorldGen.SquareTileFrame(i, j, true);
 			}
 
-			return Main.tile[i, j].TileType == TileID.Stalactite && Main.tile[i, j].HasTile;
+			bool isStalactite = Main.tile[i, j].TileType == TileID.Stalactite && Main.tile[i, j].HasTile;
+
+			if (Main.netMode != NetmodeID.SinglePlayer && isStalactite)
+			{
+				NetMessage.SendTileSquare(-1, i, j - 1, 3);
+			}
+
+			return isStalactite;
 		}, new Point16(x, y));
 	}
 }

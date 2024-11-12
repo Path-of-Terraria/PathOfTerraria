@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.RealtimeGen.Generation;
-using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
-using Terraria.DataStructures;
+﻿using System.Collections.Generic;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Quest;
@@ -20,14 +18,12 @@ internal class LunarLiquid : ModItem
 		Item.consumable = false;
 		Item.buffTime = 25;
 		Item.buffType = BuffID.VortexDebuff;
-		Item.useTime = Item.useAnimation = 30;
+		Item.useTime = Item.useAnimation = 5;
 		Item.useStyle = ItemUseStyleID.DrinkLiquid;
 	}
 
-	public override bool? UseItem(Player player)
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
-		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		EoWChasmGeneration.SpawnChasm(pos.X, pos.Y);
-		return true;
+		tooltips.RemoveAll(x => x.Name == "BuffTime");
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -99,7 +100,7 @@ internal class Pathfinder(int refreshTime)
 			end = cachedLocations.end;
 		}
 
-		if (objectSize == default ? (Solid(start) || Solid(end)) : (SolidBig(start, objectSize, posOffset, Direction.Below) || SolidBig(end, objectSize, posOffset, Direction.Below)))
+		if (objectSize == default ? (Solid(start) || Solid(end)) : (SolidBig(start, objectSize, posOffset) || SolidBig(end, objectSize, posOffset)))
 		{
 			return false;
 		}
@@ -129,7 +130,7 @@ internal class Pathfinder(int refreshTime)
 				return true;
 			}
 
-			AddSurrounds(end, pos, found[pos].Weight);
+			AddSurrounds(pos, end, found[pos].Weight);
 		}
 
 		ResetState();
@@ -182,6 +183,23 @@ internal class Pathfinder(int refreshTime)
 	}
 
 	/// <summary>
+	/// Converts a <see cref="Direction"/> to a vector <see cref="Vector2"/> direction value.
+	/// </summary>
+	/// <param name="direction">Direction to convert.</param>
+	/// <returns>Vector2 representation of the direction.</returns>
+	public static Vector2 ToVector2(Direction direction)
+	{
+		return direction switch
+		{
+			Direction.Left => new Vector2(-1, 0),
+			Direction.Right => new Vector2(1, 0),
+			Direction.Below => new Vector2(0, 1),
+			Direction.Above => new Vector2(0, -1),
+			_ => Vector2.Zero
+		};
+	}
+
+	/// <summary>
 	/// Helper method to shorten checks to see if a tile is a validly solid tile. Checks if the tile is solid and not a closed door.
 	/// </summary>
 	/// <param name="position">Position of the tile.</param>
@@ -198,45 +216,50 @@ internal class Pathfinder(int refreshTime)
 	/// </summary>
 	/// <param name="position">Position of the tile.</param>
 	/// <returns>If the tile is invalid or not.</returns>
-	public bool InvalidTile(Point16 position, Direction direction)
+	public bool InvalidTile(Point16 position)
 	{
-		return !checkingRectangle.Contains(position.ToPoint()) || (objectSize == default ? Solid(position) : SolidBig(position, objectSize, posOffset, direction)) 
+		return !checkingRectangle.Contains(position.ToPoint()) || (objectSize == default ? Solid(position) : SolidBig(position, objectSize, posOffset)) 
 			|| found.ContainsKey(position);
 	}
 
-	private static bool SolidBig(Point16 position, Vector2 objectSize, Vector2 positionOffset, Direction direction)
+	/// <summary>
+	/// Helper method for checking if a >16x16px object is blocked by tiles.<br/>
+	/// NOTE: This counts sloped tiles as full, solid tiles - this isn't perfect.
+	/// </summary>
+	/// <param name="position">Position, in tile coordinates, of the object.</param>
+	/// <param name="objectSize">Hitbox size, in tile coordinates, of the object.</param>
+	/// <param name="positionOffset">Offsets the position, such as if you want to origin the position to the original entity's Center instead of position.</param>
+	/// <returns></returns>
+	private static bool SolidBig(Point16 position, Vector2 objectSize, Vector2 positionOffset)
 	{
 		Vector2 pos = position.ToWorldCoordinates() + positionOffset;
-		Vector2 vel = ToVector(direction).ToVector2().RotatedBy(MathHelper.Pi) * 4;
-		Vector2 col = Collision.TileCollision(pos, vel, (int)(objectSize.X * 16), (int)(objectSize.Y * 16));
-		return col != vel;
-		//return Collision.SolidCollision(pos, (int)objectSize.X * 16, (int)objectSize.Y * 16);
+		return Collision.SolidCollision(pos, (int)objectSize.X * 16, (int)objectSize.Y * 16);
 	}
 
 	/// <summary>
 	/// Adds every valid tile around the given position.
 	/// </summary>
-	/// <param name="end">Goal position, used for <see cref="AddPoint(Point16, Point16, Direction, float)"/>'s heuristics.</param>
 	/// <param name="pos">Position of the tile.</param>
+	/// <param name="end">Goal position, used for <see cref="AddPoint(Point16, Point16, Direction, float)"/>'s heuristics.</param>
 	/// <param name="currentWeight">Current weight of the algorithm.</param>
-	private void AddSurrounds(Point16 end, Point16 pos, float currentWeight)
+	private void AddSurrounds(Point16 pos, Point16 end, float currentWeight)
 	{
-		if (!InvalidTile(new Point16(pos.X, pos.Y + 1), Direction.Above))
+		if (!InvalidTile(new Point16(pos.X, pos.Y + 1)))
 		{
 			AddPoint(end, new Point16(pos.X, pos.Y + 1), Direction.Above, currentWeight);
 		}
 
-		if (!InvalidTile(new Point16(pos.X, pos.Y - 1), Direction.Below))
+		if (!InvalidTile(new Point16(pos.X, pos.Y - 1)))
 		{
 			AddPoint(end, new Point16(pos.X, pos.Y - 1), Direction.Below, currentWeight);
 		}
 
-		if (!InvalidTile(new Point16(pos.X + 1, pos.Y), Direction.Left))
+		if (!InvalidTile(new Point16(pos.X + 1, pos.Y)))
 		{
 			AddPoint(end, new Point16(pos.X + 1, pos.Y), Direction.Left, currentWeight);
 		}
 
-		if (!InvalidTile(new Point16(pos.X - 1, pos.Y), Direction.Right))
+		if (!InvalidTile(new Point16(pos.X - 1, pos.Y)))
 		{
 			AddPoint(end, new Point16(pos.X - 1, pos.Y), Direction.Right, currentWeight);
 		}

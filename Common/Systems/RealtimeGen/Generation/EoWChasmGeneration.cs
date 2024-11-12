@@ -80,6 +80,11 @@ internal static class EoWChasmGeneration
 						Tile tile = Main.tile[x, y];
 						tile.Slope = SlopeType.Solid;
 
+						if (Main.netMode != NetmodeID.SinglePlayer)
+						{
+							NetMessage.SendTileSquare(-1, i, j);
+						}
+
 						return tile.TileType == type;
 					}, new Point16(x, y)), QuickDistance(x, y));
 
@@ -160,6 +165,7 @@ internal static class EoWChasmGeneration
 			int proj = Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), xPos, y * 16 + 8, 0, 0, ModContent.ProjectileType<EoWPortal>(), 0, 0, Main.myPlayer);
 
 			Main.projectile[proj].rotation = dir * MathHelper.PiOver2 - MathHelper.PiOver2;
+			Main.projectile[proj].netUpdate = true;
 			return true;
 		}, portalPosition));
 

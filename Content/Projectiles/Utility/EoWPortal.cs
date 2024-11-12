@@ -1,15 +1,12 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.UI;
 using SubworldLibrary;
-using Terraria.GameContent;
+using System.IO;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class EoWPortal : ModProjectile
 {
-	private ref float Timer => ref Projectile.ai[0];
-
 	public override void SetDefaults()
 	{
 		Projectile.friendly = false;
@@ -52,6 +49,16 @@ internal class EoWPortal : ModProjectile
 	public override Color? GetAlpha(Color lightColor)
 	{
 		return Color.White;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(Projectile.rotation);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		Projectile.rotation = reader.ReadSingle();
 	}
 
 	//public override bool PreDraw(ref Color lightColor)
