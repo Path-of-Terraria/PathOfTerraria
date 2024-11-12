@@ -256,6 +256,8 @@ public class RavencrestSystem : ModSystem
 		{
 			writer.Write(npc);
 		}
+
+		writer.WriteVector2(EntrancePosition.ToVector2());
 	}
 
 	public override void NetReceive(BinaryReader reader)
@@ -267,15 +269,7 @@ public class RavencrestSystem : ModSystem
 		{
 			HasOverworldNPC.Add(reader.ReadString());
 		}
-	}
 
-	public override void NetSend(BinaryWriter writer)
-	{
-		writer.WriteVector2(EntrancePosition.ToVector2());
-	}
-
-	public override void NetReceive(BinaryReader reader)
-	{
 		EntrancePosition = reader.ReadVector2().ToPoint16();
 	}
 }
