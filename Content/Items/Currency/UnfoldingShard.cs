@@ -15,5 +15,10 @@ internal class UnfoldingShard : CurrencyShard
 		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
 		data.Rarity = ItemRarity.Magic;
 		PoTItemHelper.Roll(player.HeldItem, data.RealLevel);
+
+		if (player.selectedItem == 58)
+		{
+			Main.mouseItem = player.HeldItem;
+		}
 	}
 }
