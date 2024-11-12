@@ -516,7 +516,11 @@ RopeClumpItem: {
 
 KingSlimeMap: {
 	DisplayName: King Slime Map
-	Tooltip: "{$MapCommon.BossBase}"
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of slime and riches'
+		'''
 }
 
 TomeOfTheElders: {
@@ -641,5 +645,18 @@ LunarObject: {
 
 EoCMap: {
 	DisplayName: Eye of Cthulhu Map
-	Tooltip: "{$MapCommon.BossBase}"
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of mildew and petrichor'
+		'''
+}
+
+EoWMap: {
+	DisplayName: Eater of Worlds Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of rot and bone'
+		'''
 }

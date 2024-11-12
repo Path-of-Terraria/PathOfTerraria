@@ -55,6 +55,12 @@ internal class BossTracker : ModSystem
 				var npc = new NPC();
 				npc.SetDefaults(type);
 				npc.Center = Main.player[0].Center;
+
+				if (npc.type == NPCID.EaterofWorldsHead)
+				{
+					npc.boss = true;
+				}
+
 				SkipWoFBox = true;
 				DoDeathEventsInfo.Invoke(npc, [Main.player[0]]);
 				SkipWoFBox = false;

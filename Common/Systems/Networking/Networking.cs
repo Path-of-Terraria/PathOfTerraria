@@ -62,6 +62,12 @@ internal static class Networking
 		/// <c>byte whoAmI</c>
 		/// </summary>
 		SyncUseStaffAltUse,
+
+		/// <summary>
+		/// Syncs a given Morven NPC to follow the given player. Signature: <br/>
+		/// <c>byte player, byte whoAmI</c>
+		/// </summary>
+		MorvenFollow,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -154,6 +160,14 @@ internal static class Networking
 				else
 				{
 					SyncStaffAltHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.MorvenFollow:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					MorvenFollowHandler.ServerRecieve(reader);
 				}
 
 				break;
