@@ -76,6 +76,12 @@ public class RavencrestSystem : ModSystem
 			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
 			Position = new Point(673, 182)
 		});
+
+		structures.Add("Observatory", new ImprovableStructure(2)
+		{
+			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
+			Position = new Point(107, 161)
+		});
 	}
 
 	public static void UpgradeBuilding(string name, int level = -1)

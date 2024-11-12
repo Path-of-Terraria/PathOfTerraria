@@ -20,4 +20,10 @@ internal class LunarLiquid : ModItem
 		Item.useTime = Item.useAnimation = 30;
 		Item.useStyle = ItemUseStyleID.DrinkLiquid;
 	}
+
+	public override bool? UseItem(Player player)
+	{
+		Main.NewText(Main.MouseWorld.ToTileCoordinates());
+		return true;
+	}
 }

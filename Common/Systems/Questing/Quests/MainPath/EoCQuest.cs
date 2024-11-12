@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
@@ -25,7 +26,7 @@ internal class EoCQuest : Quest
 	{
 		return
 		[
-			new ActionStep((_, _) => 
+			new ActionStep((_, _) =>
 			{
 				ConditionalDropHandler.AddId<LunarShard>();
 				return true;
@@ -39,14 +40,14 @@ internal class EoCQuest : Quest
 						new GiveItem(5, ModContent.ItemType<LunarShard>())
 					], true),
 			]),
-			new ActionStep((_, _) => 
+			new ActionStep((_, _) =>
 			{
-				// Fix Eldric's house pt 1
+				RavencrestSystem.UpgradeBuilding("Observatory");
 				ConditionalDropHandler.RemoveId<LunarShard>();
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"), 
-				[ new GiveItem(1, ModContent.ItemType<LunarLiquid>()) ], true, (npc) => 
+			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"),
+				[ new GiveItem(1, ModContent.ItemType<LunarLiquid>()) ], true, (npc) =>
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LunarObject>());
 					Main.item[item].shimmered = true; // So it doesn't immediately shatter + cool effect
@@ -56,7 +57,10 @@ internal class EoCQuest : Quest
 			{
 				CountsAsCompletedOnMarker = true
 			},
-			// ActionStep for fixing Eldric's house pt 2
+			new ActionStep((_, _) => {
+				RavencrestSystem.UpgradeBuilding("Observatory");
+				return true;
+			}) { CountsAsCompletedOnMarker = true },
 		];
 	}
 }
