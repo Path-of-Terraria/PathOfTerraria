@@ -53,10 +53,7 @@ internal class CollisionHooks
 						_ => throw new ArgumentException("How is this possible")
 					};
 
-					float minY = trianglePoints.Min(x => x.Y);
-					float maxY = trianglePoints.Max(x => x.Y);
-
-					if (TriangleSquareCollision(trianglePoints, hitbox, minY, maxY))
+					if (TriangleSquareCollision(trianglePoints, hitbox))
 					{
 						return true;
 					}
@@ -67,7 +64,7 @@ internal class CollisionHooks
 		return false;
 	}
 
-	public static bool TriangleSquareCollision(Vector2[] trianglePoints, Rectangle hitbox, float minY, float maxY)
+	public static bool TriangleSquareCollision(Vector2[] trianglePoints, Rectangle hitbox)
 	{
 		Vector2 center = Vector2.Zero;
 
