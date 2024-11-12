@@ -12,6 +12,7 @@ internal class PersistentReturningPlayer : ModPlayer
 		if (ReturnPosition != Vector2.Zero && CheckInMainWorld && SubworldSystem.Current is null)
 		{
 			Player.Center = ReturnPosition;
+			Player.fallStart = (int)Player.Center.Y / 16;
 			ReturnPosition = Vector2.Zero;
 		}
 	}

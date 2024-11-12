@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent.ItemDropRules;
+﻿using PathOfTerraria.Common.Systems;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -8,7 +9,13 @@ public class BossDownedCondition(BossDownedCondition.Bosses boss) : IItemDropRul
 {
 	public enum Bosses : int
 	{
+		/// <summary>
+		/// Applies to either Brain of Cthulhu or Eater of Worlds being downed.
+		/// </summary>
 		EvilBoss,
+
+		BrainOfCthulhu,
+		EaterofWorlds,
 		Any_Mech,
 		KingSlime,
 		Skeletron,
@@ -31,6 +38,8 @@ public class BossDownedCondition(BossDownedCondition.Bosses boss) : IItemDropRul
 				Bosses.Skeletron => NPC.downedBoss3,
 				Bosses.QueenBee => NPC.downedQueenBee,
 				Bosses.Any_Mech => NPC.downedMechBossAny,
+				Bosses.EaterofWorlds => BossTracker.DownedEaterOfWorlds,
+				Bosses.BrainOfCthulhu => BossTracker.DownedBrainOfCthulhu,
 				_ => false,
 			};
 		}
@@ -54,6 +63,8 @@ public class BossDownedCondition(BossDownedCondition.Bosses boss) : IItemDropRul
 			Bosses.QueenBee => NPCID.QueenBee,
 			Bosses.EvilBoss => WorldGen.crimson ? NPCID.BrainofCthulhu : NPCID.EaterofWorldsHead,
 			Bosses.EyeOfCthulhu => NPCID.EyeofCthulhu,
+			Bosses.EaterofWorlds => NPCID.EaterofWorldsHead,
+			Bosses.BrainOfCthulhu => NPCID.BrainofCthulhu,
 			_ => NPCID.BlueSlime
 		};
 
