@@ -49,6 +49,12 @@ public class RavencrestSystem : ModSystem
 			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
 			Position = new Point(673, 182)
 		});
+    
+    structures.Add("Observatory", new ImprovableStructure(2)
+		{
+			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
+			Position = new Point(107, 161)
+		});
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
 	}
@@ -146,7 +152,7 @@ public class RavencrestSystem : ModSystem
 			Point16 pos = hunterNPC.TileSpawn;
 			NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, ModContent.NPCType<GarrickNPC>());
 		}
-
+    
 		foreach (string npcName in HasOverworldNPC)
 		{
 			int type = ModContent.Find<ModNPC>(npcName).Type;
@@ -250,6 +256,8 @@ public class RavencrestSystem : ModSystem
 		{
 			writer.Write(npc);
 		}
+
+		writer.WriteVector2(EntrancePosition.ToVector2());
 	}
 
 	public override void NetReceive(BinaryReader reader)
@@ -261,15 +269,7 @@ public class RavencrestSystem : ModSystem
 		{
 			HasOverworldNPC.Add(reader.ReadString());
 		}
-	}
 
-	public override void NetSend(BinaryWriter writer)
-	{
-		writer.WriteVector2(EntrancePosition.ToVector2());
-	}
-
-	public override void NetReceive(BinaryReader reader)
-	{
 		EntrancePosition = reader.ReadVector2().ToPoint16();
 	}
 }
