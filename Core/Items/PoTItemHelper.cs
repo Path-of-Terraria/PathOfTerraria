@@ -206,6 +206,14 @@ public static class PoTItemHelper
 		return data.Affixes.Count >= GetMaxAffixCounts(data.Rarity);
 	}
 
+	public static void SetMouseItemToHeldItem(Player player)
+	{
+		if (player.selectedItem == 58)
+		{
+			Main.mouseItem = player.HeldItem;
+		}
+	}
+
 	#endregion
 
 	// TODO: Un-hardcode?
