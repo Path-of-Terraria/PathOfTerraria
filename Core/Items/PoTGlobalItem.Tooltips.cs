@@ -252,7 +252,7 @@ partial class PoTGlobalItem
 	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)
 	{
-		if (!GearGlobalItem.IsGearItem(inv[slot]) || context == 21)
+		if (!GearGlobalItem.IsGearItem(inv[slot]) || context == 21 || context == ItemSlot.Context.ChatItem)
 		{
 			orig(sb, inv, context, slot, position, color);
 			return;

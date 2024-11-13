@@ -27,6 +27,8 @@ public class AffixTooltip
 	public string DisplayDifference => AggregateDifference().ToString("+#0.##;-#0.##;0");
 	public string DisplaySign => AggregateValue() >= 0 ? "+" : "-";
 
+	public readonly HashSet<Item> SourceItems = [];
+
 	public LocalizedText Text;
 	public Dictionary<AffixSource, float> ValueBySource = [];
 	public Dictionary<AffixSource, float> OriginalValueBySource = [];

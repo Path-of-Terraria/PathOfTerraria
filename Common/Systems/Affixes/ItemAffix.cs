@@ -16,7 +16,7 @@ public abstract class ItemAffix : Affix
 
 	public virtual void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), item, Value, this.GetLocalization("Description"), IsCorruptedAffix, null);
+		handler.AddOrModify(GetType(), item, Value, this.GetLocalization("Description"), IsCorruptedAffix);
 	}
 
 	/// <summary>
