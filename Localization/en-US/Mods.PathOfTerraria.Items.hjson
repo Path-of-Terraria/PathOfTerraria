@@ -620,6 +620,16 @@ AscendantShard: {
 		'''
 }
 
+UnfoldingShard: {
+	DisplayName: Unfolding Shard
+	Tooltip:
+		'''
+		Upgrades a normal item to a magic item
+		Hold an item then right click this Shard to upgrade
+		'It almost looks like it's moving inside'
+		'''
+}
+
 LunarLiquid: {
 	DisplayName: Lunar Liquid
 	Tooltip:
