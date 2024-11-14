@@ -673,10 +673,10 @@ EoWMap: {
 
 EchoingShard: {
 	DisplayName: Echoing Shard
-	Tooltip: 
+	Tooltip:
 		'''
-    	Creates a clone of an item
-    	Hold an item then right click this Shard to clone
-    	'I can see myself!'
-    	'''
+		  	Creates a clone of an item
+		  	Hold an item then right click this Shard to clone
+		  	'I can see myself!'
+		'''
 }

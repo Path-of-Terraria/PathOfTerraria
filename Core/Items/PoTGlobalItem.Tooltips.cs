@@ -56,7 +56,7 @@ partial class PoTGlobalItem
 				line.BaseScale = new Vector2(1.1f);
 				return true;
 
-			case "Rarity" or "Corrupted":
+			case "Rarity" or "Corrupted" or "Cloned":
 				yOffset = -8;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
@@ -122,6 +122,14 @@ partial class PoTGlobalItem
 			tooltips.Add(new TooltipLine(Mod, "Corrupted", " Corrupted")
 			{
 				OverrideColor = Color.Lerp(Color.Purple, Color.White, 0.4f)
+			});
+		}
+		
+		if (data.Cloned)
+		{
+			tooltips.Add(new TooltipLine(Mod, "Cloned", " Cloned")
+			{
+				OverrideColor = Color.Lerp(Color.DarkCyan, Color.White, 0.4f)
 			});
 		}
 
