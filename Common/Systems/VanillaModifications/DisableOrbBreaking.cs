@@ -43,12 +43,12 @@ public class DisableOrbBreaking : GlobalTile
 		if (tile.HasTile && tile.TileType == TileID.ShadowOrbs && !BreakableOrbSystem.CanBreakOrb)
 		{
 			float sine = MathF.Sin(Main.GameUpdateCount * 0.1f + (i + j) * MathHelper.PiOver4) * 0.15f;
-			drawData.tileLight = Color.Lerp(Color.Purple, Color.White, sine + 0.45f);
+			drawData.tileLight = Color.Lerp(WorldGen.crimson ? Color.Red : Color.Purple, Color.White, sine + 0.45f);
 
 			if (Main.rand.NextBool(16) && tile.TileFrameX == 0 && tile.TileFrameY % 36 == 0)
 			{
 				Vector2 position = new Vector2(i, j).ToWorldCoordinates(16, 16);
-				Dust.NewDustPerfect(position, DustID.Clentaminator_Purple, Main.rand.NextVector2Circular(1, 1));
+				Dust.NewDustPerfect(position, WorldGen.crimson ? DustID.Clentaminator_Red : DustID.Clentaminator_Purple, Main.rand.NextVector2Circular(1, 1));
 			}
 		}
 	}

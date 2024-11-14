@@ -18,7 +18,7 @@ internal class OverheadDialogueInstance(string text, int maxLifeTime = 600)
 
 		if (LifeTime < MaxLifeTime / 2)
 		{
-			int length = (int)MathHelper.Lerp(0, FullText.Length, LifeTime / (float)(MaxLifeTime * 0.5f));
+			int length = (int)MathHelper.Lerp(0, FullText.Length, MathF.Min(LifeTime / MathF.Min(MaxLifeTime * 0.5f, FullText.Length * 6f), 1));
 			Text = FullText[..length];
 		}
 		else

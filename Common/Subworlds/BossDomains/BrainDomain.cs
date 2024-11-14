@@ -15,6 +15,8 @@ using System.Linq;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.Audio;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
+using PathOfTerraria.Content.NPCs.Town;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -35,6 +37,16 @@ public class BrainDomain : BossDomainSubworld
 		new PassLegacy("Surface", GenSurface),
 		new PassLegacy("Arena", SpawnArena),
 		new PassLegacy("Decor", SpawnDecor)];
+
+	public override void CopyMainWorldData()
+	{
+		SubworldSystem.CopyWorldData("hasLloyd", ModContent.GetInstance<BoCDomainSystem>().HasLloyd);
+	}
+
+	public override void ReadCopiedMainWorldData()
+	{
+		ModContent.GetInstance<BoCDomainSystem>().HasLloyd = SubworldSystem.ReadCopiedWorldData<bool>("hasLloyd");
+	}
 
 	private void SpawnDecor(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -95,6 +107,11 @@ public class BrainDomain : BossDomainSubworld
 					PlaceGrassDecor(position, flags);
 				}
 			}
+		}
+
+		if (ModContent.GetInstance<BoCDomainSystem>().HasLloyd)
+		{
+			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Main.spawnTileX * 16, Main.spawnTileY * 16, ModContent.NPCType<LloydNPC>());
 		}
 	}
 
@@ -167,7 +184,9 @@ public class BrainDomain : BossDomainSubworld
 
 			for (int y = (int)useY; y < Main.maxTilesY; ++y)
 			{
-				WorldGen.PlaceTile(x, y, y > useY + noise.GetNoise(x, 300) * 8 + 20 ? TileID.Crimtane : TileID.Dirt);
+				Tile tile = Main.tile[x, y];
+				tile.HasTile = true;
+				tile.TileType = y > useY + noise.GetNoise(x, 300) * 8 + 20 ? TileID.Crimtane : TileID.Dirt;
 			}
 
 			progress.Value = (float)x / Main.maxTilesX;
@@ -264,8 +283,9 @@ public class BrainDomain : BossDomainSubworld
 
 		Point16 lastEnd = lines.Last().Item2;
 		var pos = new Vector2(lastEnd.X + (lastEnd.X > 400 ? 30 : -30), lastEnd.Y);
+		Point16 size = StructureTools.GetSize("Assets/Structures/BrainDomain/PortalIsland", Mod);
 
-		while (Collision.SolidCollision(pos, 80, 160))
+		while (Collision.SolidCollision(pos, size.X * 16, size.Y * 16))
 		{
 			pos.X += pos.X > 400 ? 64 : -64;
 		}
@@ -415,66 +435,6 @@ public class BrainDomain : BossDomainSubworld
 		public override bool IsSceneEffectActive(Player player)
 		{
 			return SubworldSystem.Current is BrainDomain;
-		}
-	}
-
-	public class BrainDoubleJump : ExtraJump
-	{
-		public override Position GetDefaultPosition()
-		{
-			return new Before(CloudInABottle);
-		}
-
-		public override float GetDurationMultiplier(Player player)
-		{
-			return 1.2f;
-		}
-
-		public override void UpdateHorizontalSpeeds(Player player)
-		{
-			player.runAcceleration *= 1.5f;
-			player.maxRunSpeed *= 1.5f;
-		}
-
-		public override void OnRefreshed(Player player)
-		{
-			player.GetModPlayer<BrainJumpPlayer>().JumpsRemaining = 2;
-		}
-
-		public override void OnStarted(Player player, ref bool playSound)
-		{
-			playSound = false;
-			SoundEngine.PlaySound(SoundID.Item8 with { Pitch = 0, PitchVariance = 0.04f }, player.Bottom);
-
-			ref int jumps = ref player.GetModPlayer<BrainJumpPlayer>().JumpsRemaining;
-
-			jumps--;
-
-			if (jumps > 0)
-			{
-				player.GetJumpState(this).Available = true;
-			}
-
-			for (int i = 0; i < 30; i++)
-			{
-				Vector2 position = player.BottomLeft + new Vector2(Main.rand.NextFloat(player.width), 0);
-				Vector2 velocity = -(player.velocity * new Vector2(0.5f, 1)).RotatedByRandom(0.9f) * Main.rand.NextFloat(0.8f, 1.5f);
-				var dust = Dust.NewDustPerfect(position, Main.rand.NextBool() ? DustID.Crimslime : DustID.Crimson, velocity, Scale: Main.rand.NextFloat(2, 3));
-				dust.noGravity = true;
-			}
-		}
-	}
-
-	public class BrainJumpPlayer : ModPlayer
-	{
-		public int JumpsRemaining;
-
-		public override void ResetEffects()
-		{
-			if (SubworldSystem.Current is BrainDomain)
-			{
-				Player.GetJumpState<BrainDoubleJump>().Enable();
-			}
 		}
 	}
 }

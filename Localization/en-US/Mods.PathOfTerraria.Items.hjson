@@ -670,3 +670,8 @@ EoWMap: {
 		'The map smells of rot and bone'
 		'''
 }
+
+BoCMap: {
+	DisplayName: Bo C Map
+	Tooltip: ""
+}

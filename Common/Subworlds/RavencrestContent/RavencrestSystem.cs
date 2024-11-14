@@ -50,7 +50,7 @@ public class RavencrestSystem : ModSystem
 			Position = new Point(673, 182)
 		});
     
-    structures.Add("Observatory", new ImprovableStructure(2)
+		structures.Add("Observatory", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
 			Position = new Point(107, 161)
@@ -108,7 +108,7 @@ public class RavencrestSystem : ModSystem
 
 	private void OverworldOneTimeChecks()
 	{
-		if (NPC.downedBoss1 && SpawnedMorvenPos is null)
+		if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson)
 		{
 			while (true)
 			{

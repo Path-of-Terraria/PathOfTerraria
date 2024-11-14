@@ -44,12 +44,13 @@ internal class Pathfinder(int refreshTime)
 
 	public readonly int RefreshTime = refreshTime;
 
+	public int RefreshTimer = 0;
+
 	private readonly Dictionary<Point16, WorkingPoint> found = [];
 	private readonly PriorityQueue<Point16, float> frontier = new();
 	private (Point16 start, Point16 end) cachedLocations = new();
-	private bool cached = false;
-	private int refreshTimer = 0;
 	private Rectangle checkingRectangle = default;
+	private bool cached = false;
 	private Vector2 objectSize = default;
 	private Vector2 posOffset = default;
 
@@ -69,18 +70,18 @@ internal class Pathfinder(int refreshTime)
 	/// <returns>Whether a new path was found this frame. This includes cached scans finishing.</returns>
 	public bool CheckDrawPath(Point16 start, Point16 end, Vector2 objSizeInTiles = default, Rectangle? checkArea = null, Vector2? positionOffset = null)
 	{
-		refreshTimer--;
+		RefreshTimer--;
 		checkingRectangle = checkArea ?? GetCheckArea(start, end, new Point16(200, 180));
 		objectSize = objSizeInTiles;
 		posOffset = positionOffset ?? Vector2.Zero;
 
-		if (refreshTimer == 0)
+		if (RefreshTimer == 0)
 		{
 			// The timer has reset; stop the old cached result and restart
 			ResetState();
 		}
 
-		if (!cached && refreshTimer > 0)
+		if (!cached && RefreshTimer > 0)
 		{
 			return false;
 		}
@@ -92,7 +93,7 @@ internal class Pathfinder(int refreshTime)
 			frontier.Clear();
 
 			AddPoint(end, start, Direction.None, 0);
-			refreshTimer = RefreshTime;
+			RefreshTimer = RefreshTime;
 		}
 		else
 		{
@@ -126,7 +127,7 @@ internal class Pathfinder(int refreshTime)
 				ResetState();
 
 				HasPath = true;
-				refreshTimer = RefreshTime;
+				RefreshTimer = RefreshTime;
 				return true;
 			}
 
@@ -233,7 +234,7 @@ internal class Pathfinder(int refreshTime)
 	private static bool SolidBig(Point16 position, Vector2 objectSize, Vector2 positionOffset)
 	{
 		Vector2 pos = position.ToWorldCoordinates() + positionOffset;
-		return Collision.SolidCollision(pos, (int)objectSize.X * 16, (int)objectSize.Y * 16);
+		return Collision.SolidCollision(pos, (int)(objectSize.X * 16), (int)(objectSize.Y * 16));
 	}
 
 	/// <summary>
