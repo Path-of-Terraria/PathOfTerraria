@@ -1,8 +1,5 @@
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
-using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
@@ -18,7 +15,7 @@ internal class Helmet : Gear
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 1232f;
+		staticData.DropChance = 1f;
 	}
 
 	public override void SetDefaults()
@@ -31,7 +28,6 @@ internal class Helmet : Gear
 
 	public override void PostRoll()
 	{
-		this.GetInstanceData().Affixes.Add(Affix.CreateAffix<MultipliedLifeAffix>(30) as ItemAffix);
 		Item.defense = GetItemLevel.Invoke(Item) / 10 + 1;
 	}
 }
