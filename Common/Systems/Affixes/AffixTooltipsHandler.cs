@@ -150,31 +150,46 @@ public class AffixTooltipsHandler
 	internal void ModifyTooltips(List<TooltipLine> tooltips, Item item)
 	{
 		int tipNum = 0;
-
-		IEnumerable<KeyValuePair<Type, AffixTooltip>> orderedTips
-			= Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0);
-
 		bool hasShift = Keyboard.GetState().PressingShift();
+		IEnumerable<KeyValuePair<Type, AffixTooltip>> orderedTips;
 
-		if (!hasShift)
+		if (!hasShift) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
 		{
-			orderedTips = orderedTips.Where(x => x.Value.SourceItems.Any(v => item.type == v.type));
+			Tooltips.Clear();
+			PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer);
+
+			orderedTips = Tooltips;
+
+			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", "(Hold shift to compare stats)")
+			{
+				OverrideColor = Color.Gray,
+			});
+		}
+		else // Otherwise, put the tooltips modified by the current item at the top of the list
+		{
+			orderedTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0);
 		}
 
 		foreach (KeyValuePair<Type, AffixTooltip> tip in orderedTips)
 		{
-			string fromItems = string.Empty;
+			string text = $"[i:{ItemID.MusketBall}] " + tip.Value.Get();
 
-			foreach (Item srcItem in tip.Value.SourceItems)
+			if (hasShift) // If comparing, showcase the origin items for every affix
 			{
-				fromItems += $"[i:{srcItem.type}]  ";
+				string fromItems = string.Empty;
+
+				foreach (Item srcItem in tip.Value.SourceItems)
+				{
+					fromItems += $"[i:{srcItem.type}]  ";
+				}
+
+				string fromLocalized = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.AffixTooltipFrom");
+				string fromLine = fromLocalized + fromItems;
+
+				text += fromLine;
 			}
 
-			string fromLocalized = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.AffixTooltipFrom");
-			string fromLine = hasShift || tip.Value.SourceItems.Count > 1 ? fromLocalized + fromItems : string.Empty;
-			string text = $"[i:{ItemID.MusketBall}] " + tip.Value.Get() + fromLine;
-
-			tooltips.Add(new TooltipLine(ModContent.GetInstance<PoTMod>(), "Affix" + tipNum++, text)
+			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum++, text)
 			{
 				OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
 			});

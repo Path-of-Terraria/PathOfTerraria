@@ -8,7 +8,6 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Linq;
 using Terraria.Localization;
-using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -69,6 +68,7 @@ partial class PoTGlobalItem
 
 			case "AltUseDescription":
 			case "Description":
+			case "ShiftNotice":
 				yOffset = 2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
