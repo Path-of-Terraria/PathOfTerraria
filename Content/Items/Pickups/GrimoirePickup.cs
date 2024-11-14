@@ -2,7 +2,6 @@
 using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.Collections.Generic;
-using System.Linq;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
@@ -10,7 +9,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.DataStructures;
-using Terraria;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 

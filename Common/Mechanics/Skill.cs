@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.Skills.Melee;

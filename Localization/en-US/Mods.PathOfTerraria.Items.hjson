@@ -670,3 +670,13 @@ EoWMap: {
 		'The map smells of rot and bone'
 		'''
 }
+
+EchoingShard: {
+	DisplayName: Echoing Shard
+	Tooltip: 
+		'''
+    	Creates a clone of an item
+    	Hold an item then right click this Shard to clone
+    	'I can see myself!'
+    	'''
+}

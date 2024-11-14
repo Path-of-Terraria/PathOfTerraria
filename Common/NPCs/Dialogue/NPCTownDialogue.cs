@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using JetBrains.Annotations;
 using PathOfTerraria.Common.NPCs.Components;
 using Terraria.Localization;
 

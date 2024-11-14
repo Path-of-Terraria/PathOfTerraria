@@ -8,7 +8,6 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Linq;
 using Terraria.Localization;
-using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.Core.Items;
 

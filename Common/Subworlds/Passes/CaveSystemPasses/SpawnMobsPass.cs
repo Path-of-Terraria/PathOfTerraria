@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.MobSystem;
-using Terraria.ID;
+﻿using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 

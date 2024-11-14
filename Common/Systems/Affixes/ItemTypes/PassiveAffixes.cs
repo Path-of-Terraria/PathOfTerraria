@@ -1,6 +1,4 @@
-﻿using Terraria.Localization;
-
-namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 internal class IncreasedAttackSpeedAffix : ItemAffix
 {

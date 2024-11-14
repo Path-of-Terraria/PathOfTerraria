@@ -1,5 +1,4 @@
 ﻿using Terraria.GameContent.Drawing;
-using Terraria;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
