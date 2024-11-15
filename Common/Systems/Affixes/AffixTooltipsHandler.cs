@@ -2,6 +2,7 @@
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.GameContent.UI.Chat;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -89,6 +90,10 @@ public class AffixTooltipsHandler
 		{
 			return AffixTooltip.AffixSource.Wings;
 		}
+		else if (source.accessory)
+		{
+			return AffixTooltip.AffixSource.Necklace;
+		}
 
 		return AffixTooltip.AffixSource.MainItem;
 	}
@@ -144,7 +149,8 @@ public class AffixTooltipsHandler
 	}
 
 	/// <summary>
-	/// Adds all tooltips. Tooltips are named "Affix[x]" and have a Musket Ball sprite prepended.
+	/// Adds all affix tooltips. Tooltips are named "AffixX" and have a Musket Ball sprite prepended.<br/>
+	/// Additionally, adds in a (Hold shift to compare) tooltip &amp; allows for comparison &amp; non-comparison pages.
 	/// </summary>
 	/// <param name="tooltips">List to add to.</param>
 	internal void ModifyTooltips(List<TooltipLine> tooltips, Item item)
@@ -159,15 +165,47 @@ public class AffixTooltipsHandler
 			PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer);
 
 			orderedTips = Tooltips;
-
-			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", "(Hold shift to compare stats)")
-			{
-				OverrideColor = Color.Gray,
-			});
 		}
 		else // Otherwise, put the tooltips modified by the current item at the top of the list
 		{
-			orderedTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0);
+			AffixTooltip.AffixSource source = DetermineItemSource(item);
+			orderedTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0).Where(x => x.Value.ValueBySource.ContainsKey(source));
+
+			for (int i = 0; i < orderedTips.Count(); ++i)
+			{
+				KeyValuePair<Type, AffixTooltip> pair = orderedTips.ElementAt(i);
+
+				foreach (object val in Enum.GetValues(typeof(AffixTooltip.AffixSource)))
+				{
+					var enumVal = (AffixTooltip.AffixSource)val;
+
+					if (enumVal != source)
+					{
+						pair.Value.OriginalValueBySource.Remove(enumVal);
+						pair.Value.ValueBySource.Remove(enumVal);
+					}
+				}
+
+				List<Item> removals = [];
+
+				foreach (Item remov in pair.Value.SourceItems)
+				{
+					if (DetermineItemSource(remov) != source)
+					{
+						removals.Add(remov);
+					}
+				}
+
+				foreach (Item remov in removals)
+				{
+					pair.Value.SourceItems.Remove(remov);
+				}
+			}
+		}
+
+		if (tooltips.Count == 0)
+		{
+			return;
 		}
 
 		foreach (KeyValuePair<Type, AffixTooltip> tip in orderedTips)
@@ -192,6 +230,14 @@ public class AffixTooltipsHandler
 			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum++, text)
 			{
 				OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
+			});
+		}
+
+		if (!hasShift)
+		{
+			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", "(Hold shift to compare stats)")
+			{
+				OverrideColor = Color.Gray,
 			});
 		}
 	}

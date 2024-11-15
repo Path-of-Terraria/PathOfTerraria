@@ -158,7 +158,7 @@ partial class PoTGlobalItem
 		{
 			// TODO: Slice first space in damage type display name...
 			string highlightNumbers = HighlightNumbers(
-				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] Damage ({item.DamageType.DisplayName})",
+				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] Damage ({item.DamageType.DisplayName.Value.Trim()})",
 				baseColor: "DDDDDD");
 			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
 			tooltips.Add(damageLine);

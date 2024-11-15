@@ -45,7 +45,12 @@ internal class TooltipBackingFix : ILoadable
 		{
 			int yOffset = 0; // Used for getting real height
 			Vector2 oldScale = tooltip.BaseScale;
-			ItemLoader.PreDrawTooltipLine(item, tooltip, ref yOffset);
+
+			// Skip tooltips that won't draw
+			if (!ItemLoader.PreDrawTooltipLine(item, tooltip, ref yOffset))
+			{
+				continue;
+			}
 
 			// Measure the line, set maxWidth, and add to height, then reset scale in case it'd cause issues later
 			Vector2 lineSize = ChatManager.GetStringSize(tooltip.Font, tooltip.Text, Vector2.One) * tooltip.BaseScale;
