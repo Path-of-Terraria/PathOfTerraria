@@ -1,6 +1,4 @@
-﻿using Terraria.UI;
-
-namespace PathOfTerraria.Common.UI.Utilities;
+﻿namespace PathOfTerraria.Common.UI.Utilities;
 
 public class AvailablePassivePointsText
 {

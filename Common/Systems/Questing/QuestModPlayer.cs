@@ -2,7 +2,6 @@
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
-using Stubble.Core.Classes;
 using Terraria.Audio;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;

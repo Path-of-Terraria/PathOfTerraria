@@ -4,7 +4,6 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.Enums;
 using PathOfTerraria.Common.World.Generation;
 using Terraria.DataStructures;

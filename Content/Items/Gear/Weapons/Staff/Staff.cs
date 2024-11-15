@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Content.Projectiles.Magic;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.Enums;

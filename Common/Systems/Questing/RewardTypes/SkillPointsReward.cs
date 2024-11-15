@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
 
 namespace PathOfTerraria.Common.Systems.Questing.RewardTypes;
 

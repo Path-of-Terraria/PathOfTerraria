@@ -4,7 +4,6 @@ using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.TestQuest;
 

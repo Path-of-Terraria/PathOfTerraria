@@ -7,7 +7,6 @@ using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Localization;
-using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 

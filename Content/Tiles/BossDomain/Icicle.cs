@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
-using PathOfTerraria.Content.Projectiles.Hostile;
+﻿using PathOfTerraria.Content.Projectiles.Hostile;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;

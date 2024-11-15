@@ -3,7 +3,6 @@ using System.IO;
 using System.Text.Json;
 using PathOfTerraria.Common.Data.FileWatchers;
 using PathOfTerraria.Common.Data.Models;
-using Terraria.ModLoader;
 
 namespace PathOfTerraria.Common.Data;
 

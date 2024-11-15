@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace PathOfTerraria.Common;
 

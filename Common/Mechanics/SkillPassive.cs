@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.Utilities;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;

@@ -1,4 +1,3 @@
-using System.Reflection;
 using System.Reflection.Metadata;
 using PathOfTerraria.Core.UI;
 using Terraria.UI;
