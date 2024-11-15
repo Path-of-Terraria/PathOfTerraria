@@ -46,6 +46,7 @@ internal class CustomAttackHelper
 				int proj = Projectile.NewProjectile(npc.GetSource_FromAI(), npc.Center, velocity, projId, damage, knockback, Main.myPlayer);
 				Main.projectile[proj].friendly = true;
 				Main.projectile[proj].hostile = false;
+				Main.projectile[proj].npcProj = true;
 				Main.projectile[proj].netUpdate = true;
 			}
 

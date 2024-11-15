@@ -400,7 +400,7 @@ LloydNPC: {
 		}
 
 		BreakHeart: {
-			0: Hm. It seems we must destroy more. Keep going.
+			0: Hm. It seems we must break more. Keep going.
 			1: Now would be a good time to recoup. Return when you're prepared.
 			2: Here we go.
 		}
@@ -409,6 +409,12 @@ LloydNPC: {
 			0: Be well.
 			1: You cannot be too cautious.
 			2: The Brain awaits.
+		}
+
+		DomainBossDead: {
+			0: It feels lighter.
+			1: I hope I can rest now.
+			2: Thank you, all.
 		}
 	}
 }

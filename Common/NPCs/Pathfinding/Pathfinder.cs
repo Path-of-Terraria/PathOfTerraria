@@ -71,6 +71,12 @@ internal class Pathfinder(int refreshTime)
 	public bool CheckDrawPath(Point16 start, Point16 end, Vector2 objSizeInTiles = default, Rectangle? checkArea = null, Vector2? positionOffset = null)
 	{
 		RefreshTimer--;
+
+		if (start == end)
+		{
+			return true;
+		}
+
 		checkingRectangle = checkArea ?? GetCheckArea(start, end, new Point16(200, 180));
 		objectSize = objSizeInTiles;
 		posOffset = positionOffset ?? Vector2.Zero;
@@ -121,7 +127,7 @@ internal class Pathfinder(int refreshTime)
 
 			Point16 pos = frontier.Dequeue();
 
-			if (pos == end)
+			if (pos.Equals(end))
 			{
 				BuildPath(start, end);
 				ResetState();

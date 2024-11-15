@@ -11,7 +11,6 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.Pathfinding;
 using System.Linq;
 using System.Collections.Generic;
-using PathOfTerraria.Content.Tiles.Town;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.DataStructures;
@@ -21,7 +20,8 @@ using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds.BossDomains;
-using Terraria.GameContent.ItemDropRules;
+using Terraria.Chat;
+using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -81,20 +81,40 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		NPC.knockBackResist = 0.5f;
 		AnimationType = NPCID.Guide;
 		
-		NPC.TryEnableComponent<NPCHitEffects>(
-			c =>
-			{
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_0", 1));
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_1", 2));
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_2", 2));
-				
-				c.AddDust(new(DustID.Blood, 20));
-			}
-		);
+		NPC.TryEnableComponent<NPCHitEffects>(c => c.AddDust(new(DustID.Blood, 20)));
+	}
+
+	public override bool CheckDead()
+	{
+		NPC.active = false;
+		TeleportEffects();
+
+		Color color = Colors.RarityDarkRed;
+
+		if (Main.netMode == NetmodeID.SinglePlayer)
+		{
+			Main.NewText(Language.GetText($"Mods.{PoTMod.ModName}.Misc.NPCLeftWithoutDying").Format(NPC.FullName), color.R, color.G, color.B);
+		}
+		else if (Main.netMode == NetmodeID.Server)
+		{
+			ChatHelper.BroadcastChatMessage(NetworkText.FromKey($"Mods.{PoTMod.ModName}.Misc.NPCLeftWithoutDying", NPC.FullName), color);
+		}
+
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			ModContent.GetInstance<BoCDomainSystem>().DontSpawnLloyd = false;
+		}
+
+		return false;
 	}
 
 	public override bool PreAI()
 	{
+		if (NPC.hide) // When eaten by the maw to go to the Brain of Cthulhu domain, he will be invisible - stop movement so stuff like water doesn't defy invisibility
+		{
+			return false;
+		}
+
 		Tile tile = Main.tile[NPC.Center.ToTileCoordinates16()];
 
 		if (NPC.downedBoss2 && Main.player[Player.FindClosest(NPC.position, NPC.width, NPC.height)].DistanceSQ(NPC.Center) > 2000 * 2000)
@@ -102,6 +122,11 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Add(FullName);
 
 			NPC.active = false;
+		}
+
+		if (doPathing && (!FollowPlayer.active || FollowPlayer.dead))
+		{
+			doPathing = false;
 		}
 
 		if (doPathing)
@@ -150,40 +175,44 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		ScanForHearts(ref target, out bool hasOrb);
 
 		// Determines path using a slightly adjusted position and hitbox size.
-		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
+		Point16 pathStart = NPC.Top.ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
 		
 		EmitDebugDust(pathStart);
 		EmitDebugDust(pathEnd);
 
-		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2((int)(NPC.width / 16f * 0.8f), NPC.height / 16f * 0.8f),
-			hasOrb ? Pathfinder.GetCheckArea(pathStart, pathEnd, new Point16(20, 20)) : null, new(-NPC.width / 2.5f, 0));
+		Vector2 pathSize = new(NPC.width / 16f * 0.8f, NPC.height / 16f * 0.8f);
+		Vector2 pathOffset = new(-NPC.width / 2.5f, 0);
+
+		pathfinder.CheckDrawPath(pathStart, pathEnd, pathSize, null, pathOffset);
 
 		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		bool goDown = false;
 
+		if (hasOrb)
+		{
+			Main.NewText(canPath);
+		}
+
 		if (!canPath) // Retry pathing, not to the nearest orb
 		{
-			Main.NewText("need skip");
-
-			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
 			target = FollowPlayer.position;
-			hasOrb = false;
 			pathEnd = target.ToTileCoordinates16();
+			hasOrb = false;
+
+			EmitDebugDust(pathEnd);
 
 			// Resetting timer allows us to re-run pathfinding immediately.
-			pathfinder.RefreshTimer = 0;
-			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2((int)(NPC.width / 16f * 0.9f), NPC.height / 16f - 0.4f), null, new(-NPC.width / 2, 0));
+			pathfinder.RefreshTimer = 1;
+			pathfinder.CheckDrawPath(pathStart, pathEnd, pathSize, null, pathOffset);
 
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		}
 
-		float checkDist = hasOrb ? 20 * 20 : 160 * 160;
+		float checkDist = hasOrb ? 40 * 40 : 160 * 160;
 
 		if (canPath && NPC.DistanceSQ(target) > checkDist)
 		{
-			Main.NewText(checkDist + " |what| " + Main.GameUpdateCount);
-
 			int index = pathfinder.Path.IndexOf(pathfinder.Path.MinBy(x => x.Position.ToVector2().DistanceSQ(NPC.position / 16f)));
 			List<Pathfinder.FoundPoint> checkPoints = pathfinder.Path[^(Math.Min(pathfinder.Path.Count, 6))..];
 			Vector2 direction = -AveragePathDirection(checkPoints) * 2;
@@ -230,7 +259,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 		if (NPC.velocity.Y > 0 && !goDown)
 		{
-			NPC.velocity.Y -= 0.2f;
+			NPC.velocity.Y -= 0.2f * (NPC.wet ? 0.5f : 1);
 		}
 
 		RunDustEffects();
@@ -252,7 +281,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		const int Distance = 35;
 
 		Point16 pos = NPC.Center.ToTileCoordinates16();
-		Point16 orbPosition = new Point16(-1, -1);
+		var orbPosition = new Point16(-1, -1);
 		hasOrb = false;
 
 		for (int i = pos.X - Distance; i < pos.X + Distance; i++) 
@@ -262,7 +291,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 				Tile tile = Main.tile[i, j];
 
 				if (tile.HasTile && tile.TileType == TileID.ShadowOrbs && (orbPosition.X == -1 || 
-					orbPosition.ToWorldCoordinates().DistanceSQ(NPC.Center) < new Vector2(i, j).ToWorldCoordinates().DistanceSQ(NPC.Center)))
+					orbPosition.ToWorldCoordinates().DistanceSQ(NPC.Center) > new Vector2(i, j).ToWorldCoordinates().DistanceSQ(NPC.Center)))
 				{
 					orbPosition = new Point16(i, j);
 				}
@@ -302,7 +331,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 		for (int i = 0; i < 20; ++i)
 		{
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.ShadowbeamStaff, Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Firework_Red, Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
 		}
 	}
 
@@ -553,9 +582,9 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	{
 		string baseNPC = $"Mods.PathOfTerraria.NPCs.{Name}.BubbleDialogue.";
 
-		if (SubworldSystem.Current is BrainDomain)
+		if (SubworldSystem.Current is BrainDomain domain)
 		{
-			return Language.GetTextValue(baseNPC + "InDomain." + Main.rand.Next(3));
+			return Language.GetTextValue(baseNPC + (domain.BossSpawned && !NPC.AnyNPCs(NPCID.BrainofCthulhu) ? "DomainBossDead." : "InDomain.") + Main.rand.Next(3));
 		}
 
 		if (doPathing)

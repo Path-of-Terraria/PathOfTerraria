@@ -14,20 +14,21 @@ internal class PathfinderPlayer : ModPlayer
 		if (Main.mouseLeft)
 		{
 			LastOrb = Main.MouseWorld.ToTileCoordinates16();
+			Main.NewText(LastOrb);
 		}
 
-		pathfinder.CheckDrawPath(Player.Top.ToTileCoordinates16(), LastOrb, new Vector2(Player.width / 16f * 0.8f, Player.height / 16f * 0.8f),
-			null, new(-Player.width / 2.5f, 0));
+		//pathfinder.CheckDrawPath(Player.Top.ToTileCoordinates16(), LastOrb, new Vector2(Player.width / 16f * 0.8f, Player.height / 16f * 0.8f),
+		//	null, new(-Player.width / 2.5f, 0));
 
-		if (pathfinder.HasPath && pathfinder.Path.Count > 0)
-		{
-			foreach (Pathfinder.FoundPoint item in pathfinder.Path)
-			{
-				var vel = Pathfinder.ToVector2(item.Direction);
-				int id = DustID.Poisoned;
-				var dust = Dust.NewDustPerfect(item.Position.ToWorldCoordinates(), id, vel * 2);
-				dust.noGravity = true;
-			}
-		}
+		//if (pathfinder.HasPath && pathfinder.Path.Count > 0)
+		//{
+		//	foreach (Pathfinder.FoundPoint item in pathfinder.Path)
+		//	{
+		//		var vel = Pathfinder.ToVector2(item.Direction);
+		//		int id = DustID.Poisoned;
+		//		var dust = Dust.NewDustPerfect(item.Position.ToWorldCoordinates(), id, vel * 2);
+		//		dust.noGravity = true;
+		//	}
+		//}
 	}
 }

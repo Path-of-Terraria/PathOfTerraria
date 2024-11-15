@@ -20,6 +20,7 @@ using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
 using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
+using Terraria.Chat;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -79,16 +80,26 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		NPC.knockBackResist = 0.5f;
 		AnimationType = NPCID.Guide;
 		
-		NPC.TryEnableComponent<NPCHitEffects>(
-			c =>
-			{
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_0", 1));
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_1", 2));
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_2", 2));
-				
-				c.AddDust(new(DustID.Blood, 20));
-			}
-		);
+		NPC.TryEnableComponent<NPCHitEffects>(c => c.AddDust(new(DustID.Blood, 20)));
+	}
+
+	public override bool CheckDead()
+	{
+		NPC.active = false;
+		TeleportEffects();
+
+		Color color = Colors.RarityDarkRed;
+
+		if (Main.netMode == NetmodeID.SinglePlayer)
+		{
+			Main.NewText(Language.GetText($"Mods.{PoTMod.ModName}.Misc.NPCLeftWithoutDying").Format(NPC.FullName), color.R, color.G, color.B);
+		}
+		else if (Main.netMode == NetmodeID.Server)
+		{
+			ChatHelper.BroadcastChatMessage(NetworkText.FromKey($"Mods.{PoTMod.ModName}.Misc.NPCLeftWithoutDying", NPC.FullName), color);
+		}
+
+		return false;
 	}
 
 	public override bool PreAI()
@@ -163,7 +174,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
 			pathEnd = target.ToTileCoordinates16();
 
-			pathfinder.RefreshTimer = 0;
+			// Set RefreshTimer to 1 so it's 0 by the time it's checked & skips caching
+			pathfinder.RefreshTimer = 1;
 			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
 
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
