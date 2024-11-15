@@ -57,9 +57,15 @@ internal class CrimsonMaw : ModProjectile
 				if (TargettingPlayer && Main.myPlayer == Target)
 				{
 					Main.player[Target].GetModPlayer<PersistentReturningPlayer>().ReturnPosition = Main.player[Target].Center;
-					//SubworldSystem.Enter<BrainDomain>();
-					Projectile.Kill();
+					SubworldSystem.Enter<BrainDomain>();
 				}
+				else if (!TargettingPlayer && Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					Main.npc[Target].active = false;
+					Main.npc[Target].netUpdate = true;
+				}
+
+				Projectile.Kill();
 			}
 
 			if (!TargettingPlayer)

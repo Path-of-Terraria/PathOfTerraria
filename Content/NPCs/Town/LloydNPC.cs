@@ -21,6 +21,7 @@ using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds.BossDomains;
+using Terraria.GameContent.ItemDropRules;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -151,14 +152,20 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		// Determines path using a slightly adjusted position and hitbox size.
 		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
-		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2((int)(NPC.width / 16f), NPC.height / 16f - 0.2f), 
-			hasOrb ? Pathfinder.GetCheckArea(pathStart, pathEnd, new Point16(20, 20)) : null, new(-NPC.width / 2, 0));
+		
+		EmitDebugDust(pathStart);
+		EmitDebugDust(pathEnd);
+
+		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2((int)(NPC.width / 16f * 0.8f), NPC.height / 16f * 0.8f),
+			hasOrb ? Pathfinder.GetCheckArea(pathStart, pathEnd, new Point16(20, 20)) : null, new(-NPC.width / 2.5f, 0));
 
 		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		bool goDown = false;
 
 		if (!canPath) // Retry pathing, not to the nearest orb
 		{
+			Main.NewText("need skip");
+
 			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
 			target = FollowPlayer.position;
 			hasOrb = false;
@@ -166,13 +173,17 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 			// Resetting timer allows us to re-run pathfinding immediately.
 			pathfinder.RefreshTimer = 0;
-			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2((int)(NPC.width / 16f), NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
+			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2((int)(NPC.width / 16f * 0.9f), NPC.height / 16f - 0.4f), null, new(-NPC.width / 2, 0));
 
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		}
 
-		if (canPath && NPC.DistanceSQ(target) > (hasOrb ? 0 : 160 * 160))
+		float checkDist = hasOrb ? 20 * 20 : 160 * 160;
+
+		if (canPath && NPC.DistanceSQ(target) > checkDist)
 		{
+			Main.NewText(checkDist + " |what| " + Main.GameUpdateCount);
+
 			int index = pathfinder.Path.IndexOf(pathfinder.Path.MinBy(x => x.Position.ToVector2().DistanceSQ(NPC.position / 16f)));
 			List<Pathfinder.FoundPoint> checkPoints = pathfinder.Path[^(Math.Min(pathfinder.Path.Count, 6))..];
 			Vector2 direction = -AveragePathDirection(checkPoints) * 2;
@@ -187,8 +198,8 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 			if (direction.Y < 0)
 			{
-				NPC.velocity.Y -= 0.7f;
-				NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -7, 7);
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, direction.Y * 4, 0.3f);
+				NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -14, 7);
 			}
 			else
 			{
@@ -230,11 +241,18 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 	}
 
+	private static void EmitDebugDust(Point16 pathStart)
+	{
+		var dust = Dust.NewDustPerfect(pathStart.ToWorldCoordinates(), DustID.RedTorch, Vector2.Zero);
+		dust.noGravity = true;
+	}
+
 	private void ScanForHearts(ref Vector2 target, out bool hasOrb)
 	{
-		const int Distance = 20;
+		const int Distance = 35;
 
 		Point16 pos = NPC.Center.ToTileCoordinates16();
+		Point16 orbPosition = new Point16(-1, -1);
 		hasOrb = false;
 
 		for (int i = pos.X - Distance; i < pos.X + Distance; i++) 
@@ -243,23 +261,37 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (tile.HasTile && tile.TileType == TileID.ShadowOrbs)
+				if (tile.HasTile && tile.TileType == TileID.ShadowOrbs && (orbPosition.X == -1 || 
+					orbPosition.ToWorldCoordinates().DistanceSQ(NPC.Center) < new Vector2(i, j).ToWorldCoordinates().DistanceSQ(NPC.Center)))
 				{
-					target = new Vector2(i, j).ToWorldCoordinates();
-					hasOrb = true;
+					orbPosition = new Point16(i, j);
+				}
+			}
+		}
 
-					if (hammerTime <= 0 && target.DistanceSQ(NPC.Center) < MathF.Pow(16 * 4, 2))
+		if (orbPosition.X != -1)
+		{
+			target = new Vector2(orbPosition.X, orbPosition.Y).ToWorldCoordinates();
+			hasOrb = true;
+
+			if (hammerTime <= 0 && target.DistanceSQ(NPC.Center) < MathF.Pow(16 * 4, 2))
+			{
+				hammerTime = MaxHammerTime;
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					WorldGen.KillTile(orbPosition.X, orbPosition.Y);
+
+					if (Main.netMode == NetmodeID.Server)
 					{
-						hammerTime = MaxHammerTime;
-
-						WorldGen.KillTile(i, j);
-
-						int id = Math.Min(DisableEvilOrbBossSpawning.ActualOrbsSmashed, 3) - 1;
-						string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.BreakHeart." + id);
-						((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
-						return;
+						NetMessage.SendTileSquare(-1, orbPosition.X, orbPosition.Y, 2, 2);
 					}
 				}
+
+				int id = Math.Min(DisableEvilOrbBossSpawning.ActualOrbsSmashed, 3) - 1;
+				string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.BreakHeart." + id);
+				((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+				return;
 			}
 		}
 	}
