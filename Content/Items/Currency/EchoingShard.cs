@@ -6,15 +6,15 @@ namespace PathOfTerraria.Content.Items.Currency;
 
 internal class EchoingShard : CurrencyShard
 {
-	public override bool CanRightClick()
-	{
-		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity != ItemRarity.Normal;
-	}
-	
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 		Item.rare = ItemRarityID.Master;
+	}
+	
+	public override bool CanRightClick()
+	{
+		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity != ItemRarity.Normal;
 	}
 
 	/// <summary>

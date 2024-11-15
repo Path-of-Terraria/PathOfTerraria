@@ -63,9 +63,9 @@ public sealed class PoTInstanceItemData : GlobalItem
 	public bool Corrupted { get; set; }
 	
 	/// <summary>
-	///		If the item is corrupt or not. Corrupted items cannot be modified with any currency shards.
+	///		If the item is cloned or not. Cloned items cannot be modified with any currency shards.
 	/// </summary>
-	public bool Cloned { get; set; } = false;
+	public bool Cloned { get; set; }
 
 	/// <summary>
 	///		The amount of implicit affixes preceding rolled ones.
