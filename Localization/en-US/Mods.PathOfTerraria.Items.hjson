@@ -683,7 +683,7 @@ EchoingShard: {
 
 RadiantShard: {
 	DisplayName: Radiant Shard
-	Tooltip: 
+	Tooltip:
 		'''
 		Rerolls the affix values of an item
 		Hold an item then right click this Shard to reroll affix values

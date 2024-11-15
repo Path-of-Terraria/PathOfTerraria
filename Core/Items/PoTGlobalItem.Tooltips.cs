@@ -119,7 +119,7 @@ partial class PoTGlobalItem
 
 		if (data.Corrupted)
 		{
-			tooltips.Add(new TooltipLine(Mod, "Corrupted", " Corrupted")
+			tooltips.Add(new TooltipLine(Mod, "Corrupted", $" {Language.GetTextValue("Mods.PathOfTerraria.Gear.Properties.Corrupted")}")
 			{
 				OverrideColor = Color.Lerp(Color.Purple, Color.White, 0.4f)
 			});
@@ -127,7 +127,7 @@ partial class PoTGlobalItem
 		
 		if (data.Cloned)
 		{
-			tooltips.Add(new TooltipLine(Mod, "Cloned", " Cloned")
+			tooltips.Add(new TooltipLine(Mod, "Cloned", $" {Language.GetTextValue("Mods.PathOfTerraria.Gear.Properties.Cloned")}")
 			{
 				OverrideColor = Color.Lerp(Color.DarkCyan, Color.White, 0.4f)
 			});
