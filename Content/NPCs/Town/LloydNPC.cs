@@ -121,13 +121,13 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 			return false;
 		}
 
-		Tile tile = Main.tile[NPC.Center.ToTileCoordinates16()];
-
-		if (NPC.downedBoss2 && Main.player[Player.FindClosest(NPC.position, NPC.width, NPC.height)].DistanceSQ(NPC.Center) > 2000 * 2000)
+		if (NPC.downedBoss2 && Main.player[Player.FindClosest(NPC.position, NPC.width, NPC.height)].DistanceSQ(NPC.Center) > 2000 * 2000 
+			&& Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Add(FullName);
 
 			NPC.active = false;
+			return false;
 		}
 
 		if (doPathing && (!FollowPlayer.active || FollowPlayer.dead))

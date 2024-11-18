@@ -70,7 +70,7 @@ internal class CrimsonMaw : ModProjectile
 				Projectile.Kill();
 			}
 
-			if (!TargettingPlayer)
+			if (!TargettingPlayer && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				((IOverheadDialogueNPC)(Main.npc[Target].ModNPC as LloydNPC)).CurrentDialogue = null;
 			}
