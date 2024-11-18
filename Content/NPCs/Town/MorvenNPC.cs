@@ -21,11 +21,12 @@ using Terraria.ModLoader.IO;
 using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.Chat;
+using Terraria;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
+public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IPathfindSyncingNPC
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
@@ -138,7 +139,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	private void PathedMovement()
 	{
 		// Once every few seconds, sync the npc - bandaid on pathfinder in mp
-		if (++syncTimer > 240)
+		if (++syncTimer > 60)
 		{
 			NPC.netUpdate = true;
 			syncTimer = 0;
@@ -363,7 +364,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			}
 			else
 			{
-				MorvenFollowHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI);
+				PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
 			}
 
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
@@ -516,9 +517,14 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		return Language.GetTextValue(baseNPC + "Night." + Main.rand.Next(3));
 	}
 
-	internal void SetFollow(byte player)
+	public void EnablePathfinding(byte player)
 	{
 		followPlayer = player;
 		doPathing = true;
+	}
+
+	public void DisablePathfinding()
+	{
+		doPathing = false;
 	}
 }

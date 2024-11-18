@@ -101,9 +101,9 @@ public class RavencrestSystem : ModSystem
 			else if (SubworldSystem.Current is null)
 			{
 				OverworldOneTimeChecks();
-
-				ModContent.GetInstance<BoCDomainSystem>().OneTimeOverworldCheck();
 			}
+
+			ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
 
 			OneTimeCheckDone = true;
 		}

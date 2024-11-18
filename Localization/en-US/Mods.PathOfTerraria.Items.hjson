@@ -672,6 +672,10 @@ EoWMap: {
 }
 
 BoCMap: {
-	DisplayName: Bo C Map
-	Tooltip: ""
+	DisplayName: Brain of Cthulhu Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of flesh and bile'
+		'''
 }

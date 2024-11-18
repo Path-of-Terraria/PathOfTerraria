@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -70,6 +71,12 @@ internal class Pathfinder(int refreshTime)
 	/// <returns>Whether a new path was found this frame. This includes cached scans finishing.</returns>
 	public bool CheckDrawPath(Point16 start, Point16 end, Vector2 objSizeInTiles = default, Rectangle? checkArea = null, Vector2? positionOffset = null)
 	{
+		// Run only on sp or server...once we get better syncing in
+		//if (Main.netMode == NetmodeID.MultiplayerClient)
+		//{
+		//	return false;
+		//}
+
 		RefreshTimer--;
 
 		if (start == end)
@@ -329,5 +336,53 @@ internal class Pathfinder(int refreshTime)
 		Rectangle rect = new(minX, minY, maxX - minX, maxY - minY);
 		rect.Inflate(inflationSize.X, inflationSize.Y);
 		return rect;
+	}
+
+	// NOTE: Both of these should be unused as something isn't working in order to give this the intended effect.
+	public void SendPath(BinaryWriter writer)
+	{
+		if (Path.Count == 0)
+		{
+			writer.Write(false);
+			return;
+		}
+
+		writer.Write(true);
+		writer.Write(Path[0].Position.X);
+		writer.Write(Path[0].Position.Y);
+		writer.Write((byte)Path[0].Direction);
+		writer.Write((short)Path.Count - 1);
+
+		for (int i = 1; i < Path.Count; ++i)
+		{
+			writer.Write((byte)Path[i].Direction);
+		}
+	}
+
+	public void ReadPath(BinaryReader reader)
+	{
+		bool cont = reader.ReadBoolean();
+
+		if (!cont)
+		{
+			return;
+		}
+
+		short x = reader.ReadInt16();
+		short y = reader.ReadInt16();
+		var dir = (Direction)reader.ReadByte();
+		short count = reader.ReadInt16();
+		Point16 last = new(x, y);
+
+		Path.Clear();
+		Path.Add(new FoundPoint(last, dir));
+
+		for (int i = 0; i < count; ++i)
+		{
+			Point16 adj = ToVector(dir);
+			last = new Point16(last.X - adj.X, last.Y - adj.Y);
+			dir = (Direction)reader.ReadByte();
+			Path.Add(new FoundPoint(last, dir));
+		}
 	}
 }

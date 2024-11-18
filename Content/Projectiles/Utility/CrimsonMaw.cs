@@ -64,6 +64,7 @@ internal class CrimsonMaw : ModProjectile
 					Main.npc[Target].active = false;
 					Main.npc[Target].netUpdate = true;
 					ModContent.GetInstance<BoCDomainSystem>().HasLloyd = true;
+					ModContent.GetInstance<BoCDomainSystem>().LLoydReturnPos = Main.npc[Target].Center;
 				}
 
 				Projectile.Kill();

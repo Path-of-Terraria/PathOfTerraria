@@ -26,7 +26,7 @@ using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
+public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IPathfindSyncingNPC
 {
 	const int HammerId = ItemID.PlatinumHammer;
 	const int MaxHammerTime = 25;
@@ -43,6 +43,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	private bool abandoned = false;
 	private short syncTimer = 0;
 	private float wingTime = 0;
+	private bool brainDialogue = true;
 
 	// Sound timers
 	private int walkTime = 0;
@@ -82,6 +83,11 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		AnimationType = NPCID.Guide;
 		
 		NPC.TryEnableComponent<NPCHitEffects>(c => c.AddDust(new(DustID.Blood, 20)));
+	}
+
+	public override bool CheckActive()
+	{
+		return false;
 	}
 
 	public override bool CheckDead()
@@ -148,8 +154,8 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	private void PathedMovement()
 	{
-		// Once every few seconds, sync the npc - bandaid on pathfinder in mp
-		if (++syncTimer > 240)
+		// Once every second, sync the npc - bandaid on pathfinder in mp
+		if (++syncTimer > 60)
 		{
 			NPC.netUpdate = true;
 			syncTimer = 0;
@@ -159,16 +165,23 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 		// If the player is too far away from the NPC, teleport the NPC and hurt him.
 		// This reduces pathfinding load, especially if the player becomes fully blocked off somehow.
-		if (Vector2.DistanceSquared(target, NPC.Center) > MathF.Pow(250 * 16, 2))
+		if (Vector2.DistanceSquared(target, NPC.Center) > MathF.Pow(250 * 16, 2) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			TeleportEffects();
+			//TeleportEffects();
 
-			NPC.Center = target;
+			//NPC.Center = target;
+			//NPC.netUpdate = true;
+			//NPC.netOffset = Vector2.Zero;
+			//NPC.velocity = Vector2.Zero;
 
-			TeleportEffects();
+			//TeleportEffects();
 
-			string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
-			((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+			//if (Main.netMode != NetmodeID.Server)
+			//{
+			//	string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
+			//	((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+			//}
+
 			return;
 		}
 
@@ -178,9 +191,6 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		Point16 pathStart = NPC.Top.ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
 		
-		EmitDebugDust(pathStart);
-		EmitDebugDust(pathEnd);
-
 		Vector2 pathSize = new(NPC.width / 16f * 0.8f, NPC.height / 16f * 0.8f);
 		Vector2 pathOffset = new(-NPC.width / 2.5f, 0);
 
@@ -189,24 +199,17 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		bool goDown = false;
 
-		if (hasOrb)
-		{
-			Main.NewText(canPath);
-		}
-
 		if (!canPath) // Retry pathing, not to the nearest orb
 		{
 			target = FollowPlayer.position;
 			pathEnd = target.ToTileCoordinates16();
-			hasOrb = false;
-
-			EmitDebugDust(pathEnd);
 
 			// Resetting timer allows us to re-run pathfinding immediately.
 			pathfinder.RefreshTimer = 1;
 			pathfinder.CheckDrawPath(pathStart, pathEnd, pathSize, null, pathOffset);
 
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+			hasOrb = false;
 		}
 
 		float checkDist = hasOrb ? 40 * 40 : 160 * 160;
@@ -270,12 +273,6 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 	}
 
-	private static void EmitDebugDust(Point16 pathStart)
-	{
-		var dust = Dust.NewDustPerfect(pathStart.ToWorldCoordinates(), DustID.RedTorch, Vector2.Zero);
-		dust.noGravity = true;
-	}
-
 	private void ScanForHearts(ref Vector2 target, out bool hasOrb)
 	{
 		const int Distance = 35;
@@ -327,12 +324,17 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	private void TeleportEffects()
 	{
+		// I don't really know what netOffset is but vanilla does this for Tim's teleport so
+		NPC.position += NPC.netOffset;
+		
 		SoundEngine.PlaySound(SoundID.Item8, NPC.Center);
 
 		for (int i = 0; i < 20; ++i)
 		{
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Firework_Red, Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
 		}
+
+		NPC.position -= NPC.netOffset;
 	}
 
 	private void RunDustEffects()
@@ -436,7 +438,14 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = /*!ModContent.GetInstance<BoCQuest>().CanBeStarted ? "" :*/ Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+
+		//if (ModContent.GetInstance<BoCQuest>().Completed)
+		//{
+		//	return; // No additional button once quest is done
+		//}
+
+		button2 = ModContent.GetInstance<BoCQuest>().Active ? Language.GetTextValue($"Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.{(doPathing ? "Stay" : "Follow")}Button") 
+			: Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -447,23 +456,62 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 		else
 		{
-			if (Main.netMode == NetmodeID.SinglePlayer)
+			if (ModContent.GetInstance<BoCQuest>().Active)
 			{
-				followPlayer = 0;
-				doPathing = true;
+				if (doPathing)
+				{
+					if (Main.netMode == NetmodeID.SinglePlayer)
+					{
+						doPathing = false;
+					}
+					else
+					{
+						PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, false);
+					}
+
+					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.StayDialogue");
+				}
+				else
+				{
+					if (Main.netMode == NetmodeID.SinglePlayer)
+					{
+						followPlayer = 0;
+						doPathing = true;
+					}
+					else
+					{
+						PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+					}
+
+					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.FollowAgain");
+				}
 			}
 			else
 			{
-				MorvenFollowHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI);
-			}
+				if (Main.netMode == NetmodeID.SinglePlayer)
+				{
+					followPlayer = 0;
+					doPathing = true;
+				}
+				else
+				{
+					PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+				}
 
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Help");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(BoCQuest)}");
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Help");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(BoCQuest)}");
+			}
 		}
 	}
 
 	public override string GetChat()
 	{
+		if (SubworldSystem.Current is BrainDomain && brainDialogue)
+		{
+			brainDialogue = false;
+			return Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.InDomain");
+		}
+
 		string isFollow = SubworldSystem.Current is BrainDomain ? "Domain" : doPathing ? "Follow" : "Common";
 		return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue." + isFollow + Main.rand.Next(4));
 	}
@@ -480,21 +528,16 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	public override void SendExtraAI(BinaryWriter writer)
 	{
-		byte packed = 0;
-
-		if (doPathing)
-		{
-			packed |= 0b_1;
-		}
-
-		writer.Write(packed);
+		writer.Write(doPathing);
+		writer.Write(followPlayer);
+		//pathfinder.SendPath(writer);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
 	{
-		byte packed = reader.ReadByte();
-
-		doPathing = (packed & 0b_1) == 0b_1;
+		doPathing = reader.ReadBoolean();
+		followPlayer = reader.ReadByte();
+		//pathfinder.ReadPath(reader);
 	}
 
 	public override void FindFrame(int frameHeight)
@@ -610,9 +653,14 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		return Language.GetTextValue(baseNPC + "Night." + Main.rand.Next(3));
 	}
 
-	internal void SetFollow(byte player)
+	public void EnablePathfinding(byte player)
 	{
-		followPlayer = player;
 		doPathing = true;
+		followPlayer = player;
+	}
+
+	public void DisablePathfinding()
+	{
+		doPathing = false;
 	}
 }

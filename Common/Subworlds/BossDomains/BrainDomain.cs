@@ -361,7 +361,8 @@ public class BrainDomain : BossDomainSubworld
 	{
 		if (!Main.tile[x, y].HasTile)
 		{
-			color = Vector3.Max(color, Vector3.Lerp(color, Color.PaleVioletRed.ToVector3(), ModContent.GetInstance<BoCDomainSystem>().DomainAtmosphere));
+			float factor = ModContent.GetInstance<BoCDomainSystem>().DomainAtmosphere;
+			color = Vector3.Max(color, Vector3.Lerp(color, Color.PaleVioletRed.ToVector3(), factor));
 		}
 
 		if (Main.tile[x, y].WallType != WallID.None && !WallID.Sets.Transparent[Main.tile[x, y].WallType])

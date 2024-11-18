@@ -349,9 +349,13 @@ LloydNPC: {
 		Domain2: May my boon help you greatly. I wish I could do more, but the pillars tower over my strength.
 		Domain3: Cut through the obstacles here. They were never truly living.
 		Help: Hm. Fellow aide. You seem to know the lay of the land. I'm here looking for the heart that yet beats. Would you be so kind as to guide me to it? I've matters to contend with. I'll fend monsters, you guide.
-		InDomain: Alas, I'm here once more. I know my strength can't overpower the Brain. I am using what I have to allow you two additional jumps. The pillars of the land tower above, and may be much too difficult to scale otherwise. Be well, and be swift. I will be ruminating.
+		InDomain: Alas, I'm here once more. I know my strength can't overpower the Brain. I am using what I have to allow you three additional jumps. The pillars of the land tower above, and may be much too difficult to scale otherwise. Be well, and be swift. I will be ruminating.
 		NeedsReturn: You were felled too? Alas. A mighty beast, but not one without flaw. Guide me to another still-beating heart, and we return. Take caution.
 		Complete: What a great joy. I owe you everything I have, which is not much. Take this. I shall be returning to Ravencrest - I've been before, no need to take me. Be well, and be merry.
+		StayButton: Stay
+		StayDialogue: I will stay here. Do not be long.
+		FollowButton: Follow
+		FollowAgain: Lead me to crimson hearts, aide.
 	}
 
 	BubbleDialogue: {
