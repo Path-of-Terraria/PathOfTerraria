@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
@@ -8,7 +7,6 @@ using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.Enums;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;

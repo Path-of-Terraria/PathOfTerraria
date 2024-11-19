@@ -671,6 +671,26 @@ EoWMap: {
 		'''
 }
 
+EchoingShard: {
+	DisplayName: Echoing Shard
+	Tooltip:
+		'''
+		  	Creates a clone of an item
+		  	Hold an item then right click this Shard to clone
+		  	'I can see myself!'
+		'''
+}
+
+RadiantShard: {
+	DisplayName: Radiant Shard
+	Tooltip:
+		'''
+		Rerolls the affix values of an item
+		Hold an item then right click this Shard to reroll affix values
+		'It's hard to look at'
+		'''
+}
+
 BoCMap: {
 	DisplayName: Brain of Cthulhu Map
 	Tooltip:

@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.World.Generation;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Collections.Generic;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.World;

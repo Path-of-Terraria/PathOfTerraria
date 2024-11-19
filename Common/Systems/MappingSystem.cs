@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using SubworldLibrary;
 using Terraria.DataStructures;

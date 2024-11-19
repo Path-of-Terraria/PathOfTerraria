@@ -1,8 +1,5 @@
-using System.IO;
 using ReLogic.Content;
-using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.Town;

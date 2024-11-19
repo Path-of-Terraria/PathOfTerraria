@@ -8,7 +8,6 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Linq;
 using Terraria.Localization;
-using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -57,7 +56,7 @@ partial class PoTGlobalItem
 				line.BaseScale = new Vector2(1.1f);
 				return true;
 
-			case "Rarity" or "Corrupted":
+			case "Rarity" or "Corrupted" or "Cloned":
 				yOffset = -8;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
@@ -120,9 +119,17 @@ partial class PoTGlobalItem
 
 		if (data.Corrupted)
 		{
-			tooltips.Add(new TooltipLine(Mod, "Corrupted", " Corrupted")
+			tooltips.Add(new TooltipLine(Mod, "Corrupted", $" {Language.GetTextValue("Mods.PathOfTerraria.Gear.Properties.Corrupted")}")
 			{
 				OverrideColor = Color.Lerp(Color.Purple, Color.White, 0.4f)
+			});
+		}
+		
+		if (data.Cloned)
+		{
+			tooltips.Add(new TooltipLine(Mod, "Cloned", $" {Language.GetTextValue("Mods.PathOfTerraria.Gear.Properties.Cloned")}")
+			{
+				OverrideColor = Color.Lerp(Color.DarkCyan, Color.White, 0.4f)
 			});
 		}
 

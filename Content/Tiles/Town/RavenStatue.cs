@@ -1,9 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using SubworldLibrary;
-using Terraria;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.Town;

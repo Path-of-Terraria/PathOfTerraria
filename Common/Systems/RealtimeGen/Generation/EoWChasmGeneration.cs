@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic;
-using PathOfTerraria.Common.World.Generation;
+﻿using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Walls;

@@ -12,7 +12,6 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.Localization;
 using SubworldLibrary;
 using PathOfTerraria.Content.Projectiles.Utility;
-using System;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
