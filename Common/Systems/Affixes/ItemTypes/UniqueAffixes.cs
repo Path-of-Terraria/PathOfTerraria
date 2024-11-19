@@ -1,6 +1,4 @@
-using System.ComponentModel.DataAnnotations;
 using Terraria.Localization;
-using Terraria.ModLoader;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 

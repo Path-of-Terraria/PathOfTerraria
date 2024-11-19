@@ -10,11 +10,14 @@ namespace PathOfTerraria.Common.Systems.Questing;
 
 internal class QuestModPlayer : ModPlayer
 {
+	private readonly record struct CachedQuest(TagCompound tag);
+
 	// ReSharper disable once InconsistentNaming
 	public static ModKeybind ToggleQuestUIKey;
 	
 	// need a list of what npcs start what quests
 	private readonly HashSet<string> _enabledQuests = [];
+	private readonly List<CachedQuest> _questsToEnable = [];
 
 	private bool _firstQuest = true;
 
@@ -28,7 +31,7 @@ internal class QuestModPlayer : ModPlayer
 		{
 			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(Quest.GetQuest(name).DisplayName, 300, 1f, 1.2f);
 
-			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.2f });
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.5f });
 
 			if (_firstQuest) // Only display first quest popup on first quest (wow!)
 			{
@@ -46,7 +49,20 @@ internal class QuestModPlayer : ModPlayer
 		StartQuest("PathOfTerraria/TestQuest");
 		StartQuest("PathOfTerraria/TestQuestTwo");
 	}
-	
+
+	public override void OnEnterWorld()
+	{
+		foreach (CachedQuest cachedQuest in _questsToEnable)
+		{
+			var quest = Quest.LoadFrom(cachedQuest.tag, Player);
+
+			if (quest is not null)
+			{
+				StartQuest(quest.FullName, quest.CurrentStep, true);
+			}
+		}
+	}
+
 	public override void Load()
 	{
 		if (Main.dedServ)
@@ -93,15 +109,10 @@ internal class QuestModPlayer : ModPlayer
 		_firstQuest = !tag.ContainsKey("firstQuest"); // If we have the tag, the first quest is false
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
-		questTags.ForEach(tag => 
-		{ 
-			var quest = Quest.LoadFrom(tag, Player); 
-			
-			if (quest is not null) 
-			{ 
-				StartQuest(quest.FullName, quest.CurrentStep, true);
-			} 
-		});
+		// We can't enable quests here; that'd set it to Active and mess up all save data for every other player.
+		// Instead, we cache the quests that need to be loaded later,
+		// as the only time the player can save is in-world.
+		questTags.ForEach(tag => _questsToEnable.Add(new CachedQuest(tag)));
 	}
 
 	public override void PostUpdateMiscEffects()

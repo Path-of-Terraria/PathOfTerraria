@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
-using Terraria.UI.Chat;
 using PathOfTerraria.Common.Systems;
 
 using TooltipUI = PathOfTerraria.Common.UI.Tooltip;

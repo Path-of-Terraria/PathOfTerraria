@@ -8,8 +8,6 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
 internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
 {
-	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Consumables/Maps/{GetType().Name}";
-
 	public abstract int MaxUses { get; }
 
 	public int RemainingUses = 0;
@@ -111,6 +109,14 @@ internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, G
 
 	public abstract string GenerateName(string defaultName);
 
+	/// <summary>
+	/// Determines how many times a boss domain map can be used. This means the following:<br/>
+	/// <c>1 Player:</c> 6 uses<br/>
+	/// <c>2 Players:</c> 3 uses per player<br/>
+	/// <c>3 Players:</c> 2 uses per player:<br/>
+	/// <c>4+ Players:</c> 1 use per player.<br/>
+	/// </summary>
+	/// <returns></returns>
 	public static int GetBossUseCount()
 	{
 		int def = 6 / BossDomainPlayer.GetLivesPerPlayer();

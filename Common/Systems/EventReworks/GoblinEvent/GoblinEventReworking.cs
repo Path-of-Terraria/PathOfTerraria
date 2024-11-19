@@ -1,7 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.WorldNavigation;
 using SubworldLibrary;
 using Terraria.ID;
 

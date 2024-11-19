@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.UI;
 

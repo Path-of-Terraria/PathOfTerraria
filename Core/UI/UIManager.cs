@@ -1,7 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Reflection.Metadata;
-using PathOfTerraria.Core.UI;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI;

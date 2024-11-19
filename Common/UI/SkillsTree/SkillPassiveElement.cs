@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
-using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;

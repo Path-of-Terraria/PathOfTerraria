@@ -32,6 +32,7 @@ internal abstract class CurrencyShard : ModItem
 			return false;
 		}
 
-		return !Main.LocalPlayer.HeldItem.GetInstanceData().Corrupted;
+		PoTInstanceItemData item = Main.LocalPlayer.HeldItem.GetInstanceData();
+		return !item.Corrupted && !item.Cloned;
 	}
 }

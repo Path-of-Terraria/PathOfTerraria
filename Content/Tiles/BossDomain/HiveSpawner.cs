@@ -1,7 +1,4 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;

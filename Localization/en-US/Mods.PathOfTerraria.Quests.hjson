@@ -68,4 +68,12 @@ Quest: {
 		Description: ""
 		Kill.EoC: Defeat the Eye of Cthulhu
 	}
+
+	EoWQuest: {
+		Name: Whispers of the Deep
+		Description: ""
+		MorvenRaven: Get Morven to Ravencrest
+		SmashOrbs: Smash 3 Shadow Orbs
+		KillEoW: Defeat the Eater of Worlds
+	}
 }

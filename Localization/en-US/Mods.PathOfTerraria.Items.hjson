@@ -516,7 +516,11 @@ RopeClumpItem: {
 
 KingSlimeMap: {
 	DisplayName: King Slime Map
-	Tooltip: "{$MapCommon.BossBase}"
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of slime and riches'
+		'''
 }
 
 TomeOfTheElders: {
@@ -616,6 +620,16 @@ AscendantShard: {
 		'''
 }
 
+UnfoldingShard: {
+	DisplayName: Unfolding Shard
+	Tooltip:
+		'''
+		Upgrades a normal item to a magic item
+		Hold an item then right click this Shard to upgrade
+		'It almost looks like it's moving inside'
+		'''
+}
+
 LunarLiquid: {
 	DisplayName: Lunar Liquid
 	Tooltip:
@@ -641,5 +655,38 @@ LunarObject: {
 
 EoCMap: {
 	DisplayName: Eye of Cthulhu Map
-	Tooltip: "{$MapCommon.BossBase}"
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of mildew and petrichor'
+		'''
+}
+
+EoWMap: {
+	DisplayName: Eater of Worlds Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of rot and bone'
+		'''
+}
+
+EchoingShard: {
+	DisplayName: Echoing Shard
+	Tooltip:
+		'''
+		  	Creates a clone of an item
+		  	Hold an item then right click this Shard to clone
+		  	'I can see myself!'
+		'''
+}
+
+RadiantShard: {
+	DisplayName: Radiant Shard
+	Tooltip:
+		'''
+		Rerolls the affix values of an item
+		Hold an item then right click this Shard to reroll affix values
+		'It's hard to look at'
+		'''
 }
