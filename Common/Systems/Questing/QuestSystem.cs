@@ -7,6 +7,7 @@ internal class QuestSystem : ModSystem
 		foreach (Quest quest in ModContent.GetContent<Quest>())
 		{
 			quest.Active = false;
+			quest.Completed = false;
 		}
 	}
 }
