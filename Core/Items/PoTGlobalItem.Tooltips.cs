@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Linq;
 using Terraria.Localization;
+using Terraria.GameContent.Items;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -69,6 +70,7 @@ partial class PoTGlobalItem
 			case "AltUseDescription":
 			case "Description":
 			case "ShiftNotice":
+			case "SwapNotice":
 				yOffset = 2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
@@ -154,6 +156,11 @@ partial class PoTGlobalItem
 			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription.Value));
 		}
 
+		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
+		{
+			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description.Value));
+		}
+
 		if (item.damage > 0)
 		{
 			// TODO: Slice first space in damage type display name...
@@ -176,11 +183,6 @@ partial class PoTGlobalItem
 		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer); // Adds in affix tooltips from this item without applying effects
 		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().PrepareComparisonTooltips(tooltips, item);
 		AffixTooltipsHandler.DefaultColor = Color.White; // Resets color
-
-		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
-		{
-			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description.Value));
-		}
 
 		tooltips.AddRange(oldTooltips);
 	}

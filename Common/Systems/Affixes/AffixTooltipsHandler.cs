@@ -2,7 +2,6 @@
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.GameContent.UI.Chat;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -157,23 +156,22 @@ public class AffixTooltipsHandler
 	{
 		int tipNum = 0;
 		bool hasShift = Keyboard.GetState().PressingShift();
-		IEnumerable<KeyValuePair<Type, AffixTooltip>> orderedTips;
+		IEnumerable<KeyValuePair<Type, AffixTooltip>> differenceTips = null;
+		IEnumerable<KeyValuePair<Type, AffixTooltip>> firstTips = null;
 
 		if (!hasShift) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
 		{
-			Tooltips.Clear();
-			PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer);
-
-			orderedTips = Tooltips;
+			firstTips = CreateStandaloneTooltips(item);
 		}
-		else // Otherwise, put the tooltips modified by the current item at the top of the list
+		else // Otherwise, put the tooltips modified by the current item at the top of the list & re-generate the standalone lines
 		{
 			AffixTooltip.AffixSource source = DetermineItemSource(item);
-			orderedTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0).Where(x => x.Value.ValueBySource.ContainsKey(source));
+			differenceTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0).Where(x => x.Value.ValueBySource.ContainsKey(source));
+			differenceTips = new Dictionary<Type, AffixTooltip>(differenceTips); // Create a shallow clone of itself in order to de-reference from Tooltips
 
-			for (int i = 0; i < orderedTips.Count(); ++i)
+			for (int i = 0; i < differenceTips.Count(); ++i)
 			{
-				KeyValuePair<Type, AffixTooltip> pair = orderedTips.ElementAt(i);
+				KeyValuePair<Type, AffixTooltip> pair = differenceTips.ElementAt(i);
 
 				foreach (object val in Enum.GetValues(typeof(AffixTooltip.AffixSource)))
 				{
@@ -188,58 +186,95 @@ public class AffixTooltipsHandler
 
 				List<Item> removals = [];
 
-				foreach (Item remov in pair.Value.SourceItems)
+				foreach (Item obj in pair.Value.SourceItems)
 				{
-					if (DetermineItemSource(remov) != source)
+					if (DetermineItemSource(obj) != source)
 					{
-						removals.Add(remov);
+						removals.Add(obj);
 					}
 				}
 
-				foreach (Item remov in removals)
+				foreach (Item obj in removals)
 				{
-					pair.Value.SourceItems.Remove(remov);
+					pair.Value.SourceItems.Remove(obj);
 				}
 			}
+
+			Tooltips.Clear();
+			firstTips = CreateStandaloneTooltips(item);
 		}
 
-		if (tooltips.Count == 0)
+		if (tooltips.Count == 0 && (differenceTips is null || !differenceTips.Any()) && !firstTips.Any())
 		{
 			return;
 		}
 
-		foreach (KeyValuePair<Type, AffixTooltip> tip in orderedTips)
+		if (firstTips is not null)
 		{
-			string text = $"[i:{ItemID.MusketBall}] " + tip.Value.Get();
-
-			if (hasShift) // If comparing, showcase the origin items for every affix
+			foreach (KeyValuePair<Type, AffixTooltip> tip in firstTips)
 			{
-				string fromItems = string.Empty;
-
-				foreach (Item srcItem in tip.Value.SourceItems)
-				{
-					fromItems += $"[i:{srcItem.type}]  ";
-				}
-
-				string fromLocalized = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.AffixTooltipFrom");
-				string fromLine = fromLocalized + fromItems;
-
-				text += fromLine;
+				AddSingleTooltipLine(tooltips, ref tipNum, tip);
 			}
-
-			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum++, text)
-			{
-				OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
-			});
 		}
 
-		if (!hasShift)
+		if (differenceTips is not null)
 		{
-			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", "(Hold shift to compare stats)")
+			bool anyDif = false;
+
+			foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips) // Determine if there is any difference
+			{
+				if (tip.Value.HasDifference)
+				{
+					anyDif = true;
+					break;
+				}
+			}
+
+			if (hasShift) // Display "If X is equipped:" or "(No item to swap)" in comparison page
+			{
+				string swapText = !anyDif ? Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.NoSwap")
+					: Language.GetText($"Mods.{PoTMod.ModName}.TooltipNotices.Swap").Format(item.Name);
+
+				tooltips.Add(new TooltipLine(PoTMod.Instance, "SwapNotice", swapText)
+				{
+					OverrideColor = Color.Gray,
+				});
+			}
+
+			if (anyDif) // If there are differences, show comparison
+			{
+				foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips)
+				{
+					AddSingleTooltipLine(tooltips, ref tipNum, tip);
+				}
+			}
+		}
+
+		if (!hasShift) // Show "Shift to compare" if they're not doing so
+		{
+			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Shift"))
 			{
 				OverrideColor = Color.Gray,
 			});
 		}
+	}
+
+	private static int AddSingleTooltipLine(List<TooltipLine> tooltips, ref int tipNum, KeyValuePair<Type, AffixTooltip> tip)
+	{
+		string text = $"[i:{ItemID.MusketBall}] " + tip.Value.Get();
+
+		tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum++, text)
+		{
+			OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
+		});
+		return tipNum;
+	}
+
+	private IEnumerable<KeyValuePair<Type, AffixTooltip>> CreateStandaloneTooltips(Item item)
+	{
+		Tooltips.Clear();
+		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer);
+		return Tooltips;
 	}
 
 	/// <summary>

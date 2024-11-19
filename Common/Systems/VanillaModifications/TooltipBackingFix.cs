@@ -39,7 +39,6 @@ internal class TooltipBackingFix : ILoadable
 	public static void ActuallyModifyBack(Item item, List<DrawableTooltipLine> tooltips, ref Vector2 size)
 	{
 		float maxWidth = 0;
-		float maxHeight = 0;
 
 		foreach (DrawableTooltipLine tooltip in tooltips)
 		{
@@ -52,15 +51,14 @@ internal class TooltipBackingFix : ILoadable
 				continue;
 			}
 
-			// Measure the line, set maxWidth, and add to height, then reset scale in case it'd cause issues later
+			// Measure the line, set maxWidth, then reset scale in case it'd cause issues later
 			Vector2 lineSize = ChatManager.GetStringSize(tooltip.Font, tooltip.Text, Vector2.One) * tooltip.BaseScale;
 			maxWidth = MathF.Max(maxWidth, lineSize.X);
-			maxHeight += lineSize.Y + yOffset;
 			tooltip.BaseScale = oldScale;
 		}
 
-		size.X = maxWidth;
-		size.Y = maxHeight + 30;
+		size.X = maxWidth; // Max width is accurately calculated by the above
+		size.Y -= tooltips.Count * 1.2f; // Max height isn't accurately calculated by the above for whatever reason, use bandaid
 	}
 
 	public void Unload()
