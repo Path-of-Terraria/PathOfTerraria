@@ -13,3 +13,4 @@ ManaPotionTooltip: Mana Potion
 RestoresHealthTooltip: Restores {0} health
 RestoresManaTooltip: Restores {0} mana
 CooldownTooltip: "{0} second cooldown"
+AffixTooltipFrom: " from  "

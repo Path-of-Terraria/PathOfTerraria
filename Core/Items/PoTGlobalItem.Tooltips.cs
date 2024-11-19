@@ -68,6 +68,8 @@ partial class PoTGlobalItem
 
 			case "AltUseDescription":
 			case "Description":
+			case "ShiftNotice":
+			case "SwapNotice":
 				yOffset = 2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
@@ -161,11 +163,16 @@ partial class PoTGlobalItem
 			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription.Value));
 		}
 
+		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
+		{
+			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description.Value));
+		}
+
 		if (item.damage > 0)
 		{
 			// TODO: Slice first space in damage type display name...
 			string highlightNumbers = HighlightNumbers(
-				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] Damage ({item.DamageType.DisplayName})",
+				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] Damage ({item.DamageType.DisplayName.Value.Trim()})",
 				baseColor: "DDDDDD");
 			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
 			tooltips.Add(damageLine);
@@ -183,11 +190,6 @@ partial class PoTGlobalItem
 		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer); // Adds in affix tooltips from this item without applying effects
 		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().PrepareComparisonTooltips(tooltips, item);
 		AffixTooltipsHandler.DefaultColor = Color.White; // Resets color
-
-		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
-		{
-			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description.Value));
-		}
 
 		tooltips.AddRange(oldTooltips);
 	}
@@ -259,7 +261,7 @@ partial class PoTGlobalItem
 	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)
 	{
-		if (!GearGlobalItem.IsGearItem(inv[slot]) || context == 21)
+		if (!GearGlobalItem.IsGearItem(inv[slot]) || context == 21 || context == ItemSlot.Context.ChatItem)
 		{
 			orig(sb, inv, context, slot, position, color);
 			return;
