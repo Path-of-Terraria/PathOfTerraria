@@ -277,6 +277,13 @@ internal class MapDeviceEntity : ModTileEntity
 			}
 
 			var map = StoredMap.ModItem as Map;
+
+			if (map is null)
+			{
+				StoredMap = null;
+				return;
+			}
+
 			map.OpenMap();
 			map.RemainingUses--;
 
