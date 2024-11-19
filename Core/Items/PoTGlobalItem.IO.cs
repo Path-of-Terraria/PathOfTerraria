@@ -23,6 +23,7 @@ partial class PoTGlobalItem : GlobalItem
 		tag["name"] = data.SpecialName;
 		tag["ItemLevel"] = data.RealLevel;
 		tag["corrupt"] = data.Corrupted;
+		tag["cloned"] = data.Cloned;
 
 		List<TagCompound> affixTags = [];
 		foreach (ItemAffix affix in data.Affixes)
@@ -48,6 +49,7 @@ partial class PoTGlobalItem : GlobalItem
 		data.SpecialName = tag.GetString("name");
 		data.RealLevel = tag.GetInt("ItemLevel");
 		data.Corrupted = tag.GetBool("corrupt");
+		data.Cloned = tag.GetBool("cloned");
 
 		data.Affixes.Clear();
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
@@ -72,6 +74,7 @@ partial class PoTGlobalItem : GlobalItem
 
 		writer.Write((byte)data.ImplicitCount);
 		writer.Write(data.Corrupted);
+		writer.Write(data.Cloned);
 
 		// Is this necessary?
 		// Probably should save the name as
@@ -96,6 +99,7 @@ partial class PoTGlobalItem : GlobalItem
 
 		data.ImplicitCount = reader.ReadByte();
 		data.Corrupted = reader.ReadBoolean();
+		data.Cloned = reader.ReadBoolean();
 		data.SpecialName = reader.ReadString();
 		data.RealLevel = reader.ReadByte();
 

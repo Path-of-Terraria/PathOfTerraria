@@ -1,9 +1,7 @@
 using PathOfTerraria.Common.Waypoints.UI;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.UI;
-using ReLogic.Content;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
 using Terraria.ObjectData;

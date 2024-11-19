@@ -258,3 +258,76 @@ EldricNPC: {
 		}
 	}
 }
+
+MorvenNPC: {
+	DisplayName: Morven
+
+	Dialogue: {
+		Common0: Any discoveries of late? Always have an ear on science!
+		Common1: Have you seen any Goblins? I had a guy in there that knew tons of fun science.
+		Common2: You wouldn't happen to have any advanced medical science on you, would you?
+		Common3: I bet you don't even know how lamp posts work. Poor soul...
+		Follow0: Why are you talking to me? Let's get moving!
+		Follow1: If you get me killed I'll be deeply and truly upset.
+		Follow2: Charge FORWARD, not stay and TALK. Buffoon.
+		Follow3: Gather yourself...and let's get moving already.
+		Rescue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I've become incased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out? I'll...reward you greatly, or something.
+		Aboveground: Ah, thank you. Out of that stuffy old cave. Say, do you know of a quaint settlement called Ravencrest? I've got old associates there who'd love to have a look at some Demonite I managed to scrounge up. Perhaps you might get some for your time as well?
+		InRavencrest: It'll take a bit to look presentable, but that can be for later. Thank you, stranger. I reward you with a quest. I was down there for Devourers, sure, but also to spy on these curious little orbs they call Shadow Orbs. Emitting light, floating ominously, strange stories. The lot of it, these things have. Could you break one for me? Just to see what happens.
+		BeforeBeatingEoW: What? You broke one and a rift appeared and you LEFT? Jump in it! Throw your friends in! I don't care, you've got a study to conduct!
+		AfterBeatingEoW: I'll be. Would've hardly expected a large, foul beast to appear in that corrupt realm. Alas, knowing that power implies many things. As much as I've disliked you, I do respect you. Whatever this corruption is holds to the land, still, but it's forward progress. Here, have this trinket. I have no use for - well, I'd love to give it to you. Ahem.
+		Abandoned: FINALLY. Someone leaves me here and expects me to navigate the world. Take me to Ravencrest and this time don't leave me in the lurch.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: I must soon harness the sun...
+			1: Aha! This tree works on water!
+			2: So many fools surround me...
+		}
+
+		Night: {
+			0: Now is the time of ingenuity!
+			1: The moon...time's greatest trickster.
+			2: Sleep science is perhaps the greatest science of all. At least right now.
+		}
+
+		Goblins: {
+			0: Hey! Do you know a guy that has these fancy boots!...they aren't listening.
+			1: Tch. You damage something, morons, and I'll have your head!
+			2: Where's my charged plasma rifle...
+		}
+
+		Rain: {
+			0: Stupid rain. Go elsewhere!
+			1: Tch...how displeasant.
+			2: The only thing rain brings is lightning!
+		}
+
+		Escort: {
+			0: Let's keep it moving, you know?
+			1: Chop chop, stranger.
+			2: I hope you appreciate the additional firepower.
+			3: Rocket Boots are awesome.
+			4: Those Devourers can be intimidating, huh?
+		}
+
+		EscortAttack: {
+			0: Keep it moving, this thing's no big deal.
+			1: You gonna help me out?
+			2: Trusty ol' gun...
+		}
+
+		Teleport: {
+			0: OW...you gotta be too careful going too far, fool.
+			1: Don't leave me behind! This teleporter barely works!
+			2: Hey! Hey! Slow down! This teleporter hurts to use!
+		}
+	}
+
+	Stuck: {
+		0: Hey! Anyone up there!
+		1: Help a guy out!
+		2: Oh man...
+	}
+}

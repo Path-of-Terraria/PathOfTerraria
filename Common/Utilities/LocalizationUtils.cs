@@ -1,5 +1,4 @@
 ﻿using System.Text.RegularExpressions;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Utilities;
 

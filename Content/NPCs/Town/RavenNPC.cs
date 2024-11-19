@@ -88,6 +88,12 @@ public sealed class RavenNPC : ModNPC
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.GemDiamond, newColor: Color.Black);
 		}
 
+		NPC.velocity.X *= 1.05f;
+		NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -7, 7);
+
+		float lerpVal = Collision.SolidCollision(NPC.position, NPC.width, NPC.height) ? -12 : NPC.velocity.Y;
+		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, lerpVal, 0.2f);
+
 		return true;
 	}
 

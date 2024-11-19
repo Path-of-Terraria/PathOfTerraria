@@ -3,7 +3,6 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
-using ItemRarity = Terraria.GameContent.UI.ItemRarity;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 

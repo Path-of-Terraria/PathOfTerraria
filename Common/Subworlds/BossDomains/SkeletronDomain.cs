@@ -5,7 +5,6 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.DataStructures;
 using Terraria.Localization;
 using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;

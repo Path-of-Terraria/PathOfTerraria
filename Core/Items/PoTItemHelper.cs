@@ -117,6 +117,19 @@ public static class PoTItemHelper
 			data.Affixes.AddRange(uniqueItemAffixes);
 		}
 	}
+	
+	/// <summary>
+	/// Re-rolls the values of all affixes on an item. Keeping the tiers and affixes the same.
+	/// </summary>
+	/// <param name="item"></param>
+	public static void RerollAffixValues(Item item)
+	{
+	    PoTInstanceItemData data = item.GetInstanceData();
+	    foreach (ItemAffix affix in data.Affixes)
+	    {
+	        affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+	    }
+	}
 
 	///  <summary>
 	/// 		Adds a new random affix to an item. This is used for things like the ascendant shard.
@@ -204,6 +217,14 @@ public static class PoTItemHelper
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
 		return data.Affixes.Count >= GetMaxAffixCounts(data.Rarity);
+	}
+
+	public static void SetMouseItemToHeldItem(Player player)
+	{
+		if (player.selectedItem == 58)
+		{
+			Main.mouseItem = player.HeldItem;
+		}
 	}
 
 	#endregion

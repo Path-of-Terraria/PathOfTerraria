@@ -1,9 +1,12 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -35,8 +38,10 @@ internal class RavencrestSubworld : MappingWorld
 	public override void CopyMainWorldData()
 	{
 		SubworldSystem.CopyWorldData("smashedOrb", WorldGen.shadowOrbSmashed); // Copies this bool over since TownScoutNPC needs this
+		SubworldSystem.CopyWorldData("orbsSmashed", (short)DisableEvilOrbBossSpawning.ActualOrbsSmashed); // Copies this bool over since Morven/Whispers of the Deep quest needs this
 		SubworldSystem.CopyWorldData("time", Main.time); // Keeps time consistent
 		SubworldSystem.CopyWorldData("dayTime", Main.dayTime); // Keeps time consistent
+		SubworldSystem.CopyWorldData("overworldNPCs", ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.ToArray());
 	}
 
 	public override void ReadCopiedMainWorldData()
@@ -44,6 +49,15 @@ internal class RavencrestSubworld : MappingWorld
 		WorldGen.shadowOrbSmashed = SubworldSystem.ReadCopiedWorldData<bool>("smashedOrb");
 		Main.time = SubworldSystem.ReadCopiedWorldData<double>("time");
 		Main.dayTime = SubworldSystem.ReadCopiedWorldData<bool>("dayTime");
+		DisableEvilOrbBossSpawning.ActualOrbsSmashed = SubworldSystem.ReadCopiedWorldData<short>("orbsSmashed");
+
+		ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Clear();
+		string[] set = SubworldSystem.ReadCopiedWorldData<string[]>("overworldNPCs");
+
+		foreach (string name in set)
+		{
+			ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Add(name);
+		}
 	}
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)

@@ -270,7 +270,8 @@ public class EaterDomain : BossDomainSubworld
 				}
 				else if (WorldGen.genRand.NextBool(3))
 				{
-					WorldGen.PlaceUncheckedStalactite(position.X, position.Y - 1, WorldGen.genRand.NextBool(4), WorldGen.genRand.Next(15, 19), false);
+					GenPlacement.PlaceStalagmite(position.X, position.Y - 1, Main.rand.NextBool(4), 5, null);
+					//WorldGen.PlaceUncheckedStalactite(position.X, position.Y - 1, WorldGen.genRand.NextBool(4), WorldGen.genRand.Next(15, 19), false);
 				}
 			}
 		}
@@ -281,7 +282,7 @@ public class EaterDomain : BossDomainSubworld
 			{
 				if (WorldGen.genRand.NextBool(3))
 				{
-					WorldGen.PlaceUncheckedStalactite(position.X, position.Y + 1, WorldGen.genRand.NextBool(4), WorldGen.genRand.Next(15, 19), false);
+					GenPlacement.PlaceStalactite(position.X, position.Y, WorldGen.genRand.NextBool(4), 5);
 				}
 			}
 		}
@@ -365,23 +366,23 @@ public class EaterDomain : BossDomainSubworld
 
 		// Chasm one
 		List<Vector2> breakthroughs = [];
-		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, baseY, 400, baseY + 200), 26, 6), null);
+		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, baseY, 400, baseY + 220), 26, 6), null);
 
 		// Tunnel one
 		progress.Value = 0.2f;
-		Vector2[] horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(100, baseY + 200, 700, baseY + 200), 20, 10, 0.3f);
-		DigChasm(noise, horizontalPoints, (120, 680, 20), 2.4f, true);
+		Vector2[] horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(60, baseY + 200, 740, baseY + 200), 20, 6, 0.3f);
+		DigChasm(noise, horizontalPoints, (100, 700, 40), 2.8f, true);
 		GetRandomPoint(breakthroughs, horizontalPoints);
 
 		// Chasm two
 		progress.Value = 0.4f;
-		Vector2[] chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[0].X, (int)breakthroughs[0].Y - 20, 400, (int)breakthroughs[0].Y + 200), 26, 10);
+		Vector2[] chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[0].X, (int)breakthroughs[0].Y - 20, 400, (int)breakthroughs[0].Y + 200), 26, 6);
 		DigChasm(noise, chasm, null);
 
 		// Tunnel two
 		progress.Value = 0.6f;
-		horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(100, (int)breakthroughs[0].Y + 200, 700, (int)breakthroughs[0].Y + 200), 15, 10, 0.3f);
-		DigChasm(noise, horizontalPoints, (120, 680, 20), 2.4f, true);
+		horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(60, (int)breakthroughs[0].Y + 200, 740, (int)breakthroughs[0].Y + 200), 15, 6, 0.3f);
+		DigChasm(noise, horizontalPoints, (100, 700, 40), 2.4f, true);
 		breakthroughs.Add(WorldGen.genRand.Next(horizontalPoints));
 		breakthroughs[0] = chasm[chasm.Length / 5];
 
@@ -389,10 +390,10 @@ public class EaterDomain : BossDomainSubworld
 		progress.Value = 0.8f;
 		Point16 size = Point16.Zero;
 		StructureHelper.Generator.GetDimensions("Assets/Structures/EaterArena", Mod, ref size);
-		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 250, 0.2f), 12, 10);
+		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 240, 0.2f), 12, 6);
 		breakthroughs[1] = chasm[chasm.Length / 8];
-		DigChasm(noise, chasm, null, 1.6f);
-		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, Height - 260, 400, Height - 120, 0.1f), 12, 10), null, 2f);
+		DigChasm(noise, chasm, null, 2.4f);
+		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, Height - 270, 400, Height - 120, 0.1f), 12, 10), null, 2f);
 
 		progress.Value = 1f;
 		// Opening before the arena
@@ -438,17 +439,19 @@ public class EaterDomain : BossDomainSubworld
 	{
 		foreach (Vector2 item in positions)
 		{
-			float mul = MathF.Max(1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * sizeMul, 0.3f);
+			float mul = MathHelper.Max(1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * sizeMul, 0.5f);
 
 			if (smoothInOut.HasValue)
 			{
+				int fade = smoothInOut.Value.fadeAway;
+
 				if (item.X < smoothInOut.Value.baseX)
 				{
-					mul *= (20 - MathF.Min(smoothInOut.Value.baseX - item.X, 20)) / smoothInOut.Value.fadeAway;
+					mul *= (fade - MathF.Min(smoothInOut.Value.baseX - item.X, fade)) / (float)fade;
 				}
 				else if (item.X > smoothInOut.Value.endX)
 				{
-					mul *= (20 - MathF.Min(item.X - smoothInOut.Value.endX, 20)) / smoothInOut.Value.fadeAway;
+					mul *= (fade - MathF.Min(item.X - smoothInOut.Value.endX, fade)) / (float)fade;
 				}
 			}
 
@@ -517,7 +520,7 @@ public class EaterDomain : BossDomainSubworld
 		{
 			for (int i = 0; i < 20; ++i)
 			{
-				WorldGen.PlaceTile(Arena.X / 16 + i + 4, Arena.Y / 16 - 3, TileID.FleshBlock, true, true);
+				WorldGen.PlaceTile(Arena.X / 16 + i + 72, Arena.Y / 16, TileID.Ebonstone, true, true);
 			}
 
 			int headOne = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X + 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
@@ -529,7 +532,7 @@ public class EaterDomain : BossDomainSubworld
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.WorldData);
-				NetMessage.SendTileSquare(-1, Arena.X / 16 + 4, Arena.Y / 16 - 3, 20, 1);
+				NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16, 20, 1);
 			}
 
 			BossSpawned = true;

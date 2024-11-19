@@ -18,7 +18,7 @@ internal class MultipliedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.MaximumLife *= Value / 100;
+		modifier.MaximumLife *= 1 + Value / 100;
 	}
 }
 internal class FlatLifeAffix : ItemAffix
