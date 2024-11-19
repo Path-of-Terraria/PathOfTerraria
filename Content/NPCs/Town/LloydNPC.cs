@@ -167,20 +167,20 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		// This reduces pathfinding load, especially if the player becomes fully blocked off somehow.
 		if (Vector2.DistanceSquared(target, NPC.Center) > MathF.Pow(250 * 16, 2) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			//TeleportEffects();
+			TeleportEffects();
 
-			//NPC.Center = target;
-			//NPC.netUpdate = true;
-			//NPC.netOffset = Vector2.Zero;
-			//NPC.velocity = Vector2.Zero;
+			NPC.Center = target;
+			NPC.netUpdate = true;
+			NPC.netOffset = Vector2.Zero;
+			NPC.velocity = Vector2.Zero;
 
-			//TeleportEffects();
+			TeleportEffects();
 
-			//if (Main.netMode != NetmodeID.Server)
-			//{
-			//	string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
-			//	((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
-			//}
+			if (Main.netMode != NetmodeID.Server)
+			{
+				string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
+				((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+			}
 
 			return;
 		}
@@ -439,10 +439,10 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 
-		//if (ModContent.GetInstance<BoCQuest>().Completed)
-		//{
-		//	return; // No additional button once quest is done
-		//}
+		if (ModContent.GetInstance<BoCQuest>().Completed)
+		{
+			return; // No additional button once quest is done
+		}
 
 		button2 = ModContent.GetInstance<BoCQuest>().Active ? Language.GetTextValue($"Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.{(doPathing ? "Stay" : "Follow")}Button") 
 			: Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
