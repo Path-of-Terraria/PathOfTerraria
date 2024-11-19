@@ -690,3 +690,12 @@ RadiantShard: {
 		'It's hard to look at'
 		'''
 }
+
+DeerclopsMap: {
+	DisplayName: Deerclops Map
+	Tooltip: 
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of cold and fear'
+		'''
+}
