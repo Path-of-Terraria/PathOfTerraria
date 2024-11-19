@@ -76,4 +76,12 @@ Quest: {
 		SmashOrbs: Smash 3 Shadow Orbs
 		KillEoW: Defeat the Eater of Worlds
 	}
+
+	BoCQuest: {
+		Name: A Heart Still Beating
+		Description: ""
+		SmashOrb: Smash a Crimson Heart
+		EnterDomain: Enter the Brain of Cthulhu domain
+		KillBrain: Kill the Brain of Cthulhu
+	}
 }

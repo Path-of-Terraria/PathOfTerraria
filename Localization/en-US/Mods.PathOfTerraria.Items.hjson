@@ -690,3 +690,12 @@ RadiantShard: {
 		'It's hard to look at'
 		'''
 }
+
+BoCMap: {
+	DisplayName: Brain of Cthulhu Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of flesh and bile'
+		'''
+}

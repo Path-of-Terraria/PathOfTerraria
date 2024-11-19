@@ -67,7 +67,7 @@ internal static class Networking
 		/// Syncs a given Morven NPC to follow the given player. Signature: <br/>
 		/// <c>byte player, byte whoAmI</c>
 		/// </summary>
-		MorvenFollow,
+		PathfindChangeState,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -164,10 +164,10 @@ internal static class Networking
 
 				break;
 
-			case Message.MorvenFollow:
+			case Message.PathfindChangeState:
 				if (Main.netMode == NetmodeID.Server)
 				{
-					MorvenFollowHandler.ServerRecieve(reader);
+					PathfindStateChangeHandler.ServerRecieve(reader);
 				}
 
 				break;

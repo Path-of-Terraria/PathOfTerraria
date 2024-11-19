@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
@@ -27,7 +28,7 @@ public class RavencrestSystem : ModSystem
 
 	public bool SpawnedScout = false;
 	public Point16 EntrancePosition;
-	public bool ReplacedBuildings = false;
+	public bool OneTimeCheckDone = false;
 	public Point16? SpawnedMorvenPos = null;
 
 	public override void Load()
@@ -50,7 +51,7 @@ public class RavencrestSystem : ModSystem
 			Position = new Point(673, 182)
 		});
     
-    structures.Add("Observatory", new ImprovableStructure(2)
+		structures.Add("Observatory", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
 			Position = new Point(107, 161)
@@ -91,7 +92,7 @@ public class RavencrestSystem : ModSystem
 			DisableOrbBreaking.CanBreakOrb = true;
 		}
 
-		if (Main.netMode != NetmodeID.MultiplayerClient && !ReplacedBuildings && Main.CurrentFrameFlags.ActivePlayersCount > 0)
+		if (Main.netMode != NetmodeID.MultiplayerClient && !OneTimeCheckDone && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
 			if (SubworldSystem.Current is RavencrestSubworld)
 			{
@@ -102,13 +103,15 @@ public class RavencrestSystem : ModSystem
 				OverworldOneTimeChecks();
 			}
 
-			ReplacedBuildings = true;
+			ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
+
+			OneTimeCheckDone = true;
 		}
 	}
 
 	private void OverworldOneTimeChecks()
 	{
-		if (NPC.downedBoss1 && SpawnedMorvenPos is null)
+		if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson)
 		{
 			while (true)
 			{
@@ -244,7 +247,7 @@ public class RavencrestSystem : ModSystem
 	{
 		HasOverworldNPC.Clear();
 		structures.Clear();
-		ReplacedBuildings = false;
+		OneTimeCheckDone = false;
 		SpawnedMorvenPos = null;
 	}
 

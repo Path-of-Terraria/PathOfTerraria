@@ -228,13 +228,13 @@ internal class MobAprgSystem : GlobalNPC
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
+		Rarity = (ItemRarity)binaryReader.ReadByte();
+
 		// TODO: Find cause of read overflow/underflow in subworlds
 		if (npc.life <= 0 && SubworldSystem.Current is not null)
 		{
 			return;
 		}
-
-		Rarity = (ItemRarity)binaryReader.ReadByte();
 
 		// Only apply rarity the first time the rarity is sent. 
 		// This may need to be changed if we want variable rarity for some reason.
