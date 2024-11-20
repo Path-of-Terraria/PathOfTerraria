@@ -148,7 +148,7 @@ internal class RavenPass : AutoGenStep
 
 	public override int GenIndex(List<GenPass> tasks)
 	{
-		return tasks.Count - 1;
+		return tasks.FindIndex(x => x.Name == "Smooth World");
 	}
 }
 

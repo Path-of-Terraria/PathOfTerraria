@@ -13,6 +13,8 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.GameContent.Bestiary;
+using NPCUtils;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -70,7 +72,12 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			}
 		);
 	}
-	
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "Surface");
+	}
+
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");

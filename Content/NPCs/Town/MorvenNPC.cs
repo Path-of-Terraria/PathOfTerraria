@@ -20,6 +20,8 @@ using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
 using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
+using Terraria.GameContent.Bestiary;
+using NPCUtils;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -89,6 +91,11 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 				c.AddDust(new(DustID.Blood, 20));
 			}
 		);
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
 	public override bool PreAI()

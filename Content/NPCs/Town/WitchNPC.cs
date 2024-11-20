@@ -1,3 +1,4 @@
+using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
@@ -8,6 +9,7 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -65,6 +67,11 @@ public class WitchNPC : ModNPC
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
 			}
 		);
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
 	public override void SetChatButtons(ref string button, ref string button2)

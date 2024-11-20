@@ -76,4 +76,10 @@ Quest: {
 		SmashOrbs: Smash 3 Shadow Orbs
 		KillEoW: Defeat the Eater of Worlds
 	}
+
+	DeerclopsQuest: {
+		Name: Frigid Beast
+		Description: ""
+		KillDeerclops: Kill Deerclops
+	}
 }

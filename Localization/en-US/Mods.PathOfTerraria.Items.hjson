@@ -693,9 +693,24 @@ RadiantShard: {
 
 DeerclopsMap: {
 	DisplayName: Deerclops Map
-	Tooltip: 
+	Tooltip:
 		'''
 		{$MapCommon.BossBase}
 		'The map smells of cold and fear'
 		'''
+}
+
+SimpleCompass: {
+	DisplayName: Simple Compass
+	Tooltip: ""
+}
+
+AncientLeadBrickItem: {
+	DisplayName: Ancient Lead Brick Item
+	Tooltip: ""
+}
+
+Antlers: {
+	DisplayName: Strange Antlers
+	Tooltip: Unpleasantly cold to the touch
 }

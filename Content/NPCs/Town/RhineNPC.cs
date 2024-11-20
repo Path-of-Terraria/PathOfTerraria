@@ -1,13 +1,14 @@
 using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
-using PathOfTerraria.Common.Systems.Questing;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.NPCs;
+using Terraria.DataStructures;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
@@ -15,11 +16,10 @@ using NPCUtils;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
+public class RhineNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new(255, 165);
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
-
-	private float animCounter;
 
 	public override void SetStaticDefaults()
 	{
@@ -51,11 +51,21 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_0", 1));
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_1", 2));
-				c.AddGore(new($"{PoTMod.ModName}/{Name}_2", 2));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 2, NPCHitEffects.OnDeath));
 				
-				c.AddDust(new(DustID.Blood, 20));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Blood, 20));
+			}
+		);
+		
+		NPC.TryEnableComponent<NPCTownDialogue>(
+			c =>
+			{
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common0"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common1"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common2"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
 			}
 		);
 	}
@@ -63,19 +73,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
 		bestiaryEntry.AddInfo(this, "Surface");
-	}
-
-	public override string GetChat()
-	{
-		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue." + Main.rand.Next(4));
-	}
-
-	public override void AddShops()
-	{
-		if (!ShopUtils.TryCloneNpcShop("Terraria/DD2Bartender/Shop", Type))
-		{
-			Mod.Logger.Error($"Failed to clone shop 'Terraria/DD2Bartender/Shop' to NPC '{Name}'!");
-		}
 	}
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
@@ -109,25 +106,24 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !ModContent.GetInstance<KingSlimeQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		//button = Language.GetTextValue("LegacyInterface.28");
+		button2 = !ModContent.GetInstance<DeerclopsQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{
 		if (firstButton)
 		{
-			shopName = "Shop";
+			//shopName = "Shop";
 		}
 		else
 		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(KingSlimeQuest)}");
-			
-			// Add map in the future
-			// Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), );
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(DeerclopsQuest)}");
 		}
 	}
+
+	private float animCounter;
 
 	public override void FindFrame(int frameHeight)
 	{
@@ -153,7 +149,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = ModContent.GetInstance<KingSlimeQuest>();
+		quest = ModContent.GetInstance<DeerclopsQuest>();
 		return !quest.Completed;
 	}
 }
