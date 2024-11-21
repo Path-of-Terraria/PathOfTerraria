@@ -13,6 +13,7 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Quest;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -107,7 +108,7 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhea
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		//button = Language.GetTextValue("LegacyInterface.28");
+		button = Main.LocalPlayer.HasItem(ModContent.ItemType<SimpleCompass>()) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.Button");
 		button2 = !ModContent.GetInstance<DeerclopsQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
@@ -115,7 +116,23 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhea
 	{
 		if (firstButton)
 		{
-			//shopName = "Shop";
+			if (ModContent.GetInstance<DeerclopsQuest>().Active)
+			{
+				if (Main.LocalPlayer.CountItem(ItemID.Wood, 16) >= 15)
+				{
+					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.OnCraft");
+					Item.NewItem(new EntitySource_Gift(NPC), NPC.Bottom, ModContent.ItemType<SimpleCompass>());
+
+					for (int i = 0; i < 15; ++i)
+					{
+						Main.LocalPlayer.ConsumeItem(ItemID.Wood);
+					}
+				}
+				else
+				{
+					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.CantCraft");
+				}
+			}
 		}
 		else
 		{

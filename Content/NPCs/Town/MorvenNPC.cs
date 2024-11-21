@@ -22,6 +22,7 @@ using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
+using Terraria.Chat;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

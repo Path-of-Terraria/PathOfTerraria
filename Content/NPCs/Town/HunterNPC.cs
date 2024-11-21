@@ -15,6 +15,8 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
+using Terraria;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -81,7 +83,16 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !ModContent.GetInstance<HunterStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+
+		if (ModContent.GetInstance<DeerclopsQuest>().Active)
+		{
+			button2 = this.GetLocalizedValue("MapButton");
+			Main.npcChatCornerItem = ModContent.ItemType<DeerclopsMap>();
+		}
+		else
+		{
+			button2 = !ModContent.GetInstance<HunterStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -92,8 +103,23 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			return;
 		}
 
-		Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest");
-		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(HunterStartQuest)}");
+		if (ModContent.GetInstance<DeerclopsQuest>().Active)
+		{
+			if (Main.LocalPlayer.BuyItem(Item.buyPrice(0, 20, 0, 0)))
+			{
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.BuyMap");
+				Item.NewItem(new EntitySource_Gift(NPC), NPC.Bottom, ModContent.ItemType<DeerclopsMap>());
+			}
+			else
+			{
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.BuyMapFail");
+			}
+		}
+		else
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(HunterStartQuest)}");
+		}
 	}
 	
 	public override void AddShops()
