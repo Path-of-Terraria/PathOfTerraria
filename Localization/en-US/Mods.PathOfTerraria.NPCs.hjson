@@ -357,6 +357,97 @@ MorvenNPC: {
 	Entry: Once stuck in the underground Corruption, this mad scientist gained a little more mad than most. He looks down upon you, but will use you at a moment's notice to "make science".
 }
 
+LloydNPC: {
+	DisplayName: Lloyd
+
+	Dialogue: {
+		Common0: I've little to say.
+		Common1: Keep the world safe.
+		Common2: Hm?
+		Common3: Hello, fellow adventurer.
+		Follow0: Best we keep moving.
+		Follow1: I've but one goal for the moment.
+		Follow2: Keep a keen eye.
+		Follow3: Hmph.
+		Domain0: This land shakes any man.
+		Domain1: Please, for me, defeat the Brain. I cannot stand to be here any longer.
+		Domain2: May my boon help you greatly. I wish I could do more, but the pillars tower over my strength.
+		Domain3: Cut through the obstacles here. They were never truly living.
+		Help: Hm. Fellow aide. You seem to know the lay of the land. I'm here looking for the heart that yet beats. Would you be so kind as to guide me to it? I've matters to contend with. I'll fend monsters, you guide.
+		InDomain: Alas, I'm here once more. I know my strength can't overpower the Brain. I am using what I have to allow you three additional jumps. The pillars of the land tower above, and may be much too difficult to scale otherwise. Be well, and be swift. I will be ruminating.
+		NeedsReturn: You were felled too? Alas. A mighty beast, but not one without flaw. Guide me to another still-beating heart, and we return. Take caution.
+		Complete: What a great joy. I owe you everything I have, which is not much. Take this. I shall be returning to Ravencrest - I've been before, no need to take me. Be well, and be merry.
+		StayButton: Stay
+		StayDialogue: I will stay here. Do not be long.
+		FollowButton: Follow
+		FollowAgain: Lead me to crimson hearts, aide.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: ...
+			1: A moment of respite.
+			2: May all be well.
+		}
+
+		Night: {
+			0: ...how gentle.
+			1: Ah...
+			2: I remember, still.
+		}
+
+		Goblins: {
+			0: Do not make choices you'll regret.
+			1: Foolish creatures.
+			2: Hmph.
+		}
+
+		Rain: {
+			0: I hope...I hope all is well, yet.
+			1: Each one a life. Each one...
+			2: I look forward to the petrichor of the morning.
+		}
+
+		Escort: {
+			0: Grotesque.
+			1: Tarry not.
+			2: Do not let your guard down.
+			3: Be steady.
+			4: Awful creatures, this lot.
+		}
+
+		EscortAttack: {
+			0: Worry not; I've strength aplenty.
+			1: May its death be swift.
+			2: Yet another death.
+		}
+
+		Teleport: {
+			0: I appreciate the hurry, but do take care.
+			1: We'll get along nicely if you outpace me.
+			2: Not often I see someone as quick-footed as you.
+		}
+
+		BreakHeart: {
+			0: Hm. It seems we must break more. Keep going.
+			1: Now would be a good time to recoup. Return when you're prepared.
+			2: Here we go.
+		}
+
+		InDomain: {
+			0: Be well.
+			1: You cannot be too cautious.
+			2: The Brain awaits.
+		}
+
+		DomainBossDead: {
+			0: It feels lighter.
+			1: I hope I can rest now.
+			2: Thank you, all.
+		}
+	}
+}
+
 RhineNPC: {
 	DisplayName: Rhine
 

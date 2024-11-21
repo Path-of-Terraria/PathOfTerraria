@@ -26,6 +26,9 @@ public class AffixTooltip
 	public string DisplayValue => AggregateValue().ToString("#0.##");
 	public string DisplayDifference => AggregateDifference().ToString("+#0.##;-#0.##;0");
 	public string DisplaySign => AggregateValue() >= 0 ? "+" : "-";
+	public bool HasDifference => SourceItems.Count > 1 && AnyDifferenceInValues();
+
+	public readonly HashSet<Item> SourceItems = [];
 
 	public LocalizedText Text;
 	public Dictionary<AffixSource, float> ValueBySource = [];
@@ -109,7 +112,7 @@ public class AffixTooltip
 
 		if (differenceValue != realValue)
 		{
-			baseText += $" ({DisplayDifference})";
+			baseText = Text.WithFormatArgs(DisplayDifference, "").Value;
 		}
 
 		return baseText;
@@ -128,5 +131,22 @@ public class AffixTooltip
 		float originalValue = AggregateValue();
 		ValueBySource[source] = 0;
 		Color = originalValue < AggregateValue() ? Color.Green : Color.Red;
+	}
+
+	/// <summary>
+	/// Compares all values with their original values to see if there is an actual difference.
+	/// </summary>
+	/// <returns></returns>
+	private bool AnyDifferenceInValues()
+	{
+		foreach (AffixSource key in ValueBySource.Keys)
+		{
+			if (ValueBySource[key] != OriginalValueBySource[key])
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

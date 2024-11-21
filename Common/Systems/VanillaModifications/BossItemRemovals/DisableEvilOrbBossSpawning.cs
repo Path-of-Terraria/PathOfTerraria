@@ -1,6 +1,8 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Systems.RealtimeGen.Generation;
+using PathOfTerraria.Content.Projectiles.Utility;
+using Terraria;
 using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
@@ -63,22 +65,27 @@ internal class DisableEvilOrbBossSpawning : ModSystem
 	{
 		ActualOrbsSmashed++;
 
-		LocalizedText localizedText = (ActualOrbsSmashed % 3) switch
+		int checkValue = WorldGen.crimson ? Math.Min(ActualOrbsSmashed, 3) : ActualOrbsSmashed % 3;
+
+		LocalizedText localizedText = checkValue switch
 		{
 			1 => Lang.misc[10],
 			2 => Lang.misc[11],
 			_ => Language.GetText("Mods.PathOfTerraria.Misc.ChasmAppears")
 		};
 
-		Color color = ActualOrbsSmashed % 3 == 0 ? Color.Purple : new Color(50, 255, 130);
+		if (!WorldGen.crimson)
+		{
+			Color color = ActualOrbsSmashed % 3 == 0 ? Color.Purple : new Color(50, 255, 130);
 
-		if (Main.netMode == NetmodeID.SinglePlayer)
-		{
-			Main.NewText(localizedText.ToString(), color.R, color.G, color.B);
-		}
-		else if (Main.netMode == NetmodeID.Server)
-		{
-			ChatHelper.BroadcastChatMessage(NetworkText.FromKey(localizedText.Key), color);
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				Main.NewText(localizedText.ToString(), color.R, color.G, color.B);
+			}
+			else if (Main.netMode == NetmodeID.Server)
+			{
+				ChatHelper.BroadcastChatMessage(NetworkText.FromKey(localizedText.Key), color);
+			}
 		}
 
 		if (WorldGen.shadowOrbCount >= 3)
@@ -86,9 +93,29 @@ internal class DisableEvilOrbBossSpawning : ModSystem
 			WorldGen.shadowOrbCount = 0;
 		}
 
-		if (ActualOrbsSmashed % 3 == 0)
+		if (!WorldGen.crimson && checkValue == 0)
 		{
 			EoWChasmGeneration.SpawnChasm(i, j);
+		}
+		else if (WorldGen.crimson && checkValue == 3)
+		{
+			int mawType = ModContent.ProjectileType<CrimsonMaw>();
+
+			foreach (Player player in Main.ActivePlayers)
+			{
+				if (player.DistanceSQ(new Vector2(i, j) * 16) < 1200 * 1200)
+				{
+					Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center, Vector2.Zero, mawType, 0, 0, Main.myPlayer, player.whoAmI);
+				}
+			}
+
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.DistanceSQ(new Vector2(i, j) * 16) < 1200 * 1200)
+				{
+					Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), npc.Center, Vector2.Zero, mawType, 0, 0, Main.myPlayer, npc.whoAmI, 1);
+				}
+			}
 		}
 	}
 }

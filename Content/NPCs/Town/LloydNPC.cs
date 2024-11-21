@@ -11,23 +11,26 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.Pathfinding;
 using System.Linq;
 using System.Collections.Generic;
-using PathOfTerraria.Content.Tiles.Town;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.DataStructures;
 using Terraria.Audio;
-using SubworldLibrary;
-using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
 using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
+using SubworldLibrary;
+using PathOfTerraria.Common.Subworlds.BossDomains;
+using Terraria.Chat;
+using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IPathfindSyncingNPC
+public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IPathfindSyncingNPC
 {
+	const int HammerId = ItemID.PlatinumHammer;
+	const int MaxHammerTime = 25;
+
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	private readonly Pathfinder pathfinder = new(20);
@@ -37,27 +40,25 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	private float animCounter;
 	private bool doPathing = false;
 	private byte followPlayer;
-	private bool teleportingToRavencrest = false;
 	private bool abandoned = false;
 	private short syncTimer = 0;
+	private float wingTime = 0;
+	private bool brainDialogue = true;
 
 	// Sound timers
 	private int walkTime = 0;
 	private int rocketTime = 0;
-
-	// Dialogue stuff
-	private bool surfaceDialogue = true;
-	private bool postOrbPreEoWDialogue = true;
 
 	// Attack info
 	private int attackTime = 0;
 	private int attackingTime = 0;
 	private int attackDir = 0;
 	private float attackRotation = 0f;
+	private int hammerTime = 0;
 
 	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[NPC.type] = 25;
+		Main.npcFrameCount[NPC.type] = Main.npcFrameCount[NPCID.Guide];
 
 		NPCID.Sets.ExtraFramesCount[NPC.type] = 9;
 		NPCID.Sets.AttackFrameCount[NPC.type] = 4;
@@ -84,6 +85,11 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		NPC.TryEnableComponent<NPCHitEffects>(c => c.AddDust(new(DustID.Blood, 20)));
 	}
 
+	public override bool CheckActive()
+	{
+		return false;
+	}
+
 	public override bool CheckDead()
 	{
 		NPC.active = false;
@@ -100,41 +106,46 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			ChatHelper.BroadcastChatMessage(NetworkText.FromKey($"Mods.{PoTMod.ModName}.Misc.NPCLeftWithoutDying", NPC.FullName), color);
 		}
 
-		return false;
-	}
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			ModContent.GetInstance<BoCDomainSystem>().DontSpawnLloyd = false;
+		}
 
-	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-	{
-		bestiaryEntry.AddInfo(this, "Surface");
+		return false;
 	}
 
 	public override bool PreAI()
 	{
-		Tile tile = Main.tile[NPC.Center.ToTileCoordinates16()];
-
-		if (teleportingToRavencrest)
+		if (NPC.hide) // When eaten by the maw to go to the Brain of Cthulhu domain, he will be invisible - stop movement so stuff like water doesn't defy invisibility
 		{
-			NPC.Opacity -= 0.015f;
-			NPC.velocity *= 0.85f;
-
-			if (NPC.Opacity <= 0)
-			{
-				NPC.active = false;
-
-				ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Add(FullName);
-			}
-
 			return false;
 		}
-		else if (tile.HasTile && tile.TileType == ModContent.TileType<RavenStatue>())
+
+		if (NPC.downedBoss2 && Main.player[Player.FindClosest(NPC.position, NPC.width, NPC.height)].DistanceSQ(NPC.Center) > 2000 * 2000 
+			&& Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			teleportingToRavencrest = true;
+			ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Add(FullName);
+
+			NPC.active = false;
+			return false;
+		}
+
+		if (doPathing && (!FollowPlayer.active || FollowPlayer.dead))
+		{
+			doPathing = false;
 		}
 
 		if (doPathing)
 		{
+			hammerTime--;
+
 			PathedMovement();
-			CustomAttackHelper.CheckShootAttack(NPC, ref attackTime, ref attackingTime, ref attackDir, ref attackRotation);
+
+			if (hammerTime <= 0)
+			{
+				CustomAttackHelper.CheckShootAttack(NPC, ref attackTime, ref attackingTime, ref attackDir, ref attackRotation);
+			}
+
 			return false;
 		}
 
@@ -143,7 +154,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	private void PathedMovement()
 	{
-		// Once every few seconds, sync the npc - bandaid on pathfinder in mp
+		// Once every second, sync the npc - bandaid on pathfinder in mp
 		if (++syncTimer > 60)
 		{
 			NPC.netUpdate = true;
@@ -154,54 +165,77 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 		// If the player is too far away from the NPC, teleport the NPC and hurt him.
 		// This reduces pathfinding load, especially if the player becomes fully blocked off somehow.
-		if (Vector2.DistanceSquared(target, NPC.Center) > MathF.Pow(250 * 16, 2))
+		if (Vector2.DistanceSquared(target, NPC.Center) > MathF.Pow(250 * 16, 2) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			TeleportEffects();
 
 			NPC.Center = target;
-			NPC.SimpleStrikeNPC((int)(NPC.lifeMax / 3f), 0, true, noPlayerInteraction: true);
+			NPC.netUpdate = true;
+			NPC.netOffset = Vector2.Zero;
+			NPC.velocity = Vector2.Zero;
 
 			TeleportEffects();
 
-			string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
-			((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+			if (Main.netMode != NetmodeID.Server)
+			{
+				string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
+				((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+			}
+
 			return;
 		}
 
+		ScanForHearts(ref target, out bool hasOrb);
+
 		// Determines path using a slightly adjusted position and hitbox size.
-		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
+		Point16 pathStart = NPC.Top.ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
-		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
+		
+		Vector2 pathSize = new(NPC.width / 16f * 0.8f, NPC.height / 16f * 0.8f);
+		Vector2 pathOffset = new(-NPC.width / 2.5f, 0);
+
+		pathfinder.CheckDrawPath(pathStart, pathEnd, pathSize, null, pathOffset);
 
 		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+		bool goDown = false;
 
-		if (!canPath) // Retry pathing but slightly offset
+		if (!canPath) // Retry pathing, not to the nearest orb
 		{
-			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
+			target = FollowPlayer.position;
 			pathEnd = target.ToTileCoordinates16();
 
-			// Set RefreshTimer to 1 so it's 0 by the time it's checked & skips caching
+			// Resetting timer allows us to re-run pathfinding immediately.
 			pathfinder.RefreshTimer = 1;
-			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
+			pathfinder.CheckDrawPath(pathStart, pathEnd, pathSize, null, pathOffset);
 
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+			hasOrb = false;
 		}
 
-		if (canPath && NPC.DistanceSQ(target) > 160 * 160)
+		float checkDist = hasOrb ? 40 * 40 : 160 * 160;
+
+		if (canPath && NPC.DistanceSQ(target) > checkDist)
 		{
 			int index = pathfinder.Path.IndexOf(pathfinder.Path.MinBy(x => x.Position.ToVector2().DistanceSQ(NPC.position / 16f)));
 			List<Pathfinder.FoundPoint> checkPoints = pathfinder.Path[^(Math.Min(pathfinder.Path.Count, 6))..];
 			Vector2 direction = -AveragePathDirection(checkPoints) * 2;
+
+			if (direction.Y > 0.5f)
+			{
+				direction.Y = 0.5f;
+			}
 
 			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, direction.X, 0.08f);
 			NPC.velocity.Y += 0.1f;
 
 			if (direction.Y < 0)
 			{
-				NPC.velocity.Y -= 0.6f;
-				NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -5, 20);
-
-				RocketBootDust();
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, direction.Y * 4, 0.3f);
+				NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -14, 7);
+			}
+			else
+			{
+				goDown = true;
 			}
 
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
@@ -226,10 +260,9 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			NPC.velocity *= 0.9f;
 		}
 
-		if (NPC.velocity.Y > 0 && !Collision.SolidCollision(NPC.BottomLeft, NPC.width, 60))
+		if (NPC.velocity.Y > 0 && !goDown)
 		{
-			NPC.velocity.Y -= canPath ? 0.3f : 0.2f;
-			RocketBootDust();
+			NPC.velocity.Y -= 0.2f * (NPC.wet ? 0.5f : 1);
 		}
 
 		RunDustEffects();
@@ -240,14 +273,68 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 	}
 
+	private void ScanForHearts(ref Vector2 target, out bool hasOrb)
+	{
+		const int Distance = 35;
+
+		Point16 pos = NPC.Center.ToTileCoordinates16();
+		var orbPosition = new Point16(-1, -1);
+		hasOrb = false;
+
+		for (int i = pos.X - Distance; i < pos.X + Distance; i++) 
+		{ 
+			for (int j = pos.Y - Distance; j < pos.Y + Distance; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType == TileID.ShadowOrbs && (orbPosition.X == -1 || 
+					orbPosition.ToWorldCoordinates().DistanceSQ(NPC.Center) > new Vector2(i, j).ToWorldCoordinates().DistanceSQ(NPC.Center)))
+				{
+					orbPosition = new Point16(i, j);
+				}
+			}
+		}
+
+		if (orbPosition.X != -1)
+		{
+			target = new Vector2(orbPosition.X, orbPosition.Y).ToWorldCoordinates();
+			hasOrb = true;
+
+			if (hammerTime <= 0 && target.DistanceSQ(NPC.Center) < MathF.Pow(16 * 4, 2))
+			{
+				hammerTime = MaxHammerTime;
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					WorldGen.KillTile(orbPosition.X, orbPosition.Y);
+
+					if (Main.netMode == NetmodeID.Server)
+					{
+						NetMessage.SendTileSquare(-1, orbPosition.X, orbPosition.Y, 2, 2);
+					}
+				}
+
+				int id = Math.Min(DisableEvilOrbBossSpawning.ActualOrbsSmashed, 3) - 1;
+				string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.BreakHeart." + id);
+				((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+				return;
+			}
+		}
+	}
+
 	private void TeleportEffects()
 	{
-		SoundEngine.PlaySound(SoundID.Item6, NPC.Center);
+		// I don't really know what netOffset is but vanilla does this for Tim's teleport so
+		NPC.position += NPC.netOffset;
+		
+		SoundEngine.PlaySound(SoundID.Item8, NPC.Center);
 
 		for (int i = 0; i < 20; ++i)
 		{
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Teleporter);
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Firework_Red, Main.rand.NextFloat(-3, 3), Main.rand.NextFloat(-3, 3));
 		}
+
+		NPC.position -= NPC.netOffset;
 	}
 
 	private void RunDustEffects()
@@ -266,7 +353,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 			Vector2 dustPos = floorPos.ToWorldCoordinates() + new Vector2(Main.rand.NextFloat(NPC.width), NPC.gfxOffY - 8);
 			Vector2 vel = new Vector2(-NPC.velocity.X * 0.1f, Main.rand.NextFloat(-0.5f, 0.5f)).RotatedByRandom(0.2f);
-			Dust.NewDustPerfect(dustPos, DustID.Cloud, vel, Scale: Main.rand.NextFloat(1.2f, 1.8f));
+			Dust.NewDustPerfect(dustPos, DustID.Crimson, vel, Scale: Main.rand.NextFloat(1.2f, 1.8f));
 
 			walkTime += (int)Math.Abs(NPC.velocity.X);
 
@@ -324,21 +411,21 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
 	{
-		projType = ProjectileID.Bullet;
+		projType = ProjectileID.BloodShot;
 		attackDelay = 1;
 	}
 
 	public override void TownNPCAttackProjSpeed(ref float multiplier, ref float gravityCorrection, ref float randomOffset)
 	{
-		multiplier = 11f;
+		multiplier = 14f;
 		randomOffset = 0.1f;
 	}
 
 	public override void DrawTownAttackGun(ref Texture2D item, ref Rectangle itemFrame, ref float scale, ref int horizontalHoldoutOffset)
 	{
-		Main.instance.LoadItem(ItemID.Handgun);
+		Main.instance.LoadItem(ItemID.BloodRainBow);
 
-		item = TextureAssets.Item[ItemID.Handgun].Value;
+		item = TextureAssets.Item[ItemID.BloodRainBow].Value;
 		itemFrame = item.Frame(1, 1, 0, 0);
 		horizontalHoldoutOffset = -8;
 	}
@@ -351,7 +438,14 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !ModContent.GetInstance<EoWQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+
+		if (ModContent.GetInstance<BoCQuest>().Completed)
+		{
+			return; // No additional button once quest is done
+		}
+
+		button2 = ModContent.GetInstance<BoCQuest>().Active ? Language.GetTextValue($"Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.{(doPathing ? "Stay" : "Follow")}Button") 
+			: Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -362,96 +456,88 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 		else
 		{
-			if (Main.netMode == NetmodeID.SinglePlayer)
+			if (ModContent.GetInstance<BoCQuest>().Active)
 			{
-				followPlayer = 0;
-				doPathing = true;
+				if (doPathing)
+				{
+					if (Main.netMode == NetmodeID.SinglePlayer)
+					{
+						doPathing = false;
+					}
+					else
+					{
+						PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, false);
+					}
+
+					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.StayDialogue");
+				}
+				else
+				{
+					if (Main.netMode == NetmodeID.SinglePlayer)
+					{
+						followPlayer = 0;
+						doPathing = true;
+					}
+					else
+					{
+						PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+					}
+
+					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.FollowAgain");
+				}
 			}
 			else
 			{
-				PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
-			}
+				if (Main.netMode == NetmodeID.SinglePlayer)
+				{
+					followPlayer = 0;
+					doPathing = true;
+				}
+				else
+				{
+					PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+				}
 
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(EoWQuest)}");
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Help");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(BoCQuest)}");
+			}
 		}
 	}
 
 	public override string GetChat()
 	{
-		if (abandoned)
+		if (SubworldSystem.Current is BrainDomain && brainDialogue)
 		{
-			abandoned = false;
-			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Abandoned");
+			brainDialogue = false;
+			return Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.InDomain");
 		}
 
-		if (NPC.Center.Y / 16 < Main.worldSurface && surfaceDialogue && SubworldSystem.Current is null)
-		{
-			surfaceDialogue = false;
-			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Aboveground");
-		}
-
-		if (ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Contains(FullName) && postOrbPreEoWDialogue && DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2)
-		{
-			postOrbPreEoWDialogue = false;
-			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.BeforeBeatingEoW");
-		}
-
-		string isFollow = doPathing ? "Follow" : "Common";
+		string isFollow = SubworldSystem.Current is BrainDomain ? "Domain" : doPathing ? "Follow" : "Common";
 		return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue." + isFollow + Main.rand.Next(4));
 	}
 
 	public override void SaveData(TagCompound tag)
 	{
 		tag.Add("pathing", doPathing);
-		tag.Add("surfaceDialogue", surfaceDialogue);
-		tag.Add("postOrbPreEoWDialogue", postOrbPreEoWDialogue);
-		tag.Add("teleportingToRavencrest", teleportingToRavencrest);
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
 		abandoned = tag.GetBool("pathing"); // If left while pathing, activate "abandoned" dialogue
-		surfaceDialogue = tag.GetBool("surfaceDialogue");
-		postOrbPreEoWDialogue = tag.GetBool("postOrbPreEowDialogue");
-		teleportingToRavencrest = tag.GetBool("teleportingToRavencrest");
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
 	{
-		byte packed = 0;
-
-		if (doPathing)
-		{
-			packed |= 0b_1;
-		}
-
-		if (surfaceDialogue)
-		{
-			packed |= 0b_10;
-		}
-
-		if (postOrbPreEoWDialogue)
-		{
-			packed |= 0b_100;
-		}
-
-		if (teleportingToRavencrest)
-		{
-			packed |= 0b_1000;
-		}
-
-		writer.Write(packed);
+		writer.Write(doPathing);
+		writer.Write(followPlayer);
+		//pathfinder.SendPath(writer);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
 	{
-		byte packed = reader.ReadByte();
-
-		doPathing = (packed & 0b_1) == 0b_1;
-		surfaceDialogue = (packed & 0b_10) == 0b_10;
-		postOrbPreEoWDialogue = (packed & 0b_100) == 0b_100;
-		teleportingToRavencrest = (packed & 0b_1000) == 0b_1000;
+		doPathing = reader.ReadBoolean();
+		followPlayer = reader.ReadByte();
+		//pathfinder.ReadPath(reader);
 	}
 
 	public override void FindFrame(int frameHeight)
@@ -476,11 +562,51 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		NPC.frame.Y = frame * frameHeight;
 	}
 
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		if (!NPC.IsABestiaryIconDummy && !Collision.SolidCollision(NPC.BottomLeft, NPC.width, 6))
+		{
+			Main.instance.LoadWings(2);
+
+			Texture2D wings = TextureAssets.Wings[2].Value;
+			wingTime += Math.Abs(NPC.velocity.Y) / 10f;
+
+			int frameHeight = wings.Height / 4;
+			int frameNum = NPC.velocity.Y > -0.5f ? 2 : (int)(wingTime % 16f / 4f);
+			var frame = new Rectangle(0, frameHeight * frameNum, wings.Width, frameHeight);
+			SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			Vector2 wingPos = NPC.Center - screenPos - new Vector2(NPC.spriteDirection * 4, NPC.gfxOffY - 2);
+			
+			Main.EntitySpriteDraw(wings, wingPos, frame, drawColor, NPC.rotation, frame.Size() / 2f, 1f, effects);
+		}
+
+		return true;
+	}
+
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		if (attackingTime > 0)
+		if (attackingTime > 0 && hammerTime <= 0)
 		{
 			CustomAttackHelper.DrawShootAttack(NPC, screenPos, drawColor, attackRotation, ItemID.Handgun);
+		}
+		else if (hammerTime > 0)
+		{
+			float scale = 1f;
+			int horizontalOff = 0;
+
+			Main.GetItemDrawFrame(HammerId, out Texture2D tex, out Rectangle value2);
+
+			SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			float rot = hammerTime / (float)MaxHammerTime * (MathHelper.PiOver4 * 3) * -NPC.spriteDirection + MathHelper.PiOver4 * 1.5f;
+			var origin = new Vector2(0, tex.Height);
+
+			if (NPC.spriteDirection == -1)
+			{
+				rot -= MathHelper.Pi * 0.75f;
+				origin = new Vector2(tex.Width, tex.Height);
+			}
+
+			Main.EntitySpriteDraw(tex, NPC.Center - screenPos - new Vector2(horizontalOff, NPC.gfxOffY), null, drawColor, rot, origin, scale, effects);
 		}
 	}
 
@@ -498,6 +624,11 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	string IOverheadDialogueNPC.GetDialogue()
 	{
 		string baseNPC = $"Mods.PathOfTerraria.NPCs.{Name}.BubbleDialogue.";
+
+		if (SubworldSystem.Current is BrainDomain domain)
+		{
+			return Language.GetTextValue(baseNPC + (domain.BossSpawned && !NPC.AnyNPCs(NPCID.BrainofCthulhu) ? "DomainBossDead." : "InDomain.") + Main.rand.Next(3));
+		}
 
 		if (doPathing)
 		{
@@ -524,8 +655,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public void EnablePathfinding(byte player)
 	{
-		followPlayer = player;
 		doPathing = true;
+		followPlayer = player;
 	}
 
 	public void DisablePathfinding()
