@@ -10,5 +10,6 @@ public sealed class UIGearInventoryManager : ModSystem
 	public override void OnWorldLoad()
 	{
 		UIManager.TryEnableOrRegister(Identifier, "Vanilla: Inventory", new UIGearInventory(), 1);
+		UIManager.TryRefresh(Identifier); // Re-initialize the state - redundant on first load, may want to change in the future
 	}
 }
