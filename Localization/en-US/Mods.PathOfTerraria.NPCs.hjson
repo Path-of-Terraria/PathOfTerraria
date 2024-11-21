@@ -49,6 +49,7 @@ BarkeepNPC: {
 		Common1: "'Tavernkeep'? Sure do! Whatcha lookin' for?"
 		Common2: Between you and I - I'm rather lightweight on drinks. Battle? Heh...yeah, way lightweight in that too, why d'you think I barkeep?
 		Common3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
+		Quest: Oh, hi there! Got a question for you. I'm behind the bar all day, and it looks like we're low on sweetener. I had an old cache of honey from a friend a few hundred miles away, most delicious stuff I have. But, alas, twas not infinte. Do you know of honey I could snag? Or, even better, that you could get me? I'll pay you kindly. Here, take these bottles and fill 'em up. Fingers crossed!
 	}
 
 	BubbleDialogue: {

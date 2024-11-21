@@ -699,3 +699,12 @@ BoCMap: {
 		'The map smells of flesh and bile'
 		'''
 }
+
+BeeMap: {
+	DisplayName: Bee Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of sweetness and poison'
+		'''
+}
