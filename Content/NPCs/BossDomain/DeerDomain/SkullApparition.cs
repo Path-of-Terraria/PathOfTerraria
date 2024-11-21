@@ -34,6 +34,11 @@ public sealed class SkullApparition : ModNPC
 		Music = MusicID.Eerie;
 	}
 
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+	{
+		return Timer > 240;
+	}
+
 	public override void AI()
 	{
 		Timer++;

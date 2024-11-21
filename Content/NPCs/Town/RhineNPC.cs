@@ -12,6 +12,7 @@ using Terraria.DataStructures;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
+using PathOfTerraria.Content.Items.Quest;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -120,6 +121,8 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhea
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(DeerclopsQuest)}");
+
+			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<SimpleCompass>());
 		}
 	}
 
