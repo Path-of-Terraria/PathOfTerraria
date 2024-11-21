@@ -702,11 +702,16 @@ DeerclopsMap: {
 
 SimpleCompass: {
 	DisplayName: Simple Compass
-	Tooltip: ""
+	Tooltip:
+		'''
+		Hold to see the path to an ancient ruin in the snow biome
+		When close, breaks open the ruin
+		'Simple but effective'
+		'''
 }
 
 AncientLeadBrickItem: {
-	DisplayName: Ancient Lead Brick Item
+	DisplayName: Ancient Lead Brick
 	Tooltip: ""
 }
 

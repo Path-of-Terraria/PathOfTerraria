@@ -20,15 +20,18 @@ public sealed class SkullApparition : ModNPC
 		NPC.aiStyle = -1;
 		NPC.dontTakeDamage = true;
 		NPC.Size = new Vector2(168, 172);
-		NPC.damage = 0;
+		NPC.damage = 60;
 		NPC.Opacity = 0;
 		NPC.noTileCollide = true;
+		NPC.boss = true;
 
 		NPC.TryEnableComponent<NPCHitEffects>(c => 
 		{
 			c.AddDust(new(DustID.Blood, 4));
 			c.AddDust(new(DustID.Blood, 15, NPCHitEffects.OnDeath));
 		});
+
+		Music = MusicID.Eerie;
 	}
 
 	public override void AI()

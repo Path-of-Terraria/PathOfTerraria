@@ -19,7 +19,7 @@ internal class FrozenRuinPass : AutoGenStep
 		while (true)
 		{
 			int x = WorldGen.genRand.Next(Main.maxTilesX / 6, Main.maxTilesX / 6 * 5);
-			int y = WorldGen.genRand.Next((int)Main.worldSurface, Main.maxTilesY / 5 * 3);
+			int y = WorldGen.genRand.Next((int)Main.worldSurface, Main.maxTilesY / 5 * 2);
 
 			Tile tile = Main.tile[x, y];
 

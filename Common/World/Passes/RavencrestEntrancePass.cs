@@ -124,8 +124,8 @@ internal class RavenPass : AutoGenStep
 {
 	public override void Generate(GenerationProgress progress, GameConfiguration config)
 	{
-		int x = Main.spawnTileX + WorldGen.genRand.Next(50, 80) * (WorldGen.genRand.NextBool() ? -1 : 1);
-		int y = Main.spawnTileY;
+		int x = Main.maxTilesX / 2 + WorldGen.genRand.Next(50, 80) * (WorldGen.genRand.NextBool() ? -1 : 1);
+		int y = (int)(Main.worldSurface * 0.35f);
 
 		// Move the NPC up if it's in tiles, and down if it's not.
 		if (Collision.SolidCollision(new Vector2(x, y) * 16, 20, 20)) 
@@ -148,7 +148,7 @@ internal class RavenPass : AutoGenStep
 
 	public override int GenIndex(List<GenPass> tasks)
 	{
-		return tasks.FindIndex(x => x.Name == "Smooth World");
+		return tasks.FindIndex(x => x.Name == "Smooth World") + 2;
 	}
 }
 
@@ -170,7 +170,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 		{
 			int x = WorldGen.genRand.Next(150, Main.maxTilesX - 150); // Anywhere in the world, but ocean
 
-			while (Math.Abs(x - Main.spawnTileX) < 225) // Place away from spawn
+			while (Math.Abs(x - Main.maxTilesX / 2) < 300) // Place away from spawn
 			{
 				x = WorldGen.genRand.Next(150, Main.maxTilesX - 150);
 			}
@@ -190,7 +190,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 			Tile tile = Main.tile[x, y];
 
-			if (tile.TileType != TileID.Grass) // Place only on grass.
+			if (tile.TileType != TileID.Dirt) // Place only on dirt.
 			{
 				continue;
 			}
@@ -315,6 +315,6 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 	public override int GenIndex(List<GenPass> tasks)
 	{
-		return tasks.FindIndex(x => x.Name == "Micro Biomes") + 1;
+		return tasks.FindIndex(x => x.Name == "Smooth World") + 1;
 	}
 }
