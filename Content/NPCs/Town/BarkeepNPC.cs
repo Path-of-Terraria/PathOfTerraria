@@ -7,11 +7,14 @@ using Terraria.Localization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC
+public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, IQuestMarkerNPC
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
@@ -142,5 +145,11 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC
 
 		int frame = (int)animCounter;
 		NPC.frame.Y = frame * frameHeight;
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = ModContent.GetInstance<KingSlimeQuest>();
+		return !quest.Completed;
 	}
 }
