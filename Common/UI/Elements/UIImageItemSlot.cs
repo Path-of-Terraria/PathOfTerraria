@@ -172,10 +172,18 @@ public class UIImageItemSlot : UIElement
 		{
 			Icon.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
 		}
+		else
+		{
+			Icon.Left = StyleDimension.FromPixels(0);
+		}
 
 		if (tex.Height() > BackgroundTexture.Height())
 		{
 			Icon.Top = StyleDimension.FromPixels(-(tex.Height() - BackgroundTexture.Height()) / 2f);
+		}
+		else
+		{
+			Icon.Top = StyleDimension.FromPercent(0);
 		}
 
 		UpdateIcon();
