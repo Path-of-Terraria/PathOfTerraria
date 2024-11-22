@@ -86,3 +86,12 @@ EoCRitualProj.DisplayName: Eo C Ritual Proj
 EyePortal.DisplayName: Eye Portal
 EoWPortal.DisplayName: Eo W Portal
 CrimsonMaw.DisplayName: Crimson Maw
+
+HornetSummon: {
+	DisplayName: Hornet Summon
+	Description:
+		'''
+		Chases your cursor
+		Shoots projectiles at the closest enemy
+		'''
+}

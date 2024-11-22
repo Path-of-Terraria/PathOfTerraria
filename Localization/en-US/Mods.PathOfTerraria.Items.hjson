@@ -708,3 +708,12 @@ BeeMap: {
 		'The map smells of sweetness and poison'
 		'''
 }
+
+LargeStinger: {
+	DisplayName: Large Stinger
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Handle carefully.'
+		'''
+}

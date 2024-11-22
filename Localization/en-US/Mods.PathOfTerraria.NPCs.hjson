@@ -50,6 +50,7 @@ BarkeepNPC: {
 		Common2: Between you and I - I'm rather lightweight on drinks. Battle? Heh...yeah, way lightweight in that too, why d'you think I barkeep?
 		Common3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
 		Quest: Oh, hi there! Got a question for you. I'm behind the bar all day, and it looks like we're low on sweetener. I had an old cache of honey from a friend a few hundred miles away, most delicious stuff I have. But, alas, twas not infinte. Do you know of honey I could snag? Or, even better, that you could get me? I'll pay you kindly. Here, take these bottles and fill 'em up. Fingers crossed!
+		NeedsMoreHoney: Thanks! Take this payment. Real kind of you. Though...not all too much honey, is it? With the business I've been getting, and the variety of foods I've got here, this'll last maybe a week! You reckon there's a way to make this easier? I'd be happy to go get it myself. Or...say...could you go talk to Alaric? The guy's weird but he can make miracles happen. Ask him what he can do! Just be careful.
 	}
 
 	BubbleDialogue: {
@@ -177,6 +178,8 @@ WitchNPC: {
 		Quest: Your guiles intruigue me, stranger. I've summoned the most twisted of creatures before...do you wish to do the same? Do you? If your conviction holds; bring me the the feather of an owl, the wings of a bat, and a scorpion. Then we may start on your new journey.
 		Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon the Owl! Not a ghastly beast, but one that'll help you regardless! Be well, and may the phoenix find you well!
 		Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder.
+		QueenBeeQuest: Ah! You return! My guiles are favorable, yes? Yes! I have a query to ask you! Perhaps odd, but normal for one such as I! Yes! I've harkened back to a more...natural time of my life, and I wish to have some of that soul back. Could I ask you to fetch me some hornet's stingers from the jungle? Could I? Could I? You'll get a nice reward if you do.
+		GotStingers: How wonderful! Yes...here. Take this little morsel. It'll help you summon a cute little fiend from your Grimoire. Cruel, but kind! Alas, I have one more thing to ask. A creature most foul resides in the jungle, one Queen of Bees. Could I ask you to slay it? It seeks to bother me, and I wish it dead! Another award awaits you! Submerge your new hornet friend in honey if you wish to battle!
 	}
 }
 

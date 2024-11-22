@@ -82,4 +82,9 @@ Quest: {
 		EnterDomain: Enter the Brain of Cthulhu domain
 		KillBrain: Kill the Brain of Cthulhu
 	}
+
+	QueenBeeQuest: {
+		Name: A Royal Adventure
+		Description: ""
+	}
 }
