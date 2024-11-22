@@ -18,7 +18,11 @@ GUI: {
 	PlayerStatsTab: Stats
 }
 
-Generation.RavencrestEntrancePass: Opening Ravencrest
+Generation: {
+	RavencrestEntrancePass: Opening Ravencrest
+	FrozenRuinPass: ""
+}
+
 Tiles.ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile
 
 Waypoints: {

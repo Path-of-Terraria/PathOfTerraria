@@ -15,6 +15,11 @@ internal class CollectCount(Func<Item, bool> includes, int count, LocalizedText 
 	{
 	}
 
+	// ModItem localization isn't loaded by here through Lang.GetItemName for quests so we need the instance itself
+	public CollectCount(ModItem modItem, int count) : this(item => item.type == modItem.Type, count, modItem.DisplayName)
+	{
+	}
+
 	private readonly LocalizedText ItemDescription = itemDescription;
 
 	public int Total = 0;

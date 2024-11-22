@@ -84,4 +84,10 @@ Quest: {
 		EnterDomain: Enter the Brain of Cthulhu domain
 		KillBrain: Kill the Brain of Cthulhu
 	}
+
+	DeerclopsQuest: {
+		Name: Frigid Beast
+		Description: ""
+		KillDeerclops: Kill Deerclops
+	}
 }

@@ -1,6 +1,8 @@
+using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Town;
@@ -33,6 +35,11 @@ public sealed class RavenNPC : ModNPC
 			c.AddDust(new(DustID.Ghost, 2));
 			c.AddDust(new(DustID.Ghost, 6, NPCHitEffects.OnDeath));
 		});
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
 	public override bool PreAI()

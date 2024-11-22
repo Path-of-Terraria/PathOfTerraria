@@ -39,6 +39,8 @@ BlacksmithNPC: {
 			2: Sometimes, I look at the flowers...and smash them with my well-crafted hammer. Hurrah!
 		}
 	}
+
+	Entry: A jovial dwarf, Thrain enjoys hearty discussion, a nice drink, and making the best weapons you've ever seen. He can usually be found in his forge, making weapons.
 }
 
 BarkeepNPC: {
@@ -76,6 +78,8 @@ BarkeepNPC: {
 			2: Less business, more relaxin'? Don't mind if I do!
 		}
 	}
+
+	Entry: Brom is a simple man. People want a good time? They come to the bar. They talk to Brom Hardy. They have a good time with good people and good drinks. What's not to love?
 }
 
 HunterNPC: {
@@ -83,12 +87,15 @@ HunterNPC: {
 
 	Dialogue: {
 		Common0: Greetings, traveler. Need a keen eye and a steady hand?
-		Common1: I've tracked a beast through these woods. Care to join the hunt?
+		Common1: I've tracked a beast through these woods many times. Care to join the hunt?
 		Common2: Be cautious out there. The forest hides many secrets.
 		Common3: You've returned. Hope your misadventures are treating you well.
 		Quest: You've surely seen the damage here. Much like my fellow townsmen, I don't know what happened. But we repair anyhow. Would I bother you to grab some supplies? I've got to check inventory for a while.
 		Quest2: Oh my, so soon? Infinite thanks, my friend. I'll get right to repairing; next time you come back, you should see a nicer Lodge. Not...perfect, though. Take this bow. It's a trusty one. May you be so kind as to kill a few airborne hostiles for me? Ravencrest would appreciate it, as would I. And, if I may be so bold, could I also ask for a bit more building materials? The shop would enjoy that.
 		Quest3: How wonderful. The Lodge will return to its former glory, thanks to you. Feel free to come when you wish; I will support you as I can. Say, take this; I trained for many years as a ranger. The Rain of Arrows has helped me many times. May it help you too.
+		Deerclops: A Deerclops, you say? Lass called Rhine told you about it? Large, dangerous beast. I don't see much worth in treading its domain, it's...haunted in some form. No matter. Give me a moment...here. Be truly and deeply careful, the dark is always present and always dangerous.
+		BuyMap: Here. Thanks for your contribution. Hope it goes better this time.
+		BuyMapFail: You'll need a little more coin for another map, I'm afraid. You know how it is.
 	}
 
 	BubbleDialogue: {
@@ -116,6 +123,9 @@ HunterNPC: {
 			2: How quaint.
 		}
 	}
+
+	MapButton: Map (20 gold)
+	Entry: A stone-cold hunter with more knowledge than you have, Elara isn't talkative. She makes up for that by being an exceedingly good hunter and tracker, with eyes almost everywhere.
 }
 
 Minera.DisplayName: Minera
@@ -157,10 +167,20 @@ GarrickNPC: {
 			2: I hope he's dissolving.
 		}
 	}
+
+	Entry: A warrior humiliated by a King, Garrick is taking respite in the town of Ravencrest. He seems to hold a grudge to slime, and wishes he could be stronger. Soon, he'll get back on his feet.
 }
 
-TownScoutNPC.DisplayName: Goblin Surveyor
-RavenNPC.DisplayName: Ephemeral Raven
+TownScoutNPC: {
+	DisplayName: Goblin Surveyor
+	Entry: A Goblin, looking for a place to pillage. If killed, the Goblins immediately rise to fight back. Otherwise, they bide their time for later...
+}
+
+RavenNPC: {
+	DisplayName: Ephemeral Raven
+	Entry: A strange, ghostly raven. The coins it drops are more real than itself, guiding new adventurers to the legendary town of Ravencrest.
+}
+
 ControllableSpikeball.DisplayName: Spikeball
 
 WitchNPC: {
@@ -177,6 +197,8 @@ WitchNPC: {
 		Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon the Owl! Not a ghastly beast, but one that'll help you regardless! Be well, and may the phoenix find you well!
 		Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder.
 	}
+
+	Entry: Eccentric but decievingly powerful, Morgana offers a lot to Ravencrest. Sure, she may be nearly incomprehensible sometimes, and some might say offputting a lot of the time, but she's good at what she does. What does she do?...carry on.
 }
 
 WizardNPC: {
@@ -216,6 +238,8 @@ WizardNPC: {
 			2: Perhaps I...no...that'd do too much damage. Dang!
 		}
 	}
+
+	Entry: Perhaps the most powerful wizard of all time, Alaric still acts like someone who's pretending to be the most powerful wizard of all time. If he's feeling funny, he might cause true and instant catastrophe.
 }
 
 EldricNPC: {
@@ -257,6 +281,8 @@ EldricNPC: {
 			2: A soft patter is wonderful.
 		}
 	}
+
+	Entry: Forlorn and solemn, Eldric is one for silence. An observer of the stars, Eldric knows what the cosmos are; he stares, and it stares right back. Enjoys tea.
 }
 
 MorvenNPC: {
@@ -330,6 +356,8 @@ MorvenNPC: {
 		1: Help a guy out!
 		2: Oh man...
 	}
+
+	Entry: Once stuck in the underground Corruption, this mad scientist gained a little more mad than most. He looks down upon you, but will use you at a moment's notice to "make science".
 }
 
 LloydNPC: {
@@ -422,3 +450,53 @@ LloydNPC: {
 		}
 	}
 }
+
+RhineNPC: {
+	DisplayName: Rhine
+
+	Dialogue: {
+		Common0: Ah! Nothing like a day in Ravencrest for some world-famous mead.
+		Common1: Say, you do any travelling? Have you ever seen a "cow area"? My family spoke of legends.
+		Common2: Five gold coins and I can tell you the most wild story you've ever heard. Up for it?
+		Common3: Good heavens, this tastes like nothing else. You also taking an off day?
+		Quest: Ah, adventurer. You have any experience with the deep tundra? I've always been curious of a story my mother told me...about one massive, lumbering beast deep in a frigid tundra. She spoke of it as legend, and I've always been curious. Alas, I don't handle the cold well; but perhaps you do? I've high interest, though I'm not sure if it's even real. There's a small fortress in the world's snow, a short distance under the surface. Take this compass, find it, and open it. You'll know what to take.
+		Antlers: Wow...sorry. I...I genuinely didn't think these were real. My mother spoke of these, a simple set of four-point antlers with a discoloration near the points. Odd aura. Strangely uncomfortable to hold. Wow. Well. I suppose you should seek the Deer itself, then. The Hunter can tell you about it - she knows all creatures that stalk the woods, white or not. I'll be here, I can only imagine what my mother will think seeing these antlers again.
+		Success: ...unbelievable. Truly...I don't know what to say. Take this. I'll be here, stewing in revelation. Go have fun. Brom, another mead, please. Unbelievable...
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Ah, wonderful day out there.
+			1: Hm, what should I order next!
+			2: Delicious!
+		}
+
+		Night: {
+			0: Bar's open all night! Keep the mead moving.
+			1: Ah...winding down...
+			2: Perhaps a couple card games won't hurt...
+		}
+
+		Goblins: {
+			0: Gosh, why are these lot here?
+			1: Interrupting my mead...buffoons.
+			2: En garde! Time to move the old joints!
+		}
+
+		Rain: {
+			0: Good thing I'm not out there!
+			1: Thanks for the shelter!
+			2: That rain reminds me of home.
+		}
+	}
+
+	NewCompass: {
+		Button: Craft Compass
+		OnCraft: Here's another one for you. You're lucky I can carve wood anywhere always. Go get them!...if you can find them.
+		CantCraft: Did you lose your compass? Give me 15[i:9] and I can sharpen one up for you.
+	}
+
+	Entry: Rhine is a hard worker. Between travels she visits her family and hunts beasts of legend. Here? She's looking for some good food, some good drink, and people to tell stories at.
+}
+
+SkullApparition.DisplayName: Skull Apparition
