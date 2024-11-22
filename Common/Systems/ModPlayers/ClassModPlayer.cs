@@ -24,24 +24,18 @@ public class ClassModPlayer : ModPlayer
 
 		vanillaItems.Clear();
 
-		// We want the first slot to be empty so the chosen class' weapon can
-		// be placed there.
-		var item = new Item();
-		item.TurnToAir();
-		vanillaItems.Add(item);
-
-		item = new Item(ItemID.WoodenSword);
+		var item = new Item(ItemID.WoodenSword);
 		PoTInstanceItemData data = item.GetInstanceData();
-		data.Rarity = Enums.ItemRarity.Magic;
+		data.Rarity = ItemRarity.Magic;
 		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 		vanillaItems.Add(item);
 		
-		item = new Item(ItemID.CopperPickaxe);
-		vanillaItems.Add(item);
+		vanillaItems.Add(new Item(ItemID.CopperPickaxe));
+		vanillaItems.Add(new Item(ItemID.CopperAxe));
 
 		item = new Item(ItemID.WoodenBow);
 		data = item.GetInstanceData();
-		data.Rarity = Enums.ItemRarity.Magic;
+		data.Rarity = ItemRarity.Magic;
 		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 		vanillaItems.Add(item);
 
