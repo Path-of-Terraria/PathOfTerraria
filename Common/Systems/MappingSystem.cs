@@ -50,15 +50,3 @@ internal class MappingPlayer : ModPlayer
 		}
 	}
 }
-
-internal class MappingGlobalNPC : GlobalNPC
-{
-	// apply map affixes here
-	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
-	{
-		if (MappingSystem.InMap)
-		{
-			// maxSpawns = 0; if we onlt want custom spawn-ins...
-		}
-	}
-}
