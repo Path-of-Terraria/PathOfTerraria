@@ -176,12 +176,18 @@ public sealed class UIGearInventory : UIState
 	private bool fadingButton;
 
 	private int currentPage;
-	private readonly UIElement[] pages = { BuildDefaultInventory(), BuildVanityInventory(), BuildDyeInventory() };
+	private readonly UIElement[] pages = [BuildDefaultInventory(), BuildVanityInventory(), BuildDyeInventory()];
 
 	internal UIElement Root;
 
 	public override void OnInitialize()
 	{
+		// Manually re-build the inventory pages, as otherwise they will reference an old player.
+		// This makes sure they are refreshed and reference the current player properly.
+		pages[0] = BuildDefaultInventory();
+		pages[1] = BuildVanityInventory();
+		pages[2] = BuildDyeInventory();
+
 		Root = new UIElement
 		{
 			Width = StyleDimension.FromPixels(ArmorPageWidth + LoadoutPadding + FirstLoadoutIconTexture.Width() + RootPadding),
