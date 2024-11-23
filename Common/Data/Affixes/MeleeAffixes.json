@@ -1,7 +1,7 @@
 [
 	{
-		"affixType": "DefenseItemAffix",
-		"equipTypes": "Armor",
+		"affixType": "PiercingItemAffix",
+		"equipTypes": "Melee",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -30,8 +30,8 @@
 		]
 	},
 	{
-		"affixType": "EnduranceItemAffix",
-		"equipTypes": "Armor",
+		"affixType": "AddedKnockbackItemAffix",
+		"equipTypes": "Melee",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -60,8 +60,8 @@
 		]
 	},
 	{
-		"affixType": "ResistanceHelmetAffix",
-		"equipTypes": "Helmet",
+		"affixType": "IncreasedKnockbackItemAffix",
+		"equipTypes": "Melee",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -90,8 +90,8 @@
 		]
 	},
 	{
-		"affixType": "BuffBoostHelmetAffix",
-		"equipTypes": "Helmet",
+		"affixType": "FlatKnockbackItemAffix",
+		"equipTypes": "Melee",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -120,8 +120,99 @@
 		]
 	},
 	{
-		"affixType": "ThornyArmorAffix",
-		"equipTypes": "Armor",
+		"affixType": "IncreasedAttackSpeedAffix",
+		"equipTypes": "Melee",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "AddedAttackSpeedAffix",
+		"equipTypes": "Melee",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedDamageAffix",
+		"equipTypes": "Melee",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "NoFallDamageAffix",
+		"equipTypes": "Weapon",
+		"influences": "None",
 		"tiers": [
 			{
 				"minValue": 1,
