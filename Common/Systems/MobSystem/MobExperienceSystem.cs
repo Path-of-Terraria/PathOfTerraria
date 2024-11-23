@@ -11,6 +11,11 @@ public class MobExperienceSystem : GlobalNPC
 	/// <param name="npc"></param>
 	public override void OnKill(NPC npc)
 	{
+		if (npc.friendly || npc.CountsAsACritter)
+		{
+			return;
+		}
+		
 		MobAprgSystem npcSystem = npc.GetGlobalNPC<MobAprgSystem>();
 
 		if (npcSystem is null)
