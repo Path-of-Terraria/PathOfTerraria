@@ -2,7 +2,6 @@
 
 namespace PathOfTerraria.Content.Items.Gear.Offhands;
 
-[AutoloadEquip(EquipType.Shield)]
 public abstract class Offhand : Gear
 {
 	protected override string GearLocalizationCategory => "Offhand";
