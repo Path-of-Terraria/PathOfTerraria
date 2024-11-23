@@ -728,3 +728,13 @@ Antlers: {
 	DisplayName: Strange Antlers
 	Tooltip: "'Unpleasantly cold to the touch'"
 }
+
+VigorAmulet: {
+	DisplayName: Vigor Amulet
+	Tooltip: ""
+}
+
+StoneRing: {
+	DisplayName: Stone Ring
+	Tooltip: ""
+}

@@ -1,4 +1,7 @@
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Content.Items.Gear.Amulets;
+using PathOfTerraria.Content.Items.Gear.Offhands;
+using PathOfTerraria.Content.Items.Gear.Rings;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
@@ -357,7 +360,7 @@ public sealed class UIGearInventory : UIState
 		necklace.OnMouseOver += UpdateMouseOver;
 		necklace.OnMouseOut += UpdateMouseOut;
 
-		necklace.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
+		necklace.Predicate = (item, _) => item.ModItem is Amulet;
 
 		inventoryRoot.Append(necklace);
 
@@ -402,7 +405,7 @@ public sealed class UIGearInventory : UIState
 		offhand.OnMouseOver += UpdateMouseOver;
 		offhand.OnMouseOut += UpdateMouseOut;
 
-		offhand.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
+		offhand.Predicate = (item, _) =>  item.ModItem is Offhand;
 
 		inventoryRoot.Append(offhand);
 
@@ -417,7 +420,7 @@ public sealed class UIGearInventory : UIState
 		leftRing.OnMouseOver += UpdateMouseOver;
 		leftRing.OnMouseOut += UpdateMouseOut;
 
-		leftRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
+		leftRing.Predicate = (item, _) => item.ModItem is Ring;
 
 		inventoryRoot.Append(leftRing);
 
@@ -447,7 +450,7 @@ public sealed class UIGearInventory : UIState
 		rightRing.OnMouseOver += UpdateMouseOver;
 		rightRing.OnMouseOut += UpdateMouseOut;
 
-		rightRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
+		rightRing.Predicate = (item, _) =>  item.ModItem is Ring;
 
 		inventoryRoot.Append(rightRing);
 
