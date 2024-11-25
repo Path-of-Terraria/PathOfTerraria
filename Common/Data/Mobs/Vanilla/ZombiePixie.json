@@ -1,13 +1,17 @@
 {
   "netId": 321,
+  "friendlyName": "Zombie Pixie",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 1,
-			  "experience": 2
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 1,
+        "experience": 2
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }

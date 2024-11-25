@@ -1,13 +1,17 @@
 {
   "netId": 251,
+  "friendlyName": "Eyezor",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 25,
-			  "experience": 15
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 25,
+        "experience": 15
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }

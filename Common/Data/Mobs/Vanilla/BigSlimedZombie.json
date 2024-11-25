@@ -1,13 +1,17 @@
 {
   "netId": -33,
+  "friendlyName": "Big Slimed Zombie",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 4,
-			  "experience": 4
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 4,
+        "experience": 4
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }

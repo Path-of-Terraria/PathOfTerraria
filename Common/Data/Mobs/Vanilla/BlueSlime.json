@@ -1,28 +1,32 @@
-﻿{
-	"netId": 1,
-	"entries": [
-		{
-			"weight": 5.0,
-			"stats": {
-				"level": 1,
-				"experience": 1
-			},
-			"requirements": "PreHardmodeSurface"
-		},
-		{
-			"prefix": "Bulky",
-			"weight": 0.75,
-			"scale": 2,
-			"stats": {
-				"level": 3,
-				"experience": 5
-			},
-			"requirements": "PreHardmodeSurface",
-			"affixes": [
-				{
-					"name": "DoubleLife"
-				}
-			]
-		}
-	]
+{
+  "netId": 1,
+  "friendlyName": "Blue Slime",
+  "entries": [
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 5,
+      "stats": {
+        "level": 1,
+        "experience": 1
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    },
+    {
+      "scale": 2,
+      "prefix": "Bulky",
+      "weight": 0.75,
+      "stats": {
+        "level": 3,
+        "experience": 5
+      },
+      "affixes": [
+        {
+          "name": "DoubleLife"
+        }
+      ],
+      "requirements": "PreHardmodeSurface"
+    }
+  ]
 }

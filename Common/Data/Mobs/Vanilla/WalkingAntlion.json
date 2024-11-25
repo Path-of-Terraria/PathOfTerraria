@@ -1,4 +1,17 @@
 {
   "netId": 580,
-  "entries": []
+  "friendlyName": "Walking Antlion",
+  "entries": [
+    {
+      "scale": null,
+      "prefix": "",
+      "weight": 1,
+      "stats": {
+        "level": 5,
+        "experience": 7
+      },
+      "affixes": [],
+      "requirements": "PreHardmodeSurface"
+    }
+  ]
 }

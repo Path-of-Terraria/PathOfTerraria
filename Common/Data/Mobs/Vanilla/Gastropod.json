@@ -1,13 +1,17 @@
 {
   "netId": 122,
+  "friendlyName": "Gastropod",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 10,
-			  "experience": 10
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 10,
+        "experience": 10
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }

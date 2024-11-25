@@ -1,13 +1,17 @@
 {
   "netId": 319,
+  "friendlyName": "Zombie Doctor",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 3,
-			  "experience": 3
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 3,
+        "experience": 3
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }

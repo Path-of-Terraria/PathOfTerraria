@@ -1,13 +1,17 @@
 {
   "netId": 667,
+  "friendlyName": "Golden Slime",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 1,
-			  "experience": 20
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 1,
+        "experience": 20
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }
