@@ -26,12 +26,6 @@ partial class PoTGlobalItem
 	}
 
 	#region Modify tooltips and rendering
-	// TODO: Our scaling causes the tooltip box to be drawn with extra empty
-	// space, this is not something we can remedy on our side without hacky IL
-	// edits and similar.  Pending: TML-2449, TML-3546; it's been years with no
-	// resolution so I'm not holding my breath on this being implemented
-	// anytime some.  If we get close to release, I (Tomat) can write an IL
-	// edit to fix behavior for our lines.
 
 	public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
 	{

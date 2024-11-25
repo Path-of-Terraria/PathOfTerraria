@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -105,17 +106,14 @@ public static class PoTItemHelper
 			AddNewAffix(item, data);
 		}
 
-		if (staticData.IsUnique)
+		List<ItemAffix> uniqueItemAffixes = GenerateImplicits.Invoke(item);
+
+		foreach (ItemAffix affix in uniqueItemAffixes)
 		{
-			List<ItemAffix> uniqueItemAffixes = GenerateImplicits.Invoke(item);
-
-			foreach (ItemAffix affix in uniqueItemAffixes)
-			{
-				affix.Roll();
-			}
-
-			data.Affixes.AddRange(uniqueItemAffixes);
+			affix.Roll();
 		}
+
+		data.Affixes.AddRange(uniqueItemAffixes);
 	}
 	
 	/// <summary>

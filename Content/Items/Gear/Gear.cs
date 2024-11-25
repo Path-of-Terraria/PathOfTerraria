@@ -7,7 +7,7 @@ using TooltipUI = PathOfTerraria.Common.UI.Tooltip;
 
 namespace PathOfTerraria.Content.Items.Gear;
 
-public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.IItem, PostRoll.IItem, GearLocalizationCategory.IItem
+public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.IItem, PostRoll.IItem, GearLocalizationCategory.IItem, IPoTGlobalItem
 {
 	protected virtual string GearLocalizationCategory => GetType().Name;
 
