@@ -181,7 +181,7 @@ internal class MobAprgSystem : GlobalNPC
 				Experience = entry.Stats.Experience;
 				if (!string.IsNullOrEmpty(entry.Prefix))
 				{
-					npc.GivenName = $"{entry.Prefix} - {npc.GivenOrTypeName}";
+					npc.GivenName = $"{entry.Prefix} {npc.GivenOrTypeName}";
 				}
 
 				npc.scale *= entry.Scale ?? 1f;

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using PathOfTerraria.Common.Data.Models;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Data;
 
@@ -109,6 +110,20 @@ public class MobRegistry : ILoadable
 				if (!jsonDataMap.TryAdd(enumValue, data))
 				{
 					Console.WriteLine($"Duplicate NetId found: {enumValue}");
+				}
+				else
+				{
+					// Register prefix localization, value defaulting to the name of the prefix
+
+					foreach (MobEntry item in data.Entries)
+					{
+						if (item.Prefix == null || item.Prefix == string.Empty)
+						{
+							continue;
+						}
+
+						Language.GetOrRegister($"Mods.{PoTMod.ModName}.EnemyPrefixes." + item.Prefix, () => item.Prefix);
+					}
 				}
 			}
 			else
