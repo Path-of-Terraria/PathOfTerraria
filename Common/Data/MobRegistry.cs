@@ -142,8 +142,7 @@ public class MobRegistry : ILoadable
 		decimal totalWeight = entries.Sum(e => e.Weight);
 
 		// Generate a random number between 0 and total weight
-		var random = new Random();
-		decimal randomWeight = (decimal)random.NextDouble() * totalWeight;
+		decimal randomWeight = (decimal)Main.rand.NextDouble() * totalWeight;
 
 		// Select the entry based on the random number
 		decimal cumulativeWeight = 0;
