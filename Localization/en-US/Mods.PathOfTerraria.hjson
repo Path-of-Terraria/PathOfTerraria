@@ -6,7 +6,7 @@ Keybinds: {
 	UseSkill5.DisplayName: Use Skill5
 	CopyItemInfo.DisplayName: Copy Item Info
 	StatUIKey.DisplayName: Toggle Stat Page
-	GearSwap.DisplayName: Swap Gear
+	GearSwap.DisplayName: Weapon Swap
 	QuestUIKey.DisplayName: Quest UI Key
 }
 
@@ -18,7 +18,11 @@ GUI: {
 	PlayerStatsTab: Stats
 }
 
-Generation.RavencrestEntrancePass: Opening Ravencrest
+Generation: {
+	RavencrestEntrancePass: Opening Ravencrest
+	FrozenRuinPass: ""
+}
+
 Tiles.ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile
 
 Waypoints: {

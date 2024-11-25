@@ -717,3 +717,42 @@ LargeStinger: {
 		'Handle carefully.'
 		'''
 }
+
+DeerclopsMap: {
+	DisplayName: Deerclops Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of cold and fear'
+		'''
+}
+
+SimpleCompass: {
+	DisplayName: Simple Compass
+	Tooltip:
+		'''
+		Hold to see the path to an ancient ruin in the snow biome
+		When close, breaks open the ruin
+		'Simple but effective'
+		'''
+}
+
+AncientLeadBrickItem: {
+	DisplayName: Ancient Lead Brick
+	Tooltip: ""
+}
+
+Antlers: {
+	DisplayName: Strange Antlers
+	Tooltip: "'Unpleasantly cold to the touch'"
+}
+
+VigorAmulet: {
+	DisplayName: Vigor Amulet
+	Tooltip: ""
+}
+
+StoneRing: {
+	DisplayName: Stone Ring
+	Tooltip: ""
+}

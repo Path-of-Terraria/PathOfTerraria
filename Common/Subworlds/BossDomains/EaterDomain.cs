@@ -271,7 +271,6 @@ public class EaterDomain : BossDomainSubworld
 				else if (WorldGen.genRand.NextBool(3))
 				{
 					GenPlacement.PlaceStalagmite(position.X, position.Y - 1, Main.rand.NextBool(4), 5, null);
-					//WorldGen.PlaceUncheckedStalactite(position.X, position.Y - 1, WorldGen.genRand.NextBool(4), WorldGen.genRand.Next(15, 19), false);
 				}
 			}
 		}

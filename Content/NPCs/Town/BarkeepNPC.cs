@@ -69,6 +69,11 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, IQuestMarkerNPC
 		);
 	}
 
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "Surface");
+	}
+
 	public override void AddShops()
 	{
 		if (!ShopUtils.TryCloneNpcShop("Terraria/DD2Bartender/Shop", Type))

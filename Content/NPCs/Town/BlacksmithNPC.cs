@@ -12,6 +12,8 @@ using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.NPCs;
 using Terraria.DataStructures;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using Terraria.GameContent.Bestiary;
+using NPCUtils;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -68,6 +70,11 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
 			}
 		);
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
 	public override void AddShops()

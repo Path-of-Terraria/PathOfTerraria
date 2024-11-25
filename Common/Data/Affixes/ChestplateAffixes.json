@@ -1,8 +1,7 @@
 [
 	{
-		"affixType": "NoFallDamageAffix",
-		"equipTypes": "Weapon",
-		"influences": "None",
+		"affixType": "LifeRegenAffix",
+		"equipTypes": "Chestplate",
 		"tiers": [
 			{
 				"minValue": 1,

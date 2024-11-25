@@ -9,6 +9,8 @@ using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using Terraria.GameContent.Bestiary;
+using NPCUtils;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -56,6 +58,11 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 				c.AddDust(new(DustID.Blood, 20));
 			}
 		);
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
 	public override string GetChat()

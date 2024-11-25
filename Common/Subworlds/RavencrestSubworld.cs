@@ -82,6 +82,11 @@ internal class RavencrestSubworld : MappingWorld
 	{
 		public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
 		{
+			if (SubworldSystem.Current is not RavencrestSubworld)
+			{
+				return;
+			}
+
 			if (Main.invasionType == InvasionID.GoblinArmy && Main.invasionSize > 0)
 			{
 				return;

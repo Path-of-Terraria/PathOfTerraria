@@ -88,4 +88,10 @@ Quest: {
 		Description: ""
 		KillQueen: Kill the Queen Bee
 	}
+
+	DeerclopsQuest: {
+		Name: Frigid Beast
+		Description: ""
+		KillDeerclops: Kill Deerclops
+	}
 }
