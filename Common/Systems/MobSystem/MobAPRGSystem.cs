@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
+using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -181,7 +182,7 @@ internal class MobAprgSystem : GlobalNPC
 				Experience = entry.Stats.Experience;
 				if (!string.IsNullOrEmpty(entry.Prefix))
 				{
-					npc.GivenName = $"{entry.Prefix} {npc.GivenOrTypeName}";
+					npc.GivenName = $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";
 				}
 
 				npc.scale *= entry.Scale ?? 1f;
