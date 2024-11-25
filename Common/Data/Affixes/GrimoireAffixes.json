@@ -1,7 +1,7 @@
-[
+﻿[
 	{
-		"affixType": "MoltenShellAffix",
-		"equipTypes": "Weapon",
+		"affixType": "ChanceToApplyPoisonItemAffix",
+		"equipTypes": "Weapon Grimoire",
 		"influences": "None",
 		"tiers": [
 			{
@@ -31,9 +31,8 @@
 		]
 	},
 	{
-		"affixType": "BloodSiphonAffix",
-		"equipTypes": "Weapon",
-		"influences": "None",
+		"affixType": "HealOnKillingBurningEnemiesAffix",
+		"equipTypes": "Weapon Grimoire",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -62,9 +61,38 @@
 		]
 	},
 	{
-		"affixType": "FetidCarapaceAffix",
-		"equipTypes": "Weapon",
-		"influences": "None",
+		"affixType": "AddedDamageAffix",
+		"equipTypes": "Melee Grimoire",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 2,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 3,
+				"maxValue": 4,
+				"minimumLevel": 12,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 6,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 8,
+				"minimumLevel": 34,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedDamageAffix",
+		"equipTypes": "Weapon Grimoire",
 		"tiers": [
 			{
 				"minValue": 1,

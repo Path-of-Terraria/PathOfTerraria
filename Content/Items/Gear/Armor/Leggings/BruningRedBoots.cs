@@ -6,7 +6,6 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
-[AutoloadEquip(EquipType.Legs)]
 internal class BurningRedBoots : Leggings, GenerateName.IItem
 {
 	public override void SetStaticDefaults()

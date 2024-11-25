@@ -154,6 +154,11 @@ public class AffixRegistry : ILoadable
 			throw new ArgumentException($"ItemAffixData not found for affix type: {affixType.Name}");
 		}
 
+		if (itemLevel == 0)
+		{
+			itemLevel = 1;
+		}
+		
 		// Get the appropriate TierData based on itemLevel
 		ItemAffixData.TierData tierData = affixData.GetAppropriateTierData(itemLevel);
 

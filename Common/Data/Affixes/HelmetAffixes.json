@@ -1,7 +1,7 @@
-[
+﻿[
 	{
-		"affixType": "ManaAffix",
-		"equipTypes": "Armor",
+		"affixType": "ResistanceHelmetAffix",
+		"equipTypes": "Helmet",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -30,8 +30,8 @@
 		]
 	},
 	{
-		"affixType": "ManaRegenAffix",
-		"equipTypes": "Armor",
+		"affixType": "BuffBoostHelmetAffix",
+		"equipTypes": "Helmet",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -60,68 +60,8 @@
 		]
 	},
 	{
-		"affixType": "ManaPotionPowerAffix",
-		"equipTypes": "Armor",
-		"tiers": [
-			{
-				"minValue": 1,
-				"maxValue": 4,
-				"minimumLevel": 1,
-				"weight": 1
-			},
-			{
-				"minValue": 5,
-				"maxValue": 8,
-				"minimumLevel": 21,
-				"weight": 1
-			},
-			{
-				"minValue": 9,
-				"maxValue": 12,
-				"minimumLevel": 52,
-				"weight": 1
-			},
-			{
-				"minValue": 13,
-				"maxValue": 16,
-				"minimumLevel": 73,
-				"weight": 1
-			}
-		]
-	},
-	{
-		"affixType": "ManaPotionCapAffix",
-		"equipTypes": "Armor",
-		"tiers": [
-			{
-				"minValue": 1,
-				"maxValue": 4,
-				"minimumLevel": 1,
-				"weight": 1
-			},
-			{
-				"minValue": 5,
-				"maxValue": 8,
-				"minimumLevel": 21,
-				"weight": 1
-			},
-			{
-				"minValue": 9,
-				"maxValue": 12,
-				"minimumLevel": 52,
-				"weight": 1
-			},
-			{
-				"minValue": 13,
-				"maxValue": 16,
-				"minimumLevel": 73,
-				"weight": 1
-			}
-		]
-	},
-	{
-		"affixType": "ManaPotionCooldownAffix",
-		"equipTypes": "Armor",
+		"affixType": "FlatLifeAffix",
+		"equipTypes": "Helmet",
 		"tiers": [
 			{
 				"minValue": 1,
