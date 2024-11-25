@@ -53,9 +53,6 @@ public class ExpBar : SmartUiState
 			return;
 		}
 		
-		ClassModPlayer mp = Main.LocalPlayer.GetModPlayer<ClassModPlayer>();
 		SmartUiLoader.GetUiState<TreeState>().Toggle();
-
-		SoundEngine.PlaySound(mp.SelectedClass != PlayerClass.None ? SoundID.MenuOpen : SoundID.MenuClose, Main.LocalPlayer.Center);
 	}
 }
