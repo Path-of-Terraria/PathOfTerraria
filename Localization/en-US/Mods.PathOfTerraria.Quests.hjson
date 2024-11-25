@@ -86,5 +86,6 @@ Quest: {
 	QueenBeeQuest: {
 		Name: A Royal Adventure
 		Description: ""
+		KillQueen: Kill the Queen Bee
 	}
 }

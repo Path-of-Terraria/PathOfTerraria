@@ -1,13 +1,9 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
-using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
-using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -29,9 +25,10 @@ internal class QueenBeeQuest : Quest
 		return
 		[
 			new CollectCount(ItemID.Stinger, 5),
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.GotStingers"), onSuccess: 
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.GotStingers"), onSuccess: 
 				npc => Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LargeStinger>())),
-			new InteractWithNPC(ModContent.NPCType<LloydNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Complete"))
+			new KillCount(NPCID.QueenBee, 1, this.GetLocalization("KillQueen")),
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.QueenBeeKilled"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

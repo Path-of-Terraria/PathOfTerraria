@@ -6,7 +6,7 @@ Experience: {
 GrimoireConsume: "{0} consumed!"
 GrimoireMaterial: Used for the Grimoire's Menagerie.
 GrimoireBoon: Traded {0} for coin!
-# This is used for disabling EoW/BoC spawns, instead of spawning the boss it fails and says this.
+# This is used for disabling EoW/BoC spawns, instead of spawning the boss it says this.
 ChasmAppears: A chasm appears...
 HealthPotionTooltip: Health Potion
 ManaPotionTooltip: Mana Potion
@@ -15,3 +15,5 @@ RestoresManaTooltip: Restores {0} mana
 CooldownTooltip: "{0} second cooldown"
 NPCLeftWithoutDying: "{0} escaped!"
 AffixTooltipFrom: " from  "
+Enter: Enter
+Exit: Exit

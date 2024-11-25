@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
+using PathOfTerraria.Content.Projectiles.Utility;
 using SubworldLibrary;
 using Terraria.ID;
 
@@ -12,6 +13,7 @@ internal class HornetSummon : GrimoireSummon
 	public override int BaseDamage => 16;
 
 	private ref float Timer => ref Projectile.ai[1];
+	private ref float HoneyTimer => ref Projectile.ai[2];
 
 	public override void StaticDefaults()
 	{
@@ -63,15 +65,22 @@ internal class HornetSummon : GrimoireSummon
 				if (npcIndex != -1 && Main.npc[npcIndex].DistanceSQ(Projectile.Center) < 800 * 800)
 				{
 					Vector2 velocity = Projectile.DirectionTo(Main.npc[npcIndex].Center) * 11;
-					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity, ProjectileID.HornetStinger, Projectile.damage, 1f);
+					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity, ProjectileID.HornetStinger, 16, 1f);
 				}
 
 				Timer = 0;
 			}
 
-			if (Projectile.honeyWet && ModContent.GetInstance<QueenBeeQuest>().Active)
+			if (Projectile.honeyWet && NPC.downedQueenBee)
 			{
-				SubworldSystem.Enter<QueenBeeDomain>();
+				HoneyTimer++;
+
+				if (HoneyTimer > 3 * 60)
+				{
+					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<QueenBeePortal>(), 0, 1f);
+
+					Projectile.active = false;
+				}
 			}
 		}
 	}

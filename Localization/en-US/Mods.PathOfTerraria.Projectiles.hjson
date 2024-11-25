@@ -95,3 +95,5 @@ HornetSummon: {
 		Shoots projectiles at the closest enemy
 		'''
 }
+
+QueenBeePortal.DisplayName: Queen Bee Portal

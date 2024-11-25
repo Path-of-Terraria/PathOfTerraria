@@ -180,6 +180,7 @@ WitchNPC: {
 		Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder.
 		QueenBeeQuest: Ah! You return! My guiles are favorable, yes? Yes! I have a query to ask you! Perhaps odd, but normal for one such as I! Yes! I've harkened back to a more...natural time of my life, and I wish to have some of that soul back. Could I ask you to fetch me some hornet's stingers from the jungle? Could I? Could I? You'll get a nice reward if you do.
 		GotStingers: How wonderful! Yes...here. Take this little morsel. It'll help you summon a cute little fiend from your Grimoire. Cruel, but kind! Alas, I have one more thing to ask. A creature most foul resides in the jungle, one Queen of Bees. Could I ask you to slay it? It seeks to bother me, and I wish it dead! Another award awaits you! Submerge your new hornet friend in honey if you wish to battle!
+		QueenBeeKilled: Why, you return? So soon? You're quite strong, are you! Aha, yes. Yes! You are! Very well. Many thanks for the chore. I've little to give, but you must take it. Take it! Bahaha! Farewell!
 	}
 }
 
