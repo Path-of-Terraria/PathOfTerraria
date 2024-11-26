@@ -1,13 +1,17 @@
 {
   "netId": -27,
+  "friendlyName": "Big Zombie",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 2,
-			  "experience": 2
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 2,
+        "experience": 2
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }

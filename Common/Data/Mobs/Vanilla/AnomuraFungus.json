@@ -1,4 +1,17 @@
 {
   "netId": 257,
-  "entries": []
+  "friendlyName": "Anomura Fungus",
+  "entries": [
+    {
+      "scale": null,
+      "prefix": "",
+      "weight": 1,
+      "stats": {
+        "level": 7,
+        "experience": 12
+      },
+      "affixes": [],
+      "requirements": "PreHardmodeSurface"
+    }
+  ]
 }

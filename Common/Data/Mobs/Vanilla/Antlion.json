@@ -1,4 +1,17 @@
 {
   "netId": 69,
-  "entries": []
+  "friendlyName": "Antlion",
+  "entries": [
+    {
+      "scale": null,
+      "prefix": "",
+      "weight": 1,
+      "stats": {
+        "level": 3,
+        "experience": 5
+      },
+      "affixes": [],
+      "requirements": "PreHardmodeSurface"
+    }
+  ]
 }

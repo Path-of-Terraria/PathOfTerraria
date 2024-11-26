@@ -1,13 +1,17 @@
 {
   "netId": 52,
+  "friendlyName": "Doctor Bones",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 15,
-			  "experience": 20
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 15,
+        "experience": 20
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }

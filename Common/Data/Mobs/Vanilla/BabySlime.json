@@ -1,13 +1,17 @@
 {
   "netId": -5,
+  "friendlyName": "Baby Slime",
   "entries": [
-	  {
-		  "weight": 1.0,
-		  "stats": {
-			  "level": 1,
-			  "experience": 1
-		  },
-		  "requirements": "PreHardmodeSurface"
-	  }
+    {
+      "scale": null,
+      "prefix": null,
+      "weight": 1,
+      "stats": {
+        "level": 1,
+        "experience": 1
+      },
+      "affixes": null,
+      "requirements": "PreHardmodeSurface"
+    }
   ]
 }
