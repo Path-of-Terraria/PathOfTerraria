@@ -10,11 +10,13 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using Terraria.GameContent.Bestiary;
+using NPCUtils;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, IQuestMarkerNPC
+public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
@@ -114,7 +116,6 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, IQuestMarkerNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -122,11 +123,6 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, IQuestMarkerNPC
 		if (firstButton)
 		{
 			shopName = "Shop";
-		}
-		else
-		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BarkeepNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(KingSlimeQuest)}");
 		}
 	}
 
@@ -150,11 +146,5 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, IQuestMarkerNPC
 
 		int frame = (int)animCounter;
 		NPC.frame.Y = frame * frameHeight;
-	}
-
-	public bool HasQuestMarker(out Quest quest)
-	{
-		quest = ModContent.GetInstance<KingSlimeQuest>();
-		return !quest.Completed;
 	}
 }
