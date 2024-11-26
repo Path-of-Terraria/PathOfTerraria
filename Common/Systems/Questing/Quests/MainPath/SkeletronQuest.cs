@@ -30,7 +30,7 @@ internal class SkeletronQuest : Quest
 		[
 			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.OldManDialogue")),
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.HasItems"), 
-				[new GiveItem(2, ItemID.GoldenCandle, ItemID.PlatinumCandle), new GiveItem(1, ItemID.CrimtaneBar, ItemID.DemoniteBar),
+				[new GiveItem(2, ItemID.Candle, ItemID.PlatinumCandle), new GiveItem(1, ItemID.CrimtaneBar, ItemID.DemoniteBar),
 					new GiveItem(1, ModContent.ItemType<AncientEvilBook>())]),
 			new ConditionCheck((_) => SubworldSystem.Current is SkeletronDomain, 1, this.GetLocalization("EnterDomain")),
 			new KillCount(NPCID.SkeletronHead, 1, this.GetLocalization("KillSkeletron")),
