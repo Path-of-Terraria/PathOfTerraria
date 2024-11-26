@@ -1,12 +1,27 @@
-﻿using PathOfTerraria.Common.UI;
+﻿using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.UI;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class Teleportal : ModProjectile
 {
 	public Vector2 TeleportLocation => new(Projectile.ai[0], Projectile.ai[1]);
+
+	public override void SetStaticDefaults()
+	{
+		ClickableProjectilePlayer.RegisterProjectile(Type, (proj, player) =>
+		{
+			if (Main.mouseRight && Main.mouseRightRelease)
+			{
+				player.Teleport((proj.ModProjectile as Teleportal).TeleportLocation);
+			}
+
+			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"));
+		});
+	}
 
 	public override void SetDefaults()
 	{

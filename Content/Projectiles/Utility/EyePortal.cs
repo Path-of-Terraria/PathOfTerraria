@@ -1,14 +1,29 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.UI;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class EyePortal : ModProjectile
 {
 	private ref float Timer => ref Projectile.ai[0];
+
+	public override void SetStaticDefaults()
+	{
+		ClickableProjectilePlayer.RegisterProjectile(Type, (_, _) =>
+		{
+			if (Main.mouseRight && Main.mouseRightRelease)
+			{
+				SubworldSystem.Enter<EyeDomain>();
+			}
+
+			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"));
+		});
+	}
 
 	public override void SetDefaults()
 	{
