@@ -3,6 +3,12 @@ Experience: {
 	SkillUp: You have gained 1 skill point. Click the experience bar to open the skill tree.
 }
 
+RarityNames: {
+	Normal: Normal
+	Magic: Magic
+	Rare: Rare
+}
+
 GrimoireConsume: "{0} consumed!"
 GrimoireMaterial: Used for the Grimoire's Menagerie.
 GrimoireBoon: Traded {0} for coin!

@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using PathOfTerraria.Common.Data.Models;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Data;
 
@@ -110,6 +111,20 @@ public class MobRegistry : ILoadable
 				{
 					Console.WriteLine($"Duplicate NetId found: {enumValue}");
 				}
+				else
+				{
+					// Register prefix localization, value defaulting to the name of the prefix
+
+					foreach (MobEntry item in data.Entries)
+					{
+						if (item.Prefix == null || item.Prefix == string.Empty)
+						{
+							continue;
+						}
+
+						Language.GetOrRegister($"Mods.{PoTMod.ModName}.EnemyPrefixes." + item.Prefix, () => item.Prefix);
+					}
+				}
 			}
 			else
 			{
@@ -142,8 +157,7 @@ public class MobRegistry : ILoadable
 		decimal totalWeight = entries.Sum(e => e.Weight);
 
 		// Generate a random number between 0 and total weight
-		var random = new Random();
-		decimal randomWeight = (decimal)random.NextDouble() * totalWeight;
+		decimal randomWeight = (decimal)Main.rand.NextDouble() * totalWeight;
 
 		// Select the entry based on the random number
 		decimal cumulativeWeight = 0;

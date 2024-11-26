@@ -8,7 +8,9 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
+using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
@@ -135,10 +137,21 @@ internal class MobAprgSystem : GlobalNPC
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			Rarity = Main.rand.Next(100) switch
+			// Base chance is determined by item level; default is 300 - 5*4 (275).
+			// By hardmode it's 300 - 50*4 (100).
+			// Will need adjustment for hardmode.
+			int chance = 300;
+			chance -= (int)(PoTItemHelper.PickItemLevel() * 4f);
+
+			if (chance < 16)
 			{
-				< 2 => ItemRarity.Rare, //2% Rare
-				< 17 => ItemRarity.Magic, //15% Magic 
+				chance = 16;
+			}
+
+			Rarity = Main.rand.Next(chance) switch
+			{
+				< 2 => ItemRarity.Rare,
+				< 17 => ItemRarity.Magic,
 				_ => ItemRarity.Normal
 			};
 
@@ -149,34 +162,36 @@ internal class MobAprgSystem : GlobalNPC
 
 	public void ApplyRarity(NPC npc)
 	{
+		// npc.TypeName uses only the netID, which is not set by SetDefaults...for some reason.
+		// This works the same, just using type if netID isn't helpful.
+		string typeName = NPCLoader.ModifyTypeName(npc, Lang.GetNPCNameValue(npc.netID == 0 ? npc.type : npc.netID));
+
 		npc.GivenName = Rarity switch
 		{
-			ItemRarity.Magic or ItemRarity.Rare => $"{Enum.GetName(Rarity)} - {npc.GivenOrTypeName}",
+			ItemRarity.Magic or ItemRarity.Rare => $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.RarityNames." + Enum.GetName(Rarity))} {typeName}",
 			ItemRarity.Unique => "UNIQUE MOB",
-			_ => npc.GivenName
+			_ => typeName
 		};
 
 		if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 		{
 			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
+
 			if (entry != null)
 			{
 				Experience = entry.Stats.Experience;
 				if (!string.IsNullOrEmpty(entry.Prefix))
 				{
-					npc.GivenName = $"{entry.Prefix} - {npc.GivenOrTypeName}";
+					npc.GivenName = $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";
 				}
 
-				if (entry.Scale != null)
-				{
-					npc.scale *= (float)entry.Scale;
-				}
+				npc.scale *= entry.Scale ?? 1f;
 			}
 		}
 #if DEBUG
 		else
 		{
-			Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({Lang.GetNPCNameValue(npc.type)})!", Color.Red);
+			Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({typeName})!", Color.Red);
 		}
 #endif
 
