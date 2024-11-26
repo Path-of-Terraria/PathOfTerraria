@@ -3,7 +3,7 @@
 namespace PathOfTerraria.Common.Projectiles;
 
 /// <summary>
-/// Allows the develpoper to define behaviour when the player hovers over a specific projectile.<br/>
+/// Allows the developer to define behaviour when the player hovers over a specific projectile.<br/>
 /// Runs only on the client.
 /// </summary>
 internal class ClickableProjectilePlayer : ModPlayer
