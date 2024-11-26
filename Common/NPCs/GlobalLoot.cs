@@ -10,6 +10,7 @@ internal class GlobalLoot : GlobalNPC
 		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.KingSlime), ModContent.ItemType<KingSlimeMap>(), 1000));
 		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.EyeOfCthulhu), ModContent.ItemType<EoCMap>(), 1000));
 		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.EaterofWorlds), ModContent.ItemType<EoCMap>(), 1000));
+		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.QueenBee), ModContent.ItemType<BeeMap>(), 1000));
 		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.Deerclops), ModContent.ItemType<DeerclopsMap>(), 1000));
 	}
 }

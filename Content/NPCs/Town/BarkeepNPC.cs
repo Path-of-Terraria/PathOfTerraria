@@ -7,6 +7,9 @@ using Terraria.Localization;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 
@@ -113,7 +116,6 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		// button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -122,11 +124,6 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC
 		{
 			shopName = "Shop";
 		}
-		/*else
-		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Blacksmith.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
-		}*/
 	}
 
 	public override void FindFrame(int frameHeight)

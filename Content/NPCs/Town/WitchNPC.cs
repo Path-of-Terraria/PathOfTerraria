@@ -1,4 +1,5 @@
 using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
@@ -16,7 +17,7 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class WitchNPC : ModNPC
+public class WitchNPC : ModNPC, IQuestMarkerNPC
 {
 	public override void SetStaticDefaults()
 	{
@@ -77,7 +78,19 @@ public class WitchNPC : ModNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !ModContent.GetInstance<WitchStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+
+		Quest quest = DetermineNewestQuest();
+		button2 = !quest.CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+	}
+
+	private static Quest DetermineNewestQuest()
+	{
+		if (!ModContent.GetInstance<WitchStartQuest>().Completed)
+		{
+			return ModContent.GetInstance<WitchStartQuest>();
+		}
+
+		return ModContent.GetInstance<QueenBeeQuest>();
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -88,9 +101,19 @@ public class WitchNPC : ModNPC
 			return;
 		}
 
-		Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<GrimoireItem>());
-		Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest");
-		Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WitchStartQuest)}");
+		Quest quest = DetermineNewestQuest();
+
+		if (quest is WitchStartQuest)
+		{
+			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<GrimoireItem>());
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WitchStartQuest)}");
+		}
+		else
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.QueenBeeQuest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(QueenBeeQuest)}");
+		}
 	}
 
 	public override void AddShops()
@@ -128,5 +151,11 @@ public class WitchNPC : ModNPC
 	{
 		multiplier = 10f;
 		randomOffset = 0.5f;
+	}
+
+	public bool HasQuestMarker(out Quest quest)
+	{
+		quest = DetermineNewestQuest();
+		return !quest.Completed;
 	}
 }

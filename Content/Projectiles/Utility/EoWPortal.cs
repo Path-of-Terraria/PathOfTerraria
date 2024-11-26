@@ -60,19 +60,4 @@ internal class EoWPortal : ModProjectile
 	{
 		Projectile.rotation = reader.ReadSingle();
 	}
-
-	//public override bool PreDraw(ref Color lightColor)
-	//{
-	//	Texture2D tex = TextureAssets.Projectile[Type].Value;
-
-	//	for (int i = 0; i < 3; ++i)
-	//	{
-	//		float rotation = Projectile.rotation * (i % 2 == 0 ? -1 : 1);
-	//		Vector2 position = Projectile.Center - Main.screenPosition;
-	//		Color color = lightColor * ((3 - i) * 0.2f) * Projectile.Opacity;
-	//		Main.spriteBatch.Draw(tex, position, null, color, rotation, tex.Size() / 2f, 1f - i * 0.2f, SpriteEffects.None, 0);
-	//	}
-
-	//	return false;
-	//}
 }

@@ -17,10 +17,8 @@ Exploration.Ice: Explore the Ice/Snow biome ({0}%)
 Kill: {
 	SlimeZombies: Kill {0} slimes or zombies
 	Slime: Kill {0} slimes
-	Zombies: Kill {0} zombies
 	HighHealth: Kill {0} enemies with more than 100 health
 	KingSlime: Kill the King Slime
-	FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
 }
 
 Quest: {
@@ -37,7 +35,7 @@ Quest: {
 	BlacksmithStartQuest: {
 		Name: Forging a New Blade
 		Description: ""
-		Kill.Zombies: Mods.PathOfTerraria.Quests.Quest.BlacksmithStartQuest.Kill.Zombies
+		Kill.Zombies: Kill {0} zombies
 	}
 
 	KingSlimeQuest: {
@@ -50,11 +48,11 @@ Quest: {
 	HunterStartQuest: {
 		Name: Drawing the Bow
 		Description: ""
-		Kill.FloatingMisc: Mods.PathOfTerraria.Quests.Quest.HunterStartQuest.Kill.FloatingMisc
+		Kill.FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
 	}
 
 	WitchStartQuest: {
-		Name: WitchStartQuest
+		Name: The Ancient Art
 		Description: ""
 	}
 
@@ -83,6 +81,12 @@ Quest: {
 		SmashOrb: Smash a Crimson Heart
 		EnterDomain: Enter the Brain of Cthulhu domain
 		KillBrain: Kill the Brain of Cthulhu
+	}
+
+	QueenBeeQuest: {
+		Name: A Royal Adventure
+		Description: ""
+		KillQueen: Kill the Queen Bee
 	}
 
 	DeerclopsQuest: {
