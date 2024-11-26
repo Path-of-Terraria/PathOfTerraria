@@ -738,3 +738,17 @@ StoneRing: {
 	DisplayName: Stone Ring
 	Tooltip: ""
 }
+
+AncientEvilBook: {
+	DisplayName: Ancient Evil Book
+	Tooltip:
+		'''
+		Can be used in a simple ritual
+		Inscribed on the inside of the cover is:
+
+		   E
+		C  x  C
+
+		'It speaks of misdeeds and misfortune abound'
+		'''
+}

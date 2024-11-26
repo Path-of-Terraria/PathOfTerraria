@@ -13,7 +13,7 @@ public readonly struct GiveItem(int stack, params int[] ids)
 			for (int i = 0; i < Ids.Length; i++)
 			{
 				int id = Ids[i];
-				names += Lang.GetItemNameValue(id) + (i != Ids.Length - 1 ? " or " : "");
+				names += Lang.GetItemNameValue(id) + (i == Ids.Length - 1 ? "" : (i == Ids.Length - 2 ? " or " : ", "));
 			}
 
 			return names;
@@ -59,7 +59,7 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 
 			foreach (GiveItem item in RequiredItems)
 			{
-				baseText += $"\n{id++}. {item.Stack}x {item.Names}";
+				baseText += $"\n  {id++}. {item.Stack}x {item.Names}";
 			}
 		}
 		

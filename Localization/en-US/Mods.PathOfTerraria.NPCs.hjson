@@ -12,6 +12,7 @@ BlacksmithNPC: {
 		Quest: As you can see, some terrible event happened that simply obliterated my forge. What happened? I don't know, I sleep like a rock...anyhow. I'd love some help gathering materials, the town's metal has run dry for a while now. And maybe some wood while you're at it.
 		Quest2: Fantastic! I'll fix the old forge up quick as I can. Here, take this sword. It's a test I made right before the attack. I'd like for you to test it on some zombies; those buggers are awful to deal with. If you'd be so kind, I'd also enjoy some more materials. Then I think we can get the Iron Anvil truly back to her feet!
 		Quest3: It almost brings a tear to the eye. The Iron Forge is almost ready for work! Here, this is a lesson I've got from my history in battle: Sometimes, you gotta go crazy. Just be careful! And come back whenever you wish - you've been a great help!
+		OldManDialogue: Hello there, traveler!...what do you say? A man referred me to you? Hm...I recall a man, cloaked in red, come around here...some time ago. Can't tell you how long ago now, but a while. He came asking for some specific things...a book of evil, two candles, and a bar of evil. He said something about throwing evil powder on a book...but...that's all I can say. Not sure what the guy was on about.
 	}
 
 	BubbleDialogue: {
@@ -500,3 +501,40 @@ RhineNPC: {
 }
 
 SkullApparition.DisplayName: Skull Apparition
+
+OldMan: {
+	Dialogue: {
+		QuestStart: Ah...hm? Oh...an adventurer! Hello. I...I don't know who or where I am. But I do know that something terrible is happening, deep below me. I...I can scarcely remember a thing. I do know...a man, shorter, bearded...helped me...some time in the past. In a nearby town. I...don't remember the name. Perhaps look for him? I can't say much else...I'm afraid.
+		HasItems:
+			'''
+			...
+			Two lights beside;
+			One bar of evil above,
+			A candle sits.
+
+			On a throne of a forgotten dungeon.
+			A portal appears.
+			'''
+		Complete: ...! Oh! Hello! I return to my former self! What an awful spell that was, don't you think? Felt like I was miles away from myself, yet here all the same. Well. That marks a moment in time for me. Thank you ever so much for freeing me. I'll...reconsider my choices in profession. I'll stay out here, though.
+
+		Day: {
+			0: ...I...don't have anything to say.
+			1: ...
+			2: The day is long.
+		}
+
+		Weak: {
+			0: You...do you know of a curse...?
+			1: Hm...I don't...know...
+			2: Please, don't wait.
+			3: Take caution, friend...
+		}
+
+		Strong: {
+			0: You just might be strong enough...
+			1: Do...can you? I think you...may...
+			2: What was it...book...candle...
+			3: The Dungeon awaits.
+		}
+	}
+}

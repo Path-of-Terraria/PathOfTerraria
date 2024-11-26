@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 
-namespace PathOfTerraria.Common.NPCs;
+namespace PathOfTerraria.Common.NPCs.QuestMarkers;
 
 internal interface IQuestMarkerNPC
 {

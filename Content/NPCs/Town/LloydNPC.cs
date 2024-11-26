@@ -22,6 +22,7 @@ using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using Terraria.Chat;
 using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

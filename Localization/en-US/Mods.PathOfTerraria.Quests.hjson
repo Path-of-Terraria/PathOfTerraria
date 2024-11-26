@@ -90,4 +90,11 @@ Quest: {
 		Description: ""
 		KillDeerclops: Kill Deerclops
 	}
+
+	SkeletronQuest: {
+		Name: Skeletal Remnants
+		Description: ""
+		EnterDomain: Enter Skeletron's domain
+		KillSkeletron: Kill Skeletron
+	}
 }
