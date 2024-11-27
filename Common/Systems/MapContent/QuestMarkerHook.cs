@@ -3,8 +3,6 @@ using PathOfTerraria.Common.NPCs.QuestMarkers.Vanilla;
 using PathOfTerraria.Common.Systems.Questing;
 using ReLogic.Content;
 using System.Collections.Generic;
-using System.Reflection;
-using Terraria.GameContent;
 using Terraria.Graphics.Renderers;
 using Terraria.ID;
 

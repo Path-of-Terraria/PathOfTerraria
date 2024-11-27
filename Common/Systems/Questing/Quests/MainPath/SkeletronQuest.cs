@@ -1,14 +1,11 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 
