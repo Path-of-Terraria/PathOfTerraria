@@ -55,7 +55,7 @@ internal class EvilBook : ModTile
 
 		Vector2 worldPos = new Vector2(i, j).ToWorldCoordinates();
 		IEntitySource source = new EntitySource_TileInteraction(Main.player[Player.FindClosest(worldPos - new Vector2(8), 16, 16)], i, j);
-		var proj = Projectile.NewProjectileDirect(source, worldPos, Vector2.Zero, ModContent.ProjectileType<SkeletronRitualProj>(), 0, 0, Main.myPlayer);
+		Projectile.NewProjectileDirect(source, worldPos, Vector2.Zero, ModContent.ProjectileType<SkeletronRitualProj>(), 0, 0, Main.myPlayer);
 		return;
 
 		static bool IsValidCandle(Tile tile)

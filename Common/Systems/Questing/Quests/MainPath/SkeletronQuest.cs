@@ -34,7 +34,7 @@ internal class SkeletronQuest : Quest
 					new GiveItem(1, ModContent.ItemType<AncientEvilBook>())]),
 			new ConditionCheck((_) => SubworldSystem.Current is SkeletronDomain, 1, this.GetLocalization("EnterDomain")),
 			new KillCount(NPCID.SkeletronHead, 1, this.GetLocalization("KillSkeletron")),
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.Complete"))
+			new InteractWithNPC(NPCID.Clothier, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.Complete"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

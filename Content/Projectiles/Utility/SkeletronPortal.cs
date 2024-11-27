@@ -1,14 +1,27 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.UI;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class SkeletronPortal : ModProjectile
 {
-	private ref float Timer => ref Projectile.ai[0];
+	public override void SetStaticDefaults()
+	{
+		ClickableProjectilePlayer.RegisterProjectile(Type, (_, _) =>
+		{
+			if (Main.mouseRight && Main.mouseRightRelease)
+			{
+				SubworldSystem.Enter<SkeletronDomain>();
+			}
+
+			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"));
+		});
+	}
 
 	public override void SetDefaults()
 	{
@@ -32,21 +45,13 @@ internal class SkeletronPortal : ModProjectile
 		Projectile.rotation += 0.15f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.05f);
 		Projectile.velocity *= 0.96f;
-		
-		if (Timer++ == 48)
-		{
-			for (int i = 0; i < 20; ++i)
-			{
-				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Firework_Red);
-			}
-		}
 
 		if (Main.rand.NextBool(14))
 		{
-			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Firework_Red);
+			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Bone);
 		}
 
-		Lighting.AddLight(Projectile.Center, TorchID.Red);
+		Lighting.AddLight(Projectile.Center, TorchID.White);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -62,27 +67,5 @@ internal class SkeletronPortal : ModProjectile
 		}
 
 		return false;
-	}
-
-	public class ClickEyePortalPlayer : ModPlayer
-	{
-		public override void PostUpdate()
-		{
-			if (Main.myPlayer == Player.whoAmI)
-			{
-				foreach (Projectile projectile in Main.ActiveProjectiles)
-				{
-					if (projectile.ModProjectile is EyePortal teleportal && projectile.Hitbox.Contains(Main.MouseWorld.ToPoint()))
-					{
-						if (Main.mouseRight && Main.mouseRightRelease)
-						{
-							SubworldSystem.Enter<EyeDomain>();
-						}
-
-						Tooltip.SetName("Enter");
-					}
-				}
-			}
-		}
 	}
 }

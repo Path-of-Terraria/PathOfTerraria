@@ -520,7 +520,7 @@ OldMan: {
 			On a throne of a forgotten dungeon.
 			A portal appears.
 			'''
-		Complete: ...! Oh! Hello! I return to my former self! What an awful spell that was, don't you think? Felt like I was miles away from myself, yet here all the same. Well. That marks a moment in time for me. Thank you ever so much for freeing me. I'll...reconsider my choices in profession. I'll stay out here, though.
+		Complete: It was just a few moments ago I returned to my former self! Wow! Felt like I was miles away from myself, yet here all the same. Well. That marks a moment in time for me. Thank you ever so much for freeing me. I'll...reconsider my choices in profession. I owe you much.
 
 		Day: {
 			0: ...I...don't have anything to say.
