@@ -13,6 +13,7 @@ Bring: {
 
 TalkTo: Talk to {0}
 Exploration.Ice: Explore the Ice/Snow biome ({0}%)
+Or: " or "
 
 Kill: {
 	SlimeZombies: Kill {0} slimes or zombies

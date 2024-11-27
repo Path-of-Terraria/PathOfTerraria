@@ -9,11 +9,12 @@ public readonly struct GiveItem(int stack, params int[] ids)
 		get
 		{
 			string names = "";
+			string or = Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Or");
 
 			for (int i = 0; i < Ids.Length; i++)
 			{
 				int id = Ids[i];
-				names += Lang.GetItemNameValue(id) + (i == Ids.Length - 1 ? "" : (i == Ids.Length - 2 ? " or " : ", "));
+				names += Lang.GetItemNameValue(id) + (i == Ids.Length - 1 ? "" : (i == Ids.Length - 2 ? or : ", "));
 			}
 
 			return names;
