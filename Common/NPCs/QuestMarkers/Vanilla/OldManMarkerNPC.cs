@@ -10,6 +10,9 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.NPCs.QuestMarkers.Vanilla;
 
+/// <summary>
+/// Used to give the Old Man a quest marker.
+/// </summary>
 internal class OldManMarkerNPC : IQuestMarkerNPC
 {
 	public bool HasQuestMarker(out Quest quest)
@@ -52,8 +55,8 @@ internal class OldManModifiers : GlobalNPC
 
 		if (talkNPC is not null && talkNPC.type == NPCID.OldMan)
 		{
-			buttonOne = ""; // Disable "Curse" button from appearing
-			buttonTwo = /*!ModContent.GetInstance<SkeletronQuest>().CanBeStarted ? "" :*/ Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+			buttonOne = "";
+			buttonTwo = !ModContent.GetInstance<SkeletronQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		}
 	}
 
