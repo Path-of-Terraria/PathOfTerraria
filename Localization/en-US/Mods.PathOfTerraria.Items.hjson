@@ -775,3 +775,12 @@ AncientEvilBook: {
 		1: "'For now, it speaks elsewhere'"
 	}
 }
+
+SkeletronMap: {
+	DisplayName: Skeletron Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of cobwebs and metal'
+		'''
+}
