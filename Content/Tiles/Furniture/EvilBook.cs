@@ -66,7 +66,10 @@ internal class EvilBookEntity : ModTileEntity
 
 	public override void Update()
 	{
-		CheckRitual();
+		if (!NPC.downedBoss3)
+		{
+			CheckRitual();
+		}
 	}
 
 	private void CheckRitual()

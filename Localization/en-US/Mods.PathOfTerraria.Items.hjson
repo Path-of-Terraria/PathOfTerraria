@@ -769,4 +769,9 @@ AncientEvilBook: {
 
 		'It speaks of misdeeds and misfortune abound'
 		'''
+
+	PostSkeletronTooltip: {
+		0: The inside of the cover is a mess of red and black
+		1: "'For now, it speaks elsewhere'"
+	}
 }
