@@ -1,24 +1,36 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class EyePortal : ModProjectile
+internal class EyePortal : ModProjectile, ISaveProjectile
 {
 	private ref float Timer => ref Projectile.ai[0];
+	private ref float Uses => ref Projectile.ai[1];
+	private ref float MaxUses => ref Projectile.ai[2];
 
 	public override void SetStaticDefaults()
 	{
-		ClickableProjectilePlayer.RegisterProjectile(Type, (_, _) =>
+		ClickableProjectilePlayer.RegisterProjectile(Type, static (proj, _) =>
 		{
 			if (Main.mouseRight && Main.mouseRightRelease)
 			{
 				SubworldSystem.Enter<EyeDomain>();
+
+				proj.ai[1]++;
+				proj.netUpdate = true;
+
+				if (proj.ai[1] > proj.ai[2])
+				{
+					proj.Kill();
+				}
 			}
 
 			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"));
@@ -43,17 +55,26 @@ internal class EyePortal : ModProjectile
 
 	public override void AI()
 	{
+		if (NPC.downedBoss1)
+		{
+			Projectile.Kill();
+			SpawnDust();
+			return;
+		}
+
 		Projectile.timeLeft++;
 		Projectile.rotation += 0.15f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.05f);
 		Projectile.velocity *= 0.96f;
+
+		if (MaxUses == 0)
+		{
+			MaxUses = Map.GetBossUseCount();
+		}
 		
 		if (Timer++ == 48)
 		{
-			for (int i = 0; i < 20; ++i)
-			{
-				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Firework_Red);
-			}
+			SpawnDust();
 		}
 
 		if (Main.rand.NextBool(14))
@@ -62,6 +83,14 @@ internal class EyePortal : ModProjectile
 		}
 
 		Lighting.AddLight(Projectile.Center, TorchID.Red);
+	}
+
+	private void SpawnDust()
+	{
+		for (int i = 0; i < 20; ++i)
+		{
+			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Firework_Red);
+		}
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -79,25 +108,14 @@ internal class EyePortal : ModProjectile
 		return false;
 	}
 
-	public class ClickEyePortalPlayer : ModPlayer
+	public void SaveData(TagCompound tag)
 	{
-		public override void PostUpdate()
-		{
-			if (Main.myPlayer == Player.whoAmI)
-			{
-				foreach (Projectile projectile in Main.ActiveProjectiles)
-				{
-					if (projectile.ModProjectile is EyePortal teleportal && projectile.Hitbox.Contains(Main.MouseWorld.ToPoint()))
-					{
-						if (Main.mouseRight && Main.mouseRightRelease)
-						{
-							SubworldSystem.Enter<EyeDomain>();
-						}
+		tag.Add("uses", Uses);
+	}
 
-						Tooltip.SetName("Enter");
-					}
-				}
-			}
-		}
+	public void LoadData(TagCompound tag, Projectile projectile)
+	{
+		projectile.ai[0] = 49;
+		projectile.ai[1] = tag.GetFloat("uses");
 	}
 }
