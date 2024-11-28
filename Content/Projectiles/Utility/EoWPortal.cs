@@ -31,18 +31,18 @@ internal class EoWPortal : ModProjectile, ISaveProjectile
 
 	public override void AI()
 	{
-		//if (NPC.downedBoss1)
-		//{
-		//	Projectile.Kill();
+		if (NPC.downedBoss1)
+		{
+			Projectile.Kill();
 
-		//	for (int i = 0; i < 20; ++i)
-		//	{
-		//		Vector2 vel = new Vector2(-Main.rand.NextFloat(4, 8), 0).RotatedBy(Projectile.rotation);
-		//		Dust.NewDustPerfect(Projectile.Center + new Vector2(8, Main.rand.NextFloat(-16, 16)), DustID.PurpleTorch, vel);
-		//	}
+			for (int i = 0; i < 20; ++i)
+			{
+				Vector2 vel = new Vector2(-Main.rand.NextFloat(4, 8), 0).RotatedBy(Projectile.rotation);
+				Dust.NewDustPerfect(Projectile.Center + new Vector2(8, Main.rand.NextFloat(-16, 16)), DustID.PurpleTorch, vel);
+			}
 
-		//	return;
-		//}
+			return;
+		}
 
 		Projectile.timeLeft++;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.05f);
