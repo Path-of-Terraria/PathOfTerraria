@@ -250,7 +250,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 	private void PlaceArena(int x, HashSet<int> usedIds)
 	{
-		const int MaxArenas = 8;
+		const int MaxArenas = 9;
 
 		int id = WorldGen.genRand.Next(MaxArenas);
 
