@@ -63,6 +63,18 @@ internal class QueenBeePortal : ModProjectile
 		Projectile.velocity *= 0.96f;
 		Projectile.frame = (int)Math.Abs(Timer-- * 0.15f % 3);
 
+		if (NPC.downedQueenBee)
+		{
+			Projectile.Kill();
+
+			for (int i = 0; i < 20; ++i)
+			{
+				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Honey);
+			}
+
+			return;
+		}
+
 		if (Projectile.honeyWet)
 		{
 			Projectile.velocity.Y -= 0.05f;

@@ -71,7 +71,7 @@ internal class HornetSummon : GrimoireSummon
 				Timer = 0;
 			}
 
-			if (Projectile.honeyWet && NPC.downedQueenBee)
+			if (Projectile.honeyWet && !NPC.downedQueenBee)
 			{
 				HoneyTimer++;
 
