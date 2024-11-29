@@ -94,4 +94,16 @@ Quest: {
 		Description: ""
 		KillDeerclops: Kill Deerclops
 	}
+
+	WoFQuest: {
+		Name: WoFQuest
+		Description: ""
+		WizardStart: Mods.PathOfTerraria.Quests.Quest.WoFQuest.WizardStart
+		ThrainHelp: Mods.PathOfTerraria.Quests.Quest.WoFQuest.ThrainHelp
+		ElaraHelp: Mods.PathOfTerraria.Quests.Quest.WoFQuest.ElaraHelp
+		MorganaHelp: Mods.PathOfTerraria.Quests.Quest.WoFQuest.MorganaHelp
+		WizardContinue: Mods.PathOfTerraria.Quests.Quest.WoFQuest.WizardContinue
+		KillWall: Mods.PathOfTerraria.Quests.Quest.WoFQuest.KillWall
+		WizardFinish: Mods.PathOfTerraria.Quests.Quest.WoFQuest.WizardFinish
+	}
 }
