@@ -61,6 +61,8 @@ internal class QuestModPlayer : ModPlayer
 				StartQuest(quest.FullName, quest.CurrentStep, true);
 			}
 		}
+
+		_questsToEnable.Clear();
 	}
 
 	public override void Load()

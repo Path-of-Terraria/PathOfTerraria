@@ -52,6 +52,11 @@ internal class EoCQuest : Quest
 					Main.item[item].shimmered = true; // So it doesn't immediately shatter + cool effect
 				}),
 			new KillCount(NPCID.EyeofCthulhu, 1, this.GetLocalization("Kill.EoC")),
+			new ActionStep((_, _) =>
+			{
+				RavencrestSystem.UpgradeBuilding("Observatory");
+				return true;
+			}),
 			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest3"))
 			{
 				CountsAsCompletedOnMarker = true
