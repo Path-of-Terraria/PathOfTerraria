@@ -11,6 +11,10 @@ using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
+using PathOfTerraria.Content.Items.Quest;
+using Terraria.DataStructures;
+using Terraria;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -111,6 +115,15 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 		button2 = !ModContent.GetInstance<KingSlimeQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+
+		EoCQuest quest = ModContent.GetInstance<EoCQuest>();
+
+		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
+		{
+			button2 = this.GetLocalization("LunarLiquidButton").Value;
+
+			Main.npcChatCornerItem = ModContent.ItemType<LunarLiquid>();
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -121,11 +134,31 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 		else
 		{
+			EoCQuest quest = ModContent.GetInstance<EoCQuest>();
+
+			if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
+			{
+				if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5)
+				{
+					Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarLiquid").Value;
+					Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>());
+
+					for (int i = 0; i < 5; ++i)
+					{
+						Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarShard>());
+					}
+				}
+				else
+				{
+					Main.npcChatText = this.GetLocalization("Dialogue.CantTradeLiquid").Value;
+				}
+
+				return; // EoC quest is after King Slime quest, shouldn't be possible to do this before needing KS quest
+			}
+
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(KingSlimeQuest)}");
-			
-			// Add map in the future
-			// Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), );
+			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
 		}
 	}
 

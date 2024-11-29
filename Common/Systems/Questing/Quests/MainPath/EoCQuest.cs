@@ -43,7 +43,6 @@ internal class EoCQuest : Quest
 			new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Observatory");
-				ConditionalDropHandler.RemoveId<LunarShard>();
 				return true;
 			}),
 			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"),
@@ -59,6 +58,7 @@ internal class EoCQuest : Quest
 			},
 			new ActionStep((_, _) => {
 				RavencrestSystem.UpgradeBuilding("Observatory");
+				ConditionalDropHandler.RemoveId<LunarShard>();
 				return true;
 			}) { CountsAsCompletedOnMarker = true },
 		];

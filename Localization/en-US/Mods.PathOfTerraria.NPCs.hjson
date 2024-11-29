@@ -142,6 +142,8 @@ GarrickNPC: {
 		3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
 		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; it'll take you right to him.
 		EoCQuestLine: Oh, the Eye you say? Formidable. I recall Eldric speaking of it, though he almost certainly undersold it. Here, I've been tasked with keeping this. Now is the time to use it.
+		TradeLunarLiquid: Ah, I've trained for this. Do care though, these aren't a casual adventure to make.
+		CantTradeLiquid: Oh, lost the Liquid? I'll need a few Lunar Shards to remake it, I'm afraid. Return to me with 5 or more.
 	}
 
 	BubbleDialogue: {
@@ -170,6 +172,7 @@ GarrickNPC: {
 		}
 	}
 
+	LunarLiquidButton: Lunar Liquid
 	Entry: A warrior humiliated by a King, Garrick is taking respite in the town of Ravencrest. He seems to hold a grudge to slime, and wishes he could be stronger. Soon, he'll get back on his feet.
 }
 
@@ -255,10 +258,12 @@ EldricNPC: {
 		Common1: Stay calm, even if the land around isn't.
 		Common2: Would you ever enjoy a tea? I certainly would.
 		Common3: Magic is but one solution. Practicality is another. Bear this in mind.
-		Quest: My poor observatory...it seems an eye is looking down at us. The last time it passed by was when I was a child. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
+		Quest: Hello, traveler. You've stumbled across my soon-to-bee observatory...soon. However, I have noticed something in the sky as of late. The last time it passed by was when I was a child. A great eye looks down upon us, and is causing some issues in the stars. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
 		QuestLunar: Thank you. Talk to Garrick and we'll be on our way.
-		Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will repair my observatory while you battle. Best of luck.
+		Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will continue to build my observatory while you battle. Best of luck.
 		Quest3: Just as I thought. The Eye returns to...wherever it happens to hide. Regrow? Whatever. I'm able to relax now. Hopefully you'll see this observatory up and running soon. Stop by, if you'd like.
+		TradeLunarObject: Ah, another? Very well, the Eye isn't a weakling. Here you are, and best of luck once more.
+		CantTradeObject: Hm, didn't succeed with the Eye? Ah. Well, I believe Garrick can get you more of the Lunar Liquid, and then get me five more Lunar Shards and we'll be on our way.
 	}
 
 	BubbleDialogue: {
@@ -287,6 +292,7 @@ EldricNPC: {
 		}
 	}
 
+	CreateConcoction: Create Concoction
 	Entry: Forlorn and solemn, Eldric is one for silence. An observer of the stars, Eldric knows what the cosmos are; he stares, and it stares right back. Enjoys tea.
 }
 
