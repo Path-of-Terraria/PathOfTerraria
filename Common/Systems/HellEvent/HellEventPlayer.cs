@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Content.Projectiles.Hostile;
+﻿using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Content.Projectiles.Hostile;
 using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
@@ -21,6 +23,11 @@ internal class HellEventPlayer : ModPlayer
 			Main.instance.CameraModifiers.Add(modifier);
 
 			UpdateTiles();
+
+			if (ModContent.GetInstance<WoFQuest>().CanBeStarted)
+			{
+				Player.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WoFQuest)}");
+			}
 		}
 	}
 

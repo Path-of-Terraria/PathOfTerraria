@@ -24,7 +24,7 @@ public class RavencrestSystem : ModSystem
 {
 	public readonly HashSet<string> HasOverworldNPC = [];
 
-	private readonly Dictionary<string, ImprovableStructure> structures = [];
+	private static readonly Dictionary<string, ImprovableStructure> structures = [];
 
 	public bool SpawnedScout = false;
 	public Point16 EntrancePosition;
@@ -182,7 +182,7 @@ public class RavencrestSystem : ModSystem
 			return;
 		}
 
-		ImprovableStructure structure = ModContent.GetInstance<RavencrestSystem>().structures[name];
+		ImprovableStructure structure = structures[name];
 		level = level == -1 ? structure.StructureIndex + 1 : level;
 		structure.Change(level);
 	}
@@ -246,9 +246,13 @@ public class RavencrestSystem : ModSystem
 	public override void ClearWorld()
 	{
 		HasOverworldNPC.Clear();
-		structures.Clear();
 		OneTimeCheckDone = false;
 		SpawnedMorvenPos = null;
+
+		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)
+		{
+			structure.Value.StructureIndex = 0;
+		}
 	}
 
 	public override void NetSend(BinaryWriter writer)

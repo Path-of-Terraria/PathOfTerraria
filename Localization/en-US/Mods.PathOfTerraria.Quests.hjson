@@ -94,4 +94,16 @@ Quest: {
 		Description: ""
 		KillDeerclops: Kill Deerclops
 	}
+
+	WoFQuest: {
+		Name: Unleashing Chaos
+		Description: ""
+		WizardStart: Hm....yes. The ground deep beneath us all shakes with a vigor, from the one they hid away. You see, long ago, a group of adventurers locked an evil into a fascimile. However, with your incredible strength slaying all these beasts around the world, that power seems to have crept its way to that locked evil. Which is to say, we must kill it. Talk to Thrain, Morgana and Elara as soon as you can. They understand, and will give you weapons. Take this, and godspeed.
+		ThrainHelp: Oh. So it is. Here...I've been preparing for a day like this, hopefully it's up to your standard. Be well.
+		ElaraHelp: Take care, and take this. The eyes are weakest.
+		MorganaHelp: Oh...? Bahaha! The time comes! Here you are, a veritable buffet of Grimoire materials! Enjoy your boons! Bahahaha!
+		WizardContinue: Here you are. Well, take these. These are...yes...explosive, but it's just how it works. I swear. Throw these upon the ashes of Hell to open a portal to the place that the Wall was confined to. Note - you will have one chance to kill it. No mistakes. And we don't know what happens upon the wall's death. Much is uncertain, aside from that it must die. Good luck.
+		KillWall: Kill the Wall of Flesh
+		WizardFinish: You return! We see many changes, but the earth won't shake and shutter under us any longer. Prepare yourself for the future, as there is much to learn. Especially for I, who has...a lot of stuff to try out.
+	}
 }
