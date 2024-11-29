@@ -8,6 +8,11 @@ internal class HornetTriggerItem : ModItem
 {
 	protected virtual int Style => 0;
 
+	public override bool IsLoadingEnabled(Mod mod)
+	{
+		return PoTMod.CheatModEnabled;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		ItemID.Sets.DisableAutomaticPlaceableDrop[Type] = true;

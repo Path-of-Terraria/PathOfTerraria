@@ -1,20 +1,27 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.HellEvent;
 
 internal class HellEventSystem : ModSystem
 {
-	public static bool EventOccuring { get; private set; }
+	public static bool EventOccuringInstant { get; private set; }
+	public static bool EventOccuring => EventStrength > 0.1f;
+
 	public static float EventStrength = 0;
 
 	private int eventTimer = 0;
 
 	public override void PreUpdateEntities()
 	{
-		EventStrength = MathHelper.Lerp(EventStrength, EventOccuring ? 1 : 0, 0.05f);
+		if (Main.hardMode || SubworldSystem.Current is not null and not WallOfFleshDomain)
+		{
+			return;
+		}
 
 		eventTimer++;
-		EventOccuring = false;
+		EventOccuringInstant = false;
 
 		bool canEventOccur = false;
 
@@ -34,7 +41,12 @@ internal class HellEventSystem : ModSystem
 
 		if (eventTimer % (1 * 60 * 60) > 0.5f * 60 * 60)
 		{
-			EventOccuring = true;
+			EventOccuringInstant = true;
 		}
+	}
+
+	public override void PreUpdatePlayers()
+	{
+		EventStrength = MathHelper.Lerp(EventStrength, EventOccuringInstant ? 1 : 0, 0.01f);
 	}
 }

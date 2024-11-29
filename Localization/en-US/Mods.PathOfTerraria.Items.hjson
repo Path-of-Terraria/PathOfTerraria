@@ -756,3 +756,8 @@ StoneRing: {
 	DisplayName: Stone Ring
 	Tooltip: ""
 }
+
+FireMawTriggerItem: {
+	DisplayName: Fire Maw Trigger Item
+	Tooltip: ""
+}

@@ -21,6 +21,8 @@ public sealed class PoTMod : Mod
 	/// </summary>
 	internal static PoTMod Instance => ModContent.GetInstance<PoTMod>();
 
+	public static bool CheatModEnabled => ModLoader.HasMod("CheatSheet") || ModLoader.HasMod("HerosMod") || ModLoader.HasMod("DragonLens");
+
 	public override void Load()
 	{
 		base.Load();
