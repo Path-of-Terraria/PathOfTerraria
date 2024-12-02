@@ -17,6 +17,7 @@ using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

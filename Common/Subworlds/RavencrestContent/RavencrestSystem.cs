@@ -139,6 +139,13 @@ public class RavencrestSystem : ModSystem
 				}
 			}
 		}
+
+		int oldMan = NPC.FindFirstNPC(NPCID.OldMan);
+
+		if (oldMan != -1 && NPC.downedBoss3)
+		{
+			Main.npc[oldMan].Transform(NPCID.Clothier);
+		}
 	}
 
 	private void RavencrestOneTimeChecks()

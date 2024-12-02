@@ -6,11 +6,11 @@ using Terraria.Localization;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Content.Items.Quest;
 using Terraria.DataStructures;
 

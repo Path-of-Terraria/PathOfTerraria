@@ -1,6 +1,6 @@
 ﻿using Terraria.Localization;
 using Terraria.ModLoader.IO;
-using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
