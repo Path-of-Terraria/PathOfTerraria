@@ -63,11 +63,15 @@ public class SkeletronDomain : BossDomainSubworld
 
 	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
 
+	private readonly List<Point16> clearYPositions = [];
+
 	public Rectangle Arena = Rectangle.Empty;
 	public Point PortalLocation = Point.Zero;
 	public Point WellBottom = Point.Zero;
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
+	
+	private int clearY = 0;
 
 	private readonly List<PlacedRoom> SpecialRooms = [];
 	private readonly List<PlacedRoom> RoomsToWire = [];
@@ -163,7 +167,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 				WorldGen.PlaceObject(point.X, point.Y, TileID.Banners, true, styles);
 			}
-			else if (WorldGen.genRand.NextBool(420))
+			else if (WorldGen.genRand.NextBool(420) && !clearYPositions.Any(x => Math.Abs(x.X - point.X) < 10))
 			{
 				PlaceSpikes(point.X, point.Y);
 			}
@@ -354,6 +358,8 @@ public class SkeletronDomain : BossDomainSubworld
 		int roomHeight = WorldGen.genRand.Next(12, 16);
 		CreatePlainRoom(WellBottom.X, WellBottom.Y + BaseTunnelDepth, WorldGen.genRand.Next(17, 23), roomHeight, true, true);
 
+		clearYPositions.Add(new(WellBottom.X, WellBottom.Y + BaseTunnelDepth));
+
 		int corridorEnd = WellBottom.X - WorldGen.genRand.Next(50, 80);
 		int corridorEndY = WellBottom.Y + BaseTunnelDepth + 2 + WorldGen.genRand.Next(-6, 6);
 
@@ -380,6 +386,8 @@ public class SkeletronDomain : BossDomainSubworld
 
 		int roomHeight = WorldGen.genRand.Next(16, 21);
 		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true, true);
+
+		clearYPositions.Add(new(x, y));
 
 		bool left = WorldGen.genRand.NextBool();
 		int corridorEnd = x - (left ? WorldGen.genRand.Next(150, 180) : WorldGen.genRand.Next(50, 80));
@@ -415,6 +423,8 @@ public class SkeletronDomain : BossDomainSubworld
 
 		int roomHeight = WorldGen.genRand.Next(16, 21);
 		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true, true);
+		
+		clearYPositions.Add(new(x, y));
 
 		int corridorEnd = x - WorldGen.genRand.Next(140, 170);
 		bool left = WorldGen.genRand.NextBool();
@@ -686,6 +696,24 @@ public class SkeletronDomain : BossDomainSubworld
 			{
 				allInArena = false;
 			}
+
+			if (clearYPositions.Count > 0 && player.position.Y / 16 > clearY)
+			{
+				clearY = (int)player.position.Y / 16;
+
+				if (clearYPositions.Any(x => x.Y < clearY && x.ToWorldCoordinates().DistanceSQ(player.Center) < 400 * 400))
+				{
+					Main.spawnTileX = (int)player.Center.X / 16;
+					Main.spawnTileY = clearY;
+
+					clearYPositions.RemoveAll(x => x.Y < clearY && x.ToWorldCoordinates().DistanceSQ(player.Center) < 400 * 400);
+
+					if (Main.netMode != NetmodeID.SinglePlayer)
+					{
+						NetMessage.SendData(MessageID.WorldData);
+					}
+				}
+			}
 		}
 
 		if (!BossSpawned && allInArena)
@@ -707,7 +735,7 @@ public class SkeletronDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.EaterofWorldsHead);
+			BossTracker.CachedBossesDowned.Add(NPCID.SkeletronHead);
 			ReadyToExit = true;
 		}
 	}

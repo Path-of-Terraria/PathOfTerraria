@@ -15,6 +15,7 @@ using Terraria.DataStructures;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

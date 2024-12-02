@@ -1,12 +1,20 @@
-﻿using PathOfTerraria.Common.NPCs;
+﻿using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.NPCs.QuestMarkers.Vanilla;
 using PathOfTerraria.Common.Systems.Questing;
 using ReLogic.Content;
+using System.Collections.Generic;
 using Terraria.Graphics.Renderers;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.MapContent;
 
 internal class QuestMarkerHook : ILoadable
 {
+	public static Dictionary<int, IQuestMarkerNPC> VanillaQuestMarkerNPCs = new()
+	{
+		{ NPCID.OldMan, new OldManMarkerNPC() }
+	};
+
 	private static Asset<Texture2D> _markers = null;
 
 	public void Load(Mod mod)
@@ -21,7 +29,7 @@ internal class QuestMarkerHook : ILoadable
 	{
 		orig(self, entity, headId, position, color, rotation, scale, effects);
 
-		if (entity is NPC npc && npc.ModNPC is IQuestMarkerNPC questNPC)
+		if (entity is NPC npc && (npc.ModNPC is IQuestMarkerNPC questNPC || VanillaQuestMarkerNPCs.TryGetValue(npc.type, out questNPC)))
 		{
 			if (!questNPC.HasQuestMarker(out Quest quest))
 			{

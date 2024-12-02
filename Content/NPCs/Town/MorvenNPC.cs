@@ -23,6 +23,7 @@ using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using Terraria.Chat;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
