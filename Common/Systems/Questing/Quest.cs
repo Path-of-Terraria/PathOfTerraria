@@ -101,6 +101,7 @@ public abstract class Quest : ModType, ILocalizedModType
 	{
 		tag.Add("type", FullName);
 		tag.Add("completed", Completed);
+		tag.Add("active", Active);
 		tag.Add("currentQuest", CurrentStep);
 
 		if (ActiveStep is null)

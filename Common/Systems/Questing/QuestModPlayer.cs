@@ -17,7 +17,7 @@ internal class QuestModPlayer : ModPlayer
 	
 	// need a list of what npcs start what quests
 	private readonly HashSet<string> _enabledQuests = [];
-	private readonly List<CachedQuest> _questsToEnable = [];
+	private readonly List<CachedQuest> _cachedQuest = [];
 
 	private bool _firstQuest = true;
 
@@ -52,7 +52,7 @@ internal class QuestModPlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		foreach (CachedQuest cachedQuest in _questsToEnable)
+		foreach (CachedQuest cachedQuest in _cachedQuest)
 		{
 			var quest = Quest.LoadFrom(cachedQuest.tag, Player);
 
@@ -62,7 +62,7 @@ internal class QuestModPlayer : ModPlayer
 			}
 		}
 
-		_questsToEnable.Clear();
+		_cachedQuest.Clear();
 	}
 
 	public override void Load()
@@ -90,12 +90,9 @@ internal class QuestModPlayer : ModPlayer
 
 		foreach (Quest quest in quests)
 		{
-			if (quest.Active)
-			{
-				var newTag = new TagCompound();
-				quest.Save(newTag);
-				questTags.Add(newTag);
-			}
+			var newTag = new TagCompound();
+			quest.Save(newTag);
+			questTags.Add(newTag);
 		}
 
 		tag.Add("questTags", questTags);
@@ -114,7 +111,7 @@ internal class QuestModPlayer : ModPlayer
 		// We can't enable quests here; that'd set it to Active and mess up all save data for every other player.
 		// Instead, we cache the quests that need to be loaded later,
 		// as the only time the player can save is in-world.
-		questTags.ForEach(tag => _questsToEnable.Add(new CachedQuest(tag)));
+		questTags.ForEach(tag => _cachedQuest.Add(new CachedQuest(tag)));
 	}
 
 	public override void PostUpdateMiscEffects()

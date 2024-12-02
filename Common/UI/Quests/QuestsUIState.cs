@@ -81,6 +81,22 @@ public class QuestsUIState : CloseableSmartUi
 		int offset = 0;
 		QuestModPlayer player = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 
+		foreach (Quest quest in ModContent.GetContent<Quest>().Where(x => x.Completed))
+		{
+			UIText text = new(quest.DisplayName.Value, 0.7f)
+			{
+				TextColor = new Color(43, 28, 17),
+				Width = StyleDimension.FromPixels(325),
+				Height = StyleDimension.FromPixels(22),
+				Left = StyleDimension.FromPercent(0.15f),
+				Top = StyleDimension.FromPixels(120 + offset)
+			};
+
+			_questDetails.Append(text);
+
+			offset += 22;
+		}
+
 		foreach (string quest in player.GetAllQuests())
 		{
 			UISelectableQuest selectableQuest = new(quest);
