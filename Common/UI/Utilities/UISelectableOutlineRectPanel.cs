@@ -11,6 +11,8 @@ public class UISelectableOutlineRectPanel : UIPanel
 	public bool DrawFilled { get; set; } = true;
 	public bool DrawBorder { get; set; } = false;
 
+	public int BorderThickness { get; set; } = 1;
+
 	public Color HoverFillColour { get; set; }
 	public Color SelectedFillColour { get; set; }
 
@@ -35,20 +37,20 @@ public class UISelectableOutlineRectPanel : UIPanel
 
 			if (DrawBorder)
 			{
-				DrawRectangleBorder(spriteBatch, GetDimensions().ToRectangle(), IsSelected ? SelectedOutlineColour : HoverOutlineColour);
+				DrawRectangleBorder(spriteBatch, GetDimensions().ToRectangle(), IsSelected ? SelectedOutlineColour : HoverOutlineColour, BorderThickness);
 			}
 		}
 		else if (DrawBorder)
 		{
-			DrawRectangleBorder(spriteBatch, GetDimensions().ToRectangle(), NormalOutlineColour);
+			DrawRectangleBorder(spriteBatch, GetDimensions().ToRectangle(), NormalOutlineColour, BorderThickness);
 		}
 	}
 
-	private static void DrawRectangleBorder(SpriteBatch spriteBatch, Rectangle rect, Color colour)
+	private static void DrawRectangleBorder(SpriteBatch spriteBatch, Rectangle rect, Color colour, int thick)
 	{
-		spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(rect.X, rect.Y, rect.Width, 1), null, colour);
-		spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(rect.X, rect.Y + 1, 1, rect.Height - 2), null, colour);
-		spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(rect.Right - 1, rect.Y + 1, 1, rect.Height - 2), null, colour);
-		spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, 1), null, colour);
+		spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(rect.X, rect.Y, rect.Width, thick), null, colour);
+		spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(rect.X, rect.Y + 1, thick, rect.Height - 2), null, colour);
+		spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(rect.Right - 1, rect.Y + 1, thick, rect.Height - 2), null, colour);
+		spriteBatch.Draw(TextureAssets.BlackTile.Value, new Rectangle(rect.X, rect.Bottom - 1, rect.Width, thick), null, colour);
 	}
 }

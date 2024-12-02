@@ -81,15 +81,16 @@ public class QuestsUIState : CloseableSmartUi
 		int offset = 0;
 		QuestModPlayer player = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 
+		// Create dummy quests that are already completed
 		foreach (Quest quest in ModContent.GetContent<Quest>().Where(x => x.Completed))
 		{
 			UIText text = new(quest.DisplayName.Value, 0.7f)
 			{
-				TextColor = new Color(43, 28, 17),
-				Width = StyleDimension.FromPixels(325),
+				TextColor = Color.Gray,
+				ShadowColor = Color.Transparent,
 				Height = StyleDimension.FromPixels(22),
-				Left = StyleDimension.FromPercent(0.15f),
-				Top = StyleDimension.FromPixels(120 + offset)
+				Left = StyleDimension.FromPixelsAndPercent(26, 0.15f),
+				Top = StyleDimension.FromPixels(126 + offset),
 			};
 
 			_questDetails.Append(text);
@@ -97,9 +98,10 @@ public class QuestsUIState : CloseableSmartUi
 			offset += 22;
 		}
 
+		// Create actual current quests
 		foreach (string quest in player.GetAllQuests())
 		{
-			UISelectableQuest selectableQuest = new(quest);
+			UISelectableQuest selectableQuest = new(quest, _questDetails);
 			selectableQuest.Left.Set(0, 0.15f);
 			selectableQuest.Top.Set(120 + offset, 0);
 			selectableQuest.OnLeftClick += (_, _) => SelectQuest(quest);

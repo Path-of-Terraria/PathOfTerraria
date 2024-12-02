@@ -21,7 +21,7 @@ public abstract class Quest : ModType, ILocalizedModType
 
 	public string LocalizationCategory => $"Quests.Quest";
 
-	public QuestStep ActiveStep = null;
+	public QuestStep ActiveStep => QuestSteps[CurrentStep];
 
 	public int CurrentStep;
 	public bool Completed;
@@ -70,11 +70,11 @@ public abstract class Quest : ModType, ILocalizedModType
 		if (CurrentStep >= QuestSteps.Count)
 		{
 			Completed = true;
+			Active = false;
 			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
 			return;
 		}
 
-		ActiveStep = QuestSteps[CurrentStep];
 		Active = true;
 	}
 
@@ -99,9 +99,21 @@ public abstract class Quest : ModType, ILocalizedModType
 
 	public void Save(TagCompound tag)
 	{
-		tag.Add("type", FullName);
 		tag.Add("completed", Completed);
+		tag.Add("type", FullName); // This is not matched in Load, instead being checked in LoadFrom
+
+		if (Completed)
+		{
+			return;
+		}
+
 		tag.Add("active", Active);
+
+		if (!Active)
+		{
+			return;
+		}
+
 		tag.Add("currentQuest", CurrentStep);
 
 		if (ActiveStep is null)
@@ -116,9 +128,19 @@ public abstract class Quest : ModType, ILocalizedModType
 
 	private void Load(TagCompound tag, Player player)
 	{
-		if (tag.GetBool("completed"))
+		Reset();
+
+		Completed = tag.GetBool("completed");
+
+		if (Completed)
 		{
-			Completed = true;
+			return;
+		}
+
+		Active = tag.GetBool("active");
+
+		if (!Active)
+		{
 			return;
 		}
 
@@ -131,6 +153,14 @@ public abstract class Quest : ModType, ILocalizedModType
 		}
 
 		ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
+	}
+
+	private void Reset()
+	{
+		Active = false;
+		Completed = false;
+		CurrentStep = 0;
+		QuestSteps = SetSteps();
 	}
 
 	/// <summary>
