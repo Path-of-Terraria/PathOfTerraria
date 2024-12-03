@@ -55,7 +55,7 @@ internal class BloodOath : Sword, GenerateName.IItem
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.None;
 	}
-	
+
 	string GenerateName.IItem.GenerateName(string defaultName)
 	{
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
@@ -67,7 +67,7 @@ internal class BloodOath : Sword, GenerateName.IItem
 		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(0, 10, 10); // Add 10% life
 		return [sharpAffix, lifeAffix];
 	}
-	
+
 	public override bool AltFunctionUse(Player player)
 	{
 		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
@@ -79,20 +79,22 @@ internal class BloodOath : Sword, GenerateName.IItem
 
 		_specialOn = !_specialOn;
 
-		if (!_specialOn)
+		if (_specialOn)
 		{
-			foreach (int npcWho in _hitNpcs)
-			{
-				NPC npc = Main.npc[npcWho];
-
-				if (npc.active && npc.TryGetGlobalNPC(out BloodOathNPC bloodNpc))
-				{
-					bloodNpc.PopStacks(npc);
-				}
-			}
-
-			modPlayer.SetAltCooldown(1 * 60, 0);
+			return false;
 		}
+
+		foreach (int npcWho in _hitNpcs)
+		{
+			NPC npc = Main.npc[npcWho];
+
+			if (npc.active && npc.TryGetGlobalNPC(out BloodOathNPC bloodNpc))
+			{
+				bloodNpc.PopStacks(npc);
+			}
+		}
+
+		modPlayer.SetAltCooldown(1 * 60, 0);
 
 		return false;
 	}
@@ -102,22 +104,27 @@ internal class BloodOath : Sword, GenerateName.IItem
 		base.HoldItem(player);
 
 		if (_specialOn && Main.rand.NextBool(12))
-		{ 
-			Dust.NewDust(player.GetFrontHandPosition(Player.CompositeArmStretchAmount.None, 4f) + new Vector2(0, 4), 1, 1, DustID.Firework_Red);
+		{
+			Dust.NewDust(player.GetFrontHandPosition(Player.CompositeArmStretchAmount.None, 4f) + new Vector2(0, 4), 1,
+				1, DustID.Firework_Red);
 		}
 	}
 
 	public override void OnHitNPC(Player player, NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (_specialOn)
+		if (!_specialOn)
 		{
-			var deathReason = PlayerDeathReason.ByCustomReason(Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DeathReason"));
-			player.Hurt(deathReason, 1, 0, false, false, ImmunityCooldownID.TileContactDamage, false);
-			player.hurtCooldowns[ImmunityCooldownID.TileContactDamage] = 3;
-			target.GetGlobalNPC<BloodOathNPC>().ApplyStack(player.whoAmI);
-
-			_hitNpcs.Add(target.whoAmI);
+			return;
 		}
+
+		var deathReason =
+			PlayerDeathReason.ByCustomReason(
+				Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DeathReason"));
+		player.Hurt(deathReason, 1, 0, false, false, ImmunityCooldownID.TileContactDamage, false);
+		player.hurtCooldowns[ImmunityCooldownID.TileContactDamage] = 3;
+		target.GetGlobalNPC<BloodOathNPC>().ApplyStack(player.whoAmI);
+
+		_hitNpcs.Add(target.whoAmI);
 	}
 
 	public class BloodOathNPC : GlobalNPC
@@ -190,7 +197,8 @@ internal class BloodOath : Sword, GenerateName.IItem
 				float rotation = (Main.GameUpdateCount * 0.02f + i * 0.71f) * direction;
 				Vector2 pos = npc.Center - screenPos + new Vector2(i * 10).RotatedBy(rotation) - new Vector2(0, 40);
 				float spriteRotation = npc.velocity.X * 0.06f;
-				spriteBatch.Draw(daggerTexture.Value, pos, null, Color.White * (0.5f - i * 0.05f), spriteRotation, daggerTexture.Value.Size() / 2f, 1, SpriteEffects.None, 0);
+				spriteBatch.Draw(daggerTexture.Value, pos, null, Color.White * (0.5f - i * 0.05f), spriteRotation,
+					daggerTexture.Value.Size() / 2f, 1, SpriteEffects.None, 0);
 			}
 		}
 	}
