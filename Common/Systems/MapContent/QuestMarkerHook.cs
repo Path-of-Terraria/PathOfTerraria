@@ -53,7 +53,7 @@ internal class QuestMarkerHook : ILoadable
 			}
 
 			Rectangle source = new(0, (sbyte)markerType * 32, 32, 32);
-			Main.spriteBatch.Draw(_markers.Value, position - new Vector2(0, 36 * scale), source, color, 0f, source.Size() / 2f, scale, effects, 0);
+			Main.spriteBatch.Draw(_markers.Value, position - new Vector2(0, 36 * scale), source, color, 0f, source.Size() / 2f, scale, SpriteEffects.None, 0);
 		}
 	}
 

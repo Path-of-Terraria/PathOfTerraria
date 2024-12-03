@@ -11,6 +11,8 @@ using PathOfTerraria.Common.NPCs.Dialogue;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Content.Items.Quest;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -107,6 +109,15 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 		button2 = !ModContent.GetInstance<EoCQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+
+		EoCQuest quest = ModContent.GetInstance<EoCQuest>();
+
+		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
+		{
+			button2 = this.GetLocalization("CreateConcoction").Value;
+
+			Main.npcChatCornerItem = ModContent.ItemType<LunarObject>();
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -117,6 +128,30 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 		else
 		{
+			EoCQuest quest = ModContent.GetInstance<EoCQuest>();
+
+			if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
+			{
+				if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5 && Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
+				{
+					Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarObject").Value;
+					Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarObject>());
+
+					Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarLiquid>());
+
+					for (int i = 0; i < 5; ++i)
+					{
+						Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarShard>());
+					}
+				}
+				else
+				{
+					Main.npcChatText = this.GetLocalization("Dialogue.CantTradeObject").Value;
+				}
+
+				return;
+			}
+
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(EoCQuest)}");
 		}

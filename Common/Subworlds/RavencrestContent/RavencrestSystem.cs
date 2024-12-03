@@ -253,9 +253,13 @@ public class RavencrestSystem : ModSystem
 	public override void ClearWorld()
 	{
 		HasOverworldNPC.Clear();
-		structures.Clear();
 		OneTimeCheckDone = false;
 		SpawnedMorvenPos = null;
+
+		foreach (KeyValuePair<string, ImprovableStructure> item in structures)
+		{
+			item.Value.Change(0);
+		}
 	}
 
 	public override void NetSend(BinaryWriter writer)

@@ -51,7 +51,6 @@ internal class HunterStartQuest : Quest
 	{
 		return 
 		[
-			new ActionStep((_, _) => true),
 			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"),
 			[
 				new GiveItem(20, ItemID.Silk), new(50, ItemID.Wood), new(50, ItemID.StoneBlock),
