@@ -13,7 +13,6 @@ using NPCUtils;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Content.Items.Quest;
 using Terraria.DataStructures;
-using Terraria;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
 namespace PathOfTerraria.Content.NPCs.Town;
@@ -121,8 +120,15 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
 		{
 			button2 = this.GetLocalization("LunarLiquidButton").Value;
-
 			Main.npcChatCornerItem = ModContent.ItemType<LunarLiquid>();
+		}
+
+		KingSlimeQuest kingQuest = ModContent.GetInstance<KingSlimeQuest>();
+
+		if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
+		{
+			button2 = this.GetLocalization("AnotherMap").Value;
+			Main.npcChatCornerItem = ModContent.ItemType<KingSlimeMap>();
 		}
 	}
 
@@ -135,6 +141,14 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		else
 		{
 			EoCQuest quest = ModContent.GetInstance<EoCQuest>();
+			KingSlimeQuest kingQuest = ModContent.GetInstance<KingSlimeQuest>();
+
+			if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
+			{
+				Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>());
+				Main.npcChatText = this.GetLocalization("Dialogue.GetKingMapAgain").Value;
+				return;
+			}
 
 			if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
 			{

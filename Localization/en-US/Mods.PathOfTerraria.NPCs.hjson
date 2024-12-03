@@ -145,6 +145,7 @@ GarrickNPC: {
 		EoCQuestLine: Oh, the Eye you say? Formidable. I recall Eldric speaking of it, though he almost certainly undersold it. Here, I've been tasked with keeping this. Now is the time to use it.
 		TradeLunarLiquid: Ah, I've trained for this. Do care though, these aren't a casual adventure to make.
 		CantTradeLiquid: Oh, lost the Liquid? I'll need a few Lunar Shards to remake it, I'm afraid. Return to me with 5 or more.
+		GetKingMapAgain: Ah, couldn't manage it? Lost the map or something? Either way, here you are. You're lucky I carry cartography equipment everywhere...just in case.
 	}
 
 	BubbleDialogue: {
@@ -174,6 +175,7 @@ GarrickNPC: {
 	}
 
 	LunarLiquidButton: Lunar Liquid
+	AnotherMap: Map
 	Entry: A warrior humiliated by a King, Garrick is taking respite in the town of Ravencrest. He seems to hold a grudge to slime, and wishes he could be stronger. Soon, he'll get back on his feet.
 }
 
