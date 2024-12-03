@@ -784,3 +784,13 @@ SkeletronMap: {
 		'The map smells of cobwebs and metal'
 		'''
 }
+
+LimpidShard: {
+	DisplayName: Limpid Shard
+	Tooltip:
+    	'''
+    	Turns a magic or rare item normal
+    	Hold an item then right click this Shard to make item normal
+    	'It looks so plain'
+    	'''
+}
