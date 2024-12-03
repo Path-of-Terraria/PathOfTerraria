@@ -1,26 +1,38 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class QueenBeePortal : ModProjectile
 {
 	private ref float Timer => ref Projectile.ai[0];
+	private ref float Uses => ref Projectile.ai[1];
+	private ref float MaxUses => ref Projectile.ai[2];
 
 	public override void SetStaticDefaults()
 	{
 		Main.projFrames[Type] = 3;
 
-		ClickableProjectilePlayer.RegisterProjectile(Type, (_, _) =>
+		ClickableProjectilePlayer.RegisterProjectile(Type, static (proj, _) =>
 		{
 			if (Main.mouseRight && Main.mouseRightRelease)
 			{
 				SubworldSystem.Enter<QueenBeeDomain>();
+
+				proj.ai[1]++;
+				proj.netUpdate = true;
+
+				if (proj.ai[1] > proj.ai[2])
+				{
+					proj.Kill();
+				}
 			}
 
 			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"));
@@ -51,9 +63,26 @@ internal class QueenBeePortal : ModProjectile
 		Projectile.velocity *= 0.96f;
 		Projectile.frame = (int)Math.Abs(Timer-- * 0.15f % 3);
 
+		if (NPC.downedQueenBee)
+		{
+			Projectile.Kill();
+
+			for (int i = 0; i < 20; ++i)
+			{
+				Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Honey);
+			}
+
+			return;
+		}
+
 		if (Projectile.honeyWet)
 		{
 			Projectile.velocity.Y -= 0.05f;
+		}
+
+		if (MaxUses == 0)
+		{
+			MaxUses = Map.GetBossUseCount();
 		}
 
 		if (Main.rand.NextBool(14))
@@ -78,5 +107,16 @@ internal class QueenBeePortal : ModProjectile
 		}
 
 		return false;
+	}
+
+	public void SaveData(TagCompound tag)
+	{
+		tag.Add("uses", Uses);
+	}
+
+	public void LoadData(TagCompound tag, Projectile projectile)
+	{
+		projectile.ai[0] = 49;
+		projectile.ai[1] = tag.GetFloat("uses");
 	}
 }

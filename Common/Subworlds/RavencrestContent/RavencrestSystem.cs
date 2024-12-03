@@ -139,6 +139,13 @@ public class RavencrestSystem : ModSystem
 				}
 			}
 		}
+
+		int oldMan = NPC.FindFirstNPC(NPCID.OldMan);
+
+		if (oldMan != -1 && NPC.downedBoss3)
+		{
+			Main.npc[oldMan].Transform(NPCID.Clothier);
+		}
 	}
 
 	private void RavencrestOneTimeChecks()
@@ -249,9 +256,9 @@ public class RavencrestSystem : ModSystem
 		OneTimeCheckDone = false;
 		SpawnedMorvenPos = null;
 
-		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)
+		foreach (KeyValuePair<string, ImprovableStructure> item in structures)
 		{
-			structure.Value.StructureIndex = 0;
+			item.Value.Change(0);
 		}
 	}
 

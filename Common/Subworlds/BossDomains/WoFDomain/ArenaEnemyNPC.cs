@@ -17,6 +17,21 @@ internal class ArenaEnemyNPC : GlobalNPC
 		return clone;
 	}
 
+	public override void Load()
+	{
+		On_NPC.NPCLoot_DropItems += StopArenaNPCsFromDroppingLoot;
+	}
+
+	private void StopArenaNPCsFromDroppingLoot(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
+	{
+		if (self.GetGlobalNPC<ArenaEnemyNPC>().Arena)
+		{
+			return;
+		}
+
+		orig(self, closestPlayer);
+	}
+
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
 		bitWriter.WriteBit(Arena);

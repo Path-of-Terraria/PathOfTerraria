@@ -8,16 +8,14 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
-internal class QuestModPlayer : ModPlayer
+public class QuestModPlayer : ModPlayer
 {
-	private readonly record struct CachedQuest(TagCompound tag);
-
 	// ReSharper disable once InconsistentNaming
 	public static ModKeybind ToggleQuestUIKey;
 	
 	// need a list of what npcs start what quests
 	private readonly HashSet<string> _enabledQuests = [];
-	private readonly List<CachedQuest> _questsToEnable = [];
+	private readonly List<TagCompound> _cachedQuestTags = [];
 
 	private bool _firstQuest = true;
 
@@ -52,15 +50,17 @@ internal class QuestModPlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		foreach (CachedQuest cachedQuest in _questsToEnable)
+		foreach (TagCompound cachedQuest in _cachedQuestTags)
 		{
-			var quest = Quest.LoadFrom(cachedQuest.tag, Player);
+			var quest = Quest.LoadFrom(cachedQuest, Player);
 
-			if (quest is not null)
+			if (quest is not null && quest.Active)
 			{
 				StartQuest(quest.FullName, quest.CurrentStep, true);
 			}
 		}
+
+		//_cachedQuestTags.Clear();
 	}
 
 	public override void Load()
@@ -88,12 +88,9 @@ internal class QuestModPlayer : ModPlayer
 
 		foreach (Quest quest in quests)
 		{
-			if (quest.Active)
-			{
-				var newTag = new TagCompound();
-				quest.Save(newTag);
-				questTags.Add(newTag);
-			}
+			var newTag = new TagCompound();
+			quest.Save(newTag);
+			questTags.Add(newTag);
 		}
 
 		tag.Add("questTags", questTags);
@@ -109,10 +106,11 @@ internal class QuestModPlayer : ModPlayer
 		_firstQuest = !tag.ContainsKey("firstQuest"); // If we have the tag, the first quest is false
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
-		// We can't enable quests here; that'd set it to Active and mess up all save data for every other player.
+		// We can't enable quests here; that'd set it to Complete or Active and mess up all save data for every other player.
 		// Instead, we cache the quests that need to be loaded later,
 		// as the only time the player can save is in-world.
-		questTags.ForEach(tag => _questsToEnable.Add(new CachedQuest(tag)));
+		_cachedQuestTags.Clear();
+		questTags.ForEach(_cachedQuestTags.Add);
 	}
 
 	public override void PostUpdateMiscEffects()
@@ -127,6 +125,7 @@ internal class QuestModPlayer : ModPlayer
 			if (quest.Completed)
 			{
 				removals.Add(q);
+				quest.Active = false;
 			}
 		}
 

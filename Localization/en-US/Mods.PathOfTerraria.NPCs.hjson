@@ -12,6 +12,7 @@ BlacksmithNPC: {
 		Quest: As you can see, some terrible event happened that simply obliterated my forge. What happened? I don't know, I sleep like a rock...anyhow. I'd love some help gathering materials, the town's metal has run dry for a while now. And maybe some wood while you're at it.
 		Quest2: Fantastic! I'll fix the old forge up quick as I can. Here, take this sword. It's a test I made right before the attack. I'd like for you to test it on some zombies; those buggers are awful to deal with. If you'd be so kind, I'd also enjoy some more materials. Then I think we can get the Iron Anvil truly back to her feet!
 		Quest3: It almost brings a tear to the eye. The Iron Forge is almost ready for work! Here, this is a lesson I've got from my history in battle: Sometimes, you gotta go crazy. Just be careful! And come back whenever you wish - you've been a great help!
+		OldManDialogue: Hello there, traveler!...what do you say? A man referred me to you? Hm...I recall a man, cloaked in red, come around here...some time ago. Can't tell you how long ago now, but a while. He came asking for some specific things...a book of evil, two candles, and a bar of evil. He said something about throwing evil powder on a book...but...that's all I can say. Not sure what the guy was on about.
 	}
 
 	BubbleDialogue: {
@@ -143,8 +144,11 @@ GarrickNPC: {
 		1: Adventurers often fail to tell you of how slimy adventuring is. I am not one of those adventurers. It's extremely slimy.
 		2: Watch your head. Generally good active, but especially in the King's domain.
 		3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
-		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; it'll take you right to him.
+		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; I drew it on the long walk back. Good luck!
 		EoCQuestLine: Oh, the Eye you say? Formidable. I recall Eldric speaking of it, though he almost certainly undersold it. Here, I've been tasked with keeping this. Now is the time to use it.
+		TradeLunarLiquid: Ah, I've trained for this. Do care though, these aren't a casual adventure to make.
+		CantTradeLiquid: Oh, lost the Liquid? I'll need a few Lunar Shards to remake it, I'm afraid. Return to me with 5 or more.
+		GetKingMapAgain: Ah, couldn't manage it? Lost the map or something? Either way, here you are. You're lucky I carry cartography equipment everywhere...just in case.
 	}
 
 	BubbleDialogue: {
@@ -173,6 +177,8 @@ GarrickNPC: {
 		}
 	}
 
+	LunarLiquidButton: Lunar Liquid
+	AnotherMap: Map
 	Entry: A warrior humiliated by a King, Garrick is taking respite in the town of Ravencrest. He seems to hold a grudge to slime, and wishes he could be stronger. Soon, he'll get back on his feet.
 }
 
@@ -198,9 +204,9 @@ WitchNPC: {
 		Common1: Mix! Mix! I say, making the most peculiar brews you've heard of. Yes, more Strange than Strange Brews.
 		Common2: The tail of a rat! The wings of a bat! And to this, I say - rhyme? What's that?
 		Common3: Betwixt toil and trouble, I reside. Care for a concoction of devilish proportions? Do you? Do you?
-		Quest: Your guiles intruigue me, stranger. I've summoned the most twisted of creatures before...do you wish to do the same? Do you? If your conviction holds; bring me the the feather of an owl, the wings of a bat, and a scorpion. Then we may start on your new journey.
+		Quest: Your guiles intruigue me, stranger. I've summoned the most twisted of creatures before...do you wish to do the same? Do you? If your conviction holds; bring me the the feather of an owl, the wings of a bat, and the tail of a scorpion. And take this! The Grimoire will help you along. It will, won't it! Bahaha!
 		Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon the Owl! Not a ghastly beast, but one that'll help you regardless! Be well, and may the phoenix find you well!
-		Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder.
+		Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder. Especially if you're a hunter - the materials you gather may summon many different creatures!
 		QueenBeeQuest: Ah! You return! My guiles are favorable, yes? Yes! I have a query to ask you! Perhaps odd, but normal for one such as I! Yes! I've harkened back to a more...natural time of my life, and I wish to have some of that soul back. Could I ask you to fetch me some hornet's stingers from the jungle? Could I? Could I? You'll get a nice reward if you do.
 		GotStingers: How wonderful! Yes...here. Take this little morsel. It'll help you summon a cute little fiend from your Grimoire. Cruel, but kind! Alas, I have one more thing to ask. A creature most foul resides in the jungle, one Queen of Bees. Could I ask you to slay it? It seeks to bother me, and I wish it dead! Another award awaits you! Submerge your new hornet friend in honey if you wish to battle!
 		QueenBeeKilled: Why, you return? So soon? You're quite strong, are you! Aha, yes. Yes! You are! Very well. Many thanks for the chore. I've little to give, but you must take it. Take it! Bahaha! Farewell!
@@ -258,10 +264,12 @@ EldricNPC: {
 		Common1: Stay calm, even if the land around isn't.
 		Common2: Would you ever enjoy a tea? I certainly would.
 		Common3: Magic is but one solution. Practicality is another. Bear this in mind.
-		Quest: My poor observatory...it seems an eye is looking down at us. The last time it passed by was when I was a child. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
+		Quest: Hello, traveler. You've stumbled across my soon-to-be observatory...soon. However, I have noticed something in the sky as of late. The last time it passed by was when I was a child. A great eye looks down upon us, and is causing some issues in the stars. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
 		QuestLunar: Thank you. Talk to Garrick and we'll be on our way.
-		Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will repair my observatory while you battle. Best of luck.
+		Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will continue to build my observatory while you battle. Best of luck.
 		Quest3: Just as I thought. The Eye returns to...wherever it happens to hide. Regrow? Whatever. I'm able to relax now. Hopefully you'll see this observatory up and running soon. Stop by, if you'd like.
+		TradeLunarObject: Ah, another? Very well, the Eye isn't a weakling. Here you are, and best of luck once more.
+		CantTradeObject: Hm, didn't succeed with the Eye? Ah. Well, I believe Garrick can get you more of the Lunar Liquid, and then get me five more Lunar Shards and we'll be on our way.
 	}
 
 	BubbleDialogue: {
@@ -290,6 +298,7 @@ EldricNPC: {
 		}
 	}
 
+	CreateConcoction: Create Concoction
 	Entry: Forlorn and solemn, Eldric is one for silence. An observer of the stars, Eldric knows what the cosmos are; he stares, and it stares right back. Enjoys tea.
 }
 
@@ -508,6 +517,45 @@ RhineNPC: {
 }
 
 SkullApparition.DisplayName: Skull Apparition
+
+OldMan: {
+	Dialogue: {
+		QuestStart: Ah...hm? Oh...an adventurer! Hello. I...I don't know who or where I am. But I do know that something terrible is happening, deep below me. I...I can scarcely remember a thing. I do know...a man, shorter, bearded...helped me...some time in the past. In a nearby town. I...don't remember the name. Perhaps look for him? I can't say much else...I'm afraid.
+		HasItems:
+			'''
+			...
+			A light at each side;
+			One bar of evil below,
+			A book sits, starting.
+
+			Many skulls screaming,
+			On the bricks of the prison.
+			A portal appears.
+			...
+			'''
+		Complete: It was just a few moments ago I returned to my former self! Wow! Felt like I was miles away from myself, yet here all the same. Well. That marks a moment in time for me. Thank you ever so much for freeing me. I'll...reconsider my choices in profession. I owe you much.
+
+		Day: {
+			0: ...I...don't have anything to say.
+			1: ...
+			2: The day is long.
+		}
+
+		Weak: {
+			0: You...do you know of a curse...?
+			1: Hm...I don't...know...
+			2: Please, don't wait.
+			3: Take caution, friend...
+		}
+
+		Strong: {
+			0: You just might be strong enough...
+			1: Do...can you? I think you...may...
+			2: What was it...book...candle...
+			3: The Dungeon awaits.
+		}
+	}
+}
 
 AshWraith: {
 	DisplayName: Ash Wraith

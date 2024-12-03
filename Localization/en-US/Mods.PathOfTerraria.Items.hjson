@@ -757,6 +757,34 @@ StoneRing: {
 	Tooltip: ""
 }
 
+AncientEvilBook: {
+	DisplayName: Ancient Evil Book
+	Tooltip:
+		'''
+		Can be used in a simple ritual
+		Inscribed on the inside of the cover is:
+
+		C E C
+		- B -
+
+		'It speaks of misdeeds and misfortune abound'
+		'''
+
+	PostSkeletronTooltip: {
+		0: The inside of the cover is a mess of red and black
+		1: "'For now, it speaks elsewhere'"
+	}
+}
+
+SkeletronMap: {
+	DisplayName: Skeletron Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of cobwebs and metal'
+		'''
+}
+
 FireMawTriggerItem: {
 	DisplayName: Fire Maw Trigger Item
 	Tooltip: ""

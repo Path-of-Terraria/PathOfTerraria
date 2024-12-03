@@ -6,7 +6,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
 
-internal class QuestDetailsPanel : SmartUiElement
+public class QuestDetailsPanel : SmartUiElement
 {
 	public static QuestModPlayer QuestPlayer => Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 

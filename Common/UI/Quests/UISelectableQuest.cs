@@ -6,11 +6,21 @@ namespace PathOfTerraria.Common.UI.Quests;
 // ReSharper disable once InconsistentNaming
 public class UISelectableQuest : UISelectableOutlineRectPanel
 {
+	private readonly QuestDetailsPanel Panel = null;
+	private readonly string QuestName = null;
+
 	private UISimpleWrappableText Title { get; set; }
 
-	public UISelectableQuest(string quest)
+	public UISelectableQuest(string quest, QuestDetailsPanel panel)
 	{
+		Panel = panel;
+		QuestName = quest;
+
 		DrawFilled = true;
+		DrawBorder = true;
+
+		BorderThickness = 2;
+		NormalOutlineColour = Color.Transparent;
 		SelectedFillColour = new Color(102, 86, 67) * QuestsUIState.SelectedOpacity;
 		HoverFillColour = new Color(102, 86, 67) * QuestsUIState.HoveredOpacity;
 		Height.Set(22f, 0f);
@@ -22,5 +32,13 @@ public class UISelectableQuest : UISelectableOutlineRectPanel
 		Title.Top.Set(-8f, 0f);
 		Title.Colour = new Color(43, 28, 17);
 		Append(Title);
+	}
+
+	public override void Update(GameTime gameTime)
+	{
+		base.Update(gameTime);
+
+		Color color = Panel.ViewedQuestName == QuestName ? new Color(102, 86, 67) * QuestsUIState.SelectedOpacity : Color.Transparent;
+		HoverOutlineColour = SelectedOutlineColour = NormalOutlineColour = color;
 	}
 }
