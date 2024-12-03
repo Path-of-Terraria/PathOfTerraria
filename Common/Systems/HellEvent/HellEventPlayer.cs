@@ -1,6 +1,8 @@
-﻿using PathOfTerraria.Common.Systems.Questing;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Content.Projectiles.Hostile;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.Graphics.CameraModifiers;
 using Terraria.ID;
@@ -33,8 +35,9 @@ internal class HellEventPlayer : ModPlayer
 
 	private void UpdateTiles()
 	{
-		tileFallTimer += 2.5f / Main.CurrentFrameFlags.ActivePlayersCount;
-		lavaEruptTimer += 1.2f / Main.CurrentFrameFlags.ActivePlayersCount;
+		float mul = SubworldSystem.Current is WallOfFleshDomain ? 0.65f : 1f;
+		tileFallTimer += 2.5f / Main.CurrentFrameFlags.ActivePlayersCount * mul;
+		lavaEruptTimer += 1.2f / Main.CurrentFrameFlags.ActivePlayersCount * mul;
 
 		while (tileFallTimer > 2)
 		{
@@ -55,7 +58,7 @@ internal class HellEventPlayer : ModPlayer
 		Tile tile = GetRandomPosition(ref loc);
 
 		while (tile.HasTile || tile.LiquidType != LiquidID.Lava || tile.LiquidAmount < 10 || Collision.SolidCollision(loc.ToWorldCoordinates(0, -32), 16, 32) 
-			|| Main.tile[loc.X, loc.Y - 1].LiquidAmount > 0)
+			|| Main.tile[loc.X, loc.Y - 1].LiquidAmount > 100)
 		{
 			tile = GetRandomPosition(ref loc);
 		}
