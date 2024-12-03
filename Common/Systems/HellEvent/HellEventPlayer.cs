@@ -11,17 +11,27 @@ namespace PathOfTerraria.Common.Systems.HellEvent;
 
 internal class HellEventPlayer : ModPlayer
 {
+	public float LocalEventStrength { get; set; }
+
 	private float tileFallTimer = 0;
 	private float lavaEruptTimer = 0;
 
 	public override void PreUpdate()
 	{
 		// Add screenshake for "earthquake" effect
-
-		if (HellEventSystem.EventOccuring && Player.ZoneUnderworldHeight)
+		if (HellEventSystem.EventOccuring && Player.Center.Y / 16 > Main.maxTilesY - 250)
 		{
+			LocalEventStrength = 1f;
+
+			if (Player.Center.Y / 16 < Main.maxTilesY - 200) // Create fadeout strength
+			{
+				int y = (int)(Player.Center.Y / 16f);
+				LocalEventStrength = (Main.maxTilesY - 200f - y) / 50f;
+			}
+
 			Vector2 rotation = (Main.rand.NextFloat() * (MathHelper.Pi * 2f)).ToRotationVector2();
-			PunchCameraModifier modifier = new(Player.Center, rotation, 1.5f * HellEventSystem.EventStrength, 10f * HellEventSystem.EventStrength, 2, 4000, "SkeletronRitual");
+			float str = 10f * HellEventSystem.EventStrength * LocalEventStrength;
+			PunchCameraModifier modifier = new(Player.Center, rotation, 1.5f * HellEventSystem.EventStrength, str, 2, 4000, "SkeletronRitual");
 			Main.instance.CameraModifiers.Add(modifier);
 
 			UpdateTiles();
@@ -35,7 +45,7 @@ internal class HellEventPlayer : ModPlayer
 
 	private void UpdateTiles()
 	{
-		float mul = SubworldSystem.Current is WallOfFleshDomain ? 0.65f : 1f;
+		float mul = SubworldSystem.Current is WallOfFleshDomain ? 0.65f : 1f * LocalEventStrength;
 		tileFallTimer += 2.5f / Main.CurrentFrameFlags.ActivePlayersCount * mul;
 		lavaEruptTimer += 1.2f / Main.CurrentFrameFlags.ActivePlayersCount * mul;
 
@@ -52,6 +62,7 @@ internal class HellEventPlayer : ModPlayer
 		}
 	}
 
+	// Spawns the anticipation projectiles for the lava plumes
 	private void SpawnLavaPlumes()
 	{
 		Point loc = Player.Center.ToTileCoordinates();
@@ -68,6 +79,7 @@ internal class HellEventPlayer : ModPlayer
 		Projectile.NewProjectile(source, loc.ToWorldCoordinates(8, 0), Vector2.Zero, ModContent.ProjectileType<GeyserPredictionProjectile>(), 30, 0.1f, Main.myPlayer, 1);
 	}
 
+	// Spawns the ash blocks that fall from the ceiling
 	private void SpawnFallingAsh()
 	{
 		Point loc = Player.Center.ToTileCoordinates();
