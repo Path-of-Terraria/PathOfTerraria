@@ -790,7 +790,7 @@ LimpidShard: {
 	Tooltip:
     	'''
     	Turns a magic or rare item normal
-    	Hold an item then right click this Shard to make item normal
+    	Hold an item then right click this Shard to turn item normal
     	'It looks so plain'
     	'''
 }
