@@ -398,7 +398,6 @@ public class HijackHotbarClick : ModSystem
 		Main.LocalPlayer.hbLocked = true;
 		orig(self);
 		Main.LocalPlayer.hbLocked = hbLocked;
-		Texture2D back = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBack").Value;
 
 		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
 		{
@@ -408,6 +407,7 @@ public class HijackHotbarClick : ModSystem
 			return;
 		}
 
+		Texture2D back = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBack").Value;
 		DrawBuildingHotbarTooltips(hbLocked, back);
 	}
 
