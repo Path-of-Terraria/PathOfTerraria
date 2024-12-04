@@ -4,6 +4,9 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
+/// <summary>
+/// A currency shard that can be used to clone an item that is not unique
+/// </summary>
 internal class EchoingShard : CurrencyShard
 {
 	public override void SetDefaults()
@@ -14,7 +17,7 @@ internal class EchoingShard : CurrencyShard
 	
 	public override bool CanRightClick()
 	{
-		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity != ItemRarity.Normal;
+		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is not ItemRarity.Unique;
 	}
 
 	/// <summary>

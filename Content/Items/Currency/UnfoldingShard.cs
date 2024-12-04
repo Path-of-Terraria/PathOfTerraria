@@ -3,6 +3,9 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
+/// <summary>
+/// A currency shard that will turn a normal item into magic
+/// </summary>
 internal class UnfoldingShard : CurrencyShard
 {
 	public override bool CanRightClick()

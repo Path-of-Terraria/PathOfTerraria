@@ -4,6 +4,9 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
+/// <summary>
+/// A currency shard that can be used to add an affix to a magic or rare item.
+/// </summary>
 internal class AscendantShard : CurrencyShard
 {
 	public override void SetDefaults()

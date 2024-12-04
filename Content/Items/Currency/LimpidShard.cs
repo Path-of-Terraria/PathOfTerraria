@@ -3,6 +3,9 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
+/// <summary>
+/// A currency shard that can be used to turn a magic or rare item into a normal item.
+/// </summary>
 internal class LimpidShard : CurrencyShard
 {
 	public override bool CanRightClick()

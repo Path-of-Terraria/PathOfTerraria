@@ -3,6 +3,9 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
+/// <summary>
+/// A currency shard that can be used to reroll the affixes of a magic item.
+/// </summary>
 internal class GlimmeringShard : CurrencyShard
 {
 	public override bool CanRightClick()
