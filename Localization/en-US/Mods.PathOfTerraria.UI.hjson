@@ -10,3 +10,13 @@ Gear: {
 		Dyes: Dyes
 	}
 }
+
+StatUI: {
+	Level: Level
+	Experience: Exp
+	Life: Life
+	Mana: Mana
+	HealthPotions: Health Potions
+	ManaPotions: Mana Potions
+	DamageReduction: Damage Reduction
+}

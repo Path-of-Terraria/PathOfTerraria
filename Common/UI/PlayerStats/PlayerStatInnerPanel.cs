@@ -1,19 +1,30 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Content;
 using Terraria.GameContent.UI.Elements;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PlayerStats;
 
 internal class PlayerStatInnerPanel : SmartUiElement
 {
+	public static Asset<Texture2D> ChainTex = null;
+	public static Asset<Texture2D> BackTex = null;
+
 	private UIElement Panel => Parent;
 
 	public override string TabName => "PlayerStats";
 
 	private UICharacter _drawDummy = null;
 	private int _offset = 0;
+
+	public PlayerStatInnerPanel()
+	{
+		ChainTex ??= ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PlayerStatBackChain");
+		BackTex ??= ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PlayerStatBack");
+	}
 
 	public override void SafeMouseOver(UIMouseEvent evt)
 	{
@@ -31,29 +42,35 @@ internal class PlayerStatInnerPanel : SmartUiElement
 
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
-		string playerLine = $"{Main.LocalPlayer.name}";
+		string playerLine = Main.LocalPlayer.name;
 		Utils.DrawBorderStringBig(spriteBatch, playerLine, GetRectangle().Center() + new Vector2(0, -60), Color.White, 0.7f, 0.5f, 0.35f);
 
 		float expPercent = expPlayer.Exp / (float)expPlayer.NextLevel * 100;
-		DrawSingleStat(spriteBatch, $"Level: {expPlayer.Level}");
-		DrawSingleStat(spriteBatch, $"Exp: {expPlayer.Exp}/{expPlayer.NextLevel} ({expPercent:#0.##}%)");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Level")}: {expPlayer.Level}");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Experience")}: {expPlayer.Exp}/{expPlayer.NextLevel} ({expPercent:#0.##}%)");
 		float lifePercent = Main.LocalPlayer.statLife / Main.LocalPlayer.statLifeMax2 * 100;
-		DrawSingleStat(spriteBatch, $"Life: {Main.LocalPlayer.statLife}/{Main.LocalPlayer.statLifeMax2} ({lifePercent:#0.##}%)");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Life")}: {Main.LocalPlayer.statLife}/{Main.LocalPlayer.statLifeMax2} ({lifePercent:#0.##}%)");
 		float manaPercent = Main.LocalPlayer.statMana / Main.LocalPlayer.statManaMax * 100;
-		DrawSingleStat(spriteBatch, $"Mana: {Main.LocalPlayer.statMana}/{Main.LocalPlayer.statManaMax2} ({manaPercent:#0.##}%)");
-		DrawSingleStat(spriteBatch, $"Health Potions: {potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}");
-		DrawSingleStat(spriteBatch, $"Mana Potions: {potionPlayer.ManaLeft}/{potionPlayer.MaxMana}");
-		DrawSingleStat(spriteBatch, $"Damage Reduction: {Main.LocalPlayer.endurance:#0.##}%");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Mana")}: {Main.LocalPlayer.statMana}/{Main.LocalPlayer.statManaMax2} ({manaPercent:#0.##}%)");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("HealthPotions")}: {potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("ManaPotions")}: {potionPlayer.ManaLeft}/{potionPlayer.MaxMana}");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("DamageReduction")}: {Main.LocalPlayer.endurance:#0.##}%");
 
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.LavenderBlush);
 #endif
+
+		// Shorthand for localization here
+		static string GetStatLocalization(string type)
+		{
+			return Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.StatUI." + type);
+		}
 	}
 
 	private void DrawBack(SpriteBatch spriteBatch)
 	{
-		Texture2D chain = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PlayerStatBackChain").Value;
-		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PlayerStatBack").Value;
+		Texture2D chain = ChainTex.Value;
+		Texture2D tex = BackTex.Value;
 
 		for (int i = 0; i < 9; ++i)
 		{
