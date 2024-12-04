@@ -17,6 +17,11 @@ internal class ArenaEnemyNPC : GlobalNPC
 		return clone;
 	}
 
+	public override bool CheckActive(NPC npc)
+	{
+		return !Arena;
+	}
+
 	public override void Load()
 	{
 		On_NPC.NPCLoot_DropItems += StopArenaNPCsFromDroppingLoot;

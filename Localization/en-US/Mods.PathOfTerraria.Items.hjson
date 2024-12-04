@@ -789,3 +789,39 @@ FireMawTriggerItem: {
 	DisplayName: Fire Maw Trigger Item
 	Tooltip: ""
 }
+
+DwarvenGreatsword: {
+	Description: A sword forged by an extremely experienced metalsmith and magified by a madman.
+	AltUseDescription: Right click to take out the imbued spirit of Thrain Ironfist, widely and rapidly swinging around a Dwarven Greathammer
+	DisplayName: Dwarven Greatsword
+	Tooltip: ""
+}
+
+Twinbow: {
+	DisplayName: Twinbow
+	Tooltip: ""
+	Description:
+		'''
+		A hunter's unending expertise funneled into metal by an experienced metalsmith.
+		Shoots two armor-piercing arrows per shot.
+		'''
+	AltUseDescription: Right click to charge up a barrage of 6 defense-piercing arrows.
+}
+
+FlamingEye: {
+	DisplayName: Flaming Eye
+	Tooltip: 		
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Burns not your skin, but your soul.'
+		'''
+}
+
+SoulfulAsh: {
+	DisplayName: Soulful Ash
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Whispers to you softly.'
+		'''
+}

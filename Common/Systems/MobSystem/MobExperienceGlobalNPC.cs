@@ -25,7 +25,7 @@ public class MobExperienceGlobalNPC : GlobalNPC
 
 		if (npcSystem.Experience == null)
 		{
-			Main.NewText($"No experience entry for {npc.FullName} - {npc.netID}");
+			Main.NewText($"No experience entry for {npc.TypeName} - {npc.netID}");
 		}
 		
 		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);

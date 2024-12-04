@@ -1,0 +1,16 @@
+{
+	"friendlyName": "Fire Maw",
+	"entries": [
+		{
+			"scale": null,
+			"prefix": null,
+			"weight": 1,
+			"stats": {
+				"level": 1,
+				"experience": 25
+			},
+			"affixes": null,
+			"requirements": "Underworld"
+		}
+	]
+}

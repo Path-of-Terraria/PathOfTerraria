@@ -28,7 +28,7 @@ internal abstract class Bow : Gear
 	protected virtual int AnimationSpeed => 6;
 	protected virtual float CooldownTimeInSeconds => 5;
 
-	private bool _isChanneling;
+	protected bool IsChanneling;
 
 	public override void SetStaticDefaults()
 	{
@@ -65,22 +65,27 @@ internal abstract class Bow : Gear
 	{
 		base.HoldItem(player);
 
+		DoHoldFunctionality(player);
+	}
+
+	protected void DoHoldFunctionality(Player player)
+	{
 		if (player.altFunctionUse != 2 || !player.channel)
 		{
-			_isChanneling = false;
+			IsChanneling = false;
 			Item.noUseGraphic = false;
 			return;
 		}
 
 		//Check if we already started the animation
-		if (_isChanneling)
+		if (IsChanneling)
 		{
 			return;
 		}
 
 		//We are starting to channel - Begin the animation
 		Item.noUseGraphic = true;
-		_isChanneling = true;
+		IsChanneling = true;
 
 		if (Main.myPlayer != player.whoAmI)
 		{

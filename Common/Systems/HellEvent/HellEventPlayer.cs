@@ -11,6 +11,9 @@ namespace PathOfTerraria.Common.Systems.HellEvent;
 
 internal class HellEventPlayer : ModPlayer
 {
+	/// <summary>
+	/// Strength of the event for this local player. Should only be run when <c>Player.whoAmI == Main.myPlayer</c>.
+	/// </summary>
 	public float LocalEventStrength { get; set; }
 
 	private float tileFallTimer = 0;
@@ -45,7 +48,7 @@ internal class HellEventPlayer : ModPlayer
 
 	private void UpdateTiles()
 	{
-		float mul = SubworldSystem.Current is WallOfFleshDomain ? 0.65f : 1f * LocalEventStrength;
+		float mul = SubworldSystem.Current is WallOfFleshDomain ? 0.5f : 1f * LocalEventStrength;
 		tileFallTimer += 2.5f / Main.CurrentFrameFlags.ActivePlayersCount * mul;
 		lavaEruptTimer += 1.2f / Main.CurrentFrameFlags.ActivePlayersCount * mul;
 
@@ -67,11 +70,18 @@ internal class HellEventPlayer : ModPlayer
 	{
 		Point loc = Player.Center.ToTileCoordinates();
 		Tile tile = GetRandomPosition(ref loc);
+		int retries = 0;
 
 		while (tile.HasTile || tile.LiquidType != LiquidID.Lava || tile.LiquidAmount < 10 || Collision.SolidCollision(loc.ToWorldCoordinates(0, -32), 16, 32) 
 			|| Main.tile[loc.X, loc.Y - 1].LiquidAmount > 100)
 		{
 			tile = GetRandomPosition(ref loc);
+			retries++;
+
+			if (retries > 10000) // Quit if there's no valid tile nearby
+			{
+				return;
+			}
 		}
 
 		var vel = new Vector2(0, Main.rand.NextFloat(2));
@@ -84,10 +94,17 @@ internal class HellEventPlayer : ModPlayer
 	{
 		Point loc = Player.Center.ToTileCoordinates();
 		Tile tile = GetRandomPosition(ref loc);
+		int retries = 0;
 
 		while (!tile.HasTile || tile.TileType != TileID.Hellstone && tile.TileType != TileID.Ash || Collision.SolidCollision(loc.ToWorldCoordinates(0, 16), 16, 32))
 		{
 			tile = GetRandomPosition(ref loc);
+			retries++;
+
+			if (retries > 10000) // Quit if there's no valid tile nearby
+			{
+				return;
+			}
 		}
 
 		var vel = new Vector2(0, Main.rand.NextFloat(2));
