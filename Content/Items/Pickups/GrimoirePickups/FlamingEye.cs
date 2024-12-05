@@ -11,7 +11,7 @@ internal class FlamingEye : GrimoirePickup
 	{
 		if (npc.type == ModContent.NPCType<AshWraith>())
 		{
-			loot.AddCommon<SoulfulAsh>(60);
+			loot.AddCommon<FlamingEye>(60);
 		}
 	}
 }

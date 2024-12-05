@@ -17,6 +17,11 @@ internal class ClickableProjectilePlayer : ModPlayer
 	/// <param name="onClick">Behaviour to run for the projectile. Takes in the current projectile and the client.</param>
 	public static void RegisterProjectile(int projectile, Action<Projectile, Player> onClick)
 	{
+		if (Main.dedServ)
+		{
+			return;
+		}
+
 		OnHoverProjectile.Add(projectile, onClick);
 	}
 
@@ -26,7 +31,8 @@ internal class ClickableProjectilePlayer : ModPlayer
 		{
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
-				if (OnHoverProjectile.TryGetValue(projectile.type, out Action<Projectile, Player> value) && projectile.Hitbox.Contains(Main.MouseWorld.ToPoint()))
+				if (OnHoverProjectile.TryGetValue(projectile.type, out Action<Projectile, Player> value) && projectile.Hitbox.Contains(Main.MouseWorld.ToPoint())
+					&& Player.IsInTileInteractionRange(Player.tileTargetX, Player.tileTargetY, Terraria.DataStructures.TileReachCheckSettings.Simple))
 				{
 					value.Invoke(projectile, Player);
 				}

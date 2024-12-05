@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
+using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
@@ -27,7 +28,7 @@ internal class WoFQuest : Quest
 		return
 		[
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardStart"),
-				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>())),
+				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<TinyHat>())),
 			new ParallelQuestStep([
 				new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), this.GetLocalization("ThrainHelp"),
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<DwarvenGreatsword>())),
@@ -37,12 +38,11 @@ internal class WoFQuest : Quest
 					null, false, (npc) => 
 					{
 						Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<SoulfulAsh>());
-						Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>());
-						Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>());
+						Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<FlamingEye>());
 					}),
 			]),
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardContinue"),
-				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>())),
+				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>())),
 			new KillCount(NPCID.WallofFlesh, 1, this.GetLocalization("KillWall")),
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish"),
 				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>())),

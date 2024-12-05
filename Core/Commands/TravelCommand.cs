@@ -27,7 +27,7 @@ public sealed class TravelCommand : ModCommand
 
 			foreach (Subworld world in ModContent.GetContent<Subworld>())
 			{
-				name += world.FullName + "\n";
+				name += world.FullName + "  |  ";
 			}
 
 			Main.NewText(name);
@@ -37,6 +37,12 @@ public sealed class TravelCommand : ModCommand
 		if (args[0].Equals("-t", StringComparison.CurrentCultureIgnoreCase))
 		{
 			SubworldSystem.Enter<DeerclopsDomain>();
+			return;
+		}
+
+		if (args[0].Equals("-r", StringComparison.CurrentCultureIgnoreCase))
+		{
+			SubworldSystem.Exit();
 			return;
 		}
 

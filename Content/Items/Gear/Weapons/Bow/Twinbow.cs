@@ -4,7 +4,6 @@ using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Bow;
@@ -23,7 +22,7 @@ internal class Twinbow : Bow
 		ShineTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Bow/TwinbowArrowShine");
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 1f;
+		staticData.DropChance = null;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 
