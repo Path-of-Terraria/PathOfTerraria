@@ -57,7 +57,7 @@ public class TinyAlaric : ModProjectile
 			ArmRotation = Projectile.AngleTo(Main.MouseWorld);
 			Timer--;
 
-			if (Timer <= 0 && Main.mouseLeft && !Main.isMouseLeftConsumedByUI && !Owner.mouseInterface)
+			if (Timer <= 0 && Main.mouseLeft && !Owner.mouseInterface)
 			{
 				int type = Utils.SelectRandom<int>(Main.rand, ProjectileID.Fireball, ProjectileID.RayGunnerLaser, ProjectileID.MartianTurretBolt,
 					ProjectileID.DiamondBolt, ProjectileID.PartyBullet);

@@ -4,6 +4,7 @@ using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
@@ -65,6 +66,14 @@ internal class GrimoireItem : Gear
 	{
 		type = player.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
 		damage = (ContentSamples.ProjectilesByType[type].ModProjectile as GrimoireSummon).BaseDamage;
+	}
+
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+		Main.projectile[proj].damage = damage;
+		Main.projectile[proj].originalDamage = damage;
+		return false;
 	}
 
 	public override bool OnPickup(Player player)

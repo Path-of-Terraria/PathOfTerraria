@@ -44,7 +44,7 @@ public sealed class FireMaw : ModNPC
 		NPC.aiStyle = -1;
 		NPC.Size = new Vector2(22, 28);
 		NPC.damage = 60;
-		NPC.defense = 20;
+		NPC.defense = 5;
 		NPC.value = Item.buyPrice(0, 0, 5, 0);
 		NPC.knockBackResist = 0f;
 		NPC.lifeMax = 120;

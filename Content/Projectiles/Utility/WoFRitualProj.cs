@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.World.Generation;
-using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -10,8 +9,6 @@ namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class WoFRitualProj : ModProjectile
 {
-	private static Asset<Texture2D> StarTex;
-
 	public override string Texture => "Terraria/Images/NPC_0";
 
 	private bool HasInit
@@ -25,11 +22,6 @@ internal class WoFRitualProj : ModProjectile
 
 	private float explosionCap = 15;
 	
-	public override void SetStaticDefaults()
-	{
-		StarTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Projectiles/Utility/Star");
-	}
-
 	public override void SetDefaults()
 	{
 		Projectile.friendly = false;
@@ -63,7 +55,8 @@ internal class WoFRitualProj : ModProjectile
 		if (ExplosionTimer > explosionCap)
 		{
 			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(180, 180);
-			Digging.CircleOpening(pos / 16f, Main.rand.NextFloat(1, 3));
+			float size = Main.rand.NextFloat(1, 3);
+			Digging.CircleOpening(pos / 16f, size);
 
 			for (int i = 0; i < 8; ++i)
 			{
@@ -76,10 +69,15 @@ internal class WoFRitualProj : ModProjectile
 			}
 
 			Vector2 rotation = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();
-			PunchCameraModifier modifier = new(pos, rotation, 4, 10f, 6, 4000, "SkeletronRitual");
+			PunchCameraModifier modifier = new(pos, rotation, 4, 10f, 6, 4000, "WoFRitual");
 			Main.instance.CameraModifiers.Add(modifier);
 
 			SoundEngine.PlaySound(SoundID.Item14 with { PitchRange = (-0.8f, 0.2f), Volume = 0.7f }, pos);
+
+			int type = ModContent.ProjectileType<ExplosionHitbox>();
+			IEntitySource source = Projectile.GetSource_FromThis();
+
+			Projectile.NewProjectile(source, Projectile.Center, Vector2.Zero, type, 20, 6f, Projectile.owner, 20 * size, 20 * size);
 
 			explosionCap -= 0.5f;
 			ExplosionTimer = 0;
@@ -109,9 +107,12 @@ internal class WoFRitualProj : ModProjectile
 
 			SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.2f, Volume = 1f }, Projectile.Center);
 			Digging.CircleOpening(Projectile.Center / 16f, 8);
+
+			type = ModContent.ProjectileType<ExplosionHitbox>();
+
+			Projectile.NewProjectile(src, Projectile.Center, Vector2.Zero, type, 30, 6f, Projectile.owner, 18 * 8, 18 * 8);
 		}
 	}
-
 	public override bool PreDraw(ref Color lightColor)
 	{
 		DrawPortal(lightColor);

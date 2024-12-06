@@ -37,13 +37,16 @@ internal class WoFQuest : Quest
 				new InteractWithNPC(ModContent.NPCType<WitchNPC>(), this.GetLocalization("MorganaHelp"),
 					null, false, (npc) => 
 					{
-						Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<SoulfulAsh>());
-						Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<FlamingEye>());
+						for (int i = 0; i < 3; ++i)
+						{
+							Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<SoulfulAsh>());
+							Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<FlamingEye>());
+						}
 					}),
 			]),
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardContinue"),
 				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>())),
-			new KillCount(NPCID.WallofFlesh, 1, this.GetLocalization("KillWall")),
+			new ConditionCheck(_ => Main.hardMode, 1, this.GetLocalization("KillWall")),
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish"),
 				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>())),
 		];

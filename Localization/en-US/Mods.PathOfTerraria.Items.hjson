@@ -842,3 +842,12 @@ VoidPearl: {
 		"This WILL explode a lot, don't throw it at something you care about! Or do, I don't care!"
 		'''
 }
+
+WoFMap: {
+	DisplayName: Wall of Flesh Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of dread and hope'
+		'''
+}

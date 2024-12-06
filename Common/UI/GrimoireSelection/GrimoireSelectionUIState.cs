@@ -21,11 +21,6 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	public override bool IsCentered => true;
 
-	public override int InsertionIndex(List<GameInterfaceLayer> layers)
-	{
-		return layers.FindIndex(x => x.Name == "Vanilla: Hotbar");
-	}
-
 	public static Asset<Texture2D> EmptySummonTexture = null;
 
 	public static Item EmptyItem
@@ -46,6 +41,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	private static UIImage _currentSummon = null;
 	private static Item _trashItem = null;
 	private static UIItemIcon _trashSlot = null;
+
+	public override int InsertionIndex(List<GameInterfaceLayer> layers)
+	{
+		return layers.FindIndex(x => x.Name == "Vanilla: Hotbar");
+	}
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
@@ -235,6 +235,13 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		{
 			summoner.CurrentSummonId = summoner.CurrentSummonId == summon.Type ? -1 : summon.Type;
 			SetCurrentSummonImage();
+			RefreshStorage();
+
+			for (int i = 0; i < 5; ++i)
+			{
+				PutSlotItemInStorage(i);
+			}
+
 			return;
 		}
 
@@ -265,6 +272,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 				Dust.NewDust(Main.LocalPlayer.position, Player.defaultWidth, Player.defaultHeight, DustID.Confetti + Main.rand.Next(4), 0, -6);
 			}
 		}
+
+		RefreshStorage();
 	}
 
 	private static void SetCurrentSummonImage()
@@ -276,14 +285,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void UpdateSummonIcon(UIColoredImageButton self, GrimoireSummon item)
 	{
-		if (Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().HasSummon(item.Type))
-		{
-			self.SetColor(Color.White);
-		}
-		else
-		{
-			self.SetColor(new Color(100, 100, 100));
-		}
+		self.SetColor(Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().HasSummon(item.Type) ? Color.White : new Color(100, 100, 100));
 
 		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()))
 		{
@@ -291,7 +293,9 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		}
 
 		Tooltip.SetName(item.DisplayName.Value);
-		Tooltip.SetTooltip(Language.GetTextValue($"Mods.{item.Mod.Name}.Projectiles.{item.Name}.Description"));
+		string tooltip = Language.GetTextValue($"Mods.{item.Mod.Name}.Projectiles.{item.Name}.Description");
+		tooltip += "\n" + Language.GetText($"Mods.{item.Mod.Name}.UI.BaseDamage").Format(item.BaseDamage);
+		Tooltip.SetTooltip(tooltip);
 	}
 
 	private static void BuildStorage(UICloseablePanel panel)
@@ -356,8 +360,22 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	{
 		_storageGrid.Clear();
 
+		int summonId = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
+		Dictionary<int, int> parts = null;
+
+		if (summonId > ProjectileID.None)
+		{
+			var summon = ContentSamples.ProjectilesByType[summonId].ModProjectile as GrimoireSummon;
+			parts = summon.GetRequiredParts();
+		}
+
 		foreach (Item item in Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage)
 		{
+			if (parts != null && !parts.ContainsKey(item.type))
+			{
+				continue;
+			}
+
 			var storageIcon = new UIItemIcon(item, false)
 			{
 				Width = StyleDimension.FromPixels(31),
