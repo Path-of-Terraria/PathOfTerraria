@@ -6,6 +6,7 @@ using Terraria.IO;
 using Terraria.WorldBuilding;
 using ReLogic.Graphics;
 using SubworldLibrary;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -83,5 +84,9 @@ public abstract class BossDomainSubworld : MappingWorld
 		Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + position;
 		Vector2 halfSize = FontAssets.DeathText.Value.MeasureString(statusText) / 2f * scale;
 		Main.spriteBatch.DrawString(FontAssets.DeathText.Value, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
+	}
+
+	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
+	{
 	}
 }

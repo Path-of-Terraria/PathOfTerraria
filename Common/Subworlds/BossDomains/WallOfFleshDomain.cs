@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
@@ -20,9 +21,6 @@ public class WallOfFleshDomain : BossDomainSubworld
 {
 	public override int Width => 1800;
 	public override int Height => 250;
-	public override int[] WhitelistedCutTiles => [ModContent.TileType<FrayedRope>()];
-	public override int[] WhitelistedMiningTiles => [ModContent.TileType<FrayedRope>(), TileID.Platforms];
-	public override int[] WhitelistedPlaceableTiles => [TileID.Platforms];
 	public override int DropItemLevel => 30;
 
 	public bool BossSpawned = false;
@@ -31,6 +29,27 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new	PassLegacy("Base Terrain", Terrain),
 		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids), new PassLegacy("Pathway", SpawnPathway)];
+
+	internal override void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
+	{
+		if (use == BuildingWhitelist.WhitelistUse.Mining)
+		{
+			results.Remove(TileID.Rope);
+
+			results.Add(TileID.Platforms);
+			results.Add(ModContent.TileType<FrayedRope>());
+		}
+
+		if (use == BuildingWhitelist.WhitelistUse.Placing)
+		{
+			results.Add(TileID.Platforms);
+		}
+
+		if (use == BuildingWhitelist.WhitelistUse.Cutting)
+		{
+			results.Add(ModContent.TileType<FrayedRope>());
+		}
+	}
 
 	public override void OnEnter()
 	{
