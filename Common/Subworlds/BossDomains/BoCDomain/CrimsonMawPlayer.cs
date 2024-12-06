@@ -15,6 +15,11 @@ public class CrimsonMawPlayer : ModPlayer
 		On_Player.QuickMount += On_Player_QuickMount;
 	}
 
+	public override void Unload()
+	{
+		Main.OnPostDraw -= DrawBlack;
+	}
+
 	private void On_Player_QuickMount(On_Player.orig_QuickMount orig, Player self)
 	{
 		bool frozen = self.frozen;
