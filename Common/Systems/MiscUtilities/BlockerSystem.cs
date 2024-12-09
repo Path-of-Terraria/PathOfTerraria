@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.MiscUtilities;
 
@@ -10,6 +11,12 @@ public class BlockerSystem : ModSystem
 
 	public override void PreUpdatePlayers()
 	{
+		// Fixes issue where during hardmode worldgen, this throws.
+		if (SubworldSystem.Current is null)
+		{
+			return;
+		}
+
 		HasArenaEnemies = false;
 
 		foreach (NPC npc in Main.ActiveNPCs)

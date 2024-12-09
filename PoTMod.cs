@@ -21,6 +21,9 @@ public sealed class PoTMod : Mod
 	/// </summary>
 	internal static PoTMod Instance => ModContent.GetInstance<PoTMod>();
 
+	/// <summary>
+	///		Determines if any cheat mod is active. This is used to load certain cheat items, such as the spawn triggers for boss domains.
+	/// </summary>
 	public static bool CheatModEnabled => ModLoader.HasMod("CheatSheet") || ModLoader.HasMod("HerosMod") || ModLoader.HasMod("DragonLens");
 
 	public override void Load()
