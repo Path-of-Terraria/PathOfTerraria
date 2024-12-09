@@ -67,7 +67,7 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		}
 
 		// Otherwise, set the cooldown and allow alt usage.
-		modPlayer.SetAltCooldown(50);
+		modPlayer.SetAltCooldown(1500);
 		int projId = ModContent.ProjectileType<DwarvenGreatswordAltHammer>();
 		Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, projId, 50, 10f, player.whoAmI);
 		return true;
@@ -114,6 +114,9 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		{
 			Timer += 1.25f;
 
+			Owner.SetDummyItemTime(2);
+			Owner.itemAnimation = 0;
+
 			if (Projectile.timeLeft < 60f)
 			{
 				Projectile.Opacity = Projectile.timeLeft / 60f;
@@ -123,7 +126,7 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 			{
 				Projectile.hide = !Main.mouseLeft;
 
-				off = Vector2.Lerp(off, Projectile.DirectionFrom(Main.MouseWorld) * 20, 0.2f);
+				off = Vector2.Lerp(off, Projectile.DirectionFrom(Main.MouseWorld) * 6, 0.2f);
 				Projectile.Center = Owner.Center + off.RotatedBy(MathHelper.Pi);
 				Projectile.rotation = off.ToRotation() - MathHelper.Pi + MathF.Sin(Timer * 0.2f) * MathHelper.PiOver2;
 			}

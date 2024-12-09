@@ -26,7 +26,7 @@ internal class VoidPearl : ModItem
 		Item.noUseGraphic = true;
 		Item.shoot = ModContent.ProjectileType<VoidPearlThrown>();
 		Item.shootSpeed = 16;
-		Item.consumable = false;
+		Item.consumable = true;
 		Item.maxStack = 1;
 
 		for (int i = 0; i < 25; ++i)

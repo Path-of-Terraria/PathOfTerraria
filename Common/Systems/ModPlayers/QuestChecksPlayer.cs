@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using System.Linq;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 

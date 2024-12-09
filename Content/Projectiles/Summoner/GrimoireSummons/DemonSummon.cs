@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 
 internal class DemonSummon : GrimoireSummon
 {
-	public override int BaseDamage => 45;
+	public override int BaseDamage => 52;
 
 	private ref float Timer => ref Projectile.ai[1];
 
@@ -51,7 +51,7 @@ internal class DemonSummon : GrimoireSummon
 
 				foreach (NPC npc in Main.ActiveNPCs)
 				{
-					if (npc.CanBeChasedBy() && (npcIndex == -1 || npc.DistanceSQ(Projectile.Center) < Main.npc[npcIndex].DistanceSQ(Projectile.Center)))
+					if (npc.CanBeChasedBy() && (npcIndex == -1 || npc.lifeMax > Main.npc[npcIndex].lifeMax))
 					{
 						npcIndex = npc.whoAmI;
 					}

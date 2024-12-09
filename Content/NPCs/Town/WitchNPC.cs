@@ -18,8 +18,10 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class WitchNPC : ModNPC, IQuestMarkerNPC
+public class WitchNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
+	public Point16 TileSpawn => new(700, 200);
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 21;

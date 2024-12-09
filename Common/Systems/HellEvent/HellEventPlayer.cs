@@ -21,6 +21,12 @@ internal class HellEventPlayer : ModPlayer
 
 	public override void PreUpdate()
 	{
+		if (SubworldSystem.Current is not null and not WallOfFleshDomain)
+		{
+			LocalEventStrength = 0;
+			return;
+		}
+
 		// Add screenshake for "earthquake" effect
 		if (HellEventSystem.EventOccuring && Player.Center.Y / 16 > Main.maxTilesY - 250)
 		{

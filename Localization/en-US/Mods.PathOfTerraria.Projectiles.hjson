@@ -125,7 +125,7 @@ DemonSummon: {
 	Description:
 		'''
 		Follows your cursor
-		Shoots various ethereal weapons at nearby enemies
+		Shoots various ethereal weapons at the strongest nearby enemy
 		'''
 }
 

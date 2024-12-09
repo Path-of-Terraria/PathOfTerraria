@@ -15,13 +15,14 @@ internal class HellEventSystem : ModSystem
 
 	public override void PreUpdateEntities()
 	{
+		EventOccuringInstant = false;
+
 		if (Main.hardMode || SubworldSystem.Current is not null and not WallOfFleshDomain)
 		{
 			return;
 		}
 
 		eventTimer++;
-		EventOccuringInstant = false;
 
 		bool canEventOccur = false;
 
