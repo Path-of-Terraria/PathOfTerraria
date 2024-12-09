@@ -11,6 +11,11 @@ using GearItem = PathOfTerraria.Content.Items.Gear.Gear;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
+/// <summary>
+/// A currency shard that corrupts an item unpredictably.
+/// Can add new affixes, reroll the item, or nothing can happen.
+/// Once items are corrupted they can no longer be modified
+/// </summary>
 internal class CorruptShard : CurrencyShard
 {
 	public override void SetStaticDefaults()

@@ -12,3 +12,13 @@ Gear: {
 }
 
 BaseDamage: Base Damage: {0}
+
+StatUI: {
+	Level: Level
+	Experience: Exp
+	Life: Life
+	Mana: Mana
+	HealthPotions: Health Potions
+	ManaPotions: Mana Potions
+	DamageReduction: Damage Reduction
+}

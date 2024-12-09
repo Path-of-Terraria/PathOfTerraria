@@ -851,3 +851,13 @@ WoFMap: {
 		'The map smells of dread and hope'
 		'''
 }
+
+LimpidShard: {
+	DisplayName: Limpid Shard
+	Tooltip:
+		'''
+		Turns a magic or rare item normal
+		Hold an item then right click this Shard to turn item normal
+		'It looks so plain'
+		'''
+}

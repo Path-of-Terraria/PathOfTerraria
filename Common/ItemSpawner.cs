@@ -65,7 +65,7 @@ internal class ItemSpawner
 	/// <typeparam name="T">The type of gear to drop</typeparam>
 	/// <param name="pos">Where to drop it in the world</param>
 	/// <param name="itemLevel">The item level of the item to spawn</param>
-	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
+	/// <param name="rarity">Rarity of the item</param>
 	public static int SpawnItem<T>(Vector2 pos, int itemLevel = 0, ItemRarity rarity = ItemRarity.Normal) where T : ModItem
 	{
 		return SpawnItem(ModContent.ItemType<T>(), pos, itemLevel, rarity);
@@ -77,7 +77,7 @@ internal class ItemSpawner
 	/// <typeparam name="T">The type of gear to drop</typeparam>
 	/// <param name="pos">Where to drop it in the world</param>
 	/// <param name="itemLevel">The item level of the item to spawn</param>
-	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
+	/// <param name="rarity">Rarity of the item</param>
 	public static int SpawnItemFromCategory<T>(Vector2 pos, int itemLevel = 0, ItemRarity rarity = ItemRarity.Normal) where T : ModItem
 	{
 		return SpawnItem(Main.rand.Next(ModContent.GetContent<T>().ToArray()).Type, pos, itemLevel, rarity);
@@ -86,10 +86,10 @@ internal class ItemSpawner
 	/// <summary>
 	/// Spawns a random piece of gear of the given base type at the given position
 	/// </summary>
-	/// <typeparam name="T">The type of gear to drop</typeparam>
+	/// <param name="type"></param>
 	/// <param name="pos">Where to drop it in the world</param>
 	/// <param name="itemLevel">The item level of the item to spawn</param>
-	/// <param name="dropRarityModifier">Rolls an item with a drop rarity modifier</param>
+	/// <param name="rarity">Rarity of the item</param>
 	public static int SpawnItem(int type, Vector2 pos, int itemLevel = 0, ItemRarity rarity = ItemRarity.Normal)
 	{
 		var item = new Item(type);
@@ -104,15 +104,12 @@ internal class ItemSpawner
 		data.Rarity = rarity;
 		PoTItemHelper.Roll(item, itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel);
 
-		if (Main.netMode == NetmodeID.SinglePlayer)
+		return Main.netMode switch
 		{
-			return Item.NewItem(null, pos, Vector2.Zero, item);
-		}
-		else if (Main.netMode == NetmodeID.MultiplayerClient)
-		{
-			return Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"), item);
-		}
-
-		return -1;
+			NetmodeID.SinglePlayer => Item.NewItem(null, pos, Vector2.Zero, item),
+			NetmodeID.MultiplayerClient => Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"),
+				item),
+			_ => -1
+		};
 	}
 }

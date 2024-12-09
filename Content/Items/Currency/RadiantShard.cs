@@ -3,6 +3,9 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
+/// <summary>
+/// A currency shard that will reroll the values of the affixes of an item
+/// </summary>
 internal class RadiantShard : CurrencyShard
 {
 	public override bool CanRightClick()
