@@ -37,8 +37,8 @@ internal class VanillaUIEdits : ModSystem
 
 	private static void ModifyToggleLocation(ref int x, ref int y)
 	{
-		int pixels = (int)(UIManager.Data.First(x => x.Identifier == $"{PoTMod.ModName}:Inventory").Value as UIGearInventory).Root.Left.Pixels;
-		float off = pixels - Main.screenWidth + UIGearInventory.ArmorPageWidth + UIGearInventory.Margin;
+		int pixels = (int)(UIManager.Data.First(x => x.Identifier == $"{PoTMod.ModName}:Inventory").Value as UIArmorInventory).Root.Left.Pixels;
+		float off = pixels - Main.screenWidth + UIArmorInventory.ArmorPageWidth + UIArmorInventory.Margin;
 		x += (int)off + 20;
 		y += 140;
 	}

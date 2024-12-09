@@ -5,7 +5,7 @@ using MonoMod.RuntimeDetour;
 
 namespace PathOfTerraria.Common.UI.Armor;
 
-public sealed class UIGearInventoryHooks : ILoadable
+public sealed class UIArmorInventoryHooks : ILoadable
 {
 	private static readonly MethodInfo DrawAccSlotsInfo = typeof(AccessorySlotLoader).GetMethod(
 		nameof(AccessorySlotLoader.DrawAccSlots),
