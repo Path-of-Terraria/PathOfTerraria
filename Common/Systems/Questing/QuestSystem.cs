@@ -1,10 +1,21 @@
 ﻿using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
 internal class QuestSystem : ModSystem
 {
+	public static bool CanGarrickSpawn()
+	{
+		if (Main.netMode == NetmodeID.SinglePlayer)
+		{
+			return Main.LocalPlayer.GetModPlayer<QuestChecksPlayer>().CanKingSlimeQuest;
+		}
+
+		return false;
+	}
+
 	public override void ClearWorld()
 	{
 		// Reset quests on exit so we don't bleed data

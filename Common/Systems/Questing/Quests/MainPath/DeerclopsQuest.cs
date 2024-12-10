@@ -1,15 +1,10 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
-using PathOfTerraria.Common.Systems.VanillaModifications;
-using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
 using Terraria.DataStructures;
-using Terraria;
 using Terraria.Localization;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 

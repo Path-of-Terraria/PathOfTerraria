@@ -104,6 +104,7 @@ public class RavencrestSystem : ModSystem
 			}
 
 			ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
+			ModContent.GetInstance<TavernManager>().OneTimeCheck();
 
 			OneTimeCheckDone = true;
 		}

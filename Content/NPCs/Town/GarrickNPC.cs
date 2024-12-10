@@ -205,10 +205,10 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		return !quest.Completed;
 	}
 
-	//public bool ForceSpawnInTavern()
-	//{
-	//	return 
-	//}
+	public bool ForceSpawnInTavern()
+	{
+		return QuestSystem.CanGarrickSpawn();
+	}
 
 	public float SpawnChanceInTavern()
 	{

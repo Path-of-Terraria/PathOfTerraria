@@ -2,6 +2,8 @@
 
 internal interface ITavernNPC : ILoadable
 {
+	public string FullName { get; }
+
 	public bool ForceSpawnInTavern()
 	{
 		return false;
