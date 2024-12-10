@@ -18,7 +18,7 @@ internal class SkeletronQuest : Quest
 
 	public override List<QuestReward> QuestRewards =>
 	[
-		new ActionRewards((p, v) => p.GetModPlayer<ExpModPlayer>().Exp += 5000, ""),
+		new ActionRewards((p, v) => p.GetModPlayer<ExpModPlayer>().Exp += 10000, ""),
 	];
 
 	public override List<QuestStep> SetSteps()
