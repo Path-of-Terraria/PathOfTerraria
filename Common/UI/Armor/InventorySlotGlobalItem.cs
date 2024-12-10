@@ -1,4 +1,8 @@
-﻿namespace PathOfTerraria.Common.UI.Armor;
+﻿using PathOfTerraria.Content.Items.Gear.Amulets;
+using PathOfTerraria.Content.Items.Gear.Offhands;
+using PathOfTerraria.Content.Items.Gear.Rings;
+
+namespace PathOfTerraria.Common.UI.Armor;
 
 public sealed class InventorySlotGlobalItem : GlobalItem
 {
@@ -12,10 +16,14 @@ public sealed class InventorySlotGlobalItem : GlobalItem
 				result = item.wingSlot > 0;
 				break;
 			case 5:
+				result = item.ModItem is Amulet;
+				break;
 			case 6:
+				result = item.ModItem is Offhand;
+				break;
 			case 7:
 			case 8:
-				result = item.accessory && item.wingSlot <= 0;
+				result = item.ModItem is Ring;
 				break;
 			case 14:
 			case 15:
