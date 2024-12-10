@@ -5,9 +5,10 @@ using MonoMod.RuntimeDetour;
 
 namespace PathOfTerraria.Common.UI.Armor;
 
-public sealed class UIGearInventoryHooks : ILoadable
+public sealed class UIArmorInventoryHooks : ILoadable
 {
-	private static readonly MethodInfo DrawAccSlotsInfo = typeof(AccessorySlotLoader).GetMethod(
+	private static readonly MethodInfo DrawAccSlotsInfo = typeof(AccessorySlotLoader).GetMethod
+	(
 		nameof(AccessorySlotLoader.DrawAccSlots),
 		BindingFlags.Public | BindingFlags.Instance
 	);
@@ -34,7 +35,8 @@ public sealed class UIGearInventoryHooks : ILoadable
 
 		ILLabel label = cursor.MarkLabel();
 
-		cursor.GotoNext(
+		cursor.GotoNext
+		(
 			MoveType.After,
 			i => i.MatchLdsfld<Main>(nameof(Main.EquipPage)),
 			i => i.MatchBrtrue(out label)
