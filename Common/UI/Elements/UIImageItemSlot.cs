@@ -28,7 +28,7 @@ public class UIImageItemSlot : UIElement
 	///     Defaults to a new item with <see cref="ItemID.None" /> as its identity if
 	///     <see cref="InventoryGetter" /> and <see cref="Slot" /> are not provided.
 	/// </remarks>
-	public Item? Item
+	public Item Item
 	{
 		get => WrapsAroundInventory ? Inventory[Slot] : item;
 		set
@@ -56,12 +56,12 @@ public class UIImageItemSlot : UIElement
 	/// <summary>
 	///     The background of the item slot.
 	/// </summary>
-	public UIImage? Background { get; protected set; }
+	public UIImage Background { get; protected set; }
 
 	/// <summary>
 	///     The icon of the item slot.
 	/// </summary>
-	public UIImage? Icon { get; protected set; }
+	public UIImage Icon { get; protected set; }
 
 	protected Asset<Texture2D> BackgroundTexture;
 
@@ -78,7 +78,7 @@ public class UIImageItemSlot : UIElement
 	/// <summary>
 	///     The inventory that the slots wraps itself around.
 	/// </summary>
-	public Item[]? Inventory;
+	public Item[] Inventory;
 
 	private Item item = new(ItemID.None);
 
@@ -150,8 +150,6 @@ public class UIImageItemSlot : UIElement
 			HAlign = 0.5f,
 			VAlign = 0.5f
 		};
-		Icon.Width.Set(BackgroundTexture.Width(), 0f);
-		Icon.Height.Set(BackgroundTexture.Width(), 0f);
 
 		Background.Append(Icon);
 	}
@@ -185,7 +183,7 @@ public class UIImageItemSlot : UIElement
 		{
 			Icon.Top = StyleDimension.FromPercent(0);
 		}
-
+		
 		UpdateIcon();
 	}
 
@@ -241,6 +239,13 @@ public class UIImageItemSlot : UIElement
 	// Because we can't access the texture being used by the UIImage.
 	protected virtual Asset<Texture2D> GetIconToDraw()
 	{
-		return Item.IsAir ? IconTexture : TextureAssets.Item[Item.type];
+		if (Item.IsAir)
+		{
+			return IconTexture;
+		}
+		
+		Main.instance.LoadItem(Item.type);
+		
+		return TextureAssets.Item[Item.type];
 	}
 }
