@@ -47,8 +47,7 @@ internal class WoFQuest : Quest
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardContinue"),
 				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>())),
 			new ConditionCheck(_ => Main.hardMode, 1, this.GetLocalization("KillWall")),
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish"),
-				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>())),
+			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish")),
 		];
 	}
 }
