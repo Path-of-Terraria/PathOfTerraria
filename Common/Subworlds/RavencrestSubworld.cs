@@ -76,6 +76,8 @@ internal class RavencrestSubworld : MappingWorld
 
 	public override void Update()
 	{
+		// Time wasn't being incremented for some reason by default
+		Main.time++;
 	}
 
 	public class RavencrestNPC : GlobalNPC 
