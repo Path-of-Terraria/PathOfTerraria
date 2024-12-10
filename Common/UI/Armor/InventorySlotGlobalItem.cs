@@ -1,15 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using Terraria.UI;
-
-namespace PathOfTerraria.Common.UI.Armor;
+﻿namespace PathOfTerraria.Common.UI.Armor;
 
 public sealed class InventorySlotGlobalItem : GlobalItem
 {
 	public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)
 	{
-		var result = false;
-		
+		bool result = false;
+
 		switch (slot)
 		{
 			case 4:

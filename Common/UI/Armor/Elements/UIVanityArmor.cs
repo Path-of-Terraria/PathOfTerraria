@@ -1,7 +1,5 @@
 ﻿using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Armor.Elements;
@@ -16,7 +14,7 @@ public sealed class UIVanityArmor : UIArmorPage
 
 		Width = StyleDimension.FromPixels(UIArmorInventory.ArmorPageWidth);
 		Height = StyleDimension.FromPixels(UIArmorInventory.ArmorPageHeight);
-			
+
 		var wings = new UIHoverImageItemSlot(VanityFrameTexture, WingsIconTexture, ref Player.armor, 14, ItemSlot.Context.EquipAccessoryVanity)
 		{
 			ActiveScale = 1.15f,

@@ -1,8 +1,5 @@
 using PathOfTerraria.Common.UI.Armor.Elements;
 using PathOfTerraria.Common.UI.Elements;
-using PathOfTerraria.Content.Items.Gear.Amulets;
-using PathOfTerraria.Content.Items.Gear.Offhands;
-using PathOfTerraria.Content.Items.Gear.Rings;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
@@ -15,12 +12,12 @@ namespace PathOfTerraria.Common.UI.Armor;
 public sealed class UIArmorInventory : UIState
 {
 	/// <summary>
-	///		The width of each armor page, in pixels.
+	///     The width of each armor page, in pixels.
 	/// </summary>
 	public const float ArmorPageWidth = 160f;
 
 	/// <summary>
-	///		The height of each armor page, in pixels.
+	///     The height of each armor page, in pixels.
 	/// </summary>
 	public const float ArmorPageHeight = 190f;
 
@@ -39,37 +36,47 @@ public sealed class UIArmorInventory : UIState
 	public static readonly Asset<Texture2D> RightButtonTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Button_Right", AssetRequestMode.ImmediateLoad);
 
 	/// <summary>
-	///		The texture used to represent the player's defense.
+	///     The texture used to represent the player's defense.
 	/// </summary>
 	public static readonly Asset<Texture2D> DefenseCounterTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Defense", AssetRequestMode.ImmediateLoad);
 
 	/// <summary>
-	///		The texture used to represent the player's first loadout.
+	///     The texture used to represent the player's first loadout.
 	/// </summary>
 	public static readonly Asset<Texture2D> FirstLoadoutIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/FirstLoadout", AssetRequestMode.ImmediateLoad);
 
 	/// <summary>
-	///		The texture used to represent the player's second loadout.
+	///     The texture used to represent the player's second loadout.
 	/// </summary>
 	public static readonly Asset<Texture2D> SecondLoadoutIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/SecondLoadout", AssetRequestMode.ImmediateLoad);
 
 	/// <summary>
-	///		The texture used to represent the player's third loadout.
+	///     The texture used to represent the player's third loadout.
 	/// </summary>
 	public static readonly Asset<Texture2D> ThirdLoadoutIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/ThirdLoadout", AssetRequestMode.ImmediateLoad);
-	
+
+	public readonly UIElement[] Pages = [new UIDefaultArmor(), new UIVanityArmor(), new UIDyeArmor()];
+
+	private int currentPage;
+
+	private bool fadingButton;
+
+	private string previousDefense;
+
+	internal UIElement Root;
+
 	/// <summary>
-	///	<para>
-	///		The index of the current armor page.
-	/// </para>
-	/// <para>
-	///     <c>0</c> - Default <br></br>
-	///     <c>1</c> - Vanity <br></br>
-	///     <c>2</c> - Dyes
-	/// </para>
-	/// <remarks>
-	///		Automatically wraps itself around the length of armor pages.
-	/// </remarks>
+	///     <para>
+	///         The index of the current armor page.
+	///     </para>
+	///     <para>
+	///         <c>0</c> - Default <br></br>
+	///         <c>1</c> - Vanity <br></br>
+	///         <c>2</c> - Dyes
+	///     </para>
+	///     <remarks>
+	///         Automatically wraps itself around the length of armor pages.
+	///     </remarks>
 	/// </summary>
 	public int CurrentPage
 	{
@@ -95,16 +102,6 @@ public sealed class UIArmorInventory : UIState
 	}
 
 	private static Player Player => Main.LocalPlayer;
-	
-	private string previousDefense;
-	
-	private bool fadingButton;
-
-	private int currentPage;
-
-	public readonly UIElement[] Pages = [new UIDefaultArmor(), new UIVanityArmor(), new UIDyeArmor()];
-
-	internal UIElement Root;
 
 	public override void OnInitialize()
 	{
@@ -169,7 +166,8 @@ public sealed class UIArmorInventory : UIState
 
 	private void HandleLeftPageClick(UIMouseEvent @event, UIElement element)
 	{
-		SoundEngine.PlaySound(
+		SoundEngine.PlaySound
+		(
 			SoundID.MenuTick with
 			{
 				Pitch = 0.25f,
@@ -182,7 +180,8 @@ public sealed class UIArmorInventory : UIState
 
 	private void HandleRightPageClick(UIMouseEvent @event, UIElement element)
 	{
-		SoundEngine.PlaySound(
+		SoundEngine.PlaySound
+		(
 			SoundID.MenuTick with
 			{
 				Pitch = 0.25f,
@@ -199,7 +198,7 @@ public sealed class UIArmorInventory : UIState
 		{
 			Main.LocalPlayer.mouseInterface = true;
 		}
-		
+
 		if (Player.CurrentLoadoutIndex == index)
 		{
 			image.Color = Color.White;
@@ -214,7 +213,8 @@ public sealed class UIArmorInventory : UIState
 
 	private static void UpdateMouseOver(UIMouseEvent @event, UIElement element)
 	{
-		SoundEngine.PlaySound(
+		SoundEngine.PlaySound
+		(
 			SoundID.MenuTick with
 			{
 				Pitch = 0.15f,
@@ -225,7 +225,8 @@ public sealed class UIArmorInventory : UIState
 
 	private static void UpdateMouseOut(UIMouseEvent @event, UIElement element)
 	{
-		SoundEngine.PlaySound(
+		SoundEngine.PlaySound
+		(
 			SoundID.MenuTick with
 			{
 				Pitch = -0.25f,
@@ -301,7 +302,7 @@ public sealed class UIArmorInventory : UIState
 			VAlign = 0.5f
 		};
 
-		pageText.OnUpdate += (_) =>
+		pageText.OnUpdate += _ =>
 		{
 			string key = CurrentPage switch
 			{
@@ -336,31 +337,31 @@ public sealed class UIArmorInventory : UIState
 		};
 
 		// TODO: This is nasty, find a better way to handle UI movement.
-		defenseText.OnUpdate += (_) =>
+		defenseText.OnUpdate += _ =>
 		{
 			string defense = Player.statDefense.ToString();
-			
+
 			if (defense != previousDefense)
 			{
 				fadingButton = true;
 			}
-			
-			if (fadingButton) 
-			{				
+
+			if (fadingButton)
+			{
 				if (MathF.Floor(defenseText.Left.Pixels) == DefensePadding)
 				{
 					defenseText.SetText(Player.statDefense.ToString());
-					
+
 					fadingButton = false;
 				}
-				
+
 				defenseText.Left.Set(MathHelper.SmoothStep(defenseText.Left.Pixels, DefensePadding, Smoothness), 0f);
 			}
 			else
 			{
 				defenseText.Left.Set(MathHelper.SmoothStep(defenseText.Left.Pixels, DefenseCounterTexture.Width() + 8f, Smoothness), 0f);
 			}
-			
+
 			previousDefense = defense;
 		};
 
@@ -393,7 +394,7 @@ public sealed class UIArmorInventory : UIState
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
 
-		firstLoadout.OnUpdate += (_) => UpdateLoadoutIcon(firstLoadout, 0);
+		firstLoadout.OnUpdate += _ => UpdateLoadoutIcon(firstLoadout, 0);
 
 		firstLoadout.OnLeftClick += (_, _) => Player.TrySwitchingLoadout(0);
 
@@ -406,7 +407,7 @@ public sealed class UIArmorInventory : UIState
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
 
-		secondLoadout.OnUpdate += (_) => UpdateLoadoutIcon(secondLoadout, 1);
+		secondLoadout.OnUpdate += _ => UpdateLoadoutIcon(secondLoadout, 1);
 
 		secondLoadout.OnLeftClick += (_, _) => Player.TrySwitchingLoadout(1);
 
@@ -419,7 +420,7 @@ public sealed class UIArmorInventory : UIState
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
 
-		thirdLoadout.OnUpdate += (_) => UpdateLoadoutIcon(thirdLoadout, 2);
+		thirdLoadout.OnUpdate += _ => UpdateLoadoutIcon(thirdLoadout, 2);
 
 		thirdLoadout.OnLeftClick += (_, _) => Player.TrySwitchingLoadout(2);
 

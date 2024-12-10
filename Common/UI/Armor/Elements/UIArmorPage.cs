@@ -1,7 +1,4 @@
-﻿using PathOfTerraria.Common.UI.Elements;
-using PathOfTerraria.Content.Items.Gear.Amulets;
-using PathOfTerraria.Content.Items.Gear.Offhands;
-using ReLogic.Content;
+﻿using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -25,12 +22,13 @@ public abstract class UIArmorPage : UIElement
 	public static readonly Asset<Texture2D> NecklaceIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Necklace", AssetRequestMode.ImmediateLoad);
 
 	public static readonly Asset<Texture2D> WingsIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Wings", AssetRequestMode.ImmediateLoad);
-	
+
 	protected static Player Player => Main.LocalPlayer;
 
 	protected virtual void UpdateMouseOver(UIMouseEvent @event, UIElement element)
 	{
-		SoundEngine.PlaySound(
+		SoundEngine.PlaySound
+		(
 			SoundID.MenuTick with
 			{
 				Pitch = 0.15f,
@@ -41,7 +39,8 @@ public abstract class UIArmorPage : UIElement
 
 	protected virtual void UpdateMouseOut(UIMouseEvent @event, UIElement element)
 	{
-		SoundEngine.PlaySound(
+		SoundEngine.PlaySound
+		(
 			SoundID.MenuTick with
 			{
 				Pitch = -0.25f,

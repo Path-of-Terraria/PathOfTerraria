@@ -1,7 +1,5 @@
 ﻿using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
-using Terraria.Audio;
-using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Armor.Elements;
@@ -18,7 +16,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Width = StyleDimension.FromPixels(UIArmorInventory.ArmorPageWidth);
 		Height = StyleDimension.FromPixels(UIArmorInventory.ArmorPageHeight);
-			
+
 		var wings = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 4, ItemSlot.Context.EquipDye)
 		{
 			ActiveScale = 1.15f,
