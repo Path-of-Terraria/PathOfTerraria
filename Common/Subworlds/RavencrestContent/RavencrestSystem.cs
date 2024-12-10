@@ -48,7 +48,7 @@ public class RavencrestSystem : ModSystem
 		structures.Add("Burrow", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
-			Position = new Point(673, 182)
+			Position = new Point(943, 173)
 		});
     
 		structures.Add("Observatory", new ImprovableStructure(2)

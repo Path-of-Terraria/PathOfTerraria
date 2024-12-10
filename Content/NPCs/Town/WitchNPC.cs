@@ -20,7 +20,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class WitchNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
-	public Point16 TileSpawn => new(700, 200);
+	public Point16 TileSpawn => new(970, 190);
 
 	public override void SetStaticDefaults()
 	{
