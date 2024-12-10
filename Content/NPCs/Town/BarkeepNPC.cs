@@ -8,17 +8,18 @@ using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Common.Systems.Questing;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC
+public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
+	public Point16 TileSpawn => new(517, 191);
 
 	private float animCounter;
 

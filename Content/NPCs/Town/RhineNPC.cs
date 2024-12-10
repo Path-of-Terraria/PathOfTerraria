@@ -14,13 +14,13 @@ using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using Microsoft.Build.Tasks.Hosting;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class RhineNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
+public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => new(255, 165);
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	public override void SetStaticDefaults()
@@ -109,7 +109,7 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhea
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Main.LocalPlayer.HasItem(ModContent.ItemType<SimpleCompass>()) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.Button");
-		button2 = !ModContent.GetInstance<DeerclopsQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !ModContent.GetInstance<DeerclopsQuest>().CanBeStarted && NPC.downedBoss1 ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -171,5 +171,15 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhea
 	{
 		quest = ModContent.GetInstance<DeerclopsQuest>();
 		return !quest.Completed;
+	}
+
+	public bool ForceSpawnInTavern()
+	{
+		return NPC.downedBoss1 && !NPC.downedDeerclops;
+	}
+
+	public float SpawnChanceInTavern()
+	{
+		return 0.2f;
 	}
 }

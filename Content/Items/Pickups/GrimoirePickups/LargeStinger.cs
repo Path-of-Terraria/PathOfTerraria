@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent.ItemDropRules;
+﻿using PathOfTerraria.Common.NPCs;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
@@ -11,25 +12,8 @@ internal class LargeStinger : GrimoirePickup
 	{
 		if (npc.type == NPCID.Hornet)
 		{
-			loot.Add(ItemDropRule.ByCondition(new DownedQueenBee(), ModContent.ItemType<LargeStinger>(), 100));
-		}
-	}
-
-	public class DownedQueenBee : IItemDropRuleCondition, IProvideItemConditionDescription
-	{
-		public bool CanDrop(DropAttemptInfo info)
-		{
-			return NPC.downedQueenBee;
-		}
-
-		public bool CanShowItemDropInUI()
-		{
-			return true;
-		}
-
-		public string GetConditionDescription()
-		{
-			return null;
+			BossDownedCondition.Bosses boss = BossDownedCondition.Bosses.QueenBee;
+			loot.Add(ItemDropRule.ByCondition(new BossDownedCondition(boss), ModContent.ItemType<LargeStinger>(), 100));
 		}
 	}
 }

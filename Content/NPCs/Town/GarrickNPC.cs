@@ -14,11 +14,12 @@ using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Content.Items.Quest;
 using Terraria.DataStructures;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
+using PathOfTerraria.Common.NPCs;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
+public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNPC
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
@@ -202,5 +203,15 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	{
 		quest = ModContent.GetInstance<KingSlimeQuest>();
 		return !quest.Completed;
+	}
+
+	public bool ForceSpawnInTavern()
+	{
+		return QuestSystem.ForceGarrickSpawn();
+	}
+
+	public float SpawnChanceInTavern()
+	{
+		return NPC.downedSlimeKing ? 0.2f : 0f;
 	}
 }

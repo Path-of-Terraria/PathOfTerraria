@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Questing;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.HellEvent;
