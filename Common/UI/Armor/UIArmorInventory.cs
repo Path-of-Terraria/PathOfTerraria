@@ -14,8 +14,14 @@ namespace PathOfTerraria.Common.UI.Armor;
 
 public sealed class UIArmorInventory : UIState
 {
+	/// <summary>
+	///		The width of each armor page, in pixels.
+	/// </summary>
 	public const float ArmorPageWidth = 160f;
 
+	/// <summary>
+	///		The height of each armor page, in pixels.
+	/// </summary>
 	public const float ArmorPageHeight = 190f;
 
 	public const float Smoothness = 0.3f;
