@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Quest;
+using PathOfTerraria.Content.NPCs.Town;
 using System.Collections.Generic;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -57,11 +58,12 @@ internal class SyncedCustomDrops : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior)
+		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior
+			|| npc.type == ModContent.NPCType<TownScoutNPC>())
 		{
 			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<TomeOfTheElders>(), 10);
 		}
-		else if (npc.type is NPCID.Zombie)
+		else if (npc.type is NPCID.Zombie or NPCID.DemonEye)
 		{
 			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<LunarShard>(), 5);
 		}

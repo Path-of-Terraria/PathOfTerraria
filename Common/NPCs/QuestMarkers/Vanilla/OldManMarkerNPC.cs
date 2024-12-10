@@ -28,6 +28,7 @@ internal class OldManModifiers : GlobalNPC
 	{
 		int slot = Mod.AddNPCHeadTexture(NPCID.OldMan, $"{PoTMod.ModName}/Assets/NPCs/Town/OldMan_Head");
 
+		// Properly add a NPC head to the Old Man
 		FieldInfo internalDictInfo = typeof(TownNPCProfiles).GetField("_townNPCProfiles", BindingFlags.Instance | BindingFlags.NonPublic);
 		var dict = internalDictInfo.GetValue(TownNPCProfiles.Instance) as Dictionary<int, ITownNPCProfile>;
 		dict[NPCID.OldMan] = TownNPCProfiles.LegacyWithSimpleShimmer("OldMan", slot, -1, uniquePartyTexture: false, uniquePartyTextureShimmered: false);
