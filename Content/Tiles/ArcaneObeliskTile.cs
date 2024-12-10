@@ -1,9 +1,11 @@
 using PathOfTerraria.Common.Waypoints.UI;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.UI;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles;
@@ -24,6 +26,11 @@ public class ArcaneObeliskTile : ModTile
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 
 		TileObjectData.newTile.DrawYOffset = 4;
+		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook((int i, int j, int _, int _, int _, int _) =>
+		{
+			ModContent.GetInstance<ArcaneObeliskSystem>().ArcaneObeliskLocation = new Point16(i, j);
+			return 0;
+		}, -1, 0, false);
 
 		TileObjectData.newTile.Height = 5;
 		TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16, 16, 16 };
@@ -36,6 +43,11 @@ public class ArcaneObeliskTile : ModTile
 		HitSound = SoundID.Dig;
 
 		AddMapEntry(new Color(142, 136, 174), CreateMapEntryName());
+	}
+
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
+	{
+		ModContent.GetInstance<ArcaneObeliskSystem>().ArcaneObeliskLocation = null;
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num)
@@ -82,5 +94,30 @@ public class ArcaneObeliskTile : ModTile
 		Vector2 position = new Vector2(i, j) * 16f - Main.screenPosition + screenOffset + dataOffset;
 
 		spriteBatch.Draw(texture, position, frame, Color.White);
+	}
+
+	public class ArcaneObeliskSystem : ModSystem
+	{
+		public Point16? ArcaneObeliskLocation = null;
+
+		public override void SaveWorldData(TagCompound tag)
+		{
+			if (ArcaneObeliskLocation is not null)
+			{
+				tag.Add("obeliskLocation", ArcaneObeliskLocation.Value);
+			}
+		}
+
+		public override void LoadWorldData(TagCompound tag)
+		{
+			if (tag.TryGet("obeliskLocation", out Point16 arcaneLoc))
+			{
+				ArcaneObeliskLocation = arcaneLoc;
+			}
+			else
+			{
+				ArcaneObeliskLocation = null;
+			}
+		}
 	}
 }
