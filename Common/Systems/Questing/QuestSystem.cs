@@ -6,11 +6,11 @@ namespace PathOfTerraria.Common.Systems.Questing;
 
 internal class QuestSystem : ModSystem
 {
-	public static bool CanGarrickSpawn()
+	public static bool ForceGarrickSpawn()
 	{
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
-			return Main.LocalPlayer.GetModPlayer<QuestChecksPlayer>().CanKingSlimeQuest;
+			return !NPC.downedSlimeKing && Main.LocalPlayer.GetModPlayer<QuestChecksPlayer>().CanKingSlimeQuest;
 		}
 
 		return false;
@@ -18,6 +18,11 @@ internal class QuestSystem : ModSystem
 
 	public override void ClearWorld()
 	{
+		if (Main.dedServ)
+		{
+			return;
+		}
+
 		// Reset quests on exit so we don't bleed data
 		foreach (Quest quest in ModContent.GetContent<Quest>())
 		{
