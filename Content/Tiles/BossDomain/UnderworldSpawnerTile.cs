@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+using PathOfTerraria.Content.NPCs.HellEvent;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -47,7 +48,8 @@ internal class UnderworldSpawnerTile : ModTile
 			1 => NPCID.Demon,
 			2 => NPCID.FireImp,
 			3 => NPCID.Lavabat,
-			_ => NPCID.RedDevil
+			4 => NPCID.RedDevil,
+			_ => ModContent.NPCType<FireMaw>(),
 		};
 
 		int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 1);

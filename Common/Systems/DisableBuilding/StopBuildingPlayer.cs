@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.BossDomains;
 using SubworldLibrary;
 using Terraria.ID;
 
@@ -123,7 +124,7 @@ internal class StopBuildingPlayer : ModPlayer
 		// Disable placement, aside from ropes and torches
 		if (item.createTile >= TileID.Dirt || item.createWall > WallID.None || item.type == ItemID.IceRod || item.tileWand >= 0)
 		{
-			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile];
+			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile] && SubworldSystem.Current is not WallOfFleshDomain;
 			bool isTorch = item.createTile >= TileID.Dirt && TileID.Sets.Torch[item.createTile];
 
 			if (!isRope && !isTorch && !BuildingWhitelist.InPlacingWhitelist(item.createTile))

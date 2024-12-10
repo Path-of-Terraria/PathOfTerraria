@@ -131,7 +131,10 @@ HunterNPC: {
 	Entry: A stone-cold hunter with more knowledge than you have, Elara isn't talkative. She makes up for that by being an exceedingly good hunter and tracker, with eyes almost everywhere.
 }
 
-Minera.DisplayName: Minera
+Minera: {
+	DisplayName: Minera
+	Entry: A Crimera recently born from an unsavory source. They love to attack in packs.
+}
 
 GarrickNPC: {
 	DisplayName: Garrick
@@ -552,4 +555,14 @@ OldMan: {
 			3: The Dungeon awaits.
 		}
 	}
+}
+
+AshWraith: {
+	DisplayName: Ash Wraith
+	Entry: A stir of malicious energy combined with the instability of the Underworld produced this...tumbleweed? Much like their surface cousins, they dash at you, but with another axis of movement.
+}
+
+FireMaw: {
+	DisplayName: Fire Maw
+	Entry: An odd mix of flower and foe, found only in the Wall of Flesh's domain. Flourishes inside of buildings, but not outside of them.
 }

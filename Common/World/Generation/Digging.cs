@@ -8,7 +8,7 @@ internal static class Digging
 	/// <summary>
 	/// Digs a perfectly circular space into tiles.
 	/// </summary>
-	/// <param name="pos">Center of the circle.</param>
+	/// <param name="pos">Center of the circle, in tile coordinates..</param>
 	/// <param name="size">Radius of the circle.</param>
 	public static void CircleOpening(Vector2 pos, float size)
 	{

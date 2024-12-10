@@ -19,8 +19,6 @@ internal class ArenaBlocker : ModTile
 		AddMapEntry(new Color(175, 56, 76));
 
 		DustType = DustID.Obsidian;
-		HitSound = SoundID.NPCHit1;
-
 		GlowTexture ??= ModContent.Request<Texture2D>(Texture + "_Glow");
 	}
 

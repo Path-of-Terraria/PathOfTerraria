@@ -785,6 +785,73 @@ SkeletronMap: {
 		'''
 }
 
+FireMawTriggerItem: {
+	DisplayName: Fire Maw Trigger Item
+	Tooltip: ""
+}
+
+DwarvenGreatsword: {
+	Description: A sword forged by an extremely experienced metalsmith and magified by a madman.
+	AltUseDescription: Right click to take out the imbued spirit of Thrain Ironfist, widely and rapidly swinging around a Dwarven Greathammer
+	DisplayName: Dwarven Greatsword
+	Tooltip: ""
+}
+
+Twinbow: {
+	DisplayName: Twinbow
+	Tooltip: ""
+	Description:
+		'''
+		A hunter's unending expertise funneled into metal by an experienced metalsmith.
+		Shoots two armor-piercing arrows per shot.
+		'''
+	AltUseDescription: Right click to charge up a barrage of 6 defense-piercing arrows.
+}
+
+FlamingEye: {
+	DisplayName: Flaming Eye
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Burns not your skin, but your soul.'
+		'''
+}
+
+SoulfulAsh: {
+	DisplayName: Soulful Ash
+	Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Whispers to you softly.'
+		'''
+}
+
+TinyHat: {
+	DisplayName: Tiny Hat
+	Tooltip: ""
+	Description: A decent portion of a madman's power brought to life by an ancient witch...in the form of a tiny Alaric
+	AltUseDescription: Right click to increase tiny Alaric's fire rate significantly for 6 seconds
+}
+
+VoidPearl: {
+	DisplayName: Void Pearl
+	Tooltip:
+		'''
+		Throw upon the Underworld's ash to create havok and summon the Wall of Flesh's domain
+		Note from Alaric: 
+		"This WILL explode a lot, don't throw it at something you care about! Or do, I don't care!"
+		'''
+}
+
+WoFMap: {
+	DisplayName: Wall of Flesh Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of dread and hope'
+		'''
+}
+
 LimpidShard: {
 	DisplayName: Limpid Shard
 	Tooltip:

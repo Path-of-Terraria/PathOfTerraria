@@ -97,5 +97,36 @@ HornetSummon: {
 }
 
 QueenBeePortal.DisplayName: Queen Bee Portal
+FallingAshBlock.DisplayName: Falling Ash Block
+GeyserPredictionProjectile.DisplayName: Geyser Prediction Projectile
 SkeletronPortal.DisplayName: Skeletron Portal
 SkeletronRitualProj.DisplayName: Skeletron Ritual Proj
+DwarvenGreatswordAltHammer.DisplayName: Dwarven Greathammer
+TinyAlaric.DisplayName: Tiny Alaric
+VoidPearlThrown.DisplayName: Void Pearl Thrown
+WoFPortal.DisplayName: Hellish Portal
+WoFRitualProj.DisplayName: Ritual
+
+OobodopSummon: {
+	DisplayName: Podoboom
+	Description:
+		'''
+		Dashes at your cursor
+		Grows in size if in lava or when hitting enemies
+		Right click to explode, consuming all accrued lava
+		'''
+}
+
+ExplosionHitbox.DisplayName: Explosion
+ExplosionHitboxFriendly.DisplayName: Explosion
+
+DemonSummon: {
+	DisplayName: Demon
+	Description:
+		'''
+		Follows your cursor
+		Shoots various ethereal weapons at the strongest nearby enemy
+		'''
+}
+
+DemonWeapons.DisplayName: Demon Weapon

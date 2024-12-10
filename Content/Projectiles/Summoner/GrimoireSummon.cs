@@ -8,6 +8,10 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Projectiles.Summoner;
 
+/// <summary>
+/// Defines a Grimoire Summon and its functionality.<br/><br/>
+/// By default, this class uses <see cref="Projectile.ai"/>[0], alongside <see cref="Projectile.localAI"/>[0], for if the proj is despawning and for animation respectively.
+/// </summary>
 internal abstract class GrimoireSummon : ModProjectile
 {
 	public static Dictionary<int, Asset<Texture2D>> IconsById = [];
@@ -74,7 +78,6 @@ internal abstract class GrimoireSummon : ModProjectile
 
 			var pickup = part.ModItem as GrimoirePickup;
 			PoTItemHelper.ApplyAffixes(pickup.Item, modifier, Owner);
-
 		}
 
 		modifier.ApplyTo(Projectile);

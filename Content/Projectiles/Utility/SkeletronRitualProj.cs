@@ -77,7 +77,7 @@ internal class SkeletronRitualProj : ModProjectile
 			Collision.HitTiles(pos, new Vector2(0, -8), 16, 16);
 		}
 
-		if (Timer > 60 && Timer % 15 == 0 || Timer > MaxTimer - 16 && Timer % 2 == 0)
+		if (Timer > 60 && Timer % 15 == 0 || Timer > MaxTimer - 16 && Timer % 2 == 0 && Main.netMode != NetmodeID.Server)
 		{
 			Vector2 rotation = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();
 			int time = (int)(Timer / MaxTimer * 12f);

@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -7,6 +8,8 @@ namespace PathOfTerraria.Content.Projectiles.Ranged;
 
 internal class BowAnimationProjectile : ModProjectile
 {
+	public static readonly Dictionary<int, Action<Projectile>> OverridenShootActionsByItemId = [];
+
 	public override string Texture => "Terraria/Images/NPC_0";
 
 	private Player Owner => Main.player[Projectile.owner];
@@ -60,7 +63,14 @@ internal class BowAnimationProjectile : ModProjectile
 
 			if (Projectile.frame == 4)
 			{
-				Shoot();
+				if (!OverridenShootActionsByItemId.TryGetValue(Owner.HeldItem.type, out Action<Projectile> action))
+				{
+					Shoot();
+				}
+				else
+				{
+					action(Projectile);
+				}
 			}
 
 			if (Projectile.frame == 6)

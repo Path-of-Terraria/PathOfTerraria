@@ -79,7 +79,7 @@ internal class OldManModifiers : GlobalNPC
 
 	public override void OnChatButtonClicked(NPC npc, bool firstButton)
 	{
-		if (!firstButton)
+		if (!firstButton && npc.type == NPCID.OldMan)
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.QuestStart");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(SkeletronQuest)}");

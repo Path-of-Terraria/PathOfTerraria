@@ -48,6 +48,11 @@ public abstract class Quest : ModType, ILocalizedModType
 		ModTypeLookup<Quest>.Register(this);
 	}
 
+	/// <summary>
+	/// Gets the singleton instance for the given quest by name. See also <see cref="ModContent.GetInstance{T}"/>.
+	/// </summary>
+	/// <param name="name">Name of the quest.</param>
+	/// <returns>Singleton quest instance.</returns>
 	public static Quest GetQuest(string name)
 	{
 		return QuestsByName[name];

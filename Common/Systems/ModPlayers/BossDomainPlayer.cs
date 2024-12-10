@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.BossDomains;
 using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -88,6 +89,11 @@ internal class BossDomainPlayer : ModPlayer
 
 	public static int GetLivesPerPlayer()
 	{
+		if (SubworldSystem.Current is WallOfFleshDomain)
+		{
+			return 1;
+		}
+
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
 			return 6;

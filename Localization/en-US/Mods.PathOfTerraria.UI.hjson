@@ -11,6 +11,8 @@ Gear: {
 	}
 }
 
+BaseDamage: Base Damage: {0}
+
 StatUI: {
 	Level: Level
 	Experience: Exp

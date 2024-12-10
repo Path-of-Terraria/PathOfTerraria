@@ -8,6 +8,11 @@ internal class LavaSlimeTriggerItem : ModItem
 {
 	protected virtual int Style => 0;
 
+	public override bool IsLoadingEnabled(Mod mod)
+	{
+		return PoTMod.CheatModEnabled;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		ItemID.Sets.DisableAutomaticPlaceableDrop[Type] = true;
@@ -45,5 +50,10 @@ internal class LavaBatTriggerItem : LavaSlimeTriggerItem
 internal class DevilTriggerItem : LavaSlimeTriggerItem
 {
 	protected override int Style => 4;
+}
+
+internal class FireMawTriggerItem : LavaSlimeTriggerItem
+{
+	protected override int Style => 5;
 }
 #endif

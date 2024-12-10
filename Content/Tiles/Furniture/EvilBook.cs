@@ -38,6 +38,11 @@ internal class EvilBook : ModTile
 	{
 		effects = (i % 2 == 0) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 	}
+
+	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+	{
+		ModContent.GetInstance<EvilBookEntity>().Kill(i, j);
+	}
 }
 
 internal class EvilBookEntity : ModTileEntity
@@ -50,8 +55,6 @@ internal class EvilBookEntity : ModTileEntity
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
 		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18;
-		j -= tile.TileFrameY / 18 % 5;
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
@@ -84,6 +87,11 @@ internal class EvilBookEntity : ModTileEntity
 
 		int i = Position.X;
 		int j = Position.Y;
+
+		if (!Main.tile[i, j].HasTile || Main.tile[i, j].TileType != ModContent.TileType<EvilBook>())
+		{
+			return;
+		}
 
 		Tile leftCandle = Main.tile[i - 1, j];
 		Tile rightCandle = Main.tile[i + 1, j];

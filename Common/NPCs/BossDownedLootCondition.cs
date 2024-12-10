@@ -20,6 +20,7 @@ public class BossDownedCondition(BossDownedCondition.Bosses boss) : IItemDropRul
 		KingSlime,
 		Skeletron,
 		Deerclops,
+		WallOfFlesh,
 		SingularCutoff, //Keep this after all non-"the" bosses (i.e. after Skeletron but before THE Eye of Cthulhu)
 		EyeOfCthulhu,
 		QueenBee,
@@ -42,6 +43,7 @@ public class BossDownedCondition(BossDownedCondition.Bosses boss) : IItemDropRul
 				Bosses.EaterofWorlds => BossTracker.DownedEaterOfWorlds,
 				Bosses.BrainOfCthulhu => BossTracker.DownedBrainOfCthulhu,
 				Bosses.Deerclops => NPC.downedDeerclops,
+				Bosses.WallOfFlesh => Main.hardMode,
 				_ => false,
 			};
 		}
@@ -68,6 +70,7 @@ public class BossDownedCondition(BossDownedCondition.Bosses boss) : IItemDropRul
 			Bosses.EaterofWorlds => NPCID.EaterofWorldsHead,
 			Bosses.BrainOfCthulhu => NPCID.BrainofCthulhu,
 			Bosses.Deerclops => NPCID.Deerclops,
+			Bosses.WallOfFlesh => NPCID.WallofFlesh,
 			_ => NPCID.BlueSlime
 		};
 

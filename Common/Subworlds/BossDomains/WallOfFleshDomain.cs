@@ -1,8 +1,10 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using ReLogic.Utilities;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,9 +21,6 @@ public class WallOfFleshDomain : BossDomainSubworld
 {
 	public override int Width => 1800;
 	public override int Height => 250;
-	public override int[] WhitelistedCutTiles => [ModContent.TileType<FrayedRope>()];
-	public override int[] WhitelistedMiningTiles => [ModContent.TileType<FrayedRope>(), TileID.Platforms];
-	public override int[] WhitelistedPlaceableTiles => [TileID.Platforms];
 	public override int DropItemLevel => 30;
 
 	public bool BossSpawned = false;
@@ -30,6 +29,27 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new	PassLegacy("Base Terrain", Terrain),
 		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids), new PassLegacy("Pathway", SpawnPathway)];
+
+	internal override void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
+	{
+		if (use == BuildingWhitelist.WhitelistUse.Mining)
+		{
+			results.Remove(TileID.Rope);
+
+			results.Add(TileID.Platforms);
+			results.Add(ModContent.TileType<FrayedRope>());
+		}
+
+		if (use == BuildingWhitelist.WhitelistUse.Placing)
+		{
+			results.Add(TileID.Platforms);
+		}
+
+		if (use == BuildingWhitelist.WhitelistUse.Cutting)
+		{
+			results.Add(ModContent.TileType<FrayedRope>());
+		}
+	}
 
 	public override void OnEnter()
 	{
@@ -250,7 +270,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 	private void PlaceArena(int x, HashSet<int> usedIds)
 	{
-		const int MaxArenas = 8;
+		const int MaxArenas = 13;
 
 		int id = WorldGen.genRand.Next(MaxArenas);
 
@@ -561,23 +581,30 @@ public class WallOfFleshDomain : BossDomainSubworld
 	private static void GetNoises(out FastNoiseLite noise, out FastNoiseLite softNoise, out FastNoiseLite wallNoise, 
 		out FastNoiseLite smallWallNoise, out FastNoiseLite wallTypeNoise)
 	{
-		noise = new FastNoiseLite(WorldGen._genRandSeed);
+		if (!int.TryParse(WorldGen.currentWorldSeed, out int seed))
+		{
+			seed = Crc32.Calculate(WorldGen.currentWorldSeed);
+		}
+
+		seed = (seed == int.MinValue) ? int.MaxValue : Math.Abs(seed);
+
+		noise = new FastNoiseLite(seed);
 		noise.SetFrequency(0.03f);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
 
-		softNoise = new FastNoiseLite(WorldGen._genRandSeed);
+		softNoise = new FastNoiseLite(seed);
 		softNoise.SetFrequency(0.08f);
 		softNoise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
 
-		wallNoise = new FastNoiseLite(WorldGen._genRandSeed);
+		wallNoise = new FastNoiseLite(seed);
 		wallNoise.SetFrequency(0.04f);
 		wallNoise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
 
-		smallWallNoise = new FastNoiseLite(WorldGen._genRandSeed + 1);
+		smallWallNoise = new FastNoiseLite(seed);
 		smallWallNoise.SetFrequency(0.1f);
 		smallWallNoise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
 
-		wallTypeNoise = new FastNoiseLite(WorldGen._genRandSeed + 2);
+		wallTypeNoise = new FastNoiseLite(seed);
 		wallTypeNoise.SetFrequency(0.01f);
 		wallTypeNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
 	}
