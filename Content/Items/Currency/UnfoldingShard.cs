@@ -8,6 +8,12 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 internal class UnfoldingShard : CurrencyShard
 {
+	protected override void SetStaticData()
+	{
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 5000f;
+	}
+
 	public override bool CanRightClick()
 	{
 		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity == ItemRarity.Normal;

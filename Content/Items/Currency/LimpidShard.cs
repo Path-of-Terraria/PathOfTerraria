@@ -8,6 +8,13 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 internal class LimpidShard : CurrencyShard
 {
+	protected override void SetStaticData()
+	{
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 500f;
+		staticData.MinDropItemLevel = 10;
+	}
+
 	public override bool CanRightClick()
 	{
 		PoTInstanceItemData data = Main.LocalPlayer.HeldItem.GetInstanceData();

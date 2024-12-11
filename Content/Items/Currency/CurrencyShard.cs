@@ -5,18 +5,25 @@ using Terraria.ID;
 namespace PathOfTerraria.Content.Items.Currency;
 
 /// <summary>
-/// Base class for currency shards. As of now, does nothing.
+/// Base class for currency shards. Defaults to having a 4-frame animation, consumable, and has a default <see cref="CanRightClick"/>.
 /// </summary>
 internal abstract class CurrencyShard : ModItem
 {
 	public override void SetStaticDefaults()
 	{
-		base.SetStaticDefaults();
-
 		ItemID.Sets.AnimatesAsSoul[Item.type] = true;
 		Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
+		
+		SetStaticData();
 	}
-	
+
+	protected virtual void SetStaticData()
+	{
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.MinDropItemLevel = 1;
+	}
+
 	public override void SetDefaults()
 	{
 		Item.CloneDefaults(ItemID.Silk);
