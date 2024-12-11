@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria.GameContent.Creative;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
@@ -49,13 +50,30 @@ public abstract class Quest : ModType, ILocalizedModType
 	}
 
 	/// <summary>
-	/// Gets the singleton instance for the given quest by name. See also <see cref="ModContent.GetInstance{T}"/>.
+	/// Gets the template singleton instance of the given quest. Do not modify this, as players will copy the singleton to use locally.
 	/// </summary>
 	/// <param name="name">Name of the quest.</param>
-	/// <returns>Singleton quest instance.</returns>
-	public static Quest GetQuest(string name)
+	/// <returns>The quest singleton.</returns>
+	public static Quest GetSingleton(string name)
 	{
 		return QuestsByName[name];
+	}
+
+	/// <summary>
+	/// Gets the actual instance of the given quest on the local player.
+	/// </summary>
+	/// <param name="name"></param>
+	/// <returns>The in-use quest instance for the local player.</returns>
+	public static Quest GetLocalPlayerInstance(string name)
+	{
+		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[name];
+	}
+
+	/// <inheritdoc cref="GetLocalPlayerInstance(string)"/>
+	/// <typeparam name="T">The type of the quest to get.</typeparam>
+	public static T GetLocalPlayerInstance<T>() where T : Quest
+	{
+		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[ModContent.GetInstance<T>().FullName] as T;
 	}
 
 	public static LocalizedText QuestLocalization(string postfix)
@@ -174,17 +192,23 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// <param name="tag">The tag data for the quest.</param>
 	/// <param name="player">The player this is loading on.</param>
 	/// <returns>The quest singleton, if it was found.</returns>
-	public static Quest LoadFrom(TagCompound tag, Player player)
+	public static Quest LoadFrom(TagCompound tag, Player player, out Quest quest)
 	{
 		string name = tag.GetString("type");
 
-		if (!ModContent.TryFind(name, out Quest quest))
+		if (!ModContent.TryFind(name, out quest))
 		{
 			PoTMod.Instance.Logger.Error($"Could not load quest of {name}, was it removed?");
 			return null;
 		}
 
+		quest = quest.Clone();
 		quest.Load(tag, player);
 		return quest;
+	}
+
+	internal Quest Clone()
+	{
+		return (Quest)MemberwiseClone();
 	}
 }

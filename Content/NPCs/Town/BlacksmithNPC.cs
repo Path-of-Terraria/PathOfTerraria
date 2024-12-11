@@ -118,7 +118,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !ModContent.GetInstance<BlacksmithStartQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !Quest.GetLocalPlayerInstance<BlacksmithStartQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -160,7 +160,7 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = ModContent.GetInstance<BlacksmithStartQuest>();
+		quest = Quest.GetLocalPlayerInstance<BlacksmithStartQuest>();
 		return !quest.Completed;
 	}
 }

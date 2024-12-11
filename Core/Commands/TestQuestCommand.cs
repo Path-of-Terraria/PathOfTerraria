@@ -20,7 +20,7 @@ public sealed class TestQuestCommand : ModCommand
 			return;
 		}
 		
-		questPlayer.RestartQuestTest();
+		//questPlayer.RestartQuestTest();
 	}
 }
 #endif

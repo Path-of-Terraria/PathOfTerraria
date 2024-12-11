@@ -27,7 +27,7 @@ public class QuestDetailsPanel : SmartUiElement
 		
 		if (QuestPlayer.GetQuestCount() != 0 && !string.IsNullOrEmpty(ViewedQuestName))
 		{
-			string name = Quest.GetQuest(ViewedQuestName).DisplayName.Value;
+			string name = QuestPlayer.QuestsByName[ViewedQuestName].DisplayName.Value;
 			Utils.DrawBorderStringBig(spriteBatch, name, GetRectangle().Center() + new Vector2(175, -320), Color.White, 0.5f, 0.5f, 0.35f);
 		}
 
@@ -58,7 +58,7 @@ public class QuestDetailsPanel : SmartUiElement
 			RemoveChild(oldList);
 		}
 
-		var quest = Quest.GetQuest(ViewedQuestName);
+		Quest quest = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[ViewedQuestName];
 		var list = new UIList()
 		{
 			Left = StyleDimension.FromPixels(530),
@@ -76,7 +76,7 @@ public class QuestDetailsPanel : SmartUiElement
 				continue;
 			}
 
-			var stepUI = new UISelectableQuestStep(i, ViewedQuestName)
+			var stepUI = new UISelectableQuestStep(i, quest)
 			{
 				Width = StyleDimension.Fill,
 				Height = StyleDimension.FromPixels(step.LineCount * 22)

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -12,22 +13,21 @@ public class QuestModPlayer : ModPlayer
 {
 	// ReSharper disable once InconsistentNaming
 	public static ModKeybind ToggleQuestUIKey;
-	
-	// need a list of what npcs start what quests
-	private readonly HashSet<string> _enabledQuests = [];
-	private readonly List<TagCompound> _cachedQuestTags = [];
+
+	//private readonly HashSet<string> _enabledQuests = [];
+	//private readonly List<TagCompound> _cachedQuestTags = [];
+	public Dictionary<string, Quest> QuestsByName = [];
 
 	private bool _firstQuest = true;
 
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
-		var quest = Quest.GetQuest(name);
-		quest.StartQuest(Player, step == -1 ? 0 : step);
-		_enabledQuests.Add(quest.FullName);
+		//var quest = Quest.GetSingleton(name);
+		QuestsByName[name].StartQuest(Player, step == -1 ? 0 : step);
 
 		if (Main.myPlayer == Player.whoAmI && !fromLoad)
 		{
-			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(Quest.GetQuest(name).DisplayName, 300, 1f, 1.2f);
+			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(QuestsByName[name].DisplayName, 300, 1f, 1.2f);
 
 			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.5f });
 
@@ -40,28 +40,20 @@ public class QuestModPlayer : ModPlayer
 		}
 	}
 
-	public void RestartQuestTest()
-	{
-		_enabledQuests.Clear();
+	//public override void OnEnterWorld()
+	//{
+	//	foreach (TagCompound cachedQuest in _cachedQuestTags)
+	//	{
+	//		var quest = Quest.LoadFrom(cachedQuest, Player);
 
-		StartQuest("PathOfTerraria/TestQuest");
-		StartQuest("PathOfTerraria/TestQuestTwo");
-	}
+	//		if (quest is not null && quest.Active)
+	//		{
+	//			StartQuest(quest.FullName, quest.CurrentStep, true);
+	//		}
+	//	}
 
-	public override void OnEnterWorld()
-	{
-		foreach (TagCompound cachedQuest in _cachedQuestTags)
-		{
-			var quest = Quest.LoadFrom(cachedQuest, Player);
-
-			if (quest is not null && quest.Active)
-			{
-				StartQuest(quest.FullName, quest.CurrentStep, true);
-			}
-		}
-
-		//_cachedQuestTags.Clear();
-	}
+	//	//_cachedQuestTags.Clear();
+	//}
 
 	public override void Load()
 	{
@@ -84,9 +76,8 @@ public class QuestModPlayer : ModPlayer
 	public override void SaveData(TagCompound tag)
 	{
 		List<TagCompound> questTags = [];
-		IEnumerable<Quest> quests = ModContent.GetContent<Quest>();
 
-		foreach (Quest quest in quests)
+		foreach (Quest quest in QuestsByName.Values)
 		{
 			var newTag = new TagCompound();
 			quest.Save(newTag);
@@ -106,32 +97,30 @@ public class QuestModPlayer : ModPlayer
 		_firstQuest = !tag.ContainsKey("firstQuest"); // If we have the tag, the first quest is false
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
-		// We can't enable quests here; that'd set it to Complete or Active and mess up all save data for every other player.
-		// Instead, we cache the quests that need to be loaded later,
-		// as the only time the player can save is in-world.
-		_cachedQuestTags.Clear();
-		questTags.ForEach(_cachedQuestTags.Add);
+		QuestsByName.Clear();
+		
+		foreach (TagCompound questTag in questTags)
+		{
+			Quest.LoadFrom(questTag, Player, out Quest quest);
+			QuestsByName.Add(quest.FullName, quest);
+		}
 	}
 
 	public override void PostUpdateMiscEffects()
 	{
-		HashSet<string> removals = [];
-
-		foreach (string q in _enabledQuests)
+		foreach (Quest quest in QuestsByName.Values)
 		{
-			var quest = Quest.GetQuest(q);
+			if (!quest.Active)
+			{
+				continue;
+			}
+
 			quest.Update(Player); // Quests in enabledQuests are necessarily active
 
 			if (quest.Completed)
 			{
-				removals.Add(q);
 				quest.Active = false;
 			}
-		}
-
-		foreach (string quest in removals)
-		{
-			_enabledQuests.Remove(quest);
 		}
 	}
 
@@ -139,34 +128,19 @@ public class QuestModPlayer : ModPlayer
 	{
 		if (target.life <= 0)
 		{
-			foreach (string q in _enabledQuests)
+			foreach (Quest quest in QuestsByName.Values)
 			{
-				var quest = Quest.GetQuest(q);
 				quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone); // Quests in enabledQuests are necessarily active
 			}
 		}
 	}
 
-	public List<string> GetQuests()
-	{
-		return [.. _enabledQuests];
-	}
-
 	/// <summary>
-	/// Get the number of quests for the player
+	/// Get the number of active quests for the current player.
 	/// </summary>
 	/// <returns></returns>
 	public int GetQuestCount()
 	{
-		return _enabledQuests.Count;
-	}
-
-	/// <summary>
-	/// Gets all quests the player for the player
-	/// </summary>
-	/// <returns></returns>
-	public HashSet<string> GetAllQuests()
-	{
-		return _enabledQuests;
+		return QuestsByName.Count(x => x.Value.Active);
 	}
 }

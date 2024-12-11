@@ -11,10 +11,10 @@ public class UISelectableQuest : UISelectableOutlineRectPanel
 
 	private UISimpleWrappableText Title { get; set; }
 
-	public UISelectableQuest(string quest, QuestDetailsPanel panel)
+	public UISelectableQuest(Quest quest, QuestDetailsPanel panel)
 	{
 		Panel = panel;
-		QuestName = quest;
+		QuestName = quest.Name;
 
 		DrawFilled = true;
 		DrawBorder = true;
@@ -27,7 +27,7 @@ public class UISelectableQuest : UISelectableOutlineRectPanel
 		Width.Set(325, 0f);
 
 		// text
-		Title = new UISimpleWrappableText(Quest.GetQuest(quest).DisplayName.Value, 0.7f);
+		Title = new UISimpleWrappableText(quest.DisplayName.Value, 0.7f);
 		Title.Left.Set(14f, 0f);
 		Title.Top.Set(-8f, 0f);
 		Title.Colour = new Color(43, 28, 17);

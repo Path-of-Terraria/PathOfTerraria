@@ -85,14 +85,14 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 
-		if (ModContent.GetInstance<DeerclopsQuest>().Active)
+		if (Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active)
 		{
 			button2 = this.GetLocalizedValue("MapButton");
 			Main.npcChatCornerItem = ModContent.ItemType<DeerclopsMap>();
 		}
 		else
 		{
-			button2 = !ModContent.GetInstance<HunterStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+			button2 = !Quest.GetLocalPlayerInstance<HunterStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
 		}
 	}
 
@@ -104,7 +104,7 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			return;
 		}
 
-		if (ModContent.GetInstance<DeerclopsQuest>().Active)
+		if (Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active)
 		{
 			if (Main.LocalPlayer.BuyItem(Item.buyPrice(0, 20, 0, 0)))
 			{
@@ -172,7 +172,13 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = ModContent.GetInstance<HunterStartQuest>();
+		quest = Quest.GetLocalPlayerInstance<HunterStartQuest>();
+
+		if (Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active)
+		{
+			return false;
+		}
+
 		return !quest.Completed;
 	}
 }

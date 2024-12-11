@@ -12,6 +12,7 @@ Bring: {
 }
 
 TalkTo: Talk to {0}
+GiveThem: " and give them:"
 Exploration.Ice: Explore the Ice/Snow biome ({0}%)
 Or: " or "
 

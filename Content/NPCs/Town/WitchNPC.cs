@@ -88,12 +88,12 @@ public class WitchNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 
 	private static Quest DetermineNewestQuest()
 	{
-		if (!ModContent.GetInstance<WitchStartQuest>().Completed)
+		if (!Quest.GetLocalPlayerInstance<WitchStartQuest>().Completed)
 		{
-			return ModContent.GetInstance<WitchStartQuest>();
+			return Quest.GetLocalPlayerInstance<WitchStartQuest>();
 		}
 
-		return ModContent.GetInstance<QueenBeeQuest>();
+		return Quest.GetLocalPlayerInstance<QueenBeeQuest>();
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)

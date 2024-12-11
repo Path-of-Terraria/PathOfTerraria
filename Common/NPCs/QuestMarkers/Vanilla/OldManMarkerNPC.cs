@@ -17,7 +17,7 @@ internal class OldManMarkerNPC : IQuestMarkerNPC
 {
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = ModContent.GetInstance<SkeletronQuest>();
+		quest = Quest.GetLocalPlayerInstance<SkeletronQuest>();
 		return NPC.downedBoss1 && quest.CanBeStarted;
 	}
 }
@@ -57,7 +57,7 @@ internal class OldManModifiers : GlobalNPC
 		if (talkNPC is not null && talkNPC.type == NPCID.OldMan)
 		{
 			buttonOne = "";
-			buttonTwo = !ModContent.GetInstance<SkeletronQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+			buttonTwo = !Quest.GetLocalPlayerInstance<SkeletronQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		}
 	}
 
