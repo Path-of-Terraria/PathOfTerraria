@@ -12,23 +12,19 @@ namespace PathOfTerraria.Common.Systems.Questing;
 public class QuestModPlayer : ModPlayer
 {
 	// ReSharper disable once InconsistentNaming
-	public static ModKeybind ToggleQuestUIKey;
+	internal static ModKeybind ToggleQuestUIKey;
 
-	//private readonly HashSet<string> _enabledQuests = [];
-	//private readonly List<TagCompound> _cachedQuestTags = [];
 	public Dictionary<string, Quest> QuestsByName = [];
 
 	private bool _firstQuest = true;
 
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
-		//var quest = Quest.GetSingleton(name);
 		QuestsByName[name].StartQuest(Player, step == -1 ? 0 : step);
 
 		if (Main.myPlayer == Player.whoAmI && !fromLoad)
 		{
 			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(QuestsByName[name].DisplayName, 300, 1f, 1.2f);
-
 			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.5f });
 
 			if (_firstQuest) // Only display first quest popup on first quest (wow!)
@@ -39,21 +35,6 @@ public class QuestModPlayer : ModPlayer
 			}
 		}
 	}
-
-	//public override void OnEnterWorld()
-	//{
-	//	foreach (TagCompound cachedQuest in _cachedQuestTags)
-	//	{
-	//		var quest = Quest.LoadFrom(cachedQuest, Player);
-
-	//		if (quest is not null && quest.Active)
-	//		{
-	//			StartQuest(quest.FullName, quest.CurrentStep, true);
-	//		}
-	//	}
-
-	//	//_cachedQuestTags.Clear();
-	//}
 
 	public override void Load()
 	{
