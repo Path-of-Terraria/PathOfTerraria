@@ -122,3 +122,8 @@ StrongerChillPassive: {
 	Name: Stronger Chill
 	Tooltip: Chilled debuff slows down enemies 10% more.
 }
+
+ShockChancePassive: {
+	Name: Energy Field
+	Tooltip: Adds an additional 5% chance to afflict an enemy with Shock per level.
+}

@@ -34,7 +34,17 @@ internal class WarShieldPlayer : ModPlayer
 			if (npc.Hitbox.Intersects(Player.Hitbox) && !npc.friendly && !npc.townNPC)
 			{
 				bool isCrit = Main.rand.NextFloat() < (Player.HeldItem.crit + 4) * 0.01f;
-				npc.SimpleStrikeNPC(Player.HeldItem.damage, Math.Sign(StoredVelocity.X), isCrit, Player.HeldItem.knockBack);
+
+				if (NPCLoader.CanBeHitByItem(npc, Player, Player.HeldItem) is null or true)
+				{
+					int dir = Math.Sign(StoredVelocity.X);
+					NPC.HitModifiers modifiers = npc.GetIncomingStrikeModifiers(Player.HeldItem.DamageType, dir);
+
+					CombinedHooks.ModifyPlayerHitNPCWithItem(Player, Player.HeldItem, npc, ref modifiers);
+					var strike = modifiers.ToHitInfo(Player.HeldItem.damage, isCrit, 6f, damageVariation: true, Player.luck);
+					npc.StrikeNPC(strike);
+					CombinedHooks.OnPlayerHitNPCWithItem(Player, Player.HeldItem, npc, in strike, strike.Damage);
+				}
 
 				for (int i = 0; i < 5; ++i)
 				{

@@ -178,5 +178,19 @@
 			"x": -100,
 			"y": 0
 		}
+	},
+	{
+		"internalIdentifier": "ShockChancePassive",
+		"referenceId": 13,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 12
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": -100
+		}
 	}
 ]
