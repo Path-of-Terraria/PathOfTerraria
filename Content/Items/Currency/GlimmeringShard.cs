@@ -8,6 +8,12 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 internal class GlimmeringShard : CurrencyShard
 {
+	protected override void SetStaticData()
+	{
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 5000f;
+	}
+
 	public override bool CanRightClick()
 	{
 		if (Main.LocalPlayer.HeldItem.GetInstanceData().Rarity == ItemRarity.Magic)

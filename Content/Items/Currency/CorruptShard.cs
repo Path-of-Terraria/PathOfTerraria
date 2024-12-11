@@ -4,7 +4,6 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Utilities;
 using GearItem = PathOfTerraria.Content.Items.Gear.Gear;
@@ -18,12 +17,11 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 internal class CorruptShard : CurrencyShard
 {
-	public override void SetStaticDefaults()
+	protected override void SetStaticData()
 	{
-		base.SetStaticDefaults();
-
-		ItemID.Sets.AnimatesAsSoul[Item.type] = true;
-		Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 100f;
+		staticData.MinDropItemLevel = 5;
 	}
 
 	public override void SetDefaults()

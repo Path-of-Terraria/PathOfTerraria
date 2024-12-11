@@ -8,6 +8,13 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 internal class RadiantShard : CurrencyShard
 {
+	protected override void SetStaticData()
+	{
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 100f;
+		staticData.MinDropItemLevel = 25;
+	}
+
 	public override bool CanRightClick()
 	{
 		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity != ItemRarity.Normal;
