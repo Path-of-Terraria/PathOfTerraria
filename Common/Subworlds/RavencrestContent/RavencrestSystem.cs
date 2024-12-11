@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;
@@ -156,14 +157,6 @@ public class RavencrestSystem : ModSystem
 			structure.Place();
 		}
 
-		if (!NPC.AnyNPCs(ModContent.NPCType<GarrickNPC>()) && AnyClassQuestDone())
-		{
-			// Spawn in the same place as the Hunter
-			var hunterNPC = ModContent.GetInstance<HunterNPC>() as ISpawnInRavencrestNPC;
-			Point16 pos = hunterNPC.TileSpawn;
-			NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, ModContent.NPCType<GarrickNPC>());
-		}
-    
 		foreach (string npcName in HasOverworldNPC)
 		{
 			int type = ModContent.Find<ModNPC>(npcName).Type;
@@ -174,12 +167,6 @@ public class RavencrestSystem : ModSystem
 				NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, type);
 			}
 		}
-	}
-
-	private static bool AnyClassQuestDone()
-	{
-		return ModContent.GetInstance<BlacksmithStartQuest>().Completed || ModContent.GetInstance<HunterStartQuest>().Completed
-			|| ModContent.GetInstance<WitchStartQuest>().Completed || ModContent.GetInstance<WizardStartQuest>().Completed;
 	}
 
 	public static void UpgradeBuilding(string name, int level = -1)

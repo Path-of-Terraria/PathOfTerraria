@@ -15,17 +15,16 @@ namespace PathOfTerraria.Common.UI.Quests;
 public class UISelectableQuestStep : UISelectableOutlineRectPanel
 {
 	private UISimpleWrappableText Title { get; set; }
-	private Quest Quest => Quest.GetQuest(questName);
-	private QuestStep Step => Quest.QuestSteps[index];
+	private QuestStep Step => quest.QuestSteps[index];
 	
-	private readonly string questName;
+	private readonly Quest quest;
 	private readonly int index;
 
 	private bool _setSize = false;
 
-	public UISelectableQuestStep(int stepIndex, string quest)
+	public UISelectableQuestStep(int stepIndex, Quest quest)
 	{
-		questName = quest;
+		this.quest = quest;
 		index = stepIndex;
 
 		DrawFilled = true;
@@ -58,7 +57,7 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 		Vector2 stringSize = ChatManager.GetStringSize(FontAssets.ItemStack.Value, textString, Vector2.One);
 		Title.Height = StyleDimension.FromPixels(stringSize.Y);
 
-		if (Quest.CurrentStep < index) // Gray out steps that haven't been approached yet
+		if (quest.CurrentStep < index) // Gray out steps that haven't been approached yet
 		{
 			Title.Colour = new Color(43, 28, 17) * 0.25f;
 		}

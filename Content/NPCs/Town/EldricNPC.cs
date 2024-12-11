@@ -108,9 +108,9 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !ModContent.GetInstance<EoCQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 
-		EoCQuest quest = ModContent.GetInstance<EoCQuest>();
+		EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+		button2 = !quest.CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
 		{
@@ -128,7 +128,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 		else
 		{
-			EoCQuest quest = ModContent.GetInstance<EoCQuest>();
+			EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 
 			if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
 			{
@@ -181,7 +181,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = ModContent.GetInstance<EoCQuest>();
+		quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		return !quest.Completed;
 	}
 }

@@ -47,13 +47,15 @@ public class QuestsUIState : CloseableSmartUi
 		
 		RemoveAllChildren();
 		base.CreateMainPanel(false, new Point(970, 715), false, true);
-		HashSet<string> quests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().GetAllQuests();
+		Quest quest = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName.FirstOrDefault(x => x.Value.Active).Value;
+
 		_questDetails = new QuestDetailsPanel
 		{
 			Width = StyleDimension.FromPercent(1),
 			Height = StyleDimension.FromPercent(1),
-			ViewedQuestName = quests.FirstOrDefault()
+			ViewedQuestName = quest is not null ? quest.FullName : "",
 		};
+
 		_questDetails.PopulateQuestSteps();
 		Panel.Append(_questDetails);
 
@@ -81,33 +83,31 @@ public class QuestsUIState : CloseableSmartUi
 		int offset = 0;
 		QuestModPlayer player = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 
-		// Create dummy quests that are already completed
-		foreach (Quest quest in ModContent.GetContent<Quest>().Where(x => x.Completed))
+		foreach (Quest quest in player.QuestsByName.Values)
 		{
-			UIText text = new(quest.DisplayName.Value, 0.7f)
+			if (quest.Completed) // Gray out completed quests
 			{
-				TextColor = Color.Gray,
-				ShadowColor = Color.Transparent,
-				Height = StyleDimension.FromPixels(22),
-				Left = StyleDimension.FromPixelsAndPercent(26, 0.15f),
-				Top = StyleDimension.FromPixels(126 + offset),
-			};
+				UIText text = new(quest.DisplayName.Value, 0.7f)
+				{
+					TextColor = Color.Gray,
+					ShadowColor = Color.Transparent,
+					Height = StyleDimension.FromPixels(22),
+					Left = StyleDimension.FromPixelsAndPercent(26, 0.15f),
+					Top = StyleDimension.FromPixels(126 + offset),
+				};
 
-			_questDetails.Append(text);
-
-			offset += 22;
-		}
-
-		// Create actual current quests
-		foreach (string quest in player.GetAllQuests())
-		{
-			UISelectableQuest selectableQuest = new(quest, _questDetails);
-			selectableQuest.Left.Set(0, 0.15f);
-			selectableQuest.Top.Set(120 + offset, 0);
-			selectableQuest.OnLeftClick += (_, _) => SelectQuest(quest);
-			_questDetails.Append(selectableQuest);
-
-			offset += 22;
+				_questDetails.Append(text);
+				offset += 22;
+			}
+			else if (quest.Active) // Properly display active quests
+			{
+				UISelectableQuest selectableQuest = new(quest, _questDetails);
+				selectableQuest.Left.Set(0, 0.15f);
+				selectableQuest.Top.Set(120 + offset, 0);
+				selectableQuest.OnLeftClick += (_, _) => SelectQuest(quest.FullName);
+				_questDetails.Append(selectableQuest);
+				offset += 22;
+			}
 		}
 	}
 

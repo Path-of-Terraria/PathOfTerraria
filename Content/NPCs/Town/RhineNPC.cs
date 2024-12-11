@@ -109,14 +109,14 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Main.LocalPlayer.HasItem(ModContent.ItemType<SimpleCompass>()) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.Button");
-		button2 = !ModContent.GetInstance<DeerclopsQuest>().CanBeStarted && NPC.downedBoss1 ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !Quest.GetLocalPlayerInstance<DeerclopsQuest>().CanBeStarted && NPC.downedBoss1 ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
 	{
 		if (firstButton)
 		{
-			if (ModContent.GetInstance<DeerclopsQuest>().Active)
+			if (Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active)
 			{
 				if (Main.LocalPlayer.CountItem(ItemID.Wood, 16) >= 15)
 				{
@@ -169,7 +169,7 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = ModContent.GetInstance<DeerclopsQuest>();
+		quest =	Quest.GetLocalPlayerInstance<DeerclopsQuest>();
 		return !quest.Completed;
 	}
 

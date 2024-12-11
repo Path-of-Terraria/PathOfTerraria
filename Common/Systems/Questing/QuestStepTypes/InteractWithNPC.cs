@@ -55,12 +55,12 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 
 		if (RequiredItems is not null)
 		{
-			baseText += " and give them:";
+			baseText += Language.GetText($"Mods.{PoTMod.ModName}.Quests.GiveThem");
 			int id = 0;
 
 			foreach (GiveItem item in RequiredItems)
 			{
-				baseText += $"\n  {id++}. {item.Stack}x {item.Names}";
+				baseText += $"\n  {++id}. {item.Stack}x {item.Names}";
 			}
 		}
 		

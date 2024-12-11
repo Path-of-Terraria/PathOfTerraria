@@ -440,12 +440,12 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 
-		if (ModContent.GetInstance<BoCQuest>().Completed)
+		if (Quest.GetLocalPlayerInstance<BoCQuest>().Completed)
 		{
 			return; // No additional button once quest is done
 		}
 
-		button2 = ModContent.GetInstance<BoCQuest>().Active ? Language.GetTextValue($"Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.{(doPathing ? "Stay" : "Follow")}Button") 
+		button2 = Quest.GetLocalPlayerInstance<BoCQuest>().Active ? Language.GetTextValue($"Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.{(doPathing ? "Stay" : "Follow")}Button") 
 			: Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
@@ -457,7 +457,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		}
 		else
 		{
-			if (ModContent.GetInstance<BoCQuest>().Active)
+			if (Quest.GetLocalPlayerInstance<BoCQuest>().Active)
 			{
 				if (doPathing)
 				{
@@ -613,7 +613,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = ModContent.GetInstance<EoCQuest>();
+		quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		return !quest.Completed;
 	}
 

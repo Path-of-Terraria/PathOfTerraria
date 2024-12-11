@@ -5,15 +5,17 @@ namespace PathOfTerraria.Common.Systems.Questing;
 
 internal class QuestChecksPlayer : ModPlayer
 {
-	private static Quest[] ClassQuests => [ModContent.GetInstance<BlacksmithStartQuest>(), ModContent.GetInstance<WizardStartQuest>(),
-		ModContent.GetInstance<WitchStartQuest>(), ModContent.GetInstance<HunterStartQuest>()];
+	private static Quest[] ClassQuests => [Quest.GetLocalPlayerInstance<BlacksmithStartQuest>(),
+		Quest.GetLocalPlayerInstance<WizardStartQuest>(),
+		Quest.GetLocalPlayerInstance<WitchStartQuest>(),
+		Quest.GetLocalPlayerInstance<HunterStartQuest>()];
 
 	public bool CanWoFQuest { get; private set; }
 	public bool CanKingSlimeQuest { get; private set; }
 
 	public override void ResetEffects()
 	{
-		if (Main.myPlayer == Player.whoAmI)
+		if (!Main.gameMenu && Main.myPlayer == Player.whoAmI && Player.TryGetModPlayer(out QuestModPlayer _))
 		{
 			if (!CanKingSlimeQuest)
 			{
