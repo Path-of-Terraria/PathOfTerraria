@@ -101,8 +101,10 @@ public class QuestModPlayer : ModPlayer
 		
 		foreach (TagCompound questTag in questTags)
 		{
-			Quest.LoadFrom(questTag, Player, out Quest quest);
-			QuestsByName.Add(quest.FullName, quest);
+			if (Quest.LoadFrom(questTag, Player, out Quest quest))
+			{
+				QuestsByName.Add(quest.FullName, quest);
+			}
 		}
 	}
 

@@ -187,24 +187,24 @@ public abstract class Quest : ModType, ILocalizedModType
 	}
 
 	/// <summary>
-	/// Loads a quest given the tag and player. This returns the singleton instance of the quest for convenience, if found.
+	/// Loads a quest given the tag and player. This returns the quest, if found. If not found, returns the instance stored in <see cref="ModContent.GetInstance{T}"/>.
 	/// </summary>
 	/// <param name="tag">The tag data for the quest.</param>
 	/// <param name="player">The player this is loading on.</param>
-	/// <returns>The quest singleton, if it was found.</returns>
-	public static Quest LoadFrom(TagCompound tag, Player player, out Quest quest)
+	/// <returns>If the quest was successfully loaded or not.</returns>
+	public static bool LoadFrom(TagCompound tag, Player player, out Quest quest)
 	{
 		string name = tag.GetString("type");
 
 		if (!ModContent.TryFind(name, out quest))
 		{
 			PoTMod.Instance.Logger.Error($"Could not load quest of {name}, was it removed?");
-			return null;
+			return false;
 		}
 
 		quest = quest.Clone();
 		quest.Load(tag, player);
-		return quest;
+		return true;
 	}
 
 	internal Quest Clone()
