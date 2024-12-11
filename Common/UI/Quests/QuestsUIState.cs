@@ -109,23 +109,6 @@ public class QuestsUIState : CloseableSmartUi
 				offset += 22;
 			}
 		}
-
-		//// Create actual current quests
-		//foreach (Quest quest in player.QuestsByName.Values)
-		//{
-		//	if (!quest.Active)
-		//	{
-		//		continue;
-		//	}
-
-		//	UISelectableQuest selectableQuest = new(quest, _questDetails);
-		//	selectableQuest.Left.Set(0, 0.15f);
-		//	selectableQuest.Top.Set(120 + offset, 0);
-		//	selectableQuest.OnLeftClick += (_, _) => SelectQuest(quest.FullName);
-		//	_questDetails.Append(selectableQuest);
-
-		//	offset += 22;
-		//}
 	}
 
 	public void SelectQuest(string questName)
