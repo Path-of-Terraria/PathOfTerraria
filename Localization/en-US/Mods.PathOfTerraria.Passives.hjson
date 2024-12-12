@@ -70,7 +70,7 @@ StartPassive: {
 
 IncreasedSummonDamagePassive: {
 	Name: Empowered Horde
-	Tooltip: Increases your minions' damage by 10% per level
+	Tooltip: Increases all summon damage by 10% per level
 }
 
 IncreasedSentryDamagePassive: {
@@ -118,11 +118,6 @@ AnchorPassive: {
 	Tooltip: The journey starts here.
 }
 
-Anchor: {
-	Name: AnchorPassive
-	Tooltip: ""
-}
-
 StrongerChillPassive: {
 	Name: Stronger Chill
 	Tooltip: Chilled debuff slows down enemies 10% more.
@@ -135,7 +130,7 @@ ShockChancePassive: {
 
 IncreasedMinionDamagePassive: {
 	Name: IncreasedMinionDamagePassive
-	Tooltip: ""
+	Tooltip: Increases your minions' damage by 10% per level
 }
 
 AddedAggressionPassive: {
