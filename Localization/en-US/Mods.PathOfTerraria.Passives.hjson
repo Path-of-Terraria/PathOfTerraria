@@ -43,7 +43,7 @@ CloseRangePassive: {
 	Tooltip: Increases your damage against nearby enemies by 10% per level
 }
 
-BleedPassive: {
+ChanceToBleedPassive: {
 	Name: Crimson Dance
 	Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second per level
 }
@@ -136,4 +136,9 @@ ShockChancePassive: {
 IncreasedMinionDamagePassive: {
 	Name: IncreasedMinionDamagePassive
 	Tooltip: ""
+}
+
+AddedAggressionPassive: {
+	Name: Added Aggression
+	Tooltip: Adds an additional point of aggro per level.
 }

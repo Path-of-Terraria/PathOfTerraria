@@ -83,7 +83,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"internalIdentifier": "DamageReductionPassive",
 		"referenceId": 7,
 		"maxLevel": 3,
 		"connections": [
@@ -271,7 +271,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "ChanceToConsumeAmmoPassive",
+		"internalIdentifier": "LongRangePassive",
 		"referenceId": 20,
 		"maxLevel": 3,
 		"connections": [
@@ -285,7 +285,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "ChanceToConsumeAmmoPassive",
+		"internalIdentifier": "CloseRangePassive",
 		"referenceId": 21,
 		"maxLevel": 3,
 		"connections": [
@@ -296,6 +296,37 @@
 		"position": {
 			"x": -200,
 			"y": 50
+		}
+	},
+	{
+		"internalIdentifier": "ChanceToBleedPassive",
+		"referenceId": 22,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 11
+			}
+		],
+		"position": {
+			"x": -50,
+			"y": 300
+		}
+	},
+	{
+		"internalIdentifier": "AddedAggressionPassive",
+		"referenceId": 23,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 21
+			},
+			{
+				"referenceId": 11
+			}
+		],
+		"position": {
+			"x": -250,
+			"y": 250
 		}
 	}
 ]
