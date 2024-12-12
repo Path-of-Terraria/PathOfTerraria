@@ -162,7 +162,7 @@ public abstract class Passive
 	/// <returns></returns>
 	public virtual bool CanDeallocate(Player player)
 	{
-		if (InternalIdentifier == "Anchor")
+		if (InternalIdentifier == "AnchorPassive")
 		{
 			return false;
 		}

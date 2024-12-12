@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Content.Passives;
 
-internal class LifePassive : Passive
+internal class AddedLifePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{

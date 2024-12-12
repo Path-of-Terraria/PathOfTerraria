@@ -7,7 +7,7 @@ internal class CloseRangePassive : Passive
 {
 }
 
-internal class BleedPassive : Passive
+internal class ChanceToBleedPassive : Passive
 {
 }
 
@@ -16,6 +16,14 @@ internal class DamageReductionPassive : Passive
 	public override void BuffPlayer(Player player)
 	{
 		player.endurance += 0.025f * Level;
+	}
+}
+
+internal class AddedAggressionPassive : Passive
+{
+	public override void BuffPlayer(Player player)
+	{
+		player.aggro += 1 * Level;
 	}
 }
 

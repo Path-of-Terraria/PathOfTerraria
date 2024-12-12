@@ -71,10 +71,9 @@ internal class PassiveTreePlayer : ModPlayer
 
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
-
 		foreach (Passive passive in ActiveNodes)
 		{
-			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.InternalIdentifier == "Anchor" ? 1 : 0;
+			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.InternalIdentifier == "AnchorPassive" ? 1 : 0;
 			// standard is id 1 is anchor for now.
 			// no handling for multiple anchors..
 			
@@ -167,9 +166,9 @@ internal class PassiveTreePlayer : ModPlayer
 
 	private Tuple<bool, HashSet<Passive>> CanFindAnchor(Passive from, HashSet<Passive> autoComplete, Passive removed)
 	{
-		if (autoComplete.Contains(from) || from.InternalIdentifier == "Anchor")
+		if (autoComplete.Contains(from) || from.InternalIdentifier == "AnchorPassive")
 		{
-			return new(true, []);
+			return new Tuple<bool, HashSet<Passive>>(true, []);
 		}
 
 		HashSet<Passive> passed = [from, removed];
@@ -180,14 +179,14 @@ internal class PassiveTreePlayer : ModPlayer
 			Passive p = toCheck[0];
 			if (Edges.Any(e => e.Contains(p) && autoComplete.Contains(e.Other(p))))
 			{
-				return new(true, passed);
+				return new Tuple<bool, HashSet<Passive>>(true, passed);
 			}
 
 			IEnumerable<Passive> add = Edges.Where(e => e.Contains(p) && e.Other(p).Level > 0 && !passed.Contains(e.Other(p))).Select(e => e.Other(p));
 
-			if (add.Any(p => p.InternalIdentifier == "Anchor"))
+			if (add.Any(p => p.InternalIdentifier == "AnchorPassive"))
 			{
-				return new(true, passed);
+				return new Tuple<bool, HashSet<Passive>>(true, passed);
 			}
 
 			toCheck.AddRange(add);
