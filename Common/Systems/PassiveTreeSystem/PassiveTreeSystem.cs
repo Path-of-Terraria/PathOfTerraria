@@ -71,7 +71,6 @@ internal class PassiveTreePlayer : ModPlayer
 
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
-		var index = 0;
 		foreach (Passive passive in ActiveNodes)
 		{
 			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.InternalIdentifier == "AnchorPassive" ? 1 : 0;
@@ -90,8 +89,6 @@ internal class PassiveTreePlayer : ModPlayer
 			{
 				Points -= passive.Level;
 			}
-
-			index++;
 		}
 	}
 
