@@ -26,6 +26,7 @@ public sealed class RavenNPC : ModNPC
 		NPC.dontTakeDamageFromHostiles = true;
 		NPC.netAlways = true;
 		NPC.netUpdate2 = true;
+		NPC.Opacity = 0f;
 
 		AnimationType = NPCID.Bird;
 		AIType = NPCID.Bird;
@@ -76,6 +77,10 @@ public sealed class RavenNPC : ModNPC
 					Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool() ? DustID.GemDiamond : DustID.Phantasmal);
 				}
 			}
+		}
+		else
+		{
+			NPC.Opacity = MathHelper.Lerp(NPC.Opacity, 0.8f, 0.05f);
 		}
 
 		if (NPC.direction != Math.Sign(entrancePosition.X - NPC.Center.X))
