@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// <summary>
 /// Base class for currency shards. Defaults to having a 4-frame animation, consumable, and has a default <see cref="CanRightClick"/>.
 /// </summary>
-internal abstract class CurrencyShard : ModItem
+public abstract class CurrencyShard : ModItem
 {
 	public override void SetStaticDefaults()
 	{

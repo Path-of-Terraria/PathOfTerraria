@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Currency;
+using PathOfTerraria.Content.Items.Gear;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -9,33 +12,88 @@ namespace PathOfTerraria.Common;
 
 internal class ItemSpawner
 {
-	public static void SpawnRandomItem(Vector2 pos, int ilevel = 0, float dropRarityModifier = 0)
+	/// <summary>
+	/// Starts the drop process for a MobKill
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="iLevel"></param>
+	/// <param name="dropRarityModifier"></param>
+	public static void SpawnMobKillItem(Vector2 pos, int iLevel = 0, float dropRarityModifier = 0)
 	{
-		SpawnRandomItem(pos, x => true, ilevel, dropRarityModifier);
+		int rand = Main.rand.Next(1, 100);
+		switch (rand)
+		{
+			case <= 3: //3% Map
+				SpawnRandomItemByType<Map>(pos, iLevel, dropRarityModifier);
+				break;
+			case <= 10: //7% Currency
+				SpawnRandomItemByType<CurrencyShard>(pos, iLevel, dropRarityModifier);
+				break;
+			default: //90% Gear
+				SpawnRandomItemByType<Gear>(pos, iLevel, dropRarityModifier);
+				break;
+		}
+	}
+	
+	/// <summary>
+	/// Spawns a random item, based on the item level and drop rarity modifier.
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="iLevel"></param>
+	/// <param name="dropRarityModifier"></param>
+	public static void SpawnRandomItem(Vector2 pos, int iLevel = 0, float dropRarityModifier = 0)
+	{
+		SpawnRandomItem(pos, x => true, iLevel, dropRarityModifier);
+	}
+	
+	/// <summary>
+	///    Spawns a random item by it's type
+	/// </summary>
+	public static void SpawnRandomItemByType<T>(Vector2 pos, int iLevel, float dropRarityModifier = 0)
+	{
+		IEnumerable<ItemDatabase.ItemRecord> items = ItemDatabase.GetItemByType<T>();
+		SpawnItemFromList(pos, x => true, iLevel, dropRarityModifier, items.ToList());
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="dropCondition"></param>
+	/// <param name="iLevel"></param>
+	/// <param name="dropRarityModifier"></param>
+	/// <returns></returns>
 	public static int SpawnRandomItem(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition,
-		int ilevel = 0, float dropRarityModifier = 0)
+		int iLevel = 0, float dropRarityModifier = 0)
 	{
-		ilevel = ilevel == 0 ? PoTItemHelper.PickItemLevel() : ilevel; // Pick the item level if not provided
+		iLevel = iLevel == 0 ? PoTItemHelper.PickItemLevel() : iLevel; // Pick the item level if not provided
 
 		// Filter AllGear based on item level
 		var filteredGear = ItemDatabase.AllItems.Where(g => 
 		{
 			PoTStaticItemData staticData = ContentSamples.ItemsByType[g.ItemId].GetStaticData();
-			return staticData.MinDropItemLevel <= ilevel;
+			return staticData.MinDropItemLevel <= iLevel;
 		}).ToList();
 
-		return SpawnItemFromList(pos, dropCondition, ilevel, dropRarityModifier, filteredGear);
+		return SpawnItemFromList(pos, dropCondition, iLevel, dropRarityModifier, filteredGear);
 	}
 	
-	private static int SpawnItemFromList(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition, int ilevel,
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="pos"></param>
+	/// <param name="dropCondition"></param>
+	/// <param name="iLevel"></param>
+	/// <param name="dropRarityModifier"></param>
+	/// <param name="filteredGear"></param>
+	/// <returns></returns>
+	private static int SpawnItemFromList(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition, int iLevel,
 		float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)
 	{
-		dropRarityModifier += ilevel / 10f; // the effect of item level on "magic find"
+		dropRarityModifier += iLevel / 10f; // the effect of item level on "magic find"
 
 		// Calculate dropChanceSum based on filtered gear
-		float dropChanceSum = filteredGear.Where(x => dropCondition(x)).Sum((ItemDatabase.ItemRecord x) =>
+		float dropChanceSum = filteredGear.Where(dropCondition).Sum(x =>
 			ItemDatabase.ApplyRarityModifier(x.DropChance, dropRarityModifier));
 		float choice = Main.rand.NextFloat(dropChanceSum);
 
@@ -52,7 +110,7 @@ internal class ItemSpawner
 			if (choice < cumulativeChance)
 			{
 				// Spawn the item
-				return SpawnItem(item.ItemId, pos, ilevel, item.Rarity);
+				return SpawnItem(item.ItemId, pos, iLevel, item.Rarity);
 			}
 		}
 
