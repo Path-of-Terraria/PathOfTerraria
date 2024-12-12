@@ -15,7 +15,7 @@ public class QuestModPlayer : ModPlayer
 	internal static ModKeybind ToggleQuestUIKey;
 
 	public Dictionary<string, Quest> QuestsByName = [];
-
+	
 	private bool _firstQuest = true;
 
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
@@ -85,6 +85,15 @@ public class QuestModPlayer : ModPlayer
 			if (Quest.LoadFrom(questTag, Player, out Quest quest))
 			{
 				QuestsByName.Add(quest.FullName, quest);
+			}
+		}
+
+		// Catch all quests not already loaded and clone them so they exist in the dictionary
+		foreach (Quest quest in ModContent.GetContent<Quest>())
+		{
+			if (!QuestsByName.ContainsKey(quest.FullName))
+			{
+				QuestsByName.Add(quest.FullName, quest.Clone());
 			}
 		}
 	}
