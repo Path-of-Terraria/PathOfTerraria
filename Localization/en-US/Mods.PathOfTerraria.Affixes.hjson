@@ -49,3 +49,5 @@ PercentageIncreasedCriticalStrikeChanceAffix.Description: "{1}{0}% critical stri
 PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% critical strike multiplier"
 FlatCriticalStrikeChanceAffix.Description: "{1}{0} flat critical strike chance"
 PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% critical strike damage"
+ChanceToApplyShockGearAffix.Description: "{1}{0}% to apply Shock"
+BuffShockedEffectAffix.Description: "{1}{0}% multiplier to Shock effect"
