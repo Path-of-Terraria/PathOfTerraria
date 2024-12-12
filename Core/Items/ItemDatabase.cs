@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.TreeSystem;
 using System.Collections.Generic;
+using System.Linq;
+using PathOfTerraria.Content.Items.Currency;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
@@ -23,16 +25,19 @@ public sealed class ItemDatabase : ModSystem
 		}
 	}
 
+	private const float MagicDropChance = 0.85f;
+	private const float RareDropChance = 0.15f;
+
 	/// <summary>
 	///		An item record within the database.
 	/// </summary>
-	public readonly record struct ItemRecord(float DropChance, ItemRarity Rarity, int ItemId);
+	public readonly record struct ItemRecord(float DropChance, ItemRarity Rarity, int ItemId, Item item);
 
 	private static List<ItemRecord> _items = [];
 	private static Dictionary<int, ItemType> _vanillaItems = [];
 	private static HashSet<int> _uniqueVanillaItems = [];
 
-	private const float _magicFindPowerDecrease = 100f;
+	private const float MagicFindPowerDecrease = 100f;
 
 	public static IReadOnlyCollection<ItemRecord> AllItems => _items;
 
@@ -68,18 +73,12 @@ public sealed class ItemDatabase : ModSystem
 
 			if (staticData.IsUnique)
 			{
-				AddItem(dropChance, ItemRarity.Unique, i);
+				AddItem(dropChance, ItemRarity.Unique, i, item);
 			}
 			else
 			{
-				// TODO: Hardcoded :(
-				if (item.ModItem is not Jewel)
-				{
-					AddItem(dropChance * 0.7f, ItemRarity.Normal, i);
-				}
-
-				AddItem(dropChance * 0.25f, ItemRarity.Magic, i);
-				AddItem(dropChance * 0.05f, ItemRarity.Rare, i);
+				AddItem(dropChance * MagicDropChance, ItemRarity.Magic, i, item);
+				AddItem(dropChance * RareDropChance, ItemRarity.Rare, i, item);
 			}
 		}
 	}
@@ -93,16 +92,9 @@ public sealed class ItemDatabase : ModSystem
 		_uniqueVanillaItems = null;
 	}
 
-	public static void AddItem(float dropChance, ItemRarity rarity, int itemId)
+	public static void AddItem(float dropChance, ItemRarity rarity, int itemId, Item item)
 	{
-		_items.Add(new ItemRecord(dropChance, rarity, itemId));
-	}
-
-	public static void AddItemWithVariableRarity(float dropChance, int itemId)
-	{
-		AddItem(dropChance * 0.7f, ItemRarity.Normal, itemId);
-		AddItem(dropChance * 0.25f, ItemRarity.Magic, itemId);
-		AddItem(dropChance * 0.05f, ItemRarity.Rare, itemId);
+		_items.Add(new ItemRecord(dropChance, rarity, itemId, item));
 	}
 
 	public static float ApplyRarityModifier(float chance, float dropRarityModifier)
@@ -111,11 +103,20 @@ public sealed class ItemDatabase : ModSystem
 		// it is pretty hard to get all this down when we dont know all the items we will have n such;
 
 		chance *= 100f; // to make it effective on <0.1; it works... ok?
-		float powerDecrease = chance * (1 + dropRarityModifier / _magicFindPowerDecrease) /
-							  (1 + chance * dropRarityModifier / _magicFindPowerDecrease);
+		float powerDecrease = chance * (1 + dropRarityModifier / MagicFindPowerDecrease) /
+							  (1 + chance * dropRarityModifier / MagicFindPowerDecrease);
 		return powerDecrease;
 	}
-
+	
+	/// <summary>
+	/// Gets all the matching items from the database.
+	/// </summary>
+	/// <returns></returns>
+	public static IEnumerable<ItemRecord> GetItemByType<T>()
+	{
+		return _items.Where(x => x.item.ModItem is T);
+	}
+	
 	public static void RegisterVanillaItemAsGear(int itemId, ItemType itemType)
 	{
 		GearGlobalItem.MarkItemAsGear(itemId);
