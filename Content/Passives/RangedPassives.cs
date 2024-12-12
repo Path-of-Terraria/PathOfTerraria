@@ -2,6 +2,6 @@
 
 namespace PathOfTerraria.Content.Passives;
 
-internal class AmmoPassive : Passive
+internal class ChanceToConsumeAmmoPassive : Passive
 {
 }

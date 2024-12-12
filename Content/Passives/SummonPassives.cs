@@ -5,14 +5,14 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Passives;
 
-internal class MinionPassive : Passive
+internal class IncreasedMinionDamagePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
 	}
 }
 
-internal class SentryPassive : Passive
+internal class IncreasedSentryDamagePassive : Passive
 {
 	public override void OnLoad()
 	{

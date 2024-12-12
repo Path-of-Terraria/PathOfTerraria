@@ -9,3 +9,11 @@ internal class DecreasedManaCostPassive : Passive
 		player.manaCost *= 1 - 0.03f * Level; //3% per level
 	}
 }
+
+internal class AddedManaPassive : Passive
+{
+	public override void BuffPlayer(Player player)
+	{
+		player.statManaMax2 += 20 * Level;
+	}
+}

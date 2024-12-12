@@ -1,11 +1,18 @@
 [
 	{
-		"internalIdentifier": "JewelSocket",
+		"internalIdentifier": "AnchorPassive",
 		"referenceId": 0,
 		"maxLevel": 1,
 		"connections": [
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 1,
+		"maxLevel": 3,
+		"connections": [
 			{
-				"referenceId": 6
+				"referenceId": 0
 			}
 		],
 		"position": {
@@ -14,28 +21,12 @@
 		}
 	},
 	{
-		"internalIdentifier": "AnchorPassive",
-		"referenceId": 1,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 6
-			}
-		]
-	},
-	{
-		"internalIdentifier": "LifePassive",
+		"internalIdentifier": "IncreasedMeleeDamagePassive",
 		"referenceId": 2,
-		"maxLevel": 5,
+		"maxLevel": 3,
 		"connections": [
 			{
-				"referenceId": 1
-			},
-			{
-				"referenceId": 3
-			},
-			{
-				"referenceId": 4
+				"referenceId": 0
 			}
 		],
 		"position": {
@@ -44,12 +35,12 @@
 		}
 	},
 	{
-		"internalIdentifier": "LifePassive",
+		"internalIdentifier": "AddedLifePassive",
 		"referenceId": 3,
-		"maxLevel": 5,
+		"maxLevel": 3,
 		"connections": [
 			{
-				"referenceId": 0
+				"referenceId": 12
 			},
 			{
 				"referenceId": 7
@@ -57,56 +48,52 @@
 		],
 		"position": {
 			"x": 150,
-			"y": 100
+			"y": 150
 		}
 	},
 	{
-		"internalIdentifier": "LifePassive",
+		"internalIdentifier": "AddedLifePassive",
 		"referenceId": 4,
-		"maxLevel": 5,
+		"maxLevel": 3,
 		"connections": [
 			{
-				"referenceId": 5
-			},
-			{
-				"referenceId": 1
+				"referenceId": 21
 			}
 		],
 		"position": {
-			"x": -100,
-			"y": 100
+			"x": -150,
+			"y": 150
 		}
 	},
 	{
 		"internalIdentifier": "DecreasedManaCostPassive",
 		"referenceId": 5,
-		"maxLevel": 5,
-		"position": {
-			"x": -100,
-			"y": 200
-		}
-	},
-	{
-		"internalIdentifier": "JewelSocket",
-		"referenceId": 6,
-		"maxLevel": 1,
-		"position": {
-			"x": 0,
-			"y": -100
-		}
-	},
-	{
-		"internalIdentifier": "MinionPassive",
-		"referenceId": 7,
-		"maxLevel": 10,
+		"maxLevel": 3,
 		"connections": [
 			{
-				"referenceId": 5
+				"referenceId": 18
+			},
+			{
+				"referenceId": 20
 			}
 		],
 		"position": {
-			"x": 0,
-			"y": 300
+			"x": -150,
+			"y": -150
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 7,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 2
+			}
+		],
+		"position": {
+			"x": 50,
+			"y": 200
 		}
 	},
 	{
@@ -119,8 +106,8 @@
 			}
 		],
 		"position": {
-			"x": 100,
-			"y": 300
+			"x": 150,
+			"y": 225
 		}
 	},
 	{
@@ -157,12 +144,15 @@
 		"maxLevel": 3,
 		"connections": [
 			{
+				"referenceId": 2
+			},
+			{
 				"referenceId": 4
 			}
 		],
 		"position": {
-			"x": 300,
-			"y": 100
+			"x": -50,
+			"y": 200
 		}
 	},
 	{
@@ -171,12 +161,12 @@
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 4
+				"referenceId": 1
 			}
 		],
 		"position": {
-			"x": -100,
-			"y": 0
+			"x": 200,
+			"y": 50
 		}
 	},
 	{
@@ -185,12 +175,127 @@
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 12
+				"referenceId": 1
+			}
+		],
+		"position": {
+			"x": 200,
+			"y": -50
+		}
+	},
+	{
+		"internalIdentifier": "DecreasedManaCostPassive",
+		"referenceId": 14,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 13
+			},
+			{
+				"referenceId": 19
+			}
+		],
+		"position": {
+			"x": 150,
+			"y": -150
+		}
+	},
+	{
+		"internalIdentifier": "DamageReductionPassive",
+		"referenceId": 15,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 0
 			}
 		],
 		"position": {
 			"x": -100,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedRangedDamagePassive",
+		"referenceId": 16,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 0
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 17,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 0
+			}
+		],
+		"position": {
+			"x": 0,
 			"y": -100
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedSentryDamagePassive",
+		"referenceId": 18,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 17
+			}
+		],
+		"position": {
+			"x": -50,
+			"y": -200
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 19,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 17
+			}
+		],
+		"position": {
+			"x": 50,
+			"y": -200
+		}
+	},
+	{
+		"internalIdentifier": "ChanceToConsumeAmmoPassive",
+		"referenceId": 20,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 16
+			}
+		],
+		"position": {
+			"x": -200,
+			"y": -50
+		}
+	},
+	{
+		"internalIdentifier": "ChanceToConsumeAmmoPassive",
+		"referenceId": 21,
+		"maxLevel": 3,
+		"connections": [
+			{
+				"referenceId": 16
+			}
+		],
+		"position": {
+			"x": -200,
+			"y": 50
 		}
 	}
 ]
