@@ -16,7 +16,7 @@ public class QuestModPlayer : ModPlayer
 
 	public Dictionary<string, Quest> QuestsByName = [];
 	
-	private bool _firstQuest = true;
+	internal bool FirstQuest = true;
 
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
@@ -27,11 +27,11 @@ public class QuestModPlayer : ModPlayer
 			UIQuestPopupState.NewQuest = new UIQuestPopupState.PopupText(QuestsByName[name].DisplayName, 300, 1f, 1.2f);
 			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/QuestStart") { Volume = 0.5f });
 
-			if (_firstQuest) // Only display first quest popup on first quest (wow!)
+			if (FirstQuest) // Only display first quest popup on first quest (wow!)
 			{
 				UIQuestPopupState.FlashQuestButton = 600;
 
-				_firstQuest = false;
+				FirstQuest = false;
 			}
 		}
 	}
@@ -67,15 +67,15 @@ public class QuestModPlayer : ModPlayer
 
 		tag.Add("questTags", questTags);
 
-		if (!_firstQuest)
+		if (FirstQuest)
 		{
-			tag.Add("firstQuest", false);
+			tag.Add("firstQuest", true);
 		}
 	}
 	
 	public override void LoadData(TagCompound tag)
 	{
-		_firstQuest = !tag.ContainsKey("firstQuest"); // If we have the tag, the first quest is false
+		FirstQuest = tag.ContainsKey("firstQuest"); // If we have the tag, the first quest is false
 		List<TagCompound> questTags = tag.Get<List<TagCompound>>("questTags");
 
 		QuestsByName.Clear();
