@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -10,7 +11,7 @@ namespace PathOfTerraria.Common.UI;
 
 public class QuestPanelButton : SmartUiState
 {
-	public override bool Visible => Main.playerInventory || UIQuestPopupState.FlashQuestButton > 0;
+	public override bool Visible => (Main.playerInventory || UIQuestPopupState.FlashQuestButton > 0) && !Main.LocalPlayer.GetModPlayer<QuestModPlayer>().FirstQuest;
 
 	private static Asset<Texture2D> BookTexture = null;
 
