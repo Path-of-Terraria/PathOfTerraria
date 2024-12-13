@@ -79,25 +79,26 @@ internal class ItemSpawner
 	}
 
 	/// <summary>
-	/// 
+	/// Shorthand for calling <see cref="DropTable.RollList(int, float, List{ItemDatabase.ItemRecord}, Func{ItemDatabase.ItemRecord, bool})"/> and spawning an item with it.
 	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="dropCondition"></param>
-	/// <param name="iLevel"></param>
-	/// <param name="dropRarityModifier"></param>
-	/// <param name="filteredGear"></param>
-	/// <returns></returns>
-	private static int SpawnItemFromList(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition, int iLevel,
+	/// <param name="pos">Position of the spawned item.</param>
+	/// <param name="dropCondition">Additional condition for spawning, if any. 
+	/// If unconditional, use the <see cref="SpawnItemFromList(Vector2, int, float, List{ItemDatabase.ItemRecord})"/> overload.</param>
+	/// <param name="itemLevel">Item level.</param>
+	/// <param name="dropRarityModifier">Modifier for the rarity of drops.</param>
+	/// <param name="filteredGear">List of pre-filtered gear.</param>
+	/// <returns>The index of the newly spawned item in Main.item.</returns>
+	private static int SpawnItemFromList(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition, int itemLevel,
 		float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)
 	{
-		ItemDatabase.ItemRecord item = DropTable.RollList(iLevel, dropRarityModifier, filteredGear, dropCondition);
+		ItemDatabase.ItemRecord item = DropTable.RollList(itemLevel, dropRarityModifier, filteredGear, dropCondition);
 
 		if (item == ItemDatabase.InvalidItem)
 		{
 			return -1;
 		}
 
-		return SpawnItem(item.ItemId, pos, iLevel, item.Rarity);
+		return SpawnItem(item.ItemId, pos, itemLevel, item.Rarity);
 	}	
 	
 	private static int SpawnItemFromList(Vector2 pos, int iLevel, float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)

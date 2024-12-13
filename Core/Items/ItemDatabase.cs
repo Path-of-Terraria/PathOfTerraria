@@ -1,8 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Content.Items.Currency;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
@@ -116,7 +114,7 @@ public sealed class ItemDatabase : ModSystem
 	/// <returns></returns>
 	public static IEnumerable<ItemRecord> GetItemByType<T>()
 	{
-		return _items.Where(x => x.item.ModItem is T);
+		return _items.Where(x => x.Item.ModItem is T);
 	}
 	
 	public static void RegisterVanillaItemAsGear(int itemId, ItemType itemType)

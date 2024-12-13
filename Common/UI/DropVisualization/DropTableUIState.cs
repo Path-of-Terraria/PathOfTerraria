@@ -182,7 +182,7 @@ internal class DropTableUIState : CloseableSmartUi
 		normalize.OnLeftClick += ClickNormalize;
 		topPanel.Append(normalize);
 
-		_count = new("Count", 0.05f, false, 0.05, false)
+		_count = new("Count", 10f, false, 0.05, false)
 		{
 			Left = StyleDimension.FromPixels(484)
 		};
