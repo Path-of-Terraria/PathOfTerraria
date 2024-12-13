@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common;
+﻿using PathOfTerraria.Common.ItemDropping;
 
 namespace PathOfTerraria.Core.Commands;
 

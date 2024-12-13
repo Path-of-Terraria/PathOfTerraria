@@ -26,7 +26,9 @@ public sealed class ItemDatabase : ModSystem
 	/// <summary>
 	///		An item record within the database.
 	/// </summary>
-	public readonly record struct ItemRecord(float DropChance, ItemRarity Rarity, int ItemId);
+	public readonly record struct ItemRecord(float DropChance, ItemRarity Rarity, int ItemId, Item Item);
+
+	public static readonly ItemRecord InvalidItem = new(-1, 0, 0, null);
 
 	private static List<ItemRecord> _items = [];
 	private static Dictionary<int, ItemType> _vanillaItems = [];
