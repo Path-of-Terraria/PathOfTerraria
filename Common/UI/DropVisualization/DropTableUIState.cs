@@ -44,9 +44,10 @@ internal class DropTableUIState : CloseableSmartUi
 
 	public override bool IsCentered => true;
 
-	private EditablePercentUI _gearRate = null;
-	private EditablePercentUI _currencyRate = null;
-	private EditablePercentUI _mapRate = null;
+	private EditableValueUI _gearRate = null;
+	private EditableValueUI _currencyRate = null;
+	private EditableValueUI _mapRate = null;
+	private EditableValueUI _count = null;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -138,22 +139,34 @@ internal class DropTableUIState : CloseableSmartUi
 		normalize.OnLeftClick += ClickNormalize;
 		topPanel.Append(normalize);
 
+		_count = new("Count", 0.05f, false, 0.01, false)
+		{
+			Left = StyleDimension.FromPixels(464)
+		};
+		topPanel.Append(_count);
+
 		var run = new UIButton<string>("Run")
 		{
 			Width = StyleDimension.FromPixels(100),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(454)
+			Left = StyleDimension.FromPixels(570)
 		};
 
+		run.OnLeftClick += RunDatabase;
 		topPanel.Append(run);
+	}
+
+	private void RunDatabase(UIMouseEvent evt, UIElement listeningElement)
+	{
+		int count = (int)_count.Value;
 	}
 
 	private void ClickNormalize(UIMouseEvent evt, UIElement listeningElement)
 	{
-		double total = _gearRate.Percent + _currencyRate.Percent + _mapRate.Percent;
-		_gearRate.SetPercent(_gearRate.Percent / total);
-		_currencyRate.SetPercent(_currencyRate.Percent / total);
-		_mapRate.SetPercent(_mapRate.Percent / total);
+		double total = _gearRate.Value + _currencyRate.Value + _mapRate.Value;
+		_gearRate.SetPercent(_gearRate.Value / total);
+		_currencyRate.SetPercent(_currencyRate.Value / total);
+		_mapRate.SetPercent(_mapRate.Value / total);
 	}
 }
 #endif

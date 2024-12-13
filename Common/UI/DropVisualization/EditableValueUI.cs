@@ -4,27 +4,31 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.DropVisualization;
 
-internal class EditablePercentUI : UIElement
+internal class EditableValueUI : UIElement
 {
-	public string DisplayText => $"{Prefix}: {Percent * 100:#0.#}%";
+	public string DisplayText => $"{Prefix}: {Value * 100:#0.#}{(IsPercent ? "%" : "")}";
 	
-	public double Percent { get; private set; }
+	public double Value { get; private set; }
 
 	private readonly UIText Display = null;
 	private readonly string Prefix = null;
 	private readonly bool Cap = false;
+	private readonly double Increment = 0f;
+	private readonly bool IsPercent = true;
 
 	private int holdTime = 0;
 	private bool resetHold = true;
 
-	public EditablePercentUI(string displayPrefix, float defaultPercent, bool cap)
+	public EditableValueUI(string displayPrefix, float defaultPercent, bool cap, double increment = 0.005, bool isPercent = true)
 	{
 		Width = StyleDimension.FromPixels(110);
 		Height = StyleDimension.FromPixels(70);
 
 		Prefix = displayPrefix;
-		Percent = defaultPercent;
+		Value = defaultPercent;
 		Cap = cap;
+		Increment = increment;
+		IsPercent = isPercent;
 
 		Display = new(DisplayText);
 		Append(Display);
@@ -79,14 +83,14 @@ internal class EditablePercentUI : UIElement
 				{
 					if (add)
 					{
-						Percent += 0.005;
+						Value += Increment;
 					}
 					else
 					{
-						Percent -= 0.005;
+						Value -= Increment;
 					}
 
-					Percent = MathHelper.Clamp((float)Percent, 0, Cap ? 1 : float.MaxValue);
+					Value = MathHelper.Clamp((float)Value, 0, Cap ? 1 : float.MaxValue);
 				}
 			}
 		}
@@ -94,6 +98,6 @@ internal class EditablePercentUI : UIElement
 
 	public void SetPercent(double percent)
 	{
-		Percent = percent;
+		Value = percent;
 	}
 }

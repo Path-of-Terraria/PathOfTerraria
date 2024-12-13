@@ -33,8 +33,8 @@ internal sealed class CopyToClipboardGlobalItem : GlobalItem, CopyToClipboard.IG
 
 			item.ModItem.LoadData(StringTagRelation.FromString(GetText(), tag));
 		}
-	}
 #endif
+	}
 
 	// We should be using the provided Re-Logic clipboard services, but they're
 	// allegedly broken on Linux.
