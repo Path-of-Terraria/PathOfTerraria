@@ -19,13 +19,13 @@ internal class EditableValueUI : UIElement
 	private int holdTime = 0;
 	private bool resetHold = true;
 
-	public EditableValueUI(string displayPrefix, float defaultPercent, bool cap, double increment = 0.005, bool isPercent = true)
+	public EditableValueUI(string displayPrefix, float defaultValue, bool cap, double increment = 0.005, bool isPercent = true)
 	{
 		Width = StyleDimension.FromPixels(110);
 		Height = StyleDimension.FromPixels(70);
 
 		Prefix = displayPrefix;
-		Value = defaultPercent;
+		Value = defaultValue;
 		Cap = cap;
 		Increment = increment;
 		IsPercent = isPercent;
