@@ -109,6 +109,10 @@ internal class PassiveElement : SmartUiElement
 			{
 				name += $" ({_passive.Level}/{_passive.MaxLevel})";
 			}
+			
+#if DEBUG
+			name += $" -- {_passive.ReferenceId}";
+#endif
 
 			Tooltip.SetName(name);
 			Tooltip.SetTooltip(_passive.DisplayTooltip);

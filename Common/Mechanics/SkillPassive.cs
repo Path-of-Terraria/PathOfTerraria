@@ -145,13 +145,9 @@ public abstract class SkillPassive(Skill skill)
 	/// <returns></returns>
 	public virtual bool CanDeallocate()
 	{
-		if (ReferenceId == 0)
-		{
-			return false;
-		}
-		
+		return ReferenceId != 0;
+
 		//TOOD
-		return true;
 		//PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		//return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));

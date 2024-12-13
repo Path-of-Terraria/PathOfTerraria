@@ -3,33 +3,33 @@
 # Tooltip:
 # You do not need to generate these yourself, run the mod and it'll add the keys automatically.
 
-MartialMasteryPassive: {
+IncreasedMeleeDamagePassive: {
 	Name: Martial Mastery
 	Tooltip: Increases your melee damage by 5% per level
 }
 
-MarksmanshipMasteryPassive: {
+IncreasedRangedDamagePassive: {
 	Name: Marksmanship Mastery
 	Tooltip: Increases your ranged damage by 5% per level
 }
 
-ArcaneMasteryPassive: {
+IncreasedMagicDamagePassive: {
 	Name: Arcane Mastery
 	Tooltip: Increases your magic damage by 5% per level
 }
 
-SummoningMasteryPassive: {
+IncreasedSummoningDamagePassive: {
 	Name: Summoning Mastery
 	Tooltip: Increases your summon damage by 5% per level
 }
 
-LifePassive: {
+AddedLifePassive: {
 	Name: Empowered Flesh
 	Tooltip: Increases your maximum life by 20 per level
 }
 
-ManaPassive: {
-	Name: Open Mind
+AddedManaPassive: {
+	Name: AddedManaPassive
 	Tooltip: Increases your maximum mana by 20 per level
 }
 
@@ -43,7 +43,7 @@ CloseRangePassive: {
 	Tooltip: Increases your damage against nearby enemies by 10% per level
 }
 
-BleedPassive: {
+ChanceToBleedPassive: {
 	Name: Crimson Dance
 	Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second per level
 }
@@ -58,7 +58,7 @@ DamageReflectionPassive: {
 	Tooltip: Reflect 10 more damage to enemies that deal contact damage per level.
 }
 
-AmmoPassive: {
+ChanceToConsumeAmmoPassive: {
 	Name: Secret Compartment
 	Tooltip: 5% chance to not consume ammo per level
 }
@@ -68,12 +68,12 @@ StartPassive: {
 	Tooltip: Your journey starts here
 }
 
-MinionPassive: {
+IncreasedSummonDamagePassive: {
 	Name: Empowered Horde
-	Tooltip: Increases your minions' damage by 10% per level
+	Tooltip: Increases all summon damage by 10% per level
 }
 
-SentryPassive: {
+IncreasedSentryDamagePassive: {
 	Name: Steadfast Sentries
 	Tooltip: Increases your sentries' damage by 10% per level
 }
@@ -121,4 +121,19 @@ AnchorPassive: {
 StrongerChillPassive: {
 	Name: Stronger Chill
 	Tooltip: Chilled debuff slows down enemies 10% more.
+}
+
+ShockChancePassive: {
+	Name: Energy Field
+	Tooltip: Adds an additional 5% chance to afflict an enemy with Shock per level.
+}
+
+IncreasedMinionDamagePassive: {
+	Name: IncreasedMinionDamagePassive
+	Tooltip: Increases your minions' damage by 10% per level
+}
+
+AddedAggressionPassive: {
+	Name: Added Aggression
+	Tooltip: Adds an additional point of aggro per level.
 }

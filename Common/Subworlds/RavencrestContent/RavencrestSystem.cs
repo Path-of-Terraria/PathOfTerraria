@@ -27,6 +27,7 @@ public class RavencrestSystem : ModSystem
 
 	private static readonly Dictionary<string, ImprovableStructure> structures = [];
 
+	public bool SpawnedRaven = false;
 	public bool SpawnedScout = false;
 	public Point16 EntrancePosition;
 	public bool OneTimeCheckDone = false;
@@ -197,6 +198,7 @@ public class RavencrestSystem : ModSystem
 			SpawnedMorvenPos = morven;
 		}
 
+		SpawnedRaven = tag.GetBool("spawnedRaven");
 		EntrancePosition = tag.Get<Point16>("entrance");
 
 		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)
@@ -222,6 +224,7 @@ public class RavencrestSystem : ModSystem
 			tag.Add("morven", SpawnedMorvenPos.Value);
 		}
 
+		tag.Add("spawnedRaven", SpawnedRaven);
 		tag.Add("entrance", EntrancePosition);
 
 		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)

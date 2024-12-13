@@ -1,8 +1,10 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Town;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -120,6 +122,9 @@ public class RavencrestMicrobiome : MicroBiome
 	}
 }
 
+/// <summary>
+/// Originally written for worldgen, this no longer runs during worldgen. Instead, it runs in <see cref="Systems.ModPlayers.ExpModPlayer"/> on first level up.
+/// </summary>
 internal class RavenPass : AutoGenStep
 {
 	public override void Generate(GenerationProgress progress, GameConfiguration config)
@@ -143,12 +148,19 @@ internal class RavenPass : AutoGenStep
 			}
 		}
 
-		NPC.NewNPC(Entity.GetSource_NaturalSpawn(), x * 16, y * 16, ModContent.NPCType<RavenNPC>());
+		if (!WorldGen.generatingWorld && Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<RavenNPC>(), new Vector2(x, y) * 16);
+		}
+		else
+		{
+			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), x * 16, y * 16, ModContent.NPCType<RavenNPC>());
+		}
 	}
 
 	public override int GenIndex(List<GenPass> tasks)
 	{
-		return tasks.FindIndex(x => x.Name == "Smooth World") + 2;
+		return -1;
 	}
 }
 

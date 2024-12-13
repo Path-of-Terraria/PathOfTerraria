@@ -178,6 +178,11 @@ internal sealed class NewHotbar : SmartUiState
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 
 		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/EmptyPotion").Value;
+
+		// Item textures require loading before use
+		Main.instance.LoadItem(ItemID.LesserHealingPotion);
+		Main.instance.LoadItem(ItemID.LesserManaPotion);
+
 		Texture2D lifeTexture = TextureAssets.Item[ItemID.LesserHealingPotion].Value;
 		Texture2D manaTexture = TextureAssets.Item[ItemID.LesserManaPotion].Value;
 

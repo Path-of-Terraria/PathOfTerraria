@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Subworlds;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
@@ -39,44 +40,12 @@ internal class BossTracker : ModSystem
 	{
 		if (SubworldSystem.Current is BossDomainSubworld)
 		{
-			if (self.type == NPCID.WallofFlesh)
-			{
-				int x = (int)self.Center.X / 16;
-				int y = (int)self.Center.Y / 16;
-				int width = self.width / 2 / 16 + 1;
-
-				for (int i = x - width; i <= x + width; i++)
-				{
-					for (int j = y - width; j <= y + width; j++)
-					{
-						Tile tile = Main.tile[i, j];
-
-						if (i == x - width || i == x + width || j == y - width || j == y + width)
-						{
-							if (!tile.HasTile)
-							{
-								tile.TileType = (ushort)(WorldGen.crimson ? 347u : 140u);
-								tile.HasTile = true;
-							}
-						}
-
-						tile.LiquidType = LiquidID.Water;
-						tile.LiquidAmount = 0;
-
-						if (Main.netMode == NetmodeID.Server)
-						{
-							NetMessage.SendTileSquare(-1, i, j);
-						}
-						else
-						{
-							WorldGen.SquareTileFrame(i, j);
-						}
-					}
-				}
-			}
-
 			self.type = NPCID.None;
 			self.boss = false;
+		}
+		else
+		{
+			OnDeathNPC.OnDeathEffects(self);
 		}
 
 		orig(self, closestPlayer);

@@ -6,7 +6,7 @@ internal class AnchorPassive : Passive
 {
 }
 
-internal class MartialMasteryPassive : Passive
+internal class IncreasedMeleeDamagePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
@@ -14,7 +14,7 @@ internal class MartialMasteryPassive : Passive
 	}
 }
 
-internal class MarksmanshipMasteryPassive : Passive
+internal class IncreasedRangedDamagePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
@@ -22,7 +22,7 @@ internal class MarksmanshipMasteryPassive : Passive
 	}
 }
 
-internal class ArcaneMasteryPassive : Passive
+internal class IncreasedMagicDamagePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
@@ -30,7 +30,7 @@ internal class ArcaneMasteryPassive : Passive
 	}
 }
 
-internal class SummoningMasteryPassive : Passive
+internal class IncreasedSummonDamagePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{

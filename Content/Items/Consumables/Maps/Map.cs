@@ -6,7 +6,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
+public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
 {
 	public abstract int MaxUses { get; }
 

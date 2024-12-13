@@ -1,24 +1,12 @@
 ﻿using System.Reflection;
-using PathOfTerraria.Core.Items;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.TreeSystem;
 
 internal abstract class Jewel : ModItem
 {
-	public virtual string EquppedTooltip
-	{
-		get
-		{
-			EntityModifier thisItemModifier = new EntityModifier();
-			PoTItemHelper.ApplyAffixes(Item, thisItemModifier, null);
-
-			string tooltip = "";
-			EntityModifier.GetChangeOnlyStrings(thisItemModifier).ForEach(s => tooltip += s + "\n");
-
-			return tooltip;
-		}
-	}
+	[Obsolete("Needs to be updated to use new AffixTooltipsHandler system.")]
+	public virtual string EquppedTooltip => "";
 
 	private static readonly MethodInfo _getItemType = typeof(ModContent).GetMethod("ItemType", BindingFlags.Public | BindingFlags.Static);
 	public static Jewel LoadFrom(TagCompound tag)

@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
+
 /// <summary>
-/// This is for either buffs or debuffs, as its the same in terraria; but mainly debuffs.
+/// This is for either buffs or debuffs, as its the same in Terraria; but mainly debuffs.
 /// </summary>
 public class OnHitDeBuffer : EntityModifierSegment, IEnumerable<KeyValuePair<int, Dictionary<int, StatModifier>>>
 {
@@ -19,12 +20,12 @@ public class OnHitDeBuffer : EntityModifierSegment, IEnumerable<KeyValuePair<int
 	{
 		if (!Buffs.ContainsKey(id))
 		{
-			Buffs.Add(id, new Dictionary<int, StatModifier>());
+			Buffs.Add(id, []);
 		}
 
 		if (!Buffs[id].ContainsKey(duration))
 		{
-			Buffs[id].Add(duration, new StatModifier());
+			Buffs[id].Add(duration, StatModifier.Default);
 		}
 
 		Buffs[id][duration] += val;

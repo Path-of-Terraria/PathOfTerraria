@@ -189,7 +189,7 @@ public abstract class Skill
 				Edges.Add(new SkillPassiveEdge(passive, connection));
 			}
 			
-			if (passive.ReferenceId != 1) //Not anchor
+			if (passive.ReferenceId != 0) //Not anchor
 			{
 				PassivePoints -= passive.Level;
 			}
