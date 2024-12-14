@@ -16,4 +16,4 @@ internal class AddedManaPassive : Passive
 	{
 		player.statManaMax2 += 20 * Level;
 	}
-}
+} 

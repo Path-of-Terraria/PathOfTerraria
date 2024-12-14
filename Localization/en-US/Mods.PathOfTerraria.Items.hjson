@@ -861,3 +861,13 @@ LimpidShard: {
 		'It looks so plain'
 		'''
 }
+
+MysticShard: {
+	DisplayName: Mystic Shard
+	Tooltip:
+		'''
+		Turns a normal item rare
+		Hold an item then right click this Shard to turn item rare
+		'It's like an ember in the dark'
+		'''
+}
