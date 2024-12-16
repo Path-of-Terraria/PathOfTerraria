@@ -1,23 +1,20 @@
 ﻿#if DEBUG
 using System.Collections.Generic;
-using System.Linq;
-using log4net.Core;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.UI.DropVisualization;
+using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
-using ReLogic.Localization.IME;
-using ReLogic.OS;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.UI.GrimoireSelection;
+namespace PathOfTerraria.Common.UI.DropVisualization;
 
 internal class DropTablePlayer : ModPlayer
 {
@@ -62,7 +59,14 @@ internal class DropResult(int count, float percent)
 
 internal class DropTableUIState : CloseableSmartUi
 {
-	public static readonly Point MainPanelSize = new(900, 550);
+	public static readonly Point MainPanelSize = new(920, 550);
+
+	private enum SortMode
+	{
+		None,
+		Count,
+		Alphabetical
+	}
 
 	public override bool IsCentered => true;
 
@@ -71,7 +75,9 @@ internal class DropTableUIState : CloseableSmartUi
 	private EditableValueUI _mapRate = null;
 	private EditableValueUI _count = null;
 	private EditableValueUI _level = null;
+	private UIButton<string> _sortButton = null;
 	private UIList _resultList = null;
+	private SortMode _sort = SortMode.None;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -127,11 +133,12 @@ internal class DropTableUIState : CloseableSmartUi
 
 		panel.Append(bottomPanel);
 
-		_resultList = new UIList()
+		_resultList = new UIList
 		{
 			Width = StyleDimension.Fill,
 			Height = StyleDimension.Fill,
-			VAlign = 1f
+			VAlign = 1f,
+			ManualSortMethod = SortList
 		};
 
 		bottomPanel.Append(_resultList);
@@ -147,6 +154,35 @@ internal class DropTableUIState : CloseableSmartUi
 		bottomPanel.Append(bar);
 	}
 
+	private void SortList(List<UIElement> ui)
+	{
+		if (_sort == SortMode.None)
+		{
+			return;
+		}
+
+		ui.Sort(GetSort);
+	}
+
+	private int GetSort(UIElement x, UIElement y)
+	{
+		if (x is not TableEntryUI a || y is not TableEntryUI b)
+		{
+			throw new ArgumentException("Non-TableEntryUI added to table. How?");
+		}
+
+		if (_sort == SortMode.Count)
+		{
+			return b.Result.Count.CompareTo(a.Result.Count);
+		}
+		else if (_sort == SortMode.Alphabetical)
+		{
+			return Lang.GetItemNameValue(a.ItemId).CompareTo(Lang.GetItemNameValue(b.ItemId));
+		}
+
+		return 0;
+	}
+
 	private void BuildModificationPanel(UICloseablePanel panel)
 	{
 		var topPanel = new UIPanel()
@@ -157,22 +193,22 @@ internal class DropTableUIState : CloseableSmartUi
 
 		panel.Append(topPanel);
 
-		_gearRate = new("Gear", 0.80f, false);
+		_gearRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Gear"), 0.80f, false);
 		topPanel.Append(_gearRate);
 
-		_currencyRate = new("Currency", 0.15f, false)
+		_currencyRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Currency"), 0.15f, false)
 		{
 			Left = StyleDimension.FromPixels(120)
 		};
 		topPanel.Append(_currencyRate);
 
-		_mapRate = new("Map", 0.05f, false)
+		_mapRate = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Map"), 0.05f, false)
 		{
 			Left = StyleDimension.FromPixels(256)
 		};
 		topPanel.Append(_mapRate);
 
-		var normalize = new UIButton<string>("Normalize")
+		var normalize = new UIButton<string>(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Normalize"))
 		{
 			Width = StyleDimension.FromPixels(100),
 			Height = StyleDimension.FromPixels(60),
@@ -182,27 +218,50 @@ internal class DropTableUIState : CloseableSmartUi
 		normalize.OnLeftClick += ClickNormalize;
 		topPanel.Append(normalize);
 
-		_count = new("Count", 10f, false, 0.05, false)
+		_count = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Count"), 10f, false, 0.5, false)
 		{
-			Left = StyleDimension.FromPixels(484)
+			Left = StyleDimension.FromPixels(474)
 		};
 		topPanel.Append(_count);
 
-		_level = new("Level", 0.05f, false, 0.01, false)
+		_level = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Level"), 0.05f, false, 0.01, false)
 		{
 			Left = StyleDimension.FromPixels(588)
 		};
 		topPanel.Append(_level);
 
-		var run = new UIButton<string>("Run")
+		var run = new UIButton<string>(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Run"))
 		{
-			Width = StyleDimension.FromPixels(100),
+			Width = StyleDimension.FromPixels(60),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(770 - PointsAndExitPadding * 3)
+			Left = StyleDimension.FromPixels(680)
 		};
 
 		run.OnLeftClick += RunDatabase;
 		topPanel.Append(run);
+
+		_sortButton = new UIButton<string>(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.SortBy") + _sort)
+		{
+			Width = StyleDimension.FromPixels(110),
+			Height = StyleDimension.FromPixels(60),
+			Left = StyleDimension.FromPixels(744)
+		};
+
+		_sortButton.OnLeftClick += ChangeSort;
+		topPanel.Append(_sortButton);
+	}
+
+	private void ChangeSort(UIMouseEvent evt, UIElement listeningElement)
+	{
+		_sort++;
+
+		if (_sort > SortMode.Alphabetical)
+		{
+			_sort = SortMode.None;
+		}
+
+		_sortButton.SetText(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.SortBy") + _sort);
+		_resultList.UpdateOrder();
 	}
 
 	private void RunDatabase(UIMouseEvent evt, UIElement listeningElement)
@@ -210,83 +269,44 @@ internal class DropTableUIState : CloseableSmartUi
 		_resultList.Clear();
 
 		int count = (int)(_count.Value * 100);
-		float dropRarityMod = 0f;
 		Dictionary<int, DropResult> resultsById = [];
-		int checkCount = 0;
 
-		var filteredGear = ItemDatabase.AllItems.Where(g =>
-		{
-			PoTStaticItemData staticData = ContentSamples.ItemsByType[g.ItemId].GetStaticData();
-			return staticData.MinDropItemLevel <= (_level.Value * 100);
-		}).ToList();
+		RollDatabase(count, resultsById);
 
-		for (int i = 0; i < count; ++i)
-		{
-			float dropChanceSum = filteredGear.Sum((ItemDatabase.ItemRecord x) =>
-				ItemDatabase.ApplyRarityModifier(x.DropChance, dropRarityMod));
-			float choice = Main.rand.NextFloat(dropChanceSum);
-			float cumulativeChance = 0;
-
-			foreach (ItemDatabase.ItemRecord item in filteredGear)
-			{
-				cumulativeChance += ItemDatabase.ApplyRarityModifier(item.DropChance, dropRarityMod);
-
-				if (choice < cumulativeChance)
-				{
-					if (resultsById.TryGetValue(item.ItemId, out DropResult result))
-					{
-						result.Count++;
-					}
-					else
-					{
-						resultsById.Add(item.ItemId, result = new DropResult(1, 0));
-					}
-
-					if (item.Rarity == ItemRarity.Unique)
-					{
-						result.IsUnique = true;
-					}
-					else
-					{
-						result.IncrementRarityCount(item.Rarity);
-					}
-
-					checkCount++;
-					break;
-				}
-
-				if (checkCount >= count)
-				{
-				}
-			}
-
-			if (checkCount >= count)
-			{
-				break;
-			}
-		}
-
+		int check = 0;
 		foreach (KeyValuePair<int, DropResult> item in resultsById)
 		{
-			var text = new UIText($"[i:{item.Key}] {Lang.GetItemNameValue(item.Key)}:");
-			_resultList.Add(text);
-			text.Append(new UIText($"#: {item.Value.Count}") { Left = StyleDimension.FromPixels(220) });
-			text.Append(new UIText($"%: {item.Value.Count / (float)count * 100f:#0.#}%") { Left = StyleDimension.FromPixels(280) });
+			check += item.Value.Count;
+			_resultList.Add(new TableEntryUI(item.Key, item.Value, count));
+		}
+	}
 
-			int xOff = 370;
+	private void RollDatabase(int count, Dictionary<int, DropResult> resultsById)
+	{
+		for (int i = 0; i < count; ++i)
+		{
+			ItemDatabase.ItemRecord record = DropTable.RollMobDrops(0, 40, (float)_gearRate.Value, (float)_currencyRate.Value, (float)_mapRate.Value);
 
-			if (item.Value.IsUnique)
+			if (record == ItemDatabase.InvalidItem)
 			{
-				text.Append(new UIText("(Unique Item)") { Left = StyleDimension.FromPixels(xOff) });
-				xOff += 120;
+				i--;
+				continue;
+			}
+
+			if (!resultsById.TryGetValue(record.ItemId, out DropResult result))
+			{
+				resultsById.Add(record.ItemId, result = new DropResult(0, 0));
+			}
+
+			result.Count++;
+
+			if (record.Rarity == ItemRarity.Unique)
+			{
+				result.IsUnique = true;
 			}
 			else
 			{
-				foreach (KeyValuePair<ItemRarity, int> value in item.Value.CountsPerRarity)
-				{
-					text.Append(new UIText($"{value.Key.ToString()[..3]}: {value.Value / (float)item.Value.Count * 100f:#0.#}%") { Left = StyleDimension.FromPixels(xOff) });
-					xOff += 120;
-				}
+				result.IncrementRarityCount(record.Rarity);
 			}
 		}
 	}

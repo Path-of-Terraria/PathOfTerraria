@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Content.Items.Currency;
-using PathOfTerraria.Content.Items.Gear;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -13,26 +10,24 @@ namespace PathOfTerraria.Common.ItemDropping;
 internal class ItemSpawner
 {
 	/// <summary>
-	/// Starts the drop process for a mob's drop.
+	/// Drops an item based off of the following table:<br/>
+	/// <c>Gear:</c> Default 8%<br/>
+	/// <c>Currency:</c> Default 15%<br/>
+	/// <c>Maps:</c> Default 5%<br/>
 	/// </summary>
-	/// <param name="pos"></param>
-	/// <param name="iLevel"></param>
-	/// <param name="dropRarityModifier"></param>
-	public static void SpawnMobKillItem(Vector2 pos, int iLevel = 0, float dropRarityModifier = 0)
+	/// <param name="pos">Position to spawn the item on.</param>
+	/// <param name="itemLevel">Level of the item spawned. Defaults to 0, which rolls at the current world level.</param>
+	/// <param name="dropRarityModifier">Drop modifier. Higher = more likely to get rare items.</param>
+	public static int SpawnMobKillItem(Vector2 pos, int itemLevel = 0, float dropRarityModifier = 0, float gearChance = 0.8f, float curChance = 0.15f, float mapChance = 0.05f)
 	{
-		int rand = Main.rand.Next(1, 100);
-		switch (rand)
+		ItemDatabase.ItemRecord item = DropTable.RollMobDrops(itemLevel, dropRarityModifier, gearChance, curChance, mapChance);
+
+		if (item == ItemDatabase.InvalidItem)
 		{
-			case <= 3: //3% Map
-				SpawnRandomItemByType<Map>(pos, iLevel, dropRarityModifier);
-				break;
-			case <= 10: //7% Currency
-				SpawnRandomItemByType<CurrencyShard>(pos, iLevel, dropRarityModifier);
-				break;
-			default: //90% Gear
-				SpawnRandomItemByType<Gear>(pos, iLevel, dropRarityModifier);
-				break;
+			return -1;
 		}
+
+		return SpawnItem(item.ItemId, pos, itemLevel, item.Rarity);
 	}
 
 	/// <summary>
@@ -82,8 +77,7 @@ internal class ItemSpawner
 	/// Shorthand for calling <see cref="DropTable.RollList(int, float, List{ItemDatabase.ItemRecord}, Func{ItemDatabase.ItemRecord, bool})"/> and spawning an item with it.
 	/// </summary>
 	/// <param name="pos">Position of the spawned item.</param>
-	/// <param name="dropCondition">Additional condition for spawning, if any. 
-	/// If unconditional, use the <see cref="SpawnItemFromList(Vector2, int, float, List{ItemDatabase.ItemRecord})"/> overload.</param>
+	/// <param name="dropCondition">Additional condition for spawning, if any.</param>
 	/// <param name="itemLevel">Item level.</param>
 	/// <param name="dropRarityModifier">Modifier for the rarity of drops.</param>
 	/// <param name="filteredGear">List of pre-filtered gear.</param>
@@ -101,18 +95,6 @@ internal class ItemSpawner
 		return SpawnItem(item.ItemId, pos, itemLevel, item.Rarity);
 	}	
 	
-	private static int SpawnItemFromList(Vector2 pos, int iLevel, float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)
-	{
-		ItemDatabase.ItemRecord item = DropTable.RollList(iLevel, dropRarityModifier, filteredGear);
-
-		if (item == ItemDatabase.InvalidItem)
-		{
-			return -1;
-		}
-
-		return SpawnItem(item.ItemId, pos, iLevel, item.Rarity);
-	}
-
 	/// <summary>
 	/// Spawns a random piece of gear of the given type at the given position.
 	/// </summary>
@@ -160,7 +142,7 @@ internal class ItemSpawner
 
 		return Main.netMode switch
 		{
-			NetmodeID.SinglePlayer => Item.NewItem(null, pos, Vector2.Zero, item),
+			NetmodeID.SinglePlayer => Item.NewItem(new EntitySource_DebugCommand("/spawnitem"), pos, Vector2.Zero, item),
 			NetmodeID.MultiplayerClient => Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"),
 				item),
 			_ => -1
