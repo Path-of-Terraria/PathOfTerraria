@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;

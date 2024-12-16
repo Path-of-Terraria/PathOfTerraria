@@ -11,6 +11,8 @@ internal class AscendantShard : CurrencyShard
 {
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 50;
 		staticData.MinDropItemLevel = 25;

@@ -3,6 +3,7 @@ using System.IO;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;

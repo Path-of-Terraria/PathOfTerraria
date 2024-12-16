@@ -1,8 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Content.Items.Currency;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
@@ -31,7 +29,9 @@ public sealed class ItemDatabase : ModSystem
 	/// <summary>
 	///		An item record within the database.
 	/// </summary>
-	public readonly record struct ItemRecord(float DropChance, ItemRarity Rarity, int ItemId, Item item);
+	public readonly record struct ItemRecord(float DropChance, ItemRarity Rarity, int ItemId, Item Item);
+
+	public static readonly ItemRecord InvalidItem = new(-1, 0, 0, null);
 
 	private static List<ItemRecord> _items = [];
 	private static Dictionary<int, ItemType> _vanillaItems = [];
@@ -114,7 +114,7 @@ public sealed class ItemDatabase : ModSystem
 	/// <returns></returns>
 	public static IEnumerable<ItemRecord> GetItemByType<T>()
 	{
-		return _items.Where(x => x.item.ModItem is T);
+		return _items.Where(x => x.Item.ModItem is T);
 	}
 	
 	public static void RegisterVanillaItemAsGear(int itemId, ItemType itemType)

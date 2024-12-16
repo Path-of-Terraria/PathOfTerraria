@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.ItemDropping;
 
 namespace PathOfTerraria.Core.Commands;
 

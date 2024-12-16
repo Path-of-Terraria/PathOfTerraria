@@ -22,3 +22,15 @@ StatUI: {
 	ManaPotions: Mana Potions
 	DamageReduction: Damage Reduction
 }
+
+DropVisualizer: {
+	Gear: Gear
+	Currency: Currency
+	Map: Map
+	Normalize: Normalize
+	Count: Count
+	Level: Level
+	Run: Run
+	SortBy: "Sort by: "
+	UniqueItem: (Unique Item)
+}

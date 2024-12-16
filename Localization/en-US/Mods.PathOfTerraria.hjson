@@ -8,6 +8,7 @@ Keybinds: {
 	StatUIKey.DisplayName: Toggle Stat Page
 	GearSwap.DisplayName: Weapon Swap
 	QuestUIKey.DisplayName: Quest UI Key
+	DropTableKey.DisplayName: Drop Table Key
 }
 
 GUI: {
