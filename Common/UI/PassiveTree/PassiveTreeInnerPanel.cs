@@ -1,19 +1,22 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.GameInput;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PassiveTree;
 
 internal class PassiveTreeInnerPanel : SmartUiElement
 {
-	private Vector2 _start;
-	private Vector2 _lineOff;
+	private static PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
+	private static TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
+
+	public override string TabName => "PassiveTree";
 
 	private UIElement Panel => Parent;
 
-	private PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
-	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
-	public override string TabName => "PassiveTree";
+	private Vector2 _start;
+	private Vector2 _lineOff;
+	private float _zoom = 1f;
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
@@ -22,7 +25,7 @@ internal class PassiveTreeInnerPanel : SmartUiElement
 		spriteBatch.GraphicsDevice.ScissorRectangle = Panel.GetDimensions().ToRectangle();
 
 		spriteBatch.End();
-		spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
+		spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix + Matrix.CreateScale(_zoom));
 
 		foreach (PassiveEdge edge in PassiveTreeSystem.Edges)
 		{
@@ -83,6 +86,9 @@ internal class PassiveTreeInnerPanel : SmartUiElement
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
+		_zoom += PlayerInput.ScrollWheelDeltaForUI * 0.0005f;
+		_zoom = MathHelper.Clamp(_zoom, 0.1f, 1f);
+
 		Vector2 offsetChange = Vector2.Zero;
 
 		if (MouseContained.Left)
