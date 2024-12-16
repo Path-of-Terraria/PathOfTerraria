@@ -105,11 +105,11 @@ internal class StopBuildingPlayer : ModPlayer
 		LastStopBuilding = ConstantStopBuilding;
 		ConstantStopBuilding = false;
 
-		Main.NewText(Main.MouseWorld.ToTileCoordinates());
+		//Main.NewText(Main.MouseWorld.ToTileCoordinates());
 
 		if (SubworldSystem.Current is MappingWorld)
 		{
-			//ConstantStopBuilding = true;
+			ConstantStopBuilding = true;
 		}
 	}
 
