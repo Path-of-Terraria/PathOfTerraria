@@ -861,3 +861,23 @@ LimpidShard: {
 		'It looks so plain'
 		'''
 }
+
+MysticShard: {
+	DisplayName: Mystic Shard
+	Tooltip:
+		'''
+		Turns a normal item rare
+		Hold an item then right click this Shard to turn item rare
+		'It's like an ember in the dark'
+		'''
+}
+
+ShiftingShard: {
+	DisplayName: Shifting Shard
+	Tooltip:
+		'''
+		Reroll the modifiers on a Rare Item
+		Hold an item then right click this Shard to reroll the modifiers
+		'I can't tell what it's doing'
+		'''
+}

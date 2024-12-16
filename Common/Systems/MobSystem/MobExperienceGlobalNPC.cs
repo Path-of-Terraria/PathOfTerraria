@@ -22,11 +22,13 @@ public class MobExperienceGlobalNPC : GlobalNPC
 		{
 			return;
 		}
-
+		
+#if DEBUG
 		if (npcSystem.Experience == null)
 		{
 			Main.NewText($"No experience entry for {npc.TypeName} - {npc.netID}");
 		}
+#endif
 		
 		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
 		amount = npcSystem.Rarity
