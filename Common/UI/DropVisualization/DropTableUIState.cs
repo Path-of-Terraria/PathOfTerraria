@@ -104,20 +104,7 @@ internal class DropTableUIState : CloseableSmartUi
 
 		BuildModificationPanel(Panel);
 		BuildDisplay(Panel);
-
-		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
-		CloseButton.Left.Set(-PointsAndExitPadding - 38, 1);
-		CloseButton.Top.Set(10, 0f);
-		CloseButton.Width.Set(38, 0);
-		CloseButton.Height.Set(38, 0);
-		CloseButton.OnLeftClick += (a, b) =>
-		{
-			Toggle();
-			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-		};
-		CloseButton.SetVisibility(1, 1);
-		Panel.Append(CloseButton);
-
+		AddCloseButton();
 		Recalculate();
 	}
 

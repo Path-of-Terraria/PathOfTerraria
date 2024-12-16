@@ -12,7 +12,7 @@ internal class DropTable
 {
 	/// <summary>
 	/// Drops an item based off of the following table:<br/>
-	/// <c>Gear:</c> Default 8%<br/>
+	/// <c>Gear:</c> Default 80%<br/>
 	/// <c>Currency:</c> Default 15%<br/>
 	/// <c>Maps:</c> Default 5%<br/>
 	/// </summary>
