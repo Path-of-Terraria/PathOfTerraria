@@ -82,7 +82,9 @@ public sealed class PoTInstanceItemData : GlobalItem
 public sealed class PoTStaticItemData
 {
 	/// <summary>
-	///		The drop chance of this item.
+	///		The drop chance of this item.<br/>
+	///		If this is null (the default value), then this item does not specify a drop chance AT ALL (DIFFERENT from 0%), and should not be
+	///		registered. This is most prominent in things like vanilla items that should never drop.<br/>
 	/// </summary>
 	public float? DropChance { get; set; }
 

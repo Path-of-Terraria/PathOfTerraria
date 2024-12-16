@@ -39,10 +39,9 @@ internal class DropTablePlayer : ModPlayer
 	}
 }
 
-internal class DropResult(int count, float percent)
+internal class DropResult(int count)
 {
 	public int Count = count;
-	public float Percent = percent;
 	public bool IsUnique = false;
 	public Dictionary<ItemRarity, int> CountsPerRarity = [];
 
@@ -295,7 +294,7 @@ internal class DropTableUIState : CloseableSmartUi
 
 			if (!resultsById.TryGetValue(record.ItemId, out DropResult result))
 			{
-				resultsById.Add(record.ItemId, result = new DropResult(0, 0));
+				resultsById.Add(record.ItemId, result = new DropResult(0));
 			}
 
 			result.Count++;

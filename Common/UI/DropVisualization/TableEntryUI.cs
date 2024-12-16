@@ -5,6 +5,9 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.DropVisualization;
 
+/// <summary>
+/// Represents an entry in the <see cref="DropTableUIState"/> table; an item ID, info on how often it was dropped & what rarity, and if it's unique.
+/// </summary>
 internal class TableEntryUI : UIElement
 {
 	internal readonly DropResult Result = null;
