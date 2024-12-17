@@ -109,7 +109,7 @@ internal class StopBuildingPlayer : ModPlayer
 
 		if (SubworldSystem.Current is MappingWorld)
 		{
-			ConstantStopBuilding = true;
+			//ConstantStopBuilding = true;
 		}
 	}
 

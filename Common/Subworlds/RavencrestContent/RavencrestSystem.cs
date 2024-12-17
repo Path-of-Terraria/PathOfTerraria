@@ -59,11 +59,11 @@ public class RavencrestSystem : ModSystem
 			Position = new Point(107, 161)
 		});
 
-		//structures.Add("Library", new ImprovableStructure(2)
-		//{
-		//	StructurePath = "Assets/Structures/RavencrestBuildings/Library_",
-		//	Position = new Point(741, 145)
-		//});
+		structures.Add("Library", new ImprovableStructure(2)
+		{
+			StructurePath = "Assets/Structures/RavencrestBuildings/Library_",
+			Position = new Point(747, 138)
+		});
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
 	}
