@@ -62,7 +62,7 @@ internal class RavencrestSubworld : MappingWorld
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
-		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(41, 41), new(0));
+		//StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(41, 41), new(0));
 		Main.spawnTileX = 398;
 		Main.spawnTileY = 181;
 

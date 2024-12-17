@@ -22,7 +22,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => Point16.Zero;// new(782, 162);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new(782, 162);
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	private float animCounter;
