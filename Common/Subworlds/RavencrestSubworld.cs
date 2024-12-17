@@ -6,6 +6,7 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -62,9 +63,14 @@ internal class RavencrestSubworld : MappingWorld
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
-		//StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(41, 41), new(0));
 		Main.spawnTileX = 398;
 		Main.spawnTileY = 181;
+
+		var worldData = new WorldFileData(Path.Combine(Main.SavePath, "Worlds", "Custom", $"PathOfTerraria_RavencrestSubworld.wld"), false);
+		worldData.SetAsActive();
+		Main.ActiveWorldFileData = worldData;
+		WorldGen.playWorld();
+		//StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(41, 41), new(0));
 
 		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{
