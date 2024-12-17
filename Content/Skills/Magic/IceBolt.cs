@@ -16,7 +16,7 @@ public class IceBolt : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = 1;// (int)((5.5f - 0.5f * Level) * 60);
+		Cooldown = MaxCooldown = (int)((5.5f - 0.5f * Level) * 60);
 		ManaCost = 6 + 6 * Level;
 		Duration = 0;
 		WeaponType = ItemType.None;

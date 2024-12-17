@@ -57,6 +57,6 @@ Fireball: {
 }
 
 IceBolt: {
-	Name: ""
-	Description: ""
+	Name: Ice Bolt
+	Description: Cast an ice bolt that chills any enemy it hits.
 }
