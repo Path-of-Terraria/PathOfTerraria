@@ -53,7 +53,7 @@ public class Fireball : Skill
 			Projectile.width = 22;
 			Projectile.height = 22;
 			Projectile.timeLeft = 160;
-			Projectile.penetrate = -1;
+			Projectile.penetrate = 1;
 			Projectile.aiStyle = -1;
 			Projectile.extraUpdates = 1;
 		}

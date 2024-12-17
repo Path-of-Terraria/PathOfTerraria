@@ -51,7 +51,7 @@ public class IceBolt : Skill
 			Projectile.width = 16;
 			Projectile.height = 16;
 			Projectile.timeLeft = 160;
-			Projectile.penetrate = -1;
+			Projectile.penetrate = 1;
 			Projectile.aiStyle = -1;
 			Projectile.extraUpdates = 1;
 			Projectile.frame = Main.rand.Next(3);
