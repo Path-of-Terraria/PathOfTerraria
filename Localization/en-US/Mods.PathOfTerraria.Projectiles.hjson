@@ -130,3 +130,5 @@ DemonSummon: {
 }
 
 DemonWeapons.DisplayName: Demon Weapon
+FireballProj.DisplayName: Fireball
+IceBoltProj.DisplayName: Ice Bolt Proj

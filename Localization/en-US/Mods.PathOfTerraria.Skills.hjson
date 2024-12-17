@@ -50,3 +50,13 @@ FetidCarapace: {
 	Name: Fetid Carapace
 	Description: Gain some orbital projectiles that protect you from enemies and their projectiles.
 }
+
+Fireball: {
+	Name: Fireball
+	Description: Cast a high-damage fireball which has a chance to burn enemies.
+}
+
+IceBolt: {
+	Name: ""
+	Description: ""
+}
