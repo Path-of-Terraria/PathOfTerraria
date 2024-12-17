@@ -64,7 +64,7 @@ internal class RavencrestSubworld : MappingWorld
 		Main.spawnTileX = 398;
 		Main.spawnTileY = 181;
 
-		WorldFile.LoadWorld_Version2(new BinaryReader(new MemoryStream(PoTMod.Instance.GetFileBytes("Assets/Structures/RavencrestSubworld.wld"))));
+		WorldFile.LoadWorld_Version2(new BinaryReader(new MemoryStream(PoTMod.Instance.GetFileBytes("Assets/Structures/Worlds/RavencrestSubworld.wld"))));
 
 		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{
