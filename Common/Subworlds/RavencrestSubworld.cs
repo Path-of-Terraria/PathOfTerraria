@@ -2,12 +2,11 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
-using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -18,7 +17,7 @@ namespace PathOfTerraria.Common.Subworlds;
 internal class RavencrestSubworld : MappingWorld
 {
 	public override int Width => 1200;
-	public override int Height => 400;
+	public override int Height => 340;
 	public override bool ShouldSave => true;
 
 	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), 
@@ -62,9 +61,10 @@ internal class RavencrestSubworld : MappingWorld
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
-		StructureTools.PlaceByOrigin("Assets/Structures/Ravencrest", new Point16(41, 41), new(0));
 		Main.spawnTileX = 398;
 		Main.spawnTileY = 181;
+
+		WorldFile.LoadWorld_Version2(new BinaryReader(new MemoryStream(PoTMod.Instance.GetFileBytes("Assets/Structures/Worlds/RavencrestSubworld.wld"))));
 
 		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{
