@@ -18,7 +18,7 @@ namespace PathOfTerraria.Common.Subworlds;
 internal class RavencrestSubworld : MappingWorld
 {
 	public override int Width => 1200;
-	public override int Height => 400;
+	public override int Height => 340;
 	public override bool ShouldSave => true;
 
 	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), 
