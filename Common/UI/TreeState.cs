@@ -7,11 +7,18 @@ using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Localization;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
+/// <summary>
+/// UI state for the Passive and Skill trees. Despite being a <see cref="DraggableSmartUi"/>, cannot be moved - left as-is for ease of use.
+/// </summary>
 internal class TreeState : DraggableSmartUi
 {
+	private const int ShrinkX = 80;
+	private const int ShrinkY = 20;
+
 	private PassiveTreeInnerPanel _passiveTreeInner;
 	private SkillSelectionPanel _skillSelection;
 
@@ -23,6 +30,11 @@ internal class TreeState : DraggableSmartUi
 
 	public Vector2 TopLeftTree;
 	public Vector2 BotRightTree;
+
+	public override int InsertionIndex(List<GameInterfaceLayer> layers)
+	{
+		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+	}
 
 	public void Toggle()
 	{
@@ -44,10 +56,10 @@ internal class TreeState : DraggableSmartUi
 			BotRightTree = Vector2.Zero;
 			var localizedTexts = new (string key, LocalizedText text)[]
 			{
-			(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
-			(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
+				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
+				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
 			};
-			base.CreateMainPanel(localizedTexts, false);
+			base.CreateMainPanel(localizedTexts, false, panelSize: new Point(Main.screenWidth - ShrinkX * 2, Main.screenHeight - ShrinkY * 2));
 			base.AppendChildren();
 			AddCloseButton();
 			ResetTree();
@@ -90,6 +102,11 @@ internal class TreeState : DraggableSmartUi
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
+		if (Panel is not null)
+		{
+			Panel.Left = StyleDimension.FromPixels(ShrinkX);
+			Panel.Top = StyleDimension.FromPixels(ShrinkY);
+		}
 	}
 
 	protected void DrawPanelText(SpriteBatch spriteBatch)
@@ -118,5 +135,22 @@ internal class TreeState : DraggableSmartUi
 	public Rectangle GetRectangle()
 	{
 		return Panel.GetDimensions().ToRectangle();
+	}
+
+	private class StopInvPlayer : ModPlayer
+	{
+		public override void SetControls()
+		{
+			if (SmartUiLoader.GetUiState<TreeState>().IsVisible)
+			{
+				if (Player.controlInv && Player.releaseInventory)
+				{
+					SmartUiLoader.GetUiState<TreeState>().Toggle();
+				}
+
+				Player.controlInv = false;
+				Player.releaseInventory = false;
+			}
+		}
 	}
 }

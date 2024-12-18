@@ -57,13 +57,15 @@ public abstract class DraggableSmartUi : SmartUiState
 		CloseButton.Top.Set(10, 0f);
 		CloseButton.Width.Set(38, 0);
 		CloseButton.Height.Set(38, 0);
-		CloseButton.OnLeftClick += (a, b) =>
-		{
-			IsVisible = false;
-			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-		};
+		CloseButton.OnLeftClick += (_, _) => DefaultClose();
 		CloseButton.SetVisibility(1, 1);
 		Panel.Append(CloseButton);
+	}
+
+	protected virtual void DefaultClose()
+	{
+		IsVisible = false;
+		SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 	}
 
 	public virtual void AppendChildren()

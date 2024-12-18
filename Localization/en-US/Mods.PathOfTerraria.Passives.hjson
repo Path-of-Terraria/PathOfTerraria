@@ -84,8 +84,8 @@ JewelSocket: {
 }
 
 LifeRegenPassive: {
-	Name: LifeRegenPassive
-	Tooltip: ""
+	Name: Stronger Heart
+	Tooltip: Increased life regeneration
 }
 
 DecreasedManaCostPassive: {
@@ -129,7 +129,7 @@ ShockChancePassive: {
 }
 
 IncreasedMinionDamagePassive: {
-	Name: IncreasedMinionDamagePassive
+	Name: Increased Minion Damage
 	Tooltip: Increases your minions' damage by 10% per level
 }
 
