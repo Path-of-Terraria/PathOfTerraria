@@ -33,7 +33,7 @@ public class FetidCarapace : Skill
 
 		for (int i = 0; i < max; ++i)
 		{
-			int proj = Projectile.NewProjectile(player.GetSource_FromAI(), player.Center, Vector2.Zero, type, damage, 8f, player.whoAmI, 0, max, i);
+			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), player.Center, Vector2.Zero, type, damage, 8f, player.whoAmI, 0, max, i);
 			Main.projectile[proj].timeLeft = Duration;
 		}
 

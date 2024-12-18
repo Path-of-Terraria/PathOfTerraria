@@ -101,7 +101,7 @@ public class Nova : Skill
 		Timer = Cooldown;
 
 		int damage = (int)(player.HeldItem.damage * (2 + 0.5f * Level));
-		var source = new EntitySource_Misc("NovaSkill");
+		var source = new EntitySource_UseSkill(player, this);
 		NovaType type = GetNovaType();
 		float knockback = 2f;
 

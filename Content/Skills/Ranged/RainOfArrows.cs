@@ -48,7 +48,7 @@ public class RainOfArrows : Skill
 		{
 			Vector2 pos = player.Center + new Vector2(Main.rand.NextFloat(-16, 16), Main.rand.NextFloat(-10, 10));
 			Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -10 * Main.rand.NextFloat(0.9f, 1.1f);
-			int proj = Projectile.NewProjectile(new EntitySource_Misc("RainOfArrows"), pos, velocity, projToShoot, damage, 2);
+			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, velocity, projToShoot, damage, 2);
 
 			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj]);
 		}
