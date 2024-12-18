@@ -881,3 +881,8 @@ ShiftingShard: {
 		'I can't tell what it's doing'
 		'''
 }
+
+BrokenBookcaseItem: {
+	DisplayName: Broken Bookcase
+	Tooltip: ""
+}

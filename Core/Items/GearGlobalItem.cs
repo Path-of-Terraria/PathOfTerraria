@@ -138,26 +138,6 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		return item.ModItem is Gear || _optInGearItems.Contains(item.type);
 	}
 
-	public override void OnCreated(Item item, ItemCreationContext context)
-	{
-		base.OnCreated(item, context);
-
-		if (!IsGearItem(item))
-		{
-			return;
-		}
-
-		if (context is not RecipeItemCreationContext)
-		{
-			return;
-		}
-
-		PoTInstanceItemData data = item.GetInstanceData();
-		data.Rarity = ItemRarity.Magic;
-		data.Affixes.Clear();
-		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
-	}
-
 	void InsertAdditionalTooltipLines.IGlobal.InsertAdditionalTooltipLines(Item item, List<TooltipLine> tooltips)
 	{
 		if (!IsGearItem(item))

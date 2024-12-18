@@ -8,6 +8,8 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Linq;
 using Terraria.Localization;
+using Terraria.GameContent;
+using ReLogic.Content;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -24,6 +26,12 @@ partial class PoTGlobalItem
 
 		void ILoadable.Unload() { }
 	}
+
+	/// <summary>
+	/// Lookup table for textures so we skip some performance.<br/>
+	/// Keys:<br/><c>Normal, Magic, Rare, Unique, Favorite</c>
+	/// </summary>
+	private readonly static Dictionary<string, Asset<Texture2D>> Textures = [];
 
 	#region Modify tooltips and rendering
 
@@ -251,6 +259,16 @@ partial class PoTGlobalItem
 	private static partial Regex NumberHighlightRegex();
 	#endregion
 
+	private void LoadBackImages()
+	{
+		Textures.Clear();
+		Textures.Add("Normal", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/NormalBack"));
+		Textures.Add("Magic", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/MagicBack"));
+		Textures.Add("Rare", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/RareBack"));
+		Textures.Add("Unique", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/UniqueBack"));
+		Textures.Add("Favorite", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/FavoriteOverlay"));
+	}
+
 	#region Special rendering for rarities and influences
 	private static void DrawSpecial(On_ItemSlot.orig_Draw_SpriteBatch_ItemArray_int_int_Vector2_Color orig, SpriteBatch sb,
 		Item[] inv, int context, int slot, Vector2 position, Color color)
@@ -265,18 +283,20 @@ partial class PoTGlobalItem
 
 		string rareName = data.Rarity switch
 		{
-			ItemRarity.Normal => "Normal",
 			ItemRarity.Magic => "Magic",
 			ItemRarity.Rare => "Rare",
 			ItemRarity.Unique => "Unique",
 			_ => "Normal"
 		};
 
-		Texture2D back = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/{rareName}Back")
-			.Value;
 		Color backColor = Color.White * 0.75f;
+		sb.Draw(Textures[rareName].Value, position, null, backColor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
 
-		sb.Draw(back, position, null, backColor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
+		if (inv[slot].favorited)
+		{
+			sb.Draw(Textures["Favorite"].Value, position, null, backColor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
+		}
+
 		ItemSlot.Draw(sb, ref inv[slot], 21, position);
 
 		if (data.Influence == Influence.Solar)
