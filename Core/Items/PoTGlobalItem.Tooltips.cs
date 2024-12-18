@@ -31,7 +31,7 @@ partial class PoTGlobalItem
 	/// Lookup table for textures so we skip some performance.<br/>
 	/// Keys:<br/><c>Normal, Magic, Rare, Unique, Favorite</c>
 	/// </summary>
-	private static Dictionary<string, Asset<Texture2D>> Textures = [];
+	private readonly static Dictionary<string, Asset<Texture2D>> Textures = [];
 
 	#region Modify tooltips and rendering
 
