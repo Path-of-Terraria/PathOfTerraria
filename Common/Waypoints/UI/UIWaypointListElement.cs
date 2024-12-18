@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Systems;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -6,7 +7,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
 
-public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index) : UIElement
+public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index, string location) : UIElement
 {
 	public const float FullWidth = UIWaypointMenu.FullWidth - 18f;
 
@@ -14,9 +15,12 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 
 	public const float ElementMargin = 16f;
 
+	public bool CanClick => ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(Location);
+
 	public readonly Asset<Texture2D> Icon = icon;
 
 	public readonly int Index = index;
+	public readonly string Location = location;
 
 	public readonly LocalizedText Name = name;
 	private UIImage icon;
@@ -43,8 +47,17 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 	{
 		base.Update(gameTime);
 
+		if (!CanClick)
+		{
+			panel.BorderColor = Color.Lerp(panel.BorderColor, new Color(10, 15, 35), 0.3f) * 0.8f;
+			text.Scale = MathHelper.SmoothStep(text.Scale, 0.7f, 0.3f);
+			icon.Color = Color.Lerp(icon.Color, Color.Gray, 0.3f);
+			return;
+		}
+
 		panel.BorderColor = Color.Lerp(panel.BorderColor, Selected ? Color.White : new Color(68, 97, 175), 0.3f) * 0.8f;
 		icon.ImageScale = MathHelper.SmoothStep(icon.ImageScale, Selected ? 1.25f : 1f, 0.3f);
+		icon.Color = Color.Lerp(icon.Color, Color.White, 0.3f);
 		text.Scale = MathHelper.SmoothStep(text.Scale, Selected ? 0.9f : 0.7f, 0.3f);
 	}
 

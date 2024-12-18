@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Waypoints.UI;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.UI;
@@ -29,11 +30,12 @@ public class ArcaneObeliskTile : ModTile
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook((int i, int j, int _, int _, int _, int _) =>
 		{
 			ModContent.GetInstance<ArcaneObeliskSystem>().ArcaneObeliskLocation = new Point16(i, j);
+			ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Add("Overworld");
 			return 0;
 		}, -1, 0, false);
 
 		TileObjectData.newTile.Height = 5;
-		TileObjectData.newTile.CoordinateHeights = new[] { 16, 16, 16, 16, 16 };
+		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
 
 		TileObjectData.newTile.Origin = Point16.Zero;
 
@@ -48,6 +50,7 @@ public class ArcaneObeliskTile : ModTile
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		ModContent.GetInstance<ArcaneObeliskSystem>().ArcaneObeliskLocation = null;
+		ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Remove("Overworld");
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num)
@@ -100,6 +103,11 @@ public class ArcaneObeliskTile : ModTile
 	{
 		public Point16? ArcaneObeliskLocation = null;
 
+		public override void ClearWorld()
+		{
+			ArcaneObeliskLocation = null;
+		}
+
 		public override void SaveWorldData(TagCompound tag)
 		{
 			if (ArcaneObeliskLocation is not null)
@@ -113,6 +121,7 @@ public class ArcaneObeliskTile : ModTile
 			if (tag.TryGet("obeliskLocation", out Point16 arcaneLoc))
 			{
 				ArcaneObeliskLocation = arcaneLoc;
+				ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Add("Overworld");
 			}
 			else
 			{

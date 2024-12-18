@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
@@ -41,6 +42,7 @@ internal class RavencrestSubworld : MappingWorld
 		SubworldSystem.CopyWorldData("time", Main.time); // Keeps time consistent
 		SubworldSystem.CopyWorldData("dayTime", Main.dayTime); // Keeps time consistent
 		SubworldSystem.CopyWorldData("overworldNPCs", ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.ToArray());
+		ModContent.GetInstance<PersistentDataSystem>().CopyDataToRavencrest();
 	}
 
 	public override void ReadCopiedMainWorldData()
@@ -57,6 +59,8 @@ internal class RavencrestSubworld : MappingWorld
 		{
 			ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Add(name);
 		}
+
+		ModContent.GetInstance<PersistentDataSystem>().ReadDataInRavencrest();
 	}
 
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)

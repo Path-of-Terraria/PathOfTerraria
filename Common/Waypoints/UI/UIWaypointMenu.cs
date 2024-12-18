@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
 using Terraria.Audio;
@@ -120,8 +121,11 @@ public sealed class UIWaypointMenu : UIState
 
 		buttonElement.OnLeftClick += (_, _) =>
 		{
-			SelectedListWaypoint.Teleport(Main.LocalPlayer);
-			Enabled = false;
+			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.Location))
+			{
+				SelectedListWaypoint.Teleport(Main.LocalPlayer);
+				Enabled = false;
+			}
 		};
 
 		listRootElement.Append(buttonElement);
@@ -298,11 +302,18 @@ public sealed class UIWaypointMenu : UIState
 
 			Asset<Texture2D> icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
 
-			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i);
+			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.Location);
 
 			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypointIndex;
-			tab.OnLeftClick += (_, _) => SelectedWaypointIndex = tab.Index;
 
+			tab.OnLeftClick += (_, _) =>
+			{
+				if (tab.CanClick)
+				{
+					SelectedWaypointIndex = tab.Index;
+				}
+			};
+			
 			list.Add(tab);
 
 			tabs.Add(tab);

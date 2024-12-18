@@ -9,6 +9,8 @@ public abstract class ModWaypoint : ModType, ILocalizedModType
 	/// </summary>
 	public virtual LocalizedText DisplayName => this.GetLocalization(nameof(DisplayName), PrettyPrintName);
 
+	public abstract string Location { get; }
+
 	/// <summary>
 	///     The qualified path to the icon texture of this waypoint.
 	/// </summary>
