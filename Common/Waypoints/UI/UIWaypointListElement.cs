@@ -8,23 +8,21 @@ namespace PathOfTerraria.Common.Waypoints.UI;
 
 public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index) : UIElement
 {
+	private static Asset<Texture2D> Markers = null;
+
 	public const float FullWidth = UIWaypointMenu.FullWidth - 18f;
-
 	public const float FullHeight = 48f;
-
 	public const float ElementMargin = 16f;
 
 	public readonly Asset<Texture2D> Icon = icon;
-
 	public readonly int Index = index;
-
 	public readonly LocalizedText Name = name;
-	private UIImage icon;
-
-	private UIPanel panel;
 
 	public bool Selected;
+
+	private UIPanel panel;
 	private UIScalingText text;
+	private UIImage icon;
 
 	public override void OnInitialize()
 	{
@@ -37,6 +35,8 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 		Append(icon = BuildIcon());
 		Append(text = BuildText());
 		Append(BuildSeparator());
+
+		Markers ??= ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/WaypointMarkers");
 	}
 
 	public override void Update(GameTime gameTime)
@@ -58,6 +58,14 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 		};
 
 		return icon;
+	}
+
+	protected override void DrawChildren(SpriteBatch spriteBatch)
+	{
+		base.DrawChildren(spriteBatch);
+
+		Rectangle source = new Rectangle(0, 0, 36, 36);
+		spriteBatch.Draw(Markers.Value, icon.GetDimensions().Position(), source, Color.White, 0f, Vector2.Zero, icon.ImageScale, SpriteEffects.None, 0);
 	}
 
 	private UIScalingText BuildText()
