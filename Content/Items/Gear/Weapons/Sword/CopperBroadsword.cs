@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class CopperBroadsword : Sword
+internal class CopperBroadsword : Broadsword
 {
 	public override void SetStaticDefaults()
 	{
