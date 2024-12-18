@@ -28,21 +28,16 @@ internal class GearAlternatives
 	}
 }
 
-internal class GearAlternativeGlobalItem : GlobalItem
+internal class GearAlternativeGlobalItem : ModSystem
 {
-	public override void OnCreated(Item item, ItemCreationContext context)
+	public override void PostAddRecipes()
 	{
-		if (context is RecipeItemCreationContext) // If crafted && a vanilla item
+		foreach (Recipe recipe in Main.recipe)
 		{
-			if (item.ModItem is null && GearAlternatives.HasGear(item.type)) //Is Vanilla Item
+			if (GearAlternatives.HasGear(recipe.createItem.type))
 			{
-				item.SetDefaults(GearAlternatives.VanillaAlternativeToGear[item.type]);
+				recipe.ReplaceResult(GearAlternatives.VanillaAlternativeToGear[recipe.createItem.type], recipe.createItem.stack);
 			}
-
-			/*if (item.ModItem is VanillaClone)
-			{
-				item.CloneDefaults(GearAlternatives.GearToVanillaAlternative[item.type]);
-			}*/
 		}
 	}
 }
