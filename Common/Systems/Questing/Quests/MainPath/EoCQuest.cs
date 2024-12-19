@@ -68,4 +68,9 @@ internal class EoCQuest : Quest
 			}) { CountsAsCompletedOnMarker = true },
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }

@@ -25,8 +25,13 @@ internal class KingSlimeQuest : Quest
 		return 
 		[
 			new ConditionCheck((plr) => SubworldSystem.Current is KingSlimeDomain, 1,this.GetLocalization("EnterDomain")),
-			new KillCount(NPCID.KingSlime, 1, QuestLocalization("Kill.KingSlime")),
+			new KillCount(NPCID.KingSlime, 1, this.GetLocalization("Kill.KingSlime")),
 			new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
 		];
+	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
 	}
 }

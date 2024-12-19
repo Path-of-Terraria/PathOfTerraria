@@ -49,4 +49,9 @@ internal class WizardStartQuest : Quest
 			}) { CountsAsCompletedOnMarker = true },
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }

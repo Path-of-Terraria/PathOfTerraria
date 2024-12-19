@@ -40,4 +40,9 @@ internal class EoWQuest : Quest
 			},
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return CurrentStep > 0 ? "Ravencrest" : "Overworld";
+	}
 }

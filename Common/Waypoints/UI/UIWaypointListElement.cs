@@ -1,4 +1,6 @@
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Questing;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -77,9 +79,14 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 	protected override void DrawChildren(SpriteBatch spriteBatch)
 	{
 		base.DrawChildren(spriteBatch);
+		QuestModPlayer questPlayer = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 
-		Rectangle source = new Rectangle(0, 0, 36, 36);
-		spriteBatch.Draw(Markers.Value, icon.GetDimensions().Position(), source, Color.White, 0f, Vector2.Zero, icon.ImageScale, SpriteEffects.None, 0);
+		// Display quest marker if we have something that merits it
+		if (questPlayer.MarkerTypeByLocation.TryGetValue(Location, out QuestMarkerType loc) && loc != QuestMarkerType.None)
+		{
+			var source = new Rectangle(0, 38 * (int)loc, 36, 36);
+			spriteBatch.Draw(Markers.Value, icon.GetDimensions().Position(), source, Color.White, 0f, Vector2.Zero, icon.ImageScale, SpriteEffects.None, 0);
+		}
 	}
 
 	private UIScalingText BuildText()

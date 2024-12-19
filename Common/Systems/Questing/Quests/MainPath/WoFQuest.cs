@@ -50,4 +50,9 @@ internal class WoFQuest : Quest
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish")),
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }

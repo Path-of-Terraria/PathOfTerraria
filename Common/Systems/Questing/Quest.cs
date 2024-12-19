@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Terraria.GameContent.Creative;
+﻿using PathOfTerraria.Common.NPCs.QuestMarkers;
+using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
@@ -18,6 +18,11 @@ public abstract class Quest : ModType, ILocalizedModType
 	public abstract List<QuestReward> QuestRewards { get; }
 	public List<QuestStep> QuestSteps { get; protected set; } = null;
 
+	/// <summary>
+	/// Gets the quest marker type of this current quest. Assumes the quest is active;
+	/// as such, <see cref="QuestMarkerType.HasQuest"/> can't be returned.
+	/// </summary>
+	public QuestMarkerType Marker => ActiveStep is not null && ActiveStep.CountsAsCompletedOnMarker ? QuestMarkerType.QuestComplete : QuestMarkerType.QuestPending;
 	public bool CanBeStarted => !Completed && !Active;
 
 	public string LocalizationCategory => $"Quests.Quest";
@@ -41,7 +46,18 @@ public abstract class Quest : ModType, ILocalizedModType
 		QuestSteps = SetSteps();
 	}
 
+	/// <summary>
+	/// Defines the quest steps, in order, for a quest.<br/>
+	/// See the <see cref="QuestStepTypes"/> folder/namespace for the steps to use.
+	/// </summary>
+	/// <returns>The ordered list of quest steps.</returns>
 	public abstract List<QuestStep> SetSteps();
+
+	/// <summary>
+	/// The location associated with this quest. This is used to display the marker icon on the Arcane Obelisk UI.
+	/// </summary>
+	/// <returns></returns>
+	public abstract string MarkerLocation();
 
 	protected override void Register()
 	{
@@ -74,16 +90,6 @@ public abstract class Quest : ModType, ILocalizedModType
 	public static T GetLocalPlayerInstance<T>() where T : Quest
 	{
 		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[ModContent.GetInstance<T>().FullName] as T;
-	}
-
-	public static LocalizedText QuestLocalization(string postfix)
-	{
-		return Language.GetText($"Mods.{PoTMod.ModName}.Quests." + postfix);
-	}
-
-	public static string QuestLocalizationValue(string postfix)
-	{
-		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests." + postfix);
 	}
 
 	public void StartQuest(Player player, int currentQuest = 0)

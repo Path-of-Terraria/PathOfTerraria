@@ -121,7 +121,7 @@ public sealed class UIWaypointMenu : UIState
 
 		buttonElement.OnLeftClick += (_, _) =>
 		{
-			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.Location))
+			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.LocationEnum))
 			{
 				SelectedListWaypoint.Teleport(Main.LocalPlayer);
 				Enabled = false;
@@ -302,7 +302,7 @@ public sealed class UIWaypointMenu : UIState
 
 			Asset<Texture2D> icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
 
-			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.Location);
+			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.LocationEnum);
 
 			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypointIndex;
 

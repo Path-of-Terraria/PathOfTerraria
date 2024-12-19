@@ -76,4 +76,9 @@ internal class BlacksmithStartQuest : Quest
 			}) { CountsAsCompletedOnMarker = true }
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }

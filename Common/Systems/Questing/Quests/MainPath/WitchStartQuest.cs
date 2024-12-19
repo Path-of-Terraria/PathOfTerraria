@@ -61,4 +61,9 @@ internal class WitchStartQuest : Quest
 			new InteractWithNPC(ModContent.NPCType<WitchNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest3")),
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }

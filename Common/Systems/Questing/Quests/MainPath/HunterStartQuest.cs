@@ -77,4 +77,9 @@ internal class HunterStartQuest : Quest
 			})
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }

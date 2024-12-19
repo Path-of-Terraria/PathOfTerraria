@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Systems;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Waypoints;
@@ -9,7 +10,7 @@ public abstract class ModWaypoint : ModType, ILocalizedModType
 	/// </summary>
 	public virtual LocalizedText DisplayName => this.GetLocalization(nameof(DisplayName), PrettyPrintName);
 
-	public abstract string Location { get; }
+	public abstract string LocationEnum { get; }
 
 	/// <summary>
 	///     The qualified path to the icon texture of this waypoint.

@@ -36,4 +36,9 @@ internal class DeerclopsQuest : Quest
 			},
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }

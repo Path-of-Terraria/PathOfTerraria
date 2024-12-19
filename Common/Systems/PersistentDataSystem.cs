@@ -1,4 +1,5 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ModLoader.IO;
@@ -7,14 +8,16 @@ namespace PathOfTerraria.Common.Systems;
 
 internal class PersistentDataSystem : ModSystem
 {
+	public static string CurrentLocation => SubworldSystem.Current is not RavencrestSubworld ? "Overworld" : "Ravencrest";
+
 	public HashSet<string> ObelisksByLocation = ["Ravencrest"];
 
 	public override void ClearWorld()
 	{
-		ResetObelisks();
+		ResetLocationData();
 	}
 
-	private void ResetObelisks()
+	private void ResetLocationData()
 	{
 		ObelisksByLocation.Clear();
 		ObelisksByLocation.Add("Ravencrest");

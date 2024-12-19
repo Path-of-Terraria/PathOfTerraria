@@ -34,4 +34,9 @@ internal class QueenBeeQuest : Quest
 			},
 		];
 	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }
