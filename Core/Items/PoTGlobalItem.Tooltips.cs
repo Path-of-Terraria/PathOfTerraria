@@ -38,7 +38,7 @@ partial class PoTGlobalItem
 	public override bool PreDrawTooltipLine(Item item, DrawableTooltipLine line, ref int yOffset)
 	{
 		// Reduce size of tooltips to fit the "Description"s we add in
-		if (line.Name.StartsWith("Tooltip"))
+		if (line.Name.StartsWith("Tooltip") || line.Name == "SetBonus")
 		{
 			yOffset = -2;
 			line.BaseScale = new Vector2(0.8f);
@@ -105,6 +105,13 @@ partial class PoTGlobalItem
 	{
 		base.ModifyTooltips(item, tooltips);
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
+		TooltipLine setBonusLine = tooltips.FirstOrDefault(x => x.Name == "SetBonus");
+
+		if (setBonusLine is not null)
+		{
+			oldTooltips.Add(setBonusLine);
+		}
+
 		tooltips.Clear();
 
 		PoTInstanceItemData data = item.GetInstanceData();
