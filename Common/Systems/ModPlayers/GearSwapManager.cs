@@ -17,7 +17,7 @@ public sealed class GearSwapManager : ModPlayer
 	/// <summary>
 	///     The player's gear inventory, reserved for a weapon and an offhand accessory.
 	/// </summary>
-	public Item?[] Inventory = { new(ItemID.None), new(ItemID.None) };
+	public Item?[] Inventory = [new(ItemID.None), new(ItemID.None)];
 
 	public override void UpdateEquips()
 	{

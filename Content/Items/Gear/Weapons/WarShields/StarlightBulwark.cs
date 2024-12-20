@@ -89,7 +89,8 @@ internal class StarlightBulwark : LeadBattleBulwark
 		{
 			if (_lastAltClick > 0)
 			{
-				altUsePlayer.SetAltCooldown(4 * 60, 120);
+				player.GetModPlayer<WarShieldPlayer>().ResetBashCooldown();
+				 altUsePlayer.SetAltCooldown(6 * 60, 120);
 				_specialAlt = true;
 
 				for (int i = 0; i < 16; ++i)

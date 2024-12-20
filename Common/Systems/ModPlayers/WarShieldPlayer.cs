@@ -104,4 +104,9 @@ internal class WarShieldPlayer : ModPlayer
 			}
 		}
 	}
+
+	public void ResetBashCooldown()
+	{
+		_bashCooldown = 0;
+	}
 }
