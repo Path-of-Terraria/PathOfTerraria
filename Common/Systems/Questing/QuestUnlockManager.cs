@@ -2,6 +2,10 @@
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
+/// <summary>
+/// Handles if quests are unlocked and what locations have a quest to accept.<br/>
+/// Does not load on servers, as they do not have quests.
+/// </summary>
 [Autoload(Side = ModSide.Client)]
 internal class QuestUnlockManager : ModSystem
 {

@@ -5,7 +5,6 @@ using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 
