@@ -92,7 +92,7 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		}
 		else
 		{
-			button2 = QuestUnlockManager.CanStartQuest<HunterStartQuest>() ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+			button2 = !QuestUnlockManager.CanStartQuest<HunterStartQuest>() ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
 		}
 	}
 

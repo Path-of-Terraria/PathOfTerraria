@@ -14,7 +14,7 @@ internal class HellEventSystem : ModSystem
 
 	private int eventTimer = 0;
 
-	public override void PreUpdateEntities()
+	public override void PostUpdatePlayers()
 	{
 		EventOccuringInstant = false;
 
