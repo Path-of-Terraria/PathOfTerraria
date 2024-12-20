@@ -5,6 +5,7 @@ using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 
@@ -24,6 +25,19 @@ public class QuestModPlayer : ModPlayer
 	
 	internal bool FirstQuest = true;
 
+	/// <inheritdoc cref="StartQuest(string, int, bool)"/>
+	/// <typeparam name="T">Quest to start.</typeparam>
+	public void StartQuest<T>() where T : Quest
+	{
+		StartQuest(ModContent.GetInstance<T>().FullName);
+	}
+
+	/// <summary>
+	/// Starts the given quest.
+	/// </summary>
+	/// <param name="name">Full name of the quest (i.e. <see cref="Quest"/>.FullName).</param>
+	/// <param name="step">The step to skip to. Defaults to -1, which (re)starts the quest.</param>
+	/// <param name="fromLoad">Skips the quest popups &amp; sound effects if true.</param>
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
 		QuestsByName[name].StartQuest(Player, step == -1 ? 0 : step);

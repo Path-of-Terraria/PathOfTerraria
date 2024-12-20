@@ -12,7 +12,8 @@ internal class QuestMarkerHook : ILoadable
 {
 	public static Dictionary<int, IQuestMarkerNPC> VanillaQuestMarkerNPCs = new()
 	{
-		{ NPCID.OldMan, new OldManMarkerNPC() }
+		{ NPCID.OldMan, new OldManMarkerNPC() },
+		{ NPCID.Clothier, new OldManMarkerNPC() }
 	};
 
 	private static Asset<Texture2D> _markers = null;

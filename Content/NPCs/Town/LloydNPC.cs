@@ -500,7 +500,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 				}
 
 				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Help");
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(BoCQuest)}");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BoCQuest>();
 			}
 		}
 	}

@@ -45,9 +45,9 @@ internal class HellEventPlayer : ModPlayer
 
 			UpdateTiles();
 
-			if (Main.myPlayer == Player.whoAmI && Quest.GetLocalPlayerInstance<WoFQuest>().CanBeStarted)
+			if (Main.myPlayer == Player.whoAmI && QuestUnlockManager.CanStartQuest<WoFQuest>())
 			{
-				Player.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WoFQuest)}");
+				Player.GetModPlayer<QuestModPlayer>().StartQuest<WoFQuest>();
 			}
 		}
 	}
