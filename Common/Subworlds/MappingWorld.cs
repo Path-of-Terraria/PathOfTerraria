@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Subworlds.Passes;
 using SubworldLibrary;
+using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
@@ -19,11 +20,4 @@ public abstract class MappingWorld : Subworld
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
-
-	// Sets the time to the middle of the day whenever the subworld loads
-	public override void OnLoad()
-	{
-		//Main.dayTime = true;
-		//Main.time = 27000;
-	}
 }

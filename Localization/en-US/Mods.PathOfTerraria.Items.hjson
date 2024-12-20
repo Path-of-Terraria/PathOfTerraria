@@ -413,7 +413,11 @@ ArcaneObeliskItem: {
 StarlightBulwark: {
 	DisplayName: Starlight Bulwark
 	Tooltip: ""
-	AltUseDescription: Right click to parry enemies and projectiles. Parrying projectiles will send out additional stars.
+	AltUseDescription:
+		'''
+		Right click to parry enemies and projectiles. Parrying projectiles will send out additional stars.
+		Double-tap right click quickly in order to reduce your bash cooldown to almost nothing, and fly around the sky.
+		'''
 	Description: Light but heavy, you can touch the sky.
 }
 

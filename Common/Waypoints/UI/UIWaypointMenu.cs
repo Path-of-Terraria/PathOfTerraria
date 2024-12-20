@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Dynamic;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Elements;
@@ -310,7 +311,7 @@ public sealed class UIWaypointMenu : UIState
 			{
 				if (tab.CanClick)
 				{
-					SelectedWaypointIndex = tab.Index;
+					ProcessIndex(tab.Index);
 				}
 			};
 			
@@ -342,6 +343,11 @@ public sealed class UIWaypointMenu : UIState
 
 	private void ProcessInput(int direction)
 	{
+		ProcessIndex(SelectedWaypointIndex + direction);
+	}
+
+	private void ProcessIndex(int index)
+	{
 		if (!CanProcessInput() || !listRootElement.ContainsPoint(Main.MouseScreen))
 		{
 			return;
@@ -349,7 +355,7 @@ public sealed class UIWaypointMenu : UIState
 
 		holdDelayTimer++;
 
-		int nextIndex = SelectedWaypointIndex + direction;
+		int nextIndex = index;
 
 		if (nextIndex < 0 || nextIndex > ModWaypointLoader.WaypointCount - 1)
 		{

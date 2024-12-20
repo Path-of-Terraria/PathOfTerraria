@@ -26,6 +26,10 @@ public sealed class Minera : ModNPC
 		{
 			c.AddDust(new(DustID.Blood, 4));
 			c.AddDust(new(DustID.Blood, 15, NPCHitEffects.OnDeath));
+
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 2, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 1, NPCHitEffects.OnDeath));
 		});
 	}
 

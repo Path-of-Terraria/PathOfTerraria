@@ -70,6 +70,8 @@ public class DeerclopsDomain : BossDomainSubworld
 
 		HashSet<Point16> structures = [];
 
+		Main.worldSurface = Surface + 16;
+
 		for (int i = 0; i < Width; ++i)
 		{
 			for (int j = 20; j < Height; ++j)
