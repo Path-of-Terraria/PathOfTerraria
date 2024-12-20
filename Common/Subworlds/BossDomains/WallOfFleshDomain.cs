@@ -29,7 +29,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 	public bool LeftBlocked = true;
 
 	/// <summary>
-	/// If the boss has surpassed the edge of the world (with the "Player was licked" kill message), don't count the death.
+	/// If the boss has surpassed the edge of the world (with the "Player was licked" kill message), don't count the kill.
 	/// </summary>
 	private bool licked = false;
 
@@ -77,7 +77,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			maxX = Width - 10;
 		}
 
-		int y = Height / 2;
+		int y = (int)(Height * 0.4f);
 		int lastTime = 0;
 		int dir = 0;
 		int stopTime = 0;

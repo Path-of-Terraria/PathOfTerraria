@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Subworlds.Passes;
 using SubworldLibrary;
-using Terraria.GameContent.UI.BigProgressBar;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
