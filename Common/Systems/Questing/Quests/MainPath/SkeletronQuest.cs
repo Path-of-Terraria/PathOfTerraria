@@ -38,6 +38,11 @@ internal class SkeletronQuest : Quest
 		];
 	}
 
+	public override bool Available()
+	{
+		return NPC.downedBoss1;
+	}
+
 	public override string MarkerLocation()
 	{
 		return "Overworld";

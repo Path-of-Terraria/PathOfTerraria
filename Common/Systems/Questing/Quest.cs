@@ -59,6 +59,12 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// <returns></returns>
 	public abstract string MarkerLocation();
 
+	/// <summary>
+	/// Determines if the quest is available or not. Runs only on clients.<br/>
+	/// For example, returning <c>true</c> unconditionally will mean that this is available as soon as the player talks to the requisite NPC.
+	/// </summary>
+	public abstract bool Available();
+
 	protected override void Register()
 	{
 		QuestsByName.Add(FullName, this);

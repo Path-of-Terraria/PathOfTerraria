@@ -51,6 +51,11 @@ internal class WoFQuest : Quest
 		];
 	}
 
+	public override bool Available()
+	{
+		return NPC.downedDeerclops.ToInt() + NPC.downedQueenBee.ToInt() + NPC.downedBoss3.ToInt() + NPC.downedBoss2.ToInt() >= 3;
+	}
+
 	public override string MarkerLocation()
 	{
 		return "Ravencrest";
