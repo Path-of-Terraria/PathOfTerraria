@@ -9,7 +9,6 @@ using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
 using Terraria.DataStructures;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
@@ -49,5 +48,15 @@ internal class WoFQuest : Quest
 			new ConditionCheck(_ => Main.hardMode, 1, this.GetLocalization("KillWall")),
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish")),
 		];
+	}
+
+	public override bool Available()
+	{
+		return NPC.downedDeerclops.ToInt() + NPC.downedQueenBee.ToInt() + NPC.downedBoss3.ToInt() + NPC.downedBoss2.ToInt() >= 3;
+	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
 	}
 }

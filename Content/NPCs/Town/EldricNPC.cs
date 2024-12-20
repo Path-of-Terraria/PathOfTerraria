@@ -153,7 +153,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			}
 
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(EoCQuest)}");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoCQuest>();
 		}
 	}
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
@@ -15,9 +16,27 @@ public class QuestModPlayer : ModPlayer
 	internal static ModKeybind ToggleQuestUIKey;
 
 	public Dictionary<string, Quest> QuestsByName = [];
+
+	/// <summary>
+	/// Defines 
+	/// </summary>
+	public Dictionary<string, QuestMarkerType> MarkerTypeByLocation = [];
 	
 	internal bool FirstQuest = true;
 
+	/// <inheritdoc cref="StartQuest(string, int, bool)"/>
+	/// <typeparam name="T">Quest to start.</typeparam>
+	public void StartQuest<T>() where T : Quest
+	{
+		StartQuest(ModContent.GetInstance<T>().FullName);
+	}
+
+	/// <summary>
+	/// Starts the given quest.
+	/// </summary>
+	/// <param name="name">Full name of the quest (i.e. <see cref="Quest"/>.FullName).</param>
+	/// <param name="step">The step to skip to. Defaults to -1, which (re)starts the quest.</param>
+	/// <param name="fromLoad">Skips the quest popups &amp; sound effects if true.</param>
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
 		QuestsByName[name].StartQuest(Player, step == -1 ? 0 : step);
@@ -100,6 +119,8 @@ public class QuestModPlayer : ModPlayer
 
 	public override void PostUpdateMiscEffects()
 	{
+		MarkerTypeByLocation.Clear();
+
 		foreach (Quest quest in QuestsByName.Values)
 		{
 			if (!quest.Active)
@@ -107,11 +128,28 @@ public class QuestModPlayer : ModPlayer
 				continue;
 			}
 
-			quest.Update(Player); // Quests in enabledQuests are necessarily active
+			quest.Update(Player);
 
 			if (quest.Completed)
 			{
 				quest.Active = false;
+			}
+			else
+			{
+				// Update markers per area.
+				// This uses all quests, which define their location and complete-ness already,
+				// so it's pretty nicely automatic.
+
+				QuestMarkerType marker = quest.Marker;
+
+				if (!MarkerTypeByLocation.TryGetValue(quest.MarkerLocation(), out QuestMarkerType value))
+				{
+					MarkerTypeByLocation.Add(quest.MarkerLocation(), marker);
+				}
+				else if (marker == QuestMarkerType.QuestComplete)
+				{
+					MarkerTypeByLocation[quest.MarkerLocation()] = marker;
+				}
 			}
 		}
 	}

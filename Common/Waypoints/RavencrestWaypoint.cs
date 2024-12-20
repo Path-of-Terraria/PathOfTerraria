@@ -6,7 +6,7 @@ namespace PathOfTerraria.Common.Waypoints;
 
 public sealed class RavencrestWaypoint : ModWaypoint
 {
-	public override string Location => "Ravencrest";
+	public override string LocationEnum => "Ravencrest";
 
 	public override void Teleport(Player player)
 	{

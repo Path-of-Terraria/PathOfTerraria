@@ -27,12 +27,21 @@ internal class BoCQuest : Quest
 		[
 			new ConditionCheck((_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 0, 1, this.GetLocalization("SmashOrb")),
 			new ConditionCheck((_) => SubworldSystem.Current is BrainDomain, 1, this.GetLocalization("EnterDomain")),
-			//new InteractWithNPC(ModContent.NPCType<LloydNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.InDomain")),
 			new KillCount(NPCID.BrainofCthulhu, 1, this.GetLocalization("KillBrain")),
 			new InteractWithNPC(ModContent.NPCType<LloydNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Complete"))
 			{
 				CountsAsCompletedOnMarker = true
 			},
 		];
+	}
+
+	public override bool Available()
+	{
+		return NPC.downedBoss1;
+	}
+
+	public override string MarkerLocation()
+	{
+		return "Overworld";
 	}
 }

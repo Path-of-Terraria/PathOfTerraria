@@ -110,12 +110,12 @@ public class WitchNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 		{
 			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<GrimoireItem>());
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WitchStartQuest)}");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WitchStartQuest>();
 		}
 		else
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.QueenBeeQuest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(QueenBeeQuest)}");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenBeeQuest>();
 		}
 	}
 
