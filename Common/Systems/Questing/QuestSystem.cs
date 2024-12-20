@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.UI.Quests;
+﻿using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ID;
 
@@ -10,7 +11,7 @@ internal class QuestSystem : ModSystem
 	{
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
-			return !NPC.downedSlimeKing && Main.LocalPlayer.GetModPlayer<QuestChecksPlayer>().CanKingSlimeQuest;
+			return !NPC.downedSlimeKing && QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
 		}
 
 		return false;

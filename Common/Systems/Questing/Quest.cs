@@ -12,8 +12,8 @@ public abstract class Quest : ModType, ILocalizedModType
 	public abstract QuestTypes QuestType { get; }
 	public abstract int NPCQuestGiver { get; }
 
-	public LocalizedText DisplayName { get; private set; } 
-	public LocalizedText Description { get; private set; } 
+	public LocalizedText DisplayName { get; private set; }
+	public LocalizedText Description { get; private set; }
 
 	public abstract List<QuestReward> QuestRewards { get; }
 	public List<QuestStep> QuestSteps { get; protected set; } = null;
@@ -61,9 +61,13 @@ public abstract class Quest : ModType, ILocalizedModType
 
 	/// <summary>
 	/// Determines if the quest is available or not. Runs only on clients.<br/>
-	/// For example, returning <c>true</c> unconditionally will mean that this is available as soon as the player talks to the requisite NPC.
+	/// For example, returning true unconditionally will mean that this is available as soon as the player talks to the requisite NPC.<br/>
+	/// By default: returns true.
 	/// </summary>
-	public abstract bool Available();
+	public virtual bool Available()
+	{
+		return true;
+	}
 
 	protected override void Register()
 	{

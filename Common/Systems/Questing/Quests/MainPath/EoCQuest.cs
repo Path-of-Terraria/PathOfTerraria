@@ -69,6 +69,11 @@ internal class EoCQuest : Quest
 		];
 	}
 
+	public override bool Available()
+	{
+		return NPC.downedSlimeKing;
+	}
+
 	public override string MarkerLocation()
 	{
 		return "Ravencrest";

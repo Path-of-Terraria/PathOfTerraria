@@ -81,8 +81,17 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 		base.DrawChildren(spriteBatch);
 		QuestModPlayer questPlayer = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 
+		bool hasMarker = questPlayer.MarkerTypeByLocation.TryGetValue(Location, out QuestMarkerType loc) && loc != QuestMarkerType.None;
+		bool available = QuestUnlockManager.LoationHasQuest(Location);
+
+		if (available && !hasMarker)
+		{
+			hasMarker = true;
+			loc = QuestMarkerType.HasQuest;
+		}
+
 		// Display quest marker if we have something that merits it
-		if (questPlayer.MarkerTypeByLocation.TryGetValue(Location, out QuestMarkerType loc) && loc != QuestMarkerType.None)
+		if (hasMarker)
 		{
 			var source = new Rectangle(0, 38 * (int)loc, 36, 36);
 			spriteBatch.Draw(Markers.Value, icon.GetDimensions().Position(), source, Color.White, 0f, Vector2.Zero, icon.ImageScale, SpriteEffects.None, 0);

@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.HellEvent;
@@ -28,7 +29,7 @@ internal class HellEventSystem : ModSystem
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			if (player.GetModPlayer<QuestChecksPlayer>().CanWoFQuest)
+			if (QuestUnlockManager.CanStartQuest<WoFQuest>())
 			{
 				canEventOccur = true;
 				break;

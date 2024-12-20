@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -28,6 +29,19 @@ internal class KingSlimeQuest : Quest
 			new KillCount(NPCID.KingSlime, 1, this.GetLocalization("Kill.KingSlime")),
 			new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
 		];
+	}
+
+	public override bool Available()
+	{
+		Quest[] checks = 
+		[
+			GetLocalPlayerInstance<BlacksmithStartQuest>(),
+			GetLocalPlayerInstance<WizardStartQuest>(),
+			GetLocalPlayerInstance<WitchStartQuest>(),
+			GetLocalPlayerInstance<HunterStartQuest>()
+		];
+
+		return checks.Any(x => x.Completed);
 	}
 
 	public override string MarkerLocation()

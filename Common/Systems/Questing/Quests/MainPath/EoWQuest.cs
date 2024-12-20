@@ -41,6 +41,11 @@ internal class EoWQuest : Quest
 		];
 	}
 
+	public override bool Available()
+	{
+		return NPC.downedBoss1;
+	}
+
 	public override string MarkerLocation()
 	{
 		return CurrentStep > 0 ? "Ravencrest" : "Overworld";

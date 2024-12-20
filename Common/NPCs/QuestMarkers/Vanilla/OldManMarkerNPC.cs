@@ -54,10 +54,10 @@ internal class OldManModifiers : GlobalNPC
 	{
 		NPC talkNPC = Main.LocalPlayer.TalkNPC;
 
-		if (talkNPC is not null && talkNPC.type == NPCID.OldMan)
+		if (talkNPC is not null && talkNPC.type == NPCID.OldMan && QuestUnlockManager.CanStartQuest<SkeletronQuest>())
 		{
 			buttonOne = "";
-			buttonTwo = !Quest.GetLocalPlayerInstance<SkeletronQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+			buttonTwo = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		}
 	}
 
