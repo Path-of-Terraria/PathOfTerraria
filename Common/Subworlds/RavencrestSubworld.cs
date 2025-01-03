@@ -42,6 +42,7 @@ internal class RavencrestSubworld : MappingWorld
 		SubworldSystem.CopyWorldData("time", Main.time); // Keeps time consistent
 		SubworldSystem.CopyWorldData("dayTime", Main.dayTime); // Keeps time consistent
 		SubworldSystem.CopyWorldData("overworldNPCs", ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.ToArray());
+		SubworldSystem.CopyWorldData("hardMode", Main.hardMode);
 		ModContent.GetInstance<PersistentDataSystem>().CopyDataToRavencrest();
 	}
 
