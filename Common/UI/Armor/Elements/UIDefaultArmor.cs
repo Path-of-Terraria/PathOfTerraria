@@ -1,5 +1,8 @@
 ﻿using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Content.Items.Gear.Amulets;
+using PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
+using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
+using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 using PathOfTerraria.Content.Items.Gear.Offhands;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using ReLogic.Content;
@@ -42,7 +45,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		helmet.OnMouseOver += UpdateMouseOver;
 		helmet.OnMouseOut += UpdateMouseOut;
 
-		helmet.Predicate = (item, _) => item.headSlot > 0;
+		helmet.Predicate = (item, _) => item.headSlot > 0 || item.ModItem is Helmet;
 
 		Append(helmet);
 
@@ -72,7 +75,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		chest.OnMouseOver += UpdateMouseOver;
 		chest.OnMouseOut += UpdateMouseOut;
 
-		chest.Predicate = (item, _) => item.bodySlot > 0;
+		chest.Predicate = (item, _) => item.bodySlot > 0 || item.ModItem is Chestplate;
 
 		Append(chest);
 
@@ -117,7 +120,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		legs.OnMouseOver += UpdateMouseOver;
 		legs.OnMouseOut += UpdateMouseOut;
 
-		legs.Predicate = (item, _) => item.legSlot > 0;
+		legs.Predicate = (item, _) => item.legSlot > 0 || item.ModItem is Leggings;
 
 		Append(legs);
 
