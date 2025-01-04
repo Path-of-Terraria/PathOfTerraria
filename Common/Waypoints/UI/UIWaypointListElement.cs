@@ -82,7 +82,7 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 		QuestModPlayer questPlayer = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 
 		bool hasMarker = questPlayer.MarkerTypeByLocation.TryGetValue(Location, out QuestMarkerType loc) && loc != QuestMarkerType.None;
-		bool available = QuestUnlockManager.LoationHasQuest(Location);
+		bool available = QuestUnlockManager.LocationHasQuest(Location);
 
 		if (available && !hasMarker)
 		{
