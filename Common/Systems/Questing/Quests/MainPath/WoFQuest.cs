@@ -33,7 +33,7 @@ internal class WoFQuest : Quest
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<DwarvenGreatsword>())),
 				new InteractWithNPC(ModContent.NPCType<HunterNPC>(), this.GetLocalization("ElaraHelp"),
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<Twinbow>())),
-				new InteractWithNPC(ModContent.NPCType<WitchNPC>(), this.GetLocalization("MorganaHelp"),
+				new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), this.GetLocalization("MorganaHelp"),
 					null, false, (npc) => 
 					{
 						for (int i = 0; i < 3; ++i)
