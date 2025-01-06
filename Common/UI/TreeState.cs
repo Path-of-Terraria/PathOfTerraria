@@ -145,7 +145,7 @@ internal class TreeState : DraggableSmartUi
 			{
 				if (Player.controlInv && Player.releaseInventory)
 				{
-					SmartUiLoader.GetUiState<TreeState>().Toggle();
+					SmartUiLoader.GetUiState<TreeState>().DefaultClose();
 				}
 
 				Player.controlInv = false;
