@@ -3,7 +3,6 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 
-[AutoloadEquip(EquipType.Body)]
 internal abstract class Chestplate : Gear
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Body/Base";

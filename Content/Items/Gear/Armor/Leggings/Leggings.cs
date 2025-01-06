@@ -6,7 +6,6 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
-[AutoloadEquip(EquipType.Legs)]
 internal abstract class Leggings : Gear
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Legs/Base";
