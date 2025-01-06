@@ -17,7 +17,7 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 internal class WitchStartQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<WitchNPC>();
+	public override int NPCQuestGiver => ModContent.NPCType<MorganaNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
@@ -56,9 +56,9 @@ internal class WitchStartQuest : Quest
 				return storage.TryGetValue(ModContent.ItemType<BatWings>(), out int wing) && storage.TryGetValue(ModContent.ItemType<OwlFeather>(), out int feather)
 					&& wing > 0 && feather > 1;
 			}, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.WitchNPC.QuestCondition")),
-			new InteractWithNPC(ModContent.NPCType<WitchNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest2")),
+			new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest2")),
 			new ConditionCheck(p => p.ownedProjectileCounts[ModContent.ProjectileType<OwlSummon>()] > 0, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.WitchNPC.SummonCondition")),
-			new InteractWithNPC(ModContent.NPCType<WitchNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest3")),
+			new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest3")),
 		];
 	}
 

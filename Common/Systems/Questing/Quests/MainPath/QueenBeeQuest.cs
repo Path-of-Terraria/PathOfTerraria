@@ -13,7 +13,7 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 internal class QueenBeeQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<WitchNPC>();
+	public override int NPCQuestGiver => ModContent.NPCType<MorganaNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
