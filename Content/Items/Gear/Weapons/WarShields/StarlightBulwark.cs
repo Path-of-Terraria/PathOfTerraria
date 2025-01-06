@@ -53,7 +53,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 
 	public override bool? UseItem(Player player)
 	{
-		if (player.altFunctionUse != 2)
+		if (player.altFunctionUse != 2 && player.GetModPlayer<WarShieldPlayer>().CanBash)
 		{
 			player.GetModPlayer<WarShieldPlayer>().StartBash(Data.DashTime, _specialAlt ? Data.DashTime : Data.Cooldown, Data.DashMagnitude);
 		}
