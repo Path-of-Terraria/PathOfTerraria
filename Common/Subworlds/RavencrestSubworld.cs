@@ -104,7 +104,13 @@ internal class RavencrestSubworld : MappingWorld
 			}
 
 			pool.Clear();
-			pool.Add(ModContent.NPCType<TownScoutNPC>(), ModContent.GetInstance<TownScoutNPC>().SpawnChance(spawnInfo));
+
+			float scoutChance = ModContent.GetInstance<TownScoutNPC>().SpawnChance(spawnInfo);
+
+			if (scoutChance > 0)
+			{
+				pool.Add(ModContent.NPCType<TownScoutNPC>(), scoutChance);
+			}
 		}
 	}
 }

@@ -97,11 +97,16 @@ public sealed class TownScoutNPC : ModNPC
 			}
 		}
 
+		if (!anyHealthyPlayer)
+		{
+			return 0;
+		}
+
 		float chance = NPC.downedGoblins ? 0.1f : 5;
 		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
 
-		return SubworldSystem.Current is RavencrestSubworld && NPC.downedSlimeKing && anyHealthyPlayer && WorldGen.shadowOrbSmashed 
-			&& !NPC.AnyNPCs(Type) && (spawnInfo.SpawnTileX < 80 || spawnInfo.SpawnTileX > Main.maxTilesX - 80) && !spawnedScout ? chance : 0;
+		return SubworldSystem.Current is RavencrestSubworld && NPC.downedSlimeKing && WorldGen.shadowOrbSmashed 
+			&& (spawnInfo.SpawnTileX < 80 || spawnInfo.SpawnTileX > Main.maxTilesX - 80) && !spawnedScout ? chance : 0;
 	}
 
 	public override bool CheckActive()
