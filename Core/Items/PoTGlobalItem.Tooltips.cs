@@ -131,6 +131,7 @@ partial class PoTGlobalItem
 		}
 		else
 		{
+			nameLine.Text = data.SpecialName;
 			nameLine.OverrideColor ??= GetRarityColor(data.Rarity);
 		}
 
