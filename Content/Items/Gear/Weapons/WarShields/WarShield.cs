@@ -89,7 +89,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 
 	public override bool? UseItem(Player player)
 	{
-		if (player.altFunctionUse != 2 && player.GetModPlayer<WarShieldPlayer>().CanBash)
+		if (player.altFunctionUse != 2)
 		{
 			player.GetModPlayer<WarShieldPlayer>().StartBash(Data.DashTime, Data.Cooldown, Data.DashMagnitude);
 		}
