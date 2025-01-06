@@ -4,7 +4,7 @@ using PathOfTerraria.Core.Items;
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
 [AutoloadEquip(EquipType.Head)]
-internal class Helmet : Gear
+internal abstract class Helmet : Gear
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
 

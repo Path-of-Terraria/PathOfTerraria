@@ -21,21 +21,6 @@ public abstract class BossDomainSubworld : MappingWorld
 	public override bool NoPlayerSaving => false;
 
 	/// <summary>
-	/// These tiles are allowed to be mined by the player using a pickaxe.
-	/// </summary>
-	public virtual int[] WhitelistedMiningTiles => [];
-
-	/// <summary>
-	/// These tiles are allowed to be cut by the player with melee or projectiles.
-	/// </summary>
-	public virtual int[] WhitelistedCutTiles => [];
-
-	/// <summary>
-	/// These tiles are allowed to be placed by the player. These should also be in <see cref="WhitelistedMiningTiles"/>.
-	/// </summary>
-	public virtual int[] WhitelistedPlaceableTiles => [];
-
-	/// <summary>
 	/// The level of dropped <see cref="Content.Items.Gear.Gear"/> in the domain. 0 will roll default level formula.
 	/// </summary>
 	public virtual int DropItemLevel => 0;
@@ -84,9 +69,5 @@ public abstract class BossDomainSubworld : MappingWorld
 		Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + position;
 		Vector2 halfSize = FontAssets.DeathText.Value.MeasureString(statusText) / 2f * scale;
 		Main.spriteBatch.DrawString(FontAssets.DeathText.Value, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
-	}
-
-	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
-	{
 	}
 }

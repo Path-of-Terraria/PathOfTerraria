@@ -1,5 +1,4 @@
-﻿#if DEBUG
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
@@ -16,6 +15,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.DropVisualization;
 
+#if DEBUG
 internal class DropTablePlayer : ModPlayer
 {
 	public static ModKeybind ToggleDropTableUIKey = null;
@@ -38,6 +38,7 @@ internal class DropTablePlayer : ModPlayer
 		}
 	}
 }
+#endif
 
 internal class DropResult(int count)
 {
@@ -305,4 +306,3 @@ internal class DropTableUIState : CloseableSmartUi
 		_mapRate.SetPercent(_mapRate.Value / total);
 	}
 }
-#endif

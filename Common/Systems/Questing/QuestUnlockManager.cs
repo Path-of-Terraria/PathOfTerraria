@@ -9,8 +9,8 @@ namespace PathOfTerraria.Common.Systems.Questing;
 [Autoload(Side = ModSide.Client)]
 internal class QuestUnlockManager : ModSystem
 {
-	private readonly Dictionary<string, bool> IsAvailable = [];
-	private readonly Dictionary<string, bool> LocationHasAvailable = [];
+	private readonly Dictionary<string, bool> isAvailable = [];
+	private readonly Dictionary<string, bool> locationHasAvailable = [];
 
 	public static bool CanStartQuest<T>() where T : Quest
 	{
@@ -19,30 +19,31 @@ internal class QuestUnlockManager : ModSystem
 
 	public static bool CanStartQuest(string name)
 	{
-		return ModContent.GetInstance<QuestUnlockManager>().IsAvailable[name];
+		return ModContent.GetInstance<QuestUnlockManager>().isAvailable[name];
 	}
 
-	public static bool LoationHasQuest(string location)
+	public static bool LocationHasQuest(string location)
 	{
-		return ModContent.GetInstance<QuestUnlockManager>().LocationHasAvailable[location];
+		QuestUnlockManager qm = ModContent.GetInstance<QuestUnlockManager>();
+		return qm.locationHasAvailable.ContainsKey(location) && qm.locationHasAvailable[location];
 	}
 
 	public override void PreUpdateTime()
 	{
 		IEnumerable<Quest> quests = ModContent.GetContent<Quest>();
 
-		foreach (string key in LocationHasAvailable.Keys)
+		foreach (string key in locationHasAvailable.Keys)
 		{
-			LocationHasAvailable[key] = false;
+			locationHasAvailable[key] = false;
 		}
 
 		foreach (Quest quest in quests)
 		{
-			IsAvailable[quest.FullName] = quest.CanBeStarted && quest.Available();
+			isAvailable[quest.FullName] = quest.CanBeStarted && quest.Available();
 
-			if (IsAvailable[quest.FullName])
+			if (isAvailable[quest.FullName])
 			{
-				LocationHasAvailable[quest.MarkerLocation()] = true;
+				locationHasAvailable[quest.MarkerLocation()] = true;
 			}
 		}
 	}

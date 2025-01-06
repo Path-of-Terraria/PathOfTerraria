@@ -20,6 +20,8 @@ internal class RavencrestSubworld : MappingWorld
 	public override int Width => 1200;
 	public override int Height => 340;
 	public override bool ShouldSave => true;
+	public override int[] WhitelistedMiningTiles => [TileID.Tombstones];
+	public override int[] WhitelistedPlaceableTiles => [TileID.Tombstones];
 
 	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), 
 		new PassLegacy("World", SpawnWorld), new PassLegacy("Smooth", SmoothPass)];
@@ -42,6 +44,7 @@ internal class RavencrestSubworld : MappingWorld
 		SubworldSystem.CopyWorldData("time", Main.time); // Keeps time consistent
 		SubworldSystem.CopyWorldData("dayTime", Main.dayTime); // Keeps time consistent
 		SubworldSystem.CopyWorldData("overworldNPCs", ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.ToArray());
+		SubworldSystem.CopyWorldData("hardMode", Main.hardMode);
 		ModContent.GetInstance<PersistentDataSystem>().CopyDataToRavencrest();
 	}
 
