@@ -1,22 +1,10 @@
-﻿using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Common.UI.Quests;
+﻿using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI.SmartUI;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
 internal class QuestSystem : ModSystem
 {
-	public static bool ForceGarrickSpawn()
-	{
-		if (Main.netMode == NetmodeID.SinglePlayer)
-		{
-			return Quest.GetLocalPlayerInstance<KingSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
-		}
-
-		return false;
-	}
-
 	public override void ClearWorld()
 	{
 		if (Main.dedServ)
