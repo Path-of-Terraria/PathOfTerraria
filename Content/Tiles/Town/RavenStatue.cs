@@ -14,6 +14,9 @@ internal class RavenStatue : ModTile
 		Main.tileLighted[Type] = true;
 
 		TileID.Sets.InteractibleByNPCs[Type] = true;
+		TileID.Sets.BreakableWhenPlacing[Type] = false;
+		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
+		TileID.Sets.PreventsTileReplaceIfOnTopOfIt[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
 		TileObjectData.newTile.LavaDeath = false;
@@ -21,6 +24,16 @@ internal class RavenStatue : ModTile
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(56, 54, 66));
+	}
+
+	public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+	{
+		return false;
+	}
+
+	public override bool CanExplode(int i, int j)
+	{
+		return false;
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
