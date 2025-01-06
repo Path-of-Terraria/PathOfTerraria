@@ -105,6 +105,7 @@ partial class PoTGlobalItem
 		base.ModifyTooltips(item, tooltips);
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		TooltipLine setBonusLine = tooltips.FirstOrDefault(x => x.Name == "SetBonus");
+		TooltipLine nameLine = tooltips.FirstOrDefault(x => x.Name == "ItemName");
 
 		if (setBonusLine is not null)
 		{
@@ -121,10 +122,19 @@ partial class PoTGlobalItem
 			data.SpecialName = GenerateName.Invoke(item);
 		}
 
-		var nameLine = new TooltipLine(Mod, "Name", data.SpecialName)
+		if (nameLine is null)
 		{
-			OverrideColor = GetRarityColor(data.Rarity)
-		};
+			nameLine = new TooltipLine(Mod, "Name", data.SpecialName)
+			{
+				OverrideColor = GetRarityColor(data.Rarity)
+			};
+		}
+		else
+		{
+			nameLine.Text = data.SpecialName;
+			nameLine.OverrideColor ??= GetRarityColor(data.Rarity);
+		}
+
 		tooltips.Add(nameLine);
 
 		if (data.Corrupted)
