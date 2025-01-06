@@ -3,7 +3,10 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Helmet;
 
-[AutoloadEquip(EquipType.Head)]
+/// <summary>
+/// Defines the base class for a helmet.<br/>
+/// Note: You need to manually apply the <see cref="AutoloadEquip"/> attribute for <see cref="EquipType.Head"/>; the attribute can't be inherited and so turns into boilerplate.
+/// </summary>
 internal abstract class Helmet : Gear
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Helmet/Base";
