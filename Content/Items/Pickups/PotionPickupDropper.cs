@@ -46,8 +46,13 @@ internal class PotionPickupDropper : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		LeadingConditionRule notBoss = new LeadingConditionRule(new Conditions.LegacyHack_IsABoss());
+		LeadingConditionRule notBoss = new(new Conditions.LegacyHack_IsABoss());
 		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 1, 1, 1));
 		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 1, 1, 1));
+
+		notBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 7, 1, 1));
+		notBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 7, 1, 1));
+		
+		npcLoot.Add(notBoss);
 	}
 }
