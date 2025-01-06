@@ -8,6 +8,8 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 internal class MysticShard : CurrencyShard
 {
+	protected override int FrameCount => 5;
+
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();

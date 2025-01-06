@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -8,6 +10,8 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 internal class ShiftingShard : CurrencyShard
 {
+	protected override int FrameCount => 7;
+
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
