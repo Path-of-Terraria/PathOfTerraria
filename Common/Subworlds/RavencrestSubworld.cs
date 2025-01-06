@@ -79,6 +79,8 @@ internal class RavencrestSubworld : MappingWorld
 			int y = npc.TileSpawn.Y * 16;
 			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
 		}
+
+		Main.hardMode = false;
 	}
 
 	public override void Update()
