@@ -11,7 +11,7 @@ internal class QuestSystem : ModSystem
 	{
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
-			return !NPC.downedSlimeKing && QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
+			return Quest.GetLocalPlayerInstance<KingSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
 		}
 
 		return false;
