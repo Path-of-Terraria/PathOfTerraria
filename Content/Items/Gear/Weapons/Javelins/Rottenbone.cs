@@ -26,7 +26,7 @@ internal class Rottenbone : PlatinumGlaive
 		staticData.Description = this.GetLocalization("Description");
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
 		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<FetidCarapaceAffix>(1, 1, 1);

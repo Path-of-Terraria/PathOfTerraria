@@ -40,7 +40,7 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		return Language.GetTextValue("Mods.PathOfTerraria.Items.DwarvenGreatsword.DisplayName");
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(0, 33, 33); // Add 33% damage
 		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(0, 50, 50); // Add 50% life

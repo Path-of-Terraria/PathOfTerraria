@@ -61,7 +61,7 @@ internal class GuardianAngel : SteelBattleaxe
 		}
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(-1, 0.2f, 0.6f);

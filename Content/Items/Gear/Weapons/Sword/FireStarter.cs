@@ -38,7 +38,7 @@ internal class FireStarter : Sword, GenerateName.IItem
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName")}]";
 	}
 	
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
 		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
 		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(-1, 0.1f, 0.15f);
