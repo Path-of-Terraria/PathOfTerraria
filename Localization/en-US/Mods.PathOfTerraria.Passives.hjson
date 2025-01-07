@@ -137,3 +137,8 @@ AddedAggressionPassive: {
 	Name: Added Aggression
 	Tooltip: Adds an additional point of aggro per level.
 }
+
+GlancingBlowsPassive: {
+	Name: Glancing Blows
+	Tooltip: Blocking a strike deals 50% damage, but max block chance is increased to 50% and block cooldown is reduced to 1 second.
+}

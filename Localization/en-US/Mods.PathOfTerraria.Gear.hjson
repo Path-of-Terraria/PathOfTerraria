@@ -307,3 +307,11 @@ Properties: {
 	Cloned: Cloned
 	Corrupted: Corrupted
 }
+
+Offhand.Name: Offhand
+
+Shield: {
+	Name: Shield
+	Block: "[i:278] +{0}% to block"
+	Speed: "[i:278] -{0}% movement speed"
+}

@@ -328,5 +328,19 @@
 			"x": -250,
 			"y": 250
 		}
+	},
+	{
+		"internalIdentifier": "GlancingBlowsPassive",
+		"referenceId": 24,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": 50,
+			"y": 300
+		}
 	}
 ]
