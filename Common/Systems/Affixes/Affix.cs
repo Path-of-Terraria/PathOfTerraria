@@ -80,6 +80,14 @@ public abstract class Affix : ILocalizedModType
 		MinValue = reader.ReadSingle();
 	}
 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="value">The set value of the affix. Set to -1 if using minValue and maxValue</param>
+	/// <param name="minValue">When value is -1, the minimum value of the roll range for the affix</param>
+	/// <param name="maxValue">When value is -1, the maximum value of the roll range for the affix</param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
 	public static Affix CreateAffix<T>(float value = -1, float minValue = 0f, float maxValue = 1f)
 	{
 		var instance = (Affix)Activator.CreateInstance(typeof(T));
@@ -199,7 +207,8 @@ internal class AffixHandler : ILoadable
 	public static List<ItemAffix> GetAffixes(Item item)
 	{
 		return _itemAffixes
-			.Where(proto => proto.RequiredInfluence == Influence.None || proto.RequiredInfluence == item.GetInstanceData().Influence)
+			.Where(proto => proto.RequiredInfluence == Influence.None ||
+			                proto.RequiredInfluence == item.GetInstanceData().Influence)
 			.Where(proto => (item.GetInstanceData().ItemType & proto.PossibleTypes) == item.GetInstanceData().ItemType)
 			.ToList();
 	}
@@ -217,7 +226,7 @@ internal class AffixHandler : ILoadable
 	public static int IndexFromItemAffix(Affix affix)
 	{
 		ItemAffix a = _itemAffixes.First(a => affix.GetType() == a.GetType());
-		
+
 		if (a is null)
 		{
 			return 0;

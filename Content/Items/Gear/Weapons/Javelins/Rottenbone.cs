@@ -29,9 +29,9 @@ internal class Rottenbone : PlatinumGlaive
 	public override List<ItemAffix> GenerateAffixes()
 	{
 		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
-		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<FetidCarapaceAffix>(1, 1, 1);
+		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<FetidCarapaceAffix>(1);
 		var bloodclotAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyPoisonItemAffix>(-1, 0.05f, 0.1f);
-		var poisonedStrengthAffix = (ItemAffix)Affix.CreateAffix<BuffPoisonedHitsAffix>(0.2f, 0.2f, 0.2f);
+		var poisonedStrengthAffix = (ItemAffix)Affix.CreateAffix<BuffPoisonedHitsAffix>(0.2f);
 		return [addedDamageAffix, moltenShellAffix, bloodclotAffix, poisonedStrengthAffix];
 	}
 
