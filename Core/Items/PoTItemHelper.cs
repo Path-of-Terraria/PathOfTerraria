@@ -61,34 +61,12 @@ public static class PoTItemHelper
 	public static void Roll(Item item, int itemLevel)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
-		PoTStaticItemData staticData = item.GetStaticData();
 
 		SetItemLevel.Invoke(item, itemLevel);
-
-		// Only level 50+ gear can get influence.
-		if (data.RealLevel > 50 && !staticData.IsUnique && (data.ItemType & ItemType.AllGear) == ItemType.AllGear)
-		{
-			// Quality does not affect influence right now.
-			// Might not need to, seems to generaet plenty often late game.
-			int inf = Main.rand.Next(400) - data.RealLevel;
-
-			if (inf < 30)
-			{
-				data.Influence = Main.rand.NextBool() ? Influence.Solar : Influence.Lunar;
-			}
-		}
 
 		RollAffixes(item);
 		PostRoll.Invoke(item);
 		data.SpecialName = GenerateName.Invoke(item);
-	}
-
-	public static void Reroll(Item item)
-	{
-		// TODO: Don't call ANY variant of SetDefaults here... please?
-		item.GetInstanceData().Affixes.Clear();
-		item.ModItem?.SetDefaults();
-		Roll(item, PickItemLevel());
 	}
 
 	private static void RollAffixes(Item item)
