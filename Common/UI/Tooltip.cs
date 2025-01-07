@@ -52,7 +52,7 @@ public class Tooltip : SmartUiState, ILoadable
 	/// <param name="newTooltip"></param>
 	public static void SetTooltip(string newTooltip)
 	{
-		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.MouseText.Value;
+		DynamicSpriteFont font = FontAssets.MouseText.Value;
 		tooltip = StringUtils.WrapString(newTooltip, DrawWidth * 2, font, 1);
 	}
 

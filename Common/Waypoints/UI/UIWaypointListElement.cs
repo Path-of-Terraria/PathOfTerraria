@@ -1,4 +1,6 @@
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Questing;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -9,26 +11,25 @@ namespace PathOfTerraria.Common.Waypoints.UI;
 
 public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index, string location) : UIElement
 {
+	private static Asset<Texture2D> Markers = null;
+
 	public const float FullWidth = UIWaypointMenu.FullWidth - 18f;
-
 	public const float FullHeight = 48f;
-
 	public const float ElementMargin = 16f;
 
 	public bool CanClick => ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(Location);
 
 	public readonly Asset<Texture2D> Icon = icon;
-
 	public readonly int Index = index;
 	public readonly string Location = location;
 
 	public readonly LocalizedText Name = name;
-	private UIImage icon;
-
-	private UIPanel panel;
 
 	public bool Selected;
+
+	private UIPanel panel;
 	private UIScalingText text;
+	private UIImage icon;
 
 	public override void OnInitialize()
 	{
@@ -41,6 +42,8 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 		Append(icon = BuildIcon());
 		Append(text = BuildText());
 		Append(BuildSeparator());
+
+		Markers ??= ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/WaypointMarkers");
 	}
 
 	public override void Update(GameTime gameTime)
@@ -71,6 +74,28 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 		};
 
 		return icon;
+	}
+
+	protected override void DrawChildren(SpriteBatch spriteBatch)
+	{
+		base.DrawChildren(spriteBatch);
+		QuestModPlayer questPlayer = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
+
+		bool hasMarker = questPlayer.MarkerTypeByLocation.TryGetValue(Location, out QuestMarkerType loc) && loc != QuestMarkerType.None;
+		bool available = QuestUnlockManager.LocationHasQuest(Location);
+
+		if (available && !hasMarker)
+		{
+			hasMarker = true;
+			loc = QuestMarkerType.HasQuest;
+		}
+
+		// Display quest marker if we have something that merits it
+		if (hasMarker)
+		{
+			var source = new Rectangle(0, 38 * (int)loc, 36, 36);
+			spriteBatch.Draw(Markers.Value, icon.GetDimensions().Position(), source, Color.White, 0f, Vector2.Zero, icon.ImageScale, SpriteEffects.None, 0);
+		}
 	}
 
 	private UIScalingText BuildText()

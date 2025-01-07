@@ -14,13 +14,13 @@ internal class BuildingWhitelist
 		Placing
 	}
 
-	public static HashSet<int> DefaultWhitelist = [TileID.Torches, TileID.Rope];
+	public static HashSet<int> DefaultWhitelist = [TileID.Torches, TileID.Rope, TileID.Tombstones];
 
 	public static HashSet<int> GetUsedWhitelist(WhitelistUse use)
 	{
 		HashSet<int> results = use == WhitelistUse.Placing ? DefaultWhitelist : [];
 
-		if (SubworldSystem.Current is BossDomainSubworld domain)
+		if (SubworldSystem.Current is MappingWorld domain)
 		{
 			domain.ModifyDefaultWhitelist(results, use);
 		}
@@ -31,8 +31,7 @@ internal class BuildingWhitelist
 	public static HashSet<int> GetMiningWhitelist()
 	{
 		HashSet<int> whitelist = GetUsedWhitelist(WhitelistUse.Mining);
-
-		if (SubworldSystem.Current is BossDomainSubworld domain)
+		if (SubworldSystem.Current is MappingWorld domain)
 		{
 			int[] tiles = domain.WhitelistedMiningTiles;
 
@@ -54,7 +53,7 @@ internal class BuildingWhitelist
 	{
 		HashSet<int> whitelist = GetUsedWhitelist(WhitelistUse.Cutting);
 
-		if (SubworldSystem.Current is BossDomainSubworld domain)
+		if (SubworldSystem.Current is MappingWorld domain)
 		{
 			int[] tiles = domain.WhitelistedCutTiles;
 
@@ -76,7 +75,7 @@ internal class BuildingWhitelist
 	{
 		HashSet<int> whitelist = GetUsedWhitelist(WhitelistUse.Placing);
 
-		if (SubworldSystem.Current is BossDomainSubworld domain)
+		if (SubworldSystem.Current is MappingWorld domain)
 		{
 			int[] tiles = domain.WhitelistedPlaceableTiles;
 

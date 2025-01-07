@@ -6,7 +6,11 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
-internal class Leggings : Gear
+/// <summary>
+/// Defines the base class for a legging.<br/>
+/// Note: You need to manually apply the <see cref="AutoloadEquip"/> attribute for <see cref="EquipType.Legs"/>; the attribute can't be inherited and so turns into boilerplate.
+/// </summary>
+internal abstract class Leggings : Gear
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Armor/Legs/Base";
 

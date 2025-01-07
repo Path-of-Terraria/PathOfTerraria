@@ -1,0 +1,56 @@
+﻿name: Tag & Increment Build
+
+on:
+    workflow_dispatch:
+    push:
+        branches:
+            - main
+            - qa
+
+env:
+    GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
+    
+jobs:
+    increment-version:
+        permissions:
+            contents: write
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+              with:
+                  ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+            - name: Set up Python
+              uses: actions/setup-python@v5
+              with:
+                  python-version: '3.12'
+
+            - name: Increment version in build.txt
+              run: |
+                  python scripts/increment-version.py
+
+            - name: Commit and push changes
+              run: |
+                  git config --global user.name "Path of Terraria CI"
+                  git config --global user.email "ci@pathofterraria.com"
+                  git add build.txt
+                  git commit -m "Incremented version in build.txt [skip ci]"
+                  git push
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Generate and push tag
+              id: tag
+              run: |
+                  # Get the version from the updated build.txt
+                  VERSION=$(grep -oP 'version = \K[\d.]+' build.txt)
+                  # Create a new tag
+                  if [[ "${{ github.ref_name }}" == "qa" ]]; then
+                      TAG="v$VERSION-rc"
+                  else
+                      TAG="v$VERSION"
+                  fi
+                  echo "TAG=$TAG" >> $GITHUB_ENV
+                  git tag -a "$TAG" -m "Release $TAG"
+                  git push origin "$TAG"

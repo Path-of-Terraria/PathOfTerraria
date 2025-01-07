@@ -16,13 +16,6 @@ GiveThem: " and give them:"
 Exploration.Ice: Explore the Ice/Snow biome ({0}%)
 Or: " or "
 
-Kill: {
-	SlimeZombies: Kill {0} slimes or zombies
-	Slime: Kill {0} slimes
-	HighHealth: Kill {0} enemies with more than 100 health
-	KingSlime: Kill the King Slime
-}
-
 Quest: {
 	TestQuest: {
 		Name: Test Quest
@@ -45,6 +38,7 @@ Quest: {
 		Description: ""
 		EnterDomain: Enter the King's Domain
 		ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surprass me again. My thanks, however, are in order.
+		Kill.KingSlime: Kill the King Slime
 	}
 
 	HunterStartQuest: {

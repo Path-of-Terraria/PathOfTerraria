@@ -6,6 +6,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Utilities;
 using SubworldLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -26,6 +27,11 @@ public class WallOfFleshDomain : BossDomainSubworld
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 	public bool LeftBlocked = true;
+
+	/// <summary>
+	/// If the boss has surpassed the edge of the world (with the "Player was licked" kill message), don't count the kill.
+	/// </summary>
+	private bool licked = false;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new	PassLegacy("Base Terrain", Terrain),
 		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids), new PassLegacy("Pathway", SpawnPathway)];
@@ -71,7 +77,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			maxX = Width - 10;
 		}
 
-		int y = Height / 2;
+		int y = (int)(Height * 0.4f);
 		int lastTime = 0;
 		int dir = 0;
 		int stopTime = 0;
@@ -621,8 +627,9 @@ public class WallOfFleshDomain : BossDomainSubworld
 		}
 
 		TileEntity.UpdateEnd();
+		int wofIndex = NPC.FindFirstNPC(NPCID.WallofFlesh);
 
-		if (NPC.AnyNPCs(NPCID.WallofFlesh))
+		if (wofIndex != -1)
 		{
 			if (!BossSpawned) // Remove all flesh blocks
 			{
@@ -648,9 +655,19 @@ public class WallOfFleshDomain : BossDomainSubworld
 			}
 			
 			BossSpawned = true;
+
+			if (!licked)
+			{
+				NPC wof = Main.npc[wofIndex];
+
+				if (wof.position.X < 160f || wof.position.X > ((Main.maxTilesX - 10) * 16))
+				{
+					licked = true;
+				}
+			}
 		}
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.WallofFlesh) && !ReadyToExit)
+		if (BossSpawned && !NPC.AnyNPCs(NPCID.WallofFlesh) && !ReadyToExit && !licked)
 		{
 			Player player = Main.rand.Next(Main.player.Where(x => x.active).ToArray());
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center - new Vector2(0, 80), 

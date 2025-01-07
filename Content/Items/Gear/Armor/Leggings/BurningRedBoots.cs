@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Systems.Affixes;
+﻿using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
-using Terraria.Localization;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
@@ -29,7 +30,17 @@ internal class BurningRedBoots : Leggings, GenerateName.IItem
 
 	string GenerateName.IItem.GenerateName(string defaultName)
 	{
-		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BurningRedBoots.DisplayName")}]";
+		return Language.GetTextValue("Mods.PathOfTerraria.Items.BurningRedBoots.DisplayName");
+	}
+
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
+	{
+		TooltipLine nameTip = tooltips.First(x => x.Name == "ItemName");
+
+		if (nameTip is not null)
+		{
+			nameTip.OverrideColor = Color.Red;
+		}
 	}
 
 	public override void PostRoll()

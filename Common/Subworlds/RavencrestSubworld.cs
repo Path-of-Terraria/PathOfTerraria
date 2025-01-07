@@ -20,6 +20,8 @@ internal class RavencrestSubworld : MappingWorld
 	public override int Width => 1200;
 	public override int Height => 340;
 	public override bool ShouldSave => true;
+	public override int[] WhitelistedMiningTiles => [TileID.Tombstones];
+	public override int[] WhitelistedPlaceableTiles => [TileID.Tombstones];
 
 	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), 
 		new PassLegacy("World", SpawnWorld), new PassLegacy("Smooth", SmoothPass)];
@@ -42,6 +44,7 @@ internal class RavencrestSubworld : MappingWorld
 		SubworldSystem.CopyWorldData("time", Main.time); // Keeps time consistent
 		SubworldSystem.CopyWorldData("dayTime", Main.dayTime); // Keeps time consistent
 		SubworldSystem.CopyWorldData("overworldNPCs", ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.ToArray());
+		SubworldSystem.CopyWorldData("hardMode", Main.hardMode);
 		ModContent.GetInstance<PersistentDataSystem>().CopyDataToRavencrest();
 	}
 
@@ -76,6 +79,8 @@ internal class RavencrestSubworld : MappingWorld
 			int y = npc.TileSpawn.Y * 16;
 			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
 		}
+
+		Main.hardMode = false;
 	}
 
 	public override void Update()
@@ -99,7 +104,13 @@ internal class RavencrestSubworld : MappingWorld
 			}
 
 			pool.Clear();
-			pool.Add(ModContent.NPCType<TownScoutNPC>(), ModContent.GetInstance<TownScoutNPC>().SpawnChance(spawnInfo));
+
+			float scoutChance = ModContent.GetInstance<TownScoutNPC>().SpawnChance(spawnInfo);
+
+			if (scoutChance > 0)
+			{
+				pool.Add(ModContent.NPCType<TownScoutNPC>(), scoutChance);
+			}
 		}
 	}
 }

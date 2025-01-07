@@ -13,7 +13,7 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 internal class QueenBeeQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<WitchNPC>();
+	public override int NPCQuestGiver => ModContent.NPCType<MorganaNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
@@ -25,13 +25,23 @@ internal class QueenBeeQuest : Quest
 		return
 		[
 			new CollectCount(ItemID.Stinger, 5),
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.GotStingers"), onSuccess: 
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.GotStingers"), onSuccess: 
 				npc => Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LargeStinger>())),
 			new KillCount(NPCID.QueenBee, 1, this.GetLocalization("KillQueen")),
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.QueenBeeKilled"))
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeKilled"))
 			{
 				CountsAsCompletedOnMarker = true
 			},
 		];
+	}
+
+	public override bool Available()
+	{
+		return NPC.downedBoss1;
+	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
 	}
 }

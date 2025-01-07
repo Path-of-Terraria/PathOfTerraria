@@ -9,6 +9,8 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 internal class EchoingShard : CurrencyShard
 {
+	protected override int FrameCount => 5;
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();

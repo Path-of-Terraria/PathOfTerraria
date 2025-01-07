@@ -18,13 +18,14 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class WitchNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
+[LegacyName("WitchNPC")]
+public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
 	public Point16 TileSpawn => new(970, 190);
 
 	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[Type] = 21;
+		Main.npcFrameCount[Type] = 23;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
 		NPCID.Sets.DangerDetectRange[Type] = 400;
 		NPCID.Sets.AttackFrameCount[Type] = 2;
@@ -109,13 +110,13 @@ public class WitchNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 		if (quest is WitchStartQuest)
 		{
 			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<GrimoireItem>());
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(WitchStartQuest)}");
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WitchStartQuest>();
 		}
 		else
 		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.QueenBeeQuest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(QueenBeeQuest)}");
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeQuest");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenBeeQuest>();
 		}
 	}
 

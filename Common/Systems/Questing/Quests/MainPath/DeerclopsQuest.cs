@@ -36,4 +36,14 @@ internal class DeerclopsQuest : Quest
 			},
 		];
 	}
+
+	public override bool Available()
+	{
+		return NPC.downedBoss1;
+	}
+
+	public override string MarkerLocation()
+	{
+		return "Ravencrest";
+	}
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.WorldBuilding;
 
@@ -16,14 +17,26 @@ public abstract class MappingWorld : Subworld
 
 	public override bool ShouldSave => false;
 	public override bool NoPlayerSaving => false;
+	
+	/// <summary>
+	/// These tiles are allowed to be mined by the player using a pickaxe.
+	/// </summary>
+	public virtual int[] WhitelistedMiningTiles => [];
+
+	/// <summary>
+	/// These tiles are allowed to be cut by the player with melee or projectiles.
+	/// </summary>
+	public virtual int[] WhitelistedCutTiles => [];
+
+	/// <summary>
+	/// These tiles are allowed to be placed by the player. These should also be in <see cref="WhitelistedMiningTiles"/>.
+	/// </summary>
+	public virtual int[] WhitelistedPlaceableTiles => [];
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
-
-	// Sets the time to the middle of the day whenever the subworld loads
-	public override void OnLoad()
+	
+	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
 	{
-		//Main.dayTime = true;
-		//Main.time = 27000;
 	}
 }

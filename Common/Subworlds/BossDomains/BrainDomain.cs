@@ -274,6 +274,7 @@ public class BrainDomain : BossDomainSubworld
 			for (int i = 0; i < points.Length; i++)
 			{
 				float factor = i / (points.Length - 1f);
+				direction += WorldGen.genRand.NextVector2Circular(6, 6);
 				GenOval(points[i] + direction, MathHelper.Lerp(startSize, endSize, factor), MathHelper.Lerp(startAngle, endAngle, factor), true);
 				progress.Value += 1 / (float)points.Length * maxValue;
 			}
@@ -332,7 +333,6 @@ public class BrainDomain : BossDomainSubworld
 	{
 		Tile tile = Main.tile[x, y];
 		tile.WallType = (ushort)type;
-		tile.HasTile = true;
 	}
 
 	private static FastNoiseLite GetGenNoise()

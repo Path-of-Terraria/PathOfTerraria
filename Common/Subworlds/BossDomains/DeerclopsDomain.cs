@@ -70,6 +70,8 @@ public class DeerclopsDomain : BossDomainSubworld
 
 		HashSet<Point16> structures = [];
 
+		Main.worldSurface = Surface + 16;
+
 		for (int i = 0; i < Width; ++i)
 		{
 			for (int j = 20; j < Height; ++j)
@@ -162,6 +164,8 @@ public class DeerclopsDomain : BossDomainSubworld
 
 	private void Tunnels(GenerationProgress progress, GameConfiguration configuration)
 	{
+		const float VerticalTunnelSize = 3f;
+
 		FastNoiseLite noise = GetSurfaceNoise();
 		Main.spawnTileX = Width / 2;
 		Main.spawnTileY = (int)(Height * 0.7f);
@@ -173,8 +177,8 @@ public class DeerclopsDomain : BossDomainSubworld
 		StartTunnel(noise, firstTunnelXStart, out Vector2[] points, out Vector2 last);
 
 		// Second tunnel
-		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 3.5f, 0.5f);
-		DigThrough(points, noise, 1);
+		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 3f, 0.5f);
+		DigThrough(points, noise, VerticalTunnelSize);
 		AddLanterns(points);
 		last = points.Last();
 		var chasmPoints = points.Clone() as Vector2[];
@@ -182,8 +186,8 @@ public class DeerclopsDomain : BossDomainSubworld
 		last = CreateHorizontalTunnel(noise, points, chasmPoints);
 
 		// Third tunnel
-		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 3.5f, 0.5f);
-		DigThrough(points, noise, 1);
+		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 3f, 0.5f);
+		DigThrough(points, noise, VerticalTunnelSize);
 		AddLanterns(points);
 		last = points.Last();
 		chasmPoints = points.Clone() as Vector2[];
@@ -192,8 +196,8 @@ public class DeerclopsDomain : BossDomainSubworld
 		last = points.Last();
 
 		// To surface
-		points = Tunnel.GeneratePoints([last, new(Width / 2, Surface), new(Width / 2, Surface - 20)], 6, 3.5f, 0.5f);
-		DigThrough(points, noise, 1);
+		points = Tunnel.GeneratePoints([last, new(Width / 2, Surface), new(Width / 2, Surface - 20)], 6, 3f, 0.5f);
+		DigThrough(points, noise, VerticalTunnelSize);
 		AddLanterns(points, 8);
 	}
 

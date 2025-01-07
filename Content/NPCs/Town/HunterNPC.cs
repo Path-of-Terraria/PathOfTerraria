@@ -92,7 +92,7 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		}
 		else
 		{
-			button2 = !Quest.GetLocalPlayerInstance<HunterStartQuest>().CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+			button2 = !QuestUnlockManager.CanStartQuest<HunterStartQuest>() ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
 		}
 	}
 
@@ -119,7 +119,7 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		else
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(HunterStartQuest)}");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<HunterStartQuest>();
 		}
 	}
 	

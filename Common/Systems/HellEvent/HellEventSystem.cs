@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.HellEvent;
@@ -12,8 +13,9 @@ internal class HellEventSystem : ModSystem
 	public static float EventStrength = 0;
 
 	private int eventTimer = 0;
+	private int delayTimer = 0;
 
-	public override void PreUpdateEntities()
+	public override void PostUpdatePlayers()
 	{
 		EventOccuringInstant = false;
 
@@ -22,18 +24,14 @@ internal class HellEventSystem : ModSystem
 			return;
 		}
 
+		if (++delayTimer < 60)
+		{
+			return;
+		}
+
 		eventTimer++;
 
-		bool canEventOccur = false;
-
-		foreach (Player player in Main.ActivePlayers)
-		{
-			if (player.GetModPlayer<QuestChecksPlayer>().CanWoFQuest)
-			{
-				canEventOccur = true;
-				break;
-			}
-		}
+		bool canEventOccur = GetCanOccur();
 
 		if (!canEventOccur)
 		{
@@ -44,6 +42,22 @@ internal class HellEventSystem : ModSystem
 		{
 			EventOccuringInstant = true;
 		}
+	}
+
+	private static bool GetCanOccur()
+	{
+		bool canEventOccur = false;
+
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (player.Center.Y / 16 > Main.maxTilesX - 400 && QuestUnlockManager.CanStartQuest<WoFQuest>())
+			{
+				canEventOccur = true;
+				break;
+			}
+		}
+
+		return canEventOccur;
 	}
 
 	public override void PreUpdatePlayers()

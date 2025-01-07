@@ -1,18 +1,20 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
+using Terraria.ID;
 
 namespace PathOfTerraria.Core.Commands;
 
 #if DEBUG
 public sealed class SpawnUniqueItemCommand : ModCommand
 {
-	public override string Command => "spawnuitem";
+	public override string Command => "uitem";
 
 	public override CommandType Type => CommandType.Chat;
 
-	public override string Usage => "[c/ff6a00:Usage: /spawnuitem <relative X> <relative Y> <count> <ilevel> <quality increase> <geartype>]";
+	public override string Usage => "[c/ff6a00:Usage: /uitem <name> <count> <ilevel> <quality increase> <geartype> <relative X> <relative Y>]";
 
-	public override string Description => "Spawns unique item(s) for testing items and loot generation, only x and y positions are necessary.";
+	public override string Description => "Spawns unique item(s) for testing items and loot generation. " +
+		"Class name does not need to be full; for example, \"Guardia\" will be enough to find the Guardian Angel item.";
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
@@ -21,12 +23,6 @@ public sealed class SpawnUniqueItemCommand : ModCommand
 		_ = new Color(0.25f, 0.5f, 0.75f);
 		_ = new Color(0.25f, 0.5f, 0.75f, 0.1f);
 		
-		if (args.Length < 2)
-		{
-			caller.Reply("Command expected 2 arguments", Color.Red);
-			return;
-		}
-
 		string[] nArgs = new string[6];
 		
 		for (int i = 0; i < args.Length; i++)
@@ -36,43 +32,57 @@ public sealed class SpawnUniqueItemCommand : ModCommand
 
 		args = nArgs;
 
-		if (!float.TryParse(args[0], out float relX))
+		int id = -1;
+
+		for (int i = ItemID.Count; i < ItemLoader.ItemCount; ++i)
 		{
-			caller.Reply("Argument 1 must be a floating-point value", Color.Red);
-			return;
+			Item item = ContentSamples.ItemsByType[i];
+
+			if (item.ModItem.Name.StartsWith(args[0], StringComparison.OrdinalIgnoreCase))
+			{
+				id = i;
+				break;
+			}
 		}
 
-		if (!float.TryParse(args[1], out float relY))
-		{
-			caller.Reply("Argument 2 must be a floating-point value", Color.Red);
-			return;
-		}
-
-		if (!uint.TryParse(args[2], out uint count))
+		if (!uint.TryParse(args[1], out uint count))
 		{
 			count = 1;
 		}
 
-		if (!uint.TryParse(args[3], out uint ilevel))
+		if (!uint.TryParse(args[2], out uint ilevel))
 		{
 			ilevel = 0;
 		}
 
-		if (!float.TryParse(args[4], out float qualityIncrease))
+		if (!float.TryParse(args[3], out float qualityIncrease))
 		{
 			qualityIncrease = 0;
 		}
 
-		string geartype = args[5];
-		
-		// TODO: Implementation.
+		if (!float.TryParse(args[4], out float relX))
+		{
+			relX = 0;
+		}
+
+		if (!float.TryParse(args[5], out float relY))
+		{
+			relY = 0;
+		}
 
 		for (int i = 0; i < count; i++)
 		{
-			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), x => x.Rarity == ItemRarity.Unique, (int)ilevel, qualityIncrease);
+			if (id == -1)
+			{
+				ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), x => x.Rarity == ItemRarity.Unique, (int)ilevel);
+			}
+			else 
+			{
+				ItemSpawner.SpawnItem(id, caller.Player.Center + new Vector2(relX, relY), (int)ilevel);
+			}
 		}
 
-		caller.Reply("Item(s) spawned!", Color.Green);
+		caller.Reply(id == -1 ? "Spawned random items." : "Spawned item.", Color.Green);
 	}
 }
 #endif

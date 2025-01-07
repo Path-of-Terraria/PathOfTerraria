@@ -9,10 +9,12 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// </summary>
 public abstract class CurrencyShard : ModItem
 {
+	protected virtual int FrameCount => 4;
+
 	public override void SetStaticDefaults()
 	{
 		ItemID.Sets.AnimatesAsSoul[Item.type] = true;
-		Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, 4));
+		Main.RegisterItemAnimation(Item.type, new DrawAnimationVertical(5, FrameCount));
 		
 		SetStaticData();
 	}

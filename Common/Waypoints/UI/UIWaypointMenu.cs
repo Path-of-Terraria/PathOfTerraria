@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Dynamic;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Elements;
@@ -121,7 +122,7 @@ public sealed class UIWaypointMenu : UIState
 
 		buttonElement.OnLeftClick += (_, _) =>
 		{
-			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.Location))
+			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.LocationEnum))
 			{
 				SelectedListWaypoint.Teleport(Main.LocalPlayer);
 				Enabled = false;
@@ -302,7 +303,7 @@ public sealed class UIWaypointMenu : UIState
 
 			Asset<Texture2D> icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
 
-			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.Location);
+			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.LocationEnum);
 
 			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypointIndex;
 
@@ -310,7 +311,7 @@ public sealed class UIWaypointMenu : UIState
 			{
 				if (tab.CanClick)
 				{
-					SelectedWaypointIndex = tab.Index;
+					ProcessIndex(tab.Index);
 				}
 			};
 			
@@ -342,6 +343,11 @@ public sealed class UIWaypointMenu : UIState
 
 	private void ProcessInput(int direction)
 	{
+		ProcessIndex(SelectedWaypointIndex + direction);
+	}
+
+	private void ProcessIndex(int index)
+	{
 		if (!CanProcessInput() || !listRootElement.ContainsPoint(Main.MouseScreen))
 		{
 			return;
@@ -349,7 +355,7 @@ public sealed class UIWaypointMenu : UIState
 
 		holdDelayTimer++;
 
-		int nextIndex = SelectedWaypointIndex + direction;
+		int nextIndex = index;
 
 		if (nextIndex < 0 || nextIndex > ModWaypointLoader.WaypointCount - 1)
 		{

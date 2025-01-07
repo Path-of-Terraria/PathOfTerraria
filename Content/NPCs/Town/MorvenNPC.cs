@@ -375,7 +375,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			}
 
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest($"{PoTMod.ModName}/{nameof(EoWQuest)}");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
 		}
 	}
 

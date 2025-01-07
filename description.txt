@@ -1,1 +1,15 @@
-A mod built by ARPG fans that brings an ARPG into Terraria
+Path of Terraria is a fresh take on the world of Terraria bringing in ARPG elements.
+Find and help rebuild towns, complete quests, and explore the world of Terraria in a new way.
+
+New Content Includes
+- Towns
+- Questing
+- Passive Tree
+- Skilling
+- Leveling
+- Completely new way to progress (Boss Domains)
+- Item Modifiers (Affixes)
+- Item Crafting System
+
+PLEASE NOTE THIS MOD REQUIRES THE SUBWORLD LIBRARY MOD.
+You will need to install "Subworld Library" from the Mod Browser or the Workshop.
