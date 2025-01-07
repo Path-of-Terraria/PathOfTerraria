@@ -65,10 +65,10 @@ internal class TavernManager : ModSystem
 			}
 		}
 
-		Queue<int> types = [];
+		Queue<int> types = new(guarantees);
 		Queue<Point16> seatsToUse = [];
 
-		for (int i = 0; i < Seats.Length; ++i)
+		for (int i = types.Count; i < Seats.Length; ++i)
 		{
 			if (entries.elements.Count > 0)
 			{

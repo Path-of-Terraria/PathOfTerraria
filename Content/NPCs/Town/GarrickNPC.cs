@@ -207,7 +207,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 	public bool ForceSpawnInTavern()
 	{
-		return QuestSystem.ForceGarrickSpawn();
+		return Quest.GetLocalPlayerInstance<KingSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
 	}
 
 	public float SpawnChanceInTavern()
