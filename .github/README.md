@@ -1,5 +1,7 @@
 # Path of Terraria
 
+## Contributing 
+
 ### Getting Started
 1) Terraria is not included as a nuget package so we need to use the included tModLoader.targets file for pulling in the correct dependencies
     2) In the PathOfTerraria.csproj we see this line: `<Import Project="..\tModLoader.targets" />` - I have this setup so you can use this project outisde of the steam tModLoader folder. So the easiest way to get this to the place it's expecting (1 level up) simply copy the `tmodloader.targets` file from your steam tModLoader folder to the folder right above the root of this project.
@@ -13,6 +15,16 @@
 There are several mods that can help us do local development. I recommend the following:
 1) Dragonlens - https://steamcommunity.com/sharedfiles/filedetails/?id=2939737748
 2) Structurehelper - https://steamcommunity.com/sharedfiles/filedetails/?id=2790924965
+
+### Standards
+
+#### Semantic Commits
+This repository is setup to automatically tag and release new versions of the mod based on the branching structure.
+Merges into `qa` -> Releases a prerelease tag
+Merges into `main` -> Releases a production tag
+
+Utilize semantic commits when commiting as these are used to generate the changelog. Commit messages should be treated as changelog ready messaging and should be conscise and direct.
+More on semantic commmits here: https://www.conventionalcommits.org/en/v1.0.0/
 
 
 ### Project Notes
