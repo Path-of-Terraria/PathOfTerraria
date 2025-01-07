@@ -7,8 +7,13 @@ on:
             - main
             - qa
 
+env:
+    GITHUB_TOKEN: ${{ secrets.COMMIT_TOKEN }}
+    
 jobs:
     increment-version:
+        permissions:
+            contents: write
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
