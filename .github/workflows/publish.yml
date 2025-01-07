@@ -39,3 +39,18 @@ jobs:
                   git push
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Generate and push tag
+              id: tag
+              run: |
+                  # Get the version from the updated build.txt
+                  VERSION=$(grep -oP 'version = \K[\d.]+' build.txt)
+                  # Create a new tag
+                  if [[ "${{ github.ref_name }}" == "qa" ]]; then
+                      TAG="v$VERSION-rc"
+                  else
+                      TAG="v$VERSION"
+                  fi
+                  echo "TAG=$TAG" >> $GITHUB_ENV
+                  git tag -a "$TAG" -m "Release $TAG"
+                  git push origin "$TAG"
