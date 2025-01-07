@@ -110,12 +110,12 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 		if (quest is WitchStartQuest)
 		{
 			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<GrimoireItem>());
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest");
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WitchStartQuest>();
 		}
 		else
 		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.QueenBeeQuest");
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeQuest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenBeeQuest>();
 		}
 	}

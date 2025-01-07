@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.World.Passes;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -35,7 +36,7 @@ public class ExpModPlayer : ModPlayer
 
 		Player.GetModPlayer<PassiveTreePlayer>().Points++;
 
-		if (Level == 1 && !ModContent.GetInstance<RavencrestSystem>().SpawnedRaven)
+		if (Level == 1 && !ModContent.GetInstance<RavencrestSystem>().SpawnedRaven && SubworldSystem.Current is null)
 		{
 			new RavenPass().Generate(null, null);
 		}
