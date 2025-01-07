@@ -79,6 +79,8 @@ internal class RavencrestSubworld : MappingWorld
 			int y = npc.TileSpawn.Y * 16;
 			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
 		}
+
+		Main.hardMode = false;
 	}
 
 	public override void Update()
@@ -102,7 +104,13 @@ internal class RavencrestSubworld : MappingWorld
 			}
 
 			pool.Clear();
-			pool.Add(ModContent.NPCType<TownScoutNPC>(), ModContent.GetInstance<TownScoutNPC>().SpawnChance(spawnInfo));
+
+			float scoutChance = ModContent.GetInstance<TownScoutNPC>().SpawnChance(spawnInfo);
+
+			if (scoutChance > 0)
+			{
+				pool.Add(ModContent.NPCType<TownScoutNPC>(), scoutChance);
+			}
 		}
 	}
 }
