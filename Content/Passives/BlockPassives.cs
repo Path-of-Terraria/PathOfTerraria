@@ -10,3 +10,11 @@ internal class GlancingBlowsPassive : Passive
 		player.GetModPlayer<BlockPlayer>().BlockCooldown /= 2;
 	}
 }
+
+internal class IncreasedBlockChancePassive : Passive
+{
+	public override void BuffPlayer(Player player)
+	{
+		player.GetModPlayer<BlockPlayer>().MultiplyBlockChance(0.1f * Level);
+	}
+}

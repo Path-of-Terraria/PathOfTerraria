@@ -1,10 +1,9 @@
 ﻿using PathOfTerraria.Common.Systems.BlockSystem;
-using PathOfTerraria.Content.Items.Gear.Offhands;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Content.Items.Gear.Armor.Shields;
+namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 
 internal abstract class Shield : Offhand
 {
@@ -21,6 +20,9 @@ internal abstract class Shield : Offhand
 	public override void SetDefaults()
 	{
 		Item.accessory = true;
+
+		PoTInstanceItemData data = this.GetInstanceData();
+		data.ItemType = Common.Enums.ItemType.Shield;
 
 		InternalDefaults();
 	}

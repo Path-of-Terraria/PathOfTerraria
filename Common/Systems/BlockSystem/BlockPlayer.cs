@@ -27,9 +27,29 @@ internal class BlockPlayer : ModPlayer
 		_timeSinceLastBlock++;
 	}
 
+	/// <summary>
+	/// Adds to the block chance. This should be done by items that set base chance, such as Shields that have a base block chance.<br/>
+	/// If you need to add a multiplier, use <see cref="MultiplyBlockChance(float)"/> instead.
+	/// </summary>
+	/// <param name="add">How much to add by.</param>
 	public void AddBlockChance(float add)
 	{
 		BlockChance += add;
+
+		if (BlockChance > MaxBlockChance)
+		{
+			BlockChance = MaxBlockChance;
+		}
+	}
+
+	/// <summary>
+	/// Multiplies the block chance. This should be done by things that modify an existing chance, such as affixes or passives.<br/>
+	/// If you need to add a flat value, use <see cref="AddBlockChance(float)"/> instead.
+	/// </summary>
+	/// <param name="mult">How much to multiply by.</param>
+	public void MultiplyBlockChance(float mult)
+	{
+		BlockChance *= mult;
 
 		if (BlockChance > MaxBlockChance)
 		{

@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Core.Items;
 
-namespace PathOfTerraria.Content.Items.Gear.Armor.Shields;
+namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 
 internal class ShadowBarrier : Shield
 {
@@ -17,7 +17,7 @@ internal class ShadowBarrier : Shield
 	protected override void InternalDefaults()
 	{
 		Item.Size = new(26, 32);
-		Item.value = Item.buyPrice(0, 0, 3, 0);
+		Item.value = Item.buyPrice(0, 0, 10, 0);
 		Item.defense = 5;
 	}
 }

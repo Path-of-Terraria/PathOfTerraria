@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Armor.Shields;
+﻿namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 
 internal class LeatherBuckler : Shield
 {
@@ -8,7 +8,7 @@ internal class LeatherBuckler : Shield
 	protected override void InternalDefaults()
 	{
 		Item.Size = new(26);
-		Item.value = Item.buyPrice(0, 0, 3, 0);
+		Item.value = Item.buyPrice(0, 0, 0, 10);
 		Item.defense = 1;
 	}
 }

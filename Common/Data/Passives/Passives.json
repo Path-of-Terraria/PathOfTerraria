@@ -330,9 +330,9 @@
 		}
 	},
 	{
-		"internalIdentifier": "GlancingBlowsPassive",
+		"internalIdentifier": "IncreasedBlockChancePassive",
 		"referenceId": 24,
-		"maxLevel": 1,
+		"maxLevel": 2,
 		"connections": [
 			{
 				"referenceId": 7
@@ -341,6 +341,20 @@
 		"position": {
 			"x": 50,
 			"y": 300
+		}
+	},
+	{
+		"internalIdentifier": "GlancingBlowsPassive",
+		"referenceId": 25,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 24
+			}
+		],
+		"position": {
+			"x": 133,
+			"y": 367
 		}
 	}
 ]

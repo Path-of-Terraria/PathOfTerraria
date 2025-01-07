@@ -920,3 +920,8 @@ LeatherBuckler: {
 	DisplayName: Leather Buckler
 	Tooltip: ""
 }
+
+CorrodedTowerShield: {
+	DisplayName: Corroded Tower Shield
+	Tooltip: ""
+}

@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Core.Items;
 
-namespace PathOfTerraria.Content.Items.Gear.Armor.Shields;
+namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 
 internal class CrimsonBulwark : Shield
 {
@@ -11,13 +11,13 @@ internal class CrimsonBulwark : Shield
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.MinDropItemLevel = 18;
+		staticData.MinDropItemLevel = 25;
 	}
 
 	protected override void InternalDefaults()
 	{
 		Item.Size = new(28, 30);
-		Item.value = Item.buyPrice(0, 0, 3, 0);
+		Item.value = Item.buyPrice(0, 0, 15, 0);
 		Item.defense = 8;
 	}
 }
