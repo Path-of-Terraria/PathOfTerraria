@@ -28,12 +28,10 @@ internal class DeerclopsSpawnEdits : GlobalNPC
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
 	{
-		if (SubworldSystem.Current is not DeerclopsDomain)
+		if (SubworldSystem.Current is DeerclopsDomain)
 		{
-			return;
+			spawnRate = 80;
+			maxSpawns = 4;
 		}
-
-		spawnRate += 5;
-		maxSpawns = 8;
 	}
 }
