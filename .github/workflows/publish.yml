@@ -18,6 +18,8 @@ jobs:
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
+              with:
+                  ssh-key: ${{ secrets.DEPLOY_KEY }}
 
             - name: Set up Python
               uses: actions/setup-python@v5
@@ -31,7 +33,7 @@ jobs:
             - name: Commit and push changes
               run: |
                   git config --global user.name "Path of Terraria CI"
-                  git config --global user.email "actions@github.com"
+                  git config --global user.email "ci@pathofterraria.com"
                   git add build.txt
                   git commit -m "Incremented version in build.txt [skip ci]"
                   git push
