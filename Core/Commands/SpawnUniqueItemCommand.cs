@@ -11,7 +11,7 @@ public sealed class SpawnUniqueItemCommand : ModCommand
 
 	public override CommandType Type => CommandType.Chat;
 
-	public override string Usage => "[c/ff6a00:Usage: /uitem <name> <count> <ilevel> <quality increase> <geartype> <relative X> <relative Y>]";
+	public override string Usage => "[c/ff6a00:Usage: /uitem <name> <count> <ilevel> <geartype> <relative X> <relative Y>]";
 
 	public override string Description => "Spawns unique item(s) for testing items and loot generation. " +
 		"Class name does not need to be full; for example, \"Guardia\" will be enough to find the Guardian Angel item.";
@@ -55,17 +55,12 @@ public sealed class SpawnUniqueItemCommand : ModCommand
 			ilevel = 0;
 		}
 
-		if (!float.TryParse(args[3], out float qualityIncrease))
-		{
-			qualityIncrease = 0;
-		}
-
-		if (!float.TryParse(args[4], out float relX))
+		if (!float.TryParse(args[3], out float relX))
 		{
 			relX = 0;
 		}
 
-		if (!float.TryParse(args[5], out float relY))
+		if (!float.TryParse(args[4], out float relY))
 		{
 			relY = 0;
 		}
