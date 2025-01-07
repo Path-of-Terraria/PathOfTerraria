@@ -11,12 +11,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class DwarvenGreatsword : Sword, GenerateName.IItem
 {
-	public int ItemLevel
-	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
-	}
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

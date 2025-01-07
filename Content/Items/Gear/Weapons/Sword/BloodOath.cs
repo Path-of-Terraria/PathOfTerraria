@@ -12,12 +12,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class BloodOath : Sword, GenerateName.IItem
 {
-	public int ItemLevel
-	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
-	}
-
 	protected override bool CloneNewInstances => true;
 
 	private readonly HashSet<int> _hitNpcs = [];
