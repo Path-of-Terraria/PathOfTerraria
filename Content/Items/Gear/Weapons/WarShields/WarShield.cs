@@ -78,7 +78,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 		{
 			return false;
 		}
-		
+
 		return player.GetModPlayer<WarShieldPlayer>().CanBash;
 	}
 

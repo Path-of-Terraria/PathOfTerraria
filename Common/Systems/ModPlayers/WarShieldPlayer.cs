@@ -5,6 +5,8 @@ namespace PathOfTerraria.Common.Systems.ModPlayers;
 
 internal class WarShieldPlayer : ModPlayer
 {
+	protected override bool CloneNewInstances => true;
+
 	public bool CanBash => _bashCooldown <= 0;
 	public bool Bashing => _bashTime > 0;
 
@@ -12,6 +14,14 @@ internal class WarShieldPlayer : ModPlayer
 
 	private int _bashCooldown = 0;
 	private int _bashTime = 0;
+
+	public override ModPlayer Clone(Player newEntity)
+	{
+		var player = base.Clone(newEntity) as WarShieldPlayer;
+		player._bashCooldown = _bashCooldown;
+		player._bashTime = _bashTime;
+		return player;
+	}
 
 	public override void PreUpdateMovement()
 	{
