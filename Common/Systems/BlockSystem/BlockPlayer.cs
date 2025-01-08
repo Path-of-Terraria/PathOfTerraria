@@ -15,6 +15,7 @@ internal class BlockPlayer : ModPlayer
 	public float MaxBlockChance { get; private set; } = DefaultMaxBlockChance;
 	public float BlockCooldown = DefaultBlockCooldown;
 
+	private float _accuredMultiplier = 0;
 	private int _timeSinceLastBlock = 0;
 	private bool _hasDodged = false;
 
@@ -24,6 +25,7 @@ internal class BlockPlayer : ModPlayer
 		MaxBlockChance = DefaultMaxBlockChance;
 		BlockCooldown = DefaultBlockCooldown;
 
+		_accuredMultiplier = 1;
 		_timeSinceLastBlock++;
 	}
 
@@ -49,12 +51,7 @@ internal class BlockPlayer : ModPlayer
 	/// <param name="mult">How much to multiply by.</param>
 	public void MultiplyBlockChance(float mult)
 	{
-		BlockChance *= mult;
-
-		if (BlockChance > MaxBlockChance)
-		{
-			BlockChance = MaxBlockChance;
-		}
+		_accuredMultiplier *= mult;
 	}
 
 	public override bool FreeDodge(Player.HurtInfo info)

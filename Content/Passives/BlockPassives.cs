@@ -15,6 +15,6 @@ internal class IncreasedBlockChancePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetModPlayer<BlockPlayer>().MultiplyBlockChance(0.1f * Level);
+		player.GetModPlayer<BlockPlayer>().MultiplyBlockChance(1 + 0.1f * Level);
 	}
 }
