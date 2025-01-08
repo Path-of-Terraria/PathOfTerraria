@@ -8,6 +8,12 @@ internal class AttributesPlayer : ModPlayer
 
 	public override void ResetEffects()
 	{
-		Player.statLifeMax += (int)(Strength / 2f);
+		// Apply buffs
+		Player.statLifeMax2 += Strength / 10 * 5;
+		Player.GetAttackSpeed(DamageClass.Melee) += Dexterity / 10;
+		Player.statManaMax2 += Intelligence / 10 * 5;
+		
+		// Reset
+		Strength = Dexterity = Intelligence = 0;
 	}
 }
