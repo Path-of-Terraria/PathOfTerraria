@@ -307,3 +307,27 @@ Properties: {
 	Cloned: Cloned
 	Corrupted: Corrupted
 }
+
+Offhand.Name: Offhand
+
+Shield: {
+	Name: Shield
+	Block: "[i:278] +{0}% to block"
+	Speed: "[i:278] -{0}% movement speed"
+
+	Prefixes: {
+		0: Rigid
+		1: Battle-Hardened
+		2: Ornate
+		3: Roughened
+		4: Ancient
+	}
+
+	Suffixes: {
+		0: of Kings
+		1: of Death
+		2: of Isolation
+		3: of Cowardice
+		4: of Protection
+	}
+}
