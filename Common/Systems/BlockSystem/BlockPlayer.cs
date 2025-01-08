@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Content.Passives;
 using Terraria.Audio;
 using Terraria.ID;

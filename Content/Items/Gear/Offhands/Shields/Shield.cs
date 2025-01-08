@@ -9,6 +9,7 @@ internal abstract class Shield : Offhand
 {
 	protected abstract float BlockChance { get; }
 	protected abstract float SpeedReduction { get; }
+	protected override string GearLocalizationCategory => "Shield";
 
 	public override void SetStaticDefaults()
 	{
