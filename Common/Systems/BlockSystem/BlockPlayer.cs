@@ -31,6 +31,15 @@ internal class BlockPlayer : ModPlayer
 	}
 
 	/// <summary>
+	/// Adds max block chance.
+	/// </summary>
+	/// <param name="add">How much to add by.</param>
+	public void AddMaxBlock(float add)
+	{
+		MaxBlockChance += add;
+	}
+
+	/// <summary>
 	/// Adds to the block chance. This should be done by items that set base chance, such as Shields that have a base block chance.<br/>
 	/// If you need to add a multiplier, use <see cref="MultiplyBlockChance(float)"/> instead.
 	/// </summary>

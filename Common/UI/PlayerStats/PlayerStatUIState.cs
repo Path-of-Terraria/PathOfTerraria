@@ -24,18 +24,18 @@ internal class PlayerStatUIState : CloseableSmartUi
 		if (!HasChild(Panel))
 		{
 			Width = StyleDimension.FromPixels(512);
-			Height = StyleDimension.FromPixels(448);
+			Height = StyleDimension.FromPixels(660);
 			HAlign = 0.5f;
-			VAlign = 0.25f;
+			VAlign = 0.4f;
 
 			RemoveAllChildren();
 
-			base.CreateMainPanel(false, new Point(512, 448), false, true);
+			base.CreateMainPanel(false, new Point(512, 660), false, true);
 
 			statPanel = new()
 			{
 				Width = StyleDimension.FromPixels(512),
-				Height = StyleDimension.FromPixels(448),
+				Height = StyleDimension.Fill,
 				HAlign = 0.5f,
 				VAlign = 0.5f
 			};

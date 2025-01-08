@@ -42,7 +42,7 @@ internal class ThornyArmorAffix : ItemAffix
 	}
 }
 
-internal class MultiplyBlockAffix : ItemAffix
+internal class IncreaseBlockAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{

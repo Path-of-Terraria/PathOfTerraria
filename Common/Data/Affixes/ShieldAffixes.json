@@ -1,6 +1,6 @@
 ﻿[
 	{
-		"affixType": "MultiplyBlockAffix",
+		"affixType": "IncreaseBlockAffix",
 		"equipTypes": "Shield",
 		"influences": "None",
 		"tiers": [
