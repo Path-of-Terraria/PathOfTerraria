@@ -35,11 +35,11 @@ internal class StarlightBulwark : LeadBattleBulwark
 		staticData.Description = this.GetLocalization("Description");
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ManaAffix>(-1, 15, 20);
-		var noFallDamageAffix = (ItemAffix)Affix.CreateAffix<NoFallDamageAffix>(-1, 1f, 4f);
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(15, 25);
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ManaAffix>(15, 20);
+		var noFallDamageAffix = (ItemAffix)Affix.CreateAffix<NoFallDamageAffix>(1f, 4f);
 		return [addedDamageAffix, attackSpeedAffix, noFallDamageAffix];
 	}
 

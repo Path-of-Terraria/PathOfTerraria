@@ -55,10 +55,10 @@ internal class BloodOath : Sword, GenerateName.IItem
 		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(0, 2, 5);
-		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(0, 10, 10); // Add 10% life
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(2, 5);
+		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(10); // Add 10% life
 		return [sharpAffix, lifeAffix];
 	}
 

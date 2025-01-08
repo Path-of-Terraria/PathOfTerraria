@@ -18,11 +18,11 @@ internal class Bloodclotter : PlatinumGlaive
 	public override bool UseChargeAlt => false;
 	public override bool AutoloadProjectile => false;
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
-		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<BloodSiphonAffix>(1, 1, 1);
-		var bloodclotAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyBloodclotItemAffix>(1, 1, 1);
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(15, 25);
+		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<BloodSiphonAffix>(1);
+		var bloodclotAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyBloodclotItemAffix>(1);
 		return [addedDamageAffix, moltenShellAffix, bloodclotAffix];
 	}
 

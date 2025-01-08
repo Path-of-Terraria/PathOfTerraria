@@ -78,13 +78,13 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		return type == ModContent.ProjectileType<CorruptedBattleaxeProjectile>();	
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
-		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15f, 25f);
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(1, 4);
+		var increasedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(15f, 25f);
 		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(0.1f);
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyArmorShredGearAffix>(-1, 0.1f, 0.2f);
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyArmorShredGearAffix>(0.1f, 0.2f);
 		armorShredAffix.Duration = 120;
-		return [increasedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
+		return [addedDamageAffix, increasedDamageAffix, attackSpeedAffix, armorShredAffix];
 	}
 }
