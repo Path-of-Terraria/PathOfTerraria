@@ -40,8 +40,8 @@ internal class FireStarter : Sword, GenerateName.IItem
 	
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
-		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(-1, 0.1f, 0.15f);
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(1, 4);
+		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(0.1f, 0.15f);
 		return [sharpAffix, onFireAffix];
 	}
 	

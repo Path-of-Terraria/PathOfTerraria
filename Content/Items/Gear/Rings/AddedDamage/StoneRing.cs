@@ -8,6 +8,6 @@ public class StoneRing : Ring
 {
 	public override List<ItemAffix> GenerateImplicits()
 	{
-		return [(ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 2, 3)];
+		return [(ItemAffix)Affix.CreateAffix<AddedDamageAffix>(2, 3)];
 	}
 }

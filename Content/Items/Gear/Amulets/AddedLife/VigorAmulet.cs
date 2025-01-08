@@ -8,6 +8,6 @@ public class VigorAmulet : Amulet
 {
 	public override List<ItemAffix> GenerateImplicits()
 	{
-		return [(ItemAffix)Affix.CreateAffix<AddedLifeAffix>(-1, 3, 6)];
+		return [(ItemAffix)Affix.CreateAffix<AddedLifeAffix>(-3, 6)];
 	}
 }

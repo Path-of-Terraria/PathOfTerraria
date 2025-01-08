@@ -84,25 +84,40 @@ public abstract class Affix : ILocalizedModType
 	/// 
 	/// </summary>
 	/// <param name="value">The set value of the affix. Set to -1 if using minValue and maxValue</param>
-	/// <param name="minValue">When value is -1, the minimum value of the roll range for the affix</param>
-	/// <param name="maxValue">When value is -1, the maximum value of the roll range for the affix</param>
 	/// <typeparam name="T"></typeparam>
 	/// <returns></returns>
-	public static Affix CreateAffix<T>(float value = -1, float minValue = 0f, float maxValue = 1f)
+	public static Affix CreateAffix<T>(float value)
+	{
+		var instance = (Affix)Activator.CreateInstance(typeof(T));
+		
+		if (instance == null)
+		{
+			throw new Exception($"Could not create affix of type {typeof(T).Name}");
+		}
+		
+		instance.Value = value;
+		return instance;
+	}
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="minValue">The minimum value of the roll range for the affix</param>
+	/// <param name="maxValue">The maximum value of the roll range for the affix</param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	public static Affix CreateAffix<T>(float minValue = 0f, float maxValue = 1f)
 	{
 		var instance = (Affix)Activator.CreateInstance(typeof(T));
 
+		if (instance == null)
+		{
+			throw new Exception($"Could not create affix of type {typeof(T).Name}");
+		}
+
 		instance.MinValue = minValue;
 		instance.MaxValue = maxValue;
-
-		if (value == -1)
-		{
-			instance.Roll();
-		}
-		else
-		{
-			instance.Value = value;
-		}
+		instance.Roll();
 
 		return instance;
 	}
