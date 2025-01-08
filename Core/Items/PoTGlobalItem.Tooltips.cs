@@ -76,10 +76,10 @@ partial class PoTGlobalItem
 				return true;
 		}
 
-		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense")
+		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense" || line.Name.StartsWith("Stat"))
 		{
 			line.BaseScale = new Vector2(0.95f);
-			yOffset = line.Name == "Damage" || line.Name == "Defense" ? 2 : -4;
+			yOffset = line.Name == "Damage" || line.Name == "Defense" || line.Name.StartsWith("Stat") ? 2 : -4;
 			return true;
 		}
 
@@ -104,6 +104,7 @@ partial class PoTGlobalItem
 	{
 		base.ModifyTooltips(item, tooltips);
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
+		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
 		TooltipLine setBonusLine = tooltips.FirstOrDefault(x => x.Name == "SetBonus");
 		TooltipLine nameLine = tooltips.FirstOrDefault(x => x.Name == "ItemName");
 
@@ -201,6 +202,8 @@ partial class PoTGlobalItem
 			var defenseLine = new TooltipLine(Mod, "Defense", $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"+{item.defense} Defense", baseColor: "DDDDDD"));
 			tooltips.Add(defenseLine);
 		}
+
+		tooltips.AddRange(oldStats);
 
 		// Affix tooltips
 		InsertAdditionalTooltipLines.Invoke(item, tooltips);

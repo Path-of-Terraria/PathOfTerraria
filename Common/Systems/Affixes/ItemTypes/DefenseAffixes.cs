@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Systems.BlockSystem;
+
+namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 internal class DefenseItemAffix : ItemAffix
 {
@@ -37,5 +39,13 @@ internal class ThornyArmorAffix : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.ReflectedDamageModifier += Value;
+	}
+}
+
+internal class IncreaseBlockAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetModPlayer<BlockPlayer>().MultiplyBlockChance(1 + Value / 100f);
 	}
 }
