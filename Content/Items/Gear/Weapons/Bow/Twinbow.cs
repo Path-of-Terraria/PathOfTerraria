@@ -23,6 +23,7 @@ internal class Twinbow : Bow
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = null;
+		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 
