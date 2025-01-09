@@ -52,3 +52,6 @@ PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% critical stri
 ChanceToApplyShockGearAffix.Description: "{1}{0}% to apply Shock"
 BuffShockedEffectAffix.Description: "{1}{0}% multiplier to Shock effect"
 IncreaseBlockAffix.Description: "{1}{0}% increased block chance"
+StrengthItemAffix.Description: "{1}{0} strength"
+DexterityItemAffix.Description: "{1}{0} dexterity"
+IntelligenceItemAffix.Description: "{1}{0} intelligence"
