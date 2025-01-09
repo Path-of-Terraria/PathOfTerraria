@@ -159,6 +159,6 @@ AddedStrengthPassive: {
 }
 
 AddedDexterityPassive: {
-	Name: AddedDexterityPassive
-	Tooltip: ""
+	Name: Nimble Feet
+	Tooltip: Adds +10 points to dexterity per level.
 }
