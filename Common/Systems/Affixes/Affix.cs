@@ -80,21 +80,44 @@ public abstract class Affix : ILocalizedModType
 		MinValue = reader.ReadSingle();
 	}
 
-	public static Affix CreateAffix<T>(float value = -1, float minValue = 0f, float maxValue = 1f)
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="value">The set value of the affix. Set to -1 if using minValue and maxValue</param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	public static Affix CreateAffix<T>(float value)
+	{
+		var instance = (Affix)Activator.CreateInstance(typeof(T));
+		
+		if (instance == null)
+		{
+			throw new Exception($"Could not create affix of type {typeof(T).Name}");
+		}
+		
+		instance.Value = value;
+		return instance;
+	}
+	
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="minValue">The minimum value of the roll range for the affix</param>
+	/// <param name="maxValue">The maximum value of the roll range for the affix</param>
+	/// <typeparam name="T"></typeparam>
+	/// <returns></returns>
+	public static Affix CreateAffix<T>(float minValue = 0f, float maxValue = 1f)
 	{
 		var instance = (Affix)Activator.CreateInstance(typeof(T));
 
+		if (instance == null)
+		{
+			throw new Exception($"Could not create affix of type {typeof(T).Name}");
+		}
+
 		instance.MinValue = minValue;
 		instance.MaxValue = maxValue;
-
-		if (value == -1)
-		{
-			instance.Roll();
-		}
-		else
-		{
-			instance.Value = value;
-		}
+		instance.Roll();
 
 		return instance;
 	}
@@ -199,7 +222,8 @@ internal class AffixHandler : ILoadable
 	public static List<ItemAffix> GetAffixes(Item item)
 	{
 		return _itemAffixes
-			.Where(proto => proto.RequiredInfluence == Influence.None || proto.RequiredInfluence == item.GetInstanceData().Influence)
+			.Where(proto => proto.RequiredInfluence == Influence.None ||
+			                proto.RequiredInfluence == item.GetInstanceData().Influence)
 			.Where(proto => (item.GetInstanceData().ItemType & proto.PossibleTypes) == item.GetInstanceData().ItemType)
 			.ToList();
 	}
@@ -217,7 +241,7 @@ internal class AffixHandler : ILoadable
 	public static int IndexFromItemAffix(Affix affix)
 	{
 		ItemAffix a = _itemAffixes.First(a => affix.GetType() == a.GetType());
-		
+
 		if (a is null)
 		{
 			return 0;

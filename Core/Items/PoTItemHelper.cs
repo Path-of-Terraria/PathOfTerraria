@@ -7,7 +7,6 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -62,40 +61,17 @@ public static class PoTItemHelper
 	public static void Roll(Item item, int itemLevel)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
-		PoTStaticItemData staticData = item.GetStaticData();
 
 		SetItemLevel.Invoke(item, itemLevel);
-
-		// Only level 50+ gear can get influence.
-		if (data.RealLevel > 50 && !staticData.IsUnique && (data.ItemType & ItemType.AllGear) == ItemType.AllGear)
-		{
-			// Quality does not affect influence right now.
-			// Might not need to, seems to generaet plenty often late game.
-			int inf = Main.rand.Next(400) - data.RealLevel;
-
-			if (inf < 30)
-			{
-				data.Influence = Main.rand.NextBool() ? Influence.Solar : Influence.Lunar;
-			}
-		}
 
 		RollAffixes(item);
 		PostRoll.Invoke(item);
 		data.SpecialName = GenerateName.Invoke(item);
 	}
 
-	public static void Reroll(Item item)
-	{
-		// TODO: Don't call ANY variant of SetDefaults here... please?
-		item.GetInstanceData().Affixes.Clear();
-		item.ModItem?.SetDefaults();
-		Roll(item, PickItemLevel());
-	}
-
 	private static void RollAffixes(Item item)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
-		PoTStaticItemData staticData = item.GetStaticData();
 
 		data.Affixes.Clear();
 		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
@@ -106,7 +82,7 @@ public static class PoTItemHelper
 			AddNewAffix(item, data);
 		}
 
-		List<ItemAffix> uniqueItemAffixes = GenerateImplicits.Invoke(item);
+		List<ItemAffix> uniqueItemAffixes = GenerateAffixes.Invoke(item);
 
 		foreach (ItemAffix affix in uniqueItemAffixes)
 		{
@@ -227,37 +203,36 @@ public static class PoTItemHelper
 
 	#endregion
 
-	// TODO: Un-hardcode?
 	public static int PickItemLevel()
 	{
 		if (NPC.downedMoonlord)
 		{
-			return Main.rand.Next(150, 201);
+			return 70;
 		}
 
 		if (NPC.downedAncientCultist)
 		{
-			return Main.rand.Next(110, 151);
+			return 65;
 		}
 
 		if (NPC.downedGolemBoss)
 		{
-			return Main.rand.Next(95, 131);
+			return 60;
 		}
 
 		if (NPC.downedPlantBoss)
 		{
-			return Main.rand.Next(80, 121);
+			return 55;
 		}
 
 		if (NPC.downedMechBossAny)
 		{
-			return Main.rand.Next(75, 111);
+			return 50;
 		}
 
 		if (Main.hardMode)
 		{
-			return 50;
+			return 45;
 		}
 
 		if (NPC.downedBoss3) //Skeletron
@@ -269,7 +244,7 @@ public static class PoTItemHelper
 		{
 			return 35;
 		}
-
+		
 		if (NPC.downedQueenBee)
 		{
 			return 30;

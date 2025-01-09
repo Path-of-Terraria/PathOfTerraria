@@ -11,8 +11,6 @@ internal class BeeMap : Map
 
 	public override void SetStaticDefaults()
 	{
-		base.SetStaticDefaults();
-
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
 	}

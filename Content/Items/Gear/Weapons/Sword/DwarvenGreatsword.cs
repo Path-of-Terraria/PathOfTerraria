@@ -11,12 +11,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class DwarvenGreatsword : Sword, GenerateName.IItem
 {
-	public int ItemLevel
-	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
-	}
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -46,12 +40,12 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		return Language.GetTextValue("Mods.PathOfTerraria.Items.DwarvenGreatsword.DisplayName");
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(0, 33, 33); // Add 33% damage
-		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(0, 50, 50); // Add 50% life
-		var kbAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>(0, 10, 10); // Add 10% kb
-		var shredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyArmorShredGearAffix>(0, 1, 1); // Add shred affix
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(33); // Add 33% damage
+		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(50); // Add 50% life
+		var kbAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>(10); // Add 10% kb
+		var shredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyArmorShredGearAffix>(1); // Add shred affix
 
 		return [sharpAffix, lifeAffix, kbAffix, shredAffix];
 	}

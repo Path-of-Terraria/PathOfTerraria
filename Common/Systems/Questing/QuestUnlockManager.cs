@@ -19,7 +19,7 @@ internal class QuestUnlockManager : ModSystem
 
 	public static bool CanStartQuest(string name)
 	{
-		return ModContent.GetInstance<QuestUnlockManager>().isAvailable[name];
+		return ModContent.GetInstance<QuestUnlockManager>().isAvailable[name] && Quest.GetLocalPlayerInstance(name).CanBeStarted;
 	}
 
 	public static bool LocationHasQuest(string location)

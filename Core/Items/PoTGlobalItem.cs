@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -11,12 +12,22 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 
 	// IMPORTANT: Called *after* ModItem::SetDefaults.
 	// https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/Core/GlobalLoaderUtils.cs#L20
-	public override void SetDefaults(Item entity)
+	public override void SetDefaults(Item item)
 	{
-		base.SetDefaults(entity);
+		base.SetDefaults(item);
+
+		PoTInstanceItemData data = item.GetInstanceData();
+		PoTStaticItemData staticData = item.GetStaticData();
 
 		// Makes Affixes use a new reference so that rerolling or updating Affixes in another instance doesn't share the reference
-		entity.GetInstanceData().Affixes = [];
+		data.Affixes = [];
+
+		if (staticData.IsUnique)
+		{
+			data.Rarity = ItemRarity.Unique;
+		}
+
+		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 	}
 
 	public override void UpdateEquip(Item item, Player player)

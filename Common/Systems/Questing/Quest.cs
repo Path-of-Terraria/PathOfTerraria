@@ -85,6 +85,13 @@ public abstract class Quest : ModType, ILocalizedModType
 		return QuestsByName[name];
 	}
 
+	/// <inheritdoc cref="GetSingleton(string)"/>
+	/// <typeparam name="T">The type of the quest to get.</typeparam>
+	public static Quest GetSingleton<T>() where T : Quest
+	{
+		return GetSingleton(ModContent.GetInstance<T>().FullName);
+	}
+
 	/// <summary>
 	/// Gets the actual instance of the given quest on the local player.
 	/// </summary>

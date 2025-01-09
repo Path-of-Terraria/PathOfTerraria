@@ -890,3 +890,38 @@ BrokenBookcaseItem: {
 	DisplayName: Broken Bookcase
 	Tooltip: ""
 }
+
+PlankShield: {
+	DisplayName: Plank Shield
+	Tooltip: ""
+}
+
+CrimsonBulwark: {
+	DisplayName: Crimson Bulwark
+	Tooltip: ""
+}
+
+ObsidianShell: {
+	DisplayName: Obsidian Shell
+	Tooltip: ""
+}
+
+ShadowBarrier: {
+	DisplayName: Shadow Barrier
+	Tooltip: ""
+}
+
+BronzeKiteshield: {
+	DisplayName: Bronze Kiteshield
+	Tooltip: ""
+}
+
+LeatherBuckler: {
+	DisplayName: Leather Buckler
+	Tooltip: ""
+}
+
+CorrodedTowerShield: {
+	DisplayName: Corroded Tower Shield
+	Tooltip: ""
+}

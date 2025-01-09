@@ -77,8 +77,8 @@ internal class CorruptShard : CurrencyShard
 	private static void AddAffix(PoTInstanceItemData data)
 	{
 		WeightedRandom<ItemAffix> affixes = new();
-		affixes.Add((ItemAffix)Affix.CreateAffix<FlatLifeAffix>(-1, 10, 20), 1);
-		affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(-1, 4, 6), 1);
+		affixes.Add((ItemAffix)Affix.CreateAffix<FlatLifeAffix>(10, 20), 1);
+		affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(4, 6), 1);
 		affixes.Add((ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(5), 0.01f);
 
 		ItemAffix chosenAffix = affixes.Get();

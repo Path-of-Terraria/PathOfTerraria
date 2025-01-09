@@ -44,3 +44,10 @@ TooltipNotices: {
 	Swap: If {0} is equipped:
 	Shift: (Hold shift to compare stats)
 }
+
+Biomes: {
+	RavencrestBiome: {
+		DisplayName: Ravencrest Biome
+		TownNPCDialogueName: the Ravencrest Biome
+	}
+}

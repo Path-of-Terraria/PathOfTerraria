@@ -21,6 +21,12 @@ StatUI: {
 	HealthPotions: Health Potions
 	ManaPotions: Mana Potions
 	DamageReduction: Damage Reduction
+	BlockChance: Block Chance
+	MaxBlock: Block Chance Cap
+	BlockCooldown: Block Cooldown
+	Strength: Strength
+	Dexterity: Dexterity
+	Intelligence: Intelligence
 }
 
 DropVisualizer: {

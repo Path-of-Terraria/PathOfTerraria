@@ -4,7 +4,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 internal class IronBattleaxe : Battleaxe
 {
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
