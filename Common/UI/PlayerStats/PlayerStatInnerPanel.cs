@@ -44,6 +44,8 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		BlockPlayer blockPlayer = Main.LocalPlayer.GetModPlayer<BlockPlayer>();
+		AttributesPlayer attributePlayer = Main.LocalPlayer.GetModPlayer<AttributesPlayer>();
+
 		string playerLine = Main.LocalPlayer.name;
 		Utils.DrawBorderStringBig(spriteBatch, playerLine, GetRectangle().Center() + new Vector2(0, -160), Color.White, 0.7f, 0.5f, 0.35f);
 
@@ -60,6 +62,9 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		DrawSingleStat(spriteBatch, $"{GetStatLocalization("BlockChance")}: {blockPlayer.BlockChance * 100:#0.##}%");
 		DrawSingleStat(spriteBatch, $"{GetStatLocalization("MaxBlock")}: {blockPlayer.MaxBlockChance * 100:#0.##}%");
 		DrawSingleStat(spriteBatch, $"{GetStatLocalization("BlockCooldown")}: {blockPlayer.BlockCooldown / 60:#0.##}s");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Strength")}: {attributePlayer.Strength:#0.##}");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Dexterity")}: {attributePlayer.Dexterity:#0.##}");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Intelligence")}: {attributePlayer.Intelligence:#0.##}");
 
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.LavenderBlush);
@@ -76,7 +81,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 	{
 		Texture2D chain = ChainTex.Value;
 		Texture2D tex = BackTex.Value;
-		Vector2 origin = GetRectangle().Center() + new Vector2(0, -20);
+		Vector2 origin = GetRectangle().Center() + new Vector2(0, -8);
 
 		for (int i = 0; i < 9; ++i)
 		{
@@ -104,7 +109,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 				Width = StyleDimension.FromPixels(60),
 				Height = StyleDimension.FromPixels(60),
 				HAlign = 0.5f,
-				Top = StyleDimension.FromPixels(60)
+				Top = StyleDimension.FromPixels(70)
 			};
 			Append(_drawDummy);
 			Recalculate();
@@ -140,7 +145,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 
 	private void DrawSingleStat(SpriteBatch spriteBatch, string text)
 	{
-		Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Center() + new Vector2(0, -20 + 30 * _offset), Color.White, 0.5f, 0.5f, 0.35f);
+		Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Center() + new Vector2(0, -30 + 27 * _offset), Color.White, 0.45f, 0.5f, 0.35f);
 		_offset++;
 	}
 
