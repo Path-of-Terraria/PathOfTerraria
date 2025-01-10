@@ -147,3 +147,18 @@ IncreasedBlockChancePassive: {
 	Name: Heavy Armor
 	Tooltip: +10% chance to block an attack per level.
 }
+
+AddedIntelligencePassive: {
+	Name: Highly Studied
+	Tooltip: Adds +10 points to intelligence per level.
+}
+
+AddedStrengthPassive: {
+	Name: Tough Workout
+	Tooltip: Adds +10 points to strength per level.
+}
+
+AddedDexterityPassive: {
+	Name: Nimble Feet
+	Tooltip: Adds +10 points to dexterity per level.
+}

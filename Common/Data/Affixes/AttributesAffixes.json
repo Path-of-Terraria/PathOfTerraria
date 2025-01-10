@@ -1,0 +1,128 @@
+[
+	{
+		"affixType": "DexterityItemAffix",
+		"equipTypes": "AllNoMap",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 9,
+				"minimumLevel": 9,
+				"weight": 1
+			},
+			{
+				"minValue": 10,
+				"maxValue": 15,
+				"minimumLevel": 18,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 23,
+				"minimumLevel": 25,
+				"weight": 1
+			},
+			{
+				"minValue": 24,
+				"maxValue": 30,
+				"minimumLevel": 34,
+				"weight": 1
+			},
+			{
+				"minValue": 31,
+				"maxValue": 37,
+				"minimumLevel": 45,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "StrengthItemAffix",
+		"equipTypes": "AllNoMap",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 9,
+				"minimumLevel": 9,
+				"weight": 1
+			},
+			{
+				"minValue": 10,
+				"maxValue": 15,
+				"minimumLevel": 18,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 23,
+				"minimumLevel": 25,
+				"weight": 1
+			},
+			{
+				"minValue": 24,
+				"maxValue": 30,
+				"minimumLevel": 34,
+				"weight": 1
+			},
+			{
+				"minValue": 31,
+				"maxValue": 37,
+				"minimumLevel": 45,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IntelligenceItemAffix",
+		"equipTypes": "AllNoMap",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 9,
+				"minimumLevel": 9,
+				"weight": 1
+			},
+			{
+				"minValue": 10,
+				"maxValue": 15,
+				"minimumLevel": 18,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 23,
+				"minimumLevel": 25,
+				"weight": 1
+			},
+			{
+				"minValue": 24,
+				"maxValue": 30,
+				"minimumLevel": 34,
+				"weight": 1
+			},
+			{
+				"minValue": 31,
+				"maxValue": 37,
+				"minimumLevel": 45,
+				"weight": 1
+			}
+		]
+	}
+]
