@@ -925,3 +925,8 @@ CorrodedTowerShield: {
 	DisplayName: Corroded Tower Shield
 	Tooltip: ""
 }
+
+WardensBow: {
+	DisplayName: Wardens Bow
+	Tooltip: ""
+}
