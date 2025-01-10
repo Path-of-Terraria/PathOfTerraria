@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Content.SkillPassives;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class SkillPassive(Skill skill)
+public abstract class SkillPassive
 {
-	public Skill Skill { get; set; } = skill;
+	public Skill Skill { get; set; } = null;
 	public virtual List<SkillPassive> Connections { get; set; }
 	public abstract int ReferenceId { get; }
-	public int Level;
 	public abstract Vector2 TreePos { get; }
-
 	public abstract int MaxLevel { get; }
 
 	public virtual string Name => GetType().Name;
@@ -29,10 +28,36 @@ public abstract class SkillPassive(Skill skill)
 	/// </summary>
 	public virtual string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Tooltip");
 
-	public abstract void LevelTo(byte level);
-	
+	public Vector2 Size
+	{
+		get
+		{
+			if (_size != Vector2.Zero)
+			{
+				return _size;
+			}
+
+			_size = StringUtils.GetSizeOfTexture($"Assets/SkillPassives/{Name}") ?? StringUtils.GetSizeOfTexture("Assets/UI/PassiveFrameSmall") ?? new Vector2();
+
+			return _size;
+		}
+	}
+
+	public int Level;
+
 	private Vector2 _size;
-	
+
+	public SkillPassive(Skill skill)
+	{
+		Skill = skill;
+
+		// Stops a StackOverflow since SkillPassiveAnchor is a child of SkillPassive, calls base()
+		if (this is not SkillPassiveAnchor)
+		{
+			Connections = [new SkillPassiveAnchor(skill)];
+		}
+	}
+
 	public void Draw(SpriteBatch spriteBatch, Vector2 center)
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
@@ -61,21 +86,8 @@ public abstract class SkillPassive(Skill skill)
 			Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", center + Size / 2f, color, 1, 0.5f, 0.5f);
 		}
 	}
-	
-	public Vector2 Size
-	{
-		get
-		{
-			if (_size != Vector2.Zero)
-			{
-				return _size;
-			}
 
-			_size = StringUtils.GetSizeOfTexture($"Assets/SkillPassives/{Name}") ?? StringUtils.GetSizeOfTexture("Assets/UI/PassiveFrameSmall") ?? new Vector2();
-				
-			return _size;
-		}
-	}
+	public abstract void LevelTo(byte level);
 
 	protected void IncreaseLevel()
 	{
@@ -112,6 +124,11 @@ public abstract class SkillPassive(Skill skill)
 
 	internal static bool AnyBlockers(SkillPassive skill)
 	{
+		if (skill is SkillPassiveAnchor)
+		{
+			return false;
+		}
+
 		foreach (KeyValuePair<string, SkillPassiveBlocker> blocker in SkillPassiveBlocker.LoadedBlockers)
 		{
 			if (blocker.Value.BlockAllocation(skill))
