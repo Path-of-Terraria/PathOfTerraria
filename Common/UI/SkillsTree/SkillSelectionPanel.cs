@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.Localization;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
@@ -53,7 +54,7 @@ internal class SkillSelectionPanel : SmartUiElement
 
 		if (SelectedSkill.Passives.Count == 0)
 		{
-			Main.NewText("This skill has no passives.");
+			Main.NewText(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.NoPassives"));
 			return;
 		}
 
@@ -73,7 +74,7 @@ internal class SkillSelectionPanel : SmartUiElement
 			_skillTreeInnerPanel.Append(new SkillPassiveElement(n));
 		}
 
-		UIButton<string> closeButton = new("Back")
+		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))
 		{
 			Width = StyleDimension.FromPixels(80),
 			Height = StyleDimension.FromPixels(30),
