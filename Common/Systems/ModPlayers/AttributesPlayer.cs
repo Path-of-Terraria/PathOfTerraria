@@ -1,6 +1,6 @@
 ﻿namespace PathOfTerraria.Common.Systems.ModPlayers;
 
-internal class AttributesPlayer : ModPlayer
+public class AttributesPlayer : ModPlayer
 {
 	public int LifeBoost => Strength / 10 * 5;
 	public float UseSpeedBoost => Dexterity / 1000f;
