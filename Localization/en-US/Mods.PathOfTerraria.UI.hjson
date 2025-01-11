@@ -40,3 +40,8 @@ DropVisualizer: {
 	SortBy: "Sort by: "
 	UniqueItem: (Unique Item)
 }
+
+SkillUI: {
+	Back: Back
+	NoPassives: This skill has no passives.
+}

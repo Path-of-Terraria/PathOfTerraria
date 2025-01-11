@@ -67,7 +67,7 @@ public class SkillPassivePlayer : ModPlayer
 			return; // Anchor passive cannot be unallocated
 		}
 		
-		if (AllocatedPassives.TryGetValue(skill, out Dictionary<string, SkillPassive> value) && value.ContainsValue(passive))
+		if (AllocatedPassives.TryGetValue(skill, out Dictionary<string, SkillPassive> value) && value.ContainsKey(passive.Name))
 		{
 			value.Remove(passive.Name);
 			AllocatedPassivePoints[skill]--;
