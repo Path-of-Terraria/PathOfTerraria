@@ -60,6 +60,7 @@ public class MobRegistry : ILoadable
                 Console.WriteLine($"{myModInstance.Name}/{npcName} not found in ModContent");
                 continue;
             }
+            
             // Add the associated data into the Mob Registry
             if (!_mobData.TryAdd(idValue, data))
             {
