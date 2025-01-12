@@ -4,12 +4,13 @@ using PathOfTerraria.Content.Items.Gear.Rings;
 
 namespace PathOfTerraria.Common.UI.Armor;
 
-public sealed class InventorySlotGlobalItem : GlobalItem
+public sealed class AccessorySlotGlobalItem : GlobalItem
 {
 	public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)
 	{
-		bool result = false;
+		bool result = true;
 
+		// TODO: Maybe create constants for those magic numbers?
 		switch (slot)
 		{
 			case 4:
@@ -24,13 +25,6 @@ public sealed class InventorySlotGlobalItem : GlobalItem
 			case 7:
 			case 8:
 				result = item.ModItem is Ring;
-				break;
-			case 14:
-			case 15:
-			case 16:
-			case 17:
-			case 18:
-				result = true;
 				break;
 		}
 

@@ -63,7 +63,7 @@ public sealed class UIDyeArmor : UIArmorPage
 		var chest = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 1, ItemSlot.Context.EquipDye)
 		{
 			HAlign = 0.5f,
-			VAlign = 0.5f,
+			VAlign = 0.33f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -78,7 +78,7 @@ public sealed class UIDyeArmor : UIArmorPage
 		var offhand = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 6, ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
-			VAlign = 0.5f,
+			VAlign = 0.33f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -93,7 +93,7 @@ public sealed class UIDyeArmor : UIArmorPage
 		var leftRing = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 7, ItemSlot.Context.EquipDye)
 		{
 			HAlign = 0f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -104,11 +104,11 @@ public sealed class UIDyeArmor : UIArmorPage
 		leftRing.Predicate = (item, _) => item.dye > 0;
 
 		Append(leftRing);
-
+		
 		var legs = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 2, ItemSlot.Context.EquipDye)
 		{
 			HAlign = 0.5f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -123,7 +123,7 @@ public sealed class UIDyeArmor : UIArmorPage
 		var rightRing = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 8, ItemSlot.Context.EquipDye)
 		{
 			HAlign = 1f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -134,5 +134,30 @@ public sealed class UIDyeArmor : UIArmorPage
 		rightRing.Predicate = (item, _) => item.dye > 0;
 
 		Append(rightRing);
+		
+		var leftMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.armor, 9, ItemSlot.Context.EquipAccessory)
+		{
+			VAlign = 1f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+		
+		leftMiscellaneous.OnMouseOver += UpdateMouseOver;
+		leftMiscellaneous.OnMouseOut += UpdateMouseOut;
+		
+		Append(leftMiscellaneous);
+		
+		var middleMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.armor, 3, ItemSlot.Context.EquipAccessory)
+		{
+			HAlign = 0.5f,
+			VAlign = 1f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+		
+		middleMiscellaneous.OnMouseOver += UpdateMouseOver;
+		middleMiscellaneous.OnMouseOut += UpdateMouseOut;
+		
+		Append(middleMiscellaneous);
 	}
 }

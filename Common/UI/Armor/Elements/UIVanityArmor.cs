@@ -61,7 +61,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		var chest = new UIHoverImageItemSlot(VanityFrameTexture, ChestIconTexture, ref Player.armor, 11, ItemSlot.Context.EquipArmorVanity)
 		{
 			HAlign = 0.5f,
-			VAlign = 0.5f,
+			VAlign = 0.33f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -76,7 +76,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		var offhand = new UIHoverImageItemSlot(VanityFrameTexture, OffhandIconTexture, ref Player.armor, 16, ItemSlot.Context.EquipAccessoryVanity)
 		{
 			HAlign = 1f,
-			VAlign = 0.5f,
+			VAlign = 0.33f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -91,7 +91,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		var leftRing = new UIHoverImageItemSlot(VanityFrameTexture, RingIconTexture, ref Player.armor, 17, ItemSlot.Context.EquipAccessoryVanity)
 		{
 			HAlign = 0f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -106,7 +106,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		var legs = new UIHoverImageItemSlot(VanityFrameTexture, LegsIconTexture, ref Player.armor, 12, ItemSlot.Context.EquipArmorVanity)
 		{
 			HAlign = 0.5f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -121,7 +121,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		var rightRing = new UIHoverImageItemSlot(VanityFrameTexture, RingIconTexture, ref Player.armor, 18, ItemSlot.Context.EquipAccessoryVanity)
 		{
 			HAlign = 1f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -132,5 +132,30 @@ public sealed class UIVanityArmor : UIArmorPage
 		rightRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 
 		Append(rightRing);
+		
+		var leftMiscellaneous = new UIHoverImageItemSlot(VanityFrameTexture, MiscellaneousIconTexture, ref Player.armor, 9, ItemSlot.Context.EquipAccessory)
+		{
+			VAlign = 1f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+		
+		leftMiscellaneous.OnMouseOver += UpdateMouseOver;
+		leftMiscellaneous.OnMouseOut += UpdateMouseOut;
+		
+		Append(leftMiscellaneous);
+		
+		var middleMiscellaneous = new UIHoverImageItemSlot(VanityFrameTexture, MiscellaneousIconTexture, ref Player.armor, 3, ItemSlot.Context.EquipAccessory)
+		{
+			HAlign = 0.5f,
+			VAlign = 1f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+		
+		middleMiscellaneous.OnMouseOver += UpdateMouseOver;
+		middleMiscellaneous.OnMouseOut += UpdateMouseOut;
+		
+		Append(middleMiscellaneous);
 	}
 }
