@@ -1,5 +1,6 @@
 using ReLogic.Graphics;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Terraria.GameContent;
 using Terraria.GameContent.UI;
@@ -261,11 +262,23 @@ internal sealed class NewHotbar : SmartUiState
 		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
 		{
 			string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
+			
 			Tooltip.SetName(skill.DisplayName.Value + " " + level);
 
+			string noKeybindMessage = "No keybind detected";
+
+			string keybind = skillIndex switch
+			{
+				0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault(), false, out string firstSkillKeybind) ? firstSkillKeybind : noKeybindMessage,
+				1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault(), false, out string secondSkillKeybind) ? secondSkillKeybind : noKeybindMessage,
+				2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault(), false, out string thirdSkillKeybind) ? thirdSkillKeybind : noKeybindMessage,
+				_ => ""
+			};
+			
 			string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.ManaCost).Value;
 			string weapon = Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value;
-			string tooltip = skill.Description.Value + $"\n{manaCost}\n{weapon}";
+			
+			string tooltip = $"(Press \"{keybind}\" to use)\n{skill.Description.Value}\n{manaCost}\n{weapon}";
 
 			if (skill.Duration != 0)
 			{
@@ -274,6 +287,7 @@ internal sealed class NewHotbar : SmartUiState
 			}
 
 			string cooldown = Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value;
+			
 			tooltip += "\n" + cooldown;
 
 			Tooltip.SetTooltip(tooltip);
@@ -356,25 +370,52 @@ internal sealed class NewHotbar : SmartUiState
 		string skill2Key = SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault();
 		string skill3Key = SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault();
 
-		if (!string.IsNullOrEmpty(skill1Key))
+		if (TryGetKeybindName(skill1Key, true, out string skill1KeybindName))
 		{
-			DrawLetter(spriteBatch, skill1Key.Replace("D", ""), new Vector2(285, 71 + off), Color.White);
+			DrawLetter(spriteBatch, skill1KeybindName, new Vector2(285, 71 + off), Color.White, 0.35f);
 		}
 
-		if (!string.IsNullOrEmpty(skill2Key))
+		if (TryGetKeybindName(skill2Key, true, out string skill2KeybindName))
 		{
-			DrawLetter(spriteBatch, skill2Key.Replace("D", ""), new Vector2(338, 71 + off), Color.White);
+			DrawLetter(spriteBatch, skill2KeybindName, new Vector2(338, 71 + off), Color.White, 0.35f);
 		}
 
-		if (!string.IsNullOrEmpty(skill3Key))
+		if (TryGetKeybindName(skill3Key, true, out string skill3KeybindName))
 		{
-			DrawLetter(spriteBatch, skill3Key.Replace("D", ""), new Vector2(390, 71 + off), Color.White);
+			DrawLetter(spriteBatch, skill3KeybindName, new Vector2(390, 71 + off), Color.White, 0.35f);
 		}
 	}
 
-	private void DrawLetter(SpriteBatch spriteBatch, string letter, Vector2 position, Color color)
+	private void DrawLetter(SpriteBatch spriteBatch, string letter, Vector2 position, Color color, float scale = 0.43f)
 	{
-		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, _font, letter, position, color, 0f, Vector2.Zero, new Vector2(0.43f));
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, _font, letter, position, color, 0f, Vector2.Zero, new Vector2(scale));
+	}
+	
+	private static bool TryGetKeybindName(string name, bool trim, [NotNullWhen(true)] out string result)
+	{
+		result = null;
+		
+		if (string.IsNullOrEmpty(name))
+		{
+			return false;
+		}
+
+		// Remove 'D' from numerical keybinds. "D1" -> "1"
+		if (name[0] == 'D' && int.TryParse(name[1].ToString(), out _))
+		{
+			name = name.Remove(0, 1);
+		}
+
+		if (trim)
+		{
+			result = name.Length > 1 ? $"{name[0]}.." : name[0].ToString();
+		}
+		else
+		{
+			result = name;
+		}
+		
+		return true;
 	}
 
 	/// <summary>
