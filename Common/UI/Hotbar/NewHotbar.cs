@@ -276,7 +276,13 @@ internal sealed class NewHotbar : SmartUiState
 			};
 			
 			string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.ManaCost).Value;
+
 			string weapon = Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value;
+
+			if (skill.WeaponType > ItemID.None)
+			{
+				weapon = Language.GetText("Mods.PathOfTerraria.Skills.NoWeaponLine").Value;
+			}
 			
 			string tooltip = $"(Press \"{keybind}\" to use)\n{skill.Description.Value}\n{manaCost}\n{weapon}";
 
