@@ -930,3 +930,8 @@ WardensBow: {
 	DisplayName: Wardens Bow
 	Tooltip: ""
 }
+
+RootedAmulet: {
+	DisplayName: Rooted Amulet
+	Tooltip: ""
+}

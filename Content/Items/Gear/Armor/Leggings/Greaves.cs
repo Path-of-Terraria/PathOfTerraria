@@ -9,7 +9,7 @@ internal class Greaves : Leggings
 {
 	public override List<ItemAffix> GenerateImplicits()
 	{
-		return [(ItemAffix)Affix.CreateAffix<MovementSpeed>(0.5f)];
+		return [(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(0.5f)];
 	}
 
 	public override void PostRoll()

@@ -450,7 +450,7 @@
 		]
 	},
 	{
-		"affixType": "MovementSpeed",
+		"affixType": "MovementSpeedAffix",
 		"equipTypes": "Armor",
 		"tiers": [
 			{
