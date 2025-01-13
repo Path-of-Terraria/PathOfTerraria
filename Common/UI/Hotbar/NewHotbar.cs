@@ -265,7 +265,7 @@ internal sealed class NewHotbar : SmartUiState
 			
 			Tooltip.SetName(skill.DisplayName.Value + " " + level);
 
-			string noKeybindMessage = "No keybind detected";
+			string noKeybindMessage = Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value;
 
 			string keybind = skillIndex switch
 			{
@@ -283,8 +283,10 @@ internal sealed class NewHotbar : SmartUiState
 			{
 				weapon = Language.GetText("Mods.PathOfTerraria.Skills.NoWeaponLine").Value;
 			}
+
+			string indicator = Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybind).Value;
 			
-			string tooltip = $"(Press \"{keybind}\" to use)\n{skill.Description.Value}\n{manaCost}\n{weapon}";
+			string tooltip = $"{indicator}\n{skill.Description.Value}\n{manaCost}\n{weapon}";
 
 			if (skill.Duration != 0)
 			{

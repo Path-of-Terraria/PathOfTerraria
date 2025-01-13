@@ -3,8 +3,10 @@ LevelLine: (Level {0}/{1})
 ManaLine: Costs {0} mana
 WeaponLine: Must use a {0} weapon
 NoWeaponLine: No weapon required
+NoKeybindLine: No keybind detected
 DurationLine: Lasts {0} seconds
 CooldownLine: "{0} second cooldown"
+KeybindLine: Press {0} to use
 
 # These are the actual localization lines for skills.
 Nova: {
