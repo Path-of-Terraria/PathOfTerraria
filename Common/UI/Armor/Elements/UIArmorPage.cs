@@ -22,6 +22,8 @@ public abstract class UIArmorPage : UIElement
 	public static readonly Asset<Texture2D> NecklaceIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Necklace", AssetRequestMode.ImmediateLoad);
 
 	public static readonly Asset<Texture2D> WingsIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Wings", AssetRequestMode.ImmediateLoad);
+	
+	public static readonly Asset<Texture2D> MiscellaneousIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Miscellaneous", AssetRequestMode.ImmediateLoad);
 
 	protected static Player Player => Main.LocalPlayer;
 

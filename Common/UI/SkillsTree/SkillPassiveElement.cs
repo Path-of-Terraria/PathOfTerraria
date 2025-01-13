@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
+using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -10,12 +11,12 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 
 internal class SkillPassiveElement : SmartUiElement
 {
+	private static TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
+
 	private readonly SkillPassive _passive;
 
 	private int _flashTimer;
 	private int _redFlashTimer;
-
-	private TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
 	
 	public SkillPassiveElement(SkillPassive passive)
 	{
@@ -47,6 +48,17 @@ internal class SkillPassiveElement : SmartUiElement
 		Top.Set(passive.TreePos.Y - halfSizeY, 0.5f);
 		Width.Set(passive.Size.X, 0);
 		Height.Set(passive.Size.Y, 0);
+
+		SkillPassivePlayer passivePlayer = Main.LocalPlayer.GetModPlayer<SkillPassivePlayer>();
+
+		if (passivePlayer.AllocatedPassives.TryGetValue(_passive.Skill, out Dictionary<string, SkillPassive> passives))
+		{
+			if (passives.ContainsKey(_passive.Name))
+			{
+				_passive.OnAllocate();
+				_passive.Level++;
+			}
+		}
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
