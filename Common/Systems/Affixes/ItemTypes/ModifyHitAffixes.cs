@@ -94,3 +94,11 @@ internal class ChanceToApplyShockGearAffix : ItemAffix
 internal class BuffShockedEffectAffix : ItemAffix
 {
 }
+
+internal class ChanceToApplyRootedGearAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.Buffer.Add(ModContent.BuffType<RootedDebuff>(), Duration, Value * 0.01f);
+	}
+}

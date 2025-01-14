@@ -89,11 +89,7 @@ public class AffixTooltipsHandler
 		{
 			return AffixTooltip.AffixSource.Wings;
 		}
-		else if (source.accessory)
-		{
-			return AffixTooltip.AffixSource.Necklace;
-		}
-		else if (source.neckSlot > 0)
+		else if (source.accessory || source.neckSlot > 0)
 		{
 			return AffixTooltip.AffixSource.Necklace;
 		}
