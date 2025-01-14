@@ -74,7 +74,7 @@ public static class PoTItemHelper
 		PoTInstanceItemData data = item.GetInstanceData();
 
 		data.Affixes.Clear();
-		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
+		data.Affixes.AddRange(GenerateImplicits.Invoke(item));
 		data.ImplicitCount = data.Affixes.Count;
 
 		for (int i = 0; i < GetAffixCount(item); i++)
