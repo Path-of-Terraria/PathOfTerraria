@@ -5,8 +5,6 @@ namespace PathOfTerraria.Core.Items;
 
 internal sealed partial class PoTGlobalItem : GlobalItem
 {
-	private static bool HasUsedTheFuckingRoot = false;
-
 	public override void Load()
 	{
 		LoadBackImages();

@@ -18,7 +18,7 @@ public class RootedAmulet : VigorAmulet
 	{
 		var strengthAffix = (ItemAffix)Affix.CreateAffix<StrengthItemAffix>(15f, 25f);
 		var moveAffix = (ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(3, 5);
-		var rootedAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyRootedGearAffix>(3, 5);
+		var rootedAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyRootedGearAffix>(322, 522);
 
 		return [strengthAffix, moveAffix, rootedAffix];
 	}
