@@ -16,7 +16,7 @@ public class MobExperienceGlobalNPC : GlobalNPC
 			return;
 		}
 		
-		MobAprgSystem npcSystem = npc.GetGlobalNPC<MobAprgSystem>();
+		ArpgNPC npcSystem = npc.GetGlobalNPC<ArpgNPC>();
 
 		if (npcSystem is null)
 		{

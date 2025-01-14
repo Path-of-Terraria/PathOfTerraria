@@ -9,14 +9,13 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 
-internal class MobAprgSystem : GlobalNPC
+internal class ArpgNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
 
@@ -63,18 +62,18 @@ internal class MobAprgSystem : GlobalNPC
 	public override bool PreAI(NPC npc)
 	{
 		bool doRunNormalAi = true;
-		_affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAi(npc));
+		_affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAI(npc));
 		return doRunNormalAi;
 	}
 
 	public override void AI(NPC npc)
 	{
-		_affixes.ForEach(a => a.Ai(npc));
+		_affixes.ForEach(a => a.AI(npc));
 	}
 
 	public override void PostAI(NPC npc)
 	{
-		_affixes.ForEach(a => a.PostAi(npc));
+		_affixes.ForEach(a => a.PostAI(npc));
 	}
 
 	public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -258,5 +257,18 @@ internal class MobAprgSystem : GlobalNPC
 		{
 			ApplyRarity(npc);
 		}
+	}
+
+	public bool HasAffix<T>() where T : MobAffix
+	{
+		foreach (MobAffix affix in _affixes)
+		{
+			if (affix.GetType() == typeof(T))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

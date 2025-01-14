@@ -16,24 +16,24 @@ internal abstract class MobAffix : Affix
 	public virtual float DropRarityMultiplier => 1f;
 
 	/// <summary>
-	/// after the rarity buff has been applied
+	/// Runs after the rarity buff has been applied.
 	/// </summary>
 	public virtual void PostRarity(NPC npc) { }
 
 	/// <summary>
-	/// before the rarity buff has been applied
+	/// Runs before the rarity buff has been applied.
 	/// </summary>
 	public virtual void PreRarity(NPC npc) { }
 
-	public virtual bool PreAi(NPC npc) { return true; }
-	public virtual void Ai(NPC npc) { }
-	public virtual void PostAi(NPC npc) { }
+	public virtual bool PreAI(NPC npc) { return true; }
+	public virtual void AI(NPC npc) { }
+	public virtual void PostAI(NPC npc) { }
 	public virtual bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) { return true; }
 	public virtual void OnKill(NPC npc) { }
 	public virtual bool PreKill(NPC npc) { return true; }
 
 	/// <summary>
-	/// Generates an affix from a tag, used on load to re-populate affixes
+	/// Generates an affix from a tag, used on load to re-populate affixes.
 	/// </summary>
 	/// <param name="tag"></param>
 	/// <returns></returns>
