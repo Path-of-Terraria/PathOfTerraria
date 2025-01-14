@@ -925,3 +925,13 @@ CorrodedTowerShield: {
 	DisplayName: Corroded Tower Shield
 	Tooltip: ""
 }
+
+RunestoneItem: {
+	DisplayName: Runestone Item
+	Tooltip: ""
+}
+
+PoweredRunestoneItem: {
+	DisplayName: Powered Runestone Item
+	Tooltip: ""
+}
