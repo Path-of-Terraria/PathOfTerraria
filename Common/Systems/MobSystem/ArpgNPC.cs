@@ -247,7 +247,7 @@ internal class ArpgNPC : GlobalNPC
 			_ => typeName
 		};
 
-		npc.GivenName = GetAffixPrefixes(npc) + npc.GivenName;
+		npc.GivenName += "\n" + GetAffixPrefixes(npc);
 
 		return typeName;
 	}
@@ -259,7 +259,7 @@ internal class ArpgNPC : GlobalNPC
 
 		foreach (MobAffix affix in affixes)
 		{
-			 prefix += affix.Prefix + " ";
+			 prefix += affix.Prefix + " - ";
 		}
 
 		return prefix;
