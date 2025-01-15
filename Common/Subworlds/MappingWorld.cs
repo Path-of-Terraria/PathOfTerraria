@@ -2,13 +2,14 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
+using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
 /// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.<br/>
-/// Additionally, it also makes <see cref="Systems.DisableBuilding.StopBuildingPlayer"/> disable world modification.
+/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification.
 /// </summary>
 public abstract class MappingWorld : Subworld
 {
@@ -38,5 +39,14 @@ public abstract class MappingWorld : Subworld
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
 	{
+	}
+
+#pragma warning disable IDE0060 // Remove unused parameter
+	protected static void ResetStep(GenerationProgress progress, GameConfiguration configuration)
+#pragma warning restore IDE0060 // Remove unused parameter
+	{
+		WorldGenerator.CurrentGenerationProgress = progress;
+		Main.ActiveWorldFileData.SetSeedToRandom();
+		GenVars.structures = new();
 	}
 }

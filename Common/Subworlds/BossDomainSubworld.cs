@@ -33,15 +33,6 @@ public abstract class BossDomainSubworld : MappingWorld
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
 
-#pragma warning disable IDE0060 // Remove unused parameter
-	protected static void ResetStep(GenerationProgress progress, GameConfiguration configuration)
-#pragma warning restore IDE0060 // Remove unused parameter
-	{
-		WorldGenerator.CurrentGenerationProgress = progress;
-		Main.ActiveWorldFileData.SetSeedToRandom();
-		GenVars.structures = new();
-	}
-
 	public override void OnEnter()
 	{
 		base.OnEnter();

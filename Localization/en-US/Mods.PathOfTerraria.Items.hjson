@@ -935,3 +935,8 @@ PoweredRunestoneItem: {
 	DisplayName: Powered Runestone Item
 	Tooltip: ""
 }
+
+ForestMap: {
+	DisplayName: Forest Map
+	Tooltip: ""
+}
