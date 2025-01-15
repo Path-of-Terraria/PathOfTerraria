@@ -23,9 +23,9 @@ internal class BurningRedBoots : Leggings, GenerateName.IItem
 	{
 		return
 		[
-			(ItemAffix)Affix.CreateAffix<MovementSpeed>(),
-			(ItemAffix)Affix.CreateAffix<MovementSpeed>(),
-			(ItemAffix)Affix.CreateAffix<MovementSpeed>()
+			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(),
+			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(),
+			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>()
 		];
 	}
 

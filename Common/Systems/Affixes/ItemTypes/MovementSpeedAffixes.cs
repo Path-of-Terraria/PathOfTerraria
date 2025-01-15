@@ -1,6 +1,6 @@
 ﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class MovementSpeed : ItemAffix
+internal class MovementSpeedAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{

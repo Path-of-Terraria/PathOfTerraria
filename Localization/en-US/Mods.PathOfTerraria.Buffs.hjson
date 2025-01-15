@@ -32,3 +32,8 @@ ShockDebuff: {
 	DisplayName: Shock
 	Description: 10% increased damage taken
 }
+
+RootedDebuff: {
+	DisplayName: Rooted Debuff
+	Description: Mods.PathOfTerraria.Buffs.RootedDebuff.Description
+}

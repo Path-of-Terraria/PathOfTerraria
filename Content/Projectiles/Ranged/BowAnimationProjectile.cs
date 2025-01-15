@@ -104,7 +104,7 @@ internal class BowAnimationProjectile : ModProjectile
 		damage = (int)(damage * 3f);
 		Vector2 vel = Projectile.DirectionTo(Main.MouseWorld) * speed * 1.5f;
 		IEntitySource src = Owner.GetSource_ItemUse_WithPotentialAmmo(Owner.HeldItem, ammoUsed);
-		Projectile.NewProjectile(src, Projectile.Center, vel, ProjectileID.WoodenArrowFriendly, damage, kB, Owner.whoAmI);
+		Projectile.NewProjectile(src, Projectile.Center, vel, type, damage, kB, Owner.whoAmI);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
