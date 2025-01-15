@@ -89,7 +89,7 @@ public class AffixTooltipsHandler
 		{
 			return AffixTooltip.AffixSource.Wings;
 		}
-		else if (source.accessory)
+		else if (source.accessory || source.neckSlot > 0)
 		{
 			return AffixTooltip.AffixSource.Necklace;
 		}
@@ -259,7 +259,7 @@ public class AffixTooltipsHandler
 		}
 	}
 
-	private static int AddSingleTooltipLine(List<TooltipLine> tooltips, ref int tipNum, KeyValuePair<Type, AffixTooltip> tip)
+	private static void AddSingleTooltipLine(List<TooltipLine> tooltips, ref int tipNum, KeyValuePair<Type, AffixTooltip> tip)
 	{
 		string text = $"[i:{ItemID.MusketBall}] " + tip.Value.Get();
 
@@ -267,10 +267,9 @@ public class AffixTooltipsHandler
 		{
 			OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
 		});
-		return tipNum;
 	}
 
-	private IEnumerable<KeyValuePair<Type, AffixTooltip>> CreateStandaloneTooltips(Item item)
+	private Dictionary<Type, AffixTooltip> CreateStandaloneTooltips(Item item)
 	{
 		Tooltips.Clear();
 		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer);
