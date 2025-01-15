@@ -285,6 +285,8 @@ internal class AffixHandler : ILoadable
 					continue;
 				case MobAffix mobAffix:
 					_mobAffixes.Add(mobAffix);
+
+					MobAffix.MobAffixIconsByAffixName[mobAffix.GetType().AssemblyQualifiedName] = ModContent.Request<Texture2D>(mobAffix.TexturePath);
 					break;
 			}
 		}

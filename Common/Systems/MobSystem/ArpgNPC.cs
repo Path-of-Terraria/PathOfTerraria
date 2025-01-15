@@ -21,10 +21,10 @@ internal class ArpgNPC : GlobalNPC
 
 	public int? Experience;
 	public ItemRarity Rarity = ItemRarity.Normal;
+	public List<MobAffix> Affixes = [];
 
 	private readonly Player _lastPlayerHit = null;
 
-	private List<MobAffix> _affixes = [];
 	private bool _synced = false;
 
 	// should somehow work together with magic find (that i assume we will have) to increase rarity / if its a unique
@@ -33,8 +33,8 @@ internal class ArpgNPC : GlobalNPC
 		get
 		{
 			float dropRarity = 0;
-			_affixes.ForEach(a => dropRarity += a.DropRarityFlat);
-			_affixes.ForEach(a => dropRarity *= a.DropRarityMultiplier);
+			Affixes.ForEach(a => dropRarity += a.DropRarityFlat);
+			Affixes.ForEach(a => dropRarity *= a.DropRarityMultiplier);
 			return dropRarity; // rounds down iirc
 		}
 	}
@@ -53,8 +53,8 @@ internal class ArpgNPC : GlobalNPC
 		get
 		{
 			float dropQuantity = 1;
-			_affixes.ForEach(a => dropQuantity += a.DropQuantityFlat);
-			_affixes.ForEach(a => dropQuantity *= a.DropQuantityMultiplier);
+			Affixes.ForEach(a => dropQuantity += a.DropQuantityFlat);
+			Affixes.ForEach(a => dropQuantity *= a.DropQuantityMultiplier);
 			return dropQuantity;
 		}
 	}
@@ -62,30 +62,30 @@ internal class ArpgNPC : GlobalNPC
 	public override bool PreAI(NPC npc)
 	{
 		bool doRunNormalAi = true;
-		_affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAI(npc));
+		Affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAI(npc));
 		return doRunNormalAi;
 	}
 
 	public override void AI(NPC npc)
 	{
-		_affixes.ForEach(a => a.AI(npc));
+		Affixes.ForEach(a => a.AI(npc));
 	}
 
 	public override void PostAI(NPC npc)
 	{
-		_affixes.ForEach(a => a.PostAI(npc));
+		Affixes.ForEach(a => a.PostAI(npc));
 	}
 
 	public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		bool doDraw = true;
-		_affixes.ForEach(a => doDraw = doDraw && a.PreDraw(npc, spriteBatch, screenPos, drawColor));
+		Affixes.ForEach(a => doDraw = doDraw && a.PreDraw(npc, spriteBatch, screenPos, drawColor));
 		return doDraw;
 	}
 
 	public override void OnKill(NPC npc)
 	{
-		_affixes.ForEach(a => a.OnKill(npc));
+		Affixes.ForEach(a => a.OnKill(npc));
 
 		if (npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss)
 		{
@@ -123,11 +123,11 @@ internal class ArpgNPC : GlobalNPC
 	public override bool PreKill(NPC npc)
 	{
 		bool doKill = true;
-		_affixes.ForEach(a => doKill = doKill && a.PreKill(npc));
+		Affixes.ForEach(a => doKill = doKill && a.PreKill(npc));
 		return doKill;
 	}
 
-	public override void SetDefaultsFromNetId(NPC npc)
+	public override void SetDefaults(NPC npc)
 	{
 		//We only want to trigger these changes on hostile non-boss, non Eater of Worlds mobs in-game
 		if (npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail)
@@ -160,18 +160,14 @@ internal class ArpgNPC : GlobalNPC
 		}
 	}
 
+	public override void SetDefaultsFromNetId(NPC npc)
+	{
+		SetName(npc);
+	}
+
 	public void ApplyRarity(NPC npc)
 	{
-		// npc.TypeName uses only the netID, which is not set by SetDefaults...for some reason.
-		// This works the same, just using type if netID isn't helpful.
-		string typeName = NPCLoader.ModifyTypeName(npc, Lang.GetNPCNameValue(npc.netID == 0 ? npc.type : npc.netID));
-
-		npc.GivenName = Rarity switch
-		{
-			ItemRarity.Magic or ItemRarity.Rare => $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.RarityNames." + Enum.GetName(Rarity))} {typeName}",
-			ItemRarity.Unique => "UNIQUE MOB",
-			_ => typeName
-		};
+		string typeName = SetName(npc);
 
 		if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 		{
@@ -201,14 +197,14 @@ internal class ArpgNPC : GlobalNPC
 		}
 
 		List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
-		_affixes = Rarity switch
+
+		Affixes = Rarity switch
 		{
-			ItemRarity.Magic => Affix.GenerateAffixes(possible, PoTItemHelper.GetAffixCount(Rarity)),
-			ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTItemHelper.GetAffixCount(Rarity)),
+			ItemRarity.Magic or ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTItemHelper.GetMaxMobAffixCounts(Rarity)),
 			_ => []
 		};
 
-		_affixes.ForEach(a => a.PreRarity(npc));
+		Affixes.ForEach(a => a.PreRarity(npc));
 
 		switch (Rarity)
 		{
@@ -232,8 +228,41 @@ internal class ArpgNPC : GlobalNPC
 				throw new InvalidOperationException("Invalid rarity!");
 		}
 
-		_affixes.ForEach(a => a.PostRarity(npc));
+		SetName(npc);
+
+		Affixes.ForEach(a => a.PostRarity(npc));
 		_synced = true;
+	}
+
+	private string SetName(NPC npc)
+	{
+		// npc.TypeName uses only the netID, which is not set by SetDefaults...for some reason.
+		// This works the same, just using type if netID isn't helpful.
+		string typeName = NPCLoader.ModifyTypeName(npc, Lang.GetNPCNameValue(npc.netID == 0 ? npc.type : npc.netID));
+
+		npc.GivenName = Rarity switch
+		{
+			ItemRarity.Magic or ItemRarity.Rare => $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.RarityNames." + Enum.GetName(Rarity))} {typeName}",
+			ItemRarity.Unique => "UNIQUE MOB",
+			_ => typeName
+		};
+
+		npc.GivenName = GetAffixPrefixes(npc) + npc.GivenName;
+
+		return typeName;
+	}
+
+	private static string GetAffixPrefixes(NPC npc)
+	{
+		List<MobAffix> affixes = npc.GetGlobalNPC<ArpgNPC>().Affixes;
+		string prefix = "";
+
+		foreach (MobAffix affix in affixes)
+		{
+			 prefix += affix.Prefix + " ";
+		}
+
+		return prefix;
 	}
 
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
@@ -261,7 +290,7 @@ internal class ArpgNPC : GlobalNPC
 
 	public bool HasAffix<T>() where T : MobAffix
 	{
-		foreach (MobAffix affix in _affixes)
+		foreach (MobAffix affix in Affixes)
 		{
 			if (affix.GetType() == typeof(T))
 			{

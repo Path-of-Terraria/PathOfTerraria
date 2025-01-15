@@ -1,13 +1,12 @@
 ﻿namespace PathOfTerraria.Common.Systems.Affixes.MobTypes;
 
-internal class LifeAffixes
+internal class DamageAffixes
 {
-	internal class DoubleLife : MobAffix
+	internal class DamageAffix : MobAffix
 	{
 		public override void PostRarity(NPC npc)
 		{
-			npc.lifeMax *= 2;
-			npc.life = npc.lifeMax;
+			npc.damage = (int)(npc.damage * 1.5f);
 		}
 	}
 }

@@ -11,4 +11,18 @@ internal class SpeedAffixes
 			return true;
 		}
 	}
+
+	public class AggravatorAffix : MobAffix
+	{
+		public override bool PreAI(NPC npc)
+		{
+			if (npc.life < npc.lifeMax)
+			{
+				npc.GetGlobalNPC<SpeedUpNPC>().ExtraAISpeed += 0.3f;
+				npc.defense = npc.defDefense + 10;
+			}
+
+			return true;
+		}
+	}
 }
