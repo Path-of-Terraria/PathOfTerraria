@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.ItemDropping;
+﻿using Microsoft.Build.Construction;
+using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
@@ -10,6 +11,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
@@ -39,7 +41,7 @@ internal class ForestArea : MappingWorld
 
 	private void GenStructures(GenerationProgress progress, GameConfiguration configuration)
 	{
-		progress.Message = "Adding structures";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Structures");
 
 		HashSet<StructureKind> structures = [];
 
@@ -139,7 +141,7 @@ internal class ForestArea : MappingWorld
 
 	private void AddDetails(GenerationProgress progress, GameConfiguration configuration)
 	{
-		progress.Message = "Adding details";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
 		HashSet<Point16> grasses = [];
 
@@ -193,10 +195,15 @@ internal class ForestArea : MappingWorld
 					}
 				}
 			}
+
+			progress.Set(i / (float)Width);
 		}
+
+		int grassIndex = 0;
 
 		foreach (Point16 pos in grasses)
 		{
+			progress.Set(grassIndex++ / (float)grasses.Count);
 			GrowStuffOnGrass(pos);
 		}
 
@@ -275,7 +282,7 @@ internal class ForestArea : MappingWorld
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
-		progress.Message = "Generating terrain";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
 		Main.worldSurface = 240;
 		Main.rockLayer = 270;
@@ -305,16 +312,20 @@ internal class ForestArea : MappingWorld
 				}
 			}
 
+			progress.Set(i / (float)Main.maxTilesX);
+
 			for (int j = 0; j < Main.maxTilesY; ++j)
 			{
 				int id = -1;
 				int wallId = -1;
 
-				if (j < 60 + noise.GetNoise(i, j) * 15 + leafYOffset)
+				int leafCutoff = (int)(60 + noise.GetNoise(i, j) * 15 + leafYOffset);
+
+				if (j < leafCutoff)
 				{
 					id = TileID.LeafBlock;
 
-					if (WorldGen.genRand.NextBool(50))
+					if (WorldGen.genRand.NextBool(50) && j > leafCutoff - 5)
 					{
 						leafBlobs.Add(new(i, j));
 					}
@@ -348,10 +359,13 @@ internal class ForestArea : MappingWorld
 			}
 		}
 
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.TreesAndLeaves");
+
 		foreach (int x in trees)
 		{
-			Point16 pos = StructureTools.PlaceByOrigin("Assets/Structures/MapAreas/ForestArea/Tree_0", new Point16(x, FloorY - 10), new Vector2(0.5f, 0.75f));
-			Point16 size = StructureTools.GetSize("Assets/Structures/MapAreas/ForestArea/Tree_0");
+			string path = "Assets/Structures/MapAreas/ForestArea/Tree_" + WorldGen.genRand.Next(2);
+			Point16 pos = StructureTools.PlaceByOrigin(path, new Point16(x, FloorY - 10), new Vector2(0.5f, 0.75f));
+			Point16 size = StructureTools.GetSize(path);
 			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X + 20, pos.Y, size.X - 40, size.Y), 10);
 		}
 

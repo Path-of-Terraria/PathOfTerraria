@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using SubworldLibrary;
@@ -16,6 +15,7 @@ public class BlockerSystem : ModSystem
 		// Fixes issue where during hardmode worldgen, this throws.
 		if (SubworldSystem.Current is null)
 		{
+			SetBlockerSolidity(false);
 			return;
 		}
 
@@ -30,12 +30,7 @@ public class BlockerSystem : ModSystem
 			}
 		}
 
-		int[] types = [ModContent.TileType<HiveBlocker>(), ModContent.TileType<ArenaBlocker>(), ModContent.TileType<LivingWoodBlocker>()];
-
-		foreach (int type in types)
-		{
-			Main.tileSolid[type] = HasArenaEnemies;
-		}
+		SetBlockerSolidity();
 
 		if (HasArenaEnemies)
 		{
@@ -44,6 +39,16 @@ public class BlockerSystem : ModSystem
 		else
 		{
 			FadeOut = MathHelper.Lerp(FadeOut, 0, 0.06f);
+		}
+	}
+
+	private static void SetBlockerSolidity(bool? overrideValue = null)
+	{
+		int[] types = [ModContent.TileType<HiveBlocker>(), ModContent.TileType<ArenaBlocker>(), ModContent.TileType<LivingWoodBlocker>()];
+
+		foreach (int type in types)
+		{
+			Main.tileSolid[type] = overrideValue ?? HasArenaEnemies;
 		}
 	}
 
