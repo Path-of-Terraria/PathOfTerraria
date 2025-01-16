@@ -1,12 +1,8 @@
 ﻿using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
-using Terraria.GameContent;
-using Terraria.IO;
 using Terraria.WorldBuilding;
-using ReLogic.Graphics;
 using SubworldLibrary;
-using PathOfTerraria.Common.Systems.DisableBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -38,27 +34,5 @@ public abstract class BossDomainSubworld : MappingWorld
 		base.OnEnter();
 
 		SubworldSystem.noReturn = true;
-	}
-
-	public override void DrawMenu(GameTime gameTime)
-	{
-		string statusText = Main.statusText;
-		GenerationProgress progress = WorldGenerator.CurrentGenerationProgress;
-
-		if (WorldGen.gen && progress is not null)
-		{
-			DrawStringCentered(progress.Message, Color.LightGray, new Vector2(0, 60), 0.6f);
-			double percentage = progress.Value / progress.CurrentPassWeight * 100f;
-			DrawStringCentered($"{percentage:#0.##}%", Color.LightGray, new Vector2(0, 120), 0.7f);
-		}
-
-		DrawStringCentered(statusText, Color.White);
-	}
-
-	private static void DrawStringCentered(string statusText, Color color, Vector2 position = default, float scale = 1f)
-	{
-		Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + position;
-		Vector2 halfSize = FontAssets.DeathText.Value.MeasureString(statusText) / 2f * scale;
-		Main.spriteBatch.DrawString(FontAssets.DeathText.Value, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
 	}
 }

@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
@@ -40,6 +39,8 @@ internal class ForestArea : MappingWorld
 
 	private void GenStructures(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = "Adding structures";
+
 		HashSet<StructureKind> structures = [];
 
 		TryPlaceStructureAt(structures, LeftSpawn ? Width - 160 : 160, FloorY, StructureKind.Arena, 1, new Vector2(0.5f, 1), 45);
@@ -75,7 +76,7 @@ internal class ForestArea : MappingWorld
 			{
 				StructureKind kind;
 
-				if (structures.Count < (int)StructureKind.Count)
+				if (structures.Count < (int)StructureKind.Count - 1)
 				{
 					do
 					{
@@ -107,10 +108,10 @@ internal class ForestArea : MappingWorld
 		string path = $"Assets/Structures/MapAreas/ForestArea/{type}_{WorldGen.genRand.Next(max)}";
 		Point16 size = StructureTools.GetSize(path);
 
-		y += StructureTools.AverageHeights(x, y, size.X, 2000, 2, out bool valid, [], []);
-
 		if (GenVars.structures.CanPlace(new Rectangle(x - (int)(size.X * origin.X), y - (int)(size.Y * origin.Y) + offsetY, size.X, size.Y)))
 		{
+			y += StructureTools.AverageHeights(x, y, size.X, 2000, 2, out bool valid, [], []);
+
 			Point16 pos = StructureTools.PlaceByOrigin(path, new Point16(x, y + offsetY), origin);
 
 			structures.Add(type);
@@ -138,6 +139,8 @@ internal class ForestArea : MappingWorld
 
 	private void AddDetails(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = "Adding details";
+
 		HashSet<Point16> grasses = [];
 
 		for (int i = 0; i < Main.maxTilesX; ++i)
@@ -272,10 +275,13 @@ internal class ForestArea : MappingWorld
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = "Generating terrain";
+
 		Main.worldSurface = 240;
 		Main.rockLayer = 270;
 
 		LeftSpawn = WorldGen.genRand.NextBool(2);
+		LastTreeX = LeftSpawn ? 200 : Width - 200;
 		Main.spawnTileX = LeftSpawn ? 60 : Width - 60;
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
@@ -292,9 +298,10 @@ internal class ForestArea : MappingWorld
 
 			if (i > 200 && i < Width - 200)
 			{
-				if (Math.Abs(LastTreeX - i) > (Width - 200) / 3)
+				if (i == Width / 10 * 3 || i == Width / 10 * 7)
 				{
 					trees.Add(i);
+					LastTreeX = i;
 				}
 			}
 
@@ -343,7 +350,9 @@ internal class ForestArea : MappingWorld
 
 		foreach (int x in trees)
 		{
-			StructureTools.PlaceByOrigin("Assets/Structures/MapAreas/ForestArea/Tree_0", new Point16(x, FloorY), new Vector2(0.5f, 0.75f));
+			Point16 pos = StructureTools.PlaceByOrigin("Assets/Structures/MapAreas/ForestArea/Tree_0", new Point16(x, FloorY - 10), new Vector2(0.5f, 0.75f));
+			Point16 size = StructureTools.GetSize("Assets/Structures/MapAreas/ForestArea/Tree_0");
+			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X + 20, pos.Y, size.X - 40, size.Y), 10);
 		}
 
 		foreach (Point16 pos in leafBlobs)

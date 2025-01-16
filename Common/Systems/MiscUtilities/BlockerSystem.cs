@@ -1,5 +1,7 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using PathOfTerraria.Content.Tiles.Maps.Forest;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.MiscUtilities;
@@ -28,8 +30,12 @@ public class BlockerSystem : ModSystem
 			}
 		}
 
-		Main.tileSolid[ModContent.TileType<HiveBlocker>()] = HasArenaEnemies;
-		Main.tileSolid[ModContent.TileType<ArenaBlocker>()] = HasArenaEnemies;
+		int[] types = [ModContent.TileType<HiveBlocker>(), ModContent.TileType<ArenaBlocker>(), ModContent.TileType<LivingWoodBlocker>()];
+
+		foreach (int type in types)
+		{
+			Main.tileSolid[type] = HasArenaEnemies;
+		}
 
 		if (HasArenaEnemies)
 		{
@@ -43,7 +49,6 @@ public class BlockerSystem : ModSystem
 
 	public static void DrawGlow(int i, int j, int type, SpriteBatch spriteBatch, Texture2D texture, Color fadeColor)
 	{
-		FadeOut = 1;
 		if (FadeOut > 0)
 		{
 			Tile tile = Main.tile[i, j];
