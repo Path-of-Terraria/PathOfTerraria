@@ -1,5 +1,4 @@
-﻿using Microsoft.Build.Construction;
-using PathOfTerraria.Common.ItemDropping;
+﻿using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
@@ -57,6 +56,8 @@ internal class ForestArea : MappingWorld
 
 			attempts++;
 
+			progress.Set(attempts / 20000f);
+
 			if (attempts > 20000)
 			{
 				break;
@@ -99,7 +100,7 @@ internal class ForestArea : MappingWorld
 				}
 				else if (kind == StructureKind.Campsite)
 				{
-					TryPlaceStructureAt(structures, x, y, StructureKind.Campsite, 2, new Vector2(0.5f, 1), 4);
+					TryPlaceStructureAt(structures, x, y, StructureKind.Campsite, 3, new Vector2(0.5f, 1), 4);
 				}
 			}
 		}
