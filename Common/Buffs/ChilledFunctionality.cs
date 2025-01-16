@@ -9,7 +9,7 @@ internal class ChilledFunctionality : GlobalBuff
 	{
 		if (type == BuffID.Chilled)
 		{
-			npc.GetGlobalNPC<SlowDownNPC>().SlowDown += 0.2f;
+			npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += 0.2f;
 
 			if (Main.rand.NextBool(20))
 			{

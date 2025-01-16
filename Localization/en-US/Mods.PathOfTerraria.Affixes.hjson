@@ -55,4 +55,9 @@ IncreaseBlockAffix.Description: "{1}{0}% increased block chance"
 StrengthItemAffix.Description: "{1}{0} strength"
 DexterityItemAffix.Description: "{1}{0} dexterity"
 IntelligenceItemAffix.Description: "{1}{0} intelligence"
+DoubleLife.Prefix: Hearty
+SiphonerAffix.Prefix: Siphoning
+FastAffix.Prefix: Swift
+AggravatorAffix.Prefix: Aggravating
+DamageAffix.Prefix: Harmful
 ChanceToApplyRootedGearAffix.Description: "{1}{0}% chance to apply Rooted"
