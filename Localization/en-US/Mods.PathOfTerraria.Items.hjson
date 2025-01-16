@@ -927,16 +927,21 @@ CorrodedTowerShield: {
 }
 
 RunestoneItem: {
-	DisplayName: Runestone Item
+	DisplayName: Runestone
 	Tooltip: ""
 }
 
 PoweredRunestoneItem: {
-	DisplayName: Powered Runestone Item
+	DisplayName: Powered Runestone
 	Tooltip: ""
 }
 
 ForestMap: {
 	DisplayName: Forest Map
+	Tooltip: ""
+}
+
+LivingWoodBlockerItem: {
+	DisplayName: Living Wood Blocker Item
 	Tooltip: ""
 }

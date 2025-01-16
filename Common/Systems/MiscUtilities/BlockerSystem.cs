@@ -43,6 +43,7 @@ public class BlockerSystem : ModSystem
 
 	public static void DrawGlow(int i, int j, int type, SpriteBatch spriteBatch, Texture2D texture, Color fadeColor)
 	{
+		FadeOut = 1;
 		if (FadeOut > 0)
 		{
 			Tile tile = Main.tile[i, j];

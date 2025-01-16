@@ -208,7 +208,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 			}
 
 			// Get average height, with a whitelist and blacklist for nearby tiles and preferred average depth of ground.
-			int averageHeight = AverageHeights(x, y, 76, 4, 30, out bool valid, [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone], 
+			int averageHeight = StructureTools.AverageHeights(x, y, 76, 4, 30, out bool valid, [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone], 
 				TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone);
 
 			// Only place if average height difference is less than 2.
@@ -256,73 +256,6 @@ internal class RavencrestEntrancePass : AutoGenStep
 		}
 
 		return count;
-	}
-
-	/// <summary>
-	/// Determines flatness & depth placement of an area. Returns average heights; use <paramref name="valid"/> to check if the space is valid.<br/>
-	/// This needs a lot of tweaking to get perfect.
-	/// </summary>
-	/// <param name="x">Left of the area.</param>
-	/// <param name="y">Bottom of the area.</param>
-	/// <param name="width">Width of the area.</param>
-	/// <param name="validSkips">How many times non-<paramref name="allowedIds"/> tiles can be scanned before invalidating the area.</param>
-	/// <param name="depth">The desired average depth for the area.</param>
-	/// <param name="valid">Whether the area could be valid.</param>
-	/// <param name="hardAvoidIds">If a tile of any of these types are scanned, the area is automatically invalid.</param>
-	/// <param name="allowedIds">Tiles that do not increment skips when scanned.</param>
-	/// <returns>Average height.</returns>
-	private static int AverageHeights(int x, int y, int width, int validSkips, int depth, out bool valid, int[] hardAvoidIds, params int[] allowedIds)
-	{
-		int heights = 0;
-		int avgDepth = 0;
-		int skips = 0;
-
-		for (int i = x - width / 2; i < x + width / 2; i++)
-		{
-			int useY = y;
-
-			if (WorldGen.SolidTile(i, useY))
-			{
-				while (WorldGen.SolidTile(i, --useY))
-				{
-				}
-
-				useY++;
-			}
-			else
-			{
-				while (!WorldGen.SolidTile(i, ++useY))
-				{
-				}
-			}
-
-			int heightDif = useY - y;
-			heights += heightDif;
-
-			int digY = useY;
-
-			while (WorldGen.SolidTile(i, ++digY) && digY < useY + depth * 1.1f)
-			{
-			}
-
-			avgDepth += digY - useY + heightDif;
-
-			if (hardAvoidIds.Contains(Main.tile[i, useY].TileType))
-			{
-				valid = false;
-				return -1;
-			}
-
-			if (!allowedIds.Contains(Main.tile[i, useY].TileType) && ++skips > validSkips)
-			{
-				valid = false;
-				return -1;
-			}
-		}
-
-		int realWidth = width / 2 * 2;
-		valid = avgDepth / realWidth > depth;
-		return heights / realWidth;
 	}
 
 	public override int GenIndex(List<GenPass> tasks)

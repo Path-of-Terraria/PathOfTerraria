@@ -20,6 +20,9 @@ internal class Runestone : ModTile
 		Main.tileBrick[Type] = true;
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
+		Main.tileBlendAll[Type] = true;
+
+		TileID.Sets.BlockMergesWithMergeAllBlock[Type] = true;
 
 		AddMapEntry(new Color(56, 66, 66));
 
