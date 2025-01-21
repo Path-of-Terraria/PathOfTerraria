@@ -30,6 +30,7 @@ public sealed class PoTMod : Mod
 	{
 		base.Load();
 
+		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
 		Debug.Assert(Name == ModName, "Internal mod name does not match expected contsant.");
 	}
@@ -37,6 +38,7 @@ public sealed class PoTMod : Mod
 	public override void Unload()
 	{
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
+		NPCUtils.NPCUtils.UnloadMod(this);
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)

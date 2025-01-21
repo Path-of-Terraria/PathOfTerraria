@@ -121,6 +121,11 @@ public sealed class NPCHitEffects : NPCComponent
 		{ }
 	}
 
+	/// <summary>
+	/// Simply checks if this NPC is dead.
+	/// </summary>
+	/// <param name="npc"></param>
+	/// <returns></returns>
 	public static bool OnDeath(NPC npc)
 	{
 		return npc.life <= 0;

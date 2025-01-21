@@ -8,6 +8,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.HellEvent;
 
+[AutoloadBanner]
 public sealed class AshWraith : ModNPC
 {
 	public enum States : byte

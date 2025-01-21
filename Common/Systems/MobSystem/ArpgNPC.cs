@@ -130,7 +130,8 @@ internal class ArpgNPC : GlobalNPC
 	public override void SetDefaults(NPC npc)
 	{
 		//We only want to trigger these changes on hostile non-boss, non Eater of Worlds mobs in-game
-		if (npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail)
+		if (npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail || npc.immortal 
+			|| npc.dontTakeDamage)
 		{
 			return;
 		}
