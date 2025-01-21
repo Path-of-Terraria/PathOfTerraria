@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
@@ -47,12 +48,21 @@ internal class PotionPickupDropper : GlobalNPC
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
 		LeadingConditionRule notBoss = new(new Conditions.LegacyHack_IsABoss());
-		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 1, 1, 1));
-		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 1, 1, 1));
+		notBoss.OnSuccess(new HiddenDrop(ModContent.ItemType<HealingPotionPickup>(), 1, 1, 1));
+		notBoss.OnSuccess(new HiddenDrop(ModContent.ItemType<ManaPotionPickup>(), 1, 1, 1));
 
-		notBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 7, 1, 1));
-		notBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 7, 1, 1));
+		notBoss.OnFailedConditions(new HiddenDrop(ModContent.ItemType<HealingPotionPickup>(), 7, 1, 1));
+		notBoss.OnFailedConditions(new HiddenDrop(ModContent.ItemType<ManaPotionPickup>(), 7, 1, 1));
 		
 		npcLoot.Add(notBoss);
+	}
+
+	private class HiddenDrop(int itemId, int chanceDenominator, int amountDroppedMinimum = 1, int amountDroppedMaximum = 1, int chanceNumerator = 1) 
+		: CommonDrop(itemId, chanceDenominator, amountDroppedMinimum, amountDroppedMaximum, chanceNumerator)
+	{
+		// Do nothing in here so it doesn't show on the bestiary
+		public override void ReportDroprates(List<DropRateInfo> drops, DropRateInfoChainFeed ratesInfo)
+		{
+		}
 	}
 }
