@@ -274,6 +274,10 @@ internal class ForestArea : MappingWorld
 					tile.TileColor = WorldGen.genRand.NextBool(3) ? PaintID.None : PaintID.RedPaint;
 				}
 			}
+			else if (WorldGen.genRand.NextBool(40))
+			{
+				WorldGen.PlaceTile(pos.X, pos.Y - 1, TileID.DyePlants, true, true, WorldGen.genRand.Next(8, 12));
+			}
 			else
 			{
 				WorldGen.PlaceTile(pos.X, pos.Y - 1, WorldGen.genRand.NextBool() ? TileID.Plants2 : TileID.Plants, true, true, -1);
@@ -283,7 +287,7 @@ internal class ForestArea : MappingWorld
 
 	private static bool SpawnBoulder(int i, int j)
 	{
-		int size = Main.rand.Next(7, 18);
+		int size = WorldGen.genRand.Next(7, 18);
 		j += 3;
 
 		if (!WorldGen.genRand.NextBool(60) || !GenVars.structures.CanPlace(new Rectangle(i - size, j - size, size * 2, size * 2)))

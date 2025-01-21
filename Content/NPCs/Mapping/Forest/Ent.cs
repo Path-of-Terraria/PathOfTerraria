@@ -4,15 +4,18 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using ReLogic.Content;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Forest;
 
+[AutoloadBanner]
 internal class Ent : ModNPC
 {
 	public const int SwingWaitTimer = 60;
+	public const int SlamWaitTimer = 40;
 
 	private static Asset<Texture2D> Glow = null;
 
@@ -61,6 +64,22 @@ internal class Ent : ModNPC
 		NPC.defense = 35;
 		NPC.damage = 65;
 		NPC.knockBackResist = 0.3f;
+		NPC.HitSound = SoundID.NPCHit30;
+
+		NPC.TryEnableComponent<NPCHitEffects>(
+			c =>
+			{
+				for (int i = 0; i < 6; ++i)
+				{
+					c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_" + i, 1, NPCHitEffects.OnDeath));
+				}
+
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 5));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 1));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 20, NPCHitEffects.OnDeath));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 10, NPCHitEffects.OnDeath));
+			}
+		);
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -89,7 +108,12 @@ internal class Ent : ModNPC
 		}
 
 		LastOnGround = NPC.velocity.Y == 0;
-		MiragePower = MathHelper.Lerp(MiragePower, State == AIState.SwingProj ? 1 : 0, 0.1f);
+		MiragePower = MathHelper.Lerp(MiragePower, State is AIState.SwingProj or AIState.Slam ? 1 : 0, 0.1f);
+
+		if (ProjThrowTimer == 0)
+		{
+			ProjThrowTimer = Main.rand.Next(480, 600);
+		}
 
 		if (Main.rand.NextBool(40))
 		{
@@ -103,6 +127,74 @@ internal class Ent : ModNPC
 		else if (State == AIState.SwingProj)
 		{
 			SwingBehaviour();
+		}
+		else if (State == AIState.Slam)
+		{
+			SlamBehaviour();
+		}
+	}
+
+	private void SlamBehaviour()
+	{
+		Timer++;
+		NPC.velocity.X *= 0.9f;
+
+		if (Timer < SlamWaitTimer && Main.rand.NextBool(3))
+		{
+			SpawnDust(false);
+		}
+
+		if (Timer == 28 + SlamWaitTimer)
+		{
+			var slamPos = (NPC.Center + new Vector2(NPC.spriteDirection == -1 ? 60 : -260, -20)).ToPoint();
+			var slamBox = new Rectangle(slamPos.X, slamPos.Y, 200, NPC.height);
+
+			foreach (Player player in Main.ActivePlayers) // Damage players
+			{
+				if (slamBox.Intersects(player.Hitbox))
+				{
+					var deathReason = PlayerDeathReason.ByCustomReason(this.GetLocalization("SlamDeath." + Main.rand.Next(3)).Format(player.name));
+					player.Hurt(deathReason, (int)(NPC.damage * 1.5f), Math.Sign(NPC.Center.X + player.Center.X));
+					player.velocity.Y -= 8;
+				}
+			}
+
+			foreach (NPC npc in Main.ActiveNPCs) // Damage NPCs
+			{
+				if (slamBox.Intersects(npc.Hitbox)) // No "don't hit self" check since this can't hit itself
+				{
+					npc.SimpleStrikeNPC((int)(NPC.damage * 1.5f), Math.Sign(NPC.Center.X + npc.Center.X), false, 12);
+				}
+			}
+
+			Point bottom = (NPC.Bottom + new Vector2(0, 8)).ToTileCoordinates();
+
+			for (int i = 0; i < 16; ++i)
+			{
+				int x = bottom.X + i * -NPC.spriteDirection;
+				int y = bottom.Y;
+
+				while (!WorldGen.SolidTile(x, y))
+				{
+					y++;
+				}
+
+				Vector2 pos = new Point(x, y).ToWorldCoordinates(0, 0);
+				Collision.HitTiles(pos, new Vector2(0, 4), 8, 8);
+				
+				if (Main.netMode != NetmodeID.Server)
+				{
+					Gore.NewGore(NPC.GetSource_FromAI(), pos, new Vector2(0, -4), GoreID.Smoke1 + Main.rand.Next(3));
+				}
+			}
+
+			SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, slamBox.Center());
+		}
+
+		if (Timer > 72 + SlamWaitTimer)
+		{
+			Timer = 0;
+			State = AIState.Chase;
 		}
 	}
 
@@ -119,7 +211,7 @@ internal class Ent : ModNPC
 			SpawnDust(false);
 		}
 
-		if (Timer >= 10 + SwingWaitTimer && Timer <= 12 + SwingWaitTimer)
+		if (Timer >= 10 + SwingWaitTimer && Timer <= 12 + SwingWaitTimer && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			Vector2 pos = NPC.Center - new Vector2(60 * NPC.spriteDirection, 0);
 			Vector2 vel = pos.DirectionTo(Target.Center).RotatedByRandom(0.3f) * 12;
@@ -150,6 +242,19 @@ internal class Ent : ModNPC
 		}
 
 		Timer++;
+
+		var slamPos = (NPC.Center + new Vector2(NPC.spriteDirection == -1 ? 60 : -180, -50)).ToPoint();
+		var slamBox = new Rectangle(slamPos.X, slamPos.Y, 120, NPC.height);
+
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (player.Hitbox.Intersects(slamBox))
+			{
+				State = AIState.Slam;
+				Timer = 0;
+				return;
+			}
+		}
 
 		if (Timer > ProjThrowTimer)
 		{
@@ -211,17 +316,6 @@ internal class Ent : ModNPC
 		return (wall || gap) && NPC.velocity.Y == 0;
 	}
 
-	public override void HitEffect(NPC.HitInfo hit)
-	{
-		int dustCount = NPC.life < 0 ? 20 : 5;
-
-		for (int i = 0; i < dustCount; ++i)
-		{
-			int type = Main.rand.NextBool(10) ? ModContent.DustType<EntDust>() : DustID.CorruptionThorns;
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, type, NPC.velocity.X, NPC.velocity.Y);
-		}
-	}
-
 	public override void FindFrame(int frameHeight)
 	{
 		if (State == AIState.Chase || NPC.IsABestiaryIconDummy)
@@ -251,6 +345,19 @@ internal class Ent : ModNPC
 			if (adjTimer != 0)
 			{
 				NPC.frame.Y = frameHeight * (int)(8 + adjTimer / 5f);
+			}
+			else
+			{
+				NPC.frame.Y = 0;
+			}
+		}
+		else if (State == AIState.Slam)
+		{
+			float adjTimer = MathHelper.Clamp(Timer - SlamWaitTimer, 0, 24);
+
+			if (adjTimer != 0)
+			{
+				NPC.frame.Y = frameHeight * (int)(14 + adjTimer / 7f);
 			}
 			else
 			{
@@ -302,6 +409,7 @@ internal class Ent : ModNPC
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation();
 			Projectile.velocity *= 0.999f;
+			Projectile.velocity.Y += 0.05f;
 
 			if (Main.rand.NextBool(6))
 			{

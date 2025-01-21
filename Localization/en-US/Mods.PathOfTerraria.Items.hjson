@@ -942,6 +942,9 @@ ForestMap: {
 }
 
 LivingWoodBlockerItem: {
-	DisplayName: Living Wood Blocker Item
+	DisplayName: Living Wood Blocker
 	Tooltip: ""
 }
+
+EntBannerItem.DisplayName: Ent Banner
+EntlingBannerItem.DisplayName: Entling Banner

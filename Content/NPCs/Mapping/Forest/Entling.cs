@@ -1,14 +1,15 @@
 ﻿using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using ReLogic.Content;
 using System.Collections.Generic;
-using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Forest;
 
+[AutoloadBanner]
 internal class Entling : ModNPC
 {
 	private readonly static Dictionary<int, Asset<Texture2D>> GlowsById = [];
@@ -43,7 +44,6 @@ internal class Entling : ModNPC
 		NPC.defense = 10;
 		NPC.damage = 35;
 		NPC.scale = Main.rand.NextFloat(0.8f, 1.2f);
-		NPC.knockBackResist = 2 - NPC.scale;
 
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
@@ -57,6 +57,13 @@ internal class Entling : ModNPC
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<Ent.EntDust>(), 2, NPCHitEffects.OnDeath));
 			}
 		);
+	}
+
+	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+	{
+		NPC.life = ModeUtils.ByMode(225, 350, 500);
+		NPC.damage = ModeUtils.ByMode(5, 7, 10);
+		NPC.knockBackResist = ModeUtils.ByMode(2, 1.94f, 1.9f) - NPC.scale;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -155,6 +162,14 @@ internal class EntlingAlt : Entling
 		base.SetStaticDefaults();
 		Main.npcFrameCount[Type] = 8;
 	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
+		NPC.ModNPC.Banner = ModContent.NPCType<Entling>();
+		NPC.ModNPC.BannerItem = NPC.ModNPC.Mod.Find<ModItem>("EntlingBannerItem").Type;
+	}
 }
 
 internal class ClumsyEntling : Entling
@@ -174,6 +189,14 @@ internal class ClumsyEntling : Entling
 	{
 		base.SetStaticDefaults();
 		Main.npcFrameCount[Type] = 16;
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
+		NPC.ModNPC.Banner = ModContent.NPCType<Entling>();
+		NPC.ModNPC.BannerItem = NPC.ModNPC.Mod.Find<ModItem>("EntlingBannerItem").Type;
 	}
 
 	public override bool PreAI()

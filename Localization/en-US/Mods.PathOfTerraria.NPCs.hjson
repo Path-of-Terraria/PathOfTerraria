@@ -580,6 +580,12 @@ EntlingAlt: {
 Ent: {
 	DisplayName: Ent
 	Entry: An elder Entling, they hold much more formidable power. Their mischeivious nature has blossomed into abject violence, not caring what they harm as long as their tree is safe.
+
+	SlamDeath: {
+		0: "{0} was smashed to a pulp."
+		1: And to the ground {0} returns.
+		2: "{0} inspected roots too closely."
+	}
 }
 
 ClumsyEntling: {
