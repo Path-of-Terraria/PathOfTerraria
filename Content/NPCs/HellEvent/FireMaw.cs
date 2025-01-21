@@ -8,6 +8,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.HellEvent;
 
+[AutoloadBanner]
 public sealed class FireMaw : ModNPC
 {
 	public enum States : byte
