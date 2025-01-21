@@ -22,7 +22,7 @@ internal class ForestArea : MappingWorld
 		Cave,
 		Shrine,
 		Campsite,
-		//AncientTree,
+		AncientTree,
 		Arena,
 		Count,
 	}
@@ -101,6 +101,10 @@ internal class ForestArea : MappingWorld
 				else if (kind == StructureKind.Campsite)
 				{
 					TryPlaceStructureAt(structures, x, y, StructureKind.Campsite, 3, new Vector2(0.5f, 1), 4);
+				}
+				else if (kind == StructureKind.AncientTree)
+				{
+					TryPlaceStructureAt(structures, x, y, StructureKind.AncientTree, 1, new Vector2(0.5f, 1), 7);
 				}
 			}
 		}
@@ -259,6 +263,21 @@ internal class ForestArea : MappingWorld
 			{
 				WorldGen.GrowEpicTree(pos.X, pos.Y);
 			}
+			else if (WorldGen.genRand.NextBool(20))
+			{
+				int style = WorldGen.genRand.NextBool(2, 3) ? 1 : 0;
+				WorldGen.PlaceTile(pos.X, pos.Y - 1, TileID.DyePlants, true, true, -1, style);
+
+				if (style == 1) // Green mushroom
+				{
+					Tile tile = Main.tile[pos.X, pos.Y - 1];
+					tile.TileColor = WorldGen.genRand.NextBool(3) ? PaintID.None : PaintID.RedPaint;
+				}
+			}
+			else
+			{
+				WorldGen.PlaceTile(pos.X, pos.Y - 1, WorldGen.genRand.NextBool() ? TileID.Plants2 : TileID.Plants, true, true, -1);
+			}
 		}
 	}
 
@@ -375,18 +394,6 @@ internal class ForestArea : MappingWorld
 			bool isWall = WorldGen.genRand.NextBool();
 			int type = isWall ? WallID.LivingLeaf : TileID.LeafBlock;
 			Ellipse.GenOval(pos.ToVector2(), WorldGen.genRand.NextFloat(10, 50), WorldGen.genRand.NextFloat(MathHelper.TwoPi), isWall, type, noise);
-		}
-	}
-
-	public class ForestScene : ModSystem
-	{
-		public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
-		{
-			if (SubworldSystem.Current is ForestArea)
-			{
-				tileColor = new Color(180, 70, 200);
-				backgroundColor = new Color(160, 60, 180);
-			}
 		}
 	}
 }

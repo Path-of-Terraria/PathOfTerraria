@@ -566,3 +566,23 @@ MorganaNPC: {
 
 	Entry: Eccentric but decievingly powerful, Morgana offers a lot to Ravencrest. Sure, she may be nearly incomprehensible sometimes, and some might say offputting a lot of the time, but she's good at what she does. What does she do?...carry on.
 }
+
+Entling: {
+	DisplayName: Entling
+	Entry: A small critter of the forest, mischeivious in nature, Entlings seek to steal and rob. Ideally without a fight, but when it comes to it, they step up and battle by jumping a little and running and that's it. Scary!
+}
+
+EntlingAlt: {
+	DisplayName: Cyclops Entling
+	Entry: Much like their cousin, the one-eye variant here enjoys a kleptomaniac nature with a penchant for violence. They think their one eye looks better than two.
+}
+
+Ent: {
+	DisplayName: Ent
+	Entry: An elder Entling, they hold much more formidable power. Their mischeivious nature has blossomed into abject violence, not caring what they harm as long as their tree is safe.
+}
+
+ClumsyEntling: {
+	DisplayName: Clumsy Entling
+	Entry: Sometimes, you have a bad day and you trip. This guy has a bad day very, very often. Be thankful, they're here to steal your stuff.
+}
