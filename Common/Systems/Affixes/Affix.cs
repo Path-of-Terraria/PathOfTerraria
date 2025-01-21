@@ -81,40 +81,28 @@ public abstract class Affix : ILocalizedModType
 	}
 
 	/// <summary>
-	/// 
+	/// Creates an affix with the given value. If you want a range, use <see cref="CreateAffix{T}(float, float)"/>.
 	/// </summary>
-	/// <param name="value">The set value of the affix. Set to -1 if using minValue and maxValue</param>
-	/// <typeparam name="T"></typeparam>
-	/// <returns></returns>
+	/// <param name="value">The set value of the affix.</param>
+	/// <typeparam name="T">The affix type to create.</typeparam>
+	/// <returns>The new affix.</returns>
 	public static Affix CreateAffix<T>(float value)
 	{
-		var instance = (Affix)Activator.CreateInstance(typeof(T));
-		
-		if (instance == null)
-		{
-			throw new Exception($"Could not create affix of type {typeof(T).Name}");
-		}
-		
+		Affix instance = (Affix)Activator.CreateInstance(typeof(T)) ?? throw new Exception($"Could not create affix of type {typeof(T).Name}");
 		instance.Value = value;
 		return instance;
 	}
 	
 	/// <summary>
-	/// 
+	/// Creates an affix with a value between <paramref name="minValue"/> and <paramref name="maxValue"/>.
 	/// </summary>
 	/// <param name="minValue">The minimum value of the roll range for the affix</param>
 	/// <param name="maxValue">The maximum value of the roll range for the affix</param>
-	/// <typeparam name="T"></typeparam>
-	/// <returns></returns>
+	/// <typeparam name="T">The affix type to create.</typeparam>
+	/// <returns>The new affix.</returns>
 	public static Affix CreateAffix<T>(float minValue = 0f, float maxValue = 1f)
 	{
-		var instance = (Affix)Activator.CreateInstance(typeof(T));
-
-		if (instance == null)
-		{
-			throw new Exception($"Could not create affix of type {typeof(T).Name}");
-		}
-
+		Affix instance = (Affix)Activator.CreateInstance(typeof(T)) ?? throw new Exception($"Could not create affix of type {typeof(T).Name}");
 		instance.MinValue = minValue;
 		instance.MaxValue = maxValue;
 		instance.Roll();
@@ -285,6 +273,8 @@ internal class AffixHandler : ILoadable
 					continue;
 				case MobAffix mobAffix:
 					_mobAffixes.Add(mobAffix);
+
+					MobAffix.MobAffixIconsByAffixName[mobAffix.GetType().AssemblyQualifiedName] = ModContent.Request<Texture2D>(mobAffix.TexturePath);
 					break;
 			}
 		}

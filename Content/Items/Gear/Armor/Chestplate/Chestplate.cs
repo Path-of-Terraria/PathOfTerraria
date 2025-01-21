@@ -1,5 +1,8 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 
@@ -32,5 +35,15 @@ internal abstract class Chestplate : Gear
 	public override void PostRoll()
 	{
 		Item.defense = GetItemLevel.Invoke(Item) / 6 + 1;
+	}
+
+	public override List<ItemAffix> GenerateAffixes()
+	{
+		var lifeAffix = (ItemAffix)Affix.CreateAffix<FlatLifeAffix>(25, 35);
+		var strengthAffix = (ItemAffix)Affix.CreateAffix<StrengthItemAffix>(15f, 25f);
+		var moveAffix = (ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(3, 5);
+		var rootedAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyRootedGearAffix>(3, 5);
+
+		return [lifeAffix, strengthAffix, moveAffix, rootedAffix];
 	}
 }

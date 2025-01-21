@@ -948,3 +948,19 @@ LivingWoodBlockerItem: {
 
 EntBannerItem.DisplayName: Ent Banner
 EntlingBannerItem.DisplayName: Entling Banner
+
+WardensBow: {
+	DisplayName: Warden's Bow
+	Tooltip: ""
+	AltUse:
+		'''
+		Right click to shoot an arrow with a natural power
+		Arrows split into three splinters, dealing additional damage
+		The splinters and the arrow both have a decent chance to inflict Rooted
+		'''
+}
+
+RootedAmulet: {
+	DisplayName: Rooted Amulet
+	Tooltip: ""
+}

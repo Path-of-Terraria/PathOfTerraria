@@ -74,7 +74,7 @@ public static class PoTItemHelper
 		PoTInstanceItemData data = item.GetInstanceData();
 
 		data.Affixes.Clear();
-		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
+		data.Affixes.AddRange(GenerateImplicits.Invoke(item));
 		data.ImplicitCount = data.Affixes.Count;
 
 		for (int i = 0; i < GetAffixCount(item); i++)
@@ -153,7 +153,7 @@ public static class PoTItemHelper
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
-			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
+			//player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}
 
@@ -178,6 +178,21 @@ public static class PoTItemHelper
 	}
 
 	public static int GetMaxAffixCounts(ItemRarity rarity)
+	{
+		return rarity switch
+		{
+			ItemRarity.Magic => 2,
+			ItemRarity.Rare => 4,
+			_ => 0
+		};
+	}
+
+	/// <summary>
+	/// Gets the max amount of affixes a mob can have based on the rarity.
+	/// </summary>
+	/// <param name="rarity">Rarity of the mob.</param>
+	/// <returns>How many affixes the mob can have.</returns>
+	public static int GetMaxMobAffixCounts(ItemRarity rarity)
 	{
 		return rarity switch
 		{

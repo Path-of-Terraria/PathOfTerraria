@@ -7,6 +7,7 @@ internal class BaseLifeAffix : ItemAffix
 		modifier.MaximumLife.Base += Value;
 	}
 }
+
 internal class AddedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
@@ -14,6 +15,7 @@ internal class AddedLifeAffix : ItemAffix
 		modifier.MaximumLife += Value / 100;
 	}
 }
+
 internal class MultipliedLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
@@ -21,11 +23,17 @@ internal class MultipliedLifeAffix : ItemAffix
 		modifier.MaximumLife *= 1 + Value / 100;
 	}
 }
+
 internal class FlatLifeAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaximumLife.Flat += Value;
+	}
+
+	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	{
+		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
 	}
 }
 
