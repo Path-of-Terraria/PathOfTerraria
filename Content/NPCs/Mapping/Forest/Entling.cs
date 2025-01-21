@@ -54,7 +54,7 @@ internal class Entling : ModNPC
 
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 3));
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 12, NPCHitEffects.OnDeath));
-				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<Ent.EntDust>(), 2, NPCHitEffects.OnDeath));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 2, NPCHitEffects.OnDeath));
 			}
 		);
 	}

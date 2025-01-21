@@ -592,3 +592,8 @@ ClumsyEntling: {
 	DisplayName: Clumsy Entling
 	Entry: Sometimes, you have a bad day and you trip. This guy has a bad day very, very often. Be thankful, they're here to steal your stuff.
 }
+
+Grovetender: {
+	DisplayName: Elder Grovetender
+	Entry: This is the Entling that never died. For one reason or another, it lived so long; from Entling to Ent to Grovetender to now. Rooted in place, it supplants itself and its brethren with a bevvy of magical powers of the nature around it.
+}
