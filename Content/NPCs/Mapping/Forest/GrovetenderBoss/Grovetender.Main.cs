@@ -68,6 +68,7 @@ internal partial class Grovetender : ModNPC
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
 		NPC.boss = true;
+		NPC.hide = true;
 
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
@@ -88,6 +89,11 @@ internal partial class Grovetender : ModNPC
 	public override bool CheckActive()
 	{
 		return false;
+	}
+
+	public override void DrawBehind(int index)
+	{
+		Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
 	}
 
 	public override bool? CanBeHitByItem(Player player, Item item)
@@ -122,6 +128,8 @@ internal partial class Grovetender : ModNPC
 			if (!Initialized)
 			{
 				InitPoweredRunestones();
+
+				NPC.position = NPC.position.ToTileCoordinates().ToWorldCoordinates(0, 0);
 
 				Initialized = true;
 			}
