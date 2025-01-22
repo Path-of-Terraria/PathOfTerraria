@@ -31,7 +31,6 @@ internal class GroveBoulder : ModProjectile
 		Projectile.Size = new(44);
 		Projectile.penetrate = -1;
 		Projectile.extraUpdates = 1;
-		Projectile.tileCollide = false;
 	}
 
 	public override void AI()

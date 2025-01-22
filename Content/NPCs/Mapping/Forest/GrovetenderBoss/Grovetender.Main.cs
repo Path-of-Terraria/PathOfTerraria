@@ -22,6 +22,7 @@ internal partial class Grovetender : ModNPC
 		Asleep,
 		Idle,
 		BoulderThrow,
+		RainProjectiles,
 	}
 
 	public Player Target => Main.player[NPC.target];
@@ -128,13 +129,17 @@ internal partial class Grovetender : ModNPC
 
 			if (Timer > 180)
 			{
-				State = AIState.BoulderThrow;
+				State = AIState.RainProjectiles;
 				Timer = 0;
 			}
 		}
 		else if (State == AIState.BoulderThrow)
 		{
 			BoulderThrowBehaviour();
+		}
+		else if (State == AIState.RainProjectiles)
+		{
+			RainProjectileBehaviour();
 		}
 
 		UpdatePoweredRunestones();

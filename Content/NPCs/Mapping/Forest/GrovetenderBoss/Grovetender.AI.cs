@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Content.Skills.Magic;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -62,6 +61,33 @@ internal partial class Grovetender : ModNPC
 
 			State = AIState.Idle;
 			Timer = 0;
+		}
+	}
+
+	private void RainProjectileBehaviour()
+	{
+		Timer++;
+
+		if (Timer > 20 && Timer < 120 && Timer % 3 == 0)
+		{
+			int x = (int)NPC.Center.X / 16;
+			int y = (int)NPC.Center.Y / 16;
+
+			while (!Main.tile[x, y].HasTile || !Main.tile[x, y].HasUnactuatedTile || Main.tile[x, y].TileType is not TileID.LivingWood and not TileID.LeafBlock)
+			{
+				y--;
+			}
+
+			y++;
+
+			var vel = new Vector2(0, Main.rand.NextFloat(1, 5));
+			Vector2 position = new Vector2(x, y).ToWorldCoordinates();
+			Projectile.NewProjectile(NPC.GetSource_FromAI(), position, vel, ModContent.ProjectileType<FallingStick>(), ModeUtils.ProjectileDamage(30), 1);
+		}
+		else if (Timer > 160)
+		{
+			Timer = 0;
+			State = AIState.Idle;
 		}
 	}
 
