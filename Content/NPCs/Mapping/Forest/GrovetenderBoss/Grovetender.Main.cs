@@ -1,8 +1,11 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Content.Items.Gear.Amulets.AddedLife;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using ReLogic.Content;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -10,12 +13,15 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 
-internal class Grovetender : ModNPC
+internal partial class Grovetender : ModNPC
 {
 	private static Asset<Texture2D> Glow = null;
 
 	public enum AIState
 	{
+		Asleep,
+		Idle,
+		BoulderThrow,
 	}
 
 	public Player Target => Main.player[NPC.target];
@@ -26,15 +32,27 @@ internal class Grovetender : ModNPC
 		set => NPC.ai[0] = (float)value;
 	}
 
+	private ref float Timer => ref NPC.ai[1];
+
+	private int ControlledWhoAmI
+	{
+		get => (int)NPC.ai[2];
+		set => NPC.ai[2] = value;
+	}
+
+	private bool Initialized
+	{
+		get => NPC.ai[3] == 1;
+		set => NPC.ai[3] = value ? 1 : 0;
+	}
+
+	private readonly Dictionary<Point16, int> poweredRunestonePositions = [];
+
 	public override void SetStaticDefaults()
 	{
 		//Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
-
-		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
-		{
-			Velocity = 2f
-		};
-		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+		
+		NPCID.Sets.MustAlwaysDraw[Type] = true;
 	}
 
 	public override void SetDefaults()
@@ -50,20 +68,30 @@ internal class Grovetender : ModNPC
 		NPC.noGravity = true;
 		NPC.boss = true;
 
-		//NPC.TryEnableComponent<NPCHitEffects>(
-		//	c =>
-		//	{
-		//		for (int i = 0; i < 6; ++i)
-		//		{
-		//			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_" + i, 1, NPCHitEffects.OnDeath));
-		//		}
+		NPC.TryEnableComponent<NPCHitEffects>(
+			c =>
+			{
+				//for (int i = 0; i < 6; ++i)
+				//{
+				//	c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_" + i, 1, NPCHitEffects.OnDeath));
+				//}
 
-		//		c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 5));
-		//		c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 1));
-		//		c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 20, NPCHitEffects.OnDeath));
-		//		c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 10, NPCHitEffects.OnDeath));
-		//	}
-		//);
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 5));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 1));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 20, NPCHitEffects.OnDeath));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 10, NPCHitEffects.OnDeath));
+			}
+		);
+	}
+
+	public override bool? CanBeHitByItem(Player player, Item item)
+	{
+		return State != AIState.Asleep ? null : false;
+	}
+
+	public override bool? CanBeHitByProjectile(Projectile projectile)
+	{
+		return State != AIState.Asleep ? null : false;
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
@@ -82,6 +110,34 @@ internal class Grovetender : ModNPC
 	{
 		Lighting.AddLight(NPC.Center - new Vector2(30, 10), new Vector3(0.5f, 0.5f, 0.25f));
 		Lighting.AddLight(NPC.Center + new Vector2(30, -10), new Vector3(0.5f, 0.5f, 0.25f));
+
+		if (State == AIState.Asleep)
+		{
+			if (!Initialized)
+			{
+				InitPoweredRunestones();
+
+				Initialized = true;
+			}
+
+			State = AIState.Idle;
+		}
+		else if (State == AIState.Idle)
+		{
+			Timer++;
+
+			if (Timer > 180)
+			{
+				State = AIState.BoulderThrow;
+				Timer = 0;
+			}
+		}
+		else if (State == AIState.BoulderThrow)
+		{
+			BoulderThrowBehaviour();
+		}
+
+		UpdatePoweredRunestones();
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
@@ -95,11 +151,11 @@ internal class Grovetender : ModNPC
 		SpriteEffects effect = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		Vector2 position = NPC.Center - screenPos - new Vector2(-20, -NPC.gfxOffY + 200);
 
-		for (int i = 0; i < tex.Width / 16; ++i)
+		for (int i = 0; i < tex.Width / 16 + 1; ++i)
 		{
-			for (int j = 0; j < tex.Height / 16; ++j)
+			for (int j = 0; j < tex.Height / 16 + 1; ++j)
 			{
-				Rectangle frame = new Rectangle(NPC.frame.X + i * 16, NPC.frame.Y + j * 16, 16, 16);
+				var frame = new Rectangle(NPC.frame.X + i * 16, NPC.frame.Y + j * 16, 16, 16);
 				Vector2 drawPos = position + new Vector2(i * 16, j * 16);
 				Color color = Lighting.GetColor((drawPos + screenPos - new Vector2(200, 340)).ToTileCoordinates());
 
