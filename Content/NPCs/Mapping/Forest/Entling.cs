@@ -86,7 +86,7 @@ internal class Entling : ModNPC
 		targetXVel *= 2 - NPC.scale;
 		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, targetXVel, 0.03f);
 
-		if (!LastOnGround && NPC.velocity.Y == 0)
+		if (!LastOnGround && NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 3)
 		{
 			for (int i = 0; i < 2; ++i)
 			{
@@ -111,6 +111,11 @@ internal class Entling : ModNPC
 
 	private bool ShouldJump()
 	{
+		if (Collision.SolidCollision(NPC.position - new Vector2(0, 16), NPC.width, 16))
+		{
+			return false;
+		}
+
 		int dir = NPC.Center.X < Target.Center.X ? 1 : -1;
 		bool wall = dir == -1 ? Collision.SolidCollision(NPC.TopLeft - new Vector2(6, 0), 6, NPC.height - 18) : Collision.SolidCollision(NPC.TopRight, 6, NPC.height - 18);
 		bool gap = dir == -1 ? !Collision.SolidCollision(NPC.BottomLeft - new Vector2(16, 0), 14, 14) : !Collision.SolidCollision(NPC.BottomRight + new Vector2(2, 0), 14, 14);

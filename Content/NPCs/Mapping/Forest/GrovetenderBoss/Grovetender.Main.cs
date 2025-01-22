@@ -85,6 +85,11 @@ internal partial class Grovetender : ModNPC
 		);
 	}
 
+	public override bool CheckActive()
+	{
+		return false;
+	}
+
 	public override bool? CanBeHitByItem(Player player, Item item)
 	{
 		return State != AIState.Asleep ? null : false;
