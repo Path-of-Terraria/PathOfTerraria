@@ -7,6 +7,8 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 
 internal partial class Grovetender : ModNPC
 {
+	public const int MaxRunestoneWait = 60 * 2;
+
 	private void InitPoweredRunestones()
 	{
 		Point16 center = NPC.Center.ToTileCoordinates16();
@@ -36,28 +38,29 @@ internal partial class Grovetender : ModNPC
 			int type = ModContent.ProjectileType<GroveBoulder>();
 			ControlledWhoAmI = Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, type, ModeUtils.ProjectileDamage(80), 8, Main.myPlayer);
 		}
-		else if (Timer > 1 && Timer < 120)
+		else if (Timer > 1 && Timer < 100)
 		{
 			Projectile proj = Main.projectile[ControlledWhoAmI];
 			Vector2 targetPos = NPC.Center - new Vector2(0, 300);
 
-			if (Timer > 100 && Timer < 110)
+			if (Timer > 80 && Timer < 90)
 			{
-				targetPos += proj.DirectionFrom(Target.Center) * 340 * ((Timer - 100) / 10f);
+				targetPos += proj.DirectionFrom(Target.Center) * 340 * ((Timer - 80) / 10f);
 			}
-			else if (Timer >= 110)
+			else if (Timer >= 90)
 			{
-				targetPos += proj.DirectionFrom(Target.Center) * 340 * (1 - (Timer - 110) / 10f);
+				targetPos += proj.DirectionFrom(Target.Center) * 340 * (1 - (Timer - 90) / 10f);
 			}
 
-			proj.Center = Vector2.Lerp(proj.Center, targetPos, 0.04f);
+			proj.Center = Vector2.Lerp(proj.Center, targetPos, 0.06f);
 			proj.velocity = Vector2.Zero;
 			(proj.ModProjectile as GroveBoulder).Controlled = true;
 		}
-		else if (Timer == 120)
+		else if (Timer == 100)
 		{
 			Projectile proj = Main.projectile[ControlledWhoAmI];
 			proj.velocity = proj.GetArcVel(Target.Center, GroveBoulder.Gravity, 9);
+			(proj.ModProjectile as GroveBoulder).Controlled = false;
 
 			State = AIState.Idle;
 			Timer = 0;

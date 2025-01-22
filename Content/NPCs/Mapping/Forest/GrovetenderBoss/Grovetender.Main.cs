@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
 using PathOfTerraria.Content.Items.Gear.Amulets.AddedLife;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using ReLogic.Content;
@@ -13,6 +14,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 
+[AutoloadBossHead]
 internal partial class Grovetender : ModNPC
 {
 	private static Asset<Texture2D> Glow = null;
@@ -47,7 +49,7 @@ internal partial class Grovetender : ModNPC
 		set => NPC.ai[3] = value ? 1 : 0;
 	}
 
-	private readonly Dictionary<Point16, int> poweredRunestonePositions = [];
+	internal readonly Dictionary<Point16, int> poweredRunestonePositions = [];
 
 	public override void SetStaticDefaults()
 	{
@@ -60,8 +62,8 @@ internal partial class Grovetender : ModNPC
 	{
 		NPC.Size = new Vector2(233, 183);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 20000;
-		NPC.defense = 50;
+		NPC.lifeMax = 12000;
+		NPC.defense = 45;
 		NPC.damage = 0;
 		NPC.knockBackResist = 0f;
 		NPC.HitSound = SoundID.NPCHit30;
@@ -140,9 +142,13 @@ internal partial class Grovetender : ModNPC
 		{
 			Timer++;
 
-			if (Timer > 180)
+			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true; // Captures everyone in the arena with the blocker trees
+
+			if (Timer > 150)
 			{
-				State = AIState.RainProjectiles;
+				NPC.TargetClosest();
+
+				State = NPC.DistanceSQ(Target.Center) < 600 * 600 ? AIState.BoulderThrow : AIState.RainProjectiles;
 				Timer = 0;
 			}
 		}

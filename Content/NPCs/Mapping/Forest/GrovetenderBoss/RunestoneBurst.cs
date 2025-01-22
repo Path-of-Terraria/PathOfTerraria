@@ -7,6 +7,7 @@ internal class RunestoneBurst : ModProjectile
 	public override string Texture => "Terraria/Images/Projectile_0";
 
 	private ref float Timer => ref Projectile.ai[0];
+	private ref float DecaySpeed => ref Projectile.ai[1];
 
 	public override void SetDefaults()
 	{
@@ -18,11 +19,15 @@ internal class RunestoneBurst : ModProjectile
 
 	public override void AI()
 	{
-		Timer++;
+		if (DecaySpeed == 0)
+		{
+			DecaySpeed = 0.1f;
+		}
 
-		Timer = 30;
+		Timer += DecaySpeed;
+		DecaySpeed *= 0.94f;
 
-		if (Timer > 60)
+		if (DecaySpeed <= 0.001f)
 		{
 			Projectile.Kill();
 			return;
@@ -33,10 +38,9 @@ internal class RunestoneBurst : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		Vector2 position = Projectile.position;
-		float timer = Timer * 0.2f;
-
-		Vector3 topLeft = new Vector3(position - new Vector2(timer), 0);
+		Vector2 position = Projectile.position - Main.screenPosition;
+		float timer = Timer * 300f;
+		var topLeft = new Vector3(position - new Vector2(timer), 0);
 		Color color = Color.White;
 
 		short[] indices = [0, 1, 2, 1, 3, 2];
@@ -53,10 +57,13 @@ internal class RunestoneBurst : ModProjectile
 		var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
 		Matrix view = Main.GameViewMatrix.TransformationMatrix;
 		Matrix renderMatrix = view * projection;
+		float opacity = MathF.Min(DecaySpeed / 0.05f, 1);
+		Vector4 drawColor = Vector4.Lerp(new Vector4(65, 131, 224, 255), new Vector4(60, 50, 24, 255), 1 - opacity) / 255f;
 
 		foreach (EffectPass pass in effect.CurrentTechnique.Passes)
 		{
-			effect.Parameters["baseColor"].SetValue(Color.White.ToVector4() * 0.54f);
+			effect.Parameters["baseColor"].SetValue(drawColor * 0.9f * opacity);
+			effect.Parameters["width"].SetValue(40 / MathF.Pow(timer * 2f, 8f));
 			effect.Parameters["uWorldViewProjection"].SetValue(renderMatrix);
 			pass.Apply();
 

@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Tiles;
+using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using ReLogic.Content;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -35,6 +37,27 @@ internal class Runestone : ModTile
 		Vector2 worldPos = new Vector2(i, j).ToWorldCoordinates();
 		int plr = Player.FindClosest(worldPos - new Vector2(8), 16, 16);
 		float alpha = 1 - MathHelper.Clamp(Main.player[plr].Distance(worldPos) / 250f, 0, 1f);
+
+		if (ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI != -1)
+		{
+			const float MaxDistance = 200;
+
+			NPC npc = Main.npc[ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI];
+			var tender = npc.ModNPC as Grovetender;
+
+			foreach (Point16 poweredRunestonePos in tender.poweredRunestonePositions.Keys)
+			{
+				Vector2 pos = poweredRunestonePos.ToWorldCoordinates();
+
+				float distance = MathHelper.Clamp(1 - pos.Distance(new Vector2(i, j) * 16) / MaxDistance, 0, 1);
+				float newAlpha = tender.poweredRunestonePositions[poweredRunestonePos] / (float)Grovetender.MaxRunestoneWait * distance;
+
+				if (alpha < newAlpha)
+				{
+					alpha = newAlpha;
+				}
+			}
+		}
 
 		if (OpenExtensions.GetOpenings(i, j, false) != OpenFlags.None)
 		{

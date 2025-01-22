@@ -33,6 +33,11 @@ internal class GroveBoulder : ModProjectile
 		Projectile.extraUpdates = 1;
 	}
 
+	public override bool CanHitPlayer(Player target)
+	{
+		return !Controlled;
+	}
+
 	public override void AI()
 	{
 		Projectile.tileCollide = !Controlled;
@@ -53,8 +58,6 @@ internal class GroveBoulder : ModProjectile
 		{
 			Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone, Projectile.velocity.X, Projectile.velocity.Y);
 		}
-
-		Controlled = false;
 	}
 
 	public override void OnKill(int timeLeft)

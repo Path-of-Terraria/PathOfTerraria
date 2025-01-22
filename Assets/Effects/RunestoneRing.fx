@@ -1,5 +1,6 @@
 matrix uWorldViewProjection;
 float4 baseColor;
+float width;
 
 struct VertexShaderInput
 {
@@ -34,12 +35,15 @@ float invlerp(float from, float to, float value)
 
 float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 {
-	return float4(1, 1, 1, 1);
- //   float2 uv = input.TextureCoordinates;
-	//float dist = distance(uv, float2(0.5, 0.5));
-	//float lerp = invlerp(0.45, 0.5, dist);
+	float2 uv = input.TextureCoordinates;
+	float dist = distance(uv, float2(0.5, 0.5));
 	
-	//return baseColor * lerp;
+	if (dist > 0.4 && dist < 0.4 + width)
+	{
+		return baseColor * (1 - ((abs(dist - 0.425)) / 0.025));
+	}
+	
+	return float4(0, 0, 0, 0);
 }
 
 technique Technique1
