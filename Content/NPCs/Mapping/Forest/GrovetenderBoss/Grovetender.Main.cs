@@ -5,6 +5,7 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
 using PathOfTerraria.Content.Items.Gear.Amulets.AddedLife;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
+using PathOfTerraria.Content.Tiles.Maps.Forest;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -17,6 +18,8 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 [AutoloadBossHead]
 internal partial class Grovetender : ModNPC
 {
+	private static HashSet<int> ValidRainTiles => [TileID.LivingWood, TileID.LeafBlock, ModContent.TileType<LivingWoodBlocker>()];
+
 	private static Asset<Texture2D> Glow = null;
 
 	public enum AIState
@@ -49,7 +52,7 @@ internal partial class Grovetender : ModNPC
 		set => NPC.ai[3] = value ? 1 : 0;
 	}
 
-	internal readonly Dictionary<Point16, int> poweredRunestonePositions = [];
+	internal readonly Dictionary<Point16, int> PoweredRunestonePositions = [];
 
 	public override void SetStaticDefaults()
 	{
@@ -181,7 +184,7 @@ internal partial class Grovetender : ModNPC
 			{
 				var frame = new Rectangle(NPC.frame.X + i * 16, NPC.frame.Y + j * 16, 16, 16);
 				Vector2 drawPos = position + new Vector2(i * 16, j * 16);
-				Color color = Lighting.GetColor((drawPos + screenPos - new Vector2(200, 340)).ToTileCoordinates());
+				Color color = NPC.IsABestiaryIconDummy ? Color.White : Lighting.GetColor((drawPos + screenPos - new Vector2(200, 340)).ToTileCoordinates());
 
 				Main.EntitySpriteDraw(tex, drawPos, frame, color, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
 			}

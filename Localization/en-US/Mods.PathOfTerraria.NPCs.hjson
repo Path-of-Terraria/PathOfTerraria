@@ -597,3 +597,8 @@ Grovetender: {
 	DisplayName: Elder Grovetender
 	Entry: This is the Entling that never died. For one reason or another, it lived so long; from Entling to Ent to Grovetender to now. Rooted in place, it supplants itself and its brethren with a bevvy of magical powers of the nature around it.
 }
+
+CanopyBird: {
+	DisplayName: Canopy Bird
+	Entry: A bird of prey with an unusual size, the Canopy Bird seeks to keep any and all creatures off of the great canopy it resides on. They are small, but surprisingly durable, and most of all, innumerable.
+}

@@ -24,6 +24,11 @@ internal class FallingEntling : ModProjectile
 		Projectile.tileCollide = false;
 	}
 
+	public override bool CanHitPlayer(Player target)
+	{
+		return WaitTimer <= 0;
+	}
+
 	public override void AI()
 	{
 		Projectile.frame = (int)Frame;

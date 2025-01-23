@@ -24,6 +24,11 @@ internal class FallingStick : ModProjectile
 		Projectile.frame = Main.rand.Next(3);
 	}
 
+	public override bool CanHitPlayer(Player target)
+	{
+		return WaitTimer <= 0;
+	}
+
 	public override void AI()
 	{
 		if (WaitTimer-- > 0)

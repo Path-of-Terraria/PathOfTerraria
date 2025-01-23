@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -7,7 +8,7 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 
 internal partial class Grovetender : ModNPC
 {
-	public const int MaxRunestoneWait = 60 * 2;
+	public const int MaxRunestoneWait = 60 * 4;
 
 	private void InitPoweredRunestones()
 	{
@@ -21,7 +22,7 @@ internal partial class Grovetender : ModNPC
 
 				if (tile.HasTile && tile.TileType == ModContent.TileType<PoweredRunestone>())
 				{
-					poweredRunestonePositions.Add(new Point16(i, j), 0);
+					PoweredRunestonePositions.Add(new Point16(i, j), 0);
 				}
 			}
 		}
@@ -78,7 +79,7 @@ internal partial class Grovetender : ModNPC
 				int x = (int)NPC.Center.X / 16 + Main.rand.Next(-80, 80);
 				int y = (int)NPC.Center.Y / 16;
 
-				while (!Main.tile[x, y].HasTile || !Main.tile[x, y].HasUnactuatedTile || Main.tile[x, y].TileType is not TileID.LivingWood and not TileID.LeafBlock)
+				while (!Main.tile[x, y].HasTile || !Main.tile[x, y].HasUnactuatedTile || ValidRainTiles.Contains(Main.tile[x, y].TileType))
 				{
 					y--;
 
@@ -100,6 +101,7 @@ internal partial class Grovetender : ModNPC
 				Tile above = Main.tile[x, y - 1];
 				int count = 12;
 				bool canEntDust = false;
+				int damage = ModeUtils.ProjectileDamage(50);
 
 				if (above.TileType == TileID.LeafBlock && Timer is 49 or 105)
 				{
@@ -107,12 +109,12 @@ internal partial class Grovetender : ModNPC
 					canEntDust = true;
 
 					int type = ModContent.ProjectileType<FallingEntling>();
-					Projectile.NewProjectile(NPC.GetSource_FromAI(), position, vel, type, ModeUtils.ProjectileDamage(30), 1, Main.myPlayer, 120, Main.rand.Next(3));
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), position, vel, type, damage, 1, Main.myPlayer, 120, Main.rand.Next(3));
 				}
 				else
 				{
 					int type = above.TileType == TileID.LivingWood ? ModContent.ProjectileType<FallingStick>() : ModContent.ProjectileType<FallingBranch>();
-					Projectile.NewProjectile(NPC.GetSource_FromAI(), position, vel, type, ModeUtils.ProjectileDamage(30), 1, Main.myPlayer, 120);
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), position, vel, type, damage, 1, Main.myPlayer, 120);
 				}
 
 				for (int i = 0; i < count; ++i)
@@ -134,7 +136,7 @@ internal partial class Grovetender : ModNPC
 
 	private void UpdatePoweredRunestones()
 	{
-		foreach (Point16 position in poweredRunestonePositions.Keys)
+		foreach (Point16 position in PoweredRunestonePositions.Keys)
 		{
 			Vector2 pos = position.ToWorldCoordinates();
 			bool increase = false;
@@ -149,25 +151,28 @@ internal partial class Grovetender : ModNPC
 
 			if (increase)
 			{
-				poweredRunestonePositions[position]++;
+				PoweredRunestonePositions[position]++;
 
-				if (poweredRunestonePositions[position] > 60 * 8)
+				if (PoweredRunestonePositions[position] > MaxRunestoneWait)
 				{
-					poweredRunestonePositions[position] = 0;
+					PoweredRunestonePositions[position] = 0;
 
 					if (Main.netMode != NetmodeID.MultiplayerClient)
 					{
-						Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<RunestoneBurst>(), 0, 0, Main.myPlayer);
+						int damage = ModeUtils.ProjectileDamage(70);
+						Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<RunestoneBurst>(), damage, 0, Main.myPlayer);
 					}
+
+					SoundEngine.PlaySound(SoundID.Item100 with { PitchRange = (-0.2f, 0.2f) }, pos);
 				}
 			}
 			else
 			{
-				poweredRunestonePositions[position]--;
+				PoweredRunestonePositions[position]--;
 
-				if (poweredRunestonePositions[position] < 0)
+				if (PoweredRunestonePositions[position] < 0)
 				{
-					poweredRunestonePositions[position] = 0;
+					PoweredRunestonePositions[position] = 0;
 				}
 			}
 		}

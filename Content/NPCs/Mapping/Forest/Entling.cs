@@ -2,8 +2,10 @@
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
 using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -44,6 +46,11 @@ internal class Entling : ModNPC
 		NPC.defense = 10;
 		NPC.damage = 35;
 		NPC.scale = Main.rand.NextFloat(0.8f, 1.2f);
+
+		if (!Main.dedServ)
+		{
+			NPC.HitSound = new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/GrassHit") with { Volume = 0.6f, PitchRange = (-0.3f, 0.3f) };
+		}
 
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
@@ -99,6 +106,7 @@ internal class Entling : ModNPC
 		if (ShouldJump())
 		{
 			NPC.velocity.Y = -8;
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/MiscJump") with { Volume = 0.2f, PitchRange = (0.1f, 0.5f) });
 
 			for (int i = 0; i < 2; ++i)
 			{
@@ -134,6 +142,11 @@ internal class Entling : ModNPC
 		}
 
 		return (wall || gap || underPlayer) && NPC.velocity.Y == 0;
+	}
+
+	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
+	{
+		target.AddBuff(ModContent.BuffType<RootedDebuff>(), 20);
 	}
 
 	public override void FindFrame(int frameHeight)
@@ -224,6 +237,8 @@ internal class ClumsyEntling : Entling
 				{
 					Dust.NewDust(NPC.BottomLeft, NPC.width, 4, DustID.CorruptionThorns, Main.rand.NextFloat(-4, 4), Main.rand.NextFloat(-8, -5));
 				}
+
+				SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/GrassHit") with { Volume = 0.6f, PitchRange = (-0.3f, 0.3f) });
 			}
 		}
 		else

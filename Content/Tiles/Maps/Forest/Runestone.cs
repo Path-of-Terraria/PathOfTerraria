@@ -37,6 +37,7 @@ internal class Runestone : ModTile
 		Vector2 worldPos = new Vector2(i, j).ToWorldCoordinates();
 		int plr = Player.FindClosest(worldPos - new Vector2(8), 16, 16);
 		float alpha = 1 - MathHelper.Clamp(Main.player[plr].Distance(worldPos) / 250f, 0, 1f);
+		Color baseColor = Color.White;
 
 		if (ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI != -1)
 		{
@@ -45,23 +46,24 @@ internal class Runestone : ModTile
 			NPC npc = Main.npc[ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI];
 			var tender = npc.ModNPC as Grovetender;
 
-			foreach (Point16 poweredRunestonePos in tender.poweredRunestonePositions.Keys)
+			foreach (Point16 poweredRunestonePos in tender.PoweredRunestonePositions.Keys)
 			{
 				Vector2 pos = poweredRunestonePos.ToWorldCoordinates();
 
 				float distance = MathHelper.Clamp(1 - pos.Distance(new Vector2(i, j) * 16) / MaxDistance, 0, 1);
-				float newAlpha = tender.poweredRunestonePositions[poweredRunestonePos] / (float)Grovetender.MaxRunestoneWait * distance;
+				float newAlpha = tender.PoweredRunestonePositions[poweredRunestonePos] / (float)Grovetender.MaxRunestoneWait * distance;
 
 				if (alpha < newAlpha)
 				{
 					alpha = newAlpha;
+					baseColor = Color.Lerp(Color.White, Color.OrangeRed, newAlpha);
 				}
 			}
 		}
 
 		if (OpenExtensions.GetOpenings(i, j, false) != OpenFlags.None)
 		{
-			this.DrawSloped(i, j, Glow.Value, Color.White * alpha, Vector2.Zero);
+			this.DrawSloped(i, j, Glow.Value, baseColor * alpha, Vector2.Zero);
 		}
 		else
 		{
@@ -70,7 +72,7 @@ internal class Runestone : ModTile
 				return MathF.Pow(MathF.Sin(Main.GameUpdateCount * 0.03f + offset + i * MathHelper.PiOver2 + j * MathHelper.PiOver2 + i + j * 0.3f), 2) * 0.75f;
 			}
 
-			var color = new Color((float)(GetTime(0.1f) % 1), (float)(GetTime(0.2f) % 1), (float)(GetTime(-0.3f) % 1));
+			Color color = new Color((float)(GetTime(0.1f) % 1), (float)(GetTime(0.2f) % 1), (float)(GetTime(-0.3f) % 1)).MultiplyRGB(baseColor);
 			this.DrawSloped(i, j, Glow.Value, color * alpha, Vector2.Zero);
 		}
 	}

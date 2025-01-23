@@ -283,6 +283,11 @@ internal class ForestArea : MappingWorld
 				WorldGen.PlaceTile(pos.X, pos.Y - 1, WorldGen.genRand.NextBool() ? TileID.Plants2 : TileID.Plants, true, true, -1);
 			}
 		}
+
+		//if (flags != OpenFlags.None)
+		//{
+			
+		//}
 	}
 
 	private static bool SpawnBoulder(int i, int j)
@@ -311,7 +316,7 @@ internal class ForestArea : MappingWorld
 		Main.worldSurface = 240;
 		Main.rockLayer = 270;
 
-		LeftSpawn = WorldGen.genRand.NextBool(2);
+		LeftSpawn = Main.rand.NextBool(2);
 		LastTreeX = LeftSpawn ? 200 : Width - 200;
 		Main.spawnTileX = LeftSpawn ? 60 : Width - 60;
 
@@ -329,7 +334,7 @@ internal class ForestArea : MappingWorld
 
 			if (i > 200 && i < Width - 200)
 			{
-				if (i == Width / 10 * 3 || i == Width / 10 * 7)
+				if (i == Width / 10 * 3 || i == Width / 10 * 7 && WorldGen.genRand.NextBool())
 				{
 					trees.Add(i);
 					LastTreeX = i;
