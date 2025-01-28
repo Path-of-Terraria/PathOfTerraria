@@ -5,6 +5,7 @@ using System.Linq;
 using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
+using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -64,12 +65,12 @@ public abstract class Affix : ILocalizedModType
 		MinValue = tag.GetFloat("minValue");
 	}
 
-	public void NetSend(BinaryWriter writer)
+	public virtual void NetSend(BinaryWriter writer)
 	{
 		writer.Write(AffixHandler.IndexFromItemAffix(this));
 
 		writer.Write(Value);
-		writer.Write(MaxValue); // it seems that min and max get swapped here...
+		writer.Write(MaxValue);
 		writer.Write(MinValue);
 	}
 
@@ -146,7 +147,26 @@ public abstract class Affix : ILocalizedModType
 		}
 
 		var affix = (ItemAffix)Activator.CreateInstance(t);
+		affix.NetReceive(reader);
+		return affix;
+	}
 
+	/// <summary>
+	/// Generates an affix from a binary reader, used on load to re-populate affixes
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	internal static MobAffix RecieveMobAffix(BinaryReader reader)
+	{
+		int aId = reader.ReadInt32();
+		Type t = AffixHandler.MobAffixTypeFromIndex(aId);
+		if (t is null)
+		{
+			PoTMod.Instance.Logger.Error($"Could not load affix of internal id {aId}");
+			return null;
+		}
+
+		var affix = (MobAffix)Activator.CreateInstance(t);
 		affix.NetReceive(reader);
 		return affix;
 	}
@@ -236,6 +256,23 @@ internal class AffixHandler : ILoadable
 		}
 
 		return _itemAffixes.IndexOf(a);
+	}
+
+	public static Type MobAffixTypeFromIndex(int idx)
+	{
+		return _mobAffixes[idx].GetType();
+	}
+
+	public static int IndexFromMobAffix(MobAffix affix)
+	{
+		MobAffix a = _mobAffixes.First(a => affix.GetType() == a.GetType());
+
+		if (a is null)
+		{
+			return 0;
+		}
+
+		return _mobAffixes.IndexOf(a);
 	}
 
 	/// <summary>
