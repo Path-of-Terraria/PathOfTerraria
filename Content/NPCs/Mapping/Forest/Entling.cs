@@ -7,6 +7,7 @@ using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -44,8 +45,8 @@ internal class Entling : ModNPC
 	{
 		NPC.Size = new Vector2(26, 32);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 110;
-		NPC.defense = 10;
+		NPC.lifeMax = 80;
+		NPC.defense = 5;
 		NPC.damage = 35;
 		NPC.scale = Main.rand.NextFloat(0.8f, 1.2f);
 
@@ -70,8 +71,8 @@ internal class Entling : ModNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.life = ModeUtils.ByMode(225, 350, 500);
-		NPC.damage = ModeUtils.ByMode(5, 7, 10);
+		NPC.life = ModeUtils.ByMode(60, 100, 150);
+		NPC.damage = ModeUtils.ByMode(40, 55, 80);
 		NPC.knockBackResist = ModeUtils.ByMode(2, 1.94f, 1.9f) - NPC.scale;
 	}
 
@@ -170,7 +171,17 @@ internal class Entling : ModNPC
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 	{
-		target.AddBuff(ModContent.BuffType<RootedDebuff>(), 20);
+		target.AddBuff(ModContent.BuffType<RootedDebuff>(), 60);
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write((Half)NPC.scale);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		NPC.scale = (float)reader.ReadHalf();
 	}
 
 	public override void FindFrame(int frameHeight)
@@ -191,7 +202,7 @@ internal class Entling : ModNPC
 	{
 		SpriteEffects effect = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		Vector2 position = NPC.Center - screenPos - new Vector2(0, -NPC.gfxOffY);
-		Main.EntitySpriteDraw(GlowsById[Type].Value, position, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
+		Main.EntitySpriteDraw(GlowsById[Type].Value, position, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2f, NPC.scale, effect);
 	}
 }
 

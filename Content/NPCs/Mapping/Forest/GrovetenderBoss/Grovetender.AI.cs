@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using System.Collections.Generic;
@@ -29,6 +30,39 @@ internal partial class Grovetender : ModNPC
 					PoweredRunestonePositions.Add(new Point16(i, j), 0);
 				}
 			}
+		}
+	}
+
+	private void AsleepBehaviour()
+	{
+		NPC.TargetClosest();
+
+		if (!Initialized)
+		{
+			InitPoweredRunestones();
+
+			NPC.position = NPC.position.ToTileCoordinates().ToWorldCoordinates(0, 0);
+
+			Initialized = true;
+		}
+
+		bool anyPlayerFar = false;
+
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (player.DistanceSQ(NPC.Center) > 1000 * 1000)
+			{
+				anyPlayerFar = true;
+				break;
+			}
+		}
+
+		if (!anyPlayerFar)
+		{
+			State = AIState.Idle;
+
+			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true; // Captures everyone in the arena with the blocker trees
+			NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true; // But still allow drops
 		}
 	}
 
@@ -117,7 +151,7 @@ internal partial class Grovetender : ModNPC
 
 		int speed = SecondPhase ? 6 : 7;
 
-		if (Timer > 20 && Timer < 120 && Timer % 7 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+		if (Timer > 20 && Timer < 120 && Timer % speed == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			const int Variance = 80;
 
@@ -125,6 +159,12 @@ internal partial class Grovetender : ModNPC
 			{
 				int x = (int)(NPC.Center.X / 16f) + Main.rand.Next(-Variance, Variance);
 				int y = (int)(NPC.Center.Y / 16f) - 30;
+
+				if (Timer <= speed * 6)
+				{
+					x = (int)(Main.player[Main.rand.Next(Main.CurrentFrameFlags.ActivePlayersCount)].Center.X / 16f);
+					x += Main.rand.Next(-5, 5);
+				}
 
 				while (!Main.tile[x, y].HasTile || !Main.tile[x, y].HasUnactuatedTile || !ValidRainTiles.Contains(Main.tile[x, y].TileType))
 				{
@@ -148,7 +188,7 @@ internal partial class Grovetender : ModNPC
 				Tile above = Main.tile[x, y - 1];
 				int count = 12;
 				bool canEntDust = false;
-				int damage = ModeUtils.ProjectileDamage(50);
+				int damage = ModeUtils.ProjectileDamage(70);
 
 				if (above.TileType == TileID.LeafBlock && (Timer == speed * 7 || Timer == 15 * speed))
 				{
@@ -291,6 +331,16 @@ internal partial class Grovetender : ModNPC
 			{
 				_rootPositionsAndTimers[pos] += 4f;
 			}
+			else
+			{
+				_rootPositionsAndTimers[pos]--;
+			}
+
+			if (_rootPositionsAndTimers[pos] > 400)
+			{
+				Vector2 position = new((pos.X + 1 * 1.2f) * 16, (Main.maxTilesY - 40) * 16);
+				SpawnDust(position, false, 4);
+			}
 
 			if (_rootPositionsAndTimers[pos] > 600 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
@@ -307,10 +357,58 @@ internal partial class Grovetender : ModNPC
 		}
 	}
 
-	private static void SpawnDust(Vector2 position, bool noLight)
+	private static void SpawnDust(Vector2 position, bool noLight, float yMul = 1f)
 	{
-		Vector2 vel = new Vector2(0, -Main.rand.NextFloat(4, 7)).RotatedByRandom(0.1f);
+		Vector2 vel = new Vector2(0, -Main.rand.NextFloat(4, 7) * yMul).RotatedByRandom(0.1f);
 		var dust = Dust.NewDustPerfect(position, ModContent.DustType<EntDust>(), vel, 0, default, Main.rand.NextFloat(1, 1.3f));
 		dust.noLight = noLight;
+	}
+
+	private void UpdateCanopyBirds()
+	{
+		if (_canopyBirds.Count == 0)
+		{
+			for (int i = 0; i < 6; ++i)
+			{
+				_canopyBirds.Add(Main.maxNPCs - 1);
+			}
+		}
+
+		for (int i = 0; i < _canopyBirds.Count; i++)
+		{
+			int bird = _canopyBirds[i];
+			NPC npc = Main.npc[bird];
+
+			if (!npc.active || npc.type != ModContent.NPCType<CanopyBird>())
+			{
+				Vector2 pos = GetCanopyBirdPosition(i);
+				bird = NPC.NewNPC(NPC.GetSource_FromAI(), (int)pos.X, (int)pos.Y, ModContent.NPCType<CanopyBird>(), 0);
+				Main.npc[bird].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+
+				_canopyBirds[i] = bird;
+			}
+		}
+	}
+
+	private Vector2 GetCanopyBirdPosition(int i)
+	{
+		const int Variance = 80;
+
+		int x = (int)(NPC.Center.X / 16f) + (int)MathHelper.Lerp(-Variance, Variance, i / 5f);
+		int y = (int)(NPC.Center.Y / 16f) - 30;
+
+		while (!Main.tile[x, y].HasTile || !Main.tile[x, y].HasUnactuatedTile || !ValidRainTiles.Contains(Main.tile[x, y].TileType))
+		{
+			y--;
+
+			if (y < 20)
+			{
+				break;
+			}
+		}
+
+		y++;
+
+		return new Vector2(x, y - Main.rand.Next(2, 10)) * 16;
 	}
 }

@@ -46,7 +46,8 @@ internal class RunestoneBurst : ModProjectile
 		{
 			if (CanHitPlayer(player))
 			{
-				player.Hurt(PlayerDeathReason.ByCustomReason(this.GetLocalizedValue("DeathReasons." + Main.rand.Next(3))), Projectile.damage, 0, knockback: 0);
+				var deathReason = PlayerDeathReason.ByCustomReason(this.GetLocalization("DeathReasons." + Main.rand.Next(3)).Format(player.name));
+				player.Hurt(deathReason, Projectile.damage, 0, scalingArmorPenetration: 1f, knockback: 0);
 			}
 		}
 

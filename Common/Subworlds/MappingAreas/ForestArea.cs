@@ -128,7 +128,7 @@ internal class ForestArea : MappingWorld
 		{
 			y += StructureTools.AverageHeights(x, y, size.X, 2000, 2, out bool valid, [], []);
 
-			Point16 pos = StructureTools.PlaceByOrigin(path, new Point16(x, y + offsetY), origin);
+			Point16 pos = StructureTools.PlaceByOrigin(path, new Point16(x, y + offsetY), origin, null, false, true);
 
 			structures.Add(type);
 			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 10);
@@ -428,7 +428,7 @@ internal class ForestArea : MappingWorld
 		foreach (int x in trees)
 		{
 			string path = "Assets/Structures/MapAreas/ForestArea/Tree_" + WorldGen.genRand.Next(2);
-			Point16 pos = StructureTools.PlaceByOrigin(path, new Point16(x, FloorY - 10), new Vector2(0.5f, 0.75f));
+			Point16 pos = StructureTools.PlaceByOrigin(path, new Point16(x, FloorY - 10), new Vector2(0.5f, 0.75f), noSync: true);
 			Point16 size = StructureTools.GetSize(path);
 			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X + 20, pos.Y, size.X - 40, size.Y), 10);
 		}

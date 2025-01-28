@@ -67,6 +67,7 @@ internal partial class Grovetender : ModNPC
 	internal readonly Dictionary<Point16, float> PoweredRunestonePositions = [];
 
 	private readonly HashSet<int> _controlledWhoAmI = [];
+	private readonly List<int> _canopyBirds = [];
 	private readonly Dictionary<Point16, float> _rootPositionsAndTimers = [];
 
 	public override void SetStaticDefaults()
@@ -83,8 +84,8 @@ internal partial class Grovetender : ModNPC
 	{
 		NPC.Size = new Vector2(233, 183);
 		NPC.aiStyle = -1;
-		NPC.lifeMax = 12000;
-		NPC.defense = 45;
+		NPC.lifeMax = 13000;
+		NPC.defense = 10;
 		NPC.damage = 0;
 		NPC.knockBackResist = 0f;
 		NPC.HitSound = SoundID.NPCHit30;
@@ -153,35 +154,7 @@ internal partial class Grovetender : ModNPC
 
 		if (State == AIState.Asleep)
 		{
-			NPC.TargetClosest();
-
-			if (!Initialized)
-			{
-				InitPoweredRunestones();
-
-				NPC.position = NPC.position.ToTileCoordinates().ToWorldCoordinates(0, 0);
-
-				Initialized = true;
-			}
-
-			bool anyPlayerFar = false;
-
-			foreach (Player player in Main.ActivePlayers)
-			{
-				if (player.DistanceSQ(NPC.Center) > 1000 * 1000)
-				{
-					anyPlayerFar = true;
-					break;
-				}
-			}
-
-			if (!anyPlayerFar)
-			{
-				State = AIState.Idle;
-
-				NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true; // Captures everyone in the arena with the blocker trees
-				NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true; // But still allow drops
-			}
+			AsleepBehaviour();
 		}
 		else if (State == AIState.Idle)
 		{
@@ -215,7 +188,11 @@ internal partial class Grovetender : ModNPC
 			RootDigBehaviour();
 		}
 
-		UpdatePoweredRunestones();
+		if (State != AIState.Asleep)
+		{
+			UpdatePoweredRunestones();
+			UpdateCanopyBirds();
+		}
 
 		if (SecondPhase)
 		{

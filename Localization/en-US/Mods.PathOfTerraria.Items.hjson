@@ -938,7 +938,11 @@ PoweredRunestoneItem: {
 
 ForestMap: {
 	DisplayName: Forest Map
-	Tooltip: ""
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of gras and sap'
+		'''
 }
 
 LivingWoodBlockerItem: {
@@ -968,3 +972,4 @@ RootedAmulet: {
 AshWraithBannerItem.DisplayName: Ash Wraith Banner
 FireMawBannerItem.DisplayName: Fire Maw Banner
 MineraBannerItem.DisplayName: Minera Banner
+CanopyBirdBannerItem.DisplayName: Canopy Bird Banner

@@ -130,7 +130,7 @@ public sealed class RootedDebuff : ModBuff
 			Player plr = drawInfo.drawPlayer;
 			float alpha = plr.GetModPlayer<RootedPlayer>().RootedAlpha;
 
-			if (alpha > 0)
+			if (!plr.dead && alpha > 0)
 			{
 				Color color = Lighting.GetColor(drawInfo.Center.ToTileCoordinates()) * alpha;
 				Vector2 scale = GetPulse();
