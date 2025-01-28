@@ -52,6 +52,11 @@ internal class GroveBoulder : ModProjectile
 		else
 		{
 			Projectile.velocity = Vector2.Zero;
+
+			if (ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1)
+			{
+				Controlled = false;
+			}
 		}
 
 		if (Main.rand.NextBool(20))

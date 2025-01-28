@@ -12,14 +12,15 @@ public class BlockerSystem : ModSystem
 
 	public override void PreUpdatePlayers()
 	{
+		FadeOut = MathHelper.Lerp(FadeOut, !HasArenaEnemies ? 0 : 1, 0.06f);
+		HasArenaEnemies = false;
+
 		// Fixes issue where during hardmode worldgen, this throws.
 		if (SubworldSystem.Current is null)
 		{
 			SetBlockerSolidity(false);
 			return;
 		}
-
-		HasArenaEnemies = false;
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
@@ -31,15 +32,6 @@ public class BlockerSystem : ModSystem
 		}
 
 		SetBlockerSolidity();
-
-		if (HasArenaEnemies)
-		{
-			FadeOut = MathHelper.Lerp(FadeOut, 1, 0.06f);
-		}
-		else
-		{
-			FadeOut = MathHelper.Lerp(FadeOut, 0, 0.06f);
-		}
 	}
 
 	private static void SetBlockerSolidity(bool? overrideValue = null)

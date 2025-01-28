@@ -248,7 +248,10 @@ internal class ArpgNPC : GlobalNPC
 			_ => typeName
 		};
 
-		npc.GivenName += "\n" + GetAffixPrefixes(npc);
+		if (Rarity != ItemRarity.Normal)
+		{
+			npc.GivenName += "\n" + GetAffixPrefixes(npc);
+		}
 
 		return typeName;
 	}

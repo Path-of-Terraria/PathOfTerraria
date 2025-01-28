@@ -2,8 +2,10 @@
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Subworlds.MappingAreas;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
@@ -83,7 +85,7 @@ internal class Entling : ModNPC
 		NPC.TargetClosest(true);
 		NPC.spriteDirection = -NPC.direction;
 
-		float targetXVel = Target.Center.X > NPC.Center.X ? 4 : -4;
+		float targetXVel = Target.Center.X > NPC.Center.X ? 4 : -4; // Horizontal targetting
 
 		if (NPC.HasBuff(BuffID.Confused))
 		{
@@ -92,6 +94,28 @@ internal class Entling : ModNPC
 
 		targetXVel *= 2 - NPC.scale;
 		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, targetXVel, 0.03f);
+
+		if (SubworldSystem.Current is ForestArea && 
+			NPC.Center.Y / 16 > Main.maxTilesY - Main.offLimitBorderTiles - 32 || Collision.SolidCollision(NPC.position + new Vector2(8), NPC.width - 16, NPC.height - 16))
+		{
+			NPC.noTileCollide = true;
+			NPC.velocity.Y -= 0.8f;
+			NPC.rotation += 0.2f;
+
+			if (Main.rand.NextBool(20))
+			{
+				Vector2 vel = new Vector2(0, Main.rand.NextFloat(4, 7)).RotatedByRandom(0.5f);
+				var dust = Dust.NewDustPerfect(NPC.Bottom, ModContent.DustType<EntDust>(), vel, 0, default, Main.rand.NextFloat(1, 1.3f));
+				dust.noLight = false;
+			}
+
+			return;
+		}
+		else
+		{
+			NPC.noTileCollide = false;
+			NPC.rotation = 0;
+		}
 
 		if (!LastOnGround && NPC.velocity.Y == 0 && NPC.oldVelocity.Y > 3)
 		{

@@ -5,11 +5,11 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
 using PathOfTerraria.Content.Items.Gear.Amulets.AddedLife;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -20,7 +20,10 @@ internal partial class Grovetender : ModNPC
 {
 	private static HashSet<int> ValidRainTiles => [TileID.LivingWood, TileID.LeafBlock, ModContent.TileType<LivingWoodBlocker>()];
 
-	private static Asset<Texture2D> Glow = null;
+	private static Asset<Texture2D> Sockets = null;
+	private static Asset<Texture2D> EyeLarge = null;
+	private static Asset<Texture2D> EyeSmall = null;
+	private static Asset<Texture2D> Gradient = null;
 
 	public enum AIState
 	{
@@ -28,6 +31,15 @@ internal partial class Grovetender : ModNPC
 		Idle,
 		BoulderThrow,
 		RainProjectiles,
+		RootDig,
+	}
+
+	public enum EyeID
+	{
+		Left,
+		Right,
+		SmallLeft,
+		SmallRight
 	}
 
 	public Player Target => Main.player[NPC.target];
@@ -40,10 +52,10 @@ internal partial class Grovetender : ModNPC
 
 	private ref float Timer => ref NPC.ai[1];
 
-	private int ControlledWhoAmI
+	private bool SecondPhase
 	{
-		get => (int)NPC.ai[2];
-		set => NPC.ai[2] = value;
+		get => NPC.ai[2] == 1;
+		set => NPC.ai[2] = value ? 1 : 0;
 	}
 
 	private bool Initialized
@@ -52,12 +64,18 @@ internal partial class Grovetender : ModNPC
 		set => NPC.ai[3] = value ? 1 : 0;
 	}
 
-	internal readonly Dictionary<Point16, int> PoweredRunestonePositions = [];
+	internal readonly Dictionary<Point16, float> PoweredRunestonePositions = [];
+
+	private readonly HashSet<int> _controlledWhoAmI = [];
+	private readonly Dictionary<Point16, float> _rootPositionsAndTimers = [];
 
 	public override void SetStaticDefaults()
 	{
-		//Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
-		
+		Sockets = ModContent.Request<Texture2D>(Texture + "_Sockets");
+		EyeLarge = ModContent.Request<Texture2D>(Texture + "_EyeLarge");
+		EyeSmall = ModContent.Request<Texture2D>(Texture + "_EyeSmall");
+		Gradient = ModContent.Request<Texture2D>(Texture + "_Gradient");
+
 		NPCID.Sets.MustAlwaysDraw[Type] = true;
 	}
 
@@ -123,13 +141,20 @@ internal partial class Grovetender : ModNPC
 		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
+	public override void BossLoot(ref string name, ref int potionType)
+	{
+		potionType = ItemID.HealingPotion;
+	}
+
 	public override void AI()
 	{
-		Lighting.AddLight(NPC.Center - new Vector2(30, 10), new Vector3(0.5f, 0.5f, 0.25f));
-		Lighting.AddLight(NPC.Center + new Vector2(30, -10), new Vector3(0.5f, 0.5f, 0.25f));
+		Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Left, false), new Vector3(0.5f, 0.5f, 0.25f));
+		Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Right, false), new Vector3(0.5f, 0.5f, 0.25f));
 
 		if (State == AIState.Asleep)
 		{
+			NPC.TargetClosest();
+
 			if (!Initialized)
 			{
 				InitPoweredRunestones();
@@ -139,13 +164,28 @@ internal partial class Grovetender : ModNPC
 				Initialized = true;
 			}
 
-			State = AIState.Idle;
+			bool anyPlayerFar = false;
+
+			foreach (Player player in Main.ActivePlayers)
+			{
+				if (player.DistanceSQ(NPC.Center) > 1000 * 1000)
+				{
+					anyPlayerFar = true;
+					break;
+				}
+			}
+
+			if (!anyPlayerFar)
+			{
+				State = AIState.Idle;
+
+				NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true; // Captures everyone in the arena with the blocker trees
+				NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true; // But still allow drops
+			}
 		}
 		else if (State == AIState.Idle)
 		{
 			Timer++;
-
-			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true; // Captures everyone in the arena with the blocker trees
 
 			if (Timer > 150)
 			{
@@ -153,6 +193,13 @@ internal partial class Grovetender : ModNPC
 
 				State = NPC.DistanceSQ(Target.Center) < 600 * 600 ? AIState.BoulderThrow : AIState.RainProjectiles;
 				Timer = 0;
+
+				if (!SecondPhase && NPC.life < NPC.lifeMax / 2)
+				{
+					State = AIState.RootDig;
+
+					SecondPhase = true;
+				}
 			}
 		}
 		else if (State == AIState.BoulderThrow)
@@ -163,8 +210,17 @@ internal partial class Grovetender : ModNPC
 		{
 			RainProjectileBehaviour();
 		}
+		else if (State == AIState.RootDig)
+		{
+			RootDigBehaviour();
+		}
 
 		UpdatePoweredRunestones();
+
+		if (SecondPhase)
+		{
+			UpdateRootOpenings();
+		}
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
@@ -172,24 +228,9 @@ internal partial class Grovetender : ModNPC
 		npcLoot.AddOneFromOptions<RootedAmulet, WardensBow>(1);
 	}
 
-	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	public override void OnKill()
 	{
-		Texture2D tex = TextureAssets.Npc[Type].Value;
-		SpriteEffects effect = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-		Vector2 position = NPC.Center - screenPos - new Vector2(-20, -NPC.gfxOffY + 200);
-
-		for (int i = 0; i < tex.Width / 16 + 1; ++i)
-		{
-			for (int j = 0; j < tex.Height / 16 + 1; ++j)
-			{
-				var frame = new Rectangle(NPC.frame.X + i * 16, NPC.frame.Y + j * 16, 16, 16);
-				Vector2 drawPos = position + new Vector2(i * 16, j * 16);
-				Color color = NPC.IsABestiaryIconDummy ? Color.White : Lighting.GetColor((drawPos + screenPos - new Vector2(200, 340)).ToTileCoordinates());
-
-				Main.EntitySpriteDraw(tex, drawPos, frame, color, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
-			}
-		}
-		//Main.EntitySpriteDraw(Glow.Value, position, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
-		return false;
+		Vector2 pos = NPC.Center - new Vector2(0, 100);
+		Projectile.NewProjectile(Terraria.Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 	}
 }

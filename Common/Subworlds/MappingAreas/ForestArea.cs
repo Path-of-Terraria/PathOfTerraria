@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
@@ -33,10 +34,15 @@ internal class ForestArea : MappingWorld
 	private static int LastTreeX = 0;
 
 	public override int Width => 1200;
-	public override int Height => 330;
+	public override int Height => 290;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("Structures", GenStructures),
 		new PassLegacy("Detailing", AddDetails)];
+
+	public override void OnEnter()
+	{
+		SubworldSystem.noReturn = true;
+	}
 
 	private void GenStructures(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -44,7 +50,10 @@ internal class ForestArea : MappingWorld
 
 		HashSet<StructureKind> structures = [];
 
-		TryPlaceStructureAt(structures, LeftSpawn ? Width - 160 : 160, FloorY, StructureKind.Arena, 1, new Vector2(0.5f, 1), 45);
+		int arenaX = LeftSpawn ? Width - 160 : 160;
+		TryPlaceStructureAt(structures, arenaX, FloorY, StructureKind.Arena, 1, new Vector2(0.5f, 1), 45);
+		NPC.NewNPC(new EntitySource_SpawnNPC(), (arenaX - 2) * 16, (FloorY + 38) * 16, ModContent.NPCType<Grovetender>());
+
 		int attempts = 0;
 
 		while (true)
@@ -104,7 +113,7 @@ internal class ForestArea : MappingWorld
 				}
 				else if (kind == StructureKind.AncientTree)
 				{
-					TryPlaceStructureAt(structures, x, y, StructureKind.AncientTree, 1, new Vector2(0.5f, 1), 7);
+					TryPlaceStructureAt(structures, x, y, StructureKind.AncientTree, 3, new Vector2(0.5f, 1), 7);
 				}
 			}
 		}
@@ -209,7 +218,15 @@ internal class ForestArea : MappingWorld
 		foreach (Point16 pos in grasses)
 		{
 			progress.Set(grassIndex++ / (float)grasses.Count);
-			GrowStuffOnGrass(pos);
+			GrowGrassDecor(pos);
+		}
+
+		grassIndex = 0;
+
+		foreach (Point16 pos in grasses)
+		{
+			progress.Set(grassIndex++ / (float)grasses.Count);
+			AddGrassWalls(pos);
 		}
 
 		for (int i = 0; i < Main.maxTilesX; ++i)
@@ -253,7 +270,7 @@ internal class ForestArea : MappingWorld
 		}
 	}
 
-	private static void GrowStuffOnGrass(Point16 pos)
+	private static void GrowGrassDecor(Point16 pos)
 	{
 		OpenFlags flags = OpenExtensions.GetOpenings(pos.X, pos.Y, false, false);
 
@@ -283,11 +300,29 @@ internal class ForestArea : MappingWorld
 				WorldGen.PlaceTile(pos.X, pos.Y - 1, WorldGen.genRand.NextBool() ? TileID.Plants2 : TileID.Plants, true, true, -1);
 			}
 		}
+	}
 
-		//if (flags != OpenFlags.None)
-		//{
-			
-		//}
+	private static void AddGrassWalls(Point16 pos)
+	{
+		OpenFlags flags = OpenExtensions.GetOpenings(pos.X, pos.Y, false, false);
+
+		if (flags != OpenFlags.None && WorldGen.genRand.NextBool(7))
+		{
+			int count = WorldGen.genRand.Next(1, 5);
+
+			for (int i = 0; i < count; ++i)
+			{
+				var position = pos.ToVector2();
+
+				if (i != 0)
+				{
+					position += Main.rand.NextVector2Circular(1, 1);
+					position.Y += Main.rand.NextFloat(1, 3);
+				}
+
+				GenPlacement.WallCircle(position, WorldGen.genRand.NextFloat(2, 4f), WallID.LivingLeaf);
+			}
+		}
 	}
 
 	private static bool SpawnBoulder(int i, int j)
