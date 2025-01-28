@@ -156,7 +156,7 @@ internal class ArpgNPC : GlobalNPC
 				_ => ItemRarity.Normal
 			};
 
-			ApplyRarity(npc);
+			ApplyRarity(npc, false);
 			npc.netUpdate = true;
 		}
 	}
@@ -166,44 +166,44 @@ internal class ArpgNPC : GlobalNPC
 		SetName(npc);
 	}
 
-	public void ApplyRarity(NPC npc)
+	public void ApplyRarity(NPC npc, bool fromNet)
 	{
 		string typeName = SetName(npc);
 
-		if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
+		if (!fromNet)
 		{
-			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
-
-			if (entry != null)
+			if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 			{
-				Experience = entry.Stats.Experience;
-				if (!string.IsNullOrEmpty(entry.Prefix))
-				{
-					npc.GivenName = $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";
-				}
+				MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
 
-				npc.scale *= entry.Scale ?? 1f;
+				if (entry != null)
+				{
+					ApplyMobEntry(npc, entry);
+				}
 			}
-		}
 #if DEBUG
-		else
-		{
-			Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({typeName})!", Color.Red);
-		}
+			else
+			{
+				Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({typeName})!", Color.Red);
+			}
 #endif
+		}
 
 		if (Rarity == ItemRarity.Normal || Rarity == ItemRarity.Unique)
 		{
 			return;
 		}
 
-		List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
-
-		Affixes = Rarity switch
+		if (!fromNet)
 		{
-			ItemRarity.Magic or ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTItemHelper.GetMaxMobAffixCounts(Rarity)),
-			_ => []
-		};
+			List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
+
+			Affixes = Rarity switch
+			{
+				ItemRarity.Magic or ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTItemHelper.GetMaxMobAffixCounts(Rarity)),
+				_ => []
+			};
+		}
 
 		Affixes.ForEach(a => a.PreRarity(npc));
 
@@ -233,6 +233,18 @@ internal class ArpgNPC : GlobalNPC
 
 		Affixes.ForEach(a => a.PostRarity(npc));
 		_synced = true;
+	}
+
+	private void ApplyMobEntry(NPC npc, MobEntry entry)
+	{
+		Experience = entry.Stats.Experience;
+
+		if (!string.IsNullOrEmpty(entry.Prefix))
+		{
+			npc.GivenName = $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";
+		}
+
+		npc.scale *= entry.Scale ?? 1f;
 	}
 
 	private string SetName(NPC npc)
@@ -272,11 +284,26 @@ internal class ArpgNPC : GlobalNPC
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
 		binaryWriter.Write((byte)Rarity);
+		binaryWriter.Write((byte)Affixes.Count);
+
+		foreach (Affix affix in Affixes)
+		{
+			affix.NetSend(binaryWriter);
+		}
 	}
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
 		Rarity = (ItemRarity)binaryReader.ReadByte();
+		Affixes.Clear();
+
+		byte count = binaryReader.ReadByte();
+
+		for (int i = 0; i < count; i++)
+		{
+			MobAffix affix = Affix.RecieveMobAffix(binaryReader);
+			Affixes.Add(affix);
+		}
 
 		// TODO: Find cause of read overflow/underflow in subworlds
 		if (npc.life <= 0 && SubworldSystem.Current is not null)
@@ -288,7 +315,7 @@ internal class ArpgNPC : GlobalNPC
 		// This may need to be changed if we want variable rarity for some reason.
 		if (Rarity != ItemRarity.Normal && !_synced)
 		{
-			ApplyRarity(npc);
+			ApplyRarity(npc, true);
 		}
 	}
 

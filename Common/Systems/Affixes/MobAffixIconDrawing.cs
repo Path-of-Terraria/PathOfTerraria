@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.MobSystem;
 using System.Collections.Generic;
+using Terraria.GameInput;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -18,7 +19,12 @@ internal class MobAffixIconDrawing : GlobalNPC
 			return;
 		}
 
+		PlayerInput.SetZoom_Unscaled();
+		PlayerInput.SetZoom_MouseInWorld();
+
 		_hoverStrength = MathHelper.Lerp(_hoverStrength, npc.Hitbox.Contains(Main.MouseWorld.ToPoint()) ? 1 : 0, 0.1f);
+
+		PlayerInput.SetZoom_World();
 
 		float offset = affixes.Count / 2f - 0.5f;
 		float scale = MathHelper.Lerp(1f, 1.5f, _hoverStrength);
