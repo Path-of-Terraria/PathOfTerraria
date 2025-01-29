@@ -4,7 +4,9 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.World.Generation;
 using ReLogic.Content;
+using Steamworks;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -13,8 +15,7 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Forest;
 [AutoloadBanner]
 internal class CanopyBird : ModNPC
 {
-	public const int SwingWaitTimer = 60;
-	public const int SlamWaitTimer = 40;
+	public const int SplineCount = 30;
 
 	private static Asset<Texture2D> Glow = null;
 
@@ -29,8 +30,6 @@ internal class CanopyBird : ModNPC
 
 	private ref float Timer => ref NPC.ai[0];
 	private ref float SplineFactor => ref NPC.ai[1];
-
-	private readonly List<Vector2> splineLocations = [];
 
 	private Vector2[] spline = null;
 	private Vector2 spawn = Vector2.Zero;
@@ -62,10 +61,9 @@ internal class CanopyBird : ModNPC
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				//for (int i = 0; i < 6; ++i)
-				//{
-				//	c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_" + i, 1, NPCHitEffects.OnDeath));
-				//}
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 2, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 1, NPCHitEffects.OnDeath));
 
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 5));
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 1));
@@ -103,7 +101,7 @@ internal class CanopyBird : ModNPC
 
 		if (Timer > 60)
 		{
-			splineLocations.Clear();
+			List<Vector2> splineLocations = [];
 			Vector2 lastPos = NPC.Center;
 
 			HashSet<int> ids = [TileID.LeafBlock];
@@ -135,8 +133,10 @@ internal class CanopyBird : ModNPC
 				lastPos = position;
 			}
 
-			spline = Spline.InterpolateXY([.. splineLocations], 30);
+			spline = Spline.InterpolateXY([.. splineLocations], SplineCount);
 			Timer = 0;
+
+			NPC.netUpdate = true;
 		}
 
 		if (spline is not null && spline.Length > 0)
@@ -180,6 +180,39 @@ internal class CanopyBird : ModNPC
 		{
 			NPC.frameCounter += 0.4f;
 			NPC.frame.Y = frameHeight * (int)(NPC.frameCounter % 4 + 1);
+		}
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(spline is not null);
+
+		if (spline is not null)
+		{
+			for (int i = 0; i < spline.Length; i++)
+			{
+				writer.WriteVector2(spline[i]);
+			}
+		}
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		bool hasSpline = reader.ReadBoolean();
+
+		if (hasSpline)
+		{
+			spline = new Vector2[SplineCount];
+
+			for (int i = 0; i < spline.Length; i++)
+			{
+				spline[i] = reader.ReadVector2();
+			}
+		}
+		else
+		{
+			spline = null;
+			SplineFactor = 0;
 		}
 	}
 

@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
@@ -32,6 +33,7 @@ internal class ForestArea : MappingWorld
 
 	private static bool LeftSpawn = false;
 	private static int LastTreeX = 0;
+	private static Point BossSpawnLocation = Point.Zero;
 
 	public override int Width => 1200;
 	public override int Height => 290;
@@ -44,6 +46,30 @@ internal class ForestArea : MappingWorld
 		SubworldSystem.noReturn = true;
 	}
 
+	public override void Update()
+	{
+		bool hasPortal = false;
+
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.type == ModContent.ProjectileType<ExitPortal>())
+			{
+				hasPortal = true;
+				break;
+			}
+		}
+
+		if (!hasPortal && ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
+		{
+			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), BossSpawnLocation.X, BossSpawnLocation.Y, ModContent.NPCType<Grovetender>());
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+			}
+		}
+	}
+
 	private void GenStructures(GenerationProgress progress, GameConfiguration configuration)
 	{
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Structures");
@@ -52,8 +78,7 @@ internal class ForestArea : MappingWorld
 
 		int arenaX = LeftSpawn ? Width - 160 : 160;
 		TryPlaceStructureAt(structures, arenaX, FloorY, StructureKind.Arena, 1, new Vector2(0.5f, 1), 45);
-		NPC.NewNPC(new EntitySource_SpawnNPC(), (arenaX - 2) * 16, (FloorY + 38) * 16, ModContent.NPCType<Grovetender>());
-
+		BossSpawnLocation = new Point((arenaX - 2) * 16, (FloorY + 38) * 16);
 		int attempts = 0;
 
 		while (true)
@@ -65,9 +90,9 @@ internal class ForestArea : MappingWorld
 
 			attempts++;
 
-			progress.Set(attempts / 20000f);
+			progress.Set(attempts / 10000f);
 
-			if (attempts > 20000)
+			if (attempts > 10000)
 			{
 				break;
 			}
@@ -240,7 +265,14 @@ internal class ForestArea : MappingWorld
 
 				Tile tile = Main.tile[i, j];
 
-				if (tile.HasTile)
+				bool canSmooth = GenVars.structures.CanPlace(new Rectangle(i, j, 1, 1));
+
+				if (!canSmooth)
+				{
+					canSmooth = !(tile.TileType is TileID.GrayBrick or TileID.LivingWood);
+				}
+
+				if (tile.HasTile && canSmooth)
 				{
 					Tile.SmoothSlope(i, j, true);
 				}

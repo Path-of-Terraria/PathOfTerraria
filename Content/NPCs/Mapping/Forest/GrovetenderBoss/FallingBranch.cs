@@ -33,6 +33,13 @@ internal class FallingBranch : ModProjectile
 	{
 		if (WaitTimer-- > 0)
 		{
+			if (WaitTimer > 100)
+			{
+				var velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(4, 10));
+				int type = DustID.Grass;
+				Dust.NewDustPerfect(Projectile.Center, type, velocity, 0, default, Main.rand.NextFloat(1.5f, 2.5f));
+			}
+
 			return;
 		}
 

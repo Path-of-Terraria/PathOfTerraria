@@ -3,8 +3,10 @@ using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Content.Items.Gear.Amulets.AddedLife;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
+using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using ReLogic.Content;
@@ -78,6 +80,8 @@ internal partial class Grovetender : ModNPC
 		Gradient = ModContent.Request<Texture2D>(Texture + "_Gradient");
 
 		NPCID.Sets.MustAlwaysDraw[Type] = true;
+
+		ArpgNPC.NoAffixesSet.Add(Type);
 	}
 
 	public override void SetDefaults()
@@ -91,16 +95,18 @@ internal partial class Grovetender : ModNPC
 		NPC.HitSound = SoundID.NPCHit30;
 		NPC.noTileCollide = true;
 		NPC.noGravity = true;
-		NPC.boss = true;
 		NPC.hide = true;
+		NPC.netAlways = true;
+		NPC.boss = true;
+		NPC.BossBar = ModContent.GetInstance<GrovetenderBossBar>();
 
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				//for (int i = 0; i < 6; ++i)
-				//{
-				//	c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_" + i, 1, NPCHitEffects.OnDeath));
-				//}
+				for (int i = 0; i < 6; ++i)
+				{
+					c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_" + i, 1, NPCHitEffects.OnDeath));
+				}
 
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 5));
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 1));
@@ -108,6 +114,15 @@ internal partial class Grovetender : ModNPC
 				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 10, NPCHitEffects.OnDeath));
 			}
 		);
+
+		Music = -1;
+	}
+
+	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+	{
+		scale = 2f;
+		position += new Vector2(28, -16);
+		return true;
 	}
 
 	public override bool CheckActive()
@@ -149,8 +164,11 @@ internal partial class Grovetender : ModNPC
 
 	public override void AI()
 	{
-		Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Left, false), new Vector3(0.5f, 0.5f, 0.25f));
-		Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Right, false), new Vector3(0.5f, 0.5f, 0.25f));
+		if (Main.netMode != NetmodeID.Server)
+		{
+			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Left, false), new Vector3(0.5f, 0.5f, 0.25f));
+			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Right, false), new Vector3(0.5f, 0.5f, 0.25f));
+		}
 
 		if (State == AIState.Asleep)
 		{
@@ -203,6 +221,7 @@ internal partial class Grovetender : ModNPC
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		npcLoot.AddOneFromOptions<RootedAmulet, WardensBow>(1);
+		npcLoot.AddCommon<GrovetenderTrophyItem>(7);
 	}
 
 	public override void OnKill()

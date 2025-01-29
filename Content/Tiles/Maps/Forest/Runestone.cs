@@ -46,6 +46,11 @@ internal class Runestone : ModTile
 			NPC npc = Main.npc[ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI];
 			var tender = npc.ModNPC as Grovetender;
 
+			if (tender is null)
+			{
+				return;
+			}
+
 			foreach (Point16 poweredRunestonePos in tender.PoweredRunestonePositions.Keys)
 			{
 				Vector2 pos = poweredRunestonePos.ToWorldCoordinates();

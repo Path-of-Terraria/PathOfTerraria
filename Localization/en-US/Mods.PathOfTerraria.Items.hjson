@@ -973,3 +973,8 @@ AshWraithBannerItem.DisplayName: Ash Wraith Banner
 FireMawBannerItem.DisplayName: Fire Maw Banner
 MineraBannerItem.DisplayName: Minera Banner
 CanopyBirdBannerItem.DisplayName: Canopy Bird Banner
+
+GrovetenderTrophyItem: {
+	DisplayName: Grovetender Trophy
+	Tooltip: ""
+}

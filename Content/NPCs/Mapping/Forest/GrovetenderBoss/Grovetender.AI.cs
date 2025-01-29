@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -39,8 +39,6 @@ internal partial class Grovetender : ModNPC
 
 		if (!Initialized)
 		{
-			InitPoweredRunestones();
-
 			NPC.position = NPC.position.ToTileCoordinates().ToWorldCoordinates(0, 0);
 
 			Initialized = true;
@@ -57,9 +55,13 @@ internal partial class Grovetender : ModNPC
 			}
 		}
 
-		if (!anyPlayerFar)
+		if (!anyPlayerFar && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
 			State = AIState.Idle;
+
+			InitPoweredRunestones();
+
+			Music = MusicID.Boss5;
 
 			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true; // Captures everyone in the arena with the blocker trees
 			NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true; // But still allow drops
@@ -81,6 +83,8 @@ internal partial class Grovetender : ModNPC
 			{
 				_controlledWhoAmI.Add(Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, type, ModeUtils.ProjectileDamage(80), 8, Main.myPlayer));
 			}
+
+			NPC.netUpdate = true;
 		}
 		else if (Timer > 1 && Timer < 110)
 		{
@@ -89,6 +93,12 @@ internal partial class Grovetender : ModNPC
 			foreach (int who in _controlledWhoAmI)
 			{
 				Projectile proj = Main.projectile[who];
+
+				if (proj.ModProjectile is not GroveBoulder boulder)
+				{
+					continue;
+				}
+
 				Vector2 targetPos = NPC.Center - new Vector2(0, 300);
 
 				if (_controlledWhoAmI.Count > 1)
@@ -112,7 +122,7 @@ internal partial class Grovetender : ModNPC
 
 				proj.Center = Vector2.Lerp(proj.Center, targetPos, 0.06f);
 				proj.velocity = Vector2.Zero;
-				(proj.ModProjectile as GroveBoulder).Controlled = true;
+				boulder.Controlled = true;
 
 				count++;
 			}
@@ -186,15 +196,10 @@ internal partial class Grovetender : ModNPC
 				var vel = new Vector2(0, Main.rand.NextFloat(1, 5));
 				Vector2 position = new Vector2(x, y).ToWorldCoordinates();
 				Tile above = Main.tile[x, y - 1];
-				int count = 12;
-				bool canEntDust = false;
 				int damage = ModeUtils.ProjectileDamage(70);
 
 				if (above.TileType == TileID.LeafBlock && (Timer == speed * 7 || Timer == 15 * speed))
 				{
-					count = 20;
-					canEntDust = true;
-
 					int type = ModContent.ProjectileType<FallingEntling>();
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), position, vel, type, damage, 1, Main.myPlayer, 120, Main.rand.Next(3));
 				}
@@ -202,13 +207,6 @@ internal partial class Grovetender : ModNPC
 				{
 					int type = above.TileType == TileID.LivingWood ? ModContent.ProjectileType<FallingStick>() : ModContent.ProjectileType<FallingBranch>();
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), position, vel, type, damage, 1, Main.myPlayer, 120);
-				}
-
-				for (int i = 0; i < count; ++i)
-				{
-					var velocity = new Vector2(Main.rand.NextFloat(-0.4f, 0.4f), Main.rand.NextFloat(4, 10));
-					int type = canEntDust && i < count / 3 ? ModContent.DustType<EntDust>() : (above.TileType == TileID.LivingWood ? DustID.WoodFurniture : DustID.Grass);
-					Dust.NewDustPerfect(position, type, velocity, 0, default, Main.rand.NextFloat(1.5f, 2.5f));
 				}
 
 				break;
@@ -336,7 +334,7 @@ internal partial class Grovetender : ModNPC
 				_rootPositionsAndTimers[pos]--;
 			}
 
-			if (_rootPositionsAndTimers[pos] > 400)
+			if (_rootPositionsAndTimers[pos] > 400 && anyoneNearby)
 			{
 				Vector2 position = new((pos.X + 1 * 1.2f) * 16, (Main.maxTilesY - 40) * 16);
 				SpawnDust(position, false, 4);
@@ -410,5 +408,38 @@ internal partial class Grovetender : ModNPC
 		y++;
 
 		return new Vector2(x, y - Main.rand.Next(2, 10)) * 16;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write(_controlledWhoAmI.Count > 0);
+		
+		if (_controlledWhoAmI.Count > 0)
+		{
+			writer.Write((byte)_controlledWhoAmI.Count);
+			
+			foreach (int who in _controlledWhoAmI)
+			{
+				writer.Write((short)Main.projectile[who].identity);
+			}
+		}
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		if (reader.ReadBoolean()) // We have controlled whoAmI
+		{
+			byte count = reader.ReadByte();
+
+			for (int i = 0; i < count; ++i)
+			{
+				short id = reader.ReadInt16();
+				_controlledWhoAmI.Add(Main.projectile.First(x => x.active && x.identity == id).whoAmI);
+			}
+		}
+		else
+		{
+			_controlledWhoAmI.Clear();
+		}
 	}
 }
