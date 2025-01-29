@@ -80,8 +80,6 @@ internal partial class Grovetender : ModNPC
 		Gradient = ModContent.Request<Texture2D>(Texture + "_Gradient");
 
 		NPCID.Sets.MustAlwaysDraw[Type] = true;
-
-		ArpgNPC.NoAffixesSet.Add(Type);
 	}
 
 	public override void SetDefaults()
