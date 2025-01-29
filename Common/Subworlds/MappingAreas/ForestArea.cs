@@ -35,7 +35,7 @@ internal class ForestArea : MappingWorld
 	private static int LastTreeX = 0;
 	private static Point BossSpawnLocation = Point.Zero;
 
-	public override int Width => 1200;
+	public override int Width => 1200 + 120 * Main.rand.Next(10);
 	public override int Height => 290;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("Structures", GenStructures),
@@ -76,7 +76,7 @@ internal class ForestArea : MappingWorld
 
 		HashSet<StructureKind> structures = [];
 
-		int arenaX = LeftSpawn ? Width - 160 : 160;
+		int arenaX = LeftSpawn ? Main.maxTilesX - 160 : 160;
 		TryPlaceStructureAt(structures, arenaX, FloorY, StructureKind.Arena, 1, new Vector2(0.5f, 1), 45);
 		BossSpawnLocation = new Point((arenaX - 2) * 16, (FloorY + 38) * 16);
 		int attempts = 0;
@@ -97,15 +97,15 @@ internal class ForestArea : MappingWorld
 				break;
 			}
 
-			int x = WorldGen.genRand.Next(150, Width - 150);
-			int y = WorldGen.genRand.Next(FloorY - 40, FloorY + 20);
+			int x = WorldGen.genRand.Next(150, Main.maxTilesX - 150);
+			int y = WorldGen.genRand.Next(FloorY - 10, FloorY + 5);
 
 			if (!WorldGen.SolidTile(x, y))
 			{
 				continue;
 			}
 
-			if (OpenExtensions.GetOpenings(x, y).HasFlag(OpenFlags.Above) && (!structures.Contains(StructureKind.Cave) || structures.Count >= (int)StructureKind.Count))
+			if (OpenExtensions.GetOpenings(x, y).HasFlag(OpenFlags.Above))
 			{
 				TryPlaceStructureAt(structures, x, y, StructureKind.Cave, 3, new Vector2(0.5f, 0), -4);
 			}
@@ -235,7 +235,7 @@ internal class ForestArea : MappingWorld
 				}
 			}
 
-			progress.Set(i / (float)Width);
+			progress.Set(i / (float)Main.maxTilesX);
 		}
 
 		int grassIndex = 0;
@@ -384,8 +384,8 @@ internal class ForestArea : MappingWorld
 		Main.rockLayer = 270;
 
 		LeftSpawn = Main.rand.NextBool(2);
-		LastTreeX = LeftSpawn ? 200 : Width - 200;
-		Main.spawnTileX = LeftSpawn ? 60 : Width - 60;
+		LastTreeX = LeftSpawn ? 200 : Main.maxTilesX - 200;
+		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.2f);
@@ -399,9 +399,9 @@ internal class ForestArea : MappingWorld
 			int yCutoff = (int)(FloorY + noise.GetNoise(i * 0.05f, 0) * 4);
 			int leafYOffset = (int)(noise.GetNoise(i * 0.1f, 0) * 10);
 
-			if (i > 200 && i < Width - 200)
+			if (i > 200 && i < Main.maxTilesX - 200)
 			{
-				if (i == Width / 10 * 3 || i == Width / 10 * 7 && WorldGen.genRand.NextBool())
+				if (i == Main.maxTilesX / 10 * 3 || i == Main.maxTilesX / 10 * 7 && WorldGen.genRand.NextBool())
 				{
 					trees.Add(i);
 					LastTreeX = i;
@@ -430,7 +430,7 @@ internal class ForestArea : MappingWorld
 				{
 					id = TileID.Dirt;
 				}
-				else if (!LeftSpawn && i < 50 || LeftSpawn && i > Width - 50)
+				else if (!LeftSpawn && i < 50 || LeftSpawn && i > Main.maxTilesX - 50)
 				{
 					id = TileID.LivingWood;
 				}
