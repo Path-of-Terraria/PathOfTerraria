@@ -4,12 +4,6 @@
 		"equipTypes": "ExplorableMap",
 		"tiers": [
 			{
-				"minValue": 1,
-				"maxValue": 3,
-				"minimumLevel": 1,
-				"weight": 1
-			},
-			{
 				"minValue": 8,
 				"maxValue": 12,
 				"minimumLevel": 45,
@@ -28,12 +22,6 @@
 		"equipTypes": "ExplorableMap",
 		"tiers": [
 			{
-				"minValue": 10,
-				"maxValue": 20,
-				"minimumLevel": 1,
-				"weight": 1
-			},
-			{
 				"minValue": 100,
 				"maxValue": 110,
 				"minimumLevel": 45,
@@ -42,6 +30,60 @@
 			{
 				"minValue": 5,
 				"maxValue": 8,
+				"minimumLevel": 65,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "MapMobCritChanceAffix",
+		"equipTypes": "ExplorableMap",
+		"tiers": [
+			{
+				"minValue": 60,
+				"maxValue": 65,
+				"minimumLevel": 45,
+				"weight": 1
+			},
+			{
+				"minValue": 75,
+				"maxValue": 85,
+				"minimumLevel": 65,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "MapMobChillChanceAffix",
+		"equipTypes": "ExplorableMap",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 4,
+				"minimumLevel": 45,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 9,
+				"minimumLevel": 65,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "MapIncreasedBehaviourAffix",
+		"equipTypes": "ExplorableMap",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 45,
+				"weight": 1
+			},
+			{
+				"minValue": 10,
+				"maxValue": 14,
 				"minimumLevel": 65,
 				"weight": 1
 			}

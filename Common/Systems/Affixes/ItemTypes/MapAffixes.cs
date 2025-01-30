@@ -1,11 +1,22 @@
-﻿using PathOfTerraria.Common.Subworlds;
-using SubworldLibrary;
+﻿using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 public abstract class MapAffix : ItemAffix
 {
 	public virtual void ModifyNewNPC(NPC npc)
+	{
+	}
+
+	public virtual void ModifyHitPlayer(NPC npc, Player player, ref Player.HurtModifiers modifiers)
+	{
+	}
+
+	public virtual void OnHitPlayer(NPC npc, Player player, Player.HurtInfo info)
+	{
+	}
+
+	public virtual void PreAI(NPC npc)
 	{
 	}
 }
@@ -32,14 +43,30 @@ public class MapBossHealthAffix : MapAffix
 
 public class MapMobCritChanceAffix : MapAffix
 {
-	public class MobCritChance : GlobalNPC
+	public override void ModifyHitPlayer(NPC npc, Player player, ref Player.HurtModifiers modifiers)
 	{
-		public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
+		if (Main.rand.NextFloat() < Value / 100f)
 		{
-			if (SubworldSystem.Current is MappingWorld world)
-			{
-
-			}
+			modifiers.FinalDamage += 1.5f;
 		}
+	}
+}
+
+public class MapMobChillChanceAffix : MapAffix
+{
+	public override void OnHitPlayer(NPC npc, Player player, Player.HurtInfo info)
+	{
+		if (Main.rand.NextFloat() < Value / 100f)
+		{
+			player.AddBuff(BuffID.Chilled, 4 * 60);
+		}
+	}
+}
+
+public class MapIncreasedBehaviourAffix : MapAffix
+{
+	public override void PreAI(NPC npc)
+	{
+		npc.GetGlobalNPC<SpeedUpNPC>().ExtraAISpeed += Value / 100f;
 	}
 }

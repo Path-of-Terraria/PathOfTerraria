@@ -15,4 +15,39 @@ internal class MappingNPC : GlobalNPC
 			}
 		}
 	}
+
+	public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
+	{
+		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		{
+			foreach (MapAffix affix in map.Affixes)
+			{
+				affix.ModifyHitPlayer(npc, target, ref modifiers);
+			}
+		}
+	}
+
+	public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
+	{
+		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		{
+			foreach (MapAffix affix in map.Affixes)
+			{
+				affix.OnHitPlayer(npc, target, hurtInfo);
+			}
+		}
+	}
+
+	public override bool PreAI(NPC npc)
+	{
+		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		{
+			foreach (MapAffix affix in map.Affixes)
+			{
+				affix.PreAI(npc);
+			}
+		}
+
+		return true;
+	}
 }
