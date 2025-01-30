@@ -3,16 +3,22 @@ using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using SubworldLibrary;
+using PathOfTerraria.Common.Subworlds;
+using System.Linq;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
+public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem
 {
 	public abstract int MaxUses { get; }
 
 	public int RemainingUses = 0;
 
-	private int _tier;
+	private int _tier = 1;
 
 	int GetItemLevel.IItem.GetItemLevel(int realLevel)
 	{
@@ -22,10 +28,11 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
 	{
 		realLevel = level;
-		_tier = 1 + (int)Math.Floor(realLevel / 20f);
+		_tier = realLevel;
 	}
 
-	public override void SetDefaults() {
+	public override void SetDefaults() 
+	{
 		base.SetDefaults();
 
 		Item.width = 32;
@@ -41,7 +48,24 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone; }
 
-	public abstract void OpenMap();
+	public void OpenMap()
+	{
+		OpenMapInternal();
+
+		if (SubworldSystem.Current is MappingWorld map)
+		{
+			map.Level = GetSubworldLevel(map);
+			map.Affixes = [];
+			map.Affixes.AddRange(this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x));
+		}
+	}
+
+	protected abstract void OpenMapInternal();
+
+	protected virtual int GetSubworldLevel(MappingWorld map)
+	{
+		return _tier;
+	}
 
 	/// <summary>
 	/// Gets name and what tier the map is of as a singular string.
@@ -127,5 +151,15 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 		}
 
 		return def;
+	}
+
+	public List<ItemAffix> GenerateImplicits()
+	{
+		return [];
+	}
+
+	public List<ItemAffix> GenerateAffixes()
+	{
+		return [];
 	}
 }

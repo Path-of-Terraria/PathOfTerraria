@@ -11,6 +11,7 @@ using Terraria.DataStructures;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
@@ -199,6 +200,17 @@ public class QueenBeeDomain : BossDomainSubworld
 
 			BossTracker.CachedBossesDowned.Add(NPCID.QueenBee);
 			ReadyToExit = true;
+		}
+	}
+
+	public class QueenBeeEdit : ModPlayer
+	{
+		public override void ResetEffects()
+		{
+			if (SubworldSystem.Current is QueenBeeDomain)
+			{
+				Player.ZoneJungle = true;
+			}
 		}
 	}
 }

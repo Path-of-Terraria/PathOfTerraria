@@ -24,7 +24,7 @@ internal class EoWMap : Map
 		Item.Size = new Vector2(40, 30);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<EaterDomain>();
 	}

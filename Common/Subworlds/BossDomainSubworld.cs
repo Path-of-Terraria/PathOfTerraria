@@ -23,12 +23,8 @@ public abstract class BossDomainSubworld : MappingWorld
 	/// <summary>
 	/// The level of dropped <see cref="Content.Items.Gear.Gear"/> in the domain. 0 will roll default level formula.
 	/// </summary>
+	[Obsolete]
 	public virtual int DropItemLevel => 0;
-
-	/// <summary>
-	/// Forces the time to be the given time, and it to be night/day. Defaults to (-1, true), which ignores this.
-	/// </summary>
-	public virtual (int time, bool isDay) ForceTime => (-1, true);
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];

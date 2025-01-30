@@ -7,6 +7,8 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using SubworldLibrary;
+using PathOfTerraria.Common.Subworlds;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -220,6 +222,11 @@ public static class PoTItemHelper
 
 	public static int PickItemLevel()
 	{
+		if (SubworldSystem.Current is MappingWorld mapWorld)
+		{
+			return mapWorld.Level;
+		}
+
 		if (NPC.downedMoonlord)
 		{
 			return 70;

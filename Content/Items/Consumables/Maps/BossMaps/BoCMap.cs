@@ -24,7 +24,7 @@ internal class BoCMap : Map
 		Item.Size = new Vector2(34, 28);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<BrainDomain>();
 	}

@@ -24,7 +24,7 @@ internal class SkeletronMap : Map
 		Item.Size = new Vector2(36, 28);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<SkeletronDomain>();
 	}

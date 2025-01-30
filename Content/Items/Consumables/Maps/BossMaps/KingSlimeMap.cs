@@ -24,7 +24,7 @@ internal class KingSlimeMap : Map
 		Item.Size = new Vector2(44, 36);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<KingSlimeDomain>();
 	}

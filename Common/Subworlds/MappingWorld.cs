@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using SubworldLibrary;
 using Terraria.WorldBuilding;
@@ -35,6 +36,15 @@ public abstract class MappingWorld : Subworld
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
+
+	/// <summary>
+	/// Forces the time to be the given time, and it to be night/day. Defaults to (-1, true), which ignores this.
+	/// </summary>
+	public virtual (int time, bool isDay) ForceTime => (-1, true);
+
+	public List<MapAffix> Affixes = null;
+
+	public int Level = 0;
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
 	{

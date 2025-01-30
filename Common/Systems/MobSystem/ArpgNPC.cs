@@ -103,9 +103,9 @@ internal class ArpgNPC : GlobalNPC
 			magicFind = 1f + _lastPlayerHit.GetModPlayer<MinorStatsModPlayer>().MagicFind;
 		}
 
-		if (SubworldSystem.Current is BossDomainSubworld domain)
+		if (SubworldSystem.Current is MappingWorld world)
 		{
-			itemLevel = domain.DropItemLevel;
+			itemLevel = world.Level;
 		}
 
 		while (rand > 99)

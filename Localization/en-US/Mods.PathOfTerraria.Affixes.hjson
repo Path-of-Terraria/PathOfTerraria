@@ -61,3 +61,5 @@ FastAffix.Prefix: Swift
 AggravatorAffix.Prefix: Aggravating
 DamageAffix.Prefix: Harmful
 ChanceToApplyRootedGearAffix.Description: "{1}{0}% chance to apply Rooted"
+MapDamageAffix.Description: "{1}{0}% increased mob damage"
+MapBossHealthAffix.Description: "{1}{0}% increased boss health"

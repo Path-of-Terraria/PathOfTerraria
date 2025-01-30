@@ -24,7 +24,7 @@ internal class DeerclopsMap : Map
 		Item.Size = new Vector2(30, 30);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<DeerclopsDomain>();
 	}
