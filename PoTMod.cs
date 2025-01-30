@@ -51,10 +51,9 @@ public sealed class PoTMod : Mod
 		// Use our own SmartContentSource which wraps IContentSource with additional
 		// behavior.
 		var source = new SmartContentSource(base.CreateDefaultContentSource());
-		{
-			// Redirects requests for ModName/Content/... to ModName/Assets/...
-			source.AddDirectoryRedirect("Content", "Assets");
-		}
+		
+		// Redirects requests for ModName/Content/... to ModName/Assets/...
+		source.AddDirectoryRedirect("Content", "Assets");
 
 		return source;
 	}

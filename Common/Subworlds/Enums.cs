@@ -72,4 +72,61 @@ public static class OpenExtensions
 
 		return flags;
 	}
+
+	public static OpenFlags GetUnsolidOpenings(int i, int j, bool onlyVertical = true, bool noDiagonals = true)
+	{
+		OpenFlags flags = OpenFlags.None;
+
+		if (!WorldGen.SolidTile(i, j - 1))
+		{
+			flags |= OpenFlags.Above;
+		}
+
+		if (!WorldGen.SolidTile(i, j + 1))
+		{
+			flags |= OpenFlags.Below;
+		}
+
+		if (onlyVertical)
+		{
+			return flags;
+		}
+
+		if (!WorldGen.SolidTile(i - 1, j))
+		{
+			flags |= OpenFlags.Left;
+		}
+
+		if (!WorldGen.SolidTile(i + 1, j))
+		{
+			flags |= OpenFlags.Right;
+		}
+
+		if (noDiagonals)
+		{
+			return flags;
+		}
+
+		if (!WorldGen.SolidTile(i + 1, j - 1))
+		{
+			flags |= OpenFlags.UpRight;
+		}
+
+		if (!WorldGen.SolidTile(i - 1, j - 1))
+		{
+			flags |= OpenFlags.UpLeft;
+		}
+
+		if (!WorldGen.SolidTile(i - 1, j + 1))
+		{
+			flags |= OpenFlags.DownLeft;
+		}
+
+		if (!WorldGen.SolidTile(i + 1, j + 1))
+		{
+			flags |= OpenFlags.DownRight;
+		}
+
+		return flags;
+	}
 }
