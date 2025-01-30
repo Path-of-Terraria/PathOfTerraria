@@ -1,5 +1,7 @@
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Experience;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 
@@ -31,6 +33,7 @@ public class MobExperienceGlobalNPC : GlobalNPC
 #endif
 		
 		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
+
 		amount = npcSystem.Rarity
 			switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?
 			{
@@ -38,7 +41,12 @@ public class MobExperienceGlobalNPC : GlobalNPC
 				ItemRarity.Magic => Convert.ToInt32(amount * 1.05), //Magic mobs give 5% increase xp
 				_ => amount
 			};
-		
+
+		if (SubworldSystem.Current is MappingWorld world)
+		{
+			amount += world.ModifyExperience(amount);
+		}
+
 		foreach (Player player in Main.ActivePlayers)
 		{
 			if (Vector2.DistanceSquared(player.Center, npc.Center) > 2000 * 2000)

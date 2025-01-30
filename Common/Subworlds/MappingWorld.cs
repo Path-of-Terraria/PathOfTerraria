@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
@@ -82,5 +83,20 @@ public abstract class MappingWorld : Subworld
 		Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + position;
 		Vector2 halfSize = FontAssets.DeathText.Value.MeasureString(statusText) / 2f * scale;
 		Main.spriteBatch.DrawString(FontAssets.DeathText.Value, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
+	}
+
+	internal int ModifyExperience(int experience)
+	{
+		return experience + (int)(TotalWeight() / 200f * experience);
+	}
+
+	internal float TotalWeight()
+	{
+		if (Affixes is null || Affixes.Count == 0)
+		{
+			return 0;
+		}
+
+		return Affixes.Sum(x => x.Weight);
 	}
 }

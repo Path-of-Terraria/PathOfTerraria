@@ -220,6 +220,26 @@ public static class PoTItemHelper
 
 	#endregion
 
+	/// <summary>
+	/// Picks the most appropriate item level for the current world. This is the following:<br/>
+	/// For explorable maps, such as the Forest, it's variable and depends on the tier of the map.<br/>
+	/// Boss domains/overworld progression, in order:<br/>
+	/// Default: 5<br/>
+	/// King Slime: 10<br/>
+	/// Eye of Cthulhu: 15<br/>
+	/// Eater of Worlds: 20<br/>
+	/// Brain of Cthulhu: 25<br/>
+	/// Queen Bee: 30<br/>
+	/// Deerclops: 35<br/>
+	/// Skeletron: 40<br/>
+	/// Wall of Flesh: 45<br/>
+	/// Any mech boss: 50<br/>
+	/// Plantera: 55<br/>
+	/// Golem: 60<br/>
+	/// Cultist: 65<br/>
+	/// Moon Lord: 70
+	/// </summary>
+	/// <returns></returns>
 	public static int PickItemLevel()
 	{
 		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.Level > 0)
