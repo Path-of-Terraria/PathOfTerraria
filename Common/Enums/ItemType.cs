@@ -29,6 +29,7 @@ public enum ItemType : long
 	Battleaxe = 1 << 22,
 	Amulet = 1 << 23,
 	Shield = 1 << 24,
+	ExplorableMap = 1 << 25,
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Ring | Charm,
@@ -42,8 +43,9 @@ public enum ItemType : long
 	Weapon = Melee | Magic | Ranged | Whip,
 
 	AllGear = Equipment | Weapon,
+	AllMaps = Map | ExplorableMap,
 
 	AllNoMap = AllGear | Jewel,
 
-	All = AllNoMap | Map,
+	All = AllNoMap | AllMaps,
 }

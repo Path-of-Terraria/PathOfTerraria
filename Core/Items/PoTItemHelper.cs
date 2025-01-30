@@ -222,7 +222,7 @@ public static class PoTItemHelper
 
 	public static int PickItemLevel()
 	{
-		if (SubworldSystem.Current is MappingWorld mapWorld)
+		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.Level > 0)
 		{
 			return mapWorld.Level;
 		}

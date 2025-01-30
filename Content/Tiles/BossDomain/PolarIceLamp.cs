@@ -29,9 +29,9 @@ internal class PolarIceLamp : ModTile
 			return;
 		}
 
-		DeerclopsDomain.LightMultiplier = 1f;
+		DeerclopsDomainLightEdits.LightMultiplier = 1f;
 		Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), new Vector3(0.6f, 0.6f, 0.8f));
-		DeerclopsDomain.LightMultiplier = 0f;
+		DeerclopsDomainLightEdits.LightMultiplier = 0f;
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

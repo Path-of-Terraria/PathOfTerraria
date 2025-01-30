@@ -1,14 +1,14 @@
 [
 	{
 		"affixType": "MapDamageAffix",
-		"equipTypes": "Map",
+		"equipTypes": "ExplorableMap",
 		"tiers": [
 			{
 				"minValue": 1,
 				"maxValue": 3,
 				"minimumLevel": 1,
 				"weight": 1
-			},		
+			},
 			{
 				"minValue": 8,
 				"maxValue": 12,
@@ -25,7 +25,7 @@
 	},
 	{
 		"affixType": "MapBossHealthAffix",
-		"equipTypes": "Map",
+		"equipTypes": "ExplorableMap",
 		"tiers": [
 			{
 				"minValue": 10,

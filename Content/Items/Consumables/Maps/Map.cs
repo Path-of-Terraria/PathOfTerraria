@@ -3,33 +3,16 @@ using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using SubworldLibrary;
-using PathOfTerraria.Common.Subworlds;
-using System.Linq;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem
+public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem
 {
 	public abstract int MaxUses { get; }
 
 	public int RemainingUses = 0;
-
-	private int _tier = 1;
-
-	int GetItemLevel.IItem.GetItemLevel(int realLevel)
-	{
-		return _tier;
-	}
-
-	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
-	{
-		realLevel = level;
-		_tier = realLevel;
-	}
 
 	public override void SetDefaults() 
 	{
@@ -48,31 +31,19 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone; }
 
-	public void OpenMap()
+	public virtual void OpenMap()
 	{
 		OpenMapInternal();
-
-		if (SubworldSystem.Current is MappingWorld map)
-		{
-			map.Level = GetSubworldLevel(map);
-			map.Affixes = [];
-			map.Affixes.AddRange(this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x));
-		}
 	}
 
 	protected abstract void OpenMapInternal();
-
-	protected virtual int GetSubworldLevel(MappingWorld map)
-	{
-		return _tier;
-	}
 
 	/// <summary>
 	/// Gets name and what tier the map is of as a singular string.
 	/// </summary>
 	public virtual string GetNameAndTier()
 	{
-		return Core.Items.GenerateName.Invoke(Item) + ": " + _tier;
+		return Core.Items.GenerateName.Invoke(Item);
 	}
 
 	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
@@ -111,9 +82,10 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
-		if (item.ModItem is T map)
+
+		if (item.ModItem is ExplorableMap map)
 		{
-			map._tier = 1;
+			map.Tier = 1;
 		}
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
@@ -121,13 +93,11 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 	
 	public override void SaveData(TagCompound tag)
 	{
-		tag["tier"] = _tier;
 		tag.Add("usesLeft", (byte)RemainingUses);
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
-		_tier = tag.GetInt("tier");
 		RemainingUses = tag.GetByte("usesLeft");
 	}
 

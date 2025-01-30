@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 
 namespace PathOfTerraria.Core.Commands;
 
@@ -62,7 +63,9 @@ public sealed class SpawnItemCommand : ModCommand
 
 		for (int i = 0; i < count; i++)
 		{
-			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
+			//ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
+			ItemSpawner.SpawnRandomItemByType<Map>(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
+			//ItemSpawner.SpawnItemFromCategory<Map>(caller.Player.Center + new Vector2(relX, relY), (int)ilevel);//, qualityIncrease);
 		}
 
 		caller.Reply("Item(s) spawned!", Color.Green);

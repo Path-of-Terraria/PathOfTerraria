@@ -7,7 +7,7 @@ internal class MappingNPC : GlobalNPC
 {
 	public override void SetDefaults(NPC entity)
 	{
-		if (SubworldSystem.Current is MappingWorld map)
+		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
 		{
 			foreach (MapAffix affix in map.Affixes)
 			{
