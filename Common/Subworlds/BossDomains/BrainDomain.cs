@@ -13,7 +13,6 @@ using Terraria.Localization;
 using PathOfTerraria.Common.World;
 using System.Linq;
 using PathOfTerraria.Content.Tiles.BossDomain;
-using Terraria.Audio;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 using PathOfTerraria.Content.NPCs.Town;
@@ -313,7 +312,7 @@ public class BrainDomain : BossDomainSubworld
 		}
 	}
 
-	private static void GenOval(Vector2 origin, float size, float angle, bool isWall)
+	public static void GenOval(Vector2 origin, float size, float angle, bool isWall)
 	{
 		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
 		List<Point16> results = [];

@@ -50,9 +50,7 @@ public sealed class TravelCommand : ModCommand
 
 		foreach (Subworld world in ModContent.GetContent<Subworld>())
 		{
-			if (world.Name.Equals(subworldName, StringComparison.CurrentCultureIgnoreCase) || 
-				world.Name.Replace("Domain", "").Equals(subworldName, StringComparison.CurrentCultureIgnoreCase) ||
-				world.Name.Replace("Subworld", "").Equals(subworldName, StringComparison.CurrentCultureIgnoreCase))
+			if (world.Name.StartsWith(subworldName, StringComparison.CurrentCultureIgnoreCase))
 			{
 				SubworldSystem.Enter(world.FullName);
 				return;

@@ -5,6 +5,8 @@ Steps: Building steps
 Arenas: Building arenas
 Pathway: Discovering pathway
 RavenPass: Nevermore
+TreesAndLeaves: Adding trees and leaves
+Structures: Building structures
 
 EaterSign: {
 	0: "{0} was instantly devoured."

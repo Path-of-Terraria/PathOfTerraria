@@ -1,0 +1,16 @@
+{
+	"friendlyName": "Ent",
+	"entries": [
+		{
+			"scale": null,
+			"prefix": null,
+			"weight": 1,
+			"stats": {
+				"level": 1,
+				"experience": 90
+			},
+			"affixes": null,
+			"requirements": "Surface"
+		}
+	]
+}

@@ -9,6 +9,7 @@ internal class ArenaEnemyNPC : GlobalNPC
 	protected override bool CloneNewInstances => true;
 
 	public bool Arena = false;
+	public bool StillDropStuff = false;
 
 	public override GlobalNPC Clone(NPC from, NPC to)
 	{
@@ -29,7 +30,9 @@ internal class ArenaEnemyNPC : GlobalNPC
 
 	private void StopArenaNPCsFromDroppingLoot(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
 	{
-		if (self.GetGlobalNPC<ArenaEnemyNPC>().Arena)
+		ArenaEnemyNPC arena = self.GetGlobalNPC<ArenaEnemyNPC>();
+
+		if (arena.Arena && !arena.StillDropStuff)
 		{
 			return;
 		}
@@ -40,10 +43,12 @@ internal class ArenaEnemyNPC : GlobalNPC
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
 		bitWriter.WriteBit(Arena);
+		bitWriter.WriteBit(StillDropStuff);
 	}
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
 		Arena = bitReader.ReadBit();
+		StillDropStuff = bitReader.ReadBit();
 	}
 }

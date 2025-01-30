@@ -17,6 +17,11 @@ namespace PathOfTerraria.Common.Systems.MobSystem;
 
 internal class ArpgNPC : GlobalNPC
 {
+	/// <summary>
+	/// Disables affixes for any NPC with an id contained in the set.
+	/// </summary>
+	public static HashSet<int> NoAffixesSet = [];
+
 	public override bool InstancePerEntity => true;
 
 	public int? Experience;
@@ -131,7 +136,7 @@ internal class ArpgNPC : GlobalNPC
 	{
 		//We only want to trigger these changes on hostile non-boss, non Eater of Worlds mobs in-game
 		if (npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail || npc.immortal 
-			|| npc.dontTakeDamage)
+			|| npc.dontTakeDamage || NoAffixesSet.Contains(npc.type))
 		{
 			return;
 		}
@@ -260,7 +265,10 @@ internal class ArpgNPC : GlobalNPC
 			_ => typeName
 		};
 
-		npc.GivenName += "\n" + GetAffixPrefixes(npc);
+		if (Rarity != ItemRarity.Normal)
+		{
+			npc.GivenName += "\n" + GetAffixPrefixes(npc);
+		}
 
 		return typeName;
 	}
