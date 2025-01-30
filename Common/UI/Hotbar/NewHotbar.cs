@@ -537,7 +537,7 @@ public class HijackHotbarClick : ModSystem
 	{
 		for (int i = 1; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 		{
-			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
+			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !Main.playerInventory)
 			{
 				var pos = new Rectangle(52 * (i + 1) - 4, 30, back.Width, back.Height);
 
