@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -41,6 +42,7 @@ internal abstract class StaffProjectile : ModProjectile
 		Projectile.Size = new(16);
 		Projectile.friendly = true;
 		Projectile.hostile = false;
+		Projectile.hide = true;
 		Projectile.timeLeft = 3000;
 		Projectile.tileCollide = false;
 	}
@@ -53,6 +55,11 @@ internal abstract class StaffProjectile : ModProjectile
 	public override bool ShouldUpdatePosition()
 	{
 		return LetGo;
+	}
+
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+	{
+		overPlayers.Add(index);
 	}
 
 	public override void AI()
@@ -95,7 +102,10 @@ internal abstract class StaffProjectile : ModProjectile
 
 			if (Main.myPlayer == Projectile.owner)
 			{
-				Projectile.Center = Vector2.Lerp(Projectile.Center, Owner.Center + Projectile.DirectionTo(Main.MouseWorld) * ChargeOffset, 0.2f);
+				// Make the projectile always spawn from the staff's gem.
+				float offset = Owner.HeldItem.height + Projectile.height / 2 + Projectile.height / 3;
+				
+				Projectile.Center = Vector2.Lerp(Projectile.Center, Owner.Center - new Vector2(0f, offset), 0.5f);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{

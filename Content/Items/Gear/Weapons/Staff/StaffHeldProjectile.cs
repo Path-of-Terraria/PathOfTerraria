@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -26,13 +28,32 @@ internal class StaffHeldProjectile : ModProjectile
 		Projectile.timeLeft = 3000;
 	}
 
+	public override void OnSpawn(IEntitySource source)
+	{
+		float rotation = Owner.direction == -1 ? MathHelper.Pi : MathHelper.PiOver2;
+
+		Projectile.rotation = rotation;
+	}
+
 	public override void AI()
 	{
 		Owner.heldProj = Projectile.whoAmI;
 
+		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter, Projectile.rotation - MathHelper.PiOver4 - MathHelper.PiOver2);
+		
 		if (!Owner.channel)
 		{
-			Projectile.Kill();
+			float rotation = Owner.direction == -1 ? MathHelper.Pi : MathHelper.PiOver2;
+			
+			Projectile.rotation = Projectile.rotation.AngleLerp(rotation, 0.2f);
+
+			Projectile.alpha += 15;
+
+			if (Projectile.alpha >= 255)
+			{
+				Projectile.Kill();
+			}
+
 			return;
 		}
 
@@ -40,7 +61,8 @@ internal class StaffHeldProjectile : ModProjectile
 
 		if (Main.myPlayer == Projectile.owner)
 		{
-			Projectile.rotation = Projectile.AngleTo(Main.MouseWorld) + MathHelper.PiOver4;
+			Projectile.rotation = Projectile.rotation.AngleLerp(-MathHelper.PiOver4, 0.2f);
+			
 			Owner.direction = Main.MouseWorld.X <= Owner.Center.X ? -1 : 1;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -48,9 +70,6 @@ internal class StaffHeldProjectile : ModProjectile
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
 			}
 		}
-
-		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter, Projectile.rotation - MathHelper.PiOver4 - MathHelper.PiOver2);
-		Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, Projectile.rotation - MathHelper.PiOver4 - MathHelper.PiOver2);
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
@@ -67,7 +86,7 @@ internal class StaffHeldProjectile : ModProjectile
 	{
 		Texture2D tex = TextureAssets.Item[(int)ItemId].Value;
 
-		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, new Vector2(0, tex.Height), 1f, SpriteEffects.None, 0);
 		return false;
 	}
 }
