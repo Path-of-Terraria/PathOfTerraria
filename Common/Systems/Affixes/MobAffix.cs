@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
@@ -53,6 +54,15 @@ internal abstract class MobAffix : Affix
 	{
 		// Populate prefix, don't store
 		this.GetLocalization("Prefix");
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write(AffixHandler.IndexFromMobAffix(this));
+
+		writer.Write(Value);
+		writer.Write(MaxValue);
+		writer.Write(MinValue);
 	}
 
 	/// <summary>

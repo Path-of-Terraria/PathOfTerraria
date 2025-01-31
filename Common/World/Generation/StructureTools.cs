@@ -1,5 +1,6 @@
-﻿using System.Linq;
+using System.Linq;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.World.Generation;
 
@@ -12,7 +13,17 @@ internal static class StructureTools
 		return size;
 	}
 
-	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false)
+	/// <summary>
+	/// Places a structure at the given position and origin.
+	/// </summary>
+	/// <param name="structure"></param>
+	/// <param name="position"></param>
+	/// <param name="origin"></param>
+	/// <param name="mod"></param>
+	/// <param name="cullAbove"></param>
+	/// <param name="noSync">Stops StructureHelper from sending a sync packet if desired.</param>
+	/// <returns></returns>
+	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false, bool noSync = false)
 	{
 		mod ??= ModContent.GetInstance<PoTMod>();
 		var dims = new Point16();
@@ -24,7 +35,15 @@ internal static class StructureTools
 			CullLine(position, dims);
 		}
 
+		int oldVal = Main.netMode;
+
+		if (noSync)
+		{
+			Main.netMode = NetmodeID.SinglePlayer;
+		}
+
 		StructureHelper.Generator.GenerateStructure(structure, position, mod);
+		Main.netMode = oldVal;
 		return position;
 	}
 
@@ -35,7 +54,7 @@ internal static class StructureTools
 			WorldGen.KillTile(i, position.Y - 1);
 		}
 	}
-	
+
 	/// <summary>
 	/// Determines flatness & depth placement of an area. Returns average heights; use <paramref name="valid"/> to check if the space is valid.<br/>
 	/// This needs a lot of tweaking to get perfect.

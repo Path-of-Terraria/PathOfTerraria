@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.World.Generation;
