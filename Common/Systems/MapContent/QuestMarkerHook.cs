@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Common.NPCs.QuestMarkers;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.NPCs.QuestMarkers.Vanilla;
 using PathOfTerraria.Common.Systems.Questing;
 using ReLogic.Content;
@@ -23,6 +25,50 @@ internal class QuestMarkerHook : ILoadable
 		_markers = mod.Assets.Request<Texture2D>("Assets/UI/QuestMarkers");
 
 		On_NPCHeadRenderer.DrawWithOutlines += Draw;
+		IL_Main.DrawMap += HideOldManText;
+	}
+
+	private void HideOldManText(ILContext il)
+	{
+		ILCursor cursor = new(il);
+
+		if (!cursor.TryGotoNext(MoveType.After, x => x.MatchCall<Main>("DrawNPCHeadFriendly"))) // Skip the first DrawNPCHeadFriendly, which doesn't show text
+		{
+			return;
+		}
+
+		if (!cursor.TryGotoNext(MoveType.After, x => x.MatchCall<Main>("DrawNPCHeadFriendly")))
+		{
+			return;
+		}
+
+		EmitModifyOldManName(cursor);
+
+		if (!cursor.TryGotoNext(MoveType.After, x => x.MatchCall<Main>("DrawNPCHeadFriendly")))
+		{
+			return;
+		}
+
+		EmitModifyOldManName(cursor);
+	}
+
+	private static void EmitModifyOldManName(ILCursor cursor)
+	{
+		cursor.Emit(OpCodes.Ldloca_S, (byte)0);
+		cursor.Emit(OpCodes.Ldloc_S, (byte)77);
+		cursor.EmitDelegate(HideName);
+	}
+
+	public static void HideName(ref string text, int npcSlot)
+	{
+		NPC npc = Main.npc[npcSlot];
+		Point mapPos = npc.Center.ToTileCoordinates();
+		bool revealed = Main.Map.IsRevealed(mapPos.X, mapPos.Y);
+
+		if (!revealed && npc.type == NPCID.OldMan)
+		{
+			text = string.Empty;
+		}
 	}
 
 	private void Draw(On_NPCHeadRenderer.orig_DrawWithOutlines orig, NPCHeadRenderer self, Entity entity, int headId, Vector2 position, 
