@@ -45,5 +45,5 @@ public enum ItemType : long
 
 	AllNoMap = AllGear | Jewel,
 
-	All = AllNoMap,
+	All = AllNoMap | Map,
 }
