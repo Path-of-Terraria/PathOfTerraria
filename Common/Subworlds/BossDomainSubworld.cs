@@ -16,12 +16,6 @@ public abstract class BossDomainSubworld : MappingWorld
 	public override bool ShouldSave => false;
 	public override bool NoPlayerSaving => false;
 
-	/// <summary>
-	/// The level of dropped <see cref="Content.Items.Gear.Gear"/> in the domain. 0 will roll default level formula.
-	/// </summary>
-	[Obsolete]
-	public virtual int DropItemLevel => 0;
-
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
 
