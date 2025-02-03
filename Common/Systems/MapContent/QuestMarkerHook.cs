@@ -28,9 +28,17 @@ internal class QuestMarkerHook : ILoadable
 	private void Draw(On_NPCHeadRenderer.orig_DrawWithOutlines orig, NPCHeadRenderer self, Entity entity, int headId, Vector2 position, 
 		Color color, float rotation, float scale, SpriteEffects effects)
 	{
+		Point mapPos = entity.Center.ToTileCoordinates();
+		bool revealed = Main.Map.IsRevealed(mapPos.X, mapPos.Y);
+
+		if (entity is NPC oldMan && oldMan.type == NPCID.OldMan && !revealed)
+		{
+			return; // Hide Old Man head icon unless the area's been explored already, better fitting vanilla's functionality & not giving away the dungeon immediately
+		}
+
 		orig(self, entity, headId, position, color, rotation, scale, effects);
 
-		if (entity is NPC npc && (npc.ModNPC is IQuestMarkerNPC questNPC || VanillaQuestMarkerNPCs.TryGetValue(npc.type, out questNPC)))
+		if (entity is NPC npc && (npc.ModNPC is IQuestMarkerNPC questNPC || VanillaQuestMarkerNPCs.TryGetValue(npc.type, out questNPC)) && revealed)
 		{
 			QuestMarkerType markerType = DetermineMarker(questNPC);
 
