@@ -1,7 +1,7 @@
 [
 	{
 		"affixType": "MapDamageAffix",
-		"equipTypes": "ExplorableMap",
+		"equipTypes": "Map",
 		"tiers": [
 			{
 				"minValue": 8,
@@ -21,7 +21,7 @@
 	},
 	{
 		"affixType": "MapBossHealthAffix",
-		"equipTypes": "ExplorableMap",
+		"equipTypes": "Map",
 		"tiers": [
 			{
 				"minValue": 100,
@@ -41,7 +41,7 @@
 	},
 	{
 		"affixType": "MapMobCritChanceAffix",
-		"equipTypes": "ExplorableMap",
+		"equipTypes": "Map",
 		"tiers": [
 			{
 				"minValue": 60,
@@ -61,7 +61,7 @@
 	},
 	{
 		"affixType": "MapMobChillChanceAffix",
-		"equipTypes": "ExplorableMap",
+		"equipTypes": "Map",
 		"tiers": [
 			{
 				"minValue": 2,
@@ -81,7 +81,7 @@
 	},
 	{
 		"affixType": "MapIncreasedBehaviourAffix",
-		"equipTypes": "ExplorableMap",
+		"equipTypes": "Map",
 		"tiers": [
 			{
 				"minValue": 4,
