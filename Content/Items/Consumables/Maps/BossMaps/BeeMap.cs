@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class BeeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override int WorldTier => 30;
 
 	public override void SetStaticDefaults()
 	{

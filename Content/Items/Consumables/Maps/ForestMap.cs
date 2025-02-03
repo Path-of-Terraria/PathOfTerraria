@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-internal class ForestMap : ExplorableMap
+internal class ForestMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 

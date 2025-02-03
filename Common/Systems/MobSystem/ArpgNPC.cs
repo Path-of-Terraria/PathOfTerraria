@@ -64,7 +64,7 @@ internal class ArpgNPC : GlobalNPC
 			if (SubworldSystem.Current is MappingWorld world)
 			{
 				dropQuantity *= 1 + (int)(world.TotalWeight() / 5f) / 100f;
-				dropQuantity *= 1 + ((world.Level - 50) / 100f);
+				dropQuantity *= 1 + (world.Tier - 50) / 100f;
 			}
 
 			return dropQuantity;
@@ -119,7 +119,7 @@ internal class ArpgNPC : GlobalNPC
 		{
 			magicFind += (int)(world.TotalWeight() / 10f) / 100f;
 
-			float modifier = 1 + ((world.Level - 50) / 100f);
+			float modifier = 1 + (world.Tier - 50) / 100f;
 			magicFind += modifier;
 		}
 

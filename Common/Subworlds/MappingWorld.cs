@@ -48,7 +48,13 @@ public abstract class MappingWorld : Subworld
 
 	public List<MapAffix> Affixes = null;
 
-	public int Level = 0;
+	/// <summary>
+	/// The tier of the world. This modifies a lot of things:<br/>
+	/// Defines the item level of the world, and consequently, the level and type of item that drops from enemies<br/>
+	/// Above level 50, buffs enemies' damage and max health; see <see cref="MappingNPC"/>'s SetDefaults<br/>
+	/// Above level 50, buffs enemy gear droprate and rarity; see <see cref="Systems.MobSystem.ArpgNPC"/>.
+	/// </summary>
+	public int Tier = 0;
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
 	{
@@ -97,6 +103,6 @@ public abstract class MappingWorld : Subworld
 			return 0;
 		}
 
-		return Affixes.Sum(x => x.Weight);
+		return Affixes.Sum(x => x.Strength);
 	}
 }

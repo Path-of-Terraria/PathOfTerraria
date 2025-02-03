@@ -242,9 +242,9 @@ public static class PoTItemHelper
 	/// <returns></returns>
 	public static int PickItemLevel()
 	{
-		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.Level > 0)
+		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.Tier > 0)
 		{
-			return mapWorld.Level;
+			return mapWorld.Tier;
 		}
 
 		if (NPC.downedMoonlord)

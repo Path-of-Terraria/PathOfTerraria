@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class WoFMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override int WorldTier => 45;
 
 	public override void SetStaticDefaults()
 	{

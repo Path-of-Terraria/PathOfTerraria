@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class KingSlimeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override int WorldTier => 5;
 
 	public override void SetStaticDefaults()
 	{

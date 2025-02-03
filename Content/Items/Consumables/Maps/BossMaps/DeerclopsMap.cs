@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class DeerclopsMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override int WorldTier => 35;
 
 	public override void SetStaticDefaults()
 	{

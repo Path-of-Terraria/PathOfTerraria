@@ -4,7 +4,12 @@ namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 public abstract class MapAffix : ItemAffix
 {
-	public abstract float Weight { get; }
+	/// <summary>
+	/// Used to modify the resulting reward for map affix difficulty.<br/>
+	/// Experience boost: <see cref="MobSystem.MobExperienceGlobalNPC.OnKill(NPC)"/><br/>
+	/// Drop rarity and quantity boost: <see cref="MobSystem.ArpgNPC.DropQuantity"/> and <see cref="MobSystem.ArpgNPC.OnKill(NPC)"/>
+	/// </summary>
+	public float Strength;
 
 	public virtual void ModifyNewNPC(NPC npc)
 	{
@@ -25,8 +30,6 @@ public abstract class MapAffix : ItemAffix
 
 public class MapDamageAffix : MapAffix
 {
-	public override float Weight => 10;
-
 	public override void ModifyNewNPC(NPC npc)
 	{
 		npc.damage = (int)(npc.damage * (1 + Value / 100f));
@@ -35,8 +38,6 @@ public class MapDamageAffix : MapAffix
 
 public class MapBossHealthAffix : MapAffix
 {
-	public override float Weight => 15;
-
 	public override void ModifyNewNPC(NPC npc)
 	{
 		if (npc.boss)
@@ -49,8 +50,6 @@ public class MapBossHealthAffix : MapAffix
 
 public class MapMobCritChanceAffix : MapAffix
 {
-	public override float Weight => 12;
-
 	public override void ModifyHitPlayer(NPC npc, Player player, ref Player.HurtModifiers modifiers)
 	{
 		if (Main.rand.NextFloat() < Value / 100f)
@@ -62,8 +61,6 @@ public class MapMobCritChanceAffix : MapAffix
 
 public class MapMobChillChanceAffix : MapAffix
 {
-	public override float Weight => 9;
-
 	public override void OnHitPlayer(NPC npc, Player player, Player.HurtInfo info)
 	{
 		if (Main.rand.NextFloat() < Value / 100f)
@@ -75,8 +72,6 @@ public class MapMobChillChanceAffix : MapAffix
 
 public class MapIncreasedBehaviourAffix : MapAffix
 {
-	public override float Weight => 12;
-
 	public override void PreAI(NPC npc)
 	{
 		npc.GetGlobalNPC<SpeedUpNPC>().ExtraAISpeed += Value / 100f;

@@ -165,6 +165,12 @@ public class AffixRegistry : ILoadable
 
 		// Generate a random value within the specified range
 		float randomValue = Main.rand.NextFloat(tierData.MinValue, tierData.MaxValue);
+
+		if (affix is MapAffix map)
+		{
+			map.Strength = tierData.Strength;
+		}
+
 		return randomValue;
 	}
 }

@@ -14,9 +14,9 @@ internal class MappingNPC : GlobalNPC
 				affix.ModifyNewNPC(entity);
 			}
 
-			if (map.Level > 50)
+			if (map.Tier > 50)
 			{
-				float modifier = 1 + (map.Level - 50) / 10f;
+				float modifier = 1 + (map.Tier - 50) / 10f;
 				entity.life = entity.lifeMax = (int)(entity.lifeMax * modifier);
 				entity.defDamage = entity.damage = (int)(entity.damage * modifier);
 			}

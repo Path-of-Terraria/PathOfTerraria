@@ -5,14 +5,21 @@ using Terraria.ModLoader.IO;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Subworlds;
+using SubworldLibrary;
+using System.Linq;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem
+public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
 {
 	public abstract int MaxUses { get; }
+	public virtual int WorldTier => Tier;
 
 	public int RemainingUses = 0;
+
+	internal int Tier = 1;
 
 	public override void SetDefaults() 
 	{
@@ -34,6 +41,13 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public virtual void OpenMap()
 	{
 		OpenMapInternal();
+
+		if (SubworldSystem.Current is MappingWorld map)
+		{
+			map.Tier = WorldTier;
+			map.Affixes = [];
+			map.Affixes.AddRange(this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x));
+		}
 	}
 
 	protected abstract void OpenMapInternal();
@@ -82,11 +96,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
-
-		if (item.ModItem is ExplorableMap map)
-		{
-			map.Tier = 1;
-		}
+		(item.ModItem as Map).Tier = 1;
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
@@ -94,11 +104,13 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public override void SaveData(TagCompound tag)
 	{
 		tag.Add("usesLeft", (byte)RemainingUses);
+		tag.Add("tier", (short)Tier);
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
 		RemainingUses = tag.GetByte("usesLeft");
+		Tier = tag.GetShort("tier");
 	}
 
 	public abstract string GenerateName(string defaultName);
@@ -131,5 +143,16 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public List<ItemAffix> GenerateAffixes()
 	{
 		return [];
+	}
+
+	int GetItemLevel.IItem.GetItemLevel(int realLevel)
+	{
+		return Tier;
+	}
+
+	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
+	{
+		realLevel = level;
+		Tier = realLevel;
 	}
 }
