@@ -15,11 +15,12 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
 {
 	public abstract int MaxUses { get; }
-	public virtual int WorldTier => Tier;
+	public virtual int WorldTier => WorldLevelBasedOnTier(Tier);
 
 	public int RemainingUses = 0;
 
 	internal int Tier = 1;
+	internal int ItemLevel = 1;
 
 	public override void SetDefaults() 
 	{
@@ -62,26 +63,26 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
 	{
-		if (line.Mod == Mod.Name && line.Name == "Name")
-		{
-			yOffset = -2;
-			line.BaseScale = Vector2.One * 1.1f;
-			return true;
-		}
+		//if (line.Mod == Mod.Name && line.Name == "Name")
+		//{
+		//	yOffset = -2;
+		//	line.BaseScale = Vector2.One * 1.1f;
+		//	return true;
+		//}
 
-		if (line.Mod == Mod.Name && line.Name == "Map")
-		{
-			yOffset = -8;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
+		//if (line.Mod == Mod.Name && line.Name == "Map")
+		//{
+		//	yOffset = -8;
+		//	line.BaseScale = Vector2.One * 0.8f;
+		//	return true;
+		//}
 
-		if (line.Mod == Mod.Name && line.Name == "Tier")
-		{
-			yOffset = 2;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
+		//if (line.Mod == Mod.Name && line.Name == "Tier")
+		//{
+		//	yOffset = 2;
+		//	line.BaseScale = Vector2.One * 0.8f;
+		//	return true;
+		//}
 		
 		return true;
 	}
@@ -115,6 +116,11 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public abstract string GenerateName(string defaultName);
 
+	public static int WorldLevelBasedOnTier(int tier)
+	{
+		return Math.Clamp(50 + tier * 2, 50, 72);
+	}
+
 	/// <summary>
 	/// Determines how many times a boss domain map can be used. This means the following:<br/>
 	/// <c>1 Player:</c> 6 uses<br/>
@@ -147,12 +153,12 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	int GetItemLevel.IItem.GetItemLevel(int realLevel)
 	{
-		return Tier;
+		return ItemLevel;
 	}
 
 	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
 	{
 		realLevel = level;
-		Tier = realLevel;
+		ItemLevel = realLevel;
 	}
 }

@@ -941,7 +941,7 @@ ForestMap: {
 	Tooltip:
 		'''
 		{$MapCommon.BossBase}
-		'The map smells of gras and sap'
+		'The map smells of grass and sap'
 		'''
 }
 

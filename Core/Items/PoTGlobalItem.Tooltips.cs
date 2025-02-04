@@ -9,6 +9,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Linq;
 using Terraria.Localization;
 using ReLogic.Content;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -62,7 +63,7 @@ partial class PoTGlobalItem
 				line.BaseScale = new Vector2(0.8f);
 				return true;
 
-			case "ItemLevel":
+			case "ItemLevel" or "MapTier":
 				yOffset = 2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
@@ -171,7 +172,7 @@ partial class PoTGlobalItem
 			tooltips.Add(rarityLine);
 		}
 
-		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {(data.ItemType == ItemType.Map ? "Tier" : "Item level")}: [c/CCCCFF:{GetItemLevel.Invoke(item)}]")
+		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" Item level: [c/CCCCFF:{GetItemLevel.Invoke(item)}]")
 		{
 			OverrideColor = new Color(170, 170, 170)
 		};
@@ -204,6 +205,14 @@ partial class PoTGlobalItem
 		}
 
 		tooltips.AddRange(oldStats);
+
+		if (item.ModItem is Map map)
+		{
+			tooltips.Add(new TooltipLine(Mod, "MapTier", " Tier: [c/CCCCFF:" + map.Tier + "]")
+			{
+				OverrideColor = new Color(170, 170, 170)
+			});
+		}
 
 		// Affix tooltips
 		InsertAdditionalTooltipLines.Invoke(item, tooltips);
