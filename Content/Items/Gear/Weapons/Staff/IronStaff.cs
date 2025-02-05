@@ -27,5 +27,7 @@ internal class IronStaff : Staff
 	{
 		public override int DustType => DustID.GemTopaz;
 		public override int TorchType => TorchID.Yellow;
+
+		public override Vector2 ChargeOffset => base.ChargeOffset - new Vector2(0f, 6f);
 	}
 }

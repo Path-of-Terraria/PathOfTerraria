@@ -11,5 +11,6 @@ internal class CopperStaff : Staff
 
 	public class CopperStaffProjectile : StaffProjectile
 	{
+		public override Vector2 ChargeOffset => base.ChargeOffset - new Vector2(0f, 4f);
 	}
 }

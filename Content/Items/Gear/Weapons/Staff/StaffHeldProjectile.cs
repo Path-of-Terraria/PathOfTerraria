@@ -26,6 +26,8 @@ internal class StaffHeldProjectile : ModProjectile
 		Projectile.friendly  = true;
 		Projectile.hostile = false;
 		Projectile.timeLeft = 3000;
+
+		Projectile.alpha = 255;
 	}
 
 	public override void OnSpawn(IEntitySource source)
@@ -39,15 +41,22 @@ internal class StaffHeldProjectile : ModProjectile
 	{
 		Owner.heldProj = Projectile.whoAmI;
 
-		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter, Projectile.rotation - MathHelper.PiOver4 - MathHelper.PiOver2);
+		// The actual owner's direction is not consistent because the item has useTurn set to true.
+		int direction = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
+		
+		float armRotation = Projectile.rotation + MathHelper.ToRadians(135f);
+
+		if (direction == 1)
+		{
+			armRotation += MathHelper.Pi;
+		}
+		
+		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+		Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRotation);
 		
 		if (!Owner.channel)
 		{
-			float rotation = Owner.direction == -1 ? MathHelper.Pi : MathHelper.PiOver2;
-			
-			Projectile.rotation = Projectile.rotation.AngleLerp(rotation, 0.2f);
-
-			Projectile.alpha += 15;
+			Projectile.alpha += 51;
 
 			if (Projectile.alpha >= 255)
 			{
@@ -57,13 +66,18 @@ internal class StaffHeldProjectile : ModProjectile
 			return;
 		}
 
-		Projectile.Center = Owner.Center + Owner.RotatedRelativePoint(Vector2.Zero);
+		if (Projectile.alpha > 0)
+		{
+			Projectile.alpha -= 17;
+		}
+
+		Projectile.Center = Owner.Center + Owner.RotatedRelativePoint(Vector2.Zero) + new Vector2(-10f * -direction, 10f);
 
 		if (Main.myPlayer == Projectile.owner)
 		{
-			Projectile.rotation = Projectile.rotation.AngleLerp(-MathHelper.PiOver4, 0.2f);
+			Projectile.rotation = Projectile.rotation.AngleLerp(-MathHelper.PiOver4, 0.5f);
 			
-			Owner.direction = Main.MouseWorld.X <= Owner.Center.X ? -1 : 1;
+			Owner.direction = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
