@@ -158,7 +158,7 @@ internal class ItemSpawner
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
-		(item.ModItem as Map).Tier = tier;
+		//(item.ModItem as Map).Tier = tier;
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
