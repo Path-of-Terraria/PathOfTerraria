@@ -28,5 +28,7 @@ internal class SilverStaff : Staff
 		public override int DustType => DustID.GemEmerald;
 		public override int MaxCharge => 70;
 		public override int TorchType => TorchID.Green;
+
+		public override Vector2 ChargeOffset => base.ChargeOffset - new Vector2(0f, 6f);
 	}
 }
