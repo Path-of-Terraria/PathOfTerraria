@@ -54,7 +54,7 @@ public abstract class MappingWorld : Subworld
 	/// Above level 50, buffs enemies' damage and max health; see <see cref="MappingNPC"/>'s SetDefaults<br/>
 	/// Above level 50, buffs enemy gear droprate and rarity; see <see cref="Systems.MobSystem.ArpgNPC"/>.
 	/// </summary>
-	public int Tier = 0;
+	public int AreaLevel = 0;
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
 	{

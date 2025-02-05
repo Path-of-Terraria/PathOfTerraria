@@ -17,20 +17,10 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public abstract int MaxUses { get; }
 	public virtual int WorldTier => WorldLevelBasedOnTier(Tier);
 
-	protected override bool CloneNewInstances => true;
-
 	public int RemainingUses = 0;
 
 	internal int Tier = 1;
 	internal int ItemLevel = 1;
-
-	public override ModItem Clone(Item newEntity)
-	{
-		var map = base.Clone(newEntity) as Map;
-		map.Tier = Tier;
-		map.ItemLevel = ItemLevel;
-		return map;
-	}
 
 	public override void SetDefaults() 
 	{
@@ -55,7 +45,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 		if (SubworldSystem.Current is MappingWorld map)
 		{
-			map.Tier = WorldTier;
+			map.AreaLevel = WorldTier;
 			map.Affixes = [];
 			map.Affixes.AddRange(this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x));
 		}
@@ -71,32 +61,21 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 		return Core.Items.GenerateName.Invoke(Item);
 	}
 
-	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+	public static void SpawnItem(Vector2 pos)
 	{
-		//if (line.Mod == Mod.Name && line.Name == "Name")
-		//{
-		//	yOffset = -2;
-		//	line.BaseScale = Vector2.One * 1.1f;
-		//	return true;
-		//}
-
-		//if (line.Mod == Mod.Name && line.Name == "Map")
-		//{
-		//	yOffset = -8;
-		//	line.BaseScale = Vector2.One * 0.8f;
-		//	return true;
-		//}
-
-		//if (line.Mod == Mod.Name && line.Name == "Tier")
-		//{
-		//	yOffset = 2;
-		//	line.BaseScale = Vector2.One * 0.8f;
-		//	return true;
-		//}
-		
-		return true;
+		SpawnMap<LowTierMap>(pos);
+		SpawnMap<CaveMap>(pos);
 	}
+	
+	public static void SpawnMap<T>(Vector2 pos) where T : Map
+	{
+		var item = new Item();
+		item.SetDefaults(ModContent.ItemType<T>());
+		(item.ModItem as Map).Tier = 1;
 
+		Item.NewItem(null, pos, Vector2.Zero, item);
+	}
+	
 	public override void SaveData(TagCompound tag)
 	{
 		tag.Add("usesLeft", (byte)RemainingUses);
@@ -106,42 +85,14 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public override void LoadData(TagCompound tag)
 	{
 		RemainingUses = tag.GetByte("usesLeft");
-
-		try
-		{
-			if (tag.TryGet("tier", out short newTier))
-			{
-				Tier = newTier;
-			}
-		} 
-		catch
-		{
-			// Updates old users to use new system
-			// TagCompound doesn't have a nice way of converting the old Int32 into an Int16 without throwing
-			Tier = TierBasedOnItemLevel(ItemLevel);
-		}
+		Tier = tag.GetShort("tier");
 	}
 
 	public abstract string GenerateName(string defaultName);
 
 	public static int WorldLevelBasedOnTier(int tier)
 	{
-		if (tier == 0)
-		{
-			return 0;
-		}
-
 		return Math.Clamp(50 + tier * 2, 50, 72);
-	}
-
-	public static int TierBasedOnItemLevel(int itemLevel)
-	{
-		if (itemLevel <= 50)
-		{
-			return 0;
-		}
-
-		return (itemLevel - 50) / 2;
 	}
 
 	/// <summary>
@@ -183,6 +134,5 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	{
 		realLevel = level;
 		ItemLevel = realLevel;
-		Tier = TierBasedOnItemLevel(ItemLevel);
 	}
 }
