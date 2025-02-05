@@ -18,7 +18,7 @@ public sealed class RootedDebuff : ModBuff
 
 	private void StopRootedIfImmune(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
 	{
-		if (type == ModContent.BuffType<RootedDebuff>() && self.GetGlobalNPC<RootedNPC>().RootedImmuneTime > 0)
+		if (type == ModContent.BuffType<RootedDebuff>() && self.TryGetGlobalNPC(out RootedNPC rooted) && rooted.RootedImmuneTime > 0)
 		{
 			return;
 		}

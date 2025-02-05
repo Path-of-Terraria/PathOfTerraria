@@ -14,6 +14,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
 public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
 {
+	protected sealed override bool CloneNewInstances => true;
+
 	public abstract int MaxUses { get; }
 	public virtual int WorldTier => WorldLevelBasedOnTier(Tier);
 
@@ -21,6 +23,14 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	internal int Tier = 1;
 	internal int ItemLevel = 1;
+
+	public override ModItem Clone(Item newEntity)
+	{
+		var map = base.Clone(newEntity) as Map;
+		map.Tier = Tier;
+		map.ItemLevel = ItemLevel;
+		return map;
+	}
 
 	public override void SetDefaults() 
 	{
@@ -95,6 +105,18 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 		return Math.Clamp(50 + tier * 2, 50, 72);
 	}
 
+	public static int TierBasedOnWorldLevel(int area)
+	{
+		if (area == 0)
+		{
+			return 0;
+		}
+
+		// area is adjusted by 48 instead of 50 to increase the level by 1 per stage;
+		// i.e. a level 50 area gives a tier 1 map, which gives a level 52 area...
+		return Math.Clamp((area - 48) / 2, 0, 11);
+	}
+
 	/// <summary>
 	/// Determines how many times a boss domain map can be used. This means the following:<br/>
 	/// <c>1 Player:</c> 6 uses<br/>
@@ -134,5 +156,6 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	{
 		realLevel = level;
 		ItemLevel = realLevel;
+		Tier = TierBasedOnWorldLevel(ItemLevel);
 	}
 }
