@@ -5,6 +5,15 @@ Rarity: {
 	Unique: "Unique "
 }
 
+Tooltips: {
+	Cloned: Cloned
+	Corrupted: Corrupted
+	Tier: Tier:
+	Level: Item level:
+	Damage: Damage
+	Defense: Defense
+}
+
 Influence: {
 	None: ""
 	Lunar: "Lunar "
@@ -301,11 +310,6 @@ WarShield: {
 		3: of Resilience
 		4: of Conquery
 	}
-}
-
-Properties: {
-	Cloned: Cloned
-	Corrupted: Corrupted
 }
 
 Offhand.Name: Offhand
