@@ -18,7 +18,8 @@ public class AffixTooltip
 		Wings,
 		Necklace,
 		RingOn,
-		RingOff
+		RingOff,
+		NonApplicable
 	}
 
 	public delegate string OverrideStringDelegate(AffixTooltip self, float value, float difference, float originalValue, LocalizedText text);

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Items.Consumables.Maps;
+﻿using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 
 namespace PathOfTerraria.Core.Commands;
 
@@ -17,7 +18,7 @@ public sealed class SpawnMapCommand : ModCommand
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			Map.SpawnItem(caller.Player.Center);
+			ItemSpawner.SpawnMap<ForestMap>(caller.Player.Center, 5);
 		}
 	}
 }

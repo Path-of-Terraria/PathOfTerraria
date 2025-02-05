@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class EoCMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override int WorldTier => 15;
 
 	public override void SetStaticDefaults()
 	{
@@ -24,7 +25,7 @@ internal class EoCMap : Map
 		Item.Size = new Vector2(44, 30);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<EyeDomain>();
 	}

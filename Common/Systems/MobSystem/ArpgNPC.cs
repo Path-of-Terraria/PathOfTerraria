@@ -60,6 +60,13 @@ internal class ArpgNPC : GlobalNPC
 			float dropQuantity = 1;
 			Affixes.ForEach(a => dropQuantity += a.DropQuantityFlat);
 			Affixes.ForEach(a => dropQuantity *= a.DropQuantityMultiplier);
+
+			if (SubworldSystem.Current is MappingWorld world)
+			{
+				dropQuantity *= 1 + (int)(world.TotalWeight() / 5f) / 100f;
+				dropQuantity *= 1 + (world.AreaLevel - 50) / 100f;
+			}
+
 			return dropQuantity;
 		}
 	}
@@ -108,9 +115,12 @@ internal class ArpgNPC : GlobalNPC
 			magicFind = 1f + _lastPlayerHit.GetModPlayer<MinorStatsModPlayer>().MagicFind;
 		}
 
-		if (SubworldSystem.Current is BossDomainSubworld domain)
+		if (SubworldSystem.Current is MappingWorld world)
 		{
-			itemLevel = domain.DropItemLevel;
+			magicFind += (int)(world.TotalWeight() / 10f) / 100f;
+
+			float modifier = 1 + (world.AreaLevel - 50) / 100f;
+			magicFind += modifier;
 		}
 
 		while (rand > 99)

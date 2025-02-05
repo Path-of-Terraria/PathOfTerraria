@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using ReLogic.Graphics;
 using SubworldLibrary;
@@ -38,6 +40,21 @@ public abstract class MappingWorld : Subworld
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
+
+	/// <summary>
+	/// Forces the time to be the given time, and it to be night/day. Defaults to (-1, true), which ignores this.
+	/// </summary>
+	public virtual (int time, bool isDay) ForceTime => (-1, true);
+
+	public List<MapAffix> Affixes = null;
+
+	/// <summary>
+	/// The tier of the world. This modifies a lot of things:<br/>
+	/// Defines the item level of the world, and consequently, the level and type of item that drops from enemies<br/>
+	/// Above level 50, buffs enemies' damage and max health; see <see cref="MappingNPC"/>'s SetDefaults<br/>
+	/// Above level 50, buffs enemy gear droprate and rarity; see <see cref="Systems.MobSystem.ArpgNPC"/>.
+	/// </summary>
+	public int AreaLevel = 0;
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
 	{
@@ -72,5 +89,20 @@ public abstract class MappingWorld : Subworld
 		Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + position;
 		Vector2 halfSize = FontAssets.DeathText.Value.MeasureString(statusText) / 2f * scale;
 		Main.spriteBatch.DrawString(FontAssets.DeathText.Value, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
+	}
+
+	internal int ModifyExperience(int experience)
+	{
+		return experience + (int)(TotalWeight() / 200f * experience);
+	}
+
+	internal float TotalWeight()
+	{
+		if (Affixes is null || Affixes.Count == 0)
+		{
+			return 0;
+		}
+
+		return Affixes.Sum(x => x.Strength);
 	}
 }

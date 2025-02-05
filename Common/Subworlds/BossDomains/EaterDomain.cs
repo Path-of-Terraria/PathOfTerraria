@@ -315,7 +315,7 @@ public class EaterDomain : BossDomainSubworld
 		var position = new Point16(400 - size.X / 2, Height - 150 - size.Y / 2);
 		StructureHelper.Generator.GenerateStructure("Assets/Structures/EaterArena", position, Mod);
 
-		Arena = new Rectangle(position.X * 16, position.Y * 16, size.X * 16, size.Y * 16);
+		Arena = new Rectangle(position.X * 16, (position.Y + 2) * 16, size.X * 16, (size.Y - 2) * 16);
 	}
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)

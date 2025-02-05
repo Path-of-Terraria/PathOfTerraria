@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
@@ -93,6 +94,10 @@ public class AffixTooltipsHandler
 		{
 			return AffixTooltip.AffixSource.Necklace;
 		}
+		else if (source.ModItem is Map)
+		{
+			return AffixTooltip.AffixSource.NonApplicable;
+		}
 
 		return AffixTooltip.AffixSource.MainItem;
 	}
@@ -101,6 +106,11 @@ public class AffixTooltipsHandler
 	{
 		if (Tooltips.TryGetValue(type, out AffixTooltip tooltip))
 		{
+			if (source == AffixTooltip.AffixSource.NonApplicable)
+			{
+				return;
+			}
+
 			if (!tooltip.ValueBySource.ContainsKey(source))
 			{
 				tooltip.OriginalValueBySource.Add(source, value);

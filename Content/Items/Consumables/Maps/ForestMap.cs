@@ -17,7 +17,7 @@ internal class ForestMap : Map
 		staticData.DropChance = 1f;
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<ForestArea>();
 	}

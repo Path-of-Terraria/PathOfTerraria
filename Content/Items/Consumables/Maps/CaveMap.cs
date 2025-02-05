@@ -21,7 +21,7 @@ internal class CaveMap : Map
 		staticData.DropChance = 1f;
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		MappingSystem.EnterCaveMap(this);
 	}
