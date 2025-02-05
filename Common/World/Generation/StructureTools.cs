@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -68,7 +68,7 @@ internal static class StructureTools
 	/// <param name="hardAvoidIds">If a tile of any of these types are scanned, the area is automatically invalid.</param>
 	/// <param name="allowedIds">Tiles that do not increment skips when scanned.</param>
 	/// <returns>Average height.</returns>
-	public static int AverageHeights(int x, int y, int width, int validSkips, int depth, out bool valid, int[] hardAvoidIds, params int[] allowedIds)
+	public static int AverageHeights(int x, int y, int width, int validSkips, int depth, out bool valid, int[] hardAvoidIds, int[] allowedIds)
 	{
 		int heights = 0;
 		int avgDepth = 0;
