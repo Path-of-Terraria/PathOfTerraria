@@ -154,6 +154,13 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
 	{
+		// Randomize level a bit if it's == to world level
+		// TODO: Find a better way to do this?
+		if (level == PoTItemHelper.PickItemLevel() && level > 50)
+		{
+			level = Main.rand.Next(50, level + 1);
+		}
+
 		realLevel = level;
 		ItemLevel = realLevel;
 		Tier = TierBasedOnWorldLevel(ItemLevel);
