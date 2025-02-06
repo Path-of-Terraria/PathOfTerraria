@@ -5,20 +5,56 @@ using Terraria.ID;
 namespace PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 
 /// <summary>
-/// Disables natural spawns from the Eye of Cthulhu, Destroyer, Twins and Skeletron Prime.
+/// Disables natural spawns from the Eye of Cthulhu, King Slime (natural & Slime Rain), Destroyer, Twins and Skeletron Prime.
 /// </summary>
 internal class DisableRandomSpawns : ModSystem
 {
+	private static bool StopKingSlimeSpawn = false;
+
 	public override void Load()
 	{
 		On_Main.UpdateTime_StartNight += StopBossesFromSpawning;
+		On_NPC.SpawnNPC += StopKingSlimeSpawnCheck;
+		On_NPC.SpawnOnPlayer += StopKingSlime;
+		On_NPC.DoDeathEvents_AdvanceSlimeRain += AddKingSlimeSpawnCheck;
+	}
+
+	private void AddKingSlimeSpawnCheck(On_NPC.orig_DoDeathEvents_AdvanceSlimeRain orig, NPC self, Player closestPlayer)
+	{
+		StopKingSlimeSpawn = true;
+		orig(self, closestPlayer);
+
+		if (Main.slimeRainKillCount > 60) // Manually stop event since without King Slime it never ends
+		{
+			Main.StopSlimeRain();
+			AchievementsHelper.NotifyProgressionEvent(16);
+		}
+
+		StopKingSlimeSpawn = false;
+	}
+
+	private void StopKingSlime(On_NPC.orig_SpawnOnPlayer orig, int plr, int Type)
+	{
+		if (Type == NPCID.KingSlime && StopKingSlimeSpawn)
+		{
+			return;
+		}
+
+		orig(plr, Type);
+	}
+
+	private void StopKingSlimeSpawnCheck(On_NPC.orig_SpawnNPC orig)
+	{
+		StopKingSlimeSpawn = true;
+		orig();
+		StopKingSlimeSpawn = false;
 	}
 
 	private void StopBossesFromSpawning(On_Main.orig_UpdateTime_StartNight orig, ref bool stopEvents)
 	{
 		bool oldEoCDown = NPC.downedBoss1;
-		NPC.downedBoss1 = true;
-		WorldGen.spawnEye = true;
+		NPC.downedBoss1 = true; // downedBoss1 being true disables EoC spawn
+		WorldGen.spawnEye = true; // SpawnEye being true disables all other spawns
 
 		orig(ref stopEvents);
 
