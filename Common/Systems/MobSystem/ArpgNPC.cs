@@ -9,23 +9,27 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 
-internal class MobAprgSystem : GlobalNPC
+internal class ArpgNPC : GlobalNPC
 {
+	/// <summary>
+	/// Disables affixes for any NPC with an id contained in the set.
+	/// </summary>
+	public static HashSet<int> NoAffixesSet = [];
+
 	public override bool InstancePerEntity => true;
 
 	public int? Experience;
 	public ItemRarity Rarity = ItemRarity.Normal;
+	public List<MobAffix> Affixes = [];
 
 	private readonly Player _lastPlayerHit = null;
 
-	private List<MobAffix> _affixes = [];
 	private bool _synced = false;
 
 	// should somehow work together with magic find (that i assume we will have) to increase rarity / if its a unique
@@ -34,8 +38,8 @@ internal class MobAprgSystem : GlobalNPC
 		get
 		{
 			float dropRarity = 0;
-			_affixes.ForEach(a => dropRarity += a.DropRarityFlat);
-			_affixes.ForEach(a => dropRarity *= a.DropRarityMultiplier);
+			Affixes.ForEach(a => dropRarity += a.DropRarityFlat);
+			Affixes.ForEach(a => dropRarity *= a.DropRarityMultiplier);
 			return dropRarity; // rounds down iirc
 		}
 	}
@@ -54,8 +58,15 @@ internal class MobAprgSystem : GlobalNPC
 		get
 		{
 			float dropQuantity = 1;
-			_affixes.ForEach(a => dropQuantity += a.DropQuantityFlat);
-			_affixes.ForEach(a => dropQuantity *= a.DropQuantityMultiplier);
+			Affixes.ForEach(a => dropQuantity += a.DropQuantityFlat);
+			Affixes.ForEach(a => dropQuantity *= a.DropQuantityMultiplier);
+
+			if (SubworldSystem.Current is MappingWorld world)
+			{
+				dropQuantity *= 1 + (int)(world.TotalWeight() / 5f) / 100f;
+				dropQuantity *= 1 + (world.AreaLevel - 50) / 100f;
+			}
+
 			return dropQuantity;
 		}
 	}
@@ -63,30 +74,30 @@ internal class MobAprgSystem : GlobalNPC
 	public override bool PreAI(NPC npc)
 	{
 		bool doRunNormalAi = true;
-		_affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAi(npc));
+		Affixes.ForEach(a => doRunNormalAi = doRunNormalAi && a.PreAI(npc));
 		return doRunNormalAi;
 	}
 
 	public override void AI(NPC npc)
 	{
-		_affixes.ForEach(a => a.Ai(npc));
+		Affixes.ForEach(a => a.AI(npc));
 	}
 
 	public override void PostAI(NPC npc)
 	{
-		_affixes.ForEach(a => a.PostAi(npc));
+		Affixes.ForEach(a => a.PostAI(npc));
 	}
 
 	public override bool PreDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		bool doDraw = true;
-		_affixes.ForEach(a => doDraw = doDraw && a.PreDraw(npc, spriteBatch, screenPos, drawColor));
+		Affixes.ForEach(a => doDraw = doDraw && a.PreDraw(npc, spriteBatch, screenPos, drawColor));
 		return doDraw;
 	}
 
 	public override void OnKill(NPC npc)
 	{
-		_affixes.ForEach(a => a.OnKill(npc));
+		Affixes.ForEach(a => a.OnKill(npc));
 
 		if (npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss)
 		{
@@ -104,9 +115,12 @@ internal class MobAprgSystem : GlobalNPC
 			magicFind = 1f + _lastPlayerHit.GetModPlayer<MinorStatsModPlayer>().MagicFind;
 		}
 
-		if (SubworldSystem.Current is BossDomainSubworld domain)
+		if (SubworldSystem.Current is MappingWorld world)
 		{
-			itemLevel = domain.DropItemLevel;
+			magicFind += (int)(world.TotalWeight() / 10f) / 100f;
+
+			float modifier = 1 + (world.AreaLevel - 50) / 100f;
+			magicFind += modifier;
 		}
 
 		while (rand > 99)
@@ -124,14 +138,15 @@ internal class MobAprgSystem : GlobalNPC
 	public override bool PreKill(NPC npc)
 	{
 		bool doKill = true;
-		_affixes.ForEach(a => doKill = doKill && a.PreKill(npc));
+		Affixes.ForEach(a => doKill = doKill && a.PreKill(npc));
 		return doKill;
 	}
 
-	public override void SetDefaultsFromNetId(NPC npc)
+	public override void SetDefaults(NPC npc)
 	{
 		//We only want to trigger these changes on hostile non-boss, non Eater of Worlds mobs in-game
-		if (npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail)
+		if (npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail || npc.immortal 
+			|| npc.dontTakeDamage || NoAffixesSet.Contains(npc.type))
 		{
 			return;
 		}
@@ -156,60 +171,56 @@ internal class MobAprgSystem : GlobalNPC
 				_ => ItemRarity.Normal
 			};
 
-			ApplyRarity(npc);
+			ApplyRarity(npc, false);
 			npc.netUpdate = true;
 		}
 	}
 
-	public void ApplyRarity(NPC npc)
+	public override void SetDefaultsFromNetId(NPC npc)
 	{
-		// npc.TypeName uses only the netID, which is not set by SetDefaults...for some reason.
-		// This works the same, just using type if netID isn't helpful.
-		string typeName = NPCLoader.ModifyTypeName(npc, Lang.GetNPCNameValue(npc.netID == 0 ? npc.type : npc.netID));
+		SetName(npc);
+	}
 
-		npc.GivenName = Rarity switch
+	public void ApplyRarity(NPC npc, bool fromNet)
+	{
+		string typeName = SetName(npc);
+
+		if (!fromNet)
 		{
-			ItemRarity.Magic or ItemRarity.Rare => $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.RarityNames." + Enum.GetName(Rarity))} {typeName}",
-			ItemRarity.Unique => "UNIQUE MOB",
-			_ => typeName
-		};
-
-		if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
-		{
-			MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
-
-			if (entry != null)
+			if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
 			{
-				Experience = entry.Stats.Experience;
-				if (!string.IsNullOrEmpty(entry.Prefix))
-				{
-					npc.GivenName = $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";
-				}
+				MobEntry entry = MobRegistry.SelectMobEntry(mobData.NetId);
 
-				npc.scale *= entry.Scale ?? 1f;
+				if (entry != null)
+				{
+					ApplyMobEntry(npc, entry);
+				}
 			}
-		}
 #if DEBUG
-		else
-		{
-			Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({typeName})!", Color.Red);
-		}
+			else
+			{
+				Main.NewText($"Failed to load MobData for NPC ID {npc.type} ({typeName})!", Color.Red);
+			}
 #endif
+		}
 
 		if (Rarity == ItemRarity.Normal || Rarity == ItemRarity.Unique)
 		{
 			return;
 		}
 
-		List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
-		_affixes = Rarity switch
+		if (!fromNet)
 		{
-			ItemRarity.Magic => Affix.GenerateAffixes(possible, PoTItemHelper.GetAffixCount(Rarity)),
-			ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTItemHelper.GetAffixCount(Rarity)),
-			_ => []
-		};
+			List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
 
-		_affixes.ForEach(a => a.PreRarity(npc));
+			Affixes = Rarity switch
+			{
+				ItemRarity.Magic or ItemRarity.Rare => Affix.GenerateAffixes(possible, PoTItemHelper.GetMaxMobAffixCounts(Rarity)),
+				_ => []
+			};
+		}
+
+		Affixes.ForEach(a => a.PreRarity(npc));
 
 		switch (Rarity)
 		{
@@ -233,18 +244,81 @@ internal class MobAprgSystem : GlobalNPC
 				throw new InvalidOperationException("Invalid rarity!");
 		}
 
-		_affixes.ForEach(a => a.PostRarity(npc));
+		SetName(npc);
+
+		Affixes.ForEach(a => a.PostRarity(npc));
 		_synced = true;
+	}
+
+	private void ApplyMobEntry(NPC npc, MobEntry entry)
+	{
+		Experience = entry.Stats.Experience;
+
+		if (!string.IsNullOrEmpty(entry.Prefix))
+		{
+			npc.GivenName = $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.EnemyPrefixes." + entry.Prefix)} {npc.GivenOrTypeName}";
+		}
+
+		npc.scale *= entry.Scale ?? 1f;
+	}
+
+	private string SetName(NPC npc)
+	{
+		// npc.TypeName uses only the netID, which is not set by SetDefaults...for some reason.
+		// This works the same, just using type if netID isn't helpful.
+		string typeName = NPCLoader.ModifyTypeName(npc, Lang.GetNPCNameValue(npc.netID == 0 ? npc.type : npc.netID));
+
+		npc.GivenName = Rarity switch
+		{
+			ItemRarity.Magic or ItemRarity.Rare => $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.RarityNames." + Enum.GetName(Rarity))} {typeName}",
+			ItemRarity.Unique => "UNIQUE MOB",
+			_ => typeName
+		};
+
+		if (Rarity != ItemRarity.Normal)
+		{
+			npc.GivenName += "\n" + GetAffixPrefixes(npc);
+		}
+
+		return typeName;
+	}
+
+	private static string GetAffixPrefixes(NPC npc)
+	{
+		List<MobAffix> affixes = npc.GetGlobalNPC<ArpgNPC>().Affixes;
+		string prefix = "";
+
+		foreach (MobAffix affix in affixes)
+		{
+			 prefix += affix.Prefix + " - ";
+		}
+
+		return prefix;
 	}
 
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
 		binaryWriter.Write((byte)Rarity);
+		binaryWriter.Write((byte)Affixes.Count);
+
+		foreach (Affix affix in Affixes)
+		{
+			affix.NetSend(binaryWriter);
+		}
 	}
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
 		Rarity = (ItemRarity)binaryReader.ReadByte();
+		Affixes.Clear();
+
+		byte count = binaryReader.ReadByte();
+
+		for (int i = 0; i < count; i++)
+		{
+			MobAffix affix = Affix.RecieveMobAffix(binaryReader);
+			Affixes.Add(affix);
+		}
 
 		// TODO: Find cause of read overflow/underflow in subworlds
 		if (npc.life <= 0 && SubworldSystem.Current is not null)
@@ -256,7 +330,20 @@ internal class MobAprgSystem : GlobalNPC
 		// This may need to be changed if we want variable rarity for some reason.
 		if (Rarity != ItemRarity.Normal && !_synced)
 		{
-			ApplyRarity(npc);
+			ApplyRarity(npc, true);
 		}
+	}
+
+	public bool HasAffix<T>() where T : MobAffix
+	{
+		foreach (MobAffix affix in Affixes)
+		{
+			if (affix.GetType() == typeof(T))
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

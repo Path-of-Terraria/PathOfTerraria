@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class BoCMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override int WorldTier => 25;
 
 	public override void SetStaticDefaults()
 	{
@@ -24,7 +25,7 @@ internal class BoCMap : Map
 		Item.Size = new Vector2(34, 28);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<BrainDomain>();
 	}

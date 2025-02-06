@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
@@ -89,9 +90,13 @@ public class AffixTooltipsHandler
 		{
 			return AffixTooltip.AffixSource.Wings;
 		}
-		else if (source.accessory)
+		else if (source.accessory || source.neckSlot > 0)
 		{
 			return AffixTooltip.AffixSource.Necklace;
+		}
+		else if (source.ModItem is Map)
+		{
+			return AffixTooltip.AffixSource.NonApplicable;
 		}
 
 		return AffixTooltip.AffixSource.MainItem;
@@ -101,6 +106,11 @@ public class AffixTooltipsHandler
 	{
 		if (Tooltips.TryGetValue(type, out AffixTooltip tooltip))
 		{
+			if (source == AffixTooltip.AffixSource.NonApplicable)
+			{
+				return;
+			}
+
 			if (!tooltip.ValueBySource.ContainsKey(source))
 			{
 				tooltip.OriginalValueBySource.Add(source, value);
@@ -259,7 +269,7 @@ public class AffixTooltipsHandler
 		}
 	}
 
-	private static int AddSingleTooltipLine(List<TooltipLine> tooltips, ref int tipNum, KeyValuePair<Type, AffixTooltip> tip)
+	private static void AddSingleTooltipLine(List<TooltipLine> tooltips, ref int tipNum, KeyValuePair<Type, AffixTooltip> tip)
 	{
 		string text = $"[i:{ItemID.MusketBall}] " + tip.Value.Get();
 
@@ -267,10 +277,9 @@ public class AffixTooltipsHandler
 		{
 			OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
 		});
-		return tipNum;
 	}
 
-	private IEnumerable<KeyValuePair<Type, AffixTooltip>> CreateStandaloneTooltips(Item item)
+	private Dictionary<Type, AffixTooltip> CreateStandaloneTooltips(Item item)
 	{
 		Tooltips.Clear();
 		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer);

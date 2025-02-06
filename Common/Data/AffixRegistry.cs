@@ -5,6 +5,7 @@ using System.Text.Json;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Data;
@@ -163,19 +164,13 @@ public class AffixRegistry : ILoadable
 		ItemAffixData.TierData tierData = affixData.GetAppropriateTierData(itemLevel);
 
 		// Generate a random value within the specified range
-		float randomValue = GenerateRandomValue(tierData.MinValue, tierData.MaxValue);
+		float randomValue = Main.rand.NextFloat(tierData.MinValue, tierData.MaxValue);
+
+		if (affix is MapAffix map)
+		{
+			map.Strength = tierData.Strength;
+		}
 
 		return randomValue;
-	}
-
-	/// <summary>
-	/// Generates a random value within the specified range.
-	/// </summary>
-	/// <param name="min">Minimum value (inclusive).</param>
-	/// <param name="max">Maximum value (inclusive).</param>
-	/// <returns>Random value within the range.</returns>
-	private static float GenerateRandomValue(float min, float max)
-	{
-		return (float)(Main.rand.NextDouble() * (max - min) + min);
 	}
 }

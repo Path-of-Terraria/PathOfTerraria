@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -24,33 +26,64 @@ internal class StaffHeldProjectile : ModProjectile
 		Projectile.friendly  = true;
 		Projectile.hostile = false;
 		Projectile.timeLeft = 3000;
+
+		Projectile.alpha = 255;
+	}
+
+	public override void OnSpawn(IEntitySource source)
+	{
+		float rotation = Owner.direction == -1 ? MathHelper.Pi : MathHelper.PiOver2;
+
+		Projectile.rotation = rotation;
 	}
 
 	public override void AI()
 	{
 		Owner.heldProj = Projectile.whoAmI;
 
+		// The actual owner's direction is not consistent because the item has useTurn set to true.
+		int direction = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
+		
+		float armRotation = Projectile.rotation + MathHelper.ToRadians(135f);
+
+		if (direction == 1)
+		{
+			armRotation += MathHelper.Pi;
+		}
+		
+		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+		Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRotation);
+		
 		if (!Owner.channel)
 		{
-			Projectile.Kill();
+			Projectile.alpha += 51;
+
+			if (Projectile.alpha >= 255)
+			{
+				Projectile.Kill();
+			}
+
 			return;
 		}
 
-		Projectile.Center = Owner.Center + Owner.RotatedRelativePoint(Vector2.Zero);
+		if (Projectile.alpha > 0)
+		{
+			Projectile.alpha -= 17;
+		}
+
+		Projectile.Center = Owner.Center + Owner.RotatedRelativePoint(Vector2.Zero) + new Vector2(-10f * -direction, 10f);
 
 		if (Main.myPlayer == Projectile.owner)
 		{
-			Projectile.rotation = Projectile.AngleTo(Main.MouseWorld) + MathHelper.PiOver4;
-			Owner.direction = Main.MouseWorld.X <= Owner.Center.X ? -1 : 1;
+			Projectile.rotation = Projectile.rotation.AngleLerp(-MathHelper.PiOver4, 0.5f);
+			
+			Owner.direction = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
 			}
 		}
-
-		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter, Projectile.rotation - MathHelper.PiOver4 - MathHelper.PiOver2);
-		Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Quarter, Projectile.rotation - MathHelper.PiOver4 - MathHelper.PiOver2);
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)
@@ -67,7 +100,7 @@ internal class StaffHeldProjectile : ModProjectile
 	{
 		Texture2D tex = TextureAssets.Item[(int)ItemId].Value;
 
-		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, new Vector2(0, tex.Height), 1f, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, new Vector2(0, tex.Height), 1f, SpriteEffects.None, 0);
 		return false;
 	}
 }

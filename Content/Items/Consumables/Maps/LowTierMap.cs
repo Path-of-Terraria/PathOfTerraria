@@ -15,7 +15,7 @@ internal class LowTierMap : Map
 		staticData.DropChance = 1f;
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		MappingSystem.EnterMap(this);
 	}

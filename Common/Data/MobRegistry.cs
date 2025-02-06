@@ -55,11 +55,14 @@ public class MobRegistry : ILoadable
             {
                 idValue = ModContent.Find<ModNPC>($"{myModInstance.Name}/{npcName}").Type;
             }
-            catch (KeyNotFoundException ex)
-            {
+            catch (KeyNotFoundException)
+			{
                 Console.WriteLine($"{myModInstance.Name}/{npcName} not found in ModContent");
                 continue;
             }
+
+			data.NetId = idValue;
+
             // Add the associated data into the Mob Registry
             if (!_mobData.TryAdd(idValue, data))
             {

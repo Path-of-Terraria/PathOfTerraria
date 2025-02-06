@@ -9,6 +9,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Linq;
 using Terraria.Localization;
 using ReLogic.Content;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -63,7 +64,12 @@ partial class PoTGlobalItem
 				return true;
 
 			case "ItemLevel":
-				yOffset = 2;
+				yOffset = item.ModItem is Map ? -8 : 2;
+				line.BaseScale = new Vector2(0.8f);
+				return true;
+
+			case "MapTier":
+				yOffset = -2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
 
@@ -102,6 +108,11 @@ partial class PoTGlobalItem
 
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 	{
+		static string Localize(string key)
+		{
+			return Language.GetTextValue($"Mods.{PoTMod.ModName}.Gear.Tooltips." + key);
+		}
+
 		base.ModifyTooltips(item, tooltips);
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
@@ -140,7 +151,7 @@ partial class PoTGlobalItem
 
 		if (data.Corrupted)
 		{
-			tooltips.Add(new TooltipLine(Mod, "Corrupted", $" {Language.GetTextValue("Mods.PathOfTerraria.Gear.Properties.Corrupted")}")
+			tooltips.Add(new TooltipLine(Mod, "Corrupted", $" {Localize("Corrupted")}")
 			{
 				OverrideColor = Color.Lerp(Color.Purple, Color.White, 0.4f)
 			});
@@ -148,7 +159,7 @@ partial class PoTGlobalItem
 		
 		if (data.Cloned)
 		{
-			tooltips.Add(new TooltipLine(Mod, "Cloned", $" {Language.GetTextValue("Mods.PathOfTerraria.Gear.Properties.Cloned")}")
+			tooltips.Add(new TooltipLine(Mod, "Cloned", $" {Localize("Cloned")}")
 			{
 				OverrideColor = Color.Lerp(Color.DarkCyan, Color.White, 0.4f)
 			});
@@ -171,7 +182,7 @@ partial class PoTGlobalItem
 			tooltips.Add(rarityLine);
 		}
 
-		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {(data.ItemType == ItemType.Map ? "Tier" : "Item level")}: [c/CCCCFF:{GetItemLevel.Invoke(item)}]")
+		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {Localize("Level")} [c/CCCCFF:{GetItemLevel.Invoke(item)}]")
 		{
 			OverrideColor = new Color(170, 170, 170)
 		};
@@ -191,7 +202,7 @@ partial class PoTGlobalItem
 		{
 			// TODO: Slice first space in damage type display name...
 			string highlightNumbers = HighlightNumbers(
-				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] Damage ({item.DamageType.DisplayName.Value.Trim()})",
+				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})",
 				baseColor: "DDDDDD");
 			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
 			tooltips.Add(damageLine);
@@ -199,11 +210,19 @@ partial class PoTGlobalItem
 
 		if (item.defense > 0)
 		{
-			var defenseLine = new TooltipLine(Mod, "Defense", $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"+{item.defense} Defense", baseColor: "DDDDDD"));
-			tooltips.Add(defenseLine);
+			var def = new TooltipLine(Mod, "Defense", $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"+{item.defense} {Localize("Defense")}", baseColor: "DDDDDD"));
+			tooltips.Add(def);
 		}
 
 		tooltips.AddRange(oldStats);
+
+		if (item.ModItem is Map map && map.Tier > 0)
+		{
+			tooltips.Add(new TooltipLine(Mod, "MapTier", $" {Localize("Tier")} [c/CCCCFF:" + map.Tier + "]")
+			{
+				OverrideColor = new Color(170, 170, 170)
+			});
+		}
 
 		// Affix tooltips
 		InsertAdditionalTooltipLines.Invoke(item, tooltips);

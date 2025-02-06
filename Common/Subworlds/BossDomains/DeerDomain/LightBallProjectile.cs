@@ -19,6 +19,7 @@ internal class LightBallProjectile : ModProjectile
 		Projectile.friendly = true;
 		Projectile.tileCollide = false;
 		Projectile.Size = new(16);
+		Projectile.penetrate = -1;
 	}
 
 	public override void AI()
@@ -49,9 +50,9 @@ internal class LightBallProjectile : ModProjectile
 		}
 
 		Projectile.Opacity = 1 - PassThroughTimer / 600f;
-		DeerclopsDomain.LightMultiplier = 1f;
+		DeerclopsDomainLightEdits.LightMultiplier = 1f;
 		Lighting.AddLight(Projectile.Center, new Vector3(1.2f, 1f, 1.25f) * Projectile.Opacity);
-		DeerclopsDomain.LightMultiplier = 0f;
+		DeerclopsDomainLightEdits.LightMultiplier = 0f;
 
 		Player closest = Main.player[Player.FindClosest(Projectile.Center, 2, 2)];
 		float xDist = MathHelper.Clamp(Math.Abs(closest.Center.X - Projectile.Center.X ) / 200f, 0, 1) * 0.4f;

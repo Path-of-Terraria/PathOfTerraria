@@ -3,29 +3,37 @@ using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Subworlds;
+using SubworldLibrary;
+using System.Linq;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
+public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
 {
+	protected sealed override bool CloneNewInstances => true;
+
 	public abstract int MaxUses { get; }
+	public virtual int WorldTier => WorldLevelBasedOnTier(Tier);
 
 	public int RemainingUses = 0;
 
-	private int _tier;
+	internal int Tier = 1;
+	internal int ItemLevel = 1;
 
-	int GetItemLevel.IItem.GetItemLevel(int realLevel)
+	public override ModItem Clone(Item newEntity)
 	{
-		return _tier;
+		var map = base.Clone(newEntity) as Map;
+		map.Tier = Tier;
+		map.ItemLevel = ItemLevel;
+		return map;
 	}
 
-	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
+	public override void SetDefaults() 
 	{
-		realLevel = level;
-		_tier = 1 + (int)Math.Floor(realLevel / 20f);
-	}
-
-	public override void SetDefaults() {
 		base.SetDefaults();
 
 		Item.width = 32;
@@ -41,40 +49,26 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone; }
 
-	public abstract void OpenMap();
+	public virtual void OpenMap()
+	{
+		OpenMapInternal();
+
+		if (SubworldSystem.Current is MappingWorld map)
+		{
+			map.AreaLevel = WorldTier;
+			map.Affixes = [];
+			map.Affixes.AddRange(this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x));
+		}
+	}
+
+	protected abstract void OpenMapInternal();
 
 	/// <summary>
 	/// Gets name and what tier the map is of as a singular string.
 	/// </summary>
 	public virtual string GetNameAndTier()
 	{
-		return Core.Items.GenerateName.Invoke(Item) + ": " + _tier;
-	}
-
-	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
-	{
-		if (line.Mod == Mod.Name && line.Name == "Name")
-		{
-			yOffset = -2;
-			line.BaseScale = Vector2.One * 1.1f;
-			return true;
-		}
-
-		if (line.Mod == Mod.Name && line.Name == "Map")
-		{
-			yOffset = -8;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
-
-		if (line.Mod == Mod.Name && line.Name == "Tier")
-		{
-			yOffset = 2;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
-		
-		return true;
+		return Core.Items.GenerateName.Invoke(Item);
 	}
 
 	public static void SpawnItem(Vector2 pos)
@@ -87,27 +81,41 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
-		if (item.ModItem is T map)
-		{
-			map._tier = 1;
-		}
+		(item.ModItem as Map).Tier = 1;
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
 	
 	public override void SaveData(TagCompound tag)
 	{
-		tag["tier"] = _tier;
 		tag.Add("usesLeft", (byte)RemainingUses);
+		tag.Add("tier", (short)Tier);
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
-		_tier = tag.GetInt("tier");
 		RemainingUses = tag.GetByte("usesLeft");
+		Tier = tag.GetShort("tier");
 	}
 
 	public abstract string GenerateName(string defaultName);
+
+	public static int WorldLevelBasedOnTier(int tier)
+	{
+		return Math.Clamp(50 + tier * 2, 50, 72);
+	}
+
+	public static int TierBasedOnWorldLevel(int area)
+	{
+		if (area == 0)
+		{
+			return 0;
+		}
+
+		// area is adjusted by 48 instead of 50 to increase the level by 1 per stage;
+		// i.e. a level 50 area gives a tier 1 map, which gives a level 52 area...
+		return Math.Clamp((area - 48) / 2, 0, 11);
+	}
 
 	/// <summary>
 	/// Determines how many times a boss domain map can be used. This means the following:<br/>
@@ -127,5 +135,34 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 		}
 
 		return def;
+	}
+
+	public List<ItemAffix> GenerateImplicits()
+	{
+		return [];
+	}
+
+	public List<ItemAffix> GenerateAffixes()
+	{
+		return [];
+	}
+
+	int GetItemLevel.IItem.GetItemLevel(int realLevel)
+	{
+		return ItemLevel;
+	}
+
+	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
+	{
+		// Randomize level a bit if it's == to world level
+		// TODO: Find a better way to do this?
+		if (level == PoTItemHelper.PickItemLevel() && level > 50)
+		{
+			level = Main.rand.Next(50, level + 1);
+		}
+
+		realLevel = level;
+		ItemLevel = realLevel;
+		Tier = TierBasedOnWorldLevel(ItemLevel);
 	}
 }

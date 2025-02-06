@@ -13,6 +13,11 @@ public class ItemAffixData
 		public int MinimumLevel { get; set; }
 		public float Weight { get; set; }
 
+		/// <summary>
+		/// Used exclusively for <see cref="Systems.Affixes.ItemTypes.MapAffix"/>es.
+		/// </summary>
+		public float Strength { get; set; }
+
 		public override string ToString()
 		{
 			return $"Value Range: {MinValue}-{MaxValue}, Min. Level: {MinimumLevel}, Weight: {Weight}";
@@ -24,7 +29,7 @@ public class ItemAffixData
 	public string Influences { get; set; }
 	public List<TierData> Tiers { get; set; }
 
-    public TierData GetAppropriateTierData(int level)
+	public TierData GetAppropriateTierData(int level)
     {
         var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
 

@@ -34,7 +34,7 @@ internal abstract class Leggings : Gear
 
 	public override List<ItemAffix> GenerateImplicits()
 	{
-		return [(ItemAffix)Affix.CreateAffix<MovementSpeed>(8)];
+		return [(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(8)];
 	}
 
 	public override void PostRoll()

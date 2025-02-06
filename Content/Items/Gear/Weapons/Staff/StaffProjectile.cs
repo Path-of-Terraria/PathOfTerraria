@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -12,7 +13,7 @@ internal abstract class StaffProjectile : ModProjectile
 	public virtual int DustType => DustID.GemAmethyst;
 	public virtual int TorchType => TorchID.Purple;
 	public virtual int MaxCharge => 60;
-	public virtual Vector2 ChargeOffset => new(70);
+	public virtual Vector2 ChargeOffset => new(-10f, 48f);
 
 	protected Player Owner => Main.player[Projectile.owner];
 
@@ -41,6 +42,7 @@ internal abstract class StaffProjectile : ModProjectile
 		Projectile.Size = new(16);
 		Projectile.friendly = true;
 		Projectile.hostile = false;
+		Projectile.hide = true;
 		Projectile.timeLeft = 3000;
 		Projectile.tileCollide = false;
 	}
@@ -53,6 +55,11 @@ internal abstract class StaffProjectile : ModProjectile
 	public override bool ShouldUpdatePosition()
 	{
 		return LetGo;
+	}
+
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+	{
+		overPlayers.Add(index);
 	}
 
 	public override void AI()
@@ -95,7 +102,10 @@ internal abstract class StaffProjectile : ModProjectile
 
 			if (Main.myPlayer == Projectile.owner)
 			{
-				Projectile.Center = Vector2.Lerp(Projectile.Center, Owner.Center + Projectile.DirectionTo(Main.MouseWorld) * ChargeOffset, 0.2f);
+				// The actual owner's direction is not consistent because the item has useTurn set to true.
+				int direction = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
+				
+				Projectile.Center = Vector2.Lerp(Projectile.Center, Owner.Center + new Vector2(ChargeOffset.X * -direction, -ChargeOffset.Y), 0.5f);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{

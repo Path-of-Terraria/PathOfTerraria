@@ -2,11 +2,11 @@
 
 namespace PathOfTerraria.Common.Subworlds;
 
-internal class BossDomainSystem : ModSystem
+internal class MapDomainSystem : ModSystem
 {
 	public override void PreUpdateGores()
 	{
-		if (SubworldSystem.Current is BossDomainSubworld domain)
+		if (SubworldSystem.Current is MappingWorld domain)
 		{
 			if (domain.ForceTime.time != -1)
 			{

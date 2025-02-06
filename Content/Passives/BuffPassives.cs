@@ -22,7 +22,7 @@ internal class StrongerChillPassive : Passive
 					multiplier += chillPower * 0.1f;
 				}
 
-				npc.GetGlobalNPC<SlowDownNPC>().SlowDown += 0.1f * multiplier;
+				npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += 0.1f * multiplier;
 			}
 		}
 	}

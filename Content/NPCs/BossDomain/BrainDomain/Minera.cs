@@ -6,6 +6,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
 
+[AutoloadBanner]
 public sealed class Minera : ModNPC
 {
 	public override void SetStaticDefaults()

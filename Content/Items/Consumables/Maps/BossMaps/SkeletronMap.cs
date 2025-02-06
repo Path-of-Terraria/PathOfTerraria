@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class SkeletronMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override int WorldTier => 40;
 
 	public override void SetStaticDefaults()
 	{
@@ -24,7 +25,7 @@ internal class SkeletronMap : Map
 		Item.Size = new Vector2(36, 28);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<SkeletronDomain>();
 	}

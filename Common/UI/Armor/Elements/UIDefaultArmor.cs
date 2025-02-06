@@ -63,11 +63,26 @@ public sealed class UIDefaultArmor : UIArmorPage
 		necklace.Predicate = (item, _) => item.ModItem is Amulet;
 
 		Append(necklace);
+		
+		var weapon = new UIHoverImageItemSlot(DefaultFrameTexture, WeaponIconTexture, ref Player.inventory, 0)
+		{
+			HAlign = 0f,
+			VAlign = 0.33f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+
+		weapon.OnMouseOver += UpdateMouseOver;
+		weapon.OnMouseOut += UpdateMouseOut;
+
+		weapon.Predicate = (item, _) => item.damage > 0;
+
+		Append(weapon);
 
 		var chest = new UIHoverImageItemSlot(DefaultFrameTexture, ChestIconTexture, ref Player.armor, 1, ItemSlot.Context.EquipArmor)
 		{
 			HAlign = 0.5f,
-			VAlign = 0.5f,
+			VAlign = 0.33f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -82,7 +97,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var offhand = new UIHoverImageItemSlot(DefaultFrameTexture, OffhandIconTexture, ref Player.armor, 6, ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
-			VAlign = 0.5f,
+			VAlign = 0.33f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -97,11 +112,11 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var leftRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 7, ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
-
+		
 		leftRing.OnMouseOver += UpdateMouseOver;
 		leftRing.OnMouseOut += UpdateMouseOut;
 
@@ -112,7 +127,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var legs = new UIHoverImageItemSlot(DefaultFrameTexture, LegsIconTexture, ref Player.armor, 2, ItemSlot.Context.EquipArmor)
 		{
 			HAlign = 0.5f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -127,7 +142,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var rightRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 8, ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
-			VAlign = 1f,
+			VAlign = 0.66f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -138,5 +153,30 @@ public sealed class UIDefaultArmor : UIArmorPage
 		rightRing.Predicate = (item, _) => item.ModItem is Ring;
 
 		Append(rightRing);
+
+		var leftMiscellaneous = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 9, ItemSlot.Context.EquipAccessory)
+		{
+			VAlign = 1f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+		
+		leftMiscellaneous.OnMouseOver += UpdateMouseOver;
+		leftMiscellaneous.OnMouseOut += UpdateMouseOut;
+		
+		Append(leftMiscellaneous);
+		
+		var middleMiscellaneous = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 3, ItemSlot.Context.EquipAccessory)
+		{
+			HAlign = 0.5f,
+			VAlign = 1f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+		
+		middleMiscellaneous.OnMouseOver += UpdateMouseOver;
+		middleMiscellaneous.OnMouseOut += UpdateMouseOut;
+		
+		Append(middleMiscellaneous);
 	}
 }

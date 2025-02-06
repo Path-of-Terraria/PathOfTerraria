@@ -38,7 +38,7 @@ public class EyeDomain : BossDomainSubworld
 		Dictionary<Point16, OpenFlags> tiles = [];
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
-		for (int i = 0; i < Main.maxTilesX; ++i)
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
 			for (int j = 80; j < Main.maxTilesY - 50; ++j)
 			{
@@ -49,7 +49,7 @@ public class EyeDomain : BossDomainSubworld
 					continue;
 				}
 
-				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
 
 				if (flags == OpenFlags.None)
 				{

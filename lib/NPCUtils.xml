@@ -14,21 +14,40 @@
             Autoloads the given critter item if placed on an NPC.
             </summary>
         </member>
+        <member name="M:NPCUtils.AutoloadCritterAttribute.#ctor(System.Int32,System.Byte)">
+            <summary>
+            Autoloads the given critter item if placed on an NPC.
+            </summary>
+        </member>
+        <member name="F:NPCUtils.AutoloadCritterAttribute.Value">
+            <summary>
+            Value, in copper coins, of the critter.
+            </summary>
+        </member>
+        <member name="F:NPCUtils.AutoloadCritterAttribute.Rarity">
+            <summary>
+            Rarity of the critter.
+            </summary>
+        </member>
         <member name="T:NPCUtils.CritterItem">
             <summary>
             Defines a critter item that spawns a critter.
             </summary>
-            <param name="name"></param>
-            <param name="npcKey"></param>
-            <param name="texture"></param>
+            <param name="name">Internal name of the item.</param>
+            <param name="npcKey">NPC key (full name, such as Egg/EggMonster) to reference.</param>
+            <param name="texture">Texture of the item.</param>
+            <param name="rarity">Rarity of the item. Defaults to ItemRarityID.White.</param>
+            <param name="value">Value of the item, in copper coins. Defaults to 0.</param>
         </member>
-        <member name="M:NPCUtils.CritterItem.#ctor(System.String,System.String,System.String)">
+        <member name="M:NPCUtils.CritterItem.#ctor(System.String,System.String,System.String,System.Int32,System.Byte)">
             <summary>
             Defines a critter item that spawns a critter.
             </summary>
-            <param name="name"></param>
-            <param name="npcKey"></param>
-            <param name="texture"></param>
+            <param name="name">Internal name of the item.</param>
+            <param name="npcKey">NPC key (full name, such as Egg/EggMonster) to reference.</param>
+            <param name="texture">Texture of the item.</param>
+            <param name="rarity">Rarity of the item. Defaults to ItemRarityID.White.</param>
+            <param name="value">Value of the item, in copper coins. Defaults to 0.</param>
         </member>
         <member name="P:NPCUtils.CritterItem.Name">
             <summary>
@@ -75,6 +94,13 @@
             </code>
             </summary>
         </member>
+        <member name="M:NPCUtils.CritterItem.CanUseItem(Terraria.Player)">
+            <summary>
+            
+            </summary>
+            <param name="player"></param>
+            <returns></returns>
+        </member>
         <member name="T:NPCUtils.AutoloadedContentLoader">
             <summary>
             Loads all banners, critter items, and detours <see cref="T:Terraria.ModLoader.NPCLoader"/>'s SetDefaults to set <see cref="P:Terraria.ModLoader.ModNPC.Banner"/> and <see cref="P:Terraria.ModLoader.ModNPC.BannerItem"/>.
@@ -95,9 +121,19 @@
             The internal name of this banner, which is NPCNameBanner.
             </summary>
         </member>
+        <member name="F:NPCUtils.BaseBannerTile.InternalTexture">
+            <summary>
+            The internal name of this banner, which is NPCNameBanner.
+            </summary>
+        </member>
         <member name="P:NPCUtils.BaseBannerTile.Name">
             <summary>
             Overrides the internal name to use the <see cref="F:NPCUtils.BaseBannerTile.InternalName"/>.
+            </summary>
+        </member>
+        <member name="P:NPCUtils.BaseBannerTile.Texture">
+            <summary>
+            Overrides the texture to use the desired texture in <see cref="F:NPCUtils.BaseBannerTile.InternalTexture"/>.
             </summary>
         </member>
         <member name="M:NPCUtils.BaseBannerTile.#ctor">
@@ -105,12 +141,13 @@
             Creates a banner tile with no name and no internal name.
             </summary>
         </member>
-        <member name="M:NPCUtils.BaseBannerTile.#ctor(System.Int32,System.String)">
+        <member name="M:NPCUtils.BaseBannerTile.#ctor(System.Int32,System.String,System.String)">
             <summary>
             Creates a banner tile with the given name and internal name.
             </summary>
             <param name="npcType">The associated NPC ID.</param>
             <param name="internalName">The internal name of the banner.</param>
+            <param name="texture">The internal texture path of the banner.</param>
         </member>
         <member name="M:NPCUtils.BaseBannerTile.IsLoadingEnabled(Terraria.ModLoader.Mod)">
             <summary>
@@ -132,8 +169,14 @@
             <param name="j"><inheritdoc/></param>
             <param name="closer"><inheritdoc/></param>
         </member>
-        <member name="M:NPCUtils.BaseBannerTile.SetSpriteEffects(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteEffects@)">
-            <inheritdoc/>
+        <member name="M:NPCUtils.BaseBannerTile.PreDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
+            <summary>
+            Draws tile sway.
+            </summary>
+            <param name="i">X position.</param>
+            <param name="j">Y position.</param>
+            <param name="spriteBatch">spriteBatch to use.</param>
+            <returns>Whether the tile draws.</returns>
         </member>
         <member name="T:NPCUtils.BaseBannerItem">
             <summary>
@@ -150,6 +193,11 @@
             New banners must use the internal name.
             </summary>
         </member>
+        <member name="P:NPCUtils.BaseBannerItem.Texture">
+            <summary>
+            New banners must also use the internal texture.
+            </summary>
+        </member>
         <member name="P:NPCUtils.BaseBannerItem.Tooltip">
             <summary>
             New banners use only the BannerBonus tooltip line.
@@ -160,13 +208,21 @@
             Creates a banner item with default values.
             </summary>
         </member>
-        <member name="M:NPCUtils.BaseBannerItem.#ctor(System.String,System.Int32,System.Int32)">
+        <member name="M:NPCUtils.BaseBannerItem.#ctor(System.String,System.Int32,System.Int32,System.String)">
             <summary>
             Creates a banner item with the given values.
             </summary>
             <param name="internalName">The given internal name.</param>
             <param name="placeID">The banner ID to place.</param>
             <param name="npcType">The NPC type associated with the banner. Used for the tooltip.</param>
+            <param name="texture">The given texture.</param>
+        </member>
+        <member name="M:NPCUtils.BaseBannerItem.Clone(Terraria.Item)">
+            <summary>
+            Clones the current <see cref="T:NPCUtils.BaseBannerItem"/>.
+            </summary>
+            <param name="newEntity">The new entity this is being cloned to.</param>
+            <returns>The clone.</returns>
         </member>
         <member name="M:NPCUtils.BaseBannerItem.ModifyTooltips(System.Collections.Generic.List{Terraria.ModLoader.TooltipLine})">
             <summary>
@@ -216,9 +272,11 @@
             HallowUndergroundDesert HallowDesert CorruptDesert CrimsonDesert Granite UndergroundCorruption UndergroundCrimson UndergroundHallow Marble CorruptIce HallowIce CrimsonIce
             Sky NebulaPillar VortexPillar StardustPillar SolarPillar</c><br/>
             <b>Times:</b><br/><c>DayTime NightTime</c><br/>
-            <b>Events:</b><br/><c>Rain SlimeRain WindyDay BloodMoon Halloween Christmas Eclipse Party Blizzard Sandstorm</c><br/><br/>
+            <b>Events:</b><br/><c>Rain SlimeRain WindyDay BloodMoon Halloween Christmas Eclipse Party Events.Blizzard Sandstorm</c><br/>
+            <b>Visuals:</b><br/><c>Sun Moon EclipseSun Visuals.PumpkinMoon Visuals.FrostMoon Meteor Rain Visuals.Blizzard</c><br/>
+            <b>Invasions:</b><br/><c>Goblin Pirates Martian Invasions.PumpkinMoon Invasions.FrostMoon OldOnesArmy FrostLegion</c><br/><br/>
             For example, adding an entry could be like this:<br/><br/>
-            <code>entry.AddInfo(this, "NightTime Snow");</code>
+            <code>entry.AddInfo(this, "NightTime Snow Moon");</code>
             </summary>
             <param name="bestiaryEntry">The entry to modify.</param>
             <param name="npc">The NPC this entry is attatched to.</param>

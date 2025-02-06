@@ -132,3 +132,22 @@ DemonSummon: {
 DemonWeapons.DisplayName: Demon Weapon
 FireballProj.DisplayName: Fireball
 IceBoltProj.DisplayName: Ice Bolt
+EntThorn.DisplayName: Ent Thorn
+WardensBowShard.DisplayName: Wardens Bow Shard
+GroveBoulder.DisplayName: Grove Boulder
+
+RunestoneBurst: {
+	DisplayName: Runestone Burst
+
+	DeathReasons: {
+		0: "{0} was burst apart."
+		1: "{0} was bludgeoned by magical energy."
+		2: "{0} couldn't handle the power."
+	}
+}
+
+FallingStick.DisplayName: Falling Stick
+FallingEntling.DisplayName: Falling Entling
+FallingBranch.DisplayName: Falling Branch
+TinyBoulder.DisplayName: Tiny Boulder
+LargeRoots.DisplayName: Large Roots

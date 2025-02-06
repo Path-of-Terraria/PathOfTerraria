@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.Networking.Handlers.MapDevice;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.IO;
 using Terraria.DataStructures;
@@ -312,6 +313,8 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			heldItem.TurnToAir();
 		}
+
+		PoTItemHelper.SetMouseItemToHeldItem(Main.LocalPlayer);
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{

@@ -1,17 +1,21 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.Localization;
 using Terraria.ModLoader.Core;
+using Terraria.ModLoader.UI;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
 internal class SkillSelectionPanel : SmartUiElement
 {
-	private SkillTreeInnerPanel _skillTreeInnerPanel;
 	public override string TabName => "SkillTree";
 
-	private bool _drewSkills;
 	public Skill SelectedSkill { get; set; }
-	
+
+	private bool _drewSkills;
+	private SkillTreeInnerPanel _skillTreeInnerPanel;
+
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		base.Draw(spriteBatch);
@@ -26,6 +30,7 @@ internal class SkillSelectionPanel : SmartUiElement
 	private void AppendAllSkills()
 	{
 		int index = 0;
+
 		foreach (Type type in AssemblyManager.GetLoadableTypes(PoTMod.Instance.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Skill)))
@@ -46,21 +51,47 @@ internal class SkillSelectionPanel : SmartUiElement
 		{
 			return;
 		}
-		
+
 		if (SelectedSkill.Passives.Count == 0)
 		{
-			Main.NewText("This skill has no passives.");
+			Main.NewText(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.NoPassives"));
 			return;
 		}
-		
+
+		BuildSkillPassiveTree();
+	}
+
+	private void BuildSkillPassiveTree()
+	{
 		RemoveAllChildren();
 		_skillTreeInnerPanel = null;
 		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 		Append(_skillTreeInnerPanel);
 		SelectedSkill.CreateTree();
+
 		foreach (SkillPassive n in SelectedSkill.ActiveNodes)
 		{
 			_skillTreeInnerPanel.Append(new SkillPassiveElement(n));
 		}
+
+		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))
+		{
+			Width = StyleDimension.FromPixels(80),
+			Height = StyleDimension.FromPixels(30),
+			Top = StyleDimension.FromPixels(64),
+			Left = StyleDimension.FromPixels(10)
+		};
+
+		closeButton.OnLeftClick += (_, _) =>
+		{
+			RemoveAllChildren();
+
+			SelectedSkill = null;
+			_skillTreeInnerPanel = null;
+			_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
+
+			AppendAllSkills();
+		};
+		Append(closeButton);
 	}
 }

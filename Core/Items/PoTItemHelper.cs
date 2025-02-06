@@ -7,6 +7,8 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using SubworldLibrary;
+using PathOfTerraria.Common.Subworlds;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -74,7 +76,7 @@ public static class PoTItemHelper
 		PoTInstanceItemData data = item.GetInstanceData();
 
 		data.Affixes.Clear();
-		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
+		data.Affixes.AddRange(GenerateImplicits.Invoke(item));
 		data.ImplicitCount = data.Affixes.Count;
 
 		for (int i = 0; i < GetAffixCount(item); i++)
@@ -153,7 +155,7 @@ public static class PoTItemHelper
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
-			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
+			//player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}
 
@@ -187,6 +189,21 @@ public static class PoTItemHelper
 		};
 	}
 
+	/// <summary>
+	/// Gets the max amount of affixes a mob can have based on the rarity.
+	/// </summary>
+	/// <param name="rarity">Rarity of the mob.</param>
+	/// <returns>How many affixes the mob can have.</returns>
+	public static int GetMaxMobAffixCounts(ItemRarity rarity)
+	{
+		return rarity switch
+		{
+			ItemRarity.Magic => 2,
+			ItemRarity.Rare => 4,
+			_ => 0
+		};
+	}
+
 	public static bool HasMaxAffixesForRarity(Item item)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
@@ -203,8 +220,33 @@ public static class PoTItemHelper
 
 	#endregion
 
+	/// <summary>
+	/// Picks the most appropriate item level for the current world. This is the following:<br/>
+	/// For explorable maps, such as the Forest, it's variable and depends on the tier of the map.<br/>
+	/// Boss domains/overworld progression, in order:<br/>
+	/// Default: 5<br/>
+	/// King Slime: 10<br/>
+	/// Eye of Cthulhu: 15<br/>
+	/// Eater of Worlds: 20<br/>
+	/// Brain of Cthulhu: 25<br/>
+	/// Queen Bee: 30<br/>
+	/// Deerclops: 35<br/>
+	/// Skeletron: 40<br/>
+	/// Wall of Flesh: 45<br/>
+	/// Any mech boss: 50<br/>
+	/// Plantera: 55<br/>
+	/// Golem: 60<br/>
+	/// Cultist: 65<br/>
+	/// Moon Lord: 70
+	/// </summary>
+	/// <returns></returns>
 	public static int PickItemLevel()
 	{
+		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.AreaLevel > 0)
+		{
+			return mapWorld.AreaLevel;
+		}
+
 		if (NPC.downedMoonlord)
 		{
 			return 70;

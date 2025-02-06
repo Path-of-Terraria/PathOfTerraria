@@ -20,9 +20,9 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
 public class DeerclopsDomain : BossDomainSubworld
 {
-	internal static Asset<Texture2D> LightGlow = null;
+	public const int Surface = 200;
 
-	public static int Surface => 200;
+	internal static Asset<Texture2D> LightGlow = null;
 
 	public override int Width => 800;
 	public override int Height => 800;
@@ -31,7 +31,6 @@ public class DeerclopsDomain : BossDomainSubworld
 	public override int[] WhitelistedPlaceableTiles => [TileID.Platforms];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
-	internal static float LightMultiplier = 0;
 
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
@@ -44,9 +43,6 @@ public class DeerclopsDomain : BossDomainSubworld
 
 	public override void Load()
 	{
-		On_Lighting.AddLight_int_int_float_float_float += HijackAddLight;
-		On_Player.ItemCheck += SoftenPlayerLight;
-
 		LightGlow = Mod.Assets.Request<Texture2D>("Assets/Misc/VFX/LightGlow");
 	}
 
@@ -444,23 +440,6 @@ public class DeerclopsDomain : BossDomainSubworld
 				WorldGen.digTunnel(pos.X, pos.Y, 0, 0, 5, (int)(WorldGen.genRand.NextFloat(1, 8) * mul));
 			}
 		}
-	}
-
-	private void SoftenPlayerLight(On_Player.orig_ItemCheck orig, Player self)
-	{
-		LightMultiplier = 0.15f;
-		orig(self);
-		LightMultiplier = 0;
-	}
-
-	private void HijackAddLight(On_Lighting.orig_AddLight_int_int_float_float_float orig, int i, int j, float r, float g, float b)
-	{
-		if (SubworldSystem.Current is DeerclopsDomain && j > Surface + 10)
-		{
-			(r, g, b) = (r * LightMultiplier, g * LightMultiplier, b * LightMultiplier);
-		}
-
-		orig(i, j, r, g, b);
 	}
 
 	public override bool GetLight(Tile tile, int x, int y, ref FastRandom rand, ref Vector3 color)

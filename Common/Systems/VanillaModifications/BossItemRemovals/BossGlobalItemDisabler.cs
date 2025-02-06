@@ -12,7 +12,13 @@ internal class BossGlobalItemDisabler : GlobalItem
 		ItemID.Abeemination,
 		ItemID.ClothierVoodooDoll,
 		ItemID.GuideVoodooDoll,
-		ItemID.DeerThing];
+		ItemID.DeerThing,
+		ItemID.MechanicalEye,
+		ItemID.MechanicalSkull,
+		ItemID.MechanicalWorm,
+		ItemID.QueenSlimeCrystal,
+		ItemID.CelestialSigil,
+		ItemID.MechdusaSummon];
 
 	public override bool AppliesToEntity(Item entity, bool lateInstantiation)
 	{

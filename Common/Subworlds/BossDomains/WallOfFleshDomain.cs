@@ -22,7 +22,6 @@ public class WallOfFleshDomain : BossDomainSubworld
 {
 	public override int Width => 1800;
 	public override int Height => 250;
-	public override int DropItemLevel => 30;
 
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;

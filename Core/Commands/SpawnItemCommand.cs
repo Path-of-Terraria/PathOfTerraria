@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 
 namespace PathOfTerraria.Core.Commands;
 

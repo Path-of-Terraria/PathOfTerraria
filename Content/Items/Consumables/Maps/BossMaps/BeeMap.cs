@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class BeeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override int WorldTier => 30;
 
 	public override void SetStaticDefaults()
 	{
@@ -22,7 +23,7 @@ internal class BeeMap : Map
 		Item.Size = new Vector2(36, 36);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<QueenBeeDomain>();
 	}

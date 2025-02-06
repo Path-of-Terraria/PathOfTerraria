@@ -7,6 +7,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
+[AutoloadEquip(EquipType.Legs)]
 internal class BurningRedBoots : Leggings, GenerateName.IItem
 {
 	public override void SetStaticDefaults()
@@ -22,9 +23,9 @@ internal class BurningRedBoots : Leggings, GenerateName.IItem
 	{
 		return
 		[
-			(ItemAffix)Affix.CreateAffix<MovementSpeed>(),
-			(ItemAffix)Affix.CreateAffix<MovementSpeed>(),
-			(ItemAffix)Affix.CreateAffix<MovementSpeed>()
+			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(),
+			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(),
+			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>()
 		];
 	}
 

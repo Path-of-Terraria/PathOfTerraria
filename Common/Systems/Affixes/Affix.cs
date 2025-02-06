@@ -5,6 +5,7 @@ using System.Linq;
 using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
+using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -64,12 +65,12 @@ public abstract class Affix : ILocalizedModType
 		MinValue = tag.GetFloat("minValue");
 	}
 
-	public void NetSend(BinaryWriter writer)
+	public virtual void NetSend(BinaryWriter writer)
 	{
 		writer.Write(AffixHandler.IndexFromItemAffix(this));
 
 		writer.Write(Value);
-		writer.Write(MaxValue); // it seems that min and max get swapped here...
+		writer.Write(MaxValue);
 		writer.Write(MinValue);
 	}
 
@@ -81,40 +82,28 @@ public abstract class Affix : ILocalizedModType
 	}
 
 	/// <summary>
-	/// 
+	/// Creates an affix with the given value. If you want a range, use <see cref="CreateAffix{T}(float, float)"/>.
 	/// </summary>
-	/// <param name="value">The set value of the affix. Set to -1 if using minValue and maxValue</param>
-	/// <typeparam name="T"></typeparam>
-	/// <returns></returns>
+	/// <param name="value">The set value of the affix.</param>
+	/// <typeparam name="T">The affix type to create.</typeparam>
+	/// <returns>The new affix.</returns>
 	public static Affix CreateAffix<T>(float value)
 	{
-		var instance = (Affix)Activator.CreateInstance(typeof(T));
-		
-		if (instance == null)
-		{
-			throw new Exception($"Could not create affix of type {typeof(T).Name}");
-		}
-		
+		Affix instance = (Affix)Activator.CreateInstance(typeof(T)) ?? throw new Exception($"Could not create affix of type {typeof(T).Name}");
 		instance.Value = value;
 		return instance;
 	}
 	
 	/// <summary>
-	/// 
+	/// Creates an affix with a value between <paramref name="minValue"/> and <paramref name="maxValue"/>.
 	/// </summary>
 	/// <param name="minValue">The minimum value of the roll range for the affix</param>
 	/// <param name="maxValue">The maximum value of the roll range for the affix</param>
-	/// <typeparam name="T"></typeparam>
-	/// <returns></returns>
+	/// <typeparam name="T">The affix type to create.</typeparam>
+	/// <returns>The new affix.</returns>
 	public static Affix CreateAffix<T>(float minValue = 0f, float maxValue = 1f)
 	{
-		var instance = (Affix)Activator.CreateInstance(typeof(T));
-
-		if (instance == null)
-		{
-			throw new Exception($"Could not create affix of type {typeof(T).Name}");
-		}
-
+		Affix instance = (Affix)Activator.CreateInstance(typeof(T)) ?? throw new Exception($"Could not create affix of type {typeof(T).Name}");
 		instance.MinValue = minValue;
 		instance.MaxValue = maxValue;
 		instance.Roll();
@@ -158,7 +147,26 @@ public abstract class Affix : ILocalizedModType
 		}
 
 		var affix = (ItemAffix)Activator.CreateInstance(t);
+		affix.NetReceive(reader);
+		return affix;
+	}
 
+	/// <summary>
+	/// Generates an affix from a binary reader, used on load to re-populate affixes
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	internal static MobAffix RecieveMobAffix(BinaryReader reader)
+	{
+		int aId = reader.ReadInt32();
+		Type t = AffixHandler.MobAffixTypeFromIndex(aId);
+		if (t is null)
+		{
+			PoTMod.Instance.Logger.Error($"Could not load affix of internal id {aId}");
+			return null;
+		}
+
+		var affix = (MobAffix)Activator.CreateInstance(t);
 		affix.NetReceive(reader);
 		return affix;
 	}
@@ -250,6 +258,23 @@ internal class AffixHandler : ILoadable
 		return _itemAffixes.IndexOf(a);
 	}
 
+	public static Type MobAffixTypeFromIndex(int idx)
+	{
+		return _mobAffixes[idx].GetType();
+	}
+
+	public static int IndexFromMobAffix(MobAffix affix)
+	{
+		MobAffix a = _mobAffixes.First(a => affix.GetType() == a.GetType());
+
+		if (a is null)
+		{
+			return 0;
+		}
+
+		return _mobAffixes.IndexOf(a);
+	}
+
 	/// <summary>
 	/// Returns a list of mob affixes that are valid for the given type. Typically used to roll affixes.
 	/// </summary>
@@ -285,6 +310,8 @@ internal class AffixHandler : ILoadable
 					continue;
 				case MobAffix mobAffix:
 					_mobAffixes.Add(mobAffix);
+
+					MobAffix.MobAffixIconsByAffixName[mobAffix.GetType().AssemblyQualifiedName] = ModContent.Request<Texture2D>(mobAffix.TexturePath);
 					break;
 			}
 		}
