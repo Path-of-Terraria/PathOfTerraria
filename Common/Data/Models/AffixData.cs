@@ -29,9 +29,10 @@ public class ItemAffixData
 	public string Influences { get; set; }
 	public List<TierData> Tiers { get; set; }
 
-	public TierData GetAppropriateTierData(int level)
+	public TierData GetAppropriateTierData(int level, out int tierNumber)
     {
         var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
+		tierNumber = 1;
 
         if (eligibleTiers.Count == 0)
         {
@@ -49,10 +50,12 @@ public class ItemAffixData
 
             if (randomWeight <= cumulativeWeight)
             {
+				tierNumber = eligibleTiers.IndexOf(tier);
                 return tier;
             }
         }
 
+		tierNumber = eligibleTiers.Count - 1;
         return eligibleTiers.Last(); //Just in case we don't return a tier?
     }
 

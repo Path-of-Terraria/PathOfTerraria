@@ -5,7 +5,6 @@ using System.Linq;
 using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
-using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -16,6 +15,7 @@ public abstract class Affix : ILocalizedModType
 	public float Value = 0;
 	public int Duration = 180; //3 Seconds by default
 	public bool IsCorruptedAffix = false;
+	public int Tier = 1;
 
 	public string LocalizationCategory => "Affixes";
 	public Mod Mod => PoTMod.Instance; // TODO: Cross mod compat?
@@ -87,9 +87,20 @@ public abstract class Affix : ILocalizedModType
 	/// <param name="value">The set value of the affix.</param>
 	/// <typeparam name="T">The affix type to create.</typeparam>
 	/// <returns>The new affix.</returns>
-	public static Affix CreateAffix<T>(float value)
+	public static Affix CreateAffix<T>(float value) where T : Affix
 	{
-		Affix instance = (Affix)Activator.CreateInstance(typeof(T)) ?? throw new Exception($"Could not create affix of type {typeof(T).Name}");
+		return CreateAffix(typeof(T), value);
+	}
+
+	/// <summary>
+	/// Creates an affix with the given value. If you want a range, use <see cref="CreateAffix{T}(float, float)"/>.
+	/// </summary>
+	/// <param name="type">The type of affix to create.</param>
+	/// <param name="value">The set value of the affix.</param>
+	/// <returns>The new affix.</returns>
+	public static Affix CreateAffix(Type type, float value)
+	{
+		Affix instance = (Affix)Activator.CreateInstance(type) ?? throw new Exception($"Could not create affix of type {type.Name}");
 		instance.Value = value;
 		return instance;
 	}
@@ -101,9 +112,21 @@ public abstract class Affix : ILocalizedModType
 	/// <param name="maxValue">The maximum value of the roll range for the affix</param>
 	/// <typeparam name="T">The affix type to create.</typeparam>
 	/// <returns>The new affix.</returns>
-	public static Affix CreateAffix<T>(float minValue = 0f, float maxValue = 1f)
+	public static Affix CreateAffix<T>(float minValue = 0f, float maxValue = 1f) where T : Affix
 	{
-		Affix instance = (Affix)Activator.CreateInstance(typeof(T)) ?? throw new Exception($"Could not create affix of type {typeof(T).Name}");
+		return CreateAffix(typeof(T), minValue, maxValue);
+	}
+
+	/// <summary>
+	/// Creates an affix with a value between <paramref name="minValue"/> and <paramref name="maxValue"/>.
+	/// </summary>
+	/// <param name="type">The type of affix to create.</param>
+	/// <param name="minValue">The minimum value of the roll range for the affix</param>
+	/// <param name="maxValue">The maximum value of the roll range for the affix</param>
+	/// <returns>The new affix.</returns>
+	public static Affix CreateAffix(Type type, float minValue = 0f, float maxValue = 1f)
+	{
+		Affix instance = (Affix)Activator.CreateInstance(type) ?? throw new Exception($"Could not create affix of type {type.Name}");
 		instance.MinValue = minValue;
 		instance.MaxValue = maxValue;
 		instance.Roll();
