@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Core.Items;
 
-internal sealed partial class PoTGlobalItem : GlobalItem
+public sealed partial class PoTGlobalItem : GlobalItem
 {
 	public override void Load()
 	{
