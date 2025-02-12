@@ -238,7 +238,7 @@ public sealed partial class UIManager : ModSystem
 		{
 			return false;
 		}
-
+		
 		return Data[index].Enabled ? TryDisable(identifier) : TryEnable(identifier);
 	}
 

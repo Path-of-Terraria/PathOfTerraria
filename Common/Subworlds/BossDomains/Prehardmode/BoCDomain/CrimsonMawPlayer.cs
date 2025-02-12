@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.DisableBuilding;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 
@@ -53,7 +54,7 @@ public class CrimsonMawPlayer : ModPlayer
 		{
 			opacity = 1 - time / 120f;
 		}
-
+		
 		Main.spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null,
 			Main.GameViewMatrix.TransformationMatrix);
 

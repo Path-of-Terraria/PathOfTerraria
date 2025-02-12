@@ -161,7 +161,8 @@ public class AffixRegistry : ILoadable
 		}
 		
 		// Get the appropriate TierData based on itemLevel
-		ItemAffixData.TierData tierData = affixData.GetAppropriateTierData(itemLevel);
+		ItemAffixData.TierData tierData = affixData.GetAppropriateTierData(itemLevel, out int tier);
+		affix.Tier = tier;
 
 		// Generate a random value within the specified range
 		float randomValue = Main.rand.NextFloat(tierData.MinValue, tierData.MaxValue);
