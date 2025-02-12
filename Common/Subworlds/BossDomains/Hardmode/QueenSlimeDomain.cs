@@ -44,7 +44,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 
 				if (flags != OpenFlags.None)
 				{
-					if (j < Main.worldSurface && tile.HasTile)
+					if (j < Main.worldSurface && tile.HasTile && tile.TileType is TileID.Dirt or TileID.Pearlstone)
 					{
 						tile.WallType = WallID.None;
 					}
@@ -54,6 +54,11 @@ internal class QueenSlimeDomain : BossDomainSubworld
 						tile.TileType = TileID.HallowedGrass;
 
 						grasses.Add(new Point16(i, j), flags);
+					}
+
+					if (WorldGen.genRand.NextBool(2, 3))
+					{
+						Tile.SmoothSlope(i, j, false, false);
 					}
 				}
 			}
@@ -65,7 +70,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		}
 	}
 
-	private void DecorateGrass(Point16 position, OpenFlags flags)
+	private static void DecorateGrass(Point16 position, OpenFlags flags)
 	{
 		if (flags.HasFlag(OpenFlags.Above))
 		{
@@ -104,8 +109,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 	private void SpawnBaseTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
 		LeftSpawn = Main.rand.NextBool();
-		Main.rockLayer = (int)(Height * 0.65f);
-		Main.worldSurface = (int)(Height * 0.65f) - 50;
+		Main.rockLayer = (int)(Height * 0.7f);
+		Main.worldSurface = (int)(Height * 0.7f) - 50;
 
 		Vector2 circleCenter = new(LeftSpawn ? 60 : Main.maxTilesX - 60, 60);
 		FastNoiseLite noise = new();
@@ -124,15 +129,16 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			{
 				float dist = ModDistance(new Vector2(i, j), circleCenter);
 				float cutoff = 650 + 10f * noise.GetNoise((new Vector2(i, j).AngleTo(circleCenter) + MathHelper.Pi) * 40, 0);
-				bool stoneCutoff = dist > 750 + 20f * noise.GetNoise((new Vector2(i, j).AngleTo(circleCenter) + MathHelper.Pi) * 50, 0) 
-					&& (stoneNoise.GetNoise(i, j) * (stoneNoise2.GetNoise(i, j) + 0.4f)) > 0.15f;
+				float stoneCutoff = 780 + 20f * noise.GetNoise((new Vector2(i, j).AngleTo(circleCenter) + MathHelper.Pi) * 50, 0);
+
+				bool stone = (stoneNoise.GetNoise(i, j) * (stoneNoise2.GetNoise(i, j) + 0.4f)) > Utils.GetLerpValue(stoneCutoff, cutoff, dist, true) * 0.15f;
 
 				if (dist > cutoff)
 				{
 					Tile tile = Main.tile[i, j];
 					tile.HasTile = true;
-					tile.TileType = stoneCutoff ? TileID.Pearlstone : TileID.Dirt;
-					tile.WallType = stoneCutoff ? WallID.PearlstoneEcho : WallID.DirtUnsafe;
+					tile.TileType = stone ? TileID.Pearlstone : TileID.Dirt;
+					tile.WallType = stone ? WallID.PearlstoneEcho : WallID.DirtUnsafe;
 				}
 			}
 		}
