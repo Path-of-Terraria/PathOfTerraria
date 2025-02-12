@@ -1,7 +1,8 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using SubworldLibrary;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 
 internal class DeerclopsDomainLightEdits : ModSystem
 {

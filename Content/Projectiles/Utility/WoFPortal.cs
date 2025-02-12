@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Projectiles;
-using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using SubworldLibrary;

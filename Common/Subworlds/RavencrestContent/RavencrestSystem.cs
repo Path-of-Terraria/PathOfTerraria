@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;

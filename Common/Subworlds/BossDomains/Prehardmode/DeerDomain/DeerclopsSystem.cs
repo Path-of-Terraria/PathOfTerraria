@@ -1,7 +1,7 @@
 ﻿using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 
 internal class DeerclopsSystem : ModSystem
 {

@@ -3,7 +3,7 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 
 internal class DungeonConversion
 {

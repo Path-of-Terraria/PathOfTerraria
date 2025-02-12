@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;

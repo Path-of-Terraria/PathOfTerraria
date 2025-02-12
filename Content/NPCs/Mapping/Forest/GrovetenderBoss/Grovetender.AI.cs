@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using System.IO;

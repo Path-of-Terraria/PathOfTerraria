@@ -1,10 +1,11 @@
-﻿using PathOfTerraria.Content.NPCs.Town;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 
 internal class BoCDomainSystem : ModSystem
 {

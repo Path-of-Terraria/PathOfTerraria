@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
 
 internal class ArenaEnemyNPC : GlobalNPC
 {

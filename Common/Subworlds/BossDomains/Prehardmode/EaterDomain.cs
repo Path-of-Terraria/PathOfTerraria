@@ -13,7 +13,7 @@ using Terraria.Localization;
 using SubworldLibrary;
 using PathOfTerraria.Content.Projectiles.Utility;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
 public class EaterDomain : BossDomainSubworld
 {
@@ -274,7 +274,7 @@ public class EaterDomain : BossDomainSubworld
 				}
 			}
 		}
-		
+
 		if (flags.HasFlag(OpenFlags.Below))
 		{
 			if (tile.TileType == TileID.Ebonstone)
@@ -446,11 +446,11 @@ public class EaterDomain : BossDomainSubworld
 
 				if (item.X < smoothInOut.Value.baseX)
 				{
-					mul *= (fade - MathF.Min(smoothInOut.Value.baseX - item.X, fade)) / (float)fade;
+					mul *= (fade - MathF.Min(smoothInOut.Value.baseX - item.X, fade)) / fade;
 				}
 				else if (item.X > smoothInOut.Value.endX)
 				{
-					mul *= (fade - MathF.Min(item.X - smoothInOut.Value.endX, fade)) / (float)fade;
+					mul *= (fade - MathF.Min(item.X - smoothInOut.Value.endX, fade)) / fade;
 				}
 			}
 

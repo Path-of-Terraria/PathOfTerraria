@@ -1,13 +1,14 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 
 public class DeerclopsDomainPlayer : ModPlayer
 {
 	public float Insanity => MathHelper.Clamp(LightTime / (5 * 60f), 0, 1);
-	
+
 	private int LightTime = 0;
 	private int ProjTime = 0;
 

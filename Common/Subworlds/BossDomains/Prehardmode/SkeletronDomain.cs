@@ -7,12 +7,12 @@ using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
 using Terraria.DataStructures;
 using Terraria.Localization;
-using PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
 using System.Linq;
 using Terraria.Utilities;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
 public class SkeletronDomain : BossDomainSubworld
 {
@@ -70,7 +70,7 @@ public class SkeletronDomain : BossDomainSubworld
 	public Point WellBottom = Point.Zero;
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
-	
+
 	private int clearY = 0;
 
 	private readonly List<PlacedRoom> SpecialRooms = [];
@@ -253,7 +253,7 @@ public class SkeletronDomain : BossDomainSubworld
 		ActuatorInfoByFloor.Clear();
 	}
 
-	private static int DigChasm(int startY, int endY, float baseX, int wallDepth, int tunnelWidth, bool spawnActuatedWall = false, 
+	private static int DigChasm(int startY, int endY, float baseX, int wallDepth, int tunnelWidth, bool spawnActuatedWall = false,
 		int tileType = TileID.GrayBrick, int wallType = WallID.GrayBrick, int actuatedWallCount = 2)
 	{
 		FastNoiseLite noise = GetGenNoise();
@@ -298,7 +298,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 						ActuatorInfoByFloor[Floor].AddActuatedTile(value, new Point(x, y));
 					}
-					
+
 					if ((!spawnActuatedWall || y > startY + actuatedWallCount * 4) && y % 10 == 0)
 					{
 						tile.TileType = TileID.Platforms;
@@ -307,7 +307,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 						if (!WorldGen.genRand.NextBool(6) && tileType != TileID.GrayBrick)
 						{
-							int type = !WorldGen.genRand.NextBool(15) ? TileID.Books : 
+							int type = !WorldGen.genRand.NextBool(15) ? TileID.Books :
 								WorldGen.genRand.NextBool(3) ? TileID.WaterCandle : TileID.Candles;
 							int style = type != TileID.Candles || WorldGen.genRand.NextBool(3) ? 0 : 1;
 
@@ -423,7 +423,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 		int roomHeight = WorldGen.genRand.Next(16, 21);
 		CreatePlainRoom(x, y, WorldGen.genRand.Next(23, 34), roomHeight, true, true);
-		
+
 		clearYPositions.Add(new(x, y));
 
 		int corridorEnd = x - WorldGen.genRand.Next(140, 170);
@@ -535,7 +535,7 @@ public class SkeletronDomain : BossDomainSubworld
 		int dif = Math.Abs(endX - x);
 		int sign = Math.Sign(endX - x);
 
-		for (int i = x; i != endX; i += sign) 
+		for (int i = x; i != endX; i += sign)
 		{
 			int baseY = (int)MathHelper.Lerp(y, endY, MathF.Abs(x - i) / dif);
 

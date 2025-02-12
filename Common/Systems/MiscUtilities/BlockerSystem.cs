@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using SubworldLibrary;

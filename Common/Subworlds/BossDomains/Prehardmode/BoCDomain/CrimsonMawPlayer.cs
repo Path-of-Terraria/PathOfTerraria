@@ -2,7 +2,7 @@
 using Terraria.DataStructures;
 using Terraria.GameContent;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 
 public class CrimsonMawPlayer : ModPlayer
 {

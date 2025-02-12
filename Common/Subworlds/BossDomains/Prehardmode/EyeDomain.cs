@@ -14,7 +14,7 @@ using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
 public class EyeDomain : BossDomainSubworld
 {

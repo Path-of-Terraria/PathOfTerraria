@@ -1,7 +1,8 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using SubworldLibrary;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
 
 /// <summary>
 /// Stops the Wall of Flesh from despawning in the <see cref="WallOfFleshDomain"/>.<br/>

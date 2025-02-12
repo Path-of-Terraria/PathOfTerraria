@@ -1,7 +1,9 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
+using SubworldLibrary;
 using Terraria.DataStructures;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 
 internal class PlayerInsanityLayer : PlayerDrawLayer
 {

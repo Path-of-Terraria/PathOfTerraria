@@ -14,10 +14,10 @@ using PathOfTerraria.Common.World;
 using System.Linq;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 using PathOfTerraria.Content.NPCs.Town;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
 public class BrainDomain : BossDomainSubworld
 {
@@ -240,7 +240,7 @@ public class BrainDomain : BossDomainSubworld
 
 		progress.Value = 0;
 
-		foreach ((Point16 start, Point16 end) in lines) 
+		foreach ((Point16 start, Point16 end) in lines)
 		{
 			Vector2[] basePoints = [start.ToVector2(), Vector2.Lerp(start.ToVector2(), end.ToVector2(), 0.5f), end.ToVector2()];
 			Vector2[] points = Tunnel.CreateEquidistantSet(basePoints, 46);
@@ -316,7 +316,7 @@ public class BrainDomain : BossDomainSubworld
 		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
 		List<Point16> results = [];
 		float ySize = size / WorldGen.genRand.NextFloat(2, 3);
-		Ellipse.Fill(!isWall ? (x, y) => FastPlaceTile(x, y, TileID.Crimstone) : (x, y) => FastPlaceWall(x, y, WallID.CrimstoneUnsafe), 
+		Ellipse.Fill(!isWall ? (x, y) => FastPlaceTile(x, y, TileID.Crimstone) : (x, y) => FastPlaceWall(x, y, WallID.CrimstoneUnsafe),
 			origin.ToPoint16(), size, ySize, angle - MathHelper.PiOver2, ref results, (x, y) => GetGenNoise().GetNoise(x, y) * 10);
 	}
 

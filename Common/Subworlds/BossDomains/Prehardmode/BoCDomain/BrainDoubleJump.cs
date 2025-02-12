@@ -1,8 +1,9 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using SubworldLibrary;
 using Terraria.Audio;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 
 public class BrainJumpPlayer : ModPlayer
 {

@@ -1,9 +1,10 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 
 internal class EditSkeleDomainSpawnPool : GlobalNPC
 {

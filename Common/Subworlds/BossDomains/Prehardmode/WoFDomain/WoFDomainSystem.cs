@@ -1,7 +1,8 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using SubworldLibrary;
 using System.IO;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
 
 /// <summary>
 /// Used to clamp camera to hide the other side of the domain for a "wow" factor.

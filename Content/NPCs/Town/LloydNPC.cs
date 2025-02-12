@@ -19,10 +19,10 @@ using Terraria.ModLoader.IO;
 using System.IO;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using SubworldLibrary;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using Terraria.Chat;
-using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

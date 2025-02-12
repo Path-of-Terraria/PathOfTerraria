@@ -16,7 +16,7 @@ using ReLogic.Content;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
 public class DeerclopsDomain : BossDomainSubworld
 {
@@ -35,8 +35,8 @@ public class DeerclopsDomain : BossDomainSubworld
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), 
-		new FlatWorldPass(Surface, true, GetSurfaceNoise(), TileID.SnowBlock, WallID.SnowWallUnsafe), 
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
+		new FlatWorldPass(Surface, true, GetSurfaceNoise(), TileID.SnowBlock, WallID.SnowWallUnsafe),
 		new PassLegacy("Tunnels", Tunnels),
 		new PassLegacy("Polish", Polish),
 		new PassLegacy("Settle Liquids", SettleLiquidsStep.Generation)];
@@ -233,7 +233,7 @@ public class DeerclopsDomain : BossDomainSubworld
 				Point16 size = StructureTools.GetSize(structure);
 				int dist = Math.Abs(y - y2);
 				var checkingRect = new Rectangle(x, y - (int)(size.Y * 0.5f), size.X, size.Y);
-				
+
 				if (chasmPoints.Any(x => checkingRect.Contains(x.ToPoint())))
 				{
 					continue;
@@ -266,7 +266,7 @@ public class DeerclopsDomain : BossDomainSubworld
 			Vector2 pos = Main.rand.Next(points);
 			int x = (int)pos.X;
 			int y = (int)pos.Y;
-			
+
 			while (WorldGen.SolidTile(x, y))
 			{
 				y++;

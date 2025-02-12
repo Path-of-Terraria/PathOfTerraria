@@ -6,7 +6,6 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Utilities;
 using SubworldLibrary;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -16,7 +15,7 @@ using Terraria.IO;
 using Terraria.Localization;
 using Terraria.WorldBuilding;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
 public class WallOfFleshDomain : BossDomainSubworld
 {
@@ -32,7 +31,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 	/// </summary>
 	private bool licked = false;
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new	PassLegacy("Base Terrain", Terrain),
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new   PassLegacy("Base Terrain", Terrain),
 		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids), new PassLegacy("Pathway", SpawnPathway)];
 
 	internal override void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
@@ -192,7 +191,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 					tile.TileType = TileID.ObsidianBrick;
 					tile.HasTile = true;
 				}
-				
+
 				WorldGen.TileFrame(i, end.Y, true);
 				spacing++;
 			}
@@ -221,7 +220,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			SlopeType doSlope = SlopeType.SlopeDownLeft;
 			int slope = 2;
 
-			if (TileID.Sets.Platforms[Main.tile[x + 1, y - 1].TileType] || TileID.Sets.Platforms[Main.tile[x - 1, y + 1].TileType] || 
+			if (TileID.Sets.Platforms[Main.tile[x + 1, y - 1].TileType] || TileID.Sets.Platforms[Main.tile[x - 1, y + 1].TileType] ||
 				WorldGen.SolidTile(x + 1, y) && !WorldGen.SolidTile(x - 1, y))
 			{
 				doSlope = SlopeType.SlopeDownRight;
@@ -583,7 +582,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 		return true;
 	}
 
-	private static void GetNoises(out FastNoiseLite noise, out FastNoiseLite softNoise, out FastNoiseLite wallNoise, 
+	private static void GetNoises(out FastNoiseLite noise, out FastNoiseLite softNoise, out FastNoiseLite wallNoise,
 		out FastNoiseLite smallWallNoise, out FastNoiseLite wallTypeNoise)
 	{
 		if (!int.TryParse(WorldGen.currentWorldSeed, out int seed))
@@ -591,7 +590,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			seed = Crc32.Calculate(WorldGen.currentWorldSeed);
 		}
 
-		seed = (seed == int.MinValue) ? int.MaxValue : Math.Abs(seed);
+		seed = seed == int.MinValue ? int.MaxValue : Math.Abs(seed);
 
 		noise = new FastNoiseLite(seed);
 		noise.SetFrequency(0.03f);
@@ -652,14 +651,14 @@ public class WallOfFleshDomain : BossDomainSubworld
 					}
 				}
 			}
-			
+
 			BossSpawned = true;
 
 			if (!licked)
 			{
 				NPC wof = Main.npc[wofIndex];
 
-				if (wof.position.X < 160f || wof.position.X > ((Main.maxTilesX - 10) * 16))
+				if (wof.position.X < 160f || wof.position.X > (Main.maxTilesX - 10) * 16)
 				{
 					licked = true;
 				}
@@ -669,7 +668,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.WallofFlesh) && !ReadyToExit && !licked)
 		{
 			Player player = Main.rand.Next(Main.player.Where(x => x.active).ToArray());
-			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center - new Vector2(0, 80), 
+			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center - new Vector2(0, 80),
 				Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.CachedBossesDowned.Add(NPCID.WallofFlesh);

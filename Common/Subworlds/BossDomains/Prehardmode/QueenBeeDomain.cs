@@ -13,7 +13,7 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
 using SubworldLibrary;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
 public class QueenBeeDomain : BossDomainSubworld
 {
@@ -134,9 +134,9 @@ public class QueenBeeDomain : BossDomainSubworld
 	{
 		var original = new Point16(x, y);
 
-		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Height / 4), 0.5f) 
+		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Height / 4), 0.5f)
 			+ new Vector2(WorldGen.genRand.Next(-2, 3), WorldGen.genRand.Next(-2, 3)), new(Width / 2, Height / 4)], 8, 6);
-		
+
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		int breakTime = -1;
 

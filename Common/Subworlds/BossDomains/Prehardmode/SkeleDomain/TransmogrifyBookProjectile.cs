@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Content.Tiles.Furniture;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.SkeleDomain;
+namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 
 internal class TransmogrifyBookProjectile : GlobalProjectile
 {

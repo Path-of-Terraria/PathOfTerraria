@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
