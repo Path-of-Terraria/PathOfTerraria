@@ -978,3 +978,13 @@ GrovetenderTrophyItem: {
 	DisplayName: Grovetender Trophy
 	Tooltip: ""
 }
+
+QueenSlimeMap: {
+	DisplayName: Queen Slime Map
+	Tooltip: ""
+}
+
+BrittleCrystalItem: {
+	DisplayName: Brittle Crystal
+	Tooltip: ""
+}
