@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// <summary>
 /// A currency shard that can be used to reroll the affixes of a magic item.
 /// </summary>
-internal class GlimmeringShard : CurrencyShard
+public class GlimmeringShard : CurrencyShard
 {
 	protected override void SetStaticData()
 	{

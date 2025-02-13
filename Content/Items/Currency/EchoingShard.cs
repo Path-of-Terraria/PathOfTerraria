@@ -5,9 +5,9 @@ using Terraria.ID;
 namespace PathOfTerraria.Content.Items.Currency;
 
 /// <summary>
-/// A currency shard that can be used to clone an item that is not unique
+/// A currency shard that can be used to clone an item that is not unique.
 /// </summary>
-internal class EchoingShard : CurrencyShard
+public class EchoingShard : CurrencyShard
 {
 	protected override int FrameCount => 5;
 
