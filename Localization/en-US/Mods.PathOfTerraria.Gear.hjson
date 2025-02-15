@@ -12,6 +12,9 @@ Tooltips: {
 	Level: Item level:
 	Damage: Damage
 	Defense: Defense
+	Pickaxe: Pickaxe Power
+	Axe: Axe Power
+	Hammer: Hammer Power
 }
 
 Influence: {
@@ -337,3 +340,5 @@ Shield: {
 }
 
 Map.Name: Map
+
+None.Name: None
