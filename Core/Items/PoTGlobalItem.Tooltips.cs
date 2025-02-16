@@ -214,6 +214,27 @@ partial class PoTGlobalItem
 			tooltips.Add(def);
 		}
 
+		if (item.pick > 0)
+		{
+			var pick = new TooltipLine(Mod, "Pickaxe", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.pick} {Localize("Pickaxe")}", baseColor: "DDDDDD")}");
+			
+			tooltips.Add(pick);
+		}
+		
+		if (item.axe > 0)
+		{
+			var pick = new TooltipLine(Mod, "Axe", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.axe * 5} {Localize("Axe")}", baseColor: "DDDDDD")}");
+			
+			tooltips.Add(pick);
+		}
+		
+		if (item.hammer > 0)
+		{
+			var pick = new TooltipLine(Mod, "Hammer", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.hammer} {Localize("Hammer")}", baseColor: "DDDDDD")}");
+			
+			tooltips.Add(pick);
+		}
+		
 		tooltips.AddRange(oldStats);
 
 		if (item.ModItem is Map map && map.Tier > 0)
