@@ -4,9 +4,9 @@ using PathOfTerraria.Core.Items;
 namespace PathOfTerraria.Content.Items.Currency;
 
 /// <summary>
-/// A currency shard that can be used to upgrade a normal item to rare
+/// A currency shard that can be used to upgrade a normal item to rare.
 /// </summary>
-internal class MysticShard : CurrencyShard
+public class MysticShard : CurrencyShard
 {
 	protected override int FrameCount => 5;
 

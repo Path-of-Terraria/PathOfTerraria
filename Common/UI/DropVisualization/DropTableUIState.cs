@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -70,11 +71,11 @@ internal class DropTableUIState : CloseableSmartUi
 
 	public override bool IsCentered => true;
 
-	private EditableValueUI _gearRate = null;
-	private EditableValueUI _currencyRate = null;
-	private EditableValueUI _mapRate = null;
-	private EditableValueUI _count = null;
-	private EditableValueUI _level = null;
+	private UIEditableValue _gearRate = null;
+	private UIEditableValue _currencyRate = null;
+	private UIEditableValue _mapRate = null;
+	private UIEditableValue _count = null;
+	private UIEditableValue _level = null;
 	private UIButton<string> _sortButton = null;
 	private UIList _resultList = null;
 	private SortMode _sort = SortMode.None;

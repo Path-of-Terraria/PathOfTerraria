@@ -1,14 +1,12 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
-using Terraria.DataStructures;
-using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
 /// <summary>
-/// A currency shard that can be used to reroll the affixes on a rare item
+/// A currency shard that can be used to reroll the affixes on a rare item.
 /// </summary>
-internal class ShiftingShard : CurrencyShard
+public class ShiftingShard : CurrencyShard
 {
 	protected override int FrameCount => 7;
 

@@ -2,12 +2,12 @@
 using Terraria.ModLoader.UI;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.UI.DropVisualization;
+namespace PathOfTerraria.Common.UI.Elements;
 
-internal class EditableValueUI : UIElement
+public class UIEditableValue : UIElement
 {
 	public string DisplayText => $"{Prefix}: {Value * 100:#0.#}{(IsPercent ? "%" : "")}";
-	
+
 	public double Value { get; private set; }
 
 	private readonly UIText Display = null;
@@ -19,7 +19,7 @@ internal class EditableValueUI : UIElement
 	private int holdTime = 0;
 	private bool resetHold = true;
 
-	public EditableValueUI(string displayPrefix, float defaultValue, bool cap, double increment = 0.005, bool isPercent = true)
+	public UIEditableValue(string displayPrefix, float defaultValue, bool cap, double increment = 0.005, bool isPercent = true)
 	{
 		Width = StyleDimension.FromPixels(110);
 		Height = StyleDimension.FromPixels(70);
