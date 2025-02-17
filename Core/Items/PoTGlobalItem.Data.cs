@@ -70,7 +70,7 @@ public sealed class PoTInstanceItemData : GlobalItem
 	/// <summary>
 	///		The amount of implicit affixes preceding rolled ones.
 	/// </summary>
-	internal int ImplicitCount { get; set; }
+	public int ImplicitCount { get; set; }
 
 	internal int RealLevel { get; set; }
 }

@@ -71,8 +71,13 @@ internal class StaffHeldProjectile : ModProjectile
 			Projectile.alpha -= 17;
 		}
 
-		Projectile.Center = Owner.Center + Owner.RotatedRelativePoint(Vector2.Zero) + new Vector2(-10f * -direction, 10f);
+		Projectile.Center = Owner.Center + new Vector2(-10f * -direction, 10f);
 
+		if (!Owner.mount.Active)
+		{
+			Projectile.Center += Owner.RotatedRelativePoint(Vector2.Zero);
+		}
+		
 		if (Main.myPlayer == Projectile.owner)
 		{
 			Projectile.rotation = Projectile.rotation.AngleLerp(-MathHelper.PiOver4, 0.5f);
@@ -100,7 +105,14 @@ internal class StaffHeldProjectile : ModProjectile
 	{
 		Texture2D tex = TextureAssets.Item[(int)ItemId].Value;
 
-		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, new Vector2(0, tex.Height), 1f, SpriteEffects.None, 0);
+		Vector2 positionOffset = new(Projectile.ModProjectile?.DrawOffsetX ?? 0f, Projectile.gfxOffY);
+		Vector2 position = Projectile.Center - Main.screenPosition + positionOffset;
+
+		Vector2 originOffset = new(Projectile.ModProjectile?.DrawOriginOffsetX ?? 0f, Projectile.ModProjectile?.DrawOriginOffsetY ?? 0f);
+		Vector2 origin = new Vector2(0f, tex.Height) + originOffset;
+		
+		Main.spriteBatch.Draw(tex, position, null, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, 1f, SpriteEffects.None, 0);
+		
 		return false;
 	}
 }

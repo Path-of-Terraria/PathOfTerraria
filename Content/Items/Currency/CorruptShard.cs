@@ -15,7 +15,7 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// Can add new affixes, reroll the item, or nothing can happen.
 /// Once items are corrupted they can no longer be modified
 /// </summary>
-internal class CorruptShard : CurrencyShard
+public class CorruptShard : CurrencyShard
 {
 	protected override void SetStaticData()
 	{
