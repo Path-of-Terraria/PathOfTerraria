@@ -8,7 +8,7 @@ internal class QueenSlimeScene : ModSceneEffect
 	public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
 	public override int Music => QueenSlimeDomain.ModDistance(Main.LocalPlayer.Center, GetCircleCenter()) < 696 * 16 ? MusicID.TheHallow : MusicID.UndergroundHallow;
 
-	private static Vector2 GetCircleCenter()
+	public static Vector2 GetCircleCenter()
 	{
 		if (SubworldSystem.Current is QueenSlimeDomain)
 		{

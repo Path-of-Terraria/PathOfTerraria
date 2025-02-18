@@ -289,7 +289,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			new Vector2(!LeftSpawn ? 200 : Main.maxTilesX - 200, Height * 0.45f - 20)], noise, crystals, portalTunnel == 1);
 
 		DigSingleTunnel([new Vector2(Width / 2, Height * 0.8f - 20),
-			new Vector2(!LeftSpawn ? 500 : Main.maxTilesX - 500, Height * 0.75f),
+			new Vector2(!LeftSpawn ? 500 : Main.maxTilesX - 500, Height * 0.725f),
 			new Vector2(!LeftSpawn ? 100 : Main.maxTilesX - 100, Height * 0.65f - 20)], noise, crystals, portalTunnel == 2);
 
 		foreach (Point crystal in crystals)
