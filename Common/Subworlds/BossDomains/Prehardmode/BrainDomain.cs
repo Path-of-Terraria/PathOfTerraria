@@ -38,11 +38,15 @@ public class BrainDomain : BossDomainSubworld
 
 	public override void CopyMainWorldData()
 	{
+		base.CopyMainWorldData();
+
 		SubworldSystem.CopyWorldData("hasLloyd", ModContent.GetInstance<BoCDomainSystem>().HasLloyd);
 	}
 
 	public override void ReadCopiedMainWorldData()
 	{
+		base.ReadCopiedMainWorldData();
+
 		ModContent.GetInstance<BoCDomainSystem>().HasLloyd = SubworldSystem.ReadCopiedWorldData<bool>("hasLloyd");
 	}
 

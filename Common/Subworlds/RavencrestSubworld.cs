@@ -39,6 +39,8 @@ internal class RavencrestSubworld : MappingWorld
 
 	public override void CopyMainWorldData()
 	{
+		base.CopyMainWorldData();
+
 		SubworldSystem.CopyWorldData("smashedOrb", WorldGen.shadowOrbSmashed); // Copies this bool over since TownScoutNPC needs this
 		SubworldSystem.CopyWorldData("orbsSmashed", (short)DisableEvilOrbBossSpawning.ActualOrbsSmashed); // Copies this bool over since Morven/Whispers of the Deep quest needs this
 		SubworldSystem.CopyWorldData("time", Main.time); // Keeps time consistent
@@ -50,6 +52,8 @@ internal class RavencrestSubworld : MappingWorld
 
 	public override void ReadCopiedMainWorldData()
 	{
+		base.ReadCopiedMainWorldData();
+
 		WorldGen.shadowOrbSmashed = SubworldSystem.ReadCopiedWorldData<bool>("smashedOrb");
 		Main.time = SubworldSystem.ReadCopiedWorldData<double>("time");
 		Main.dayTime = SubworldSystem.ReadCopiedWorldData<bool>("dayTime");

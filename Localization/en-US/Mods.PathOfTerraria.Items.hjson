@@ -981,7 +981,11 @@ GrovetenderTrophyItem: {
 
 QueenSlimeMap: {
 	DisplayName: Queen Slime Map
-	Tooltip: ""
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of pixies and exuberance'
+		'''
 }
 
 BrittleCrystalItem: {
