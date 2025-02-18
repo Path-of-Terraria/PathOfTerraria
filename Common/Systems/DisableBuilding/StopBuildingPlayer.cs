@@ -1,7 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using SubworldLibrary;
 using Terraria.ID;
 

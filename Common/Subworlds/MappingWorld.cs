@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
@@ -7,6 +8,7 @@ using ReLogic.Graphics;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.IO;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
@@ -49,12 +51,18 @@ public abstract class MappingWorld : Subworld
 	public List<MapAffix> Affixes = null;
 
 	/// <summary>
-	/// The tier of the world. This modifies a lot of things:<br/>
+	/// The level of the world. This modifies a lot of things:<br/>
 	/// Defines the item level of the world, and consequently, the level and type of item that drops from enemies<br/>
 	/// Above level 50, buffs enemies' damage and max health; see <see cref="MappingNPC"/>'s SetDefaults<br/>
 	/// Above level 50, buffs enemy gear droprate and rarity; see <see cref="Systems.MobSystem.ArpgNPC"/>.
 	/// </summary>
 	public int AreaLevel = 0;
+
+	/// <summary>
+	/// The map tier. This is the unconverted version of <see cref="AreaLevel"/>; the level should be used more often.<br/>
+	/// This is kept as the map tier is used for a couple of things, namely <see cref="MappingDomainSystem.Tracker"/>.
+	/// </summary>
+	public int MapTier = 0;
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
 	{
@@ -67,6 +75,24 @@ public abstract class MappingWorld : Subworld
 		WorldGenerator.CurrentGenerationProgress = progress;
 		Main.ActiveWorldFileData.SetSeedToRandom();
 		GenVars.structures = new();
+	}
+
+	public override void CopyMainWorldData()
+	{
+		base.CopyMainWorldData();
+
+		TagCompound trackerTag = [];
+		ModContent.GetInstance<MappingDomainSystem>().Tracker.Save(trackerTag);
+		SubworldSystem.CopyWorldData("tracker", trackerTag);
+	}
+
+	public override void ReadCopiedMainWorldData()
+	{
+		base.ReadCopiedMainWorldData();
+
+		TagCompound tag = SubworldSystem.ReadCopiedWorldData<TagCompound>("tracker");
+		var tracker = MappingDomainSystem.TiersDownedTracker.Load(tag);
+		ModContent.GetInstance<MappingDomainSystem>().Tracker = tracker;
 	}
 
 	public override void DrawMenu(GameTime gameTime)

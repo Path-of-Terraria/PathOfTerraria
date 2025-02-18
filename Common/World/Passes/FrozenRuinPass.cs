@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 using PathOfTerraria.Common.World.Generation;
 using System.Collections.Generic;
 using Terraria.DataStructures;

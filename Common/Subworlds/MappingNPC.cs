@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds;
@@ -56,5 +57,21 @@ internal class MappingNPC : GlobalNPC
 		}
 
 		return true;
+	}
+
+	public override void OnKill(NPC npc)
+	{
+		if (npc.boss && SubworldSystem.Current is MappingWorld world)
+		{
+			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
+			tracker.AddCompletion(world.MapTier);
+
+			int count = tracker.CompletionsAtOrAboveTier(0);
+
+			if (count >= 10 && !NPC.downedQueenSlime)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
+			}
+		}
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;

@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 using Terraria.ID;
 using Terraria.ObjectData;
 

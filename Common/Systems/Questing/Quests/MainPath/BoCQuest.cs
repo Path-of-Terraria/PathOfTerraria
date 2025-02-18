@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;

@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
@@ -45,7 +45,7 @@ public sealed class TravelCommand : ModCommand
 			SubworldSystem.Exit();
 			return;
 		}
-
+		
 		string subworldName = string.Join(" ", args);
 
 		foreach (Subworld world in ModContent.GetContent<Subworld>())

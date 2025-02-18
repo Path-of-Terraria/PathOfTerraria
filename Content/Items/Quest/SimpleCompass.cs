@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 using PathOfTerraria.Common.Systems.DrawLayers;
 using PathOfTerraria.Common.Systems.RealtimeGen;
 using PathOfTerraria.Content.Tiles.BossDomain;

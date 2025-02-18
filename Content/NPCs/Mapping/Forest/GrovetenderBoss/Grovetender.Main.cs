@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
 using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Content.Items.Gear.Amulets.AddedLife;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;

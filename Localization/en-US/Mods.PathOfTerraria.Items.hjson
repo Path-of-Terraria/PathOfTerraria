@@ -978,3 +978,17 @@ GrovetenderTrophyItem: {
 	DisplayName: Grovetender Trophy
 	Tooltip: ""
 }
+
+QueenSlimeMap: {
+	DisplayName: Queen Slime Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of pixies and exuberance'
+		'''
+}
+
+BrittleCrystalItem: {
+	DisplayName: Brittle Crystal
+	Tooltip: ""
+}

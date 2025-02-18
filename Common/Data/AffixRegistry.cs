@@ -164,6 +164,11 @@ public class AffixRegistry : ILoadable
 		ItemAffixData.TierData tierData = affixData.GetAppropriateTierData(itemLevel, out int tier);
 		affix.Tier = tier;
 
+		if (tierData is null)
+		{
+			return 0;
+		}
+
 		// Generate a random value within the specified range
 		float randomValue = Main.rand.NextFloat(tierData.MinValue, tierData.MaxValue);
 
