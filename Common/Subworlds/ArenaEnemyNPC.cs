@@ -1,8 +1,12 @@
 ﻿using System.IO;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
+namespace PathOfTerraria.Common.Subworlds;
 
+/// <summary>
+/// Handles enemies spawned by arenas which require being blocked off before progressing.<br/>
+/// Examples include the Queen Bee domain and the Wall of Flesh domain.
+/// </summary>
 internal class ArenaEnemyNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
