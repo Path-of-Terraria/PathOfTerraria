@@ -12,12 +12,18 @@ internal class BrittleCrystal : ModTile
 
 		Main.tileBrick[Type] = true;
 		Main.tileSolid[Type] = true;
-		Main.tileBlockLight[Type] = false;
+		Main.tileBlockLight[Type] = true;
 		Main.tileCracked[Type] = true;
+
+		Main.tileMerge[Type][TileID.Dirt] = true;
+		Main.tileMerge[TileID.Dirt][Type] = true;		
+		Main.tileMerge[Type][TileID.Pearlstone] = true;
+		Main.tileMerge[TileID.Pearlstone][Type] = true;
 
 		AddMapEntry(new Color(174, 110, 229));
 
 		DustType = DustID.PurpleCrystalShard;
+		HitSound = SoundID.Shatter;
 	}
 }
 
