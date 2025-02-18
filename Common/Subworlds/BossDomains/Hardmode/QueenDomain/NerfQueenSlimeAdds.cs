@@ -11,6 +11,6 @@ internal class NerfQueenSlimeAdds : GlobalNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(NPC npc, int numPlayers, float balance, float bossAdjustment)
 	{
-		npc.lifeMax /= 4;
+		npc.lifeMax /= Main.expertMode ? 4 : 2;
 	}
 }
