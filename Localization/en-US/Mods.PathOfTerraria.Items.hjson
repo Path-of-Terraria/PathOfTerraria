@@ -992,3 +992,8 @@ BrittleCrystalItem: {
 	DisplayName: Brittle Crystal
 	Tooltip: ""
 }
+
+TwinsMap: {
+	DisplayName: Twins Map
+	Tooltip: ""
+}
