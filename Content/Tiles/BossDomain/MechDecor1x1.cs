@@ -20,4 +20,9 @@ internal class MechDecor1x1 : ModTile
 
 		AddMapEntry(new Color(128, 128, 128));
 	}
+
+	public override void SetSpriteEffects(int i, int j, ref SpriteEffects spriteEffects)
+	{
+		spriteEffects = i % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+	}
 }
