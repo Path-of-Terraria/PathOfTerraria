@@ -11,6 +11,7 @@ using System.Linq;
 using Terraria.Utilities;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
+using PathOfTerraria.Common.Subworlds.Tools;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 

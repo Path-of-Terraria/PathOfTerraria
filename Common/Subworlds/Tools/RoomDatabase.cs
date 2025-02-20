@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
 
-namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
+namespace PathOfTerraria.Common.Subworlds.Tools;
 
 public record PlacedRoom(RoomData Data, Rectangle Area);
 
@@ -59,6 +60,15 @@ internal class RoomDatabase : ModSystem
 		return DataByRoomIndex[id].PlaceRoom(x, y, id, origin);
 	}
 
+	public void AddTimerInfo(EngageTimerInfo info)
+	{
+		_timers.Add(info);
+	}
+
+	/// <summary>
+	/// Adds a given 
+	/// </summary>
+	/// <param name="info"></param>
 	public void AddTimerInfo(List<EngageTimerInfo> info)
 	{
 		_timers.AddRange(info);

@@ -1,8 +1,10 @@
-﻿using PathOfTerraria.Common.World.Generation;
+﻿using PathOfTerraria.Common.Subworlds.Tools;
+using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
+using Terraria.GameContent.NetModules;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
@@ -82,34 +84,122 @@ internal class TwinsDomain : BossDomainSubworld
 			return;
 		}
 
+		if (WorldGen.genRand.NextBool(150) && position.X > 10 && position.X < Main.maxTilesX - 10)
+		{
+			PlaceGemsparkWall(position, flags);
+		}
+
 		if (flags.HasFlag(OpenFlags.Above))
 		{
-			if (WorldGen.genRand.NextBool(6))
+			if (WorldGen.genRand.NextBool(4))
 			{
 				//int id = WorldGen.genRand.Next(15);
 				int type = ModContent.TileType<MechDecor1x1>();
 				int styleRange = 8;
 
+				if (WorldGen.genRand.NextBool(4))
+				{
+					type = ModContent.TileType<MechDecor2x2>();
+					styleRange = 4;
+				}
+
 				WorldGen.PlaceTile(position.X, position.Y - 1, type, style: WorldGen.genRand.Next(styleRange));
 			}
 		}
 
-		if (flags.HasFlag(OpenFlags.Below) && WorldGen.genRand.NextBool(20))
+		if (flags.HasFlag(OpenFlags.Below))
 		{
-			int count = WorldGen.genRand.Next(6, 12) + 1;
-
-			for (int i = 1; i < count; ++i)
+			if (WorldGen.genRand.NextBool(20))
 			{
-				Tile tile = Main.tile[position.X, position.Y + i];
+				int count = WorldGen.genRand.Next(6, 12) + 1;
 
-				if (tile.HasTile)
+				for (int i = 1; i < count; ++i)
 				{
-					break;
+					Tile tile = Main.tile[position.X, position.Y + i];
+
+					if (tile.HasTile)
+					{
+						break;
+					}
+
+					tile.TileType = TileID.Chain;
+					tile.HasTile = true;
+				}
+			}
+			else if (WorldGen.genRand.NextBool(400))
+			{
+				WorldGen.PlaceObject(position.X, position.Y + 1, TileID.HangingLanterns);
+
+				for (int i = -1; i < 11; ++i)
+				{
+					Tile tile = Main.tile[position.X, position.Y - i];
+					tile.YellowWire = true;
 				}
 
-				tile.TileType = TileID.Chain;
-				tile.HasTile = true;
+				Point16 timerPos = new(position.X, position.Y - 10);
+				Tile timer = Main.tile[timerPos];
+				timer.TileType = TileID.Timers;
+				timer.TileFrameX = 0;
+				timer.TileFrameY = 18;
+				timer.HasTile = true;
+
+				ModContent.GetInstance<RoomDatabase>().AddTimerInfo(new EngageTimerInfo(timerPos, WorldGen.genRand.Next(300)));
 			}
+		}
+	}
+
+	private static void PlaceGemsparkWall(Point16 position, OpenFlags flags)
+	{
+		if (flags == OpenFlags.None)
+		{
+			return;
+		}
+
+		HashSet<OpenFlags> directions = [];
+
+		void AddIfTrue(OpenFlags flag)
+		{
+			if (flags.HasFlag(flag))
+			{
+				directions.Add(flag);
+			}
+		}
+
+		AddIfTrue(OpenFlags.Above);
+		AddIfTrue(OpenFlags.Below);
+		AddIfTrue(OpenFlags.Left);
+		AddIfTrue(OpenFlags.Right);
+
+		if (directions.Count == 0)
+		{
+			return;
+		}
+
+		OpenFlags flag = WorldGen.genRand.Next([.. directions]);
+
+		Point direction = flag switch
+		{
+			OpenFlags.Above => new Point(0, -1),
+			OpenFlags.Below => new Point(0, 1),
+			OpenFlags.Right => new Point(1, 0),
+			_ => new Point(-1, 0)
+		};
+
+		Point16 place = new(position.X + direction.X, position.Y + direction.Y);
+		ushort wall = WallID.DiamondGemspark;
+
+		if (place.Y < MetalLayerEnd + DirtLayerEnd / 2)
+		{
+			wall = WallID.RubyGemspark;
+		}
+
+		while (!WorldGen.SolidOrSlopedTile(place.X, place.Y))
+		{
+			Tile tile = Main.tile[place];
+			tile.WallType = wall;
+			tile.BlueWire = true;
+
+			place = new Point16(place.X + direction.X, place.Y + direction.Y);
 		}
 	}
 
@@ -237,8 +327,11 @@ internal class TwinsDomain : BossDomainSubworld
 		
 		int spawnId = Main.rand.Next(3);
 
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
 		Vector2 mazeStart = DigCorruptionTunnels(StructureTools.GetSize("Assets/Structures/TwinsDomain/Spawn_" + spawnId));
-		Point16 mazeEnd = DigMazeArea(mazeStart);
+
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Maze");
+		Point16 mazeEnd = DigMazeArea(mazeStart, progress);
 
 		DigRoughTunnel(mazeEnd.ToVector2(), new(Width / 2 + WorldGen.genRand.Next(-250, 250), BlockLayer + 100),
 			new Vector2(Width / 2 + WorldGen.genRand.Next(-100, 100), BlockLayer - 10), dirtNoise, null, 0.5f);
@@ -308,19 +401,19 @@ internal class TwinsDomain : BossDomainSubworld
 		float y = j;
 		malaiseNoise.DomainWarp(ref x, ref y);
 
-		if (malaiseNoise.GetNoise(x, y) > -0.15f)
-		{
-			tile.TileType = (ushort)ModContent.TileType<WeakMalaise>();
-		}
-
-		if (dirtNoise.GetNoise(i, j) > 0.6f)
+		if (dirtNoise.GetNoise(i, j) > 0.4f)
 		{
 			tile.TileType = TileID.Dirt;
 			tile.WallType = WallID.CorruptGrassUnsafe;
 		}
+
+		if (malaiseNoise.GetNoise(x, y) > -0.15f)
+		{
+			tile.TileType = (ushort)ModContent.TileType<WeakMalaise>();
+		}
 	}
 
-	private Point16 DigMazeArea(Vector2 mazeStart)
+	private Point16 DigMazeArea(Vector2 mazeStart, GenerationProgress progress)
 	{
 		float maxY = mazeStart.Y;
 		Range xRange = (Width / 2 - 5)..(Width / 2 + 5);
@@ -382,6 +475,8 @@ internal class TwinsDomain : BossDomainSubworld
 					flagsBySlots[i, j] |= flag;
 				}
 			}
+
+			progress.Set(i / (float)AreaWidth);
 		}
 
 		int exitPoint = WorldGen.genRand.Next(2, AreaWidth - 2);
@@ -626,6 +721,8 @@ internal class TwinsDomain : BossDomainSubworld
 
 	public override void Update()
 	{
+		Wiring.UpdateMech();
+		
 		if (!BossSpawned)
 		{
 			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
