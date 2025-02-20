@@ -476,7 +476,7 @@ internal class TwinsDomain : BossDomainSubworld
 				}
 			}
 
-			progress.Set(i / (float)AreaWidth);
+			progress.Set(i / (AreaWidth - 1f));
 		}
 
 		int exitPoint = WorldGen.genRand.Next(2, AreaWidth - 2);
