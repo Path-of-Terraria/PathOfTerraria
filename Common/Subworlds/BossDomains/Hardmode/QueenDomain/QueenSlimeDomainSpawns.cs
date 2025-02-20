@@ -34,6 +34,11 @@ internal class QueenSlimeDomainSpawns : GlobalNPC
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
 	{
+		if (SubworldSystem.Current is not QueenSlimeDomain)
+		{
+			return;
+		}
+
 		spawnRate = (int)(spawnRate * 0.8f);
 		maxSpawns += 2;
 	}
