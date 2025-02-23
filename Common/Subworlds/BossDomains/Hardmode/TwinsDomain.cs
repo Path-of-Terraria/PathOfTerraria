@@ -2,9 +2,10 @@
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
-using Terraria.GameContent.NetModules;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
@@ -14,6 +15,9 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class TwinsDomain : BossDomainSubworld
 {
+	public const int MazeWidth = 11;
+	public const int MazeHeight = 7;
+
 	public override int Width => 900;
 	public override int Height => 1500;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
@@ -157,6 +161,7 @@ internal class TwinsDomain : BossDomainSubworld
 
 		HashSet<OpenFlags> directions = [];
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		void AddIfTrue(OpenFlags flag)
 		{
 			if (flags.HasFlag(flag))
@@ -195,7 +200,7 @@ internal class TwinsDomain : BossDomainSubworld
 
 		while (!WorldGen.SolidOrSlopedTile(place.X, place.Y))
 		{
-			Tile tile = Main.tile[place];
+			Tile tile = Main.tile[place.X, place.Y];
 			tile.WallType = wall;
 			tile.BlueWire = true;
 
@@ -328,10 +333,11 @@ internal class TwinsDomain : BossDomainSubworld
 		int spawnId = Main.rand.Next(3);
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
-		Vector2 mazeStart = DigCorruptionTunnels(StructureTools.GetSize("Assets/Structures/TwinsDomain/Spawn_" + spawnId));
+		HashSet<int> additionalEntrances = [];
+		Vector2 mazeStart = DigCorruptionTunnels(StructureTools.GetSize("Assets/Structures/TwinsDomain/Spawn_" + spawnId), additionalEntrances);
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Maze");
-		Point16 mazeEnd = DigMazeArea(mazeStart, progress);
+		Point16 mazeEnd = DigMazeArea(mazeStart, progress, additionalEntrances);
 
 		DigRoughTunnel(mazeEnd.ToVector2(), new(Width / 2 + WorldGen.genRand.Next(-250, 250), BlockLayer + 100),
 			new Vector2(Width / 2 + WorldGen.genRand.Next(-100, 100), BlockLayer - 10), dirtNoise, null, 0.5f);
@@ -413,25 +419,21 @@ internal class TwinsDomain : BossDomainSubworld
 		}
 	}
 
-	private Point16 DigMazeArea(Vector2 mazeStart, GenerationProgress progress)
+	private Point16 DigMazeArea(Vector2 mazeStart, GenerationProgress progress, HashSet<int> additionalEntrances)
 	{
 		float maxY = mazeStart.Y;
 		Range xRange = (Width / 2 - 5)..(Width / 2 + 5);
 		Dictionary<Point16, bool> SideByPosition = [];
 
-		const int AreaWidth = 11;
-		const int AreaHeight = 7;
-
 		HashSet<Point16> mazePoints = [];
-		var positionBySlots = new Point16[AreaWidth, AreaHeight];
-		var flagsBySlots = new OpenFlags[AreaWidth, AreaHeight];
+		var positionBySlots = new Point16[MazeWidth, MazeHeight];
+		var flagsBySlots = new OpenFlags[MazeWidth, MazeHeight];
 
-		for (int i = 0; i < AreaWidth; ++i)
+		for (int i = 0; i < MazeWidth; ++i)
 		{
-			for (int j = 0; j < AreaHeight; ++j)
+			for (int j = 0; j < MazeHeight; ++j)
 			{
-				int x = (int)MathHelper.Lerp(80, Width - 80, i / (float)(AreaWidth - 1));
-				int y = (int)MathHelper.Lerp(DirtLayerEnd + 40, MetalLayerEnd - 40, j / (float)(AreaHeight - 1));
+				GetPositionOfMazeFromCell(i, j, out int x, out int y);
 
 				mazePoints.Add(new(x, y));
 				positionBySlots[i, j] = new Point16(x, y + WorldGen.genRand.Next(-3, 4));
@@ -454,7 +456,7 @@ internal class TwinsDomain : BossDomainSubworld
 						continue;
 					}
 
-					if (j == AreaHeight - 1 && flag == OpenFlags.Below)
+					if (j == MazeHeight - 1 && flag == OpenFlags.Below)
 					{
 						k--;
 						continue;
@@ -466,7 +468,7 @@ internal class TwinsDomain : BossDomainSubworld
 						continue;
 					}
 
-					if (i == AreaWidth - 1 && flag == OpenFlags.Right)
+					if (i == MazeWidth - 1 && flag == OpenFlags.Right)
 					{
 						k--;
 						continue;
@@ -476,18 +478,23 @@ internal class TwinsDomain : BossDomainSubworld
 				}
 			}
 
-			progress.Set(i / (AreaWidth - 1f));
+			progress.Set(i / (MazeWidth - 1f));
 		}
 
-		int exitPoint = WorldGen.genRand.Next(2, AreaWidth - 2);
+		int exitPoint = WorldGen.genRand.Next(2, MazeWidth - 2);
 		flagsBySlots[exitPoint, 0] |= OpenFlags.Above;
-		flagsBySlots[AreaWidth / 2, AreaHeight - 1] |= OpenFlags.Below;
+		flagsBySlots[MazeWidth / 2, MazeHeight - 1] |= OpenFlags.Below;
 
-		ForcePath(new Point16(AreaWidth / 2, AreaHeight - 1), new Point16(exitPoint, 0), AreaWidth, AreaHeight, flagsBySlots);
-
-		for (int i = 0; i < AreaWidth; ++i)
+		foreach (int xPosition in additionalEntrances)
 		{
-			for (int j = 0; j < AreaHeight; ++j)
+			flagsBySlots[xPosition, MazeHeight - 1] |= OpenFlags.Below;
+		}
+
+		ForcePath(new Point16(MazeWidth / 2, MazeHeight - 1), new Point16(exitPoint, 0), MazeWidth, MazeHeight, flagsBySlots);
+
+		for (int i = 0; i < MazeWidth; ++i)
+		{
+			for (int j = 0; j < MazeHeight; ++j)
 			{
 				DigMazeConnector(i, j, positionBySlots, flagsBySlots, exitPoint);
 			}
@@ -495,6 +502,12 @@ internal class TwinsDomain : BossDomainSubworld
 
 		Point16 endStart = positionBySlots[exitPoint, 0];
 		return new(endStart.X, endStart.Y - 100);
+	}
+
+	private void GetPositionOfMazeFromCell(int i, int j, out int x, out int y)
+	{
+		x = (int)MathHelper.Lerp(80, Width - 80, i / (float)(MazeWidth - 1));
+		y = (int)MathHelper.Lerp(DirtLayerEnd + 40, MetalLayerEnd - 40, j / (float)(MazeHeight - 1));
 	}
 
 	private static void ForcePath(Point16 start, Point16 end, int width, int height, OpenFlags[,] flagsBySlots)
@@ -600,7 +613,7 @@ internal class TwinsDomain : BossDomainSubworld
 			}
 		}
 
-		if (connections.HasFlag(OpenFlags.Below) && (j < positionBySlots.GetLength(1) - 1 || i == width / 2))
+		if (connections.HasFlag(OpenFlags.Below) && j < positionBySlots.GetLength(1))
 		{
 			int belowY = j == positionBySlots.GetLength(1) - 1 ? position.Y + 60 : positionBySlots[i, j + 1].Y + 6;
 
@@ -636,7 +649,7 @@ internal class TwinsDomain : BossDomainSubworld
 		}
 	}
 
-	private Vector2 DigCorruptionTunnels(Point16 spawnSize)
+	private Vector2 DigCorruptionTunnels(Point16 spawnSize, HashSet<int> additionalEntrances)
 	{
 		Vector2 start = new(Main.spawnTileX, Main.spawnTileY - spawnSize.Y / 2);
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
@@ -656,6 +669,18 @@ internal class TwinsDomain : BossDomainSubworld
 			ends.Add(end);
 		}
 
+		while (additionalEntrances.Count < 2)
+		{
+			int random = WorldGen.genRand.Next(MazeWidth);
+
+			while (additionalEntrances.Contains(random) || random == MazeWidth / 2)
+			{
+				random = WorldGen.genRand.Next(MazeWidth);
+			}
+
+			additionalEntrances.Add(random);
+		}
+
 		for (int i = 0; i < ends.Count; ++i) 
 		{
 			Vector2 newStart = ends[i];
@@ -668,6 +693,13 @@ internal class TwinsDomain : BossDomainSubworld
 			{
 				mid = Vector2.Lerp(newStart, end, WorldGen.genRand.NextFloat(0.45f, 0.55f));
 				end = Main.rand.Next(ends);
+			}
+
+			if (i > ends.Count - 1 - additionalEntrances.Count)
+			{
+				int index = i - (ends.Count - 1 - additionalEntrances.Count) - 1;
+				GetPositionOfMazeFromCell(additionalEntrances.ElementAt(index), MazeHeight - 1, out int x, out int y);
+				end = new Vector2(x, y + 60);
 			}
 
 			DigRoughTunnel(newStart, mid, end, noise);
@@ -757,7 +789,7 @@ internal class TwinsDomain : BossDomainSubworld
 				ExitSpawned = true;
 
 				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				//Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+				Projectile.NewProjectile(src, new Vector2(Width / 2, BlockLayer - 20).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 			}
 		}
 	}
