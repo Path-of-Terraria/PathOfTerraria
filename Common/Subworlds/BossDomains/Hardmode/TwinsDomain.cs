@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using System.Collections.Generic;
 using System.Linq;
@@ -74,6 +75,8 @@ internal class TwinsDomain : BossDomainSubworld
 		{
 			DecorateGrass(grass.Key, grass.Value);
 		}
+
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingMetals");
 
 		foreach (KeyValuePair<Point16, OpenFlags> metal in metals)
 		{
@@ -230,6 +233,15 @@ internal class TwinsDomain : BossDomainSubworld
 				int styleRange = id == 0 ? 8 : 23;
 
 				WorldGen.PlaceTile(position.X, position.Y - 1, type, style: WorldGen.genRand.Next(styleRange));
+			}
+			else if (WorldGen.genRand.NextBool(10) && position.Y < DirtLayerEnd)
+			{
+				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Saplings);
+
+				if (!WorldGen.GrowTree(position.X, position.Y - 1))
+				{
+					WorldGen.KillTile(position.X, position.Y - 1);
+				}
 			}
 		}
 
@@ -544,7 +556,12 @@ internal class TwinsDomain : BossDomainSubworld
 
 			if (current == new Point(end.X, end.Y + 1) || current == new Point(end.X + 1, end.Y) || current == new Point(end.X - 1, end.Y))
 			{
-				newPos = new Point(end.X, end.Y);
+				break;
+			}
+
+			if (newPos == end.ToPoint())
+			{
+				break;
 			}
 
 			if (OutsideOfBounds(newPos.X, newPos.Y) || takenIndexes.ContainsKey(newPos))
@@ -565,7 +582,7 @@ internal class TwinsDomain : BossDomainSubworld
 
 		bool OutsideOfBounds(int x, int y)
 		{
-			return x < 0 || y < 0 || x >= width || y >= height;
+			return x < 0 || y < 0 || x >= width - 1 || y >= height - 1;
 		}
 
 		bool AllSurroundsInvalid(int x, int y)
@@ -784,7 +801,7 @@ internal class TwinsDomain : BossDomainSubworld
 		}
 		else
 		{
-			if (!NPC.AnyNPCs(NPCID.QueenSlimeBoss) && !ExitSpawned)
+			if (!NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.Retinazer) && !ExitSpawned)
 			{
 				ExitSpawned = true;
 
