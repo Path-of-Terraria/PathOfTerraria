@@ -7,8 +7,8 @@ public class AncientLeadBrickItem : ModItem
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<AncientLeadBrick>());
-		Item.width = 60;
-		Item.height = 38;
+		Item.width = 16;
+		Item.height = 16;
 		Item.value = 0;
 	}
 }

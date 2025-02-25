@@ -2,6 +2,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Experience;
 using SubworldLibrary;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 
@@ -13,7 +14,7 @@ public class MobExperienceGlobalNPC : GlobalNPC
 	/// <param name="npc"></param>
 	public override void OnKill(NPC npc)
 	{
-		if (npc.friendly || npc.CountsAsACritter)
+		if (npc.friendly || npc.CountsAsACritter || !npc.AnyInteractions() || NPCID.Sets.ProjectileNPC[npc.type])
 		{
 			return;
 		}

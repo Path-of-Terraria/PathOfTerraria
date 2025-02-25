@@ -997,3 +997,8 @@ TwinsMap: {
 	DisplayName: Twins Map
 	Tooltip: ""
 }
+
+MechLampItem: {
+	DisplayName: Mech Lamp Item
+	Tooltip: ""
+}

@@ -3,7 +3,7 @@ using ReLogic.Content;
 using Terraria.ID;
 using Terraria.ObjectData;
 
-namespace PathOfTerraria.Content.Tiles.BossDomain;
+namespace PathOfTerraria.Content.Tiles.BossDomain.Mech;
 
 internal class MechDecor1x1 : ModTile
 {
@@ -20,6 +20,7 @@ internal class MechDecor1x1 : ModTile
 		TileObjectData.newTile.CoordinateHeights = [18];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 8;
+		TileObjectData.newTile.AnchorBottom = new(TileObjectData.newTile.AnchorBottom.type | Terraria.Enums.AnchorType.PlatformNonHammered, 1, 0);
 		TileObjectData.addTile(Type);
 
 		DustType = DustID.Iron;

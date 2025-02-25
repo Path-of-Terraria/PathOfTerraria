@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -29,6 +30,7 @@ internal class TwinsDomain : BossDomainSubworld
 	internal static int DirtLayerEnd => 400;
 	internal static int MetalLayerEnd => 910;
 	internal static int MetalLayerTransEnd => MetalLayerEnd + 20;
+	internal static int GateLayer => 410;
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
@@ -42,6 +44,9 @@ internal class TwinsDomain : BossDomainSubworld
 		Dictionary<Point16, OpenFlags> grasses = [];
 		Dictionary<Point16, OpenFlags> metals = [];
 
+		FastNoiseLite noise = new();
+		noise.SetFrequency(0.2f);
+
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
@@ -49,6 +54,13 @@ internal class TwinsDomain : BossDomainSubworld
 			for (int j = 2; j < Main.maxTilesY - 2; ++j)
 			{
 				Tile tile = Main.tile[i, j];
+
+				if (tile.TileType == TileID.Ebonstone)
+				{
+					TryPlaceEbonsand(i, j, noise);
+					continue;
+				}
+
 				OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
 
 				if (!tile.HasTile || flags == OpenFlags.None)
@@ -82,25 +94,77 @@ internal class TwinsDomain : BossDomainSubworld
 		{
 			DecorateMetals(metal.Key, metal.Value);
 		}
+
+		PlaceButtons();
 	}
 
-	private static void DecorateMetals(Point16 position, OpenFlags flags)
+	private static void TryPlaceEbonsand(int i, int j, FastNoiseLite noise)
+	{
+		bool canSand = Main.tile[i, j + 1].HasTile;
+
+		if (!canSand || !WorldGen.InWorld(i, j, 20))
+		{
+			return;
+		}
+
+		int height = 6 + (int)(noise.GetNoise(i, j) * 3);
+
+		for (int y = j; y > j - height; --y)
+		{
+			if (!WorldGen.SolidOrSlopedTile(i, y))
+			{
+				Tile tile = Main.tile[i, j];
+				tile.TileType = TileID.Ebonsand;
+				return;
+			}
+		}
+	}
+
+	private void PlaceButtons()
+	{
+		int count = 0;
+		List<Vector2> positions = [];
+		int type = ModContent.TileType<MechButton>();
+
+		while (count < 4)
+		{
+			int x = WorldGen.genRand.Next(10, Width - 10);
+			int y = WorldGen.genRand.Next(DirtLayerEnd + 20, MetalLayerEnd);
+
+			if (WorldGen.PlaceObject(x, y, type, true) && Main.tile[x, y].TileType == type && Main.tile[x, y].HasTile 
+				&& !positions.Any(other => other.DistanceSQ(new Vector2(x, y)) < 200 * 200))
+			{
+				count++;
+
+				positions.Add(new Vector2(x, y));
+
+				while (y >= GateLayer)
+				{
+					Tile tile = Main.tile[x, y];
+					tile.GreenWire = true;
+
+					y--;
+				}
+			}
+		}
+	}
+
+	private static void DecorateMetals(Point16 position, OpenFlags flags, bool fromPlatform = false)
 	{
 		if (!Main.tile[position].HasTile)
 		{
 			return;
 		}
 
-		if (WorldGen.genRand.NextBool(150) && position.X > 10 && position.X < Main.maxTilesX - 10)
+		if (WorldGen.genRand.NextBool(150) && position.X > 10 && position.X < Main.maxTilesX - 10 && !fromPlatform)
 		{
 			PlaceGemsparkWall(position, flags);
 		}
 
 		if (flags.HasFlag(OpenFlags.Above))
 		{
-			if (WorldGen.genRand.NextBool(4))
+			if (WorldGen.genRand.NextBool(5))
 			{
-				//int id = WorldGen.genRand.Next(15);
 				int type = ModContent.TileType<MechDecor1x1>();
 				int styleRange = 8;
 
@@ -110,7 +174,26 @@ internal class TwinsDomain : BossDomainSubworld
 					styleRange = 4;
 				}
 
-				WorldGen.PlaceTile(position.X, position.Y - 1, type, style: WorldGen.genRand.Next(styleRange));
+				WorldGen.PlaceObject(position.X, position.Y - 1, type, style: WorldGen.genRand.Next(styleRange));
+			}
+			else if (WorldGen.genRand.NextBool(250) && !fromPlatform)
+			{
+				WorldGen.PlaceObject(position.X, position.Y - 3, ModContent.TileType<MechLamp>());
+
+				for (int i = -1; i < 11; ++i)
+				{
+					Tile tile = Main.tile[position.X, position.Y + i];
+					tile.YellowWire = true;
+				}
+
+				Point16 timerPos = new(position.X, position.Y + 10);
+				Tile timer = Main.tile[timerPos];
+				timer.TileType = TileID.Timers;
+				timer.TileFrameX = 0;
+				timer.TileFrameY = 18;
+				timer.HasTile = true;
+
+				ModContent.GetInstance<RoomDatabase>().AddTimerInfo(new EngageTimerInfo(timerPos, WorldGen.genRand.Next(600)));
 			}
 		}
 
@@ -119,21 +202,29 @@ internal class TwinsDomain : BossDomainSubworld
 			if (WorldGen.genRand.NextBool(20))
 			{
 				int count = WorldGen.genRand.Next(6, 12) + 1;
+				int start = Main.tile[position].TileType == ModContent.TileType<MechPlatform>() ? -1 : 1;
 
-				for (int i = 1; i < count; ++i)
+				for (int i = start; i < count; ++i)
 				{
 					Tile tile = Main.tile[position.X, position.Y + i];
 
 					if (tile.HasTile)
 					{
-						break;
+						if (i == 0)
+						{
+							continue;
+						}
+						else
+						{
+							break;
+						}
 					}
 
 					tile.TileType = TileID.Chain;
 					tile.HasTile = true;
 				}
 			}
-			else if (WorldGen.genRand.NextBool(400))
+			else if (WorldGen.genRand.NextBool(350) && !fromPlatform)
 			{
 				WorldGen.PlaceObject(position.X, position.Y + 1, TileID.HangingLanterns);
 
@@ -150,8 +241,46 @@ internal class TwinsDomain : BossDomainSubworld
 				timer.TileFrameY = 18;
 				timer.HasTile = true;
 
-				ModContent.GetInstance<RoomDatabase>().AddTimerInfo(new EngageTimerInfo(timerPos, WorldGen.genRand.Next(300)));
+				ModContent.GetInstance<RoomDatabase>().AddTimerInfo(new EngageTimerInfo(timerPos, WorldGen.genRand.Next(600)));
 			}
+		}
+
+		if (fromPlatform)
+		{
+			return;
+		}
+
+		if ((flags.HasFlag(OpenFlags.Left) || flags.HasFlag(OpenFlags.Right)) && position.X > 20 && position.X < Main.maxTilesX - 20 
+			&& WorldGen.genRand.NextBool(10) && position.Y % 3 == 0)
+		{
+			bool left = true;
+
+			if (flags.HasFlag(OpenFlags.Right) && flags.HasFlag(OpenFlags.Left))
+			{
+				left = WorldGen.genRand.NextBool(2);
+			}
+			else if (flags.HasFlag(OpenFlags.Right))
+			{
+				left = false;
+			}
+
+			PlacePlatforms(position.X, position.Y, left);
+		}
+	}
+
+	private static void PlacePlatforms(short x, short y, bool left)
+	{
+		int len = WorldGen.genRand.Next(5, 11);
+
+		for (int i = 1; i < len; ++i)
+		{
+			int realX = x + i * (left ? -1 : 1);
+			Tile tile = Main.tile[realX, y];
+			tile.TileType = (ushort)ModContent.TileType<MechPlatform>();
+			tile.HasTile = true;
+
+			WorldGen.TileFrame(realX, y);
+			DecorateMetals(new Point16(realX, y), OpenFlags.Above | OpenFlags.Below, true);
 		}
 	}
 
@@ -322,11 +451,12 @@ internal class TwinsDomain : BossDomainSubworld
 					}
 					else
 					{
-						tile.TileType = TileID.Dirt;
+						bool isStone = dirtNoise.GetNoise(i, j) > 0.2f && j > BlockLayer + 15;
+						tile.TileType = isStone ? TileID.Ebonstone : TileID.Dirt;
 
 						if (j > BlockLayer + 2)
 						{
-							tile.WallType = WallID.DirtUnsafe;
+							tile.WallType = isStone ? WallID.EbonstoneUnsafe : WallID.DirtUnsafe;
 						}
 					}
 				}
@@ -351,8 +481,23 @@ internal class TwinsDomain : BossDomainSubworld
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Maze");
 		Point16 mazeEnd = DigMazeArea(mazeStart, progress, additionalEntrances);
 
-		DigRoughTunnel(mazeEnd.ToVector2(), new(Width / 2 + WorldGen.genRand.Next(-250, 250), BlockLayer + 100),
-			new Vector2(Width / 2 + WorldGen.genRand.Next(-100, 100), BlockLayer - 10), dirtNoise, null, 0.5f);
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			Tile tile = Main.tile[i, GateLayer];
+			tile.GreenWire = true;
+			
+			if (!tile.HasTile)
+			{
+				tile.TileType = (ushort)ModContent.TileType<MechGate>();
+				tile.HasTile = true;
+			}
+		}
+
+		for (int i = 0; i < 4; ++i)
+		{
+			DigRoughTunnel(mazeEnd.ToVector2(), new(Width / 2 + WorldGen.genRand.Next(-250, 250), BlockLayer + 100),
+				new Vector2(Width / 2 + WorldGen.genRand.Next(-100, 100), BlockLayer - 40), dirtNoise, null, 0.5f);
+		}
 
 		StructureTools.PlaceByOrigin("Assets/Structures/TwinsDomain/Spawn_" + spawnId, new(Main.spawnTileX, Main.spawnTileY), new Vector2(0.5f));
 	}
@@ -382,7 +527,7 @@ internal class TwinsDomain : BossDomainSubworld
 	{
 		Tile tile = Main.tile[i, j];
 		tile.TileType = TileID.TinPlating;
-		tile.WallType = WallID.TinPlating;
+		tile.WallType = (ushort)ModContent.WallType<TinPlatingUnsafe>();
 		tile.TileColor = PaintID.GrayPaint;
 		tile.WallColor = PaintID.GrayPaint;
 
@@ -392,17 +537,17 @@ internal class TwinsDomain : BossDomainSubworld
 
 			(ushort type, ushort wall) = typeNoise switch
 			{
-				0 => (TileID.TinBrick, WallID.TinBrick),
-				1 => (TileID.IronBrick, WallID.IronBrick),
-				2 => (TileID.SilverBrick, WallID.SilverBrick),
-				_ => (TileID.PlatinumBrick, WallID.PlatinumBrick),
+				0 => (TileID.TinBrick, (ushort)ModContent.WallType<TinBrickUnsafe>()),
+				1 => (TileID.IronBrick, (ushort)ModContent.WallType<IronBrickUnsafe>()),
+				2 => (TileID.SilverBrick, (ushort)ModContent.WallType<SilverBrickUnsafe>()),
+				_ => (TileID.PlatinumBrick, (ushort)ModContent.WallType<PlatinumBrickUnsafe>()),
 			};
 
 			tile.TileType = type;
 			tile.WallType = wall;
 			tile.TileColor = PaintID.None;
 
-			if (wall is not WallID.PlatinumBrick and not WallID.TinBrick)
+			if (wall != ModContent.WallType<PlatinumBrickUnsafe>() && wall != ModContent.WallType<TinBrickUnsafe>())
 			{
 				tile.WallColor = PaintID.None;
 			}
@@ -686,7 +831,7 @@ internal class TwinsDomain : BossDomainSubworld
 			ends.Add(end);
 		}
 
-		while (additionalEntrances.Count < 2)
+		while (additionalEntrances.Count < 3)
 		{
 			int random = WorldGen.genRand.Next(MazeWidth);
 
@@ -806,7 +951,7 @@ internal class TwinsDomain : BossDomainSubworld
 				ExitSpawned = true;
 
 				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Projectile.NewProjectile(src, new Vector2(Width / 2, BlockLayer - 20).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+				Projectile.NewProjectile(src, new Vector2(Width / 2, BlockLayer - 16).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 			}
 		}
 	}
