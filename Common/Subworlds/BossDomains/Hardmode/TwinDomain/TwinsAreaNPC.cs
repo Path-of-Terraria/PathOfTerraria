@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.MappingAreas;
-using PathOfTerraria.Content.NPCs.Mapping.Forest;
+﻿using PathOfTerraria.Content.NPCs.BossDomain.Mech;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -22,6 +21,8 @@ internal class TwinsAreaNPC : GlobalNPC
 		if (plrY > TwinsDomain.DirtLayerEnd && plrY < TwinsDomain.MetalLayerEnd)
 		{
 			pool[NPCID.Probe] = 0.4f;
+			pool[ModContent.NPCType<Sawblade>()] = 0.3f;
+			pool[ModContent.NPCType<CircuitSkull>()] = 0.6f;
 		}
 		else if (plrY >= TwinsDomain.MetalLayerEnd)
 		{

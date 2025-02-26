@@ -47,7 +47,12 @@ TooltipNotices: {
 
 Biomes: {
 	RavencrestBiome: {
-		DisplayName: Ravencrest Biome
-		TownNPCDialogueName: the Ravencrest Biome
+		DisplayName: Ravencrest
+		TownNPCDialogueName: Ravencrest
+	}
+
+	MechBiome: {
+		DisplayName: Mechanisms
+		TownNPCDialogueName: the Mechanisms
 	}
 }

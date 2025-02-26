@@ -1,14 +1,44 @@
-﻿using Terraria.ID;
+﻿using NPCUtils;
+using PathOfTerraria.Content.Scenes;
+using Terraria.GameContent.Bestiary;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.Mech;
 
 internal class Sawblade : ModNPC
 {
+	public override void Load()
+	{
+		On_NPC.UpdateCollision += ChangeNPCTypeCollision;
+	}
+
+	private void ChangeNPCTypeCollision(On_NPC.orig_UpdateCollision orig, NPC self)
+	{
+		int oldType = self.type;
+
+		if (self.type == ModContent.NPCType<Sawblade>())
+		{
+			self.type = NPCID.BlazingWheel;
+		}
+
+		orig(self);
+
+		self.type = oldType;
+	}
+
 	public override void SetDefaults()
 	{
 		NPC.CloneDefaults(NPCID.BlazingWheel);
 		NPC.Opacity = 1;
 		NPC.Size = new Vector2(40);
+
+		AIType = NPCID.BlazingWheel;
+		SpawnModBiomes = [ModContent.GetInstance<MechBiome>().Type];
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "");
 	}
 
 	public override bool PreAI()

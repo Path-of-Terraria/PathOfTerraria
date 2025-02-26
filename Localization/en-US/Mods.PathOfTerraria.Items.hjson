@@ -1002,3 +1002,5 @@ MechLampItem: {
 	DisplayName: Mech Lamp Item
 	Tooltip: ""
 }
+
+CircuitSkullBannerItem.DisplayName: Circuit Skull Banner Item

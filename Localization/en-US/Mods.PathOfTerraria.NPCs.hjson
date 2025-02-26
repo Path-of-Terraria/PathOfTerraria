@@ -609,4 +609,12 @@ CanopyBird: {
 	Entry: A bird of prey with an unusual size, the Canopy Crow seeks to keep any and all creatures off of the great canopy it resides on. They are small, but surprisingly durable, and most of all, innumerable.
 }
 
-Sawblade.DisplayName: Sawblade
+Sawblade: {
+	DisplayName: Motorized Sawblade
+	Entry: As a great machinist once said; "Simplicity is key". Sawblade spins, and if touched, sawblade hurts you. It's refreshing, really.
+}
+
+CircuitSkull: {
+	DisplayName: Circuit Skull
+	Entry: A bizzare form of defense, the Circuit Skull dances around the empty halls of creation. Why does it do so? Couldn't it jump more efficiently? At the end of the day, these are unknown questions.
+}

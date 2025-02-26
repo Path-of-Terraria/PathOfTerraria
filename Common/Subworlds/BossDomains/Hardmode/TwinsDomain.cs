@@ -126,10 +126,10 @@ internal class TwinsDomain : BossDomainSubworld
 		List<Vector2> positions = [];
 		int type = ModContent.TileType<MechButton>();
 
-		while (count < 4)
+		while (count < 3)
 		{
 			int x = WorldGen.genRand.Next(10, Width - 10);
-			int y = WorldGen.genRand.Next(DirtLayerEnd + 20, MetalLayerEnd);
+			int y = WorldGen.genRand.Next(DirtLayerEnd + 20, MetalLayerEnd - 40);
 
 			if (WorldGen.PlaceObject(x, y, type, true) && Main.tile[x, y].TileType == type && Main.tile[x, y].HasTile 
 				&& !positions.Any(other => other.DistanceSQ(new Vector2(x, y)) < 200 * 200))
@@ -145,6 +145,10 @@ internal class TwinsDomain : BossDomainSubworld
 
 					y--;
 				}
+			}
+			else if (Main.tile[x, y].TileType == type && Main.tile[x, y].HasTile)
+			{
+				WorldGen.KillTile(x, y);
 			}
 		}
 	}
@@ -251,7 +255,7 @@ internal class TwinsDomain : BossDomainSubworld
 		}
 
 		if ((flags.HasFlag(OpenFlags.Left) || flags.HasFlag(OpenFlags.Right)) && position.X > 20 && position.X < Main.maxTilesX - 20 
-			&& WorldGen.genRand.NextBool(10) && position.Y % 3 == 0)
+			&& WorldGen.genRand.NextBool(10) && position.Y % 3 == 0 && position.Y < MetalLayerEnd)
 		{
 			bool left = true;
 
@@ -279,7 +283,7 @@ internal class TwinsDomain : BossDomainSubworld
 			tile.TileType = (ushort)ModContent.TileType<MechPlatform>();
 			tile.HasTile = true;
 
-			WorldGen.TileFrame(realX, y);
+			WorldGen.TileFrame(realX, y, true, true);
 			DecorateMetals(new Point16(realX, y), OpenFlags.Above | OpenFlags.Below, true);
 		}
 	}
@@ -395,6 +399,8 @@ internal class TwinsDomain : BossDomainSubworld
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Start(1);
+
 		FastNoiseLite malaiseNoise = new(WorldGen._genRandSeed);
 		malaiseNoise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
 		malaiseNoise.SetFrequency(0.04f);
@@ -916,7 +922,7 @@ internal class TwinsDomain : BossDomainSubworld
 	public override void Update()
 	{
 		Wiring.UpdateMech();
-		
+
 		if (!BossSpawned)
 		{
 			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;

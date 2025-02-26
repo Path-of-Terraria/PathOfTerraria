@@ -17,6 +17,7 @@ internal class MechButton : ModTile
 		TileObjectData.newTile.Width = 3;
 		TileObjectData.newTile.CoordinateHeights = [18];
 		TileObjectData.newTile.StyleHorizontal = true;
+		TileObjectData.newTile.Origin = new Point16(1, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(Terraria.Enums.AnchorType.SolidTile | Terraria.Enums.AnchorType.SolidWithTop, 3, 0);
 		TileObjectData.addTile(Type);
 
