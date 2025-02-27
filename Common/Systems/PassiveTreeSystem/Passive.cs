@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Data.Models;
-using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Utilities;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 
-namespace PathOfTerraria.Common.Systems.TreeSystem;
+namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
 internal class PassiveLoader : ILoadable
 {
@@ -43,10 +42,12 @@ public abstract class Passive
 	/// <summary>
 	/// Tooltip to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
 	/// </summary>
-	public virtual string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.Passives." + InternalIdentifier + ".Tooltip");
+	public virtual string DisplayTooltip => 
+		string.Format(Language.GetTextValue($"Mods.PathOfTerraria.Passives.{InternalIdentifier}.Tooltip"), Value);
 
 	public int Level;
 	public int MaxLevel;
+	public int Value;
 
 	private Vector2 _size;
 	
@@ -109,6 +110,7 @@ public abstract class Passive
 		p.TreePos = new Vector2(data.Position.X, data.Position.Y);
 		p.MaxLevel = data.MaxLevel;
 		p.ReferenceId = data.ReferenceId;
+		p.Value = data.Value;
 
 		return p;
 	}

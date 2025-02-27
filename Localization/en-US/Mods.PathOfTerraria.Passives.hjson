@@ -2,6 +2,7 @@
 # Name:
 # Tooltip:
 # You do not need to generate these yourself, run the mod and it'll add the keys automatically.
+# The {0} is the value of the passive
 
 IncreasedMeleeDamagePassive: {
 	Name: Martial Mastery
@@ -150,15 +151,15 @@ IncreasedBlockChancePassive: {
 
 AddedIntelligencePassive: {
 	Name: Highly Studied
-	Tooltip: Adds +10 points to intelligence per level.
+	Tooltip: Adds +{0} points to intelligence per level.
 }
 
 AddedStrengthPassive: {
 	Name: Tough Workout
-	Tooltip: Adds +10 points to strength per level.
+	Tooltip: Adds +{0} points to strength per level.
 }
 
 AddedDexterityPassive: {
 	Name: Nimble Feet
-	Tooltip: Adds +10 points to dexterity per level.
+	Tooltip: Adds +{0} points to dexterity per level.
 }
