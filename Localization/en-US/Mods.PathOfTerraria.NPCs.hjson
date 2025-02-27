@@ -618,3 +618,13 @@ CircuitSkull: {
 	DisplayName: Circuit Skull
 	Entry: A bizzare form of defense, the Circuit Skull dances around the empty halls of creation. Why does it do so? Couldn't it jump more efficiently? At the end of the day, these are unknown questions.
 }
+
+SecurityDrone: {
+	DisplayName: Security Drone
+	Entry: Like their sister machine the Probe, Security Drones are designed to peruse the large, empty space of the Mechanisms. They always gun for their target directly and forcefully.
+}
+
+Grabber: {
+	DisplayName: Autoclamp
+	Entry: The most bizarre of the Mechanism's security protocols, the Autoclamp doesn't do much damage.
+}

@@ -20,9 +20,10 @@ internal class TwinsAreaNPC : GlobalNPC
 
 		if (plrY > TwinsDomain.DirtLayerEnd && plrY < TwinsDomain.MetalLayerEnd)
 		{
-			pool[NPCID.Probe] = 0.4f;
+			pool[NPCID.Probe] = 0.2f;
 			pool[ModContent.NPCType<Sawblade>()] = 0.3f;
 			pool[ModContent.NPCType<CircuitSkull>()] = 0.6f;
+			pool[ModContent.NPCType<SecurityDrone>()] = 0.8f;
 		}
 		else if (plrY >= TwinsDomain.MetalLayerEnd)
 		{

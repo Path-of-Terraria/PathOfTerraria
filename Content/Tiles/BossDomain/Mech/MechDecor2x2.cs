@@ -13,7 +13,6 @@ internal class MechDecor2x2 : ModTile
 	{
 		Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
 
-		Main.tileCut[Type] = true;
 		Main.tileFrameImportant[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);

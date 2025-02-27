@@ -1,4 +1,6 @@
 ﻿using NPCUtils;
+using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Content.Scenes;
 using ReLogic.Content;
@@ -36,6 +38,18 @@ internal class CircuitSkull : ModNPC
 		NPC.scale = 1;
 
 		SpawnModBiomes = [ModContent.GetInstance<MechBiome>().Type];
+
+		NPC.TryEnableComponent<NPCHitEffects>(c =>
+		{
+			c.AddDust(new(DustID.MinecartSpark, 6, null, static x => x.scale = 10));
+			c.AddDust(new(DustID.MinecartSpark, 20, NPCHitEffects.OnDeath, static x => x.scale = 10));
+
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(GoreID.Smoke1, 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(GoreID.Smoke2, 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(GoreID.Smoke3, 1, NPCHitEffects.OnDeath));
+		});
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

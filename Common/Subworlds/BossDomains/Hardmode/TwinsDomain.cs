@@ -25,6 +25,7 @@ internal class TwinsDomain : BossDomainSubworld
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
 	internal static Point16 CircleCenter = Point16.Zero;
+	public override int[] WhitelistedMiningTiles => [ModContent.TileType<GrabberAnchor>()];
 
 	internal static int BlockLayer => 200;
 	internal static int DirtLayerEnd => 400;
@@ -96,6 +97,16 @@ internal class TwinsDomain : BossDomainSubworld
 		}
 
 		PlaceButtons();
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				WorldGen.TileFrame(i, j, true);
+			}
+
+			progress.Value = (float)i / Main.maxTilesX;
+		}
 	}
 
 	private static void TryPlaceEbonsand(int i, int j, FastNoiseLite noise)
@@ -149,6 +160,26 @@ internal class TwinsDomain : BossDomainSubworld
 			else if (Main.tile[x, y].TileType == type && Main.tile[x, y].HasTile)
 			{
 				WorldGen.KillTile(x, y);
+			}
+		}
+
+		count = 0;
+		positions.Clear();
+		type = ModContent.TileType<GrabberAnchor>();
+
+		while (count < 9)
+		{
+			int x = WorldGen.genRand.Next(10, Width - 10);
+			int y = WorldGen.genRand.Next(DirtLayerEnd + 20, MetalLayerEnd - 40);
+
+			if (WorldGen.PlaceObject(x, y, type, true) && Main.tile[x, y].TileType == type && Main.tile[x, y].HasTile 
+				&& !positions.Any(other => other.DistanceSQ(new Vector2(x, y)) < 80 * 80))
+			{
+				count++;
+
+				ModContent.GetInstance<GrabberAnchor.GrabberSpawnEntity>().Place(x, y);
+
+				positions.Add(new Vector2(x, y));
 			}
 		}
 	}
@@ -282,6 +313,7 @@ internal class TwinsDomain : BossDomainSubworld
 			Tile tile = Main.tile[realX, y];
 			tile.TileType = (ushort)ModContent.TileType<MechPlatform>();
 			tile.HasTile = true;
+			tile.TileFrameY = 0;
 
 			WorldGen.TileFrame(realX, y, true, true);
 			DecorateMetals(new Point16(realX, y), OpenFlags.Above | OpenFlags.Below, true);
@@ -922,6 +954,14 @@ internal class TwinsDomain : BossDomainSubworld
 	public override void Update()
 	{
 		Wiring.UpdateMech();
+		TileEntity.UpdateStart();
+
+		foreach (TileEntity te in TileEntity.ByID.Values)
+		{
+			te.Update();
+		}
+
+		TileEntity.UpdateEnd();
 
 		if (!BossSpawned)
 		{

@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using SubworldLibrary;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Scenes;
 

@@ -166,7 +166,7 @@ public sealed class NPCHitEffects : NPCComponent
 
 	public override void HitEffect(NPC npc, NPC.HitInfo hit)
 	{
-		if (!Enabled || npc.life > 0 || Main.netMode == NetmodeID.Server)
+		if (!Enabled || Main.netMode == NetmodeID.Server)
 		{
 			return;
 		}

@@ -50,7 +50,7 @@ internal class Sawblade : ModNPC
 			NPC.ai[0] = 1f;
 		}
 
-		const int Speed = 7;
+		const float Speed = 6.5f;
 
 		if (NPC.ai[1] == 0f)
 		{
@@ -100,7 +100,8 @@ internal class Sawblade : ModNPC
 		NPC.velocity.X = Speed * NPC.direction;
 		NPC.velocity.Y = Speed * NPC.directionY;
 
-		Lighting.AddLight(NPC.Center, TorchID.Red);
+		Lighting.AddLight(NPC.Center, TorchID.Blue);
+		Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.MinecartSpark, -NPC.velocity.X, -NPC.velocity.Y, Scale: 2);
 
 		return false;
 	}

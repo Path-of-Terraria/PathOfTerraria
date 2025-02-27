@@ -1,6 +1,8 @@
 ﻿using NPCUtils;
+using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.Pathfinding;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Content.Scenes;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -9,12 +11,14 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.Mech;
 
-//[AutoloadBanner]
+[AutoloadBanner]
 internal class SecurityDrone : ModNPC
 {
 	private static Asset<Texture2D> Glow = null;
 
-	private Pathfinder _pathfinder = new(60);
+	private ref float Timer => ref NPC.ai[0];
+
+	private readonly Pathfinder _pathfinder = new(5);
 
 	public override void SetStaticDefaults()
 	{
@@ -34,6 +38,20 @@ internal class SecurityDrone : ModNPC
 		NPC.noGravity = true;
 		NPC.knockBackResist = 0;
 		NPC.scale = 1;
+		NPC.noTileCollide = true;
+
+		NPC.TryEnableComponent<NPCHitEffects>(c =>
+		{
+			c.AddDust(new(DustID.MinecartSpark, 6, null, static x => x.scale = 10));
+			c.AddDust(new(DustID.MinecartSpark, 20, NPCHitEffects.OnDeath, static x => x.scale = 10));
+
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(GoreID.Smoke1, 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(GoreID.Smoke2, 1, NPCHitEffects.OnDeath));
+			c.AddGore(new NPCHitEffects.GoreSpawnParameters(GoreID.Smoke3, 1, NPCHitEffects.OnDeath));
+		});
 
 		SpawnModBiomes = [ModContent.GetInstance<MechBiome>().Type];
 	}
@@ -51,11 +69,56 @@ internal class SecurityDrone : ModNPC
 	public override void AI()
 	{
 		NPC.TargetClosest(false);
-		Player target = Main.player[NPC.target];
+		NPC.rotation = MathHelper.Lerp(NPC.rotation, NPC.velocity.X * 0.1f, 0.2f);
 
-		if (_pathfinder.CheckDrawPath(NPC.Center.ToTileCoordinates16(), target.Center.ToTileCoordinates16()))
+		Player target = Main.player[NPC.target];
+		_pathfinder.CheckDrawPath(NPC.Center.ToTileCoordinates16(), target.Center.ToTileCoordinates16(), 
+			new Vector2(NPC.width / 16f, NPC.height / 16f - 1f), null, new(-NPC.width / 2, -10));
+
+		bool canPath = _pathfinder.HasPath && _pathfinder.Path.Count > 0;
+
+		if (canPath)
 		{
+			List<Pathfinder.FoundPoint> checkPoints = _pathfinder.Path[^(Math.Min(_pathfinder.Path.Count, 6))..];
+			Vector2 direction = -Vector2.Normalize(AveragePathDirection(checkPoints)) * 5;
+			NPC.velocity = direction;
 		}
+
+		if (Collision.CanHit(NPC, target))
+		{
+			Timer++;
+
+			if (Timer > 480)
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					int damage = ModeUtils.ProjectileDamage(30, 45, 80);
+					Vector2 vel = NPC.DirectionTo(target.Center) * 8;
+
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + vel * 7, vel, ProjectileID.PinkLaser, damage, 0, Main.myPlayer);
+				}
+
+				Timer = 0;
+			}
+			else if (Timer > 400)
+			{
+				Vector2 vel = NPC.DirectionTo(target.Center) * 28;
+				var dust = Dust.NewDustPerfect(NPC.Center, DustID.RedMoss, vel);
+				dust.noGravity = true;
+			}
+		}
+	}
+
+	private static Vector2 AveragePathDirection(List<Pathfinder.FoundPoint> foundPoints)
+	{
+		Vector2 dir = Vector2.Zero;
+
+		foreach (Pathfinder.FoundPoint point in foundPoints)
+		{
+			dir += Pathfinder.ToVector2(point.Direction);
+		}
+
+		return dir / foundPoints.Count;
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
