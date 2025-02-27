@@ -2,10 +2,12 @@ Path of Terraria is a fresh take on the world of Terraria bringing in ARPG eleme
 Find and help rebuild towns, complete quests, and explore the world of Terraria in a new way.
 
 New Content Includes
+- Global Leaderboard System
+- Global Trade System
 - Towns
 - Questing
 - Passive Tree
-- Skilling
+- Skills
 - Leveling
 - Completely new way to progress (Boss Domains)
 - Item Modifiers (Affixes)
