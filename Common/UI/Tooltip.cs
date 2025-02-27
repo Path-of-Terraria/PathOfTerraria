@@ -113,11 +113,20 @@ public class Tooltip : SmartUiState, ILoadable
 		}
 		else if (fancyTooltips.Count > 0)
 		{
+			float yOffset = 0;
+
 			for (int i = 0; i < fancyTooltips.Count; ++i)
 			{
 				DrawableTooltipLine line = fancyTooltips[i];
 
-				ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, line.Text, pos + new Vector2(0, 30 * i), line.OverrideColor ?? line.Color, 0f, Vector2.Zero, new(0.9f));
+				ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, line.Text, pos + new Vector2(0, yOffset), line.OverrideColor ?? line.Color, 0f, line.Origin, new(0.9f));
+				yOffset += 30 * line.BaseScale.Y;
+				int newLineCount = line.Text.Count(x => x == '\n');
+
+				if (newLineCount > 0)
+				{
+					yOffset += 20 * newLineCount;
+				}
 			}
 		}
 	}
