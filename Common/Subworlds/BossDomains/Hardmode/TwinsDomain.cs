@@ -36,6 +36,11 @@ internal class TwinsDomain : BossDomainSubworld
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
 
+	/// <summary>
+	/// This is used as the check for "everyone's belowground" fails in MP by default. Waiting a bit to do it fixes the issue.
+	/// </summary>
+	private int _mpDelayTimer = 0;
+
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenTerrain),
 		new PassLegacy("Decor", GenDecor)];
@@ -965,23 +970,37 @@ internal class TwinsDomain : BossDomainSubworld
 
 		if (!BossSpawned)
 		{
-			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				_mpDelayTimer = 300;
+			}
+			else if (Main.netMode == NetmodeID.Server)
+			{
+				_mpDelayTimer++;
+			}
+
+			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0 && _mpDelayTimer > 300;
 			HashSet<int> who = [];
 
-			foreach (Player player in Main.ActivePlayers)
+			if (canSpawn)
 			{
-				if (player.position.Y > BlockLayer * 16 + 200)
+				foreach (Player player in Main.ActivePlayers)
 				{
-					canSpawn = false;
-					break;
-				}
-				else
-				{
-					who.Add(player.whoAmI);
+					if (player.position.Y > BlockLayer * 16 + 200)
+					{
+						canSpawn = false;
+						break;
+					}
+					else
+					{
+						who.Add(player.whoAmI);
+
+						Mod.Logger.Debug($"I think that player {player.whoAmI} is good. His position is {player.position.Y}.");
+					}
 				}
 			}
 
-			if (canSpawn)
+			if (canSpawn && Main.CurrentFrameFlags.ActivePlayersCount > 0 && who.Count > 0)
 			{
 				int plr = Main.rand.Next([.. who]);
 				NPC.SpawnOnPlayer(plr, NPCID.Spazmatism);

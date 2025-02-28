@@ -18,7 +18,7 @@ internal class BuildingWhitelist
 
 	public static HashSet<int> GetUsedWhitelist(WhitelistUse use)
 	{
-		HashSet<int> results = use == WhitelistUse.Placing ? DefaultWhitelist : [];
+		HashSet<int> results = use is WhitelistUse.Placing or WhitelistUse.Mining ? DefaultWhitelist : [];
 
 		if (SubworldSystem.Current is MappingWorld domain)
 		{
@@ -31,6 +31,7 @@ internal class BuildingWhitelist
 	public static HashSet<int> GetMiningWhitelist()
 	{
 		HashSet<int> whitelist = GetUsedWhitelist(WhitelistUse.Mining);
+
 		if (SubworldSystem.Current is MappingWorld domain)
 		{
 			int[] tiles = domain.WhitelistedMiningTiles;

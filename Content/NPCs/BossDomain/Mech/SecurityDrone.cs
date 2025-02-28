@@ -39,6 +39,7 @@ internal class SecurityDrone : ModNPC
 		NPC.knockBackResist = 0;
 		NPC.scale = 1;
 		NPC.noTileCollide = true;
+		NPC.value = Item.buyPrice(0, 0, 5);
 
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{

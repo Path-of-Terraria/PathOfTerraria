@@ -36,6 +36,7 @@ internal class CircuitSkull : ModNPC
 		NPC.noGravity = true;
 		NPC.knockBackResist = 0;
 		NPC.scale = 1;
+		NPC.value = Item.buyPrice(0, 0, 5);
 
 		SpawnModBiomes = [ModContent.GetInstance<MechBiome>().Type];
 

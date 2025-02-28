@@ -628,3 +628,10 @@ Grabber: {
 	DisplayName: Autoclamp
 	Entry: The most bizarre of the Mechanism's security protocols, the Autoclamp doesn't do much damage.
 }
+
+CoreModule: {
+	DisplayName: Core Module
+	Entry: When a disturbance so large that it requires immediate, massive force occurs in the Mechanism, the Core Module is sent out. It's large, highly defensive, very offensive and most of all, cool.
+}
+
+CoreModulePlate.DisplayName: Core Module Plate

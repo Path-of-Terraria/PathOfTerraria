@@ -8,7 +8,6 @@ using PathOfTerraria.Content.Scenes;
 using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.Mech;
@@ -62,6 +61,7 @@ internal class Grabber : ModNPC
 		NPC.scale = 1;
 		NPC.dontTakeDamage = true;
 		NPC.npcSlots = 0;
+		NPC.value = Item.buyPrice(0, 5);
 
 		SpawnModBiomes = [ModContent.GetInstance<MechBiome>().Type];
 
@@ -102,9 +102,11 @@ internal class Grabber : ModNPC
 			NPC.netUpdate = true;
 		}
 
-		if (!Main.tile[Anchor.ToTileCoordinates()].HasTile && Main.netMode != NetmodeID.MultiplayerClient)
+		if (!Main.tile[Anchor.ToTileCoordinates()].HasTile)
 		{
 			NPC.StrikeInstantKill();
+			NPC.netUpdate = true;
+			NPC.active = false;
 			return;
 		}
 
@@ -113,19 +115,20 @@ internal class Grabber : ModNPC
 			Player captive = Main.player[HoldingPlayer];
 			ShakeTimer += captive.velocity.Length() * 2;
 
-			captive.velocity = Vector2.Zero;
-			captive.Center = NPC.Center;
-			captive.tongued = true;
+			//captive.velocity = Vector2.Zero;
+			//captive.Center = NPC.Center;
 
 			NPC.velocity *= 0.9f;
 
 			Main.NewText(ShakeTimer);
 
-			if (ShakeTimer > 180)
+			if (ShakeTimer > 180 || captive.DeadOrGhost)
 			{
 				HoldingPlayer = -1;
 				ShakeTimer = -1;
 				RegrabTimer = 60;
+
+				captive.GetModPlayer<GrabberPlayer>().BeingGrabbed = -1;
 
 				NPC.netUpdate = true;
 			}
@@ -165,6 +168,8 @@ internal class Grabber : ModNPC
 		{
 			HoldingPlayer = target.whoAmI;
 			ShakeTimer = 0;
+
+			target.GetModPlayer<GrabberPlayer>().BeingGrabbed = NPC.whoAmI;
 		}
 	}
 
@@ -294,5 +299,49 @@ internal class Grabber : ModNPC
 
 		Vector2 position = NPC.Center - screenPos;
 		spriteBatch.Draw(Glow.Value, position, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / new Vector2(2, 1), 1f, SpriteEffects.None, 0);
+	}
+}
+
+public class GrabberPlayer : ModPlayer
+{
+	public int BeingGrabbed = -1;
+
+	public override void Load()
+	{
+		On_Player.GrappleMovement += ResetThePlayerToGrabberAgain;
+	}
+
+	private void ResetThePlayerToGrabberAgain(On_Player.orig_GrappleMovement orig, Player self)
+	{
+		orig(self);
+
+		self.GetModPlayer<GrabberPlayer>().UpdateGrabbed();
+	}
+
+	public void UpdateGrabbed()
+	{
+		if (BeingGrabbed >= 0)
+		{
+			NPC grabber = Main.npc[BeingGrabbed];
+
+			if (!grabber.active || grabber.type != ModContent.NPCType<Grabber>())
+			{
+				BeingGrabbed = -1;
+				return;
+			}
+
+			Player.Center = grabber.Center + (grabber.rotation - MathHelper.PiOver2).ToRotationVector2() * 20;
+
+			float speed = Player.velocity.Length();
+
+			if (Player.grappling[0] > -1)
+			{
+				speed /= 4;
+			}
+
+			grabber.ai[2] += speed;
+
+			Player.velocity = Vector2.Zero;
+		}
 	}
 }
