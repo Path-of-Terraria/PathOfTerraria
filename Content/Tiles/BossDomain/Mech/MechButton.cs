@@ -61,6 +61,7 @@ internal class MechButton : ModTile
 			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
 				NetMessage.SendTileSquare(-1, i, j, 3, 1);
+				NetMessage.SendData(MessageID.HitSwitch, -1, -1, null, i, j);
 			}
 		}
 	}
