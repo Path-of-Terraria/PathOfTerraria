@@ -13,6 +13,9 @@ internal class MechButton : ModTile
 		Main.tileCut[Type] = true;
 		Main.tileFrameImportant[Type] = true;
 
+		TileID.Sets.IsATrigger[Type] = true;
+		TileID.Sets.IsAMechanism[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.Width = 3;
 		TileObjectData.newTile.CoordinateHeights = [18];
@@ -53,7 +56,6 @@ internal class MechButton : ModTile
 			for (int k = 0; k < 3; ++k)
 			{
 				Main.tile[i + k, j].TileFrameX += frameAdjustment;
-				Wiring.SkipWire(i + k, j);
 			}
 
 			Wiring.TripWire(i, j, 3, 1);
@@ -61,7 +63,9 @@ internal class MechButton : ModTile
 			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
 				NetMessage.SendTileSquare(-1, i, j, 3, 1);
-				NetMessage.SendData(MessageID.HitSwitch, -1, -1, null, i, j);
+				NetMessage.SendData(MessageID.HitSwitch, -1, Main.myPlayer, null, i, j);
+				NetMessage.SendData(MessageID.HitSwitch, -1, Main.myPlayer, null, i + 1, j);
+				NetMessage.SendData(MessageID.HitSwitch, -1, Main.myPlayer, null, i + 2, j);
 			}
 		}
 	}

@@ -72,6 +72,13 @@ internal class MappingNPC : GlobalNPC
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
 			}
+			
+			count = tracker.CompletionsAtOrAboveTier(1);
+
+			if (count >= 10 && NPC.downedQueenSlime && !NPC.downedMechBoss2)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
+			}
 		}
 	}
 }

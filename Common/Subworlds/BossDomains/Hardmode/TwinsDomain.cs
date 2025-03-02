@@ -140,7 +140,7 @@ internal class TwinsDomain : BossDomainSubworld
 	{
 		int count = 0;
 		List<Vector2> positions = [];
-		int type = ModContent.TileType<MechButton>();
+		int type = TileID.Lever;
 
 		while (count < 3)
 		{

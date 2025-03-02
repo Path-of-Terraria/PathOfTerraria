@@ -88,6 +88,8 @@ internal class CircuitSkull : ModNPC
 				{
 					NPC.velocity = DetermineRandomDirection().RotatedByRandom(0.2f) * speed;
 				}
+
+				NPC.netUpdate = true;
 			}
 		}
 		else if (State == 1)
