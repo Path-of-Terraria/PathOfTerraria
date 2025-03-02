@@ -49,8 +49,9 @@ internal class GrabberAnchor : ModTile
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		Vector2 pos = TileExtensions.DrawPosition(i, j);
-		Rectangle source = TileExtensions.BasicFrame(i, j) with { Y = 18 };
+		Vector2 pos = TileExtensions.DrawPosition(i, j) - new Vector2(2);
+		Tile tile = Main.tile[i, j];
+		Rectangle source = new Rectangle(tile.TileFrameX / 18 * 22, 18, 20, 20);
 		float sine = MathF.Max(0, 3 * MathF.Sin(-i - j + 0.05f * Main.GameUpdateCount)) * 0.5f;
 
 		spriteBatch.Draw(TextureAssets.Tile[Type].Value, pos, source, Color.White * sine, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
