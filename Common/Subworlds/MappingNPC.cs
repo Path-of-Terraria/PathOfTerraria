@@ -95,6 +95,6 @@ internal class MappingNPC : GlobalNPC
 			3 => NPC.downedMechBoss2,
 			4 => NPC.downedMechBoss3,
 			_ => true,
-		}
+		};
 	}
 }
