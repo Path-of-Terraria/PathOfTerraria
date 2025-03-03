@@ -14,10 +14,14 @@ internal class WeakMalaise : ModTile
 		Main.tileBlockLight[Type] = true;
 		Main.tileLighted[Type] = true;
 
-		Main.tileMerge[Type][TileID.Stone] = true;
-		Main.tileMerge[TileID.Stone][Type] = true;
 		Main.tileMerge[Type][TileID.Ebonstone] = true;
 		Main.tileMerge[TileID.Ebonstone][Type] = true;
+		Main.tileMerge[Type][TileID.Ebonsand] = true;
+		Main.tileMerge[TileID.Ebonsand][Type] = true;
+		Main.tileMerge[Type][TileID.Stone] = true;
+		Main.tileMerge[TileID.Stone][Type] = true;
+		Main.tileMerge[Type][TileID.Dirt] = true;
+		Main.tileMerge[TileID.Dirt][Type] = true;
 
 		AddMapEntry(new Color(116, 63, 136));
 

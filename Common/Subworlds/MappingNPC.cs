@@ -64,7 +64,11 @@ internal class MappingNPC : GlobalNPC
 		if (npc.boss && SubworldSystem.Current is MappingWorld world)
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-			tracker.AddCompletion(world.MapTier);
+
+			if (DownedBossForTier(world))
+			{
+				tracker.AddCompletion(world.MapTier);
+			}
 
 			int count = tracker.CompletionsAtOrAboveTier(0);
 
@@ -72,6 +76,25 @@ internal class MappingNPC : GlobalNPC
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
 			}
+			
+			count = tracker.CompletionsAtOrAboveTier(1);
+
+			if (count >= 10 && NPC.downedQueenSlime && !NPC.downedMechBoss2)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
+			}
 		}
+	}
+
+	private static bool DownedBossForTier(MappingWorld world)
+	{
+		return world.MapTier switch
+		{
+			1 => NPC.downedQueenSlime,
+			2 => NPC.downedMechBoss1,
+			3 => NPC.downedMechBoss2,
+			4 => NPC.downedMechBoss3,
+			_ => true,
+		};
 	}
 }

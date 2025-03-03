@@ -4,7 +4,7 @@ namespace PathOfTerraria.Common.Subworlds;
 
 internal class MapDomainSystem : ModSystem
 {
-	public override void PreUpdateGores()
+	public override void PostUpdateWorld()
 	{
 		if (SubworldSystem.Current is MappingWorld domain)
 		{

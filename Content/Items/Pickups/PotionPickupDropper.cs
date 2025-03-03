@@ -47,13 +47,18 @@ internal class PotionPickupDropper : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		LeadingConditionRule notBoss = new(new Conditions.LegacyHack_IsABoss());
-		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 1, 1, 1), true);
-		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 1, 1, 1), true);
+		if (NPCID.Sets.ProjectileNPC[npc.type])
+		{
+			return;
+		}
 
-		notBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 7, 1, 1), true);
-		notBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 7, 1, 1), true);
+		LeadingConditionRule isBoss = new(new Conditions.LegacyHack_IsABoss());
+		isBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 1, 1, 1), true);
+		isBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 1, 1, 1), true);
+
+		isBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 7, 1, 1), true);
+		isBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 7, 1, 1), true);
 		
-		npcLoot.Add(notBoss);
+		npcLoot.Add(isBoss);
 	}
 }

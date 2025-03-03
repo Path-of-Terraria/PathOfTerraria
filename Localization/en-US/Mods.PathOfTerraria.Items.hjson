@@ -992,3 +992,16 @@ BrittleCrystalItem: {
 	DisplayName: Brittle Crystal
 	Tooltip: ""
 }
+
+TwinsMap: {
+	DisplayName: Twins Map
+	Tooltip: ""
+}
+
+MechLampItem: {
+	DisplayName: Mech Lamp Item
+	Tooltip: ""
+}
+
+CircuitSkullBannerItem.DisplayName: Circuit Skull Banner Item
+SecurityDroneBannerItem.DisplayName: Security Drone Banner Item

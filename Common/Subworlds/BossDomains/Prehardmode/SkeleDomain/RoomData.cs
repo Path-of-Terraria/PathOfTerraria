@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.World.Generation;
+﻿using PathOfTerraria.Common.Subworlds.Tools;
+using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.BossDomain.SkeletronDomain;
 using StructureHelper;
 using System.Collections.Generic;
@@ -21,13 +22,6 @@ public readonly struct SpikeballInfo(Point16 position, float length, bool? spinC
 	public readonly float Length = length;
 	public readonly bool? SpinClockwise = spinClockwise;
 	public readonly float SpinSpeed = spinSpeed ?? 0.06f;
-}
-
-public class EngageTimerInfo(Point16 position, int ticks)
-{
-	public readonly Point16 Position = position;
-
-	public int Ticks = ticks;
 }
 
 public readonly struct RoomData(WireColor color, OpeningType opening, Point openingLoc, Point wireLoc, List<SpikeballInfo> spikeBalls = null, List<EngageTimerInfo> timers = null)

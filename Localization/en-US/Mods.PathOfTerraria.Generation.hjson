@@ -7,6 +7,8 @@ Pathway: Discovering pathway
 RavenPass: Nevermore
 TreesAndLeaves: Adding trees and leaves
 Structures: Building structures
+Maze: Escaping the maze
+PopulatingMetals: Scattering metals
 
 EaterSign: {
 	0: "{0} was instantly devoured."
