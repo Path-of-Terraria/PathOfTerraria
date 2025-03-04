@@ -12,5 +12,8 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.GolemFistRight);
 		ArpgNPC.NoAffixesSet.Add(NPCID.GolemHead);
 		ArpgNPC.NoAffixesSet.Add(NPCID.GolemHeadFree);
+		ArpgNPC.NoAffixesSet.Add(NPCID.BoundTownSlimeOld);
+		ArpgNPC.NoAffixesSet.Add(NPCID.BoundTownSlimePurple);
+		ArpgNPC.NoAffixesSet.Add(NPCID.BoundTownSlimeYellow);
 	}
 }
