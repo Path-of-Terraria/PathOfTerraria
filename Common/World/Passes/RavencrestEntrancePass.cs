@@ -4,10 +4,8 @@ using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework.Input;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.IO;
@@ -47,7 +45,8 @@ public class RavencrestMicrobiome : MicroBiome
 		}
 		
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
-		
+		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X, origin.Y);
+
 		return true;
 	}
 }
@@ -200,9 +199,9 @@ internal class RavencrestEntrancePass : AutoGenStep
 			int count = 0;
 			
 			// Check if the upper portion of the structure is mostly empty.
-			for (var i = 0; i < size.X; i++)
+			for (int i = 0; i < size.X; i++)
 			{
-				for (var j = 0; j < size.Y; j++)
+				for (int j = 0; j < size.Y; j++)
 				{
 					Tile tile = Framing.GetTileSafely(origin.X + i, origin.Y + j - size.Y);
 
@@ -234,7 +233,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 			CleanBase(tiles);
 			
 			// Fills up small dirt blotches to make the structure naturally blend in, alongside the previously generated base.
-			for (var i = 0; i < size.X; i++)
+			for (int i = 0; i < size.X; i++)
 			{
 				int strength = WorldGen.genRand.Next(8, 12);
 				int steps = WorldGen.genRand.Next(1, 4);

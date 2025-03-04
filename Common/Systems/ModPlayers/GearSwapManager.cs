@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.UI.Guide;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.ID;
@@ -25,6 +26,8 @@ public sealed class GearSwapManager : ModPlayer
 		{
 			return;
 		}
+
+		Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SwappedWeapon);
 
 		Item previousWeapon = Player.inventory[0];
 		Item previousOffhand = Player.armor[6];

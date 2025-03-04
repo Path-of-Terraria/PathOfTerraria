@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using PathOfTerraria.Common.UI.Guide;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -20,6 +21,8 @@ internal class PlayerStatUIState : CloseableSmartUi
 			Panel?.Remove();
 			return;
 		}
+
+		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.OpenedCharSheet);
 
 		if (!HasChild(Panel))
 		{
