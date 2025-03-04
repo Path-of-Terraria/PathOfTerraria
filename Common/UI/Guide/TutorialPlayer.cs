@@ -13,6 +13,7 @@ public enum TutorialCheck : byte
 	UsedASkill,
 	SwappedWeapon,
 	OpenedCharSheet,
+	OpenedQuestBook,
 	FinishedTutorial,
 }
 
@@ -42,6 +43,8 @@ internal class TutorialPlayer : ModPlayer
 	{
 		TutorialChecks = new HashSet<TutorialCheck>(tag.GetByteArray("checks").Select(x => (TutorialCheck)x));
 		TutorialStep = tag.GetByte("step");
+		TutorialStep = 0;
+		TutorialChecks.Clear();
 
 		TutorialUIState.StoredStep = TutorialStep;
 	}

@@ -45,7 +45,7 @@ public class RavencrestMicrobiome : MicroBiome
 		}
 		
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
-		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X, origin.Y);
+		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X + size.X / 2, origin.Y + size.Y / 2);
 
 		return true;
 	}

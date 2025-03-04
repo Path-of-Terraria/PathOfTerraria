@@ -127,10 +127,10 @@ Guide: {
 	10:
 		'''
 		Only a few more things to go. Next is the Quest system. Next to the minimap there is a checkmarked book,
-		clicking it or using the Quest hotkey (default L) will open the Quest Book.
+		clicking it or using the Quest hotkey (default L) will open the Quest Book. Click on it and look around.
 		Here, you can see all of your quests, completed or ongoing.
 		Your first quest will be going to Ravencrest, the first and primary town in the mod.
-		Hit the "Next" button when ready.
+		Close it when you are ready to continue.
 		'''
 	# Enter Ravencrest
 	11:

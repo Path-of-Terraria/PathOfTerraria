@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.PlayerStats;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -13,6 +15,8 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
+using Terraria.Social.Steam;
+using PathOfTerraria.Common.UI.Quests;
 
 namespace PathOfTerraria.Common.UI.Guide;
 
@@ -42,7 +46,7 @@ internal class TutorialUIState : UIState
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
 		_opacity = MathHelper.Lerp(_opacity, Step > 13 ? 0 : 1, 0.05f);
-		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step == 9 ? 8 : 4, 0.05f);
+		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step is 9 or 10 ? 8 : 4, 0.05f);
 
 		Vector2 pos = new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(2, _baseYDivisor);
 
@@ -52,7 +56,11 @@ internal class TutorialUIState : UIState
 		bool canGoNext = CanGotoNextStep();
 		DrawBacked(spriteBatch, pos + new Vector2(-110, 110), "Next", true, !canGoNext ? null : new Action(IncrementStep), !canGoNext);
 		DrawBacked(spriteBatch, pos + new Vector2(0, 110), "Skip Step", true, new Action(IncrementStep));
-		DrawBacked(spriteBatch, pos + new Vector2(110, 110), "Skip Guide", true, () => { });
+		DrawBacked(spriteBatch, pos + new Vector2(110, 110), "Skip Guide", true, () => 
+		{
+			Step = 13;
+			IncrementStep();
+		});
 	}
 
 	public override void Update(GameTime gameTime)
@@ -93,6 +101,10 @@ internal class TutorialUIState : UIState
 		{
 			IncrementStep();
 		}
+		else if (Step == 10 && !SmartUiLoader.GetUiState<QuestsUIState>().Visible && checks.Contains(TutorialCheck.OpenedQuestBook))
+		{
+			IncrementStep();
+		}
 		else if (Step == 11 && SubworldSystem.Current is RavencrestSubworld)
 		{
 			IncrementStep();
@@ -116,7 +128,11 @@ internal class TutorialUIState : UIState
 		plr.GetModPlayer<TutorialPlayer>().TutorialStep = (byte)Step;
 		StoredStep = Step;
 
-		if (Step == 11)
+		if (Step == 10)
+		{
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
+		}
+		else if (Step == 11)
 		{
 			if (!NPC.AnyNPCs(ModContent.NPCType<RavenNPC>()))
 			{
@@ -141,7 +157,7 @@ internal class TutorialUIState : UIState
 	{
 		return Step switch
 		{
-			0 or 7 or 10 or 13 => true,
+			0 or 7 or 13 => true,
 			_ => false
 		};
 	}

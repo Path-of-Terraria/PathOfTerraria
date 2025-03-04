@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.UI.Guide;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -44,7 +45,9 @@ public class QuestsUIState : CloseableSmartUi
 			_questDetails.Remove();
 			return;
 		}
-		
+
+		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.OpenedQuestBook);
+
 		RemoveAllChildren();
 		base.CreateMainPanel(false, new Point(970, 715), false, true);
 		Quest quest = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName.FirstOrDefault(x => x.Value.Active).Value;
