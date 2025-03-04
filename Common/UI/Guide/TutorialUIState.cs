@@ -7,6 +7,7 @@ using ReLogic.Content;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -20,9 +21,12 @@ internal class TutorialUIState : UIState
 	public static Asset<Texture2D> SmallBack;
 	public static Asset<Texture2D> BigBack;
 
+	public bool Visible => _opacity > 0;
+
 	internal static int StoredStep = 0;
 
-	private int _step = 0;
+	public int Step { get; private set; }
+
 	private float _opacity = 0;
 	private float _displayTextLength = 0;
 	private float _baseYDivisor = 4; 
@@ -32,17 +36,17 @@ internal class TutorialUIState : UIState
 		BigBack ??= ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Guide/LargeBack");
 		SmallBack ??= ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Guide/SkipBack");
 
-		_step = StoredStep;
+		Step = StoredStep;
 	}
 
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
-		_opacity = MathHelper.Lerp(_opacity, _step > 13 ? 0 : 1, 0.05f);
-		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, _step == 9 ? 8 : 4, 0.05f);
+		_opacity = MathHelper.Lerp(_opacity, Step > 13 ? 0 : 1, 0.05f);
+		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step == 9 ? 8 : 4, 0.05f);
 
 		Vector2 pos = new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(2, _baseYDivisor);
 
-		string text = Language.GetText($"Mods.{PoTMod.ModName}.UI.Guide." + Math.Min(_step, 13)).Value;
+		string text = Language.GetText($"Mods.{PoTMod.ModName}.UI.Guide." + Math.Min(Step, 13)).Value;
 		DrawBacked(spriteBatch, pos, text, false);
 
 		bool canGoNext = CanGotoNextStep();
@@ -57,43 +61,43 @@ internal class TutorialUIState : UIState
 
 		HashSet<TutorialCheck> checks = Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks;
 
-		if (_step == 1 && SmartUiLoader.GetUiState<TreeState>().Visible)
+		if (Step == 1 && SmartUiLoader.GetUiState<TreeState>().Visible)
 		{
 			IncrementStep();
 		}
-		else if (_step == 2 && checks.Contains(TutorialCheck.AllocatedPassive) && checks.Contains(TutorialCheck.DeallocatedPassive))
+		else if (Step == 2 && checks.Contains(TutorialCheck.AllocatedPassive) && checks.Contains(TutorialCheck.DeallocatedPassive))
 		{
 			IncrementStep();
 		}
-		else if (_step == 3 && SmartUiLoader.GetUiState<TreeState>().Visible && SmartUiLoader.GetUiState<TreeState>().Panel.ActiveTab == "SkillTree")
+		else if (Step == 3 && SmartUiLoader.GetUiState<TreeState>().Visible && SmartUiLoader.GetUiState<TreeState>().Panel.ActiveTab == "SkillTree")
 		{
 			IncrementStep();
 		}
-		else if (_step == 4 && checks.Contains(TutorialCheck.SelectedSkill))
+		else if (Step == 4 && checks.Contains(TutorialCheck.SelectedSkill))
 		{
 			IncrementStep();
 		}
-		else if (_step == 5 && !SmartUiLoader.GetUiState<TreeState>().Visible)
+		else if (Step == 5 && !SmartUiLoader.GetUiState<TreeState>().Visible)
 		{
 			IncrementStep();
 		}
-		else if (_step == 6 && checks.Contains(TutorialCheck.UsedASkill))
+		else if (Step == 6 && checks.Contains(TutorialCheck.UsedASkill))
 		{
 			IncrementStep();
 		}
-		else if (_step == 8 && checks.Contains(TutorialCheck.SwappedWeapon))
+		else if (Step == 8 && checks.Contains(TutorialCheck.SwappedWeapon))
 		{ 
 			IncrementStep();
 		}
-		else if (_step == 9 && !SmartUiLoader.GetUiState<PlayerStatUIState>().Visible && checks.Contains(TutorialCheck.OpenedCharSheet))
+		else if (Step == 9 && !SmartUiLoader.GetUiState<PlayerStatUIState>().Visible && checks.Contains(TutorialCheck.OpenedCharSheet))
 		{
 			IncrementStep();
 		}
-		else if (_step == 11 && SubworldSystem.Current is RavencrestSubworld)
+		else if (Step == 11 && SubworldSystem.Current is RavencrestSubworld)
 		{
 			IncrementStep();
 		}
-		else if (_step == 12 && SubworldSystem.Current is null)
+		else if (Step == 12 && SubworldSystem.Current is null)
 		{
 			IncrementStep();
 		}
@@ -101,18 +105,18 @@ internal class TutorialUIState : UIState
 
 	private void IncrementStep()
 	{
-		_step++;
+		Step++;
 
-		if (_step <= 13)
+		if (Step <= 13)
 		{
 			_displayTextLength = 0;
 		}
 
 		Player plr = Main.LocalPlayer;
-		plr.GetModPlayer<TutorialPlayer>().TutorialStep = (byte)_step;
-		StoredStep = _step;
+		plr.GetModPlayer<TutorialPlayer>().TutorialStep = (byte)Step;
+		StoredStep = Step;
 
-		if (_step == 11)
+		if (Step == 11)
 		{
 			if (!NPC.AnyNPCs(ModContent.NPCType<RavenNPC>()))
 			{
@@ -127,7 +131,7 @@ internal class TutorialUIState : UIState
 				}
 			}
 		}
-		else if (_step == 13)
+		else if (Step == 13)
 		{
 			Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.FinishedTutorial);
 		}
@@ -135,7 +139,7 @@ internal class TutorialUIState : UIState
 
 	private bool CanGotoNextStep()
 	{
-		return _step switch
+		return Step switch
 		{
 			0 or 7 or 10 or 13 => true,
 			_ => false
@@ -157,7 +161,7 @@ internal class TutorialUIState : UIState
 
 		if (!isPrimaryPanel)
 		{
-			if (_step <= 14)
+			if (Step <= 14)
 			{
 				_displayTextLength = Math.Min(_displayTextLength + 0.9f, text.Length);
 				text = text[.. (int)_displayTextLength];
