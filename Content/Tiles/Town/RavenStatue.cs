@@ -1,6 +1,10 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Tiles;
+using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Core.UI;
 using SubworldLibrary;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -13,6 +17,7 @@ internal class RavenStatue : ModTile
 		Main.tileFrameImportant[Type] = true;
 		Main.tileLighted[Type] = true;
 
+		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.InteractibleByNPCs[Type] = true;
 		TileID.Sets.BreakableWhenPlacing[Type] = false;
 		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
@@ -60,5 +65,19 @@ internal class RavenStatue : ModTile
 		player.cursorItemIconText = "Enter Ravencrest";
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
+	}
+
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		if (!UIManager.TryGet("Tutorial UI", out UIManager.UIStateData data) || data.UserInterface.CurrentState is not TutorialUIState tut || 
+			!tut.Visible || tut.Step is not 10 and not 11)
+		{
+			return;
+		}
+
+		Texture2D outline = TextureAssets.HighlightMask[Type].Value;
+		Tile tile = Main.tile[i, j];
+
+		spriteBatch.Draw(outline, TileExtensions.DrawPosition(i, j), tile.BasicFrame(), Color.White);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.TreeSystem;
+using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -130,6 +131,7 @@ internal class PassiveElement : SmartUiElement
 
 		_passive.Level++;
 		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points--;
+		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
 
 		_flashTimer = 20;
 
@@ -149,5 +151,6 @@ internal class PassiveElement : SmartUiElement
 		_redFlashTimer = 20;
 
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
+		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
 	}
 }
