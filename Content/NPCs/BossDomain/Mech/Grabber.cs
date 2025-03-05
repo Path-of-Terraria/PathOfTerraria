@@ -115,12 +115,7 @@ internal class Grabber : ModNPC
 			Player captive = Main.player[HoldingPlayer];
 			ShakeTimer += captive.velocity.Length() * 2;
 
-			//captive.velocity = Vector2.Zero;
-			//captive.Center = NPC.Center;
-
 			NPC.velocity *= 0.9f;
-
-			Main.NewText(ShakeTimer);
 
 			if (ShakeTimer > 180 || captive.DeadOrGhost)
 			{

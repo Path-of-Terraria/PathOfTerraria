@@ -20,6 +20,8 @@ internal class MechGate : ModTile
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
+		TileID.Sets.DrawsWalls[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.CoordinateHeights = [18];
 		TileObjectData.newTile.StyleHorizontal = true;

@@ -994,8 +994,6 @@ internal class TwinsDomain : BossDomainSubworld
 					else
 					{
 						who.Add(player.whoAmI);
-
-						Mod.Logger.Debug($"I think that player {player.whoAmI} is good. His position is {player.position.Y}.");
 					}
 				}
 			}
