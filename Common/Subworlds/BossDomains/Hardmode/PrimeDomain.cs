@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -22,21 +24,16 @@ internal class PrimeDomain : BossDomainSubworld
 		Cannon
 	}
 
-	public const int MazeWidth = 11;
-	public const int MazeHeight = 7;
+	public const int StandardHallSize = 18;
 
-	public override int Width => 1200;
+	public override int Width => 1300;
 	public override int Height => 400;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
 	private static bool LeftSpawn = false;
-
-	/// <summary>
-	/// This is used as the check for "everyone's belowground" fails in MP by default. Waiting a bit to do it fixes the issue.
-	/// </summary>
-	private int _mpDelayTimer = 0;
+	private static Rectangle Arena = Rectangle.Empty;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenTerrain),
@@ -44,18 +41,17 @@ internal class PrimeDomain : BossDomainSubworld
 
 	private void DigTunnels(GenerationProgress progress, GameConfiguration configuration)
 	{
-		const int StandardHallSize = 18;
-
 		int spawnX = LeftSpawn ? 120 : Width - 120;
 		int spawnY = Height / 2;
 
 		Main.spawnTileX = spawnX;
 		Main.spawnTileY = spawnY;
 
-		int startOpeningX = LeftSpawn ? 220 : Width - 220;
-		int endOpeningX = !LeftSpawn ? 220 : Width - 220;
+		int startOpeningX = LeftSpawn ? 280 : Width - 280;
+		int endOpeningX = !LeftSpawn ? 280 : Width - 280;
 
 		LineCut(spawnX, spawnY - 4, startOpeningX, spawnY - 4, 9);
+		LineCut(endOpeningX, spawnY - 4, !LeftSpawn ? 200 : Width - 200, spawnY - 4, 9);
 
 		for (int i = 0; i < 6; ++i)
 		{
@@ -86,26 +82,66 @@ internal class PrimeDomain : BossDomainSubworld
 		}
 
 		string spawn = $"Assets/Structures/SkelePrimeDomain/{(!LeftSpawn ? "Left" : "Right")}Start_" + WorldGen.genRand.Next(3);
-
 		Point16 size = StructureTools.GetSize(spawn);
 		StructureTools.PlaceByOrigin(spawn, new Point16(spawnX, spawnY + size.Y % 2), new Vector2(0.5f));
+
+		string arena = "Assets/Structures/SkelePrimeDomain/Arena_0";
+		Point16 arenaSize = StructureTools.GetSize(arena);
+		Point16 pos = StructureTools.PlaceByOrigin(arena, new Point16(!LeftSpawn ? 180 : Width - 180, Height / 2 + 2), new Vector2(0.5f));
+
+		Arena = new Rectangle(pos.X * 16, pos.Y * 16, arenaSize.X * 16, arenaSize.Y * 16);
 	}
 
-	private void GenerateHall(Hall hall)
+	private static void GenerateHall(Hall hall)
 	{
 		if (hall.HallType == HallwayType.Saw)
 		{
-			for (int i = 0; i < 30; ++i)
-			{
-				int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, WorldGen.genRand.NextFloat());
+			int repeats = (int)(Math.Abs(hall.Start.X - hall.End.X) * 0.05f);
+			HashSet<Point16> points = [];
 
-				Tile tile = Main.tile[x, hall.End.Y];
+			for (int i = 0; i < repeats; ++i)
+			{
+				bool up = WorldGen.genRand.NextBool();
+				int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, WorldGen.genRand.NextFloat());
+				int y = up ? hall.End.Y - StandardHallSize / 2 + WorldGen.genRand.Next(3)
+					: hall.End.Y + StandardHallSize / 2 - 1 - WorldGen.genRand.Next(3);
+				int loops = 0;
+
+				while (points.Contains(new Point16(x, y)) || points.Any(v => v.ToVector2().DistanceSQ(new Vector2(x, y)) < 12) || !CanPlaceSaw(x, y, up))
+				{
+					x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, WorldGen.genRand.NextFloat());
+					y = WorldGen.genRand.NextBool() ? hall.End.Y - StandardHallSize / 2 + WorldGen.genRand.Next(3)
+						: hall.End.Y + StandardHallSize / 2 - 1 - WorldGen.genRand.Next(3);
+					loops++;
+
+					if (loops > 20000)
+					{
+						goto skipSaws;
+					}
+				}
+
+				Tile tile = Main.tile[x, y];
 				tile.HasTile = true;
 				tile.TileType = (ushort)ModContent.TileType<SawAnchor>();
 
-				ModContent.GetInstance<SawAnchor.SawEntity>().Place(x, hall.End.Y);
+				ModContent.GetInstance<SawAnchor.SawEntity>().Place(x, y);
+				points.Add(new Point16(x, y));
 			}
+
+		skipSaws: ;
 		}
+	}
+
+	private static bool CanPlaceSaw(int x, int y, bool up)
+	{
+		int yOff = y;
+
+		while (!WorldGen.SolidTile(x, yOff))
+		{
+			yOff += up ? -1 : 1;
+		}
+
+		return Math.Abs(yOff - y) <= 2;
 	}
 
 	private static void LineCut(int spawnX, int spawnY, int endX, int endY, int length)
@@ -246,41 +282,45 @@ internal class PrimeDomain : BossDomainSubworld
 
 		if (!BossSpawned)
 		{
-			if (Main.netMode == NetmodeID.SinglePlayer)
-			{
-				_mpDelayTimer = 300;
-			}
-			else if (Main.netMode == NetmodeID.Server)
-			{
-				_mpDelayTimer++;
-			}
-
-			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0 && _mpDelayTimer > 300;
+			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 			HashSet<int> who = [];
 
 			if (canSpawn)
 			{
 				foreach (Player player in Main.ActivePlayers)
 				{
+					if (!Arena.Intersects(player.Hitbox))
+					{
+						canSpawn = false;
+						break;
+					}
+					else
+					{
+						who.Add(player.whoAmI);
+					}
 				}
 			}
 
 			if (canSpawn && Main.CurrentFrameFlags.ActivePlayersCount > 0 && who.Count > 0)
 			{
 				int plr = Main.rand.Next([.. who]);
-				NPC.SpawnOnPlayer(plr, NPCID.SkeletronPrime);
+				IEntitySource src = Entity.GetSource_NaturalSpawn();
+				NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 26, NPCID.SkeletronPrime);
 
+				Main.spawnTileX = (int)Arena.Center().X / 16;
+				Main.spawnTileY = (int)Arena.Center().Y / 16;
+				
 				BossSpawned = true;
 			}
 		}
 		else
 		{
-			if (!NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.Retinazer) && !ExitSpawned)
+			if (!NPC.AnyNPCs(NPCID.SkeletronPrime) && !ExitSpawned)
 			{
 				ExitSpawned = true;
 
 				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				//Projectile.NewProjectile(src, new Vector2(Width / 2, BlockLayer - 16).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+				Projectile.NewProjectile(src, Arena.Center() - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 			}
 		}
 	}

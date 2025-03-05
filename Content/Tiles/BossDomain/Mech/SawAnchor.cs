@@ -71,7 +71,7 @@ internal class SawAnchor : ModTile
 				_spawned = true;
 
 				int type = ModContent.ProjectileType<SawProjectile>();
-				Projectile.NewProjectile(new EntitySource_SpawnNPC(), Position.ToWorldCoordinates(), Vector2.Zero, type, 50, 0, Main.myPlayer, Main.rand.Next(4));
+				Projectile.NewProjectile(new EntitySource_SpawnNPC(), Position.ToWorldCoordinates(), Vector2.Zero, type, 2, 0, Main.myPlayer, Main.rand.Next(2) + 2);
 			}
 		}
 
@@ -95,32 +95,46 @@ internal class SawAnchor : ModTile
 	public class SawProjectile : ModProjectile
 	{
 		ref float Size => ref Projectile.ai[0];
+		ref float RotationSign => ref Projectile.ai[1];
+		ref float RotationSpeed => ref Projectile.ai[2];
 
 		public override void SetDefaults()
 		{
+			Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
 			Projectile.tileCollide = false;
 			Projectile.timeLeft = 2;
+			Projectile.aiStyle = -1;
+			Projectile.hostile = true;
+			Projectile.friendly = false;
 		}
 
 		public override void AI()
 		{
+			if (RotationSign == 0)
+			{
+				RotationSign = Main.rand.NextBool() ? -1 : 1;
+				RotationSpeed = Main.rand.NextFloat(0.28f, 0.33f);
+			}
+
 			Projectile.timeLeft = 2;
-			Projectile.rotation += 0.2f;
+			Projectile.rotation += RotationSpeed * RotationSign;
 		}
 
 		public override void ModifyDamageHitbox(ref Rectangle hitbox)
 		{
-			hitbox.Width = hitbox.Height = GetSize();
+			hitbox.Width = hitbox.Height = GetSize() - 10;
+			hitbox.X -= hitbox.Width / 2;
+			hitbox.Y -= hitbox.Height / 2;
 		}
 
 		private int GetSize()
 		{
 			return Size switch
 			{
-				0 => 34,
-				1 => 38,
-				2 => 58,
-				_ => 66,
+				0 => 38,
+				1 => 58,
+				2 => 66,
+				_ => 112,
 			};
 		}
 
@@ -130,9 +144,9 @@ internal class SawAnchor : ModTile
 			int frameX = Size switch
 			{
 				0 => 0,
-				1 => 36,
-				2 => 76,
-				_ => 136,
+				1 => 40,
+				2 => 100,
+				_ => 168,
 			};
 
 			Rectangle frame = new(frameX, 0, size, size);

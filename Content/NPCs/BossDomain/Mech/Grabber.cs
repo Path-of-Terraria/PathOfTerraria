@@ -1,7 +1,4 @@
-﻿using Humanizer;
-using Microsoft.Xna.Framework.Input;
-using Mono.Cecil;
-using NPCUtils;
+﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Content.Scenes;
