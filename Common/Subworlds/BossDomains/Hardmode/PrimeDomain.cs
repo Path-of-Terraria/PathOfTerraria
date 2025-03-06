@@ -224,11 +224,6 @@ internal class PrimeDomain : BossDomainSubworld
 					tile.TileType = type;
 					tile.WallType = wall;
 
-					if (typeNoise == 2)
-					{
-						tile.TileColor = PaintID.None;
-					}
-
 					if (wall != ModContent.WallType<TinBrickUnsafe>() && wall != ModContent.WallType<CopperPlatingUnsafe>())
 					{
 						tile.WallColor = PaintID.None;
