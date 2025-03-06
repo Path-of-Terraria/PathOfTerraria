@@ -13,6 +13,8 @@ internal class SawAnchor : ModTile
 	{
 		Main.tileFrameImportant[Type] = true;
 
+		TileID.Sets.FramesOnKillWall[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.CoordinateHeights = [16];
 		TileObjectData.newTile.StyleHorizontal = true;
@@ -37,6 +39,11 @@ internal class SawAnchor : ModTile
 		TileObjectData.newAlternate.AnchorRight = new(AnchorType.SolidSide | AnchorType.SolidTile, 1, 0);
 		TileObjectData.newAlternate.AnchorBottom = AnchorData.Empty;
 		TileObjectData.addAlternate(3);
+
+		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+		TileObjectData.newAlternate.AnchorBottom = AnchorData.Empty;
+		TileObjectData.newAlternate.AnchorWall = true;
+		TileObjectData.addAlternate(4);
 
 		TileObjectData.addTile(Type);
 

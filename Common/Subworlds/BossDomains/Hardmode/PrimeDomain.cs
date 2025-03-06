@@ -8,6 +8,7 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
@@ -25,6 +26,8 @@ internal class PrimeDomain : BossDomainSubworld
 	}
 
 	public const int StandardHallSize = 18;
+
+	public static UnifiedRandom GenRandom => Main.rand;
 
 	public override int Width => 1300;
 	public override int Height => 400;
@@ -60,10 +63,10 @@ internal class PrimeDomain : BossDomainSubworld
 		}
 
 		PriorityQueue<HallwayType, float> types = new(4);
-		types.Enqueue(HallwayType.Saw, WorldGen.genRand.NextFloat());
-		types.Enqueue(HallwayType.Laser, WorldGen.genRand.NextFloat());
-		types.Enqueue(HallwayType.Vice, WorldGen.genRand.NextFloat());
-		types.Enqueue(HallwayType.Cannon, WorldGen.genRand.NextFloat());
+		types.Enqueue(HallwayType.Saw, GenRandom.NextFloat());
+		types.Enqueue(HallwayType.Laser, GenRandom.NextFloat());
+		types.Enqueue(HallwayType.Vice, GenRandom.NextFloat());
+		types.Enqueue(HallwayType.Cannon, GenRandom.NextFloat());
 
 		List<Hall> halls = [];
 
@@ -72,7 +75,7 @@ internal class PrimeDomain : BossDomainSubworld
 			int y = (Height - 132) / 4 * i;
 			LineCut(startOpeningX, 90 + y, endOpeningX, 90 + y, StandardHallSize);
 
-			int lineY = 90 + StandardHallSize / 2;
+			int lineY = 90 + StandardHallSize / 2 + y;
 			halls.Add(new Hall(new Point16(startOpeningX, lineY), new Point16(endOpeningX, lineY), types.Dequeue()));
 		}
 
@@ -81,7 +84,7 @@ internal class PrimeDomain : BossDomainSubworld
 			GenerateHall(hall);
 		}
 
-		string spawn = $"Assets/Structures/SkelePrimeDomain/{(!LeftSpawn ? "Left" : "Right")}Start_" + WorldGen.genRand.Next(3);
+		string spawn = $"Assets/Structures/SkelePrimeDomain/{(!LeftSpawn ? "Left" : "Right")}Start_" + GenRandom.Next(3);
 		Point16 size = StructureTools.GetSize(spawn);
 		StructureTools.PlaceByOrigin(spawn, new Point16(spawnX, spawnY + size.Y % 2), new Vector2(0.5f));
 
@@ -101,17 +104,17 @@ internal class PrimeDomain : BossDomainSubworld
 
 			for (int i = 0; i < repeats; ++i)
 			{
-				bool up = WorldGen.genRand.NextBool();
-				int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, WorldGen.genRand.NextFloat());
-				int y = up ? hall.End.Y - StandardHallSize / 2 + WorldGen.genRand.Next(3)
-					: hall.End.Y + StandardHallSize / 2 - 1 - WorldGen.genRand.Next(3);
+				bool up = GenRandom.NextBool();
+				int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, GenRandom.NextFloat());
+				int y = up ? hall.End.Y - StandardHallSize / 2 + GenRandom.Next(3)
+					: hall.End.Y + StandardHallSize / 2 - 1 - GenRandom.Next(3);
 				int loops = 0;
 
 				while (points.Contains(new Point16(x, y)) || points.Any(v => v.ToVector2().DistanceSQ(new Vector2(x, y)) < 12) || !CanPlaceSaw(x, y, up))
 				{
-					x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, WorldGen.genRand.NextFloat());
-					y = WorldGen.genRand.NextBool() ? hall.End.Y - StandardHallSize / 2 + WorldGen.genRand.Next(3)
-						: hall.End.Y + StandardHallSize / 2 - 1 - WorldGen.genRand.Next(3);
+					x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, GenRandom.NextFloat());
+					y = GenRandom.NextBool() ? hall.End.Y - StandardHallSize / 2 + GenRandom.Next(3)
+						: hall.End.Y + StandardHallSize / 2 - 1 - GenRandom.Next(3);
 					loops++;
 
 					if (loops > 20000)
@@ -191,13 +194,13 @@ internal class PrimeDomain : BossDomainSubworld
 		progress.Start(1);
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
-		LeftSpawn = WorldGen.genRand.NextBool();
+		LeftSpawn = GenRandom.NextBool();
 
 		CreateOreNoises(out FastNoiseLite oreNoise, out FastNoiseLite oreTypeNoise);
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
-			for (int j = 2; j < Main.maxTilesY - 20; ++j)
+			for (int j = 2; j < Main.maxTilesY - 10; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 				tile.TileType = TileID.TinPlating;
@@ -213,9 +216,9 @@ internal class PrimeDomain : BossDomainSubworld
 					(ushort type, ushort wall) = typeNoise switch
 					{
 						0 => (TileID.TinBrick, (ushort)ModContent.WallType<TinBrickUnsafe>()),
-						1 => (TileID.LeadBrick, (ushort)ModContent.WallType<IronBrickUnsafe>()),
-						2 => (TileID.TungstenBrick, (ushort)ModContent.WallType<SilverBrickUnsafe>()),
-						_ => (TileID.CopperPlating, (ushort)ModContent.WallType<PlatinumBrickUnsafe>()),
+						1 => (TileID.LeadBrick, (ushort)ModContent.WallType<LeadBrickUnsafe>()),
+						2 => (TileID.TungstenBrick, (ushort)ModContent.WallType<TungstenBrickUnsafe>()),
+						_ => (TileID.CopperPlating, (ushort)ModContent.WallType<CopperPlatingUnsafe>()), 
 					};
 
 					tile.TileType = type;
@@ -226,7 +229,7 @@ internal class PrimeDomain : BossDomainSubworld
 						tile.TileColor = PaintID.None;
 					}
 
-					if (wall != ModContent.WallType<PlatinumBrickUnsafe>() && wall != ModContent.WallType<TinBrickUnsafe>())
+					if (wall != ModContent.WallType<TinBrickUnsafe>() && wall != ModContent.WallType<CopperPlatingUnsafe>())
 					{
 						tile.WallColor = PaintID.None;
 					}
@@ -305,7 +308,7 @@ internal class PrimeDomain : BossDomainSubworld
 			{
 				int plr = Main.rand.Next([.. who]);
 				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 26, NPCID.SkeletronPrime);
+				NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 25, NPCID.SkeletronPrime);
 
 				Main.spawnTileX = (int)Arena.Center().X / 16;
 				Main.spawnTileY = (int)Arena.Center().Y / 16;
