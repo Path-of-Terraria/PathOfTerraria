@@ -100,7 +100,7 @@ internal class PrimeDomain : BossDomainSubworld
 		if (hall.HallType == HallwayType.Saw)
 		{
 			SpawnHallContent(hall);
-			//SpawnHallStructures("Assets/Structures/SkelePrimeDomain/SawHall", hall, 3, 5);
+			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/SawHall_", hall, 3, 5);
 		}
 		else if (hall.HallType == HallwayType.Laser)
 		{
@@ -193,17 +193,17 @@ internal class PrimeDomain : BossDomainSubworld
 		}
 	}
 
-	//private static void SpawnHallStructures(string structureName, Hall hall, int range, int strCount)
-	//{
-	//	for (int i = 0; i < strCount; ++i)
-	//	{
-	//		int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, GenRandom.NextFloat());
-	//		int y = hall.Start.Y;
-	//		string name = structureName + "_" + Main.rand.Next(range);
-			
-	//		StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 1));
-	//	}
-	//}
+	private static void SpawnHallStructures(string structureName, Hall hall, int range, int strCount)
+	{
+		for (int i = 0; i < strCount; ++i)
+		{
+			int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, GenRandom.NextFloat());
+			int y = hall.Start.Y;
+			string name = structureName + Main.rand.Next(range);
+
+			StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 0.5f));
+		}
+	}
 
 	private static void LineCut(int spawnX, int spawnY, int endX, int endY, int length)
 	{
