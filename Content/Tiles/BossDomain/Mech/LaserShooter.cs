@@ -1,12 +1,11 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
-using Terraria.DataStructures;
+﻿using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
 
-namespace PathOfTerraria.Content.Tiles.BossDomain;
+namespace PathOfTerraria.Content.Tiles.BossDomain.Mech;
 
-internal class PolarIceThrower : ModTile
+internal class LaserShooter : ModTile
 {
 	public override void SetStaticDefaults()
 	{
@@ -17,8 +16,9 @@ internal class PolarIceThrower : ModTile
 		TileObjectData.newTile.CoordinateHeights = [16, 16];
 		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
 		TileObjectData.newTile.StyleHorizontal = true;
+		TileObjectData.newTile.Origin = new Point16(0, 0);
 
-		ThrowerTE tileEntity = ModContent.GetInstance<ThrowerTE>();
+		LaserShooterTE tileEntity = ModContent.GetInstance<LaserShooterTE>();
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(tileEntity.Hook_AfterPlacement, -1, 0, false);
 
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
@@ -33,36 +33,40 @@ internal class PolarIceThrower : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		ModContent.GetInstance<ThrowerTE>().Kill(i, j);
+		ModContent.GetInstance<LaserShooterTE>().Kill(i, j);
 	}
 
-	public class ThrowerTE : ModTileEntity
+	public class LaserShooterTE : ModTileEntity
 	{
-		private int _timer = 14 * 60;
+		public const int MaxTimer = 6 * 60;
+
+		internal int Timer = 0;
 
 		public override bool IsTileValidForEntity(int x, int y)
 		{
-			return Main.tile[x, y].TileType == ModContent.TileType<PolarIceThrower>();
+			return Main.tile[x, y].TileType == ModContent.TileType<LaserShooter>();
 		}
 
 		public override void Update()
 		{
-			_timer++;
+			Timer++;
 
 			Vector2 worldPos = Position.ToWorldCoordinates();
 
-			if (_timer > 16 * 60 && Main.player[Player.FindClosest(worldPos, 32, 32)].DistanceSQ(worldPos) < 400 * 400)
+			if (Timer > MaxTimer)
 			{
 				int side = Main.tile[Position].TileFrameX < 36 ? -1 : 1;
 				Vector2 position = worldPos + new Vector2(side == -1 ? -20 : 36, 10);
-				Projectile.NewProjectile(null, position, new Vector2(side * 1.2f, 0), ModContent.ProjectileType<LightBallProjectile>(), 40, 0, Main.myPlayer);
-				_timer = 0;
+				int proj = Projectile.NewProjectile(null, position, new Vector2(side * 8f, 0), ProjectileID.DeathLaser, 40, 0, Main.myPlayer);
+				Main.projectile[proj].timeLeft = 5000;
+				
+				Timer = 0;
 			}
 		}
 
 		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 		{
-			TileObjectData tileData = TileObjectData.GetTileData(type, style, alternate);
+			var tileData = TileObjectData.GetTileData(type, style, alternate);
 			int topLeftX = i - tileData.Origin.X;
 			int topLeftY = j - tileData.Origin.Y;
 

@@ -99,53 +99,111 @@ internal class PrimeDomain : BossDomainSubworld
 	{
 		if (hall.HallType == HallwayType.Saw)
 		{
-			int repeats = (int)(Math.Abs(hall.Start.X - hall.End.X) * 0.05f);
-			HashSet<Point16> points = [];
+			SpawnHallContent(hall);
+			//SpawnHallStructures("Assets/Structures/SkelePrimeDomain/SawHall", hall, 3, 5);
+		}
+		else if (hall.HallType == HallwayType.Laser)
+		{
+			SpawnHallContent(hall);
 
-			for (int i = 0; i < repeats; ++i)
+			int x = hall.End.X;
+			int y = hall.End.Y;
+			int style = 0;
+
+			if (x < Main.maxTilesX / 2)
 			{
-				bool up = GenRandom.NextBool();
-				int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, GenRandom.NextFloat());
-				int y = up ? hall.End.Y - StandardHallSize / 2 + GenRandom.Next(3)
-					: hall.End.Y + StandardHallSize / 2 - 1 - GenRandom.Next(3);
-				int loops = 0;
-
-				while (points.Contains(new Point16(x, y)) || points.Any(v => v.ToVector2().DistanceSQ(new Vector2(x, y)) < 12) || !CanPlaceSaw(x, y, up))
-				{
-					x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, GenRandom.NextFloat());
-					y = GenRandom.NextBool() ? hall.End.Y - StandardHallSize / 2 + GenRandom.Next(3)
-						: hall.End.Y + StandardHallSize / 2 - 1 - GenRandom.Next(3);
-					loops++;
-
-					if (loops > 20000)
-					{
-						goto skipSaws;
-					}
-				}
-
-				Tile tile = Main.tile[x, y];
-				tile.HasTile = true;
-				tile.TileType = (ushort)ModContent.TileType<SawAnchor>();
-
-				ModContent.GetInstance<SawAnchor.SawEntity>().Place(x, y);
-				points.Add(new Point16(x, y));
+				x -= 2;
+				style = 1;
+			}
+			else
+			{
+				x += StandardHallSize;
 			}
 
-		skipSaws: ;
+			PriorityQueue<float, float> offsets = new();
+
+			for (int i = 0; i < 6; ++i)
+			{
+				offsets.Enqueue(i / 5f, WorldGen.genRand.NextFloat());
+			}
+
+			for (int i = -3; i < 3; ++i)
+			{
+				PlaceLaserTurret(x, y + i * 3, style, offsets.Dequeue());
+			}
 		}
 	}
 
-	private static bool CanPlaceSaw(int x, int y, bool up)
+	private static void PlaceLaserTurret(int x, int y, int style, float timerModifier)
 	{
-		int yOff = y;
-
-		while (!WorldGen.SolidTile(x, yOff))
+		for (int i = 0; i < 2; ++i)
 		{
-			yOff += up ? -1 : 1;
+			for (int j = 0; j < 2; ++j)
+			{
+				Tile tile = Main.tile[x + i, y + j];
+				tile.HasTile = false;
+				tile.TileColor = PaintID.None;
+			}
 		}
 
-		return Math.Abs(yOff - y) <= 2;
+		WorldGen.PlaceObject(x, y, ModContent.TileType<LaserShooter>(), style: style);
+
+		int te = ModContent.GetInstance<LaserShooter.LaserShooterTE>().Place(x, y);
+		(TileEntity.ByID[te] as LaserShooter.LaserShooterTE).Timer = (int)(LaserShooter.LaserShooterTE.MaxTimer * timerModifier);
 	}
+
+	public static void SpawnHallContent(Hall hall)
+	{
+		int start = Math.Min(hall.Start.X, hall.End.X);
+		int end = Math.Max(hall.Start.X, hall.End.X);
+
+		for (int x = start; x < end; ++x)
+		{
+			for (int y = hall.Start.Y - StandardHallSize / 2 - 3; y < hall.Start.Y + StandardHallSize / 2 + 3; ++y)
+			{
+				if (!WorldGen.SolidTile(x, y))
+				{
+					continue;
+				}
+
+				OpenFlags flags = OpenExtensions.GetOpenings(x, y, false, false);
+				string binary = Convert.ToString((byte)flags, 2);
+				int count = binary.ToCharArray().Count('1');
+
+				if (count >= 5 && hall.HallType == HallwayType.Saw)
+				{
+					Tile tile = Main.tile[x, y];
+					tile.HasTile = true;
+					tile.TileType = (ushort)ModContent.TileType<SawAnchor>();
+
+					ModContent.GetInstance<SawAnchor.SawEntity>().Place(x, y);
+				}
+
+				if (count == 3 && hall.HallType == HallwayType.Laser && WorldGen.genRand.NextBool(30))
+				{
+					Tile tile = Main.tile[x, y];
+					tile.HasTile = true;
+					tile.TileType = (ushort)ModContent.TileType<ConstantLaser>();
+					tile.TileFrameX = (short)(y < hall.Start.Y ? 18 : 0);
+					tile.TileFrameY = 0;
+
+					ModContent.GetInstance<ConstantLaser.ConstantLaserTE>().Place(x, y);
+				}
+			}
+		}
+	}
+
+	//private static void SpawnHallStructures(string structureName, Hall hall, int range, int strCount)
+	//{
+	//	for (int i = 0; i < strCount; ++i)
+	//	{
+	//		int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, GenRandom.NextFloat());
+	//		int y = hall.Start.Y;
+	//		string name = structureName + "_" + Main.rand.Next(range);
+			
+	//		StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 1));
+	//	}
+	//}
 
 	private static void LineCut(int spawnX, int spawnY, int endX, int endY, int length)
 	{

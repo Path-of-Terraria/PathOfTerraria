@@ -18,4 +18,12 @@ internal static class TileExtensions
 	{
 		return new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 	}
+
+	public static void MergeWith(this ModTile tile, params int[] otherIds)
+	{
+		foreach (int other in otherIds)
+		{
+			TileMerger.MutualMerge(tile.Type, other);
+		}
+	}
 }
