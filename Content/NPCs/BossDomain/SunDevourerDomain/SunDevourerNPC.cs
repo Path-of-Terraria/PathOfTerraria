@@ -17,6 +17,11 @@ public sealed class SunDevourerNPC : ModNPC
 	public const int IDLE_DURATION = 5 * 60;
 
 	/// <summary>
+	///		Represents the duration of the sandstorm state of the NPC, in ticks.
+	/// </summary>
+	public const int SANDSTORM_DURATION = 10 * 60;
+
+	/// <summary>
 	///		Represents the duration of the charge focus of the NPC, in ticks.
 	/// </summary>
 	public const int FOCUS_DURATION_CHARGE = 3 * 60;
@@ -289,44 +294,20 @@ public sealed class SunDevourerNPC : ModNPC
 
 	private void UpdateIdle_Day()
 	{
+		if (Timer >= IDLE_DURATION)
+		{
+			UpdateState();
+			return;
+		}
+		
 		Timer++;
 
 		var radius = 16f * 16f;
 		var angle = Timer * 0.025f;
     
 		var position = Player.Center + new Vector2(radius, 0f).RotatedBy(angle) + Player.velocity;
-		
-		var direction = NPC.DirectionTo(position);
-		var velocity = direction * Speed;
 
-		NPC.velocity = Vector2.SmoothStep(NPC.velocity, velocity, 0.25f);
-
-		if (Timer < IDLE_DURATION)
-		{
-			return;
-		}
-
-		switch (Previous)
-		{
-			case STATE_IDLE:
-				UpdateState(STATE_CHARGE);
-				break;
-			case STATE_CHARGE:
-				ApplyFocus(FOCUS_DURATION_ERUPTION);
-
-				UpdateState(STATE_ERUPTION);
-				break;
-			case STATE_ERUPTION:
-				ApplyFocus(FOCUS_DURATION_CHARGE);
-
-				UpdateState(STATE_SANDSTORM);
-				break;
-			case STATE_SANDSTORM:
-				ApplyFocus(FOCUS_DURATION_SANDSTORM);
-				
-				UpdateState(STATE_IDLE);
-				break;
-		}
+		ApplyMovement(position, Speed);
 	}
 
 	private void UpdateIdle_Night()
@@ -350,13 +331,13 @@ public sealed class SunDevourerNPC : ModNPC
 	{
 		Timer++;
 		
-		if (Timer < COOLDOWN_CHARGE)
+		if (Timer < 60f)
 		{
 			NPC.velocity *= 0.95f;
 		}
 		else
 		{
-			if (Timer == COOLDOWN_CHARGE)
+			if (Timer == 60f)
 			{
 				direction = NPC.DirectionTo(Player.Center + Player.velocity * 2f);
 				
@@ -365,7 +346,7 @@ public sealed class SunDevourerNPC : ModNPC
 				NPC.netUpdate = true;
 			}
 			
-			if (Timer > COOLDOWN_CHARGE)
+			if (Timer > 90f)
 			{
 				Timer = 0f;
 				
@@ -373,13 +354,13 @@ public sealed class SunDevourerNPC : ModNPC
 			}
 			else
 			{
-				var velocity = direction * Speed * 2f;
+				var velocity = direction * Speed * 1.5f;
 
-				ApplyVelocity(velocity);
+				NPC.velocity = Vector2.SmoothStep(NPC.velocity, velocity, 0.25f);
 			}
 		}
 
-		if (Counter <= COUNT_ERUPTION)
+		if (Counter <= 3f)
 		{
 			return;
 		}
@@ -394,6 +375,12 @@ public sealed class SunDevourerNPC : ModNPC
 
 	private void UpdateEruption()
 	{
+		if (Counter >= COUNT_ERUPTION)
+		{
+			UpdateState(STATE_IDLE);
+			return;
+		}
+		
 		var position = Player.Center - new Vector2(0f, 24f * 16f) + new Vector2(0f, 64f).RotatedBy(Main.GameUpdateCount * 0.1f);
 
 		ApplyMovement(position, Speed * 2f);
@@ -404,39 +391,63 @@ public sealed class SunDevourerNPC : ModNPC
 		{
 			return;
 		}
+
+		var count = Main.rand.Next(1, 4);
+
+		for (var i = 0; i < count; i++)
+		{
+			var origin = new Vector2(0f, 1f).RotatedByRandom(MathHelper.ToRadians(5f)) * Main.rand.NextFloat(16f, 24f);
+			var offset = new Vector2(Main.rand.Next(-Main.LogicCheckScreenWidth / 2, Main.LogicCheckScreenWidth / 2), -Main.LogicCheckScreenHeight / 2f);
 		
-		var origin = new Vector2(0f, 1f).RotatedByRandom(MathHelper.ToRadians(5f)) * Main.rand.NextFloat(16f, 24f);
-		var offset = new Vector2(Main.rand.Next(-Main.LogicCheckScreenWidth / 2, Main.LogicCheckScreenWidth / 2), -Main.LogicCheckScreenHeight / 2f);
-		
-		Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + offset, origin, ModContent.ProjectileType<SunDevourerEruptionProjectile>(), 20, 1f, -1, 0f, Player.whoAmI);
+			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + offset, origin, ModContent.ProjectileType<SunDevourerEruptionProjectile>(), 20, 1f, -1, 0f, Player.whoAmI);
+		}
 		
 		Timer = 0f;
 		Counter++;
 
 		NPC.netUpdate = true;
-		
-		if (Counter <= COUNT_ERUPTION)
-		{
-			return;
-		}
-
-		UpdateState(STATE_IDLE);
 	}
 	
 	private void UpdateSandstorm()
 	{
+		if (Timer >= SANDSTORM_DURATION)
+		{
+			UpdateState(STATE_IDLE);
+			return;
+		}
+		
 		NPC.velocity *= 0.95f;
 	
 		Timer++;
 
-		Player.velocity += Player.DirectionTo(NPC.Center) * 0.1f;
-
-		if (Timer < 10 * 60)
+		Player.velocity += Player.DirectionTo(NPC.Center) * 0.25f;
+	}
+	
+	private void UpdateState() 
+	{
+		switch (Previous)
 		{
-			return;
-		}
+			case STATE_IDLE:
+				ApplyFocus(FOCUS_DURATION_CHARGE);
 
-		UpdateState(STATE_IDLE);
+				UpdateState(STATE_CHARGE);
+				break;
+			case STATE_CHARGE:
+				ApplyFocus(FOCUS_DURATION_ERUPTION);
+
+				UpdateState(STATE_ERUPTION);
+				break;
+			case STATE_ERUPTION:
+				ApplyFocus(FOCUS_DURATION_SANDSTORM);
+
+				UpdateState(STATE_SANDSTORM);
+				break;
+			case STATE_SANDSTORM:
+				ApplyFocus(FOCUS_DURATION_CHARGE);
+
+				UpdateState(STATE_CHARGE);
+				break;
+		}
 	}
 
 	private void UpdateState(float state)
@@ -457,9 +468,10 @@ public sealed class SunDevourerNPC : ModNPC
 
 		if (distance < 16f * 16f)
 		{
-			NPC.velocity *= 0.95f; 
+			NPC.velocity *= 0.95f;
+			return;
 		}
-
+		
 		var velocity = direction * speed;
 
 		ApplyVelocity(velocity);

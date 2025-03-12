@@ -99,7 +99,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 		
 		var direction = MathF.Sign(Player.Center.X - Projectile.Center.X);
 
-		Projectile.velocity.X += direction * 0.05f;
+		Projectile.velocity.X += direction * 0.1f;
 	}
 	
 	private void UpdateDustEffects()
