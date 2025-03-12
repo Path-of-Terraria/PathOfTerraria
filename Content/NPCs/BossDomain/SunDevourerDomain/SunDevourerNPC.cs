@@ -255,9 +255,25 @@ public sealed class SunDevourerNPC : ModNPC
 			return;
 		}
 
-		ApplyFocus(FOCUS_DURATION);
-		
-		UpdateState(STATE_ERUPTION);
+
+		switch (Previous)
+		{
+			case STATE_IDLE:
+				UpdateState(STATE_CHARGE);
+				break;
+			case STATE_CHARGE:
+				ApplyFocus(180);
+
+				UpdateState(STATE_ERUPTION);
+				break;
+			case STATE_ERUPTION:
+				ApplyFocus(90);
+
+				UpdateState(STATE_CHARGE);
+				break;
+			case STATE_SANDSTORM:
+				break;
+		}
 	}
 
 	private void UpdateIdle_Night()
@@ -342,7 +358,7 @@ public sealed class SunDevourerNPC : ModNPC
 		var origin = new Vector2(0f, 1f).RotatedByRandom(MathHelper.ToRadians(5f)) * Main.rand.NextFloat(16f, 24f);
 		var offset = new Vector2(Main.rand.Next(-Main.LogicCheckScreenWidth / 2, Main.LogicCheckScreenWidth / 2), -Main.LogicCheckScreenHeight / 2f);
 		
-		Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + offset, origin, ModContent.ProjectileType<SunDevourerEruptionProjectile>(), 20, 1f);
+		Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + offset, origin, ModContent.ProjectileType<SunDevourerEruptionProjectile>(), 20, 1f, -1, 0f, Player.whoAmI);
 		
 		Timer = 0f;
 		Counter++;
@@ -391,14 +407,14 @@ public sealed class SunDevourerNPC : ModNPC
 			duration,
 			(ref SpriteViewMatrix matrix, float progress) =>
 			{
-				var multiplier = progress / (float)(duration * 2f);
-				var fade = MathF.Sin(multiplier * MathF.PI);
+				var multiplier = 1f - progress; 
+				var fade = MathF.Sin(multiplier * MathF.PI); 
 
 				matrix.Zoom = new Vector2(1f + 1f * fade);
 			}
 		);
 		
-		Main.instance.CameraModifiers.Add(new FocusCameraModifier(() => NPC.Center + NPC.Size / 2f, duration));
+		Main.instance.CameraModifiers.Add(new FocusCameraModifier(() => NPC.Center + NPC.Size / 2f, duration / 2));
 	}
 	
 	#endregion
@@ -430,7 +446,7 @@ public sealed class SunDevourerNPC : ModNPC
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		if (State == STATE_CHARGE)
+		if (State == STATE_CHARGE || State == STATE_ERUPTION)
 		{
 			Opacity += 0.05f;
 		}

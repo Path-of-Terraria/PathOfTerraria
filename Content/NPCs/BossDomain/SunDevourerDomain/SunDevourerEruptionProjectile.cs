@@ -11,7 +11,20 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 {
 	private static readonly VertexStrip Strip = new();
 	
+	/// <summary>
+	///		Gets or sets the timer of the projectile. Shorthand for <c>Projectile.ai[0]</c>.
+	/// </summary>
 	public ref float Timer => ref Projectile.ai[0];
+
+	/// <summary>
+	///		Gets or sets the index of the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Projectile.ai[1]</c>.
+	/// </summary>
+	public ref float Index => ref Projectile.ai[1];
+
+	/// <summary>
+	///		Gets the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Main.player[(int)Projectile.ai[1]]</c>.
+	/// </summary>
+	public Player Player => Main.player[(int)Index];
 	
 	public override void SetStaticDefaults()
 	{
@@ -68,19 +81,43 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 	{
 		base.AI();
 
-		if (Main.rand.NextBool(5))
-		{
-			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FlameBurst);
-
-			dust.velocity *= 2f;
-			
-			dust.noGravity = true;
-		}
-
 		Timer++;
 
-		Projectile.velocity.X = MathF.Cos(Timer * 0.1f) * 2f;
+		Projectile.velocity.X += MathF.Cos(Timer * 0.1f) * 0.01f;
 		
+		UpdateHoming();
+		UpdateGravity();
+		UpdateDustEffects();
+	}
+
+	private void UpdateHoming()
+	{
+		if (!Player.active || Player.dead || Player.ghost)
+		{
+			return;
+		}
+		
+		var direction = MathF.Sign(Player.Center.X - Projectile.Center.X);
+
+		Projectile.velocity.X += direction * 0.05f;
+	}
+	
+	private void UpdateDustEffects()
+	{
+		if (!Main.rand.NextBool(5))
+		{
+			return;
+		}
+		
+		var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FlameBurst);
+
+		dust.velocity *= 2f;
+			
+		dust.noGravity = true;
+	}
+
+	private void UpdateGravity()
+	{
 		Projectile.velocity.Y += 0.3f;
 
 		if (Projectile.velocity.Y < 12f)
