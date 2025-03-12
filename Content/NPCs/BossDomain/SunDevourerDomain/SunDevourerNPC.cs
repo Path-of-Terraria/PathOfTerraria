@@ -11,24 +11,47 @@ public sealed class SunDevourerNPC : ModNPC
 {
 	#region Durations
 
+	/// <summary>
+	///		Represents the duration of the idle state of the NPC, in ticks.
+	/// </summary>
 	public const int IDLE_DURATION = 5 * 60;
 
+	/// <summary>
+	///		Represents the duration of the charge focus of the NPC, in ticks.
+	/// </summary>
 	public const int FOCUS_DURATION_CHARGE = 3 * 60;
 
+	/// <summary>
+	///		Represents the duration of the eruption focus of the NPC, in ticks.
+	/// </summary>
 	public const int FOCUS_DURATION_ERUPTION = 90;
+
+	/// <summary>
+	///		Represents the duration of the sandstorm focus of the NPC, in ticks.
+	/// </summary>
+	public const int FOCUS_DURATION_SANDSTORM = 3 * 60;
 
 	#endregion
 
 	#region Counts
 	
+	/// <summary>
+	///		Represents the amount of dashes the NPC performs during the charge state.
+	/// </summary>
 	public const int COUNT_CHARGE = 3;
 
+	/// <summary>
+	///		Represents the amount of projectiles the NPC shoots during the eruption state.
+	/// </summary>
 	public const int COUNT_ERUPTION = 50;
 	
 	#endregion
 	
 	#region Cooldowns
 
+	/// <summary>
+	///		Represents the cooldown between each dash of the NPC during the charge state, in ticks.
+	/// </summary>
 	public const int COOLDOWN_CHARGE = 90;
 
 	#endregion
@@ -54,11 +77,19 @@ public sealed class SunDevourerNPC : ModNPC
 	/// </summary>
 	public const float STATE_IDLE = 0f;
 
+	/// <summary>
+	///		Represents the identity of the charge state of the NPC.
+	/// </summary>
 	public const float STATE_CHARGE = 1f;
 
+	/// <summary>
+	///		Represents the identity of the eruption state of the NPC.
+	/// </summary>
 	public const float STATE_ERUPTION = 2f;
 	
-	// Darude
+	/// <summary>
+	///		Represents the identity of the sandstorm state of the NPC.
+	/// </summary>
 	public const float STATE_SANDSTORM = 3f;
 	
 	#endregion
@@ -288,9 +319,12 @@ public sealed class SunDevourerNPC : ModNPC
 			case STATE_ERUPTION:
 				ApplyFocus(FOCUS_DURATION_CHARGE);
 
-				UpdateState(STATE_CHARGE);
+				UpdateState(STATE_SANDSTORM);
 				break;
 			case STATE_SANDSTORM:
+				ApplyFocus(FOCUS_DURATION_SANDSTORM);
+				
+				UpdateState(STATE_IDLE);
 				break;
 		}
 	}
@@ -391,7 +425,18 @@ public sealed class SunDevourerNPC : ModNPC
 	
 	private void UpdateSandstorm()
 	{
-		// TODO: Behavior.
+		NPC.velocity *= 0.95f;
+	
+		Timer++;
+
+		Player.velocity += Player.DirectionTo(NPC.Center) * 0.1f;
+
+		if (Timer < 10 * 60)
+		{
+			return;
+		}
+
+		UpdateState(STATE_IDLE);
 	}
 
 	private void UpdateState(float state)
@@ -423,7 +468,7 @@ public sealed class SunDevourerNPC : ModNPC
 	private void ApplyVelocity(Vector2 velocity)
 	{
 		NPC.velocity = Vector2.SmoothStep(NPC.velocity, velocity, 0.25f);
-	}	
+	}
 	
 	#endregion
 	
@@ -476,7 +521,7 @@ public sealed class SunDevourerNPC : ModNPC
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		if (State == STATE_CHARGE || State == STATE_ERUPTION)
+		if (State != STATE_IDLE)
 		{
 			Opacity += 0.05f;
 		}
