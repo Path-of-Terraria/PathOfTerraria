@@ -9,10 +9,30 @@ namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
 
 public sealed class SunDevourerNPC : ModNPC
 {
+	#region Durations
+
 	public const int IDLE_DURATION = 5 * 60;
 
-	public const int FOCUS_DURATION = 3 * 60;
+	public const int FOCUS_DURATION_CHARGE = 3 * 60;
+
+	public const int FOCUS_DURATION_ERUPTION = 90;
+
+	#endregion
+
+	#region Counts
 	
+	public const int COUNT_CHARGE = 3;
+
+	public const int COUNT_ERUPTION = 50;
+	
+	#endregion
+	
+	#region Cooldowns
+
+	public const int COOLDOWN_CHARGE = 90;
+
+	#endregion
+		
 	#region Modes
 	
 	/// <summary>
@@ -95,7 +115,7 @@ public sealed class SunDevourerNPC : ModNPC
 	/// <summary>
 	///		Gets the rate at which the NPC shoots projectiles.
 	/// </summary>
-	public float Rate => Eclipse ? 5f : 10f;
+	public float Cooldown => Eclipse ? 5f : 10f;
 	
 	/// <summary>
 	///		Gets the <see cref="Player"/> instance that the NPC is targeting. Shorthand for <c>Main.player[NPC.target]</c>.
@@ -255,19 +275,18 @@ public sealed class SunDevourerNPC : ModNPC
 			return;
 		}
 
-
 		switch (Previous)
 		{
 			case STATE_IDLE:
 				UpdateState(STATE_CHARGE);
 				break;
 			case STATE_CHARGE:
-				ApplyFocus(180);
+				ApplyFocus(FOCUS_DURATION_ERUPTION);
 
 				UpdateState(STATE_ERUPTION);
 				break;
 			case STATE_ERUPTION:
-				ApplyFocus(90);
+				ApplyFocus(FOCUS_DURATION_CHARGE);
 
 				UpdateState(STATE_CHARGE);
 				break;
@@ -297,13 +316,13 @@ public sealed class SunDevourerNPC : ModNPC
 	{
 		Timer++;
 		
-		if (Timer < 60f)
+		if (Timer < COOLDOWN_CHARGE)
 		{
 			NPC.velocity *= 0.95f;
 		}
 		else
 		{
-			if (Timer == 60f)
+			if (Timer == COOLDOWN_CHARGE)
 			{
 				direction = NPC.DirectionTo(Player.Center + Player.velocity * 2f);
 				
@@ -312,7 +331,7 @@ public sealed class SunDevourerNPC : ModNPC
 				NPC.netUpdate = true;
 			}
 			
-			if (Timer > 90f)
+			if (Timer > COOLDOWN_CHARGE)
 			{
 				Timer = 0f;
 				
@@ -320,13 +339,13 @@ public sealed class SunDevourerNPC : ModNPC
 			}
 			else
 			{
-				var velocity = direction * Speed * 1.5f;
+				var velocity = direction * Speed * 2f;
 
-				NPC.velocity = Vector2.SmoothStep(NPC.velocity, velocity, 0.25f);
+				ApplyVelocity(velocity);
 			}
 		}
 
-		if (Counter <= 3f)
+		if (Counter <= COUNT_ERUPTION)
 		{
 			return;
 		}
@@ -342,15 +361,12 @@ public sealed class SunDevourerNPC : ModNPC
 	private void UpdateEruption()
 	{
 		var position = Player.Center - new Vector2(0f, 24f * 16f) + new Vector2(0f, 64f).RotatedBy(Main.GameUpdateCount * 0.1f);
-		
-		var direction = NPC.DirectionTo(position);
-		var velocity = direction * Speed * 1.5f;
 
-		NPC.velocity = Vector2.SmoothStep(NPC.velocity, velocity, 0.25f);
+		ApplyMovement(position, Speed * 2f);
 		
 		Timer++;
 
-		if (Timer < Rate)
+		if (Timer < Cooldown)
 		{
 			return;
 		}
@@ -365,7 +381,7 @@ public sealed class SunDevourerNPC : ModNPC
 
 		NPC.netUpdate = true;
 		
-		if (Counter <= 50f)
+		if (Counter <= COUNT_ERUPTION)
 		{
 			return;
 		}
@@ -388,21 +404,35 @@ public sealed class SunDevourerNPC : ModNPC
 
 		NPC.netUpdate = true;
 	}
+
+	private void ApplyMovement(Vector2 position, float speed)
+	{
+		var direction = NPC.DirectionTo(position);
+		var distance = Vector2.DistanceSquared(NPC.Center, position);
+
+		if (distance < 16f * 16f)
+		{
+			NPC.velocity *= 0.95f; 
+		}
+
+		var velocity = direction * speed;
+
+		ApplyVelocity(velocity);
+	}
+
+	private void ApplyVelocity(Vector2 velocity)
+	{
+		NPC.velocity = Vector2.SmoothStep(NPC.velocity, velocity, 0.25f);
+	}	
 	
 	#endregion
 	
 	#region Effects
 
-	public override void HitEffect(NPC.HitInfo hit)
-	{
-		base.HitEffect(hit);
-		
-		// TODO: Hit effects and death effects.
-	}
-
 	private void ApplyFocus(int duration)
 	{
-		ZoomSystem.AddModifier(
+		ZoomSystem.AddModifier
+		(
 			"SunDevourer", 
 			duration,
 			(ref SpriteViewMatrix matrix, float progress) =>
