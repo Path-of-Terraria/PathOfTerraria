@@ -1,22 +1,11 @@
-﻿using ReLogic.Content;
+﻿using PathOfTerraria.Core.Graphics.Shaders;
+using ReLogic.Content;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
 
 public sealed class SunDevourerSceneEffect : ModSceneEffect
 {
-	/// <summary>
-	///		Gets or sets the vignette shader asset.
-	/// </summary>
-	public static Asset<Effect> VignetteShader { get; private set; }
-	
 	public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
-
-	public override void Load()
-	{
-		base.Load();
-
-		VignetteShader = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/Vignette", AssetRequestMode.ImmediateLoad);
-	}
 
 	public override void SpecialVisuals(Player player, bool isActive) 
 	{
@@ -24,7 +13,7 @@ public sealed class SunDevourerSceneEffect : ModSceneEffect
 		
 		if (isActive)
 		{
-			var shader = VignetteShader.Value;
+			var shader = VignetteLoader.Vignette.Value;
 			
 			shader.Parameters["uOpacity"].SetValue(1f);
 			shader.Parameters["strength"].SetValue(0.8f);
@@ -33,7 +22,7 @@ public sealed class SunDevourerSceneEffect : ModSceneEffect
 			shader.Parameters["outerRadius"].SetValue(1.2f);
 		}
 
-		player.ManageSpecialBiomeVisuals($"{PoTMod.ModName}:{nameof(VignetteShader)}", isActive);
+		player.ManageSpecialBiomeVisuals($"{PoTMod.ModName}:Vignette", isActive);
 	}
 
 	public override bool IsSceneEffectActive(Player player)
