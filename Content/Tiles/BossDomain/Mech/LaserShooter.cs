@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Common.NPCs;
+using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -28,7 +29,7 @@ internal class LaserShooter : ModTile
 
 		DustType = DustID.Ice;
 
-		AddMapEntry(new Color(250, 250, 255));
+		AddMapEntry(new Color(255, 120, 120));
 	}
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -57,7 +58,8 @@ internal class LaserShooter : ModTile
 			{
 				int side = Main.tile[Position].TileFrameX < 36 ? -1 : 1;
 				Vector2 position = worldPos + new Vector2(side == -1 ? -20 : 36, 10);
-				int proj = Projectile.NewProjectile(null, position, new Vector2(side * 7f, 0), ProjectileID.DeathLaser, 40, 0, Main.myPlayer);
+				int damage = ModeUtils.ProjectileDamage(50, 80, 150);
+				int proj = Projectile.NewProjectile(null, position, new Vector2(side * 7f, 0), ProjectileID.DeathLaser, damage, 0, Main.myPlayer);
 				Main.projectile[proj].timeLeft = 5000;
 				
 				Timer = 0;

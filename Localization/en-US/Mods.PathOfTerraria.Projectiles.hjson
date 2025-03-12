@@ -155,3 +155,5 @@ SawProjectile.DisplayName: Saw
 ConstantLaserProj.DisplayName: Laser
 ExplosiveTurret.DisplayName: Explosive Turret
 PincerProjectile.DisplayName: Pincer Projectile
+PrimeRocket.DisplayName: Prime Rocket
+PrimeBomb.DisplayName: Prime Bomb

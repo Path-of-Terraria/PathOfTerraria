@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Tiles;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -85,13 +86,14 @@ public class ConstantLaser : ModTile
 			Projectile.width = 2;
 			Projectile.height = 2;
 			Projectile.tileCollide = false;
+			Projectile.netImportant = true;
 		}
 
 		public override void AI()
 		{
 			Projectile.timeLeft = 2;
 
-			if (Init == 0)
+			if (Init == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				Init = 1;
 				Length = 0;
@@ -132,6 +134,16 @@ public class ConstantLaser : ModTile
 					Lighting.AddLight(Projectile.Center + Projectile.velocity * i * 16, TorchID.Red);
 				}
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Length);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Length = reader.ReadSingle();
 		}
 
 		public override bool CanHitPlayer(Player target)

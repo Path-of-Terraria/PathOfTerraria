@@ -8,7 +8,6 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
-using Terraria.ModLoader.Config;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -161,11 +160,11 @@ internal class PrimeDomain : BossDomainSubworld
 
 		string spawn = $"Assets/Structures/SkelePrimeDomain/{(!LeftSpawn ? "Left" : "Right")}Start_" + GenRandom.Next(3);
 		Point16 size = StructureTools.GetSize(spawn);
-		StructureTools.PlaceByOrigin(spawn, new Point16(spawnX, spawnY + size.Y % 2), new Vector2(0.5f));
+		StructureTools.PlaceByOrigin(spawn, new Point16(spawnX, spawnY + size.Y % 2), new Vector2(0.5f), noSync: true);
 
 		string arena = "Assets/Structures/SkelePrimeDomain/Arena_0";
 		Point16 arenaSize = StructureTools.GetSize(arena);
-		Point16 pos = StructureTools.PlaceByOrigin(arena, new Point16(!LeftSpawn ? 180 : Width - 180, Height / 2 + 2), new Vector2(0.5f));
+		Point16 pos = StructureTools.PlaceByOrigin(arena, new Point16(!LeftSpawn ? 180 : Width - 180, Height / 2 + 2), new Vector2(0.5f), noSync: true);
 
 		Arena = new Rectangle((pos.X + 5) * 16, pos.Y * 16, (arenaSize.X - 10) * 16, arenaSize.Y * 16);
 	}
@@ -214,7 +213,7 @@ internal class PrimeDomain : BossDomainSubworld
 		}
 		else if (hall.HallType == HallwayType.Vice)
 		{
-			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/ViceHall_", hall, 4, 15);
+			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/ViceHall_", hall, 10, 15);
 		}
 	}
 
@@ -285,7 +284,7 @@ internal class PrimeDomain : BossDomainSubworld
 
 			if (GenVars.structures.CanPlace(new Rectangle(x, y - size.Y / 2, size.X, size.Y), 6) && CanPlaceHallStructureHere(x, y, size))
 			{
-				Point16 pos = StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 0.5f));
+				Point16 pos = StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 0.5f), noSync: true);
 				GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 6);
 			}
 			else

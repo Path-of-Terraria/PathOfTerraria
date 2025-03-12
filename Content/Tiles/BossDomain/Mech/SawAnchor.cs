@@ -119,6 +119,7 @@ internal class SawAnchor : ModTile
 			Projectile.timeLeft = 2;
 			Projectile.aiStyle = -1;
 			Projectile.hostile = true;
+			Projectile.netImportant = true;
 			Projectile.friendly = false;
 		}
 

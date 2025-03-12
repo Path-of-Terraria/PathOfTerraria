@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics.PackedVector;
-using PathOfTerraria.Common.Tiles;
-using System.Diagnostics;
+﻿using PathOfTerraria.Common.NPCs;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -64,6 +62,7 @@ public class ViceSpearAnchor : ModTile
 			Projectile.width = 20;
 			Projectile.height = 20;
 			Projectile.tileCollide = false;
+			Projectile.netImportant = true;
 		}
 
 		public override void AI()
@@ -74,7 +73,7 @@ public class ViceSpearAnchor : ModTile
 			if (State == 0)
 			{
 				State = 1;
-				Length = 20;
+				Length = 18;
 			}
 			else if (State == 1)
 			{
@@ -194,7 +193,8 @@ public class PincerTE : ModTileEntity
 
 			var src = new EntitySource_TileUpdate(Position.X, Position.Y);
 			int type = ModContent.ProjectileType<ViceSpearAnchor.PincerProjectile>();
-			int proj = Projectile.NewProjectile(src, worldPos, direction, type, 40, 0, Main.myPlayer, 0);
+			int damage = ModeUtils.ProjectileDamage(80, 100, 150);
+			int proj = Projectile.NewProjectile(src, worldPos, direction, type, damage, 0, Main.myPlayer, 0);
 
 			_hasShot = true;
 		}
