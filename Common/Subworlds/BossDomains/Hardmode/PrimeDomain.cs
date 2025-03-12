@@ -8,6 +8,7 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
+using Terraria.ModLoader.Config;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
@@ -32,6 +33,8 @@ internal class PrimeDomain : BossDomainSubworld
 	public override int Width => 1300;
 	public override int Height => 400;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
+	public override int[] WhitelistedExplodableTiles => [ModContent.TileType<ExplosivePowder>()];
+	public override int[] WhitelistedMiningTiles => [ModContent.TileType<GrabberAnchor>()];
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
@@ -40,11 +43,83 @@ internal class PrimeDomain : BossDomainSubworld
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenTerrain),
-		new PassLegacy("Tunnels", DigTunnels)];
+		new PassLegacy("Tunnels", DigTunnels),
+		new PassLegacy("AddDecor", GenDecor)];
+
+	private void GenDecor(GenerationProgress progress, GameConfiguration configuration)
+	{
+		Dictionary<Point16, OpenFlags> metals = [];
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
+
+				int wall = tile.WallType;
+
+				if (wall != ModContent.WallType<TinBrickUnsafe>() && wall != ModContent.WallType<CopperPlatingUnsafe>() && wall != ModContent.WallType<TinPlatingUnsafe>())
+				{
+					tile.WallColor = PaintID.None;
+				}
+				else
+				{
+					tile.WallColor = PaintID.GrayPaint;
+				}
+
+				if (!tile.HasTile || flags == OpenFlags.None)
+				{
+					continue;
+				}
+
+				if (tile.TileType is TileID.TinPlating or TileID.TinBrick or TileID.LeadBrick or TileID.TungstenBrick or TileID.CopperPlating)
+				{
+					metals.Add(new Point16(i, j), flags);
+				}
+			}
+
+			progress.Value = (float)i / Main.maxTilesX;
+		}
+
+		foreach (KeyValuePair<Point16, OpenFlags> metal in metals)
+		{
+			TwinsDomain.DecorateMetals(metal.Key, metal.Value, true);
+
+			if (WorldGen.genRand.NextBool(50) && metal.Value.Cardinal())
+			{
+				SnakeGemspark(metal.Key, metal.Value);
+			}
+		}
+	}
+
+	private static void SnakeGemspark(Point16 key, OpenFlags value)
+	{
+		Point direction = value.GetDirectionRandom(WorldGen.genRand);
+		direction = new Point(-direction.X, -direction.Y);
+		var position = key.ToPoint();
+		int count = WorldGen.genRand.Next(10, 50);
+
+		while (WorldGen.SolidOrSlopedTile(position.X, position.Y))
+		{
+			Tile tile = Main.tile[position];
+			tile.WallType = WallID.RubyGemspark;
+			tile.WallColor = PaintID.None;
+
+			position += direction;
+
+			if (count-- < 0)
+			{
+				direction = (OpenFlags.Above | OpenFlags.Below | OpenFlags.Left | OpenFlags.Right).GetDirectionRandom();
+				count = WorldGen.genRand.Next(10, 50);
+			}
+		}
+	}
 
 	private void DigTunnels(GenerationProgress progress, GameConfiguration configuration)
 	{
-		int spawnX = LeftSpawn ? 120 : Width - 120;
+		int spawnX = LeftSpawn ? 180 : Width - 180;
 		int spawnY = Height / 2;
 
 		Main.spawnTileX = spawnX;
@@ -92,7 +167,7 @@ internal class PrimeDomain : BossDomainSubworld
 		Point16 arenaSize = StructureTools.GetSize(arena);
 		Point16 pos = StructureTools.PlaceByOrigin(arena, new Point16(!LeftSpawn ? 180 : Width - 180, Height / 2 + 2), new Vector2(0.5f));
 
-		Arena = new Rectangle(pos.X * 16, pos.Y * 16, arenaSize.X * 16, arenaSize.Y * 16);
+		Arena = new Rectangle((pos.X + 5) * 16, pos.Y * 16, (arenaSize.X - 10) * 16, arenaSize.Y * 16);
 	}
 
 	private static void GenerateHall(Hall hall)
@@ -100,11 +175,12 @@ internal class PrimeDomain : BossDomainSubworld
 		if (hall.HallType == HallwayType.Saw)
 		{
 			SpawnHallContent(hall);
-			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/SawHall_", hall, 3, 5);
+			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/SawHall_", hall, 10, 15);
 		}
 		else if (hall.HallType == HallwayType.Laser)
 		{
 			SpawnHallContent(hall);
+			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/LaserHall_", hall, 10, 12);
 
 			int x = hall.End.X;
 			int y = hall.End.Y;
@@ -124,13 +200,21 @@ internal class PrimeDomain : BossDomainSubworld
 
 			for (int i = 0; i < 6; ++i)
 			{
-				offsets.Enqueue(i / 5f, WorldGen.genRand.NextFloat());
+				offsets.Enqueue(i / 6f, WorldGen.genRand.NextFloat());
 			}
 
 			for (int i = -3; i < 3; ++i)
 			{
 				PlaceLaserTurret(x, y + i * 3, style, offsets.Dequeue());
 			}
+		}
+		else if (hall.HallType == HallwayType.Cannon)
+		{
+			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/CannonHall_", hall, 8, 6, 1);
+		}
+		else if (hall.HallType == HallwayType.Vice)
+		{
+			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/ViceHall_", hall, 4, 15);
 		}
 	}
 
@@ -178,31 +262,58 @@ internal class PrimeDomain : BossDomainSubworld
 
 					ModContent.GetInstance<SawAnchor.SawEntity>().Place(x, y);
 				}
-
-				if (count == 3 && hall.HallType == HallwayType.Laser && WorldGen.genRand.NextBool(30))
-				{
-					Tile tile = Main.tile[x, y];
-					tile.HasTile = true;
-					tile.TileType = (ushort)ModContent.TileType<ConstantLaser>();
-					tile.TileFrameX = (short)(y < hall.Start.Y ? 18 : 0);
-					tile.TileFrameY = 0;
-
-					ModContent.GetInstance<ConstantLaser.ConstantLaserTE>().Place(x, y);
-				}
 			}
 		}
 	}
 
-	private static void SpawnHallStructures(string structureName, Hall hall, int range, int strCount)
+	private static void SpawnHallStructures(string structureName, Hall hall, int range, int strCount, int widthAdd = 0)
 	{
+		int repeats = 0;
+
 		for (int i = 0; i < strCount; ++i)
 		{
+			if (repeats > 30000)
+			{
+				break;
+			}
+
 			int x = (int)MathHelper.Lerp(hall.Start.X, hall.End.X, GenRandom.NextFloat());
 			int y = hall.Start.Y;
 			string name = structureName + Main.rand.Next(range);
+			Point16 size = StructureTools.GetSize(name);
+			size = new(size.X + widthAdd, size.Y);
 
-			StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 0.5f));
+			if (GenVars.structures.CanPlace(new Rectangle(x, y - size.Y / 2, size.X, size.Y), 6) && CanPlaceHallStructureHere(x, y, size))
+			{
+				Point16 pos = StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 0.5f));
+				GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 6);
+			}
+			else
+			{
+				i--;
+				repeats++;
+			}
 		}
+	}
+
+	private static bool CanPlaceHallStructureHere(int x, int y, Point16 size)
+	{
+		const int Height = 11;
+
+		for (int i = x; i < x + size.X - 1; ++i)
+		{
+			if (!WorldGen.SolidTile(i, y - Height))
+			{
+				return false;
+			}
+
+			if (!WorldGen.SolidTile(i, y + Height - 1))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static void LineCut(int spawnX, int spawnY, int endX, int endY, int length)
@@ -361,7 +472,9 @@ internal class PrimeDomain : BossDomainSubworld
 			{
 				int plr = Main.rand.Next([.. who]);
 				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 25, NPCID.SkeletronPrime);
+				
+				int npc = NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 25, NPCID.SkeletronPrime);
+				Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
 
 				Main.spawnTileX = (int)Arena.Center().X / 16;
 				Main.spawnTileY = (int)Arena.Center().Y / 16;

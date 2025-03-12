@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
-using PathOfTerraria.Common.Tiles;
+﻿using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Content.NPCs.BossDomain.Mech;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -47,6 +46,11 @@ internal class GrabberAnchor : ModTile
 		AddMapEntry(new Color(128, 128, 128));
 	}
 
+	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+	{
+		ModContent.GetInstance<GrabberSpawnEntity>().Kill(i, j);
+	}
+
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		Vector2 pos = TileExtensions.DrawPosition(i, j) - new Vector2(2);
@@ -91,5 +95,13 @@ internal class GrabberAnchor : ModTile
 
 			return Place(topLeftX, topLeftY);
 		}
+	}
+}
+
+public class GrabberAnchorItem : ModItem
+{
+	public override void SetDefaults()
+	{
+		Item.DefaultToPlaceableTile(ModContent.TileType<GrabberAnchor>(), 0);
 	}
 }

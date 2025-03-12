@@ -40,6 +40,11 @@ public abstract class MappingWorld : Subworld
 	/// </summary>
 	public virtual int[] WhitelistedPlaceableTiles => [];
 
+	/// <summary>
+	/// These tiles are allowed to explode, by the player or otherwise.
+	/// </summary>
+	public virtual int[] WhitelistedExplodableTiles => [];
+
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
 

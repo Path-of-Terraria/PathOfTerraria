@@ -999,9 +999,39 @@ TwinsMap: {
 }
 
 MechLampItem: {
-	DisplayName: Mech Lamp Item
+	DisplayName: Mech Lamp
 	Tooltip: ""
 }
 
-CircuitSkullBannerItem.DisplayName: Circuit Skull Banner Item
-SecurityDroneBannerItem.DisplayName: Security Drone Banner Item
+CircuitSkullBannerItem.DisplayName: Circuit Skull Banner
+SecurityDroneBannerItem.DisplayName: Security Drone Banner
+
+ConstantLaserItem: {
+	DisplayName: Constant Laser
+	Tooltip: ""
+}
+
+BrokenLaserItem: {
+	DisplayName: Broken Laser
+	Tooltip: ""
+}
+
+CannonAnchorItem: {
+	DisplayName: Cannon Anchor
+	Tooltip: ""
+}
+
+CannonBombAnchorItem: {
+	DisplayName: Cannon Bomb Anchor
+	Tooltip: ""
+}
+
+PincerAnchorItem: {
+	DisplayName: Pincer Anchor
+	Tooltip: ""
+}
+
+GrabberAnchorItem: {
+	DisplayName: Grabber Anchor Item
+	Tooltip: ""
+}

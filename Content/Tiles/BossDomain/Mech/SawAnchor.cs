@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Tiles;
+﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Tiles;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -52,11 +53,16 @@ internal class SawAnchor : ModTile
 		AddMapEntry(new Color(128, 128, 128));
 	}
 
+	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
+	{
+		ModContent.GetInstance<SawEntity>().Kill(i, j);
+	}
+
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		Vector2 pos = TileExtensions.DrawPosition(i, j) - new Vector2(2);
 		Tile tile = Main.tile[i, j];
-		Rectangle source = new Rectangle(tile.TileFrameX / 18 * 22, 18, 20, 20);
+		Rectangle source = new(tile.TileFrameX / 18 * 22, 18, 20, 20);
 		float sine = MathF.Max(0, 3 * MathF.Sin(-i - j + 0.05f * Main.GameUpdateCount)) * 0.5f;
 
 		spriteBatch.Draw(TextureAssets.Tile[Type].Value, pos, source, Color.White * sine, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
@@ -78,7 +84,8 @@ internal class SawAnchor : ModTile
 				_spawned = true;
 
 				int type = ModContent.ProjectileType<SawProjectile>();
-				Projectile.NewProjectile(new EntitySource_SpawnNPC(), Position.ToWorldCoordinates(), Vector2.Zero, type, 2, 0, Main.myPlayer, Main.rand.Next(2) + 2);
+				int damage = ModeUtils.ProjectileDamage(90);
+				Projectile.NewProjectile(new EntitySource_SpawnNPC(), Position.ToWorldCoordinates(), Vector2.Zero, type, damage, 0, Main.myPlayer, Main.rand.Next(2) + 2);
 			}
 		}
 

@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using SubworldLibrary;
-using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Scenes;
 
@@ -42,6 +41,10 @@ public class MechPlayer : ModPlayer
 			{
 				MechBiome.LocallyInBiome = true;
 			}
+		}
+		else if (SubworldSystem.Current is PrimeDomain)
+		{
+			MechBiome.LocallyInBiome = true;
 		}
 	}
 }

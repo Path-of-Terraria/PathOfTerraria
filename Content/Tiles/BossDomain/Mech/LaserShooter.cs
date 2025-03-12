@@ -38,7 +38,7 @@ internal class LaserShooter : ModTile
 
 	public class LaserShooterTE : ModTileEntity
 	{
-		public const int MaxTimer = 6 * 60;
+		public const int MaxTimer = 12 * 60;
 
 		internal int Timer = 0;
 
@@ -57,7 +57,7 @@ internal class LaserShooter : ModTile
 			{
 				int side = Main.tile[Position].TileFrameX < 36 ? -1 : 1;
 				Vector2 position = worldPos + new Vector2(side == -1 ? -20 : 36, 10);
-				int proj = Projectile.NewProjectile(null, position, new Vector2(side * 8f, 0), ProjectileID.DeathLaser, 40, 0, Main.myPlayer);
+				int proj = Projectile.NewProjectile(null, position, new Vector2(side * 7f, 0), ProjectileID.DeathLaser, 40, 0, Main.myPlayer);
 				Main.projectile[proj].timeLeft = 5000;
 				
 				Timer = 0;

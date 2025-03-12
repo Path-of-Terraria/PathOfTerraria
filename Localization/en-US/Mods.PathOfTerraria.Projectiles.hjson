@@ -151,5 +151,7 @@ FallingEntling.DisplayName: Falling Entling
 FallingBranch.DisplayName: Falling Branch
 TinyBoulder.DisplayName: Tiny Boulder
 LargeRoots.DisplayName: Large Roots
-SawProjectile.DisplayName: Saw Projectile
-ConstantLaserProj.DisplayName: Constant Laser Proj
+SawProjectile.DisplayName: Saw
+ConstantLaserProj.DisplayName: Laser
+ExplosiveTurret.DisplayName: Explosive Turret
+PincerProjectile.DisplayName: Pincer Projectile

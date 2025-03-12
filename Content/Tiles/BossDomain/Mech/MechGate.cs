@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Tiles;
+﻿using PathOfTerraria.Common.Systems.MiscUtilities;
+using PathOfTerraria.Common.Tiles;
 using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -8,13 +9,22 @@ using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain.Mech;
 
-internal class MechGate : ModTile
+public class MechGate : ModTile
 {
+	protected static Asset<Texture2D> BlockerGlow = null;
+	
 	private static Asset<Texture2D> Glow = null;
 
 	public override void SetStaticDefaults()
 	{
-		Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
+		if (Type == ModContent.TileType<MechGate>())
+		{
+			Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
+		}
+		else
+		{
+			BlockerGlow = ModContent.Request<Texture2D>(Texture + "_Glow");
+		}
 
 		Main.tileFrameImportant[Type] = true;
 		Main.tileSolid[Type] = true;
@@ -46,6 +56,16 @@ internal class MechGate : ModTile
 		AddMapEntry(new Color(128, 128, 128));
 	}
 
+	public override void HitWire(int i, int j)
+	{
+		WorldGen.KillTile(i, j);
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			NetMessage.SendTileSquare(-1, i, j);
+		}
+	}
+
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
 		Tile tile = Main.tile[i, j];
@@ -63,14 +83,30 @@ internal class MechGate : ModTile
 		return false;
 	}
 
-	public override void HitWire(int i, int j)
+	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		WorldGen.KillTile(i, j);
+		Tile tile = Main.tile[i, j];
 
-		if (Main.netMode != NetmodeID.SinglePlayer)
+		Rectangle frame = tile.BasicFrame();
+		frame.X %= 36;
+		spriteBatch.Draw(TextureAssets.Tile[Type].Value, TileExtensions.DrawPosition(i, j), frame, Lighting.GetColor(i, j));
+
+		if (tile.HasUnactuatedTile)
 		{
-			NetMessage.SendTileSquare(-1, i, j);
+			spriteBatch.Draw(Glow.Value, TileExtensions.DrawPosition(i, j), frame, Color.White);
 		}
+
+		return false;
+	}
+}
+
+public class BlockingGate : MechGate
+{
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		Main.tileSolid[Type] = false;
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -83,7 +119,7 @@ internal class MechGate : ModTile
 
 		if (tile.HasUnactuatedTile)
 		{
-			spriteBatch.Draw(Glow.Value, TileExtensions.DrawPosition(i, j), frame, Color.White);
+			BlockerSystem.DrawGlow(i, j, Type, spriteBatch, BlockerGlow.Value, Color.Red);
 		}
 
 		return false;
