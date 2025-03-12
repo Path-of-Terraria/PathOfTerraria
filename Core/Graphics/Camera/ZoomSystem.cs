@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using Terraria.Graphics;
 
-namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
+namespace PathOfTerraria.Core.Graphics.Camera;
 
-// TODO: Maybe make this a global system?
 [Autoload(Side = ModSide.Client)]
 public sealed class ZoomSystem : ModSystem
 {
@@ -39,17 +38,16 @@ public sealed class ZoomSystem : ModSystem
 		if (index == -1)
 		{
 			Modifiers.Add(new ZoomModifier(identifier, duration, callback));
+			return;
 		}
-		else
-		{
-			var modifier = Modifiers[index];
-
-			modifier.TimeLeft = Math.Max(modifier.TimeLeft, duration);
-			modifier.TimeMax = Math.Max(modifier.TimeMax, duration);
 		
-			modifier.Callback = callback;
+		var modifier = Modifiers[index];
 
-			Modifiers[index] = modifier;
-		}
+		modifier.TimeLeft = Math.Max(modifier.TimeLeft, duration);
+		modifier.TimeMax = Math.Max(modifier.TimeMax, duration);
+		
+		modifier.Callback = callback;
+
+		Modifiers[index] = modifier;
 	}
 }

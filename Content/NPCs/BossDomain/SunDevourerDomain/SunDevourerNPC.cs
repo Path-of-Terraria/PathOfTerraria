@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using PathOfTerraria.Core.Graphics.Camera;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics;
@@ -158,6 +159,11 @@ public sealed class SunDevourerNPC : ModNPC
 	/// </summary>
 	public Player Player => Main.player[NPC.target];
 
+	/// <summary>
+	///		Gets or sets the target position of the NPC.
+	/// </summary>
+	public Vector2 Position { get; private set; }
+	
 	private float Opacity
 	{
 		get => opacity;
@@ -166,8 +172,6 @@ public sealed class SunDevourerNPC : ModNPC
 	
 	private float opacity;
 	
-	private Vector2 direction;
-
 	#region Defaults
 	
 	public override void SetStaticDefaults()
@@ -239,7 +243,7 @@ public sealed class SunDevourerNPC : ModNPC
 		
 		writer.Write(Previous);
 		
-		writer.WriteVector2(direction);
+		writer.WriteVector2(Position);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -248,7 +252,7 @@ public sealed class SunDevourerNPC : ModNPC
 
 		Previous = reader.ReadSingle();
 		
-		direction = reader.ReadVector2();
+		Position = reader.ReadVector2();
 	}
 
 	#endregion
@@ -339,7 +343,7 @@ public sealed class SunDevourerNPC : ModNPC
 		{
 			if (Timer == 60f)
 			{
-				direction = NPC.DirectionTo(Player.Center + Player.velocity * 2f);
+				Position = NPC.DirectionTo(Player.Center + Player.velocity * 2f);
 				
 				Counter++;
 				
@@ -354,7 +358,7 @@ public sealed class SunDevourerNPC : ModNPC
 			}
 			else
 			{
-				var velocity = direction * Speed * 1.5f;
+				var velocity = Position * Speed * 1.5f;
 
 				NPC.velocity = Vector2.SmoothStep(NPC.velocity, velocity, 0.25f);
 			}
@@ -427,11 +431,6 @@ public sealed class SunDevourerNPC : ModNPC
 	{
 		switch (Previous)
 		{
-			case STATE_IDLE:
-				ApplyFocus(FOCUS_DURATION_CHARGE);
-
-				UpdateState(STATE_CHARGE);
-				break;
 			case STATE_CHARGE:
 				ApplyFocus(FOCUS_DURATION_ERUPTION);
 
@@ -443,7 +442,12 @@ public sealed class SunDevourerNPC : ModNPC
 				UpdateState(STATE_SANDSTORM);
 				break;
 			case STATE_SANDSTORM:
-				ApplyFocus(FOCUS_DURATION_CHARGE);
+				ApplyFocus(90);
+
+				UpdateState(STATE_CHARGE);
+				break;
+			default:
+				ApplyFocus(90);
 
 				UpdateState(STATE_CHARGE);
 				break;

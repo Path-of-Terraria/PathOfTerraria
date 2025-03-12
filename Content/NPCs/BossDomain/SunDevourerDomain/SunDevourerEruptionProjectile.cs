@@ -66,6 +66,10 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 			
 			dust.noGravity = true;
 		}
+
+		Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2Circular(4f, 4f), GoreID.Smoke1);
+		Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2Circular(4f, 4f), GoreID.Smoke2);
+		Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2Circular(4f, 4f), GoreID.Smoke3);
 	}
 
 	public override bool OnTileCollide(Vector2 oldVelocity)

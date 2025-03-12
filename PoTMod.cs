@@ -9,7 +9,7 @@ namespace PathOfTerraria;
 /// <summary>
 ///		Path of Terraria <see cref="Mod"/> implementation.
 /// </summary>
-public sealed class PoTMod : Mod
+public sealed partial class PoTMod : Mod
 {
 	/// <summary>
 	///		The internal name of the mod.
@@ -32,6 +32,7 @@ public sealed class PoTMod : Mod
 
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
+		
 		Debug.Assert(Name == ModName, "Internal mod name does not match expected contsant.");
 	}
 

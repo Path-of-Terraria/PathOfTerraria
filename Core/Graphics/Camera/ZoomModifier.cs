@@ -1,6 +1,6 @@
 ﻿using Terraria.Graphics;
 
-namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
+namespace PathOfTerraria.Core.Graphics.Camera;
 
 public struct ZoomModifier(string identifier, int timeLeft, ZoomModifier.ModifierCallback callback)
 {
