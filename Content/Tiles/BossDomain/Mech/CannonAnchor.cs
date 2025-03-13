@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using SubworldLibrary;
+using System.IO;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -71,7 +72,6 @@ public class CannonAnchor : ModTile
 
 		public override void SetDefaults()
 		{
-			Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
 			Projectile.tileCollide = false;
 			Projectile.timeLeft = 6;
 			Projectile.aiStyle = -1;
@@ -86,37 +86,52 @@ public class CannonAnchor : ModTile
 		{
 			Projectile.timeLeft = 6;
 
-			if (Main.CurrentFrameFlags.ActivePlayersCount == 0)
-			{
-				return;
-			}
+			//if (Main.CurrentFrameFlags.ActivePlayersCount == 0)
+			//{
+			//	return;
+			//}
 
-			int targetWho = Player.FindClosest(Projectile.position, Projectile.width, Projectile.height);
-			Player target = Main.player[targetWho];
+			//int targetWho = Player.FindClosest(Projectile.position, Projectile.width, Projectile.height);
+			//Player target = Main.player[targetWho];
 
-			Projectile.rotation = Utils.AngleLerp(Projectile.rotation, Projectile.AngleTo(target.Center + target.velocity * 20) - MathHelper.PiOver2, 0.12f);
+			//Projectile.rotation = Utils.AngleLerp(Projectile.rotation, Projectile.AngleTo(target.Center + target.velocity * 20) - MathHelper.PiOver2, 0.12f);
 
-			Blowback = MathHelper.Lerp(Blowback, 0, 0.07f);
-			ShootTimer++;
+			//Blowback = MathHelper.Lerp(Blowback, 0, 0.07f);
+			//ShootTimer++;
 
-			if (ShootTimer > 60)
-			{
-				if (Main.netMode != NetmodeID.MultiplayerClient && SubworldSystem.Current is not null)
-				{
-					int type = BombCannon ? ModContent.ProjectileType<PrimeRocket>() : ModContent.ProjectileType<PrimeRocket>();
-					Vector2 vel = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 8;
-					int damage = BombCannon ? ModeUtils.ProjectileDamage(120, 170, 200) : ModeUtils.ProjectileDamage(70, 100, 160);
-					int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + vel * 2, vel, type, damage, 0, Main.myPlayer);
+			//if (ShootTimer > 60)
+			//{
+			//	// TODO: This isn't technically valid code, but it doesn't work otherwise.
+			//	if (/*Main.netMode != NetmodeID.MultiplayerClient &&*/ SubworldSystem.Current is not null)
+			//	{
+			//		int type = BombCannon ? ModContent.ProjectileType<PrimeBomb>() : ModContent.ProjectileType<PrimeRocket>();
+			//		Vector2 vel = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 8;
+			//		int damage = BombCannon ? ModeUtils.ProjectileDamage(120, 170, 200) : ModeUtils.ProjectileDamage(70, 100, 160);
+			//		int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + vel * 2, vel, type, damage, 0, Main.myPlayer);
 
-					if (Main.netMode == NetmodeID.Server)
-					{
-						NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
-					}
-				}
+			//		if (Main.netMode == NetmodeID.Server)
+			//		{
+			//			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+			//		}
+			//	}
 
-				Blowback = 8;
-				ShootTimer = 0;
-			}
+			//	Blowback = 8;
+			//	ShootTimer = 0;
+			//}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.rotation);
+			writer.Write(ShootTimer);
+			writer.Write(BombCannon);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.rotation = reader.ReadSingle();
+			ShootTimer = reader.ReadSingle();
+			BombCannon = reader.ReadBoolean();
 		}
 
 		public override bool CanHitPlayer(Player target)
