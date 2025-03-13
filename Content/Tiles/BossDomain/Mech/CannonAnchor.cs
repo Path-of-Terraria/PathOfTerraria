@@ -1,4 +1,6 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.NPCs;
+using SubworldLibrary;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -84,6 +86,11 @@ public class CannonAnchor : ModTile
 		{
 			Projectile.timeLeft = 6;
 
+			if (Main.CurrentFrameFlags.ActivePlayersCount == 0)
+			{
+				return;
+			}
+
 			int targetWho = Player.FindClosest(Projectile.position, Projectile.width, Projectile.height);
 			Player target = Main.player[targetWho];
 
@@ -96,10 +103,15 @@ public class CannonAnchor : ModTile
 			{
 				if (Main.netMode != NetmodeID.MultiplayerClient && SubworldSystem.Current is not null)
 				{
-					int type = BombCannon ? ModContent.ProjectileType<PrimeBomb>() : ModContent.ProjectileType<PrimeRocket>();
+					int type = BombCannon ? ModContent.ProjectileType<PrimeRocket>() : ModContent.ProjectileType<PrimeRocket>();
 					Vector2 vel = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 8;
-					int damage = 90;
+					int damage = BombCannon ? ModeUtils.ProjectileDamage(120, 170, 200) : ModeUtils.ProjectileDamage(70, 100, 160);
 					int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + vel * 2, vel, type, damage, 0, Main.myPlayer);
+
+					if (Main.netMode == NetmodeID.Server)
+					{
+						NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+					}
 				}
 
 				Blowback = 8;
@@ -137,6 +149,7 @@ public class CannonAnchor : ModTile
 			Projectile.width = Projectile.height = 10;
 			Projectile.hostile = true;
 			Projectile.friendly = false;
+			Projectile.netImportant = true;
 
 			AIType = ProjectileID.RocketII;
 		}
@@ -215,6 +228,14 @@ public class CannonAnchor : ModTile
 			Projectile.hostile = true;
 			Projectile.friendly = false;
 			Projectile.timeLeft = 60;
+			Projectile.aiStyle = -1;
+			Projectile.netImportant = true;
+		}
+
+		public override void PostAI()
+		{
+			Projectile.rotation += Projectile.velocity.X * 0.05f;
+			Projectile.velocity.Y += 0.2f;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -233,20 +254,26 @@ public class CannonAnchor : ModTile
 			return false;
 		}
 
-		public override void OnKill(int timeLeft)
+		public override bool PreKill(int timeLeft)
 		{
-			const int Range = 5;
+			Explode();
+			return false;
+		}
+
+		private void Explode()
+		{
+			const int Range = 6;
 
 			for (int i = 0; i < 25; ++i)
 			{
 				Vector2 vel = Main.rand.NextVector2CircularEdge(3, 3) * Main.rand.NextFloat(0.2f, 1f);
-				Dust.NewDustPerfect(Projectile.position, DustID.Torch, vel, 0, default, Main.rand.NextFloat(1.5f, 3));
+				Dust.NewDustPerfect(Projectile.Center, DustID.Torch, vel, 0, default, Main.rand.NextFloat(1.5f, 3));
 			}
 
 			for (int i = 0; i < 6; ++i)
 			{
 				Vector2 vel = Main.rand.NextVector2CircularEdge(1, 1) * Main.rand.NextFloat(0.2f, 1f);
-				Gore.NewGore(Projectile.GetSource_Death(), Projectile.position, vel, GoreID.Smoke1 + Main.rand.Next(3));
+				Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, vel, GoreID.Smoke1 + Main.rand.Next(3));
 			}
 
 			SoundEngine.PlaySound(SoundID.Item14 with { MaxInstances = 0 }, Projectile.Center);
@@ -283,6 +310,17 @@ public class CannonAnchor : ModTile
 		{
 			return Projectile.Opacity == 0;
 		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D tex = TextureAssets.Projectile[Type].Value;
+			var source = new Rectangle(0, 0, 24, 24);
+			Vector2 position = Projectile.Center - Main.screenPosition;
+
+			Main.EntitySpriteDraw(tex, position, source, lightColor, Projectile.rotation, source.Size() / 2f, 1f, SpriteEffects.None, 0);
+			Main.EntitySpriteDraw(tex, position, source with { Y = 26 }, Color.White, Projectile.rotation, source.Size() / 2f, 1f, SpriteEffects.None, 0);
+			return false;
+		}
 	}
 }
 
@@ -308,11 +346,9 @@ public class CannonTE : ModTileEntity
 			int type = ModContent.ProjectileType<CannonAnchor.ExplosiveTurret>();
 			Tile tile = Main.tile[Position];
 			int bomb = tile.TileType == ModContent.TileType<CannonBombAnchor>() ? 1 : 0;
-			int proj = Projectile.NewProjectile(new EntitySource_SpawnNPC(), Position.ToWorldCoordinates(), Vector2.Zero, type, 0, 0, Main.myPlayer, bomb, Main.rand.Next(120));
+			int proj = Projectile.NewProjectile(new EntitySource_TileEntity(this), Position.ToWorldCoordinates(), Vector2.Zero, type, 0, 0, Main.myPlayer, bomb, Main.rand.Next(120));
 
 			Main.projectile[proj].netUpdate = true;
-
-			Mod.Logger.Debug("What is happening");
 		}
 	}
 

@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.NPCs;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Enums;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -56,11 +58,19 @@ internal class LaserShooter : ModTile
 
 			if (Timer > MaxTimer)
 			{
-				int side = Main.tile[Position].TileFrameX < 36 ? -1 : 1;
-				Vector2 position = worldPos + new Vector2(side == -1 ? -20 : 36, 10);
-				int damage = ModeUtils.ProjectileDamage(50, 80, 150);
-				int proj = Projectile.NewProjectile(null, position, new Vector2(side * 7f, 0), ProjectileID.DeathLaser, damage, 0, Main.myPlayer);
-				Main.projectile[proj].timeLeft = 5000;
+				if (Main.CurrentFrameFlags.ActivePlayersCount > 0)
+				{
+					int side = Main.tile[Position].TileFrameX < 36 ? -1 : 1;
+					Vector2 position = worldPos + new Vector2(side == -1 ? -20 : 36, 10);
+					int damage = ModeUtils.ProjectileDamage(50, 80, 150);
+					int type = ModContent.ProjectileType<LaserClone>();
+					int proj = Projectile.NewProjectile(new EntitySource_TileEntity(this), position, new Vector2(side * 7f, 0), type, damage, 0, Main.myPlayer);
+
+					if (Main.netMode == NetmodeID.Server)
+					{
+						NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+					}
+				}
 				
 				Timer = 0;
 			}
@@ -80,6 +90,32 @@ internal class LaserShooter : ModTile
 			}
 
 			return Place(topLeftX, topLeftY);
+		}
+	}
+
+	public class LaserClone : ModProjectile
+	{
+		public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.DeathLaser;
+
+		public override void SetDefaults()
+		{
+			Projectile.timeLeft = 5000;
+			Projectile.aiStyle = -1;
+			Projectile.Opacity = 1f;
+			Projectile.friendly = false;
+			Projectile.hostile = true;
+			Projectile.Size = new Vector2(6);
+			Projectile.scale = 2f;
+			Projectile.extraUpdates = 2;
+			Projectile.netImportant = true;
+
+			AIType = -1;
+		}
+
+		public override void AI()
+		{
+			Lighting.AddLight(Projectile.Center, new Vector3(1, 0, 0));
+			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 		}
 	}
 }
