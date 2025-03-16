@@ -86,13 +86,13 @@ public class CannonAnchor : ModTile
 		{
 			Projectile.timeLeft = 6;
 
-			//if (Main.CurrentFrameFlags.ActivePlayersCount == 0)
-			//{
-			//	return;
-			//}
+			if (Main.CurrentFrameFlags.ActivePlayersCount == 0)
+			{
+				return;
+			}
 
-			//int targetWho = Player.FindClosest(Projectile.position, Projectile.width, Projectile.height);
-			//Player target = Main.player[targetWho];
+			int targetWho = Player.FindClosest(Projectile.position, Projectile.width, Projectile.height);
+			Player target = Main.player[targetWho];
 
 			if (!target.active || target.dead || target.DistanceSQ(Projectile.Center) > 6000 * 6000)
 			{
@@ -101,28 +101,27 @@ public class CannonAnchor : ModTile
 
 			Projectile.rotation = Utils.AngleLerp(Projectile.rotation, Projectile.AngleTo(target.Center + target.velocity * 20) - MathHelper.PiOver2, 0.12f);
 
-			//Blowback = MathHelper.Lerp(Blowback, 0, 0.07f);
-			//ShootTimer++;
+			Blowback = MathHelper.Lerp(Blowback, 0, 0.07f);
+			ShootTimer++;
 
-			//if (ShootTimer > 60)
-			//{
-			//	// TODO: This isn't technically valid code, but it doesn't work otherwise.
-			//	if (/*Main.netMode != NetmodeID.MultiplayerClient &&*/ SubworldSystem.Current is not null)
-			//	{
-			//		int type = BombCannon ? ModContent.ProjectileType<PrimeBomb>() : ModContent.ProjectileType<PrimeRocket>();
-			//		Vector2 vel = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 8;
-			//		int damage = BombCannon ? ModeUtils.ProjectileDamage(120, 170, 200) : ModeUtils.ProjectileDamage(70, 100, 160);
-			//		int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + vel * 2, vel, type, damage, 0, Main.myPlayer);
+			if (ShootTimer > 60)
+			{
+				if (Main.netMode != NetmodeID.MultiplayerClient && SubworldSystem.Current is not null)
+				{
+					int type = BombCannon ? ModContent.ProjectileType<PrimeBomb>() : ModContent.ProjectileType<PrimeRocket>();
+					Vector2 vel = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 8;
+					int damage = BombCannon ? ModeUtils.ProjectileDamage(120, 170, 200) : ModeUtils.ProjectileDamage(70, 100, 160);
+					int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + vel * 2, vel, type, damage, 0, Main.myPlayer);
 
-			//		if (Main.netMode == NetmodeID.Server)
-			//		{
-			//			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
-			//		}
-			//	}
+					if (Main.netMode == NetmodeID.Server)
+					{
+						NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+					}
+				}
 
-			//	Blowback = 8;
-			//	ShootTimer = 0;
-			//}
+				Blowback = 8;
+				ShootTimer = 0;
+			}
 		}
 
 		public override void SendExtraAI(BinaryWriter writer)
@@ -359,7 +358,7 @@ public class CannonTE : ModTileEntity
 
 	public override void Update()
 	{
-		if (!_spawned)
+		if (!_spawned && Main.netMode == NetmodeID.SinglePlayer)
 		{
 			_spawned = true;
 
