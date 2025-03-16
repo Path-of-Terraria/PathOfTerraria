@@ -44,6 +44,8 @@ DropVisualizer: {
 SkillUI: {
 	Back: Back
 	NoPassives: This skill has no passives.
+	NoSkill: (No skill)
+	ChooseSkill: Choose a skill from the Skill menu to use it.
 }
 
 Guide: {

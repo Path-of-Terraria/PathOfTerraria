@@ -17,6 +17,7 @@ using Terraria.UI;
 using Terraria.UI.Chat;
 using Terraria.Social.Steam;
 using PathOfTerraria.Common.UI.Quests;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Common.UI.Guide;
 
@@ -128,7 +129,11 @@ internal class TutorialUIState : UIState
 		plr.GetModPlayer<TutorialPlayer>().TutorialStep = (byte)Step;
 		StoredStep = Step;
 
-		if (Step == 10)
+		if (Step == 1)
+		{
+			plr.GetModPlayer<ExpModPlayer>().Exp += plr.GetModPlayer<ExpModPlayer>().NextLevel + 1;
+		}
+		else if (Step == 10)
 		{
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
 		}
@@ -136,7 +141,6 @@ internal class TutorialUIState : UIState
 		{
 			if (!NPC.AnyNPCs(ModContent.NPCType<RavenNPC>()))
 			{
-
 				if (Main.netMode == NetmodeID.SinglePlayer)
 				{
 					NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)plr.Center.X, (int)plr.Center.Y - 200, ModContent.NPCType<RavenNPC>());
