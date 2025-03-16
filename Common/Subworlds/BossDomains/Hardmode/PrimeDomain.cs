@@ -207,7 +207,7 @@ internal class PrimeDomain : BossDomainSubworld
 				PlaceLaserTurret(x, y + i * 3, style, offsets.Dequeue());
 			}
 		}
-		else if (hall.HallType == HallwayType.Cannon && Main.netMode == NetmodeID.SinglePlayer) // TODO: Fix mp incompatibility
+		else if (hall.HallType == HallwayType.Cannon) // TODO: Fix mp incompatibility
 		{
 			SpawnHallStructures("Assets/Structures/SkelePrimeDomain/CannonHall_", hall, 8, 6, 1);
 		}

@@ -59,47 +59,52 @@ public class CannonAnchor : ModTile
 		ModContent.GetInstance<CannonTE>().Kill(i, j);
 	}
 
-	public class ExplosiveTurret : ModProjectile
+	public class ExplosiveTurret : ModNPC
 	{
 		public bool BombCannon
 		{
-			get => Projectile.ai[0] == 1;
-			set => Projectile.ai[0] = value ? 1 : 0;
+			get => NPC.ai[0] == 1;
+			set => NPC.ai[0] = value ? 1 : 0;
 		}
 
-		private ref float ShootTimer => ref Projectile.ai[1];
-		private ref float Blowback => ref Projectile.ai[2];
+		private ref float ShootTimer => ref NPC.ai[1];
+		private ref float Blowback => ref NPC.ai[2];
 
 		public override void SetDefaults()
 		{
-			Projectile.tileCollide = false;
-			Projectile.timeLeft = 6;
-			Projectile.aiStyle = -1;
-			Projectile.hostile = true;
-			Projectile.friendly = false;
-			Projectile.width = 6;
-			Projectile.height = 6;
-			Projectile.netImportant = true;
+			NPC.noTileCollide = true;
+			NPC.timeLeft = 6;
+			NPC.aiStyle = -1;
+			NPC.width = 6;
+			NPC.height = 6;
+			NPC.lifeMax = 1500;
+			NPC.dontTakeDamage = true;
+			NPC.dontCountMe = true;
+			NPC.defense = 20000;
+			NPC.noGravity = true;
+		}
+
+		public override bool CheckActive()
+		{
+			return false;
 		}
 
 		public override void AI()
 		{
-			Projectile.timeLeft = 6;
-
 			if (Main.CurrentFrameFlags.ActivePlayersCount == 0)
 			{
 				return;
 			}
 
-			int targetWho = Player.FindClosest(Projectile.position, Projectile.width, Projectile.height);
+			int targetWho = Player.FindClosest(NPC.position, NPC.width, NPC.height);
 			Player target = Main.player[targetWho];
 
-			if (!target.active || target.dead || target.DistanceSQ(Projectile.Center) > 6000 * 6000)
+			if (!target.active || target.dead || target.DistanceSQ(NPC.Center) > 6000 * 6000)
 			{
 				return;
 			}
 
-			Projectile.rotation = Utils.AngleLerp(Projectile.rotation, Projectile.AngleTo(target.Center + target.velocity * 20) - MathHelper.PiOver2, 0.12f);
+			NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.AngleTo(target.Center + target.velocity * 20) - MathHelper.PiOver2, 0.12f);
 
 			Blowback = MathHelper.Lerp(Blowback, 0, 0.07f);
 			ShootTimer++;
@@ -109,9 +114,9 @@ public class CannonAnchor : ModTile
 				if (Main.netMode != NetmodeID.MultiplayerClient && SubworldSystem.Current is not null)
 				{
 					int type = BombCannon ? ModContent.ProjectileType<PrimeBomb>() : ModContent.ProjectileType<PrimeRocket>();
-					Vector2 vel = (Projectile.rotation + MathHelper.PiOver2).ToRotationVector2() * 8;
+					Vector2 vel = (NPC.rotation + MathHelper.PiOver2).ToRotationVector2() * 8;
 					int damage = BombCannon ? ModeUtils.ProjectileDamage(120, 170, 200) : ModeUtils.ProjectileDamage(70, 100, 160);
-					int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center + vel * 2, vel, type, damage, 0, Main.myPlayer);
+					int proj = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center + vel * 2, vel, type, damage, 0, Main.myPlayer);
 
 					if (Main.netMode == NetmodeID.Server)
 					{
@@ -126,31 +131,31 @@ public class CannonAnchor : ModTile
 
 		public override void SendExtraAI(BinaryWriter writer)
 		{
-			writer.Write(Projectile.rotation);
+			writer.Write(NPC.rotation);
 			writer.Write(ShootTimer);
 			writer.Write(BombCannon);
 		}
 
 		public override void ReceiveExtraAI(BinaryReader reader)
 		{
-			Projectile.rotation = reader.ReadSingle();
+			NPC.rotation = reader.ReadSingle();
 			ShootTimer = reader.ReadSingle();
 			BombCannon = reader.ReadBoolean();
 		}
 
-		public override bool CanHitPlayer(Player target)
+		public override bool CanHitPlayer(Player target, ref int cooldownSlot)
 		{
 			return false;
 		}
 
-		public override bool PreDraw(ref Color lightColor)
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 		{
-			Texture2D tex = TextureAssets.Projectile[Type].Value;
+			Texture2D tex = TextureAssets.Npc[Type].Value;
 			Rectangle frame = new(0, 0, 22, 22);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, frame.Size() / 2f, 1f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor, NPC.rotation, frame.Size() / 2f, 1f, SpriteEffects.None, 0);
 			
 			frame = new(BombCannon ? 28 : 0, 26, 26, 44);
-			Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, new Vector2(13, -6 + Blowback), 1f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, NPC.Center - Main.screenPosition, frame, drawColor, NPC.rotation, new Vector2(13, -6 + Blowback), 1f, SpriteEffects.None, 0);
 			return false;
 		}
 	}
@@ -358,16 +363,14 @@ public class CannonTE : ModTileEntity
 
 	public override void Update()
 	{
-		if (!_spawned && Main.netMode == NetmodeID.SinglePlayer)
+		if (!_spawned)
 		{
 			_spawned = true;
 
-			int type = ModContent.ProjectileType<CannonAnchor.ExplosiveTurret>();
+			int type = ModContent.NPCType<CannonAnchor.ExplosiveTurret>();
 			Tile tile = Main.tile[Position];
 			int bomb = tile.TileType == ModContent.TileType<CannonBombAnchor>() ? 1 : 0;
-			int proj = Projectile.NewProjectile(new EntitySource_TileEntity(this), Position.ToWorldCoordinates(), Vector2.Zero, type, 0, 0, Main.myPlayer, bomb, Main.rand.Next(120));
-
-			Main.projectile[proj].netUpdate = true;
+			int npc = NPC.NewNPC(new EntitySource_TileEntity(this), Position.X * 16, Position.Y * 16, type, 0, bomb, Main.rand.NextFloat(120));
 		}
 	}
 
