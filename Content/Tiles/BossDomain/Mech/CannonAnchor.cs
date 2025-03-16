@@ -71,7 +71,6 @@ public class CannonAnchor : ModTile
 
 		public override void SetDefaults()
 		{
-			Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
 			Projectile.tileCollide = false;
 			Projectile.timeLeft = 6;
 			Projectile.aiStyle = -1;
@@ -93,6 +92,11 @@ public class CannonAnchor : ModTile
 
 			int targetWho = Player.FindClosest(Projectile.position, Projectile.width, Projectile.height);
 			Player target = Main.player[targetWho];
+
+			if (!target.active || target.dead || target.DistanceSQ(Projectile.Center) > 6000 * 6000)
+			{
+				return;
+			}
 
 			Projectile.rotation = Utils.AngleLerp(Projectile.rotation, Projectile.AngleTo(target.Center + target.velocity * 20) - MathHelper.PiOver2, 0.12f);
 

@@ -477,7 +477,13 @@ internal class PrimeDomain : BossDomainSubworld
 
 				Main.spawnTileX = (int)Arena.Center().X / 16;
 				Main.spawnTileY = (int)Arena.Center().Y / 16;
-				
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.WorldData);
+					NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16, 20, 1);
+				}
+
 				BossSpawned = true;
 			}
 		}
