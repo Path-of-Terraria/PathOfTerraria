@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.UI.Guide;
 using Terraria.GameContent;
 using Terraria.UI;
 using Terraria.UI.Chat;
@@ -51,6 +52,8 @@ internal class SkillSelectionElement : UIElement
 		skillCombatPlayer.TryAddSkill(_skill);
 		_parentPanel.SelectedSkill = _skill;
 		_parentPanel.RebuildTree();
+
+		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);
 	}
 
 	public override void RightClick(UIMouseEvent evt)

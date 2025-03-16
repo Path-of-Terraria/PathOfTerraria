@@ -261,4 +261,44 @@ public sealed partial class UIManager : ModSystem
 
 		return TryToggle(identifier);
 	}
+
+	/// <summary>
+	///		Checks if there is a <see cref="UIStateData"/> of the given identifier.
+	/// </summary>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <returns>If the instance was found or not.</returns>
+	public static bool Has(string identifier)
+	{
+		int index = Data.FindIndex(s => s.Identifier == identifier);
+		return index >= 0;
+	}
+
+	/// <summary>
+	///		Obtains the <see cref="UIStateData"/> given the identifier. Throws if the identifier is not found.
+	/// </summary>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <returns><see cref="UIStateData"/> of the identifier.</returns>
+	public static UIStateData Get(string identifier)
+	{
+		int index = Data.FindIndex(s => s.Identifier == identifier);
+		return Data[index];
+	}
+
+	/// <summary>
+	///		Attempts to safely obtain the <see cref="UIStateData"/> of a given identifier.
+	/// </summary>
+	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
+	/// <param name="data">The resulting <see cref="UIStateData"/>, if found. If not found, will be null.</param>
+	/// <returns>If the data was found or not.</returns>
+	public static bool TryGet(string identifier, out UIStateData data)
+	{
+		if (Has(identifier))
+		{
+			data = Get(identifier);
+			return true;
+		}
+
+		data = null;
+		return false;
+	}
 }

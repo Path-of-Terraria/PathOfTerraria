@@ -146,7 +146,7 @@ internal class ArpgNPC : GlobalNPC
 	{
 		//We only want to trigger these changes on hostile non-boss, non Eater of Worlds mobs in-game
 		if (npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail || npc.immortal 
-			|| npc.dontTakeDamage || NoAffixesSet.Contains(npc.type) || NPCID.Sets.ProjectileNPC[npc.type])
+			|| npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type] || npc.CountsAsACritter || NoAffixesSet.Contains(npc.type))
 		{
 			return;
 		}

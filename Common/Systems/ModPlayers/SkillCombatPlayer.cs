@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.UI.Guide;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
@@ -49,19 +50,28 @@ internal class SkillCombatPlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		if (Skill1Keybind.JustPressed && HotbarSkills[0] != null && HotbarSkills[0].CanUseSkill(Player))
+		if (Skill1Keybind.JustPressed)
 		{
-			HotbarSkills[0]?.UseSkill(Player);
+			UseSkill(0);
 		}
 
-		if (Skill2Keybind.JustPressed && HotbarSkills[1] != null && HotbarSkills[1].CanUseSkill(Player))
+		if (Skill2Keybind.JustPressed)
 		{
-			HotbarSkills[1]?.UseSkill(Player);
+			UseSkill(1);
 		}
 
-		if (Skill3Keybind.JustPressed && HotbarSkills[2] != null && HotbarSkills[2].CanUseSkill(Player))
+		if (Skill3Keybind.JustPressed)
 		{
-			HotbarSkills[2]?.UseSkill(Player);
+			UseSkill(2);
+		}
+	}
+
+	public void UseSkill(int index)
+	{
+		if (HotbarSkills[index] != null && HotbarSkills[index].CanUseSkill(Player))
+		{
+			Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.UsedASkill);
+			HotbarSkills[index]?.UseSkill(Player);
 		}
 	}
 
