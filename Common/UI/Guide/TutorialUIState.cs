@@ -60,6 +60,8 @@ internal class TutorialUIState : UIState
 		DrawBacked(spriteBatch, pos + new Vector2(110, 110), "Skip Guide", true, () => 
 		{
 			Step = 13;
+			Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
+
 			IncrementStep();
 		});
 	}
