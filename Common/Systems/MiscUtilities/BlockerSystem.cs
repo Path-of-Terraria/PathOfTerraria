@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using SubworldLibrary;
 
@@ -36,7 +37,8 @@ public class BlockerSystem : ModSystem
 
 	private static void SetBlockerSolidity(bool? overrideValue = null)
 	{
-		int[] types = [ModContent.TileType<HiveBlocker>(), ModContent.TileType<ArenaBlocker>(), ModContent.TileType<LivingWoodBlocker>()];
+		int[] types = [ModContent.TileType<HiveBlocker>(), ModContent.TileType<ArenaBlocker>(), ModContent.TileType<LivingWoodBlocker>(), 
+			ModContent.TileType<BlockingGate>()];
 
 		foreach (int type in types)
 		{

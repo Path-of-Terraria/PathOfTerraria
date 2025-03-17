@@ -71,8 +71,58 @@ internal class TinPlatingUnsafe : ModWall
 	public override void SetStaticDefaults()
 	{
 		Main.wallHouse[Type] = false;
+		Main.wallLargeFrames[Type] = 1;
 
 		DustType = DustID.Iron;
+		AddMapEntry(new Color(48, 48, 48));
+	}
+
+	public override void NumDust(int i, int j, bool fail, ref int num)
+	{
+		num = fail ? 1 : 3;
+	}
+}
+
+internal class LeadBrickUnsafe : ModWall
+{
+	public override void SetStaticDefaults()
+	{
+		Main.wallHouse[Type] = false;
+
+		DustType = DustID.Lead;
+		AddMapEntry(new Color(48, 48, 48));
+	}
+
+	public override void NumDust(int i, int j, bool fail, ref int num)
+	{
+		num = fail ? 1 : 3;
+	}
+}
+
+internal class TungstenBrickUnsafe : ModWall
+{
+	public override void SetStaticDefaults()
+	{
+		Main.wallHouse[Type] = false;
+
+		DustType = DustID.Tungsten;
+		AddMapEntry(new Color(48, 48, 48));
+	}
+
+	public override void NumDust(int i, int j, bool fail, ref int num)
+	{
+		num = fail ? 1 : 3;
+	}
+}
+
+internal class CopperPlatingUnsafe : ModWall
+{
+	public override void SetStaticDefaults()
+	{
+		Main.wallHouse[Type] = false;
+		Main.wallLargeFrames[Type] = 1;
+
+		DustType = DustID.Copper;
 		AddMapEntry(new Color(48, 48, 48));
 	}
 

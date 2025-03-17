@@ -38,7 +38,7 @@ internal class PolarIceThrower : ModTile
 
 	public class ThrowerTE : ModTileEntity
 	{
-		private int _timer = 14 * 16;
+		private int _timer = 14 * 60;
 
 		public override bool IsTileValidForEntity(int x, int y)
 		{
