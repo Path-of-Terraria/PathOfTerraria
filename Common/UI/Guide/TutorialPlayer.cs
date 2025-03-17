@@ -41,10 +41,9 @@ internal class TutorialPlayer : ModPlayer
 
 	public override void LoadData(TagCompound tag)
 	{
+		TutorialChecks.Clear();
 		TutorialChecks = new HashSet<TutorialCheck>(tag.GetByteArray("checks").Select(x => (TutorialCheck)x));
 		TutorialStep = tag.GetByte("step");
-		TutorialStep = 0;
-		TutorialChecks.Clear();
 
 		TutorialUIState.StoredStep = TutorialStep;
 	}
