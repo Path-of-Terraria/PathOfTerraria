@@ -47,6 +47,12 @@ internal class TutorialUIState : UIState
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
 		_opacity = MathHelper.Lerp(_opacity, Step > 13 ? 0 : 1, 0.05f);
+
+		if (_opacity < 0.001f)
+		{
+			return;
+		}
+
 		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step is 9 or 10 ? 8 : 4, 0.05f);
 
 		Vector2 pos = new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(2, _baseYDivisor);
@@ -59,7 +65,7 @@ internal class TutorialUIState : UIState
 		DrawBacked(spriteBatch, pos + new Vector2(0, 110), "Skip Step", true, new Action(IncrementStep));
 		DrawBacked(spriteBatch, pos + new Vector2(110, 110), "Skip Guide", true, () => 
 		{
-			Step = 13;
+			Step = 12;
 
 			if (Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Level == 0)
 			{
