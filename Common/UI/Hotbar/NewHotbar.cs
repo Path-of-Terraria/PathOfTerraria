@@ -14,6 +14,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using PathOfTerraria.Core.UI.SmartUI;
+using StructureHelper.GUI;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -239,16 +240,25 @@ internal sealed class NewHotbar : SmartUiState
 
 	private static void DrawSkill(SpriteBatch spriteBatch, float off, float opacity, Texture2D glow, int skillIndex)
 	{
+		// Texture width is hardcoded as the UI doesn't account for anything larger and anything smaller should be on a 50x50 canvas anyway.
+		const int TextureSize = 50;
+
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
+		var skillRect = new Rectangle(268 + 52 * skillIndex, (int)(8 + off) + TextureSize - 25, TextureSize, TextureSize);
 
 		if (skillCombatPlayer.HotbarSkills[skillIndex] is null)
 		{
+			if (skillRect.Contains(Main.MouseScreen.ToPoint()))
+			{
+				Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.NoSkill"));
+				Tooltip.SetTooltip(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.ChooseSkill"));
+			}
+
 			return;
 		}
 
 		Skill skill = skillCombatPlayer.HotbarSkills[skillIndex];
 		Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
-		var skillRect = new Rectangle(268 + 52 * skillIndex, (int)(8 + off) + texture.Height - 25, texture.Width, texture.Height);
 		spriteBatch.Draw(texture,
 			skillRect,
 			new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
@@ -261,42 +271,47 @@ internal sealed class NewHotbar : SmartUiState
 
 		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
 		{
-			string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
-			
-			Tooltip.SetName(skill.DisplayName.Value + " " + level);
-
-			string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.ManaCost).Value;
-
-			string weapon = skill.WeaponType != ItemID.None
-				? Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value
-				: Language.GetText("Mods.PathOfTerraria.Skills.NoWeaponLine").Value;
-
-			string noKeybindName = Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value;
-
-			string keybindName = skillIndex switch
-			{
-				0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill1KeybindName) ? skill1KeybindName : noKeybindName,
-				1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill2KeybindName) ? skill2KeybindName : noKeybindName,
-				2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill3KeybindName) ? skill3KeybindName : noKeybindName,
-				_ => ""
-			};
-			
-			string keybindLine = Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value;
-			
-			string tooltip = $"{keybindLine}\n{skill.Description.Value}\n{manaCost}\n{weapon}";
-
-			if (skill.Duration != 0)
-			{
-				string duration = Language.GetText("Mods.PathOfTerraria.Skills.DurationLine").WithFormatArgs($"{skill.Duration / 60f:#0.##}").Value;
-				tooltip += "\n" + duration;
-			}
-
-			string cooldown = Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value;
-			
-			tooltip += "\n" + cooldown;
-
-			Tooltip.SetTooltip(tooltip);
+			DrawSkillHoverTooltips(skillIndex, skill);
 		}
+	}
+
+	private static void DrawSkillHoverTooltips(int skillIndex, Skill skill)
+	{
+		string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
+
+		Tooltip.SetName(skill.DisplayName.Value + " " + level);
+
+		string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.ManaCost).Value;
+
+		string weapon = skill.WeaponType != ItemID.None
+			? Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value
+			: Language.GetText("Mods.PathOfTerraria.Skills.NoWeaponLine").Value;
+
+		string noKeybindName = Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value;
+
+		string keybindName = skillIndex switch
+		{
+			0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill1KeybindName) ? skill1KeybindName : noKeybindName,
+			1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill2KeybindName) ? skill2KeybindName : noKeybindName,
+			2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill3KeybindName) ? skill3KeybindName : noKeybindName,
+			_ => ""
+		};
+
+		string keybindLine = Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value;
+
+		string tooltip = $"{keybindLine}\n{skill.Description.Value}\n{manaCost}\n{weapon}";
+
+		if (skill.Duration != 0)
+		{
+			string duration = Language.GetText("Mods.PathOfTerraria.Skills.DurationLine").WithFormatArgs($"{skill.Duration / 60f:#0.##}").Value;
+			tooltip += "\n" + duration;
+		}
+
+		string cooldown = Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value;
+
+		tooltip += "\n" + cooldown;
+
+		Tooltip.SetTooltip(tooltip);
 	}
 
 	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
