@@ -995,7 +995,11 @@ BrittleCrystalItem: {
 
 TwinsMap: {
 	DisplayName: Twins Map
-	Tooltip: ""
+	Tooltip: 
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of rot and oil'
+		'''
 }
 
 MechLampItem: {
@@ -1032,6 +1036,15 @@ PincerAnchorItem: {
 }
 
 GrabberAnchorItem: {
-	DisplayName: Grabber Anchor Item
+	DisplayName: Grabber Anchor
 	Tooltip: ""
+}
+
+PrimeMap: {
+	DisplayName: Prime Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of metal and singe'
+		'''
 }
