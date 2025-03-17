@@ -40,11 +40,11 @@ public class EyeDomain : BossDomainSubworld
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
-			for (int j = 80; j < Main.maxTilesY - 50; ++j)
+			for (int j = 20; j < Main.maxTilesY - 20; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (!tile.HasTile || tile.TileType != TileID.Dirt || tiles.ContainsKey(new Point16(i, j)))
+				if (!tile.HasTile)
 				{
 					continue;
 				}
@@ -69,7 +69,7 @@ public class EyeDomain : BossDomainSubworld
 		{
 			TrySpreadGrassOnTile(tile, position, grasses, includeFleshStuff);
 
-			if (position.X == ArenaX && Main.tile[position].HasTile && Main.tile[position].TileType == TileID.Grass)
+			if (position.X == ArenaX && Main.tile[position].HasTile)
 			{
 				arenaY = position.Y;
 			}
@@ -125,9 +125,8 @@ public class EyeDomain : BossDomainSubworld
 
 		if (includeFleshStuff)
 		{
-			var dims = new Point16();
-			StructureHelper.Generator.GetDimensions("Assets/Structures/EyeArena", mod, ref dims);
-			StructureHelper.Generator.GenerateStructure("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), mod);
+			Point16 dims = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/EyeArena", mod);
+			StructureHelper.API.Generator.GenerateStructure("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), mod);
 			arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
 		}
 
@@ -162,7 +161,7 @@ public class EyeDomain : BossDomainSubworld
 	{
 		Tile tile = Main.tile[position];
 
-		if (adjacencies == OpenFlags.Above)
+		if (adjacencies != OpenFlags.None)
 		{
 			tile.TileType = TileID.Grass;
 

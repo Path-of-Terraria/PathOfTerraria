@@ -31,7 +31,6 @@ public class DeerclopsDomain : BossDomainSubworld
 	public override int[] WhitelistedPlaceableTiles => [TileID.Platforms];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
-
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 
@@ -89,7 +88,7 @@ public class DeerclopsDomain : BossDomainSubworld
 						tile.TileType = TileID.IceBlock;
 					}
 
-					if (WorldGen.genRand.NextBool(300) && j < Surface + 5 && OpenExtensions.GetOpenings(i, j).HasFlag(OpenFlags.Above))
+					if (WorldGen.genRand.NextBool(300) && j < Surface + 5 && OpenExtensions.GetOpenings(i, j).HasFlag(OpenFlags.Above) && WorldGen.InWorld(i, j, 30))
 					{
 						structures.Add(new Point16(i, j));
 					}

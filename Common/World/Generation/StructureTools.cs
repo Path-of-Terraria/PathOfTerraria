@@ -6,11 +6,15 @@ namespace PathOfTerraria.Common.World.Generation;
 
 internal static class StructureTools
 {
+	/// <summary>
+	/// Shorthand for calling <see cref="StructureHelper.API.Generator.GetStructureDimensions(string, Mod, bool)"/> with <see cref="PoTMod.Instance"/>.
+	/// </summary>
+	/// <param name="structure">Path to the structure. Formatted like "Assets/Structures/XX/Structure".</param>
+	/// <param name="mod"></param>
+	/// <returns></returns>
 	public static Point16 GetSize(string structure, Mod mod = null)
 	{
-		Point16 size = new();
-		StructureHelper.Generator.GetDimensions(structure, mod ?? ModContent.GetInstance<PoTMod>(), ref size);
-		return size;
+		return StructureHelper.API.Generator.GetStructureDimensions(structure, mod ?? PoTMod.Instance);
 	}
 
 	/// <summary>
@@ -26,8 +30,7 @@ internal static class StructureTools
 	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false, bool noSync = false)
 	{
 		mod ??= ModContent.GetInstance<PoTMod>();
-		var dims = new Point16();
-		StructureHelper.Generator.GetDimensions(structure, mod, ref dims);
+		Point16 dims = GetSize(structure);
 		position = (position.ToVector2() - dims.ToVector2() * origin).ToPoint16();
 
 		if (cullAbove)
@@ -42,7 +45,7 @@ internal static class StructureTools
 			Main.netMode = NetmodeID.SinglePlayer;
 		}
 
-		StructureHelper.Generator.GenerateStructure(structure, position, mod);
+		StructureHelper.API.Generator.GenerateStructure(structure, position, mod);
 		Main.netMode = oldVal;
 		return position;
 	}

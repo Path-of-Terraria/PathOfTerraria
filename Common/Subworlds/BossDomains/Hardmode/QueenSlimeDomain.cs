@@ -148,7 +148,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 	{
 		if (flags != OpenFlags.None)
 		{
-			if (WorldGen.genRand.NextBool(40) && WorldGen.SolidOrSlopedTile(position.X, position.Y))
+			if (WorldGen.genRand.NextBool(40) && WorldGen.SolidOrSlopedTile(position.X, position.Y) && WorldGen.InWorld(position.X, position.Y, 60))
 			{
 				string str = "Assets/Structures/QueenSlimeDomain/Crystal_" + Main.rand.Next(16);
 

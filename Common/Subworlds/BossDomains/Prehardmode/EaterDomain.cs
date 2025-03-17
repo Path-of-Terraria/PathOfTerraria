@@ -310,10 +310,9 @@ public class EaterDomain : BossDomainSubworld
 
 	private void SpawnArena(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Point16 size = Point16.Zero;
-		StructureHelper.Generator.GetDimensions("Assets/Structures/EaterArena", Mod, ref size);
+		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/EaterArena", Mod);
 		var position = new Point16(400 - size.X / 2, Height - 150 - size.Y / 2);
-		StructureHelper.Generator.GenerateStructure("Assets/Structures/EaterArena", position, Mod);
+		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/EaterArena", position, Mod);
 
 		Arena = new Rectangle(position.X * 16, (position.Y + 2) * 16, size.X * 16, (size.Y - 2) * 16);
 	}
@@ -387,8 +386,7 @@ public class EaterDomain : BossDomainSubworld
 
 		// Last chasm
 		progress.Value = 0.8f;
-		Point16 size = Point16.Zero;
-		StructureHelper.Generator.GetDimensions("Assets/Structures/EaterArena", Mod, ref size);
+		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/EaterArena", Mod);
 		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 240, 0.2f), 12, 6);
 		breakthroughs[1] = chasm[chasm.Length / 8];
 		DigChasm(noise, chasm, null, 2.4f);

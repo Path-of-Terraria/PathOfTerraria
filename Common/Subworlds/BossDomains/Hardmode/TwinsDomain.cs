@@ -942,7 +942,7 @@ internal class TwinsDomain : BossDomainSubworld
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
-				_mpDelayTimer = 300;
+				_mpDelayTimer = 301;
 			}
 			else if (Main.netMode == NetmodeID.Server)
 			{

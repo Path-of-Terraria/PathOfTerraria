@@ -179,8 +179,7 @@ public class KingSlimeDomain : BossDomainSubworld
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
 		progress.Value = 0;
 
-		Point16 size = Point16.Zero;
-		StructureHelper.Generator.GetDimensions("Assets/Structures/KingSlimeArena", Mod, ref size);
+		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/KingSlimeArena", Mod);
 
 		Arena = new Rectangle((250 - size.X / 2) * 16, (ArenaY - size.Y / 2 + 4) * 16, size.X * 16, (size.Y - 4) * 16);
 		ArenaEntrance = new Point16(248, ArenaY - size.Y / 2);
@@ -234,7 +233,7 @@ public class KingSlimeDomain : BossDomainSubworld
 		}
 
 		// Place arena
-		StructureHelper.Generator.GenerateStructure("Assets/Structures/KingSlimeArena", new Point16(250 - size.X / 2, ArenaY - size.Y / 2), Mod);
+		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/KingSlimeArena", new Point16(250 - size.X / 2, ArenaY - size.Y / 2), Mod);
 
 		static int GenerateEdgeX(ref bool flip)
 		{

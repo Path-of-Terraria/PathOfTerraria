@@ -19,16 +19,7 @@ public class RavencrestMicrobiome : MicroBiome
 	{
 		Mod mod = ModContent.GetInstance<PoTMod>();
 
-		var size = new Point16();
-
-		bool hasDimensions = StructureHelper.Generator.GetDimensions("Assets/Structures/RavencrestEntrance", mod, ref size);
-		
-		if (!hasDimensions)
-		{
-			// TODO: Maybe this should not throw at all, despite Ravencrest being a core piece of the mod. - Naka
-			throw new InvalidOperationException("Could not retrieve structure's dimensions. Path: Assets/Structures/RavencrestEntrance");
-		}
-
+		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/RavencrestEntrance", mod);
 		bool hasProtection = !structures.CanPlace(new Rectangle(origin.X, origin.Y, size.X, size.Y));
 
 		if (hasProtection)
@@ -36,60 +27,11 @@ public class RavencrestMicrobiome : MicroBiome
 			return false;
 		}
 		
-		bool hasGenerated = StructureHelper.Generator.GenerateStructure("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), mod);
-
-		if (!hasGenerated)
-		{
-			// TODO: Maybe this should not throw at all, despite Ravencrest being a core piece of the mod. - Naka
-			throw new InvalidOperationException("Could not generate structure. Path: Assets/Structures/RavencrestEntrance");
-		}
-		
+		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), mod);
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
 		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X + size.X / 2, origin.Y + size.Y / 2);
 
 		return true;
-	}
-}
-
-/// <summary>
-/// Originally written for worldgen, this no longer runs during worldgen. Instead, it runs in <see cref="Systems.ModPlayers.ExpModPlayer"/> on first level up.
-/// </summary>
-internal class RavenPass : AutoGenStep
-{
-	public override void Generate(GenerationProgress progress, GameConfiguration config)
-	{
-		int x = Main.maxTilesX / 2 + WorldGen.genRand.Next(50, 80) * (WorldGen.genRand.NextBool() ? -1 : 1);
-		int y = (int)(Main.worldSurface * 0.35f);
-
-		// Move the NPC up if it's in tiles, and down if it's not.
-		if (Collision.SolidCollision(new Vector2(x, y) * 16, 20, 20)) 
-		{
-			while (Collision.SolidCollision(new Vector2(x, y) * 16, 20, 20))
-			{
-				y--;
-			}
-		}
-		else
-		{
-			while (!Collision.SolidCollision(new Vector2(x, y) * 16, 20, 20))
-			{
-				y++;
-			}
-		}
-
-		if (!WorldGen.generatingWorld && Main.netMode == NetmodeID.MultiplayerClient)
-		{
-			SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<RavenNPC>(), new Vector2(x, y) * 16);
-		}
-		else
-		{
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), x * 16, y * 16, ModContent.NPCType<RavenNPC>());
-		}
-	}
-
-	public override int GenIndex(List<GenPass> tasks)
-	{
-		return -1;
 	}
 }
 
@@ -101,18 +43,8 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 		Mod mod = ModContent.GetInstance<PoTMod>();
 
-		var size = new Point16();
-		
-		bool hasDimensions = StructureHelper.Generator.GetDimensions("Assets/Structures/RavencrestEntrance", mod, ref size);
-		
-		if (!hasDimensions)
-		{
-			// TODO: Maybe this should not throw at all, despite Ravencrest being a core piece of the mod. - Naka
-			throw new InvalidOperationException("Could not retrieve structure's dimensions. Path: Assets/Structures/RavencrestEntrance");
-		}
-
+		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/RavencrestEntrance", mod);
 		RavencrestMicrobiome biome = GenVars.configuration.CreateBiome<RavencrestMicrobiome>();
-
 		bool generated = false;
 
 		while (!generated)
