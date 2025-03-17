@@ -2,6 +2,7 @@ using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -102,6 +103,11 @@ public sealed class RavenNPC : ModNPC
 		if (NPC.velocity.LengthSquared() == 0)
 		{
 			NPC.spriteDirection = NPC.direction;
+		}
+
+		if (Main.rand.NextBool(800) && Main.netMode != NetmodeID.Server)
+		{
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/RavenCaw"), NPC.Center);
 		}
 	}
 

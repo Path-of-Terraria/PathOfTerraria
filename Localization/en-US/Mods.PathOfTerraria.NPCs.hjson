@@ -189,7 +189,7 @@ TownScoutNPC: {
 
 RavenNPC: {
 	DisplayName: Ephemeral Raven
-	Entry: A strange, ghostly raven. The coins it drops are more real than itself, guiding new adventurers to the legendary town of Ravencrest.
+	Entry: A strange, ghostly raven. It guides travelers to Ravencrest, but otherwise is mired in mystery as it tows the line between this world and another.
 }
 
 ControllableSpikeball.DisplayName: Spikeball
