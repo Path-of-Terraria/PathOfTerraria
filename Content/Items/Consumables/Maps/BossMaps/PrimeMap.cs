@@ -9,6 +9,7 @@ internal class PrimeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 59;
+	public override bool CanDrop => throw new NotImplementedException();
 
 	public override void SetStaticDefaults()
 	{

@@ -17,6 +17,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	protected sealed override bool CloneNewInstances => true;
 
 	public abstract int MaxUses { get; }
+	public abstract bool CanDrop { get; }
 	public virtual int WorldTier => WorldLevelBasedOnTier(Tier);
 
 	public int RemainingUses = 0;

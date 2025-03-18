@@ -9,6 +9,7 @@ internal class BeeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 30;
+	public override bool CanDrop => NPC.downedQueenBee;
 
 	public override void SetStaticDefaults()
 	{
