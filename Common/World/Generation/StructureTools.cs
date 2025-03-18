@@ -1,3 +1,4 @@
+using StructureHelper;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -27,7 +28,8 @@ internal static class StructureTools
 	/// <param name="cullAbove"></param>
 	/// <param name="noSync">Stops StructureHelper from sending a sync packet if desired.</param>
 	/// <returns></returns>
-	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false, bool noSync = false)
+	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false, 
+		bool noSync = false, GenFlags flags = GenFlags.None)
 	{
 		mod ??= ModContent.GetInstance<PoTMod>();
 		Point16 dims = GetSize(structure);
@@ -45,7 +47,7 @@ internal static class StructureTools
 			Main.netMode = NetmodeID.SinglePlayer;
 		}
 
-		StructureHelper.API.Generator.GenerateStructure(structure, position, mod);
+		StructureHelper.API.Generator.GenerateStructure(structure, position, mod, flags: flags);
 		Main.netMode = oldVal;
 		return position;
 	}

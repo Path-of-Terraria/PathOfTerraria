@@ -1,9 +1,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
-using PathOfTerraria.Content.NPCs.Town;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;

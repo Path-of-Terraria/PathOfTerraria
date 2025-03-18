@@ -8,7 +8,6 @@ using Terraria.Enums;
 using PathOfTerraria.Common.World.Generation;
 using Terraria.DataStructures;
 using PathOfTerraria.Common.Subworlds.Passes;
-using SubworldLibrary;
 using Terraria.Utilities;
 using System.Linq;
 using PathOfTerraria.Content.Tiles.BossDomain;
