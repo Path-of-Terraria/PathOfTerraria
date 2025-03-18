@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Core.Items;
@@ -95,6 +96,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			DecorateGrass(item.Key, item.Value);
 		}
 
+		Decoration.ManuallyPopulateChests();
+
 		WeightedRandom<(int type, Range stackRange)> miscChestLoot = new();
 		miscChestLoot.Add((ItemID.CrystalShard, 6..12), 1.4f);
 		miscChestLoot.Add((ItemID.CrystalBullet, 20..30), 0.5f);
@@ -148,7 +151,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 	{
 		if (flags != OpenFlags.None)
 		{
-			if (WorldGen.genRand.NextBool(40) && WorldGen.SolidOrSlopedTile(position.X, position.Y))
+			if (WorldGen.genRand.NextBool(40) && WorldGen.SolidOrSlopedTile(position.X, position.Y) && WorldGen.InWorld(position.X, position.Y, 60))
 			{
 				string str = "Assets/Structures/QueenSlimeDomain/Crystal_" + Main.rand.Next(16);
 

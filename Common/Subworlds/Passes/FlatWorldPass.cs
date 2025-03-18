@@ -20,6 +20,7 @@ public class FlatWorldPass(int floorY = 500, bool spawnWalls = false, FastNoiseL
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain"); // Sets the text displayed for this pass
 		Main.worldSurface = Main.maxTilesY - 42; // Hides the underground layer just out of bounds
 		Main.rockLayer = Main.maxTilesY; // Hides the cavern layer way out of bounds
+
 		for (int x = 0; x < Main.maxTilesX; x++)
 		{
 			for (int y = 0; y < Main.maxTilesY; y++)

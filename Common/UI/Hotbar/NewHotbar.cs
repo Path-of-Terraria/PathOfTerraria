@@ -14,7 +14,6 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using PathOfTerraria.Core.UI.SmartUI;
-using StructureHelper.GUI;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 

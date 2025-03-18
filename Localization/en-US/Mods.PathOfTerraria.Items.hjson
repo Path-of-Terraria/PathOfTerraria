@@ -995,7 +995,7 @@ BrittleCrystalItem: {
 
 TwinsMap: {
 	DisplayName: Twins Map
-	Tooltip: 
+	Tooltip:
 		'''
 		{$MapCommon.BossBase}
 		'The map smells of rot and oil'

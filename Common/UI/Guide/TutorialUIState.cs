@@ -155,11 +155,11 @@ internal class TutorialUIState : UIState
 			{
 				if (Main.netMode == NetmodeID.SinglePlayer)
 				{
-					NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)plr.Center.X, (int)plr.Center.Y - 200, ModContent.NPCType<RavenNPC>());
+					NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)plr.Center.X, (int)plr.Center.Y - 250, ModContent.NPCType<RavenNPC>());
 				}
 				else if (Main.netMode == NetmodeID.MultiplayerClient)
 				{
-					SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<RavenNPC>(), plr.Center - new Vector2(0, 200));
+					SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<RavenNPC>(), plr.Center - new Vector2(0, 250));
 				}
 			}
 		}

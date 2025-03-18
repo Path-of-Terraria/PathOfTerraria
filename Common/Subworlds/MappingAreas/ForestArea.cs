@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
@@ -32,7 +33,6 @@ internal class ForestArea : MappingWorld
 	public const int FloorY = 180;
 
 	private static bool LeftSpawn = false;
-	private static int LastTreeX = 0;
 	private static Point BossSpawnLocation = Point.Zero;
 
 	public override int Width => 1200 + 120 * Main.rand.Next(10);
@@ -238,6 +238,8 @@ internal class ForestArea : MappingWorld
 			progress.Set(i / (float)Main.maxTilesX);
 		}
 
+		Decoration.ManuallyPopulateChests();
+
 		int grassIndex = 0;
 
 		foreach (Point16 pos in grasses)
@@ -384,7 +386,6 @@ internal class ForestArea : MappingWorld
 		Main.rockLayer = 270;
 
 		LeftSpawn = Main.rand.NextBool(2);
-		LastTreeX = LeftSpawn ? 200 : Main.maxTilesX - 200;
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
@@ -404,7 +405,6 @@ internal class ForestArea : MappingWorld
 				if (i == Main.maxTilesX / 10 * 3 || i == Main.maxTilesX / 10 * 7 && WorldGen.genRand.NextBool())
 				{
 					trees.Add(i);
-					LastTreeX = i;
 				}
 			}
 

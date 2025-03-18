@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.BossDomain.SkeletronDomain;
-using StructureHelper;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -46,8 +45,7 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 
 		string structure = "Assets/Structures/SkeletronDomain/Room_" + id;
 		Point16 position = StructureTools.PlaceByOrigin(structure, new Point16(x, y), Vector2.Zero, null, false);
-		var size = new Point16();
-		Generator.GetDimensions(structure, PoTMod.Instance, ref size);
+		Point16 size = StructureHelper.API.Generator.GetStructureDimensions(structure, PoTMod.Instance);
 		AddSpawns(x, y);
 
 		return new Rectangle(x, y, size.X, size.Y);

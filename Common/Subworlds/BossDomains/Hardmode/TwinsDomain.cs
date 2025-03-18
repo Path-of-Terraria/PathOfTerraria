@@ -5,7 +5,6 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -942,7 +941,7 @@ internal class TwinsDomain : BossDomainSubworld
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
-				_mpDelayTimer = 300;
+				_mpDelayTimer = 301;
 			}
 			else if (Main.netMode == NetmodeID.Server)
 			{

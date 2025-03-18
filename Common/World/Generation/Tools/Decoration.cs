@@ -33,4 +33,20 @@ internal static class Decoration
 			WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(10), 0);
 		}
 	}
+
+	public static void ManuallyPopulateChests()
+	{
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && TileID.Sets.IsAContainer[tile.TileType] && TileID.Sets.BasicChest[tile.TileType])
+				{
+					Chest.CreateChest(i, j);
+				}
+			}
+		}
+	}
 }
