@@ -9,6 +9,7 @@ internal class TwinsMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 55;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 54 && NPC.downedMechBoss2;
 
 	public override void SetStaticDefaults()
 	{
