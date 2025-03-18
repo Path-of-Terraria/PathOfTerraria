@@ -21,11 +21,11 @@ internal static class StructureTools
 	/// <summary>
 	/// Places a structure at the given position and origin.
 	/// </summary>
-	/// <param name="structure"></param>
-	/// <param name="position"></param>
-	/// <param name="origin"></param>
-	/// <param name="mod"></param>
-	/// <param name="cullAbove"></param>
+	/// <param name="structure">Path to the structure, NOT including mod name. Formatted like "Assets/Structures/XX/Structure".</param>
+	/// <param name="position">Position of the structure, according to origin.</param>
+	/// <param name="origin">Origin of the structure; (0, 0) is top-left, (1, 1) is bottom-right.</param>
+	/// <param name="mod">Mod to reference. Usually null for <see cref="PoTMod.Instance"/>.</param>
+	/// <param name="cullAbove">Whether or not to cull tiles above the structure. Used to cut down trees.</param>
 	/// <param name="noSync">Stops StructureHelper from sending a sync packet if desired.</param>
 	/// <returns></returns>
 	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false, 
@@ -52,7 +52,12 @@ internal static class StructureTools
 		return position;
 	}
 
-	private static void CullLine(Point16 position, Point16 dims)
+	/// <summary>
+	/// Used to remove trees above structures in certain areas.
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="dims"></param>
+	internal static void CullLine(Point16 position, Point16 dims)
 	{
 		for (int i = position.X; i < position.X + dims.X; ++i)
 		{

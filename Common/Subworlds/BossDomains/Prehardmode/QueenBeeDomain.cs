@@ -165,8 +165,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			}
 		}
 
-		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{WorldGen.genRand.Next(4)}", original, new(left ? 1 : 0, 0.5f),
-			flags: StructureHelper.GenFlags.IgnoreTileEnttiyData);
+		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{WorldGen.genRand.Next(4)}", original, new(left ? 1 : 0, 0.5f));
 	}
 
 	public override void OnEnter()
