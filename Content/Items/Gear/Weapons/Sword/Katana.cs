@@ -1,10 +1,16 @@
-﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
+﻿using PathOfTerraria.Core.Items;
+
+namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class Katana : Sword
 {
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
+		
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 1f;
+		staticData.MinDropItemLevel = 15;
 
 		GearAlternatives.Register(Type, Terraria.ID.ItemID.Katana);
 	}
