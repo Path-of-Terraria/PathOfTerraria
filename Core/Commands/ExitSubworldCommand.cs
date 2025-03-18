@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
