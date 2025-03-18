@@ -29,7 +29,7 @@ internal class TutorialPlayer : ModPlayer
 	{
 		if (!TutorialChecks.Contains(TutorialCheck.FinishedTutorial))
 		{
-			UIManager.Register("Tutorial UI", "Vanilla: Interface Logic 4", new TutorialUIState());
+			UIManager.Register("Tutorial UI", "Vanilla: Player Chat", new TutorialUIState());
 		}
 	}
 
