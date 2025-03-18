@@ -28,12 +28,12 @@ internal class TutorialUIState : UIState
 
 	public bool Visible => _opacity > 0;
 
-	internal static int StoredStep = 0;
+	internal static int StoredStep;
 
 	public int Step { get; private set; }
 
-	private float _opacity = 0;
-	private float _displayTextLength = 0;
+	private float _opacity;
+	private float _displayTextLength;
 	private float _baseYDivisor = 4; 
 	
 	public TutorialUIState()
@@ -56,6 +56,12 @@ internal class TutorialUIState : UIState
 		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step is 9 or 10 ? 8 : 4, 0.05f);
 
 		Vector2 pos = new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(2, _baseYDivisor);
+
+		// Temp fix to position the guide correctly on ultra-wide monitors + 4k monitors
+		if (Main.screenWidth > 3000)
+		{
+			pos = new Vector2(Main.screenWidth, Main.screenHeight + 500) / new Vector2(2, _baseYDivisor);
+		}
 
 		string text = Language.GetText($"Mods.{PoTMod.ModName}.UI.Guide." + Math.Min(Step, 13)).Value;
 		DrawBacked(spriteBatch, pos, text, false);
