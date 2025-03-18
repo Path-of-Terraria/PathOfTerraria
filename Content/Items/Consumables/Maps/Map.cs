@@ -71,12 +71,6 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	{
 		return Core.Items.GenerateName.Invoke(Item);
 	}
-
-	public static void SpawnItem(Vector2 pos)
-	{
-		SpawnMap<LowTierMap>(pos);
-		SpawnMap<CaveMap>(pos);
-	}
 	
 	public static void SpawnMap<T>(Vector2 pos) where T : Map
 	{

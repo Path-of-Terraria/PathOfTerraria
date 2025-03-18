@@ -147,12 +147,9 @@ public class QueenBeeDomain : BossDomainSubworld
 				breakTime = 5;
 			}
 
-			if (breakTime > -1)
+			if (breakTime > -1 && --breakTime == 0) // Makes sure the opening continues a little bit into the hive
 			{
-				if (--breakTime == 0) // Makes sure the opening continues a little bit into the hive
-				{
-					break;
-				}
+				break;
 			}
 
 			float mul = 0.8f + MathF.Abs(noise.GetNoise(pos.X, pos.Y)) * 1.2f;

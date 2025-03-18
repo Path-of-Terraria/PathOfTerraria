@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Core.Items;
@@ -94,6 +95,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		{
 			DecorateGrass(item.Key, item.Value);
 		}
+
+		Decoration.ManuallyPopulateChests();
 
 		WeightedRandom<(int type, Range stackRange)> miscChestLoot = new();
 		miscChestLoot.Add((ItemID.CrystalShard, 6..12), 1.4f);
