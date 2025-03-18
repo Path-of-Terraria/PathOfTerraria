@@ -9,6 +9,7 @@ internal class QueenSlimeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 53;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 52 && NPC.downedQueenSlime;
 
 	public override void SetStaticDefaults()
 	{

@@ -38,7 +38,7 @@ internal class DropTable
 		}
 		else
 		{
-			items = ItemDatabase.GetItemByType<Map>();
+			items = ItemDatabase.GetItemByType<Map>().Where(x => (x.Item.ModItem as Map).CanDrop);
 		}
 
 		return RollList(itemLevel, dropRarityModifier, items.ToList());
