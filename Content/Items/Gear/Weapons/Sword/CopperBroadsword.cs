@@ -21,7 +21,7 @@ internal class CopperBroadsword : Broadsword
 	{
 		base.SetDefaults();
 
-		Item.damage = 8;
+		Item.damage = 26;
 		Item.width = 42;
 		Item.height = 42;
 		Item.UseSound = SoundID.Item1;
