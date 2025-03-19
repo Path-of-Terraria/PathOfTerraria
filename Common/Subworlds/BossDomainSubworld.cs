@@ -18,11 +18,4 @@ public abstract class BossDomainSubworld : MappingWorld
 
 	// We are going to first set the world to be completely flat so we can build on top of that
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
-
-	public override void OnEnter()
-	{
-		base.OnEnter();
-
-		SubworldSystem.noReturn = true;
-	}
 }
