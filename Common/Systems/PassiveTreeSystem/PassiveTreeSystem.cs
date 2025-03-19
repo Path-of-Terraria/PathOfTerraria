@@ -60,11 +60,14 @@ internal class PassiveTreePlayer : ModPlayer
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
 
+		SetTree();
+	}
+
+	private void SetTree()
+	{
 		foreach (Passive passive in ActiveNodes)
 		{
 			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.InternalIdentifier == "AnchorPassive" ? 1 : 0;
-			// standard is id 1 is anchor for now.
-			// no handling for multiple anchors..
 
 			if (passive is JewelSocket jsPassive)
 			{
@@ -131,6 +134,7 @@ internal class PassiveTreePlayer : ModPlayer
 		ExtraPoints = tag.GetInt("extraPoints");
 
 		ResetNodes();
+		SetTree();
 	}
 
 	internal int GetCumulativeLevel(string internalIdentifier)
