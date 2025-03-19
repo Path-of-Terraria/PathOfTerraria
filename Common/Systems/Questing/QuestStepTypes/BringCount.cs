@@ -42,11 +42,27 @@ internal class BringCount((int id, int count)[] stacks, int npcId, bool takeItem
 		return result;
 	}
 
-	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
 	{
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, DisplayString(), topLeft, Color.White, 0f, Vector2.Zero, Vector2.One, -1, 2);
+		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
+		Color col = StepColor(currentStep);
+		string[] texts = DisplayString().Split('\n');
+		bool throwaway = false;
 
-		uiHeight = DisplayString().ToCharArray().Count('\n') * 22;
+		for (int i = 0; i < texts.Length; ++i)
+		{
+			Vector2 pos = topLeft + new Vector2(0, i * 20);
+			Color color = col;
+
+			if (currentStep == StepCompletion.Current && i > 0 && CheckSingleItem(Main.LocalPlayer, ref throwaway, Stacks[i - 1].id, Stacks[i - 1].count))
+			{
+				color = Color.Green;
+			}
+
+			DrawString(texts[i], pos, color, currentStep);
+		}
+
+		uiHeight = texts.Length * 22;
 	}
 
 	public override bool Track(Player player)
@@ -57,11 +73,7 @@ internal class BringCount((int id, int count)[] stacks, int npcId, bool takeItem
 
 			foreach ((int id, int count) in Stacks)
 			{
-				if (player.CountItem(id, count) < count)
-				{
-					hasAllStacks = false;
-					break;
-				}
+				CheckSingleItem(player, ref hasAllStacks, id, count);
 			}
 
 			if (hasAllStacks)
@@ -81,6 +93,17 @@ internal class BringCount((int id, int count)[] stacks, int npcId, bool takeItem
 		}
 
 		return false;
+	}
+
+	private static bool CheckSingleItem(Player player, ref bool hasAllStacks, int id, int count)
+	{
+		if (player.CountItem(id, count) < count)
+		{
+			hasAllStacks = false;
+			return false;
+		}
+
+		return true;
 	}
 
 	private void TakeAllItems(Player player)

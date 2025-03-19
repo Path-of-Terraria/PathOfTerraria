@@ -12,9 +12,9 @@ internal class ActionStep(Func<Player, QuestStep, bool> action) : QuestStep
 
 	public override bool NoUI => true;
 
-	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
 	{
-		uiHeight = 0;
+		uiHeight = 0; // Draw nothing and don't add a space
 	}
 
 	public override bool Track(Player player)

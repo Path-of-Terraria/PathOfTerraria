@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Utilities;
+using PathOfTerraria.Content.NPCs.BossDomain.Mech;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
@@ -34,7 +35,18 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 		base.DrawSelf(spriteBatch);
 
 		Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(6);
-		Step.DrawQuestStep(pos, out int height, quest.CurrentStep == index);
+		QuestStep.StepCompletion completion = QuestStep.StepCompletion.Locked;
+
+		if (quest.CurrentStep == index)
+		{
+			completion = QuestStep.StepCompletion.Current;
+		}
+		else if (quest.CurrentStep > index)
+		{
+			completion = QuestStep.StepCompletion.Completed;
+		}
+
+		Step.DrawQuestStep(pos, out int height, completion);
 		Height = StyleDimension.FromPixels(height);
 	}
 }

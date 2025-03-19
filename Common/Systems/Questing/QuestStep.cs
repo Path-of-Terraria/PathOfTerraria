@@ -8,6 +8,13 @@ namespace PathOfTerraria.Common.Systems.Questing;
 
 public abstract class QuestStep
 {
+	public enum StepCompletion
+	{
+		Locked,
+		Current,
+		Completed
+	}
+
 	public static Color DefaultTextColor = new(43, 28, 17);
 
 	public virtual int LineCount => 1;
@@ -37,18 +44,28 @@ public abstract class QuestStep
 	/// <summary>
 	/// Used to display in the Quest book. Make sure to use <see cref="LocalizedText"/>s and not hardcoded strings.
 	/// </summary>
-	public abstract void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep);
+	public abstract void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep);
 
-	protected static void DrawString(string text, Vector2 position, Color color, bool currentStep)
+	protected static void DrawString(string text, Vector2 position, Color color, StepCompletion currentStep)
 	{
 		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
 
-		if (!currentStep)
+		if (currentStep == StepCompletion.Locked)
 		{
 			color = DefaultTextColor * 0.25f;
 		}
 
 		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, color, Color.Transparent, 0f, Vector2.Zero, new(0.7f), -1, 2);
+	}
+
+	protected static Color StepColor(StepCompletion step)
+	{
+		return step switch
+		{
+			StepCompletion.Locked => DefaultTextColor * 0.25f,
+			StepCompletion.Current => DefaultTextColor,
+			_ => Color.Green,
+		};
 	}
 
 	public virtual void Save(TagCompound tag) { }

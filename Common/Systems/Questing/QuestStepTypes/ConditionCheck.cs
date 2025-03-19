@@ -23,9 +23,9 @@ internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, L
 		return displayText.WithFormatArgs(IsDone ? 100 : (_explore / ExploreTime * 100).ToString("#0.##")).Value;
 	}
 
-	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
 	{
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, DisplayString(), topLeft, Color.White, 0f, Vector2.Zero, Vector2.One);
+		DrawString(DisplayString(), topLeft, StepColor(currentStep), currentStep);
 
 		uiHeight = 22;
 	}

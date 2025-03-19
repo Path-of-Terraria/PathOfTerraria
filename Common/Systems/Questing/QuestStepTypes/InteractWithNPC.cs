@@ -69,10 +69,10 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 		return baseText;
 	}
 
-	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
 	{
 		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
-		Color col = !currentStep ? new Color(43, 28, 17) * 0.25f : new Color(43, 28, 17);
+		Color col = StepColor(currentStep);
 		string[] texts = DisplayString().Split('\n');
 		bool throwaway = false;
 
@@ -81,7 +81,7 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 			Vector2 pos = topLeft + new Vector2(0, i * 20);
 			Color color = col;
 
-			if (currentStep && i > 0 && CheckSingleItem(Main.LocalPlayer, ref throwaway, RequiredItems[i - 1]))
+			if (currentStep == StepCompletion.Current && i > 0 && CheckSingleItem(Main.LocalPlayer, ref throwaway, RequiredItems[i - 1]))
 			{
 				color = Color.Green;
 			}

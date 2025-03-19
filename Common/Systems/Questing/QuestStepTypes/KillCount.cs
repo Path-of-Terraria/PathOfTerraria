@@ -1,4 +1,5 @@
-﻿using Terraria.Localization;
+﻿using Terraria.GameContent.Creative;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -27,9 +28,9 @@ internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText disp
 		return Display.WithFormatArgs(MaxRemaining - _remaining + "/" + MaxRemaining).Value;
 	}
 
-	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
 	{
-		DrawString(DisplayString(), topLeft, DefaultTextColor, currentStep);
+		DrawString(DisplayString(), topLeft, StepColor(currentStep), currentStep);
 
 		uiHeight = 22;
 	}

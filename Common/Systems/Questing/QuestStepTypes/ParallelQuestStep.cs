@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.UI.Elements;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -25,9 +26,17 @@ internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
 		}
 	}
 
-	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
 	{
-		uiHeight = 22;
+		Vector2 pos = topLeft;
+		uiHeight = 0;
+
+		for (int i = 0; i < steps.Count; i++)
+		{
+			steps[i].DrawQuestStep(pos, out int height, steps[i].IsDone ? StepCompletion.Completed : currentStep);
+			pos.Y += height;
+			uiHeight += height;
+		}
 	}
 
 	public override bool Track(Player player)
