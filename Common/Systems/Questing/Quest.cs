@@ -133,16 +133,6 @@ public abstract class Quest : ModType, ILocalizedModType
 		}
 	}
 
-	public List<QuestStep> GetSteps()
-	{
-		return QuestSteps;
-	}
-
-	public string CurrentQuestString()
-	{
-		return ActiveStep.DisplayString();
-	}
-
 	public void Save(TagCompound tag)
 	{
 		tag.Add("completed", Completed);

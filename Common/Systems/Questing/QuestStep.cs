@@ -42,10 +42,20 @@ public abstract class QuestStep
 	public virtual string DisplayString() { return ""; }
 
 	/// <summary>
-	/// Used to display in the Quest book. Make sure to use <see cref="LocalizedText"/>s and not hardcoded strings.
+	/// Used to display in the Quest book. Make sure to use <see cref="LocalizedText"/>s and not hardcoded strings.<br/>
+	/// Additionally, the <see cref="StepColor(StepCompletion)"/> - provides a default color based on the current <paramref name="currentStep"/> -<br/>
+	/// <see cref="DrawString(string, Vector2, Color, StepCompletion)"/> - draws a string with default parameters for ease of use -<br/>and <see cref="DefaultTextColor"/> 
+	/// may be used to more easily draw the step.
 	/// </summary>
 	public abstract void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep);
 
+	/// <summary>
+	/// Draws a string with default Quest Book parameters - namely, faded if completed, 0.7f scale, no transparency with the ItemStack font and Main.spriteBatch.
+	/// </summary>
+	/// <param name="text">Text to display.</param>
+	/// <param name="position">Position to draw at.</param>
+	/// <param name="color">Color to draw with. Will be overriden if <paramref name="currentStep"/> is <see cref="StepCompletion.Completed"/>.</param>
+	/// <param name="currentStep">Color of the current step. Used to override <paramref name="color"/> if the step is <see cref="StepCompletion.Completed"/>.</param>
 	protected static void DrawString(string text, Vector2 position, Color color, StepCompletion currentStep)
 	{
 		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
@@ -58,6 +68,14 @@ public abstract class QuestStep
 		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, color, Color.Transparent, 0f, Vector2.Zero, new(0.7f), -1, 2);
 	}
 
+	/// <summary>
+	/// Gets the default color of the given step.<br/>
+	/// <c><see cref="StepCompletion.Locked"/></c> => <c>DefaultTextColor * 0.25f</c>,<br/>
+	/// <c><see cref="StepCompletion.Current"/></c> => <c>DefaultTextColor</c>,<br/>
+	/// <c><see cref="StepCompletion.Completed"/></c> => <c>Color.Green</c><br/>
+	/// </summary>
+	/// <param name="step"></param>
+	/// <returns></returns>
 	protected static Color StepColor(StepCompletion step)
 	{
 		return step switch
