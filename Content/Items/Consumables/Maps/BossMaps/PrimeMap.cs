@@ -9,7 +9,7 @@ internal class PrimeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 59;
-	public override bool CanDrop => throw new NotImplementedException();
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 58 && NPC.downedMechBoss3;
 
 	public override void SetStaticDefaults()
 	{
