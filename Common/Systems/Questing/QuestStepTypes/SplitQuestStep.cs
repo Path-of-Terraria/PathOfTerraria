@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria.GameContent;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
@@ -25,6 +26,23 @@ internal class SplitQuestSteps(List<QuestStep> stepsLists) : QuestStep
 		}
 
 		return IsDone;
+	}
+
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
+	{
+		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
+		Color col = StepColor(currentStep);
+		string[] texts = DisplayString().Split('\n');
+
+		for (int i = 0; i < texts.Length; ++i)
+		{
+			Vector2 pos = topLeft + new Vector2(0, i * 20);
+			Color color = col;
+
+			DrawString(texts[i], pos, color, currentStep);
+		}
+
+		uiHeight = texts.Length * 22;
 	}
 
 	public override string DisplayString()
