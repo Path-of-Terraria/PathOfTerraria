@@ -47,23 +47,20 @@ internal class TreeState : DraggableSmartUi
 			return;
 		}
 
-		if (_passiveTreeInner == null || _skillSelection == null)
-		{
-			_passiveTreeInner = new PassiveTreeInnerPanel();
-			_skillSelection = new SkillSelectionPanel();
+		_passiveTreeInner = new PassiveTreeInnerPanel();
+		_skillSelection = new SkillSelectionPanel();
 
-			TopLeftTree = Vector2.Zero;
-			BotRightTree = Vector2.Zero;
-			var localizedTexts = new (string key, LocalizedText text)[]
-			{
+		TopLeftTree = Vector2.Zero;
+		BotRightTree = Vector2.Zero;
+		var localizedTexts = new (string key, LocalizedText text)[]
+		{
 				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
 				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
-			};
-			base.CreateMainPanel(localizedTexts, false, panelSize: new Point(Main.screenWidth - ShrinkX * 2, Main.screenHeight - ShrinkY * 2));
-			base.AppendChildren();
-			AddCloseButton();
-			ResetTree();
-		}
+		};
+		base.CreateMainPanel(localizedTexts, false, panelSize: new Point(Main.screenWidth - ShrinkX * 2, Main.screenHeight - ShrinkY * 2));
+		base.AppendChildren();
+		AddCloseButton();
+		ResetTree();
 
 		IsVisible = true;
 	}

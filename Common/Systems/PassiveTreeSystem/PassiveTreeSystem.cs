@@ -55,28 +55,17 @@ internal class PassiveTreePlayer : ModPlayer
 
 	public void CreateTree()
 	{
-		ActiveNodes = [];
-		Edges = [];
-
-		Dictionary<int, Passive> passives = [];
-		List<PassiveData> data = PassiveRegistry.GetPassiveData();
-
-		data.ForEach(n => 
-		{
-			passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n)); 
-			ActiveNodes.Add(passives[n.ReferenceId]); 
-		});
-
-		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new PassiveEdge(passives[n.ReferenceId], passives[connection.ReferenceId]))));
+		ResetNodes();
 
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
+
 		foreach (Passive passive in ActiveNodes)
 		{
 			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.InternalIdentifier == "AnchorPassive" ? 1 : 0;
 			// standard is id 1 is anchor for now.
 			// no handling for multiple anchors..
-			
+
 			if (passive is JewelSocket jsPassive)
 			{
 				if (_saveData.TryGet("_" + passive.ReferenceId, out TagCompound tag))
@@ -92,6 +81,23 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 	}
 
+	private void ResetNodes()
+	{
+		ActiveNodes = [];
+		Edges = [];
+
+		Dictionary<int, Passive> passives = [];
+		List<PassiveData> data = PassiveRegistry.GetPassiveData();
+
+		data.ForEach(n =>
+		{
+			passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n));
+			ActiveNodes.Add(passives[n.ReferenceId]);
+		});
+
+		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new PassiveEdge(passives[n.ReferenceId], passives[connection.ReferenceId]))));
+	}
+
 	public override void UpdateEquips()
 	{
 		ActiveNodes.Where(n => n.Level != 0).ToList().ForEach(n => n.BuffPlayer(Player));
@@ -101,7 +107,11 @@ internal class PassiveTreePlayer : ModPlayer
 	{
 		foreach (Passive passive in ActiveNodes)
 		{
-			tag[passive.ReferenceId.ToString()] = passive.Level;
+			if (passive.Level > 0)
+			{
+				tag[passive.ReferenceId.ToString()] = passive.Level;
+			}
+
 			if (passive is JewelSocket jsPassive && jsPassive.Socketed is not null)
 			{
 				TagCompound jewelTag = [];
@@ -111,12 +121,16 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 		
 		tag["extraPoints"] = ExtraPoints;
+
+		_saveData = tag;
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
 		_saveData = tag;
 		ExtraPoints = tag.GetInt("extraPoints");
+
+		ResetNodes();
 	}
 
 	internal int GetCumulativeLevel(string internalIdentifier)
