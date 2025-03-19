@@ -9,4 +9,9 @@ internal class StopExplodingTile : GlobalTile
 	{
 		return SubworldSystem.Current is not BossDomainSubworld || BuildingWhitelist.InMiningWhitelist(type) || BuildingWhitelist.InExplodingWhitelist(type);
 	}
+
+	public override bool Slope(int i, int j, int type)
+	{
+		return SubworldSystem.Current is not MappingWorld;
+	}
 }
