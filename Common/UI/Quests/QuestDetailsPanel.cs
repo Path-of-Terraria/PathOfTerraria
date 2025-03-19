@@ -82,7 +82,7 @@ public class QuestDetailsPanel : SmartUiElement
 				Height = StyleDimension.FromPixels(step.LineCount * 22)
 			};
 
-			stepUI.UpdateText();
+			//stepUI.UpdateText();
 			list.Add(stepUI);
 		}
 

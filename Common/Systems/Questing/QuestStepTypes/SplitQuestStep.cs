@@ -27,6 +27,11 @@ internal class SplitQuestSteps(List<QuestStep> stepsLists) : QuestStep
 		return IsDone;
 	}
 
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	{
+		uiHeight = 20;
+	}
+
 	public override string DisplayString()
 	{
 		string s = "--\n";

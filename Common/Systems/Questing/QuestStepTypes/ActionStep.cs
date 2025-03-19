@@ -1,4 +1,5 @@
-﻿namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
+﻿
+namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
 /// <summary>
 /// Allows you to create a behaviour mid-quest. For example, spawning an item or teleporting the player.<br/>
@@ -10,6 +11,11 @@ internal class ActionStep(Func<Player, QuestStep, bool> action) : QuestStep
 	private readonly Func<Player, QuestStep, bool> Action = action;
 
 	public override bool NoUI => true;
+
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	{
+		uiHeight = 0;
+	}
 
 	public override bool Track(Player player)
 	{

@@ -1,11 +1,15 @@
 ﻿using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using Terraria.UI.Chat;
+using Terraria.GameContent;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
 public abstract class QuestStep
 {
+	public static Color DefaultTextColor = new(43, 28, 17);
+
 	public virtual int LineCount => 1;
 	public virtual bool NoUI => false;
 
@@ -29,6 +33,23 @@ public abstract class QuestStep
 	/// </summary>
 	/// <returns>The display string.</returns>
 	public virtual string DisplayString() { return ""; }
+
+	/// <summary>
+	/// Used to display in the Quest book. Make sure to use <see cref="LocalizedText"/>s and not hardcoded strings.
+	/// </summary>
+	public abstract void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep);
+
+	protected static void DrawString(string text, Vector2 position, Color color, bool currentStep)
+	{
+		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
+
+		if (!currentStep)
+		{
+			color = DefaultTextColor * 0.25f;
+		}
+
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, color, Color.Transparent, 0f, Vector2.Zero, new(0.7f), -1, 2);
+	}
 
 	public virtual void Save(TagCompound tag) { }
 	public virtual void Load(TagCompound tag) { }

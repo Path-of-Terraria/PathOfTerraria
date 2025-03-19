@@ -1,4 +1,6 @@
-﻿using Terraria.Localization;
+﻿using Terraria.GameContent;
+using Terraria.Localization;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
@@ -19,6 +21,13 @@ internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, L
 	public override string DisplayString()
 	{
 		return displayText.WithFormatArgs(IsDone ? 100 : (_explore / ExploreTime * 100).ToString("#0.##")).Value;
+	}
+
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	{
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, DisplayString(), topLeft, Color.White, 0f, Vector2.Zero, Vector2.One);
+
+		uiHeight = 22;
 	}
 
 	public override bool Track(Player player)

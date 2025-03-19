@@ -1,5 +1,8 @@
-﻿using Terraria.GameContent.Drawing;
+﻿using System.Linq;
+using Terraria.GameContent;
+using Terraria.GameContent.Drawing;
 using Terraria.Localization;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
@@ -37,6 +40,13 @@ internal class BringCount((int id, int count)[] stacks, int npcId, bool takeItem
 
 		result += $"    {GiveText.Format(Lang.GetNPCNameValue(NpcId))}";
 		return result;
+	}
+
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	{
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, DisplayString(), topLeft, Color.White, 0f, Vector2.Zero, Vector2.One, -1, 2);
+
+		uiHeight = DisplayString().ToCharArray().Count('\n') * 22;
 	}
 
 	public override bool Track(Player player)

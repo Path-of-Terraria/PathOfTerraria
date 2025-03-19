@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.UI.Elements;
+using System.Collections.Generic;
 using System.Linq;
 using Terraria.ModLoader.IO;
 
@@ -22,6 +23,11 @@ internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
 		{
 			IsDone = true;
 		}
+	}
+
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	{
+		uiHeight = 22;
 	}
 
 	public override bool Track(Player player)

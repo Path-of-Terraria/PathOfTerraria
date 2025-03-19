@@ -27,6 +27,13 @@ internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText disp
 		return Display.WithFormatArgs(MaxRemaining - _remaining + "/" + MaxRemaining).Value;
 	}
 
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, bool currentStep)
+	{
+		DrawString(DisplayString(), topLeft, DefaultTextColor, currentStep);
+
+		uiHeight = 22;
+	}
+
 	public override void OnKillNPC(Player player, NPC target, NPC.HitInfo hitInfo, int damageDone)
 	{
 		if (player.whoAmI == Main.myPlayer && countsAsKill(target))
