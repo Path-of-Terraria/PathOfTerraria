@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Utilities;
-using PathOfTerraria.Content.NPCs.BossDomain.Mech;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
