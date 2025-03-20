@@ -636,3 +636,8 @@ CoreModule: {
 
 CoreModulePlate.DisplayName: Core Module Plate
 ExplosiveTurret.DisplayName: Explosive Turret
+
+HauntedHead: {
+	DisplayName: Haunted Head
+	Entry: The long-lost head of a traveller, merchant, or other unfortunate soul seeking revenge. Emerging from the sands, it'll stop at nothing but death to stop you.
+}

@@ -25,7 +25,7 @@ internal class DesertArea : MappingWorld
 	private static bool LeftSpawn = false;
 	private static Point BossSpawnLocation = Point.Zero;
 
-	public override int Width => 1200 + 120 * Main.rand.Next(10);
+	public override int Width => 1800 + 120 * Main.rand.Next(4);
 	public override int Height => 400;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain)];
@@ -61,6 +61,8 @@ internal class DesertArea : MappingWorld
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
+		const int MinHeight = 210;
+
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
 		Main.worldSurface = 240;
@@ -70,54 +72,55 @@ internal class DesertArea : MappingWorld
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
-		noise.SetFrequency(0.02f);
+		noise.SetFrequency(0.005f);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
 
-		HashSet<Point16> leafBlobs = [];
-		HashSet<int> trees = [];
-		HashSet<int> duneXs = [];
-		float cutOffY = 220;
+		float cutOffY = MinHeight;
+		int start = 0;
+		int end = Main.maxTilesX;
 
-		PopulateDuneLocations(duneXs);
-
-		for (int i = 0; i < Main.maxTilesX; ++i)
+		if (!LeftSpawn)
 		{
-			progress.Set(i / (float)Main.maxTilesX);
+			start = Main.maxTilesX;
+			end = 0;
+		}
 
-			for (int j = 0; j < Main.maxTilesY; ++j)
+		int i = start;
+
+		while (i != end)
+		{
+			float factor = i / (float)Main.maxTilesX;
+			progress.Set(!LeftSpawn ? 1 - factor : factor);
+
+			for (int j = 40; j < Main.maxTilesY; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 				
-				if (j > cutOffY)
+				if (j >= cutOffY)
 				{
 					tile.TileType = TileID.Sand;
 					tile.HasTile = true;
+
+					if (i == Main.spawnTileX && j == (int)cutOffY + 1)
+					{
+						Main.spawnTileY = j - 4;
+					}
 				}
 			}
 
-			if (duneXs.Contains(i))
+			cutOffY -= (noise.GetNoise(i, 0) + 0.5f) * 1f;
+
+			int edge = i < 200 ? 40 : Main.maxTilesX - 40;
+			float lerpValue = 0.01f;
+
+			if (Math.Abs(edge - i) < 80)
 			{
-				cutOffY += noise.GetNoise(i, 0) * 1.2f;
+				lerpValue += Math.Abs(edge - i) / 40f * 0.05f;
 			}
-		}
-	}
 
-	private void PopulateDuneLocations(HashSet<int> duneXs)
-	{
-		List<Range> ranges = [];
+			cutOffY = MathHelper.Lerp(cutOffY, MinHeight, lerpValue);
 
-		for (int i = 0; i < Width / 1200 * 7; ++i)
-		{
-			int baseX = WorldGen.genRand.Next(40, Main.maxTilesX - 500);
-			ranges.Add(baseX..(baseX + WorldGen.genRand.Next(400)));
-		}
-
-		foreach (Range item in ranges)
-		{
-			for (int i = item.Start.Value; i < item.End.Value; ++i)
-			{
-				duneXs.Add(i);
-			}
+			i += Math.Sign(end - i);
 		}
 	}
 }
