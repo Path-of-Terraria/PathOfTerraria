@@ -91,6 +91,17 @@ internal class RavencrestSubworld : MappingWorld
 	{
 		// Time wasn't being incremented for some reason by default
 		Main.time++;
+
+		if (Main.dayTime && Main.time >= Main.dayLength)
+		{
+			Main.dayTime = false;
+			Main.time = 0;
+		}
+		else if (!Main.dayTime && Main.time >= Main.nightLength)
+		{
+			Main.dayTime = false;
+			Main.time = 0;
+		}
 	}
 
 	public class RavencrestNPC : GlobalNPC 
