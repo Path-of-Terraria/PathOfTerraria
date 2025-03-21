@@ -1,12 +1,14 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Effects;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert;
 
-//[AutoloadBanner]
+[AutoloadBanner]
 internal class HauntedHead : ModNPC
 {
 	public enum AIState
@@ -38,26 +40,23 @@ internal class HauntedHead : ModNPC
 		NPC.lifeMax = 300;
 		NPC.defense = 0;
 		NPC.damage = 50;
-		NPC.knockBackResist = 0;
 		NPC.HitSound = SoundID.NPCHit30;
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
 		NPC.hide = true;
 		NPC.color = Color.White;
 
-		//NPC.TryEnableComponent<NPCHitEffects>(
-		//	c =>
-		//	{
-		//		c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_0", 1, NPCHitEffects.OnDeath));
-		//		c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_1", 2, NPCHitEffects.OnDeath));
-		//		c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/{Name}_2", 1, NPCHitEffects.OnDeath));
+		NPC.TryEnableComponent<NPCHitEffects>(
+			c =>
+			{
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_0", 2, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_1", 2, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_2", 2, NPCHitEffects.OnDeath));
 
-		//		c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 5));
-		//		c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 1));
-		//		c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.CorruptionThorns, 20, NPCHitEffects.OnDeath));
-		//		c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<EntDust>(), 10, NPCHitEffects.OnDeath));
-		//	}
-		//);
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<GhostDust>(), 5));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<GhostDust>(), 20, NPCHitEffects.OnDeath));
+			}
+		);
 	}
 
 	public override void DrawBehind(int index)
@@ -89,11 +88,12 @@ internal class HauntedHead : ModNPC
 		Timer++;
 
 		NPC.TargetClosest();
-		NPC.velocity += NPC.DirectionTo(Main.player[NPC.target].Center).RotatedBy(MathF.Sin(Timer * 0.02f) * 0.5f);
+		NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+		NPC.velocity += NPC.DirectionTo(Main.player[NPC.target].Center).RotatedBy(MathF.Sin(Timer * 0.02f) * 0.5f) * 0.5f;
 
-		if (NPC.velocity.LengthSquared() > 14 * 14)
+		if (NPC.velocity.LengthSquared() > 11 * 11)
 		{
-			NPC.velocity = Vector2.Normalize(NPC.velocity) * 14;
+			NPC.velocity = Vector2.Normalize(NPC.velocity) * 11;
 		}
 
 		NPC.velocity *= 0.99f;
