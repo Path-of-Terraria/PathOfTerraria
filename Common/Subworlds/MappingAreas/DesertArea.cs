@@ -28,7 +28,46 @@ internal class DesertArea : MappingWorld
 	public override int Width => 1800 + 120 * Main.rand.Next(4);
 	public override int Height => 400;
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain)];
+	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), 
+		new PassLegacy("Decor", GenerateDecor)];
+
+	private void GenerateDecor(GenerationProgress progress, GameConfiguration configuration)
+	{
+		List<Point16> boulders = [];
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
+
+				if (tile.HasTile && WorldGen.genRand.NextBool(12) && flags.HasFlag(OpenFlags.Above))
+				{
+					boulders.Add(new Point16(i, j));
+				}
+			}
+		}
+
+		foreach (Point16 item in boulders)
+		{
+			SpawnBoulder(item.X, item.Y);
+		}
+	}
+
+	private static void SpawnBoulder(int i, int j)
+	{
+		bool isWall = false;
+		ushort type = WorldGen.genRand.NextBool(4) ? TileID.HardenedSand : TileID.Sandstone;
+
+		if (WorldGen.genRand.NextBool(2, 5))
+		{
+			isWall = true;
+			type = WorldGen.genRand.NextBool(4) ? WallID.HardenedSand : WallID.Sandstone;
+		}
+
+		ForestArea.SpawnBoulder(i, j, type, WorldGen.genRand.Next(4, 30), isWall);
+	}
 
 	public override void OnEnter()
 	{
@@ -105,10 +144,15 @@ internal class DesertArea : MappingWorld
 					{
 						Main.spawnTileY = j - 4;
 					}
+
+					if (j > cutOffY + 10)
+					{
+						tile.TileType = TileID.Sandstone;
+					}
 				}
 			}
 
-			cutOffY -= (noise.GetNoise(i, 0) + 0.5f) * 1f;
+			cutOffY -= (noise.GetNoise(i, 0) + 0.5f) * (noise.GetNoise(i + 9832, 0) + 0.5f) * 1f;
 
 			int edge = i < 200 ? 40 : Main.maxTilesX - 40;
 			float lerpValue = 0.01f;

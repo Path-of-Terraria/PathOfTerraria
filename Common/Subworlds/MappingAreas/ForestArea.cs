@@ -200,7 +200,9 @@ internal class ForestArea : MappingWorld
 				{
 					if (flags != OpenFlags.None)
 					{
-						if (!SpawnBoulder(i, j))
+						int type = WorldGen.genRand.NextBool(12) ? ModContent.TileType<Runestone>() : TileID.Stone;
+
+						if (!WorldGen.genRand.NextBool(60) || !SpawnBoulder(i, j, type))
 						{
 							tile.TileType = TileID.Grass;
 
@@ -359,22 +361,23 @@ internal class ForestArea : MappingWorld
 		}
 	}
 
-	private static bool SpawnBoulder(int i, int j)
+	public static bool SpawnBoulder(int i, int j, int type, int size = -1, bool isWall = false)
 	{
-		int size = WorldGen.genRand.Next(7, 18);
+		if (size == -1)
+		{
+			size = WorldGen.genRand.Next(7, 18);
+		}
+
 		j += 3;
 
-		if (!WorldGen.genRand.NextBool(60) || !GenVars.structures.CanPlace(new Rectangle(i - size, j - size, size * 2, size * 2)))
+		if (!GenVars.structures.CanPlace(new Rectangle(i - size, j - size, size * 2, size * 2)))
 		{
 			return false;
 		}
 
-		int type = WorldGen.genRand.NextBool(12) ? ModContent.TileType<Runestone>() : TileID.Stone;
-
 		FastNoiseLite noise = new();
 		noise.SetFrequency(0.015f);
-
-		Ellipse.GenOval(new Vector2(i, j), size, WorldGen.genRand.NextFloat(MathHelper.Pi) + MathHelper.PiOver2, false, type, noise);
+		Ellipse.GenOval(new Vector2(i, j), size, WorldGen.genRand.NextFloat(MathHelper.Pi) + MathHelper.PiOver2, isWall, type, noise);
 		return true;
 	}
 
