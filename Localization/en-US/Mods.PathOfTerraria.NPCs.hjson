@@ -647,4 +647,7 @@ ScarabSwarmController: {
 	Entry: A swarm of carnivorous scarabs, seeking more food. Why or how they're bunched together is unclear.
 }
 
-SwarmScarab.DisplayName: Swarm Scarab
+SwarmScarab: {
+	DisplayName: Swarm Scarab
+	Entry: ""
+}

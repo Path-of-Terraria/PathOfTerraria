@@ -1,0 +1,16 @@
+{
+	"friendlyName": "Swarm Scarab",
+	"entries": [
+		{
+			"scale": null,
+			"prefix": null,
+			"weight": 1,
+			"stats": {
+				"level": 1,
+				"experience": 120
+			},
+			"affixes": null,
+			"requirements": "Surface"
+		}
+	]
+}

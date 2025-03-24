@@ -53,6 +53,38 @@ internal class DesertArea : MappingWorld
 		{
 			SpawnBoulder(item.X, item.Y);
 		}
+
+		for (int i = 20; i < Main.maxTilesX - 20; ++i)
+		{
+			for (int j = 20; j < Main.maxTilesY - 20; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
+
+				if (flags.HasFlag(OpenFlags.Above) && tile.HasTile)
+				{
+					if (WorldGen.genRand.NextBool(10) && tile.TileType == TileID.Sand)
+					{
+						WorldGen.PlantCactus(i, j);
+					}
+					else if (WorldGen.genRand.NextBool(26))
+					{
+						if (WorldGen.genRand.NextBool())
+						{
+							WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(42, 47), 1);
+						}
+						else if (tile.TileType == TileID.Sand)
+						{
+							WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(62, 65), 1);
+						}
+					}
+					else if (WorldGen.genRand.NextBool(12))
+					{
+						WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(54, 60), 0);
+					}
+				}
+			}
+		}
 	}
 
 	private static void SpawnBoulder(int i, int j)
@@ -67,35 +99,6 @@ internal class DesertArea : MappingWorld
 		}
 
 		ForestArea.SpawnBoulder(i, j, type, WorldGen.genRand.Next(4, 30), isWall);
-	}
-
-	public override void OnEnter()
-	{
-		SubworldSystem.noReturn = true;
-	}
-
-	public override void Update()
-	{
-		bool hasPortal = false;
-
-		foreach (Projectile projectile in Main.ActiveProjectiles)
-		{
-			if (projectile.type == ModContent.ProjectileType<ExitPortal>())
-			{
-				hasPortal = true;
-				break;
-			}
-		}
-
-		//if (!hasPortal && ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
-		//{
-		//	int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), BossSpawnLocation.X, BossSpawnLocation.Y, ModContent.NPCType<Grovetender>());
-
-		//	if (Main.netMode == NetmodeID.Server)
-		//	{
-		//		NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
-		//	}
-		//}
 	}
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
@@ -113,6 +116,10 @@ internal class DesertArea : MappingWorld
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.005f);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+
+		FastNoiseLite superNoise = new(WorldGen._genRandSeed);
+		superNoise.SetFrequency(0.05f);
+		superNoise.SetNoiseType(FastNoiseLite.NoiseType.ValueCubic);
 
 		float cutOffY = MinHeight;
 		int start = 0;
@@ -145,14 +152,14 @@ internal class DesertArea : MappingWorld
 						Main.spawnTileY = j - 4;
 					}
 
-					if (j > cutOffY + 10)
+					if (j > cutOffY + 12 + noise.GetNoise(i, 9000) * 12)
 					{
 						tile.TileType = TileID.Sandstone;
 					}
 				}
 			}
 
-			cutOffY -= (noise.GetNoise(i, 0) + 0.5f) * (noise.GetNoise(i + 9832, 0) + 0.5f) * 1f;
+			cutOffY -= (noise.GetNoise(i, 0) + 0.5f) * (noise.GetNoise(i + 9832, 0) + 0.5f) * (1 + superNoise.GetNoise(i, 0));
 
 			int edge = i < 200 ? 40 : Main.maxTilesX - 40;
 			float lerpValue = 0.01f;
@@ -166,5 +173,34 @@ internal class DesertArea : MappingWorld
 
 			i += Math.Sign(end - i);
 		}
+	}
+
+	public override void OnEnter()
+	{
+		SubworldSystem.noReturn = true;
+	}
+
+	public override void Update()
+	{
+		bool hasPortal = false;
+
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.type == ModContent.ProjectileType<ExitPortal>())
+			{
+				hasPortal = true;
+				break;
+			}
+		}
+
+		//if (!hasPortal && ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
+		//{
+		//	int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), BossSpawnLocation.X, BossSpawnLocation.Y, ModContent.NPCType<Grovetender>());
+
+		//	if (Main.netMode == NetmodeID.Server)
+		//	{
+		//		NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+		//	}
+		//}
 	}
 }

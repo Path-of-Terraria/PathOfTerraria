@@ -24,6 +24,15 @@ internal class ScarabSwarmController : ModNPC
 		set => NPC.ai[1] = (float)value;
 	}
 
+	public override void SetStaticDefaults()
+	{
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Hide = true
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+	}
+
 	public override void SetDefaults()
 	{
 		NPC.Size = new Vector2(34, 30);
@@ -58,11 +67,6 @@ internal class ScarabSwarmController : ModNPC
 		return false;
 	}
 
-	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
-	{
-		bestiaryEntry.AddInfo(this, "Desert");
-	}
-
 	public override void AI()
 	{
 		if (State == AIState.Init)
@@ -78,12 +82,12 @@ internal class ScarabSwarmController : ModNPC
 		}
 		else if (State == AIState.Chase)
 		{
-			const float MaxSpeed = 6;
+			const float MaxSpeed = 8;
 
 			if (UnderlingCount <= 0)
 			{
-				NPC.NPCLoot();
-				NPC.active = false;
+				NPC.life = -1;
+				NPC.checkDead();
 				NPC.netUpdate = true;
 				return;
 			}
