@@ -641,3 +641,10 @@ HauntedHead: {
 	DisplayName: Haunted Head
 	Entry: The long-lost head of a traveller, merchant, or other unfortunate soul seeking revenge. Emerging from the sands, it'll stop at nothing but death to stop you.
 }
+
+ScarabSwarmController: {
+	DisplayName: Scarab Swarm
+	Entry: A swarm of carnivorous scarabs, seeking more food. Why or how they're bunched together is unclear.
+}
+
+SwarmScarab.DisplayName: Swarm Scarab

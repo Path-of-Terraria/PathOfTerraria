@@ -45,6 +45,7 @@ internal class HauntedHead : ModNPC
 		NPC.noTileCollide = true;
 		NPC.hide = true;
 		NPC.color = Color.White;
+		NPC.knockBackResist = 1.8f;
 
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
@@ -78,6 +79,8 @@ internal class HauntedHead : ModNPC
 
 	public override void AI()
 	{
+		const float MaxSpeed = 12;
+
 		if (Main.rand.NextBool(2, 5))
 		{
 			Vector2 dustPos = NPC.BottomRight - new Vector2(4 + Main.rand.NextFloat(NPC.width - 8), 6);
@@ -89,18 +92,14 @@ internal class HauntedHead : ModNPC
 
 		NPC.TargetClosest();
 		NPC.spriteDirection = Math.Sign(NPC.velocity.X);
-		NPC.velocity += NPC.DirectionTo(Main.player[NPC.target].Center).RotatedBy(MathF.Sin(Timer * 0.02f) * 0.5f) * 0.5f;
+		NPC.velocity += NPC.DirectionTo(Main.player[NPC.target].Center).RotatedBy(MathF.Sin(Timer * 0.02f) * 0.5f) * 0.35f;
 
-		if (NPC.velocity.LengthSquared() > 11 * 11)
+		if (NPC.velocity.LengthSquared() > MaxSpeed * MaxSpeed)
 		{
-			NPC.velocity = Vector2.Normalize(NPC.velocity) * 11;
+			NPC.velocity = Vector2.Normalize(NPC.velocity) * MaxSpeed;
 		}
 
-		NPC.velocity *= 0.99f;
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
+		NPC.velocity *= 0.98f;
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -111,38 +110,6 @@ internal class HauntedHead : ModNPC
 		Color color = NPC.GetAlpha(Lighting.GetColor(NPC.Center.ToTileCoordinates(), NPC.color));
 		spriteBatch.Draw(tex, NPC.Center - screenPos, frame, color, 0f, frame.Size() / 2f, 1f, effect, 0);
 		spriteBatch.Draw(tex, NPC.Center - screenPos, frame with { X = 36 }, color, 0f, frame.Size() / 2f, 1f, effect, 0);
-
-		return false;
-	}
-}
-
-public class GhostDust : ModDust
-{
-	public override void OnSpawn(Dust dust)
-	{
-		dust.velocity *= 0.4f;
-		dust.noGravity = true;
-		dust.noLight = true;
-		dust.scale *= 1.5f;
-		dust.color.A = (byte)Main.rand.Next(20, 230);
-		dust.frame = new Rectangle(0, 8 * Main.rand.Next(3), 6, 6);
-	}
-
-	public override bool Update(Dust dust)
-	{
-		dust.position += dust.velocity;
-		dust.rotation += dust.velocity.X * 0.15f;
-		dust.scale *= 0.98f;
-
-		if (Collision.SolidCollision(dust.position, 6, 6))
-		{
-			dust.scale *= 0.7f;
-		}
-
-		if (dust.scale < 0.3f)
-		{
-			dust.active = false;
-		}
 
 		return false;
 	}
