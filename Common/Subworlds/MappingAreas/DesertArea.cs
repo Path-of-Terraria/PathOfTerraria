@@ -55,10 +55,10 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			SpawnBoulder(item.X, item.Y);
 		}
 
-		HashSet<int> xPositions = [];
-		DigTunnels(xPositions);
+		HashSet<int> tunnelXPositions = [];
+		DigTunnels(tunnelXPositions);
 		CleanWorld();
-		PlaceColumns(xPositions);
+		PlaceColumns(tunnelXPositions);
 		SpawnStructures();
 		Decoration.ManuallyPopulateChests();
 		DecorateSand();
@@ -195,24 +195,28 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		noise.SetFractalGain(0.02f);
 		List<int> centres = [];
 
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < 3; ++i)
 		{
-			int startX = WorldGen.genRand.Next(400, Main.maxTilesX - 400);
+			int startX = WorldGen.genRand.Next(500, Main.maxTilesX - 500);
 			int endX = startX + WorldGen.genRand.Next(180, 220) * (WorldGen.genRand.NextBool() ? -1 : 1);
 			int centerX = (startX + endX) / 2;
 
 			while (centres.Any(x => Math.Abs(centerX - x) < 300))
 			{
-				startX = WorldGen.genRand.Next(400, Main.maxTilesX - 400);
+				startX = WorldGen.genRand.Next(500, Main.maxTilesX - 500);
 				endX = startX + WorldGen.genRand.Next(180, 220) * (WorldGen.genRand.NextBool() ? -1 : 1);
 				centerX = (startX + endX) / 2;
 			}
 
 			int startY = FindYBelow(startX, 20);
 			int endY = FindYBelow(endX, 20);
+			int min = Math.Min(startX, endX);
+			int max = Math.Max(startX, endX);
+			int dif = max - min;
+			int tunnelCenterX = Math.Clamp(centerX + WorldGen.genRand.Next(-dif / 2, dif / 2), min + 10, max - 10);
 
-			Vector2[] tunnel = Tunnel.GeneratePoints([new(startX, startY), new(centerX, (startY + endY) / 2 + WorldGen.genRand.Next(50, 90)), new(endX, endY)],
-				20, 2, 0.2f);
+			Vector2[] tunnel = Tunnel.GeneratePoints([new(startX, startY), new(tunnelCenterX, (startY + endY) / 2 + WorldGen.genRand.Next(50, 90)), 
+				new(endX, endY)], 20, 2, 0.2f);
 
 			foreach (Vector2 pos in tunnel)
 			{
@@ -220,9 +224,6 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			}
 
 			centres.Add(centerX);
-
-			int min = Math.Min(startX, endX);
-			int max = Math.Max(startX, endX);
 
 			for (int x = min; x < max; ++x)
 			{
