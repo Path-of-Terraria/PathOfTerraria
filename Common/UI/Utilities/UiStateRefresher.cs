@@ -1,6 +1,8 @@
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Common.UI.PlayerStats;
+using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.GameContent.UI.States;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.UI.Utilities;
@@ -19,7 +21,7 @@ internal class UiStateRefresher : ModSystem
 	{
 		Main.OnResolutionChanged -= RefreshUi;
 	}
-	
+
 	/// <summary>
 	/// Forces the refresh a single time for when the world is loaded and the UI needs refreshing
 	/// </summary>
@@ -41,5 +43,13 @@ internal class UiStateRefresher : ModSystem
 		SmartUiLoader.GetUiState<QuestPanelButton>().Refresh();
 		SmartUiLoader.GetUiState<PlayerStatButton>().Refresh();
 		SmartUiLoader.GetUiState<GrimoireInvButton>().Refresh();
+
+		foreach (UIManager.UIStateData item in UIManager.Data)
+		{
+			if (item.UserInterface?.CurrentState != null)
+			{
+				item.UserInterface.CurrentState.Recalculate();
+			}
+		}
 	}
 }
