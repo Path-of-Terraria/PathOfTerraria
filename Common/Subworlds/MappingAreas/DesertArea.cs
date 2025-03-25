@@ -4,8 +4,8 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
-using SubworldLibrary;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Generation;
@@ -17,16 +17,16 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class DesertArea : MappingWorld
+internal class DesertArea : MappingWorld, IOverrideOcean
 {
-	public const int FloorY = 220;
+	public const int FloorY = 400;
 
 	private static bool LeftSpawn = false;
 	private static Point BossSpawnLocation = Point.Zero;
 	private static int SandstormTimer = 0;
 
-	public override int Width => 1800 + 120 * Main.rand.Next(4);
-	public override int Height => 500;
+	public override int Width => 2000 + 120 * Main.rand.Next(5);
+	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), 
@@ -55,10 +55,18 @@ internal class DesertArea : MappingWorld
 			SpawnBoulder(item.X, item.Y);
 		}
 
-		DigTunnels();
+		HashSet<int> xPositions = [];
+		DigTunnels(xPositions);
+		CleanWorld();
+		PlaceColumns(xPositions);
 		SpawnStructures();
 		Decoration.ManuallyPopulateChests();
+		DecorateSand();
+		PopulateChests();
+	}
 
+	private static void DecorateSand()
+	{
 		for (int i = 20; i < Main.maxTilesX - 20; ++i)
 		{
 			for (int j = 20; j < Main.maxTilesY - 20; ++j)
@@ -92,29 +100,258 @@ internal class DesertArea : MappingWorld
 					{
 						WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(54, 60), 0);
 					}
+					else if (WorldGen.genRand.NextBool(160) && tile.TileType == TileID.Sand)
+					{
+						float x = i;
+						int length = WorldGen.genRand.Next(8, 18);
+
+						for (int y = 0; y < length; ++y)
+						{
+							Tile hole = Main.tile[(int)x, j + y];
+
+							if (WorldGen.genRand.NextBool())
+							{
+								hole.Clear(TileDataType.All);
+
+								if (y > 4)
+								{
+									hole.WallType = WallID.Sandstone;
+								}
+							}
+							else
+							{
+								hole.TileType = TileID.Sandstone;
+							}
+
+							x += WorldGen.genRand.NextFloat(-0.5f, 0.5f);
+						}
+					}
 				}
 			}
 		}
-
-		PopulateChests();
 	}
 
-	private static void DigTunnels()
+	private static void CleanWorld()
 	{
+		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		noise.SetFrequency(0.005f);
+		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+
+		for (int i = 20; i < Main.maxTilesX - 20; ++i)
+		{
+			for (int j = 20; j < Main.maxTilesY - 20; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j);
+
+				if (tile.TileType == TileID.Sand && flags.HasFlag(OpenFlags.Below))
+				{
+					PlaceSandstone(i, j, noise);
+				}
+				else if (tile.TileType != TileID.Sandstone && flags.HasFlag(OpenFlags.Above))
+				{
+					PlaceSand(i, j, noise);
+				}
+
+				Tile.SmoothSlope(i, j, false, false);
+			}
+		}
+	}
+
+	private static void PlaceSandstone(int i, int j, FastNoiseLite noise)
+	{
+		int depth = (int)(6 + noise.GetNoise(i, 1800) * 2);
+
+		for (int y = j; y > j - depth; --y)
+		{
+			Tile tile = Main.tile[i, y];
+
+			if (tile.HasTile && tile.TileType == TileID.Sand)
+			{
+				tile.TileType = TileID.Sandstone;
+			}
+		}
+	}
+
+	private static void PlaceSand(int i, int j, FastNoiseLite noise)
+	{
+		int depth = (int)(12 + noise.GetNoise(i, 9000) * 12);
+
+		for (int y = j; y < j + depth; ++y)
+		{
+			Tile tile = Main.tile[i, y];
+			
+			if (tile.HasTile && tile.TileType != TileID.Sandstone)
+			{
+				tile.TileType = TileID.Sand;
+			}
+		}
+	}
+
+	private static void DigTunnels(HashSet<int> xPositions)
+	{
+		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		noise.SetFrequency(0.02f);
+		noise.SetFractalGain(0.02f);
+		List<int> centres = [];
+
 		for (int i = 0; i < 4; ++i)
 		{
-			int startX = WorldGen.genRand.Next(220, Main.maxTilesX - 220);
-			int endX = startX + WorldGen.genRand.Next(60, 120) * (WorldGen.genRand.NextBool() ? -1 : 1);
+			int startX = WorldGen.genRand.Next(400, Main.maxTilesX - 400);
+			int endX = startX + WorldGen.genRand.Next(180, 220) * (WorldGen.genRand.NextBool() ? -1 : 1);
+			int centerX = (startX + endX) / 2;
+
+			while (centres.Any(x => Math.Abs(centerX - x) < 300))
+			{
+				startX = WorldGen.genRand.Next(400, Main.maxTilesX - 400);
+				endX = startX + WorldGen.genRand.Next(180, 220) * (WorldGen.genRand.NextBool() ? -1 : 1);
+				centerX = (startX + endX) / 2;
+			}
+
+			int startY = FindYBelow(startX, 20);
+			int endY = FindYBelow(endX, 20);
+
+			Vector2[] tunnel = Tunnel.GeneratePoints([new(startX, startY), new(centerX, (startY + endY) / 2 + WorldGen.genRand.Next(50, 90)), new(endX, endY)],
+				20, 2, 0.2f);
+
+			foreach (Vector2 pos in tunnel)
+			{
+				TunnelDig(noise, pos);
+			}
+
+			centres.Add(centerX);
+
+			int min = Math.Min(startX, endX);
+			int max = Math.Max(startX, endX);
+
+			for (int x = min; x < max; ++x)
+			{
+				xPositions.Add(x);
+			}
 		}
+	}
+
+	private static void PlaceColumns(HashSet<int> xPositions)
+	{
+		int lastX = 0;
+		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		noise.SetFrequency(0.08f);
+
+		var tempList = xPositions.ToList();
+		tempList.Sort();
+		xPositions = new HashSet<int>(tempList);
+
+		foreach (int x in xPositions)
+		{
+			if (WorldGen.genRand.NextBool(16) && lastX < x - 20)
+			{
+				for (int i = x - 3; i < x + 3; ++i)
+				{
+					if (!xPositions.Contains(i))
+					{
+						continue;
+					}
+
+					PlaceSandstoneColumn(i, noise, i != x - 3 && i != x + 2);
+				}
+
+				lastX = x;
+			}
+		}
+	}
+
+	private static void PlaceSandstoneColumn(int x, FastNoiseLite noise, bool hasWalls)
+	{
+		int y = Main.maxTilesY - 60;
+
+		while (WorldGen.SolidOrSlopedTile(x, y))
+		{
+			y--;
+		}
+
+		int baseY = y;
+
+		while (!WorldGen.SolidOrSlopedTile(x, y))
+		{
+			y--;
+
+			if (y <= 10)
+			{
+				return;
+			}
+		}
+
+		int targetY = y;
+		y = baseY + 1;
+
+		for (int j = y; j < y + 4; ++j)
+		{
+			Tile tile = Main.tile[x, j];
+			tile.TileType = TileID.SandStoneSlab;
+		}
+
+		if (hasWalls)
+		{
+			while (y > targetY)
+			{
+
+				Tile tile = Main.tile[x, y];
+				tile.WallType = noise.GetNoise(x, y) <= 0.08f ? WallID.ObsidianBackUnsafe : WallID.SandstoneBrick;
+
+				if (noise.GetNoise(x, y + 2039) > 0.25f)
+				{
+					tile.WallType = WallID.Sandstone;
+				}
+
+				y--;
+			}
+		}
+		else
+		{
+			y = targetY;
+		}
+
+		for (int j = y; j > y - 4; --j)
+		{
+			Tile tile = Main.tile[x, j];
+			tile.TileType = TileID.SandStoneSlab;
+		}
+	}
+
+	private static void TunnelDig(FastNoiseLite noise, Vector2 pos)
+	{
+		float mul = 0.5f + MathF.Abs(noise.GetNoise(pos.X, pos.Y));
+		Digging.CircleOpening(pos + WorldGen.genRand.NextVector2Circular(4, 4), 8 * mul);
+		Digging.CircleOpening(pos, WorldGen.genRand.Next(3, 7) * mul);
+
+		if (WorldGen.genRand.NextBool(3, 25))
+		{
+			WorldGen.digTunnel(pos.X, pos.Y, 0, 0, 5, (int)(WorldGen.genRand.NextFloat(5, 9) * mul));
+		}
+	}
+
+	private static int FindYBelow(int x, int y)
+	{
+		while (!WorldGen.SolidOrSlopedTile(x, y))
+		{
+			y++;
+		}
+
+		return y;
 	}
 
 	private static void PopulateChests()
 	{
 		WeightedRandom<(int type, Range stackRange)> miscChestLoot = new();
 		miscChestLoot.Add((ItemID.DesertFossil, 9..30), 1f);
+		miscChestLoot.Add((ItemID.FossilOre, 12..20), 0.5f);
 		miscChestLoot.Add((ItemID.AncientBattleArmorMaterial, 1..2), 0.05f);
 		miscChestLoot.Add((ItemID.DjinnLamp, 1..1), 0.0005f);
 		miscChestLoot.Add((ItemID.Cactus, 20..60), 0.4f);
+		miscChestLoot.Add((ItemID.AncientCloth, 2..5), 0.2f);
+		miscChestLoot.Add((ItemID.DjinnsCurse, 2..5), 0.0005f);
+		miscChestLoot.Add((ItemID.CatBast, 1..1), 0.05f);
+		miscChestLoot.Add((ItemID.AncientHorn, 1..1), 0.005f);
 
 		for (int i = 0; i < Main.maxChests; ++i)
 		{
@@ -154,7 +391,7 @@ internal class DesertArea : MappingWorld
 		while (count > 0)
 		{
 			Point16 pos = GetOpenAirRandomPosition();
-			string structurePath = "Assets/Structures/MapAreas/DesertArea/Ruin_" + WorldGen.genRand.Next(3);
+			string structurePath = "Assets/Structures/MapAreas/DesertArea/Ruin_" + WorldGen.genRand.Next(4);
 			Point16 structureSize = StructureTools.GetSize(structurePath);
 			bool left = CanPlaceStructureOn(pos, structureSize);
 			bool right = CanPlaceStructureOn(new Point16(pos.X - structureSize.X, pos.Y), structureSize);
@@ -175,13 +412,13 @@ internal class DesertArea : MappingWorld
 				originX = 1;
 			}
 
-			if (!GenVars.structures.CanPlace(new Rectangle(pos.X - (int)(structureSize.X * originX), pos.Y, structureSize.X, structureSize.Y)))
+			if (!GenVars.structures.CanPlace(new Rectangle(pos.X - (int)(structureSize.X * (1 - originX)), pos.Y, structureSize.X, structureSize.Y)))
 			{
 				continue;
 			}
 
 			pos = StructureTools.PlaceByOrigin(structurePath, pos, new Vector2(1 - originX, 1));
-			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, structureSize.X, structureSize.Y));
+			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, structureSize.X, structureSize.Y), 10);
 			count--;
 		}
 	}
@@ -203,7 +440,7 @@ internal class DesertArea : MappingWorld
 	{
 		while (true)
 		{
-			Point16 pos = new(WorldGen.genRand.Next(80, Main.maxTilesX - 80), WorldGen.genRand.Next(80, Main.maxTilesY - 80));
+			Point16 pos = new(WorldGen.genRand.Next(200, Main.maxTilesX - 200), WorldGen.genRand.Next(80, Main.maxTilesY - 80));
 
 			if (Main.tile[pos].HasTile && Main.tile[pos].TileType == TileID.Sand && !Main.tile[pos.X, pos.Y - 1].HasTile)
 			{
@@ -269,7 +506,7 @@ internal class DesertArea : MappingWorld
 				
 				if (j >= cutOffY)
 				{
-					tile.TileType = TileID.Sand;
+					tile.TileType = TileID.HardenedSand;
 					tile.HasTile = true;
 
 					if (i == Main.spawnTileX && j == (int)cutOffY + 1)
@@ -277,14 +514,9 @@ internal class DesertArea : MappingWorld
 						Main.spawnTileY = j - 4;
 					}
 
-					if (j > cutOffY + 12 + noise.GetNoise(i, 9000) * 12)
+					if (j >= cutOffY + 2.5f)
 					{
-						tile.TileType = TileID.Sandstone;
-					}
-
-					if (j > cutOffY + 1)
-					{
-						tile.WallType = WallID.HardenedSand;
+						tile.WallType = superNoise.GetNoise(i, j) > 0.1f ? WallID.HardenedSand : WallID.Sandstone;
 					}
 				}
 			}
@@ -303,11 +535,6 @@ internal class DesertArea : MappingWorld
 
 			i += Math.Sign(end - i);
 		}
-	}
-
-	public override void OnEnter()
-	{
-		SubworldSystem.noReturn = true;
 	}
 
 	public override void Update()
@@ -351,5 +578,11 @@ internal class DesertArea : MappingWorld
 		//		NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
 		//	}
 		//}
+	}
+
+	public void OnOceanOverriden()
+	{
+		Main.bgStyle = 2;
+		Main.curMusic = MusicID.Desert;
 	}
 }

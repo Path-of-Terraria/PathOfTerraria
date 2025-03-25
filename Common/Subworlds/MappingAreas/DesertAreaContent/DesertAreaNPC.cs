@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.NPCs.Mapping.Desert;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Content.NPCs.Mapping.Desert;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -22,5 +23,15 @@ internal class DesertAreaNPC : GlobalNPC
 		pool[NPCID.SandShark] = 0.1f;
 		pool[NPCID.DesertGhoul] = 0.9f;
 		pool[NPCID.DesertDjinn] = 0.5f;
+	}
+
+	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+	{
+		if (SubworldSystem.Current is not QueenSlimeDomain || spawnRate == int.MinValue)
+		{
+			return;
+		}
+
+		maxSpawns -= 2;
 	}
 }

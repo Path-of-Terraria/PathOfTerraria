@@ -18,7 +18,7 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class ForestArea : MappingWorld
+internal class ForestArea : MappingWorld, IOverrideOcean
 {
 	private enum StructureKind : byte
 	{
@@ -474,5 +474,11 @@ internal class ForestArea : MappingWorld
 			int type = isWall ? WallID.LivingLeaf : TileID.LeafBlock;
 			Ellipse.GenOval(pos.ToVector2(), WorldGen.genRand.NextFloat(10, 50), WorldGen.genRand.NextFloat(MathHelper.TwoPi), isWall, type, noise);
 		}
+	}
+
+	public void OnOceanOverriden()
+	{
+		Main.bgStyle = 0;
+		Main.curMusic = MusicID.OverworldDay;
 	}
 }

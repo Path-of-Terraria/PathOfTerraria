@@ -1,6 +1,4 @@
-﻿using SubworldLibrary;
-
-namespace PathOfTerraria.Common.Subworlds.MappingAreas;
+﻿namespace PathOfTerraria.Common.Subworlds.MappingAreas.DesertAreaContent;
 
 internal class DesertAreaHooks : ModSystem
 {
