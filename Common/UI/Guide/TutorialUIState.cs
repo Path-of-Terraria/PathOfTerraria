@@ -53,7 +53,7 @@ internal class TutorialUIState : UIState
 			return;
 		}
 
-		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step is 9 or 10 ? 8 : 4, 0.05f);
+		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step is 9 or 10 or 11 ? 8 : 4, 0.05f);
 
 		Vector2 pos = new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(2, _baseYDivisor);
 
@@ -153,7 +153,10 @@ internal class TutorialUIState : UIState
 		}
 		else if (Step == 10)
 		{
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
+			if (!Quest.GetLocalPlayerInstance<FirstQuest>().Active)
+			{
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
+			}
 		}
 		else if (Step == 11)
 		{
