@@ -48,7 +48,7 @@ internal class CanopyBird : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.Size = new Vector2(40, 36);
+		NPC.Size = new Vector2(48, 54);
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 300;
 		NPC.defense = 0;
