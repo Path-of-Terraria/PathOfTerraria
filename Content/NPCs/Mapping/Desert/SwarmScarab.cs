@@ -18,6 +18,12 @@ internal class SwarmScarab : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 2;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1.5f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -27,21 +33,23 @@ internal class SwarmScarab : ModNPC
 		NPC.lifeMax = 60;
 		NPC.defense = 0;
 		NPC.damage = 50;
-		NPC.HitSound = SoundID.NPCHit30;
+		NPC.HitSound = SoundID.NPCHit23;
+		NPC.DeathSound = SoundID.NPCDeath16;
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
 		NPC.color = Color.White;
 		NPC.value = 0;
+		NPC.npcSlots = 0.5f;
 
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_0", 2, NPCHitEffects.OnDeath));
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_1", 2, NPCHitEffects.OnDeath));
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_2", 2, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/Scarab_0", 2, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/Scarab_1", 1, NPCHitEffects.OnDeath));
+				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/Scarab_2", 1, NPCHitEffects.OnDeath));
 
-				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<GhostDust>(), 5));
-				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<GhostDust>(), 20, NPCHitEffects.OnDeath));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Enchanted_Gold, 5));
+				c.AddDust(new NPCHitEffects.DustSpawnParameters(DustID.Enchanted_Gold, 20, NPCHitEffects.OnDeath));
 			}
 		);
 	}

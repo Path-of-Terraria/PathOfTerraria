@@ -40,7 +40,8 @@ internal class HauntedHead : ModNPC
 		NPC.lifeMax = 300;
 		NPC.defense = 0;
 		NPC.damage = 50;
-		NPC.HitSound = SoundID.NPCHit30;
+		NPC.HitSound = SoundID.NPCHit2;
+		NPC.DeathSound = SoundID.NPCDeath6;
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
 		NPC.hide = true;
@@ -62,12 +63,12 @@ internal class HauntedHead : ModNPC
 
 	public override void DrawBehind(int index)
 	{
-		Main.instance.DrawCacheNPCsMoonMoon.Add(index);
+		Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(250, 300, 400);
+		NPC.lifeMax = ModeUtils.ByMode(180, 200, 250);
 		NPC.damage = ModeUtils.ByMode(50, 80, 120);
 		NPC.defense = ModeUtils.ByMode(0, 0, 10, 20);
 	}

@@ -82,7 +82,7 @@ internal class ScarabSwarmController : ModNPC
 		}
 		else if (State == AIState.Chase)
 		{
-			const float MaxSpeed = 8;
+			const float MaxSpeed = 6;
 
 			if (UnderlingCount <= 0)
 			{

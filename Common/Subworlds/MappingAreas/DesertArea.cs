@@ -1,32 +1,33 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
-using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Content.Tiles.Maps.Forest;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent.Events;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
 internal class DesertArea : MappingWorld
 {
-	public const int FloorY = 180;
+	public const int FloorY = 220;
 
 	private static bool LeftSpawn = false;
 	private static Point BossSpawnLocation = Point.Zero;
+	private static int SandstormTimer = 0;
 
 	public override int Width => 1800 + 120 * Main.rand.Next(4);
-	public override int Height => 400;
+	public override int Height => 500;
+	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), 
 		new PassLegacy("Decor", GenerateDecor)];
@@ -54,6 +55,10 @@ internal class DesertArea : MappingWorld
 			SpawnBoulder(item.X, item.Y);
 		}
 
+		DigTunnels();
+		SpawnStructures();
+		Decoration.ManuallyPopulateChests();
+
 		for (int i = 20; i < Main.maxTilesX - 20; ++i)
 		{
 			for (int j = 20; j < Main.maxTilesY - 20; ++j)
@@ -66,6 +71,11 @@ internal class DesertArea : MappingWorld
 					if (WorldGen.genRand.NextBool(10) && tile.TileType == TileID.Sand)
 					{
 						WorldGen.PlantCactus(i, j);
+					}
+					else if (WorldGen.genRand.NextBool(40))
+					{
+						int type = WorldGen.genRand.NextBool() ? WorldGen.genRand.Next(29, 35) : WorldGen.genRand.Next(52, 55);
+						WorldGen.PlaceObject(i, j - 1, TileID.LargePiles2, true, type);
 					}
 					else if (WorldGen.genRand.NextBool(26))
 					{
@@ -83,6 +93,121 @@ internal class DesertArea : MappingWorld
 						WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(54, 60), 0);
 					}
 				}
+			}
+		}
+
+		PopulateChests();
+	}
+
+	private static void DigTunnels()
+	{
+		for (int i = 0; i < 4; ++i)
+		{
+			int startX = WorldGen.genRand.Next(220, Main.maxTilesX - 220);
+			int endX = startX + WorldGen.genRand.Next(60, 120) * (WorldGen.genRand.NextBool() ? -1 : 1);
+		}
+	}
+
+	private static void PopulateChests()
+	{
+		WeightedRandom<(int type, Range stackRange)> miscChestLoot = new();
+		miscChestLoot.Add((ItemID.DesertFossil, 9..30), 1f);
+		miscChestLoot.Add((ItemID.AncientBattleArmorMaterial, 1..2), 0.05f);
+		miscChestLoot.Add((ItemID.DjinnLamp, 1..1), 0.0005f);
+		miscChestLoot.Add((ItemID.Cactus, 20..60), 0.4f);
+
+		for (int i = 0; i < Main.maxChests; ++i)
+		{
+			Chest chest = Main.chest[i];
+
+			if (chest is null)
+			{
+				continue;
+			}
+
+			Tile tile = Main.tile[chest.x, chest.y];
+
+			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
+			{
+				for (int k = 0; k < 5; ++k)
+				{
+					if (k < 3)
+					{
+						ItemDatabase.ItemRecord drop = DropTable.RollMobDrops(PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
+
+						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+					}
+					else
+					{
+						(int type, Range stackRange) = miscChestLoot.Get();
+						chest.item[k] = new Item(type, Main.rand.Next(stackRange.Start.Value, stackRange.End.Value + 1));
+					}
+				}
+			}
+		}
+	}
+
+	private static void SpawnStructures()
+	{
+		int count = 5;
+
+		while (count > 0)
+		{
+			Point16 pos = GetOpenAirRandomPosition();
+			string structurePath = "Assets/Structures/MapAreas/DesertArea/Ruin_" + WorldGen.genRand.Next(3);
+			Point16 structureSize = StructureTools.GetSize(structurePath);
+			bool left = CanPlaceStructureOn(pos, structureSize);
+			bool right = CanPlaceStructureOn(new Point16(pos.X - structureSize.X, pos.Y), structureSize);
+
+			if (!left && !right)
+			{
+				continue;
+			}
+
+			float originX = 0;
+
+			if (left && right)
+			{
+				originX = WorldGen.genRand.NextBool() ? 0 : 1;
+			}
+			else if (left)
+			{
+				originX = 1;
+			}
+
+			if (!GenVars.structures.CanPlace(new Rectangle(pos.X - (int)(structureSize.X * originX), pos.Y, structureSize.X, structureSize.Y)))
+			{
+				continue;
+			}
+
+			pos = StructureTools.PlaceByOrigin(structurePath, pos, new Vector2(1 - originX, 1));
+			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, structureSize.X, structureSize.Y));
+			count--;
+		}
+	}
+
+	private static bool CanPlaceStructureOn(Point16 pos, Point16 structureSize)
+	{
+		for (int i = pos.X; i < pos.X + structureSize.X; ++i)
+		{
+			if (!WorldGen.SolidOrSlopedTile(i, pos.Y))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static Point16 GetOpenAirRandomPosition()
+	{
+		while (true)
+		{
+			Point16 pos = new(WorldGen.genRand.Next(80, Main.maxTilesX - 80), WorldGen.genRand.Next(80, Main.maxTilesY - 80));
+
+			if (Main.tile[pos].HasTile && Main.tile[pos].TileType == TileID.Sand && !Main.tile[pos.X, pos.Y - 1].HasTile)
+			{
+				return pos;
 			}
 		}
 	}
@@ -156,10 +281,15 @@ internal class DesertArea : MappingWorld
 					{
 						tile.TileType = TileID.Sandstone;
 					}
+
+					if (j > cutOffY + 1)
+					{
+						tile.WallType = WallID.HardenedSand;
+					}
 				}
 			}
 
-			cutOffY -= (noise.GetNoise(i, 0) + 0.5f) * (noise.GetNoise(i + 9832, 0) + 0.5f) * (1 + superNoise.GetNoise(i, 0));
+			cutOffY -= (noise.GetNoise(i, 0) + 0.5f) * (noise.GetNoise(i + 9832, 0) + 0.5f) * (1 + superNoise.GetNoise(i, 0)) * 1.4f;
 
 			int edge = i < 200 ? 40 : Main.maxTilesX - 40;
 			float lerpValue = 0.01f;
@@ -182,6 +312,8 @@ internal class DesertArea : MappingWorld
 
 	public override void Update()
 	{
+		Wiring.UpdateMech();
+
 		bool hasPortal = false;
 
 		foreach (Projectile projectile in Main.ActiveProjectiles)
@@ -191,6 +323,23 @@ internal class DesertArea : MappingWorld
 				hasPortal = true;
 				break;
 			}
+		}
+
+		SandstormTimer++;
+		int max = !Sandstorm.Happening ? 15 * 60 : 8 * 60;
+
+		if (SandstormTimer > max)
+		{
+			if (!Sandstorm.Happening)
+			{
+				Sandstorm.StartSandstorm();
+			}
+			else 
+			{
+				Sandstorm.StopSandstorm();
+			}
+
+			SandstormTimer = 0;
 		}
 
 		//if (!hasPortal && ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))

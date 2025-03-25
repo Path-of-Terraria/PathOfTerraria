@@ -16,19 +16,12 @@ internal class DesertAreaHooks : ModSystem
 			return;
 		}
 
-		if (SubworldSystem.Current is DesertArea)
-		{
-			try
-			{
-				orig(i, j);
-			}
-			catch
-			{
-			}
-		}
-		else
+		try
 		{
 			orig(i, j);
+		}
+		catch
+		{
 		}
 	}
 }
