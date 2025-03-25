@@ -1,11 +1,10 @@
 ﻿using Terraria.Graphics.CameraModifiers;
 
-namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
+namespace PathOfTerraria.Core.Graphics.Camera.Modifiers;
 
-// TODO: Maybe make this a global modifier?
 public sealed class FocusCameraModifier : ICameraModifier
 {
-	public string UniqueIdentity { get; } = $"{nameof(PoTMod.ModName)}:{nameof(FocusCameraModifier)}";
+	public string UniqueIdentity { get; } 
 
 	/// <summary>
 	///		Gets the position of the modifier, in world coordinates.
@@ -24,10 +23,16 @@ public sealed class FocusCameraModifier : ICameraModifier
 	
 	public bool Finished { get; private set; }
 	
-	public FocusCameraModifier(Func<Vector2> position, int duration)
+	public FocusCameraModifier(string identifier, int duration, Func<Vector2> position)
 	{
-		Position = position;
+		ArgumentNullException.ThrowIfNullOrEmpty(identifier, nameof(identifier));
+		
+		UniqueIdentity = identifier;
+		
+		ArgumentOutOfRangeException.ThrowIfNegativeOrZero(duration, nameof(duration));
+		
 		Duration = duration;
+		Position = position;
 	}
 
 	public void Update(ref CameraInfo cameraPosition)

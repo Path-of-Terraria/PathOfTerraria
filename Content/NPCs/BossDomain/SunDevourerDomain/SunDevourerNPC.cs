@@ -1,5 +1,8 @@
 ﻿using System.IO;
 using PathOfTerraria.Core.Graphics.Camera;
+using PathOfTerraria.Core.Graphics.Camera.Modifiers;
+using PathOfTerraria.Core.Graphics.Zoom;
+using PathOfTerraria.Core.Graphics.Zoom.Modifiers;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics;
@@ -263,6 +266,9 @@ public sealed class SunDevourerNPC : ModNPC
 	{
 		base.AI();
 
+		NPC.direction = Math.Sign(NPC.velocity.X);
+		NPC.spriteDirection = NPC.direction;
+
 		NPC.TargetClosest();
 
 		switch (State)
@@ -280,8 +286,6 @@ public sealed class SunDevourerNPC : ModNPC
 				UpdateSandstorm();
 				break;
 		}
-		
-		NPC.rotation = NPC.velocity.X * 0.1f;
 	}
 	
 	private void UpdateIdle()
@@ -303,7 +307,9 @@ public sealed class SunDevourerNPC : ModNPC
 			UpdateState();
 			return;
 		}
-		
+
+		NPC.rotation = NPC.rotation.AngleLerp(NPC.velocity.X * 0.1f, 0.2f);
+
 		Timer++;
 
 		var radius = 16f * 16f;
@@ -333,6 +339,8 @@ public sealed class SunDevourerNPC : ModNPC
 
 	private void UpdateCharge_Day()
 	{
+		NPC.rotation = NPC.rotation.AngleLerp(NPC.velocity.ToRotation() + MathHelper.Pi, 0.2f);
+
 		Timer++;
 		
 		if (Timer < 60f)
@@ -385,9 +393,13 @@ public sealed class SunDevourerNPC : ModNPC
 			return;
 		}
 		
+		NPC.rotation = NPC.rotation.AngleLerp(NPC.velocity.ToRotation() + MathHelper.Pi, 0.2f);
+
 		var position = Player.Center - new Vector2(0f, 24f * 16f) + new Vector2(0f, 64f).RotatedBy(Main.GameUpdateCount * 0.1f);
 
 		ApplyMovement(position, Speed * 2f);
+		
+		Player.velocity += Player.DirectionTo(NPC.Center) * 0.25f;
 		
 		Timer++;
 
@@ -492,20 +504,9 @@ public sealed class SunDevourerNPC : ModNPC
 
 	private void ApplyFocus(int duration)
 	{
-		ZoomSystem.AddModifier
-		(
-			"SunDevourer", 
-			duration,
-			(ref SpriteViewMatrix matrix, float progress) =>
-			{
-				var multiplier = 1f - progress; 
-				var fade = MathF.Sin(multiplier * MathF.PI); 
-
-				matrix.Zoom = new Vector2(1f + 1f * fade);
-			}
-		);
+		ZoomSystem.AddModifier(new FocusZoomModifier($"{PoTMod.ModName}:{nameof(SunDevourerNPC)}_Zoom", duration));
 		
-		Main.instance.CameraModifiers.Add(new FocusCameraModifier(() => NPC.Center + NPC.Size / 2f, duration / 2));
+		Main.instance.CameraModifiers.Add(new FocusCameraModifier("{PoTMod.ModName}:{nameof(SunDevourerNPC)}_Camera", duration, () => NPC.Center + NPC.Size / 2f));
 	}
 	
 	#endregion

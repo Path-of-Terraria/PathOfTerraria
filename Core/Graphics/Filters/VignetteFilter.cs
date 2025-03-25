@@ -1,13 +1,11 @@
-﻿using System.Linq;
-using System.Reflection;
-using ReLogic.Content;
+﻿using ReLogic.Content;
 using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
-namespace PathOfTerraria.Core.Graphics.Shaders;
+namespace PathOfTerraria.Core.Graphics.Filters;
 
 [Autoload(Side = ModSide.Client)]
-public sealed class VignetteLoader : ILoadable
+public sealed class VignetteFilter : ILoadable
 {
 	/// <summary>
 	///		The path to the vignette shader, qualified by the mod name.
@@ -35,13 +33,9 @@ public sealed class VignetteLoader : ILoadable
 
 		var shader = Vignette.Value;
 
-		Filters.Scene[FILTER_NAME] = new Filter(new ScreenShaderData(new Ref<Effect>(shader), PASS_NAME));
-		Filters.Scene[FILTER_NAME].Load();
+		Terraria.Graphics.Effects.Filters.Scene[FILTER_NAME] = new Filter(new ScreenShaderData(new Ref<Effect>(shader), PASS_NAME));
+		Terraria.Graphics.Effects.Filters.Scene[FILTER_NAME].Load();
 	}
-
-	void ILoadable.Unload()
-	{
-		Vignette?.Dispose();
-		Vignette = null;
-	}
+	
+	void ILoadable.Unload() { }
 }
