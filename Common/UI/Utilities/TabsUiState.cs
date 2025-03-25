@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
@@ -7,11 +6,11 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.UI;
+namespace PathOfTerraria.Common.UI.Utilities;
 
-public abstract class DraggableSmartUi : SmartUiState
+public abstract class TabsUiState : SmartUiState
 {
-	public UIDraggablePanel Panel;
+	public UITabsPanel Panel;
 	public UIImageButton CloseButton;
 	public bool IsVisible;
 
@@ -25,17 +24,19 @@ public abstract class DraggableSmartUi : SmartUiState
 	protected const int PanelWidth = 900;
 	
 	public override bool Visible => IsVisible;
+	public virtual List<SmartUiElement> TabPanels => [];
 	
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
-	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true, Point? panelSize = null, bool canResize = true)
+	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true, Point? panelSize = null)
 	{
 		panelSize ??= new Point(PanelWidth, PanelHeight);
 
-		Panel = new UIDraggablePanel(false, false, tabs, DraggablePanelHeight, canResize);
+		Panel = new UITabsPanel(false, false, tabs, DraggablePanelHeight);
+		Panel.OnActiveTabChanged += HandleActiveTabChanged;
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
 		Panel.Width.Set(panelSize.Value.X, 0);
@@ -64,5 +65,32 @@ public abstract class DraggableSmartUi : SmartUiState
 	{
 		IsVisible = false;
 		SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+	}
+
+	public virtual void AppendChildren()
+	{
+		foreach (SmartUiElement tabPanel in TabPanels)
+		{
+			tabPanel.Left.Set(0, 0);
+			tabPanel.Top.Set(DraggablePanelHeight, 0);
+			tabPanel.Width.Set(0, 1f);
+			tabPanel.Height.Set(-DraggablePanelHeight, 1f);
+		}
+
+		HandleActiveTabChanged();
+	}
+
+	private void HandleActiveTabChanged()
+	{
+		foreach (SmartUiElement tabPanel in TabPanels)
+		{
+			if (tabPanel.TabName != Panel.ActiveTab)
+			{
+				tabPanel.Remove();
+				continue;
+			}
+			
+			Panel.Append(tabPanel);
+		}
 	}
 }
