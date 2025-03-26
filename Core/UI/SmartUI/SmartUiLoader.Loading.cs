@@ -3,7 +3,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI.SmartUI;
 
-internal sealed partial class SmartUiLoader
+public sealed partial class SmartUiLoader
 {
 	public override void Load()
 	{

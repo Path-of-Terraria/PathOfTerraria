@@ -8,7 +8,7 @@ namespace PathOfTerraria.Core.UI.SmartUI;
 ///		Automatically loads <see cref="SmartUiState"/> singletons.
 /// </summary>
 [Autoload(Side = ModSide.Client)]
-internal sealed partial class SmartUiLoader : ModSystem
+public sealed partial class SmartUiLoader : ModSystem
 {
 	private readonly List<UserInterface> userInterfaces = [];
 	private readonly List<SmartUiState> uiStates = [];
