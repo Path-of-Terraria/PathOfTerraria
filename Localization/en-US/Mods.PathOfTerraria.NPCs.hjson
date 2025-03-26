@@ -648,3 +648,8 @@ SwarmScarab: {
 	DisplayName: Swarm Scarab
 	Entry: One of a swarm of carnivorous scarabs, seeking more food. Why is it with so many other scarabs? Intimidation reasons.
 }
+
+AntlionTrapper: {
+	DisplayName: Antlion Trapper
+	Entry: What happens when an Antlion's jaws get out of hand? They adapt. What happens when you step near them? Only one way to find out!
+}

@@ -111,12 +111,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 							if (WorldGen.genRand.NextBool())
 							{
-								hole.Clear(TileDataType.All);
-
-								if (y > 4)
-								{
-									hole.WallType = WallID.Sandstone;
-								}
+								hole.Clear(TileDataType.All ^ TileDataType.Wall);
 							}
 							else
 							{
