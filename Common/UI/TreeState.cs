@@ -12,9 +12,9 @@ using Terraria.UI;
 namespace PathOfTerraria.Common.UI;
 
 /// <summary>
-/// UI state for the Passive and Skill trees. Despite being a <see cref="DraggableSmartUi"/>, cannot be moved - left as-is for ease of use.
+/// UI state for the Passive and Skill trees.
 /// </summary>
-internal class TreeState : DraggableSmartUi
+internal class TreeState : TabsUiState
 {
 	private const int ShrinkX = 80;
 	private const int ShrinkY = 20;
@@ -134,6 +134,7 @@ internal class TreeState : DraggableSmartUi
 		return Panel.GetDimensions().ToRectangle();
 	}
 
+	// ReSharper disable once UnusedType.Local
 	private class StopInvPlayer : ModPlayer
 	{
 		public override void SetControls()

@@ -27,8 +27,6 @@ public class UIDraggablePanel : UIPanel
 	private readonly UIPanel _header;
 	private readonly bool _canResize = true;
 	private readonly Dictionary<string, UIPanelTab> _menus;
-	public string ActiveTab = "";
-	public event Action OnActiveTabChanged;
 
 	public bool Blocked = true;
 
@@ -82,7 +80,6 @@ public class UIDraggablePanel : UIPanel
 			menu.OnLeftClick += (evt, element) =>
 			{
 				SoundEngine.PlaySound(SoundID.MenuTick);
-				SetActivePage(key);
 			};
 
 			left += menu.GetDimensions().Width + 10;
@@ -92,8 +89,6 @@ public class UIDraggablePanel : UIPanel
 
 		_minSize.X = Math.Max(_minSize.X, left);
 		_canResize = canResize;
-
-		SetActivePage(_menus.Keys.First());
 	}
 
 	public override void RightMouseDown(UIMouseEvent evt)
@@ -124,60 +119,6 @@ public class UIDraggablePanel : UIPanel
 	{
 		_scaling = [false, false];
 		base.RightMouseUp(evt);
-	}
-
-	public void SetActivePage(string page)
-	{
-		foreach (UIPanelTab tab in _menus.Values)
-		{
-			tab.TextColor = Color.White;
-		}
-
-		if (_menus.TryGetValue(page, out UIPanelTab menuText))
-		{
-			menuText.TextColor = Color.Yellow;
-		}
-		
-		ActiveTab = page;
-		OnActiveTabChanged?.Invoke();
-	}
-
-	public void HideTab(string page)
-	{
-		if (_menus.TryGetValue(page, out UIPanelTab tab))
-		{
-			tab.Remove();
-			RecalculateTabPositions();
-		}
-	}
-
-	public void ShowTab(string page)
-	{
-		if (_menus.TryGetValue(page, out UIPanelTab tab) && tab.Parent is null)
-		{
-			tab.Remove();
-			_header.Append(tab);
-
-			RecalculateTabPositions();
-		}
-	}
-
-	private void RecalculateTabPositions()
-	{
-		float left = 0;
-
-		foreach (UIPanelTab tab in _menus.Values)
-		{
-			if (tab.Parent is null)
-			{
-				continue;
-			}
-
-			tab.Left.Set(left, 0f);
-			tab.Recalculate();
-
-			left += tab.GetDimensions().Width + 10;
-		}
 	}
 
 	private void Header_MouseDown(UIMouseEvent evt, UIElement element)
