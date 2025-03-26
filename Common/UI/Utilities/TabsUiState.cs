@@ -93,4 +93,9 @@ public abstract class TabsUiState : SmartUiState
 			Panel.Append(tabPanel);
 		}
 	}
+	
+	public Rectangle GetRectangle()
+	{
+		return Panel.GetDimensions().ToRectangle();
+	}
 }

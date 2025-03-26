@@ -57,9 +57,8 @@ internal class TreeState : TabsUiState
 				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
 				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
 		};
-		base.CreateMainPanel(localizedTexts, false, panelSize: new Point(Main.screenWidth - ShrinkX * 2, Main.screenHeight - ShrinkY * 2));
+		base.CreateMainPanel(localizedTexts, panelSize: new Point(Main.screenWidth - ShrinkX * 2, Main.screenHeight - ShrinkY * 2));
 		base.AppendChildren();
-		AddCloseButton();
 		ResetTree();
 
 		IsVisible = true;
@@ -127,11 +126,6 @@ internal class TreeState : TabsUiState
 		}
 		
 		AvailablePassivePointsText.DrawAvailablePassivePoint(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin);
-	}
-
-	public Rectangle GetRectangle()
-	{
-		return Panel.GetDimensions().ToRectangle();
 	}
 
 	// ReSharper disable once UnusedType.Local
