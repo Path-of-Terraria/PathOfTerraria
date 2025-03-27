@@ -22,7 +22,7 @@ internal class DesertAreaNPC : GlobalNPC
 		pool[NPCID.Mummy] = 1f;
 		pool[NPCID.SandShark] = 0.1f;
 		pool[NPCID.DesertGhoul] = 0.9f;
-		pool[NPCID.DesertDjinn] = 0.5f;
+		pool[NPCID.DesertDjinn] = 0.3f;
 	}
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
@@ -32,6 +32,15 @@ internal class DesertAreaNPC : GlobalNPC
 			return;
 		}
 
-		maxSpawns -= 2;
+		maxSpawns -= 3;
+		spawnRate = (int)(spawnRate * 2f);
+	}
+
+	public override void ApplyDifficultyAndPlayerScaling(NPC npc, int numPlayers, float balance, float bossAdjustment)
+	{
+		if (npc.type == NPCID.DesertDjinn && SubworldSystem.Current is DesertArea)
+		{
+			npc.life /= 3;
+		}
 	}
 }

@@ -476,7 +476,7 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 		}
 	}
 
-	public void OnOceanOverriden()
+	public void OverrideOcean()
 	{
 		Main.bgStyle = 0;
 		Main.curMusic = MusicID.OverworldDay;

@@ -1,6 +1,7 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using System.Collections.Specialized;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -72,19 +73,34 @@ internal class ScarabSwarmController : ModNPC
 		if (State == AIState.Init)
 		{
 			State = AIState.Chase;
-			int count = Main.rand.Next(5, 9);
 
-			for (int i = 0; i < count; ++i)
+			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				int npc = NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<SwarmScarab>(), 0, NPC.whoAmI);
-				Main.npc[npc].velocity = Main.rand.NextVector2Circular(4, 4);
+				int count = Main.rand.Next(4, 8);
+
+				if (Main.masterMode)
+				{
+					count += 2;
+				}
+
+				if (Main.getGoodWorld)
+				{
+					count += 2;
+				}
+
+				for (int i = 0; i < count; ++i)
+				{
+					int npc = NPC.NewNPC(NPC.GetSource_FromAI(), (int)NPC.Center.X, (int)NPC.Center.Y, ModContent.NPCType<SwarmScarab>(), 0, NPC.whoAmI);
+					Main.npc[npc].velocity = Main.rand.NextVector2Circular(4, 4);
+					Main.npc[npc].netUpdate = true;
+				}
 			}
 		}
 		else if (State == AIState.Chase)
 		{
-			const float MaxSpeed = 6;
+			const float MaxSpeed = 5;
 
-			if (UnderlingCount <= 0)
+			if (UnderlingCount <= 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				NPC.life = -1;
 				NPC.checkDead();

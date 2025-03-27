@@ -44,7 +44,6 @@ internal class HauntedHead : ModNPC
 		NPC.DeathSound = SoundID.NPCDeath6;
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
-		NPC.hide = true;
 		NPC.color = Color.White;
 		NPC.knockBackResist = 1.8f;
 
@@ -61,15 +60,10 @@ internal class HauntedHead : ModNPC
 		);
 	}
 
-	public override void DrawBehind(int index)
-	{
-		Main.instance.DrawCacheNPCsBehindNonSolidTiles.Add(index);
-	}
-
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(180, 200, 250);
-		NPC.damage = ModeUtils.ByMode(50, 80, 120);
+		NPC.lifeMax = ModeUtils.ByMode(130, 160, 220);
+		NPC.damage = ModeUtils.ByMode(30, 55, 95);
 		NPC.defense = ModeUtils.ByMode(0, 0, 10, 20);
 	}
 
@@ -110,7 +104,7 @@ internal class HauntedHead : ModNPC
 		Rectangle frame = NPC.frame with { Width = 34 };
 		Color color = NPC.GetAlpha(Lighting.GetColor(NPC.Center.ToTileCoordinates(), NPC.color));
 		spriteBatch.Draw(tex, NPC.Center - screenPos, frame, color, 0f, frame.Size() / 2f, 1f, effect, 0);
-		spriteBatch.Draw(tex, NPC.Center - screenPos, frame with { X = 36 }, color, 0f, frame.Size() / 2f, 1f, effect, 0);
+		spriteBatch.Draw(tex, NPC.Center - screenPos, frame with { X = 36 }, Color.Lerp(color, Color.White, 0.5f), 0f, frame.Size() / 2f, 1f, effect, 0);
 
 		return false;
 	}

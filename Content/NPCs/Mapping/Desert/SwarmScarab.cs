@@ -62,7 +62,7 @@ internal class SwarmScarab : ModNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(90, 125, 170);
+		NPC.lifeMax = ModeUtils.ByMode(70, 115, 160);
 		NPC.damage = ModeUtils.ByMode(70, 80, 110);
 		NPC.defense = ModeUtils.ByMode(0, 5, 10, 20);
 	}

@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Content.NPCs.Mapping.Desert;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
@@ -63,6 +64,45 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		Decoration.ManuallyPopulateChests();
 		DecorateSand();
 		PopulateChests();
+		AddTrappers();
+	}
+
+	private static void AddTrappers()
+	{
+		int count = 9;
+
+		while (count > 0)
+		{
+			int x = WorldGen.genRand.Next(400, Main.maxTilesX - 400);
+			int y = WorldGen.genRand.Next(40, Main.maxTilesY - 50);// FindYBelow(x, 50);
+			Vector2 left = new Vector2(x - 3, y).ToWorldCoordinates(0, WorldGen.genRand.NextFloat(16));
+
+			if (NoOpening(left, 6 * 16) && !Collision.SolidCollision(left - new Vector2(0, 20), 6 * 16, 16))
+			{
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), x * 16, y * 16 - 16, ModContent.NPCType<AntlionTrapper>());
+				count--;
+			}
+		}
+	}
+
+	private static bool NoOpening(Vector2 position, int width)
+	{
+		int leftX = (int)(position.X / 16f) - 1;
+		int rightX = (int)((position.X + width) / 16f) + 2;
+		int y = (int)(position.Y / 16f);
+
+		leftX = Utils.Clamp(leftX, 0, Main.maxTilesX - 1);
+		rightX = Utils.Clamp(rightX, 0, Main.maxTilesX - 1);
+
+		for (int i = leftX; i < rightX; i++)
+		{
+			if (!WorldGen.SolidOrSlopedTile(i, y))
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	private static void DecorateSand()
@@ -311,6 +351,12 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		{
 			Tile tile = Main.tile[x, j];
 			tile.TileType = TileID.SandStoneSlab;
+			tile.WallType = noise.GetNoise(x, j) <= 0.08f ? WallID.ObsidianBackUnsafe : WallID.SandstoneBrick;
+
+			if (noise.GetNoise(x, j + 2039) > 0.25f)
+			{
+				tile.WallType = WallID.Sandstone;
+			}
 		}
 	}
 
@@ -576,9 +622,11 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		//}
 	}
 
-	public void OnOceanOverriden()
+	public void OverrideOcean()
 	{
 		Main.bgStyle = 2;
+		Main.newMusic = MusicID.Desert;
 		Main.curMusic = MusicID.Desert;
+		Main.LocalPlayer.ZoneBeach = false;
 	}
 }

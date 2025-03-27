@@ -1,5 +1,5 @@
 ﻿using SubworldLibrary;
-using Terraria.ID;
+using Terraria.Audio;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -7,17 +7,16 @@ internal class DisableOceanSystem : ModSystem
 {
 	public override void Load()
 	{
-		On_Player.UpdateBiomes += StopOceanInSubworlds;
+		On_LegacyAudioSystem.UpdateMisc += StopMusic;
 	}
 
-	private void StopOceanInSubworlds(On_Player.orig_UpdateBiomes orig, Player self)
+	private void StopMusic(On_LegacyAudioSystem.orig_UpdateMisc orig, LegacyAudioSystem self)
 	{
 		orig(self);
 
-		if (SubworldSystem.Current is IOverrideOcean ocean)
+		if (SubworldSystem.Current is IOverrideOcean ocean && Main.LocalPlayer.ZoneBeach)
 		{
-			self.ZoneBeach = false;
-			ocean.OnOceanOverriden();
+			ocean.OverrideOcean();
 		}
 	}
 }

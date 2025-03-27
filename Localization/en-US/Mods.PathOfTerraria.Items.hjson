@@ -1050,4 +1050,5 @@ PrimeMap: {
 }
 
 HauntedHeadBannerItem.DisplayName: Haunted Head Banner
-SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner Item
+SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
+AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner

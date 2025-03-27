@@ -652,4 +652,10 @@ SwarmScarab: {
 AntlionTrapper: {
 	DisplayName: Antlion Trapper
 	Entry: What happens when an Antlion's jaws get out of hand? They adapt. What happens when you step near them? Only one way to find out!
+
+	Death: {
+		0: "{0} was turned into mush."
+		1: "{0} was snapped up."
+		2: "{0} didn't watch where they were going."
+	}
 }

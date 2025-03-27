@@ -2,5 +2,5 @@
 
 internal interface IOverrideOcean
 {
-	public void OnOceanOverriden();
+	public void OverrideOcean();
 }
