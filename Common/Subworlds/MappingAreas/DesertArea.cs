@@ -602,10 +602,12 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			if (!Sandstorm.Happening)
 			{
 				Sandstorm.StartSandstorm();
+				Main.windSpeedTarget = Main.rand.NextFloat(1, 2);
 			}
 			else 
 			{
 				Sandstorm.StopSandstorm();
+				Main.windSpeedTarget = 0;
 			}
 
 			SandstormTimer = 0;
