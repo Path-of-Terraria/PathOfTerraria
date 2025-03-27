@@ -21,6 +21,14 @@ internal class AntlionTrapper : ModNPC
 
 	private bool _spawnItem = true;
 
+	public override void SetStaticDefaults()
+	{
+		ItemID.Sets.KillsToBanner[Mod.Find<ModItem>(Name + "BannerItem").Type] = 20;
+
+		// This stops the NPC from being overwritten by another in multiplayer. Why does that happen? I don't know!
+		NPCID.Sets.SpawnFromLastEmptySlot[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		NPC.Size = new Vector2(34, 50);
@@ -34,12 +42,12 @@ internal class AntlionTrapper : ModNPC
 		NPC.noTileCollide = true;
 		NPC.color = Color.White;
 		NPC.value = 0;
-		NPC.npcSlots = 0.5f;
 		NPC.hide = true;
 		NPC.knockBackResist = 0f;
 		NPC.ShowNameOnHover = false;
 		NPC.dontTakeDamage = true;
-		
+		NPC.dontCountMe = true;
+
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{
@@ -60,7 +68,7 @@ internal class AntlionTrapper : ModNPC
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
 		bestiaryEntry.AddInfo(this, "Desert");
-		bestiaryEntry.UIInfoProvider = new CustomInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[Type], false, 10);
+		bestiaryEntry.UIInfoProvider = new CustomInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[Type], false, 20);
 	}
 
 	public override void DrawBehind(int index)
@@ -86,10 +94,16 @@ internal class AntlionTrapper : ModNPC
 		{
 			_spawnItem = false;
 
-			if (Main.rand.NextBool(3))
+			if (Main.rand.NextBool(3)) // Spawn bait gold
 			{
 				int item = Item.NewItem(NPC.GetSource_FromAI(), NPC.Center, ItemID.GoldCoin, Main.rand.Next(5, 9));
 				Main.item[item].velocity = Vector2.Zero;
+				Main.item[item].timeLeftInWhichTheItemCannotBeTakenByEnemies = 3000000; // Arbitrary "infinite" value
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					NetMessage.SendData(MessageID.SyncItemCannotBeTakenByEnemies, -1, -1, null, item);
+				}
 			}
 		}
 

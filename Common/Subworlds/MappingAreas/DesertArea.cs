@@ -5,6 +5,7 @@ using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Mapping.Desert;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
+using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -32,6 +33,32 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), 
 		new PassLegacy("Decor", GenerateDecor)];
+
+	public override void Load()
+	{
+		On_Player.UpdateBiomes += AddSandstorm;
+		On_Sandstorm.HandleEffectAndSky += WhoopsAlwaysActive;
+	}
+
+	private void WhoopsAlwaysActive(On_Sandstorm.orig_HandleEffectAndSky orig, bool toState)
+	{
+		if (SubworldSystem.Current is DesertArea && Sandstorm.Happening)
+		{
+			toState = true;
+		}
+
+		orig(toState);
+	}
+
+	private void AddSandstorm(On_Player.orig_UpdateBiomes orig, Player self)
+	{
+		orig(self);
+
+		if (SubworldSystem.Current is DesertArea && Sandstorm.Happening)
+		{
+			self.ZoneSandstorm = true;
+		}
+	}
 
 	private void GenerateDecor(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -583,19 +610,8 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 	{
 		Wiring.UpdateMech();
 
-		bool hasPortal = false;
-
-		foreach (Projectile projectile in Main.ActiveProjectiles)
-		{
-			if (projectile.type == ModContent.ProjectileType<ExitPortal>())
-			{
-				hasPortal = true;
-				break;
-			}
-		}
-
 		SandstormTimer++;
-		int max = !Sandstorm.Happening ? 15 * 60 : 8 * 60;
+		int max = !Sandstorm.Happening ? 40 * 60 : 20 * 60;
 
 		if (SandstormTimer > max)
 		{
@@ -611,6 +627,17 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			}
 
 			SandstormTimer = 0;
+		}
+
+		bool hasPortal = false;
+
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.type == ModContent.ProjectileType<ExitPortal>())
+			{
+				hasPortal = true;
+				break;
+			}
 		}
 
 		//if (!hasPortal && ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
@@ -630,5 +657,6 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		Main.newMusic = MusicID.Desert;
 		Main.curMusic = MusicID.Desert;
 		Main.LocalPlayer.ZoneBeach = false;
+		Main.LocalPlayer.ZoneSandstorm = Sandstorm.Happening;
 	}
 }

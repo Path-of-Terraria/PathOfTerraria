@@ -24,6 +24,7 @@ internal class SwarmScarab : ModNPC
 			Velocity = 1.5f
 		};
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
+		ItemID.Sets.KillsToBanner[Mod.Find<ModItem>(Name + "BannerItem").Type] = 150;
 	}
 
 	public override void SetDefaults()
