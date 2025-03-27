@@ -49,18 +49,6 @@ internal class ScarabSwarmController : ModNPC
 		NPC.knockBackResist = 1.8f;
 		NPC.dontTakeDamage = true;
 		NPC.value = Item.buyPrice(0, 0, 20);
-
-		NPC.TryEnableComponent<NPCHitEffects>(
-			c =>
-			{
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_0", 2, NPCHitEffects.OnDeath));
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_1", 2, NPCHitEffects.OnDeath));
-				c.AddGore(new NPCHitEffects.GoreSpawnParameters($"{PoTMod.ModName}/MummyPaper_2", 2, NPCHitEffects.OnDeath));
-
-				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<GhostDust>(), 5));
-				c.AddDust(new NPCHitEffects.DustSpawnParameters(ModContent.DustType<GhostDust>(), 20, NPCHitEffects.OnDeath));
-			}
-		);
 	}
 
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot)

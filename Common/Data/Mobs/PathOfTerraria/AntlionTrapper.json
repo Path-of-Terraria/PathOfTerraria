@@ -1,5 +1,5 @@
 {
-	"friendlyName": "Ash Wraith",
+	"friendlyName": "Antlion Trapper",
 	"entries": [
 		{
 			"scale": null,
@@ -10,7 +10,7 @@
 				"experience": 35
 			},
 			"affixes": null,
-			"requirements": "Underworld"
+			"requirements": "Desert"
 		}
 	]
 }
