@@ -22,12 +22,15 @@ public enum TutorialCheck : byte
 /// </summary>
 internal class TutorialPlayer : ModPlayer
 {
+	/// <summary> Whether the player has completed the tutorial (<see cref="TutorialCheck.FinishedTutorial"/>). </summary>
+	public bool CompletedTutorial => TutorialChecks.Contains(TutorialCheck.FinishedTutorial);
+
 	public HashSet<TutorialCheck> TutorialChecks = [];
 	public byte TutorialStep = 0;
 
 	public override void OnEnterWorld()
 	{
-		if (!TutorialChecks.Contains(TutorialCheck.FinishedTutorial))
+		if (!CompletedTutorial)
 		{
 			UIManager.Register("Tutorial UI", "Vanilla: Player Chat", new TutorialUIState());
 		}
