@@ -44,9 +44,12 @@ internal class RavencrestEntrancePass : AutoGenStep
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/RavencrestEntrance", mod);
 		RavencrestMicrobiome biome = GenVars.configuration.CreateBiome<RavencrestMicrobiome>();
 		bool generated = false;
+		int attempts = 0;
 
 		while (!generated)
 		{
+			attempts++;
+
 			int x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
 			int y = (int)(Main.worldSurface * 0.35f);
 			
@@ -72,9 +75,14 @@ internal class RavencrestEntrancePass : AutoGenStep
 				y = 0;
 			}
 
+			if (attempts < 2000 && !AvoidsEvilPath((short)x)) //Include an additional 'attempts' failsafe
+			{
+				continue;
+			}
+
 			int[] invalidTiles = [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone];
 			int[] validTiles = [TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone];
-			
+
 			// TODO: Should this check for valid/invalid tiles, if it's meant for calculating average heights? - Naka
 			int averageHeight = StructureTools.AverageHeights(x, y, 76, 4, 30, out bool valid, invalidTiles, validTiles);
 
@@ -169,14 +177,15 @@ internal class RavencrestEntrancePass : AutoGenStep
 				int steps = WorldGen.genRand.Next(1, 4);
 
 				int type = WorldGen.genRand.NextBool(10) ? TileID.Stone : TileID.Dirt;
+				int bottom = origin.Y + size.Y;
 
-				WorldGen.TileRunner(origin.X + i, origin.Y + size.Y + strength / 2, strength, steps, TileID.Dirt, true, overRide: false);
+				WorldGen.TileRunner(origin.X + i, bottom + strength / 2, strength, steps, TileID.Dirt, true, overRide: false);
 			
-				WorldGen.TileRunner(origin.X - 5 + i, origin.Y + size.Y + strength, strength, steps, type, true);
-				WorldGen.TileRunner(origin.X + size.X + 5 - i, origin.Y + size.Y + strength, strength, steps, type, true);
+				WorldGen.TileRunner(origin.X - 5 + i, bottom + strength, strength, steps, type, true);
+				WorldGen.TileRunner(origin.X + size.X + 5 - i, bottom + strength, strength, steps, type, true);
 			
-				WorldGen.TileRunner(origin.X - 10 + i, origin.Y + size.Y + strength * 2, strength, steps, type, true);
-				WorldGen.TileRunner(origin.X + size.X + 10 - i, origin.Y + size.Y + strength * 2, strength, steps, type, true);
+				WorldGen.TileRunner(origin.X - 10 + i, bottom + strength * 2, strength, steps, type, true);
+				WorldGen.TileRunner(origin.X + size.X + 10 - i, bottom + strength * 2, strength, steps, type, true);
 			}
 
 			generated = true;
@@ -188,6 +197,46 @@ internal class RavencrestEntrancePass : AutoGenStep
 	public override int GenIndex(List<GenPass> tasks)
 	{
 		return tasks.FindIndex(x => x.Name == "Smooth World") + 1;
+	}
+
+	/// <summary> Avoids plotting on intercept course with world evil biomes. </summary>
+	private static bool AvoidsEvilPath(short x)
+	{
+		int center = Main.maxTilesX / 2;
+		int y = (int)(Main.worldSurface * 0.35f);
+
+		if (x < center)
+		{
+			for (short i = x; i < center; i++)
+			{
+				if (UnsafeCoords(i, (short)y))
+				{
+					return false;
+				}
+			}
+		}
+		else
+		{
+			for (short i = x; i > center; i--)
+			{
+				if (UnsafeCoords(i, (short)y))
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
+
+		static bool UnsafeCoords(short x, short y)
+		{
+			int[] evilTiles = [TileID.Ebonstone, TileID.Crimstone, TileID.CorruptGrass, TileID.CrimsonGrass, TileID.Crimsand, TileID.Ebonsand];
+
+			while (!WorldGen.SolidTile(x, y++)) { } //Move down to the nearest surface
+
+			int tileType = Framing.GetTileSafely(x, y).TileType;
+			return evilTiles.Contains(tileType);
+		}
 	}
 
 	/// <summary>

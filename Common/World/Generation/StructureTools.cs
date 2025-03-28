@@ -66,7 +66,7 @@ internal static class StructureTools
 	}
 
 	/// <summary>
-	/// Determines flatness & depth placement of an area. Returns average heights; use <paramref name="valid"/> to check if the space is valid.<br/>
+	/// Determines flatness and depth placement of an area. Returns average heights; use <paramref name="valid"/> to check if the space is valid.<br/>
 	/// This needs a lot of tweaking to get perfect.
 	/// </summary>
 	/// <param name="x">Left of the area.</param>
