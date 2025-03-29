@@ -69,7 +69,7 @@ internal class DropTableUIState : CloseableSmartUi
 		Alphabetical
 	}
 
-	public override bool IsCentered => true;
+	protected override bool IsCentered => true;
 
 	private UIEditableValue _gearRate = null;
 	private UIEditableValue _currencyRate = null;

@@ -16,11 +16,11 @@ public class QuestsUIState : CloseableSmartUi
 	public const float HoveredOpacity = 0.1f;
 	private UIImageButton _closeButton;
 
-	public override int TopPadding => 0;
-	public override int PanelHeight => 1000;
-	public override int LeftPadding => 0;
-	public override int PanelWidth => 750;
-	public override bool IsCentered => true;
+	protected override int TopPadding => 0;
+	protected override int PanelHeight => 1000;
+	protected override int LeftPadding => 0;
+	protected override int PanelWidth => 750;
+	protected override bool IsCentered => true;
 	
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
