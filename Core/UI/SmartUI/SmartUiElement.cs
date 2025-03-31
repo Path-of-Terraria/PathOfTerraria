@@ -17,7 +17,7 @@ public class SmartUiElement : UIElement
 {
 	public virtual string TabName => "";
 
-	public MouseContainedState MouseContained { get; internal set; } = new();
+	public MouseContainedState MouseContained { get; set; } = new();
 
 	protected virtual void DrawOnto(SpriteBatch spriteBatch, Vector2 center) { }
 
