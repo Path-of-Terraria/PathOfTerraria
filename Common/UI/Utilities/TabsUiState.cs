@@ -45,7 +45,7 @@ public abstract class TabsUiState : CloseableSmartUi
 
 		if (showCloseButton)
 		{
-			AddCloseButton();	
+			AddCloseButton();
 		}
 	}
 
