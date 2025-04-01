@@ -58,6 +58,7 @@ internal class TutorialUIState : UIState
 		// Temp fix to position the guide correctly on ultra-wide monitors + 4k monitors
 		if (Main.screenWidth > 3000)
 		{
+			_baseYDivisor = 4;
 			pos = new Vector2(Main.screenWidth, Main.screenHeight + 500) / new Vector2(2, _baseYDivisor);
 		}
 
