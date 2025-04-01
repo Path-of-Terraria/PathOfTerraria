@@ -8,7 +8,7 @@ internal class RestorationBuff : ModBuff
 	{
 		if (npc.life < npc.lifeMax)
 		{
-			npc.lifeRegen = 30;
+			npc.lifeRegen = (int)(20 * (1 + (npc.lifeMax / 300f * 0.5f + 0.5f)));
 
 			if (Main.rand.NextBool(20))
 			{
@@ -23,7 +23,7 @@ internal class RestorationBuff : ModBuff
 		{
 			if (Player.HasBuff<RestorationBuff>())
 			{
-				Player.lifeRegen += 30;
+				Player.lifeRegen += 20;
 
 				if (Main.rand.NextBool(20))
 				{
