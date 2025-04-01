@@ -1,25 +1,22 @@
-using Terraria.DataStructures;
-using Terraria.ID;
-using Terraria.ObjectData;
+using PathOfTerraria.Content.Buffs.ShrineBuffs;
+using PathOfTerraria.Content.Projectiles.Utility;
 
 namespace PathOfTerraria.Content.Tiles.Maps;
 
 public class RestorationShrine : BaseShrine
 {
+	public override int AoE => ModContent.ProjectileType<RestorationAoE>();
 }
 
-public class DefenseShrine : BaseShrine
+public class RestorationAoE : ShrineAoE
 {
-}
+	public override Color Tint => Color.Purple;
+	public override int BuffId => ModContent.BuffType<RestorationBuff>();
 
-public class HasteShrine : BaseShrine
-{
-}
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
 
-public class UnstoppableShrine : BaseShrine
-{
-}
-
-public class GodlikeShrine : BaseShrine
-{
+		Projectile.Opacity = 0.1f;
+	}
 }

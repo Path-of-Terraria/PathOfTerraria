@@ -96,7 +96,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			DecorateGrass(item.Key, item.Value);
 		}
 
-		Decoration.ManuallyPopulateChests();
+		GenerationUtilities.ManuallyPopulateChests();
 
 		WeightedRandom<(int type, Range stackRange)> miscChestLoot = new();
 		miscChestLoot.Add((ItemID.CrystalShard, 6..12), 1.4f);

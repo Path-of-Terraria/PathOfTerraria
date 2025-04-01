@@ -34,6 +34,7 @@ internal class ForestArea : MappingWorld
 
 	private static bool LeftSpawn = false;
 	private static Point BossSpawnLocation = Point.Zero;
+	private static bool HasShrine = false;
 
 	public override int Width => 1200 + 120 * Main.rand.Next(10);
 	public override int Height => 290;
@@ -147,6 +148,14 @@ internal class ForestArea : MappingWorld
 	private static void TryPlaceStructureAt(HashSet<StructureKind> structures, int x, int y, StructureKind type, int max, Vector2 origin, int offsetY = 0)
 	{
 		string path = $"Assets/Structures/MapAreas/ForestArea/{type}_{WorldGen.genRand.Next(max)}";
+		bool isShrine = false;
+
+		if (HasShrine && type != StructureKind.Arena && type != StructureKind.Cave)
+		{
+			path = $"Assets/Structures/MapAreas/ForestArea/SpecialShrine_{WorldGen.genRand.Next(1) + 1}";
+			isShrine = true;
+		}
+
 		Point16 size = StructureTools.GetSize(path);
 
 		if (GenVars.structures.CanPlace(new Rectangle(x - (int)(size.X * origin.X), y - (int)(size.Y * origin.Y) + offsetY, size.X, size.Y)))
@@ -157,6 +166,11 @@ internal class ForestArea : MappingWorld
 
 			structures.Add(type);
 			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 10);
+
+			if (isShrine)
+			{
+				HasShrine = false;
+			}
 
 			for (int i = pos.X; i < pos.X + size.X; ++i)
 			{
@@ -238,7 +252,8 @@ internal class ForestArea : MappingWorld
 			progress.Set(i / (float)Main.maxTilesX);
 		}
 
-		Decoration.ManuallyPopulateChests();
+		GenerationUtilities.ManuallyPopulateChests();
+		GenerationUtilities.PopulateShrines();
 
 		int grassIndex = 0;
 
@@ -387,6 +402,11 @@ internal class ForestArea : MappingWorld
 
 		LeftSpawn = Main.rand.NextBool(2);
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
+
+		if (WorldGen.genRand.NextBool(1))
+		{
+			HasShrine = true;
+		}
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.2f);
