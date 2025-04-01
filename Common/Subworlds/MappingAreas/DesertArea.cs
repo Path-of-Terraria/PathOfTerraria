@@ -36,11 +36,11 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	public override void Load()
 	{
-		On_Player.UpdateBiomes += AddSandstorm;
-		On_Sandstorm.HandleEffectAndSky += WhoopsAlwaysActive;
+		On_Player.UpdateBiomes += ForceActiveSandstormBiomeInDesert;
+		On_Sandstorm.HandleEffectAndSky += ForceActiveSandstormInDesert;
 	}
 
-	private void WhoopsAlwaysActive(On_Sandstorm.orig_HandleEffectAndSky orig, bool toState)
+	private void ForceActiveSandstormInDesert(On_Sandstorm.orig_HandleEffectAndSky orig, bool toState)
 	{
 		if (SubworldSystem.Current is DesertArea && Sandstorm.Happening)
 		{
@@ -50,7 +50,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		orig(toState);
 	}
 
-	private void AddSandstorm(On_Player.orig_UpdateBiomes orig, Player self)
+	private void ForceActiveSandstormBiomeInDesert(On_Player.orig_UpdateBiomes orig, Player self)
 	{
 		orig(self);
 

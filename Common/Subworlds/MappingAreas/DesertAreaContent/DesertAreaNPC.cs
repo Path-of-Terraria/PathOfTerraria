@@ -23,6 +23,8 @@ internal class DesertAreaNPC : GlobalNPC
 		pool[NPCID.SandShark] = 0.1f;
 		pool[NPCID.DesertGhoul] = 0.9f;
 		pool[NPCID.DesertDjinn] = 0.3f;
+		pool[NPCID.Scorpion] = 0.1f;
+		pool[NPCID.ScorpionBlack] = 0.1f;
 	}
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
