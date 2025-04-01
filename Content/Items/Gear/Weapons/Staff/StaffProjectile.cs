@@ -166,7 +166,6 @@ internal abstract class StaffProjectile : ModProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
-		Vector2 position = Projectile.Center - Main.screenPosition;
 
 		for (int k = 0; k < Projectile.oldPos.Length; k++)
 		{
@@ -175,6 +174,7 @@ internal abstract class StaffProjectile : ModProjectile
 			DrawSelf(color, tex, drawPos);
 		}
 
+		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Owner.gfxOffY);
 		DrawSelf(lightColor, tex, position);
 
 		return false;
