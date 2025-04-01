@@ -152,7 +152,7 @@ internal class ForestArea : MappingWorld
 
 		if (HasShrine && type != StructureKind.Arena && type != StructureKind.Cave)
 		{
-			path = $"Assets/Structures/MapAreas/ForestArea/SpecialShrine_{WorldGen.genRand.Next(1) + 1}";
+			path = $"Assets/Structures/MapAreas/ForestArea/SpecialShrine_{WorldGen.genRand.Next(1) + 3}";
 			isShrine = true;
 		}
 

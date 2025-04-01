@@ -47,3 +47,8 @@ RestorationBuff: {
 	DisplayName: Restoration Buff
 	Description: Provides massive life regeneration
 }
+
+HardinessBuff: {
+	DisplayName: Hardiness Buff
+	Description: Mods.PathOfTerraria.Buffs.HardinessBuff.Description
+}
