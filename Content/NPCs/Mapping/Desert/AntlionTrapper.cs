@@ -113,7 +113,7 @@ internal class AntlionTrapper : ModNPC
 		{
 			NPC.velocity.Y *= 0.6f;
 
-			if (!Collision.SolidCollision(NPC.position + new Vector2(0, 16), NPC.width, 6))
+			if (!Collision.SolidCollision(NPC.position + new Vector2(0, 16), NPC.width, 6) || !Collision.SolidCollision(NPC.position + new Vector2(0, 32), NPC.width, 6))
 			{
 				NPC.velocity.Y += 0.1f;
 			}
@@ -130,7 +130,7 @@ internal class AntlionTrapper : ModNPC
 
 			foreach (Player player in Main.ActivePlayers)
 			{
-				if (player.Hitbox.Intersects(snapBounds))
+				if (!player.dead && player.Hitbox.Intersects(snapBounds))
 				{
 					SnapWait += 2;
 				}

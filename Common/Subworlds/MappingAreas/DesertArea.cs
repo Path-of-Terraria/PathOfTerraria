@@ -85,9 +85,21 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 		HashSet<int> tunnelXPositions = [];
 		DigTunnels(tunnelXPositions);
-		CleanWorld();
 		PlaceColumns(tunnelXPositions);
+		AddTileVariance();
 		SpawnStructures();
+
+		for (int i = 20; i < Main.maxTilesX - 20; ++i)
+		{
+			for (int j = 20; j < Main.maxTilesY - 40; ++j)
+			{
+				if (GenVars.structures.CanPlace(new Rectangle(i, j, 1, 1), 2))
+				{
+					Tile.SmoothSlope(i, j, false, false);
+				}
+			}
+		}
+
 		Decoration.ManuallyPopulateChests();
 		DecorateSand();
 		PopulateChests();
@@ -143,7 +155,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 				if (flags.HasFlag(OpenFlags.Above) && tile.HasTile)
 				{
-					if (WorldGen.genRand.NextBool(10) && tile.TileType == TileID.Sand)
+					if (WorldGen.genRand.NextBool(10) && tile.TileType == TileID.Sand && i > 160 && i < Main.maxTilesX - 160)
 					{
 						WorldGen.PlantCactus(i, j);
 					}
@@ -167,7 +179,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 					{
 						WorldGen.PlaceSmallPile(i, j - 1, WorldGen.genRand.Next(54, 60), 0);
 					}
-					else if (WorldGen.genRand.NextBool(160) && tile.TileType == TileID.Sand)
+					else if (WorldGen.genRand.NextBool(160) && tile.TileType == TileID.Sand && GenVars.structures.CanPlace(new Rectangle(i, j, 1, 1), 2))
 					{
 						float x = i;
 						int length = WorldGen.genRand.Next(8, 18);
@@ -193,7 +205,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		}
 	}
 
-	private static void CleanWorld()
+	private static void AddTileVariance()
 	{
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.005f);
@@ -214,8 +226,6 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 				{
 					PlaceSand(i, j, noise);
 				}
-
-				Tile.SmoothSlope(i, j, false, false);
 			}
 		}
 	}
@@ -455,6 +465,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	private static void SpawnStructures()
 	{
+		// Ruins, mostly embedded in sand
 		int count = 5;
 
 		while (count > 0)
@@ -462,8 +473,8 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			Point16 pos = GetOpenAirRandomPosition();
 			string structurePath = "Assets/Structures/MapAreas/DesertArea/Ruin_" + WorldGen.genRand.Next(4);
 			Point16 structureSize = StructureTools.GetSize(structurePath);
-			bool left = CanPlaceStructureOn(pos, structureSize);
-			bool right = CanPlaceStructureOn(new Point16(pos.X - structureSize.X, pos.Y), structureSize);
+			bool left = CanEmbedStructureIn(pos, structureSize);
+			bool right = CanEmbedStructureIn(new Point16(pos.X - structureSize.X, pos.Y), structureSize);
 
 			if (!left && !right)
 			{
@@ -490,13 +501,61 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, structureSize.X, structureSize.Y), 10);
 			count--;
 		}
+
+		// Oasis
+		count = 2;
+		int reps = 0;
+
+		while (count > 0)
+		{
+			reps++;
+
+			if (reps > 20000)
+			{
+				break;
+			}
+
+			Point16 pos = GetOpenAirRandomPosition();
+			string structurePath = "Assets/Structures/MapAreas/DesertArea/Oasis_" + WorldGen.genRand.Next(3);
+			Point16 structureSize = StructureTools.GetSize(structurePath);
+			bool canPlace = CanPlaceStructureOn(pos, structureSize);
+
+			if (!canPlace || !GenVars.structures.CanPlace(new Rectangle(pos.X - structureSize.X, pos.Y, structureSize.X, structureSize.Y)))
+			{
+				continue;
+			}
+
+			pos = StructureTools.PlaceByOrigin(structurePath, pos, new Vector2(0, 1));
+			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, structureSize.X, structureSize.Y), 10);
+			count--;
+		}
 	}
 
-	private static bool CanPlaceStructureOn(Point16 pos, Point16 structureSize)
+	private static bool CanEmbedStructureIn(Point16 pos, Point16 structureSize)
 	{
 		for (int i = pos.X; i < pos.X + structureSize.X; ++i)
 		{
 			if (!WorldGen.SolidOrSlopedTile(i, pos.Y))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static bool CanPlaceStructureOn(Point16 pos, Point16 structureSize)
+	{
+		const int VerticalOffset = 20;
+
+		for (int i = pos.X; i < pos.X + structureSize.X; ++i)
+		{
+			if (!WorldGen.SolidOrSlopedTile(i, pos.Y))
+			{
+				return false;
+			}
+
+			if (WorldGen.SolidOrSlopedTile(i, pos.Y - VerticalOffset) || Main.tile[i, pos.Y - VerticalOffset].WallType > 0)
 			{
 				return false;
 			}
