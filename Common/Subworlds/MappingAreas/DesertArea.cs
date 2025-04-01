@@ -64,6 +64,8 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 	{
 		List<Point16> boulders = [];
 
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
+
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
 			for (int j = 2; j < Main.maxTilesY - 2; ++j)
@@ -76,17 +78,27 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 					boulders.Add(new Point16(i, j));
 				}
 			}
+
+			progress.Set(i / (float)Main.maxTilesX);
 		}
 
-		foreach (Point16 item in boulders)
+		for (int i = 0; i < boulders.Count; i++)
 		{
+			Point16 item = boulders[i];
 			SpawnBoulder(item.X, item.Y);
+
+			progress.Set(i / (float)boulders.Count);
 		}
+
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
 
 		HashSet<int> tunnelXPositions = [];
 		DigTunnels(tunnelXPositions);
 		PlaceColumns(tunnelXPositions);
 		AddTileVariance();
+
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
+
 		SpawnStructures();
 
 		for (int i = 20; i < Main.maxTilesX - 20; ++i)
@@ -98,11 +110,20 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 					Tile.SmoothSlope(i, j, false, false);
 				}
 			}
+
+			progress.Set(i / (float)Main.maxTilesX);
 		}
 
+		progress.Set(0);
 		Decoration.ManuallyPopulateChests();
+		
+		progress.Set(0.33f);
 		DecorateSand();
+
+		progress.Set(0.67f);
 		PopulateChests();
+
+		progress.Set(1);
 		AddTrappers();
 	}
 
