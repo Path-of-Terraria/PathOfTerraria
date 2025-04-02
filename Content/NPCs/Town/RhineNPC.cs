@@ -107,7 +107,8 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Main.LocalPlayer.HasItem(ModContent.ItemType<SimpleCompass>()) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.Button");
+		bool needsCompass = !Main.LocalPlayer.HasItem(ModContent.ItemType<SimpleCompass>()) && Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active;
+		button = !needsCompass ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.Button");
 		button2 = !QuestUnlockManager.CanStartQuest<DeerclopsQuest>() ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
