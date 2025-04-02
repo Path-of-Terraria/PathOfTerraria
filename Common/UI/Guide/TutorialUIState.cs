@@ -182,7 +182,7 @@ internal class TutorialUIState : UIState
 		}
 		else if (Step == 11)
 		{
-			if (!NPC.AnyNPCs(ModContent.NPCType<RavenNPC>()))
+			if (SubworldSystem.Current is null && (!FromLoad || !NPC.AnyNPCs(ModContent.NPCType<RavenNPC>())))
 			{
 				if (Main.netMode == NetmodeID.SinglePlayer)
 				{
