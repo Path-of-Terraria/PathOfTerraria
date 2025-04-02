@@ -19,7 +19,7 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, ISpawnInRavencres
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
-	public Point16 TileSpawn => new(517, 191);
+	public Point16 TileSpawn => new(517, 172);
 
 	private float animCounter;
 

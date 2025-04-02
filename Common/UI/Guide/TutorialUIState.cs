@@ -28,6 +28,13 @@ internal class TutorialUIState : UIState
 
 	internal static int StoredStep;
 
+	/// <summary>
+	/// Defines that the current <see cref="StoredStep"/> value is from load 
+	/// (specifically, from <see cref="TutorialPlayer.OnEnterWorld"/>)<br/>
+	/// This increments StoredStep once to properly "activate" the current step when a player re-enters the world.
+	/// </summary>
+	internal static bool FromLoad;
+
 	public int Step { get; private set; }
 
 	private float _opacity;
@@ -72,6 +79,11 @@ internal class TutorialUIState : UIState
 		{
 			Step = 12;
 
+			if (!Quest.GetLocalPlayerInstance<FirstQuest>().CanBeStarted)
+			{
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
+			}
+
 			if (Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Level == 0)
 			{
 				Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
@@ -91,6 +103,12 @@ internal class TutorialUIState : UIState
 		base.Update(gameTime);
 
 		HashSet<TutorialCheck> checks = Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks;
+
+		if (FromLoad)
+		{
+			IncrementStep();
+			FromLoad = false;
+		}
 
 		if (Step == 1 && SmartUiLoader.GetUiState<TreeState>().Visible)
 		{
@@ -151,7 +169,7 @@ internal class TutorialUIState : UIState
 		plr.GetModPlayer<TutorialPlayer>().TutorialStep = (byte)Step;
 		StoredStep = Step;
 
-		if (Step == 1)
+		if (Step == 1 && !FromLoad)
 		{
 			plr.GetModPlayer<ExpModPlayer>().Exp += plr.GetModPlayer<ExpModPlayer>().NextLevel + 1;
 		}

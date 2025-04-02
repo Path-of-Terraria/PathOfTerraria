@@ -14,7 +14,6 @@ using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
-using Microsoft.Build.Tasks.Hosting;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -134,7 +133,7 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 				}
 			}
 		}
-		else
+		else if (QuestUnlockManager.CanStartQuest<DeerclopsQuest>())
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<DeerclopsQuest>();

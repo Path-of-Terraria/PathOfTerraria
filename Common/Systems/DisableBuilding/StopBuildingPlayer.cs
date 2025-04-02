@@ -105,10 +105,10 @@ internal class StopBuildingPlayer : ModPlayer
 		LastStopBuilding = ConstantStopBuilding;
 		ConstantStopBuilding = false;
 
-		if (SubworldSystem.Current is MappingWorld)
-		{
-			ConstantStopBuilding = true;
-		}
+		//if (SubworldSystem.Current is MappingWorld)
+		//{
+		//	ConstantStopBuilding = true;
+		//}
 	}
 
 	public override bool CanUseItem(Item item)
