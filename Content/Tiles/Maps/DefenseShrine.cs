@@ -10,6 +10,6 @@ public class DefenseShrine : BaseShrine
 
 public class DefenseAoE : ShrineAoE
 {
-	public override Color Tint => Color.Gray;
+	public override Color Tint => Color.White;
 	public override int BuffId => ModContent.BuffType<HardinessBuff>();
 }

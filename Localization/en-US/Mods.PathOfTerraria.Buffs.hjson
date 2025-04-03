@@ -50,5 +50,27 @@ RestorationBuff: {
 
 HardinessBuff: {
 	DisplayName: Hardiness Buff
-	Description: Mods.PathOfTerraria.Buffs.HardinessBuff.Description
+	Description:
+		'''
+		+10 defense
+		+20% block chance
+		'''
+}
+
+HasteBuff: {
+	DisplayName: Haste Buff
+	Description:
+		'''
+		+20% movement speed
+		+15% attack speed
+		'''
+}
+
+UnstoppableBuff: {
+	DisplayName: Unstoppable Buff
+	Description:
+		'''
+		+50% shielding health
+		Immunity to Chilled
+		'''
 }

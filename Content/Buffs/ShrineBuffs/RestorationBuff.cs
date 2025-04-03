@@ -4,6 +4,12 @@ namespace PathOfTerraria.Content.Buffs.ShrineBuffs;
 
 internal class RestorationBuff : ModBuff
 {
+	public override void SetStaticDefaults()
+	{
+		// This allows for otherwise buff immune NPCs to have this effect
+		BuffID.Sets.IsATagBuff[Type] = true;
+	}
+
 	public override void Update(NPC npc, ref int buffIndex)
 	{
 		if (npc.life < npc.lifeMax)

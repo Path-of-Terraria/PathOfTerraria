@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using ReLogic.Content;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
@@ -45,7 +44,7 @@ public abstract class ShrineAoE : ModProjectile
 	{
 		Projectile.timeLeft = 3;
 
-		if (!HasInitialized)
+		if (!HasInitialized && AnyNearbyPlayer())
 		{
 			HasInitialized = true;
 			WeightedRandom<int> random = ShrineMobPools.GetPool((int)ShrineType);
@@ -65,6 +64,19 @@ public abstract class ShrineAoE : ModProjectile
 				npc.AddBuff(BuffId, 2);
 			}
 		}
+	}
+
+	private bool AnyNearbyPlayer()
+	{
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (player.DistanceSQ(Projectile.Center) < Projectile.width * Projectile.width * 1.05f)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public override Color? GetAlpha(Color lightColor)

@@ -26,6 +26,8 @@ public abstract class BaseShrine : ModTile
 		TileObjectData.newTile.Origin = new Point16(1, 0);
 		TileObjectData.addTile(Type);
 
+		AddMapEntry(Color.LightSlateGray);
+
 		DustType = DustID.Stone;
 		HitSound = SoundID.Dig;
 	}
