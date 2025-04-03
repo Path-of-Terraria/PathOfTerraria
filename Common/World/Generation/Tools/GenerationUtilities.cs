@@ -21,6 +21,9 @@ internal class GenerationUtilities
 		}
 	}
 
+	/// <summary>
+	/// Gives all <see cref="BaseShrine"/>s an associated <see cref="BaseShrine.ShrineTileEntity"/>, as this is not done automatically by worldgen.
+	/// </summary>
 	public static void PopulateShrines()
 	{
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
@@ -31,7 +34,7 @@ internal class GenerationUtilities
 
 				if (tile.TileType >= TileID.Count && ModContent.GetModTile(tile.TileType) is BaseShrine shrine && tile.TileFrameX == 0 && tile.TileFrameY == 0)
 				{
-					shrine.Activate(i, j);
+					ModContent.GetInstance<BaseShrine.ShrineTileEntity>().Place(i, j);
 				}
 			}
 		}

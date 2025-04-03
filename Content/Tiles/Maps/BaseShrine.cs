@@ -1,5 +1,6 @@
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Content.Projectiles.Utility;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
@@ -19,6 +20,9 @@ public abstract class BaseShrine : ModTile
 
 		TileID.Sets.HasOutlines[Type] = true;
 
+		ShrineTileEntity tileEntity = ModContent.GetInstance<ShrineTileEntity>();
+		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(tileEntity.Hook_AfterPlacement, -1, 0, false);
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
 		TileObjectData.newTile.StyleHorizontal = true;
@@ -37,11 +41,16 @@ public abstract class BaseShrine : ModTile
 		num = fail ? 1 : 3;
 	}
 
-	public virtual void Activate(int i, int j)
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
+	{
+		ModContent.GetInstance<ShrineTileEntity>().Kill(i, j);
+	}
+
+	public virtual int Activate(int i, int j)
 	{
 		Tile tile = Main.tile[i, j];
 		int type = tile.TileFrameY / 38;
-		Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.Zero, AoE, 0, 0, Main.myPlayer, type);
+		return Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(i, j).ToWorldCoordinates(12, 12), Vector2.Zero, AoE, 0, 0, Main.myPlayer, type);
 	}
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings)
@@ -61,17 +70,58 @@ public abstract class BaseShrine : ModTile
 	{
 		WorldGen.KillTile(i, j);
 		int buffId = (ContentSamples.ProjectilesByType[AoE].ModProjectile as ShrineAoE).BuffId;
-		Vector2 worldPos = new Vector2(i, j).ToWorldCoordinates();
 		Main.LocalPlayer.AddBuff(buffId, 20 * 60);
 
-		foreach (Projectile projectile in Main.ActiveProjectiles)
+		return true;
+	}
+
+	public class ShrineTileEntity : ModTileEntity
+	{
+		private int _projectile = -1;
+
+		public override bool IsTileValidForEntity(int x, int y)
 		{
-			if (projectile.DistanceSQ(worldPos) < 120 * 120)
+			return ModContent.GetModTile(Main.tile[x, y].TileType) is BaseShrine;
+		}
+
+		public override void Update()
+		{
+			if (_projectile <= -1)
 			{
-				projectile.active = false;
+				Tile tile = Main.tile[Position];
+				var shrine = ModContent.GetModTile(tile.TileType) as BaseShrine;
+				_projectile = shrine.Activate(Position.X, Position.Y);
+
+				if (Main.projectile[_projectile].ModProjectile is not ShrineAoE)
+				{
+					throw new InvalidCastException("Baseshrine.Activate() should spawn a child of ShrineAoE!");
+				}
+			}
+			else
+			{
+				Projectile projectile = Main.projectile[_projectile];
+
+				if (!projectile.active || projectile.ModProjectile is not ShrineAoE)
+				{
+					_projectile = -1;
+				}
 			}
 		}
 
-		return true;
+		public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
+		{
+			var tileData = TileObjectData.GetTileData(type, style, alternate);
+			int topLeftX = i - tileData.Origin.X;
+			int topLeftY = j - tileData.Origin.Y;
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendTileSquare(Main.myPlayer, topLeftX, topLeftY, tileData.Width, tileData.Height);
+				NetMessage.SendData(MessageID.TileEntityPlacement, number: topLeftX, number2: topLeftY, number3: Type);
+				return -1;
+			}
+
+			return Place(topLeftX, topLeftY);
+		}
 	}
 }

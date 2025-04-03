@@ -49,6 +49,14 @@ internal class ForestArea : MappingWorld
 
 	public override void Update()
 	{
+		TileEntity.UpdateStart();
+		foreach (TileEntity te in TileEntity.ByID.Values)
+		{
+			te.Update();
+		}
+
+		TileEntity.UpdateEnd();
+
 		bool hasPortal = false;
 
 		foreach (Projectile projectile in Main.ActiveProjectiles)
