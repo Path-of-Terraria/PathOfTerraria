@@ -106,7 +106,7 @@ internal class StaffHeldProjectile : ModProjectile
 		Texture2D tex = TextureAssets.Item[(int)ItemId].Value;
 
 		Vector2 positionOffset = new(Projectile.ModProjectile?.DrawOffsetX ?? 0f, Projectile.gfxOffY);
-		Vector2 position = Projectile.Center - Main.screenPosition + positionOffset;
+		Vector2 position = Projectile.Center - Main.screenPosition + positionOffset - new Vector2(0, Owner.gfxOffY);
 
 		Vector2 originOffset = new(Projectile.ModProjectile?.DrawOriginOffsetX ?? 0f, Projectile.ModProjectile?.DrawOriginOffsetY ?? 0f);
 		Vector2 origin = new Vector2(0f, tex.Height) + originOffset;

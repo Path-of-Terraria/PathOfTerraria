@@ -1048,3 +1048,7 @@ PrimeMap: {
 		'The map smells of metal and singe'
 		'''
 }
+
+HauntedHeadBannerItem.DisplayName: Haunted Head Banner
+SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
+AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner

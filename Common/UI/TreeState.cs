@@ -6,6 +6,7 @@ using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.UI;
 
@@ -65,7 +66,20 @@ internal class TreeState : TabsUiState
 		IsVisible = true;
 	}
 
-	internal void ResetTree()
+	private new void AddCloseButton()
+	{
+		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
+		CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
+		CloseButton.Top.Set(10, 0f);
+		CloseButton.Width.Set(38, 0);
+		CloseButton.Height.Set(38, 0);
+		CloseButton.OnLeftClick += (a, b) => Toggle();
+		CloseButton.SetVisibility(1, 1);
+		Panel.Append(CloseButton);
+	}
+
+
+	private void ResetTree()
 	{
 		_passiveTreeInner.RemoveAllChildren();
 
@@ -127,11 +141,6 @@ internal class TreeState : TabsUiState
 		}
 		
 		AvailablePassivePointsText.DrawAvailablePassivePoint(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin);
-	}
-
-	public Rectangle GetRectangle()
-	{
-		return Panel.GetDimensions().ToRectangle();
 	}
 
 	// ReSharper disable once UnusedType.Local

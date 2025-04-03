@@ -9,13 +9,11 @@ using ReLogic.Content;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
-using Terraria.Social.Steam;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Common.Systems.ModPlayers;
 
@@ -46,7 +44,7 @@ internal class TutorialUIState : UIState
 
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
-		_opacity = MathHelper.Lerp(_opacity, Step > 13 ? 0 : 1, 0.05f);
+		_opacity = MathHelper.Lerp(_opacity, HideSelf() ? 0 : 1, 0.05f);
 
 		if (_opacity < 0.001f)
 		{
@@ -60,6 +58,7 @@ internal class TutorialUIState : UIState
 		// Temp fix to position the guide correctly on ultra-wide monitors + 4k monitors
 		if (Main.screenWidth > 3000)
 		{
+			_baseYDivisor = 4;
 			pos = new Vector2(Main.screenWidth, Main.screenHeight + 500) / new Vector2(2, _baseYDivisor);
 		}
 
@@ -80,6 +79,11 @@ internal class TutorialUIState : UIState
 
 			IncrementStep();
 		});
+
+		bool HideSelf() //Under what conditions this panel should fade out in
+		{
+			return Step > 13 || Main.npcChatText != string.Empty;
+		}
 	}
 
 	public override void Update(GameTime gameTime)
