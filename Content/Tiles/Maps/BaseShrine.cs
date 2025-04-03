@@ -49,7 +49,7 @@ public abstract class BaseShrine : ModTile
 	public virtual int Activate(int i, int j)
 	{
 		Tile tile = Main.tile[i, j];
-		int type = tile.TileFrameY / 38;
+		int type = tile.TileFrameX / 36;
 		return Projectile.NewProjectile(new EntitySource_SpawnNPC(), new Vector2(i, j).ToWorldCoordinates(12, 12), Vector2.Zero, AoE, 0, 0, Main.myPlayer, type);
 	}
 

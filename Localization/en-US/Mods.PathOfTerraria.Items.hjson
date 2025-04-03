@@ -1052,3 +1052,23 @@ PrimeMap: {
 HauntedHeadBannerItem.DisplayName: Haunted Head Banner
 SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
 AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner
+
+DefenseShrineItem: {
+	DisplayName: Defense Shrine Item
+	Tooltip: ""
+}
+
+DesertDefenseShrineItem: {
+	DisplayName: Desert Defense Shrine Item
+	Tooltip: ""
+}
+
+DesertGodlikeShrineItem: {
+	DisplayName: Desert Godlike Shrine Item
+	Tooltip: ""
+}
+
+GodlikeShrineItem: {
+	DisplayName: Godlike Shrine Item
+	Tooltip: ""
+}

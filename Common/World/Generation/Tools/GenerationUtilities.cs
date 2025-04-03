@@ -5,6 +5,9 @@ namespace PathOfTerraria.Common.World.Generation.Tools;
 
 internal class GenerationUtilities
 {
+	/// <summary>
+	/// Manually assigns a <see cref="Chest"/> to every chest that needs one.
+	/// </summary>
 	public static void ManuallyPopulateChests()
 	{
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
@@ -32,7 +35,7 @@ internal class GenerationUtilities
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (tile.TileType >= TileID.Count && ModContent.GetModTile(tile.TileType) is BaseShrine shrine && tile.TileFrameX == 0 && tile.TileFrameY == 0)
+				if (tile.TileType >= TileID.Count && ModContent.GetModTile(tile.TileType) is BaseShrine shrine && tile.TileFrameX % 36 == 0 && tile.TileFrameY == 0)
 				{
 					ModContent.GetInstance<BaseShrine.ShrineTileEntity>().Place(i, j);
 				}

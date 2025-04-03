@@ -413,11 +413,7 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 
 		LeftSpawn = Main.rand.NextBool(2);
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
-
-		if (WorldGen.genRand.NextBool(1))
-		{
-			HasShrine = true;
-		}
+		HasShrine = WorldGen.genRand.NextBool(5);
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.2f);

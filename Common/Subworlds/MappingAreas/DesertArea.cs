@@ -26,6 +26,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 	private static bool LeftSpawn = false;
 	private static Point BossSpawnLocation = Point.Zero;
 	private static int SandstormTimer = 0;
+	private static bool HasShrine = false;
 
 	public override int Width => 2000 + 120 * Main.rand.Next(5);
 	public override int Height => 600;
@@ -99,6 +100,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
+		HasShrine = WorldGen.genRand.NextBool(1);
 		SpawnStructures();
 
 		for (int i = 20; i < Main.maxTilesX - 20; ++i)
@@ -115,8 +117,9 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		}
 
 		progress.Set(0);
-		Decoration.ManuallyPopulateChests();
-		
+		GenerationUtilities.ManuallyPopulateChests();
+		GenerationUtilities.PopulateShrines();
+
 		progress.Set(0.33f);
 		DecorateSand();
 
@@ -538,6 +541,14 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 			Point16 pos = GetOpenAirRandomPosition();
 			string structurePath = "Assets/Structures/MapAreas/DesertArea/Oasis_" + WorldGen.genRand.Next(3);
+			bool isShrine = false;
+
+			if (HasShrine)
+			{
+				isShrine = true;
+				structurePath = "Assets/Structures/MapAreas/DesertArea/Shrine_" + (WorldGen.genRand.Next(1) + 1);
+			}
+
 			Point16 structureSize = StructureTools.GetSize(structurePath);
 			bool canPlace = CanPlaceStructureOn(pos, structureSize);
 
@@ -549,6 +560,11 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			pos = StructureTools.PlaceByOrigin(structurePath, pos, new Vector2(0, 1));
 			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, structureSize.X, structureSize.Y), 10);
 			count--;
+
+			if (isShrine)
+			{
+				HasShrine = false;
+			}
 		}
 	}
 
@@ -688,6 +704,13 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	public override void Update()
 	{
+		TileEntity.UpdateStart();
+		foreach (TileEntity te in TileEntity.ByID.Values)
+		{
+			te.Update();
+		}
+
+		TileEntity.UpdateEnd();
 		Wiring.UpdateMech();
 
 		SandstormTimer++;
