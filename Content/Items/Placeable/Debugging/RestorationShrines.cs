@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Placeable.Debugging;
 
-internal class ForestDefenseShrineItem : ModItem
+internal class ForestRestorationShrineItem : ModItem
 {
 	protected virtual int Style => 0;
 
@@ -15,13 +15,13 @@ internal class ForestDefenseShrineItem : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToPlaceableTile(ModContent.TileType<DefenseShrine>(), Style);
+		Item.DefaultToPlaceableTile(ModContent.TileType<RestorationShrine>(), Style);
 		Item.width = 16;
 		Item.height = 16;
 	}
 }
 
-internal class DesertDefenseShrineItem : ForestDefenseShrineItem
+internal class DesertRestorationShrineItem : ForestRestorationShrineItem
 {
 	protected override int Style => 1;
 }

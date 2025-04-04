@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Placeable.Debugging;
 
-internal class GodlikeShrineItem : ModItem
+internal class ForestGodlikeShrineItem : ModItem
 {
 	protected virtual int Style => 0;
 
@@ -21,7 +21,7 @@ internal class GodlikeShrineItem : ModItem
 	}
 }
 
-internal class DesertGodlikeShrineItem : GodlikeShrineItem
+internal class DesertGodlikeShrineItem : ForestGodlikeShrineItem
 {
 	protected override int Style => 1;
 }

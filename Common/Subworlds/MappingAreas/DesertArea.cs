@@ -546,7 +546,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			if (HasShrine)
 			{
 				isShrine = true;
-				structurePath = "Assets/Structures/MapAreas/DesertArea/Shrine_" + (WorldGen.genRand.Next(1) + 1);
+				structurePath = "Assets/Structures/MapAreas/DesertArea/Shrine_" + (WorldGen.genRand.Next(1) + 2);
 			}
 
 			Point16 structureSize = StructureTools.GetSize(structurePath);

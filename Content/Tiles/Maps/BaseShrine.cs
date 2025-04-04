@@ -1,6 +1,5 @@
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Content.Projectiles.Utility;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;

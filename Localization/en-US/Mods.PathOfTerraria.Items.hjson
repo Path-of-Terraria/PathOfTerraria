@@ -1072,3 +1072,28 @@ GodlikeShrineItem: {
 	DisplayName: Godlike Shrine Item
 	Tooltip: ""
 }
+
+DesertRestorationShrineItem: {
+	DisplayName: Desert Restoration Shrine Item
+	Tooltip: ""
+}
+
+RestorationShrineItem: {
+	DisplayName: Restoration Shrine Item
+	Tooltip: ""
+}
+
+ForestDefenseShrineItem: {
+	DisplayName: Forest Defense Shrine Item
+	Tooltip: ""
+}
+
+ForestGodlikeShrineItem: {
+	DisplayName: Forest Godlike Shrine Item
+	Tooltip: ""
+}
+
+ForestRestorationShrineItem: {
+	DisplayName: Forest Restoration Shrine Item
+	Tooltip: ""
+}
