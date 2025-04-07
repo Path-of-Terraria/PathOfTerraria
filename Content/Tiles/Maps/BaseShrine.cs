@@ -3,6 +3,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.Maps;
@@ -65,10 +66,11 @@ public abstract class BaseShrine : ModTile
 
 	public override void MouseOver(int i, int j)
 	{
-		base.MouseOver(i, j);
-
-		Main.LocalPlayer.cursorItemIconEnabled = true;
-		Main.LocalPlayer.cursorItemIconID = ModContent.ItemType<ArcaneObeliskItem>();
+		Player player = Main.LocalPlayer;
+		player.cursorItemIconID = -1;
+		player.cursorItemIconText = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Activate");
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
 	}
 
 	public override bool RightClick(int i, int j)

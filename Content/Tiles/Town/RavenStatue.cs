@@ -6,6 +6,7 @@ using PathOfTerraria.Core.UI;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.Town;
@@ -62,7 +63,7 @@ internal class RavenStatue : ModTile
 	{
 		Player player = Main.LocalPlayer;
 		player.cursorItemIconID = -1;
-		player.cursorItemIconText = "Enter Ravencrest";
+		player.cursorItemIconText = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.EnterRavencrest");
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
 	}

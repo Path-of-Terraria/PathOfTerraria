@@ -5,7 +5,7 @@ namespace PathOfTerraria.Common.NPCs;
 
 /// <summary>
 /// Defines the ability for NPCs to dodge attacks. This is very similar to <see cref="Systems.BlockSystem.BlockPlayer"/>.<br/>
-/// TODO: Needs final implementation. At the moment, dodges don't work properly.
+/// TODO: At the moment, dodges don't work properly. If you want to use this, make sure it works fully first! At the moment, this is unused.
 /// </summary>
 internal class BlockNPC : GlobalNPC
 {
@@ -24,6 +24,11 @@ internal class BlockNPC : GlobalNPC
 	private float _accruedMultiplier = 0;
 	private int _timeSinceLastBlock = 0;
 	private int _blockTime = 0;
+
+	public override bool IsLoadingEnabled(Mod mod)
+	{
+		return false;
+	}
 
 	public override void ResetEffects(NPC npc)
 	{

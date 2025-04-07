@@ -23,3 +23,5 @@ NPCLeftWithoutDying: "{0} escaped!"
 AffixTooltipFrom: " from  "
 Enter: Enter
 Exit: Exit
+EnterRavencrest: "{$Enter} Ravencrest"
+Activate: Activate
