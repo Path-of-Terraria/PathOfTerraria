@@ -61,13 +61,20 @@ public sealed class RavenNPC : ModNPC
 			int tileX = (int)(NPC.Center.X / 16f);
 			int tileY = (int)(NPC.Center.Y / 16f);
 
-			while (!WorldGen.SolidOrSlopedTile(tileX, tileY))
+			if (!WorldGen.InWorld(tileX, tileY, 20))
 			{
-				tileY++;
-
-				if (!WorldGen.InWorld(tileX, tileY, 20))
+				tileY += 30;
+			}
+			else
+			{
+				while (!WorldGen.SolidOrSlopedTile(tileX, tileY))
 				{
-					break;
+					tileY++;
+
+					if (!WorldGen.InWorld(tileX, tileY, 20))
+					{
+						break;
+					}
 				}
 			}
 
