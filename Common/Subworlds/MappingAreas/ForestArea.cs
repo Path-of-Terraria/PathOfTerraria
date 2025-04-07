@@ -48,6 +48,14 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 
 	public override void Update()
 	{
+		TileEntity.UpdateStart();
+		foreach (TileEntity te in TileEntity.ByID.Values)
+		{
+			te.Update();
+		}
+
+		TileEntity.UpdateEnd();
+
 		bool hasPortal = false;
 
 		foreach (Projectile projectile in Main.ActiveProjectiles)
@@ -147,6 +155,14 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 	private static void TryPlaceStructureAt(HashSet<StructureKind> structures, int x, int y, StructureKind type, int max, Vector2 origin, int offsetY = 0)
 	{
 		string path = $"Assets/Structures/MapAreas/ForestArea/{type}_{WorldGen.genRand.Next(max)}";
+		bool isShrine = false;
+
+		if (WorldGen.genRand.NextBool(5) && type != StructureKind.Arena && type != StructureKind.Cave)
+		{
+			path = $"Assets/Structures/MapAreas/ForestArea/SpecialShrine_{WorldGen.genRand.Next(5)}";
+			isShrine = true;
+		}
+
 		Point16 size = StructureTools.GetSize(path);
 
 		if (GenVars.structures.CanPlace(new Rectangle(x - (int)(size.X * origin.X), y - (int)(size.Y * origin.Y) + offsetY, size.X, size.Y)))
@@ -240,7 +256,8 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 			progress.Set(i / (float)Main.maxTilesX);
 		}
 
-		Decoration.ManuallyPopulateChests();
+		GenerationUtilities.ManuallyPopulateChests();
+		ShrineFunctionality.PopulateShrines();
 
 		int grassIndex = 0;
 

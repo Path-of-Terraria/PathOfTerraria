@@ -42,7 +42,7 @@ internal class DesertAreaNPC : GlobalNPC
 	{
 		if (npc.type == NPCID.DesertDjinn && SubworldSystem.Current is DesertArea)
 		{
-			npc.life /= 3;
+			npc.life /= 4;
 		}
 	}
 }

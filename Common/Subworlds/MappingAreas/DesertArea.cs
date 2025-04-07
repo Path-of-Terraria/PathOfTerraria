@@ -115,8 +115,9 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		}
 
 		progress.Set(0);
-		Decoration.ManuallyPopulateChests();
-		
+		GenerationUtilities.ManuallyPopulateChests();
+		ShrineFunctionality.PopulateShrines();
+
 		progress.Set(0.33f);
 		DecorateSand();
 
@@ -526,6 +527,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		// Oasis
 		count = 2;
 		int reps = 0;
+		bool hasShrine = WorldGen.genRand.NextBool(ShrineFunctionality.ShrineDenominator);
 
 		while (count > 0)
 		{
@@ -538,6 +540,14 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 			Point16 pos = GetOpenAirRandomPosition();
 			string structurePath = "Assets/Structures/MapAreas/DesertArea/Oasis_" + WorldGen.genRand.Next(3);
+			bool isShrine = false;
+
+			if (hasShrine)
+			{
+				isShrine = true;
+				structurePath = "Assets/Structures/MapAreas/DesertArea/Shrine_" + WorldGen.genRand.Next(5);
+			}
+
 			Point16 structureSize = StructureTools.GetSize(structurePath);
 			bool canPlace = CanPlaceStructureOn(pos, structureSize);
 
@@ -549,6 +559,11 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			pos = StructureTools.PlaceByOrigin(structurePath, pos, new Vector2(0, 1));
 			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, structureSize.X, structureSize.Y), 10);
 			count--;
+
+			if (isShrine)
+			{
+				hasShrine = false;
+			}
 		}
 	}
 
@@ -688,6 +703,13 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	public override void Update()
 	{
+		TileEntity.UpdateStart();
+		foreach (TileEntity te in TileEntity.ByID.Values)
+		{
+			te.Update();
+		}
+
+		TileEntity.UpdateEnd();
 		Wiring.UpdateMech();
 
 		SandstormTimer++;

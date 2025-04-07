@@ -1052,3 +1052,68 @@ PrimeMap: {
 HauntedHeadBannerItem.DisplayName: Haunted Head Banner
 SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
 AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner
+
+DefenseShrineItem: {
+	DisplayName: Defense Shrine Item
+	Tooltip: ""
+}
+
+DesertDefenseShrineItem: {
+	DisplayName: Desert Defense Shrine Item
+	Tooltip: ""
+}
+
+DesertGodlikeShrineItem: {
+	DisplayName: Desert Godlike Shrine Item
+	Tooltip: ""
+}
+
+GodlikeShrineItem: {
+	DisplayName: Godlike Shrine Item
+	Tooltip: ""
+}
+
+DesertRestorationShrineItem: {
+	DisplayName: Desert Restoration Shrine Item
+	Tooltip: ""
+}
+
+RestorationShrineItem: {
+	DisplayName: Restoration Shrine Item
+	Tooltip: ""
+}
+
+ForestDefenseShrineItem: {
+	DisplayName: Forest Defense Shrine Item
+	Tooltip: ""
+}
+
+ForestGodlikeShrineItem: {
+	DisplayName: Forest Godlike Shrine Item
+	Tooltip: ""
+}
+
+ForestRestorationShrineItem: {
+	DisplayName: Forest Restoration Shrine Item
+	Tooltip: ""
+}
+
+DesertHasteShrineItem: {
+	DisplayName: Desert Haste Shrine Item
+	Tooltip: ""
+}
+
+ForestHasteShrineItem: {
+	DisplayName: Forest Haste Shrine Item
+	Tooltip: ""
+}
+
+DesertUnstoppableShrineItem: {
+	DisplayName: Desert Unstoppable Shrine Item
+	Tooltip: ""
+}
+
+ForestUnstoppableShrineItem: {
+	DisplayName: Forest Unstoppable Shrine Item
+	Tooltip: ""
+}
