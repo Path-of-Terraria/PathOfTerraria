@@ -18,7 +18,7 @@ internal class HasteBuff : ModBuff
 
 		if (!npc.noTileCollide)
 		{
-				npc.position += npc.velocity * 0.05f;
+			npc.position += npc.velocity * 0.05f;
 			UpdateCollision(npc);
 		}
 		else // NPCs without collision don't update their position in the same way for some reason
@@ -39,7 +39,7 @@ internal class HasteBuff : ModBuff
 				Player.runAcceleration *= 1.2f;
 				Player.maxRunSpeed *= 1.2f;
 				Player.moveSpeed += 0.2f;
-				Player.GetAttackSpeed(DamageClass.Generic) += 0.15f;
+				Player.GetAttackSpeed(DamageClass.Generic) += 0.25f;
 			}
 		}
 	}

@@ -7,6 +7,12 @@ using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.Maps;
 
+public enum ShrineType
+{
+	Forest = 0,
+	Desert = 1,
+}
+
 public abstract class BaseShrine : ModTile
 {
 	public abstract int AoE { get; }

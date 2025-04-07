@@ -71,11 +71,13 @@ public abstract class ShrineAoE : ModProjectile
 		if (!HasInitialized && AnyNearbyPlayer())
 		{
 			HasInitialized = true;
-			WeightedRandom<int> random = ShrineMobPools.GetPool((int)ShrineType);
+			WeightedRandom<int> random = ShrineMobPools.GetPool((ShrineType)ShrineType);
 
 			for (int i = 0; i < 8; ++i)
 			{
-				NPC.NewNPC(Terraria.Entity.GetSource_NaturalSpawn(), (int)Projectile.Center.X, (int)Projectile.Center.Y, random);
+				int npc = NPC.NewNPC(Terraria.Entity.GetSource_NaturalSpawn(), (int)Projectile.Center.X, (int)Projectile.Center.Y - 90, random);
+				Main.npc[npc].velocity = Main.rand.NextVector2Circular(2, 2);
+				Main.npc[npc].netUpdate = true;
 			}
 		}
 

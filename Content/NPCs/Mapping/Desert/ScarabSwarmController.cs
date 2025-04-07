@@ -1,6 +1,7 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Systems;
 using System.Collections.Specialized;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -86,13 +87,14 @@ internal class ScarabSwarmController : ModNPC
 		}
 		else if (State == AIState.Chase)
 		{
-			const float MaxSpeed = 5;
+			const float MaxSpeed = 4;
 
-			if (UnderlingCount <= 0 && Main.netMode != NetmodeID.MultiplayerClient)
+			if (UnderlingCount <= 0 && Main.netMode != NetmodeID.MultiplayerClient && !SpeedUpNPC.Boosting)
 			{
 				NPC.life = -1;
 				NPC.checkDead();
 				NPC.netUpdate = true;
+				NPC.active = false;
 				return;
 			}
 
