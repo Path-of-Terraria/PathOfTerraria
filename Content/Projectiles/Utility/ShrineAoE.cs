@@ -10,12 +10,14 @@ namespace PathOfTerraria.Content.Projectiles.Utility;
 public abstract class ShrineAoE : ModProjectile
 {
 	public static readonly Dictionary<int, Asset<Texture2D>> IconsByType = [];
+	public static readonly Dictionary<int, Asset<Texture2D>> MapIconsByType = [];
 
 	public override string Texture => $"{PoTMod.ModName}/Assets/Projectiles/Utility/ShrineAoE";
 
 	public abstract Color Tint { get; }
 	public abstract int BuffId { get; }
 	public virtual string Icon => (GetType().Namespace + "." + Name).Replace('.', '/').Replace("AoE", "Icon");
+	public virtual string MapIcon => (GetType().Namespace + "." + Name).Replace('.', '/').Replace("AoE", "MapIcon");
 
 	private ref float ShrineType => ref Projectile.ai[0];
 
@@ -30,6 +32,7 @@ public abstract class ShrineAoE : ModProjectile
 		if (!Main.dedServ)
 		{
 			IconsByType.Add(Type, ModContent.Request<Texture2D>(Icon));
+			MapIconsByType.Add(Type, ModContent.Request<Texture2D>(MapIcon));
 		}
 	}
 

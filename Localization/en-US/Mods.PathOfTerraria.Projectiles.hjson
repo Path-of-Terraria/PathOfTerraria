@@ -158,9 +158,9 @@ PincerProjectile.DisplayName: Pincer Projectile
 PrimeRocket.DisplayName: Prime Rocket
 PrimeBomb.DisplayName: Prime Bomb
 LaserClone.DisplayName: Laser Clone
-ShrineAoE.DisplayName: Shrine Ao E
-UnstoppableAoE.DisplayName: Unstoppable Ao E
-GodlikeAoE.DisplayName: Godlike Ao E
-DefenseAoE.DisplayName: Defense Ao E
-HasteAoE.DisplayName: Haste Ao E
-RestorationAoE.DisplayName: Restoration Ao E
+ShrineAoE.DisplayName: Shrine Shrine
+UnstoppableAoE.DisplayName: Unstoppable Shrine
+GodlikeAoE.DisplayName: Godlike Shrine
+DefenseAoE.DisplayName: Defense Shrine
+HasteAoE.DisplayName: Haste Shrine
+RestorationAoE.DisplayName: Restoration Shrine

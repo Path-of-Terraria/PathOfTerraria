@@ -34,7 +34,6 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 
 	private static bool LeftSpawn = false;
 	private static Point BossSpawnLocation = Point.Zero;
-	private static bool HasShrine = false;
 
 	public override int Width => 1200 + 120 * Main.rand.Next(10);
 	public override int Height => 290;
@@ -158,7 +157,7 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 		string path = $"Assets/Structures/MapAreas/ForestArea/{type}_{WorldGen.genRand.Next(max)}";
 		bool isShrine = false;
 
-		if (HasShrine && type != StructureKind.Arena && type != StructureKind.Cave)
+		if (WorldGen.genRand.NextBool(5) && type != StructureKind.Arena && type != StructureKind.Cave)
 		{
 			path = $"Assets/Structures/MapAreas/ForestArea/SpecialShrine_{WorldGen.genRand.Next(5)}";
 			isShrine = true;
@@ -174,11 +173,6 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 
 			structures.Add(type);
 			GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 10);
-
-			if (isShrine)
-			{
-				HasShrine = false;
-			}
 
 			for (int i = pos.X; i < pos.X + size.X; ++i)
 			{
@@ -263,7 +257,7 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 		}
 
 		GenerationUtilities.ManuallyPopulateChests();
-		GenerationUtilities.PopulateShrines();
+		ShrineFunctionality.PopulateShrines();
 
 		int grassIndex = 0;
 
@@ -413,7 +407,6 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 
 		LeftSpawn = Main.rand.NextBool(2);
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
-		HasShrine = WorldGen.genRand.NextBool(5);
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.2f);

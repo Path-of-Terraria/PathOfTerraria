@@ -26,7 +26,6 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 	private static bool LeftSpawn = false;
 	private static Point BossSpawnLocation = Point.Zero;
 	private static int SandstormTimer = 0;
-	private static bool HasShrine = false;
 
 	public override int Width => 2000 + 120 * Main.rand.Next(5);
 	public override int Height => 600;
@@ -100,7 +99,6 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
-		HasShrine = WorldGen.genRand.NextBool(1);
 		SpawnStructures();
 
 		for (int i = 20; i < Main.maxTilesX - 20; ++i)
@@ -118,7 +116,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 		progress.Set(0);
 		GenerationUtilities.ManuallyPopulateChests();
-		GenerationUtilities.PopulateShrines();
+		ShrineFunctionality.PopulateShrines();
 
 		progress.Set(0.33f);
 		DecorateSand();
@@ -529,6 +527,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		// Oasis
 		count = 2;
 		int reps = 0;
+		bool hasShrine = WorldGen.genRand.NextBool(ShrineFunctionality.ShrineDenominator);
 
 		while (count > 0)
 		{
@@ -543,10 +542,10 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			string structurePath = "Assets/Structures/MapAreas/DesertArea/Oasis_" + WorldGen.genRand.Next(3);
 			bool isShrine = false;
 
-			if (HasShrine)
+			if (hasShrine)
 			{
 				isShrine = true;
-				structurePath = "Assets/Structures/MapAreas/DesertArea/Shrine_" + (WorldGen.genRand.Next(1) + 4);
+				structurePath = "Assets/Structures/MapAreas/DesertArea/Shrine_" + WorldGen.genRand.Next(5);
 			}
 
 			Point16 structureSize = StructureTools.GetSize(structurePath);
@@ -563,7 +562,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 			if (isShrine)
 			{
-				HasShrine = false;
+				hasShrine = false;
 			}
 		}
 	}
