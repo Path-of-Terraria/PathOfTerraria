@@ -169,7 +169,7 @@ internal class TutorialUIState : UIState
 		plr.GetModPlayer<TutorialPlayer>().TutorialStep = (byte)Step;
 		StoredStep = Step;
 
-		if (Step == 1 && !FromLoad)
+		if (Step == 1 && !FromLoad && plr.GetModPlayer<ExpModPlayer>().Level <= 0)
 		{
 			plr.GetModPlayer<ExpModPlayer>().Exp += plr.GetModPlayer<ExpModPlayer>().NextLevel + 1;
 		}
