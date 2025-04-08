@@ -30,6 +30,9 @@ internal class TutorialPlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
+		TutorialUIState.StoredStep = TutorialStep - 1;
+		TutorialUIState.FromLoad = true;
+
 		if (!CompletedTutorial)
 		{
 			UIManager.Register("Tutorial UI", "Vanilla: Player Chat", new TutorialUIState());
@@ -47,7 +50,5 @@ internal class TutorialPlayer : ModPlayer
 		TutorialChecks.Clear();
 		TutorialChecks = new HashSet<TutorialCheck>(tag.GetByteArray("checks").Select(x => (TutorialCheck)x));
 		TutorialStep = tag.GetByte("step");
-
-		TutorialUIState.StoredStep = TutorialStep;
 	}
 }

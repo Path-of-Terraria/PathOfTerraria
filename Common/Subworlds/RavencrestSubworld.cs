@@ -3,11 +3,13 @@ using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
+using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -23,7 +25,7 @@ internal class RavencrestSubworld : MappingWorld
 	public override int[] WhitelistedMiningTiles => [TileID.Tombstones];
 	public override int[] WhitelistedPlaceableTiles => [TileID.Tombstones];
 
-	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), 
+	public override List<GenPass> Tasks => [new FlatWorldPass(145, true, null, TileID.Dirt, WallID.Dirt), 
 		new PassLegacy("World", SpawnWorld), new PassLegacy("Smooth", SmoothPass)];
 
 	private void SmoothPass(GenerationProgress progress, GameConfiguration configuration)
@@ -75,7 +77,9 @@ internal class RavencrestSubworld : MappingWorld
 		Main.spawnTileX = 398;
 		Main.spawnTileY = 181;
 
-		WorldFile.LoadWorld_Version2(new BinaryReader(new MemoryStream(PoTMod.Instance.GetFileBytes("Assets/Structures/Worlds/RavencrestSubworld.wld"))));
+		//WorldFile.LoadWorld_Version2(new BinaryReader(new MemoryStream(PoTMod.Instance.GetFileBytes("Assets/Structures/Worlds/RavencrestSubworld.wld"))));
+
+		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 22), Vector2.Zero);
 
 		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{

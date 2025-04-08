@@ -28,7 +28,7 @@ internal class SimpleCompass : ModItem
 		{
 			Vector2 dir = drawInfo.Center.DirectionTo(ModContent.GetInstance<DeerclopsSystem>().AntlerLocation.ToWorldCoordinates());
 
-			Main.spriteBatch.Draw(_arrowTex.Value, drawInfo.Center - Main.screenPosition + dir * 40, null, Color.White,
+			Main.spriteBatch.Draw(_arrowTex.Value, drawInfo.Center - Main.screenPosition + dir * 38, null, Color.White,
 				dir.ToRotation() + MathHelper.PiOver2, new Vector2(11, 38), 1f, SpriteEffects.None, 0);
 		}
 	}

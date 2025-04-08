@@ -24,7 +24,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [AutoloadHead]
 public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => new(319, 163);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => new(319, 144);
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	public override void SetStaticDefaults()

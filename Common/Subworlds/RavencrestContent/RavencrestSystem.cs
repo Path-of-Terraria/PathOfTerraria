@@ -38,31 +38,31 @@ public class RavencrestSystem : ModSystem
 		structures.Add("Lodge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Lodge_",
-			Position = new Point(259, 134),
+			Position = new Point(259, 115),
 		});
 
 		structures.Add("Forge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Forge_",
-			Position = new Point(195, 148)
+			Position = new Point(195, 129)
 		});
 
 		structures.Add("Burrow", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
-			Position = new Point(943, 173)
+			Position = new Point(943, 154)
 		});
     
 		structures.Add("Observatory", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
-			Position = new Point(107, 161)
+			Position = new Point(107, 142)
 		});
 
 		structures.Add("Library", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Library_",
-			Position = new Point(747, 138)
+			Position = new Point(747, 119)
 		});
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;
@@ -112,7 +112,7 @@ public class RavencrestSystem : ModSystem
 			}
 
 			ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
-			ModContent.GetInstance<TavernManager>().OneTimeCheck();
+			TavernManager.OneTimeCheck();
 
 			OneTimeCheckDone = true;
 		}
