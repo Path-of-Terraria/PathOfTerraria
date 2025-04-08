@@ -607,7 +607,7 @@ CorruptShard: {
 	Tooltip:
 		'''
 		Chaotic and unstable
-		Has a chance to add in an additional affix and corrupt any item, disabling any future item interactions
+		Has a chance to add an additional affix and corrupt any item, disabling any future item interactions
 		Has a chance to reduce Uniques into Rare items of the same kind, rerolling them at the same level
 		Has a large chance to do nothing
 		'Pulses with malaise'
@@ -679,9 +679,9 @@ EchoingShard: {
 	DisplayName: Echoing Shard
 	Tooltip:
 		'''
-		  	Creates a clone of an item
-		  	Hold an item then right click this Shard to clone
-		  	'I can see myself!'
+		Creates a clone of an item
+		Hold an item then right click this Shard to clone
+		'I can see myself!'
 		'''
 }
 
