@@ -27,6 +27,7 @@ public class ItemAffixData
 	public string AffixType { get; set; }
 	public string EquipTypes { get; set; }
 	public string Influences { get; set; }
+	public bool Round { get; set; }
 	public List<TierData> Tiers { get; set; }
 
 	public TierData GetAppropriateTierData(int level, out int tierNumber)
