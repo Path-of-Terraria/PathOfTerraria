@@ -169,11 +169,6 @@ MapDevice: {
 	Tooltip: Used to travel through maps
 }
 
-MapDeviceOn: {
-	DisplayName: Map Device On
-	Tooltip: ""
-}
-
 WoodenBow: {
 	DisplayName: Wooden Bow
 	Tooltip: ""
