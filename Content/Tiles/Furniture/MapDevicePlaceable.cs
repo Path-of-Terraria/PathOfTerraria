@@ -37,22 +37,21 @@ public class MapDevicePlaceable : ModTile
 		TileID.Sets.InteractibleByNPCs[Type] = true;
 		
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
+		TileObjectData.newTile.Width = 5;
 		TileObjectData.newTile.Height = 5;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<MapDeviceEntity>().Hook_AfterPlacement, -1, 0, false);
 		TileObjectData.newTile.LavaDeath = false;
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
-		TileObjectData.newTile.StyleHorizontal = false;
-		TileObjectData.newTile.StyleWrapLimitVisualOverride = 2;
-		TileObjectData.newTile.StyleMultiplier = 2;
-		TileObjectData.newTile.StyleWrapLimit = 2;
-		TileObjectData.newTile.styleLineSkipVisualOverride = 0;
+		TileObjectData.newTile.StyleHorizontal = true;
+		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
+		RegisterItemDrop(ModContent.ItemType<MapDevice>());
 		AddMapEntry(new Color(233, 207, 94), Language.GetText("MapObject.MapDevice"));
 	}
 
@@ -99,7 +98,7 @@ public class MapDevicePlaceable : ModTile
 		int frameY = tile.TileFrameX / FrameWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
-		Vector2 worldPos = p.ToWorldCoordinates(24f, 64f);
+		Vector2 worldPos = p.ToWorldCoordinates(40f, 64f);
 		Color color = Lighting.GetColor(p.X, p.Y);
 		bool direction =
 			tile.TileFrameY / FrameHeight != 0; // This is related to the alternate tile data we registered before
@@ -114,11 +113,11 @@ public class MapDevicePlaceable : ModTile
 		{
 			float rotation = Main.GlobalTimeWrappedHourly * 7f * (k % 2 == 0 ? -1 : 1);
 			Color drawColor = color * (1 - k * 0.2f);
-			spriteBatch.Draw(texture, drawPos, frame, drawColor with { A = 150 }, rotation, origin, 1f - k * 0.2f, effects, 0f);
+			spriteBatch.Draw(texture, drawPos, frame, drawColor with { A = 150 }, rotation, origin, 1.3f - k * 0.2f, effects, 0f);
 		}
 
 		Texture2D itemTex = TextureAssets.Item[entity.StoredMap.type].Value;
-		spriteBatch.Draw(itemTex, drawPos, null, Color.White * 0.95f, 0f, itemTex.Size() / 2f, 0.5f, effects, 0f);
+		spriteBatch.Draw(itemTex, drawPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
 
 		// Draw the periodic glow effect
 		float scale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 2f) * 0.3f + 0.7f;
