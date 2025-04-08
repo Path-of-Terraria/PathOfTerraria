@@ -13,6 +13,14 @@ internal class PlayerStatUIState : CloseableSmartUi
 
 	private PlayerStatInnerPanel statPanel = null;
 
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		if (!Main.playerInventory)
+		{
+			Toggle();
+		}
+	}
+
 	public void Toggle()
 	{
 		if (IsVisible)
