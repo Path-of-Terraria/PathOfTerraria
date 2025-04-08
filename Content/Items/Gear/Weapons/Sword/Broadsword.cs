@@ -11,5 +11,6 @@ internal class Broadsword : Sword
 		Item.damage = 15;
 		Item.useTime = 60;
 		Item.useAnimation = 65;
+		Item.useTurn = true;
 	}
 }

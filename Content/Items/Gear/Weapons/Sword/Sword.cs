@@ -37,6 +37,7 @@ internal abstract class Sword : Gear
 		Item.crit = 6;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.PurificationPowder;
+		Item.useTurn = true;
 		Item.shootSpeed = 10f;
 
 		PoTInstanceItemData data = this.GetInstanceData();
