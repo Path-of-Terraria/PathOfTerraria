@@ -143,17 +143,14 @@ public class MapDevicePlaceable : ModTile
 
 	public override void MouseOver(int i, int j)
 	{
-		if (TryGetEntity(ref i, ref j, out MapDeviceEntity entity))
-		{
-			Player player = Main.LocalPlayer;
-			player.noThrow = 2;
-			player.cursorItemIconEnabled = true;
-			player.cursorItemIconID = ModContent.ItemType<MapDevice>();
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = ModContent.ItemType<MapDevice>();
 
-			if (entity.StoredMap != null)
-			{
-				player.cursorItemIconID = entity.StoredMap.type;
-			}
+		if (TryGetEntity(ref i, ref j, out MapDeviceEntity entity) && entity.StoredMap != null)
+		{ 
+			player.cursorItemIconID = entity.StoredMap.type;
 		}
 	}
 
