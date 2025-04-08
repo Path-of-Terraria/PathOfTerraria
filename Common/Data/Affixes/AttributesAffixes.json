@@ -2,6 +2,7 @@
 	{
 		"affixType": "DexterityItemAffix",
 		"equipTypes": "AllNoMap",
+		"round": true,
 		"tiers": [
 			{
 				"minValue": 3,
@@ -44,6 +45,7 @@
 	{
 		"affixType": "StrengthItemAffix",
 		"equipTypes": "AllNoMap",
+		"round": true,
 		"tiers": [
 			{
 				"minValue": 3,
@@ -86,6 +88,7 @@
 	{
 		"affixType": "IntelligenceItemAffix",
 		"equipTypes": "AllNoMap",
+		"round": true,
 		"tiers": [
 			{
 				"minValue": 3,
