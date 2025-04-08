@@ -118,7 +118,7 @@ internal class TutorialUIState : UIState
 		{
 			IncrementStep();
 		}
-		else if (Step == 3 && SmartUiLoader.GetUiState<TreeState>().Visible && SmartUiLoader.GetUiState<TreeState>().Panel.ActiveTab == "SkillTree")
+		else if (Step == 3 && SmartUiLoader.GetUiState<TreeState>().Visible && SmartUiLoader.GetUiState<TreeState>().TabPanel.ActiveTab == "SkillTree")
 		{
 			IncrementStep();
 		}

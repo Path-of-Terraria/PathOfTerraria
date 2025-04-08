@@ -8,34 +8,20 @@ public class UICloseablePanel : UIPanel
 {
 	private bool[] _scaling = [false, false];
 
-	private readonly Vector2 _minSize = new(400f, 400f);
-
-	private readonly bool _stopItemUse;
-
-	private int _uiDelay = -1;
-
-	private readonly UIPanel _header;
-	private readonly bool _canResize = true;
 
 	public bool Blocked = true;
 	public bool Visible = true;
 
-	protected override void DrawSelf(SpriteBatch spriteBatch)
-	{
-		if (!Visible)
-		{
-			return;
-		}
+	protected int UiDelay = -1;
+	protected bool StopItemUse;
+	protected Vector2 MinSize = new(400f, 400f);
 
-		base.DrawSelf(spriteBatch);
-#if DEBUG
-		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Blue);
-#endif
-	}
+	private readonly UIPanel _header;
+	private readonly bool _canResize = true;
 
 	public UICloseablePanel(bool stopItemUse, bool showCloseButton, bool canResize, bool invisible)
 	{
-		_stopItemUse = stopItemUse;
+		StopItemUse = stopItemUse;
 
 		SetPadding(0);
 
@@ -62,8 +48,21 @@ public class UICloseablePanel : UIPanel
 
 		float left = 0;
 
-		_minSize.X = Math.Max(_minSize.X, left);
+		MinSize.X = Math.Max(MinSize.X, left);
 		_canResize = canResize;
+	}
+
+	protected override void DrawSelf(SpriteBatch spriteBatch)
+	{
+		if (!Visible)
+		{
+			return;
+		}
+
+		base.DrawSelf(spriteBatch);
+#if DEBUG
+		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Blue);
+#endif
 	}
 
 	public override void RightMouseDown(UIMouseEvent evt)
@@ -98,13 +97,13 @@ public class UICloseablePanel : UIPanel
 	
 	public override void Update(GameTime gameTime)
 	{
-		if (_uiDelay > 0)
+		if (UiDelay > 0)
 		{
-			_uiDelay--;
+			UiDelay--;
 		}
 
 		// clicks on this UIElement dont cause the player to use current items. 
-		if (ContainsPoint(Main.MouseScreen) && _stopItemUse)
+		if (ContainsPoint(Main.MouseScreen) && StopItemUse)
 		{
 			Main.LocalPlayer.mouseInterface = true;
 		}
