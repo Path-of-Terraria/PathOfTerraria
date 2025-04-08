@@ -1,8 +1,5 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Core.UI.SmartUI;
-using Terraria.Audio;
-using Terraria.GameContent.UI.Elements;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
@@ -10,9 +7,10 @@ namespace PathOfTerraria.Common.UI.Utilities;
 
 public abstract class TabsUiState : CloseableSmartUi
 {
-	public UITabsPanel Panel;
-	public UIImageButton CloseButton;
-	public bool IsVisible;
+	/// <summary>
+	/// Shorthand for <c>Panel as UITabsPanel</c>.
+	/// </summary>
+	public UITabsPanel TabPanel => Panel as UITabsPanel;
 
 	protected override int PointsAndExitPadding => 10;
 
@@ -36,7 +34,7 @@ public abstract class TabsUiState : CloseableSmartUi
 		panelSize ??= new Point(PanelWidth, PanelHeight);
 
 		Panel = new UITabsPanel(false, false, tabs, DraggablePanelHeight);
-		Panel.OnActiveTabChanged += HandleActiveTabChanged;
+		TabPanel.OnActiveTabChanged += HandleActiveTabChanged;
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
 		Panel.Width.Set(panelSize.Value.X, 0);
@@ -66,7 +64,7 @@ public abstract class TabsUiState : CloseableSmartUi
 	{
 		foreach (SmartUiElement tabPanel in TabPanels)
 		{
-			if (tabPanel.TabName != Panel.ActiveTab)
+			if (tabPanel.TabName != TabPanel.ActiveTab)
 			{
 				tabPanel.Remove();
 				continue;

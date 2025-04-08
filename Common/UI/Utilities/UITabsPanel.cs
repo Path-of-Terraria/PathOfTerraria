@@ -9,12 +9,8 @@ using Terraria.UI;
 namespace PathOfTerraria.Common.UI.Utilities;
 
 // ReSharper disable once InconsistentNaming
-public class UITabsPanel : UIPanel
+public class UITabsPanel : UICloseablePanel
 {
-	private readonly Vector2 _minSize = new(400f, 400f);
-
-	private readonly bool _stopItemUse;
-
 	private int _uiDelay = -1;
 
 	private readonly UIPanel _header;
@@ -22,11 +18,10 @@ public class UITabsPanel : UIPanel
 	public string ActiveTab = "";
 	public event Action OnActiveTabChanged;
 
-	public bool Blocked = true;
-
 	public UITabsPanel(bool stopItemUse, bool showCloseButton, IEnumerable<(string key, LocalizedText text)> menuOptions, int panelHeight)
+		: base(stopItemUse, showCloseButton, false, false)
 	{
-		_stopItemUse = stopItemUse;
+		StopItemUse = stopItemUse;
 
 		SetPadding(0);
 
@@ -79,7 +74,7 @@ public class UITabsPanel : UIPanel
 			_header.Append(menu);
 		}
 
-		_minSize.X = Math.Max(_minSize.X, left);
+		MinSize.X = Math.Max(MinSize.X, left);
 
 		SetActivePage(_menus.Keys.First());
 	}
@@ -146,7 +141,7 @@ public class UITabsPanel : UIPanel
 		}
 
 		// clicks on this UIElement dont cause the player to use current items. 
-		if (ContainsPoint(Main.MouseScreen) && _stopItemUse)
+		if (ContainsPoint(Main.MouseScreen) && StopItemUse)
 		{
 			Main.LocalPlayer.mouseInterface = true;
 		}

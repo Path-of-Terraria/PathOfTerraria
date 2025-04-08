@@ -128,13 +128,14 @@ internal class TreeState : TabsUiState
 		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) +
 		                         tex.Size() / 2;
 
-		int points = Panel.ActiveTab switch
+		int points = TabPanel.ActiveTab switch
 		{
 			"PassiveTree" => passiveTreePlayer.Points,
 			"SkillTree" => skillCombatPlayer.Points,
 			_ => 0
 		};
-		if (Panel.ActiveTab != "PassiveTree") //Temp to only draw for passive tree
+
+		if (TabPanel.ActiveTab != "PassiveTree") //Temp to only draw for passive tree
 		{
 			return;
 		}
