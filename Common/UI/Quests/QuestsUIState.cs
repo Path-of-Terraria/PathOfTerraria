@@ -21,7 +21,8 @@ public class QuestsUIState : CloseableSmartUi
 	protected override int LeftPadding => 0;
 	protected override int PanelWidth => 750;
 	protected override bool IsCentered => true;
-	
+	public override int DepthPriority => 3;
+
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
@@ -35,7 +36,13 @@ public class QuestsUIState : CloseableSmartUi
 #endif
 	}
 
-	public override int DepthPriority => 3;
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		if (!Main.playerInventory)
+		{
+			Toggle();
+		}
+	}
 
 	public void Toggle()
 	{

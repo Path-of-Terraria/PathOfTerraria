@@ -37,6 +37,15 @@ internal class TreeState : TabsUiState
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		if (Panel is not null)
+		{
+			Panel.Left = StyleDimension.FromPixels(ShrinkX);
+			Panel.Top = StyleDimension.FromPixels(ShrinkY);
+		}
+	}
+
 	public void Toggle()
 	{
 		if (IsVisible)
@@ -78,7 +87,6 @@ internal class TreeState : TabsUiState
 		Panel.Append(CloseButton);
 	}
 
-
 	private void ResetTree()
 	{
 		_passiveTreeInner.RemoveAllChildren();
@@ -108,15 +116,6 @@ internal class TreeState : TabsUiState
 			Main.isMouseLeftConsumedByUI = true;
 			Main.LocalPlayer.mouseInterface = true;
 			Main.mouseText = false;
-		}
-	}
-
-	public override void SafeUpdate(GameTime gameTime)
-	{
-		if (Panel is not null)
-		{
-			Panel.Left = StyleDimension.FromPixels(ShrinkX);
-			Panel.Top = StyleDimension.FromPixels(ShrinkY);
 		}
 	}
 
@@ -152,11 +151,8 @@ internal class TreeState : TabsUiState
 			{
 				if (Player.controlInv && Player.releaseInventory)
 				{
-					SmartUiLoader.GetUiState<TreeState>().DefaultClose();
+					SmartUiLoader.GetUiState<TreeState>().Toggle();
 				}
-
-				Player.controlInv = false;
-				Player.releaseInventory = false;
 			}
 		}
 	}

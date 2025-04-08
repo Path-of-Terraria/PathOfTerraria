@@ -34,6 +34,7 @@ internal abstract class Battleaxe : Gear
 		Item.knockBack = 8;
 		Item.crit = 12;
 		Item.UseSound = SoundID.Item1;
+		Item.useTurn = true;
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Battleaxe;

@@ -116,8 +116,11 @@ partial class PoTGlobalItem
 		base.ModifyTooltips(item, tooltips);
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
+
 		TooltipLine setBonusLine = tooltips.FirstOrDefault(x => x.Name == "SetBonus");
 		TooltipLine nameLine = tooltips.FirstOrDefault(x => x.Name == "ItemName");
+		TooltipLine priceLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Price");
+		TooltipLine materialLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Material");
 
 		if (setBonusLine is not null)
 		{
@@ -253,6 +256,16 @@ partial class PoTGlobalItem
 		AffixTooltipsHandler.DefaultColor = Color.White; // Resets color
 
 		tooltips.AddRange(oldTooltips);
+
+		if (materialLine is not null)
+		{
+			tooltips.Add(materialLine);
+		}
+		
+		if (priceLine is not null)
+		{
+			tooltips.Add(priceLine);
+		}
 	}
 
 	private static string HighlightNumbers(string input, string numColor = "CCCCFF", string baseColor = "A0A0A0")
