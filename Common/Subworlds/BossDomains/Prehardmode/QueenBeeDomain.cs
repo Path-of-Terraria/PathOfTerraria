@@ -19,7 +19,7 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 public class QueenBeeDomain : BossDomainSubworld
 {
 	public override int Width => 800;
-	public override int Height => 800;
+	public override int Height => 1600;
 	public override int[] WhitelistedCutTiles => [TileID.BeeHive, TileID.JungleVines, ModContent.TileType<RoyalHoneyClumpTile>()];
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<RoyalHoneyClumpTile>()];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
@@ -113,7 +113,7 @@ public class QueenBeeDomain : BossDomainSubworld
 	private void GenTiles(GenerationProgress progress, GameConfiguration configuration)
 	{
 		Main.spawnTileX = Width / 2;
-		Main.spawnTileY = Height / 4 - 20;
+		Main.spawnTileY = (int)(Main.rockLayer + 20); // Puts the player below rockLayer
 		Main.worldSurface = 230;
 		Main.rockLayer = 299;
 
@@ -131,8 +131,8 @@ public class QueenBeeDomain : BossDomainSubworld
 
 			progress.Value = (float)x / Main.maxTilesX;
 		}
-
-		StructureTools.PlaceByOrigin("Assets/Structures/BeeDomain/Arena_" + WorldGen.genRand.Next(2), new Point16(Width / 2, Height / 4), new(0.5f));
+		
+		StructureTools.PlaceByOrigin("Assets/Structures/BeeDomain/Arena_" + WorldGen.genRand.Next(2), new Point16(Width / 2, Main.spawnTileY), new(0.5f));
 
 		// Replace hive with unsafe hive wall so it's not destroyed by the tunnel
 		for (int i = 1; i < Width - 1; ++i)
@@ -148,16 +148,16 @@ public class QueenBeeDomain : BossDomainSubworld
 			}
 		}
 
-		DigTunnel(Width / 4, Height / 4 - WorldGen.genRand.Next(-40, 40), true);
-		DigTunnel((int)(Width * 0.75f), Height / 4 - WorldGen.genRand.Next(-40, 40), false);
+		DigTunnel(Width / 4, Main.spawnTileY - WorldGen.genRand.Next(-40, 40), true);
+		DigTunnel((int)(Width * 0.75f), Main.spawnTileY - WorldGen.genRand.Next(-40, 40), false);
 	}
 
 	private void DigTunnel(int x, int y, bool left)
 	{
 		var original = new Point16(x, y);
 
-		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Height / 4), 0.7f)
-			+ new Vector2(WorldGen.genRand.Next(-2, 3), WorldGen.genRand.Next(-2, 3)), new(Width / 2, Height / 4)], 6, 4);
+		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Main.spawnTileY), 0.7f)
+			+ new Vector2(WorldGen.genRand.Next(-2, 3), WorldGen.genRand.Next(-2, 3)), new(Width / 2, Main.spawnTileY)], 6, 4);
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		int breakTime = -1;
@@ -214,7 +214,7 @@ public class QueenBeeDomain : BossDomainSubworld
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.QueenBee) && !ReadyToExit)
 		{
-			Vector2 pos = new Vector2(Width / 2, Height / 4 - 8) * 16;
+			Vector2 pos = new Vector2(Width / 2, Main.spawnTileY - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.CachedBossesDowned.Add(NPCID.QueenBee);
@@ -229,6 +229,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			if (SubworldSystem.Current is QueenBeeDomain)
 			{
 				Player.ZoneJungle = true;
+				Player.ZoneHive = true;
 			}
 		}
 	}
