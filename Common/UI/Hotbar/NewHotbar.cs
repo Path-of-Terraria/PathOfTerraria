@@ -26,10 +26,11 @@ internal sealed class NewHotbar : SmartUiState
 	{
 		public override bool PreDraw(SpriteBatch spriteBatch, int type, int buffIndex, ref BuffDrawParams drawParams)
 		{
-			// TODO: Make constant when a good value is found.
-			int buffPositionOffsetY = 20;
-			drawParams.Position = new Vector2(drawParams.Position.X, drawParams.Position.Y + buffPositionOffsetY);
-			drawParams.MouseRectangle.Y += buffPositionOffsetY;
+			const int Offset = 24;
+
+			drawParams.Position = new Vector2(drawParams.Position.X, drawParams.Position.Y + Offset);
+			drawParams.MouseRectangle.Y += Offset;
+			drawParams.TextPosition.Y += Offset;
 			return true;
 		}
 	}
