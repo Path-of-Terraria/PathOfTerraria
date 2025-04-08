@@ -26,10 +26,11 @@ public abstract class BaseShrine : ModTile
 
 		TileID.Sets.HasOutlines[Type] = true;
 
+		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
+
 		ShrineTileEntity tileEntity = ModContent.GetInstance<ShrineTileEntity>();
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(tileEntity.Hook_AfterPlacement, -1, 0, false);
 
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.CoordinateHeights = [16, 18];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.StyleWrapLimit = 3;
