@@ -166,12 +166,7 @@ WoodenSword: {
 
 MapDevice: {
 	DisplayName: Map Device
-	Tooltip: ""
-}
-
-MapDeviceOn: {
-	DisplayName: Map Device On
-	Tooltip: ""
+	Tooltip: Used to travel through maps
 }
 
 WoodenBow: {
