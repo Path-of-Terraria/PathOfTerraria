@@ -1,9 +1,10 @@
 ﻿using PathOfTerraria.Core.Graphics.Filters;
+using PathOfTerraria.Core.Graphics.Particles;
 using ReLogic.Content;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
 
-public sealed class SunDevourerSceneEffect : ModSceneEffect
+public sealed class SunDevourerScene : ModSceneEffect
 {
 	/// <summary>
 	///		Gets or sets the strength of the vignette effect.
@@ -27,9 +28,14 @@ public sealed class SunDevourerSceneEffect : ModSceneEffect
 			shader.Parameters["curvature"].SetValue(0.5f * Strength);
 			shader.Parameters["innerRadius"].SetValue(0.5f * Strength);
 			shader.Parameters["outerRadius"].SetValue(1.2f * Strength);
+			
+			var position = Main.screenPosition + new Vector2(Main.rand.Next(0, Main.screenWidth), Main.rand.Next(0, Main.screenHeight));
+        
+			ParticleSystem.Create(new SunDevourerParticle(position));
 		}
 
 		player.ManageSpecialBiomeVisuals($"{PoTMod.ModName}:Vignette", isActive);
+		player.ManageSpecialBiomeVisuals(SunDevourerFilter.FILTER_NAME, isActive);
 	}
 
 	public override bool IsSceneEffectActive(Player player)
