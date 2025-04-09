@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Enums;
 using Terraria.DataStructures;
 using Terraria.ID;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using static AssGen.Assets;
 
 namespace PathOfTerraria.Common.ItemDropping;
 
@@ -154,12 +155,10 @@ internal class ItemSpawner
 	/// Used by the SpawnMap command. This seems useless, but I've ported it if only for posterity.
 	/// </summary>
 	/// <param name="pos"></param>
-	public static void SpawnMap<T>(Vector2 pos, int tier) where T : Map
+	public static void SpawnMap(Vector2 pos, int tier)
 	{
-		var item = new Item();
-		item.SetDefaults(ModContent.ItemType<T>());
-		//(item.ModItem as Map).Tier = tier;
+		int type = DropTable.RollMobDrops(tier, 0, 0, 0, 1).Item.type;
 
-		Item.NewItem(null, pos, Vector2.Zero, item);
+		SpawnItem(type, pos, tier);
 	}
 }
