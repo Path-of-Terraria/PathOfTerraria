@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
+
 internal class UniversalBuffingPlayer : ModPlayer
 {
 	public EntityModifier UniversalModifier;
@@ -11,9 +12,11 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 	public override void PostUpdateEquips()
 	{
-		if (!Player.inventory[0].IsAir)
+		int mainItem = Main.mouseItem.IsAir ? 0 : 58;
+
+		if (!Player.inventory[mainItem].IsAir)
 		{
-			PoTItemHelper.ApplyAffixes(Player.inventory[0], UniversalModifier, Player);
+			PoTItemHelper.ApplyAffixes(Player.inventory[mainItem], UniversalModifier, Player);
 		}
 
 		UniversalModifier.ApplyTo(Player);
