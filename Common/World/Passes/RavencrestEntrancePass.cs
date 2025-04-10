@@ -43,18 +43,17 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/RavencrestEntrance", mod);
 		RavencrestMicrobiome biome = GenVars.configuration.CreateBiome<RavencrestMicrobiome>();
-		bool generated = false;
 		int attempts = 0;
 
-		while (!generated)
+		while (true)
 		{
 			attempts++;
 
 			int x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
 			int y = (int)(Main.worldSurface * 0.35f);
 			
-			// Place the entrance at least 150 tiles away from the center of the world.
-			if (Math.Abs(x - Main.spawnTileX) <= 150)
+			// Place the entrance at least 180 tiles away from spawn.
+			if (Math.Abs(x - Main.spawnTileX) <= 180)
 			{
 				continue;
 			}
@@ -62,7 +61,9 @@ internal class RavencrestEntrancePass : AutoGenStep
 			// Find the first suitable surface tile.
 			while (true)
 			{
-				while (!WorldGen.SolidTile(x, y++)) { }
+				while (!WorldGen.SolidTile(x, y++) && WorldGen.InWorld(x, y, 20)) 
+				{ 
+				}
 
 				Tile tile = Framing.GetTileSafely(x, y);
 				
@@ -71,8 +72,11 @@ internal class RavencrestEntrancePass : AutoGenStep
 					break;
 				}
 
-				x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
-				y = 0;
+				do
+				{
+					x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
+					y = 0;
+				} while (Math.Abs(x - Main.spawnTileX) <= 180);
 			}
 
 			if (attempts < 2000 && !AvoidsEvilPath((short)x)) //Include an additional 'attempts' failsafe
@@ -86,15 +90,15 @@ internal class RavencrestEntrancePass : AutoGenStep
 			// TODO: Should this check for valid/invalid tiles, if it's meant for calculating average heights? - Naka
 			int averageHeight = StructureTools.AverageHeights(x, y, 76, 4, 30, out bool valid, invalidTiles, validTiles);
 
-			if (averageHeight == -1 || Math.Abs(averageHeight) >= 5) 
+			if (averageHeight == -1 || Math.Abs(averageHeight) >= 7) 
 			{
 				continue;
 			}
 			
 			Point origin = new(x, y);
 
-			Dictionary<ushort, int> whitelistLookup = new();
-			Dictionary<ushort, int> blacklistLookup = new();
+			Dictionary<ushort, int> whitelistLookup = [];
+			Dictionary<ushort, int> blacklistLookup = [];
 
 			// Check if the terrain is mostly dirt, and if there's no invalid tiles.
 			WorldUtils.Gen(origin, new Shapes.Rectangle(size.X, size.Y), new Actions.TileScanner(TileID.Dirt).Output(whitelistLookup));
@@ -129,7 +133,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 			int area = size.X * size.Y;
 
 			// Check if the scanned area is full of valid tiles for a solid base, and if there's less than a quarter of invalid tiles.
-			if (whitelistLookup.Values.Sum() >= area || blacklistLookup.Values.Sum() <= area / 4)
+			if (blacklistLookup.Values.Sum() >= area || whitelistLookup.Values.Sum() <= area / 4)
 			{
 				continue;
 			}
@@ -165,11 +169,11 @@ internal class RavencrestEntrancePass : AutoGenStep
 			{
 				continue;
 			}
-			
+
 			HashSet<Point16> tiles = FitBase((short)origin.X, origin.Y + size.Y - 1, size.X);
-			
+
 			CleanBase(tiles);
-			
+
 			// Fills up small dirt blotches to make the structure naturally blend in, alongside the previously generated base.
 			for (int i = 0; i < size.X; i++)
 			{
@@ -187,8 +191,6 @@ internal class RavencrestEntrancePass : AutoGenStep
 				WorldGen.TileRunner(origin.X - 10 + i, bottom + strength * 2, strength, steps, type, true);
 				WorldGen.TileRunner(origin.X + size.X + 10 - i, bottom + strength * 2, strength, steps, type, true);
 			}
-
-			generated = true;
 
 			break;
 		}
@@ -287,6 +289,9 @@ internal class RavencrestEntrancePass : AutoGenStep
 			}
 
 			WorldGen.SquareTileFrame(pos.X, pos.Y, true);
+
+			tile.Slope = SlopeType.Solid;
+			Tile.SmoothSlope(pos.X, pos.Y, true);
 		}
 	}
 
@@ -325,6 +330,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 				WorldGen.SlopeTile(i, newY, 0, true);
 				tiles.Add(new Point16(i, newY));
+				tiles.Add(new Point16(i, newY + 1));
 			}
 		}
 
