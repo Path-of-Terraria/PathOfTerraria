@@ -15,9 +15,24 @@ public class UICloseablePanel : UIPanel
 	protected int UiDelay = -1;
 	protected bool StopItemUse;
 	protected Vector2 MinSize = new(400f, 400f);
-
-	private readonly UIPanel _header;
+	protected UIPanel Header;
+	
 	private readonly bool _canResize = true;
+
+	public UICloseablePanel(bool stopItemUse, bool showCloseButton)
+	{
+		StopItemUse = stopItemUse;
+
+		if (showCloseButton)
+		{
+			var closeButton = new UITextPanel<char>('X');
+			closeButton.SetPadding(7);
+			closeButton.Width.Set(40, 0);
+			closeButton.Left.Set(-40, 1);
+			closeButton.BackgroundColor.A = 255;
+			Header.Append(closeButton);
+		}
+	}
 
 	public UICloseablePanel(bool stopItemUse, bool showCloseButton, bool canResize, bool invisible)
 	{
@@ -25,15 +40,15 @@ public class UICloseablePanel : UIPanel
 
 		SetPadding(0);
 
-		_header = new UIPanel();
-		_header.SetPadding(0);
-		_header.Width.Set(0, 0f);
-		_header.Height.Set(0, 0f);
-		_header.BackgroundColor.A = 255;
+		Header = new UIPanel();
+		Header.SetPadding(0);
+		Header.Width.Set(0, 0f);
+		Header.Height.Set(0, 0f);
+		Header.BackgroundColor.A = 255;
 
 		if (!invisible)
 		{
-			Append(_header);
+			Append(Header);
 		}
 
 		if (showCloseButton)
@@ -43,7 +58,7 @@ public class UICloseablePanel : UIPanel
 			closeButton.Width.Set(40, 0);
 			closeButton.Left.Set(-40, 1);
 			closeButton.BackgroundColor.A = 255;
-			_header.Append(closeButton);
+			Header.Append(closeButton);
 		}
 
 		float left = 0;
