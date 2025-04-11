@@ -27,7 +27,7 @@ public class RavencrestMicrobiome : MicroBiome
 		
 		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), mod);
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
-		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X + size.X / 2, origin.Y + size.Y / 2);
+		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X + size.X / 2, origin.Y + size.Y / 2 - 6);
 
 		return true;
 	}
@@ -49,18 +49,18 @@ internal class RavencrestEntrancePass : AutoGenStep
 		{
 			attempts++;
 
-			int x = WorldGen.genRand.Next(Main.maxTilesX / 4, Main.maxTilesX / 4 * 3);
-			int y = (int)(Main.worldSurface * 0.35f);
-			
-			// Place the entrance at least 180 tiles away from spawn.
-			if (Math.Abs(x - Main.spawnTileX) <= 180)
-			{
-				continue;
-			}
+			int x;
+			int y;
 			
 			// Find the first suitable surface tile.
 			while (true)
 			{
+				do
+				{
+					x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
+					y = 21;
+				} while (Math.Abs(x - Main.maxTilesX / 2) <= 180);
+
 				while (!WorldGen.SolidTile(x, y++) && WorldGen.InWorld(x, y, 20)) 
 				{ 
 				}
@@ -71,18 +71,14 @@ internal class RavencrestEntrancePass : AutoGenStep
 				{
 					break;
 				}
-
-				do
-				{
-					x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
-					y = 0;
-				} while (Math.Abs(x - Main.spawnTileX) <= 180);
 			}
 
 			if (attempts < 2000 && !AvoidsEvilPath((short)x)) //Include an additional 'attempts' failsafe
 			{
 				continue;
 			}
+
+			y += 2;
 
 			int[] invalidTiles = [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone];
 			int[] validTiles = [TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone];
@@ -170,9 +166,9 @@ internal class RavencrestEntrancePass : AutoGenStep
 				continue;
 			}
 
-			HashSet<Point16> tiles = FitBase((short)origin.X, origin.Y + size.Y - 1, size.X);
+			//HashSet<Point16> tiles = FitBase((short)origin.X, origin.Y + size.Y - 1, size.X);
 
-			CleanBase(tiles);
+			//CleanBase(tiles);
 
 			// Fills up small dirt blotches to make the structure naturally blend in, alongside the previously generated base.
 			for (int i = 0; i < size.X; i++)
@@ -190,6 +186,14 @@ internal class RavencrestEntrancePass : AutoGenStep
 			
 				WorldGen.TileRunner(origin.X - 10 + i, bottom + strength * 2, strength, steps, type, true);
 				WorldGen.TileRunner(origin.X + size.X + 10 - i, bottom + strength * 2, strength, steps, type, true);
+			}
+
+			for (int i = origin.X - 20; i < origin.X + size.X + 20; ++i)
+			{
+				for (int j = origin.Y; j < origin.Y + size.Y + 40; ++j)
+				{
+					Tile.SmoothSlope(i, j, true, false);
+				}
 			}
 
 			break;
