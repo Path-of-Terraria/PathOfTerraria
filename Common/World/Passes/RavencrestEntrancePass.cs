@@ -49,7 +49,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 		{
 			attempts++;
 
-			int x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
+			int x = WorldGen.genRand.Next(Main.maxTilesX / 4, Main.maxTilesX / 4 * 3);
 			int y = (int)(Main.worldSurface * 0.35f);
 			
 			// Place the entrance at least 180 tiles away from spawn.
@@ -90,7 +90,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 			// TODO: Should this check for valid/invalid tiles, if it's meant for calculating average heights? - Naka
 			int averageHeight = StructureTools.AverageHeights(x, y, 76, 4, 30, out bool valid, invalidTiles, validTiles);
 
-			if (averageHeight == -1 || Math.Abs(averageHeight) >= 7) 
+			if (averageHeight == -1 || Math.Abs(averageHeight) >= 4) 
 			{
 				continue;
 			}
@@ -291,7 +291,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 			WorldGen.SquareTileFrame(pos.X, pos.Y, true);
 
 			tile.Slope = SlopeType.Solid;
-			Tile.SmoothSlope(pos.X, pos.Y, true);
+			//Tile.SmoothSlope(pos.X, pos.Y, true);
 		}
 	}
 
