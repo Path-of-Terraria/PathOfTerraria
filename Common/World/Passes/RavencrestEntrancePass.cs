@@ -27,7 +27,7 @@ public class RavencrestMicrobiome : MicroBiome
 		
 		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), mod);
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
-		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X + size.X / 2, origin.Y + size.Y / 2 - 6);
+		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X + size.X / 2, origin.Y + size.Y / 2 - 8);
 
 		return true;
 	}
@@ -78,7 +78,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 				continue;
 			}
 
-			y += 2;
+			y += 4;
 
 			int[] invalidTiles = [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone];
 			int[] validTiles = [TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone];
