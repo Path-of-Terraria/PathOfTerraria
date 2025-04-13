@@ -24,16 +24,23 @@ internal class OldManMarkerNPC : IQuestMarkerNPC
 
 internal class OldManModifiers : GlobalNPC
 {
+	private static Dictionary<int, ITownNPCProfile> ProfileDict;
+
 	public override void Load()
 	{
 		int slot = Mod.AddNPCHeadTexture(NPCID.OldMan, $"{PoTMod.ModName}/Assets/NPCs/Town/OldMan_Head");
 
 		// Properly add a NPC head to the Old Man
 		FieldInfo internalDictInfo = typeof(TownNPCProfiles).GetField("_townNPCProfiles", BindingFlags.Instance | BindingFlags.NonPublic);
-		var dict = internalDictInfo.GetValue(TownNPCProfiles.Instance) as Dictionary<int, ITownNPCProfile>;
-		dict[NPCID.OldMan] = TownNPCProfiles.LegacyWithSimpleShimmer("OldMan", slot, -1, uniquePartyTexture: false, uniquePartyTextureShimmered: false);
+		ProfileDict = internalDictInfo.GetValue(TownNPCProfiles.Instance) as Dictionary<int, ITownNPCProfile>;
+		ProfileDict[NPCID.OldMan] = TownNPCProfiles.LegacyWithSimpleShimmer("OldMan", slot, -1, uniquePartyTexture: false, uniquePartyTextureShimmered: false);
 
 		IL_Main.GUIChatDrawInner += AddOldManButtonHook;
+	}
+
+	public override void Unload()
+	{
+		ProfileDict.Remove(NPCID.OldMan);
 	}
 
 	private void AddOldManButtonHook(ILContext il)
