@@ -1112,3 +1112,8 @@ ForestUnstoppableShrineItem: {
 	DisplayName: Forest Unstoppable Shrine Item
 	Tooltip: ""
 }
+
+DesertMap: {
+	DisplayName: Desert Map
+	Tooltip: ""
+}
