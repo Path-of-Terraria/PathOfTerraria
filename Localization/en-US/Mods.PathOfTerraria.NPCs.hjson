@@ -659,3 +659,5 @@ AntlionTrapper: {
 		2: "{0} didn't watch where they were going."
 	}
 }
+
+SunDevourerNPC.DisplayName: Sun Devourer N P C
