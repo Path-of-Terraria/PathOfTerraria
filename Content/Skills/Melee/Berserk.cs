@@ -1,10 +1,7 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Content.Buffs;
-using SubworldLibrary;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.Skills.Melee;
@@ -40,7 +37,7 @@ public class Berserk : Skill
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
-			if (drawInfo.headOnlyRender || drawInfo.shadow > 0 || drawInfo.drawPlayer.GetModPlayer<BerserkVisualsPlayer>().BerserkOpacity < 0.01f)
+			if (drawInfo.headOnlyRender || drawInfo.shadow > 0 || drawInfo.drawPlayer.GetModPlayer<BerserkVisualsPlayer>().BerserkOpacity < 0.01f || Main.gameMenu)
 			{
 				return;
 			}

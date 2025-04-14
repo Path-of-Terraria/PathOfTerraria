@@ -12,7 +12,7 @@ namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 internal class TavernManager : ModSystem
 {
-	public const int SeatY = 174;
+	public const int SeatY = 154;
 
 	public static readonly List<string> TavernNPCFullNames = [];
 

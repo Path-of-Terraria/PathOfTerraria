@@ -4,6 +4,7 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities.Extensions;
@@ -21,7 +22,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [LegacyName("WitchNPC")]
 public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
-	public Point16 TileSpawn => new(970, 171);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => (RavencrestSystem.structures["Burrow"].Position + new Point(18, 20)).ToPoint16();
 
 	public override void SetStaticDefaults()
 	{
