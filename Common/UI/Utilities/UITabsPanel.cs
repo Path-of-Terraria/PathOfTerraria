@@ -13,24 +13,23 @@ public class UITabsPanel : UICloseablePanel
 {
 	private int _uiDelay = -1;
 
-	private readonly UIPanel _header;
 	private readonly Dictionary<string, UIPanelTab> _menus;
 	public string ActiveTab = "";
 	public event Action OnActiveTabChanged;
 
 	public UITabsPanel(bool stopItemUse, bool showCloseButton, IEnumerable<(string key, LocalizedText text)> menuOptions, int panelHeight)
-		: base(stopItemUse, showCloseButton, false, false)
+		: base(stopItemUse, showCloseButton)
 	{
 		StopItemUse = stopItemUse;
 
 		SetPadding(0);
 
-		_header = new UIPanel();
-		_header.SetPadding(0);
-		_header.Width.Set(0, 1f);
-		_header.Height.Set(panelHeight, 0f);
-		_header.BackgroundColor.A = 255;
-		Append(_header);
+		Header = new UIPanel();
+		Header.SetPadding(0);
+		Header.Width.Set(0, 1f);
+		Header.Height.Set(panelHeight, 0f);
+		Header.BackgroundColor.A = 255;
+		Append(Header);
 
 		if (showCloseButton)
 		{
@@ -39,16 +38,8 @@ public class UITabsPanel : UICloseablePanel
 			closeButton.Width.Set(40, 0);
 			closeButton.Left.Set(-40, 1);
 			closeButton.BackgroundColor.A = 255;
-			_header.Append(closeButton);
+			Header.Append(closeButton);
 		}
-
-		UIPanel viewArea = new();
-		viewArea.Top.Set(38, 0);
-		viewArea.Width.Set(0, 1f);
-		viewArea.Height.Set(-38, 1f);
-		viewArea.BackgroundColor = Color.Transparent;
-		viewArea.BorderColor = Color.Transparent;
-		Append(viewArea);
 
 		_menus = new Dictionary<string, UIPanelTab>();
 
@@ -71,7 +62,7 @@ public class UITabsPanel : UICloseablePanel
 
 			left += menu.GetDimensions().Width + 10;
 
-			_header.Append(menu);
+			Header.Append(menu);
 		}
 
 		MinSize.X = Math.Max(MinSize.X, left);
@@ -109,7 +100,7 @@ public class UITabsPanel : UICloseablePanel
 		if (_menus.TryGetValue(page, out UIPanelTab tab) && tab.Parent is null)
 		{
 			tab.Remove();
-			_header.Append(tab);
+			Header.Append(tab);
 
 			RecalculateTabPositions();
 		}
