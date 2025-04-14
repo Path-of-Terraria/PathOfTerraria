@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Items.Pickups;
 internal abstract class PickupItem : ModItem
 {
 	/// <summary> The time it takes, in ticks, for this pickup to despawn. </summary>
-	public virtual int DecayTime => 60 * 3;
+	public virtual int DecayTime => 60 * 60;
 	public float DecayProgress => (float)(Item.timeSinceItemSpawned - ItemID.Sets.OverflowProtectionTimeOffset[Type]) / (DecayTime / ItemID.Sets.ItemSpawnDecaySpeed[Type]);
 
 	public override void SetStaticDefaults()
