@@ -1,25 +1,27 @@
 ﻿using Terraria.GameContent;
 using Terraria.Localization;
-using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
 public readonly struct GiveItem(int stack, params int[] ids)
 {
+	/// <summary> Returns a formatted list of names corresponding to <see cref="Ids"/> with stack indicators. </summary>
 	public string Names
 	{
 		get
 		{
-			string names = "";
 			string or = Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Or");
+			string names = string.Empty;
 
 			for (int i = 0; i < Ids.Length; i++)
 			{
-				int id = Ids[i];
-				names += Lang.GetItemNameValue(id) + (i == Ids.Length - 1 ? "" : (i == Ids.Length - 2 ? or : ", "));
+				int type = Ids[i];
+				int localCount = Math.Min(Main.LocalPlayer.CountItem(type, Stack), Stack);
+
+				names += Lang.GetItemNameValue(type) + $" ({localCount} / {Stack})" + ((i == Ids.Length - 2) ? or : ", ");
 			}
 
-			return names;
+			return names.Remove(names.Length - 2, 2);
 		}
 	}
 
@@ -58,11 +60,11 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 		if (RequiredItems is not null)
 		{
 			baseText += Language.GetText($"Mods.{PoTMod.ModName}.Quests.GiveThem");
-			int id = 0;
 
-			foreach (GiveItem item in RequiredItems)
+			for (int i = 0; i < RequiredItems.Length; i++)
 			{
-				baseText += $"\n  {++id}. {item.Stack}x {item.Names}";
+				GiveItem item = RequiredItems[i];
+				baseText += $"\n  {i + 1}. {item.Stack}x {item.Names}";
 			}
 		}
 		

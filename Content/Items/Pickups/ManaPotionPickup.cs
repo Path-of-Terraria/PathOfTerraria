@@ -5,24 +5,11 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
-internal class ManaPotionPickup : ModItem
+internal class ManaPotionPickup : PickupItem
 {
-	public override void SetDefaults()
-	{
-		base.SetDefaults();
-
-		Item.width = 16;
-		Item.height = 16;
-	}
-
-	public override void Update(ref float gravity, ref float maxFallSpeed)
+	public override void PostUpdate()
 	{
 		Lighting.AddLight(Item.Center, new Vector3(0.02f, 0.05f, 0.3f) * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.25f));
-	}
-
-	public override bool ItemSpace(Player player)
-	{
-		return true;
 	}
 
 	public override bool CanPickup(Player player)
@@ -68,8 +55,8 @@ internal class ManaPotionPickup : ModItem
 
 		glowColor *= 0.6f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.1f;
 
-		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, glowColor, 0, glow.Size() / 2f, 0.6f, 0, 0);
-		spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, Item.GetAlpha(glowColor), 0, glow.Size() / 2f, 0.6f, 0, 0);
+		spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Item.GetAlpha(Color.White), 0, tex.Size() / 2f, 1, 0, 0);
 
 		return false;
 	}

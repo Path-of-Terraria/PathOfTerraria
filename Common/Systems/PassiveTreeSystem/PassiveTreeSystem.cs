@@ -3,7 +3,6 @@ using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
