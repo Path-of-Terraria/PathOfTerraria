@@ -1,6 +1,8 @@
-﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using Microsoft.Build.Tasks.Hosting;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using SubworldLibrary;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -70,18 +72,28 @@ internal class MappingNPC : GlobalNPC
 				tracker.AddCompletion(world.MapTier);
 			}
 
-			int count = tracker.CompletionsAtOrAboveTier(0);
+			Dictionary<int, int> completionsByTier = tracker.CompletionsPerTier();
 
-			if (count >= 10 && !NPC.downedQueenSlime)
+			if (TierPassed(0) && !NPC.downedQueenSlime)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
 			}
 			
-			count = tracker.CompletionsAtOrAboveTier(1);
-
-			if (count >= 10 && NPC.downedQueenSlime && !NPC.downedMechBoss2)
+			if (TierPassed(1) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
+			}
+
+			if (TierPassed(3) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PrimeMap>());
+			}
+
+			return;
+
+			bool TierPassed(int tier)
+			{
+				return completionsByTier.TryGetValue(tier, out int tierValue) && tierValue >= 10;
 			}
 		}
 	}

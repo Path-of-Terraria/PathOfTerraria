@@ -25,7 +25,6 @@ public abstract class DraggableSmartUi : SmartUiState
 	protected const int PanelWidth = 900;
 	
 	public override bool Visible => IsVisible;
-	public virtual List<SmartUiElement> TabPanels => [];
 	
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -37,7 +36,6 @@ public abstract class DraggableSmartUi : SmartUiState
 		panelSize ??= new Point(PanelWidth, PanelHeight);
 
 		Panel = new UIDraggablePanel(false, false, tabs, DraggablePanelHeight, canResize);
-		Panel.OnActiveTabChanged += HandleActiveTabChanged;
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
 		Panel.Width.Set(panelSize.Value.X, 0);
@@ -66,32 +64,5 @@ public abstract class DraggableSmartUi : SmartUiState
 	{
 		IsVisible = false;
 		SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-	}
-
-	public virtual void AppendChildren()
-	{
-		foreach (SmartUiElement tabPanel in TabPanels)
-		{
-			tabPanel.Left.Set(0, 0);
-			tabPanel.Top.Set(DraggablePanelHeight, 0);
-			tabPanel.Width.Set(0, 1f);
-			tabPanel.Height.Set(-DraggablePanelHeight, 1f);
-		}
-
-		HandleActiveTabChanged();
-	}
-
-	private void HandleActiveTabChanged()
-	{
-		foreach (SmartUiElement tabPanel in TabPanels)
-		{
-			if (tabPanel.TabName != Panel.ActiveTab)
-			{
-				tabPanel.Remove();
-				continue;
-			}
-			
-			Panel.Append(tabPanel);
-		}
 	}
 }

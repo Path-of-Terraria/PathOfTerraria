@@ -12,13 +12,14 @@ using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
 using SubworldLibrary;
+using Terraria.GameContent.Tile_Entities;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
 public class QueenBeeDomain : BossDomainSubworld
 {
 	public override int Width => 800;
-	public override int Height => 800;
+	public override int Height => 1600;
 	public override int[] WhitelistedCutTiles => [TileID.BeeHive, TileID.JungleVines, ModContent.TileType<RoyalHoneyClumpTile>()];
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<RoyalHoneyClumpTile>()];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
@@ -63,27 +64,48 @@ public class QueenBeeDomain : BossDomainSubworld
 		{
 			AddGrassDecor(grass.X, grass.Y, flags);
 		}
+
+		for (int i = 1; i < Width - 1; ++i)
+		{
+			for (int j = 1; j < Height - 1; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.TileType == TileID.LogicSensor && tile.TileFrameY == 36)
+				{
+					int id = TELogicSensor.Place(i, j);
+					(TileEntity.ByID[id] as TELogicSensor).logicCheck = TELogicSensor.LogicCheckType.PlayerAbove;
+				}
+			}
+		}
 	}
 
 	private static void AddGrassDecor(int i, int j, OpenFlags flags)
 	{
-		if (flags.HasFlag(OpenFlags.Above))
+		if (flags.HasFlag(OpenFlags.Above) && !WorldGen.genRand.NextBool(3))
 		{
-			WorldGen.PlaceTile(i, j - 1, TileID.JunglePlants, true, false, style: WorldGen.genRand.Next(24));
+			WorldGen.PlaceTile(i, j - 1, WorldGen.genRand.NextBool(3) ? TileID.JunglePlants2 : TileID.JunglePlants, true, false, style: WorldGen.genRand.Next(24));
 		}
 
-		if (flags.HasFlag(OpenFlags.Below) && !WorldGen.genRand.NextBool(5))
+		if (flags.HasFlag(OpenFlags.Below))
 		{
-			int length = WorldGen.genRand.Next(5, 12);
-
-			for (int k = 1; k < length; ++k)
+			if (!WorldGen.genRand.NextBool(4))
 			{
-				if (Main.tile[i, j + k].HasTile)
-				{
-					break;
-				}
+				int length = WorldGen.genRand.Next(5, 12);
 
-				WorldGen.PlaceTile(i, j + k, TileID.JungleVines, true);
+				for (int k = 1; k < length; ++k)
+				{
+					if (Main.tile[i, j + k].HasTile)
+					{
+						break;
+					}
+
+					WorldGen.PlaceTile(i, j + k, TileID.JungleVines, true);
+				}
+			}
+			else if (WorldGen.genRand.NextBool(6))
+			{
+				WorldGen.PlaceTile(i, j + 1, TileID.HangingLanterns, true, false, -1, 13);
 			}
 		}
 	}
@@ -91,7 +113,7 @@ public class QueenBeeDomain : BossDomainSubworld
 	private void GenTiles(GenerationProgress progress, GameConfiguration configuration)
 	{
 		Main.spawnTileX = Width / 2;
-		Main.spawnTileY = Height / 4 - 20;
+		Main.spawnTileY = (int)(Main.rockLayer + 20); // Puts the player below rockLayer
 		Main.worldSurface = 230;
 		Main.rockLayer = 299;
 
@@ -109,8 +131,8 @@ public class QueenBeeDomain : BossDomainSubworld
 
 			progress.Value = (float)x / Main.maxTilesX;
 		}
-
-		StructureTools.PlaceByOrigin("Assets/Structures/BeeDomain/Arena_" + WorldGen.genRand.Next(2), new Point16(Width / 2, Height / 4), new(0.5f));
+		
+		StructureTools.PlaceByOrigin("Assets/Structures/BeeDomain/Arena_" + WorldGen.genRand.Next(2), new Point16(Width / 2, Main.spawnTileY), new(0.5f));
 
 		// Replace hive with unsafe hive wall so it's not destroyed by the tunnel
 		for (int i = 1; i < Width - 1; ++i)
@@ -126,16 +148,16 @@ public class QueenBeeDomain : BossDomainSubworld
 			}
 		}
 
-		DigTunnel(Width / 4, Height / 4 - WorldGen.genRand.Next(-50, 50), true);
-		DigTunnel((int)(Width * 0.75f), Height / 4 - WorldGen.genRand.Next(-50, 50), false);
+		DigTunnel(Width / 4, Main.spawnTileY - WorldGen.genRand.Next(-40, 40), true);
+		DigTunnel((int)(Width * 0.75f), Main.spawnTileY - WorldGen.genRand.Next(-40, 40), false);
 	}
 
 	private void DigTunnel(int x, int y, bool left)
 	{
 		var original = new Point16(x, y);
 
-		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Height / 4), 0.5f)
-			+ new Vector2(WorldGen.genRand.Next(-2, 3), WorldGen.genRand.Next(-2, 3)), new(Width / 2, Height / 4)], 8, 6);
+		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Main.spawnTileY), 0.7f)
+			+ new Vector2(WorldGen.genRand.Next(-2, 3), WorldGen.genRand.Next(-2, 3)), new(Width / 2, Main.spawnTileY)], 6, 4);
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		int breakTime = -1;
@@ -147,12 +169,9 @@ public class QueenBeeDomain : BossDomainSubworld
 				breakTime = 5;
 			}
 
-			if (breakTime > -1)
+			if (breakTime > -1 && --breakTime == 0) // Makes sure the opening continues a little bit into the hive
 			{
-				if (--breakTime == 0) // Makes sure the opening continues a little bit into the hive
-				{
-					break;
-				}
+				break;
 			}
 
 			float mul = 0.8f + MathF.Abs(noise.GetNoise(pos.X, pos.Y)) * 1.2f;
@@ -195,7 +214,7 @@ public class QueenBeeDomain : BossDomainSubworld
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.QueenBee) && !ReadyToExit)
 		{
-			Vector2 pos = new Vector2(Width / 2, Height / 4 - 8) * 16;
+			Vector2 pos = new Vector2(Width / 2, Main.spawnTileY - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.CachedBossesDowned.Add(NPCID.QueenBee);
@@ -210,6 +229,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			if (SubworldSystem.Current is QueenBeeDomain)
 			{
 				Player.ZoneJungle = true;
+				Player.ZoneHive = true;
 			}
 		}
 	}

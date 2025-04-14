@@ -12,7 +12,7 @@ public abstract class SmartUiState : UIState
 	/// <summary>
 	/// The UserInterface automatically assigned to this UIState on load.
 	/// </summary>
-	protected internal UserInterface? UserInterface { get; internal set; }
+	public UserInterface? UserInterface { get; set; }
 
 	/// <summary>
 	/// Whether the UI should be visible and interactable.

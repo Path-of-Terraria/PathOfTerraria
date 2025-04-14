@@ -8,17 +8,64 @@ public class UICloseablePanel : UIPanel
 {
 	private bool[] _scaling = [false, false];
 
-	private readonly Vector2 _minSize = new(400f, 400f);
-
-	private readonly bool _stopItemUse;
-
-	private int _uiDelay = -1;
-
-	private readonly UIPanel _header;
-	private readonly bool _canResize = true;
 
 	public bool Blocked = true;
 	public bool Visible = true;
+
+	protected int UiDelay = -1;
+	protected bool StopItemUse;
+	protected Vector2 MinSize = new(400f, 400f);
+	protected UIPanel Header;
+	
+	private readonly bool _canResize = true;
+
+	public UICloseablePanel(bool stopItemUse, bool showCloseButton)
+	{
+		StopItemUse = stopItemUse;
+
+		if (showCloseButton)
+		{
+			var closeButton = new UITextPanel<char>('X');
+			closeButton.SetPadding(7);
+			closeButton.Width.Set(40, 0);
+			closeButton.Left.Set(-40, 1);
+			closeButton.BackgroundColor.A = 255;
+			Header.Append(closeButton);
+		}
+	}
+
+	public UICloseablePanel(bool stopItemUse, bool showCloseButton, bool canResize, bool invisible)
+	{
+		StopItemUse = stopItemUse;
+
+		SetPadding(0);
+
+		Header = new UIPanel();
+		Header.SetPadding(0);
+		Header.Width.Set(0, 0f);
+		Header.Height.Set(0, 0f);
+		Header.BackgroundColor.A = 255;
+
+		if (!invisible)
+		{
+			Append(Header);
+		}
+
+		if (showCloseButton)
+		{
+			var closeButton = new UITextPanel<char>('X');
+			closeButton.SetPadding(7);
+			closeButton.Width.Set(40, 0);
+			closeButton.Left.Set(-40, 1);
+			closeButton.BackgroundColor.A = 255;
+			Header.Append(closeButton);
+		}
+
+		float left = 0;
+
+		MinSize.X = Math.Max(MinSize.X, left);
+		_canResize = canResize;
+	}
 
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
@@ -31,39 +78,6 @@ public class UICloseablePanel : UIPanel
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.Blue);
 #endif
-	}
-
-	public UICloseablePanel(bool stopItemUse, bool showCloseButton, bool canResize, bool invisible)
-	{
-		_stopItemUse = stopItemUse;
-
-		SetPadding(0);
-
-		_header = new UIPanel();
-		_header.SetPadding(0);
-		_header.Width.Set(0, 0f);
-		_header.Height.Set(0, 0f);
-		_header.BackgroundColor.A = 255;
-
-		if (!invisible)
-		{
-			Append(_header);
-		}
-
-		if (showCloseButton)
-		{
-			var closeButton = new UITextPanel<char>('X');
-			closeButton.SetPadding(7);
-			closeButton.Width.Set(40, 0);
-			closeButton.Left.Set(-40, 1);
-			closeButton.BackgroundColor.A = 255;
-			_header.Append(closeButton);
-		}
-
-		float left = 0;
-
-		_minSize.X = Math.Max(_minSize.X, left);
-		_canResize = canResize;
 	}
 
 	public override void RightMouseDown(UIMouseEvent evt)
@@ -98,13 +112,13 @@ public class UICloseablePanel : UIPanel
 	
 	public override void Update(GameTime gameTime)
 	{
-		if (_uiDelay > 0)
+		if (UiDelay > 0)
 		{
-			_uiDelay--;
+			UiDelay--;
 		}
 
 		// clicks on this UIElement dont cause the player to use current items. 
-		if (ContainsPoint(Main.MouseScreen) && _stopItemUse)
+		if (ContainsPoint(Main.MouseScreen) && StopItemUse)
 		{
 			Main.LocalPlayer.mouseInterface = true;
 		}

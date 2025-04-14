@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps;
 internal class ForestMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
+	public override bool CanDrop => Main.hardMode;
 
 	public override void SetStaticDefaults()
 	{

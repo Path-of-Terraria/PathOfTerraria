@@ -19,7 +19,7 @@ internal class SteelBroadsword : Broadsword
 	{
 		base.SetDefaults();
 
-		Item.damage = 12;
+		Item.damage = 38;
 		Item.width = 46;
 		Item.height = 46;
 		Item.UseSound = SoundID.Item1;

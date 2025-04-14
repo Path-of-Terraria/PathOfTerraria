@@ -8,7 +8,8 @@ public class MapDevice : ModItem
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<MapDevicePlaceable>());
-		Item.width = 48;
+		Item.rare = ItemRarityID.Blue;
+		Item.width = 36;
 		Item.height = 18;
 		Item.value = 0;
 	}

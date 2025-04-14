@@ -11,7 +11,8 @@ internal class BuildingWhitelist
 	{
 		Mining,
 		Cutting,
-		Placing
+		Placing,
+		Exploding,
 	}
 
 	public static HashSet<int> DefaultWhitelist = [TileID.Torches, TileID.Rope, TileID.Tombstones];
@@ -92,5 +93,27 @@ internal class BuildingWhitelist
 	internal static bool InPlacingWhitelist(int tileType)
 	{
 		return GetPlacingWhitelist().Contains(tileType);
+	}
+
+	public static HashSet<int> GetExplodingWhitelist()
+	{
+		HashSet<int> whitelist = GetUsedWhitelist(WhitelistUse.Exploding);
+
+		if (SubworldSystem.Current is MappingWorld domain)
+		{
+			int[] tiles = domain.WhitelistedExplodableTiles;
+
+			foreach (int value in tiles)
+			{
+				whitelist.Add(value);
+			}
+		}
+
+		return whitelist;
+	}
+
+	internal static bool InExplodingWhitelist(int tileType)
+	{
+		return GetExplodingWhitelist().Contains(tileType);
 	}
 }

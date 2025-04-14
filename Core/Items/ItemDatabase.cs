@@ -1,6 +1,13 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Data.Models;
+using PathOfTerraria.Common.Enums;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization.Metadata;
+using System.Text.Unicode;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
@@ -44,6 +51,21 @@ public sealed class ItemDatabase : ModSystem
 	public override void PostSetupContent()
 	{
 		base.PostSetupContent();
+
+		for (int i = 0; i < ItemLoader.ItemCount; i++)
+		{
+			byte[] bytes = Mod.GetFileBytes("Common/Data/VanillaItemData/" + ItemID.Search.GetName(i) + ".json");
+
+			if (bytes is null)
+			{
+				continue;
+			}
+
+			string str = System.Text.Encoding.UTF8.GetString(bytes);
+			VanillaItemData data = JsonSerializer.Deserialize<VanillaItemData>(str);
+
+			RegisterVanillaItemAsGear(i, Enum.Parse<ItemType>(data.ItemType));
+		}
 
 		for (int i = 0; i < ItemLoader.ItemCount; i++)
 		{

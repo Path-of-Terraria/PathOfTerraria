@@ -9,14 +9,13 @@ using ReLogic.Content;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
-using Terraria.Social.Steam;
 using PathOfTerraria.Common.UI.Quests;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Common.UI.Guide;
 
@@ -27,12 +26,19 @@ internal class TutorialUIState : UIState
 
 	public bool Visible => _opacity > 0;
 
-	internal static int StoredStep = 0;
+	internal static int StoredStep;
+
+	/// <summary>
+	/// Defines that the current <see cref="StoredStep"/> value is from load 
+	/// (specifically, from <see cref="TutorialPlayer.OnEnterWorld"/>)<br/>
+	/// This increments StoredStep once to properly "activate" the current step when a player re-enters the world.
+	/// </summary>
+	internal static bool FromLoad;
 
 	public int Step { get; private set; }
 
-	private float _opacity = 0;
-	private float _displayTextLength = 0;
+	private float _opacity;
+	private float _displayTextLength;
 	private float _baseYDivisor = 4; 
 	
 	public TutorialUIState()
@@ -45,10 +51,23 @@ internal class TutorialUIState : UIState
 
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
-		_opacity = MathHelper.Lerp(_opacity, Step > 13 ? 0 : 1, 0.05f);
-		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step is 9 or 10 ? 8 : 4, 0.05f);
+		_opacity = MathHelper.Lerp(_opacity, HideSelf() ? 0 : 1, 0.05f);
+
+		if (_opacity < 0.001f)
+		{
+			return;
+		}
+
+		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step is 9 or 10 or 11 ? 8 : 4, 0.05f);
 
 		Vector2 pos = new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(2, _baseYDivisor);
+
+		// Temp fix to position the guide correctly on ultra-wide monitors + 4k monitors
+		if (Main.screenWidth > 3000)
+		{
+			_baseYDivisor = 4;
+			pos = new Vector2(Main.screenWidth, Main.screenHeight + 500) / new Vector2(2, _baseYDivisor);
+		}
 
 		string text = Language.GetText($"Mods.{PoTMod.ModName}.UI.Guide." + Math.Min(Step, 13)).Value;
 		DrawBacked(spriteBatch, pos, text, false);
@@ -58,9 +77,25 @@ internal class TutorialUIState : UIState
 		DrawBacked(spriteBatch, pos + new Vector2(0, 110), "Skip Step", true, new Action(IncrementStep));
 		DrawBacked(spriteBatch, pos + new Vector2(110, 110), "Skip Guide", true, () => 
 		{
-			Step = 13;
+			Step = 12;
+
+			if (!Quest.GetLocalPlayerInstance<FirstQuest>().CanBeStarted)
+			{
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
+			}
+
+			if (Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Level == 0)
+			{
+				Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
+			}
+
 			IncrementStep();
 		});
+
+		bool HideSelf() //Under what conditions this panel should fade out in
+		{
+			return Step > 13 || Main.npcChatText != string.Empty;
+		}
 	}
 
 	public override void Update(GameTime gameTime)
@@ -68,6 +103,12 @@ internal class TutorialUIState : UIState
 		base.Update(gameTime);
 
 		HashSet<TutorialCheck> checks = Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks;
+
+		if (FromLoad)
+		{
+			IncrementStep();
+			FromLoad = false;
+		}
 
 		if (Step == 1 && SmartUiLoader.GetUiState<TreeState>().Visible)
 		{
@@ -77,7 +118,7 @@ internal class TutorialUIState : UIState
 		{
 			IncrementStep();
 		}
-		else if (Step == 3 && SmartUiLoader.GetUiState<TreeState>().Visible && SmartUiLoader.GetUiState<TreeState>().Panel.ActiveTab == "SkillTree")
+		else if (Step == 3 && SmartUiLoader.GetUiState<TreeState>().Visible && SmartUiLoader.GetUiState<TreeState>().TabPanel.ActiveTab == "SkillTree")
 		{
 			IncrementStep();
 		}
@@ -128,22 +169,28 @@ internal class TutorialUIState : UIState
 		plr.GetModPlayer<TutorialPlayer>().TutorialStep = (byte)Step;
 		StoredStep = Step;
 
-		if (Step == 10)
+		if (Step == 1 && !FromLoad && plr.GetModPlayer<ExpModPlayer>().Level <= 0)
 		{
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
+			plr.GetModPlayer<ExpModPlayer>().Exp += plr.GetModPlayer<ExpModPlayer>().NextLevel + 1;
+		}
+		else if (Step == 10)
+		{
+			if (!Quest.GetLocalPlayerInstance<FirstQuest>().Active)
+			{
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
+			}
 		}
 		else if (Step == 11)
 		{
-			if (!NPC.AnyNPCs(ModContent.NPCType<RavenNPC>()))
+			if (SubworldSystem.Current is null && (!FromLoad || !NPC.AnyNPCs(ModContent.NPCType<RavenNPC>())))
 			{
-
 				if (Main.netMode == NetmodeID.SinglePlayer)
 				{
-					NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)plr.Center.X, (int)plr.Center.Y - 200, ModContent.NPCType<RavenNPC>());
+					NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)plr.Center.X, (int)plr.Center.Y - 250, ModContent.NPCType<RavenNPC>());
 				}
 				else if (Main.netMode == NetmodeID.MultiplayerClient)
 				{
-					SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<RavenNPC>(), plr.Center - new Vector2(0, 200));
+					SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<RavenNPC>(), plr.Center - new Vector2(0, 250));
 				}
 			}
 		}

@@ -9,6 +9,7 @@ internal class EoWMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 20;
+	public override bool CanDrop => NPC.downedBoss2;
 
 	public override void SetStaticDefaults()
 	{

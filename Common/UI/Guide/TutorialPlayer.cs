@@ -22,14 +22,20 @@ public enum TutorialCheck : byte
 /// </summary>
 internal class TutorialPlayer : ModPlayer
 {
+	/// <summary> Whether the player has completed the tutorial (<see cref="TutorialCheck.FinishedTutorial"/>). </summary>
+	public bool CompletedTutorial => TutorialChecks.Contains(TutorialCheck.FinishedTutorial);
+
 	public HashSet<TutorialCheck> TutorialChecks = [];
 	public byte TutorialStep = 0;
 
 	public override void OnEnterWorld()
 	{
-		if (!TutorialChecks.Contains(TutorialCheck.FinishedTutorial))
+		TutorialUIState.StoredStep = TutorialStep - 1;
+		TutorialUIState.FromLoad = true;
+
+		if (!CompletedTutorial)
 		{
-			UIManager.Register("Tutorial UI", "Vanilla: Interface Logic 4", new TutorialUIState());
+			UIManager.Register("Tutorial UI", "Vanilla: Player Chat", new TutorialUIState());
 		}
 	}
 
@@ -41,11 +47,8 @@ internal class TutorialPlayer : ModPlayer
 
 	public override void LoadData(TagCompound tag)
 	{
+		TutorialChecks.Clear();
 		TutorialChecks = new HashSet<TutorialCheck>(tag.GetByteArray("checks").Select(x => (TutorialCheck)x));
 		TutorialStep = tag.GetByte("step");
-		TutorialStep = 0;
-		TutorialChecks.Clear();
-
-		TutorialUIState.StoredStep = TutorialStep;
 	}
 }

@@ -35,5 +35,42 @@ ShockDebuff: {
 
 RootedDebuff: {
 	DisplayName: Rooted Debuff
-	Description: Mods.PathOfTerraria.Buffs.RootedDebuff.Description
+	Description: You can't move!
+}
+
+GodlikeBuff: {
+	DisplayName: Godlike Buff
+	Description: You are immune to all direct damage
+}
+
+RestorationBuff: {
+	DisplayName: Restoration Buff
+	Description: Provides massive life regeneration
+}
+
+HardinessBuff: {
+	DisplayName: Hardiness Buff
+	Description:
+		'''
+		+10 defense
+		+20% block chance
+		'''
+}
+
+HasteBuff: {
+	DisplayName: Haste Buff
+	Description:
+		'''
+		+20% movement speed
+		+15% attack speed
+		'''
+}
+
+UnstoppableBuff: {
+	DisplayName: Unstoppable Buff
+	Description:
+		'''
+		+50% shielding health
+		Immunity to Chilled
+		'''
 }

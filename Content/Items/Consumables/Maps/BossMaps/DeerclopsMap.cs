@@ -9,6 +9,7 @@ internal class DeerclopsMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 35;
+	public override bool CanDrop => NPC.downedDeerclops;
 
 	public override void SetStaticDefaults()
 	{

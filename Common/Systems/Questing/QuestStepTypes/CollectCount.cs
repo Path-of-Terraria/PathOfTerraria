@@ -34,6 +34,13 @@ internal class CollectCount(Func<Item, bool> includes, int count, LocalizedText 
 		return "Collect " + (IsDone ? count : Total) + "/" + count + " " + ItemDescription.Value;
 	}
 
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
+	{
+		DrawString(DisplayString(), topLeft, StepColor(currentStep), currentStep);
+
+		uiHeight = 22;
+	}
+
 	public override bool Track(Player player)
 	{
 		Total = TrackItemCount(includes, player);

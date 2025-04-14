@@ -1,4 +1,8 @@
-﻿namespace PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+using Terraria.Utilities;
+
+namespace PathOfTerraria.Common.Subworlds.BossDomains;
 
 [Flags]
 public enum OpenFlags
@@ -128,5 +132,43 @@ public static class OpenExtensions
 		}
 
 		return flags;
+	}
+
+	public static Point GetDirectionAbsolute(this OpenFlags flag)
+	{
+		return flag switch
+		{
+			OpenFlags.Above => new Point(0, -1),
+			OpenFlags.Below => new Point(0, 1),
+			OpenFlags.Right => new Point(1, 0),
+			_ => new Point(-1, 0)
+		};
+	}
+
+	public static Point GetDirectionRandom(this OpenFlags flags, UnifiedRandom random = null)
+	{
+		PriorityQueue<OpenFlags, float> directions = new();
+		random ??= Main.rand;
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		void AddIfTrue(OpenFlags flag)
+		{
+			if (flags.HasFlag(flag))
+			{
+				directions.Enqueue(flag, random.NextFloat());
+			}
+		}
+
+		AddIfTrue(OpenFlags.Above);
+		AddIfTrue(OpenFlags.Below);
+		AddIfTrue(OpenFlags.Left);
+		AddIfTrue(OpenFlags.Right);
+
+		return GetDirectionAbsolute(directions.Dequeue());
+	}
+
+	public static bool Cardinal(this OpenFlags flags)
+	{
+		return flags.HasFlag(OpenFlags.Right) || flags.HasFlag(OpenFlags.Above) || flags.HasFlag(OpenFlags.Left) || flags.HasFlag(OpenFlags.Below);
 	}
 }

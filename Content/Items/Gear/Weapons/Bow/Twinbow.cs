@@ -62,6 +62,7 @@ internal class Twinbow : Bow
 		Item.height = 30;
 		Item.damage = 20;
 		Item.autoReuse = true;
+		Item.shootSpeed = 10;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -72,7 +73,7 @@ internal class Twinbow : Bow
 
 			for (int i = 0; i < 2; ++i)
 			{
-				Vector2 modVel = velocity.RotatedByRandom(0.05f) * Main.rand.NextFloat(0.9f, 1.2f);
+				Vector2 modVel = i == 0 ? velocity : velocity.RotatedByRandom(0.05f) * Main.rand.NextFloat(0.9f, 1.2f);
 				int proj = Projectile.NewProjectile(source, position, modVel, type, damage, knockback, player.whoAmI);
 				Main.projectile[proj].GetGlobalProjectile<TwinbowArrow>().PiercingArrow = true;
 			}

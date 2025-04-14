@@ -120,27 +120,27 @@ internal class UIQuestPopupState : SmartUiState
 		NewQuestSupertext.DrawAndUpdate(newQuestPos - new Vector2(0, 60));
 		NewQuest.DrawAndUpdate(newQuestPos);
 
-		ExplainOpacity = MathHelper.Lerp(ExplainOpacity, FlashQuestButton > 0 ? 1f : 0, 0.03f);
+		//ExplainOpacity = MathHelper.Lerp(ExplainOpacity, FlashQuestButton > 0 ? 1f : 0, 0.03f);
 
-		if (ExplainOpacity > 0)
-		{
-			Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/QuestPromptBack").Value;
-			Vector2 textPos = Main.ScreenSize.ToVector2() / new Vector2(2, 4);
+		//if (ExplainOpacity > 0)
+		//{
+		//	Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/QuestPromptBack").Value;
+		//	Vector2 textPos = Main.ScreenSize.ToVector2() / new Vector2(2, 4);
 
-			Main.spriteBatch.Draw(tex, textPos, null, Color.White * ExplainOpacity, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+		//	Main.spriteBatch.Draw(tex, textPos, null, Color.White * ExplainOpacity, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 
-			DrawCenteredExplanationText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Popups.Line1"), textPos - new Vector2(0, 12));
-			DrawCenteredExplanationText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Popups.Line2"), textPos + new Vector2(0, 12));
-			List<string> assignedKeys = QuestModPlayer.ToggleQuestUIKey.GetAssignedKeys();
-			string key = Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Popups.NoKey");
+		//	DrawCenteredExplanationText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Popups.Line1"), textPos - new Vector2(0, 12));
+		//	DrawCenteredExplanationText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Popups.Line2"), textPos + new Vector2(0, 12));
+		//	List<string> assignedKeys = QuestModPlayer.ToggleQuestUIKey.GetAssignedKeys();
+		//	string key = Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Popups.NoKey");
 
-			if (assignedKeys.Count > 0)
-			{
-				key = assignedKeys[0];
-			}
+		//	if (assignedKeys.Count > 0)
+		//	{
+		//		key = assignedKeys[0];
+		//	}
 
-			DrawCenteredExplanationText(Language.GetText($"Mods.{PoTMod.ModName}.Quests.Popups.Line3").Format(key), textPos + new Vector2(0, 36));
-		}
+		//	DrawCenteredExplanationText(Language.GetText($"Mods.{PoTMod.ModName}.Quests.Popups.Line3").Format(key), textPos + new Vector2(0, 36));
+		//}
 	}
 
 	private static string DrawCenteredExplanationText(string text, Vector2 textPos)

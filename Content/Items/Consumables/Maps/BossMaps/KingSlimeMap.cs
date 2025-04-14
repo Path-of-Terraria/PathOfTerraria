@@ -9,6 +9,7 @@ internal class KingSlimeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 5;
+	public override bool CanDrop => NPC.downedSlimeKing;
 
 	public override void SetStaticDefaults()
 	{

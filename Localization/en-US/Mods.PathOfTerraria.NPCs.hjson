@@ -189,7 +189,7 @@ TownScoutNPC: {
 
 RavenNPC: {
 	DisplayName: Ephemeral Raven
-	Entry: A strange, ghostly raven. The coins it drops are more real than itself, guiding new adventurers to the legendary town of Ravencrest.
+	Entry: A strange, ghostly raven. It guides travelers to Ravencrest, but otherwise is mired in mystery as it tows the line between this world and another.
 }
 
 ControllableSpikeball.DisplayName: Spikeball
@@ -605,8 +605,8 @@ Grovetender: {
 }
 
 CanopyBird: {
-	DisplayName: Canopy Crow
-	Entry: A bird of prey with an unusual size, the Canopy Crow seeks to keep any and all creatures off of the great canopy it resides on. They are small, but surprisingly durable, and most of all, innumerable.
+	DisplayName: Canopy Owl
+	Entry: A bird of prey with an unusual size, the Canopy Owl seeks to keep any and all creatures off of the great canopy it resides on. They are relatively small, but surprisingly durable, and most of all, innumerable.
 }
 
 Sawblade: {
@@ -635,4 +635,27 @@ CoreModule: {
 }
 
 CoreModulePlate.DisplayName: Core Module Plate
-SunDevourerNPC.DisplayName: Sun Devourer N P C
+ExplosiveTurret.DisplayName: Explosive Turret
+
+HauntedHead: {
+	DisplayName: Haunted Head
+	Entry: The long-lost head of a traveller, merchant, or other unfortunate soul seeking revenge. Emerging from the sands, it'll stop at nothing but death to stop you.
+}
+
+ScarabSwarmController.DisplayName: Scarab Swarm
+
+SwarmScarab: {
+	DisplayName: Swarm Scarab
+	Entry: One of a swarm of carnivorous scarabs, seeking more food. Why is it with so many other scarabs? Intimidation reasons.
+}
+
+AntlionTrapper: {
+	DisplayName: Antlion Trapper
+	Entry: What happens when an Antlion's jaws get out of hand? They adapt. What happens when you step near them? Only one way to find out!
+
+	Death: {
+		0: "{0} was turned into mush."
+		1: "{0} was snapped up."
+		2: "{0} didn't watch where they were going."
+	}
+}

@@ -162,10 +162,9 @@ public class BrainDomain : BossDomainSubworld
 
 	private void SpawnArena(GenerationProgress progress, GameConfiguration configuration)
 	{
-		var dims = new Point16();
-		StructureHelper.Generator.GetDimensions("Assets/Structures/BrainArena", Mod, ref dims);
+		Point16 dims = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/BrainArena", Mod);
 		var pos = new Point16(400 - dims.X / 2, 200 - dims.Y / 2);
-		StructureHelper.Generator.GenerateStructure("Assets/Structures/BrainArena", pos, Mod);
+		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/BrainArena", pos, Mod);
 		Arena = new Rectangle(pos.X * 16, pos.Y * 16, dims.X * 16, dims.Y * 16);
 	}
 

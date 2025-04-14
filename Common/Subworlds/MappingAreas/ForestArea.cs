@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
@@ -17,7 +18,7 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class ForestArea : MappingWorld
+internal class ForestArea : MappingWorld, IOverrideOcean
 {
 	private enum StructureKind : byte
 	{
@@ -32,7 +33,6 @@ internal class ForestArea : MappingWorld
 	public const int FloorY = 180;
 
 	private static bool LeftSpawn = false;
-	private static int LastTreeX = 0;
 	private static Point BossSpawnLocation = Point.Zero;
 
 	public override int Width => 1200 + 120 * Main.rand.Next(10);
@@ -48,6 +48,14 @@ internal class ForestArea : MappingWorld
 
 	public override void Update()
 	{
+		TileEntity.UpdateStart();
+		foreach (TileEntity te in TileEntity.ByID.Values)
+		{
+			te.Update();
+		}
+
+		TileEntity.UpdateEnd();
+
 		bool hasPortal = false;
 
 		foreach (Projectile projectile in Main.ActiveProjectiles)
@@ -147,6 +155,14 @@ internal class ForestArea : MappingWorld
 	private static void TryPlaceStructureAt(HashSet<StructureKind> structures, int x, int y, StructureKind type, int max, Vector2 origin, int offsetY = 0)
 	{
 		string path = $"Assets/Structures/MapAreas/ForestArea/{type}_{WorldGen.genRand.Next(max)}";
+		bool isShrine = false;
+
+		if (WorldGen.genRand.NextBool(5) && type != StructureKind.Arena && type != StructureKind.Cave)
+		{
+			path = $"Assets/Structures/MapAreas/ForestArea/SpecialShrine_{WorldGen.genRand.Next(5)}";
+			isShrine = true;
+		}
+
 		Point16 size = StructureTools.GetSize(path);
 
 		if (GenVars.structures.CanPlace(new Rectangle(x - (int)(size.X * origin.X), y - (int)(size.Y * origin.Y) + offsetY, size.X, size.Y)))
@@ -200,7 +216,9 @@ internal class ForestArea : MappingWorld
 				{
 					if (flags != OpenFlags.None)
 					{
-						if (!SpawnBoulder(i, j))
+						int type = WorldGen.genRand.NextBool(12) ? ModContent.TileType<Runestone>() : TileID.Stone;
+
+						if (!WorldGen.genRand.NextBool(60) || !SpawnBoulder(i, j, type))
 						{
 							tile.TileType = TileID.Grass;
 
@@ -237,6 +255,9 @@ internal class ForestArea : MappingWorld
 
 			progress.Set(i / (float)Main.maxTilesX);
 		}
+
+		GenerationUtilities.ManuallyPopulateChests();
+		ShrineFunctionality.PopulateShrines();
 
 		int grassIndex = 0;
 
@@ -357,22 +378,23 @@ internal class ForestArea : MappingWorld
 		}
 	}
 
-	private static bool SpawnBoulder(int i, int j)
+	public static bool SpawnBoulder(int i, int j, int type, int size = -1, bool isWall = false)
 	{
-		int size = WorldGen.genRand.Next(7, 18);
+		if (size == -1)
+		{
+			size = WorldGen.genRand.Next(7, 18);
+		}
+
 		j += 3;
 
-		if (!WorldGen.genRand.NextBool(60) || !GenVars.structures.CanPlace(new Rectangle(i - size, j - size, size * 2, size * 2)))
+		if (!GenVars.structures.CanPlace(new Rectangle(i - size, j - size, size * 2, size * 2)))
 		{
 			return false;
 		}
 
-		int type = WorldGen.genRand.NextBool(12) ? ModContent.TileType<Runestone>() : TileID.Stone;
-
 		FastNoiseLite noise = new();
 		noise.SetFrequency(0.015f);
-
-		Ellipse.GenOval(new Vector2(i, j), size, WorldGen.genRand.NextFloat(MathHelper.Pi) + MathHelper.PiOver2, false, type, noise);
+		Ellipse.GenOval(new Vector2(i, j), size, WorldGen.genRand.NextFloat(MathHelper.Pi) + MathHelper.PiOver2, isWall, type, noise);
 		return true;
 	}
 
@@ -384,7 +406,6 @@ internal class ForestArea : MappingWorld
 		Main.rockLayer = 270;
 
 		LeftSpawn = Main.rand.NextBool(2);
-		LastTreeX = LeftSpawn ? 200 : Main.maxTilesX - 200;
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
@@ -404,7 +425,6 @@ internal class ForestArea : MappingWorld
 				if (i == Main.maxTilesX / 10 * 3 || i == Main.maxTilesX / 10 * 7 && WorldGen.genRand.NextBool())
 				{
 					trees.Add(i);
-					LastTreeX = i;
 				}
 			}
 
@@ -471,5 +491,11 @@ internal class ForestArea : MappingWorld
 			int type = isWall ? WallID.LivingLeaf : TileID.LeafBlock;
 			Ellipse.GenOval(pos.ToVector2(), WorldGen.genRand.NextFloat(10, 50), WorldGen.genRand.NextFloat(MathHelper.TwoPi), isWall, type, noise);
 		}
+	}
+
+	public void OverrideOcean()
+	{
+		Main.bgStyle = 0;
+		Main.curMusic = MusicID.OverworldDay;
 	}
 }

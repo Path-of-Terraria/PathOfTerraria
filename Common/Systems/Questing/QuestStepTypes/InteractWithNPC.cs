@@ -1,4 +1,6 @@
-﻿using Terraria.Localization;
+﻿using Terraria.GameContent;
+using Terraria.Localization;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
@@ -67,6 +69,29 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 		return baseText;
 	}
 
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
+	{
+		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
+		Color col = StepColor(currentStep);
+		string[] texts = DisplayString().Split('\n');
+		bool throwaway = false;
+
+		for (int i = 0; i < texts.Length; ++i)
+		{
+			Vector2 pos = topLeft + new Vector2(0, i * 20);
+			Color color = col;
+
+			if (currentStep == StepCompletion.Current && i > 0 && CheckSingleItem(Main.LocalPlayer, ref throwaway, RequiredItems[i - 1]))
+			{
+				color = Color.Green;
+			}
+
+			DrawString(texts[i], pos, color, currentStep);
+		}
+
+		uiHeight = texts.Length * 22;
+	}
+
 	public override bool Track(Player player)
 	{
 		bool talkingToNpc = player.TalkNPC is not null && player.TalkNPC.type == NpcId;
@@ -79,18 +104,7 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 			{
 				foreach (GiveItem item in RequiredItems)
 				{
-					int count = 0;
-
-					for (int i = 0; i < item.Ids.Length; ++i)
-					{
-						count += player.CountItem(item.Ids[i]);
-					}
-
-					if (count < item.Stack)
-					{
-						hasAllItems = false;
-						break;
-					}
+					CheckSingleItem(player, ref hasAllItems, item);
 				}
 
 				if (hasAllItems)
@@ -136,5 +150,23 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 		}
 
 		return finished;
+	}
+
+	private static bool CheckSingleItem(Player player, ref bool hasAllItems, GiveItem item)
+	{
+		int count = 0;
+
+		for (int i = 0; i < item.Ids.Length; ++i)
+		{
+			count += player.CountItem(item.Ids[i]);
+		}
+
+		if (count < item.Stack)
+		{
+			hasAllItems = false;
+			return false;
+		}
+
+		return true;
 	}
 }

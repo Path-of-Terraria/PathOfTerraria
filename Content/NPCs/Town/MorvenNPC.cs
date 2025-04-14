@@ -59,7 +59,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[NPC.type] = 25;
+		Main.npcFrameCount[NPC.type] = 26;
 
 		NPCID.Sets.ExtraFramesCount[NPC.type] = 9;
 		NPCID.Sets.AttackFrameCount[NPC.type] = 4;

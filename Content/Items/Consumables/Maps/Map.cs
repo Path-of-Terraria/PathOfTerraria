@@ -17,6 +17,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	protected sealed override bool CloneNewInstances => true;
 
 	public abstract int MaxUses { get; }
+	public abstract bool CanDrop { get; }
 	public virtual int WorldTier => WorldLevelBasedOnTier(Tier);
 
 	public int RemainingUses = 0;
@@ -70,12 +71,6 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public virtual string GetNameAndTier()
 	{
 		return Core.Items.GenerateName.Invoke(Item);
-	}
-
-	public static void SpawnItem(Vector2 pos)
-	{
-		SpawnMap<LowTierMap>(pos);
-		SpawnMap<CaveMap>(pos);
 	}
 	
 	public static void SpawnMap<T>(Vector2 pos) where T : Map

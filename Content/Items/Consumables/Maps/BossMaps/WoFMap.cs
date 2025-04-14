@@ -9,6 +9,7 @@ internal class WoFMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 45;
+	public override bool CanDrop => Main.hardMode;
 
 	public override void SetStaticDefaults()
 	{

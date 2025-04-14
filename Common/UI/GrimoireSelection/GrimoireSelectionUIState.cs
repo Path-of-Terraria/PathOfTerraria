@@ -19,7 +19,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 {
 	public static readonly Point MainPanelSize = new(900, 550);
 
-	public override bool IsCentered => true;
+	protected override bool IsCentered => true;
 
 	public static Asset<Texture2D> EmptySummonTexture = null;
 

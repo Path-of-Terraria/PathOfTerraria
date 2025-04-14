@@ -21,7 +21,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [LegacyName("WitchNPC")]
 public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
-	public Point16 TileSpawn => new(970, 190);
+	public Point16 TileSpawn => new(970, 171);
 
 	public override void SetStaticDefaults()
 	{

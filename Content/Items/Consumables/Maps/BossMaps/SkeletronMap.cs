@@ -9,6 +9,7 @@ internal class SkeletronMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
 	public override int WorldTier => 40;
+	public override bool CanDrop => NPC.downedBoss3;
 
 	public override void SetStaticDefaults()
 	{

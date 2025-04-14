@@ -285,8 +285,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 		usedIds.Add(id);
 
-		Point16 size = new();
-		StructureHelper.Generator.GetDimensions("Assets/Structures/WoFDomain/Arena_" + id, Mod, ref size);
+		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/WoFDomain/Arena_" + id, Mod);
 
 		x -= size.X / 2;
 

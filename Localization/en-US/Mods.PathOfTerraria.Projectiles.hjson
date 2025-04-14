@@ -151,4 +151,16 @@ FallingEntling.DisplayName: Falling Entling
 FallingBranch.DisplayName: Falling Branch
 TinyBoulder.DisplayName: Tiny Boulder
 LargeRoots.DisplayName: Large Roots
-SunDevourerEruptionProjectile.DisplayName: Sun Devourer Eruption Projectile
+SawProjectile.DisplayName: Saw
+ConstantLaserProj.DisplayName: Laser
+ExplosiveTurret.DisplayName: Explosive Turret
+PincerProjectile.DisplayName: Pincer Projectile
+PrimeRocket.DisplayName: Prime Rocket
+PrimeBomb.DisplayName: Prime Bomb
+LaserClone.DisplayName: Laser Clone
+ShrineAoE.DisplayName: Shrine Shrine
+UnstoppableAoE.DisplayName: Unstoppable Shrine
+GodlikeAoE.DisplayName: Godlike Shrine
+DefenseAoE.DisplayName: Defense Shrine
+HasteAoE.DisplayName: Haste Shrine
+RestorationAoE.DisplayName: Restoration Shrine

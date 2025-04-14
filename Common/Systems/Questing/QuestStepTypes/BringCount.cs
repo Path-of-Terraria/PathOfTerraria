@@ -1,5 +1,8 @@
-﻿using Terraria.GameContent.Drawing;
+﻿using System.Linq;
+using Terraria.GameContent;
+using Terraria.GameContent.Drawing;
 using Terraria.Localization;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
@@ -39,6 +42,29 @@ internal class BringCount((int id, int count)[] stacks, int npcId, bool takeItem
 		return result;
 	}
 
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
+	{
+		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
+		Color col = StepColor(currentStep);
+		string[] texts = DisplayString().Split('\n');
+		bool throwaway = false;
+
+		for (int i = 0; i < texts.Length; ++i)
+		{
+			Vector2 pos = topLeft + new Vector2(0, i * 20);
+			Color color = col;
+
+			if (currentStep == StepCompletion.Current && i > 0 && CheckSingleItem(Main.LocalPlayer, ref throwaway, Stacks[i - 1].id, Stacks[i - 1].count))
+			{
+				color = Color.Green;
+			}
+
+			DrawString(texts[i], pos, color, currentStep);
+		}
+
+		uiHeight = texts.Length * 22;
+	}
+
 	public override bool Track(Player player)
 	{
 		if (player.TalkNPC is not null && player.TalkNPC.type == NpcId)
@@ -47,11 +73,7 @@ internal class BringCount((int id, int count)[] stacks, int npcId, bool takeItem
 
 			foreach ((int id, int count) in Stacks)
 			{
-				if (player.CountItem(id, count) < count)
-				{
-					hasAllStacks = false;
-					break;
-				}
+				CheckSingleItem(player, ref hasAllStacks, id, count);
 			}
 
 			if (hasAllStacks)
@@ -71,6 +93,17 @@ internal class BringCount((int id, int count)[] stacks, int npcId, bool takeItem
 		}
 
 		return false;
+	}
+
+	private static bool CheckSingleItem(Player player, ref bool hasAllStacks, int id, int count)
+	{
+		if (player.CountItem(id, count) < count)
+		{
+			hasAllStacks = false;
+			return false;
+		}
+
+		return true;
 	}
 
 	private void TakeAllItems(Player player)

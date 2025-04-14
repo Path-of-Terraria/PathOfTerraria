@@ -5,7 +5,6 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -189,7 +188,7 @@ internal class TwinsDomain : BossDomainSubworld
 		}
 	}
 
-	private static void DecorateMetals(Point16 position, OpenFlags flags, bool fromPlatform = false)
+	internal static void DecorateMetals(Point16 position, OpenFlags flags, bool fromPlatform = false)
 	{
 		if (!Main.tile[position].HasTile)
 		{
@@ -332,37 +331,7 @@ internal class TwinsDomain : BossDomainSubworld
 			return;
 		}
 
-		HashSet<OpenFlags> directions = [];
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		void AddIfTrue(OpenFlags flag)
-		{
-			if (flags.HasFlag(flag))
-			{
-				directions.Add(flag);
-			}
-		}
-
-		AddIfTrue(OpenFlags.Above);
-		AddIfTrue(OpenFlags.Below);
-		AddIfTrue(OpenFlags.Left);
-		AddIfTrue(OpenFlags.Right);
-
-		if (directions.Count == 0)
-		{
-			return;
-		}
-
-		OpenFlags flag = WorldGen.genRand.Next([.. directions]);
-
-		Point direction = flag switch
-		{
-			OpenFlags.Above => new Point(0, -1),
-			OpenFlags.Below => new Point(0, 1),
-			OpenFlags.Right => new Point(1, 0),
-			_ => new Point(-1, 0)
-		};
-
+		Point direction = flags.GetDirectionRandom(WorldGen.genRand);
 		Point16 place = new(position.X + direction.X, position.Y + direction.Y);
 		ushort wall = WallID.DiamondGemspark;
 
@@ -972,7 +941,7 @@ internal class TwinsDomain : BossDomainSubworld
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
-				_mpDelayTimer = 300;
+				_mpDelayTimer = 301;
 			}
 			else if (Main.netMode == NetmodeID.Server)
 			{
@@ -994,8 +963,6 @@ internal class TwinsDomain : BossDomainSubworld
 					else
 					{
 						who.Add(player.whoAmI);
-
-						Mod.Logger.Debug($"I think that player {player.whoAmI} is good. His position is {player.position.Y}.");
 					}
 				}
 			}

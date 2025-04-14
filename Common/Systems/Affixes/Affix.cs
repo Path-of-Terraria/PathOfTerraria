@@ -15,6 +15,7 @@ public abstract class Affix : ILocalizedModType
 	public float Value = 0;
 	public int Duration = 180; //3 Seconds by default
 	public bool IsCorruptedAffix = false;
+	public bool Round = false;
 	public int Tier = 1;
 
 	public string LocalizationCategory => "Affixes";
@@ -29,6 +30,10 @@ public abstract class Affix : ILocalizedModType
 		if (Value == 0)
 		{
 			Value = Main.rand.NextFloat(MinValue, MaxValue);
+			if (Round)
+			{
+				Value = (float) Math.Round(Value);
+			}
 		}
 	}
 

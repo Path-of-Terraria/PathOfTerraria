@@ -166,12 +166,7 @@ WoodenSword: {
 
 MapDevice: {
 	DisplayName: Map Device
-	Tooltip: ""
-}
-
-MapDeviceOn: {
-	DisplayName: Map Device On
-	Tooltip: ""
+	Tooltip: Used to travel through maps
 }
 
 WoodenBow: {
@@ -607,7 +602,7 @@ CorruptShard: {
 	Tooltip:
 		'''
 		Chaotic and unstable
-		Has a chance to add in an additional affix and corrupt any item, disabling any future item interactions
+		Has a chance to add an additional affix and corrupt any item, disabling any future item interactions
 		Has a chance to reduce Uniques into Rare items of the same kind, rerolling them at the same level
 		Has a large chance to do nothing
 		'Pulses with malaise'
@@ -679,9 +674,9 @@ EchoingShard: {
 	DisplayName: Echoing Shard
 	Tooltip:
 		'''
-		  	Creates a clone of an item
-		  	Hold an item then right click this Shard to clone
-		  	'I can see myself!'
+		Creates a clone of an item
+		Hold an item then right click this Shard to clone
+		'I can see myself!'
 		'''
 }
 
@@ -995,13 +990,125 @@ BrittleCrystalItem: {
 
 TwinsMap: {
 	DisplayName: Twins Map
-	Tooltip: ""
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of rot and oil'
+		'''
 }
 
 MechLampItem: {
-	DisplayName: Mech Lamp Item
+	DisplayName: Mech Lamp
 	Tooltip: ""
 }
 
-CircuitSkullBannerItem.DisplayName: Circuit Skull Banner Item
-SecurityDroneBannerItem.DisplayName: Security Drone Banner Item
+CircuitSkullBannerItem.DisplayName: Circuit Skull Banner
+SecurityDroneBannerItem.DisplayName: Security Drone Banner
+
+ConstantLaserItem: {
+	DisplayName: Constant Laser
+	Tooltip: ""
+}
+
+BrokenLaserItem: {
+	DisplayName: Broken Laser
+	Tooltip: ""
+}
+
+CannonAnchorItem: {
+	DisplayName: Cannon Anchor
+	Tooltip: ""
+}
+
+CannonBombAnchorItem: {
+	DisplayName: Cannon Bomb Anchor
+	Tooltip: ""
+}
+
+PincerAnchorItem: {
+	DisplayName: Pincer Anchor
+	Tooltip: ""
+}
+
+GrabberAnchorItem: {
+	DisplayName: Grabber Anchor
+	Tooltip: ""
+}
+
+PrimeMap: {
+	DisplayName: Prime Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of metal and singe'
+		'''
+}
+
+HauntedHeadBannerItem.DisplayName: Haunted Head Banner
+SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
+AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner
+
+DefenseShrineItem: {
+	DisplayName: Defense Shrine Item
+	Tooltip: ""
+}
+
+DesertDefenseShrineItem: {
+	DisplayName: Desert Defense Shrine Item
+	Tooltip: ""
+}
+
+DesertGodlikeShrineItem: {
+	DisplayName: Desert Godlike Shrine Item
+	Tooltip: ""
+}
+
+GodlikeShrineItem: {
+	DisplayName: Godlike Shrine Item
+	Tooltip: ""
+}
+
+DesertRestorationShrineItem: {
+	DisplayName: Desert Restoration Shrine Item
+	Tooltip: ""
+}
+
+RestorationShrineItem: {
+	DisplayName: Restoration Shrine Item
+	Tooltip: ""
+}
+
+ForestDefenseShrineItem: {
+	DisplayName: Forest Defense Shrine Item
+	Tooltip: ""
+}
+
+ForestGodlikeShrineItem: {
+	DisplayName: Forest Godlike Shrine Item
+	Tooltip: ""
+}
+
+ForestRestorationShrineItem: {
+	DisplayName: Forest Restoration Shrine Item
+	Tooltip: ""
+}
+
+DesertHasteShrineItem: {
+	DisplayName: Desert Haste Shrine Item
+	Tooltip: ""
+}
+
+ForestHasteShrineItem: {
+	DisplayName: Forest Haste Shrine Item
+	Tooltip: ""
+}
+
+DesertUnstoppableShrineItem: {
+	DisplayName: Desert Unstoppable Shrine Item
+	Tooltip: ""
+}
+
+ForestUnstoppableShrineItem: {
+	DisplayName: Forest Unstoppable Shrine Item
+	Tooltip: ""
+}

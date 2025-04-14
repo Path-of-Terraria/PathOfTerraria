@@ -1,0 +1,16 @@
+{
+	"friendlyName": "Haunted Head",
+	"entries": [
+		{
+			"scale": null,
+			"prefix": null,
+			"weight": 1,
+			"stats": {
+				"level": 1,
+				"experience": 35
+			},
+			"affixes": null,
+			"requirements": "Desert"
+		}
+	]
+}

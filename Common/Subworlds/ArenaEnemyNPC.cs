@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using PathOfTerraria.Common.Systems.MiscUtilities;
+using System.IO;
+using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Subworlds;
@@ -12,6 +14,7 @@ internal class ArenaEnemyNPC : GlobalNPC
 	public override bool InstancePerEntity => true;
 	protected override bool CloneNewInstances => true;
 
+	public byte? SpawnerIndex;
 	public bool Arena = false;
 	public bool StillDropStuff = false;
 
@@ -24,7 +27,34 @@ internal class ArenaEnemyNPC : GlobalNPC
 
 	public override bool CheckActive(NPC npc)
 	{
-		return !Arena;
+		const int despawnRange = 16 * 100;
+
+		if (Arena)
+		{
+			if (Main.netMode != NetmodeID.MultiplayerClient) //Manually despawn arena NPCs
+			{
+				bool despawn = true;
+
+				foreach (Player player in Main.ActivePlayers)
+				{
+					if (npc.Distance(player.Center) < despawnRange)
+					{
+						despawn = false;
+						break;
+					}
+				}
+
+				if (despawn)
+				{
+					npc.active = false;
+					SpawnerSystem.ResetSpawner(npc.whoAmI);
+				}
+			}
+
+			return false;
+		}
+
+		return true;
 	}
 
 	public override void Load()

@@ -35,11 +35,6 @@ public class ExpModPlayer : ModPlayer
 		Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.SkillUp"), new Color(255, 255, 160));
 
 		Player.GetModPlayer<PassiveTreePlayer>().Points++;
-
-		if (Level == 1 && !ModContent.GetInstance<RavencrestSystem>().SpawnedRaven && SubworldSystem.Current is null)
-		{
-			new RavenPass().Generate(null, null);
-		}
 	}
 
 	public override void SaveData(TagCompound tag)

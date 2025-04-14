@@ -7,6 +7,8 @@
 /// </summary>
 public class SpeedUpNPC : GlobalNPC
 {
+	public static bool Boosting { get; private set; }
+
 	public override bool InstancePerEntity => true;
 
 	public float ExtraAISpeed = 0f;
@@ -38,9 +40,9 @@ public class SpeedUpNPC : GlobalNPC
 
 		while (_extraAITimer >= 1f)
 		{
-			_boosting = true;
+			_boosting = Boosting = true;
 			npc.AI();
-			_boosting = false;
+			_boosting = Boosting = false;
 			_extraAITimer--;
 		}
 

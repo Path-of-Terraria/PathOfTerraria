@@ -1,3 +1,4 @@
+using StructureHelper;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -6,28 +7,32 @@ namespace PathOfTerraria.Common.World.Generation;
 
 internal static class StructureTools
 {
+	/// <summary>
+	/// Shorthand for calling <see cref="StructureHelper.API.Generator.GetStructureDimensions(string, Mod, bool)"/> with <see cref="PoTMod.Instance"/>.
+	/// </summary>
+	/// <param name="structure">Path to the structure. Formatted like "Assets/Structures/XX/Structure".</param>
+	/// <param name="mod"></param>
+	/// <returns></returns>
 	public static Point16 GetSize(string structure, Mod mod = null)
 	{
-		Point16 size = new();
-		StructureHelper.Generator.GetDimensions(structure, mod ?? ModContent.GetInstance<PoTMod>(), ref size);
-		return size;
+		return StructureHelper.API.Generator.GetStructureDimensions(structure, mod ?? PoTMod.Instance);
 	}
 
 	/// <summary>
 	/// Places a structure at the given position and origin.
 	/// </summary>
-	/// <param name="structure"></param>
-	/// <param name="position"></param>
-	/// <param name="origin"></param>
-	/// <param name="mod"></param>
-	/// <param name="cullAbove"></param>
+	/// <param name="structure">Path to the structure, NOT including mod name. Formatted like "Assets/Structures/XX/Structure".</param>
+	/// <param name="position">Position of the structure, according to origin.</param>
+	/// <param name="origin">Origin of the structure; (0, 0) is top-left, (1, 1) is bottom-right.</param>
+	/// <param name="mod">Mod to reference. Usually null for <see cref="PoTMod.Instance"/>.</param>
+	/// <param name="cullAbove">Whether or not to cull tiles above the structure. Used to cut down trees.</param>
 	/// <param name="noSync">Stops StructureHelper from sending a sync packet if desired.</param>
 	/// <returns></returns>
-	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false, bool noSync = false)
+	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false, 
+		bool noSync = false, GenFlags flags = GenFlags.None)
 	{
 		mod ??= ModContent.GetInstance<PoTMod>();
-		var dims = new Point16();
-		StructureHelper.Generator.GetDimensions(structure, mod, ref dims);
+		Point16 dims = GetSize(structure);
 		position = (position.ToVector2() - dims.ToVector2() * origin).ToPoint16();
 
 		if (cullAbove)
@@ -42,12 +47,17 @@ internal static class StructureTools
 			Main.netMode = NetmodeID.SinglePlayer;
 		}
 
-		StructureHelper.Generator.GenerateStructure(structure, position, mod);
+		StructureHelper.API.Generator.GenerateStructure(structure, position, mod, flags: flags);
 		Main.netMode = oldVal;
 		return position;
 	}
 
-	private static void CullLine(Point16 position, Point16 dims)
+	/// <summary>
+	/// Used to remove trees above structures in certain areas.
+	/// </summary>
+	/// <param name="position"></param>
+	/// <param name="dims"></param>
+	internal static void CullLine(Point16 position, Point16 dims)
 	{
 		for (int i = position.X; i < position.X + dims.X; ++i)
 		{
@@ -56,7 +66,7 @@ internal static class StructureTools
 	}
 
 	/// <summary>
-	/// Determines flatness & depth placement of an area. Returns average heights; use <paramref name="valid"/> to check if the space is valid.<br/>
+	/// Determines flatness and depth placement of an area. Returns average heights; use <paramref name="valid"/> to check if the space is valid.<br/>
 	/// This needs a lot of tweaking to get perfect.
 	/// </summary>
 	/// <param name="x">Left of the area.</param>

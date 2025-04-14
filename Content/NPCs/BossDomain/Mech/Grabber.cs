@@ -1,11 +1,9 @@
-﻿using Humanizer;
-using Microsoft.Xna.Framework.Input;
-using Mono.Cecil;
-using NPCUtils;
+﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Content.Scenes;
 using ReLogic.Content;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -61,7 +59,7 @@ internal class Grabber : ModNPC
 		NPC.scale = 1;
 		NPC.dontTakeDamage = true;
 		NPC.npcSlots = 0;
-		NPC.value = Item.buyPrice(0, 5);
+		NPC.value = Item.buyPrice(0, 1);
 
 		SpawnModBiomes = [ModContent.GetInstance<MechBiome>().Type];
 
@@ -115,18 +113,13 @@ internal class Grabber : ModNPC
 			Player captive = Main.player[HoldingPlayer];
 			ShakeTimer += captive.velocity.Length() * 2;
 
-			//captive.velocity = Vector2.Zero;
-			//captive.Center = NPC.Center;
-
 			NPC.velocity *= 0.9f;
-
-			Main.NewText(ShakeTimer);
 
 			if (ShakeTimer > 180 || captive.DeadOrGhost)
 			{
 				HoldingPlayer = -1;
 				ShakeTimer = -1;
-				RegrabTimer = 60;
+				RegrabTimer = 100;
 
 				captive.GetModPlayer<GrabberPlayer>().BeingGrabbed = -1;
 
@@ -320,6 +313,11 @@ public class GrabberPlayer : ModPlayer
 
 	public void UpdateGrabbed()
 	{
+		if (Player.dead)
+		{
+			BeingGrabbed = -1;
+		}
+
 		if (BeingGrabbed >= 0)
 		{
 			NPC grabber = Main.npc[BeingGrabbed];
@@ -343,5 +341,11 @@ public class GrabberPlayer : ModPlayer
 
 			Player.velocity = Vector2.Zero;
 		}
+	}
+
+	public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
+	{
+		BeingGrabbed = -1;
+		return true;
 	}
 }

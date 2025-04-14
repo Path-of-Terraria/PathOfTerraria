@@ -2,6 +2,8 @@ using NPCUtils;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -9,7 +11,8 @@ namespace PathOfTerraria.Content.NPCs.Town;
 
 public sealed class RavenNPC : ModNPC
 {
-	private ref float LastDropX => ref NPC.ai[3];
+	private readonly Vector2[] _offsets = new Vector2[3];
+	private readonly Vector2[] _targets = new Vector2[3];
 
 	public override void SetStaticDefaults()
 	{
@@ -20,16 +23,15 @@ public sealed class RavenNPC : ModNPC
 	{
 		NPC.CloneDefaults(NPCID.Bird);
 		NPC.noTileCollide = true;
-		NPC.width = 30;
-		NPC.width = 26;
+		NPC.width = 74;
+		NPC.width = 74;
 		NPC.dontTakeDamage = true;
 		NPC.dontTakeDamageFromHostiles = true;
 		NPC.netAlways = true;
 		NPC.netUpdate2 = true;
 		NPC.Opacity = 0f;
-
-		AnimationType = NPCID.Bird;
-		AIType = NPCID.Bird;
+		NPC.aiStyle = -1;
+		NPC.noGravity = true;
 
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
@@ -43,79 +45,99 @@ public sealed class RavenNPC : ModNPC
 		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
-	public override bool PreAI()
+	public override void AI()
 	{
-		Lighting.AddLight(NPC.Center, new Vector3(0.15f));
+		NPC.Opacity = MathHelper.Lerp(NPC.Opacity, 0.45f, 0.05f);
+		NPC.TargetClosest(true);
+
+		Player target = Main.player[NPC.target];
 		Vector2 entrancePosition = ModContent.GetInstance<RavencrestSystem>().EntrancePosition.ToVector2() * 16;
+		bool nearEntrance = entrancePosition.DistanceSQ(NPC.Center) < 600 * 600;
+		int dir = Math.Sign(entrancePosition.X - NPC.Center.X);
 
-		if (NPC.DistanceSQ(entrancePosition) < 400 * 400 || Main.player[Player.FindClosest(NPC.Center, 1, 1)].DistanceSQ(NPC.Center) > 700 * 700)
+		if (!nearEntrance && (target.dead || !target.active || target.DistanceSQ(NPC.Center) > 500 * 500 
+			|| Math.Abs(NPC.Center.X - entrancePosition.X) < Math.Abs(target.Center.X - entrancePosition.X + dir * 200)))
 		{
-			if (!Collision.SolidCollision(NPC.position, NPC.width, NPC.height))
+			int tileX = (int)(NPC.Center.X / 16f);
+			int tileY = (int)(NPC.Center.Y / 16f);
+
+			if (!WorldGen.InWorld(tileX, tileY, 20))
 			{
-				NPC.noTileCollide = false;
-				NPC.ai[0] = 0;
+				tileY += 30;
 			}
-
-			NPC.velocity.X *= 0.9f;
-		}
-		else
-		{
-			NPC.noTileCollide = true;
-		}
-
-		if (Math.Abs(NPC.Center.X - entrancePosition.X) < 8)
-		{
-			NPC.Opacity -= 0.05f;
-			NPC.velocity.X *= 0.5f;
-
-			if (NPC.Opacity < 0.05f)
+			else
 			{
-				NPC.active = false;
-
-				for (int i = 0; i < 15; ++i)
+				while (!WorldGen.SolidOrSlopedTile(tileX, tileY))
 				{
-					Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool() ? DustID.GemDiamond : DustID.Phantasmal);
+					tileY++;
+
+					if (!WorldGen.InWorld(tileX, tileY, 20))
+					{
+						break;
+					}
 				}
 			}
+
+			if (tileY - NPC.Center.Y / 16f > 15)
+			{
+				NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, 6f, 0.1f);
+			}
+			else
+			{
+				SlowDown();
+			}
 		}
 		else
 		{
-			NPC.Opacity = MathHelper.Lerp(NPC.Opacity, 0.8f, 0.05f);
+			NPC.spriteDirection = dir;
+			Vector2 targetPosition = target.Center + new Vector2(dir * 180, -120);
+
+			if (nearEntrance)
+			{
+				targetPosition = entrancePosition + new Vector2(60, 200);
+			}
+
+			if (targetPosition.DistanceSQ(NPC.Center) > 30 * 30)
+			{
+				NPC.velocity = Vector2.Lerp(NPC.velocity, NPC.DirectionTo(targetPosition) * (nearEntrance ? 6 : 9), 0.2f);
+			}
+			else
+			{
+				SlowDown();
+			}
 		}
 
-		if (NPC.direction != Math.Sign(entrancePosition.X - NPC.Center.X))
+		if (NPC.velocity.LengthSquared() == 0)
 		{
-			NPC.direction = Math.Sign(entrancePosition.X - NPC.Center.X);
-			NPC.velocity.X *= 0.98f;
+			NPC.spriteDirection = NPC.direction;
 		}
 
-		if (Math.Abs(LastDropX - NPC.Center.X) > 200 && Main.netMode != NetmodeID.MultiplayerClient)
+		if (Main.rand.NextBool(800) && Main.netMode != NetmodeID.Server)
 		{
-			Item.NewItem(NPC.GetSource_FromAI(), NPC.Center, ItemID.SilverCoin, 2);
-			LastDropX = NPC.Center.X;
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/RavenCaw"), NPC.Center);
 		}
-
-		if (NPC.ai[0] == 1 && Main.rand.NextBool(15))
-		{
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.GemDiamond, newColor: Color.Black);
-		}
-
-		NPC.velocity.X *= 1.05f;
-		NPC.velocity.X = MathHelper.Clamp(NPC.velocity.X, -7, 7);
-
-		float lerpVal = Collision.SolidCollision(NPC.position, NPC.width, NPC.height) ? -12 : NPC.velocity.Y;
-		NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, lerpVal, 0.2f);
-
-		return true;
 	}
 
-	public override void PostAI()
+	private void SlowDown()
 	{
-		Vector2 entrancePosition = ModContent.GetInstance<RavencrestSystem>().EntrancePosition.ToVector2() * 16;
+		NPC.velocity *= 0.85f;
 
-		if (NPC.DistanceSQ(entrancePosition) < 600 * 600 && NPC.velocity.Y < 0)
+		if (NPC.velocity.LengthSquared() < 0.05f * 0.05f)
 		{
-			NPC.velocity.Y = 0;
+			NPC.velocity *= 0;
+		}
+	}
+
+	public override void FindFrame(int frameHeight)
+	{
+		if (NPC.velocity.LengthSquared() > 0 || NPC.IsABestiaryIconDummy)
+		{
+			NPC.frameCounter += 0.15f;
+			NPC.frame.Y = frameHeight * (int)(NPC.frameCounter % 4);
+		}
+		else
+		{
+			NPC.frame.Y = frameHeight * 4;
 		}
 	}
 
@@ -127,5 +149,35 @@ public sealed class RavenNPC : ModNPC
 	public override bool NeedSaving()
 	{
 		return true;
+	}
+
+	public override Color? GetAlpha(Color drawColor)
+	{
+		return Color.Lerp(drawColor, Color.White, 0.3f);
+	}
+
+	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		Texture2D tex = TextureAssets.Npc[Type].Value;
+		Vector2 pos = NPC.Center - screenPos;
+		Rectangle frame = NPC.frame with { Width = 80 };
+		SpriteEffects effect = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+		for (int i = 0; i < _offsets.Length; ++i)
+		{
+			_offsets[i] = Vector2.Lerp(_offsets[i], _targets[i], 0.35f);
+
+			if (_offsets[i].DistanceSQ(_targets[i]) < 0.5f * 0.5f)
+			{
+				_targets[i] = Main.rand.NextVector2CircularEdge(9, 9);
+			}
+
+			Vector2 drawPos = pos + _offsets[i];
+			Main.EntitySpriteDraw(tex, drawPos, frame, drawColor * NPC.Opacity * 0.5f, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
+		}
+
+		Main.EntitySpriteDraw(tex, pos, frame, drawColor * NPC.Opacity, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
+		Main.EntitySpriteDraw(tex, pos, frame with { X = 82 }, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
+		return false;
 	}
 }
