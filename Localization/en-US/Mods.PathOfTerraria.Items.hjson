@@ -1115,5 +1115,9 @@ ForestUnstoppableShrineItem: {
 
 DesertMap: {
 	DisplayName: Desert Map
-	Tooltip: ""
+	Tooltip: 
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of sand and bone'
+		'''
 }
