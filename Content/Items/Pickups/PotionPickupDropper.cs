@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
@@ -47,7 +46,7 @@ internal class PotionPickupDropper : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		if (NPCID.Sets.ProjectileNPC[npc.type])
+		if (NPCID.Sets.ProjectileNPC[npc.type] || npc.CountsAsACritter || npc.friendly)
 		{
 			return;
 		}

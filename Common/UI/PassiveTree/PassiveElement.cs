@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Sounds;
@@ -124,14 +123,17 @@ internal class PassiveElement : SmartUiElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		if (!_passive.CanAllocate(Main.LocalPlayer) || !CheckMouseContained())
+		Player p = Main.LocalPlayer;
+
+		if (!_passive.CanAllocate(p) || !CheckMouseContained())
 		{
 			return;
 		}
 
 		_passive.Level++;
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points--;
-		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
+		p.GetModPlayer<PassiveTreePlayer>().Points--;
+		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
+		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
 
 		_flashTimer = 20;
 
@@ -140,17 +142,20 @@ internal class PassiveElement : SmartUiElement
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
+		Player p = Main.LocalPlayer;
+
 		if (!_passive.CanDeallocate(Main.LocalPlayer) || !CheckMouseContained())
 		{
 			return;
 		}
 
 		_passive.Level--;
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points++;
+		p.GetModPlayer<PassiveTreePlayer>().Points++;
+		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
 
 		_redFlashTimer = 20;
 
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
-		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
+		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
 	}
 }
