@@ -163,3 +163,8 @@ AddedDexterityPassive: {
 	Name: Nimble Feet
 	Tooltip: Adds +{0} points to dexterity per level.
 }
+
+IncreasedPotionRecoveryPassive: {
+	Name: IncreasedPotionRecoveryPassive
+	Tooltip: Adds +{0}% additional healing from Healing Potions per level.
+}
