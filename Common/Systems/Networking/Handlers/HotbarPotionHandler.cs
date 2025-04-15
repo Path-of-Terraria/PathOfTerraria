@@ -42,7 +42,7 @@ internal static class HotbarPotionHandler
 
 	public static void SetHotbarPotion(byte playerWhoAmI, bool isHealingPotion, int newValue)
 	{
-		PotionSystem player = Main.player[playerWhoAmI].GetModPlayer<PotionSystem>();
+		PotionPlayer player = Main.player[playerWhoAmI].GetModPlayer<PotionPlayer>();
 		
 		if (isHealingPotion)
 		{

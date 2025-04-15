@@ -170,7 +170,7 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest =	Quest.GetLocalPlayerInstance<DeerclopsQuest>();
-		return !quest.Completed;
+		return QuestUnlockManager.CanStartQuest<DeerclopsQuest>() && !quest.Completed;
 	}
 
 	public bool ForceSpawnInTavern()

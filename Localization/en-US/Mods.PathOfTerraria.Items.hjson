@@ -11,11 +11,13 @@ MapCommon: {
 HealingPotionPickup: {
 	DisplayName: Healing Potion Pickup
 	Tooltip: ""
+	Pickup: Healing Potion
 }
 
 ManaPotionPickup: {
 	DisplayName: Mana Potion Pickup
 	Tooltip: ""
+	Pickup: Mana Potion
 }
 
 Helmet: {
@@ -1115,7 +1117,7 @@ ForestUnstoppableShrineItem: {
 
 DesertMap: {
 	DisplayName: Desert Map
-	Tooltip: 
+	Tooltip:
 		'''
 		{$MapCommon.BossBase}
 		'The map smells of sand and bone'

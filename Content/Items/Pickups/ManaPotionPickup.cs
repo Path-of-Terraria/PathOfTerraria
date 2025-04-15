@@ -14,19 +14,27 @@ internal class ManaPotionPickup : PickupItem
 
 	public override bool CanPickup(Player player)
 	{
-		return player.GetModPlayer<PotionSystem>().ManaLeft < player.GetModPlayer<PotionSystem>().MaxMana;
+		int manaLeft = player.GetModPlayer<PotionPlayer>().ManaLeft;
+		int maxMana = player.GetModPlayer<PotionPlayer>().MaxMana;
+		bool potionSpace = manaLeft < maxMana;
+		bool orAutoMana = manaLeft >= maxMana && player.statMana < player.statManaMax2 && !player.HasBuff(BuffID.ManaSickness);
+		return potionSpace || orAutoMana;
 	}
-
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<PotionSystem>().ManaLeft++;
+		PotionPlayer potionPlr = player.GetModPlayer<PotionPlayer>();
+		ref int manaLeft = ref potionPlr.ManaLeft;
 
-		if (Main.netMode != NetmodeID.SinglePlayer)
+		if (manaLeft >= player.GetModPlayer<PotionPlayer>().MaxMana && player.statMana < player.statManaMax2 && !player.HasBuff(BuffID.ManaSickness))
 		{
-			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, false, (byte)player.GetModPlayer<PotionSystem>().ManaLeft);
+			manaLeft++;
+			PotionPlayer.UseHealingPotion(player, true);
 		}
-
-		CombatText.NewText(player.Hitbox, new Color(150, 190, 255), "Mana Potion");
+		else if (manaLeft < player.GetModPlayer<PotionPlayer>().MaxMana)
+		{
+			manaLeft++;
+			CombatText.NewText(player.Hitbox, new Color(150, 190, 255), this.GetLocalization("Pickup").Value);
+		}
 
 		for (int k = 0; k < 10; k++)
 		{
