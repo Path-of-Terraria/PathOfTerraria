@@ -34,7 +34,7 @@ internal class HealingPotionPickup : PickupItem
 		else if (healingLeft < player.GetModPlayer<PotionPlayer>().MaxHealing)
 		{
 			healingLeft++;
-			CombatText.NewText(player.Hitbox, new Color(255, 150, 150), "Healing Potion");
+			CombatText.NewText(player.Hitbox, new Color(255, 150, 150), this.GetLocalization("Pickup").Value);
 		}
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
