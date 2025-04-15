@@ -74,14 +74,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue." + Main.rand.Next(4));
 	}
 
-	public override void AddShops()
-	{
-		if (!ShopUtils.TryCloneNpcShop("Terraria/DD2Bartender/Shop", Type))
-		{
-			Mod.Logger.Error($"Failed to clone shop 'Terraria/DD2Bartender/Shop' to NPC '{Name}'!");
-		}
-	}
-
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
 	{
 		damage = 13;
