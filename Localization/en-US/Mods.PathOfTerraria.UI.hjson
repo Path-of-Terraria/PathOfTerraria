@@ -49,6 +49,11 @@ SkillUI: {
 }
 
 Guide: {
+	Next: Next
+	Skip: Skip
+	SkipGuide: "{$Skip} All"
+	SkipStep: "{$Skip} Step"
+	Hide: Hide
 	# Welcome/hello, explain purpose of tutorial
 	0:
 		'''

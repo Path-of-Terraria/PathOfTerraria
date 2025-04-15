@@ -39,7 +39,9 @@ internal class TutorialUIState : UIState
 
 	private float _opacity;
 	private float _displayTextLength;
-	private float _baseYDivisor = 4; 
+	private float _baseYDivisor = 4;
+	private bool _hide = false;
+	private float _hideOpacity = 1f;
 	
 	public TutorialUIState()
 	{
@@ -49,18 +51,44 @@ internal class TutorialUIState : UIState
 		Step = StoredStep;
 	}
 
+	private static string Localize(string postfix) 
+	{
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.Guide." + postfix);
+	}
+
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
-		_opacity = MathHelper.Lerp(_opacity, HideSelf() ? 0 : 1, 0.05f);
+		_opacity = MathHelper.Lerp(_opacity, ShouldFadeOut() ? 0 : 1, 0.05f);
 
 		if (_opacity < 0.001f)
 		{
 			return;
 		}
 
-		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, Step is 9 or 10 or 11 ? 8 : 4, 0.05f);
+		float divisorTarget = Step is 9 or 10 or 11 ? 8 : 4;
+		_hideOpacity = MathHelper.Lerp(_hideOpacity, _hide ? 0 : 1, 0.1f);
+
+		if (_hide)
+		{
+			divisorTarget = 16;
+		}
+
+		_baseYDivisor = MathHelper.Lerp(_baseYDivisor, divisorTarget, 0.05f);
 
 		Vector2 pos = new Vector2(Main.screenWidth, Main.screenHeight) / new Vector2(2, _baseYDivisor);
+		float oldOpacity = _opacity;
+		bool skipSecondHideButton = false;
+
+		if (_hide)
+		{
+			DrawHideButton(spriteBatch, pos);
+			skipSecondHideButton = !_hide;
+		}
+
+		if (_hideOpacity < _opacity)
+		{
+			_opacity = _hideOpacity;
+		}
 
 		// Temp fix to position the guide correctly on ultra-wide monitors + 4k monitors
 		if (Main.screenWidth > 3000)
@@ -73,9 +101,9 @@ internal class TutorialUIState : UIState
 		DrawBacked(spriteBatch, pos, text, false);
 
 		bool canGoNext = CanGotoNextStep();
-		DrawBacked(spriteBatch, pos + new Vector2(-110, 110), "Next", true, !canGoNext ? null : new Action(IncrementStep), !canGoNext);
-		DrawBacked(spriteBatch, pos + new Vector2(0, 110), "Skip Step", true, new Action(IncrementStep));
-		DrawBacked(spriteBatch, pos + new Vector2(110, 110), "Skip Guide", true, () => 
+		DrawBacked(spriteBatch, pos + new Vector2(-168, 110), Localize("Next"), true, !canGoNext ? null : new Action(IncrementStep), !canGoNext);
+		DrawBacked(spriteBatch, pos + new Vector2(-56, 110), Localize("SkipStep"), true, new Action(IncrementStep));
+		DrawBacked(spriteBatch, pos + new Vector2(56, 110), Localize("SkipGuide"), true, () =>
 		{
 			Step = 12;
 
@@ -92,10 +120,22 @@ internal class TutorialUIState : UIState
 			IncrementStep();
 		});
 
-		bool HideSelf() //Under what conditions this panel should fade out in
+		if (!_hide && !skipSecondHideButton)
+		{
+			DrawHideButton(spriteBatch, pos);
+		}
+
+		_opacity = oldOpacity;
+
+		bool ShouldFadeOut() //Under what conditions this panel should fade out in
 		{
 			return Step > 13 || Main.npcChatText != string.Empty;
 		}
+	}
+
+	private void DrawHideButton(SpriteBatch spriteBatch, Vector2 pos)
+	{
+		DrawBacked(spriteBatch, pos + new Vector2(168, 110), Localize("Hide"), true, () => _hide = !_hide);
 	}
 
 	public override void Update(GameTime gameTime)
@@ -209,10 +249,10 @@ internal class TutorialUIState : UIState
 		};
 	}
 
-	private void DrawBacked(SpriteBatch spriteBatch, Vector2 pos, string text, bool isPrimaryPanel, Action onClick = null, bool grayOut = false)
+	private void DrawBacked(SpriteBatch spriteBatch, Vector2 pos, string text, bool notPrimaryPanel, Action onClick = null, bool grayOut = false)
 	{
 		bool hasClick = onClick is not null;
-		Texture2D tex = (isPrimaryPanel ? SmallBack : BigBack).Value;
+		Texture2D tex = (notPrimaryPanel ? SmallBack : BigBack).Value;
 		bool hover = false;
 		Rectangle bounds = new((int)pos.X - tex.Width / 2, (int)pos.Y - tex.Height / 2, tex.Width, tex.Height);
 
@@ -222,16 +262,24 @@ internal class TutorialUIState : UIState
 			Main.LocalPlayer.mouseInterface = true;
 		}
 
-		if (!isPrimaryPanel)
+		if (!notPrimaryPanel)
 		{
 			if (Step <= 14)
 			{
-				_displayTextLength = Math.Min(_displayTextLength + 0.9f, text.Length);
+				if (!_hide)
+				{
+					_displayTextLength = Math.Min(_displayTextLength + 0.9f, text.Length);
+				}
+
 				text = text[.. (int)_displayTextLength];
 			}
 			else
 			{
-				_displayTextLength = Math.Max(_displayTextLength - 0.9f, 0);
+				if (!_hide)
+				{
+					_displayTextLength = Math.Max(_displayTextLength - 0.9f, 0);
+				}
+
 				text = text[..(int)_displayTextLength];
 			}
 		}
