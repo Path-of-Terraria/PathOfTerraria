@@ -23,6 +23,6 @@ internal class IncreasedPotionRecoveryPassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.PotionHealPower += 0.5f;
+		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.PotionHealPower += Level * 0.5f;
 	}
 }

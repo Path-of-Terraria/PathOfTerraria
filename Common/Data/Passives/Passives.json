@@ -494,5 +494,20 @@
 			"x": 0,
 			"y": -290
 		}
+	},
+	{
+		"internalIdentifier": "IncreasedMoveSpeedPassive",
+		"referenceId": 34,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": -380
+		}
 	}
 ]
