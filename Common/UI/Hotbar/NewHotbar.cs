@@ -177,7 +177,7 @@ internal sealed class NewHotbar : SmartUiState
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
 		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30 + off));
 
-		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
+		PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 
 		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/EmptyPotion").Value;
 
@@ -547,7 +547,7 @@ public class HijackHotbarClick : ModSystem
 	private static void SetHealthOrManaTooltip(bool health)
 	{
 		string type = health ? "Health" : "Mana";
-		PotionSystem potions = Main.LocalPlayer.GetModPlayer<PotionSystem>();
+		PotionPlayer potions = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 
 		Tooltip.SetName(Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"));
 		Tooltip.SetTooltip(

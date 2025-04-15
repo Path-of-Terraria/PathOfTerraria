@@ -14,16 +14,16 @@ internal class ManaPotionPickup : PickupItem
 
 	public override bool CanPickup(Player player)
 	{
-		return player.GetModPlayer<PotionSystem>().ManaLeft < player.GetModPlayer<PotionSystem>().MaxMana;
+		return player.GetModPlayer<PotionPlayer>().ManaLeft < player.GetModPlayer<PotionPlayer>().MaxMana;
 	}
 
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<PotionSystem>().ManaLeft++;
+		player.GetModPlayer<PotionPlayer>().ManaLeft++;
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, false, (byte)player.GetModPlayer<PotionSystem>().ManaLeft);
+			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, false, (byte)player.GetModPlayer<PotionPlayer>().ManaLeft);
 		}
 
 		CombatText.NewText(player.Hitbox, new Color(150, 190, 255), "Mana Potion");
