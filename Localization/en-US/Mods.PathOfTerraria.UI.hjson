@@ -54,6 +54,7 @@ Guide: {
 	SkipGuide: "{$Skip} All"
 	SkipStep: "{$Skip} Step"
 	Hide: Hide
+	Show: Show
 	# Welcome/hello, explain purpose of tutorial
 	0:
 		'''

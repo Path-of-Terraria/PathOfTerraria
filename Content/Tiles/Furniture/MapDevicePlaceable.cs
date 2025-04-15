@@ -43,12 +43,9 @@ public class MapDevicePlaceable : ModTile
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<MapDeviceEntity>().Hook_AfterPlacement, -1, 0, false);
 		TileObjectData.newTile.LavaDeath = false;
 		TileObjectData.newTile.DrawYOffset = 2;
-		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 3;
-		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
-		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
-		TileObjectData.addAlternate(1);
+		TileObjectData.newTile.AnchorBottom = new AnchorData(TileObjectData.newTile.AnchorBottom.type, TileObjectData.newTile.Width, 0);
 		TileObjectData.addTile(Type);
 
 		RegisterItemDrop(ModContent.ItemType<MapDevice>());
@@ -72,7 +69,7 @@ public class MapDevicePlaceable : ModTile
 	{
 		Tile tile = Main.tile[i, j];
 
-		if (tile.TileFrameX != 0 || tile.TileFrameY != 0 && tile.TileFrameY != 90)
+		if (tile.TileFrameX % 90 != 0 || tile.TileFrameY != 0)
 		{
 			return;
 		}
@@ -183,7 +180,7 @@ internal class MapDeviceEntity : ModTileEntity
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
 		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18;
+		i -= tile.TileFrameX % 90 / 18;
 		j -= tile.TileFrameY / 18 % 5;
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)

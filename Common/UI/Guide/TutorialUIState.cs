@@ -135,7 +135,7 @@ internal class TutorialUIState : UIState
 
 	private void DrawHideButton(SpriteBatch spriteBatch, Vector2 pos)
 	{
-		DrawBacked(spriteBatch, pos + new Vector2(168, 110), Localize("Hide"), true, () => _hide = !_hide);
+		DrawBacked(spriteBatch, pos + new Vector2(168, 110), Localize(_hide ? "Show" : "Hide"), true, () => _hide = !_hide);
 	}
 
 	public override void Update(GameTime gameTime)
