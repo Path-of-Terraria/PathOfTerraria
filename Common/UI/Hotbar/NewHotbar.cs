@@ -271,11 +271,11 @@ internal sealed class NewHotbar : SmartUiState
 
 		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
 		{
-			DrawSkillHoverTooltips(skillIndex, skill);
+			DrawSkillHoverTooltips(skill, skillIndex);
 		}
 	}
 
-	private static void DrawSkillHoverTooltips(int skillIndex, Skill skill)
+	internal static void DrawSkillHoverTooltips(Skill skill, int? skillIndex = null)
 	{
 		string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
 
@@ -289,17 +289,22 @@ internal sealed class NewHotbar : SmartUiState
 
 		string noKeybindName = Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value;
 
-		string keybindName = skillIndex switch
+		string keybindLine = "";
+
+		if (skillIndex.HasValue)
 		{
-			0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill1KeybindName) ? skill1KeybindName : noKeybindName,
-			1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill2KeybindName) ? skill2KeybindName : noKeybindName,
-			2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill3KeybindName) ? skill3KeybindName : noKeybindName,
-			_ => ""
-		};
+			string keybindName = skillIndex switch
+			{
+				0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill1KeybindName) ? skill1KeybindName : noKeybindName,
+				1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill2KeybindName) ? skill2KeybindName : noKeybindName,
+				2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill3KeybindName) ? skill3KeybindName : noKeybindName,
+				_ => ""
+			};
 
-		string keybindLine = Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value;
+			keybindLine = Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value + "\n";
+		}
 
-		string tooltip = $"{keybindLine}\n{skill.Description.Value}\n{manaCost}\n{weapon}";
+		string tooltip = $"{keybindLine}{skill.Description.Value}\n{manaCost}\n{weapon}";
 
 		if (skill.Duration != 0)
 		{
