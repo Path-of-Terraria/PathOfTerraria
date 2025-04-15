@@ -31,7 +31,7 @@ internal class VoidPearlThrown : ModProjectile
 		{
 			if (!item.Overlayer)
 			{
-				VoidPearl.DrawParticle(item, false, Projectile.Center);
+				VoidPearl.DrawParticle(item, false, Projectile.Center, Color.White);
 			}
 		}
 
@@ -44,7 +44,7 @@ internal class VoidPearlThrown : ModProjectile
 		{
 			if (item.Overlayer)
 			{
-				VoidPearl.DrawParticle(item, false, Projectile.Center);
+				VoidPearl.DrawParticle(item, false, Projectile.Center, Color.White);
 			}
 		}
 	}

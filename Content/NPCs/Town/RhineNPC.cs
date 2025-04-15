@@ -180,6 +180,6 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 
 	public float SpawnChanceInTavern()
 	{
-		return 0.2f;
+		return 1f;
 	}
 }

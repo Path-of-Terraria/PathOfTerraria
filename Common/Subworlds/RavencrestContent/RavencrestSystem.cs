@@ -1,12 +1,8 @@
-﻿using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Common.Systems.Questing;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.UI;
-using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Graphics;
 using SubworldLibrary;
@@ -25,7 +21,7 @@ public class RavencrestSystem : ModSystem
 {
 	public readonly HashSet<string> HasOverworldNPC = [];
 
-	private static readonly Dictionary<string, ImprovableStructure> structures = [];
+	internal static readonly Dictionary<string, ImprovableStructure> structures = [];
 
 	public bool SpawnedRaven = false;
 	public bool SpawnedScout = false;
@@ -38,31 +34,31 @@ public class RavencrestSystem : ModSystem
 		structures.Add("Lodge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Lodge_",
-			Position = new Point(259, 115),
+			Position = new Point(259, 95),
 		});
 
 		structures.Add("Forge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Forge_",
-			Position = new Point(195, 129)
+			Position = new Point(195, 109)
 		});
 
 		structures.Add("Burrow", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
-			Position = new Point(943, 154)
+			Position = new Point(800, 129)
 		});
     
 		structures.Add("Observatory", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
-			Position = new Point(107, 142)
+			Position = new Point(107, 122)
 		});
 
 		structures.Add("Library", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Library_",
-			Position = new Point(747, 119)
+			Position = new Point(604, 94)
 		});
 
 		MiscOverlayUI.DrawOverlay += DrawDistantMorvenDialogue;

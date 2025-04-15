@@ -314,7 +314,7 @@ internal sealed class NewHotbar : SmartUiState
 		Tooltip.SetTooltip(tooltip);
 	}
 
-	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
+	private static void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
 		Texture2D building = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBuilding").Value;
 		Main.inventoryScale = Math.Max(opacity, 0f);
@@ -453,9 +453,16 @@ internal sealed class NewHotbar : SmartUiState
 
 public class HijackHotbarClick : ModSystem
 {
+	private static bool WasInInventory = false;
+
 	public override void Load()
 	{
 		On_Main.GUIHotbarDrawInner += StopClickOnHotbar;
+	}
+
+	public override void PreUpdateNPCs()
+	{
+		WasInInventory = Main.playerInventory; // Needs manual check for old value because HotbarHijack.cs overrides this value for the below method
 	}
 
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
@@ -481,7 +488,7 @@ public class HijackHotbarClick : ModSystem
 	{
 		const int FirstSlot = 0;
 
-		if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
+		if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !WasInInventory)
 		{
 			var pos = new Rectangle(26 * (FirstSlot + 1) - 4, 30, 60, 60);
 
@@ -528,7 +535,7 @@ public class HijackHotbarClick : ModSystem
 		{
 			var pos = new Rectangle(offX, offY, SlotSize, SlotSize);
 
-			if (pos.Contains(Main.MouseScreen.ToPoint()))
+			if (pos.Contains(Main.MouseScreen.ToPoint()) && !Main.playerInventory)
 			{
 				SetHealthOrManaTooltip(i == 0);
 			}

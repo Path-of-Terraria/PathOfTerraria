@@ -7,7 +7,6 @@ using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -19,13 +18,13 @@ namespace PathOfTerraria.Common.Subworlds;
 
 internal class RavencrestSubworld : MappingWorld
 {
-	public override int Width => 1200;
+	public override int Width => 1010;
 	public override int Height => 340;
 	public override bool ShouldSave => true;
 	public override int[] WhitelistedMiningTiles => [TileID.Tombstones];
 	public override int[] WhitelistedPlaceableTiles => [TileID.Tombstones];
 
-	public override List<GenPass> Tasks => [new FlatWorldPass(145, true, null, TileID.Dirt, WallID.Dirt), 
+	public override List<GenPass> Tasks => [new FlatWorldPass(126, true, null, TileID.Dirt, WallID.Dirt), 
 		new PassLegacy("World", SpawnWorld), new PassLegacy("Smooth", SmoothPass)];
 
 	private void SmoothPass(GenerationProgress progress, GameConfiguration configuration)
@@ -75,7 +74,7 @@ internal class RavencrestSubworld : MappingWorld
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
 		Main.spawnTileX = 398;
-		Main.spawnTileY = 181;
+		Main.spawnTileY = 141;
 
 		//WorldFile.LoadWorld_Version2(new BinaryReader(new MemoryStream(PoTMod.Instance.GetFileBytes("Assets/Structures/Worlds/RavencrestSubworld.wld"))));
 
