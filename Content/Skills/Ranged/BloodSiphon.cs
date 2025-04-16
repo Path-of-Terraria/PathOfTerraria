@@ -16,10 +16,11 @@ public class BloodSiphon : Skill
 
 	public override void LevelTo(byte level)
 	{
+		level = 3;
 		Level = level;
-		Cooldown = 15 * 60;
+		MaxCooldown = (15 - Level * 2) * 60;
 		Timer = 0;
-		ManaCost = 20;
+		ManaCost = 20 - Level * 5;
 		Duration = 0;
 		WeaponType = ItemType.Ranged;
 	}
@@ -50,7 +51,7 @@ public class BloodSiphon : Skill
 			}
 		}
 
-		Timer = Cooldown;
+		Timer = MaxCooldown;
 	}
 
 	public override bool CanEquipSkill(Player player)
