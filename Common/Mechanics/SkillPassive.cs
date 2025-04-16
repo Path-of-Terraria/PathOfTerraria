@@ -1,15 +1,36 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.SkillPassives;
+﻿using PathOfTerraria.Common.Systems.Skills;
 using Terraria.Localization;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class SkillPassive
+public abstract class SkillPassive(SkillTree tree) : Allocatable(tree)
 {
-	public Skill Skill { get; set; } = null;
+	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillPassives/" + Name;
+	public override string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Description");
+
+	public int Level;
+	public int MaxLevel;
+
+	public override void Draw(SpriteBatch spriteBatch, Vector2 position)
+	{
+		Texture2D texture = Texture.Value;
+		spriteBatch.Draw(texture, position - texture.Size() / 2, Color.White);
+	}
+
+	/// <summary> The effects of this skill passive. </summary>
+	public virtual void PassiveEffects() { }
+
+	public override void OnAllocate(Player player)
+	{
+		Level++;
+	}
+
+	public override void OnDeallocate(Player player)
+	{
+		Level--;
+	}
+
+	/*public Skill Skill { get; set; } = null;
 	public virtual List<SkillPassive> Connections { get; set; }
 	public abstract int ReferenceId { get; }
 	public abstract Vector2 TreePos { get; }
@@ -168,5 +189,5 @@ public abstract class SkillPassive
 		//PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		//return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
-	}
+	}*/
 }

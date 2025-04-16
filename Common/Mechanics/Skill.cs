@@ -1,31 +1,11 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.Skills.Melee;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
-
-public class SkillPassiveEdge(SkillPassive start, SkillPassive end)
-{
-	public readonly SkillPassive Start = start;
-	public readonly SkillPassive End = end;
-
-	public bool Contains(SkillPassive p)
-	{
-		return p == Start || p == End;
-	}
-
-	/// <summary>
-	/// Assuming that p is either start or end - Contains returned true.
-	/// </summary>
-	public SkillPassive Other(SkillPassive p)
-	{
-		return p == Start ? End : Start;
-	}
-}
 
 public abstract class Skill
 {
@@ -36,10 +16,9 @@ public abstract class Skill
 	public int ManaCost;
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
-	public abstract List<SkillPassive> Passives { get; }
-	public List<SkillPassive> ActiveNodes = [];
-	public List<SkillPassiveEdge> Edges = [];
 
+	/// <summary> The tree associated with this skill. <see cref="null"/> if there is none. </summary>
+	public virtual SkillTree SkillTree { get; }
 	public abstract int MaxLevel { get; }
 	public int PassivePoints { get; set; } = 1;
 
@@ -156,6 +135,8 @@ public abstract class Skill
 		ManaCost = tag.GetShort(nameof(ManaCost));
 		WeaponType = (ItemType)tag.GetInt(nameof(WeaponType));
 		Level = tag.GetByte(nameof(Level));
+
+		SkillTree?.LoadData(tag);
 	}
 
 	public virtual void SaveData(TagCompound tag)
@@ -167,34 +148,7 @@ public abstract class Skill
 		tag.Add(nameof(ManaCost), (short)ManaCost);
 		tag.Add(nameof(WeaponType), (int)WeaponType);
 		tag.Add(nameof(Level), Level);
-	}
-	
-	public void CreateTree()
-	{
-		Edges = [];
-		ActiveNodes =
-		[
-			new SkillPassiveAnchor(this)
-		];
 
-		foreach (SkillPassive passive in Passives)
-		{
-			if (passive.Connections == null)
-			{
-				continue;
-			}
-			
-			foreach (SkillPassive connection in passive.Connections)
-			{
-				Edges.Add(new SkillPassiveEdge(passive, connection));
-			}
-			
-			if (passive.ReferenceId != 0) //Not anchor
-			{
-				PassivePoints -= passive.Level;
-			}
-			
-			ActiveNodes.Add(passive);
-		}
+		SkillTree?.SaveData(tag);
 	}
 }

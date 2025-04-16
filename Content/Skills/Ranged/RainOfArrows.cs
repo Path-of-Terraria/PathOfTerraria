@@ -2,7 +2,6 @@
 using System.IO;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -13,7 +12,6 @@ public class RainOfArrows : Skill
 	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Sandgun];
 
 	public override int MaxLevel => 3;
-	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{

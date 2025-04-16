@@ -50,7 +50,7 @@ internal class SkillSelectionElement : UIElement
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 		Main.NewText("Clicked on " + _skill.Name);
 		skillCombatPlayer.TryAddSkill(_skill);
-		_parentPanel.SelectedSkill = _skill;
+		_parentPanel.SelectedTree = _skill.SkillTree;
 		_parentPanel.RebuildTree();
 
 		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);

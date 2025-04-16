@@ -35,10 +35,10 @@ public sealed class GrantSkillPassiveCommand : ModCommand
 		}
 
 		var skill = Skill.GetAndPrepareSkill(skillType);
-		if (!caller.Player.TryGetModPlayer(out SkillPassivePlayer skillPassivePlayer))
+		/*if (!caller.Player.TryGetModPlayer(out SkillPassivePlayer skillPassivePlayer))
 		{
 			return;
-		}
+		}*/
 
 		int count = 1;
 
@@ -49,7 +49,7 @@ public sealed class GrantSkillPassiveCommand : ModCommand
 
 		for (int i = 0; i < count; ++i)
 		{
-			skillPassivePlayer.AwardPassivePoint(skill);
+			skill.SkillTree.Points++;
 		}
 
 		caller.Reply($"Granted {count} skill point(s) for {skill.Name}");

@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Content.Buffs;
 using Terraria.DataStructures;
@@ -9,7 +8,6 @@ namespace PathOfTerraria.Content.Skills.Melee;
 public class Berserk : Skill
 {
 	public override int MaxLevel => 3;
-	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{

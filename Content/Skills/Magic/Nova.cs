@@ -1,10 +1,8 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.SkillPassives;
-using PathOfTerraria.Content.SkillPassives.Magic;
+using PathOfTerraria.Content.SkillTrees;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Utilities;
@@ -22,14 +20,7 @@ public class Nova : Skill
 	}
 
 	public override int MaxLevel => 3;
-	
-	public override List<SkillPassive> Passives =>
-	[
-		new SkillPassiveAnchor(this),
-		new LightningNovaSkillPassive(this),
-		new FireNovaSkillPassive(this),
-		new IceNovaSkillPassive(this)
-	];
+	public override SkillTree SkillTree => ModContent.GetInstance<NovaTree>();
 
 	public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTexture();
 	public override LocalizedText DisplayName => GetLocalization("Name", base.DisplayName);
@@ -64,9 +55,9 @@ public class Nova : Skill
 	public static NovaType GetNovaType(Nova nova)
 	{
 		Player player = Main.LocalPlayer;
-		SkillPassivePlayer skillPassive = player.GetModPlayer<SkillPassivePlayer>();
+		//SkillPassivePlayer skillPassive = player.GetModPlayer<SkillPassivePlayer>();
 
-		if (skillPassive.AllocatedPassives.TryGetValue(nova, out Dictionary<string, SkillPassive> passives))
+		/*if (skillPassive.AllocatedPassives.TryGetValue(nova, out Dictionary<string, SkillPassive> passives))
 		{
 			if (passives.ContainsKey(nameof(FireNovaSkillPassive)))
 			{
@@ -80,7 +71,7 @@ public class Nova : Skill
 			{
 				return NovaType.Lightning;
 			}
-		}
+		}*/
 
 		return NovaType.Normal;
 	}
