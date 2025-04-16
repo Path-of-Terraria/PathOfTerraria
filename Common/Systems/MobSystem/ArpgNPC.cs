@@ -123,6 +123,11 @@ internal class ArpgNPC : GlobalNPC
 			magicFind += modifier;
 		}
 
+		if (Rarity is ItemRarity.Magic or ItemRarity.Rare)
+		{
+			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind, forceRarity: Rarity);
+		}
+
 		while (rand > 99)
 		{
 			rand -= 100;
