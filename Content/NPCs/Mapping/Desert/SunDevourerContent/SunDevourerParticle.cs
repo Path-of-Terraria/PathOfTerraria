@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Core.Graphics.Particles;
 
-namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerDomain;
 
 public sealed class SunDevourerParticle : ForegroundParticle
 {
@@ -13,12 +13,12 @@ public sealed class SunDevourerParticle : ForegroundParticle
 	///     The orange color used for the particle.
 	/// </summary>
 	public static readonly Color Orange = new(212, 153, 53, 0);
-    
+
 	public SunDevourerParticle(Vector2 position)
 	{
 		Position = position;
 	}
-    
+
 	public override void Create()
 	{
 		base.Create();
@@ -46,7 +46,7 @@ public sealed class SunDevourerParticle : ForegroundParticle
 		{
 			return;
 		}
-        
+
 		Destroy();
 	}
 }

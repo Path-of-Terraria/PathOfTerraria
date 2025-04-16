@@ -5,12 +5,12 @@ using Terraria.Graphics.CameraModifiers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerDomain;
 
 public sealed class SunDevourerEruptionProjectile : ModProjectile
 {
 	private static readonly VertexStrip Strip = new();
-	
+
 	/// <summary>
 	///		Gets or sets the timer of the projectile. Shorthand for <c>Projectile.ai[0]</c>.
 	/// </summary>
@@ -25,13 +25,13 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 	///		Gets the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Main.player[(int)Projectile.ai[1]]</c>.
 	/// </summary>
 	public Player Player => Main.player[(int)Index];
-	
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
 		Main.projFrames[Type] = 2;
-		
+
 		ProjectileID.Sets.TrailingMode[Type] = 3;
 		ProjectileID.Sets.TrailCacheLength[Type] = 20;
 	}
@@ -63,7 +63,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FlameBurst);
 
 			dust.velocity *= 2f;
-			
+
 			dust.noGravity = true;
 		}
 
@@ -75,9 +75,9 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 	public override bool OnTileCollide(Vector2 oldVelocity)
 	{
 		Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitY, 4f, 6f, 30, 1000f, "SunDevourer"));
-		
+
 		Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
-		
+
 		return true;
 	}
 
@@ -88,7 +88,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 		Timer++;
 
 		Projectile.velocity.X += MathF.Cos(Timer * 0.1f) * 0.01f;
-		
+
 		UpdateHoming();
 		UpdateGravity();
 		UpdateDustEffects();
@@ -100,23 +100,23 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 		{
 			return;
 		}
-		
+
 		var direction = MathF.Sign(Player.Center.X - Projectile.Center.X);
 
 		Projectile.velocity.X += direction * 0.1f;
 	}
-	
+
 	private void UpdateDustEffects()
 	{
 		if (!Main.rand.NextBool(5))
 		{
 			return;
 		}
-		
+
 		var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FlameBurst);
 
 		dust.velocity *= 2f;
-			
+
 		dust.noGravity = true;
 	}
 
@@ -138,7 +138,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 
 		DrawProjectileTrail();
 		DrawProjectile(in lightColor);
-		
+
 		return false;
 	}
 
@@ -159,23 +159,23 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 	private void DrawProjectileTrail()
 	{
 		var data = GameShaders.Misc["FlameLash"];
-        
+
 		data.UseSaturation(-2f);
 		data.UseOpacity(10f);
-        
+
 		data.Apply();
 
 		Strip.PrepareStripWithProceduralPadding
 		(
 			Projectile.oldPos,
-			Projectile.oldRot, 
+			Projectile.oldRot,
 			static (progress) => new Color(235, 97, 52, 0) * progress,
-			static (progress) => MathHelper.SmoothStep(32f, 0f, progress), 
+			static (progress) => MathHelper.SmoothStep(32f, 0f, progress),
 			-Main.screenPosition + Projectile.Size / 2f
 		);
-		
+
 		Strip.DrawTrail();
-		
+
 		Main.pixelShader.CurrentTechnique.Passes[0].Apply();
 	}
 }

@@ -22,19 +22,19 @@ public readonly struct SunDevourerVerletRenderer : IVerletRenderer
 			switch (i)
 			{
 				case 0:
-					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/BossDomain/SunDevourerDomain/SunDevourerNPC_Tail_4").Value;
+					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/Mapping/Desert/SunDevourerContent/SunDevourerNPC_Tail_4").Value;
 					break;
 				case >= 1 and < 4:
-					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/BossDomain/SunDevourerDomain/SunDevourerNPC_Tail_3").Value;
+					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/Mapping/Desert/SunDevourerContent/SunDevourerNPC_Tail_3").Value;
 					break;
 				case >= 4 and < 6:
-					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/BossDomain/SunDevourerDomain/SunDevourerNPC_Tail_2").Value;
+					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/Mapping/Desert/SunDevourerContent/SunDevourerNPC_Tail_2").Value;
 					break;
 				case >= 6 and < 8:
-					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/BossDomain/SunDevourerDomain/SunDevourerNPC_Tail_1").Value;
+					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/Mapping/Desert/SunDevourerContent/SunDevourerNPC_Tail_1").Value;
 					break;
 				case 8:
-					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/BossDomain/SunDevourerDomain/SunDevourerNPC_Tail_0").Value;
+					texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/NPCs/Mapping/Desert/SunDevourerContent/SunDevourerNPC_Tail_0").Value;
 					break;
 			}
 			

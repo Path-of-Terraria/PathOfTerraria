@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
+﻿namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerContent;
 
 public sealed partial class SunDevourerNPC : ModNPC
 {

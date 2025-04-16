@@ -1,6 +1,6 @@
-﻿namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
+﻿namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerContent;
 
-public sealed partial class SunDevourerNPC : ModNPC
+public sealed partial class SunDevourerNPC// : ModNPC
 {
 	public const float STATE_IDLE = 0f;
 

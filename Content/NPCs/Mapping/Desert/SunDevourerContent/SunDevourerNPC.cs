@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using NPCUtils;
 using PathOfTerraria.Core.Graphics.Camera;
 using PathOfTerraria.Core.Graphics.Camera.Modifiers;
 using PathOfTerraria.Core.Graphics.Zoom;
@@ -7,11 +8,12 @@ using PathOfTerraria.Core.Graphics.Zoom.Modifiers;
 using PathOfTerraria.Core.Physics.Verlet;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
 using Terraria.Graphics;
 using Terraria.ID;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace PathOfTerraria.Content.NPCs.BossDomain.SunDevourerDomain;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerContent;
 
 public sealed partial class SunDevourerNPC : ModNPC
 {
@@ -47,6 +49,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
+	}
+
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.AddInfo(this, "Desert");
 	}
 
 	public override void OnSpawn(IEntitySource source)
