@@ -16,7 +16,6 @@ public class BloodSiphon : Skill
 
 	public override void LevelTo(byte level)
 	{
-		level = 3;
 		Level = level;
 		MaxCooldown = (15 - Level * 2) * 60;
 		Timer = 0;
