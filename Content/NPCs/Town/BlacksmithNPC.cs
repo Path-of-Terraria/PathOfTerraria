@@ -36,6 +36,12 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -134,31 +140,6 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
 		}
 	}
-
-	private float animCounter;
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
-	}
-
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest = Quest.GetLocalPlayerInstance<BlacksmithStartQuest>();

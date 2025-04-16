@@ -16,7 +16,6 @@ using Terraria.Localization;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
-using Terraria;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 

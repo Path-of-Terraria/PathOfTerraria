@@ -23,8 +23,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
-	private float animCounter;
-
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
@@ -36,6 +34,12 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -167,28 +171,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<KingSlimeQuest>();
 			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
 		}
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
 	}
 
 	public bool HasQuestMarker(out Quest quest)

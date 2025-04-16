@@ -380,6 +380,7 @@ LloydNPC: {
 		StayDialogue: I will stay here. Do not be long.
 		FollowButton: Follow
 		FollowAgain: Lead me to crimson hearts, aide.
+		Abandoned: Tell me when you're leaving next time.
 	}
 
 	BubbleDialogue: {
