@@ -3,7 +3,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class SkillSpecial(SkillTree tree) : Allocatable(tree)
+public abstract class SkillSpecial : Allocatable
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillSpecials/" + Name;
 	public override string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillSpecials." + Name + ".Description");
@@ -11,7 +11,19 @@ public abstract class SkillSpecial(SkillTree tree) : Allocatable(tree)
 	public override void Draw(SpriteBatch spriteBatch, Vector2 position)
 	{
 		Texture2D texture = Texture.Value;
-		spriteBatch.Draw(texture, position, null, Color.White, 0, texture.Size() / 2, 1, default, 0);
+		Color color = Color.Gray;
+
+		if (CanAllocate(Main.LocalPlayer))
+		{
+			color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
+		}
+
+		if (Tree.Specialization == this)
+		{
+			color = Color.White;
+		}
+
+		spriteBatch.Draw(texture, position, null, color, 0, texture.Size() / 2, 1, default, 0);
 
 		if (Tree.Specialization == this)
 		{
@@ -39,7 +51,27 @@ public abstract class SkillSpecial(SkillTree tree) : Allocatable(tree)
 	/// <summary> Whether this skill specialization can be used. </summary>
 	public override bool CanAllocate(Player player)
 	{
-		return Tree.Specialization is null;
+		return Tree.Specialization is null && Connected();
+
+		bool Connected()
+		{
+			bool value = true;
+
+			foreach (SkillTree.Edge edge in Tree.Edges)
+			{
+				if (edge.Contains(this))
+				{
+					if (edge.Other(this) is not SkillPassive p || p.Level > 0)
+					{
+						return true;
+					}
+
+					value = false;
+				}
+			}
+
+			return value;
+		}
 	}
 
 	/// <summary> Whether this skill specialization can be refunded. </summary>

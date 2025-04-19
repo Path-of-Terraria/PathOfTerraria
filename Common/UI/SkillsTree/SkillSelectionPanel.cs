@@ -13,7 +13,7 @@ internal class SkillSelectionPanel : SmartUiElement
 {
 	public override string TabName => "SkillTree";
 
-	public SkillTree SelectedTree { get; set; }
+	public Skill SelectedSkill { get; set; }
 
 	private bool _drewSkills;
 	private SkillTreeInnerPanel _skillTreeInnerPanel;
@@ -22,7 +22,7 @@ internal class SkillSelectionPanel : SmartUiElement
 	{
 		base.Draw(spriteBatch);
 
-		if (!_drewSkills && SelectedTree == null)
+		if (!_drewSkills && SelectedSkill == null)
 		{
 			_drewSkills = true;
 			AppendAllSkills();
@@ -49,20 +49,28 @@ internal class SkillSelectionPanel : SmartUiElement
 
 	public void RebuildTree()
 	{
-		if (SelectedTree is null)
+		if (SelectedSkill is null)
 		{
 			return;
 		}
 
+		Allocatable.ViewedSkill = SelectedSkill;
 		RemoveAllChildren();
 		_skillTreeInnerPanel = null;
-		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedTree);
+		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 		Append(_skillTreeInnerPanel);
 
-		Dictionary<Vector2, Allocatable> dict = SelectedTree.Allocatables;
+		Dictionary<Vector2, Allocatable> dict = SelectedSkill.Tree.Allocatables;
 		foreach (Vector2 key in dict.Keys)
 		{
 			_skillTreeInnerPanel.Append(new AllocatableElement(key, dict[key]));
+		}
+
+		const int augmentSlots = 3; //Can be made variable when needed
+
+		for (int i = 0; i < augmentSlots; i++)
+		{
+			_skillTreeInnerPanel.Append(new AugmentSlotElement(i));
 		}
 
 		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))
@@ -77,9 +85,9 @@ internal class SkillSelectionPanel : SmartUiElement
 		{
 			RemoveAllChildren();
 
-			SelectedTree = null;
+			SelectedSkill = null;
 			_skillTreeInnerPanel = null;
-			_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedTree);
+			_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 
 			AppendAllSkills();
 		};

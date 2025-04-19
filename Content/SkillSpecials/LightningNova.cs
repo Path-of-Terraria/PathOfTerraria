@@ -1,9 +1,8 @@
 ﻿using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Skills;
 
 namespace PathOfTerraria.Content.SkillSpecials;
 
-internal class LightningNova(SkillTree tree) : SkillSpecial(tree)
+internal class LightningNova : SkillSpecial
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/UI/SpecialFrame";
 }

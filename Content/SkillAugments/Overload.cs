@@ -2,12 +2,11 @@
 
 namespace PathOfTerraria.Content.SkillPassives;
 
-internal class Strength : SkillPassive
+internal class Overload : SkillAugment
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/UI/PassiveFrameTiny";
 
-	public override void PassiveEffects()
+	public override void AugmentEffects()
 	{
-		base.PassiveEffects();
 	}
 }

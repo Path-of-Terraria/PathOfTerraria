@@ -20,7 +20,6 @@ public class Nova : Skill
 	}
 
 	public override int MaxLevel => 3;
-	public override SkillTree SkillTree => ModContent.GetInstance<NovaTree>();
 
 	public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTexture();
 	public override LocalizedText DisplayName => GetLocalization("Name", base.DisplayName);

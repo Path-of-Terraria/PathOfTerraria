@@ -9,13 +9,13 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 internal class SkillTreeInnerPanel : SmartUiElement
 {
 	private UIElement Panel => Parent;
-	private readonly SkillTree _tree;
+	private readonly Skill _skill;
 
 	public override string TabName => "SelectedSkillTree";
 
-	public SkillTreeInnerPanel(SkillTree tree)
+	public SkillTreeInnerPanel(Skill skill)
 	{
-		_tree = tree;
+		_skill = skill;
 		Height = StyleDimension.FromPixels(768);
 		Width = StyleDimension.FromPixels(900);
 	}
@@ -25,23 +25,24 @@ internal class SkillTreeInnerPanel : SmartUiElement
 		Rectangle oldRect = spriteBatch.GraphicsDevice.ScissorRectangle;
 		spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
 		spriteBatch.GraphicsDevice.ScissorRectangle = Panel.GetDimensions().ToRectangle();
-		
-		int availablePoints = _tree.Points;
+
+		SkillTree tree = _skill.Tree;
+		int availablePoints = tree.Points;
 		AvailablePassivePointsText.DrawAvailablePassivePoint(spriteBatch, availablePoints, GetRectangle().TopLeft() + new Vector2(35, 35));
 
 		spriteBatch.End();
 		spriteBatch.Begin(default, default, default, default, default, default, Main.UIScaleMatrix);
 
-		foreach (SkillTree.Edge edge in _tree.Edges)
+		foreach (SkillTree.Edge edge in tree.Edges)
 		{
 			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 			Color color = Color.Gray;
 
-			int startLevel = (edge.Start is SkillPassive s) ? s.Level : 1;
-			int endLevel = (edge.End is SkillPassive e) ? e.Level : 1;
+			int startLevel = (edge.Start is SkillPassive s) ? s.Level : 0;
+			int endLevel = (edge.End is SkillPassive e) ? e.Level : 0;
 
-			Vector2 startPos = _tree.Point(edge.Start);
-			Vector2 endPos = _tree.Point(edge.End);
+			Vector2 startPos = tree.Point(edge.Start);
+			Vector2 endPos = tree.Point(edge.End);
 
 			if (edge.End.CanAllocate(Main.LocalPlayer) && startLevel > 0)
 			{

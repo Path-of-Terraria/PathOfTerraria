@@ -10,8 +10,6 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 
 internal class AllocatableElement : SmartUiElement
 {
-	private static TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
-
 	private readonly Allocatable _node;
 
 	private int _flashTimer;

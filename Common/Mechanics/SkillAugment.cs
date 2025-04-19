@@ -1,23 +1,43 @@
-﻿namespace PathOfTerraria.Common.Mechanics;
+﻿using ReLogic.Content;
+using System.Collections.Generic;
+using Terraria.Localization;
 
-public abstract class SkillAugment
+namespace PathOfTerraria.Common.Mechanics;
+
+public abstract class SkillAugment : ILoadable
 {
+	public static readonly Dictionary<string, SkillAugment> LoadedAugments = [];
+
+	private Asset<Texture2D> _texture;
+	public Asset<Texture2D> Texture //Cache the texture to avoid constant requests
+	{
+		get
+		{
+			if (_texture != null)
+			{
+				return _texture;
+			}
+
+			return _texture = ModContent.Request<Texture2D>(TexturePath, AssetRequestMode.ImmediateLoad);
+		}
+	}
+
+	public virtual string TexturePath => $"{PoTMod.ModName}/Assets/SkillAugments/" + Name;
 	public virtual string Name => GetType().Name;
-	public string Texture => $"{PoTMod.ModName}/Assets/SkillAugments/" + Name;
+	public virtual string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillAugments." + Name + ".Description");
 
 	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position)
 	{
-		Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
+		Texture2D texture = Texture.Value;
 		spriteBatch.Draw(texture, position - texture.Size() / 2, Color.White);
 	}
 
-	public virtual bool CanAllocate(Player player)
+	public virtual void AugmentEffects() { }
+
+	public void Load(Mod mod)
 	{
-		return true;
+		LoadedAugments.Add(Name, this);
 	}
 
-	public virtual bool CanDeallocate(Player player)
-	{
-		return true;
-	}
+	public void Unload() { }
 }

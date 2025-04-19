@@ -1,9 +1,10 @@
 ﻿using PathOfTerraria.Common.Systems.Skills;
 using ReLogic.Content;
+using System.Linq;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class Allocatable(SkillTree tree)
+public abstract class Allocatable
 {
 	private Asset<Texture2D> _texture;
 	public Asset<Texture2D> Texture //Cache the texture to avoid constant requests
@@ -23,15 +24,14 @@ public abstract class Allocatable(SkillTree tree)
 	public virtual string Name => GetType().Name;
 	public abstract string Tooltip { get; }
 
-	public SkillTree Tree = tree;
+	internal static Skill ViewedSkill;
+	/// <summary> The tree of the currently viewed skill (<see cref="ViewedSkill"/>).</summary>
+	public static SkillTree Tree => ViewedSkill.Tree;
 
 	/// <summary> Should check <see cref="CanAllocate"/> before being called. </summary>
 	public virtual void OnAllocate(Player player)
 	{
-		if (Tree.Points > 0)
-		{
-			Tree.Points--;
-		}
+		Tree.Points--;
 	}
 
 	/// <summary> Should check <see cref="CanDeallocate"/> before being called. </summary>
@@ -42,7 +42,7 @@ public abstract class Allocatable(SkillTree tree)
 
 	public virtual bool CanAllocate(Player player)
 	{
-		return Tree.Points > 0;
+		return Tree.Points > 0 && Tree.Edges.Any(e => e.Contains(this) && (e.Other(this) is not SkillPassive p || p.Level > 0));
 	}
 
 	public virtual bool CanDeallocate(Player player)

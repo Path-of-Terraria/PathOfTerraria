@@ -17,8 +17,20 @@ public abstract class Skill
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
 
-	/// <summary> The tree associated with this skill. <see cref="null"/> if there is none. </summary>
-	public virtual SkillTree SkillTree { get; }
+	/// <summary> Attempts to get the skill tree associated with this skill. Returns null if none. </summary>
+	public SkillTree Tree
+	{ 
+		get
+		{
+			if (SkillTree.TypeToSkillTree.TryGetValue(GetType(), out SkillTree value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+	}
+
 	public abstract int MaxLevel { get; }
 	public int PassivePoints { get; set; } = 1;
 
@@ -136,7 +148,7 @@ public abstract class Skill
 		WeaponType = (ItemType)tag.GetInt(nameof(WeaponType));
 		Level = tag.GetByte(nameof(Level));
 
-		SkillTree?.LoadData(tag);
+		Tree?.LoadData(this, tag);
 	}
 
 	public virtual void SaveData(TagCompound tag)
@@ -149,6 +161,6 @@ public abstract class Skill
 		tag.Add(nameof(WeaponType), (int)WeaponType);
 		tag.Add(nameof(Level), Level);
 
-		SkillTree?.SaveData(tag);
+		Tree?.SaveData(this, tag);
 	}
 }
