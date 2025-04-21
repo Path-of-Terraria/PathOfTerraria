@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Core.Graphics.Filters;
-using PathOfTerraria.Core.Graphics.Particles;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
@@ -11,6 +10,11 @@ public sealed class SunDevourerScene : ModSceneEffect
 	public float Strength { get; private set; }
 
 	public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
+
+	public override bool IsLoadingEnabled(Mod mod)
+	{
+		return false;
+	}
 
 	public override void SpecialVisuals(Player player, bool isActive)
 	{
@@ -34,7 +38,7 @@ public sealed class SunDevourerScene : ModSceneEffect
 		}
 
 		//player.ManageSpecialBiomeVisuals($"{PoTMod.ModName}:Vignette", isActive);
-		player.ManageSpecialBiomeVisuals(SunDevourerFilter.FILTER_NAME, isActive);
+		//player.ManageSpecialBiomeVisuals(SunDevourerFilter.FILTER_NAME, isActive);
 	}
 
 	public override bool IsSceneEffectActive(Player player)

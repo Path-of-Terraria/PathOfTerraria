@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Mapping.Desert;
+using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
 using StructureHelper.Models;
@@ -25,7 +26,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 	public const int FloorY = 400;
 
 	private static bool LeftSpawn = false;
-	private static Point BossSpawnLocation = Point.Zero;
+	private static Point16 BossSpawnLocation = Point16.Zero;
 	private static int SandstormTimer = 0;
 
 	public override int Width => 2000 + 120 * Main.rand.Next(5);
@@ -574,7 +575,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 	{
 		string structure = "Assets/Structures/MapAreas/DesertArea/Arena";
 		Point16 size = StructureTools.GetSize(structure);
-		int x = LeftSpawn ? Main.maxTilesX - 170 - size.X : 170;
+		int x = LeftSpawn ? Main.maxTilesX - 140 - size.X : 140;
 		int lowestY = 0;
 		int lowestX = 0;
 		float lowestOriginX = 0;
@@ -593,6 +594,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 		Point16 pos = StructureTools.PlaceByOrigin(structure, new Point16(lowestX, lowestY), new Vector2(lowestOriginX, 1));
 		GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 10);
+		BossSpawnLocation = pos + new Point16(size.X / 2, size.Y / 2);
 	}
 
 	private static bool CanEmbedStructureIn(Point16 pos, Point16 structureSize)
@@ -770,15 +772,17 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			}
 		}
 
-		//if (!hasPortal && ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
-		//{
-		//	int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), BossSpawnLocation.X, BossSpawnLocation.Y, ModContent.NPCType<Grovetender>());
+		if (!hasPortal && !NPC.AnyNPCs(ModContent.NPCType<SunDevourerNPC>()))
+		{
+			int x = BossSpawnLocation.X * 16;
+			int y = BossSpawnLocation.Y * 16;
+			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, ModContent.NPCType<SunDevourerNPC>(), 0, x, y);
 
-		//	if (Main.netMode == NetmodeID.Server)
-		//	{
-		//		NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
-		//	}
-		//}
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+			}
+		}
 	}
 
 	public void OverrideOcean()

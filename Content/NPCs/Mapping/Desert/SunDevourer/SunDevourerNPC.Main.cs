@@ -1,63 +1,56 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using NPCUtils;
-using PathOfTerraria.Core.Graphics.Camera;
+﻿using NPCUtils;
 using PathOfTerraria.Core.Graphics.Camera.Modifiers;
 using PathOfTerraria.Core.Graphics.Zoom;
 using PathOfTerraria.Core.Graphics.Zoom.Modifiers;
 using PathOfTerraria.Core.Physics.Verlet;
-using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
-using Terraria.Graphics;
 using Terraria.ID;
-using Vector2 = Microsoft.Xna.Framework.Vector2;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
-public sealed class SunDevourerNPC : ModNPC
+[AutoloadBossHead]
+public sealed partial class SunDevourerNPC : ModNPC
 {
-	public const float MODE_DAY_TIME = 0f;
-	public const float MODE_NIGHT_TIME = 1f;
-
-	public const float STATE_IDLE = 0f;
-	public const float STATE_CHARGE = 1f;
-	public const float STATE_ERUPTION = 2f;
-	public const float STATE_SANDSTORM = 3f;
+	public enum DevourerState : byte
+	{
+		Trapped,
+		Rise,
+		ReturnToIdle,
+		Firefall,
+		FlameAdds,
+	}
 
 	public const int COOLDOWN_CHARGE = 90;
-
-	//public override string Texture => "PathOfTerraria/Assets/NPCs/Mapping/Desert/SunDevourerContent/" + GetType().Name;
 
 	/// <summary>
 	///		Gets the <see cref="Player"/> instance that the NPC is targeting. Shorthand for <c>Main.player[NPC.target]</c>.
 	/// </summary>
 	public Player Player => Main.player[NPC.target];
 
-	/// <summary>
-	///		Gets or sets the mode of the NPC. Shorthand for <c>NPC.ai[0]</c>.
-	/// </summary>
-	public ref float Mode => ref NPC.ai[0];
+	public Vector2 IdleSpot => new(NPC.ai[0], NPC.ai[1]);
 
 	/// <summary>
 	///		Gets or sets the state of the NPC. Shorthand for <c>NPC.ai[1]</c>.
 	/// </summary>
-	public ref float State => ref NPC.ai[1];
+	public DevourerState State
+	{
+		get => (DevourerState)NPC.ai[2];
+		set => NPC.ai[2] = (float)value;
+	}
 
 	/// <summary>
 	///		Gets or sets the timer of the NPC. Shorthand for <c>NPC.ai[2]</c>.
 	/// </summary>
-	public ref float Timer => ref NPC.ai[2];
-
-	/// <summary>
-	///		Gets or sets the counter of the NPC. Shorthand for <c>NPC.ai[3]</c>.
-	/// </summary>
-	public ref float Counter => ref NPC.ai[3];
+	public ref float Timer => ref NPC.ai[3];
 
 	/// <summary>
 	///		Gets or sets the previous state of the NPC. Shorthand for <c>NPC.localAI[0]</c>.
 	/// </summary>
-	public ref float Previous => ref NPC.localAI[0];
+	public ref float MiscData => ref NPC.localAI[0];
+
+	private VerletChain chain;
+	private Vector2[] bezier;
 
 	public override void SetStaticDefaults()
 	{
@@ -75,13 +68,12 @@ public sealed class SunDevourerNPC : ModNPC
 		NPC.lavaImmune = true;
 		NPC.noGravity = true;
 		NPC.boss = true;
-
 		NPC.width = 20;
 		NPC.height = 20;
 		NPC.lifeMax = 10000;
 		NPC.defense = 20;
 		NPC.aiStyle = -1;
-
+		NPC.knockBackResist = 0;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
 	}
@@ -91,56 +83,19 @@ public sealed class SunDevourerNPC : ModNPC
 		bestiaryEntry.AddInfo(this, "Desert");
 	}
 
-	public override void OnSpawn(IEntitySource source)
+	public override bool CheckActive()
 	{
-		base.OnSpawn(source);
-
-		Mode = Main.dayTime ? MODE_DAY_TIME : MODE_NIGHT_TIME;
-
-		if (Mode == MODE_NIGHT_TIME)
-		{
-			return;
-		}
-
-		//Main.Moondialing();
+		return false;
 	}
 
-	public override void OnKill()
+	public override void BossHeadRotation(ref float rotation)
 	{
-		base.OnKill();
-
-		if (Mode == MODE_NIGHT_TIME)
-		{
-			return;
-		}
-
-		//Main.Sundialing();
+		rotation = NPC.rotation;
 	}
 
-	public override void SendExtraAI(BinaryWriter writer)
+	public override void BossHeadSpriteEffects(ref SpriteEffects spriteEffects)
 	{
-		base.SendExtraAI(writer);
-
-		writer.Write(Previous);
-	}
-
-	public override void ReceiveExtraAI(BinaryReader reader)
-	{
-		base.ReceiveExtraAI(reader);
-
-		Previous = reader.ReadSingle();
-	}
-
-	public override void AI()
-	{
-		base.AI();
-
-		NPC.TargetClosest();
-
-		switch (State)
-		{
-
-		}
+		spriteEffects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 	}
 
 	public override void BossLoot(ref string name, ref int potionType)
@@ -157,22 +112,20 @@ public sealed class SunDevourerNPC : ModNPC
 		return null;
 	}
 
-	private VerletChain chain;
-
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		if (chain == null)
-		{
-			chain = VerletChainBuilder.CreatePinnedRope(NPC.Center, 10, 32f, 0.9f);
-		}
-		else
-		{
-			// TODO: Just for testing purposes. Eventually make this follow the NPC's tail position.
-			chain.Points[0].Position = Main.MouseWorld;
+		//if (chain == null)
+		//{
+		//	chain = VerletChainBuilder.CreatePinnedRope(NPC.Center, 10, 32f, 0.9f);
+		//}
+		//else
+		//{
+		//	// TODO: Just for testing purposes. Eventually make this follow the NPC's tail position.
+		//	chain.Points[0].Position = Main.MouseWorld;
 
-			chain.Update();
-			chain.Render(new SunDevourerVerletRenderer());
-		}
+		//	chain.Update();
+		//	chain.Render(new SunDevourerVerletRenderer());
+		//}
 
 		DrawNPC(in screenPos, in drawColor);
 
@@ -188,13 +141,10 @@ public sealed class SunDevourerNPC : ModNPC
 
 	private void DrawNPC(in Vector2 screenPosition, in Color drawColor)
 	{
-		var texture = TextureAssets.Npc[Type].Value;
-
-		var position = NPC.Center - screenPosition + new Vector2(0f, NPC.gfxOffY + DrawOffsetY);
-
-		var origin = NPC.frame.Size() / 2f;
-
-		var effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+		Texture2D texture = TextureAssets.Npc[Type].Value;
+		Vector2 position = NPC.Center - screenPosition + new Vector2(0f, NPC.gfxOffY + DrawOffsetY);
+		Vector2 origin = NPC.frame.Size() / 2f;
+		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
 	}
