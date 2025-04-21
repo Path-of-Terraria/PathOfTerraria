@@ -1121,3 +1121,8 @@ DesertMap: {
 		'The map smells of sand and bone'
 		'''
 }
+
+AugmentationOrb: {
+	DisplayName: Skill Augmentation Orb
+	Tooltip: Unlocks an augmentation slot for a given skill
+}

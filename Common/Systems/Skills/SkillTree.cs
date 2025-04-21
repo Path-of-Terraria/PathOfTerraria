@@ -8,33 +8,36 @@ namespace PathOfTerraria.Common.Systems.Skills;
 
 public abstract class SkillTree : ILoadable
 {
-	internal readonly record struct Edge(Allocatable Start, Allocatable End)
+	internal readonly record struct Edge(SkillNode Start, SkillNode End)
 	{
-		public readonly Allocatable Start = Start;
-		public readonly Allocatable End = End;
+		public readonly SkillNode Start = Start;
+		public readonly SkillNode End = End;
 
-		public bool Contains(Allocatable p)
+		public bool Contains(SkillNode p)
 		{
 			return p == Start || p == End;
 		}
 
 		/// <summary> Assuming that p is either start or end - Contains returned true. </summary>
-		public Allocatable Other(Allocatable p)
+		public SkillNode Other(SkillNode p)
 		{
 			return p == Start ? End : Start;
 		}
 	}
 
+	public const int AugmentCount = 3;
+
 	/// <summary> The currently viewed skill tree. </summary>
 	internal static SkillTree Current;
-
 	public static readonly Dictionary<Type, SkillTree> TypeToSkillTree = [];
 
 	public Dictionary<Vector2, SkillNode> Nodes = [];
-	public SkillAugment[] Augments = new SkillAugment[3]; 
+	public SkillAugment[] Augments = new SkillAugment[AugmentCount];
 
 	internal List<Edge> Edges = [];
 
+	/// <summary> The indexes of unlocked augment slots. </summary>
+	public bool[] Slots = new bool[AugmentCount];
 	/// <summary> The number of points available for spending in this skill tree. </summary>
 	public int Points;
 	/// <summary> The current skill specialization of this tree. </summary>
@@ -72,16 +75,19 @@ public abstract class SkillTree : ILoadable
 			}
 		}
 
-		tag["names"] = nameToLevel.Keys.ToList();
+		tag["passives"] = nameToLevel.Keys.ToList(); //Save passives
 		tag["levels"] = nameToLevel.Values.ToList();
 		tag["special"] = Specialization.Name;
+
+		tag[nameof(Slots)] = Slots.ToList(); //Save augments
+		tag["augments"] = Augments.Where(x => x is not null).Select(x => x.Name).ToList();
 	}
 
 	public virtual void LoadData(Skill skill, TagCompound tag)
 	{
 		string skillName = skill.Name;
 
-		IList<string> names = tag.GetList<string>("names");
+		IList<string> names = tag.GetList<string>("passives"); //Load passives
 		IList<int> levels = tag.GetList<int>("levels");
 
 		for (int i = 0; i < names.Count; i++)
@@ -90,6 +96,30 @@ public abstract class SkillTree : ILoadable
 		}
 
 		Specialization = (SkillSpecial)Nodes.Values.First(x => x is SkillSpecial && x.Name == tag.GetString("special"));
+
+		if (tag.TryGet(nameof(Slots), out List<bool> list)) //Use TryGet because we don't want to assign an empty array
+		{
+			Slots = list.ToArray();
+		}
+
+		IList<string> augments = tag.GetList<string>("augments");
+
+		int index = 0;
+		foreach (string name in augments)
+		{
+			if (index >= Slots.Length || !Slots[index])
+			{
+				break;
+			}
+
+			if (!SkillAugment.LoadedAugments.ContainsKey(name))
+			{
+				continue;
+			}
+
+			Augments[index] = SkillAugment.LoadedAugments[name];
+			index++;
+		}
 	}
 
 	public void Load(Mod mod)
@@ -99,30 +129,4 @@ public abstract class SkillTree : ILoadable
 	}
 
 	public void Unload() { }
-}
-
-internal class SkillTreePlayer : ModPlayer
-{
-	private HashSet<string> AcquiredAugments = [];
-
-	/// <summary> Unlocks the given skill augment for this player. </summary>
-	public void UnlockAugment(SkillAugment augment)
-	{
-		AcquiredAugments.Add(augment.Name);
-	}
-
-	public bool Unlocked(SkillAugment augment)
-	{
-		return AcquiredAugments.Contains(augment.Name);
-	}
-
-	public override void SaveData(TagCompound tag)
-	{
-		tag[nameof(AcquiredAugments)] = AcquiredAugments.ToList();
-	}
-
-	public override void LoadData(TagCompound tag)
-	{
-		AcquiredAugments = tag.GetList<string>(nameof(AcquiredAugments)).ToHashSet();
-	}
 }

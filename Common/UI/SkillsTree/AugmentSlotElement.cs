@@ -1,6 +1,12 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using Humanizer;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Content.Items.Consumables;
+using PathOfTerraria.Core.Sounds;
 using System.Linq;
+using Terraria.Audio;
+using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
@@ -11,11 +17,13 @@ internal class AugmentSlotElement : UIElement
 
 	public readonly int Index;
 	public int HoverTime;
+	private bool _unlocked;
 
 	public AugmentSlotElement(int index)
 	{
 		const int squareSize = 160;
 		Index = index;
+		_unlocked = SkillTree.Current.Slots[Index];
 
 		Width.Set(squareSize, 0);
 		Height.Set(squareSize, 0);
@@ -26,6 +34,11 @@ internal class AugmentSlotElement : UIElement
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
+
+		if (!_unlocked)
+		{
+			return;
+		}
 
 		if (ContainsPoint(Main.MouseScreen))
 		{
@@ -58,15 +71,39 @@ internal class AugmentSlotElement : UIElement
 
 		Vector2 center = GetDimensions().Center();
 		SkillAugment[] augments = SkillTree.Current.Augments;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/AugmentFrame").Value;
+
+		var innerFrame = new Rectangle((int)(center.X - tex.Width / 2), (int)(center.Y - tex.Height / 2), tex.Width, tex.Height);
 
 		if (augments[Index] != null)
 		{
 			augments[Index].Draw(spriteBatch, center, Color.White);
+
+			if (innerFrame.Contains(Main.MouseScreen.ToPoint()))
+			{
+				string name = augments[Index].DisplayName;
+				string tooltip = augments[Index].Tooltip;
+
+				Tooltip.SetName(name);
+				Tooltip.SetTooltip(tooltip);
+			}
+
 			return;
 		}
 
-		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/AugmentFrame").Value;
 		spriteBatch.Draw(tex, center, null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+
+		if (!_unlocked)
+		{
+			Texture2D lockIcon = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon").Value;
+			spriteBatch.Draw(lockIcon, center, null, Color.Gray, 0, lockIcon.Size() / 2, 1, default, 0);
+
+			if (innerFrame.Contains(Main.MouseScreen.ToPoint()))
+			{
+				Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillAugments.SlotLine"));
+				Tooltip.SetTooltip(Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillAugments.CostLine").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value));
+			}
+		}
 	}
 
 	private void AddRadial()
@@ -86,9 +123,35 @@ internal class AugmentSlotElement : UIElement
 		}
 	}
 
+	public override void LeftClick(UIMouseEvent evt)
+	{
+		if (_unlocked)
+		{
+			return;
+		}
+
+		Player p = Main.LocalPlayer;
+		int orb = ModContent.ItemType<AugmentationOrb>();
+
+		if (p.HasItem(orb))
+		{
+			p.ConsumeItem(orb);
+			SkillTree.Current.Slots[Index] = true;
+			_unlocked = true;
+
+			TreeSoundEngine.PlaySoundForTreeAllocation(1, 1);
+		}
+	}
+
 	public override void RightClick(UIMouseEvent evt)
 	{
+		bool hadAugment = SkillTree.Current.Augments[Index] != null;
 		SkillTree.Current.Augments[Index] = null;
+
+		if (hadAugment)
+		{
+			SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
+		}
 	}
 }
 
@@ -114,7 +177,6 @@ internal class AugmentRadialElement : UIElement
 	}
 
 	private float Progress => (float)Handler.HoverTime / AugmentSlotElement.HoverTimeMax;
-	private bool Unlocked => Main.LocalPlayer.GetModPlayer<SkillTreePlayer>().Unlocked(_augment);
 
 	public AugmentRadialElement(Vector2 origin, SkillAugment augment, int index)
 	{
@@ -144,15 +206,7 @@ internal class AugmentRadialElement : UIElement
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		_augment.Draw(spriteBatch, GetDimensions().Center(), Unlocked ? Color.White : Color.Gray);
-
-		if (!Unlocked)
-		{
-			Texture2D lockIcon = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon").Value;
-			float scale = 1f + _redFlashTimer / 20f * .25f;
-
-			spriteBatch.Draw(lockIcon, GetDimensions().Center(), null, Color.Gray, scale - 1, lockIcon.Size() / 2, scale, default, 0);
-		}
+		_augment.Draw(spriteBatch, GetDimensions().Center(), Color.White);
 
 		if (_flashTimer > 0)
 		{
@@ -196,22 +250,19 @@ internal class AugmentRadialElement : UIElement
 
 		if (ContainsPoint(Main.MouseScreen))
 		{
-			string name = _augment.Name;
+			string name = _augment.DisplayName;
+			string tooltip = _augment.Tooltip;
 
 			Tooltip.SetName(name);
-			Tooltip.SetTooltip(_augment.Tooltip);
+			Tooltip.SetTooltip(tooltip);
 		}
 	}
 
 	public override void LeftClick(UIMouseEvent evt)
 	{
-		if (!Unlocked)
-		{
-			_redFlashTimer = 20;
-			//return; //Removed for debug
-		}
-
 		_flashTimer = 20;
 		SkillTree.Current.Augments[Handler.Index] = _augment;
+
+		TreeSoundEngine.PlaySoundForTreeAllocation(1, 0);
 	}
 }

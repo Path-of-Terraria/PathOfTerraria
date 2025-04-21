@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.SkillSpecials;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Utilities;
@@ -43,23 +44,18 @@ public class Nova : Skill
 		Player player = Main.LocalPlayer;
 		SkillSpecial special = nova.Tree.Specialization;
 
-		//SkillPassivePlayer skillPassive = player.GetModPlayer<SkillPassivePlayer>();
-
-		/*if (skillPassive.AllocatedPassives.TryGetValue(nova, out Dictionary<string, SkillPassive> passives))
+		if (special is FireNova)
 		{
-			if (passives.ContainsKey(nameof(FireNovaSkillPassive)))
-			{
-				return NovaType.Fire;
-			}
-			else if (passives.ContainsKey(nameof(IceNovaSkillPassive)))
-			{
-				return NovaType.Ice;
-			}
-			else if (passives.ContainsKey(nameof(LightningNovaSkillPassive)))
-			{
-				return NovaType.Lightning;
-			}
-		}*/
+			return NovaType.Fire;
+		}
+		else if (special is IceNova)
+		{
+			return NovaType.Ice;
+		}
+		else if (special is LightningNova)
+		{
+			return NovaType.Lightning;
+		}
 
 		return NovaType.Normal;
 	}

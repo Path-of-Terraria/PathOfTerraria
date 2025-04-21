@@ -24,8 +24,10 @@ public abstract class SkillAugment : ILoadable
 		}
 	}
 
+	public string Name => GetType().Name;
+
 	public virtual string TexturePath => $"{PoTMod.ModName}/Assets/SkillAugments/" + Name;
-	public virtual string Name => GetType().Name;
+	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillAugments." + Name + ".Name");
 	public virtual string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillAugments." + Name + ".Tooltip");
 
 	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, Color color)

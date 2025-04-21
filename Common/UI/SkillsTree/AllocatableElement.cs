@@ -89,7 +89,7 @@ internal class AllocatableElement : SmartUiElement
 
 			if (_node is SkillSpecial special)
 			{
-				tooltip += "\n\n" + Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillSpecials.OneLine");
+				tooltip += '\n' + Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillSpecials.OneLine");
 			}
 
 			Tooltip.SetName(name);
