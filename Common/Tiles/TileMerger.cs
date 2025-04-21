@@ -11,6 +11,10 @@ internal class TileMerger : ModSystem
 
 		Main.tileBrick[TileID.TinPlating] = true;
 		Main.tileBrick[TileID.CopperPlating] = true;
+		Main.tileBrick[TileID.SandstoneBrick] = true;
+		Main.tileBrick[TileID.Obsidian] = true;
+		Main.tileBrick[TileID.SandStoneSlab] = true;
+		Main.tileBrick[TileID.Sandstone] = true;
 	}
 
 	public static void MutualMerge(int type, int other)

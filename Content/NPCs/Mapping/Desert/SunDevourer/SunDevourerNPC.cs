@@ -13,14 +13,51 @@ using Terraria.Graphics;
 using Terraria.ID;
 using Vector2 = Microsoft.Xna.Framework.Vector2;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerContent;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
-public sealed partial class SunDevourerNPC : ModNPC
+public sealed class SunDevourerNPC : ModNPC
 {
+	public const float MODE_DAY_TIME = 0f;
+	public const float MODE_NIGHT_TIME = 1f;
+
+	public const float STATE_IDLE = 0f;
+	public const float STATE_CHARGE = 1f;
+	public const float STATE_ERUPTION = 2f;
+	public const float STATE_SANDSTORM = 3f;
+
+	public const int COOLDOWN_CHARGE = 90;
+
+	//public override string Texture => "PathOfTerraria/Assets/NPCs/Mapping/Desert/SunDevourerContent/" + GetType().Name;
+
 	/// <summary>
 	///		Gets the <see cref="Player"/> instance that the NPC is targeting. Shorthand for <c>Main.player[NPC.target]</c>.
 	/// </summary>
 	public Player Player => Main.player[NPC.target];
+
+	/// <summary>
+	///		Gets or sets the mode of the NPC. Shorthand for <c>NPC.ai[0]</c>.
+	/// </summary>
+	public ref float Mode => ref NPC.ai[0];
+
+	/// <summary>
+	///		Gets or sets the state of the NPC. Shorthand for <c>NPC.ai[1]</c>.
+	/// </summary>
+	public ref float State => ref NPC.ai[1];
+
+	/// <summary>
+	///		Gets or sets the timer of the NPC. Shorthand for <c>NPC.ai[2]</c>.
+	/// </summary>
+	public ref float Timer => ref NPC.ai[2];
+
+	/// <summary>
+	///		Gets or sets the counter of the NPC. Shorthand for <c>NPC.ai[3]</c>.
+	/// </summary>
+	public ref float Counter => ref NPC.ai[3];
+
+	/// <summary>
+	///		Gets or sets the previous state of the NPC. Shorthand for <c>NPC.localAI[0]</c>.
+	/// </summary>
+	public ref float Previous => ref NPC.localAI[0];
 
 	public override void SetStaticDefaults()
 	{
@@ -38,13 +75,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 		NPC.lavaImmune = true;
 		NPC.noGravity = true;
 		NPC.boss = true;
-		
+
 		NPC.width = 20;
 		NPC.height = 20;
-
 		NPC.lifeMax = 10000;
 		NPC.defense = 20;
-
 		NPC.aiStyle = -1;
 
 		NPC.HitSound = SoundID.NPCHit1;
@@ -59,15 +94,15 @@ public sealed partial class SunDevourerNPC : ModNPC
 	public override void OnSpawn(IEntitySource source)
 	{
 		base.OnSpawn(source);
-		
+
 		Mode = Main.dayTime ? MODE_DAY_TIME : MODE_NIGHT_TIME;
 
 		if (Mode == MODE_NIGHT_TIME)
 		{
 			return;
 		}
-		
-		Main.Moondialing();
+
+		//Main.Moondialing();
 	}
 
 	public override void OnKill()
@@ -78,14 +113,14 @@ public sealed partial class SunDevourerNPC : ModNPC
 		{
 			return;
 		}
-		
-		Main.Sundialing();
+
+		//Main.Sundialing();
 	}
-	
+
 	public override void SendExtraAI(BinaryWriter writer)
 	{
 		base.SendExtraAI(writer);
-		
+
 		writer.Write(Previous);
 	}
 
@@ -104,7 +139,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		switch (State)
 		{
-			
+
 		}
 	}
 
@@ -114,11 +149,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		potionType = ItemID.GreaterHealingPotion;
 	}
-	
+
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 	{
 		scale = 1.5f;
-		
+
 		return null;
 	}
 
@@ -134,23 +169,23 @@ public sealed partial class SunDevourerNPC : ModNPC
 		{
 			// TODO: Just for testing purposes. Eventually make this follow the NPC's tail position.
 			chain.Points[0].Position = Main.MouseWorld;
-			
+
 			chain.Update();
 			chain.Render(new SunDevourerVerletRenderer());
 		}
-		
+
 		DrawNPC(in screenPos, in drawColor);
-		
+
 		return false;
 	}
 
 	private void ApplyFocus(int duration)
 	{
 		ZoomSystem.AddModifier(new FocusZoomModifier($"{PoTMod.ModName}:{nameof(SunDevourerNPC)}_Zoom", duration));
-		
+
 		Main.instance.CameraModifiers.Add(new FocusCameraModifier($"{PoTMod.ModName}:{nameof(SunDevourerNPC)}_Camera", duration, () => NPC.Center + NPC.Size / 2f));
 	}
-	
+
 	private void DrawNPC(in Vector2 screenPosition, in Color drawColor)
 	{
 		var texture = TextureAssets.Npc[Type].Value;
@@ -160,7 +195,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		var origin = NPC.frame.Size() / 2f;
 
 		var effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-		
+
 		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
 	}
 }

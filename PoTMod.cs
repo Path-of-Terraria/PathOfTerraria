@@ -9,7 +9,7 @@ namespace PathOfTerraria;
 /// <summary>
 ///		Path of Terraria <see cref="Mod"/> implementation.
 /// </summary>
-public sealed partial class PoTMod : Mod
+public sealed class PoTMod : Mod
 {
 	/// <summary>
 	///		The internal name of the mod.

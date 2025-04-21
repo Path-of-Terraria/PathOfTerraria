@@ -5,6 +5,7 @@ using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Mapping.Desert;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
+using StructureHelper.Models;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
@@ -487,6 +488,8 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	private static void SpawnStructures()
 	{
+		PlaceArena();
+
 		// Ruins, mostly embedded in sand
 		int count = 5;
 
@@ -565,6 +568,31 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 				hasShrine = false;
 			}
 		}
+	}
+
+	private static void PlaceArena()
+	{
+		string structure = "Assets/Structures/MapAreas/DesertArea/Arena";
+		Point16 size = StructureTools.GetSize(structure);
+		int x = LeftSpawn ? Main.maxTilesX - 170 - size.X : 170;
+		int lowestY = 0;
+		int lowestX = 0;
+		float lowestOriginX = 0;
+
+		for (int i = x; i < x + size.X; ++i)
+		{
+			int y = FindYBelow(i, 0);
+			
+			if (y > lowestY)
+			{
+				lowestY = y;
+				lowestX = i;
+				lowestOriginX = (i - x) / (float)size.X;
+			}
+		}
+
+		Point16 pos = StructureTools.PlaceByOrigin(structure, new Point16(lowestX, lowestY), new Vector2(lowestOriginX, 1));
+		GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 10);
 	}
 
 	private static bool CanEmbedStructureIn(Point16 pos, Point16 structureSize)

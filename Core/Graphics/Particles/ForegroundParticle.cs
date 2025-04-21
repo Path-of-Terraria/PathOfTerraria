@@ -2,7 +2,10 @@
 
 public abstract class ForegroundParticle : IParticle
 {
-    public virtual string Texture => GetType().FullName.Replace(".", "/");
+	/// <summary>
+	/// The path used to retrieve the particle's texture. This, by default, replaces "Content" with "Assets" - make sure to do the same when overriding.
+	/// </summary>
+    public virtual string Texture => GetType().FullName.Replace(".", "/").Replace("Content", "Assets");
 
     /// <summary>
     ///     Gets or sets the rotation of the particle, in radians.

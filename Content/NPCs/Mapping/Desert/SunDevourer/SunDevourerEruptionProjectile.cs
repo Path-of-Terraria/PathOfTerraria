@@ -1,11 +1,10 @@
 ﻿using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.Graphics;
-using Terraria.Graphics.CameraModifiers;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerDomain;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 public sealed class SunDevourerEruptionProjectile : ModProjectile
 {
@@ -33,7 +32,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 		Main.projFrames[Type] = 2;
 
 		ProjectileID.Sets.TrailingMode[Type] = 3;
-		ProjectileID.Sets.TrailCacheLength[Type] = 20;
+		ProjectileID.Sets.TrailCacheLength[Type] = 40;
 	}
 
 	public override void SetDefaults()
@@ -43,8 +42,8 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 		Projectile.friendly = false;
 		Projectile.hostile = true;
 
-		Projectile.width = 16;
-		Projectile.height = 16;
+		Projectile.width = 80;
+		Projectile.height = 80;
 	}
 
 	public override void OnSpawn(IEntitySource source)
@@ -58,26 +57,18 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 	{
 		base.OnKill(timeLeft);
 
-		for (var i = 0; i < 5; i++)
+		for (int i = 0; i < 15; i++)
 		{
-			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FlameBurst);
-
-			dust.velocity *= 2f;
-
+			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, Scale: Main.rand.NextFloat(2, 4));
+			dust.velocity.Y = Main.rand.NextFloat(-1, 1);
+			dust.velocity *= 4f;
 			dust.noGravity = true;
 		}
-
-		Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2Circular(4f, 4f), GoreID.Smoke1);
-		Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2Circular(4f, 4f), GoreID.Smoke2);
-		Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, Main.rand.NextVector2Circular(4f, 4f), GoreID.Smoke3);
 	}
 
 	public override bool OnTileCollide(Vector2 oldVelocity)
 	{
-		Main.instance.CameraModifiers.Add(new PunchCameraModifier(Projectile.Center, Vector2.UnitY, 4f, 6f, 30, 1000f, "SunDevourer"));
-
 		Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
-
 		return true;
 	}
 
@@ -170,7 +161,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 			Projectile.oldPos,
 			Projectile.oldRot,
 			static (progress) => new Color(235, 97, 52, 0) * progress,
-			static (progress) => MathHelper.SmoothStep(32f, 0f, progress),
+			static (progress) => MathHelper.SmoothStep(80f, 0f, progress),
 			-Main.screenPosition + Projectile.Size / 2f
 		);
 

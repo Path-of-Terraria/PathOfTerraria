@@ -2,7 +2,7 @@
 using Terraria.GameContent;
 using Terraria.Graphics.Effects;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerDomain;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 public sealed class SunDevourerSky : CustomSky
 {

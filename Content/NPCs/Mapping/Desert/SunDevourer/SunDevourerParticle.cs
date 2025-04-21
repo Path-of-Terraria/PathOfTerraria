@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Core.Graphics.Particles;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerDomain;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 public sealed class SunDevourerParticle : ForegroundParticle
 {

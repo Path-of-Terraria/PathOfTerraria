@@ -1,8 +1,7 @@
-﻿using PathOfTerraria.Content.NPCs.BossDomain.SunDevourerContent;
-using Terraria.Graphics.Effects;
+﻿using Terraria.Graphics.Effects;
 using Terraria.Graphics.Shaders;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourerDomain;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 public sealed class SunDevourerFilter : ILoadable
 {
