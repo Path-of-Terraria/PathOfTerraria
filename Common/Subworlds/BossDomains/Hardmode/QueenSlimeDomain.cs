@@ -52,7 +52,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		int y = 160;
 
 		ArenaPos = new Point16(x, y);
-		StructureTools.PlaceByOrigin("Assets/Structures/QueenSlimeDomain/Arena_0", ArenaPos, new Vector2(0.5f, 0.3f), noSync: true);
+		StructureTools.PlaceByOrigin("Assets/Structures/QueenSlimeDomain/Arena_0", ArenaPos, new Vector2(0.5f, 0.3f));
 		ArenaPos = new Point16(ArenaPos.X - 4, ArenaPos.Y + 30);
 	}
 
@@ -155,7 +155,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			{
 				string str = "Assets/Structures/QueenSlimeDomain/Crystal_" + Main.rand.Next(16);
 
-				StructureTools.PlaceByOrigin(str, position, new Vector2(0.5f), noSync: true);
+				StructureTools.PlaceByOrigin(str, position, new Vector2(0.5f));
 				return;
 			}
 		}
@@ -318,7 +318,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			}
 			else
 			{
-				StructureTools.PlaceByOrigin("Assets/Structures/QueenSlimeDomain/Cove_" + Main.rand.Next(3), end.ToPoint16(), new Vector2(0.5f), noSync: true);
+				StructureTools.PlaceByOrigin("Assets/Structures/QueenSlimeDomain/Cove_" + Main.rand.Next(3), end.ToPoint16(), new Vector2(0.5f));
 			}
 		}
 	}
@@ -380,7 +380,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		foreach ((int, int) pair in crystalPositions)
 		{
 			string str = "Assets/Structures/QueenSlimeDomain/Crystal_" + pair.Item2;
-			StructureTools.PlaceByOrigin(str, new Point16(pos.X, pair.Item1), new Vector2(0.5f), noSync: true);
+			StructureTools.PlaceByOrigin(str, new Point16(pos.X, pair.Item1), new Vector2(0.5f));
 		}
 	}
 
