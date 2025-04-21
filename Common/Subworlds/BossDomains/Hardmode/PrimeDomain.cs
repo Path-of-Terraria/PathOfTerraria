@@ -160,11 +160,11 @@ internal class PrimeDomain : BossDomainSubworld
 
 		string spawn = $"Assets/Structures/SkelePrimeDomain/{(!LeftSpawn ? "Left" : "Right")}Start_" + GenRandom.Next(3);
 		Point16 size = StructureTools.GetSize(spawn);
-		StructureTools.PlaceByOrigin(spawn, new Point16(spawnX, spawnY + size.Y % 2), new Vector2(0.5f), noSync: true);
+		StructureTools.PlaceByOrigin(spawn, new Point16(spawnX, spawnY + size.Y % 2), new Vector2(0.5f));
 
 		string arena = "Assets/Structures/SkelePrimeDomain/Arena_0";
 		Point16 arenaSize = StructureTools.GetSize(arena);
-		Point16 pos = StructureTools.PlaceByOrigin(arena, new Point16(!LeftSpawn ? 180 : Width - 180, Height / 2 + 2), new Vector2(0.5f), noSync: true);
+		Point16 pos = StructureTools.PlaceByOrigin(arena, new Point16(!LeftSpawn ? 180 : Width - 180, Height / 2 + 2), new Vector2(0.5f));
 
 		Arena = new Rectangle((pos.X + 5) * 16, pos.Y * 16, (arenaSize.X - 10) * 16, arenaSize.Y * 16);
 	}
@@ -284,7 +284,7 @@ internal class PrimeDomain : BossDomainSubworld
 
 			if (GenVars.structures.CanPlace(new Rectangle(x, y - size.Y / 2, size.X, size.Y), 6) && CanPlaceHallStructureHere(x, y, size))
 			{
-				Point16 pos = StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 0.5f), noSync: true);
+				Point16 pos = StructureTools.PlaceByOrigin(name, new Point16(x, y), new Vector2(0, 0.5f));
 				GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 6);
 			}
 			else

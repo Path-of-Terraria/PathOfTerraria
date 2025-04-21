@@ -34,7 +34,7 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 
 	public void PlaceRoom(int x, int y, int id, Vector2 origin)
 	{
-		Point16 position = StructureTools.PlaceByOrigin("Assets/Structures/SkeletronDomain/Room_" + id, new Point16(x, y), origin, null, false);
+		Point16 position = StructureTools.PlaceByOrigin("Assets/Structures/SkeletronDomain/Room_" + id, new Point16(x, y), origin);
 		AddSpawns(x, y);
 	}
 
@@ -44,7 +44,7 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 		y -= origin.Y;
 
 		string structure = "Assets/Structures/SkeletronDomain/Room_" + id;
-		Point16 position = StructureTools.PlaceByOrigin(structure, new Point16(x, y), Vector2.Zero, null, false);
+		Point16 position = StructureTools.PlaceByOrigin(structure, new Point16(x, y), Vector2.Zero);
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions(structure, PoTMod.Instance);
 		AddSpawns(x, y);
 
