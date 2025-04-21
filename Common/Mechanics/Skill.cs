@@ -35,10 +35,30 @@ public abstract class Skill
 	public int PassivePoints { get; set; } = 1;
 
 	public virtual string Name => GetType().Name;
-	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
+	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTextureName();
 
-	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria.Skills." + Name + ".Name");
-	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria.Skills." + Name + ".Description");
+	private string GetTextureName()
+	{
+		if (Tree?.Specialization is not null)
+		{
+			return Tree.Specialization.Name;
+		}
+
+		return Name;
+	}
+
+	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Name");
+	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Description");
+
+	private string GetLocalKey()
+	{
+		if (Tree?.Specialization is not null)
+		{
+			return "SkillSpecials." + Tree.Specialization.Name;
+		}
+
+		return "Skills." + Name;
+	}
 
 	/// <summary>
 	/// Creates a default instance of the given <see cref="Skill"/> at <see cref="Level"/> 1.
@@ -97,7 +117,7 @@ public abstract class Skill
 	/// What this skill actually does
 	/// </summary>
 	/// <param name="player">The player using the skill</param>
-	public abstract void UseSkill(Player player);
+	public abstract void UseSkill(Player player, SkillBuff buff);
 
 	/// <summary>
 	/// If this skill should be able to be used. By default this is if the cooldown is over and the player has enough mana.

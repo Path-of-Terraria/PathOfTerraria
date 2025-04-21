@@ -1,0 +1,16 @@
+OneLine: Only one skill specialization may be selected
+
+FireNova: {
+	Name: Fire Burst
+	Description: Create an aura of flame based on your held magic weapon's damage, inflicting On Fire!
+}
+
+IceNova: {
+	Name: Ice Wave
+	Description: Create a wave of ice based on your held magic weapon's damage, inflicting Chilled
+}
+
+LightningNova: {
+	Name: Thunder Shock
+	Description: Create a pulse of electricity based on your held magic weapon's damage, dealing a wider range of damage and inflicting Shocked
+}

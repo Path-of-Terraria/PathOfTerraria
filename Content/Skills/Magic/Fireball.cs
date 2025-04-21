@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -19,12 +20,12 @@ public class Fireball : Skill
 		WeaponType = ItemType.None;
 	}
 
-	public override void UseSkill(Player player)
+	public override void UseSkill(Player player, SkillBuff buff)
 	{
-		player.statMana -= ManaCost;
+		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
 		Timer = Cooldown;
 
-		int damage = (Level - 1) * 20 + 30;
+		int damage = (int)buff.Damage.ApplyTo((Level - 1) * 20 + 30);
 		var source = new EntitySource_UseSkill(player, this);
 		float knockback = 2f;
 		int type = ModContent.ProjectileType<FireballProj>();

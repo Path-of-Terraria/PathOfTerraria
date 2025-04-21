@@ -1,4 +1,5 @@
-﻿using ReLogic.Content;
+﻿using PathOfTerraria.Common.Systems.Skills;
+using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.Localization;
 
@@ -6,6 +7,7 @@ namespace PathOfTerraria.Common.Mechanics;
 
 public abstract class SkillAugment : ILoadable
 {
+	/// <summary> All skill augments, keyed by name, added during load. </summary>
 	public static readonly Dictionary<string, SkillAugment> LoadedAugments = [];
 
 	private Asset<Texture2D> _texture;
@@ -24,15 +26,15 @@ public abstract class SkillAugment : ILoadable
 
 	public virtual string TexturePath => $"{PoTMod.ModName}/Assets/SkillAugments/" + Name;
 	public virtual string Name => GetType().Name;
-	public virtual string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillAugments." + Name + ".Description");
+	public virtual string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillAugments." + Name + ".Tooltip");
 
-	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position)
+	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, Color color)
 	{
 		Texture2D texture = Texture.Value;
-		spriteBatch.Draw(texture, position - texture.Size() / 2, Color.White);
+		spriteBatch.Draw(texture, position - texture.Size() / 2, color);
 	}
 
-	public virtual void AugmentEffects() { }
+	public virtual void AugmentEffects(ref SkillBuff buff) { }
 
 	public void Load(Mod mod)
 	{

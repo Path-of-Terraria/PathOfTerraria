@@ -1,10 +1,12 @@
-﻿using Terraria.Localization;
+﻿using PathOfTerraria.Common.Systems.Skills;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class SkillPassive : Allocatable
+public abstract class SkillPassive(SkillTree tree) : SkillNode(tree)
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillPassives/" + Name;
+	public override string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Name");
 	public override string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Description");
 
 	public int Level;
@@ -29,7 +31,7 @@ public abstract class SkillPassive : Allocatable
 	}
 
 	/// <summary> The effects of this skill passive. </summary>
-	public virtual void PassiveEffects() { }
+	public virtual void PassiveEffects(ref SkillBuff buff) { }
 
 	public override void OnAllocate(Player player)
 	{
@@ -41,6 +43,11 @@ public abstract class SkillPassive : Allocatable
 	{
 		Level--;
 		Tree.Points++;
+	}
+
+	public override bool CanAllocate(Player player)
+	{
+		return Tree.Points > 0;
 	}
 
 	public override bool CanDeallocate(Player player)

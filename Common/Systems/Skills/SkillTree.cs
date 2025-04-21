@@ -25,9 +25,12 @@ public abstract class SkillTree : ILoadable
 		}
 	}
 
+	/// <summary> The currently viewed skill tree. </summary>
+	internal static SkillTree Current;
+
 	public static readonly Dictionary<Type, SkillTree> TypeToSkillTree = [];
 
-	public Dictionary<Vector2, Allocatable> Allocatables = [];
+	public Dictionary<Vector2, SkillNode> Nodes = [];
 	public SkillAugment[] Augments = new SkillAugment[3]; 
 
 	internal List<Edge> Edges = [];
@@ -39,9 +42,9 @@ public abstract class SkillTree : ILoadable
 
 	public Vector2 Point(Allocatable a)
 	{
-		foreach (Vector2 key in Allocatables.Keys)
+		foreach (Vector2 key in Nodes.Keys)
 		{
-			if (Allocatables[key] == a)
+			if (Nodes[key] == a)
 			{
 				return key;
 			}
@@ -50,6 +53,7 @@ public abstract class SkillTree : ILoadable
 		return default;
 	}
 
+	/// <summary> The Type of skill this tree belongs to, added to <see cref="TypeToSkillTree"/> during loading. </summary>
 	public abstract Type ParentSkill { get; }
 
 	/// <summary> Add skill tree elements by position here. </summary>
@@ -60,9 +64,9 @@ public abstract class SkillTree : ILoadable
 		string skillName = skill.Name;
 		Dictionary<string, int> nameToLevel = [];
 
-		foreach (Allocatable item in Allocatables.Values)
+		foreach (Allocatable item in Nodes.Values)
 		{
-			if (item is SkillPassive passive && item is not SkillPassiveAnchor && passive.Level != 0)
+			if (item is SkillPassive passive && item is not Anchor && passive.Level != 0)
 			{
 				nameToLevel.Add(passive.Name, passive.Level);
 			}
@@ -82,10 +86,10 @@ public abstract class SkillTree : ILoadable
 
 		for (int i = 0; i < names.Count; i++)
 		{
-			((SkillPassive)Allocatables.Values.First(x => x.Name == names[i] && x is SkillPassive)).Level = levels[i];
+			((SkillPassive)Nodes.Values.First(x => x.Name == names[i] && x is SkillPassive)).Level = levels[i];
 		}
 
-		Specialization = (SkillSpecial)Allocatables.Values.First(x => x is SkillSpecial && x.Name == tag.GetString("special"));
+		Specialization = (SkillSpecial)Nodes.Values.First(x => x is SkillSpecial && x.Name == tag.GetString("special"));
 	}
 
 	public void Load(Mod mod)
@@ -95,4 +99,30 @@ public abstract class SkillTree : ILoadable
 	}
 
 	public void Unload() { }
+}
+
+internal class SkillTreePlayer : ModPlayer
+{
+	private HashSet<string> AcquiredAugments = [];
+
+	/// <summary> Unlocks the given skill augment for this player. </summary>
+	public void UnlockAugment(SkillAugment augment)
+	{
+		AcquiredAugments.Add(augment.Name);
+	}
+
+	public bool Unlocked(SkillAugment augment)
+	{
+		return AcquiredAugments.Contains(augment.Name);
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		tag[nameof(AcquiredAugments)] = AcquiredAugments.ToList();
+	}
+
+	public override void LoadData(TagCompound tag)
+	{
+		AcquiredAugments = tag.GetList<string>(nameof(AcquiredAugments)).ToHashSet();
+	}
 }

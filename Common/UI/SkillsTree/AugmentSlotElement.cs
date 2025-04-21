@@ -1,18 +1,20 @@
 ﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
+using System.Linq;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
 internal class AugmentSlotElement : UIElement
 {
-	public const int ClickTimeMax = 10;
+	public const int HoverTimeMax = 10;
 
 	public readonly int Index;
-	public int ClickTime;
+	public int HoverTime;
 
 	public AugmentSlotElement(int index)
 	{
-		const int squareSize = 140;
+		const int squareSize = 160;
 		Index = index;
 
 		Width.Set(squareSize, 0);
@@ -25,22 +27,27 @@ internal class AugmentSlotElement : UIElement
 	{
 		base.Update(gameTime);
 
-		if (!ContainsPoint(Main.MouseScreen))
+		if (ContainsPoint(Main.MouseScreen))
 		{
-			if (ClickTime < ClickTimeMax)
+			if (HoverTime == 0)
 			{
-				ClickTime++;
+				AddRadial();
 			}
-			else
+
+			if (HoverTime < HoverTimeMax)
 			{
-				RemoveAllChildren();
+				HoverTime++;
 			}
 		}
 		else
 		{
-			if (ClickTime > 0)
+			if (HoverTime > 0)
 			{
-				ClickTime--;
+				HoverTime--;
+			}
+			else
+			{
+				RemoveAllChildren();
 			}
 		}
 	}
@@ -50,24 +57,16 @@ internal class AugmentSlotElement : UIElement
 		base.Draw(spriteBatch);
 
 		Vector2 center = GetDimensions().Center();
-		SkillAugment[] augments = Allocatable.ViewedSkill.Tree.Augments;
+		SkillAugment[] augments = SkillTree.Current.Augments;
 
 		if (augments[Index] != null)
 		{
-			augments[Index].Draw(spriteBatch, center);
+			augments[Index].Draw(spriteBatch, center, Color.White);
 			return;
 		}
 
-		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/PassiveFrame").Value;
+		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/AugmentFrame").Value;
 		spriteBatch.Draw(tex, center, null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
-	}
-
-	public override void LeftClick(UIMouseEvent evt)
-	{
-		RemoveAllChildren();
-		AddRadial();
-
-		ClickTime = ClickTimeMax;
 	}
 
 	private void AddRadial()
@@ -75,14 +74,21 @@ internal class AugmentSlotElement : UIElement
 		int index = 0;
 		foreach (string key in SkillAugment.LoadedAugments.Keys)
 		{
-			Append(new AugmentRadialElement(Vector2.Zero, SkillAugment.LoadedAugments[key], index));
+			SkillAugment augment = SkillAugment.LoadedAugments[key];
+
+			if (SkillTree.Current.Augments.Contains(augment))
+			{
+				continue;
+			}
+
+			Append(new AugmentRadialElement(Vector2.Zero, augment, index));
 			index++;
 		}
 	}
 
 	public override void RightClick(UIMouseEvent evt)
 	{
-		Allocatable.Tree.Augments[Index] = null;
+		SkillTree.Current.Augments[Index] = null;
 	}
 }
 
@@ -107,7 +113,8 @@ internal class AugmentRadialElement : UIElement
 		}
 	}
 
-	private float Progress => 1f - (float)Handler.ClickTime / AugmentSlotElement.ClickTimeMax;
+	private float Progress => (float)Handler.HoverTime / AugmentSlotElement.HoverTimeMax;
+	private bool Unlocked => Main.LocalPlayer.GetModPlayer<SkillTreePlayer>().Unlocked(_augment);
 
 	public AugmentRadialElement(Vector2 origin, SkillAugment augment, int index)
 	{
@@ -137,7 +144,15 @@ internal class AugmentRadialElement : UIElement
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		_augment.Draw(spriteBatch, GetDimensions().Center());
+		_augment.Draw(spriteBatch, GetDimensions().Center(), Unlocked ? Color.White : Color.Gray);
+
+		if (!Unlocked)
+		{
+			Texture2D lockIcon = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon").Value;
+			float scale = 1f + _redFlashTimer / 20f * .25f;
+
+			spriteBatch.Draw(lockIcon, GetDimensions().Center(), null, Color.Gray, scale - 1, lockIcon.Size() / 2, scale, default, 0);
+		}
 
 		if (_flashTimer > 0)
 		{
@@ -186,18 +201,17 @@ internal class AugmentRadialElement : UIElement
 			Tooltip.SetName(name);
 			Tooltip.SetTooltip(_augment.Tooltip);
 		}
-
-		//Recalculate();
 	}
 
 	public override void LeftClick(UIMouseEvent evt)
 	{
-		_flashTimer = 20;
-		Allocatable.Tree.Augments[Handler.Index] = _augment;
-	}
+		if (!Unlocked)
+		{
+			_redFlashTimer = 20;
+			//return; //Removed for debug
+		}
 
-	public override void RightClick(UIMouseEvent evt)
-	{
-		_redFlashTimer = 20;
+		_flashTimer = 20;
+		SkillTree.Current.Augments[Handler.Index] = _augment;
 	}
 }

@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.SkillTrees;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Utilities;
@@ -21,7 +20,6 @@ public class Nova : Skill
 
 	public override int MaxLevel => 3;
 
-	public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTexture();
 	public override LocalizedText DisplayName => GetLocalization("Name", base.DisplayName);
 	public override LocalizedText Description => GetLocalization("Description", base.Description);
 
@@ -35,17 +33,6 @@ public class Nova : Skill
 		};
 	}
 
-	private string GetTexture()
-	{
-		return GetNovaType() switch
-		{
-			NovaType.Fire => "FireNova",
-			NovaType.Lightning => "LightningNova",
-			NovaType.Ice => "IceNova",
-			_ => GetType().Name,
-		};
-	}
-
 	private NovaType GetNovaType()
 	{
 		return GetNovaType(this);
@@ -54,6 +41,8 @@ public class Nova : Skill
 	public static NovaType GetNovaType(Nova nova)
 	{
 		Player player = Main.LocalPlayer;
+		SkillSpecial special = nova.Tree.Specialization;
+
 		//SkillPassivePlayer skillPassive = player.GetModPlayer<SkillPassivePlayer>();
 
 		/*if (skillPassive.AllocatedPassives.TryGetValue(nova, out Dictionary<string, SkillPassive> passives))
@@ -84,12 +73,12 @@ public class Nova : Skill
 		WeaponType = ItemType.Magic;
 	}
 
-	public override void UseSkill(Player player)
+	public override void UseSkill(Player player, SkillBuff buff)
 	{
-		player.statMana -= ManaCost;
+		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
 		Timer = Cooldown;
 
-		int damage = (int)(player.HeldItem.damage * (2 + 0.5f * Level));
+		int damage = (int)buff.Damage.ApplyTo(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);
 		NovaType type = GetNovaType();
 		float knockback = 2f;

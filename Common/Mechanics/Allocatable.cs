@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Skills;
-using ReLogic.Content;
-using System.Linq;
+﻿using ReLogic.Content;
 
 namespace PathOfTerraria.Common.Mechanics;
 
@@ -20,29 +18,22 @@ public abstract class Allocatable
 		}
 	}
 
+	/// <summary> Shorthand for the Type name. </summary>
+	public string Name => GetType().Name;
+
 	public virtual string TexturePath { get; }
-	public virtual string Name => GetType().Name;
+	public abstract string DisplayName { get; }
 	public abstract string Tooltip { get; }
 
-	internal static Skill ViewedSkill;
-	/// <summary> The tree of the currently viewed skill (<see cref="ViewedSkill"/>).</summary>
-	public static SkillTree Tree => ViewedSkill.Tree;
-
 	/// <summary> Should check <see cref="CanAllocate"/> before being called. </summary>
-	public virtual void OnAllocate(Player player)
-	{
-		Tree.Points--;
-	}
+	public virtual void OnAllocate(Player player) { }
 
 	/// <summary> Should check <see cref="CanDeallocate"/> before being called. </summary>
-	public virtual void OnDeallocate(Player player)
-	{
-		Tree.Points++;
-	}
+	public virtual void OnDeallocate(Player player) { }
 
 	public virtual bool CanAllocate(Player player)
 	{
-		return Tree.Points > 0 && Tree.Edges.Any(e => e.Contains(this) && (e.Other(this) is not SkillPassive p || p.Level > 0));
+		return true;
 	}
 
 	public virtual bool CanDeallocate(Player player)

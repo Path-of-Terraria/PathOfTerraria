@@ -49,25 +49,24 @@ internal class SkillSelectionPanel : SmartUiElement
 
 	public void RebuildTree()
 	{
-		if (SelectedSkill is null)
+		if (SelectedSkill is null || SelectedSkill.Tree is null)
 		{
 			return;
 		}
 
-		Allocatable.ViewedSkill = SelectedSkill;
+		SkillTree.Current = SelectedSkill.Tree;
 		RemoveAllChildren();
 		_skillTreeInnerPanel = null;
 		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 		Append(_skillTreeInnerPanel);
 
-		Dictionary<Vector2, Allocatable> dict = SelectedSkill.Tree.Allocatables;
+		Dictionary<Vector2, SkillNode> dict = SkillTree.Current.Nodes;
 		foreach (Vector2 key in dict.Keys)
 		{
 			_skillTreeInnerPanel.Append(new AllocatableElement(key, dict[key]));
 		}
 
-		const int augmentSlots = 3; //Can be made variable when needed
-
+		int augmentSlots = SelectedSkill.Tree.Augments.Length;
 		for (int i = 0; i < augmentSlots; i++)
 		{
 			_skillTreeInnerPanel.Append(new AugmentSlotElement(i));

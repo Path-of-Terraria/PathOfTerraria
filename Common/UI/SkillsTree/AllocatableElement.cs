@@ -4,6 +4,7 @@ using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
@@ -25,7 +26,7 @@ internal class AllocatableElement : SmartUiElement
 		Width.Set(size.X, 0);
 		Height.Set(size.Y, 0);
 
-		if (_node is SkillPassiveAnchor)
+		if (_node is Anchor)
 		{
 			(_node as SkillPassive).Level = 1;
 		}
@@ -78,15 +79,21 @@ internal class AllocatableElement : SmartUiElement
 
 		if (IsMouseHovering)
 		{
-			string name = _node.Name;
+			string name = _node.DisplayName;
+			string tooltip = _node.Tooltip;
 
 			if (_node is SkillPassive passive && passive.MaxLevel > 1)
 			{
 				name += $" ({passive.Level}/{passive.MaxLevel})";
 			}
 
+			if (_node is SkillSpecial special)
+			{
+				tooltip += "\n\n" + Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillSpecials.OneLine");
+			}
+
 			Tooltip.SetName(name);
-			Tooltip.SetTooltip(_node.Tooltip);
+			Tooltip.SetTooltip(tooltip);
 		}
 
 		Recalculate();
