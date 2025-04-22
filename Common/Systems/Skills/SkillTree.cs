@@ -24,7 +24,7 @@ public abstract class SkillTree : ILoadable
 		}
 	}
 
-	public const int AugmentCount = 3;
+	public const int AugmentCount = 2;
 
 	/// <summary> The currently viewed skill tree. </summary>
 	internal static SkillTree Current;
