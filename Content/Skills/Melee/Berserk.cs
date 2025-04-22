@@ -15,7 +15,6 @@ public class Berserk : Skill
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (60 - 5 * Level) * 60;
-		Timer = 0;
 		ManaCost = 10 + 5 * level;
 		Duration = (15 + 5 * Level) * 60;
 		WeaponType = ItemType.Sword;
@@ -25,7 +24,7 @@ public class Berserk : Skill
 	{
 		player.statMana -= ManaCost;
 		player.AddBuff(ModContent.BuffType<RageBuff>(), Duration);
-		Timer = Cooldown;
+		Cooldown = MaxCooldown;
 	}
 
 	internal class BerserkAuraLayer : PlayerDrawLayer

@@ -25,7 +25,7 @@ public class Fireball : Skill
 	public override void UseSkill(Player player)
 	{
 		player.statMana -= ManaCost;
-		Timer = Cooldown;
+		Cooldown = MaxCooldown;
 
 		int damage = (Level - 1) * 20 + 30;
 		var source = new EntitySource_UseSkill(player, this);

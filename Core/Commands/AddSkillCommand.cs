@@ -64,10 +64,10 @@ public sealed class AddSkillCommand : ModCommand
 
 		bool timerValid = int.TryParse(args[3], out int timer);
 
-		if (timerValid)
-		{
-			skill.Timer = timer;
-		}
+		//if (timerValid)
+		//{
+		//	skill.Timer = timer;
+		//}
 
 		if (SetSkillOrComplain(caller, args, skillSlot, skill, timerValid, 4, 3, "timer"))
 		{

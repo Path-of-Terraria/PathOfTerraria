@@ -15,8 +15,7 @@ public class MoltenShield : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		MaxCooldown = 15 * 60;
-		Timer = 0;
+		Cooldown = MaxCooldown = 15 * 60;
 		ManaCost = 10 - Math.Max(2, (int)Level);
 		Duration =  (5 + 2 * Level) * 60;
 		WeaponType = ItemType.Sword;
@@ -29,7 +28,7 @@ public class MoltenShield : Skill
 
 		player.statMana -= ManaCost;
 		player.GetModPlayer<MoltenShieldBuff.MoltenShieldPlayer>().SetBuff(Level, Duration);
-		Timer = MaxCooldown;
+		Cooldown = MaxCooldown;
 	}
 
 	public override bool CanEquipSkill(Player player)

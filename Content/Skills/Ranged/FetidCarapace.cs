@@ -15,8 +15,7 @@ public class FetidCarapace : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		MaxCooldown = 30 * 60;
-		Timer = 0;
+		Cooldown = MaxCooldown = 30 * 60;
 		ManaCost = 20;
 		Duration = (6 + Level * 4) * 60;
 		WeaponType = ItemType.Ranged;
@@ -37,7 +36,7 @@ public class FetidCarapace : Skill
 			Main.projectile[proj].timeLeft = Duration;
 		}
 
-		Timer = MaxCooldown;
+		Cooldown = MaxCooldown;
 	}
 
 	public override bool CanUseSkill(Player player)

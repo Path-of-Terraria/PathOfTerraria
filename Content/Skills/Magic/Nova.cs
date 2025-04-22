@@ -97,7 +97,7 @@ public class Nova : Skill
 	public override void UseSkill(Player player)
 	{
 		player.statMana -= ManaCost;
-		Timer = Cooldown;
+		Cooldown = MaxCooldown;
 
 		int damage = (int)(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);

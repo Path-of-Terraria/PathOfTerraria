@@ -25,7 +25,7 @@ public class IceBolt : Skill
 	public override void UseSkill(Player player)
 	{
 		player.statMana -= ManaCost;
-		Timer = Cooldown;
+		Cooldown = MaxCooldown;
 
 		int damage = Level * 10 + 5;
 		var source = new EntitySource_UseSkill(player, this);

@@ -84,9 +84,9 @@ internal class SkillCombatPlayer : ModPlayer
 
 		foreach (Skill skill in HotbarSkills)
 		{
-			if (skill is { Timer: > 0 })
+			if (skill is { Cooldown: > 0 })
 			{
-				skill.Timer--;
+				skill.Cooldown--;
 			}
 		}
 	}
@@ -146,8 +146,8 @@ internal class SkillCombatPlayer : ModPlayer
 			string type = data.GetString("type");
 
 			var skill = Skill.GetAndPrepareSkill(Type.GetType(type));
-			skill.LoadData(data);
 			skill.LevelTo(skill.Level);
+			skill.LoadData(data);
 
 			HotbarSkills[i] = skill;
 		}
