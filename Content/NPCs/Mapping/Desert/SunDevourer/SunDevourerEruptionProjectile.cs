@@ -80,7 +80,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 
 		Projectile.velocity.X += MathF.Cos(Timer * 0.1f) * 0.01f;
 
-		UpdateHoming();
+		//UpdateHoming();
 		UpdateGravity();
 		UpdateDustEffects();
 	}
@@ -161,7 +161,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 			Projectile.oldPos,
 			Projectile.oldRot,
 			static (progress) => new Color(235, 97, 52, 0) * progress,
-			static (progress) => MathHelper.SmoothStep(80f, 0f, progress),
+			static (progress) => MathHelper.SmoothStep(50f, 0f, progress),
 			-Main.screenPosition + Projectile.Size / 2f
 		);
 

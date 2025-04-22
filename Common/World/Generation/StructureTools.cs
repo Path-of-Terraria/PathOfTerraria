@@ -41,7 +41,7 @@ internal static class StructureTools
 		}
 
 		int oldVal = Main.netMode;
-
+		
 		if (noSync)
 		{
 			Main.netMode = NetmodeID.SinglePlayer;

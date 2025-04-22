@@ -1,4 +1,5 @@
 ﻿using NPCUtils;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Graphics.Camera.Modifiers;
 using PathOfTerraria.Core.Graphics.Zoom;
 using PathOfTerraria.Core.Graphics.Zoom.Modifiers;
@@ -44,10 +45,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 	/// </summary>
 	public ref float Timer => ref NPC.ai[3];
 
-	/// <summary>
-	///		Gets or sets the previous state of the NPC. Shorthand for <c>NPC.localAI[0]</c>.
-	/// </summary>
 	public ref float MiscData => ref NPC.localAI[0];
+	public ref float AdditionalData => ref NPC.localAI[1];
 
 	private VerletChain chain;
 	private Vector2[] bezier;
@@ -147,5 +146,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
+	}
+
+	public override void OnKill()
+	{
+		Vector2 pos = IdleSpot;
+		Projectile.NewProjectile(Terraria.Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 	}
 }

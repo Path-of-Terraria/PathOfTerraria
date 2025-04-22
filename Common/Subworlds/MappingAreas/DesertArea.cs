@@ -179,7 +179,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 				if (flags.HasFlag(OpenFlags.Above) && tile.HasTile)
 				{
-					if (WorldGen.genRand.NextBool(10) && tile.TileType == TileID.Sand && i > 160 && i < Main.maxTilesX - 160)
+					if (WorldGen.genRand.NextBool(10) && tile.TileType == TileID.Sand && i > 180 && i < Main.maxTilesX - 180)
 					{
 						WorldGen.PlantCactus(i, j);
 					}
@@ -594,7 +594,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 		Point16 pos = StructureTools.PlaceByOrigin(structure, new Point16(lowestX, lowestY), new Vector2(lowestOriginX, 1));
 		GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 10);
-		BossSpawnLocation = pos + new Point16(size.X / 2, size.Y / 2);
+		BossSpawnLocation = pos + new Point16(size.X / 2, (int)(size.Y / 1.25f));
 	}
 
 	private static bool CanEmbedStructureIn(Point16 pos, Point16 structureSize)
@@ -741,25 +741,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 		TileEntity.UpdateEnd();
 		Wiring.UpdateMech();
-
-		SandstormTimer++;
-		int max = !Sandstorm.Happening ? 40 * 60 : 20 * 60;
-
-		if (SandstormTimer > max)
-		{
-			if (!Sandstorm.Happening)
-			{
-				Sandstorm.StartSandstorm();
-				Main.windSpeedTarget = Main.rand.NextFloat(1, 2);
-			}
-			else 
-			{
-				Sandstorm.StopSandstorm();
-				Main.windSpeedTarget = 0;
-			}
-
-			SandstormTimer = 0;
-		}
+		UpdateSandstorm();
 
 		bool hasPortal = false;
 
@@ -776,13 +758,69 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		{
 			int x = BossSpawnLocation.X * 16;
 			int y = BossSpawnLocation.Y * 16;
-			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, ModContent.NPCType<SunDevourerNPC>(), 0, x, y);
+			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, ModContent.NPCType<SunDevourerNPC>(), 0, x, y - 40 * 16);
 
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
 			}
 		}
+	}
+
+	private static void UpdateSandstorm()
+	{
+		if (CanRunSandstorm())
+		{
+			if (SandstormTimer != 0 && Sandstorm.Happening)
+			{
+				Sandstorm.StopSandstorm();
+				Main.windSpeedTarget = 0;
+			}
+
+			SandstormTimer = 0;
+			return;
+		}
+
+		SandstormTimer++;
+		int max = !Sandstorm.Happening ? 40 * 60 : 20 * 60;
+
+		if (SandstormTimer > max)
+		{
+			if (!Sandstorm.Happening)
+			{
+				Sandstorm.StartSandstorm();
+				Main.windSpeedTarget = Main.rand.NextFloat(1, 2);
+			}
+			else
+			{
+				Sandstorm.StopSandstorm();
+				Main.windSpeedTarget = 0;
+			}
+
+			SandstormTimer = 0;
+		}
+	}
+
+	private static bool CanRunSandstorm()
+	{
+		if (!Main.CurrentFrameFlags.AnyActiveBossNPC)
+		{
+			return true;
+		}
+
+		int bossWho = NPC.FindFirstNPC(ModContent.NPCType<SunDevourerNPC>());
+
+		if (bossWho != -1)
+		{
+			NPC boss = Main.npc[bossWho];
+
+			if (boss.ai[0] > 0)
+			{
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 	public void OverrideOcean()
