@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems.Skills;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;

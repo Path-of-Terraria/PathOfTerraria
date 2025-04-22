@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Data.Models;
-using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Common.Mechanics;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 
@@ -19,52 +19,34 @@ internal class PassiveLoader : ILoadable
 	}
 }
 
-public abstract class Passive
+public abstract class Passive : Allocatable, ILevel
 {
 	public static Dictionary<string, Type> Passives = [];
 	
 	public Vector2 TreePos;
 
-	/// <summary>
-	/// This is used to map the JSON data to the correct passive.
-	/// This is also what's used to grab the texture of this passive.
+	/// <summary> The internal identifier of this passive. <para/>
+	/// This is used to map the JSON data to the correct passive. This is also what's used to grab the texture of this passive.
 	/// </summary>
-	public virtual string InternalIdentifier => GetType().Name;
+	public override string Name => GetType().Name;
 	
 	// This is used to create a reference to the created passive for connections
 	public int ReferenceId;
 
+	public override string TexturePath => $"{PoTMod.ModName}/Assets/Passives/" + Name;
 	/// <summary>
 	/// Name to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
 	/// </summary>
-	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.Passives." + InternalIdentifier + ".Name");
+	public override string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.Passives." + Name + ".Name");
 
 	/// <summary>
 	/// Tooltip to be used in ALL display situations. This is automatically populated by <see cref="Language.GetOrRegister(string, Func{string})"/>.
 	/// </summary>
-	public virtual string DisplayTooltip => 
-		string.Format(Language.GetTextValue($"Mods.PathOfTerraria.Passives.{InternalIdentifier}.Tooltip"), Value);
+	public override string DisplayTooltip => string.Format(Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip"), Value);
 
 	public int Level;
 	public int MaxLevel;
 	public int Value;
-
-	private Vector2 _size;
-	
-	public Vector2 Size
-	{
-		get
-		{
-			if (_size != Vector2.Zero)
-			{
-				return _size;
-			}
-
-			_size = StringUtils.GetSizeOfTexture($"Assets/Passives/{InternalIdentifier}") ?? StringUtils.GetSizeOfTexture("Assets/UI/PassiveFrameSmall") ?? new Vector2();
-				
-			return _size;
-		}
-	}
 
 	public virtual void BuffPlayer(Player player) { }
 
@@ -85,10 +67,10 @@ public abstract class Passive
 			instance.OnLoad();
 
 			// Automatically registers the given keys for each instance loaded, and sets Name to the class's name and Description to empty if they do not exist.
-			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.InternalIdentifier + ".Name", () => type.Name);
-			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.InternalIdentifier + ".Tooltip", () => "");
+			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.Name + ".Name", () => type.Name);
+			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.Name + ".Tooltip", () => "");
 
-			Passives.Add(instance.InternalIdentifier, type);
+			Passives.Add(instance.Name, type);
 		}
 	}
 
@@ -115,15 +97,9 @@ public abstract class Passive
 		return p;
 	}
 
-	public void Draw(SpriteBatch spriteBatch, Vector2 center)
+	public override void Draw(SpriteBatch spriteBatch, Vector2 center)
 	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
-
-		if (ModContent.HasAsset($"{PoTMod.ModName}/Assets/Passives/" + InternalIdentifier))
-		{
-			tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Passives/" + InternalIdentifier).Value;
-		}
-
+		Texture2D tex = Texture.Value;
 		Color color = Color.Gray;
 
 		if (CanAllocate(Main.LocalPlayer))
@@ -148,7 +124,7 @@ public abstract class Passive
 	/// If this passive is able to be allocated or not
 	/// </summary>
 	/// <returns></returns>
-	public bool CanAllocate(Player player)
+	public override bool CanAllocate(Player player)
 	{
 		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
@@ -162,9 +138,9 @@ public abstract class Passive
 	/// If this passive can be refunded or not
 	/// </summary>
 	/// <returns></returns>
-	public virtual bool CanDeallocate(Player player)
+	public override bool CanDeallocate(Player player)
 	{
-		if (InternalIdentifier == "AnchorPassive")
+		if (Name == "AnchorPassive")
 		{
 			return false;
 		}
@@ -172,5 +148,15 @@ public abstract class Passive
 		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
+	}
+
+	public (int, int) LevelRange
+	{
+		get => (Level, MaxLevel);
+		set
+		{
+			Level = value.Item1;
+			MaxLevel = value.Item2;
+		}
 	}
 }

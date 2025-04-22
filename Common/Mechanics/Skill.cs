@@ -19,7 +19,7 @@ public abstract class Skill
 
 	/// <summary> Attempts to get the skill tree associated with this skill. Returns null if none. </summary>
 	public SkillTree Tree
-	{ 
+	{
 		get
 		{
 			if (SkillTree.TypeToSkillTree.TryGetValue(GetType(), out SkillTree value))
@@ -97,7 +97,7 @@ public abstract class Skill
 	{
 		LevelTo((byte)(Level + 1));
 	}
-	
+
 	public override bool Equals(object obj)
 	{
 		if (obj is Skill otherSkill)
@@ -107,7 +107,7 @@ public abstract class Skill
 
 		return false;
 	}
-	
+
 	public override int GetHashCode()
 	{
 		return Name.GetHashCode(); // Again, you can use other properties here if needed
@@ -140,9 +140,9 @@ public abstract class Skill
 	{
 		return true;
 	}
-	
+
 	private Vector2 _size;
-	
+
 	public Vector2 Size
 	{
 		get
@@ -153,7 +153,7 @@ public abstract class Skill
 			}
 
 			_size = StringUtils.GetSizeOfTexture($"Assets/Skills/{GetType().Name}") ?? new Vector2();
-				
+
 			return _size;
 		}
 	}

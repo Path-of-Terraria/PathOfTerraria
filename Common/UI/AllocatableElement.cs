@@ -2,45 +2,61 @@
 using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.UI.SkillsTree;
+namespace PathOfTerraria.Common.UI;
 
 internal class AllocatableElement : SmartUiElement
 {
-	private readonly Allocatable _node;
+	public static Asset<Texture2D> GlowAlpha;
+	public static Asset<Texture2D> StarAlpha;
+
+	public readonly Allocatable Node;
 
 	private int _flashTimer;
 	private int _redFlashTimer;
-	
-	public AllocatableElement(Vector2 origin, Allocatable node)
-	{
-		var size = node.Texture.Size().ToPoint();
-		_node = node;
 
-		Left.Set(origin.X - size.X / 2, 0.5f);
-		Top.Set(origin.Y - size.Y / 2, 0.5f);
+	public static void LoadAssets()
+	{
+		if (GlowAlpha?.IsLoaded is not true)
+		{
+			GlowAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
+		}
+
+		if (StarAlpha?.IsLoaded is not true)
+		{
+			StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
+		}
+	}
+
+	public AllocatableElement(Allocatable node)
+	{
+		var size = node.Size.ToPoint();
+
 		Width.Set(size.X, 0);
 		Height.Set(size.Y, 0);
 
-		if (_node is Anchor)
+		if (Node is Anchor)
 		{
-			(_node as SkillPassive).Level = 1;
+			(Node as SkillPassive).Level = 1;
 		}
+
+		LoadAssets();
+		Node = node;
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		_node.Draw(spriteBatch, GetDimensions().Center());
+		Node.Draw(spriteBatch, GetDimensions().Center());
 		DrawOnto(spriteBatch, GetDimensions().Center());
 
 		if (_flashTimer > 0)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
-			Texture2D star = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha").Value;
+			Texture2D glow = GlowAlpha.Value;
+			Texture2D star = StarAlpha.Value;
 
 			float prog = _flashTimer / 20f;
 
@@ -59,8 +75,8 @@ internal class AllocatableElement : SmartUiElement
 
 		if (_redFlashTimer > 0)
 		{
-			Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
-			Texture2D star = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha").Value;
+			Texture2D glow = GlowAlpha.Value;
+			Texture2D star = StarAlpha.Value;
 
 			float prog = _redFlashTimer / 20f;
 
@@ -79,38 +95,44 @@ internal class AllocatableElement : SmartUiElement
 
 		if (IsMouseHovering)
 		{
-			string name = _node.DisplayName;
-			string tooltip = _node.Tooltip;
-
-			if (_node is SkillPassive passive && passive.MaxLevel > 1)
-			{
-				name += $" ({passive.Level}/{passive.MaxLevel})";
-			}
-
-			if (_node is SkillSpecial special)
-			{
-				tooltip += '\n' + Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillSpecials.OneLine");
-			}
-
-			Tooltip.SetName(name);
-			Tooltip.SetTooltip(tooltip);
+			DrawHoverTooltip();
 		}
 
 		Recalculate();
+	}
+
+	/// <summary> Draws the name and tooltip of <see cref="Node"/> when hovered over. </summary>
+	public virtual void DrawHoverTooltip()
+	{
+		string name = Node.DisplayName;
+
+		if (Node is ILevel level)
+		{
+			(int, int) range = level.LevelRange;
+
+			if (range.Item2 > 1)
+			{
+				name += $" ({range.Item1}/{range.Item2})";
+			}
+		}
+
+		Tooltip.SetName(name);
+		Tooltip.SetTooltip(Node.DisplayTooltip);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
 		Player p = Main.LocalPlayer;
 
-		if (CheckMouseContained() && _node.CanAllocate(p))
+		if (CheckMouseContained() && Node.CanAllocate(p))
 		{
-			_node.OnAllocate(p);
+			Node.OnAllocate(p);
 			_flashTimer = 20;
-			
-			if (_node is SkillPassive passive)
+
+			if (Node is ILevel level)
 			{
-				TreeSoundEngine.PlaySoundForTreeAllocation(passive.MaxLevel, passive.Level);
+				(int, int) range = level.LevelRange;
+				TreeSoundEngine.PlaySoundForTreeAllocation(range.Item2, range.Item1);
 			}
 			else
 			{
@@ -123,9 +145,9 @@ internal class AllocatableElement : SmartUiElement
 	{
 		Player p = Main.LocalPlayer;
 
-		if (CheckMouseContained() && _node.CanDeallocate(p))
+		if (CheckMouseContained() && Node.CanDeallocate(p))
 		{
-			_node.OnDeallocate(p);
+			Node.OnDeallocate(p);
 			_redFlashTimer = 20;
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 		}

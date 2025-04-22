@@ -18,7 +18,6 @@ public abstract class SkillTree : ILoadable
 			return p == Start || p == End;
 		}
 
-		/// <summary> Assuming that p is either start or end - Contains returned true. </summary>
 		public SkillNode Other(SkillNode p)
 		{
 			return p == Start ? End : Start;
@@ -43,7 +42,7 @@ public abstract class SkillTree : ILoadable
 	/// <summary> The current skill specialization of this tree. </summary>
 	public SkillSpecial Specialization;
 
-	public Vector2 Point(Allocatable a)
+	public Vector2 Point(SkillNode a)
 	{
 		foreach (Vector2 key in Nodes.Keys)
 		{

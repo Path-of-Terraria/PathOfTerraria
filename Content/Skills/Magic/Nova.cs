@@ -4,7 +4,6 @@ using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.SkillSpecials;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Skills.Magic;
@@ -20,24 +19,6 @@ public class Nova : Skill
 	}
 
 	public override int MaxLevel => 3;
-
-	public override LocalizedText DisplayName => GetLocalization("Name", base.DisplayName);
-	public override LocalizedText Description => GetLocalization("Description", base.Description);
-
-	private LocalizedText GetLocalization(string postfix, LocalizedText def)
-	{
-		NovaType type = GetNovaType();
-		return type switch
-		{
-			NovaType.Fire or NovaType.Ice or NovaType.Lightning => Language.GetText("Mods.PathOfTerraria.Skills." + Name + "." + type.ToString() + "." + postfix),
-			_ => def,
-		};
-	}
-
-	private NovaType GetNovaType()
-	{
-		return GetNovaType(this);
-	}
 
 	public static NovaType GetNovaType(Nova nova)
 	{
@@ -76,7 +57,7 @@ public class Nova : Skill
 
 		int damage = (int)buff.Damage.ApplyTo(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);
-		NovaType type = GetNovaType();
+		NovaType type = GetNovaType(this);
 		float knockback = 2f;
 
 		if (type == NovaType.Fire)

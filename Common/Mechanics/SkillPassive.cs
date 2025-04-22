@@ -3,11 +3,11 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class SkillPassive(SkillTree tree) : SkillNode(tree)
+public abstract class SkillPassive(SkillTree tree) : SkillNode(tree), ILevel
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillPassives/" + Name;
 	public override string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Name");
-	public override string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Tooltip");
+	public override string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Tooltip");
 
 	public int Level;
 	public int MaxLevel;
@@ -53,5 +53,15 @@ public abstract class SkillPassive(SkillTree tree) : SkillNode(tree)
 	public override bool CanDeallocate(Player player)
 	{
 		return Level > 0;
+	}
+
+	public (int, int) LevelRange
+	{
+		get => (Level, MaxLevel);
+		set
+		{
+			Level = value.Item1;
+			MaxLevel = value.Item2;
+		}
 	}
 }

@@ -1,7 +1,10 @@
 ﻿using ReLogic.Content;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 
 namespace PathOfTerraria.Common.Mechanics;
 
+/// <summary> Boilerplate for an object that can be allocated to, like <see cref="SkillPassive"/> and <see cref="Passive"/>.<para/>
+/// Use <see cref="ILevel"/> if the object can gain levels. </summary>
 public abstract class Allocatable
 {
 	private Asset<Texture2D> _texture;
@@ -18,12 +21,28 @@ public abstract class Allocatable
 		}
 	}
 
-	/// <summary> Shorthand for the Type name. </summary>
-	public string Name => GetType().Name;
+	private Vector2 _size;
+	public Vector2 Size
+	{
+		get
+		{
+			if (_size != Vector2.Zero)
+			{
+				return _size;
+			}
+
+			return _size = Texture.Size();
+		}
+	}
+
+	/// <summary> Shorthand for Type name. </summary>
+	public virtual string Name => GetType().Name;
 
 	public virtual string TexturePath { get; }
+	/// <summary> Name to be used in ALL display situations. </summary>
 	public abstract string DisplayName { get; }
-	public abstract string Tooltip { get; }
+	/// <summary> Tooltip to be used in ALL display situations. </summary>
+	public abstract string DisplayTooltip { get; }
 
 	/// <summary> Should check <see cref="CanAllocate"/> before being called. </summary>
 	public virtual void OnAllocate(Player player) { }

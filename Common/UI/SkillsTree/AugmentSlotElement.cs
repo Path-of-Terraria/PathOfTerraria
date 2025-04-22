@@ -19,6 +19,19 @@ internal class AugmentSlotElement : UIElement
 	public int HoverTime;
 	private bool _unlocked;
 
+	public bool ContainsInner
+	{
+		get
+		{
+			const int region = 52;
+
+			Vector2 center = GetDimensions().Center();
+			var area = new Rectangle((int)(center.X - region / 2), (int)(center.Y - region / 2), region, region);
+
+			return area.Contains(Main.MouseScreen.ToPoint());
+		}
+	}
+
 	public AugmentSlotElement(int index)
 	{
 		const int squareSize = 160;
@@ -40,7 +53,7 @@ internal class AugmentSlotElement : UIElement
 			return;
 		}
 
-		if (ContainsPoint(Main.MouseScreen))
+		if (ContainsInner || HoverTime > 0 && ContainsPoint(Main.MouseScreen))
 		{
 			if (HoverTime == 0)
 			{
@@ -52,7 +65,7 @@ internal class AugmentSlotElement : UIElement
 				HoverTime++;
 			}
 		}
-		else
+		else if (!ContainsPoint(Main.MouseScreen))
 		{
 			if (HoverTime > 0)
 			{
@@ -73,13 +86,11 @@ internal class AugmentSlotElement : UIElement
 		SkillAugment[] augments = SkillTree.Current.Augments;
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/AugmentFrame").Value;
 
-		var innerFrame = new Rectangle((int)(center.X - tex.Width / 2), (int)(center.Y - tex.Height / 2), tex.Width, tex.Height);
-
 		if (augments[Index] != null)
 		{
 			augments[Index].Draw(spriteBatch, center, Color.White);
 
-			if (innerFrame.Contains(Main.MouseScreen.ToPoint()))
+			if (ContainsInner)
 			{
 				string name = augments[Index].DisplayName;
 				string tooltip = augments[Index].Tooltip;
@@ -98,7 +109,7 @@ internal class AugmentSlotElement : UIElement
 			Texture2D lockIcon = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/LockIcon").Value;
 			spriteBatch.Draw(lockIcon, center, null, Color.Gray, 0, lockIcon.Size() / 2, 1, default, 0);
 
-			if (innerFrame.Contains(Main.MouseScreen.ToPoint()))
+			if (ContainsInner)
 			{
 				Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillAugments.SlotLine"));
 				Tooltip.SetTooltip(Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillAugments.CostLine").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value));

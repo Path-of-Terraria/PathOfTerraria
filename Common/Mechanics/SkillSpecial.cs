@@ -4,11 +4,20 @@ using Terraria.Localization;
 namespace PathOfTerraria.Common.Mechanics;
 
 /// <summary> The base class for skill specializations. Only one specialization can be selected per skill tree. </summary>
-public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree)
+public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree), ILevel
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillSpecials/" + Name;
 	public override string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillSpecials." + Name + ".Name");
-	public override string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillSpecials." + Name + ".Description");
+	public override string DisplayTooltip
+	{
+		get
+		{
+			string tooltip = Language.GetTextValue("Mods.PathOfTerraria.SkillSpecials." + Name + ".Description");
+			tooltip += "\n\n" + Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillSpecials.OneLine");
+
+			return tooltip;
+		}
+	}
 
 	public override void Draw(SpriteBatch spriteBatch, Vector2 position)
 	{
@@ -80,5 +89,11 @@ public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree)
 	public override bool CanDeallocate(Player player)
 	{
 		return Tree.Specialization == this;
+	}
+
+	public (int, int) LevelRange
+	{
+		get => ((Tree.Specialization == this) ? 1 : 0, 1); //Selecting a specialization is considered leveling up
+		set { }
 	}
 }

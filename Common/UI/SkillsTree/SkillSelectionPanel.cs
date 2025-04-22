@@ -63,7 +63,11 @@ internal class SkillSelectionPanel : SmartUiElement
 		Dictionary<Vector2, SkillNode> dict = SkillTree.Current.Nodes;
 		foreach (Vector2 key in dict.Keys)
 		{
-			_skillTreeInnerPanel.Append(new AllocatableElement(key, dict[key]));
+			var element = new AllocatableElement(dict[key]);
+			element.Left.Set(key.X - dict[key].Size.X / 2, 0.5f);
+			element.Top.Set(key.Y - dict[key].Size.Y / 2, 0.5f);
+
+			_skillTreeInnerPanel.Append(element);
 		}
 
 		int augmentSlots = SelectedSkill.Tree.Augments.Length;

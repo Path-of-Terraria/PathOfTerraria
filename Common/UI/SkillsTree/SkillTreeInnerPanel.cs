@@ -38,8 +38,8 @@ internal class SkillTreeInnerPanel : SmartUiElement
 			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 			Color color = Color.Gray;
 
-			int startLevel = (edge.Start is SkillPassive s) ? s.Level : 0;
-			int endLevel = (edge.End is SkillPassive e) ? e.Level : 0;
+			int startLevel = (edge.Start is ILevel) ? (edge.Start as ILevel).LevelRange.Item1 : 0;
+			int endLevel = (edge.End is ILevel) ? (edge.End as ILevel).LevelRange.Item1 : 0;
 
 			Vector2 startPos = tree.Point(edge.Start);
 			Vector2 endPos = tree.Point(edge.End);
