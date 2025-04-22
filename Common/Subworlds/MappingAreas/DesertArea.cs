@@ -6,7 +6,6 @@ using PathOfTerraria.Content.NPCs.Mapping.Desert;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
-using StructureHelper.Models;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,8 +28,9 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 	private static Point16 BossSpawnLocation = Point16.Zero;
 	private static int SandstormTimer = 0;
 
-	public override int Width => 2000 + 120 * Main.rand.Next(5);
+	public override int Width => 2600 + 150 * Main.rand.Next(3);
 	public override int Height => 600;
+	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), 
@@ -543,7 +543,10 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			}
 
 			Point16 pos = GetOpenAirRandomPosition();
-			string structurePath = "Assets/Structures/MapAreas/DesertArea/Oasis_" + WorldGen.genRand.Next(3);
+			string structurePath = WorldGen.genRand.NextBool() 
+				? "Assets/Structures/MapAreas/DesertArea/Oasis_" + WorldGen.genRand.Next(3)
+				: "Assets/Structures/MapAreas/DesertArea/Obelisk_" + WorldGen.genRand.Next(2);
+
 			bool isShrine = false;
 
 			if (hasShrine)
