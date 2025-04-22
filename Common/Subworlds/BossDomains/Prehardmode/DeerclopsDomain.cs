@@ -152,7 +152,7 @@ public class DeerclopsDomain : BossDomainSubworld
 				pos = new Point16(pos.X, pos.Y - 2);
 			}
 
-			StructureTools.PlaceByOrigin("Assets/Structures/DeerclopsDomain/Surface_" + id, new Point16(pos.X, pos.Y + 2), origin, null, true);
+			StructureTools.PlaceByOrigin("Assets/Structures/DeerclopsDomain/Surface_" + id, new Point16(pos.X, pos.Y + 2), origin);
 		}
 	}
 
@@ -165,7 +165,7 @@ public class DeerclopsDomain : BossDomainSubworld
 		Main.spawnTileY = (int)(Height * 0.7f);
 
 		string startPath = "Assets/Structures/DeerclopsDomain/Start_" + WorldGen.genRand.Next(4);
-		StructureTools.PlaceByOrigin(startPath, new Point16(Main.spawnTileX, Main.spawnTileY), new(0.5f, 0.6f), null, false);
+		StructureTools.PlaceByOrigin(startPath, new Point16(Main.spawnTileX, Main.spawnTileY), new(0.5f, 0.6f), null);
 
 		int firstTunnelXStart = Main.spawnTileX + WorldGen.genRand.Next(40, 80) * (WorldGen.genRand.NextBool() ? -1 : 1);
 		StartTunnel(noise, firstTunnelXStart, out Vector2[] points, out Vector2 last);

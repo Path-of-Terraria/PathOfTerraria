@@ -299,7 +299,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			}
 		}
 
-		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Arena_" + id, new Point16(x, (int)(Height * 0.48f) - size.Y / 2), Vector2.Zero, null, false);
+		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Arena_" + id, new Point16(x, (int)(Height * 0.48f) - size.Y / 2), Vector2.Zero);
 	}
 
 	private void SettleLiquids(GenerationProgress progress, GameConfiguration configuration)
@@ -462,7 +462,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			}
 		}
 
-		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Spawn", new Point16(Main.spawnTileX, Main.spawnTileY), new Vector2(0.5f, 0), null, false);
+		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Spawn", new Point16(Main.spawnTileX, Main.spawnTileY), new Vector2(0.5f, 0));
 		return;
 
 		static int GetWallType(FastNoiseLite wallTypeNoise, int i, int j)
@@ -516,7 +516,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 		}
 
 		crucibleY -= 10;
-		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Crucible", new Point16(crucibleX, crucibleY), new Vector2(0.5f, 0.5f), null, false);
+		StructureTools.PlaceByOrigin("Assets/Structures/WoFDomain/Crucible", new Point16(crucibleX, crucibleY), new Vector2(0.5f, 0.5f));
 
 		crucibleX--;
 		crucibleY -= 10;

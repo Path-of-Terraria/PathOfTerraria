@@ -129,7 +129,7 @@ public class EaterDomain : BossDomainSubworld
 			Vector2 angleOffset = -new Vector2(0, -10).RotatedBy(angle);
 			var placePos = new Point16(position.X + (int)angleOffset.X, position.Y + (int)angleOffset.Y);
 
-			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/Egg" + WorldGen.genRand.Next(3), placePos, new Vector2(0.5f, 0.5f), null);
+			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/Egg" + WorldGen.genRand.Next(3), placePos, new Vector2(0.5f, 0.5f));
 		}
 
 		HashSet<Point16> grasses = [];
@@ -238,7 +238,7 @@ public class EaterDomain : BossDomainSubworld
 
 		if (CanPlaceGraveyard(position) && WorldGen.genRand.NextBool(12) && position.Y > 300)
 		{
-			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/UGGraveyard" + WorldGen.genRand.Next(3), position, new Vector2(0f, 1f), null, true);
+			StructureTools.PlaceByOrigin("Assets/Structures/EaterDomain/UGGraveyard" + WorldGen.genRand.Next(3), position, new Vector2(0f, 1f));
 			return;
 		}
 
