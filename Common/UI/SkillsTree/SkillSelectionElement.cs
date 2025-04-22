@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Common.UI.Hotbar;
 using Terraria.GameContent;
+using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
@@ -16,6 +18,7 @@ internal class SkillSelectionElement : UIElement
 	{
 		_skill = skill;
 		_parentPanel = parentPanel;
+		_skill.LevelTo(1);
 		Width.Set(skill.Size.X, 0);
 		Height.Set(skill.Size.Y, 0);
 		Top.Set(60, 0);
@@ -33,6 +36,18 @@ internal class SkillSelectionElement : UIElement
 			return;
 		}
 
+		if (ContainsPoint(Main.MouseScreen))
+		{
+			if (_skill.CanEquipSkill(Main.LocalPlayer))
+			{
+				NewHotbar.DrawSkillHoverTooltips(_skill);
+			}
+			else
+			{
+				Tooltip.SetName(Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip"));
+			}
+		}
+
 		Vector2 position = GetDimensions().Position() + new Vector2(Width.Pixels / 2, Height.Pixels / 2);
 		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
 
@@ -48,7 +63,6 @@ internal class SkillSelectionElement : UIElement
 	public override void LeftClick(UIMouseEvent evt)
 	{
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
-		Main.NewText("Clicked on " + _skill.Name);
 		skillCombatPlayer.TryAddSkill(_skill);
 		_parentPanel.SelectedSkill = _skill;
 		_parentPanel.RebuildTree();
@@ -58,7 +72,6 @@ internal class SkillSelectionElement : UIElement
 
 	public override void RightClick(UIMouseEvent evt)
 	{
-		Main.NewText("Right Clicked on " + _skill.Name);
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 		skillCombatPlayer.TryRemoveSkill(_skill);
 	}

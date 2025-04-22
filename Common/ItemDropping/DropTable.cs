@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Items.Consumables.Maps;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Core.Items;
@@ -18,7 +19,7 @@ internal class DropTable
 	/// </summary>
 	/// <param name="random">The random to 'seed' the choice with. Defaults to Main.rand.</param>
 	public static ItemDatabase.ItemRecord RollMobDrops(int itemLevel, float dropRarityModifier, float gearChance = 0.8f, float currencyChance = 0.15f, float mapChance = 0.05f, 
-		UnifiedRandom random = null)
+		UnifiedRandom random = null, ItemRarity forceRarity = (ItemRarity)(-1))
 	{
 		var chances = new WeightedRandom<int>(random ?? Main.rand);
 		chances.Add(0, gearChance);
@@ -39,6 +40,11 @@ internal class DropTable
 		else
 		{
 			items = ItemDatabase.GetItemByType<Map>().Where(x => (x.Item.ModItem as Map).CanDrop);
+		}
+
+		if (forceRarity != (ItemRarity)(-1))
+		{
+			items = items.Where(x => x.Rarity == forceRarity);
 		}
 
 		return RollList(itemLevel, dropRarityModifier, items.ToList());

@@ -12,7 +12,7 @@ namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 internal class TavernManager : ModSystem
 {
-	public const int SeatY = 174;
+	public const int SeatY = 154;
 
 	public static readonly List<string> TavernNPCFullNames = [];
 
@@ -49,7 +49,7 @@ internal class TavernManager : ModSystem
 			}
 		}
 
-		WeightedRandom<int> entries = new();
+		WeightedRandom<int> entries = new(Main.rand);
 		HashSet<int> guarantees = [];
 
 		foreach (string npcName in TavernNPCFullNames)
@@ -61,10 +61,15 @@ internal class TavernManager : ModSystem
 			{
 				guarantees.Add(npc.type);
 			}
-			else
+			else if (Main.rand.NextFloat() < tavernNPC.SpawnChanceInTavern())
 			{
-				entries.Add(npc.type, tavernNPC.SpawnChanceInTavern());
+				entries.Add(npc.type);
 			}
+		}
+
+		if (entries.elements.Count == 0 && guarantees.Count == 0)
+		{
+			return;
 		}
 
 		Queue<int> types = new(guarantees);

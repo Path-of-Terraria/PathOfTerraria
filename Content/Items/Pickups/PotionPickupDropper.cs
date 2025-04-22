@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
@@ -24,7 +23,7 @@ internal class PotionPickupDropper : GlobalNPC
 						if (Main.netMode == NetmodeID.SinglePlayer)
 						{
 							int index = Item.NewItem(npc.GetSource_FromThis(), npc.Hitbox, ModContent.ItemType<HealingPotionPickup>());
-							Main.item[index].velocity = Vector2.UnitX.RotatedBy(i / (float)amount * MathHelper.TwoPi) * 10;
+							Main.item[index].velocity = Vector2.UnitX.RotatedBy(i / (float)amount * MathHelper.TwoPi).RotatedByRandom(0.4f) * 10;
 						}
 						else if (Main.netMode == NetmodeID.Server)
 						{
@@ -47,7 +46,7 @@ internal class PotionPickupDropper : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		if (NPCID.Sets.ProjectileNPC[npc.type])
+		if (NPCID.Sets.ProjectileNPC[npc.type] || npc.CountsAsACritter || npc.friendly)
 		{
 			return;
 		}

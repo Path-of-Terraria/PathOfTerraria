@@ -476,5 +476,38 @@
 			"x": 300,
 			"y": -75
 		}
+	},
+	{
+		"internalIdentifier": "IncreasedPotionRecoveryPassive",
+		"referenceId": 33,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 19
+			},
+			{
+				"referenceId": 18
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": -290
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMoveSpeedPassive",
+		"referenceId": 34,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": -380
+		}
 	}
 ]

@@ -177,7 +177,7 @@ internal sealed class NewHotbar : SmartUiState
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
 		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30 + off));
 
-		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
+		PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 
 		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/EmptyPotion").Value;
 
@@ -271,11 +271,11 @@ internal sealed class NewHotbar : SmartUiState
 
 		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
 		{
-			DrawSkillHoverTooltips(skillIndex, skill);
+			DrawSkillHoverTooltips(skill, skillIndex);
 		}
 	}
 
-	private static void DrawSkillHoverTooltips(int skillIndex, Skill skill)
+	internal static void DrawSkillHoverTooltips(Skill skill, int? skillIndex = null)
 	{
 		string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
 
@@ -289,17 +289,22 @@ internal sealed class NewHotbar : SmartUiState
 
 		string noKeybindName = Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value;
 
-		string keybindName = skillIndex switch
+		string keybindLine = "";
+
+		if (skillIndex.HasValue)
 		{
-			0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill1KeybindName) ? skill1KeybindName : noKeybindName,
-			1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill2KeybindName) ? skill2KeybindName : noKeybindName,
-			2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill3KeybindName) ? skill3KeybindName : noKeybindName,
-			_ => ""
-		};
+			string keybindName = skillIndex switch
+			{
+				0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill1KeybindName) ? skill1KeybindName : noKeybindName,
+				1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill2KeybindName) ? skill2KeybindName : noKeybindName,
+				2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill3KeybindName) ? skill3KeybindName : noKeybindName,
+				_ => ""
+			};
 
-		string keybindLine = Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value;
+			keybindLine = Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value + "\n";
+		}
 
-		string tooltip = $"{keybindLine}\n{skill.Description.Value}\n{manaCost}\n{weapon}";
+		string tooltip = $"{keybindLine}{skill.Description.Value}\n{manaCost}\n{weapon}";
 
 		if (skill.Duration != 0)
 		{
@@ -314,7 +319,7 @@ internal sealed class NewHotbar : SmartUiState
 		Tooltip.SetTooltip(tooltip);
 	}
 
-	private void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
+	private static void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
 		Texture2D building = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBuilding").Value;
 		Main.inventoryScale = Math.Max(opacity, 0f);
@@ -453,9 +458,16 @@ internal sealed class NewHotbar : SmartUiState
 
 public class HijackHotbarClick : ModSystem
 {
+	private static bool WasInInventory = false;
+
 	public override void Load()
 	{
 		On_Main.GUIHotbarDrawInner += StopClickOnHotbar;
+	}
+
+	public override void PreUpdateNPCs()
+	{
+		WasInInventory = Main.playerInventory; // Needs manual check for old value because HotbarHijack.cs overrides this value for the below method
 	}
 
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
@@ -481,7 +493,7 @@ public class HijackHotbarClick : ModSystem
 	{
 		const int FirstSlot = 0;
 
-		if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel)
+		if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !WasInInventory)
 		{
 			var pos = new Rectangle(26 * (FirstSlot + 1) - 4, 30, 60, 60);
 
@@ -528,7 +540,7 @@ public class HijackHotbarClick : ModSystem
 		{
 			var pos = new Rectangle(offX, offY, SlotSize, SlotSize);
 
-			if (pos.Contains(Main.MouseScreen.ToPoint()))
+			if (pos.Contains(Main.MouseScreen.ToPoint()) && !Main.playerInventory)
 			{
 				SetHealthOrManaTooltip(i == 0);
 			}
@@ -540,7 +552,7 @@ public class HijackHotbarClick : ModSystem
 	private static void SetHealthOrManaTooltip(bool health)
 	{
 		string type = health ? "Health" : "Mana";
-		PotionSystem potions = Main.LocalPlayer.GetModPlayer<PotionSystem>();
+		PotionPlayer potions = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 
 		Tooltip.SetName(Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"));
 		Tooltip.SetTooltip(

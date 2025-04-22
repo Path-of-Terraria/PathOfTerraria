@@ -7,8 +7,6 @@ using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using PathOfTerraria.Common.Utilities.Extensions;
-using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
-using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs;
 using Terraria.DataStructures;
@@ -16,16 +14,16 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Content.Items.Currency;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
 public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => new(782, 143);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => (RavencrestSystem.structures["Library"].Position + new Point(50, 15)).ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
-
-	private float animCounter;
 
 	public override void SetStaticDefaults()
 	{
@@ -38,6 +36,12 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -84,8 +88,9 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	public override void AddShops()
 	{
 		var shop = new NPCShop(Type);
-		shop.Add<Staff>();
-		shop.Add<Wand>();
+		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<UnfoldingShard>()) { shopCustomPrice = Item.buyPrice(0, 10, 0, 0) }));
+		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<GlimmeringShard>()) { shopCustomPrice = Item.buyPrice(0, 25, 0, 0) }, 
+			new Condition(LocalizedText.Empty, () => Quest.GetLocalPlayerInstance<WizardStartQuest>().Completed)));
 		shop.Register();
 	}
 
@@ -136,28 +141,6 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
 		}
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
 	}
 
 	public bool HasQuestMarker(out Quest quest)

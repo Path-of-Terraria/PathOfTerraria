@@ -160,7 +160,10 @@ public class QuestModPlayer : ModPlayer
 		{
 			foreach (Quest quest in QuestsByName.Values)
 			{
-				quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone); // Quests in enabledQuests are necessarily active
+				if (quest.Active)
+				{
+					quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone); // Quests in enabledQuests are necessarily active
+				}
 			}
 		}
 	}

@@ -93,7 +93,7 @@ public partial class EntityModifier : EntityModifierSegment
 		MinorStatsModPlayer msmp = player.GetModPlayer<MinorStatsModPlayer>();
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);
 
-		PotionSystem ps = player.GetModPlayer<PotionSystem>();
+		PotionPlayer ps = player.GetModPlayer<PotionPlayer>();
 		ps.MaxHealing = (int)MaxHealthPotions.ApplyTo(ps.MaxHealing);
 		ps.HealPower = (int)PotionHealPower.ApplyTo(ps.HealPower);
 		ps.HealDelay = (int)PotionHealDelay.ApplyTo(ps.HealDelay);

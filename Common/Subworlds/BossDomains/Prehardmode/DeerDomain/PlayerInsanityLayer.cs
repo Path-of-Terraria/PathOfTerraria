@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;

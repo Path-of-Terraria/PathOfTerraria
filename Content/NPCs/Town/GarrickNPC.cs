@@ -23,8 +23,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
-	private float animCounter;
-
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
@@ -36,6 +34,12 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -72,14 +76,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 	public override string GetChat()
 	{
 		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue." + Main.rand.Next(4));
-	}
-
-	public override void AddShops()
-	{
-		if (!ShopUtils.TryCloneNpcShop("Terraria/DD2Bartender/Shop", Type))
-		{
-			Mod.Logger.Error($"Failed to clone shop 'Terraria/DD2Bartender/Shop' to NPC '{Name}'!");
-		}
 	}
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
@@ -146,7 +142,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 			if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
 			{
-				Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>());
+				Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
 				Main.npcChatText = this.GetLocalization("Dialogue.GetKingMapAgain").Value;
 				return;
 			}
@@ -175,28 +171,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<KingSlimeQuest>();
 			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
 		}
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
 	}
 
 	public bool HasQuestMarker(out Quest quest)

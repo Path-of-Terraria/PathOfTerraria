@@ -15,14 +15,14 @@ public sealed class AccessoryReforgeGlobalItem : GlobalItem
 
 	public override bool CanReforge(Item item)
 	{
-		return !item.accessory;
+		return false;
 	}
 	
 	public override void UpdateInventory(Item item, Player player)
 	{
 		base.UpdateInventory(item, player);
 
-		if (!item.accessory || item.prefix <= 0)
+		if (item.prefix <= 0)
 		{
 			return;
 		}
@@ -32,6 +32,7 @@ public sealed class AccessoryReforgeGlobalItem : GlobalItem
 	
 	private static bool Item_CanHavePrefixes_Hook(On_Item.orig_CanHavePrefixes orig, Item self)
 	{
-		return self.accessory ? false : orig(self);
+		orig(self);
+		return false;
 	}
 }

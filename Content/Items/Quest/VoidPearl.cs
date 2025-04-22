@@ -93,15 +93,15 @@ internal class VoidPearl : ModItem
 		{
 			if (item.Overlayer == overlayer)
 			{
-				DrawParticle(item, inventory, position);
+				DrawParticle(item, inventory, position, Item.color == Color.Transparent ? Color.White : Item.color);
 			}
 		}
 	}
 
-	internal static void DrawParticle(Particle item, bool inInventory, Vector2 position)
+	internal static void DrawParticle(Particle item, bool inInventory, Vector2 position, Color color)
 	{
 		Dust dust = item.Dust;
-		Color col = Color.White;
+		Color col = color;
 		Vector2 pos = dust.position + position;
 
 		if (!inInventory)
