@@ -11,26 +11,20 @@ public sealed partial class SunDevourerNPC : ModNPC
 	{
 		base.AI();
 
-		NPC.TargetClosest();
-		NPC.rotation = NPC.velocity.ToRotation() - MathHelper.Pi;
-		NPC.spriteDirection = -1;
-		NPC.directionY = 1;
+		ConstantTimer++;
 
-		if (NPC.rotation < 0)
+		NPC.TargetClosest();
+		NPC.rotation = (NPC.velocity.X - NPC.velocity.Y) * 0.015f;
+
+		if (Math.Abs(NPC.velocity.X) > 0.1f)
 		{
-			//NPC.rotation += MathHelper.Pi;
-			NPC.spriteDirection = -1;
-			NPC.directionY = 1;
+			NPC.spriteDirection = Math.Sign(NPC.velocity.X);
 		}
 
 		switch (State)
 		{
 			case DevourerState.Trapped:
 				TrappedAI();
-				break;
-
-			case DevourerState.Rise:
-				RiseAI();
 				break;
 
 			case DevourerState.ReturnToIdle:
@@ -81,11 +75,12 @@ public sealed partial class SunDevourerNPC : ModNPC
 			}
 
 			Vector2 target = IdleSpot + new Vector2(side * 1555, 525);
-			NPC.velocity = (target - NPC.Center).SafeNormalize(Vector2.Zero) * 14;
+			NPC.velocity += (target - NPC.Center).SafeNormalize(Vector2.Zero) * 2.2f;
+			NPC.velocity *= 0.9f;
 
-			if (NPC.DistanceSQ(target) < 20 * 20)
+			if (NPC.DistanceSQ(target) < 40 * 40)
 			{
-				bezier = Spline.InterpolateXY([target, IdleSpot - new Vector2(0, 500), IdleSpot + new Vector2(-side * 1555, 525)], 17);
+				bezier = Spline.InterpolateXY([target, IdleSpot - new Vector2(0, 500), IdleSpot + new Vector2(-side * 1800, 525)], 12);
 
 				Timer = 1;
 				MiscData = 0;
@@ -96,8 +91,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 			ref float index = ref MiscData;
 			ref float swingAround = ref AdditionalData;
 
-			float speed = swingAround == 1 ? 1.6f : 0.8f;
-			float maxSpeed = swingAround == 1 ? 28 : 18;
+			float speed = swingAround == 1 ? 1.6f : 1f;
+			float maxSpeed = swingAround == 1 ? 28 : 24;
 
 			NPC.velocity += (bezier[(int)index] - NPC.Center).SafeNormalize(Vector2.Zero) * speed;
 
@@ -108,11 +103,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			Timer++;
 
-			if (Timer % 4 == 0 && Main.myPlayer != NetmodeID.MultiplayerClient && swingAround == 0)
+			if (Timer % 2 == 0 && Main.myPlayer != NetmodeID.MultiplayerClient && swingAround == 0)
 			{
 				var vel = new Vector2(Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(4));
 				int type = ModContent.ProjectileType<SunDevourerEruptionProjectile>();
-				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, 80, 0, Main.myPlayer);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, 80, 0, Main.myPlayer, 0, 0, FloorY);
 			}
 
 			if (Timer % 15 == 0)
@@ -142,12 +137,12 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void ReturnToIdleAI()
 	{
-		if (NPC.DistanceSQ(IdleSpot) < 30 * 30)
+		if (NPC.DistanceSQ(IdleSpot) < 20 * 20)
 		{
 			NPC.velocity *= 0.85f;
 			Timer++;
 
-			if (Timer > 120)
+			if (Timer > 60)
 			{
 				SetState(DevourerState.Firefall);
 			}
@@ -162,25 +157,6 @@ public sealed partial class SunDevourerNPC : ModNPC
 			}
 
 			NPC.velocity *= 0.96f;
-		}
-	}
-
-	private void RiseAI()
-	{
-		Timer++;
-
-		if (Timer < 40)
-		{
-			NPC.velocity.Y -= 0.3f;
-		}
-		else
-		{
-			NPC.velocity.Y = MathHelper.Lerp(NPC.velocity.Y, 0, 0.1f);
-		}
-
-		if (NPC.velocity.Y > -0.05f)
-		{
-			SetState(DevourerState.ReturnToIdle);
 		}
 	}
 
@@ -199,8 +175,10 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		if (!anyPlayerFar)
 		{
-			SetState(DevourerState.Rise);
+			SetState(DevourerState.ReturnToIdle);
 
+			NPC.dontTakeDamage = false;
+			NPC.boss = true;
 			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
 		}
 	}

@@ -760,6 +760,8 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			int y = BossSpawnLocation.Y * 16;
 			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, ModContent.NPCType<SunDevourerNPC>(), 0, x, y - 40 * 16);
 
+			Main.npc[npc].localAI[3] = y + 20 * 16;
+
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);

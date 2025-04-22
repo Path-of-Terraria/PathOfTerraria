@@ -20,6 +20,8 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 	/// </summary>
 	public ref float Index => ref Projectile.ai[1];
 
+	public ref float FloorY => ref Projectile.ai[2];
+
 	/// <summary>
 	///		Gets the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Main.player[(int)Projectile.ai[1]]</c>.
 	/// </summary>
@@ -78,24 +80,30 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 
 		Timer++;
 
+		Projectile.tileCollide = Projectile.Center.Y > FloorY || InObsidian();
 		Projectile.velocity.X += MathF.Cos(Timer * 0.1f) * 0.01f;
 
-		//UpdateHoming();
 		UpdateGravity();
 		UpdateDustEffects();
 	}
 
-	private void UpdateHoming()
+	private bool InObsidian()
 	{
-		if (!Player.active || Player.dead || Player.ghost)
-		{
-			return;
-		}
-
-		var direction = MathF.Sign(Player.Center.X - Projectile.Center.X);
-
-		Projectile.velocity.X += direction * 0.1f;
+		Tile tile = Main.tile[Projectile.Center.ToTileCoordinates()];
+		return tile.HasTile && tile.TileType == TileID.Obsidian;
 	}
+
+	//private void UpdateHoming()
+	//{
+	//	if (!Player.active || Player.dead || Player.ghost)
+	//	{
+	//		return;
+	//	}
+
+	//	var direction = MathF.Sign(Player.Center.X - Projectile.Center.X);
+
+	//	Projectile.velocity.X += direction * 0.1f;
+	//}
 
 	private void UpdateDustEffects()
 	{
@@ -105,9 +113,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 		}
 
 		var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FlameBurst);
-
 		dust.velocity *= 2f;
-
 		dust.noGravity = true;
 	}
 
@@ -135,21 +141,18 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 
 	private void DrawProjectile(in Color lightColor)
 	{
-		var texture = TextureAssets.Projectile[Type].Value;
-
-		var position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
-
-		var frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
-		var origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
-
-		var effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+		Texture2D texture = TextureAssets.Projectile[Type].Value;
+		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
+		Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+		Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
+		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, effects);
 	}
 
 	private void DrawProjectileTrail()
 	{
-		var data = GameShaders.Misc["FlameLash"];
+		MiscShaderData data = GameShaders.Misc["FlameLash"];
 
 		data.UseSaturation(-2f);
 		data.UseOpacity(10f);
@@ -161,7 +164,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 			Projectile.oldPos,
 			Projectile.oldRot,
 			static (progress) => new Color(235, 97, 52, 0) * progress,
-			static (progress) => MathHelper.SmoothStep(50f, 0f, progress),
+			static (progress) => MathHelper.SmoothStep(30f, 0f, progress),
 			-Main.screenPosition + Projectile.Size / 2f
 		);
 

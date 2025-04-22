@@ -16,7 +16,6 @@ public sealed partial class SunDevourerNPC : ModNPC
 	public enum DevourerState : byte
 	{
 		Trapped,
-		Rise,
 		ReturnToIdle,
 		Firefall,
 		FlameAdds,
@@ -29,7 +28,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	/// </summary>
 	public Player Player => Main.player[NPC.target];
 
-	public Vector2 IdleSpot => new(NPC.ai[0], NPC.ai[1]);
+	public Vector2 IdleSpot => new(NPC.ai[0], NPC.ai[1] + MathF.Sin(ConstantTimer * 0.1f) * 50);
 
 	/// <summary>
 	///		Gets or sets the state of the NPC. Shorthand for <c>NPC.ai[1]</c>.
@@ -47,6 +46,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	public ref float MiscData => ref NPC.localAI[0];
 	public ref float AdditionalData => ref NPC.localAI[1];
+	public ref float ConstantTimer => ref NPC.localAI[2];
+	public ref float FloorY => ref NPC.localAI[3];
 
 	private VerletChain chain;
 	private Vector2[] bezier;
@@ -63,18 +64,20 @@ public sealed partial class SunDevourerNPC : ModNPC
 	{
 		base.SetDefaults();
 
+		NPC.Size = new Vector2(80);
 		NPC.noTileCollide = true;
 		NPC.lavaImmune = true;
 		NPC.noGravity = true;
-		NPC.boss = true;
-		NPC.width = 20;
-		NPC.height = 20;
+		NPC.boss = false;
 		NPC.lifeMax = 10000;
 		NPC.defense = 20;
 		NPC.aiStyle = -1;
 		NPC.knockBackResist = 0;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
+		NPC.npcSlots = 15;
+		NPC.dontTakeDamage = true;
+		NPC.BossBar = ModContent.GetInstance<DevourerBossBar>();
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
