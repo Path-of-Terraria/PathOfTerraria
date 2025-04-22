@@ -50,6 +50,8 @@ public sealed class RavenNPC : ModNPC
 		NPC.Opacity = MathHelper.Lerp(NPC.Opacity, 0.45f, 0.05f);
 		NPC.TargetClosest(true);
 
+		Lighting.AddLight(NPC.Center - new Vector2(50, 10), new Vector3(0.25f, 0.28f, 0.37f));
+
 		Player target = Main.player[NPC.target];
 		Vector2 entrancePosition = ModContent.GetInstance<RavencrestSystem>().EntrancePosition.ToVector2() * 16;
 		bool nearEntrance = entrancePosition.DistanceSQ(NPC.Center) < 600 * 600;
@@ -162,6 +164,7 @@ public sealed class RavenNPC : ModNPC
 		Vector2 pos = NPC.Center - screenPos;
 		Rectangle frame = NPC.frame with { Width = 80 };
 		SpriteEffects effect = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+		drawColor = Color.Lerp(drawColor, Color.White, 0.15f);
 
 		for (int i = 0; i < _offsets.Length; ++i)
 		{

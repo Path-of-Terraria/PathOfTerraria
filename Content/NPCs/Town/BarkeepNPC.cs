@@ -21,8 +21,6 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, ISpawnInRavencres
 
 	public Point16 TileSpawn => new(517, 142);
 
-	private float animCounter;
-
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[NPC.type] = 25;
@@ -34,6 +32,12 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, ISpawnInRavencres
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -125,27 +129,5 @@ public sealed class BarkeepNPC : ModNPC, IOverheadDialogueNPC, ISpawnInRavencres
 		{
 			shopName = "Shop";
 		}
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
 	}
 }

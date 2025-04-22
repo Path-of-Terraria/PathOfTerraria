@@ -23,7 +23,7 @@ internal class PotionPickupDropper : GlobalNPC
 						if (Main.netMode == NetmodeID.SinglePlayer)
 						{
 							int index = Item.NewItem(npc.GetSource_FromThis(), npc.Hitbox, ModContent.ItemType<HealingPotionPickup>());
-							Main.item[index].velocity = Vector2.UnitX.RotatedBy(i / (float)amount * MathHelper.TwoPi) * 10;
+							Main.item[index].velocity = Vector2.UnitX.RotatedBy(i / (float)amount * MathHelper.TwoPi).RotatedByRandom(0.4f) * 10;
 						}
 						else if (Main.netMode == NetmodeID.Server)
 						{

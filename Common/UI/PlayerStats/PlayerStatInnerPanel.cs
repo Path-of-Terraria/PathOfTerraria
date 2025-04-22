@@ -41,7 +41,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		DrawBack(spriteBatch);
 		SetAndDrawPlayer(spriteBatch);
 
-		PotionSystem potionPlayer = Main.LocalPlayer.GetModPlayer<PotionSystem>();
+		PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		BlockPlayer blockPlayer = Main.LocalPlayer.GetModPlayer<BlockPlayer>();
 		AttributesPlayer attributePlayer = Main.LocalPlayer.GetModPlayer<AttributesPlayer>();

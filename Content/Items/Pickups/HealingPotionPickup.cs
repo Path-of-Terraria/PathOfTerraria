@@ -14,19 +14,33 @@ internal class HealingPotionPickup : PickupItem
 
 	public override bool CanPickup(Player player)
 	{
-		return player.GetModPlayer<PotionSystem>().HealingLeft < player.GetModPlayer<PotionSystem>().MaxHealing;
+		int healLeft = player.GetModPlayer<PotionPlayer>().HealingLeft;
+		int maxHeal = player.GetModPlayer<PotionPlayer>().MaxHealing;
+		bool potionSpace = healLeft < maxHeal;
+		bool orAutoHeal = healLeft >= maxHeal && player.statLife < player.statLifeMax2 && !player.HasBuff(BuffID.PotionSickness);
+		return potionSpace || orAutoHeal;
 	}
 
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<PotionSystem>().HealingLeft++;
+		PotionPlayer potionPlr = player.GetModPlayer<PotionPlayer>();
+		ref int healingLeft = ref potionPlr.HealingLeft;
+		
+		if (healingLeft >= player.GetModPlayer<PotionPlayer>().MaxHealing && player.statLife < player.statLifeMax2 && !player.HasBuff(BuffID.PotionSickness))
+		{
+			healingLeft++;
+			PotionPlayer.UseHealingPotion(player, true);
+		}
+		else if (healingLeft < player.GetModPlayer<PotionPlayer>().MaxHealing)
+		{
+			healingLeft++;
+			CombatText.NewText(player.Hitbox, new Color(255, 150, 150), this.GetLocalization("Pickup").Value);
+		}
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, true, (byte)player.GetModPlayer<PotionSystem>().HealingLeft);
+			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, true, (byte)player.GetModPlayer<PotionPlayer>().HealingLeft);
 		}
-
-		CombatText.NewText(player.Hitbox, new Color(255, 150, 150), "Healing Potion");
 
 		for (int k = 0; k < 10; k++)
 		{

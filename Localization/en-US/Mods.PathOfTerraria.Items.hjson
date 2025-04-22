@@ -11,11 +11,13 @@ MapCommon: {
 HealingPotionPickup: {
 	DisplayName: Healing Potion Pickup
 	Tooltip: ""
+	Pickup: Healing Potion
 }
 
 ManaPotionPickup: {
 	DisplayName: Mana Potion Pickup
 	Tooltip: ""
+	Pickup: Mana Potion
 }
 
 Helmet: {

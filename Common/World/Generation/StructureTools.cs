@@ -29,7 +29,7 @@ internal static class StructureTools
 	/// <param name="noSync">Stops StructureHelper from sending a sync packet if desired.</param>
 	/// <returns></returns>
 	public static Point16 PlaceByOrigin(string structure, Point16 position, Vector2 origin, Mod mod = null, bool cullAbove = false, 
-		bool noSync = false, GenFlags flags = GenFlags.None)
+		bool noSync = true, GenFlags flags = GenFlags.None)
 	{
 		mod ??= ModContent.GetInstance<PoTMod>();
 		Point16 dims = GetSize(structure);

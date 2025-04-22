@@ -14,7 +14,7 @@ public class FetidCarapace : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = 30 * 60;
+		MaxCooldown = 30 * 60;
 		Timer = 0;
 		ManaCost = 20;
 		Duration = (6 + Level * 4) * 60;
@@ -36,7 +36,7 @@ public class FetidCarapace : Skill
 			Main.projectile[proj].timeLeft = Duration;
 		}
 
-		Timer = Cooldown;
+		Timer = MaxCooldown;
 	}
 
 	public override bool CanUseSkill(Player player)
