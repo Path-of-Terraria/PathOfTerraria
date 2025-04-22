@@ -62,62 +62,50 @@ public sealed class AddSkillCommand : ModCommand
 			return;
 		}
 
-		bool timerValid = int.TryParse(args[3], out int timer);
-
-		//if (timerValid)
-		//{
-		//	skill.Timer = timer;
-		//}
-
-		if (SetSkillOrComplain(caller, args, skillSlot, skill, timerValid, 4, 3, "timer"))
-		{
-			return;
-		}
-
-		bool maxCooldownValid = int.TryParse(args[4], out int maxCooldown);
+		bool maxCooldownValid = int.TryParse(args[3], out int maxCooldown);
 
 		if (maxCooldownValid)
 		{
 			skill.MaxCooldown = maxCooldown;
 		}
 
-		if (SetSkillOrComplain(caller, args, skillSlot, skill, maxCooldownValid, 5, 4, "maxCooldown"))
+		if (SetSkillOrComplain(caller, args, skillSlot, skill, maxCooldownValid, 4, 3, "maxCooldown"))
 		{
 			return;
 		}
 
-		bool cooldownValid = int.TryParse(args[5], out int cooldown);
+		bool cooldownValid = int.TryParse(args[4], out int cooldown);
 
 		if (cooldownValid)
 		{
 			skill.Cooldown = cooldown;
 		}
 
-		if (SetSkillOrComplain(caller, args, skillSlot, skill, cooldownValid, 6, 5, "cooldown"))
+		if (SetSkillOrComplain(caller, args, skillSlot, skill, cooldownValid, 5, 4, "cooldown"))
 		{
 			return;
 		}
-
-		bool manaCostValid = int.TryParse(args[6], out int manaCost);
+		
+		bool manaCostValid = int.TryParse(args[5], out int manaCost);
 
 		if (manaCostValid)
 		{
 			skill.ManaCost = manaCost;
 		}
 
-		if (SetSkillOrComplain(caller, args, skillSlot, skill, manaCostValid, 7, 6, "manaCost"))
+		if (SetSkillOrComplain(caller, args, skillSlot, skill, manaCostValid, 6, 5, "manaCost"))
 		{
 			return;
 		}
 
-		bool weaponTypeValid = Enum.TryParse(args[7], out ItemType weaponType);
+		bool weaponTypeValid = Enum.TryParse(args[6], out ItemType weaponType);
 
 		if (weaponTypeValid)
 		{
 			skill.WeaponType = weaponType;
 		}
 
-		if (SetSkillOrComplain(caller, args, skillSlot, skill, weaponTypeValid, 8, 7, "weaponType"))
+		if (SetSkillOrComplain(caller, args, skillSlot, skill, weaponTypeValid, 7, 8, "weaponType"))
 		{
 			return;
 		}
