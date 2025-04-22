@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Content.Items.Consumables;
-using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
+﻿using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.GameContent.ItemDropRules;
 
 namespace PathOfTerraria.Common.NPCs;
@@ -15,7 +14,5 @@ internal class GlobalLoot : GlobalNPC
 		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.Deerclops), ModContent.ItemType<DeerclopsMap>(), 1000));
 		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.Skeletron), ModContent.ItemType<SkeletronMap>(), 1000));
 		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.WallOfFlesh), ModContent.ItemType<WoFMap>(), 1000));
-
-		globalLoot.Add(ItemDropRule.ByCondition(new BossDownedCondition(BossDownedCondition.Bosses.Skeletron), ModContent.ItemType<AugmentationOrb>(), 500));
 	}
 }

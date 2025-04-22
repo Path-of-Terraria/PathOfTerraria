@@ -1,7 +1,7 @@
 ﻿using Humanizer;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
-using PathOfTerraria.Content.Items.Consumables;
+using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Sounds;
 using System.Linq;
 using Terraria.Audio;
