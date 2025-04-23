@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -11,8 +11,6 @@ public class IceBolt : Skill
 {
 	public override int MaxLevel => 3;
 
-	public override List<SkillPassive> Passives => [];
-
 	public override void LevelTo(byte level)
 	{
 		Level = level;
@@ -22,12 +20,12 @@ public class IceBolt : Skill
 		WeaponType = ItemType.None;
 	}
 
-	public override void UseSkill(Player player)
+	public override void UseSkill(Player player, SkillBuff buff)
 	{
-		player.statMana -= ManaCost;
+		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
 		Timer = Cooldown;
 
-		int damage = Level * 10 + 5;
+		int damage = (int)buff.Damage.ApplyTo(Level * 10 + 5);
 		var source = new EntitySource_UseSkill(player, this);
 		float knockback = 2f;
 		int type = ModContent.ProjectileType<IceBoltProj>();

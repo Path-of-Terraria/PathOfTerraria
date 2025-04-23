@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Core.Commands;
@@ -35,10 +34,10 @@ public sealed class GrantSkillPassiveCommand : ModCommand
 		}
 
 		var skill = Skill.GetAndPrepareSkill(skillType);
-		if (!caller.Player.TryGetModPlayer(out SkillPassivePlayer skillPassivePlayer))
+		/*if (!caller.Player.TryGetModPlayer(out SkillPassivePlayer skillPassivePlayer))
 		{
 			return;
-		}
+		}*/
 
 		int count = 1;
 
@@ -49,7 +48,7 @@ public sealed class GrantSkillPassiveCommand : ModCommand
 
 		for (int i = 0; i < count; ++i)
 		{
-			skillPassivePlayer.AwardPassivePoint(skill);
+			skill.Tree.Points++;
 		}
 
 		caller.Reply($"Granted {count} skill point(s) for {skill.Name}");
