@@ -120,13 +120,6 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 	private void UpdateGravity()
 	{
 		Projectile.velocity.Y += 0.3f;
-
-		if (Projectile.velocity.Y < 12f)
-		{
-			return;
-		}
-
-		Projectile.velocity.Y = 12f;
 	}
 
 	public override bool PreDraw(ref Color lightColor)

@@ -28,7 +28,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	/// </summary>
 	public Player Player => Main.player[NPC.target];
 
-	public Vector2 IdleSpot => new(NPC.ai[0], NPC.ai[1] + MathF.Sin(ConstantTimer * 0.1f) * 50);
+	public Vector2 IdleSpot => new(NPC.ai[0], NPC.ai[1]);
 
 	/// <summary>
 	///		Gets or sets the state of the NPC. Shorthand for <c>NPC.ai[1]</c>.
@@ -73,6 +73,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		NPC.defense = 20;
 		NPC.aiStyle = -1;
 		NPC.knockBackResist = 0;
+		NPC.damage = 60;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
 		NPC.npcSlots = 15;
@@ -143,6 +144,15 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void DrawNPC(in Vector2 screenPosition, in Color drawColor)
 	{
+		if (State is DevourerState.ReturnToIdle)
+		{
+			DrawOffsetY = -Math.Abs(MathF.Sin(ConstantTimer * 0.15f) * 30);
+		}
+		else
+		{
+			DrawOffsetY *= 0.4f;
+		}
+
 		Texture2D texture = TextureAssets.Npc[Type].Value;
 		Vector2 position = NPC.Center - screenPosition + new Vector2(0f, NPC.gfxOffY + DrawOffsetY);
 		Vector2 origin = NPC.frame.Size() / 2f;

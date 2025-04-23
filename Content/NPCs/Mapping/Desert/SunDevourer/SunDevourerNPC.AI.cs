@@ -105,7 +105,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			if (Timer % 2 == 0 && Main.myPlayer != NetmodeID.MultiplayerClient && swingAround == 0)
 			{
-				var vel = new Vector2(Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(4));
+				var vel = new Vector2(Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(2) + 5);
 				int type = ModContent.ProjectileType<SunDevourerEruptionProjectile>();
 				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, 80, 0, Main.myPlayer, 0, 0, FloorY);
 			}
@@ -142,7 +142,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 			NPC.velocity *= 0.85f;
 			Timer++;
 
-			if (Timer > 60)
+			if (Timer > 120)
 			{
 				SetState(DevourerState.Firefall);
 			}

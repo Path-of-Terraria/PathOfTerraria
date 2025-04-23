@@ -23,13 +23,14 @@ namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 internal class DesertArea : MappingWorld, IOverrideOcean
 {
 	public const int FloorY = 400;
+	private const int MapHeight = 600;
 
 	private static bool LeftSpawn = false;
 	private static Point16 BossSpawnLocation = Point16.Zero;
 	private static int SandstormTimer = 0;
 
 	public override int Width => 2600 + 150 * Main.rand.Next(3);
-	public override int Height => 600;
+	public override int Height => MapHeight;
 	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
@@ -774,7 +775,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	private static void UpdateSandstorm()
 	{
-		if (CanRunSandstorm())
+		if (!CanRunSandstorm())
 		{
 			if (SandstormTimer != 0 && Sandstorm.Happening)
 			{
