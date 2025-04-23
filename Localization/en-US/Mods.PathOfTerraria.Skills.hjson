@@ -14,21 +14,6 @@ CantEquip: Can't equip skill!
 Nova: {
 	Name: Nova
 	Description: Create a shockwave around you based on your held magic weapon's damage
-
-	Fire: {
-		Name: Fire Burst
-		Description: Create an aura of flame based on your held magic weapon's damage, inflicting On Fire!
-	}
-
-	Ice: {
-		Name: Ice Wave
-		Description: Create a wave of ice based on your held magic weapon's damage, inflicting Chilled
-	}
-
-	Lightning: {
-		Name: Thunder Shock
-		Description: Create a pulse of electricity based on your held magic weapon's damage, dealing a wider range of damage and inflicting Shocked
-	}
 }
 
 Berserk: {

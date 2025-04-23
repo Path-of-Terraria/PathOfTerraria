@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Core.UI.SmartUI;
+using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.UI;
@@ -47,31 +49,31 @@ internal class SkillSelectionPanel : SmartUiElement
 
 	public void RebuildTree()
 	{
-		if (SelectedSkill == null)
+		if (SelectedSkill is null || SelectedSkill.Tree is null)
 		{
 			return;
 		}
 
-		if (SelectedSkill.Passives.Count == 0)
-		{
-			Main.NewText(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.NoPassives"));
-			return;
-		}
-
-		BuildSkillPassiveTree();
-	}
-
-	private void BuildSkillPassiveTree()
-	{
+		SkillTree.Current = SelectedSkill.Tree;
 		RemoveAllChildren();
 		_skillTreeInnerPanel = null;
 		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 		Append(_skillTreeInnerPanel);
-		SelectedSkill.CreateTree();
 
-		foreach (SkillPassive n in SelectedSkill.ActiveNodes)
+		Dictionary<Vector2, SkillNode> dict = SkillTree.Current.Nodes;
+		foreach (Vector2 key in dict.Keys)
 		{
-			_skillTreeInnerPanel.Append(new SkillPassiveElement(n));
+			var element = new AllocatableElement(dict[key]);
+			element.Left.Set(key.X - dict[key].Size.X / 2, 0.5f);
+			element.Top.Set(key.Y - dict[key].Size.Y / 2, 0.5f);
+
+			_skillTreeInnerPanel.Append(element);
+		}
+
+		int augmentSlots = SelectedSkill.Tree.Augments.Length;
+		for (int i = 0; i < augmentSlots; i++)
+		{
+			_skillTreeInnerPanel.Append(new AugmentSlotElement(i));
 		}
 
 		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))

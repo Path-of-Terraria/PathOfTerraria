@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Skills;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
@@ -10,7 +10,6 @@ namespace PathOfTerraria.Content.Skills.Ranged;
 public class FetidCarapace : Skill
 {
 	public override int MaxLevel => 3;
-	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
@@ -21,12 +20,12 @@ public class FetidCarapace : Skill
 		WeaponType = ItemType.Ranged;
 	}
 
-	public override void UseSkill(Player player)
+	public override void UseSkill(Player player, SkillBuff buff)
 	{
 		// Level to the strength of all FetidCarapaceAffix
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<FetidCarapaceAffix>());
 
-		int damage = (int)(30 * (1f - (3 - Level) * 0.2f));
+		int damage = (int)buff.Damage.ApplyTo(30 * (1f - (3 - Level) * 0.2f));
 		int max = 1 + Level;
 		int type = ModContent.ProjectileType<CarapaceChunk>();
 

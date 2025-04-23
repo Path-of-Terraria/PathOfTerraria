@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 using Terraria.DataStructures;
 
@@ -9,7 +9,6 @@ namespace PathOfTerraria.Content.Skills.Melee;
 public class Berserk : Skill
 {
 	public override int MaxLevel => 3;
-	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
@@ -20,9 +19,9 @@ public class Berserk : Skill
 		WeaponType = ItemType.Sword;
 	}
 
-	public override void UseSkill(Player player)
+	public override void UseSkill(Player player, SkillBuff buff)
 	{
-		player.statMana -= ManaCost;
+		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
 		player.AddBuff(ModContent.BuffType<RageBuff>(), Duration);
 		Cooldown = MaxCooldown;
 	}

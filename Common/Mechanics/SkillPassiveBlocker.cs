@@ -11,7 +11,7 @@ public abstract class SkillPassiveBlocker : ILoadable
 	public static readonly Dictionary<string, SkillPassiveBlocker> LoadedBlockers = [];
 
 	public string FullName => Mod.Name + "/" + GetType().Name;
-	
+
 	internal Mod Mod = null;
 
 	public void Load(Mod mod)

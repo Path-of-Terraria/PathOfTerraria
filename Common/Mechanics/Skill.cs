@@ -1,52 +1,74 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.Skills.Melee;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public class SkillPassiveEdge(SkillPassive start, SkillPassive end)
-{
-	public readonly SkillPassive Start = start;
-	public readonly SkillPassive End = end;
-
-	public bool Contains(SkillPassive p)
-	{
-		return p == Start || p == End;
-	}
-
-	/// <summary>
-	/// Assuming that p is either start or end - Contains returned true.
-	/// </summary>
-	public SkillPassive Other(SkillPassive p)
-	{
-		return p == Start ? End : Start;
-	}
-}
-
 public abstract class Skill
 {
 	public int Duration;
 	public int MaxCooldown;
 	public int Cooldown;
+	/// <summary> The default mana cost of this skill.<br/>See <see cref="TotalManaCost"/>. </summary>
 	public int ManaCost;
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
-	public abstract List<SkillPassive> Passives { get; }
-	public List<SkillPassive> ActiveNodes = [];
-	public List<SkillPassiveEdge> Edges = [];
+
+	/// <summary> The final mana cost of this skill affected by modifications. </summary>
+	public int TotalManaCost
+	{
+		get
+		{
+			SkillBuff buff = this.GetPower();
+			return (int)buff.ManaCost.ApplyTo(ManaCost);
+		}
+	}
+
+	/// <summary> Attempts to get the skill tree associated with this skill. Returns null if none. </summary>
+	public SkillTree Tree
+	{
+		get
+		{
+			if (SkillTree.TypeToSkillTree.TryGetValue(GetType(), out SkillTree value))
+			{
+				return value;
+			}
+
+			return null;
+		}
+	}
 
 	public abstract int MaxLevel { get; }
 	public int PassivePoints { get; set; } = 1;
 
 	public virtual string Name => GetType().Name;
-	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
+	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTextureName();
 
-	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria.Skills." + Name + ".Name");
-	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria.Skills." + Name + ".Description");
+	private string GetTextureName()
+	{
+		if (Tree?.Specialization is not null)
+		{
+			return Tree.Specialization.Name;
+		}
+
+		return Name;
+	}
+
+	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Name");
+	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Description");
+
+	private string GetLocalKey()
+	{
+		if (Tree?.Specialization is not null)
+		{
+			return "SkillSpecials." + Tree.Specialization.Name;
+		}
+
+		return "Skills." + Name;
+	}
 
 	/// <summary>
 	/// Creates a default instance of the given <see cref="Skill"/> at <see cref="Level"/> 1.
@@ -85,7 +107,7 @@ public abstract class Skill
 	{
 		LevelTo((byte)(Level + 1));
 	}
-	
+
 	public override bool Equals(object obj)
 	{
 		if (obj is Skill otherSkill)
@@ -95,7 +117,7 @@ public abstract class Skill
 
 		return false;
 	}
-	
+
 	public override int GetHashCode()
 	{
 		return Name.GetHashCode(); // Again, you can use other properties here if needed
@@ -105,7 +127,7 @@ public abstract class Skill
 	/// What this skill actually does
 	/// </summary>
 	/// <param name="player">The player using the skill</param>
-	public abstract void UseSkill(Player player);
+	public abstract void UseSkill(Player player, SkillBuff buff);
 
 	/// <summary>
 	/// If this skill should be able to be used. By default this is if the cooldown is over and the player has enough mana.
@@ -128,9 +150,9 @@ public abstract class Skill
 	{
 		return true;
 	}
-	
+
 	private Vector2 _size;
-	
+
 	public Vector2 Size
 	{
 		get
@@ -141,7 +163,7 @@ public abstract class Skill
 			}
 
 			_size = StringUtils.GetSizeOfTexture($"Assets/Skills/{GetType().Name}") ?? new Vector2();
-				
+
 			return _size;
 		}
 	}
@@ -154,6 +176,8 @@ public abstract class Skill
 		ManaCost = tag.GetShort(nameof(ManaCost));
 		WeaponType = (ItemType)tag.GetInt(nameof(WeaponType));
 		Level = tag.GetByte(nameof(Level));
+
+		Tree?.LoadData(this, tag);
 	}
 
 	public virtual void SaveData(TagCompound tag)
@@ -164,34 +188,7 @@ public abstract class Skill
 		tag.Add(nameof(ManaCost), (short)ManaCost);
 		tag.Add(nameof(WeaponType), (int)WeaponType);
 		tag.Add(nameof(Level), Level);
-	}
-	
-	public void CreateTree()
-	{
-		Edges = [];
-		ActiveNodes =
-		[
-			new SkillPassiveAnchor(this)
-		];
 
-		foreach (SkillPassive passive in Passives)
-		{
-			if (passive.Connections == null)
-			{
-				continue;
-			}
-			
-			foreach (SkillPassive connection in passive.Connections)
-			{
-				Edges.Add(new SkillPassiveEdge(passive, connection));
-			}
-			
-			if (passive.ReferenceId != 0) //Not anchor
-			{
-				PassivePoints -= passive.Level;
-			}
-			
-			ActiveNodes.Add(passive);
-		}
+		Tree?.SaveData(this, tag);
 	}
 }
