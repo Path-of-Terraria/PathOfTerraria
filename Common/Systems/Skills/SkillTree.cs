@@ -28,6 +28,7 @@ public abstract class SkillTree : ILoadable
 
 	/// <summary> The currently viewed skill tree. </summary>
 	internal static SkillTree Current;
+
 	public static readonly Dictionary<Type, SkillTree> TypeToSkillTree = [];
 
 	public Dictionary<Vector2, SkillNode> Nodes = [];
@@ -37,8 +38,10 @@ public abstract class SkillTree : ILoadable
 
 	/// <summary> The indexes of unlocked augment slots. </summary>
 	public bool[] Slots = new bool[AugmentCount];
+
 	/// <summary> The number of points available for spending in this skill tree. </summary>
 	public int Points;
+
 	/// <summary> The current skill specialization of this tree. </summary>
 	public SkillSpecial Specialization;
 

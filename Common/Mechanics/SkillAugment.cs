@@ -11,6 +11,7 @@ public abstract class SkillAugment : ILoadable
 	public static readonly Dictionary<string, SkillAugment> LoadedAugments = [];
 
 	private Asset<Texture2D> _texture;
+
 	public Asset<Texture2D> Texture //Cache the texture to avoid constant requests
 	{
 		get

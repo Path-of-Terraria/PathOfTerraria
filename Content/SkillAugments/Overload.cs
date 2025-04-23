@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 
-namespace PathOfTerraria.Content.SkillPassives;
+namespace PathOfTerraria.Content.SkillAugments;
 
 internal class Overload : SkillAugment
 {

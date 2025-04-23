@@ -20,25 +20,17 @@ public class Nova : Skill
 
 	public override int MaxLevel => 3;
 
-	public static NovaType GetNovaType(Nova nova)
+	private static NovaType GetNovaType(Nova nova)
 	{
-		Player player = Main.LocalPlayer;
 		SkillSpecial special = nova.Tree.Specialization;
 
-		if (special is FireNova)
+		return special switch
 		{
-			return NovaType.Fire;
-		}
-		else if (special is IceNova)
-		{
-			return NovaType.Ice;
-		}
-		else if (special is LightningNova)
-		{
-			return NovaType.Lightning;
-		}
-
-		return NovaType.Normal;
+			FireNova => NovaType.Fire,
+			IceNova => NovaType.Ice,
+			LightningNova => NovaType.Lightning,
+			_ => NovaType.Normal
+		};
 	}
 
 	public override void LevelTo(byte level)
@@ -60,24 +52,26 @@ public class Nova : Skill
 		NovaType type = GetNovaType(this);
 		float knockback = 2f;
 
-		if (type == NovaType.Fire)
+		switch (type)
 		{
-			knockback = 4f;
-		}
-		else if (type == NovaType.Lightning)
-		{
-			WeightedRandom<float> mult = new(Main.rand);
-			mult.Add(1f, 1f);
-			mult.Add(0.75f, 1f);
-			mult.Add(0.5f, 1f);
-			mult.Add(1.5f, 1f);
-			mult.Add(2f, 1f);
+			case NovaType.Fire:
+				knockback = 4f;
+				break;
+			case NovaType.Lightning:
+				{
+					WeightedRandom<float> mult = new(Main.rand);
+					mult.Add(1f, 1f);
+					mult.Add(0.75f, 1f);
+					mult.Add(0.5f, 1f);
+					mult.Add(1.5f, 1f);
+					mult.Add(2f, 1f);
 
-			damage = (int)(damage * mult);
-		}
-		else if (type == NovaType.Ice)
-		{
-			damage = (int)(damage * 0.9f);
+					damage = (int)(damage * mult);
+					break;
+				}
+			case NovaType.Ice:
+				damage = (int)(damage * 0.9f);
+				break;
 		}
 
 		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
@@ -209,17 +203,20 @@ public class Nova : Skill
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (NovaType == NovaType.Fire)
+			switch (NovaType)
 			{
-				target.AddBuff(BuffID.OnFire, 5 * 60);
-			}
-			else if (NovaType == NovaType.Lightning)
-			{
-				target.AddBuff(ModContent.BuffType<ShockDebuff>(), 5 * 60);
-			}
-			else if (NovaType == NovaType.Ice)
-			{
-				target.AddBuff(BuffID.Chilled, 5 * 60);
+				case NovaType.Fire:
+					target.AddBuff(BuffID.OnFire, 5 * 60);
+					break;
+				case NovaType.Lightning:
+					target.AddBuff(ModContent.BuffType<ShockDebuff>(), 5 * 60);
+					break;
+				case NovaType.Ice:
+					target.AddBuff(BuffID.Chilled, 5 * 60);
+					break;
+				case NovaType.Normal:
+				default:
+					return;
 			}
 		}
 	}
