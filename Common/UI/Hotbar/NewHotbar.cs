@@ -281,7 +281,7 @@ internal sealed class NewHotbar : SmartUiState
 
 		Tooltip.SetName(skill.DisplayName.Value + " " + level);
 
-		string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.ManaCost).Value;
+		string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.TotalManaCost).Value;
 
 		string weapon = skill.WeaponType != ItemID.None
 			? Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value

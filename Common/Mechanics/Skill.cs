@@ -13,9 +13,20 @@ public abstract class Skill
 	public int Timer;
 	public int MaxCooldown;
 	public int Cooldown;
+	/// <summary> The default mana cost of this skill.<br/>See <see cref="TotalManaCost"/>. </summary>
 	public int ManaCost;
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
+
+	/// <summary> The final mana cost of this skill affected by modifications. </summary>
+	public int TotalManaCost
+	{
+		get
+		{
+			SkillBuff buff = this.GetPower();
+			return (int)buff.ManaCost.ApplyTo(ManaCost);
+		}
+	}
 
 	/// <summary> Attempts to get the skill tree associated with this skill. Returns null if none. </summary>
 	public SkillTree Tree

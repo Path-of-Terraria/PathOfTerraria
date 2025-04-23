@@ -111,8 +111,20 @@ internal class AugmentSlotElement : UIElement
 
 			if (ContainsInner)
 			{
-				Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillAugments.SlotLine"));
-				Tooltip.SetTooltip(Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillAugments.CostLine").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value));
+				string common = $"Mods.{PoTMod.Instance.Name}.SkillAugments";
+				string tooltip;
+
+				if (Main.LocalPlayer.HasItem(ModContent.ItemType<AugmentationOrb>()))
+				{
+					tooltip = Language.GetTextValue(common + ".Unlock").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
+				}
+				else
+				{
+					tooltip = Language.GetTextValue(common + ".CostLine").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
+				}
+
+				Tooltip.SetName(Language.GetTextValue(common + ".SlotLine"));
+				Tooltip.SetTooltip(tooltip);
 			}
 		}
 	}

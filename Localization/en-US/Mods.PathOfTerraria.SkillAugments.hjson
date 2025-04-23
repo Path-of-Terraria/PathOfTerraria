@@ -1,7 +1,8 @@
 SlotLine: Augmentation Slot
 CostLine: Costs a {0} to unlock
+Unlock: <left> to unlock
 
 Overload: {
 	Name: Overload
-	Tooltip: Increases damage at the cost of mana
+	Tooltip: Increases damage by {0}% at the cost of {1}% increased mana usage
 }

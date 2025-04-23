@@ -79,7 +79,11 @@ public abstract class SkillTree : ILoadable
 
 		tag["passives"] = nameToLevel.Keys.ToList(); //Save passives
 		tag["levels"] = nameToLevel.Values.ToList();
-		tag["special"] = Specialization.Name;
+
+		if (Specialization is not null)
+		{
+			tag["special"] = Specialization.Name;
+		}
 
 		tag[nameof(Slots)] = Slots.ToList(); //Save augments
 		tag["augments"] = Augments.Where(x => x is not null).Select(x => x.Name).ToList();
@@ -97,7 +101,11 @@ public abstract class SkillTree : ILoadable
 			((SkillPassive)Nodes.Values.First(x => x.Name == names[i] && x is SkillPassive)).Level = levels[i];
 		}
 
-		Specialization = (SkillSpecial)Nodes.Values.First(x => x is SkillSpecial && x.Name == tag.GetString("special"));
+		var special = (SkillSpecial)Nodes.Values.FirstOrDefault(x => x is SkillSpecial && x.Name == tag.GetString("special"));
+		if (special != default)
+		{
+			Specialization = special;
+		}
 
 		if (tag.TryGet(nameof(Slots), out List<bool> list)) //Use TryGet because we don't want to assign an empty array
 		{
