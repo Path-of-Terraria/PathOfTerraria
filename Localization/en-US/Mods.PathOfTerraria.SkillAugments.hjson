@@ -1,6 +1,6 @@
 SlotLine: Augmentation Slot
 CostLine: Costs a {0} to unlock
-Unlock: <left> to unlock
+Unlock: Left Click to unlock
 
 Overload: {
 	Name: Overload
