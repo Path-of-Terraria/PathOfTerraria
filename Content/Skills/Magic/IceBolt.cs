@@ -23,7 +23,7 @@ public class IceBolt : Skill
 	public override void UseSkill(Player player, SkillBuff buff)
 	{
 		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
-		Timer = Cooldown;
+		Cooldown = MaxCooldown;
 
 		int damage = (int)buff.Damage.ApplyTo(Level * 10 + 5);
 		var source = new EntitySource_UseSkill(player, this);

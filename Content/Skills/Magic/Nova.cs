@@ -45,7 +45,7 @@ public class Nova : Skill
 	public override void UseSkill(Player player, SkillBuff buff)
 	{
 		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
-		Timer = Cooldown;
+		Cooldown = MaxCooldown;
 
 		int damage = (int)buff.Damage.ApplyTo(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);

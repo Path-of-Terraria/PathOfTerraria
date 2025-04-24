@@ -26,7 +26,7 @@ public class RainOfArrows : Skill
 	public override void UseSkill(Player player, SkillBuff buff)
 	{
 		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
-		Timer = Cooldown;
+		Cooldown = MaxCooldown;
 
 		player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int _, true);
 

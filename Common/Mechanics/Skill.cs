@@ -10,7 +10,6 @@ namespace PathOfTerraria.Common.Mechanics;
 public abstract class Skill
 {
 	public int Duration;
-	public int Timer;
 	public int MaxCooldown;
 	public int Cooldown;
 	/// <summary> The default mana cost of this skill.<br/>See <see cref="TotalManaCost"/>. </summary>
@@ -137,7 +136,7 @@ public abstract class Skill
 	/// <returns>If the skill can be used or not</returns>
 	public virtual bool CanUseSkill(Player player)
 	{
-		return Timer <= 0 && player.CheckMana(ManaCost);
+		return Cooldown <= 0 && player.CheckMana(ManaCost);
 	}
 
 	/// <summary>
@@ -172,7 +171,6 @@ public abstract class Skill
 	public virtual void LoadData(TagCompound tag)
 	{
 		Duration = tag.GetShort(nameof(Duration));
-		Timer = tag.GetShort(nameof(Timer));
 		MaxCooldown = tag.GetShort(nameof(MaxCooldown));
 		Cooldown = tag.GetShort(nameof(Cooldown));
 		ManaCost = tag.GetShort(nameof(ManaCost));
@@ -185,7 +183,6 @@ public abstract class Skill
 	public virtual void SaveData(TagCompound tag)
 	{
 		tag.Add(nameof(Duration), (short)Duration);
-		tag.Add(nameof(Timer), (short)Timer);
 		tag.Add(nameof(MaxCooldown), (short)MaxCooldown);
 		tag.Add(nameof(Cooldown), (short)Cooldown);
 		tag.Add(nameof(ManaCost), (short)ManaCost);
