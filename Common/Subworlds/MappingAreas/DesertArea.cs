@@ -20,10 +20,10 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class DesertArea : MappingWorld, IOverrideOcean
+internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 {
 	public const int FloorY = 400;
-	private const int MapHeight = 600;
+	private const int MapHeight = 800;
 
 	private static bool LeftSpawn = false;
 	private static Point16 BossSpawnLocation = Point16.Zero;
@@ -663,12 +663,12 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
-		const int MinHeight = 210;
+		const int MinHeight = FloorY;
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
-		Main.worldSurface = 240;
-		Main.rockLayer = 270;
+		Main.worldSurface = FloorY + 30;
+		Main.rockLayer = FloorY + 60;
 
 		LeftSpawn = Main.rand.NextBool(2);
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
@@ -829,7 +829,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 		return true;
 	}
 
-	public void OverrideOcean()
+	public void OverrideBiome()
 	{
 		Main.bgStyle = 2;
 		Main.newMusic = MusicID.Desert;

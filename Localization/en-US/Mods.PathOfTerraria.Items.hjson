@@ -1123,3 +1123,13 @@ DesertMap: {
 		'The map smells of sand and bone'
 		'''
 }
+
+DevourersTail: {
+	DisplayName: Devourer's Tail
+	Tooltip: The tail of a powerful beast of light
+	AltUseDescription:
+		'''
+		Right click to whip significantly faster
+		The whip glows in the dark when swiftly whipping
+		'''
+}

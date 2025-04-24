@@ -1,4 +1,5 @@
 ﻿using NPCUtils;
+using PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Graphics.Camera.Modifiers;
 using PathOfTerraria.Core.Graphics.Zoom;
@@ -18,15 +19,16 @@ public sealed partial class SunDevourerNPC : ModNPC
 		Trapped,
 		ReturnToIdle,
 		Firefall,
+		BallLightning,
 		FlameAdds,
 	}
 
-	public const int COOLDOWN_CHARGE = 90;
+	public bool NightStage { get; set; }
 
 	/// <summary>
 	///		Gets the <see cref="Player"/> instance that the NPC is targeting. Shorthand for <c>Main.player[NPC.target]</c>.
 	/// </summary>
-	public Player Player => Main.player[NPC.target];
+	public Player Target => Main.player[NPC.target];
 
 	public Vector2 IdleSpot => new(NPC.ai[0], NPC.ai[1]);
 
@@ -51,6 +53,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private VerletChain chain;
 	private Vector2[] bezier;
+	private Vector2 addedPos;
 
 	public override void SetStaticDefaults()
 	{
@@ -108,6 +111,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 		potionType = ItemID.GreaterHealingPotion;
 	}
 
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		npcLoot.AddOneFromOptions<DevourersTail, DevourersTail>(1);
+	}
+
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 	{
 		scale = 1.5f;
@@ -146,7 +154,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	{
 		if (State is DevourerState.ReturnToIdle)
 		{
-			DrawOffsetY = -Math.Abs(MathF.Sin(ConstantTimer * 0.15f) * 30);
+			DrawOffsetY = -Math.Abs(MathF.Sin(ConstantTimer * 0.05f) * 20);
 		}
 		else
 		{

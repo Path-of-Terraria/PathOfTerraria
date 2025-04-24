@@ -6,7 +6,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
-public sealed class SunDevourerEruptionProjectile : ModProjectile
+public sealed class DevourerFireball : ModProjectile
 {
 	private static readonly VertexStrip Strip = new();
 
@@ -35,6 +35,7 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 
 		ProjectileID.Sets.TrailingMode[Type] = 3;
 		ProjectileID.Sets.TrailCacheLength[Type] = 40;
+		ProjectileID.Sets.DrawScreenCheckFluff[Type] = 15 * 16;
 	}
 
 	public override void SetDefaults()
@@ -55,8 +56,18 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 		Projectile.frame = Main.rand.Next(2);
 	}
 
+	public override bool CanHitPlayer(Player target)
+	{
+		return Timer != -1;
+	}
+
 	public override void OnKill(int timeLeft)
 	{
+		if (Timer == -1)
+		{
+			return;
+		}
+
 		base.OnKill(timeLeft);
 
 		for (int i = 0; i < 15; i++)
@@ -71,19 +82,34 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 	public override bool OnTileCollide(Vector2 oldVelocity)
 	{
 		Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
-		return true;
+		OnKill(0);
+		Timer = -1;
+
+		return false;
 	}
 
 	public override void AI()
 	{
 		base.AI();
+		
+		if (Timer == -1)
+		{
+			Projectile.velocity = Vector2.Zero;
+
+			if (Projectile.oldPos[^1] == Projectile.oldPos[0])
+			{
+				Projectile.Kill();
+			}
+
+			return;
+		}
 
 		Timer++;
 
 		Projectile.tileCollide = Projectile.Center.Y > FloorY || InObsidian();
 		Projectile.velocity.X += MathF.Cos(Timer * 0.1f) * 0.01f;
+		Projectile.velocity.Y += 0.3f;
 
-		UpdateGravity();
 		UpdateDustEffects();
 	}
 
@@ -117,17 +143,16 @@ public sealed class SunDevourerEruptionProjectile : ModProjectile
 		dust.noGravity = true;
 	}
 
-	private void UpdateGravity()
-	{
-		Projectile.velocity.Y += 0.3f;
-	}
-
 	public override bool PreDraw(ref Color lightColor)
 	{
 		lightColor = new Color(235, 97, 52, 0);
 
 		DrawProjectileTrail();
-		DrawProjectile(in lightColor);
+
+		if (Timer != -1)
+		{
+			DrawProjectile(in lightColor);
+		}
 
 		return false;
 	}

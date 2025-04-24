@@ -165,3 +165,5 @@ DefenseAoE.DisplayName: Defense Shrine
 HasteAoE.DisplayName: Haste Shrine
 RestorationAoE.DisplayName: Restoration Shrine
 SunDevourerEruptionProjectile.DisplayName: Sun Devourer Eruption Projectile
+BallLightning.DisplayName: Ball Lightning
+DevourerFireball.DisplayName: Devourer Fireball

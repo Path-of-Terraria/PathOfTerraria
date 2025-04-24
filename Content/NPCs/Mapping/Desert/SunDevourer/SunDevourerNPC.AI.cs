@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.World.Generation;
 using System.IO;
 using Terraria.ID;
@@ -38,6 +39,74 @@ public sealed partial class SunDevourerNPC : ModNPC
 			case DevourerState.FlameAdds:
 				FlameAddsAI();
 				break;
+
+			case DevourerState.BallLightning:
+				BallLightningAI();
+				break;
+		}
+	}
+
+	private void BallLightningAI()
+	{
+		Timer++;
+
+		ref float ballSlot = ref AdditionalData;
+
+		if (Timer == 1 && Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			var vel = new Vector2(NPC.direction * 4, 0);
+			int type = ModContent.ProjectileType<BallLightning>();
+			ballSlot = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, ModeUtils.ProjectileDamage(80, 110, 150), 0, Main.myPlayer);
+			//Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, ModeUtils.ProjectileDamage(80, 110, 150), 0, Main.myPlayer, 1);
+
+			NPC.netUpdate = true;
+			NPC.velocity -= vel;
+		}
+
+		Projectile ball = Main.projectile[(int)ballSlot];
+
+		if (Timer < 20)
+		{
+			NPC.velocity *= 0.95f;
+		}
+
+		if (Timer > 20)
+		{
+			ref float subTimer = ref MiscData;
+			subTimer++;
+
+			if (subTimer == 5)
+			{
+				addedPos = Main.rand.NextBool() ? Target.Center : Target.Center + Target.Center.DirectionFrom(ball.Center) * 60;
+			}
+			else if (subTimer > 5 && subTimer < 90)
+			{
+				NPC.velocity += NPC.DirectionTo(addedPos);
+				NPC.position -= Target.velocity * 0.33f;
+			}
+			else if (subTimer > 100)
+			{
+				subTimer = 0;
+			}
+
+			if (NPC.velocity.LengthSquared() > 22 * 22)
+			{
+				NPC.velocity = Vector2.Normalize(NPC.velocity) * 22;
+			}
+		}
+
+		float exitTime = NPC.life < NPC.lifeMax * 0.67f ? BallLightning.LifeTime * 0.7f : BallLightning.LifeTime;
+		
+		if (Timer > exitTime - 30)
+		{
+			NPC.velocity *= 0.9f;
+		}
+
+		if (Timer >= exitTime)
+		{
+			MiscData = 0;
+			ballSlot = 0;
+			SetState(DevourerState.ReturnToIdle);
 		}
 	}
 
@@ -74,13 +143,13 @@ public sealed partial class SunDevourerNPC : ModNPC
 				NPC.netUpdate = true;
 			}
 
-			Vector2 target = IdleSpot + new Vector2(side * 1555, 525);
+			Vector2 target = IdleSpot + new Vector2(side * 1580, 525);
 			NPC.velocity += (target - NPC.Center).SafeNormalize(Vector2.Zero) * 2.2f;
 			NPC.velocity *= 0.9f;
 
 			if (NPC.DistanceSQ(target) < 40 * 40)
 			{
-				bezier = Spline.InterpolateXY([target, IdleSpot - new Vector2(0, 500), IdleSpot + new Vector2(-side * 1800, 525)], 12);
+				bezier = Spline.InterpolateXY([target, IdleSpot - new Vector2(side * 320, 750), IdleSpot + new Vector2(-side * 1800, 525)], 12);
 
 				Timer = 1;
 				MiscData = 0;
@@ -103,10 +172,10 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			Timer++;
 
-			if (Timer % 2 == 0 && Main.myPlayer != NetmodeID.MultiplayerClient && swingAround == 0)
+			if (Timer % 2 == 0 && Main.myPlayer != NetmodeID.MultiplayerClient && swingAround == 0 && CanDropProjOnPlayer())
 			{
 				var vel = new Vector2(Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(2) + 5);
-				int type = ModContent.ProjectileType<SunDevourerEruptionProjectile>();
+				int type = ModContent.ProjectileType<DevourerFireball>();
 				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, 80, 0, Main.myPlayer, 0, 0, FloorY);
 			}
 
@@ -135,6 +204,19 @@ public sealed partial class SunDevourerNPC : ModNPC
 		}
 	}
 
+	private bool CanDropProjOnPlayer()
+	{
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (Math.Abs(player.Center.X - NPC.Center.X) < 500)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private void ReturnToIdleAI()
 	{
 		if (NPC.DistanceSQ(IdleSpot) < 20 * 20)
@@ -144,7 +226,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			if (Timer > 120)
 			{
-				SetState(DevourerState.Firefall);
+				SetState(Main.rand.NextBool() ? DevourerState.BallLightning : DevourerState.Firefall);
 			}
 		}
 		else
@@ -195,6 +277,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		writer.Write(MiscData);
 		writer.Write(AdditionalData);
+		writer.WriteVector2(addedPos);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -203,5 +286,6 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		MiscData = reader.ReadSingle();
 		AdditionalData = reader.ReadSingle();
+		addedPos = reader.ReadVector2();
 	}
 }

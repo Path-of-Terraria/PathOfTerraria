@@ -10,6 +10,8 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 
 internal abstract class Whip : Gear
 {
+	public delegate void ProjectileModifyLinkDrawDelegate(Projectile projectile, int segment, ref Color color);
+
 	/// <summary>
 	/// Defines the draw data for a particular whip.
 	/// </summary>
@@ -25,12 +27,21 @@ internal abstract class Whip : Gear
 
 	public abstract WhipDrawData DrawData { get; }
 	public abstract WhipSettings WhipSettings { get; }
+	public virtual Action<Projectile> UpdateProjectile => Empty;
+	public virtual ProjectileModifyLinkDrawDelegate ModifyProjectileLinkDrawing => EmptyDraw;
+
 	protected override string GearLocalizationCategory => "Whip";
 
 	/// <summary>
 	/// Stores a Whip's sprite asset automatically for use in <see cref="BowAnimationProjectile"/>.
 	/// </summary>
 	public static Dictionary<int, Asset<Texture2D>> WhipProjectileSpritesById = [];
+
+	/// <summary>
+	/// Serves as the default value of <see cref="UpdateProjectile"/>.
+	/// </summary>
+	private static void Empty(Projectile projectile) { }
+	private static void EmptyDraw(Projectile projectile, int segment, ref Color color) { }
 
 	public override void SetStaticDefaults()
 	{
