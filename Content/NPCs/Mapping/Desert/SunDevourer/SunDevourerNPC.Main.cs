@@ -1,4 +1,5 @@
-﻿using NPCUtils;
+﻿using Humanizer.Localisation.DateToOrdinalWords;
+using NPCUtils;
 using PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Graphics.Camera.Modifiers;
@@ -21,6 +22,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		Firefall,
 		BallLightning,
 		FlameAdds,
+		AbsorbSun,
 	}
 
 	public bool NightStage { get; set; }
@@ -51,9 +53,10 @@ public sealed partial class SunDevourerNPC : ModNPC
 	public ref float ConstantTimer => ref NPC.localAI[2];
 	public ref float FloorY => ref NPC.localAI[3];
 
-	private VerletChain chain;
 	private Vector2[] bezier;
 	private Vector2 addedPos;
+	private int glassCount = -1;
+	private int maxGlassCount;
 
 	public override void SetStaticDefaults()
 	{
@@ -125,21 +128,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		//if (chain == null)
-		//{
-		//	chain = VerletChainBuilder.CreatePinnedRope(NPC.Center, 10, 32f, 0.9f);
-		//}
-		//else
-		//{
-		//	// TODO: Just for testing purposes. Eventually make this follow the NPC's tail position.
-		//	chain.Points[0].Position = Main.MouseWorld;
-
-		//	chain.Update();
-		//	chain.Render(new SunDevourerVerletRenderer());
-		//}
-
 		DrawNPC(in screenPos, in drawColor);
-
 		return false;
 	}
 
@@ -152,15 +141,6 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void DrawNPC(in Vector2 screenPosition, in Color drawColor)
 	{
-		if (State is DevourerState.ReturnToIdle)
-		{
-			DrawOffsetY = -Math.Abs(MathF.Sin(ConstantTimer * 0.05f) * 20);
-		}
-		else
-		{
-			DrawOffsetY *= 0.4f;
-		}
-
 		Texture2D texture = TextureAssets.Npc[Type].Value;
 		Vector2 position = NPC.Center - screenPosition + new Vector2(0f, NPC.gfxOffY + DrawOffsetY);
 		Vector2 origin = NPC.frame.Size() / 2f;

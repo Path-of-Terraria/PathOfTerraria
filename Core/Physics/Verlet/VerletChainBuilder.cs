@@ -21,17 +21,15 @@ public static class VerletChainBuilder
 		
 		var chain = new VerletChain(friction, gravity, segments);
 
-		for (var i = 0; i < segments; i++)
+		for (int i = 0; i < segments; i++)
 		{
 			var point = new VerletPoint(origin, i == 0);
-			
 			chain.AddPoint(in point);
 		}
 		
-		for (var i = 0; i < segments - 1; i++)
+		for (int i = 0; i < segments - 1; i++)
 		{
 			var stick = new VerletStick(chain.Points[i], chain.Points[i + 1], length);
-			
 			chain.AddStick(in stick);
 		}
 		

@@ -665,3 +665,8 @@ SunDevourerNPC: {
 	DisplayName: Sun Devourer
 	Entry: An ancient beast in a faraway desert known the world over. While not the largest creature, the beast is known to devour sunlight, growing to strengths beyond its size.
 }
+
+WormLightning: {
+	DisplayName: Sprite Sprite
+	Entry: A being of pure energy, wildly bouncing around the domain of its creator.
+}

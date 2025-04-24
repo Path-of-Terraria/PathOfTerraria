@@ -1133,3 +1133,5 @@ DevourersTail: {
 		The whip glows in the dark when swiftly whipping
 		'''
 }
+
+WormLightningBannerItem.DisplayName: Worm Lightning Banner Item

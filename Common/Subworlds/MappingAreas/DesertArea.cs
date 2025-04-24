@@ -31,8 +31,9 @@ internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 
 	public override int Width => 2600 + 150 * Main.rand.Next(3);
 	public override int Height => MapHeight;
-	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick];
-	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
+	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
+	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick, TileID.Cobweb];
+	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, SunDevourerSunEdit.Blackout > 0);
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), 
 		new PassLegacy("Decor", GenerateDecor)];
@@ -766,9 +767,13 @@ internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 
 			Main.npc[npc].localAI[3] = y + 20 * 16;
 
+			Main.spawnTileX = BossSpawnLocation.X;
+			Main.spawnTileY = BossSpawnLocation.Y;
+
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+				NetMessage.SendData(MessageID.WorldData, -1, -1, null);
 			}
 		}
 	}

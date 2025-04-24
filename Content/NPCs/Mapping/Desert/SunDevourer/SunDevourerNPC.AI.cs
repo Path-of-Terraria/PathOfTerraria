@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.World.Generation;
 using System.IO;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
@@ -43,6 +44,22 @@ public sealed partial class SunDevourerNPC : ModNPC
 			case DevourerState.BallLightning:
 				BallLightningAI();
 				break;
+
+			case DevourerState.AbsorbSun:
+				AbsorbSunAI();
+				break;
+		}
+	}
+
+	private void AbsorbSunAI()
+	{
+		Timer++;
+		SunDevourerSunEdit.Blackout = 1 - Timer / 300f;
+
+		if (Timer > 300)
+		{
+			NightStage = true;
+			SetState(DevourerState.ReturnToIdle);
 		}
 	}
 
@@ -112,22 +129,57 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void FlameAddsAI()
 	{
+		const int EndTimer = 300;
+
 		Timer++;
 
-		if (Timer < 80)
+		if (Timer < 40)
 		{
-			NPC.Opacity = 1 - Timer / 80f;
+			NPC.Opacity = 1 - Timer / 40f;
 		}
 
-		if (Timer > 600)
+		if (Timer == 1)
 		{
-			NPC.Opacity = (Timer - 600) / 80f;
+			NPC.dontTakeDamage = true;
+		}
+		else if (Timer == EndTimer)
+		{
+			NPC.dontTakeDamage = false;
 		}
 
-		if (Timer > 680)
+		if (Timer is 100 or 180 or 260 && Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			Vector2 pos = NPC.Center + new Vector2(Main.rand.Next(-500, 500), Main.rand.Next(1200, 1400));
+			Vector2 glassPos = FindGlass(IdleSpot - new Vector2(0, 600));
+			NPC.NewNPC(NPC.GetSource_FromAI(), (int)pos.X, (int)pos.Y, ModContent.NPCType<WormLightning>(), 0, 1, glassPos.X, glassPos.Y);
+		}
+
+		if (Timer > EndTimer - 40)
+		{
+			NPC.Opacity = (Timer - (EndTimer - 40)) / 40f;
+		}
+
+		if (Timer > EndTimer)
 		{
 			SetState(DevourerState.ReturnToIdle);
 		}
+	}
+
+	public static Vector2 FindGlass(Vector2 basePos, float widthVariance = 200, float heightVariance = 120)
+	{
+		int reps = 0;
+
+		while (true)
+		{
+			Vector2 pos = basePos + new Vector2(Main.rand.NextFloat(-widthVariance, widthVariance), Main.rand.NextFloat(-heightVariance, heightVariance));
+			Point16 tilePos = pos.ToTileCoordinates16();
+			reps++;
+			
+			if (Main.tile[tilePos].HasTile && Main.tile[tilePos].TileType == TileID.Glass || reps > 30000)
+			{
+				return pos;
+			}
+		} 
 	}
 
 	private void FirefallAI()
@@ -219,6 +271,26 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void ReturnToIdleAI()
 	{
+		if (MiscData == 0 && !NightStage)
+		{
+			if (maxGlassCount == 0)
+			{
+				glassCount = maxGlassCount = CountGlass();
+			}
+			else
+			{
+				glassCount = CountGlass();
+			}
+
+			MiscData = 1;
+
+			if (glassCount < maxGlassCount * 0.4f)
+			{
+				MiscData = 0;
+				SetState(DevourerState.AbsorbSun);
+			}
+		}
+
 		if (NPC.DistanceSQ(IdleSpot) < 20 * 20)
 		{
 			NPC.velocity *= 0.85f;
@@ -226,7 +298,14 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			if (Timer > 120)
 			{
+				MiscData = 0;
 				SetState(Main.rand.NextBool() ? DevourerState.BallLightning : DevourerState.Firefall);
+
+				if (!NightStage && ConstantTimer > 60 * 20)
+				{
+					SetState(DevourerState.FlameAdds);
+					ConstantTimer = 0;
+				}
 			}
 		}
 		else
@@ -240,6 +319,27 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			NPC.velocity *= 0.96f;
 		}
+	}
+
+	private int CountGlass()
+	{
+		Point16 basePos = (IdleSpot - new Vector2(0, 600)).ToTileCoordinates16();
+		int count = 0;
+
+		for (int i = basePos.X - 20; i < basePos.X + 20; ++i)
+		{
+			for (int j = basePos.Y - 10; j < basePos.Y + 10; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType == TileID.Glass)
+				{
+					count++;
+				}
+			}
+		}
+
+		return count;
 	}
 
 	private void TrappedAI()
