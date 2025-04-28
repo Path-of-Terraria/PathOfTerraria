@@ -92,7 +92,6 @@ internal class RavencrestSubworld : MappingWorld
 
 	public override void Update()
 	{
-		// Time wasn't being incremented for some reason by default
 		Main.time++;
 
 		if (Main.dayTime && Main.time >= Main.dayLength)
@@ -102,7 +101,7 @@ internal class RavencrestSubworld : MappingWorld
 		}
 		else if (!Main.dayTime && Main.time >= Main.nightLength)
 		{
-			Main.dayTime = false;
+			Main.dayTime = true;
 			Main.time = 0;
 		}
 	}
