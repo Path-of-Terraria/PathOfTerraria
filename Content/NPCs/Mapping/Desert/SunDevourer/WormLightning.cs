@@ -1,6 +1,7 @@
 ﻿using NPCUtils;
-using PathOfTerraria.Core.Physics.Verlet;
+using PathOfTerraria.Common.NPCs.Worms;
 using ReLogic.Content;
+using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -9,6 +10,19 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 [AutoloadBanner]
 internal class WormLightning : ModNPC
 {
+	internal class WormLightning_Body : WormSegment
+	{
+		public override void Defaults()
+		{
+			NPC.Size = new Vector2(22);
+			NPC.damage = 30;
+		}
+	}
+
+	internal class WormLightning_Tail : WormLightning_Body
+	{
+	}
+
 	internal static Asset<Texture2D>[] Textures;
 
 	private ref float State => ref NPC.ai[0];
@@ -21,7 +35,7 @@ internal class WormLightning : ModNPC
 
 	private ref float GlassBroken => ref NPC.ai[3];
 
-	private VerletChain chain;
+	private bool _spawnedSegments = false;
 
 	public override void SetStaticDefaults()
 	{
@@ -51,6 +65,14 @@ internal class WormLightning : ModNPC
 
 	public override void AI()
 	{
+		if (!_spawnedSegments && Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			WormSegment.SpawnWhole<WormLightning_Body, WormLightning_Tail>(NPC.GetSource_FromAI(), NPC, 24, 12);
+			_spawnedSegments = true;
+		}
+
+		NPC.rotation = NPC.velocity.ToRotation();
+
 		if (State == 0)
 		{
 			NPC.dontTakeDamage = false;
@@ -122,58 +144,8 @@ internal class WormLightning : ModNPC
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		if (chain == null)
-		{
-			chain = VerletChainBuilder.CreatePinnedRope(NPC.Center, 16, 12, 0, 0);
-		}
-		else
-		{
-			// TODO: Just for testing purposes. Eventually make this follow the NPC's tail position.
-			chain.Points[0].Position = NPC.position;
-
-			chain.Update();
-			chain.Render(new LightningWormVerletRenderer());
-		}
-
+		Texture2D value = TextureAssets.Npc[Type].Value;
+		spriteBatch.Draw(value, NPC.Center - screenPos, null, Color.White, NPC.rotation, value.Size() * new Vector2(1f, 0.5f), 1f, SpriteEffects.None, 0);
 		return false;
-	}
-}
-
-public readonly struct LightningWormVerletRenderer : IVerletRenderer
-{
-	void IVerletRenderer.Render(VerletChain chain)
-	{
-		for (int i = 0; i < chain.Sticks.Count; i++)
-		{
-			VerletStick stick = chain.Sticks[i];
-
-			Vector2 start = stick.Start.Position - Main.screenPosition;
-			Vector2 end = stick.End.Position - Main.screenPosition;
-			Vector2 difference = end - start;
-			float rotation = difference.ToRotation();
-
-			Texture2D texture = WormLightning.Textures[1].Value;
-
-			if (i == 0)
-			{
-				texture = WormLightning.Textures[0].Value;
-			}
-			else if (i == chain.Sticks.Count - 1)
-			{
-				texture = WormLightning.Textures[2].Value;
-			}
-
-			Main.spriteBatch.Draw
-			(
-				texture,
-				new Rectangle((int)start.X, (int)start.Y, (int)difference.Length(), texture.Height),
-				null,
-				Color.White,
-				rotation,
-				texture.Size() / 2f,
-				SpriteEffects.None,
-				0f
-			);
-		}
 	}
 }

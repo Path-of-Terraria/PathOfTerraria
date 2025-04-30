@@ -8,6 +8,8 @@ namespace PathOfTerraria.Content.Projectiles.Whip;
 
 internal abstract class WhipProjectile : ModProjectile
 {
+	protected bool LetGo => AltUse || !Main.player[Projectile.owner].channel || ChargeTime >= 120;
+
 	private Player Owner => Main.player[Projectile.owner];
 
 	public float Timer
@@ -40,8 +42,11 @@ internal abstract class WhipProjectile : ModProjectile
 		Projectile.DefaultToWhip();
 	}
 
-	// This example uses PreAI to implement a charging mechanic.
-	// If you remove this, also remove Item.channel = true from the item's SetDefaults.
+	public override bool? CanHitNPC(NPC target)
+	{
+		return Main.player[Projectile.owner].channel && !LetGo ? false : null;
+	}
+
 	public override bool PreAI()
 	{
 		Player owner = Main.player[Projectile.owner];
@@ -60,7 +65,7 @@ internal abstract class WhipProjectile : ModProjectile
 
 		(owner.HeldItem.ModItem as WhipItem).UpdateProjectile(Projectile);
 
-		if (AltUse || !owner.channel || ChargeTime >= 120)
+		if (LetGo)
 		{
 			return true; // Let the vanilla whip AI run.
 		}

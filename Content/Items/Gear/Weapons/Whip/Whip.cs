@@ -57,6 +57,8 @@ internal abstract class Whip : Gear
 		}
 	}
 
+	public override string Texture => base.Texture;
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();

@@ -670,3 +670,6 @@ WormLightning: {
 	DisplayName: Sprite Sprite
 	Entry: A being of pure energy, wildly bouncing around the domain of its creator.
 }
+
+WormLightning_Body.DisplayName: Worm Lightning_ Body
+WormLightning_Tail.DisplayName: Worm Lightning_ Tail

@@ -1135,3 +1135,9 @@ DevourersTail: {
 }
 
 WormLightningBannerItem.DisplayName: Worm Lightning Banner Item
+
+SunsoulStaff: {
+	DisplayName: Sunsoul Staff
+	Tooltip: The remaining strength of the sun lies dormant
+	AltUseDescription: Does something fancy woah yahoo ayaya
+}

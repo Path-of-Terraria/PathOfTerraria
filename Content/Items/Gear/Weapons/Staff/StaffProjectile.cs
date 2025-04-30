@@ -14,18 +14,19 @@ internal abstract class StaffProjectile : ModProjectile
 	public virtual int TorchType => TorchID.Purple;
 	public virtual int MaxCharge => 60;
 	public virtual Vector2 ChargeOffset => new(-10f, 48f);
+	public virtual bool CanCollideWithTiles => true;
 
 	protected Player Owner => Main.player[Projectile.owner];
 
-	private ref float Charge => ref Projectile.ai[0];
+	protected ref float Charge => ref Projectile.ai[0];
 
-	private bool LetGo
+	protected bool LetGo
 	{
 		get => Projectile.ai[1] == 1;
 		set => Projectile.ai[1] = value ? 1 : 0;
 	}
 
-	private bool PassedCharge
+	protected bool PassedCharge
 	{
 		get => Projectile.ai[2] == 1;
 		set => Projectile.ai[2] = value ? 1 : 0;
@@ -74,7 +75,7 @@ internal abstract class StaffProjectile : ModProjectile
 			Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType);
 		}
 
-		if (LetGo)
+		if (LetGo && CanCollideWithTiles)
 		{
 			if (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
 			{
@@ -141,7 +142,7 @@ internal abstract class StaffProjectile : ModProjectile
 		}
 	}
 
-	public void ReleaseProjectile()
+	public virtual void ReleaseProjectile()
 	{
 		if (Main.myPlayer == Projectile.owner)
 		{
@@ -159,7 +160,6 @@ internal abstract class StaffProjectile : ModProjectile
 		{
 			Projectile.Kill();
 			Owner.channel = false;
-			return;
 		}
 	}
 

@@ -53,6 +53,7 @@ internal class StaffHeldProjectile : ModProjectile
 		
 		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
 		Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRotation);
+		Owner.SetDummyItemTime(2);
 		
 		if (!Owner.channel)
 		{
