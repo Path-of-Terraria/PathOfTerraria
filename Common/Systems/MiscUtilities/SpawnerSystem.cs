@@ -18,10 +18,18 @@ internal class SpawnerSystem : ModSystem
 	public static readonly Dictionary<int, TileData> SpawnerRecord = [];
 
 	/// <summary> Resets a spawner corresponding to an NPC index. </summary>
-	public static void ResetSpawner(int key)
+	/// <returns> Whether the record of <paramref name="key"/> was removed. </returns>
+	public static bool ResetSpawner(int key)
 	{
-		ResetSingle(key);
-		SpawnerRecord.Remove(key);
+		if (SpawnerRecord.ContainsKey(key))
+		{
+			ResetSingle(key);
+			SpawnerRecord.Remove(key);
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public static void ResetSpawners()
