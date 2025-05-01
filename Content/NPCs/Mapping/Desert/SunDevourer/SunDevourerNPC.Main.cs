@@ -1,15 +1,11 @@
-﻿using Humanizer.Localisation.DateToOrdinalWords;
-using NPCUtils;
+﻿using NPCUtils;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff.SunsoulStaff;
-using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Graphics.Camera.Modifiers;
 using PathOfTerraria.Core.Graphics.Zoom;
 using PathOfTerraria.Core.Graphics.Zoom.Modifiers;
-using PathOfTerraria.Core.Physics.Verlet;
 using ReLogic.Content;
-using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -26,6 +22,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		BallLightning,
 		FlameAdds,
 		AbsorbSun,
+		Godrays,
 	}
 
 	protected static Asset<Texture2D> MaskTexture;
@@ -130,27 +127,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 		return null;
 	}
 
-	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
-	{
-		DrawNPC(in screenPos, in drawColor);
-		return false;
-	}
-
 	private void ApplyFocus(int duration)
 	{
 		ZoomSystem.AddModifier(new FocusZoomModifier($"{PoTMod.ModName}:{nameof(SunDevourerNPC)}_Zoom", duration));
 
 		Main.instance.CameraModifiers.Add(new FocusCameraModifier($"{PoTMod.ModName}:{nameof(SunDevourerNPC)}_Camera", duration, () => NPC.Center + NPC.Size / 2f));
-	}
-
-	private void DrawNPC(in Vector2 screenPosition, in Color drawColor)
-	{
-		Texture2D texture = TextureAssets.Npc[Type].Value;
-		Vector2 position = NPC.Center - screenPosition + new Vector2(0f, NPC.gfxOffY + DrawOffsetY);
-		Vector2 origin = NPC.frame.Size() / 2f;
-		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
 	}
 
 	public override void OnKill()

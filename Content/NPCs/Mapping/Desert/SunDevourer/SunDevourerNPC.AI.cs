@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.World.Generation;
 using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -48,12 +49,84 @@ public sealed partial class SunDevourerNPC : ModNPC
 			case DevourerState.AbsorbSun:
 				AbsorbSunAI();
 				break;
+
+			case DevourerState.Godrays:
+				GodrayAI();
+				break;
+		}
+	}
+
+	private void GodrayAI()
+	{
+		const float DustWidth = 140;
+
+		Timer++;
+		NPC.velocity = Vector2.Zero;
+
+		if (Timer < 120)
+		{
+			NPC.Opacity = 1f;
+
+			if (Timer % 2 == 0)
+			{
+				Vector2 dustPos = NPC.Center + new Vector2(Main.rand.NextFloat(-DustWidth, DustWidth), Main.rand.NextFloat(-60, 60));
+				Dust.NewDustPerfect(dustPos, DustID.AncientLight, new Vector2(0, -6).RotatedByRandom(0.1f));
+			}
+		}
+		else if (Timer == 120)
+		{
+			if (Main.netMode != NetmodeID.Server)
+			{
+				for (int i = 0; i < 15; ++i)
+				{
+					Vector2 dustPos = NPC.Center + new Vector2(Main.rand.NextFloat(-DustWidth, DustWidth), Main.rand.NextFloat(-80, 80));
+					Dust.NewDustPerfect(dustPos, DustID.AncientLight, new Vector2(0, -6).RotatedByRandom(0.1f), Scale: Main.rand.NextFloat(1, 2));
+				}
+
+				for (int i = 0; i < 8; ++i)
+				{
+					int count = Main.rand.Next(5, 9);
+					Vector2 basePos = NPC.Center + new Vector2(MathHelper.Lerp(-DustWidth, DustWidth, i / 7f), Main.rand.NextFloat(-60, 60));
+					float magnitude = Main.rand.NextFloat(2, 12);
+
+					for (int j = 0; j < count; ++j)
+					{
+						float factor = (j + 1) / (float)count;
+						Dust.NewDustPerfect(basePos, DustID.AncientLight, new Vector2(0, -magnitude * factor - 4).RotatedByRandom(0.1f));
+					}
+				}
+
+				SoundEngine.PlaySound(new SoundStyle("PathOfTerraria/Assets/Sounds/LightDisappear") with { PitchRange = (-0.1f, 0.1f) }, NPC.Center);
+			}
+
+			NPC.Opacity = 0f;
+		}
+		else if (Timer <= 300)
+		{
+			NPC.Opacity = 0f;
+
+			if (Timer > 240)
+			{
+				NPC.Opacity = (Timer - 240) / 60f;
+			}
+
+			if (Timer < 240 && Timer % 12 == 0)
+			{
+				var position = new Vector2(Target.Center.X, FloorY);
+				int damage = ModeUtils.ProjectileDamage(80, 110, 150);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), position, new Vector2(0, -18), ModContent.ProjectileType<Lightray>(), damage, 0, Main.myPlayer);
+			}
+		}
+		else if (Timer >= 300)
+		{
+			SetState(DevourerState.Godrays);
 		}
 	}
 
 	private void AbsorbSunAI()
 	{
 		Timer++;
+		NPC.velocity = Vector2.Zero;
 		SunDevourerSunEdit.Blackout = 1 - Timer / 300f;
 
 		if (Timer > 300)
@@ -74,7 +147,6 @@ public sealed partial class SunDevourerNPC : ModNPC
 			var vel = new Vector2(NPC.direction * 4, 0);
 			int type = ModContent.ProjectileType<BallLightning>();
 			ballSlot = Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, ModeUtils.ProjectileDamage(80, 110, 150), 0, Main.myPlayer);
-			//Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, ModeUtils.ProjectileDamage(80, 110, 150), 0, Main.myPlayer, 1);
 
 			NPC.netUpdate = true;
 			NPC.velocity -= vel;
@@ -299,12 +371,20 @@ public sealed partial class SunDevourerNPC : ModNPC
 			if (Timer > 120)
 			{
 				MiscData = 0;
-				SetState(Main.rand.NextBool() ? DevourerState.BallLightning : DevourerState.Firefall);
 
-				if (!NightStage && ConstantTimer > 60 * 20)
+				if (NightStage)
 				{
-					SetState(DevourerState.FlameAdds);
-					ConstantTimer = 0;
+					SetState(Main.rand.NextBool() ? DevourerState.BallLightning : DevourerState.Firefall);
+
+					if (!NightStage && ConstantTimer > 60 * 20)
+					{
+						SetState(DevourerState.FlameAdds);
+						ConstantTimer = 0;
+					}
+				}
+				else
+				{
+					SetState(DevourerState.Godrays);
 				}
 			}
 		}
