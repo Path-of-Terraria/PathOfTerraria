@@ -37,7 +37,7 @@ public class Nova : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = 2;// (15 - Level) * 60;
+		Cooldown = MaxCooldown = (15 - Level) * 60;
 		ManaCost = 20 + 5 * Level;
 		Duration = 0;
 		WeaponType = ItemType.Magic;
