@@ -115,11 +115,7 @@ public class Nova : Skill
 			Timer += 0.04f;
 			DecaySpeed *= 0.94f;
 
-			if (NovaType == NovaType.Normal)
-			{
-				//SpamNormalDust();
-			}
-			else if (NovaType == NovaType.Fire)
+			if (NovaType == NovaType.Fire)
 			{
 				SpamFireDust();
 			}
@@ -127,7 +123,7 @@ public class Nova : Skill
 			{
 				SpamIceDust();
 			}
-			else
+			else if (NovaType == NovaType.Lightning)
 			{
 				SpamLightningDust();
 			}
@@ -267,9 +263,7 @@ public class Nova : Skill
 				NovaType.Lightning => (Color.LightBlue, Color.SkyBlue),
 				_ => (new Color(255, 255, 255), new Color(150, 150, 255))
 			};
-
-			pair.Item1 = pair.Item1 with { A = 255 };
-			pair.Item2 = pair.Item2 with { A = 255 };
+			
 			return pair;
 		}
 	}
