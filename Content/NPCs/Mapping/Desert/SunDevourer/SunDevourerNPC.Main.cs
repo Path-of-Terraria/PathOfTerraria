@@ -1,11 +1,14 @@
 ﻿using Humanizer.Localisation.DateToOrdinalWords;
 using NPCUtils;
+using PathOfTerraria.Content.Items.Gear.Weapons.Staff.SunsoulStaff;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Graphics.Camera.Modifiers;
 using PathOfTerraria.Core.Graphics.Zoom;
 using PathOfTerraria.Core.Graphics.Zoom.Modifiers;
 using PathOfTerraria.Core.Physics.Verlet;
+using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -24,6 +27,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 		FlameAdds,
 		AbsorbSun,
 	}
+
+	protected static Asset<Texture2D> MaskTexture;
 
 	public bool NightStage { get; set; }
 
@@ -64,6 +69,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		NPCID.Sets.TrailingMode[Type] = 3;
 		NPCID.Sets.TrailCacheLength[Type] = 10;
+
+		MaskTexture = ModContent.Request<Texture2D>(Texture + "_Mask");
 	}
 
 	public override void SetDefaults()
@@ -109,20 +116,17 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	public override void BossLoot(ref string name, ref int potionType)
 	{
-		base.BossLoot(ref name, ref potionType);
-
 		potionType = ItemID.GreaterHealingPotion;
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		npcLoot.AddOneFromOptions<DevourersTail, DevourersTail>(1);
+		npcLoot.AddOneFromOptions<DevourersTail, SunsoulStaffItem>(1);
 	}
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
 	{
 		scale = 1.5f;
-
 		return null;
 	}
 

@@ -362,6 +362,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 			NPC.dontTakeDamage = false;
 			NPC.boss = true;
 			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+			NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true;
 		}
 	}
 

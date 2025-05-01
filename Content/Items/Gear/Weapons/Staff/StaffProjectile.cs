@@ -75,9 +75,9 @@ internal abstract class StaffProjectile : ModProjectile
 			Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustType);
 		}
 
-		if (LetGo && CanCollideWithTiles)
+		if (LetGo)
 		{
-			if (!Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
+			if (CanCollideWithTiles && !Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height))
 			{
 				Projectile.tileCollide = true;
 			}

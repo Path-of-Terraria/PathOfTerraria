@@ -8,7 +8,7 @@ namespace PathOfTerraria.Common.NPCs.Worms;
 
 internal abstract class WormSegment : ModNPC
 {
-	public Entity Parent => Main.npc[ParentIndex];
+	public NPC Parent => Main.npc[ParentIndex];
 
 	public ref float Length => ref NPC.ai[0];
 	public int ParentIndex => (int)NPC.ai[1];
@@ -75,6 +75,8 @@ internal abstract class WormSegment : ModNPC
 			NPC.Center = Parent.Center + Parent.DirectionTo(NPC.Center) * Length;
 			NPC.rotation = NPC.AngleTo(Parent.Center);
 		}
+
+		NPC.dontTakeDamage = Parent.dontTakeDamage;
 
 		if (!Parent.active)
 		{
