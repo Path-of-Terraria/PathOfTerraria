@@ -115,9 +115,13 @@ public class Nova : Skill
 			Timer += 0.04f;
 			DecaySpeed *= 0.94f;
 
-			if (NovaType != NovaType.Lightning && NovaType != NovaType.Ice)
+			if (NovaType == NovaType.Normal)
 			{
 				//SpamNormalDust();
+			}
+			else if (NovaType == NovaType.Fire)
+			{
+				SpamFireDust();
 			}
 			else if (NovaType == NovaType.Ice)
 			{
@@ -126,6 +130,17 @@ public class Nova : Skill
 			else
 			{
 				SpamLightningDust();
+			}
+		}
+
+		private void SpamFireDust()
+		{
+			for (int i = 0; i < 2; ++i)
+			{
+				Vector2 offset = Main.rand.NextVector2CircularEdge(Spread, Spread);
+				Vector2 pos = Projectile.Center + offset;
+				var dust = Dust.NewDustPerfect(pos, DustID.Torch, Vector2.Normalize(offset) * Main.rand.NextFloat(2, 4), Scale: Main.rand.NextFloat(1, 2));
+				dust.noGravity = true;
 			}
 		}
 
@@ -159,7 +174,7 @@ public class Nova : Skill
 		{
 			float dustIterations = Main.rand.Next(5, 8);
 
-			if (Projectile.timeLeft % 3 != 0)
+			if (Projectile.timeLeft % 3 <= 1)
 			{
 				return;
 			}
@@ -249,7 +264,7 @@ public class Nova : Skill
 			{
 				NovaType.Fire => (new Color(255, 150, 150), new Color(255, 255, 150)),
 				NovaType.Ice => (new Color(150, 150, 255), new Color(160, 180, 235)),
-				NovaType.Lightning => (Color.LightBlue, Color.Yellow),
+				NovaType.Lightning => (Color.LightBlue, Color.SkyBlue),
 				_ => (new Color(255, 255, 255), new Color(150, 150, 255))
 			};
 
