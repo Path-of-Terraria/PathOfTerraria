@@ -1,12 +1,9 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.SkillPassives;
-using PathOfTerraria.Content.SkillPassives.Magic;
+using PathOfTerraria.Content.SkillSpecials;
 using Terraria.ID;
-using Terraria.Localization;
 using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Skills.Magic;
@@ -22,67 +19,18 @@ public class Nova : Skill
 	}
 
 	public override int MaxLevel => 3;
-	
-	public override List<SkillPassive> Passives =>
-	[
-		new SkillPassiveAnchor(this),
-		new LightningNovaSkillPassive(this),
-		new FireNovaSkillPassive(this),
-		new IceNovaSkillPassive(this)
-	];
 
-	public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTexture();
-	public override LocalizedText DisplayName => GetLocalization("Name", base.DisplayName);
-	public override LocalizedText Description => GetLocalization("Description", base.Description);
-
-	private LocalizedText GetLocalization(string postfix, LocalizedText def)
+	private static NovaType GetNovaType(Nova nova)
 	{
-		NovaType type = GetNovaType();
-		return type switch
+		SkillSpecial special = nova.Tree.Specialization;
+
+		return special switch
 		{
-			NovaType.Fire or NovaType.Ice or NovaType.Lightning => Language.GetText("Mods.PathOfTerraria.Skills." + Name + "." + type.ToString() + "." + postfix),
-			_ => def,
+			FireNova => NovaType.Fire,
+			IceNova => NovaType.Ice,
+			LightningNova => NovaType.Lightning,
+			_ => NovaType.Normal
 		};
-	}
-
-	private string GetTexture()
-	{
-		return GetNovaType() switch
-		{
-			NovaType.Fire => "FireNova",
-			NovaType.Lightning => "LightningNova",
-			NovaType.Ice => "IceNova",
-			_ => GetType().Name,
-		};
-	}
-
-	private NovaType GetNovaType()
-	{
-		return GetNovaType(this);
-	}
-
-	public static NovaType GetNovaType(Nova nova)
-	{
-		Player player = Main.LocalPlayer;
-		SkillPassivePlayer skillPassive = player.GetModPlayer<SkillPassivePlayer>();
-
-		if (skillPassive.AllocatedPassives.TryGetValue(nova, out Dictionary<string, SkillPassive> passives))
-		{
-			if (passives.ContainsKey(nameof(FireNovaSkillPassive)))
-			{
-				return NovaType.Fire;
-			}
-			else if (passives.ContainsKey(nameof(IceNovaSkillPassive)))
-			{
-				return NovaType.Ice;
-			}
-			else if (passives.ContainsKey(nameof(LightningNovaSkillPassive)))
-			{
-				return NovaType.Lightning;
-			}
-		}
-
-		return NovaType.Normal;
 	}
 
 	public override void LevelTo(byte level)
@@ -94,34 +42,36 @@ public class Nova : Skill
 		WeaponType = ItemType.Magic;
 	}
 
-	public override void UseSkill(Player player)
+	public override void UseSkill(Player player, SkillBuff buff)
 	{
-		player.statMana -= ManaCost;
-		Timer = Cooldown;
+		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
+		Cooldown = MaxCooldown;
 
-		int damage = (int)(player.HeldItem.damage * (2 + 0.5f * Level));
+		int damage = (int)buff.Damage.ApplyTo(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);
-		NovaType type = GetNovaType();
+		NovaType type = GetNovaType(this);
 		float knockback = 2f;
 
-		if (type == NovaType.Fire)
+		switch (type)
 		{
-			knockback = 4f;
-		}
-		else if (type == NovaType.Lightning)
-		{
-			WeightedRandom<float> mult = new(Main.rand);
-			mult.Add(1f, 1f);
-			mult.Add(0.75f, 1f);
-			mult.Add(0.5f, 1f);
-			mult.Add(1.5f, 1f);
-			mult.Add(2f, 1f);
+			case NovaType.Fire:
+				knockback = 4f;
+				break;
+			case NovaType.Lightning:
+				{
+					WeightedRandom<float> mult = new(Main.rand);
+					mult.Add(1f, 1f);
+					mult.Add(0.75f, 1f);
+					mult.Add(0.5f, 1f);
+					mult.Add(1.5f, 1f);
+					mult.Add(2f, 1f);
 
-			damage = (int)(damage * mult);
-		}
-		else if (type == NovaType.Ice)
-		{
-			damage = (int)(damage * 0.9f);
+					damage = (int)(damage * mult);
+					break;
+				}
+			case NovaType.Ice:
+				damage = (int)(damage * 0.9f);
+				break;
 		}
 
 		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
@@ -253,17 +203,20 @@ public class Nova : Skill
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (NovaType == NovaType.Fire)
+			switch (NovaType)
 			{
-				target.AddBuff(BuffID.OnFire, 5 * 60);
-			}
-			else if (NovaType == NovaType.Lightning)
-			{
-				target.AddBuff(ModContent.BuffType<ShockDebuff>(), 5 * 60);
-			}
-			else if (NovaType == NovaType.Ice)
-			{
-				target.AddBuff(BuffID.Chilled, 5 * 60);
+				case NovaType.Fire:
+					target.AddBuff(BuffID.OnFire, 5 * 60);
+					break;
+				case NovaType.Lightning:
+					target.AddBuff(ModContent.BuffType<ShockDebuff>(), 5 * 60);
+					break;
+				case NovaType.Ice:
+					target.AddBuff(BuffID.Chilled, 5 * 60);
+					break;
+				case NovaType.Normal:
+				default:
+					return;
 			}
 		}
 	}

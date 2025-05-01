@@ -1141,3 +1141,8 @@ SunsoulStaffItem: {
 	Tooltip: The remaining strength of the sun lies dormant
 	AltUseDescription: Does something fancy woah yahoo ayaya
 }
+
+AugmentationOrb: {
+	DisplayName: Skill Augmentation Orb
+	Tooltip: Unlocks an augmentation slot for a given skill
+}

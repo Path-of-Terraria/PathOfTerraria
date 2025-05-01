@@ -65,9 +65,10 @@ internal class SkillSelectionElement : UIElement
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 		skillCombatPlayer.TryAddSkill(_skill);
 		_parentPanel.SelectedSkill = _skill;
-		_parentPanel.RebuildTree();
 
-		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);
+        _parentPanel.RebuildTree();
+
+        Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);
 	}
 
 	public override void RightClick(UIMouseEvent evt)

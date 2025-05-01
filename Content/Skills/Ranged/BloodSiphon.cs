@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
 using Terraria.ID;
@@ -12,19 +13,17 @@ namespace PathOfTerraria.Content.Skills.Ranged;
 public class BloodSiphon : Skill
 {
 	public override int MaxLevel => 3;
-	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		MaxCooldown = (15 - Level * 2) * 60;
-		Timer = 0;
+		Cooldown = MaxCooldown = (15 - Level * 2) * 60;
 		ManaCost = 20 - Level * 5;
 		Duration = 0;
 		WeaponType = ItemType.Ranged;
 	}
 
-	public override void UseSkill(Player player)
+	public override void UseSkill(Player player, SkillBuff buff)
 	{
 		// Level to the strength of all BloodSiphonAffix
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>());
@@ -50,7 +49,7 @@ public class BloodSiphon : Skill
 			}
 		}
 
-		Timer = MaxCooldown;
+		Cooldown = MaxCooldown;
 	}
 
 	public override bool CanEquipSkill(Player player)

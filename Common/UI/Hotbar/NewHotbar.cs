@@ -263,10 +263,10 @@ internal sealed class NewHotbar : SmartUiState
 			skillRect,
 			new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
 
-		if (skill.Timer > 0)
+		if (skill.Cooldown > 0)
 		{
 			spriteBatch.Draw(glow, new Vector2(291 + 52 * skillIndex, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
-			Utils.DrawBorderString(spriteBatch, $"{skill.Timer / 60 + 1}", new Vector2(291 + 52 * skillIndex, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+			Utils.DrawBorderString(spriteBatch, $"{skill.Cooldown / 60 + 1}", new Vector2(291 + 52 * skillIndex, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
 		}
 
 		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
@@ -281,7 +281,7 @@ internal sealed class NewHotbar : SmartUiState
 
 		Tooltip.SetName(skill.DisplayName.Value + " " + level);
 
-		string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.ManaCost).Value;
+		string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.TotalManaCost).Value;
 
 		string weapon = skill.WeaponType != ItemID.None
 			? Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value

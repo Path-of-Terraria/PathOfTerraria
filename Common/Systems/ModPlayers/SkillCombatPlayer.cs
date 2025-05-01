@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Guide;
 using Terraria.GameInput;
 using Terraria.Localization;
@@ -71,7 +72,9 @@ internal class SkillCombatPlayer : ModPlayer
 		if (HotbarSkills[index] != null && HotbarSkills[index].CanUseSkill(Player))
 		{
 			Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.UsedASkill);
-			HotbarSkills[index]?.UseSkill(Player);
+
+			SkillBuff buff = HotbarSkills[index].GetPower();
+			HotbarSkills[index]?.UseSkill(Player, buff);
 		}
 	}
 
@@ -84,9 +87,9 @@ internal class SkillCombatPlayer : ModPlayer
 
 		foreach (Skill skill in HotbarSkills)
 		{
-			if (skill is { Timer: > 0 })
+			if (skill is { Cooldown: > 0 })
 			{
-				skill.Timer--;
+				skill.Cooldown--;
 			}
 		}
 	}
@@ -146,8 +149,8 @@ internal class SkillCombatPlayer : ModPlayer
 			string type = data.GetString("type");
 
 			var skill = Skill.GetAndPrepareSkill(Type.GetType(type));
-			skill.LoadData(data);
 			skill.LevelTo(skill.Level);
+			skill.LoadData(data);
 
 			HotbarSkills[i] = skill;
 		}

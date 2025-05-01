@@ -66,7 +66,7 @@ internal class PassiveTreePlayer : ModPlayer
 	{
 		foreach (Passive passive in ActiveNodes)
 		{
-			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.InternalIdentifier == "AnchorPassive" ? 1 : 0;
+			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.Name == "AnchorPassive" ? 1 : 0;
 
 			if (passive is JewelSocket jsPassive)
 			{
@@ -76,7 +76,7 @@ internal class PassiveTreePlayer : ModPlayer
 				}
 			}
 
-			if (passive.InternalIdentifier != "AnchorPassive" && passive.Level > 0)
+			if (passive.Name != "AnchorPassive" && passive.Level > 0)
 			{
 				Points -= passive.Level;
 			}
@@ -142,7 +142,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 		foreach (Passive passive in ActiveNodes)
 		{
-			if (passive.InternalIdentifier == internalIdentifier)
+			if (passive.Name == internalIdentifier)
 			{
 				level += passive.Level;
 			}
@@ -183,7 +183,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 	private Tuple<bool, HashSet<Passive>> CanFindAnchor(Passive from, HashSet<Passive> autoComplete, Passive removed)
 	{
-		if (autoComplete.Contains(from) || from.InternalIdentifier == "AnchorPassive")
+		if (autoComplete.Contains(from) || from.Name == "AnchorPassive")
 		{
 			return new Tuple<bool, HashSet<Passive>>(true, []);
 		}
@@ -201,7 +201,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 			IEnumerable<Passive> add = Edges.Where(e => e.Contains(p) && e.Other(p).Level > 0 && !passed.Contains(e.Other(p))).Select(e => e.Other(p));
 
-			if (add.Any(p => p.InternalIdentifier == "AnchorPassive"))
+			if (add.Any(p => p.Name == "AnchorPassive"))
 			{
 				return new Tuple<bool, HashSet<Passive>>(true, passed);
 			}
