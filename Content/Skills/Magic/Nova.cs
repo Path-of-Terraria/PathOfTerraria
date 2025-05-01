@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.SkillSpecials;
+using ReLogic.Content;
 using Terraria.ID;
 using Terraria.Utilities;
 
@@ -36,7 +37,7 @@ public class Nova : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = (15 - Level) * 60;
+		Cooldown = MaxCooldown = 2;// (15 - Level) * 60;
 		ManaCost = 20 + 5 * Level;
 		Duration = 0;
 		WeaponType = ItemType.Magic;
@@ -91,6 +92,9 @@ public class Nova : Skill
 		private int Spread => (int)((1 - Projectile.timeLeft / 30f) * TotalRadius);
 		private NovaType NovaType => (NovaType)Projectile.ai[0];
 
+		private ref float Timer => ref Projectile.ai[1];
+		private ref float DecaySpeed => ref Projectile.ai[2];
+
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
@@ -103,9 +107,17 @@ public class Nova : Skill
 
 		public override void AI()
 		{
+			if (DecaySpeed == 0)
+			{
+				DecaySpeed = 0.075f;
+			}
+
+			Timer += 0.04f;
+			DecaySpeed *= 0.94f;
+
 			if (NovaType != NovaType.Lightning && NovaType != NovaType.Ice)
 			{
-				SpamNormalDust();
+				//SpamNormalDust();
 			}
 			else if (NovaType == NovaType.Ice)
 			{
@@ -114,33 +126,6 @@ public class Nova : Skill
 			else
 			{
 				SpamLightningDust();
-			}
-		}
-
-		private void SpamNormalDust()
-		{
-			const float MaxDustIterations = 60;
-
-			int dustType = NovaType switch
-			{
-				NovaType.Fire => DustID.Torch,
-				_ => DustID.Astra
-			};
-
-			for (int i = 0; i < MaxDustIterations; ++i)
-			{
-				Vector2 spread = new Vector2(Spread, 0).RotatedBy(i / MaxDustIterations * MathHelper.TwoPi);
-				float scale = 0.5f;
-
-				if (NovaType == NovaType.Fire)
-				{
-					spread = spread.RotatedBy(Projectile.timeLeft / 8f * Spread / TotalRadius);
-					spread *= Main.rand.NextFloat(0.9f, 1f);
-					scale = Main.rand.NextFloat(0.75f, 1.7f);
-				}
-
-				Vector2 position = Projectile.Center + spread;
-				Dust.NewDustPerfect(position, dustType, spread / Spread * 6, Scale: scale);
 			}
 		}
 
@@ -218,6 +203,59 @@ public class Nova : Skill
 				default:
 					return;
 			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Vector2 position = Projectile.position - Main.screenPosition;
+			float timer = Timer * 300f;
+			var topLeft = new Vector3(position - new Vector2(timer), 0);
+			Color color = Color.White;
+
+			short[] indices = [0, 1, 2, 1, 3, 2];
+
+			VertexPositionColorTexture[] vertices =
+			[
+				new(topLeft, color, new Vector2(0, 0)),
+				new(topLeft + new Vector3(new Vector2(timer * 2, 0), 0), color, new Vector2(1, 0)),
+				new(topLeft + new Vector3(new Vector2(0, timer * 2), 0), color, new Vector2(0, 1)),
+				new(topLeft + new Vector3(new Vector2(timer * 2), 0), color, new Vector2(1, 1)),
+			];
+
+			Effect effect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/RunestoneRing", AssetRequestMode.ImmediateLoad).Value;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			Matrix renderMatrix = view * projection;
+			float opacity = MathF.Min(Projectile.timeLeft / 30f, 1);
+			float lerpFactor = MathF.Pow(MathF.Sin((float)Main.timeForVisualEffects * 0.5f), 2);
+			(Color, Color) colorPair = GetColorPair();
+			var drawColor = Vector4.Lerp(colorPair.Item1.ToVector4(), colorPair.Item2.ToVector4(), lerpFactor);
+
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+			{
+				effect.Parameters["baseColor"].SetValue(drawColor * opacity);
+				effect.Parameters["uWorldViewProjection"].SetValue(renderMatrix);
+				pass.Apply();
+
+				Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, 4, indices, 0, 2);
+			}
+
+			return false;
+		}
+
+		private (Color, Color) GetColorPair()
+		{
+			(Color, Color) pair = NovaType switch
+			{
+				NovaType.Fire => (new Color(255, 150, 150), new Color(255, 255, 150)),
+				NovaType.Ice => (new Color(150, 150, 255), new Color(160, 180, 235)),
+				NovaType.Lightning => (Color.LightBlue, Color.Yellow),
+				_ => (new Color(255, 255, 255), new Color(150, 150, 255))
+			};
+
+			pair.Item1 = pair.Item1 with { A = 255 };
+			pair.Item2 = pair.Item2 with { A = 255 };
+			return pair;
 		}
 	}
 }
