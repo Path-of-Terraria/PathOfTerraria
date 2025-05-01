@@ -14,7 +14,6 @@ internal class ArenaEnemyNPC : GlobalNPC
 	public override bool InstancePerEntity => true;
 	protected override bool CloneNewInstances => true;
 
-	public byte? SpawnerIndex;
 	public bool Arena = false;
 	public bool StillDropStuff = false;
 
