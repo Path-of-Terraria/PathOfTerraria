@@ -230,7 +230,7 @@ public class Nova : Skill
 			float lerpFactor = MathF.Pow(MathF.Sin((float)Main.timeForVisualEffects * 0.5f), 2);
 			(Color, Color) colorPair = GetColorPair();
 			var drawColor = Vector4.Lerp(colorPair.Item1.ToVector4(), colorPair.Item2.ToVector4(), lerpFactor);
-
+			
 			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
 			{
 				effect.Parameters["baseColor"].SetValue(drawColor * opacity);
