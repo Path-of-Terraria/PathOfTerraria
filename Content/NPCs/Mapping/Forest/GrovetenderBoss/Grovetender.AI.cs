@@ -382,7 +382,6 @@ internal partial class Grovetender : ModNPC
 				Vector2 pos = GetCanopyBirdPosition(i);
 				bird = NPC.NewNPC(NPC.GetSource_FromAI(), (int)pos.X, (int)pos.Y, ModContent.NPCType<CanopyBird>(), 0);
 				Main.npc[bird].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
-				Main.npc[bird].GetGlobalNPC<ArenaEnemyNPC>().SpawnerIndex = null;
 
 				_canopyBirds[i] = bird;
 			}

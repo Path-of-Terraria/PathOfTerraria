@@ -4,7 +4,6 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.World.Generation;
 using ReLogic.Content;
-using Steamworks;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.GameContent.Bestiary;
