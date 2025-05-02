@@ -56,7 +56,6 @@ internal abstract class WormSegment : ModNPC
 		NPC.noGravity = true;
 		NPC.noTileCollide = true;
 		NPC.knockBackResist = 0f;
-		NPC.ShowNameOnHover = false;
 
 		Defaults();
 	}

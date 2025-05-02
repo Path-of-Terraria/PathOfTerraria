@@ -38,8 +38,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 				FirefallAI();
 				break;
 
-			case DevourerState.FlameAdds:
-				FlameAddsAI();
+			case DevourerState.LightningAdds:
+				LightningAdds();
 				break;
 
 			case DevourerState.BallLightning:
@@ -99,6 +99,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 				SoundEngine.PlaySound(new SoundStyle("PathOfTerraria/Assets/Sounds/LightDisappear") with { PitchRange = (-0.1f, 0.1f) }, NPC.Center);
 			}
 
+			NPC.dontTakeDamage = true;
+			NPC.ShowNameOnHover = false;
 			NPC.Opacity = 0f;
 		}
 		else if (Timer <= 300)
@@ -108,18 +110,20 @@ public sealed partial class SunDevourerNPC : ModNPC
 			if (Timer > 240)
 			{
 				NPC.Opacity = (Timer - 240) / 60f;
+				NPC.ShowNameOnHover = true;
+				NPC.dontTakeDamage = false;
 			}
 
-			if (Timer < 240 && Timer % 12 == 0)
+			if (Timer < 240 && Timer % 12 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				var position = new Vector2(Target.Center.X, FloorY);
+				var position = new Vector2(Target.Center.X + Main.rand.Next(-20, 20), FloorY);
 				int damage = ModeUtils.ProjectileDamage(80, 110, 150);
 				Projectile.NewProjectile(NPC.GetSource_FromAI(), position, new Vector2(0, -18), ModContent.ProjectileType<Lightray>(), damage, 0, Main.myPlayer);
 			}
 		}
-		else if (Timer >= 300)
+		else if (Timer > 400)
 		{
-			SetState(DevourerState.Godrays);
+			SetState(DevourerState.ReturnToIdle);
 		}
 	}
 
@@ -150,6 +154,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			NPC.netUpdate = true;
 			NPC.velocity -= vel;
+
+			doDamage = true;
 		}
 
 		Projectile ball = Main.projectile[(int)ballSlot];
@@ -196,10 +202,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 			MiscData = 0;
 			ballSlot = 0;
 			SetState(DevourerState.ReturnToIdle);
+			doDamage = false;
 		}
 	}
 
-	private void FlameAddsAI()
+	private void LightningAdds()
 	{
 		const int EndTimer = 300;
 
@@ -213,17 +220,20 @@ public sealed partial class SunDevourerNPC : ModNPC
 		if (Timer == 1)
 		{
 			NPC.dontTakeDamage = true;
+			NPC.ShowNameOnHover = false;
 		}
 		else if (Timer == EndTimer)
 		{
 			NPC.dontTakeDamage = false;
+			NPC.ShowNameOnHover = true;
 		}
 
 		if (Timer is 100 or 180 or 260 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			Vector2 pos = NPC.Center + new Vector2(Main.rand.Next(-500, 500), Main.rand.Next(1200, 1400));
 			Vector2 glassPos = FindGlass(IdleSpot - new Vector2(0, 600));
-			NPC.NewNPC(NPC.GetSource_FromAI(), (int)pos.X, (int)pos.Y, ModContent.NPCType<WormLightning>(), 0, 1, glassPos.X, glassPos.Y);
+			Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<LightningBurst>(), 50, 4, Main.myPlayer, 0, glassPos.X, glassPos.Y);
+			//NPC.NewNPC(NPC.GetSource_FromAI(), (int)pos.X, (int)pos.Y, ModContent.NPCType<WormLightning>(), 0, 1, glassPos.X, glassPos.Y);
 		}
 
 		if (Timer > EndTimer - 40)
@@ -277,6 +287,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 				Timer = 1;
 				MiscData = 0;
+
+				doDamage = true;
 			}
 		}
 		else if (Timer >= 1)
@@ -322,6 +334,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 						index = 0;
 						swingAround = 0;
 						SetState(DevourerState.ReturnToIdle);
+
+						doDamage = false;
 					}
 				}
 			}
@@ -372,13 +386,13 @@ public sealed partial class SunDevourerNPC : ModNPC
 			{
 				MiscData = 0;
 
-				if (NightStage)
+				if (!NightStage)
 				{
 					SetState(Main.rand.NextBool() ? DevourerState.BallLightning : DevourerState.Firefall);
 
 					if (!NightStage && ConstantTimer > 60 * 20)
 					{
-						SetState(DevourerState.FlameAdds);
+						SetState(DevourerState.LightningAdds);
 						ConstantTimer = 0;
 					}
 				}

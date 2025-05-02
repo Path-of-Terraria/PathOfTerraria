@@ -20,7 +20,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		ReturnToIdle,
 		Firefall,
 		BallLightning,
-		FlameAdds,
+		LightningAdds,
 		AbsorbSun,
 		Godrays,
 	}
@@ -59,6 +59,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	private Vector2 addedPos;
 	private int glassCount = -1;
 	private int maxGlassCount;
+	private bool doDamage = false;
 
 	public override void SetStaticDefaults()
 	{
@@ -125,6 +126,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 	{
 		scale = 1.5f;
 		return null;
+	}
+
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot)
+	{
+		return doDamage;
 	}
 
 	private void ApplyFocus(int duration)

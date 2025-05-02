@@ -17,6 +17,31 @@ internal class WormLightning : ModNPC
 			NPC.Size = new Vector2(22);
 			NPC.damage = 30;
 		}
+
+		public override Color? GetAlpha(Color drawColor)
+		{
+			return Color.White;
+		}
+
+		public override void AI()
+		{
+			base.AI();
+
+			if (!Main.rand.NextBool(55))
+			{
+				return;
+			}
+
+			var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Electric);
+			dust.velocity *= 2f;
+			dust.noGravity = true;
+		}
+
+		public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+		{
+			DrawSelf(NPC, spriteBatch, screenPos);
+			return false;
+		}
 	}
 
 	internal class WormLightning_Tail : WormLightning_Body
@@ -65,6 +90,15 @@ internal class WormLightning : ModNPC
 
 	public override void AI()
 	{
+		const float MaxSpeed = 13;
+
+		if (Main.rand.NextBool(55))
+		{
+			var dust = Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.Electric);
+			dust.velocity *= 2f;
+			dust.noGravity = true;
+		}
+
 		if (!_spawnedSegments && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			WormSegment.SpawnWhole<WormLightning_Body, WormLightning_Tail>(NPC.GetSource_FromAI(), NPC, 24, 12);
@@ -81,71 +115,96 @@ internal class WormLightning : ModNPC
 
 			NPC.velocity += NPC.DirectionTo(target.Center) * 0.4f;
 
-			if (NPC.velocity.LengthSquared() > 12 * 12)
+			if (NPC.velocity.LengthSquared() > MaxSpeed * MaxSpeed)
 			{
-				NPC.velocity = Vector2.Normalize(NPC.velocity) * 12;
+				NPC.velocity = Vector2.Normalize(NPC.velocity) * MaxSpeed;
+			}
+
+			// Aliasing locally as both of these are already used for TargetGlass, but State == 0 doesn't use TargetGlass
+			ref float maxJerkTimer = ref NPC.ai[1];
+			ref float jerkTime = ref GlassBroken;
+
+			if (jerkTime++ > maxJerkTimer)
+			{
+				jerkTime = 0;
+				maxJerkTimer = Main.rand.NextFloat(25, 90);
+				NPC.velocity = NPC.velocity.RotatedBy(Main.rand.NextFloat(0.2f, 0.4f) * (Main.rand.NextBool() ? 1 : -1));
+				NPC.netUpdate = true;
 			}
 		}
-		else if (State == 1)
-		{
-			NPC.dontTakeDamage = true;
-			NPC.velocity += NPC.DirectionTo(TargetGlass).RotatedByRandom(0.2f) * 1f;
+		//else if (State == 1)
+		//{
+		//	NPC.dontTakeDamage = true;
+		//	NPC.velocity += NPC.DirectionTo(TargetGlass).RotatedByRandom(0.2f) * 1.2f;
 
-			if (NPC.velocity.LengthSquared() > 12 * 12)
-			{
-				NPC.velocity = Vector2.Normalize(NPC.velocity) * 12;
-			}
+		//	if (NPC.velocity.LengthSquared() > MaxSpeed * MaxSpeed)
+		//	{
+		//		NPC.velocity = Vector2.Normalize(NPC.velocity) * MaxSpeed;
+		//	}
 
-			CheckResetGlassPosition();
+		//	NPC.velocity *= 0.99f;
 
-			Point tilePos = (NPC.Center - new Vector2(12, 0)).ToTileCoordinates();
-			Tile tile = Main.tile[tilePos];
-			bool brokeGlass = false;
+		//	CheckResetGlassPosition();
 
-			if (tile.HasTile && tile.TileType == TileID.Glass)
-			{
-				WorldGen.KillTile(tilePos.X, tilePos.Y, false, false, true);
-				GlassBroken++;
-				brokeGlass = true;
-			}
+		//	Point tilePos = (NPC.Center - new Vector2(12, 0)).ToTileCoordinates();
+		//	Tile tile = Main.tile[tilePos];
+		//	bool brokeGlass = false;
+
+		//	if (tile.HasTile && tile.TileType == TileID.Glass)
+		//	{
+		//		WorldGen.KillTile(tilePos.X, tilePos.Y, false, false, true);
+		//		GlassBroken++;
+		//		brokeGlass = true;
+		//	}
 			
-			tilePos = (NPC.Center + new Vector2(12, 0)).ToTileCoordinates();
-			tile = Main.tile[tilePos];
+		//	tilePos = (NPC.Center + new Vector2(12, 0)).ToTileCoordinates();
+		//	tile = Main.tile[tilePos];
 
-			if (tile.HasTile && tile.TileType == TileID.Glass)
-			{
-				WorldGen.KillTile(tilePos.X, tilePos.Y, false, false, true);
-				GlassBroken++;
-				brokeGlass = true;
-			}
+		//	if (tile.HasTile && tile.TileType == TileID.Glass)
+		//	{
+		//		WorldGen.KillTile(tilePos.X, tilePos.Y, false, false, true);
+		//		GlassBroken++;
+		//		brokeGlass = true;
+		//	}
 
-			if (brokeGlass)
-			{
-				TargetGlass = SunDevourerNPC.FindGlass(NPC.Center, 120, 80);
+		//	if (brokeGlass)
+		//	{
+		//		TargetGlass = SunDevourerNPC.FindGlass(NPC.Center, 120, 80);
 
-				if (GlassBroken >= 4)
-				{
-					State = 0;
-					NPC.velocity = Vector2.Zero;
-				}
-			}
-		}
-	}
-
-	private void CheckResetGlassPosition()
-	{
-		Tile tile = Main.tile[TargetGlass.ToTileCoordinates16()];
-
-		if (!tile.HasTile || tile.TileType != TileID.Glass)
-		{
-			TargetGlass = SunDevourerNPC.FindGlass(TargetGlass, 300, 120);
-		}
+		//		if (GlassBroken >= 6)
+		//		{
+		//			State = 0;
+		//			TargetGlass = Vector2.Zero;
+		//			NPC.velocity = Vector2.Zero;
+		//		}
+		//	}
+		//}
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
-		Texture2D value = TextureAssets.Npc[Type].Value;
-		spriteBatch.Draw(value, NPC.Center - screenPos, null, Color.White, NPC.rotation, value.Size() * new Vector2(1f, 0.5f), 1f, SpriteEffects.None, 0);
+		DrawSelf(NPC, spriteBatch, screenPos);
 		return false;
+	}
+
+	private static void DrawSelf(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos)
+	{
+		Texture2D value = TextureAssets.Npc[npc.type].Value;
+
+		for (int i = 0; i < 3; ++i)
+		{
+			float scale = 0.6f + (i + 1) * 0.3f;
+			float lerpFactor = MathF.Pow(MathF.Sin((float)Main.timeForVisualEffects * 0.1f + i + npc.whoAmI * 2.5f), 2);
+			Color color = GetElectricColor(lerpFactor) * (1 - i * 0.4f);
+			int frame = (int)((Main.timeForVisualEffects * 0.25f + i) % 3);
+			Rectangle src = new(0, 26 * frame, 22, 24);
+			Vector2 position = npc.Center - screenPos + Main.rand.NextVector2Circular(i * 3, i * 3);
+			spriteBatch.Draw(value, position, src, color, npc.rotation, src.Size() * new Vector2(0.5f, 0.5f), scale, SpriteEffects.None, 0);
+		}
+	}
+
+	private static Color GetElectricColor(float lerpFactor)
+	{
+		return Color.Lerp(Color.Lerp(new Color(160, 255, 255), Color.White, lerpFactor), Color.Lerp(Color.White, Color.Yellow with { B = 190 }, lerpFactor), lerpFactor);
 	}
 }
