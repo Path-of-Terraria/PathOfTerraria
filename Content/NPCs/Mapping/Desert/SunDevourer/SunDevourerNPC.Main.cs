@@ -75,7 +75,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	{
 		base.SetDefaults();
 
-		NPC.Size = new Vector2(80);
+		NPC.Size = new Vector2(120, 80);
 		NPC.noTileCollide = true;
 		NPC.lavaImmune = true;
 		NPC.noGravity = true;

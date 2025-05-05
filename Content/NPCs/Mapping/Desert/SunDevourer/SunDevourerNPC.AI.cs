@@ -208,7 +208,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void LightningAdds()
 	{
-		const int EndTimer = 300;
+		const int EndTimer = 380;
 
 		Timer++;
 

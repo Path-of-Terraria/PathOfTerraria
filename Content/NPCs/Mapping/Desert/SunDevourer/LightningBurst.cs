@@ -64,6 +64,7 @@ public sealed class LightningBurst : ModProjectile
 	{
 		Projectile.timeLeft++;
 		Projectile.velocity = Projectile.DirectionTo(TargetGlass) * 8;
+		Projectile.rotation += 0.1f;
 
 		CheckResetGlassPosition();
 
@@ -111,19 +112,27 @@ public sealed class LightningBurst : ModProjectile
 	{
 		lightColor = new Color(235, 97, 52, 0);
 
-		DrawProjectile(in lightColor);
+		for (int i = 0; i < 3; ++i) 
+		{
+			lightColor = new Color(235, 97, 52, 0) * ((i + 1) / 3f + Main.rand.NextFloat(0.1f));
+			float scale = (i + 1) / 3f;
+			float rotation = i % 2 == 0 ? -1 : 1;
+
+			DrawProjectile(in lightColor, in scale, in rotation);
+		}
 
 		return false;
 	}
 
-	private void DrawProjectile(in Color lightColor)
+	private void DrawProjectile(in Color lightColor, in float scale, in float rotation)
 	{
 		Texture2D texture = TextureAssets.Projectile[Type].Value;
 		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
 		Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
 		Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
 		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, effects);
+		float rot = Projectile.rotation * rotation;
+		
+		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), rot, origin, Projectile.scale * scale, effects);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Worms;
 using ReLogic.Content;
 using Terraria.GameContent;
@@ -15,7 +16,7 @@ internal class WormLightning : ModNPC
 		public override void Defaults()
 		{
 			NPC.Size = new Vector2(22);
-			NPC.damage = 30;
+			NPC.damage = 60;
 		}
 
 		public override Color? GetAlpha(Color drawColor)
@@ -41,6 +42,11 @@ internal class WormLightning : ModNPC
 		{
 			DrawSelf(NPC, spriteBatch, screenPos);
 			return false;
+		}
+
+		public override bool? CanBeHitByProjectile(Projectile projectile)
+		{
+			return projectile.type != ProjectileID.SandBallFalling ? null : false;
 		}
 	}
 
@@ -75,12 +81,17 @@ internal class WormLightning : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.Size = new Vector2(22);
-		NPC.lifeMax = 600;
-		NPC.damage = 30;
+		NPC.lifeMax = 100;
+		NPC.damage = 60;
 		NPC.aiStyle = -1;
 		NPC.noGravity = true;
 		NPC.knockBackResist = 0;
 		NPC.noTileCollide = true;
+	}
+
+	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+	{
+		NPC.lifeMax = ModeUtils.ByMode(60, 100, 150, 250);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -132,53 +143,11 @@ internal class WormLightning : ModNPC
 				NPC.netUpdate = true;
 			}
 		}
-		//else if (State == 1)
-		//{
-		//	NPC.dontTakeDamage = true;
-		//	NPC.velocity += NPC.DirectionTo(TargetGlass).RotatedByRandom(0.2f) * 1.2f;
+	}
 
-		//	if (NPC.velocity.LengthSquared() > MaxSpeed * MaxSpeed)
-		//	{
-		//		NPC.velocity = Vector2.Normalize(NPC.velocity) * MaxSpeed;
-		//	}
-
-		//	NPC.velocity *= 0.99f;
-
-		//	CheckResetGlassPosition();
-
-		//	Point tilePos = (NPC.Center - new Vector2(12, 0)).ToTileCoordinates();
-		//	Tile tile = Main.tile[tilePos];
-		//	bool brokeGlass = false;
-
-		//	if (tile.HasTile && tile.TileType == TileID.Glass)
-		//	{
-		//		WorldGen.KillTile(tilePos.X, tilePos.Y, false, false, true);
-		//		GlassBroken++;
-		//		brokeGlass = true;
-		//	}
-			
-		//	tilePos = (NPC.Center + new Vector2(12, 0)).ToTileCoordinates();
-		//	tile = Main.tile[tilePos];
-
-		//	if (tile.HasTile && tile.TileType == TileID.Glass)
-		//	{
-		//		WorldGen.KillTile(tilePos.X, tilePos.Y, false, false, true);
-		//		GlassBroken++;
-		//		brokeGlass = true;
-		//	}
-
-		//	if (brokeGlass)
-		//	{
-		//		TargetGlass = SunDevourerNPC.FindGlass(NPC.Center, 120, 80);
-
-		//		if (GlassBroken >= 6)
-		//		{
-		//			State = 0;
-		//			TargetGlass = Vector2.Zero;
-		//			NPC.velocity = Vector2.Zero;
-		//		}
-		//	}
-		//}
+	public override bool? CanBeHitByProjectile(Projectile projectile)
+	{
+		return projectile.type != ProjectileID.SandBallFalling ? null : false;
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

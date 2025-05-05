@@ -800,7 +800,7 @@ internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 			if (!Sandstorm.Happening)
 			{
 				Sandstorm.StartSandstorm();
-				Main.windSpeedTarget = Main.rand.NextFloat(1, 2);
+				Main.windSpeedTarget = Main.rand.NextFloat(1, 2) * (LeftSpawn ? -1 : 1);
 			}
 			else
 			{
