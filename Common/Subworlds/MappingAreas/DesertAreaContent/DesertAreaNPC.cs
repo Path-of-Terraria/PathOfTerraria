@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Content.NPCs.Mapping.Desert;
+using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -17,8 +18,13 @@ internal class DesertAreaNPC : GlobalNPC
 
 		pool.Clear();
 
+		if (DesertArea.ActiveDevourer())
+		{
+			return;
+		}
+
 		pool[ModContent.NPCType<HauntedHead>()] = 0.5f;
-		pool[ModContent.NPCType<ScarabSwarmController>()] = 0.4f;
+		pool[ModContent.NPCType<ScarabSwarmController>()] = 0.3f;
 		pool[NPCID.Mummy] = 1f;
 		pool[NPCID.SandShark] = 0.1f;
 		pool[NPCID.DesertGhoul] = 0.9f;

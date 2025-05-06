@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 public sealed class BallLightning : ModProjectile
 {
-	public const int LifeTime = 40 * 15;
+	public const int LifeTime = 60 * 8;
 
 	private bool IsSmall => Projectile.ai[0] == 1;
 
@@ -70,11 +70,11 @@ public sealed class BallLightning : ModProjectile
 			return;
 		}
 
-		const float MaxSpeed = 11;
+		const float MaxSpeed = 10;
 
 		if (!IsSmall)
 		{
-			Projectile.velocity += Projectile.DirectionTo(Player.Center) * 0.5f;
+			Projectile.velocity += Projectile.DirectionTo(Player.Center) * 0.4f;
 
 			if (Projectile.velocity.LengthSquared() > MaxSpeed * MaxSpeed)
 			{

@@ -1,4 +1,5 @@
 ﻿using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff.SunsoulStaff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 using PathOfTerraria.Content.Projectiles.Utility;
@@ -25,7 +26,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		Godrays,
 	}
 
-	protected static Asset<Texture2D> MaskTexture;
+	private static Asset<Texture2D> MaskTexture;
 
 	public bool NightStage { get; set; }
 
@@ -90,6 +91,13 @@ public sealed partial class SunDevourerNPC : ModNPC
 		NPC.npcSlots = 15;
 		NPC.dontTakeDamage = true;
 		NPC.BossBar = ModContent.GetInstance<DevourerBossBar>();
+	}
+
+	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+	{
+		NPC.lifeMax = ModeUtils.ByMode(8000, 12000, 17000, 25000);
+		NPC.defense = ModeUtils.ByMode(12, 20, 25, 40);
+		NPC.damage = ModeUtils.ByMode(60, 90, 120, 170);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

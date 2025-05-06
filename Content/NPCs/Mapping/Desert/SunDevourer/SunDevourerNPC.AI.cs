@@ -142,11 +142,13 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void BallLightningAI()
 	{
+		const float StartTime = 90;
+
 		Timer++;
 
 		ref float ballSlot = ref AdditionalData;
 
-		if (Timer == 1 && Main.netMode != NetmodeID.MultiplayerClient)
+		if (Timer == StartTime && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			var vel = new Vector2(NPC.direction * 4, 0);
 			int type = ModContent.ProjectileType<BallLightning>();
@@ -160,12 +162,15 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		Projectile ball = Main.projectile[(int)ballSlot];
 
-		if (Timer < 20)
+		if (Timer < StartTime)
 		{
 			NPC.velocity *= 0.95f;
+
+			Vector2 offset = Main.rand.NextVector2Circular(60, 40);
+			Dust.NewDustPerfect(NPC.Center + offset, DustID.Electric, Vector2.Normalize(offset) * Main.rand.NextFloat(1, 5) * (Timer / StartTime));
 		}
 
-		if (Timer > 20)
+		if (Timer > StartTime)
 		{
 			ref float subTimer = ref MiscData;
 			subTimer++;
@@ -190,7 +195,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 			}
 		}
 
-		float exitTime = NPC.life < NPC.lifeMax * 0.67f ? BallLightning.LifeTime * 0.7f : BallLightning.LifeTime;
+		float exitTime = (NPC.life < NPC.lifeMax * 0.67f ? BallLightning.LifeTime * 0.8f : BallLightning.LifeTime) + StartTime;
 		
 		if (Timer > exitTime - 30)
 		{
@@ -233,7 +238,6 @@ public sealed partial class SunDevourerNPC : ModNPC
 			Vector2 pos = NPC.Center + new Vector2(Main.rand.Next(-500, 500), Main.rand.Next(1200, 1400));
 			Vector2 glassPos = FindGlass(IdleSpot - new Vector2(0, 600));
 			Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<LightningBurst>(), 50, 4, Main.myPlayer, 0, glassPos.X, glassPos.Y);
-			//NPC.NewNPC(NPC.GetSource_FromAI(), (int)pos.X, (int)pos.Y, ModContent.NPCType<WormLightning>(), 0, 1, glassPos.X, glassPos.Y);
 		}
 
 		if (Timer > EndTimer - 40)

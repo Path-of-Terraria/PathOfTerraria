@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.WorldBuilding;
-using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds;
 

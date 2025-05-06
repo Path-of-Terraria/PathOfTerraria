@@ -44,6 +44,16 @@ internal class WormLightning : ModNPC
 			return false;
 		}
 
+		public override void HitEffect(NPC.HitInfo hit)
+		{
+			int reps = NPC.life < 0 ? 8 : 2;
+
+			for (int i = 0; i < reps; ++i)
+			{
+				Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Electric, NPC.velocity.X, NPC.velocity.X);
+			}
+		}
+
 		public override bool? CanBeHitByProjectile(Projectile projectile)
 		{
 			return projectile.type != ProjectileID.SandBallFalling ? null : false;
@@ -142,6 +152,16 @@ internal class WormLightning : ModNPC
 				NPC.velocity = NPC.velocity.RotatedBy(Main.rand.NextFloat(0.2f, 0.4f) * (Main.rand.NextBool() ? 1 : -1));
 				NPC.netUpdate = true;
 			}
+		}
+	}
+
+	public override void HitEffect(NPC.HitInfo hit)
+	{
+		int reps = NPC.life < 0 ? 12 : 3;
+
+		for (int i = 0; i < reps; ++i)
+		{
+			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Electric, NPC.velocity.X, NPC.velocity.X);
 		}
 	}
 

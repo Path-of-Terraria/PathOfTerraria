@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
-using Terraria.GameContent;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Staff.SunsoulStaff;
@@ -13,8 +12,8 @@ internal class SunsoulStaffItem : Staff
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 1f;
-		staticData.MinDropItemLevel = 17;
+		staticData.DropChance = null;
+		staticData.IsUnique = true;
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 	}
 
@@ -23,8 +22,28 @@ internal class SunsoulStaffItem : Staff
 		base.SetDefaults();
 
 		Item.shoot = ModContent.ProjectileType<SunsoulHead>();
-		Item.damage = 120;
+		Item.damage = 72;
 		Item.knockBack = 1;
+	}
+
+	public override void HoldItem(Player player)
+	{
+		if (Main.myPlayer == player.whoAmI && !player.GetModPlayer<AltUsePlayer>().OnCooldown && Main.mouseRight && !player.mouseInterface)
+		{
+			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(35 * 60, 15 * 60);
+			int damage = (int)(Item.damage * 1.5f);
+			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<SunsoulSummon>(), damage, 0, player.whoAmI);
+
+			for (int i = 0; i < 20; ++i)
+			{
+				Dust.NewDustPerfect(player.Center, DustID.Torch, Main.rand.NextVector2Circular(3, 3));
+			}
+		}
+	}
+
+	public override bool AltFunctionUse(Player player)
+	{
+		return false;
 	}
 
 	public override bool CanUseItem(Player player)
@@ -34,14 +53,9 @@ internal class SunsoulStaffItem : Staff
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (player.altFunctionUse == 2)
-		{
-			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime, AltActiveTime);
-
-			Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<SunsoulSummon>(), 0, 0, player.whoAmI);
-			return false;
-		}
-
+		// Force-channel because the held staff breaks without it for some reason
+		// Also, using less apt itemless overload since the one that takes item doesn't work
+		player.StartChanneling();
 		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<StaffHeldProjectile>(), 0, 0, player.whoAmI, Item.type);
 		return true;
 	}

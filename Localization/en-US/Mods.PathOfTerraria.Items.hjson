@@ -1139,7 +1139,12 @@ WormLightningBannerItem.DisplayName: Worm Lightning Banner
 SunsoulStaffItem: {
 	DisplayName: Sunsoul Staff
 	Tooltip: The remaining strength of the sun lies dormant
-	AltUseDescription: Does something fancy woah yahoo ayaya
+	AltUseDescription:
+		'''
+		Right click to summon a sun sprite
+		The sun sprite bounces between you and your mouse
+		You can still use the main staff while the sprite is active
+		'''
 }
 
 AugmentationOrb: {

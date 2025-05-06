@@ -47,7 +47,7 @@ internal class SunsoulHead : StaffProjectile
 			_headTimer = 0;
 
 			Vector2 vel = Projectile.velocity.RotatedByRandom(0.2f);
-			int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center, vel, Type, Projectile.damage, 0, Projectile.owner);
+			int proj = Projectile.NewProjectile(Projectile.GetSource_FromAI(), Owner.Center - new Vector2(0, 60), vel, Type, Projectile.damage, 0, Projectile.owner);
 			Main.projectile[proj].scale = Main.rand.NextFloat(0.8f, 0.95f);
 			var head = Main.projectile[proj].ModProjectile as SunsoulHead;
 			head._nextHead = 5;

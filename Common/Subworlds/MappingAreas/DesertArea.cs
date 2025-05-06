@@ -9,6 +9,7 @@ using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Generation;
@@ -28,6 +29,7 @@ internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 	private static bool LeftSpawn = false;
 	private static Point16 BossSpawnLocation = Point16.Zero;
 	private static int SandstormTimer = 0;
+	private static bool SetSpawn = false;
 
 	public override int Width => 2600 + 150 * Main.rand.Next(3);
 	public override int Height => MapHeight;
@@ -767,12 +769,24 @@ internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 
 			Main.npc[npc].localAI[3] = y + 20 * 16;
 
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+			}
+		}
+		else
+		{
+			if (SetSpawn || !ActiveDevourer())
+			{
+				return;
+			}
+
+			SetSpawn = true;
 			Main.spawnTileX = BossSpawnLocation.X;
 			Main.spawnTileY = BossSpawnLocation.Y;
 
 			if (Main.netMode == NetmodeID.Server)
 			{
-				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
 				NetMessage.SendData(MessageID.WorldData, -1, -1, null);
 			}
 		}
@@ -841,5 +855,22 @@ internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 		Main.curMusic = MusicID.Desert;
 		Main.LocalPlayer.ZoneBeach = false;
 		Main.LocalPlayer.ZoneSandstorm = Sandstorm.Happening;
+	}
+
+	public static bool ActiveDevourer()
+	{
+		int bossWho = NPC.FindFirstNPC(ModContent.NPCType<SunDevourerNPC>());
+
+		if (bossWho != -1)
+		{
+			NPC boss = Main.npc[bossWho];
+
+			if (boss.ai[2] > 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

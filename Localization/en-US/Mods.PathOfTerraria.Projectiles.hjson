@@ -55,36 +55,29 @@ RottenboneThrown.DisplayName: Rottenbone
 RottenboneChunks.DisplayName: Rottenbone Chunks
 CarapaceChunk.DisplayName: Carapace Chunk
 ExitPortal.DisplayName: Exit Portal
-FallingSlimeProj.DisplayName: Falling Slime Proj
-SparklingBallProjectile.DisplayName: Sparkling Ball Projectile
+FallingSlimeProj.DisplayName: Falling Slime
+SparklingBallProjectile.DisplayName: Sparkling Ball
 Teleportal.DisplayName: Teleportal
-FallingPusBlock.DisplayName: Falling Pus Block
-VoodooRopeProj.DisplayName: Voodoo Rope Proj
-LightBallProjectile.DisplayName: Light Ball Projectile
-IcicleProjectile.DisplayName: Icicle Projectile
+FallingPusBlock.DisplayName: Falling Pus
+VoodooRopeProj.DisplayName: Voodoo Rope
+LightBallProjectile.DisplayName: Light Ball
+IcicleProjectile.DisplayName: Icicle
 WoodenWandProjectile.DisplayName: Clump of Leaves
 MahoganyWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
 EbonwoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
 ShadewoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
 GemWandProjectile.DisplayName: Gem
-CopperStaffProjectile.DisplayName: Copper Staff Projectile
-CopperStaffHeld.DisplayName: Copper Staff Held
-IronStaffHeld.DisplayName: Iron Staff Held
-IronStaffProjectile.DisplayName: Iron Staff Projectile
-LeadStaffHeld.DisplayName: Lead Staff Held
-LeadStaffProjectile.DisplayName: Lead Staff Projectile
-SilverStaffHeld.DisplayName: Silver Staff Held
-SilverStaffProjectile.DisplayName: Silver Staff Projectile
-TungstenStaffHeld.DisplayName: Tungsten Staff Held
-TungstenStaffProjectile.DisplayName: Tungsten Staff Projectile
-GoldStaffHeld.DisplayName: Gold Staff Held
-GoldStaffProjectile.DisplayName: Gold Staff Projectile
-PlatinumStaffHeld.DisplayName: Platinum Staff Held
-PlatinumStaffProjectile.DisplayName: Platinum Staff Projectile
-StaffHeldProjectile.DisplayName: Staff Held Projectile
-EoCRitualProj.DisplayName: Eo C Ritual Proj
+CopperStaffProjectile.DisplayName: Amethyst Energy
+IronStaffProjectile.DisplayName: Topaz Energy
+LeadStaffProjectile.DisplayName: Sapphire Energy
+SilverStaffProjectile.DisplayName: Emerald Energy
+TungstenStaffProjectile.DisplayName: Ruby Energy
+GoldStaffProjectile.DisplayName: Diamond Energy
+PlatinumStaffProjectile.DisplayName: "{$GoldStaffProjectile.DisplayName}"
+StaffHeldProjectile.DisplayName: Staff
+EoCRitualProj.DisplayName: Ritual
 EyePortal.DisplayName: Eye Portal
-EoWPortal.DisplayName: Eo W Portal
+EoWPortal.DisplayName: Eater Portal
 CrimsonMaw.DisplayName: Crimson Maw
 
 HornetSummon: {
@@ -97,10 +90,10 @@ HornetSummon: {
 }
 
 QueenBeePortal.DisplayName: Queen Bee Portal
-FallingAshBlock.DisplayName: Falling Ash Block
-GeyserPredictionProjectile.DisplayName: Geyser Prediction Projectile
+FallingAshBlock.DisplayName: Falling Ash
+GeyserPredictionProjectile.DisplayName: Geyser Prediction
 SkeletronPortal.DisplayName: Skeletron Portal
-SkeletronRitualProj.DisplayName: Skeletron Ritual Proj
+SkeletronRitualProj.DisplayName: Skeletron Ritual
 DwarvenGreatswordAltHammer.DisplayName: Dwarven Greathammer
 TinyAlaric.DisplayName: Tiny Alaric
 VoidPearlThrown.DisplayName: Void Pearl Thrown
@@ -154,7 +147,7 @@ LargeRoots.DisplayName: Large Roots
 SawProjectile.DisplayName: Saw
 ConstantLaserProj.DisplayName: Laser
 ExplosiveTurret.DisplayName: Explosive Turret
-PincerProjectile.DisplayName: Pincer Projectile
+PincerProjectile.DisplayName: Pincer
 PrimeRocket.DisplayName: Prime Rocket
 PrimeBomb.DisplayName: Prime Bomb
 LaserClone.DisplayName: Laser Clone
@@ -167,6 +160,6 @@ RestorationAoE.DisplayName: Restoration Shrine
 BallLightning.DisplayName: Ball Lightning
 DevourerFireball.DisplayName: Devourer Fireball
 SunsoulHead.DisplayName: Sunsoul
-SunsoulSummon.DisplayName: Sunsoul Summon
+SunsoulSummon.DisplayName: Sunsoul Star
 Lightray.DisplayName: Lightray
 LightningBurst.DisplayName: Lightning Burst

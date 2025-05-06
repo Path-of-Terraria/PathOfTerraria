@@ -19,8 +19,8 @@ public sealed class LightningBurst : ModProjectile
 		Projectile.friendly = false;
 		Projectile.hostile = true;
 		Projectile.tileCollide = false;
-		Projectile.width = 80;
-		Projectile.height = 80;
+		Projectile.width = 34;
+		Projectile.height = 34;
 		Projectile.timeLeft = 2;
 	}
 
@@ -46,9 +46,9 @@ public sealed class LightningBurst : ModProjectile
 
 		Point16 center = Projectile.Center.ToTileCoordinates16();
 
-		for (int i = center.X - 1; i < center.X + 1; ++i)
+		for (int i = center.X - 2; i < center.X + 2; ++i)
 		{
-			for (int j = center.Y - 1; j < center.Y + 1; ++j)
+			for (int j = center.Y - 2; j < center.Y + 2; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 
@@ -63,7 +63,7 @@ public sealed class LightningBurst : ModProjectile
 	public override void AI()
 	{
 		Projectile.timeLeft++;
-		Projectile.velocity = Projectile.DirectionTo(TargetGlass) * 8;
+		Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(TargetGlass) * 10, 0.2f);
 		Projectile.rotation += 0.1f;
 
 		CheckResetGlassPosition();
@@ -110,12 +110,10 @@ public sealed class LightningBurst : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		lightColor = new Color(235, 97, 52, 0);
-
 		for (int i = 0; i < 3; ++i) 
 		{
-			lightColor = new Color(235, 97, 52, 0) * ((i + 1) / 3f + Main.rand.NextFloat(0.1f));
-			float scale = (i + 1) / 3f;
+			lightColor = new Color(156, 246, 255, 0) * ((i + 1) / 3f);
+			float scale = (i + 1.2f) / 3f + Main.rand.NextFloat(0.3f);
 			float rotation = i % 2 == 0 ? -1 : 1;
 
 			DrawProjectile(in lightColor, in scale, in rotation);

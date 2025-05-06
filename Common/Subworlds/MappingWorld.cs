@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
@@ -15,7 +14,7 @@ namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
 /// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.<br/>
-/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification.
+/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification, and enables <see cref="Systems.ModPlayers.BossDomainPlayer"/>'s life system.
 /// </summary>
 public abstract class MappingWorld : Subworld
 {
