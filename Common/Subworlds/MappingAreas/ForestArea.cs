@@ -34,6 +34,7 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 
 	private static bool LeftSpawn = false;
 	private static Point BossSpawnLocation = Point.Zero;
+	private static bool HasShrine = false;
 
 	public override int Width => 1200 + 120 * Main.rand.Next(10);
 	public override int Height => 290;
@@ -84,6 +85,7 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 
 		HashSet<StructureKind> structures = [];
 
+		HasShrine = WorldGen.genRand.NextBool(5);
 		int arenaX = LeftSpawn ? Main.maxTilesX - 160 : 160;
 		TryPlaceStructureAt(structures, arenaX, FloorY, StructureKind.Arena, 1, new Vector2(0.5f, 1), 45);
 		BossSpawnLocation = new Point((arenaX - 2) * 16, (FloorY + 38) * 16);
@@ -155,12 +157,11 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 	private static void TryPlaceStructureAt(HashSet<StructureKind> structures, int x, int y, StructureKind type, int max, Vector2 origin, int offsetY = 0)
 	{
 		string path = $"Assets/Structures/MapAreas/ForestArea/{type}_{WorldGen.genRand.Next(max)}";
-		bool isShrine = false;
 
-		if (WorldGen.genRand.NextBool(5) && type != StructureKind.Arena && type != StructureKind.Cave)
+		if (HasShrine && WorldGen.genRand.NextBool(5) && type != StructureKind.Arena && type != StructureKind.Cave)
 		{
 			path = $"Assets/Structures/MapAreas/ForestArea/SpecialShrine_{WorldGen.genRand.Next(5)}";
-			isShrine = true;
+			HasShrine = false;
 		}
 
 		Point16 size = StructureTools.GetSize(path);
