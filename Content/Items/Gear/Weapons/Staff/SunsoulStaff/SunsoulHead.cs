@@ -109,6 +109,7 @@ internal class SunsoulHead : StaffProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
+		lightColor = Color.White;
 
 		for (int k = 0; k < Projectile.oldPos.Length; k++)
 		{

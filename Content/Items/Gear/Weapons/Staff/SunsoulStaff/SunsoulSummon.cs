@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.World.Generation;
+using System.Collections.Generic;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -33,6 +34,12 @@ public class SunsoulSummon : ModProjectile
 		Projectile.hostile = false;
 		Projectile.penetrate = -1;
 		Projectile.Opacity = 0f;
+		Projectile.hide = true;
+	}
+
+	public override void DrawBehind(int index, List<int> bNaT, List<int> bN, List<int> bP, List<int> overPlayers, List<int> oWUI)
+	{
+		overPlayers.Add(index);
 	}
 
 	public override void AI()

@@ -10,6 +10,8 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 public sealed partial class SunDevourerNPC : ModNPC
 {
+	private const int GodrayHideTime = 80;
+
 	public override void AI()
 	{
 		base.AI();
@@ -63,7 +65,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		Timer++;
 		NPC.velocity = Vector2.Zero;
 
-		if (Timer < 120)
+		if (Timer < GodrayHideTime)
 		{
 			NPC.Opacity = 1f;
 
@@ -73,7 +75,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 				Dust.NewDustPerfect(dustPos, DustID.AncientLight, new Vector2(0, -6).RotatedByRandom(0.1f));
 			}
 		}
-		else if (Timer == 120)
+		else if (Timer == GodrayHideTime)
 		{
 			if (Main.netMode != NetmodeID.Server)
 			{
@@ -118,10 +120,10 @@ public sealed partial class SunDevourerNPC : ModNPC
 			{
 				var position = new Vector2(Target.Center.X + Main.rand.Next(-20, 20), FloorY);
 				int damage = ModeUtils.ProjectileDamage(80, 110, 150);
-				Projectile.NewProjectile(NPC.GetSource_FromAI(), position, new Vector2(0, -18), ModContent.ProjectileType<Lightray>(), damage, 0, Main.myPlayer);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), position, new Vector2(0, -18), ModContent.ProjectileType<Lightray>(), damage, 0, Main.myPlayer, 0, FloorY);
 			}
 		}
-		else if (Timer > 400)
+		else if (Timer > 380)
 		{
 			SetState(DevourerState.ReturnToIdle);
 		}

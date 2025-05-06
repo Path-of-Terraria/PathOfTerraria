@@ -9,6 +9,7 @@ public sealed class Lightray : ModProjectile
 	public const int LifeTime = 60;
 
 	public ref float Timer => ref Projectile.ai[0];
+	public ref float FloorY => ref Projectile.ai[1];
 	
 	public override void SetDefaults()
 	{
@@ -43,6 +44,11 @@ public sealed class Lightray : ModProjectile
 		if (Timer > LifeTime - 10)
 		{
 			Projectile.Opacity = 1 - (Timer - (LifeTime - 10)) / 10f;
+		}
+
+		if (Projectile.timeLeft == 5 && Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(3) && NPC.CountNPCS(ModContent.NPCType<WormLightning>()) < 3)
+		{ 
+			NPC.NewNPC(Projectile.GetSource_FromAI(), (int)Projectile.Center.X, (int)FloorY, ModContent.NPCType<WormLightning>());
 		}
 	}
 

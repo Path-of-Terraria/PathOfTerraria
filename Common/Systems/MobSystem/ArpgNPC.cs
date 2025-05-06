@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -99,7 +100,7 @@ internal class ArpgNPC : GlobalNPC
 	{
 		Affixes.ForEach(a => a.OnKill(npc));
 
-		if (npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss)
+		if (npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss || NoGearDropNPC.NoDrops(npc))
 		{
 			return;
 		}

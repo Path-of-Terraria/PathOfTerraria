@@ -67,14 +67,8 @@ internal class WormLightning : ModNPC
 	internal static Asset<Texture2D>[] Textures;
 
 	private ref float State => ref NPC.ai[0];
-
-	private Vector2 TargetGlass
-	{
-		get => new(NPC.ai[1], NPC.ai[2]);
-		set => (NPC.ai[1], NPC.ai[2]) = (value.X, value.Y);
-	}
-
-	private ref float GlassBroken => ref NPC.ai[3];
+	private ref float MaxJerkTimer => ref NPC.ai[1];
+	private ref float JerkTimer => ref NPC.ai[2];
 
 	private bool _spawnedSegments = false;
 
@@ -101,7 +95,7 @@ internal class WormLightning : ModNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(60, 100, 150, 250);
+		NPC.lifeMax = ModeUtils.ByMode(120, 200, 300, 600);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -141,14 +135,10 @@ internal class WormLightning : ModNPC
 				NPC.velocity = Vector2.Normalize(NPC.velocity) * MaxSpeed;
 			}
 
-			// Aliasing locally as both of these are already used for TargetGlass, but State == 0 doesn't use TargetGlass
-			ref float maxJerkTimer = ref NPC.ai[1];
-			ref float jerkTime = ref GlassBroken;
-
-			if (jerkTime++ > maxJerkTimer)
+			if (JerkTimer++ > MaxJerkTimer)
 			{
-				jerkTime = 0;
-				maxJerkTimer = Main.rand.NextFloat(25, 90);
+				JerkTimer = 0;
+				MaxJerkTimer = Main.rand.NextFloat(25, 90);
 				NPC.velocity = NPC.velocity.RotatedBy(Main.rand.NextFloat(0.2f, 0.4f) * (Main.rand.NextBool() ? 1 : -1));
 				NPC.netUpdate = true;
 			}

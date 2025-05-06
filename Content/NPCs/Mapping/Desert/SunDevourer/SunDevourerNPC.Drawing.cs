@@ -19,9 +19,9 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
 
-		if (State == DevourerState.Godrays && Timer <= 120f)
+		if (State == DevourerState.Godrays && Timer <= GodrayHideTime)
 		{
-			Color maskColor = Color.White * (Timer / 120f);
+			Color maskColor = Color.White * (Timer / GodrayHideTime);
 			Main.EntitySpriteDraw(MaskTexture.Value, position, NPC.frame, maskColor, NPC.rotation, origin, NPC.scale, effects);
 		}
 	}

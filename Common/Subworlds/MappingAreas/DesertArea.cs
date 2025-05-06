@@ -673,6 +673,7 @@ internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 		Main.worldSurface = FloorY + 30;
 		Main.rockLayer = FloorY + 60;
 
+		SetSpawn = false;
 		LeftSpawn = Main.rand.NextBool(2);
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
 
