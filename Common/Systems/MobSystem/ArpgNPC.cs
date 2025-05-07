@@ -100,7 +100,7 @@ internal class ArpgNPC : GlobalNPC
 	{
 		Affixes.ForEach(a => a.OnKill(npc));
 
-		if (npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss || NoGearDropNPC.NoDrops(npc))
+		if (DropModifierNPC.GetDropRate(npc) < Main.rand.NextFloat() || npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss)
 		{
 			return;
 		}
