@@ -1,7 +1,7 @@
 ﻿using Terraria.GameContent;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 
 public sealed class BallLightning : ModProjectile
 {
@@ -13,7 +13,7 @@ public sealed class BallLightning : ModProjectile
 	///		Gets or sets the index of the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Projectile.ai[1]</c>.
 	/// </summary>
 	public ref float Index => ref Projectile.ai[1];
-	
+
 	/// <summary>
 	///		Gets the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Main.player[(int)Projectile.ai[1]]</c>.
 	/// </summary>

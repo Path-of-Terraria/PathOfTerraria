@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -73,37 +74,10 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		if (Timer > 5 && Timer % 30 == 0)
 		{
-			(int topXStart, int topXEnd) = (-722, 722);
-			(int bottomXStart, int bottomXEnd) = (-1284, 1284);
-			(int yTop, int yBottom) = (-460, 800);
 			int type = ModContent.ProjectileType<SunspotAura>();
-			float x;
-			float y;
+			Vector2 spot = DevourerArenaPositioning.GetPosition(InvalidateIfProjNear) + IdleSpot;
 
-			while (true)
-			{
-				float yFac = Main.rand.NextFloat();
-				float xFac = Main.rand.NextFloat();
-
-				bool succeeded = true;
-				x = MathHelper.Lerp(MathHelper.Lerp(topXStart, topXEnd, xFac), MathHelper.Lerp(bottomXStart, bottomXEnd, xFac), yFac);
-				y = MathHelper.Lerp(yTop, yBottom, yFac);
-
-				foreach (Projectile projectile in Main.ActiveProjectiles)
-				{
-					if (projectile.ModProjectile is SunspotAura aura && aura.Target.DistanceSQ(IdleSpot + new Vector2(x, y)) < 600 * 600)
-					{
-						succeeded = false;
-					}
-				}
-
-				if (succeeded)
-				{
-					break;
-				}
-			}
-			
-			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, 0, 0, Main.myPlayer, IdleSpot.X + x, IdleSpot.Y + y);
+			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, 0, 0, Main.myPlayer, spot.X, spot.Y);
 		}
 
 		if (addedPos == Vector2.Zero || NPC.DistanceSQ(addedPos) < 50 * 50)
@@ -117,6 +91,21 @@ public sealed partial class SunDevourerNPC : ModNPC
 		if (Timer >= 220)
 		{
 			SetState(DevourerState.ReturnToIdle);
+		}
+
+		return;
+
+		bool InvalidateIfProjNear(Vector2 pos)
+		{
+			foreach (Projectile projectile in Main.ActiveProjectiles)
+			{
+				if (projectile.ModProjectile is SunspotAura aura && aura.Target.DistanceSQ(IdleSpot + pos) < 600 * 600)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 	}
 
@@ -169,6 +158,12 @@ public sealed partial class SunDevourerNPC : ModNPC
 		}
 		else if (Timer <= 300)
 		{
+			if (Timer == GodrayHideTime + 5)
+			{
+				Vector2 spot = DevourerArenaPositioning.GetPosition() + IdleSpot;
+				NPC.Center = spot;
+			}
+
 			NPC.Opacity = 0f;
 
 			if (Timer > 240)
@@ -301,7 +296,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 		{
 			Vector2 pos = NPC.Center + new Vector2(Main.rand.Next(-500, 500), Main.rand.Next(1200, 1400));
 			Vector2 glassPos = FindGlass(IdleSpot - new Vector2(0, 600));
-			Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, ModContent.ProjectileType<LightningBurst>(), 50, 4, Main.myPlayer, 0, glassPos.X, glassPos.Y);
+			int type = ModContent.ProjectileType<LightningBurst>();
+			Projectile.NewProjectile(NPC.GetSource_FromAI(), pos, Vector2.Zero, type, 50, 4, Main.myPlayer, 0, glassPos.X, glassPos.Y);
 		}
 
 		if (Timer > EndTimer - 40)
@@ -391,13 +387,20 @@ public sealed partial class SunDevourerNPC : ModNPC
 				{
 					index = 0;
 
-					if (swingAround == 0)
+					if (swingAround == 0) // Start swinging around
 					{
 						bezier = Spline.InterpolateXY([NPC.Center, IdleSpot + new Vector2(0, 500), IdleSpot], 7);
 						Timer = 1;
 						swingAround = 1;
+
+						if (Main.netMode != NetmodeID.MultiplayerClient)
+						{
+							int projDamage = ModeUtils.ProjectileDamage(NPC.damage);
+							int type = ModContent.ProjectileType<SunDevourerDash>();
+							Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, projDamage, 0, Main.myPlayer, 60 * 1.6f, 0, NPC.whoAmI);
+						}
 					}
-					else
+					else // Attack is finished, return to idle
 					{
 						index = 0;
 						swingAround = 0;

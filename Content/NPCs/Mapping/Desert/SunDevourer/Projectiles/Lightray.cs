@@ -2,7 +2,7 @@
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 
 public sealed class Lightray : ModProjectile
 {
@@ -10,7 +10,7 @@ public sealed class Lightray : ModProjectile
 
 	public ref float Timer => ref Projectile.ai[0];
 	public ref float FloorY => ref Projectile.ai[1];
-	
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
@@ -47,7 +47,7 @@ public sealed class Lightray : ModProjectile
 		}
 
 		if (Projectile.timeLeft == 5 && Main.netMode != NetmodeID.MultiplayerClient && Main.rand.NextBool(3) && NPC.CountNPCS(ModContent.NPCType<WormLightning>()) < 3)
-		{ 
+		{
 			NPC.NewNPC(Projectile.GetSource_FromAI(), (int)Projectile.Center.X, (int)FloorY, ModContent.NPCType<WormLightning>());
 		}
 	}
@@ -71,7 +71,7 @@ public sealed class Lightray : ModProjectile
 		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 		Color color = Color.Yellow with { B = 222 } * 0.7f;
 		var scale = new Vector2(Projectile.scale, 15000);
-		
+
 		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(color), Projectile.rotation, origin, scale, effects);
 
 		for (int i = 0; i < 5; ++i)

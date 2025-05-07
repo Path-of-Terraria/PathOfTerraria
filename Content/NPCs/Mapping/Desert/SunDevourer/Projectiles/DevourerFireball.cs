@@ -4,7 +4,7 @@ using Terraria.Graphics;
 using Terraria.Graphics.Shaders;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 
 public sealed class DevourerFireball : ModProjectile
 {
@@ -91,7 +91,7 @@ public sealed class DevourerFireball : ModProjectile
 	public override void AI()
 	{
 		base.AI();
-		
+
 		if (Timer == -1)
 		{
 			Projectile.velocity = Vector2.Zero;

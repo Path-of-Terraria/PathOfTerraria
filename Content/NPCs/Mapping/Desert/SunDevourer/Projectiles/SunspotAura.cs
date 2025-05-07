@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Terraria.GameContent;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 
 public sealed class SunspotAura : ModProjectile
 {
@@ -53,7 +53,7 @@ public sealed class SunspotAura : ModProjectile
 		if (Projectile.timeLeft <= 60)
 		{
 			float factor = Projectile.timeLeft / 60f;
-			Projectile.scale = factor;
+			Projectile.scale = MathF.Min(factor, Projectile.scale);
 			Projectile.Opacity = factor * MaxOpacity;
 		}
 	}
@@ -65,15 +65,11 @@ public sealed class SunspotAura : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		for (int i = 0; i <	1; ++i)
-		{
-			DrawProjectile(in lightColor, 1 - i / 6f);
-		}
-
+		DrawProjectile(in lightColor);
 		return false;
 	}
 
-	private void DrawProjectile(in Color lightColor, float scale)
+	private void DrawProjectile(in Color lightColor)
 	{
 		Texture2D texture = TextureAssets.Projectile[Type].Value;
 		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
@@ -81,7 +77,7 @@ public sealed class SunspotAura : ModProjectile
 		Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
 		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale * scale, effects);
+		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, effects);
 	}
 
 	/// <summary>

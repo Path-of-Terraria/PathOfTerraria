@@ -2,7 +2,7 @@
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 
 public sealed class LightningBurst : ModProjectile
 {
@@ -26,6 +26,8 @@ public sealed class LightningBurst : ModProjectile
 
 	public override void OnKill(int timeLeft)
 	{
+		const int KillDistance = 3;
+
 		if (!WorldGen.InWorld((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16, 20))
 		{
 			return;
@@ -46,9 +48,9 @@ public sealed class LightningBurst : ModProjectile
 
 		Point16 center = Projectile.Center.ToTileCoordinates16();
 
-		for (int i = center.X - 2; i < center.X + 2; ++i)
+		for (int i = center.X - KillDistance; i < center.X + KillDistance; ++i)
 		{
-			for (int j = center.Y - 2; j < center.Y + 2; ++j)
+			for (int j = center.Y - KillDistance; j < center.Y + KillDistance; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 
@@ -110,7 +112,7 @@ public sealed class LightningBurst : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		for (int i = 0; i < 3; ++i) 
+		for (int i = 0; i < 3; ++i)
 		{
 			lightColor = new Color(156, 246, 255, 0) * ((i + 1) / 3f);
 			float scale = (i + 1.2f) / 3f + Main.rand.NextFloat(0.3f);
@@ -130,7 +132,7 @@ public sealed class LightningBurst : ModProjectile
 		Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
 		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 		float rot = Projectile.rotation * rotation;
-		
+
 		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), rot, origin, Projectile.scale * scale, effects);
 	}
 }
