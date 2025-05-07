@@ -1,7 +1,10 @@
 ﻿using NPCUtils;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Worms;
+using PathOfTerraria.Common.Subworlds.MappingAreas;
+using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 using ReLogic.Content;
+using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
@@ -13,6 +16,14 @@ internal class WormLightning : ModNPC
 {
 	internal class WormLightning_Body : WormSegment
 	{
+		public override void SetStaticDefaults()
+		{
+			base.SetStaticDefaults();
+
+			NPCID.Sets.TrailCacheLength[Type] = 2;
+			NPCID.Sets.TrailingMode[Type] = 1;
+		}
+
 		public override void Defaults()
 		{
 			NPC.Size = new Vector2(22);
@@ -27,6 +38,18 @@ internal class WormLightning : ModNPC
 		public override void AI()
 		{
 			base.AI();
+
+			if (!Parent.active)
+			{
+				NPC.active = false;
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					Vector2 vel = NPC.oldPos[0] - NPC.oldPos[1];
+					int type = ModContent.ProjectileType<WormLightningDeathFX>();
+					Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, vel, type, 0, 0, Main.myPlayer, NPC.type, 0, NPC.rotation);
+				}
+			}
 
 			if (!Main.rand.NextBool(55))
 			{
@@ -64,23 +87,11 @@ internal class WormLightning : ModNPC
 	{
 	}
 
-	internal static Asset<Texture2D>[] Textures;
-
 	private ref float State => ref NPC.ai[0];
 	private ref float MaxJerkTimer => ref NPC.ai[1];
 	private ref float JerkTimer => ref NPC.ai[2];
 
 	private bool _spawnedSegments = false;
-
-	public override void SetStaticDefaults()
-	{
-		Textures = 
-		[
-			ModContent.Request<Texture2D>(Texture),
-			ModContent.Request<Texture2D>(Texture + "_Body"),
-			ModContent.Request<Texture2D>(Texture + "_Tail")
-		];
-	}
 
 	public override void SetDefaults()
 	{
@@ -103,6 +114,12 @@ internal class WormLightning : ModNPC
 		bestiaryEntry.AddInfo(this, "Desert");
 	}
 
+	public override bool CheckDead()
+	{
+		SpawnDeathFX();
+		return true;
+	}
+
 	public override void AI()
 	{
 		const float MaxSpeed = 13;
@@ -118,6 +135,13 @@ internal class WormLightning : ModNPC
 		{
 			WormSegment.SpawnWhole<WormLightning_Body, WormLightning_Tail>(NPC.GetSource_FromAI(), NPC, 24, 12);
 			_spawnedSegments = true;
+		}
+
+		if (SubworldSystem.Current is not DesertArea || !NPC.AnyNPCs(ModContent.NPCType<SunDevourerNPC>()))
+		{
+			NPC.active = false;
+			SpawnDeathFX();
+			return;
 		}
 
 		NPC.rotation = NPC.velocity.ToRotation();
@@ -145,6 +169,15 @@ internal class WormLightning : ModNPC
 		}
 	}
 
+	private void SpawnDeathFX()
+	{
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			int type = ModContent.ProjectileType<WormLightningDeathFX>();
+			Projectile.NewProjectile(NPC.GetSource_Death(), NPC.Center, NPC.velocity, type, 0, 0, Main.myPlayer, NPC.type, 0, NPC.rotation);
+		}
+	}
+
 	public override void HitEffect(NPC.HitInfo hit)
 	{
 		int reps = NPC.life < 0 ? 12 : 3;
@@ -166,7 +199,7 @@ internal class WormLightning : ModNPC
 		return false;
 	}
 
-	private static void DrawSelf(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos)
+	public static void DrawSelf(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos)
 	{
 		Texture2D value = TextureAssets.Npc[npc.type].Value;
 
@@ -174,7 +207,7 @@ internal class WormLightning : ModNPC
 		{
 			float scale = 0.6f + (i + 1) * 0.3f;
 			float lerpFactor = MathF.Pow(MathF.Sin((float)Main.timeForVisualEffects * 0.1f + i + npc.whoAmI * 2.5f), 2);
-			Color color = GetElectricColor(lerpFactor) * (1 - i * 0.4f);
+			Color color = GetElectricColor(lerpFactor) * (1 - i * 0.4f) * npc.Opacity;
 			int frame = (int)((Main.timeForVisualEffects * 0.25f + i) % 3);
 			Rectangle src = new(0, 26 * frame, 22, 24);
 			Vector2 position = npc.Center - screenPos + Main.rand.NextVector2Circular(i * 3, i * 3);

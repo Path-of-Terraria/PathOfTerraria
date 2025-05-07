@@ -28,6 +28,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	}
 
 	private static Asset<Texture2D> MaskTexture;
+	private static Asset<Texture2D> ChainTexture;
 
 	public bool NightStage { get; set; }
 
@@ -71,6 +72,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		NPCID.Sets.TrailCacheLength[Type] = 10;
 
 		MaskTexture = ModContent.Request<Texture2D>(Texture + "_Mask");
+		ChainTexture = ModContent.Request<Texture2D>(Texture + "_Chains");
 	}
 
 	public override void SetDefaults()
@@ -96,7 +98,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(8000, 12000, 17000, 25000);
+		NPC.lifeMax = ModeUtils.ByMode(10000, 15000, 19000, 25000);
 		NPC.defense = ModeUtils.ByMode(12, 20, 25, 40);
 		NPC.damage = ModeUtils.ByMode(60, 90, 120, 170);
 	}
@@ -109,6 +111,14 @@ public sealed partial class SunDevourerNPC : ModNPC
 	public override bool CheckActive()
 	{
 		return false;
+	}
+
+	public override void BossHeadSlot(ref int index)
+	{
+		if (NPC.Opacity <= 0.03f)
+		{
+			index = -1;
+		}
 	}
 
 	public override void BossHeadRotation(ref float rotation)

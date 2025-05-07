@@ -376,7 +376,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 			{
 				var vel = new Vector2(Main.rand.NextFloat(-1, 1), Main.rand.NextFloat(2) + 5);
 				int type = ModContent.ProjectileType<DevourerFireball>();
-				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, 80, 0, Main.myPlayer, 0, 0, FloorY);
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, vel, type, ModeUtils.ProjectileDamage(120, 150, 190, 250), 0, Main.myPlayer, 0, 0, FloorY);
 			}
 
 			if (Timer % 15 == 0)
@@ -395,7 +395,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 						if (Main.netMode != NetmodeID.MultiplayerClient)
 						{
-							int projDamage = ModeUtils.ProjectileDamage(NPC.damage);
+							int projDamage = ModeUtils.ProjectileDamage(NPC.damage * 2);
 							int type = ModContent.ProjectileType<SunDevourerDash>();
 							Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, projDamage, 0, Main.myPlayer, 60 * 1.6f, 0, NPC.whoAmI);
 						}
@@ -519,25 +519,58 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void TrappedAI()
 	{
-		bool anyPlayerFar = false;
-
-		foreach (Player player in Main.ActivePlayers)
+		if (Timer == 0)
 		{
-			if (player.DistanceSQ(NPC.Center) > 300 * 300)
+			bool anyPlayerFar = false;
+
+			foreach (Player player in Main.ActivePlayers)
 			{
-				anyPlayerFar = true;
-				break;
+				if (player.DistanceSQ(NPC.Center) > 300 * 300)
+				{
+					anyPlayerFar = true;
+					break;
+				}
+			}
+
+			if (!anyPlayerFar)
+			{
+				Timer = 1;
 			}
 		}
-
-		if (!anyPlayerFar)
+		else
 		{
-			SetState(DevourerState.ReturnToIdle);
+			Timer++;
+			Vector2 position = NPC.Center - Main.screenPosition;
 
-			NPC.dontTakeDamage = false;
-			NPC.boss = true;
-			NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
-			NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true;
+			if (Timer == 30)
+			{
+				DrawOrBreakChains(position + new Vector2(140, 0), position + new Vector2(190, -120), true);
+			}
+			else if (Timer == 80)
+			{
+				DrawOrBreakChains(position - new Vector2(120, -20), position + new Vector2(-160, 140), true);
+			}
+			else if (Timer == 110)
+			{
+				DrawOrBreakChains(position - new Vector2(120, -20), position + new Vector2(-160, -140), true);
+			}
+			else if (Timer == 130)
+			{
+				DrawOrBreakChains(position - new Vector2(20, 0), position + new Vector2(20, -140), true);
+			}
+			else if (Timer == 140)
+			{
+				DrawOrBreakChains(position + new Vector2(00, 30), position + new Vector2(120, 140), true);
+			}
+			else if (Timer > 180)
+			{
+				SetState(DevourerState.ReturnToIdle);
+
+				NPC.dontTakeDamage = false;
+				NPC.boss = true;
+				NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+				NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true;
+			}
 		}
 	}
 
@@ -553,6 +586,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		writer.Write(MiscData);
 		writer.Write(AdditionalData);
+		writer.Write(FloorY);
 		writer.WriteVector2(addedPos);
 	}
 
@@ -562,6 +596,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		MiscData = reader.ReadSingle();
 		AdditionalData = reader.ReadSingle();
+		FloorY = reader.ReadSingle();
 		addedPos = reader.ReadVector2();
 	}
 }
