@@ -667,8 +667,8 @@ SunDevourerNPC: {
 }
 
 WormLightning: {
-	DisplayName: Thunder Sprite
-	Entry: A being of pure energy, born from the explosion of a burst of lightning. They seek only one thing - distract from their creator.
+	DisplayName: Lightning Sprite
+	Entry: A being of pure energy, born from the explosion of a burst of lightning. They seek only one thing - to distract from their creator.
 }
 
 WormLightning_Body.DisplayName: "{$WormLightning.DisplayName}"

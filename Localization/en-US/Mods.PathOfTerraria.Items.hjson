@@ -1134,7 +1134,7 @@ DevourersTail: {
 		'''
 }
 
-WormLightningBannerItem.DisplayName: Worm Lightning Banner
+WormLightningBannerItem.DisplayName: Lightning Sprite Banner
 
 SunsoulStaffItem: {
 	DisplayName: Sunsoul Staff

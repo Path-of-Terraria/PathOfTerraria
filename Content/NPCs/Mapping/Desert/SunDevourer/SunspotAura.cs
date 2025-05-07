@@ -1,17 +1,15 @@
 ﻿using System.Collections.Generic;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 public sealed class SunspotAura : ModProjectile
 {
-	public const int LifeTime = 60 * 8;
+	public const int LifeTime = 60 * 25;
+	public const float MaxOpacity = 0.5f;
 
-	/// <summary>
-	///		Gets or sets the index of the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Projectile.ai[1]</c>.
-	/// </summary>
-	public ref float Index => ref Projectile.ai[1];
+	public Vector2 Target => new(Projectile.ai[0], Projectile.ai[1]);
+	public bool Active => Projectile.DistanceSQ(Target) < 10 * 10;
 
 	public override void SetDefaults()
 	{
@@ -20,11 +18,11 @@ public sealed class SunspotAura : ModProjectile
 		Projectile.friendly = false;
 		Projectile.hostile = true;
 		Projectile.tileCollide = false;
-
 		Projectile.Size = new Vector2(434);
 		Projectile.timeLeft = LifeTime;
-		Projectile.Opacity = 0.3f;
+		Projectile.Opacity = MaxOpacity;
 		Projectile.hide = true;
+		Projectile.scale = 0.2f;
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
@@ -40,30 +38,66 @@ public sealed class SunspotAura : ModProjectile
 	public override void AI()
 	{
 		Projectile.rotation += 0.01f;
+		Projectile.Center = Vector2.Lerp(Projectile.Center, Target, 0.05f);
+
+		if (Active && Projectile.timeLeft > 60)
+		{
+			Projectile.scale = MathHelper.Lerp(Projectile.scale, 1, 0.05f);
+
+			if (!NPC.AnyNPCs(ModContent.NPCType<SunDevourerNPC>()))
+			{
+				Projectile.timeLeft = 60;
+			}
+		}
+
+		if (Projectile.timeLeft <= 60)
+		{
+			float factor = Projectile.timeLeft / 60f;
+			Projectile.scale = factor;
+			Projectile.Opacity = factor * MaxOpacity;
+		}
 	}
 
 	public override Color? GetAlpha(Color lightColor)
 	{
-		return Color.Black * Projectile.Opacity;
+		return Color.White * Projectile.Opacity;
 	}
 
-	//public override bool PreDraw(ref Color lightColor)
-	//{
-	//	lightColor = new Color(235, 97, 52, 0);
+	public override bool PreDraw(ref Color lightColor)
+	{
+		for (int i = 0; i <	1; ++i)
+		{
+			DrawProjectile(in lightColor, 1 - i / 6f);
+		}
 
-	//	DrawProjectile(in lightColor);
+		return false;
+	}
 
-	//	return false;
-	//}
+	private void DrawProjectile(in Color lightColor, float scale)
+	{
+		Texture2D texture = TextureAssets.Projectile[Type].Value;
+		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
+		Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+		Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
+		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-	//private void DrawProjectile(in Color lightColor)
-	//{
-	//	Texture2D texture = TextureAssets.Projectile[Type].Value;
-	//	Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
-	//	Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
-	//	Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
-	//	SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale * scale, effects);
+	}
 
-	//	Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, effects);
-	//}
+	/// <summary>
+	/// The projectile can't have this life drain functionality with lifeRegen in AI, so this does that instead.
+	/// </summary>
+	public class SunspotPlayer : ModPlayer
+	{
+		public override void UpdateBadLifeRegen()
+		{
+			foreach (Projectile projectile in Main.ActiveProjectiles)
+			{
+				if (projectile.ModProjectile is SunspotAura aura && aura.Active && projectile.DistanceSQ(Player.Center) < 217 * 217)
+				{
+					Player.lifeRegen -= 60;
+				}
+			}
+		}
+	}
 }

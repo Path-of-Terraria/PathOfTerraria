@@ -55,6 +55,68 @@ public sealed partial class SunDevourerNPC : ModNPC
 			case DevourerState.Godrays:
 				GodrayAI();
 				break;
+
+			case DevourerState.Sunspots:
+				SunspotAI();
+				break;
+		}
+	}
+
+	private void SunspotAI()
+	{
+		Timer++;
+
+		if (Timer == 1)
+		{
+			addedPos = Vector2.Zero;
+		}
+
+		if (Timer > 5 && Timer % 30 == 0)
+		{
+			(int topXStart, int topXEnd) = (-722, 722);
+			(int bottomXStart, int bottomXEnd) = (-1284, 1284);
+			(int yTop, int yBottom) = (-460, 800);
+			int type = ModContent.ProjectileType<SunspotAura>();
+			float x;
+			float y;
+
+			while (true)
+			{
+				float yFac = Main.rand.NextFloat();
+				float xFac = Main.rand.NextFloat();
+
+				bool succeeded = true;
+				x = MathHelper.Lerp(MathHelper.Lerp(topXStart, topXEnd, xFac), MathHelper.Lerp(bottomXStart, bottomXEnd, xFac), yFac);
+				y = MathHelper.Lerp(yTop, yBottom, yFac);
+
+				foreach (Projectile projectile in Main.ActiveProjectiles)
+				{
+					if (projectile.ModProjectile is SunspotAura aura && aura.Target.DistanceSQ(IdleSpot + new Vector2(x, y)) < 600 * 600)
+					{
+						succeeded = false;
+					}
+				}
+
+				if (succeeded)
+				{
+					break;
+				}
+			}
+			
+			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, 0, 0, Main.myPlayer, IdleSpot.X + x, IdleSpot.Y + y);
+		}
+
+		if (addedPos == Vector2.Zero || NPC.DistanceSQ(addedPos) < 50 * 50)
+		{
+			addedPos = IdleSpot + Main.rand.NextVector2Circular(300, 300);
+		}
+
+		NPC.velocity += NPC.DirectionTo(addedPos) * 0.2f;
+		NPC.velocity *= 0.99f;
+
+		if (Timer >= 220)
+		{
+			SetState(DevourerState.ReturnToIdle);
 		}
 	}
 
@@ -404,7 +466,17 @@ public sealed partial class SunDevourerNPC : ModNPC
 				}
 				else
 				{
-					SetState(DevourerState.Godrays);
+					int count = 0;
+
+					foreach (Projectile proj in Main.ActiveProjectiles)
+					{
+						if (proj.ModProjectile is SunspotAura)
+						{
+							count++;
+						}
+					}
+
+					SetState(count > 2 ? DevourerState.Godrays : DevourerState.Sunspots);
 				}
 			}
 		}
