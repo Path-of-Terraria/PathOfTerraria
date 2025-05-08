@@ -27,6 +27,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 			NPC.spriteDirection = Math.Sign(NPC.velocity.X);
 		}
 
+		Dust.NewDustPerfect(GetPositionFromSquareEdge(TransformAngleToSquareEdge(Main.GameUpdateCount * 0.02f)) + IdleSpot, DustID.AncientLight, Vector2.Zero).noGravity = true;
+
 		switch (State)
 		{
 			case DevourerState.Trapped:
@@ -60,7 +62,63 @@ public sealed partial class SunDevourerNPC : ModNPC
 			case DevourerState.Sunspots:
 				SunspotAI();
 				break;
+
+			case DevourerState.Dawning:
+				DawningAI();
+				break;
 		}
+	}
+
+	private void DawningAI()
+	{
+		Timer++;
+
+		if (Timer > 180)
+		{
+			SetState(DevourerState.ReturnToIdle);
+		}
+		else
+		{
+			ref float angle = ref MiscData;
+			ref float startAngle = ref AdditionalData;
+
+			if (Timer == 0)
+			{
+				startAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+			}
+			else
+			{
+				NPC.velocity += NPC.DirectionTo(TransformAngleToSquareEdge(angle + startAngle));
+			}
+		}
+	}
+
+	/// <summary>
+	/// Thank you to: https://squircular.blogspot.com/2015/09/mapping-circle-to-square.html !<br/>
+	/// Converts an angle into a unit vector, then places the unit vector on the appropriate spot on a square.<br/>
+	/// Used for <see cref="GetPositionFromSquareEdge(Vector2)"/>.
+	/// </summary>
+	/// <param name="angle">The angle to convert.</param>
+	/// <returns>The position on a square with the range [-1, -1] to [1, 1].</returns>
+	private Vector2 TransformAngleToSquareEdge(float angle)
+	{
+		Vector2 p = angle.ToRotationVector2();
+		float sqrt2 = MathF.Sqrt(2);
+		float xPow = p.X * p.X;
+		float yPow = p.Y * p.Y;
+		float twoXSqrt2 = 2 * p.X * sqrt2;
+		float twoYSqrt2 = 2 * p.Y * sqrt2;
+		float x = MathF.Sqrt(2 + twoXSqrt2 + xPow - yPow) / 2 - MathF.Sqrt(2 - twoXSqrt2 + xPow - yPow) / 2;
+		float y = MathF.Sqrt(2 + twoYSqrt2 - xPow + yPow) / 2 - MathF.Sqrt(2 - twoYSqrt2 - xPow + yPow) / 2;
+
+		return new Vector2(x, y);
+	}
+
+	private Vector2 GetPositionFromSquareEdge(Vector2 squareEdge)
+	{
+		float x = (squareEdge.X + 1) / 2f;
+		float y = (squareEdge.Y + 1) / 2f;
+		return DevourerArenaPositioning.GetPosition(x, y);
 	}
 
 	private void SunspotAI()
@@ -75,7 +133,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		if (Timer > 5 && Timer % 30 == 0)
 		{
 			int type = ModContent.ProjectileType<SunspotAura>();
-			Vector2 spot = DevourerArenaPositioning.GetPosition(InvalidateIfProjNear) + IdleSpot;
+			Vector2 spot = DevourerArenaPositioning.GetRandomPosition(InvalidateIfProjNear) + IdleSpot;
 
 			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, 0, 0, Main.myPlayer, spot.X, spot.Y);
 		}
@@ -160,7 +218,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		{
 			if (Timer == GodrayHideTime + 5)
 			{
-				Vector2 spot = DevourerArenaPositioning.GetPosition() + IdleSpot;
+				Vector2 spot = DevourerArenaPositioning.GetRandomPosition() + IdleSpot;
 				NPC.Center = spot;
 			}
 

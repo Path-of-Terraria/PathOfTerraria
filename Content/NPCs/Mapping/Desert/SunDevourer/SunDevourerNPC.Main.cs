@@ -25,6 +25,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		AbsorbSun,
 		Godrays,
 		Sunspots,
+		Dawning,
 	}
 
 	private static Asset<Texture2D> MaskTexture;

@@ -6,8 +6,8 @@
 /// </summary>
 internal class DevourerArenaPositioning
 {
-	public const int TopXStart = -722;
-	public const int TopXEnd = 722;
+	public const int TopXStart = -692;
+	public const int TopXEnd = 692;
 
 	public const int BottomXStart = -1284;
 	public const int BottomXEnd = 1284;
@@ -15,16 +15,13 @@ internal class DevourerArenaPositioning
 	public const int YTop = -460;
 	public const int YBottom = 800;
 
-	public static Vector2 GetPosition(Func<Vector2, bool> invalidFunc = null)
+	public static Vector2 GetPosition(float xFac, float yFac, Func<Vector2, bool> invalidFunc = null)
 	{
 		float x;
 		float y;
 
 		while (true)
 		{
-			float yFac = Main.rand.NextFloat();
-			float xFac = Main.rand.NextFloat();
-
 			bool succeeded = true;
 			x = MathHelper.Lerp(MathHelper.Lerp(TopXStart, TopXEnd, xFac), MathHelper.Lerp(BottomXStart, BottomXEnd, xFac), yFac);
 			y = MathHelper.Lerp(YTop, YBottom, yFac);
@@ -41,5 +38,13 @@ internal class DevourerArenaPositioning
 		}
 
 		return new(x, y);
+	}
+
+	public static Vector2 GetRandomPosition(Func<Vector2, bool> invalidFunc = null)
+	{
+		float xFac = Main.rand.NextFloat();
+		float yFac = Main.rand.NextFloat();
+
+		return GetPosition(xFac, yFac, invalidFunc);
 	}
 }
