@@ -129,8 +129,6 @@ internal abstract class WhipProjectile : ModProjectile
 	{
 		Projectile.WhipSettings.Segments = reader.ReadInt16();
 		Projectile.WhipSettings.RangeMultiplier = (float)reader.ReadHalf();
-
-		Main.NewText(Projectile.WhipSettings.Segments + " " + Projectile.WhipSettings.RangeMultiplier);
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
