@@ -11,6 +11,9 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
+/// <summary>
+/// Defines the head of a Thunder Sprite. The body and tail are nested classes.
+/// </summary>
 [AutoloadBanner]
 internal class WormLightning : ModNPC
 {
@@ -28,6 +31,8 @@ internal class WormLightning : ModNPC
 		{
 			NPC.Size = new Vector2(22);
 			NPC.damage = 60;
+			NPC.HitSound = SoundID.NPCHit34;
+			NPC.DeathSound = SoundID.NPCHit53;
 		}
 
 		public override Color? GetAlpha(Color drawColor)
@@ -102,11 +107,13 @@ internal class WormLightning : ModNPC
 		NPC.noGravity = true;
 		NPC.knockBackResist = 0;
 		NPC.noTileCollide = true;
+		NPC.HitSound = SoundID.NPCHit34;
+		NPC.DeathSound = SoundID.NPCHit53;
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
 	{
-		NPC.lifeMax = ModeUtils.ByMode(120, 200, 300, 600);
+		NPC.lifeMax = ModeUtils.ByMode(300, 500, 800, 1200);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)

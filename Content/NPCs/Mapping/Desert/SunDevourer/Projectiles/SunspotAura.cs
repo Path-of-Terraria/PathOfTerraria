@@ -5,8 +5,8 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 
 public sealed class SunspotAura : ModProjectile
 {
-	public const int LifeTime = 60 * 25;
-	public const float MaxOpacity = 0.5f;
+	public const int LifeTime = 60 * 35;
+	public const float MaxOpacity = 0.3f;
 
 	public Vector2 Target => new(Projectile.ai[0], Projectile.ai[1]);
 	public bool Active => Projectile.DistanceSQ(Target) < 10 * 10;
@@ -89,7 +89,7 @@ public sealed class SunspotAura : ModProjectile
 		{
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
-				if (projectile.ModProjectile is SunspotAura aura && aura.Active && projectile.DistanceSQ(Player.Center) < 217 * 217)
+				if (projectile.ModProjectile is SunspotAura aura && aura.Active && projectile.DistanceSQ(Player.Center) < MathF.Pow(217 * projectile.scale, 2))
 				{
 					Player.lifeRegen -= 60;
 				}

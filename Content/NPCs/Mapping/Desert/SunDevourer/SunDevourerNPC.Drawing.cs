@@ -19,6 +19,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 		Vector2 origin = NPC.frame.Size() / 2f;
 		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
+		if (flipVert)
+		{
+			effects |= SpriteEffects.FlipVertically;
+		}
+
 		if (State == DevourerState.Trapped)
 		{
 			DrawAllChains(position);

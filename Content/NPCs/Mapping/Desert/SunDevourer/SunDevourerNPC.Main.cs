@@ -64,6 +64,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	private int glassCount = -1;
 	private int maxGlassCount;
 	private bool doDamage = false;
+	private bool flipVert = false;
 
 	public override void SetStaticDefaults()
 	{
@@ -95,6 +96,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 		NPC.npcSlots = 15;
 		NPC.dontTakeDamage = true;
 		NPC.BossBar = ModContent.GetInstance<DevourerBossBar>();
+
+		Music = MusicID.Boss4;
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)

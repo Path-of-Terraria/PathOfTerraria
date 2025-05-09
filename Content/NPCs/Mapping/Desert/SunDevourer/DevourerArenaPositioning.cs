@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+﻿using Steamworks;
+
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 /// <summary>
 /// Helper class for getting a random, valid position within the Sun Devourer's arena.<br/>
@@ -15,36 +17,51 @@ internal class DevourerArenaPositioning
 	public const int YTop = -460;
 	public const int YBottom = 800;
 
-	public static Vector2 GetPosition(float xFac, float yFac, Func<Vector2, bool> invalidFunc = null)
+	public delegate bool InvalidatePositionDelegate(Vector2 input, out Vector2 output);
+
+	public static Vector2 GetPosition(float xFac, float yFac, out bool couldntPlace, InvalidatePositionDelegate invalidFunc = null)
 	{
 		float x;
 		float y;
+		int repeats = 0;
 
 		while (true)
 		{
+			if (repeats > 30000)
+			{
+				couldntPlace = true;
+				return Vector2.Zero;
+			}
+
 			bool succeeded = true;
 			x = MathHelper.Lerp(MathHelper.Lerp(TopXStart, TopXEnd, xFac), MathHelper.Lerp(BottomXStart, BottomXEnd, xFac), yFac);
 			y = MathHelper.Lerp(YTop, YBottom, yFac);
 
-			if (invalidFunc is not null && invalidFunc(new Vector2(x, y)))
+			if (invalidFunc is not null && invalidFunc(new Vector2(x, y), out Vector2 output))
 			{
 				succeeded = false;
+
+				xFac = output.X;
+				yFac = output.Y;
 			}
 
 			if (succeeded)
 			{
 				break;
 			}
+
+			repeats++;
 		}
 
+		couldntPlace = false;
 		return new(x, y);
 	}
 
-	public static Vector2 GetRandomPosition(Func<Vector2, bool> invalidFunc = null)
+	public static Vector2 GetRandomPosition(out bool couldntPlace, InvalidatePositionDelegate invalidFunc = null)
 	{
 		float xFac = Main.rand.NextFloat();
 		float yFac = Main.rand.NextFloat();
 
-		return GetPosition(xFac, yFac, invalidFunc);
+		return GetPosition(xFac, yFac, out couldntPlace, invalidFunc);
 	}
 }

@@ -20,14 +20,16 @@ public sealed partial class SunDevourerNPC : ModNPC
 		ConstantTimer++;
 
 		NPC.TargetClosest();
-		NPC.rotation = (NPC.velocity.X - NPC.velocity.Y) * 0.015f;
 
-		if (Math.Abs(NPC.velocity.X) > 0.1f)
+		if (State != DevourerState.Dawning)
 		{
-			NPC.spriteDirection = Math.Sign(NPC.velocity.X);
-		}
+			NPC.rotation = (NPC.velocity.X - NPC.velocity.Y) * 0.015f;
 
-		Dust.NewDustPerfect(GetPositionFromSquareEdge(TransformAngleToSquareEdge(Main.GameUpdateCount * 0.02f)) + IdleSpot, DustID.AncientLight, Vector2.Zero).noGravity = true;
+			if (Math.Abs(NPC.velocity.X) > 0.1f)
+			{
+				NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+			}
+		}
 
 		switch (State)
 		{
@@ -71,24 +73,67 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void DawningAI()
 	{
+		const int AttackTime = 600;
+
 		Timer++;
 
-		if (Timer > 180)
+		if (Timer > AttackTime)
 		{
-			SetState(DevourerState.ReturnToIdle);
+			if (Timer > AttackTime * 1.5f)
+			{
+				SetState(DevourerState.ReturnToIdle);
+			}
+
+			// Ease back into normal rotation
+			float rot = (NPC.velocity.X - NPC.velocity.Y) * 0.015f;
+			NPC.rotation = MathHelper.Lerp(NPC.rotation, rot, 0.1f);
+			flipVert = false;
+
+			if (Math.Abs(NPC.velocity.X) > 0.1f)
+			{
+				NPC.spriteDirection = Math.Sign(NPC.velocity.X);
+			}
+
+			// Return to idle but without using the ReturnToIdleState so we idle longer
+			NPC.velocity += NPC.DirectionTo(IdleSpot) * 0.15f;
+
+			if (NPC.velocity.LengthSquared() > 6 * 6)
+			{
+				NPC.velocity = Vector2.Normalize(NPC.velocity) * 6;
+			}
+
+			NPC.velocity *= 0.99f;
 		}
 		else
 		{
 			ref float angle = ref MiscData;
 			ref float startAngle = ref AdditionalData;
 
-			if (Timer == 0)
+			if (Timer == 1)
 			{
 				startAngle = Main.rand.NextFloat(MathHelper.TwoPi);
+
+				if (Main.netMode != NetmodeID.MultiplayerClient)
+				{
+					int type = ModContent.ProjectileType<SunBlast>();
+					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, new Vector2(0, -1), type, 80, 0, Main.myPlayer, 0, NPC.whoAmI, AttackTime);
+				}
 			}
 			else
 			{
-				NPC.velocity += NPC.DirectionTo(TransformAngleToSquareEdge(angle + startAngle));
+				int dir = (int)(startAngle * 10) % 2 == 0 ? -1 : 1;
+
+				Vector2 target = GetPositionFromSquareEdge(TransformAngleToSquareEdge(angle + startAngle)) + IdleSpot;
+				Vector2 futureTarget = GetPositionFromSquareEdge(TransformAngleToSquareEdge(angle + startAngle + 0.1f * dir)) + IdleSpot;
+				NPC.Center = Vector2.Lerp(NPC.Center, (target + futureTarget) / 2, MathF.Min(Timer / 2000f, 0.02f));
+				NPC.velocity = NPC.oldPos[0] - NPC.oldPos[1];
+				NPC.Center -= NPC.velocity;
+
+				angle += 0.015f * dir;
+
+				NPC.rotation = Utils.AngleLerp(NPC.rotation, NPC.AngleTo(IdleSpot), 0.15f);
+				NPC.spriteDirection = 1;
+				flipVert = NPC.rotation > MathHelper.PiOver2 || NPC.rotation < -MathHelper.PiOver2;
 			}
 		}
 	}
@@ -108,8 +153,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 		float yPow = p.Y * p.Y;
 		float twoXSqrt2 = 2 * p.X * sqrt2;
 		float twoYSqrt2 = 2 * p.Y * sqrt2;
-		float x = MathF.Sqrt(2 + twoXSqrt2 + xPow - yPow) / 2 - MathF.Sqrt(2 - twoXSqrt2 + xPow - yPow) / 2;
-		float y = MathF.Sqrt(2 + twoYSqrt2 - xPow + yPow) / 2 - MathF.Sqrt(2 - twoYSqrt2 - xPow + yPow) / 2;
+		float x = MathF.Sqrt(MathF.Abs(2 + twoXSqrt2 + xPow - yPow)) / 2 - MathF.Sqrt(MathF.Abs(2 - twoXSqrt2 + xPow - yPow) / 2);
+		float y = MathF.Sqrt(MathF.Abs(2 + twoYSqrt2 - xPow + yPow)) / 2 - MathF.Sqrt(MathF.Abs(2 - twoYSqrt2 - xPow + yPow) / 2);
 
 		return new Vector2(x, y);
 	}
@@ -118,7 +163,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	{
 		float x = (squareEdge.X + 1) / 2f;
 		float y = (squareEdge.Y + 1) / 2f;
-		return DevourerArenaPositioning.GetPosition(x, y);
+		return DevourerArenaPositioning.GetPosition(x, y, out _);
 	}
 
 	private void SunspotAI()
@@ -133,9 +178,12 @@ public sealed partial class SunDevourerNPC : ModNPC
 		if (Timer > 5 && Timer % 30 == 0)
 		{
 			int type = ModContent.ProjectileType<SunspotAura>();
-			Vector2 spot = DevourerArenaPositioning.GetRandomPosition(InvalidateIfProjNear) + IdleSpot;
+			Vector2 spot = DevourerArenaPositioning.GetRandomPosition(out bool invalid, InvalidateIfProjNear) + IdleSpot;
 
-			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, 0, 0, Main.myPlayer, spot.X, spot.Y);
+			if (!invalid)
+			{
+				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, type, 0, 0, Main.myPlayer, spot.X, spot.Y);
+			}
 		}
 
 		if (addedPos == Vector2.Zero || NPC.DistanceSQ(addedPos) < 50 * 50)
@@ -146,19 +194,28 @@ public sealed partial class SunDevourerNPC : ModNPC
 		NPC.velocity += NPC.DirectionTo(addedPos) * 0.2f;
 		NPC.velocity *= 0.99f;
 
-		if (Timer >= 220)
+		if (Timer >= 180)
 		{
 			SetState(DevourerState.ReturnToIdle);
 		}
 
 		return;
 
-		bool InvalidateIfProjNear(Vector2 pos)
+		bool InvalidateIfProjNear(Vector2 pos, out Vector2 newPos)
 		{
+			newPos = Vector2.Zero;
+
+			if (pos.DistanceSQ(IdleSpot) < 250 * 250)
+			{
+				newPos = new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat());
+				return true;
+			}
+
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
-				if (projectile.ModProjectile is SunspotAura aura && aura.Target.DistanceSQ(IdleSpot + pos) < 600 * 600)
+				if (projectile.ModProjectile is SunspotAura aura && aura.Target.DistanceSQ(IdleSpot + pos) < 540 * 540)
 				{
+					newPos = new Vector2(Main.rand.NextFloat(), Main.rand.NextFloat());
 					return true;
 				}
 			}
@@ -218,7 +275,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		{
 			if (Timer == GodrayHideTime + 5)
 			{
-				Vector2 spot = DevourerArenaPositioning.GetRandomPosition() + IdleSpot;
+				Vector2 spot = DevourerArenaPositioning.GetRandomPosition(out _) + IdleSpot;
 				NPC.Center = spot;
 			}
 
@@ -247,7 +304,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	private void AbsorbSunAI()
 	{
 		Timer++;
-		NPC.velocity = Vector2.Zero;
+		NPC.velocity *= 0.8f;
 		SunDevourerSunEdit.Blackout = 1 - Timer / 300f;
 
 		if (Timer > 300)
@@ -528,6 +585,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 				else
 				{
 					int count = 0;
+					int wormCount = 0;
 
 					foreach (Projectile proj in Main.ActiveProjectiles)
 					{
@@ -537,7 +595,26 @@ public sealed partial class SunDevourerNPC : ModNPC
 						}
 					}
 
-					SetState(count > 2 ? DevourerState.Godrays : DevourerState.Sunspots);
+					foreach (NPC npc in Main.ActiveNPCs)
+					{
+						if (npc.ModNPC is WormLightning)
+						{
+							wormCount++;
+						}
+					}
+
+					if (count < 2)
+					{
+						SetState(DevourerState.Sunspots);
+					}
+					else if (wormCount < 2)
+					{
+						SetState(Main.rand.NextBool() ? DevourerState.Dawning : DevourerState.Godrays);
+					}
+					else
+					{
+						SetState(DevourerState.Dawning);
+					}	
 				}
 			}
 		}
@@ -636,6 +713,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 	{
 		State = state;
 		Timer = 0;
+
+		NPC.netUpdate = true;
 	}
 
 	public override void SendExtraAI(BinaryWriter writer)

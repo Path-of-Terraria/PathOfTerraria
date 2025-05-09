@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -31,13 +32,21 @@ internal class SunsoulStaffItem : Staff
 	{
 		if (Main.myPlayer == player.whoAmI && !player.GetModPlayer<AltUsePlayer>().OnCooldown && Main.mouseRight && !player.mouseInterface)
 		{
-			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(35 * 60, 15 * 60);
 			int damage = (int)(Item.damage * 1.5f);
-			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<SunsoulSummon>(), damage, 0, player.whoAmI);
+			int type = ModContent.ProjectileType<SunsoulSummon>();
+			int proj = Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, type, damage, 0, player.whoAmI);
 
 			for (int i = 0; i < 20; ++i)
 			{
 				Dust.NewDustPerfect(player.Center, DustID.Torch, Main.rand.NextVector2Circular(3, 3));
+			}
+
+			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(35 * 60, 15 * 60);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, proj);
+				SyncAltUseHandler.Send((byte)player.whoAmI, 35 * 60, 15 * 60);
 			}
 		}
 	}
