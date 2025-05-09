@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -57,12 +58,17 @@ internal abstract class WhipProjectile : ModProjectile
 			_setSettings = true;
 		}
 
-		if (owner.channel)
+		if (owner.channel && Main.myPlayer == Projectile.owner)
 		{
 			Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * 4;
-			owner.ChangeDir(MathF.Sign(Projectile.velocity.X));
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+			}
 		}
 
+		owner.ChangeDir(MathF.Sign(Projectile.velocity.X));
 		(owner.HeldItem.ModItem as WhipItem).UpdateProjectile(Projectile);
 
 		if (LetGo)
@@ -111,6 +117,20 @@ internal abstract class WhipProjectile : ModProjectile
 		};
 
 		Owner.SetCompositeArmFront(true, stretch, rotationOffset);
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write((short)Projectile.WhipSettings.Segments);
+		writer.Write((Half)Projectile.WhipSettings.RangeMultiplier);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		Projectile.WhipSettings.Segments = reader.ReadInt16();
+		Projectile.WhipSettings.RangeMultiplier = (float)reader.ReadHalf();
+
+		Main.NewText(Projectile.WhipSettings.Segments + " " + Projectile.WhipSettings.RangeMultiplier);
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.World.Generation;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -87,6 +88,8 @@ public class SunsoulSummon : ModProjectile
 			if (BezierSlot >= bezier.Length)
 			{
 				Moving = false;
+				bezier = [];
+				Projectile.netUpdate = true;
 			}
 			else
 			{
@@ -117,10 +120,48 @@ public class SunsoulSummon : ModProjectile
 
 				bezier = Spline.InterpolateXY([Vector2.Zero, midPoint + offset, target, midPoint + offset.RotatedBy(MathHelper.Pi), Vector2.Zero], 16);
 				Speed = Math.Max(0.08f, Math.Abs(100 / target.Length() + 0.25f));
+
+				Projectile.netUpdate = true;
 			}
 		}
 
 		return;
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write((Half)Speed);
+		writer.Write(bezier is null);
+
+		if (bezier is null)
+		{
+			return;
+		}
+
+		writer.Write((byte)bezier.Length);
+
+		foreach (Vector2 pos in bezier)
+		{
+			writer.WriteVector2(pos);
+		}
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		Speed = (float)reader.ReadHalf();
+
+		if (reader.ReadBoolean())
+		{
+			return;
+		}
+
+		int count = reader.ReadByte();
+		bezier = new Vector2[count];
+
+		for (int i = 0; i < count; ++i)
+		{
+			bezier[i] = reader.ReadVector2();
+		}
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

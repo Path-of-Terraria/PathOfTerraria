@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Content.Projectiles.Whip;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Whip;
 
@@ -72,7 +74,13 @@ internal class DevourersTail : Whip
 			player.itemAnimation = player.itemAnimationMax = 24;
 			Item.useAnimation = 24;
 
-			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(3, 300);
+			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(60 * 15, 60 * 8);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				SyncAltUseHandler.Send((byte)player.whoAmI, 60 * 15, 60 * 8);
+			}
+
 			return false;
 		}
 		else if (!player.GetModPlayer<AltUsePlayer>().AltFunctionActive)

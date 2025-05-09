@@ -656,6 +656,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 	{
 		if (Timer == 0)
 		{
+			if (Main.CurrentFrameFlags.ActivePlayersCount == 0)
+			{
+				return;
+			}
+
 			bool anyPlayerFar = false;
 
 			foreach (Player player in Main.ActivePlayers)
@@ -667,9 +672,10 @@ public sealed partial class SunDevourerNPC : ModNPC
 				}
 			}
 
-			if (!anyPlayerFar)
+			if (!anyPlayerFar && Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				Timer = 1;
+				NPC.netUpdate = true;
 			}
 		}
 		else
