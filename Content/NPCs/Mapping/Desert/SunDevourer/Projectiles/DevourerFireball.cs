@@ -119,18 +119,6 @@ public sealed class DevourerFireball : ModProjectile
 		return tile.HasTile && tile.TileType == TileID.Obsidian;
 	}
 
-	//private void UpdateHoming()
-	//{
-	//	if (!Player.active || Player.dead || Player.ghost)
-	//	{
-	//		return;
-	//	}
-
-	//	var direction = MathF.Sign(Player.Center.X - Projectile.Center.X);
-
-	//	Projectile.velocity.X += direction * 0.1f;
-	//}
-
 	private void UpdateDustEffects()
 	{
 		if (!Main.rand.NextBool(5))

@@ -2,6 +2,9 @@
 
 namespace PathOfTerraria.Core.Physics.Verlet;
 
+/// <summary>
+/// Will go unused, but kept for reference in case we use this system later.
+/// </summary>
 public readonly struct SunDevourerVerletRenderer : IVerletRenderer
 {
 	void IVerletRenderer.Render(VerletChain chain)

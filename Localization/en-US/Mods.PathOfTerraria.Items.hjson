@@ -1153,6 +1153,6 @@ AugmentationOrb: {
 }
 
 SunDevourerTrophyItem: {
-	DisplayName: Sun Devourer Trophy Item
+	DisplayName: Sun Devourer Trophy
 	Tooltip: ""
 }

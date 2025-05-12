@@ -37,11 +37,6 @@ internal class StaffHeldProjectile : ModProjectile
 		Projectile.rotation = rotation;
 	}
 
-	public override void OnKill(int timeLeft)
-	{
-		base.OnKill(timeLeft);
-	}
-
 	public override void AI()
 	{
 		Owner.heldProj = Projectile.whoAmI;
