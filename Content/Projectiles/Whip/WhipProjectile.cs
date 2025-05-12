@@ -50,17 +50,25 @@ internal abstract class WhipProjectile : ModProjectile
 
 	public override bool PreAI()
 	{
-		Player owner = Main.player[Projectile.owner];
+		// For some reason, using a whip without charging then immediately buffering a charge causes a weird visual issue with the whip
+		// In multiplayer, this visual issue is ten times worse for fun I guess
+		// This fixes it and has no functional downside to my knowledge - GabeHasWon
+		if (Timer >= Owner.HeldItem.useAnimation * 2 - 2)
+		{
+			Projectile.Kill();
+			return false;
+		}
 
 		if (!_setSettings)
 		{
-			Projectile.WhipSettings = (owner.HeldItem.ModItem as WhipItem).WhipSettings;
+			Projectile.WhipSettings = (Owner.HeldItem.ModItem as WhipItem).WhipSettings;
 			_setSettings = true;
 		}
 
-		if (owner.channel && Main.myPlayer == Projectile.owner)
+		if (!LetGo && Owner.channel && Main.myPlayer == Projectile.owner)
 		{
-			Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld) * 4;
+			Projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * 4;
+			Owner.ChangeDir(MathF.Sign(Projectile.velocity.X));
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -68,8 +76,7 @@ internal abstract class WhipProjectile : ModProjectile
 			}
 		}
 
-		owner.ChangeDir(MathF.Sign(Projectile.velocity.X));
-		(owner.HeldItem.ModItem as WhipItem).UpdateProjectile(Projectile);
+		(Owner.HeldItem.ModItem as WhipItem).UpdateProjectile(Projectile);
 
 		if (LetGo)
 		{
@@ -85,8 +92,8 @@ internal abstract class WhipProjectile : ModProjectile
 		Projectile.WhipSettings.RangeMultiplier += 1 / 120f;
 
 		// Reset the animation and item timer while charging.
-		owner.itemAnimation = owner.itemAnimationMax;
-		owner.itemTime = owner.itemTimeMax;
+		Owner.itemAnimation = Owner.itemAnimationMax;
+		Owner.itemTime = Owner.itemTimeMax;
 
 		return false; // Prevent the vanilla whip AI from running.
 	}
