@@ -21,7 +21,7 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class DesertArea : MappingWorld, IOverrideBiomeWorld
+internal class DesertArea : MappingWorld, IOverrideBiome
 {
 	public const int FloorY = 400;
 	private const int MapHeight = 800;

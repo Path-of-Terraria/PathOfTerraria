@@ -14,7 +14,7 @@ internal class OverrideBiomeWorld : ModSystem
 	{
 		orig(self);
 
-		if (SubworldSystem.Current is IOverrideBiomeWorld ocean)
+		if (SubworldSystem.Current is IOverrideBiome ocean)
 		{
 			ocean.OverrideBiome();
 		}
@@ -24,7 +24,7 @@ internal class OverrideBiomeWorld : ModSystem
 	{
 		orig(self);
 
-		if (SubworldSystem.Current is IOverrideBiomeWorld ocean)
+		if (SubworldSystem.Current is IOverrideBiome ocean)
 		{
 			ocean.OverrideBiome();
 		}

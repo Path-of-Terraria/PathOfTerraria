@@ -3,7 +3,7 @@
 /// <summary>
 /// Allows <see cref="MappingWorld"/>s to override the Ocean biome when desired.
 /// </summary>
-internal interface IOverrideBiomeWorld
+internal interface IOverrideBiome
 {
 	/// <summary>
 	/// Runs when the Ocean is active and needs to be overriden.<br/>

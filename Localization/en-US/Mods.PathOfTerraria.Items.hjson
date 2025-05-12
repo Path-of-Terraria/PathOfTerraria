@@ -1151,3 +1151,8 @@ AugmentationOrb: {
 	DisplayName: Skill Augmentation Orb
 	Tooltip: Unlocks an augmentation slot for a given skill
 }
+
+SunDevourerTrophyItem: {
+	DisplayName: Sun Devourer Trophy Item
+	Tooltip: ""
+}

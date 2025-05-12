@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Content.Items.Gear.Weapons.Staff.SunsoulStaff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Whip;
+using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Graphics.Camera.Modifiers;
 using PathOfTerraria.Core.Graphics.Zoom;
@@ -143,6 +144,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
 		npcLoot.AddOneFromOptions<DevourersTail, SunsoulStaffItem>(1);
+		npcLoot.AddCommon<SunDevourerTrophyItem>(7);
 	}
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
