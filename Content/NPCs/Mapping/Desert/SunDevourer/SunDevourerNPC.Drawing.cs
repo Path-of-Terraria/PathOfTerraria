@@ -68,6 +68,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private void DrawOrBreakChains(Vector2 start, Vector2 end, bool gore = false)
 	{
+		if (gore && Main.dedServ)
+		{
+			return;
+		}
+
 		Vector2 current = start;
 		Vector2 dir = start.DirectionTo(end) * 24;
 		float angle = start.AngleTo(end) + MathHelper.PiOver2;

@@ -1,5 +1,6 @@
 ﻿using Microsoft.CodeAnalysis.Operations;
 using PathOfTerraria.Common.Systems.MobSystem;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -81,6 +82,16 @@ internal abstract class WormSegment : ModNPC
 		{
 			NPC.active = false;
 		}
+	}
+
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write((short)NPC.realLife);
+	}
+
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		NPC.realLife = reader.ReadInt16();
 	}
 
 	public virtual void Draw()

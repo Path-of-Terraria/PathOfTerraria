@@ -57,6 +57,11 @@ public sealed class LightningBurst : ModProjectile
 				if (tile.TileType == TileID.Glass && tile.HasTile)
 				{
 					WorldGen.KillTile(i, j, false, false, true);
+
+					if (Main.netMode != NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendTileSquare(-1, i, j);
+					}
 				}
 			}
 		}
@@ -95,6 +100,8 @@ public sealed class LightningBurst : ModProjectile
 		if (!tile.HasTile || tile.TileType != TileID.Glass)
 		{
 			TargetGlass = SunDevourerNPC.FindGlass(TargetGlass, 300, 120);
+
+			Projectile.netUpdate = true;
 		}
 	}
 

@@ -48,7 +48,7 @@ internal class DesertArea : MappingWorld, IOverrideBiomeWorld
 
 	private void ForceActiveSandstormInDesert(On_Sandstorm.orig_HandleEffectAndSky orig, bool toState)
 	{
-		if (SubworldSystem.Current is DesertArea && Sandstorm.Happening)
+		if (SubworldSystem.Current is DesertArea && Sandstorm.Happening && !Main.dedServ)
 		{
 			toState = true;
 		}

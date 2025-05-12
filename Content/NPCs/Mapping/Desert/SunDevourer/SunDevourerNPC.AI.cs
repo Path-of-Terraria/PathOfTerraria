@@ -88,6 +88,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 			float rot = (NPC.velocity.X - NPC.velocity.Y) * 0.015f;
 			NPC.rotation = MathHelper.Lerp(NPC.rotation, rot, 0.1f);
 			flipVert = false;
+			doDamage = false;
 
 			if (Math.Abs(NPC.velocity.X) > 0.1f)
 			{
@@ -118,6 +119,9 @@ public sealed partial class SunDevourerNPC : ModNPC
 					int type = ModContent.ProjectileType<SunBlast>();
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, new Vector2(0, -1), type, 80, 0, Main.myPlayer, 0, NPC.whoAmI, AttackTime);
 				}
+
+				NPC.netUpdate = true;
+				doDamage = true;
 			}
 			else
 			{
@@ -175,7 +179,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 			addedPos = Vector2.Zero;
 		}
 
-		if (Timer > 5 && Timer % 30 == 0)
+		if (Timer > 5 && Timer % 30 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			int type = ModContent.ProjectileType<SunspotAura>();
 			Vector2 spot = DevourerArenaPositioning.GetRandomPosition(out bool invalid, InvalidateIfProjNear) + IdleSpot;
@@ -189,6 +193,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 		if (addedPos == Vector2.Zero || NPC.DistanceSQ(addedPos) < 50 * 50)
 		{
 			addedPos = IdleSpot + Main.rand.NextVector2Circular(300, 300);
+
+			NPC.netUpdate = true;
 		}
 
 		NPC.velocity += NPC.DirectionTo(addedPos) * 0.2f;
@@ -681,6 +687,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		else
 		{
 			Timer++;
+
 			Vector2 position = NPC.Center - Main.screenPosition;
 
 			if (Timer == 30)
@@ -720,6 +727,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 		State = state;
 		Timer = 0;
 
+		NPC.Opacity = 1f;
+		NPC.dontTakeDamage = false;
 		NPC.netUpdate = true;
 	}
 
@@ -731,6 +740,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		writer.Write(AdditionalData);
 		writer.Write(FloorY);
 		writer.WriteVector2(addedPos);
+		writer.Write(doDamage);
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -741,5 +751,6 @@ public sealed partial class SunDevourerNPC : ModNPC
 		AdditionalData = reader.ReadSingle();
 		FloorY = reader.ReadSingle();
 		addedPos = reader.ReadVector2();
+		doDamage = reader.ReadBoolean();
 	}
 }

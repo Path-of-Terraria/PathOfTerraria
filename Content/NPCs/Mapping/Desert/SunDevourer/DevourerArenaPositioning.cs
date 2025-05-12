@@ -1,6 +1,4 @@
-﻿using Steamworks;
-
-namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+﻿namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 /// <summary>
 /// Helper class for getting a random, valid position within the Sun Devourer's arena.<br/>
@@ -15,7 +13,7 @@ internal class DevourerArenaPositioning
 	public const int BottomXEnd = 1284;
 
 	public const int YTop = -460;
-	public const int YBottom = 800;
+	public const int YBottom = 1050;
 
 	public delegate bool InvalidatePositionDelegate(Vector2 input, out Vector2 output);
 
