@@ -3,6 +3,7 @@ using System.IO;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -28,7 +29,7 @@ public class RainOfArrows : Skill
 		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
 		Cooldown = MaxCooldown;
 
-		player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int _, true);
+		player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int ammo, true);
 
 		if (player.HeldItem.ModItem is not null)
 		{
@@ -36,7 +37,7 @@ public class RainOfArrows : Skill
 			ItemLoader.ModifyShootStats(player.HeldItem, player, ref throwaway, ref throwaway, ref projToShoot, ref damage, ref knockBack);
 		}
 
-		damage = (int)buff.Damage.ApplyTo(0.7f + Level * 0.15f);
+		damage = (int)buff.Damage.ApplyTo(damage * (1 + Level * 0.15f));
 
 		if (projToShoot <= 0)
 		{
@@ -47,7 +48,7 @@ public class RainOfArrows : Skill
 		{
 			Vector2 pos = player.Center + new Vector2(Main.rand.NextFloat(-16, 16), Main.rand.NextFloat(-10, 10));
 			Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -10 * Main.rand.NextFloat(0.9f, 1.1f);
-			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, velocity, projToShoot, damage, 2);
+			int proj = Projectile.NewProjectile(new EntitySource_ItemUse_WithAmmo(player, player.HeldItem, ammo), pos, velocity, projToShoot, damage, 2, player.whoAmI);
 
 			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj]);
 		}

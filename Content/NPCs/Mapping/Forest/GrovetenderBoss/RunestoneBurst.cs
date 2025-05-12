@@ -1,5 +1,6 @@
 ﻿using ReLogic.Content;
 using Terraria.DataStructures;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 
@@ -9,7 +10,6 @@ internal class RunestoneBurst : ModProjectile
 
 	private ref float Timer => ref Projectile.ai[0];
 	private ref float DecaySpeed => ref Projectile.ai[1];
-	private ref float WaitTimer => ref Projectile.ai[2];
 
 	public override void SetDefaults()
 	{
@@ -46,7 +46,7 @@ internal class RunestoneBurst : ModProjectile
 		{
 			if (CanHitPlayer(player))
 			{
-				var deathReason = PlayerDeathReason.ByCustomReason(this.GetLocalization("DeathReasons." + Main.rand.Next(3)).Format(player.name));
+				var deathReason = PlayerDeathReason.ByCustomReason(NetworkText.FromKey(this.GetLocalization("DeathReasons." + Main.rand.Next(3)).Value, player.name));
 				player.Hurt(deathReason, Projectile.damage, 0, scalingArmorPenetration: 1f, knockback: 0);
 			}
 		}

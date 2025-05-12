@@ -1126,5 +1126,9 @@ DesertMap: {
 
 AugmentationOrb: {
 	DisplayName: Skill Augmentation Orb
-	Tooltip: Unlocks an augmentation slot for a given skill
+	Tooltip:
+		'''
+		Can be used to unlock an augmentation slot for a given skill
+		Enter a skill submenu to use
+		'''
 }
