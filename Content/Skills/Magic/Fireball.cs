@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
-using PathOfTerraria.Content.SkillPassives;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -15,7 +14,7 @@ public class Fireball : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = 2 * 60;
+		Cooldown = MaxCooldown = 8 * 60;
 		ManaCost = 20 + 10 * Level;
 		Duration = 0;
 		WeaponType = ItemType.None;
