@@ -1,3 +1,5 @@
+using Terraria.Localization;
+
 namespace PathOfTerraria.Common.Enums;
 
 [Flags]
@@ -46,4 +48,12 @@ public enum ItemType : long
 	AllNoMap = AllGear | Jewel,
 
 	All = AllNoMap | Map,
+}
+
+public static class ItemTypeLocalization
+{
+	public static string LocalizeText(this ItemType type)
+	{
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Gear.{type}.Name");
+	}
 }

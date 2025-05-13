@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Content.Skills.Melee;
+using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
@@ -9,13 +11,22 @@ namespace PathOfTerraria.Common.Mechanics;
 
 public abstract class Skill
 {
-	public int Duration;
-	public int MaxCooldown;
-	public int Cooldown;
-	/// <summary> The default mana cost of this skill.<br/>See <see cref="TotalManaCost"/>. </summary>
-	public int ManaCost;
-	public ItemType WeaponType = ItemType.None;
-	public byte Level = 1;
+	private Vector2 _size;
+
+	public Vector2 Size
+	{
+		get
+		{
+			if (_size != Vector2.Zero)
+			{
+				return _size;
+			}
+
+			_size = StringUtils.GetSizeOfTexture($"Assets/Skills/{GetType().Name}") ?? new Vector2();
+
+			return _size;
+		}
+	}
 
 	/// <summary> The final mana cost of this skill affected by modifications. </summary>
 	public int TotalManaCost
@@ -47,6 +58,17 @@ public abstract class Skill
 	public virtual string Name => GetType().Name;
 	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTextureName();
 
+	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Name");
+	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Description");
+
+	public int Duration;
+	public int MaxCooldown;
+	public int Cooldown;
+	/// <summary> The default mana cost of this skill.<br/>See <see cref="TotalManaCost"/>. </summary>
+	public int ManaCost;
+	public ItemType WeaponType = ItemType.None;
+	public byte Level = 1;
+
 	private string GetTextureName()
 	{
 		if (Tree?.Specialization is not null)
@@ -56,9 +78,6 @@ public abstract class Skill
 
 		return Name;
 	}
-
-	public virtual LocalizedText DisplayName => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Name");
-	public virtual LocalizedText Description => Language.GetText("Mods.PathOfTerraria." + GetLocalKey() + ".Description");
 
 	private string GetLocalKey()
 	{
@@ -151,23 +170,6 @@ public abstract class Skill
 		return true;
 	}
 
-	private Vector2 _size;
-
-	public Vector2 Size
-	{
-		get
-		{
-			if (_size != Vector2.Zero)
-			{
-				return _size;
-			}
-
-			_size = StringUtils.GetSizeOfTexture($"Assets/Skills/{GetType().Name}") ?? new Vector2();
-
-			return _size;
-		}
-	}
-
 	public virtual void LoadData(TagCompound tag)
 	{
 		Duration = tag.GetShort(nameof(Duration));
@@ -190,5 +192,9 @@ public abstract class Skill
 		tag.Add(nameof(Level), Level);
 
 		Tree?.SaveData(this, tag);
+	}
+
+	public virtual void ModifyTooltips(List<NewHotbar.SkillTooltip> tooltips)
+	{
 	}
 }

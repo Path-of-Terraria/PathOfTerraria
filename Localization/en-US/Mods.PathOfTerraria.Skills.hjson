@@ -7,8 +7,10 @@ NoKeybindLine: No keybind detected
 DurationLine: Lasts {0} seconds
 CooldownLine: "{0} second cooldown"
 KeybindLine: Press {0} to use
+NeedsWeapon: "[c/999999:Needs a {0} item]"
+BaseDamage: Deals {0} base damage
 # This is for the hover text in the skills menu.
-CantEquip: Can't equip skill!
+CantEquip: Can't equip skill
 
 # These are the actual localization lines for skills.
 Nova: {

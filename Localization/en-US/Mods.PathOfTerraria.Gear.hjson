@@ -341,3 +341,7 @@ Shield: {
 
 Map.Name: Map
 None.Name: None
+Magic.Name: Magic
+Ranged.Name: Ranged
+Melee.Name: Melee
+Summon.Name: Summon
