@@ -4,12 +4,12 @@ using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.Furniture;
 
-public class GrovetenderTrophy : ModTile
+public abstract class TrophyTile : ModTile
 {
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
-		Main.tileBlockLight[Type] = true;
+		Main.tileBlockLight[Type] = false;
 		Main.tileLavaDeath[Type] = true;
 		Main.tileNoAttach[Type] = true;
 
@@ -19,7 +19,7 @@ public class GrovetenderTrophy : ModTile
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(120, 85, 60), Language.GetText("MapObject.Trophy"));
-		
+
 		DustType = DustID.WoodFurniture;
 		HitSound = SoundID.Dig;
 	}
@@ -28,4 +28,12 @@ public class GrovetenderTrophy : ModTile
 	{
 		num = fail ? 1 : 3;
 	}
+}
+
+public class GrovetenderTrophy : TrophyTile
+{
+}
+
+public class SunDevourerTrophy : TrophyTile
+{
 }

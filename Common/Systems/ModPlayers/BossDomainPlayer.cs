@@ -38,7 +38,7 @@ internal class BossDomainPlayer : ModPlayer
 
 	public override void ResetEffects()
 	{
-		bool inDomain = SubworldSystem.Current is BossDomainSubworld;
+		bool inDomain = SubworldSystem.Current is MappingWorld;
 
 		if (inDomain && !InDomain)
 		{

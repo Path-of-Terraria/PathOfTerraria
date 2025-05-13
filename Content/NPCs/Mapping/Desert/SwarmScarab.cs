@@ -41,7 +41,7 @@ internal class SwarmScarab : ModNPC
 		NPC.color = Color.White;
 		NPC.value = 0;
 		NPC.npcSlots = 0.5f;
-
+		
 		NPC.TryEnableComponent<NPCHitEffects>(
 			c =>
 			{

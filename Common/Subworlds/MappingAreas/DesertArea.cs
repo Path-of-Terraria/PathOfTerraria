@@ -3,11 +3,13 @@ using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.NPCs.Mapping.Desert;
+using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Generation;
@@ -19,17 +21,21 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class DesertArea : MappingWorld, IOverrideOcean
+internal class DesertArea : MappingWorld, IOverrideBiome
 {
 	public const int FloorY = 400;
+	private const int MapHeight = 800;
 
 	private static bool LeftSpawn = false;
-	private static Point BossSpawnLocation = Point.Zero;
+	private static Point16 BossSpawnLocation = Point16.Zero;
 	private static int SandstormTimer = 0;
+	private static bool SetSpawn = false;
 
-	public override int Width => 2000 + 120 * Main.rand.Next(5);
-	public override int Height => 600;
-	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
+	public override int Width => 2600 + 150 * Main.rand.Next(3);
+	public override int Height => MapHeight;
+	public override int[] WhitelistedCutTiles => [TileID.Cobweb];
+	public override int[] WhitelistedMiningTiles => [TileID.CrackedBlueDungeonBrick, TileID.Cobweb];
+	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, SunDevourerSunEdit.Blackout > 0);
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), 
 		new PassLegacy("Decor", GenerateDecor)];
@@ -42,7 +48,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	private void ForceActiveSandstormInDesert(On_Sandstorm.orig_HandleEffectAndSky orig, bool toState)
 	{
-		if (SubworldSystem.Current is DesertArea && Sandstorm.Happening)
+		if (SubworldSystem.Current is DesertArea && Sandstorm.Happening && !Main.dedServ)
 		{
 			toState = true;
 		}
@@ -177,7 +183,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 				if (flags.HasFlag(OpenFlags.Above) && tile.HasTile)
 				{
-					if (WorldGen.genRand.NextBool(10) && tile.TileType == TileID.Sand && i > 160 && i < Main.maxTilesX - 160)
+					if (WorldGen.genRand.NextBool(10) && tile.TileType == TileID.Sand && i > 180 && i < Main.maxTilesX - 180)
 					{
 						WorldGen.PlantCactus(i, j);
 					}
@@ -487,6 +493,8 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	private static void SpawnStructures()
 	{
+		PlaceArena();
+
 		// Ruins, mostly embedded in sand
 		int count = 5;
 
@@ -539,7 +547,10 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			}
 
 			Point16 pos = GetOpenAirRandomPosition();
-			string structurePath = "Assets/Structures/MapAreas/DesertArea/Oasis_" + WorldGen.genRand.Next(3);
+			string structurePath = WorldGen.genRand.NextBool() 
+				? "Assets/Structures/MapAreas/DesertArea/Oasis_" + WorldGen.genRand.Next(3)
+				: "Assets/Structures/MapAreas/DesertArea/Obelisk_" + WorldGen.genRand.Next(2);
+
 			bool isShrine = false;
 
 			if (hasShrine)
@@ -565,6 +576,32 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 				hasShrine = false;
 			}
 		}
+	}
+
+	private static void PlaceArena()
+	{
+		string structure = "Assets/Structures/MapAreas/DesertArea/Arena";
+		Point16 size = StructureTools.GetSize(structure);
+		int x = LeftSpawn ? Main.maxTilesX - 140 - size.X : 140;
+		int lowestY = 0;
+		int lowestX = 0;
+		float lowestOriginX = 0;
+
+		for (int i = x; i < x + size.X; ++i)
+		{
+			int y = FindYBelow(i, 0);
+			
+			if (y > lowestY)
+			{
+				lowestY = y;
+				lowestX = i;
+				lowestOriginX = (i - x) / (float)size.X;
+			}
+		}
+
+		Point16 pos = StructureTools.PlaceByOrigin(structure, new Point16(lowestX, lowestY), new Vector2(lowestOriginX, 1));
+		GenVars.structures.AddProtectedStructure(new Rectangle(pos.X, pos.Y, size.X, size.Y), 10);
+		BossSpawnLocation = pos + new Point16(size.X / 2, (int)(size.Y / 1.25f));
 	}
 
 	private static bool CanEmbedStructureIn(Point16 pos, Point16 structureSize)
@@ -629,13 +666,14 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 	private void GenerateTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
-		const int MinHeight = 210;
+		const int MinHeight = FloorY;
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
-		Main.worldSurface = 240;
-		Main.rockLayer = 270;
+		Main.worldSurface = FloorY + 30;
+		Main.rockLayer = FloorY + 60;
 
+		SetSpawn = false;
 		LeftSpawn = Main.rand.NextBool(2);
 		Main.spawnTileX = LeftSpawn ? 70 : Main.maxTilesX - 70;
 
@@ -711,25 +749,7 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 
 		TileEntity.UpdateEnd();
 		Wiring.UpdateMech();
-
-		SandstormTimer++;
-		int max = !Sandstorm.Happening ? 40 * 60 : 20 * 60;
-
-		if (SandstormTimer > max)
-		{
-			if (!Sandstorm.Happening)
-			{
-				Sandstorm.StartSandstorm();
-				Main.windSpeedTarget = Main.rand.NextFloat(1, 2);
-			}
-			else 
-			{
-				Sandstorm.StopSandstorm();
-				Main.windSpeedTarget = 0;
-			}
-
-			SandstormTimer = 0;
-		}
+		UpdateSandstorm();
 
 		bool hasPortal = false;
 
@@ -742,23 +762,116 @@ internal class DesertArea : MappingWorld, IOverrideOcean
 			}
 		}
 
-		//if (!hasPortal && ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
-		//{
-		//	int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), BossSpawnLocation.X, BossSpawnLocation.Y, ModContent.NPCType<Grovetender>());
+		if (!hasPortal && !NPC.AnyNPCs(ModContent.NPCType<SunDevourerNPC>()))
+		{
+			int x = BossSpawnLocation.X * 16;
+			int y = BossSpawnLocation.Y * 16;
+			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), x, y, ModContent.NPCType<SunDevourerNPC>(), 0, x, y - 40 * 16);
 
-		//	if (Main.netMode == NetmodeID.Server)
-		//	{
-		//		NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
-		//	}
-		//}
+			Main.npc[npc].localAI[3] = y + 20 * 16;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+			}
+		}
+		else
+		{
+			if (SetSpawn || !ActiveDevourer())
+			{
+				return;
+			}
+
+			SetSpawn = true;
+			Main.spawnTileX = BossSpawnLocation.X;
+			Main.spawnTileY = BossSpawnLocation.Y;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.WorldData, -1, -1, null);
+			}
+		}
 	}
 
-	public void OverrideOcean()
+	private static void UpdateSandstorm()
+	{
+		if (!CanRunSandstorm())
+		{
+			if (SandstormTimer != 0 && Sandstorm.Happening)
+			{
+				Sandstorm.StopSandstorm();
+				Main.windSpeedTarget = 0;
+			}
+
+			SandstormTimer = 0;
+			return;
+		}
+
+		SandstormTimer++;
+		int max = !Sandstorm.Happening ? 40 * 60 : 20 * 60;
+
+		if (SandstormTimer > max)
+		{
+			if (!Sandstorm.Happening)
+			{
+				Sandstorm.StartSandstorm();
+				Main.windSpeedTarget = Main.rand.NextFloat(1, 2) * (LeftSpawn ? -1 : 1);
+			}
+			else
+			{
+				Sandstorm.StopSandstorm();
+				Main.windSpeedTarget = 0;
+			}
+
+			SandstormTimer = 0;
+		}
+	}
+
+	private static bool CanRunSandstorm()
+	{
+		if (!Main.CurrentFrameFlags.AnyActiveBossNPC)
+		{
+			return true;
+		}
+
+		int bossWho = NPC.FindFirstNPC(ModContent.NPCType<SunDevourerNPC>());
+
+		if (bossWho != -1)
+		{
+			NPC boss = Main.npc[bossWho];
+
+			if (boss.ai[0] > 0)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	public void OverrideBiome()
 	{
 		Main.bgStyle = 2;
 		Main.newMusic = MusicID.Desert;
 		Main.curMusic = MusicID.Desert;
 		Main.LocalPlayer.ZoneBeach = false;
 		Main.LocalPlayer.ZoneSandstorm = Sandstorm.Happening;
+	}
+
+	public static bool ActiveDevourer()
+	{
+		int bossWho = NPC.FindFirstNPC(ModContent.NPCType<SunDevourerNPC>());
+
+		if (bossWho != -1)
+		{
+			NPC boss = Main.npc[bossWho];
+
+			if (boss.ai[2] > 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

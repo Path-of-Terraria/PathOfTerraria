@@ -68,6 +68,12 @@ internal static class Networking
 		/// <c>byte player, byte whoAmI</c>
 		/// </summary>
 		PathfindChangeState,
+
+		/// <summary>
+		/// Syncs any use of <see cref="AltUsePlayer"/>'s <see cref="AltUsePlayer.SetAltCooldown(int, int)"/>. Signature: <br/>
+		/// <c>byte player, short cooldown, short activeTime</c>
+		/// </summary>
+		SyncAltUse,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -168,6 +174,18 @@ internal static class Networking
 				if (Main.netMode == NetmodeID.Server)
 				{
 					PathfindStateChangeHandler.ServerRecieve(reader);
+				}
+
+				break;
+
+			case Message.SyncAltUse:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SyncAltUseHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					SyncAltUseHandler.ClientRecieve(reader);
 				}
 
 				break;

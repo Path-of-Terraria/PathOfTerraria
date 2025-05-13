@@ -45,11 +45,6 @@ internal abstract class Staff : Gear
 		data.ItemType = Common.Enums.ItemType.Staff;
 	}
 
-	public override bool? CanAutoReuseItem(Player player)
-	{
-		return player.GetModPlayer<StaffPlayer>().Empowered;
-	}
-
 	public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
 	{
 		mult = 0;

@@ -32,6 +32,7 @@ public sealed class PoTMod : Mod
 
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
+		
 		Debug.Assert(Name == ModName, "Internal mod name does not match expected contsant.");
 	}
 

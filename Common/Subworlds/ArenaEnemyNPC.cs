@@ -21,6 +21,7 @@ internal class ArenaEnemyNPC : GlobalNPC
 	{
 		GlobalNPC clone = base.Clone(from, to);
 		(clone as ArenaEnemyNPC).Arena = Arena;
+		(clone as ArenaEnemyNPC).StillDropStuff = StillDropStuff;
 		return clone;
 	}
 

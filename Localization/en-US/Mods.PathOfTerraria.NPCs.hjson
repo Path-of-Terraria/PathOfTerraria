@@ -660,3 +660,16 @@ AntlionTrapper: {
 		2: "{0} didn't watch where they were going."
 	}
 }
+
+SunDevourerNPC: {
+	DisplayName: Sun Devourer
+	Entry: An ancient beast in a faraway desert known the world over. While not the largest creature, the beast is known to devour sunlight, growing to strengths beyond its size.
+}
+
+WormLightning: {
+	DisplayName: Lightning Sprite
+	Entry: A being of pure energy, born from the explosion of a burst of lightning. They seek only one thing - to distract from their creator.
+}
+
+WormLightning_Body.DisplayName: "{$WormLightning.DisplayName}"
+WormLightning_Tail.DisplayName: "{$WormLightning.DisplayName}"

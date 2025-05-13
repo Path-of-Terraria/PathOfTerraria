@@ -1124,6 +1124,29 @@ DesertMap: {
 		'''
 }
 
+DevourersTail: {
+	DisplayName: Devourer's Tail
+	Tooltip: The tail of a powerful beast of light
+	AltUseDescription:
+		'''
+		Right click to whip significantly faster
+		The whip glows in the dark when swiftly whipping
+		'''
+}
+
+WormLightningBannerItem.DisplayName: Lightning Sprite Banner
+
+SunsoulStaffItem: {
+	DisplayName: Sunsoul Staff
+	Tooltip: The remaining strength of the sun lies dormant
+	AltUseDescription:
+		'''
+		Right click to summon a sun sprite
+		The sun sprite bounces between you and your mouse
+		You can still use the main staff while the sprite is active
+		'''
+}
+
 AugmentationOrb: {
 	DisplayName: Skill Augmentation Orb
 	Tooltip:
@@ -1131,4 +1154,9 @@ AugmentationOrb: {
 		Can be used to unlock an augmentation slot for a given skill
 		Enter a skill submenu to use
 		'''
+}
+
+SunDevourerTrophyItem: {
+	DisplayName: Sun Devourer Trophy
+	Tooltip: ""
 }

@@ -75,7 +75,7 @@ internal class QuestMarkerHook : ILoadable
 		Color color, float rotation, float scale, SpriteEffects effects)
 	{
 		Point mapPos = entity.Center.ToTileCoordinates();
-		bool revealed = Main.Map.IsRevealed(mapPos.X, mapPos.Y);
+		bool revealed = WorldGen.InWorld(mapPos.X, mapPos.Y, 5) && Main.Map.IsRevealed(mapPos.X, mapPos.Y);
 
 		if (entity is NPC oldMan && oldMan.type == NPCID.OldMan && !revealed)
 		{

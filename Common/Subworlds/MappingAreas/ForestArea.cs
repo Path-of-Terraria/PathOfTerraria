@@ -18,7 +18,7 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.MappingAreas;
 
-internal class ForestArea : MappingWorld, IOverrideOcean
+internal class ForestArea : MappingWorld, IOverrideBiome
 {
 	private enum StructureKind : byte
 	{
@@ -494,7 +494,7 @@ internal class ForestArea : MappingWorld, IOverrideOcean
 		}
 	}
 
-	public void OverrideOcean()
+	public void OverrideBiome()
 	{
 		Main.bgStyle = 0;
 		Main.curMusic = MusicID.OverworldDay;

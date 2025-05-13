@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -8,6 +9,8 @@ namespace PathOfTerraria.Content.Projectiles.Whip;
 
 internal abstract class WhipProjectile : ModProjectile
 {
+	protected bool LetGo => AltUse || !Main.player[Projectile.owner].channel || ChargeTime >= 120;
+
 	private Player Owner => Main.player[Projectile.owner];
 
 	public float Timer
@@ -29,6 +32,71 @@ internal abstract class WhipProjectile : ModProjectile
 	}
 
 	private bool _setSettings = false;
+
+	public override void SetStaticDefaults()
+	{
+		ProjectileID.Sets.IsAWhip[Type] = true;
+	}
+
+	public override void SetDefaults()
+	{
+		Projectile.DefaultToWhip();
+	}
+
+	public override bool? CanHitNPC(NPC target)
+	{
+		return Main.player[Projectile.owner].channel && !LetGo ? false : null;
+	}
+
+	public override bool PreAI()
+	{
+		// For some reason, using a whip without charging then immediately buffering a charge causes a weird visual issue with the whip
+		// In multiplayer, this visual issue is ten times worse for fun I guess
+		// This fixes it and has no functional downside to my knowledge - GabeHasWon
+		if (Timer >= Owner.HeldItem.useAnimation * 2 - 2)
+		{
+			Projectile.Kill();
+			return false;
+		}
+
+		if (!_setSettings)
+		{
+			Projectile.WhipSettings = (Owner.HeldItem.ModItem as WhipItem).WhipSettings;
+			_setSettings = true;
+		}
+
+		if (!LetGo && Owner.channel && Main.myPlayer == Projectile.owner)
+		{
+			Projectile.velocity = Owner.DirectionTo(Main.MouseWorld) * 4;
+			Owner.ChangeDir(MathF.Sign(Projectile.velocity.X));
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, Projectile.whoAmI);
+			}
+		}
+
+		(Owner.HeldItem.ModItem as WhipItem).UpdateProjectile(Projectile);
+
+		if (LetGo)
+		{
+			return true; // Let the vanilla whip AI run.
+		}
+
+		if (++ChargeTime % 12 == 0) // 1 segment per 12 ticks of charge.
+		{
+			Projectile.WhipSettings.Segments++;
+		}
+
+		// Increase range up to 2x for full charge.
+		Projectile.WhipSettings.RangeMultiplier += 1 / 120f;
+
+		// Reset the animation and item timer while charging.
+		Owner.itemAnimation = Owner.itemAnimationMax;
+		Owner.itemTime = Owner.itemTimeMax;
+
+		return false; // Prevent the vanilla whip AI from running.
+	}
 
 	public override void AI()
 	{
@@ -58,46 +126,16 @@ internal abstract class WhipProjectile : ModProjectile
 		Owner.SetCompositeArmFront(true, stretch, rotationOffset);
 	}
 
-	public override void SetStaticDefaults()
+	public override void SendExtraAI(BinaryWriter writer)
 	{
-		ProjectileID.Sets.IsAWhip[Type] = true;
+		writer.Write((short)Projectile.WhipSettings.Segments);
+		writer.Write((Half)Projectile.WhipSettings.RangeMultiplier);
 	}
 
-	public override void SetDefaults()
+	public override void ReceiveExtraAI(BinaryReader reader)
 	{
-		Projectile.DefaultToWhip();
-	}
-
-	// This example uses PreAI to implement a charging mechanic.
-	// If you remove this, also remove Item.channel = true from the item's SetDefaults.
-	public override bool PreAI()
-	{
-		Player owner = Main.player[Projectile.owner];
-
-		if (!_setSettings)
-		{
-			Projectile.WhipSettings = (owner.HeldItem.ModItem as WhipItem).WhipSettings;
-			_setSettings = true;
-		}
-
-		if (AltUse || !owner.channel || ChargeTime >= 120)
-		{
-			return true; // Let the vanilla whip AI run.
-		}
-
-		if (++ChargeTime % 12 == 0) // 1 segment per 12 ticks of charge.
-		{
-			Projectile.WhipSettings.Segments++;
-		}
-
-		// Increase range up to 2x for full charge.
-		Projectile.WhipSettings.RangeMultiplier += 1 / 120f;
-
-		// Reset the animation and item timer while charging.
-		owner.itemAnimation = owner.itemAnimationMax;
-		owner.itemTime = owner.itemTimeMax;
-
-		return false; // Prevent the vanilla whip AI from running.
+		Projectile.WhipSettings.Segments = reader.ReadInt16();
+		Projectile.WhipSettings.RangeMultiplier = (float)reader.ReadHalf();
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -182,6 +220,8 @@ internal abstract class WhipProjectile : ModProjectile
 
 			float rotation = diff.ToRotation() - MathHelper.PiOver2; // This projectile's sprite faces down, so PiOver2 is used to correct rotation.
 			Color color = Lighting.GetColor(element.ToTileCoordinates());
+
+			(Main.player[Projectile.owner].HeldItem.ModItem as WhipItem).ModifyProjectileLinkDrawing(Projectile, i, ref color);
 
 			Main.EntitySpriteDraw(texture, pos - Main.screenPosition, frame, color, rotation, origin, scale, flip, 0);
 
