@@ -43,7 +43,7 @@ FetidCarapace: {
 
 Fireball: {
 	Name: Fireball
-	Description: Cast a high-damage fireball which has a chance to burn enemies.
+	Description: Cast a high-damage, explosive fireball which has a chance to burn enemies.
 }
 
 IceBolt: {
