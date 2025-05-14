@@ -1,20 +1,17 @@
 ﻿using PathOfTerraria.Common.Subworlds.Passes;
-using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
-using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
-internal class DestroyerDomain : BossDomainSubworld
+internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 {
 	[Flags]
 	public enum PlatformState
@@ -27,13 +24,10 @@ internal class DestroyerDomain : BossDomainSubworld
 
 	public const int FloorY = 300;
 
-	public static UnifiedRandom GenRandom => Main.rand;
-
-	public override int Width => 1200;
+	public override int Width => 1300;
 	public override int Height => 400;
-	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
-	public override int[] WhitelistedExplodableTiles => [ModContent.TileType<ExplosivePowder>()];
-	public override int[] WhitelistedMiningTiles => [ModContent.TileType<GrabberAnchor>()];
+	public override (int time, bool isDay) ForceTime => (600, false);
+	public override int[] WhitelistedMiningTiles => [TileID.Ebonstone];
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
@@ -41,47 +35,140 @@ internal class DestroyerDomain : BossDomainSubworld
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new FlatWorldPass(FloorY, true, null, TileID.TinPlating, ModContent.WallType<TinPlatingUnsafe>()),
-		new PassLegacy("City", BuildCity)];
+		new PassLegacy("City", BuildCity),
+		new PassLegacy("Paint", PaintWorld)];
+
+	private void PaintWorld(GenerationProgress progress, GameConfiguration configuration)
+	{
+		HashSet<Point16> blueSpots = [];
+		Dictionary<Point16, OpenFlags> metals = [];
+
+		for (int i = 10; i < Main.maxTilesX - 10; ++i)
+		{
+			for (int j = 10; j < Main.maxTilesY - 10; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
+
+				if (tile.HasTile && (tile.TileType == TileID.TinPlating || tile.TileType == ModContent.TileType<MechPlatform>()))
+				{
+					tile.TileColor = PaintID.GrayPaint;
+
+					if (tile.TileType == ModContent.TileType<MechPlatform>())
+					{
+						metals.Add(new Point16(i, j), flags);
+					}
+				}
+
+				if (tile.WallType == ModContent.WallType<TinPlatingUnsafe>())
+				{
+					tile.WallColor = PaintID.GrayPaint;
+
+					if (WorldGen.genRand.NextBool(460))
+					{
+						blueSpots.Add(new Point16(i, j));
+					}
+				}
+			}
+		}
+
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingMetals");
+
+		foreach (KeyValuePair<Point16, OpenFlags> metal in metals)
+		{
+			TwinsDomain.DecorateMetals(metal.Key, metal.Value, true);
+		}
+
+		foreach (Point16 spot in blueSpots)
+		{
+			Tile tile = Main.tile[spot];
+			tile.WallType = (ushort)ModContent.WallType<BrokenSoftGlowplateWall>();
+			tile.WallColor = PaintID.None;
+		}
+	}
 
 	private void BuildCity(GenerationProgress progress, GameConfiguration configuration)
 	{
-		Main.spawnTileY = FloorY - 4;
-
 		int reps = Width / 130;
+		int spawnTower = WorldGen.genRand.Next(reps);
 
 		for (int i = 0; i < reps; ++i)
 		{
-			if (WorldGen.genRand.NextBool(6))
+			if (WorldGen.genRand.NextBool(6) && i != spawnTower)
 			{
 				continue;
 			}
 
-			int x = (int)MathHelper.Lerp(120, Main.maxTilesX - 120, i / (reps - 1f)) + WorldGen.genRand.Next(-30, 30);
+			int x = (int)MathHelper.Lerp(160, Main.maxTilesX - 160, i / (reps - 1f)) + WorldGen.genRand.Next(-30, 30);
+			int y = MakeTower(x, FloorY + 1);
 
-			MakeTower(x, FloorY + 1);
+			if (spawnTower == i)
+			{
+				Main.spawnTileX = x + (WorldGen.genRand.NextBool() ? -1 : 1 * WorldGen.genRand.Next(5, 12));
+				Main.spawnTileY = y + 16;
+			}
 		}
 
 		for (int i = 0; i < 90; ++i)
 		{
-			WorldUtils.Gen(new Point(WorldGen.genRand.Next(40, Main.maxTilesX - 40), FloorY + 2), 
-				new ShapeBranch(WorldGen.genRand.NextFloat(-0.9f, 0.2f), WorldGen.genRand.NextFloat(16, 80)), new Actions.PlaceWall(WallID.EbonstoneUnsafe));
+			var pos = new Point(WorldGen.genRand.Next(60, Main.maxTilesX - 60), FloorY + 2);
+			Branch(pos);
 
 			if (i % 2 == 0)
 			{
-				float shapeDist = WorldGen.genRand.NextFloat(16, 80);
-
-				WorldUtils.Gen(new Point(WorldGen.genRand.Next(40, Main.maxTilesX - 40), FloorY + 2),
-					new ShapeBranch(WorldGen.genRand.NextFloat(-0.9f, 0.2f) + MathHelper.PiOver2, shapeDist), new Actions.SetTile(TileID.Ebonstone));
+				pos = new Point(WorldGen.genRand.Next(60, Main.maxTilesX - 60), FloorY + 2);
+				Branch(pos, null, true);
 			}
+		}
+
+		for (int i = 0; i < 12; ++i)
+		{
+			int x;
+			int y;
+
+			do
+			{
+				x = WorldGen.genRand.Next(170, Main.maxTilesX - 170);
+				y = WorldGen.genRand.Next(150, FloorY - 40);
+			} while (!GenVars.structures.CanPlace(new Rectangle(x, y, 30, 8)));
+
+			FloatingHouse(x, y);
 		}
 	}
 
-	public static void MakeTower(int x, int y)
+	private static void Branch(Point pos, Range? sizeRange = null, bool placeTiles = false, float forceAngle = float.PositiveInfinity)
 	{
-		int reps = WorldGen.genRand.Next(8, 15);
+		ShapeData shape = new();
+
+		float angle = WorldGen.genRand.NextFloat(-1.4f, 0.2f);
+
+		if (placeTiles)
+		{
+			angle += MathHelper.Pi;
+		}
+
+		if (forceAngle != float.PositiveInfinity)
+		{
+			angle = forceAngle;
+		}
+
+		// Base branch
+		WorldUtils.Gen(pos, new ShapeBranch(angle,
+			sizeRange is null ? WorldGen.genRand.NextFloat(16, 80) : WorldGen.genRand.NextFloat(sizeRange.Value.Start.Value, sizeRange.Value.End.Value)), 
+			placeTiles ? new Actions.SetTile(TileID.Ebonstone) : new Actions.PlaceWall(WallID.EbonstoneUnsafe).Output(shape));
+
+		// Leaf details
+		WorldUtils.Gen(pos, new ModShapes.InnerOutline(shape), Actions.Chain(new Modifiers.Blotches(6, 3, 0.05f), new Modifiers.NotInShape(shape),
+			new Actions.PlaceWall(WallID.CorruptGrassUnsafe)));
+	}
+
+	public static int MakeTower(int x, int y)
+	{
+		int reps = WorldGen.genRand.Next(8, 18);
 		int width = WorldGen.genRand.Next(50, 60);
-		bool endNext = false;
+		int originalWidth = width;
 		int originalY = y;
+		bool endNext = false;
 
 		for (int i = 0; i < reps; ++i)
 		{
@@ -96,9 +183,9 @@ internal class DestroyerDomain : BossDomainSubworld
 
 			y -= height - 1;
 
-			MakeHouse(x, y, width, height, i == 0 ? PlatformState.None : PlatformState.Below, last, i == 1);
+			MakeHouse(x, y, width, height, i == 0 ? PlatformState.None : PlatformState.Below, last, i == 1 || WorldGen.genRand.NextBool(6) && !last);
 
-			width -= WorldGen.genRand.Next(2, 7);
+			width -= WorldGen.genRand.Next(1, 7);
 
 			if (last)
 			{
@@ -111,7 +198,8 @@ internal class DestroyerDomain : BossDomainSubworld
 			}
 		}
 
-		GenVars.structures.AddProtectedStructure(new Rectangle(x - width / 2, originalY, width, originalY - y));
+		GenVars.structures.AddProtectedStructure(new Rectangle(x - width / 2, y, originalWidth - 6, originalY - y), 8);
+		return y;
 	}
 
 	public static void MakeHouse(int x, int y, int width, int height, PlatformState platformState = PlatformState.None, bool forceCenter = false, bool openWalls = false)
@@ -120,28 +208,17 @@ internal class DestroyerDomain : BossDomainSubworld
 
 		ShapeData data = new();
 		WorldUtils.Gen(new Point(x, y), new Shapes.Rectangle(width, height), new Actions.PlaceWall((ushort)ModContent.WallType<TinPlatingUnsafe>()).Output(data));
-		WorldUtils.Gen(new Point(x, y), new ModShapes.InnerOutline(data), Actions.Chain(new Modifiers.Blotches(), new Actions.PlaceTile(TileID.TinPlating), new Actions.ClearWall()));
+		WorldUtils.Gen(new Point(x, y), new ModShapes.InnerOutline(data), Actions.Chain(new Modifiers.Blotches(), 
+			new Actions.PlaceTile(TileID.TinPlating), new Actions.ClearWall()));
 
 		if (platformState.HasFlag(PlatformState.Below))
 		{
-			int openingWidth = WorldGen.genRand.Next(Math.Max(3, width / 4), Math.Max(4, width / 2));
-			int floorX = x + WorldGen.genRand.Next(width - openingWidth - 8) + 4;
+			AddPlatformHole(x, y + height - 1, width, forceCenter);
+		}
 
-			if (forceCenter)
-			{
-				floorX = x + width / 2 - 3;
-				openingWidth = 6;
-			}
-
-			for (int j = -1; j < 2; ++j)
-			{
-				for (int i = floorX; i < floorX + openingWidth; ++i)
-				{
-					Tile tile = Main.tile[i, y + height - 1 + j];
-					tile.Clear(TileDataType.Tile);
-					tile.WallType = (ushort)ModContent.WallType<TinPlatingUnsafe>();
-				}
-			}
+		if (platformState.HasFlag(PlatformState.Above))
+		{
+			AddPlatformHole(x, y, width, forceCenter);
 		}
 
 		if (openWalls)
@@ -159,14 +236,89 @@ internal class DestroyerDomain : BossDomainSubworld
 			}
 		}
 
-		PopulateHouse(data);
+		PopulateHouse(data, new Point(x, y));
 	}
 
-	private static void PopulateHouse(ShapeData data)
+	private static void AddPlatformHole(int x, int y, int width, bool forceCenter)
 	{
-		foreach (Point16 pos in data.GetData())
-		{
+		int openingWidth = WorldGen.genRand.Next(Math.Max(3, width / 4), Math.Max(4, width / 2));
+		int floorX = x + WorldGen.genRand.Next(width - openingWidth - 8) + 4;
 
+		if (forceCenter)
+		{
+			floorX = x + width / 2 - 3;
+			openingWidth = 6;
+		}
+
+		for (int j = -1; j < 2; ++j)
+		{
+			for (int i = floorX; i < floorX + openingWidth; ++i)
+			{
+				Tile tile = Main.tile[i, y + j];
+				tile.Clear(TileDataType.Tile);
+
+				if (j == 0)
+				{
+					tile.TileType = (ushort)ModContent.TileType<MechPlatform>();
+					tile.HasTile = true;
+				}
+
+				tile.WallType = (ushort)ModContent.WallType<TinPlatingUnsafe>();
+			}
+		}
+	}
+
+	public static void FloatingHouse(int x, int y)
+	{
+		int width = WorldGen.genRand.Next(18, 30);
+		MakeHouse(x, y, width + width % 2, 8, PlatformState.Above);
+
+		if (WorldGen.genRand.NextBool(2) && width > 20)
+		{
+			PlacePulseGenerator(x - 4, y, width);
+			PlacePulseGenerator(x + 4, y, width);
+		}
+		else
+		{
+			PlacePulseGenerator(x, y, width);
+		}
+	}
+
+	private static void PlacePulseGenerator(int x, int y, int width)
+	{
+		for (int i = 0; i < 6; ++i)
+		{
+			int k = x - 3 + i;
+
+			WorldGen.PlaceTile(k, y + 8, TileID.TinPlating);
+		}
+
+		WorldGen.PlaceTile(x - 3, y + 9, ModContent.TileType<PulseGenerator>());
+		GenVars.structures.AddProtectedStructure(new Rectangle(x - width / 2, y, width, 8));
+	}
+
+	private static void PopulateHouse(ShapeData data, Point position)
+	{
+		HashSet<Point16> positions = data.GetData();
+
+		foreach (Point16 pos in positions)
+		{
+			if (AnyAdjacentOpening(positions, pos, position) && WorldGen.genRand.NextBool(20))
+			{
+				float factor = WorldGen.genRand.NextFloat();
+				int max = (int)MathHelper.Lerp(MathHelper.Lerp(16, 20, factor), MathHelper.Lerp(20, 34, factor), factor);
+				Branch(new Point(position.X + pos.X, position.Y + pos.Y), 12..max, WorldGen.genRand.NextBool(12), WorldGen.genRand.NextFloat(-3f, 0.2f));
+			}
+		}
+	}
+
+	private static bool AnyAdjacentOpening(HashSet<Point16> positions, Point16 pos, Point origin)
+	{
+		return OpenNoWall(pos.X - 1, pos.Y) || OpenNoWall(pos.X + 1, pos.Y) || OpenNoWall(pos.X, pos.Y + 1) || OpenNoWall(pos.X, pos.Y - 1);
+
+		bool OpenNoWall(int x, int y)
+		{
+			return !positions.Contains(new Point16(x, y)) && Main.tile[x + origin.X, y + origin.Y].WallType == WallID.None;
 		}
 	}
 
@@ -241,5 +393,12 @@ internal class DestroyerDomain : BossDomainSubworld
 				Projectile.NewProjectile(src, Arena.Center() - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 			}
 		}
+	}
+
+	public void OverrideBiome()
+	{
+		Main.LocalPlayer.ZoneCorrupt = true;
+		Main.newMusic = MusicID.Corruption;
+		Main.curMusic = MusicID.Corruption;
 	}
 }

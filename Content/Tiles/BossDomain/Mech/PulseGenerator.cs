@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Tiles;
 using ReLogic.Content;
 using System.Collections.Generic;
-using System.Security.Permissions;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -45,7 +44,7 @@ internal class PulseGenerator : ModTile
 	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		Tile tile = Main.tile[i, j];
-		int timer = Timer + i * 7 + j * 3;
+		int timer = Timer + i * 3 + j * 2;
 
 		if (tile.TileFrameX == 0 && tile.TileFrameY == 0 && timer % 18 == 0)
 		{
@@ -81,8 +80,14 @@ internal class PulseGenerator : ModTile
 
 		public override bool Update(Gore gore)
 		{
-			gore.velocity.Y *= 0.97f;
-			gore.scale -= 0.01f;
+			UpdateState(gore);
+
+			if (Collision.SolidCollision(gore.position, 32, 10))
+			{
+				UpdateState(gore);
+				UpdateState(gore);
+			}
+
 			gore.position += gore.velocity;
 
 			if (gore.scale <= 0)
@@ -91,6 +96,12 @@ internal class PulseGenerator : ModTile
 			}
 
 			return false;
+		}
+
+		private static void UpdateState(Gore gore)
+		{
+			gore.velocity.Y *= 0.97f;
+			gore.scale -= 0.01f;
 		}
 
 		public override Color? GetAlpha(Gore gore, Color lightColor)

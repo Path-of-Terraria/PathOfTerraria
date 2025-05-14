@@ -20,5 +20,11 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.PrimeLaser);
 		ArpgNPC.NoAffixesSet.Add(NPCID.PrimeCannon);
 		ArpgNPC.NoAffixesSet.Add(NPCID.Creeper); // Stops the BoC healthbar from bugging
+		ArpgNPC.NoAffixesSet.Add(NPCID.TheDestroyerBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.TheDestroyerTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.TheDestroyer);
+		ArpgNPC.NoAffixesSet.Add(NPCID.EaterofWorldsHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.EaterofWorldsBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.EaterofWorldsTail);
 	}
 }
