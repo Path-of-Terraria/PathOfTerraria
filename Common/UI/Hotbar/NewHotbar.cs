@@ -17,7 +17,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
-internal sealed class NewHotbar : SmartUiState
+public sealed class NewHotbar : SmartUiState
 {
 	/// <summary>
 	///		Offsets the rendering of buffs to render below our custom hotbar.
@@ -46,6 +46,8 @@ internal sealed class NewHotbar : SmartUiState
 			X += (Target - X) * 0.33f;
 		}
 	}
+
+	public record struct SkillTooltip(string Name, string Text, float Slot);
 
 	private readonly Selector specialSelector = new();
 	private readonly Selector buildingSelector = new();
@@ -278,45 +280,52 @@ internal sealed class NewHotbar : SmartUiState
 	internal static void DrawSkillHoverTooltips(Skill skill, int? skillIndex = null)
 	{
 		string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
-
 		Tooltip.SetName(skill.DisplayName.Value + " " + level);
 
-		string manaCost = Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.TotalManaCost).Value;
+		List<SkillTooltip> tooltips = [];
+		SkillTooltip manaCost = new("Mana", Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.TotalManaCost).Value, 2);
+		SkillTooltip weapon = skill.WeaponType != ItemID.None
+			? new("WeaponType", Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value, 3)
+			: new("NoWeapon", Language.GetText("Mods.PathOfTerraria.Skills.NoWeaponLine").Value, 3);
 
-		string weapon = skill.WeaponType != ItemID.None
-			? Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value
-			: Language.GetText("Mods.PathOfTerraria.Skills.NoWeaponLine").Value;
-
-		string noKeybindName = Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value;
-
-		string keybindLine = "";
+		SkillTooltip noKeybindName = new("NoKeybind", Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value, 0);
+		SkillTooltip keybindLine = new();
 
 		if (skillIndex.HasValue)
 		{
 			string keybindName = skillIndex switch
 			{
-				0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill1KeybindName) ? skill1KeybindName : noKeybindName,
-				1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill2KeybindName) ? skill2KeybindName : noKeybindName,
-				2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault(), false, out string skill3KeybindName) ? skill3KeybindName : noKeybindName,
+				0 => TryGetKeybindName(SkillCombatPlayer.Skill1Keybind, false, out string skill1KeybindName) ? skill1KeybindName : noKeybindName.Text,
+				1 => TryGetKeybindName(SkillCombatPlayer.Skill2Keybind, false, out string skill2KeybindName) ? skill2KeybindName : noKeybindName.Text,
+				2 => TryGetKeybindName(SkillCombatPlayer.Skill3Keybind, false, out string skill3KeybindName) ? skill3KeybindName : noKeybindName.Text,
 				_ => ""
 			};
 
-			keybindLine = Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value + "\n";
+			keybindLine = new("Keybind", Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value + "\n", 0);
 		}
 
-		string tooltip = $"{keybindLine}{skill.Description.Value}\n{manaCost}\n{weapon}";
+		tooltips.Add(manaCost);
+		tooltips.Add(keybindLine);
+		tooltips.Add(weapon);
+		tooltips.Add(new SkillTooltip("Description", skill.Description.Value, 1));
 
 		if (skill.Duration != 0)
 		{
-			string duration = Language.GetText("Mods.PathOfTerraria.Skills.DurationLine").WithFormatArgs($"{skill.Duration / 60f:#0.##}").Value;
-			tooltip += "\n" + duration;
+			tooltips.Add(new("Duration", Language.GetText("Mods.PathOfTerraria.Skills.DurationLine").WithFormatArgs($"{skill.Duration / 60f:#0.##}").Value, 4));
 		}
 
-		string cooldown = Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value;
+		tooltips.Add(new("Cooldown", Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value, 5));
+		skill.ModifyTooltips(tooltips);
+		tooltips.Sort((x, y) => x.Slot.CompareTo(y.Slot));
 
-		tooltip += "\n" + cooldown;
+		string final = "";
 
-		Tooltip.SetTooltip(tooltip);
+		foreach (SkillTooltip tooltip in tooltips)
+		{
+			final += tooltip.Text + "\n";
+		}
+		
+		Tooltip.SetTooltip(final);
 	}
 
 	private static void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
@@ -391,21 +400,17 @@ internal sealed class NewHotbar : SmartUiState
 		DrawLetter(spriteBatch, assignedManaKey, new Vector2(523, 71 + off), Color.White);
 
 		// Draw Skill Hotkeys
-		string skill1Key = SkillCombatPlayer.Skill1Keybind.GetAssignedKeys().FirstOrDefault();
-		string skill2Key = SkillCombatPlayer.Skill2Keybind.GetAssignedKeys().FirstOrDefault();
-		string skill3Key = SkillCombatPlayer.Skill3Keybind.GetAssignedKeys().FirstOrDefault();
-
-		if (TryGetKeybindName(skill1Key, true, out string skill1KeybindName))
+		if (TryGetKeybindName(SkillCombatPlayer.Skill1Keybind, true, out string skill1KeybindName))
 		{
 			DrawLetter(spriteBatch, skill1KeybindName, new Vector2(285, 71 + off), Color.White, 0.35f);
 		}
 
-		if (TryGetKeybindName(skill2Key, true, out string skill2KeybindName))
+		if (TryGetKeybindName(SkillCombatPlayer.Skill2Keybind, true, out string skill2KeybindName))
 		{
 			DrawLetter(spriteBatch, skill2KeybindName, new Vector2(338, 71 + off), Color.White, 0.35f);
 		}
 
-		if (TryGetKeybindName(skill3Key, true, out string skill3KeybindName))
+		if (TryGetKeybindName(SkillCombatPlayer.Skill3Keybind, true, out string skill3KeybindName))
 		{
 			DrawLetter(spriteBatch, skill3KeybindName, new Vector2(390, 71 + off), Color.White, 0.35f);
 		}
@@ -416,8 +421,9 @@ internal sealed class NewHotbar : SmartUiState
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, _font, letter, position, color, 0f, Vector2.Zero, new Vector2(scale));
 	}
 	
-	private static bool TryGetKeybindName(string name, bool trim, [NotNullWhen(true)] out string result)
+	private static bool TryGetKeybindName(ModKeybind key, bool trim, [NotNullWhen(true)] out string result)
 	{
+		string name = key.GetAssignedKeys().FirstOrDefault();
 		result = null;
 		
 		if (string.IsNullOrEmpty(name))

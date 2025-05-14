@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Common.UI.Hotbar;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
@@ -58,6 +61,20 @@ public class RainOfArrows : Skill
 	{
 		return base.CanUseSkill(player) && player.HeldItem.CountsAsClass(DamageClass.Ranged) && Main.myPlayer == player.whoAmI && 
 			!WeaponBlacklist.Contains(player.HeldItem.type) && !player.HeldItem.consumable;
+	}
+
+	public override void ModifyTooltips(List<NewHotbar.SkillTooltip> tooltips)
+	{
+		tooltips.Remove(tooltips.FirstOrDefault(x => x.Name == "WeaponType"));
+		NewHotbar.SkillTooltip tooltip = tooltips.First(x => x.Name == "Description");
+		string text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.NeedsWeapon").Format(WeaponType.LocalizeText().ToLower());
+
+		if (Main.LocalPlayer.HeldItem.CountsAsClass(DamageClass.Ranged))
+		{
+			text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.BaseDamage").Format(Main.LocalPlayer.HeldItem.damage);
+		}
+
+		tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 	}
 
 	private class RainProjectile : GlobalProjectile

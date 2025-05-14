@@ -1,10 +1,15 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.SkillSpecials;
 using ReLogic.Content;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Skills.Magic;
@@ -81,6 +86,20 @@ public class Nova : Skill
 	public override bool CanUseSkill(Player player)
 	{
 		return base.CanUseSkill(player) && player.HeldItem.CountsAsClass(DamageClass.Magic);
+	}
+
+	public override void ModifyTooltips(List<NewHotbar.SkillTooltip> tooltips)
+	{
+		tooltips.Remove(tooltips.FirstOrDefault(x => x.Name == "WeaponType"));
+		NewHotbar.SkillTooltip tooltip = tooltips.First(x => x.Name == "Description");
+		string text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.NeedsWeapon").Format(WeaponType.LocalizeText().ToLower());
+
+		if (Main.LocalPlayer.HeldItem.CountsAsClass(DamageClass.Magic))
+		{
+			text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.BaseDamage").Format(Main.LocalPlayer.HeldItem.damage);
+		}
+
+		tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 	}
 
 	private class NovaProjectile : ModProjectile
