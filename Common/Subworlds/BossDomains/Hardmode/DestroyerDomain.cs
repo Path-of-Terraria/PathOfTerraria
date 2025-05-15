@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
@@ -81,9 +82,16 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 		foreach (Point16 spot in blueSpots)
 		{
-			Tile tile = Main.tile[spot];
-			tile.WallType = (ushort)ModContent.WallType<BrokenSoftGlowplateWall>();
-			tile.WallColor = PaintID.None;
+			for (int i = -2; i < 3; ++i)
+			{
+				Tile tile = Main.tile[spot.X, spot.Y + i];
+
+				if (tile.WallType != WallID.None)
+				{
+					tile.WallType = (ushort)ModContent.WallType<BrokenSoftGlowplateWall>();
+					tile.WallColor = PaintID.None;
+				}
+			}
 		}
 	}
 
@@ -99,8 +107,8 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 				continue;
 			}
 
-			int x = (int)MathHelper.Lerp(160, Main.maxTilesX - 160, i / (reps - 1f)) + WorldGen.genRand.Next(-30, 30);
-			int y = MakeTower(x, FloorY + 1);
+			int x = (int)MathHelper.Lerp(130, Main.maxTilesX - 160, i / (reps - 1f)) + WorldGen.genRand.Next(-30, 30);
+			int y = MakeTower(x, FloorY + 1, spawnTower == i);
 
 			if (spawnTower == i)
 			{
@@ -162,7 +170,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 			new Actions.PlaceWall(WallID.CorruptGrassUnsafe)));
 	}
 
-	public static int MakeTower(int x, int y)
+	public static int MakeTower(int x, int y, bool spawnTower)
 	{
 		int reps = WorldGen.genRand.Next(8, 18);
 		int width = WorldGen.genRand.Next(50, 60);
@@ -183,7 +191,14 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 			y -= height - 1;
 
-			MakeHouse(x, y, width, height, i == 0 ? PlatformState.None : PlatformState.Below, last, i == 1 || WorldGen.genRand.NextBool(6) && !last);
+			if (!last || spawnTower)
+			{
+				MakeHouse(x, y, width, height, i == 0 ? PlatformState.None : PlatformState.Below, last, i == 1 || WorldGen.genRand.NextBool(6) && !last, last);
+			}
+			else
+			{
+				StructureTools.PlaceByOrigin($"Assets/Structures/DestroyerDomain/Top_" + Main.rand.Next(8), new Point16(x, y), new Vector2(0.5f, 0));
+			}
 
 			width -= WorldGen.genRand.Next(1, 7);
 
@@ -202,7 +217,8 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 		return y;
 	}
 
-	public static void MakeHouse(int x, int y, int width, int height, PlatformState platformState = PlatformState.None, bool forceCenter = false, bool openWalls = false)
+	public static void MakeHouse(int x, int y, int width, int height, PlatformState platformState = PlatformState.None, bool forceCenter = false, bool openWalls = false,
+		bool mechGatePlatform = false)
 	{
 		x -= width / 2;
 
@@ -213,7 +229,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 		if (platformState.HasFlag(PlatformState.Below))
 		{
-			AddPlatformHole(x, y + height - 1, width, forceCenter);
+			AddPlatformHole(x, y + height - 1, width, forceCenter, mechGatePlatform);
 		}
 
 		if (platformState.HasFlag(PlatformState.Above))
@@ -239,7 +255,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 		PopulateHouse(data, new Point(x, y));
 	}
 
-	private static void AddPlatformHole(int x, int y, int width, bool forceCenter)
+	private static void AddPlatformHole(int x, int y, int width, bool forceCenter, bool mechGatePlatform = false)
 	{
 		int openingWidth = WorldGen.genRand.Next(Math.Max(3, width / 4), Math.Max(4, width / 2));
 		int floorX = x + WorldGen.genRand.Next(width - openingWidth - 8) + 4;
@@ -259,7 +275,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 				if (j == 0)
 				{
-					tile.TileType = (ushort)ModContent.TileType<MechPlatform>();
+					tile.TileType = (ushort)(mechGatePlatform ? ModContent.TileType<BlockingGate>() : ModContent.TileType<MechPlatform>());
 					tile.HasTile = true;
 				}
 

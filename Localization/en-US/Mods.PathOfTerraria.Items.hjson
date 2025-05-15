@@ -1160,3 +1160,18 @@ SunDevourerTrophyItem: {
 	DisplayName: Sun Devourer Trophy
 	Tooltip: ""
 }
+
+CircuitSkullTriggerItem: {
+	DisplayName: Circuit Skull Trigger Item
+	Tooltip: ""
+}
+
+DroneTriggerItem: {
+	DisplayName: Drone Trigger Item
+	Tooltip: ""
+}
+
+SecurityDroneTriggerItem: {
+	DisplayName: Security Drone Trigger Item
+	Tooltip: ""
+}
