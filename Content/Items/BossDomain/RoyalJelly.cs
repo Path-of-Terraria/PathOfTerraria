@@ -14,10 +14,6 @@ internal class RoyalJelly : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		DestroyerDomain.MakeTower(pos.X, pos.Y, true);
-
-		return true;
 		NPC.SpawnOnPlayer(player.whoAmI, NPCID.QueenBee);
 		return true;
 	}
