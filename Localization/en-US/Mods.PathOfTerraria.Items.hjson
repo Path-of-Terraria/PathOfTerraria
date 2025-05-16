@@ -1162,16 +1162,33 @@ SunDevourerTrophyItem: {
 }
 
 CircuitSkullTriggerItem: {
-	DisplayName: Circuit Skull Trigger Item
+	DisplayName: Circuit Skull Trigger
 	Tooltip: ""
 }
 
 DroneTriggerItem: {
-	DisplayName: Drone Trigger Item
+	DisplayName: Drone Trigger
 	Tooltip: ""
 }
 
 SecurityDroneTriggerItem: {
-	DisplayName: Security Drone Trigger Item
+	DisplayName: Security Drone Trigger
+	Tooltip: ""
+}
+
+MechDrive: {
+	DisplayName: Mech Drive
+	Tooltip: ""
+}
+
+EnergizerCoreTriggerItem: {
+	DisplayName: Energizer Core Trigger
+	Tooltip: ""
+}
+
+EnergizerCoreBannerItem.DisplayName: Energizer Core Banner
+
+MechChip: {
+	DisplayName: Mech Chip
 	Tooltip: ""
 }

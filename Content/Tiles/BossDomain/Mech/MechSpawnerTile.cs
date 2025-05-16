@@ -47,7 +47,8 @@ internal class MechSpawnerTile : ModTile
 		{
 			0 => NPCID.Probe,
 			1 => ModContent.NPCType<CircuitSkull>(),
-			_ => ModContent.NPCType<SecurityDrone>(),
+			2 => ModContent.NPCType<SecurityDrone>(),
+			_ => ModContent.NPCType<EnergizerCore>(),
 		};
 
 		int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 1);

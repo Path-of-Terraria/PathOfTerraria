@@ -41,4 +41,9 @@ internal class SecurityDroneTriggerItem : DroneTriggerItem
 {
 	protected override int Style => 2;
 }
+
+internal class EnergizerCoreTriggerItem : DroneTriggerItem
+{
+	protected override int Style => 3;
+}
 #endif

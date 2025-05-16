@@ -29,6 +29,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 	public override int Height => 400;
 	public override (int time, bool isDay) ForceTime => (600, false);
 	public override int[] WhitelistedMiningTiles => [TileID.Ebonstone];
+	public override int[] WhitelistedCutTiles => [ModContent.TileType<TechDriveTile>()];
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
@@ -99,11 +100,13 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 	{
 		int reps = Width / 130;
 		int spawnTower = WorldGen.genRand.Next(reps);
+		int skipped = -1;
 
 		for (int i = 0; i < reps; ++i)
 		{
-			if (WorldGen.genRand.NextBool(6) && i != spawnTower)
+			if (WorldGen.genRand.NextBool(6) && i != spawnTower && skipped < 4)
 			{
+				skipped++;
 				continue;
 			}
 
@@ -119,12 +122,12 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 		for (int i = 0; i < 90; ++i)
 		{
-			var pos = new Point(WorldGen.genRand.Next(60, Main.maxTilesX - 60), FloorY + 2);
+			var pos = new Point(WorldGen.genRand.Next(80, Main.maxTilesX - 80), FloorY + 2);
 			Branch(pos);
 
 			if (i % 2 == 0)
 			{
-				pos = new Point(WorldGen.genRand.Next(60, Main.maxTilesX - 60), FloorY + 2);
+				pos = new Point(WorldGen.genRand.Next(80, Main.maxTilesX - 80), FloorY + 2);
 				Branch(pos, null, true);
 			}
 		}
@@ -180,7 +183,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 		for (int i = 0; i < reps; ++i)
 		{
-			int height = Math.Max(5, (int)(width * WorldGen.genRand.NextFloat(0.3f, 0.5f)));
+			int height = Math.Max(7, (int)(width * WorldGen.genRand.NextFloat(0.3f, 0.5f)));
 			bool last = i == reps - 1 || endNext;
 
 			if (last)
@@ -212,7 +215,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 				endNext = true;
 			}
 		}
-
+		
 		GenVars.structures.AddProtectedStructure(new Rectangle(x - width / 2, y, originalWidth - 6, originalY - y), 8);
 		return y;
 	}
@@ -291,16 +294,18 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 		if (WorldGen.genRand.NextBool(2) && width > 20)
 		{
-			PlacePulseGenerator(x - 4, y, width);
-			PlacePulseGenerator(x + 4, y, width);
+			PlacePulseGenerator(x - 4, y);
+			PlacePulseGenerator(x + 4, y);
 		}
 		else
 		{
-			PlacePulseGenerator(x, y, width);
+			PlacePulseGenerator(x, y);
 		}
+
+		GenVars.structures.AddProtectedStructure(new Rectangle(x - width / 2, y, width, 8));
 	}
 
-	private static void PlacePulseGenerator(int x, int y, int width)
+	private static void PlacePulseGenerator(int x, int y)
 	{
 		for (int i = 0; i < 6; ++i)
 		{
@@ -310,7 +315,6 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 		}
 
 		WorldGen.PlaceTile(x - 3, y + 9, ModContent.TileType<PulseGenerator>());
-		GenVars.structures.AddProtectedStructure(new Rectangle(x - width / 2, y, width, 8));
 	}
 
 	private static void PopulateHouse(ShapeData data, Point position)
