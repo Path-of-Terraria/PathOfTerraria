@@ -26,10 +26,7 @@ Generation: {
 
 Tiles: {
 	ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile
-
-	MechChest: {
-		MapEntry: Mechanical Case
-	}
+	MechChest.MapEntry: Mechanical Case
 }
 
 Waypoints: {

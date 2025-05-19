@@ -1178,7 +1178,7 @@ SecurityDroneTriggerItem: {
 
 MechDrive: {
 	DisplayName: Mech Drive
-	Tooltip: ""
+	Tooltip: "'Seems to interface with unknown signals throughout the ruined city'"
 }
 
 EnergizerCoreTriggerItem: {
@@ -1190,7 +1190,11 @@ EnergizerCoreBannerItem.DisplayName: Energizer Core Banner
 
 MechChip: {
 	DisplayName: Mech Chip
-	Tooltip: ""
+	Tooltip:
+		'''
+		A small, unstable device that connects to the Destroyer
+		{$MechDrive.Tooltip}
+		'''
 }
 
 DestroyerMap: {
