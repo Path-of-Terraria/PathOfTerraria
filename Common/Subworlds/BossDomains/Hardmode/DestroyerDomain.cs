@@ -28,7 +28,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 	public override int Width => 1300;
 	public override int Height => 400;
 	public override (int time, bool isDay) ForceTime => (600, false);
-	public override int[] WhitelistedMiningTiles => [TileID.Ebonstone];
+	public override int[] WhitelistedMiningTiles => [TileID.Ebonstone, ModContent.TileType<MechCapsule>()];
 	public override int[] WhitelistedCutTiles => [ModContent.TileType<TechDriveTile>()];
 
 	private static bool BossSpawned = false;
@@ -38,10 +38,12 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new FlatWorldPass(FloorY, true, null, TileID.TinPlating, ModContent.WallType<TinPlatingUnsafe>()),
 		new PassLegacy("City", BuildCity),
-		new PassLegacy("Paint", PaintWorld)];
+		new PassLegacy("Decor", DecorateWorld)];
 
-	private void PaintWorld(GenerationProgress progress, GameConfiguration configuration)
+	private void DecorateWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
+
 		HashSet<Point16> blueSpots = [];
 		Dictionary<Point16, OpenFlags> metals = [];
 
@@ -72,6 +74,8 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 					}
 				}
 			}
+
+			progress.Set((i - 10f) / (Main.maxTilesX - 20f));
 		}
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingMetals");
@@ -98,6 +102,8 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 	private void BuildCity(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Structures");
+
 		int reps = Width / 130;
 		int spawnTower = WorldGen.genRand.Next(reps);
 		int skipped = -1;
@@ -118,6 +124,8 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 				Main.spawnTileX = x + (WorldGen.genRand.NextBool() ? -1 : 1 * WorldGen.genRand.Next(5, 12));
 				Main.spawnTileY = y + 16;
 			}
+
+			progress.Set(i / (float)reps);
 		}
 
 		for (int i = 0; i < 90; ++i)
@@ -130,6 +138,8 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 				pos = new Point(WorldGen.genRand.Next(80, Main.maxTilesX - 80), FloorY + 2);
 				Branch(pos, null, true);
 			}
+
+			progress.Set(i / 90f);
 		}
 
 		for (int i = 0; i < 12; ++i)
@@ -144,6 +154,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 			} while (!GenVars.structures.CanPlace(new Rectangle(x, y, 30, 8)));
 
 			FloatingHouse(x, y);
+			progress.Set(i / 12f);
 		}
 	}
 
@@ -302,7 +313,38 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 			PlacePulseGenerator(x, y);
 		}
 
+		if (WorldGen.genRand.NextBool())
+		{
+			PlaceChest(x, y, width);
+		}
+
 		GenVars.structures.AddProtectedStructure(new Rectangle(x - width / 2, y, width, 8));
+	}
+
+	private static void PlaceChest(int x, int y, int width)
+	{
+		int chestX = WorldGen.genRand.Next(-width / 3, width / 3);
+
+		for (int i = 0; i < 2; ++i)
+		{
+			for (int j = -2; j < 1; ++j)
+			{
+				int k = x + i;
+				Tile tile = Main.tile[k + chestX, y + 7 + j];
+
+				if (j == 0)
+				{
+					WorldGen.PlaceTile(k + chestX, y + 7 + j, TileID.TinPlating);
+					tile.Slope = SlopeType.Solid;
+				}
+				else
+				{
+					tile.Clear(TileDataType.Tile);
+				}
+			}
+		}
+
+		WorldGen.PlaceObject(x + chestX, y + 6, ModContent.TileType<MechCapsule>(), true, 0);
 	}
 
 	private static void PlacePulseGenerator(int x, int y)

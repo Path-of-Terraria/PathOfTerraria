@@ -1192,3 +1192,13 @@ MechChip: {
 	DisplayName: Mech Chip
 	Tooltip: ""
 }
+
+DestroyerMap: {
+	DisplayName: Destroyer Map
+	Tooltip: ""
+}
+
+MechChestItem: {
+	DisplayName: Mech Chest
+	Tooltip: ""
+}
