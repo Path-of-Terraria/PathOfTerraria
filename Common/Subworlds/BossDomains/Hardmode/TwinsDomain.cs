@@ -188,14 +188,14 @@ internal class TwinsDomain : BossDomainSubworld
 		}
 	}
 
-	internal static void DecorateMetals(Point16 position, OpenFlags flags, bool fromPlatform = false)
+	internal static void DecorateMetals(Point16 position, OpenFlags flags, bool noLightsOrPlatforms = false)
 	{
 		if (!Main.tile[position].HasTile)
 		{
 			return;
 		}
 
-		if (WorldGen.genRand.NextBool(150) && position.X > 10 && position.X < Main.maxTilesX - 10 && !fromPlatform)
+		if (WorldGen.genRand.NextBool(150) && position.X > 10 && position.X < Main.maxTilesX - 10 && !noLightsOrPlatforms)
 		{
 			PlaceGemsparkWall(position, flags);
 		}
@@ -215,7 +215,7 @@ internal class TwinsDomain : BossDomainSubworld
 
 				WorldGen.PlaceObject(position.X, position.Y - 1, type, style: WorldGen.genRand.Next(styleRange));
 			}
-			else if (WorldGen.genRand.NextBool(250) && !fromPlatform)
+			else if (WorldGen.genRand.NextBool(250) && !noLightsOrPlatforms)
 			{
 				WorldGen.PlaceObject(position.X, position.Y - 3, ModContent.TileType<MechLamp>());
 
@@ -263,7 +263,7 @@ internal class TwinsDomain : BossDomainSubworld
 					tile.HasTile = true;
 				}
 			}
-			else if (WorldGen.genRand.NextBool(350) && !fromPlatform)
+			else if (WorldGen.genRand.NextBool(350) && !noLightsOrPlatforms)
 			{
 				WorldGen.PlaceObject(position.X, position.Y + 1, TileID.HangingLanterns);
 
@@ -284,7 +284,7 @@ internal class TwinsDomain : BossDomainSubworld
 			}
 		}
 
-		if (fromPlatform)
+		if (noLightsOrPlatforms)
 		{
 			return;
 		}

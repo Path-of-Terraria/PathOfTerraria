@@ -1160,3 +1160,49 @@ SunDevourerTrophyItem: {
 	DisplayName: Sun Devourer Trophy
 	Tooltip: ""
 }
+
+CircuitSkullTriggerItem: {
+	DisplayName: Circuit Skull Trigger
+	Tooltip: ""
+}
+
+DroneTriggerItem: {
+	DisplayName: Drone Trigger
+	Tooltip: ""
+}
+
+SecurityDroneTriggerItem: {
+	DisplayName: Security Drone Trigger
+	Tooltip: ""
+}
+
+MechDrive: {
+	DisplayName: Mech Drive
+	Tooltip: "'Seems to interface with unknown signals throughout the ruined city'"
+}
+
+EnergizerCoreTriggerItem: {
+	DisplayName: Energizer Core Trigger
+	Tooltip: ""
+}
+
+EnergizerCoreBannerItem.DisplayName: Energizer Core Banner
+
+MechChip: {
+	DisplayName: Mech Chip
+	Tooltip:
+		'''
+		A small, unstable device that connects to the Destroyer
+		{$MechDrive.Tooltip}
+		'''
+}
+
+DestroyerMap: {
+	DisplayName: Destroyer Map
+	Tooltip: ""
+}
+
+MechChestItem: {
+	DisplayName: Mech Chest
+	Tooltip: ""
+}
