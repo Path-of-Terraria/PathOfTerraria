@@ -1,11 +1,12 @@
 ﻿using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
+using ReLogic.Utilities;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
@@ -19,11 +20,10 @@ internal class PlanteraDomain : BossDomainSubworld
 	public override int Height => 800;
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, false);
 	public override int[] WhitelistedExplodableTiles => [ModContent.TileType<ExplosivePowder>()];
-	public override int[] WhitelistedMiningTiles => [ModContent.TileType<GrabberAnchor>()];
+	public override int[] WhitelistedMiningTiles => [TileID.PlanteraBulb];
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
-	private static bool LeftSpawn = false;
 	private static Rectangle Arena = Rectangle.Empty;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
@@ -46,8 +46,6 @@ internal class PlanteraDomain : BossDomainSubworld
 		cell.SetNoiseType(FastNoiseLite.NoiseType.Value);
 		cell.SetFrequency(0.06f);
 		cell.SetDomainWarpType(FastNoiseLite.DomainWarpType.BasicGrid);
-
-		LeftSpawn = WorldGen.genRand.NextBool();
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
@@ -75,6 +73,7 @@ internal class PlanteraDomain : BossDomainSubworld
 		}
 
 		Dictionary<Point16, OpenFlags> grasses = [];
+		HashSet<Point16> branches = [];
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
@@ -92,6 +91,29 @@ internal class PlanteraDomain : BossDomainSubworld
 
 						grasses.Add(new Point16(i, j), flags);
 					}
+					else if (WorldGen.genRand.NextBool(180))
+					{
+						ushort type = WorldGen.genRand.NextBool() ? TileID.Mudstone : TileID.Stone;
+						WorldGen.TileRunner(i, j, WorldGen.genRand.NextFloat(3, 12), WorldGen.genRand.Next(3, 12), type);
+					}
+					else if (WorldGen.genRand.NextBool(200) && WorldGen.InWorld(i, j, 50))
+					{
+						float angle = WorldGen.genRand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi);
+						var root = new ShapeRoot(angle, WorldGen.genRand.NextFloat(18, 30), WorldGen.genRand.NextFloat(4, 8), 1);
+						WorldUtils.Gen(new Point(i, j), root, new Actions.PlaceWall(WallID.LivingWoodUnsafe));
+					}
+				}
+
+				if (WorldGen.genRand.NextBool(350))
+				{
+					WallRunner(i, j, Main.rand.Next(6) switch
+					{
+						0 => WallID.JungleUnsafe,
+						1 => WallID.JungleUnsafe1,
+						2 => WallID.JungleUnsafe2,
+						3 => WallID.JungleUnsafe3,
+						_ => WallID.JungleUnsafe4
+					});
 				}
 			}
 
@@ -104,40 +126,101 @@ internal class PlanteraDomain : BossDomainSubworld
 		}
 	}
 
+	public static void WallRunner(int i, int j, int wall)
+	{
+		double num = WorldGen.genRand.Next(8, 21);
+		double num2 = WorldGen.genRand.Next(8, 33);
+		double num3 = num2;
+		Vector2D vector2D = default;
+		vector2D.X = i;
+		vector2D.Y = j;
+		Vector2D vector2D2 = default;
+		vector2D2.X = WorldGen.genRand.Next(-10, 11) * 0.1;
+		vector2D2.Y = WorldGen.genRand.Next(-10, 11) * 0.1;
+		
+		while (num > 0.0 && num3 > 0.0)
+		{
+			double num4 = num * (num3 / num2);
+			num3 -= 1.0;
+			int num5 = (int)(vector2D.X - num4 * 0.5);
+			int num6 = (int)(vector2D.X + num4 * 0.5);
+			int num7 = (int)(vector2D.Y - num4 * 0.5);
+			int num8 = (int)(vector2D.Y + num4 * 0.5);
+
+			if (num5 < 0)
+			{
+				num5 = 0;
+			}
+
+			if (num6 > Main.maxTilesX)
+			{
+				num6 = Main.maxTilesX;
+			}
+
+			if (num7 < 0)
+			{
+				num7 = 0;
+			}
+
+			if (num8 > Main.maxTilesY)
+			{
+				num8 = Main.maxTilesY;
+			}
+
+			for (int k = num5; k < num6; k++)
+			{
+				for (int l = num7; l < num8; l++)
+				{
+					if (Math.Abs(k - vector2D.X) + Math.Abs(l - vector2D.Y) < num * 0.5 * (1.0 + WorldGen.genRand.Next(-10, 11) * 0.015) && l > Main.worldSurface)
+					{
+						Main.tile[k, l].WallType = (ushort)wall;
+					}
+				}
+			}
+
+			vector2D += vector2D2;
+			vector2D2.X += WorldGen.genRand.Next(-10, 11) * 0.05;
+			vector2D2.X = Math.Clamp(vector2D.X, -1, 1);
+			vector2D2.Y += WorldGen.genRand.Next(-10, 11) * 0.05;
+			vector2D2.Y = Math.Clamp(vector2D.Y, -1, 1);
+		}
+	}
+
 	private static void PlaceGrass(short x, short y, OpenFlags flags)
 	{
 		if (flags.HasFlag(OpenFlags.Above))
 		{
-			new CheckChain((int x, int y, out int? checkType) =>
+			new CheckChain((int x, int y, ref int? checkType) =>
 			{
-				checkType = 233;
-
 				if (WorldGen.genRand.NextBool(2))
 				{
 					return;
 				}
 
+				checkType = 233;
 				WorldGen.PlaceJunglePlant(x, y, 233, WorldGen.genRand.Next(8), 0);
-			}).Chain((int x, int y, out int? checkType) =>
+			}).Chain((int x, int y, ref int? checkType) =>
 			{
-				checkType = 233;
-
 				if (WorldGen.genRand.NextBool(2))
 				{
 					return;
 				}
 
+				checkType = 233;
 				WorldGen.PlaceJunglePlant(x, y, 233, WorldGen.genRand.Next(12), 1);
-			}).Chain((int x, int y, out int? checkType) =>
+			}).Chain((int x, int y, ref int? checkType) =>
 			{
 				checkType = WorldGen.genRand.NextBool(3) ? TileID.JunglePlants2 : TileID.JunglePlants;
 				WorldGen.PlaceTile(x, y, checkType.Value, true, false, style: WorldGen.genRand.Next(24));
+
+				Tile tile = Main.tile[x, y];
+				tile.TileFrameX = (short)((WorldGen.genRand.NextBool(5) && checkType == TileID.JunglePlants ? 8 : WorldGen.genRand.Next(24)) * 18);
 			}).Run(x, y - 1);
 		}
 
 		if (flags.HasFlag(OpenFlags.Below))
 		{
-			if (!WorldGen.genRand.NextBool(4))
+			if (!WorldGen.genRand.NextBool(3))
 			{
 				int length = WorldGen.genRand.Next(5, 12);
 
@@ -179,56 +262,12 @@ internal class PlanteraDomain : BossDomainSubworld
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned)
+		if (!NPC.AnyNPCs(NPCID.Plantera) && !ExitSpawned)
 		{
-			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
-			HashSet<int> who = [];
+			ExitSpawned = true;
 
-			if (canSpawn)
-			{
-				foreach (Player player in Main.ActivePlayers)
-				{
-					if (!Arena.Intersects(player.Hitbox))
-					{
-						canSpawn = false;
-						break;
-					}
-					else
-					{
-						who.Add(player.whoAmI);
-					}
-				}
-			}
-
-			if (canSpawn && Main.CurrentFrameFlags.ActivePlayersCount > 0 && who.Count > 0)
-			{
-				int plr = Main.rand.Next([.. who]);
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				
-				int npc = NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 25, NPCID.SkeletronPrime);
-				Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
-
-				Main.spawnTileX = (int)Arena.Center().X / 16;
-				Main.spawnTileY = (int)Arena.Center().Y / 16;
-
-				if (Main.netMode == NetmodeID.Server)
-				{
-					NetMessage.SendData(MessageID.WorldData);
-					NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16, 20, 1);
-				}
-
-				BossSpawned = true;
-			}
-		}
-		else
-		{
-			if (!NPC.AnyNPCs(NPCID.SkeletronPrime) && !ExitSpawned)
-			{
-				ExitSpawned = true;
-
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Projectile.NewProjectile(src, Arena.Center() - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-			}
+			IEntitySource src = Entity.GetSource_NaturalSpawn();
+			Projectile.NewProjectile(src, Arena.Center() - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
 	}
 }

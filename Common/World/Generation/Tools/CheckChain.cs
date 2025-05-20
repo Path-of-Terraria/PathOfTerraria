@@ -2,20 +2,21 @@
 
 internal class CheckChain(CheckChain.GenAction action)
 {
-	public delegate void GenAction(int x, int y, out int? checkType);
+	public delegate void GenAction(int x, int y, ref int? checkType);
 
 	public GenAction Action = action;
 	public CheckChain Next = null;
 
 	public bool Run(int x, int y)
 	{
-		Action(x, y, out int? checkType);
+		int? checkType = null;
+		Action(x, y, ref checkType);
 
 		if (Main.tile[x, y].TileType != checkType)
 		{
 			if (Next is null)
 			{
-				return false;
+				return Main.tile[x, y].TileType == checkType;
 			}
 
 			Next.Run(x, y);

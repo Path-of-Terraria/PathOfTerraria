@@ -19,11 +19,11 @@ internal class RoyalJelly : ModItem
 	public override bool? UseItem(Player player)
 	{
 		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		int style3x2 = WorldGen.genRand.NextBool() ? WorldGen.genRand.Next(3) : WorldGen.genRand.Next(6) + 6;
-
-		WorldGen.PlaceJunglePlant(pos.X, pos.Y, TileID.PlantDetritus, Main.rand.Next(12), 1);
-		Main.NewText(Main.tile[pos].TileFrameX + " " + Main.tile[pos].TileFrameY);
-		WorldGen.SquareTileFrame(pos.X ,pos.Y);
+		int checkType = TileID.JunglePlants;
+		int style = 8;// WorldGen.genRand.NextBool() && checkType == TileID.JunglePlants ? 8 : WorldGen.genRand.Next(24);
+		WorldGen.PlaceTile(pos.X, pos.Y, checkType, true, false, style: style);
+		Tile tile = Main.tile[pos];
+		tile.TileFrameX = 8 * 18;
 		return true;
 		NPC.SpawnOnPlayer(player.whoAmI, NPCID.QueenBee);
 		return true;
