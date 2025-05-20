@@ -16,7 +16,7 @@ internal class QueenSlimeDomainSpawns : GlobalNPC
 		pool[0] = 0;
 
 		// Underground spawns first, otherwise aboveground
-		if (QueenSlimeDomain.ModDistance(spawnInfo.Player.Center, QueenSlimeScene.GetCircleCenter()) > 696 * 16)
+		if (MathTools.ModDistance(spawnInfo.Player.Center, QueenSlimeScene.GetCircleCenter(), 1, 5) > 696 * 16)
 		{
 			pool[NPCID.ChaosElemental] = 0.3f;
 			pool[NPCID.Gastropod] = 0.8f;

@@ -6,7 +6,7 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.QueenDomain;
 internal class QueenSlimeScene : ModSceneEffect
 {
 	public override SceneEffectPriority Priority => SceneEffectPriority.Environment;
-	public override int Music => QueenSlimeDomain.ModDistance(Main.LocalPlayer.Center, GetCircleCenter()) < 696 * 16 ? MusicID.TheHallow : MusicID.UndergroundHallow;
+	public override int Music => MathTools.ModDistance(Main.LocalPlayer.Center, GetCircleCenter(), 1, 5) < 696 * 16 ? MusicID.TheHallow : MusicID.UndergroundHallow;
 
 	public static Vector2 GetCircleCenter()
 	{
