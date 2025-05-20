@@ -19,11 +19,10 @@ public class Berserk : Skill
 		WeaponType = ItemType.Sword;
 	}
 
-	public override void UseSkill(Player player, SkillBuff buff)
+	public override void UseSkill(Player player)
 	{
-		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
+		base.UseSkill(player);
 		player.AddBuff(ModContent.BuffType<RageBuff>(), Duration);
-		Cooldown = MaxCooldown;
 	}
 
 	internal class BerserkAuraLayer : PlayerDrawLayer

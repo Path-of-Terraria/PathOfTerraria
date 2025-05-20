@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Hotbar;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -27,10 +26,9 @@ public class RainOfArrows : Skill
 		WeaponType = ItemType.Ranged;
 	}
 
-	public override void UseSkill(Player player, SkillBuff buff)
+	public override void UseSkill(Player player)
 	{
-		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
-		Cooldown = MaxCooldown;
+		base.UseSkill(player);
 
 		player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int ammo, true);
 
@@ -40,7 +38,7 @@ public class RainOfArrows : Skill
 			ItemLoader.ModifyShootStats(player.HeldItem, player, ref throwaway, ref throwaway, ref projToShoot, ref damage, ref knockBack);
 		}
 
-		damage = (int)buff.Damage.ApplyTo(damage * (1 + Level * 0.15f));
+		damage = GetTotalDamage(damage * (1 + Level * 0.15f));
 
 		if (projToShoot <= 0)
 		{

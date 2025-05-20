@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Skills.Melee;
 using System.Collections.Generic;
 using Terraria.Localization;
@@ -9,7 +10,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class Skill
+public abstract partial class Skill
 {
 	private Vector2 _size;
 
@@ -25,16 +26,6 @@ public abstract class Skill
 			_size = StringUtils.GetSizeOfTexture($"Assets/Skills/{GetType().Name}") ?? new Vector2();
 
 			return _size;
-		}
-	}
-
-	/// <summary> The final mana cost of this skill affected by modifications. </summary>
-	public int TotalManaCost
-	{
-		get
-		{
-			SkillBuff buff = this.GetPower();
-			return (int)buff.ManaCost.ApplyTo(ManaCost);
 		}
 	}
 
@@ -142,11 +133,13 @@ public abstract class Skill
 		return Name.GetHashCode(); // Again, you can use other properties here if needed
 	}
 
-	/// <summary>
-	/// What this skill actually does
-	/// </summary>
+	/// <summary> What this skill actually does.<br/>Consumes mana based on <see cref="TotalManaCost"/> and applies <see cref="MaxCooldown"/> by default. </summary>
 	/// <param name="player">The player using the skill</param>
-	public abstract void UseSkill(Player player, SkillBuff buff);
+	public virtual void UseSkill(Player player)
+	{
+		player.CheckMana(TotalManaCost, true);
+		Cooldown = MaxCooldown;
+	}
 
 	/// <summary>
 	/// If this skill should be able to be used. By default this is if the cooldown is over and the player has enough mana.

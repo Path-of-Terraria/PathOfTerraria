@@ -23,8 +23,10 @@ public class BloodSiphon : Skill
 		WeaponType = ItemType.Ranged;
 	}
 
-	public override void UseSkill(Player player, SkillBuff buff)
+	public override void UseSkill(Player player)
 	{
+		base.UseSkill(player);
+
 		// Level to the strength of all BloodSiphonAffix
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>());
 
@@ -48,8 +50,6 @@ public class BloodSiphon : Skill
 				}
 			}
 		}
-
-		Cooldown = MaxCooldown;
 	}
 
 	public override bool CanEquipSkill(Player player)

@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Skills;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -20,12 +19,11 @@ public class IceBolt : Skill
 		WeaponType = ItemType.None;
 	}
 
-	public override void UseSkill(Player player, SkillBuff buff)
+	public override void UseSkill(Player player)
 	{
-		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
-		Cooldown = MaxCooldown;
+		base.UseSkill(player);
 
-		int damage = (int)buff.Damage.ApplyTo(Level * 10 + 5);
+		int damage = GetTotalDamage(Level * 10 + 5);
 		var source = new EntitySource_UseSkill(player, this);
 		float knockback = 2f;
 		int type = ModContent.ProjectileType<IceBoltProj>();

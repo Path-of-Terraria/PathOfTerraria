@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
-using PathOfTerraria.Common.Systems.Skills;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
@@ -20,22 +19,23 @@ public class FetidCarapace : Skill
 		WeaponType = ItemType.Ranged;
 	}
 
-	public override void UseSkill(Player player, SkillBuff buff)
+	public override void UseSkill(Player player)
 	{
+		base.UseSkill(player);
+
 		// Level to the strength of all FetidCarapaceAffix
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<FetidCarapaceAffix>());
 
-		int damage = (int)buff.Damage.ApplyTo(30 * (1f - (3 - Level) * 0.2f));
+		int damage = GetTotalDamage(30 * (1f - (3 - Level) * 0.2f));
 		int max = 1 + Level;
 		int type = ModContent.ProjectileType<CarapaceChunk>();
 
 		for (int i = 0; i < max; ++i)
 		{
-			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), player.Center, Vector2.Zero, type, damage, 8f, player.whoAmI, 0, max, i);
-			Main.projectile[proj].timeLeft = Duration;
+			var proj = Projectile.NewProjectileDirect(new EntitySource_UseSkill(player, this), player.Center, Vector2.Zero, type, damage, 8f, player.whoAmI, 0, max, i);
+			proj.timeLeft = Duration;
+			proj.netUpdate = true;
 		}
-
-		Cooldown = MaxCooldown;
 	}
 
 	public override bool CanUseSkill(Player player)

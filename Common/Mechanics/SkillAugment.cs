@@ -31,10 +31,10 @@ public abstract class SkillAugment : ILoadable
 	public virtual string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillAugments." + Name + ".Name");
 	public virtual string Tooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillAugments." + Name + ".Tooltip");
 
-	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, Color color)
+	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position, Color color, float scale = 1f)
 	{
 		Texture2D texture = Texture.Value;
-		spriteBatch.Draw(texture, position - texture.Size() / 2, color);
+		spriteBatch.Draw(texture, position, null, color, 0, texture.Size() / 2, scale, default, 0);
 	}
 
 	public virtual void AugmentEffects(ref SkillBuff buff) { }
