@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using ReLogic.Utilities;
 using System.Collections.Generic;
@@ -114,6 +115,34 @@ internal class PlanteraDomain : BossDomainSubworld
 						3 => WallID.JungleUnsafe3,
 						_ => WallID.JungleUnsafe4
 					});
+				}
+			}
+
+			progress.Value = (float)i / Main.maxTilesX;
+		}
+
+		HashSet<Point16> spores = [];
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (!tile.HasTile && tile.WallType != WallID.None)
+				{
+					if (WorldGen.genRand.NextBool(120) && !spores.Contains(new Point16(i, j)))
+					{
+						WorldGen.PlaceTile(i, j, ModContent.TileType<GlowingSpores>(), true, false, -1, WorldGen.genRand.Next(3));
+
+						for (int k = -2; k < 3; ++k)
+						{
+							for (int l = -2; l < 3; ++l)
+							{
+								spores.Add(new Point16(i + k, j + l));
+							}
+						}
+					}
 				}
 			}
 
