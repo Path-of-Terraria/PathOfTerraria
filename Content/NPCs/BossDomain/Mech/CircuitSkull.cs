@@ -31,7 +31,7 @@ internal class CircuitSkull : ModNPC
 		NPC.aiStyle = -1;
 		NPC.lifeMax = 150;
 		NPC.defense = 50;
-		NPC.damage = 20;
+		NPC.damage = 30;
 		NPC.HitSound = SoundID.NPCHit4;
 		NPC.noGravity = true;
 		NPC.knockBackResist = 0;

@@ -1,5 +1,4 @@
-﻿using Microsoft.Build.Tasks.Hosting;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -82,6 +81,11 @@ internal class MappingNPC : GlobalNPC
 			if (TierPassed(1) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
+			}
+			
+			if (TierPassed(2) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<DestroyerMap>());
 			}
 
 			if (TierPassed(3) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)

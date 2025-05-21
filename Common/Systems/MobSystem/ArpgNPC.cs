@@ -150,9 +150,9 @@ internal class ArpgNPC : GlobalNPC
 
 	public override void SetDefaults(NPC npc)
 	{
-		//We only want to trigger these changes on hostile non-boss, non Eater of Worlds mobs in-game
-		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.type is NPCID.EaterofWorldsBody or NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail 
-			|| npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type] || npc.CountsAsACritter || NoAffixesSet.Contains(npc.type))
+		//We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
+		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type] 
+			|| npc.CountsAsACritter || NoAffixesSet.Contains(npc.type))
 		{
 			return;
 		}

@@ -24,7 +24,10 @@ Generation: {
 	FrozenRuinPass: ""
 }
 
-Tiles.ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile
+Tiles: {
+	ArcaneObeliskTile.MapEntry: Arcane Obelisk Tile
+	MechChest.MapEntry: Mechanical Case
+}
 
 Waypoints: {
 	RavencrestWaypoint.DisplayName: Ravencrest

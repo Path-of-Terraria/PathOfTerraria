@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
-using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 
 namespace PathOfTerraria.Content.Skills.Melee;
@@ -20,14 +19,13 @@ public class MoltenShield : Skill
 		WeaponType = ItemType.Sword;
 	}
 
-	public override void UseSkill(Player player, SkillBuff buff)
+	public override void UseSkill(Player player)
 	{
+		base.UseSkill(player);
+
 		// Level to the strength of all MoltenShellAffixes
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<MoltenShellAffix>());
-
-		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
 		player.GetModPlayer<MoltenShieldBuff.MoltenShieldPlayer>().SetBuff(Level, Duration);
-		Cooldown = MaxCooldown;
 	}
 
 	public override bool CanEquipSkill(Player player)

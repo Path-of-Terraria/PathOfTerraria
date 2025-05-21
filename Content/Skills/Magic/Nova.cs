@@ -1,13 +1,12 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.SkillSpecials;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Utilities;
@@ -48,12 +47,11 @@ public class Nova : Skill
 		WeaponType = ItemType.Magic;
 	}
 
-	public override void UseSkill(Player player, SkillBuff buff)
+	public override void UseSkill(Player player)
 	{
-		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
-		Cooldown = MaxCooldown;
+		base.UseSkill(player);
 
-		int damage = (int)buff.Damage.ApplyTo(player.HeldItem.damage * (2 + 0.5f * Level));
+		int damage = GetTotalDamage(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);
 		NovaType type = GetNovaType(this);
 		float knockback = 2f;
@@ -102,9 +100,9 @@ public class Nova : Skill
 		tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 	}
 
-	private class NovaProjectile : ModProjectile
+	private class NovaProjectile : SkillProjectile<Nova>
 	{
-		private const int TotalRadius = 300;
+		private int TotalRadius => Skill.GetTotalAreaOfEffect(300);
 
 		public override string Texture => "Terraria/Images/NPC_0";
 

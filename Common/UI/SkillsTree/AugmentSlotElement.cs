@@ -1,5 +1,6 @@
 ﻿using Humanizer;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Sounds;
@@ -34,7 +35,7 @@ internal class AugmentSlotElement : UIElement
 
 	public AugmentSlotElement(int index)
 	{
-		const int squareSize = 160;
+		const int squareSize = 180;
 		Index = index;
 		_unlocked = SkillTree.Current.Slots[Index];
 
@@ -136,13 +137,19 @@ internal class AugmentSlotElement : UIElement
 		{
 			SkillAugment augment = SkillAugment.LoadedAugments[key];
 
-			if (SkillTree.Current.Augments.Contains(augment))
+			if (SkillTree.Current.Augments.Contains(augment) || !CanBeApplied(augment))
 			{
 				continue;
 			}
 
 			Append(new AugmentRadialElement(Vector2.Zero, augment, index));
 			index++;
+		}
+
+		static bool CanBeApplied(SkillAugment augment)
+		{
+			Skill skill = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills.Where(x => x.GetType() == SkillTree.Current.ParentSkill).FirstOrDefault();
+			return skill != default && augment.CanBeApplied(skill);
 		}
 	}
 
@@ -220,7 +227,7 @@ internal class AugmentRadialElement : UIElement
 		int space = 8;
 
 		Vector2 origin = Vector2.Zero;
-		float distance = (Height.Pixels + 12) * Progress;
+		float distance = (Height.Pixels + 22) * Progress + (float)Math.Sin(Progress * Math.PI) * 30; //The total distance to move
 		var newPos = (origin - (Vector2.UnitY * distance).RotatedBy(MathHelper.TwoPi / space * _index)).ToPoint();
 
 		Left.Set(newPos.X - Width.Pixels / 2, 0.5f);
@@ -229,7 +236,8 @@ internal class AugmentRadialElement : UIElement
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		_augment.Draw(spriteBatch, GetDimensions().Center(), Color.White);
+		Texture2D aIcon = _augment.Texture.Value;
+		spriteBatch.Draw(aIcon, GetDimensions().Center(), null, Color.White, 1f - Progress, aIcon.Size() / 2, Progress, default, 0);
 
 		if (_flashTimer > 0)
 		{
@@ -271,7 +279,7 @@ internal class AugmentRadialElement : UIElement
 			_redFlashTimer--;
 		}
 
-		if (ContainsPoint(Main.MouseScreen))
+		if (ContainsPoint(Main.MouseScreen) && Progress == 1)
 		{
 			string name = _augment.DisplayName;
 			string tooltip = _augment.Tooltip;

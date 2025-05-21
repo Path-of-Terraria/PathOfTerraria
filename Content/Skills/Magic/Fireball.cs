@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Skills;
-using PathOfTerraria.Content.SkillPassives;
+using PathOfTerraria.Common.Projectiles;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -21,12 +20,11 @@ public class Fireball : Skill
 		WeaponType = ItemType.None;
 	}
 
-	public override void UseSkill(Player player, SkillBuff buff)
+	public override void UseSkill(Player player)
 	{
-		player.CheckMana((int)buff.ManaCost.ApplyTo(ManaCost), true);
-		Cooldown = MaxCooldown;
+		base.UseSkill(player);
 
-		int damage = (int)buff.Damage.ApplyTo((Level - 1) * 20 + 30);
+		int damage = GetTotalDamage((Level - 1) * 20 + 30);
 		var source = new EntitySource_UseSkill(player, this);
 		float knockback = 2f;
 		int type = ModContent.ProjectileType<FireballProj>();
@@ -35,7 +33,7 @@ public class Fireball : Skill
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
 	}
 
-	private class FireballProj : ModProjectile
+	private class FireballProj : SkillProjectile<Fireball>
 	{
 		public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
 
@@ -107,7 +105,8 @@ public class Fireball : Skill
 				}
 			}
 
-			Projectile.Resize(160, 160);
+			int area = Skill.GetTotalAreaOfEffect(160);
+			Projectile.Resize(area, area);
 			Projectile.Damage();
 		}
 

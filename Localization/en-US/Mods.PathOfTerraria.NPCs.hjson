@@ -674,6 +674,11 @@ WormLightning: {
 WormLightning_Body.DisplayName: "{$WormLightning.DisplayName}"
 WormLightning_Tail.DisplayName: "{$WormLightning.DisplayName}"
 
+EnergizerCore: {
+	DisplayName: Energizer Core
+	Entry: A self-sustaining, powerful machine made only to keep its fellow automatons alive. It is unknown what the core is doing or why the metal spins around it.
+}
+
 Minitera: {
 	DisplayName: Minitera
 	Entry: ""
