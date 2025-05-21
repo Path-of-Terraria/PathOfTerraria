@@ -23,9 +23,9 @@ internal abstract class SkillProjectile<T> : ModProjectile where T : Skill
 	private bool _justSpawned = false;
 
 	/// <summary> Similar to <see cref="ModProjectile.OnSpawn"/> but called on all clients. </summary>
-	public virtual void OnSpawn() { }
+	public virtual void SyncedSpawn() { }
 
-	/// <summary><inheritdoc cref="ModProjectile.PreAI"/><para/>Additionally sets one-time stat effects and calls <see cref="OnSpawn"/> by default.</summary>
+	/// <summary><inheritdoc cref="ModProjectile.PreAI"/><para/>Additionally sets one-time stat effects and calls <see cref="SyncedSpawn"/> by default.</summary>
 	/// <returns><inheritdoc cref="ModProjectile.PreAI"/></returns>
 	public override bool PreAI()
 	{
@@ -34,7 +34,7 @@ internal abstract class SkillProjectile<T> : ModProjectile where T : Skill
 			int originalCrit = Math.Max(Projectile.OriginalCritChance, 4);
 			Projectile.CritChance = Skill.GetTotalCritChance(originalCrit);
 
-			OnSpawn();
+			SyncedSpawn();
 			_justSpawned = true;
 		}
 
