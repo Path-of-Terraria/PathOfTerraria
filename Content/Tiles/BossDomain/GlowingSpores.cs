@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Tiles;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -34,9 +35,21 @@ internal class GlowingSpores : ModTile
 
 		(r, g, b) = frameX switch
 		{
-			0 => (0.3f, 0.5f, 0.2f),
+			0 => (0.4f, 0.5f, 0.1f),
 			1 => (0.1f, 0.6f, 0.15f),
 			_ => (0.3f, 0.6f, 0.25f)
 		};
+	}
+
+	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		Texture2D tex = TextureAssets.Tile[Type].Value;
+		Tile tile = Main.tile[i, j];
+		var src = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
+		Vector2 position = TileExtensions.DrawPosition(i, j) + new Vector2(8, 8);
+		float sine = MathF.Sin(i + j + (float)Main.timeForVisualEffects * 0.01f) * MathHelper.PiOver4;
+		
+		spriteBatch.Draw(tex, position, src, Lighting.GetColor(i, j), sine, src.Size() / 2f, 1f, SpriteEffects.None, 0);
+		return false;
 	}
 }
