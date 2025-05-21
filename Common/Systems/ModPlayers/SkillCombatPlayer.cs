@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.Xna.Framework.Input;
+﻿using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Guide;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.GameInput;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
@@ -73,8 +72,8 @@ internal class SkillCombatPlayer : ModPlayer
 		{
 			Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.UsedASkill);
 
-			SkillBuff buff = HotbarSkills[index].GetPower();
-			HotbarSkills[index]?.UseSkill(Player, buff);
+			HotbarSkills[index].RecalculateStats();
+			HotbarSkills[index]?.UseSkill(Player);
 		}
 	}
 
