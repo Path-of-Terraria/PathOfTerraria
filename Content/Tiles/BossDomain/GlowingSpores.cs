@@ -45,10 +45,10 @@ internal class GlowingSpores : ModTile
 	{
 		Texture2D tex = TextureAssets.Tile[Type].Value;
 		Tile tile = Main.tile[i, j];
-		var src = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
+		var src = new Rectangle(tile.TileFrameX % 54, tile.TileFrameY, 16, 16);
 		Vector2 position = TileExtensions.DrawPosition(i, j) + new Vector2(8, 8);
 		float sine = MathF.Sin(i + j + (float)Main.timeForVisualEffects * 0.01f) * MathHelper.PiOver4;
-		
+
 		spriteBatch.Draw(tex, position, src, Lighting.GetColor(i, j), sine, src.Size() / 2f, 1f, SpriteEffects.None, 0);
 		return false;
 	}

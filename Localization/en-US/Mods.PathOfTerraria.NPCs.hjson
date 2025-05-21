@@ -673,3 +673,8 @@ WormLightning: {
 
 WormLightning_Body.DisplayName: "{$WormLightning.DisplayName}"
 WormLightning_Tail.DisplayName: "{$WormLightning.DisplayName}"
+
+Minitera: {
+	DisplayName: Minitera
+	Entry: ""
+}

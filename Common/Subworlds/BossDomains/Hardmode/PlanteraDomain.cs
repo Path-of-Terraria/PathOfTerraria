@@ -18,8 +18,9 @@ internal class PlanteraDomain : BossDomainSubworld
 {
 	public override int Width => 1700;
 	public override int Height => 800;
-	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, false);
+	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 	public override int[] WhitelistedExplodableTiles => [ModContent.TileType<ExplosivePowder>()];
+	public override int[] WhitelistedCutTiles => [TileID.JungleVines];
 	public override int[] WhitelistedMiningTiles => [TileID.PlanteraBulb, TileID.Mud, TileID.JungleGrass, TileID.Mudstone, TileID.Stone, ModContent.TileType<BabyBulb>()];
 
 	public static Point16 BulbPosition = new();
@@ -29,8 +30,7 @@ internal class PlanteraDomain : BossDomainSubworld
 	private static bool ExitSpawned = false;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
-		new PassLegacy("Terrain", GenTerrain),
-		];
+		new PassLegacy("Terrain", GenTerrain)];
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -44,7 +44,7 @@ internal class PlanteraDomain : BossDomainSubworld
 		Main.worldSurface = 20;
 		Main.rockLayer = 30;
 
-		Vector2 center = new Vector2(Width / 2, Height / 2);
+		Vector2 center = new(Width / 2, Height / 2);
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.03f);
 
@@ -141,11 +141,6 @@ internal class PlanteraDomain : BossDomainSubworld
 						bool isFlower = WorldGen.genRand.NextBool(12);
 						int type = isFlower ? ModContent.TileType<Seeflower>() : ModContent.TileType<GlowingSpores>();
 						WorldGen.PlaceTile(i, j, type, true, false, -1, WorldGen.genRand.Next(isFlower ? 1 : 3));
-
-						if (type == ModContent.TileType<Seeflower>())
-						{
-							ModContent.GetInstance<Seeflower.SeeflowerTE>().Place(i, j);
-						}
 
 						for (int k = -2; k < 3; ++k)
 						{
