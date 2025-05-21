@@ -39,6 +39,12 @@ public abstract class SkillAugment : ILoadable
 
 	public virtual void AugmentEffects(ref SkillBuff buff) { }
 
+	/// <summary> Whether this augmentation can be applied. Use this to prevent augmentations from appearing on skills that they do not affect. </summary>
+	public virtual bool CanBeApplied(Skill skill)
+	{
+		return true;
+	}
+
 	public void Load(Mod mod)
 	{
 		LoadedAugments.Add(Name, this);

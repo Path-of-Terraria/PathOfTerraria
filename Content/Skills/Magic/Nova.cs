@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.SkillSpecials;
@@ -99,9 +100,9 @@ public class Nova : Skill
 		tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 	}
 
-	private class NovaProjectile : ModProjectile
+	private class NovaProjectile : SkillProjectile<Nova>
 	{
-		private const int TotalRadius = 300;
+		private int TotalRadius => Skill.GetTotalAreaOfEffect(300);
 
 		public override string Texture => "Terraria/Images/NPC_0";
 

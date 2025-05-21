@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Projectiles;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -32,7 +33,7 @@ public class IceBolt : Skill
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
 	}
 
-	private class IceBoltProj : ModProjectile
+	private class IceBoltProj : SkillProjectile<IceBolt>
 	{
 		public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
 

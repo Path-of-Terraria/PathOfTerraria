@@ -1,6 +1,6 @@
 ﻿using Humanizer;
-using Microsoft.Xna.Framework.Graphics;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Sounds;
@@ -137,13 +137,19 @@ internal class AugmentSlotElement : UIElement
 		{
 			SkillAugment augment = SkillAugment.LoadedAugments[key];
 
-			if (SkillTree.Current.Augments.Contains(augment))
+			if (SkillTree.Current.Augments.Contains(augment) || !CanBeApplied(augment))
 			{
 				continue;
 			}
 
 			Append(new AugmentRadialElement(Vector2.Zero, augment, index));
 			index++;
+		}
+
+		static bool CanBeApplied(SkillAugment augment)
+		{
+			Skill skill = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills.Where(x => x.GetType() == SkillTree.Current.ParentSkill).FirstOrDefault();
+			return skill != default && augment.CanBeApplied(skill);
 		}
 	}
 

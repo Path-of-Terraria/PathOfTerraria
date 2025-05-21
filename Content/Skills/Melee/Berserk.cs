@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 using Terraria.DataStructures;
 

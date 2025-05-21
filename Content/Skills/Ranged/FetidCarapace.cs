@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ID;
@@ -63,7 +64,7 @@ public class FetidCarapace : Skill
 		return player.GetModPlayer<AffixPlayer>().StrengthOf<FetidCarapaceAffix>() > 0;
 	}
 
-	internal class CarapaceChunk : ModProjectile
+	internal class CarapaceChunk : SkillProjectile<FetidCarapace>
 	{
 		public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 

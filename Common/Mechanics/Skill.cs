@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Skills.Melee;
 using System.Collections.Generic;
 using Terraria.Localization;

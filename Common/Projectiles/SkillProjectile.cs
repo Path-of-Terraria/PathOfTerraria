@@ -19,4 +19,25 @@ internal abstract class SkillProjectile<T> : ModProjectile where T : Skill
 			return Skill.GetAndPrepareSkill<T>();
 		}
 	}
+
+	private bool _justSpawned = false;
+
+	/// <summary> Similar to <see cref="ModProjectile.OnSpawn"/> but called on all clients. </summary>
+	public virtual void OnSpawn() { }
+
+	/// <summary><inheritdoc cref="ModProjectile.PreAI"/><para/>Additionally sets one-time stat effects and calls <see cref="OnSpawn"/> by default.</summary>
+	/// <returns><inheritdoc cref="ModProjectile.PreAI"/></returns>
+	public override bool PreAI()
+	{
+		if (!_justSpawned)
+		{
+			int originalCrit = Math.Max(Projectile.OriginalCritChance, 4);
+			Projectile.CritChance = Skill.GetTotalCritChance(originalCrit);
+
+			OnSpawn();
+			_justSpawned = true;
+		}
+
+		return true;
+	}
 }
