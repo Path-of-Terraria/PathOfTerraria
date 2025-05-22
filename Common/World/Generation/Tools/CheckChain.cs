@@ -1,5 +1,10 @@
 ﻿namespace PathOfTerraria.Common.World.Generation.Tools;
 
+/// <summary>
+/// Provides a mechanism to repeatedly attempt to place tiles, guaranteeing a spawn by checking that the tile at x, y is the desired type.<br/>
+/// Use <see cref="Chain(CheckChain)"/> or <see cref="Chain(GenAction)"/> on a CheckChain to resurively run generation.
+/// </summary>
+/// <param name="action"></param>
 internal class CheckChain(CheckChain.GenAction action)
 {
 	public delegate void GenAction(int x, int y, ref int? checkType);

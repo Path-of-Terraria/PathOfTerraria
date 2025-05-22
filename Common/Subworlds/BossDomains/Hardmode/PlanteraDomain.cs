@@ -280,12 +280,11 @@ internal class PlanteraDomain : BossDomainSubworld
 				WorldGen.PlaceJunglePlant(x, y, 233, WorldGen.genRand.Next(12), 1);
 			}).Chain((int x, int y, ref int? checkType) =>
 			{
-				bool shortGrass = WorldGen.genRand.NextBool(3);
-				checkType = shortGrass ? TileID.JunglePlants2 : TileID.JunglePlants;
-				WorldGen.PlaceTile(x, y, checkType.Value, true, false, style: WorldGen.genRand.Next(shortGrass ? 24 : 16));
+				checkType = TileID.JunglePlants;
+				WorldGen.PlaceTile(x, y, checkType.Value, true, false, style: WorldGen.genRand.Next(24));
 
 				Tile tile = Main.tile[x, y];
-				tile.TileFrameX = (short)((WorldGen.genRand.NextBool(5) && shortGrass ? 8 : WorldGen.genRand.Next(24)) * 18);
+				tile.TileFrameX = (short)((WorldGen.genRand.NextBool(5) ? 8 : WorldGen.genRand.Next(24)) * 18);
 			}).Run(x, y - 1);
 		}
 
