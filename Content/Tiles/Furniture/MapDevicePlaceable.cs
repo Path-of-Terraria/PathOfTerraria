@@ -60,7 +60,7 @@ public class MapDevicePlaceable : ModTile
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18;
+		i -= tile.TileFrameX / 18 % 5;
 		j -= tile.TileFrameY / 18 % 5;
 		ModContent.GetInstance<MapDeviceEntity>().Kill(i, j);
 	}
@@ -69,7 +69,7 @@ public class MapDevicePlaceable : ModTile
 	{
 		Tile tile = Main.tile[i, j];
 
-		if (tile.TileFrameX % 90 != 0 || tile.TileFrameY != 0)
+		if (tile.TileFrameX / 18 % 5 == 0 || tile.TileFrameY != 0)
 		{
 			return;
 		}
@@ -84,7 +84,8 @@ public class MapDevicePlaceable : ModTile
 
 		// Take the tile, check if it actually exists
 		var p = new Point(i, j);
-		tile = Main.tile[p.X, p.Y];
+		tile = Main.tile[p];
+
 		if (tile == null || !tile.HasTile)
 		{
 			return;
@@ -92,11 +93,11 @@ public class MapDevicePlaceable : ModTile
 
 		// Get the initial draw parameters
 		Texture2D texture = _portalTex.Value;
-		int frameY = tile.TileFrameX / FrameWidth; // Picks the frame on the sheet based on the placeStyle of the item
+		int frameY = tile.TileFrameX % 90 / FrameWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
 		Vector2 worldPos = p.ToWorldCoordinates(40f, 64f);
-		Color color = Lighting.GetColor(p.X, p.Y);
+		Color color = Color.Lerp(Lighting.GetColor(p.X, p.Y), Color.White, 0.4f);
 		bool direction =
 			tile.TileFrameY / FrameHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -154,7 +155,7 @@ public class MapDevicePlaceable : ModTile
 	private static bool TryGetEntity(ref int i, ref int j, out MapDeviceEntity entity)
 	{
 		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18;
+		i -= tile.TileFrameX / 18 % 5;
 		j -= tile.TileFrameY / 18 % 5;
 
 		if (TileEntity.ByPosition.TryGetValue(new(i, j), out TileEntity tileEntity) && tileEntity is MapDeviceEntity mapEntity)

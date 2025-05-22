@@ -13,6 +13,7 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
 using SubworldLibrary;
 using Terraria.GameContent.Tile_Entities;
+using PathOfTerraria.Common.World.Generation.Tools;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -65,19 +66,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			AddGrassDecor(grass.X, grass.Y, flags);
 		}
 
-		for (int i = 1; i < Width - 1; ++i)
-		{
-			for (int j = 1; j < Height - 1; ++j)
-			{
-				Tile tile = Main.tile[i, j];
-
-				if (tile.TileType == TileID.LogicSensor && tile.TileFrameY == 36)
-				{
-					int id = TELogicSensor.Place(i, j);
-					(TileEntity.ByID[id] as TELogicSensor).logicCheck = TELogicSensor.LogicCheckType.PlayerAbove;
-				}
-			}
-		}
+		GenerationUtilities.ManuallyPopulatePlayerSensors();
 	}
 
 	private static void AddGrassDecor(int i, int j, OpenFlags flags)

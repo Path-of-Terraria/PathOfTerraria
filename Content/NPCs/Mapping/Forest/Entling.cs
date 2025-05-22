@@ -131,7 +131,7 @@ internal class Entling : ModNPC
 		if (ShouldJump())
 		{
 			NPC.velocity.Y = -8;
-			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/MiscJump") with { Volume = 0.2f, PitchRange = (0.1f, 0.5f) });
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/MiscJump") with { Volume = 0.05f, PitchRange = (0.1f, 0.5f) });
 
 			for (int i = 0; i < 2; ++i)
 			{

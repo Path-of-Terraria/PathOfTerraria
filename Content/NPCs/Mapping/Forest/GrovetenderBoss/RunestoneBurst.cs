@@ -81,7 +81,7 @@ internal class RunestoneBurst : ModProjectile
 		foreach (EffectPass pass in effect.CurrentTechnique.Passes)
 		{
 			effect.Parameters["baseColor"].SetValue(drawColor * 0.9f * opacity);
-			effect.Parameters["width"].SetValue(40 / MathF.Pow(timer * 2f, 8f));
+			effect.Parameters["width"].SetValue(40);
 			effect.Parameters["uWorldViewProjection"].SetValue(renderMatrix);
 			pass.Apply();
 
