@@ -1206,3 +1206,8 @@ MechChestItem: {
 	DisplayName: Mech Chest
 	Tooltip: ""
 }
+
+PlanteraMap: {
+	DisplayName: Plantera Map
+	Tooltip: ""
+}

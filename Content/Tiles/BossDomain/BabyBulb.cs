@@ -1,6 +1,4 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Content.NPCs.BossDomain.Mech;
 using PathOfTerraria.Content.NPCs.BossDomain.PlantDomain;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -43,14 +41,6 @@ internal class BabyBulb : ModTile
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 0);
-			Main.npc[npc].velocity = new Vector2(0, 8).RotatedByRandom(0.5f);
-
-			PlanteraDomain.BulbsBroken++;
-			PlanteraDomain.PlaceBulb(true);
-		}
-		else
-		{
-			SpawnNPCOnServerHandler.Send((short)type, new((i + 1) * 16, (j + 1) * 16), new Vector2(0, 8).RotatedByRandom(0.5f));
 
 			PlanteraDomain.BulbsBroken++;
 			PlanteraDomain.PlaceBulb(true);

@@ -5,6 +5,7 @@ using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Net;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain;
@@ -17,10 +18,12 @@ internal class Seeflower : ModTile
 	internal static Dictionary<Point16, float> AngleByPosition = [];
 
 	private static Asset<Texture2D> WorldTexture = null;
+	private static Asset<Texture2D> GlowTexture = null;
 
 	public override void SetStaticDefaults()
 	{
 		WorldTexture = ModContent.Request<Texture2D>(Texture + "World");
+		GlowTexture = ModContent.Request<Texture2D>(Texture + "WorldGlow");
 
 		Main.tileFrameImportant[Type] = true;
 		Main.tileLighted[Type] = true;
@@ -60,9 +63,15 @@ internal class Seeflower : ModTile
 		Tile tile = Main.tile[i, j];
 		Vector2 position = TileExtensions.DrawPosition(i - 11, j - 11) - new Vector2(8);
 		float angle = AngleByPosition[new Point16(i, j)];
-		float sine = MathF.Sin(i + j + (float)Main.timeForVisualEffects * 0.01f) * 0.2f;
+		float sine = MathF.Sin(i + j + (float)Main.timeForVisualEffects * 0.012f) * 0.2f;
+		var src = new Rectangle(30 * ((i + j) % 3), 0, 28, 32);
+		
+		spriteBatch.Draw(tex, position, src, Lighting.GetColor(i, j), angle + sine, src.Size() / 2f, 1f, SpriteEffects.None, 0);
 
-		spriteBatch.Draw(tex, position, null, Lighting.GetColor(i, j), angle + sine, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+		float glowRot = angle + sine + 0.6f + MathHelper.Pi;
+		Color glowColor = new(233, 235, 103);
+		Texture2D glow = GlowTexture.Value;
+		spriteBatch.Draw(glow, position + angle.ToRotationVector2(), null, glowColor * 0.3f, glowRot, glow.Size() * new Vector2(1, 0.5f), 1f, SpriteEffects.None, 0);
 	}
 }
 

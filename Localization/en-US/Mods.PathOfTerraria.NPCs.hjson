@@ -680,6 +680,8 @@ EnergizerCore: {
 }
 
 Minitera: {
-	DisplayName: Minitera
-	Entry: ""
+	DisplayName: Budding Plantera
+	Entry: An early bloom, this Plantera was not given the time it needed to grow fully. That being said, it's still much more powerful than most foes.
 }
+
+MiniteraHook.DisplayName: Minitera Hook

@@ -83,7 +83,7 @@ internal class MappingNPC : GlobalNPC
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
 			}
 			
-			if (TierPassed(2) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
+			if (TierPassed(2) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<DestroyerMap>());
 			}
@@ -91,6 +91,11 @@ internal class MappingNPC : GlobalNPC
 			if (TierPassed(3) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PrimeMap>());
+			}
+
+			if (TierPassed(4) && NPC.downedMechBoss3 && !NPC.downedPlantBoss)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PlanteraMap>());
 			}
 
 			return;

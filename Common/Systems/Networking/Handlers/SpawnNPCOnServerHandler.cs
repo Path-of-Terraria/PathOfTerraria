@@ -44,7 +44,6 @@ internal static class SpawnNPCOnServerHandler
 		if (velocity != default)
 		{
 			Main.npc[who].velocity = velocity;
-			PoTMod.Instance.Logger.Debug("GOT: " + velocity);
 			NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, who);
 		}
 	}

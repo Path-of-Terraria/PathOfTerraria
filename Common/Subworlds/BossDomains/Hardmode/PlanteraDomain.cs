@@ -138,7 +138,7 @@ internal class PlanteraDomain : BossDomainSubworld
 				{
 					if (WorldGen.genRand.NextBool(120) && !spores.Contains(new Point16(i, j)))
 					{
-						bool isFlower = WorldGen.genRand.NextBool(12);
+						bool isFlower = WorldGen.genRand.NextBool(10);
 						int type = isFlower ? ModContent.TileType<Seeflower>() : ModContent.TileType<GlowingSpores>();
 						WorldGen.PlaceTile(i, j, type, true, false, -1, WorldGen.genRand.Next(isFlower ? 1 : 3));
 
