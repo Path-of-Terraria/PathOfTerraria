@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
@@ -196,6 +197,8 @@ public class WallOfFleshDomain : BossDomainSubworld
 				spacing++;
 			}
 		}
+
+		GenerationUtilities.ManuallyPopulatePlayerSensors();
 
 		static bool SolidOrLava(int i, int j)
 		{
