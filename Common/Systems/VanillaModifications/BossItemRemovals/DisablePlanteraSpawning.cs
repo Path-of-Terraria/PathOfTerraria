@@ -1,5 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 
@@ -31,6 +33,7 @@ internal class DisablePlanteraSpawning : ModSystem
 			return;
 		}
 
-		c.Emit(OpCodes.Br, label);
+		c.EmitDelegate(() => SubworldSystem.Current is not PlanteraDomain);
+		c.Emit(OpCodes.Brtrue, label);
 	}
 }

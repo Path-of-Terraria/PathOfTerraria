@@ -244,7 +244,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		{
 			for (int j = 2; j < Main.maxTilesY - 2; j++)
 			{
-				float dist = ModDistance(new Vector2(i, j), CircleCenter.ToVector2());
+				float dist = MathTools.ModDistance(new Vector2(i, j), CircleCenter.ToVector2(), 1, 5);
 				float cutoff = 650 + 10f * noise.GetNoise((new Vector2(i, j).AngleTo(CircleCenter.ToVector2()) + MathHelper.Pi) * 40, 0);
 				float stoneCutoff = 780 + 20f * noise.GetNoise((new Vector2(i, j).AngleTo(CircleCenter.ToVector2()) + MathHelper.Pi) * 50, 0);
 
@@ -394,11 +394,6 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		{
 			WorldGen.digTunnel(pos.X, pos.Y, 0, 0, 5, (int)(WorldGen.genRand.NextFloat(5, 9) * mul));
 		}
-	}
-
-	internal static float ModDistance(Vector2 position, Vector2 circleCenter)
-	{
-		return MathF.Sqrt(MathF.Pow(position.X - circleCenter.X, 2) + MathF.Pow(position.Y - circleCenter.Y, 2) * 5);
 	}
 
 	public override void Update()

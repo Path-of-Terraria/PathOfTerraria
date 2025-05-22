@@ -221,11 +221,8 @@ internal class Grabber : ModNPC
 			center += Vector2.Normalize(offset) * CordHeight;
 			offset = Anchor - center;
 
-			Color color = NPC.GetAlpha(Lighting.GetColor((int)center.X / 16, (int)(center.Y / 16.0)));
-			Rectangle source = new(0, count % 3 * (CordHeight + 2), 12, 12);
-
 			int gore = Gore.NewGore(NPC.GetSource_Death(), center, Vector2.Zero, ModContent.Find<ModGore>($"{PoTMod.ModName}/Grabber_2").Type);
-			Main.gore[gore].Frame = new Terraria.DataStructures.SpriteFrame(1, 3, 0, (byte)(count % 3));
+			Main.gore[gore].Frame = new SpriteFrame(1, 3, 0, (byte)(count % 3));
 		}
 
 		return false;

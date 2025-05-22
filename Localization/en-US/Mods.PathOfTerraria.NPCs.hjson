@@ -678,3 +678,10 @@ EnergizerCore: {
 	DisplayName: Energizer Core
 	Entry: A self-sustaining, powerful machine made only to keep its fellow automatons alive. It is unknown what the core is doing or why the metal spins around it.
 }
+
+Minitera: {
+	DisplayName: Budding Plantera
+	Entry: An early bloom, this Plantera was not given the time it needed to grow fully. That being said, it's still much more powerful than most foes.
+}
+
+MiniteraHook.DisplayName: Minitera Hook
