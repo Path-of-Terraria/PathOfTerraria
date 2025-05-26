@@ -509,5 +509,50 @@
 			"x": 0,
 			"y": -380
 		}
+	},
+	{
+		"internalIdentifier": "IncreasedWhipDamage",
+		"referenceId": 35,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": 120,
+			"y": -320
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedWhipSpeed",
+		"referenceId": 36,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": -120,
+			"y": -320
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedJumpHeight",
+		"referenceId": 37,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": -220,
+			"y": -320
+		}
 	}
 ]

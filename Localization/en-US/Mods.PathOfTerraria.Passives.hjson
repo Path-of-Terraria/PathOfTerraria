@@ -171,5 +171,20 @@ IncreasedPotionRecoveryPassive: {
 
 IncreasedMoveSpeedPassive: {
 	Name: Swift Footwork
-	Tooltip: +{0}% increased movement speed per level
+	Tooltip: +{0}% increased movement speed per level.
+}
+
+IncreasedWhipDamage: {
+	Name: Strong Snap
+	Tooltip: +{0}% increased whip damage per level.
+}
+
+IncreasedWhipSpeed: {
+	Name: Rapid Whips
+	Tooltip: +5% increased whip speed per level.
+}
+
+IncreasedJumpHeight: {
+	Name: High Vaulter
+	Tooltip: +{0}% faster jump speed.
 }

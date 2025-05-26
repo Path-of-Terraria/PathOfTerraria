@@ -28,3 +28,22 @@ internal class IncreasedSentryDamagePassive : Passive
 		}
 	}
 }
+
+internal class IncreasedWhipDamage : Passive
+{
+	public override void BuffPlayer(Player player)
+	{
+		player.GetDamage(DamageClass.MeleeNoSpeed) += Level * Value * 0.01f;
+	}
+}
+
+internal class IncreasedWhipSpeed : Passive
+{
+	private class WhipSpeedItem : GlobalItem
+	{
+		public override float UseSpeedMultiplier(Item item, Player player)
+		{
+			return 1 + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(IncreasedWhipSpeed)) * 0.05f;
+		}
+	}
+}

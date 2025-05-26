@@ -83,10 +83,9 @@ internal abstract class WhipProjectile : ModProjectile
 			return true; // Let the vanilla whip AI run.
 		}
 
-		if (++ChargeTime % 12 == 0) // 1 segment per 12 ticks of charge.
-		{
-			Projectile.WhipSettings.Segments++;
-		}
+		float useTimeMult = CombinedHooks.TotalUseTimeMultiplier(Owner, Owner.HeldItem);
+		ChargeTime += 1 / useTimeMult;
+		Projectile.WhipSettings.Segments = (int)((Owner.HeldItem.ModItem as WhipItem).WhipSettings.Segments + ChargeTime / 12f);
 
 		// Increase range up to 2x for full charge.
 		Projectile.WhipSettings.RangeMultiplier += 1 / 120f;
@@ -94,7 +93,7 @@ internal abstract class WhipProjectile : ModProjectile
 		// Reset the animation and item timer while charging.
 		Owner.itemAnimation = Owner.itemAnimationMax;
 		Owner.itemTime = Owner.itemTimeMax;
-
+		
 		return false; // Prevent the vanilla whip AI from running.
 	}
 
