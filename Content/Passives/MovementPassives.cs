@@ -9,3 +9,11 @@ internal class IncreasedMoveSpeedPassive : Passive
 		player.moveSpeed += 0.2f * Level;
 	}
 }
+
+internal class IncreasedJumpHeight : Passive
+{
+	public override void BuffPlayer(Player player)
+	{
+		player.jumpSpeedBoost += Value * 0.1f * Level;
+	}
+}
