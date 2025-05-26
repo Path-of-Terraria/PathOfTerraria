@@ -4,7 +4,6 @@ using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Content.Socketables;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -234,16 +233,6 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 				PoTItemHelper.ApplyAffixes(gear.Item, swapItemModifier, Main.LocalPlayer);
 			}
 		}
-	}
-
-	public override bool AltFunctionUse(Item item, Player player)
-	{
-		if (!IsGearItem(item))
-		{
-			return base.AltFunctionUse(item, player);
-		}
-
-		return player.GetModPlayer<AltUsePlayer>().AltFunctionAvailable;
 	}
 
 	void GeneratePrefix.IGlobal.ModifyPrefix(Item item, ref string prefix)

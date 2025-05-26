@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -21,7 +22,7 @@ public class GlimmeringShard : CurrencyShard
 			return base.CanRightClick();
 		}
 
-		Main.NewText("Item must be of Magic rarity");
+		//Main.NewText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.ShardNotifs.Glimmering"));
 		return false;
 	}
 
