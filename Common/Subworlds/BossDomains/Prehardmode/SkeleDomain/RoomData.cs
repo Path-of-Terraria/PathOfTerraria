@@ -4,6 +4,7 @@ using PathOfTerraria.Content.NPCs.BossDomain.SkeletronDomain;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 
@@ -23,18 +24,37 @@ public readonly struct SpikeballInfo(Point16 position, float length, bool? spinC
 	public readonly float SpinSpeed = spinSpeed ?? 0.06f;
 }
 
-public readonly struct RoomData(WireColor color, OpeningType opening, Point openingLoc, Point wireLoc, List<SpikeballInfo> spikeBalls = null, List<EngageTimerInfo> timers = null)
+public readonly struct RoomData(WireColor color, OpeningType opening, Point openingLoc, Point wireLoc, List<SpikeballInfo> spikeBalls = null, 
+	List<EngageTimerInfo> timers = null, bool skeletron = true)
 {
+	private string StructurePath
+	{
+		get
+		{
+			string name = "Assets/Structures/SkeletronDomain/Room_";
+
+			if (!ForSkeletron)
+			{
+				name = "Assets/Structures/GolemDomain/Room_" + (Opening == OpeningType.Above ? "Up" : "Down") + "_";
+			}
+
+			return name;
+		}
+	}
+
 	public readonly WireColor Wire = color;
 	public readonly OpeningType Opening = opening;
 	public readonly Point OpeningLocation = openingLoc;
 	public readonly Point WireConnection = wireLoc;
 	public readonly List<SpikeballInfo> Spikeballs = spikeBalls ?? [];
 	public readonly List<EngageTimerInfo> Timers = timers ?? [];
+	public readonly bool ForSkeletron = skeletron;
 
 	public void PlaceRoom(int x, int y, int id, Vector2 origin)
 	{
-		Point16 position = StructureTools.PlaceByOrigin("Assets/Structures/SkeletronDomain/Room_" + id, new Point16(x, y), origin);
+		string name = StructurePath + id;
+
+		Point16 position = StructureTools.PlaceByOrigin(name, new Point16(x, y), origin);
 		AddSpawns(x, y);
 	}
 
@@ -43,12 +63,14 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 		x -= origin.X;
 		y -= origin.Y;
 
-		string structure = "Assets/Structures/SkeletronDomain/Room_" + id;
+		string structure = StructurePath + id;
 		Point16 position = StructureTools.PlaceByOrigin(structure, new Point16(x, y), Vector2.Zero);
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions(structure, PoTMod.Instance);
 		AddSpawns(x, y);
 
-		return new Rectangle(x, y, size.X, size.Y);
+		GenVars.structures.AddProtectedStructure(new Rectangle(position.X, position.Y, size.X, size.Y));
+
+		return new Rectangle(position.X, position.Y, size.X, size.Y);
 	}
 
 	private void AddSpawns(int x, int y)

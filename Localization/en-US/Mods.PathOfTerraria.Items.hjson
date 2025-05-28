@@ -1211,3 +1211,8 @@ PlanteraMap: {
 	DisplayName: Plantera Map
 	Tooltip: ""
 }
+
+OffsetTool: {
+	DisplayName: Offset Tool
+	Tooltip: ""
+}
