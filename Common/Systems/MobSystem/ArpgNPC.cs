@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
@@ -7,6 +8,7 @@ using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.DamageTypes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
@@ -28,6 +30,10 @@ internal class ArpgNPC : GlobalNPC
 	public int? Experience;
 	public ItemRarity Rarity = ItemRarity.Normal;
 	public List<MobAffix> Affixes = [];
+
+	public FireDamageType FireDamage;
+	public ColdDamageType ColdDamage;
+	public LightningDamageType LightningDamage;
 
 	private readonly Player _lastPlayerHit = null;
 
@@ -177,6 +183,7 @@ internal class ArpgNPC : GlobalNPC
 				_ => ItemRarity.Normal
 			};
 
+			ApplyDamageTypes(npc);
 			ApplyRarity(npc, false);
 			npc.netUpdate = true;
 		}
@@ -185,6 +192,61 @@ internal class ArpgNPC : GlobalNPC
 	public override void SetDefaultsFromNetId(NPC npc)
 	{
 		SetName(npc);
+	}
+
+	// TODO: net support (mandatory, for random entries)
+	public void ApplyDamageTypes(NPC npc, MobEntry entry = null)
+	{
+		List<MobDamage> elementalDamages = null;
+		// Apply entry overrides if evaluating an entry and overrides are available
+		if (entry != null && entry.DamageOverrides != null)
+		{
+			elementalDamages = entry.DamageOverrides;
+		}
+		// Otherwise, try get common data for this type
+		else if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
+		{ 
+			elementalDamages = mobData.Damage;
+		}
+
+		if (elementalDamages != null && elementalDamages.Count > 0)
+		{
+			int level = PoTItemHelper.PickItemLevel();
+			foreach (MobDamage mobDamage in elementalDamages.OrderByDescending(d => d.MinLevel))
+			{
+				if(level >= mobDamage.MinLevel)
+				{
+					if (mobDamage.Fire != null)
+					{
+						FireDamage = new FireDamageType()
+						{
+							DamageBonus = mobDamage.Fire.Added,
+							DamageConversion = mobDamage.Fire.Conversion
+						};
+					}
+
+					if (mobDamage.Cold != null)
+					{
+						ColdDamage = new ColdDamageType()
+						{
+							DamageBonus = mobDamage.Cold.Added,
+							DamageConversion = mobDamage.Cold.Conversion
+						};
+					}
+
+					if (mobDamage.Lightning != null)
+					{
+						LightningDamage = new LightningDamageType()
+						{
+							DamageBonus = mobDamage.Lightning.Added,
+							DamageConversion = mobDamage.Lightning.Conversion
+						};
+					}
+
+					break;
+				}
+			}
+		}
 	}
 
 	public void ApplyRarity(NPC npc, bool fromNet)
@@ -266,6 +328,8 @@ internal class ArpgNPC : GlobalNPC
 		}
 
 		npc.scale *= entry.Scale ?? 1f;
+
+		ApplyDamageTypes(npc, entry);
 	}
 
 	private string SetName(NPC npc)

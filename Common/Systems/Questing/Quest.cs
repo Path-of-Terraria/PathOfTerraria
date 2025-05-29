@@ -99,14 +99,14 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// <returns>The in-use quest instance for the local player.</returns>
 	public static Quest GetLocalPlayerInstance(string name)
 	{
-		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[name];
+		return QuestsByName[name];
 	}
 
 	/// <inheritdoc cref="GetLocalPlayerInstance(string)"/>
 	/// <typeparam name="T">The type of the quest to get.</typeparam>
 	public static T GetLocalPlayerInstance<T>() where T : Quest
 	{
-		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[ModContent.GetInstance<T>().FullName] as T;
+		return QuestsByName[ModContent.GetInstance<T>().FullName] as T;
 	}
 
 	public void StartQuest(Player player, int currentQuest = 0)

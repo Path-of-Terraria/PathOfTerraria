@@ -1,5 +1,15 @@
 {
-  "netId": 60,
-  "friendlyName": "Hellbat",
-  "entries": []
+	"netId": 60,
+	"friendlyName": "Hellbat",
+	"damage": [
+		{
+			"minLevel": 3,
+			"fire":
+			{
+				"added": 10,
+				"conversion": 0.5
+			}
+		}
+	],
+	"entries": []
 }
