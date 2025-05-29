@@ -1216,3 +1216,8 @@ OffsetTool: {
 	DisplayName: Offset Tool
 	Tooltip: Used to generate offsets for use in the RoomDatabase system.
 }
+
+LihzahrdGuardItem: {
+	DisplayName: Lihzahrd Guard Item
+	Tooltip: ""
+}

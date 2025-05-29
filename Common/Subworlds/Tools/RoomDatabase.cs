@@ -91,6 +91,18 @@ internal class RoomDatabase : ModSystem
 			[new EngageTimerInfo(new(55, 37), 0), new EngageTimerInfo(new(53, 37), 45), new EngageTimerInfo(new(51, 37), 90), new EngageTimerInfo(new(49, 37), 135), 
 			new EngageTimerInfo(new(57, 37), 0)]));
 
+		DataByRoomIndex.Add(10, MakeRoom(true, 75, new Point(41, 0),
+			[new EngageTimerInfo(new(4, 7), 0), new EngageTimerInfo(new(5, 7), 15), new EngageTimerInfo(new(6, 7), 30), new EngageTimerInfo(new(7, 7), 45),
+			 new EngageTimerInfo(new(71, 38), 0), new EngageTimerInfo(new(70, 38), 5), new EngageTimerInfo(new(69, 38), 10), new EngageTimerInfo(new(68, 38), 15), 
+			new EngageTimerInfo(new(67, 38), 20), new EngageTimerInfo(new(66, 38), 25), new EngageTimerInfo(new(65, 38), 30), new EngageTimerInfo(new(64, 38), 35)]));
+
+		DataByRoomIndex.Add(11, MakeRoom(true, 75, new Point(35, 0),
+			[new EngageTimerInfo(new(8, 28), 0), new EngageTimerInfo(new(7, 28), 22), new EngageTimerInfo(new(6, 28), 44), new EngageTimerInfo(new(5, 28), 66), 
+			new EngageTimerInfo(new(8, 25), 88), new EngageTimerInfo(new(7, 25), 110), new EngageTimerInfo(new(6, 25), 132), new EngageTimerInfo(new(5, 25), 154)]));
+
+		DataByRoomIndex.Add(12, MakeRoom(true, 75, new Point(69, 0),
+			[new EngageTimerInfo(new(66, 30), 0), new EngageTimerInfo(new(67, 30), 15), new EngageTimerInfo(new(68, 30), 30), new EngageTimerInfo(new(69, 30), 45)]));
+
 		static RoomData MakeRoom(bool up, int width, Point wireLocation, List<EngageTimerInfo> timers)
 		{
 			return new RoomData(WireColor.Red, up ? OpeningType.Above : OpeningType.Below, new Point(width / 2, 0), wireLocation, null, timers ?? [], false);

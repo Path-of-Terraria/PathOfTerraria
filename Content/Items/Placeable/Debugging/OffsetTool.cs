@@ -7,8 +7,9 @@ namespace PathOfTerraria.Content.Items.Placeable.Debugging;
 
 internal class OffsetTool : ModItem
 {
+	private readonly List<Point16> all = [];
+
 	private Point16 Anchor = Point16.Zero;
-	private List<Point16> all = [];
 	private int middleClickTimer = 0;
 
 	public override void SetDefaults()
@@ -50,23 +51,23 @@ internal class OffsetTool : ModItem
 
 		if (Main.mouseMiddle && middleClickTimer < 30)
 		{
-			string text = "";
-
-			foreach (Point16 p in all)
-			{
-				text += $"new EngageTimerInfo(new({p.X}, {p.Y}), 0), ";
-			}
-
-			Mod.Logger.Debug(text);
-
 			if (middleClickTimer > 0)
 			{
-				Main.NewText("Cleared list.");
 				all.Clear();
+				Main.NewText("Cleared list.");
 			}
 			else
 			{
-				Main.NewText("Posted offsets.");
+				string text = "";
+
+				foreach (Point16 p in all)
+				{
+					text += $"new EngageTimerInfo(new({p.X}, {p.Y}), 0), ";
+				}
+
+				Mod.Logger.Debug(text);
+
+				Main.NewText("Posted offsets to log.");
 			}
 
 			middleClickTimer = 60;

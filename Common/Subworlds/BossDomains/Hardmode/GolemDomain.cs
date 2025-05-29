@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -15,11 +16,15 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class GolemDomain : BossDomainSubworld
 {
+	const int RoomCountPerTemple = 3;
+
+	private record PairingRoom(PlacedRoom Room, bool Exit, int PairingNumber);
+
 	public override int Width => 600;
 	public override int Height => 1500;
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
-	private static readonly List<PlacedRoom> Rooms = [];
+	private static readonly List<PairingRoom> Rooms = [];
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
@@ -29,9 +34,30 @@ internal class GolemDomain : BossDomainSubworld
 		new PassLegacy("Temples", Temples),
 		new PassLegacy("Decor", Decor)];
 
+	public override void Load()
+	{
+		On_Player.Teleport += AddGolemTeleporting;
+	}
+
+	private void AddGolemTeleporting(On_Player.orig_Teleport orig, Player self, Vector2 newPos, int Style, int extraInfo)
+	{
+		orig(self, newPos, Style, extraInfo);
+
+		if (SubworldSystem.Current is GolemDomain)
+		{
+			Main.spawnTileX = (int)newPos.X / 16;
+			Main.spawnTileY = (int)newPos.Y / 16;
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendData(MessageID.WorldData);
+			}
+		}
+	}
+
 	private void Temples(GenerationProgress progress, GameConfiguration configuration)
 	{
-		const int Seperation = 50;
+		const int Seperation = 48;
 
 		Rooms.Clear();
 		bool start = WorldGen.genRand.NextBool();
@@ -39,13 +65,62 @@ internal class GolemDomain : BossDomainSubworld
 
 		SpawnTemple(Width / 2 - Seperation, FindTileBelow(Width / 2 - Seperation, 100), start, tunnels);
 		SpawnTemple(Width / 2 + Seperation, FindTileBelow(Width / 2 + Seperation, 100), !start, tunnels);
+		GenerateTunnels(tunnels);
+		PairTeleporters();
+	}
 
+	private static void PairTeleporters()
+	{
+		for (int i = 0; i < RoomCountPerTemple + 2; ++i)
+		{
+			PairingRoom exit = Rooms.Find(x => x.Exit && x.PairingNumber == i);
+			PairingRoom entrance = Rooms.Find(x => !x.Exit && x.PairingNumber == i);
+
+			Point exitWirePos = exit.Room.Data.WireConnection;
+			Point pos = new(exit.Room.Area.X + exitWirePos.X, exit.Room.Area.Y + exitWirePos.Y - 1);
+
+			Point entranceWirePos = entrance.Room.Data.WireConnection;
+			Point target = new(entrance.Room.Area.X + entranceWirePos.X, entrance.Room.Area.Y + entranceWirePos.Y - 1);
+
+			while (pos != target)
+			{
+				Tile tile = Main.tile[pos];
+				tile.YellowWire = true;
+
+				bool inStructure = GenVars.structures.CanPlace(new Rectangle(pos.X, pos.Y, 1, 1), 1);
+
+				if (!inStructure || pos.Y <= target.Y)
+				{
+					int dir = pos.Y <= target.Y ? Math.Sign(target.X - pos.X) : 1;
+
+					if (dir == 0)
+					{
+						pos.Y++;
+					}
+					else
+					{
+						pos.X += dir;
+					}
+				}
+				else
+				{
+					pos.Y--;
+				}
+			}
+
+			Tile finalTile = Main.tile[pos];
+			finalTile.YellowWire = true;
+		}
+	}
+
+	private static void GenerateTunnels(List<(Point, Point)> tunnels)
+	{
 		foreach ((Point exit, Point entrance) in tunnels)
 		{
 			var vExit = exit.ToVector2();
 			var vEntrance = entrance.ToVector2();
-			Vector2[] tunnel = Tunnel.GeneratePoints([vExit, Vector2.Lerp(vExit, vEntrance, 0.5f + WorldGen.genRand.NextFloat(-0.1f, 0.1f)) 
-				- new Vector2(WorldGen.genRand.NextFloat(-22, 22), 0), vEntrance], 12, 1, 0.2f);
+			Vector2[] tunnel = Tunnel.GeneratePoints([vExit, Vector2.Lerp(vExit, vEntrance, 0.5f + WorldGen.genRand.NextFloat(-0.1f, 0.1f))
+				- new Vector2(WorldGen.genRand.NextFloat(-32, 32), 0), vEntrance], 12, 1, 0.2f);
 			HashSet<Point16> clearTiles = [];
 			HashSet<Point16> allTiles = [];
 
@@ -79,7 +154,7 @@ internal class GolemDomain : BossDomainSubworld
 
 		for (int i = -8; i < 9; ++i)
 		{
-			for (int j = -8; j < 9; ++j)
+			for (int j = -6; j < 7; ++j)
 			{
 				var newPos = new Point16(center.X + i, center.Y + j);
 
@@ -90,7 +165,7 @@ internal class GolemDomain : BossDomainSubworld
 
 				allTiles.Add(newPos);
 
-				if (i > -5 && i < 5 && j > -5 && j < 5)
+				if (i > -5 && i < 5 && j > -4 && j < 4)
 				{
 					clearTiles.Add(newPos);
 				}
@@ -115,22 +190,26 @@ internal class GolemDomain : BossDomainSubworld
 		y += VarianceY();
 
 		Point entrance;
+		int pairing = 0;
 
-		for (int i = 0; i < 4; ++i)
+		for (int i = 0; i < RoomCountPerTemple; ++i)
 		{
 			int useX = x + WorldGen.genRand.Next(-10, 11);
 
 			if (start)
 			{
-				AddRoom(useX, y, RoomDatabase.PlaceRandomRoom(OpeningType.Above, useX, y, [], false), false, out entrance);
+				AddRoom(useX, y, RoomDatabase.PlaceRandomRoom(OpeningType.Above, useX, y, [], false), false, pairing, out entrance);
+				pairing++;
 				start = false;
 			}
 			else
 			{
-				AddRoom(useX, y, RoomDatabase.PlaceRandomRoom(OpeningType.Below, useX, y, [], false), true, out exit);
+				AddRoom(useX, y, RoomDatabase.PlaceRandomRoom(OpeningType.Below, useX, y, [], false), true, pairing, out exit);
+				pairing++;
 				y += (int)(VarianceY() * 0.8f);
 
-				AddRoom(useX, y, RoomDatabase.PlaceRandomRoom(OpeningType.Above, useX, y, [], false), false, out entrance);
+				AddRoom(useX, y, RoomDatabase.PlaceRandomRoom(OpeningType.Above, useX, y, [], false), false, pairing, out entrance);
+				pairing++;
 			}
 
 			y += VarianceY();
@@ -140,13 +219,13 @@ internal class GolemDomain : BossDomainSubworld
 
 		static int VarianceY()
 		{
-			return WorldGen.genRand.Next(70, 180);
+			return WorldGen.genRand.Next(87, 89);
 		}
 	}
 
-	private static void AddRoom(int x, int y, PlacedRoom room, bool exit, out Point opening)
+	private static void AddRoom(int x, int y, PlacedRoom room, bool exit, int pairingNumber, out Point opening)
 	{
-		Rooms.Add(room);
+		Rooms.Add(new PairingRoom(room, exit, pairingNumber));
 
 		// X is already centered as that's how the placement works for our rooms here.
 		if (exit)
@@ -250,6 +329,7 @@ internal class GolemDomain : BossDomainSubworld
 
 	public override void Update()
 	{
+		NPC.downedPlantBoss = true;
 		Wiring.UpdateMech();
 		TileEntity.UpdateStart();
 
