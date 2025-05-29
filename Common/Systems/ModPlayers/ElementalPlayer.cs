@@ -28,7 +28,7 @@ public class ElementalPlayer : ModPlayer
 	}
 
 	// TODO: could be a ModConfig toggle
-	public bool DebugMessages => true;
+	public static bool DebugMessages => true;
 
 	public override void ResetEffects()
 	{
