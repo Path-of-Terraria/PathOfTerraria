@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain;
 
@@ -20,6 +22,12 @@ internal class LihzahrdGuard : ModTile
 
 		CanMerge.Add(Type);
 		CanMerge.Add(TileID.LihzahrdBrick);
+
+		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
+		TileObjectData.newTile.AnchorWall = true;
+		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
+		TileObjectData.newTile.StyleHorizontal = true;
+		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(141, 56, 0));
 
@@ -67,7 +75,7 @@ public class GuardProjectile : GlobalProjectile
 
 	public override void AI(Projectile projectile)
 	{
-		Tile tile = Main.tile[projectile.Center.ToTileCoordinates()];
+		Tile tile = Main.tile[(projectile.Center + projectile.velocity).ToTileCoordinates()];
 
 		if (tile.HasTile && tile.TileType == ModContent.TileType<LihzahrdGuard>())
 		{

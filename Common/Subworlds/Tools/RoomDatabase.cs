@@ -103,6 +103,12 @@ internal class RoomDatabase : ModSystem
 		DataByRoomIndex.Add(12, MakeRoom(true, 75, new Point(69, 0),
 			[new EngageTimerInfo(new(66, 30), 0), new EngageTimerInfo(new(67, 30), 15), new EngageTimerInfo(new(68, 30), 30), new EngageTimerInfo(new(69, 30), 45)]));
 
+		DataByRoomIndex.Add(13, MakeRoom(false, 77, new Point(6, 0),
+			[new EngageTimerInfo(new(2, 14), 0), new EngageTimerInfo(new(3, 14), 75), new EngageTimerInfo(new(4, 14), 150), new EngageTimerInfo(new(5, 14), 225)]));
+
+		DataByRoomIndex.Add(14, MakeRoom(false, 77, new Point(37, 0),
+			[new EngageTimerInfo(new(4, 48), 0), new EngageTimerInfo(new(4, 9), 45), new EngageTimerInfo(new(73, 9), 90), new EngageTimerInfo(new(73, 48), 135)]));
+
 		static RoomData MakeRoom(bool up, int width, Point wireLocation, List<EngageTimerInfo> timers)
 		{
 			return new RoomData(WireColor.Red, up ? OpeningType.Above : OpeningType.Below, new Point(width / 2, 0), wireLocation, null, timers ?? [], false);
