@@ -12,27 +12,27 @@ internal class NovaTree : SkillTree
 	public override void Populate() //Could be moved to a .json based system at some point, like player passives.
 	{
 		var anchor = new Anchor(this) { Level = 1 };
-		var novaFire = new FireNova(this);
-		var novaIce = new IceNova(this);
-		var novaLightning = new LightningNova(this);
-		var efficiency = new Efficiency(this);
-		var thunderClaps = new ThunderClaps(this);
-		var concurrentBlasts = new ConcurrentBlasts(this);
-		var volatileNova = new VolatileNova(this);
-		var igniteChance = new IgniteChance(this);
-		var shockChance = new ShockChance(this);
+		var novaFire = new FireNova(this) { TreePos = new Vector2(-200, 0) };
+		var novaIce = new IceNova(this) { TreePos = new Vector2(0, 100) };
+		var novaLightning = new LightningNova(this) { TreePos = new Vector2(200, 0) };
+		var efficiency = new Efficiency(this) { TreePos = new Vector2(50, -50) };
+		var thunderClaps = new ThunderClaps(this) { TreePos = new Vector2(200, -80) };
+		var concurrentBlasts = new ConcurrentBlasts(this) { TreePos = new Vector2(80, 150) };
+		var volatileNova = new VolatileNova(this) { TreePos = new Vector2(80, 100) };
+		var igniteChance = new IgniteChance(this) { TreePos = new Vector2(-200, 80) };
+		var shockChance = new ShockChance(this) { TreePos = new Vector2(250, 80) };
 
-		Nodes.Add(new Vector2(0, 0), anchor);
-		Nodes.Add(new Vector2(-200, 0), novaFire);
-		Nodes.Add(new Vector2(0, 100), novaIce);
-		Nodes.Add(new Vector2(200, 0), novaLightning);
+		Nodes.Add(anchor);
+		Nodes.Add(novaFire);
+		Nodes.Add(novaIce);
+		Nodes.Add(novaLightning);
 
-		Nodes.Add(new Vector2(50, -50), efficiency);
-		Nodes.Add(new Vector2(200, -80), thunderClaps);
-		Nodes.Add(new Vector2(80, 150), concurrentBlasts);
-		Nodes.Add(new Vector2(80, 100), volatileNova);
-		Nodes.Add(new Vector2(-200, 80), igniteChance);
-		Nodes.Add(new Vector2(250, 80), shockChance);
+		Nodes.Add(efficiency);
+		Nodes.Add(thunderClaps);
+		Nodes.Add(concurrentBlasts);
+		Nodes.Add(volatileNova);
+		Nodes.Add(igniteChance);
+		Nodes.Add(shockChance);
 
 		Edges.Add(new(novaFire, anchor));
 		Edges.Add(new(novaIce, anchor));

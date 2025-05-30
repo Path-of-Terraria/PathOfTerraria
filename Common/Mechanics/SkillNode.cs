@@ -21,7 +21,7 @@ public abstract class SkillNode(SkillTree tree) : Allocatable
 		get
 		{
 			int count = 0;
-			foreach (SkillTree.Edge edge in Tree.Edges)
+			foreach (Edge edge in Tree.Edges)
 			{
 				if (edge.Contains(this) && edge.Other(this).Allocated)
 				{

@@ -37,9 +37,9 @@ public abstract partial class Skill
 			return stats;
 		}
 
-		foreach (Vector2 key in tree.Nodes.Keys)
+		foreach (SkillNode node in tree.Nodes)
 		{
-			if (tree.Nodes[key] is SkillPassive p)
+			if (node is SkillPassive p)
 			{
 				p.PassiveEffects(ref stats);
 			}

@@ -22,8 +22,6 @@ internal class PassiveLoader : ILoadable
 public abstract class Passive : Allocatable
 {
 	public static Dictionary<string, Type> Passives = [];
-	
-	public Vector2 TreePos;
 
 	/// <summary> The internal identifier of this passive. <para/>
 	/// This is used to map the JSON data to the correct passive. This is also what's used to grab the texture of this passive.

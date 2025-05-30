@@ -35,6 +35,7 @@ public abstract class Allocatable
 		}
 	}
 
+	public Vector2 TreePos;
 	public int Level;
 	public int MaxLevel = 1;
 
