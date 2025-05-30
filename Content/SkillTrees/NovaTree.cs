@@ -39,6 +39,7 @@ internal class NovaTree : SkillTree
 		Edges.Add(new(novaLightning, anchor));
 		Edges.Add(new(efficiency, anchor));
 		Edges.Add(new(thunderClaps, novaLightning));
+		Edges.Add(new(igniteChance, novaFire));
 		Edges.Add(new(shockChance, novaLightning));
 		Edges.Add(new(volatileNova, novaIce));
 		Edges.Add(new(volatileNova, novaLightning));

@@ -8,26 +8,28 @@ public abstract class SkillNode(SkillTree tree) : Allocatable
 
 	public override bool CanAllocate(Player player)
 	{
-		return Connected();
+		return base.CanAllocate(player) && Connections > 0;
+	}
 
-		bool Connected()
+	public override bool CanDeallocate(Player player)
+	{
+		return base.CanDeallocate(player) && Connections < 2;
+	}
+
+	private int Connections
+	{
+		get
 		{
-			bool value = true;
-
+			int count = 0;
 			foreach (SkillTree.Edge edge in Tree.Edges)
 			{
-				if (edge.Contains(this))
+				if (edge.Contains(this) && edge.Other(this).Allocated)
 				{
-					if (edge.Other(this) is not SkillPassive p || p.Level > 0)
-					{
-						return true;
-					}
-
-					value = false;
+					count++;
 				}
 			}
 
-			return value;
+			return count;
 		}
 	}
 }

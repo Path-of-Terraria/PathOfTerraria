@@ -11,26 +11,13 @@ namespace PathOfTerraria.Common.UI;
 
 internal class AllocatableElement : SmartUiElement
 {
-	public static Asset<Texture2D> GlowAlpha;
-	public static Asset<Texture2D> StarAlpha;
+	public static Asset<Texture2D> GlowAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
+	public static Asset<Texture2D> StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
 
 	public readonly Allocatable Node;
 
 	private int _flashTimer;
 	private int _redFlashTimer;
-
-	public static void LoadAssets()
-	{
-		if (GlowAlpha?.IsLoaded is not true)
-		{
-			GlowAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
-		}
-
-		if (StarAlpha?.IsLoaded is not true)
-		{
-			StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
-		}
-	}
 
 	public AllocatableElement(Allocatable node)
 	{
@@ -44,7 +31,6 @@ internal class AllocatableElement : SmartUiElement
 			(Node as SkillPassive).Level = 1;
 		}
 
-		LoadAssets();
 		Node = node;
 	}
 
@@ -106,14 +92,9 @@ internal class AllocatableElement : SmartUiElement
 	{
 		string name = Node.DisplayName;
 
-		if (Node is ILevel level)
+		if (Node.MaxLevel > 1)
 		{
-			(int, int) range = level.LevelRange;
-
-			if (range.Item2 > 1)
-			{
-				name += $" ({range.Item1}/{range.Item2})";
-			}
+			name += $" ({Node.Level}/{Node.MaxLevel})";
 		}
 
 		Tooltip.SetName(name);
@@ -129,15 +110,7 @@ internal class AllocatableElement : SmartUiElement
 			Node.OnAllocate(p);
 			_flashTimer = 20;
 
-			if (Node is ILevel level)
-			{
-				(int, int) range = level.LevelRange;
-				TreeSoundEngine.PlaySoundForTreeAllocation(range.Item2, range.Item1);
-			}
-			else
-			{
-				TreeSoundEngine.PlaySoundForTreeAllocation(1, 1);
-			}
+			TreeSoundEngine.PlaySoundForTreeAllocation(Node.Level, Node.MaxLevel);
 		}
 	}
 

@@ -35,6 +35,12 @@ public abstract class Allocatable
 		}
 	}
 
+	public int Level;
+	public int MaxLevel = 1;
+
+	/// <summary> Shorthand for checking <see cref="Level"/> > 0.</summary>
+	public bool Allocated => Level > 0;
+
 	/// <summary> Shorthand for Type name. </summary>
 	public virtual string Name => GetType().Name;
 
@@ -45,19 +51,25 @@ public abstract class Allocatable
 	public abstract string DisplayTooltip { get; }
 
 	/// <summary> Should check <see cref="CanAllocate"/> before being called. </summary>
-	public virtual void OnAllocate(Player player) { }
+	public virtual void OnAllocate(Player player)
+	{
+		Level++;
+	}
 
 	/// <summary> Should check <see cref="CanDeallocate"/> before being called. </summary>
-	public virtual void OnDeallocate(Player player) { }
+	public virtual void OnDeallocate(Player player)
+	{
+		Level--;
+	}
 
 	public virtual bool CanAllocate(Player player)
 	{
-		return true;
+		return Level < MaxLevel;
 	}
 
 	public virtual bool CanDeallocate(Player player)
 	{
-		return true;
+		return Level > 0;
 	}
 
 	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position) { }

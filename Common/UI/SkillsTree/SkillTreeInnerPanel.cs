@@ -38,18 +38,18 @@ internal class SkillTreeInnerPanel : SmartUiElement
 			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 			Color color = Color.Gray;
 
-			int startLevel = (edge.Start is ILevel) ? (edge.Start as ILevel).LevelRange.Item1 : 0;
-			int endLevel = (edge.End is ILevel) ? (edge.End as ILevel).LevelRange.Item1 : 0;
+			bool start = edge.Start.Allocated;
+			bool end = edge.End.Allocated;
 
 			Vector2 startPos = tree.Point(edge.Start);
 			Vector2 endPos = tree.Point(edge.End);
 
-			if (edge.End.CanAllocate(Main.LocalPlayer) && startLevel > 0)
+			if (edge.End.CanAllocate(Main.LocalPlayer) && start)
 			{
 				color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 			}
 
-			if (endLevel > 0 && startLevel > 0)
+			if (start && end)
 			{
 				color = Color.White;
 			}
@@ -61,7 +61,7 @@ internal class SkillTreeInnerPanel : SmartUiElement
 					startPos.DirectionTo(endPos).ToRotation(), chainTex.Size() / 2, 1, 0, 0);
 			}
 
-			if (endLevel > 0 && startLevel > 0)
+			if (start && end)
 			{
 				Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
 				var glowColor = new Color(255, 230, 150) { A = 0 };
@@ -77,6 +77,7 @@ internal class SkillTreeInnerPanel : SmartUiElement
 					float progress = (Main.GameUpdateCount + 15 * k) % len / len;
 					Vector2 pos = GetDimensions().Center() + Vector2.SmoothStep(startPos, endPos, progress);
 					float scale2 = (float)Math.Sin(progress * 3.14f) * (0.4f - scale);
+
 					spriteBatch.Draw(glow, pos, null, glowColor * scale2, 0, glow.Size() / 2f, scale2, 0, 0);
 				}
 			}

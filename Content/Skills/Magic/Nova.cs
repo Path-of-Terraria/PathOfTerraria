@@ -80,7 +80,7 @@ public class Nova : Skill
 				break;
 		}
 
-		if (Tree.TryGetNode(out VolatileNova vNova)) //Passive synergy
+		if (Tree.TryGetNode(out VolatileNova vNova) && vNova.Allocated) //Passive synergy
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -237,17 +237,17 @@ public class Nova : Skill
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			//Passive synergies
-			if (Skill.Tree.TryGetNode(out IgniteChance ignite) && Main.rand.NextFloat() < 0.02f * ignite.Level)
+			if (Skill.Tree.TryGetNode(out IgniteChance ignite) && ignite.Allocated && Main.rand.NextFloat() < 0.02f * ignite.Level)
 			{
 				target.AddBuff(BuffID.OnFire, 8 * 60);
 			}
 
-			if (Skill.Tree.TryGetNode(out ShockChance shock) && Main.rand.NextFloat() < 0.02f * shock.Level)
+			if (Skill.Tree.TryGetNode(out ShockChance shock) && shock.Allocated && Main.rand.NextFloat() < 0.02f * shock.Level)
 			{
 				target.AddBuff(ModContent.BuffType<ShockDebuff>(), 8 * 60);
 			}
 
-			if (Skill.Tree.TryGetNode(out ThunderClaps thunderClaps) && Main.rand.NextFloat() < 0.05f * thunderClaps.Level)
+			if (Skill.Tree.TryGetNode(out ThunderClaps thunderClaps) && thunderClaps.Allocated && Main.rand.NextFloat() < 0.05f * thunderClaps.Level)
 			{
 				Vector2 position = target.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(AreaOfEffect / 3f);
 
