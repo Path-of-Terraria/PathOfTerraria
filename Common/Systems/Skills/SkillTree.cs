@@ -45,6 +45,19 @@ public abstract class SkillTree : ILoadable
 	/// <summary> The current skill specialization of this tree. </summary>
 	public SkillSpecial Specialization;
 
+	public bool TryGetNode<T>(out T value) where T : SkillNode
+	{
+		T first = Nodes.Values.FirstOrDefault(x => x is T) as T;
+		if (first != default)
+		{
+			value = first;
+			return true;
+		}
+
+		value = null;
+		return false;
+	}
+
 	public Vector2 Point(SkillNode a)
 	{
 		foreach (Vector2 key in Nodes.Keys)
@@ -109,7 +122,7 @@ public abstract class SkillTree : ILoadable
 
 		if (tag.TryGet(nameof(Slots), out List<bool> list)) //Use TryGet because we don't want to assign an empty array
 		{
-			Slots = list.ToArray();
+			Slots = [.. list];
 		}
 
 		IList<string> augments = tag.GetList<string>("augments");

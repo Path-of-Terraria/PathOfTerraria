@@ -41,7 +41,7 @@ public abstract class Allocatable
 	public virtual string TexturePath { get; }
 	/// <summary> Name to be used in ALL display situations. </summary>
 	public abstract string DisplayName { get; }
-	/// <summary> Tooltip to be used in ALL display situations. </summary>
+	/// <summary> Tooltip to be used in <b>ALL</b> display situations. </summary>
 	public abstract string DisplayTooltip { get; }
 
 	/// <summary> Should check <see cref="CanAllocate"/> before being called. </summary>

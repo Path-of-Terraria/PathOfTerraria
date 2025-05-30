@@ -3,9 +3,11 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.SkillSpecials;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.ID;
 using Terraria.Localization;
@@ -78,7 +80,21 @@ public class Nova : Skill
 				break;
 		}
 
-		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
+		if (Tree.TryGetNode(out VolatileNova vNova)) //Passive synergy
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2 position = player.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(NovaProjectile.AreaOfEffect);
+
+				var smallBlast = Projectile.NewProjectileDirect(source, position, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
+				smallBlast.scale = Main.rand.NextFloat(0.4f, 0.6f);
+				smallBlast.netUpdate = true;
+			}
+		}
+		else
+		{
+			Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
+		}
 	}
 
 	public override bool CanUseSkill(Player player)
@@ -102,13 +118,12 @@ public class Nova : Skill
 
 	private class NovaProjectile : SkillProjectile<Nova>
 	{
-		private int TotalRadius => Skill.GetTotalAreaOfEffect(300);
+		public const int AreaOfEffect = 300;
+		public int Spread => (int)((1 - Projectile.timeLeft / 30f) * Skill.GetTotalAreaOfEffect(300 * Projectile.scale));
 
 		public override string Texture => "Terraria/Images/NPC_0";
 
-		private int Spread => (int)((1 - Projectile.timeLeft / 30f) * TotalRadius);
 		private NovaType NovaType => (NovaType)Projectile.ai[0];
-
 		private ref float Timer => ref Projectile.ai[1];
 		private ref float DecaySpeed => ref Projectile.ai[2];
 
@@ -214,22 +229,31 @@ public class Nova : Skill
 			return distanceSq > MathF.Pow(Spread - 20, 2) && distanceSq < MathF.Pow(Spread + 20, 2);
 		}
 
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			base.ModifyHitNPC(target, ref modifiers);
+		}
+
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			switch (NovaType)
+			//Passive synergies
+			if (Skill.Tree.TryGetNode(out IgniteChance ignite) && Main.rand.NextFloat() < 0.02f * ignite.Level)
 			{
-				case NovaType.Fire:
-					target.AddBuff(BuffID.OnFire, 5 * 60);
-					break;
-				case NovaType.Lightning:
-					target.AddBuff(ModContent.BuffType<ShockDebuff>(), 5 * 60);
-					break;
-				case NovaType.Ice:
-					target.AddBuff(BuffID.Chilled, 5 * 60);
-					break;
-				case NovaType.Normal:
-				default:
-					return;
+				target.AddBuff(BuffID.OnFire, 8 * 60);
+			}
+
+			if (Skill.Tree.TryGetNode(out ShockChance shock) && Main.rand.NextFloat() < 0.02f * shock.Level)
+			{
+				target.AddBuff(ModContent.BuffType<ShockDebuff>(), 8 * 60);
+			}
+
+			if (Skill.Tree.TryGetNode(out ThunderClaps thunderClaps) && Main.rand.NextFloat() < 0.05f * thunderClaps.Level)
+			{
+				Vector2 position = target.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(AreaOfEffect / 3f);
+
+				var smallBlast = Projectile.NewProjectileDirect(Projectile.GetSource_OnHit(target), position, Vector2.Zero, Type, Projectile.damage, Projectile.knockBack, Projectile.owner, (int)NovaType);
+				smallBlast.scale = 0.5f;
+				smallBlast.netUpdate = true;
 			}
 		}
 
@@ -282,6 +306,16 @@ public class Nova : Skill
 			};
 			
 			return pair;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.scale);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.scale = reader.ReadSingle();
 		}
 	}
 }

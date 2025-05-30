@@ -47,7 +47,7 @@ public abstract class SkillPassive(SkillTree tree) : SkillNode(tree), ILevel
 
 	public override bool CanAllocate(Player player)
 	{
-		return Tree.Points > 0;
+		return base.CanAllocate(player) && Tree.Points > 0;
 	}
 
 	public override bool CanDeallocate(Player player)

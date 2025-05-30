@@ -2,3 +2,37 @@ Anchor: {
 	Name: Anchor
 	Tooltip: Your journey starts here
 }
+
+IgniteChance: {
+	Name: Ignite Chance
+	Tooltip: +{0}% Chance per level to apply On Fire! on hit
+}
+
+ShockChance: {
+	Name: Shock Chance
+	Tooltip: +{0}% Chance per level to apply Shock on hit
+}
+
+Efficiency: {
+	Name: Efficiency
+	Tooltip: Mana cost reduced by {0}% per level
+}
+
+ThunderClaps: {
+	Name: Thunder Claps
+	Tooltip: 5% chance per level to spawn a tiny nova around a hit target
+}
+
+ConcurrentBlasts: {
+	Name: Concurrent Blasts
+	Tooltip: Deal 15% more damage if hit by another nova from the same cast
+}
+
+VolatileNova: {
+	Name: Volatile Nova
+	Tooltip:
+		'''
+		Splits your attack into 3 tiny nova
+		Can hit the same target multiple times
+		'''
+}

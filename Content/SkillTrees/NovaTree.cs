@@ -15,15 +15,33 @@ internal class NovaTree : SkillTree
 		var novaFire = new FireNova(this);
 		var novaIce = new IceNova(this);
 		var novaLightning = new LightningNova(this);
-		var strength = new Strength(this);
+		var efficiency = new Efficiency(this);
+		var thunderClaps = new ThunderClaps(this);
+		var concurrentBlasts = new ConcurrentBlasts(this);
+		var volatileNova = new VolatileNova(this);
+		var igniteChance = new IgniteChance(this);
+		var shockChance = new ShockChance(this);
 
 		Nodes.Add(new Vector2(0, 0), anchor);
-		Nodes.Add(new Vector2(100, 0), novaFire);
-		Nodes.Add(new Vector2(200, 0), novaIce);
-		Nodes.Add(new Vector2(300, 0), novaLightning);
-		Nodes.Add(new Vector2(100), strength);
+		Nodes.Add(new Vector2(-200, 0), novaFire);
+		Nodes.Add(new Vector2(0, 100), novaIce);
+		Nodes.Add(new Vector2(200, 0), novaLightning);
 
-		Edges.Add(new(strength, anchor));
-		Edges.Add(new(novaLightning, strength));
+		Nodes.Add(new Vector2(50, -50), efficiency);
+		Nodes.Add(new Vector2(200, -80), thunderClaps);
+		Nodes.Add(new Vector2(80, 150), concurrentBlasts);
+		Nodes.Add(new Vector2(80, 100), volatileNova);
+		Nodes.Add(new Vector2(-200, 80), igniteChance);
+		Nodes.Add(new Vector2(250, 80), shockChance);
+
+		Edges.Add(new(novaFire, anchor));
+		Edges.Add(new(novaIce, anchor));
+		Edges.Add(new(novaLightning, anchor));
+		Edges.Add(new(efficiency, anchor));
+		Edges.Add(new(thunderClaps, novaLightning));
+		Edges.Add(new(shockChance, novaLightning));
+		Edges.Add(new(volatileNova, novaIce));
+		Edges.Add(new(volatileNova, novaLightning));
+		Edges.Add(new(concurrentBlasts, volatileNova));
 	}
 }
