@@ -7,5 +7,5 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 internal class PassiveTreeInnerPanel : AllocatableInnerPanel
 {
 	public override string TabName => "PassiveTree";
-	public override List<Edge> Connections => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Edges;
+	public override IEnumerable<Edge> Connections => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Edges;
 }

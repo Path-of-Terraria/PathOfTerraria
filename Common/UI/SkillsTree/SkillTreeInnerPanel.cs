@@ -8,7 +8,7 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 internal class SkillTreeInnerPanel : AllocatableInnerPanel
 {
 	public override string TabName => "SelectedSkillTree";
-	public override List<Edge> Connections => _skill.Tree.Edges;
+	public override IEnumerable<Edge> Connections => _skill.Tree.Edges;
 
 	private readonly Skill _skill;
 

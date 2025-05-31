@@ -23,26 +23,6 @@ internal class PassiveElement : SmartUiElement
 		float halfSizeX = passive.Size.X / 2;
 		float halfSizeY = passive.Size.Y / 2;
 
-		if (passive.TreePos.X - halfSizeX < UiTreeState.TopLeftTree.X)
-		{
-			UiTreeState.TopLeftTree.X = passive.TreePos.X - halfSizeX;
-		}
-		
-		if (passive.TreePos.Y - halfSizeY < UiTreeState.TopLeftTree.Y)
-		{
-			UiTreeState.TopLeftTree.Y = passive.TreePos.Y - halfSizeY;
-		}
-
-		if (passive.TreePos.X + halfSizeX > UiTreeState.BotRightTree.X)
-		{
-			UiTreeState.BotRightTree.X = passive.TreePos.X + halfSizeX;
-		}
-		
-		if (passive.TreePos.Y + halfSizeY > UiTreeState.BotRightTree.Y)
-		{
-			UiTreeState.BotRightTree.Y = passive.TreePos.Y + halfSizeY;
-		}
-
 		_passive = passive;
 		Left.Set(passive.TreePos.X - halfSizeX, 0.5f);
 		Top.Set(passive.TreePos.Y - halfSizeY, 0.5f);

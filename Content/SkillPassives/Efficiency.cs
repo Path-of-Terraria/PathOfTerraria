@@ -4,10 +4,15 @@ using PathOfTerraria.Common.Systems.Skills;
 
 namespace PathOfTerraria.Content.SkillPassives;
 
-internal class Efficiency(SkillTree tree) : SkillPassive(tree)
+internal class Efficiency : SkillPassive
 {
 	public const float Chance = 0.02f;
 	public override string DisplayTooltip => base.DisplayTooltip.FormatWith(Round(Chance));
+
+	public Efficiency(SkillTree tree) : base(tree)
+	{
+		MaxLevel = 3;
+	}
 
 	private static int Round(float value)
 	{

@@ -87,7 +87,7 @@ public class Nova : Skill
 				Vector2 position = player.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(NovaProjectile.AreaOfEffect);
 
 				var smallBlast = Projectile.NewProjectileDirect(source, position, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
-				smallBlast.scale = Main.rand.NextFloat(0.4f, 0.6f);
+				smallBlast.scale = Main.rand.NextFloat(0.2f, 0.3f);
 				smallBlast.netUpdate = true;
 			}
 		}
@@ -119,7 +119,7 @@ public class Nova : Skill
 	private class NovaProjectile : SkillProjectile<Nova>
 	{
 		public const int AreaOfEffect = 300;
-		public int Spread => (int)((1 - Projectile.timeLeft / 30f) * Skill.GetTotalAreaOfEffect(300 * Projectile.scale));
+		public int Spread => (int)((1 - Projectile.timeLeft / 30f) * Skill.GetTotalAreaOfEffect(300f * Projectile.scale));
 
 		public override string Texture => "Terraria/Images/NPC_0";
 
@@ -231,7 +231,15 @@ public class Nova : Skill
 
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			base.ModifyHitNPC(target, ref modifiers);
+			if (Skill.Tree.TryGetNode(out ConcurrentBlasts blasts) && blasts.Allocated && target.TryGetGlobalNPC(out ConcurrentNPC cNPC))
+			{
+				if (cNPC.Vulnerable)
+				{
+					modifiers.FinalDamage *= ConcurrentBlasts.BonusDamage;
+				}
+
+				cNPC.ApplyBlastTimer();
+			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -252,7 +260,7 @@ public class Nova : Skill
 				Vector2 position = target.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(AreaOfEffect / 3f);
 
 				var smallBlast = Projectile.NewProjectileDirect(Projectile.GetSource_OnHit(target), position, Vector2.Zero, Type, Projectile.damage, Projectile.knockBack, Projectile.owner, (int)NovaType);
-				smallBlast.scale = 0.5f;
+				smallBlast.scale = 0.25f;
 				smallBlast.netUpdate = true;
 			}
 		}

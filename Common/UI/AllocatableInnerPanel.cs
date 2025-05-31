@@ -7,7 +7,7 @@ namespace PathOfTerraria.Common.UI;
 
 internal abstract class AllocatableInnerPanel : SmartUiElement
 {
-	public abstract List<Edge> Connections { get; }
+	public abstract IEnumerable<Edge> Connections { get; }
 
 	private readonly UIElement _draggable;
 	protected Vector2 DragOffset;
@@ -91,14 +91,15 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 		Vector2 oldOffset = DragOffset;
 		DragOffset = Main.MouseScreen;
 
-		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft)
+		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft) //Manually check mouse input because other elements shouldn't be allowed to interfere
 		{
-			_draggable.Left.Pixels += (DragOffset - oldOffset).X;
-			_draggable.Top.Pixels += (DragOffset - oldOffset).Y;
+			var size = new Point((int)_draggable.GetDimensions().Width, (int)_draggable.GetDimensions().Height);
+			var bounds = new Rectangle(-(size.X / 2), -(size.Y / 2), size.X, size.Y);
+
+			_draggable.Left.Pixels = Math.Clamp(_draggable.Left.Pixels + (DragOffset - oldOffset).X, bounds.TopLeft().X, bounds.BottomRight().X);
+			_draggable.Top.Pixels = Math.Clamp(_draggable.Top.Pixels + (DragOffset - oldOffset).Y, bounds.TopLeft().Y, bounds.BottomRight().Y);
 
 			Recalculate();
 		}
-
-		return;
 	}
 }

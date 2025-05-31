@@ -25,6 +25,11 @@ public abstract class SkillPassive(SkillTree tree) : SkillNode(tree)
 		}
 
 		spriteBatch.Draw(texture, position - texture.Size() / 2, color);
+
+		if (MaxLevel > 1)
+		{
+			Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", position + Size / 2f, color, 1, 0.5f, 0.5f);
+		}
 	}
 
 	/// <summary> The effects of this skill passive. </summary>
