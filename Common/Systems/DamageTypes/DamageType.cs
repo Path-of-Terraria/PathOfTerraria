@@ -1,8 +1,31 @@
-﻿namespace PathOfTerraria.Common.Systems.DamageTypes;
+﻿using PathOfTerraria.Common.Data.Models;
+using System.IO;
+
+namespace PathOfTerraria.Common.Systems.DamageTypes;
 internal abstract class DamageType
 {
-	public int DamageBonus { get; init; }	
-	public float DamageConversion { get; init; }	
+	/// <summary> The flat damage bonus of this damage type </summary>
+	public int DamageBonus { get; private set; }
+
+	/// <summary> The damage conversion of this damage type </summary>
+	public float DamageConversion { get; private set; }
+
+	/// <summary> Apply stats from mob data </summary>
+	public DamageType Apply(MobElementStats stats)
+	{
+		if (stats.Added.HasValue)
+		{
+			DamageBonus = stats.Added.Value;
+		}
+
+		if (stats.Conversion.HasValue)
+		{
+			DamageConversion = stats.Conversion.Value;
+		}
+
+		return this;
+	}
+
 
 	/// <summary> The (de)buff type to apply. Return 0 for none. </summary>
 	public abstract int GetBuffType();
@@ -35,5 +58,17 @@ internal abstract class DamageType
 		}
 
 		return chance;
+	}
+
+	public virtual void Write(BinaryWriter writer)
+	{
+		writer.Write(DamageBonus);
+		writer.Write(DamageConversion);
+	}
+
+	public virtual void Read(BinaryReader reader)
+	{
+		DamageBonus = reader.ReadInt32();
+		DamageConversion = reader.ReadSingle();
 	}
 }

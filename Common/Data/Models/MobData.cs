@@ -42,6 +42,6 @@ public class MobDamage
 
 public class MobElementStats
 {
-	public int Added { get; set; }
-	public float Conversion { get; set; }
+	public int? Added { get; set; }
+	public float? Conversion { get; set; }
 }

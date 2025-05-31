@@ -13,20 +13,40 @@
       "affixes": null,
       "requirements": "PreHardmodeSurface"
     },
-    {
-      "scale": 2,
-      "prefix": "Bulky",
-      "weight": 0.75,
-      "stats": {
-        "level": 3,
-        "experience": 5
-      },
-      "affixes": [
-        {
-          "name": "DoubleLife"
+  {
+    "scale": 2,
+    "prefix": "Bulky",
+    "weight": 0.75,
+    "stats": {
+      "level": 3,
+      "experience": 5
+    },
+    "affixes": [
+      {
+        "name": "DoubleLife"
+      }
+    ],
+    "requirements": "PreHardmodeSurface"
+  },
+  {
+    "scale": null,
+    "prefix": "Electric",
+    "weight": 0.75,
+    "stats": {
+      "level": 3,
+      "experience": 5
+    },
+    "affixes": null,
+    "requirements": "PreHardmodeSurface",
+    "damageOverrides": [
+      {
+        "minLevel": 10,
+        "lightning": {
+          "added": 15,
+          "conversion": 0.75
         }
-      ],
-      "requirements": "PreHardmodeSurface"
-    }
+      }
+    ]
+  }
   ]
 }
