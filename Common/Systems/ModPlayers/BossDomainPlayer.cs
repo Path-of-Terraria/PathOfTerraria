@@ -59,6 +59,7 @@ internal class BossDomainPlayer : ModPlayer
 		{
 			Player.statLife = Player.statLifeMax2;
 			Player.Teleport(new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates(), TeleportationStyleID.RodOfDiscord);
+			Player.velocity = Vector2.Zero;
 			return false;
 		}
 

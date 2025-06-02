@@ -21,11 +21,12 @@ internal class GolemDomain : BossDomainSubworld
 	private record PairingRoom(PlacedRoom Room, bool Exit, int PairingNumber);
 
 	public override int Width => 600;
-	public override int Height => 1500;
+	public override int Height => 1100;
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
 	private static readonly List<PairingRoom> Rooms = [];
 
+	private static Rectangle Arena = Rectangle.Empty;
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
 
@@ -71,7 +72,7 @@ internal class GolemDomain : BossDomainSubworld
 
 	private static void PairTeleporters()
 	{
-		for (int i = 0; i < RoomCountPerTemple + 2; ++i)
+		for (int i = 0; i < RoomCountPerTemple + 3; ++i)
 		{
 			PairingRoom exit = Rooms.Find(x => x.Exit && x.PairingNumber == i);
 			PairingRoom entrance = Rooms.Find(x => !x.Exit && x.PairingNumber == i);
@@ -191,6 +192,7 @@ internal class GolemDomain : BossDomainSubworld
 
 		Point entrance;
 		int pairing = 0;
+		bool didStart = start;
 
 		for (int i = 0; i < RoomCountPerTemple; ++i)
 		{
@@ -215,6 +217,21 @@ internal class GolemDomain : BossDomainSubworld
 			y += VarianceY();
 
 			tunnels.Add((exit, entrance));
+		}
+
+		if (didStart)
+		{
+			string structure = "Assets/Structures/GolemDomain/Arena_0";
+			Point16 pos = new(Main.maxTilesX / 2, y + 90);
+			Point16 size = StructureTools.GetSize(structure);
+			pos = StructureTools.PlaceByOrigin(structure, pos, new Vector2(0.5f));
+
+			Arena = new Rectangle(pos.X, pos.Y, size.X, size.Y);
+
+			AddRoom(pos.X, pos.Y, new PlacedRoom(new RoomData(WireColor.Yellow, OpeningType.Above, Point.Zero, new Point(67, 0), null, null, false), 
+				Arena), true, pairing, out Point _);
+
+			Arena = new Rectangle(pos.X * 16, pos.Y * 16, size.X * 16, size.Y * 16);
 		}
 
 		static int VarianceY()
@@ -340,12 +357,47 @@ internal class GolemDomain : BossDomainSubworld
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned && NPC.AnyNPCs(NPCID.Plantera))
+		if (!BossSpawned)
 		{
-			BossSpawned = true;
+			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
+			HashSet<int> who = [];
+
+			if (canSpawn)
+			{
+				foreach (Player player in Main.ActivePlayers)
+				{
+					if (!Arena.Intersects(player.Hitbox))
+					{
+						canSpawn = false;
+						break;
+					}
+					else
+					{
+						who.Add(player.whoAmI);
+					}
+				}
+			}
+
+			if (canSpawn && Main.CurrentFrameFlags.ActivePlayersCount > 0 && who.Count > 0)
+			{
+				int plr = Main.rand.Next([.. who]);
+				IEntitySource src = Entity.GetSource_NaturalSpawn();
+
+				int npc = NPC.NewNPC(src, (int)Arena.Center().X - (Main.rand.NextBool() ? - 720 : 720), (int)Arena.Center().Y, NPCID.Golem);
+
+				Main.spawnTileX = (int)Arena.Center().X / 16;
+				Main.spawnTileY = (int)Arena.Center().Y / 16;
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.WorldData);
+				}
+
+				BossSpawned = true;
+			}
 		}
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.Plantera) && !ExitSpawned)
+		if (BossSpawned && !NPC.AnyNPCs(NPCID.Golem) && !ExitSpawned)
 		{
 			ExitSpawned = true;
 
@@ -360,7 +412,7 @@ internal class GolemDomain : BossDomainSubworld
 			}
 
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
+			Vector2 position = Arena.Center.ToVector2() + new Vector2(0, 66);
 			Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
 	}
