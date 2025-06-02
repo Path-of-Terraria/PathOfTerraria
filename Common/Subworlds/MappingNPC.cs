@@ -98,6 +98,11 @@ internal class MappingNPC : GlobalNPC
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PlanteraMap>());
 			}
 
+			if (TierPassed(5) && NPC.downedPlantBoss && !NPC.downedGolemBoss)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<GolemMap>());
+			}
+
 			return;
 
 			bool TierPassed(int tier)

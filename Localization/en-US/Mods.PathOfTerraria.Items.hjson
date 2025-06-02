@@ -1199,7 +1199,11 @@ MechChip: {
 
 DestroyerMap: {
 	DisplayName: Destroyer Map
-	Tooltip: ""
+	Tooltip: 		
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of sulfur and rust'
+		'''
 }
 
 MechChestItem: {
@@ -1209,7 +1213,11 @@ MechChestItem: {
 
 PlanteraMap: {
 	DisplayName: Plantera Map
-	Tooltip: ""
+	Tooltip: 
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of mildew and dirt'
+		'''
 }
 
 OffsetTool: {
@@ -1220,4 +1228,13 @@ OffsetTool: {
 LihzahrdGuardItem: {
 	DisplayName: Lihzahrd Guard
 	Tooltip: Blocks spiky balls from passing through
+}
+
+GolemMap: {
+	DisplayName: Golem Map
+	Tooltip: 
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of brick and smoke'
+		'''
 }

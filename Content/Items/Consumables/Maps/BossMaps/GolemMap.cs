@@ -5,11 +5,11 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class QueenSlimeMap : Map
+internal class GolemMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 53;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 52 && NPC.downedQueenSlime;
+	public override int WorldTier => 63;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 62 && NPC.downedGolemBoss;
 
 	public override void SetStaticDefaults()
 	{
@@ -21,12 +21,12 @@ internal class QueenSlimeMap : Map
 	{
 		base.SetDefaults();
 
-		Item.Size = new Vector2(34, 38);
+		Item.Size = new Vector2(40, 26);
 	}
 
 	protected override void OpenMapInternal()
 	{
-		SubworldSystem.Enter<QueenSlimeDomain>();
+		SubworldSystem.Enter<GolemDomain>();
 	}
 
 	public override string GenerateName(string defaultName)
