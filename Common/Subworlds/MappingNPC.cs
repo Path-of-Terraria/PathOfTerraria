@@ -2,6 +2,7 @@
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using SubworldLibrary;
 using System.Collections.Generic;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -120,6 +121,8 @@ internal class MappingNPC : GlobalNPC
 			2 => NPC.downedMechBoss1,
 			3 => NPC.downedMechBoss2,
 			4 => NPC.downedMechBoss3,
+			5 => NPC.downedPlantBoss,
+			6 => NPC.downedGolemBoss,
 			_ => true,
 		};
 	}
