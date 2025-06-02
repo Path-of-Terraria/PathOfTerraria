@@ -21,7 +21,7 @@ internal class GolemDomain : BossDomainSubworld
 	private record PairingRoom(PlacedRoom Room, bool Exit, int PairingNumber);
 
 	public override int Width => 600;
-	public override int Height => 1100;
+	public override int Height => 1060;
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
 	private static readonly List<PairingRoom> Rooms = [];
@@ -236,7 +236,7 @@ internal class GolemDomain : BossDomainSubworld
 
 		static int VarianceY()
 		{
-			return WorldGen.genRand.Next(87, 89);
+			return WorldGen.genRand.Next(100, 103);
 		}
 	}
 
