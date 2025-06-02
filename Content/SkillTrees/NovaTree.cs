@@ -22,27 +22,12 @@ internal class NovaTree : SkillTree
 		var igniteChance = new IgniteChance(this) { TreePos = new Vector2(-200, 80) };
 		var shockChance = new ShockChance(this) { TreePos = new Vector2(250, 80) };
 
-		Nodes.Add(anchor);
-		Nodes.Add(novaFire);
-		Nodes.Add(novaIce);
-		Nodes.Add(novaLightning);
-
-		Nodes.Add(efficiency);
-		Nodes.Add(thunderClaps);
-		Nodes.Add(concurrentBlasts);
-		Nodes.Add(volatileNova);
-		Nodes.Add(igniteChance);
-		Nodes.Add(shockChance);
-
-		Edges.Add(new(novaFire, anchor));
-		Edges.Add(new(novaIce, anchor));
-		Edges.Add(new(novaLightning, anchor));
-		Edges.Add(new(efficiency, anchor));
-		Edges.Add(new(thunderClaps, novaLightning));
-		Edges.Add(new(igniteChance, novaFire));
-		Edges.Add(new(shockChance, novaLightning));
-		Edges.Add(new(volatileNova, novaIce));
-		Edges.Add(new(volatileNova, novaLightning));
-		Edges.Add(new(concurrentBlasts, volatileNova));
+		AddNodes(anchor, novaFire, novaIce, novaLightning, efficiency);
+		AddNodes(novaLightning, thunderClaps);
+		AddNodes(novaFire, igniteChance);
+		AddNodes(novaLightning, shockChance);
+		AddNodes(novaIce, volatileNova);
+		AddNodes(volatileNova, novaLightning);
+		AddNodes(concurrentBlasts, volatileNova);
 	}
 }

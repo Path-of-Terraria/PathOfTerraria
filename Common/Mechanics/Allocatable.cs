@@ -70,7 +70,7 @@ public abstract class Allocatable
 
 	public virtual bool CanDeallocate(Player player)
 	{
-		return Level > 0;
+		return Allocated;
 	}
 
 	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position) { }

@@ -48,6 +48,24 @@ public abstract class SkillTree : ILoadable
 	/// <summary> Add skill tree elements by position here. </summary>
 	public virtual void Populate() { }
 
+	/// <summary> Adds a list of connected <see cref="SkillNode"/>s pointing to the first element. Used to help build skill trees in <see cref="Populate"/>. </summary>
+	public void AddNodes(params SkillNode[] list)
+	{
+		for (int i = 0; i < list.Length; i++)
+		{
+			SkillNode c = list[i];
+			if (!Nodes.Contains(c))
+			{
+				Nodes.Add(c);
+			}
+
+			if (i != 0)
+			{
+				Edges.Add(new(c, list[0]));
+			}
+		}
+	}
+
 	public virtual void SaveData(Skill skill, TagCompound tag)
 	{
 		string skillName = skill.Name;

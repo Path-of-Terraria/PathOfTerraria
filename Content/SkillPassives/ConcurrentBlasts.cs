@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Common.Utilities;
 
 namespace PathOfTerraria.Content.SkillPassives;
 
@@ -8,12 +9,7 @@ internal class ConcurrentBlasts(SkillTree tree) : SkillPassive(tree)
 {
 	/// <summary> A damage multiplier applied to targets based on <see cref="ConcurrentNPC.Vulnerable"/>. </summary>
 	public const float BonusDamage = 1.15f;
-
-	public override string DisplayTooltip => base.DisplayTooltip.FormatWith(Round(BonusDamage));
-	private static int Round(float value)
-	{
-		return (int)Math.Round((value - 1) * 100);
-	}
+	public override string DisplayTooltip => base.DisplayTooltip.FormatWith(MathUtils.Percent(BonusDamage - 1));
 }
 
 internal class ConcurrentNPC : GlobalNPC
