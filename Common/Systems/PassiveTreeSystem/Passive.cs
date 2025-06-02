@@ -19,11 +19,9 @@ internal class PassiveLoader : ILoadable
 	}
 }
 
-public abstract class Passive : Allocatable, ILevel
+public abstract class Passive : Allocatable
 {
 	public static Dictionary<string, Type> Passives = [];
-	
-	public Vector2 TreePos;
 
 	/// <summary> The internal identifier of this passive. <para/>
 	/// This is used to map the JSON data to the correct passive. This is also what's used to grab the texture of this passive.
@@ -44,8 +42,6 @@ public abstract class Passive : Allocatable, ILevel
 	/// </summary>
 	public override string DisplayTooltip => string.Format(Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip"), Value);
 
-	public int Level;
-	public int MaxLevel;
 	public int Value;
 
 	public virtual void BuffPlayer(Player player) { }
@@ -148,15 +144,5 @@ public abstract class Passive : Allocatable, ILevel
 		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));
-	}
-
-	public (int, int) LevelRange
-	{
-		get => (Level, MaxLevel);
-		set
-		{
-			Level = value.Item1;
-			MaxLevel = value.Item2;
-		}
 	}
 }

@@ -55,19 +55,20 @@ internal class SkillSelectionPanel : SmartUiElement
 		}
 
 		SkillTree.Current = SelectedSkill.Tree;
+
 		RemoveAllChildren();
-		_skillTreeInnerPanel = null;
+
 		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 		Append(_skillTreeInnerPanel);
 
-		Dictionary<Vector2, SkillNode> dict = SkillTree.Current.Nodes;
-		foreach (Vector2 key in dict.Keys)
+		List<SkillNode> list = SkillTree.Current.Nodes;
+		foreach (SkillNode node in list)
 		{
-			var element = new AllocatableElement(dict[key]);
-			element.Left.Set(key.X - dict[key].Size.X / 2, 0.5f);
-			element.Top.Set(key.Y - dict[key].Size.Y / 2, 0.5f);
+			var element = new AllocatableElement(node);
+			element.Left.Set(node.TreePos.X - node.Size.X / 2, 0.5f);
+			element.Top.Set(node.TreePos.Y - node.Size.Y / 2, 0.5f);
 
-			_skillTreeInnerPanel.Append(element);
+			_skillTreeInnerPanel.AppendAsDraggable(element);
 		}
 
 		int augmentSlots = SelectedSkill.Tree.Augments.Length;
@@ -89,7 +90,6 @@ internal class SkillSelectionPanel : SmartUiElement
 			RemoveAllChildren();
 
 			SelectedSkill = null;
-			_skillTreeInnerPanel = null;
 			_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 
 			AppendAllSkills();
