@@ -24,13 +24,9 @@ internal class TreeState : TabsUiState
 	private SkillSelectionPanel _skillSelection;
 
 	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillSelection];
-
+	protected static PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 	public override int DepthPriority => 1;
 
-	protected static PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
-
-	public Vector2 TopLeftTree;
-	public Vector2 BotRightTree;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -60,8 +56,6 @@ internal class TreeState : TabsUiState
 		_passiveTreeInner = new PassiveTreeInnerPanel();
 		_skillSelection = new SkillSelectionPanel();
 
-		TopLeftTree = Vector2.Zero;
-		BotRightTree = Vector2.Zero;
 		var localizedTexts = new (string key, LocalizedText text)[]
 		{
 				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
@@ -96,11 +90,11 @@ internal class TreeState : TabsUiState
 		{
 			if (n is JewelSocket socket)
 			{
-				_passiveTreeInner.Append(new PassiveSocket(socket));
+				_passiveTreeInner.AppendAsDraggable(new PassiveSocket(socket));
 			}
 			else
 			{
-				_passiveTreeInner.Append(new PassiveElement(n));
+				_passiveTreeInner.AppendAsDraggable(new PassiveElement(n));
 			}
 		});
 	}
@@ -125,8 +119,7 @@ internal class TreeState : TabsUiState
 		PassiveTreePlayer passiveTreePlayer = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 
-		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) +
-		                         tex.Size() / 2;
+		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) + tex.Size() / 2;
 
 		int points = TabPanel.ActiveTab switch
 		{

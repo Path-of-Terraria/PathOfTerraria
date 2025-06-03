@@ -4,7 +4,7 @@ using Terraria.Localization;
 namespace PathOfTerraria.Common.Mechanics;
 
 /// <summary> The base class for skill specializations. Only one specialization can be selected per skill tree. </summary>
-public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree), ILevel
+public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree)
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillSpecials/" + Name;
 	public override string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillSpecials." + Name + ".Name");
@@ -51,49 +51,25 @@ public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree), ILevel
 
 	public override void OnAllocate(Player player)
 	{
+		Level++;
 		Tree.Specialization = this;
 	}
 
 	public override void OnDeallocate(Player player)
 	{
+		Level--;
 		Tree.Specialization = null;
 	}
 
 	/// <summary> Whether this skill specialization can be used. </summary>
 	public override bool CanAllocate(Player player)
 	{
-		return Tree.Specialization is null && Connected();
-
-		bool Connected()
-		{
-			bool value = true;
-
-			foreach (SkillTree.Edge edge in Tree.Edges)
-			{
-				if (edge.Contains(this))
-				{
-					if (edge.Other(this) is not SkillPassive p || p.Level > 0)
-					{
-						return true;
-					}
-
-					value = false;
-				}
-			}
-
-			return value;
-		}
+		return base.CanAllocate(player) && Tree.Specialization is null;
 	}
 
 	/// <summary> Whether this skill specialization can be refunded. </summary>
 	public override bool CanDeallocate(Player player)
 	{
-		return Tree.Specialization == this;
-	}
-
-	public (int, int) LevelRange
-	{
-		get => ((Tree.Specialization == this) ? 1 : 0, 1); //Selecting a specialization is considered leveling up
-		set { }
+		return base.CanDeallocate(player) && Tree.Specialization == this;
 	}
 }

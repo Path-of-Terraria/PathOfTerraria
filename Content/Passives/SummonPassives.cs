@@ -28,3 +28,32 @@ internal class IncreasedSentryDamagePassive : Passive
 		}
 	}
 }
+
+internal class IncreasedWhipDamage : Passive
+{
+}
+
+internal class IncreasedWhipSpeed : Passive
+{
+}
+
+internal class WhipModsItem : GlobalItem
+{
+	public override void ModifyWeaponDamage(Item item, Player player, ref StatModifier damage)
+	{
+		if (item.shoot > ProjectileID.None && ProjectileID.Sets.IsAWhip[item.shoot])
+		{
+			damage += player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(IncreasedWhipDamage)) * 0.05f;
+		}
+	}
+
+	public override float UseSpeedMultiplier(Item item, Player player)
+	{
+		if (item.shoot > ProjectileID.None && ProjectileID.Sets.IsAWhip[item.shoot])
+		{
+			return 1 + player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(IncreasedWhipSpeed)) * 0.05f;
+		}
+
+		return 1;
+	}
+}

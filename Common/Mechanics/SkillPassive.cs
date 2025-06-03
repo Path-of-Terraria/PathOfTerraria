@@ -3,14 +3,11 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Mechanics;
 
-public abstract class SkillPassive(SkillTree tree) : SkillNode(tree), ILevel
+public abstract class SkillPassive(SkillTree tree) : SkillNode(tree)
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillPassives/" + Name;
 	public override string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Name");
 	public override string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Tooltip");
-
-	public int Level;
-	public int MaxLevel;
 
 	public override void Draw(SpriteBatch spriteBatch, Vector2 position)
 	{
@@ -28,40 +25,30 @@ public abstract class SkillPassive(SkillTree tree) : SkillNode(tree), ILevel
 		}
 
 		spriteBatch.Draw(texture, position - texture.Size() / 2, color);
+
+		if (MaxLevel > 1)
+		{
+			Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", position + Size / 2f, color, 1, 0.5f, 0.5f);
+		}
 	}
 
 	/// <summary> The effects of this skill passive. </summary>
 	public virtual void PassiveEffects(ref SkillBuff buff) { }
 
+	public override bool CanAllocate(Player player)
+	{
+		return base.CanAllocate(player) && Tree.Points > 0;
+	}
+
 	public override void OnAllocate(Player player)
 	{
-		Level++;
+		base.OnAllocate(player);
 		Tree.Points--;
 	}
 
 	public override void OnDeallocate(Player player)
 	{
-		Level--;
+		base.OnDeallocate(player);
 		Tree.Points++;
-	}
-
-	public override bool CanAllocate(Player player)
-	{
-		return Tree.Points > 0;
-	}
-
-	public override bool CanDeallocate(Player player)
-	{
-		return Level > 0;
-	}
-
-	public (int, int) LevelRange
-	{
-		get => (Level, MaxLevel);
-		set
-		{
-			Level = value.Item1;
-			MaxLevel = value.Item2;
-		}
 	}
 }

@@ -8,22 +8,6 @@ namespace PathOfTerraria.Common.Systems.Skills;
 
 public abstract class SkillTree : ILoadable
 {
-	internal readonly record struct Edge(SkillNode Start, SkillNode End)
-	{
-		public readonly SkillNode Start = Start;
-		public readonly SkillNode End = End;
-
-		public bool Contains(SkillNode p)
-		{
-			return p == Start || p == End;
-		}
-
-		public SkillNode Other(SkillNode p)
-		{
-			return p == Start ? End : Start;
-		}
-	}
-
 	public const int AugmentCount = 2;
 
 	/// <summary> The currently viewed skill tree. </summary>
@@ -31,7 +15,7 @@ public abstract class SkillTree : ILoadable
 
 	public static readonly Dictionary<Type, SkillTree> TypeToSkillTree = [];
 
-	public Dictionary<Vector2, SkillNode> Nodes = [];
+	public List<SkillNode> Nodes = [];
 	public SkillAugment[] Augments = new SkillAugment[AugmentCount];
 
 	internal List<Edge> Edges = [];
@@ -45,17 +29,17 @@ public abstract class SkillTree : ILoadable
 	/// <summary> The current skill specialization of this tree. </summary>
 	public SkillSpecial Specialization;
 
-	public Vector2 Point(SkillNode a)
+	public bool TryGetNode<T>(out T value) where T : SkillNode
 	{
-		foreach (Vector2 key in Nodes.Keys)
+		T first = Nodes.FirstOrDefault(x => x is T) as T;
+		if (first != default)
 		{
-			if (Nodes[key] == a)
-			{
-				return key;
-			}
+			value = first;
+			return true;
 		}
 
-		return default;
+		value = null;
+		return false;
 	}
 
 	/// <summary> The Type of skill this tree belongs to, added to <see cref="TypeToSkillTree"/> during loading. </summary>
@@ -64,12 +48,30 @@ public abstract class SkillTree : ILoadable
 	/// <summary> Add skill tree elements by position here. </summary>
 	public virtual void Populate() { }
 
+	/// <summary> Adds a list of connected <see cref="SkillNode"/>s pointing to the first element. Used to help build skill trees in <see cref="Populate"/>. </summary>
+	public void AddNodes(params SkillNode[] list)
+	{
+		for (int i = 0; i < list.Length; i++)
+		{
+			SkillNode c = list[i];
+			if (!Nodes.Contains(c))
+			{
+				Nodes.Add(c);
+			}
+
+			if (i != 0)
+			{
+				Edges.Add(new(c, list[0]));
+			}
+		}
+	}
+
 	public virtual void SaveData(Skill skill, TagCompound tag)
 	{
 		string skillName = skill.Name;
 		Dictionary<string, int> nameToLevel = [];
 
-		foreach (Allocatable item in Nodes.Values)
+		foreach (Allocatable item in Nodes)
 		{
 			if (item is SkillPassive passive && item is not Anchor && passive.Level != 0)
 			{
@@ -98,10 +100,10 @@ public abstract class SkillTree : ILoadable
 
 		for (int i = 0; i < names.Count; i++)
 		{
-			((SkillPassive)Nodes.Values.First(x => x.Name == names[i] && x is SkillPassive)).Level = levels[i];
+			((SkillPassive)Nodes.First(x => x.Name == names[i] && x is SkillPassive)).Level = levels[i];
 		}
 
-		var special = (SkillSpecial)Nodes.Values.FirstOrDefault(x => x is SkillSpecial && x.Name == tag.GetString("special"));
+		var special = (SkillSpecial)Nodes.FirstOrDefault(x => x is SkillSpecial && x.Name == tag.GetString("special"));
 		if (special != default)
 		{
 			Specialization = special;
@@ -109,7 +111,7 @@ public abstract class SkillTree : ILoadable
 
 		if (tag.TryGet(nameof(Slots), out List<bool> list)) //Use TryGet because we don't want to assign an empty array
 		{
-			Slots = list.ToArray();
+			Slots = [.. list];
 		}
 
 		IList<string> augments = tag.GetList<string>("augments");

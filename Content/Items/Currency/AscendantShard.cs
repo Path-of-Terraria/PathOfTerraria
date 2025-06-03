@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -27,21 +28,23 @@ public class AscendantShard : CurrencyShard
 	public override bool CanRightClick()
 	{
 		Item heldItem = Main.LocalPlayer.HeldItem;
+
 		if (!heldItem.TryGetGlobalItem(out PoTGlobalItem _))
 		{
 			return false;
 		}
-		
-		if (heldItem.GetInstanceData().Rarity != ItemRarity.Magic &&
-		    heldItem.GetInstanceData().Rarity != ItemRarity.Rare)
+
+		ItemRarity rare = heldItem.GetInstanceData().Rarity;
+
+		if (rare != ItemRarity.Magic && rare != ItemRarity.Rare)
 		{
-			Main.NewText("This item can only be used on Magic or Rare items.");
+			//Main.NewText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.ShardNotifs.Ascendant.NotRareOrMagic"));
 			return false;
 		}
 
 		if (PoTItemHelper.HasMaxAffixesForRarity(heldItem))
 		{
-			Main.NewText("This item has maximum affixes already");
+			//Main.NewText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.ShardNotifs.Ascendant.MaxAffixes"));
 			return false;
 		}
 		
@@ -51,5 +54,6 @@ public class AscendantShard : CurrencyShard
 	public override void RightClick(Player player)
 	{
 		PoTItemHelper.AddNewAffix(player.HeldItem);
+		PoTItemHelper.SetMouseItemToHeldItem(player);
 	}
 }

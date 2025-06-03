@@ -12,18 +12,22 @@ internal class NovaTree : SkillTree
 	public override void Populate() //Could be moved to a .json based system at some point, like player passives.
 	{
 		var anchor = new Anchor(this) { Level = 1 };
-		var novaFire = new FireNova(this);
-		var novaIce = new IceNova(this);
-		var novaLightning = new LightningNova(this);
-		var strength = new Strength(this);
+		var novaFire = new FireNova(this) { TreePos = new Vector2(-200, 0) };
+		var novaIce = new IceNova(this) { TreePos = new Vector2(0, 100) };
+		var novaLightning = new LightningNova(this) { TreePos = new Vector2(200, 0) };
+		var efficiency = new Efficiency(this) { TreePos = new Vector2(50, -50) };
+		var thunderClaps = new ThunderClaps(this) { TreePos = new Vector2(200, -80) };
+		var concurrentBlasts = new ConcurrentBlasts(this) { TreePos = new Vector2(80, 150) };
+		var volatileNova = new VolatileNova(this) { TreePos = new Vector2(80, 100) };
+		var igniteChance = new IgniteChance(this) { TreePos = new Vector2(-200, 80) };
+		var shockChance = new ShockChance(this) { TreePos = new Vector2(250, 80) };
 
-		Nodes.Add(new Vector2(0, 0), anchor);
-		Nodes.Add(new Vector2(100, 0), novaFire);
-		Nodes.Add(new Vector2(200, 0), novaIce);
-		Nodes.Add(new Vector2(300, 0), novaLightning);
-		Nodes.Add(new Vector2(100), strength);
-
-		Edges.Add(new(strength, anchor));
-		Edges.Add(new(novaLightning, strength));
+		AddNodes(anchor, novaFire, novaIce, novaLightning, efficiency);
+		AddNodes(novaLightning, thunderClaps);
+		AddNodes(novaFire, igniteChance);
+		AddNodes(novaLightning, shockChance);
+		AddNodes(novaIce, volatileNova);
+		AddNodes(volatileNova, novaLightning);
+		AddNodes(concurrentBlasts, volatileNova);
 	}
 }
