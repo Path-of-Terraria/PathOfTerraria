@@ -31,9 +31,9 @@ internal class ArpgNPC : GlobalNPC
 	public ItemRarity Rarity = ItemRarity.Normal;
 	public List<MobAffix> Affixes = [];
 
-	public FireDamageType FireDamage;
-	public ColdDamageType ColdDamage;
-	public LightningDamageType LightningDamage;
+	public ElementalDamage FireDamage;
+	public ElementalDamage ColdDamage;
+	public ElementalDamage LightningDamage;
 
 	private readonly Player _lastPlayerHit = null;
 
@@ -222,20 +222,38 @@ internal class ArpgNPC : GlobalNPC
 				{
 					if (mobDamage.Fire != null)
 					{
-						FireDamage ??= new FireDamageType();
-						FireDamage.Apply(mobDamage.Fire);
+						if (!FireDamage.Valid)
+						{
+							FireDamage = new ElementalDamage(ElementType.Fire, mobDamage.Fire.Added ?? 0, mobDamage.Fire.Conversion ?? 0f);
+						}
+						else
+						{
+							FireDamage = FireDamage.ApplyOverride(mobDamage.Fire.Added, mobDamage.Fire.Conversion);
+						}
 					}
 
 					if (mobDamage.Cold != null)
 					{
-						ColdDamage ??= new ColdDamageType();
-						ColdDamage.Apply(mobDamage.Cold);
+						if (!ColdDamage.Valid)
+						{
+							ColdDamage = new ElementalDamage(ElementType.Cold, mobDamage.Cold.Added ?? 0, mobDamage.Cold.Conversion ?? 0f);
+						}
+						else
+						{
+							ColdDamage = ColdDamage.ApplyOverride(mobDamage.Cold.Added, mobDamage.Cold.Conversion);
+						}
 					}
 
 					if (mobDamage.Lightning != null)
 					{
-						LightningDamage ??= new LightningDamageType();
-						LightningDamage.Apply(mobDamage.Lightning);
+						if (!LightningDamage.Valid)
+						{
+							LightningDamage = new ElementalDamage(ElementType.Lightning, mobDamage.Lightning.Added ?? 0, mobDamage.Lightning.Conversion ?? 0f);
+						}
+						else
+						{
+							LightningDamage = LightningDamage.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
+						}
 					}
 
 					break;
@@ -372,10 +390,24 @@ internal class ArpgNPC : GlobalNPC
 			affix.NetSend(binaryWriter);
 		}
 
-		binaryWriter.Write(new BitsByte(FireDamage != null, ColdDamage != null, LightningDamage != null));
-		FireDamage?.Write(binaryWriter);
-		ColdDamage?.Write(binaryWriter);
-		LightningDamage?.Write(binaryWriter);
+		bitWriter.WriteBit(FireDamage.Valid);
+		bitWriter.WriteBit(ColdDamage.Valid);
+		bitWriter.WriteBit(LightningDamage.Valid);
+
+		if (FireDamage.Valid)
+		{
+			FireDamage.Write(binaryWriter);
+		}
+
+		if (ColdDamage.Valid)
+		{
+			ColdDamage.Write(binaryWriter);
+		}
+
+		if (LightningDamage.Valid)
+		{
+			LightningDamage.Write(binaryWriter);
+		}
 	}
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
@@ -391,23 +423,23 @@ internal class ArpgNPC : GlobalNPC
 			Affixes.Add(affix);
 		}
 
-		binaryReader.ReadBitsByte().Deconstruct(out bool fire, out bool cold, out bool lightning);
+		bool fire = bitReader.ReadBit();
+		bool cold = bitReader.ReadBit();
+		bool lightning = bitReader.ReadBit();
+
 		if (fire)
 		{
-			FireDamage ??= new FireDamageType();
-			FireDamage.Read(binaryReader);
+			FireDamage = ElementalDamage.Read(binaryReader);
 		}
 
 		if (cold)
 		{
-			ColdDamage ??= new ColdDamageType();
-			ColdDamage.Read(binaryReader);
+			ColdDamage = ElementalDamage.Read(binaryReader);
 		}
 
 		if (lightning)
 		{
-			LightningDamage ??= new LightningDamageType();
-			LightningDamage.Read(binaryReader);
+			ColdDamage = ElementalDamage.Read(binaryReader);
 		}
 
 		// TODO: Find cause of read overflow/underflow in subworlds
