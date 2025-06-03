@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Systems.DamageTypes;
+namespace PathOfTerraria.Common.Systems.ElementalDamage;
 internal class ElementalProjectile : GlobalProjectile
 {
 	public override bool InstancePerEntity => true;
@@ -15,7 +15,7 @@ internal class ElementalProjectile : GlobalProjectile
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
-		if(source is EntitySource_Parent parent && parent.Entity is NPC npc && npc.TryGetGlobalNPC(out ArpgNPC arpgNPC) && Main.netMode != NetmodeID.MultiplayerClient)
+		if (source is EntitySource_Parent parent && parent.Entity is NPC npc && npc.TryGetGlobalNPC(out ArpgNPC arpgNPC) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			FireDamage = arpgNPC.FireDamage;
 			ColdDamage = arpgNPC.ColdDamage;

@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.MobSystem;
 
-namespace PathOfTerraria.Common.Systems.DamageTypes;
+namespace PathOfTerraria.Common.Systems.ElementalDamage;
 public class ElementalPlayer : ModPlayer
 {
 
@@ -82,7 +82,7 @@ public class ElementalPlayer : ModPlayer
 
 	public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
 	{
-		if(proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
+		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
 			ElementOnHit(Player, elemProj.FireDamage, elemProj.ColdDamage, elemProj.LightningDamage, hurtInfo.SourceDamage, hurtInfo.Damage);
 		}
@@ -161,7 +161,7 @@ public class ElementalPlayer : ModPlayer
 			{
 				npc.AddBuff(buffType, timeToAdd);
 			}
-			else if(target is Player player)
+			else if (target is Player player)
 			{
 				player.AddBuff(buffType, timeToAdd);
 			}

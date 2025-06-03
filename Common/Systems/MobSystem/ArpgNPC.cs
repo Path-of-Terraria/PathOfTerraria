@@ -8,7 +8,7 @@ using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems.DamageTypes;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;

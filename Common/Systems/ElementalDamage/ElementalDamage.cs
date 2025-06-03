@@ -1,10 +1,7 @@
-﻿
-using PathOfTerraria.Common.Data.Models;
-using System.IO;
+﻿using System.IO;
 using Terraria.ID;
 
-
-namespace PathOfTerraria.Common.Systems.DamageTypes;
+namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
 public readonly struct ElementalDamage
 {
@@ -23,7 +20,7 @@ public readonly struct ElementalDamage
 	{
 		ElementType = elementType;
 		DamageBonus = bonus;
-	    DamageConversion = Math.Clamp(conversion, 0f, 1f);
+		DamageConversion = Math.Clamp(conversion, 0f, 1f);
 	}
 
 	public ElementalDamage ApplyOverride(int? newBonus, float? newConversion)
