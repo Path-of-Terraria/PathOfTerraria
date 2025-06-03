@@ -1211,3 +1211,12 @@ PlanteraMap: {
 	DisplayName: Plantera Map
 	Tooltip: ""
 }
+
+FishronMap: {
+	DisplayName: Duke Fishron Map
+	Tooltip: 
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of stillwater and fungi'
+		'''
+}
