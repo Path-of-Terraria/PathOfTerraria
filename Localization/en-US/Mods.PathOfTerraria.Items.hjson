@@ -1214,7 +1214,7 @@ PlanteraMap: {
 
 FishronMap: {
 	DisplayName: Duke Fishron Map
-	Tooltip: 
+	Tooltip:
 		'''
 		{$MapCommon.BossBase}
 		'The map smells of stillwater and fungi'

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
+using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
@@ -22,7 +23,66 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 	private static Rectangle Arena = Rectangle.Empty;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
-		new FlatWorldPass(FloorY, true, FlatNoise(), TileID.Mud, WallID.MushroomUnsafe, 18)];
+		new FlatWorldPass(FloorY, true, FlatNoise(), TileID.Mud, WallID.MushroomUnsafe, 18),
+		new PassLegacy("Decor", DecorateWorld)];
+
+	private void DecorateWorld(GenerationProgress progress, GameConfiguration configuration)
+	{
+		Dictionary<Point16, OpenFlags> grasses = [];
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType == TileID.Mud)
+				{
+					OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
+
+					if (flags != OpenFlags.None)
+					{
+						tile.TileType = TileID.MushroomGrass;
+
+						grasses.Add(new Point16(i, j), flags);
+					}
+				}
+			}
+
+			progress.Value = (float)i / Main.maxTilesX;
+		}
+
+		foreach (KeyValuePair<Point16, OpenFlags> grass in grasses)
+		{
+			GrowOnGrass(grass.Key.X, grass.Key.Y, grass.Value);
+		}
+	}
+
+	private void GrowOnGrass(short x, short y, OpenFlags value)
+	{
+		if (value.HasFlag(OpenFlags.Above) && !WorldGen.genRand.NextBool(5))
+		{
+			WorldGen.PlaceTile(x, y - 1, TileID.MushroomPlants);
+		}
+		
+		if (value.HasFlag(OpenFlags.Below))
+		{
+			if (!WorldGen.genRand.NextBool(3))
+			{
+				int length = WorldGen.genRand.Next(5, 12);
+
+				for (int k = 1; k < length; ++k)
+				{
+					if (Main.tile[x, y + k].HasTile)
+					{
+						break;
+					}
+
+					WorldGen.PlaceTile(x, y + k, TileID.MushroomVines, true);
+				}
+			}
+		}
+	}
 
 	private static FastNoiseLite FlatNoise()
 	{
