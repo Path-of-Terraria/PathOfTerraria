@@ -27,6 +27,9 @@ StatUI: {
 	Strength: Strength
 	Dexterity: Dexterity
 	Intelligence: Intelligence
+	FireResistance: Fire Resistance
+	ColdResistance: Cold Resistance
+	LightningResistance: Lightning Resistance
 }
 
 DropVisualizer: {
