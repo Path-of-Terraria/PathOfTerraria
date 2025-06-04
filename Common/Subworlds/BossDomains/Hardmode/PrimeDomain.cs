@@ -481,7 +481,6 @@ internal class PrimeDomain : BossDomainSubworld
 				if (Main.netMode == NetmodeID.Server)
 				{
 					NetMessage.SendData(MessageID.WorldData);
-					NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16, 20, 1);
 				}
 
 				BossSpawned = true;

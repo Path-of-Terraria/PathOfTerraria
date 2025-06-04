@@ -8,7 +8,7 @@ internal class PotionPickupDropper : GlobalNPC
 {
 	public override void HitEffect(NPC npc, NPC.HitInfo hit)
 	{
-		if (npc.boss && Main.netMode != NetmodeID.MultiplayerClient)
+		if (IsNPCABoss(npc) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
 			for (int k = 0; k < 10; k++)
 			{
@@ -42,6 +42,11 @@ internal class PotionPickupDropper : GlobalNPC
 				}
 			}
 		}
+	}
+
+	private static bool IsNPCABoss(NPC npc)
+	{
+		return npc.boss || npc.type == NPCID.GolemHead;
 	}
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)

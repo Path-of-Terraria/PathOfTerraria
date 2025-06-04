@@ -13,10 +13,10 @@ internal class RoomDatabase : ModSystem
 
 	private readonly List<EngageTimerInfo> _timers = [];
 
-	public static PlacedRoom PlaceRandomRoom(OpeningType opening, int x, int y, List<WireColor> usedColors)
+	public static PlacedRoom PlaceRandomRoom(OpeningType opening, int x, int y, List<WireColor> usedColors, bool skeletron = true)
 	{
 		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
-		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening);
+		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening && x.Value.ForSkeletron == skeletron);
 
 		int roomId = WorldGen.genRand.Next(roomDatas.Count());
 		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
@@ -35,10 +35,10 @@ internal class RoomDatabase : ModSystem
 		return new PlacedRoom(roomData.Value, instance.PlaceRoom(roomData.Key, x, y, roomData.Value.OpeningLocation));
 	}
 
-	public static PlacedRoom PlaceRandomRoom(OpeningType opening, int x, int y)
+	public static PlacedRoom PlaceRandomRoom(OpeningType opening, int x, int y, bool skeletron = true)
 	{
 		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
-		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening);
+		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening && x.Value.ForSkeletron == skeletron);
 		int roomId = WorldGen.genRand.Next(roomDatas.Count());
 		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
 
@@ -48,11 +48,6 @@ internal class RoomDatabase : ModSystem
 		}
 
 		return new PlacedRoom(roomData.Value, instance.PlaceRoom(roomData.Key, x, y, roomData.Value.OpeningLocation));
-	}
-
-	public void PlaceRoom(int id, int x, int y, Vector2 origin)
-	{
-		DataByRoomIndex[id].PlaceRoom(x, y, id, origin);
 	}
 
 	public Rectangle PlaceRoom(int id, int x, int y, Point origin)
@@ -77,6 +72,51 @@ internal class RoomDatabase : ModSystem
 	public override void Load()
 	{
 		DataByRoomIndex.Clear();
+		AddSkeletronDatabase();
+		AddGolemDatabase();
+	}
+
+	private void AddGolemDatabase()
+	{
+		DataByRoomIndex.Add(7, MakeRoom(true, 75, new Point(15, 0), 
+			[new EngageTimerInfo(new(24, 8), 0), new EngageTimerInfo(new(25, 8), 90), new EngageTimerInfo(new(24, 10), 0), new EngageTimerInfo(new(25, 10), 300 / 4),
+			new EngageTimerInfo(new(26, 10), 300 / 2), new EngageTimerInfo(new(27, 10), 300 / 4 * 3), new EngageTimerInfo(new(24, 14), 154), 
+			new EngageTimerInfo(new(24, 12), 132), new EngageTimerInfo(new(25, 12), 110), new EngageTimerInfo(new(25, 14), 88),
+			new EngageTimerInfo(new(26, 14), 66), new EngageTimerInfo(new(26, 12), 44), new EngageTimerInfo(new(27, 12), 22), new EngageTimerInfo(new(27, 14), 0)]));
+
+		DataByRoomIndex.Add(8, MakeRoom(false, 77, new Point(62, 1),
+			[new EngageTimerInfo(new(52, 4), 0), new EngageTimerInfo(new(53, 4), 45), new EngageTimerInfo(new(54, 4), 90), new EngageTimerInfo(new(55, 4), 135)]));
+
+		DataByRoomIndex.Add(9, MakeRoom(false, 77, new Point(40, 0),
+			[new EngageTimerInfo(new(55, 37), 0), new EngageTimerInfo(new(53, 37), 45), new EngageTimerInfo(new(51, 37), 90), new EngageTimerInfo(new(49, 37), 135), 
+			new EngageTimerInfo(new(57, 37), 0)]));
+
+		DataByRoomIndex.Add(10, MakeRoom(true, 75, new Point(41, 0),
+			[new EngageTimerInfo(new(4, 7), 0), new EngageTimerInfo(new(5, 7), 15), new EngageTimerInfo(new(6, 7), 30), new EngageTimerInfo(new(7, 7), 45),
+			 new EngageTimerInfo(new(71, 38), 0), new EngageTimerInfo(new(70, 38), 5), new EngageTimerInfo(new(69, 38), 10), new EngageTimerInfo(new(68, 38), 15), 
+			new EngageTimerInfo(new(67, 38), 20), new EngageTimerInfo(new(66, 38), 25), new EngageTimerInfo(new(65, 38), 30), new EngageTimerInfo(new(64, 38), 35)]));
+
+		DataByRoomIndex.Add(11, MakeRoom(true, 75, new Point(35, 0),
+			[new EngageTimerInfo(new(8, 28), 0), new EngageTimerInfo(new(7, 28), 22), new EngageTimerInfo(new(6, 28), 44), new EngageTimerInfo(new(5, 28), 66), 
+			new EngageTimerInfo(new(8, 25), 88), new EngageTimerInfo(new(7, 25), 110), new EngageTimerInfo(new(6, 25), 132), new EngageTimerInfo(new(5, 25), 154)]));
+
+		DataByRoomIndex.Add(12, MakeRoom(true, 75, new Point(69, 0),
+			[new EngageTimerInfo(new(66, 30), 0), new EngageTimerInfo(new(67, 30), 15), new EngageTimerInfo(new(68, 30), 30), new EngageTimerInfo(new(69, 30), 45)]));
+
+		DataByRoomIndex.Add(13, MakeRoom(false, 77, new Point(6, 0),
+			[new EngageTimerInfo(new(2, 14), 0), new EngageTimerInfo(new(3, 14), 75), new EngageTimerInfo(new(4, 14), 150), new EngageTimerInfo(new(5, 14), 225)]));
+
+		DataByRoomIndex.Add(14, MakeRoom(false, 77, new Point(37, 0),
+			[new EngageTimerInfo(new(4, 48), 0), new EngageTimerInfo(new(4, 9), 45), new EngageTimerInfo(new(73, 9), 90), new EngageTimerInfo(new(73, 48), 135)]));
+
+		static RoomData MakeRoom(bool up, int width, Point wireLocation, List<EngageTimerInfo> timers)
+		{
+			return new RoomData(WireColor.Red, up ? OpeningType.Above : OpeningType.Below, new Point(width / 2, 0), wireLocation, null, timers ?? [], false);
+		}
+	}
+
+	private void AddSkeletronDatabase()
+	{
 		DataByRoomIndex.Add(0, new RoomData(WireColor.Yellow, OpeningType.Right, new Point(44, 29), new Point(23, 39), null, [new EngageTimerInfo(new Point16(41, 5), 0)]));
 
 		DataByRoomIndex.Add(1, new RoomData(WireColor.Blue, OpeningType.Left, new Point(0, 11), new Point(89, 56),

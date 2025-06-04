@@ -3,12 +3,16 @@ using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using SubworldLibrary;
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
 
 internal class StopBuildingPlayer : ModPlayer
 {
+	public static HashSet<int> InvalidBuildingIds = [ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench, ItemID.WireKite,
+		ItemID.ActuationRod, ItemID.ActuationAccessory, ItemID.Actuator, ItemID.RodofDiscord, ItemID.RodOfHarmony];
+
 	/// <summary>
 	/// Stops the player from building if true. This is reset every frame.
 	/// </summary>
@@ -115,9 +119,7 @@ internal class StopBuildingPlayer : ModPlayer
 	public override bool CanUseItem(Item item)
 	{
 		// Disable wiring stuff
-		if (item.type == ItemID.Wrench || item.type == ItemID.BlueWrench || item.type == ItemID.GreenWrench || 
-			item.type == ItemID.YellowWrench || item.type == ItemID.MulticolorWrench || item.type == ItemID.WireKite 
-			|| item.type == ItemID.ActuationRod)
+		if (InvalidBuildingIds.Contains(item.type))
 		{
 			return !LastStopBuilding;
 		}	
