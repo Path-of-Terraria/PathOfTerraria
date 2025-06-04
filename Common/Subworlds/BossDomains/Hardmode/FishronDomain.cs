@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -15,7 +17,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 	public const int FloorY = 180;
 
 	public override int Width => 1300;
-	public override int Height => 400;
+	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => (4600, true);
 
 	private static bool BossSpawned = false;
@@ -28,13 +30,40 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 	private void DecorateWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = "make pit";
+		GeneratePit(progress);
+
+		progress.Message = "decor";
+
 		Dictionary<Point16, OpenFlags> grasses = [];
+
+		int seed = Main.rand.Next();
+		FastNoiseLite wallNoise = new(seed);
+		wallNoise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
+		wallNoise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.EuclideanSq);
+		wallNoise.SetCellularReturnType(FastNoiseLite.CellularReturnType.Distance2Div);
+		wallNoise.SetCellularJitter(1.120f);
+		wallNoise.SetFrequency(0.025f);
+		wallNoise.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2);
+		wallNoise.SetDomainWarpAmp(138.5f);
+
+		FastNoiseLite stoneNoise = new(seed);
+		stoneNoise.SetFrequency(0.027f);
+		stoneNoise.SetFractalType(FastNoiseLite.FractalType.FBm);
+		stoneNoise.SetFractalWeightedStrength(4.38f);
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
 			for (int j = 2; j < Main.maxTilesY - 2; ++j)
 			{
 				Tile tile = Main.tile[i, j];
+
+				Tile.SmoothSlope(i, j, false);
+
+				if (tile.HasTile && stoneNoise.GetNoise(i, j) < -0.7f)
+				{
+					tile.TileType = TileID.Stone;
+				}
 
 				if (tile.HasTile && tile.TileType == TileID.Mud)
 				{
@@ -44,32 +73,130 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 					{
 						tile.TileType = TileID.MushroomGrass;
 
-						grasses.Add(new Point16(i, j), flags);
+						if (tile.Slope == SlopeType.Solid)
+						{
+							grasses.Add(new Point16(i, j), flags);
+						}
 					}
+					else if (WorldGen.genRand.NextBool(80))
+					{
+						tile.TileType = TileID.MushroomGrass;
+					}
+				}
+
+				float wallX = i;
+				float wallY = j;
+
+				wallNoise.DomainWarp(ref wallX, ref wallY);
+
+				if (wallNoise.GetNoise(wallX, wallY) > -0.06f && tile.WallType != WallID.None && !tile.HasTile)
+				{
+					WorldGen.PlaceTile(i, j, ModContent.TileType<MushroomGrowths>(), true);
 				}
 			}
 
 			progress.Value = (float)i / Main.maxTilesX;
 		}
 
+		int count = 0;
+
 		foreach (KeyValuePair<Point16, OpenFlags> grass in grasses)
 		{
 			GrowOnGrass(grass.Key.X, grass.Key.Y, grass.Value);
+			progress.Value = (float)count / grasses.Count;
+			count++;
 		}
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (j > FloorY + 20)
+				{
+					tile.LiquidType = LiquidID.Water;
+					tile.LiquidAmount = 255;
+				}
+			}
+
+			progress.Value = (float)i / Main.maxTilesX;
+		}
+
+		Main.worldSurface = FloorY + 60;
+		Main.rockLayer = FloorY + 65;
 	}
 
-	private void GrowOnGrass(short x, short y, OpenFlags value)
+	private void GeneratePit(GenerationProgress progress)
 	{
-		if (value.HasFlag(OpenFlags.Above) && !WorldGen.genRand.NextBool(5))
+		int x = Width / 2;
+		int y = 100;
+
+		while (!WorldGen.SolidOrSlopedTile(x, y))
 		{
-			WorldGen.PlaceTile(x, y - 1, TileID.MushroomPlants);
+			y++;
+		}
+
+		y += 79;
+
+		ShapeData data = new();
+
+		progress.Message = "basic shape";
+
+		WorldUtils.Gen(new Point(x, y), new Shapes.Circle(300, 90),
+			Actions.Chain(new Modifiers.Blotches(4, 4, 0.7f), new Actions.ClearTile().Output(data)));
+
+		int count = WorldGen.genRand.Next(9, 12);
+		List<Point> points = [];
+
+		progress.Message = "epic shape";
+
+		for (int i = 0; i < count + 1; ++i)
+		{
+			Point origin;
+
+			do
+			{
+				origin = WorldGen.genRand.NextVector2CircularEdge(260, WorldGen.genRand.Next(120, 140)).ToPoint();
+			} while (origin.Y < 0 || points.Any(x => x.ToVector2().Distance(origin.ToVector2()) < 50));
+
+			GenShape shape = new Shapes.Circle(WorldGen.genRand.Next(40, 60), WorldGen.genRand.Next(30, 50));
+			var blotches = new Modifiers.Blotches(30, 8, 0.4f);
+			WorldUtils.Gen(new Point(origin.X + x, origin.Y + y), shape, Actions.Chain(blotches, new Actions.ClearTile().Output(data)));
+		}
+
+		WorldUtils.Gen(new Point(x, y - 40), new Shapes.Rectangle(8, 40),
+			Actions.Chain(new Modifiers.Blotches(5, 3, 0.6f), new Actions.ClearTile().Output(data)));
+	}
+
+	private static void GrowOnGrass(short x, short y, OpenFlags value)
+	{
+		if (value.HasFlag(OpenFlags.Above) && !Main.tile[x, y - 1].HasTile)
+		{
+			if (WorldGen.genRand.NextBool(30))
+			{
+				WorldGen.PlaceObject(x, y - 1, ModContent.TileType<Bubbleshroom>(), true);
+
+				if (Main.tile[x, y - 1].TileType == ModContent.TileType<Bubbleshroom>())
+				{
+					ModContent.GetInstance<Bubbleshroom.BubblerTE>().Place(x - 2, y - 2);
+				}
+			}
+			else if (!WorldGen.genRand.NextBool(2))
+			{
+				WorldGen.PlaceTile(x, y - 1, TileID.MushroomPlants, true);
+			}
+			else if (WorldGen.genRand.NextBool(5))
+			{
+				WorldGen.GrowTree(x, y);
+			}
 		}
 		
 		if (value.HasFlag(OpenFlags.Below))
 		{
 			if (!WorldGen.genRand.NextBool(3))
 			{
-				int length = WorldGen.genRand.Next(5, 12);
+				int length = WorldGen.genRand.Next(5, 16);
 
 				for (int k = 1; k < length; ++k)
 				{
@@ -86,12 +213,10 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 	private static FastNoiseLite FlatNoise()
 	{
-		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		FastNoiseLite noise = new(Main.rand.Next());
 		noise.SetFrequency(0.006f);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2);
-
 		noise.SetCellularDistanceFunction(FastNoiseLite.CellularDistanceFunction.Hybrid);
-
 		noise.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2);
 		noise.SetDomainWarpAmp(-900);
 		return noise;
@@ -172,8 +297,9 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 	public void OverrideBiome()
 	{
-		Main.LocalPlayer.ZoneCorrupt = true;
-		Main.newMusic = MusicID.Corruption;
-		Main.curMusic = MusicID.Corruption;
+		Main.LocalPlayer.ZoneGlowshroom = true;
+		Main.SmoothedMushroomLightInfluence = 1f;
+		Main.newMusic = MusicID.Mushrooms;
+		Main.curMusic = MusicID.Mushrooms;
 	}
 }
