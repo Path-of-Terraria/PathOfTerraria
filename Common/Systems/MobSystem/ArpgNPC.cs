@@ -31,10 +31,6 @@ internal class ArpgNPC : GlobalNPC
 	public ItemRarity Rarity = ItemRarity.Normal;
 	public List<MobAffix> Affixes = [];
 
-	public ElementalDamage FireDamage;
-	public ElementalDamage ColdDamage;
-	public ElementalDamage LightningDamage;
-
 	private readonly Player _lastPlayerHit = null;
 
 	private bool _synced = false;
@@ -184,7 +180,10 @@ internal class ArpgNPC : GlobalNPC
 			};
 
 			// Apply common damage types
-			ApplyDamageTypes(npc);
+			if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
+			{
+				elemNPC.ApplyDamageTypes(npc);
+			}
 
 			ApplyRarity(npc, false);
 			npc.netUpdate = true;
@@ -194,72 +193,6 @@ internal class ArpgNPC : GlobalNPC
 	public override void SetDefaultsFromNetId(NPC npc)
 	{
 		SetName(npc);
-	}
-
-	// TODO: net support (mandatory, for random entries)
-	public void ApplyDamageTypes(NPC npc, MobEntry entry = null)
-	{
-		List<MobDamage> elementalDamages = null;
-
-		// Apply entry overrides if evaluating an entry and overrides are available
-		bool fromEntry = entry != null && entry.DamageOverrides != null;
-		if (fromEntry)
-		{
-			elementalDamages = entry.DamageOverrides;
-		}
-		// Otherwise, try get the root (common) data for this type
-		else if (MobRegistry.TryGetMobData(npc.type, out MobData mobData))
-		{
-			elementalDamages = mobData.Damage;
-		}
-
-		if (elementalDamages != null && elementalDamages.Count > 0)
-		{
-			int level = PoTItemHelper.PickItemLevel();
-			foreach (MobDamage mobDamage in elementalDamages.OrderByDescending(d => d.MinLevel))
-			{
-				if (level >= mobDamage.MinLevel)
-				{
-					if (mobDamage.Fire != null)
-					{
-						if (!FireDamage.Valid)
-						{
-							FireDamage = new ElementalDamage(ElementType.Fire, mobDamage.Fire.Added ?? 0, mobDamage.Fire.Conversion ?? 0f);
-						}
-						else
-						{
-							FireDamage = FireDamage.ApplyOverride(mobDamage.Fire.Added, mobDamage.Fire.Conversion);
-						}
-					}
-
-					if (mobDamage.Cold != null)
-					{
-						if (!ColdDamage.Valid)
-						{
-							ColdDamage = new ElementalDamage(ElementType.Cold, mobDamage.Cold.Added ?? 0, mobDamage.Cold.Conversion ?? 0f);
-						}
-						else
-						{
-							ColdDamage = ColdDamage.ApplyOverride(mobDamage.Cold.Added, mobDamage.Cold.Conversion);
-						}
-					}
-
-					if (mobDamage.Lightning != null)
-					{
-						if (!LightningDamage.Valid)
-						{
-							LightningDamage = new ElementalDamage(ElementType.Lightning, mobDamage.Lightning.Added ?? 0, mobDamage.Lightning.Conversion ?? 0f);
-						}
-						else
-						{
-							LightningDamage = LightningDamage.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
-						}
-					}
-
-					break;
-				}
-			}
-		}
 	}
 
 	public void ApplyRarity(NPC npc, bool fromNet)
@@ -277,7 +210,10 @@ internal class ArpgNPC : GlobalNPC
 					ApplyMobEntry(npc, entry);
 
 					// Apply entry-specific damage type overrides
-					ApplyDamageTypes(npc, entry);
+					if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
+					{
+						elemNPC.ApplyDamageTypes(npc, entry);
+					}
 				}
 			}
 #if DEBUG
@@ -389,25 +325,6 @@ internal class ArpgNPC : GlobalNPC
 		{
 			affix.NetSend(binaryWriter);
 		}
-
-		bitWriter.WriteBit(FireDamage.Valid);
-		bitWriter.WriteBit(ColdDamage.Valid);
-		bitWriter.WriteBit(LightningDamage.Valid);
-
-		if (FireDamage.Valid)
-		{
-			FireDamage.Write(binaryWriter);
-		}
-
-		if (ColdDamage.Valid)
-		{
-			ColdDamage.Write(binaryWriter);
-		}
-
-		if (LightningDamage.Valid)
-		{
-			LightningDamage.Write(binaryWriter);
-		}
 	}
 
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
@@ -421,25 +338,6 @@ internal class ArpgNPC : GlobalNPC
 		{
 			MobAffix affix = Affix.RecieveMobAffix(binaryReader);
 			Affixes.Add(affix);
-		}
-
-		bool fire = bitReader.ReadBit();
-		bool cold = bitReader.ReadBit();
-		bool lightning = bitReader.ReadBit();
-
-		if (fire)
-		{
-			FireDamage = ElementalDamage.Read(binaryReader);
-		}
-
-		if (cold)
-		{
-			ColdDamage = ElementalDamage.Read(binaryReader);
-		}
-
-		if (lightning)
-		{
-			ColdDamage = ElementalDamage.Read(binaryReader);
 		}
 
 		// TODO: Find cause of read overflow/underflow in subworlds

@@ -35,12 +35,6 @@ public class ElementalPlayer : ModPlayer
 		LightningResistance = 0f;
 	}
 
-	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-	{
-		// Potential usage for player elemental damage:
-		// ElementModifyDamage(FireDamage, ColdDamage, LightningDamage, ref modifiers.TargetDamageMultiplier, ref modifiers.SourceDamage);
-	}
-
 	public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
 	{
 		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
@@ -51,9 +45,9 @@ public class ElementalPlayer : ModPlayer
 
 	public override void ModifyHitByNPC(NPC npc, ref Player.HurtModifiers modifiers)
 	{
-		if (npc.TryGetGlobalNPC(out ArpgNPC arpgNPC))
+		if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementModifyDamage(arpgNPC.FireDamage, arpgNPC.ColdDamage, arpgNPC.LightningDamage, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
+			ElementModifyDamage(elemNPC.FireDamage, elemNPC.ColdDamage, elemNPC.LightningDamage, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
 		}
 	}
 
@@ -90,9 +84,9 @@ public class ElementalPlayer : ModPlayer
 
 	public override void OnHitByNPC(NPC npc, Player.HurtInfo hurtInfo)
 	{
-		if (npc.TryGetGlobalNPC(out ArpgNPC arpgNPC))
+		if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(Player, arpgNPC.FireDamage, arpgNPC.ColdDamage, arpgNPC.LightningDamage, hurtInfo.SourceDamage, hurtInfo.Damage);
+			ElementOnHit(Player, elemNPC.FireDamage, elemNPC.ColdDamage, elemNPC.LightningDamage, hurtInfo.SourceDamage, hurtInfo.Damage);
 		}
 	}
 

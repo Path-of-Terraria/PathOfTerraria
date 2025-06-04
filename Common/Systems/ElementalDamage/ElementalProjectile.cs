@@ -9,17 +9,17 @@ internal class ElementalProjectile : GlobalProjectile
 {
 	public override bool InstancePerEntity => true;
 
-	public ElementalDamage FireDamage;
-	public ElementalDamage ColdDamage;
-	public ElementalDamage LightningDamage;
+	public ElementalDamage FireDamage { get; set; }
+	public ElementalDamage ColdDamage { get; set; }
+	public ElementalDamage LightningDamage { get; set; }
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
-		if (source is EntitySource_Parent parent && parent.Entity is NPC npc && npc.TryGetGlobalNPC(out ArpgNPC arpgNPC) && Main.netMode != NetmodeID.MultiplayerClient)
+		if (source is EntitySource_Parent parent && parent.Entity is NPC npc && npc.TryGetGlobalNPC(out ElementalNPC elemNPC) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			FireDamage = arpgNPC.FireDamage;
-			ColdDamage = arpgNPC.ColdDamage;
-			LightningDamage = arpgNPC.LightningDamage;
+			FireDamage = elemNPC.FireDamage;
+			ColdDamage = elemNPC.ColdDamage;
+			LightningDamage = elemNPC.LightningDamage;
 			projectile.netUpdate = true;
 		}
 	}
