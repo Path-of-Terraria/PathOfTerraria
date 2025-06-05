@@ -1,4 +1,23 @@
+Common: {
+	Missing1: Missing {0}.
+	Missing2: Missing {0} and {1}.
+	Missing3: Missing {0}{1} and {2}.
+	MissingList: "{0}, "
+}
+
 Tavern: {
 	DisplayName: Tavern
-	Description: Requires 3 tables, 3 chairs, a keg, a sign, and a light source
+	Description:
+		'''
+		Must occupy at least 100 tiles
+		Requires 3 tables, 3 chairs, 3 bar stools, a keg, a sign, a door, and a light source
+		'''
+
+	Error: {
+		Tables: 3 tables
+		BarStools: 3 bar stools
+		Chairs: 3 chairs
+		Keg: a keg
+		Sign: a sign
+	}
 }
