@@ -173,6 +173,11 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		}
 	}
 
+	public override bool CanTownNPCSpawn(int numTownNPCs)
+	{
+		return true; //Tavern NPCs can only move into Tavern rooms
+	}
+
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();

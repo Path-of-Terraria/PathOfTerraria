@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>HousingAPI</name>
+    </assembly>
+    <members>
+        <member name="T:HousingAPI.Common.GlobalRoomType">
+            <summary> Allows you to modify default NPC housing rules. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.GlobalRoomType.RoomNeeds(HousingAPI.Common.Helpers.RoomScanner)">
+            <summary> Allows you to modify whether this room is valid. Returns null by default, which uses the vanilla response. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.GlobalRoomType.ScoreRoom(System.Int32@,System.Int32,System.Int32)">
+            <summary> Allows you to modify how this room is scored by <paramref name="npcType"/>. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.Helpers.HoverTooltip.DrawPanel(Microsoft.Xna.Framework.Graphics.SpriteBatch,Microsoft.Xna.Framework.Rectangle,Microsoft.Xna.Framework.Color,Microsoft.Xna.Framework.Color,System.Int32)">
+            <summary> Draws a background panel based on vanilla code. </summary>
+        </member>
+        <member name="T:HousingAPI.Common.Helpers.RoomScanner">
+            <summary> Contains helpers for checking room requirements. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.Helpers.RoomScanner.#ctor">
+            <summary> Contains helpers for checking room requirements. </summary>
+        </member>
+        <member name="P:HousingAPI.Common.Helpers.RoomScanner.NumTiles">
+            <summary> How many tiles this room occupies. </summary>
+        </member>
+        <member name="F:HousingAPI.Common.Helpers.RoomScanner.Scanned">
+            <summary> A hash of all tile coordinates scanned by this room. Can be used for more complex checks than the methods provided. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.Helpers.RoomScanner.ContainsTile(System.Int32)">
+            <summary> Whether this room contains a tile of <paramref name="type"/>. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.Helpers.RoomScanner.TileCount(System.Int32)">
+            <summary> Counts all tiles in the room of <paramref name="type"/>. If <paramref name="type"/> is a multitile, only the top leftmost tile is counted. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.Helpers.RoomScanner.HasRoomNeed(System.Int32[])">
+            <summary> Whether this room contains a tile from <see cref="T:Terraria.ID.TileID.Sets.RoomNeeds"/>. </summary>
+        </member>
+        <member name="F:HousingAPI.Common.RoomTypeDatabase.RoomByType">
+            <summary> Stores registered rooms by <see cref="P:HousingAPI.Common.ModRoomType.Type"/>. </summary>
+        </member>
+        <member name="P:HousingAPI.Common.RoomTypeDatabase.GetContent">
+            <summary> All registered <see cref="T:HousingAPI.Common.ModRoomType"/>s except for <see cref="T:HousingAPI.Content.VanillaRoom"/>. </summary>
+        </member>
+        <member name="T:HousingAPI.Common.ModRoomType">
+            <summary> Allows you to define custom NPC room behaviour as a singleton. <br/>
+            Multiple room types can apply at once, if conditions allow it. <para/>
+            The provided methods are often called in the order they appear. For example: <list type="bullet">
+            <item> RoomCheck </item>
+            <item> AllowNPC </item>
+            <item> RoomNeeds </item>
+            <item> RoomScore </item>
+            </list></summary>
+        </member>
+        <member name="P:HousingAPI.Common.ModRoomType.Priority">
+            <summary> Whether this room completely overrides the vanilla room type. </summary>
+        </member>
+        <member name="P:HousingAPI.Common.ModRoomType.DisplayName">
+            <summary> The name of this room as displayed in-game. Defaults to "Mods.(Mod Name).Rooms.(ModType Name).DisplayName". </summary>
+        </member>
+        <member name="P:HousingAPI.Common.ModRoomType.Description">
+            <summary> The description of this room. Defaults to "Mods.(Mod Name).Rooms.(ModType Name).Description". </summary>
+        </member>
+        <member name="P:HousingAPI.Common.ModRoomType.Success">
+            <summary> Tracks consecutive operations for this room and whether it is valid. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.ModRoomType.DoStructureCheck(Terraria.DataStructures.Point16,HousingAPI.Common.Helpers.RoomScanner)">
+            <summary> Calls <see cref="M:HousingAPI.Common.ModRoomType.RoomCheck(System.Int32,System.Int32,HousingAPI.Common.Helpers.RoomScanner)"/> and updates <see cref="P:HousingAPI.Common.ModRoomType.Success"/> accordingly. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.ModRoomType.DoBasicCheck(System.Int32,HousingAPI.Common.Helpers.RoomScanner,System.Boolean@)">
+            <summary> Calls <see cref="M:HousingAPI.Common.ModRoomType.RoomNeeds(HousingAPI.Common.Helpers.RoomScanner)"/> according to <see cref="P:HousingAPI.Common.ModRoomType.Success"/>. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.ModRoomType.RoomCheck(System.Int32,System.Int32,HousingAPI.Common.Helpers.RoomScanner)">
+            <summary> Used to check room structure. Defaults to null, which uses the vanilla response. <br/>
+            This is more advanced than <see cref="M:HousingAPI.Common.ModRoomType.RoomNeeds(HousingAPI.Common.Helpers.RoomScanner)"/> and doesn't normally need to be used. Consult vanilla code (<see cref="M:Terraria.WorldGen.StartRoomCheck(System.Int32,System.Int32)"/>) before using this method. </summary>
+            <param name="x"> The x coordinate to start scanning at. </param>
+            <param name="y"> The y coordinate to start scanning at. </param>
+            <returns> Whether this room is the correct shape, size, etc. for this <see cref="T:HousingAPI.Common.ModRoomType"/>. </returns>
+        </member>
+        <member name="M:HousingAPI.Common.ModRoomType.RoomNeeds(HousingAPI.Common.Helpers.RoomScanner)">
+            <summary> Used to check room furniture requirements. Defaults to false, which uses the vanilla response. </summary>
+            <param name="results"> A helper to easily get the contents of a room. Tile data normally corresponds to <see cref="F:Terraria.WorldGen.houseTile"/>. </param>
+            <returns> Whether this room has all required furniture for this type. </returns>
+        </member>
+        <member name="M:HousingAPI.Common.ModRoomType.AllowNPC(System.Int32)">
+            <summary> Whether <paramref name="npcType"/> is allowed in this room. Returns true by default. </summary>
+            <param name="npcType"> The NPC type trying to move in. Corresponds to <see cref="F:Terraria.WorldGen.prioritizedTownNPCType"/>. </param>
+        </member>
+        <member name="M:HousingAPI.Common.ModRoomType.ScoreRoom(System.Int32@,System.Int32,System.Int32)">
+            <summary> Used to modify how much an NPC favours a room with <paramref name="score"/>. </summary>
+            <param name="score"> The room score to modify. </param>
+            <param name="ignoreType"></param>
+            <param name="npcType"> The type of NPC scoring the room. </param>
+        </member>
+        <member name="T:HousingAPI.Common.UI.QueryButtonDetour">
+            <summary> Prevents NPCs from drawing in the housing UI while querying. </summary>
+        </member>
+        <member name="T:HousingAPI.Common.UI.QueryInfo">
+            <summary> Used to contain info about a query in UI. </summary>
+        </member>
+        <member name="M:HousingAPI.Common.UI.QueryInfo.#ctor(System.Boolean,System.String)">
+            <summary> Used to contain info about a query in UI. </summary>
+        </member>
+        <member name="T:HousingAPI.Content.VanillaRoom">
+            <summary> Represents the default NPC room. </summary>
+        </member>
+        <member name="T:HousingAPI.HousingAPI">
+            <summary> The core of the mod. </summary>
+        </member>
+    </members>
+</doc>

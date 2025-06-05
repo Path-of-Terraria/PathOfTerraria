@@ -149,6 +149,11 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 		}
 	}
 
+	public override bool CanTownNPCSpawn(int numTownNPCs)
+	{
+		return true; //Tavern NPCs can only move into Tavern rooms
+	}
+
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest =	Quest.GetLocalPlayerInstance<DeerclopsQuest>();
