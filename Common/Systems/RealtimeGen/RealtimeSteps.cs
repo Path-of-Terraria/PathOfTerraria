@@ -40,11 +40,11 @@ public static class RealtimeSteps
 	/// <param name="x">X position.</param>
 	/// <param name="y">Y position.</param>
 	/// <returns>A realtime step that kills a tile.</returns>
-	public static RealtimeStep KillTile(int x, int y)
+	public static RealtimeStep KillTile(int x, int y, bool noItem = false)
 	{
 		return new RealtimeStep((i, j) =>
 		{
-			WorldGen.KillTile(i, j);
+			WorldGen.KillTile(i, j, noItem: noItem);
 			bool value = !Main.tile[i, j].HasTile;
 
 			if (value && Main.netMode != NetmodeID.SinglePlayer)

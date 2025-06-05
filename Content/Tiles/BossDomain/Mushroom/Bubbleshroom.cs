@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -50,6 +51,14 @@ internal class Bubbleshroom : ModTile
 			g = color2.G / 255f;
 			b = color2.B / 255f;
 		}
+	}
+
+	public override void KillMultiTile(int i, int j, int frameX, int frameY)
+	{
+		Tile tile = Main.tile[i, j];
+		i -= tile.TileFrameX / 18;
+		j -= tile.TileFrameY / 18;
+		ModContent.GetInstance<BubblerTE>().Kill(i, j);
 	}
 
 	private class BubbleshroomBubble : ModProjectile
@@ -121,6 +130,8 @@ internal class Bubbleshroom : ModTile
 			_timer++;
 
 			Vector2 worldPos = Position.ToWorldCoordinates();
+
+			Dust.NewDustPerfect(Position.ToWorldCoordinates(), DustID.YellowStarDust, Vector2.Zero);
 
 			if (_timer > 6 * 60 && Collision.WetCollision(Position.ToWorldCoordinates(), 68, 26))
 			{

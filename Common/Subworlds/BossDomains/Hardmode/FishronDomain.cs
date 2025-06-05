@@ -1,13 +1,16 @@
 ﻿using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
@@ -15,23 +18,160 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 {
 	public const int FloorY = 180;
+	public const int WaterLine = FloorY + 20;
+	public const int MushroomCount = 7;
 
 	public override int Width => 1300;
 	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => (4600, true);
+	public override int[] WhitelistedMiningTiles => [ModContent.TileType<Burstshroom2x2>()];
+
+	internal static int MushroomsBroken = 0;
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
 	private static Rectangle Arena = Rectangle.Empty;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
-		new FlatWorldPass(FloorY, true, FlatNoise(), TileID.Mud, WallID.MushroomUnsafe, 18),
-		new PassLegacy("Decor", DecorateWorld)];
+		new PassLegacy("Terrain", Terrain),
+		new PassLegacy("Decor", DecorateWorld),
+		new PassLegacy("SettleLiquids", SettleLiquidsStep.Generation),
+		new PassLegacy("Pads", AddPads)];
+
+	private static void Terrain(GenerationProgress progress, GameConfiguration configuration)
+	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain"); // Sets the text displayed for this pass
+		Main.worldSurface = Main.maxTilesY - 42; // Hides the underground layer just out of bounds
+		Main.rockLayer = Main.maxTilesY; // Hides the cavern layer way out of bounds
+
+		FastNoiseLite noise = FlatNoise();
+		float noiseAmp = 20;
+		int tileId = TileID.Mud;
+		int wallId = WallID.MushroomUnsafe;
+
+		for (int x = 0; x < Main.maxTilesX; x++)
+		{
+			for (int y = 0; y < Main.maxTilesY; y++)
+			{
+				progress.Set((y + x * Main.maxTilesY) / (float)(Main.maxTilesX * Main.maxTilesY)); // Controls the progress bar, should only be set between 0f and 1f
+				Tile tile = Main.tile[x, y];
+
+				float warpedX = x;
+				float warpedY = y;
+				noise.DomainWarp(ref warpedX, ref warpedY);
+
+				int floorY = (int)(FloorY + (noise is null ? 0 : noise.GetNoise(warpedX, 0) * noiseAmp));
+
+				if (y <= floorY)
+				{
+					continue; // Stop tiles from being placed above the floor
+				}
+
+				tile.HasTile = true;
+				tile.TileType = (ushort)tileId;
+
+				if (y > floorY + 1)
+				{
+					float value = noise.GetNoise(warpedX, warpedY);
+
+					if (value < 0f)
+					{
+						tile.WallType = noise.GetNoise(warpedX + 3000, warpedY) < 0f ? WallID.MudUnsafe : (ushort)wallId;
+					}
+					else
+					{
+						tile.WallType = WallID.None;
+					}
+				}
+			}
+		}
+	}
+
+	private void AddPads(GenerationProgress progress, GameConfiguration configuration)
+	{
+		int totalRepeats = 0;
+		List<int> xs = [];
+
+		for (int i = 0; i < 9; ++i)
+		{
+			int x;
+
+			do
+			{
+				x = WorldGen.genRand.Next(200, Width - 200);
+				totalRepeats++;
+
+				if (totalRepeats > 30000)
+				{
+					return;
+				}
+			} while (Collision.SolidCollision(new Vector2((x - 10) * 16, WaterLine * 16), 20 * 16, 16) || xs.Any(v => Math.Abs(v - x) < 36));
+
+			xs.Add(x);
+			PlaceMushroomLily(x, WaterLine + 1);
+		}
+	}
+
+	internal static void PlaceMushroomLily(int x, int y)
+	{
+		int width = WorldGen.genRand.Next(9, 21);
+
+		for (int i = x - width + 1; i < x + width; ++i)
+		{
+			Tile tile = Main.tile[i, y];
+			tile.HasTile = true;
+			tile.TileType = (ushort)ModContent.TileType<Mushpad>();
+
+			if (i == x)
+			{
+				for (int j = 1; j < width / 3; ++j)
+				{
+					Tile stem = Main.tile[i, y + j];
+					stem.HasTile = true;
+					stem.TileType = (ushort)ModContent.TileType<Mushpad>();
+				}
+			}
+		}
+
+		for (int i = x - width; i < x + width; ++i)
+		{
+			WorldGen.TileFrame(i, y);
+
+			if (i == x)
+			{
+				for (int j = 1; j < width / 3; ++j)
+				{
+					WorldGen.TileFrame(i, y + j);
+				}
+			}
+			else
+			{
+				SpawnMushroomVine(i, y);
+			}
+		}
+
+		if (!WorldGen.genRand.NextBool(3))
+		{
+			WorldGen.PlaceObject(x, y - 1, ModContent.TileType<MushpadFlower>(), true, WorldGen.genRand.Next(2));
+		}
+	}
 
 	private void DecorateWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
+		MushroomsBroken = 0;
+
 		progress.Message = "make pit";
 		GeneratePit(progress);
+
+		Main.spawnTileX = WorldGen.genRand.NextBool() ? 120 : Main.maxTilesX - 120;
+		Main.spawnTileY = 140;
+
+		while (!WorldGen.SolidOrSlopedTile(Main.spawnTileX, Main.spawnTileY))
+		{
+			Main.spawnTileY++;
+		}
+
+		Main.spawnTileY -= 3;
 
 		progress.Message = "decor";
 
@@ -107,13 +247,34 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 			count++;
 		}
 
+		int burstshroomCount = 0;
+		HashSet<Point16> burstshrooms = [];
+
+		while (burstshroomCount < MushroomCount)
+		{
+			Point16 pos;
+
+			do
+			{
+				pos = new Point16(WorldGen.genRand.Next(200, Width - 200), WorldGen.genRand.Next(WaterLine, Height - 120));
+			} while (!grasses.ContainsKey(pos) || Main.tile[pos.X, pos.Y - 1].HasTile || burstshrooms.Any(x => x.ToVector2().DistanceSQ(pos.ToVector2()) < 30 * 30));
+
+			WorldGen.PlaceObject(pos.X, pos.Y - 1, ModContent.TileType<Burstshroom2x2>(), true, style: WorldGen.genRand.Next(4));
+
+			if (Main.tile[pos.X, pos.Y - 1].TileType == ModContent.TileType<Burstshroom2x2>())
+			{
+				burstshroomCount++;
+				burstshrooms.Add(pos);
+			}
+		}
+
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
 			for (int j = 2; j < Main.maxTilesY - 2; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (j > FloorY + 20)
+				if (j > WaterLine)
 				{
 					tile.LiquidType = LiquidID.Water;
 					tile.LiquidAmount = 255;
@@ -173,7 +334,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 	{
 		if (value.HasFlag(OpenFlags.Above) && !Main.tile[x, y - 1].HasTile)
 		{
-			if (WorldGen.genRand.NextBool(30))
+			if (WorldGen.genRand.NextBool(30) && y > WaterLine)
 			{
 				WorldGen.PlaceObject(x, y - 1, ModContent.TileType<Bubbleshroom>(), true);
 
@@ -191,22 +352,29 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 				WorldGen.GrowTree(x, y);
 			}
 		}
-		
+
 		if (value.HasFlag(OpenFlags.Below))
 		{
-			if (!WorldGen.genRand.NextBool(3))
+			SpawnMushroomVine(x, y);
+		}
+	}
+
+	private static void SpawnMushroomVine(int x, int y)
+	{
+		int vineType = WorldGen.genRand.NextBool(3) ? ModContent.TileType<Flowervine>() : TileID.MushroomVines;
+
+		if (!WorldGen.genRand.NextBool(3))
+		{
+			int length = WorldGen.genRand.Next(5, 16);
+
+			for (int k = 1; k < length; ++k)
 			{
-				int length = WorldGen.genRand.Next(5, 16);
-
-				for (int k = 1; k < length; ++k)
+				if (Main.tile[x, y + k].HasTile)
 				{
-					if (Main.tile[x, y + k].HasTile)
-					{
-						break;
-					}
-
-					WorldGen.PlaceTile(x, y + k, TileID.MushroomVines, true);
+					break;
 				}
+
+				WorldGen.PlaceTile(x, y + k, vineType, true);
 			}
 		}
 	}
@@ -298,7 +466,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 	public void OverrideBiome()
 	{
 		Main.LocalPlayer.ZoneGlowshroom = true;
-		Main.SmoothedMushroomLightInfluence = 1f;
+		Main.SmoothedMushroomLightInfluence = MushroomsBroken / (float)(MushroomCount - 1);
 		Main.newMusic = MusicID.Mushrooms;
 		Main.curMusic = MusicID.Mushrooms;
 	}
