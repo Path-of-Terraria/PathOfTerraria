@@ -1,14 +1,47 @@
 ﻿using HousingAPI.Common;
 using HousingAPI.Common.Helpers;
 using Humanizer;
+using PathOfTerraria.Common.NPCs;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ObjectData;
 
 namespace PathOfTerraria.Content.RoomTypes;
+
+/// <summary> Allows <see cref="ITavernNPC"/>s to share a room. </summary>
+internal class TavernDetours : ILoadable
+{
+	public void Load(Mod mod)
+	{
+		On_TownRoomManager.CanNPCsLiveWithEachOther_NPC_NPC += ForceShareRoom;
+	}
+
+	private static bool ForceShareRoom(On_TownRoomManager.orig_CanNPCsLiveWithEachOther_NPC_NPC orig, TownRoomManager self, NPC npc1, NPC npc2)
+	{
+		bool value = orig(self, npc1, npc2);
+		if (npc1.ModNPC is ITavernNPC)
+		{
+			return true;
+		}
+
+		return value;
+	}
+
+	public void Unload() { }
+}
+
+/// <summary> Prevents tavern NPCs from moving into normal rooms. </summary>
+public class TavernGlobal : GlobalRoomType
+{
+	public override bool? AllowNPC(int npcType)
+	{
+		return ContentSamples.NpcsByNetId[npcType].ModNPC is ITavernNPC ? false : null;
+	}
+}
 
 public class Tavern : ModRoomType
 {
@@ -138,10 +171,5 @@ public class Tavern : ModRoomType
 
 		chairs = chairCount;
 		barStools = stoolCount;
-	}
-
-	protected override bool AllowNPC(int npcType)
-	{
-		return false;
 	}
 }
