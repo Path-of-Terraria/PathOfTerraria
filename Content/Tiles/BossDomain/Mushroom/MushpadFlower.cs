@@ -9,6 +9,7 @@ internal class MushpadFlower : ModTile
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
+		Main.tileLighted[Type] = true;
 
 		TileID.Sets.BreakableWhenPlacing[Type] = false;
 		TileID.Sets.PreventsSandfall[Type] = true;
@@ -24,5 +25,10 @@ internal class MushpadFlower : ModTile
 		DustType = DustID.RedMoss;
 
 		AddMapEntry(new Color(196, 74, 98));
+	}
+
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
+	{
+		(r, g, b) = (0.5f, 0.05f, 0.05f);
 	}
 }

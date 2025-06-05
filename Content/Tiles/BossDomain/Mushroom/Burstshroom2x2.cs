@@ -1,8 +1,11 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.RealtimeGen;
+using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Common.World.Generation;
+using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.ObjectData;
 
@@ -10,8 +13,12 @@ namespace PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
 
 internal class Burstshroom2x2 : ModTile
 {
+	private static Asset<Texture2D> Outline = null;
+
 	public override void SetStaticDefaults()
 	{
+		Outline = ModContent.Request<Texture2D>(Texture + "_Outline");
+
 		Main.tileFrameImportant[Type] = true;
 		Main.tileLighted[Type] = true;
 
@@ -35,7 +42,7 @@ internal class Burstshroom2x2 : ModTile
 
 		if (tile.TileColor == PaintID.None)
 		{
-			r = 0.1f;
+			r = 0.2f;
 			g = 0.8f + str / 2f;
 			b = 3.2f;
 		}
@@ -46,6 +53,15 @@ internal class Burstshroom2x2 : ModTile
 			g = color2.G / 255f;
 			b = color2.B / 255f;
 		}
+	}
+
+	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		Vector2 position = TileExtensions.DrawPosition(i, j) - new Vector2(2);
+		Rectangle src = Main.tile[i, j].BasicFrame();
+		src = new Rectangle(src.X / 16 * 20, src.Y / 16 * 20, 20, 20);
+
+		spriteBatch.Draw(Outline.Value, position, src, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 	}
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
@@ -77,8 +93,7 @@ internal class Burstshroom2x2 : ModTile
 			{
 				Tile tile = Main.tile[i, j];
 
-				steps.Enqueue(RealtimeSteps.KillTile(i, j, true), order++);
-				steps.Enqueue(RealtimeSteps.PlaceTile(i, j, TileID.MushroomBlock), order++);
+				steps.Enqueue(new RealtimeStep((i, j) => ReplacePaintTile(i, j, windingNoise), new Point16(i, j)), order++);
 
 				if (j < highPos.Y)
 				{
@@ -107,8 +122,7 @@ internal class Burstshroom2x2 : ModTile
 				if (dist < HalfTopWidth * 0.6f - WorldGen.genRand.NextFloat())
 				{
 					int off = highPos.Y - j;
-					steps.Enqueue(RealtimeSteps.KillTile(i, j, true), order + HalfTopWidth + off * 2);
-					steps.Enqueue(RealtimeSteps.PlaceTile(i, j, TileID.MushroomBlock), order + HalfTopWidth + off * 2 + 3);
+					steps.Enqueue(new RealtimeStep((i, j) => ReplacePaintTile(i, j, windingNoise), new Point16(i, j)), order + HalfTopWidth + off);
 				}
 			}
 		}
@@ -121,5 +135,19 @@ internal class Burstshroom2x2 : ModTile
 		}
 
 		RealtimeGenerationSystem.AddAction(new RealtimeGenerationAction(useSteps, 0.004f));
+	}
+
+	public static bool ReplacePaintTile(int i, int j, FastNoiseLite noise)
+	{
+		WorldGen.KillTile(i, j, false, false, true);
+		bool value = WorldGen.PlaceTile(i, j, TileID.MushroomBlock, true);
+		WorldGen.paintTile(i, j, noise.GetNoise(i * 2.5f, j * 2.5f) > 0.3f ? PaintID.BluePaint : PaintID.None);
+
+		if (value && Main.netMode != NetmodeID.SinglePlayer)
+		{
+			NetMessage.SendTileSquare(-1, i, j);
+		}
+
+		return value;
 	}
 }

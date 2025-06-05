@@ -29,5 +29,7 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.EaterofWorldsTail);
 		ArpgNPC.NoAffixesSet.Add(NPCID.WallofFlesh); // Neither WoF body part should be buffed, works weirdly
 		ArpgNPC.NoAffixesSet.Add(NPCID.WallofFleshEye);
+		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron); // Both of these are effectively projectiles, should be ignored
+		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron2);
 	}
 }

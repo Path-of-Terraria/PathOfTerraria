@@ -1,16 +1,17 @@
-﻿using PathOfTerraria.Common.Subworlds.Passes;
+﻿using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
+using Terraria.UI.Chat;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
@@ -24,13 +25,14 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 	public override int Width => 1300;
 	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => (4600, true);
-	public override int[] WhitelistedMiningTiles => [ModContent.TileType<Burstshroom2x2>()];
+	public override int[] WhitelistedMiningTiles => [ModContent.TileType<Burstshroom2x2>(), TileID.MushroomBlock];
 
 	internal static int MushroomsBroken = 0;
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
-	private static Rectangle Arena = Rectangle.Empty;
+	private static int BossSpawnTimer = 0;
+	private static Point16 NewSpawn = Point16.Zero;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", Terrain),
@@ -76,7 +78,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 					if (value < 0f)
 					{
-						tile.WallType = noise.GetNoise(warpedX + 3000, warpedY) < 0f ? WallID.MudUnsafe : (ushort)wallId;
+						tile.WallType = noise.GetNoise(warpedX * 1.4f + 3000, warpedY * 1.4f) < 0f ? WallID.MudUnsafe : (ushort)wallId;
 					}
 					else
 					{
@@ -109,6 +111,11 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 			xs.Add(x);
 			PlaceMushroomLily(x, WaterLine + 1);
+
+			if (Math.Abs(NewSpawn.X - Width / 2) > Math.Abs(x - Width / 2))
+			{
+				NewSpawn = new Point16(x, WaterLine - 3);
+			}
 		}
 	}
 
@@ -159,6 +166,10 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 	private void DecorateWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
 		MushroomsBroken = 0;
+		BossSpawnTimer = 0;
+		NewSpawn = Point16.Zero;
+		BossSpawned = false;
+		ExitSpawned = false;
 
 		progress.Message = "make pit";
 		GeneratePit(progress);
@@ -410,55 +421,59 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned)
+		if (!BossSpawned && MushroomsBroken >= 7)
 		{
-			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
-			HashSet<int> who = [];
+			BossSpawnTimer++;
 
-			if (canSpawn)
+			if (BossSpawnTimer == 1)
 			{
-				foreach (Player player in Main.ActivePlayers)
+				string key = $"Mods.{PoTMod.ModName}.Misc.FishronSpawn";
+				
+				if (!Main.dedServ)
 				{
-					if (!Arena.Intersects(player.Hitbox))
-					{
-						canSpawn = false;
-						break;
-					}
-					else
-					{
-						who.Add(player.whoAmI);
-					}
+					Main.NewText(Language.GetTextValue(key), Colors.RarityDarkPurple);
+				}
+				else
+				{
+					ChatHelper.BroadcastChatMessage(NetworkText.FromKey(key), Colors.RarityDarkPurple);
 				}
 			}
 
-			if (canSpawn && Main.CurrentFrameFlags.ActivePlayersCount > 0 && who.Count > 0)
+			if (BossSpawnTimer > 1800)
 			{
-				int plr = Main.rand.Next([.. who]);
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				
-				int npc = NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 25, NPCID.SkeletronPrime);
-				Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+				string key = "Game.Announcement.HasAwoken";
 
-				Main.spawnTileX = (int)Arena.Center().X / 16;
-				Main.spawnTileY = (int)Arena.Center().Y / 16;
+				if (!Main.dedServ)
+				{
+					Main.NewText(Language.GetTextValue(key, Lang.GetNPCName(NPCID.DukeFishron)), Colors.RarityDarkPurple);
+				}
+				else
+				{
+					ChatHelper.BroadcastChatMessage(NetworkText.FromKey(key, NetworkText.FromKey(Lang.GetNPCName(NPCID.DukeFishron).Key)), Colors.RarityDarkPurple);
+				}
+
+				Vector2 pos = Main.LocalPlayer.Center - new Vector2(0, 2000);
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)pos.X, (int)pos.Y, NPCID.DukeFishron);
+
+				BossSpawned = true;
+
+				Main.spawnTileX = NewSpawn.X;
+				Main.spawnTileY = NewSpawn.Y;
 
 				if (Main.netMode == NetmodeID.Server)
 				{
 					NetMessage.SendData(MessageID.WorldData);
-					NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16, 20, 1);
 				}
-
-				BossSpawned = true;
 			}
 		}
-		else
+		else if (BossSpawned)
 		{
-			if (!NPC.AnyNPCs(NPCID.SkeletronPrime) && !ExitSpawned)
+			if (!NPC.AnyNPCs(NPCID.DukeFishron) && !ExitSpawned)
 			{
 				ExitSpawned = true;
 
 				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Projectile.NewProjectile(src, Arena.Center() - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+				Projectile.NewProjectile(src, NewSpawn.ToWorldCoordinates(0, -60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 			}
 		}
 	}
@@ -466,8 +481,9 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 	public void OverrideBiome()
 	{
 		Main.LocalPlayer.ZoneGlowshroom = true;
-		Main.SmoothedMushroomLightInfluence = MushroomsBroken / (float)(MushroomCount - 1);
+		Main.SmoothedMushroomLightInfluence = MushroomsBroken / (float)MushroomCount;
 		Main.newMusic = MusicID.Mushrooms;
 		Main.curMusic = MusicID.Mushrooms;
+		Main.bgStyle = SurfaceBackgroundID.Mushroom;
 	}
 }

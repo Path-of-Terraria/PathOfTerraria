@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -96,7 +97,7 @@ internal class Bubbleshroom : ModTile
 
 			if (!Collision.WetCollision(Projectile.position, Projectile.width, Projectile.height))
 			{
-				Projectile.velocity.Y += 0.22f;
+				Projectile.velocity.Y += 0.3f;
 				Projectile.timeLeft--;
 			}
 			else
@@ -111,6 +112,20 @@ internal class Bubbleshroom : ModTile
 					player.breath = Math.Min(player.breath + 100, player.breathMax);
 					Projectile.Kill();
 					break;
+				}
+			}
+		}
+
+		public override void OnKill(int timeLeft)
+		{
+			if (!Main.dedServ)
+			{
+				SoundEngine.PlaySound(SoundID.Item85, Projectile.Center);
+
+				for (int i = 0; i < 18; ++i)
+				{
+					Vector2 vel = Main.rand.NextVector2CircularEdge(3, 3) * Main.rand.NextFloat(0.8f, 1.2f);
+					Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2CircularEdge(12, 12), DustID.BubbleBlock, vel, Scale: Main.rand.NextFloat(0.4f, 0.8f));
 				}
 			}
 		}
@@ -131,9 +146,7 @@ internal class Bubbleshroom : ModTile
 
 			Vector2 worldPos = Position.ToWorldCoordinates();
 
-			Dust.NewDustPerfect(Position.ToWorldCoordinates(), DustID.YellowStarDust, Vector2.Zero);
-
-			if (_timer > 6 * 60 && Collision.WetCollision(Position.ToWorldCoordinates(), 68, 26))
+			if (_timer > 4 * 60 && Collision.WetCollision(Position.ToWorldCoordinates(), 68, 26))
 			{
 				Vector2 position = Position.ToWorldCoordinates(Main.rand.NextFloat(54), Main.rand.NextFloat(-8, 12));
 				int type = ModContent.ProjectileType<BubbleshroomBubble>();
