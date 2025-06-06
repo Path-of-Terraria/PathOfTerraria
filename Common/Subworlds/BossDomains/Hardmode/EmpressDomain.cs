@@ -1,8 +1,5 @@
 ﻿using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Content.Tiles.BossDomain;
-using ReLogic.Utilities;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -12,10 +9,10 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
-internal class EmpressDomain : BossDomainSubworld
+internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 {
 	public override int Width => 800;
-	public override int Height => 400;
+	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
 	private static bool BossSpawned = false;
@@ -31,7 +28,7 @@ internal class EmpressDomain : BossDomainSubworld
 		Main.worldSurface = Height - 5;
 		Main.rockLayer = Height - 2;
 
-		StructureTools.PlaceByOrigin($"Assets/Structures/EmpressDomain/Arena", new Point16(Width / 2, Height / 2 + 5), new Vector2(0.5f, 0));
+		StructureTools.PlaceByOrigin($"Assets/Structures/EmpressDomain/Arena", new Point16(Width / 2, Height / 2 - 5), new Vector2(0.5f, 0));
 	}
 
 	public override void OnEnter()
@@ -67,5 +64,13 @@ internal class EmpressDomain : BossDomainSubworld
 			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
 			Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
+	}
+
+	public void OverrideBiome()
+	{
+		Main.LocalPlayer.ZoneHallow = true;
+		Main.newMusic = MusicID.TheHallow;
+		Main.curMusic = MusicID.TheHallow;
+		Main.bgStyle = SurfaceBackgroundID.Hallow;
 	}
 }
