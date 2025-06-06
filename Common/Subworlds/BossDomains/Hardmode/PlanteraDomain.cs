@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
-using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using ReLogic.Utilities;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -19,7 +18,6 @@ internal class PlanteraDomain : BossDomainSubworld
 	public override int Width => 1700;
 	public override int Height => 800;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
-	public override int[] WhitelistedExplodableTiles => [ModContent.TileType<ExplosivePowder>()];
 	public override int[] WhitelistedCutTiles => [TileID.JungleVines];
 	public override int[] WhitelistedMiningTiles => [TileID.PlanteraBulb, TileID.Mud, TileID.JungleGrass, TileID.Mudstone, TileID.Stone, ModContent.TileType<BabyBulb>()];
 
@@ -157,7 +155,7 @@ internal class PlanteraDomain : BossDomainSubworld
 
 		foreach (KeyValuePair<Point16, OpenFlags> grass in grasses)
 		{
-			PlaceGrass(grass.Key.X, grass.Key.Y, grass.Value);
+			Decoration.GrowOnJungleGrass(grass.Key.X, grass.Key.Y, grass.Value);
 		}
 
 		PlaceBulb();
@@ -252,57 +250,6 @@ internal class PlanteraDomain : BossDomainSubworld
 			velocity.X = Math.Clamp(basePos.X, -1, 1);
 			velocity.Y += WorldGen.genRand.Next(-10, 11) * 0.05;
 			velocity.Y = Math.Clamp(basePos.Y, -1, 1);
-		}
-	}
-
-	private static void PlaceGrass(short x, short y, OpenFlags flags)
-	{
-		if (flags.HasFlag(OpenFlags.Above))
-		{
-			new CheckChain((int x, int y, ref int? checkType) =>
-			{
-				if (WorldGen.genRand.NextBool(2))
-				{
-					return;
-				}
-
-				checkType = 233;
-				WorldGen.PlaceJunglePlant(x, y, 233, WorldGen.genRand.Next(8), 0);
-			}).Chain((int x, int y, ref int? checkType) =>
-			{
-				if (WorldGen.genRand.NextBool(2))
-				{
-					return;
-				}
-
-				checkType = 233;
-				WorldGen.PlaceJunglePlant(x, y, 233, WorldGen.genRand.Next(12), 1);
-			}).Chain((int x, int y, ref int? checkType) =>
-			{
-				checkType = TileID.JunglePlants;
-				WorldGen.PlaceTile(x, y, checkType.Value, true, false, style: WorldGen.genRand.Next(24));
-
-				Tile tile = Main.tile[x, y];
-				tile.TileFrameX = (short)((WorldGen.genRand.NextBool(5) ? 8 : WorldGen.genRand.Next(24)) * 18);
-			}).Run(x, y - 1);
-		}
-
-		if (flags.HasFlag(OpenFlags.Below))
-		{
-			if (!WorldGen.genRand.NextBool(3))
-			{
-				int length = WorldGen.genRand.Next(5, 12);
-
-				for (int k = 1; k < length; ++k)
-				{
-					if (Main.tile[x, y + k].HasTile)
-					{
-						break;
-					}
-
-					WorldGen.PlaceTile(x, y + k, TileID.JungleVines, true);
-				}
-			}
 		}
 	}
 
