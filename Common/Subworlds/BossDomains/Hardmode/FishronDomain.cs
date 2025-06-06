@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.World.Generation;
+﻿using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
@@ -11,7 +10,6 @@ using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
-using Terraria.UI.Chat;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
@@ -171,8 +169,8 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		BossSpawned = false;
 		ExitSpawned = false;
 
-		progress.Message = "make pit";
-		GeneratePit(progress);
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Hole"); // Sets the text displayed for this pass
+		GeneratePit();
 
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 120 : Main.maxTilesX - 120;
 		Main.spawnTileY = 140;
@@ -184,7 +182,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 		Main.spawnTileY -= 3;
 
-		progress.Message = "decor";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
 		Dictionary<Point16, OpenFlags> grasses = [];
 
@@ -299,7 +297,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		Main.rockLayer = FloorY + 65;
 	}
 
-	private void GeneratePit(GenerationProgress progress)
+	private void GeneratePit()
 	{
 		int x = Width / 2;
 		int y = 100;
@@ -313,15 +311,11 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 		ShapeData data = new();
 
-		progress.Message = "basic shape";
-
 		WorldUtils.Gen(new Point(x, y), new Shapes.Circle(300, 90),
 			Actions.Chain(new Modifiers.Blotches(4, 4, 0.7f), new Actions.ClearTile().Output(data)));
 
 		int count = WorldGen.genRand.Next(9, 12);
 		List<Point> points = [];
-
-		progress.Message = "epic shape";
 
 		for (int i = 0; i < count + 1; ++i)
 		{
