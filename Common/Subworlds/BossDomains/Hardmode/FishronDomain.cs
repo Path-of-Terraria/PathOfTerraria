@@ -428,7 +428,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 			if (BossSpawnTimer == 1)
 			{
 				string key = $"Mods.{PoTMod.ModName}.Misc.FishronSpawn";
-				
+
 				if (!Main.dedServ)
 				{
 					Main.NewText(Language.GetTextValue(key), Colors.RarityDarkPurple);
@@ -439,9 +439,9 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 				}
 			}
 
-			if (BossSpawnTimer > 1800)
+			if (BossSpawnTimer > 1200)
 			{
-				string key = "Game.Announcement.HasAwoken";
+				string key = "Announcement.HasAwoken";
 
 				if (!Main.dedServ)
 				{
@@ -452,7 +452,14 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 					ChatHelper.BroadcastChatMessage(NetworkText.FromKey(key, NetworkText.FromKey(Lang.GetNPCName(NPCID.DukeFishron).Key)), Colors.RarityDarkPurple);
 				}
 
-				Vector2 pos = Main.LocalPlayer.Center - new Vector2(0, 2000);
+				List<Player> players = [];
+
+				foreach (Player player in Main.ActivePlayers)
+				{
+					players.Add(player);
+				}
+
+				Vector2 pos = Main.rand.Next([.. players]).Center - new Vector2(0, 1200);
 				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)pos.X, (int)pos.Y, NPCID.DukeFishron);
 
 				BossSpawned = true;
@@ -466,15 +473,12 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 				}
 			}
 		}
-		else if (BossSpawned)
+		else if (BossSpawned && !NPC.AnyNPCs(NPCID.DukeFishron) && !ExitSpawned)
 		{
-			if (!NPC.AnyNPCs(NPCID.DukeFishron) && !ExitSpawned)
-			{
-				ExitSpawned = true;
+			ExitSpawned = true;
 
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Projectile.NewProjectile(src, NewSpawn.ToWorldCoordinates(0, -60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-			}
+			IEntitySource src = Entity.GetSource_NaturalSpawn();
+			Projectile.NewProjectile(src, NewSpawn.ToWorldCoordinates(0, -60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
 	}
 

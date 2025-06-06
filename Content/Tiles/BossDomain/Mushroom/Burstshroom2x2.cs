@@ -37,7 +37,7 @@ internal class Burstshroom2x2 : ModTile
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		Tile tile = Main.tile[i, j];
-		float str = Main.rand.Next(28, 42) * 0.005f;
+		float str = Main.rand.Next(28, 42) * 0.0055f;
 		str += (270 - Main.mouseTextColor) / 1000f;
 
 		if (tile.TileColor == PaintID.None)
