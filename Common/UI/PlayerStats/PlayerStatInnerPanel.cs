@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.BlockSystem;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -45,6 +46,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		BlockPlayer blockPlayer = Main.LocalPlayer.GetModPlayer<BlockPlayer>();
 		AttributesPlayer attributePlayer = Main.LocalPlayer.GetModPlayer<AttributesPlayer>();
+		ElementalPlayer elementalPlayer = Main.LocalPlayer.GetModPlayer<ElementalPlayer>();
 
 		string playerLine = Main.LocalPlayer.name;
 		Utils.DrawBorderStringBig(spriteBatch, playerLine, GetRectangle().Center() + new Vector2(0, -160), Color.White, 0.7f, 0.5f, 0.35f);
@@ -65,6 +67,10 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Strength")}: {attributePlayer.Strength:#0.##}");
 		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Dexterity")}: {attributePlayer.Dexterity:#0.##}");
 		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Intelligence")}: {attributePlayer.Intelligence:#0.##}");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("FireResistance")}: {elementalPlayer.FireResistance * 100:#0.##}%");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("ColdResistance")}: {elementalPlayer.ColdResistance * 100:#0.##}%");
+		DrawSingleStat(spriteBatch, $"{GetStatLocalization("LightningResistance")}: {elementalPlayer.LightningResistance * 100:#0.##}%");
+
 
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.LavenderBlush);
