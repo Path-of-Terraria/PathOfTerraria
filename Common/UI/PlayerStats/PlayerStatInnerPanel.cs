@@ -12,8 +12,35 @@ namespace PathOfTerraria.Common.UI.PlayerStats;
 
 internal class PlayerStatInnerPanel : SmartUiElement
 {
+	private class PlayerStatUI : UIText
+	{
+		public readonly int Slot = 0;
+
+		private readonly LocalizedText text = null;
+		private readonly Func<Player, string> getValue = null;
+		private readonly bool noColon = false;
+
+		public PlayerStatUI(LocalizedText text, Func<Player, string> getValue, float scale = 1f, bool big = false, bool noColon = false) : base("", scale, big)
+		{
+			this.text = text;
+			this.getValue = getValue;
+			this.noColon = noColon;
+
+			Slot = SlotNumber++;
+			HAlign = 0.5f;
+		}
+
+		public override void Update(GameTime gameTime)
+		{
+			base.Update(gameTime);
+			SetText(text.Value + (noColon ? "" : ": ") + getValue(Main.LocalPlayer));
+		}
+	}
+
 	public static Asset<Texture2D> ChainTex = null;
 	public static Asset<Texture2D> BackTex = null;
+
+	private static int SlotNumber = 0;
 
 	private UIElement Panel => Parent;
 
@@ -26,6 +53,100 @@ internal class PlayerStatInnerPanel : SmartUiElement
 	{
 		ChainTex ??= ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PlayerStatBackChain");
 		BackTex ??= ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PlayerStatBack");
+
+		UIElement panel = new()
+		{
+			Width = StyleDimension.FromPixels(512),
+			Height = StyleDimension.FromPixels(640),
+			VAlign = 0.5f,
+			HAlign = 0.5f
+		};
+		Append(panel);
+
+		UIList list = new()
+		{
+			Width = StyleDimension.FromPixels(386),
+			Height = StyleDimension.FromPixels(420),
+			Left = StyleDimension.FromPixels(68),
+			Top = StyleDimension.FromPixels(166),
+			ListPadding = 12,
+		};
+
+		panel.Append(list);
+
+		list.ManualSortMethod = (list) => list.Sort((x, y) =>
+			{
+				if (x is not PlayerStatUI xStat)
+				{
+					return -1;
+				}
+				else if (y is not PlayerStatUI yStat)
+				{
+					return 1;
+				}
+				else
+				{
+					return xStat.Slot.CompareTo(yStat.Slot);
+				}
+			});
+
+		UIScrollbar bar = new()
+		{
+			Width = StyleDimension.FromPixels(24),
+			Height = StyleDimension.FromPixels(420),
+			HAlign = 1f,
+			Left = StyleDimension.FromPixels(-36),
+			Top = StyleDimension.FromPixels(166),
+		};
+
+		list.SetScrollbar(bar);
+
+		SlotNumber = 0;
+
+		list.Add(new UIElement() { Height = StyleDimension.FromPixels(4) }); // Stops the name text from being cut off
+		list.Add(new PlayerStatUI(LocalizedText.Empty, player => player.name, 0.8f, true, true));
+		list.Add(new PlayerStatUI(GetLocalization("Level"), player => player.GetModPlayer<ExpModPlayer>().Level.ToString()));
+		list.Add(new PlayerStatUI(GetLocalization("Experience"), player =>
+		{
+			ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
+			float expPercent = expPlayer.Exp / (float)expPlayer.NextLevel * 100;
+			return $"{expPlayer.Exp}/{expPlayer.NextLevel} ({expPercent:#0.##}%)";
+		}));
+		list.Add(new PlayerStatUI(GetLocalization("Life"), player =>
+		{
+			float lifePercent = Main.LocalPlayer.statLife / Main.LocalPlayer.statLifeMax2 * 100;
+			return $"{Main.LocalPlayer.statLife}/{Main.LocalPlayer.statLifeMax2} ({lifePercent:#0.##}%)";
+		}));
+		list.Add(new PlayerStatUI(GetLocalization("Mana"), player =>
+		{
+			float manaPercent = Main.LocalPlayer.statMana / Main.LocalPlayer.statManaMax * 100;
+			return $"{Main.LocalPlayer.statMana}/{Main.LocalPlayer.statManaMax2} ({manaPercent:#0.##}%)";
+		}));
+		list.Add(new PlayerStatUI(GetLocalization("HealthPotions"), player =>
+		{
+			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
+			return $"{potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}";
+		}));
+		list.Add(new PlayerStatUI(GetLocalization("ManaPotions"), player =>
+		{
+			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
+			return $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}";
+		}));
+		list.Add(new PlayerStatUI(GetLocalization("DamageReduction"), player => $"{player.endurance:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().BlockChance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().BlockChance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("BlockCooldown"), player => $"{player.GetModPlayer<BlockPlayer>().BlockCooldown / 60:#0.##}s"));
+		list.Add(new PlayerStatUI(GetLocalization("Strength"), player => $"{player.GetModPlayer<AttributesPlayer>().Strength:#0.##}"));
+		list.Add(new PlayerStatUI(GetLocalization("Dexterity"), player => $"{player.GetModPlayer<AttributesPlayer>().Dexterity:#0.##}"));
+		list.Add(new PlayerStatUI(GetLocalization("Intelligence"), player => $"{player.GetModPlayer<AttributesPlayer>().Intelligence:#0.##}"));
+		list.Add(new PlayerStatUI(GetLocalization("FireResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().FireResistance * 100:#0.##}"));
+		list.Add(new PlayerStatUI(GetLocalization("ColdResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().ColdResistance * 100:#0.##}"));
+		list.Add(new PlayerStatUI(GetLocalization("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().LightningResistance * 100:#0.##}"));
+
+		static LocalizedText GetLocalization(string type)
+		{
+			return Language.GetText($"Mods.{PoTMod.ModName}.UI.StatUI." + type);
+		}
 	}
 
 	public override void SafeMouseOver(UIMouseEvent evt)
@@ -40,54 +161,19 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		_offset = -3;
 		
 		DrawBack(spriteBatch);
+		base.Draw(spriteBatch);
 		SetAndDrawPlayer(spriteBatch);
-
-		PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
-		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
-		BlockPlayer blockPlayer = Main.LocalPlayer.GetModPlayer<BlockPlayer>();
-		AttributesPlayer attributePlayer = Main.LocalPlayer.GetModPlayer<AttributesPlayer>();
-		ElementalPlayer elementalPlayer = Main.LocalPlayer.GetModPlayer<ElementalPlayer>();
-
-		string playerLine = Main.LocalPlayer.name;
-		Utils.DrawBorderStringBig(spriteBatch, playerLine, GetRectangle().Center() + new Vector2(0, -160), Color.White, 0.7f, 0.5f, 0.35f);
-
-		float expPercent = expPlayer.Exp / (float)expPlayer.NextLevel * 100;
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Level")}: {expPlayer.Level}");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Experience")}: {expPlayer.Exp}/{expPlayer.NextLevel} ({expPercent:#0.##}%)");
-		float lifePercent = Main.LocalPlayer.statLife / Main.LocalPlayer.statLifeMax2 * 100;
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Life")}: {Main.LocalPlayer.statLife}/{Main.LocalPlayer.statLifeMax2} ({lifePercent:#0.##}%)");
-		float manaPercent = Main.LocalPlayer.statMana / Main.LocalPlayer.statManaMax * 100;
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Mana")}: {Main.LocalPlayer.statMana}/{Main.LocalPlayer.statManaMax2} ({manaPercent:#0.##}%)");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("HealthPotions")}: {potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("ManaPotions")}: {potionPlayer.ManaLeft}/{potionPlayer.MaxMana}");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("DamageReduction")}: {Main.LocalPlayer.endurance:#0.##}%");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("BlockChance")}: {blockPlayer.BlockChance * 100:#0.##}%");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("MaxBlock")}: {blockPlayer.MaxBlockChance * 100:#0.##}%");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("BlockCooldown")}: {blockPlayer.BlockCooldown / 60:#0.##}s");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Strength")}: {attributePlayer.Strength:#0.##}");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Dexterity")}: {attributePlayer.Dexterity:#0.##}");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("Intelligence")}: {attributePlayer.Intelligence:#0.##}");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("FireResistance")}: {elementalPlayer.FireResistance * 100:#0.##}%");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("ColdResistance")}: {elementalPlayer.ColdResistance * 100:#0.##}%");
-		DrawSingleStat(spriteBatch, $"{GetStatLocalization("LightningResistance")}: {elementalPlayer.LightningResistance * 100:#0.##}%");
-
 
 #if DEBUG
 		GUIDebuggingTools.DrawGuiBorder(spriteBatch, this, Color.LavenderBlush);
 #endif
-
-		// Shorthand for localization here
-		static string GetStatLocalization(string type)
-		{
-			return Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.StatUI." + type);
-		}
 	}
 
 	private void DrawBack(SpriteBatch spriteBatch)
 	{
 		Texture2D chain = ChainTex.Value;
 		Texture2D tex = BackTex.Value;
-		Vector2 origin = GetRectangle().Center() + new Vector2(0, -8);
+		Vector2 origin = GetPanelRectangle().Center() + new Vector2(0, -8);
 
 		for (int i = 0; i < 9; ++i)
 		{
@@ -151,11 +237,11 @@ internal class PlayerStatInnerPanel : SmartUiElement
 
 	private void DrawSingleStat(SpriteBatch spriteBatch, string text)
 	{
-		Utils.DrawBorderStringBig(spriteBatch, text, GetRectangle().Center() + new Vector2(0, -30 + 27 * _offset), Color.White, 0.45f, 0.5f, 0.35f);
+		Utils.DrawBorderStringBig(spriteBatch, text, GetPanelRectangle().Center() + new Vector2(0, -30 + 27 * _offset), Color.White, 0.45f, 0.5f, 0.35f);
 		_offset++;
 	}
 
-	private Rectangle GetRectangle()
+	private Rectangle GetPanelRectangle()
 	{
 		return Panel.GetDimensions().ToRectangle();
 	}
