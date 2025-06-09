@@ -1,6 +1,22 @@
 {
   "netId": 147,
   "friendlyName": "Ice Slime",
+  "damage": [
+    {
+      "minLevel": 1,
+      "cold": {
+        "added": 2,
+        "conversion": 0.5
+      }
+    },
+    {
+      "minLevel": 20,
+      "cold": {
+        "added": 10,
+        "conversion": 0.5
+      }
+    }
+  ],
   "entries": [
     {
       "scale": null,
@@ -11,7 +27,16 @@
         "experience": 3
       },
       "affixes": null,
-      "requirements": "PreHardmodeSurface"
+      "requirements": "PreHardmodeSurface",
+      "damageOverrides": [
+        {
+          "minLevel": 10,
+          "cold": {
+            "added": 15,
+            "conversion": 0.75
+          }
+        }
+      ]
     }
   ]
 }

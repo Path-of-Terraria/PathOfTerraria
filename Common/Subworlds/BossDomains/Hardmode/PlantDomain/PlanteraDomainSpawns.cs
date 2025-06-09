@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.QueenDomain;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
 
@@ -31,7 +30,7 @@ internal class PlanteraDomainSpawns : GlobalNPC
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
 	{
-		if (SubworldSystem.Current is not QueenSlimeDomain || spawnRate == int.MinValue)
+		if (SubworldSystem.Current is not PlanteraDomain || spawnRate == int.MinValue)
 		{
 			return;
 		}

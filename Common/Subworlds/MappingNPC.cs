@@ -104,6 +104,11 @@ internal class MappingNPC : GlobalNPC
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<GolemMap>());
 			}
 
+			if (TierPassed(6) && NPC.downedGolemBoss && !NPC.downedFishron)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<FishronMap>());
+			}
+
 			return;
 
 			bool TierPassed(int tier)

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
@@ -7,6 +8,7 @@ using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
@@ -151,7 +153,7 @@ internal class ArpgNPC : GlobalNPC
 	public override void SetDefaults(NPC npc)
 	{
 		//We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
-		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type] 
+		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type]
 			|| npc.CountsAsACritter || NoAffixesSet.Contains(npc.type))
 		{
 			return;
@@ -177,6 +179,12 @@ internal class ArpgNPC : GlobalNPC
 				_ => ItemRarity.Normal
 			};
 
+			// Apply common damage types
+			if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
+			{
+				elemNPC.ApplyDamageTypes(npc);
+			}
+
 			ApplyRarity(npc, false);
 			npc.netUpdate = true;
 		}
@@ -200,6 +208,12 @@ internal class ArpgNPC : GlobalNPC
 				if (entry != null)
 				{
 					ApplyMobEntry(npc, entry);
+
+					// Apply entry-specific damage type overrides
+					if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
+					{
+						elemNPC.ApplyDamageTypes(npc, entry);
+					}
 				}
 			}
 #if DEBUG
@@ -296,7 +310,7 @@ internal class ArpgNPC : GlobalNPC
 
 		foreach (MobAffix affix in affixes)
 		{
-			 prefix += affix.Prefix + " - ";
+			prefix += affix.Prefix + " - ";
 		}
 
 		return prefix;
