@@ -77,7 +77,6 @@ internal class PlanteraDomain : BossDomainSubworld
 		}
 
 		Dictionary<Point16, OpenFlags> grasses = [];
-		HashSet<Point16> branches = [];
 
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{

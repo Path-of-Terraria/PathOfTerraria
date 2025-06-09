@@ -1238,3 +1238,12 @@ GolemMap: {
 		'The map smells of brick and smoke'
 		'''
 }
+
+FishronMap: {
+	DisplayName: Duke Fishron Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of stillwater and fungi'
+		'''
+}

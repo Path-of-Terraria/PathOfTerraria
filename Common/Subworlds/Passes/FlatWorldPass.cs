@@ -7,13 +7,14 @@ using Terraria.WorldBuilding;
 namespace PathOfTerraria.Common.Subworlds.Passes;
 
 public class FlatWorldPass(int floorY = 500, bool spawnWalls = false, FastNoiseLite surfaceNoise = null, 
-	int tileType = TileID.Stone, int wallType = WallID.Stone) : GenPass("Terrain", 1)
+	int tileType = TileID.Stone, int wallType = WallID.Stone, float noiseAmp = 4f) : GenPass("Terrain", 1)
 {
 	public readonly int FloorY = floorY;
 	public readonly bool SpawnWalls = spawnWalls;
 	public readonly FastNoiseLite Noise = surfaceNoise;
 	public readonly int TileType = tileType;
 	public readonly int WallType = wallType;
+	public readonly float NoiseAmp = noiseAmp;
 
 	protected override void ApplyPass(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -27,7 +28,12 @@ public class FlatWorldPass(int floorY = 500, bool spawnWalls = false, FastNoiseL
 			{
 				progress.Set((y + x * Main.maxTilesY) / (float)(Main.maxTilesX * Main.maxTilesY)); // Controls the progress bar, should only be set between 0f and 1f
 				Tile tile = Main.tile[x, y];
-				int floorY = (int)(FloorY + (Noise is null ? 0 : Noise.GetNoise(x, 0) * 4f));
+
+				float warpedX = x;
+				float warpedY = y;
+				Noise.DomainWarp(ref warpedX, ref warpedY);
+
+				int floorY = (int)(FloorY + (Noise is null ? 0 : Noise.GetNoise(warpedX, 0) * noiseAmp));
 
 				if (y <= floorY)
 				{
