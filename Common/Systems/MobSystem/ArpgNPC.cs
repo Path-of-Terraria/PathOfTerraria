@@ -247,13 +247,13 @@ internal class ArpgNPC : GlobalNPC
 			case ItemRarity.Normal:
 				break;
 			case ItemRarity.Magic:
-				npc.color = Color.Lerp(npc.color, new Color(125, 125, 255), 0.5f);
+				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(125, 125, 255), 0.5f);
 				npc.lifeMax *= 2; //Magic mobs get 100% increased life
 				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
 				npc.damage = (int)(npc.damage * 1.1f); //Magic mobs get 10% increase damage
 				break;
 			case ItemRarity.Rare:
-				npc.color = Color.Lerp(npc.color, new Color(255, 255, 0), 0.5f);
+				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(255, 255, 0), 0.5f);
 				npc.lifeMax *= 3; //Rare mobs get 200% Increased Life
 				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
 				npc.damage = (int)(npc.damage * 1.2f); //Magic mobs get 20% increase damage

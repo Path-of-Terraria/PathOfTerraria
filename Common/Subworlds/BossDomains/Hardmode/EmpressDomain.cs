@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -11,12 +12,15 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 {
-	public override int Width => 800;
+	public override int Width => 670;
 	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
+	private static Rectangle ArenaBounds = new();
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
+	private static int Wave = 0;
+	private static int WaitTime = 0;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenTerrain)];
@@ -28,7 +32,10 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 		Main.worldSurface = Height - 5;
 		Main.rockLayer = Height - 2;
 
-		StructureTools.PlaceByOrigin($"Assets/Structures/EmpressDomain/Arena", new Point16(Width / 2, Height / 2 - 5), new Vector2(0.5f, 0));
+		Point16 size = StructureTools.GetSize("Assets/Structures/EmpressDomain/Arena");
+		Point16 pos = StructureTools.PlaceByOrigin("Assets/Structures/EmpressDomain/Arena", new Point16(Width / 2, Height / 2 - 5), new Vector2(0.5f, 0));
+
+		ArenaBounds = new Rectangle(pos.X * 16, pos.Y * 16, size.X * 16, size.Y * 16);
 	}
 
 	public override void OnEnter()
@@ -37,10 +44,14 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 
 		BossSpawned = false;
 		ExitSpawned = false;
+		Wave = 0;
+		WaitTime = 0;
 	}
 
 	public override void Update()
 	{
+		DoWaveFunctionality();
+
 		if (!BossSpawned && NPC.AnyNPCs(NPCID.HallowBoss))
 		{
 			BossSpawned = true;
@@ -64,6 +75,90 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
 			Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
+	}
+
+	private static void DoWaveFunctionality()
+	{
+		int count = 0;
+
+		foreach (NPC npc in Main.ActiveNPCs)
+		{
+			count++;
+		}
+
+		foreach (Projectile proj in Main.ActiveProjectiles)
+		{
+			if (proj.type == ModContent.ProjectileType<SpawnSymbols>())
+			{
+				count++;
+			}
+		}
+
+		if (count <= 0)
+		{
+			WaitTime++;
+
+			if (WaitTime > 20)
+			{
+				Wave++;
+				WaitTime = 0;
+
+				if (Wave == 1)
+				{
+					for (int i = 0; i < 8; ++i)
+					{
+						SpawnSpawner(NPCID.Pixie);
+					}
+				}
+				else if (Wave == 2)
+				{
+					for (int i = 0; i < 8; ++i)
+					{
+						SpawnSpawner(i < 6 ? NPCID.Pixie : NPCID.Gastropod);
+					}
+				}
+				else if (Wave == 3)
+				{
+					for (int i = 0; i < 8; ++i)
+					{
+						SpawnSpawner(i < 6 ? NPCID.Gastropod : NPCID.Unicorn);
+					}
+				}
+				else if (Wave == 4)
+				{
+					for (int i = 0; i < 5; ++i)
+					{
+						SpawnSpawner(i < 2 ? NPCID.RainbowSlime : (i == 4 ? ModContent.NPCType<GreaterFairy>() : NPCID.Unicorn));
+					}
+				}
+				else if (Wave == 5)
+				{
+					SpawnSpawner(NPCID.QueenSlimeBoss, new Vector2(Main.spawnTileX, Main.spawnTileY) * 16);
+				}
+				else if (Wave == 6)
+				{
+					for (int i = 0; i < 3; ++i)
+					{
+						SpawnSpawner(ModContent.NPCType<GreaterFairy>());
+					}
+				}
+			}
+		}
+	}
+
+	private static void SpawnSpawner(int type, Vector2? forcePos = null)
+	{
+		var src = new EntitySource_SpawnNPC();
+		int proj = ModContent.ProjectileType<SpawnSymbols>();
+		Vector2 pos = forcePos ?? RandomArenaPosition();
+
+		Projectile.NewProjectile(src, pos, Vector2.Zero, proj, 0, 0, Main.myPlayer, type, Main.rand.NextFloat(240));
+	}
+
+	private static Vector2 RandomArenaPosition()
+	{
+		int halfX = Main.maxTilesX / 2;
+		return new(Main.rand.Next(halfX - 20, halfX + 20) * 16, Main.rand.Next(ArenaBounds.Top - 50, ArenaBounds.Top + 200));
 	}
 
 	public void OverrideBiome()
