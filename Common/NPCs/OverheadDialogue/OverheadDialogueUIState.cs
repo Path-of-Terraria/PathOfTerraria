@@ -25,11 +25,6 @@ internal class OverheadDialogueUIState : SmartUiState
 		{
 			if (npc.Hitbox.Intersects(screen) && npc.ModNPC is IOverheadDialogueNPC bubbleNpc)
 			{
-				if (bubbleNpc.ShowDialogue() && bubbleNpc.CurrentDialogue is null)
-				{
-					bubbleNpc.CurrentDialogue = new OverheadDialogueInstance(bubbleNpc.GetDialogue());
-				}
-
 				bubbleNpc.CurrentDialogue?.Draw(npc.Center - Main.screenPosition - new Vector2(0, npc.height / 2 - npc.gfxOffY));
 
 				if (bubbleNpc.CurrentDialogue is not null && bubbleNpc.CurrentDialogue.LifeTime >= bubbleNpc.CurrentDialogue.MaxLifeTime)
@@ -38,5 +33,25 @@ internal class OverheadDialogueUIState : SmartUiState
 				}
 			}
 		}
+	}
+}
+
+internal class OverheadDialogueNPC : GlobalNPC
+{
+	public override bool AppliesToEntity(NPC entity, bool lateInstantiation)
+	{
+		return entity.ModNPC is IOverheadDialogueNPC;
+	}
+
+	public override bool PreAI(NPC npc)
+	{
+		var bubbleNpc = npc.ModNPC as IOverheadDialogueNPC;
+
+		if (bubbleNpc.ShowDialogue() && bubbleNpc.CurrentDialogue is null)
+		{
+			bubbleNpc.CurrentDialogue = new OverheadDialogueInstance(bubbleNpc.GetDialogue());
+		}
+
+		return true;
 	}
 }
