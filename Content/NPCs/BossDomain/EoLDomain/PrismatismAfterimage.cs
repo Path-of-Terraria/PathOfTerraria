@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common;
 using Terraria.GameContent.Drawing;
-using XPT.Core.Audio.MP3Sharp.Decoding.Decoders.LayerIII;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 
