@@ -1247,3 +1247,12 @@ FishronMap: {
 		'The map smells of stillwater and fungi'
 		'''
 }
+
+EoLMap: {
+	DisplayName: Empress of Light Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of light and cloy'
+		'''
+}
