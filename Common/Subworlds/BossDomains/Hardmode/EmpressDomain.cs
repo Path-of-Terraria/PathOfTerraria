@@ -14,7 +14,7 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 {
 	public override int Width => 670;
 	public override int Height => 600;
-	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
+	public override (int time, bool isDay) ForceTime => (3500, false);
 
 	private static Rectangle ArenaBounds = new();
 	private static bool BossSpawned = false;
@@ -29,8 +29,8 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 	{
 		Main.spawnTileX = Width / 2;
 		Main.spawnTileY = Height / 2;
-		Main.worldSurface = Height - 5;
-		Main.rockLayer = Height - 2;
+		Main.worldSurface = Height - 50;
+		Main.rockLayer = Height - 40;
 
 		Point16 size = StructureTools.GetSize("Assets/Structures/EmpressDomain/Arena");
 		Point16 pos = StructureTools.PlaceByOrigin("Assets/Structures/EmpressDomain/Arena", new Point16(Width / 2, Height / 2 - 5), new Vector2(0.5f, 0));
@@ -141,6 +141,37 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 					{
 						SpawnSpawner(ModContent.NPCType<GreaterFairy>());
 					}
+				}
+				else if (Wave == 7)
+				{
+					for (int i = 0; i < 3; ++i)
+					{
+						SpawnSpawner(ModContent.NPCType<Prismatism>());
+					}
+				}
+				else if (Wave == 8)
+				{
+					for (int i = 0; i < 6; ++i)
+					{
+						SpawnSpawner(i < 3 ? ModContent.NPCType<GreaterFairy>() : ModContent.NPCType<Prismatism>());
+					}
+				}
+				else if (Wave == 9)
+				{
+					for (int i = 0; i < 12; ++i)
+					{
+						SpawnSpawner(i switch
+						{
+							< 3 => ModContent.NPCType<GreaterFairy>(),
+							< 6 => ModContent.NPCType<Prismatism>(),
+							< 9 => NPCID.RainbowSlime,
+							_ => NPCID.Unicorn
+						});
+					}
+				}
+				else if (Wave == 10)
+				{
+					SpawnSpawner(NPCID.HallowBoss, new Vector2(Main.spawnTileX, Main.spawnTileY - 10) * 16);
 				}
 			}
 		}

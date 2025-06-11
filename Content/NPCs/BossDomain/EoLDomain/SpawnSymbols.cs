@@ -39,9 +39,15 @@ internal class SpawnSymbols : ModProjectile
 		{
 			if (Main.netMode != NetmodeID.MultiplayerClient && NPCTypeToSpawn != 0)
 			{
-				int npc = NPC.NewNPC(Projectile.GetSource_FromAI(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCTypeToSpawn);
-
-				Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+				if (NPCTypeToSpawn == NPCID.HallowBoss)
+				{
+					NPC.SpawnBoss((int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCTypeToSpawn, Player.FindClosest(Projectile.position, 16, 16));
+				}
+				else
+				{
+					int npc = NPC.NewNPC(Projectile.GetSource_FromAI(), (int)Projectile.Center.X, (int)Projectile.Center.Y, (int)NPCTypeToSpawn);
+					Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+				}
 			}
 
 			for (int i = 0; i < 20; ++i)

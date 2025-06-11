@@ -29,9 +29,10 @@ internal class GreaterFairy : ModNPC
 		NPC.damage = 0;
 		NPC.aiStyle = -1;
 		NPC.defense = 50;
-		NPC.lifeMax = 1500;
+		NPC.lifeMax = 1000;
 		NPC.noGravity = true;
 		NPC.knockBackResist = 0f;
+		NPC.noTileCollide = true;
 
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
