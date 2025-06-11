@@ -1256,3 +1256,6 @@ EoLMap: {
 		'The map smells of light and cloy'
 		'''
 }
+
+GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
+PrismatismBannerItem.DisplayName: Prismatism Banner

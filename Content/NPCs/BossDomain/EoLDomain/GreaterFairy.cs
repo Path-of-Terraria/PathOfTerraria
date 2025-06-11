@@ -8,6 +8,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 
+[AutoloadBanner]
 internal class GreaterFairy : ModNPC
 {
 	private static Asset<Texture2D> WingTex = null;

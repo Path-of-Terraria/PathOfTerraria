@@ -3,13 +3,13 @@ using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
 using ReLogic.Content;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 
+[AutoloadBanner]
 internal class Prismatism : ModNPC
 {
 	private static Asset<Texture2D> CapeTex = null;
@@ -47,8 +47,8 @@ internal class Prismatism : ModNPC
 
 		NPC.TryEnableComponent<NPCHitEffects>(c =>
 		{
-			c.AddDust(new(DustID.Pixie, 4));
-			c.AddDust(new(DustID.Pixie, 16, NPCHitEffects.OnDeath));
+			c.AddDust(new(DustID.BubbleBurst_White, 4));
+			c.AddDust(new(DustID.BubbleBurst_White, 16, NPCHitEffects.OnDeath));
 
 			for (int i = 0; i < 3; ++i)
 			{
