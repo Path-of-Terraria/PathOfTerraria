@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class SteelBroadsword : Flamberge
+internal class SteelBroadsword : Sword
 {
 	public override void SetStaticDefaults()
 	{
