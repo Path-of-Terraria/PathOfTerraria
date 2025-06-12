@@ -31,9 +31,9 @@ public class FlatWorldPass(int floorY = 500, bool spawnWalls = false, FastNoiseL
 
 				float warpedX = x;
 				float warpedY = y;
-				Noise.DomainWarp(ref warpedX, ref warpedY);
+				Noise?.DomainWarp(ref warpedX, ref warpedY);
 
-				int floorY = (int)(FloorY + (Noise is null ? 0 : Noise.GetNoise(warpedX, 0) * noiseAmp));
+				int floorY = (int)(FloorY + (Noise is null ? 0 : Noise.GetNoise(warpedX, 0) * NoiseAmp));
 
 				if (y <= floorY)
 				{
