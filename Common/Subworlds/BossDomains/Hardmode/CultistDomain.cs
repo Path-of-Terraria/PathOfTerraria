@@ -1,9 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
-using ReLogic.Utilities;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -16,9 +14,14 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class CultistDomain : BossDomainSubworld
 {
-	public override int Width => 1400;
-	public override int Height => 800;
+	const int FloorY = 400;
+	const int PedestalDistance = 400;
+	const int EdgeDistance = 800;
+
+	public override int Width => 1900;
+	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.95), true);
+	public override int[] WhitelistedMiningTiles => [ModContent.TileType<TabletPieces>()];
 
 	public static Point16 BulbPosition = new();
 	public static int BulbsBroken = 0;
@@ -27,7 +30,8 @@ internal class CultistDomain : BossDomainSubworld
 	private static bool ExitSpawned = false;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
-		new FlatWorldPass(500, tileType: TileID.BlueDungeonBrick)];
+		new FlatWorldPass(FloorY, tileType: TileID.BlueDungeonBrick),
+		new PassLegacy("Structures", GenTerrain)];
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -38,15 +42,65 @@ internal class CultistDomain : BossDomainSubworld
 		progress.Start(1);
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
-		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		Point16 cliffSize = StructureTools.GetSize("Assets/Structures/LunaticDomain/CliffLeft");
+		int cliffWidth = cliffSize.X;
+		int cliffHeight = cliffSize.Y - 1;
+
+		for (int i = 0; i < Width / 2 - EdgeDistance; ++i)
 		{
-			for (int j = 2; j < Main.maxTilesY - 2; ++j)
+			for (int j = FloorY - cliffHeight; j < Height - 10; ++j)
 			{
+				Tile tile = Main.tile[i, j];
+				tile.HasTile = true;
+				tile.TileType = TileID.BlueDungeonBrick;
 
+				tile = Main.tile[Width / 2 + EdgeDistance + i, j];
+				tile.HasTile = true;
+				tile.TileType = TileID.BlueDungeonBrick;
 			}
-
-			progress.Value = (float)i / Main.maxTilesX;
 		}
+
+		StructureTools.PlaceByOrigin("Assets/Structures/LunaticDomain/Center_" + WorldGen.genRand.Next(2), GetFloor(Width / 2, 200), new Vector2(0.5f, 1));
+
+		PriorityQueue<int, float> pieces = new();
+		pieces.Enqueue(0, WorldGen.genRand.NextFloat());
+		pieces.Enqueue(1, WorldGen.genRand.NextFloat());
+		pieces.Enqueue(2, WorldGen.genRand.NextFloat());
+		pieces.Enqueue(3, WorldGen.genRand.NextFloat());
+
+		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(2), Width / 2 - PedestalDistance, new Vector2(0.5f, 1), pieces.Dequeue());
+		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(2), Width / 2 + PedestalDistance, new Vector2(0.5f, 1), pieces.Dequeue());
+
+		PlaceStructureWithPiece("CliffLeft", Width / 2 - EdgeDistance, new Vector2(0, 1), pieces.Dequeue());
+		PlaceStructureWithPiece("CliffRight", Width / 2 + EdgeDistance, new Vector2(1), pieces.Dequeue());
+	}
+
+	private static void PlaceStructureWithPiece(string structure, int x, Vector2 origin, int style)
+	{
+		StructureTools.PlaceByOrigin("Assets/Structures/LunaticDomain/" + structure, new Point16(x, FloorY + 1), origin);
+
+		while (true)
+		{
+			int pieceX = x + WorldGen.genRand.Next(-40, 40);
+			Point16 pos = GetFloor(pieceX, 200);
+
+			WorldGen.PlaceObject(pos.X, pos.Y - 1, ModContent.TileType<TabletPieces>(), true, style);
+
+			if (Main.tile[pos.X, pos.Y - 1].TileType == ModContent.TileType<TabletPieces>() && Main.tile[pos.X, pos.Y - 1].HasTile)
+			{
+				return;
+			}
+		}
+	}
+
+	public static Point16 GetFloor(int x, int y)
+	{
+		while (!WorldGen.SolidOrSlopedTile(x, y))
+		{
+			y++;
+		}
+
+		return new (x, y);
 	}
 
 	public override void OnEnter()

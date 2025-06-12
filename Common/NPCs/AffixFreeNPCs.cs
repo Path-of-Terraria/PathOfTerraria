@@ -31,5 +31,6 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.WallofFleshEye);
 		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron); // Both of these are effectively projectiles, should be ignored
 		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron2);
+		ArpgNPC.NoAffixesSet.Add(NPCID.AncientLight); // This is a projectile NPC but is not marked as such for some reason
 	}
 }
