@@ -1247,3 +1247,8 @@ FishronMap: {
 		'The map smells of stillwater and fungi'
 		'''
 }
+
+Flamberge: {
+	DisplayName: Flamberge
+	Tooltip: ""
+}
