@@ -685,3 +685,13 @@ Minitera: {
 }
 
 MiniteraHook.DisplayName: Minitera Hook
+
+GreaterFairy: {
+	DisplayName: Greater Fairy
+	Entry: A much less kind version of the fairies sometimes found throughout the world, Greater Fairies align themselves to the absolutution of the Hallow instead.
+}
+
+Prismatism: {
+	DisplayName: Prismatism
+	Entry: Mysteriously well dressed, this chromatic orb seems to possess either entirely too little movement or altogether too much. It has exactly enough hostility against you to merit that.
+}

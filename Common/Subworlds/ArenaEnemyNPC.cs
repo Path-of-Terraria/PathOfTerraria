@@ -7,7 +7,8 @@ namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
 /// Handles enemies spawned by arenas which require being blocked off before progressing.<br/>
-/// Examples include the Queen Bee domain and the Wall of Flesh domain.
+/// Examples include the Queen Bee domain and the Wall of Flesh domain.<br/>
+/// This is also used to block despawning and stop all item drops.
 /// </summary>
 internal class ArenaEnemyNPC : GlobalNPC
 {

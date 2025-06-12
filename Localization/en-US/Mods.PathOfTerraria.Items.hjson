@@ -1248,7 +1248,20 @@ FishronMap: {
 		'''
 }
 
+EoLMap: {
+	DisplayName: Empress of Light Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of light and cloy'
+		'''
+}
+
+GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
+PrismatismBannerItem.DisplayName: Prismatism Banner
+
 Flamberge: {
 	DisplayName: Flamberge
 	Tooltip: ""
 }
+
