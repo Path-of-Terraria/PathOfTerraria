@@ -1259,3 +1259,9 @@ EoLMap: {
 
 GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
 PrismatismBannerItem.DisplayName: Prismatism Banner
+
+Flamberge: {
+	DisplayName: Flamberge
+	Tooltip: ""
+}
+
