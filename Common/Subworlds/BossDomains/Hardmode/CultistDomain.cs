@@ -1,5 +1,7 @@
-﻿using PathOfTerraria.Common.Subworlds.Passes;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
+using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using System.Collections.Generic;
@@ -12,30 +14,28 @@ using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
-internal class CultistDomain : BossDomainSubworld
+internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 {
-	const int FloorY = 400;
-	const int PedestalDistance = 400;
-	const int EdgeDistance = 800;
+	public const int FloorY = 400;
+	public const int PedestalDistance = 400;
+	public const int EdgeDistance = 1000;
 
-	public override int Width => 1900;
+	public override int Width => 2400;
 	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.95), true);
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<TabletPieces>()];
-
-	public static Point16 BulbPosition = new();
-	public static int BulbsBroken = 0;
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new FlatWorldPass(FloorY, tileType: TileID.BlueDungeonBrick),
-		new PassLegacy("Structures", GenTerrain)];
+		new PassLegacy("Structures", GenTerrain),
+		new PassLegacy("Convert", DungeonConversion.Convert),
+		new PassLegacy("Settle Liquids", SettleLiquidsStep.Generation)];
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
-		BulbsBroken = 0;
 		BossSpawned = false;
 		ExitSpawned = false;
 
@@ -68,17 +68,112 @@ internal class CultistDomain : BossDomainSubworld
 		pieces.Enqueue(2, WorldGen.genRand.NextFloat());
 		pieces.Enqueue(3, WorldGen.genRand.NextFloat());
 
-		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(2), Width / 2 - PedestalDistance, new Vector2(0.5f, 1), pieces.Dequeue());
-		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(2), Width / 2 + PedestalDistance, new Vector2(0.5f, 1), pieces.Dequeue());
+		List<int> pieceXs = [];
 
-		PlaceStructureWithPiece("CliffLeft", Width / 2 - EdgeDistance, new Vector2(0, 1), pieces.Dequeue());
-		PlaceStructureWithPiece("CliffRight", Width / 2 + EdgeDistance, new Vector2(1), pieces.Dequeue());
+		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(2), Width / 2 - PedestalDistance, new Vector2(0.5f, 1), pieceXs);
+		PlaceStructureWithPiece("Pedestal_" + WorldGen.genRand.Next(2), Width / 2 + PedestalDistance, new Vector2(0.5f, 1), pieceXs);
+		PlaceStructureWithPiece("CliffLeft", Width / 2 - EdgeDistance, new Vector2(0, 1), pieceXs);
+		PlaceStructureWithPiece("CliffRight", Width / 2 + EdgeDistance, new Vector2(1), pieceXs);
+
+		OffsetArea();
+		ModifyArea();
+
+		foreach (int x in pieceXs)
+		{
+			PlacePiece(x, pieces.Dequeue());
+		}
+
+		Point16 spawn = GetFloor(Width / 2, 20);
+		Main.spawnTileX = spawn.X;
+		Main.spawnTileY = spawn.Y - 5;
 	}
 
-	private static void PlaceStructureWithPiece(string structure, int x, Vector2 origin, int style)
+	private void OffsetArea()
+	{
+		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		noise.SetFrequency(0.004f);
+		noise.SetNoiseType(FastNoiseLite.NoiseType.Value);
+		noise.SetFractalType(FastNoiseLite.FractalType.FBm);
+
+		for (int i = 2; i < Width - 2; ++i)
+		{
+			int height = (int)Math.Abs(noise.GetNoise(i, 0) * 16);
+
+			for (int j = 60; j < Height - 60; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				Tile below = Main.tile[i, j + height];
+
+				tile.HasTile = below.HasTile;
+				tile.TileType = below.TileType;
+				tile.WallType = below.WallType;
+			}
+		}
+	}
+
+	private void ModifyArea()
+	{
+		for (int i = 2; i < Width  - 2; ++i)
+		{
+			for (int j = FloorY - 100; j < Height - 10; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				
+				if (tile.HasTile && tile.TileType == TileID.BlueDungeonBrick && OpenExtensions.GetUnsolidAndWallOpenings(i, j, false, false) == OpenFlags.None)
+				{
+					tile.WallType = WallID.BlueDungeonUnsafe;
+				}
+
+				Tile.SmoothSlope(i, j);
+			}
+		}
+
+		Main.tileDungeon[TileID.BlueDungeonBrick] = false; // Bypass WorldGen.meteor safety check
+		int oldNetMode = Main.netMode;
+		Main.netMode = NetmodeID.MultiplayerClient; // Bypass announcement
+
+		for (int i = 10; i < Width - 10; ++i)
+		{
+			if (WorldGen.genRand.NextBool(30))
+			{
+				int j = GetFloor(i, 200).Y;
+				j += WorldGen.genRand.Next(-10, 2);
+
+				float xVel = WorldGen.genRand.NextFloat(-2f, 2);
+				float yVel = WorldGen.genRand.NextFloat(-0.5f, 2);
+				WorldGen.digTunnel(i, j, xVel, yVel, WorldGen.genRand.Next(4, 20), WorldGen.genRand.Next(2, 6), WorldGen.genRand.NextBool(8));
+			}
+			else if (WorldGen.genRand.NextBool(600) && Math.Abs(i - Width / 2) > 80)
+			{
+				int j = GetFloor(i, 200).Y;
+				j += WorldGen.genRand.Next(-10, 2);
+
+				bool v = WorldGen.meteor(i, j, true);
+			}
+		}
+
+		Main.tileDungeon[TileID.BlueDungeonBrick] = true;
+		Main.netMode = oldNetMode;
+
+		for (int i = 10; i < Width - 10; ++i)
+		{
+			if (WorldGen.genRand.NextBool(90))
+			{
+				int j = GetFloor(i, 200).Y;
+
+				WorldGen.PlaceObject(i, j - 1, TileID.Lamps, true, 24);
+			}
+		}
+	}
+
+	private static void PlaceStructureWithPiece(string structure, int x, Vector2 origin, List<int> pieces)
 	{
 		StructureTools.PlaceByOrigin("Assets/Structures/LunaticDomain/" + structure, new Point16(x, FloorY + 1), origin);
+		pieces.Add(x);
+	}
 
+	private static void PlacePiece(int x, int style)
+	{
 		while (true)
 		{
 			int pieceX = x + WorldGen.genRand.Next(-40, 40);
@@ -113,15 +208,7 @@ internal class CultistDomain : BossDomainSubworld
 
 	public override void Update()
 	{
-		Wiring.UpdateMech();
-		TileEntity.UpdateStart();
-
-		foreach (TileEntity te in TileEntity.ByID.Values)
-		{
-			te.Update();
-		}
-
-		TileEntity.UpdateEnd();
+		Liquid.UpdateLiquid();
 
 		if (!BossSpawned && NPC.AnyNPCs(NPCID.Plantera))
 		{
@@ -146,5 +233,11 @@ internal class CultistDomain : BossDomainSubworld
 			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
 			Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
+	}
+
+	public void OverrideBiome()
+	{
+		Main.bgStyle = 0;
+		Main.curMusic = MusicID.OverworldDay;
 	}
 }

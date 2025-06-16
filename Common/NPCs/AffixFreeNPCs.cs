@@ -32,5 +32,11 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron); // Both of these are effectively projectiles, should be ignored
 		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron2);
 		ArpgNPC.NoAffixesSet.Add(NPCID.AncientLight); // This is a projectile NPC but is not marked as such for some reason
+		ArpgNPC.NoAffixesSet.Add(NPCID.AncientDoom); // The above
+		ArpgNPC.NoAffixesSet.Add(NPCID.LunarTowerNebula); // These all are just damage sponges, making them "harder" doesn't make sense
+		ArpgNPC.NoAffixesSet.Add(NPCID.LunarTowerSolar);
+		ArpgNPC.NoAffixesSet.Add(NPCID.LunarTowerStardust);
+		ArpgNPC.NoAffixesSet.Add(NPCID.LunarTowerVortex);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistBossClone); // Gives away the clone, plus it has no health or contact damage
 	}
 }

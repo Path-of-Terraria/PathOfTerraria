@@ -1267,3 +1267,8 @@ AncientTabletTwo: {
 	DisplayName: Ancient Tablet Two
 	Tooltip: "{$AncientTabletFour.Tooltip}"
 }
+
+AncientTablet: {
+	DisplayName: Ancient Tablet
+	Tooltip: ""
+}
