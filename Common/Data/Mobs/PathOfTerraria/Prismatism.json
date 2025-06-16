@@ -1,0 +1,16 @@
+{
+	"friendlyName": "Greater Fairy",
+	"entries": [
+		{
+			"scale": null,
+			"prefix": null,
+			"weight": 1,
+			"stats": {
+				"level": 1,
+				"experience": 600
+			},
+			"affixes": null,
+			"requirements": "Desert"
+		}
+	]
+}

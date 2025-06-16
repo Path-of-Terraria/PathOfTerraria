@@ -109,6 +109,11 @@ internal class MappingNPC : GlobalNPC
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<FishronMap>());
 			}
 
+			if (TierPassed(7) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<EoLMap>());
+			}
+
 			return;
 
 			bool TierPassed(int tier)
@@ -128,6 +133,9 @@ internal class MappingNPC : GlobalNPC
 			4 => NPC.downedMechBoss3,
 			5 => NPC.downedPlantBoss,
 			6 => NPC.downedGolemBoss,
+			7 => NPC.downedFishron,
+			8 => NPC.downedEmpressOfLight,
+			9 => NPC.downedAncientCultist,
 			_ => true,
 		};
 	}

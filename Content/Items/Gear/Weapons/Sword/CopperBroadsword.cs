@@ -4,7 +4,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class CopperBroadsword : Broadsword
+internal class CopperBroadsword : Flamberge
 {
 	public override void SetStaticDefaults()
 	{
@@ -22,8 +22,8 @@ internal class CopperBroadsword : Broadsword
 		base.SetDefaults();
 
 		Item.damage = 18;
-		Item.width = 42;
-		Item.height = 42;
+		Item.width = 38;
+		Item.height = 38;
 		Item.UseSound = SoundID.Item1;
 
 		PoTInstanceItemData data = this.GetInstanceData();

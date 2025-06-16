@@ -53,5 +53,8 @@ internal class DropModifierNPC : GlobalNPC
 		AddRateModifier(NPCID.Bee, 0.33f);
 		AddRateModifier(NPCID.BeeSmall, 0.33f);
 		AddRateModifier(NPCID.PlanterasHook, 0f);
+		AddRateModifier(NPCID.QueenSlimeMinionBlue, 0.2f);
+		AddRateModifier(NPCID.QueenSlimeMinionPurple, 0.2f);
+		AddRateModifier(NPCID.QueenSlimeMinionPink, 0.2f);
 	}
 }
