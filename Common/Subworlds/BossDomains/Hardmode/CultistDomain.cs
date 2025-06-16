@@ -25,9 +25,6 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 	public override (int time, bool isDay) ForceTime => ((int)(Main.dayLength * 0.95), true);
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<TabletPieces>()];
 
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
-
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new FlatWorldPass(FloorY, tileType: TileID.BlueDungeonBrick),
 		new PassLegacy("Structures", GenTerrain),
@@ -36,9 +33,6 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
-		BossSpawned = false;
-		ExitSpawned = false;
-
 		progress.Start(1);
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
@@ -209,30 +203,6 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 	public override void Update()
 	{
 		Liquid.UpdateLiquid();
-
-		if (!BossSpawned && NPC.AnyNPCs(NPCID.Plantera))
-		{
-			BossSpawned = true;
-		}
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.Plantera) && !ExitSpawned)
-		{
-			ExitSpawned = true;
-
-			HashSet<Player> players = [];
-
-			foreach (Player plr in Main.ActivePlayers)
-			{
-				if (!plr.dead)
-				{
-					players.Add(plr);
-				}
-			}
-
-			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
-			Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-		}
 	}
 
 	public void OverrideBiome()
