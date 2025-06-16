@@ -195,9 +195,6 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 	public override void OnEnter()
 	{
 		base.OnEnter();
-
-		BossSpawned = false;
-		ExitSpawned = false;
 	}
 
 	public override void Update()

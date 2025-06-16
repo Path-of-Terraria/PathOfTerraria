@@ -5,11 +5,11 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class EoLMap : Map
+internal class CultistMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 67;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 66 && NPC.downedEmpressOfLight;
+	public override int WorldTier => 69;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 68 && NPC.downedAncientCultist;
 
 	public override void SetStaticDefaults()
 	{
@@ -21,12 +21,12 @@ internal class EoLMap : Map
 	{
 		base.SetDefaults();
 
-		Item.Size = new Vector2(34, 38);
+		Item.Size = new Vector2(40);
 	}
 
 	protected override void OpenMapInternal()
 	{
-		SubworldSystem.Enter<EmpressDomain>();
+		SubworldSystem.Enter<CultistDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

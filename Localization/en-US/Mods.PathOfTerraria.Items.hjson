@@ -1265,7 +1265,6 @@ Flamberge: {
 	Tooltip: ""
 }
 
-
 AncientTabletFour: {
 	DisplayName: Ancient Tablet Four
 	Tooltip: A part of a larger tablet
@@ -1288,5 +1287,14 @@ AncientTabletTwo: {
 
 AncientTablet: {
 	DisplayName: Ancient Tablet
-	Tooltip: ""
+	Tooltip: Summons the Lunatic Cultist
+}
+
+CultistMap: {
+	DisplayName: Lunatic Cultist Map
+	Tooltip: 
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of soot and space'
+		'''
 }
