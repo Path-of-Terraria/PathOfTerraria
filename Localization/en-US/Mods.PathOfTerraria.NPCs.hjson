@@ -686,6 +686,151 @@ Minitera: {
 
 MiniteraHook.DisplayName: Minitera Hook
 
+WarriorNPC: {
+	DisplayName: Warrior
+
+	Names: {
+		Male: {
+			0: James
+			1: John
+			2: Peter
+			3: Mark
+			4: Salvador
+			5: Ezra
+			6: Simone
+			7: Eduardo
+			8: Lee
+			9: Enrique
+			10: Walter
+			11: Sven
+			12: Hidehito
+			13: Goro
+			14: Jamir
+			15: Talan
+			16: Moises
+			17: Felipe
+			18: Samuel
+		}
+
+		Female: {
+			0: Alma
+			1: Paula
+			2: Jenna
+			3: Lyric
+			4: Serena
+			5: Teagan
+			6: Kinsley
+			7: Aria
+			8: Priya
+			9: Ella
+			10: Kamora
+			11: Damaris
+			12: Josephine
+			13: Anahi
+			14: Halle
+			15: Myah
+			16: Perla
+			17: Fatima
+			18: Samantha
+		}
+	}
+
+	Dialogue: {
+		Confident: {
+			0: A respite well earned! Cheers, my friend.
+			1: Ah, the mead known throughout the world!
+			2: Sometimes, a stiff drink and a rest beats adventure!...sometimes.
+			3: And so I told Brom - "I hope this drink's not as strong as the beast!" Bahahaha!
+		}
+
+		Reserved: {
+			0: Well met, stranger.
+			1: Hello.
+			2: Not often I see that get-up.
+			3: Cheers, friend.
+		}
+
+		Boastful: {
+			0: And so I slayed the Burnfield, like nothing! Legendary beast, meet my blade!
+			1: Ohohoh, quite curious? What have you slain? Beasts? Gods?
+			2: The Cliffs near the Maw of Earth? Child's play! I remember traipsing through like it's a hike!
+			3: Not much beats a strong drink and a great achievement, huh? Aha! Of course not!
+		}
+
+		Sly: {
+			0: Aye. Don't tell Brom...this is all counterfeit coin. Heh.
+			1: They say a great theft can overshadow a greater achievement. You interested?
+			2: How much mead do you think I can hide in my waterskin?
+			3: Say...you know where this fine establishment keeps its coin? No reason...
+		}
+
+		Partygoer: {
+			0: Hey, hey! I know a little magic - you got a coin I could borrow? It'll disappear, but only for a bit!
+			1: The best thing in combat? Confusion. You throw a confetti bomb and a wolf hardly knows what's going on.
+			2: Look at this - within moments, I can make this mead disappear.
+			3: This one's simple - how do you trick the gullible?...I'll tell you later.
+		}
+
+		Reverent: {
+			0: Thank whatever guides you for what you enjoy.
+			1: Alas! I am doing my work. Cheers!
+			2: Have you seen a Shrine's blessings? Curious boons.
+			3: Comfort in the home is worth many a battle.
+		}
+	}
+
+	BubbleDialogue: {
+		Confident: {
+			0: Ah, yes. A moment...
+			1: You can tell the owner here was an adventuerer himself, huh?
+			2: I'm already getting excited to head back out...
+			3: ...where are the quest listings again...?
+		}
+
+		Reserved: {
+			0: Hm.
+			1: How nice.
+			2: Where'd I leave my coin...
+			3: Another drink, perhaps...?
+		}
+
+		Boastful: {
+			0: What else to say, what else to say...
+			1: I should say that Maw of Earth line again, that one's awesome.
+			2: Where's my audience?
+			3: Man, I'm so cool.
+		}
+
+		Sly: {
+			0: Act natural, I'm just a normal adventurer...
+			1: Is anyone looking?
+			2: Hehe...they won't know what hit 'em.
+			3: Good thing I've such big pockets...
+		}
+
+		Partygoer: {
+			0: Whoo, man! That mead's starting to hit...
+			1: Brom? Could I get another one...?
+			2: Woah. That's where that coin went.
+			3: Whooh. Just gonna take a moment...
+		}
+
+		Reverent: {
+			0: Thank you all for my meal...
+			1: Be blessed.
+			2: Perhaps the desert next?
+			3: Ah...
+		}
+	}
+}
+
+RangerNPC: {
+	DisplayName: Ranger
+	Names: "{WarriorNPC.Names}"
+	Dialogue: "{WarriorNPC.Dialogue}"
+	BubbleDialogue: "{WarriorNPC.BubbleDialogue}"
+}
+
 GreaterFairy: {
 	DisplayName: Greater Fairy
 	Entry: A much less kind version of the fairies sometimes found throughout the world, Greater Fairies align themselves to the absolutution of the Hallow instead.
