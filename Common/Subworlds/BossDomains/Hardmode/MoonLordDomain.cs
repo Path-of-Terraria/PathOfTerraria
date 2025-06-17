@@ -16,6 +16,8 @@ internal class MoonLordDomain : BossDomainSubworld
 	public override int Width => 900;
 	public override int Height => 3000;
 	public override (int time, bool isDay) ForceTime => (3500, false);
+	
+	private static readonly HashSet<int> TypesUsed = [];
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
@@ -48,6 +50,7 @@ internal class MoonLordDomain : BossDomainSubworld
 		Main.spawnTileY = Height / 2;
 		Main.worldSurface = Height - 50;
 		Main.rockLayer = Height - 40;
+		TypesUsed.Clear();
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
@@ -59,14 +62,14 @@ internal class MoonLordDomain : BossDomainSubworld
 		noise.SetDomainWarpType(FastNoiseLite.DomainWarpType.BasicGrid);
 		noise.SetDomainWarpAmp(175);
 
-		const int RangeStep = 40; 
+		const int RangeStep = 30; 
 
 		Dictionary<int, int> closestValidTileLookup = [];
-		int rangeSpace = TileLoader.TileCount / RangeStep;
+		int rangeSpace = TileID.Count / RangeStep;
 		int baseRange = Main.rand.Next(rangeSpace + 15, rangeSpace * (RangeStep - 1) - 15);
 		Range range = (baseRange - rangeSpace)..(baseRange + rangeSpace);
 
-		for (int i = Math.Max(range.Start.Value - 10, 0); i < Math.Min(range.End.Value + 10, TileLoader.TileCount); ++i)
+		for (int i = Math.Max(range.Start.Value - 10, 0); i < Math.Min(range.End.Value + 10, TileID.Count); ++i)
 		{
 			int id = i;
 			
@@ -94,9 +97,45 @@ internal class MoonLordDomain : BossDomainSubworld
 
 				Tile tile = Main.tile[i, j];
 				tile.HasTile = true;
-				tile.TileType = (ushort)GetNearestTileId(noise, x, y, closestValidTileLookup, range);
+				tile.TileType = GradientNonsenseTileId(noise, closestValidTileLookup, range, x, y);
+
+				TypesUsed.Add(tile.TileType);
 			}
 		}
+
+		string types = "";
+
+		foreach (int item in TypesUsed)
+		{
+			types += $"({item}: {TileID.Search.GetName(item)}) ";
+		}
+
+		Mod.Logger.Debug("ML DEBUG LIST: " + types);
+	}
+
+	private static ushort GradientNonsenseTileId(FastNoiseLite noise, Dictionary<int, int> closestValidTileLookup, Range range, float x, float y)
+	{
+		float yDistance = (y - 2000) / 1000f;
+
+		if (yDistance > 0.7f)
+		{
+			return yDistance < 0.73f ? Dither(yDistance, 0.7f, 0.73f, TileID.Dirt, TileID.Stone) : TileID.Dirt;
+		}
+		else if (yDistance > 0.6f)
+		{
+			return yDistance < 0.63f ? Dither(yDistance, 0.6f, 0.63f, TileID.Stone, TileID.Ash) : TileID.Stone;
+		}
+		else if (yDistance > 0.55f && WorldGen.genRand.NextFloat() < Utils.GetLerpValue(0.55f, 0.57f, yDistance))
+		{
+			return TileID.Ash;
+		}
+
+		return (ushort)GetNearestTileId(noise, x, y, closestValidTileLookup, range);
+	}
+
+	private static ushort Dither(float yDistance, float min, float max, ushort bottom, ushort top)
+	{
+		return WorldGen.genRand.NextFloat() < Utils.GetLerpValue(min, max, yDistance) ? bottom : top;
 	}
 
 	private static int GetNearestTileId(FastNoiseLite noise, float x, float y, Dictionary<int, int> closestValidTileLookup, Range idRange)
@@ -112,7 +151,7 @@ internal class MoonLordDomain : BossDomainSubworld
 
 		while (InvalidId(topId))
 		{
-			if (topId > TileLoader.TileCount - 1)
+			if (topId > TileID.Count - 1)
 			{
 				topId = -1;
 				break;
