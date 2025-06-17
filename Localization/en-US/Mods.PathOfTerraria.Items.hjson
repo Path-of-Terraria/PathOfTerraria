@@ -1265,3 +1265,36 @@ Flamberge: {
 	Tooltip: ""
 }
 
+AncientTabletFour: {
+	DisplayName: Ancient Tablet Four
+	Tooltip: A part of a larger tablet
+}
+
+AncientTabletOne: {
+	DisplayName: Ancient Tablet One
+	Tooltip: "{$AncientTabletFour.Tooltip}"
+}
+
+AncientTabletThree: {
+	DisplayName: Ancient Tablet Three
+	Tooltip: "{$AncientTabletFour.Tooltip}"
+}
+
+AncientTabletTwo: {
+	DisplayName: Ancient Tablet Two
+	Tooltip: "{$AncientTabletFour.Tooltip}"
+}
+
+AncientTablet: {
+	DisplayName: Ancient Tablet
+	Tooltip: Summons the Lunatic Cultist
+}
+
+CultistMap: {
+	DisplayName: Lunatic Cultist Map
+	Tooltip: 
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of soot and space'
+		'''
+}
