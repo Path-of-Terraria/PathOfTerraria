@@ -1,6 +1,7 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -110,7 +111,7 @@ internal class StopBuildingPlayer : ModPlayer
 		LastStopBuilding = ConstantStopBuilding;
 		ConstantStopBuilding = false;
 
-		if (SubworldSystem.Current is MappingWorld)
+		if (SubworldSystem.Current is MappingWorld and not MoonLordDomain)
 		{
 			ConstantStopBuilding = true;
 		}
