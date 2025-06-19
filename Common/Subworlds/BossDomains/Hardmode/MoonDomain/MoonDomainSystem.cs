@@ -13,14 +13,14 @@ internal class MoonDomainSystem : ModSystem
 
 		int y = (int)(Main.LocalPlayer.Center.Y / 16f);
 
-		if (y < 1600)
+		if (y < MoonLordDomain.CloudTop)
 		{
 			tileColor = Color.Black;
 			backgroundColor = Color.Black;
 		}
-		else if (y < 1700)
+		else if (y < MoonLordDomain.CloudBottom)
 		{
-			tileColor = Color.Lerp(Color.Black, tileColor, (y - 1600) / 100f);
+			tileColor = Color.Lerp(Color.Black, tileColor, (y - MoonLordDomain.CloudTop) / (float)(MoonLordDomain.CloudBottom - MoonLordDomain.CloudTop));
 			backgroundColor = tileColor;
 		}
 	}

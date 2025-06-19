@@ -10,6 +10,10 @@ Structures: Building structures
 Maze: Escaping the maze
 PopulatingMetals: Scattering metals
 Hole: Digging hole
+Growing: Growing land
+Clouds: Exploring the sky
+Space: Escaping the atmosphere
+Scanning: Scanning terrain
 
 EaterSign: {
 	0: "{0} was instantly devoured."

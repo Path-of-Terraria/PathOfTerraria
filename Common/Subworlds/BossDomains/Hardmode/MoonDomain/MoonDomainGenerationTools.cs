@@ -667,8 +667,5 @@ internal class MoonDomainGenerationTools
 			WorldUtils.Gen(anchor, new ShapeRoot(angle, WorldGen.genRand.Next(40, 60)), Actions.Chain(new Modifiers.SkipTiles(21, 467, 226, 237), 
 				new Modifiers.SkipWalls(87), new SetTileNoClear(TileID.LivingMahogany, true), new Actions.PlaceWall(WallID.LivingWood)));
 		}
-
-		//WorldGen.AddBuriedChest(anchor.X + 3, anchor.Y - 1, (!WorldGen.genRand.NextBool(4)) ? WorldGen.GetNextJungleChestItem() : 0, notNearOtherChests: false, 10,
-		//	trySlope: false, 0);
 	}
 }

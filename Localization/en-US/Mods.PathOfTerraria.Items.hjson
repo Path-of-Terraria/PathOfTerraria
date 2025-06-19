@@ -1264,3 +1264,12 @@ Flamberge: {
 	DisplayName: Flamberge
 	Tooltip: ""
 }
+
+MoonMap: {
+	DisplayName: Moon Lord Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of shimmer'
+		'''
+}

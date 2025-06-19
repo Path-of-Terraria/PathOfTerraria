@@ -13,6 +13,19 @@ internal class MoonDomainHooks : ModSystem
 		On_WorldGen.KillWall_DropItems += StopWallDrops;
 		On_WorldGen.KillTile += StopAllKillTileDrops;
 		On_WorldGen.TileFrame += On_WorldGen_TileFrame;
+		On_WorldGen.BiomeTileCheck += StopBiomeCheckInSubworld;
+	}
+
+	private bool StopBiomeCheckInSubworld(On_WorldGen.orig_BiomeTileCheck orig, int x, int y)
+	{
+		bool value = orig(x, y);
+
+		if (SubworldSystem.Current is MoonLordDomain)
+		{
+			return false;
+		}
+
+		return value;
 	}
 
 	private void On_WorldGen_TileFrame(On_WorldGen.orig_TileFrame orig, int i, int j, bool resetFrame, bool noBreak)

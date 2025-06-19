@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using SubworldLibrary;
-using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.BossDomain;
@@ -15,9 +14,7 @@ internal class MechChip : ModItem
 
 	public override bool? UseItem(Player player)
 	{
-		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		MoonLordDomain.Cloud(pos.X, pos.Y);
-		//NPC.SpawnOnPlayer(player.whoAmI, NPCID.TheDestroyer);
+		NPC.SpawnOnPlayer(player.whoAmI, NPCID.TheDestroyer);
 		return true;
 	}
 
@@ -25,7 +22,7 @@ internal class MechChip : ModItem
 	{
 		if (SubworldSystem.Current is not DestroyerDomain)
 		{
-			//Item.TurnToAir();
+			Item.TurnToAir();
 		}
 	}
 

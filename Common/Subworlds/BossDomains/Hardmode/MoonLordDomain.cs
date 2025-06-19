@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,6 +12,7 @@ using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.ObjectData;
 using Terraria.WorldBuilding;
 
@@ -19,11 +21,13 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 internal class MoonLordDomain : BossDomainSubworld
 {
 	public const int TerrariaHeight = 1800;
+	public const int CloudTop = TerrariaHeight - 350;
+	public const int CloudBottom = TerrariaHeight - 50;
+	public const int PlanetTop = 700;
 
 	// For GetTileId
 	const float DirtCutoff = 0.6f;
 	const float DirtDitherStart = DirtCutoff + 0.03f;
-
 	const float StoneCutoff = 0.3f;
 	const float StoneDitherStart = StoneCutoff + 0.03f;
 
@@ -31,111 +35,178 @@ internal class MoonLordDomain : BossDomainSubworld
 	public override int Height => 4200;
 	public override (int time, bool isDay) ForceTime => (3500, false);
 	
-	private static readonly HashSet<int> TypesUsed = [];
-
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenerateTerraria),
-		new PassLegacy("Clouds", GenerateClouds)];
+		new PassLegacy("Clouds", GenerateClouds),
+		new PassLegacy("Planets", GeneratePlanets)];
+
+	private void GeneratePlanets(GenerationProgress progress, GameConfiguration configuration)
+	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Space");
+
+		PriorityQueue<int, float> planetTypes = new();
+		planetTypes.Enqueue(0, WorldGen.genRand.NextFloat());
+		planetTypes.Enqueue(1, WorldGen.genRand.NextFloat());
+		planetTypes.Enqueue(2, WorldGen.genRand.NextFloat());
+		planetTypes.Enqueue(3, WorldGen.genRand.NextFloat());
+
+		for (int i = 0; i < 4; ++i)
+		{
+			GeneratePlanet(i, planetTypes.Dequeue());
+		}
+	}
+
+	private void GeneratePlanet(int slot, int type)
+	{
+		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		int x = WorldGen.genRand.Next(100, Width - 100);
+		int y = (int)MathHelper.Lerp(PlanetTop, CloudTop - 200, slot / 3f);
+		
+		int tileType = type switch
+		{
+			0 => TileID.LunarBlockVortex,
+			1 => TileID.LunarBlockStardust,
+			2 => TileID.LunarBlockSolar,
+			_ => TileID.LunarBlockNebula,
+		};
+
+		int size = type switch
+		{
+			0 => 40,
+			1 => 60,
+			2 => 80,
+			_ => 55,
+		};
+
+		int sizeWithBuffer = size + 20;
+
+		for (int i = x - sizeWithBuffer; i <= x + sizeWithBuffer; i++)
+		{
+			for (int j = y - sizeWithBuffer; j <= y + sizeWithBuffer; j++)
+			{
+				if (Vector2.Distance(new Vector2(x, y), new Vector2(i, j)) < size - noise.GetNoise(i, j) * 4)
+				{
+					Tile tile = Main.tile[i, j];
+					tile.HasTile = true;
+					tile.TileType = (ushort)tileType;
+				}
+			}
+		}
+	}
 
 	private void GenerateClouds(GenerationProgress progress, GameConfiguration configuration)
 	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
+
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.04f);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
 
 		for (int i = 10; i < Width - 10; ++i)
 		{
-			int topHeight = (int)(noise.GetNoise(i * 0.1f, 0) * 40);
+			int topHeight = (int)(noise.GetNoise(i * 0.15f, 0) * 40);
 			int botHeight = (int)(noise.GetNoise(i * 0.3f, 500) * 40);
 
-			int top = TerrariaHeight - 320 - topHeight;
-			int bottom = TerrariaHeight - 80 + botHeight;
+			int top = Math.Max(TerrariaHeight - 320 - topHeight, CloudTop);
+			int bottom = Math.Min(TerrariaHeight - 80 + botHeight, CloudBottom);
 
 			for (int j = top; j < bottom; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 				float heightFactor = Utils.GetLerpValue(top, bottom, j);
 				float value = noise.GetNoise(i, j * 2f);
-
-				if (j < top + 20)
-				{
-					value = MathHelper.Lerp(value, -0.4f, Math.Abs(j - (top + 20)) / 20f);
-				}
-				else if (j > bottom - 20)
-				{
-					value = MathHelper.Lerp(value, -0.4f, Math.Abs(j - (bottom - 20)) / 20f);
-				}
+				value = FadeValue(top, bottom, j, value);
 
 				if (value > MathHelper.Lerp(-0.1f, 0.2f, heightFactor))
 				{
 					tile.HasTile = true;
 					tile.TileType = noise.GetNoise(i, j * 2.5f + 2000) > MathHelper.Lerp(-0.4f, 0.2f, heightFactor) ? TileID.RainCloud : TileID.Cloud;
 				}
-			}
-		}
-	}
 
-	public static void Cloud(int x, int y)
-	{
-		int width = WorldGen.genRand.Next(38, 50);
-		GenAction action = Actions.Chain(new Modifiers.Blotches(), new Actions.PlaceTile(TileID.Cloud));
-		float maxLength = new Vector2(width, 27).Length();
+				value = noise.GetNoise(i + 9873, j * 2f);
+				value = FadeValue(top, bottom, j, value);
+
+				if (value > MathHelper.Lerp(-0.1f, 0.2f, heightFactor))
+				{
+					tile.WallType = WallID.Cloud;
+				}
+			}
+
+			progress.Set(i / (Width - 20f));
+		}
 
 		for (int i = 0; i < 30; ++i)
 		{
-			Point offset = new(WorldGen.genRand.Next(-width, width), WorldGen.genRand.Next(28));
-			float mult = offset.ToVector2().Length() / maxLength;
+			Point16 pos = new(WorldGen.genRand.Next(60, Width - 60), WorldGen.genRand.Next(CloudTop, CloudBottom));
+			BuildPillar(pos);
+		}
+	}
 
-			if (mult <= 0.18f)
+	private static void BuildPillar(Point16 pos)
+	{
+		if (WorldGen.SolidOrSlopedTile(pos.X, pos.Y))
+		{
+			return;
+		}
+
+		for (int i = pos.X - 4; i < pos.X + 4; ++i)
+		{
+			if (WorldGen.SolidOrSlopedTile(i, pos.Y))
 			{
 				continue;
 			}
 
-			Point pos = new(x + offset.X, y + offset.Y);
-			WorldUtils.Gen(pos, new Shapes.Circle((int)(18 * mult), (int)(8 * mult)), action);
-		}
-
-		GenAction rainSnowCloudAction = Actions.Chain(new Modifiers.Conditions(new Conditions.IsTile(TileID.RainCloud)), new Modifiers.Blotches(), 
-			new Actions.PlaceTile(TileID.Cloud));
-
-		for (int i = 0; i < 8; ++i)
-		{
-			Point offset = new(x + WorldGen.genRand.Next(-width, width), y + WorldGen.genRand.Next(28));
-			int size = 8;
-
-			for (int m = offset.X - size; m <= offset.X + size; m++)
+			if (!WorldUtils.Find(new Point(i, pos.Y), new Searches.Up(40).Conditions(new Conditions.IsSolid()), out Point top))
 			{
-				for (int n = offset.Y - size; n <= offset.Y + size; n++)
-				{
-					if (n > offset.X)
-					{
-						double num47 = Math.Abs(m - offset.X);
-						double num13 = Math.Abs(n - offset.Y) * 2;
+				return;
+			}
 
-						if (Math.Sqrt(num47 * num47 + num13 * num13) < (size + WorldGen.genRand.Next(2)))
-						{
-							Tile tile = Main.tile[m, n];
-							tile = Main.tile[m, n];
-							tile.TileType = TileID.RainCloud;
-						}
-					}
+			if (!WorldUtils.Find(new Point(i, pos.Y), new Searches.Down(40).Conditions(new Conditions.IsSolid()), out Point bottom))
+			{
+				return;
+			}
+
+			for (int j = top.Y - 2; j < bottom.Y + 3; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile)
+				{
+					tile.TileType = TileID.Sunplate;
+				}
+				else
+				{
+					tile.WallType = WallID.DiscWall;
 				}
 			}
 		}
 	}
 
+	private static float FadeValue(int top, int bottom, int j, float value)
+	{
+		if (j < top + 20)
+		{
+			value = MathHelper.Lerp(value, -0.4f, Math.Abs(j - (top + 20)) / 20f);
+		}
+		else if (j > bottom - 20)
+		{
+			value = MathHelper.Lerp(value, -0.4f, Math.Abs(j - (bottom - 20)) / 20f);
+		}
+
+		return value;
+	}
+
 	private void GenerateTerraria(GenerationProgress progress, GameConfiguration configuration)
 	{
-		progress.Message = "Terrain";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Scanning");
 
 		Main.spawnTileX = Width / 2;
 		Main.spawnTileY = Height / 2;
 		Main.worldSurface = Height - 50;
 		Main.rockLayer = Height - 40;
-		TypesUsed.Clear();
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
@@ -159,7 +230,10 @@ internal class MoonLordDomain : BossDomainSubworld
 		baseRange = Main.rand.Next(rangeSpace + 15, rangeSpace * (TileRangeStep - 1) - 15);
 		Range wallRange = (baseRange - rangeSpace)..(baseRange + rangeSpace);
 
-		for (int i = Math.Max(tileRange.Start.Value - 10, 0); i < Math.Min(tileRange.End.Value + 10, TileID.Count); ++i)
+		int scanStart = Math.Max(tileRange.Start.Value - 10, 0);
+		int scanEnd = Math.Min(tileRange.End.Value + 10, TileID.Count);
+
+		for (int i = scanStart; i < scanEnd; ++i)
 		{
 			int id = i;
 
@@ -169,7 +243,11 @@ internal class MoonLordDomain : BossDomainSubworld
 			}
 
 			closestValidTileLookup.Add(i, id);
+
+			progress.Set(Utils.GetLerpValue(scanStart, scanEnd, i));
 		}
+
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
 		for (int i = 0; i < Width; ++i)
 		{
@@ -189,12 +267,12 @@ internal class MoonLordDomain : BossDomainSubworld
 				tile.HasTile = y > TerrariaHeight + 60;
 				tile.TileType = GetTileId(noise, closestValidTileLookup, tileRange, new Vector2(x, y), new Vector2(i, j), wallRange, out ushort wallType);
 				tile.WallType = wallType;
-
-				TypesUsed.Add(tile.TileType);
 			}
+
+			progress.Set(i / (float)Width);
 		}
 
-		progress.Message = "Tunnels";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
 
 		Main.spawnTileX = Width / 2;
 		Main.spawnTileY = Height - 200;
@@ -205,9 +283,10 @@ internal class MoonLordDomain : BossDomainSubworld
 		for (int i = 0; i < 4; ++i)
 		{
 			DigTunnel(Main.rand.Next(9, 18), xByTierStep);
+			progress.Set(i / 3f);
 		}
 
-		progress.Message = "Objects";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.PopulatingWorld");
 
 		Dictionary<string, int> counts = [];
 
@@ -216,9 +295,14 @@ internal class MoonLordDomain : BossDomainSubworld
 			bool success = true;
 
 			success &= SpamObject((x, y) => MoonDomainGenerationTools.ForceLivingTree(x, y, WorldGen.genRand.NextBool(3)), counts, "Tree", 6);
-			success &= SpamObject((x, y) => new MarbleBiome().Place(new Point(x, y), GenVars.structures), counts, "Marble");
-			success &= SpamObject((x, y) => new GraniteBiome().Place(new Point(x + (WorldGen.genRand.NextBool() ? -1 : 1), y), GenVars.structures), 
-				counts, "Granite", 18, false);
+			success &= SpamObject((x, y) => new MarbleBiome().Place(new Point(x, y), GenVars.structures), counts, "Marble", 5);
+			success &= SpamObject((x, y) =>
+			{
+				Tile tile = Main.tile[x, y];
+				tile.HasTile = false;
+
+				new GraniteBiome().Place(new Point(x, y), GenVars.structures);
+			}, counts, "Granite", 7, false);
 
 			success &= SpamObject((x, y) =>
 			{
@@ -234,7 +318,7 @@ internal class MoonLordDomain : BossDomainSubworld
 					builder.ChestChance = 0;
 					builder.Place(new HouseBuilderContext(), GenVars.structures);
 				}
-			}, counts, "UGHouse", 12, false);
+			}, counts, "UGHouse", 16, false);
 
 			success &= SpamObject((x, y) =>
 			{
@@ -250,7 +334,7 @@ internal class MoonLordDomain : BossDomainSubworld
 					builder.ChestChance = 0;
 					builder.Place(new HouseBuilderContext(), GenVars.structures);
 				}
-			}, counts, "House", 18);
+			}, counts, "House", 16);
 
 			success &= SpamObject((x, y) => WorldGen.TileRunner(x + Main.rand.Next(-40, 40), y + Main.rand.Next(-40, 40), WorldGen.genRand.NextFloat(8, 17), 
 				WorldGen.genRand.Next(4, 9), WorldGen.genRand.Next(12) switch 
@@ -281,7 +365,7 @@ internal class MoonLordDomain : BossDomainSubworld
 			}
 		}
 
-		progress.Message = "Growth";
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
 
 		for (int i = 2; i < Width - 2; ++i)
 		{
