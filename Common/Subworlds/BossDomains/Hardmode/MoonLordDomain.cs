@@ -2,13 +2,13 @@
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
-using SubworldLibrary;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes;
 using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.GameContent.Generation;
-using Terraria.GameContent.Personalities;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.ObjectData;
@@ -19,6 +19,13 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 internal class MoonLordDomain : BossDomainSubworld
 {
 	public const int TerrariaHeight = 1800;
+
+	// For GetTileId
+	const float DirtCutoff = 0.6f;
+	const float DirtDitherStart = DirtCutoff + 0.03f;
+
+	const float StoneCutoff = 0.3f;
+	const float StoneDitherStart = StoneCutoff + 0.03f;
 
 	public override int Width => 900;
 	public override int Height => 4200;
@@ -35,29 +42,38 @@ internal class MoonLordDomain : BossDomainSubworld
 
 	private void GenerateClouds(GenerationProgress progress, GameConfiguration configuration)
 	{
-		for (int i = 0; i < 35; ++i)
-		{
-			Point pos = new(WorldGen.genRand.Next(120, Width - 120), Main.rand.Next(TerrariaHeight - 400, TerrariaHeight - 200));
+		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		noise.SetFrequency(0.04f);
+		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
 
-			if (WorldGen.genRand.NextBool(5))
+		for (int i = 10; i < Width - 10; ++i)
+		{
+			int topHeight = (int)(noise.GetNoise(i * 0.1f, 0) * 40);
+			int botHeight = (int)(noise.GetNoise(i * 0.3f, 500) * 40);
+
+			int top = TerrariaHeight - 320 - topHeight;
+			int bottom = TerrariaHeight - 80 + botHeight;
+
+			for (int j = top; j < bottom; ++j)
 			{
-				Cloud(pos.X, pos.Y);
-			}
-			else if (WorldGen.genRand.NextBool(5))
-			{
-				WorldGen.CloudLake(pos.X, pos.Y);
-			}
-			else if (WorldGen.genRand.NextBool(5))
-			{
-				WorldGen.CloudIsland(pos.X, pos.Y);
-			}
-			else if (WorldGen.genRand.NextBool(5))
-			{
-				WorldGen.DesertCloudIsland(pos.X, pos.Y);
-			}
-			else if (WorldGen.genRand.NextBool(5))
-			{
-				WorldGen.SnowCloudIsland(pos.X, pos.Y);
+				Tile tile = Main.tile[i, j];
+				float heightFactor = Utils.GetLerpValue(top, bottom, j);
+				float value = noise.GetNoise(i, j * 2f);
+
+				if (j < top + 20)
+				{
+					value = MathHelper.Lerp(value, -0.4f, Math.Abs(j - (top + 20)) / 20f);
+				}
+				else if (j > bottom - 20)
+				{
+					value = MathHelper.Lerp(value, -0.4f, Math.Abs(j - (bottom - 20)) / 20f);
+				}
+
+				if (value > MathHelper.Lerp(-0.1f, 0.2f, heightFactor))
+				{
+					tile.HasTile = true;
+					tile.TileType = noise.GetNoise(i, j * 2.5f + 2000) > MathHelper.Lerp(-0.4f, 0.2f, heightFactor) ? TileID.RainCloud : TileID.Cloud;
+				}
 			}
 		}
 	}
@@ -171,21 +187,12 @@ internal class MoonLordDomain : BossDomainSubworld
 
 				Tile tile = Main.tile[i, j];
 				tile.HasTile = y > TerrariaHeight + 60;
-				tile.TileType = GradientNonsenseTileId(noise, closestValidTileLookup, tileRange, x, y, wallRange, out ushort wallType);
+				tile.TileType = GetTileId(noise, closestValidTileLookup, tileRange, new Vector2(x, y), new Vector2(i, j), wallRange, out ushort wallType);
 				tile.WallType = wallType;
 
 				TypesUsed.Add(tile.TileType);
 			}
 		}
-
-		string types = "";
-
-		foreach (int item in TypesUsed)
-		{
-			types += $"({item}: {TileID.Search.GetName(item)}) ";
-		}
-
-		Mod.Logger.Debug("ML DEBUG LIST: " + types);
 
 		progress.Message = "Tunnels";
 
@@ -193,48 +200,84 @@ internal class MoonLordDomain : BossDomainSubworld
 		Main.spawnTileY = Height - 200;
 
 		WorldUtils.Gen(new Point(Main.spawnTileX, Main.spawnTileY), new Shapes.Circle(12, 8), Actions.Chain(new Modifiers.Blotches(), new Actions.ClearTile(false)));
+		Dictionary<int, List<int>> xByTierStep = [];
 
 		for (int i = 0; i < 4; ++i)
 		{
-			DigTunnel(Main.rand.Next(9, 18));
+			DigTunnel(Main.rand.Next(9, 18), xByTierStep);
 		}
 
 		progress.Message = "Objects";
 
-		Dictionary<string, int> typeCount = [];
+		Dictionary<string, int> counts = [];
 
-		for (int i = 0; i < 12; ++i)
+		while (true)
 		{
 			bool success = true;
 
-			success &= SpamObject((x, y) => MoonDomainGenerationTools.ForceLivingTree(x, y, false), typeCount, "Tree");
-			success &= SpamObject((x, y) => new MarbleBiome().Place(new Point(x, y), GenVars.structures), typeCount, "Marble");
-			success &= SpamObject((x, y) => new GraniteBiome().Place(new Point(x + (WorldGen.genRand.NextBool() ? -1 : 1), y), GenVars.structures), typeCount, "Granite", 20);
+			success &= SpamObject((x, y) => MoonDomainGenerationTools.ForceLivingTree(x, y, WorldGen.genRand.NextBool(3)), counts, "Tree", 6);
+			success &= SpamObject((x, y) => new MarbleBiome().Place(new Point(x, y), GenVars.structures), counts, "Marble");
+			success &= SpamObject((x, y) => new GraniteBiome().Place(new Point(x + (WorldGen.genRand.NextBool() ? -1 : 1), y), GenVars.structures), 
+				counts, "Granite", 18, false);
 
 			success &= SpamObject((x, y) =>
 			{
-				const int Spacing = 12;
-				float xDir = WorldGen.genRand.NextFloat(-Spacing, Spacing);
-				float yDir = WorldGen.genRand.NextFloat(-Spacing, Spacing);
-				WorldGen.digTunnel(x, y, xDir, yDir, WorldGen.genRand.Next(14, 30), WorldGen.genRand.Next(20, 50));
-			}, typeCount, "Tunnel");
-
-			success &= SpamObject((x, y) =>
-			{
-				var rooms = new Rectangle[WorldGen.genRand.Next(2) + 1];
-				rooms[0] = new Rectangle(x, y, 20, 14);
-
-				if (rooms.Length > 1)
+				HouseBuilder builder = MoonDomainGenerationTools.CreateHouseBuilder(new Point(x, y), WorldGen.genRand.Next(3) switch 
 				{
-					rooms[1] = new Rectangle(x + WorldGen.genRand.Next(-10, 10), y + 14, 20, 14);
+					0 => HouseType.Ice,
+					1 => HouseType.Granite,
+					_ => HouseType.Marble,
+				});
+
+				if (builder.IsValid)
+				{
+					builder.ChestChance = 0;
+					builder.Place(new HouseBuilderContext(), GenVars.structures);
 				}
+			}, counts, "UGHouse", 12, false);
 
-				new CaveHouseBiome().Place(new Point(x, y), GenVars.structures);
-			}, typeCount, "UGHouse", 12, false);
-
-			if (!success)
+			success &= SpamObject((x, y) =>
 			{
-				i--;
+				HouseBuilder builder = MoonDomainGenerationTools.CreateHouseBuilder(new Point(x, y), WorldGen.genRand.Next(3) switch 
+				{
+					0 => HouseType.Jungle,
+					1 => HouseType.Mushroom,
+					_ => HouseType.Wood,
+				});
+
+				if (builder.IsValid)
+				{
+					builder.ChestChance = 0;
+					builder.Place(new HouseBuilderContext(), GenVars.structures);
+				}
+			}, counts, "House", 18);
+
+			success &= SpamObject((x, y) => WorldGen.TileRunner(x + Main.rand.Next(-40, 40), y + Main.rand.Next(-40, 40), WorldGen.genRand.NextFloat(8, 17), 
+				WorldGen.genRand.Next(4, 9), WorldGen.genRand.Next(12) switch 
+			{
+				0 => TileID.Iron,
+				1 => TileID.Gold,
+				2 => TileID.Lead,
+				3 => TileID.Silver,
+				4 => TileID.Tungsten,
+				5 => TileID.Platinum,
+				6 => TileID.Palladium,
+				7 => TileID.Cobalt,
+				8 => TileID.Mythril,
+				9 => TileID.Orichalcum,
+				10 => TileID.Titanium,
+				_ => TileID.Adamantite,
+			}), counts, "Ore", 300, false);
+
+			success &= SpamObject((x, y) =>
+			{
+				int height = WorldGen.genRand.Next(20, 80);
+				MoonDomainGenerationTools.GenerateMahoganyTree(new Point(x, y), new Point(x, y - height));
+			}, counts, "MahoganyTree", 6);
+
+			if (success)
+			{
+				break;
 			}
 		}
 
@@ -247,10 +290,32 @@ internal class MoonLordDomain : BossDomainSubworld
 				Tile tile = Main.tile[i, j];
 				OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
 
-				if (tile.HasTile && tile.TileType == TileID.Dirt && flags != OpenFlags.None)
+				if (tile.WallType == WallID.None)
+				{
+					tile.WallType = WallID.LunarRustBrickWall;
+				}
+
+				if (!tile.HasTile)
+				{
+					continue;
+				}
+
+				if (tile.TileType == TileID.Dirt && flags != OpenFlags.None)
 				{
 					tile.TileType = TileID.Grass;
 					Decoration.OnPurityGrass(new Point16(i, j), flags, 1);
+				}
+				else if (tile.TileType == TileID.Stone && flags != OpenFlags.None)
+				{
+					tile.TileType = noise.GetNoise(i, j) switch
+					{
+						< -0.4f => TileID.ArgonMoss,
+						< -0.2f => TileID.LavaMoss,
+						< 0f => TileID.VioletMoss,
+						< 0.2f => TileID.XenonMoss,
+						< 0.4f => TileID.KryptonMoss,
+						_ => TileID.Stone,
+					};
 				}
 			}
 		}
@@ -264,8 +329,8 @@ internal class MoonLordDomain : BossDomainSubworld
 		}
 
 		int y = dirtArea 
-			? WorldGen.genRand.Next((int)MathHelper.Lerp(TerrariaHeight, Height, 0.52f), Height - 150)
-			: WorldGen.genRand.Next((int)MathHelper.Lerp(TerrariaHeight, Height, 0.32f), (int)MathHelper.Lerp(TerrariaHeight, Height, 0.48f));
+			? WorldGen.genRand.Next((int)MathHelper.Lerp(TerrariaHeight, Height, DirtCutoff + 0.02f), Height - 150)
+			: WorldGen.genRand.Next((int)MathHelper.Lerp(TerrariaHeight, Height, StoneCutoff + 0.02f), (int)MathHelper.Lerp(TerrariaHeight, Height, DirtCutoff - 0.02f));
 
 		Point pos = new(WorldGen.genRand.Next(200, Width - 200), y);
 		OpenFlags flags = OpenExtensions.GetOpenings(pos.X, pos.Y);
@@ -280,7 +345,7 @@ internal class MoonLordDomain : BossDomainSubworld
 			}
 
 			countsByType[name] = ++value;
-			return true;
+			return false;
 		}
 		else
 		{
@@ -288,14 +353,15 @@ internal class MoonLordDomain : BossDomainSubworld
 		}
 	}
 
-	private void DigTunnel(int baseSize)
+	private void DigTunnel(int baseSize, Dictionary<int, List<int>> xByTierStep)
 	{
 		FastNoiseLite noise = new();
 
-		Vector2[] points = Tunnel.GeneratePoints([new(Main.spawnTileX, Main.spawnTileY), new Vector2(RandomX(), StepY(0.2f)),
-			new Vector2(RandomX(), StepY(0.3f)), new Vector2(RandomX(), StepY(0.4f)), new Vector2(RandomX(), StepY(0.5f)), new Vector2(RandomX(), StepY(0.6f)),
-			new Vector2(RandomX(), StepY(0.7f)), new Vector2(RandomX(), StepY(0.8f)), new Vector2(RandomX(), StepY(0.9f)), new Vector2(RandomX(), StepY(1f))],
-					60, 4, 0.6f);
+		Vector2[] points = Tunnel.GeneratePoints([new(Main.spawnTileX, Main.spawnTileY), new Vector2(RandomX(0), StepY(0.1f)), new Vector2(RandomX(-1), StepY(0.15f)), 
+			new Vector2(RandomX(1), StepY(0.2f)), new Vector2(RandomX(2), StepY(0.3f)), new Vector2(RandomX(3), StepY(0.4f)), new Vector2(RandomX(4), StepY(0.5f)), 
+			new Vector2(RandomX(5), StepY(0.55f)), new Vector2(RandomX(6), StepY(0.6f)), new Vector2(RandomX(7), StepY(0.7f)), new Vector2(RandomX(8), StepY(0.75f)), 
+			new Vector2(RandomX(9), StepY(0.8f)), new Vector2(RandomX(10), StepY(0.85f)), new Vector2(RandomX(11), StepY(0.9f)), new Vector2(RandomX(12), StepY(1f))],
+			60, 4, 0.6f);
 
 		foreach (Vector2 point in points)
 		{
@@ -310,36 +376,48 @@ internal class MoonLordDomain : BossDomainSubworld
 			return MathHelper.Lerp(Main.spawnTileY, TerrariaHeight, factor);
 		}
 
-		float RandomX()
+		float RandomX(int tier)
 		{
-			return WorldGen.genRand.Next(200, Width - 200);
+			int x;
+
+			xByTierStep.TryAdd(tier, []);
+
+			do
+			{
+				x = WorldGen.genRand.Next(200, Width - 200);
+			} while (xByTierStep[tier].Any(v => Math.Abs(x - v) < 60));
+
+			xByTierStep[tier].Add(x);
+			return x;
 		}
 	}
 
-	private static ushort GradientNonsenseTileId(FastNoiseLite noise, Dictionary<int, int> tileLookup, Range tileRange, float x, float y, Range wallRange, out ushort wall)
+	private static ushort GetTileId(FastNoiseLite noise, Dictionary<int, int> lookup, Range tileRange, Vector2 mod, Vector2 real, Range wallRange, out ushort wall)
 	{
-		const float DirtCutoff = 0.5f;
-		const float DirtDitherStart = DirtCutoff + 0.03f;
-
-		const float StoneCutoff = 0.3f;
-		const float StoneDitherStart = StoneCutoff + 0.03f;
+		(float x, float y) = (mod.X, mod.Y);
+		(float i, float j) = (real.X, real.Y);
 
 		float yDistance = (y - TerrariaHeight) / (Main.maxTilesY - TerrariaHeight);
 
 		if (yDistance > DirtCutoff)
 		{
-			ushort dirt = noise.GetNoise(x, y) < -0.2f ? WallID.Dirt : WallID.Grass;
-			wall = yDistance < DirtDitherStart ? Dither(yDistance, DirtCutoff, DirtDitherStart, dirt, WallID.Stone) : dirt;
-			return yDistance < DirtDitherStart ? Dither(yDistance, DirtCutoff, DirtDitherStart, TileID.Dirt, TileID.Stone) : TileID.Dirt;
+			ushort dirt = noise.GetNoise(i, j) < -0.2f ? WallID.Dirt : WallID.Grass;
+			bool ice = noise.GetNoise(i * 0.4f, j * 0.4f) < -0.3f;
+			int stone = ice ? (noise.GetNoise(x * 0.4f, (y + 3000) * 0.4f) > 0.2f ? TileID.IceBlock : TileID.SnowBlock) : TileID.Stone;
+
+			wall = yDistance < DirtDitherStart ? Dither(yDistance, DirtCutoff, DirtDitherStart, dirt, ice ? WallID.IceUnsafe : WallID.Stone) : dirt;
+			return yDistance < DirtDitherStart ? Dither(yDistance, DirtCutoff, DirtDitherStart, TileID.Dirt, (ushort)stone) : TileID.Dirt;
 		}
 		else if (yDistance > StoneCutoff && WorldGen.genRand.NextFloat() < Utils.GetLerpValue(StoneCutoff, StoneDitherStart, yDistance))
 		{
-			wall = yDistance < StoneDitherStart ? Dither(yDistance, StoneCutoff, StoneDitherStart, WallID.Stone, WallID.ObsidianBackUnsafe) : WallID.Stone;
-			return yDistance < StoneDitherStart ? Dither(yDistance, StoneCutoff, StoneDitherStart, TileID.Stone, TileID.Ash) : TileID.Stone;
+			bool ice = noise.GetNoise(i * 0.4f, j * 0.4f) < -0.3f;
+			int stone = ice ? (noise.GetNoise(x * 0.4f, (y + 3000) * 0.4f) > 0.2f ? TileID.IceBlock : TileID.SnowBlock) : TileID.Stone;
+			wall = ice ? WallID.IceUnsafe : WallID.Stone;
+			return (ushort)stone;
 		}
 
 		wall = (ushort)MathHelper.Lerp(wallRange.Start.Value, wallRange.End.Value, Utils.GetLerpValue(-1.3f, 0.7f, noise.GetNoise(x * 0.8f, y * 0.8f + 120), true));
-		return (ushort)GetNearestTileId(noise.GetNoise(x, y), tileLookup, tileRange);
+		return (ushort)GetNearestTileId(noise.GetNoise(x, y), lookup, tileRange);
 	}
 
 	private static ushort Dither(float yDistance, float min, float max, ushort bottom, ushort top)
@@ -394,8 +472,8 @@ internal class MoonLordDomain : BossDomainSubworld
 	{
 		var data = TileObjectData.GetTileData(id, 0);
 		return (data == null || DataHasNoAnchors(data)) && Main.tileFrameImportant[id] || Main.tileCut[id] || id < TileID.Count && !Main.tileSolid[id]
-			|| id is TileID.Cactus or TileID.Trees or TileID.EchoBlock or TileID.Boulder or TileID.MetalBars or TileID.Teleporter || TileID.Sets.IsVine[id] 
-			|| ModContent.GetModTile(id) is ModTile modTile && modTile.Mod.Name == "ModLoaderMod" || TileID.Sets.Falling[id];
+			|| id is TileID.Cactus or TileID.Trees or TileID.EchoBlock or TileID.Boulder or TileID.MetalBars or TileID.Teleporter or TileID.TallGateClosed 
+			|| TileID.Sets.IsVine[id] || ModContent.GetModTile(id) is ModTile modTile && modTile.Mod.Name == "ModLoaderMod" || TileID.Sets.Falling[id];
 	}
 
 	private static bool DataHasNoAnchors(TileObjectData data)

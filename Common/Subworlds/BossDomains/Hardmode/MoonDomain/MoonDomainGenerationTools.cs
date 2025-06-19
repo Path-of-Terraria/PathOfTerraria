@@ -1,16 +1,18 @@
 ﻿using ReLogic.Utilities;
+using System.Collections.Generic;
+using Terraria.GameContent.Biomes.CaveHouse;
+using Terraria.GameContent.Generation;
 using Terraria.ID;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
 
 internal class MoonDomainGenerationTools
 {
 	/// <summary>
-	/// <see cref="WorldGen.GrowLivingTree(int, int, bool)"/> but with the conditions removed.
+	/// <see cref="WorldGen.GrowLivingTree(int, int, bool)"/> but with the conditions removed.<br/>
+	/// This is only cleaned up enough to remove warnings, and to add walls to the generation to fit better with the domain.
 	/// </summary>
-	/// <param name="i"></param>
-	/// <param name="j"></param>
-	/// <param name="patch"></param>
 	public static void ForceLivingTree(int i, int j, bool patch)
 	{
 		int num = 0;
@@ -454,6 +456,9 @@ internal class MoonDomainGenerationTools
 		Main.tileSolid[48] = true;
 	}
 
+	/// <summary>
+	/// Used to shorten code in <see cref="ForceLivingTree(int, int, bool)"/>.
+	/// </summary>
 	private static void PlaceLivingTile(int i, int j, int type = TileID.LivingWood, int wallType = WallID.LivingWoodUnsafe)
 	{
 		if (!WorldGen.InWorld(i, j, 20))
@@ -466,5 +471,204 @@ internal class MoonDomainGenerationTools
 		//tile.HasTile = true;
 		tile.IsHalfBlock = false;
 		tile.WallType = (ushort)wallType;
+	}
+
+	/// <summary>
+	/// Nabbed from <see cref="HouseUtils.CreateBuilder(Point, StructureMap)"/>, with various safety checks removed.<br/>
+	/// Same for the child methods <see cref="CreateRooms(Point)"/> and <see cref="GetRoomSolidPrecentage(Rectangle)"/>.
+	/// </summary>
+	public static HouseBuilder CreateHouseBuilder(Point origin, HouseType houseType)
+	{
+		List<Rectangle> list = CreateRooms(origin);
+
+		if (list.Count == 0)
+		{
+			return HouseBuilder.Invalid;
+		}
+
+		return houseType switch
+		{
+			HouseType.Wood => new WoodHouseBuilder(list),
+			HouseType.Desert => new DesertHouseBuilder(list),
+			HouseType.Granite => new GraniteHouseBuilder(list),
+			HouseType.Ice => new IceHouseBuilder(list),
+			HouseType.Jungle => new JungleHouseBuilder(list),
+			HouseType.Marble => new MarbleHouseBuilder(list),
+			HouseType.Mushroom => new MushroomHouseBuilder(list),
+			_ => new WoodHouseBuilder(list),
+		};
+	}
+
+	public static List<Rectangle> CreateRooms(Point result)
+	{
+		Rectangle item = FindRoom(result);
+		Rectangle rectangle = FindRoom(new Point(item.Center.X, item.Y + 1));
+		Rectangle rectangle2 = FindRoom(new Point(item.Center.X, item.Y + item.Height + 10));
+		rectangle2.Y = item.Y + item.Height - 1;
+		double roomSolidPrecentage = GetRoomSolidPrecentage(rectangle);
+		double roomSolidPrecentage2 = GetRoomSolidPrecentage(rectangle2);
+		item.Y += 3;
+		rectangle.Y += 3;
+		rectangle2.Y += 3;
+		var list = new List<Rectangle>();
+
+		if (WorldGen.genRand.NextDouble() > roomSolidPrecentage + 0.2)
+		{
+			list.Add(rectangle);
+		}
+
+		list.Add(item);
+
+		if (WorldGen.genRand.NextDouble() > roomSolidPrecentage2 + 0.2)
+		{
+			list.Add(rectangle2);
+		}
+
+		return list;
+	}
+
+	private static Rectangle FindRoom(Point origin)
+	{
+		bool flag = WorldUtils.Find(origin, Searches.Chain(new Searches.Left(25), new Conditions.IsSolid()), out Point result);
+		bool num = WorldUtils.Find(origin, Searches.Chain(new Searches.Right(25), new Conditions.IsSolid()), out Point result2);
+
+		if (!flag)
+		{
+			result = new Point(origin.X - 25, origin.Y);
+		}
+
+		if (!num)
+		{
+			result2 = new Point(origin.X + 25, origin.Y);
+		}
+
+		Rectangle room = new(origin.X, origin.Y, 0, 0);
+		
+		if (origin.X - result.X > result2.X - origin.X)
+		{
+			room.X = result.X;
+			room.Width = Utils.Clamp(result2.X - result.X, 15, 30);
+		}
+		else
+		{
+			room.Width = Utils.Clamp(result2.X - result.X, 15, 30);
+			room.X = result2.X - room.Width;
+		}
+
+		bool flag2 = WorldUtils.Find(result, Searches.Chain(new Searches.Up(10), new Conditions.IsSolid()), out Point result4);
+		bool num2 = WorldUtils.Find(result2, Searches.Chain(new Searches.Up(10), new Conditions.IsSolid()), out Point result5);
+		
+		if (!flag2)
+		{
+			result4 = new Point(origin.X, origin.Y - 10);
+		}
+
+		if (!num2)
+		{
+			result5 = new Point(origin.X, origin.Y - 10);
+		}
+
+		room.Height = Utils.Clamp(Math.Max(origin.Y - result4.Y, origin.Y - result5.Y), 8, 12);
+		room.Y -= room.Height;
+		return room;
+	}
+
+	private static double GetRoomSolidPrecentage(Rectangle room)
+	{
+		double num = room.Width * room.Height;
+		var @ref = new Ref<int>(0);
+		WorldUtils.Gen(new Point(room.X, room.Y), new Shapes.Rectangle(room.Width, room.Height), Actions.Chain(new Modifiers.IsSolid(), 
+			new Actions.Count(@ref)));
+		return @ref.Value / num;
+	}
+
+	/// <summary>
+	/// Copied from <see cref="Terraria.GameContent.Biomes.MahoganyTreeBiome.Place"/>, cleaned up and added walls.
+	/// </summary>
+	/// <param name="anchor"></param>
+	/// <param name="top"></param>
+	public static void GenerateMahoganyTree(Point anchor, Point top)
+	{
+		int num3 = (anchor.Y - top.Y - 9) / 5;
+		int num4 = num3 * 5;
+		int num5 = 0;
+		double num6 = WorldGen.genRand.NextDouble() + 1.0;
+		double num7 = WorldGen.genRand.NextDouble() + 2.0;
+
+		if (WorldGen.genRand.NextBool(2))
+		{
+			num7 = 0.0 - num7;
+		}
+
+		for (int i = 0; i < num3; i++)
+		{
+			int num8 = (int)(Math.Sin((i + 1) / 12.0 * num6 * MathHelper.Pi) * num7);
+			int num9 = (num8 < num5) ? (num8 - num5) : 0;
+
+			WorldUtils.Gen(new Point(anchor.X + num5 + num9, anchor.Y - (i + 1) * 5), new Shapes.Rectangle(6 + Math.Abs(num8 - num5), 7), 
+				Actions.Chain(new Modifiers.SkipTiles(21, 467, 226, 237), new Modifiers.SkipWalls(87), new SetTileNoClear(383), new Actions.PlaceWall(WallID.LivingWood), 
+				new Actions.SetFrames()));
+			
+			WorldUtils.Gen(new Point(anchor.X + num5 + num9 + 2, anchor.Y - (i + 1) * 5), new Shapes.Rectangle(2 + Math.Abs(num8 - num5), 5), 
+				Actions.Chain(new Modifiers.SkipTiles(21, 467, 226, 237), new Modifiers.SkipWalls(87), new RemoveTileAction(), 
+				new Actions.PlaceWall(WallID.LivingWood)));
+			
+			WorldUtils.Gen(new Point(anchor.X + num5 + 2, anchor.Y - i * 5), new Shapes.Rectangle(2, 2), 
+				Actions.Chain(new Modifiers.SkipTiles(21, 467, 226, 237), new Modifiers.SkipWalls(87), new RemoveTileAction(), 
+				new Actions.PlaceWall(WallID.LivingWood)));
+			num5 = num8;
+		}
+
+		int num10 = 6;
+
+		if (num7 < 0.0)
+		{
+			num10 = 0;
+		}
+
+		var list = new List<Point>();
+		for (int j = 0; j < 2; j++)
+		{
+			double num11 = (j + 1.0) / 3.0;
+			int num12 = num10 + (int)(Math.Sin(num3 * num11 / 12.0 * num6 * MathHelper.Pi) * num7);
+			double num13 = WorldGen.genRand.NextDouble() * MathHelper.PiOver4 - MathHelper.PiOver4 - 0.2;
+
+			if (num10 == 0)
+			{
+				num13 -= MathHelper.PiOver2;
+			}
+
+			WorldUtils.Gen(new Point(anchor.X + num12, anchor.Y - (int)(num3 * 5 * num11)), new ShapeBranch(num13, WorldGen.genRand.Next(12, 16)).OutputEndpoints(list), 
+				Actions.Chain(new Modifiers.SkipTiles(21, 467, 226, 237), new Modifiers.SkipWalls(87), new SetTileNoClear(383), new Actions.SetFrames(true),
+				new Actions.PlaceWall(WallID.LivingWood)));
+
+			num10 = 6 - num10;
+		}
+
+		int num14 = (int)(Math.Sin(num3 / 12.0 * num6 * MathHelper.Pi) * num7);
+		
+		WorldUtils.Gen(new Point(anchor.X + 6 + num14, anchor.Y - num4), new ShapeBranch(-0.6853981852531433, WorldGen.genRand.Next(16, 22)).OutputEndpoints(list), 
+			Actions.Chain(new Modifiers.SkipTiles(21, 467, 226, 237), new Modifiers.SkipWalls(87), new SetTileNoClear(383), new Actions.SetFrames(true), 
+			new Actions.PlaceWall(WallID.LivingWood)));
+		
+		WorldUtils.Gen(new Point(anchor.X + num14, anchor.Y - num4), new ShapeBranch(-2.45619455575943, WorldGen.genRand.Next(16, 22)).OutputEndpoints(list), 
+			Actions.Chain(new Modifiers.SkipTiles(21, 467, 226, 237), new Modifiers.SkipWalls(87), new SetTileNoClear(383), new Actions.SetFrames(true),
+			new Actions.PlaceWall(WallID.LivingWood)));
+		
+		foreach (Point item in list)
+		{
+			WorldUtils.Gen(item, new Shapes.Circle(4), Actions.Chain(new Modifiers.Blotches(4, 2), new Modifiers.SkipTiles(383, 21, 467, 226, 237), 
+				new Modifiers.SkipWalls(78, 87), new SetTileNoClear(TileID.LivingMahoganyLeaves), new Actions.SetFrames(true), new Actions.PlaceWall(WallID.JungleUnsafe)));
+		}
+
+		for (int k = 0; k < 4; k++)
+		{
+			double angle = k / 3.0 * 2.0 + 0.57075;
+			WorldUtils.Gen(anchor, new ShapeRoot(angle, WorldGen.genRand.Next(40, 60)), Actions.Chain(new Modifiers.SkipTiles(21, 467, 226, 237), 
+				new Modifiers.SkipWalls(87), new SetTileNoClear(TileID.LivingMahogany, true), new Actions.PlaceWall(WallID.LivingWood)));
+		}
+
+		//WorldGen.AddBuriedChest(anchor.X + 3, anchor.Y - 1, (!WorldGen.genRand.NextBool(4)) ? WorldGen.GetNextJungleChestItem() : 0, notNearOtherChests: false, 10,
+		//	trySlope: false, 0);
 	}
 }

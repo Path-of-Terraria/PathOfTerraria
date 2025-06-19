@@ -1,7 +1,9 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using SubworldLibrary;
+using System.Data;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
@@ -50,7 +52,7 @@ internal class StopCuttingProjectile : GlobalProjectile
 	{
 		bool vanilla = orig(x, y);
 
-		if (Cutting && SubworldSystem.Current is BossDomainSubworld domain)
+		if (Cutting && SubworldSystem.Current is BossDomainSubworld domain and not MoonLordDomain)
 		{
 			return vanilla && BuildingWhitelist.InCuttingWhitelist(Main.tile[x, y].TileType);
 		}

@@ -10,21 +10,29 @@ internal class MoonDomainHooks : ModSystem
 	public override void Load()
 	{
 		On_Item.NewItem_Inner += BlockDropsInThisDomain;
-		On_WorldGen.KillTile_DropItems += StopDrops;
 		On_WorldGen.KillWall_DropItems += StopWallDrops;
+		On_WorldGen.KillTile += StopAllKillTileDrops;
+		On_WorldGen.TileFrame += On_WorldGen_TileFrame;
+	}
+
+	private void On_WorldGen_TileFrame(On_WorldGen.orig_TileFrame orig, int i, int j, bool resetFrame, bool noBreak)
+	{
+		DroppingTileItem = true;
+		orig(i, j, resetFrame, noBreak);
+		DroppingTileItem = false;
+	}
+
+	private void StopAllKillTileDrops(On_WorldGen.orig_KillTile orig, int i, int j, bool fail, bool effectOnly, bool noItem)
+	{
+		DroppingTileItem = true;
+		orig(i, j, fail, effectOnly, SubworldSystem.Current is MoonLordDomain || noItem);
+		DroppingTileItem = false;
 	}
 
 	private void StopWallDrops(On_WorldGen.orig_KillWall_DropItems orig, int i, int j, Tile tileCache)
 	{
 		DroppingTileItem = true;
 		orig(i, j, tileCache);
-		DroppingTileItem = false;
-	}
-
-	private void StopDrops(On_WorldGen.orig_KillTile_DropItems orig, int x, int y, Tile tileCache, bool includeLargeObjectDrops, bool includeAllModdedLargeObjectDrops)
-	{
-		DroppingTileItem = true;
-		orig(x, y, tileCache, includeLargeObjectDrops, includeAllModdedLargeObjectDrops);
 		DroppingTileItem = false;
 	}
 
