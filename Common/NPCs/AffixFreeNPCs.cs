@@ -49,5 +49,14 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody4);
 		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonHead);
 		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DiggerBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DiggerHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DiggerTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.LeechBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.LeechHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.LeechTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerTail);
 	}
 }
