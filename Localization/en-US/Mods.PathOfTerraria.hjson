@@ -58,4 +58,9 @@ Biomes: {
 		DisplayName: Mechanisms
 		TownNPCDialogueName: the Mechanisms
 	}
+
+	SolarArea: {
+		DisplayName: Solar Area
+		TownNPCDialogueName: the Solar Area
+	}
 }

@@ -31,5 +31,23 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.WallofFleshEye);
 		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron); // Both of these are effectively projectiles, should be ignored
 		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron2);
+		ArpgNPC.NoAffixesSet.Add(NPCID.GiantWormBody); // All of these are worms which should not be modified
+		ArpgNPC.NoAffixesSet.Add(NPCID.GiantWormHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.GiantWormTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernBody2);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernBody3);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernLegs);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DevourerBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DevourerHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DevourerTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody1);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody2);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody3);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody4);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonTail);
 	}
 }

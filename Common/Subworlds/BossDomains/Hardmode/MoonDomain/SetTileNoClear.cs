@@ -1,5 +1,4 @@
-﻿using Terraria.DataStructures;
-using Terraria.WorldBuilding;
+﻿using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
 
