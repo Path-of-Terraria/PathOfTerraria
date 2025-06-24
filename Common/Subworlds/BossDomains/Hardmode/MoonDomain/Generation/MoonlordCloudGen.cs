@@ -8,7 +8,7 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Genera
 
 internal static class MoonlordCloudGen
 {
-	internal static void GenerateClouds(GenerationProgress progress, int Width, int Height)
+	internal static void GenerateClouds(GenerationProgress progress, int Width)
 	{
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		noise.SetFrequency(0.04f);
@@ -35,6 +35,11 @@ internal static class MoonlordCloudGen
 					tile.TileType = noise.GetNoise(i, j * 2.5f + 2000) > MathHelper.Lerp(-0.4f, 0.2f, heightFactor) ? TileID.RainCloud : TileID.Cloud;
 				}
 
+				if (noise.GetNoise(i, j + 1500) > 0.5f)
+				{
+					tile.TileType = TileID.SnowCloud;
+				}
+
 				value = noise.GetNoise(i + 10000, j * 2f);
 				value = FadeValue(top, bottom, j, value);
 
@@ -47,7 +52,7 @@ internal static class MoonlordCloudGen
 			progress.Set(i / (Width - 20f));
 		}
 
-		for (int i = 0; i < 20; ++i)
+		for (int i = 0; i < 30; ++i)
 		{
 			Point16 pos;
 
@@ -56,7 +61,7 @@ internal static class MoonlordCloudGen
 				pos = new(WorldGen.genRand.Next(60, Width - 60), WorldGen.genRand.Next(MoonLordDomain.CloudTop, MoonLordDomain.CloudBottom));
 			} while (!GenVars.structures.CanPlace(new Rectangle(pos.X, pos.Y - 6, 12, 12)));
 
-			if (BuildPillar(pos, out Rectangle bounds))
+			if (i < 15 ? BuildGap(pos, out Rectangle bounds) : BuildPillar(pos, out bounds))
 			{
 				GenVars.structures.AddProtectedStructure(bounds, 8);
 			}
@@ -122,6 +127,68 @@ internal static class MoonlordCloudGen
 
 			bottomRight.X = Math.Max(bottomRight.X, point.X);
 			bottomRight.Y = Math.Max(bottomRight.Y, point.Y);
+		}
+
+		bounds = new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
+		return true;
+	}
+
+	private static bool BuildGap(Point16 pos, out Rectangle bounds)
+	{
+		bounds = Rectangle.Empty;
+
+		if (WorldGen.SolidOrSlopedTile(pos.X, pos.Y))
+		{
+			return false;
+		}
+
+		HashSet<Point16> points = [];
+		Point topLeft = new(short.MaxValue - 1, short.MaxValue - 1);
+		Point bottomRight = Point.Zero;
+
+		for (int j = pos.Y - 4; j < pos.Y + 4; ++j)
+		{
+			if (WorldGen.SolidOrSlopedTile(pos.X, j))
+			{
+				continue;
+			}
+
+			if (!WorldUtils.Find(new Point(pos.X, j), new Searches.Left(40).Conditions(new Conditions.IsSolid()), out Point left))
+			{
+				return false;
+			}
+
+			if (!WorldUtils.Find(new Point(pos.X, j), new Searches.Right(40).Conditions(new Conditions.IsSolid()), out Point right))
+			{
+				return false;
+			}
+
+			for (int i = left.X - 2; i < right.X + 3; ++i)
+			{
+				points.Add(new Point16(i, j));
+
+				topLeft.X = Math.Min(topLeft.X, i);
+				topLeft.Y = Math.Min(topLeft.Y, j);
+
+				bottomRight.X = Math.Max(bottomRight.X, i);
+				bottomRight.Y = Math.Max(bottomRight.Y, j);
+			}
+		}
+
+		foreach (Point16 point in points)
+		{
+			Tile tile = Main.tile[point.X, point.Y];
+			int wallDiff = point.Y - pos.Y;
+
+			if (tile.HasTile)
+			{
+				tile.TileType = TileID.GoldStarryGlassBlock;
+			}
+			
+			if (topLeft.Y < point.Y && bottomRight.Y > point.Y)
+			{
+				tile.WallType = WallID.GoldStarryGlassWall;
+			}
 		}
 
 		bounds = new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);

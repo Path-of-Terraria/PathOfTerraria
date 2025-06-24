@@ -292,7 +292,7 @@ internal class MoonlordTerrainGen
 
 			do
 			{
-				x = WorldGen.genRand.Next(200, Main.maxTilesX - 200);
+				x = WorldGen.genRand.Next(140, Main.maxTilesX - 140);
 			} while (xByTierStep[tier].Any(v => Math.Abs(x - v) < 60));
 
 			xByTierStep[tier].Add(x);

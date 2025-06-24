@@ -48,7 +48,7 @@ internal class MoonLordDomain : BossDomainSubworld
 	private void GenerateClouds(GenerationProgress progress, GameConfiguration configuration)
 	{
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Clouds");
-		MoonlordCloudGen.GenerateClouds(progress, Width, Height);
+		MoonlordCloudGen.GenerateClouds(progress, Width);
 	}
 
 	public override void OnEnter()
