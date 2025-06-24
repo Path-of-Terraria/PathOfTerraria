@@ -40,8 +40,20 @@ internal class CustomHeadIconMapLayer : ModMapLayer, INeedRenderTargetContent
 			{
 				_drawData.Clear();
 
-				ref Vector2 mapPosition = ref GetMapPosition(ref context);
+				Vector2 mapPosition = GetMapPosition(ref context);
 				Vector2 position = (npc.Center.ToTileCoordinates().ToVector2() - mapPosition) * GetMapScale(ref context) + GetMapOffset(ref context);
+				Rectangle? clippingRect = GetClippingRectangle(ref context);
+
+				if (clippingRect.HasValue)
+				{
+					Rectangle rect = clippingRect.Value;
+					rect.Inflate(-16, -16);
+
+					if (!rect.Contains(position.ToPoint()))
+					{
+						continue;
+					}
+				}
 
 				PlayerHeadDrawRenderTargetContent playerHeadDrawRenderTargetContent = _containerHeadRenderers[npc.whoAmI];
 				playerHeadDrawRenderTargetContent.UsePlayer(cNPC.DrawDummy);
@@ -76,6 +88,9 @@ internal class CustomHeadIconMapLayer : ModMapLayer, INeedRenderTargetContent
 
 	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_drawScale")]
 	static extern ref float GetDrawScale(ref MapOverlayDrawContext context);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_clippingRect")]
+	static extern ref Rectangle? GetClippingRectangle(ref MapOverlayDrawContext context);
 
 	private void RenderDrawData(Player drawPlayer)
 	{

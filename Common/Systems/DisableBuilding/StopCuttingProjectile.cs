@@ -8,7 +8,7 @@ namespace PathOfTerraria.Common.Systems.DisableBuilding;
 
 internal class StopCuttingProjectile : GlobalProjectile
 {
-	private static bool Cutting = false;
+	private static Projectile CuttingProjectile = null;
 
 	public override void Load()
 	{
@@ -50,9 +50,9 @@ internal class StopCuttingProjectile : GlobalProjectile
 	{
 		bool vanilla = orig(x, y);
 
-		if (Cutting && SubworldSystem.Current is BossDomainSubworld domain)
+		if (CuttingProjectile is not null && SubworldSystem.Current is BossDomainSubworld domain && Main.tile[x, y].HasTile && Main.tileCut[Main.tile[x, y].TileType])
 		{
-			return vanilla && BuildingWhitelist.InCuttingWhitelist(Main.tile[x, y].TileType);
+			return vanilla && CanCutTile(CuttingProjectile, x, y);
 		}
 
 		return vanilla;
@@ -60,9 +60,9 @@ internal class StopCuttingProjectile : GlobalProjectile
 
 	private void AddCutCheck(On_Projectile.orig_CutTiles orig, Projectile self)
 	{
-		Cutting = true;
+		CuttingProjectile = self;
 		orig(self);
-		Cutting = false;
+		CuttingProjectile = null;
 	}
 
 	public override bool PreKill(Projectile projectile, int timeLeft)
