@@ -8,6 +8,8 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Genera
 
 internal static class MoonlordCloudGen
 {
+	private delegate bool CloudDelegate(Point16 pos, out Rectangle bounds);
+
 	internal static void GenerateClouds(GenerationProgress progress, int Width)
 	{
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
@@ -52,16 +54,25 @@ internal static class MoonlordCloudGen
 			progress.Set(i / (Width - 20f));
 		}
 
-		for (int i = 0; i < 30; ++i)
+		SpamCloudObject(BuildPillar);
+		SpamCloudObject(BuildGap);
+		SpamCloudObject(BuildSmallStar, 18);
+	}
+
+	private static void SpamCloudObject(CloudDelegate cloud, int count = 12)
+	{
+		for (int i = 0; i < count; ++i)
 		{
 			Point16 pos;
 
 			do
 			{
-				pos = new(WorldGen.genRand.Next(60, Width - 60), WorldGen.genRand.Next(MoonLordDomain.CloudTop, MoonLordDomain.CloudBottom));
+				pos = new(WorldGen.genRand.Next(60, Main.maxTilesX - 60), WorldGen.genRand.Next(MoonLordDomain.CloudTop, MoonLordDomain.CloudBottom));
 			} while (!GenVars.structures.CanPlace(new Rectangle(pos.X, pos.Y - 6, 12, 12)));
 
-			if (i < 15 ? BuildGap(pos, out Rectangle bounds) : BuildPillar(pos, out bounds))
+			bool success = cloud(pos, out Rectangle bounds);
+
+			if (success)
 			{
 				GenVars.structures.AddProtectedStructure(bounds, 8);
 			}
@@ -70,6 +81,54 @@ internal static class MoonlordCloudGen
 				i--;
 			}
 		}
+	}
+
+	private static bool BuildSmallStar(Point16 pos, out Rectangle bounds)
+	{
+		int size = WorldGen.genRand.Next(6, 12);
+		bool wall = WorldGen.genRand.NextBool(4);
+
+		ushort type;
+
+		if (wall)
+		{
+			type = WorldGen.genRand.Next(2) switch
+			{
+				0 => WallID.Lavafall,
+				_ => WallID.LavaMossBlockWall,
+			};
+		}
+		else
+		{
+			type = WorldGen.genRand.Next(6) switch
+			{
+				0 => TileID.LivingFire,
+				1 => TileID.LivingFrostFire,
+				2 => TileID.LivingDemonFire,
+				3 => TileID.Hellstone,
+				4 => TileID.Meteorite,
+				_ => TileID.LivingCursedFire,
+			};
+		}
+
+		GenAction placeAction = wall ? new Actions.PlaceWall(type) : new Actions.PlaceTile(type);
+
+		if (type == TileID.Meteorite)
+		{
+			placeAction = Actions.Chain(new Modifiers.Blotches(4, 0.4f), new Actions.PlaceTile(type));
+		}
+
+		WorldUtils.Gen(pos.ToPoint(), new Shapes.Circle(size), Actions.Chain(new Modifiers.Blotches(), new Actions.Clear()));
+		int radius = (int)(size * WorldGen.genRand.NextFloat(0.4f, 0.7f));
+
+		if (type == TileID.Meteorite)
+		{
+			radius = size + WorldGen.genRand.Next(2, 6);
+		}
+		
+		WorldUtils.Gen(pos.ToPoint(), new Shapes.Circle(radius), placeAction);
+		bounds = new Rectangle(pos.X - 10, pos.Y - 10, 20, 20);
+		return true;
 	}
 
 	private static bool BuildPillar(Point16 pos, out Rectangle bounds)

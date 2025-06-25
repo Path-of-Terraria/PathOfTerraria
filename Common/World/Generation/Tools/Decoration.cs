@@ -80,7 +80,9 @@ internal static class Decoration
 			}
 		}
 
-		if (flags.HasFlag(OpenFlags.Below))
+		Tile tile = Main.tile[position.ToPoint()];
+
+		if (flags.HasFlag(OpenFlags.Below) && (tile.BottomSlope || tile.Slope == SlopeType.Solid))
 		{
 			int length = WorldGen.genRand.Next(5, 12);
 

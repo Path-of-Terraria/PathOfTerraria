@@ -1,4 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation;
+using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -12,13 +15,13 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class MoonLordDomain : BossDomainSubworld
 {
-	public const int TerrariaHeight = 1800;
+	public const int TerrariaHeight = 2400;
 	public const int CloudTop = TerrariaHeight - 350;
 	public const int CloudBottom = TerrariaHeight - 50;
-	public const int PlanetTop = 700;
+	public const int PlanetTop = 1200;
 
-	public override int Width => 900;
-	public override int Height => 4200;
+	public override int Width => 1200;
+	public override int Height => 4800;
 	public override (int time, bool isDay) ForceTime => (3500, false);
 	
 	private static bool BossSpawned = false;
@@ -27,7 +30,73 @@ internal class MoonLordDomain : BossDomainSubworld
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", MoonlordTerrainGen.GenerateTerraria),
 		new PassLegacy("Clouds", GenerateClouds),
-		new PassLegacy("Planets", GeneratePlanets)];
+		new PassLegacy("Planets", GeneratePlanets),
+		new PassLegacy("Clean", CleanWorld),
+		new PassLegacy("Settle Liquids", SettleLiquidsStep.Generation),
+		new PassLegacy("Shimmerize", ShimmerizeTopTerrain)];
+
+	private void ShimmerizeTopTerrain(GenerationProgress progress, GameConfiguration configuration)
+	{
+		for (int i = 20; i < Width - 20; ++i)
+		{
+			for (int j = TerrariaHeight; j < TerrariaHeight + 300; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				tile.LiquidType = LiquidID.Shimmer;
+			}
+		}
+
+		for (int i = Main.spawnTileX - 520; i < Main.spawnTileX + 520; ++i)
+		{
+			for (int j = Main.spawnTileY - 160; j < Main.spawnTileY + 150; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				tile.LiquidAmount = 0;
+			}
+		}
+	}
+
+	private void CleanWorld(GenerationProgress progress, GameConfiguration configuration)
+	{
+		FastNoiseLite noise = MoonlordTerrainGen.GetTerrariaNoise();
+
+		for (int i = 2; i < Main.maxTilesX - 2; ++i)
+		{
+			for (int j = TerrariaHeight + 50; j < Main.maxTilesY - 2; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
+
+				if (tile.WallType == WallID.None)
+				{
+					tile.WallType = WallID.LunarRustBrickWall;
+				}
+
+				if (!tile.HasTile)
+				{
+					continue;
+				}
+
+				if (tile.TileType == TileID.Dirt && flags != OpenFlags.None)
+				{
+					tile.TileType = TileID.Grass;
+					Decoration.OnPurityGrass(new Point16(i, j), flags, 1);
+				}
+				else if (tile.TileType == TileID.Stone && flags != OpenFlags.None)
+				{
+					tile.TileType = noise.GetNoise(i, j) switch
+					{
+						< -0.4f => TileID.ArgonMoss,
+						< -0.2f => TileID.LavaMoss,
+						< 0f => TileID.VioletMoss,
+						< 0.2f => TileID.XenonMoss,
+						< 0.4f => TileID.KryptonMoss,
+						_ => TileID.Stone,
+					};
+				}
+			}
+		}
+	}
 
 	private void GeneratePlanets(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -38,10 +107,16 @@ internal class MoonLordDomain : BossDomainSubworld
 		planetTypes.Enqueue(1, WorldGen.genRand.NextFloat());
 		planetTypes.Enqueue(2, WorldGen.genRand.NextFloat());
 		planetTypes.Enqueue(3, WorldGen.genRand.NextFloat());
+		List<MoonlordPlanetGen.PlanetInstance> planets = [];
 
 		for (int i = 0; i < 4; ++i)
 		{
-			MoonlordPlanetGen.GeneratePlanet(i, planetTypes.Dequeue());
+			int type = planetTypes.Dequeue();
+
+			for (int j = 0; j < 4; ++j)
+			{
+				MoonlordPlanetGen.GeneratePlanet(type, planets);
+			}
 		}
 	}
 
@@ -62,6 +137,8 @@ internal class MoonLordDomain : BossDomainSubworld
 	public override void Update()
 	{
 		Main.shimmerAlpha = 1f;
+
+		Liquid.UpdateLiquid();
 
 		if (!BossSpawned && NPC.AnyNPCs(NPCID.MoonLordCore))
 		{

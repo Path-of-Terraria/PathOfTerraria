@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.World.Generation.Tools;
-using PathOfTerraria.Common.World.Generation;
+﻿using PathOfTerraria.Common.World.Generation;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -19,6 +18,9 @@ internal class MoonlordTerrainGen
 	public const float StoneCutoff = 0.3f;
 	public const float StoneDitherStart = StoneCutoff + 0.03f;
 
+	private readonly static int[] RandomOreTypes = [TileID.Iron, TileID.Gold, TileID.Lead, TileID.Silver, TileID.Tungsten, TileID.Platinum, TileID.Palladium, 
+		TileID.Cobalt, TileID.Mythril, TileID.Orichalcum, TileID.Titanium, TileID.Adamantite];
+
 #pragma warning disable IDE0060 // Remove unused parameter
 	public static void GenerateTerraria(GenerationProgress progress, GameConfiguration configuration)
 #pragma warning restore IDE0060 // Remove unused parameter
@@ -31,15 +33,9 @@ internal class MoonlordTerrainGen
 		Main.worldSurface = Main.maxTilesY - 50;
 		Main.rockLayer = Main.maxTilesY - 40;
 
-		FastNoiseLite noise = new(WorldGen._genRandSeed);
-		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
-		noise.SetFrequency(0.014f);
-		noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
-		noise.SetFractalOctaves(2);
-		noise.SetFractalGain(-2.570f);
-		noise.SetFractalWeightedStrength(-0.066f);
-		noise.SetDomainWarpType(FastNoiseLite.DomainWarpType.BasicGrid);
-		noise.SetDomainWarpAmp(175);
+		FastNoiseLite noise = TerrainNoise();
+		FastNoiseLite messNoise = TerrainNoise();
+		messNoise.SetNoiseType((FastNoiseLite.NoiseType)WorldGen.genRand.Next(6));
 
 		const int TileRangeStep = 30;
 
@@ -88,7 +84,7 @@ internal class MoonlordTerrainGen
 
 				Tile tile = Main.tile[i, j];
 				tile.HasTile = y > MoonLordDomain.TerrariaHeight + 60;
-				tile.TileType = GetTileId(noise, closestValidTileLookup, tileRange, new Vector2(x, y), new Vector2(i, j), wallRange, out ushort wallType);
+				tile.TileType = GetTileId(noise, closestValidTileLookup, tileRange, new Vector2(x, y), new Vector2(i, j), wallRange, out ushort wallType, messNoise);
 				tile.WallType = wallType;
 			}
 
@@ -113,11 +109,28 @@ internal class MoonlordTerrainGen
 
 		Dictionary<string, int> counts = [];
 
+		SpamSingleAction((x, y) =>
+		{
+			const int Embed = 9;
+
+			float angle = OpenExtensions.GetOpenings(x, y, false, false).GetDirectionRandom().ToVector2().ToRotation() + WorldGen.genRand.NextFloat(-0.7f, 0.7f);
+			Vector2 offset = angle.ToRotationVector2();
+			int id = WorldGen.genRand.NextBool() ? TileID.ShimmerBlock : TileID.ShimmerBrick;
+
+			GenerateSpike(new Point16(x - (int)(offset.X * Embed), y - (int)(offset.Y * Embed)), WorldGen.genRand.Next(20, 40), angle, 0.2f, id);
+		}, "Spikes", counts, 20, null);
+
+		SmoothWorld();
+
+		SpamSingleAction((x, y) => WorldGen.TileRunner(x + Main.rand.Next(-40, 40), y + Main.rand.Next(-40, 40), WorldGen.genRand.NextFloat(8, 17),
+			WorldGen.genRand.Next(4, 9), WorldGen.genRand.Next(RandomOreTypes)), "Ore", counts, 300);
+
+		SpamTrees(counts);
+
 		while (true)
 		{
 			bool success = true;
 
-			success &= SpamObject((x, y) => MoonDomainGenerationTools.ForceLivingTree(x, y, WorldGen.genRand.NextBool(3)), counts, "Tree", 6);
 			success &= SpamObject((x, y) => new MarbleBiome().Place(new Point(x, y), GenVars.structures), counts, "Marble", 5);
 			success &= SpamObject((x, y) =>
 			{
@@ -159,22 +172,69 @@ internal class MoonlordTerrainGen
 				}
 			}, counts, "House", 16);
 
-			success &= SpamObject((x, y) => WorldGen.TileRunner(x + Main.rand.Next(-40, 40), y + Main.rand.Next(-40, 40), WorldGen.genRand.NextFloat(8, 17),
-				WorldGen.genRand.Next(4, 9), WorldGen.genRand.Next(12) switch
-				{
-					0 => TileID.Iron,
-					1 => TileID.Gold,
-					2 => TileID.Lead,
-					3 => TileID.Silver,
-					4 => TileID.Tungsten,
-					5 => TileID.Platinum,
-					6 => TileID.Palladium,
-					7 => TileID.Cobalt,
-					8 => TileID.Mythril,
-					9 => TileID.Orichalcum,
-					10 => TileID.Titanium,
-					_ => TileID.Adamantite,
-				}), counts, "Ore", 300, false);
+			if (success)
+			{
+				break;
+			}
+		}
+
+		for (int i = 40; i < Main.maxTilesX - 40; ++i)
+		{
+			for (int j = MoonLordDomain.CloudBottom; j < MoonLordDomain.CloudBottom + 5; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+				tile.LiquidAmount = 255;
+				tile.LiquidType = LiquidID.Water;
+
+				tile = Main.tile[i, j + 167];
+				tile.LiquidAmount = 255;
+				tile.LiquidType = LiquidID.Lava;
+
+				tile = Main.tile[i, j + 177];
+				tile.LiquidAmount = 255;
+				tile.LiquidType = LiquidID.Lava;
+
+				tile = Main.tile[i, j + 333];
+				tile.LiquidAmount = 255;
+				tile.LiquidType = LiquidID.Water;
+			}
+		}
+	}
+
+	public static FastNoiseLite TerrainNoise()
+	{
+		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+		noise.SetFrequency(0.014f);
+		noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
+		noise.SetFractalOctaves(2);
+		noise.SetFractalGain(-2.570f);
+		noise.SetFractalWeightedStrength(-0.066f);
+		noise.SetDomainWarpType(FastNoiseLite.DomainWarpType.BasicGrid);
+		noise.SetDomainWarpAmp(175);
+		return noise;
+	}
+
+	private static void SpamSingleAction(Action<int, int> action, string name, Dictionary<string, int> counts, int totalRepeats, bool? location = false)
+	{
+		while (true)
+		{
+			bool success = SpamObject(action, counts, name, totalRepeats, location);
+
+			if (success)
+			{
+				break;
+			}
+		}
+	}
+
+	private static void SpamTrees(Dictionary<string, int> counts)
+	{
+		while (true)
+		{
+			bool success = true;
+
+			success &= SpamObject((x, y) => MoonDomainGenerationTools.ForceLivingTree(x, y, WorldGen.genRand.NextBool(3)), counts, "Tree", 6);
 
 			success &= SpamObject((x, y) =>
 			{
@@ -187,58 +247,48 @@ internal class MoonlordTerrainGen
 				break;
 			}
 		}
+	}
 
-		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Growing");
-
+	private static void SmoothWorld()
+	{
 		for (int i = 2; i < Main.maxTilesX - 2; ++i)
 		{
-			for (int j = 2400; j < Main.maxTilesY - 2; ++j)
+			for (int j = 2; j < Main.maxTilesY - 2; ++j)
 			{
-				Tile tile = Main.tile[i, j];
-				OpenFlags flags = OpenExtensions.GetOpenings(i, j, false, false);
-
-				if (tile.WallType == WallID.None)
+				if (!WorldGen.genRand.NextBool(3))
 				{
-					tile.WallType = WallID.LunarRustBrickWall;
-				}
-
-				if (!tile.HasTile)
-				{
-					continue;
-				}
-
-				if (tile.TileType == TileID.Dirt && flags != OpenFlags.None)
-				{
-					tile.TileType = TileID.Grass;
-					Decoration.OnPurityGrass(new Point16(i, j), flags, 1);
-				}
-				else if (tile.TileType == TileID.Stone && flags != OpenFlags.None)
-				{
-					tile.TileType = noise.GetNoise(i, j) switch
-					{
-						< -0.4f => TileID.ArgonMoss,
-						< -0.2f => TileID.LavaMoss,
-						< 0f => TileID.VioletMoss,
-						< 0.2f => TileID.XenonMoss,
-						< 0.4f => TileID.KryptonMoss,
-						_ => TileID.Stone,
-					};
+					Tile.SmoothSlope(i, j, false);
 				}
 			}
 		}
 	}
 
-	internal static bool SpamObject(Action<int, int> action, Dictionary<string, int> countsByType, string name, int max = 12, bool dirtArea = true)
+	internal static FastNoiseLite GetTerrariaNoise()
+	{
+		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+		noise.SetFrequency(0.014f);
+		noise.SetFractalType(FastNoiseLite.FractalType.Ridged);
+		noise.SetFractalOctaves(2);
+		noise.SetFractalGain(-2.570f);
+		noise.SetFractalWeightedStrength(-0.066f);
+		noise.SetDomainWarpType(FastNoiseLite.DomainWarpType.BasicGrid);
+		noise.SetDomainWarpAmp(175);
+		return noise;
+	}
+
+	internal static bool SpamObject(Action<int, int> action, Dictionary<string, int> countsByType, string name, int max = 12, bool? dirtArea = true)
 	{
 		if (countsByType.TryGetValue(name, out int counts) && counts > max)
 		{
 			return true;
 		}
 
-		int y = dirtArea
+		int y = dirtArea.HasValue ? dirtArea.Value
 			? WorldGen.genRand.Next((int)MathHelper.Lerp(MoonLordDomain.TerrariaHeight, Main.maxTilesY, DirtCutoff + 0.02f), Main.maxTilesY - 150)
 			: WorldGen.genRand.Next((int)MathHelper.Lerp(MoonLordDomain.TerrariaHeight, Main.maxTilesY, StoneCutoff + 0.02f), 
-				(int)MathHelper.Lerp(MoonLordDomain.TerrariaHeight, Main.maxTilesY, DirtCutoff - 0.02f));
+				(int)MathHelper.Lerp(MoonLordDomain.TerrariaHeight, Main.maxTilesY, DirtCutoff - 0.02f))
+			: WorldGen.genRand.Next(MoonLordDomain.TerrariaHeight + 50, (int)MathHelper.Lerp(MoonLordDomain.TerrariaHeight, Main.maxTilesY, StoneCutoff - 0.02f));
 
 		Point pos = new(WorldGen.genRand.Next(200, Main.maxTilesX - 200), y);
 		OpenFlags flags = OpenExtensions.GetOpenings(pos.X, pos.Y);
@@ -263,13 +313,17 @@ internal class MoonlordTerrainGen
 
 	internal static void DigTunnel(int baseSize, Dictionary<int, List<int>> xByTierStep)
 	{
-		FastNoiseLite noise = new();
+		const float MaxTunnelSteps = 18f;
 
-		Vector2[] points = Tunnel.GeneratePoints([new(Main.spawnTileX, Main.spawnTileY), new Vector2(RandomX(0), StepY(0.1f)), new Vector2(RandomX(-1), StepY(0.15f)),
-			new Vector2(RandomX(1), StepY(0.2f)), new Vector2(RandomX(2), StepY(0.3f)), new Vector2(RandomX(3), StepY(0.4f)), new Vector2(RandomX(4), StepY(0.5f)),
-			new Vector2(RandomX(5), StepY(0.55f)), new Vector2(RandomX(6), StepY(0.6f)), new Vector2(RandomX(7), StepY(0.7f)), new Vector2(RandomX(8), StepY(0.75f)),
-			new Vector2(RandomX(9), StepY(0.8f)), new Vector2(RandomX(10), StepY(0.85f)), new Vector2(RandomX(11), StepY(0.9f)), new Vector2(RandomX(12), StepY(1f))],
-			60, 4, 0.6f);
+		FastNoiseLite noise = new();
+		List<Vector2> basePoints = [new(Main.spawnTileX, Main.spawnTileY)];
+
+		for (int i = 1; i < MaxTunnelSteps; ++i)
+		{
+			basePoints.Add(new Vector2(RandomX(i - 1), StepY(i / (MaxTunnelSteps - 1))));
+		}
+
+		Vector2[] points = Tunnel.GeneratePoints([..basePoints], 60, 4, 0.6f);
 
 		foreach (Vector2 point in points)
 		{
@@ -293,14 +347,15 @@ internal class MoonlordTerrainGen
 			do
 			{
 				x = WorldGen.genRand.Next(140, Main.maxTilesX - 140);
-			} while (xByTierStep[tier].Any(v => Math.Abs(x - v) < 60));
+			} while (xByTierStep[tier].Any(v => Math.Abs(x - v) < 100));
 
 			xByTierStep[tier].Add(x);
 			return x;
 		}
 	}
 
-	private static ushort GetTileId(FastNoiseLite noise, Dictionary<int, int> lookup, Range tileRange, Vector2 mod, Vector2 real, Range wallRange, out ushort wall)
+	private static ushort GetTileId(FastNoiseLite noise, Dictionary<int, int> lookup, Range tileRange, Vector2 mod, Vector2 real, Range wallRange, out ushort wall, 
+		FastNoiseLite messNoise)
 	{
 		(float x, float y) = (mod.X, mod.Y);
 		(float i, float j) = (real.X, real.Y);
@@ -325,7 +380,13 @@ internal class MoonlordTerrainGen
 		}
 
 		wall = (ushort)MathHelper.Lerp(wallRange.Start.Value, wallRange.End.Value, Utils.GetLerpValue(-1.3f, 0.7f, noise.GetNoise(x * 0.8f, y * 0.8f + 120), true));
-		return (ushort)GetNearestTileId(noise.GetNoise(x, y), lookup, tileRange);
+
+		if (wall == WallID.EchoWall) // These look ugly
+		{
+			wall++;
+		}
+
+		return (ushort)GetNearestTileId(noise.GetNoise(x, y + 3000) > noise.GetNoise(x - 3000, y) ? noise.GetNoise(x, y) : messNoise.GetNoise(i, j), lookup, tileRange);
 	}
 
 	private static ushort Dither(float yDistance, float min, float max, ushort bottom, ushort top)
@@ -337,6 +398,48 @@ internal class MoonlordTerrainGen
 	{
 		int id = (int)MathHelper.Lerp(idRange.Start.Value, idRange.End.Value, Utils.GetLerpValue(-1.3f, 0.7f, noise, true));
 		return closestValidTileLookup[id];
+	}
+
+	public static void GenerateSpike(Point16 anchor, int length, float angle, float angleRange, int tileType, bool replaceTiles = true)
+	{
+		Rectangle rect = GetSpikeArea(anchor, length, angle, angleRange);
+		Vector2 point = anchor.ToVector2() + angle.ToRotationVector2() * length;
+
+		for (int i = rect.X; i < rect.Right; ++i)
+		{
+			for (int j = rect.Y; j < rect.Bottom; ++j)
+			{
+				if (Math.Abs(angle - new Vector2(i, j).AngleTo(point)) < angleRange && (replaceTiles || !Main.tile[i, j].HasTile))
+				{
+					Tile tile = Main.tile[i, j];
+					tile.HasTile = true;
+					tile.TileType = (ushort)tileType;
+				}
+			}
+		}
+	}
+
+	private static Rectangle GetSpikeArea(Point16 anchor, int length, float angle, float angleRange)
+	{
+		Point topLeft = new(short.MaxValue, short.MaxValue);
+		Point bottomRight = Point.Zero;
+		Vector2 angleVec = angle.ToRotationVector2();
+		Vector2 point = anchor.ToVector2() + angleVec * length;
+
+		ModifyPoints((point + (point.DirectionTo(anchor.ToVector2()) * length * 1.5f).RotatedBy(angleRange)).ToPoint(), ref topLeft, ref bottomRight); // Side 1
+		ModifyPoints((point + (point.DirectionTo(anchor.ToVector2()) * length * 1.5f).RotatedBy(-angleRange)).ToPoint(), ref topLeft, ref bottomRight); // Side 2
+		ModifyPoints(anchor.ToPoint() + (angleVec * length).ToPoint(), ref topLeft, ref bottomRight); // Point
+
+		return new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
+
+		static void ModifyPoints(Point point, ref Point topLeft, ref Point bottomRight)
+		{
+			topLeft.X = Math.Min(topLeft.X, point.X);
+			topLeft.Y = Math.Min(topLeft.Y, point.Y);
+
+			bottomRight.X = Math.Max(bottomRight.X, point.X);
+			bottomRight.Y = Math.Max(bottomRight.Y, point.Y);
+		}
 	}
 
 	private static void SearchForBetterId(ref int id)
@@ -380,8 +483,9 @@ internal class MoonlordTerrainGen
 	{
 		var data = TileObjectData.GetTileData(id, 0);
 		return (data == null || DataHasNoAnchors(data)) && Main.tileFrameImportant[id] || Main.tileCut[id] || id < TileID.Count && !Main.tileSolid[id]
-			|| id is TileID.Cactus or TileID.Trees or TileID.EchoBlock or TileID.Boulder or TileID.MetalBars or TileID.Teleporter or TileID.TallGateClosed
-			|| TileID.Sets.IsVine[id] || ModContent.GetModTile(id) is ModTile modTile && modTile.Mod.Name == "ModLoaderMod" || TileID.Sets.Falling[id];
+			|| id is TileID.Cactus or TileID.Trees or TileID.EchoBlock or TileID.Boulder or TileID.MetalBars or TileID.Teleporter or TileID.TallGateClosed 
+			or TileID.TrapdoorClosed or TileID.TrapdoorOpen || TileID.Sets.IsVine[id] || ModContent.GetModTile(id) is ModTile modTile && modTile.Mod.Name == "ModLoaderMod" 
+			|| TileID.Sets.Falling[id] || TileID.Sets.TouchDamageImmediate[id] > 0 || TileID.Sets.TouchDamageHot[id];
 	}
 
 	private static bool DataHasNoAnchors(TileObjectData data)
