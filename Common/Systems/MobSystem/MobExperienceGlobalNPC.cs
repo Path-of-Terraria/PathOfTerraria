@@ -1,6 +1,6 @@
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.Experience;
+using PathOfTerraria.Common.Systems.ExperienceSystem;
 using SubworldLibrary;
 using Terraria.ID;
 

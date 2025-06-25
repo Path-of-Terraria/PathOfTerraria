@@ -21,7 +21,7 @@ public class QueenBeeDomain : BossDomainSubworld
 {
 	public override int Width => 800;
 	public override int Height => 1600;
-	public override int[] WhitelistedCutTiles => [TileID.BeeHive, TileID.JungleVines, ModContent.TileType<RoyalHoneyClumpTile>()];
+	public override int[] WhitelistedCutTiles => [TileID.BeeHive, TileID.JungleVines, TileID.JunglePlants, TileID.JunglePlants2, ModContent.TileType<RoyalHoneyClumpTile>()];
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<RoyalHoneyClumpTile>()];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
@@ -146,7 +146,7 @@ public class QueenBeeDomain : BossDomainSubworld
 		var original = new Point16(x, y);
 
 		Vector2[] positions = Tunnel.GeneratePoints([new(x, y), Vector2.Lerp(new(x, y), new(Width / 2, Main.spawnTileY), 0.7f)
-			+ new Vector2(WorldGen.genRand.Next(-2, 3), WorldGen.genRand.Next(-2, 3)), new(Width / 2, Main.spawnTileY)], 6, 4);
+			+ new Vector2(WorldGen.genRand.Next(-2, 3), WorldGen.genRand.Next(-2, 3)), new(Width / 2, Main.spawnTileY)], 6, 4, 0.1f);
 
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		int breakTime = -1;

@@ -22,17 +22,17 @@ public sealed class Experience
 	private const int ExtraUpdates = 7;
 
 	public readonly float Rotation;
+	public readonly int Target;
 
 	private readonly Queue<Vector2> _oldCenters;
-	private readonly int _value;
 	private readonly float _magnitude;
-	private readonly int _target;
 
 	public Vector2 Center;
 	public bool Active;
 	public bool Collected;
 
 	private Vector2 _velocity;
+	private int _value;
 	private Color[] _collectedTrail;
 	private bool _oldCollected;
 
@@ -40,36 +40,50 @@ public sealed class Experience
 	{
 		_value = xp;
 
-		Vector2 size = GetSize();
-		if (size == Vector2.Zero)
-		{
-			throw new Exception("Invalid xp count: " + xp);
-		}
+		GetSize(); // Used only to throw an ArgumentException if it fails
 
 		Center = startPosition;
 		Active = true;
 		Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 
 		_velocity = startVelocity;
-		_target = targetPlayer;
+		Target = targetPlayer;
 		_magnitude = startVelocity.Length();
 		_oldCenters = new Queue<Vector2>();
 	}
 
-	public Vector2 GetSize()
+	public int GetSize()
 	{
 		return _value switch
 		{
-			Sizes.OrbSmallYellow or Sizes.OrbSmallGreen or Sizes.OrbSmallBlue => new Vector2(6),
-			Sizes.OrbMediumYellow or Sizes.OrbMediumGreen or Sizes.OrbMediumBlue => new Vector2(8),
-			Sizes.OrbLargeYellow or Sizes.OrbLargeGreen or Sizes.OrbLargeBlue => new Vector2(10),
-			_ => Vector2.Zero
+			>= Sizes.OrbLargeBlue => Sizes.OrbLargeBlue,
+			>= Sizes.OrbLargeGreen => Sizes.OrbLargeGreen,
+			>= Sizes.OrbLargeYellow => Sizes.OrbLargeYellow,
+			>= Sizes.OrbMediumBlue => Sizes.OrbMediumBlue,
+			>= Sizes.OrbMediumGreen => Sizes.OrbMediumGreen,
+			>= Sizes.OrbMediumYellow => Sizes.OrbMediumYellow,
+			>= Sizes.OrbSmallBlue => Sizes.OrbSmallBlue,
+			>= Sizes.OrbSmallGreen => Sizes.OrbSmallGreen,
+			>= Sizes.OrbSmallYellow => Sizes.OrbSmallYellow,
+			_ => throw new ArgumentException("value is equal to or less than 0. This should never happen.")
 		};
+	}
+
+	public float GetScale()
+	{
+		float scale = 1f;
+
+		if (GetSize() == Sizes.OrbLargeBlue)
+		{
+			scale += MathF.Sqrt((_value - Sizes.OrbLargeBlue) * 0.00001f);
+		}
+
+		return scale;
 	}
 
 	private Color GetTrailColor()
 	{
-		return _value switch
+		return GetSize() switch
 		{
 			Sizes.OrbSmallYellow or Sizes.OrbMediumYellow or Sizes.OrbLargeYellow => Color.Yellow,
 			Sizes.OrbSmallGreen or Sizes.OrbMediumGreen or Sizes.OrbLargeGreen => Color.LimeGreen,
@@ -80,7 +94,7 @@ public sealed class Experience
 
 	public Rectangle GetSourceRectangle()
 	{
-		return _value switch
+		return GetSize() switch
 		{
 			Sizes.OrbSmallYellow => new Rectangle(0, 0, 6, 6),
 			Sizes.OrbSmallGreen => new Rectangle(8, 0, 6, 6),
@@ -95,7 +109,7 @@ public sealed class Experience
 		};
 	}
 
-	public void Update()
+	public void Update(int who, Experience[] experienceList)
 	{
 		if (!Active)
 		{
@@ -105,11 +119,27 @@ public sealed class Experience
 		_oldCollected = Collected;
 
 		//Home in on the player, unless they've disconnected
-		Player player = Main.player[_target];
+		Player player = Main.player[Target];
 
 		if (!player.active)
 		{
 			Collected = true;
+			return;
+		}
+
+		if (!Collected && who != experienceList.Length - 1)
+		{
+			for (int i = who + 1; i < experienceList.Length; i++)
+			{
+				Experience exp = experienceList[i];
+
+				if (exp != null && !exp.Collected && exp.Target == Target && Center.DistanceSQ(exp.Center) < 18 * 18 && (long)exp._value + _value < int.MaxValue)
+				{
+					exp.Collected = true;
+					exp.Active = false;
+					_value += exp._value;
+				}
+			}
 		}
 
 		if (Collected)
@@ -138,7 +168,7 @@ public sealed class Experience
 
 	private void InnerUpdate()
 	{
-		Player player = Main.player[_target];
+		Player player = Main.player[Target];
 
 		// Lazily home towards player
 		_velocity += player.DirectionFrom(Center) * 0.1f;
@@ -194,12 +224,6 @@ public sealed class Experience
 			return;
 		}
 
-		Vector2 size = GetSize();
-		if (size == Vector2.Zero)
-		{
-			return;
-		}
-
 		//No trail yet
 		if (_oldCenters.Count == 0)
 		{
@@ -231,5 +255,10 @@ public sealed class Experience
 		_oldCenters.CopyTo(points, 0);
 
 		PrimitiveDrawing.DrawLineStrip(points, colors);
+	}
+
+	public override string ToString()
+	{
+		return $"{Active}: Collected: {Collected} Value: {_value}";
 	}
 }

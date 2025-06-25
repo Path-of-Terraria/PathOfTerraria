@@ -1292,7 +1292,7 @@ AncientTablet: {
 
 CultistMap: {
 	DisplayName: Lunatic Cultist Map
-	Tooltip: 
+	Tooltip:
 		'''
 		{$MapCommon.BossBase}
 		'The map smells of soot and space'
