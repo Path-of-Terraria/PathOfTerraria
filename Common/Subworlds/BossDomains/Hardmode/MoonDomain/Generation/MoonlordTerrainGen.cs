@@ -419,6 +419,23 @@ internal class MoonlordTerrainGen
 		}
 	}
 
+	public static void GenerateSpikeAction(Point16 anchor, int length, float angle, float angleRange, Action<int, int> action, bool replaceTiles = true)
+	{
+		Rectangle rect = GetSpikeArea(anchor, length, angle, angleRange);
+		Vector2 point = anchor.ToVector2() + angle.ToRotationVector2() * length;
+
+		for (int i = rect.X; i < rect.Right; ++i)
+		{
+			for (int j = rect.Y; j < rect.Bottom; ++j)
+			{
+				if (Math.Abs(angle - new Vector2(i, j).AngleTo(point)) < angleRange && (replaceTiles || !Main.tile[i, j].HasTile))
+				{
+					action(i, j);
+				}
+			}
+		}
+	}
+
 	private static Rectangle GetSpikeArea(Point16 anchor, int length, float angle, float angleRange)
 	{
 		Point topLeft = new(short.MaxValue, short.MaxValue);

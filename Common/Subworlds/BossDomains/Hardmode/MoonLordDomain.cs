@@ -102,16 +102,16 @@ internal class MoonLordDomain : BossDomainSubworld
 	{
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Space");
 
-		PriorityQueue<int, float> planetTypes = new();
-		planetTypes.Enqueue(0, WorldGen.genRand.NextFloat());
-		planetTypes.Enqueue(1, WorldGen.genRand.NextFloat());
-		planetTypes.Enqueue(2, WorldGen.genRand.NextFloat());
-		planetTypes.Enqueue(3, WorldGen.genRand.NextFloat());
+		PriorityQueue<MoonlordPlanetGen.PlanetType, float> planetTypes = new();
+		planetTypes.Enqueue(MoonlordPlanetGen.PlanetType.Solar, WorldGen.genRand.NextFloat());
+		planetTypes.Enqueue(MoonlordPlanetGen.PlanetType.Stardust, WorldGen.genRand.NextFloat());
+		planetTypes.Enqueue(MoonlordPlanetGen.PlanetType.Nebula, WorldGen.genRand.NextFloat());
+		planetTypes.Enqueue(MoonlordPlanetGen.PlanetType.Vortex, WorldGen.genRand.NextFloat());
 		List<MoonlordPlanetGen.PlanetInstance> planets = [];
 
 		for (int i = 0; i < 4; ++i)
 		{
-			int type = planetTypes.Dequeue();
+			MoonlordPlanetGen.PlanetType type = planetTypes.Dequeue();
 
 			for (int j = 0; j < 4; ++j)
 			{
