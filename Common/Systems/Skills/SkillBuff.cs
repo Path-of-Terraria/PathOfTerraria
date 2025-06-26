@@ -9,4 +9,5 @@ public class SkillBuff
 	public StatModifier ManaCost = StatModifier.Default;
 	public StatModifier AreaOfEffect = StatModifier.Default;
 	public StatModifier CritChance = StatModifier.Default;
+	public StatModifier Cooldown = StatModifier.Default;
 }

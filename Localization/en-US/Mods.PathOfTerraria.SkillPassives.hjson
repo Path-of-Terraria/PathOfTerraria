@@ -36,3 +36,12 @@ VolatileNova: {
 		Can hit the same target multiple times
 		'''
 }
+
+FlashFire: {
+	Name: Flash Fire
+	Tooltip:
+		'''
+		Cooldown reduced by half
+		Deals {0}% less damage
+		'''
+}
