@@ -245,6 +245,11 @@ public class Nova : Skill
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			//Passive synergies
+			if (target.life <= 0 && Skill.Tree.TryGetNode(out Combustive combustive) && combustive.Allocated)
+			{
+				Projectile.NewProjectile(Projectile.GetSource_OnHit(target), Projectile.Center, Vector2.Zero, ModContent.ProjectileType<Combustive.CombustionBlast>(), (int)(target.lifeMax * 0.05f), 3);
+			}
+
 			if (Skill.Tree.TryGetNode(out IgniteChance ignite) && ignite.Allocated && Main.rand.NextFloat() < 0.02f * ignite.Level)
 			{
 				target.AddBuff(BuffID.OnFire, 8 * 60);
