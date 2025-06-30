@@ -41,7 +41,8 @@ internal abstract class GasTile : ModTile
 		Rectangle src = tile.BasicFrame();
 		SpriteEffects effects = i % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 		float sinY = MathF.Sin(i + j * 3f + Main.GameUpdateCount * 0.045f + MathHelper.PiOver2 * 0.39f);
-		Vector2 sin = new Vector2(MathF.Sin(i * SineDirection * 0.8f + j + Main.GameUpdateCount * 0.03f), sinY) * 2;
+		float windPush = Main.instance.TilesRenderer.GetWindGridPush(i, j, 60, 0.1f);
+		Vector2 sin = new Vector2(MathF.Sin(i * SineDirection * 0.8f + j + Main.GameUpdateCount * 0.03f) + windPush, sinY) * 2;
 
 		if (j % 2 == 0)
 		{

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.World.Passes;
@@ -50,10 +51,17 @@ internal class MoonLordDomain : BossDomainSubworld
 		{
 			for (int j = Main.spawnTileY - 160; j < Main.spawnTileY + 150; ++j)
 			{
+				if (MoonlordTerrainGen.ProtectedLiquid.Contains(new Point16(i, j)))
+				{
+					continue;
+				}
+
 				Tile tile = Main.tile[i, j];
 				tile.LiquidAmount = 0;
 			}
 		}
+
+		MoonlordBackgroundDrawing.ReloadPlanets();
 	}
 
 	private void CleanWorld(GenerationProgress progress, GameConfiguration configuration)
@@ -116,6 +124,8 @@ internal class MoonLordDomain : BossDomainSubworld
 			for (int j = 0; j < 4; ++j)
 			{
 				MoonlordPlanetGen.GeneratePlanet(type, planets);
+
+				progress.Set((i + j) / 16f);
 			}
 		}
 	}

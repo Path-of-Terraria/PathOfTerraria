@@ -19,14 +19,15 @@ internal class SolarFlare : GasTile
 		src = ModifySource(i, j, tile, src, 0);
 		SpriteEffects effects = i % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
+		float windPush = Main.instance.TilesRenderer.GetWindGridPush(i, j, 60, 0.1f);
 		float sinY = MathF.Sin(i + j * 3f + Main.GameUpdateCount * 0.045f + MathHelper.PiOver2 * 0.39f);
 		int repeats = tile.TileFrameX / 18;
 
 		for (int k = 0; k < repeats + 1; ++k)
 		{
-			Vector2 position = TileExtensions.DrawPosition(i, j) + new Vector2(8) + Offsets[k] + GetSineWave(i + k * 17, j + k * 7, sinY);
+			Vector2 position = TileExtensions.DrawPosition(i, j) + new Vector2(8 + windPush, 8) + Offsets[k] + GetSineWave(i + k * 17, j + k * 7, sinY);
 			src = ModifySource(i, j + i, tile, src, k * 12);
-			spriteBatch.Draw(tex, position, src, Color.Lerp(Lighting.GetColor(i, j), OffsetColors[k], 0.6f), 0f, src.Size() / 2f, 1f, effects, 0);
+			spriteBatch.Draw(tex, position, src, Color.Lerp(Lighting.GetColor(i, j), OffsetColors[k], 0.6f) * 0.7f, 0f, src.Size() / 2f, 1f, effects, 0);
 		}
 
 		return false;

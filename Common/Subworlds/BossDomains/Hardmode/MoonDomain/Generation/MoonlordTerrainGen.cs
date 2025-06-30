@@ -21,10 +21,14 @@ internal class MoonlordTerrainGen
 	private readonly static int[] RandomOreTypes = [TileID.Iron, TileID.Gold, TileID.Lead, TileID.Silver, TileID.Tungsten, TileID.Platinum, TileID.Palladium, 
 		TileID.Cobalt, TileID.Mythril, TileID.Orichalcum, TileID.Titanium, TileID.Adamantite];
 
+	public readonly static HashSet<Point16> ProtectedLiquid = [];
+
 #pragma warning disable IDE0060 // Remove unused parameter
 	public static void GenerateTerraria(GenerationProgress progress, GameConfiguration configuration)
 #pragma warning restore IDE0060 // Remove unused parameter
 	{
+		ProtectedLiquid.Clear();
+
 		progress.Start(1);
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Scanning");
 
@@ -116,14 +120,35 @@ internal class MoonlordTerrainGen
 			float angle = OpenExtensions.GetOpenings(x, y, false, false).GetDirectionRandom().ToVector2().ToRotation() + WorldGen.genRand.NextFloat(-0.7f, 0.7f);
 			Vector2 offset = angle.ToRotationVector2();
 			int id = WorldGen.genRand.NextBool() ? TileID.ShimmerBlock : TileID.ShimmerBrick;
+			float angleRange = WorldGen.genRand.NextFloat(0.1f, 0.35f);
+			var anchor = new Point16(x - (int)(offset.X * Embed), y - (int)(offset.Y * Embed));
+			int length = WorldGen.genRand.Next(20, 40);
 
-			GenerateSpike(new Point16(x - (int)(offset.X * Embed), y - (int)(offset.Y * Embed)), WorldGen.genRand.Next(20, 40), angle, 0.2f, id);
-		}, "Spikes", counts, 20, null);
+			GenerateSpike(anchor, length, angle, angleRange, id, (x, y, _, point) => MathF.Max(Vector2.Distance(new Vector2(x, y), point) / length - 0.2f, 0));
+		}, "ShimmerSpikes", counts, 20, null, (i, j) => Main.tile[i, j].TileType is not TileID.ShimmerBlock and not TileID.ShimmerBrick);
+
+		SpamSingleAction((x, y) =>
+		{
+			const int Embed = 9;
+
+			float angle = OpenExtensions.GetOpenings(x, y, false, false).GetDirectionRandom().ToVector2().ToRotation() + WorldGen.genRand.NextFloat(-0.4f, 0.4f);
+			Vector2 offset = angle.ToRotationVector2();
+			int id = GetTileId(noise, closestValidTileLookup, tileRange, new Vector2(x, y), new Vector2(x, y), wallRange, out _, messNoise);
+			float angleRange = WorldGen.genRand.NextFloat(0.025f, 0.1f);
+			var anchor = new Point16(x - (int)(offset.X * Embed), y - (int)(offset.Y * Embed));
+			int length = WorldGen.genRand.Next(20, 50);
+
+			GenerateSpike(anchor, length, angle, angleRange, id, (x, y, _, point) => MathF.Max(Vector2.Distance(new Vector2(x, y), point) / length - 0.2f, 0));
+		}, "Spikes", counts, 40, null, (i, j) => Main.tile[i, j].TileType is not TileID.ShimmerBlock and not TileID.ShimmerBrick);
 
 		SmoothWorld();
 
 		SpamSingleAction((x, y) => WorldGen.TileRunner(x + Main.rand.Next(-40, 40), y + Main.rand.Next(-40, 40), WorldGen.genRand.NextFloat(8, 17),
 			WorldGen.genRand.Next(4, 9), WorldGen.genRand.Next(RandomOreTypes)), "Ore", counts, 300);
+
+		SpamSingleAction((x, y) => GenerateLiquidfall(x, y - 1, 2, LiquidID.Shimmer), "Shimmerfalls", counts, 70, null, (x, y) => !Main.tile[x, y - 1].HasTile);
+		SpamSingleAction((x, y) => GenerateLiquidfall(x, y - 1, 2, LiquidID.Lava), "Lavafalls", counts, 45, false, (x, y) => !Main.tile[x, y - 1].HasTile);
+		SpamSingleAction((x, y) => GenerateLiquidfall(x, y - 1, 2, LiquidID.Water), "Waterfalls", counts, 30, true, (x, y) => !Main.tile[x, y - 1].HasTile);
 
 		SpamTrees(counts);
 
@@ -215,11 +240,12 @@ internal class MoonlordTerrainGen
 		return noise;
 	}
 
-	private static void SpamSingleAction(Action<int, int> action, string name, Dictionary<string, int> counts, int totalRepeats, bool? location = false)
+	private static void SpamSingleAction(Action<int, int> action, string name, Dictionary<string, int> counts, int totalRepeats, bool? location = false, 
+		Func<int, int, bool> canPlace = null)
 	{
 		while (true)
 		{
-			bool success = SpamObject(action, counts, name, totalRepeats, location);
+			bool success = SpamObject(action, counts, name, totalRepeats, location, canPlace);
 
 			if (success)
 			{
@@ -263,6 +289,56 @@ internal class MoonlordTerrainGen
 		}
 	}
 
+	private static void GenerateLiquidfall(int x, int y, int minHeight, short liquidType = LiquidID.Water)
+	{
+		bool CanPlaceAt(int i, int j, int dir)
+		{
+			return Main.tile[i, j].HasTile && Main.tile[i + dir, j].HasTile && Main.tile[i + dir + dir, j - 1].HasTile;
+		}
+
+		// Places the waterfall source tile
+		void PlaceAt(int i, int j, int dir)
+		{
+			Tile liquidTile = Main.tile[i + dir, j - 1];
+			liquidTile.ClearTile();
+			liquidTile.LiquidAmount = 255;
+			liquidTile.LiquidType = liquidType;
+
+			ProtectedLiquid.Add(new Point16(i + dir, j - 1));
+
+			Tile halfTile = Main.tile[i, j - 1];
+			halfTile.IsHalfBlock = true;
+
+			int adjY = 0;
+
+			while (Main.tile[i - dir, j - 1 + adjY].HasTile)
+			{
+				Main.tile[i - dir, j - 1 + adjY++].ClearTile();
+			}
+		}
+
+		const int MaxHeight = 50;
+
+		for (int j = y; j > y - MaxHeight; --j)
+		{
+			if (Math.Abs(j - y) < minHeight)
+			{
+				continue;
+			}
+
+			if (CanPlaceAt(x, j, -1))
+			{
+				PlaceAt(x, j, -1);
+				return;
+			}
+			else if (CanPlaceAt(x, j, 1))
+			{
+				PlaceAt(x, j, 1);
+				return;
+			}
+		}
+	}
+
 	internal static FastNoiseLite GetTerrariaNoise()
 	{
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
@@ -277,7 +353,8 @@ internal class MoonlordTerrainGen
 		return noise;
 	}
 
-	internal static bool SpamObject(Action<int, int> action, Dictionary<string, int> countsByType, string name, int max = 12, bool? dirtArea = true)
+	internal static bool SpamObject(Action<int, int> action, Dictionary<string, int> countsByType, string name, int max = 12, bool? dirtArea = true, 
+		Func<int, int, bool> canPlace = null)
 	{
 		if (countsByType.TryGetValue(name, out int counts) && counts > max)
 		{
@@ -293,7 +370,7 @@ internal class MoonlordTerrainGen
 		Point pos = new(WorldGen.genRand.Next(200, Main.maxTilesX - 200), y);
 		OpenFlags flags = OpenExtensions.GetOpenings(pos.X, pos.Y);
 
-		if (flags != OpenFlags.None && Main.tile[pos].HasTile)
+		if (flags != OpenFlags.None && Main.tile[pos].HasTile && (canPlace?.Invoke(pos.X, pos.Y) ?? true))
 		{
 			action(pos.X, pos.Y);
 
@@ -386,6 +463,11 @@ internal class MoonlordTerrainGen
 			wall++;
 		}
 
+		if (messNoise.GetNoise(x, y) > 0.36f + WorldGen.genRand.NextFloat(0.03f))
+		{
+			return TileID.ShimmerBlock;
+		}
+
 		return (ushort)GetNearestTileId(noise.GetNoise(x, y + 3000) > noise.GetNoise(x - 3000, y) ? noise.GetNoise(x, y) : messNoise.GetNoise(i, j), lookup, tileRange);
 	}
 
@@ -400,35 +482,29 @@ internal class MoonlordTerrainGen
 		return closestValidTileLookup[id];
 	}
 
-	public static void GenerateSpike(Point16 anchor, int length, float angle, float angleRange, int tileType, bool replaceTiles = true)
+	public static void GenerateSpike(Point16 anchor, int length, float angle, float angleRange, int tileType, Func<int, int, Point16, Vector2, float> ditherFunction = null)
 	{
-		Rectangle rect = GetSpikeArea(anchor, length, angle, angleRange);
-		Vector2 point = anchor.ToVector2() + angle.ToRotationVector2() * length;
-
-		for (int i = rect.X; i < rect.Right; ++i)
+		GenerateSpikeAction(anchor, length, angle, angleRange, (x, y) =>
 		{
-			for (int j = rect.Y; j < rect.Bottom; ++j)
-			{
-				if (Math.Abs(angle - new Vector2(i, j).AngleTo(point)) < angleRange && (replaceTiles || !Main.tile[i, j].HasTile))
-				{
-					Tile tile = Main.tile[i, j];
-					tile.HasTile = true;
-					tile.TileType = (ushort)tileType;
-				}
-			}
-		}
+			Tile tile = Main.tile[x, y];
+			tile.HasTile = true;
+			tile.TileType = (ushort)tileType;
+		}, ditherFunction);
 	}
 
-	public static void GenerateSpikeAction(Point16 anchor, int length, float angle, float angleRange, Action<int, int> action, bool replaceTiles = true)
+	public static void GenerateSpikeAction(Point16 anchor, int length, float angle, float angleRange, Action<int, int> action, 
+		Func<int, int, Point16, Vector2, float> ditherFunction = null)
 	{
-		Rectangle rect = GetSpikeArea(anchor, length, angle, angleRange);
-		Vector2 point = anchor.ToVector2() + angle.ToRotationVector2() * length;
+		Rectangle rect = GetSpikeArea(anchor, length, angle, angleRange, out Vector2 point);
 
 		for (int i = rect.X; i < rect.Right; ++i)
 		{
 			for (int j = rect.Y; j < rect.Bottom; ++j)
 			{
-				if (Math.Abs(angle - new Vector2(i, j).AngleTo(point)) < angleRange && (replaceTiles || !Main.tile[i, j].HasTile))
+				float distSq = Vector2.DistanceSquared(point, new Vector2(i, j));
+
+				if (Math.Abs(angle - new Vector2(i, j).AngleTo(point)) < angleRange 
+					&& (WorldGen.genRand.NextFloat() > ditherFunction(i, j, anchor, point) || !Main.tile[i, j].HasTile) && distSq < length * length)
 				{
 					action(i, j);
 				}
@@ -436,12 +512,12 @@ internal class MoonlordTerrainGen
 		}
 	}
 
-	private static Rectangle GetSpikeArea(Point16 anchor, int length, float angle, float angleRange)
+	private static Rectangle GetSpikeArea(Point16 anchor, int length, float angle, float angleRange, out Vector2 point)
 	{
 		Point topLeft = new(short.MaxValue, short.MaxValue);
 		Point bottomRight = Point.Zero;
 		Vector2 angleVec = angle.ToRotationVector2();
-		Vector2 point = anchor.ToVector2() + angleVec * length;
+		point = anchor.ToVector2() + angleVec * length;
 
 		ModifyPoints((point + (point.DirectionTo(anchor.ToVector2()) * length * 1.5f).RotatedBy(angleRange)).ToPoint(), ref topLeft, ref bottomRight); // Side 1
 		ModifyPoints((point + (point.DirectionTo(anchor.ToVector2()) * length * 1.5f).RotatedBy(-angleRange)).ToPoint(), ref topLeft, ref bottomRight); // Side 2

@@ -142,7 +142,7 @@ internal static class MoonlordPlanetGen
 						bool isWall = WorldGen.genRand.NextBool(3);
 
 						MoonlordTerrainGen.GenerateSpikeAction(new Point16(i, j), (int)length, pos.AngleFrom(center), angleRange, 
-							(x, y) => SetTilePerNoise(valueNoise, cellularNoise, tileSet, x, y, isWall), false);
+							(x, y) => SetTilePerNoise(valueNoise, cellularNoise, tileSet, x, y, isWall), (_, _, _, _) => 1f);
 					}
 				}
 			}
@@ -245,7 +245,6 @@ internal static class MoonlordPlanetGen
 			for (int j = 0; j < width; ++j)
 			{
 				Vector2 widePos = pos + dir.RotatedBy(MathHelper.PiOver2) * j;
-
 				Tile tile = Main.tile[widePos.ToPoint()];
 
 				if (tile.HasTile)
