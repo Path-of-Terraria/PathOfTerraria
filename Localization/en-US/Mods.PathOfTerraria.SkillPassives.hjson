@@ -45,3 +45,13 @@ FlashFire: {
 		Deals {0}% less damage
 		'''
 }
+
+Combustive: {
+	Name: Combustive
+	Tooltip: Enemies create a fiery blast on death
+}
+
+ScorchingTouch: {
+	Name: Scorching Touch
+	Tooltip: Lights terrain ablaze on contact
+}

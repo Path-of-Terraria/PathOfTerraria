@@ -21,10 +21,13 @@ internal class NovaTree : SkillTree
 		var volatileNova = new VolatileNova(this) { TreePos = new Vector2(80, 100) };
 		var igniteChance = new IgniteChance(this) { TreePos = new Vector2(-200, 80) };
 		var shockChance = new ShockChance(this) { TreePos = new Vector2(250, 80) };
+		var flashFire = new FlashFire(this) { TreePos = new Vector2(-200, -100) };
+		var combustive = new Combustive(this) { TreePos = new Vector2(-300, -100) };
+		var scorching = new ScorchingTouch(this) { TreePos = new Vector2(-340, 100) };
 
 		AddNodes(anchor, novaFire, novaIce, novaLightning, efficiency);
 		AddNodes(novaLightning, thunderClaps);
-		AddNodes(novaFire, igniteChance);
+		AddNodes(novaFire, igniteChance, flashFire, combustive, scorching);
 		AddNodes(novaLightning, shockChance);
 		AddNodes(novaIce, volatileNova);
 		AddNodes(volatileNova, novaLightning);

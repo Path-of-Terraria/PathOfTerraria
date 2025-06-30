@@ -35,7 +35,9 @@ internal class Combustive(SkillTree tree) : SkillPassive(tree)
 			for (int i = 0; i < 15; ++i)
 			{
 				Vector2 position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(Spread / 2);
-				Dust.NewDustPerfect(position, DustID.Torch, position.DirectionFrom(Projectile.Center) * 1.5f, Scale: Main.rand.NextFloat(1, 2)).noGravity = true;
+				var dust = Dust.NewDustPerfect(position, DustID.Torch, position.DirectionFrom(Projectile.Center) * 1.5f, Scale: Main.rand.NextFloat(1, 2));
+				dust.noGravity = true;
+				dust.fadeIn = 1.1f;
 			}
 		}
 
