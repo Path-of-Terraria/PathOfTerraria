@@ -178,16 +178,16 @@ public class Nova : Skill
 			{
 				for (int y = position.Y; y < position.Y + size.Y; y++)
 				{
-					if (WorldGen.InWorld(x, y, 2) && IsSolid(x, y) && !WorldGen.SolidOrSlopedTile(x, y - 1) && Main.rand.NextBool(3))
+					if (WorldGen.InWorld(x, y, 2) && IsSolid(x, y) && !IsSolid(x, y, true) && Main.rand.NextBool(3))
 					{
 						Projectile.NewProjectile(Projectile.GetSource_FromAI(), new Vector2(x, y).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<FieryPatch>(), Projectile.damage / 5, 0, Projectile.owner);
 					}
 				}
 			}
 
-			static bool IsSolid(int x, int y)
+			static bool IsSolid(int x, int y, bool checkSloped = false)
 			{
-				return WorldGen.SolidTile(x, y) || Main.tileSolidTop[Main.tile[x, y].TileType];
+				return (checkSloped ? WorldGen.SolidOrSlopedTile(x, y) : WorldGen.SolidTile(x, y)) || Main.tileSolidTop[Main.tile[x, y].TileType];
 			}
 		}
 
