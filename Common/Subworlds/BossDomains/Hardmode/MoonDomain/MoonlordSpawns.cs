@@ -156,10 +156,6 @@ internal class MoonlordSpawns : GlobalNPC
 			return;
 		}
 
-		//if (npc.type is NPCID.SolarCrawltipedeHead or NPCID.SolarCorite or NPCID.NebulaBrain or NPCID.NebulaHeadcrab or NPCID.StardustCellBig or NPCID.StardustJellyfishBig
-		//	or NPCID.StardustWormHead or NPCID.VortexHornet or NPCID.VortexRifleman)
-		//{
 		npc.lifeMax = (int)(npc.lifeMax * (Main.expertMode ? 0.33f : 0.5f));
-		//}
 	}
 }
