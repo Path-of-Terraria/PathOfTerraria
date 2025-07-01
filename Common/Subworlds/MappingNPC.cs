@@ -114,6 +114,11 @@ internal class MappingNPC : GlobalNPC
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<EoLMap>());
 			}
 
+			if (TierPassed(8) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<CultistMap>());
+			}
+
 			return;
 
 			bool TierPassed(int tier)

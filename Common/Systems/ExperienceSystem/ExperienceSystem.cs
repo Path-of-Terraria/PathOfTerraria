@@ -1,24 +1,27 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.ID;
+using static PathOfTerraria.Common.Mechanics.Experience;
 
-namespace PathOfTerraria.Common.Systems.Experience;
+namespace PathOfTerraria.Common.Systems.ExperienceSystem;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class ExperienceTracker : ModSystem
 {
-	private static Mechanics.Experience[] _trackedExp;
+	private static Experience[] _trackedExp;
 
 	public override void OnWorldLoad()
 	{
-		_trackedExp = new Mechanics.Experience[1000];
+		_trackedExp = new Experience[1000];
 	}
 
 	public override void PostUpdateNPCs()
 	{
-		foreach (Mechanics.Experience t in _trackedExp)
+		for (int i = 0; i < _trackedExp.Length; i++)
 		{
-			t?.Update();
+			Experience t = _trackedExp[i];
+			t?.Update(i, _trackedExp);
 		}
 	}
 
@@ -29,14 +32,21 @@ public class ExperienceTracker : ModSystem
 
 		//Draw the orbs
 		Texture2D texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Experience").Value;
-		foreach (Mechanics.Experience xp in _trackedExp)
+
+		foreach (Experience xp in _trackedExp)
 		{
 			if (xp is null || !xp.Active)
 			{
 				continue;
 			}
 
-			Vector2 size = xp.GetSize();
+			Vector2 size = xp.GetSize() switch
+			{
+				Sizes.OrbSmallYellow or Sizes.OrbSmallGreen or Sizes.OrbSmallBlue => new Vector2(6),
+				Sizes.OrbMediumYellow or Sizes.OrbMediumGreen or Sizes.OrbMediumBlue => new Vector2(8),
+				Sizes.OrbLargeYellow or Sizes.OrbLargeGreen or Sizes.OrbLargeBlue => new Vector2(10),
+				_ => Vector2.Zero
+			};
 
 			if (size == Vector2.Zero || xp.Collected)
 			{
@@ -44,14 +54,15 @@ public class ExperienceTracker : ModSystem
 			}
 
 			Rectangle source = xp.GetSourceRectangle();
+			float scale = xp.GetScale();
 
-			batch.Draw(texture, xp.Center - Main.screenPosition, source, Color.White, xp.Rotation, size / 2f, 1f, SpriteEffects.None, 0);
+			batch.Draw(texture, xp.Center - Main.screenPosition, source, Color.White, xp.Rotation, size / 2f, scale, SpriteEffects.None, 0);
 		}
 
 		batch.End();
 
 		//Draw the trails
-		foreach (Mechanics.Experience t in _trackedExp)
+		foreach (Experience t in _trackedExp)
 		{
 			t?.DrawTrail();
 		}
@@ -73,13 +84,7 @@ public class ExperienceTracker : ModSystem
 			return [];
 		}
 
-		if (Main.netMode == NetmodeID.Server && !fromNet) // Syncs the spawn of all orbs - only does so if not from the server
-		{
-			//ExperienceHandler.SendExperience(targetPlayer, xp, location, baseVelocity, true);
-			//return [];
-		}
-
-		List<Mechanics.Experience> spawned = [];
+		List<Experience> spawned = [];
 		int totalLeft = xp;
 
 		while (totalLeft > 0)
@@ -88,45 +93,45 @@ public class ExperienceTracker : ModSystem
 
 			switch (totalLeft)
 			{
-				case >= Mechanics.Experience.Sizes.OrbLargeBlue:
-					toSpawn = Mechanics.Experience.Sizes.OrbLargeBlue;
-					totalLeft -= Mechanics.Experience.Sizes.OrbLargeBlue;
+				case >= Experience.Sizes.OrbLargeBlue:
+					toSpawn = Experience.Sizes.OrbLargeBlue;
+					totalLeft -= Experience.Sizes.OrbLargeBlue;
 					break;
-				case >= Mechanics.Experience.Sizes.OrbLargeGreen:
-					toSpawn = Mechanics.Experience.Sizes.OrbLargeGreen;
-					totalLeft -= Mechanics.Experience.Sizes.OrbLargeGreen;
+				case >= Experience.Sizes.OrbLargeGreen:
+					toSpawn = Experience.Sizes.OrbLargeGreen;
+					totalLeft -= Experience.Sizes.OrbLargeGreen;
 					break;
-				case >= Mechanics.Experience.Sizes.OrbLargeYellow:
-					toSpawn = Mechanics.Experience.Sizes.OrbLargeYellow;
-					totalLeft -= Mechanics.Experience.Sizes.OrbLargeYellow;
+				case >= Experience.Sizes.OrbLargeYellow:
+					toSpawn = Experience.Sizes.OrbLargeYellow;
+					totalLeft -= Experience.Sizes.OrbLargeYellow;
 					break;
-				case >= Mechanics.Experience.Sizes.OrbMediumBlue:
-					toSpawn = Mechanics.Experience.Sizes.OrbMediumBlue;
-					totalLeft -= Mechanics.Experience.Sizes.OrbMediumBlue;
+				case >= Experience.Sizes.OrbMediumBlue:
+					toSpawn = Experience.Sizes.OrbMediumBlue;
+					totalLeft -= Experience.Sizes.OrbMediumBlue;
 					break;
-				case >= Mechanics.Experience.Sizes.OrbMediumGreen:
-					toSpawn = Mechanics.Experience.Sizes.OrbMediumGreen;
-					totalLeft -= Mechanics.Experience.Sizes.OrbMediumGreen;
+				case >= Experience.Sizes.OrbMediumGreen:
+					toSpawn = Experience.Sizes.OrbMediumGreen;
+					totalLeft -= Experience.Sizes.OrbMediumGreen;
 					break;
-				case >= Mechanics.Experience.Sizes.OrbMediumYellow:
-					toSpawn = Mechanics.Experience.Sizes.OrbMediumYellow;
-					totalLeft -= Mechanics.Experience.Sizes.OrbMediumYellow;
+				case >= Experience.Sizes.OrbMediumYellow:
+					toSpawn = Experience.Sizes.OrbMediumYellow;
+					totalLeft -= Experience.Sizes.OrbMediumYellow;
 					break;
-				case >= Mechanics.Experience.Sizes.OrbSmallBlue:
-					toSpawn = Mechanics.Experience.Sizes.OrbSmallBlue;
-					totalLeft -= Mechanics.Experience.Sizes.OrbSmallBlue;
+				case >= Experience.Sizes.OrbSmallBlue:
+					toSpawn = Experience.Sizes.OrbSmallBlue;
+					totalLeft -= Experience.Sizes.OrbSmallBlue;
 					break;
-				case >= Mechanics.Experience.Sizes.OrbSmallGreen:
-					toSpawn = Mechanics.Experience.Sizes.OrbSmallGreen;
-					totalLeft -= Mechanics.Experience.Sizes.OrbSmallGreen;
+				case >= Experience.Sizes.OrbSmallGreen:
+					toSpawn = Experience.Sizes.OrbSmallGreen;
+					totalLeft -= Experience.Sizes.OrbSmallGreen;
 					break;
 				default:
-					toSpawn = Mechanics.Experience.Sizes.OrbSmallYellow;
+					toSpawn = Experience.Sizes.OrbSmallYellow;
 					totalLeft--;
 					break;
 			}
 
-			var thing = new Mechanics.Experience(toSpawn, location, baseVelocity.RotatedBy(totalLeft * MathHelper.PiOver2 * 1.22f), targetPlayer);
+			var thing = new Experience(toSpawn, location, baseVelocity.RotatedBy(totalLeft * MathHelper.PiOver2 * 1.22f), targetPlayer);
 			spawned.Add(thing);
 		}
 
@@ -144,11 +149,11 @@ public class ExperienceTracker : ModSystem
 		return indices;
 	}
 
-	private static int InsertExperience(Mechanics.Experience expNew)
+	private static int InsertExperience(Experience expNew)
 	{
 		for (int i = 0; i < _trackedExp.Length; i++)
 		{
-			Mechanics.Experience exp = _trackedExp[i];
+			Experience exp = _trackedExp[i];
 
 			if (exp is not null && exp.Active)
 			{

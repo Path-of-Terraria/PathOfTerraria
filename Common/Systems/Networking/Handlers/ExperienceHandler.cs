@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.Systems.Experience;
+using PathOfTerraria.Common.Systems.ExperienceSystem;
 using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;

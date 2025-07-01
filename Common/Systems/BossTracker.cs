@@ -38,7 +38,7 @@ internal class BossTracker : ModSystem
 
 	private void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
 	{
-		if (SubworldSystem.Current is BossDomainSubworld)
+		if (SubworldSystem.Current is BossDomainSubworld && self.boss)
 		{
 			self.type = NPCID.None;
 			self.boss = false;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Terraria.ID;
 using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains;
@@ -132,6 +133,68 @@ public static class OpenExtensions
 		}
 
 		return flags;
+	}
+
+	public static OpenFlags GetUnsolidAndWallOpenings(int i, int j, bool onlyVertical = true, bool noDiagonals = true)
+	{
+		OpenFlags flags = OpenFlags.None;
+
+		if (!SolidOrWalled(i, j - 1))
+		{
+			flags |= OpenFlags.Above;
+		}
+
+		if (!SolidOrWalled(i, j + 1))
+		{
+			flags |= OpenFlags.Below;
+		}
+
+		if (onlyVertical)
+		{
+			return flags;
+		}
+
+		if (!SolidOrWalled(i - 1, j))
+		{
+			flags |= OpenFlags.Left;
+		}
+
+		if (!SolidOrWalled(i + 1, j))
+		{
+			flags |= OpenFlags.Right;
+		}
+
+		if (noDiagonals)
+		{
+			return flags;
+		}
+
+		if (!SolidOrWalled(i + 1, j - 1))
+		{
+			flags |= OpenFlags.UpRight;
+		}
+
+		if (!SolidOrWalled(i - 1, j - 1))
+		{
+			flags |= OpenFlags.UpLeft;
+		}
+
+		if (!SolidOrWalled(i - 1, j + 1))
+		{
+			flags |= OpenFlags.DownLeft;
+		}
+
+		if (!SolidOrWalled(i + 1, j + 1))
+		{
+			flags |= OpenFlags.DownRight;
+		}
+
+		return flags;
+
+		static bool SolidOrWalled(int i, int j)
+		{
+			return WorldGen.SolidTile(i, j) || Main.tile[i, j].WallType > WallID.None;
+		}
 	}
 
 	public static Point GetDirectionAbsolute(this OpenFlags flag)

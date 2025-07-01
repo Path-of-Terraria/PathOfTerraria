@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.Systems.Experience;
+using PathOfTerraria.Common.Systems.ExperienceSystem;
 
 namespace PathOfTerraria.Core.Commands;
 
