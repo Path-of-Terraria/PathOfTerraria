@@ -6,6 +6,8 @@ public abstract partial class Skill
 {
 	public SkillBuff Stats = new();
 
+	/// <summary> The final cooldown of this skill affected by modifications. </summary>
+	public int TotalCooldown => (int)Stats.Cooldown.ApplyTo(Cooldown);
 	/// <summary> The final mana cost of this skill affected by modifications. </summary>
 	public int TotalManaCost => (int)Stats.ManaCost.ApplyTo(ManaCost);
 

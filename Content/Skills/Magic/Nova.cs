@@ -12,6 +12,7 @@ using System.Linq;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Utilities;
+using static PathOfTerraria.Content.SkillPassives.ScorchingTouch;
 
 namespace PathOfTerraria.Content.Skills.Magic;
 
@@ -147,6 +148,11 @@ public class Nova : Skill
 			Timer += 0.04f;
 			DecaySpeed *= 0.94f;
 
+			if (Main.myPlayer == Projectile.owner && Projectile.timeLeft % 8 == 0 && Skill.Tree.TryGetNode(out ScorchingTouch scorching) && scorching.Allocated)
+			{
+				ScorchSurface();
+			}
+
 			if (NovaType == NovaType.Fire)
 			{
 				SpamFireDust();
@@ -158,6 +164,30 @@ public class Nova : Skill
 			else if (NovaType == NovaType.Lightning)
 			{
 				SpamLightningDust();
+			}
+		}
+
+		private void ScorchSurface()
+		{
+			float spread = Spread * 2f;
+
+			var position = ((Projectile.position - new Vector2(spread / 2)) / 16).ToPoint();
+			var size = (new Vector2(spread) / 16).ToPoint();
+
+			for (int x = position.X; x < position.X + size.X; x++)
+			{
+				for (int y = position.Y; y < position.Y + size.Y; y++)
+				{
+					if (WorldGen.InWorld(x, y, 2) && IsSolid(x, y) && !IsSolid(x, y, true) && Main.rand.NextBool(3))
+					{
+						Projectile.NewProjectile(Projectile.GetSource_FromAI(), new Vector2(x, y).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<FieryPatch>(), Projectile.damage / 5, 0, Projectile.owner);
+					}
+				}
+			}
+
+			static bool IsSolid(int x, int y, bool checkSloped = false)
+			{
+				return (checkSloped ? WorldGen.SolidOrSlopedTile(x, y) : WorldGen.SolidTile(x, y)) || Main.tileSolidTop[Main.tile[x, y].TileType];
 			}
 		}
 
@@ -245,6 +275,11 @@ public class Nova : Skill
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			//Passive synergies
+			if (target.life <= 0 && Skill.Tree.TryGetNode(out Combustive combustive) && combustive.Allocated)
+			{
+				Projectile.NewProjectile(Projectile.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<Combustive.CombustionBlast>(), (int)(target.lifeMax * 0.05f), 3);
+			}
+
 			if (Skill.Tree.TryGetNode(out IgniteChance ignite) && ignite.Allocated && Main.rand.NextFloat() < 0.02f * ignite.Level)
 			{
 				target.AddBuff(BuffID.OnFire, 8 * 60);

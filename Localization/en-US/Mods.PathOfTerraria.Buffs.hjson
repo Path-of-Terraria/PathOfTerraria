@@ -74,3 +74,8 @@ UnstoppableBuff: {
 		Immunity to Chilled
 		'''
 }
+
+FrostflameDebuff: {
+	DisplayName: Frostflame Debuff
+	Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
+}
