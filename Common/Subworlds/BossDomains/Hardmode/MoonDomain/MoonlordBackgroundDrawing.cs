@@ -1,5 +1,6 @@
 ﻿using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation;
+using PathOfTerraria.Common.World.Generation;
 using ReLogic.Content;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ internal class MoonlordBackgroundDrawing : ModSystem
 {
 	private const string TexPath = "PathOfTerraria/Assets/Backgrounds/";
 
-	public readonly record struct Planet(Point16 Position, MoonlordPlanetGen.PlanetType Type, float Scale, float Rotation);
+	public readonly record struct Planet(Point16 Position, MoonlordPlanetGen.PlanetType Type, float Scale, float Rotation, byte Frame);
 
 	private static readonly List<Planet> Planets = [];
 	private static readonly List<Star> Stars = [];
@@ -64,17 +65,22 @@ internal class MoonlordBackgroundDrawing : ModSystem
 	public static void ReloadPlanets()
 	{
 		Planets.Clear();
+		Stars.Clear();
 
-		for (int i = 0; i < 50; ++i)
+		for (int i = 0; i < 80; ++i)
 		{
 			Point16 pos = new(Main.rand.Next(1921), Main.rand.Next(1201));
-			Planets.Add(new Planet(pos, (MoonlordPlanetGen.PlanetType)Main.rand.Next(4), Main.rand.NextFloat(0.4f, 2f), Main.rand.NextFloat(MathHelper.TwoPi)));
+			var type = (MoonlordPlanetGen.PlanetType)Main.rand.Next(4);
+			Planets.Add(new Planet(pos, type, Main.rand.NextFloat(0.2f, 2f), Main.rand.NextFloat(MathHelper.TwoPi), (byte)Main.rand.Next(4)));
 		}
 
-		for (int i = 0; i < 600; ++i)
+		FastNoiseLite starNoise = new(Main.rand.Next());
+		starNoise.SetFrequency(0.002f);
+
+		for (int i = 0; i < 1200; ++i)
 		{
 			Vector2 pos = new(Main.rand.Next(1921), Main.rand.Next(1201));
-			Stars.Add(new Star() { falling = false, position = pos, scale = 1f });
+			Stars.Add(new Star() { falling = false, position = pos, scale = 2 * Math.Abs(starNoise.GetNoise(pos.X, pos.Y)) });
 		}
 	}
 
@@ -85,10 +91,21 @@ internal class MoonlordBackgroundDrawing : ModSystem
 		if (SubworldSystem.Current is MoonLordDomain)
 		{
 			float opacity;
-
-			if (Main.LocalPlayer.Center.Y / 16 < MoonLordDomain.CloudTop)
+			float y = Main.LocalPlayer.Center.Y / 16;
+			
+			if (y < MoonLordDomain.PlanetTop - 200)
 			{
-				opacity = Utils.GetLerpValue(MoonLordDomain.CloudTop, MoonLordDomain.CloudTop - 150, Main.LocalPlayer.Center.Y / 16, true);
+				DrawingSpecialStars = 0f;
+				return;
+			}
+			else if (y < MoonLordDomain.PlanetTop)
+			{
+				opacity = Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true);
+				DrawingSpecialStars = opacity;
+			}
+			else if (y < MoonLordDomain.CloudTop)
+			{
+				opacity = Utils.GetLerpValue(MoonLordDomain.CloudTop, MoonLordDomain.CloudTop - 150, y, true);
 			}
 			else
 			{
@@ -101,8 +118,9 @@ internal class MoonlordBackgroundDrawing : ModSystem
 					+ new Vector2(0f, sceneArea.bgTopY) + sceneArea.SceneLocalScreenPositionOffset;
 				Texture2D tex = PlanetTextures[(int)planet.Type].Value;
 				var color = Color.Lerp(Color.White, Color.DarkGray, Utils.GetLerpValue(2f, 0.4f, planet.Scale, true));
+				Rectangle src = new(0, 17 * planet.Frame, 16, 17);
 
-				Main.spriteBatch.Draw(tex, position, null, color * opacity, planet.Rotation, tex.Size() / 2f, planet.Scale, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(tex, position, src, color * opacity, planet.Rotation, src.Size() / 2f, planet.Scale, SpriteEffects.None, 0);
 			}
 
 			DrawingSpecialStars = opacity;
@@ -114,6 +132,16 @@ internal class MoonlordBackgroundDrawing : ModSystem
 				CallDrawStar(Main.instance, ref sceneArea, 1f, Main.ColorOfTheSkies * opacity, i, star, artificial);
 			}
 
+			DrawingSpecialStars = null;
+
+			if (y < MoonLordDomain.PlanetTop)
+			{
+				opacity = Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true);
+				DrawingSpecialStars = opacity;
+			}
+		}
+		else
+		{
 			DrawingSpecialStars = null;
 		}
 

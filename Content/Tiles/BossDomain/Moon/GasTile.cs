@@ -7,6 +7,7 @@ namespace PathOfTerraria.Content.Tiles.BossDomain.Moon;
 internal abstract class GasTile : ModTile
 {
 	public abstract Color TileColor { get; }
+	public abstract int Dust { get; }
 	public virtual int SineDirection { get; }
 	public virtual Color GlowColor => TileColor;
 
@@ -18,8 +19,13 @@ internal abstract class GasTile : ModTile
 
 		AddMapEntry(TileColor);
 
-		DustType = DustID.PurpleCrystalShard;
+		DustType = Dust;
 		HitSound = SoundID.Item39;
+	}
+
+	public override void NumDust(int i, int j, bool fail, ref int num)
+	{
+		num = 2;
 	}
 
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)

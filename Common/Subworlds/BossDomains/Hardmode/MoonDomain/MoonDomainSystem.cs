@@ -1,4 +1,5 @@
-﻿using SubworldLibrary;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation;
+using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
 
@@ -23,6 +24,14 @@ internal class MoonDomainSystem : ModSystem
 		{
 			tileColor = Color.Lerp(Color.Black, tileColor, (y - top) / (float)(MoonLordDomain.CloudBottom - top));
 			backgroundColor = tileColor;
+		}
+		else if (y < MoonLordDomain.TerrariaHeight)
+		{
+			// Empty block because I'm too lazy to write logic
+		}
+		else if (y < MoonlordTerrainGen.StoneCutoff)
+		{
+
 		}
 	}
 }

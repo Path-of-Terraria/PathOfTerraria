@@ -20,6 +20,7 @@ internal class MoonLordDomain : BossDomainSubworld
 	public const int CloudTop = TerrariaHeight - 350;
 	public const int CloudBottom = TerrariaHeight - 50;
 	public const int PlanetTop = 1200;
+	public const int TopOfTheWorld = PlanetTop / 2;
 
 	public override int Width => 1200;
 	public override int Height => 4800;
@@ -125,7 +126,7 @@ internal class MoonLordDomain : BossDomainSubworld
 			{
 				MoonlordPlanetGen.GeneratePlanet(type, planets);
 
-				progress.Set((i + j) / 16f);
+				progress.Set((i * 4 + j) / 16f);
 			}
 		}
 	}
@@ -146,13 +147,24 @@ internal class MoonLordDomain : BossDomainSubworld
 
 	public override void Update()
 	{
-		Main.shimmerAlpha = 1f;
-
 		Liquid.UpdateLiquid();
 
-		if (!BossSpawned && NPC.AnyNPCs(NPCID.MoonLordCore))
+		bool allPlayersAtop = true;
+
+		foreach (Player player in Main.ActivePlayers)
+		{
+			if (player.Center.Y / 16 > TopOfTheWorld)
+			{
+				allPlayersAtop = false;
+				break;
+			}
+		}
+
+		if (!BossSpawned && allPlayersAtop && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
 			BossSpawned = true;
+
+			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), Main.maxTilesX * 8, TopOfTheWorld * 16, NPCID.MoonLordCore);
 		}
 
 		ModifySpawn();
@@ -196,12 +208,17 @@ internal class MoonLordDomain : BossDomainSubworld
 
 		ModifySpawnCutoff(highestX, highestY, MoonlordTerrainGen.DirtCutoff);
 		ModifySpawnCutoff(highestX, highestY, MoonlordTerrainGen.StoneCutoff);
+		ModifySpawn(highestX, highestY, TerrariaHeight);
+		ModifySpawn(highestX, highestY, CloudTop);
 	}
 
 	private static void ModifySpawnCutoff(int highestX, int highestY, float cutoffFactor)
 	{
-		int y = (int)MathHelper.Lerp(TerrariaHeight, Main.maxTilesY, cutoffFactor);
+		ModifySpawn(highestX, highestY, (int)MathHelper.Lerp(TerrariaHeight, Main.maxTilesY, cutoffFactor));
+	}
 
+	private static void ModifySpawn(int highestX, int highestY, int y)
+	{
 		if (highestY < y * 16 && Main.spawnTileY > y)
 		{
 			Main.spawnTileX = highestX / 16;

@@ -57,20 +57,23 @@ internal static class MoonlordCloudGen
 		SpamCloudObject(BuildPillar);
 		SpamCloudObject(BuildGap);
 		SpamCloudObject(BuildSmallStar, 18);
+		SpamCloudObject(BuildSmallStar, 15, (MoonLordDomain.CloudTop - 200)..MoonLordDomain.CloudTop);
 	}
 
-	private static void SpamCloudObject(CloudDelegate cloud, int count = 12)
+	private static void SpamCloudObject(CloudDelegate cloud, int count = 12, Range? yRange = null)
 	{
+		yRange ??= MoonLordDomain.CloudTop..MoonLordDomain.CloudBottom;
+
 		for (int i = 0; i < count; ++i)
 		{
 			Point16 pos;
 
 			do
 			{
-				pos = new(WorldGen.genRand.Next(60, Main.maxTilesX - 60), WorldGen.genRand.Next(MoonLordDomain.CloudTop, MoonLordDomain.CloudBottom));
+				pos = new(WorldGen.genRand.Next(60, Main.maxTilesX - 60), WorldGen.genRand.Next(yRange.Value.Start.Value, yRange.Value.End.Value));
 			} while (!GenVars.structures.CanPlace(new Rectangle(pos.X, pos.Y - 6, 12, 12)));
 
-			bool success = cloud(pos, out Rectangle bounds);
+			bool success = cloud(new Point16(pos.X, pos.Y), out Rectangle bounds);
 
 			if (success)
 			{

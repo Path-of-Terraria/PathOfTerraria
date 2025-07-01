@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.MiscUtilities;
+using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Tiles.BossDomain.Moon;
 using System.Collections.Generic;
@@ -47,6 +48,7 @@ internal static class MoonlordPlanetGen
 	internal static void GeneratePlanet(PlanetType type, List<PlanetInstance> points)
 	{
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		int tries = 0;
 		int x;
 		int y;
 
@@ -54,7 +56,17 @@ internal static class MoonlordPlanetGen
 		{
 			x = WorldGen.genRand.Next(190, Main.maxTilesX - 190);
 			y = WorldGen.genRand.Next(MoonLordDomain.PlanetTop, MoonLordDomain.CloudTop - 200);
+
+			if (++tries > 30000)
+			{
+				break;
+			}
 		} while (points.Any(v => new Vector2(x, y).DistanceSQ(v.Position) < MathF.Pow(v.Radius + 100, 2)));
+
+		if (tries > 30000)
+		{
+			return;
+		}
 
 		FastNoiseLite valueNoise = new(WorldGen._genRandSeed);
 		valueNoise.SetNoiseType(FastNoiseLite.NoiseType.Value);
@@ -64,29 +76,7 @@ internal static class MoonlordPlanetGen
 		cellularNoise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
 		cellularNoise.SetFrequency(0.055f);
 
-		PlanetTileSet tileSet = type switch
-		{
-			PlanetType.Vortex => Vortex,
-			PlanetType.Stardust => Stardust,
-			PlanetType.Solar => Solar,
-			_ => Nebula,
-		};
-
-		int size = type switch
-		{
-			0 => 40,
-			PlanetType.Stardust => 60,
-			PlanetType.Solar => 80,
-			_ => 55,
-		};
-
-		int gasType = type switch
-		{
-			PlanetType.Nebula => ModContent.TileType<NebulaGas>(),
-			PlanetType.Stardust => ModContent.TileType<Stardust>(),
-			PlanetType.Solar => ModContent.TileType<SolarFlare>(),
-			_ => ModContent.TileType<MiniVortex>(),
-		};
+		GetDataBasedOnType(type, out PlanetTileSet tileSet, out int size, out int gasType);
 
 		size = (int)(size * WorldGen.genRand.NextFloat(0.7f, 1.2f));
 
@@ -95,13 +85,51 @@ internal static class MoonlordPlanetGen
 			size += 8; // Add buffer for gas outline
 		}
 
-		int sizeWithBuffer = size + 20;
+		Dictionary<Point16, float> nebulaGasLocations = [];
 
 		points.Add(new PlanetInstance(new Vector2(x, y), size));
 
+		GeneratePlanetInstance(type, noise, x, y, valueNoise, cellularNoise, tileSet, size, gasType, nebulaGasLocations);
+		AddGasses(type, gasType, new Point16(x, y), size);
+		GenerateNebulaGasRing(gasType, nebulaGasLocations);
+
+		if (y < MoonLordDomain.PlanetTop + size * 2)
+		{
+			GenerateLuminiteSteps(x, y, size, valueNoise);
+		}
+	}
+
+	private static void GetDataBasedOnType(PlanetType type, out PlanetTileSet tileSet, out int size, out int gasType)
+	{
+		tileSet = type switch
+		{
+			PlanetType.Vortex => Vortex,
+			PlanetType.Stardust => Stardust,
+			PlanetType.Solar => Solar,
+			_ => Nebula,
+		};
+		size = type switch
+		{
+			0 => 40,
+			PlanetType.Stardust => 60,
+			PlanetType.Solar => 80,
+			_ => 55,
+		};
+		gasType = type switch
+		{
+			PlanetType.Nebula => ModContent.TileType<NebulaGas>(),
+			PlanetType.Stardust => ModContent.TileType<Stardust>(),
+			PlanetType.Solar => ModContent.TileType<SolarFlare>(),
+			_ => ModContent.TileType<MiniVortex>(),
+		};
+	}
+
+	private static void GeneratePlanetInstance(PlanetType type, FastNoiseLite noise, int x, int y, FastNoiseLite valueNoise, FastNoiseLite cellularNoise,
+		PlanetTileSet tileSet, int size, int gasType, Dictionary<Point16, float> nebulaGasLocations)
+	{
 		bool hasSpikes = WorldGen.genRand.NextBool(2);
 		int noiseAmp = WorldGen.genRand.Next(3, 11);
-		Dictionary<Point16, float> nebulaGasLocations = [];
+		int sizeWithBuffer = size + 20;
 
 		if (hasSpikes)
 		{
@@ -141,15 +169,70 @@ internal static class MoonlordPlanetGen
 						float angleRange = WorldGen.genRand.NextFloat(0.15f, 0.35f);
 						bool isWall = WorldGen.genRand.NextBool(3);
 
-						MoonlordTerrainGen.GenerateSpikeAction(new Point16(i, j), (int)length, pos.AngleFrom(center), angleRange, 
+						MoonlordTerrainGen.GenerateSpikeAction(new Point16(i, j), (int)length, pos.AngleFrom(center), angleRange,
 							(x, y) => SetTilePerNoise(valueNoise, cellularNoise, tileSet, x, y, isWall), (_, _, _, _) => 1f);
 					}
 				}
 			}
 		}
+	}
 
-		AddGasses(type, gasType, new Point16(x, y), size);
+	private static void GenerateLuminiteSteps(int x, int y, int size, FastNoiseLite noise)
+	{
+		Point target = new(Main.maxTilesX / 2, MoonLordDomain.TopOfTheWorld);
+		Point pos = new(x, y - size - 40);
 
+		while (true)
+		{
+			pos += (pos.ToVector2().DirectionTo(target.ToVector2()) * WorldGen.genRand.Next(40, 90)).ToPoint();
+
+			if (pos.ToVector2().DistanceSQ(target.ToVector2()) <= 80 * 80)
+			{
+				break;
+			}
+
+			PlaceLuminitePebble(noise, new Point(pos.X + WorldGen.genRand.Next(-20, 20), pos.Y + WorldGen.genRand.Next(-20, 20)), WorldGen.genRand.Next(12, 17));
+		}
+
+		PlaceLuminitePebble(noise, target, WorldGen.genRand.Next(20, 27));
+	}
+
+	private static void PlaceLuminitePebble(FastNoiseLite noise, Point pos, int size)
+	{
+		HashSet<Point16> positions = [];
+
+		for (int i = pos.X - size; i <= pos.X + size; i++)
+		{
+			for (int j = pos.Y - size; j <= pos.Y + size; j++)
+			{
+				float distance = Vector2.DistanceSquared(pos.ToVector2(), new Vector2(i, j));
+				float cutoff = size - noise.GetNoise(i, j) * 4;
+
+				if (distance < cutoff * cutoff)
+				{
+					Tile tile = Main.tile[i, j];
+					tile.HasTile = true;
+					tile.TileType = !WorldGen.genRand.NextBool(8) ? TileID.LunarOre : WorldGen.genRand.Next(4) switch
+					{
+						0 => TileID.LunarBlockSolar,
+						1 => TileID.LunarBlockNebula,
+						2 => TileID.LunarBlockStardust,
+						_ => TileID.LunarBlockVortex
+					};
+
+					positions.Add(new Point16(i, j));
+				}
+			}
+		}
+
+		foreach (Point16 position in positions)
+		{
+			Tile.SmoothSlope(position.X, position.Y);
+		}
+	}
+
+	private static void GenerateNebulaGasRing(int gasType, Dictionary<Point16, float> nebulaGasLocations)
+	{
 		foreach (Point16 pos in nebulaGasLocations.Keys)
 		{
 			Tile tile = Main.tile[pos];

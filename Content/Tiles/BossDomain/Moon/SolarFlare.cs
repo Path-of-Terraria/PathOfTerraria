@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Tiles;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain.Moon;
 
@@ -9,6 +10,7 @@ internal class SolarFlare : GasTile
 	public static Color[] OffsetColors = [Color.White, new Color(140, 140, 140) * 0.9f, new Color(255, 255, 40) * 0.7f, new Color(60, 60, 60) * 0.4f];
 
 	public override Color TileColor => new(249, 75, 9);
+	public override int Dust => DustID.SolarFlare;
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
@@ -19,7 +21,7 @@ internal class SolarFlare : GasTile
 		src = ModifySource(i, j, tile, src, 0);
 		SpriteEffects effects = i % 2 == 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-		float windPush = Main.instance.TilesRenderer.GetWindGridPush(i, j, 60, 0.1f);
+		float windPush = Main.instance.TilesRenderer.GetWindGridPush(i, j, 60, 0.2f);
 		float sinY = MathF.Sin(i + j * 3f + Main.GameUpdateCount * 0.045f + MathHelper.PiOver2 * 0.39f);
 		int repeats = tile.TileFrameX / 18;
 

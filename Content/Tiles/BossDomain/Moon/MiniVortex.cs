@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Tiles;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain.Moon;
 
@@ -7,6 +8,7 @@ internal class MiniVortex : GasTile
 {
 	public override Color TileColor => new(0, 242, 230);
 	public override int SineDirection => -1;
+	public override int Dust => DustID.Vortex;
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
