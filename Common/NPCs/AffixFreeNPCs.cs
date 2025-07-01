@@ -58,5 +58,9 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerHead);
 		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerBody);
 		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.MoonLordFreeEye); // All moon lord parts should be affixless
+		ArpgNPC.NoAffixesSet.Add(NPCID.MoonLordHand);
+		ArpgNPC.NoAffixesSet.Add(NPCID.MoonLordHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.MoonLordLeechBlob);
 	}
 }

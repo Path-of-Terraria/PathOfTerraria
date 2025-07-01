@@ -91,16 +91,21 @@ internal class MoonlordBackgroundDrawing : ModSystem
 		if (SubworldSystem.Current is MoonLordDomain)
 		{
 			float opacity;
-			float y = Main.LocalPlayer.Center.Y / 16;
+			float y = Main.LocalPlayer.Center.Y / 16;   
 			
 			if (y < MoonLordDomain.PlanetTop - 200)
 			{
-				DrawingSpecialStars = 0f;
-				return;
+				DrawingSpecialStars = 1 - MoonDomainSystem.EffectStrength;
+				opacity = DrawingSpecialStars.Value;
+
+				if (MoonDomainSystem.EffectStrength > 0.99f)
+				{
+					return;
+				}
 			}
 			else if (y < MoonLordDomain.PlanetTop)
 			{
-				opacity = Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true);
+				opacity = MathHelper.Lerp(Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true), 1, 1 - MoonDomainSystem.EffectStrength);
 				DrawingSpecialStars = opacity;
 			}
 			else if (y < MoonLordDomain.CloudTop)
@@ -136,7 +141,7 @@ internal class MoonlordBackgroundDrawing : ModSystem
 
 			if (y < MoonLordDomain.PlanetTop)
 			{
-				opacity = Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true);
+				opacity = MathHelper.Lerp(Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true), 1, 1 - MoonDomainSystem.EffectStrength);
 				DrawingSpecialStars = opacity;
 			}
 		}
@@ -144,9 +149,9 @@ internal class MoonlordBackgroundDrawing : ModSystem
 		{
 			DrawingSpecialStars = null;
 		}
-
-		[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawStar")]
-		static extern void CallDrawStar(Main instance, ref Main.SceneArea sceneArea, float starOpacity, Color bgColorForStars, int i, Star theStar, bool artificial, 
-			bool foreground = false);
 	}
+	
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "DrawStar")]
+	private static extern void CallDrawStar(Main instance, ref Main.SceneArea sceneArea, float starOpacity, Color bgColorForStars, int i, Star theStar, bool artificial,
+		bool foreground = false);
 }

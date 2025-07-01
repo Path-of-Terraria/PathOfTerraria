@@ -32,8 +32,6 @@ internal class MoonlordTerrainGen
 		progress.Start(1);
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Scanning");
 
-		Main.spawnTileX = Main.maxTilesX / 2;
-		Main.spawnTileY = Main.maxTilesY / 2;
 		Main.worldSurface = Main.maxTilesY - 50;
 		Main.rockLayer = Main.maxTilesY - 40;
 

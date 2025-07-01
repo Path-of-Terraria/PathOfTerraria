@@ -25,9 +25,6 @@ internal class MoonLordDomain : BossDomainSubworld
 	public override int Width => 1200;
 	public override int Height => 4800;
 	public override (int time, bool isDay) ForceTime => (3500, false);
-	
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", MoonlordTerrainGen.GenerateTerraria),
@@ -140,53 +137,12 @@ internal class MoonLordDomain : BossDomainSubworld
 	public override void OnEnter()
 	{
 		base.OnEnter();
-
-		BossSpawned = false;
-		ExitSpawned = false;
 	}
 
 	public override void Update()
 	{
 		Liquid.UpdateLiquid();
-
-		bool allPlayersAtop = true;
-
-		foreach (Player player in Main.ActivePlayers)
-		{
-			if (player.Center.Y / 16 > TopOfTheWorld)
-			{
-				allPlayersAtop = false;
-				break;
-			}
-		}
-
-		if (!BossSpawned && allPlayersAtop && Main.CurrentFrameFlags.ActivePlayersCount > 0)
-		{
-			BossSpawned = true;
-
-			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), Main.maxTilesX * 8, TopOfTheWorld * 16, NPCID.MoonLordCore);
-		}
-
 		ModifySpawn();
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.MoonLordCore) && !ExitSpawned)
-		{
-			ExitSpawned = true;
-
-			HashSet<Player> players = [];
-
-			foreach (Player plr in Main.ActivePlayers)
-			{
-				if (!plr.dead)
-				{
-					players.Add(plr);
-				}
-			}
-
-			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
-			Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-		}
 	}
 
 	private static void ModifySpawn()
