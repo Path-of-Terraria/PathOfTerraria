@@ -37,7 +37,7 @@ internal class MoonlordSpawns : GlobalNPC
 		}
 	}
 
-	private static int FixCrawltipedes(On_NPC.orig_NewNPC orig, IEntitySource source, int X, int Y, int Type, int Start, float ai0, float ai1, float ai2, float ai3, int t)
+	private static int FixCrawltipedes(On_NPC.orig_NewNPC orig, IEntitySource src, int X, int Y, int Type, int Start, float ai0, float ai1, float ai2, float ai3, int t)
 	{
 		if (Start == 0 && Type is NPCID.SolarCrawltipedeHead or NPCID.StardustWormHead or NPCID.CultistDragonHead or NPCID.WyvernHead or NPCID.SeekerHead 
 			or NPCID.DuneSplicerHead)
@@ -45,7 +45,7 @@ internal class MoonlordSpawns : GlobalNPC
 			Start = 1; // The fix is so easy yet vanilla can't for some reason >:(
 		}
 
-		return orig(source, X, Y, Type, Start, ai0, ai1, ai2, ai3, t);
+		return orig(src, X, Y, Type, Start, ai0, ai1, ai2, ai3, t);
 	}
 
 	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
@@ -129,6 +129,8 @@ internal class MoonlordSpawns : GlobalNPC
 			pool[NPCID.PirateGhost] = 0.1f;
 			pool[NPCID.BloodSquid] = 0.1f;
 		}
+	
+		pool[NPCID.Shimmerfly] = 0.05f;
 	}
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
