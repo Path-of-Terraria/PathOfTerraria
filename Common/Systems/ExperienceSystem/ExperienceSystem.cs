@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.ID;
-using static PathOfTerraria.Common.Mechanics.Experience;
 
 namespace PathOfTerraria.Common.Systems.ExperienceSystem;
 
@@ -35,37 +34,10 @@ public class ExperienceTracker : ModSystem
 
 		foreach (Experience xp in _trackedExp)
 		{
-			if (xp is null || !xp.Active)
-			{
-				continue;
-			}
-
-			Vector2 size = xp.GetSize() switch
-			{
-				Sizes.OrbSmallYellow or Sizes.OrbSmallGreen or Sizes.OrbSmallBlue => new Vector2(6),
-				Sizes.OrbMediumYellow or Sizes.OrbMediumGreen or Sizes.OrbMediumBlue => new Vector2(8),
-				Sizes.OrbLargeYellow or Sizes.OrbLargeGreen or Sizes.OrbLargeBlue => new Vector2(10),
-				_ => Vector2.Zero
-			};
-
-			if (size == Vector2.Zero || xp.Collected)
-			{
-				continue;
-			}
-
-			Rectangle source = xp.GetSourceRectangle();
-			float scale = xp.GetScale();
-
-			batch.Draw(texture, xp.Center - Main.screenPosition, source, Color.White, xp.Rotation, size / 2f, scale, SpriteEffects.None, 0);
+			xp?.Draw(batch, texture);
 		}
 
 		batch.End();
-
-		//Draw the trails
-		foreach (Experience t in _trackedExp)
-		{
-			t?.DrawTrail();
-		}
 	}
 
 	/// <summary>
