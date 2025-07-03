@@ -1,16 +1,13 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Content.Tiles.Maps;
 using System.Runtime.CompilerServices;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs.ShrineBuffs;
 
-internal class HasteBuff : ModBuff
+internal class HasteBuff : ShrineBuff
 {
-	public override void SetStaticDefaults()
-	{
-		// This allows for otherwise buff immune NPCs to have this effect
-		BuffID.Sets.IsATagBuff[Type] = true;
-	}
+	public override int AoEType => ModContent.ProjectileType<HasteAoE>();
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{
