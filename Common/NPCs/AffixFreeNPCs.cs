@@ -31,6 +31,37 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.WallofFleshEye);
 		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron); // Both of these are effectively projectiles, should be ignored
 		ArpgNPC.NoAffixesSet.Add(NPCID.Sharkron2);
+		ArpgNPC.NoAffixesSet.Add(NPCID.GiantWormBody); // All of these are worms which should not be modified
+		ArpgNPC.NoAffixesSet.Add(NPCID.GiantWormHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.GiantWormTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernBody2);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernBody3);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernLegs);
+		ArpgNPC.NoAffixesSet.Add(NPCID.WyvernTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DevourerBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DevourerHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DevourerTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody1);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody2);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody3);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonBody4);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.CultistDragonTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DiggerBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DiggerHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.DiggerTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.LeechBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.LeechHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.LeechTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerBody);
+		ArpgNPC.NoAffixesSet.Add(NPCID.SeekerTail);
+		ArpgNPC.NoAffixesSet.Add(NPCID.MoonLordFreeEye); // All moon lord parts should be affixless
+		ArpgNPC.NoAffixesSet.Add(NPCID.MoonLordHand);
+		ArpgNPC.NoAffixesSet.Add(NPCID.MoonLordHead);
+		ArpgNPC.NoAffixesSet.Add(NPCID.MoonLordLeechBlob);
 		ArpgNPC.NoAffixesSet.Add(NPCID.AncientLight); // This is a projectile NPC but is not marked as such for some reason
 		ArpgNPC.NoAffixesSet.Add(NPCID.AncientDoom); // The above
 		ArpgNPC.NoAffixesSet.Add(NPCID.LunarTowerNebula); // These all are just damage sponges, making them "harder" doesn't make sense

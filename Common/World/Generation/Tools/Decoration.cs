@@ -57,24 +57,44 @@ internal static class Decoration
 		}
 	}
 
-	public static void OnPurityGrass(Point16 position)
+	public static void OnPurityGrass(Point16 position, OpenFlags flags, int treeChance = 6)
 	{
-		if (!WorldGen.genRand.NextBool(3))
+		if (flags.HasFlag(OpenFlags.Above))
 		{
-			WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Plants);
-		}
-		else if (WorldGen.genRand.NextBool(6))
-		{
-			WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Saplings);
-
-			if (!WorldGen.GrowTree(position.X, position.Y - 1))
+			if (!WorldGen.genRand.NextBool(3))
 			{
-				WorldGen.KillTile(position.X, position.Y - 1);
+				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Plants, true);
+			}
+			else if (WorldGen.genRand.NextBool(treeChance))
+			{
+				WorldGen.PlaceTile(position.X, position.Y - 1, TileID.Saplings, true);
+
+				if (!WorldGen.GrowTree(position.X, position.Y - 1))
+				{
+					WorldGen.KillTile(position.X, position.Y - 1);
+				}
+			}
+			else if (WorldGen.genRand.NextBool(4))
+			{
+				WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(10), 0);
 			}
 		}
-		else if (WorldGen.genRand.NextBool(4))
+
+		Tile tile = Main.tile[position.ToPoint()];
+
+		if (flags.HasFlag(OpenFlags.Below) && (tile.BottomSlope || tile.Slope == SlopeType.Solid))
 		{
-			WorldGen.PlaceSmallPile(position.X, position.Y - 1, WorldGen.genRand.Next(10), 0);
+			int length = WorldGen.genRand.Next(5, 12);
+
+			for (int k = 1; k < length; ++k)
+			{
+				if (Main.tile[position.X, position.Y + k].HasTile)
+				{
+					break;
+				}
+
+				WorldGen.PlaceTile(position.X, position.Y + k, TileID.Vines, true);
+			}
 		}
 	}
 }

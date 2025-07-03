@@ -120,7 +120,7 @@ public class EyeDomain : BossDomainSubworld
 				continue;
 			}
 
-			Decoration.OnPurityGrass(position);
+			Decoration.OnPurityGrass(position, OpenFlags.Above);
 		}
 
 		if (includeFleshStuff)
