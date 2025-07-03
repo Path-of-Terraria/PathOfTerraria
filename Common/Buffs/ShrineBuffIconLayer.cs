@@ -14,7 +14,7 @@ internal class ShrineBuffIconLayer : PlayerDrawLayer
 
 	protected override void Draw(ref PlayerDrawSet drawInfo)
 	{
-		if (drawInfo.shadow != 0)
+		if (drawInfo.shadow != 0 || Main.gameMenu)
 		{
 			return;
 		}
