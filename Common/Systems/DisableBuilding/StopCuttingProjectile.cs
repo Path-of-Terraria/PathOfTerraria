@@ -52,7 +52,7 @@ internal class StopCuttingProjectile : GlobalProjectile
 	{
 		bool vanilla = orig(x, y);
 
-		if (CuttingProjectile is not null && SubworldSystem.Current is BossDomainSubworld domainand not MoonLordDomain && Main.tile[x, y].HasTile && Main.tileCut[Main.tile[x, y].TileType])
+		if (CuttingProjectile is not null && SubworldSystem.Current is BossDomainSubworld domain and not MoonLordDomain && Main.tile[x, y].HasTile && Main.tileCut[Main.tile[x, y].TileType])
 		{
 			return vanilla && CanCutTile(CuttingProjectile, x, y);
 		}
