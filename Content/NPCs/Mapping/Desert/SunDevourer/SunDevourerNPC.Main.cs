@@ -136,7 +136,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 		spriteEffects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 	}
 
-	public override void BossLoot(ref string name, ref int potionType)
+	public override void BossLoot(ref int potionType)
 	{
 		potionType = ItemID.GreaterHealingPotion;
 	}
