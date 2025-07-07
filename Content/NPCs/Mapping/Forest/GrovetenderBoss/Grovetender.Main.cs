@@ -153,7 +153,7 @@ internal partial class Grovetender : ModNPC
 		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
-	public override void BossLoot(ref string name, ref int potionType)
+	public override void BossLoot(ref int potionType)
 	{
 		potionType = ItemID.HealingPotion;
 	}
@@ -178,13 +178,13 @@ internal partial class Grovetender : ModNPC
 			{
 				NPC.TargetClosest();
 
-				State = NPC.DistanceSQ(Target.Center) < 600 * 600 ? AIState.BoulderThrow : AIState.RainProjectiles;
+				State = NPC.DistanceSQ(Target.Center) < 600 * 600 && Main.rand.NextBool(6) ? AIState.BoulderThrow : AIState.RainProjectiles;
 				Timer = 0;
+				NPC.netUpdate = true;
 
 				if (!SecondPhase && NPC.life < NPC.lifeMax / 2)
 				{
 					State = AIState.RootDig;
-
 					SecondPhase = true;
 				}
 			}
