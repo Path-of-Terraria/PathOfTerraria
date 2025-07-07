@@ -23,7 +23,7 @@ public sealed class UIArmorInventory : UIState
 
 	public const float Smoothness = 0.3f;
 
-	public const float Margin = 40f;
+	public const float Margin = 42f;
 
 	public const float RootPadding = 16f;
 
