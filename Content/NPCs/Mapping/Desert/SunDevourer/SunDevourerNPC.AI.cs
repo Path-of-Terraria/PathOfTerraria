@@ -718,6 +718,11 @@ public sealed partial class SunDevourerNPC : ModNPC
 				NPC.boss = true;
 				NPC.GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
 				NPC.GetGlobalNPC<ArenaEnemyNPC>().StillDropStuff = true;
+
+				if (!Main.dedServ)
+				{
+					SoundEngine.PlaySound(SoundID.Roar, NPC.Center);
+				}
 			}
 		}
 	}

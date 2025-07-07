@@ -69,6 +69,7 @@ internal partial class Grovetender : ModNPC
 	private readonly HashSet<int> _controlledWhoAmI = [];
 	private readonly List<int> _canopyBirds = [];
 	private readonly Dictionary<Point16, float> _rootPositionsAndTimers = [];
+	private float _eyeOpacity = 0;
 
 	public override void SetStaticDefaults()
 	{
@@ -162,8 +163,8 @@ internal partial class Grovetender : ModNPC
 	{
 		if (Main.netMode != NetmodeID.Server)
 		{
-			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Left, false), new Vector3(0.5f, 0.5f, 0.25f));
-			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Right, false), new Vector3(0.5f, 0.5f, 0.25f));
+			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Left, false), new Vector3(0.5f, 0.5f, 0.25f) * _eyeOpacity);
+			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Right, false), new Vector3(0.5f, 0.5f, 0.25f) * _eyeOpacity);
 		}
 
 		if (State == AIState.Asleep)

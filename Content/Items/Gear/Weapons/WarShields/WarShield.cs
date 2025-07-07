@@ -61,6 +61,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 		Item.useTime = Data.DashTime;
 		Item.useAnimation = Data.DashTime;
 		Item.useStyle = ItemUseStyleID.Shoot;
+		Item.UseSound = SoundID.Item70;
 		Item.damage = 5;
 		Item.channel = true;
 		Item.noMelee = true;
