@@ -79,6 +79,7 @@ public abstract class MappingWorld : Subworld
 		WorldGenerator.CurrentGenerationProgress = progress;
 		Main.ActiveWorldFileData.SetSeedToRandom();
 		GenVars.structures = new();
+		WorldGen._genRandSeed = Main.rand.Next();
 
 		int rand = Main.rand.Next(10, 30);
 

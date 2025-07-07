@@ -3,6 +3,8 @@ using PathOfTerraria.Common;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using SubworldLibrary;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 
@@ -91,7 +93,7 @@ internal class Minitera : ModNPC
 
 		NPC.rotation = NPC.velocity.ToRotation() + MathHelper.PiOver2;
 
-		if (Timer % 100 == 0 && Main.netMode != NetmodeID.MultiplayerClient)
+		if (Timer % 100 == 0 && Main.netMode != NetmodeID.MultiplayerClient && SubworldSystem.Current is not MoonLordDomain)
 		{
 			for (int i = 0; i < 3; ++i)
 			{

@@ -371,16 +371,16 @@ internal class Ent : ModNPC
 		Texture2D tex = TextureAssets.Npc[Type].Value;
 		SpriteEffects effect = NPC.spriteDirection == 1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		Vector2 position = NPC.Center - screenPos - new Vector2(16 * NPC.spriteDirection, -NPC.gfxOffY);
-		
-		Main.EntitySpriteDraw(tex, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
-		Main.EntitySpriteDraw(Glow.Value, position, NPC.frame, Color.White, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
+
+		Main.EntitySpriteDraw(tex, position, NPC.frame, NPC.GetShimmerColor(drawColor), NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
+		Main.EntitySpriteDraw(Glow.Value, position, NPC.frame, NPC.GetShimmerColor(Color.White), NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
 
 		if (MiragePower > 0)
 		{
 			for (int i = 0; i < 10; ++i)
 			{
 				Vector2 pos = position + Main.rand.NextVector2Circular(MiragePower * 6, MiragePower * 6);
-				Main.EntitySpriteDraw(Glow.Value, pos, NPC.frame, Color.White * 0.3f, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
+				Main.EntitySpriteDraw(Glow.Value, pos, NPC.frame, NPC.GetShimmerColor(Color.White * 0.3f), NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
 			}
 		}
 

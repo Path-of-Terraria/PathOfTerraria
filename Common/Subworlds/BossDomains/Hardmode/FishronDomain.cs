@@ -40,7 +40,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 	private static void Terrain(GenerationProgress progress, GameConfiguration configuration)
 	{
-		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain"); // Sets the text displayed for this pass
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 		Main.worldSurface = Main.maxTilesY - 42; // Hides the underground layer just out of bounds
 		Main.rockLayer = Main.maxTilesY; // Hides the cavern layer way out of bounds
 

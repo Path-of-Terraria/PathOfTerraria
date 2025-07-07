@@ -1265,6 +1265,14 @@ Flamberge: {
 	Tooltip: ""
 }
 
+MoonMap: {
+	DisplayName: Moon Lord Map
+	Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of shimmer'
+}
+
 AncientTabletFour: {
 	DisplayName: Ancient Tablet Four
 	Tooltip: A part of a larger tablet
