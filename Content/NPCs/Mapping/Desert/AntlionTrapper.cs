@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert;
 
@@ -171,8 +172,8 @@ internal class AntlionTrapper : ModNPC
 		{
 			if (player.Hitbox.Intersects(snapBounds))
 			{
-				var deathReason = PlayerDeathReason.ByCustomReason(this.GetLocalization("Death." + Main.rand.Next(3)).Format(player.name));
-				player.Hurt(deathReason, ModeUtils.ByMode(300, 350, 480), 0, scalingArmorPenetration: 0.2f);
+				var source = PlayerDeathReason.ByCustomReason(NetworkText.FromKey(this.GetLocalizationKey("Death." + Main.rand.Next(3)), player.name));
+				player.Hurt(source, ModeUtils.ByMode(300, 350, 480), 0, scalingArmorPenetration: 0.2f);
 			}
 		}
 

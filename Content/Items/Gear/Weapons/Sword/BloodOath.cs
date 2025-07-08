@@ -111,9 +111,7 @@ internal class BloodOath : Sword, GenerateName.IItem
 			return;
 		}
 
-		var deathReason =
-			PlayerDeathReason.ByCustomReason(
-				Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DeathReason"));
+		var deathReason = PlayerDeathReason.ByCustomReason(NetworkText.FromKey(Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DeathReason")));
 		player.Hurt(deathReason, 1, 0, false, false, ImmunityCooldownID.TileContactDamage, false);
 		player.hurtCooldowns[ImmunityCooldownID.TileContactDamage] = 3;
 		target.GetGlobalNPC<BloodOathNPC>().ApplyStack(player.whoAmI);
