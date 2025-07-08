@@ -1,7 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using MonoMod.RuntimeDetour;
 using System.Reflection;
-using Terraria.Chat;
 
 namespace PathOfTerraria.Core.Commands;
 
