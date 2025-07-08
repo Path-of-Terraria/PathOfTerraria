@@ -5,6 +5,10 @@ using Terraria.GameContent;
 
 namespace PathOfTerraria.Common.NPCs;
 
+/// <summary>
+/// This IL edit stops an esoteric error from happening, where <see cref="PlayerContainerNPC"/>s throw an exception when the npc housing page is open.
+/// That error occurs even though player container NPCs don't have housing, and even though the banners wouldn't be visible anyway. Weird!
+/// </summary>
 internal class HouseBannerHook : ILoadable
 {
 	public void Load(Mod mod)
