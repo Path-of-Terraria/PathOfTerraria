@@ -8,6 +8,7 @@ using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Forest;
 
@@ -153,7 +154,7 @@ internal class Ent : ModNPC
 			{
 				if (slamBox.Intersects(player.Hitbox))
 				{
-					var deathReason = PlayerDeathReason.ByCustomReason(this.GetLocalization("SlamDeath." + Main.rand.Next(3)).Format(player.name));
+					var deathReason = PlayerDeathReason.ByCustomReason(NetworkText.FromKey(this.GetLocalizationKey("SlamDeath." + Main.rand.Next(3)), player.name));
 					player.Hurt(deathReason, (int)(NPC.damage * 1.5f), Math.Sign(NPC.Center.X + player.Center.X));
 					player.velocity.Y -= 8;
 				}

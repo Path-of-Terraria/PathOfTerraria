@@ -57,7 +57,7 @@ internal static class MoonlordCloudGen
 		SpamCloudObject(BuildPillar);
 		SpamCloudObject(BuildGap);
 		SpamCloudObject(BuildSmallStar, 18);
-		SpamCloudObject(BuildSmallStar, 15, (MoonLordDomain.CloudTop - 200)..MoonLordDomain.CloudTop);
+		SpamCloudObject(BuildSolidStar, 30, (MoonLordDomain.CloudTop - 200)..(MoonLordDomain.CloudTop + 20));
 	}
 
 	private static void SpamCloudObject(CloudDelegate cloud, int count = 12, Range? yRange = null)
@@ -129,6 +129,38 @@ internal static class MoonlordCloudGen
 			radius = size + WorldGen.genRand.Next(2, 6);
 		}
 		
+		WorldUtils.Gen(pos.ToPoint(), new Shapes.Circle(radius), placeAction);
+		bounds = new Rectangle(pos.X - 10, pos.Y - 10, 20, 20);
+		return true;
+	}
+
+	private static bool BuildSolidStar(Point16 pos, out Rectangle bounds)
+	{
+		int size = WorldGen.genRand.Next(6, 12);
+
+		ushort type = WorldGen.genRand.Next(4) switch
+		{
+			1 => TileID.LavaMossBlock,
+			2 => TileID.Hellstone,
+			3 => TileID.Meteorite,
+			_ => TileID.HellstoneBrick,
+		};
+
+		GenAction placeAction = new Actions.PlaceTile(type);
+
+		if (type == TileID.Meteorite)
+		{
+			placeAction = Actions.Chain(new Modifiers.Blotches(4, 0.4f), new Actions.PlaceTile(type));
+		}
+
+		WorldUtils.Gen(pos.ToPoint(), new Shapes.Circle(size), Actions.Chain(new Modifiers.Blotches(), new Actions.Clear()));
+		int radius = (int)(size * WorldGen.genRand.NextFloat(0.4f, 0.7f));
+
+		if (type == TileID.Meteorite)
+		{
+			radius = size + WorldGen.genRand.Next(2, 6);
+		}
+
 		WorldUtils.Gen(pos.ToPoint(), new Shapes.Circle(radius), placeAction);
 		bounds = new Rectangle(pos.X - 10, pos.Y - 10, 20, 20);
 		return true;

@@ -66,3 +66,11 @@ MapBossHealthAffix.Description: "{1}{0}% increased boss health"
 MapMobCritChanceAffix.Description: "{1}{0}% increased enemy crit chance"
 MapMobChillChanceAffix.Description: "{1}{0}% chance for enemies to inflict Chilled"
 MapIncreasedBehaviourAffix.Description: "{1}{0}% increased enemy behavior speed"
+ColdAffix.Prefix: Freezing
+LightningAffix.Prefix: Shocking
+FlamingAffix.Prefix: Flaming
+StalwartAffix.Prefix: Stalwart
+FireResistItemAffix.Description: "{1}{0}% fire resistance"
+ColdResistItemAffix.Description: "{1}{0}% cold resistance"
+LightningResistItemAffix.Description: "{1}{0} lightning resistance"
+ResistItemAffix.Description: "{1}{0} to stat"

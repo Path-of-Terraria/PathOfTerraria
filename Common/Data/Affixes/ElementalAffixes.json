@@ -1,0 +1,164 @@
+[
+	{
+		"affixType": "FireResistItemAffix",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 9,
+				"minimumLevel": 11,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 19,
+				"weight": 1
+			},
+			{
+				"minValue": 12,
+				"maxValue": 17,
+				"minimumLevel": 26,
+				"weight": 1
+			},
+			{
+				"minValue": 17,
+				"maxValue": 23,
+				"minimumLevel": 35,
+				"weight": 1
+			},
+			{
+				"minValue": 23,
+				"maxValue": 28,
+				"minimumLevel": 47,
+				"weight": 1
+			},
+			{
+				"minValue": 28,
+				"maxValue": 33,
+				"minimumLevel": 56,
+				"weight": 1
+			},
+			{
+				"minValue": 33,
+				"maxValue": 36,
+				"minimumLevel": 63,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ColdResistItemAffix",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 9,
+				"minimumLevel": 11,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 19,
+				"weight": 1
+			},
+			{
+				"minValue": 12,
+				"maxValue": 17,
+				"minimumLevel": 26,
+				"weight": 1
+			},
+			{
+				"minValue": 17,
+				"maxValue": 23,
+				"minimumLevel": 35,
+				"weight": 1
+			},
+			{
+				"minValue": 23,
+				"maxValue": 28,
+				"minimumLevel": 47,
+				"weight": 1
+			},
+			{
+				"minValue": 28,
+				"maxValue": 33,
+				"minimumLevel": 56,
+				"weight": 1
+			},
+			{
+				"minValue": 33,
+				"maxValue": 36,
+				"minimumLevel": 63,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "LightningResistItemAffix",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 9,
+				"minimumLevel": 11,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 19,
+				"weight": 1
+			},
+			{
+				"minValue": 12,
+				"maxValue": 17,
+				"minimumLevel": 26,
+				"weight": 1
+			},
+			{
+				"minValue": 17,
+				"maxValue": 23,
+				"minimumLevel": 35,
+				"weight": 1
+			},
+			{
+				"minValue": 23,
+				"maxValue": 28,
+				"minimumLevel": 47,
+				"weight": 1
+			},
+			{
+				"minValue": 28,
+				"maxValue": 33,
+				"minimumLevel": 56,
+				"weight": 1
+			},
+			{
+				"minValue": 33,
+				"maxValue": 36,
+				"minimumLevel": 63,
+				"weight": 1
+			}
+		]
+	}
+]

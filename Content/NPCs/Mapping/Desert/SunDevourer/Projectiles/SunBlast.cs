@@ -41,6 +41,12 @@ public sealed class SunBlast : ModProjectile
 
 	public override void AI()
 	{
+		if (!Parent.active)
+		{
+			Projectile.Kill();
+			return;
+		}
+
 		Timer++;
 
 		Vector2 toIdle = Parent.DirectionTo((Parent.ModNPC as SunDevourerNPC).IdleSpot);

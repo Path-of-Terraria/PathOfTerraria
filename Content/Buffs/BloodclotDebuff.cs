@@ -43,8 +43,8 @@ public sealed class BloodclotDebuff : ModBuff
 
 		if (Main.time % 60 == 0)
 		{
-			string deathText = Language.GetText("Mods.PathOfTerraria.Buffs.BloodclotDebuff.DeathText").WithFormatArgs(player.name).Value;
-			player.Hurt(PlayerDeathReason.ByCustomReason(deathText), 3, 0, false, false, ImmunityCooldownID.TileContactDamage, false, 0, 1, 0);
+			var source = PlayerDeathReason.ByCustomReason(NetworkText.FromKey("Mods.PathOfTerraria.Buffs.BloodclotDebuff.DeathText", player.name));
+			player.Hurt(source, 3, 0, false, false, ImmunityCooldownID.TileContactDamage, false, 0, 1, 0);
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
@@ -45,6 +46,8 @@ internal class WormLightningDeathFX : ModProjectile
 				dust.velocity *= 2f;
 				dust.noGravity = true;
 			}
+
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/CrunchyPop") with { PitchRange = (-0.7f, 0.3f), Volume = 0.2f }, Projectile.Center);
 		}
 	}
 

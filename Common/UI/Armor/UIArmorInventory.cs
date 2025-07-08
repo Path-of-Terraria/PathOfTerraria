@@ -23,7 +23,7 @@ public sealed class UIArmorInventory : UIState
 
 	public const float Smoothness = 0.3f;
 
-	public const float Margin = 40f;
+	public const float Margin = 42f;
 
 	public const float RootPadding = 16f;
 
@@ -278,6 +278,7 @@ public sealed class UIArmorInventory : UIState
 		leftButton.OnLeftClick += HandleLeftPageClick;
 		leftButton.OnMouseOver += UpdateMouseOver;
 		leftButton.OnMouseOut += UpdateMouseOut;
+		leftButton.OnUpdate += GenericHover;
 
 		buttonRoot.Append(leftButton);
 
@@ -293,6 +294,7 @@ public sealed class UIArmorInventory : UIState
 		rightButton.OnLeftClick += HandleRightPageClick;
 		rightButton.OnMouseOver += UpdateMouseOver;
 		rightButton.OnMouseOut += UpdateMouseOut;
+		rightButton.OnUpdate += GenericHover;
 
 		buttonRoot.Append(rightButton);
 
@@ -318,6 +320,14 @@ public sealed class UIArmorInventory : UIState
 		buttonRoot.Append(pageText);
 
 		return buttonRoot;
+	}
+
+	private void GenericHover(UIElement affectedElement)
+	{
+		if (affectedElement.ContainsPoint(Main.MouseScreen))
+		{
+			Main.LocalPlayer.mouseInterface = true;
+		}
 	}
 
 	private UIElement BuildDefenseCounter()

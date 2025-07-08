@@ -69,6 +69,7 @@ internal partial class Grovetender : ModNPC
 	private readonly HashSet<int> _controlledWhoAmI = [];
 	private readonly List<int> _canopyBirds = [];
 	private readonly Dictionary<Point16, float> _rootPositionsAndTimers = [];
+	private float _eyeOpacity = 0;
 
 	public override void SetStaticDefaults()
 	{
@@ -153,7 +154,7 @@ internal partial class Grovetender : ModNPC
 		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
-	public override void BossLoot(ref string name, ref int potionType)
+	public override void BossLoot(ref int potionType)
 	{
 		potionType = ItemID.HealingPotion;
 	}
@@ -162,8 +163,8 @@ internal partial class Grovetender : ModNPC
 	{
 		if (Main.netMode != NetmodeID.Server)
 		{
-			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Left, false), new Vector3(0.5f, 0.5f, 0.25f));
-			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Right, false), new Vector3(0.5f, 0.5f, 0.25f));
+			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Left, false), new Vector3(0.5f, 0.5f, 0.25f) * _eyeOpacity);
+			Lighting.AddLight(NPC.Center - GetEyeOffset(EyeID.Right, false), new Vector3(0.5f, 0.5f, 0.25f) * _eyeOpacity);
 		}
 
 		if (State == AIState.Asleep)
@@ -178,13 +179,13 @@ internal partial class Grovetender : ModNPC
 			{
 				NPC.TargetClosest();
 
-				State = NPC.DistanceSQ(Target.Center) < 600 * 600 ? AIState.BoulderThrow : AIState.RainProjectiles;
+				State = NPC.DistanceSQ(Target.Center) < 600 * 600 && Main.rand.NextBool(6) ? AIState.BoulderThrow : AIState.RainProjectiles;
 				Timer = 0;
+				NPC.netUpdate = true;
 
 				if (!SecondPhase && NPC.life < NPC.lifeMax / 2)
 				{
 					State = AIState.RootDig;
-
 					SecondPhase = true;
 				}
 			}

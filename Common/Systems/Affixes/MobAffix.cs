@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.MobSystem;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.IO;
@@ -14,7 +15,6 @@ internal abstract class MobAffix : Affix
 	public Asset<Texture2D> Icon => MobAffixIconsByAffixName[GetType().AssemblyQualifiedName];
 
 	public virtual ItemRarity MinimumRarity => ItemRarity.Magic;
-	public virtual bool Allowed => true;
 
 	/// <summary>
 	/// Texture path that points to the icon that shows over an NPC.
@@ -34,12 +34,24 @@ internal abstract class MobAffix : Affix
 	public virtual float DropRarityMultiplier => 1f;
 
 	/// <summary>
-	/// Runs after the rarity buff has been applied.
+	/// Whether this affix can apply to the given NPC. Returns true by default.
+	/// </summary>
+	/// <param name="npc">The NPC this affix is being added to.</param>
+	/// <returns>If the affix can be applied.</returns>
+	public virtual bool CanApplyTo(NPC npc)
+	{
+		return true;
+	}
+
+	/// <summary>
+	/// Runs after the rarity buff has been applied in <see cref="ArpgNPC.ApplyRarity(NPC, bool)"/>, a method called in SetDefaults. 
+	/// This can be used to set values based on the NPC's post-rarity values, such as damage.
 	/// </summary>
 	public virtual void PostRarity(NPC npc) { }
 
 	/// <summary>
-	/// Runs before the rarity buff has been applied.
+	/// Runs after the rarity buff has been applied in <see cref="ArpgNPC.ApplyRarity(NPC, bool)"/>, a method called in SetDefaults. 
+	/// This can be used to set values based on the NPC's pre-rarity values, such as damage.
 	/// </summary>
 	public virtual void PreRarity(NPC npc) { }
 
@@ -50,6 +62,9 @@ internal abstract class MobAffix : Affix
 	public virtual void OnKill(NPC npc) { }
 	public virtual bool PreKill(NPC npc) { return true; }
 
+	/// <summary>
+	/// Allows you to generate and, if necessary, store localized values. By default, creates the Prefix localization line.
+	/// </summary>
 	internal override void CreateLocalization()
 	{
 		// Populate prefix, don't store
@@ -68,8 +83,6 @@ internal abstract class MobAffix : Affix
 	/// <summary>
 	/// Generates an affix from a tag, used on load to re-populate affixes.
 	/// </summary>
-	/// <param name="tag"></param>
-	/// <returns></returns>
 	public static MobAffix FromTag(TagCompound tag)
 	{
 		var affix = (MobAffix)Activator.CreateInstance(typeof(MobAffix).Assembly.GetType(tag.GetString("type")));
