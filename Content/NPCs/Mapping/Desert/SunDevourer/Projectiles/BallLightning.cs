@@ -19,6 +19,11 @@ public sealed class BallLightning : ModProjectile
 	/// </summary>
 	public Player Player => Main.player[(int)Index];
 
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 3;
+	}
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
@@ -30,6 +35,7 @@ public sealed class BallLightning : ModProjectile
 		Projectile.width = 80;
 		Projectile.height = 80;
 		Projectile.timeLeft = LifeTime;
+		Projectile.spriteDirection = Main.rand.NextBool(2) ? -1 : 1;
 	}
 
 	public override void OnKill(int timeLeft)
@@ -58,6 +64,9 @@ public sealed class BallLightning : ModProjectile
 			Projectile.Size = new Vector2(40, 40);
 			Projectile.scale = 0.5f;
 		}
+
+		Projectile.frame = (int)(Projectile.frameCounter++ / 4f % 3);
+		Projectile.rotation = Projectile.velocity.X * 0.01f;
 
 		UpdateHoming();
 		UpdateDustEffects();
@@ -102,10 +111,7 @@ public sealed class BallLightning : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		lightColor = new Color(235, 97, 52, 0);
-
 		DrawProjectile(in lightColor);
-
 		return false;
 	}
 
@@ -117,6 +123,6 @@ public sealed class BallLightning : ModProjectile
 		Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
 		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
-		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, effects);
+		Main.EntitySpriteDraw(texture, position, frame, Color.White, Projectile.rotation, origin, Projectile.scale, effects);
 	}
 }
