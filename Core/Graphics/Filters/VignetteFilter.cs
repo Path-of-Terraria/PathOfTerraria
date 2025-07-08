@@ -30,10 +30,7 @@ public sealed class VignetteFilter : ILoadable
 	void ILoadable.Load(Mod mod)
 	{
 		Vignette = ModContent.Request<Effect>(EFFECT_PATH, AssetRequestMode.ImmediateLoad);
-
-		var shader = Vignette.Value;
-
-		Terraria.Graphics.Effects.Filters.Scene[FILTER_NAME] = new Filter(new ScreenShaderData(new Ref<Effect>(shader), PASS_NAME));
+		Terraria.Graphics.Effects.Filters.Scene[FILTER_NAME] = new Filter(new ScreenShaderData(Vignette, PASS_NAME));
 		Terraria.Graphics.Effects.Filters.Scene[FILTER_NAME].Load();
 	}
 	

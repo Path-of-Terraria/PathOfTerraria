@@ -36,7 +36,6 @@ internal class FishronDomainSpawns : GlobalNPC
 
 		if (npc.type == NPCID.GiantFungiBulb)
 		{
-			int i = 0;
 			npc.ai[0] = (int)npc.Center.X / 16;
 			npc.ai[1] = (int)npc.Center.Y / 16 + 2;
 		}

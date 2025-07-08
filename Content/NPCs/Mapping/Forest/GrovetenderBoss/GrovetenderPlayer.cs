@@ -11,8 +11,7 @@ internal class GrovetenderPlayer : ModPlayer
 	{
 		if (SubworldSystem.Current is ForestArea && !Player.dead && Player.Center.Y > (Main.maxTilesY - 45) * 16)
 		{
-			string text = Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.Grovetender.BottomDeath." + Main.rand.Next(3), Player.name);
-			var reason = PlayerDeathReason.ByCustomReason(text);
+			var reason = PlayerDeathReason.ByCustomReason(NetworkText.FromKey($"Mods.{PoTMod.ModName}.NPCs.Grovetender.BottomDeath." + Main.rand.Next(3), Player.name));
 			Player.KillMe(reason, 9999, 0, false);
 		}
 	}
