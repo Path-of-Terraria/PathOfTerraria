@@ -1,6 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.MobSystem;
+﻿namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
-namespace PathOfTerraria.Common.Systems.ElementalDamage;
 public class ElementalPlayer : ModPlayer
 {
 

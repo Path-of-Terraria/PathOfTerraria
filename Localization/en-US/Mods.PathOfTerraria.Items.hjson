@@ -1271,6 +1271,7 @@ MoonMap: {
 		'''
 		{$MapCommon.BossBase}
 		'The map smells of shimmer'
+		'''
 }
 
 AncientTabletFour: {
