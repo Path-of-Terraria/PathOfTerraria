@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
@@ -308,9 +307,10 @@ internal class ArpgNPC : GlobalNPC
 		List<MobAffix> affixes = npc.GetGlobalNPC<ArpgNPC>().Affixes;
 		string prefix = "";
 
-		foreach (MobAffix affix in affixes)
+		for (int i = 0; i < affixes.Count; i++)
 		{
-			prefix += affix.Prefix + " - ";
+			MobAffix affix = affixes[i];
+			prefix += affix.Prefix + (i == affixes.Count - 1 ? "" : " - ");
 		}
 
 		return prefix;
