@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -45,6 +46,8 @@ public sealed class LightningBurst : ModProjectile
 			dust.velocity *= 4f;
 			dust.noGravity = true;
 		}
+
+		SoundEngine.PlaySound(SoundID.Item94 with { PitchRange = (-0.3f, 0.3f) }, Projectile.Center);
 
 		Point16 center = Projectile.Center.ToTileCoordinates16();
 

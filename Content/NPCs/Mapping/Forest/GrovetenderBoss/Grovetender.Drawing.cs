@@ -11,28 +11,31 @@ internal partial class Grovetender : ModNPC
 		Vector2 position = NPC.Center - screenPos - new Vector2(-20, -NPC.gfxOffY + 200);
 		float gradientY = (Main.maxTilesY - 48) * 16 - Main.screenPosition.Y;
 
-		for (int i = (int)(Main.screenPosition.X / 16f) - 3; i < (int)(Main.screenPosition.X / 16f) + (int)(Main.screenWidth / 16f) + 3; i++)
+		if (!NPC.IsABestiaryIconDummy)
 		{
-			if (WorldGen.SolidOrSlopedTile(i, Main.maxTilesY - 50))
+			for (int i = (int)(Main.screenPosition.X / 16f) - 3; i < (int)(Main.screenPosition.X / 16f) + (int)(Main.screenWidth / 16f) + 3; i++)
 			{
-				continue;
-			}
+				if (WorldGen.SolidOrSlopedTile(i, Main.maxTilesY - 50))
+				{
+					continue;
+				}
 
-			var drawPos = new Vector2(i * 16 - Main.screenPosition.X, gradientY);
-			int width = 16;
+				var drawPos = new Vector2(i * 16 - Main.screenPosition.X, gradientY);
+				int width = 16;
 
-			if (WorldGen.SolidOrSlopedTile(i - 1, Main.maxTilesY - 50))
-			{
-				drawPos.X -= 8;
-				width = 24;
-			}
-			else if (WorldGen.SolidOrSlopedTile(i + 1, Main.maxTilesY - 50))
-			{
-				width = 24;
-			}
+				if (WorldGen.SolidOrSlopedTile(i - 1, Main.maxTilesY - 50))
+				{
+					drawPos.X -= 8;
+					width = 24;
+				}
+				else if (WorldGen.SolidOrSlopedTile(i + 1, Main.maxTilesY - 50))
+				{
+					width = 24;
+				}
 
-			Lighting.AddLight(drawPos + Main.screenPosition, new Vector3(0.5f, 0.5f, 0.25f));
-			Main.EntitySpriteDraw(Gradient.Value, drawPos, new Rectangle(0, 0, width, 100), Color.White, 0f, Vector2.Zero, new Vector2(1, 1), effect);
+				Lighting.AddLight(drawPos + Main.screenPosition, new Vector3(0.5f, 0.5f, 0.25f) * _eyeOpacity);
+				Main.EntitySpriteDraw(Gradient.Value, drawPos, new Rectangle(0, 0, width, 100), Color.White * _eyeOpacity, 0f, Vector2.Zero, new Vector2(1, 1), effect);
+			}
 		}
 
 		Main.EntitySpriteDraw(Sockets.Value, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);
@@ -72,8 +75,15 @@ internal partial class Grovetender : ModNPC
 
 	private void DrawEye(Vector2 screenPos, EyeID eye, bool large)
 	{
+		if (State == AIState.Asleep)
+		{
+			return;
+		}
+
+		_eyeOpacity = MathHelper.Lerp(_eyeOpacity, 1, 0.02f);
 		Vector2 offset = GetEyeOffset(eye, true);
-		Main.EntitySpriteDraw((large ? EyeLarge : EyeSmall).Value, NPC.Center - screenPos - offset, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None);
+		Texture2D tex = (large ? EyeLarge : EyeSmall).Value;
+		Main.EntitySpriteDraw(tex, NPC.Center - screenPos - offset, null, Color.White * _eyeOpacity, 0f, Vector2.Zero, 1f, SpriteEffects.None);
 	}
 
 	public Vector2 GetEyeOffset(EyeID eye, bool sightAdjusted)

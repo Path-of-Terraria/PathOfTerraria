@@ -102,9 +102,9 @@ internal class Twinbow : Bow
 			{
 				Texture2D tex = ShineTex.Value;
 				Vector2 pos = projectile.Center - Main.screenPosition;
-				Color color = Color.Lerp(lightColor, Color.White, 0.5f) * 0.5f;
+				Color color = Color.Lerp(lightColor, Color.White, 0.5f) * 0.6f;
 
-				Main.spriteBatch.Draw(tex, pos, null, color, Main.GameUpdateCount * 0.2f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(tex, pos, null, color, Main.GameUpdateCount * 0.1f + projectile.whoAmI, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 			}
 		}
 	}

@@ -1,16 +1,13 @@
 ﻿using PathOfTerraria.Common.NPCs.Overhealth;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.Tiles.Maps;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs.ShrineBuffs;
 
-internal class UnstoppableBuff : ModBuff
+internal class UnstoppableBuff : ShrineBuff
 {
-	public override void SetStaticDefaults()
-	{
-		// This allows for otherwise buff immune NPCs to have this effect
-		BuffID.Sets.IsATagBuff[Type] = true;
-	}
+	public override int AoEType => ModContent.ProjectileType<UnstoppableAoE>();
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{

@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -17,12 +16,13 @@ public class GlimmeringShard : CurrencyShard
 
 	public override bool CanRightClick()
 	{
-		if (Main.LocalPlayer.HeldItem.GetInstanceData().Rarity == ItemRarity.Magic)
+		Item heldItem = Main.LocalPlayer.HeldItem;
+
+		if (heldItem.GetInstanceData().Rarity == ItemRarity.Magic && !heldItem.IsAir)
 		{
 			return base.CanRightClick();
 		}
 
-		//Main.NewText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.ShardNotifs.Glimmering"));
 		return false;
 	}
 

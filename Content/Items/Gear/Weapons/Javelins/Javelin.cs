@@ -62,6 +62,11 @@ internal abstract class Javelin : Gear
 		data.ItemType = Common.Enums.ItemType.Javelin;
 	}
 
+	public override bool AltFunctionUse(Player player)
+	{
+		return true;
+	}
+
 	public override bool CanUseItem(Player player)
 	{
 		AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();

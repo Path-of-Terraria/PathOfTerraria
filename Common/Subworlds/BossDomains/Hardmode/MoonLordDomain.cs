@@ -3,7 +3,6 @@ using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.World.Passes;
-using PathOfTerraria.Content.Projectiles.Utility;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;

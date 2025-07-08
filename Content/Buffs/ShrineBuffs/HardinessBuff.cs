@@ -1,15 +1,12 @@
 ﻿using PathOfTerraria.Common.Systems.BlockSystem;
+using PathOfTerraria.Content.Tiles.Maps;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs.ShrineBuffs;
 
-internal class HardinessBuff : ModBuff
+internal class HardinessBuff : ShrineBuff
 {
-	public override void SetStaticDefaults()
-	{
-		// This allows for otherwise buff immune NPCs to have this effect
-		BuffID.Sets.IsATagBuff[Type] = true;
-	}
+	public override int AoEType => ModContent.ProjectileType<DefenseAoE>();
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{
