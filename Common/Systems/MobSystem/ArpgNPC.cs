@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
@@ -230,7 +231,7 @@ internal class ArpgNPC : GlobalNPC
 
 		if (!fromNet)
 		{
-			List<MobAffix> possible = AffixHandler.GetAffixes(Rarity);
+			List<MobAffix> possible = AffixHandler.GetMobAffixes(npc, Rarity);
 
 			Affixes = Rarity switch
 			{

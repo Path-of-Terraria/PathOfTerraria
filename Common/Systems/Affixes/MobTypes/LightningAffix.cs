@@ -11,11 +11,11 @@ internal class LightningAffix : MobAffix
 	{
 		if (!npc.GetGlobalNPC<ElementalNPC>().LightningDamage.Valid)
 		{
-			npc.GetGlobalNPC<ElementalNPC>().LightningDamage = new ElementalDamage.ElementalDamage(ElementType.Lightning, 0, 1);
+			npc.GetGlobalNPC<ElementalNPC>().LightningDamage = new ElementalDamage.ElementalDamage(ElementType.Lightning, 10, 1);
 		}
 		else
 		{
-			npc.GetGlobalNPC<ElementalNPC>().LightningDamage.ApplyOverride(null, 1f);
+			npc.GetGlobalNPC<ElementalNPC>().LightningDamage.ApplyOverride(10, 1f);
 		}
 
 		npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(203, 235, 255), 0.25f);

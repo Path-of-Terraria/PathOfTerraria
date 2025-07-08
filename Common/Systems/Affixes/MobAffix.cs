@@ -15,7 +15,6 @@ internal abstract class MobAffix : Affix
 	public Asset<Texture2D> Icon => MobAffixIconsByAffixName[GetType().AssemblyQualifiedName];
 
 	public virtual ItemRarity MinimumRarity => ItemRarity.Magic;
-	public virtual bool Allowed => true;
 
 	/// <summary>
 	/// Texture path that points to the icon that shows over an NPC.
@@ -33,6 +32,16 @@ internal abstract class MobAffix : Affix
 	public virtual float DropQuantityMultiplier => 1f;
 	public virtual float DropRarityFlat => 0;
 	public virtual float DropRarityMultiplier => 1f;
+
+	/// <summary>
+	/// Whether this affix can apply to the given NPC. Returns true by default.
+	/// </summary>
+	/// <param name="npc">The NPC this affix is being added to.</param>
+	/// <returns>If the affix can be applied.</returns>
+	public virtual bool CanApplyTo(NPC npc)
+	{
+		return true;
+	}
 
 	/// <summary>
 	/// Runs after the rarity buff has been applied in <see cref="ArpgNPC.ApplyRarity(NPC, bool)"/>, a method called in SetDefaults. 

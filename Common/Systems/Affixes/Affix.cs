@@ -5,6 +5,7 @@ using System.Linq;
 using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
+using Terraria;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -304,15 +305,12 @@ internal class AffixHandler : ILoadable
 	}
 
 	/// <summary>
-	/// Returns a list of mob affixes that are valid for the given type. Typically used to roll affixes.
+	/// Returns a list of mob affixes that are valid for the given NPC and rarity.
 	/// </summary>
 	/// <returns></returns>
-	public static List<MobAffix> GetAffixes(ItemRarity rarity)
+	public static List<MobAffix> GetMobAffixes(NPC npc, ItemRarity rarity)
 	{
-		return _mobAffixes
-			.Where(proto => rarity >= proto.MinimumRarity)
-			.Where(proto => proto.Allowed)
-			.ToList();
+		return _mobAffixes.Where(x => rarity >= x.MinimumRarity && x.CanApplyTo(npc)).ToList();
 	}
 
 	public void Load(Mod mod)

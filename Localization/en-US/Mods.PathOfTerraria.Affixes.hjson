@@ -69,3 +69,4 @@ MapIncreasedBehaviourAffix.Description: "{1}{0}% increased enemy behavior speed"
 ColdAffix.Prefix: Freezing
 LightningAffix.Prefix: Shocking
 FlamingAffix.Prefix: Flaming
+StalwartAffix.Prefix: Stalwart
