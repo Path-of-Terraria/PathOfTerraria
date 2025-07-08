@@ -1,15 +1,15 @@
 ﻿using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using SubworldLibrary;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class MLPortal : ModProjectile, ISaveProjectile
 {
-	private ref float Uses => ref Projectile.ai[1];
 	private ref float MaxUses => ref Projectile.ai[2];
 
 	public override void SetStaticDefaults()
@@ -18,7 +18,7 @@ internal class MLPortal : ModProjectile, ISaveProjectile
 		{
 			if (Main.mouseRight && Main.mouseRightRelease)
 			{
-				//SubworldSystem.Enter<EyeDomain>();
+				SubworldSystem.Enter<MoonLordDomain>();
 
 				proj.ai[1]++;
 				proj.netUpdate = true;

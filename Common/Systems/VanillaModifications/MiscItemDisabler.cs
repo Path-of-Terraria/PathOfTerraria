@@ -1,0 +1,77 @@
+﻿using System.Collections.Generic;
+using Terraria.GameContent.ItemDropRules;
+using Terraria.ID;
+
+namespace PathOfTerraria.Common.Systems.VanillaModifications;
+
+internal class MiscItemDisabler : ModSystem
+{
+	public readonly static HashSet<int> DisabledItems = [ItemID.HealingPotion, ItemID.GreaterHealingPotion, ItemID.LesserHealingPotion, ItemID.SuperHealingPotion,
+		ItemID.ManaPotion, ItemID.GreaterManaPotion, ItemID.LesserManaPotion, ItemID.SuperManaPotion, ItemID.ManaFlower];
+
+	private static bool DroppingPotions = false;
+
+	public override void Load()
+	{
+		On_NPC.DoDeathEvents_DropBossPotionsAndHearts += AddFlag;
+		On_Item.NewItem_Inner += StopPotionDrops;
+	}
+
+	private int StopPotionDrops(On_Item.orig_NewItem_Inner orig, Terraria.DataStructures.IEntitySource source, int X, int Y, int Width, int Height, Item itemToClone, 
+		int Type, int Stack, bool noBroadcast, int pfix, bool noGrabDelay, bool reverseLookup)
+	{
+		if (DroppingPotions && DisabledItems.Contains(Type))
+		{
+			return Main.maxItems - 1;
+		}
+
+		return orig(source, X, Y, Width, Height, itemToClone, Type, Stack, noBroadcast, pfix, noGrabDelay, reverseLookup);
+	}
+
+	private void AddFlag(On_NPC.orig_DoDeathEvents_DropBossPotionsAndHearts orig, NPC self, ref string typeName)
+	{
+		DroppingPotions = true;
+		orig(self, ref typeName);
+		DroppingPotions = false;
+	}
+
+	public override void PostAddRecipes()
+	{
+		foreach (Recipe recipe in Main.recipe)
+		{
+			// Disable all relevant vanilla boss spawners
+			if (DisabledItems.Contains(recipe.createItem.type))
+			{
+				recipe.DisableRecipe();
+			}
+		}
+	}
+
+	public override void PostWorldGen()
+	{
+		foreach (Chest chest in Main.chest)
+		{
+			if (chest is null)
+			{
+				continue;
+			}
+
+			foreach (Item item in chest.item)
+			{
+				if (DisabledItems.Contains(item.type) && !item.IsAir)
+				{
+					item.SetDefaults(ItemID.GoldCoin);
+					item.stack = WorldGen.genRand.Next(1, 4);
+				}
+			}
+		}
+	}
+
+	internal class MiscLootDisabler : GlobalNPC
+	{
+		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
+		{
+			npcLoot.RemoveWhere(x => x is CommonDrop common && DisabledItems.Contains(common.itemId));
+		}
+	}
+}
