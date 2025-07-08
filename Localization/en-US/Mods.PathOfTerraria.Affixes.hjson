@@ -70,3 +70,4 @@ ColdAffix.Prefix: Freezing
 LightningAffix.Prefix: Shocking
 FlamingAffix.Prefix: Flaming
 StalwartAffix.Prefix: Stalwart
+FireResistItemAffix.Description: "{1}{0} fire resistance"
