@@ -3,6 +3,7 @@ using System.Dynamic;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Core.UI;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -201,7 +202,7 @@ public sealed class UIWaypointMenu : UIState
 
 		closeImage.OnMouseOut += HandleMouseOutSound;
 		closeImage.OnMouseOver += HandleMouseOverSound;
-		closeImage.OnLeftClick += (_, _) => Enabled = false;
+		closeImage.OnLeftClick += (_, _) => UIManager.TryDisable(UIWaypointMenu.Identifier);
 
 		infoRoot.Append(closeImage);
 	}
@@ -314,7 +315,7 @@ public sealed class UIWaypointMenu : UIState
 					ProcessIndex(tab.Index);
 				}
 			};
-			
+
 			list.Add(tab);
 
 			tabs.Add(tab);
