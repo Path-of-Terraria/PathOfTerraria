@@ -160,6 +160,27 @@ public class RavencrestSystem : ModSystem
 			structure.Place();
 		}
 
+		for (int i = 0; i < Main.maxTilesX; ++i)
+		{
+			for (int j = 0; j < Main.maxTilesY; ++j)
+			{
+				WorldGen.TileFrame(i, j, true);
+				int sign = Sign.ReadSign(i, j, true);
+
+				if (sign != -1)
+				{
+					string text = i switch
+					{
+						< 220 => "the Iron Anvil",
+						< 360 => "The Lodge",
+						_ => "<-- Lodge, Forge\nLibrary, Hovel -->"
+					};
+
+					Sign.TextSign(sign, text);
+				}
+			}
+		}
+
 		foreach (string npcName in HasOverworldNPC)
 		{
 			int type = ModContent.Find<ModNPC>(npcName).Type;

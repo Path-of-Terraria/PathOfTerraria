@@ -15,6 +15,7 @@ public enum TutorialCheck : byte
 	OpenedCharSheet,
 	OpenedQuestBook,
 	FinishedTutorial,
+	FreeDayGone,
 }
 
 /// <summary>
@@ -24,6 +25,7 @@ internal class TutorialPlayer : ModPlayer
 {
 	/// <summary> Whether the player has completed the tutorial (<see cref="TutorialCheck.FinishedTutorial"/>). </summary>
 	public bool CompletedTutorial => TutorialChecks.Contains(TutorialCheck.FinishedTutorial);
+	public bool HasFreeDay => !TutorialChecks.Contains(TutorialCheck.FreeDayGone);
 
 	public HashSet<TutorialCheck> TutorialChecks = [];
 	public byte TutorialStep = 0;
@@ -36,6 +38,14 @@ internal class TutorialPlayer : ModPlayer
 		if (!CompletedTutorial)
 		{
 			UIManager.Register("Tutorial UI", "Vanilla: Player Chat", new TutorialUIState(), 0, Terraria.UI.InterfaceScaleType.UI);
+		}
+	}
+
+	public override void UpdateEquips()
+	{
+		if (!Main.dayTime)
+		{
+			TutorialChecks.Add(TutorialCheck.FreeDayGone);
 		}
 	}
 
