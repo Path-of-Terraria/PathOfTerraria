@@ -119,8 +119,7 @@ public sealed partial class UIManager : ModSystem
 				{
 					data.UserInterface.Draw(Main.spriteBatch, lastGameTime);
 					return true;
-				}
-			);
+				}, data.Type);
 
 			layers.Insert(index + data.Offset, layer);
 		}

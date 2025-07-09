@@ -8,8 +8,6 @@ internal class MechBiome : ModBiome
 	public static bool LocallyInBiome = false;
 
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;
-
-	// Needs sprite
 	public override string MapBackground => "PathOfTerraria/Assets/Backgrounds/MechAreaMapBack";
 	public override string BackgroundPath => MapBackground;
 	public override Color? BackgroundColor => Color.White;
