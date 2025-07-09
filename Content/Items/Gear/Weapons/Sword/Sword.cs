@@ -62,7 +62,7 @@ internal abstract class Sword : Gear
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position,
 		Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (player.altFunctionUse != 2)
+		if (player.altFunctionUse != 2 || !player.ItemAnimationJustStarted)
 		{
 			return false;
 		}

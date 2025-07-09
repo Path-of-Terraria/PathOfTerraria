@@ -35,7 +35,7 @@ internal class TutorialPlayer : ModPlayer
 
 		if (!CompletedTutorial)
 		{
-			UIManager.Register("Tutorial UI", "Vanilla: Player Chat", new TutorialUIState());
+			UIManager.Register("Tutorial UI", "Vanilla: Player Chat", new TutorialUIState(), 0, Terraria.UI.InterfaceScaleType.UI);
 		}
 	}
 

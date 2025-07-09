@@ -29,7 +29,7 @@ public class LifeStealProjectile : ModProjectile
 
 	public override bool? CanHitNPC(NPC target)
 	{
-		return Projectile.penetrate == 2;
+		return Projectile.penetrate == 2 && !target.friendly;
 	}
 
 	public override void AI()

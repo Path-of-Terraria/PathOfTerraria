@@ -183,4 +183,10 @@ public sealed class RavenNPC : ModNPC
 		Main.EntitySpriteDraw(tex, pos, frame with { X = 82 }, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
 		return false;
 	}
+
+	public override void ModifyHoverBoundingBox(ref Rectangle boundingBox)
+	{
+		var pos = NPC.position.ToPoint();
+		boundingBox = new Rectangle(pos.X - 32, pos.Y - 32, 42, 80);
+	}
 }
