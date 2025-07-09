@@ -4,6 +4,7 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.GrimoireSelection;
@@ -13,6 +14,7 @@ public class GrimoireInvButton : SmartUiState
 	public override bool Visible => Main.playerInventory && Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().HasObtainedGrimoire;
 
 	private static int _denyTimer = 0;
+	private static bool _lastHover = false;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -29,33 +31,36 @@ public class GrimoireInvButton : SmartUiState
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		Texture2D texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GrimoireButton").Value;
-		Vector2 pos = new(GetTextureXPosition(), 220);
 		var color = Color.Lerp(Color.White, Color.Red, _denyTimer / 20f);
-		spriteBatch.Draw(texture, pos, null, color, MathF.Max(0, _denyTimer * 0.005f), new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
+		bool hover = UIHelper.GetInvButtonInfo(220, out Vector2 pos);
+
+		if (hover)
+		{
+			Player player = Main.LocalPlayer;
+			player.cursorItemIconText = Language.GetTextValue("Mods.PathOfTerraria.UI.InvButtons." + (GetGrimoireIndex() == -1 ? "NoGrimoire" : "Grimoire"));
+			player.noThrow = 2;
+			player.cursorItemIconID = -1;
+			player.cursorItemIconEnabled = true;
+		}
+
+		if (hover != _lastHover)
+		{
+			SoundEngine.PlaySound(_lastHover ? SoundID.MenuTick with { Pitch = -0.3f } : SoundID.MenuTick);
+		}
+
+		_lastHover = hover;
+
+		spriteBatch.Draw(texture, pos, new Rectangle(0, hover ? 64 : 0, 64, 64), color, MathF.Max(0, _denyTimer * 0.005f), new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		Vector2 pos = new(GetTextureXPosition(), 220);
-		var bounding = new Rectangle((int)(pos.X - 64 / 1.125f), (int)pos.Y, 64, 64);
-
-		if (!bounding.Contains(Main.MouseScreen.ToPoint()))
+		if (!UIHelper.GetInvButtonInfo(220, out _))
 		{
 			return;
 		}
 
-		int index = -1;
-
-		for (int i = 0; i < Main.LocalPlayer.inventory.Length; ++i)
-		{
-			Item item = Main.LocalPlayer.inventory[i];
-
-			if (!item.IsAir && item.type == ModContent.ItemType<GrimoireItem>())
-			{
-				index = i;
-				break;
-			}
-		}
+		int index = GetGrimoireIndex();
 
 		if (index != -1)
 		{
@@ -70,16 +75,21 @@ public class GrimoireInvButton : SmartUiState
 		}
 	}
 
-	private static float GetTextureXPosition()
+	private static int GetGrimoireIndex()
 	{
-		float screenWidth = Main.screenWidth / 1.12f;
-		return screenWidth switch
+		int index = -1;
+
+		for (int i = 0; i < Main.LocalPlayer.inventory.Length; ++i)
 		{
-			//4k or 4k Wide
-			>= 2160 => screenWidth / 1.001f,
-			//1440p+
-			>= 1440 => screenWidth / 1.06f,
-			_ => screenWidth / 1.125f
-		};
+			Item item = Main.LocalPlayer.inventory[i];
+
+			if (!item.IsAir && item.type == ModContent.ItemType<GrimoireItem>())
+			{
+				index = i;
+				break;
+			}
+		}
+
+		return index;
 	}
 }
