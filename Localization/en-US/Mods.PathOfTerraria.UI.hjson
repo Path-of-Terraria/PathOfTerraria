@@ -169,3 +169,11 @@ Guide: {
 		PS: Don't forget to use the Arcane Obelisk!
 		'''
 }
+
+# For the various inventory buttons. NoGrimoire is only if the Grimoire isn't in the player's inventory.
+InvButtons: {
+	Grimoire: Grimoire
+	NoGrimoire: "[c/888888:(Needs] [i:PathOfTerraria/GrimoireItem] [c/888888:Grimoire)]"
+	Quest: Quests
+	Stats: Stats
+}
