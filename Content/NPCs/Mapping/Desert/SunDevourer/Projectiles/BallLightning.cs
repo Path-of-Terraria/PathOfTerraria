@@ -44,7 +44,7 @@ public sealed class BallLightning : ModProjectile
 
 		for (int i = 0; i < 15; i++)
 		{
-			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Electric, Scale: Main.rand.NextFloat(2, 4));
+			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Electric, Scale: Main.rand.NextFloat(1, 2));
 			dust.velocity.Y = Main.rand.NextFloat(-1, 1);
 			dust.velocity *= 4f;
 			dust.noGravity = true;
@@ -65,8 +65,10 @@ public sealed class BallLightning : ModProjectile
 			Projectile.scale = 0.5f;
 		}
 
-		Projectile.frame = (int)(Projectile.frameCounter++ / 4f % 3);
+		Projectile.frame = (int)(Projectile.frameCounter++ / 4.5f % 3);
 		Projectile.rotation = Projectile.velocity.X * 0.01f;
+
+		Lighting.AddLight(Projectile.Center, new Vector3(86, 235, 255) / 255f);
 
 		UpdateHoming();
 		UpdateDustEffects();
@@ -111,11 +113,11 @@ public sealed class BallLightning : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		DrawProjectile(in lightColor);
+		DrawProjectile();
 		return false;
 	}
 
-	private void DrawProjectile(in Color lightColor)
+	private void DrawProjectile()
 	{
 		Texture2D texture = TextureAssets.Projectile[Type].Value;
 		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
