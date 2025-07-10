@@ -3,7 +3,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.Utilities;
 
-namespace PathOfTerraria.Content.SkillPassives;
+namespace PathOfTerraria.Content.SkillPassives.Generic;
 
 internal class FlashFire(SkillTree tree) : SkillPassive(tree)
 {

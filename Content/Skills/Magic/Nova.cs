@@ -3,7 +3,8 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.SkillPassives;
+using PathOfTerraria.Content.SkillPassives.Generic;
+using PathOfTerraria.Content.SkillPassives.NovaTree;
 using PathOfTerraria.Content.SkillSpecials;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -12,7 +13,6 @@ using System.Linq;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Utilities;
-using static PathOfTerraria.Content.SkillPassives.ScorchingTouch;
 
 namespace PathOfTerraria.Content.Skills.Magic;
 
@@ -180,7 +180,9 @@ public class Nova : Skill
 				{
 					if (WorldGen.InWorld(x, y, 2) && IsSolid(x, y) && !IsSolid(x, y, true) && Main.rand.NextBool(3))
 					{
-						Projectile.NewProjectile(Projectile.GetSource_FromAI(), new Vector2(x, y).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<FieryPatch>(), Projectile.damage / 5, 0, Projectile.owner);
+						int type = ModContent.ProjectileType<ScorchingTouch.FieryPatch>();
+						Vector2 pos = new Vector2(x, y).ToWorldCoordinates();
+						Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Vector2.Zero, type, Projectile.damage / 5, 0, Projectile.owner);
 					}
 				}
 			}

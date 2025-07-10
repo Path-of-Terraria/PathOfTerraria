@@ -5,7 +5,7 @@ using PathOfTerraria.Content.Skills.Magic;
 using Terraria.GameContent.Drawing;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.SkillPassives;
+namespace PathOfTerraria.Content.SkillPassives.NovaTree;
 
 internal class Combustive(SkillTree tree) : SkillPassive(tree)
 {
