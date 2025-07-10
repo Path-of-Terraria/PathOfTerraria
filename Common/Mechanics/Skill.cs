@@ -137,7 +137,7 @@ public abstract partial class Skill
 	public virtual void UseSkill(Player player)
 	{
 		player.CheckMana(TotalManaCost, true);
-		Cooldown = MaxCooldown;
+		Cooldown = TotalCooldown;
 	}
 
 	/// <summary>
@@ -147,7 +147,7 @@ public abstract partial class Skill
 	/// <returns>If the skill can be used or not</returns>
 	public virtual bool CanUseSkill(Player player)
 	{
-		return Cooldown <= 0 && player.CheckMana(ManaCost);
+		return Cooldown <= 0 && player.CheckMana(TotalManaCost);
 	}
 
 	/// <summary>
