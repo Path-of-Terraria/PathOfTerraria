@@ -4,6 +4,11 @@ namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 internal class DefenseItemAffix : ItemAffix
 {
+	public DefenseItemAffix()
+	{
+		Round = true;
+	}
+	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.Defense.Base += Value;
