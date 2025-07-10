@@ -23,5 +23,6 @@ internal class StoneSword : Sword
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;
+		Item.value = Item.buyPrice(0, 0, 10, 0);
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
+using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -75,6 +76,8 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 		{
 			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, DustType, Scale: Main.rand.NextFloat(1, 1.5f));
 		}
+
+		SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
 	}
 
 	public override bool PreDraw(ref Color lightColor)

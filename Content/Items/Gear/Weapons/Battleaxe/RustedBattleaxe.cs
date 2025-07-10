@@ -19,10 +19,6 @@ internal class RustedBattleaxe : Battleaxe
 
 		Item.width = 38;
 		Item.height = 38;
-	}
-
-	public override void UseStyle(Player player, Rectangle heldItemFrame)
-	{
-		
+		Item.value = Item.buyPrice(0, 0, 25, 0);
 	}
 }

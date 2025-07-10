@@ -50,6 +50,11 @@ internal class SkillCombatPlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
+		if (Player.dead)
+		{
+			return;
+		}
+
 		if (Skill1Keybind.JustPressed)
 		{
 			UseSkill(0);

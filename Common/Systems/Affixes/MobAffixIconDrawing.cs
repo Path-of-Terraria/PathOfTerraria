@@ -34,7 +34,7 @@ internal class MobAffixIconDrawing : GlobalNPC
 		{
 			MobAffix affix = affixes[i];
 
-			Vector2 position = npc.Center - screenPos + new Vector2((i * 20 - offset * 20) * scale, -npc.height / 2 - 12);
+			Vector2 position = npc.Center - screenPos + new Vector2((i * 20 - offset * 20) * scale, -npc.height / 2 - 12 + npc.gfxOffY);
 			spriteBatch.Draw(affix.Icon.Value, position, null, drawColor * opacity, 0f, affix.Icon.Size() / 2f, scale, SpriteEffects.None, 0);
 		}
 	}
