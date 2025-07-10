@@ -549,7 +549,7 @@ FireMaw: {
 
 MorganaNPC: {
 	DisplayName: Morgana
-	QuestCondition: Collect 2 Owl Feathers and 1 Bat Wing
+	QuestCondition: Collect 2 Owl Feathers and 1 Pair of Bat Wings
 	SummonCondition: Summon the Owl with the Grimoire
 
 	Dialogue: {
