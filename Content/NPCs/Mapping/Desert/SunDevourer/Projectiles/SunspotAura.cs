@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Terraria.GameContent;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 
@@ -65,19 +64,9 @@ public sealed class SunspotAura : ModProjectile
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		DrawProjectile(in lightColor);
+		Queue<SunspotBatching.Sunspot> sunspot = Projectile.whoAmI % 4 == 0 ? SunspotBatching.SparseSunspots : SunspotBatching.FullSunspots;
+		sunspot.Enqueue(new SunspotBatching.Sunspot(Projectile.Center, Projectile.scale, Projectile.rotation, Projectile.whoAmI));
 		return false;
-	}
-
-	private void DrawProjectile(in Color lightColor)
-	{
-		Texture2D texture = TextureAssets.Projectile[Type].Value;
-		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
-		Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
-		Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
-		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, effects);
 	}
 
 	/// <summary>
