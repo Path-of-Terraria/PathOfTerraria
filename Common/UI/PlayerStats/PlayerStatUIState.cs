@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -6,7 +7,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PlayerStats;
 
-internal class PlayerStatUIState : CloseableSmartUi
+internal class PlayerStatUIState : CloseableSmartUi, IMutuallyExclusiveUI
 {
 	public override int DepthPriority => 3;
 	protected override bool IsCentered => true;
@@ -40,6 +41,7 @@ internal class PlayerStatUIState : CloseableSmartUi
 			VAlign = 0.4f;
 
 			RemoveAllChildren();
+			ModContent.GetInstance<SmartUiLoader>().ClearMutuallyExclusive<PlayerStatUIState>();
 
 			base.CreateMainPanel(false, new Point(512, 660), false, true);
 

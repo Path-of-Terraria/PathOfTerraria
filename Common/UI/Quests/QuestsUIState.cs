@@ -2,6 +2,7 @@
 using System.Linq;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
@@ -9,7 +10,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
 
-public class QuestsUIState : CloseableSmartUi
+public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 {
 	private QuestDetailsPanel _questDetails;
 	public const float SelectedOpacity = 0.25f;
@@ -54,6 +55,7 @@ public class QuestsUIState : CloseableSmartUi
 		}
 
 		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.OpenedQuestBook);
+		ModContent.GetInstance<SmartUiLoader>().ClearMutuallyExclusive<QuestsUIState>();
 
 		RemoveAllChildren();
 		base.CreateMainPanel(false, new Point(970, 715), false, true);

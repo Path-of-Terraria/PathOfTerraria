@@ -15,7 +15,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
-internal class GrimoireSelectionUIState : CloseableSmartUi
+internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 {
 	public static readonly Point MainPanelSize = new(900, 550);
 
@@ -50,7 +50,6 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	public override void SafeUpdate(GameTime gameTime)
 	{
 		base.SafeUpdate(gameTime);
-
 		bool offItem = Main.LocalPlayer.HeldItem.ModItem is not GrimoireItem && !Main.LocalPlayer.controlTorch;
 		if (IsVisible && (offItem || !Main.playerInventory))
 		{
@@ -66,7 +65,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		Main.inventoryScale = invSize;
 	}
 
-	internal void Toggle()
+	public void Toggle()
 	{
 		RemoveAllChildren();
 
@@ -87,6 +86,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			_storageGrid = null;
 			return;
 		}
+
+		ModContent.GetInstance<SmartUiLoader>().ClearMutuallyExclusive<GrimoireSelectionUIState>();
 
 		Main.playerInventory = true;
 

@@ -1,12 +1,10 @@
-﻿using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
-using System.Collections.Generic;
-
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
 using PathOfTerraria.Core.Items;
-
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;

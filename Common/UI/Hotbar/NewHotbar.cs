@@ -283,7 +283,8 @@ public sealed class NewHotbar : SmartUiState
 		Tooltip.SetName(skill.DisplayName.Value + " " + level);
 
 		List<SkillTooltip> tooltips = [];
-		SkillTooltip manaCost = new("Mana", Language.GetText("Mods.PathOfTerraria.Skills.ManaLine").WithFormatArgs(skill.TotalManaCost).Value, 2);
+		SkillTooltip manaCost = new("Mana", Language.GetText("Mods.PathOfTerraria.Skills." 
+			+ (Main.LocalPlayer.statManaMax2 <= skill.TotalManaCost ? "NotEnoughMana" : "ManaLine")).WithFormatArgs(skill.TotalManaCost).Value, 2);
 		SkillTooltip weapon = skill.WeaponType != ItemID.None
 			? new("WeaponType", Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value, 3)
 			: new("NoWeapon", Language.GetText("Mods.PathOfTerraria.Skills.NoWeaponLine").Value, 3);

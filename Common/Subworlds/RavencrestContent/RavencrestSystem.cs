@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Graphics;
 using SubworldLibrary;
@@ -159,6 +160,29 @@ public class RavencrestSystem : ModSystem
 		{
 			structure.Place();
 		}
+
+		for (int i = 0; i < Main.maxTilesX; ++i)
+		{
+			for (int j = 0; j < Main.maxTilesY; ++j)
+			{
+				WorldGen.TileFrame(i, j, true);
+				int sign = Sign.ReadSign(i, j, true);
+
+				if (sign != -1)
+				{
+					string text = i switch
+					{
+						< 220 => "the Iron Anvil",
+						< 360 => "The Lodge",
+						_ => "<-- Lodge, Forge\nLibrary, Hovel -->"
+					};
+
+					Sign.TextSign(sign, text);
+				}
+			}
+		}
+
+		GenerationUtilities.ManuallyPopulateChests();
 
 		foreach (string npcName in HasOverworldNPC)
 		{
