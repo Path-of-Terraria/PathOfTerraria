@@ -1,6 +1,5 @@
 ﻿using HousingAPI.Common;
 using HousingAPI.Common.Helpers;
-using Humanizer;
 using PathOfTerraria.Common.NPCs;
 using System.Collections.Generic;
 using System.Linq;
@@ -105,23 +104,23 @@ public class Tavern : ModRoomType
 		{
 			if (objects.Count == 1)
 			{
-				ErrorLog = Language.GetTextValue(path + "Common.Missing1").FormatWith(objects[0]);
+				ErrorLog = Language.GetTextValue(path + "Common.Missing1", objects[0]);
 			}
 			else if (objects.Count == 2)
 			{
-				ErrorLog = Language.GetTextValue(path + "Common.Missing2").FormatWith(objects[0], objects[1]);
+				ErrorLog = Language.GetTextValue(path + "Common.Missing2", objects[0], objects[1]);
 			}
 			else
 			{
-				string listText = Language.GetTextValue(path + "Common.MissingList");
+				string listText = Language.GetTextValue(path + "Common.MissingList", objects[..^2]);
 				string init = string.Empty;
 
 				for (int i = 0; i < objects.Count - 2; i++)
 				{
-					init += listText.FormatWith(objects[i]);
+					init += Language.GetTextValue(path + "Common.MissingList", objects[i]);
 				}
 
-				ErrorLog = Language.GetTextValue(path + "Common.Missing3").FormatWith(init, objects[^2], objects[^1]);
+				ErrorLog = Language.GetTextValue(path + "Common.Missing3", init, objects[^2], objects[^1]);
 			}
 
 			return false;

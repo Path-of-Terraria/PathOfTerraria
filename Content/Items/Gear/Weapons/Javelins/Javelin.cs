@@ -145,7 +145,7 @@ internal abstract class Javelin : Gear
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc.Hitbox.Intersects(Player.Hitbox))
+				if (npc.Hitbox.Intersects(Player.Hitbox) && npc.CanBeChasedBy())
 				{
 					npc.SimpleStrikeNPC((int)(Player.HeldItem.damage * 1.5f), Math.Sign(StoredVelocity.X), true);
 

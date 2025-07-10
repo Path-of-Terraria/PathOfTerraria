@@ -297,7 +297,7 @@ GrimoireItem: {
 }
 
 BatWings: {
-	DisplayName: Bat Wings
+	DisplayName: Pair of Bat Wings
 	Tooltip:
 		'''
 		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}

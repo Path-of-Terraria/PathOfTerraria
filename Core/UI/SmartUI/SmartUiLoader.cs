@@ -98,4 +98,19 @@ internal sealed partial class SmartUiLoader : ModSystem
 			);
 		}
 	}
+
+	/// <summary>
+	/// Clears all <see cref="IMutuallyExclusiveUI"/> that aren't of type <typeparamref name="T"/>.
+	/// </summary>
+	/// <typeparam name="T">The type to NOT call Toggle on.</typeparam>
+	public void ClearMutuallyExclusive<T>() where T : IMutuallyExclusiveUI
+	{
+		foreach (SmartUiState ui in uiStates)
+		{
+			if (ui is not T && ui.Visible && ui is IMutuallyExclusiveUI toggle)
+			{
+				toggle.Toggle();
+			}
+		}
+	}
 }

@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Items.Currency;
@@ -117,11 +116,11 @@ internal class AugmentSlotElement : UIElement
 
 				if (Main.LocalPlayer.HasItem(ModContent.ItemType<AugmentationOrb>()))
 				{
-					tooltip = Language.GetTextValue(common + ".Unlock").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
+					tooltip = Language.GetTextValue(common + ".Unlock", ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
 				}
 				else
 				{
-					tooltip = Language.GetTextValue(common + ".CostLine").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
+					tooltip = Language.GetTextValue(common + ".CostLine", ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
 				}
 
 				Tooltip.SetName(Language.GetTextValue(common + ".SlotLine"));
@@ -133,6 +132,7 @@ internal class AugmentSlotElement : UIElement
 	private void AddRadial()
 	{
 		int index = 0;
+
 		foreach (string key in SkillAugment.LoadedAugments.Keys)
 		{
 			SkillAugment augment = SkillAugment.LoadedAugments[key];
@@ -148,7 +148,8 @@ internal class AugmentSlotElement : UIElement
 
 		static bool CanBeApplied(SkillAugment augment)
 		{
-			Skill skill = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills.Where(x => x.GetType() == SkillTree.Current.ParentSkill).FirstOrDefault();
+			Skill skill = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills
+				.Where(x => x is not null && x.GetType() == SkillTree.Current.ParentSkill).FirstOrDefault();
 			return skill != default && augment.CanBeApplied(skill);
 		}
 	}

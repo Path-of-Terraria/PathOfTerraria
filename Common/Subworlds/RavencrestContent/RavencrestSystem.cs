@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Graphics;
 using SubworldLibrary;
@@ -180,6 +181,8 @@ public class RavencrestSystem : ModSystem
 				}
 			}
 		}
+
+		GenerationUtilities.ManuallyPopulateChests();
 
 		foreach (string npcName in HasOverworldNPC)
 		{
