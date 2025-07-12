@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Core.UI.SmartUI;
 using System.Collections.Generic;
 using Terraria.Localization;
@@ -62,19 +63,20 @@ internal class SkillSelectionPanel : SmartUiElement
 		Append(_skillTreeInnerPanel);
 
 		List<SkillNode> list = SkillTree.Current.Nodes;
+		int spareSlotCounter = 0;
+
+		for (int i = 0; i < SkillTree.DefaultAugmentCount; i++)
+		{
+			_skillTreeInnerPanel.Append(new AugmentSlotElement(spareSlotCounter++, SkillTree.Current.Augments[i].Unlocked));
+		}
+
 		foreach (SkillNode node in list)
 		{
-			var element = new AllocatableElement(node);
+			UIElement element = (node is SpareSlot) ? new AugmentSlotElement(spareSlotCounter++, true, node) : new AllocatableElement(node);
 			element.Left.Set(node.TreePos.X - node.Size.X / 2, 0.5f);
 			element.Top.Set(node.TreePos.Y - node.Size.Y / 2, 0.5f);
 
 			_skillTreeInnerPanel.AppendAsDraggable(element);
-		}
-
-		int augmentSlots = SelectedSkill.Tree.Augments.Length;
-		for (int i = 0; i < augmentSlots; i++)
-		{
-			_skillTreeInnerPanel.Append(new AugmentSlotElement(i));
 		}
 
 		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))

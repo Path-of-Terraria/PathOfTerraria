@@ -51,25 +51,25 @@ public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree)
 
 	public override void OnAllocate(Player player)
 	{
-		Level++;
+		base.OnAllocate(player);
 		Tree.Specialization = this;
 	}
 
 	public override void OnDeallocate(Player player)
 	{
-		Level--;
+		base.OnDeallocate(player);
 		Tree.Specialization = null;
 	}
 
 	/// <summary> Whether this skill specialization can be used. </summary>
 	public override bool CanAllocate(Player player)
 	{
-		return base.CanAllocate(player) && Tree.Specialization is null;
+		return Connections > 0 && Tree.Specialization is null;
 	}
 
 	/// <summary> Whether this skill specialization can be refunded. </summary>
 	public override bool CanDeallocate(Player player)
 	{
-		return base.CanDeallocate(player) && Tree.Specialization == this;
+		return Connections < 2 && Tree.Specialization == this;
 	}
 }

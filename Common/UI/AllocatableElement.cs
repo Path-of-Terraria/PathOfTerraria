@@ -14,12 +14,12 @@ internal class AllocatableElement : SmartUiElement
 	public static Asset<Texture2D> GlowAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
 	public static Asset<Texture2D> StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
 
-	public readonly Allocatable Node;
+	public readonly SkillNode Node;
 
 	private int _flashTimer;
 	private int _redFlashTimer;
 
-	public AllocatableElement(Allocatable node)
+	public AllocatableElement(SkillNode node)
 	{
 		var size = node.Size.ToPoint();
 

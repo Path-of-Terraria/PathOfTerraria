@@ -16,7 +16,7 @@ public abstract class SkillNode(SkillTree tree) : Allocatable
 		return base.CanDeallocate(player) && Connections < 2;
 	}
 
-	private int Connections
+	protected int Connections
 	{
 		get
 		{
