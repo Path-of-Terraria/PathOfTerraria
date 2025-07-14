@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
 

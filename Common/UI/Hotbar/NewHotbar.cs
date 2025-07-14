@@ -14,6 +14,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using PathOfTerraria.Core.UI.SmartUI;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -107,14 +108,15 @@ public sealed class NewHotbar : SmartUiState
 	private static void DrawHeldItemName(SpriteBatch spriteBatch)
 	{
 		string text = Lang.inter[37].Value; // "Item" when no item is held
-
-		if (Main.LocalPlayer.HeldItem.Name != null && Main.LocalPlayer.HeldItem.Name != string.Empty)
+		Item item = Main.LocalPlayer.HeldItem;
+		
+		if (item.Name != null && item.Name != string.Empty)
 		{
-			text = Main.LocalPlayer.HeldItem.AffixName(); // Otherwise the name of the item
+			text = item.AffixName(); // Otherwise the name of the item
 		}
 
 		var itemNamePosition = new Vector2(266f - (FontAssets.MouseText.Value.MeasureString(text) / 2f).X, 6f);
-		Color itemNameColor = ItemRarity.GetColor(Main.LocalPlayer.HeldItem.rare);
+		Color itemNameColor = PoTGlobalItem.GetRarityColor(item.GetInstanceData().Rarity);
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
 	}
 

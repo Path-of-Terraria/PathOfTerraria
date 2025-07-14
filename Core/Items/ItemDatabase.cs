@@ -64,7 +64,12 @@ public sealed class ItemDatabase : ModSystem
 			string str = System.Text.Encoding.UTF8.GetString(bytes);
 			VanillaItemData data = JsonSerializer.Deserialize<VanillaItemData>(str);
 
-			RegisterVanillaItemAsGear(i, Enum.Parse<ItemType>(data.ItemType));
+			// Make sure this counts as a Gear item by checking if it would have a PoTGlobalItem
+			// Otherwise this allows random items to be gear even if they shouldn't count as it
+			if (ModContent.GetInstance<PoTGlobalItem>().AppliesToEntity(new Item(i), true))
+			{
+				RegisterVanillaItemAsGear(i, Enum.Parse<ItemType>(data.ItemType));
+			}
 		}
 
 		for (int i = 0; i < ItemLoader.ItemCount; i++)
