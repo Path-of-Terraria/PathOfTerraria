@@ -22,7 +22,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [LegacyName("WitchNPC")]
 public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => (RavencrestSystem.structures["Burrow"].Position + new Point(18, 20)).ToPoint16();
+	Point16 ISpawnInRavencrestNPC.TileSpawn => (RavencrestSystem.Structures["Burrow"].Position + new Point(18, 20)).ToPoint16();
 
 	public override void SetStaticDefaults()
 	{
