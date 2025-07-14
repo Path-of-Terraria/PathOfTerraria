@@ -20,5 +20,6 @@ internal class IronBoomerang : Boomerang
 		Item.damage = 9;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;
+		Item.value = Item.buyPrice(0, 0, 1, 60);
 	}
 }

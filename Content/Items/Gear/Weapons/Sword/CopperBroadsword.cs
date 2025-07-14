@@ -25,6 +25,7 @@ internal class CopperBroadsword : Flamberge
 		Item.width = 38;
 		Item.height = 38;
 		Item.UseSound = SoundID.Item1;
+		Item.value = Item.buyPrice(0, 0, 1, 10);
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;

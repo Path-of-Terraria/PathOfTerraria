@@ -12,5 +12,6 @@ internal class Flamberge : Sword
 		Item.useTime = 60;
 		Item.useAnimation = 65;
 		Item.useTurn = true;
+		Item.value = Item.buyPrice(0, 0, 1, 0);
 	}
 }

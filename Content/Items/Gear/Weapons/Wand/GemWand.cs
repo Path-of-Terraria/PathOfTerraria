@@ -24,6 +24,7 @@ internal class GemWand : Wand
 		Item.shoot = ModContent.ProjectileType<GemWandProjectile>();
 		Item.shootSpeed = 12;
 		Item.UseSound = SoundID.Item7;
+		Item.value = Item.buyPrice(0, 0, 1, 50);
 	}
 
 	public class GemWandProjectile : ModProjectile

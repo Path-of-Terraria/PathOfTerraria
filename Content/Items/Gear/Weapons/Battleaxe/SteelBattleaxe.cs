@@ -20,5 +20,6 @@ internal class SteelBattleaxe : Battleaxe
 		Item.damage = 26;
 		Item.width = 40;
 		Item.height = 40;
+		Item.value = Item.buyPrice(0, 0, 1, 20);
 	}
 }

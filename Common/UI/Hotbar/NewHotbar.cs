@@ -116,7 +116,7 @@ public sealed class NewHotbar : SmartUiState
 		}
 
 		var itemNamePosition = new Vector2(266f - (FontAssets.MouseText.Value.MeasureString(text) / 2f).X, 6f);
-		Color itemNameColor = PoTGlobalItem.GetRarityColor(item.GetInstanceData().Rarity);
+		Color itemNameColor = item.IsAir ? Color.White : PoTGlobalItem.GetRarityColor(item.GetInstanceData().Rarity);
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
 	}
 
@@ -347,8 +347,14 @@ public sealed class NewHotbar : SmartUiState
 
 		for (int k = 2; k <= 9; k++)
 		{
-			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21,
-				new Vector2(24 + 124 + 52 * (k - 2), 30 + off), Color.White * opacity);
+			var pos = new Vector2(24 + 124 + 52 * (k - 2), 30 + off);
+			var bounds = new Rectangle((int)pos.X, (int)pos.Y, 64, 64);
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21, pos, Color.White * opacity);
+
+			if (bounds.Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft && Main.mouseLeftRelease)
+			{
+				Main.LocalPlayer.selectedItem = k;
+			}
 		}
 
 		if (Main.LocalPlayer.selectedItem > 10)
@@ -437,7 +443,7 @@ public sealed class NewHotbar : SmartUiState
 		// Remove 'D' from numerical keybinds. "D1" -> "1"
 		if (name[0] == 'D' && int.TryParse(name[1].ToString(), out _))
 		{
-			name = name.Remove(0, 1);
+			name = name[1..];
 		}
 
 		if (trim)

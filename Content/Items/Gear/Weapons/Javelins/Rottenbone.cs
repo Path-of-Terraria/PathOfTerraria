@@ -40,5 +40,6 @@ internal class Rottenbone : PlatinumGlaive
 		base.SetDefaults();
 
 		Item.shoot = ModContent.ProjectileType<RottenboneThrown>();
+		Item.value = Item.buyPrice(0, 0, 30, 0);
 	}
 }

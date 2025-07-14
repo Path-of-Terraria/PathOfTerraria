@@ -17,7 +17,7 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 public class KingSlimeDomain : BossDomainSubworld
 {
 	public override int Width => 500;
-	public override int Height => 600;
+	public override int Height => 700;
 	public override int[] WhitelistedCutTiles => [ModContent.TileType<EmbeddedSlimes>(), ModContent.TileType<FallingSlime>()];
 
 	internal static Point16 ArenaEntrance = Point16.Zero;
@@ -28,7 +28,7 @@ public class KingSlimeDomain : BossDomainSubworld
 	public List<Vector2> SlimePositions = [];
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
-		new FlatWorldPass(100, true, GetGenNoise()),
+		new FlatWorldPass(200, true, GetGenNoise()),
 		new PassLegacy("Tunnel", TunnelGen),
 		new PassLegacy("Decor", DecorGen)];
 
@@ -175,7 +175,7 @@ public class KingSlimeDomain : BossDomainSubworld
 		const int ArenaY = 490;
 
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 150 : 350;
-		Main.spawnTileY = 95;
+		Main.spawnTileY = 195;
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
 		progress.Value = 0;
 

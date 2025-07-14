@@ -10,4 +10,9 @@ public sealed class HomeWaypoint : ModWaypoint
 	{
 		SubworldSystem.Exit();
 	}
+
+	public override bool CanGoto()
+	{
+		return SubworldSystem.Current is not null;
+	}
 }

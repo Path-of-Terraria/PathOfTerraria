@@ -23,6 +23,7 @@ internal class WoodenSword : Sword
 		Item.Size = new(38);
 		Item.damage = 4;
 		Item.UseSound = SoundID.Item1;
+		Item.value = Item.buyPrice(0, 0, 0, 10);
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;

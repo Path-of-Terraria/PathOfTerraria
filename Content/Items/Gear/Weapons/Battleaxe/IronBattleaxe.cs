@@ -19,5 +19,6 @@ internal class IronBattleaxe : Battleaxe
 
 		Item.damage = 16;
 		Item.Size = new Vector2(34);
+		Item.value = Item.buyPrice(0, 0, 0, 80);
 	}
 }

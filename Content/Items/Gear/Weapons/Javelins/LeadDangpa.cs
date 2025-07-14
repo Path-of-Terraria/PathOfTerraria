@@ -21,5 +21,6 @@ internal class LeadDangpa : Javelin
 		base.SetDefaults();
 
 		Item.damage = 10;
+		Item.value = Item.buyPrice(0, 0, 0, 60);
 	}
 }

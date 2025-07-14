@@ -44,6 +44,7 @@ internal class WardensBow : WoodenBow
 
 		Item.damage = 40;
 		Item.Size = new Vector2(24, 48);
+		Item.value = Item.buyPrice(0, 2, 0, 0);
 	}
 
 	public override List<ItemAffix> GenerateAffixes()

@@ -30,6 +30,7 @@ internal class GuardianAngel : SteelBattleaxe
 
 		Item.width = 54;
 		Item.height = 54;
+		Item.value = Item.buyPrice(0, 0, 15, 0);
 	}
 	
 	public override bool AltFunctionUse(Player player)

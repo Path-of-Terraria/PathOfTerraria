@@ -20,9 +20,9 @@ internal class StoneSword : Sword
 
 		Item.damage = 6;
 		Item.UseSound = SoundID.Item1;
-
+		Item.value = Item.buyPrice(0, 0, 0, 50);
+		
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;
-		Item.value = Item.buyPrice(0, 0, 10, 0);
 	}
 }

@@ -27,5 +27,6 @@ internal class ChainWhip : Whip
 
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 13, 2, 4);
 		Item.channel = true;
+		Item.value = Item.buyPrice(0, 0, 0, 80);
 	}
 }

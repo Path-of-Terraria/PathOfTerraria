@@ -49,6 +49,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 
 		Item.Size = new(34);
 		Item.knockBack = 10;
+		Item.value = Item.buyPrice(0, 0, 5, 0);
 	}
 
 	public override bool? UseItem(Player player)

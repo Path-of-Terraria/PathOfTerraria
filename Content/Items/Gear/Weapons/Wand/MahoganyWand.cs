@@ -23,6 +23,7 @@ internal class MahoganyWand : Wand
 		Item.shoot = ModContent.ProjectileType<MahoganyWandProjectile>();
 		Item.shootSpeed = 10;
 		Item.UseSound = SoundID.Item7;
+		Item.value = Item.buyPrice(0, 0, 0, 60);
 	}
 
 	public class MahoganyWandProjectile : ModProjectile

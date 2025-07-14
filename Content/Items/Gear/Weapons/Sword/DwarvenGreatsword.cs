@@ -33,6 +33,7 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.None;
 		Item.useTime = Item.useAnimation = 34;
+		Item.value = Item.buyPrice(0, 5, 0, 0);
 	}
 
 	string GenerateName.IItem.GenerateName(string defaultName)

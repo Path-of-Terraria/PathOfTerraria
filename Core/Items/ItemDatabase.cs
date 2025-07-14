@@ -1,13 +1,8 @@
 ﻿using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
-using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization.Metadata;
-using System.Text.Unicode;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
