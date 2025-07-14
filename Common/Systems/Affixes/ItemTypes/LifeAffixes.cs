@@ -26,6 +26,11 @@ internal class MultipliedLifeAffix : ItemAffix
 
 internal class FlatLifeAffix : ItemAffix
 {
+	public FlatLifeAffix()
+	{
+		Round = true;
+	}
+	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaximumLife.Flat += Value;
@@ -63,6 +68,11 @@ internal class LifePotionPowerAffix : ItemAffix
 
 internal class LifePotionCapAffix : ItemAffix
 {
+	public LifePotionCapAffix()
+	{
+		Round = true;
+	}
+	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaxHealthPotions.Base += Value;

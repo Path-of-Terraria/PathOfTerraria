@@ -3,7 +3,7 @@
 # The {0} is the value of the affix, and the {1} is the sign.
 # An in-game line would look like: -5.58 to stat
 IncreasedDamageAffix.Description: "{1}{0}% damage"
-DefenseItemAffix.Description: "{1}{0} increased defense"
+DefenseItemAffix.Description: "{1}{0} defense"
 EnduranceItemAffix.Description: "{1}{0}% increased damage resistance"
 ResistanceHelmetAffix.Description: "{1}{0}% shorter debuffs"
 BuffBoostHelmetAffix.Description: "{1}{0}% longer beneficial buffs"
