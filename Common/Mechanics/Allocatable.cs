@@ -22,7 +22,7 @@ public abstract class Allocatable
 	}
 
 	private Vector2 _size;
-	public Vector2 Size
+	public virtual Vector2 Size
 	{
 		get
 		{
@@ -54,13 +54,13 @@ public abstract class Allocatable
 	/// <summary> Should check <see cref="CanAllocate"/> before being called. </summary>
 	public virtual void OnAllocate(Player player)
 	{
-		Level++;
+		Level = Math.Min(Level + 1, MaxLevel);
 	}
 
 	/// <summary> Should check <see cref="CanDeallocate"/> before being called. </summary>
 	public virtual void OnDeallocate(Player player)
 	{
-		Level--;
+		Level = Math.Max(Level - 1, 0);
 	}
 
 	public virtual bool CanAllocate(Player player)

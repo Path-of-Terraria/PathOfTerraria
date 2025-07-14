@@ -8,7 +8,8 @@ namespace PathOfTerraria.Common.Systems.Skills;
 
 public abstract class SkillTree : ILoadable
 {
-	public const int AugmentCount = 2;
+	public record struct PackedAugment(SkillAugment Augment, bool Unlocked);
+	public const int DefaultAugmentCount = 2;
 
 	/// <summary> The currently viewed skill tree. </summary>
 	internal static SkillTree Current;
@@ -16,12 +17,10 @@ public abstract class SkillTree : ILoadable
 	public static readonly Dictionary<Type, SkillTree> TypeToSkillTree = [];
 
 	public List<SkillNode> Nodes = [];
-	public SkillAugment[] Augments = new SkillAugment[AugmentCount];
+	/// <summary> Stores skill augments and whether they are unlocked. </summary>
+	public readonly List<PackedAugment> Augments = [];
 
 	internal List<Edge> Edges = [];
-
-	/// <summary> The indexes of unlocked augment slots. </summary>
-	public bool[] Slots = new bool[AugmentCount];
 
 	/// <summary> The number of points available for spending in this skill tree. </summary>
 	public int Points;
@@ -71,11 +70,11 @@ public abstract class SkillTree : ILoadable
 		string skillName = skill.Name;
 		Dictionary<string, int> nameToLevel = [];
 
-		foreach (Allocatable item in Nodes)
+		foreach (SkillNode item in Nodes)
 		{
-			if (item is SkillPassive passive && item is not Anchor && passive.Level != 0)
+			if (item is not Anchor && item.Level != 0)
 			{
-				nameToLevel.Add(passive.Name, passive.Level);
+				nameToLevel.Add(item.Name, item.Level);
 			}
 		}
 
@@ -87,8 +86,11 @@ public abstract class SkillTree : ILoadable
 			tag["special"] = Specialization.Name;
 		}
 
-		tag[nameof(Slots)] = Slots.ToList(); //Save augments
-		tag["augments"] = Augments.Where(x => x is not null).Select(x => x.Name).ToList();
+		var augments = Augments.Where(x => x.Augment is not null).ToList();
+		tag["augmentNames"] = augments.Select(x => x.Augment.Name).ToList();
+		tag["augmentUnlocks"] = augments.Select(x => x.Unlocked).ToList();
+
+		Augments.Clear();
 	}
 
 	public virtual void LoadData(Skill skill, TagCompound tag)
@@ -100,7 +102,7 @@ public abstract class SkillTree : ILoadable
 
 		for (int i = 0; i < names.Count; i++)
 		{
-			((SkillPassive)Nodes.First(x => x.Name == names[i] && x is SkillPassive)).Level = levels[i];
+			Nodes.First(x => x.Name == names[i]).Level = levels[i];
 		}
 
 		var special = (SkillSpecial)Nodes.FirstOrDefault(x => x is SkillSpecial && x.Name == tag.GetString("special"));
@@ -109,28 +111,16 @@ public abstract class SkillTree : ILoadable
 			Specialization = special;
 		}
 
-		if (tag.TryGet(nameof(Slots), out List<bool> list)) //Use TryGet because we don't want to assign an empty array
+		IList<string> augmentNames = tag.GetList<string>("augmentNames");
+		IList<bool> augmentUnlocked = tag.GetList<bool>("augmentUnlocks");
+		int count = Math.Max(augmentUnlocked.Count, DefaultAugmentCount);
+
+		for (int c = 0; c < count; c++)
 		{
-			Slots = [.. list];
-		}
+			SkillAugment a = (c < augmentNames.Count) ? SkillAugment.LoadedAugments[augmentNames[c]] : null;
+			bool u = c < augmentUnlocked.Count && augmentUnlocked[c];
 
-		IList<string> augments = tag.GetList<string>("augments");
-
-		int index = 0;
-		foreach (string name in augments)
-		{
-			if (index >= Slots.Length || !Slots[index])
-			{
-				break;
-			}
-
-			if (!SkillAugment.LoadedAugments.ContainsKey(name))
-			{
-				continue;
-			}
-
-			Augments[index] = SkillAugment.LoadedAugments[name];
-			index++;
+			Augments.Add(new(a, u));
 		}
 	}
 
