@@ -17,6 +17,8 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
 internal class HunterStartQuest : Quest
 {
+	public static readonly HashSet<int> FloatingEyes = [NPCID.DemonEye, NPCID.DemonEye2, NPCID.DemonEyeOwl, NPCID.DemonEyeSpaceship, NPCID.CataractEye, NPCID.CataractEye2, NPCID.DialatedEye, NPCID.DialatedEye2, NPCID.GreenEye, NPCID.GreenEye2, NPCID.PurpleEye, NPCID.PurpleEye2, NPCID.SleepyEye, NPCID.SleepyEye2, NPCID.WanderingEye];
+
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override int NPCQuestGiver => ModContent.NPCType<HunterNPC>();
 
@@ -53,7 +55,7 @@ internal class HunterStartQuest : Quest
 				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<WoodenBow>());
 				return true;
 			}),
-			new KillCount(npc => npc.type is NPCID.DemonEye or NPCID.Crimera or NPCID.EaterofSouls, 10, this.GetLocalization("Kill.FloatingMisc")),
+			new KillCount(npc => npc.type is NPCID.Crimera or NPCID.EaterofSouls || FloatingEyes.Contains(npc.type) || NPCID.Sets.DemonEyes[npc.type], 10, this.GetLocalization("Kill.FloatingMisc")),
 			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest3"),
 			[
 				new GiveItem(40, ItemID.Wood), new(10, ItemID.Gel), new(20, ItemID.IronBar, ItemID.LeadBar)

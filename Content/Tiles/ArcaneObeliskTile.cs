@@ -25,6 +25,7 @@ public class ArcaneObeliskTile : ModTile
 		TileID.Sets.HasOutlines[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
+		TileObjectData.newTile.Origin = new(1, 3);
 
 		TileObjectData.newTile.DrawYOffset = 4;
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook((int i, int j, int _, int _, int _, int _) =>
