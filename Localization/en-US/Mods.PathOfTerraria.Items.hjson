@@ -219,7 +219,7 @@ StoneBoomerang: {
 FireStarter: {
 	DisplayName: Fire Starter
 	AltUseDescription: 100% chance to apply On Fire! for 3 seconds
-	Description: A dry piece of wood that smells like burning...
+	Description: A smoldering piece of wood.
 	Tooltip: ""
 }
 
