@@ -4,6 +4,7 @@ using System.Linq;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.UI.Hotbar;
+using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -51,7 +52,7 @@ public class RainOfArrows : Skill
 			Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -10 * Main.rand.NextFloat(0.9f, 1.1f);
 			int proj = Projectile.NewProjectile(new EntitySource_ItemUse_WithAmmo(player, player.HeldItem, ammo), pos, velocity, projToShoot, damage, 2, player.whoAmI);
 
-			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj]);
+			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj], this);
 		}
 	}
 
@@ -84,6 +85,7 @@ public class RainOfArrows : Skill
 
 		private short _rainTimer = 0;
 		private float _originalMagnitude = 0f;
+		private bool _poison = false;
 
 		public override bool PreAI(Projectile projectile)
 		{
@@ -123,7 +125,7 @@ public class RainOfArrows : Skill
 			return true;
 		}
 
-		internal void SetRainProjectile(Projectile projectile)
+		internal void SetRainProjectile(Projectile projectile, RainOfArrows skill)
 		{
 			IsRainProjectile = true;
 			RainTarget = Main.MouseWorld;
@@ -131,11 +133,24 @@ public class RainOfArrows : Skill
 			_originalMagnitude = projectile.velocity.Length();
 			_rainTimer = 0;
 
+			if (skill.Tree.Specialization is NaturesBarrage)
+			{
+				_poison = true;
+			}
+
 			projectile.tileCollide = false;
 
 			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);
+			}
+		}
+
+		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (_poison)
+			{
+				target.AddBuff(BuffID.Poisoned, 60 * 4);
 			}
 		}
 
@@ -147,6 +162,7 @@ public class RainOfArrows : Skill
 			{
 				binaryWriter.WriteVector2(RainTarget);
 				binaryWriter.Write((Half)_originalMagnitude);
+				bitWriter.WriteBit(_poison);
 			}
 		}
 
@@ -158,6 +174,7 @@ public class RainOfArrows : Skill
 			{
 				RainTarget = binaryReader.ReadVector2();
 				_originalMagnitude = (float)binaryReader.ReadHalf();
+				_poison = bitReader.ReadBit();
 			}
 		}
 	}
