@@ -76,12 +76,15 @@ internal class RavencrestSubworld : MappingWorld
 		Main.spawnTileX = 398;
 		Main.spawnTileY = 141;
 
-		//WorldFile.LoadWorld_Version2(new BinaryReader(new MemoryStream(PoTMod.Instance.GetFileBytes("Assets/Structures/Worlds/RavencrestSubworld.wld"))));
-
 		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 22), Vector2.Zero);
 
 		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{
+			if (!npc.CanSpawn(true))
+			{
+				continue;
+			}
+
 			int x = npc.TileSpawn.X * 16;
 			int y = npc.TileSpawn.Y * 16;
 			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
