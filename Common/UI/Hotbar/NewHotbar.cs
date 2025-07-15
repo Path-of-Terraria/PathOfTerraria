@@ -14,6 +14,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using PathOfTerraria.Core.UI.SmartUI;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -107,14 +108,15 @@ public sealed class NewHotbar : SmartUiState
 	private static void DrawHeldItemName(SpriteBatch spriteBatch)
 	{
 		string text = Lang.inter[37].Value; // "Item" when no item is held
-
-		if (Main.LocalPlayer.HeldItem.Name != null && Main.LocalPlayer.HeldItem.Name != string.Empty)
+		Item item = Main.LocalPlayer.HeldItem;
+		
+		if (item.Name != null && item.Name != string.Empty)
 		{
-			text = Main.LocalPlayer.HeldItem.AffixName(); // Otherwise the name of the item
+			text = item.AffixName(); // Otherwise the name of the item
 		}
 
 		var itemNamePosition = new Vector2(266f - (FontAssets.MouseText.Value.MeasureString(text) / 2f).X, 6f);
-		Color itemNameColor = ItemRarity.GetColor(Main.LocalPlayer.HeldItem.rare);
+		Color itemNameColor = item.IsAir ? Color.White : PoTGlobalItem.GetRarityColor(item.GetInstanceData().Rarity);
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
 	}
 
@@ -345,8 +347,14 @@ public sealed class NewHotbar : SmartUiState
 
 		for (int k = 2; k <= 9; k++)
 		{
-			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21,
-				new Vector2(24 + 124 + 52 * (k - 2), 30 + off), Color.White * opacity);
+			var pos = new Vector2(24 + 124 + 52 * (k - 2), 30 + off);
+			var bounds = new Rectangle((int)pos.X, (int)pos.Y, 64, 64);
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21, pos, Color.White * opacity);
+
+			if (bounds.Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft && Main.mouseLeftRelease)
+			{
+				Main.LocalPlayer.selectedItem = k;
+			}
 		}
 
 		if (Main.LocalPlayer.selectedItem > 10)
@@ -435,7 +443,7 @@ public sealed class NewHotbar : SmartUiState
 		// Remove 'D' from numerical keybinds. "D1" -> "1"
 		if (name[0] == 'D' && int.TryParse(name[1].ToString(), out _))
 		{
-			name = name.Remove(0, 1);
+			name = name[1..];
 		}
 
 		if (trim)

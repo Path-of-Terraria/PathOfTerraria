@@ -22,5 +22,6 @@ internal class WoodenBoomerang : Boomerang
 		Item.damage = 5;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;
+		Item.value = Item.buyPrice(0, 0, 0, 10);
 	}
 }

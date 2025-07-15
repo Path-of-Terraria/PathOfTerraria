@@ -32,6 +32,7 @@ internal class MoltenDangpa : LeadDangpa
 		base.SetDefaults();
 
 		Item.shoot = ModContent.ProjectileType<MoltenDangpaThrown>();
+		Item.value = Item.buyPrice(0, 0, 70, 0);
 	}
 
 	public override List<ItemAffix> GenerateAffixes()

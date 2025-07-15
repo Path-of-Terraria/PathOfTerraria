@@ -20,5 +20,6 @@ internal class SilverBoomerang : Boomerang
 		Item.damage = 15;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;
+		Item.value = Item.buyPrice(0, 0, 3, 0);
 	}
 }

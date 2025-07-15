@@ -70,8 +70,8 @@ public class ArcaneObeliskTile : ModTile
 
 	public override bool RightClick(int i, int j)
 	{
+		UIWaypointMenu.InWorldAnchor = new Point(i * 16, j * 16);
 		UIManager.TryToggleOrRegister(UIWaypointMenu.Identifier, "Vanilla: Mouse Text", new UIWaypointMenu(), 1);
-
 		return true;
 	}
 

@@ -23,5 +23,6 @@ internal class BarbedLeatherWhip : Whip
 
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 7, 2, 4);
 		Item.channel = true;
+		Item.value = Item.buyPrice(0, 0, 0, 50);
 	}
 }

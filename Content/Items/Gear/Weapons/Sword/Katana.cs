@@ -24,5 +24,6 @@ internal class Katana : Sword
 		Item.useAnimation = 35;
 		Item.width = 48; 
 		Item.height = 54;
+		Item.value = Item.buyPrice(0, 0, 1, 50);
 	}
 }

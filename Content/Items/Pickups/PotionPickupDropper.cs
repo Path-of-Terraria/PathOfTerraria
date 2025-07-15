@@ -8,15 +8,17 @@ internal class PotionPickupDropper : GlobalNPC
 {
 	public override void HitEffect(NPC npc, NPC.HitInfo hit)
 	{
+		const float MaxPotionGates = 2;
+
 		if (IsNPCABoss(npc) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			for (int k = 0; k < 10; k++)
+			for (int k = 0; k < MaxPotionGates; k++)
 			{
-				int gate = (int)(npc.lifeMax * (k / 10f));
+				int gate = (int)(npc.lifeMax * (k / MaxPotionGates));
 
 				if (npc.life >= gate && (npc.life - hit.Damage) < gate)
 				{
-					int amount = Main.rand.Next(2, 6);
+					int amount = Main.rand.Next(4, 6);
 
 					for (int i = 0; i < amount; i++)
 					{

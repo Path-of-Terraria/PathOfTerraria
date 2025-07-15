@@ -27,5 +27,6 @@ internal class WebWhip : Whip
 
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 9, 2, 4);
 		Item.channel = true;
+		Item.value = Item.buyPrice(0, 0, 1, 0);
 	}
 }

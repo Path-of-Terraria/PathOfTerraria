@@ -25,7 +25,7 @@ internal class SunsoulStaffItem : Staff
 		Item.shoot = ModContent.ProjectileType<SunsoulHead>();
 		Item.damage = 85;
 		Item.knockBack = 1;
-		Item.value = Item.buyPrice(0, 25, 0, 0);
+		Item.value = Item.buyPrice(0, 5, 0, 0);
 	}
 
 	public override void HoldItem(Player player)

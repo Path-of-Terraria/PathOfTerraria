@@ -21,5 +21,6 @@ internal class PlatinumGlaive : Javelin
 		base.SetDefaults();
 
 		Item.damage = 16;
+		Item.value = Item.buyPrice(0, 0, 1, 0);
 	}
 }

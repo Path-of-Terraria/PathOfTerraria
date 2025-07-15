@@ -55,6 +55,7 @@ internal class DevourersTail : Whip
 
 		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 67, 2, 4);
 		Item.channel = true;
+		Item.value = Item.buyPrice(0, 5, 0, 0);
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)

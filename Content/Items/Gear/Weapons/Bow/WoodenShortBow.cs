@@ -24,5 +24,6 @@ internal class WoodenShortBow : Bow
 		Item.width = 18;
 		Item.height = 30;
 		Item.damage = 7;
+		Item.value = Item.buyPrice(0, 0, 0, 30);
 	}
 }

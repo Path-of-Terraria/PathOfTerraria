@@ -12,7 +12,8 @@ internal class LeatherWhip : Whip
 	{
 		base.SetDefaults();
 
-		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 7, 2, 4);
+		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 5, 2, 4);
 		Item.channel = true;
+		Item.value = Item.buyPrice(0, 0, 0, 20);
 	}
 }

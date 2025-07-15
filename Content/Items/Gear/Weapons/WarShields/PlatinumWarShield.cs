@@ -22,5 +22,6 @@ internal class PlatinumWarShield : WarShield
 		Item.damage = 22;
 		Item.Size = new(26);
 		Item.knockBack = 9;
+		Item.value = Item.buyPrice(0, 0, 1, 30);
 	}
 }

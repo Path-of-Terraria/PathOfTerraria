@@ -14,6 +14,12 @@ public class RootedAmulet : VigorAmulet
 		def.DropChance = null;
 	}
 
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+		Item.value = Item.buyPrice(0, 1, 0, 0);
+	}
+
 	public override List<ItemAffix> GenerateAffixes()
 	{
 		var strengthAffix = (ItemAffix)Affix.CreateAffix<StrengthItemAffix>(15f, 25f);

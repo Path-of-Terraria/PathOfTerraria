@@ -29,6 +29,7 @@ internal class CorruptedBattleaxe : IronBattleaxe
 		Item.width = 52;
 		Item.height = 52;
 		Item.shoot = ProjectileID.PurificationPowder; // Could be anything really
+		Item.value = Item.buyPrice(0, 0, 5, 0);
 	}
 	
 	public override bool AltFunctionUse(Player player)

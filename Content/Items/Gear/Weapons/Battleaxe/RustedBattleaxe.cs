@@ -19,6 +19,6 @@ internal class RustedBattleaxe : Battleaxe
 
 		Item.width = 38;
 		Item.height = 38;
-		Item.value = Item.buyPrice(0, 0, 25, 0);
+		Item.value = Item.buyPrice(0, 0, 0, 20);
 	}
 }
