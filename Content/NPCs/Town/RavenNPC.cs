@@ -11,6 +11,10 @@ namespace PathOfTerraria.Content.NPCs.Town;
 
 public sealed class RavenNPC : ModNPC
 {
+	public static readonly SoundStyle Caw = new($"{PoTMod.ModName}/Assets/Sounds/RavenCaw");
+
+	/// <summary> The unit used to control opacity when the raven has reached the Ravencrest entrance. </summary>
+	private float _fadeOut;
 	private readonly Vector2[] _offsets = new Vector2[3];
 	private readonly Vector2[] _targets = new Vector2[3];
 
@@ -57,8 +61,7 @@ public sealed class RavenNPC : ModNPC
 		bool nearEntrance = entrancePosition.DistanceSQ(NPC.Center) < 600 * 600;
 		int dir = Math.Sign(entrancePosition.X - NPC.Center.X);
 
-		if (!nearEntrance && (target.dead || !target.active || target.DistanceSQ(NPC.Center) > 500 * 500 
-			|| Math.Abs(NPC.Center.X - entrancePosition.X) < Math.Abs(target.Center.X - entrancePosition.X + dir * 200)))
+		if (!nearEntrance && (target.dead || !target.active || target.DistanceSQ(NPC.Center) > 500 * 500 || Math.Abs(NPC.Center.X - entrancePosition.X) < Math.Abs(target.Center.X - entrancePosition.X + dir * 200)))
 		{
 			int tileX = (int)(NPC.Center.X / 16f);
 			int tileY = (int)(NPC.Center.Y / 16f);
@@ -106,6 +109,12 @@ public sealed class RavenNPC : ModNPC
 			else
 			{
 				SlowDown();
+
+				if (nearEntrance && (_fadeOut += 0.01f) >= 1 && Main.netMode != NetmodeID.MultiplayerClient) //Vanish
+				{
+					NPC.active = false;
+					NPC.netUpdate = true;
+				}
 			}
 		}
 
@@ -116,7 +125,12 @@ public sealed class RavenNPC : ModNPC
 
 		if (Main.rand.NextBool(800) && Main.netMode != NetmodeID.Server)
 		{
-			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/RavenCaw"), NPC.Center);
+			SoundEngine.PlaySound(Caw, NPC.Center);
+		}
+
+		if (!nearEntrance && _fadeOut > 0)
+		{
+			_fadeOut -= 0.05f;
 		}
 	}
 
@@ -164,6 +178,8 @@ public sealed class RavenNPC : ModNPC
 		Vector2 pos = NPC.Center - screenPos;
 		Rectangle frame = NPC.frame with { Width = 80 };
 		SpriteEffects effect = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+		float finalOpacity = 1f - _fadeOut;
 		drawColor = Color.Lerp(drawColor, Color.White, 0.15f);
 
 		for (int i = 0; i < _offsets.Length; ++i)
@@ -176,11 +192,11 @@ public sealed class RavenNPC : ModNPC
 			}
 
 			Vector2 drawPos = pos + _offsets[i];
-			Main.EntitySpriteDraw(tex, drawPos, frame, drawColor * NPC.Opacity * 0.5f, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
+			Main.EntitySpriteDraw(tex, drawPos, frame, drawColor * NPC.Opacity * 0.5f * finalOpacity, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
 		}
 
-		Main.EntitySpriteDraw(tex, pos, frame, drawColor * NPC.Opacity, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
-		Main.EntitySpriteDraw(tex, pos, frame with { X = 82 }, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
+		Main.EntitySpriteDraw(tex, pos, frame, drawColor * NPC.Opacity * finalOpacity, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
+		Main.EntitySpriteDraw(tex, pos, frame with { X = 82 }, drawColor * finalOpacity, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect, 0);
 		return false;
 	}
 

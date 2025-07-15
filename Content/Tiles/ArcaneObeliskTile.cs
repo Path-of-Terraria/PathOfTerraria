@@ -37,7 +37,7 @@ public class ArcaneObeliskTile : ModTile
 		TileObjectData.newTile.Height = 5;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
 
-		TileObjectData.newTile.Origin = Point16.Zero;
+		TileObjectData.newTile.Origin = new(1, 4);
 
 		TileObjectData.addTile(Type);
 
