@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
-using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
-using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -27,20 +25,11 @@ internal class HunterStartQuest : Quest
 		new ActionRewards((p, v) =>
 			{
 				p.GetModPlayer<ExpModPlayer>().Exp += 500;
-				int sword = ItemSpawner.SpawnItemFromCategory<Sword>(v);
+				int sword = ItemSpawner.SpawnItemFromCategory<Bow>(v);
 
 				if (sword != -1)
 				{
 					Item item = Main.item[sword];
-					item.GetInstanceData().Rarity = ItemRarity.Magic;
-					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
-				}
-				
-				int axe = ItemSpawner.SpawnItemFromCategory<Battleaxe>(v);
-
-				if (axe != -1)
-				{
-					Item item = Main.item[axe];
 					item.GetInstanceData().Rarity = ItemRarity.Magic;
 					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
 				}

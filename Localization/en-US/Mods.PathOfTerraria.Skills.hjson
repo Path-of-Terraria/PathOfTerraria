@@ -1,6 +1,7 @@
 # These are used for the hotbar hover in NewHotbar.cs.
 LevelLine: (Level {0}/{1})
 ManaLine: Costs {0} mana
+NotEnoughMana: Costs [c/FF6666:{0} mana]
 WeaponLine: Must use a {0} weapon
 NoWeaponLine: No weapon required
 NoKeybindLine: No keybind detected
@@ -10,7 +11,12 @@ KeybindLine: Press {0} to use
 NeedsWeapon: "[c/999999:Needs a {0} item]"
 BaseDamage: Deals {0} base damage
 # This is for the hover text in the skills menu.
-CantEquip: Can't equip skill
+CantEquip: Can't equip skill: {0}
+
+Denials: {
+	NotEnoughMana: "[c/999999:Not enough mana]"
+	NeedsAffix: "[c/999999:Needs affix strength]"
+}
 
 # These are the actual localization lines for skills.
 Nova: {

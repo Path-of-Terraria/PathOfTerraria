@@ -38,18 +38,18 @@ internal class SkillSelectionElement : UIElement
 
 		if (ContainsPoint(Main.MouseScreen))
 		{
-			if (_skill.CanEquipSkill(Main.LocalPlayer))
+			if (_skill.CanEquipSkill(Main.LocalPlayer, out string failReason))
 			{
 				NewHotbar.DrawSkillHoverTooltips(_skill);
 			}
 			else
 			{
-				Tooltip.SetName(Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip"));
+				Tooltip.SetName(Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip", failReason));
 			}
 		}
 
 		Vector2 position = GetDimensions().Position() + new Vector2(Width.Pixels / 2, Height.Pixels / 2);
-		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer, out _) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
 
 		if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(_skill.Name))
 		{
@@ -63,12 +63,14 @@ internal class SkillSelectionElement : UIElement
 	public override void LeftClick(UIMouseEvent evt)
 	{
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
-		skillCombatPlayer.TryAddSkill(_skill);
-		_parentPanel.SelectedSkill = _skill;
 
-        _parentPanel.RebuildTree();
+		if (skillCombatPlayer.TryAddSkill(_skill))
+		{
+			_parentPanel.SelectedSkill = _skill;
+			_parentPanel.RebuildTree();
 
-        Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);
+			Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);
+		}
 	}
 
 	public override void RightClick(UIMouseEvent evt)

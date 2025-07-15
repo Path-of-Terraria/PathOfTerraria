@@ -104,15 +104,10 @@ internal class SkillCombatPlayer : ModPlayer
 		{
 			Skill skill = HotbarSkills[i];
 
-			if (skill is not null)
+			if (skill is not null && !skill.CanEquipSkill(Player, out _))
 			{
-				//skill.UpdateEquipped(Player);
-
-				if (!skill.CanEquipSkill(Player))
-				{
-					HotbarSkills[i] = null;
-					continue;
-				}
+				HotbarSkills[i] = null;
+				continue;
 			}
 		}
 	}
@@ -191,9 +186,9 @@ internal class SkillCombatPlayer : ModPlayer
 
 	public bool TryAddSkill(Skill skill)
 	{
-		if (!skill.CanEquipSkill(Player))
+		if (!skill.CanEquipSkill(Player, out string failReason))
 		{
-			Main.NewText("Skill cannot be added.");
+			Main.NewText($"Skill cannot be added. ({failReason})");
 			return false;
 		}
 

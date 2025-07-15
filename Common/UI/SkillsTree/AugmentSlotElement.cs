@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Items.Currency;
@@ -14,9 +13,12 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 
 internal class AugmentSlotElement : UIElement
 {
+	public const int SquareSize = 180;
 	public const int HoverTimeMax = 10;
 
 	public readonly int Index;
+	public readonly SkillNode Node;
+
 	public int HoverTime;
 	private bool _unlocked;
 
@@ -33,15 +35,16 @@ internal class AugmentSlotElement : UIElement
 		}
 	}
 
-	public AugmentSlotElement(int index)
+	public AugmentSlotElement(int index, bool unlocked = false, SkillNode node = null)
 	{
-		const int squareSize = 180;
 		Index = index;
-		_unlocked = SkillTree.Current.Slots[Index];
+		Node = node;
 
-		Width.Set(squareSize, 0);
-		Height.Set(squareSize, 0);
-		Top.Set(100 + squareSize * index, 0);
+		_unlocked = unlocked; //SkillTree.Current.Augments[Index].Unlocked;
+
+		Width.Set(SquareSize, 0);
+		Height.Set(SquareSize, 0);
+		Top.Set(100 + SquareSize * index, 0);
 		Left.Set(100, 0);
 	}
 
@@ -84,7 +87,7 @@ internal class AugmentSlotElement : UIElement
 		base.Draw(spriteBatch);
 
 		Vector2 center = GetDimensions().Center();
-		SkillAugment[] augments = SkillTree.Current.Augments;
+		SkillAugment[] augments = [.. SkillTree.Current.Augments.Select(x => x.Augment)];
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/AugmentFrame").Value;
 
 		if (augments[Index] != null)
@@ -117,11 +120,11 @@ internal class AugmentSlotElement : UIElement
 
 				if (Main.LocalPlayer.HasItem(ModContent.ItemType<AugmentationOrb>()))
 				{
-					tooltip = Language.GetTextValue(common + ".Unlock").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
+					tooltip = Language.GetTextValue(common + ".Unlock", ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
 				}
 				else
 				{
-					tooltip = Language.GetTextValue(common + ".CostLine").FormatWith(ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
+					tooltip = Language.GetTextValue(common + ".CostLine", ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
 				}
 
 				Tooltip.SetName(Language.GetTextValue(common + ".SlotLine"));
@@ -133,11 +136,12 @@ internal class AugmentSlotElement : UIElement
 	private void AddRadial()
 	{
 		int index = 0;
+
 		foreach (string key in SkillAugment.LoadedAugments.Keys)
 		{
 			SkillAugment augment = SkillAugment.LoadedAugments[key];
 
-			if (SkillTree.Current.Augments.Contains(augment) || !CanBeApplied(augment))
+			if (SkillTree.Current.Augments.Any(x => x.Augment == augment) || !CanBeApplied(augment))
 			{
 				continue;
 			}
@@ -148,7 +152,7 @@ internal class AugmentSlotElement : UIElement
 
 		static bool CanBeApplied(SkillAugment augment)
 		{
-			Skill skill = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills.Where(x => x.GetType() == SkillTree.Current.ParentSkill).FirstOrDefault();
+			Skill skill = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HotbarSkills.Where(x => x is not null && x.GetType() == SkillTree.Current.ParentSkill).FirstOrDefault();
 			return skill != default && augment.CanBeApplied(skill);
 		}
 	}
@@ -166,7 +170,9 @@ internal class AugmentSlotElement : UIElement
 		if (p.HasItem(orb))
 		{
 			p.ConsumeItem(orb);
-			SkillTree.Current.Slots[Index] = true;
+			SkillTree.PackedAugment a = SkillTree.Current.Augments[Index];
+
+			SkillTree.Current.Augments[Index] = new(a.Augment, true);
 			_unlocked = true;
 
 			TreeSoundEngine.PlaySoundForTreeAllocation(1, 1);
@@ -175,12 +181,19 @@ internal class AugmentSlotElement : UIElement
 
 	public override void RightClick(UIMouseEvent evt)
 	{
-		bool hadAugment = SkillTree.Current.Augments[Index] != null;
-		SkillTree.Current.Augments[Index] = null;
+		bool hadAugment = SkillTree.Current.Augments[Index].Augment != null;
+		SkillTree.PackedAugment a = SkillTree.Current.Augments[Index];
+
+		SkillTree.Current.Augments[Index] = new(null, a.Unlocked);
 
 		if (hadAugment)
 		{
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
+			
+			if (Node?.CanDeallocate(Main.LocalPlayer) == true)
+			{
+				Node.OnDeallocate(Main.LocalPlayer);
+			}
 		}
 	}
 }
@@ -292,8 +305,15 @@ internal class AugmentRadialElement : UIElement
 	public override void LeftClick(UIMouseEvent evt)
 	{
 		_flashTimer = 20;
-		SkillTree.Current.Augments[Handler.Index] = _augment;
+
+		SkillTree.PackedAugment a = SkillTree.Current.Augments[Handler.Index];
+		SkillTree.Current.Augments[Handler.Index] = new(_augment, a.Unlocked);
 
 		TreeSoundEngine.PlaySoundForTreeAllocation(1, 0);
+
+		if (Handler.Node?.CanAllocate(Main.LocalPlayer) == true)
+		{
+			Handler.Node.OnAllocate(Main.LocalPlayer);
+		}
 	}
 }

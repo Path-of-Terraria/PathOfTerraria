@@ -86,7 +86,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			// Ease back into normal rotation
 			float rot = (NPC.velocity.X - NPC.velocity.Y) * 0.015f;
-			NPC.rotation = MathHelper.Lerp(NPC.rotation, rot, 0.1f);
+			NPC.rotation = Utils.AngleLerp(NPC.rotation, rot, 0.1f);
 			flipVert = false;
 			doDamage = false;
 

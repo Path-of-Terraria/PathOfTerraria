@@ -2,6 +2,11 @@
 
 internal class ManaAffix : ItemAffix
 {
+	public ManaAffix()
+	{
+		Round = true;
+	}
+	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaximumMana.Base += Value;
@@ -26,6 +31,11 @@ internal class ManaPotionPowerAffix : ItemAffix
 
 internal class ManaPotionCapAffix : ItemAffix
 {
+	public ManaPotionCapAffix()
+	{
+		Round = true;
+	}
+	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaxManaPotions.Base += Value;

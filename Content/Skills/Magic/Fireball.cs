@@ -28,8 +28,9 @@ public class Fireball : Skill
 		var source = new EntitySource_UseSkill(player, this);
 		float knockback = 2f;
 		int type = ModContent.ProjectileType<FireballProj>();
-
-		Projectile.NewProjectile(source, player.Center, player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * 8, type, damage, knockback, player.whoAmI, Level);
+		Vector2 velocity = player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * 8 * Main.rand.NextFloat(0.9f, 1.1f);
+		
+		Projectile.NewProjectile(source, player.Center - new Vector2(0, 12), velocity, type, damage, knockback, player.whoAmI, Level);
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
 	}
 
@@ -47,19 +48,25 @@ public class Fireball : Skill
 		public override void SetDefaults()
 		{
 			Projectile.friendly = true;
-			Projectile.width = 50;
-			Projectile.height = 50;
 			Projectile.timeLeft = 240;
 			Projectile.penetrate = 1;
 			Projectile.aiStyle = -1;
+			Projectile.scale = 0f;
 		}
 
 		public override void AI()
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation();
-			Projectile.frame = (int)(Projectile.frameCounter++ / 6f) % 5;
-			Projectile.velocity.Y += 0.01f;
+			Projectile.frame = (int)(Projectile.frameCounter++ / 5f) % 5;
 			Projectile.Opacity = (Projectile.velocity.Length() - 2) / 8f * 0.25f + 0.75f;
+			Projectile.scale = Math.Min(1, Projectile.scale + 0.025f);
+			Projectile.width = (int)(36 * Projectile.scale);
+			Projectile.height = (int)(36 * Projectile.scale); 
+
+			if (Projectile.scale == 1)
+			{
+				Projectile.velocity.Y += 0.01f;
+			}
 
 			SpawnDust(1, 0.4f);
 		}
@@ -117,8 +124,9 @@ public class Fireball : Skill
 			var src = new Rectangle(0, frameHeight * Projectile.frame, tex.Width, frameHeight);
 			Color col = lightColor * Projectile.Opacity;
 			Vector2 position = Projectile.Center - Main.screenPosition;
+			Vector2 origin = src.Size() / new Vector2(1.5f, 2);
 			
-			Main.EntitySpriteDraw(tex, position, src, col, Projectile.rotation, src.Size() / new Vector2(1.5f, 2), 1f, SpriteEffects.None, 0);
+			Main.EntitySpriteDraw(tex, position, src, col * Projectile.scale, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
 			return false;
 		}
 	}

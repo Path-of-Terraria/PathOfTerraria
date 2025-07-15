@@ -4,7 +4,7 @@ internal class IncreasedAttackSpeedAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Attackspeed += Value;
+		modifier.AttackSpeed += Value / 100f;
 	}
 
 	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
@@ -17,7 +17,7 @@ internal class AddedAttackSpeedAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Attackspeed.Base += Value;
+		modifier.AttackSpeed.Base += Value;
 	}
 }
 

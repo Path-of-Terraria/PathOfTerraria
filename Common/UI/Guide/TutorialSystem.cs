@@ -11,4 +11,13 @@ internal class TutorialSystem : ModSystem
 			UIManager.Data.RemoveAll(x => x.Identifier == "Tutorial UI");
 		}
 	}
+
+	public override void ModifyTimeRate(ref double timeRate, ref double tileUpdateRate, ref double eventUpdateRate)
+	{
+		TutorialPlayer plr = Main.LocalPlayer.GetModPlayer<TutorialPlayer>();
+		if (!plr.CompletedTutorial && plr.HasFreeDay)
+		{
+			timeRate /= 3;
+		}
+	}
 }

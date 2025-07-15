@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Skills;
+using System.Linq;
 
 namespace PathOfTerraria.Common.Mechanics;
 
@@ -7,7 +8,7 @@ public abstract partial class Skill
 	public SkillBuff Stats = new();
 
 	/// <summary> The final cooldown of this skill affected by modifications. </summary>
-	public int TotalCooldown => (int)Stats.Cooldown.ApplyTo(Cooldown);
+	public int TotalCooldown => (int)Stats.Cooldown.ApplyTo(MaxCooldown);
 	/// <summary> The final mana cost of this skill affected by modifications. </summary>
 	public int TotalManaCost => (int)Stats.ManaCost.ApplyTo(ManaCost);
 
@@ -47,7 +48,7 @@ public abstract partial class Skill
 			}
 		}
 
-		foreach (SkillAugment a in tree.Augments)
+		foreach (SkillAugment a in tree.Augments.Select(x => x.Augment))
 		{
 			if (a is null)
 			{

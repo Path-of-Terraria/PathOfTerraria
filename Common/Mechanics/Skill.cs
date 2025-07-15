@@ -147,19 +147,38 @@ public abstract partial class Skill
 	/// <returns>If the skill can be used or not</returns>
 	public virtual bool CanUseSkill(Player player)
 	{
-		return Cooldown <= 0 && player.CheckMana(ManaCost);
+		return Cooldown <= 0 && player.CheckMana(TotalManaCost);
 	}
 
 	/// <summary>
 	/// Whether the player can have the current skill equipped or not.<br/>
-	/// This will remove the skill automatically if they have it equipped but the condition is false.
-	/// Returns true by default.
+	/// This will also remove the skill automatically if they have it equipped but the condition is false.
+	/// Returns true by default.<br/>
+	/// If you need to check if a skill can be equipped, use <see cref="CanEquipSkill(Player)"/> instead.
 	/// </summary>
-	/// <param name="player">The player who is trying to equip or has the skill equipped.</param>
+	/// <param name="player">The player who is trying to equip the skill, or has the skill equipped.</param>
 	/// <returns>If the player can have this skill equipped.</returns>
-	public virtual bool CanEquipSkill(Player player)
+	protected virtual bool ProtectedCanEquip(Player player, out string failReason)
 	{
+		failReason = string.Empty;
 		return true;
+	}
+
+	/// <summary>
+	/// Whether the skill can be equipped. Runs <see cref="ProtectedCanEquip(Player)"/> and checks if the player has enough mana to use the skill.
+	/// </summary>
+	/// <param name="player">The player who is trying to equip the skill, or has the skill equipped.</param>
+	/// <returns>If the player can have this skill equipped.</returns>
+	public bool CanEquipSkill(Player player, out string failReason)
+	{
+		if (!ProtectedCanEquip(player, out failReason))
+		{
+			return false;
+		}
+
+		bool hasMana = player.statManaMax2 > TotalManaCost;
+		failReason = hasMana ? "" : Language.GetTextValue("Mods.PathOfTerraria.Skills.Denials.NotEnoughMana");
+		return hasMana;
 	}
 
 	public virtual void LoadData(TagCompound tag)

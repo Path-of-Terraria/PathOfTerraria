@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
 
@@ -52,10 +53,12 @@ public class BloodSiphon : Skill
 		}
 	}
 
-	public override bool CanEquipSkill(Player player)
+	protected override bool ProtectedCanEquip(Player player, out string failReason)
 	{
 		// TODO: If this needs to be equippable without the affix, figure out that system
-		return player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>() > 0;
+		bool canEquip = player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>() > 0;
+		failReason = canEquip ? "" : Language.GetTextValue("Mods.PathOfTerraria.Skills.Denials.NeedsAffix");
+		return canEquip;
 	}
 }
 

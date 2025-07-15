@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.SkillPassives.Generic;
 using PathOfTerraria.Content.SkillPassives.NovaTree;
@@ -26,8 +27,9 @@ internal class NovaTree : SkillTree
 		var flashFire = new FlashFire(this) { TreePos = new Vector2(-200, -100) };
 		var combustive = new Combustive(this) { TreePos = new Vector2(-300, -100) };
 		var scorching = new ScorchingTouch(this) { TreePos = new Vector2(-340, 100) };
+		var slot = new SpareSlot(this) { TreePos = new Vector2(0, -170) };
 
-		AddNodes(anchor, novaFire, novaIce, novaLightning, efficiency);
+		AddNodes(anchor, novaFire, novaIce, novaLightning, efficiency, slot);
 		AddNodes(novaLightning, thunderClaps);
 		AddNodes(novaFire, igniteChance, flashFire, combustive, scorching);
 		AddNodes(novaLightning, shockChance);
