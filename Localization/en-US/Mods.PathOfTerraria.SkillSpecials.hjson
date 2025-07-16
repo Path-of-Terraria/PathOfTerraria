@@ -17,5 +17,5 @@ LightningNova: {
 
 NaturesBarrage: {
 	Name: Nature's Barrage
-	Tooltip: Tampered tips poison enemies
+	Description: Tampered tips poison enemies
 }

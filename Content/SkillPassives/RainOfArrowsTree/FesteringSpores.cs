@@ -17,8 +17,6 @@ internal class FesteringSpores(SkillTree tree) : SkillPassive(tree)
 
 		public static Asset<Texture2D> Glow = null;
 
-		public int ExplosionSize => Skill.GetTotalAreaOfEffect(AreaOfEffect);
-
 		private bool IsExploding
 		{
 			get => Projectile.ai[0] == 1;
@@ -76,7 +74,8 @@ internal class FesteringSpores(SkillTree tree) : SkillPassive(tree)
 			{
 				IsExploding = true;
 
-				Projectile.Resize(ExplosionSize, ExplosionSize);
+				float aoE = AreaOfEffect * (1 + Skill.Tree.CountStrength<FungalSpread>() * 0.1f);
+				Projectile.Resize((int)aoE, (int)aoE);
 				Projectile.Damage();
 				Projectile.Kill();
 

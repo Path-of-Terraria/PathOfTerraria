@@ -64,8 +64,9 @@ internal class SkillSelectionPanel : SmartUiElement
 
 		List<SkillNode> list = SkillTree.Current.Nodes;
 		int spareSlotCounter = 0;
+		int count = Math.Min(SkillTree.DefaultAugmentCount, SkillTree.Current.Augments.Count);
 
-		for (int i = 0; i < SkillTree.DefaultAugmentCount; i++)
+		for (int i = 0; i < count; i++)
 		{
 			_skillTreeInnerPanel.Append(new AugmentSlotElement(spareSlotCounter++, SkillTree.Current.Augments[i].Unlocked));
 		}

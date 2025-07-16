@@ -65,3 +65,8 @@ MoldColony: {
 	Name: Mold Colony
 	Tooltip: Increases the chance for projectiles to spawn spores
 }
+
+FungalSpread: {
+	Name: Fungal Spread
+	Tooltip: Spore explosions are 10% larger per stack
+}

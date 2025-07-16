@@ -12,11 +12,12 @@ internal class RainOfArrowsTree : SkillTree
 	public override void Populate()
 	{
 		var anchor = new Anchor(this) { Level = 1 };
-		var natures = new NaturesBarrage(this) { TreePos = new Vector2(-250, 0) };
-		var spores = new FesteringSpores(this) { TreePos = new Vector2(-250, -100) };
+		var natures = new NaturesBarrage(this) { TreePos = new Vector2(-200, 0) };
+		var spores = new FesteringSpores(this) { TreePos = new Vector2(-200, -100) };
 
 		AddNodes(anchor, natures);
 		AddNodes(natures, spores);
-		AddNodes(spores, new MoldColony(this) { TreePos = new Vector2(-350, -100), MaxLevel = 2 });
+		AddNodes(spores, new MoldColony(this) { TreePos = new Vector2(-300, -100), MaxLevel = 2 });
+		AddNodes(spores, new FungalSpread(this) { TreePos = new Vector2(-200, -200), MaxLevel = 2 });
 	}
 }

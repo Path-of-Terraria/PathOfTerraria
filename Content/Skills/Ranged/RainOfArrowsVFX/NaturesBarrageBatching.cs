@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
+﻿using log4net.Util;
+using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
 using ReLogic.Content;
 using System.Collections.Generic;
 
@@ -9,10 +10,22 @@ namespace PathOfTerraria.Content.Skills.Ranged.RainOfArrowsVFX;
 /// </summary>
 internal class NaturesBarrageBatching : ModSystem
 {
+	public enum ArrowRainShaderType
+	{
+		Barrage,
+		Explosive
+	}
+
 	public static bool Batching { get; private set; } = false;
-	public static Queue<int> Projectiles = new();
+	public static Dictionary<ArrowRainShaderType, Queue<int>> Projectiles = [];
 
 	private static Asset<Effect> PoisonTipEffect;
+
+	public static void AddCache(ArrowRainShaderType type, int who)
+	{
+		Projectiles.TryAdd(type, []);
+		Projectiles[type].Enqueue(who);
+	}
 
 	public override void Load()
 	{
@@ -24,8 +37,14 @@ internal class NaturesBarrageBatching : ModSystem
 	private void DrawSunspots(On_Main.orig_DrawProjectiles orig, Main self)
 	{
 		orig(self);
+		
+		DrawShaderPass(ArrowRainShaderType.Barrage);
+		DrawShaderPass(ArrowRainShaderType.Explosive);
+	}
 
-		if (Projectiles.Count <= 0)
+	private static void DrawShaderPass(ArrowRainShaderType type)
+	{
+		if (!Projectiles.TryGetValue(type, out Queue<int> projectiles) || projectiles.Count <= 0)
 		{
 			return;
 		}
@@ -36,9 +55,9 @@ internal class NaturesBarrageBatching : ModSystem
 
 		Batching = true;
 
-		while (Projectiles.Count > 0)
+		while (projectiles.Count > 0)
 		{
-			int proj = Projectiles.Dequeue();
+			int proj = projectiles.Dequeue();
 			Projectile projectile = Main.projectile[proj];
 			effect.Parameters["target"].SetValue(projectile.GetGlobalProjectile<RainOfArrows.RainProjectile>().PoisonOrientation);
 			Main.instance.DrawProjDirect(projectile);
@@ -48,50 +67,21 @@ internal class NaturesBarrageBatching : ModSystem
 		Main.spriteBatch.End();
 	}
 
-	public static Vector2 GetTargetBasedOnRotation(float rotation)
-	{
-		rotation %= MathHelper.Pi;
-
-		if (rotation >= -MathHelper.PiOver4 && rotation <= MathHelper.PiOver4)
-		{
-			return new Vector2(MathHelper.Lerp(0, 1, Utils.GetLerpValue(-MathHelper.PiOver4, MathHelper.PiOver4, rotation)), 0);
-		}
-		else if (rotation <= -MathHelper.PiOver4 && rotation >= -3 * MathHelper.PiOver4 / 4)
-		{
-			return new Vector2(0, MathHelper.Lerp(0, 1, Utils.GetLerpValue(-3 * MathHelper.PiOver4 / 4, -MathHelper.PiOver4, rotation)));
-		}
-		else if (rotation >= MathHelper.PiOver4 && rotation <= 3 * MathHelper.PiOver4 / 4)
-		{
-			return new Vector2(1, MathHelper.Lerp(1, 0, Utils.GetLerpValue(MathHelper.PiOver4, 3f * MathHelper.Pi / 4f, rotation)));
-		}
-		else
-		{
-			if (rotation <= -3 * MathHelper.PiOver4 / 4)
-			{
-				return new Vector2(MathHelper.Lerp(0, 0.5f, Utils.GetLerpValue(-3 * MathHelper.PiOver4 / 4f, -MathHelper.Pi, rotation)), 1);
-			}
-			else
-			{
-				return new Vector2(MathHelper.Lerp(0.5f, 1f, Utils.GetLerpValue(3 * MathHelper.PiOver4 / 4f, MathHelper.Pi, rotation)), 1);
-			}
-		}
-	}
-
 	public static Vector2 GetTargetBasedOnNormalizedVelocity(Vector2 vel)
 	{
-		if (GetDotProduct(vel, new Vector2(1, 0), out float side)) // closest to facing right
+		if (GetDotProduct(vel, new Vector2(1, 0), out float side))
 		{
 			return new Vector2(1f, side);
 		}
-		else if (GetDotProduct(vel, new Vector2(0, -1), out side)) //closest to facing up
+		else if (GetDotProduct(vel, new Vector2(0, -1), out side))
 		{
 			return new Vector2(side, 1);
 		}
-		else if (GetDotProduct(vel, new Vector2(-1, 0), out side)) // closest to facing left
+		else if (GetDotProduct(vel, new Vector2(-1, 0), out side))
 		{
 			return new Vector2(0, side);
 		}
-		else //closest to facing down
+		else
 		{
 			GetDotProduct(vel, new Vector2(0, 1), out side);
 			return new Vector2(side, 1);
@@ -103,7 +93,7 @@ internal class NaturesBarrageBatching : ModSystem
 		float maxDist = 0.71f; // equivalent to a little over 1 / sqrt(2) for 45 degree angle 
 		float dot = Vector2.Dot(vel, dir);
 
-		if (dot > maxDist) // closest to facing right
+		if (dot > maxDist)
 		{
 			side = MathHelper.Lerp(0, 1, Utils.GetLerpValue(maxDist, 1, dot));
 			return true;

@@ -158,7 +158,7 @@ public class RainOfArrows : Skill
 				return;
 			}
 
-			float count = GetSkill(projectile).Tree.Nodes.Sum(x => x is MoldColony ? x.Level : 0) * 0.05f;
+			float count = GetSkill(projectile).Tree.CountStrength<MoldColony>() * 0.05f;
 
 			if (Main.rand.NextFloat() < 0.05f + count && Main.myPlayer == projectile.owner)
 			{
@@ -201,7 +201,7 @@ public class RainOfArrows : Skill
 		{
 			if (_poison && !NaturesBarrageBatching.Batching)
 			{
-				NaturesBarrageBatching.Projectiles.Enqueue(projectile.whoAmI);
+				NaturesBarrageBatching.AddCache(NaturesBarrageBatching.ArrowRainShaderType.Barrage, projectile.whoAmI);
 				return false;
 			}
 

@@ -2,7 +2,6 @@
 using PathOfTerraria.Content.SkillPassives;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Skills;
@@ -71,6 +70,21 @@ public abstract class SkillTree : ILoadable
 		}
 	}
 
+	public int CountStrength<T>() where T : SkillPassive
+	{
+		int count = 0;
+
+		foreach (SkillNode node in Nodes)
+		{
+			if (node is T)
+			{
+				count += node.Level;
+			}
+		}
+
+		return count;
+	}
+
 	public virtual void SaveData(Skill skill, TagCompound tag)
 	{
 		string skillName = skill.Name;
@@ -95,8 +109,6 @@ public abstract class SkillTree : ILoadable
 		var augments = Augments.Where(x => x.Augment is not null).ToList();
 		tag["augmentNames"] = augments.Select(x => x.Augment.Name).ToList();
 		tag["augmentUnlocks"] = augments.Select(x => x.Unlocked).ToList();
-
-		Augments.Clear();
 	}
 
 	public virtual void LoadData(Skill skill, TagCompound tag)
