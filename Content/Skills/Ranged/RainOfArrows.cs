@@ -1,10 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.NetworkInformation;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.UI.Hotbar;
+using PathOfTerraria.Content.Gores.Misc;
 using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
+using PathOfTerraria.Content.Skills.Ranged.RainOfArrowsVFX;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -21,7 +24,7 @@ public class RainOfArrows : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = 10 * 60;
+		Cooldown = MaxCooldown = 2 * 60;
 		ManaCost = 20;
 		Duration = 0;
 		WeaponType = ItemType.Ranged;
@@ -46,7 +49,9 @@ public class RainOfArrows : Skill
 			return;
 		}
 
-		for (int i = 0; i < 6 + Level * 2; ++i)
+		int repeats = 6 + Level * 2;
+
+		for (int i = 0; i < repeats; ++i)
 		{
 			Vector2 pos = player.Center + new Vector2(Main.rand.NextFloat(-16, 16), Main.rand.NextFloat(-10, 10));
 			Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -10 * Main.rand.NextFloat(0.9f, 1.1f);
@@ -76,12 +81,13 @@ public class RainOfArrows : Skill
 		tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 	}
 
-	private class RainProjectile : GlobalProjectile
+	internal class RainProjectile : GlobalProjectile
 	{
 		public override bool InstancePerEntity => true;
 
 		internal bool IsRainProjectile = false;
 		internal Vector2 RainTarget = Vector2.Zero;
+		internal Vector2 PoisonOrientation = Vector2.Zero;
 
 		private short _rainTimer = 0;
 		private float _originalMagnitude = 0f;
@@ -92,6 +98,16 @@ public class RainOfArrows : Skill
 			if (IsRainProjectile)
 			{
 				_rainTimer++;
+
+				if (_poison)
+				{
+					PoisonOrientation = NaturesBarrageBatching.GetTargetBasedOnNormalizedVelocity(projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(projectile.rotation));
+
+					if (Main.rand.NextFloat() < 0.03f && !Main.dedServ)
+					{
+						Gore.NewGore(projectile.GetSource_FromAI(), projectile.Center, projectile.velocity, ModContent.GoreType<PoisonBubble>());
+					}
+				}
 
 				if (_rainTimer < 60f)
 				{
@@ -152,6 +168,17 @@ public class RainOfArrows : Skill
 			{
 				target.AddBuff(BuffID.Poisoned, 60 * 4);
 			}
+		}
+
+		public override bool PreDraw(Projectile projectile, ref Color lightColor)
+		{
+			if (_poison && !NaturesBarrageBatching.Batching)
+			{
+				NaturesBarrageBatching.Projectiles.Enqueue(projectile.whoAmI);
+				return false;
+			}
+
+			return true;
 		}
 
 		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)

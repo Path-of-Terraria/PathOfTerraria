@@ -72,10 +72,10 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 
 	public override void OnKill(int timeLeft)
 	{
+		DeathDust();
+
 		if (Projectile.timeLeft > 3)
 		{
-			DeathDust();
-
 			if (UsingAlt && Main.myPlayer == Projectile.owner)
 			{
 				int projCount = Main.rand.Next(3, 6);

@@ -12,7 +12,7 @@ internal class RainOfArrowsTree : SkillTree
 	public override void Populate()
 	{
 		var anchor = new Anchor(this) { Level = 1 };
-		var natures = new NaturesBarrage(this) { TreePos = new Vector2(-100, 0) };
+		var natures = new NaturesBarrage(this) { TreePos = new Vector2(-250, 0) };
 
 		AddNodes(anchor, natures);
 	}
