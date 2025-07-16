@@ -8,17 +8,39 @@ internal class OnSwapPlayer : ModPlayer
 {
 	public delegate void SwapDelegate(Player self, Item newItem, Item oldItem);
 
+	/// <summary>
+	/// Called when the player's main item, <see cref="Player.inventory"/>[0], is changed. Run in <see cref="PreUpdate"/>.
+	/// </summary>
 	public static event SwapDelegate OnSwapMainItem;
 
+	/// <summary>
+	/// Called when the player's main item, <see cref="Player.inventory"/>[0], is changed. Run later in <see cref="PostUpdate"/>, 
+	/// useful if you need values like accessories or affixes.
+	/// </summary>
+	public static event SwapDelegate LateSwapMainItem;
+
 	private Item _oldItem = null;
+	private Action _runLate = null;
 
 	public override void PreUpdate()
 	{
 		if (_oldItem != Player.inventory[0])
 		{
 			OnSwapMainItem.Invoke(Player, Player.inventory[0], _oldItem);
+
+			// Cache LateSwap call so we can store the value of _oldItem without having to keep clones or w/e
+			_runLate = () => LateSwapMainItem.Invoke(Player, Player.inventory[0], _oldItem);
 		}
 
 		_oldItem = Player.inventory[0];
+	}
+
+	public override void PostUpdate()
+	{
+		if (_runLate is not null)
+		{
+			_runLate.Invoke();
+			_runLate = null;
+		}
 	}
 }

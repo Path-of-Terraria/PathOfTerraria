@@ -17,5 +17,6 @@ internal class Codex : Spellbook
 		base.SetDefaults();
 
 		Item.damage = 50;
+		Item.mana = 18;
 	}
 }
