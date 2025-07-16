@@ -55,3 +55,13 @@ ScorchingTouch: {
 	Name: Scorching Touch
 	Tooltip: Lights terrain ablaze on contact
 }
+
+FesteringSpores: {
+	Name: Festering Spores
+	Tooltip: Projectiles hitting the ground will spawn damaging, explosive spores
+}
+
+MoldColony: {
+	Name: Mold Colony
+	Tooltip: Increases the chance for projectiles to spawn spores
+}

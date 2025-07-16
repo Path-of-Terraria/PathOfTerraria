@@ -2,6 +2,7 @@
 using PathOfTerraria.Content.SkillPassives;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Skills;
@@ -53,9 +54,14 @@ public abstract class SkillTree : ILoadable
 		for (int i = 0; i < list.Length; i++)
 		{
 			SkillNode c = list[i];
+
 			if (!Nodes.Contains(c))
 			{
 				Nodes.Add(c);
+
+				// Invokes each so we can register each value automatically as both call GetOrRegister
+				_ = c.DisplayName;
+				_ = c.DisplayTooltip;
 			}
 
 			if (i != 0)

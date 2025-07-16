@@ -1,13 +1,13 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.NetworkInformation;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Gores.Misc;
 using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
 using PathOfTerraria.Content.Skills.Ranged.RainOfArrowsVFX;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -93,6 +93,16 @@ public class RainOfArrows : Skill
 		private float _originalMagnitude = 0f;
 		private bool _poison = false;
 
+		private static Skill GetSkill(Projectile projectile)
+		{
+			if (Main.player[projectile.owner].GetModPlayer<SkillCombatPlayer>().TryGetSkill<RainOfArrows>(out Skill skill))
+			{
+				return skill;
+			}
+
+			return GetAndPrepareSkill<RainOfArrows>();
+		}
+
 		public override bool PreAI(Projectile projectile)
 		{
 			if (IsRainProjectile)
@@ -139,6 +149,23 @@ public class RainOfArrows : Skill
 			}
 
 			return true;
+		}
+
+		public override void OnKill(Projectile projectile, int timeLeft)
+		{
+			if (!IsRainProjectile || !_poison)
+			{
+				return;
+			}
+
+			float count = GetSkill(projectile).Tree.Nodes.Sum(x => x is MoldColony ? x.Level : 0) * 0.05f;
+
+			if (Main.rand.NextFloat() < 0.05f + count && Main.myPlayer == projectile.owner)
+			{
+				int damage = (int)(projectile.damage * 1.5f);
+				int type = ModContent.ProjectileType<FesteringSpores.FesteringSporesProj>();
+				Projectile.NewProjectile(projectile.GetSource_Death(), projectile.Center, Vector2.Zero, type, damage, 8f, projectile.owner);
+			}
 		}
 
 		internal void SetRainProjectile(Projectile projectile, RainOfArrows skill)

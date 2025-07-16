@@ -189,7 +189,7 @@ internal class SkillCombatPlayer : ModPlayer
 		if (!skill.CanEquipSkill(Player, out string failReason))
 		{
 			Main.NewText($"Skill cannot be added. ({failReason})");
-			return false;
+			return false; // Couldn't equip skill, return false
 		}
 
 		for (int i = 0; i < HotbarSkills.Length; ++i)
@@ -197,7 +197,7 @@ internal class SkillCombatPlayer : ModPlayer
 			if (HotbarSkills[i] != null && HotbarSkills[i].Name == skill.Name)
 			{
 				Main.NewText("Skill already added.");
-				return false;
+				return true; // Return true because the skill can be added, it just is equipped already
 			}
 		}
 
@@ -208,12 +208,12 @@ internal class SkillCombatPlayer : ModPlayer
 				HotbarSkills[i] = skill;
 				HotbarSkills[i].LevelTo(HotbarSkills[i].Level);
 				Main.NewText("Skill added successfully.");
-				return true;
+				return true; // Equipped skill, return true
 			}
 		}
 
 		Main.NewText("No available space to add the skill.");
-		return false;
+		return false; // No space, fail
 	}
 
 	public bool TryRemoveSkill(Skill skill)

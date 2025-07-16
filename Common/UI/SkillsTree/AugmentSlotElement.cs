@@ -90,7 +90,7 @@ internal class AugmentSlotElement : UIElement
 		SkillAugment[] augments = [.. SkillTree.Current.Augments.Select(x => x.Augment)];
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/AugmentFrame").Value;
 
-		if (augments[Index] != null)
+		if (Index < augments.Length && augments[Index] != null)
 		{
 			augments[Index].Draw(spriteBatch, center, Color.White);
 

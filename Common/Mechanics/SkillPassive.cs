@@ -6,8 +6,8 @@ namespace PathOfTerraria.Common.Mechanics;
 public abstract class SkillPassive(SkillTree tree) : SkillNode(tree)
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillPassives/" + Name;
-	public override string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Name");
-	public override string DisplayTooltip => Language.GetTextValue("Mods.PathOfTerraria.SkillPassives." + Name + ".Tooltip");
+	public override string DisplayName => Language.GetOrRegister("Mods.PathOfTerraria.SkillPassives." + Name + ".Name").Value;
+	public override string DisplayTooltip => Language.GetOrRegister("Mods.PathOfTerraria.SkillPassives." + Name + ".Tooltip").Value;
 
 	public override void Draw(SpriteBatch spriteBatch, Vector2 position)
 	{
