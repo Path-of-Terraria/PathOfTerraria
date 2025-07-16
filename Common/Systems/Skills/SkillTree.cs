@@ -86,8 +86,8 @@ public abstract class SkillTree : ILoadable
 			tag["special"] = Specialization.Name;
 		}
 
-		var augments = Augments.Where(x => x.Augment is not null).ToList();
-		tag["augmentNames"] = augments.Select(x => x.Augment.Name).ToList();
+		var augments = Augments.ToList();
+		tag["augmentNames"] = augments.Select(x => x.Augment?.Name ?? "null").ToList();
 		tag["augmentUnlocks"] = augments.Select(x => x.Unlocked).ToList();
 
 		Augments.Clear();
@@ -117,7 +117,7 @@ public abstract class SkillTree : ILoadable
 
 		for (int c = 0; c < count; c++)
 		{
-			SkillAugment a = (c < augmentNames.Count) ? SkillAugment.LoadedAugments[augmentNames[c]] : null;
+			SkillAugment a = (c < augmentNames.Count && augmentNames[c] != "null") ? SkillAugment.LoadedAugments[augmentNames[c]] : null;
 			bool u = c < augmentUnlocked.Count && augmentUnlocked[c];
 
 			Augments.Add(new(a, u));
