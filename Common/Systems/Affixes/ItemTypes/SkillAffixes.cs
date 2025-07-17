@@ -9,7 +9,7 @@ internal class MoltenShellAffix : ItemAffix
 {
 	public override void OnLoad()
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableMoltenShellIfOpen;
+		OnSwapPlayer.LateSwapMainItem += EnableMoltenShellIfOpen;
 	}
 
 	private void EnableMoltenShellIfOpen(Player self, Item newItem, Item oldItem)
@@ -26,7 +26,7 @@ internal class BloodSiphonAffix : ItemAffix
 {
 	public override void OnLoad()
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableBloodSiphonIfOpen;
+		OnSwapPlayer.LateSwapMainItem += EnableBloodSiphonIfOpen;
 	}
 
 	private void EnableBloodSiphonIfOpen(Player self, Item newItem, Item oldItem)
@@ -43,7 +43,7 @@ internal class FetidCarapaceAffix : ItemAffix
 {
 	public override void OnLoad()
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableFetidCarapaceIfOpen;
+		OnSwapPlayer.LateSwapMainItem += EnableFetidCarapaceIfOpen;
 	}
 
 	private void EnableFetidCarapaceIfOpen(Player self, Item newItem, Item oldItem)
