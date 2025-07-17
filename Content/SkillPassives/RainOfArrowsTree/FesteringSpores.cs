@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Skills.Ranged;
 using ReLogic.Content;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -79,16 +80,21 @@ internal class FesteringSpores(SkillTree tree) : SkillPassive(tree)
 				Projectile.Damage();
 				Projectile.Kill();
 
-				for (int i = 0; i < 4; ++i)
+				if (!Main.dedServ)
 				{
-					Vector2 vel = Main.rand.NextVector2CircularEdge(4, 4) * Main.rand.NextFloat(0.5f, 1f);
-					Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, vel, GoreID.Smoke1 + Main.rand.Next(3));
-				}
+					SoundEngine.PlaySound(SoundID.Item10, Projectile.Center);
 
-				for (int i = 0; i < 20; ++i)
-				{
-					Vector2 v = Main.rand.NextVector2CircularEdge(6, 6) * Main.rand.NextFloat(0.5f, 1f);
-					Dust.NewDust(Projectile.Center, 1, 1, DustID.Grass, v.X, v.Y, Scale: Main.rand.NextFloat(0.5f, 1.2f));
+					for (int i = 0; i < 4; ++i)
+					{
+						Vector2 vel = Main.rand.NextVector2CircularEdge(4, 4) * Main.rand.NextFloat(0.5f, 1f);
+						Gore.NewGore(Projectile.GetSource_Death(), Projectile.Center, vel, GoreID.Smoke1 + Main.rand.Next(3));
+					}
+
+					for (int i = 0; i < 20; ++i)
+					{
+						Vector2 v = Main.rand.NextVector2CircularEdge(6, 6) * Main.rand.NextFloat(0.5f, 1f);
+						Dust.NewDust(Projectile.Center, 1, 1, DustID.Grass, v.X, v.Y, Scale: Main.rand.NextFloat(0.5f, 1.2f));
+					}
 				}
 			}
 		}

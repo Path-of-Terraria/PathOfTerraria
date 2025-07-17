@@ -58,7 +58,7 @@ ScorchingTouch: {
 
 FesteringSpores: {
 	Name: Festering Spores
-	Tooltip: Projectiles hitting the ground will spawn damaging, explosive spores
+	Tooltip: Projectiles hitting the ground have a small chance to spawn damaging, explosive spores
 }
 
 MoldColony: {
@@ -69,4 +69,9 @@ MoldColony: {
 FungalSpread: {
 	Name: Fungal Spread
 	Tooltip: Spore explosions are 10% larger per stack
+}
+
+LingeringPoison: {
+	Name: Lingering Poison
+	Tooltip: Projectiles hitting the ground leave poisonous gas
 }

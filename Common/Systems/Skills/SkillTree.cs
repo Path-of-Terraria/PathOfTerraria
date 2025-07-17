@@ -85,6 +85,19 @@ public abstract class SkillTree : ILoadable
 		return count;
 	}
 
+	public bool HasPassive<T>() where T : SkillPassive
+	{
+		foreach (SkillNode node in Nodes)
+		{
+			if (node is T)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public virtual void SaveData(Skill skill, TagCompound tag)
 	{
 		string skillName = skill.Name;

@@ -158,13 +158,23 @@ public class RainOfArrows : Skill
 				return;
 			}
 
-			float count = GetSkill(projectile).Tree.CountStrength<MoldColony>() * 0.05f;
-
-			if (Main.rand.NextFloat() < 0.05f + count && Main.myPlayer == projectile.owner)
+			if (GetSkill(projectile).Tree.HasPassive<FesteringSpores>())
 			{
-				int damage = (int)(projectile.damage * 1.5f);
-				int type = ModContent.ProjectileType<FesteringSpores.FesteringSporesProj>();
-				Projectile.NewProjectile(projectile.GetSource_Death(), projectile.Center, Vector2.Zero, type, damage, 8f, projectile.owner);
+				float count = GetSkill(projectile).Tree.CountStrength<MoldColony>() * 0.05f;
+
+				if (Main.rand.NextFloat() < 0.05f + count && Main.myPlayer == projectile.owner)
+				{
+					int damage = (int)(projectile.damage * 1.5f);
+					int type = ModContent.ProjectileType<FesteringSpores.FesteringSporesProj>();
+					Projectile.NewProjectile(projectile.GetSource_Death(), projectile.Center, Vector2.Zero, type, damage, 8f, projectile.owner);
+				}
+			}
+
+			if (GetSkill(projectile).Tree.CountStrength<LingeringPoison>() > 0 && Main.myPlayer == projectile.owner)
+			{
+				int type = ModContent.ProjectileType<LingeringPoison.SporeCloud>();
+				Vector2 velocity = Main.rand.NextVector2Circular(0.6f, 0.6f);
+				Projectile.NewProjectile(projectile.GetSource_Death(), projectile.Center, velocity, type, projectile.damage, 8f, projectile.owner);
 			}
 		}
 
