@@ -22,7 +22,10 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// Gets the quest marker type of this current quest. Assumes the quest is active;
 	/// as such, <see cref="QuestMarkerType.HasQuest"/> can't be returned.
 	/// </summary>
-	public QuestMarkerType Marker => ActiveStep is not null && ActiveStep.CountsAsCompletedOnMarker ? QuestMarkerType.QuestComplete : QuestMarkerType.QuestPending;
+	public QuestMarkerType Marker => ActiveStep is not null && ActiveStep.CountsAsCompletedOnMarker
+		? QuestMarkerType.QuestComplete
+		: QuestMarkerType.QuestPending;
+
 	public bool CanBeStarted => !Completed && !Active;
 
 	public string LocalizationCategory => $"Quests.Quest";
@@ -41,8 +44,10 @@ public abstract class Quest : ModType, ILocalizedModType
 	public override void SetStaticDefaults()
 	{
 		// Must be initialized here so that NPC types are populated properly.
-		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
-		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
+		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name",
+			() => GetType().Name);
+		Description =
+			Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
 		QuestSteps = SetSteps();
 	}
 
@@ -132,6 +137,7 @@ public abstract class Quest : ModType, ILocalizedModType
 			StartQuest(player, CurrentStep + 1);
 		}
 	}
+	
 
 	public void Save(TagCompound tag)
 	{

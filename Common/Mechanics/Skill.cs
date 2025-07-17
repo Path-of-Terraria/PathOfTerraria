@@ -54,8 +54,10 @@ public abstract partial class Skill
 	public int Duration;
 	public int MaxCooldown;
 	public int Cooldown;
+	
 	/// <summary> The default mana cost of this skill.<br/>See <see cref="TotalManaCost"/>. </summary>
 	public int ManaCost;
+	
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
 
