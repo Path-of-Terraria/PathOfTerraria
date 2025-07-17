@@ -31,7 +31,7 @@ internal class LingeringPoison(SkillTree tree) : SkillPassive(tree)
 			{
 				if (npc.CanBeChasedBy() && npc.DistanceSQ(Projectile.Center) < 40 * 40)
 				{
-					npc.AddBuff(BuffID.Poisoned, 4 * 60);
+					SporeNPC.AddSporeDebuff(npc, Projectile.damage, 4 * 60, true);
 				}
 			}
 

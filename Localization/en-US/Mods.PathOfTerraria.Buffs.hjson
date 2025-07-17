@@ -79,3 +79,8 @@ FrostflameDebuff: {
 	DisplayName: Frostflame Debuff
 	Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
 }
+
+SporeDebuff: {
+	DisplayName: Spore Debuff
+	Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
+}
