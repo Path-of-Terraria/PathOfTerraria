@@ -21,6 +21,7 @@ internal class TungstenStaff : Staff
 		Item.shoot = ModContent.ProjectileType<TungstenStaffProjectile>();
 		Item.damage = 47;
 		Item.knockBack = 4;
+		Item.value = Item.buyPrice(0, 0, 1, 50);
 	}
 
 	public class TungstenStaffProjectile : StaffProjectile

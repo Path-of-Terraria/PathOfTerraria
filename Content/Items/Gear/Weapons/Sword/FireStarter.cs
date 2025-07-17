@@ -31,6 +31,7 @@ internal class FireStarter : Sword, GenerateName.IItem
 		Item.damage = 4;
 		Item.Size = new(38);
 		Item.UseSound = SoundID.Item1;
+		Item.value = Item.buyPrice(0, 0, 5, 0);
 	}
 	
 	string GenerateName.IItem.GenerateName(string defaultName)

@@ -23,6 +23,7 @@ internal class ShadewoodWand : Wand
 		Item.shoot = ModContent.ProjectileType<ShadewoodWandProjectile>();
 		Item.shootSpeed = 12;
 		Item.UseSound = SoundID.Item7;
+		Item.value = Item.buyPrice(0, 0, 0, 80);
 	}
 
 	public class ShadewoodWandProjectile : ModProjectile

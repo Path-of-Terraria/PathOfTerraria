@@ -127,9 +127,9 @@ internal abstract class StaffProjectile : ModProjectile
 			{
 				ReleaseProjectile();
 			}
-			else // Don't play sound when empowered, it's annoying
+			else if (Owner.CheckMana(Owner.HeldItem.mana)) // Don't play the sound if the user is lacking mana
 			{
-				SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center);
+				SoundEngine.PlaySound(SoundID.MaxMana, Projectile.Center); // Don't play sound when empowered, it's annoying
 			}
 
 			for (int i = 0; i < 4; ++i)

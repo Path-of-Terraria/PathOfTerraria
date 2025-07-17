@@ -40,7 +40,12 @@ internal class AugmentSlotElement : UIElement
 		Index = index;
 		Node = node;
 
-		_unlocked = unlocked; //SkillTree.Current.Augments[Index].Unlocked;
+		if (Index >= SkillTree.Current.Augments.Count) //Failsafe
+		{
+			SkillTree.Current.Augments.Add(new(null, unlocked));
+		}
+
+		_unlocked = unlocked;
 
 		Width.Set(SquareSize, 0);
 		Height.Set(SquareSize, 0);

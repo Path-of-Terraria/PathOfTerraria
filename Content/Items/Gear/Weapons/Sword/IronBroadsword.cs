@@ -25,6 +25,7 @@ internal class IronBroadsword : Sword
 		Item.width = 46;
 		Item.height = 46;
 		Item.UseSound = SoundID.Item1;
+		Item.value = Item.buyPrice(0, 0, 0, 80);
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;

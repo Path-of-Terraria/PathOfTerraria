@@ -21,6 +21,7 @@ internal class LeadStaff : Staff
 		Item.shoot = ModContent.ProjectileType<LeadStaffProjectile>();
 		Item.damage = 34;
 		Item.knockBack = 3;
+		Item.value = Item.buyPrice(0, 0, 0, 50);
 	}
 
 	public class LeadStaffProjectile : StaffProjectile

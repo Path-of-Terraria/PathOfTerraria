@@ -84,7 +84,8 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 				{
 					int type = ModContent.ProjectileType<MoltenDangpaBubbles>();
 					Vector2 velocity = -Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(0.5f, 1f);
-					Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center - Projectile.velocity * 3, velocity, type, (int)(Projectile.damage * 0.75f), 0);
+					Vector2 position = Projectile.Center - Projectile.velocity * 3;
+					Projectile.NewProjectile(Projectile.GetSource_Death(), position, velocity, type, (int)(Projectile.damage * 0.75f), 0, Projectile.owner);
 				}
 			}
 		}
@@ -122,6 +123,8 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 			set => Projectile.ai[2] = value ? 1 : 0;
 		}
 
+		public ref float Timer => ref Projectile.localAI[2];
+
 		public override void SetStaticDefaults()
 		{
 			Main.projFrames[Type] = 3;
@@ -131,7 +134,7 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 		{
 			Projectile.CloneDefaults(ProjectileID.SpikyBall);
 			Projectile.timeLeft = 500;
-			Projectile.Size = new Vector2(18);
+			Projectile.Size = new Vector2(24);
 			Projectile.penetrate = -1;
 		}
 
@@ -150,13 +153,19 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch);
 			}
 
-			return !Stuck;
+			if (Stuck && ++Timer >= 5)
+			{
+				Projectile.rotation += Projectile.velocity.X * 0.05f;
+				Projectile.velocity *= 0.9f;
+				Projectile.velocity.Y += 0.05f;
+			}
+
+			return !Stuck || Timer < 5;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			Stuck = true;
-			Projectile.velocity = Vector2.Zero;
 			return false;
 		}
 	}

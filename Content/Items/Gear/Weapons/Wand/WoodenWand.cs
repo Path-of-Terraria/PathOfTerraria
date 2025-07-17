@@ -14,6 +14,7 @@ internal class WoodenWand : Wand
 		Item.shoot = ModContent.ProjectileType<WoodenWandProjectile>();
 		Item.shootSpeed = 10;
 		Item.UseSound = SoundID.Item7;
+		Item.value = Item.buyPrice(0, 0, 0, 20);
 	}
 
 	public class WoodenWandProjectile : ModProjectile

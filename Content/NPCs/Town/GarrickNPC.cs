@@ -3,7 +3,6 @@ using PathOfTerraria.Common.NPCs.Effects;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Common.Utilities;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;

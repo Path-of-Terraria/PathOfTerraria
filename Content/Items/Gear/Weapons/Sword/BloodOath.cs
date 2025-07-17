@@ -48,6 +48,7 @@ internal class BloodOath : Sword, GenerateName.IItem
 		Item.height = 58;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.None;
+		Item.value = Item.buyPrice(0, 0, 20, 0);
 	}
 
 	string GenerateName.IItem.GenerateName(string defaultName)

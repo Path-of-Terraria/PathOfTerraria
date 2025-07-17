@@ -288,7 +288,7 @@ partial class PoTGlobalItem
 		});
 	}
 
-	private static Color GetRarityColor(ItemRarity rarity)
+	public static Color GetRarityColor(ItemRarity rarity)
 	{
 		return rarity switch
 		{
@@ -331,7 +331,7 @@ partial class PoTGlobalItem
 	private static partial Regex NumberHighlightRegex();
 	#endregion
 
-	private void LoadBackImages()
+	private static void LoadBackImages()
 	{
 		Textures.Clear();
 		Textures.Add("Normal", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/NormalBack"));

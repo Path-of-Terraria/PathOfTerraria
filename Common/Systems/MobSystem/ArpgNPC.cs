@@ -154,7 +154,7 @@ internal class ArpgNPC : GlobalNPC
 	{
 		//We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
 		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type]
-			|| npc.CountsAsACritter || NoAffixesSet.Contains(npc.type))
+			|| npc.CountsAsACritter || npc.realLife != -1 || NoAffixesSet.Contains(npc.type))
 		{
 			return;
 		}

@@ -22,5 +22,6 @@ internal class SteelWarShield : WarShield
 		Item.damage = 30;
 		Item.Size = new(26);
 		Item.knockBack = 9;
+		Item.value = Item.buyPrice(0, 0, 1, 0);
 	}
 }

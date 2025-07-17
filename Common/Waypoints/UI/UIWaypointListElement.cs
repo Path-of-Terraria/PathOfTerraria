@@ -9,7 +9,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
 
-public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index, string location) : UIElement
+public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText name, int index, string location, ModWaypoint waypoint) : UIElement
 {
 	private static Asset<Texture2D> Markers = null;
 
@@ -22,6 +22,7 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 	public readonly Asset<Texture2D> Icon = icon;
 	public readonly int Index = index;
 	public readonly string Location = location;
+	public readonly ModWaypoint Waypoint = waypoint;
 
 	public readonly LocalizedText Name = name;
 
@@ -50,7 +51,7 @@ public sealed class UIWaypointListElement(Asset<Texture2D> icon, LocalizedText n
 	{
 		base.Update(gameTime);
 
-		if (!CanClick)
+		if (!CanClick || !Waypoint.CanGoto())
 		{
 			panel.BorderColor = Color.Lerp(panel.BorderColor, new Color(10, 15, 35), 0.3f) * 0.8f;
 			text.Scale = MathHelper.SmoothStep(text.Scale, 0.7f, 0.3f);

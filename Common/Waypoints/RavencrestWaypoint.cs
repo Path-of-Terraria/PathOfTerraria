@@ -13,4 +13,9 @@ public sealed class RavencrestWaypoint : ModWaypoint
 		player.GetModPlayer<PersistentReturningPlayer>().ReturnPosition = player.Center;
 		SubworldSystem.Enter<RavencrestSubworld>();
 	}
+
+	public override bool CanGoto()
+	{
+		return SubworldSystem.Current is not RavencrestSubworld;
+	}
 }

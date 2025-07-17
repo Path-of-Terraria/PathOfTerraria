@@ -6,6 +6,7 @@ using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Core.UI;
 using ReLogic.Content;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
@@ -34,6 +35,8 @@ public sealed class UIWaypointMenu : UIState
 
 	public const float InfoFullWidth = 360f;
 	public const float InfoFullHeight = FullHeight;
+
+	internal static Point InWorldAnchor = Point.Zero;
 
 	public const float ElementPadding = 12f;
 
@@ -123,7 +126,7 @@ public sealed class UIWaypointMenu : UIState
 
 		buttonElement.OnLeftClick += (_, _) =>
 		{
-			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.LocationEnum))
+			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.LocationEnum) && SelectedListWaypoint.CanGoto())
 			{
 				SelectedListWaypoint.Teleport(Main.LocalPlayer);
 				Enabled = false;
@@ -202,7 +205,7 @@ public sealed class UIWaypointMenu : UIState
 
 		closeImage.OnMouseOut += HandleMouseOutSound;
 		closeImage.OnMouseOver += HandleMouseOverSound;
-		closeImage.OnLeftClick += (_, _) => UIManager.TryDisable(UIWaypointMenu.Identifier);
+		closeImage.OnLeftClick += (_, _) => UIManager.TryDisable(Identifier);
 
 		infoRoot.Append(closeImage);
 	}
@@ -225,6 +228,11 @@ public sealed class UIWaypointMenu : UIState
 	{
 		base.Update(gameTime);
 
+		if (Vector2.DistanceSquared(InWorldAnchor.ToVector2(), Main.LocalPlayer.Center) > 300 * 300 && Enabled)
+		{
+			UIManager.TryDisable(Identifier);
+		}
+
 		if (rootElement.ContainsPoint(Main.MouseScreen))
 		{
 			Main.LocalPlayer.mouseInterface = true;
@@ -235,7 +243,6 @@ public sealed class UIWaypointMenu : UIState
 		float target = Enabled ? 0f : Main.screenHeight;
 
 		rootElement.Top.Pixels = MathHelper.SmoothStep(rootElement.Top.Pixels, target, 0.3f);
-
 		buttonPanel.BorderColor = Color.Lerp(buttonPanel.BorderColor, buttonElement.IsMouseHovering ? Color.White : new Color(68, 97, 175), 0.3f)
 			* 0.8f;
 
@@ -301,23 +308,19 @@ public sealed class UIWaypointMenu : UIState
 		for (int i = 0; i < ModWaypointLoader.WaypointCount; i++)
 		{
 			ModWaypoint waypoint = ModWaypointLoader.Waypoints[i];
-
 			Asset<Texture2D> icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
 
-			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.LocationEnum);
-
+			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.LocationEnum, waypoint);
 			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypointIndex;
-
 			tab.OnLeftClick += (_, _) =>
 			{
-				if (tab.CanClick)
+				if (tab.CanClick && waypoint.CanGoto())
 				{
 					ProcessIndex(tab.Index);
 				}
 			};
 
 			list.Add(tab);
-
 			tabs.Add(tab);
 		}
 	}

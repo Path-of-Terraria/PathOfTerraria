@@ -8,5 +8,6 @@ internal class WoodPlank : WarShield
 
 		Item.damage = 7;
 		Item.Size = new(22, 26);
+		Item.value = Item.buyPrice(0, 0, 0, 10);
 	}
 }

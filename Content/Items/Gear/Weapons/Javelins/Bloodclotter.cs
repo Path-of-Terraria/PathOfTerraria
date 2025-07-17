@@ -39,6 +39,7 @@ internal class Bloodclotter : PlatinumGlaive
 		base.SetDefaults();
 
 		Item.shoot = ModContent.ProjectileType<BloodclotterThrown>();
+		Item.value = Item.buyPrice(0, 0, 40, 0);
 	}
 
 	public override bool CanUseItem(Player player)

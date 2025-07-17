@@ -21,5 +21,6 @@ internal class IronPilum : Javelin
 		base.SetDefaults();
 
 		Item.damage = 8;
+		Item.value = Item.buyPrice(0, 0, 0, 40);
 	}
 }

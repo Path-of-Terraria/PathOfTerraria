@@ -23,6 +23,7 @@ internal class EbonwoodWand : Wand
 		Item.shoot = ModContent.ProjectileType<EbonwoodWandProjectile>();
 		Item.shootSpeed = 10;
 		Item.UseSound = SoundID.Item7;
+		Item.value = Item.buyPrice(0, 0, 1, 0);
 	}
 
 	public class EbonwoodWandProjectile : ModProjectile

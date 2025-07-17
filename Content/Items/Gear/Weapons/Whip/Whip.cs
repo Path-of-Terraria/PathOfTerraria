@@ -63,7 +63,7 @@ internal abstract class Whip : Gear
 	{
 		base.SetDefaults();
 
-		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 5, 2, 4);
+		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 3, 2, 4);
 		Item.channel = true;
 
 		PoTInstanceItemData data = this.GetInstanceData();

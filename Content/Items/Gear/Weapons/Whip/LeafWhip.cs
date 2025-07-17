@@ -9,4 +9,10 @@ internal class LeafWhip : Whip
 		Segments = 24,
 		RangeMultiplier = 1,
 	};
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+		Item.value = Item.buyPrice(0, 0, 0, 10);
+	}
 }

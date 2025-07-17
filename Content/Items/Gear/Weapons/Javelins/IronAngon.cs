@@ -21,5 +21,6 @@ internal class IronAngon : Javelin
 		base.SetDefaults();
 
 		Item.damage = 12;
+		Item.value = Item.buyPrice(0, 0, 0, 80);
 	}
 }

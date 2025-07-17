@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
+﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;
@@ -22,7 +23,7 @@ public class RavencrestSystem : ModSystem
 {
 	public readonly HashSet<string> HasOverworldNPC = [];
 
-	internal static readonly Dictionary<string, ImprovableStructure> structures = [];
+	internal static readonly Dictionary<string, ImprovableStructure> Structures = [];
 
 	public bool SpawnedRaven = false;
 	public bool SpawnedScout = false;
@@ -32,31 +33,31 @@ public class RavencrestSystem : ModSystem
 
 	public override void Load()
 	{
-		structures.Add("Lodge", new ImprovableStructure(2)
+		Structures.Add("Lodge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Lodge_",
 			Position = new Point(259, 95),
 		});
 
-		structures.Add("Forge", new ImprovableStructure(2)
+		Structures.Add("Forge", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Forge_",
 			Position = new Point(195, 109)
 		});
 
-		structures.Add("Burrow", new ImprovableStructure(2)
+		Structures.Add("Burrow", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Burrow_",
 			Position = new Point(800, 129)
 		});
     
-		structures.Add("Observatory", new ImprovableStructure(2)
+		Structures.Add("Observatory", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Observatory_",
 			Position = new Point(107, 122)
 		});
 
-		structures.Add("Library", new ImprovableStructure(2)
+		Structures.Add("Library", new ImprovableStructure(2)
 		{
 			StructurePath = "Assets/Structures/RavencrestBuildings/Library_",
 			Position = new Point(604, 94)
@@ -156,7 +157,7 @@ public class RavencrestSystem : ModSystem
 
 	private void RavencrestOneTimeChecks()
 	{
-		foreach (ImprovableStructure structure in structures.Values)
+		foreach (ImprovableStructure structure in Structures.Values)
 		{
 			structure.Place();
 		}
@@ -194,6 +195,18 @@ public class RavencrestSystem : ModSystem
 				NPC.NewNPC(Entity.GetSource_TownSpawn(), pos.X * 16, pos.Y * 16, type);
 			}
 		}
+
+		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
+		{
+			if (!npc.CanSpawn(false))
+			{
+				continue;
+			}
+
+			int x = npc.TileSpawn.X * 16;
+			int y = npc.TileSpawn.Y * 16;
+			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
+		}
 	}
 
 	public static void UpgradeBuilding(string name, int level = -1)
@@ -204,7 +217,7 @@ public class RavencrestSystem : ModSystem
 			return;
 		}
 
-		ImprovableStructure structure = structures[name];
+		ImprovableStructure structure = Structures[name];
 		level = level == -1 ? structure.StructureIndex + 1 : level;
 		structure.Change(level);
 	}
@@ -227,7 +240,7 @@ public class RavencrestSystem : ModSystem
 		SpawnedRaven = tag.GetBool("spawnedRaven");
 		EntrancePosition = tag.Get<Point16>("entrance");
 
-		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)
+		foreach (KeyValuePair<string, ImprovableStructure> structure in Structures)
 		{
 			if (tag.TryGet(structure.Key + "Name", out byte index))
 			{
@@ -253,7 +266,7 @@ public class RavencrestSystem : ModSystem
 		tag.Add("spawnedRaven", SpawnedRaven);
 		tag.Add("entrance", EntrancePosition);
 
-		foreach (KeyValuePair<string, ImprovableStructure> structure in structures)
+		foreach (KeyValuePair<string, ImprovableStructure> structure in Structures)
 		{
 			tag.Add(structure.Key + "Name", (byte)structure.Value.StructureIndex);
 		}
@@ -273,7 +286,7 @@ public class RavencrestSystem : ModSystem
 		OneTimeCheckDone = false;
 		SpawnedMorvenPos = null;
 
-		foreach (KeyValuePair<string, ImprovableStructure> item in structures)
+		foreach (KeyValuePair<string, ImprovableStructure> item in Structures)
 		{
 			item.Value.Change(0);
 		}

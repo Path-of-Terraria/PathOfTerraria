@@ -1,25 +1,33 @@
+using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
-using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.Localization;
-using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using PathOfTerraria.Common.NPCs.Dialogue;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
-using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Quest;
 using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
+public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
 {
+	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.Structures["Observatory"].Position.ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
+
+	bool ISpawnInRavencrestNPC.CanSpawn(bool worldGen)
+	{
+		return NPC.downedSlimeKing && !worldGen;
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -165,5 +173,15 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 	{
 		quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		return !quest.Completed;
+	}
+
+	public bool ForceSpawnInTavern()
+	{
+		return Quest.GetLocalPlayerInstance<EoCQuest>().Active || QuestUnlockManager.CanStartQuest<EoCQuest>();
+	}
+
+	public float SpawnChanceInTavern()
+	{
+		return NPC.downedBoss1 ? 0.2f : 0f;
 	}
 }

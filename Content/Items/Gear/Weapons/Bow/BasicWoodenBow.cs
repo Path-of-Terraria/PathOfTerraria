@@ -21,5 +21,6 @@ internal class BasicWoodenBow : Bow
 
 		Item.damage = 8;
 		Item.Size = new Vector2(24, 42);
+		Item.value = Item.buyPrice(0, 0, 0, 30);
 	}
 }

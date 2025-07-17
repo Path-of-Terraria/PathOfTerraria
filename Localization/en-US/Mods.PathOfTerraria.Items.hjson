@@ -219,7 +219,7 @@ StoneBoomerang: {
 FireStarter: {
 	DisplayName: Fire Starter
 	AltUseDescription: 100% chance to apply On Fire! for 3 seconds
-	Description: A dry piece of wood I found in the forest. It's perfect for starting fires.
+	Description: A smoldering piece of wood.
 	Tooltip: ""
 }
 
@@ -283,7 +283,7 @@ BloodOath: {
 	AltUseDescription:
 		'''
 		Right click to pledge. Every hit does 1 damage to you and adds an Oath to the enemy.
-		Right click again after hitting enemies to heal 5 damage per stack per enemy.
+		Right click again after hitting enemies to heal 3 damage per stack per enemy.
 		'''
 	Description: Teeth fill your peripherals, but dissipate when you focus on them
 	DeathReason: "{0} pledged too much."

@@ -23,6 +23,7 @@ internal class TinyHat : Wand
 		Item.mana = 3;
 		Item.useTime = Item.useAnimation = 25;
 		Item.UseSound = SoundID.Item7;
+		Item.value = Item.buyPrice(0, 5, 0, 0);
 	}
 
 	public override void HoldItem(Player player)

@@ -19,5 +19,6 @@ internal class StoneBoomerang : Boomerang
 		Item.damage = 7;
 		Item.shootSpeed = 11;
 		Item.autoReuse = true;
+		Item.value = Item.buyPrice(0, 0, 0, 60);
 	}
 }
