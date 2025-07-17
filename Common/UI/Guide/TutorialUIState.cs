@@ -16,6 +16,8 @@ using Terraria.UI;
 using Terraria.UI.Chat;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.Items.Placeable;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.UI.Guide;
 
@@ -116,6 +118,8 @@ internal class TutorialUIState : UIState
 			{
 				Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
 			}
+			
+			Item.NewItem(new EntitySource_Misc("Quest"), Main.LocalPlayer.Bottom, ModContent.ItemType<ArcaneObeliskItem>());
 
 			IncrementStep();
 		});
