@@ -75,3 +75,13 @@ LingeringPoison: {
 	Name: Lingering Poison
 	Tooltip: Projectiles hitting the ground leave poisonous gas
 }
+
+PowerfulSmog: {
+	Name: Powerful Smog
+	Tooltip: Poison clouds linger a second longer per stack
+}
+
+Megatoxin: {
+	Name: Megatoxin
+	Tooltip: Substantially increases lingering poison damage per stack
+}

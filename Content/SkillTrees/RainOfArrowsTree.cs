@@ -18,8 +18,10 @@ internal class RainOfArrowsTree : SkillTree
 
 		AddNodes(anchor, natures);
 		AddNodes(natures, spores);
-		AddNodes(spores, new MoldColony(this) { TreePos = new Vector2(-300, -100), MaxLevel = 2 });
-		AddNodes(spores, new FungalSpread(this) { TreePos = new Vector2(-200, -200), MaxLevel = 2 });
+		AddNodes(spores, new MoldColony(this) { TreePos = new Vector2(-300, -100), MaxLevel = 2 }, 
+			new FungalSpread(this) { TreePos = new Vector2(-200, -200), MaxLevel = 2 });
 		AddNodes(natures, linger);
+		AddNodes(linger, new PowerfulSmog(this) { TreePos = new Vector2(-200, 200), MaxLevel = 2 }, 
+			new Megatoxin(this) { TreePos = new Vector2(-300, 100), MaxLevel = 2 });
 	}
 }
