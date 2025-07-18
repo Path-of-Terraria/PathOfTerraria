@@ -86,7 +86,7 @@ Leggings: {
 
 Battleaxe: {
 	Name: Battle Axe
-	AltUse: Sacrifice 5 life to increase damage temporarily. Take more damage during the effect.
+	AltUse: Right click to sacrifice 5 life to increase damage given and taken temporarily.
 
 	Prefixes: {
 		0: Brutal
@@ -107,7 +107,7 @@ Battleaxe: {
 
 Boomerang: {
 	Name: Boomerang
-	AltUse: Send the boomerang in a quick spiral around you.
+	AltUse: Right click to send the boomerang in a quick spiral around you.
 
 	Prefixes: {
 		0: Spiraling
@@ -128,7 +128,7 @@ Boomerang: {
 
 Bow: {
 	Name: Bow
-	AltUse: Charge and fire a significantly stronger and faster shot.
+	AltUse: Right click to charge and fire a significantly stronger and faster shot.
 
 	Prefixes: {
 		0: Swift
@@ -149,7 +149,7 @@ Bow: {
 
 Staff: {
 	Name: Staff
-	AltUse: Overcharge your mana for a short time, summoning projectiles four times faster and automatically firing them
+	AltUse: Right click to overcharge your mana for a short time, summoning projectiles four times faster and automatically firing them
 
 	Prefixes: {
 		0: Arcane
@@ -212,7 +212,7 @@ Spellbook: {
 
 Wand: {
 	Name: Wand
-	AltUse: Summon 4x the normal mana cost to send a flurry of projectiles forward
+	AltUse: Right click to summon 4x the normal mana cost to send a flurry of projectiles forward
 
 	Prefixes: {
 		0: Forbidden
@@ -233,7 +233,7 @@ Wand: {
 
 Whip: {
 	Name: Whip
-	AltUse: Whip once in front of and once behind you in quick succession.
+	AltUse: Right click to whip once in front of and once behind you in quick succession.
 
 	Prefixes: {
 		0: Searing
@@ -275,6 +275,7 @@ Javelin: {
 
 Grimoire: {
 	Name: Grimoire
+	# This is the alt use line but is used to describe basic functionality. Change to be more clear?
 	AltUse: Command your conjurations to go towards your cursor.
 
 	Prefixes: {
@@ -296,7 +297,7 @@ Grimoire: {
 
 WarShield: {
 	Name: War Shield
-	AltUse: Block or reflect projectiles and incoming hits, dealing damage in return.
+	AltUse: Right click to block or reflect projectiles and incoming hits, dealing damage in return.
 
 	Prefixes: {
 		0: Hardened

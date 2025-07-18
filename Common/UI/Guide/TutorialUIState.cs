@@ -209,6 +209,10 @@ internal class TutorialUIState : UIState
 				}
 			}
 		}
+		else if (Step == 12)
+		{
+			plr.QuickSpawnItem(Entity.GetSource_NaturalSpawn(), ModContent.ItemType<ArcaneObeliskItem>());
+		}
 		else if (Step == 13)
 		{
 			Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.FinishedTutorial);
