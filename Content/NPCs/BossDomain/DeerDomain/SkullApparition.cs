@@ -16,14 +16,15 @@ public sealed class SkullApparition : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.CloneDefaults(NPCID.Crimera);
 		NPC.aiStyle = -1;
 		NPC.dontTakeDamage = true;
-		NPC.Size = new Vector2(168, 172);
+		NPC.Size = new Vector2(84, 86);
 		NPC.damage = 60;
 		NPC.Opacity = 0;
 		NPC.noTileCollide = true;
 		NPC.boss = true;
+		NPC.lifeMax = 1;
+		NPC.noGravity = true;
 
 		NPC.TryEnableComponent<NPCHitEffects>(c => 
 		{
@@ -45,7 +46,7 @@ public sealed class SkullApparition : ModNPC
 
 		if (Main.rand.NextBool(8 + (int)(100 * (1 - NPC.Opacity))))
 		{
-			int dust = Dust.NewDust(NPC.position + new Vector2(56, 86), 48, 86, DustID.PortalBoltTrail, 0, 0, Main.rand.Next(50, 150), Scale: 2);
+			int dust = Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.PortalBoltTrail, 0, 0, Main.rand.Next(50, 150), Scale: 2);
 
 			Main.dust[dust].noGravity = true;
 		}
@@ -64,7 +65,7 @@ public sealed class SkullApparition : ModNPC
 
 		if (NPC.HasValidTarget)
 		{
-			NPC.velocity += NPC.DirectionTo(Main.player[NPC.target].Center) * 0.2f;
+			NPC.velocity += NPC.DirectionTo(Main.player[NPC.target].Center) * 0.25f;
 
 			if (Main.player[NPC.target].ZoneOverworldHeight && PlayerInTheOpen(Main.player[NPC.target]))
 			{
@@ -94,7 +95,7 @@ public sealed class SkullApparition : ModNPC
 		}
 	}
 
-	private bool PlayerInTheOpen(Player player)
+	private static bool PlayerInTheOpen(Player player)
 	{
 		Point pos = player.Top.ToTileCoordinates();
 		Point dif = pos;
