@@ -1,7 +1,9 @@
-﻿using PathOfTerraria.Common.ItemDropping;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 namespace PathOfTerraria.Core.Commands;
 
@@ -65,7 +67,7 @@ public sealed class SpawnItemCommand : ModCommand
 
 		for (int i = 0; i < count; i++)
 		{
-			ItemSpawner.SpawnItemFromCategory<Battleaxe>(caller.Player.Center + new Vector2(relX, relY), (int)ilevel);
+			ItemSpawner.SpawnItemFromCategory<Battleaxe>(caller.Player.Center + new Vector2(relX, relY), Main.rand.Next(6, 11), ItemRarity.Magic);
 			//ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
 		}
 

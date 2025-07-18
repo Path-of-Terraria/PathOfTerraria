@@ -116,16 +116,19 @@ internal class ItemSpawner
 	/// <param name="pos">Where to drop it in the world</param>
 	/// <param name="itemLevel">The item level of the item to spawn</param>
 	/// <param name="rarity">Rarity of the item</param>
-	public static int SpawnItemFromCategory<T>(Vector2 pos, int itemLevel = 0, ItemRarity rarity = ItemRarity.Invalid) where T : ModItem
+	public static int SpawnItemFromCategory<T>(Vector2 pos, int itemLevel = 0, params ItemRarity[] rarity) where T : ModItem
 	{
-		T[] array = [.. ModContent.GetContent<T>().Where(x => rarity == ItemRarity.Invalid || x.GetInstanceData().Rarity == rarity)];
+		HashSet<ItemRarity> validRarity = [.. rarity];
+		bool noRarityCheck = rarity is null || rarity.Length == 0;
+		ItemDatabase.ItemRecord[] array = [.. ItemDatabase.AllItems.Where(x => (noRarityCheck || validRarity.Contains(x.Rarity)) && x.Item.ModItem is T)];
 
 		if (array.Length > 0)
 		{
-			return SpawnItem(Main.rand.Next(array).Type, pos, itemLevel, rarity);
+			ItemDatabase.ItemRecord record = Main.rand.Next(array);
+			return SpawnItem(record.ItemId, pos, itemLevel, record.Rarity);
 		}
 
-		throw new ArgumentException("Type " + typeof(T).Name + " has " + ((int)rarity == -1 ? "no items." : "no items of rarity " + rarity + $"({(int)rarity})"));
+		throw new ArgumentException("Type " + typeof(T).Name + " has " + (noRarityCheck ? "no items." : "no items of the given rarities."));
 	}
 
 	/// <summary>
