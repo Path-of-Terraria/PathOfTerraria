@@ -67,8 +67,7 @@ public sealed class SpawnItemCommand : ModCommand
 
 		for (int i = 0; i < count; i++)
 		{
-			ItemSpawner.SpawnItemFromCategory<Battleaxe>(caller.Player.Center + new Vector2(relX, relY), Main.rand.Next(6, 11), ItemRarity.Magic);
-			//ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
+			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
 		}
 
 		caller.Reply("Item(s) spawned!", Color.Green);

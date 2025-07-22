@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.NPCs;
+﻿using PathOfTerraria.Common.NPCs.GlobalNPCs;
 using PathOfTerraria.Common.Subworlds;
 using SubworldLibrary;
 using System.Collections.Generic;

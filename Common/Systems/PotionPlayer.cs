@@ -35,7 +35,7 @@ internal class PotionPlayer : ModPlayer
 		UseHealingPotion(self);
 	}
 
-	internal static void UseHealingPotion(Player self, bool skipSync = false)
+	internal static void UseHealingPotion(Player self, bool hasSync = false)
 	{
 		PotionPlayer mp = self.GetModPlayer<PotionPlayer>();
 
@@ -46,7 +46,7 @@ internal class PotionPlayer : ModPlayer
 		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/PickupPotion"));
 		SoundEngine.PlaySound(SoundID.Item3);
 
-		if (Main.netMode != NetmodeID.SinglePlayer && skipSync)
+		if (Main.netMode != NetmodeID.SinglePlayer && hasSync)
 		{
 			HotbarPotionHandler.SendHotbarPotionUse((byte)self.whoAmI, true, (byte)mp.HealingLeft, runLocally: false);
 		}
@@ -61,6 +61,13 @@ internal class PotionPlayer : ModPlayer
 			return;
 		}
 
+		UseManaPotion(self);
+	}
+
+	internal static void UseManaPotion(Player self, bool hasSync = false)
+	{
+		PotionPlayer mp = self.GetModPlayer<PotionPlayer>();
+
 		self.ManaEffect(mp.ManaPower);
 		self.statMana += mp.ManaPower;
 		self.AddBuff(BuffID.ManaSickness, mp.ManaDelay);
@@ -69,7 +76,7 @@ internal class PotionPlayer : ModPlayer
 		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/PickupPotion"));
 		SoundEngine.PlaySound(SoundID.Item3);
 
-		if (Main.netMode != NetmodeID.SinglePlayer)
+		if (Main.netMode != NetmodeID.SinglePlayer && hasSync)
 		{
 			HotbarPotionHandler.SendHotbarPotionUse((byte)self.whoAmI, false, (byte)mp.ManaLeft, runLocally: false);
 		}

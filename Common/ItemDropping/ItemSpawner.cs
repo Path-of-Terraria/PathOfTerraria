@@ -154,10 +154,8 @@ internal class ItemSpawner
 
 		return Main.netMode switch
 		{
-			NetmodeID.SinglePlayer => Item.NewItem(new EntitySource_DebugCommand("/spawnitem"), pos, Vector2.Zero, item),
-			NetmodeID.MultiplayerClient => Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"),
-				item),
-			_ => -1
+			NetmodeID.MultiplayerClient => Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"), item),
+			_ => Item.NewItem(new EntitySource_DebugCommand("/spawnitem"), pos, Vector2.Zero, item),
 		};
 	}
 

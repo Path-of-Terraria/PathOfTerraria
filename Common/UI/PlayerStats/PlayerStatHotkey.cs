@@ -22,6 +22,7 @@ internal class PlayerStatHotkey : ModPlayer
 	{
 		if (ToggleStatUIKey.JustPressed)
 		{
+			Main.playerInventory = true;
 			SmartUiLoader.GetUiState<PlayerStatUIState>().Toggle();
 		}
 	}

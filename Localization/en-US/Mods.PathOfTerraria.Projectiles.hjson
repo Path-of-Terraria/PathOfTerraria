@@ -7,11 +7,10 @@ BowAltUseProjectile.DisplayName: Bow Alt Use Projectile
 BowDrawAnimationProjectile.DisplayName: Bow Draw Animation Projectile
 BasicWoodenBowAnimationProjectile.DisplayName: Basic Wooden Bow Animation Projectile
 WoodenBowAnimationProjectile.DisplayName: Wooden Bow Animation Projectile
-WhipBaseProjectile.DisplayName: Whip Base Projectile
 BoomerangProjectile.DisplayName: Boomerang Projectile
 BowAnimationProjectile.DisplayName: Bow Animation Projectile
 FireStarterProjectile.DisplayName: Fire Starter Projectile
-NovaProjectile.DisplayName: Nova Projectile
+NovaProjectile.DisplayName: Nova
 CorruptedBattleaxeProjectile.DisplayName: Corrupted Battleaxe Projectile
 GuardianAngelProjectile.DisplayName: Guardian Angel Projectile
 GuardianAngelRay.DisplayName: Guardian Angel Ray
@@ -22,7 +21,7 @@ IronAngonThrown.DisplayName: Iron Angon
 PlatinumGlaiveThrown.DisplayName: Platinum Glaive
 
 OwlSummon: {
-	DisplayName: Owl Summon
+	DisplayName: Owl
 	Description:
 		'''
 		Flies towards your cursor
@@ -31,12 +30,12 @@ OwlSummon: {
 }
 
 BatSummon: {
-	DisplayName: Bat Summon
+	DisplayName: Bat
 	Description: "{$OwlSummon.Description}"
 }
 
 PoacherSummon: {
-	DisplayName: Poacher Summon
+	DisplayName: Poacher
 	Description:
 		'''
 		Chases your cursor
@@ -81,7 +80,7 @@ EoWPortal.DisplayName: Eater Portal
 CrimsonMaw.DisplayName: Crimson Maw
 
 HornetSummon: {
-	DisplayName: Hornet Summon
+	DisplayName: Hornet
 	Description:
 		'''
 		Chases your cursor
@@ -164,12 +163,13 @@ SunsoulSummon.DisplayName: Sunsoul Star
 Lightray.DisplayName: Lightray
 LightningBurst.DisplayName: Lightning Burst
 SunspotAura.DisplayName: Sunspot Aura
-SunDevourerDash.DisplayName: Sun Devourer Dash
-WormLightningDeathFX.DisplayName: Worm Lightning Death F X
+SunDevourerDash.DisplayName: Sun Devourer
+WormLightningDeathFX.DisplayName: Worm Lightning Death
 SunBlast.DisplayName: Sun Blast
 BubbleshroomBubble.DisplayName: Bubbleshroom Bubble
 SpawnSymbols.DisplayName: Spawn Symbols
 PrismatismAfterimage.DisplayName: Prismatism Afterimage
-MLPortal.DisplayName: M L Portal
+MLPortal.DisplayName: Portal
 CombustionBlast.DisplayName: Combustion Blast
 FieryPatch.DisplayName: Fiery Patch
+WhipBaseProjectile.DisplayName: Whip Base Projectile

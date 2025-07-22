@@ -36,6 +36,14 @@ internal class ShockChancePassive : Passive
 			ApplyChance(npc, player);
 		}
 
+		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			if (projectile.TryGetOwner(out Player owner))
+			{
+				ApplyChance(npc, owner);
+			}
+		}
+
 		private static void ApplyChance(NPC npc, Player player)
 		{
 			float str = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(ShockChancePassive));
@@ -50,14 +58,6 @@ internal class ShockChancePassive : Passive
 			if (canAfflict)
 			{
 				npc.AddBuff(ModContent.BuffType<ShockDebuff>(), 10 * 60);
-			}
-		}
-
-		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			if (projectile.TryGetOwner(out Player owner))
-			{
-				ApplyChance(npc, owner);
 			}
 		}
 	}

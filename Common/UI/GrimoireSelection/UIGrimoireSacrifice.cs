@@ -16,7 +16,7 @@ internal class UIGrimoireSacrifice : UIElement
 		Width = StyleDimension.FromPixels(350);
 		Height = StyleDimension.FromPixels(150);
 
-		Append(new UIImage(ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/SacrificeBack"))
+		Append(new UIImage(ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/SacrificeBack"))
 		{
 			Width = StyleDimension.Fill,
 			Height = StyleDimension.Fill,

@@ -80,7 +80,7 @@ internal class RavencrestSubworld : MappingWorld
 
 		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{
-			if (!npc.CanSpawn(true))
+			if (!npc.CanSpawn(true, NPC.AnyNPCs(npc.Type)))
 			{
 				continue;
 			}

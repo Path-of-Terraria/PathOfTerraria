@@ -24,9 +24,9 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.Structures["Observatory"].Position.ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
-	bool ISpawnInRavencrestNPC.CanSpawn(bool worldGen)
+	bool ISpawnInRavencrestNPC.CanSpawn(bool worldGen, bool alreadyExists)
 	{
-		return NPC.downedSlimeKing && !worldGen;
+		return NPC.downedSlimeKing && !worldGen && !alreadyExists;
 	}
 
 	public override void SetStaticDefaults()
@@ -119,7 +119,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
+		//button = Language.GetTextValue("LegacyInterface.28");
 
 		EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		button2 = !quest.CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
