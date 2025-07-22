@@ -28,7 +28,7 @@ internal class ManaPotionPickup : PickupItem
 		if (manaLeft >= player.GetModPlayer<PotionPlayer>().MaxMana && player.statMana < player.statManaMax2 && !player.HasBuff(BuffID.ManaSickness))
 		{
 			manaLeft++;
-			PotionPlayer.UseHealingPotion(player, true);
+			PotionPlayer.UseManaPotion(player, true);
 		}
 		else if (manaLeft < player.GetModPlayer<PotionPlayer>().MaxMana)
 		{

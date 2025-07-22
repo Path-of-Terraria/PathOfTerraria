@@ -198,7 +198,7 @@ public class RavencrestSystem : ModSystem
 
 		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
 		{
-			if (!npc.CanSpawn(false))
+			if (!npc.CanSpawn(false, NPC.AnyNPCs(npc.Type)))
 			{
 				continue;
 			}

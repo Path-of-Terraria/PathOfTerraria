@@ -178,3 +178,23 @@ InvButtons: {
 	Quest: Quests
 	Stats: Stats
 }
+
+Grimoire: {
+	Storage: Storage
+	ClickMe: Click me!
+
+	Help: {
+		Materials:
+			'''
+			Here you'll find your materials! Stingers, wings and souls galore! 
+			Each can be used to augment your creations... just click on them!
+			Those parts with affixes will boon your summons, and are NOT consumed.
+			'''
+		Summons:
+			'''
+			As for your creatures...say hello! Hello! These freakish critters can be chosen, allowing you to...help them around. Yes, yes! You must first unlock their life; 
+			the materials in storage will allow you to do so. You can see what you must obtain by clicking on hidden summons.
+			'''
+		Ritual: Ah, and your ritual! Here you can place materials full of boons! If your pieces have no boons, they have no effect...
+	}
+}

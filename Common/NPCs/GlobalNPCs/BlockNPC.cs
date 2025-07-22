@@ -1,7 +1,7 @@
 ﻿using Terraria.Audio;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.NPCs;
+namespace PathOfTerraria.Common.NPCs.GlobalNPCs;
 
 /// <summary>
 /// Defines the ability for NPCs to dodge attacks. This is very similar to <see cref="Systems.BlockSystem.BlockPlayer"/>.<br/>

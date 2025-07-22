@@ -12,10 +12,10 @@ internal interface ISpawnInRavencrestNPC : ILoadable
 
 	/// <summary>
 	/// Whether this NPC can spawn. Useful for characters that can spawn in Ravencrest, but only under specific conditions.<br/>
-	/// By default, only spawns NPCs during worldgen.
+	/// By default, only spawns NPCs during worldgen, and not a duplicate just in case.
 	/// </summary>
-	public bool CanSpawn(bool worldGen)
+	public bool CanSpawn(bool worldGen, bool alreadyExists)
 	{
-		return worldGen;
+		return worldGen && !alreadyExists;
 	}
 }

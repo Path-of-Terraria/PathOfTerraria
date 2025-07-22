@@ -30,7 +30,7 @@ public class GrimoireInvButton : SmartUiState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		Texture2D texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GrimoireButton").Value;
+		Texture2D texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Grimoire/GrimoireButton").Value;
 		var color = Color.Lerp(Color.White, Color.Red, _denyTimer / 20f);
 		bool hover = UIHelper.GetInvButtonInfo(220, out Vector2 pos);
 

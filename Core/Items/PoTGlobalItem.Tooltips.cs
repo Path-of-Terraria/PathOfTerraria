@@ -10,6 +10,7 @@ using System.Linq;
 using Terraria.Localization;
 using ReLogic.Content;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Gear;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -150,11 +151,11 @@ partial class PoTGlobalItem
 			nameLine.OverrideColor ??= GetRarityColor(data.Rarity);
 		}
 
-		tooltips.Add(nameLine);
+		AddNewTooltipLine(item, tooltips, nameLine);
 
 		if (data.Corrupted)
 		{
-			tooltips.Add(new TooltipLine(Mod, "Corrupted", $" {Localize("Corrupted")}")
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Corrupted", $" {Localize("Corrupted")}")
 			{
 				OverrideColor = Color.Lerp(Color.Purple, Color.White, 0.4f)
 			});
@@ -162,7 +163,7 @@ partial class PoTGlobalItem
 		
 		if (data.Cloned)
 		{
-			tooltips.Add(new TooltipLine(Mod, "Cloned", $" {Localize("Cloned")}")
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Cloned", $" {Localize("Cloned")}")
 			{
 				OverrideColor = Color.Lerp(Color.DarkCyan, Color.White, 0.4f)
 			});
@@ -182,23 +183,23 @@ partial class PoTGlobalItem
 			{
 				OverrideColor = Color.Lerp(GetRarityColor(data.Rarity), Color.White, 0.5f)
 			};
-			tooltips.Add(rarityLine);
+			AddNewTooltipLine(item, tooltips, rarityLine);
 		}
 
 		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {Localize("Level")} [c/CCCCFF:{GetItemLevel.Invoke(item)}]")
 		{
 			OverrideColor = new Color(170, 170, 170)
 		};
-		tooltips.Add(itemLevelLine);
+		AddNewTooltipLine(item, tooltips, itemLevelLine);
 
 		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
 		{
-			tooltips.Add(new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription.Value));
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "AltUseDescription", staticData.AltUseDescription.Value));
 		}
 
 		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
 		{
-			tooltips.Add(new TooltipLine(Mod, "Description", staticData.Description.Value));
+			AddNewTooltipLine(item, tooltips, new(Mod, "Description", staticData.Description.Value));
 		}
 
 		if (item.damage > 0)
@@ -208,41 +209,38 @@ partial class PoTGlobalItem
 				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})",
 				baseColor: "DDDDDD");
 			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
-			tooltips.Add(damageLine);
+			AddNewTooltipLine(item, tooltips, damageLine);
 		}
 
 		if (item.defense > 0)
 		{
 			var def = new TooltipLine(Mod, "Defense", $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"+{item.defense} {Localize("Defense")}", baseColor: "DDDDDD"));
-			tooltips.Add(def);
+			AddNewTooltipLine(item, tooltips, def);
 		}
 
 		if (item.pick > 0)
 		{
 			var pick = new TooltipLine(Mod, "Pickaxe", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.pick} {Localize("Pickaxe")}", baseColor: "DDDDDD")}");
-			
-			tooltips.Add(pick);
+			AddNewTooltipLine(item, tooltips, pick);
 		}
 		
 		if (item.axe > 0)
 		{
-			var pick = new TooltipLine(Mod, "Axe", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.axe * 5} {Localize("Axe")}", baseColor: "DDDDDD")}");
-			
-			tooltips.Add(pick);
+			var axe = new TooltipLine(Mod, "Axe", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.axe * 5} {Localize("Axe")}", baseColor: "DDDDDD")}");
+			AddNewTooltipLine(item, tooltips, axe);
 		}
 		
 		if (item.hammer > 0)
 		{
-			var pick = new TooltipLine(Mod, "Hammer", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.hammer} {Localize("Hammer")}", baseColor: "DDDDDD")}");
-			
-			tooltips.Add(pick);
+			var hammer = new TooltipLine(Mod, "Hammer", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.hammer} {Localize("Hammer")}", baseColor: "DDDDDD")}");
+			AddNewTooltipLine(item, tooltips, hammer);
 		}
 		
 		tooltips.AddRange(oldStats);
 
 		if (item.ModItem is Map map && map.Tier > 0)
 		{
-			tooltips.Add(new TooltipLine(Mod, "MapTier", $" {Localize("Tier")} [c/CCCCFF:" + map.Tier + "]")
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "MapTier", $" {Localize("Tier")} [c/CCCCFF:" + map.Tier + "]")
 			{
 				OverrideColor = new Color(170, 170, 170)
 			});
@@ -255,6 +253,7 @@ partial class PoTGlobalItem
 		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().PrepareComparisonTooltips(tooltips, item);
 		AffixTooltipsHandler.DefaultColor = Color.White; // Resets color
 
+		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);
 
 		if (materialLine is not null)
@@ -265,6 +264,21 @@ partial class PoTGlobalItem
 		if (priceLine is not null)
 		{
 			tooltips.Add(priceLine);
+		}
+	}
+
+	/// <summary>
+	/// Adds the tooltip line if the <paramref name="item"/> is not a Gear item, or if <see cref="Gear.ModifyNewTooltipLine(TooltipLine)"/> returns true.
+	/// </summary>
+	/// <param name="item">Item referenced.</param>
+	/// <param name="tooltips">List of tooltips.</param>
+	/// <param name="staticData"></param>
+	/// <param name="tooltip"></param>
+	private static void AddNewTooltipLine(Item item, List<TooltipLine> tooltips, TooltipLine tooltip)
+	{
+		if (item.ModItem is not Gear gearItem || gearItem.ModifyNewTooltipLine(tooltip))
+		{
+			tooltips.Add(tooltip);
 		}
 	}
 

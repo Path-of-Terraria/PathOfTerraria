@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using SubworldLibrary;
-using Terraria.ID;
+﻿using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 
@@ -11,7 +9,7 @@ internal class DeerclopsDomainLightEdits : ModSystem
 	public override void Load()
 	{
 		On_Lighting.AddLight_int_int_float_float_float += HijackAddLight;
-		On_Lighting.AddLight_int_int_int_float += HideTorchLight; ;
+		On_Lighting.AddLight_int_int_int_float += HideTorchLight;
 		On_Player.ItemCheck += SoftenPlayerLight;
 		On_Main.Update += ResetLightMul;
 		On_Projectile.ProjLight += HideProjLight;

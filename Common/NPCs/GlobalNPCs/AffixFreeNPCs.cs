@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.MobSystem;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.NPCs;
+namespace PathOfTerraria.Common.NPCs.GlobalNPCs;
 
 internal class AffixFreeNPCs : GlobalNPC
 {

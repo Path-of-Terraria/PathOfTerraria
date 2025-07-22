@@ -69,6 +69,7 @@ public class QuestModPlayer : ModPlayer
 	{
 		if (ToggleQuestUIKey.JustPressed)
 		{
+			Main.playerInventory = true;
 			SmartUiLoader.GetUiState<QuestsUIState>().Toggle();
 		}
 	}

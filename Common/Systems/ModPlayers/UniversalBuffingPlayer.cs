@@ -31,7 +31,8 @@ internal class UniversalBuffingPlayer : ModPlayer
 	}
 	
 	/// <summary>
-	/// Used to apply on hit effects for affixes that have them
+	/// Used to apply on hit effects for affixes that have them.
+	/// <inheritdoc/>
 	/// </summary>
 	/// <param name="target"></param>
 	/// <param name="hit"></param>

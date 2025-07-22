@@ -1,17 +1,20 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
+using ReLogic.Graphics;
+using System.Collections.Generic;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
@@ -22,6 +25,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	protected override bool IsCentered => true;
 
 	public static Asset<Texture2D> EmptySummonTexture = null;
+	public static Asset<Texture2D> MorganaHelp = null;
+	public static Asset<Texture2D> HelpBack = null;
 
 	public static Item EmptyItem
 	{
@@ -41,6 +46,10 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	private static UIImage _currentSummon = null;
 	private static Item _trashItem = null;
 	private static UIItemIcon _trashSlot = null;
+	private static bool _helpOpen = false;
+	private static bool _helpHover = false;
+	private static bool _heyHelp = false;
+	private static float _helpOpacity = 0;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -63,16 +72,93 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		Main.inventoryScale = 0.8f;
 		base.Draw(spriteBatch);
 		Main.inventoryScale = invSize;
+
+		DrawMorganaHelp(spriteBatch);
+	}
+
+	private void DrawMorganaHelp(SpriteBatch spriteBatch)
+	{
+		if (Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().FirstOpenMenagerie)
+		{
+			_heyHelp = true;
+		}
+
+		Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().FirstOpenMenagerie = false;
+
+		CalculatedStyle panelSize = Panel.GetDimensions();
+		Vector2 topLeft = panelSize.Position();
+		Vector2 pos = topLeft + new Vector2(66, 14);
+		Rectangle rect = new((int)pos.X, (int)pos.Y, 34, 34);
+		bool hover = rect.Contains(Main.MouseScreen.ToPoint());
+		Rectangle src = new(36 * hover.ToInt(), 36 * _helpOpen.ToInt(), 34, 34);
+		spriteBatch.Draw(MorganaHelp.Value, pos, src, Color.White);
+
+		if (_heyHelp)
+		{
+			if (_helpOpen)
+			{
+				_heyHelp = false;
+			}
+
+			string heyText = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.ClickMe");
+			Vector2 heyPos = topLeft + new Vector2(52, -6 + MathF.Sin((float)Main.timeForVisualEffects * 0.1f) * 4);
+			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, heyText, heyPos, Color.White, -0.2f, Vector2.Zero, Vector2.One);
+		}
+
+		if (hover)
+		{
+			if (Main.mouseLeft && Main.mouseLeftRelease)
+			{
+				_helpOpen = !_helpOpen;
+			}
+
+			Tooltip.SetName("Help");
+		}
+
+		if (_helpHover != hover)
+		{
+			SoundEngine.PlaySound(SoundID.MenuTick, Main.LocalPlayer.Center);
+		}
+
+		_helpHover = hover;
+		_helpOpacity = MathHelper.Lerp(_helpOpacity, _helpOpen ? 1 : 0, 0.08f);
+
+		if (_helpOpacity < 0.01f)
+		{
+			return;
+		}
+
+		spriteBatch.Draw(HelpBack.Value, topLeft, Color.White * _helpOpacity);
+		DynamicSpriteFont font = FontAssets.ItemStack.Value;
+		string text = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.Help.Materials");
+		DrawHelpText(spriteBatch, topLeft + new Vector2(30, panelSize.Y * 1.5f), font, text, 320);
+
+		text = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.Help.Summons");
+		DrawHelpText(spriteBatch, topLeft + new Vector2(430, 250), font, text, 420);
+
+		text = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.Help.Ritual");
+		DrawHelpText(spriteBatch, topLeft + new Vector2(446, 544), font, text, 420);
+	}
+
+	private static void DrawHelpText(SpriteBatch spriteBatch, Vector2 position, DynamicSpriteFont font, string text, int maxWidth)
+	{
+		Vector2 size = ChatManager.GetStringSize(font, text, Vector2.One, maxWidth);
+		position.Y += 28;
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, Color.White * _helpOpacity, 0f, size * new Vector2(0f, 1f), Vector2.One, maxWidth);
 	}
 
 	public void Toggle()
 	{
 		RemoveAllChildren();
 
+		_helpOpen = false;
+
 		Width = StyleDimension.Fill;
 		Height = StyleDimension.Fill;
 
 		EmptySummonTexture ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/Projectiles/Summoner/GrimoireSummons/Empty_Icon");
+		MorganaHelp ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/MorganaHelp");
+		HelpBack ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/HelpBack");
 		IsVisible = !IsVisible;
 
 		for (int i = 0; i < _parts.Length; i++)
@@ -176,7 +262,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		};
 		panel.Append(mainPanel);
 
-		mainPanel.Append(new UIImage(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GrimoireButton"))
+		mainPanel.Append(new UIImageFramed(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Grimoire/GrimoireButton"), new Rectangle(0, 0, 64, 64))
 		{
 			VAlign = -0.24f,
 			HAlign = 0.5f,
@@ -308,7 +394,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		};
 		panel.Append(mainPanel);
 
-		mainPanel.Append(new UIText("Storage", 1, true)
+		mainPanel.Append(new UIText(Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.Storage"), 1, true)
 		{
 			HAlign = 0.5f,
 		});
