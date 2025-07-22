@@ -3,11 +3,14 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Gores.Misc;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
 using PathOfTerraria.Content.Skills.Ranged.RainOfArrowsVFX;
+using PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -57,7 +60,7 @@ public class RainOfArrows : Skill
 			Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -10 * Main.rand.NextFloat(0.9f, 1.1f);
 			int proj = Projectile.NewProjectile(new EntitySource_ItemUse_WithAmmo(player, player.HeldItem, ammo), pos, velocity, projToShoot, damage, 2, player.whoAmI);
 
-			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj], this);
+			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj], this, i == 0);
 		}
 	}
 
@@ -92,6 +95,7 @@ public class RainOfArrows : Skill
 		private short _rainTimer = 0;
 		private float _originalMagnitude = 0f;
 		private bool _poison = false;
+		private bool _isFirst = false;
 
 		private static Skill GetSkill(Projectile projectile)
 		{
@@ -129,17 +133,14 @@ public class RainOfArrows : Skill
 				}
 				else
 				{
-					Vector2 offset = -Vector2.UnitY.RotatedByRandom(0.6f);
-					projectile.Center = RainTarget + offset * 400;
-					projectile.velocity = -offset * _originalMagnitude;
-
-					for (int i = 0; i < 3; ++i)
+					if (GetSkill(projectile).Tree.Specialization is ExplosiveVolley)
 					{
-						Vector2 velocity = -projectile.velocity.RotatedByRandom(0.2f) * 0.3f;
-						Dust.NewDust(projectile.Center, 1, 1, DustID.AncientLight, velocity.X, velocity.Y);
+						ExplosiveReposition(projectile);
 					}
-
-					projectile.netUpdate = true;
+					else
+					{
+						NormalReposition(projectile);
+					}
 				}
 
 				if (projectile.Center.Y > RainTarget.Y)
@@ -149,6 +150,50 @@ public class RainOfArrows : Skill
 			}
 
 			return true;
+		}
+
+		private void ExplosiveReposition(Projectile projectile)
+		{
+			Vector2 offset = -Vector2.UnitY.RotatedByRandom(0.01f);
+			projectile.Center = RainTarget + offset * 250;
+
+			float originalLength = projectile.velocity.Length();
+			Vector2 velocity = new Vector2(0, WorldGen.genRand.NextFloat(_originalMagnitude * 0.8f, _originalMagnitude * 1.5f)).RotatedByRandom(MathHelper.PiOver2 * 0.8f);
+			projectile.velocity = velocity;
+
+			for (int i = 0; i < 3; ++i)
+			{
+				Dust.NewDust(projectile.Center, 1, 1, DustID.AncientLight, velocity.X, velocity.Y);
+			}
+
+			projectile.netUpdate = true;
+
+			if (_isFirst)
+			{
+				if (Main.myPlayer == projectile.owner)
+				{
+					int dmg = (int)(projectile.damage * 1.5f);
+					int type = ModContent.ProjectileType<ExplosionHitboxFriendly>();
+					Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, Vector2.Zero, type, dmg, 15, Main.myPlayer, 90, 90);
+				}
+
+				ExplosionHitbox.VFX(projectile);
+			}
+		}
+
+		private void NormalReposition(Projectile projectile)
+		{
+			Vector2 offset = -Vector2.UnitY.RotatedByRandom(0.6f);
+			projectile.Center = RainTarget + offset * 400;
+			projectile.velocity = -offset * _originalMagnitude;
+
+			for (int i = 0; i < 3; ++i)
+			{
+				Vector2 velocity = -projectile.velocity.RotatedByRandom(0.2f) * 0.3f;
+				Dust.NewDust(projectile.Center, 1, 1, DustID.AncientLight, velocity.X, velocity.Y);
+			}
+
+			projectile.netUpdate = true;
 		}
 
 		public override void OnKill(Projectile projectile, int timeLeft)
@@ -178,13 +223,14 @@ public class RainOfArrows : Skill
 			}
 		}
 
-		internal void SetRainProjectile(Projectile projectile, RainOfArrows skill)
+		internal void SetRainProjectile(Projectile projectile, RainOfArrows skill, bool isFirst = false)
 		{
 			IsRainProjectile = true;
 			RainTarget = Main.MouseWorld;
 
 			_originalMagnitude = projectile.velocity.Length();
 			_rainTimer = 0;
+			_isFirst = isFirst;
 
 			if (skill.Tree.Specialization is NaturesBarrage)
 			{

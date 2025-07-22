@@ -1,5 +1,5 @@
 ﻿using log4net.Util;
-using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
+using PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
 using ReLogic.Content;
 using System.Collections.Generic;
 

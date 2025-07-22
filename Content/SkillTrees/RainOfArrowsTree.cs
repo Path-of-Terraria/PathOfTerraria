@@ -2,6 +2,7 @@
 using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
 using PathOfTerraria.Content.Skills.Ranged;
+using PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
 
 namespace PathOfTerraria.Content.SkillTrees;
 
@@ -23,5 +24,8 @@ internal class RainOfArrowsTree : SkillTree
 		AddNodes(natures, linger);
 		AddNodes(linger, new PowerfulSmog(this) { TreePos = new Vector2(-200, 200), MaxLevel = 2 }, 
 			new Megatoxin(this) { TreePos = new Vector2(-300, 100), MaxLevel = 2 });
+
+		var explosive = new ExplosiveVolley(this) { TreePos = new Vector2(0, 200) };
+		AddNodes(anchor, explosive);
 	}
 }

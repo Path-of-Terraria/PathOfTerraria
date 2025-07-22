@@ -19,3 +19,8 @@ NaturesBarrage: {
 	Name: Nature's Barrage
 	Description: Tampered tips poison enemies
 }
+
+ExplosiveVolley: {
+	Name: Explosive Valley
+	Description: Arrows reposition with an explosion in a much wider range.
+}

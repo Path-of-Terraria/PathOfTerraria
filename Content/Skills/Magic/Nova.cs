@@ -5,7 +5,7 @@ using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.SkillPassives.Generic;
 using PathOfTerraria.Content.SkillPassives.NovaTree;
-using PathOfTerraria.Content.SkillSpecials;
+using PathOfTerraria.Content.SkillSpecials.NovaSpecials;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.IO;

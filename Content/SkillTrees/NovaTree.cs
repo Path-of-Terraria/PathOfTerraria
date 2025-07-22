@@ -4,7 +4,7 @@ using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.SkillPassives.Generic;
 using PathOfTerraria.Content.SkillPassives.NovaTree;
 using PathOfTerraria.Content.Skills.Magic;
-using PathOfTerraria.Content.SkillSpecials;
+using PathOfTerraria.Content.SkillSpecials.NovaSpecials;
 
 namespace PathOfTerraria.Content.SkillTrees;
 
