@@ -34,6 +34,8 @@ internal class EbonwoodWand : Wand
 			Projectile.friendly = true;
 			Projectile.penetrate = 2;
 			Projectile.timeLeft = 250;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 20;
 		}
 
 		public override void AI()

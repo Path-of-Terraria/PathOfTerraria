@@ -71,7 +71,7 @@ internal class HornetSummon : GrimoireSummon
 				Timer = 0;
 			}
 
-			if (Projectile.honeyWet && !NPC.downedQueenBee)
+			if (Projectile.honeyWet && !NPC.downedQueenBee && !HasAnyQBPortal())
 			{
 				HoneyTimer++;
 
@@ -83,6 +83,19 @@ internal class HornetSummon : GrimoireSummon
 				}
 			}
 		}
+	}
+
+	private static bool HasAnyQBPortal()
+	{
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.ModProjectile is QueenBeePortal)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	protected override void AltEffect()

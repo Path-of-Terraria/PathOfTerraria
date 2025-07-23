@@ -14,8 +14,7 @@ internal class TutorialSystem : ModSystem
 
 	public override void ModifyTimeRate(ref double timeRate, ref double tileUpdateRate, ref double eventUpdateRate)
 	{
-		TutorialPlayer plr = Main.LocalPlayer.GetModPlayer<TutorialPlayer>();
-		if (!plr.CompletedTutorial && plr.HasFreeDay)
+		if (Main.LocalPlayer.TryGetModPlayer(out TutorialPlayer plr) && !plr.CompletedTutorial && plr.HasFreeDay)
 		{
 			timeRate /= 3;
 		}

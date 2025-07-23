@@ -1,3 +1,4 @@
+using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
@@ -106,13 +107,41 @@ internal sealed class HotbarHijack : ModSystem
 		return orig(self, plr, newItem, settings, returnItem, i);
 	}
 
-	private static bool IsWeapon(Item item)
+	public static bool IsWeapon(Item item)
 	{
-		return item.damage > 0;
+		return item.damage > 0 && item.ammo == AmmoID.None;
 	}
 
 	private static bool IsTool(Item item)
 	{
 		return item.pick > 0 || item.axe > 0 || item.hammer > 0;
+	}
+}
+
+public class WeaponPickupItem : GlobalItem
+{
+	public override bool CanPickup(Item item, Player player)
+	{
+		if (HotbarHijack.IsWeapon(item))
+		{
+			if (player.inventory[0].IsAir)
+			{
+				return true;
+			}
+
+			for (int i = 10; i < Main.InventoryItemSlotsCount; i++)
+			{
+				Item inv = player.inventory[i];
+
+				if (inv.IsAir)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		return true;
 	}
 }

@@ -4,6 +4,7 @@ using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -79,6 +80,19 @@ internal class GrimoireItem : Gear
 	public override bool OnPickup(Player player)
 	{
 		player.GetModPlayer<GrimoireSummonPlayer>().HasObtainedGrimoire = true;
+		return true;
+	}
+
+	public override bool ModifyNewTooltipLine(TooltipLine line)
+	{
+		if (line.Name == "Description")
+		{
+			int id = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
+			bool hasSummon = id != -1;
+			string control = hasSummon ? this.GetLocalization("Control").Format(Lang.GetProjectileName(id).Value) : this.GetLocalization("ControlNone").Value;
+			line.Text = control + "\n" + this.GetLocalization("Description");
+		}
+
 		return true;
 	}
 }

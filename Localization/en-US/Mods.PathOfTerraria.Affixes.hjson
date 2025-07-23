@@ -73,4 +73,3 @@ StalwartAffix.Prefix: Stalwart
 FireResistItemAffix.Description: "{1}{0}% fire resistance"
 ColdResistItemAffix.Description: "{1}{0}% cold resistance"
 LightningResistItemAffix.Description: "{1}{0} lightning resistance"
-ResistItemAffix.Description: "{1}{0} to stat"

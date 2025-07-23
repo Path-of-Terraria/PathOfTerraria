@@ -24,7 +24,7 @@ internal class Spellbook : Gear
 	{
 		base.SetDefaults();
 
-		Item.damage = 10;
+		Item.damage = 8;
 		Item.width = Item.height = 40;
 		Item.useTime = Item.useAnimation = 20;
 		Item.useStyle = ItemUseStyleID.Shoot;
@@ -33,6 +33,7 @@ internal class Spellbook : Gear
 		Item.knockBack = 1;
 		Item.UseSound = SoundID.Item20;
 		Item.shootSpeed = 25f;
+		Item.mana = 3;
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Wand;

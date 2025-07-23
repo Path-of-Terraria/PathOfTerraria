@@ -46,7 +46,7 @@ CloseRangePassive: {
 
 ChanceToBleedPassive: {
 	Name: Crimson Dance
-	Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second per level
+	Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second, for two + level seconds.
 }
 
 DamageReductionPassive: {

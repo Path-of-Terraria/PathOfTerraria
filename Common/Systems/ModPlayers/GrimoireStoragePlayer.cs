@@ -8,6 +8,8 @@ internal class GrimoireStoragePlayer : ModPlayer
 {
 	public readonly List<Item> Storage = [];
 
+	internal bool FirstOpenMenagerie = true;
+
 	public override void SaveData(TagCompound tag)
 	{
 		Storage.RemoveAll(x => x.IsAir || x.type == ItemID.None || x.stack == 0);
@@ -19,6 +21,11 @@ internal class GrimoireStoragePlayer : ModPlayer
 			Item item = Storage[i];
 			tag.Add("item" + i, ItemIO.Save(item));
 		}
+
+		if (FirstOpenMenagerie)
+		{
+			tag.Add("firstOpen", FirstOpenMenagerie);
+		}
 	}
 
 	public override void LoadData(TagCompound tag)
@@ -29,6 +36,8 @@ internal class GrimoireStoragePlayer : ModPlayer
 		{
 			Storage.Add(ItemIO.Load(tag.GetCompound("item" + i)));
 		}
+
+		FirstOpenMenagerie = !tag.ContainsKey("firstOpen");
 	}
 
 	internal Dictionary<int, int> GetStoredCount()
