@@ -149,7 +149,7 @@ internal class SkillCombatPlayer : ModPlayer
 
 			var skill = Skill.GetAndPrepareSkill(Type.GetType(type));
 			skill.LevelTo(skill.Level);
-			skill.LoadData(data);
+			skill.LoadData(data, Player);
 
 			HotbarSkills[i] = skill;
 		}

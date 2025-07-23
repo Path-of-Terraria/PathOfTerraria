@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
 using PathOfTerraria.Content.Skills.Ranged;
@@ -18,6 +19,7 @@ internal class RainOfArrowsTree : SkillTree
 		var spores = new FesteringSpores(this) { TreePos = new Vector2(-200, -100) };
 		var linger = new LingeringPoison(this) { TreePos = new Vector2(-200, 100) };
 
+		AddNodes(anchor, new SpareSlot(this) { TreePos = new Vector2(0, -100) });
 		AddNodes(anchor, natures);
 		AddNodes(natures, spores, linger, new CreepingVines(this) { TreePos = new Vector2(-300, 0) });
 		AddNodes(spores, new MoldColony(this) { TreePos = new Vector2(-300, -100), MaxLevel = 2 }, 

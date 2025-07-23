@@ -181,7 +181,7 @@ public abstract partial class Skill
 		return hasMana;
 	}
 
-	public virtual void LoadData(TagCompound tag)
+	public virtual void LoadData(TagCompound tag, Player loadingPlayer)
 	{
 		Duration = tag.GetShort(nameof(Duration));
 		MaxCooldown = tag.GetShort(nameof(MaxCooldown));
@@ -190,7 +190,7 @@ public abstract partial class Skill
 		WeaponType = (ItemType)tag.GetInt(nameof(WeaponType));
 		Level = tag.GetByte(nameof(Level));
 
-		Tree?.LoadData(this, tag);
+		Tree?.LoadData(this, tag, loadingPlayer);
 	}
 
 	public virtual void SaveData(TagCompound tag)

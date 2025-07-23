@@ -13,7 +13,11 @@ namespace PathOfTerraria.Common.UI.SkillsTree;
 
 internal class AugmentSlotElement : UIElement
 {
-	public const int SquareSize = 180;
+	/// <summary>
+	/// Defines both clickbox size and the hoverbox size for showing/hiding radial augments.
+	/// </summary>
+	public const int SquareSize = 60;
+
 	public const int HoverTimeMax = 10;
 
 	public readonly int Index;
@@ -22,7 +26,7 @@ internal class AugmentSlotElement : UIElement
 	public int HoverTime;
 	private bool _unlocked;
 
-	public bool ContainsInner
+	private Rectangle GetBaseHoverbox
 	{
 		get
 		{
@@ -30,7 +34,24 @@ internal class AugmentSlotElement : UIElement
 
 			Vector2 center = GetDimensions().Center();
 			var area = new Rectangle((int)(center.X - region / 2), (int)(center.Y - region / 2), region, region);
+			return area;
+		}
+	}
 
+	/// <summary>
+	/// Used for checking if the player is hovering over the element itself.
+	/// </summary>
+	public bool ContainsInner => GetBaseHoverbox.Contains(Main.MouseScreen.ToPoint());
+
+	/// <summary>
+	/// Used for checking if the player is hovering over the area for augments.
+	/// </summary>
+	public bool IsHovering
+	{
+		get
+		{
+			Rectangle area = GetBaseHoverbox;
+			area.Inflate(SquareSize, SquareSize); // Makes it easier to choose an augment
 			return area.Contains(Main.MouseScreen.ToPoint());
 		}
 	}
@@ -49,7 +70,7 @@ internal class AugmentSlotElement : UIElement
 
 		Width.Set(SquareSize, 0);
 		Height.Set(SquareSize, 0);
-		Top.Set(100 + SquareSize * index, 0);
+		Top.Set(100 + SquareSize * index * 3, 0);
 		Left.Set(100, 0);
 	}
 
@@ -62,7 +83,7 @@ internal class AugmentSlotElement : UIElement
 			return;
 		}
 
-		if (ContainsInner || HoverTime > 0 && ContainsPoint(Main.MouseScreen))
+		if (IsHovering || HoverTime > 0 && ContainsPoint(Main.MouseScreen))
 		{
 			if (HoverTime == 0)
 			{
@@ -250,6 +271,13 @@ internal class AugmentRadialElement : UIElement
 
 		Left.Set(newPos.X - Width.Pixels / 2, 0.5f);
 		Top.Set(newPos.Y - Height.Pixels / 2, 0.5f);
+
+		// PLACEHOLDER
+		// This just forces left click to work properly because something else is blocking it.
+		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft)
+		{
+			LeftClick(null);
+		}
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -309,11 +337,16 @@ internal class AugmentRadialElement : UIElement
 
 	public override void LeftClick(UIMouseEvent evt)
 	{
+		SkillTree.PackedAugment a = SkillTree.Current.Augments[Handler.Index];
+
+		if (a.Augment == _augment)
+		{
+			return;
+		}
+
 		_flashTimer = 20;
 
-		SkillTree.PackedAugment a = SkillTree.Current.Augments[Handler.Index];
 		SkillTree.Current.Augments[Handler.Index] = new(_augment, a.Unlocked);
-
 		TreeSoundEngine.PlaySoundForTreeAllocation(1, 0);
 
 		if (Handler.Node?.CanAllocate(Main.LocalPlayer) == true)

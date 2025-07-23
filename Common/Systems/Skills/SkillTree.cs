@@ -134,11 +134,19 @@ public abstract class SkillTree : ILoadable
 		tag["augmentUnlocks"] = augments.Select(x => x.Unlocked).ToList();
 	}
 
-	public virtual void LoadData(Skill skill, TagCompound tag)
+	public virtual void LoadData(Skill skill, TagCompound tag, Player loadingPlayer)
 	{
-		// Reset the skill tree to default.
-		// Otherwise, player data would bleed.
+		// Data must be delayed as SkillTrees are singletons.
+		// This means multiple players modifying one tree would just override everyone but the last player's information.
+		// We delay it here so it only loads on world load, avoiding the issue.
+		loadingPlayer.GetModPlayer<SkillTreePlayer>().AddCache(new SkillTreePlayer.CachedSkillTreeData(this, skill, tag));
+	}
 
+	/// <summary>
+	/// Loads data for a skill from a tag.
+	/// </summary>
+	internal void LoadDelayedData(Skill skill, TagCompound tag)
+	{
 		string skillName = skill.Name;
 
 		IList<string> names = tag.GetList<string>("passives"); //Load passives
