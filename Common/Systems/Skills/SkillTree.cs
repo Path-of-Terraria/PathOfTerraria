@@ -136,6 +136,9 @@ public abstract class SkillTree : ILoadable
 
 	public virtual void LoadData(Skill skill, TagCompound tag)
 	{
+		// Reset the skill tree to default.
+		// Otherwise, player data would bleed.
+
 		string skillName = skill.Name;
 
 		IList<string> names = tag.GetList<string>("passives"); //Load passives
@@ -147,10 +150,7 @@ public abstract class SkillTree : ILoadable
 		}
 
 		var special = (SkillSpecial)Nodes.FirstOrDefault(x => x is SkillSpecial && x.Name == tag.GetString("special"));
-		if (special != default)
-		{
-			Specialization = special;
-		}
+		Specialization = special;
 
 		IList<string> augmentNames = tag.GetList<string>("augmentNames");
 		IList<bool> augmentUnlocked = tag.GetList<bool>("augmentUnlocks");

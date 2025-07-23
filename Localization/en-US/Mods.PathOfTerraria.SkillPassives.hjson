@@ -125,3 +125,8 @@ TargetLock: {
 	Name: Target Lock
 	Tooltip: Projectiles will lazily home on the nearest enemy
 }
+
+Ghostfire: {
+	Name: Ghostfire
+	Tooltip: Projectiles that hit an enemy have a small chance to duplicate
+}

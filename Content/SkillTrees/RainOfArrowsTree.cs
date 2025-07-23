@@ -35,6 +35,6 @@ internal class RainOfArrowsTree : SkillTree
 		var sharp = new SharpenedTips(this) { TreePos = new Vector2(300, 0), MaxLevel = 2 };
 		AddNodes(anchor, precision);
 		AddNodes(precision, new Quickload(this) { TreePos = new Vector2(200, -100) }, sharp);
-		AddNodes(sharp, new TargetLock(this) { TreePos = new Vector2(300, 100) });
+		AddNodes(sharp, new TargetLock(this) { TreePos = new Vector2(300, 100) }, new Ghostfire(this) { TreePos = new Vector2(400, 0) });
 	}
 }

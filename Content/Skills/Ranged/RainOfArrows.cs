@@ -10,13 +10,17 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
 using PathOfTerraria.Content.Skills.Ranged.RainOfArrowsVFX;
 using PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
+using Steamworks;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
 
@@ -195,6 +199,17 @@ public class RainOfArrows : Skill
 					{
 						NormalReposition(projectile);
 					}
+
+					if (_ghost)
+					{
+						for (int i = 0; i < 9; ++i)
+						{
+							float scale = Main.rand.NextFloat(1, 2);
+							Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.Ghost, projectile.velocity.X, 6, 0, Scale: scale);
+						}
+
+						SoundEngine.PlaySound(SoundID.DD2_GhastlyGlaiveImpactGhost, projectile.Center);
+					}
 				}
 
 				if (projectile.Center.Y > RainTarget.Y)
@@ -297,10 +312,10 @@ public class RainOfArrows : Skill
 			}
 		}
 
-		internal void SetRainProjectile(Projectile projectile, bool isFirst = false)
+		internal void SetRainProjectile(Projectile projectile, bool isFirst = false, Vector2? overrideTarget = null)
 		{
 			IsRainProjectile = true;
-			RainTarget = Main.MouseWorld;
+			RainTarget = overrideTarget ?? Main.MouseWorld;
 
 			_originalMagnitude = projectile.velocity.Length();
 			_rainTimer = 0;
@@ -351,6 +366,19 @@ public class RainOfArrows : Skill
 			if (tree.HasPassive<CreepingVines>() && !target.immortal && !vine.HasValue)
 			{
 				vine = projectile.Center;
+			}
+
+			if (tree.HasPassive<Ghostfire>() && !_ghost && Main.rand.NextFloat() < 0.1f)
+			{
+				Player player = Main.player[projectile.owner];
+				Vector2 pos = player.Center + new Vector2(Main.rand.NextFloat(-16, 16), Main.rand.NextFloat(-10, 10));
+				Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -10 * Main.rand.NextFloat(0.9f, 1.1f);
+				int proj = Projectile.NewProjectile(projectile.GetSource_Death(), pos, velocity, projectile.type, projectile.damage, projectile.knockBack, player.whoAmI);
+				Projectile newProj = Main.projectile[proj];
+				RainProjectile rain = newProj.GetGlobalProjectile<RainProjectile>();
+				
+				rain.SetRainProjectile(Main.projectile[proj], false, projectile.Center);
+				rain._ghost = true;
 			}
 		}
 
