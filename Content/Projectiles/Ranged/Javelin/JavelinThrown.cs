@@ -74,17 +74,24 @@ public class JavelinThrown(string name, Vector2 itemSize, int dustType) : ModPro
 
 		for (int i = 0; i < 16; ++i)
 		{
-			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, DustType, Scale: Main.rand.NextFloat(1, 1.5f));
+			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, DustType, Scale: Main.rand.NextFloat(1, 1.5f) * Projectile.scale);
 		}
 
 		SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
+	}
+
+	public override void ModifyDamageHitbox(ref Rectangle hitbox)
+	{
+		hitbox.Width = (int)(hitbox.Width * Projectile.scale);
+		hitbox.Height = (int)(hitbox.Height * Projectile.scale);
 	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
 		Color color = lightColor * Projectile.Opacity;
-		Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, tex.Size() * new Vector2(0.75f, 0.25f), 1f, SpriteEffects.None, 0);
+		Vector2 position = Projectile.Center - Main.screenPosition;
+		Main.EntitySpriteDraw(tex, position, null, color, Projectile.rotation, tex.Size() * new Vector2(0.75f, 0.25f), Projectile.scale, SpriteEffects.None, 0);
 
 		return false;
 	}

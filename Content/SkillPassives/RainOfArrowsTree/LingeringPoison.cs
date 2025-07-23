@@ -12,7 +12,7 @@ internal class LingeringPoison(SkillTree tree) : SkillPassive(tree)
 	{
 		private ref float Timer => ref Projectile.ai[0];
 
-		private float MaxTimeLeft => Skill.Tree.CountStrength<PowerfulSmog>() * 60 + 120;
+		private float MaxTimeLeft => Skill.Tree.GetStrength<PowerfulSmog>() * 60 + 120;
 
 		public override void SetDefaults()
 		{
@@ -34,7 +34,7 @@ internal class LingeringPoison(SkillTree tree) : SkillPassive(tree)
 				if (npc.CanBeChasedBy() && npc.DistanceSQ(Projectile.Center) < 40 * 40)
 				{
 					// Add megatoxin buff directly to damage to simulate increase without having to pass values or check every frame
-					SporeNPC.AddSporeDebuff(npc, Projectile.damage * Skill.Tree.CountStrength<Megatoxin>(), 4 * 60, true);
+					SporeNPC.AddSporeDebuff(npc, Projectile.damage * Skill.Tree.GetStrength<Megatoxin>(), 4 * 60, true);
 				}
 			}
 

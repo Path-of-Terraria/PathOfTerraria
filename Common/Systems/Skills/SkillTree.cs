@@ -70,7 +70,12 @@ public abstract class SkillTree : ILoadable
 		}
 	}
 
-	public int CountStrength<T>() where T : SkillPassive
+	/// <summary>
+	/// Counts the amount of stacks per passive.
+	/// </summary>
+	/// <typeparam name="T">The passive to check for.</typeparam>
+	/// <returns>The amount of levels in use for the given passive.</returns>
+	public int GetStrength<T>() where T : SkillPassive
 	{
 		int count = 0;
 
@@ -85,11 +90,16 @@ public abstract class SkillTree : ILoadable
 		return count;
 	}
 
+	/// <summary>
+	/// Checks if the tree has the given passive enabled.
+	/// </summary>
+	/// <typeparam name="T">The passive to check for.</typeparam>
+	/// <returns>If the passive is enabled (if the level is > 0).</returns>
 	public bool HasPassive<T>() where T : SkillPassive
 	{
 		foreach (SkillNode node in Nodes)
 		{
-			if (node is T)
+			if (node is T && node.Level > 0)
 			{
 				return true;
 			}
@@ -144,7 +154,7 @@ public abstract class SkillTree : ILoadable
 
 		IList<string> augmentNames = tag.GetList<string>("augmentNames");
 		IList<bool> augmentUnlocked = tag.GetList<bool>("augmentUnlocks");
-		int count = Math.Max(augmentUnlocked.Count, DefaultAugmentCount);
+		int count = Math.Min(augmentUnlocked.Count, DefaultAugmentCount);
 
 		for (int c = 0; c < count; c++)
 		{

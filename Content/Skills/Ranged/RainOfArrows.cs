@@ -1,6 +1,9 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Buffs;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Gores.Misc;
 using PathOfTerraria.Content.Projectiles.Utility;
@@ -10,7 +13,6 @@ using PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -23,6 +25,16 @@ public class RainOfArrows : Skill
 	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Sandgun];
 
 	public override int MaxLevel => 3;
+
+	public static Skill GetSkillForProjectile(Projectile projectile)
+	{
+		if (Main.player[projectile.owner].GetModPlayer<SkillCombatPlayer>().TryGetSkill<RainOfArrows>(out Skill skill))
+		{
+			return skill;
+		}
+
+		return GetAndPrepareSkill<RainOfArrows>();
+	}
 
 	public override void LevelTo(byte level)
 	{
@@ -52,15 +64,39 @@ public class RainOfArrows : Skill
 			return;
 		}
 
-		int repeats = 6 + Level * 2;
+		var src = new EntitySource_ItemUse_WithAmmo(player, player.HeldItem, ammo);
 
-		for (int i = 0; i < repeats; ++i)
+		if (Tree.Specialization is not PiercingPrecision)
 		{
-			Vector2 pos = player.Center + new Vector2(Main.rand.NextFloat(-16, 16), Main.rand.NextFloat(-10, 10));
-			Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -10 * Main.rand.NextFloat(0.9f, 1.1f);
-			int proj = Projectile.NewProjectile(new EntitySource_ItemUse_WithAmmo(player, player.HeldItem, ammo), pos, velocity, projToShoot, damage, 2, player.whoAmI);
+			int repeats = 6 + Level * 2;
+			bool shattering = Tree.HasPassive<ShatteringArrows>();
 
-			Main.projectile[proj].GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj], this, i == 0);
+			if (shattering)
+			{
+				repeats *= 2;
+				damage = (int)(damage * 0.7f);
+				repeats += Tree.GetStrength<ConcussiveBurst>();
+			}
+
+			for (int i = 0; i < repeats; ++i)
+			{
+				Vector2 pos = player.Center + new Vector2(Main.rand.NextFloat(-16, 16), Main.rand.NextFloat(-10, 10));
+				Vector2 velocity = Vector2.UnitY.RotatedByRandom(0.6f) * -10 * Main.rand.NextFloat(0.9f, 1.1f);
+				int proj = Projectile.NewProjectile(src, pos, velocity, projToShoot, damage, knockBack, player.whoAmI);
+
+				Projectile projectile = Main.projectile[proj];
+				projectile.GetGlobalProjectile<RainProjectile>().SetRainProjectile(Main.projectile[proj], i == 0);
+
+				if (shattering)
+				{
+					projectile.scale *= 0.5f;
+				}
+			}
+		}
+		else
+		{
+			int type = ModContent.ProjectileType<PiercingPrecision.PrecisionSpawnerProjectile>();
+			Projectile.NewProjectile(src, player.Center, Vector2.Zero, type, damage, knockBack, player.whoAmI, projToShoot);
 		}
 	}
 
@@ -96,16 +132,8 @@ public class RainOfArrows : Skill
 		private float _originalMagnitude = 0f;
 		private bool _poison = false;
 		private bool _isFirst = false;
-
-		private static Skill GetSkill(Projectile projectile)
-		{
-			if (Main.player[projectile.owner].GetModPlayer<SkillCombatPlayer>().TryGetSkill<RainOfArrows>(out Skill skill))
-			{
-				return skill;
-			}
-
-			return GetAndPrepareSkill<RainOfArrows>();
-		}
+		private bool _piercingProj = false;
+		private bool _ghost = false;
 
 		public override bool PreAI(Projectile projectile)
 		{
@@ -115,7 +143,8 @@ public class RainOfArrows : Skill
 
 				if (_poison)
 				{
-					PoisonOrientation = NaturesBarrageBatching.GetTargetBasedOnNormalizedVelocity(projectile.velocity.SafeNormalize(Vector2.Zero).RotatedBy(projectile.rotation));
+					Vector2 vel = projectile.velocity.SafeNormalize(Vector2.Zero);
+					PoisonOrientation = NaturesBarrageBatching.GetTargetBasedOnNormalizedVelocity(vel.RotatedBy(projectile.rotation));
 
 					if (Main.rand.NextFloat() < 0.03f && !Main.dedServ)
 					{
@@ -130,10 +159,35 @@ public class RainOfArrows : Skill
 				else if (_rainTimer > 60f)
 				{
 					projectile.Opacity = MathHelper.Lerp(projectile.Opacity, 1f, 0.1f);
+
+					if (GetSkillForProjectile(projectile).Tree.HasPassive<TargetLock>())
+					{
+						NPC closest = null;
+
+						foreach (NPC npc in Main.ActiveNPCs)
+						{
+							float curDist = npc.DistanceSQ(projectile.Center);
+
+							if (npc.CanBeChasedBy() && curDist < 600 * 600 && (closest is null || curDist < closest.DistanceSQ(projectile.Center)))
+							{
+								closest = npc;
+							}
+						}
+
+						if (closest != null)
+						{
+							projectile.velocity += projectile.DirectionTo(closest.Center) * new Vector2(0.2f, 0.005f);
+
+							if (projectile.velocity.LengthSquared() > _originalMagnitude * _originalMagnitude)
+							{
+								projectile.velocity = projectile.velocity.SafeNormalize(Vector2.Zero) * _originalMagnitude;
+							}
+						}
+					}
 				}
 				else
 				{
-					if (GetSkill(projectile).Tree.Specialization is ExplosiveVolley)
+					if (GetSkillForProjectile(projectile).Tree.Specialization is ExplosiveVolley)
 					{
 						ExplosiveReposition(projectile);
 					}
@@ -170,20 +224,40 @@ public class RainOfArrows : Skill
 
 			if (_isFirst)
 			{
+				bool coldBlast = GetSkillForProjectile(projectile).Tree.HasPassive<ColdBlast>();
+
 				if (Main.myPlayer == projectile.owner)
 				{
 					int dmg = (int)(projectile.damage * 1.5f);
 					int type = ModContent.ProjectileType<ExplosionHitboxFriendly>();
-					Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, Vector2.Zero, type, dmg, 15, Main.myPlayer, 90, 90);
+					int proj = Projectile.NewProjectile(projectile.GetSource_FromAI(), projectile.Center, Vector2.Zero, type, dmg, 15, Main.myPlayer, 90, 90);
+
+					if (coldBlast)
+					{
+						Projectile newProj = Main.projectile[proj];
+						newProj.localAI[0] = BuffID.Chilled;
+						newProj.localAI[1] = 120;
+						newProj.GetGlobalProjectile<ElementalProjectile>().ColdDamage.ApplyOverride(0, 1);
+					}
 				}
 
-				ExplosionHitbox.VFX(projectile);
+				ExplosionHitbox.VFXPackage package = new(1);
+
+				if (coldBlast)
+				{
+					package = new ExplosionHitbox.VFXPackage(1, 20, 16, true, null, DustID.Smoke, DustID.IceTorch);
+				}
+
+				ExplosionHitbox.VFX(projectile, package);
 			}
+
+			// Stop the projectiles from going through tiles at all
+			RainTarget.Y -= 300;
 		}
 
 		private void NormalReposition(Projectile projectile)
 		{
-			Vector2 offset = -Vector2.UnitY.RotatedByRandom(0.6f);
+			Vector2 offset = -Vector2.UnitY.RotatedByRandom(GetSkillForProjectile(projectile).Tree.Specialization is PiercingPrecision ? 0.2f : 0.6f);
 			projectile.Center = RainTarget + offset * 400;
 			projectile.velocity = -offset * _originalMagnitude;
 
@@ -203,9 +277,9 @@ public class RainOfArrows : Skill
 				return;
 			}
 
-			if (GetSkill(projectile).Tree.HasPassive<FesteringSpores>())
+			if (GetSkillForProjectile(projectile).Tree.HasPassive<FesteringSpores>())
 			{
-				float count = GetSkill(projectile).Tree.CountStrength<MoldColony>() * 0.05f;
+				float count = GetSkillForProjectile(projectile).Tree.GetStrength<MoldColony>() * 0.05f;
 
 				if (Main.rand.NextFloat() < 0.05f + count && Main.myPlayer == projectile.owner)
 				{
@@ -215,7 +289,7 @@ public class RainOfArrows : Skill
 				}
 			}
 
-			if (GetSkill(projectile).Tree.CountStrength<LingeringPoison>() > 0 && Main.myPlayer == projectile.owner)
+			if (GetSkillForProjectile(projectile).Tree.GetStrength<LingeringPoison>() > 0 && Main.myPlayer == projectile.owner)
 			{
 				int type = ModContent.ProjectileType<LingeringPoison.SporeCloud>();
 				Vector2 velocity = Main.rand.NextVector2Circular(0.6f, 0.6f);
@@ -223,7 +297,7 @@ public class RainOfArrows : Skill
 			}
 		}
 
-		internal void SetRainProjectile(Projectile projectile, RainOfArrows skill, bool isFirst = false)
+		internal void SetRainProjectile(Projectile projectile, bool isFirst = false)
 		{
 			IsRainProjectile = true;
 			RainTarget = Main.MouseWorld;
@@ -232,9 +306,15 @@ public class RainOfArrows : Skill
 			_rainTimer = 0;
 			_isFirst = isFirst;
 
-			if (skill.Tree.Specialization is NaturesBarrage)
+			SkillSpecial spec = GetSkillForProjectile(projectile).Tree.Specialization;
+
+			if (spec is NaturesBarrage)
 			{
 				_poison = true;
+			}
+			else if (spec is PiercingPrecision)
+			{
+				_piercingProj = true;
 			}
 
 			projectile.tileCollide = false;
@@ -245,11 +325,32 @@ public class RainOfArrows : Skill
 			}
 		}
 
+		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (_piercingProj)
+			{
+				modifiers.ScalingArmorPenetration += 0.3f + GetSkillForProjectile(projectile).Tree.GetStrength<SharpenedTips>() * 0.1f;
+			}
+		}
+
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (_poison)
 			{
 				target.AddBuff(BuffID.Poisoned, 60 * 4);
+			}
+
+			SkillTree tree = GetSkillForProjectile(projectile).Tree;
+			ref Vector2? vine = ref target.GetGlobalNPC<CreepingVines.VineNPC>().Vined;
+
+			if (tree.HasPassive<SlicingShrapnel>())
+			{
+				target.AddBuff(BuffID.Bleeding, 60 * 3);
+			}
+
+			if (tree.HasPassive<CreepingVines>() && !target.immortal && !vine.HasValue)
+			{
+				vine = projectile.Center;
 			}
 		}
 
@@ -273,6 +374,9 @@ public class RainOfArrows : Skill
 				binaryWriter.WriteVector2(RainTarget);
 				binaryWriter.Write((Half)_originalMagnitude);
 				bitWriter.WriteBit(_poison);
+				bitWriter.WriteBit(_isFirst);
+				bitWriter.WriteBit(_piercingProj);
+				bitWriter.WriteBit(_ghost);
 			}
 		}
 
@@ -285,6 +389,9 @@ public class RainOfArrows : Skill
 				RainTarget = binaryReader.ReadVector2();
 				_originalMagnitude = (float)binaryReader.ReadHalf();
 				_poison = bitReader.ReadBit();
+				_isFirst = bitReader.ReadBit();
+				_piercingProj = bitReader.ReadBit();
+				_ghost = bitReader.ReadBit();
 			}
 		}
 	}

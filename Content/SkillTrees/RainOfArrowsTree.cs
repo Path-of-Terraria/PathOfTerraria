@@ -3,6 +3,7 @@ using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
 using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
+using Terraria.GameContent;
 
 namespace PathOfTerraria.Content.SkillTrees;
 
@@ -18,14 +19,22 @@ internal class RainOfArrowsTree : SkillTree
 		var linger = new LingeringPoison(this) { TreePos = new Vector2(-200, 100) };
 
 		AddNodes(anchor, natures);
-		AddNodes(natures, spores);
+		AddNodes(natures, spores, linger, new CreepingVines(this) { TreePos = new Vector2(-300, 0) });
 		AddNodes(spores, new MoldColony(this) { TreePos = new Vector2(-300, -100), MaxLevel = 2 }, 
 			new FungalSpread(this) { TreePos = new Vector2(-200, -200), MaxLevel = 2 });
-		AddNodes(natures, linger);
 		AddNodes(linger, new PowerfulSmog(this) { TreePos = new Vector2(-200, 200), MaxLevel = 2 }, 
 			new Megatoxin(this) { TreePos = new Vector2(-300, 100), MaxLevel = 2 });
 
-		var explosive = new ExplosiveVolley(this) { TreePos = new Vector2(0, 200) };
+		var explosive = new ExplosiveVolley(this) { TreePos = new Vector2(0, 100) };
+		var shattering = new ShatteringArrows(this) { TreePos = new Vector2(0, 200) };
 		AddNodes(anchor, explosive);
+		AddNodes(explosive, new ColdBlast(this) { TreePos = new Vector2(100, 100) }, shattering);
+		AddNodes(shattering, new ConcussiveBurst(this) { TreePos = new Vector2(-100, 200), MaxLevel = 3 }, new SlicingShrapnel(this) { TreePos = new Vector2(0, 300) });
+
+		var precision = new PiercingPrecision(this) { TreePos = new Vector2(200, 0) };
+		var sharp = new SharpenedTips(this) { TreePos = new Vector2(300, 0), MaxLevel = 2 };
+		AddNodes(anchor, precision);
+		AddNodes(precision, new Quickload(this) { TreePos = new Vector2(200, -100) }, sharp);
+		AddNodes(sharp, new TargetLock(this) { TreePos = new Vector2(300, 100) });
 	}
 }

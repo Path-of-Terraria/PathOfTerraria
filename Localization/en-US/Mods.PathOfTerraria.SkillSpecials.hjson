@@ -24,3 +24,8 @@ ExplosiveVolley: {
 	Name: Explosive Valley
 	Description: Arrows reposition with an explosion in a much wider range.
 }
+
+PiercingPrecision: {
+	Name: Piercing Precision
+	Description: Replace the rain of arrows with a quick barrage with increased armor piercing
+}

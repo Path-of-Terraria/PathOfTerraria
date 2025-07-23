@@ -75,7 +75,7 @@ internal class FesteringSpores(SkillTree tree) : SkillPassive(tree)
 			{
 				IsExploding = true;
 
-				float aoE = AreaOfEffect * (1 + Skill.Tree.CountStrength<FungalSpread>() * 0.1f);
+				float aoE = AreaOfEffect * (1 + Skill.Tree.GetStrength<FungalSpread>() * 0.1f);
 				Projectile.Resize((int)aoE, (int)aoE);
 				Projectile.Damage();
 				Projectile.Kill();
