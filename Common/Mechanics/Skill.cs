@@ -61,12 +61,7 @@ public abstract partial class Skill
 
 	private string GetTextureName()
 	{
-		if (Tree?.Specialization is not null)
-		{
-			return Tree.Specialization.Name;
-		}
-
-		return Name;
+		return Tree?.Specialization?.Name ?? Name;
 	}
 
 	private string GetLocalKey()

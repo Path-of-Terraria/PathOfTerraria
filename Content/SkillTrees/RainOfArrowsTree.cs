@@ -1,10 +1,9 @@
 ﻿using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Content.SkillPassives;
-using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
+using PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
-using Terraria.GameContent;
 
 namespace PathOfTerraria.Content.SkillTrees;
 

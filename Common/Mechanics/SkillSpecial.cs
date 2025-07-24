@@ -52,12 +52,14 @@ public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree)
 	public override void OnAllocate(Player player)
 	{
 		base.OnAllocate(player);
+		player.GetModPlayer<SkillTreePlayer>().SetSpecializationForSkill(Tree.ParentSkill, this);
 		Tree.Specialization = this;
 	}
 
 	public override void OnDeallocate(Player player)
 	{
 		base.OnDeallocate(player);
+		player.GetModPlayer<SkillTreePlayer>().SpecializationsBySkill.Remove(Tree.ParentSkill);
 		Tree.Specialization = null;
 	}
 

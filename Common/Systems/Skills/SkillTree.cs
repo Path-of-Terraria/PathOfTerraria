@@ -8,17 +8,19 @@ namespace PathOfTerraria.Common.Systems.Skills;
 
 public abstract class SkillTree : ILoadable
 {
-	public record struct PackedAugment(SkillAugment Augment, bool Unlocked);
 	public const int DefaultAugmentCount = 2;
+
+	public record struct PackedAugment(SkillAugment Augment, bool Unlocked);
 
 	/// <summary> The currently viewed skill tree. </summary>
 	internal static SkillTree Current;
 
 	public static readonly Dictionary<Type, SkillTree> TypeToSkillTree = [];
 
-	public List<SkillNode> Nodes = [];
 	/// <summary> Stores skill augments and whether they are unlocked. </summary>
 	public readonly List<PackedAugment> Augments = [];
+
+	public List<SkillNode> Nodes = [];
 
 	internal List<Edge> Edges = [];
 
@@ -68,44 +70,6 @@ public abstract class SkillTree : ILoadable
 				Edges.Add(new(c, list[0]));
 			}
 		}
-	}
-
-	/// <summary>
-	/// Counts the amount of stacks per passive.
-	/// </summary>
-	/// <typeparam name="T">The passive to check for.</typeparam>
-	/// <returns>The amount of levels in use for the given passive.</returns>
-	public int GetStrength<T>() where T : SkillPassive
-	{
-		int count = 0;
-
-		foreach (SkillNode node in Nodes)
-		{
-			if (node is T)
-			{
-				count += node.Level;
-			}
-		}
-
-		return count;
-	}
-
-	/// <summary>
-	/// Checks if the tree has the given passive enabled.
-	/// </summary>
-	/// <typeparam name="T">The passive to check for.</typeparam>
-	/// <returns>If the passive is enabled (if the level is > 0).</returns>
-	public bool HasPassive<T>() where T : SkillPassive
-	{
-		foreach (SkillNode node in Nodes)
-		{
-			if (node is T && node.Level > 0)
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	public virtual void SaveData(Skill skill, TagCompound tag)

@@ -1,6 +1,6 @@
 ﻿using Terraria.ID;
 
-namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
+namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 
 internal class SporeDebuff : ModBuff
 {

@@ -1,8 +1,9 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
-using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
-using PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
+using PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 using PathOfTerraria.Content.Skills.Ranged;
+using PathOfTerraria.Content.SkillTrees;
 using Terraria.DataStructures;
 
 namespace PathOfTerraria.Content.SkillSpecials.RainOfArrowsSpecials;
@@ -39,7 +40,7 @@ internal class PiercingPrecision(SkillTree tree) : SkillSpecial(tree)
 			Player player = Main.player[Projectile.owner];
 			Projectile.Center = Projectile.Center;
 
-			int rate = 10 - RainOfArrows.GetSkillForProjectile(Projectile).Tree.GetStrength<Quickload>() * 2;
+			int rate = 10 - Projectile.GetOwner().GetPassiveStrength<RainOfArrowsTree, Quickload>() * 2;
 
 			if (Projectile.timeLeft % rate == 0)
 			{

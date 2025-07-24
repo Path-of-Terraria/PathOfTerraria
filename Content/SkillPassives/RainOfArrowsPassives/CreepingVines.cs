@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.Skills;
 using ReLogic.Content;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
+namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 
 internal class CreepingVines(SkillTree tree) : SkillPassive(tree)
 {
@@ -18,7 +18,7 @@ internal class CreepingVines(SkillTree tree) : SkillPassive(tree)
 
 		public override void Load()
 		{
-			VineTex = ModContent.Request<Texture2D>("PathOfTerraria/Assets/SkillPassives/RainOfArrowsTree/CreepingVineVine");
+			VineTex = ModContent.Request<Texture2D>("PathOfTerraria/Assets/SkillPassives/RainOfArrowsPassives/CreepingVineVine");
 		}
 
 		public override bool PreAI(NPC npc)

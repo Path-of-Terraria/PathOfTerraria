@@ -1,14 +1,17 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Skills.Ranged;
+using PathOfTerraria.Content.SkillTrees;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 
-namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsTree;
+namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 
 internal class FesteringSpores(SkillTree tree) : SkillPassive(tree)
 {
@@ -75,7 +78,8 @@ internal class FesteringSpores(SkillTree tree) : SkillPassive(tree)
 			{
 				IsExploding = true;
 
-				float aoE = AreaOfEffect * (1 + Skill.Tree.GetStrength<FungalSpread>() * 0.1f);
+				Player player = Main.player[Projectile.owner];
+				float aoE = AreaOfEffect * (1 + player.GetPassiveStrength<RainOfArrowsTree, FungalSpread>() * 0.1f);
 				Projectile.Resize((int)aoE, (int)aoE);
 				Projectile.Damage();
 				Projectile.Kill();
