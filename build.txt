@@ -2,4 +2,4 @@ displayName = Path of Terraria
 author = ScottieKnowz & GabeHasWon
 modReferences = SubworldLibrary, HousingAPI
 dllReferences = NPCUtils, StructureHelper
-version = 0.1.24
+version = 0.1.26

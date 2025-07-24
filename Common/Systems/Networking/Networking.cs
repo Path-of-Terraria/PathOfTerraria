@@ -74,6 +74,26 @@ internal static class Networking
 		/// <c>byte player, short cooldown, short activeTime</c>
 		/// </summary>
 		SyncAltUse,
+
+		/// <summary>
+		/// Syncs all of one player's passives with everyone else + the server. Signature:<br/>
+		/// <c>byte player, string treeName, string nodeName, byte level, bool runLocally = false</c>
+		/// </summary>
+		SkillPassiveValue,
+
+		/// <summary>
+		/// Requests all other players to sync their skill passives. Signature:<br/>
+		/// <c>byte player</c>
+		/// </summary>
+		RequestOthersSkillPassives,
+
+		/// <summary>
+		/// Syncs all of one player's skill specializations with everyone else + the server. Signature:<br/>
+		/// <c>byte player, string skillName, string specName</c>
+		/// </summary>
+		SyncSkillSpecialization,
+
+		RequestOthersSkillSpecialization
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -190,14 +210,38 @@ internal static class Networking
 
 				break;
 
+			case Message.SkillPassiveValue:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SkillPassiveValueHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					SkillPassiveValueHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.SyncSkillSpecialization:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SyncSkillSpecializationHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					SyncSkillSpecializationHandler.ClientRecieve(reader);
+				}
+
+				break;
+
 			default:
 				throw null;
 		}
 	}
 
-	internal static ModPacket GetPacket(Message type)
+	internal static ModPacket GetPacket(Message type, byte capacity = 255)
 	{
-		ModPacket packet = PoTMod.Instance.GetPacket();
+		ModPacket packet = PoTMod.Instance.GetPacket(capacity);
 		packet.Write((byte)type);
 		return packet;
 	}

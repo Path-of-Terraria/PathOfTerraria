@@ -69,7 +69,6 @@ internal class SunspotBatching : ModSystem
 			Texture2D texture = Sunspots[spot.Who % 3].Value;
 			
 			Main.EntitySpriteDraw(texture, position, null, Color.White, spot.Rotation, texture.Size() / 2f, spot.Scale, SpriteEffects.None);
-
 		}
 
 		Main.spriteBatch.End();

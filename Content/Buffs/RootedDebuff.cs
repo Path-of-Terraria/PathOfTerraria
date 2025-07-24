@@ -35,7 +35,7 @@ public sealed class RootedDebuff : ModBuff
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{
-		npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier = 1;
+		npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += 1;
 		npc.GetGlobalNPC<RootedNPC>().RootedImmuneTime = 3 * 60;
 	}
 

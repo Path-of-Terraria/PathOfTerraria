@@ -7,12 +7,12 @@ namespace PathOfTerraria.Common.Mechanics;
 public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree)
 {
 	public override string TexturePath => $"{PoTMod.ModName}/Assets/SkillSpecials/" + Name;
-	public override string DisplayName => Language.GetTextValue("Mods.PathOfTerraria.SkillSpecials." + Name + ".Name");
+	public override string DisplayName => Language.GetOrRegister("Mods.PathOfTerraria.SkillSpecials." + Name + ".Name").Value;
 	public override string DisplayTooltip
 	{
 		get
 		{
-			string tooltip = Language.GetTextValue("Mods.PathOfTerraria.SkillSpecials." + Name + ".Description");
+			string tooltip = Language.GetOrRegister("Mods.PathOfTerraria.SkillSpecials." + Name + ".Description").Value;
 			tooltip += "\n\n" + Language.GetTextValue($"Mods.{PoTMod.Instance.Name}.SkillSpecials.OneLine");
 
 			return tooltip;
@@ -52,12 +52,14 @@ public abstract class SkillSpecial(SkillTree tree) : SkillNode(tree)
 	public override void OnAllocate(Player player)
 	{
 		base.OnAllocate(player);
+		player.GetModPlayer<SkillTreePlayer>().SetSpecializationForSkill(Tree.ParentSkill, this);
 		Tree.Specialization = this;
 	}
 
 	public override void OnDeallocate(Player player)
 	{
 		base.OnDeallocate(player);
+		player.GetModPlayer<SkillTreePlayer>().SpecializationsBySkill.Remove(Tree.ParentSkill);
 		Tree.Specialization = null;
 	}
 

@@ -64,11 +64,7 @@ internal class SkillSelectionPanel : SmartUiElement
 
 		List<SkillNode> list = SkillTree.Current.Nodes;
 		int spareSlotCounter = 0;
-
-		for (int i = 0; i < SkillTree.DefaultAugmentCount; i++)
-		{
-			_skillTreeInnerPanel.Append(new AugmentSlotElement(spareSlotCounter++, SkillTree.Current.Augments[i].Unlocked));
-		}
+		int count = Math.Min(SkillTree.DefaultAugmentCount, SkillTree.Current.Augments.Count);
 
 		foreach (SkillNode node in list)
 		{
@@ -77,6 +73,11 @@ internal class SkillSelectionPanel : SmartUiElement
 			element.Top.Set(node.TreePos.Y - node.Size.Y / 2, 0.5f);
 
 			_skillTreeInnerPanel.AppendAsDraggable(element);
+		}
+
+		for (int i = 0; i < count; i++)
+		{
+			_skillTreeInnerPanel.Append(new AugmentSlotElement(spareSlotCounter++, SkillTree.Current.Augments[i].Unlocked));
 		}
 
 		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))

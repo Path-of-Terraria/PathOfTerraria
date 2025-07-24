@@ -4,7 +4,7 @@ using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Skills.Magic;
 using Terraria.GameContent.Drawing;
 
-namespace PathOfTerraria.Content.SkillPassives;
+namespace PathOfTerraria.Content.SkillPassives.NovaTree;
 
 internal class ScorchingTouch(SkillTree tree) : SkillPassive(tree)
 {

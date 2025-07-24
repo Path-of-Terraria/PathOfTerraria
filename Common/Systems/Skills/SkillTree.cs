@@ -8,17 +8,19 @@ namespace PathOfTerraria.Common.Systems.Skills;
 
 public abstract class SkillTree : ILoadable
 {
-	public record struct PackedAugment(SkillAugment Augment, bool Unlocked);
 	public const int DefaultAugmentCount = 2;
+
+	public record struct PackedAugment(SkillAugment Augment, bool Unlocked);
 
 	/// <summary> The currently viewed skill tree. </summary>
 	internal static SkillTree Current;
 
 	public static readonly Dictionary<Type, SkillTree> TypeToSkillTree = [];
 
-	public List<SkillNode> Nodes = [];
 	/// <summary> Stores skill augments and whether they are unlocked. </summary>
 	public readonly List<PackedAugment> Augments = [];
+
+	public List<SkillNode> Nodes = [];
 
 	internal List<Edge> Edges = [];
 
@@ -53,9 +55,14 @@ public abstract class SkillTree : ILoadable
 		for (int i = 0; i < list.Length; i++)
 		{
 			SkillNode c = list[i];
+
 			if (!Nodes.Contains(c))
 			{
 				Nodes.Add(c);
+
+				// Invokes each so we can register each value automatically as both call GetOrRegister
+				_ = c.DisplayName;
+				_ = c.DisplayTooltip;
 			}
 
 			if (i != 0)
@@ -89,11 +96,20 @@ public abstract class SkillTree : ILoadable
 		var augments = Augments.ToList();
 		tag["augmentNames"] = augments.Select(x => x.Augment?.Name ?? "null").ToList();
 		tag["augmentUnlocks"] = augments.Select(x => x.Unlocked).ToList();
-
-		Augments.Clear();
 	}
 
-	public virtual void LoadData(Skill skill, TagCompound tag)
+	public virtual void LoadData(Skill skill, TagCompound tag, Player loadingPlayer)
+	{
+		// Data must be delayed as SkillTrees are singletons.
+		// This means multiple players modifying one tree would just override everyone but the last player's information.
+		// We delay it here so it only loads on world load, avoiding the issue.
+		loadingPlayer.GetModPlayer<SkillTreePlayer>().AddCache(new SkillTreePlayer.CachedSkillTreeData(this, skill, tag));
+	}
+
+	/// <summary>
+	/// Loads data for a skill from a tag.
+	/// </summary>
+	internal void LoadDelayedData(Skill skill, TagCompound tag)
 	{
 		string skillName = skill.Name;
 
@@ -106,14 +122,11 @@ public abstract class SkillTree : ILoadable
 		}
 
 		var special = (SkillSpecial)Nodes.FirstOrDefault(x => x is SkillSpecial && x.Name == tag.GetString("special"));
-		if (special != default)
-		{
-			Specialization = special;
-		}
+		Specialization = special;
 
 		IList<string> augmentNames = tag.GetList<string>("augmentNames");
 		IList<bool> augmentUnlocked = tag.GetList<bool>("augmentUnlocks");
-		int count = Math.Max(augmentUnlocked.Count, DefaultAugmentCount);
+		int count = Math.Min(augmentUnlocked.Count, DefaultAugmentCount);
 
 		for (int c = 0; c < count; c++)
 		{
