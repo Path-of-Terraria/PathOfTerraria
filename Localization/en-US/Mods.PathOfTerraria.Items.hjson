@@ -291,8 +291,10 @@ BloodOath: {
 
 GrimoireItem: {
 	DisplayName: Grimoire
-	AltUseDescription: Right click to open up the Menagerie.
-	Description: A small books holds big secrets.
+	AltUseDescription: Right click while holding to open up the Menagerie.
+	Control: Control a {0} with your mouse.
+	ControlNone: "[c/999999:No summon selected! Select one in the Menagerie.]"
+	Description: "'A small books holds big secrets.'"
 	Tooltip: ""
 }
 

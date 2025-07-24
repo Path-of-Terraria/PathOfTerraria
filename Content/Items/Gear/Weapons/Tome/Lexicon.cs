@@ -17,5 +17,6 @@ internal class Lexicon : Spellbook
 		base.SetDefaults();
 
 		Item.damage = 35;
+		Item.mana = 14;
 	}
 }

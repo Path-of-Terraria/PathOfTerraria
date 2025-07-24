@@ -16,6 +16,8 @@ using Terraria.UI;
 using Terraria.UI.Chat;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.Items.Placeable;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.UI.Guide;
 
@@ -116,6 +118,8 @@ internal class TutorialUIState : UIState
 			{
 				Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
 			}
+			
+			Item.NewItem(new EntitySource_Misc("Quest"), Main.LocalPlayer.Bottom, ModContent.ItemType<ArcaneObeliskItem>());
 
 			IncrementStep();
 		});
@@ -150,47 +154,18 @@ internal class TutorialUIState : UIState
 			FromLoad = false;
 		}
 
-		if (Step == 1 && SmartUiLoader.GetUiState<TreeState>().Visible)
-		{
-			IncrementStep();
-		}
-		else if (Step == 2 && checks.Contains(TutorialCheck.AllocatedPassive) && checks.Contains(TutorialCheck.DeallocatedPassive))
-		{
-			IncrementStep();
-		}
-		else if (Step == 3 && SmartUiLoader.GetUiState<TreeState>().Visible && SmartUiLoader.GetUiState<TreeState>().TabPanel.ActiveTab == "SkillTree")
-		{
-			IncrementStep();
-		}
-		else if (Step == 4 && checks.Contains(TutorialCheck.SelectedSkill))
-		{
-			IncrementStep();
-		}
-		else if (Step == 5 && !SmartUiLoader.GetUiState<TreeState>().Visible)
-		{
-			IncrementStep();
-		}
-		else if (Step == 6 && checks.Contains(TutorialCheck.UsedASkill))
-		{
-			IncrementStep();
-		}
-		else if (Step == 8 && checks.Contains(TutorialCheck.SwappedWeapon))
-		{ 
-			IncrementStep();
-		}
-		else if (Step == 9 && !SmartUiLoader.GetUiState<PlayerStatUIState>().Visible && checks.Contains(TutorialCheck.OpenedCharSheet))
-		{
-			IncrementStep();
-		}
-		else if (Step == 10 && !SmartUiLoader.GetUiState<QuestsUIState>().Visible && checks.Contains(TutorialCheck.OpenedQuestBook))
-		{
-			IncrementStep();
-		}
-		else if (Step == 11 && SubworldSystem.Current is RavencrestSubworld)
-		{
-			IncrementStep();
-		}
-		else if (Step == 12 && SubworldSystem.Current is null)
+		if (Step == 1 && SmartUiLoader.GetUiState<TreeState>().Visible
+		    || Step == 2 && checks.Contains(TutorialCheck.AllocatedPassive) && checks.Contains(TutorialCheck.DeallocatedPassive) 
+		    || Step == 3 && SmartUiLoader.GetUiState<TreeState>().Visible && SmartUiLoader.GetUiState<TreeState>().TabPanel.ActiveTab == "SkillTree" 
+		    || Step == 4 && checks.Contains(TutorialCheck.SelectedSkill) 
+		    || Step == 5 && !SmartUiLoader.GetUiState<TreeState>().Visible 
+		    || Step == 6 && checks.Contains(TutorialCheck.UsedASkill) 
+		    || Step == 8 && checks.Contains(TutorialCheck.SwappedWeapon) 
+		    || Step == 9 && !SmartUiLoader.GetUiState<PlayerStatUIState>().Visible && checks.Contains(TutorialCheck.OpenedCharSheet) 
+		    || Step == 10 && !SmartUiLoader.GetUiState<QuestsUIState>().Visible && checks.Contains(TutorialCheck.OpenedQuestBook) 
+		    || Step == 11 && SubworldSystem.Current is RavencrestSubworld 
+		    || Step == 12 && SubworldSystem.Current is null
+		    )
 		{
 			IncrementStep();
 		}
@@ -233,6 +208,10 @@ internal class TutorialUIState : UIState
 					SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<RavenNPC>(), plr.Center - new Vector2(0, 250));
 				}
 			}
+		}
+		else if (Step == 12)
+		{
+			plr.QuickSpawnItem(Entity.GetSource_NaturalSpawn(), ModContent.ItemType<ArcaneObeliskItem>());
 		}
 		else if (Step == 13)
 		{

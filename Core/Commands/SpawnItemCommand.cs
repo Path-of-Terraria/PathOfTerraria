@@ -1,5 +1,9 @@
-﻿using PathOfTerraria.Common.ItemDropping;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 namespace PathOfTerraria.Core.Commands;
 

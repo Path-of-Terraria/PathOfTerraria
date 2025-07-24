@@ -63,7 +63,7 @@ internal class SyncedCustomDrops : GlobalNPC
 		{
 			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<TomeOfTheElders>(), 10);
 		}
-		else if (npc.type is NPCID.Zombie or NPCID.DemonEye)
+		else if (npc.type is NPCID.Zombie or NPCID.DemonEye || NPCID.Sets.Zombies[npc.type] || NPCID.Sets.DemonEyes[npc.type])
 		{
 			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<LunarShard>(), 5);
 		}

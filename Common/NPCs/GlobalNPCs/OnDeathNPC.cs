@@ -1,8 +1,6 @@
-﻿using PathOfTerraria.Common.World.Passes;
-using SubworldLibrary;
-using Terraria.ID;
+﻿using Terraria.ID;
 
-namespace PathOfTerraria.Common.NPCs;
+namespace PathOfTerraria.Common.NPCs.GlobalNPCs;
 
 /// <summary>
 /// Handles death effects for boss NPCs that are delayed. 

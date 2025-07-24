@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class ResistItemAffix : ItemAffix
+internal abstract class ResistItemAffix : ItemAffix
 {
 	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{

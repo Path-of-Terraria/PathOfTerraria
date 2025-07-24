@@ -82,7 +82,7 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
+		//button = Language.GetTextValue("LegacyInterface.28");
 
 		Quest quest = DetermineNewestQuest();
 		button2 = !quest.CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
@@ -102,7 +102,7 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 	{
 		if (firstButton)
 		{
-			shopName = "Shop";
+			//shopName = "Shop";
 			return;
 		}
 
@@ -121,13 +121,13 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 		}
 	}
 
-	public override void AddShops()
-	{
-		new NPCShop(Type)
-			.Add<WoodenBow>()
-			.Add<WoodenShortBow>()
-			.Register();
-	}
+	//public override void AddShops()
+	//{
+	//	new NPCShop(Type)
+	//		.Add<WoodenBow>()
+	//		.Add<WoodenShortBow>()
+	//		.Register();
+	//}
 
 	public override ITownNPCProfile TownNPCProfile()
 	{

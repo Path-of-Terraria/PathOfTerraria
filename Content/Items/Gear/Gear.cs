@@ -37,4 +37,14 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 			TooltipUI.SetName($"[c/{tooltipLines[0].Color.Hex3()}:{tooltipLines[0].Text}]");
 		}
 	}
+
+	/// <summary>
+	/// Allows the modder to modify incoming lines added by Path of Terraria which may not be accessible in <see cref="ModItem.ModifyTooltips(List{TooltipLine})"/>.
+	/// </summary>
+	/// <param name="line">The line being added.</param>
+	/// <returns>Whether the line will be added or not.</returns>
+	public virtual bool ModifyNewTooltipLine(TooltipLine line)
+	{
+		return true;
+	}
 }

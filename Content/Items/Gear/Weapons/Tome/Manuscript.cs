@@ -16,6 +16,7 @@ internal class Manuscript : Spellbook
 	{
 		base.SetDefaults();
 
-		Item.damage = 20;
+		Item.damage = 16;
+		Item.mana = 8;
 	}
 }

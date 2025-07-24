@@ -63,7 +63,7 @@ public class ElementalPlayer : ModPlayer
 		sourceDamage.Flat += cold.DamageBonus * (1f - ColdResistance);
 		sourceDamage.Flat += lightning.DamageBonus * (1f - LightningResistance);
 
-		if (DebugMessages && fire.Valid || cold.Valid || lightning.Valid)
+		if (DebugMessages && (fire.Valid || cold.Valid || lightning.Valid))
 		{
 			Main.NewText("[DEBUG] Elemental Damage Modifiers:");
 			Main.NewText($"  Fire:      Conversion: {fire.DamageConversion * 100}%, Flat: {fire.DamageBonus:0.##}, Resistance: {FireResistance * 100}%");
