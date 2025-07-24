@@ -8,7 +8,8 @@ using Terraria.ModLoader.IO;
 namespace PathOfTerraria.Common.Systems.Skills;
 
 /// <summary>
-/// Used to delay loading trees, and to sync skill tree information safely.
+/// Used to delay loading trees, and to sync skill tree information.<br/>
+/// Most of the values have shorthand in <see cref="EntityExtensions"/>, such as <see cref="EntityExtensions.GetPassiveStrength{TTree, TPassive}(Player)"/>.
 /// </summary>
 internal class SkillTreePlayer : ModPlayer
 {
@@ -35,7 +36,21 @@ internal class SkillTreePlayer : ModPlayer
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
+			// Tell everyone what I have
 			SyncAllPassives();
+			SyncAllSpecializations();
+			 
+			// and ask everyone what they have
+			RequestOtherSkillSpecializationHandler.Send((byte)Player.whoAmI);
+			RequestOtherSkillPassivesHandler.Send((byte)Player.whoAmI);
+		}
+	}
+
+	internal void SyncAllSpecializations()
+	{
+		foreach (KeyValuePair<Type, SkillSpecial> pair in SpecializationsBySkill)
+		{
+			SyncSkillSpecializationHandler.Send((byte)Player.whoAmI, pair.Key.FullName, pair.Value.GetType().FullName);
 		}
 	}
 
@@ -53,6 +68,12 @@ internal class SkillTreePlayer : ModPlayer
 		}
 	}
 
+	/// <summary>
+	/// Sets the specialization for the given skill type. Used for syncing.
+	/// </summary>
+	/// <param name="type">Skill type.</param>
+	/// <param name="spec">Specialization to set.</param>
+	/// <param name="sync">Whether to sync this value setting or not.</param>
 	internal void SetSpecializationForSkill(Type type, SkillSpecial spec, bool sync = true)
 	{
 		if (spec is null)
@@ -128,6 +149,12 @@ internal class SkillTreePlayer : ModPlayer
 		return GetPassiveStrength<TTree, TPassive>() > 0;
 	}
 
+	/// <summary>
+	/// Checks if the given skill's specialization is <typeparamref name="TSpecialization"/>.
+	/// </summary>
+	/// <typeparam name="TSkill">The skill to reference.</typeparam>
+	/// <typeparam name="TSpecialization">The specialization to match for.</typeparam>
+	/// <returns>If the specialization for <typeparamref name="TSkill"/> is <typeparamref name="TSpecialization"/>.</returns>
 	internal bool HasSpecialization<TSkill, TSpecialization>() where TSkill : Skill where TSpecialization : SkillSpecial
 	{
 		if (!SpecializationsBySkill.TryGetValue(typeof(TSkill), out SkillSpecial spec))
@@ -138,9 +165,14 @@ internal class SkillTreePlayer : ModPlayer
 		return spec is TSpecialization;
 	}
 
+	/// <summary>
+	/// Gets the specialization currently on <typeparamref name="TSkill"/>, if any. Returns null if there isn't one.
+	/// </summary>
+	/// <typeparam name="TSkill">The skill to get the specialization of.</typeparam>
+	/// <returns>The skill's specialization, if any.</returns>
 	internal SkillSpecial GetSpecialization<TSkill>() where TSkill : Skill
 	{
-		if (!SpecializationsBySkill.TryGetValue(typeof(TSkill), out SkillSpecial spec))
+		if (SpecializationsBySkill.TryGetValue(typeof(TSkill), out SkillSpecial spec))
 		{
 			return spec;
 		}
@@ -209,6 +241,13 @@ internal class SkillTreePlayer : ModPlayer
 		}
 	}
 
+	/// <summary>
+	///	Gets the info for and calls <see cref="SetSpecializationForSkill(Type, SkillSpecial, bool)"/> 
+	///	based on the <see cref="Type.FullName"/> of the specialization and skill.
+	/// </summary>
+	/// <param name="specName"><see cref="Type.FullName"/> of the specialization.</param>
+	/// <param name="skillName"><see cref="Type.FullName"/> of the skill.</param>
+	/// <param name="sync">Whether this should call sync on <see cref="SetSpecializationForSkill(Type, SkillSpecial, bool)"/>.</param>
 	internal void AddSkillSpecBasedOnTypeNames(string specName, string skillName, bool sync = true)
 	{
 		Assembly assembly = GetType().Assembly;

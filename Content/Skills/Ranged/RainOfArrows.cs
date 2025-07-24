@@ -2,8 +2,6 @@
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ElementalDamage;
-using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Gores.Misc;
 using PathOfTerraria.Content.Projectiles.Utility;
@@ -28,20 +26,10 @@ public class RainOfArrows : Skill
 
 	public override int MaxLevel => 3;
 
-	public static Skill GetSkillForProjectile(Projectile projectile)
-	{
-		if (Main.player[projectile.owner].GetModPlayer<SkillCombatPlayer>().TryGetSkill<RainOfArrows>(out Skill skill))
-		{
-			return skill;
-		}
-
-		return GetAndPrepareSkill<RainOfArrows>();
-	}
-
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = 2 * 60;
+		Cooldown = MaxCooldown = 8 * 60;
 		ManaCost = 20;
 		Duration = 0;
 		WeaponType = ItemType.Ranged;
@@ -49,9 +37,12 @@ public class RainOfArrows : Skill
 
 	public override void UseSkill(Player player)
 	{
-		base.UseSkill(player);
+		if (!player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int ammo, true))
+		{
+			return;
+		}
 
-		player.PickAmmo(player.HeldItem, out int projToShoot, out float speed, out int damage, out float knockBack, out int ammo, true);
+		base.UseSkill(player);
 
 		if (player.HeldItem.ModItem is not null)
 		{
@@ -164,27 +155,7 @@ public class RainOfArrows : Skill
 
 					if (projectile.GetOwner().HasTreePassive<RainOfArrowsTree, TargetLock>())
 					{
-						NPC closest = null;
-
-						foreach (NPC npc in Main.ActiveNPCs)
-						{
-							float curDist = npc.DistanceSQ(projectile.Center);
-
-							if (npc.CanBeChasedBy() && curDist < 600 * 600 && (closest is null || curDist < closest.DistanceSQ(projectile.Center)))
-							{
-								closest = npc;
-							}
-						}
-
-						if (closest != null)
-						{
-							projectile.velocity += projectile.DirectionTo(closest.Center) * new Vector2(0.2f, 0.005f);
-
-							if (projectile.velocity.LengthSquared() > _originalMagnitude * _originalMagnitude)
-							{
-								projectile.velocity = projectile.velocity.SafeNormalize(Vector2.Zero) * _originalMagnitude;
-							}
-						}
+						TargetLockHoming(projectile);
 					}
 				}
 				else
@@ -219,21 +190,55 @@ public class RainOfArrows : Skill
 			return true;
 		}
 
+		private void TargetLockHoming(Projectile projectile)
+		{
+			NPC closest = null;
+
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				float curDist = npc.DistanceSQ(projectile.Center);
+
+				if (npc.CanBeChasedBy() && curDist < 600 * 600 && (closest is null || curDist < closest.DistanceSQ(projectile.Center)))
+				{
+					closest = npc;
+				}
+			}
+
+			if (closest != null)
+			{
+				projectile.velocity += projectile.DirectionTo(closest.Center) * new Vector2(0.2f, 0.005f);
+
+				if (projectile.velocity.LengthSquared() > _originalMagnitude * _originalMagnitude)
+				{
+					projectile.velocity = projectile.velocity.SafeNormalize(Vector2.Zero) * _originalMagnitude;
+				}
+			}
+		}
+
 		private void ExplosiveReposition(Projectile projectile)
 		{
-			Vector2 offset = -Vector2.UnitY.RotatedByRandom(0.01f);
-			projectile.Center = RainTarget + offset * 250;
+			if (projectile.owner == Main.myPlayer)
+			{
+				Vector2 offset = -Vector2.UnitY.RotatedByRandom(0.01f);
+				projectile.Center = RainTarget + offset * 200;
 
-			float originalLength = projectile.velocity.Length();
-			Vector2 velocity = new Vector2(0, WorldGen.genRand.NextFloat(_originalMagnitude * 0.8f, _originalMagnitude * 1.5f)).RotatedByRandom(MathHelper.PiOver2 * 0.8f);
-			projectile.velocity = velocity;
+				float originalLength = projectile.velocity.Length();
+				Vector2 velocity = new Vector2(0, WorldGen.genRand.NextFloat(_originalMagnitude * 0.8f, _originalMagnitude * 1.5f)).RotatedByRandom(MathHelper.PiOver2 * 0.8f);
+				projectile.velocity = velocity;
+
+				// Stop the projectiles from going through tiles at all
+				RainTarget.Y -= 300;
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);
+				}
+			}
 
 			for (int i = 0; i < 3; ++i)
 			{
-				Dust.NewDust(projectile.Center, 1, 1, DustID.AncientLight, velocity.X, velocity.Y);
+				Dust.NewDust(projectile.Center, 1, 1, DustID.AncientLight, 0, 2);
 			}
-
-			projectile.netUpdate = true;
 
 			if (_isFirst)
 			{
@@ -263,13 +268,15 @@ public class RainOfArrows : Skill
 
 				ExplosionHitbox.VFX(projectile, package);
 			}
-
-			// Stop the projectiles from going through tiles at all
-			RainTarget.Y -= 300;
 		}
 
 		private void NormalReposition(Projectile projectile)
 		{
+			if (Main.myPlayer != projectile.owner)
+			{
+				return;
+			}
+
 			Vector2 offset = -Vector2.UnitY.RotatedByRandom(_piercingProj ? 0.2f : 0.6f);
 			projectile.Center = RainTarget + offset * 400;
 			projectile.velocity = -offset * _originalMagnitude;
@@ -360,7 +367,6 @@ public class RainOfArrows : Skill
 			}
 
 			Player player = Main.player[projectile.owner];
-			SkillTree tree = GetSkillForProjectile(projectile).Tree;
 			ref Vector2? vine = ref target.GetGlobalNPC<CreepingVines.VineNPC>().Vined;
 
 			if (player.HasTreePassive<RainOfArrowsTree, SlicingShrapnel>())

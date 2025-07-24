@@ -87,7 +87,13 @@ internal static class Networking
 		/// </summary>
 		RequestOthersSkillPassives,
 
+		/// <summary>
+		/// Syncs all of one player's skill specializations with everyone else + the server. Signature:<br/>
+		/// <c>byte player, string skillName, string specName</c>
+		/// </summary>
 		SyncSkillSpecialization,
+
+		RequestOthersSkillSpecialization
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

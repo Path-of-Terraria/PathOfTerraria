@@ -1,8 +1,5 @@
-using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
-using Stubble.Core.Classes;
 using System.IO;
-using System.Reflection;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
@@ -45,6 +42,6 @@ internal static class SyncSkillSpecializationHandler
 	private static void SetSkillOnPlayer(byte target, string skillName, string specName)
 	{
 		Player player = Main.player[target];
-		player.GetModPlayer<SkillTreePlayer>().AddSkillSpecBasedOnTypeNames(specName, skillName);
+		player.GetModPlayer<SkillTreePlayer>().AddSkillSpecBasedOnTypeNames(specName, skillName, false);
 	}
 }

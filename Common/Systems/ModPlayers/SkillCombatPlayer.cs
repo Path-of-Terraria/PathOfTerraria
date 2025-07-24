@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.UI.Guide;
 using System.Collections.Generic;
 using System.Linq;

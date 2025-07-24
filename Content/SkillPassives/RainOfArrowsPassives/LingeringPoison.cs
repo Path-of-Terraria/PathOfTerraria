@@ -1,7 +1,6 @@
 ﻿using PathOfTerraria.Common;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
-using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Content.SkillTrees;
@@ -41,7 +40,7 @@ internal class LingeringPoison(SkillTree tree) : SkillPassive(tree)
 			}
 
 			Projectile.velocity *= 0.999f;
-			Projectile.Opacity = 1 - Timer++ / MaxTimeLeft;
+			Projectile.Opacity = 1 - ++Timer / MaxTimeLeft;
 			Projectile.timeLeft = 2;
 
 			if (Timer > MaxTimeLeft)

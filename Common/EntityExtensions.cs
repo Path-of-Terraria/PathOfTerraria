@@ -31,11 +31,15 @@ public static class EntityExtensions
 		return (entity.Center - target).SafeNormalize(defaultValue ?? Vector2.Zero);
 	}
 
+	/// <inheritdoc cref="SkillTreePlayer.GetSpecialization{TSkill}"/>
+	/// <param name="player">The player being referenced.</param>
 	internal static SkillSpecial GetSkillSpecialization<TSkill>(this Player player) where TSkill : Skill
 	{
 		return player.GetModPlayer<SkillTreePlayer>().GetSpecialization<TSkill>();
 	}
 
+	/// <inheritdoc cref="SkillTreePlayer.HasSpecialization{TSkill, TSpecialization}"/>
+	/// <param name="player">The player being referenced.</param>
 	internal static bool HasSkillSpecialization<TSkill, TSpecialization>(this Player player) where TSkill : Skill where TSpecialization : SkillSpecial
 	{
 		return player.GetModPlayer<SkillTreePlayer>().HasSpecialization<TSkill, TSpecialization>();
