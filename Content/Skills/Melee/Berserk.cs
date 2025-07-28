@@ -12,9 +12,9 @@ public class Berserk : Skill
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = MaxCooldown = (60 - 5 * Level) * 60;
+		Cooldown = MaxCooldown = (35 - 5 * Level) * 60;
 		ManaCost = 10 + 5 * level;
-		Duration = (15 + 5 * Level) * 60;
+		Duration = ((10 * Level) * 60) / 2;
 		WeaponType = ItemType.Sword;
 	}
 
