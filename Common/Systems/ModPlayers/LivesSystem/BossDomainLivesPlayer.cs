@@ -4,13 +4,13 @@ using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Systems.ModPlayers;
+namespace PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 
-internal class BossDomainPlayer : ModPlayer
+internal class BossDomainLivesPlayer : ModPlayer
 {
 	public bool InDomain = false;
+	public int LivesLeft = 0;
 
-	private int _livesLeft = 0;
 	private int _deadTime = 0;
 
 	public override void Load()
@@ -20,17 +20,17 @@ internal class BossDomainPlayer : ModPlayer
 
 	private static void UpdateGhost(On_Player.orig_Ghost orig, Player self)
 	{
-		self.GetModPlayer<BossDomainPlayer>().ResetEffects();
+		self.GetModPlayer<BossDomainLivesPlayer>().ResetEffects();
 
 		orig(self);
 
-		if (self.GetModPlayer<BossDomainPlayer>().InDomain)
+		if (self.GetModPlayer<BossDomainLivesPlayer>().InDomain)
 		{
 			self.respawnTimer++;
 
-			if (++self.GetModPlayer<BossDomainPlayer>()._deadTime > 360)
+			if (++self.GetModPlayer<BossDomainLivesPlayer>()._deadTime > 360)
 			{
-				self.GetModPlayer<BossDomainPlayer>()._deadTime = 0;
+				self.GetModPlayer<BossDomainLivesPlayer>()._deadTime = 0;
 				SubworldSystem.Exit();
 			}
 		}
@@ -53,9 +53,19 @@ internal class BossDomainPlayer : ModPlayer
 		InDomain = inDomain;
 	}
 
+	public override bool CanBeHitByNPC(NPC npc, ref int cooldownSlot)
+	{
+		return !InDomain || !Player.ghost;
+	}
+
+	public override bool CanBeHitByProjectile(Projectile proj)
+	{
+		return !InDomain || !Player.ghost;
+	}
+
 	public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
 	{
-		if (InDomain && --_livesLeft > 0)
+		if (InDomain && --LivesLeft > 0)
 		{
 			Player.statLife = Player.statLifeMax2;
 			Player.Teleport(new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates(), TeleportationStyleID.RodOfDiscord);
@@ -80,12 +90,12 @@ internal class BossDomainPlayer : ModPlayer
 			Player.deadForGood = false;
 		}
 
-		_livesLeft = 0;
+		LivesLeft = 0;
 	}
 
 	private void SetInDomain()
 	{
-		_livesLeft = GetLivesPerPlayer();
+		LivesLeft = GetLivesPerPlayer();
 	}
 
 	public static int GetLivesPerPlayer()

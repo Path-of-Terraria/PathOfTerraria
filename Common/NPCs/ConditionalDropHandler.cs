@@ -62,7 +62,11 @@ internal class ConditionalDropHandler : GlobalNPC
 	{
 		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior)
 		{
-			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<TomeOfTheElders>(), 10);
+			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<TomeOfTheElders>(), 8);
+		}
+		else if (npc.type is NPCID.Zombie or NPCID.DemonEye || NPCID.Sets.Zombies[npc.type] || NPCID.Sets.DemonEyes[npc.type])
+		{
+			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<LunarShard>(), 2);
 		}
 	}
 

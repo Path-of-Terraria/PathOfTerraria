@@ -34,7 +34,15 @@ internal class EoCQuest : Quest
 			new ParallelQuestStep(
 			[
 				new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.EoCQuestLine"),
-					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>())),
+					null, false, (npc) => 
+					{
+						int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>());
+
+						if (Main.netMode == NetmodeID.MultiplayerClient)
+						{
+							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+						}
+					}),
 				new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.QuestLunar"),
 					[
 						new GiveItem(5, ModContent.ItemType<LunarShard>())
@@ -50,6 +58,11 @@ internal class EoCQuest : Quest
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LunarObject>());
 					Main.item[item].shimmered = true; // So it doesn't immediately shatter + cool effect
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
 				}),
 			new KillCount(NPCID.EyeofCthulhu, 1, this.GetLocalization("Kill.EoC")),
 			new ActionStep((_, _) =>

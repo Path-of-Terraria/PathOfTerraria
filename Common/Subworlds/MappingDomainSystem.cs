@@ -66,6 +66,7 @@ public class MappingDomainSystem : ModSystem
 			{
 				tag.Add("pair" + id + "Tier", (byte)tier);
 				tag.Add("pair" + id + "Count", (short)count);
+				id++;
 			}
 		}
 

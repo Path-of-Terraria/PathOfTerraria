@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -10,6 +9,8 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Skills.Melee;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
+using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -45,7 +46,13 @@ internal class BlacksmithStartQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Forge");
 
 				int npc = NPC.FindFirstNPC(ModContent.NPCType<BlacksmithNPC>());
-				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
+				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+				}
+
 				return true;
 			}),
 			new KillCount(static npc => NPCID.Sets.Zombies[npc.type], 15, this.GetLocalization("Kill.Zombies")),

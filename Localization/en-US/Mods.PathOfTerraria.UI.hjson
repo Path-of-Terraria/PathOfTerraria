@@ -12,6 +12,7 @@ Gear: {
 }
 
 BaseDamage: Base Damage: {0}
+Lives: lives left
 
 StatUI: {
 	Level: Level
@@ -30,6 +31,12 @@ StatUI: {
 	FireResistance: Fire Resistance
 	ColdResistance: Cold Resistance
 	LightningResistance: Lightning Resistance
+
+	Help: {
+		Strength: Grants 5 additional max health per 10 points
+		Dexterity: Grants 1% additional global attack speed per 10 points
+		Intelligence: Grants 5 additional max mana per 10 points
+	}
 }
 
 DropVisualizer: {
