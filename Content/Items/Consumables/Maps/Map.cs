@@ -2,13 +2,13 @@
 using PathOfTerraria.Core.Items;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
-using PathOfTerraria.Common.Systems.ModPlayers;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Subworlds;
 using SubworldLibrary;
 using System.Linq;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -123,7 +123,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	/// <returns></returns>
 	public static int GetBossUseCount()
 	{
-		int def = 6 / BossDomainPlayer.GetLivesPerPlayer();
+		int def = 6 / BossDomainLivesPlayer.GetLivesPerPlayer();
 
 		if (Main.CurrentFrameFlags.ActivePlayersCount > 6)
 		{

@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.NPCs;
+﻿using PathOfTerraria.Common.NPCs.ConditionalDropping;
 using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;

@@ -14,7 +14,7 @@ namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
 /// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.<br/>
-/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification, and enables <see cref="Systems.ModPlayers.BossDomainPlayer"/>'s life system.
+/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification, and enables <see cref="Systems.ModPlayers.LivesSystem.BossDomainLivesPlayer"/>'s life system.
 /// </summary>
 public abstract class MappingWorld : Subworld
 {

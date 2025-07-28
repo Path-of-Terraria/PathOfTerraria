@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
+using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -63,7 +64,7 @@ internal class MappingNPC : GlobalNPC
 
 	public override void OnKill(NPC npc)
 	{
-		if (npc.boss && SubworldSystem.Current is MappingWorld world)
+		if (npc.boss && SubworldSystem.Current is MappingWorld world && Main.hardMode && PoTItemHelper.PickItemLevel() >= 45)
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 

@@ -93,6 +93,10 @@ internal static class Networking
 		/// </summary>
 		SyncSkillSpecialization,
 
+		/// <summary>
+		/// Requests all other players to sync their skill specializations. Signature:<br/>
+		/// <c>byte player</c>
+		/// </summary>
 		RequestOthersSkillSpecialization
 	}
 
@@ -234,8 +238,40 @@ internal static class Networking
 
 				break;
 
+			case Message.RequestOthersSkillPassives:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					RequestOtherSkillPassivesHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					RequestOtherSkillPassivesHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.RequestOthersSkillSpecialization:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					RequestOtherSkillSpecializationHandler.ServerRecieve(reader);
+				}
+				else
+				{
+					RequestOtherSkillSpecializationHandler.ClientRecieve(reader);
+				}
+
+				break;
+
+			case Message.SyncConditionalDrop:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SyncConditionalDropHandler.ServerRecieve(reader);
+				}
+
+				break;
+
 			default:
-				throw null;
+				throw new ArgumentException($"{message} is an invalid PoT message ID.");
 		}
 	}
 

@@ -1,14 +1,15 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds;
+﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
-using SubworldLibrary;
-using Terraria.DataStructures;
-using Terraria;
 using PathOfTerraria.Content.Items.Placeable;
+using SubworldLibrary;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
@@ -31,7 +32,13 @@ internal class FirstQuest : Quest
 			new ConditionCheck(_ => SubworldSystem.Current is RavencrestSubworld, 1, this.GetLocalization("EnterRavencrest")),
 			new ActionStep((plr, step) =>
 			{
-				Item.NewItem(new EntitySource_Misc("Quest"), plr.Bottom, ModContent.ItemType<ArcaneObeliskItem>());
+				int item = Item.NewItem(new EntitySource_Misc("Quest"), plr.Bottom, ModContent.ItemType<ArcaneObeliskItem>());
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+				}
+
 				return true;
 			})
 		];

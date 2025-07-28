@@ -19,12 +19,15 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		private readonly LocalizedText text = null;
 		private readonly Func<Player, string> getValue = null;
 		private readonly bool noColon = false;
+		private readonly LocalizedText hover = null;
 
-		public PlayerStatUI(LocalizedText text, Func<Player, string> getValue, float scale = 1f, bool big = false, bool noColon = false) : base("", scale, big)
+		public PlayerStatUI(LocalizedText text, Func<Player, string> getValue, float scale = 1f, bool big = false, bool noColon = false, 
+			LocalizedText hover = null) : base("", scale, big)
 		{
 			this.text = text;
 			this.getValue = getValue;
 			this.noColon = noColon;
+			this.hover = hover;
 
 			Slot = SlotNumber++;
 			HAlign = 0.5f;
@@ -34,6 +37,12 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		{
 			base.Update(gameTime);
 			SetText(text.Value + (noColon ? "" : ": ") + getValue(Main.LocalPlayer));
+
+			if (hover is not null && ContainsPoint(Main.MouseScreen))
+			{
+				Tooltip.SetName(text.Value);
+				Tooltip.SetTooltip(hover.Value);
+			}
 		}
 	}
 
@@ -132,13 +141,14 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 			return $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}";
 		}));
+
 		list.Add(new PlayerStatUI(GetLocalization("DamageReduction"), player => $"{player.endurance:#0.##}%"));
 		list.Add(new PlayerStatUI(GetLocalization("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().BlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(GetLocalization("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().BlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(GetLocalization("BlockCooldown"), player => $"{player.GetModPlayer<BlockPlayer>().BlockCooldown / 60:#0.##}s"));
-		list.Add(new PlayerStatUI(GetLocalization("Strength"), player => $"{player.GetModPlayer<AttributesPlayer>().Strength:#0.##}"));
-		list.Add(new PlayerStatUI(GetLocalization("Dexterity"), player => $"{player.GetModPlayer<AttributesPlayer>().Dexterity:#0.##}"));
-		list.Add(new PlayerStatUI(GetLocalization("Intelligence"), player => $"{player.GetModPlayer<AttributesPlayer>().Intelligence:#0.##}"));
+		list.Add(new PlayerStatUI(GetLocalization("Strength"), player => $"{player.GetModPlayer<AttributesPlayer>().Strength:#0.##}", hover: GetHelp("Strength")));
+		list.Add(new PlayerStatUI(GetLocalization("Dexterity"), player => $"{player.GetModPlayer<AttributesPlayer>().Dexterity:#0.##}", hover: GetHelp("Dexterity")));
+		list.Add(new PlayerStatUI(GetLocalization("Intelligence"), player => $"{player.GetModPlayer<AttributesPlayer>().Intelligence:#0.##}", hover: GetHelp("Intelligence")));
 		list.Add(new PlayerStatUI(GetLocalization("FireResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().FireResistance * 100:#0.##}"));
 		list.Add(new PlayerStatUI(GetLocalization("ColdResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().ColdResistance * 100:#0.##}"));
 		list.Add(new PlayerStatUI(GetLocalization("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().LightningResistance * 100:#0.##}"));
@@ -146,6 +156,11 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		static LocalizedText GetLocalization(string type)
 		{
 			return Language.GetText($"Mods.{PoTMod.ModName}.UI.StatUI." + type);
+		}
+
+		static LocalizedText GetHelp(string type)
+		{
+			return Language.GetText($"Mods.{PoTMod.ModName}.UI.StatUI.Help." + type);
 		}
 	}
 

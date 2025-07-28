@@ -1,20 +1,21 @@
-﻿using PathOfTerraria.Content.Items.Quest;
-using PathOfTerraria.Content.NPCs.Town;
+﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Content.Items.Quest;
 using System.Collections.Generic;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Common.NPCs;
+namespace PathOfTerraria.Common.NPCs.ConditionalDropping;
 
-internal class SyncedCustomDrops : GlobalNPC
+internal class ConditionalDropHandler : GlobalNPC
 {
-	private static readonly Dictionary<int, int> PlayerCountByItemIds = [];
+	internal static readonly Dictionary<int, int> PlayerCountByItemIds = [];
 	
 	public static void AddId(int id)
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
+			SyncConditionalDropHandler.Send(id, true);
 			return;
 		}
 
@@ -37,6 +38,7 @@ internal class SyncedCustomDrops : GlobalNPC
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
+			SyncConditionalDropHandler.Send(id, false);
 			return;
 		}
 
@@ -58,14 +60,13 @@ internal class SyncedCustomDrops : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior
-			|| npc.type == ModContent.NPCType<TownScoutNPC>())
+		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior)
 		{
-			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<TomeOfTheElders>(), 10);
+			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<TomeOfTheElders>(), 8);
 		}
 		else if (npc.type is NPCID.Zombie or NPCID.DemonEye || NPCID.Sets.Zombies[npc.type] || NPCID.Sets.DemonEyes[npc.type])
 		{
-			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<LunarShard>(), 5);
+			AddCountCondition(npcLoot, LocalizedText.Empty, ModContent.ItemType<LunarShard>(), 2);
 		}
 	}
 

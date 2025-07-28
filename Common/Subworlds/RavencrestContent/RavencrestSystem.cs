@@ -98,18 +98,22 @@ public class RavencrestSystem : ModSystem
 			DisableOrbBreaking.CanBreakOrb = true;
 		}
 
-		if (Main.netMode != NetmodeID.MultiplayerClient && !OneTimeCheckDone && Main.CurrentFrameFlags.ActivePlayersCount > 0)
+		if (!OneTimeCheckDone && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
-			if (SubworldSystem.Current is RavencrestSubworld)
+			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				RavencrestOneTimeChecks();
-			}
-			else if (SubworldSystem.Current is null)
-			{
-				OverworldOneTimeChecks();
+				if (SubworldSystem.Current is RavencrestSubworld)
+				{
+					RavencrestOneTimeChecks();
+				}
+				else if (SubworldSystem.Current is null)
+				{
+					OverworldOneTimeChecks();
+				}
+
+				ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
 			}
 
-			ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
 			TavernManager.OneTimeCheck();
 
 			OneTimeCheckDone = true;

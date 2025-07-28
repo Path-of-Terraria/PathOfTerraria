@@ -1,4 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,6 +36,9 @@ internal class TavernManager : ModSystem
 		}
 	}
 
+	/// <summary>
+	/// Checks spawns for taverns. Runs on all clients + server.
+	/// </summary>
 	internal static void OneTimeCheck()
 	{
 		if (SubworldSystem.Current is not RavencrestSubworld)
@@ -49,6 +54,14 @@ internal class TavernManager : ModSystem
 			}
 		}
 
+		if (!Main.dedServ)
+		{
+			SpawnTownNPCs();
+		}
+	}
+
+	private static void SpawnTownNPCs()
+	{
 		WeightedRandom<int> entries = new(Main.rand);
 		HashSet<int> guarantees = [];
 
@@ -92,7 +105,14 @@ internal class TavernManager : ModSystem
 			int type = types.Dequeue();
 			Point16 pos = seatsToUse.Dequeue();
 
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), pos.X * 16, pos.Y * 16, type);
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), pos.X * 16, pos.Y * 16, type);
+			}
+			else
+			{
+				SpawnNPCOnServerHandler.Send((short)type, pos.ToWorldCoordinates());
+			}
 		}
 	}
 }
