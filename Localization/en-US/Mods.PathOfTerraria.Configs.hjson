@@ -8,3 +8,13 @@ DeveloperConfig: {
 
 	Headers.Graphics: Graphics Header
 }
+
+UIConfig: {
+	DisplayName: UI Config
+	Headers.UI: UI Header
+
+	PreventExpBarClicking: {
+		Label: Prevent Exp Bar Clicking
+		Tooltip: ""
+	}
+}
