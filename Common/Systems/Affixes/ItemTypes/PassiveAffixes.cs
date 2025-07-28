@@ -1,5 +1,8 @@
 ﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
+/// <summary>
+/// Increases the player's attack speed by a percentage (Value).
+/// </summary>
 internal class IncreasedAttackSpeedAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
@@ -13,6 +16,9 @@ internal class IncreasedAttackSpeedAffix : ItemAffix
 	}
 }
 
+/// <summary>
+/// Adds a flat percentage (Value) to the player's base attack speed.
+/// </summary>
 internal class AddedAttackSpeedAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
@@ -21,6 +27,9 @@ internal class AddedAttackSpeedAffix : ItemAffix
 	}
 }
 
+/// <summary>
+/// Adds a flat amount (Value) to the player's base damage.
+/// </summary>
 internal class AddedDamageAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
@@ -29,6 +38,9 @@ internal class AddedDamageAffix : ItemAffix
 	}
 }
 
+/// <summary>
+/// Increases the player's damage by a percentage (Value / 500).
+/// </summary>
 internal class IncreasedDamageAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
