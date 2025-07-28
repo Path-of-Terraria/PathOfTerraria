@@ -4,7 +4,6 @@ using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
-using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -42,6 +41,8 @@ internal class GrimoireItem : Gear
 		Item.shoot = ProjectileID.PurificationPowder; // The value here is irrelevant
 		Item.channel = true;
 		Item.noMelee = true;
+
+		Item.shopCustomPrice = Item.buyPrice(silver: 10);
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Grimoire;

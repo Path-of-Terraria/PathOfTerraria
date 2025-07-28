@@ -105,24 +105,28 @@ internal class TutorialUIState : UIState
 		bool canGoNext = CanGotoNextStep();
 		DrawBacked(spriteBatch, pos + new Vector2(-168, 110), Localize("Next"), true, !canGoNext ? null : new Action(IncrementStep), !canGoNext);
 		DrawBacked(spriteBatch, pos + new Vector2(-56, 110), Localize("SkipStep"), true, new Action(IncrementStep));
-		DrawBacked(spriteBatch, pos + new Vector2(56, 110), Localize("SkipGuide"), true, () =>
+		
+		if (Step < 12) //Don't allow "SkipGuide" if not applicable anymore
 		{
-			Step = 12;
-
-			if (!Quest.GetLocalPlayerInstance<FirstQuest>().CanBeStarted)
+			DrawBacked(spriteBatch, pos + new Vector2(56, 110), Localize("SkipGuide"), true, () =>
 			{
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
-			}
+				Step = 12;
 
-			if (Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Level == 0)
-			{
-				Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
-			}
-			
-			Item.NewItem(new EntitySource_Misc("Quest"), Main.LocalPlayer.Bottom, ModContent.ItemType<ArcaneObeliskItem>());
+				if (!Quest.GetLocalPlayerInstance<FirstQuest>().CanBeStarted)
+				{
+					Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
+				}
 
-			IncrementStep();
-		});
+				if (Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Level == 0)
+				{
+					Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
+				}
+
+				Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("Quest"), ModContent.ItemType<ArcaneObeliskItem>());
+
+				IncrementStep();
+			});
+		}
 
 		if (!_hide && !skipSecondHideButton)
 		{
@@ -211,7 +215,7 @@ internal class TutorialUIState : UIState
 		}
 		else if (Step == 12)
 		{
-			plr.QuickSpawnItem(Entity.GetSource_NaturalSpawn(), ModContent.ItemType<ArcaneObeliskItem>());
+			plr.QuickSpawnItem(new EntitySource_Misc("Quest"), ModContent.ItemType<ArcaneObeliskItem>());
 		}
 		else if (Step == 13)
 		{
