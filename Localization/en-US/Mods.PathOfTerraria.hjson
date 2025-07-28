@@ -9,6 +9,7 @@ Keybinds: {
 	GearSwap.DisplayName: Weapon Swap
 	QuestUIKey.DisplayName: Quest UI Key
 	DropTableKey.DisplayName: Drop Table Key
+	PassiveTreeUIKey.DisplayName: Passive Tree UI Key
 }
 
 GUI: {

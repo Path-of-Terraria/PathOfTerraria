@@ -8,3 +8,13 @@ DeveloperConfig: {
 
 	Headers.Graphics: Graphics Header
 }
+
+UIConfig: {
+	DisplayName: UI Config
+	Headers.UI: UI Header
+
+	PreventExpBarClicking: {
+		Label: Prevent Exp Bar Clicking
+		Tooltip: "When this is enabled you won't be able to click the experience bar to open the level up menu, but rather only through the Hotkey. This is useful if you find yourself accidentally opening it while trying to click on other UI elements."
+	}
+}

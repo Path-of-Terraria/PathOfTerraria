@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -52,7 +53,10 @@ public class ExpBar : SmartUiState
 		{
 			return;
 		}
-		
-		SmartUiLoader.GetUiState<TreeState>().Toggle();
+
+		if (!ModContent.GetInstance<UIConfig>().PreventExpBarClicking)
+		{
+			SmartUiLoader.GetUiState<TreeState>().Toggle();
+		}
 	}
 }
