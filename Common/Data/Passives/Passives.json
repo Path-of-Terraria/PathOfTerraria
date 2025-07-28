@@ -315,7 +315,7 @@
 	{
 		"internalIdentifier": "AddedAggressionPassive",
 		"referenceId": 23,
-		"maxLevel": 1,
+		"maxLevel": 2,
 		"connections": [
 			{
 				"referenceId": 21
@@ -537,7 +537,7 @@
 		],
 		"position": {
 			"x": -120,
-			"y": -320
+			"y": -370
 		}
 	},
 	{
