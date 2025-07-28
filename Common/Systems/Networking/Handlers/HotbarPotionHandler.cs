@@ -2,24 +2,27 @@
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class HotbarPotionHandler
+internal class HotbarPotionHandler : Handler
 {
-	public static void SendHotbarPotionUse(byte playerWhoAmI, bool isHealingPotion, byte newValue, bool runLocally = false)
-	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SetHotbarPotionUse);
+	public override Networking.Message MessageType => Networking.Message.SetHotbarPotionUse;
 
+	public override void Send(params object[] parameters)
+	{
+		CastParameters(parameters, out byte playerWhoAmI, out bool isHealingPotion, out byte newValue);
+
+		ModPacket packet = Networking.GetPacket(MessageType);
 		packet.Write(playerWhoAmI);
 		packet.Write(isHealingPotion);
 		packet.Write(newValue);
 		packet.Send();
 
-		if (runLocally)
+		if (GetOptionalBool(parameters, 3))
 		{
 			SetHotbarPotion(playerWhoAmI, isHealingPotion, newValue);
 		}
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
 		byte who = reader.ReadByte();
 		bool isHeal = reader.ReadBoolean();
@@ -27,7 +30,7 @@ internal static class HotbarPotionHandler
 
 		SetHotbarPotion(who, isHeal, newValue);
 
-		ModPacket packet = Networking.GetPacket(Networking.Message.SetHotbarPotionUse);
+		ModPacket packet = Networking.GetPacket(MessageType);
 
 		packet.Write(who);
 		packet.Write(isHeal);
@@ -35,7 +38,7 @@ internal static class HotbarPotionHandler
 		packet.Send(-1, who);
 	}
 	
-	internal static void ClientRecieve(BinaryReader reader)
+	internal override void ClientRecieve(BinaryReader reader)
 	{
 		SetHotbarPotion(reader.ReadByte(), reader.ReadBoolean(), reader.ReadByte());
 	}

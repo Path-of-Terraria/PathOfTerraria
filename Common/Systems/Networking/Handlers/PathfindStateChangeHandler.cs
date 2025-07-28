@@ -3,19 +3,22 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class PathfindStateChangeHandler
+internal class PathfindStateChangeHandler : Handler
 {
-	public static void Send(byte player, byte who, bool enable)
-	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.PathfindChangeState);
+	public override Networking.Message MessageType => Networking.Message.PathfindChangeState;
 
+	public override void Send(params object[] parameters)
+	{
+		CastParameters(parameters, out byte player, out byte who, out bool enable);
+
+		ModPacket packet = Networking.GetPacket(MessageType);
 		packet.Write(player);
 		packet.Write(who);
 		packet.Write(enable);
 		packet.Send();
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
 		byte player = reader.ReadByte();
 		int who = reader.ReadByte();

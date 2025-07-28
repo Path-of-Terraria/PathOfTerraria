@@ -103,20 +103,30 @@ internal static class Networking
 	internal static void HandlePacket(BinaryReader reader)
 	{
 		var message = (Message)reader.ReadByte();
+		Handler handler = Handler.HandlerForMessage[message];
+
+		if (Main.netMode == NetmodeID.Server)
+		{
+			handler.ServerRecieve(reader);
+		}
+		else
+		{
+			handler.ClientRecieve(reader);
+		}
 
 		switch (message)
 		{
-			case Message.SpawnExperience:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					ExperienceHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					ExperienceHandler.ClientRecieve(reader);
-				}
+			//case Message.SpawnExperience:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		ExperienceHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		ExperienceHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
 			case Message.SetHotbarPotionUse:
 				if (Main.netMode == NetmodeID.Server)
