@@ -9,6 +9,7 @@ using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
@@ -38,13 +39,32 @@ internal class WoFQuest : Quest
 					{
 						for (int i = 0; i < 3; ++i)
 						{
-							Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<SoulfulAsh>());
-							Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<FlamingEye>());
+							int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<SoulfulAsh>());
+
+							if (Main.netMode == NetmodeID.MultiplayerClient)
+							{
+								NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+							}
+
+							item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<FlamingEye>());
+
+							if (Main.netMode == NetmodeID.MultiplayerClient)
+							{
+								NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+							}
 						}
 					}),
 			]),
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardContinue"),
-				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>())),
+				null, false, (npc) =>
+				{
+					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>());
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
+				}),
 			new ConditionCheck(_ => Main.hardMode, 1, this.GetLocalization("KillWall")),
 			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish")),
 		];

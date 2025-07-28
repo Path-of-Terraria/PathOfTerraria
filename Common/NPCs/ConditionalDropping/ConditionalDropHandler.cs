@@ -5,11 +5,11 @@ using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Common.NPCs;
+namespace PathOfTerraria.Common.NPCs.ConditionalDropping;
 
 internal class ConditionalDropHandler : GlobalNPC
 {
-	private static readonly Dictionary<int, int> PlayerCountByItemIds = [];
+	internal static readonly Dictionary<int, int> PlayerCountByItemIds = [];
 	
 	public static void AddId(int id)
 	{

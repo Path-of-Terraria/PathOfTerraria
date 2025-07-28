@@ -262,6 +262,14 @@ internal static class Networking
 
 				break;
 
+			case Message.SyncConditionalDrop:
+				if (Main.netMode == NetmodeID.Server)
+				{
+					SyncConditionalDropHandler.ServerRecieve(reader);
+				}
+
+				break;
+
 			default:
 				throw new ArgumentException($"{message} is an invalid PoT message ID.");
 		}

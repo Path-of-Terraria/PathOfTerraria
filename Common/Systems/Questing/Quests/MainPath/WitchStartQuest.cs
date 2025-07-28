@@ -24,23 +24,23 @@ internal class WitchStartQuest : Quest
 		new ActionRewards((p, v) =>
 			{
 				p.GetModPlayer<ExpModPlayer>().Exp += 500;
-				int sword = ItemSpawner.SpawnItemFromCategory<Sword>(v);
+				//int sword = ItemSpawner.SpawnItemFromCategory<Sword>(v);
 
-				if (sword != -1)
-				{
-					Item item = Main.item[sword];
-					item.GetInstanceData().Rarity = ItemRarity.Magic;
-					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
-				}
+				//if (sword != -1)
+				//{
+				//	Item item = Main.item[sword];
+				//	item.GetInstanceData().Rarity = ItemRarity.Magic;
+				//	PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
+				//}
 				
-				int axe = ItemSpawner.SpawnItemFromCategory<Battleaxe>(v);
+				//int axe = ItemSpawner.SpawnItemFromCategory<Battleaxe>(v);
 
-				if (axe != -1)
-				{
-					Item item = Main.item[axe];
-					item.GetInstanceData().Rarity = ItemRarity.Magic;
-					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
-				}
+				//if (axe != -1)
+				//{
+				//	Item item = Main.item[axe];
+				//	item.GetInstanceData().Rarity = ItemRarity.Magic;
+				//	PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
+				//}
 			},
 			"500 experience (POC giving experience)\nSome gear with an affix\nA unique item\nAgain, just for POC reasons"),
 	];

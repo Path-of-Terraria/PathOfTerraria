@@ -50,7 +50,13 @@ internal class HunterStartQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Lodge", 1);
 
 				int npc = NPC.FindFirstNPC(ModContent.NPCType<HunterNPC>());
-				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<WoodenBow>());
+				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<WoodenBow>());
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+				}
+
 				return true;
 			}),
 			new KillCount(npc => npc.type is NPCID.Crimera or NPCID.EaterofSouls || NPCID.Sets.DemonEyes[npc.type], 10, this.GetLocalization("Kill.FloatingMisc")),
