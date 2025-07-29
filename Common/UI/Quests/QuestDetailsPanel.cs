@@ -23,8 +23,6 @@ public class QuestDetailsPanel : SmartUiElement
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		DrawBack(spriteBatch);
-		
 		if (QuestPlayer.GetQuestCount() != 0 && !string.IsNullOrEmpty(ViewedQuestName))
 		{
 			string name = QuestPlayer.QuestsByName[ViewedQuestName].DisplayName.Value;
@@ -36,12 +34,6 @@ public class QuestDetailsPanel : SmartUiElement
 #endif
 
 		base.Draw(spriteBatch);
-	}
-
-	private void DrawBack(SpriteBatch spriteBatch)
-	{
-		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/QuestBookBackground").Value;
-		spriteBatch.Draw(tex, GetRectangle().Center(), null, Color.White, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 	}
 
 	public void PopulateQuestSteps()
