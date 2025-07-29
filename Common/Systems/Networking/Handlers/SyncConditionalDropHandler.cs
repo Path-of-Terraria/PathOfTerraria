@@ -3,17 +3,25 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class SyncConditionalDropHandler
+/// <summary>
+/// Handles syncing a conditional drop by sending it to the server. Doesn't do anything if recieved by a client, as drops are server-side only in multiplayer.
+/// </summary>
+internal class SyncConditionalDropHandler : Handler
 {
-	public static void Send(int id, bool add)
+	public override Networking.Message MessageType => Networking.Message.SyncConditionalDrop;
+
+	/// <inheritdoc cref="Networking.Message.SyncConditionalDrop"/>
+	public override void Send(params object[] parameters)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SyncConditionalDrop);
+		CastParameters(parameters, out int id, out bool add);
+
+		ModPacket packet = Networking.GetPacket(MessageType);
 		packet.Write(id);
 		packet.Write(add);
 		packet.Send();
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
 		int id = reader.ReadInt32();
 		bool add = reader.ReadBoolean();

@@ -126,7 +126,7 @@ public class EyeDomain : BossDomainSubworld
 		if (includeFleshStuff)
 		{
 			Point16 dims = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/EyeArena", mod);
-			StructureHelper.API.Generator.GenerateStructure("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), mod);
+			StructureTools.PlaceByOrigin("Assets/Structures/EyeArena", new Point16(ArenaX, arenaY - 27), Vector2.Zero);
 			arena = new Rectangle(ArenaX * 16, (arenaY + 2) * 16, dims.X * 16, (dims.Y - 2) * 16);
 		}
 

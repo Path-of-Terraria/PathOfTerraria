@@ -115,7 +115,7 @@ internal class GuardianAngel : SteelBattleaxe
 
 			if (Main.netMode != NetmodeID.SinglePlayer && !fromNet)
 			{
-				SyncGuardianAngelHandler.Send((byte)playerWho, (short)npc.whoAmI);
+				ModContent.GetInstance<SyncGuardianAngelHandler>().Send((byte)playerWho, (short)npc.whoAmI);
 			}
 		}
 

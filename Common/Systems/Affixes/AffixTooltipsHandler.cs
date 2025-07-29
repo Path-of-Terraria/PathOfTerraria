@@ -166,18 +166,19 @@ public class AffixTooltipsHandler
 	{
 		int tipNum = 0;
 		bool hasShift = Keyboard.GetState().PressingShift();
+		bool isMap = item.ModItem is Map; // Used to disable comparisons on maps since that doesn't make sense
 		IEnumerable<KeyValuePair<Type, AffixTooltip>> differenceTips = null;
 		IEnumerable<KeyValuePair<Type, AffixTooltip>> firstTips = null;
 
-		if (!hasShift) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
+		if (!hasShift || isMap) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
 		{
 			firstTips = CreateStandaloneTooltips(item);
 		}
 		else // Otherwise, put the tooltips modified by the current item at the top of the list & re-generate the standalone lines
 		{
 			AffixTooltip.AffixSource source = DetermineItemSource(item);
-			differenceTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0).Where(x => x.Value.ValueBySource.ContainsKey(source));
-			differenceTips = new Dictionary<Type, AffixTooltip>(differenceTips); // Create a shallow clone of itself in order to de-reference from Tooltips
+			differenceTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0);//.Where(x => x.Value.ValueBySource.ContainsKey(source));
+			differenceTips = [.. differenceTips]; // Create a shallow clone of itself in order to de-reference from Tooltips
 
 			for (int i = 0; i < differenceTips.Count(); ++i)
 			{
@@ -229,21 +230,25 @@ public class AffixTooltipsHandler
 
 		if (differenceTips is not null)
 		{
-			bool anyDif = false;
+			// You will see some commented out code here.
+			// This code was originally written to compare only two weapons of the same type - two javelins, two broadswords, two bows, etc.
+			// This is now no longer intended functionality, but instead of removing it I'm commenting it out since it may be a useful config option.
+			// I also don't really remember how this code works so it'd be tough to rewrite. - GabeHasWon
 
-			foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips) // Determine if there is any difference
-			{
-				if (tip.Value.HasDifference)
-				{
-					anyDif = true;
-					break;
-				}
-			}
+			//bool anyDif = true;
+			//foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips) // Determine if there is any difference
+			//{
+			//	if (tip.Value.HasDifference)
+			//	{
+			//		anyDif = true;
+			//		break;
+			//	}
+			//}
 
 			if (hasShift) // Display "If X is equipped:" or "(No item to swap)" in comparison page
 			{
-				string swapText = !anyDif ? Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.NoSwap")
-					: Language.GetText($"Mods.{PoTMod.ModName}.TooltipNotices.Swap").Format(item.Name);
+				string swapText = //!anyDif ? Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.NoSwap") : 
+					Language.GetText($"Mods.{PoTMod.ModName}.TooltipNotices.Swap").Format(item.Name);
 
 				tooltips.Add(new TooltipLine(PoTMod.Instance, "SwapNotice", swapText)
 				{
@@ -251,16 +256,18 @@ public class AffixTooltipsHandler
 				});
 			}
 
-			if (anyDif) // If there are differences, show comparison
+			//if (anyDif) // If there are differences, show comparison
+			//{
+			foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips)
 			{
-				foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips)
-				{
-					AddSingleTooltipLine(tooltips, ref tipNum, tip);
-				}
+				AddSingleTooltipLine(tooltips, ref tipNum, tip);
 			}
+			//}
+
+			// End code kept for posterity.
 		}
 
-		if (!hasShift) // Show "Shift to compare" if they're not doing so
+		if (!hasShift && !isMap) // Show "Shift to compare" if they're not doing so (and it's not a map)
 		{
 			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Shift"))
 			{

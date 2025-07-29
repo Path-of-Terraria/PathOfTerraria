@@ -35,7 +35,7 @@ internal class MorvenStuck : ModTile
 		}
 		else if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<MorvenNPC>(), new((i + 1) * 16 + 4, (j + 1) * 16));
+			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)ModContent.NPCType<MorvenNPC>(), new Vector2((i + 1) * 16 + 4, (j + 1) * 16));
 		}
 
 		Vector2 basePos = new Vector2(i, j + 1).ToWorldCoordinates(0, 0);

@@ -3,23 +3,28 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class SyncGuardianAngelHandler
+internal class SyncGuardianAngelHandler : Handler
 {
-	public static void Send(byte playerWhoAmI, short npcWho, bool runLocally = false)
+	public override Networking.Message MessageType => Networking.Message.SyncGuardianAngelHit;
+
+	/// <inheritdoc cref="Networking.Message.SyncGuardianAngelHit"/>
+	public override void Send(params object[] parameters)
 	{
+		CastParameters(parameters, out byte playerWhoAmI, out short npcWho);
+
 		ModPacket packet = Networking.GetPacket(Networking.Message.SyncGuardianAngelHit);
 
 		packet.Write(playerWhoAmI);
 		packet.Write(npcWho);
 		packet.Send();
 
-		if (runLocally)
+		if (TryGetOptionalValue(parameters, 2, out bool runLocally) && runLocally)
 		{
 			HitGuardianAngel(playerWhoAmI, npcWho);
 		}
 	}
 
-	internal static void ServerReceive(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
 		byte who = reader.ReadByte();
 		short npcWho = reader.ReadInt16();
@@ -32,8 +37,8 @@ internal static class SyncGuardianAngelHandler
 		packet.Write(npcWho);
 		packet.Send(-1, who);
 	}
-	
-	internal static void ClientReceive(BinaryReader reader)
+
+	internal override void ClientRecieve(BinaryReader reader)
 	{
 		HitGuardianAngel(reader.ReadByte(), reader.ReadInt16());
 	}

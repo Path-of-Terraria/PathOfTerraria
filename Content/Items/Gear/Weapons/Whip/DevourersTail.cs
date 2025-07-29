@@ -79,7 +79,7 @@ internal class DevourersTail : Whip
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				SyncAltUseHandler.Send((byte)player.whoAmI, 60 * 15, 60 * 8);
+				ModContent.GetInstance<SyncAltUseHandler>().Send((byte)player.whoAmI, 60 * 15, 60 * 8);
 			}
 
 			return false;

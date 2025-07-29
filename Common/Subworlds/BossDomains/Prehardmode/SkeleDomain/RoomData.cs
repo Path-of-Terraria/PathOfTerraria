@@ -64,7 +64,7 @@ public readonly struct RoomData(WireColor color, OpeningType opening, Point open
 		y -= origin.Y;
 
 		string structure = StructurePath + id;
-		Point16 position = StructureTools.PlaceByOrigin(structure, new Point16(x, y), Vector2.Zero);
+		Point16 position = StructureTools.PlaceByOrigin(structure, new Point16(x, y), Vector2.Zero, noSync: true);
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions(structure, PoTMod.Instance);
 		AddSpawns(x, y);
 

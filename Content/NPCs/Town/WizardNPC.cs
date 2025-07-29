@@ -91,7 +91,16 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<UnfoldingShard>()) { shopCustomPrice = Item.buyPrice(0, 10, 0, 0) }));
 		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<GlimmeringShard>()) { shopCustomPrice = Item.buyPrice(0, 25, 0, 0) }, 
 			new Condition(LocalizedText.Empty, () => Quest.GetLocalPlayerInstance<WizardStartQuest>().Completed)));
+
+		Condition conditions = new("Mods.PathOfTerraria.Misc.VoidPearlCondition", () => Main.hardMode || QuestReady());
+		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<VoidPearl>()) { shopCustomPrice = Item.buyPrice(0, 50, 0, 0) }, Condition.Hardmode));
 		shop.Register();
+	}
+
+	public static bool QuestReady()
+	{
+		WoFQuest quest = Quest.GetLocalPlayerInstance<WoFQuest>();
+		return quest.Active && quest.CurrentStep > 2;
 	}
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)

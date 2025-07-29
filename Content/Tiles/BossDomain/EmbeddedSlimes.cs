@@ -47,7 +47,7 @@ internal class EmbeddedSlimes : ModTile
 		}
 		else
 		{
-			SpawnNPCOnServerHandler.Send(type, new((i + 1) * 16, (j + 1) * 16));
+			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send(type, new Vector2((i + 1) * 16, (j + 1) * 16));
 		}
 
 		for (int k = 0; k < 16; k++)

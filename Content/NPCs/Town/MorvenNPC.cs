@@ -393,7 +393,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			}
 			else
 			{
-				PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+				ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
 			}
 
 			if (!quest.Active)

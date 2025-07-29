@@ -3,35 +3,31 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class ExperienceHandler
+internal class ExperienceHandler : Handler
 {
-	/// <summary>
-	/// Spawns an orb on all clients but <paramref name="target"/>. 
-	/// Generally, this should only be called by <see cref="ExperienceModSystem.SpawnExperience(int, Vector2, Vector2, int, bool)"/>.
-	/// </summary>
-	/// <param name="target">Target for the exp to aim for.</param>
-	/// <param name="xpValue">Amount of XP to spawn.</param>
-	/// <param name="position">Where it spawns.</param>
-	/// <param name="velocity">The base velocity of the spawned exp.</param>
-	public static void SendExperience(byte target, int xpValue, Vector2 position, Vector2 velocity, bool spawnLocally = false)
-	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SpawnExperience);
+	public override Networking.Message MessageType => Networking.Message.SpawnExperience;
 
+	/// <inheritdoc cref="Networking.Message.SpawnExperience"/>
+	public override void Send(params object[] parameters)
+	{
+		CastParameters(parameters, out byte target, out int xpValue, out Vector2 position, out Vector2 velocity);
+		
+		ModPacket packet = Networking.GetPacket(MessageType);
 		packet.Write(target);
 		packet.Write(xpValue);
 		packet.WriteVector2(position);
 		packet.WriteVector2(velocity);
 		packet.Send();
 
-		if (spawnLocally)
+		if (TryGetOptionalValue(parameters, 4, out bool runLocally) && runLocally)
 		{
 			ExperienceTracker.SpawnExperience(xpValue, position, velocity, target, true);
 		}
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SpawnExperience);
+		ModPacket packet = Networking.GetPacket(MessageType);
 		byte target = reader.ReadByte();
 
 		packet.Write(target);
@@ -41,7 +37,7 @@ internal static class ExperienceHandler
 		packet.Send(-1, target);
 	}
 
-	internal static void ClientRecieve(BinaryReader reader)
+	internal override void ClientRecieve(BinaryReader reader)
 	{
 		int target = reader.ReadByte();
 		int xp = reader.ReadInt32();

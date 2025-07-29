@@ -312,7 +312,7 @@ public class EaterDomain : BossDomainSubworld
 	{
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/EaterArena", Mod);
 		var position = new Point16(400 - size.X / 2, Height - 150 - size.Y / 2);
-		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/EaterArena", position, Mod);
+		StructureTools.PlaceByOrigin("Assets/Structures/EaterArena", position, Vector2.Zero);
 
 		Arena = new Rectangle(position.X * 16, (position.Y + 2) * 16, size.X * 16, (size.Y - 2) * 16);
 	}
