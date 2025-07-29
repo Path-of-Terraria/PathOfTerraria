@@ -217,7 +217,7 @@ public class RavencrestSystem : ModSystem
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			RavencrestBuildingIndex.Send(name, level);
+			ModContent.GetInstance<RavencrestBuildingIndex>().Send(name, level);
 			return;
 		}
 

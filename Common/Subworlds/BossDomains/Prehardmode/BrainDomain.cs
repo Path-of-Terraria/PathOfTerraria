@@ -164,7 +164,7 @@ public class BrainDomain : BossDomainSubworld
 	{
 		Point16 dims = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/BrainArena", Mod);
 		var pos = new Point16(400 - dims.X / 2, 200 - dims.Y / 2);
-		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/BrainArena", pos, Mod);
+		StructureTools.PlaceByOrigin("Assets/Structures/BrainArena", pos, Vector2.Zero);
 		Arena = new Rectangle(pos.X * 16, pos.Y * 16, dims.X * 16, dims.Y * 16);
 	}
 

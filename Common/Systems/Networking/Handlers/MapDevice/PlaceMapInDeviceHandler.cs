@@ -4,18 +4,21 @@ using Terraria.DataStructures;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers.MapDevice;
 
-internal static class PlaceMapInDeviceHandler
+internal class PlaceMapInDeviceHandler : Handler
 {
+	public override Networking.Message MessageType => Networking.Message.SyncMapDevicePlaceMap;
+
 	/// <summary>
 	/// Sets the item in a MapDeviceEntity at <paramref name="entityKey"/> to the given item.
 	/// </summary>
 	/// <param name="fromWho">The player who sent the packet.</param>
 	/// <param name="itemId">The item ID to place into the map entity.</param>
 	/// <param name="entityKey">The position of the entity.</param>
-	public static void Send(byte fromWho, short itemId, Point16 entityKey)
+	public override void Send(params object[] parameters)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SyncMapDevicePlaceMap);
+		CastParameters(parameters, out byte fromWho, out short itemId, out Point16 entityKey);
 
+		ModPacket packet = Networking.GetPacket(Networking.Message.SyncMapDevicePlaceMap);
 		packet.Write(fromWho);
 		packet.Write(itemId);
 		packet.Write(entityKey.X);
@@ -23,7 +26,7 @@ internal static class PlaceMapInDeviceHandler
 		packet.Send();
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
 		ModPacket packet = Networking.GetPacket(Networking.Message.SyncMapDevicePlaceMap);
 		short fromWho = reader.ReadByte();
@@ -42,7 +45,7 @@ internal static class PlaceMapInDeviceHandler
 		}
 	}
 
-	internal static void ClientRecieve(BinaryReader reader)
+	internal override void ClientRecieve(BinaryReader reader)
 	{
 		short itemId = reader.ReadInt16();
 		short x = reader.ReadInt16();

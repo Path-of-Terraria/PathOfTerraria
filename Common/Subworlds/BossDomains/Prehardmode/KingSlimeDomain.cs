@@ -233,7 +233,7 @@ public class KingSlimeDomain : BossDomainSubworld
 		}
 
 		// Place arena
-		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/KingSlimeArena", new Point16(250 - size.X / 2, ArenaY - size.Y / 2), Mod);
+		StructureTools.PlaceByOrigin("Assets/Structures/KingSlimeArena", new Point16(250 - size.X / 2, ArenaY - size.Y / 2), Vector2.Zero);
 
 		static int GenerateEdgeX(ref bool flip)
 		{

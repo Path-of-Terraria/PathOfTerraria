@@ -41,8 +41,8 @@ internal class SkillTreePlayer : ModPlayer
 			SyncAllSpecializations();
 			 
 			// and ask everyone what they have
-			RequestOtherSkillSpecializationHandler.Send((byte)Player.whoAmI);
-			RequestOtherSkillPassivesHandler.Send((byte)Player.whoAmI);
+			ModContent.GetInstance<RequestOtherSkillSpecializationHandler>().Send((byte)Player.whoAmI);
+			ModContent.GetInstance<RequestOtherSkillPassivesHandler>().Send((byte)Player.whoAmI);
 		}
 	}
 
@@ -50,7 +50,7 @@ internal class SkillTreePlayer : ModPlayer
 	{
 		foreach (KeyValuePair<Type, SkillSpecial> pair in SpecializationsBySkill)
 		{
-			SyncSkillSpecializationHandler.Send((byte)Player.whoAmI, pair.Key.FullName, pair.Value.GetType().FullName);
+			ModContent.GetInstance<SyncSkillSpecializationHandler>().Send((byte)Player.whoAmI, pair.Key.FullName, pair.Value.GetType().FullName);
 		}
 	}
 
@@ -63,7 +63,7 @@ internal class SkillTreePlayer : ModPlayer
 		{
 			foreach (KeyValuePair<Type, int> pair in TotalLevelByTypeByTree[tree])
 			{
-				SkillPassiveValueHandler.Send((byte)Player.whoAmI, tree.GetType().FullName, pair.Key.FullName, (byte)pair.Value);
+				ModContent.GetInstance<SkillPassiveValueHandler>().Send((byte)Player.whoAmI, tree.GetType().FullName, pair.Key.FullName, (byte)pair.Value);
 			}
 		}
 	}
@@ -87,7 +87,7 @@ internal class SkillTreePlayer : ModPlayer
 
 		if (Main.netMode == NetmodeID.MultiplayerClient && sync)
 		{
-			SyncSkillSpecializationHandler.Send((byte)Player.whoAmI, type.FullName, spec.GetType().FullName);
+			ModContent.GetInstance<SyncSkillSpecializationHandler>().Send((byte)Player.whoAmI, type.FullName, spec.GetType().FullName);
 		}
 	}
 
@@ -118,7 +118,7 @@ internal class SkillTreePlayer : ModPlayer
 
 		if (Main.netMode == NetmodeID.MultiplayerClient && sync)
 		{
-			SkillPassiveValueHandler.Send((byte)Player.whoAmI, tree.GetType().FullName, nodeType.FullName, (byte)levelByType[nodeType]);
+			ModContent.GetInstance<SkillPassiveValueHandler>().Send((byte)Player.whoAmI, tree.GetType().FullName, nodeType.FullName, (byte)levelByType[nodeType]);
 		}
 	}
 

@@ -40,9 +40,16 @@ internal abstract class Handler : ILoadable
 		HandlerForMessage.Remove(MessageType);
 	}
 
-	public static bool GetOptionalBool(object[] objects, int length)
+	public static bool TryGetOptionalValue<T>(object[] objects, int length, out T value)
 	{
-		return objects.Length > length && objects[length] is bool option && option;
+		if (objects.Length > length && objects[length] is T option)
+		{
+			value = option;
+			return true;
+		}
+
+		value = default;
+		return false;
 	}
 
 	public static void CastParameters<T>(object[] objects, out T one)

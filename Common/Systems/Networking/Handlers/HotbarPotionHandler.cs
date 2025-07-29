@@ -16,7 +16,7 @@ internal class HotbarPotionHandler : Handler
 		packet.Write(newValue);
 		packet.Send();
 
-		if (GetOptionalBool(parameters, 3))
+		if (TryGetOptionalValue(parameters, 3, out bool runLocally) && runLocally)
 		{
 			SetHotbarPotion(playerWhoAmI, isHealingPotion, newValue);
 		}

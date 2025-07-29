@@ -23,7 +23,7 @@ internal class ExperienceHandler : Handler
 		packet.WriteVector2(velocity);
 		packet.Send();
 
-		if (GetOptionalBool(parameters, 4))
+		if (TryGetOptionalValue(parameters, 4, out bool runLocally) && runLocally)
 		{
 			ExperienceTracker.SpawnExperience(xpValue, position, velocity, target, true);
 		}

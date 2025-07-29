@@ -1,6 +1,4 @@
 ﻿using System.IO;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Common.Systems.Networking.Handlers.MapDevice;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Networking;
@@ -114,6 +112,7 @@ internal static class Networking
 			handler.ClientRecieve(reader);
 		}
 
+		return;
 		switch (message)
 		{
 			//case Message.SpawnExperience:
@@ -128,160 +127,160 @@ internal static class Networking
 
 			//	break;
 
-			case Message.SetHotbarPotionUse:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					HotbarPotionHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					HotbarPotionHandler.ClientRecieve(reader);
-				}
+			//case Message.SetHotbarPotionUse:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		HotbarPotionHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		HotbarPotionHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SyncGuardianAngelHit:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					SyncGuardianAngelHandler.ServerReceive(reader);
-				}
-				else
-				{
-					SyncGuardianAngelHandler.ClientReceive(reader);
-				}
+			//case Message.SyncGuardianAngelHit:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		SyncGuardianAngelHandler.ServerReceive(reader);
+			//	}
+			//	else
+			//	{
+			//		SyncGuardianAngelHandler.ClientReceive(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SyncMapDevicePlaceMap:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					PlaceMapInDeviceHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					PlaceMapInDeviceHandler.ClientRecieve(reader);
-				}
+			//case Message.SyncMapDevicePlaceMap:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		PlaceMapInDeviceHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		PlaceMapInDeviceHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.ConsumeMapOffOfDevice:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					ConsumeMapDeviceHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					ConsumeMapDeviceHandler.ClientRecieve(reader);
-				}
+			//case Message.ConsumeMapOffOfDevice:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		ConsumeMapDeviceHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		ConsumeMapDeviceHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SpawnNPCOnServer:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					SpawnNPCOnServerHandler.ServerRecieve(reader);
-				}
+			//case Message.SpawnNPCOnServer:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		SpawnNPCOnServerHandler.ServerRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SetRavencrestBuildingIndex:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					RavencrestBuildingIndex.ServerRecieve(reader);
-				}
+			//case Message.SetRavencrestBuildingIndex:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		RavencrestBuildingIndex.ServerRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SyncUseStaffAltUse:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					SyncStaffAltHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					SyncStaffAltHandler.ClientRecieve(reader);
-				}
+			//case Message.SyncUseStaffAltUse:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		SyncStaffAltHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		SyncStaffAltHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.PathfindChangeState:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					PathfindStateChangeHandler.ServerRecieve(reader);
-				}
+			//case Message.PathfindChangeState:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		PathfindStateChangeHandler.ServerRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SyncAltUse:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					SyncAltUseHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					SyncAltUseHandler.ClientRecieve(reader);
-				}
+			//case Message.SyncAltUse:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		SyncAltUseHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		SyncAltUseHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SkillPassiveValue:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					SkillPassiveValueHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					SkillPassiveValueHandler.ClientRecieve(reader);
-				}
+			//case Message.SkillPassiveValue:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		SkillPassiveValueHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		SkillPassiveValueHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SyncSkillSpecialization:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					SyncSkillSpecializationHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					SyncSkillSpecializationHandler.ClientRecieve(reader);
-				}
+			//case Message.SyncSkillSpecialization:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		SyncSkillSpecializationHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		SyncSkillSpecializationHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.RequestOthersSkillPassives:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					RequestOtherSkillPassivesHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					RequestOtherSkillPassivesHandler.ClientRecieve(reader);
-				}
+			//case Message.RequestOthersSkillPassives:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		RequestOtherSkillPassivesHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		RequestOtherSkillPassivesHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.RequestOthersSkillSpecialization:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					RequestOtherSkillSpecializationHandler.ServerRecieve(reader);
-				}
-				else
-				{
-					RequestOtherSkillSpecializationHandler.ClientRecieve(reader);
-				}
+			//case Message.RequestOthersSkillSpecialization:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		RequestOtherSkillSpecializationHandler.ServerRecieve(reader);
+			//	}
+			//	else
+			//	{
+			//		RequestOtherSkillSpecializationHandler.ClientRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			case Message.SyncConditionalDrop:
-				if (Main.netMode == NetmodeID.Server)
-				{
-					SyncConditionalDropHandler.ServerRecieve(reader);
-				}
+			//case Message.SyncConditionalDrop:
+			//	if (Main.netMode == NetmodeID.Server)
+			//	{
+			//		SyncConditionalDropHandler.ServerRecieve(reader);
+			//	}
 
-				break;
+			//	break;
 
-			default:
-				throw new ArgumentException($"{message} is an invalid PoT message ID.");
+			//default:
+			//	throw new ArgumentException($"{message} is an invalid PoT message ID.");
 		}
 	}
 

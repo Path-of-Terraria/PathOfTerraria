@@ -326,7 +326,7 @@ internal class TwinsDomain : BossDomainSubworld
 
 	private static void PlaceGemsparkWall(Point16 position, OpenFlags flags)
 	{
-		if (flags == OpenFlags.None)
+		if (flags == OpenFlags.None || !flags.HasCardinal())
 		{
 			return;
 		}

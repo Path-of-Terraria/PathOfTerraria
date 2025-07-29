@@ -19,7 +19,8 @@ internal static class StructureTools
 	}
 
 	/// <summary>
-	/// Places a structure at the given position and origin.
+	/// Places a structure at the given position and origin. This also includes more tooling than the equivalent 
+	/// <see cref="StructureHelper.API.Generator.GenerateStructure(string, Point16, Mod, bool, bool, GenFlags)"/>.
 	/// </summary>
 	/// <param name="structure">Path to the structure, NOT including mod name. Formatted like "Assets/Structures/XX/Structure".</param>
 	/// <param name="position">Position of the structure, according to origin.</param>
@@ -41,14 +42,17 @@ internal static class StructureTools
 		}
 
 		int oldVal = Main.netMode;
+		bool generatingWorld = WorldGen.generatingWorld;
 		
 		if (noSync)
 		{
 			Main.netMode = NetmodeID.SinglePlayer;
+			WorldGen.generatingWorld = true;
 		}
 
 		StructureHelper.API.Generator.GenerateStructure(structure, position, mod, flags: flags);
 		Main.netMode = oldVal;
+		WorldGen.generatingWorld = generatingWorld;
 		return position;
 	}
 

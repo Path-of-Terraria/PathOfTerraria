@@ -47,7 +47,7 @@ internal class EmbeddedEye : ModTile
 		}
 		else
 		{
-			SpawnNPCOnServerHandler.Send(NPCID.DemonEye, new((i + 1) * 16, (j + 1) * 16), new Vector2(0, -6).RotatedByRandom(0.2f));
+			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send(NPCID.DemonEye, new Vector2((i + 1) * 16, (j + 1) * 16), new Vector2(0, -6).RotatedByRandom(0.2f));
 		}
 
 		for (int k = 0; k < 16; k++)
