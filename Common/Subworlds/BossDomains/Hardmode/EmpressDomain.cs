@@ -182,8 +182,12 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 		var src = new EntitySource_SpawnNPC();
 		int proj = ModContent.ProjectileType<SpawnSymbols>();
 		Vector2 pos = forcePos ?? RandomArenaPosition();
+		int newProj = Projectile.NewProjectile(src, pos, Vector2.Zero, proj, 0, 0, Main.myPlayer, type, Main.rand.NextFloat(240));
 
-		Projectile.NewProjectile(src, pos, Vector2.Zero, proj, 0, 0, Main.myPlayer, type, Main.rand.NextFloat(240));
+		if (Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, newProj);
+		}
 	}
 
 	private static Vector2 RandomArenaPosition()

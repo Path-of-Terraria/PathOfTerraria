@@ -610,7 +610,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/SkeletronArena", Mod);
 		var position = new Point16(Width / 2 - size.X / 2, Height - 150 - size.Y / 2);
-		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/SkeletronArena", position, Mod);
+		StructureTools.PlaceByOrigin("Assets/Structures/SkeletronArena", position, Vector2.Zero);
 		Arena = new Rectangle(position.X * 16, position.Y * 16, size.X * 16, size.Y * 16);
 	}
 

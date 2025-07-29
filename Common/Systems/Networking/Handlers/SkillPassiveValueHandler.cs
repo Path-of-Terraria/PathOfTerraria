@@ -3,11 +3,16 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class SkillPassiveValueHandler
+internal class SkillPassiveValueHandler : Handler
 {
-	public static void Send(byte player, string treeName, string nodeName, byte level, bool runLocally = false)
+	public override Networking.Message MessageType => Networking.Message.SkillPassiveValue;
+
+	/// <inheritdoc cref="Networking.Message.SkillPassiveValue"/>
+	public override void Send(params object[] parameters)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SkillPassiveValue);
+		CastParameters(parameters, out byte player, out string treeName, out string nodeName, out byte level);
+
+		ModPacket packet = Networking.GetPacket(MessageType);
 
 		packet.Write(player);
 		packet.Write(treeName);
@@ -15,7 +20,7 @@ internal static class SkillPassiveValueHandler
 		packet.Write(level);
 		packet.Send();
 
-		if (runLocally)
+		if (TryGetOptionalValue(parameters, 4, out bool runLocally) && runLocally)
 		{
 			SetPlayerNodeStrength(player, treeName, nodeName, level);
 		}
@@ -29,9 +34,9 @@ internal static class SkillPassiveValueHandler
 		Main.player[player].GetModPlayer<SkillTreePlayer>().ModifyPassive(SkillTree.TypeToSkillTree[tree.ParentSkill], nodeType, level, false, true);
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SkillPassiveValue);
+		ModPacket packet = Networking.GetPacket(MessageType);
 		byte target = reader.ReadByte();
 		string treeName = reader.ReadString();
 		string nodeName = reader.ReadString();
@@ -46,7 +51,7 @@ internal static class SkillPassiveValueHandler
 		SetPlayerNodeStrength(target, treeName, nodeName, level);
 	}
 
-	internal static void ClientRecieve(BinaryReader reader)
+	internal override void ClientRecieve(BinaryReader reader)
 	{
 		byte target = reader.ReadByte();
 		string treeName = reader.ReadString();

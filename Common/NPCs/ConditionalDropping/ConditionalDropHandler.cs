@@ -15,7 +15,7 @@ internal class ConditionalDropHandler : GlobalNPC
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			SyncConditionalDropHandler.Send(id, true);
+			ModContent.GetInstance<SyncConditionalDropHandler>().Send(id, true);
 			return;
 		}
 
@@ -38,7 +38,7 @@ internal class ConditionalDropHandler : GlobalNPC
 	{
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			SyncConditionalDropHandler.Send(id, false);
+			ModContent.GetInstance<SyncConditionalDropHandler>().Send(id, false);
 			return;
 		}
 

@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,7 +110,7 @@ internal class TavernManager : ModSystem
 			}
 			else
 			{
-				SpawnNPCOnServerHandler.Send((short)type, pos.ToWorldCoordinates());
+				ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, pos.ToWorldCoordinates());
 			}
 		}
 	}

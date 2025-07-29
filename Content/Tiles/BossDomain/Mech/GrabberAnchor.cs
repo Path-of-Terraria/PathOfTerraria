@@ -46,6 +46,11 @@ internal class GrabberAnchor : ModTile
 		AddMapEntry(new Color(128, 128, 128));
 	}
 
+	public override bool CanDrop(int i, int j)
+	{
+		return false;
+	}
+
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
 		ModContent.GetInstance<GrabberSpawnEntity>().Kill(i, j);

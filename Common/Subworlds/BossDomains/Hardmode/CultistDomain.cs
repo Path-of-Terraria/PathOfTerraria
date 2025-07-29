@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
-using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using System.Collections.Generic;
 using Terraria.DataStructures;

@@ -50,6 +50,11 @@ internal class TechDriveTile : ModTile, ICanCutTile
 	{
 		Tile tile = Main.tile[i, j];
 		tile.TileFrameY = 18;
+
+		if (Main.dedServ)
+		{
+			NetMessage.SendTileSquare(-1, i, j);
+		}
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)

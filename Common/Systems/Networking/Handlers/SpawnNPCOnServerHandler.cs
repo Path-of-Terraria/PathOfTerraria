@@ -4,30 +4,35 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class SpawnNPCOnServerHandler
+internal class SpawnNPCOnServerHandler : Handler
 {
-	public static void Send(short type, Vector2 position)
-	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SpawnNPCOnServer);
+	public override Networking.Message MessageType => Networking.Message.SpawnNPCOnServer;
 
-		packet.Write((byte)2);
-		packet.Write(type);
-		packet.WriteVector2(position);
-		packet.Send();
+	/// <inheritdoc cref="Networking.Message.SpawnNPCOnServer"/>
+	public override void Send(params object[] parameters)
+	{
+		CastParameters(parameters, out short type, out Vector2 position);
+
+		if (TryGetOptionalValue(parameters, 2, out Vector2 velocity))
+		{
+			ModPacket packet = Networking.GetPacket(MessageType);
+			packet.Write((byte)3);
+			packet.Write(type);
+			packet.WriteVector2(position);
+			packet.WriteVector2(velocity);
+			packet.Send();
+		}
+		else 
+		{ 
+			ModPacket packet = Networking.GetPacket(MessageType);
+			packet.Write((byte)2);
+			packet.Write(type);
+			packet.WriteVector2(position);
+			packet.Send();
+		}
 	}
 
-	public static void Send(short type, Vector2 position, Vector2 velocity)
-	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.SpawnNPCOnServer);
-
-		packet.Write((byte)3);
-		packet.Write(type);
-		packet.WriteVector2(position);
-		packet.WriteVector2(velocity);
-		packet.Send();
-	}
-
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
 		int paramCount = reader.ReadByte();
 		short type = reader.ReadInt16();
@@ -39,7 +44,7 @@ internal static class SpawnNPCOnServerHandler
 			velocity = reader.ReadVector2();
 		}
 
-		int who = NPC.NewNPC(new EntitySource_SpawnNPC(), (int)pos.X, (int)pos.Y, type);
+		int who = NPC.NewNPC(new EntitySource_SpawnNPC(), (int)pos.X, (int)pos.Y, type, Start: 1);
 
 		if (velocity != default)
 		{

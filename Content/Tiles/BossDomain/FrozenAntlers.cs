@@ -54,7 +54,7 @@ internal class FrozenAntlers : ModTile
 		}
 		else
 		{
-			SpawnNPCOnServerHandler.Send((short)type, new((i + 1) * 16, (j + 1) * 16), new Vector2(0, 8).RotatedByRandom(0.5f));
+			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, new Vector2((i + 1) * 16, (j + 1) * 16), new Vector2(0, 8).RotatedByRandom(0.5f));
 		}
 	}
 }

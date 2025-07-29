@@ -230,7 +230,7 @@ public static class OpenExtensions
 		return GetDirectionAbsolute(directions.Dequeue());
 	}
 
-	public static bool Cardinal(this OpenFlags flags)
+	public static bool HasCardinal(this OpenFlags flags)
 	{
 		return flags.HasFlag(OpenFlags.Right) || flags.HasFlag(OpenFlags.Above) || flags.HasFlag(OpenFlags.Left) || flags.HasFlag(OpenFlags.Below);
 	}

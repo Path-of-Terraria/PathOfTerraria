@@ -25,7 +25,7 @@ public class RavencrestMicrobiome : MicroBiome
 			return false;
 		}
 		
-		StructureHelper.API.Generator.GenerateStructure("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), mod);
+		StructureTools.PlaceByOrigin("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), Vector2.Zero);
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
 		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X + size.X / 2, origin.Y + size.Y / 2 - 8);
 

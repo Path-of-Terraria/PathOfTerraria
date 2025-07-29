@@ -115,7 +115,7 @@ public class ExperienceTracker : ModSystem
 
 		if (Main.netMode != NetmodeID.SinglePlayer && !fromNet) // Syncs the spawn of all orbs - only does so if not from the server
 		{
-			ExperienceHandler.SendExperience((byte)targetPlayer, xp, location, baseVelocity, false);
+			ModContent.GetInstance<ExperienceHandler>().Send((byte)targetPlayer, xp, location, baseVelocity, false);
 		}
 
 		return indices;

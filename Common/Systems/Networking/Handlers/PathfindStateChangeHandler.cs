@@ -3,19 +3,26 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class PathfindStateChangeHandler
+internal class PathfindStateChangeHandler : Handler
 {
-	public static void Send(byte player, byte who, bool enable)
-	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.PathfindChangeState);
+	public override Networking.Message MessageType => Networking.Message.PathfindChangeState;
 
-		packet.Write(player);
+	/// <summary>
+	/// Changes the pathfinder state on the given NPC. This is used over <see cref="NPC.netUpdate"/> as it guarantees precision information.<br/>Signature:<br/>
+	/// <c>byte followPlayer, byte who, bool enable</c>
+	/// </summary>
+	public override void Send(params object[] parameters)
+	{
+		CastParameters(parameters, out byte followPlayer, out byte who, out bool enable);
+
+		ModPacket packet = Networking.GetPacket(MessageType);
+		packet.Write(followPlayer);
 		packet.Write(who);
 		packet.Write(enable);
 		packet.Send();
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
 		byte player = reader.ReadByte();
 		int who = reader.ReadByte();

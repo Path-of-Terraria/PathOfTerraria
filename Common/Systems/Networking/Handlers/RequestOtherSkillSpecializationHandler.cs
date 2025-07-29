@@ -3,25 +3,30 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal static class RequestOtherSkillSpecializationHandler
+internal class RequestOtherSkillSpecializationHandler : Handler
 {
-	public static void Send(byte player)
+	public override Networking.Message MessageType => Networking.Message.RequestOthersSkillSpecialization;
+
+	/// <inheritdoc cref="Networking.Message.RequestOthersSkillSpecialization"/>
+	public override void Send(params object[] parameters)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.RequestOthersSkillSpecialization);
+		CastParameters(parameters, out byte player);
+
+		ModPacket packet = Networking.GetPacket(MessageType);
 		packet.Write(player);
 		packet.Send();
 	}
 
-	internal static void ServerRecieve(BinaryReader reader)
+	internal override void ServerRecieve(BinaryReader reader)
 	{
-		ModPacket packet = Networking.GetPacket(Networking.Message.RequestOthersSkillSpecialization);
+		ModPacket packet = Networking.GetPacket(MessageType);
 		byte target = reader.ReadByte();
 
 		packet.Write(target);
 		packet.Send(-1, target);
 	}
 
-	internal static void ClientRecieve(BinaryReader reader)
+	internal override void ClientRecieve(BinaryReader reader)
 	{
 		byte target = reader.ReadByte();
 

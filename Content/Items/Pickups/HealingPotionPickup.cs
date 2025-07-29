@@ -39,7 +39,7 @@ internal class HealingPotionPickup : PickupItem
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, true, (byte)player.GetModPlayer<PotionPlayer>().HealingLeft);
+			ModContent.GetInstance<HotbarPotionHandler>().Send((byte)player.whoAmI, true, (byte)player.GetModPlayer<PotionPlayer>().HealingLeft);
 		}
 
 		for (int k = 0; k < 10; k++)

@@ -86,7 +86,7 @@ internal class PrimeDomain : BossDomainSubworld
 		{
 			TwinsDomain.DecorateMetals(metal.Key, metal.Value, true);
 
-			if (WorldGen.genRand.NextBool(50) && metal.Value.Cardinal())
+			if (WorldGen.genRand.NextBool(50) && metal.Value.HasCardinal())
 			{
 				SnakeGemspark(metal.Key, metal.Value);
 			}
