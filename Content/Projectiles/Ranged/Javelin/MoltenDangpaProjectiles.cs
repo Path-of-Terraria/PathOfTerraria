@@ -93,12 +93,17 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 
 	private void DeathDust()
 	{
+		if (UsingAlt) // For some reason I can't figure out, alt use causes it to spawn an offset line of dust at about 45 degrees always. No dust looks fine
+		{
+			return;
+		}
+
 		Vector2 location = Projectile.Center;
 		Vector2 tip = ItemSize.RotatedBy(Projectile.rotation + MathHelper.PiOver2);
 
 		for (int i = 0; i < 16; ++i)
 		{
-			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, UsingAlt ? DustType : DustID.Lead);
+			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, DustID.Lead);
 		}
 	}
 
@@ -108,7 +113,8 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 		Main.instance.LoadItem(moltenId);
 		Texture2D tex = UsingAlt ? TextureAssets.Projectile[Type].Value : TextureAssets.Item[moltenId].Value;
 		Color color = lightColor * Projectile.Opacity;
-		Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, tex.Size() * new Vector2(0.75f, 0.25f), 1f, SpriteEffects.None, 0);
+		Vector2 position = Projectile.Center - Main.screenPosition;
+		Main.EntitySpriteDraw(tex, position, null, color, Projectile.rotation, tex.Size() * new Vector2(0.75f, 0.25f), 1f, SpriteEffects.None, 0);
 
 		return false;
 	}
