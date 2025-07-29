@@ -7,11 +7,7 @@ internal class ExperienceHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SpawnExperience;
 
-	/// <summary>
-	/// Spawns an orb on all clients but the target (parameter 0).
-	/// Generally, this should only be called by <see cref="ExperienceTracker.SpawnExperience(int, Vector2, Vector2, int, bool)"/>.<br/>
-	/// Signature:<br/><c>byte target, int xpValue, Vector2 position, Vector2 velocity, bool spawnLocally = false</c>
-	/// </summary>
+	/// <inheritdoc cref="Networking.Message.SpawnExperience"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte target, out int xpValue, out Vector2 position, out Vector2 velocity);

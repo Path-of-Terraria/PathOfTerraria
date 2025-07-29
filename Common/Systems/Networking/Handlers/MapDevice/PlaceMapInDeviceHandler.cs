@@ -8,12 +8,7 @@ internal class PlaceMapInDeviceHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SyncMapDevicePlaceMap;
 
-	/// <summary>
-	/// Sets the item in a MapDeviceEntity at <paramref name="entityKey"/> to the given item.
-	/// </summary>
-	/// <param name="fromWho">The player who sent the packet.</param>
-	/// <param name="itemId">The item ID to place into the map entity.</param>
-	/// <param name="entityKey">The position of the entity.</param>
+	/// <inheritdoc cref="Networking.Message.SyncMapDevicePlaceMap"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte fromWho, out short itemId, out Point16 entityKey);

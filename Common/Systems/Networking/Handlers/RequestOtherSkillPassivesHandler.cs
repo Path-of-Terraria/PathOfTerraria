@@ -7,6 +7,7 @@ internal class RequestOtherSkillPassivesHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.RequestOthersSkillPassives;
 
+	/// <inheritdoc cref="Networking.Message.RequestOthersSkillPassives"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte player);

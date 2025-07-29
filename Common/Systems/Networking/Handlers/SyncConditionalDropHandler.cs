@@ -10,6 +10,7 @@ internal class SyncConditionalDropHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SyncConditionalDrop;
 
+	/// <inheritdoc cref="Networking.Message.SyncConditionalDrop"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out int id, out bool add);

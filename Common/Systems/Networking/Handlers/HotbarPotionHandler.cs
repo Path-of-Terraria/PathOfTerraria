@@ -6,6 +6,7 @@ internal class HotbarPotionHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SetHotbarPotionUse;
 
+	/// <inheritdoc cref="Networking.Message.SetHotbarPotionUse"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte playerWhoAmI, out bool isHealingPotion, out byte newValue);

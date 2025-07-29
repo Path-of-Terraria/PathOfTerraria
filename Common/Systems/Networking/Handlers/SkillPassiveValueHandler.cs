@@ -7,6 +7,7 @@ internal class SkillPassiveValueHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SkillPassiveValue;
 
+	/// <inheritdoc cref="Networking.Message.SkillPassiveValue"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte player, out string treeName, out string nodeName, out byte level);

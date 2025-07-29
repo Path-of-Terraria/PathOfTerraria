@@ -7,6 +7,7 @@ internal class SyncGuardianAngelHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SyncGuardianAngelHit;
 
+	/// <inheritdoc cref="Networking.Message.SyncGuardianAngelHit"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte playerWhoAmI, out short npcWho);

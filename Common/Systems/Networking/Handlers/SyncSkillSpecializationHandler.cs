@@ -7,6 +7,7 @@ internal class SyncSkillSpecializationHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SyncSkillSpecialization;
 
+	/// <inheritdoc cref="Networking.Message.SyncSkillSpecialization"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte player, out string skillName, out string specName);

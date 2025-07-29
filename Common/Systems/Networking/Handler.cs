@@ -12,10 +12,14 @@ internal abstract class Handler : ILoadable
 {
 	public static Dictionary<Networking.Message, Handler> HandlerForMessage = [];
 
+	/// <summary>
+	/// The message type this handler is associated with.
+	/// </summary>
 	public abstract Networking.Message MessageType { get; }
 
 	/// <summary>
-	/// Sends the packet with the given parameters. Ideally, write in docs to clarify the signature so it's easier to use.
+	/// Sends the packet with the given parameters. Ideally, write in docs to clarify the signature so it's easier to use, 
+	/// or use inheritdoc for the <see cref="Networking.Message"/> so both have the same comment for consistency and readability.
 	/// </summary>
 	/// <param name="parameters">Parameters to use for the method.</param>
 	public abstract void Send(params object[] parameters);

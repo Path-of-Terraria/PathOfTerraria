@@ -7,6 +7,7 @@ internal class RequestOtherSkillSpecializationHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.RequestOthersSkillSpecialization;
 
+	/// <inheritdoc cref="Networking.Message.RequestOthersSkillSpecialization"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte player);

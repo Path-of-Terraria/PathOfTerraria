@@ -8,6 +8,7 @@ internal class SpawnNPCOnServerHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SpawnNPCOnServer;
 
+	/// <inheritdoc cref="Networking.Message.SpawnNPCOnServer"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out short type, out Vector2 position);

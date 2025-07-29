@@ -7,10 +7,7 @@ internal class SyncStaffAltHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SyncUseStaffAltUse;
 
-	/// <summary>
-	/// Sets a player to be "using" the Staff alt use functionality.
-	/// </summary>
-	/// <param name="whoAmI">Index of the player.</param>
+	/// <inheritdoc cref="Networking.Message.SyncUseStaffAltUse"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte whoAmI);

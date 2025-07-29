@@ -7,12 +7,16 @@ internal class PathfindStateChangeHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.PathfindChangeState;
 
+	/// <summary>
+	/// Changes the pathfinder state on the given NPC. This is used over <see cref="NPC.netUpdate"/> as it guarantees precision information.<br/>Signature:<br/>
+	/// <c>byte followPlayer, byte who, bool enable</c>
+	/// </summary>
 	public override void Send(params object[] parameters)
 	{
-		CastParameters(parameters, out byte player, out byte who, out bool enable);
+		CastParameters(parameters, out byte followPlayer, out byte who, out bool enable);
 
 		ModPacket packet = Networking.GetPacket(MessageType);
-		packet.Write(player);
+		packet.Write(followPlayer);
 		packet.Write(who);
 		packet.Write(enable);
 		packet.Send();

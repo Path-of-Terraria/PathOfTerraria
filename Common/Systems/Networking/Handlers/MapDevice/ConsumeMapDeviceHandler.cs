@@ -8,12 +8,7 @@ internal class ConsumeMapDeviceHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.ConsumeMapOffOfDevice;
 
-	/// <summary>
-	/// Map device packet <paramref name="target"/>. 
-	/// Generally, this should only be called by <see cref="MapDevicePlaceable.TryPlaceMap"/>.
-	/// </summary>
-	/// <param name="fromWho">The person entering the map.</param>
-	/// <param name="entityKey">The key for the entity</param>
+	/// <inheritdoc cref="Networking.Message.ConsumeMapOffOfDevice"/>
 	public override void Send(params object[] parameters)
 	{
 		CastParameters(parameters, out byte fromWho, out Point16 entityKey);
