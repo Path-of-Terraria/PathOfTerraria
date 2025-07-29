@@ -231,7 +231,7 @@ public class AffixTooltipsHandler
 		if (differenceTips is not null)
 		{
 			// You will see some commented out code here.
-			// This code was originally written to compare only two weapons of the same time - two javelins, two broadswords, two bows, etc.
+			// This code was originally written to compare only two weapons of the same type - two javelins, two broadswords, two bows, etc.
 			// This is now no longer intended functionality, but instead of removing it I'm commenting it out since it may be a useful config option.
 			// I also don't really remember how this code works so it'd be tough to rewrite. - GabeHasWon
 
