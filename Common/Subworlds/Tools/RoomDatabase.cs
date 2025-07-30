@@ -18,14 +18,14 @@ internal class RoomDatabase : ModSystem
 		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
 		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening && x.Value.ForSkeletron == skeletron);
 
-		int roomId = WorldGen.genRand.Next(roomDatas.Count());
-		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
+		int roomId;
+		KeyValuePair<int, RoomData> roomData;
 
-		while (usedColors.Contains(roomData.Value.Wire))
+		do
 		{
 			roomId = WorldGen.genRand.Next(roomDatas.Count());
 			roomData = roomDatas.ElementAt(roomId);
-		}
+		} while (usedColors.Contains(roomData.Value.Wire));
 
 		if (opening == OpeningType.Right) // Right-placed needs to be adjusted
 		{

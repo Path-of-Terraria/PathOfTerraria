@@ -12,6 +12,7 @@ using Terraria.Utilities;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 using PathOfTerraria.Common.Subworlds.Tools;
+using PathOfTerraria.Content.Tiles.BossDomain;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -245,6 +246,7 @@ public class SkeletronDomain : BossDomainSubworld
 	private void DigTunnels(GenerationProgress progress, GameConfiguration configuration)
 	{
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Tunnels");
 
 		WellBottom.X = DigChasm(WellBottom.Y - 1, WellBottom.Y + BaseTunnelDepth, WellBottom.X, 4, 6);
 		Point secondFloorStart = GenerateFirstFloor();
@@ -287,7 +289,7 @@ public class SkeletronDomain : BossDomainSubworld
 				{
 					if (spawnActuatedWall && pregeneratedActuatedWallYs.TryGetValue(y, out int value))
 					{
-						tile.TileType = (ushort)tileType;
+						tile.TileType = (ushort)ModContent.TileType<BoneGate>();// (ushort)tileType;
 						tile.HasTile = true;
 						tile.HasActuator = true;
 						tile.IsActuated = false;
@@ -365,13 +367,13 @@ public class SkeletronDomain : BossDomainSubworld
 		int corridorEndY = WellBottom.Y + BaseTunnelDepth + 2 + WorldGen.genRand.Next(-6, 6);
 
 		RunCorridor(WellBottom.X, WellBottom.Y + BaseTunnelDepth + 2, corridorEnd, corridorEndY);
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, corridorEndY, usedColors));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, corridorEndY, usedColors), usedColors);
 
 		corridorEnd = WellBottom.X + WorldGen.genRand.Next(50, 80);
 		corridorEndY = WellBottom.Y + BaseTunnelDepth + 2 + WorldGen.genRand.Next(-6, 6);
 
 		RunCorridor(WellBottom.X, WellBottom.Y + BaseTunnelDepth + 2, corridorEnd, corridorEndY);
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, corridorEndY, usedColors));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, corridorEndY, usedColors), usedColors);
 
 		int chasmBottom = WellBottom.Y + BaseTunnelDepth + 2 + 180;
 		int lastX = DigChasm(WellBottom.Y + BaseTunnelDepth + 2 + roomHeight / 2 - 2, chasmBottom, WellBottom.X, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 2);
@@ -397,19 +399,19 @@ public class SkeletronDomain : BossDomainSubworld
 
 		if (left)
 		{
-			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors));
+			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors), usedColors);
 		}
 
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y, usedColors));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y, usedColors), usedColors);
 
 		corridorEnd = x + (!left ? WorldGen.genRand.Next(150, 180) : WorldGen.genRand.Next(50, 80));
 
 		RunCorridor(x, y, corridorEnd, y);
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y, usedColors));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y, usedColors), usedColors);
 
 		if (!left)
 		{
-			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3, usedColors));
+			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3, usedColors), usedColors);
 		}
 
 		int lastX = DigChasm(y + roomHeight / 2 - 2, y + 220, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 3);
@@ -432,14 +434,14 @@ public class SkeletronDomain : BossDomainSubworld
 
 		RunCorridor(x, y, corridorEnd, y);
 
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors));
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y, usedColors));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors), usedColors);
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Right, corridorEnd, y, usedColors), usedColors);
 
 		corridorEnd = x + WorldGen.genRand.Next(140, 170);
 
 		RunCorridor(x, y, corridorEnd, y);
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y, usedColors));
-		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors));
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, y, usedColors), usedColors);
+		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 4, usedColors), usedColors);
 
 		int lastX = DigChasm(y + roomHeight / 2 - 2, y + 120, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 4);
 		WireRoomsToChasms(ActuatorInfoByFloor[2], RoomsToWire);
@@ -448,10 +450,12 @@ public class SkeletronDomain : BossDomainSubworld
 		PortalLocation = new Point(lastX, y + 124);
 	}
 
-	private void AddRoom(PlacedRoom room)
+	private void AddRoom(PlacedRoom room, List<WireColor> usedColors)
 	{
 		SpecialRooms.Add(room);
 		RoomsToWire.Add(room);
+
+		usedColors.Add(room.Data.Wire);
 	}
 
 	private void WireRoomsToChasms(FloorActuatorInfo floorActuatorInfo, List<PlacedRoom> roomsToWire)
@@ -475,6 +479,7 @@ public class SkeletronDomain : BossDomainSubworld
 			Point loc = roomsToWire[i].Area.Location;
 			var wirePosition = new Point(loc.X + data.WireConnection.X - 1, loc.Y + data.WireConnection.Y - 1);
 			Point point = floorActuatorInfo.ActuatedTilesByWall[i].First();
+			point.X -= 6;
 
 			SetWireOnTile(data, Main.tile[wirePosition.X + 1, wirePosition.Y]);
 
@@ -500,6 +505,12 @@ public class SkeletronDomain : BossDomainSubworld
 				SetWireOnTile(data, Main.tile[wirePosition]);
 
 				wirePosition.Y += yDir;
+			}
+
+			for (int k = 1; k < 7; ++k)
+			{
+				SetWireOnTile(data, Main.tile[wirePosition]);
+				wirePosition.X++;
 			}
 		}
 

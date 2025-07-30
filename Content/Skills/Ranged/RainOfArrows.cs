@@ -367,16 +367,20 @@ public class RainOfArrows : Skill
 			}
 
 			Player player = Main.player[projectile.owner];
-			ref Vector2? vine = ref target.GetGlobalNPC<CreepingVines.VineNPC>().Vined;
 
 			if (player.HasTreePassive<RainOfArrowsTree, SlicingShrapnel>())
 			{
 				target.AddBuff(BuffID.Bleeding, 60 * 3);
 			}
 
-			if (player.HasTreePassive<RainOfArrowsTree, CreepingVines>() && !target.immortal && !vine.HasValue)
+			if (target.TryGetGlobalNPC(out CreepingVines.VineNPC vinedNpc))
 			{
-				vine = projectile.Center;
+				ref Vector2? vine = ref vinedNpc.Vined;
+
+				if (player.HasTreePassive<RainOfArrowsTree, CreepingVines>() && !target.immortal && !vine.HasValue)
+				{
+					vine = projectile.Center;
+				}
 			}
 
 			if (player.HasTreePassive<RainOfArrowsTree, Ghostfire>() && !_ghost && Main.rand.NextFloat() < 0.1f)

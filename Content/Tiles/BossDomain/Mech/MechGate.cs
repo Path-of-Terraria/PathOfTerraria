@@ -21,7 +21,7 @@ public class MechGate : ModTile
 		{
 			Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
 		}
-		else
+		else if (Type == ModContent.TileType<BlockingGate>())
 		{
 			BlockerGlow = ModContent.Request<Texture2D>(Texture + "_Glow");
 		}
@@ -70,7 +70,7 @@ public class MechGate : ModTile
 	{
 		Tile tile = Main.tile[i, j];
 		
-		if (Main.tile[i, j + 1].HasTile || Main.tile[i, j - 1].HasTile)
+		if (ValidAdjacent(i, j + 1, Type) || ValidAdjacent(i, j - 1, Type))
 		{
 			tile.TileFrameY = 18;
 		}
@@ -81,6 +81,12 @@ public class MechGate : ModTile
 
 		tile.TileFrameX = (short)(Main.rand.Next(3) * 18);
 		return false;
+
+		static bool ValidAdjacent(int i, int j, int type)
+		{
+			Tile tile = Main.tile[i, j];
+			return tile.HasTile && (tile.TileType == type || Main.tileSolid[tile.TileType]);
+		}
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -116,6 +122,12 @@ public class BlockingGate : MechGate
 		Rectangle frame = tile.BasicFrame();
 		frame.X %= 36;
 		spriteBatch.Draw(TextureAssets.Tile[Type].Value, TileExtensions.DrawPosition(i, j), frame, Lighting.GetColor(i, j));
+
+		if (tile.HasUnactuatedTile)
+		{
+			spriteBatch.Draw(BlockerGlow.Value, TileExtensions.DrawPosition(i, j), frame, Color.White);
+		}
+
 		return false;
 	}
 }

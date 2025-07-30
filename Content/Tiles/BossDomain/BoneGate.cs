@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.MiscUtilities;
-using PathOfTerraria.Common.Tiles;
+﻿using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using Terraria.GameContent;
 
@@ -11,7 +10,7 @@ internal class BoneGate : MechGate
 	{
 		base.SetStaticDefaults();
 
-		Main.tileSolid[Type] = false;
+		Main.tileSolid[Type] = true;
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -21,11 +20,6 @@ internal class BoneGate : MechGate
 		Rectangle frame = tile.BasicFrame();
 		frame.X %= 36;
 		spriteBatch.Draw(TextureAssets.Tile[Type].Value, TileExtensions.DrawPosition(i, j), frame, Lighting.GetColor(i, j));
-
-		if (tile.HasUnactuatedTile)
-		{
-			BlockerSystem.DrawGlow(i, j, Type, spriteBatch, BlockerGlow.Value, Color.Red);
-		}
 
 		return false;
 	}
