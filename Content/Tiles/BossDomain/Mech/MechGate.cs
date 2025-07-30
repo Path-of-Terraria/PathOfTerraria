@@ -116,12 +116,6 @@ public class BlockingGate : MechGate
 		Rectangle frame = tile.BasicFrame();
 		frame.X %= 36;
 		spriteBatch.Draw(TextureAssets.Tile[Type].Value, TileExtensions.DrawPosition(i, j), frame, Lighting.GetColor(i, j));
-
-		if (tile.HasUnactuatedTile)
-		{
-			BlockerSystem.DrawGlow(i, j, Type, spriteBatch, BlockerGlow.Value, Color.Red);
-		}
-
 		return false;
 	}
 }
