@@ -72,7 +72,9 @@ internal class SkillCombatPlayer : ModPlayer
 
 	public void UseSkill(int index)
 	{
-		if (HotbarSkills[index] != null && HotbarSkills[index].CanUseSkill(Player))
+		SkillFailure _ = default;
+
+		if (HotbarSkills[index] != null && HotbarSkills[index].CanUseSkill(Player, ref _, false))
 		{
 			Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.UsedASkill);
 

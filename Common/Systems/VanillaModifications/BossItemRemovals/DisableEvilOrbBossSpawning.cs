@@ -2,7 +2,6 @@
 using MonoMod.Cil;
 using PathOfTerraria.Common.Systems.RealtimeGen.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
-using Terraria;
 using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;

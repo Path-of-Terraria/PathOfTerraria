@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;
@@ -122,7 +123,7 @@ public class RavencrestSystem : ModSystem
 
 	private void OverworldOneTimeChecks()
 	{
-		if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson)
+		if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !BossTracker.DownedBrainOfCthulhu)
 		{
 			while (true)
 			{
@@ -306,6 +307,13 @@ public class RavencrestSystem : ModSystem
 		}
 
 		writer.WriteVector2(EntrancePosition.ToVector2());
+		writer.Write(SpawnedMorvenPos is not null);
+
+		if (SpawnedMorvenPos is not null)
+		{
+			writer.Write(SpawnedMorvenPos.Value.X);
+			writer.Write(SpawnedMorvenPos.Value.Y);
+		}
 	}
 
 	public override void NetReceive(BinaryReader reader)
@@ -319,5 +327,10 @@ public class RavencrestSystem : ModSystem
 		}
 
 		EntrancePosition = reader.ReadVector2().ToPoint16();
+
+		if (reader.ReadBoolean())
+		{
+			SpawnedMorvenPos = new Point16(reader.ReadInt16(), reader.ReadInt16());
+		}
 	}
 }

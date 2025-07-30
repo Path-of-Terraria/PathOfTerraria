@@ -1,21 +1,21 @@
+using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Content;
 using ReLogic.Graphics;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent;
-using Terraria.GameContent.UI;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
-using Terraria.Localization;
-using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems;
-using Terraria.DataStructures;
-using PathOfTerraria.Core.UI.SmartUI;
-using PathOfTerraria.Core.Items;
-using ReLogic.Content;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -51,15 +51,13 @@ public sealed class NewHotbar : SmartUiState
 
 	public record struct SkillTooltip(string Name, string Text, float Slot);
 
+	public readonly static Dictionary<string, Asset<Texture2D>> Textures = [];
+
 	private readonly Selector specialSelector = new();
 	private readonly Selector buildingSelector = new();
 	private readonly DynamicSpriteFont _font = FontAssets.DeathText.Value;
 
 	private int _animation;
-
-	public static readonly Asset<Texture2D> CombatTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Combat");
-	public static readonly Asset<Texture2D> BuildingTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Building");
-	public static readonly Asset<Texture2D> ActiveTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Active");
 
 	public override bool Visible => !Main.playerInventory;
 
@@ -70,6 +68,23 @@ public sealed class NewHotbar : SmartUiState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
+		if (Textures.Count == 0)
+		{
+			// Spamming ModContent.Request requires a lot of string manipulation, many times per frame,
+			// so caching is more efficient long term. It also makes it easier to read & write.
+
+			Textures.Add("InactiveCombat", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Combat"));
+			Textures.Add("InactiveBuilding", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Building"));
+			Textures.Add("SpecialActive", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Active"));
+			Textures.Add("HotbarCombat", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarCombat"));
+			Textures.Add("EmptyPotion", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/EmptyPotion"));
+			Textures.Add("GlowSoft", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowSoft"));
+			Textures.Add("HotbarBuilding", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBuilding"));
+			Textures.Add("HotbarBack", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBack"));
+			Textures.Add("HotbarSelector", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSelector"));
+			Textures.Add("SkillDenialIcons", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/SkillDenialIcons"));
+		}
+
 		float prog;
 
 		if (Main.LocalPlayer.selectedItem == 0)
@@ -145,9 +160,9 @@ public sealed class NewHotbar : SmartUiState
 		//     cleanly transition within context of the position of the
 		//     selector.
 
-		Texture2D specialInactiveCombat = CombatTexture.Value;
-		Texture2D specialInactiveBuilding = BuildingTexture.Value;
-		Texture2D specialActive = ActiveTexture.Value;
+		Texture2D specialInactiveCombat = Textures["InactiveCombat"].Value;
+		Texture2D specialInactiveBuilding = Textures["InactiveBuilding"].Value;
+		Texture2D specialActive = Textures["SpecialActive"].Value;
 		Main.inventoryScale = 1f; // 36 / 52f * 52f / 36f * 1 computes to 1...
 
 		// Draw active slot textures (hotbar background).
@@ -181,15 +196,14 @@ public sealed class NewHotbar : SmartUiState
 
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D combat = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarCombat").Value;
+		Texture2D combat = Textures["HotbarCombat"].Value;
 		Main.inventoryScale = opacity;
 
 		Main.spriteBatch.Draw(combat, new Vector2(20, 20 + off), null, Color.White * opacity);
 		// ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30 + off));
 
 		PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
-
-		Texture2D bottleTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/EmptyPotion").Value;
+		Texture2D bottleTex = Textures["EmptyPotion"].Value;
 
 		// Item textures require loading before use
 		Main.instance.LoadItem(ItemID.LesserHealingPotion);
@@ -220,7 +234,7 @@ public sealed class NewHotbar : SmartUiState
 			(potionPlayer.ManaLeft > 0 ? new Color(200, 220, 255) : Color.Gray) * opacity, 1f * opacity, 0.5f,
 			0.5f);
 
-		Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowSoft").Value;
+		Texture2D glow = Textures["GlowSoft"].Value;
 		if (Main.LocalPlayer.HasBuff(BuffID.PotionSickness))
 		{
 			spriteBatch.Draw(glow, new Vector2(480, 60 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
@@ -267,16 +281,42 @@ public sealed class NewHotbar : SmartUiState
 			return;
 		}
 
+		SkillFailure failure = default;
 		Skill skill = skillCombatPlayer.HotbarSkills[skillIndex];
+		var skillCenter = new Vector2(291 + 52 * skillIndex, 55 + off);
+		bool cantUse = !skill.CanUseSkill(Main.LocalPlayer, ref failure, true);
+
 		Texture2D texture = ModContent.Request<Texture2D>(skill.Texture).Value;
 		spriteBatch.Draw(texture,
 			skillRect,
-			new Rectangle(1, 2, texture.Width, texture.Height), Color.White * opacity);
+			new Rectangle(1, 2, texture.Width, texture.Height), (cantUse ? Color.Gray : Color.White) * opacity);
 
 		if (skill.Cooldown > 0)
 		{
-			spriteBatch.Draw(glow, new Vector2(291 + 52 * skillIndex, 55 + off), null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
+			spriteBatch.Draw(glow, skillCenter, null, Color.Black, 0, glow.Size() / 2f, 1, 0, 0);
 			Utils.DrawBorderString(spriteBatch, $"{skill.Cooldown / 60 + 1}", new Vector2(291 + 52 * skillIndex, 55 + off), Color.LightGray * opacity, 1f * opacity, 0.5f, 0.5f);
+		}
+		else if (cantUse)
+		{
+			skillCenter += new Vector2(2, 0);
+
+			if (failure.Reason != SkillFailReason.Other)
+			{
+				int slot = (int)failure.Reason;
+				Texture2D tex = Textures["SkillDenialIcons"].Value;
+				Rectangle source = new(48 * slot, 0, 46, 46);
+
+				Color color = Color.Lerp(Color.White, Color.Red, MathF.Sin((float)Main.timeForVisualEffects * 0.07f) * 0.25f + 0.25f) * opacity;
+				spriteBatch.Draw(tex, skillCenter, source, color, 0f, source.Size() / 2f, 1f, SpriteEffects.None, 0);
+			}
+			else
+			{
+				Texture2D tex = Textures["SkillDenialIcons"].Value;
+				Rectangle source = new(48, 48, 46, 46);
+
+				Color color = Color.Lerp(Color.White, Color.Red, MathF.Sin((float)Main.timeForVisualEffects * 0.07f) * 0.25f + 0.25f) * opacity;
+				spriteBatch.Draw(tex, skillCenter, source, color, 0f, source.Size() / 2f, 1f, SpriteEffects.None, 0);
+			}
 		}
 
 		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
@@ -285,17 +325,34 @@ public sealed class NewHotbar : SmartUiState
 		}
 	}
 
-	internal static void DrawSkillHoverTooltips(Skill skill, int? skillIndex = null)
+	internal static void DrawSkillHoverTooltips(Skill skill, int? skillIndex = null, bool ignoreCanUse = false)
 	{
 		string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
 		Tooltip.SetName(skill.DisplayName.Value + " " + level);
 
+		SkillFailure failure = default;
+		bool canUse = skill.CanUseSkill(Main.LocalPlayer, ref failure, true);
+
+		if (ignoreCanUse)
+		{
+			canUse = true;
+		}
+
 		List<SkillTooltip> tooltips = [];
-		SkillTooltip manaCost = new("Mana", Language.GetText("Mods.PathOfTerraria.Skills." 
-			+ (Main.LocalPlayer.statManaMax2 <= skill.TotalManaCost ? "NotEnoughMana" : "ManaLine")).WithFormatArgs(skill.TotalManaCost).Value, 2);
-		SkillTooltip weapon = skill.WeaponType != ItemID.None
-			? new("WeaponType", Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value, 3)
-			: new("NoWeapon", Language.GetText("Mods.PathOfTerraria.Skills.NoWeaponLine").Value, 3);
+		string manaPostfix = Main.LocalPlayer.statManaMax2 <= skill.TotalManaCost ? "NotEnoughMana" : "ManaLine";
+		SkillTooltip manaCost = new("Mana", Language.GetText("Mods.PathOfTerraria.Skills." + manaPostfix).WithFormatArgs(skill.TotalManaCost).Value, 2);
+
+		if (skill.WeaponType != ItemID.None)
+		{
+			Color color = canUse && failure.WeaponRejected ? Color.Red : Color.White;
+			string text = Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value;
+			tooltips.Add(new("WeaponType", $"[c/{color.Hex3()}:{text}]", 0.5f));
+		}
+		
+		if (!canUse && failure.Reason == SkillFailReason.Other)
+		{
+			tooltips.Add(new("OtherDenial", $"[c/FF0000:{failure.OtherReason.Value}]", 0.5f));
+		}
 
 		SkillTooltip noKeybindName = new("NoKeybind", Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value, 0);
 		SkillTooltip keybindLine = new();
@@ -315,7 +372,6 @@ public sealed class NewHotbar : SmartUiState
 
 		tooltips.Add(manaCost);
 		tooltips.Add(keybindLine);
-		tooltips.Add(weapon);
 		tooltips.Add(new SkillTooltip("Description", skill.Description.Value, 1));
 
 		if (skill.Duration != 0)
@@ -339,7 +395,7 @@ public sealed class NewHotbar : SmartUiState
 
 	private static void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
 	{
-		Texture2D building = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBuilding").Value;
+		Texture2D building = Textures["HotbarBuilding"].Value;
 		Main.inventoryScale = Math.Max(opacity, 0f);
 
 		Main.spriteBatch.Draw(building, new Vector2(20, 20 + off), null, Color.White * opacity);
@@ -365,14 +421,14 @@ public sealed class NewHotbar : SmartUiState
 
 		if (Main.LocalPlayer.selectedItem > 10)
 		{
-			Texture2D back = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBack").Value;
+			Texture2D back = Textures["HotbarBack"].Value;
 			spriteBatch.Draw(back, new Vector2(24 + 126 + 52 * 8, 32 + off), null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0);
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem], 21, new Vector2(24 + 124 + 52 * 8, 30 + off));
 		}
 	}
 
 	private void DrawSelector(SpriteBatch spriteBatch, float opacity) {
-		Texture2D select = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSelector").Value;
+		Texture2D select = Textures["HotbarSelector"].Value;
 
 		// Render the special selector, which is always visible.
 		spriteBatch.Draw(select, new Vector2(specialSelector.X, 20), null, Color.White);
@@ -506,7 +562,7 @@ public class HijackHotbarClick : ModSystem
 			return;
 		}
 
-		Texture2D back = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarBack").Value;
+		Texture2D back = NewHotbar.Textures["HotbarBack"].Value;
 		DrawBuildingHotbarTooltips(hbLocked, back);
 	}
 

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Hotbar;
@@ -40,7 +41,7 @@ internal class SkillSelectionElement : UIElement
 		{
 			if (_skill.CanEquipSkill(Main.LocalPlayer, out string failReason))
 			{
-				NewHotbar.DrawSkillHoverTooltips(_skill);
+				NewHotbar.DrawSkillHoverTooltips(_skill, null, true);
 			}
 			else
 			{
