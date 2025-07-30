@@ -586,7 +586,7 @@ public class EaterDomain : BossDomainSubworld
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.WorldData);
-				NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16 - 24, 20, 1);
+				NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16 - 4, 20, 1);
 			}
 
 			BossSpawned = true;
