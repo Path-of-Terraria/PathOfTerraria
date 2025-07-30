@@ -9,10 +9,36 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Mechanics;
 
+/// <summary>
+/// Standardized reasons for a skill to fail, + other for all other use cases. Does not contain "OnCooldown" or similar, as that's handled seperately.
+/// </summary>
+public enum SkillFailReason
+{
+	NotEnoughMana,
+	NeedsMelee,
+	NeedsRanged,
+	NeedsMagic,
+	NeedsSummon,
+	Other
+}
+
+/// <summary>
+/// Contains a reason for a skill's use to fail.
+/// </summary>
+/// <param name="reason"></param>
+/// <param name="otherPrefix"></param>
+public readonly struct SkillFailure(SkillFailReason reason, string otherPrefix = null)
+{
+	public bool WeaponRejected => Reason is SkillFailReason.NeedsMelee or SkillFailReason.NeedsRanged or SkillFailReason.NeedsMagic or SkillFailReason.NeedsSummon;
+	public LocalizedText OtherReason => Language.GetText($"Mods.{PoTMod.ModName}.SkillFailReasons." + otherPrefix);
+
+	public readonly SkillFailReason Reason = reason;
+
+	private readonly string otherPrefix = otherPrefix;
+}
+
 public abstract partial class Skill
 {
-	private Vector2 _size;
-
 	public Vector2 Size
 	{
 		get
@@ -60,6 +86,8 @@ public abstract partial class Skill
 	
 	public ItemType WeaponType = ItemType.None;
 	public byte Level = 1;
+
+	private Vector2 _size;
 
 	private string GetTextureName()
 	{
@@ -142,9 +170,17 @@ public abstract partial class Skill
 	/// </summary>
 	/// <param name="player">The player trying to use the skill</param>
 	/// <returns>If the skill can be used or not</returns>
-	public virtual bool CanUseSkill(Player player)
+	/// <param name="failReason">The reason this skill failed to be used. Used for the icons over the UI.</param>
+	/// <param name="justChecking">If this is being called to "just check" - i.e., don't do any functionality aside from true/false and <paramref name="failReason"/>.</param>
+	public virtual bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
 	{
-		return Cooldown <= 0 && player.CheckMana(TotalManaCost);
+		if (!player.CheckMana(TotalManaCost))
+		{
+			failReason = new SkillFailure(SkillFailReason.NotEnoughMana);
+			return false;
+		}
+
+		return Cooldown <= 0;
 	}
 
 	/// <summary>

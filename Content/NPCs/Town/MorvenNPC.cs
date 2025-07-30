@@ -118,6 +118,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public override bool PreAI()
 	{
+		ModContent.GetInstance<RavencrestSystem>().SpawnedMorvenPos = null;
+
 		Tile tile = Main.tile[NPC.Center.ToTileCoordinates16()];
 
 		if (teleportingToRavencrest)

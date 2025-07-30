@@ -40,11 +40,17 @@ public class FetidCarapace : Skill
 		}
 	}
 
-	public override bool CanUseSkill(Player player)
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
 	{
-		bool canUse = base.CanUseSkill(player);
+		if (!player.HeldItem.CountsAsClass(DamageClass.Ranged))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsRanged);
+			return false;
+		}
 
-		if (!canUse) // If we can't use the skill, attempt to shoot the projectiles
+		bool canUse = base.CanUseSkill(player, ref failReason, true);
+
+		if (!canUse && !justChecking) // If we can't use the skill, attempt to shoot the projectiles
 		{
 			foreach (Projectile proj in Main.ActiveProjectiles)
 			{

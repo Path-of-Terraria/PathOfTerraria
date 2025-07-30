@@ -10,8 +10,13 @@ internal static class Digging
 	/// </summary>
 	/// <param name="pos">Center of the circle, in tile coordinates..</param>
 	/// <param name="size">Radius of the circle.</param>
-	public static void CircleOpening(Vector2 pos, float size)
+	public static void CircleOpening(Vector2 pos, float size, float? minSize = null)
 	{
+		if (minSize.HasValue)
+		{
+			size = MathF.Max(minSize.Value, size);
+		}
+
 		for (int i = (int)(pos.X - size); i < (int)pos.X + size; ++i)
 		{
 			for (int j = (int)(pos.Y - size); j < (int)pos.Y + size; ++j)

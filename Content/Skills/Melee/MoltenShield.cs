@@ -17,7 +17,7 @@ public class MoltenShield : Skill
 		Cooldown = MaxCooldown = 15 * 60;
 		ManaCost = 10 - Math.Max(2, (int)Level);
 		Duration =  (5 + 2 * Level) * 60;
-		WeaponType = ItemType.Sword;
+		WeaponType = ItemType.Melee;
 	}
 
 	public override void UseSkill(Player player)
@@ -27,6 +27,17 @@ public class MoltenShield : Skill
 		// Level to the strength of all MoltenShellAffixes
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<MoltenShellAffix>());
 		player.GetModPlayer<MoltenShieldBuff.MoltenShieldPlayer>().SetBuff(Level, Duration);
+	}
+
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
+	{
+		if (!player.HeldItem.CountsAsClass(DamageClass.Melee))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsMelee);
+			return false;
+		}
+
+		return base.CanUseSkill(player, ref failReason, true);
 	}
 
 	protected override bool ProtectedCanEquip(Player player, out string failReason)

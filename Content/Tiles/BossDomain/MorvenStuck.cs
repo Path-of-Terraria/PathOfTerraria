@@ -31,7 +31,6 @@ internal class MorvenStuck : ModTile
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
 			NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16 + 8, (j + 2) * 16 + 4, ModContent.NPCType<MorvenNPC>(), 0);
-			ModContent.GetInstance<RavencrestSystem>().SpawnedMorvenPos = null;
 		}
 		else if (Main.netMode == NetmodeID.MultiplayerClient)
 		{

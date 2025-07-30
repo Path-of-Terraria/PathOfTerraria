@@ -1,0 +1,11 @@
+NotEnoughMana: Not enough mana to cast
+NeedsMelee: Needs a melee weapon to use
+NeedsRanged: Needs a ranged weapon to use
+NeedsMagic: Needs a magic weapon to use
+NeedsSummon: Needs a summon weapon to use
+
+Other: {
+	RangedWeaponConsumable: Needs a non-consumable weapon
+	WeaponInvalid: Held weapon is invalid for this skill
+	NoAmmo: Needs ammo
+}

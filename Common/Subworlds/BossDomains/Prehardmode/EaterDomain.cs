@@ -1,17 +1,19 @@
-﻿using PathOfTerraria.Common.Systems;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Content.Tiles.BossDomain;
+using SubworldLibrary;
 using System.Collections.Generic;
+using System.Linq;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.WorldBuilding;
-using PathOfTerraria.Common.World.Generation;
-using Terraria.DataStructures;
-using MonoMod.Cil;
-using Mono.Cecil.Cil;
-using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.Localization;
-using SubworldLibrary;
-using PathOfTerraria.Content.Projectiles.Utility;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -314,7 +316,7 @@ public class EaterDomain : BossDomainSubworld
 		var position = new Point16(400 - size.X / 2, Height - 150 - size.Y / 2);
 		StructureTools.PlaceByOrigin("Assets/Structures/EaterArena", position, Vector2.Zero);
 
-		Arena = new Rectangle(position.X * 16, (position.Y + 2) * 16, size.X * 16, (size.Y - 2) * 16);
+		Arena = new Rectangle(position.X * 16, (position.Y + 4) * 16, size.X * 16, (size.Y - 4) * 16);
 	}
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
@@ -377,29 +379,58 @@ public class EaterDomain : BossDomainSubworld
 		Vector2[] chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[0].X, (int)breakthroughs[0].Y - 20, 400, (int)breakthroughs[0].Y + 200), 26, 6);
 		DigChasm(noise, chasm, null);
 
+		PoTMod.Instance.Logger.Debug("[EaterDomain] Chasm 2");
+
 		// Tunnel two
 		progress.Value = 0.6f;
 		horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(60, (int)breakthroughs[0].Y + 200, 740, (int)breakthroughs[0].Y + 200), 15, 6, 0.3f);
 		DigChasm(noise, horizontalPoints, (100, 700, 40), 2.4f, true);
 		breakthroughs.Add(WorldGen.genRand.Next(horizontalPoints));
-		breakthroughs[0] = chasm[chasm.Length / 5];
+		breakthroughs[0] = GetMalaiseOpening((int)breakthroughs[0].Y - 20, (int)breakthroughs[0].Y + 200);
+
+		PoTMod.Instance.Logger.Debug("[EaterDomain] Tunnel 2");
 
 		// Last chasm
 		progress.Value = 0.8f;
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/EaterArena", Mod);
-		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 240, 0.2f), 12, 6);
-		breakthroughs[1] = chasm[chasm.Length / 8];
+		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 220, 0.2f), 12, 6);
 		DigChasm(noise, chasm, null, 2.4f);
 		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, Height - 270, 400, Height - 120, 0.1f), 12, 10), null, 2f);
+		breakthroughs[1] = GetMalaiseOpening((int)breakthroughs[1].Y - 20, Height - 220);
+
+		PoTMod.Instance.Logger.Debug("[EaterDomain] Last chasm");
 
 		progress.Value = 1f;
 		// Opening before the arena
 		WorldGen.digTunnel(403, Height - 200, 0, 0, 20, 20);
+		WorldGen.digTunnel(403, Height - 220, 0, 0, 20, 20);
+
+		PoTMod.Instance.Logger.Debug("[EaterDomain] Breakthroughs");
 
 		foreach (Vector2 item in breakthroughs)
 		{
+			if (item == Vector2.Zero)
+			{
+				continue;
+			}
+
 			WorldGen.TileRunner((int)item.X, (int)item.Y, 40, WorldGen.genRand.Next(20, 40), ModContent.TileType<WeakMalaise>(), true);
 		}
+	}
+
+	private Vector2 GetMalaiseOpening(int topY, int bottomY)
+	{
+		int y = (int)MathHelper.Lerp(topY, bottomY, WorldGen.genRand.NextFloat(0.4f, 0.6f));
+
+		for (int i = 20; i < Main.maxTilesX - 20; ++i)
+		{
+			if (!Collision.SolidCollision(new Vector2(i, y).ToWorldCoordinates(), 24, 24))
+			{
+				return new Vector2(i + 8, y);
+			}
+		}
+
+		return Vector2.Zero;
 	}
 
 	private static void GetRandomPoint(List<Vector2> breakthroughs, Vector2[] horizontalPoints)
@@ -414,7 +445,7 @@ public class EaterDomain : BossDomainSubworld
 		breakthroughs.Add(position);
 	}
 
-	private Vector2[] GenerateHorizontalTunnel(int x, float y, int targetX, float targetY)
+	private static Vector2[] GenerateHorizontalTunnel(int x, float y, int targetX, float targetY)
 	{
 		const int MaxSteps = 8;
 
@@ -434,8 +465,21 @@ public class EaterDomain : BossDomainSubworld
 
 	private static void DigChasm(FastNoiseLite noise, Vector2[] positions, (int baseX, int endX, int fadeAway)? smoothInOut, float sizeMul = 1.2f, bool digTunnel = true)
 	{
+		int minY = int.MaxValue;
+		int maxY = 0;
+
 		foreach (Vector2 item in positions)
 		{
+			if (item.Y < minY)
+			{
+				minY = (int)item.Y;
+			}
+
+			if (item.Y > maxY)
+			{
+				maxY = (int)item.Y;
+			}
+
 			float mul = MathHelper.Max(1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * sizeMul, 0.5f);
 
 			if (smoothInOut.HasValue)
@@ -452,8 +496,8 @@ public class EaterDomain : BossDomainSubworld
 				}
 			}
 
-			Digging.CircleOpening(item, 5 * mul);
-			Digging.CircleOpening(item, WorldGen.genRand.Next(3, 7) * mul);
+			Digging.CircleOpening(item, 5 * mul, 3);
+			Digging.CircleOpening(item, WorldGen.genRand.Next(3, 7) * mul, 3);
 
 			if (WorldGen.genRand.NextBool(8))
 			{
@@ -462,14 +506,37 @@ public class EaterDomain : BossDomainSubworld
 
 			if (digTunnel && WorldGen.genRand.NextBool(3, 5))
 			{
-				WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, (int)(WorldGen.genRand.NextFloat(1, 8) * mul));
+				WorldGen.digTunnel(item.X, item.Y, 0, 0, 5, (int)MathF.Max(WorldGen.genRand.NextFloat(1, 8) * mul, 2));
 			}
 
 			WorldGen.TileRunner((int)item.X, (int)item.Y, 120, 8, TileID.Ebonstone, false, 0, 0, false, true);
 		}
+
+		for (int j = minY; j < maxY; j += 3)
+		{
+			bool hasOpening = false;
+
+			for (int i = 20; i < Main.maxTilesX - 20; ++i)
+			{
+				if (!Collision.SolidCollision(new Vector2(i, j).ToWorldCoordinates(), 48, 48))
+				{
+					hasOpening = true;
+					break;
+				}
+			}
+
+			if (hasOpening)
+			{
+				PoTMod.Instance.Logger.Debug("Opening detected, keep moving.");
+				return;
+			}
+		}
+
+		PoTMod.Instance.Logger.Debug("No opening detected, force redo.");
+		DigChasm(noise, [.. positions.Select(x => x + Main.rand.NextVector2Circular(1, 1))], smoothInOut, sizeMul, digTunnel);
 	}
 
-	private Vector2[] GenerateWindingTunnel(int x, float y, int targetX, float targetY, float windingMultiplier = 1f)
+	private static Vector2[] GenerateWindingTunnel(int x, float y, int targetX, float targetY, float windingMultiplier = 1f)
 	{
 		const int MaxSteps = 3;
 
@@ -517,7 +584,7 @@ public class EaterDomain : BossDomainSubworld
 		{
 			for (int i = 0; i < 20; ++i)
 			{
-				WorldGen.PlaceTile(Arena.X / 16 + i + 72, Arena.Y / 16, TileID.Ebonstone, true, true);
+				WorldGen.PlaceTile(Arena.X / 16 + i + 72, Arena.Y / 16 - 4, TileID.Ebonstone, true, true);
 			}
 
 			int headOne = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X + 1400, Arena.Center.Y - 0, NPCID.EaterofWorldsHead, 1);
@@ -529,7 +596,7 @@ public class EaterDomain : BossDomainSubworld
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.WorldData);
-				NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16, 20, 1);
+				NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16 - 24, 20, 1);
 			}
 
 			BossSpawned = true;
