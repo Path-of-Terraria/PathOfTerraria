@@ -4,8 +4,8 @@ using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.IO;
+using Terraria;
 using Terraria.DataStructures;
-using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -16,13 +16,22 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 
 public class MapDevicePlaceable : ModTile
 {
-	private const int FrameWidth = 18 * 3;
-	private const int FrameHeight = 18 * 4 + 20;
+	public const int FullWidth = 18 * 5;
+	public const int FullHeight = 18 * 5;
 
 	private static Asset<Texture2D> _portalTex;
 
 	/// This is the portal that will appear above
 	protected virtual string Portal => $"{PoTMod.ModName}/Assets/Items/Placeable/Portal";
+
+	public static Point16 GetTopLeft(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		i -= tile.TileFrameX % FullWidth / 18;
+		j -= tile.TileFrameY % FullHeight / 18;
+
+		return new(i, j);
+	}
 
 	public override void Load()
 	{
@@ -46,6 +55,7 @@ public class MapDevicePlaceable : ModTile
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.newTile.AnchorBottom = new AnchorData(TileObjectData.newTile.AnchorBottom.type, TileObjectData.newTile.Width, 0);
+		TileObjectData.newTile.Origin = new(3, 4);
 		TileObjectData.addTile(Type);
 
 		RegisterItemDrop(ModContent.ItemType<MapDevice>());
@@ -59,10 +69,8 @@ public class MapDevicePlaceable : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18 % 5;
-		j -= tile.TileFrameY / 18 % 5;
-		ModContent.GetInstance<MapDeviceEntity>().Kill(i, j);
+		Point16 coords = GetTopLeft(i, j);
+		ModContent.GetInstance<MapDeviceEntity>().Kill(coords.X, coords.Y);
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
@@ -93,13 +101,13 @@ public class MapDevicePlaceable : ModTile
 
 		// Get the initial draw parameters
 		Texture2D texture = _portalTex.Value;
-		int frameY = tile.TileFrameX % 90 / FrameWidth; // Picks the frame on the sheet based on the placeStyle of the item
+		int frameY = tile.TileFrameX % 90 / FullWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
 		Vector2 worldPos = p.ToWorldCoordinates(40f, 64f);
 		Color color = Color.Lerp(Lighting.GetColor(p.X, p.Y), Color.White, 0.4f);
 		bool direction =
-			tile.TileFrameY / FrameHeight != 0; // This is related to the alternate tile data we registered before
+			tile.TileFrameY / FullHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 		// Some math magic to make it smoothly move up and down over time
@@ -180,9 +188,9 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
-		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX % 90 / 18;
-		j -= tile.TileFrameY / 18 % 5;
+		Point16 coords = MapDevicePlaceable.GetTopLeft(i, j);
+		i = coords.X;
+		j = coords.Y;
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{

@@ -189,7 +189,8 @@ public sealed class NewHotbar : SmartUiState
 			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal; 
 		}
 
-		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
+		//Draw greyed out icons when inactive
+		//Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
 		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
 	}
 
