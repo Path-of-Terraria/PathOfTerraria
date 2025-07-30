@@ -1224,7 +1224,7 @@ PlanteraMap: {
 
 OffsetTool: {
 	DisplayName: Offset Tool
-	Tooltip: 
+	Tooltip:
 		'''
 		Used to generate offsets for use in the RoomDatabase system.
 		Use right click to set anchor.
