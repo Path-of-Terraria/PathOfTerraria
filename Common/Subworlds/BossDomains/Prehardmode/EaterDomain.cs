@@ -366,46 +366,38 @@ public class EaterDomain : BossDomainSubworld
 
 		// Chasm one
 		List<Vector2> breakthroughs = [];
-		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, baseY, 400, baseY + 220), 26, 6), null);
+		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, baseY, 400, baseY + 220), 26, 4), null);
 
 		// Tunnel one
 		progress.Value = 0.2f;
-		Vector2[] horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(60, baseY + 200, 740, baseY + 200), 20, 6, 0.3f);
+		Vector2[] horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(60, baseY + 200, 740, baseY + 200), 20, 4, 0.3f);
 		DigChasm(noise, horizontalPoints, (100, 700, 40), 2.8f, true);
 		GetRandomPoint(breakthroughs, horizontalPoints);
 
 		// Chasm two
 		progress.Value = 0.4f;
-		Vector2[] chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[0].X, (int)breakthroughs[0].Y - 20, 400, (int)breakthroughs[0].Y + 200), 26, 6);
+		Vector2[] chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[0].X, (int)breakthroughs[0].Y - 20, 400, (int)breakthroughs[0].Y + 200), 26, 4);
 		DigChasm(noise, chasm, null);
-
-		PoTMod.Instance.Logger.Debug("[EaterDomain] Chasm 2");
 
 		// Tunnel two
 		progress.Value = 0.6f;
-		horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(60, (int)breakthroughs[0].Y + 200, 740, (int)breakthroughs[0].Y + 200), 15, 6, 0.3f);
+		horizontalPoints = Tunnel.GeneratePoints(GenerateHorizontalTunnel(60, (int)breakthroughs[0].Y + 200, 740, (int)breakthroughs[0].Y + 200), 15, 4, 0.3f);
 		DigChasm(noise, horizontalPoints, (100, 700, 40), 2.4f, true);
 		breakthroughs.Add(WorldGen.genRand.Next(horizontalPoints));
 		breakthroughs[0] = GetMalaiseOpening((int)breakthroughs[0].Y - 20, (int)breakthroughs[0].Y + 200);
 
-		PoTMod.Instance.Logger.Debug("[EaterDomain] Tunnel 2");
-
 		// Last chasm
 		progress.Value = 0.8f;
 		Point16 size = StructureHelper.API.Generator.GetStructureDimensions("Assets/Structures/EaterArena", Mod);
-		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 220, 0.2f), 12, 6);
+		chasm = Tunnel.GeneratePoints(GenerateWindingTunnel((int)breakthroughs[1].X, (int)breakthroughs[1].Y - 20, 400, Height - 220, 0.2f), 12, 4);
 		DigChasm(noise, chasm, null, 2.4f);
 		DigChasm(noise, Tunnel.GeneratePoints(GenerateWindingTunnel(400, Height - 270, 400, Height - 120, 0.1f), 12, 10), null, 2f);
 		breakthroughs[1] = GetMalaiseOpening((int)breakthroughs[1].Y - 20, Height - 220);
-
-		PoTMod.Instance.Logger.Debug("[EaterDomain] Last chasm");
 
 		progress.Value = 1f;
 		// Opening before the arena
 		WorldGen.digTunnel(403, Height - 200, 0, 0, 20, 20);
 		WorldGen.digTunnel(403, Height - 220, 0, 0, 20, 20);
-
-		PoTMod.Instance.Logger.Debug("[EaterDomain] Breakthroughs");
 
 		foreach (Vector2 item in breakthroughs)
 		{
@@ -418,7 +410,7 @@ public class EaterDomain : BossDomainSubworld
 		}
 	}
 
-	private Vector2 GetMalaiseOpening(int topY, int bottomY)
+	private static Vector2 GetMalaiseOpening(int topY, int bottomY)
 	{
 		int y = (int)MathHelper.Lerp(topY, bottomY, WorldGen.genRand.NextFloat(0.4f, 0.6f));
 
@@ -527,12 +519,10 @@ public class EaterDomain : BossDomainSubworld
 
 			if (hasOpening)
 			{
-				PoTMod.Instance.Logger.Debug("Opening detected, keep moving.");
 				return;
 			}
 		}
 
-		PoTMod.Instance.Logger.Debug("No opening detected, force redo.");
 		DigChasm(noise, [.. positions.Select(x => x + Main.rand.NextVector2Circular(1, 1))], smoothInOut, sizeMul, digTunnel);
 	}
 
