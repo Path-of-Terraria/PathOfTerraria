@@ -1,4 +1,5 @@
-﻿namespace PathOfTerraria.Content.Buffs;
+﻿
+namespace PathOfTerraria.Content.Buffs;
 
 internal class BlindedDebuff : ModBuff
 {
@@ -28,14 +29,25 @@ internal class BlindedPlayer : ModPlayer
 		}
 	}
 
-	public override bool CanHitNPC(NPC target)
+	public override bool? CanHitNPCWithProj(Projectile proj, NPC target)
 	{
-		if (_missedTarget == -1 && Player.HasBuff<BlindedDebuff>() && Main.rand.NextFloat() <= 0.1f)
+		if (_missedTarget == -1 && Player.HasBuff<BlindedDebuff>() && proj.Colliding(proj.Hitbox, target.Hitbox) && Main.rand.NextFloat() <= 0.1f)
 		{
 			_missedTarget = target.whoAmI;
 			_missCooldown = MissCooldownMax;
 		}
 
-		return _missedTarget != target.whoAmI;
+		return (_missedTarget == target.whoAmI) ? false : null;
+	}
+
+	public override bool? CanMeleeAttackCollideWithNPC(Item item, Rectangle meleeAttackHitbox, NPC target)
+	{
+		if (_missedTarget == -1 && Player.HasBuff<BlindedDebuff>() && meleeAttackHitbox.Intersects(target.Hitbox) && Main.rand.NextFloat() <= 0.1f)
+		{
+			_missedTarget = target.whoAmI;
+			_missCooldown = MissCooldownMax;
+		}
+
+		return (_missedTarget == target.whoAmI) ? false : null;
 	}
 }
