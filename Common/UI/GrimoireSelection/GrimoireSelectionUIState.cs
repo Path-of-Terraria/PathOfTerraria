@@ -320,9 +320,13 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 
 		if (summoner.HasSummon(summon.Type))
 		{
-			summoner.CurrentSummonId = summoner.CurrentSummonId == summon.Type ? -1 : summon.Type;
+			bool deactivate = summoner.CurrentSummonId == summon.Type;
+
+			summoner.CurrentSummonId = deactivate ? -1 : summon.Type;
 			SetCurrentSummonImage();
 			RefreshStorage();
+
+			SoundEngine.PlaySound((deactivate ? SoundID.MenuClose : SoundID.MenuOpen) with { Pitch = 0.5f });
 
 			for (int i = 0; i < 5; ++i)
 			{

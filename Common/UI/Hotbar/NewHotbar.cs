@@ -15,6 +15,7 @@ using PathOfTerraria.Common.Systems;
 using Terraria.DataStructures;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Core.Items;
+using ReLogic.Content;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -55,6 +56,10 @@ public sealed class NewHotbar : SmartUiState
 	private readonly DynamicSpriteFont _font = FontAssets.DeathText.Value;
 
 	private int _animation;
+
+	public static readonly Asset<Texture2D> CombatTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Combat");
+	public static readonly Asset<Texture2D> BuildingTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Building");
+	public static readonly Asset<Texture2D> ActiveTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Active");
 
 	public override bool Visible => !Main.playerInventory;
 
@@ -140,9 +145,9 @@ public sealed class NewHotbar : SmartUiState
 		//     cleanly transition within context of the position of the
 		//     selector.
 
-		Texture2D specialInactiveCombat = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Combat").Value;
-		Texture2D specialInactiveBuilding = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Inactive_Building").Value;
-		Texture2D specialActive = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/HotbarSpecial_Active").Value;
+		Texture2D specialInactiveCombat = CombatTexture.Value;
+		Texture2D specialInactiveBuilding = BuildingTexture.Value;
+		Texture2D specialActive = ActiveTexture.Value;
 		Main.inventoryScale = 1f; // 36 / 52f * 52f / 36f * 1 computes to 1...
 
 		// Draw active slot textures (hotbar background).
@@ -169,7 +174,8 @@ public sealed class NewHotbar : SmartUiState
 			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal; 
 		}
 
-		Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
+		//Draw greyed out icons when inactive
+		//Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
 		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
 	}
 

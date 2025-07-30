@@ -4,7 +4,9 @@ using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
@@ -75,6 +77,24 @@ internal class GrimoireItem : Gear
 		int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 		Main.projectile[proj].damage = damage;
 		Main.projectile[proj].originalDamage = damage;
+
+		for (int i = 0; i < 10; i++)
+		{
+			float strength = Main.rand.NextFloat();
+			Vector2 unit = Main.rand.NextVector2Unit() * strength;
+
+			var dust = Dust.NewDustPerfect(position, DustID.GreenTorch, unit * 3, newColor: Color.White with { A = 0 }, Scale: strength * 3f);
+			dust.noGravity = true;
+			dust.noLightEmittence = true;
+
+			Dust.NewDustPerfect(position, DustID.Smoke, unit, Alpha: 150, newColor: Color.Black, Scale: strength * 3f);
+		}
+
+		ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.TerraBlade, new() { PositionInWorld = position });
+
+		SoundEngine.PlaySound(SoundID.AbigailSummon with { Volume = 0.3f, Pitch = -0.2f, PitchVariance = 0.2f }, player.Center);
+		SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.5f }, player.Center);
+
 		return false;
 	}
 

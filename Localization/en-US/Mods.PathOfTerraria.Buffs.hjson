@@ -84,3 +84,8 @@ SporeDebuff: {
 	DisplayName: Spore Debuff
 	Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
 }
+
+BlindedDebuff: {
+	DisplayName: Blinded
+	Description: Attacks have a chance to miss
+}
