@@ -1,10 +1,10 @@
-﻿using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
+﻿using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
 using PathOfTerraria.Content.Items.Pickups;
 using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.Collections.Generic;
-using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Projectiles.Summoner;
 
@@ -53,7 +53,7 @@ internal abstract class GrimoireSummon : ModProjectile
 
 	public sealed override bool PreAI()
 	{
-		if (Owner.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId != Type || Owner.HeldItem.type != ModContent.ItemType<GrimoireItem>())
+		if (GrimoirePlayer.Get(Owner).CurrentSummonId != Type || Owner.HeldItem.type != ModContent.ItemType<GrimoireItem>())
 		{
 			Projectile.Kill();
 			return false;
@@ -69,7 +69,7 @@ internal abstract class GrimoireSummon : ModProjectile
 
 		var modifier = new Common.Systems.EntityModifier();
 
-		foreach (Item part in Owner.GetModPlayer<GrimoireSummonPlayer>().StoredParts)
+		foreach (Item part in GrimoirePlayer.Get(Owner).StoredParts)
 		{
 			if (part.ModItem is null)
 			{
@@ -130,7 +130,40 @@ internal abstract class GrimoireSummon : ModProjectile
 
 public class GrimoireSummonLoader : ModSystem
 {
-	public Dictionary<int, Dictionary<int, int>> RequiredPartsByProjectileId = [];
+	public readonly struct Requirement()
+	{
+		private readonly List<int> items = [];
+
+		public readonly Requirement Add(int itemType, int count)
+		{
+			for (int i = 0; i < count; i++)
+			{
+				items.Add(itemType);
+			}
+
+			return this;
+		}
+
+		public readonly List<int> Types => [.. items];
+		public readonly Dictionary<int, int> Stacks
+		{
+			get
+			{
+				Dictionary<int, int> values = [];
+				foreach (int type in items)
+				{
+					if (!values.TryAdd(type, 1))
+					{
+						values[type]++;
+					}
+				}
+
+				return values;
+			}
+		}
+	}
+
+	public Dictionary<int, Requirement> RequiredPartsByProjectileId = [];
 	public HashSet<int> SummonIds = [];
 
 	public override void PostSetupContent()
@@ -166,7 +199,13 @@ public class GrimoireSummonLoader : ModSystem
 					throw new Exception("GrimoireSummon.GetPartTypes should not return a Dictionary with more than 5 values, or over 5 required items!");
 				}
 
-				RequiredPartsByProjectileId.Add(i, types);
+				Requirement requirement = new();
+				foreach (int type in types.Keys)
+				{
+					requirement.Add(type, types[type]);
+				}
+
+				RequiredPartsByProjectileId.Add(i, requirement);
 				SummonIds.Add(i);
 			}
 		}

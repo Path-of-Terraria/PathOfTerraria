@@ -4,6 +4,7 @@ using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -63,12 +64,12 @@ internal class GrimoireItem : Gear
 			return false;
 		}
 
-		return player.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId != -1;
+		return GrimoirePlayer.Get(player).CurrentSummonId != -1;
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		type = player.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
+		type = GrimoirePlayer.Get(player).CurrentSummonId;
 		damage = (ContentSamples.ProjectilesByType[type].ModProjectile as GrimoireSummon).BaseDamage;
 	}
 
@@ -100,7 +101,7 @@ internal class GrimoireItem : Gear
 
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<GrimoireSummonPlayer>().HasObtainedGrimoire = true;
+		GrimoirePlayer.Get(player).HasObtainedGrimoire = true;
 		return true;
 	}
 
@@ -108,7 +109,7 @@ internal class GrimoireItem : Gear
 	{
 		if (line.Name == "Description")
 		{
-			int id = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
+			int id = GrimoirePlayer.Get().CurrentSummonId;
 			bool hasSummon = id != -1;
 			string control = hasSummon ? this.GetLocalization("Control").Format(Lang.GetProjectileName(id).Value) : this.GetLocalization("ControlNone").Value;
 			line.Text = control + "\n" + this.GetLocalization("Description");
