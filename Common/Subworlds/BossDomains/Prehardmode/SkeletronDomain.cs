@@ -13,6 +13,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using PathOfTerraria.Common.World.Generation.Tools;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -196,6 +197,8 @@ public class SkeletronDomain : BossDomainSubworld
 				}
 			}
 		}
+
+		GenerationUtilities.ManuallyPopulatePlayerSensors();
 	}
 
 	private static void PlaceSpikes(int x, int y)
