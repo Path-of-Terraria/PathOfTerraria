@@ -1,15 +1,10 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
-using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
-using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
-using PathOfTerraria.Core.Items;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
@@ -51,7 +46,7 @@ internal class WitchStartQuest : Quest
 		[
 			new ConditionCheck(plr =>
 			{
-				Dictionary<int, int> storage = plr.GetModPlayer<GrimoireStoragePlayer>().GetStoredCount();
+				Dictionary<int, int> storage = GrimoirePlayer.Get(plr).GetStoredCount();
 
 				return storage.TryGetValue(ModContent.ItemType<BatWings>(), out int wing) && storage.TryGetValue(ModContent.ItemType<OwlFeather>(), out int feather)
 					&& wing > 0 && feather > 1;
