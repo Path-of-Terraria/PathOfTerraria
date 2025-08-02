@@ -4,7 +4,6 @@ using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.IO;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -105,7 +104,7 @@ public class MapDevicePlaceable : ModTile
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
 		Vector2 worldPos = p.ToWorldCoordinates(40f, 64f);
-		Color color = Color.Lerp(Lighting.GetColor(p.X, p.Y), Color.White, 0.4f);
+		var color = Color.Lerp(Lighting.GetColor(p.X, p.Y), Color.White, 0.4f);
 		bool direction =
 			tile.TileFrameY / FullHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
@@ -162,9 +161,9 @@ public class MapDevicePlaceable : ModTile
 
 	private static bool TryGetEntity(ref int i, ref int j, out MapDeviceEntity entity)
 	{
-		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18 % 5;
-		j -= tile.TileFrameY / 18 % 5;
+		Point16 pos = GetTopLeft(i, j);
+		i = pos.X;
+		j = pos.Y;
 
 		if (TileEntity.ByPosition.TryGetValue(new(i, j), out TileEntity tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
@@ -188,26 +187,18 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
-		Point16 coords = MapDevicePlaceable.GetTopLeft(i, j);
-		i = coords.X;
-		j = coords.Y;
+		var tileData = TileObjectData.GetTileData(type, style, alternate);
+		int topLeftX = i - tileData.Origin.X;
+		int topLeftY = j - tileData.Origin.Y;
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			// Sync the entire multitile's area.
-			NetMessage.SendTileSquare(Main.myPlayer, i, j, 3, 5);
-
-			// Sync the placement of the tile entity with other clients. Needs to match Place() coordinates
-			// The "type" parameter refers to the tile type which placed the tile entity, so "Type" (the type of the tile entity) needs to be used here instead
-			NetMessage.SendData(MessageID.TileEntityPlacement, number: i, number2: j, number3: Type);
+			NetMessage.SendTileSquare(Main.myPlayer, topLeftX, topLeftY, tileData.Width, tileData.Height);
+			NetMessage.SendData(MessageID.TileEntityPlacement, number: topLeftX, number2: topLeftY, number3: Type);
 			return -1;
 		}
 
-		// ModTileEntity.Place() handles checking if the entity can be placed, then places it for you
-		// Set "tileOrigin" to the same value you set TileObjectData.newTile.Origin to in the ModTile
-		int placedEntity = Place(i, j);
-
-		return placedEntity;
+		return Place(topLeftX, topLeftY);
 	}
 
 	public override void OnKill()
