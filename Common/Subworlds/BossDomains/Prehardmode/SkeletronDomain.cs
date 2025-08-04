@@ -684,6 +684,14 @@ public class SkeletronDomain : BossDomainSubworld
 	public override void Update()
 	{
 		Wiring.UpdateMech();
+		TileEntity.UpdateStart();
+
+		foreach (TileEntity te in TileEntity.ByID.Values)
+		{
+			te.Update();
+		}
+
+		TileEntity.UpdateEnd();
 
 		bool hasProj = false;
 

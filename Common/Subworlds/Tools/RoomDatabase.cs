@@ -60,10 +60,6 @@ internal class RoomDatabase : ModSystem
 		_timers.Add(info);
 	}
 
-	/// <summary>
-	/// Adds a given 
-	/// </summary>
-	/// <param name="info"></param>
 	public void AddTimerInfo(List<EngageTimerInfo> info)
 	{
 		_timers.AddRange(info);
@@ -155,7 +151,10 @@ internal class RoomDatabase : ModSystem
 
 		DataByRoomIndex.Add(16, new RoomData(WireColor.Blue, OpeningType.Above, new Point(37, 0), new Point(46, 70),
 			[new SpikeballInfo(new(40, 18), 60), new SpikeballInfo(new(51, 18), 50), new SpikeballInfo(new(62, 18), 60)],
-			[new EngageTimerInfo(new(33, 58), 0), new EngageTimerInfo(new(35, 58), 0), new EngageTimerInfo(new(37, 58), 0), new EngageTimerInfo(new(39, 58), 0)]));
+			[new EngageTimerInfo(new(33, 58), 0), new EngageTimerInfo(new(35, 58), 60), new EngageTimerInfo(new(37, 58), 120), new EngageTimerInfo(new(39, 58), 180)]));
+
+		DataByRoomIndex.Add(17, new RoomData(WireColor.Blue, OpeningType.Right, new Point(89, 11), new Point(84, 51), null,
+			[new EngageTimerInfo(new(18, 39), 0), new EngageTimerInfo(new(20, 39), 90)]));
 	}
 
 	public override void PreUpdateWorld()

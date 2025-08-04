@@ -44,7 +44,7 @@ internal class DevourersTail : Whip
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.MinDropItemLevel = 15;
+		staticData.DropChance = null;
 		staticData.IsUnique = true;
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 	}
