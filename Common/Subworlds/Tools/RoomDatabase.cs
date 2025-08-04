@@ -18,14 +18,14 @@ internal class RoomDatabase : ModSystem
 		RoomDatabase instance = ModContent.GetInstance<RoomDatabase>();
 		IEnumerable<KeyValuePair<int, RoomData>> roomDatas = instance.DataByRoomIndex.Where(x => x.Value.Opening == opening && x.Value.ForSkeletron == skeletron);
 
-		int roomId = WorldGen.genRand.Next(roomDatas.Count());
-		KeyValuePair<int, RoomData> roomData = roomDatas.ElementAt(roomId);
+		int roomId;
+		KeyValuePair<int, RoomData> roomData;
 
-		while (usedColors.Contains(roomData.Value.Wire))
+		do
 		{
 			roomId = WorldGen.genRand.Next(roomDatas.Count());
 			roomData = roomDatas.ElementAt(roomId);
-		}
+		} while (usedColors.Contains(roomData.Value.Wire));
 
 		if (opening == OpeningType.Right) // Right-placed needs to be adjusted
 		{
@@ -60,10 +60,6 @@ internal class RoomDatabase : ModSystem
 		_timers.Add(info);
 	}
 
-	/// <summary>
-	/// Adds a given 
-	/// </summary>
-	/// <param name="info"></param>
 	public void AddTimerInfo(List<EngageTimerInfo> info)
 	{
 		_timers.AddRange(info);
@@ -149,6 +145,16 @@ internal class RoomDatabase : ModSystem
 				new EngageTimerInfo(new(60, 25), 240), new(new(61, 25), 300), new(new(62, 25), 360), new(new(63, 25), 420), new(new(60, 31), 720), new(new(61, 31), 780),
 				new EngageTimerInfo(new(62, 31), 840), new(new(63, 31), 900), new(new(52, 7), 0), new(new(53, 7), 75), new(new(54, 7), 150), new(new(55, 7), 225),
 				new(new(60, 44), 0)]));
+
+		DataByRoomIndex.Add(15, new RoomData(WireColor.Red, OpeningType.Above, new Point(16, 0), new Point(17, 53), null,
+			[new EngageTimerInfo(new(4, 46), 0), new EngageTimerInfo(new(6, 46), 60), new EngageTimerInfo(new(5, 46), 120)]));
+
+		DataByRoomIndex.Add(16, new RoomData(WireColor.Blue, OpeningType.Above, new Point(37, 0), new Point(46, 70),
+			[new SpikeballInfo(new(40, 18), 60), new SpikeballInfo(new(51, 18), 50), new SpikeballInfo(new(62, 18), 60)],
+			[new EngageTimerInfo(new(33, 58), 0), new EngageTimerInfo(new(35, 58), 60), new EngageTimerInfo(new(37, 58), 120), new EngageTimerInfo(new(39, 58), 180)]));
+
+		DataByRoomIndex.Add(17, new RoomData(WireColor.Blue, OpeningType.Right, new Point(89, 11), new Point(84, 51), null,
+			[new EngageTimerInfo(new(18, 39), 0), new EngageTimerInfo(new(20, 39), 90)]));
 	}
 
 	public override void PreUpdateWorld()

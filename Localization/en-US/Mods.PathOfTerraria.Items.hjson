@@ -1224,7 +1224,13 @@ PlanteraMap: {
 
 OffsetTool: {
 	DisplayName: Offset Tool
-	Tooltip: Used to generate offsets for use in the RoomDatabase system.
+	Tooltip:
+		'''
+		Used to generate offsets for use in the RoomDatabase system.
+		Use right click to set anchor.
+		Use left click to add in an additional offset to the pool.
+		Hold middle click to paste and clear the offsets.
+		'''
 }
 
 LihzahrdGuardItem: {

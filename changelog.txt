@@ -1,4 +1,6 @@
-v0.1.20
+v0.1.30
+- Fixed map devices not working properly in multiplayer
+
 Refer to the wiki page for full changelogs: https://wiki.pathofterraria.com/en/PatchNotes
 These are under 0.2.0 - the changelog IS NOT final, and will change on official release! 
 This is an internal test version.

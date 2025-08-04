@@ -1,7 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 using System.Collections.Generic;
-using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;

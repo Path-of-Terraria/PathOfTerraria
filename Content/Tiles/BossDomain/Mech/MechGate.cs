@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.MiscUtilities;
-using PathOfTerraria.Common.Tiles;
+﻿using PathOfTerraria.Common.Tiles;
 using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -21,7 +20,7 @@ public class MechGate : ModTile
 		{
 			Glow = ModContent.Request<Texture2D>(Texture + "_Glow");
 		}
-		else
+		else if (Type == ModContent.TileType<BlockingGate>())
 		{
 			BlockerGlow = ModContent.Request<Texture2D>(Texture + "_Glow");
 		}
@@ -69,18 +68,15 @@ public class MechGate : ModTile
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
 		Tile tile = Main.tile[i, j];
-		
-		if (Main.tile[i, j + 1].HasTile || Main.tile[i, j - 1].HasTile)
-		{
-			tile.TileFrameY = 18;
-		}
-		else
-		{
-			tile.TileFrameY = 0;
-		}
-
+		tile.TileFrameY = (short)(ValidAdjacent(i + 1, j, Type) || ValidAdjacent(i - 1, j, Type) ? 0 : 18);
 		tile.TileFrameX = (short)(Main.rand.Next(3) * 18);
 		return false;
+
+		static bool ValidAdjacent(int i, int j, int type)
+		{
+			Tile tile = Main.tile[i, j];
+			return tile.HasTile && (tile.TileType == type || Main.tileSolid[tile.TileType]);
+		}
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
@@ -119,7 +115,7 @@ public class BlockingGate : MechGate
 
 		if (tile.HasUnactuatedTile)
 		{
-			BlockerSystem.DrawGlow(i, j, Type, spriteBatch, BlockerGlow.Value, Color.Red);
+			spriteBatch.Draw(BlockerGlow.Value, TileExtensions.DrawPosition(i, j), frame, Color.White);
 		}
 
 		return false;

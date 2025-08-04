@@ -13,7 +13,7 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 internal class KingSlimeQuest : Quest
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
+	public override int NPCQuestGiver => ModContent.NPCType<GarrickNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
@@ -25,8 +25,8 @@ internal class KingSlimeQuest : Quest
 	{
 		return 
 		[
-			new ConditionCheck((plr) => SubworldSystem.Current is KingSlimeDomain, 1,this.GetLocalization("EnterDomain")),
-			new KillCount(NPCID.KingSlime, 1, this.GetLocalization("Kill.KingSlime")),
+			new ConditionCheck(_ => SubworldSystem.Current is KingSlimeDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck(_ => NPC.downedSlimeKing, 1, this.GetLocalization("Kill.KingSlime")),
 			new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
 		];
 	}
