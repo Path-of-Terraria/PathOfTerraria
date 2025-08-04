@@ -1,19 +1,20 @@
+using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.Localization;
-using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
-using PathOfTerraria.Common.NPCs.QuestMarkers;
-using PathOfTerraria.Content.Items.Quest;
-using Terraria.DataStructures;
+using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
-using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Content.Items.Quest;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
