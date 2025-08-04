@@ -17,12 +17,11 @@ public class QuestModPlayer : ModPlayer
 
 	public Dictionary<string, Quest> QuestsByName = [];
 
-	/// <summary>
-	/// Defines 
-	/// </summary>
 	public Dictionary<string, QuestMarkerType> MarkerTypeByLocation = [];
 	
 	internal bool FirstQuest = true;
+	/// <summary> The full name of this player's pinned quest. </summary>
+	public string PinnedQuest;
 
 	/// <inheritdoc cref="StartQuest(string, int, bool)"/>
 	/// <typeparam name="T">Quest to start.</typeparam>

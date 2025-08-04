@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -36,9 +37,19 @@ internal class FireStarter : Sword, GenerateName.IItem
 	
 	string GenerateName.IItem.GenerateName(string defaultName)
 	{
-		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName")}]";
+		return Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName");
 	}
-	
+
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
+	{
+		TooltipLine nameTip = tooltips.First(x => x.Name == "ItemName");
+
+		if (nameTip is not null)
+		{
+			nameTip.OverrideColor = Color.Red;
+		}
+	}
+
 	public override List<ItemAffix> GenerateAffixes()
 	{
 		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(1, 4);

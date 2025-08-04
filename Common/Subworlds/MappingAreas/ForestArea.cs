@@ -68,13 +68,55 @@ internal class ForestArea : MappingWorld, IOverrideBiome
 			}
 		}
 
-		if (!hasPortal && ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
+		int grove = ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI;
+
+		if (!hasPortal && grove == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
 		{
 			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), BossSpawnLocation.X, BossSpawnLocation.Y, ModContent.NPCType<Grovetender>());
 
 			if (Main.netMode == NetmodeID.Server)
 			{
 				NetMessage.SendData(MessageID.SyncNPC, -1, -1, null, npc);
+			}
+		}
+
+		if (grove != -1)
+		{
+			NPC tender = Main.npc[grove];
+
+			if (new Vector2(Main.spawnTileX, Main.spawnTileY).DistanceSQ(tender.Center / 16) < 200 * 200)
+			{
+				return;
+			}
+
+			bool allPlayersClose = true;
+			int mostDistantWho = -1;
+
+			foreach (Player player in Main.ActivePlayers)
+			{
+				float dist = player.DistanceSQ(Main.npc[grove].Center);
+
+				if (dist > 1500 * 1500)
+				{
+					allPlayersClose = false;
+					break;
+				}
+				else if (mostDistantWho == -1 || dist > Main.player[mostDistantWho].DistanceSQ(Main.npc[grove].Center))
+				{
+					mostDistantWho = player.whoAmI;
+				}
+			}
+
+			if (allPlayersClose)
+			{
+				Player closest = Main.player[mostDistantWho];
+				Main.spawnTileX = (int)closest.Center.X / 16;
+				Main.spawnTileY = (int)closest.Center.Y / 16;
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.WorldData);
+				}
 			}
 		}
 	}

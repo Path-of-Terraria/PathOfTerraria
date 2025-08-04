@@ -24,6 +24,7 @@ using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -117,6 +118,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public override bool PreAI()
 	{
+		ModContent.GetInstance<RavencrestSystem>().SpawnedMorvenPos = null;
+
 		Tile tile = Main.tile[NPC.Center.ToTileCoordinates16()];
 
 		if (teleportingToRavencrest)
@@ -358,7 +361,21 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		//button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !Quest.GetLocalPlayerInstance<EoWQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = "";
+
+		if (Quest.GetLocalPlayerInstance<EoWQuest>().CanBeStarted)
+		{
+			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		}
+		else
+		{
+			EoWQuest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
+
+			if (quest.Active && SubworldSystem.Current is not RavencrestSubworld)
+			{
+				button2 = "Follow";
+			}
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -369,6 +386,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 		else
 		{
+			EoWQuest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
+
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
 				followPlayer = 0;
@@ -379,8 +398,11 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 				ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
 			}
 
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+			if (!quest.Active)
+			{
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+			}
 		}
 	}
 

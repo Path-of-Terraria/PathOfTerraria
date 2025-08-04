@@ -98,23 +98,25 @@ public class Nova : Skill
 		}
 	}
 
-	public override bool CanUseSkill(Player player)
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
 	{
-		return base.CanUseSkill(player) && player.HeldItem.CountsAsClass(DamageClass.Magic);
+		if (!player.HeldItem.CountsAsClass(DamageClass.Magic))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsMagic);
+			return false;
+		}
+
+		return base.CanUseSkill(player, ref failReason, true);
 	}
 
 	public override void ModifyTooltips(List<NewHotbar.SkillTooltip> tooltips)
 	{
-		tooltips.Remove(tooltips.FirstOrDefault(x => x.Name == "WeaponType"));
-		NewHotbar.SkillTooltip tooltip = tooltips.First(x => x.Name == "Description");
-		string text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.NeedsWeapon").Format(WeaponType.LocalizeText().ToLower());
-
 		if (Main.LocalPlayer.HeldItem.CountsAsClass(DamageClass.Magic))
 		{
-			text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.BaseDamage").Format(Main.LocalPlayer.HeldItem.damage);
+			NewHotbar.SkillTooltip tooltip = tooltips.First(x => x.Name == "Description");
+			string text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.BaseDamage").Format(Main.LocalPlayer.HeldItem.damage);
+			tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 		}
-
-		tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 	}
 
 	private class NovaProjectile : SkillProjectile<Nova>
