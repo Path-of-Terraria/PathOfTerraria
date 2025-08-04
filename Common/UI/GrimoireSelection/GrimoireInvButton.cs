@@ -11,7 +11,7 @@ namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
 public class GrimoireInvButton : SmartUiState
 {
-	public override bool Visible => Main.playerInventory && Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().HasObtainedGrimoire;
+	public override bool Visible => Main.playerInventory && GrimoirePlayer.Get().HasObtainedGrimoire;
 
 	private static int _denyTimer = 0;
 	private static bool _lastHover = false;

@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 using ReLogic.Content;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -53,7 +54,7 @@ internal class BloodOath : Sword, GenerateName.IItem
 
 	string GenerateName.IItem.GenerateName(string defaultName)
 	{
-		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
+		return Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName");
 	}
 
 	public override List<ItemAffix> GenerateAffixes()
@@ -61,6 +62,16 @@ internal class BloodOath : Sword, GenerateName.IItem
 		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(2, 5);
 		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(10); // Add 10% life
 		return [sharpAffix, lifeAffix];
+	}
+
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
+	{
+		TooltipLine nameTip = tooltips.First(x => x.Name == "ItemName");
+
+		if (nameTip is not null)
+		{
+			nameTip.OverrideColor = Color.Red;
+		}
 	}
 
 	public override bool AltFunctionUse(Player player)

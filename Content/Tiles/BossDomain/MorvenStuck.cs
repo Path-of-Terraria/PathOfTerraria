@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Content.NPCs.Town;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -10,8 +11,9 @@ internal class MorvenStuck : ModTile
 {
 	public override void SetStaticDefaults()
 	{
-		Main.tileCut[Type] = true;
 		Main.tileFrameImportant[Type] = true;
+
+		TileID.Sets.DoesntGetReplacedWithTileReplacement[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x3);
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
@@ -26,11 +28,11 @@ internal class MorvenStuck : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Main.netMode != NetmodeID.MultiplayerClient)
+		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
 			NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16 + 8, (j + 2) * 16 + 4, ModContent.NPCType<MorvenNPC>(), 0);
 		}
-		else
+		else if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)ModContent.NPCType<MorvenNPC>(), new Vector2((i + 1) * 16 + 4, (j + 1) * 16));
 		}

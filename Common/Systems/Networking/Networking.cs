@@ -113,6 +113,9 @@ internal static class Networking
 			handler.ClientRecieve(reader);
 		}
 
+#if DEBUG
+		PoTMod.Instance.Logger.Debug($"[PoT] Network got: {message}");
+#endif
 		return;
 	}
 

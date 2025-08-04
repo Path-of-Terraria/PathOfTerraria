@@ -12,6 +12,7 @@ using PathOfTerraria.Content.SkillTrees;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -22,7 +23,7 @@ namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class RainOfArrows : Skill
 {
-	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Sandgun];
+	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Flamethrower, ItemID.ElfMelter];
 
 	public override int MaxLevel => 3;
 
@@ -93,24 +94,43 @@ public class RainOfArrows : Skill
 		}
 	}
 
-	public override bool CanUseSkill(Player player)
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
 	{
-		return base.CanUseSkill(player) && player.HeldItem.CountsAsClass(DamageClass.Ranged) && Main.myPlayer == player.whoAmI && 
-			!WeaponBlacklist.Contains(player.HeldItem.type) && !player.HeldItem.consumable;
+		if (!player.HeldItem.CountsAsClass(DamageClass.Ranged))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsRanged);
+			return false;
+		}
+
+		if (player.HeldItem.consumable)
+		{
+			failReason = new SkillFailure(SkillFailReason.Other, "Other.RangedWeaponConsumable");
+			return false;
+		}
+
+		if (WeaponBlacklist.Contains(player.HeldItem.type))
+		{
+			failReason = new SkillFailure(SkillFailReason.Other, "Other.WeaponInvalid");
+			return false;
+		}
+
+		if (!Main.LocalPlayer.PickAmmo(Main.LocalPlayer.HeldItem, out int _, out float _, out int _, out float _, out int _, true))
+		{
+			failReason = new SkillFailure(SkillFailReason.Other, "Other.NoAmmo");
+			return false;
+		}
+
+		return base.CanUseSkill(player, ref failReason, true) && Main.myPlayer == player.whoAmI;
 	}
 
 	public override void ModifyTooltips(List<NewHotbar.SkillTooltip> tooltips)
 	{
-		tooltips.Remove(tooltips.FirstOrDefault(x => x.Name == "WeaponType"));
-		NewHotbar.SkillTooltip tooltip = tooltips.First(x => x.Name == "Description");
-		string text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.NeedsWeapon").Format(WeaponType.LocalizeText().ToLower());
-
 		if (Main.LocalPlayer.HeldItem.CountsAsClass(DamageClass.Ranged))
 		{
-			text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.BaseDamage").Format(Main.LocalPlayer.HeldItem.damage);
+			NewHotbar.SkillTooltip tooltip = tooltips.First(x => x.Name == "Description");
+			string text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.BaseDamage").Format(Main.LocalPlayer.HeldItem.damage);
+			tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 		}
-
-		tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
 	}
 
 	internal class RainProjectile : GlobalProjectile
