@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.MiscUtilities;
-using PathOfTerraria.Common.Tiles;
+﻿using PathOfTerraria.Common.Tiles;
 using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -69,16 +68,7 @@ public class MechGate : ModTile
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
 		Tile tile = Main.tile[i, j];
-		
-		if (ValidAdjacent(i, j + 1, Type) || ValidAdjacent(i, j - 1, Type))
-		{
-			tile.TileFrameY = 18;
-		}
-		else
-		{
-			tile.TileFrameY = 0;
-		}
-
+		tile.TileFrameY = (short)(ValidAdjacent(i + 1, j, Type) || ValidAdjacent(i - 1, j, Type) ? 0 : 18);
 		tile.TileFrameX = (short)(Main.rand.Next(3) * 18);
 		return false;
 
