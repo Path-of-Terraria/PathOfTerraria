@@ -1,19 +1,20 @@
+using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.Localization;
-using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
-using PathOfTerraria.Common.NPCs.QuestMarkers;
-using PathOfTerraria.Content.Items.Quest;
-using Terraria.DataStructures;
+using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
-using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Content.Items.Quest;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -141,7 +142,13 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 			if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
 			{
-				Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
+				int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+				}
+
 				Main.npcChatText = this.GetLocalization("Dialogue.GetKingMapAgain").Value;
 				return;
 			}
@@ -151,7 +158,12 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 				if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5)
 				{
 					Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarLiquid").Value;
-					Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>());
+					int item =Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>());
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
 
 					for (int i = 0; i < 5; ++i)
 					{
