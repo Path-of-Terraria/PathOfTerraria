@@ -292,7 +292,7 @@ public class SkeletronDomain : BossDomainSubworld
 				{
 					if (spawnActuatedWall && pregeneratedActuatedWallYs.TryGetValue(y, out int value))
 					{
-						tile.TileType = (ushort)ModContent.TileType<BoneGate>();// (ushort)tileType;
+						tile.TileType = (ushort)ModContent.TileType<BoneGate>();
 						tile.HasTile = true;
 						tile.HasActuator = true;
 						tile.IsActuated = false;
