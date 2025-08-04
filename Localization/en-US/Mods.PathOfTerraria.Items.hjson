@@ -644,7 +644,12 @@ LunarLiquid: {
 
 LunarShard: {
 	DisplayName: Lunar Shard
-	Tooltip: ""
+	Tooltip:
+		'''
+		A small element used to summon the Eye of Cthulhu's domain
+		Can be given to Eldric after the Rising Omen quest
+		'''
+	InQuest: During the Rising Omen quest
 }
 
 LunarObject: {

@@ -141,7 +141,13 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 			if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
 			{
-				Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
+				int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>(), noGrabDelay: true);
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+				}
+
 				Main.npcChatText = this.GetLocalization("Dialogue.GetKingMapAgain").Value;
 				return;
 			}
@@ -151,7 +157,12 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 				if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5)
 				{
 					Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarLiquid").Value;
-					Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>());
+					int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>(), noGrabDelay: true);
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
 
 					for (int i = 0; i < 5; ++i)
 					{
@@ -168,7 +179,12 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<KingSlimeQuest>();
-			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
+			int mapItem = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>(), noGrabDelay: true);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, mapItem);
+			}
 		}
 	}
 
@@ -185,7 +201,9 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 	public bool ForceSpawnInTavern()
 	{
-		return Quest.GetLocalPlayerInstance<KingSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
+		bool kingSlime = Quest.GetLocalPlayerInstance<KingSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
+		bool eoC = Quest.GetLocalPlayerInstance<EoCQuest>().Active;
+		return kingSlime || eoC;
 	}
 
 	public float SpawnChanceInTavern()

@@ -6,7 +6,6 @@ using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
