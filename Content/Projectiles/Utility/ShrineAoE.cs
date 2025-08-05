@@ -116,8 +116,9 @@ public abstract class ShrineAoE : ModProjectile
 	public override void PostDraw(Color lightColor)
 	{
 		Texture2D tex = IconsByType[Type].Value;
-		Vector2 position = Projectile.Center - Main.screenPosition - new Vector2(0, 45 + MathF.Sin((float)Main.timeForVisualEffects * 0.035f) * 10);
+		Vector2 position = Projectile.Center - Main.screenPosition - new Vector2(-4, 45 + MathF.Sin((float)Main.timeForVisualEffects * 0.035f) * 10);
 		float opacity = MathF.Min(Projectile.Opacity / 0.06f, 1f);
-		Main.spriteBatch.Draw(tex, position, null, Color.White * opacity, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+		Rectangle src = tex.Frame(1, 8, 0, (int)(Main.timeForVisualEffects * 0.2f % 8));
+		Main.spriteBatch.Draw(tex, position, src, Color.White * opacity, 0f, src.Size() / 2f, 1f, SpriteEffects.None, 0);
 	}
 }
