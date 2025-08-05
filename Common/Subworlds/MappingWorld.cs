@@ -68,7 +68,7 @@ public abstract class MappingWorld : Subworld
 	/// </summary>
 	public int MapTier = 0;
 	
-	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
+	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
 	{
 	}
 

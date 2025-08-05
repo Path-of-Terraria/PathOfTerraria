@@ -43,7 +43,7 @@ internal class PlanteraDomain : BossDomainSubworld
 		Main.rockLayer = 30;
 
 		Vector2 center = new(Width / 2, Height / 2);
-		FastNoiseLite noise = new(WorldGen._genRandSeed);
+		FastNoiseLite noise = new(Main.rand.Next());
 		noise.SetFrequency(0.03f);
 
 		FastNoiseLite cell = new(WorldGen._genRandSeed);
@@ -159,6 +159,25 @@ internal class PlanteraDomain : BossDomainSubworld
 		}
 
 		PlaceBulb();
+		SetSpawn();
+	}
+
+	private static void SetSpawn()
+	{
+		float tries = 0;
+
+		while (true)
+		{
+			var pos = (new Vector2(Main.maxTilesX, Main.maxTilesY) / 2 + WorldGen.genRand.NextVector2Circular(tries * 0.25f, tries * 0.25f)).ToPoint16();
+			tries++;
+
+			if (!Collision.SolidCollision(pos.ToWorldCoordinates(), 54, 54) && Collision.SolidCollision(pos.ToWorldCoordinates() + new Vector2(0, 54), 54, 16))
+			{
+				Main.spawnTileX = pos.X;
+				Main.spawnTileY = pos.Y;
+				return;
+			}
+		}
 	}
 
 	internal static void PlaceBulb(bool realTime = false)

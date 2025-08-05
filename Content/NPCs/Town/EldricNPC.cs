@@ -130,6 +130,10 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 			Main.npcChatCornerItem = ModContent.ItemType<LunarObject>();
 		}
+		else if (quest.Completed && (Main.LocalPlayer.HasItem(ModContent.ItemType<LunarShard>()) || Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>())))
+		{
+			button2 = this.GetLocalization("DonateLunar").Value;
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -147,7 +151,12 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 				if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5 && Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
 				{
 					Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarObject").Value;
-					Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarObject>());
+					int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarObject>(), noGrabDelay: true);
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
 
 					Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarLiquid>());
 
@@ -158,9 +167,16 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 				}
 				else
 				{
-					Main.npcChatText = this.GetLocalization("Dialogue.CantTradeObject").Value;
+					Main.npcChatText = this.GetLocalization("Dialogue.Donation").Value;
 				}
 
+				return;
+			}
+			else if (quest.Completed)
+			{
+				Main.npcChatText = this.GetLocalization("Dialogue.ThanksForDonating").Value;
+				int count = Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>()) + Main.LocalPlayer.CountItem(ModContent.ItemType<LunarLiquid>());
+				Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), ItemID.SilverCoin, count);
 				return;
 			}
 

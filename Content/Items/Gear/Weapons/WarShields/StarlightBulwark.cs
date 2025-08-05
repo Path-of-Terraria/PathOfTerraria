@@ -87,7 +87,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 
 		AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 
-		if (player.whoAmI == Main.myPlayer && Main.mouseRight && Main.mouseRightRelease && (altUsePlayer.AltFunctionAvailable || altUsePlayer.AltFunctionActive))
+		if (player.whoAmI == Main.myPlayer && Main.mouseRight && Main.mouseRightRelease && altUsePlayer.AltFunctionAvailable)
 		{
 			if (_lastAltClick > 0)
 			{
