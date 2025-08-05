@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using SubworldLibrary;
 using System.Data;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
@@ -44,8 +45,10 @@ internal class StopCuttingProjectile : GlobalProjectile
 
 	public static bool CanCutTile(Projectile projectile, int i, int j)
 	{
-		bool cantCutWhitelist = Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding && !BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
-		return !cantCutWhitelist && (ModContent.GetModTile(Main.tile[i, j].TileType) is not ICanCutTile cutTile || cutTile.CanCut(i, j));
+		Tile tile = Main.tile[i, j];
+		Point16 frame = new(tile.TileFrameX, tile.TileFrameY);
+		bool cantCutWhitelist = Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding && !BuildingWhitelist.InCuttingWhitelist(tile.TileType, frame);
+		return !cantCutWhitelist && (ModContent.GetModTile(tile.TileType) is not ICanCutTile cutTile || cutTile.CanCut(i, j));
 	}
 
 	private bool CutCheck(On_DelegateMethods.orig_CutTiles orig, int x, int y)
