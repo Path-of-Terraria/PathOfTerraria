@@ -51,8 +51,8 @@ internal static class Networking
 		SetRavencrestBuildingIndex,
 
 		/// <summary>
-		/// Syncs a condition drop to the server.<br/>Signature:<br/>
-		/// <c>int id, bool add</c>
+		/// Syncs a player's conditional drop to the server and all other clients.<br/>Signature:<br/>
+		/// <c>byte who, int id, bool add</c>
 		/// </summary>
 		SyncConditionalDrop,
 

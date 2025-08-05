@@ -14,6 +14,7 @@ using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -85,6 +86,13 @@ public class SkeletronDomain : BossDomainSubworld
 		new PassLegacy("Tunnels", DigTunnels),
 		new PassLegacy("Decor", AddDecor),
 		new PassLegacy("Convert", DungeonConversion.Convert)];
+
+	internal override void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
+	{
+		blockers.Add(new FramedTileBlockers(TileID.Platforms, new OptionalPoint16(null, 108)));
+		blockers.Add(new FramedTileBlockers(TileID.Platforms, new OptionalPoint16(null, 126)));
+		blockers.Add(new FramedTileBlockers(TileID.Platforms, new OptionalPoint16(null, 144)));
+	}
 
 	private void AddDecor(GenerationProgress progress, GameConfiguration configuration)
 	{

@@ -64,7 +64,7 @@ internal class MappingNPC : GlobalNPC
 
 	public override void OnKill(NPC npc)
 	{
-		if (npc.boss && SubworldSystem.Current is MappingWorld world && Main.hardMode && PoTItemHelper.PickItemLevel() >= 45)
+		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && PoTItemHelper.PickItemLevel() >= 45)
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 

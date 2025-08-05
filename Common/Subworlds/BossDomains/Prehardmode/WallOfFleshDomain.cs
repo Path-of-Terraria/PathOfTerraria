@@ -35,7 +35,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new   PassLegacy("Base Terrain", Terrain),
 		new PassLegacy("Arenas", SpawnArenas), new PassLegacy("Settle Liquids", SettleLiquids), new PassLegacy("Pathway", SpawnPathway)];
 
-	internal override void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use)
+	internal override void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
 	{
 		if (use == BuildingWhitelist.WhitelistUse.Mining)
 		{

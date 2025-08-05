@@ -82,7 +82,7 @@ internal class SkillTreePlayer : ModPlayer
 		}
 		else
 		{
-			SpecializationsBySkill.Add(type, spec);
+			SpecializationsBySkill.TryAdd(type, spec);
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient && sync)

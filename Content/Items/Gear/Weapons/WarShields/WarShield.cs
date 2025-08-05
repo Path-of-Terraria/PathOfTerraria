@@ -85,7 +85,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 
 	public override bool AltFunctionUse(Player player)
 	{
-		return true;
+		return CanRaiseShield(player);
 	}
 
 	public override bool? UseItem(Player player)

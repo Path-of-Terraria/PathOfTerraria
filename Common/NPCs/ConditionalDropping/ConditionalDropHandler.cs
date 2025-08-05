@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Content.Items.Quest;
-using System.Collections.Generic;
+﻿using PathOfTerraria.Content.Items.Quest;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
@@ -9,55 +7,6 @@ namespace PathOfTerraria.Common.NPCs.ConditionalDropping;
 
 internal class ConditionalDropHandler : GlobalNPC
 {
-	internal static readonly Dictionary<int, int> PlayerCountByItemIds = [];
-	
-	public static void AddId(int id)
-	{
-		if (Main.netMode == NetmodeID.MultiplayerClient)
-		{
-			ModContent.GetInstance<SyncConditionalDropHandler>().Send(id, true);
-			return;
-		}
-
-		if (PlayerCountByItemIds.TryGetValue(id, out int count))
-		{
-			PlayerCountByItemIds[id] = ++count;
-		}
-		else
-		{
-			PlayerCountByItemIds.Add(id, 1);
-		}
-	}
-
-	public static void AddId<T>() where T : ModItem
-	{
-		AddId(ModContent.ItemType<T>());
-	}
-
-	public static void RemoveId(int id)
-	{
-		if (Main.netMode == NetmodeID.MultiplayerClient)
-		{
-			ModContent.GetInstance<SyncConditionalDropHandler>().Send(id, false);
-			return;
-		}
-
-		if (PlayerCountByItemIds.TryGetValue(id, out int value))
-		{
-			PlayerCountByItemIds[id] = --value;
-
-			if (value <= 0)
-			{
-				PlayerCountByItemIds.Remove(id);
-			}
-		}
-	}
-
-	public static void RemoveId<T>() where T : ModItem
-	{
-		RemoveId(ModContent.ItemType<T>());
-	}
-
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
 		if (npc.type is NPCID.GoblinArcher or NPCID.GoblinPeon or NPCID.GoblinScout or NPCID.GoblinSorcerer or NPCID.GoblinThief or NPCID.GoblinWarrior)
@@ -82,7 +31,7 @@ internal class ConditionalDropHandler : GlobalNPC
 
 		public bool CanDrop(DropAttemptInfo info)
 		{
-			return PlayerCountByItemIds.TryGetValue(_id, out int count) && count > 0;
+			return info.player.GetModPlayer<ConditionalDropPlayer>().TrackedIds.TryGetValue(_id, out int count) && count > 0;
 		}
 
 		public bool CanShowItemDropInUI()
