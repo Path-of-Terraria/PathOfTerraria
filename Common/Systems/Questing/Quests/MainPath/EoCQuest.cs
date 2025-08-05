@@ -28,7 +28,7 @@ internal class EoCQuest : Quest
 		[
 			new ActionStep((_, _) =>
 			{
-				ConditionalDropHandler.AddId<LunarShard>();
+				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().AddId<LunarShard>();
 				return true;
 			}),
 			new ParallelQuestStep(
@@ -76,7 +76,7 @@ internal class EoCQuest : Quest
 			},
 			new ActionStep((_, _) => {
 				RavencrestSystem.UpgradeBuilding("Observatory");
-				ConditionalDropHandler.RemoveId<LunarShard>();
+				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().RemoveId<LunarShard>();
 				return true;
 			}) { CountsAsCompletedOnMarker = true },
 		];

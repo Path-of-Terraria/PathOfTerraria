@@ -5,9 +5,15 @@ using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using SubworldLibrary;
 using System.Collections.Generic;
+using Terraria;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
+
+public readonly record struct FramedTileBlockers(int TileType, OptionalPoint16 Frame);
+
+public readonly record struct OptionalPoint16(short? X, short? Y);
 
 internal class StopBuildingPlayer : ModPlayer
 {
@@ -85,7 +91,9 @@ internal class StopBuildingPlayer : ModPlayer
 
 	public static bool CanCutTile(Player player, int i, int j)
 	{
-		bool defaultCanBreak = !player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding || BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
+		Tile tile = Main.tile[i, j];
+		Point16 tileFrame = new(tile.TileFrameX, tile.TileFrameY);
+		bool defaultCanBreak = !player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding || BuildingWhitelist.InCuttingWhitelist(tile.TileType, tileFrame);
 		return defaultCanBreak && (ModContent.GetModTile(Main.tile[i, j].TileType) is not ICanCutTile cutTile || cutTile.CanCut(i, j));
 	}
 
@@ -100,7 +108,7 @@ internal class StopBuildingPlayer : ModPlayer
 
 		if (!isWall)
 		{
-			return !BuildingWhitelist.InMiningWhitelist(tile.TileType);
+			return !BuildingWhitelist.InMiningWhitelist(tile.TileType, new Point16(tile.TileFrameX, tile.TileFrameY));
 		}
 
 		return true;
@@ -131,7 +139,7 @@ internal class StopBuildingPlayer : ModPlayer
 			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile] && SubworldSystem.Current is not WallOfFleshDomain;
 			bool isTorch = item.createTile >= TileID.Dirt && TileID.Sets.Torch[item.createTile];
 
-			if (!isRope && !isTorch && !BuildingWhitelist.InPlacingWhitelist(item.createTile))
+			if (!isRope && !isTorch && !BuildingWhitelist.InPlacingWhitelist(item.createTile, null))
 			{
 				return !LastStopBuilding;
 			}

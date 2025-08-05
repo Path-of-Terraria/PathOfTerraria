@@ -41,7 +41,7 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 
 	public override void HoldItem(Player player)
 	{
-		if (Item == Main.mouseItem || Item == player.inventory[58] && player.IsStandingStillForSpecialEffects)
+		if (Item == Main.mouseItem || Item == player.inventory[58] && player.IsStandingStillForSpecialEffects && player.whoAmI == Main.myPlayer)
 		{
 			List<DrawableTooltipLine> tooltipLines = ItemTooltipBuilder.BuildTooltips(Item, player);
 			TooltipUI.SetFancyTooltip(tooltipLines[1..]);

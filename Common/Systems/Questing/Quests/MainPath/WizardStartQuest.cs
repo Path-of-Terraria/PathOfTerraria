@@ -33,7 +33,7 @@ internal class WizardStartQuest : Quest
 		[
 			new ActionStep((player, _) => 
 			{
-				ConditionalDropHandler.AddId(ModContent.ItemType<TomeOfTheElders>());
+				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().AddId(ModContent.ItemType<TomeOfTheElders>());
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}),
@@ -43,7 +43,7 @@ internal class WizardStartQuest : Quest
 			], true),
 			new ActionStep((player, _) =>
 			{
-				ConditionalDropHandler.RemoveId(ModContent.ItemType<TomeOfTheElders>());
+				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().RemoveId(ModContent.ItemType<TomeOfTheElders>());
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}) { CountsAsCompletedOnMarker = true },

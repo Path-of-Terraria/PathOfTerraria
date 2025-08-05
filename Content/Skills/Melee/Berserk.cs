@@ -24,6 +24,17 @@ public class Berserk : Skill
 		player.AddBuff(ModContent.BuffType<RageBuff>(), Duration);
 	}
 
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
+	{
+		if (!player.HeldItem.CountsAsClass(DamageClass.Melee))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsMelee);
+			return false;
+		}
+
+		return base.CanUseSkill(player, ref failReason, justChecking);
+	}
+
 	internal class BerserkAuraLayer : PlayerDrawLayer
 	{
 		public override Position GetDefaultPosition()

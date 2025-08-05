@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Common.UI;
+﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.UI;
+using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.Localization;
 using Terraria.UI.Chat;
@@ -19,7 +21,7 @@ internal class BossDomainLivesUILayer : ILoadable
 
 	private void DrawLivesCounter(SpriteBatch spriteBatch)
 	{
-		if (!Main.LocalPlayer.GetModPlayer<BossDomainLivesPlayer>().InDomain)
+		if (!Main.LocalPlayer.GetModPlayer<BossDomainLivesPlayer>().InDomain || SubworldSystem.Current is RavencrestSubworld)
 		{
 			return;
 		}
