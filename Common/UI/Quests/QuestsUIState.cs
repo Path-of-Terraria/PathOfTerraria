@@ -4,10 +4,12 @@ using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
+using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
@@ -22,7 +24,9 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 
 	public static string ViewedQuest { get; private set; }
 
+	private UIText _tooltipText;
 	private UIImageButton _closeButton;
+	private UIImageButton _reQuestButton;
 
 	private UIList _questDetails;
 	private UIList _questList;
@@ -135,6 +139,58 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		_closeButton.SetVisibility(1, 1);
 		Panel.Append(_closeButton);
 
+		// Add button to restart a quest in case of issues with the quest when quest is selected from quest book
+		_reQuestButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/reQuestButton"))
+		{
+			Left = new StyleDimension(0f, 0.9f), // 90% of screen width (10% from right edge)
+			Top = new StyleDimension(-38f, 0.9f), // 90% of screen height, offset by button height
+			Width = new StyleDimension(38f, 0f),
+			Height = new StyleDimension(38f, 0f)
+		};
+
+		// Initialize the tooltip text
+		_tooltipText = new UIText("", 0.8f)
+		{
+			Left = new StyleDimension(-20f, 0f), // Position slightly right of the button
+			Top = new StyleDimension(-20f, 0f), // Position above the button
+		};
+
+		// Attach hover events
+		_reQuestButton.OnMouseOver += (evt, element) =>
+		{
+			// Show tooltip
+			_tooltipText.SetText(Language.GetText("Mods.PathOfTerraria.Misc.ResetQuestProgressTooltip"));
+			Main.LocalPlayer.mouseInterface = true; // Prevent clicking through UI
+		};
+
+		_reQuestButton.OnMouseOut += (evt, element) =>
+		{
+			_tooltipText.SetText(""); // Hide tooltip
+			Main.LocalPlayer.mouseInterface = false;
+		};
+
+		// Add on left click event
+		_reQuestButton.OnLeftClick += (a, b) =>
+		{
+			if(ViewedQuest != null)
+			{
+				Quest quest = Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName.GetValueOrDefault(ViewedQuest);
+				if(quest.Active)
+				{
+					quest.Reset();
+					SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+					
+					_reQuestButton.SetVisibility(0, 0);
+					_reQuestButton.Deactivate();
+				}
+			}			
+		};
+
+		_reQuestButton.SetVisibility(0, 0);
+		_reQuestButton.Deactivate();
+		_reQuestButton.Append(_tooltipText);
+		Panel.Append(_reQuestButton);
+
 		IsVisible = true;
 		Visible = true;
 		PopulateQuests();
@@ -159,8 +215,12 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 				Height = StyleDimension.FromPixels(step.LineCount * 22)
 			});
 		}
+
+		_reQuestButton.Activate();
+		_reQuestButton.SetVisibility(1, 1);
+		
 	}
-	
+
 	private void PopulateQuests()
 	{
 		_questList.Clear();
@@ -220,7 +280,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	public void SelectQuest(string questName)
 	{
 		ViewedQuest = questName;
-
+		
 		PopulateQuestSteps(Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[questName]);
 		Recalculate();
 	}

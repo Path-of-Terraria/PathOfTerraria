@@ -197,7 +197,7 @@ public abstract class Quest : ModType, ILocalizedModType
 		ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
 	}
 
-	private void Reset()
+	public void Reset()
 	{
 		Active = false;
 		Completed = false;

@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -18,9 +19,24 @@ public class GlimmeringShard : CurrencyShard
 	{
 		Item heldItem = Main.LocalPlayer.HeldItem;
 
-		if (heldItem.GetInstanceData().Rarity == ItemRarity.Magic && !heldItem.IsAir)
+		// Check if heldItem is valid and not air
+		if (heldItem == null || heldItem.IsAir)
 		{
-			return base.CanRightClick();
+			return false;
+		}
+
+		try
+		{
+			PoTInstanceItemData globalData = heldItem.GetInstanceData();
+			if (globalData != null && globalData.Rarity == ItemRarity.Magic)
+			{
+				return base.CanRightClick();
+			}
+		}
+		catch (KeyNotFoundException)
+		{
+			// Log the issue for debugging (optional)
+			Mod.Logger.Warn($"PoTInstanceItemData not found for item: {heldItem.Name}");
 		}
 
 		return false;
