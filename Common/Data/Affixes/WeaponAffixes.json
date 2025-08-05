@@ -183,7 +183,7 @@
 	},
 	{
 		"affixType": "MoltenShellAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Melee",
 		"influences": "None",
 		"round": true,
 		"tiers": [
@@ -209,7 +209,7 @@
 	},
 	{
 		"affixType": "BloodSiphonAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Melee",
 		"influences": "None",
 		"round": true,
 		"tiers": [
@@ -235,7 +235,7 @@
 	},
 	{
 		"affixType": "FetidCarapaceAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Ranged",
 		"influences": "None",
 		"round": true,
 		"tiers": [
