@@ -423,8 +423,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			{
 				BossSpawned = true;
 
-				Main.spawnTileX = ArenaPos.X / 16;
-				Main.spawnTileY = ArenaPos.Y / 16;
+				Main.spawnTileX = ArenaPos.X;
+				Main.spawnTileY = ArenaPos.Y;
 
 				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), ArenaPos.X * 16, (ArenaPos.Y + 20) * 16, NPCID.QueenSlimeBoss);
 
