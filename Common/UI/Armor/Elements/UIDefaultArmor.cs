@@ -21,7 +21,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		Width = StyleDimension.FromPixels(UIArmorInventory.ArmorPageWidth);
 		Height = StyleDimension.FromPixels(UIArmorInventory.ArmorPageHeight);
 
-		var wings = new UIHoverImageItemSlot(DefaultFrameTexture, WingsIconTexture, ref Player.armor, 4, ItemSlot.Context.EquipAccessory)
+		var wings = new UIHoverImageItemSlot(DefaultFrameTexture, WingsIconTexture, ref Player.armor, 4, $"Mods.{PoTMod.ModName}.UI.Slots.10", ItemSlot.Context.EquipAccessory)
 		{
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
@@ -34,7 +34,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(wings);
 
-		var helmet = new UIHoverImageItemSlot(DefaultFrameTexture, HelmetIconTexture, ref Player.armor, 0, ItemSlot.Context.EquipArmor)
+		var helmet = new UIHoverImageItemSlot(DefaultFrameTexture, HelmetIconTexture, ref Player.armor, 0, $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipArmor)
 		{
 			HAlign = 0.5f,
 			VAlign = 0f,
@@ -49,7 +49,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(helmet);
 
-		var necklace = new UIHoverImageItemSlot(DefaultFrameTexture, NecklaceIconTexture, ref Player.armor, 5, ItemSlot.Context.EquipAccessory)
+		var necklace = new UIHoverImageItemSlot(DefaultFrameTexture, NecklaceIconTexture, ref Player.armor, 5, $"Mods.{PoTMod.ModName}.UI.Slots.5", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
 			VAlign = 0f,
@@ -64,7 +64,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(necklace);
 		
-		var weapon = new UIHoverImageItemSlot(DefaultFrameTexture, WeaponIconTexture, ref Player.inventory, 0)
+		var weapon = new UIHoverImageItemSlot(DefaultFrameTexture, WeaponIconTexture, ref Player.inventory, 0, $"Mods.{PoTMod.ModName}.UI.Slots.4")
 		{
 			HAlign = 0f,
 			VAlign = 0.33f,
@@ -79,7 +79,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(weapon);
 
-		var chest = new UIHoverImageItemSlot(DefaultFrameTexture, ChestIconTexture, ref Player.armor, 1, ItemSlot.Context.EquipArmor)
+		var chest = new UIHoverImageItemSlot(DefaultFrameTexture, ChestIconTexture, ref Player.armor, 1, $"Mods.{PoTMod.ModName}.UI.Slots.1", ItemSlot.Context.EquipArmor)
 		{
 			HAlign = 0.5f,
 			VAlign = 0.33f,
@@ -94,7 +94,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(chest);
 
-		var offhand = new UIHoverImageItemSlot(DefaultFrameTexture, OffhandIconTexture, ref Player.armor, 6, ItemSlot.Context.EquipAccessory)
+		var offhand = new UIHoverImageItemSlot(DefaultFrameTexture, OffhandIconTexture, ref Player.armor, 6, $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
 			VAlign = 0.33f,
@@ -109,7 +109,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(offhand);
 
-		var leftRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 7, ItemSlot.Context.EquipAccessory)
+		var leftRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 7, $"Mods.{PoTMod.ModName}.UI.Slots.7", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0f,
 			VAlign = 0.66f,
@@ -124,7 +124,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(leftRing);
 
-		var legs = new UIHoverImageItemSlot(DefaultFrameTexture, LegsIconTexture, ref Player.armor, 2, ItemSlot.Context.EquipArmor)
+		var legs = new UIHoverImageItemSlot(DefaultFrameTexture, LegsIconTexture, ref Player.armor, 2, $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipArmor)
 		{
 			HAlign = 0.5f,
 			VAlign = 0.66f,
@@ -139,7 +139,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(legs);
 
-		var rightRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 8, ItemSlot.Context.EquipAccessory)
+		var rightRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 8, $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
 			VAlign = 0.66f,
@@ -154,7 +154,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		Append(rightRing);
 
-		var leftMiscellaneous = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 9, ItemSlot.Context.EquipAccessory)
+		var leftMiscellaneous = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 9, $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipAccessory)
 		{
 			VAlign = 1f,
 			ActiveScale = 1.15f,
@@ -166,7 +166,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		
 		Append(leftMiscellaneous);
 		
-		var middleMiscellaneous = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 3, ItemSlot.Context.EquipAccessory)
+		var middleMiscellaneous = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 3, $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0.5f,
 			VAlign = 1f,

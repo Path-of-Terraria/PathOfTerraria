@@ -11,6 +11,20 @@ Gear: {
 	}
 }
 
+Slots: {
+	0: Helmet
+	1: Chest
+	2: Legs
+	3: Accessory 2
+	4: Weapon
+	5: Necklace
+	6: Offhand
+	7: Left Ring
+	8: Right Ring
+	9: Accessory 1
+	10: Wings
+}
+
 BaseDamage: Base Damage: {0}
 Lives: lives left
 

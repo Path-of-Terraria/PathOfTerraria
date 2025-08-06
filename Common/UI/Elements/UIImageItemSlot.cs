@@ -1,8 +1,10 @@
 using ReLogic.Content;
+using System.Xml.Linq;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Elements;
@@ -95,6 +97,15 @@ public class UIImageItemSlot : UIElement
 	/// </remarks>
 	public int Slot;
 
+
+	/// <summary>
+	///    The key to look for in Localization for tooltip hover
+	/// </summary>
+	/// <remarks>
+	///     Will not have any effect if <see cref="Key" /> is <c>null</c> or not provided.
+	/// </remarks>
+	public string Key;
+
 	public UIImageItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
@@ -121,6 +132,25 @@ public class UIImageItemSlot : UIElement
 		Inventory = inventory;
 		Slot = slot;
 		Context = context;
+	}
+
+	public UIImageItemSlot(
+		Asset<Texture2D> backgroundTexture,
+		Asset<Texture2D> iconTexture,
+		ref Item[]? inventory,
+		int slot,
+		int context = ItemSlot.Context.InventoryItem,
+		string key = null
+	)
+	{
+		BackgroundTexture = backgroundTexture;
+		IconTexture = iconTexture;
+
+		Inventory = inventory;
+		Slot = slot;
+		Context = context;
+
+		Key = key;
 	}
 
 	/// <summary>
@@ -223,6 +253,13 @@ public class UIImageItemSlot : UIElement
 		if (WrapsAroundInventory)
 		{
 			ItemSlot.Handle(Inventory, Context, Slot);
+
+			if (Key != null)
+			{
+				Main.hoverItemName = Language.GetTextValue(Key);
+				Main.HoverItem = Inventory[Slot].Clone();
+				Main.HoverItem.tooltipContext = Context;
+			}	
 		}
 		else
 		{
@@ -232,7 +269,7 @@ public class UIImageItemSlot : UIElement
 
 			Item = item;
 		}
-
+		
 		Main.LocalPlayer.mouseInterface = true;
 	}
 
