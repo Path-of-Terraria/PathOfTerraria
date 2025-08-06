@@ -26,7 +26,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 
 	private UIText _tooltipText;
 	private UIImageButton _closeButton;
-	private UIImageButton _reQuestButton;
+	private UIImageButton _questResetButton;
 
 	private UIList _questDetails;
 	private UIList _questList;
@@ -140,7 +140,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		Panel.Append(_closeButton);
 
 		// Add button to restart a quest in case of issues with the quest when quest is selected from quest book
-		_reQuestButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/reQuestButton"))
+		_questResetButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/QuestResetButton"))
 		{
 			Left = new StyleDimension(0f, 0.9f), // 90% of screen width (10% from right edge)
 			Top = new StyleDimension(-38f, 0.9f), // 90% of screen height, offset by button height
@@ -151,26 +151,26 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		// Initialize the tooltip text
 		_tooltipText = new UIText("", 0.8f)
 		{
-			Left = new StyleDimension(-20f, 0f), // Position slightly right of the button
+			Left = new StyleDimension(-20f, 0f), // Position slightly left of the button
 			Top = new StyleDimension(-20f, 0f), // Position above the button
 		};
 
 		// Attach hover events
-		_reQuestButton.OnMouseOver += (evt, element) =>
+		_questResetButton.OnMouseOver += (evt, element) =>
 		{
 			// Show tooltip
 			_tooltipText.SetText(Language.GetText("Mods.PathOfTerraria.Misc.ResetQuestProgressTooltip"));
 			Main.LocalPlayer.mouseInterface = true; // Prevent clicking through UI
 		};
 
-		_reQuestButton.OnMouseOut += (evt, element) =>
+		_questResetButton.OnMouseOut += (evt, element) =>
 		{
 			_tooltipText.SetText(""); // Hide tooltip
 			Main.LocalPlayer.mouseInterface = false;
 		};
 
 		// Add on left click event
-		_reQuestButton.OnLeftClick += (a, b) =>
+		_questResetButton.OnLeftClick += (a, b) =>
 		{
 			if(ViewedQuest != null)
 			{
@@ -180,16 +180,16 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 					quest.Reset();
 					SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 					
-					_reQuestButton.SetVisibility(0, 0);
-					_reQuestButton.Deactivate();
+					_questResetButton.SetVisibility(0, 0);
+					_questResetButton.Deactivate();
 				}
 			}			
 		};
 
-		_reQuestButton.SetVisibility(0, 0);
-		_reQuestButton.Deactivate();
-		_reQuestButton.Append(_tooltipText);
-		Panel.Append(_reQuestButton);
+		_questResetButton.SetVisibility(0, 0);
+		_questResetButton.Deactivate();
+		_questResetButton.Append(_tooltipText);
+		Panel.Append(_questResetButton);
 
 		IsVisible = true;
 		Visible = true;
@@ -216,8 +216,8 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			});
 		}
 
-		_reQuestButton.Activate();
-		_reQuestButton.SetVisibility(1, 1);
+		_questResetButton.Activate();
+		_questResetButton.SetVisibility(1, 1);
 		
 	}
 

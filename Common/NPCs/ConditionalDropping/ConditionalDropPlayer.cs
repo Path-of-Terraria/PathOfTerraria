@@ -1,6 +1,4 @@
 ﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Content.Items.Quest;
 using System.Collections.Generic;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
