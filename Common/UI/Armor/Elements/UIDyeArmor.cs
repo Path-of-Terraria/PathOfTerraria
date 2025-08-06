@@ -17,7 +17,7 @@ public sealed class UIDyeArmor : UIArmorPage
 		Width = StyleDimension.FromPixels(UIArmorInventory.ArmorPageWidth);
 		Height = StyleDimension.FromPixels(UIArmorInventory.ArmorPageHeight);
 
-		var wings = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 4, ItemSlot.Context.EquipDye)
+		var wings = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 4, $"Mods.{PoTMod.ModName}.UI.Slots.10", ItemSlot.Context.EquipDye)
 		{
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
@@ -30,7 +30,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(wings);
 
-		var helmet = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 0, ItemSlot.Context.EquipDye)
+		var helmet = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 0, $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipDye)
 		{
 			HAlign = 0.5f,
 			VAlign = 0f,
@@ -45,7 +45,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(helmet);
 
-		var necklace = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 5, ItemSlot.Context.EquipDye)
+		var necklace = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 5, $"Mods.{PoTMod.ModName}.UI.Slots.5", ItemSlot.Context.EquipDye)
 		{
 			HAlign = 1f,
 			VAlign = 0f,
@@ -60,7 +60,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(necklace);
 
-		var chest = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 1, ItemSlot.Context.EquipDye)
+		var chest = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 1, $"Mods.{PoTMod.ModName}.UI.Slots.1", ItemSlot.Context.EquipDye)
 		{
 			HAlign = 0.5f,
 			VAlign = 0.33f,
@@ -75,7 +75,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(chest);
 
-		var offhand = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 6, ItemSlot.Context.EquipAccessory)
+		var offhand = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 6, $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
 			VAlign = 0.33f,
@@ -90,7 +90,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(offhand);
 
-		var leftRing = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 7, ItemSlot.Context.EquipDye)
+		var leftRing = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 7, $"Mods.{PoTMod.ModName}.UI.Slots.7", ItemSlot.Context.EquipDye)
 		{
 			HAlign = 0f,
 			VAlign = 0.66f,
@@ -105,7 +105,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(leftRing);
 		
-		var legs = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 2, ItemSlot.Context.EquipDye)
+		var legs = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 2, $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipDye)
 		{
 			HAlign = 0.5f,
 			VAlign = 0.66f,
@@ -120,7 +120,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(legs);
 
-		var rightRing = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 8, ItemSlot.Context.EquipDye)
+		var rightRing = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 8, $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipDye)
 		{
 			HAlign = 1f,
 			VAlign = 0.66f,
@@ -135,7 +135,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(rightRing);
 		
-		var leftMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.armor, 9, ItemSlot.Context.EquipAccessory)
+		var leftMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.armor, 9, $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipAccessory)
 		{
 			VAlign = 1f,
 			ActiveScale = 1.15f,
@@ -147,7 +147,7 @@ public sealed class UIDyeArmor : UIArmorPage
 		
 		Append(leftMiscellaneous);
 		
-		var middleMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.armor, 3, ItemSlot.Context.EquipAccessory)
+		var middleMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.armor, 3, $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0.5f,
 			VAlign = 1f,
