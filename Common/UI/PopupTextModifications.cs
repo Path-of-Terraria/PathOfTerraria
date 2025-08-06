@@ -115,13 +115,15 @@ internal class PopupTextModifications : ILoadable
 	}
 
 	// Both hijack methods take more parameters than they actually use to pop them off of the stack, DO NOT change this
-
 	public static void HijackTextDraw(SpriteBatch batch, DynamicSpriteFont font, string text, Vector2 position, Color color, float rotation, Vector2 origin, float scale, 
 		SpriteEffects effects, float layer, int slot)
 	{
 		DrawText(batch, font, text, position, color, rotation, origin, scale, slot);
 	}
 
+	// Vanilla has an if that draws two texts for a reason I don't quite understand.
+	// The if checks: color2 != Color.Black && j < 4
+	// color2 is equivalent to secondColor here. I don't know the intent, or what context specifically this appears in, but this should keep parity.
 	public static void HijackTextDraw_Twin(SpriteBatch batch, DynamicSpriteFont font, string text, Vector2 position, Color color, float rotation, Vector2 origin, float scale,
 		SpriteEffects effects, float layer, Color secondColor, int slot)
 	{
@@ -131,9 +133,10 @@ internal class PopupTextModifications : ILoadable
 
 	public static void DrawText(SpriteBatch batch, DynamicSpriteFont font, string text, Vector2 position, Color color, float rotation, Vector2 origin, float scale, int? slot)
 	{
+		bool hasRare = slot.HasValue && PopupTextRarity[slot.Value] != ItemRarity.Invalid;
 		DynamicSpriteFontExtensionMethods.DrawString(batch, font, text, position, color, rotation, origin, new Vector2(scale), SpriteEffects.None, 0);
 
-		if (slot.HasValue && PopupTextRarity[slot.Value] != ItemRarity.Invalid)
+		if (hasRare)
 		{
 			var src = new Rectangle(20 * (int)PopupTextRarity[slot.Value], 0, 18, 18);
 			Main.spriteBatch.Draw(Icons.Value, position, src, Color.White, rotation, origin + new Vector2(20, 0), scale, SpriteEffects.None, 0);
