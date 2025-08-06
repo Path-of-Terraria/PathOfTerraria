@@ -133,6 +133,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 		};
 		_closeButton.SetVisibility(1, 1);
+
 		Panel.Append(_closeButton);
 
 		IsVisible = true;
@@ -158,9 +159,9 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 				Width = StyleDimension.Fill,
 				Height = StyleDimension.FromPixels(step.LineCount * 22)
 			});
-		}
+		}		
 	}
-	
+
 	private void PopulateQuests()
 	{
 		_questList.Clear();
@@ -220,7 +221,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	public void SelectQuest(string questName)
 	{
 		ViewedQuest = questName;
-
+		
 		PopulateQuestSteps(Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[questName]);
 		Recalculate();
 	}

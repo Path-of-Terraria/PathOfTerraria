@@ -98,7 +98,7 @@ public partial class EntityModifier : EntityModifierSegment
 		ps.HealPower = (int)PotionHealPower.ApplyTo(ps.HealPower);
 		ps.HealDelay = (int)PotionHealDelay.ApplyTo(ps.HealDelay);
 
-		ps.MaxMana = (int)MaxHealthPotions.ApplyTo(ps.MaxMana);
+		ps.MaxMana = (int)MaxManaPotions.ApplyTo(ps.MaxMana);
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
 
