@@ -26,16 +26,10 @@ internal class ConditionalDropHandler : GlobalNPC
 		npcLoot.Add(ItemDropRule.ByCondition(new PlayerCountCondition(conditionName, itemId), itemId, denominator));
 	}
 
-	public class PlayerCountCondition : IItemDropRuleCondition
+	public class PlayerCountCondition(LocalizedText conditionName, int itemId) : IItemDropRuleCondition
 	{
-		private readonly LocalizedText _conditionName;
-		private readonly int _itemId;
-
-		public PlayerCountCondition(LocalizedText conditionName, int itemId)
-		{
-			_conditionName = conditionName;
-			_itemId = itemId;
-		}
+		private readonly LocalizedText _conditionName = conditionName;
+		private readonly int _itemId = itemId;
 
 		public bool CanDrop(DropAttemptInfo info)
 		{
