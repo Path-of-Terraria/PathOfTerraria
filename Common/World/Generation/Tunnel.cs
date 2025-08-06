@@ -7,9 +7,24 @@ internal static class Tunnel
 {
 	public static Vector2[] GeneratePoints(Vector2[] points, int splineCount, float equidistantSpacing, float variationMultiplier = 1f)
 	{
-		points = AddVariationToPoints(points, variationMultiplier);
+		if (variationMultiplier != 0)
+		{
+			points = AddVariationToPoints(points, variationMultiplier);
+		}
+
 		Vector2[] results = Spline.InterpolateXY(points, splineCount);
 		return CreateEquidistantSet(results, equidistantSpacing);
+	}
+
+	public static Vector2[] GeneratePoints(Vector2[] points, out Vector2[] baseSpline, int splineCount, float equidistantSpacing, float variationMultiplier = 1f)
+	{
+		if (variationMultiplier != 0)
+		{
+			points = AddVariationToPoints(points, variationMultiplier);
+		}
+
+		baseSpline = Spline.InterpolateXY(points, splineCount);
+		return CreateEquidistantSet(baseSpline, equidistantSpacing);
 	}
 
 	public static Vector2[] AddVariationToPoints(Vector2[] points, float variationMultiplier = 1f)
@@ -84,7 +99,7 @@ internal static class Tunnel
 				return [.. points];
 			}
 
-			while (factor > 1f)
+			if (factor > 1f)
 			{
 				if (remainingPoints.Count == 0)
 				{

@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Common.World.Generation;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.ID;
@@ -22,6 +23,36 @@ public sealed class GearSwapManager : ModPlayer
 
 	public override void UpdateEquips()
 	{
+		if (Main.mouseLeft && Main.GameUpdateCount % 10 == 0)
+		{
+			bool flip = WorldGen.genRand.NextBool(2);
+
+			// Generate base points
+			Vector2[] points = [new Vector2(250, 0),
+				new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(160, 190)),
+				new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(220, 250)),
+				new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(280, 310)),
+				new Vector2(GenerateEdgeX(ref flip), WorldGen.genRand.Next(330, 350)),
+				new	Vector2(250, 400)];
+
+			Vector2[] tunnel = Tunnel.GeneratePoints(points, out Vector2[] basePoints, 30, 12, 0);
+
+			foreach (var point in points)
+			{
+				Dust.NewDustPerfect(point + Main.MouseWorld, DustID.UltraBrightTorch, Vector2.Zero, 0, Scale: 2f).noGravity = true;
+			}
+
+			foreach (var point in tunnel)
+			{
+				Dust.NewDustPerfect(point + Main.MouseWorld, DustID.Torch, Vector2.Zero, 0, Scale: 3f).noGravity = true;
+			}
+
+			foreach (var point in basePoints)
+			{
+				Dust.NewDustPerfect(point + Main.MouseWorld + Vector2.UnitX * 500, DustID.CursedTorch, Vector2.Zero, 0, Scale: 3f).noGravity = true;
+			}
+		}
+
 		if (Main.dedServ || !GearSwapKeybind.SwapKeybind.JustPressed || Main.LocalPlayer.itemTime > 0)
 		{
 			return;
@@ -45,6 +76,12 @@ public sealed class GearSwapManager : ModPlayer
 				MaxInstances = 1
 			}
 		);
+	}
+
+	static int GenerateEdgeX(ref bool flip)
+	{
+		flip = !flip;
+		return 250 + WorldGen.genRand.Next(70, 160) * (flip ? -1 : 1);
 	}
 
 	public override void SaveData(TagCompound tag)
