@@ -140,9 +140,7 @@ internal abstract class WhipProjectile : ModProjectile
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		Main.player[Projectile.owner].MinionAttackTargetNPC = target.whoAmI;
-		Projectile.damage =
-			(int)(Projectile.damage *
-			      0.5f); // Multihit penalty. Decrease the damage the more enemies the whip hits.
+		Projectile.damage = (int)(Projectile.damage * 0.5f); // Multihit penalty. Decrease the damage the more enemies the whip hits.
 	}
 
 	// This method draws a line between all points of the whip, in case there's empty space between the sprites.

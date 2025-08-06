@@ -323,7 +323,7 @@ public class EaterDomain : BossDomainSubworld
 	{
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 80 : Main.maxTilesX - 80;
 		Main.spawnTileY = 110;
-		Main.worldSurface = 230;
+		Main.worldSurface = 195;
 		Main.rockLayer = 299;
 
 		float baseY = 120;
@@ -493,7 +493,7 @@ public class EaterDomain : BossDomainSubworld
 
 			if (WorldGen.genRand.NextBool(8))
 			{
-				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7));
+				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7), true);
 			}
 
 			if (digTunnel && WorldGen.genRand.NextBool(3, 5))

@@ -26,7 +26,7 @@ Nova: {
 
 Berserk: {
 	Name: Berserk
-	Description: Deal 150% more Damage while taking 5 more damage each time hit
+	Description: Deal 150% more melee damage while taking 5 more damage each time hit
 }
 
 RainOfArrows: {

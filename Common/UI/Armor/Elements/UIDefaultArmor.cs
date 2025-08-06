@@ -6,6 +6,8 @@ using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 using PathOfTerraria.Content.Items.Gear.Offhands;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using ReLogic.Content;
+using Terraria.Localization;
+using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Armor.Elements;
@@ -29,6 +31,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		wings.OnMouseOver += UpdateMouseOver;
 		wings.OnMouseOut += UpdateMouseOut;
+		wings.OnUpdate += self => OverrideHoverText(self, Language.GetText("Mods.PathOfTerraria.UI.Hover.Wings"));
 
 		wings.Predicate = (item, _) => item.wingSlot > 0;
 
@@ -119,6 +122,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		
 		leftRing.OnMouseOver += UpdateMouseOver;
 		leftRing.OnMouseOut += UpdateMouseOut;
+		wings.OnUpdate += self => OverrideHoverText(self, Language.GetText("Mods.PathOfTerraria.UI.Hover.Wings"));
 
 		leftRing.Predicate = (item, _) => item.ModItem is Ring;
 
@@ -178,5 +182,13 @@ public sealed class UIDefaultArmor : UIArmorPage
 		middleMiscellaneous.OnMouseOut += UpdateMouseOut;
 		
 		Append(middleMiscellaneous);
+	}
+
+	public static void OverrideHoverText(UIElement element, LocalizedText text)
+	{
+		if (element.ContainsPoint(Main.MouseScreen))
+		{
+			Main.instance.MouseText(text.Value);
+		}
 	}
 }

@@ -216,12 +216,13 @@ public class KingSlimeDomain : BossDomainSubworld
 		{
 			Vector2 item = results[i];
 			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * 1.2f;
+			mul = MathF.Max(0.5f, mul);
 			Digging.CircleOpening(item, 5 * mul);
 			Digging.CircleOpening(item, WorldGen.genRand.Next(3, 7) * mul);
 
 			if (WorldGen.genRand.NextBool(8))
 			{
-				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7));
+				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7), true);
 			}
 
 			if (WorldGen.genRand.NextBool(3, 5))

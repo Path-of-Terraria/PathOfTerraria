@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using SubworldLibrary;
+﻿using SubworldLibrary;
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
@@ -23,5 +23,18 @@ internal class StopWoFDespawnNPC : GlobalNPC
 		}
 
 		return true;
+	}
+
+	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
+	{
+		if (SubworldSystem.Current is not WallOfFleshDomain)
+		{
+			return;
+		}
+
+		pool[0] = 0;
+		pool[NPCID.Hellbat] = 0.4f;
+		pool[NPCID.Demon] = 0.2f;
+		pool[NPCID.BoneSerpentHead] = 0.05f;
 	}
 }
