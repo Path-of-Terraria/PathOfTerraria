@@ -24,8 +24,7 @@ public class GlimmeringShard : CurrencyShard
 			return false;
 		}
 
-		heldItem.TryGetGlobalItem(out PoTInstanceItemData data);
-		if (data != null && data.Rarity == ItemRarity.Magic)
+		if (heldItem.TryGetGlobalItem(out PoTInstanceItemData data) && data.Rarity == ItemRarity.Magic)
 		{
 			return base.CanRightClick();
 		}

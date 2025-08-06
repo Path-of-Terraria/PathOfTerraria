@@ -49,7 +49,7 @@ internal class ConditionalDropHandler : GlobalNPC
 
 		public string GetConditionDescription()
 		{
-			return _conditionName.ToString();
+			return _conditionName.Value;
 		}
 	}
 }
