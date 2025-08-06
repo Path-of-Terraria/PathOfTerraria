@@ -15,7 +15,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
