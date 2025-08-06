@@ -507,7 +507,7 @@ public class DeerclopsDomain : BossDomainSubworld
 			Vector2 pos = new Vector2(Width / 2, Height / 4 - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.Deerclops);
+			BossTracker.AddDowned(NPCID.Deerclops);
 			ReadyToExit = true;
 		}
 	}

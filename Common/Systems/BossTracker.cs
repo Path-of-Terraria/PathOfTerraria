@@ -26,6 +26,23 @@ internal class BossTracker : ModSystem
 		On_NPC.CreateBrickBoxForWallOfFlesh += StopBrickBox;
 	}
 
+	public static void AddDowned(int id)
+	{
+		CachedBossesDowned.Add(id);
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.RequestWorldData, -1, -1, null, Main.myPlayer);
+			}
+			else
+			{
+				NetMessage.SendData(MessageID.WorldData);
+			}
+		}
+	}
+
 	private void StopBrickBox(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
 	{
 		if (SkipWoFBox)
@@ -78,21 +95,38 @@ internal class BossTracker : ModSystem
 	public override void SaveWorldData(TagCompound tag)
 	{
 		tag.Add(nameof(DownedFlags), (byte)DownedFlags);
+		tag.Add(nameof(CachedBossesDowned), (int[])[.. CachedBossesDowned]);
 	}
 
 	public override void LoadWorldData(TagCompound tag)
 	{
+		CachedBossesDowned.Clear();
 		DownedFlags = tag.GetByte(nameof(DownedFlags));
+		CachedBossesDowned = [.. tag.GetIntArray(nameof(CachedBossesDowned))];
 	}
 
 	public override void NetSend(BinaryWriter writer)
 	{
 		writer.Write((byte)DownedFlags);
+		writer.Write(CachedBossesDowned.Count);
+
+		foreach (int item in CachedBossesDowned)
+		{
+			writer.Write(item);
+		}
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
 		DownedFlags = reader.ReadByte();
+		CachedBossesDowned.Clear();
+
+		int count = reader.ReadInt32();
+		
+		for (int i = 0; i < count; ++i)
+		{
+			CachedBossesDowned.Add(reader.ReadInt32());
+		}
 	}
 
 	public class BossTrackerNPC : GlobalNPC

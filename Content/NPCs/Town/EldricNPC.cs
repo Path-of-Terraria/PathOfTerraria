@@ -6,6 +6,7 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities.Extensions;
@@ -26,7 +27,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	bool ISpawnInRavencrestNPC.CanSpawn(bool worldGen, bool alreadyExists)
 	{
-		return NPC.downedSlimeKing && !worldGen && !alreadyExists;
+		return BossTracker.CachedBossesDowned.Contains(NPCID.KingSlime) && !worldGen && !alreadyExists;
 	}
 
 	public override void SetStaticDefaults()
@@ -189,15 +190,5 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	{
 		quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		return !quest.Completed;
-	}
-
-	public bool ForceSpawnInTavern()
-	{
-		return Quest.GetLocalPlayerInstance<EoCQuest>().Active || QuestUnlockManager.CanStartQuest<EoCQuest>();
-	}
-
-	public float SpawnChanceInTavern()
-	{
-		return NPC.downedBoss1 ? 0.2f : 0f;
 	}
 }

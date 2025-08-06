@@ -765,7 +765,7 @@ public class SkeletronDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.SkeletronHead);
+			BossTracker.AddDowned(NPCID.SkeletronHead);
 			ReadyToExit = true;
 		}
 	}

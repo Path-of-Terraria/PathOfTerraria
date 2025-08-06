@@ -284,7 +284,7 @@ public class EyeDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(-130, -300);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.EyeofCthulhu);
+			BossTracker.AddDowned(NPCID.EyeofCthulhu);
 			ReadyToExit = true;
 		}
 	}

@@ -85,7 +85,7 @@ internal class EoCQuest : Quest
 
 	public override bool Available()
 	{
-		return NPC.downedSlimeKing;
+		return BossTracker.CachedBossesDowned.Contains(NPCID.KingSlime);
 	}
 
 	public override string MarkerLocation()

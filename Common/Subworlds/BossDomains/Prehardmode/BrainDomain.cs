@@ -424,7 +424,7 @@ public class BrainDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(30, 100);
 			int proj = Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.BrainofCthulhu);
+			BossTracker.AddDowned(NPCID.BrainofCthulhu);
 			ReadyToExit = true;
 		}
 	}

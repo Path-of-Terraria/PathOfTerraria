@@ -673,7 +673,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center - new Vector2(0, 80),
 				Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.WallofFlesh);
+			BossTracker.AddDowned(NPCID.WallofFlesh);
 			ReadyToExit = true;
 		}
 	}

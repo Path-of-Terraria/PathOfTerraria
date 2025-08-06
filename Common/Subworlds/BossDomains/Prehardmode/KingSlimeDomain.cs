@@ -280,7 +280,7 @@ public class KingSlimeDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(0, 150);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.KingSlime);
+			BossTracker.AddDowned(NPCID.KingSlime);
 			ReadyToExit = true;
 		}
 	}
