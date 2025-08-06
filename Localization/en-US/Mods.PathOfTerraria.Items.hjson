@@ -1320,23 +1320,3 @@ CultistMap: {
 		'The map smells of soot and space'
 		'''
 }
-
-CommonIcon: {
-	DisplayName: Common Icon
-	Tooltip: ""
-}
-
-RareIcon: {
-	DisplayName: Rare Icon
-	Tooltip: ""
-}
-
-UncommonIcon: {
-	DisplayName: Uncommon Icon
-	Tooltip: ""
-}
-
-UniqueIcon: {
-	DisplayName: Unique Icon
-	Tooltip: ""
-}
