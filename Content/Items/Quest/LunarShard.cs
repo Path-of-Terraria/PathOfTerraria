@@ -22,7 +22,7 @@ internal class LunarShard : ModItem
 		// Placeholder recipe to assuage obtainment issues
 		// Should be removed in the future 
 		CreateRecipe()
-			.AddIngredient(ItemID.Star, 5)
+			.AddIngredient(ItemID.FallenStar, 5)
 			.AddCondition(new Condition(this.GetLocalization("InQuest"), () => Common.Systems.Questing.Quest.GetLocalPlayerInstance<EoCQuest>().Active))
 			.Register();
 	}

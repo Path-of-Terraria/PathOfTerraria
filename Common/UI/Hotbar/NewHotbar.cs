@@ -167,6 +167,11 @@ public sealed class NewHotbar : SmartUiState
 		// Draw offhand slot
 		Main.spriteBatch.Draw(specialActive, new Vector2(2, -2), new Rectangle(0, 0, 60, 72), Color.White, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0);
 
+		if (TryGetKeybindName(GearSwapKeybind.SwapKeybind, true, out string swapKey)) 
+		{
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, swapKey, new Vector2(8, 36), Color.White, 0f, Vector2.Zero, new Vector2(0.9f));
+		}
+
 		Main.inventoryScale = 0.7f;
 		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.GetModPlayer<GearSwapManager>().Inventory[0], 21, new Vector2(4, 4));
 		Main.inventoryScale = 1f;
