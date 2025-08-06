@@ -19,24 +19,15 @@ public class GlimmeringShard : CurrencyShard
 	{
 		Item heldItem = Main.LocalPlayer.HeldItem;
 
-		// Check if heldItem is valid and not air
 		if (heldItem == null || heldItem.IsAir)
 		{
 			return false;
 		}
 
-		try
+		heldItem.TryGetGlobalItem(out PoTInstanceItemData data);
+		if (data != null && data.Rarity == ItemRarity.Magic)
 		{
-			PoTInstanceItemData globalData = heldItem.GetInstanceData();
-			if (globalData != null && globalData.Rarity == ItemRarity.Magic)
-			{
-				return base.CanRightClick();
-			}
-		}
-		catch (KeyNotFoundException)
-		{
-			// Log the issue for debugging (optional)
-			Mod.Logger.Warn($"PoTInstanceItemData not found for item: {heldItem.Name}");
+			return base.CanRightClick();
 		}
 
 		return false;
