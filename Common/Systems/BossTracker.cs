@@ -11,7 +11,19 @@ namespace PathOfTerraria.Common.Systems;
 
 internal class BossTracker : ModSystem
 {
+	/// <summary>
+	/// Tracks the bosses that were killed in a <see cref="BossDomainSubworld"/>, so we can delay the effects to the main world. 
+	/// This can also be used for non-universal kills per subworld, i.e.<br/>
+	/// <c>if (SubworldSystem.Current is BossDomainSubworld &amp;&amp; CachedBossesDowned.Contains(id)</c><br/>
+	/// you know you are in a subworld where a boss was slain.
+	/// </summary>
 	public static HashSet<int> CachedBossesDowned = [];
+
+	/// <summary>
+	/// Tracks all bosses that have ever been downed. If they're in this set, they've been killed at least once before by any player.
+	/// </summary>
+	public static HashSet<int> TotalBossesDowned = [];
+
 	public static BitsByte DownedFlags;
 	public static bool SkipWoFBox;
 
@@ -29,6 +41,7 @@ internal class BossTracker : ModSystem
 	public static void AddDowned(int id)
 	{
 		CachedBossesDowned.Add(id);
+		TotalBossesDowned.Add(id);
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
@@ -41,6 +54,11 @@ internal class BossTracker : ModSystem
 				NetMessage.SendData(MessageID.WorldData);
 			}
 		}
+	}
+
+	public static bool DownedInDomain<T>(int id) where T : BossDomainSubworld
+	{
+		return CachedBossesDowned.Contains(id) && SubworldSystem.Current is T;
 	}
 
 	private void StopBrickBox(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
@@ -96,6 +114,7 @@ internal class BossTracker : ModSystem
 	{
 		tag.Add(nameof(DownedFlags), (byte)DownedFlags);
 		tag.Add(nameof(CachedBossesDowned), (int[])[.. CachedBossesDowned]);
+		tag.Add(nameof(TotalBossesDowned), (int[])[.. TotalBossesDowned]);
 	}
 
 	public override void LoadWorldData(TagCompound tag)
@@ -103,6 +122,7 @@ internal class BossTracker : ModSystem
 		CachedBossesDowned.Clear();
 		DownedFlags = tag.GetByte(nameof(DownedFlags));
 		CachedBossesDowned = [.. tag.GetIntArray(nameof(CachedBossesDowned))];
+		TotalBossesDowned = [.. tag.GetIntArray(nameof(TotalBossesDowned))];
 	}
 
 	public override void NetSend(BinaryWriter writer)
@@ -114,18 +134,33 @@ internal class BossTracker : ModSystem
 		{
 			writer.Write(item);
 		}
+
+		writer.Write(TotalBossesDowned.Count);
+
+		foreach (int item in TotalBossesDowned)
+		{
+			writer.Write(item);
+		}
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
 		DownedFlags = reader.ReadByte();
 		CachedBossesDowned.Clear();
+		TotalBossesDowned.Clear();
 
 		int count = reader.ReadInt32();
 		
 		for (int i = 0; i < count; ++i)
 		{
 			CachedBossesDowned.Add(reader.ReadInt32());
+		}
+
+		count = reader.ReadInt32();
+
+		for (int i = 0; i < count; ++i)
+		{
+			TotalBossesDowned.Add(reader.ReadInt32());
 		}
 	}
 

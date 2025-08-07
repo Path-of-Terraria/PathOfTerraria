@@ -96,7 +96,13 @@ internal static class Networking
 		/// Requests all other players to sync their skill specializations.<br/>Signature:<br/>
 		/// <c>byte player</c>
 		/// </summary>
-		RequestOthersSkillSpecialization
+		RequestOthersSkillSpecialization,
+
+		/// <summary>
+		/// Requests all other players to sync their conditional drops. Does not recieve on clients; forwards a <see cref="SyncConditionalDrop"/> instead.<br/>Signature:<br/>
+		/// <c>byte who, int[] drops</c>
+		/// </summary>
+		SyncNewConditionalDropPlayer
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

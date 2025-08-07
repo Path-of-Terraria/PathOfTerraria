@@ -86,6 +86,7 @@ public class QuestPanelButton : SmartUiState
 
 		SoundEngine.PlaySound(SoundID.MenuOpen);
 		SmartUiLoader.GetUiState<QuestsUIState>().Toggle();
+		Main.playerInventory = true;
 	}
 
 	private static float GetTextureXPosition()

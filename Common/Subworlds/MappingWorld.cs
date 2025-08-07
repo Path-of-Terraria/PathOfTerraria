@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using Terraria.GameContent;
+using Terraria.ID;
 using Terraria.IO;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
@@ -93,18 +95,53 @@ public abstract class MappingWorld : Subworld
 	{
 		base.CopyMainWorldData();
 
+		CopyConsistentInfo();
+	}
+
+	private static void CopyConsistentInfo()
+	{
 		TagCompound trackerTag = [];
 		ModContent.GetInstance<MappingDomainSystem>().Tracker.Save(trackerTag);
 		SubworldSystem.CopyWorldData("tracker", trackerTag);
+
+		TagCompound bossTrackerTag = [];
+		bossTrackerTag.Add("total", (int[])[.. BossTracker.TotalBossesDowned]);
+		bossTrackerTag.Add("cached", (int[])[.. BossTracker.CachedBossesDowned]);
+		SubworldSystem.CopyWorldData("bossTracker", bossTrackerTag);
 	}
 
 	public override void ReadCopiedMainWorldData()
 	{
 		base.ReadCopiedMainWorldData();
+		ReadConsistentInfo();
+	}
 
+	private static void ReadConsistentInfo()
+	{
 		TagCompound tag = SubworldSystem.ReadCopiedWorldData<TagCompound>("tracker");
 		var tracker = MappingDomainSystem.TiersDownedTracker.Load(tag);
 		ModContent.GetInstance<MappingDomainSystem>().Tracker = tracker;
+
+		TagCompound bossTrackerTag = SubworldSystem.ReadCopiedWorldData<TagCompound>("bossTracker");
+		BossTracker.TotalBossesDowned = [.. bossTrackerTag.GetIntArray("total")];
+		BossTracker.CachedBossesDowned = [.. bossTrackerTag.GetIntArray("cached")];
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			NetMessage.SendData(MessageID.WorldData);
+		}
+	}
+
+	public override void CopySubworldData()
+	{
+		base.CopySubworldData();
+		CopyConsistentInfo();
+	}
+
+	public override void ReadCopiedSubworldData()
+	{
+		base.ReadCopiedSubworldData();
+		ReadConsistentInfo();
 	}
 
 	public override void DrawMenu(GameTime gameTime)

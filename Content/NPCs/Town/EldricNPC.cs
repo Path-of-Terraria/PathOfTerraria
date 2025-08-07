@@ -20,14 +20,14 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
+public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC, ITavernNPC
 {
 	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.Structures["Observatory"].Position.ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	bool ISpawnInRavencrestNPC.CanSpawn(bool worldGen, bool alreadyExists)
 	{
-		return BossTracker.CachedBossesDowned.Contains(NPCID.KingSlime) && !worldGen && !alreadyExists;
+		return BossTracker.TotalBossesDowned.Contains(NPCID.EyeofCthulhu) && !worldGen && !alreadyExists;
 	}
 
 	public override void SetStaticDefaults()
@@ -190,5 +190,15 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	{
 		quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		return !quest.Completed;
+	}
+
+	public bool ForceSpawnInTavern()
+	{
+		return BossTracker.TotalBossesDowned.Contains(NPCID.KingSlime) && !BossTracker.TotalBossesDowned.Contains(NPCID.EyeofCthulhu);
+	}
+
+	public float SpawnChanceInTavern()
+	{
+		return 0f;
 	}
 }

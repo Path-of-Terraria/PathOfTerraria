@@ -33,7 +33,7 @@ internal class ConditionalDropHandler : GlobalNPC
 
 		public bool CanDrop(DropAttemptInfo info)
 		{
-			return info.player.GetModPlayer<ConditionalDropPlayer>().TrackedIds.TryGetValue(_itemId, out int count) && count > 0;
+			 return info.player.GetModPlayer<ConditionalDropPlayer>().TrackedIds.TryGetValue(_itemId, out int count) && count > 0;
 		}
 
 		public bool CanShowItemDropInUI()

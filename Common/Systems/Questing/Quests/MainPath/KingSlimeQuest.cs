@@ -26,7 +26,7 @@ internal class KingSlimeQuest : Quest
 		return 
 		[
 			new ConditionCheck(_ => SubworldSystem.Current is KingSlimeDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.CachedBossesDowned.Contains(NPCID.KingSlime), 1, this.GetLocalization("Kill.KingSlime")),
+			new ConditionCheck(_ => BossTracker.DownedInDomain<KingSlimeDomain>(NPCID.KingSlime), 1, this.GetLocalization("Kill.KingSlime")),
 			new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
 		];
 	}
