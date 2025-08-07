@@ -16,11 +16,22 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 		return GearLocalizationCategory;
 	}
 
+	/// <summary>
+	/// Used to generate <b>optional, random</b> affixes per gear. Defaults to empty.<br/>
+	/// This is run after <see cref="GenerateImplicits"/>, and are allowed to be rerolled, removed or modified.
+	/// </summary>
+	/// <returns>The list of affixes to be added to this item.</returns>
 	public virtual List<ItemAffix> GenerateAffixes()
 	{
 		return [];
 	}
 
+	/// <summary>
+	/// Used to generate <b>consistent, guaranteed</b> affixes per gear. Defaults to empty.<br/>
+	/// This is run before <see cref="GenerateAffixes"/>, and cannot be rerolled or modified. 
+	/// Furthermore, the list returned will set <see cref="PoTInstanceItemData.ImplicitCount"/>.
+	/// </summary>
+	/// <returns>The list of implicit affixes to be added to this item.</returns>
 	public virtual List<ItemAffix> GenerateImplicits()
 	{
 		return [];

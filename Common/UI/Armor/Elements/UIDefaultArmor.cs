@@ -6,6 +6,8 @@ using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 using PathOfTerraria.Content.Items.Gear.Offhands;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using ReLogic.Content;
+using Terraria.Localization;
+using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Armor.Elements;
