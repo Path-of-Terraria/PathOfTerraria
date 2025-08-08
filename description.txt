@@ -13,5 +13,11 @@ New Content Includes
 - Item Modifiers (Affixes)
 - Item Crafting System
 
-PLEASE NOTE THIS MOD REQUIRES THE SUBWORLD LIBRARY MOD.
-You will need to install "Subworld Library" from the Mod Browser or the Workshop.
+CREDITS:
+- ScottieKnowz - Project Lead
+- GabeHasWon - Main Developer
+- pil - Main Sprite Artist
+- MrPus - Builder
+- catNull - Developer
+- Ian - Builder
+- chalibur - Developer
