@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -56,6 +57,36 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 		{
 			spriteBatch.Draw(GrimoirePickupLoader.AffixIconTex.Value, position - origin * 0.9f, Color.White);
 		}
+	}
+	
+	public override bool CanRightClick()
+	{
+		return true;
+	}
+	
+	public override void RightClick(Player player)
+	{
+		if (!SmartUiLoader.GetUiState<GrimoireSelectionUIState>().IsVisible)
+		{
+			SmartUiLoader.GetUiState<GrimoireSelectionUIState>().Toggle();
+		}
+		
+		StoreItem(Item);
+	}
+	
+	private static void StoreItem(Item item)
+	{
+		if (item.ModItem is not GrimoirePickup)
+		{
+			return;
+		}
+
+		GrimoirePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<GrimoirePlayer>();
+
+		storagePlayer.Storage.Add(item.Clone());
+		item.TurnToAir();
+
+		GrimoireSelectionUIState.RefreshStorage();
 	}
 
 	public abstract void AddDrops(NPC npc, ref NPCLoot loot);
