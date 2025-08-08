@@ -363,6 +363,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 
 	internal static void RefreshStorage()
 	{
+		if (_storageGrid is null)
+		{
+			return;
+		}
+		
 		_storageGrid.Clear();
 
 		int summonId = GrimoirePlayer.Get().CurrentSummonId;
