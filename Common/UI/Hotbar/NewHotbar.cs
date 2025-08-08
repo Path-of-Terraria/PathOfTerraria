@@ -173,15 +173,15 @@ public sealed class NewHotbar : SmartUiState
 		}
 
 		Main.inventoryScale = 0.7f;
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.GetModPlayer<GearSwapManager>().Inventory[0], 21, new Vector2(4, 4));
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.GetModPlayer<GearSwapManager>().Inventory[0], ItemSlot.Context.HotbarItem, new Vector2(4, 4));
 		Main.inventoryScale = 1f;
 
 		// Draw active slot textures (hotbar background).
 		Main.spriteBatch.Draw(specialActive, new Vector2(20f), null, Color.White);
 
 		// Draw item slot items.
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30));
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62f, 30));
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], ItemSlot.Context.HotbarItem, new Vector2(24, 30));
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], ItemSlot.Context.HotbarItem, new Vector2(24 + 62f, 30));
 
 		// Render inactive slot textures OVER active textures and items.
 		const int Height = 72;

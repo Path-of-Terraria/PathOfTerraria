@@ -11,6 +11,7 @@ using Terraria.Localization;
 using ReLogic.Content;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Common.Items;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -383,7 +384,11 @@ partial class PoTGlobalItem
 			sb.Draw(Textures["Favorite"].Value, position, null, backColor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
 		}
 
-		ItemSlot.Draw(sb, ref inv[slot], 21, position);
+		// For some reason this *hard* crashes if it's a HotbarItem.
+		// Instead, CountDisplayItem has a manual override.
+		CountDisplayItem.ForcedContext = ItemSlot.Context.HotbarItem;
+		ItemSlot.Draw(sb, ref inv[slot], ItemSlot.Context.MouseItem, position);
+		CountDisplayItem.ForcedContext = -1;
 
 		if (data.Influence == Influence.Solar)
 		{

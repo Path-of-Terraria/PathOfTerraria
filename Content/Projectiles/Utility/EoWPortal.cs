@@ -31,7 +31,7 @@ internal class EoWPortal : ModProjectile, ISaveProjectile
 
 	public override void AI()
 	{
-		if (NPC.downedBoss1)
+		if (NPC.downedBoss2)
 		{
 			Projectile.Kill();
 

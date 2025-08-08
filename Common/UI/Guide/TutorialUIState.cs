@@ -117,12 +117,15 @@ internal class TutorialUIState : UIState
 					Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<FirstQuest>();
 				}
 
-				if (Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Level == 0)
+				if (!Main.LocalPlayer.GetModPlayer<TutorialPlayer>().Restarted)
 				{
-					Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
-				}
+					if (Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Level == 0)
+					{
+						Main.LocalPlayer.GetModPlayer<ExpModPlayer>().Exp += Main.LocalPlayer.GetModPlayer<ExpModPlayer>().NextLevel + 1;
+					}
 
-				Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("Quest"), ModContent.ItemType<ArcaneObeliskItem>());
+					Main.LocalPlayer.QuickSpawnItem(new EntitySource_Misc("Quest"), ModContent.ItemType<ArcaneObeliskItem>());
+				}
 
 				IncrementStep();
 			});
@@ -185,10 +188,11 @@ internal class TutorialUIState : UIState
 		}
 
 		Player plr = Main.LocalPlayer;
-		plr.GetModPlayer<TutorialPlayer>().TutorialStep = (byte)Step;
+		TutorialPlayer tutPlr = plr.GetModPlayer<TutorialPlayer>();
+		tutPlr.TutorialStep = (byte)Step;
 		StoredStep = Step;
 
-		if (Step == 1 && !FromLoad && plr.GetModPlayer<ExpModPlayer>().Level <= 0)
+		if (Step == 1 && !FromLoad && plr.GetModPlayer<ExpModPlayer>().Level <= 0 && !tutPlr.Restarted)
 		{
 			plr.GetModPlayer<ExpModPlayer>().Exp += plr.GetModPlayer<ExpModPlayer>().NextLevel + 1;
 		}
@@ -201,7 +205,7 @@ internal class TutorialUIState : UIState
 		}
 		else if (Step == 11)
 		{
-			if (SubworldSystem.Current is null && (!FromLoad || !NPC.AnyNPCs(ModContent.NPCType<RavenNPC>())))
+			if (SubworldSystem.Current is null && (!FromLoad || !NPC.AnyNPCs(ModContent.NPCType<RavenNPC>())) && !tutPlr.Restarted)
 			{
 				if (Main.netMode == NetmodeID.SinglePlayer)
 				{
@@ -213,7 +217,7 @@ internal class TutorialUIState : UIState
 				}
 			}
 		}
-		else if (Step == 12)
+		else if (Step == 12 && !tutPlr.Restarted)
 		{
 			plr.QuickSpawnItem(new EntitySource_Misc("Quest"), ModContent.ItemType<ArcaneObeliskItem>());
 		}

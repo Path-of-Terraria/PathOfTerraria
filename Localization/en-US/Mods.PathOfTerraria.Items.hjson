@@ -406,7 +406,7 @@ Bloodclotter: {
 
 ArcaneObeliskItem: {
 	DisplayName: Arcane Obelisk
-	Tooltip: ""
+	Tooltip: Only one can be placed per world
 }
 
 StarlightBulwark: {
