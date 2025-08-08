@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
 using SubworldLibrary;
 using System.Collections.Generic;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.BossTrackingSystems;
 
@@ -14,7 +15,7 @@ internal class BossTrackingPlayer : ModPlayer
 
 	public override void OnEnterWorld()
 	{
-		if (SubworldSystem.Current is null && CachedBossesDowned.Count > 0)
+		if (Main.netMode != NetmodeID.SinglePlayer && SubworldSystem.Current is null && CachedBossesDowned.Count > 0)
 		{
 			foreach (int id in CachedBossesDowned)
 			{
