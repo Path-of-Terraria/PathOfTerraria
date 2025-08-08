@@ -112,7 +112,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		button = Language.GetTextValue("LegacyInterface.28");
 		button2 = !Quest.GetLocalPlayerInstance<KingSlimeQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 
-		EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
 		{
@@ -120,7 +120,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 			Main.npcChatCornerItem = ModContent.ItemType<LunarLiquid>();
 		}
 
-		KingSlimeQuest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
+		Quest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
 
 		if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
 		{
@@ -137,8 +137,8 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		}
 		else
 		{
-			EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
-			KingSlimeQuest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
+			Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+			Quest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
 
 			if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
 			{

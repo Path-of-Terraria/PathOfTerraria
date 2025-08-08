@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -14,6 +13,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using SubworldLibrary;
 using Terraria.GameContent.Tile_Entities;
 using PathOfTerraria.Common.World.Generation.Tools;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -206,7 +206,7 @@ public class QueenBeeDomain : BossDomainSubworld
 			Vector2 pos = new Vector2(Width / 2, Main.spawnTileY - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.AddDowned(NPCID.QueenBee);
+			BossTracker.AddDowned(NPCID.QueenBee, false, true);
 			ReadyToExit = true;
 		}
 	}

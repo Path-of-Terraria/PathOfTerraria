@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -14,6 +13,7 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Content;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -507,7 +507,7 @@ public class DeerclopsDomain : BossDomainSubworld
 			Vector2 pos = new Vector2(Width / 2, Height / 4 - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.AddDowned(NPCID.Deerclops);
+			BossTracker.AddDowned(NPCID.Deerclops, false, true);
 			ReadyToExit = true;
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs.GlobalNPCs;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +8,7 @@ using System.Reflection;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Systems;
+namespace PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 internal class BossTracker : ModSystem
 {
@@ -38,12 +39,20 @@ internal class BossTracker : ModSystem
 		On_NPC.CreateBrickBoxForWallOfFlesh += StopBrickBox;
 	}
 
-	public static void AddDowned(int id)
+	public static void AddDowned(int id, bool fromSync = false, bool setPlayerValues = false)
 	{
 		CachedBossesDowned.Add(id);
 		TotalBossesDowned.Add(id);
 
-		if (Main.netMode != NetmodeID.SinglePlayer)
+		if (setPlayerValues)
+		{
+			foreach (Player player in Main.ActivePlayers)
+			{
+				player.GetModPlayer<BossTrackingPlayer>().CachedBossesDowned.Add(id);
+			}
+		}
+
+		if (Main.netMode != NetmodeID.SinglePlayer && !fromSync)
 		{
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
@@ -53,6 +62,16 @@ internal class BossTracker : ModSystem
 			{
 				NetMessage.SendData(MessageID.WorldData);
 			}
+
+			ModContent.GetInstance<SyncPlayerBossDownedHandler>().Send(id);
+
+			//if (SubworldSystem.Current is not null)
+			//{
+			//	ModPacket packet = Networking.Networking.GetPacket(Networking.Networking.Message.SyncBossDowned);
+			//	packet.Write(id);
+
+			//	Networking.Networking.SendPacketToMainServer(packet);
+			//}
 		}
 	}
 

@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Tiles.BossDomain;
-using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -13,6 +12,7 @@ using Terraria.Enums;
 using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -284,7 +284,7 @@ public class EyeDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(-130, -300);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.AddDowned(NPCID.EyeofCthulhu);
+			BossTracker.AddDowned(NPCID.EyeofCthulhu, false, true);
 			ReadyToExit = true;
 		}
 	}

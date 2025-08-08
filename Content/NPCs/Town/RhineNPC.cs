@@ -14,6 +14,8 @@ using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -162,7 +164,8 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 
 	public bool ForceSpawnInTavern()
 	{
-		return NPC.downedBoss1 && !NPC.downedDeerclops;
+		HashSet<int> downed = BossTracker.TotalBossesDowned;
+		return downed.Contains(NPCID.EyeofCthulhu) && !downed.Contains(NPCID.Deerclops) || Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active;
 	}
 
 	public float SpawnChanceInTavern()
