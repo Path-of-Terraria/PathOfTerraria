@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs.ConditionalDropping;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
@@ -85,7 +86,7 @@ internal class EoCQuest : Quest
 
 	public override bool Available()
 	{
-		return NPC.downedSlimeKing;
+		return BossTracker.TotalBossesDowned.Contains(NPCID.KingSlime);
 	}
 
 	public override string MarkerLocation()

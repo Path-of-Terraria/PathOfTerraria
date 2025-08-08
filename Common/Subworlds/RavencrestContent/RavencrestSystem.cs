@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
-using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;

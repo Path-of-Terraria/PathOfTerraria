@@ -369,7 +369,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 		else
 		{
-			EoWQuest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
+			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
 
 			if (quest.Active && SubworldSystem.Current is not RavencrestSubworld)
 			{
@@ -386,7 +386,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 		else
 		{
-			EoWQuest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
+			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
 
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{

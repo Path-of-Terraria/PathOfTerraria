@@ -6,10 +6,12 @@ using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Quest;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
@@ -19,14 +21,14 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
+public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC, ITavernNPC
 {
 	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.Structures["Observatory"].Position.ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	bool ISpawnInRavencrestNPC.CanSpawn(bool worldGen, bool alreadyExists)
 	{
-		return NPC.downedSlimeKing && !worldGen && !alreadyExists;
+		return (BossTracker.TotalBossesDowned.Contains(NPCID.EyeofCthulhu) || NPC.downedBoss1) && !worldGen && !alreadyExists;
 	}
 
 	public override void SetStaticDefaults()
@@ -121,7 +123,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	{
 		//button = Language.GetTextValue("LegacyInterface.28");
 
-		EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		button2 = !quest.CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
@@ -144,7 +146,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 		else
 		{
-			EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+			Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 
 			if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
 			{
@@ -167,16 +169,28 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 				}
 				else
 				{
-					Main.npcChatText = this.GetLocalization("Dialogue.Donation").Value;
+					Main.npcChatText = this.GetLocalization("Dialogue.CantTradeObject").Value;
 				}
 
 				return;
 			}
 			else if (quest.Completed)
 			{
-				Main.npcChatText = this.GetLocalization("Dialogue.ThanksForDonating").Value;
-				int count = Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>()) + Main.LocalPlayer.CountItem(ModContent.ItemType<LunarLiquid>());
+				Main.npcChatText = this.GetLocalization("Dialogue.Donation").Value;
+				int shardCount = Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>());
+				int count = shardCount + Main.LocalPlayer.CountItem(ModContent.ItemType<LunarLiquid>());
 				Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), ItemID.SilverCoin, count);
+
+				for (int i = 0; i < count - shardCount; ++i)
+				{
+					Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarLiquid>());
+				}
+
+				for (int i = 0; i < shardCount; ++i)
+				{
+					Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarShard>());
+				}
+
 				return;
 			}
 
@@ -193,11 +207,12 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public bool ForceSpawnInTavern()
 	{
-		return Quest.GetLocalPlayerInstance<EoCQuest>().Active || QuestUnlockManager.CanStartQuest<EoCQuest>();
+		HashSet<int> downs = BossTracker.TotalBossesDowned;
+		return downs.Contains(NPCID.KingSlime) && !downs.Contains(NPCID.EyeofCthulhu) || Quest.GetLocalPlayerInstance<EoCQuest>().Active;
 	}
 
 	public float SpawnChanceInTavern()
 	{
-		return NPC.downedBoss1 ? 0.2f : 0f;
+		return 0f;
 	}
 }

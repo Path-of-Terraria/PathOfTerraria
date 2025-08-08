@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.Subworlds.Passes;
-using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -11,6 +10,7 @@ using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
 using Terraria.Localization;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -281,7 +281,7 @@ public class KingSlimeDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(0, 150);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.KingSlime);
+			BossTracker.AddDowned(NPCID.KingSlime, false, true);
 			ReadyToExit = true;
 		}
 	}

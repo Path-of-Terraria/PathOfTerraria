@@ -82,7 +82,7 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		WitchStartQuest startQuest = Quest.GetLocalPlayerInstance<WitchStartQuest>();
+		Quest startQuest = Quest.GetLocalPlayerInstance<WitchStartQuest>();
 		if (startQuest.Active || startQuest.Completed) //Don't display the shop until the player has received the first quest
 		{
 			button = Language.GetTextValue("LegacyInterface.28"); //Shop
