@@ -1,6 +1,8 @@
 Path of Terraria is a fresh take on the world of Terraria bringing in ARPG elements.
 Find and help rebuild towns, complete quests, and explore the world of Terraria in a new way.
 
+Path of Terraria is fully multiplayer-compatible and can be played with friends or solo.
+
 New Content Includes
 - Global Leaderboard System
 - Global Trade System
@@ -12,6 +14,7 @@ New Content Includes
 - Completely new way to progress (Boss Domains)
 - Item Modifiers (Affixes)
 - Item Crafting System
+- Mapping Endgame System
 
 CREDITS:
 - ScottieKnowz - Project Lead
