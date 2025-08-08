@@ -9,9 +9,23 @@ internal class BatWings : GrimoirePickup
 
 	public override void AddDrops(NPC npc, ref NPCLoot loot)
 	{
-		if (npc.type == NPCID.CaveBat || npc.type == NPCID.JungleBat)
+		switch (npc.type)
 		{
-			loot.AddCommon<BatWings>(npc.type == NPCID.JungleBat ? 15 : 20);
+			case NPCID.CaveBat:
+				loot.AddCommon<BatWings>(20);
+				break;
+			case NPCID.JungleBat:
+				loot.AddCommon<BatWings>(15);
+				break;
+			case NPCID.IceBat:
+				loot.AddCommon<BatWings>(15);
+				break;
+			case NPCID.SporeBat:
+				loot.AddCommon<BatWings>(15);
+				break;
+			case NPCID.Hellbat:
+				loot.AddCommon<BatWings>(10);
+				break;
 		}
 	}
 }
