@@ -8,7 +8,7 @@ namespace PathOfTerraria.Common.Systems.ModPlayers;
 // ReSharper disable once ClassNeverInstantiated.Global
 public class ExpModPlayer : ModPlayer
 {
-	public int Level;
+	public int Level = 100;
 	public int QuestLevel;
 	public int EffectiveLevel => Level + QuestLevel;
 

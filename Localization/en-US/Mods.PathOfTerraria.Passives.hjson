@@ -65,8 +65,8 @@ ChanceToConsumeAmmoPassive: {
 }
 
 StartPassive: {
-	Name: Anchor
-	Tooltip: Your journey starts here
+	Name: Magic Path
+	Tooltip: Your magic journey starts here
 }
 
 IncreasedSummonDamagePassive: {
@@ -151,7 +151,7 @@ IncreasedBlockChancePassive: {
 
 AddedIntelligencePassive: {
 	Name: Highly Studied
-	Tooltip: Adds +{0} points to intelligence per level.
+	Tooltip: Adds +10 points to intelligence per level.
 }
 
 AddedStrengthPassive: {
@@ -187,4 +187,24 @@ IncreasedWhipSpeed: {
 IncreasedJumpHeight: {
 	Name: High Vaulter
 	Tooltip: +{0}% faster jump speed.
+}
+
+PercentIncreasedMaximumManaPassive: {
+	Name: Deep in Thought
+	Tooltip: +5% Increased Maximum Mana
+}
+
+IncreasedFireDamagePassive: {
+	Name: Burning Fury
+	Tooltip: +10% Increased Fire Damage
+}
+
+IncreasedLightningDamagePassive: {
+	Name: Voltaic Surge
+	Tooltip: +10% Increased Lightning Damage
+}
+
+IncreasedColdDamagePassive: {
+	Name: Chilling Precision
+	Tooltip: +10% Increased Cold Damage
 }
