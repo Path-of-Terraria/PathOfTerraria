@@ -70,11 +70,20 @@ internal class GrimoireItem : Gear
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
 		type = GrimoirePlayer.Get(player).CurrentSummonId;
-		damage = (ContentSamples.ProjectilesByType[type].ModProjectile as GrimoireSummon).BaseDamage;
+
+		if (type != -1)
+		{
+			damage = (ContentSamples.ProjectilesByType[type].ModProjectile as GrimoireSummon).BaseDamage;
+		}
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (type == -1)
+		{
+			return false;
+		}
+
 		int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 		Main.projectile[proj].damage = damage;
 		Main.projectile[proj].originalDamage = damage;

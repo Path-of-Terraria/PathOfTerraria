@@ -16,6 +16,11 @@ public enum TutorialCheck : byte
 	OpenedQuestBook,
 	FinishedTutorial,
 	FreeDayGone,
+
+	/// <summary>
+	/// Used to not re-award stuff, such as the free level, when restarting the tutorial.
+	/// </summary>
+	RestartedTutorial,
 }
 
 /// <summary>
@@ -26,6 +31,7 @@ internal class TutorialPlayer : ModPlayer
 	/// <summary> Whether the player has completed the tutorial (<see cref="TutorialCheck.FinishedTutorial"/>). </summary>
 	public bool CompletedTutorial => TutorialChecks.Contains(TutorialCheck.FinishedTutorial);
 	public bool HasFreeDay => !TutorialChecks.Contains(TutorialCheck.FreeDayGone);
+	public bool Restarted => TutorialChecks.Contains(TutorialCheck.RestartedTutorial);
 
 	public HashSet<TutorialCheck> TutorialChecks = [];
 	public byte TutorialStep = 0;
@@ -58,7 +64,7 @@ internal class TutorialPlayer : ModPlayer
 	public override void LoadData(TagCompound tag)
 	{
 		TutorialChecks.Clear();
-		TutorialChecks = new HashSet<TutorialCheck>(tag.GetByteArray("checks").Select(x => (TutorialCheck)x));
+		TutorialChecks = [.. tag.GetByteArray("checks").Select(x => (TutorialCheck)x)];
 		TutorialStep = tag.GetByte("step");
 	}
 }

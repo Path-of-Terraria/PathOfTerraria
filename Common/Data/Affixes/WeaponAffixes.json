@@ -209,7 +209,7 @@
 	},
 	{
 		"affixType": "BloodSiphonAffix",
-		"equipTypes": "Melee",
+		"equipTypes": "Ranged",
 		"influences": "None",
 		"round": true,
 		"tiers": [

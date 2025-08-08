@@ -198,6 +198,7 @@ InvButtons: {
 	NoGrimoire: "[c/888888:(Needs] [i:PathOfTerraria/GrimoireItem] [c/888888:Grimoire)]"
 	Quest: Quests
 	Stats: Stats
+	RestartTutorial: Restart Tutorial
 }
 
 Grimoire: {
