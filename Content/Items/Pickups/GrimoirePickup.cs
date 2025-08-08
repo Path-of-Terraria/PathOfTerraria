@@ -1,10 +1,14 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
+using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Content.Items.Pickups;
@@ -61,6 +65,31 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 	
 	public override bool CanRightClick()
 	{
+		return true;
+	}
+	
+	public override bool OnPickup(Player player)
+	{
+		StoreItem(Item);
+		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Item.Name).Value;
+		Color textColor = Color.IndianRed;
+		int projType = ModContent.ProjectileType<GrimoireVisageEffect>();
+		
+		if (player.ownedProjectileCounts[projType] <= 0)
+		{
+			Projectile.NewProjectile(player.GetSource_FromAI(), player.Top - Vector2.UnitY * 40, Vector2.Zero, projType, 0, 0, player.whoAmI);
+		}
+
+		var request = new AdvancedPopupRequest
+		{
+			Text = spawnText,
+			DurationInFrames = 60,
+			Velocity = Vector2.UnitY * -10,
+			Color = textColor
+		};
+
+		PopupText.NewText(request, player.Center);
+
 		return true;
 	}
 	
