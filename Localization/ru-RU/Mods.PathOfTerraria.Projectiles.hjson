@@ -110,9 +110,9 @@ RunestoneBurst: {
 	DisplayName: Взрыв рунного камня
 
 	DeathReasons: {
-		 0: "{0} was burst apart."
-		 1: "{0} was bludgeoned by magical energy."
-		 2: "{0} couldn't handle the power."
+		0: "{0} was burst apart."
+		1: "{0} was bludgeoned by magical energy."
+		2: "{0} couldn't handle the power."
 	}
 }
 

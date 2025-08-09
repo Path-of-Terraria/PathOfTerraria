@@ -669,8 +669,8 @@ AncientEvilBook: {
 	Tooltip: "'''"
 
 	PostSkeletronTooltip: {
-		 0: The inside of the cover is a mess of red and black
-		 1: "'For now, it speaks elsewhere'"
+		0: The inside of the cover is a mess of red and black
+		1: "'For now, it speaks elsewhere'"
 	}
 }
 
@@ -800,8 +800,8 @@ LivingWoodBlockerItem: {
 	Tooltip: ""
 }
 
- EntBannerItem.DisplayName: Ent Banner
- EntlingBannerItem.DisplayName: Entling Banner
+EntBannerItem.DisplayName: Ent Banner
+EntlingBannerItem.DisplayName: Entling Banner
 
 WardensBow: {
 	DisplayName: Лук Стража
@@ -814,10 +814,10 @@ RootedAmulet: {
 	Tooltip: ""
 }
 
- AshWraithBannerItem.DisplayName: Ash Wraith Banner
- FireMawBannerItem.DisplayName: Fire Maw Banner
- MineraBannerItem.DisplayName: Minera Banner
- CanopyBirdBannerItem.DisplayName: Canopy Bird Banner
+AshWraithBannerItem.DisplayName: Ash Wraith Banner
+FireMawBannerItem.DisplayName: Fire Maw Banner
+MineraBannerItem.DisplayName: Minera Banner
+CanopyBirdBannerItem.DisplayName: Canopy Bird Banner
 
 GrovetenderTrophyItem: {
 	DisplayName: Трофей Хранителя рощи
@@ -844,8 +844,8 @@ MechLampItem: {
 	Tooltip: ""
 }
 
- CircuitSkullBannerItem.DisplayName: Circuit Skull Banner
- SecurityDroneBannerItem.DisplayName: Security Drone Banner
+CircuitSkullBannerItem.DisplayName: Circuit Skull Banner
+SecurityDroneBannerItem.DisplayName: Security Drone Banner
 
 ConstantLaserItem: {
 	DisplayName: Постоянный лазер
@@ -882,9 +882,9 @@ PrimeMap: {
 	Tooltip: "'''"
 }
 
- HauntedHeadBannerItem.DisplayName: Haunted Head Banner
- SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
- AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner
+HauntedHeadBannerItem.DisplayName: Haunted Head Banner
+SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
+AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner
 
 DefenseShrineItem: {
 	DisplayName: Предмет святилища защиты
@@ -962,7 +962,7 @@ DevourersTail: {
 	AltUseDescription: "'''"
 }
 
- WormLightningBannerItem.DisplayName: Lightning Sprite Banner
+WormLightningBannerItem.DisplayName: Lightning Sprite Banner
 
 SunsoulStaffItem: {
 	DisplayName: Посох Души Солнца
@@ -1005,7 +1005,7 @@ EnergizerCoreTriggerItem: {
 	Tooltip: ""
 }
 
- EnergizerCoreBannerItem.DisplayName: Energizer Core Banner
+EnergizerCoreBannerItem.DisplayName: Energizer Core Banner
 
 MechChip: {
 	DisplayName: Механическая микросхема
@@ -1052,8 +1052,8 @@ EoLMap: {
 	Tooltip: "'''"
 }
 
- GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
- PrismatismBannerItem.DisplayName: Prismatism Banner
+GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
+PrismatismBannerItem.DisplayName: Prismatism Banner
 
 Flamberge: {
 	DisplayName: Фламберг

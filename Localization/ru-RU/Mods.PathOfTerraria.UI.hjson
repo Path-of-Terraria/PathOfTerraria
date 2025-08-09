@@ -1,7 +1,7 @@
 Gear: {
 	Buttons: {
-		 Previous: Previous
-		 Next: Next
+		Previous: Previous
+		Next: Next
 	}
 
 	Pages: {
@@ -12,44 +12,44 @@ Gear: {
 }
 
 Slots: {
-	 0: Helmet
-	 1: Chest
-	 2: Legs
-	 3: Accessory 2
-	 4: Weapon
-	 5: Necklace
-	 6: Offhand
-	 7: Left Ring
-	 8: Right Ring
-	 9: Accessory 1
-	 10: Wings
+	0: Helmet
+	1: Chest
+	2: Legs
+	3: Accessory 2
+	4: Weapon
+	5: Necklace
+	6: Offhand
+	7: Left Ring
+	8: Right Ring
+	9: Accessory 1
+	10: Wings
 }
 
- BaseDamage: Base Damage: {0}
+BaseDamage: Base Damage: {0}
 Lives: осталось жизней
 
 StatUI: {
-	 Level: Level
-	 Experience: Exp
-	 Life: Life
-	 Mana: Mana
-	 HealthPotions: Health Potions
-	 ManaPotions: Mana Potions
-	 DamageReduction: Damage Reduction
-	 BlockChance: Block Chance
-	 MaxBlock: Block Chance Cap
-	 BlockCooldown: Block Cooldown
-	 Strength: Strength
-	 Dexterity: Dexterity
-	 Intelligence: Intelligence
-	 FireResistance: Fire Resistance
-	 ColdResistance: Cold Resistance
-	 LightningResistance: Lightning Resistance
+	Level: Level
+	Experience: Exp
+	Life: Life
+	Mana: Mana
+	HealthPotions: Health Potions
+	ManaPotions: Mana Potions
+	DamageReduction: Damage Reduction
+	BlockChance: Block Chance
+	MaxBlock: Block Chance Cap
+	BlockCooldown: Block Cooldown
+	Strength: Strength
+	Dexterity: Dexterity
+	Intelligence: Intelligence
+	FireResistance: Fire Resistance
+	ColdResistance: Cold Resistance
+	LightningResistance: Lightning Resistance
 
 	Help: {
-		 Strength: Grants 5 additional max health per 10 points
-		 Dexterity: Grants 1% additional global attack speed per 10 points
-		 Intelligence: Grants 5 additional max mana per 10 points
+		Strength: Grants 5 additional max health per 10 points
+		Dexterity: Grants 1% additional global attack speed per 10 points
+		Intelligence: Grants 5 additional max mana per 10 points
 	}
 }
 
@@ -115,7 +115,7 @@ InvButtons: {
 	NoGrimoire: "[c/888888:(Needs] [i:PathOfTerraria/GrimoireItem] [c/888888:Grimoire)]"
 	Quest: Задания
 	Stats: Статистика
-	 RestartTutorial: Restart Tutorial
+	RestartTutorial: Restart Tutorial
 }
 
 Grimoire: {
@@ -134,6 +134,6 @@ Grimoire: {
 			As for your creatures...say hello! Hello! These freakish critters can be chosen, allowing you to...help them around. Yes, yes! You must first unlock their life; 
 			the materials in storage will allow you to do so. You can see what you must obtain by clicking on hidden summons.
 			''' */
-		 Ritual: Ah, and your ritual! Here you can place materials full of boons! If your pieces have no boons, they have no effect...
+		Ritual: Ah, and your ritual! Here you can place materials full of boons! If your pieces have no boons, they have no effect...
 	}
 }
