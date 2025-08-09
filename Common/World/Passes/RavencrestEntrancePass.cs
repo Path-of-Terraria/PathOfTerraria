@@ -1,7 +1,5 @@
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.World.Generation;
-using PathOfTerraria.Common.World.Generation.Tools;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -24,7 +22,7 @@ public class RavencrestMicrobiome : MicroBiome
 		{
 			return false;
 		}
-		
+
 		StructureTools.PlaceByOrigin("Assets/Structures/RavencrestEntrance", new Point16(origin.X, origin.Y), Vector2.Zero);
 		GenVars.structures.AddProtectedStructure(new Rectangle(origin.X, origin.Y, size.X, size.Y));
 		ModContent.GetInstance<RavencrestSystem>().EntrancePosition = new Point16(origin.X + size.X / 2, origin.Y + size.Y / 2 - 8);
@@ -45,6 +43,27 @@ internal class RavencrestEntrancePass : AutoGenStep
 		RavencrestMicrobiome biome = GenVars.configuration.CreateBiome<RavencrestMicrobiome>();
 		int attempts = 0;
 
+		int worldW = Main.maxTilesX;
+		int spawnX = Main.spawnTileX;
+
+		int preferredRange = Math.Max(400, worldW / 10); 
+		int hardRange = Math.Max(1000, worldW / 4); 
+		int minFromSpawn = 120; //Not toooooo close
+
+		// Local helper to pick an x biased toward center (spawnX)
+		int PickBiasedX(int a, int b, int center)
+		{
+			int u1 = WorldGen.genRand.Next(a, b);
+			int u2 = WorldGen.genRand.Next(a, b);
+			int tri = (u1 + u2) / 2; // triangular distribution
+
+			// Soft pull toward center (50%)
+			int pulled = tri + (int)((center - tri) * 0.5);
+
+			// Clamp to beach-safe bounds
+			return Utils.Clamp(pulled, a, b);
+		}
+
 		while (true)
 		{
 			attempts++;
@@ -52,18 +71,31 @@ internal class RavencrestEntrancePass : AutoGenStep
 			int x;
 			int y;
 
-			// Find the first suitable surface tile.
+			// Expand the search window as attempts increase
+			int expand = (attempts / 100) * 200; // +200 tiles half-width every 100 attempts
+			int currentRange = Math.Min(hardRange, preferredRange + expand);
+
+			// Clamp the candidate window inside the beaches
+			int coastalBuffer = Math.Max(300, worldW / 20); // ~5% of world width, at least 300 tiles
+			int left  = Math.Max(WorldGen.beachDistance + coastalBuffer, spawnX - currentRange);
+			int right = Math.Min(worldW - WorldGen.beachDistance - coastalBuffer, spawnX + currentRange);
+
+			// If the window collapses (tiny worlds), fall back to the original clamps
+			if (left >= right) {
+				left  = Math.Max(WorldGen.beachDistance, spawnX - currentRange);
+				right = Math.Min(worldW - WorldGen.beachDistance, spawnX + currentRange);
+			}
+
+			// Find the first suitable surface tile, biased toward spawn and not too close to it
 			while (true)
 			{
 				do
 				{
-					x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
+					x = PickBiasedX(left, right, spawnX);
 					y = 21;
-				} while (Math.Abs(x - Main.maxTilesX / 2) <= 180);
-
-				while (!WorldGen.SolidTile(x, y++) && WorldGen.InWorld(x, y, 20))
-				{
-				}
+				} while (Math.Abs(x - spawnX) < minFromSpawn);
+				
+				while (!WorldGen.SolidTile(x, y++) && WorldGen.InWorld(x, y, 20)) { }
 
 				Tile tile = Framing.GetTileSafely(x, y);
 
@@ -73,7 +105,8 @@ internal class RavencrestEntrancePass : AutoGenStep
 				}
 			}
 
-			if (attempts < 2000 && !AvoidsEvilPath((short)x)) //Include an additional 'attempts' failsafe
+			// Keep your evil-path avoidance with a failsafe for very long searches
+			if (attempts < 400 && !AvoidsEvilLocal((short)x, 200))
 			{
 				continue;
 			}
@@ -81,11 +114,13 @@ internal class RavencrestEntrancePass : AutoGenStep
 			y += 4;
 
 			int[] invalidTiles = [TileID.Cloud, TileID.RainCloud, TileID.Ebonstone, TileID.Crimstone];
-			int[] validTiles = [TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin, TileID.Stone];
+			int[] validTiles =
+			[
+				TileID.Grass, TileID.ClayBlock, TileID.Dirt, TileID.Iron, TileID.Copper, TileID.Lead, TileID.Tin,
+				TileID.Stone
+			];
 
-			// TODO: Should this check for valid/invalid tiles, if it's meant for calculating average heights? - Naka
 			int averageHeight = StructureTools.AverageHeights(x, y, 76, 4, 30, out bool valid, invalidTiles, validTiles);
-
 			if (averageHeight == -1 || Math.Abs(averageHeight) >= 4)
 			{
 				continue;
@@ -93,11 +128,40 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 			Point origin = new(x, y);
 
+			{
+				int distFromSpawn = Math.Abs(origin.X - spawnX);
+				
+				double rejectChance = (distFromSpawn - minFromSpawn) / (double)preferredRange;
+				rejectChance = Math.Clamp(rejectChance, 0, 0.9);
+
+				if (rejectChance > 0.8)
+				{
+					rejectChance = 0.8;
+				}
+
+				double easing = 1.0 - (attempts / 600.0); // after ~600 attempts, much more lenient
+				if (easing < 0.2)
+				{
+					easing = 0.2; // never fully disable the bias
+				}
+
+				if (easing > 1.0)
+				{
+					easing = 1.0;
+				}
+
+				if ((double)WorldGen.genRand.NextFloat() < rejectChance * easing)
+				{
+					continue;
+				}
+			}
+
 			Dictionary<ushort, int> whitelistLookup = [];
 			Dictionary<ushort, int> blacklistLookup = [];
 
 			// Check if the terrain is mostly dirt, and if there's no invalid tiles.
-			WorldUtils.Gen(origin, new Shapes.Rectangle(size.X, size.Y), new Actions.TileScanner(TileID.Dirt).Output(whitelistLookup));
+			WorldUtils.Gen(origin, new Shapes.Rectangle(size.X, size.Y),
+				new Actions.TileScanner(TileID.Dirt).Output(whitelistLookup));
 			WorldUtils.Gen
 			(
 				origin,
@@ -136,24 +200,20 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 			int count = 0;
 
-			// Check if the upper portion of the structure is mostly empty.
+			// Check if the upper portion of the structure area is mostly empty.
 			for (int i = 0; i < size.X; i++)
 			{
 				for (int j = 0; j < size.Y; j++)
 				{
 					Tile tile = Framing.GetTileSafely(origin.X + i, origin.Y + j - size.Y);
-
-					if (tile.HasTile || tile.LiquidAmount > 0)
+					if (!tile.HasTile && tile.LiquidAmount == 0)
 					{
-						continue;
+						count++;
 					}
-
-					count++;
 				}
 			}
 
 			bool empty = count >= area / 2;
-
 			if (!empty)
 			{
 				continue;
@@ -196,9 +256,42 @@ internal class RavencrestEntrancePass : AutoGenStep
 		}
 	}
 
+
 	public override int GenIndex(List<GenPass> tasks)
 	{
 		return tasks.FindIndex(x => x.Name == "Smooth World") + 1;
+	}
+	
+	private static bool AvoidsEvilLocal(short x, int radiusTiles = 200)
+	{
+		int y = (int)(Main.worldSurface * 0.35f);
+		int[] evilTiles = [ TileID.Ebonstone, TileID.Crimstone, TileID.CorruptGrass, TileID.CrimsonGrass, TileID.Crimsand, TileID.Ebonsand ];
+
+		// Walk down to surface at the probe column (to keep consistency with your old method)
+		while (WorldGen.InWorld(x, y, 20) && !WorldGen.SolidTile(x, y))
+		{
+			y++;
+		}
+
+		int left = Math.Max(0, x - radiusTiles);
+		int right = Math.Min(Main.maxTilesX - 1, x + radiusTiles);
+
+		for (int i = left; i <= right; i += 2) // step 2 for speed
+		{
+			int sy = y;
+			while (WorldGen.InWorld(i, sy, 20) && !WorldGen.SolidTile(i, sy))
+			{
+				sy++;
+			}
+
+			int tileType = Framing.GetTileSafely(i, sy).TileType;
+			if (evilTiles.Contains(tileType))
+			{
+				return false;
+			}
+		}
+		
+		return true;
 	}
 
 	/// <summary> Avoids plotting on intercept course with world evil biomes. </summary>
@@ -232,7 +325,11 @@ internal class RavencrestEntrancePass : AutoGenStep
 
 		static bool UnsafeCoords(short x, short y)
 		{
-			int[] evilTiles = [TileID.Ebonstone, TileID.Crimstone, TileID.CorruptGrass, TileID.CrimsonGrass, TileID.Crimsand, TileID.Ebonsand];
+			int[] evilTiles =
+			[
+				TileID.Ebonstone, TileID.Crimstone, TileID.CorruptGrass, TileID.CrimsonGrass, TileID.Crimsand,
+				TileID.Ebonsand
+			];
 
 			while (!WorldGen.SolidTile(x, y++)) { } //Move down to the nearest surface
 
