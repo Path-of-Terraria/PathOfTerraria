@@ -177,6 +177,6 @@ public class AffixRegistry : ILoadable
 			map.Strength = tierData.Strength;
 		}
 
-		return randomValue;
+		return affix.Round ? (float)Math.Round(randomValue) : randomValue;
 	}
 }
