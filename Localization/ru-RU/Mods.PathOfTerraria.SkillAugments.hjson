@@ -1,0 +1,23 @@
+// SlotLine: Augmentation Slot
+// CostLine: Costs a {0} to unlock
+// Unlock: Left Click to unlock
+
+Overload: {
+	// Name: Overload
+	// Tooltip: Increases damage by {0}% at the cost of {1}% increased mana usage
+}
+
+Disperse: {
+	Name: Рассеивание
+	Tooltip: Увеличивает область действия на {0}% за счет увеличения расхода маны на {1}%
+}
+
+Concentrate: {
+	Name: Концентрация
+	Tooltip: Увеличивает урон на {0}% за счет увеличения расхода маны на {1}% и уменьшения области действия на {2}%
+}
+
+Critical: {
+	Name: Критический удар
+	Tooltip: Увеличивает шанс критического удара на {0}% за счет увеличения расхода маны на {1}%
+}
