@@ -11,7 +11,7 @@ Bring: {
 	GiveItTo: и отдайте это в {0}
 }
 
-// TalkTo: Talk to {0}
+ TalkTo: Talk to {0}
 GiveThem: и дайте им:
 Exploration.Ice: Исследуйте ледяной/снежный биом ({0}%)
 Or: или
@@ -29,91 +29,91 @@ Quest: {
 
 	BlacksmithStartQuest: {
 		Name: Ковка нового клинка
-		// Description: ""
+		Description: ""
 		Kill.Zombies: Убейте {0} зомби
 	}
 
 	KingSlimeQuest: {
 		Name: Убейте короля слизней
-		// Description: ""
+		 Description: ""
 		EnterDomain: Войдите во владения короля слизней
-		// ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surprass me again. My thanks, however, are in order.
-		// Kill.KingSlime: Kill the King Slime
+		 ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surprass me again. My thanks, however, are in order.
+		 Kill.KingSlime: Kill the King Slime
 	}
 
 	HunterStartQuest: {
-		// Name: Drawing the Bow
-		// Description: ""
-		// Kill.FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
+		 Name: Drawing the Bow
+		 Description: ""
+		 Kill.FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
 	}
 
 	WitchStartQuest: {
-		// Name: The Ancient Art
-		// Description: ""
+		 Name: The Ancient Art
+		 Description: ""
 	}
 
 	WizardStartQuest: {
-		// Name: Magical Returnal
-		// Description: ""
+		 Name: Magical Returnal
+		 Description: ""
 	}
 
 	EoCQuest: {
-		// Name: The Rising Omen
-		// Description: ""
-		// Kill.EoC: Defeat the Eye of Cthulhu
+		 Name: The Rising Omen
+		 Description: ""
+		 Kill.EoC: Defeat the Eye of Cthulhu
 	}
 
 	EoWQuest: {
-		// Name: Whispers of the Deep
-		// Description: ""
-		// MorvenRaven: Get Morven to Ravencrest
-		// SmashOrbs: Smash 3 Shadow Orbs
-		// KillEoW: Defeat the Eater of Worlds
+		 Name: Whispers of the Deep
+		 Description: ""
+		 MorvenRaven: Get Morven to Ravencrest
+		 SmashOrbs: Smash 3 Shadow Orbs
+		 KillEoW: Defeat the Eater of Worlds
 	}
 
 	BoCQuest: {
-		// Name: A Heart Still Beating
-		// Description: ""
-		// SmashOrb: Smash a Crimson Heart
-		// EnterDomain: Enter the Brain of Cthulhu domain
-		// KillBrain: Kill the Brain of Cthulhu
+		 Name: A Heart Still Beating
+		 Description: ""
+		 SmashOrb: Smash a Crimson Heart
+		 EnterDomain: Enter the Brain of Cthulhu domain
+		 KillBrain: Kill the Brain of Cthulhu
 	}
 
 	QueenBeeQuest: {
-		// Name: A Royal Adventure
-		// Description: ""
-		// KillQueen: Kill the Queen Bee
+		 Name: A Royal Adventure
+		 Description: ""
+		 KillQueen: Kill the Queen Bee
 	}
 
 	DeerclopsQuest: {
-		// Name: Frigid Beast
-		// Description: ""
-		// KillDeerclops: Kill Deerclops
+		 Name: Frigid Beast
+		 Description: ""
+		 KillDeerclops: Kill Deerclops
 	}
 
 	SkeletronQuest: {
-		// Name: Skeletal Remnants
-		// Description: ""
-		// EnterDomain: Enter Skeletron's domain
-		// KillSkeletron: Kill Skeletron
+		 Name: Skeletal Remnants
+		 Description: ""
+		 EnterDomain: Enter Skeletron's domain
+		 KillSkeletron: Kill Skeletron
 	}
 
 	WoFQuest: {
-		// Name: Unleashing Chaos
-		// Description: ""
-		// WizardStart: Hm....yes. The ground deep beneath us all shakes with a vigor, from the one they hid away. You see, long ago, a group of adventurers locked an evil into a fascimile. However, with your incredible strength slaying all these beasts around the world, that power seems to have crept its way to that locked evil. Which is to say, we must kill it. Talk to Thrain, Morgana and Elara as soon as you can. They understand, and will give you weapons. Take this, and godspeed. You can thank Morgana for this, too. Just...don't ask about it too much. Busy days here!
-		// ThrainHelp: Oh. So it is. Here...I've been preparing for a day like this, hopefully it's up to your standard. Alaric helped with this, it holds the memories of my battles. Enjoy. Good luck.
-		// ElaraHelp: Take care, and take this. I'm no fancy weaponsmith, but Thrain helped with it. Keeps it simple. And - the eyes are weakest.
-		// MorganaHelp: Oh...? Bahaha! The time comes! Here you are, a veritable buffet of Grimoire materials! Elara helped with these beings...quite the knowledgable lass, she is! Enjoy your boons! Bahahaha!
-		// WizardContinue: Here you are. Well, take these. These are...yes...explosive, but it's just how it works. I swear. Throw these upon the ashes of Hell to open a portal to the place that the Wall was confined to. Note - you will have one chance to kill it. No mistakes. And we don't know what happens upon the wall's death. Much is uncertain, aside from that it must die. Good luck. If you need any more, I can summon some...for a small price! Sorry! Commerce never hides!
-		// KillWall: Kill the Wall of Flesh
-		// WizardFinish: You return! We see many changes, but the earth won't shake and shutter under us any longer. Prepare yourself for the future, as there is much to learn. Especially for myself, for I have...a lot of stuff to try out.
+		 Name: Unleashing Chaos
+		 Description: ""
+		 WizardStart: Hm....yes. The ground deep beneath us all shakes with a vigor, from the one they hid away. You see, long ago, a group of adventurers locked an evil into a fascimile. However, with your incredible strength slaying all these beasts around the world, that power seems to have crept its way to that locked evil. Which is to say, we must kill it. Talk to Thrain, Morgana and Elara as soon as you can. They understand, and will give you weapons. Take this, and godspeed. You can thank Morgana for this, too. Just...don't ask about it too much. Busy days here!
+		 ThrainHelp: Oh. So it is. Here...I've been preparing for a day like this, hopefully it's up to your standard. Alaric helped with this, it holds the memories of my battles. Enjoy. Good luck.
+		 ElaraHelp: Take care, and take this. I'm no fancy weaponsmith, but Thrain helped with it. Keeps it simple. And - the eyes are weakest.
+		 MorganaHelp: Oh...? Bahaha! The time comes! Here you are, a veritable buffet of Grimoire materials! Elara helped with these beings...quite the knowledgable lass, she is! Enjoy your boons! Bahahaha!
+		 WizardContinue: Here you are. Well, take these. These are...yes...explosive, but it's just how it works. I swear. Throw these upon the ashes of Hell to open a portal to the place that the Wall was confined to. Note - you will have one chance to kill it. No mistakes. And we don't know what happens upon the wall's death. Much is uncertain, aside from that it must die. Good luck. If you need any more, I can summon some...for a small price! Sorry! Commerce never hides!
+		 KillWall: Kill the Wall of Flesh
+		 WizardFinish: You return! We see many changes, but the earth won't shake and shutter under us any longer. Prepare yourself for the future, as there is much to learn. Especially for myself, for I have...a lot of stuff to try out.
 	}
 
 	FirstQuest: {
-		// Name: Entering Ravencrest
-		// Description: ""
-		// ApproachEntrance: Approach the entrance to Ravencrest
-		// EnterRavencrest: Enter Ravencrest
+		 Name: Entering Ravencrest
+		 Description: ""
+		 ApproachEntrance: Approach the entrance to Ravencrest
+		 EnterRavencrest: Enter Ravencrest
 	}
 }

@@ -27,12 +27,12 @@ Chestplate: {
 	Name: Нагрудник
 
 	Prefixes: {
-		// 0: Enduring
-		// 1: Dreadknight's
-		// 2: Dragon
-		// 3: Golem
-		// 4: Warden's
-		// 5: Protected
+		 0: Enduring
+		 1: Dreadknight's
+		 2: Dragon
+		 3: Golem
+		 4: Warden's
+		 5: Protected
 	}
 
 	Suffixes: {
@@ -48,19 +48,19 @@ Helmet: {
 	Name: Шлем
 
 	Prefixes: {
-		// 0: Adept
-		// 1: Tattered
-		// 2: Enchanted
-		// 3: Beautiful
-		// 4: Strange
+		 0: Adept
+		 1: Tattered
+		 2: Enchanted
+		 3: Beautiful
+		 4: Strange
 	}
 
 	Suffixes: {
-		// 0: Drape
-		// 1: Dome
-		// 2: Thought
-		// 3: Vision
-		// 4: Maw
+		 0: Drape
+		 1: Dome
+		 2: Thought
+		 3: Vision
+		 4: Maw
 	}
 }
 
@@ -68,19 +68,19 @@ Leggings: {
 	Name: Поножи
 
 	Prefixes: {
-		// 0: Eagle
-		// 1: Swift
-		// 2: Feathered
-		// 3: Spiked
-		// 4: Buckled
+		 0: Eagle
+		 1: Swift
+		 2: Feathered
+		 3: Spiked
+		 4: Buckled
 	}
 
 	Suffixes: {
 		0: Ботинки
-		// 1: Treads
-		// 2: Greaves
-		// 3: Tassets
-		// 4: Leggings
+		 1: Treads
+		 2: Greaves
+		 3: Tassets
+		 4: Leggings
 	}
 }
 
@@ -89,17 +89,17 @@ Battleaxe: {
 	AltUse: Правый клик, чтобы пожертвовать 5 единицами здоровья для временного увеличения наносимого и получаемого урона.
 
 	Prefixes: {
-		// 0: Brutal
-		// 1: Savage
-		// 2: Cleaving
-		// 3: War
-		// 4: Bloodthirsty
+		 0: Brutal
+		 1: Savage
+		 2: Cleaving
+		 3: War
+		 4: Bloodthirsty
 	}
 
 	Suffixes: {
-		// 0: Fury
-		// 1: Cleaver
-		// 2: Ravage
+		 0: Fury
+		 1: Cleaver
+		 2: Ravage
 		3: Рубить
 		4: Убийца
 	}
@@ -110,18 +110,18 @@ Boomerang: {
 	AltUse: ПКМ чтобы отправить бумеранг вокруг вас по спирали
 
 	Prefixes: {
-		// 0: Spiraling
-		// 1: Quick
-		// 2: Razor
-		// 3: Enchanted
-		// 4: Storm
+		 0: Spiraling
+		 1: Quick
+		 2: Razor
+		 3: Enchanted
+		 4: Storm
 	}
 
 	Suffixes: {
 		0: Возвращать
 		1: Ломтик
 		2: Скользить
-		// 3: Arc
+		 3: Arc
 		4: Край
 	}
 }
@@ -131,19 +131,19 @@ Bow: {
 	AltUse: Правый клик, чтобы зарядить и выстрелить значительно сильнее и быстрее.
 
 	Prefixes: {
-		// 0: Swift
-		// 1: Piercing
-		// 2: Hunter's
-		// 3: Gale
-		// 4: Vengeful
+		 0: Swift
+		 1: Piercing
+		 2: Hunter's
+		 3: Gale
+		 4: Vengeful
 	}
 
 	Suffixes: {
-		// 0: Flight
-		// 1: Song
-		// 2: Wind
-		// 3: Thorn
-		// 4: Sight
+		 0: Flight
+		 1: Song
+		 2: Wind
+		 3: Thorn
+		 4: Sight
 	}
 }
 
@@ -152,19 +152,19 @@ Staff: {
 	AltUse: Правый клик, чтобы перезарядить вашу ману на короткое время, вызывая снаряды в четыре раза быстрее и автоматически стреляя ими
 
 	Prefixes: {
-		// 0: Arcane
-		// 1: Mystic
-		// 2: Eldritch
-		// 3: Luminous
-		// 4: Sacred
+		 0: Arcane
+		 1: Mystic
+		 2: Eldritch
+		 3: Luminous
+		 4: Sacred
 	}
 
 	Suffixes: {
-		// 0: Wrath
-		// 1: Whisper
-		// 2: Beacon
-		// 3: Veil
-		// 4: Echo
+		 0: Wrath
+		 1: Whisper
+		 2: Beacon
+		 3: Veil
+		 4: Echo
 	}
 }
 
@@ -173,19 +173,19 @@ Sword: {
 	AltUse: Правый клик, чтобы вызвать дух из вашего клинка, который устремляется вперёд, исцеляя вас на 15 здоровья при попадании по врагу.
 
 	Prefixes: {
-		// 0: Sharp
-		// 1: Harmonic
-		// 2: Enchanted
-		// 3: Shiny
-		// 4: Strange
+		 0: Sharp
+		 1: Harmonic
+		 2: Enchanted
+		 3: Shiny
+		 4: Strange
 	}
 
 	Suffixes: {
-		// 0: Drape
-		// 1: Dome
-		// 2: Thought
-		// 3: Vision
-		// 4: Maw
+		 0: Drape
+		 1: Dome
+		 2: Thought
+		 3: Vision
+		 4: Maw
 	}
 }
 
@@ -194,19 +194,19 @@ Spellbook: {
 	Name: Книга Заклинаний
 
 	Prefixes: {
-		// 0: Arcane
-		// 1: Mystic
-		// 2: Eldritch
-		// 3: Luminous
-		// 4: Sacred
+		 0: Arcane
+		 1: Mystic
+		 2: Eldritch
+		 3: Luminous
+		 4: Sacred
 	}
 
 	Suffixes: {
-		// 0: Wrath
-		// 1: Whisper
-		// 2: Beacon
-		// 3: Veil
-		// 4: Echo
+		 0: Wrath
+		 1: Whisper
+		 2: Beacon
+		 3: Veil
+		 4: Echo
 	}
 }
 
@@ -215,19 +215,19 @@ Wand: {
 	AltUse: Правый клик, чтобы вызвать 4x нормальную стоимость маны, чтобы отправить всплеск снарядов вперёд
 
 	Prefixes: {
-		// 0: Forbidden
-		// 1: Ancient
-		// 2: Holy
-		// 3: Ominous
-		// 4: Sacred
+		 0: Forbidden
+		 1: Ancient
+		 2: Holy
+		 3: Ominous
+		 4: Sacred
 	}
 
 	Suffixes: {
-		// 0: of Fury
-		// 1: of Creation
-		// 2: of Destruction
-		// 3: of Memories
-		// 4: of Death
+		 0: of Fury
+		 1: of Creation
+		 2: of Destruction
+		 3: of Memories
+		 4: of Death
 	}
 }
 
@@ -236,19 +236,19 @@ Whip: {
 	AltUse: Правый клик, чтобы хлестнуть один раз перед собой и один раз позади себя быстро подряд.
 
 	Prefixes: {
-		// 0: Searing
-		// 1: Venomous
-		// 2: Barbed
-		// 3: Fiery
-		// 4: Thunderous
+		 0: Searing
+		 1: Venomous
+		 2: Barbed
+		 3: Fiery
+		 4: Thunderous
 	}
 
 	Suffixes: {
-		// 0: Lash
-		// 1: Fang
-		// 2: Scourge
-		// 3: Strike
-		// 4: Snap
+		 0: Lash
+		 1: Fang
+		 2: Scourge
+		 3: Strike
+		 4: Snap
 	}
 }
 
@@ -257,19 +257,19 @@ Javelin: {
 	AltUse: Правый клик, чтобы рвануть к курсору, коля первого врага, которого вы ударите, на большой урон.
 
 	Prefixes: {
-		// 0: Piercing
-		// 1: Sharp
-		// 2: Barbed
-		// 3: Sleek
-		// 4: Powerful
+		 0: Piercing
+		 1: Sharp
+		 2: Barbed
+		 3: Sleek
+		 4: Powerful
 	}
 
 	Suffixes: {
-		// 0: Lash
-		// 1: Fang
-		// 2: Scourge
-		// 3: Strike
-		// 4: Snap
+		 0: Lash
+		 1: Fang
+		 2: Scourge
+		 3: Strike
+		 4: Snap
 	}
 }
 
@@ -279,19 +279,19 @@ Grimoire: {
 	AltUse: Управляйте своими призывами, чтобы они шли к вашему курсору.
 
 	Prefixes: {
-		// 0: Ancient
-		// 1: Forsaken
-		// 2: Cursed
-		// 3: Vile
-		// 4: Jealous
+		 0: Ancient
+		 1: Forsaken
+		 2: Cursed
+		 3: Vile
+		 4: Jealous
 	}
 
 	Suffixes: {
-		// 0: of Sin
-		// 1: of Death
-		// 2: of Fury
-		// 3: of Limbo
-		// 4: of Hell
+		 0: of Sin
+		 1: of Death
+		 2: of Fury
+		 3: of Limbo
+		 4: of Hell
 	}
 }
 
@@ -300,19 +300,19 @@ WarShield: {
 	AltUse: ПКМ, чтобы блокировать или отразить снаряды и удары, возвращая урон обратно
 
 	Prefixes: {
-		// 0: Hardened
-		// 1: Worn
-		// 2: Blessed
-		// 3: Reinforced
-		// 4: Great
+		 0: Hardened
+		 1: Worn
+		 2: Blessed
+		 3: Reinforced
+		 4: Great
 	}
 
 	Suffixes: {
-		// 0: of Bashing
-		// 1: of Power
-		// 2: of Strength
-		// 3: of Resilience
-		// 4: of Conquery
+		 0: of Bashing
+		 1: of Power
+		 2: of Strength
+		 3: of Resilience
+		 4: of Conquery
 	}
 }
 
@@ -324,11 +324,11 @@ Shield: {
 	Speed: "[i:278] -{0}% скорости перемещения"
 
 	Prefixes: {
-		// 0: Rigid
-		// 1: Battle-Hardened
-		// 2: Ornate
-		// 3: Roughened
-		// 4: Ancient
+		 0: Rigid
+		 1: Battle-Hardened
+		 2: Ornate
+		 3: Roughened
+		 4: Ancient
 	}
 
 	Suffixes: {
@@ -346,4 +346,4 @@ Magic.Name: Магия
 Ranged.Name: Дистанционный
 Melee.Name: Рукопашный
 Summon.Name: Призвать
-// Accessory.Name: Accessory
+ Accessory.Name: Accessory

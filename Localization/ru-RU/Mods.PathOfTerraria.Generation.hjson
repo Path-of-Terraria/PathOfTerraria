@@ -22,15 +22,15 @@ EaterSign: {
 	3: "{0} был переварен."
 
 	Names: {
-		// 0: Ronny
-		// 1: Jameson
-		// 2: Evan
-		// 3: Polly
-		// 4: Sylvia
-		// 5: Liara
-		// 6: Svetlana
-		// 7: Obie
-		// 8: Jane-Ashley
+		 0: Ronny
+		 1: Jameson
+		 2: Evan
+		 3: Polly
+		 4: Sylvia
+		 5: Liara
+		 6: Svetlana
+		 7: Obie
+		 8: Jane-Ashley
 	}
 }
 
@@ -41,16 +41,16 @@ EyeSign: {
 	3: "{0} не справился с аудиторией."
 
 	Names: {
-		// 0: Wilken
-		// 1: Jimmy
-		// 2: Cammy
-		// 3: Samarah
-		// 4: Pyotir
-		// 5: Aabria
-		// 6: Izzy
-		// 7: Gabe
-		// 8: Roald
+		 0: Wilken
+		 1: Jimmy
+		 2: Cammy
+		 3: Samarah
+		 4: Pyotir
+		 5: Aabria
+		 6: Izzy
+		 7: Gabe
+		 8: Roald
 	}
 }
 
-// RemoveBeeLarvaeStep: ""
+ RemoveBeeLarvaeStep: ""
