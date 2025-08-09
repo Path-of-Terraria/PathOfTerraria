@@ -28,13 +28,15 @@ public abstract class Affix : ILocalizedModType
 
 	public virtual void Roll()
 	{
-		if (Value == 0)
+		if (Value != 0)
 		{
-			Value = Main.rand.NextFloat(MinValue, MaxValue);
-			if (Round)
-			{
-				Value = (float) Math.Round(Value);
-			}
+			return;
+		}
+
+		Value = Main.rand.NextFloat(MinValue, MaxValue);
+		if (Round)
+		{
+			Value = (float) Math.Round(Value);
 		}
 	}
 
