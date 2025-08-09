@@ -1,0 +1,56 @@
+Terrain: Генерация ландшафта
+Tunnels: Рытье туннелей
+PopulatingWorld: Заселение мира
+Steps: Этапы строительства
+Arenas: Строительство арен
+Pathway: Открытие пути
+RavenPass: Никогда больше
+TreesAndLeaves: Добавление деревьев и листьев
+Structures: Строительные конструкции
+Maze: Выход из лабиринта
+PopulatingMetals: Рассеивающие металлы
+Hole: Копание ямы
+Growing: Растущая земля
+Clouds: Исследуя небо
+Space: Выход из атмосферы
+Scanning: Сканирование местности
+
+EaterSign: {
+	0: "{0} был мгновенно съеден."
+	1: "{0} попал в пасть Пожирателя."
+	2: Пожиратель нашел плоть {0} очень вкусной.
+	3: "{0} был переварен."
+
+	Names: {
+		0: Ronny
+		1: Jameson
+		2: Evan
+		3: Polly
+		4: Sylvia
+		5: Liara
+		6: Svetlana
+		7: Obie
+		8: Jane-Ashley
+	}
+}
+
+EyeSign: {
+	0: "{0} не мог смотреть в ответ."
+	1: Око поглотило {0}.
+	2: "{0} был под контролем и подавлен."
+	3: "{0} не справился с аудиторией."
+
+	Names: {
+		0: Wilken
+		1: Jimmy
+		2: Cammy
+		3: Samarah
+		4: Pyotir
+		5: Aabria
+		6: Izzy
+		7: Gabe
+		8: Roald
+	}
+}
+
+RemoveBeeLarvaeStep: ""
