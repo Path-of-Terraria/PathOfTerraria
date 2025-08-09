@@ -1,0 +1,19 @@
+Common: {
+	Missing1: Отсутствует {0}.
+	Missing2: Отсутствуют {0} и {1}.
+	Missing3: Отсутствуют {0}{1} и {2}.
+	MissingList: "{0},"
+}
+
+Tavern: {
+	DisplayName: Таверна
+	Description: Необходимо занимать не менее 100 плиток. Требуется 3 стола, 3 стула, 3 барных стула, бочонок, вывеска, дверь и источник света.
+
+	Error: {
+		// Tables: 3 tables
+		// BarStools: 3 bar stools
+		// Chairs: 3 chairs
+		// Keg: a keg
+		// Sign: a sign
+	}
+}

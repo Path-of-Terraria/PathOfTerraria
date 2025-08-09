@@ -1,0 +1,33 @@
+﻿PassiveTreeUIKey: {
+    DisplayName: '''	Ключ пользовательского интерфейса пассивного дерева'''
+  }
+  DropTableKey: {
+    DisplayName: '''	Клавиша сброса таблицы'''
+  }
+  QuestUIKey: {
+    DisplayName: Ключ квестового интерфейса
+  }
+  GearSwap: {
+    DisplayName: Обмен оружием
+  }
+  StatUIKey: {
+    DisplayName: Переключить страницу статистики
+  }
+  CopyItemInfo: {
+    DisplayName: '''	Копировать информацию о товаре'''
+  }
+  UseSkill4: {
+    DisplayName: Использовать 4 способность
+  }
+  UseSkill5: {
+    DisplayName: Использовать 5 способность
+  }
+  UseSkill3: {
+    DisplayName: Использовать 3 способность
+  }
+  UseSkill1: {
+    DisplayName: Использовать 1 способность
+  }
+  UseSkill2: {
+    DisplayName: Использовать 2 способность
+  }

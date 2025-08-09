@@ -1,0 +1,139 @@
+Gear: {
+	Buttons: {
+		// Previous: Previous
+		// Next: Next
+	}
+
+	Pages: {
+		Gear: Механизм
+		Vanity: Тщеславие
+		Dyes: Красители
+	}
+}
+
+Slots: {
+	// 0: Helmet
+	// 1: Chest
+	// 2: Legs
+	// 3: Accessory 2
+	// 4: Weapon
+	// 5: Necklace
+	// 6: Offhand
+	// 7: Left Ring
+	// 8: Right Ring
+	// 9: Accessory 1
+	// 10: Wings
+}
+
+// BaseDamage: Base Damage: {0}
+Lives: осталось жизней
+
+StatUI: {
+	// Level: Level
+	// Experience: Exp
+	// Life: Life
+	// Mana: Mana
+	// HealthPotions: Health Potions
+	// ManaPotions: Mana Potions
+	// DamageReduction: Damage Reduction
+	// BlockChance: Block Chance
+	// MaxBlock: Block Chance Cap
+	// BlockCooldown: Block Cooldown
+	// Strength: Strength
+	// Dexterity: Dexterity
+	// Intelligence: Intelligence
+	// FireResistance: Fire Resistance
+	// ColdResistance: Cold Resistance
+	// LightningResistance: Lightning Resistance
+
+	Help: {
+		// Strength: Grants 5 additional max health per 10 points
+		// Dexterity: Grants 1% additional global attack speed per 10 points
+		// Intelligence: Grants 5 additional max mana per 10 points
+	}
+}
+
+DropVisualizer: {
+	Gear: Снаряжение
+	Currency: Валюта
+	Map: Карта
+	Normalize: Нормализовать
+	Count: Количество
+	Level: Уровень
+	Run: Запуск
+	SortBy: "Сортировать по: "
+	UniqueItem: (Уникальный предмет)
+}
+
+SkillUI: {
+	Back: Назад
+	NoPassives: У этого навыка нет пассивов.
+	NoSkill: (Нет навыка)
+	ChooseSkill: Выберите навык из меню Навыков, чтобы использовать его.
+}
+
+Guide: {
+	Next: Следующий
+	Skip: Пропустить
+	SkipGuide: "{$Skip} Все"
+	SkipStep: "{$Skip} Шаг"
+	Hide: Скрыть
+	Show: Показать
+	# Welcome/hello, explain purpose of tutorial
+	0: ""
+	# Explain EXP bar, click on exp bar
+	1: ""
+	# Explain Passive tree, ask to [de]allocate.
+	2: ""
+	# Click on skill tab.
+	3: Теперь нажмите на вкладку Навыков в левом верхнем углу.
+	# Explain the skills tab, select a skill
+	4: ""
+	# Explain skills, close menu
+	5: ""
+	# Explain weapon requirements, use skill
+	6: ""
+	# Explain inventory
+	7: ""
+	# Explain inventory pt2, hotswapping
+	8: ""
+	# Character sheet
+	9: ""
+	# Explain the Quest Book
+	10: ""
+	# Enter Ravencrest
+	11: ""
+	# In Ravencrest, exit
+	12: ""
+	# Finish
+	13: ""
+}
+
+# For the various inventory buttons. NoGrimoire is only if the Grimoire isn't in the player's inventory.
+InvButtons: {
+	Grimoire: Гримуар
+	NoGrimoire: "[c/888888:(Needs] [i:PathOfTerraria/GrimoireItem] [c/888888:Grimoire)]"
+	Quest: Задания
+	Stats: Статистика
+	// RestartTutorial: Restart Tutorial
+}
+
+Grimoire: {
+	Storage: Хранилище
+	ClickMe: Нажми на меня!
+
+	Help: {
+		/* Materials:
+			'''
+			Here you'll find your materials! Stingers, wings and souls galore! 
+			Each can be used to augment your creations... just click on them!
+			Those parts with affixes will boon your summons, and are NOT consumed.
+			''' */
+		/* Summons:
+			'''
+			As for your creatures...say hello! Hello! These freakish critters can be chosen, allowing you to...help them around. Yes, yes! You must first unlock their life; 
+			the materials in storage will allow you to do so. You can see what you must obtain by clicking on hidden summons.
+			''' */
+		// Ritual: Ah, and your ritual! Here you can place materials full of boons! If your pieces have no boons, they have no effect...
+	}
+}
