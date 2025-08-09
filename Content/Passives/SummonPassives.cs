@@ -6,8 +6,19 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class IncreasedMinionDamagePassive : Passive
 {
-	public override void BuffPlayer(Player player)
+	public override void OnLoad()
 	{
+		PathOfTerrariaPlayerEvents.ModifyHitNPCWithProjEvent += BuffMinions;
+	}
+
+	private void BuffMinions(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
+	{
+		int level = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
+		
+		if (proj.minion)
+		{
+			modifiers.FinalDamage += 0.1f * level;
+		}
 	}
 }
 
@@ -35,6 +46,7 @@ internal class IncreasedWhipDamage : Passive
 
 internal class IncreasedWhipSpeed : Passive
 {
+	
 }
 
 internal class WhipModsItem : GlobalItem

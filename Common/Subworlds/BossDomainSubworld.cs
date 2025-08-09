@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.Passes;
-using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using System.Collections.Generic;
 using Terraria.WorldBuilding;
 

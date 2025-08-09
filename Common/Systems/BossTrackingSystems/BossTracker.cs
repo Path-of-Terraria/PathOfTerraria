@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs.GlobalNPCs;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.Networking.Handlers;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
@@ -7,11 +8,23 @@ using System.Reflection;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
-namespace PathOfTerraria.Common.Systems;
+namespace PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 internal class BossTracker : ModSystem
 {
+	/// <summary>
+	/// Tracks the bosses that were killed in a <see cref="BossDomainSubworld"/>, so we can delay the effects to the main world. 
+	/// This can also be used for non-universal kills per subworld, i.e.<br/>
+	/// <c>if (SubworldSystem.Current is BossDomainSubworld &amp;&amp; CachedBossesDowned.Contains(id)</c><br/>
+	/// you know you are in a subworld where a boss was slain.
+	/// </summary>
 	public static HashSet<int> CachedBossesDowned = [];
+
+	/// <summary>
+	/// Tracks all bosses that have ever been downed. If they're in this set, they've been killed at least once before by any player.
+	/// </summary>
+	public static HashSet<int> TotalBossesDowned = [];
+
 	public static BitsByte DownedFlags;
 	public static bool SkipWoFBox;
 
@@ -24,6 +37,47 @@ internal class BossTracker : ModSystem
 	{
 		On_NPC.DoDeathEvents += HijackDeathEffects;
 		On_NPC.CreateBrickBoxForWallOfFlesh += StopBrickBox;
+	}
+
+	public static void AddDowned(int id, bool fromSync = false, bool setPlayerValues = false)
+	{
+		CachedBossesDowned.Add(id);
+		TotalBossesDowned.Add(id);
+
+		if (setPlayerValues)
+		{
+			foreach (Player player in Main.ActivePlayers)
+			{
+				player.GetModPlayer<BossTrackingPlayer>().CachedBossesDowned.Add(id);
+			}
+		}
+
+		if (Main.netMode != NetmodeID.SinglePlayer && !fromSync)
+		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.RequestWorldData, -1, -1, null, Main.myPlayer);
+			}
+			else
+			{
+				NetMessage.SendData(MessageID.WorldData);
+			}
+
+			ModContent.GetInstance<SyncPlayerBossDownedHandler>().Send(id);
+
+			//if (SubworldSystem.Current is not null)
+			//{
+			//	ModPacket packet = Networking.Networking.GetPacket(Networking.Networking.Message.SyncBossDowned);
+			//	packet.Write(id);
+
+			//	Networking.Networking.SendPacketToMainServer(packet);
+			//}
+		}
+	}
+
+	public static bool DownedInDomain<T>(int id) where T : BossDomainSubworld
+	{
+		return CachedBossesDowned.Contains(id) && SubworldSystem.Current is T;
 	}
 
 	private void StopBrickBox(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
@@ -78,21 +132,55 @@ internal class BossTracker : ModSystem
 	public override void SaveWorldData(TagCompound tag)
 	{
 		tag.Add(nameof(DownedFlags), (byte)DownedFlags);
+		tag.Add(nameof(CachedBossesDowned), (int[])[.. CachedBossesDowned]);
+		tag.Add(nameof(TotalBossesDowned), (int[])[.. TotalBossesDowned]);
 	}
 
 	public override void LoadWorldData(TagCompound tag)
 	{
+		CachedBossesDowned.Clear();
 		DownedFlags = tag.GetByte(nameof(DownedFlags));
+		CachedBossesDowned = [.. tag.GetIntArray(nameof(CachedBossesDowned))];
+		TotalBossesDowned = [.. tag.GetIntArray(nameof(TotalBossesDowned))];
 	}
 
 	public override void NetSend(BinaryWriter writer)
 	{
 		writer.Write((byte)DownedFlags);
+		writer.Write(CachedBossesDowned.Count);
+
+		foreach (int item in CachedBossesDowned)
+		{
+			writer.Write(item);
+		}
+
+		writer.Write(TotalBossesDowned.Count);
+
+		foreach (int item in TotalBossesDowned)
+		{
+			writer.Write(item);
+		}
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
 		DownedFlags = reader.ReadByte();
+		CachedBossesDowned.Clear();
+		TotalBossesDowned.Clear();
+
+		int count = reader.ReadInt32();
+		
+		for (int i = 0; i < count; ++i)
+		{
+			CachedBossesDowned.Add(reader.ReadInt32());
+		}
+
+		count = reader.ReadInt32();
+
+		for (int i = 0; i < count; ++i)
+		{
+			TotalBossesDowned.Add(reader.ReadInt32());
+		}
 	}
 
 	public class BossTrackerNPC : GlobalNPC

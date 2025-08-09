@@ -1,6 +1,4 @@
-v0.1.30
-- Fixed map devices not working properly in multiplayer
+v0.2.0 - Open Beta
 
 Refer to the wiki page for full changelogs: https://wiki.pathofterraria.com/en/PatchNotes
-These are under 0.2.0 - the changelog IS NOT final, and will change on official release! 
-This is an internal test version.
+These are under 0.2.0. I hope you enjoy the mod!

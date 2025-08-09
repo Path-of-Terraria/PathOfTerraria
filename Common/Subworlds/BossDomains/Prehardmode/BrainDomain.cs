@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -16,6 +15,7 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -424,7 +424,7 @@ public class BrainDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(30, 100);
 			int proj = Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.BrainofCthulhu);
+			BossTracker.AddDowned(NPCID.BrainofCthulhu, false, true);
 			ReadyToExit = true;
 		}
 	}

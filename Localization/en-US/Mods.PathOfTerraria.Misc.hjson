@@ -10,7 +10,7 @@ RarityNames: {
 }
 
 GrimoireConsume: "{0} consumed!"
-GrimoireMaterial: Used for the Grimoire's Menagerie.
+GrimoireMaterial: Used for the Grimoire's Menagerie. Right click to add to the Menagerie.
 GrimoireBoon: Traded {0} for coin!
 # This is used for disabling EoW/BoC spawns, instead of spawning the boss it says this.
 ChasmAppears: A chasm appears...

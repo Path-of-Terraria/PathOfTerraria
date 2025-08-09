@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -15,6 +14,7 @@ using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -765,7 +765,7 @@ public class SkeletronDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.SkeletronHead);
+			BossTracker.AddDowned(NPCID.SkeletronHead, false, true);
 			ReadyToExit = true;
 		}
 	}

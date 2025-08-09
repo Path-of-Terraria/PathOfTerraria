@@ -53,6 +53,17 @@ public class BloodSiphon : Skill
 		}
 	}
 
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
+	{
+		if (!player.HeldItem.CountsAsClass(DamageClass.Ranged))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsRanged);
+			return false;
+		}
+
+		return base.CanUseSkill(player, ref failReason, justChecking);
+	}
+
 	protected override bool ProtectedCanEquip(Player player, out string failReason)
 	{
 		// TODO: If this needs to be equippable without the affix, figure out that system

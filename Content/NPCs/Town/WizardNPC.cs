@@ -99,7 +99,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 
 	public static bool QuestReady()
 	{
-		WoFQuest quest = Quest.GetLocalPlayerInstance<WoFQuest>();
+		Quest quest = Quest.GetLocalPlayerInstance<WoFQuest>();
 		return quest.Active && quest.CurrentStep > 2;
 	}
 
