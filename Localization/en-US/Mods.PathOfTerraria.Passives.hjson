@@ -208,3 +208,8 @@ IncreasedColdDamagePassive: {
 	Name: Chilling Precision
 	Tooltip: +10% Increased Cold Damage
 }
+
+TestMasteryPassive: {
+	Name: TestMasteryPassive
+	Tooltip: ""
+}

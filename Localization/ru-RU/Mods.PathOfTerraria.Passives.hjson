@@ -188,3 +188,28 @@ IncreasedJumpHeight: {
 	Name: Высокий прыгун
 	Tooltip: +{0}% увеличение скорости прыжка.
 }
+
+PercentIncreasedMaximumManaPassive: {
+	// Name: Deep in Thought
+	// Tooltip: +5% Increased Maximum Mana
+}
+
+IncreasedFireDamagePassive: {
+	// Name: Burning Fury
+	// Tooltip: +10% Increased Fire Damage
+}
+
+IncreasedLightningDamagePassive: {
+	// Name: Voltaic Surge
+	// Tooltip: +10% Increased Lightning Damage
+}
+
+IncreasedColdDamagePassive: {
+	// Name: Chilling Precision
+	// Tooltip: +10% Increased Cold Damage
+}
+
+TestMasteryPassive: {
+	// Name: TestMasteryPassive
+	// Tooltip: ""
+}

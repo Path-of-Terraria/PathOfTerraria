@@ -327,6 +327,9 @@
 		"connections": [
 			{
 				"referenceId": 22
+			},
+			{
+				"referenceId": 5
 			}
 		],
 		"position": {
@@ -355,6 +358,9 @@
 		"connections": [
 			{
 				"referenceId": 15
+			},
+			{
+				"referenceId": 11
 			}
 		],
 		"position": {
@@ -456,6 +462,9 @@
 		"connections": [
 			{
 				"referenceId": 31
+			},
+			{
+				"referenceId": 26
 			}
 		],
 		"position": {
@@ -470,6 +479,9 @@
 		"connections": [
 			{
 				"referenceId": 31
+			},
+			{
+				"referenceId": 19
 			}
 		],
 		"position": {
@@ -532,5 +544,23 @@
 			"x": 1010,
 			"y": 30
 		}
+	},
+	{
+		"internalIdentifier": "TestMasteryPassive",
+		"referenceId": 38,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 32
+			},
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": 800,
+			"y": 30
+		}
 	}
+
 ]
