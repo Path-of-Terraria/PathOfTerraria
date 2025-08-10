@@ -76,6 +76,7 @@ partial class PoTGlobalItem
 				return true;
 
 			case "AltUseDescription":
+			case "ManaCost":
 			case "Description":
 			case "ShiftNotice":
 			case "SwapNotice":
@@ -211,6 +212,16 @@ partial class PoTGlobalItem
 				baseColor: "DDDDDD");
 			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
 			AddNewTooltipLine(item, tooltips, damageLine);
+		}
+		
+		if (item.mana > 0)
+		{
+			string manaCost = $"{Localize("ManaCost")}: {item.mana}";
+			var manaLine = new TooltipLine(Mod, "ManaCost", manaCost)
+			{
+				OverrideColor = Color.Cyan
+			};
+			AddNewTooltipLine(item, tooltips, manaLine);
 		}
 
 		if (item.defense > 0)
