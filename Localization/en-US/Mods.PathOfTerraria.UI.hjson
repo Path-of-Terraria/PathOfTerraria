@@ -39,6 +39,7 @@ StatUI: {
 	BlockChance: Block Chance
 	MaxBlock: Block Chance Cap
 	BlockCooldown: Block Cooldown
+	MaxMinions: Maximum Minions
 	Strength: Strength
 	Dexterity: Dexterity
 	Intelligence: Intelligence
