@@ -168,6 +168,8 @@ Staff: {
 	}
 }
 
+Broadsword.Name: Broadsword
+
 Sword: {
 	Name: Sword
 	AltUse: Right click to summon a spirit from your blade that lunges forward, healing you for 15 health on hitting an enemy.
