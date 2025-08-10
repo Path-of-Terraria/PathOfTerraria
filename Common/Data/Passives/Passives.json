@@ -128,6 +128,9 @@
 		"connections": [
 			{
 				"referenceId": 8
+			},
+			{
+				"referenceId": 4
 			}
 		],
 		"position": {
@@ -327,10 +330,8 @@
 		"connections": [
 			{
 				"referenceId": 22
-			},
-			{
-				"referenceId": 5
 			}
+
 		],
 		"position": {
 			"x": 380,
@@ -546,21 +547,120 @@
 		}
 	},
 	{
-		"internalIdentifier": "TestMasteryPassive",
+		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 38,
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 32
+				"referenceId": 23
 			},
 			{
-				"referenceId": 33
+				"referenceId": 3
 			}
 		],
 		"position": {
-			"x": 800,
-			"y": 30
+			"x": 250,
+			"y": 150
+		}
+	},
+
+	{
+		"internalIdentifier": "AnchorPassive",
+		"referenceId": 555,
+		"maxLevel": 1,
+		"connections": [
+		],
+		"position": {
+			"x": -150,
+			"y": -150
+		}
+	},	
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 39,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 555
+			}
+		],
+		"position": {
+			"x": -200,
+			"y": -250
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 40,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 555
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": -250
+		}
+	},
+{
+	"internalIdentifier": "AddedIntelligencePassive",
+	"referenceId": 41,
+	"maxLevel": 1,
+	"connections": [
+		{
+			"referenceId": 39
+		},
+		{
+			"referenceId": 40
+		}
+	],
+	"position": {
+		"x": -150,
+		"y": -325
+	}
+},
+{
+	"internalIdentifier": "AddedIntelligencePassive",
+	"referenceId": 42,
+	"maxLevel": 1,
+	"connections": [
+		{
+			"referenceId": 41
+		}
+	],
+	"position": {
+		"x": -200,
+		"y": -400
+	}
+},
+{
+	"internalIdentifier": "AddedIntelligencePassive",
+	"referenceId": 43,
+	"maxLevel": 1,
+	"connections": [
+		{
+			"referenceId": 41
+		}
+	],
+	"position": {
+		"x": -100,
+		"y": -400
+	}
+},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 44,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 42
+			}
+		],
+		"position": {
+			"x": -240,
+			"y": -560
 		}
 	}
-
+	
 ]
