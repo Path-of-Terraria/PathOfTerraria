@@ -1,6 +1,6 @@
 ﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class Flamberge : Sword
+internal class Broadsword : Sword
 {
 	public override void SetDefaults()
 	{
