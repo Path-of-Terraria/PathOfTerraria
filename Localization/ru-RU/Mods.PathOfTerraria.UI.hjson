@@ -39,6 +39,7 @@ StatUI: {
 	BlockChance: Шанс блокировки
 	MaxBlock: Максимальный шанс блокировки
 	BlockCooldown: Перезарядка блокировки
+	// MaxMinions: Maximum Minions
 	Strength: Сила
 	Dexterity: Ловкость
 	Intelligence: Интеллект
