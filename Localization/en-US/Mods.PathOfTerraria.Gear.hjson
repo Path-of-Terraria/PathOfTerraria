@@ -15,6 +15,7 @@ Tooltips: {
 	Pickaxe: Pickaxe Power
 	Axe: Axe Power
 	Hammer: Hammer Power
+	ManaCost: Mana Cost
 }
 
 Influence: {
