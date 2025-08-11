@@ -72,7 +72,7 @@ internal class EoCQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Observatory");
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest3"))
+			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest3"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

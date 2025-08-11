@@ -29,7 +29,7 @@ internal class DeerclopsQuest : Quest
 			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Antlers"),
 				[new GiveItem(1, ModContent.ItemType<Antlers>())], true),
-			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Deerclops"),
+			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Deerclops"),
 				onSuccess: npc =>
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<DeerclopsMap>());
@@ -40,7 +40,7 @@ internal class DeerclopsQuest : Quest
 					}
 				}),
 			new ConditionCheck((_) => NPC.downedDeerclops, 1, this.GetLocalization("KillDeerclops")),
-			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Success"))
+			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Success"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

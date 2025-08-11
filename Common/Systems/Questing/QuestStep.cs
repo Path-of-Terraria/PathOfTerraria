@@ -50,9 +50,11 @@ public abstract class QuestStep
 	public abstract void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep);
 
 	/// <summary>
-	/// Displays "reminder" text in the quest book, namely for NPC dialogue.
+	/// Displays "reminder" text in the quest book, namely for NPC dialogue. <paramref name="title"/> is the title of the reminder, i.e. <br/><c>
+	/// Dialogue</c><br/>
+	/// <c>You need to get...</c>
 	/// </summary>
-	/// <returns></returns>
+	/// <returns>The reminder text to show.</returns>
 	public virtual string ReminderText(ref string title)
 	{
 		return string.Empty;

@@ -2,9 +2,7 @@
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
-using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.NPCs.Town;
-using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
@@ -44,10 +42,14 @@ internal class WitchStartQuest : Quest
 	{
 		return 
 		[
-			new ConditionCheck(plr => GrimoirePlayer.Get(plr).GetStoredCount().Count > 0, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.QuestCondition")),
-			new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest2")),
-			new ConditionCheck(p => p.GetModPlayer<GrimoirePlayer>().CurrentSummonId > -1, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.SummonCondition")),
-			new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest3")),
+			new ConditionCheck(plr => GrimoirePlayer.Get(plr).GetStoredCount().Count > 0, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.QuestCondition"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest")),
+			new InteractWithNPC(ModContent.NPCType<MorganaNPC>(),Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.QuestCondition"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest2")),
+			new ConditionCheck(p => p.GetModPlayer<GrimoirePlayer>().CurrentSummonId > -1, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.SummonCondition"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest2")),
+			new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.SummonCondition"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest3")),
 		];
 	}
 

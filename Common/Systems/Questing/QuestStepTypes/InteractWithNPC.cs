@@ -175,7 +175,7 @@ internal class InteractWithNPC(int npcId, LocalizedText reminder, LocalizedText 
 
 	public override string ReminderText(ref string title)
 	{
-		title = Language.GetTextValue("Mods.PathOfTerraria.UI.QuestReminderTitles.Reminder");
+		title = Language.GetTextValue("Mods.PathOfTerraria.UI.QuestReminderTitles.Dialogue");
 		return Reminder.Value;
 	}
 }
