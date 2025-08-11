@@ -94,7 +94,8 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft) //Manually check mouse input because other elements shouldn't be allowed to interfere
 		{
 			var size = new Point((int)_draggable.GetDimensions().Width, (int)_draggable.GetDimensions().Height);
-			var bounds = new Rectangle(-(size.X / 2), -(size.Y / 2), size.X, size.Y);
+			var bounds = new Rectangle(-2500, -2500, 5000, 5000);
+
 
 			_draggable.Left.Pixels = Math.Clamp(_draggable.Left.Pixels + (DragOffset - oldOffset).X, bounds.TopLeft().X, bounds.BottomRight().X);
 			_draggable.Top.Pixels = Math.Clamp(_draggable.Top.Pixels + (DragOffset - oldOffset).Y, bounds.TopLeft().Y, bounds.BottomRight().Y);
