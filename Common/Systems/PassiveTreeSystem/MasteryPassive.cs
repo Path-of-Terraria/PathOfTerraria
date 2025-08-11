@@ -17,7 +17,6 @@ public abstract class MasteryPassive : Passive
 	//LoadPassives
 	public override void OnLoad()
 	{
-		ChoicePassives = new List<Passive>();
 	}
 
 

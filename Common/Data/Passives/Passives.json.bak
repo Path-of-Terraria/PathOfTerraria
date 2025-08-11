@@ -1,0 +1,903 @@
+[
+	{
+		"internalIdentifier": "AnchorPassive",
+		"referenceId": 0,
+		"maxLevel": 1,
+		"connections": [
+		]
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 0
+			}
+		],
+		"position": {
+			"x": 100,
+			"y": 50
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 2,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 0
+			}
+		],
+		"position": {
+			"x": 100,
+			"y": -50
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 3,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1
+			}
+		],
+		"position": {
+			"x": 200,
+			"y": 70
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 4,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 2
+			}
+		],
+		"position": {
+			"x": 200,
+			"y": -70
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 5,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 3
+			}
+		],
+		"position": {
+			"x": 300,
+			"y": 50
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 6,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 4
+			}
+		],
+		"position": {
+			"x": 300,
+			"y": -50
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 7,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 5
+			},
+			{
+				"referenceId": 6
+			}
+		],
+		"position": {
+			"x": 400,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 8,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": 400,
+			"y": -120
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedColdDamagePassive",
+		"referenceId": 9,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 8
+			},
+			{
+				"referenceId": 4
+			}
+		],
+		"position": {
+			"x": 320,
+			"y": -200
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedFireDamagePassive",
+		"referenceId": 10,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 8
+			}
+		],
+		"position": {
+			"x": 400,
+			"y": -200
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedLightningDamagePassive",
+		"referenceId": 11,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 8
+			}
+		],
+		"position": {
+			"x": 480,
+			"y": -200
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedColdDamagePassive",
+		"referenceId": 12,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 9
+			}
+		],
+		"position": {
+			"x": 280,
+			"y": -280
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedFireDamagePassive",
+		"referenceId": 13,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 10
+			}
+		],
+		"position": {
+			"x": 400,
+			"y": -280
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedLightningDamagePassive",
+		"referenceId": 14,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 11
+			}
+		],
+		"position": {
+			"x": 520,
+			"y": -280
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedPotionRecoveryPassive",
+		"referenceId": 15,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": 510,
+			"y": -70
+		}
+	},
+	{
+		"internalIdentifier": "AddedManaPassive",
+		"referenceId": 16,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": 510,
+			"y": 70
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 17,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 15
+			},
+			{
+				"referenceId": 16
+			}
+		],
+		"position": {
+			"x": 620,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 18,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 16
+			}
+		],
+		"position": {
+			"x": 580,
+			"y": 130
+		}
+	},
+	{
+		"internalIdentifier": "AddedManaPassive",
+		"referenceId": 19,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 18
+			}
+		],
+		"position": {
+			"x": 620,
+			"y": 220
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 20,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 19
+			}
+		],
+		"position": {
+			"x": 570,
+			"y": 310
+		}
+	},
+	{
+		"internalIdentifier": "PercentIncreasedMaximumManaPassive",
+		"referenceId": 21,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 20
+			}
+		],
+		"position": {
+			"x": 460,
+			"y": 340
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 22,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 21
+			}
+		],
+		"position": {
+			"x": 380,
+			"y": 280
+		}
+	},
+	{
+		"internalIdentifier": "AddedManaPassive",
+		"referenceId": 23,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 22
+			}
+
+		],
+		"position": {
+			"x": 380,
+			"y": 180
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 24,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 23
+			}
+		],
+		"position": {
+			"x": 470,
+			"y": 140
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 25,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 15
+			},
+			{
+				"referenceId": 11
+			}
+		],
+		"position": {
+			"x": 600,
+			"y": -150
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 26,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 25
+			}
+		],
+		"position": {
+			"x": 700,
+			"y": -150
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 27,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 25
+			}
+		],
+		"position": {
+			"x": 600,
+			"y": -250
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 28,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 27
+			}
+		],
+		"position": {
+			"x": 710,
+			"y": -350
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 29,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 26
+			}
+		],
+		"position": {
+			"x": 800,
+			"y": -250
+		}
+	},
+	{
+		"internalIdentifier": "AddedCriticalStrikeChance",
+		"referenceId": 30,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 29
+			},
+			{
+				"referenceId": 28
+			}
+		],
+		"position": {
+			"x": 700,
+			"y": -255
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 31,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 17
+			}
+		],
+		"position": {
+			"x": 740,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 32,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 31
+			},
+			{
+				"referenceId": 26
+			}
+		],
+		"position": {
+			"x": 810,
+			"y": -110
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 33,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 31
+			},
+			{
+				"referenceId": 19
+			}
+		],
+		"position": {
+			"x": 810,
+			"y": 110
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 34,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 32
+			}
+		],
+		"position": {
+			"x": 910,
+			"y": -70
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 35,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": 910,
+			"y": 70
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 36,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 34
+			}
+		],
+		"position": {
+			"x": 1010,
+			"y": -30
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 37,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 35
+			}
+		],
+		"position": {
+			"x": 1010,
+			"y": 30
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 38,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 23
+			},
+			{
+				"referenceId": 3
+			}
+		],
+		"position": {
+			"x": 250,
+			"y": 150
+		}
+	},
+
+	{
+		"internalIdentifier": "AnchorPassive",
+		"referenceId": 555,
+		"maxLevel": 1,
+		"connections": [
+		],
+		"position": {
+			"x": -150,
+			"y": -150
+		}
+	},	
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 39,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 555
+			}
+		],
+		"position": {
+			"x": -200,
+			"y": -250
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 40,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 555
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": -250
+		}
+	},
+{
+	"internalIdentifier": "AddedIntelligencePassive",
+	"referenceId": 41,
+	"maxLevel": 1,
+	"connections": [
+		{
+			"referenceId": 39
+		},
+		{
+			"referenceId": 40
+		}
+	],
+	"position": {
+		"x": -150,
+		"y": -325
+	}
+},
+{
+	"internalIdentifier": "AddedIntelligencePassive",
+	"referenceId": 42,
+	"maxLevel": 1,
+	"connections": [
+		{
+			"referenceId": 41
+		}
+	],
+	"position": {
+		"x": -220,
+		"y": -400
+	}
+},
+{
+	"internalIdentifier": "AddedIntelligencePassive",
+	"referenceId": 43,
+	"maxLevel": 1,
+	"connections": [
+		{
+			"referenceId": 41
+		}
+	],
+	"position": {
+		"x": -80,
+		"y": -400
+	}
+},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 44,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 42
+			}
+		],
+		"position": {
+			"x": -240,
+			"y": -520
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 45,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 43
+			}
+		],
+		"position": {
+			"x": -60,
+			"y": -520
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 46,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 44
+			}
+		],
+		"position": {
+			"x": -240,
+			"y": -620
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 47,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 45
+			}
+		],
+		"position": {
+			"x": -60,
+			"y": -620
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 48,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 47
+			},
+			{
+				"referenceId": 46
+			}
+		],
+		"position": {
+			"x": -150,
+			"y": -620
+		}
+	},
+
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 49,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 47
+			}
+
+		],
+		"position": {
+			"x": 40,
+			"y": -680
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 50,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 49
+			}
+
+		],
+		"position": {
+			"x": 150,
+			"y": -680
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 51,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 50
+			}
+
+		],
+		"position": {
+			"x": 260,
+			"y": -680
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 52,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 49
+			}
+
+		],
+		"position": {
+			"x": 150,
+			"y": -590
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 53,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 52
+			}
+		],
+		"position": {
+			"x": 80,
+			"y": -500
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 54,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 53
+			},
+			{
+				"referenceId": 52
+			}
+		],
+		"position": {
+			"x": 220,
+			"y": -500
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 55,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 44
+			}
+		],
+		"position": {
+			"x": -350,
+			"y": -480
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 56,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 55
+			}
+		],
+		"position": {
+			"x": -630,
+			"y": -480
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 57,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 55
+			}
+		],
+		"position": {
+			"x": -583,
+			"y": -620
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 58,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 56
+			}
+		],
+		"position": {
+			"x": -397,
+			"y": -620
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 59,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 58
+			},
+			{
+				"referenceId": 57
+			}
+		],
+		"position": {
+			"x": -490,
+			"y": -380
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 60,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 47
+			}
+		],
+		"position": {
+			"x": -490,
+			"y": -380
+		}
+	}
+]

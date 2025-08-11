@@ -2,9 +2,7 @@
 	{
 		"internalIdentifier": "AnchorPassive",
 		"referenceId": 0,
-		"maxLevel": 1,
-		"connections": [
-		]
+		"maxLevel": 1
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
@@ -331,7 +329,6 @@
 			{
 				"referenceId": 22
 			}
-
 		],
 		"position": {
 			"x": 380,
@@ -563,18 +560,6 @@
 			"y": 150
 		}
 	},
-
-	{
-		"internalIdentifier": "AnchorPassive",
-		"referenceId": 555,
-		"maxLevel": 1,
-		"connections": [
-		],
-		"position": {
-			"x": -150,
-			"y": -150
-		}
-	},	
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 39,
@@ -603,51 +588,51 @@
 			"y": -250
 		}
 	},
-{
-	"internalIdentifier": "AddedIntelligencePassive",
-	"referenceId": 41,
-	"maxLevel": 1,
-	"connections": [
-		{
-			"referenceId": 39
-		},
-		{
-			"referenceId": 40
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 41,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 39
+			},
+			{
+				"referenceId": 40
+			}
+		],
+		"position": {
+			"x": -150,
+			"y": -325
 		}
-	],
-	"position": {
-		"x": -150,
-		"y": -325
-	}
-},
-{
-	"internalIdentifier": "AddedIntelligencePassive",
-	"referenceId": 42,
-	"maxLevel": 1,
-	"connections": [
-		{
-			"referenceId": 41
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 42,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 41
+			}
+		],
+		"position": {
+			"x": -220,
+			"y": -400
 		}
-	],
-	"position": {
-		"x": -220,
-		"y": -400
-	}
-},
-{
-	"internalIdentifier": "AddedIntelligencePassive",
-	"referenceId": 43,
-	"maxLevel": 1,
-	"connections": [
-		{
-			"referenceId": 41
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 43,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 41
+			}
+		],
+		"position": {
+			"x": -80,
+			"y": -400
 		}
-	],
-	"position": {
-		"x": -80,
-		"y": -400
-	}
-},
+	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 44,
@@ -683,6 +668,9 @@
 		"connections": [
 			{
 				"referenceId": 44
+			},
+			{
+				"referenceId": 68
 			}
 		],
 		"position": {
@@ -697,6 +685,9 @@
 		"connections": [
 			{
 				"referenceId": 45
+			},
+			{
+				"referenceId": 61
 			}
 		],
 		"position": {
@@ -721,7 +712,6 @@
 			"y": -620
 		}
 	},
-
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 49,
@@ -730,7 +720,6 @@
 			{
 				"referenceId": 47
 			}
-
 		],
 		"position": {
 			"x": 40,
@@ -745,7 +734,6 @@
 			{
 				"referenceId": 49
 			}
-
 		],
 		"position": {
 			"x": 150,
@@ -760,7 +748,6 @@
 			{
 				"referenceId": 50
 			}
-
 		],
 		"position": {
 			"x": 260,
@@ -775,7 +762,6 @@
 			{
 				"referenceId": 49
 			}
-
 		],
 		"position": {
 			"x": 150,
@@ -824,7 +810,7 @@
 		],
 		"position": {
 			"x": -350,
-			"y": -480
+			"y": -510
 		}
 	},
 	{
@@ -838,7 +824,7 @@
 		],
 		"position": {
 			"x": -630,
-			"y": -480
+			"y": -510
 		}
 	},
 	{
@@ -848,11 +834,14 @@
 		"connections": [
 			{
 				"referenceId": 55
+			},
+			{
+				"referenceId": 69
 			}
 		],
 		"position": {
 			"x": -583,
-			"y": -620
+			"y": -650
 		}
 	},
 	{
@@ -866,7 +855,7 @@
 		],
 		"position": {
 			"x": -397,
-			"y": -620
+			"y": -650
 		}
 	},
 	{
@@ -883,21 +872,1525 @@
 		],
 		"position": {
 			"x": -490,
-			"y": -380
+			"y": -430
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedStrengthPassive",
 		"referenceId": 60,
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 47
+				"referenceId": 91
+			}
+		],
+		"position": {
+			"x": -680,
+			"y": -270
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 61,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 62
+			},
+			{
+				"referenceId": 63
+			}
+		],
+		"position": {
+			"x": 90,
+			"y": -780
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 62,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 65
+			},
+			{
+				"referenceId": 51
+			}
+		],
+		"position": {
+			"x": 190,
+			"y": -860
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 63,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 64
+			}
+		],
+		"position": {
+			"x": -10,
+			"y": -860
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 64,
+		"maxLevel": 1,
+		"position": {
+			"x": -60,
+			"y": -960
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 65,
+		"maxLevel": 1,
+		"position": {
+			"x": 240,
+			"y": -960
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 66,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 64
+			}
+		],
+		"position": {
+			"x": 20,
+			"y": -1030
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 67,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 65
+			}
+		],
+		"position": {
+			"x": 150,
+			"y": -1030
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 68,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 69
+			}
+		],
+		"position": {
+			"x": -427,
+			"y": -740
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 69,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 71
+			}
+		],
+		"position": {
+			"x": -547,
+			"y": -820
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 70,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 68
+			},
+			{
+				"referenceId": 72
+			}
+		],
+		"position": {
+			"x": -307,
+			"y": -820
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 71,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 73
+			}
+		],
+		"position": {
+			"x": -547,
+			"y": -970
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 72,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 73
+			},
+			{
+				"referenceId": 79
+			}
+		],
+		"position": {
+			"x": -307,
+			"y": -960
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 73,
+		"maxLevel": 1,
+		"position": {
+			"x": -427,
+			"y": -1120
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 74,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 43
+			}
+		],
+		"position": {
+			"x": 10,
+			"y": -350
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 75,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 74
+			},
+			{
+				"referenceId": 76
+			},
+			{
+				"referenceId": 53
+			}
+		],
+		"position": {
+			"x": 90,
+			"y": -390
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 76,
+		"maxLevel": 1,
+		"position": {
+			"x": 120,
+			"y": -290
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 77,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 48
+			},
+			{
+				"referenceId": 78
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": -740
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 78,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 79
+			}
+		],
+		"position": {
+			"x": -190,
+			"y": -840
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 79,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 64
+			}
+		],
+		"position": {
+			"x": -170,
+			"y": -970
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 80,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 666
+			},
+			{
+				"referenceId": 82
+			}
+		],
+		"position": {
+			"x": -400,
+			"y": 60
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 81,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 666
+			}
+		],
+		"position": {
+			"x": -400,
+			"y": -50
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 82,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 81
 			}
 		],
 		"position": {
 			"x": -490,
-			"y": -380
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 83,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 82
+			},
+			{
+				"referenceId": 85
+			}
+		],
+		"position": {
+			"x": -590,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 84,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 83
+			},
+			{
+				"referenceId": 96
+			}
+		],
+		"position": {
+			"x": -590,
+			"y": 80
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 85,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 90
+			}
+		],
+		"position": {
+			"x": -590,
+			"y": -80
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 86,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 83
+			}
+		],
+		"position": {
+			"x": -710,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 87,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 85
+			},
+			{
+				"referenceId": 103
+			}
+		],
+		"position": {
+			"x": -990,
+			"y": -100
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 88,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 84
+			},
+			{
+				"referenceId": 89
+			}
+		],
+		"position": {
+			"x": -990,
+			"y": 100
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 89,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 87
+			},
+			{
+				"referenceId": 121
+			}
+		],
+		"position": {
+			"x": -1110,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 90,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 60
+			}
+		],
+		"position": {
+			"x": -590,
+			"y": -180
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 91,
+		"maxLevel": 1,
+		"position": {
+			"x": -690,
+			"y": -370
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 92,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 91
+			},
+			{
+				"referenceId": 93
+			}
+		],
+		"position": {
+			"x": -580,
+			"y": -440
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 93,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 94
+			}
+		],
+		"position": {
+			"x": -460,
+			"y": -360
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 94,
+		"maxLevel": 1,
+		"position": {
+			"x": -490,
+			"y": -240
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 95,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 94
+			}
+		],
+		"position": {
+			"x": -600,
+			"y": -280
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 96,
+		"maxLevel": 1,
+		"position": {
+			"x": -570,
+			"y": 190
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 97,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 96
+			},
+			{
+				"referenceId": 101
+			}
+		],
+		"position": {
+			"x": -650,
+			"y": 230
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 98,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 97
+			},
+			{
+				"referenceId": 100
+			}
+		],
+		"position": {
+			"x": -730,
+			"y": 270
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 99,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 98
+			}
+		],
+		"position": {
+			"x": -810,
+			"y": 310
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 100,
+		"maxLevel": 1,
+		"position": {
+			"x": -730,
+			"y": 370
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 101,
+		"maxLevel": 1,
+		"position": {
+			"x": -650,
+			"y": 330
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 102,
+		"maxLevel": 1,
+		"position": {
+			"x": -870,
+			"y": -190
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 103,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 102
+			},
+			{
+				"referenceId": 105
+			}
+		],
+		"position": {
+			"x": -990,
+			"y": -190
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 104,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 102
+			},
+			{
+				"referenceId": 91
+			}
+		],
+		"position": {
+			"x": -840,
+			"y": -390
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 105,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 104
+			}
+		],
+		"position": {
+			"x": -1020,
+			"y": -390
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 106,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 88
+			},
+			{
+				"referenceId": 107
+			}
+		],
+		"position": {
+			"x": -960,
+			"y": 210
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 107,
+		"maxLevel": 1,
+		"position": {
+			"x": -1020,
+			"y": 310
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 108,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 107
+			},
+			{
+				"referenceId": 99
+			}
+		],
+		"position": {
+			"x": -940,
+			"y": 390
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 109,
+		"maxLevel": 1,
+		"position": {
+			"x": -1270,
+			"y": 160
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 110,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 109
+			}
+		],
+		"position": {
+			"x": -1270,
+			"y": 310
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 111,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 110
+			}
+		],
+		"position": {
+			"x": -1350,
+			"y": 330
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 112,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 110
+			},
+			{
+				"referenceId": 114
+			},
+			{
+				"referenceId": 107
+			}
+		],
+		"position": {
+			"x": -1190,
+			"y": 330
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 113,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 111
+			}
+		],
+		"position": {
+			"x": -1350,
+			"y": 200
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 114,
+		"maxLevel": 1,
+		"position": {
+			"x": -1190,
+			"y": 200
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 115,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 116
+			},
+			{
+				"referenceId": 117
+			}
+		],
+		"position": {
+			"x": -1230,
+			"y": -160
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 116,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 118
+			}
+		],
+		"position": {
+			"x": -1330,
+			"y": -260
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 117,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 119
+			}
+		],
+		"position": {
+			"x": -1130,
+			"y": -260
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 118,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 120
+			}
+		],
+		"position": {
+			"x": -1330,
+			"y": -410
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 119,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 120
+			},
+			{
+				"referenceId": 105
+			}
+		],
+		"position": {
+			"x": -1130,
+			"y": -410
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 120,
+		"maxLevel": 1,
+		"position": {
+			"x": -1230,
+			"y": -490
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 121,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 115
+			},
+			{
+				"referenceId": 123
+			}
+		],
+		"position": {
+			"x": -1210,
+			"y": -80
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 122,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 89
+			},
+			{
+				"referenceId": 109
+			},
+			{
+				"referenceId": 124
+			}
+		],
+		"position": {
+			"x": -1210,
+			"y": 80
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 123,
+		"maxLevel": 1,
+		"position": {
+			"x": -1360,
+			"y": -80
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 124,
+		"maxLevel": 1,
+		"position": {
+			"x": -1360,
+			"y": 80
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 125,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 444
+			}
+		],
+		"position": {
+			"x": -200,
+			"y": 240
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 126,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 444
+			},
+			{
+				"referenceId": 127
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": 240
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 127,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 125
+			},
+			{
+				"referenceId": 128
+			}
+		],
+		"position": {
+			"x": -150,
+			"y": 330
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 128,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 129
+			}
+		],
+		"position": {
+			"x": -50,
+			"y": 400
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 129,
+		"maxLevel": 1,
+		"position": {
+			"x": -50,
+			"y": 500
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 130,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 132
+			},
+			{
+				"referenceId": 133
+			}
+		],
+		"position": {
+			"x": -290,
+			"y": 690
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 131,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 129
+			}
+		],
+		"position": {
+			"x": -150,
+			"y": 570
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 132,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 135
+			}
+		],
+		"position": {
+			"x": -340,
+			"y": 580
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 133,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 134
+			}
+		],
+		"position": {
+			"x": -410,
+			"y": 670
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 134,
+		"maxLevel": 1,
+		"position": {
+			"x": -520,
+			"y": 700
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 135,
+		"maxLevel": 1,
+		"position": {
+			"x": -420,
+			"y": 500
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 136,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 134
+			},
+			{
+				"referenceId": 133
+			}
+		],
+		"position": {
+			"x": -490,
+			"y": 590
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 137,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 138
+			}
+		],
+		"position": {
+			"x": 40,
+			"y": 690
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 138,
+		"maxLevel": 1,
+		"position": {
+			"x": 80,
+			"y": 600
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 139,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 138
+			},
+			{
+				"referenceId": 129
+			}
+		],
+		"position": {
+			"x": 40,
+			"y": 500
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 140,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 139
+			}
+		],
+		"position": {
+			"x": 210,
+			"y": 500
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 141,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 140
+			},
+			{
+				"referenceId": 142
+			}
+		],
+		"position": {
+			"x": 390,
+			"y": 500
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 142,
+		"maxLevel": 1,
+		"position": {
+			"x": 330,
+			"y": 600
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 143,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 131
+			},
+			{
+				"referenceId": 130
+			},
+			{
+				"referenceId": 137
+			}
+		],
+		"position": {
+			"x": -150,
+			"y": 690
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 144,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 143
+			}
+		],
+		"position": {
+			"x": -230,
+			"y": 850
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 145,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 143
+			},
+			{
+				"referenceId": 151
+			}
+		],
+		"position": {
+			"x": -70,
+			"y": 850
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 146,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 134
+			},
+			{
+				"referenceId": 144
+			},
+			{
+				"referenceId": 148
+			}
+		],
+		"position": {
+			"x": -380,
+			"y": 850
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 147,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 146
+			},
+			{
+				"referenceId": 149
+			}
+		],
+		"position": {
+			"x": -470,
+			"y": 950
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 148,
+		"maxLevel": 1,
+		"position": {
+			"x": -280,
+			"y": 950
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 149,
+		"maxLevel": 1,
+		"position": {
+			"x": -460,
+			"y": 1150
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 150,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 148
+			},
+			{
+				"referenceId": 149
+			}
+		],
+		"position": {
+			"x": -289,
+			"y": 1150
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 151,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 152
+			}
+		],
+		"position": {
+			"x": 70,
+			"y": 850
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 152,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 154
+			}
+		],
+		"position": {
+			"x": 70,
+			"y": 740
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 153,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 151
+			},
+			{
+				"referenceId": 155
+			}
+		],
+		"position": {
+			"x": 200,
+			"y": 850
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 154,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 156
+			}
+		],
+		"position": {
+			"x": 200,
+			"y": 740
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 155,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 160
+			}
+		],
+		"position": {
+			"x": 350,
+			"y": 870
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 156,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 142
+			}
+		],
+		"position": {
+			"x": 350,
+			"y": 740
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 157,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 145
+			},
+			{
+				"referenceId": 158
+			}
+		],
+		"position": {
+			"x": 70,
+			"y": 950
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 158,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 160
+			}
+		],
+		"position": {
+			"x": 210,
+			"y": 970
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 159,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 157
+			}
+		],
+		"position": {
+			"x": 170,
+			"y": 1090
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 160,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 161
+			}
+		],
+		"position": {
+			"x": 360,
+			"y": 970
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 161,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 162
+			}
+		],
+		"position": {
+			"x": 500,
+			"y": 950
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 162,
+		"maxLevel": 1,
+		"position": {
+			"x": 400,
+			"y": 1090
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 163,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 144
+			},
+			{
+				"referenceId": 145
+			}
+		],
+		"position": {
+			"x": -150,
+			"y": 930
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 164,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 163
+			},
+			{
+				"referenceId": 165
+			}
+		],
+		"position": {
+			"x": -200,
+			"y": 1030
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 165,
+		"maxLevel": 1,
+		"position": {
+			"x": -80,
+			"y": 1130
+		}
+	},
+	{
+		"internalIdentifier": "AnchorPassive",
+		"referenceId": 444,
+		"maxLevel": 1,
+		"position": {
+			"x": -150,
+			"y": 150
+		}
+	},
+	{
+		"internalIdentifier": "AnchorPassive",
+		"referenceId": 666,
+		"maxLevel": 1,
+		"position": {
+			"x": -300,
+			"y": -0
+		}
+	},
+	{
+		"internalIdentifier": "AnchorPassive",
+		"referenceId": 555,
+		"maxLevel": 1,
+		"position": {
+			"x": -150,
+			"y": -150
 		}
 	}
 ]
