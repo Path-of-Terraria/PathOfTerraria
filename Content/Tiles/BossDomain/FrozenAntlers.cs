@@ -47,24 +47,24 @@ internal class FrozenAntlers : ModTile
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		int type = ModContent.NPCType<SkullApparition>();
+		HashSet<Point16> positions = [];
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			HashSet<Point16> positions = [];
 			int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 0);
 			Main.npc[npc].velocity = new Vector2(0, 8).RotatedByRandom(0.5f);
 			Main.npc[npc].netUpdate = true;
-
-			for (int k = 0; k < 15; ++k)
-			{
-				Vector2 target = GetTarget(i, j, positions).ToWorldCoordinates();
-				Vector2 pos = new Vector2(i, j).ToWorldCoordinates();
-				Projectile.NewProjectile(new EntitySource_TileBreak(i, j), pos, Vector2.Zero, ModContent.ProjectileType<AntlerShardProj>(), 0, 0, Main.myPlayer, target.X, target.Y);
-			}
 		}
 		else
 		{
 			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, new Vector2((i + 1) * 16, (j + 1) * 16), new Vector2(0, 8).RotatedByRandom(0.5f));
+		}
+
+		for (int k = 0; k < 15; ++k)
+		{
+			Vector2 target = GetTarget(i, j, positions).ToWorldCoordinates();
+			Vector2 pos = new Vector2(i, j).ToWorldCoordinates();
+			Projectile.NewProjectile(new EntitySource_TileBreak(i, j), pos, Vector2.Zero, ModContent.ProjectileType<AntlerShardProj>(), 0, 0, Main.myPlayer, target.X, target.Y);
 		}
 	}
 

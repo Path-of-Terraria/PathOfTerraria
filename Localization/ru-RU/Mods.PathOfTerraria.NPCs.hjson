@@ -459,8 +459,8 @@ RhineNPC: {
 		// Common2: Five gold coins and I can tell you the most wild story you've ever heard. Up for it?
 		// Common3: Good heavens, this tastes like nothing else. You also taking an off day?
 		// Quest: Ah, adventurer. You have any experience with the deep tundra? I've always been curious of a story my mother told me...about one massive, lumbering beast deep in a frigid tundra. She spoke of it as legend, and I've always been curious. Alas, I don't handle the cold well; but perhaps you do? I've high interest, though I'm not sure if it's even real. There's a small fortress in the world's snow, a short distance under the surface. Take this compass, find it, and open it. You'll know what to take.
-		// Antlers: Wow...sorry. I...I genuinely didn't think these were real. My mother spoke of these, a simple set of four-point antlers with a discoloration near the points. Odd aura. Strangely uncomfortable to hold. Wow. Well. I suppose you should seek the Deer itself, then. The Hunter can tell you about it - she knows all creatures that stalk the woods, white or not. I'll be here, I can only imagine what my mother will think seeing these antlers again.
-		// Success: ...unbelievable. Truly...I don't know what to say. Take this. I'll be here, stewing in revelation. Go have fun. Brom, another mead, please. Unbelievable...
+		// Antlers: Wow...sorry. I...I genuinely didn't think these were real. My mother spoke of this - even just the shards shaved off of the antlers are...combative. Odd aura. Strangely uncomfortable to hold. Wow. Well. I suppose you should seek the Deer itself, then. The Hunter can tell you about it - she knows all creatures that stalk the woods, white or not. I'll be here. I can only imagine what my mother will think seeing these antlers again.
+		// Success: ...unbelievable. Truly...I don't know what to say. Take this. I'll be here, stewing in revelation. Go have fun. Brom, another mead, please. Never would I have thought...
 	}
 
 	BubbleDialogue: {
