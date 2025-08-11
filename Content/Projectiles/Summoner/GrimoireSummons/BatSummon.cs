@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 
 internal class BatSummon : GrimoireSummon
 {
-	public override int BaseDamage => 5;
+	public override int BaseDamage => 12;
 
 	public override void StaticDefaults()
 	{
