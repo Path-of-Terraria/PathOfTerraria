@@ -17,7 +17,7 @@ internal class SilverBoomerang : Boomerang
 	{
 		base.SetDefaults();
 
-		Item.damage = 15;
+		Item.damage = 17;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;
 		Item.value = Item.buyPrice(0, 0, 3, 0);
