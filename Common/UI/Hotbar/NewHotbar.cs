@@ -333,6 +333,11 @@ public sealed class NewHotbar : SmartUiState
 		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
 		{
 			DrawSkillHoverTooltips(skill, skillIndex);
+
+			if (Main.mouseRight && Main.mouseRightRelease)
+			{
+				skillCombatPlayer.HotbarSkills[skillIndex] = null;
+			}
 		}
 	}
 
@@ -356,13 +361,13 @@ public sealed class NewHotbar : SmartUiState
 		if (skill.WeaponType != ItemID.None)
 		{
 			Color color = canUse && failure.WeaponRejected ? Color.Red : Color.White;
-			string text = Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value;
+			string text = Language.GetText("Mods.PathOfTerraria.SkillFailReasons.NeedsWeapon").WithFormatArgs(skill.WeaponType).Value;
 			tooltips.Add(new("WeaponType", $"[c/{color.Hex3()}:{text}]", 0.5f));
 		}
 		
 		if (!canUse && failure.Reason == SkillFailReason.Other)
 		{
-			tooltips.Add(new("OtherDenial", $"[c/FF0000:{failure.OtherReason.Value}]", 0.5f));
+			tooltips.Add(new("Denial", $"[c/FF0000:{failure.Description.Value}]", 0.5f));
 		}
 
 		SkillTooltip noKeybindName = new("NoKeybind", Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value, 0);

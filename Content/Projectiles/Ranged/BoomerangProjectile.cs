@@ -25,7 +25,7 @@ internal class BoomerangProjectile : ModProjectile
 	{
 		Projectile.width = 20;
 		Projectile.height = 20;
-		Projectile.tileCollide = false;
+		Projectile.tileCollide = true;
 		Projectile.friendly = true;
 		Projectile.penetrate = -1;
 	}
@@ -84,6 +84,7 @@ internal class BoomerangProjectile : ModProjectile
 
 		// Return by lerping velocity towards player.
 		Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(Owner.Center) * _originalMagnitude, factor);
+		Projectile.tileCollide = false; // Ignore tiles so that the boomerang can reach the player on return
 
 		if (Owner.Hitbox.Intersects(Projectile.Hitbox)) // Despawn when touching the player.
 		{
@@ -91,20 +92,35 @@ internal class BoomerangProjectile : ModProjectile
 		}
 	}
 
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	private bool Reflect()
 	{
 		if (Timer <= 30) // Only reflect & return if not already returning for vanilla parity
 		{
 			Projectile.velocity = -Projectile.velocity.RotatedByRandom(0.2f); // Reflect boomerang...
 			Timer = 31; //...and make it return immediately
+
+			return true;
 		}
+
+		return false;
+	}
+
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		Reflect();
+		return false;
+	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		Reflect();
 	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureUtils.LoadAndGetItem((int)ItemId).Value;
 
-		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, tex.Size() / 2f, 1, SpriteEffects.None, 0);
+		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, tex.Size() / 2f, 1, SpriteEffects.None, 0);
 		return false;
 	}
 }
