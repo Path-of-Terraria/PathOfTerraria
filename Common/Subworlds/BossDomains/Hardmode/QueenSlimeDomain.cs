@@ -6,6 +6,7 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -134,7 +135,11 @@ internal class QueenSlimeDomain : BossDomainSubworld
 					if (k < 3)
 					{
 						ItemDatabase.ItemRecord drop = DropTable.RollMobDrops(PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
-
+						if (drop.Item == null)
+						{
+							continue; //Noticed null reference for drop.Item.stack when entering Queen Slime Domain
+						}
+						
 						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
 					}
 					else
@@ -436,13 +441,17 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		}
 		else
 		{
-			if (!NPC.AnyNPCs(NPCID.QueenSlimeBoss) && !ExitSpawned)
+			if (NPC.AnyNPCs(NPCID.QueenSlimeBoss) || ExitSpawned)
 			{
-				ExitSpawned = true;
-
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+				return;
 			}
+
+			BossTracker.AddDowned(NPCID.QueenSlimeBoss, false, true);
+
+			ExitSpawned = true;
+
+			IEntitySource src = Entity.GetSource_NaturalSpawn();
+			Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
 	}
 }
