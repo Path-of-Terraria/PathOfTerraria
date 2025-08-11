@@ -71,7 +71,7 @@ public sealed class TownScoutNPC : ModNPC
 		else
 		{
 			float target = NPC.Center.X < Main.maxTilesX * 8 ? -4 : 4;
-			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, target, 0.05f);
+			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, target, 0.03f);
 		}
 
 		NPC.direction = NPC.spriteDirection = Math.Sign(NPC.velocity.X);
