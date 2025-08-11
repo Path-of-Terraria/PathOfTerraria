@@ -59,7 +59,7 @@ internal class FrozenAntlers : ModTile
 		{
 			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, new Vector2((i + 1) * 16, (j + 1) * 16), new Vector2(0, 8).RotatedByRandom(0.5f));
 		}
-
+		
 		for (int k = 0; k < 15; ++k)
 		{
 			Vector2 target = GetTarget(i, j, positions).ToWorldCoordinates();
