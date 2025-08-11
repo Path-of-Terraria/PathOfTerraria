@@ -64,8 +64,7 @@ internal abstract class Sword : Gear
 			return false;
 		}
 
-		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
-		modPlayer.Player.statMana -= 5;
+		player.CheckMana(5, true);
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 		player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime);
 
