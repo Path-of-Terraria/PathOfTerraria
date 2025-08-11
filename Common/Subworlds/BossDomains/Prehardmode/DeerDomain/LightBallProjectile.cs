@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 
@@ -17,8 +15,8 @@ internal class LightBallProjectile : ModProjectile
 		Projectile.Opacity = 0;
 		Projectile.aiStyle = 0;
 		Projectile.timeLeft = 2;
-		Projectile.hostile = true;
-		Projectile.friendly = true;
+		Projectile.hostile = false;
+		Projectile.friendly = false;
 		Projectile.tileCollide = false;
 		Projectile.Size = new(16);
 		Projectile.penetrate = -1;

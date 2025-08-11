@@ -89,6 +89,7 @@ Quest: {
 		Name: Frigid Beast
 		Description: ""
 		KillDeerclops: Kill Deerclops
+		// GetAntlersOrShards: Get Strange Antlers or an Antler Shard
 	}
 
 	SkeletronQuest: {

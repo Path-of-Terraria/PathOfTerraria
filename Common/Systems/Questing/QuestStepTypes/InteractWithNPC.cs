@@ -21,7 +21,7 @@ public readonly struct GiveItem(int stack, params int[] ids)
 				names += Lang.GetItemNameValue(type) + $" ({localCount} / {Stack})" + ((i == Ids.Length - 2) ? or : ", ");
 			}
 
-			return names.Remove(names.Length - 2, 2);
+			return names[..^2];
 		}
 	}
 
@@ -39,13 +39,14 @@ public readonly struct GiveItem(int stack, params int[] ids)
 /// <param name="reqItems">If not null, the items required to be held by the player when talking to the NPC.</param>
 /// <param name="removeItems">If true, and <paramref name="reqItems"/> is not null, all <paramref name="reqItems"/> will be taken up to the required stack.</param>
 /// <param name="onSuccessfulInteraction">An action that is run when the interaction is successful (the step is completed).</param>
-internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveItem[] reqItems = null, 
+internal class InteractWithNPC(int npcId, LocalizedText reminder, LocalizedText dialogue = null, GiveItem[] reqItems = null, 
 	bool removeItems = false, Action<NPC> onSuccess = null) : QuestStep
 {
 	private static LocalizedText TalkToText = null;
 
 	private readonly int NpcId = npcId;
 	private readonly LocalizedText NpcDialogue = dialogue;
+	private readonly LocalizedText Reminder = reminder;
 	private readonly GiveItem[] RequiredItems = reqItems;
 	private readonly bool RemoveItems = removeItems;
 	private readonly Action<NPC> OnSuccess = onSuccess;
@@ -170,5 +171,11 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 		}
 
 		return true;
+	}
+
+	public override string ReminderText(ref string title)
+	{
+		title = Language.GetTextValue("Mods.PathOfTerraria.UI.QuestReminderTitles.Reminder");
+		return Reminder.Value;
 	}
 }

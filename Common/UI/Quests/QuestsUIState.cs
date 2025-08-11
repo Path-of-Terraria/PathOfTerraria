@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -127,6 +128,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			Width = new(38, 0),
 			Height = new(38, 0)
 		};
+
 		_closeButton.OnLeftClick += (a, b) =>
 		{
 			IsVisible = false;
@@ -159,7 +161,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 				Width = StyleDimension.Fill,
 				Height = StyleDimension.FromPixels(step.LineCount * 22)
 			});
-		}		
+		}
 	}
 
 	private void PopulateQuests()

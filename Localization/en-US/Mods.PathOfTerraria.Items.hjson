@@ -1320,3 +1320,8 @@ CultistMap: {
 		'The map smells of soot and space'
 		'''
 }
+
+AntlerShard: {
+	DisplayName: Antler Shard
+	Tooltip: ""
+}

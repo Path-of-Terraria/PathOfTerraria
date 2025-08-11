@@ -1,7 +1,6 @@
-﻿using PathOfTerraria.Common.UI.Elements;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using Terraria;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -10,11 +9,13 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// Wraps around two or more steps to do in parallel. For example, getting 10 Iron Bars, killing the Eye and exploring the Jungle.
 /// </summary>
 /// <param name="stepsLists">The steps to run in parallel.</param>
-internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
+internal class ParallelQuestStep(List<QuestStep> stepsLists, LocalizedText reminder = null, LocalizedText reminderTitle = null) : QuestStep
 {
 	public override int LineCount => steps.Count + 2;
 
 	readonly List<QuestStep> steps = stepsLists;
+	readonly LocalizedText reminder = reminder;
+	readonly LocalizedText reminderTitle = reminderTitle ?? Language.GetText("Mods.PathOfTerraria.UI.QuestReminderTitles.Reminder");
 
 	public void FinishSubTask(int id)
 	{
@@ -100,5 +101,11 @@ internal class ParallelQuestStep(List<QuestStep> stepsLists) : QuestStep
 		{
 			steps[i].Load(subStepTags[i]);
 		}
+	}
+
+	public override string ReminderText(ref string title)
+	{
+		title = reminderTitle.Value;
+		return reminder.Value;
 	}
 }

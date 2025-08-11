@@ -131,6 +131,18 @@ internal class RavencrestSubworld : MappingWorld
 			{
 				pool.Add(ModContent.NPCType<TownScoutNPC>(), scoutChance);
 			}
+
+			if (Main.dayTime)
+			{
+				pool[NPCID.Bird] = 0.3f;
+				pool[NPCID.BirdBlue] = 0.3f;
+				pool[NPCID.BirdRed] = 0.3f;
+				pool[NPCID.GoldBird] = 0.005f;
+			}
+			else
+			{
+				pool[NPCID.Owl] = 0.6f;
+			}
 		}
 	}
 }
