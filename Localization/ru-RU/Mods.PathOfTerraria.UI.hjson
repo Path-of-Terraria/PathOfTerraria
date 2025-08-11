@@ -23,6 +23,8 @@ Slots: {
 	// 8: Right Ring
 	// 9: Accessory 1
 	// 10: Wings
+	// 11: Accessory 3
+	// 12: Accessory 4
 }
 
 BaseDamage: Базовый урон: {0}
