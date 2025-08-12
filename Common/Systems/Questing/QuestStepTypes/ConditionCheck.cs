@@ -13,7 +13,7 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, LocalizedText displayText, LocalizedText reminderText = null) : QuestStep
 {
 	private readonly float ExploreTime = exploreTime;
-	private readonly LocalizedText Reminder = reminderText;
+	private readonly LocalizedText Reminder = reminderText ?? LocalizedText.Empty;
 
 	private float _explore = 0;
 
