@@ -2,7 +2,6 @@
 LevelLine: (Niveau {0}/{1})
 ManaLine: Coute {0} mana
 NotEnoughMana: Coute [c/FF6666:{0} mana]
-WeaponLine: Doit utiliser une arme {0}
 NoWeaponLine: Aucune arme requise
 NoKeybindLine: Aucune touche détectée
 DurationLine: Dure {0} secondes
@@ -12,11 +11,6 @@ NeedsWeapon: Besoin d'un objet {0} pour être porté
 BaseDamage: Inflige {0} de dommage de base
 # This is for the hover text in the skills menu.
 CantEquip: Ne peut équiper la compétence : {0}
-
-Denials: {
-	NotEnoughMana: "[c/999999 : Pas assez de mana]"
-	NeedsAffix: "[c/999999 : Besoin d'un affixe de force]"
-}
 
 # These are the actual localization lines for skills.
 Nova: {
