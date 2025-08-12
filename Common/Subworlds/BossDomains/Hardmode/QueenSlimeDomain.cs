@@ -135,10 +135,6 @@ internal class QueenSlimeDomain : BossDomainSubworld
 					if (k < 3)
 					{
 						ItemDatabase.ItemRecord drop = DropTable.RollMobDrops(PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
-						if (drop.Item == null)
-						{
-							continue; //Noticed null reference for drop.Item.stack when entering Queen Slime Domain
-						}
 						
 						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
 					}
