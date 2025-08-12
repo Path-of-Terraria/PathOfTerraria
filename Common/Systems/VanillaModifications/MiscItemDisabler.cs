@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Utilities;
+using SubworldLibrary;
+using Terraria.Chat;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.VanillaModifications;
 
@@ -72,6 +76,29 @@ internal class MiscItemDisabler : ModSystem
 		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 		{
 			npcLoot.RemoveWhere(x => x is CommonDrop common && DisabledItems.Contains(common.itemId));
+		}
+	}
+	
+	internal class MiscItemDisablerGlobalItem : GlobalItem
+	{
+		public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+		{
+			return entity.type == ItemID.PirateMap;
+		}
+
+		
+		public override bool CanUseItem(Item item, Player player)
+		{
+			if (SubworldSystem.Current is null)
+			{
+				return true;
+			}
+			
+			string key = $"Mods.{PoTMod.ModName}.Misc.SubworldItemDisabler";
+
+			NotificationUtils.ShowNotification(key, Colors.RarityDarkRed);
+			
+			return false;
 		}
 	}
 }
