@@ -113,7 +113,6 @@ internal class PotionGlobal : GlobalItem
 
 	public override bool? UseItem(Item item, Player player)
 	{
-		Main.NewText("Used a potion!");
 		return null;
 	}
 }

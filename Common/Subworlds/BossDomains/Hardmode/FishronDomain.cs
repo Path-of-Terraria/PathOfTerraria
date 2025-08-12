@@ -5,6 +5,7 @@ using PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
 using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Utilities;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -424,28 +425,14 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 			{
 				string key = $"Mods.{PoTMod.ModName}.Misc.FishronSpawn";
 
-				if (!Main.dedServ)
-				{
-					Main.NewText(Language.GetTextValue(key), Colors.RarityDarkPurple);
-				}
-				else
-				{
-					ChatHelper.BroadcastChatMessage(NetworkText.FromKey(key), Colors.RarityDarkPurple);
-				}
+				NotificationUtils.ShowNotification(key, Colors.RarityDarkPurple);
 			}
 
 			if (BossSpawnTimer > 1200)
 			{
 				string key = "Announcement.HasAwoken";
-
-				if (!Main.dedServ)
-				{
-					Main.NewText(Language.GetTextValue(key, Lang.GetNPCName(NPCID.DukeFishron)), Colors.RarityDarkPurple);
-				}
-				else
-				{
-					ChatHelper.BroadcastChatMessage(NetworkText.FromKey(key, NetworkText.FromKey(Lang.GetNPCName(NPCID.DukeFishron).Key)), Colors.RarityDarkPurple);
-				}
+				
+				NotificationUtils.ShowNotification(key, Colors.RarityDarkPurple);
 
 				List<Player> players = [];
 
