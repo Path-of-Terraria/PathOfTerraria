@@ -220,7 +220,7 @@ partial class PoTGlobalItem
 			aps = (float) Math.Round(aps, 2);
 			string apsStr = aps.ToString("0.00");
 			string localizeString = item.DamageType == DamageClass.Magic ? "CastSpeed" : "AttackSpeed";
-			var attackSpeed = new TooltipLine(Mod, "APS", $"[i:{ItemID.SilverBullet}] [{apsStr}] {Localize(localizeString)}");
+			var attackSpeed = new TooltipLine(Mod, "AttacksPerSecond", $"[i:{ItemID.SilverBullet}] [{apsStr}] {Localize(localizeString)}");
 			AddNewTooltipLine(item, tooltips, attackSpeed);
 		}
 		
