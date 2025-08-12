@@ -15,7 +15,7 @@ public class AscendantShard : CurrencyShard
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 50;
+		staticData.DropChance = 500f;
 		staticData.MinDropItemLevel = 25;
 	}
 

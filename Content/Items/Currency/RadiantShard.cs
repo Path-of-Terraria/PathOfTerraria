@@ -11,7 +11,7 @@ public class RadiantShard : CurrencyShard
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 100f;
+		staticData.DropChance = 250f;
 		staticData.MinDropItemLevel = 25;
 	}
 
