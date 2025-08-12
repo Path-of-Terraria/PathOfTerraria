@@ -16,6 +16,8 @@ Tooltips: {
 	Axe: Axe Power
 	Hammer: Hammer Power
 	ManaCost: Mana Cost
+	AttackSpeed: Attack Speed
+	CastSpeed: Cast Speed
 }
 
 Influence: {
