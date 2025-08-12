@@ -10,7 +10,7 @@ internal class DeerclopsSystem : ModSystem
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		tag.Add("antler", AntlerLocation);
+		tag["antler"] = AntlerLocation;
 	}
 
 	public override void LoadWorldData(TagCompound tag)
@@ -20,12 +20,15 @@ internal class DeerclopsSystem : ModSystem
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		writer.Write(AntlerLocation.X);
-		writer.Write(AntlerLocation.Y);
+		writer.Write((ushort)AntlerLocation.X);
+		writer.Write((ushort)AntlerLocation.Y);
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		AntlerLocation = new Point16(reader.ReadInt16(), reader.ReadInt16());
+		ushort x = reader.ReadUInt16();
+		ushort y = reader.ReadUInt16();
+
+		AntlerLocation = new(x, y);
 	}
 }

@@ -37,7 +37,7 @@ Sword: {
 }
 
 Broadsword: {
-	DisplayName: Тесак
+	DisplayName: Фламберг
 	Tooltip: ""
 }
 
@@ -1054,11 +1054,6 @@ EoLMap: {
 
 GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
 PrismatismBannerItem.DisplayName: Prismatism Banner
-
-Flamberge: {
-	DisplayName: Фламберг
-	Tooltip: ""
-}
 
 MoonMap: {
 	DisplayName: Карта Господина Луны

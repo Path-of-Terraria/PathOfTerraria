@@ -1,0 +1,31 @@
+OneLine: Une seule spécialisation de compétence peut être sélectionnée
+
+FireNova: {
+	Name: Explosion de Feu
+	Description: Créez une aura de flamme basée sur les dégâts de l'arme magique que vous tenez, infligeant En feu !
+}
+
+IceNova: {
+	Name: Vague de Glace
+	Description: Créez une vague de glace basée sur les dégâts de l'arme magique que vous tenez, infligeant Refroidissement
+}
+
+LightningNova: {
+	Name: Choc de Tonnerre
+	Description: Créez une pulsation électrique basée sur les dégâts de l'arme magique que vous tenez, infligeant de large dégâts et infligeant Électrification
+}
+
+NaturesBarrage: {
+	// Name: Nature's Barrage
+	// Description: Tampered tips poison enemies
+}
+
+ExplosiveVolley: {
+	// Name: Explosive Valley
+	// Description: Arrows reposition with an explosion in a much wider range.
+}
+
+PiercingPrecision: {
+	// Name: Piercing Precision
+	// Description: Replace the flurry with a delayed barrage with increased armor piercing
+}
