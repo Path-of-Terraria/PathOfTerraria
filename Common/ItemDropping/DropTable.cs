@@ -39,25 +39,32 @@ internal class DropTable
 				break;
 			default: //Maps
 				{
-					IEnumerable<ItemDatabase.ItemRecord> allMaps = ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop);
-					IEnumerable<ItemDatabase.ItemRecord> itemRecords = allMaps as ItemDatabase.ItemRecord[] ?? allMaps.ToArray();
-					IEnumerable<ItemDatabase.ItemRecord> explorableMaps = itemRecords.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-					IEnumerable<ItemDatabase.ItemRecord> bossMaps = itemRecords.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
-
-					var mapTypeChances = new WeightedRandom<int>(random ?? Main.rand);
-					mapTypeChances.Add(0, 0.7f); //70% explorable maps
-					mapTypeChances.Add(1, 0.3f); //30% boss domain maps
-					int mapTypeChoice = mapTypeChances.Get();
-
-					if (mapTypeChoice == 0)
+					if (Main.hardMode)
 					{
-						items = explorableMaps;
+						IEnumerable<ItemDatabase.ItemRecord> allMaps = ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop);
+						IEnumerable<ItemDatabase.ItemRecord> itemRecords = allMaps as ItemDatabase.ItemRecord[] ?? allMaps.ToArray();
+						IEnumerable<ItemDatabase.ItemRecord> explorableMaps = itemRecords.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
+						IEnumerable<ItemDatabase.ItemRecord> bossMaps = itemRecords.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
+
+						var mapTypeChances = new WeightedRandom<int>(random ?? Main.rand);
+						mapTypeChances.Add(0, 0.7f); //70% explorable maps
+						mapTypeChances.Add(1, 0.3f); //30% boss domain maps
+						int mapTypeChoice = mapTypeChances.Get();
+
+						if (mapTypeChoice == 0)
+						{
+							items = explorableMaps;
+						}
+						else
+						{
+							items = bossMaps;
+						}
 					}
 					else
 					{
-						items = bossMaps;
+						items = ItemDatabase.GetItemByType<Map>().Where(x => (x.Item.ModItem as Map).CanDrop);
 					}
-
+					
 					break;
 				}
 		}
