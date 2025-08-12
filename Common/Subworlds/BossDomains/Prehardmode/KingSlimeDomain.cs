@@ -11,6 +11,7 @@ using PathOfTerraria.Common.World.Generation;
 using Terraria.Localization;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.World.Generation.Tools;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -165,6 +166,7 @@ public class KingSlimeDomain : BossDomainSubworld
 				if (WorldGen.genRand.NextBool(chance))
 				{
 					WorldGen.TileRunner(position.X, position.Y, WorldGen.genRand.Next(6, 20), 8, TileID.SlimeBlock, false, 0, 0, false);
+					Digging.WallCirclePlacing(position.ToVector2(), WorldGen.genRand.Next(6, 20) / 2, true, WallID.Slime, true, false);
 				}
 			}
 		}

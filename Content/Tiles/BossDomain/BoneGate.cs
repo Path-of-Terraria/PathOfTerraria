@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Tiles;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using Terraria.GameContent;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Tiles.BossDomain;
 
@@ -9,6 +10,8 @@ internal class BoneGate : MechGate
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
+
+		TileID.Sets.NotReallySolid[Type] = true;
 
 		Main.tileSolid[Type] = true;
 	}
