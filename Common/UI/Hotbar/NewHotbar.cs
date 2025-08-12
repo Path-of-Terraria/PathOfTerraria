@@ -169,7 +169,7 @@ public sealed class NewHotbar : SmartUiState
 
 		if (TryGetKeybindName(GearSwapKeybind.SwapKeybind, true, out string swapKey)) 
 		{
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, swapKey, new Vector2(8, 36), Color.White, 0f, Vector2.Zero, new Vector2(0.9f));
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, swapKey, new Vector2(8, 40), Color.White, 0f, Vector2.Zero, new Vector2(0.9f));
 		}
 
 		Main.inventoryScale = 0.7f;

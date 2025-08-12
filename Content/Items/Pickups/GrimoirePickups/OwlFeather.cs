@@ -11,7 +11,7 @@ internal class OwlFeather : GrimoirePickup
 	{
 		if (npc.type == NPCID.Owl)
 		{
-			loot.AddCommon<OwlFeather>(5);
+			loot.AddCommon<OwlFeather>(2);
 		}
 	}
 }

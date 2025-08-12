@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
@@ -28,7 +29,7 @@ internal class KingSlimeQuest : Quest
 		[
 			new ConditionCheck(_ => SubworldSystem.Current is KingSlimeDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck(_ => BossTracker.DownedInDomain<KingSlimeDomain>(NPCID.KingSlime), 1, this.GetLocalization("Kill.KingSlime")),
-			new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
+			new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), LocalizedText.Empty, this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
 		];
 	}
 

@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.BossDomain.DeerDomain;
+using PathOfTerraria.Content.Projectiles.Utility;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -45,6 +47,7 @@ internal class FrozenAntlers : ModTile
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		int type = ModContent.NPCType<SkullApparition>();
+		HashSet<Point16> positions = [];
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 		{
@@ -56,5 +59,33 @@ internal class FrozenAntlers : ModTile
 		{
 			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, new Vector2((i + 1) * 16, (j + 1) * 16), new Vector2(0, 8).RotatedByRandom(0.5f));
 		}
+		
+		for (int k = 0; k < 15; ++k)
+		{
+			Vector2 target = GetTarget(i, j, positions).ToWorldCoordinates();
+			Vector2 pos = new Vector2(i, j).ToWorldCoordinates();
+			Projectile.NewProjectile(new EntitySource_TileBreak(i, j), pos, Vector2.Zero, ModContent.ProjectileType<AntlerShardProj>(), 0, 0, Main.myPlayer, target.X, target.Y);
+		}
+	}
+
+	private static Point16 GetTarget(int i, int j, HashSet<Point16> positions)
+	{
+		int reps = 0;
+		
+		while (reps < 15000)
+		{
+			reps++;
+
+			var pos = new Point16(i + Main.rand.Next(-30, 30), j + Main.rand.Next(-30, 30));
+			Tile tile = Main.tile[pos];
+
+			if (!positions.Contains(pos) && !tile.HasTile && tile.WallType == WallID.LeadBrick)
+			{
+				positions.Add(pos);
+				return pos;
+			}
+		}
+
+		return new Point16(i, j - 5);
 	}
 }

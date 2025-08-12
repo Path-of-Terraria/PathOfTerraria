@@ -70,8 +70,9 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 	
 	public override bool OnPickup(Player player)
 	{
+		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Lang.GetItemName(Type)).Value;
+
 		StoreItem(Item);
-		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Item.Name).Value;
 		Color textColor = Color.IndianRed;
 		int projType = ModContent.ProjectileType<GrimoireVisageEffect>();
 		

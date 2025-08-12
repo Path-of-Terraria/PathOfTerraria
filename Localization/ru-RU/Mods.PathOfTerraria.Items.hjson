@@ -1089,3 +1089,8 @@ CultistMap: {
 	DisplayName: Карта Лунатичного Культиста
 	Tooltip: "'''"
 }
+
+AntlerShard: {
+	// DisplayName: Antler Shard
+	// Tooltip: ""
+}

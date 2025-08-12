@@ -26,7 +26,8 @@ internal class EoWQuest : Quest
 		return
 		[
 			new ConditionCheck((_) => ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Contains("PathOfTerraria/MorvenNPC"), 1, this.GetLocalization("MorvenRaven")),
-			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.InRavencrest")),
+			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Aboveground"),
+			    Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.InRavencrest")),
 			new ActionStep((_, _) =>
 			{
 				DisableOrbBreaking.BreakableOrbSystem.CanBreakOrb = true;
@@ -34,7 +35,7 @@ internal class EoWQuest : Quest
 			}),
 			new ConditionCheck((_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2, 1, this.GetLocalization("SmashOrbs")),
 			new ConditionCheck((_) => NPC.downedBoss2, 1, this.GetLocalization("KillEoW")),
-			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.AfterBeatingEoW"))
+			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.AfterBeatingEoW"))
 			{
 				CountsAsCompletedOnMarker = true
 			},
