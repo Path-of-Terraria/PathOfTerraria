@@ -126,9 +126,10 @@ public class RavencrestSystem : ModSystem
 		if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !BossTracker.DownedBrainOfCthulhu)
 		{
 			const int MaxAttempts = 10000;
+
 			for (int attempt = 0; attempt < MaxAttempts; attempt++)
 			{
-				int x = Main.rand.Next(Main.maxTilesX / 5, Main.maxTilesX * 4 / 5);
+				int x = Main.rand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
 				int checkY = Main.rand.Next((int)Main.worldSurface, Main.maxTilesY / 2);
 
 				while (checkY < Main.maxTilesY - 10 && !WorldGen.SolidTile(x, checkY))
@@ -171,7 +172,6 @@ public class RavencrestSystem : ModSystem
 				Main.NewText($"Reached max attempts trying to spawn Morven. Please report this to the mod developers.");
 			}
 		}
-
 
 		int oldMan = NPC.FindFirstNPC(NPCID.OldMan);
 
