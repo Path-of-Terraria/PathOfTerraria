@@ -60,7 +60,7 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.HallowBoss) && !ExitSpawned)
 		{
-			BossTracker.AddDowned(NPCID.EmpressButterfly, false, true);
+			BossTracker.AddDowned(NPCID.HallowBoss, false, true);
 
 			ExitSpawned = true;
 
