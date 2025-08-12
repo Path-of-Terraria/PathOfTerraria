@@ -13,7 +13,7 @@ public class MysticShard : CurrencyShard
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 100f;
+		staticData.DropChance = 500f;
 		staticData.MinDropItemLevel = 15;
 	}
 
