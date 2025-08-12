@@ -13,6 +13,7 @@ public static class NotificationUtils
 			case NetmodeID.SinglePlayer:
 				Main.NewText(Language.GetTextValue(key), color);
 				break;
+			case NetmodeID.MultiplayerClient:
 			case NetmodeID.Server:
 				ChatHelper.BroadcastChatMessage(NetworkText.FromKey(key), color);
 				break;
