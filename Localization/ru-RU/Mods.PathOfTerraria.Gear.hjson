@@ -16,6 +16,8 @@ Tooltips: {
 	Axe: Мощность топора
 	Hammer: Мощность молота
 	// ManaCost: Mana Cost
+	// AttackSpeed: Attack Speed
+	// CastSpeed: Cast Speed
 }
 
 Influence: {

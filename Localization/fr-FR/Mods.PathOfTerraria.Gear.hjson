@@ -16,6 +16,8 @@ Tooltips: {
 	Axe: Puissance de la Hache
 	Hammer: Puissance du Marteau
 	// ManaCost: Mana Cost
+	// AttackSpeed: Attack Speed
+	// CastSpeed: Cast Speed
 }
 
 Influence: {
