@@ -1092,5 +1092,9 @@ CultistMap: {
 
 AntlerShard: {
 	// DisplayName: Antler Shard
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Show this to Rhine in Ravencrest
+		'It has a malice about it'
+		''' */
 }

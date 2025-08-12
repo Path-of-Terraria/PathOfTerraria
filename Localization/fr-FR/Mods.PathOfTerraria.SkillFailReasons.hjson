@@ -1,11 +1,6 @@
 NotEnoughMana: Pas assez de mana pour lancer le sort
-NeedsMelee: Besoin d'une arme de mélée pour utiliser
-NeedsRanged: Besoin d'une arme à distance pour utiliser
-NeedsMagic: Besoin d'une arme magique pour utiliser
-NeedsSummon: Besoin d'une arme d'invocation pour utiliser
-
-Other: {
-	RangedWeaponConsumable: Besoin d'une arme non-consommable
-	WeaponInvalid: L'arme tenue n'est pas valide pour cette compétence
-	NoAmmo: Besoin de munitions
-}
+// NeedsWeapon: Needs a {0} weapon to use
+// RangedWeaponConsumable: Needs a non-consumable weapon
+// WeaponInvalid: Held weapon is invalid for this skill
+// NoAmmo: Needs ammo
+// MissingAffix: Needs affix strength
