@@ -221,3 +221,8 @@ Grimoire: {
 		Ritual: Ah, and your ritual! Here you can place materials full of boons! If your pieces have no boons, they have no effect...
 	}
 }
+
+QuestReminderTitles: {
+	Dialogue: Dialogue
+	Reminder: Reminder
+}

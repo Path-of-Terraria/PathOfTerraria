@@ -1315,3 +1315,12 @@ CultistMap: {
 		'The map smells of soot and space'
 		''' */
 }
+
+AntlerShard: {
+	// DisplayName: Antler Shard
+	/* Tooltip:
+		'''
+		Show this to Rhine in Ravencrest
+		'It has a malice about it'
+		''' */
+}

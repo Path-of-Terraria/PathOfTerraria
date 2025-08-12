@@ -3,6 +3,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -490,6 +491,7 @@ internal class PrimeDomain : BossDomainSubworld
 		{
 			if (!NPC.AnyNPCs(NPCID.SkeletronPrime) && !ExitSpawned)
 			{
+				BossTracker.AddDowned(NPCID.SkeletronPrime, false, true);
 				ExitSpawned = true;
 
 				IEntitySource src = Entity.GetSource_NaturalSpawn();

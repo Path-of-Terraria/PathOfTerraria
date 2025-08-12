@@ -2,6 +2,7 @@
 using PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -59,6 +60,8 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.HallowBoss) && !ExitSpawned)
 		{
+			BossTracker.AddDowned(NPCID.EmpressButterfly, false, true);
+
 			ExitSpawned = true;
 
 			HashSet<Player> players = [];

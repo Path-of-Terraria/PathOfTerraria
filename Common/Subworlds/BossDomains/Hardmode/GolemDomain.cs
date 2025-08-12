@@ -5,6 +5,7 @@ using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 using SubworldLibrary;
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -399,6 +400,8 @@ internal class GolemDomain : BossDomainSubworld
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.Golem) && !ExitSpawned)
 		{
+			BossTracker.AddDowned(NPCID.Golem, false, true);
+
 			ExitSpawned = true;
 
 			HashSet<Player> players = [];

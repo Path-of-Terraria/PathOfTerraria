@@ -70,11 +70,35 @@ public sealed class TownScoutNPC : ModNPC
 		}
 		else
 		{
-			NPC.velocity.X = NPC.Center.X < Main.maxTilesX * 8 ? -3 : 3;
+			float target = NPC.Center.X < Main.maxTilesX * 8 ? -4 : 4;
+			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, target, 0.03f);
 		}
 
 		NPC.direction = NPC.spriteDirection = Math.Sign(NPC.velocity.X);
 		ModContent.GetInstance<RavencrestSystem>().SpawnedScout = true;
+
+		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+
+		if (NPC.velocity.Y != 0)
+		{
+			return false;
+		}
+
+		if (NPC.velocity.X < 0)
+		{
+			if (Collision.SolidCollision(NPC.position - new Vector2(6, 0), 6, 16))
+			{
+				NPC.velocity.Y = -6;
+			}
+		}
+		else
+		{
+			if (Collision.SolidCollision(NPC.TopRight, 6, 16))
+			{
+				NPC.velocity.Y = -6;
+			}
+		}
+
 		return false;
 	}
 
@@ -101,12 +125,12 @@ public sealed class TownScoutNPC : ModNPC
 		{
 			return 0;
 		}
-
+		
 		float chance = NPC.downedGoblins ? 0.1f : 5;
 		bool spawnedScout = ModContent.GetInstance<RavencrestSystem>().SpawnedScout;
 
-		return SubworldSystem.Current is RavencrestSubworld && NPC.downedSlimeKing && WorldGen.shadowOrbSmashed 
-			&& (spawnInfo.SpawnTileX < 80 || spawnInfo.SpawnTileX > Main.maxTilesX - 80) && !spawnedScout ? chance : 0;
+		return SubworldSystem.Current is RavencrestSubworld && NPC.downedSlimeKing 
+			&& (spawnInfo.SpawnTileX < 180 || spawnInfo.SpawnTileX > Main.maxTilesX - 180) && !spawnedScout ? chance : 0;
 	}
 
 	public override bool CheckActive()

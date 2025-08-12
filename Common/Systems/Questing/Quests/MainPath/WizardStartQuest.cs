@@ -37,7 +37,8 @@ internal class WizardStartQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
+			new InteractWithNPC(ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
 			[
 				new GiveItem(1, ModContent.ItemType<TomeOfTheElders>())
 			], true),
