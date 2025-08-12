@@ -1,7 +1,9 @@
 ﻿namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class Flamberge : Sword
+internal abstract class Broadsword : Sword
 {
+	protected override string GearLocalizationCategory => "Broadsword";
+	
 	public override void SetDefaults()
 	{
 		base.SetDefaults();

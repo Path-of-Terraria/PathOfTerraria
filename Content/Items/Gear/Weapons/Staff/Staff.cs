@@ -57,20 +57,20 @@ internal abstract class Staff : Gear
 
 	public override bool CanUseItem(Player player)
 	{
-		if (player.altFunctionUse == 2)
+		if (player.altFunctionUse != 2)
 		{
-			player.GetModPlayer<StaffPlayer>().EmpoweredStaffTime = AltActiveTime;
-			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime, AltActiveTime);
-
-			if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
-			{
-				ModContent.GetInstance<SyncStaffAltHandler>().Send((byte)player.whoAmI);
-			}
-
-			return false;
+			return player.ownedProjectileCounts[ModContent.ProjectileType<StaffHeldProjectile>()] == 0;
 		}
 
-		return player.ownedProjectileCounts[ModContent.ProjectileType<StaffHeldProjectile>()] == 0;
+		player.GetModPlayer<StaffPlayer>().EmpoweredStaffTime = AltActiveTime;
+		player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime, AltActiveTime);
+
+		if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			ModContent.GetInstance<SyncStaffAltHandler>().Send((byte)player.whoAmI);
+		}
+
+		return false;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
