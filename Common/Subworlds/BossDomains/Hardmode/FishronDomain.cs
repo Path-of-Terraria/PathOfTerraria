@@ -4,6 +4,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mushroom;
 using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -469,6 +470,8 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		}
 		else if (BossSpawned && !NPC.AnyNPCs(NPCID.DukeFishron) && !ExitSpawned)
 		{
+			BossTracker.AddDowned(NPCID.DukeFishron, false, true);
+
 			ExitSpawned = true;
 
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
