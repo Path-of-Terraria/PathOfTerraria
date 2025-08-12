@@ -12,7 +12,7 @@ internal class AddedCriticalStrikeChance : Passive
 
 	public override void BuffPlayer(Player player)
 	{
-		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) + AmountPerLevel * Level;
+		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) + Value * Level;
 	}
 }
 
@@ -21,11 +21,9 @@ internal class AddedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeChance : Passive
 {
-	private const float AmountPerLevel = 1.05f;
-
 	public override void BuffPlayer(Player player)
 	{
-		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) * (1 + AmountPerLevel * Level);
+		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) * (1 + Value * Level);
 	}
 }
 
@@ -35,8 +33,6 @@ internal class IncreasedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeMultiplier : Passive
 {
-	private const float AmountPerLevel = 1.05f;
-
 	public override void OnLoad()
 	{
 		PathOfTerrariaPlayerEvents.ModifyHitNPCEvent += BuffCritStrikeDamageMultiplier;
@@ -48,7 +44,8 @@ internal class IncreasedCriticalStrikeMultiplier : Passive
 
 		if (level > 0)
 		{
-			modifiers.CritDamage *= level * AmountPerLevel;
+			float multiplierIncrease = level * (Value / 100f);
+			modifiers.CritDamage *= 1f + multiplierIncrease;
 		}
 	}
 }

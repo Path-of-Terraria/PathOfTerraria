@@ -6,37 +6,32 @@
 
 IncreasedMeleeDamagePassive: {
 	Name: Martial Mastery
-	Tooltip: Increases your melee damage by 5% per level
+	Tooltip: Increases your melee damage by {0}% per level
 }
 
 IncreasedRangedDamagePassive: {
 	Name: Marksmanship Mastery
-	Tooltip: Increases your ranged damage by 5% per level
+	Tooltip: Increases your ranged damage by {0}% per level
 }
 
 IncreasedMagicDamagePassive: {
 	Name: Arcane Mastery
-	Tooltip: Increases your magic damage by 5% per level
-}
-
-IncreasedSummoningDamagePassive: {
-	Name: Summoning Mastery
-	Tooltip: Increases your summon damage by 5% per level
+	Tooltip: Increases your magic damage by {0}% per level
 }
 
 AddedLifePassive: {
 	Name: Empowered Flesh
-	Tooltip: Increases your maximum life by 20 per level
+	Tooltip: Increases your maximum life by {0} per level
 }
 
 AddedManaPassive: {
 	Name: AddedManaPassive
-	Tooltip: Increases your maximum mana by 20 per level
+	Tooltip: Increases your maximum mana by {0} per level
 }
 
 LongRangePassive: {
 	Name: Sniper
-	Tooltip: Increases your damage against distant enemies by 10% per level
+	Tooltip: Increases your damage against distant enemies by {0}% per level
 }
 
 CloseRangePassive: {
@@ -51,17 +46,12 @@ ChanceToBleedPassive: {
 
 DamageReductionPassive: {
 	Name: Iron Will
-	Tooltip: Gain 0.25% damage reduction per level.
+	Tooltip: Gain {0}% damage reduction per level.
 }
 
 DamageReflectionPassive: {
 	Name: Thorny Exterior
-	Tooltip: Reflect 10 more damage to enemies that deal contact damage per level.
-}
-
-ChanceToConsumeAmmoPassive: {
-	Name: Secret Compartment
-	Tooltip: 5% chance to not consume ammo per level
+	Tooltip: Reflect {0} more damage to enemies that deal contact damage per level.
 }
 
 StartPassive: {
@@ -71,12 +61,12 @@ StartPassive: {
 
 IncreasedSummonDamagePassive: {
 	Name: Empowered Horde
-	Tooltip: Increases all summon damage by 10% per level
+	Tooltip: Increases all summon damage by {0}% per level
 }
 
 IncreasedSentryDamagePassive: {
 	Name: Steadfast Sentries
-	Tooltip: Increases your sentries' damage by 10% per level
+	Tooltip: Increases your sentries' damage by {0}% per level
 }
 
 JewelSocket: {
@@ -86,32 +76,32 @@ JewelSocket: {
 
 LifeRegenPassive: {
 	Name: Stronger Heart
-	Tooltip: Increased life regeneration
+	Tooltip: Increase life regeneration by {0} per level
 }
 
 DecreasedManaCostPassive: {
 	Name: Decreased Mana Cost
-	Tooltip: Decreases mana cost by 3% per level
+	Tooltip: Decreases mana cost by {0}% per level
 }
 
 AddedCriticalStrikeChance: {
 	Name: Added Critical Strike Chance
-	Tooltip: Adds 2% flat critical strike chance per level
+	Tooltip: Adds {0}% flat critical strike chance per level
 }
 
 IncreasedCriticalStrikeChance: {
 	Name: Increased Critical Strike Chance
-	Tooltip: Adds 5% increased critical strike chance per level
+	Tooltip: Adds {0}% increased critical strike chance per level
 }
 
 IncreasedCriticalStrikeMultiplier: {
 	Name: Increased Critical Strike Multiplier
-	Tooltip: Adds 5% critical strike multiplier per level
+	Tooltip: Adds {0}% critical strike multiplier per level
 }
 
 ArmorPenetrationPassive: {
 	Name: Increased Armor Penetration (Melee)
-	Tooltip: Adds 15% more armor penetration per level
+	Tooltip: Adds {0}% more armor penetration per level
 }
 
 AnchorPassive: {
@@ -131,7 +121,7 @@ ShockChancePassive: {
 
 IncreasedMinionDamagePassive: {
 	Name: Increased Minion Damage
-	Tooltip: Increases your minions' damage by 10% per level
+	Tooltip: Increases your minions' damage by {0}% per level
 }
 
 AddedAggressionPassive: {
@@ -151,7 +141,7 @@ IncreasedBlockChancePassive: {
 
 AddedIntelligencePassive: {
 	Name: Highly Studied
-	Tooltip: Adds +10 points to intelligence per level.
+	Tooltip: Adds +{0} points to intelligence per level.
 }
 
 AddedStrengthPassive: {
@@ -181,7 +171,7 @@ IncreasedWhipDamage: {
 
 IncreasedWhipSpeed: {
 	Name: Rapid Whips
-	Tooltip: +5% increased whip speed per level.
+	Tooltip: +{0}% increased whip speed per level.
 }
 
 IncreasedJumpHeight: {
@@ -191,25 +181,35 @@ IncreasedJumpHeight: {
 
 PercentIncreasedMaximumManaPassive: {
 	Name: Deep in Thought
-	Tooltip: +5% Increased Maximum Mana
+	Tooltip: +{0}% Increased Maximum Mana
 }
 
 IncreasedFireDamagePassive: {
 	Name: Burning Fury
-	Tooltip: +10% Increased Fire Damage
+	Tooltip: +{0}% Increased Fire Damage
 }
 
 IncreasedLightningDamagePassive: {
 	Name: Voltaic Surge
-	Tooltip: +10% Increased Lightning Damage
+	Tooltip: +{0}% Increased Lightning Damage
 }
 
 IncreasedColdDamagePassive: {
 	Name: Chilling Precision
-	Tooltip: +10% Increased Cold Damage
+	Tooltip: +{0}% Increased Cold Damage
 }
 
 TestMasteryPassive: {
 	Name: TestMasteryPassive
+	Tooltip: ""
+}
+
+IncreasedWhipDamagePassive: {
+	Name: IncreasedWhipDamagePassive
+	Tooltip: ""
+}
+
+IncreasedWhipSpeedPassive: {
+	Name: IncreasedWhipSpeedPassive
 	Tooltip: ""
 }
