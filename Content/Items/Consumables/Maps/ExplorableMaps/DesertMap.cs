@@ -3,9 +3,9 @@ using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Content.Items.Consumables.Maps;
+namespace PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 
-internal class DesertMap : Map
+internal class DesertMap : ExplorableMap
 {
 	public override int MaxUses => GetBossUseCount();
 	public override bool CanDrop => Main.hardMode;
