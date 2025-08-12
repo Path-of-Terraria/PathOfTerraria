@@ -29,17 +29,37 @@ internal class DropTable
 		int choice = chances.Get();
 		IEnumerable<ItemDatabase.ItemRecord> items;
 
-		if (choice == 0)
+		switch (choice)
 		{
-			items = ItemDatabase.GetItemByType<Gear>();
-		}
-		else if (choice == 1)
-		{
-			items = ItemDatabase.GetItemByType<CurrencyShard>();
-		}
-		else
-		{
-			items = ItemDatabase.GetItemByType<Map>().Where(x => (x.Item.ModItem as Map).CanDrop);
+			case 0: //Gear
+				items = ItemDatabase.GetItemByType<Gear>();
+				break;
+			case 1: //Currency
+				items = ItemDatabase.GetItemByType<CurrencyShard>();
+				break;
+			default: //Maps
+				{
+					IEnumerable<ItemDatabase.ItemRecord> allMaps = ItemDatabase.GetItemByType<Map>().Where(x => ((Map)x.Item.ModItem).CanDrop);
+					IEnumerable<ItemDatabase.ItemRecord> itemRecords = allMaps as ItemDatabase.ItemRecord[] ?? allMaps.ToArray();
+					IEnumerable<ItemDatabase.ItemRecord> explorableMaps = itemRecords.Where(x => x.Item.ModItem is Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
+					IEnumerable<ItemDatabase.ItemRecord> bossMaps = itemRecords.Where(x => x.Item.ModItem is not Content.Items.Consumables.Maps.ExplorableMaps.ExplorableMap);
+
+					var mapTypeChances = new WeightedRandom<int>(random ?? Main.rand);
+					mapTypeChances.Add(0, 0.7f); //70% explorable maps
+					mapTypeChances.Add(1, 0.3f); //30% boss domain maps
+					int mapTypeChoice = mapTypeChances.Get();
+
+					if (mapTypeChoice == 0)
+					{
+						items = explorableMaps;
+					}
+					else
+					{
+						items = bossMaps;
+					}
+
+					break;
+				}
 		}
 
 		if (forceRarity != (ItemRarity)(-1))
@@ -50,7 +70,7 @@ internal class DropTable
 		return RollList(itemLevel, dropRarityModifier, items.ToList());
 	}
 
-	public static ItemDatabase.ItemRecord RollList(int itemLevel, float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)
+	private static ItemDatabase.ItemRecord RollList(int itemLevel, float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)
 	{
 		return RollList(itemLevel, dropRarityModifier, filteredGear, _ => true);
 	}
