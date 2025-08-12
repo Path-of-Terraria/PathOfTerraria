@@ -20,7 +20,11 @@ internal class GrimoirePlayer : ModPlayer
 
 	public readonly List<Item> Storage = [];
 
+	/// <summary>
+	/// The currently selected grimoire summon for the player. This will be -1 if no summon is selected.
+	/// </summary>
 	public int CurrentSummonId = -1;
+
 	public bool FirstOpenMenagerie = true;
 	public bool HasObtainedGrimoire = false;
 

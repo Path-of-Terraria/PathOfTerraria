@@ -77,7 +77,8 @@ public class QuestPanelButton : SmartUiState
 		Texture2D texture = BookTexture.Value;
 		Vector2 pos = new(GetTextureXPosition(), 80);
 
-		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f), (int)pos.Y, texture.Width, texture.Height);
+		//Uses just a 64/64 texture size
+		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f), (int)pos.Y, 64, 64);
 
 		if (!bounding.Contains(Main.MouseScreen.ToPoint()))
 		{
@@ -86,6 +87,7 @@ public class QuestPanelButton : SmartUiState
 
 		SoundEngine.PlaySound(SoundID.MenuOpen);
 		SmartUiLoader.GetUiState<QuestsUIState>().Toggle();
+		Main.playerInventory = true;
 	}
 
 	private static float GetTextureXPosition()

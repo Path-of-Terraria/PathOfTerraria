@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -15,6 +14,8 @@ using PathOfTerraria.Common.Subworlds.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Utilities.Extensions;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -40,7 +41,7 @@ public class SkeletronDomain : BossDomainSubworld
 	}
 
 	public override int Width => 900;
-	public override int Height => 1000;
+	public override int Height => 900;
 	public override (int time, bool isDay) ForceTime => ((int)Main.nightLength / 2, false);
 
 	const int BaseTunnelDepth = 90;
@@ -59,6 +60,12 @@ public class SkeletronDomain : BossDomainSubworld
 	/// Stops bone clusters from spawning in chasms.
 	/// </summary>
 	private readonly static HashSet<Point> ChasmTiles = [];
+
+	/// <summary>
+	/// Stores a selection of tiles to avoid placing wires through. 
+	/// Necessary since <see cref="SpecialRooms"/> isn't resizable for buffer, and <see cref="GenVars.structures"/> has a hardcoded failure on dungeon tiles, breaking it entirely.
+	/// </summary>
+	private readonly static HashSet<Point16> PseudoStructures = [];
 
 	/// <summary>
 	/// Current floor.
@@ -111,19 +118,6 @@ public class SkeletronDomain : BossDomainSubworld
 			}
 
 			continue;
-		}
-
-		foreach (Point point in CorridorTiles)
-		{
-			if (blackList.Contains(point))
-			{
-				continue;
-			}
-
-			if (WorldGen.genRand.NextBool(600) && !ChasmTiles.Contains(point))
-			{
-				WorldGen.TileRunner(point.X, point.Y, WorldGen.genRand.Next(5, 12), 8, TileID.BoneBlock);
-			}
 		}
 
 		foreach (Point point in CorridorTiles)
@@ -386,7 +380,7 @@ public class SkeletronDomain : BossDomainSubworld
 		RunCorridor(WellBottom.X, WellBottom.Y + BaseTunnelDepth + 2, corridorEnd, corridorEndY);
 		AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Left, corridorEnd, corridorEndY, usedColors), usedColors);
 
-		int chasmBottom = WellBottom.Y + BaseTunnelDepth + 2 + 180;
+		int chasmBottom = WellBottom.Y + BaseTunnelDepth + 2 + 120;
 		int lastX = DigChasm(WellBottom.Y + BaseTunnelDepth + 2 + roomHeight / 2 - 2, chasmBottom, WellBottom.X, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 2);
 
 		WireRoomsToChasms(ActuatorInfoByFloor[Floor], RoomsToWire);
@@ -425,9 +419,11 @@ public class SkeletronDomain : BossDomainSubworld
 			AddRoom(RoomDatabase.PlaceRandomRoom(OpeningType.Above, (corridorEnd + x) / 2, y + 3, usedColors), usedColors);
 		}
 
-		int lastX = DigChasm(y + roomHeight / 2 - 2, y + 220, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 3);
+		const int ThirdFloorYOffset = 180;
+
+		int lastX = DigChasm(y + roomHeight / 2 - 2, y + ThirdFloorYOffset, x, 4, 6, true, TileID.BlueDungeonBrick, WallID.BlueDungeonUnsafe, 3);
 		WireRoomsToChasms(ActuatorInfoByFloor[1], RoomsToWire);
-		return new Point(lastX, y + 220);
+		return new Point(lastX, y + ThirdFloorYOffset);
 	}
 
 	private void GenerateThirdFloor(int x, int y)
@@ -466,10 +462,18 @@ public class SkeletronDomain : BossDomainSubworld
 		SpecialRooms.Add(room);
 		RoomsToWire.Add(room);
 
+		for (int i = room.Area.X - 2; i < room.Area.Right + 2; ++i)
+		{
+			for (int j = room.Area.Top - 2; j < room.Area.Bottom + 2; ++j)
+			{
+				PseudoStructures.Add(new Point16(i, j));
+			}
+		}
+
 		usedColors.Add(room.Data.Wire);
 	}
 
-	private void WireRoomsToChasms(FloorActuatorInfo floorActuatorInfo, List<PlacedRoom> roomsToWire)
+	private static void WireRoomsToChasms(FloorActuatorInfo floorActuatorInfo, List<PlacedRoom> roomsToWire)
 	{
 		if (floorActuatorInfo.ActuatedWallCount != roomsToWire.Count)
 		{
@@ -502,7 +506,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 				wirePosition.X += xDir;
 
-				if (SpecialRooms.Any(x => x.Area.Contains(wirePosition)))
+				if (PseudoStructures.Contains(wirePosition.ToPoint16()))
 				{
 					wirePosition.X -= xDir;
 					wirePosition.Y++;
@@ -641,6 +645,7 @@ public class SkeletronDomain : BossDomainSubworld
 		SpecialRooms.Clear();
 		CorridorTiles.Clear();
 		ChasmTiles.Clear();
+		PseudoStructures.Clear();
 
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 180 : Main.maxTilesX - 180;
 		Main.spawnTileY = 110;
@@ -727,7 +732,7 @@ public class SkeletronDomain : BossDomainSubworld
 				allInArena = false;
 			}
 
-			if (clearYPositions.Count > 0 && player.position.Y / 16 > clearY)
+			if (clearYPositions.Count > 0)
 			{
 				clearY = (int)player.position.Y / 16;
 
@@ -765,7 +770,7 @@ public class SkeletronDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.SkeletronHead);
+			BossTracker.AddDowned(NPCID.SkeletronHead, false, true);
 			ReadyToExit = true;
 		}
 	}

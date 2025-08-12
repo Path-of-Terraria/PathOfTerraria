@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.Localization;
@@ -26,7 +26,7 @@ internal class FishronMap : Map
 
 	protected override void OpenMapInternal()
 	{
-		SubworldSystem.Enter<QueenBeeDomain>();
+		SubworldSystem.Enter<FishronDomain>();
 	}
 
 	public override string GenerateName(string defaultName)

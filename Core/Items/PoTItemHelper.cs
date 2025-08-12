@@ -9,6 +9,7 @@ using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 
 namespace PathOfTerraria.Core.Items;
 

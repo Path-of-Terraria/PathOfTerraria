@@ -14,6 +14,8 @@ using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -127,7 +129,12 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 				if (Main.LocalPlayer.CountItem(ItemID.Wood, 16) >= 15)
 				{
 					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.OnCraft");
-					Item.NewItem(new EntitySource_Gift(NPC), NPC.Bottom, ModContent.ItemType<SimpleCompass>());
+					int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Bottom, ModContent.ItemType<SimpleCompass>());
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
 
 					for (int i = 0; i < 15; ++i)
 					{
@@ -145,7 +152,12 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<DeerclopsQuest>();
 
-			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<SimpleCompass>());
+			int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<SimpleCompass>());
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+			}
 		}
 	}
 
@@ -162,7 +174,8 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 
 	public bool ForceSpawnInTavern()
 	{
-		return NPC.downedBoss1 && !NPC.downedDeerclops;
+		HashSet<int> downed = BossTracker.TotalBossesDowned;
+		return downed.Contains(NPCID.EyeofCthulhu) && !downed.Contains(NPCID.Deerclops) || Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active;
 	}
 
 	public float SpawnChanceInTavern()

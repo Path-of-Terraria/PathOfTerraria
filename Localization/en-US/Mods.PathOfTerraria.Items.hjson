@@ -406,7 +406,7 @@ Bloodclotter: {
 
 ArcaneObeliskItem: {
 	DisplayName: Arcane Obelisk
-	Tooltip: ""
+	Tooltip: Only one can be placed per world
 }
 
 StarlightBulwark: {
@@ -1273,11 +1273,6 @@ EoLMap: {
 GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
 PrismatismBannerItem.DisplayName: Prismatism Banner
 
-Flamberge: {
-	DisplayName: Flamberge
-	Tooltip: ""
-}
-
 MoonMap: {
 	DisplayName: Moon Lord Map
 	Tooltip:
@@ -1318,5 +1313,14 @@ CultistMap: {
 		'''
 		{$MapCommon.BossBase}
 		'The map smells of soot and space'
+		'''
+}
+
+AntlerShard: {
+	DisplayName: Antler Shard
+	Tooltip:
+		'''
+		Show this to Rhine in Ravencrest
+		'It has a malice about it'
 		'''
 }

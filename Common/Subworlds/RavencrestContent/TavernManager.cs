@@ -112,6 +112,11 @@ internal class TavernManager : ModSystem
 			{
 				ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, pos.ToWorldCoordinates());
 			}
+
+			if (seatsToUse.Count == 0)
+			{
+				return;
+			}
 		}
 	}
 }

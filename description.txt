@@ -1,5 +1,9 @@
+~Not intended to be played with other Content mods. QOL mods are fine~
+
 Path of Terraria is a fresh take on the world of Terraria bringing in ARPG elements.
 Find and help rebuild towns, complete quests, and explore the world of Terraria in a new way.
+
+Path of Terraria is fully multiplayer-compatible and can be played with friends or solo.
 
 New Content Includes
 - Global Leaderboard System
@@ -12,6 +16,18 @@ New Content Includes
 - Completely new way to progress (Boss Domains)
 - Item Modifiers (Affixes)
 - Item Crafting System
+- Mapping Endgame System
 
-PLEASE NOTE THIS MOD REQUIRES THE SUBWORLD LIBRARY MOD.
-You will need to install "Subworld Library" from the Mod Browser or the Workshop.
+CREDITS:
+- ScottieKnowz - Project Lead
+- GabeHasWon - Main Developer
+- pil - Main Sprite Artist
+- MrPus - Builder
+- catNull - Developer
+- Ian - Builder
+- chalibur - Developer
+
+Available Links:
+- Discord: https://discord.gg/5c2GrFQReE
+- Website: https://pathofterraria.com/
+- Wiki: https://wiki.pathofterraria.com/

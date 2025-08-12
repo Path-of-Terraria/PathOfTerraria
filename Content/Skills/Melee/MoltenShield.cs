@@ -3,7 +3,6 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Buffs;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Skills.Melee;
 
@@ -40,11 +39,14 @@ public class MoltenShield : Skill
 		return base.CanUseSkill(player, ref failReason, true);
 	}
 
-	protected override bool ProtectedCanEquip(Player player, out string failReason)
+	protected override bool ProtectedCanEquip(Player player, ref SkillFailure failReason)
 	{
-		// TODO: If this needs to be equippable without the affix, figure out that system
-		bool canEquip = player.GetModPlayer<AffixPlayer>().StrengthOf<MoltenShellAffix>() > 0;
-		failReason = canEquip ? "" : Language.GetTextValue("Mods.PathOfTerraria.Skills.Denials.NeedsAffix");
-		return canEquip;
+		if (player.GetModPlayer<AffixPlayer>().StrengthOf<MoltenShellAffix>() <= 0)
+		{
+			failReason = new SkillFailure(SkillFailReason.Other, "MissingAffix");
+			return false;
+		}
+
+		return true;
 	}
 }

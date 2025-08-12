@@ -98,20 +98,29 @@ public abstract class Quest : ModType, ILocalizedModType
 	}
 
 	/// <summary>
-	/// Gets the actual instance of the given quest on the local player.
+	/// Gets the actual instance of the given quest on the local player. If the instance does not exist for some reason, adds it.
 	/// </summary>
-	/// <param name="name"></param>
+	/// <param name="name">The name of the quest to get.</param>
 	/// <returns>The in-use quest instance for the local player.</returns>
 	public static Quest GetLocalPlayerInstance(string name)
 	{
-		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[name];
+		// For some reason, in multiplayer, if a player joins a world without PoT, exits, enables PoT, then re-enters (all in multiplayer),
+		// the QuestsByName list will not be populated. This accounts for that.
+
+		if (!Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName.TryGetValue(name, out Quest value))
+		{
+			value = GetSingleton(name).Clone();
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName.Add(name, value);
+		}
+
+		return value;
 	}
 
 	/// <inheritdoc cref="GetLocalPlayerInstance(string)"/>
 	/// <typeparam name="T">The type of the quest to get.</typeparam>
-	public static T GetLocalPlayerInstance<T>() where T : Quest
+	public static Quest GetLocalPlayerInstance<T>() where T : Quest
 	{
-		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[ModContent.GetInstance<T>().FullName] as T;
+		return GetLocalPlayerInstance(ModContent.GetInstance<T>().FullName);
 	}
 
 	public void StartQuest(Player player, int currentQuest = 0)
@@ -197,7 +206,7 @@ public abstract class Quest : ModType, ILocalizedModType
 		ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
 	}
 
-	private void Reset()
+	public void Reset()
 	{
 		Active = false;
 		Completed = false;

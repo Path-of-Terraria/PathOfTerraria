@@ -10,7 +10,7 @@ RarityNames: {
 }
 
 GrimoireConsume: "{0} consumed!"
-GrimoireMaterial: Used for the Grimoire's Menagerie.
+GrimoireMaterial: Used for the Grimoire's Menagerie. Right click to add to the Menagerie.
 GrimoireBoon: Traded {0} for coin!
 # This is used for disabling EoW/BoC spawns, instead of spawning the boss it says this.
 ChasmAppears: A chasm appears...
@@ -29,3 +29,4 @@ Activate: Activate
 FishronSpawn: You hear a roar in the distance...
 ImpendingDoom: A pulse quickens at the center of the world...
 VoidPearlCondition: In hardmode or during the Unleashing Chaos quest
+SubworldItemDisabler: You cannot use this item in a subworld.

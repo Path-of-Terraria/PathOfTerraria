@@ -1,6 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
-using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
@@ -323,7 +323,7 @@ public class EaterDomain : BossDomainSubworld
 	{
 		Main.spawnTileX = WorldGen.genRand.NextBool() ? 80 : Main.maxTilesX - 80;
 		Main.spawnTileY = 110;
-		Main.worldSurface = 230;
+		Main.worldSurface = 195;
 		Main.rockLayer = 299;
 
 		float baseY = 120;
@@ -493,7 +493,7 @@ public class EaterDomain : BossDomainSubworld
 
 			if (WorldGen.genRand.NextBool(8))
 			{
-				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7));
+				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7), true);
 			}
 
 			if (digTunnel && WorldGen.genRand.NextBool(3, 5))
@@ -597,7 +597,7 @@ public class EaterDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.EaterofWorldsHead);
+			BossTracker.AddDowned(NPCID.EaterofWorldsHead, false, true);
 			ReadyToExit = true;
 		}
 	}

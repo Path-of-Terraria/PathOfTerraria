@@ -15,7 +15,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Common.UI.Hotbar;
 
@@ -165,12 +164,24 @@ public sealed class NewHotbar : SmartUiState
 		Texture2D specialActive = Textures["SpecialActive"].Value;
 		Main.inventoryScale = 1f; // 36 / 52f * 52f / 36f * 1 computes to 1...
 
+		// Draw offhand slot
+		Main.spriteBatch.Draw(specialActive, new Vector2(2, -2), new Rectangle(0, 0, 60, 72), Color.White, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0);
+
+		if (TryGetKeybindName(GearSwapKeybind.SwapKeybind, true, out string swapKey)) 
+		{
+			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, swapKey, new Vector2(8, 40), Color.White, 0f, Vector2.Zero, new Vector2(0.9f));
+		}
+
+		Main.inventoryScale = 0.7f;
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.GetModPlayer<GearSwapManager>().Inventory[0], ItemSlot.Context.HotbarItem, new Vector2(4, 4));
+		Main.inventoryScale = 1f;
+
 		// Draw active slot textures (hotbar background).
 		Main.spriteBatch.Draw(specialActive, new Vector2(20f), null, Color.White);
 
 		// Draw item slot items.
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], 21, new Vector2(24, 30));
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], 21, new Vector2(24 + 62f, 30));
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], ItemSlot.Context.HotbarItem, new Vector2(24, 30));
+		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], ItemSlot.Context.HotbarItem, new Vector2(24 + 62f, 30));
 
 		// Render inactive slot textures OVER active textures and items.
 		const int Height = 72;
@@ -322,6 +333,11 @@ public sealed class NewHotbar : SmartUiState
 		if (skillRect.Contains(Main.MouseScreen.ToPoint()))
 		{
 			DrawSkillHoverTooltips(skill, skillIndex);
+
+			if (Main.mouseRight && Main.mouseRightRelease)
+			{
+				skillCombatPlayer.HotbarSkills[skillIndex] = null;
+			}
 		}
 	}
 
@@ -345,13 +361,13 @@ public sealed class NewHotbar : SmartUiState
 		if (skill.WeaponType != ItemID.None)
 		{
 			Color color = canUse && failure.WeaponRejected ? Color.Red : Color.White;
-			string text = Language.GetText("Mods.PathOfTerraria.Skills.WeaponLine").WithFormatArgs(skill.WeaponType).Value;
+			string text = Language.GetText("Mods.PathOfTerraria.SkillFailReasons.NeedsWeapon").WithFormatArgs(skill.WeaponType).Value;
 			tooltips.Add(new("WeaponType", $"[c/{color.Hex3()}:{text}]", 0.5f));
 		}
 		
 		if (!canUse && failure.Reason == SkillFailReason.Other)
 		{
-			tooltips.Add(new("OtherDenial", $"[c/FF0000:{failure.OtherReason.Value}]", 0.5f));
+			tooltips.Add(new("Denial", $"[c/FF0000:{failure.Description.Value}]", 0.5f));
 		}
 
 		SkillTooltip noKeybindName = new("NoKeybind", Language.GetText("Mods.PathOfTerraria.Skills.NoKeybindLine").Value, 0);

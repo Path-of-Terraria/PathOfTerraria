@@ -1,0 +1,844 @@
+// Shop: Shop
+// Quest: Quest
+
+BlacksmithNPC: {
+	DisplayName: Трейн Железный Кулак
+
+	Dialogue: {
+		// Common0: Forged in steel, I am. Care to buy some?
+		// Common1: Sometimes, I miss the caverns. Rock and stone, brother, rock and stone.
+		// Common2: Nothing quite like a blade that cuts through bone like air. Makes sandwiches easy!
+		// Common3: I could easily beat you in an arm wrestle - the exercise of steel forging is effective.
+		// Quest: As you can see, some terrible event happened that simply obliterated my forge. What happened? I don't know, I sleep like a rock...anyhow. I'd love some help gathering materials, the town's metal has run dry for a while now. And maybe some wood while you're at it.
+		// Quest2: Fantastic! I'll fix the old forge up quick as I can. Here, take this sword. It's a test I made right before the attack. I'd like for you to test it on some zombies; those buggers are awful to deal with. If you'd be so kind, I'd also enjoy some more materials. Then I think we can get the Iron Anvil truly back to her feet!
+		// Quest3: It almost brings a tear to the eye. The Iron Forge is almost ready for work! Here, this is a lesson I've got from my history in battle: Sometimes, you gotta go crazy. Just be careful! And come back whenever you wish - you've been a great help!
+		// OldManDialogue: Hello there, traveler!...what do you say? A man referred me to you? Hm...I recall a man, cloaked in red, come around here...some time ago. Can't tell you how long ago now, but a while. He came asking for some specific things...a book of evil, two candles, and a bar of evil. He said something about throwing evil powder on a book...but...that's all I can say. Not sure what the guy was on about.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: Nothing like a day at the forge.
+			// 1: Love the smell of molten metal in the morning.
+			// 2: The caverns call...not today though.
+		}
+
+		Night: {
+			// 0: The cold night breeze. Who needs anything more?
+			// 1: The best part of metalsmithing is when you wait for it to set.
+			// 2: I hope I didn't leave the forge on!
+		}
+
+		Goblins: {
+			// 0: These guys better not break any doors again.
+			// 1: Hey! Knock it off! I'm forging here!
+			// 2: I'll show these nitwits what a strong hammer can do!
+		}
+
+		Rain: {
+			// 0: Forge's still moving. Nothing can stop that, rain or otherwise.
+			// 1: You ever tried cooling a blade in rain? Don't. It doesn't work.
+			// 2: Sometimes, I look at the flowers...and smash them with my well-crafted hammer. Hurrah!
+		}
+	}
+
+	Entry: Весёлый гном, Трейн любит весёлые беседы, хороший напиток и изготовление лучшего оружия, которое вы когда-либо видели. Обычно его можно найти в его кузне, изготавливающем оружие.
+}
+
+BarkeepNPC: {
+	// DisplayName: Brom Hardy
+
+	Dialogue: {
+		// Common0: Got some old friends back in Eternia. Miss 'em every day.
+		// Common1: "'Tavernkeep'? Sure do! Whatcha lookin' for?"
+		// Common2: Between you and I - I'm rather lightweight on drinks. Battle? Heh...yeah, way lightweight in that too, why d'you think I barkeep?
+		// Common3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
+		// Quest: Oh, hi there! Got a question for you. I'm behind the bar all day, and it looks like we're low on sweetener. I had an old cache of honey from a friend a few hundred miles away, most delicious stuff I have. But, alas, twas not infinte. Do you know of honey I could snag? Or, even better, that you could get me? I'll pay you kindly. Here, take these bottles and fill 'em up. Fingers crossed!
+		// NeedsMoreHoney: Thanks! Take this payment. Real kind of you. Though...not all too much honey, is it? With the business I've been getting, and the variety of foods I've got here, this'll last maybe a week! You reckon there's a way to make this easier? I'd be happy to go get it myself. Or...say...could you go talk to Alaric? The guy's weird but he can make miracles happen. Ask him what he can do! Just be careful.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: Keepin' the bar, bar the keepin'...
+			// 1: Maybe I can make a new drink...
+			// 2: Hopin' for a good night of business.
+		}
+
+		Night: {
+			// 0: Oh! A big tip! Thank ya, stranger. Whoever you were.
+			// 1: "'A guy walks into a bar?' I should use that one sometime."
+			// 2: I love my job.
+		}
+
+		Goblins: {
+			// 0: Those DANG goblins better stay away from MY drink.
+			// 1: I've made a molotov a couple a times. What's another spin?
+			// 2: If another glass breaks I swear I'll finally pick up the blade again.
+		}
+
+		Rain: {
+			// 0: A bar with rain ambiance. Lovely!
+			// 1: I hope the barrels ain't getting soaked through again.
+			// 2: Less business, more relaxin'? Don't mind if I do!
+		}
+	}
+
+	// Entry: Brom is a simple man. People want a good time? They come to the bar. They talk to Brom Hardy. They have a good time with good people and good drinks. What's not to love?
+}
+
+HunterNPC: {
+	// DisplayName: Elara
+
+	Dialogue: {
+		// Common0: Greetings, traveler. Need a keen eye and a steady hand?
+		// Common1: I've tracked a beast through these woods many times. Care to join the hunt?
+		// Common2: Be cautious out there. The forest hides many secrets.
+		// Common3: You've returned. Hope your misadventures are treating you well.
+		// Quest: You've surely seen the damage here. Much like my fellow townsmen, I don't know what happened. But we repair anyhow. Would I bother you to grab some supplies? I've got to check inventory for a while.
+		// Quest2: Oh my, so soon? Infinite thanks, my friend. I'll get right to repairing; next time you come back, you should see a nicer Lodge. Not...perfect, though. Take this bow. It's a trusty one. May you be so kind as to kill a few airborne hostiles for me? Ravencrest would appreciate it, as would I. And, if I may be so bold, could I also ask for a bit more building materials? The shop would enjoy that.
+		// Quest3: How wonderful. The Lodge will return to its former glory, thanks to you. Feel free to come when you wish; I will support you as I can. Say, take this; I trained for many years as a ranger. The Flurry has helped me many times. May it help you too.
+		// Deerclops: A Deerclops, you say? Lass called Rhine told you about it? Large, dangerous beast. I don't see much worth in treading its domain, it's...haunted in some form. No matter. Give me a moment...here. Be truly and deeply careful, the dark is always present and always dangerous.
+		// BuyMap: Here. Thanks for your contribution. Hope it goes better this time.
+		// BuyMapFail: You'll need a little more coin for another map, I'm afraid. You know how it is.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: Where'd my arrows go?
+			// 1: Preparation waits for no one.
+			// 2: Let's hope the forest is kind.
+		}
+
+		Night: {
+			// 0: The night; a time of relaxation. I'm the hunter, not the hunted.
+			// 1: You can never be too safe with your fletching. Polish away.
+			// 2: A moment of clarity can save anyone quite a lot of trouble.
+		}
+
+		Goblins: {
+			// 0: Shoot to kill.
+			// 1: A sorcerer is frail and defenseless; attack with no mercy.
+			// 2: Those spiked balls do not work for bows, do not use them.
+		}
+
+		Rain: {
+			// 0: The wood dampens. I will not be hunting today.
+			// 1: The dance of the rain is nice, if bothersome.
+			// 2: How quaint.
+		}
+	}
+
+	// MapButton: Map (20 gold)
+	// Entry: A stone-cold hunter with more knowledge than you have, Elara isn't talkative. She makes up for that by being an exceedingly good hunter and tracker, with eyes almost everywhere.
+}
+
+Minera: {
+	// DisplayName: Minera
+	// Entry: A Crimera recently born from an unsavory source. They love to attack in packs.
+}
+
+GarrickNPC: {
+	// DisplayName: Garrick
+
+	Dialogue: {
+		// 0: The ground shakes uncontrollably in the King's domain. As if slime seeps into the rock.
+		// 1: Adventurers often fail to tell you of how slimy adventuring is. I am not one of those adventurers. It's extremely slimy.
+		// 2: Watch your head. Generally good advice, but especially in the King's domain.
+		// 3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
+		// Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; I drew it on the long walk back. Good luck!
+		// EoCQuestLine: Oh, the Eye you say? Formidable. I recall Eldric speaking of it, though he almost certainly undersold it. Here, I've been tasked with keeping this. Now is the time to use it.
+		// TradeLunarLiquid: Ah, I've trained for this. Do care though, these aren't a casual adventure to make.
+		// CantTradeLiquid: Oh, lost the Liquid? I'll need a few Lunar Shards to remake it, I'm afraid. Return to me with 5 or more.
+		// GetKingMapAgain: Ah, couldn't manage it? Lost the map or something? Either way, here you are. You're lucky I carry cartography equipment everywhere...just in case.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: The sun shines...one day the King's crown won't.
+			// 1: Ah...the wounds are clear. Gah...
+			// 2: Curse you, King!
+		}
+
+		Night: {
+			// 0: I must rest...
+			// 1: I see his jiggly blue carapace, still...
+			// 2: Does anyone have a healing potion?
+		}
+
+		Goblins: {
+			// 0: I must busy myself with others but the King, to practice.
+			// 1: En garde! I cannot lose again!
+			// 2: You cannot best me forever, King!
+		}
+
+		Rain: {
+			// 0: Rain cleans the wounds. It's nice.
+			// 1: A moment for me and my thoughts.
+			// 2: I hope he's dissolving.
+		}
+	}
+
+	// LunarLiquidButton: Lunar Liquid
+	// AnotherMap: Map
+	// Entry: A warrior humiliated by a King, Garrick is taking respite in the town of Ravencrest. He seems to hold a grudge to slime, and wishes he could be stronger. Soon, he'll get back on his feet.
+}
+
+TownScoutNPC: {
+	// DisplayName: Goblin Surveyor
+	// Entry: A Goblin, looking for a place to pillage. If killed, the Goblins immediately rise to fight back. Otherwise, they bide their time for later...
+}
+
+RavenNPC: {
+	// DisplayName: Ephemeral Raven
+	// Entry: A strange, ghostly raven. It guides travelers to Ravencrest, but otherwise is mired in mystery as it tows the line between this world and another.
+}
+
+// ControllableSpikeball.DisplayName: Spikeball
+
+WizardNPC: {
+	// DisplayName: Alaric
+
+	Dialogue: {
+		// Common0: Magic is scary. Once, I saw someone turn their hand into a rat. What's the lesson? I don't know.
+		// Common1: Wisdom holds many powers. Angel Statues once did something. It was...well...so...ahem. Time can only tell.
+		// Common2: I've seen the throughline of your destiny. I cannot, for the life of me, put it to words.
+		// Common3: Ah! I almost turned you into a mole the size of a god. Beware my strength!
+		// Quest: Hm. You saw the damage everywhere. Alas! My powers cannot reconstitute the world. I'm far busier on...my...projects. Yes! Alas, I have something more pressing. A goblin burglar took one of my tomes. Powerful as it is, it has to be harnessed by a strong wizard. I suspect they are looking through the tome to learn its secrets...so with haste, return it! I will grant you powers beyond imagination. I will be here, individually placing books on shelves with the strength of magic.
+		// Quest2: Aha! Thank you kindly. Your kindness will be rewarded greatly! My powers will push you forward at all times. Here, take a mote of power; a Nova is but a portion of my strength! As for the Library...my strength renewed, it will be repaired by the time you return! Books organized like you've never seen before! Behold it and weep...soon!
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: Should I try to push the sun forward!?...no, not again.
+			// 1: What should I showcase next...?
+			// 2: Did I open the drawer too hard again? Should I start using my hands? Hah, good one Alaric.
+		}
+
+		Night: {
+			// 0: Maybe I can make some time for some nice shut eye.
+			// 1: I impress even myself! This sandwich is delicious!
+			// 2: If only I could grab that star...I could...but...alas. I'm too tired!
+		}
+
+		Goblins: {
+			// 0: My powers aren't just for show.
+			// 1: Explosions are always a fun display!
+			// 2: I politely declined their entry! I simply had to shock them with every lightning imaginable!
+		}
+
+		Rain: {
+			// 0: Remember that time you put all the rain water into the house next door? Hah...yeah. Good times.
+			// 1: Don't freeze the rain, don't freeze the rain, don't freeze the -
+			// 2: Perhaps I...no...that'd do too much damage. Dang!
+		}
+	}
+
+	// Entry: Perhaps the most powerful wizard of all time, Alaric still acts like someone who's pretending to be the most powerful wizard of all time. If he's feeling funny, he might cause true and instant catastrophe.
+}
+
+EldricNPC: {
+	// DisplayName: Eldric
+
+	Dialogue: {
+		// Common0: The world's tumultuous, isn't it?
+		// Common1: Stay calm, even if the land around isn't.
+		// Common2: Would you ever enjoy a tea? I certainly would.
+		// Common3: Magic is but one solution. Practicality is another. Bear this in mind.
+		// Quest: Hello, traveler. I am Eldric, and the construction on the west edge of town is mine. I come to warn; a great eye looks down upon us, and seeks to disturb the stars. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
+		// QuestLunar: Thank you. Talk to Garrick and we'll be on our way.
+		// Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will continue to build my observatory while you battle. Best of luck.
+		// Quest3: Just as I thought. The Eye returns to...wherever it happens to hide. Regrow? Whatever. I'm able to relax now. Hopefully you'll see this observatory up and running soon. Stop by, if you'd like.
+		// TradeLunarObject: Ah, another? Very well, the Eye isn't a weakling. Here you are, and best of luck once more.
+		// CantTradeObject: Hm, didn't succeed with the Eye? Ah. Well, I believe Garrick can get you more of the Lunar Liquid, and then get me five more Lunar Shards and we'll be on our way.
+		// Donation: Some Lunar stuff remaining? Very well. I've taken it for you, since you won't need it any longer. Enjoy the few silver.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: How pleasant.
+			// 1: The trees dance, good.
+			// 2: Hm...looking jovial.
+		}
+
+		Night: {
+			// 0: The stars are...imperfect.
+			// 1: It's so different these nights.
+			// 2: How curious...
+		}
+
+		Goblins: {
+			// 0: Powers beyond your knowledge play with you, fools.
+			// 1: If only we could talk.
+			// 2: Alas.
+		}
+
+		Rain: {
+			// 0: May the flowers grow.
+			// 1: The preamble to petrichor.
+			// 2: A soft patter is wonderful.
+		}
+	}
+
+	// CreateConcoction: Create Concoction
+	// DonateLunar: Donate Lunar Shards/Liquid
+	// Entry: Forlorn and solemn, Eldric is one for silence. An observer of the stars, Eldric knows what the cosmos are; he stares, and it stares right back. Enjoys tea.
+}
+
+MorvenNPC: {
+	// DisplayName: Morven
+
+	Dialogue: {
+		// Common0: Any discoveries of late? Always have an ear on science!
+		// Common1: Have you seen any Goblins? I had a guy in there that knew tons of fun science.
+		// Common2: You wouldn't happen to have any advanced medical science on you, would you?
+		// Common3: I bet you don't even know how lamp posts work. Poor soul...
+		// Follow0: Why are you talking to me? Let's get moving!
+		// Follow1: If you get me killed I'll be deeply and truly upset.
+		// Follow2: Charge FORWARD, not stay and TALK. Buffoon.
+		// Follow3: Gather yourself...and let's get moving already.
+		// Rescue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I've become incased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out? I'll...reward you greatly, or something.
+		// Aboveground: Ah, thank you. Out of that stuffy old cave. Say, do you know of a quaint settlement called Ravencrest? I've got old associates there who'd love to have a look at some Demonite I managed to scrounge up. Perhaps you might get some for your time as well?
+		// InRavencrest: It'll take a bit to look presentable, but that can be for later. Thank you, stranger. I reward you with a quest. I was down there for Devourers, sure, but also to spy on these curious little orbs they call Shadow Orbs. Emitting light, floating ominously, strange stories. The lot of it, these things have. Could you break one for me? Just to see what happens.
+		// BeforeBeatingEoW: What? You broke one and a rift appeared and you LEFT? Jump in it! Throw your friends in! I don't care, you've got a study to conduct!
+		// AfterBeatingEoW: I'll be. Would've hardly expected a large, foul beast to appear in that corrupt realm. Alas, knowing that power implies many things. As much as I've disliked you, I do respect you. Whatever this corruption is holds to the land, still, but it's forward progress. Here, have this trinket. I have no use for - well, I'd love to give it to you. Ahem.
+		// Abandoned: FINALLY. Someone leaves me here and expects me to navigate the world. Take me to Ravencrest and this time don't leave me in the lurch.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: I must soon harness the sun...
+			// 1: Aha! This tree works on water!
+			// 2: So many fools surround me...
+		}
+
+		Night: {
+			// 0: Now is the time of ingenuity!
+			// 1: The moon...time's greatest trickster.
+			// 2: Sleep science is perhaps the greatest science of all. At least right now.
+		}
+
+		Goblins: {
+			// 0: Hey! Do you know a guy that has these fancy boots!...they aren't listening.
+			// 1: Tch. You damage something, morons, and I'll have your head!
+			// 2: Where's my charged plasma rifle...
+		}
+
+		Rain: {
+			// 0: Stupid rain. Go elsewhere!
+			// 1: Tch...how displeasant.
+			// 2: The only thing rain brings is lightning!
+		}
+
+		Escort: {
+			// 0: Let's keep it moving, you know?
+			// 1: Chop chop, stranger.
+			// 2: I hope you appreciate the additional firepower.
+			// 3: Rocket Boots are awesome.
+			// 4: Those Devourers can be intimidating, huh?
+		}
+
+		EscortAttack: {
+			// 0: Keep it moving, this thing's no big deal.
+			// 1: You gonna help me out?
+			// 2: Trusty ol' gun...
+		}
+
+		Teleport: {
+			// 0: OW...you gotta be too careful going too far, fool.
+			// 1: Don't leave me behind! This teleporter barely works!
+			// 2: Hey! Hey! Slow down! This teleporter hurts to use!
+		}
+	}
+
+	Stuck: {
+		// 0: Hey! Anyone up there!
+		// 1: Help a guy out!
+		// 2: Oh man...
+	}
+
+	// Entry: Once stuck in the underground Corruption, this mad scientist gained a little more mad than most. He looks down upon you, but will use you at a moment's notice to "make science".
+}
+
+LloydNPC: {
+	// DisplayName: Lloyd
+
+	Dialogue: {
+		// Common0: I've little to say.
+		// Common1: Keep the world safe.
+		// Common2: Hm?
+		// Common3: Hello, fellow adventurer.
+		// Follow0: Best we keep moving.
+		// Follow1: I've but one goal for the moment.
+		// Follow2: Keep a keen eye.
+		// Follow3: Hmph.
+		// Domain0: This land shakes any man.
+		// Domain1: Please, for me, defeat the Brain. I cannot stand to be here any longer.
+		// Domain2: May my boon help you greatly. I wish I could do more, but the pillars tower over my strength.
+		// Domain3: Cut through the obstacles here. They were never truly living.
+		// Help: Hm. Fellow aide. You seem to know the lay of the land. I'm here looking for the heart that yet beats. Would you be so kind as to guide me to it? I've matters to contend with. I'll fend monsters, you guide.
+		// InDomain: Alas, I'm here once more. I know my strength can't overpower the Brain. I am using what I have to allow you three additional jumps. The pillars of the land tower above, and may be much too difficult to scale otherwise. Be well, and be swift. I will be ruminating.
+		// NeedsReturn: You were felled too? Alas. A mighty beast, but not one without flaw. Guide me to another still-beating heart, and we return. Take caution.
+		// Complete: What a great joy. I owe you everything I have, which is not much. Take this. I shall be returning to Ravencrest - I've been before, no need to take me. Be well, and be merry.
+		// StayButton: Stay
+		// StayDialogue: I will stay here. Do not be long.
+		// FollowButton: Follow
+		// FollowAgain: Lead me to crimson hearts, aide.
+		// Abandoned: Tell me when you're leaving next time.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: ...
+			// 1: A moment of respite.
+			// 2: May all be well.
+		}
+
+		Night: {
+			// 0: ...how gentle.
+			// 1: Ah...
+			// 2: I remember, still.
+		}
+
+		Goblins: {
+			// 0: Do not make choices you'll regret.
+			// 1: Foolish creatures.
+			// 2: Hmph.
+		}
+
+		Rain: {
+			// 0: I hope...I hope all is well, yet.
+			// 1: Each one a life. Each one...
+			// 2: I look forward to the petrichor of the morning.
+		}
+
+		Escort: {
+			// 0: Grotesque.
+			// 1: Tarry not.
+			// 2: Do not let your guard down.
+			// 3: Be steady.
+			// 4: Awful creatures, this lot.
+		}
+
+		EscortAttack: {
+			// 0: Worry not; I've strength aplenty.
+			// 1: May its death be swift.
+			// 2: Yet another death.
+		}
+
+		Teleport: {
+			// 0: I appreciate the hurry, but do take care.
+			// 1: We'll get along nicely if you outpace me.
+			// 2: Not often I see someone as quick-footed as you.
+		}
+
+		BreakHeart: {
+			// 0: Hm. It seems we must break more. Keep going.
+			// 1: Now would be a good time to recoup. Return when you're prepared.
+			// 2: Here we go.
+		}
+
+		InDomain: {
+			// 0: Be well.
+			// 1: You cannot be too cautious.
+			// 2: The Brain awaits.
+		}
+
+		DomainBossDead: {
+			// 0: It feels lighter.
+			// 1: I hope I can rest now.
+			// 2: Thank you, all.
+		}
+	}
+}
+
+RhineNPC: {
+	// DisplayName: Rhine
+
+	Dialogue: {
+		// Common0: Ah! Nothing like a day in Ravencrest for some world-famous mead.
+		// Common1: Say, you do any travelling? Have you ever seen a "cow area"? My family spoke of legends.
+		// Common2: Five gold coins and I can tell you the most wild story you've ever heard. Up for it?
+		// Common3: Good heavens, this tastes like nothing else. You also taking an off day?
+		// Quest: Ah, adventurer. You have any experience with the deep tundra? I've always been curious of a story my mother told me...about one massive, lumbering beast deep in a frigid tundra. She spoke of it as legend, and I've always been curious. Alas, I don't handle the cold well; but perhaps you do? I've high interest, though I'm not sure if it's even real. There's a small fortress in the world's snow, a short distance under the surface. Take this compass, find it, and open it. You'll know what to take.
+		// Antlers: Wow...sorry. I...I genuinely didn't think these were real. My mother spoke of this - even just the shards shaved off of the antlers are...combative. Odd aura. Strangely uncomfortable to hold. Wow. Well. I suppose you should seek the Deer itself, then. The Hunter can tell you about it - she knows all creatures that stalk the woods, white or not. I'll be here. I can only imagine what my mother will think seeing these antlers again.
+		// Success: ...unbelievable. Truly...I don't know what to say. Take this. I'll be here, stewing in revelation. Go have fun. Brom, another mead, please. Never would I have thought...
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: Ah, wonderful day out there.
+			// 1: Hm, what should I order next!
+			// 2: Delicious!
+		}
+
+		Night: {
+			// 0: Bar's open all night! Keep the mead moving.
+			// 1: Ah...winding down...
+			// 2: Perhaps a couple card games won't hurt...
+		}
+
+		Goblins: {
+			// 0: Gosh, why are these lot here?
+			// 1: Interrupting my mead...buffoons.
+			// 2: En garde! Time to move the old joints!
+		}
+
+		Rain: {
+			// 0: Good thing I'm not out there!
+			// 1: Thanks for the shelter!
+			// 2: That rain reminds me of home.
+		}
+	}
+
+	NewCompass: {
+		// Button: Craft Compass
+		// OnCraft: Here's another one for you. You're lucky I can carve wood anywhere always. Go get them!...if you can find them.
+		// CantCraft: Did you lose your compass? Give me 15[i:9] and I can sharpen one up for you.
+	}
+
+	// Entry: Rhine is a hard worker. Between travels she visits her family and hunts beasts of legend. Here? She's looking for some good food, some good drink, and people to tell stories at.
+}
+
+// SkullApparition.DisplayName: Skull Apparition
+
+OldMan: {
+	Dialogue: {
+		// QuestStart: Ah...hm? Oh...an adventurer! Hello. I...I don't know who or where I am. But I do know that something terrible is happening, deep below me. I...I can scarcely remember a thing. I do know...a man, shorter, bearded...helped me...some time in the past. In a nearby town. I...don't remember the name. Perhaps look for him? I can't say much else...I'm afraid.
+		/* HasItems:
+			'''
+			...
+			A light at each side;
+			One bar of evil below,
+			A book sits, starting.
+
+			Many skulls screaming,
+			On the bricks of the prison.
+			A portal appears.
+			...
+			''' */
+		// Complete: It was just a few moments ago I returned to my former self! Wow! Felt like I was miles away from myself, yet here all the same. Well. That marks a moment in time for me. Thank you ever so much for freeing me. I'll...reconsider my choices in profession. I owe you much.
+
+		Day: {
+			// 0: ...I...don't have anything to say.
+			// 1: ...
+			// 2: The day is long.
+		}
+
+		Weak: {
+			// 0: You...do you know of a curse...?
+			// 1: Hm...I don't...know...
+			// 2: Please, don't wait.
+			// 3: Take caution, friend...
+		}
+
+		Strong: {
+			// 0: You just might be strong enough...
+			// 1: Do...can you? I think you...may...
+			// 2: What was it...book...candle...
+			// 3: The Dungeon awaits.
+		}
+	}
+}
+
+AshWraith: {
+	// DisplayName: Ash Wraith
+	// Entry: A stir of malicious energy combined with the instability of the Underworld produced this...tumbleweed? Much like their surface cousins, they dash at you, but with another axis of movement.
+}
+
+FireMaw: {
+	// DisplayName: Fire Maw
+	// Entry: An odd mix of flower and foe, found only in the Wall of Flesh's domain. Flourishes inside of buildings, but not outside of them.
+}
+
+MorganaNPC: {
+	// DisplayName: Morgana
+	// QuestCondition: Collect 2 Owl Feathers and 1 Pair of Bat Wings
+	// SummonCondition: Summon the Owl with the Grimoire
+
+	Dialogue: {
+		// Common0: Yes...the brew speaks!...it says you're looking to buy! Hm? Are you?
+		// Common1: Mix! Mix! I say, making the most peculiar brews you've heard of. Yes, more Strange than Strange Brews.
+		// Common2: The tail of a rat! The wings of a bat! And to this, I say - rhyme? What's that?
+		// Common3: Betwixt toil and trouble, I reside. Care for a concoction of devilish proportions? Do you? Do you?
+		// Quest: Your guiles intruigue me, stranger. I've summoned the most twisted of creatures before...do you wish to do the same? Do you? If your conviction holds; bring me anything that your Grimoire consumes! No Grimoire? Ohoho! Here you are...don't let your guard down! Open up your Grimoire to see what it's eaten!
+		// Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon whichever beast you like! Owl, bat - or perhaps a different creature entirely? Hm? Hm?! Be merry, and may the phoenix find you well!
+		// Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder. Especially if you're a hunter - the materials you gather may summon many different creatures!
+		// QueenBeeQuest: Ah! You return! My guiles are favorable, yes? Yes! I have a query to ask you! Perhaps odd, but normal for one such as I! Yes! I've harkened back to a more...natural time of my life, and I wish to have some of that soul back. Could I ask you to fetch me some hornet's stingers from the jungle? Could I? Could I? You'll get a nice reward if you do.
+		// GotStingers: How wonderful! Yes...here. Take this little morsel. It'll help you summon a cute little fiend from your Grimoire. Cruel, but kind! Alas, I have one more thing to ask. A creature most foul resides in the jungle, one Queen of Bees. Could I ask you to slay it? It seeks to bother me, and I wish it dead! Another award awaits you! Submerge your new hornet friend in honey if you wish to battle!
+		// QueenBeeKilled: Why, you return? So soon? You're quite strong, are you! Aha, yes. Yes! You are! Very well. Many thanks for the chore. I've little to give, but you must take it. Take it! Bahaha! Farewell!
+	}
+
+	// Entry: Eccentric but decievingly powerful, Morgana offers a lot to Ravencrest. Sure, she may be nearly incomprehensible sometimes, and some might say offputting a lot of the time, but she's good at what she does. Huh? "What does she do?" Uh...
+}
+
+Entling: {
+	// DisplayName: Entling
+	// Entry: A small critter of the forest, mischeivious in nature, Entlings seek to steal and rob. Ideally without a fight, but when it comes to it, they step up and battle by jumping a little and running and that's it. Scary!
+}
+
+EntlingAlt: {
+	// DisplayName: Cyclops Entling
+	// Entry: Much like their cousin, the one-eye variant here enjoys a kleptomaniac nature with a penchant for violence. They think their one eye looks better than two.
+}
+
+Ent: {
+	// DisplayName: Ent
+	// Entry: An elder Entling, they hold much more formidable power. Their mischeivious nature has blossomed into abject violence, not caring what they harm as long as their tree is safe.
+
+	SlamDeath: {
+		// 0: "{0} was smashed to a pulp."
+		// 1: And to the ground {0} returns.
+		// 2: "{0} inspected roots too closely."
+	}
+}
+
+ClumsyEntling: {
+	// DisplayName: Clumsy Entling
+	// Entry: Sometimes, you have a bad day and you trip. This guy has a bad day very, very often. Be thankful, they're here to steal your stuff.
+}
+
+Grovetender: {
+	// DisplayName: Elder Grovetender
+	// Entry: This is the Entling that never died. For one reason or another, it lived too long; from Entling to Ent to Grovetender to now. Rooted in place, it supplants itself and its brethren with a bevvy of magical powers of the nature around it. It bleeds an ancient, magical power.
+
+	BottomDeath: {
+		// 0: "{0} was lost in the tangle."
+		// 1: "{0} was buried in wood."
+		// 2: "{0} was harvested for energy."
+	}
+}
+
+CanopyBird: {
+	// DisplayName: Canopy Owl
+	// Entry: A bird of prey with an unusual size, the Canopy Owl seeks to keep any and all creatures off of the great canopy it resides on. They are relatively small, but surprisingly durable, and most of all, innumerable.
+}
+
+Sawblade: {
+	// DisplayName: Motorized Sawblade
+	// Entry: As a great machinist once said; "Simplicity is key". Sawblade spins, and if touched, sawblade hurts you. It's refreshing, really.
+}
+
+CircuitSkull: {
+	// DisplayName: Circuit Skull
+	// Entry: A bizzare form of defense, the Circuit Skull dances around the empty halls of creation. Why does it do so? Couldn't it jump more efficiently? At the end of the day, these are unknown questions.
+}
+
+SecurityDrone: {
+	// DisplayName: Security Drone
+	// Entry: Like their sister machine the Probe, Security Drones are designed to peruse the large, empty space of the Mechanisms. They always gun for their target directly and forcefully.
+}
+
+Grabber: {
+	// DisplayName: Autoclamp
+	// Entry: The most bizarre of the Mechanism's security protocols, the Autoclamp doesn't do much damage.
+}
+
+CoreModule: {
+	// DisplayName: Core Module
+	// Entry: When a disturbance so large that it requires immediate, massive force occurs in the Mechanism, the Core Module is sent out. It's large, highly defensive, very offensive and most of all, cool.
+}
+
+// CoreModulePlate.DisplayName: Core Module Plate
+// ExplosiveTurret.DisplayName: Explosive Turret
+
+HauntedHead: {
+	// DisplayName: Haunted Head
+	// Entry: The long-lost head of a traveller, merchant, or other unfortunate soul seeking revenge. Emerging from the sands, it'll stop at nothing but death to stop you.
+}
+
+// ScarabSwarmController.DisplayName: Scarab Swarm
+
+SwarmScarab: {
+	// DisplayName: Swarm Scarab
+	// Entry: One of a swarm of carnivorous scarabs, seeking more food. Why is it with so many other scarabs? Intimidation reasons.
+}
+
+AntlionTrapper: {
+	// DisplayName: Antlion Trapper
+	// Entry: What happens when an Antlion's jaws get out of hand? They adapt. What happens when you step near them? Only one way to find out!
+
+	Death: {
+		// 0: "{0} was turned into mush."
+		// 1: "{0} was snapped up."
+		// 2: "{0} didn't watch where they were going."
+	}
+}
+
+SunDevourerNPC: {
+	// DisplayName: Sun Devourer
+	// Entry: An ancient beast in a faraway desert known the world over. While not the largest creature, the beast is known to devour sunlight, growing to strengths beyond its size.
+}
+
+WormLightning: {
+	// DisplayName: Lightning Sprite
+	// Entry: A being of pure energy, born from the explosion of a burst of lightning. They seek only one thing - to distract from their creator.
+}
+
+// WormLightning_Body.DisplayName: "{$WormLightning.DisplayName}"
+// WormLightning_Tail.DisplayName: "{$WormLightning.DisplayName}"
+
+EnergizerCore: {
+	// DisplayName: Energizer Core
+	// Entry: A self-sustaining, powerful machine made only to keep its fellow automatons alive. It is unknown what the core is doing or why the metal spins around it.
+}
+
+Minitera: {
+	// DisplayName: Budding Plantera
+	// Entry: An early bloom, this Plantera was not given the time it needed to grow fully. That being said, it's still much more powerful than most foes.
+}
+
+// MiniteraHook.DisplayName: Minitera Hook
+
+WarriorNPC: {
+	// DisplayName: Warrior
+
+	Names: {
+		Male: {
+			// 0: James
+			// 1: John
+			// 2: Peter
+			// 3: Mark
+			// 4: Salvador
+			// 5: Ezra
+			// 6: Simone
+			// 7: Eduardo
+			// 8: Lee
+			// 9: Enrique
+			// 10: Walter
+			// 11: Sven
+			// 12: Hidehito
+			// 13: Goro
+			// 14: Jamir
+			// 15: Talan
+			// 16: Moises
+			// 17: Felipe
+			// 18: Samuel
+		}
+
+		Female: {
+			// 0: Alma
+			// 1: Paula
+			// 2: Jenna
+			// 3: Lyric
+			// 4: Serena
+			// 5: Teagan
+			// 6: Kinsley
+			// 7: Aria
+			// 8: Priya
+			// 9: Ella
+			// 10: Kamora
+			// 11: Damaris
+			// 12: Josephine
+			// 13: Anahi
+			// 14: Halle
+			// 15: Myah
+			// 16: Perla
+			// 17: Fatima
+			// 18: Samantha
+		}
+	}
+
+	Dialogue: {
+		Confident: {
+			// 0: A respite well earned! Cheers, my friend.
+			// 1: Ah, the mead known throughout the world!
+			// 2: Sometimes, a stiff drink and a rest beats adventure!...sometimes.
+			// 3: And so I told Brom - "I hope this drink's not as strong as the beast!" Bahahaha!
+		}
+
+		Reserved: {
+			// 0: Well met, stranger.
+			// 1: Hello.
+			// 2: Not often I see that get-up.
+			// 3: Cheers, friend.
+		}
+
+		Boastful: {
+			// 0: And so I slayed the Burnfield, like nothing! Legendary beast, meet my blade!
+			// 1: Ohohoh, quite curious? What have you slain? Beasts? Gods?
+			// 2: The Cliffs near the Maw of Earth? Child's play! I remember traipsing through like it's a hike!
+			// 3: Not much beats a strong drink and a great achievement, huh? Aha! Of course not!
+		}
+
+		Sly: {
+			// 0: Aye. Don't tell Brom...this is all counterfeit coin. Heh.
+			// 1: They say a great theft can overshadow a greater achievement. You interested?
+			// 2: How much mead do you think I can hide in my waterskin?
+			// 3: Say...you know where this fine establishment keeps its coin? No reason...
+		}
+
+		Partygoer: {
+			// 0: Hey, hey! I know a little magic - you got a coin I could borrow? It'll disappear, but only for a bit!
+			// 1: The best thing in combat? Confusion. You throw a confetti bomb and a wolf hardly knows what's going on.
+			// 2: Look at this - within moments, I can make this mead disappear.
+			// 3: This one's simple - how do you trick the gullible?...I'll tell you later.
+		}
+
+		Reverent: {
+			// 0: Thank whatever guides you for what you enjoy.
+			// 1: Alas! I am doing my work. Cheers!
+			// 2: Have you seen a Shrine's blessings? Curious boons.
+			// 3: Comfort in the home is worth many a battle.
+		}
+	}
+
+	BubbleDialogue: {
+		Confident: {
+			// 0: Ah, yes. A moment...
+			// 1: You can tell the owner here was an adventuerer himself, huh?
+			// 2: I'm already getting excited to head back out...
+			// 3: ...where are the quest listings again...?
+		}
+
+		Reserved: {
+			// 0: Hm.
+			// 1: How nice.
+			// 2: Where'd I leave my coin...
+			// 3: Another drink, perhaps...?
+		}
+
+		Boastful: {
+			// 0: What else to say, what else to say...
+			// 1: I should say that Maw of Earth line again, that one's awesome.
+			// 2: Where's my audience?
+			// 3: Man, I'm so cool.
+		}
+
+		Sly: {
+			// 0: Act natural, I'm just a normal adventurer...
+			// 1: Is anyone looking?
+			// 2: Hehe...they won't know what hit 'em.
+			// 3: Good thing I've such big pockets...
+		}
+
+		Partygoer: {
+			// 0: Whoo, man! That mead's starting to hit...
+			// 1: Brom? Could I get another one...?
+			// 2: Woah. That's where that coin went.
+			// 3: Whooh. Just gonna take a moment...
+		}
+
+		Reverent: {
+			// 0: Thank you all for my meal...
+			// 1: Be blessed.
+			// 2: Perhaps the desert next?
+			// 3: Ah...
+		}
+	}
+}
+
+RangerNPC: {
+	// DisplayName: Ranger
+	// Names: "{WarriorNPC.Names}"
+	// Dialogue: "{WarriorNPC.Dialogue}"
+	// BubbleDialogue: "{WarriorNPC.BubbleDialogue}"
+}
+
+GreaterFairy: {
+	// DisplayName: Greater Fairy
+	// Entry: A much less kind version of the fairies sometimes found throughout the world, Greater Fairies align themselves to the absolutution of the Hallow instead.
+}
+
+Prismatism: {
+	// DisplayName: Prismatism
+	// Entry: Mysteriously well dressed, this chromatic orb seems to possess either entirely too little movement or altogether too much. It has exactly enough hostility against you to merit that.
+}

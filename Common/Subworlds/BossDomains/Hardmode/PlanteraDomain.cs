@@ -4,6 +4,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Utilities;
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -304,6 +305,8 @@ internal class PlanteraDomain : BossDomainSubworld
 
 		if (BossSpawned && !NPC.AnyNPCs(NPCID.Plantera) && !ExitSpawned)
 		{
+			BossTracker.AddDowned(NPCID.Plantera, false, true);
+
 			ExitSpawned = true;
 
 			HashSet<Player> players = [];

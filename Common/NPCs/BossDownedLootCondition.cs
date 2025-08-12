@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;

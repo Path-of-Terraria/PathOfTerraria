@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Common.Subworlds.Passes;
-using PathOfTerraria.Common.Systems;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.DataStructures;
@@ -11,6 +10,8 @@ using Terraria.WorldBuilding;
 using PathOfTerraria.Common.World.Generation;
 using Terraria.Localization;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.World.Generation.Tools;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -165,6 +166,7 @@ public class KingSlimeDomain : BossDomainSubworld
 				if (WorldGen.genRand.NextBool(chance))
 				{
 					WorldGen.TileRunner(position.X, position.Y, WorldGen.genRand.Next(6, 20), 8, TileID.SlimeBlock, false, 0, 0, false);
+					Digging.WallCirclePlacing(position.ToVector2(), WorldGen.genRand.Next(6, 20) / 2, true, WallID.Slime, true, false);
 				}
 			}
 		}
@@ -216,12 +218,13 @@ public class KingSlimeDomain : BossDomainSubworld
 		{
 			Vector2 item = results[i];
 			float mul = 1f + MathF.Abs(noise.GetNoise(item.X, item.Y)) * 1.2f;
+			mul = MathF.Max(0.5f, mul);
 			Digging.CircleOpening(item, 5 * mul);
 			Digging.CircleOpening(item, WorldGen.genRand.Next(3, 7) * mul);
 
 			if (WorldGen.genRand.NextBool(8))
 			{
-				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7));
+				Digging.WallCircleOpening(item, WorldGen.genRand.Next(4, 7), true);
 			}
 
 			if (WorldGen.genRand.NextBool(3, 5))
@@ -280,7 +283,7 @@ public class KingSlimeDomain : BossDomainSubworld
 			Vector2 pos = Arena.Center() + new Vector2(0, 150);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.CachedBossesDowned.Add(NPCID.KingSlime);
+			BossTracker.AddDowned(NPCID.KingSlime, false, true);
 			ReadyToExit = true;
 		}
 	}

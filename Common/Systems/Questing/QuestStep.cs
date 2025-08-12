@@ -15,7 +15,7 @@ public abstract class QuestStep
 		Completed
 	}
 
-	public static Color DefaultTextColor = new(43, 28, 17);
+	internal static Color DefaultTextColor = new(43, 28, 17);
 
 	public virtual int LineCount => 1;
 	public virtual bool NoUI => false;
@@ -50,7 +50,18 @@ public abstract class QuestStep
 	public abstract void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep);
 
 	/// <summary>
-	/// Draws a string with default Quest Book parameters - namely, faded if completed, 0.7f scale, no transparency with the ItemStack font and Main.spriteBatch.
+	/// Displays "reminder" text in the quest book, namely for NPC dialogue. <paramref name="title"/> is the title of the reminder, i.e. <br/><c>
+	/// Dialogue</c><br/>
+	/// <c>You need to get...</c>
+	/// </summary>
+	/// <returns>The reminder text to show.</returns>
+	public virtual string ReminderText(ref string title)
+	{
+		return string.Empty;
+	}
+
+	/// <summary>
+	/// Draws a string with default Quest Book parameters - namely, faded if completed, 0.85f scale, no transparency with the ItemStack font and Main.spriteBatch.
 	/// </summary>
 	/// <param name="text">Text to display.</param>
 	/// <param name="position">Position to draw at.</param>
@@ -65,7 +76,7 @@ public abstract class QuestStep
 			color = DefaultTextColor * 0.25f;
 		}
 
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, color, Color.Transparent, 0f, Vector2.Zero, new(0.7f), -1, 2);
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, font, text, position, color, Color.Transparent, 0f, Vector2.Zero, new Vector2(0.85f), -1, 2);
 	}
 
 	/// <summary>

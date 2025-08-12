@@ -19,7 +19,8 @@ internal class BossGlobalItemDisabler : GlobalItem
 		ItemID.QueenSlimeCrystal,
 		ItemID.CelestialSigil,
 		ItemID.MechdusaSummon,
-		ItemID.LihzahrdPowerCell]; 
+		ItemID.LihzahrdPowerCell,
+		ItemID.GoblinBattleStandard]; 
 	
 	// Important to note that the Lihzahrd Power Cell is disabled because NPC.downedPlantBoss isn't kept from the Plantera domain
 	// This stops the power cells from working even if the player somehow obtains a power cell in the overworld

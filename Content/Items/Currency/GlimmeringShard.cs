@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -11,14 +12,19 @@ public class GlimmeringShard : CurrencyShard
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 5000f;
+		staticData.DropChance = 10000f;
 	}
 
 	public override bool CanRightClick()
 	{
 		Item heldItem = Main.LocalPlayer.HeldItem;
 
-		if (heldItem.GetInstanceData().Rarity == ItemRarity.Magic && !heldItem.IsAir)
+		if (heldItem == null || heldItem.IsAir)
+		{
+			return false;
+		}
+
+		if (heldItem.TryGetGlobalItem(out PoTInstanceItemData data) && data.Rarity == ItemRarity.Magic)
 		{
 			return base.CanRightClick();
 		}

@@ -99,20 +99,6 @@ internal class SkillCombatPlayer : ModPlayer
 		}
 	}
 
-	public override void PostUpdate()
-	{
-		for (int i = 0; i < HotbarSkills.Length; i++)
-		{
-			Skill skill = HotbarSkills[i];
-
-			if (skill is not null && !skill.CanEquipSkill(Player, out _))
-			{
-				HotbarSkills[i] = null;
-				continue;
-			}
-		}
-	}
-
 	public override void SaveData(TagCompound tag)
 	{
 		for (int i = 0; i < HotbarSkills.Length; i++)
@@ -185,11 +171,13 @@ internal class SkillCombatPlayer : ModPlayer
 		return false;
 	}
 
-	public bool TryAddSkill(Skill skill)
+	/// <param name="suppress"> Whether to display Main.NewText feedback. </param>
+	public bool TryAddSkill(Skill skill, bool suppress = false)
 	{
-		if (!skill.CanEquipSkill(Player, out string failReason))
+		SkillFailure fail = default;
+		if (!skill.CanEquipSkill(Player, ref fail))
 		{
-			Main.NewText($"Skill cannot be added. ({failReason})");
+			NewText($"Skill cannot be added. ({fail.Description.Value})");
 			return false; // Couldn't equip skill, return false
 		}
 
@@ -197,7 +185,7 @@ internal class SkillCombatPlayer : ModPlayer
 		{
 			if (HotbarSkills[i] != null && HotbarSkills[i].Name == skill.Name)
 			{
-				Main.NewText("Skill already added.");
+				NewText("Skill already added.");
 				return true; // Return true because the skill can be added, it just is equipped already
 			}
 		}
@@ -208,13 +196,22 @@ internal class SkillCombatPlayer : ModPlayer
 			{
 				HotbarSkills[i] = skill;
 				HotbarSkills[i].LevelTo(HotbarSkills[i].Level);
-				Main.NewText("Skill added successfully.");
+
+				NewText("Skill added successfully.");
 				return true; // Equipped skill, return true
 			}
 		}
 
-		Main.NewText("No available space to add the skill.");
+		NewText("No available space to add the skill.");
 		return false; // No space, fail
+
+		void NewText(string value)
+		{
+			if (!suppress)
+			{
+				Main.NewText(value);
+			}
+		}
 	}
 
 	public bool TryRemoveSkill(Skill skill)

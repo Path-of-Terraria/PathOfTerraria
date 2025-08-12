@@ -54,6 +54,17 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 	{
 	}
 
+	public UIHoverImageItemSlot(
+		Asset<Texture2D> backgroundTexture,
+		Asset<Texture2D> iconTexture,
+		ref Item[]? inventory,
+		int slot,
+		string key,
+		int context = ItemSlot.Context.InventoryItem	
+	) : base(backgroundTexture, iconTexture, ref inventory, slot, context, key)
+	{
+	}
+
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);

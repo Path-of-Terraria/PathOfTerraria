@@ -93,13 +93,13 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 			new Condition(LocalizedText.Empty, () => Quest.GetLocalPlayerInstance<WizardStartQuest>().Completed)));
 
 		Condition conditions = new("Mods.PathOfTerraria.Misc.VoidPearlCondition", () => Main.hardMode || QuestReady());
-		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<VoidPearl>()) { shopCustomPrice = Item.buyPrice(0, 50, 0, 0) }, Condition.Hardmode));
+		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<VoidPearl>()) { shopCustomPrice = Item.buyPrice(0, 50, 0, 0) }, conditions));
 		shop.Register();
 	}
 
 	public static bool QuestReady()
 	{
-		WoFQuest quest = Quest.GetLocalPlayerInstance<WoFQuest>();
+		var quest = Quest.GetLocalPlayerInstance<WoFQuest>();
 		return quest.Active && quest.CurrentStep > 2;
 	}
 

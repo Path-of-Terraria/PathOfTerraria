@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
-using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
 using PathOfTerraria.Common.Systems.VanillaModifications;
@@ -125,30 +125,51 @@ public class RavencrestSystem : ModSystem
 	{
 		if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !BossTracker.DownedBrainOfCthulhu)
 		{
-			while (true)
-			{
-				int x = Main.rand.Next(Main.maxTilesX / 5, Main.maxTilesX / 5 * 4);
-				int y = Main.rand.Next((int)Main.worldSurface, Main.maxTilesY / 2);
-				int checkY = y;
+			const int MaxAttempts = 10000;
 
-				while (!WorldGen.SolidTile(x, checkY))
+			for (int attempt = 0; attempt < MaxAttempts; attempt++)
+			{
+				int x = Main.rand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
+				int checkY = Main.rand.Next((int)Main.worldSurface, Main.maxTilesY / 2);
+
+				while (checkY < Main.maxTilesY - 10 && !WorldGen.SolidTile(x, checkY))
 				{
 					checkY++;
 				}
 
-				if (!Main.tile[x, y].HasTile || Main.tile[x, y].TileType != TileID.Ebonstone)
+				if (checkY >= Main.maxTilesY - 10)
 				{
 					continue;
 				}
 
-				y = checkY - 2;
-				WorldGen.PlaceObject(x, y, ModContent.TileType<MorvenStuck>());
-
-				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<MorvenStuck>())
+				if (!Main.tile[x, checkY].HasTile || Main.tile[x, checkY].TileType != TileID.Ebonstone)
 				{
-					SpawnedMorvenPos = new Point16(x, y);
-					break;
+					continue;
 				}
+
+				int placeY = checkY - 2;
+				if (!WorldGen.InWorld(x, placeY, 15))
+				{
+					continue;
+				}
+
+				if (!WorldGen.EmptyTileCheck(x - 1, x + 1, placeY - 3, placeY, 3))
+				{
+					continue;
+				}
+
+				if (!WorldGen.PlaceObject(x, placeY, ModContent.TileType<MorvenStuck>()))
+				{
+					continue;
+				}
+
+				SpawnedMorvenPos = new Point16(x, placeY);
+				break;
+			}
+			
+			if (SpawnedMorvenPos is null)
+			{
+				Main.NewText($"Reached max attempts trying to spawn Morven. Please report this to the mod developers.");
 			}
 		}
 

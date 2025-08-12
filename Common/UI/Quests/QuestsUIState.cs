@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using System.Collections.Generic;
@@ -127,12 +128,14 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			Width = new(38, 0),
 			Height = new(38, 0)
 		};
+
 		_closeButton.OnLeftClick += (a, b) =>
 		{
 			IsVisible = false;
 			SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
 		};
 		_closeButton.SetVisibility(1, 1);
+
 		Panel.Append(_closeButton);
 
 		IsVisible = true;
@@ -160,7 +163,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			});
 		}
 	}
-	
+
 	private void PopulateQuests()
 	{
 		_questList.Clear();
@@ -220,7 +223,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 	public void SelectQuest(string questName)
 	{
 		ViewedQuest = questName;
-
+		
 		PopulateQuestSteps(Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[questName]);
 		Recalculate();
 	}

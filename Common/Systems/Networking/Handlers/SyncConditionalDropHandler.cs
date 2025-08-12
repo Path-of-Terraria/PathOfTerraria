@@ -32,7 +32,7 @@ internal class SyncConditionalDropHandler : Handler
 		SetValuesBasedOnReader(reader, false);
 	}
 
-	private void SetValuesBasedOnReader(BinaryReader reader, bool sync)
+	public static void SetValuesBasedOnReader(BinaryReader reader, bool runningOnServer)
 	{
 		byte who = reader.ReadByte();
 		int id = reader.ReadInt32();
@@ -41,16 +41,16 @@ internal class SyncConditionalDropHandler : Handler
 
 		if (add)
 		{
-			plr.GetModPlayer<ConditionalDropPlayer>().AddId(id);
+			plr.GetModPlayer<ConditionalDropPlayer>().AddId(id, true);
 		}
 		else
 		{
-			plr.GetModPlayer<ConditionalDropPlayer>().RemoveId(id);
+			plr.GetModPlayer<ConditionalDropPlayer>().RemoveId(id, true);
 		}
 
-		if (sync)
+		if (runningOnServer)
 		{
-			ModPacket packet = Networking.GetPacket(MessageType);
+			ModPacket packet = Networking.GetPacket(Networking.Message.SyncConditionalDrop);
 			packet.Write(who);
 			packet.Write(id);
 			packet.Write(add);

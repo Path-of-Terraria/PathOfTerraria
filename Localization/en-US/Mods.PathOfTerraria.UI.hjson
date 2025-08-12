@@ -11,6 +11,20 @@ Gear: {
 	}
 }
 
+Slots: {
+	0: Helmet
+	1: Chest
+	2: Legs
+	3: Accessory 2
+	4: Weapon
+	5: Necklace
+	6: Offhand
+	7: Left Ring
+	8: Right Ring
+	9: Accessory 1
+	10: Wings
+}
+
 BaseDamage: Base Damage: {0}
 Lives: lives left
 
@@ -25,6 +39,7 @@ StatUI: {
 	BlockChance: Block Chance
 	MaxBlock: Block Chance Cap
 	BlockCooldown: Block Cooldown
+	MaxMinions: Maximum Minions
 	Strength: Strength
 	Dexterity: Dexterity
 	Intelligence: Intelligence
@@ -184,6 +199,7 @@ InvButtons: {
 	NoGrimoire: "[c/888888:(Needs] [i:PathOfTerraria/GrimoireItem] [c/888888:Grimoire)]"
 	Quest: Quests
 	Stats: Stats
+	RestartTutorial: Restart Tutorial
 }
 
 Grimoire: {
@@ -204,4 +220,9 @@ Grimoire: {
 			'''
 		Ritual: Ah, and your ritual! Here you can place materials full of boons! If your pieces have no boons, they have no effect...
 	}
+}
+
+QuestReminderTitles: {
+	Dialogue: Dialogue
+	Reminder: Reminder
 }

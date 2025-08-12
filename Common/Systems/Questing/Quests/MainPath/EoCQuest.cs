@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.NPCs.ConditionalDropping;
+﻿using PathOfTerraria.Common.NPCs.ConditionalDropping;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
@@ -33,7 +35,7 @@ internal class EoCQuest : Quest
 			}),
 			new ParallelQuestStep(
 			[
-				new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.EoCQuestLine"),
+				new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.EoCQuestLine"),
 					null, false, (npc) => 
 					{
 						int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>());
@@ -43,17 +45,17 @@ internal class EoCQuest : Quest
 							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 						}
 					}),
-				new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.QuestLunar"),
+				new InteractWithNPC(ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.QuestLunar"),
 					[
 						new GiveItem(5, ModContent.ItemType<LunarShard>())
 					], true),
-			]),
+			], Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest")),
 			new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Observatory");
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"),
+			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"),
 				[ new GiveItem(1, ModContent.ItemType<LunarLiquid>()) ], true, (npc) =>
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LunarObject>());
@@ -70,7 +72,7 @@ internal class EoCQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Observatory");
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest3"))
+			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest3"))
 			{
 				CountsAsCompletedOnMarker = true
 			},
@@ -84,7 +86,7 @@ internal class EoCQuest : Quest
 
 	public override bool Available()
 	{
-		return NPC.downedSlimeKing;
+		return BossTracker.TotalBossesDowned.Contains(NPCID.KingSlime);
 	}
 
 	public override string MarkerLocation()

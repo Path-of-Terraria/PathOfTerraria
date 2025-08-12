@@ -1,4 +1,6 @@
-﻿using System.IO;
+﻿using SubworldLibrary;
+using System.IO;
+using System.Runtime.CompilerServices;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Networking;
@@ -96,7 +98,26 @@ internal static class Networking
 		/// Requests all other players to sync their skill specializations.<br/>Signature:<br/>
 		/// <c>byte player</c>
 		/// </summary>
-		RequestOthersSkillSpecialization
+		RequestOthersSkillSpecialization,
+
+		/// <summary>
+		/// Requests all other players to sync their conditional drops. Does not recieve on clients; forwards a <see cref="SyncConditionalDrop"/> instead.<br/>Signature:<br/>
+		/// <c>byte who, int[] drops</c>
+		/// </summary>
+		SyncNewConditionalDropPlayer,
+
+		/// <summary>
+		/// Sends a boss to be downed from the server. This is used for caching boss downs, and redundant data may be sent to the server in quick succession.<br/>Signature:<br/>
+		/// <c>int id</c>
+		/// </summary>
+		SyncBossDowned,
+
+		/// <summary>
+		/// Tells all players to add the given id to their cache. Used by temporary <see cref="BossTrackingSystems.BossTrackingPlayer"/> downed caching system.<br/>
+		/// This simply assumes every player in a subworld 'beat' the boss, and thus should carry the information forward.<br/>Signature:<br/>
+		/// <c>int id</c>
+		/// </summary>
+		SyncPlayerDownedBoss,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -124,5 +145,17 @@ internal static class Networking
 		ModPacket packet = PoTMod.Instance.GetPacket(capacity);
 		packet.Write((byte)type);
 		return packet;
+	}
+
+	/// <summary>
+	/// Unused. Doesn't work right atm; I don't know how it works, but this would be useful if I understood it. - Gabe
+	/// </summary>
+	/// <param name="packet"></param>
+	internal static void SendPacketToMainServer(ModPacket packet)
+	{
+		SubworldSystem.SendToMainServer(PoTMod.Instance, GetBuffer(packet));
+
+		[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "buf")]
+		static extern ref byte[] GetBuffer(ModPacket packet);
 	}
 }

@@ -1,0 +1,62 @@
+Keybinds: {
+	UseSkill1.DisplayName: Использовать 1 способность
+	UseSkill2.DisplayName: Использовать 2 способность
+	UseSkill3.DisplayName: Использовать 3 способность
+	UseSkill4.DisplayName: Использовать 4 способность
+	UseSkill5.DisplayName: Использовать 5 способность
+	CopyItemInfo.DisplayName: Копировать информацию о товаре
+	StatUIKey.DisplayName: Переключить страницу статистики
+	GearSwap.DisplayName: Обмен оружием
+	QuestUIKey.DisplayName: Ключ квестового интерфейса
+	DropTableKey.DisplayName: Клавиша сброса таблицы
+	PassiveTreeUIKey.DisplayName: Ключ пользовательского интерфейса пассивного дерева
+}
+
+GUI: {
+	PassiveTreeTab: Пассивные
+	SkillTreeTab: Навыки
+	QuestsAvailableTab: Доступный
+	QuestsCompletedTab: Завершенный
+	PlayerStatsTab: Статистика
+}
+
+Generation: {
+	RavencrestEntrancePass: Открытие Ravencrest
+	FrozenRuinPass: ""
+}
+
+Tiles: {
+	ArcaneObeliskTile.MapEntry: Плитка «Тайный обелиск»
+	MechChest.MapEntry: Механический корпус
+}
+
+Waypoints: {
+	RavencrestWaypoint.DisplayName: Гребень Ворона
+	HomeWaypoint.DisplayName: Дом
+}
+
+Condition: {
+	BossDowned: {
+		Drop: Выпадает только после победы над {0}
+		AnyMech: Любой Мех Босс
+		The: то
+	}
+}
+
+TooltipNotices: {
+	NoSwap: (Нечего обменивать)
+	Swap: Если {0} оборудован:
+	Shift: (Удерживайте клавишу Shift, чтобы сравнить статистику)
+}
+
+Biomes: {
+	RavencrestBiome: {
+		DisplayName: Гребень Ворона
+		TownNPCDialogueName: Гребень Ворона
+	}
+
+	MechBiome: {
+		DisplayName: Механизмы
+		TownNPCDialogueName: Механизмы
+	}
+}

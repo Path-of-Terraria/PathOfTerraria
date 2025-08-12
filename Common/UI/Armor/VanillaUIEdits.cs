@@ -19,22 +19,7 @@ internal class VanillaUIEdits : ModSystem
 		{
 			ILCursor c = new(il);
 
-			MethodInfo method = typeof(SpriteBatch).GetMethod
-			(
-				nameof(SpriteBatch.Draw),
-				BindingFlags.Public | BindingFlags.Instance,
-				[typeof(Texture2D), typeof(Vector2), typeof(Rectangle?), typeof(Color), typeof(float), typeof(Vector2), typeof(Vector2), typeof(SpriteEffects), typeof(float)]
-			);
-
-			if (!c.TryGotoNext(x => x.MatchCallvirt(method)))
-			{
-				return;
-			}
-
-			if (!c.TryGotoPrev(x => x.MatchLdsfld<Main>(nameof(Main.spriteBatch))))
-			{
-				return;
-			}
+			c.GotoNext(MoveType.After, x => x.MatchStloc2());
 
 			c.Emit(OpCodes.Ldloca_S, (byte)1);
 			c.Emit(OpCodes.Ldloca_S, (byte)2);

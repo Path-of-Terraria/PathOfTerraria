@@ -41,6 +41,7 @@ internal abstract class Whip : Gear
 	/// Serves as the default value of <see cref="UpdateProjectile"/>.
 	/// </summary>
 	private static void Empty(Projectile projectile) { }
+	
 	private static void EmptyDraw(Projectile projectile, int segment, ref Color color) { }
 
 	public override void SetStaticDefaults()
@@ -63,7 +64,7 @@ internal abstract class Whip : Gear
 	{
 		base.SetDefaults();
 
-		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 3, 2, 4);
+		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 7, 2, 4);
 		Item.channel = true;
 
 		PoTInstanceItemData data = this.GetInstanceData();

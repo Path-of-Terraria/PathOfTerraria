@@ -11,7 +11,7 @@ public class UnfoldingShard : CurrencyShard
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 5000f;
+		staticData.DropChance = 20000f;
 	}
 
 	public override bool CanRightClick()

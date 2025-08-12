@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -12,9 +13,9 @@ internal class ConditionalDropPlayer : ModPlayer
 {
 	internal readonly HashSet<int> TrackedIds = [];
 
-	public void AddId(int id)
+	public void AddId(int id, bool syncing = false)
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient)
+		if (Main.netMode == NetmodeID.MultiplayerClient && !syncing)
 		{
 			ModContent.GetInstance<SyncConditionalDropHandler>().Send((byte)Player.whoAmI, id, true);
 			return;
@@ -28,9 +29,9 @@ internal class ConditionalDropPlayer : ModPlayer
 		AddId(ModContent.ItemType<T>());
 	}
 
-	public void RemoveId(int id)
+	public void RemoveId(int id, bool syncing = false)
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient)
+		if (Main.netMode == NetmodeID.MultiplayerClient && !syncing)
 		{
 			ModContent.GetInstance<SyncConditionalDropHandler>().Send((byte)Player.whoAmI, id, false);
 			return;
@@ -48,7 +49,15 @@ internal class ConditionalDropPlayer : ModPlayer
 	{
 		if (TrackedIds.Count > 0)
 		{
-			tag.Add("ids", (int[])[.. TrackedIds]);
+			tag.Add("ids", (string[])[.. TrackedIds.Select(x => x < ItemID.Count ? "Terraria/" + x : ContentSamples.ItemsByType[x].ModItem.FullName)]);
+		}
+	}
+
+	public override void OnEnterWorld()
+	{
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			ModContent.GetInstance<SyncNewConditionalDropPlayerHandler>().Send((byte)Player.whoAmI, (int[])[.. TrackedIds]);
 		}
 	}
 
@@ -56,11 +65,50 @@ internal class ConditionalDropPlayer : ModPlayer
 	{
 		TrackedIds.Clear();
 
-		if (tag.TryGet("ids", out int[] ids))
+		if (!tag.ContainsKey("ids"))
 		{
-			foreach (int id in ids)
+			return;
+		}
+
+		if (tag.TryGet("ids", out object[] obj))
+		{
+			if (obj.Length == 0)
 			{
-				TrackedIds.Add(id);
+				return;
+			}
+
+			if (obj[0] is not string)
+			{
+				return;
+			}
+		}
+
+		if (tag.TryGet("ids", out string[] ids))
+		{
+			foreach (string name in ids)
+			{
+				int id;
+
+				if (name.StartsWith("Terraria/"))
+				{
+					id = int.Parse(name.Split('/')[1]);
+				}
+				else
+				{
+					if (ModContent.TryFind(name, out ModItem item))
+					{
+						id = item.Type;	
+					}
+					else
+					{
+						id = -1;
+					}
+				}
+
+				if (id != -1)
+				{
+					TrackedIds.Add(id);
+				}
 			}
 		}
 	}

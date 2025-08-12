@@ -11,6 +11,7 @@ using Terraria.Localization;
 using ReLogic.Content;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Gear;
+using PathOfTerraria.Common.Items;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -75,6 +76,7 @@ partial class PoTGlobalItem
 				return true;
 
 			case "AltUseDescription":
+			case "ManaCost":
 			case "Description":
 			case "ShiftNotice":
 			case "SwapNotice":
@@ -206,10 +208,30 @@ partial class PoTGlobalItem
 		{
 			// TODO: Slice first space in damage type display name...
 			string highlightNumbers = HighlightNumbers(
-				$"[{Math.Round(item.damage * 0.8f, 2)}-{Math.Round(item.damage * 1.2f, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})",
+				$"[{Math.Round(item.damage * 0.85f, 2)}-{Math.Round(item.damage * 1.15f, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})",
 				baseColor: "DDDDDD");
 			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
 			AddNewTooltipLine(item, tooltips, damageLine);
+		}
+		
+		if (item.useTime > 0) // Attack or cast speed
+		{
+			float aps = 60f / item.useTime;
+			aps = (float) Math.Round(aps, 2);
+			string apsStr = aps.ToString("0.00");
+			string localizeString = item.DamageType == DamageClass.Magic ? "CastSpeed" : "AttackSpeed";
+			var attackSpeed = new TooltipLine(Mod, "AttacksPerSecond", $"[i:{ItemID.SilverBullet}] [{apsStr}] {Localize(localizeString)}");
+			AddNewTooltipLine(item, tooltips, attackSpeed);
+		}
+		
+		if (item.mana > 0)
+		{
+			string manaCost = $"{Localize("ManaCost")}: {item.mana}";
+			var manaLine = new TooltipLine(Mod, "ManaCost", manaCost)
+			{
+				OverrideColor = Color.Cyan
+			};
+			AddNewTooltipLine(item, tooltips, manaLine);
 		}
 
 		if (item.defense > 0)
@@ -383,7 +405,11 @@ partial class PoTGlobalItem
 			sb.Draw(Textures["Favorite"].Value, position, null, backColor, 0f, default, Main.inventoryScale, SpriteEffects.None, 0f);
 		}
 
-		ItemSlot.Draw(sb, ref inv[slot], 21, position);
+		// For some reason this *hard* crashes if it's a HotbarItem.
+		// Instead, CountDisplayItem has a manual override.
+		CountDisplayItem.ForcedContext = ItemSlot.Context.HotbarItem;
+		ItemSlot.Draw(sb, ref inv[slot], ItemSlot.Context.MouseItem, position);
+		CountDisplayItem.ForcedContext = -1;
 
 		if (data.Influence == Influence.Solar)
 		{

@@ -15,6 +15,9 @@ Tooltips: {
 	Pickaxe: Pickaxe Power
 	Axe: Axe Power
 	Hammer: Hammer Power
+	ManaCost: Mana Cost
+	AttackSpeed: Attack Speed
+	CastSpeed: Cast Speed
 }
 
 Influence: {
@@ -167,6 +170,8 @@ Staff: {
 		4: Echo
 	}
 }
+
+Broadsword.Name: Broadsword
 
 Sword: {
 	Name: Sword
@@ -346,3 +351,4 @@ Magic.Name: Magic
 Ranged.Name: Ranged
 Melee.Name: Melee
 Summon.Name: Summon
+Accessory.Name: Accessory

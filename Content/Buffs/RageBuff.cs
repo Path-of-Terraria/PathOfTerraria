@@ -21,6 +21,6 @@ public sealed class RageBuff : ModBuff
 	{
 		base.Update(player, ref buffIndex);
 		
-		player.GetDamage(DamageClass.Generic) += 1.5f;
+		player.GetDamage(DamageClass.Melee) += 1.5f;
 	}
 }

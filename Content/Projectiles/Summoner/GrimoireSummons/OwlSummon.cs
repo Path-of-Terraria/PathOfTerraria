@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 
 internal class OwlSummon : GrimoireSummon
 {
-	public override int BaseDamage => 3;
+	public override int BaseDamage => 6;
 
 	public override void StaticDefaults()
 	{

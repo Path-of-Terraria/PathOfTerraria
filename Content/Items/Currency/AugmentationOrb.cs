@@ -9,7 +9,7 @@ internal class AugmentationOrb : CurrencyShard
 	public override void SetStaticDefaults()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 500f;
+		staticData.DropChance = 100f;
 		staticData.MinDropItemLevel = 40;
 	}
 

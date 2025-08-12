@@ -229,7 +229,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"internalIdentifier": "IncreasedSummonDamagePassive",
 		"referenceId": 17,
 		"maxLevel": 3,
 		"connections": [

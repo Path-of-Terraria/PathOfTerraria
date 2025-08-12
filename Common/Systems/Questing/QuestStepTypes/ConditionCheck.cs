@@ -1,6 +1,4 @@
-﻿using Terraria.GameContent;
-using Terraria.Localization;
-using Terraria.UI.Chat;
+﻿using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
@@ -12,9 +10,10 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// </summary>
 /// <param name="condition"></param>
 /// <param name="displayText"></param>
-internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, LocalizedText displayText) : QuestStep
+internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, LocalizedText displayText, LocalizedText reminderText = null) : QuestStep
 {
 	private readonly float ExploreTime = exploreTime;
+	private readonly LocalizedText Reminder = reminderText ?? LocalizedText.Empty;
 
 	private float _explore = 0;
 
@@ -38,5 +37,11 @@ internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, L
 		}
 
 		return _explore > ExploreTime;
+	}
+
+	public override string ReminderText(ref string title)
+	{
+		title = Language.GetTextValue("Mods.PathOfTerraria.UI.QuestReminderTitles.Reminder");
+		return Reminder.Value;
 	}
 }

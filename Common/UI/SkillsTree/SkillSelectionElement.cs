@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Hotbar;
@@ -31,6 +30,7 @@ internal class SkillSelectionElement : UIElement
 		base.Draw(spriteBatch);
 
 		Texture2D tex = ModContent.Request<Texture2D>(_skill.Texture).Value;
+		SkillFailure fail = default;
 
 		if (tex == null)
 		{
@@ -39,18 +39,18 @@ internal class SkillSelectionElement : UIElement
 
 		if (ContainsPoint(Main.MouseScreen))
 		{
-			if (_skill.CanEquipSkill(Main.LocalPlayer, out string failReason))
+			if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(_skill.Name) || _skill.CanEquipSkill(Main.LocalPlayer, ref fail))
 			{
 				NewHotbar.DrawSkillHoverTooltips(_skill, null, true);
 			}
 			else
 			{
-				Tooltip.SetName(Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip", failReason));
+				Tooltip.SetName(Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip", fail.Description));
 			}
 		}
 
 		Vector2 position = GetDimensions().Position() + new Vector2(Width.Pixels / 2, Height.Pixels / 2);
-		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer, out _) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer, ref fail) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
 
 		if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(_skill.Name))
 		{
