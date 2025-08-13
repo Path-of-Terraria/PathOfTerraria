@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Items;
+using PathOfTerraria.Common.Enums;
 
 namespace PathOfTerraria.Content.Items.Gear.Rings;
 
@@ -14,4 +15,20 @@ public abstract class Ring : Gear
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = Common.Enums.ItemType.Ring;
 	}
+	
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		PoTStaticItemData staticData = this.GetStaticData();
+		staticData.DropChance = 0.5f;
+	}
+	
+	public override bool CanEquipAccessory(Player player, int slot, bool modded)
+	{
+		// Ensure rings can only be equipped in ring slots (7 and 8)
+		return slot == 7 || slot == 8;
+	}
+
 }
+

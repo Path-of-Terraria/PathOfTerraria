@@ -6,6 +6,10 @@ internal class BaseLifeAffix : ItemAffix
 	{
 		modifier.MaximumLife.Base += Value;
 	}
+	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	{
+		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+	}
 }
 
 internal class AddedLifeAffix : ItemAffix
@@ -13,6 +17,10 @@ internal class AddedLifeAffix : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.MaximumLife += Value / 100;
+	}
+	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	{
+		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
 	}
 }
 
