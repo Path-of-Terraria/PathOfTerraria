@@ -565,22 +565,22 @@ PlatinumStaff: {
 
 GlimmeringShard: {
 	DisplayName: Мерцающий осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 CorruptShard: {
 	DisplayName: Искаженный осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 AscendantShard: {
 	DisplayName: Возвышенный осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 UnfoldingShard: {
 	DisplayName: Разворачивающийся осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 LunarLiquid: {
@@ -611,12 +611,12 @@ EoWMap: {
 
 EchoingShard: {
 	DisplayName: Эхо-осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 RadiantShard: {
 	DisplayName: Сияющий осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 BoCMap: {
@@ -727,17 +727,17 @@ WoFMap: {
 
 LimpidShard: {
 	DisplayName: Прозрачный осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 MysticShard: {
 	DisplayName: Мистический осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 ShiftingShard: {
 	DisplayName: Изменяющийся осколок
-	Tooltip: "'''"
+	//Tooltip: "'''"
 }
 
 BrokenBookcaseItem: {
