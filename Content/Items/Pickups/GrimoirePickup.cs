@@ -138,11 +138,9 @@ internal class GrimoirePickupLoader : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		for (int i = 0; i < ItemLoader.ItemCount; ++i)
+		foreach (KeyValuePair<int, Item> pair in ContentSamples.ItemsByType)
 		{
-			var item = new Item(i);
-
-			if (item.ModItem is GrimoirePickup grim)
+			if (pair.Value.ModItem is GrimoirePickup grim)
 			{
 				grim.AddDrops(npc, ref npcLoot);
 			}
