@@ -565,22 +565,44 @@ PlatinumStaff: {
 
 GlimmeringShard: {
 	DisplayName: Мерцающий осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Rerolls the affixes on Magic rarity items
+		Hold an item then right click this Shard to reroll the item
+		'Glimmers and shines unnaturally'
+		''' */
 }
 
 CorruptShard: {
 	DisplayName: Искаженный осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Chaotic and unstable
+		Has a chance to add an additional affix and corrupt any item, disabling any future item interactions
+		Has a chance to reduce Uniques into Rare items of the same kind, rerolling them at the same level
+		Has a large chance to do nothing
+		'Pulses with malaise'
+		''' */
 }
 
 AscendantShard: {
 	DisplayName: Возвышенный осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Adds a new affix to an item
+		Hold an item then right click this Shard to add a new affix
+		'A strong sense of power emanates from it'
+		''' */
 }
 
 UnfoldingShard: {
 	DisplayName: Разворачивающийся осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Upgrades a normal item to a magic item
+		Hold an item then right click this Shard to upgrade
+		'It almost looks like it's moving inside'
+		''' */
 }
 
 LunarLiquid: {
@@ -611,12 +633,22 @@ EoWMap: {
 
 EchoingShard: {
 	DisplayName: Эхо-осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Creates a clone of an item
+		Hold an item then right click this Shard to clone
+		'I can see myself!'
+		''' */
 }
 
 RadiantShard: {
 	DisplayName: Сияющий осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Rerolls the affix values of an item
+		Hold an item then right click this Shard to reroll affix values
+		'It's hard to look at'
+		''' */
 }
 
 BoCMap: {
@@ -727,17 +759,32 @@ WoFMap: {
 
 LimpidShard: {
 	DisplayName: Прозрачный осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Turns a magic or rare item normal
+		Hold an item then right click this Shard to turn item normal
+		'It looks so plain'
+		''' */
 }
 
 MysticShard: {
 	DisplayName: Мистический осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Turns a normal item rare
+		Hold an item then right click this Shard to turn item rare
+		'It's like an ember in the dark'
+		''' */
 }
 
 ShiftingShard: {
 	DisplayName: Изменяющийся осколок
-	//Tooltip: "'''"
+	/* Tooltip:
+		'''
+		Reroll the modifiers on a Rare Item
+		Hold an item then right click this Shard to reroll the modifiers
+		'I can't tell what it's doing'
+		''' */
 }
 
 BrokenBookcaseItem: {
