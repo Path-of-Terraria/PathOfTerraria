@@ -16,6 +16,4 @@ public class VigorAmulet : Amulet
 	{
 		return [(ItemAffix)Affix.CreateAffix<AddedLifeAffix>(3, 6)];
 	}
-	
-	
 }

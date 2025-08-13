@@ -27,5 +27,4 @@ public abstract class Amulet : Gear
 		// Ensure amulets can be equipped in amulet slot only
 		return slot == 5;
 	}
-
 }

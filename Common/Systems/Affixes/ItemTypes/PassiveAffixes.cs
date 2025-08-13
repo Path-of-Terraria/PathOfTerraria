@@ -36,6 +36,7 @@ internal class AddedDamageAffix : ItemAffix
 	{
 		Round = true;
 	}
+	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.Damage.Base += Value;

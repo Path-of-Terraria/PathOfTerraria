@@ -32,8 +32,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 		wings.OnMouseOver += UpdateMouseOver;
 		wings.OnMouseOut += UpdateMouseOut;
 
-		wings.Predicate = (item, _) => item.wingSlot > 0;
-
 		Append(wings);
 
 		var helmet = new UIHoverImageItemSlot(DefaultFrameTexture, HelmetIconTexture, ref Player.armor, 0, $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipArmor)
@@ -46,8 +44,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		helmet.OnMouseOver += UpdateMouseOver;
 		helmet.OnMouseOut += UpdateMouseOut;
-
-		helmet.Predicate = (item, _) => item.headSlot > 0 || item.ModItem is Helmet;
 
 		Append(helmet);
 
@@ -62,8 +58,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 		necklace.OnMouseOver += UpdateMouseOver;
 		necklace.OnMouseOut += UpdateMouseOut;
 
-		necklace.Predicate = (item, _) => item.ModItem is Amulet;
-
 		Append(necklace);
 		
 		var weapon = new UIHoverImageItemSlot(DefaultFrameTexture, WeaponIconTexture, ref Player.inventory, 0, $"Mods.{PoTMod.ModName}.UI.Slots.4")
@@ -76,8 +70,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		weapon.OnMouseOver += UpdateMouseOver;
 		weapon.OnMouseOut += UpdateMouseOut;
-
-		weapon.Predicate = (item, _) => item.damage > 0;
 
 		Append(weapon);
 
@@ -92,8 +84,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 		chest.OnMouseOver += UpdateMouseOver;
 		chest.OnMouseOut += UpdateMouseOut;
 
-		chest.Predicate = (item, _) => item.bodySlot > 0 || item.ModItem is Chestplate;
-
 		Append(chest);
 
 		var offhand = new UIHoverImageItemSlot(DefaultFrameTexture, OffhandIconTexture, ref Player.armor, 6, $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipAccessory)
@@ -106,8 +96,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		offhand.OnMouseOver += UpdateMouseOver;
 		offhand.OnMouseOut += UpdateMouseOut;
-
-		offhand.Predicate = (item, _) => item.ModItem is Offhand;
 
 		Append(offhand);
 
@@ -122,8 +110,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 		leftRing.OnMouseOver += UpdateMouseOver;
 		leftRing.OnMouseOut += UpdateMouseOut;
 
-		leftRing.Predicate = (item, _) => item.ModItem is Ring;
-
 		Append(leftRing);
 
 		var legs = new UIHoverImageItemSlot(DefaultFrameTexture, LegsIconTexture, ref Player.armor, 2, $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipArmor)
@@ -137,8 +123,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 		legs.OnMouseOver += UpdateMouseOver;
 		legs.OnMouseOut += UpdateMouseOut;
 
-		legs.Predicate = (item, _) => item.legSlot > 0 || item.ModItem is Leggings;
-
 		Append(legs);
 
 		var rightRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 8, $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipAccessory)
@@ -151,8 +135,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		rightRing.OnMouseOver += UpdateMouseOver;
 		rightRing.OnMouseOut += UpdateMouseOut;
-
-		rightRing.Predicate = (item, _) => item.ModItem is Ring;
 
 		Append(rightRing);
 

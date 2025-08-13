@@ -29,6 +29,5 @@ public abstract class Ring : Gear
 		// Ensure rings can only be equipped in ring slots (7 and 8)
 		return slot == 7 || slot == 8;
 	}
-
 }
 
