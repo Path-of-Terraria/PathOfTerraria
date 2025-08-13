@@ -3,7 +3,6 @@ using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -67,55 +66,52 @@ internal class MappingNPC : GlobalNPC
 		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && PoTItemHelper.PickItemLevel() >= 45)
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
+			tracker.AddCompletion(world.MapTier);
 
-			if (DownedBossForTier(world))
-			{
-				tracker.AddCompletion(world.MapTier);
-			}
-
+			DownedBossForTier(world);
 			Dictionary<int, int> completionsByTier = tracker.CompletionsPerTier();
 
-			if (TierPassed(0) && !NPC.downedQueenSlime)
+			if (TierPassed(1) && !NPC.downedQueenSlime)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
 			}
 			
-			if (TierPassed(1) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
+			if (TierPassed(2) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
 			}
 			
-			if (TierPassed(2) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
+			if (TierPassed(3) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<DestroyerMap>());
 			}
 
-			if (TierPassed(3) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)
+			if (TierPassed(4) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PrimeMap>());
 			}
 
-			if (TierPassed(4) && NPC.downedMechBoss3 && !NPC.downedPlantBoss)
+			if (TierPassed(5) && NPC.downedMechBoss3 && !NPC.downedPlantBoss)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PlanteraMap>());
 			}
 
-			if (TierPassed(5) && NPC.downedPlantBoss && !NPC.downedGolemBoss)
+			if (TierPassed(6) && NPC.downedPlantBoss && !NPC.downedGolemBoss)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<GolemMap>());
 			}
 
-			if (TierPassed(6) && NPC.downedGolemBoss && !NPC.downedFishron)
+			if (TierPassed(7) && NPC.downedGolemBoss && !NPC.downedFishron)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<FishronMap>());
 			}
 
-			if (TierPassed(7) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
+			if (TierPassed(8) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<EoLMap>());
 			}
 
-			if (TierPassed(8) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
+			if (TierPassed(9) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<CultistMap>());
 			}
@@ -144,5 +140,22 @@ internal class MappingNPC : GlobalNPC
 			9 => NPC.downedAncientCultist,
 			_ => true,
 		};
+	}
+}
+
+public class MappingPlayer : ModPlayer
+{
+	public override void UpdateEquips()
+	{
+		return;
+		MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
+
+		if (Main.mouseLeft)
+		{
+			for (int i = 0; i < 10; ++i)
+			{
+				Main.NewText(i + ": " + tracker.CompletionsAtOrAboveTier(i));
+			}
+		}
 	}
 }

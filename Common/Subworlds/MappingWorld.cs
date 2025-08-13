@@ -9,6 +9,7 @@ using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.IO;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
@@ -69,6 +70,10 @@ public abstract class MappingWorld : Subworld
 	/// This is kept as the map tier is used for a couple of things, namely <see cref="MappingDomainSystem.Tracker"/>.
 	/// </summary>
 	public int MapTier = 0;
+
+	private string _tip = "";
+	private string _fadingInTip = "";
+	private int _tipTime = 0;
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
 	{
@@ -157,6 +162,48 @@ public abstract class MappingWorld : Subworld
 		}
 
 		DrawStringCentered(statusText, Color.White);
+
+		if (_tip == "")
+		{
+			SetTip();
+			_tipTime = 0;
+		}
+
+		_tipTime++;
+
+		DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.UI.Tips.Title"), Color.White, new Vector2(0, 300), 0.8f);
+
+		if (_tipTime > 300)
+		{
+			float factor = (_tipTime - 300) / 60f;
+			DrawStringCentered(_tip, Color.White * (1 - factor), new Vector2(0, 338), 0.5f);
+			DrawStringCentered(_fadingInTip, Color.White * factor, new Vector2(0, 338), 0.5f);
+
+			if (_tipTime == 360)
+			{
+				SetTip(_fadingInTip);
+				_tipTime = 0;
+			}
+		}
+		else
+		{
+			DrawStringCentered(_tip, Color.White, new Vector2(0, 338), 0.5f);
+		}
+	}
+
+	/// <summary>
+	/// Sets the tip to <paramref name="text"/>, or if <paramref name="text"/> is null, any random tip.
+	/// </summary>
+	private void SetTip(string text = null)
+	{
+		const int MaxTips = 29;
+
+		_tip = text ?? Language.GetTextValue("Mods.PathOfTerraria.UI.Tips." + Main.rand.Next(MaxTips));
+
+		do
+		{
+			_fadingInTip = Language.GetTextValue("Mods.PathOfTerraria.UI.Tips." + Main.rand.Next(MaxTips));
+		} while (_tip == _fadingInTip);
 	}
 
 	private static void DrawStringCentered(string statusText, Color color, Vector2 position = default, float scale = 1f)
