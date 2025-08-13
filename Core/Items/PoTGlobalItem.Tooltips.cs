@@ -214,15 +214,24 @@ partial class PoTGlobalItem
 			AddNewTooltipLine(item, tooltips, damageLine);
 		}
 		
-		if (item.useTime > 0) // Attack or cast speed
+		if (item.useTime > 0) 
 		{
-			float aps = 60f / item.useTime;
-			aps = (float) Math.Round(aps, 2);
-			string apsStr = aps.ToString("0.00");
-			string localizeString = item.DamageType == DamageClass.Magic ? "CastSpeed" : "AttackSpeed";
-			var attackSpeed = new TooltipLine(Mod, "AttacksPerSecond", $"[i:{ItemID.SilverBullet}] [{apsStr}] {Localize(localizeString)}");
-			AddNewTooltipLine(item, tooltips, attackSpeed);
+			if (data.ItemType != ItemType.Helmet && 
+			    data.ItemType != ItemType.Chestplate && 
+			    data.ItemType != ItemType.Leggings && 
+			    data.ItemType != ItemType.Ring && 
+			    data.ItemType != ItemType.Amulet &&
+			    data.ItemType != ItemType.Accessories)
+			{
+				float aps = 60f / item.useTime;
+				aps = (float) Math.Round(aps, 2);
+				string apsStr = aps.ToString("0.00");
+				string localizeString = item.DamageType == DamageClass.Magic ? "CastSpeed" : "AttackSpeed";
+				var attackSpeed = new TooltipLine(Mod, "AttacksPerSecond", $"[i:{ItemID.SilverBullet}] [{apsStr}] {Localize(localizeString)}");
+				AddNewTooltipLine(item, tooltips, attackSpeed);
+			}
 		}
+
 		
 		if (item.mana > 0)
 		{
