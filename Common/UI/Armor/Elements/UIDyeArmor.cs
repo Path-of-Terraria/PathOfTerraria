@@ -135,7 +135,7 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(rightRing);
 		
-		var leftMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.armor, 9, $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipAccessory)
+		var leftMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 9, $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipAccessory)
 		{
 			VAlign = 1f,
 			ActiveScale = 1.15f,
@@ -147,7 +147,7 @@ public sealed class UIDyeArmor : UIArmorPage
 		
 		Append(leftMiscellaneous);
 		
-		var middleMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.armor, 3, $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipAccessory)
+		var middleMiscellaneous = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, ref Player.dye, 3, $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0.5f,
 			VAlign = 1f,
