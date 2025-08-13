@@ -109,8 +109,8 @@ public static class PoTItemHelper
 	    }
 	}
 
-	///  <summary>
-	/// 		Adds a new random affix to an item. This is used for things like the ascendant shard.
+	///  <summary> 
+	///  Adds a new random affix to an item. This is used for things like the ascendant shard. 
 	///  </summary>
 	///  <param name="item"></param>
 	///  <param name="data"></param>
@@ -135,6 +135,11 @@ public static class PoTItemHelper
 		}
 
 		affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+		if (affix.Value == 0)
+		{
+			return; //If the affix has no value, don't add it. This usually happens when there's no TierData associated with the given item
+		}
+
 		data.Affixes.Add(affix);
 	}
 
