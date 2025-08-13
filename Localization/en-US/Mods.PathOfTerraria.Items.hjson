@@ -1324,3 +1324,13 @@ AntlerShard: {
 		'It has a malice about it'
 		'''
 }
+
+RubyRing: {
+	DisplayName: Ruby Ring
+	Tooltip: ""
+}
+
+SapphireRing: {
+	DisplayName: Sapphire Ring
+	Tooltip: ""
+}
