@@ -32,7 +32,7 @@ internal class AddedAttackSpeedAffix : ItemAffix
 /// </summary>
 internal class AddedDamageAffix : ItemAffix
 {
-	AddedDamageAffix()
+	public AddedDamageAffix()
 	{
 		Round = true;
 	}
