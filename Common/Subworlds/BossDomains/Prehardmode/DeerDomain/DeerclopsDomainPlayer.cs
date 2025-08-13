@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+﻿using PathOfTerraria.Common.NPCs;
 using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -7,9 +7,11 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 
 public class DeerclopsDomainPlayer : ModPlayer
 {
-	public float Insanity => MathHelper.Clamp(LightTime / (5 * 60f), 0, 1);
+	const int MaxTimeInSeconds = 8;
 
-	private int LightTime = 0;
+	public float Insanity => MathHelper.Clamp(LightTime / (MaxTimeInSeconds * 60f), 0, 1);
+
+	private float LightTime = 0;
 	private int ProjTime = 0;
 
 	public override void UpdateEquips()
@@ -24,26 +26,27 @@ public class DeerclopsDomainPlayer : ModPlayer
 
 		if (SubworldSystem.Current is not DeerclopsDomain || bright > 0.25f)
 		{
-			if (LightTime > 5 * 60)
+			if (LightTime > MaxTimeInSeconds * 60)
 			{
-				LightTime = 5 * 60;
+				LightTime = MaxTimeInSeconds * 60;
 			}
 
-			LightTime--;
+			LightTime -= 1.5f;
 			ProjTime = 0;
 		}
 		else
 		{
 			LightTime++;
 
-			if (LightTime > 5 * 60)
+			if (LightTime > MaxTimeInSeconds * 60)
 			{
 				if (++ProjTime % (1f * 60) == 0)
 				{
 					Vector2 projPos = Player.Center + Main.rand.NextVector2CircularEdge(160, 160);
 					Projectile.RandomizeInsanityShadowFor(Main.player[Player.whoAmI], true, out Vector2 spawnPosition, out Vector2 vel, out float ai, out float ai2);
 					IEntitySource source = Terraria.Entity.GetSource_NaturalSpawn();
-					int proj = Projectile.NewProjectile(source, spawnPosition, vel, ProjectileID.InsanityShadowHostile, 60, 6, Main.myPlayer, ai, ai2);
+					int damage = ModeUtils.ProjectileDamage(60);
+					int proj = Projectile.NewProjectile(source, spawnPosition, vel, ProjectileID.InsanityShadowHostile, damage, 6, Main.myPlayer, ai, ai2);
 
 					if (Main.netMode == NetmodeID.MultiplayerClient)
 					{
