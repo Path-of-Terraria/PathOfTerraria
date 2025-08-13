@@ -5,6 +5,17 @@ namespace PathOfTerraria.Common.World.Generation;
 
 internal static class Tunnel
 {
+	/// <summary>
+	/// Generates a list of points that creates a cohesive, singular, smooth tunnel.
+	/// </summary>
+	/// <param name="points">Base points to generate between.</param>
+	/// <param name="splineCount">The amount of splines to generate; that is, the amount of "control points" on the line. More = more smooth, but may add weird loops.</param>
+	/// <param name="equidistantSpacing">How close each point should be, in singular units (usually tiles).</param>
+	/// <param name="variationMultiplier">
+	/// A randomized default variation algorithm's strength. 
+	/// Offsets each point before creating the equidistant set. 0 skips variation entirely.
+	/// </param>
+	/// <returns>The equidistant, smooth and singular curved tunnel.</returns>
 	public static Vector2[] GeneratePoints(Vector2[] points, int splineCount, float equidistantSpacing, float variationMultiplier = 1f)
 	{
 		if (variationMultiplier != 0)
@@ -13,9 +24,21 @@ internal static class Tunnel
 		}
 
 		Vector2[] results = Spline.InterpolateXY(points, splineCount);
-		return CreateEquidistantSet(results, equidistantSpacing);
+		return CreateEquidistantSet(results, equidistantSpacing, true);
 	}
 
+	/// <summary>
+	/// Generates a list of points that creates a cohesive, singular, smooth tunnel. This overload returns the 'base' spline before the equidistant set for debugging.
+	/// </summary>
+	/// <param name="points">Base points to generate between.</param>
+	/// <param name="baseSpline">The default spline made by <see cref="Spline.InterpolateXY(Vector2[], int)"/>.</param>
+	/// <param name="splineCount">The amount of splines to generate; that is, the amount of "control points" on the line. More = more smooth, but may add weird loops.</param>
+	/// <param name="equidistantSpacing">How close each point should be, in singular units (usually tiles).</param>
+	/// <param name="variationMultiplier">
+	/// A randomized default variation algorithm's strength. 
+	/// Offsets each point before creating the equidistant set. 0 skips variation entirely.
+	/// </param>
+	/// <returns>The equidistant, smooth and singular curved tunnel.</returns>
 	public static Vector2[] GeneratePoints(Vector2[] points, out Vector2[] baseSpline, int splineCount, float equidistantSpacing, float variationMultiplier = 1f)
 	{
 		if (variationMultiplier != 0)
@@ -24,7 +47,7 @@ internal static class Tunnel
 		}
 
 		baseSpline = Spline.InterpolateXY(points, splineCount);
-		return CreateEquidistantSet(baseSpline, equidistantSpacing);
+		return CreateEquidistantSet(baseSpline, equidistantSpacing, true);
 	}
 
 	public static Vector2[] AddVariationToPoints(Vector2[] points, float variationMultiplier = 1f)
@@ -66,7 +89,7 @@ internal static class Tunnel
 		return [.. uniques];
 	}
 
-	public static Vector2[] CreateEquidistantSet(Vector2[] results, float distance)
+	public static Vector2[] CreateEquidistantSet(Vector2[] results, float distance, bool resetOnRefactor = false)
 	{
 		List<Vector2> points = [];
 		Queue<Vector2> remainingPoints = new(results);
@@ -99,16 +122,39 @@ internal static class Tunnel
 				return [.. points];
 			}
 
-			if (factor > 1f)
+			if (resetOnRefactor)
 			{
-				if (remainingPoints.Count == 0)
+				if (factor > 1f)
 				{
-					return [.. points];
+					if (remainingPoints.Count == 0)
+					{
+						return [.. points];
+					}
+
+					current = next;
+					next = remainingPoints.Dequeue();
+					factor--;
+
+					factor *= dist / current.Distance(next);
 				}
 
-				current = next;
-				next = remainingPoints.Dequeue();
-				factor--;
+				factor = 0;
+			}
+			else
+			{
+				while (factor > 1f)
+				{
+					if (remainingPoints.Count == 0)
+					{
+						return [.. points];
+					}
+
+					current = next;
+					next = remainingPoints.Dequeue();
+					factor--;
+
+					factor *= dist / current.Distance(next);
+				}
 			}
 		}
 	}
