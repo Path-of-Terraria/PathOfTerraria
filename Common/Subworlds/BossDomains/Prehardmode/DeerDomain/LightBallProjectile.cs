@@ -51,11 +51,11 @@ internal class LightBallProjectile : ModProjectile
 
 		Projectile.Opacity = 1 - PassThroughTimer / 600f;
 		DeerclopsDomainLightEdits.LightMultiplier = 1f;
-		Lighting.AddLight(Projectile.Center, new Vector3(1.2f, 1f, 1.25f) * Projectile.Opacity);
+		Lighting.AddLight(Projectile.Center, new Vector3(1.2f, 1f, 1.25f) * Projectile.Opacity * 1.75f);
 		DeerclopsDomainLightEdits.LightMultiplier = 0f;
 
 		Player closest = Main.player[Player.FindClosest(Projectile.Center, 2, 2)];
-		float xDist = MathHelper.Clamp(Math.Abs(closest.Center.X - Projectile.Center.X ) / 200f, 0, 1) * 0.4f;
+		float xDist = MathHelper.Clamp(Math.Abs(closest.Center.X - Projectile.Center.X ) / 200f, 0, 1) * 0.8f;
 		int velDir = Math.Sign(Projectile.velocity.X);
 
 		if (closest.Center.X < Projectile.Center.X)
@@ -82,8 +82,7 @@ internal class LightBallProjectile : ModProjectile
 
 	public override void PostDraw(Color lightColor)
 	{
-		Color color = Color.Lerp(Color.Red, Color.White, 0.4f) with { A = 0 } * Projectile.Opacity;
-		DrawGlow(Projectile.Center, Projectile.whoAmI, color);
+		DrawGlow(Projectile.Center, Projectile.whoAmI, Color.White * Projectile.Opacity);
 	}
 
 	public static void DrawGlow(Vector2 position, float sineOffset, Color baseColor, bool isTile = false)

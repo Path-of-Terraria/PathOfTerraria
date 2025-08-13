@@ -48,7 +48,7 @@ internal class DeerclopsDomainLightEdits : ModSystem
 
 	private void SoftenPlayerLight(On_Player.orig_ItemCheck orig, Player self)
 	{
-		LightMultiplier = 0.15f;
+		LightMultiplier = 0.2f;
 		orig(self);
 		LightMultiplier = 0;
 	}

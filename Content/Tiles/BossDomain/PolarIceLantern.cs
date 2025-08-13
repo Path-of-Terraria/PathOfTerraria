@@ -32,7 +32,7 @@ internal class PolarIceLantern : ModTile
 		}
 
 		DeerclopsDomainLightEdits.LightMultiplier = 1f;
-		Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), new Vector3(0.6f, 0.6f, 0.8f));
+		Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), new Vector3(0.6f, 0.6f, 0.8f) * 1.25f);
 		DeerclopsDomainLightEdits.LightMultiplier = 0f;
 	}
 
