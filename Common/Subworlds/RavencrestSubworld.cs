@@ -78,17 +78,7 @@ internal class RavencrestSubworld : MappingWorld
 
 		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 22), Vector2.Zero);
 
-		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
-		{
-			if (!npc.CanSpawn(true, NPC.AnyNPCs(npc.Type)))
-			{
-				continue;
-			}
-
-			int x = npc.TileSpawn.X * 16;
-			int y = npc.TileSpawn.Y * 16;
-			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
-		}
+		RavencrestSystem.SpawnNativeNpcs(NPCSpawnTimeframe.WorldGen);
 
 		Main.hardMode = false;
 	}
