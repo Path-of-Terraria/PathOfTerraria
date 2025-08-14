@@ -1,6 +1,7 @@
 ﻿ArcaneObeliskTile: {
-    MapEntry: Плитка «Тайный обелиск»
+    MapEntry: Таинственный обелиск
   }
   MechChest: {
-    MapEntry: Механический корпус
+    MapEntry: Механический контейнер
+
   }
