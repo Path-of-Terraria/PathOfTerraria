@@ -1,4 +1,7 @@
-﻿using PathOfTerraria.Common.NPCs;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Runtime.CompilerServices;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.Networking.Handlers;
@@ -9,19 +12,21 @@ using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Graphics;
 using SubworldLibrary;
-using System.Collections.Generic;
-using System.IO;
+using Terraria;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 public class RavencrestSystem : ModSystem
 {
+	/// <summary> Extra NPCs that do not spawn here by default. </summary>
 	public readonly HashSet<string> HasOverworldNPC = [];
 
 	internal static readonly Dictionary<string, ImprovableStructure> Structures = [];
@@ -94,6 +99,8 @@ public class RavencrestSystem : ModSystem
 
 	public override void PreUpdateTime()
 	{
+		ReturnNativeNpcs();
+
 		if (NPC.downedBoss2 && !DisableOrbBreaking.CanBreakOrb)
 		{
 			DisableOrbBreaking.CanBreakOrb = true;
@@ -222,16 +229,57 @@ public class RavencrestSystem : ModSystem
 			}
 		}
 
-		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
+		SpawnNativeNpcs(NPCSpawnTimeframe.WorldLoad, announceArrival: false);
+	}
+
+	private static void ReturnNativeNpcs()
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient || SubworldSystem.Current is not RavencrestSubworld)
 		{
-			if (!npc.CanSpawn(false, NPC.AnyNPCs(npc.Type)))
+			return;
+		}
+
+		// Simple arbitrary time & luck delay.
+		const int AttemptEveryXTick = 60 * 10;
+		const int ChanceXInOne = 5;
+		double updateRate = WorldGen.GetWorldUpdateRate();
+
+		if (updateRate > 0 && (Main.GameUpdateCount % (int)(AttemptEveryXTick / updateRate)) == 0 && Main.rand.NextBool(ChanceXInOne))
+		{
+			Main.checkForSpawns = 0;
+			SpawnNativeNpcs(NPCSpawnTimeframe.NaturalSpawn, announceArrival: true, maxAmount: 1);
+		}
+	}
+
+	public static void SpawnNativeNpcs(NPCSpawnTimeframe timeframe, bool? announceArrival = null, int? maxAmount = null)
+	{
+		int numSpawned = 0;
+		List<ISpawnInRavencrestNPC> pool = new(ModContent.GetContent<ISpawnInRavencrestNPC>());
+
+		while (pool.Count != 0)
+		{
+			int index = Main.rand.Next(pool.Count);
+			ISpawnInRavencrestNPC npc = pool[index];
+
+			if (npc.CanSpawn(timeframe, NPC.AnyNPCs(npc.Type)))
 			{
-				continue;
+				int x = npc.TileSpawn.X * 16;
+				int y = npc.TileSpawn.Y * 16;
+				var spawnedNpc = NPC.NewNPCDirect(Entity.GetSource_TownSpawn(), x, y, npc.Type);
+
+				if (announceArrival ?? (timeframe == NPCSpawnTimeframe.NaturalSpawn))
+				{
+					var announceColor = new Color(50, 125, 255);
+					ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasArrived", spawnedNpc.GivenOrTypeName), announceColor);
+				}
 			}
 
-			int x = npc.TileSpawn.X * 16;
-			int y = npc.TileSpawn.Y * 16;
-			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
+			pool.RemoveAt(index);
+
+			if (++numSpawned >= maxAmount)
+			{
+				break;
+			}
 		}
 	}
 
