@@ -27,14 +27,14 @@ Lives: жизней осталось
 StatUI: {
 	Level: Уровень
 	Experience: Опыт
-	Life: Жизни
+	Life: Жизнь
 	Mana: Мана
 	HealthPotions: Зелья лечения
 	ManaPotions: Зелья маны
 	DamageReduction: Снижение урона
-	BlockChance: Шанс блока
-	MaxBlock: Предел шанса блока
-	BlockCooldown: Перезарядка блока
+	BlockChance: Шанс блокировки
+	MaxBlock: Предел шанса блокировки
+	BlockCooldown: Перезарядка блокировки
 	MaxMinions: Макс. прислужников
 	Strength: Сила
 	Dexterity: Ловкость
@@ -55,7 +55,7 @@ DropVisualizer: {
 	Normalize: Нормализовать
 	Count: Кол-во
 	Level: Уровень
-	Run: Прогон
+	Run: Запуск
 	SortBy: "Сортировать по: "
 	UniqueItem: (Уникальный предмет)
 }
@@ -171,7 +171,7 @@ Guide: {
 InvButtons: {
 	Grimoire: Гримуар
 	NoGrimoire: "[c/888888:(Нужен] [i:PathOfTerraria/GrimoireItem] [c/888888:Гримуар)]"
-	Quest: Квесты
+	Quest: Задания
 	Stats: Характеристики
 	RestartTutorial: Перезапустить обучение
 }
