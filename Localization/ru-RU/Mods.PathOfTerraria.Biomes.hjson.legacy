@@ -1,8 +1,9 @@
 ﻿RavencrestBiome: {
-    DisplayName: '''	Гребень Ворона'''
-    TownNPCDialogueName: '''	Гребень Ворона'''
+    DisplayName: '''	Рэйвенкрист'''
+    TownNPCDialogueName: '''	Рэйвенкрист'''
   }
   MechBiome: {
     DisplayName: Механизмы
     TownNPCDialogueName: '''	Механизмы'''
+
   }
