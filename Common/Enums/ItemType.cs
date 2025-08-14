@@ -33,7 +33,7 @@ public enum ItemType : long
 	Shield = 1 << 24,
 
 	Armor = Helmet | Chestplate | Leggings,
-	Accessories = Ring | Charm,
+	Accessories = Ring | Charm | Amulet,
 	Equipment = Armor | Accessories,
 	Offhand = Shield,
 
