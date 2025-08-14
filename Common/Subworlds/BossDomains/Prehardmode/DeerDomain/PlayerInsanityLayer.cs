@@ -12,7 +12,8 @@ internal class PlayerInsanityLayer : PlayerDrawLayer
 
 	protected override void Draw(ref PlayerDrawSet drawInfo)
 	{
-		if (SubworldSystem.Current is not DeerclopsDomain || drawInfo.headOnlyRender || drawInfo.shadow > 0)
+		if (drawInfo.headOnlyRender || drawInfo.drawPlayer.dead || drawInfo.shadow > 0
+		|| SubworldSystem.Current is not DeerclopsDomain)
 		{
 			return;
 		}
