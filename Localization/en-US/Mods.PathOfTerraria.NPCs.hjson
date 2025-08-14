@@ -144,7 +144,8 @@ GarrickNPC: {
 		1: Adventurers often fail to tell you of how slimy adventuring is. I am not one of those adventurers. It's extremely slimy.
 		2: Watch your head. Generally good advice, but especially in the King's domain.
 		3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
-		Quest: You may be able to tell - I've not had the best time. Tried to take down the King, almost lost everything. You are the one who restored Ravencrest, yes? Would I ask of you; slay the King Slime on my behalf? I'll reward you greatly. Take this map; I drew it on the long walk back. Good luck!
+		Quest: I've heard of an ancient device that can transport adventurers to distant realms. With the right materials - some metal bars and a gem for focus. I could craft one for you. Bring them to me when you can.
+		QuestResponse: Perfect! Here’s the Map Device as promised. I once faced the King and nearly lost everything. You restored Ravencrest, so now I ask you: slay the King Slime for me. You’ll be well rewarded. Take this map and use it with the device.
 		EoCQuestLine: Oh, the Eye you say? Formidable. I recall Eldric speaking of it, though he almost certainly undersold it. Here, I've been tasked with keeping this. Now is the time to use it.
 		TradeLunarLiquid: Ah, I've trained for this. Do care though, these aren't a casual adventure to make.
 		CantTradeLiquid: Oh, lost the Liquid? I'll need a few Lunar Shards to remake it, I'm afraid. Return to me with 5 or more.
