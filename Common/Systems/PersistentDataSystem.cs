@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.ModLoader.IO;
 
@@ -27,10 +28,29 @@ internal class PersistentDataSystem : ModSystem
 	{
 		tag.Add("hasMainObelisk", ObelisksByLocation.ToArray());
 	}
-
 	public override void LoadWorldData(TagCompound tag)
 	{
 		ObelisksByLocation = new(tag.Get<string[]>("hasMainObelisk"));
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write7BitEncodedInt(ObelisksByLocation.Count);
+		foreach (string obeliskId in ObelisksByLocation)
+		{
+			writer.Write(obeliskId);
+		}
+	}
+	public override void NetReceive(BinaryReader reader)
+	{
+		int numObelisks = reader.Read7BitEncodedInt();
+		ObelisksByLocation.Clear();
+		ObelisksByLocation.EnsureCapacity(numObelisks);
+
+		for (int i = 0; i < numObelisks; i++)
+		{
+			ObelisksByLocation.Add(reader.ReadString());
+		}
 	}
 
 	internal void CopyDataToRavencrest()
