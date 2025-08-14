@@ -41,6 +41,7 @@ internal class IncreasedCriticalStrikeMultiplier : Passive
 	private void BuffCritStrikeDamageMultiplier(NPC target, ref NPC.HitModifiers modifiers)
 	{
 		int level = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
+		float AmountPerLevel = 1.05f;
 
 		if (level > 0)
 		{
