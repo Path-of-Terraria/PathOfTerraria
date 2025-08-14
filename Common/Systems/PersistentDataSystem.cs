@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Terraria.ModLoader.IO;
 
@@ -8,9 +9,14 @@ namespace PathOfTerraria.Common.Systems;
 
 internal class PersistentDataSystem : ModSystem
 {
-	public static string CurrentLocation => SubworldSystem.Current is not RavencrestSubworld ? "Overworld" : "Ravencrest";
+	private const string ObelisksSaveKey = "hasMainObelisk";
 
-	public HashSet<string> ObelisksByLocation = ["Ravencrest"];
+	public HashSet<string> ObelisksByLocation = [];
+
+	public PersistentDataSystem()
+	{
+		ResetLocationData();
+	}
 
 	public override void ClearWorld()
 	{
@@ -25,21 +31,40 @@ internal class PersistentDataSystem : ModSystem
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		tag.Add("hasMainObelisk", ObelisksByLocation.ToArray());
+		tag.Add(ObelisksSaveKey, ObelisksByLocation.ToArray());
 	}
-
 	public override void LoadWorldData(TagCompound tag)
 	{
-		ObelisksByLocation = new(tag.Get<string[]>("hasMainObelisk"));
+		ObelisksByLocation = new(tag.Get<string[]>(ObelisksSaveKey));
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write7BitEncodedInt(ObelisksByLocation.Count);
+		foreach (string obeliskId in ObelisksByLocation)
+		{
+			writer.Write(obeliskId);
+		}
+	}
+	public override void NetReceive(BinaryReader reader)
+	{
+		int numObelisks = reader.Read7BitEncodedInt();
+		ObelisksByLocation.Clear();
+		ObelisksByLocation.EnsureCapacity(numObelisks);
+
+		for (int i = 0; i < numObelisks; i++)
+		{
+			ObelisksByLocation.Add(reader.ReadString());
+		}
 	}
 
 	internal void CopyDataToRavencrest()
 	{
-		SubworldSystem.CopyWorldData("hasMainObelisk", ObelisksByLocation.ToArray());
+		SubworldSystem.CopyWorldData(ObelisksSaveKey, ObelisksByLocation.ToArray());
 	}
 
 	internal void ReadDataInRavencrest()
 	{
-		ObelisksByLocation = new(SubworldSystem.ReadCopiedWorldData<string[]>("hasMainObelisk"));
+		ObelisksByLocation = new(SubworldSystem.ReadCopiedWorldData<string[]>(ObelisksSaveKey));
 	}
 }
