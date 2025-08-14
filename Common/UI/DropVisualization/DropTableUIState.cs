@@ -47,14 +47,20 @@ internal class DropResult(int count)
 	public bool IsUnique = false;
 	public Dictionary<ItemRarity, int> CountsPerRarity = [];
 
+	/// <summary>
+	/// Indexes counts by map tier for maps. This will be null on non-maps.
+	/// </summary>
+	public Dictionary<int, int> CountsPerMapTier = [];
+
 	public void IncrementRarityCount(ItemRarity rarity)
 	{
-		if (!CountsPerRarity.ContainsKey(rarity))
+		if (!CountsPerRarity.TryGetValue(rarity, out int value))
 		{
-			CountsPerRarity.Add(rarity, 0);
+			value = 0;
+			CountsPerRarity.Add(rarity, value);
 		}
 
-		CountsPerRarity[rarity]++;
+		CountsPerRarity[rarity] = ++value;
 	}
 }
 
@@ -284,6 +290,11 @@ internal class DropTableUIState : CloseableSmartUi
 			if (!resultsById.TryGetValue(record.ItemId, out DropResult result))
 			{
 				resultsById.Add(record.ItemId, result = new DropResult(0));
+
+				if (ContentSamples.ItemsByType[record.ItemId].ModItem is Content.Items.Consumables.Maps.Map map)
+				{
+					result.CountsPerMapTier = [];
+				}
 			}
 
 			result.Count++;

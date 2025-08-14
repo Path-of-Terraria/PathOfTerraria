@@ -141,7 +141,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 			return $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}";
 		}));
-		list.Add(new PlayerStatUI(GetLocalization("DamageReduction"), player => $"{player.endurance:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("DamageReduction"), player => $"{player.endurance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(GetLocalization("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(GetLocalization("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(GetLocalization("BlockCooldown"), player => $"{player.GetModPlayer<BlockPlayer>().BlockCooldown / 60:#0.##}s"));

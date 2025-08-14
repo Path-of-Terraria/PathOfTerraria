@@ -739,8 +739,8 @@ SimpleCompass: {
 	// DisplayName: Simple Compass
 	/* Tooltip:
 		'''
-		Hold to see the path to an ancient ruin in the snow biome
-		When close, breaks open the ruin
+		Hold this item to see the direction to an ancient ruin in the snow biome
+		When close, breaks open the ruin and itself
 		'Simple but effective'
 		''' */
 }

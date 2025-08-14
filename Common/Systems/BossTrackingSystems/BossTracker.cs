@@ -80,6 +80,24 @@ internal class BossTracker : ModSystem
 		return CachedBossesDowned.Contains(id) && SubworldSystem.Current is T;
 	}
 
+	public static bool DownedInDomain<T>(params int[] ids) where T : BossDomainSubworld
+	{
+		if (SubworldSystem.Current is not T)
+		{
+			return false;
+		}
+
+		foreach (int id in ids)
+		{
+			if (!CachedBossesDowned.Contains(id))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private void StopBrickBox(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
 	{
 		if (SkipWoFBox)

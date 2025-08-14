@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.SkeleDomain;
 using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Passes;
 using PathOfTerraria.Content.Tiles.BossDomain;
@@ -18,6 +19,8 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 	public const int FloorY = 400;
 	public const int PedestalDistance = 400;
 	public const int EdgeDistance = 1000;
+
+	private static bool SpawnedLunatic = false;
 
 	public override int Width => 2400;
 	public override int Height => 600;
@@ -199,6 +202,18 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 	public override void Update()
 	{
 		Liquid.UpdateLiquid();
+
+		if (!SpawnedLunatic)
+		{
+			if (NPC.AnyNPCs(NPCID.CultistBoss))
+			{
+				SpawnedLunatic = true;
+			}
+		}
+		else if (!NPC.AnyNPCs(NPCID.CultistBoss))
+		{
+			BossTracker.AddDowned(NPCID.CultistBoss, false, true);
+		}
 	}
 
 	public void OverrideBiome()

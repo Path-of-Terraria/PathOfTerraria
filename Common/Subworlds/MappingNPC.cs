@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
@@ -66,9 +67,12 @@ internal class MappingNPC : GlobalNPC
 		if (npc.boss && SubworldSystem.Current is MappingWorld world and not BossDomainSubworld && Main.hardMode && PoTItemHelper.PickItemLevel() >= 45)
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-			tracker.AddCompletion(world.MapTier);
 
-			DownedBossForTier(world);
+			if (DownedBossForTier(world))
+			{
+				tracker.AddCompletion(world.MapTier);
+			}
+
 			Dictionary<int, int> completionsByTier = tracker.CompletionsPerTier();
 
 			if (TierPassed(1) && !NPC.downedQueenSlime)
@@ -106,14 +110,19 @@ internal class MappingNPC : GlobalNPC
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<FishronMap>());
 			}
 
-			if (TierPassed(8) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
+			if (TierPassed(8) && NPC.downedFishron && !NPC.downedEmpressOfLight)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<EoLMap>());
 			}
 
-			if (TierPassed(9) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
+			if (TierPassed(9) && NPC.downedEmpressOfLight && !NPC.downedAncientCultist)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<CultistMap>());
+			}
+
+			if (TierPassed(10) && NPC.downedMoonlord)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<MoonMap>());
 			}
 
 			return;
@@ -127,35 +136,19 @@ internal class MappingNPC : GlobalNPC
 
 	private static bool DownedBossForTier(MappingWorld world)
 	{
-		return world.MapTier switch
+		return (world.MapTier - 1) switch
 		{
 			1 => NPC.downedQueenSlime,
-			2 => NPC.downedMechBoss1,
-			3 => NPC.downedMechBoss2,
+			2 => NPC.downedMechBoss2,
+			3 => NPC.downedMechBoss1,
 			4 => NPC.downedMechBoss3,
 			5 => NPC.downedPlantBoss,
 			6 => NPC.downedGolemBoss,
 			7 => NPC.downedFishron,
 			8 => NPC.downedEmpressOfLight,
 			9 => NPC.downedAncientCultist,
+			10 => NPC.downedMoonlord,
 			_ => true,
 		};
-	}
-}
-
-public class MappingPlayer : ModPlayer
-{
-	public override void UpdateEquips()
-	{
-		return;
-		MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-
-		if (Main.mouseLeft)
-		{
-			for (int i = 0; i < 10; ++i)
-			{
-				Main.NewText(i + ": " + tracker.CompletionsAtOrAboveTier(i));
-			}
-		}
 	}
 }
