@@ -188,6 +188,11 @@ internal class Grabber : ModNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
+		if (Main.dedServ)
+		{
+			return;
+		}
+
 		Vector2 center = NPC.Center;
 		Vector2 offset = Anchor - center;
 

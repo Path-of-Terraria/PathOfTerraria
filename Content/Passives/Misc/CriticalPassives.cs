@@ -44,8 +44,7 @@ internal class IncreasedCriticalStrikeMultiplier : Passive
 
 		if (level > 0)
 		{
-			float multiplierIncrease = level * (Value / 100f);
-			modifiers.CritDamage *= 1f + multiplierIncrease;
+			modifiers.CritDamage *= 1f + (AmountPerLevel - 1f) * level;
 		}
 	}
 }

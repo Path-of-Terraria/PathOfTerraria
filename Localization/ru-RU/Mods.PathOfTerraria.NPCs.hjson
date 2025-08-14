@@ -243,7 +243,7 @@ EldricNPC: {
 		// Common1: Stay calm, even if the land around isn't.
 		// Common2: Would you ever enjoy a tea? I certainly would.
 		// Common3: Magic is but one solution. Practicality is another. Bear this in mind.
-		// Quest: Hello, traveler. You've stumbled across my soon-to-be observatory...soon. However, I have noticed something in the sky as of late. The last time it passed by was when I was a child. A great eye looks down upon us, and is causing some issues in the stars. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
+		// Quest: Hello, traveler. I am Eldric, and the construction on the west edge of town is mine. I come to warn; a great eye looks down upon us, and seeks to disturb the stars. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
 		// QuestLunar: Thank you. Talk to Garrick and we'll be on our way.
 		// Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will continue to build my observatory while you battle. Best of luck.
 		// Quest3: Just as I thought. The Eye returns to...wherever it happens to hide. Regrow? Whatever. I'm able to relax now. Hopefully you'll see this observatory up and running soon. Stop by, if you'd like.
@@ -459,8 +459,8 @@ RhineNPC: {
 		// Common2: Five gold coins and I can tell you the most wild story you've ever heard. Up for it?
 		// Common3: Good heavens, this tastes like nothing else. You also taking an off day?
 		// Quest: Ah, adventurer. You have any experience with the deep tundra? I've always been curious of a story my mother told me...about one massive, lumbering beast deep in a frigid tundra. She spoke of it as legend, and I've always been curious. Alas, I don't handle the cold well; but perhaps you do? I've high interest, though I'm not sure if it's even real. There's a small fortress in the world's snow, a short distance under the surface. Take this compass, find it, and open it. You'll know what to take.
-		// Antlers: Wow...sorry. I...I genuinely didn't think these were real. My mother spoke of these, a simple set of four-point antlers with a discoloration near the points. Odd aura. Strangely uncomfortable to hold. Wow. Well. I suppose you should seek the Deer itself, then. The Hunter can tell you about it - she knows all creatures that stalk the woods, white or not. I'll be here, I can only imagine what my mother will think seeing these antlers again.
-		// Success: ...unbelievable. Truly...I don't know what to say. Take this. I'll be here, stewing in revelation. Go have fun. Brom, another mead, please. Unbelievable...
+		// Antlers: Wow...sorry. I...I genuinely didn't think these were real. My mother spoke of this - even just the shards shaved off of the antlers are...combative. Odd aura. Strangely uncomfortable to hold. Wow. Well. I suppose you should seek the Deer itself, then. The Hunter can tell you about it - she knows all creatures that stalk the woods, white or not. I'll be here. I can only imagine what my mother will think seeing these antlers again.
+		// Success: ...unbelievable. Truly...I don't know what to say. Take this. I'll be here, stewing in revelation. Go have fun. Brom, another mead, please. Never would I have thought...
 	}
 
 	BubbleDialogue: {
@@ -559,15 +559,15 @@ MorganaNPC: {
 		// Common1: Mix! Mix! I say, making the most peculiar brews you've heard of. Yes, more Strange than Strange Brews.
 		// Common2: The tail of a rat! The wings of a bat! And to this, I say - rhyme? What's that?
 		// Common3: Betwixt toil and trouble, I reside. Care for a concoction of devilish proportions? Do you? Do you?
-		// Quest: Your guiles intruigue me, stranger. I've summoned the most twisted of creatures before...do you wish to do the same? Do you? If your conviction holds; bring me the the feather of an owl, the wings of a bat, and the tail of a scorpion. And take this! The Grimoire will help you along. It will, won't it! Bahaha!
-		// Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon whichever beast you like! Owl, bat - which should it be? Hm? Hm?! Be merry, and may the phoenix find you well!
+		// Quest: Your guiles intruigue me, stranger. I've summoned the most twisted of creatures before...do you wish to do the same? Do you? If your conviction holds; bring me anything that your Grimoire consumes! No Grimoire? Ohoho! Here you are...don't let your guard down! Open up your Grimoire to see what it's eaten!
+		// Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon whichever beast you like! Owl, bat - or perhaps a different creature entirely? Hm? Hm?! Be merry, and may the phoenix find you well!
 		// Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder. Especially if you're a hunter - the materials you gather may summon many different creatures!
 		// QueenBeeQuest: Ah! You return! My guiles are favorable, yes? Yes! I have a query to ask you! Perhaps odd, but normal for one such as I! Yes! I've harkened back to a more...natural time of my life, and I wish to have some of that soul back. Could I ask you to fetch me some hornet's stingers from the jungle? Could I? Could I? You'll get a nice reward if you do.
 		// GotStingers: How wonderful! Yes...here. Take this little morsel. It'll help you summon a cute little fiend from your Grimoire. Cruel, but kind! Alas, I have one more thing to ask. A creature most foul resides in the jungle, one Queen of Bees. Could I ask you to slay it? It seeks to bother me, and I wish it dead! Another award awaits you! Submerge your new hornet friend in honey if you wish to battle!
 		// QueenBeeKilled: Why, you return? So soon? You're quite strong, are you! Aha, yes. Yes! You are! Very well. Many thanks for the chore. I've little to give, but you must take it. Take it! Bahaha! Farewell!
 	}
 
-	// Entry: Eccentric but decievingly powerful, Morgana offers a lot to Ravencrest. Sure, she may be nearly incomprehensible sometimes, and some might say offputting a lot of the time, but she's good at what she does. What does she do?...carry on.
+	// Entry: Eccentric but decievingly powerful, Morgana offers a lot to Ravencrest. Sure, she may be nearly incomprehensible sometimes, and some might say offputting a lot of the time, but she's good at what she does. Huh? "What does she do?" Uh...
 }
 
 Entling: {

@@ -15,6 +15,9 @@ Tooltips: {
 	Pickaxe: Мощность кирки
 	Axe: Мощность топора
 	Hammer: Мощность молота
+	// ManaCost: Mana Cost
+	// AttackSpeed: Attack Speed
+	// CastSpeed: Cast Speed
 }
 
 Influence: {
@@ -167,6 +170,8 @@ Staff: {
 		4: Echo
 	}
 }
+
+// Broadsword.Name: Broadsword
 
 Sword: {
 	Name: Меч

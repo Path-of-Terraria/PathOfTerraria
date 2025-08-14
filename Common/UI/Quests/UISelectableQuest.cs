@@ -25,7 +25,7 @@ public class UISelectableQuest : UISelectableOutlineRectPanel
 		Width.Set(325, 0f);
 
 		// text
-		Title = new UISimpleWrappableText(quest.DisplayName.Value, 0.7f);
+		Title = new UISimpleWrappableText(quest.DisplayName.Value, 0.85f);
 		Title.Left.Set(14f, 0f);
 		Title.Top.Set(-8f, 0f);
 		Title.Colour = new Color(43, 28, 17);

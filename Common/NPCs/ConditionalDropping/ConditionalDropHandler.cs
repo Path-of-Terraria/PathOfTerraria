@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Content.Items.Quest;
-using System.Collections.Generic;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;

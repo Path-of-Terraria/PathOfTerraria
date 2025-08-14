@@ -221,3 +221,8 @@ Grimoire: {
 		Ritual: Ах, и ваш ритуал! Здесь вы можете разместить материалы, полные благ! Если ваши части не имеют благ, они не имеют эффекта...
 	}
 }
+
+QuestReminderTitles: {
+	// Dialogue: Dialogue
+	// Reminder: Reminder
+}

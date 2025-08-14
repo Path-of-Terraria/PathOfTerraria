@@ -22,19 +22,37 @@ public enum SkillFailReason
 	Other
 }
 
-/// <summary>
-/// Contains a reason for a skill's use to fail.
-/// </summary>
+/// <summary> Contains a reason for a skill to fail in any context. </summary>
 /// <param name="reason"></param>
-/// <param name="otherPrefix"></param>
-public readonly struct SkillFailure(SkillFailReason reason, string otherPrefix = null)
+/// <param name="context"></param>
+public readonly struct SkillFailure(SkillFailReason reason, string context = null)
 {
+	/// <summary> Whether <see cref="Reason"/> is a weapons requirement. </summary>
 	public bool WeaponRejected => Reason is SkillFailReason.NeedsMelee or SkillFailReason.NeedsRanged or SkillFailReason.NeedsMagic or SkillFailReason.NeedsSummon;
-	public LocalizedText OtherReason => Language.GetText($"Mods.{PoTMod.ModName}.SkillFailReasons." + otherPrefix);
+	public readonly LocalizedText Description => GetDescription();
 
 	public readonly SkillFailReason Reason = reason;
+	private readonly string _context = context;
 
-	private readonly string otherPrefix = otherPrefix;
+	private readonly LocalizedText GetDescription()
+	{
+		const string path = $"Mods.{PoTMod.ModName}.SkillFailReasons.";
+		string value = Reason switch
+		{ 
+			SkillFailReason.NeedsMelee => ItemType.Melee.ToString(),
+			SkillFailReason.NeedsRanged => ItemType.Ranged.ToString(),
+			SkillFailReason.NeedsMagic => ItemType.Magic.ToString(),
+			SkillFailReason.NeedsSummon => ItemType.Summoner.ToString(),
+			_ => null
+		};
+
+		if (value != null && _context == null)
+		{
+			return Language.GetText(path + "NeedsWeapon").WithFormatArgs(value);
+		}
+
+		return Language.GetText(path + (_context ?? Reason.ToString()));
+	}
 }
 
 public abstract partial class Skill
@@ -172,8 +190,13 @@ public abstract partial class Skill
 	/// <returns>If the skill can be used or not</returns>
 	/// <param name="failReason">The reason this skill failed to be used. Used for the icons over the UI.</param>
 	/// <param name="justChecking">If this is being called to "just check" - i.e., don't do any functionality aside from true/false and <paramref name="failReason"/>.</param>
-	public virtual bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
+	public virtual bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking = true)
 	{
+		if (!CanEquipSkill(player, ref failReason))
+		{
+			return false;
+		}
+
 		if (!player.CheckMana(TotalManaCost))
 		{
 			failReason = new SkillFailure(SkillFailReason.NotEnoughMana);
@@ -185,33 +208,35 @@ public abstract partial class Skill
 
 	/// <summary>
 	/// Whether the player can have the current skill equipped or not.<br/>
-	/// This will also remove the skill automatically if they have it equipped but the condition is false.
 	/// Returns true by default.<br/>
-	/// If you need to check if a skill can be equipped, use <see cref="CanEquipSkill(Player)"/> instead.
+	/// If you need to check if a skill can be equipped, use <see cref="CanEquipSkill(Player, ref SkillFailure)"/> instead.
 	/// </summary>
 	/// <param name="player">The player who is trying to equip the skill, or has the skill equipped.</param>
 	/// <returns>If the player can have this skill equipped.</returns>
-	protected virtual bool ProtectedCanEquip(Player player, out string failReason)
+	protected virtual bool ProtectedCanEquip(Player player, ref SkillFailure failReason)
 	{
-		failReason = string.Empty;
 		return true;
 	}
 
 	/// <summary>
-	/// Whether the skill can be equipped. Runs <see cref="ProtectedCanEquip(Player)"/> and checks if the player has enough mana to use the skill.
+	/// Whether the skill can be equipped. Runs <see cref="ProtectedCanEquip(Player, ref SkillFailure)"/> and checks if the player has enough mana to use the skill.
 	/// </summary>
 	/// <param name="player">The player who is trying to equip the skill, or has the skill equipped.</param>
 	/// <returns>If the player can have this skill equipped.</returns>
-	public bool CanEquipSkill(Player player, out string failReason)
+	public bool CanEquipSkill(Player player, ref SkillFailure failReason)
 	{
-		if (!ProtectedCanEquip(player, out failReason))
+		if (!ProtectedCanEquip(player, ref failReason))
 		{
 			return false;
 		}
 
-		bool hasMana = player.statManaMax2 > TotalManaCost;
-		failReason = hasMana ? "" : Language.GetTextValue("Mods.PathOfTerraria.Skills.Denials.NotEnoughMana");
-		return hasMana;
+		if (player.statManaMax2 < TotalManaCost)
+		{
+			failReason = new SkillFailure(SkillFailReason.NotEnoughMana);
+			return false;
+		}
+
+		return true;
 	}
 
 	public virtual void LoadData(TagCompound tag, Player loadingPlayer)

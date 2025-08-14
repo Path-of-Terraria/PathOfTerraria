@@ -93,6 +93,8 @@ public class DeerclopsDomain : BossDomainSubworld
 					}
 				}
 			}
+
+			progress.Set(i / (float)Width);
 		}
 
 		for (int i = 0; i < Width; ++i)
@@ -138,6 +140,8 @@ public class DeerclopsDomain : BossDomainSubworld
 					}
 				}
 			}
+
+			progress.Set(i / (float)Width);
 		}
 
 		foreach (Point16 position in structures)
@@ -167,11 +171,15 @@ public class DeerclopsDomain : BossDomainSubworld
 		string startPath = "Assets/Structures/DeerclopsDomain/Start_" + WorldGen.genRand.Next(4);
 		StructureTools.PlaceByOrigin(startPath, new Point16(Main.spawnTileX, Main.spawnTileY), new(0.5f, 0.6f), null);
 
+		progress.Set(0.125f);
+
 		int firstTunnelXStart = Main.spawnTileX + WorldGen.genRand.Next(40, 80) * (WorldGen.genRand.NextBool() ? -1 : 1);
-		StartTunnel(noise, firstTunnelXStart, out Vector2[] points, out Vector2 last);
+		StartTunnel(noise, firstTunnelXStart, out Vector2 last);
+
+		progress.Set(0.33f);
 
 		// Second tunnel
-		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 3f, 0.5f);
+		Vector2[] points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 8, 2f, 0.3f);
 		DigThrough(points, noise, VerticalTunnelSize);
 		AddLanterns(points);
 		last = points.Last();
@@ -179,18 +187,22 @@ public class DeerclopsDomain : BossDomainSubworld
 		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 3.5f);
 		last = CreateHorizontalTunnel(noise, points, chasmPoints);
 
+		progress.Set(0.67f);
+
 		// Third tunnel
-		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 6, 3f, 0.5f);
+		points = Tunnel.GeneratePoints([last, new(MathHelper.Lerp(last.X, Width / 2, 0.3f), last.Y - 80)], 8, 2f, 0.3f);
 		DigThrough(points, noise, VerticalTunnelSize);
 		AddLanterns(points);
 		last = points.Last();
 		chasmPoints = points.Clone() as Vector2[];
-		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 3.5f);
+		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 2.5f);
 		CreateHorizontalTunnel(noise, points, chasmPoints);
 		last = points.Last();
 
+		progress.Set(0.9f);
+
 		// To surface
-		points = Tunnel.GeneratePoints([last, new(Width / 2, Surface), new(Width / 2, Surface - 20)], 6, 3f, 0.5f);
+		points = Tunnel.GeneratePoints([last, new(Width / 2, Surface), new(Width / 2, Surface - 20)], 8, 2f, 0.3f);
 		DigThrough(points, noise, VerticalTunnelSize);
 		AddLanterns(points, 8);
 	}
@@ -304,9 +316,9 @@ public class DeerclopsDomain : BossDomainSubworld
 		}
 	}
 
-	private void StartTunnel(FastNoiseLite noise, int firstTunnelXStart, out Vector2[] points, out Vector2 last)
+	private void StartTunnel(FastNoiseLite noise, int firstTunnelXStart, out Vector2 last)
 	{
-		points = Tunnel.GeneratePoints([new(Main.spawnTileX, Main.spawnTileY), new(firstTunnelXStart, Main.spawnTileY - 60)], 6, 4);
+		Vector2[] points = Tunnel.GeneratePoints([new(Main.spawnTileX, Main.spawnTileY), new(firstTunnelXStart, Main.spawnTileY - 60)], 6, 4);
 		DigThrough(points, noise, 1);
 		AddLanterns(points);
 		last = points.Last();
@@ -370,7 +382,7 @@ public class DeerclopsDomain : BossDomainSubworld
 		return true;
 	}
 
-	private static void AddLanterns(Vector2[] points, int count = 4)
+	private static void AddLanterns(Vector2[] points, int count = 6)
 	{
 		for (int i = 0; i < count; ++i)
 		{

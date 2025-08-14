@@ -5,6 +5,7 @@ using PathOfTerraria.Content.Tiles.BossDomain;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -980,6 +981,9 @@ internal class TwinsDomain : BossDomainSubworld
 		{
 			if (!NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.Retinazer) && !ExitSpawned)
 			{
+				BossTracker.AddDowned(NPCID.Retinazer, false, true);
+				BossTracker.AddDowned(NPCID.Spazmatism, false, true);
+
 				ExitSpawned = true;
 
 				IEntitySource src = Entity.GetSource_NaturalSpawn();

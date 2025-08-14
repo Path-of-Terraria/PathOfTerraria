@@ -32,6 +32,11 @@ internal class AddedAttackSpeedAffix : ItemAffix
 /// </summary>
 internal class AddedDamageAffix : ItemAffix
 {
+	public AddedDamageAffix()
+	{
+		Round = true;
+	}
+	
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.Damage.Base += Value;

@@ -19,6 +19,8 @@ internal class TinyHat : Wand
 
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
+		
 		Item.damage = 44;
 		Item.mana = 3;
 		Item.useTime = Item.useAnimation = 25;

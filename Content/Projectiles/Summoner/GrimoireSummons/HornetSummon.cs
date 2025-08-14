@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.Projectiles.Utility;
-using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 
 internal class HornetSummon : GrimoireSummon
 {
-	public override int BaseDamage => 16;
+	public override int BaseDamage => 17;
 
 	private ref float Timer => ref Projectile.ai[1];
 	private ref float HoneyTimer => ref Projectile.ai[2];

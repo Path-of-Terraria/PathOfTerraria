@@ -12,7 +12,7 @@ internal abstract class StaffProjectile : ModProjectile
 {
 	public virtual int DustType => DustID.GemAmethyst;
 	public virtual int TorchType => TorchID.Purple;
-	public virtual int MaxCharge => 60;
+	public virtual int MaxCharge => Owner.HeldItem.useTime;
 	public virtual Vector2 ChargeOffset => new(-10f, 48f);
 	public virtual bool CanCollideWithTiles => true;
 

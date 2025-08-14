@@ -80,7 +80,8 @@ public static class PoTItemHelper
 		data.Affixes.AddRange(GenerateImplicits.Invoke(item));
 		data.ImplicitCount = data.Affixes.Count;
 
-		for (int i = 0; i < GetAffixCount(item); i++)
+		int affixesToRoll = GetAffixCount(item);
+		for (int i = 0; i < affixesToRoll; i++)
 		{
 			AddNewAffix(item, data);
 		}
@@ -108,15 +109,15 @@ public static class PoTItemHelper
 	    }
 	}
 
-	///  <summary>
-	/// 		Adds a new random affix to an item. This is used for things like the ascendant shard.
+	///  <summary> 
+	///  Adds a new random affix to an item. This is used for things like the ascendant shard. 
 	///  </summary>
 	///  <param name="item"></param>
 	///  <param name="data"></param>
 	public static void AddNewAffix(Item item, [CanBeNull] PoTInstanceItemData data = null)
 	{
 		data ??= item.GetInstanceData();
-		if (data.Affixes.Count >= GetAffixCount(item))
+		if ((data.Affixes.Count - data.ImplicitCount) >= GetAffixCount(item))
 		{
 			return;
 		}
@@ -134,6 +135,11 @@ public static class PoTItemHelper
 		}
 
 		affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+		if (affix.Value == 0)
+		{
+			return; //If the affix has no value, don't add it. This usually happens when there's no TierData associated with the given item
+		}
+
 		data.Affixes.Add(affix);
 	}
 
