@@ -4,6 +4,8 @@ namespace PathOfTerraria.Content.Scenes;
 
 internal class RavencrestSurfaceBackground : ModSurfaceBackgroundStyle, IBackgroundModifier
 {
+	private static int SurfaceFrame = 0;
+
 	public override int ChooseFarTexture()
 	{
 		return BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Backgrounds/RavencrestFar");
@@ -16,8 +18,12 @@ internal class RavencrestSurfaceBackground : ModSurfaceBackgroundStyle, IBackgro
 
 	public override int ChooseCloseTexture(ref float scale, ref double parallax, ref float a, ref float b)
 	{
+		SurfaceFrame++;
+
 		b -= 1550;
-		return BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Backgrounds/RavencrestFront");
+		int frame = SurfaceFrame / 12 % 8;
+
+		return BackgroundTextureLoader.GetBackgroundSlot(Mod, "Assets/Backgrounds/RavencrestClose" + frame);
 	}
 
 	public override void ModifyFarFades(float[] fades, float transitionSpeed)
