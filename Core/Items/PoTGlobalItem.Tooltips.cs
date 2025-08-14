@@ -230,14 +230,27 @@ partial class PoTGlobalItem
 		
 		if (item.useTime > 0) 
 		{
+			//We want to ensure default attack speed is not shown on any of the below gear/items.
 			if (data.ItemType != ItemType.Helmet && 
 			    data.ItemType != ItemType.Chestplate && 
 			    data.ItemType != ItemType.Leggings && 
 			    data.ItemType != ItemType.Ring && 
 			    data.ItemType != ItemType.Amulet &&
-			    data.ItemType != ItemType.Accessories)
+			    data.ItemType != ItemType.Accessories &&
+			    data.ItemType != ItemType.Map &&
+			    data.ItemType != ItemType.Shield &&
+			    item.wingSlot <= 0)
 			{
-				float aps = 60f / item.useTime;
+				Player player = Main.LocalPlayer;
+				// Get the player's attack speed multiplier
+				float useTimeMultiplier = player.GetTotalAttackSpeed(item.DamageType);
+		
+				// Calculate effective use time with player bonuses
+				float effectiveUseTime = item.useTime / useTimeMultiplier;
+		
+				// Calculate attacks per second with bonuses
+				float aps = 60f / effectiveUseTime;
+
 				aps = (float) Math.Round(aps, 2);
 				string apsStr = aps.ToString("0.00");
 				string localizeString = item.DamageType == DamageClass.Magic ? "CastSpeed" : "AttackSpeed";
@@ -256,9 +269,6 @@ partial class PoTGlobalItem
 			float baseCritChance = item.crit;
 			float playerCritChance = player.GetTotalCritChance(item.DamageType);
 			float totalCritChance = baseCritChance + playerCritChance;
-        
-			// Clamp between 0 and 100
-			totalCritChance = Math.Max(0, Math.Min(100, totalCritChance));
         
 			// Add the tooltip line
 			var critLine = new TooltipLine(Mod, "CriticalStrikeChance",$"[i:{ItemID.SilverBullet}] [{totalCritChance:F1}%] Critical Strike Chance");
