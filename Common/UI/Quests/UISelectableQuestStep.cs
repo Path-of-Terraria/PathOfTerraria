@@ -33,6 +33,18 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 	{
 		base.DrawSelf(spriteBatch);
 
+		if (ContainsPoint(Main.MouseScreen) && quest.CurrentStep == index)
+		{
+			string title = "Reminder";
+			string text = Step.ReminderText(ref title);
+
+			if (text != string.Empty)
+			{
+				Tooltip.SetName(title);
+				Tooltip.SetTooltip(text);
+			}
+		}
+
 		Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(6);
 		QuestStep.StepCompletion completion = QuestStep.StepCompletion.Locked;
 

@@ -10,6 +10,7 @@ using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
@@ -27,14 +28,14 @@ internal class WoFQuest : Quest
 	{
 		return
 		[
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardStart"),
+			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardStart"), LocalizedText.Empty,
 				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<TinyHat>())),
 			new ParallelQuestStep([
-				new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), this.GetLocalization("ThrainHelp"),
+				new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("ThrainHelp"),
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<DwarvenGreatsword>())),
-				new InteractWithNPC(ModContent.NPCType<HunterNPC>(), this.GetLocalization("ElaraHelp"),
+				new InteractWithNPC(ModContent.NPCType<HunterNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("ElaraHelp"),
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<Twinbow>())),
-				new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), this.GetLocalization("MorganaHelp"),
+				new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("MorganaHelp"),
 					null, false, (npc) => 
 					{
 						for (int i = 0; i < 3; ++i)
@@ -55,7 +56,7 @@ internal class WoFQuest : Quest
 						}
 					}),
 			]),
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardContinue"),
+			new InteractWithNPC(NPCQuestGiver, LocalizedText.Empty, this.GetLocalization("WizardContinue"),
 				null, false, (npc) =>
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>());

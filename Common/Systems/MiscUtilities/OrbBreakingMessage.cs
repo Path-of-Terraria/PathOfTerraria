@@ -19,7 +19,7 @@ public class OrbPreventer : GlobalTile
 
 	public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)
 	{
-		if (type == TileID.ShadowOrbs && PlayerIsMining())
+		if (type == TileID.ShadowOrbs && PlayerIsMining() && DisableOrbBreaking.BreakableOrbSystem.CanBreakOrb == false)
 		{
 			TrySendMessage("Something tells me I shouldn't break this yet.", Color.MediumPurple);
 			return false;
@@ -29,7 +29,7 @@ public class OrbPreventer : GlobalTile
 
 	public override bool CanExplode(int i, int j, int type)
 	{
-		if (type == TileID.ShadowOrbs)
+		if (type == TileID.ShadowOrbs && DisableOrbBreaking.BreakableOrbSystem.CanBreakOrb == false)
 		{
 			TrySendMessage("Something tells me I shouldn't break this yet.", Color.OrangeRed);
 			return false;

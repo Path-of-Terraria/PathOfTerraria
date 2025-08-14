@@ -74,6 +74,11 @@ internal class WormLightning : ModNPC
 
 		public override void HitEffect(NPC.HitInfo hit)
 		{
+			if (Main.dedServ)
+			{
+				return;
+			}
+
 			int reps = NPC.life < 0 ? 8 : 2;
 
 			for (int i = 0; i < reps; ++i)

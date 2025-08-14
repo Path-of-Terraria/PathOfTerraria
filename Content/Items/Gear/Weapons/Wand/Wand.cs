@@ -39,6 +39,7 @@ internal abstract class Wand : Gear
 		Item.mana = 4;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.shoot = ModContent.ProjectileType<HomingProjectile>();
+		Item.noMelee = true;
 		Item.SetShopValues(ItemRarityColor.Green2, 50);
 
 		PoTInstanceItemData data = this.GetInstanceData();

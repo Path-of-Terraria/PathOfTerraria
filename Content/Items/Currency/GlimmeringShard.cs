@@ -12,7 +12,7 @@ public class GlimmeringShard : CurrencyShard
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 5000f;
+		staticData.DropChance = 10000f;
 	}
 
 	public override bool CanRightClick()

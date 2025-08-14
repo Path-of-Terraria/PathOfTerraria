@@ -10,14 +10,14 @@ internal class CopperBoomerang : Boomerang
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.MinDropItemLevel = 8;
+		staticData.MinDropItemLevel = 5;
 	}
 
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
-		Item.damage = 12;
+		Item.damage = 10;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;
 		Item.value = Item.buyPrice(0, 0, 1, 0);

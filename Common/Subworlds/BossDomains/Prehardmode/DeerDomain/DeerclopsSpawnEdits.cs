@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
 
@@ -31,7 +30,7 @@ internal class DeerclopsSpawnEdits : GlobalNPC
 	{
 		if (SubworldSystem.Current is DeerclopsDomain)
 		{
-			spawnRate = 80;
+			spawnRate = 180;
 			maxSpawns = 4;
 		}
 	}

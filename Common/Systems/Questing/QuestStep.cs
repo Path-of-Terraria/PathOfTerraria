@@ -15,7 +15,7 @@ public abstract class QuestStep
 		Completed
 	}
 
-	public static Color DefaultTextColor = new(43, 28, 17);
+	internal static Color DefaultTextColor = new(43, 28, 17);
 
 	public virtual int LineCount => 1;
 	public virtual bool NoUI => false;
@@ -48,6 +48,17 @@ public abstract class QuestStep
 	/// may be used to more easily draw the step.
 	/// </summary>
 	public abstract void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep);
+
+	/// <summary>
+	/// Displays "reminder" text in the quest book, namely for NPC dialogue. <paramref name="title"/> is the title of the reminder, i.e. <br/><c>
+	/// Dialogue</c><br/>
+	/// <c>You need to get...</c>
+	/// </summary>
+	/// <returns>The reminder text to show.</returns>
+	public virtual string ReminderText(ref string title)
+	{
+		return string.Empty;
+	}
 
 	/// <summary>
 	/// Draws a string with default Quest Book parameters - namely, faded if completed, 0.85f scale, no transparency with the ItemStack font and Main.spriteBatch.

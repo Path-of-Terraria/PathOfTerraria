@@ -25,18 +25,22 @@ internal class QueenBeeQuest : Quest
 		return
 		[
 			new CollectCount(ItemID.Stinger, 5),
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.GotStingers"), onSuccess: 
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeQuest"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.GotStingers"), onSuccess: 
 				npc =>
 				{
-					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LargeStinger>());
-
-					if (Main.netMode == NetmodeID.MultiplayerClient)
+					for (int i = 0; i < 3; ++i)
 					{
-						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+						int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LargeStinger>());
+
+						if (Main.netMode == NetmodeID.MultiplayerClient)
+						{
+							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+						}
 					}
 				}),
 			new KillCount(NPCID.QueenBee, 1, this.GetLocalization("KillQueen")),
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeKilled"))
+			new InteractWithNPC(NPCQuestGiver, LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeKilled"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

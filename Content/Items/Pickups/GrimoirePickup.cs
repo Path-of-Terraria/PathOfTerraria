@@ -70,8 +70,9 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 	
 	public override bool OnPickup(Player player)
 	{
+		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Lang.GetItemName(Type)).Value;
+
 		StoreItem(Item);
-		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Item.Name).Value;
 		Color textColor = Color.IndianRed;
 		int projType = ModContent.ProjectileType<GrimoireVisageEffect>();
 		
@@ -137,11 +138,9 @@ internal class GrimoirePickupLoader : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		for (int i = 0; i < ItemLoader.ItemCount; ++i)
+		foreach (KeyValuePair<int, Item> pair in ContentSamples.ItemsByType)
 		{
-			var item = new Item(i);
-
-			if (item.ModItem is GrimoirePickup grim)
+			if (pair.Value.ModItem is GrimoirePickup grim)
 			{
 				grim.AddDrops(npc, ref npcLoot);
 			}

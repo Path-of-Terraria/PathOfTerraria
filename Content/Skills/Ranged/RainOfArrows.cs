@@ -104,19 +104,19 @@ public class RainOfArrows : Skill
 
 		if (player.HeldItem.consumable)
 		{
-			failReason = new SkillFailure(SkillFailReason.Other, "Other.RangedWeaponConsumable");
+			failReason = new SkillFailure(SkillFailReason.Other, "RangedWeaponConsumable");
 			return false;
 		}
 
 		if (WeaponBlacklist.Contains(player.HeldItem.type))
 		{
-			failReason = new SkillFailure(SkillFailReason.Other, "Other.WeaponInvalid");
+			failReason = new SkillFailure(SkillFailReason.Other, "WeaponInvalid");
 			return false;
 		}
 
 		if (!Main.LocalPlayer.PickAmmo(Main.LocalPlayer.HeldItem, out int _, out float _, out int _, out float _, out int _, true))
 		{
-			failReason = new SkillFailure(SkillFailReason.Other, "Other.NoAmmo");
+			failReason = new SkillFailure(SkillFailReason.Other, "NoAmmo");
 			return false;
 		}
 

@@ -70,6 +70,16 @@ internal class BossDomainLivesPlayer : ModPlayer
 			Player.statLife = Player.statLifeMax2;
 			Player.Teleport(new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates(), TeleportationStyleID.RodOfDiscord);
 			Player.velocity = Vector2.Zero;
+
+			for (int i = 0; i < Player.buffTime.Length; ++i)
+			{
+				if (Player.buffType[i] != 0 && Main.debuff[Player.buffType[i]])
+				{
+					Player.DelBuff(i);
+					i--;
+				}
+			}
+
 			return false;
 		}
 
