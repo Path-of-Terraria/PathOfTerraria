@@ -39,7 +39,9 @@ internal class PotionPlayer : ModPlayer
 	{
 		PotionPlayer mp = self.GetModPlayer<PotionPlayer>();
 
-		self.Heal(mp.HealPower);
+		// Changed from flat healing to percentage-based (Using statLifeMax2 is MaxLife after adjusted buffs/equipment)
+		int healAmount = (int)(self.statLifeMax2 * (mp.HealPower / 100f));
+		self.Heal(healAmount);
 		self.AddBuff(BuffID.PotionSickness, mp.HealDelay);
 		mp.HealingLeft--;
 
@@ -95,6 +97,7 @@ internal class PotionPlayer : ModPlayer
 		}
 
 		MaxHealing = 3;
+		//This is now 30%
 		HealPower = 30;
 		HealDelay = 300;
 
