@@ -9,9 +9,14 @@ namespace PathOfTerraria.Common.Systems;
 
 internal class PersistentDataSystem : ModSystem
 {
-	public static string CurrentLocation => SubworldSystem.Current is not RavencrestSubworld ? "Overworld" : "Ravencrest";
+	private const string ObelisksSaveKey = "hasMainObelisk";
 
-	public HashSet<string> ObelisksByLocation = ["Ravencrest"];
+	public HashSet<string> ObelisksByLocation = [];
+
+	public PersistentDataSystem()
+	{
+		ResetLocationData();
+	}
 
 	public override void ClearWorld()
 	{
@@ -26,11 +31,11 @@ internal class PersistentDataSystem : ModSystem
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		tag.Add("hasMainObelisk", ObelisksByLocation.ToArray());
+		tag.Add(ObelisksSaveKey, ObelisksByLocation.ToArray());
 	}
 	public override void LoadWorldData(TagCompound tag)
 	{
-		ObelisksByLocation = new(tag.Get<string[]>("hasMainObelisk"));
+		ObelisksByLocation = new(tag.Get<string[]>(ObelisksSaveKey));
 	}
 
 	public override void NetSend(BinaryWriter writer)
@@ -55,11 +60,11 @@ internal class PersistentDataSystem : ModSystem
 
 	internal void CopyDataToRavencrest()
 	{
-		SubworldSystem.CopyWorldData("hasMainObelisk", ObelisksByLocation.ToArray());
+		SubworldSystem.CopyWorldData(ObelisksSaveKey, ObelisksByLocation.ToArray());
 	}
 
 	internal void ReadDataInRavencrest()
 	{
-		ObelisksByLocation = new(SubworldSystem.ReadCopiedWorldData<string[]>("hasMainObelisk"));
+		ObelisksByLocation = new(SubworldSystem.ReadCopiedWorldData<string[]>(ObelisksSaveKey));
 	}
 }
