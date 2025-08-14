@@ -1,16 +1,16 @@
-LifeStealProjectile.DisplayName: Снаряд похищения жизни
+LifeStealProjectile.DisplayName: Снаряд вампиризма
 HomingProjectile.DisplayName: Самонаводящийся снаряд
 SparklingBall.DisplayName: Сверкающий шар
-TomeProjectile.DisplayName: Снаряд тома
-BowProjectile.DisplayName: Лучный снаряд
-BowAltUseProjectile.DisplayName: Лучный снаряд (альт. режим)
+TomeProjectile.DisplayName: Снаряд из тома
+BowProjectile.DisplayName: Снаряд лука
+BowAltUseProjectile.DisplayName: Снаряд лука (альт. режим)
 BowDrawAnimationProjectile.DisplayName: Анимация натяжения лука
 BasicWoodenBowAnimationProjectile.DisplayName: Анимация простого деревянного лука
 WoodenBowAnimationProjectile.DisplayName: Анимация деревянного лука
 BoomerangProjectile.DisplayName: Снаряд-бумеранг
 BowAnimationProjectile.DisplayName: Анимация лука
 FireStarterProjectile.DisplayName: Снаряд Разжигателя огня
-NovaProjectile.DisplayName: Новая
+NovaProjectile.DisplayName: Нова
 CorruptedBattleaxeProjectile.DisplayName: Снаряд Осквернённой секиры
 GuardianAngelProjectile.DisplayName: Снаряд «Ангела‑хранителя»
 GuardianAngelRay.DisplayName: Луч «Ангела‑хранителя»
@@ -57,10 +57,10 @@ FallingPusBlock.DisplayName: Падающий гной
 VoodooRopeProj.DisplayName: Вуду‑верёвка
 LightBallProjectile.DisplayName: Световой шар
 IcicleProjectile.DisplayName: Сосулька
-WoodenWandProjectile.DisplayName: Клок листвы
-MahoganyWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
-EbonwoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
-ShadewoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+WoodenWandProjectile.DisplayName: Комок листвы
+MahoganyWandProjectile.DisplayName: "{$WoodenWandProjectile.DisplayName}"
+EbonwoodWandProjectile.DisplayName: "{$WoodenWandProjectile.DisplayName}"
+ShadewoodWandProjectile.DisplayName: "{$WoodenWandProjectile.DisplayName}"
 GemWandProjectile.DisplayName: Самоцвет
 CopperStaffProjectile.DisplayName: Аметистовая энергия
 IronStaffProjectile.DisplayName: Топазовая энергия
@@ -71,7 +71,7 @@ GoldStaffProjectile.DisplayName: Алмазная энергия
 PlatinumStaffProjectile.DisplayName: "{$GoldStaffProjectile.DisplayName}"
 StaffHeldProjectile.DisplayName: Посох
 EoCRitualProj.DisplayName: Ритуал
-EyePortal.DisplayName: Портал Ока
+EyePortal.DisplayName: Портал Глаза
 EoWPortal.DisplayName: Портал Пожирателя
 CrimsonMaw.DisplayName: Багровая пасть
 HornetSummon: {
@@ -87,7 +87,7 @@ FallingAshBlock.DisplayName: Падающий пепел
 GeyserPredictionProjectile.DisplayName: Предсказание гейзера
 SkeletronPortal.DisplayName: Портал Скелетрона
 SkeletronRitualProj.DisplayName: Ритуал Скелетрона
-DwarvenGreatswordAltHammer.DisplayName: Гномий молот‑колот
+DwarvenGreatswordAltHammer.DisplayName: Дварфский молот‑колот
 TinyAlaric.DisplayName: Крошечный Аларик
 VoidPearlThrown.DisplayName: Брошенная Жемчужина Пустоты
 WoFPortal.DisplayName: Адский портал
@@ -114,8 +114,8 @@ DemonSummon: {
 DemonWeapons.DisplayName: Демоническое оружие
 FireballProj.DisplayName: Огненный шар
 IceBoltProj.DisplayName: Ледяная стрела
-EntThorn.DisplayName: Шип энта
-WardensBowShard.DisplayName: Осколок Лука Стража
+EntThorn.DisplayName: Шип Энта
+WardensBowShard.DisplayName: Осколок лука Стража
 GroveBoulder.DisplayName: Валун рощи
 RunestoneBurst: {
 	DisplayName: Всплеск рунического камня
@@ -126,9 +126,9 @@ RunestoneBurst: {
 	}
 }
 FallingStick.DisplayName: Падающая палка
-FallingEntling.DisplayName: Падающий энтёнок
+FallingEntling.DisplayName: Падающий Энтлинг
 FallingBranch.DisplayName: Падающая ветвь
-TinyBoulder.DisplayName: Крошечный валун
+TinyBoulder.DisplayName: Маленький валун
 LargeRoots.DisplayName: Большие корни
 SawProjectile.DisplayName: Пила
 ConstantLaserProj.DisplayName: Лазер
@@ -136,7 +136,7 @@ ExplosiveTurret.DisplayName: Взрывная турель
 PincerProjectile.DisplayName: Клешня
 PrimeRocket.DisplayName: Ракета Прайма
 PrimeBomb.DisplayName: Бомба Прайма
-LaserClone.DisplayName: Лазер‑двойник
+LaserClone.DisplayName: Клон лазера
 ShrineAoE.DisplayName: Святилище
 UnstoppableAoE.DisplayName: Святилище неудержимости
 GodlikeAoE.DisplayName: Божественное святилище
@@ -148,7 +148,7 @@ DevourerFireball.DisplayName: Огненный шар Пожирателя
 SunsoulHead.DisplayName: Солнечная душа
 SunsoulSummon.DisplayName: Звезда солнечной души
 Lightray.DisplayName: Луч света
-LightningBurst.DisplayName: Всплеск молнии
+LightningBurst.DisplayName: Взрыв молнии
 SunspotAura.DisplayName: Аура солнечного пятна
 SunDevourerDash.DisplayName: Пожиратель солнца
 WormLightningDeathFX.DisplayName: Смерть молниевого духа
@@ -161,6 +161,6 @@ CombustionBlast.DisplayName: Взрыв возгорания
 FieryPatch.DisplayName: Огненное пятно
 FesteringSporesProj.DisplayName: Снаряд гниющих спор
 SporeCloud.DisplayName: Облако спор
-PrecisionSpawnerProjectile.DisplayName: Порождающий
+PrecisionSpawnerProjectile.DisplayName: Спавнер
 WhipBaseProjectile.DisplayName: Базовый снаряд кнута
 AntlerShardProj.DisplayName: Снаряд «Осколок рога»
