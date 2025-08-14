@@ -174,7 +174,11 @@ public sealed class UIDefaultArmor : UIArmorPage
 		
 		accessorySlot4.OnMouseOver += UpdateMouseOver;
 		accessorySlot4.OnMouseOut += UpdateMouseOut;
-		//Append(accessorySlot4);
+
+		if (Main.hardMode)
+		{
+			Append(accessorySlot4);	
+		}
 		//DISABLED FOR NOW. Add when condition for killing WOF is added + padding on the gear/defense buttons
 	}
 }
