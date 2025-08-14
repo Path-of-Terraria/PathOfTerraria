@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Content.Projectiles.Utility;
 using SubworldLibrary;
 using System.Collections.Generic;
@@ -88,6 +89,8 @@ internal class MoonDomainSystem : ModSystem
 					players.Add(plr);
 				}
 			}
+
+			BossTracker.AddDowned(NPCID.MoonLordCore, false, true);
 
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Tiles;
+﻿using PathOfTerraria.Common.Systems.MiscUtilities;
+using PathOfTerraria.Common.Tiles;
 using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -113,7 +114,7 @@ public class BlockingGate : MechGate
 		frame.X %= 36;
 		spriteBatch.Draw(TextureAssets.Tile[Type].Value, TileExtensions.DrawPosition(i, j), frame, Lighting.GetColor(i, j));
 
-		if (tile.HasUnactuatedTile)
+		if (tile.HasUnactuatedTile && BlockerSystem.HasArenaEnemies)
 		{
 			spriteBatch.Draw(BlockerGlow.Value, TileExtensions.DrawPosition(i, j), frame, Color.White);
 		}

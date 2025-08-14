@@ -239,42 +239,66 @@ public static class PoTItemHelper
 	/// Queen Bee: 30<br/>
 	/// Deerclops: 35<br/>
 	/// Skeletron: 40<br/>
-	/// Wall of Flesh: 45<br/>
-	/// Any mech boss: 50<br/>
-	/// Plantera: 55<br/>
-	/// Golem: 60<br/>
-	/// Cultist: 65<br/>
-	/// Moon Lord: 70
+	/// Wall of Flesh / <b>Overworld Max</b>: 45<br/>
+	/// Queen Slime: 50<br/>
+	/// Twins: 55<br/>
+	/// Destroyer: 60<br/>
+	/// Skeletron Prime: 65<br/>
+	/// Plantera: 70<br/>
+	/// Golem: 75<br/>
+	/// Cultist: 80<br/>
+	/// Moon Lord: 85
 	/// </summary>
+	/// <param name="clampHardmode">Clamps level to hardmode (45).</param>
 	/// <returns></returns>
-	public static int PickItemLevel()
+	public static int PickItemLevel(bool clampHardmode = true)
 	{
 		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.AreaLevel > 0)
 		{
 			return mapWorld.AreaLevel;
 		}
 
+		if (clampHardmode && Main.hardMode)
+		{
+			return 45;
+		}
+
 		if (NPC.downedMoonlord)
 		{
-			return 70;
+			return 85;
 		}
 
 		if (NPC.downedAncientCultist)
 		{
-			return 65;
+			return 80;
 		}
 
 		if (NPC.downedGolemBoss)
 		{
-			return 60;
+			return 75;
 		}
 
 		if (NPC.downedPlantBoss)
 		{
+			return 70;
+		}
+
+		if (NPC.downedMechBoss3) // Skele Prime
+		{
+			return 65;
+		}
+
+		if (NPC.downedMechBoss1) // Destroyer
+		{
+			return 60;
+		}
+
+		if (NPC.downedMechBoss2) // Twins
+		{
 			return 55;
 		}
 
-		if (NPC.downedMechBossAny)
+		if (NPC.downedQueenSlime)
 		{
 			return 50;
 		}

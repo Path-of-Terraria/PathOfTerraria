@@ -44,7 +44,8 @@ public class Berserk : Skill
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
-			if (drawInfo.headOnlyRender || drawInfo.shadow > 0 || drawInfo.drawPlayer.GetModPlayer<BerserkVisualsPlayer>().BerserkOpacity < 0.01f || Main.gameMenu)
+			if (drawInfo.headOnlyRender || drawInfo.drawPlayer.dead || drawInfo.shadow > 0 || Main.gameMenu
+			|| drawInfo.drawPlayer.GetModPlayer<BerserkVisualsPlayer>().BerserkOpacity < 0.01f)
 			{
 				return;
 			}

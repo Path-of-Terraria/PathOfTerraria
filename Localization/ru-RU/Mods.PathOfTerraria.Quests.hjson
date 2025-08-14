@@ -117,4 +117,83 @@ Quest: {
 		ApproachEntrance: Approach the entrance to Ravencrest
 		EnterRavencrest: Enter Ravencrest
 	}
+
+	QueenSlimeQuest: {
+		// Name: Regal Regime
+		// Description: ""
+		// Tiers: Complete 10 Tier 1 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Queen Slime's domain
+		// Boss: Defeat the Queen Slime
+	}
+
+	TwinsQuest: {
+		// Name: Twin Terrors
+		// Description: ""
+		// Tiers: Complete 10 Tier 2 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Twin's domain
+		// Boss: Defeat the Twins
+	}
+
+	DestroyerQuest: {
+		// Name: Metal Eartheater
+		// Description: ""
+		// Tiers: Complete 10 Tier 3 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Destroyer's domain
+		// Boss: Defeat the Destroyer
+	}
+
+	SkelePrimeQuest: {
+		// Name: Metal Bones
+		// Description: ""
+		// Tiers: Complete 10 Tier 4 Explorable maps ({1}/10)
+		// EnterDomain: Enter Skeletron Prime's domain
+		// Boss: Defeat Skeletron Prime
+	}
+
+	PlanteraQuest: {
+		// Name: Ravenous Bloom
+		// Description: ""
+		// Tiers: Complete 10 Tier 5 Explorable maps ({1}/10)
+		// EnterDomain: Enter Plantera's domain
+		// Boss: Defeat Plantera
+	}
+
+	GolemQuest: {
+		// Name: Ancient Design
+		// Description: ""
+		// Tiers: Complete 10 Tier 6 Explorable maps ({1}/10)
+		// EnterDomain: Enter Golem's domain
+		// Boss: Defeat Golem
+	}
+
+	FishronQuest: {
+		// Name: Mad Pig...ron
+		// Description: ""
+		// Tiers: Complete 10 Tier 7 Explorable maps ({1}/10)
+		// EnterDomain: Enter Duke Fishron's domain
+		// Boss: Defeat Duke Fishron
+	}
+
+	EoLQuest: {
+		// Name: Holy Absolution
+		// Description: ""
+		// Tiers: Complete 10 Tier 8 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Empress of Light's domain
+		// Boss: Defeat the Empress of Light
+	}
+
+	CultistQuest: {
+		// Name: Lunar Leader
+		// Description: ""
+		// Tiers: Complete 10 Tier 9 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Lunatic Cultist's domain
+		// Boss: Defeat the Lunatic Cultist
+	}
+
+	MoonLordQuest: {
+		// Name: The Ending
+		// Description: ""
+		// EnterDomain: Enter the Moon Lords's domain
+		// Boss: Defeat the Moon Lord
+	}
 }

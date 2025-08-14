@@ -1,9 +1,9 @@
-﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -75,49 +75,54 @@ internal class MappingNPC : GlobalNPC
 
 			Dictionary<int, int> completionsByTier = tracker.CompletionsPerTier();
 
-			if (TierPassed(0) && !NPC.downedQueenSlime)
+			if (TierPassed(1) && !NPC.downedQueenSlime)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
 			}
 			
-			if (TierPassed(1) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
+			if (TierPassed(2) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
 			}
 			
-			if (TierPassed(2) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
+			if (TierPassed(3) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<DestroyerMap>());
 			}
 
-			if (TierPassed(3) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)
+			if (TierPassed(4) && NPC.downedMechBoss1 && !NPC.downedMechBoss3)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PrimeMap>());
 			}
 
-			if (TierPassed(4) && NPC.downedMechBoss3 && !NPC.downedPlantBoss)
+			if (TierPassed(5) && NPC.downedMechBoss3 && !NPC.downedPlantBoss)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<PlanteraMap>());
 			}
 
-			if (TierPassed(5) && NPC.downedPlantBoss && !NPC.downedGolemBoss)
+			if (TierPassed(6) && NPC.downedPlantBoss && !NPC.downedGolemBoss)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<GolemMap>());
 			}
 
-			if (TierPassed(6) && NPC.downedGolemBoss && !NPC.downedFishron)
+			if (TierPassed(7) && NPC.downedGolemBoss && !NPC.downedFishron)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<FishronMap>());
 			}
 
-			if (TierPassed(7) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
+			if (TierPassed(8) && NPC.downedFishron && !NPC.downedEmpressOfLight)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<EoLMap>());
 			}
 
-			if (TierPassed(8) && NPC.downedGolemBoss && !NPC.downedEmpressOfLight)
+			if (TierPassed(9) && NPC.downedEmpressOfLight && !NPC.downedAncientCultist)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<CultistMap>());
+			}
+
+			if (TierPassed(10) && NPC.downedMoonlord)
+			{
+				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<MoonMap>());
 			}
 
 			return;
@@ -131,17 +136,18 @@ internal class MappingNPC : GlobalNPC
 
 	private static bool DownedBossForTier(MappingWorld world)
 	{
-		return world.MapTier switch
+		return (world.MapTier - 1) switch
 		{
 			1 => NPC.downedQueenSlime,
-			2 => NPC.downedMechBoss1,
-			3 => NPC.downedMechBoss2,
+			2 => NPC.downedMechBoss2,
+			3 => NPC.downedMechBoss1,
 			4 => NPC.downedMechBoss3,
 			5 => NPC.downedPlantBoss,
 			6 => NPC.downedGolemBoss,
 			7 => NPC.downedFishron,
 			8 => NPC.downedEmpressOfLight,
 			9 => NPC.downedAncientCultist,
+			10 => NPC.downedMoonlord,
 			_ => true,
 		};
 	}

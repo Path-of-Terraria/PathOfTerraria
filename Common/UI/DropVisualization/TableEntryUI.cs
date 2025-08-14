@@ -49,7 +49,7 @@ internal class TableEntryUI : UIElement
 				xOff += 120;
 			}
 		}
-
+		
 		Append(text);
 	}
 }

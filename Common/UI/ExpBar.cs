@@ -26,8 +26,13 @@ public class ExpBar : SmartUiState
 		ExpModPlayer mp = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 
 		var pos = new Vector2(Main.screenWidth / 2, 10);
-		var target = new Rectangle((int)(pos.X - bar.Width / 2) + 6, (int)pos.Y + 14, (int)(mp.Exp / (float)mp.NextLevel * fill.Width), fill.Height);
-		var source = new Rectangle(0, 0, target.Width, target.Height);
+		
+		// Clamp the exp fill to 100 to prevent it from going infinitely off screen
+		float fillPercentage = Math.Min(1f, mp.Exp / (float)mp.NextLevel);
+		int fillWidth = (int)(fillPercentage * fill.Width);
+		
+		var target = new Rectangle((int)(pos.X - bar.Width / 2) + 6, (int)pos.Y + 14, fillWidth, fill.Height);
+		var source = new Rectangle(0, 0, fillWidth, target.Height);
 
 		spriteBatch.Draw(bar, pos, null, Color.White, 0, new Vector2(bar.Width / 2f, 0), 1, 0, 0);
 		spriteBatch.Draw(fill, target, source, Color.White);
