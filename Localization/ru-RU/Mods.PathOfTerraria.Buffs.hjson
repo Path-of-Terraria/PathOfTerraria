@@ -1,75 +1,77 @@
 BattleAxeBuff: {
-	DisplayName: Боевая ярость
-	Description: Увеличенный урон и увеличенный получаемый урон
+	DisplayName: Ярость битвы
+	Description: Повышенный урон и получаемый урон
 }
-
 RageBuff: {
 	DisplayName: Берсерк
-	Description: Увеличенный урон и значительно увеличенное отбрасывание
+	Description: Повышенный урон и значительно увеличенное отбрасывание
 }
-
 MoltenShieldBuff: {
-	DisplayName: Расплавленный панцирь
-	Description: Получите временный щит\nПолучите небольшую защиту
+	DisplayName: Расплавленный щит
+	Description:
+		'''
+		Даёт временный защитный барьер
+		Немного повышает показатель защиты
+		'''
 }
-
 BloodclotDebuff: {
-	DisplayName: Тромб
+	DisplayName: Сгусток крови
 	Description: ""
 	DeathText: "{0} не смог остановить кровотечение"
 }
-
 ArmorShredDebuff: {
-	DisplayName: Ослабление разрушения брони
+	DisplayName: Ослабление брони
 	Description: ""
 }
-
 ShockDebuff: {
 	DisplayName: Шок
-	Description: На 10% больше получаемого урона
+	Description: Получаемый урон увеличен на 10%
 }
-
 RootedDebuff: {
-	DisplayName: "Обездвиживание "
-	Description: Тебе нельзя двигаться!
+	DisplayName: Укоренение
+	Description: Вы не можете двигаться!
 }
-
 GodlikeBuff: {
-	DisplayName: Богоподобный
-	Description: Вы невосприимчивы ко всем прямым повреждениям
+	DisplayName: Божественная защита
+	Description: Вы невосприимчивы ко всему прямому урону
 }
-
 RestorationBuff: {
-	DisplayName: Восстановление
-	Description: Обеспечивает массовую регенерацию жизни
+	DisplayName: Востановление
+	Description: Значительное восстановление здоровья
 }
-
 HardinessBuff: {
-	DisplayName: Повышение выносливости
-	Description: +10 защиты +20% шанс блока
+	DisplayName: Выносливость
+	Description:
+		'''
+		+10 к защите
+		+20% к шансу блока
+		'''
 }
-
 HasteBuff: {
-	DisplayName: Усиление скорости
-	Description: +20% скорости передвижения\n+15% скорости атаки
+	DisplayName: Спешка
+	Description:
+		'''
+		+20% к скорости передвижения
+		+15% к скорости атаки
+		'''
 }
-
 UnstoppableBuff: {
-	DisplayName: Неудержимый бафф
-	Description: +50% к здоровью щита\nИммунитет к охлаждению
+	DisplayName: Неудержимость
+	Description:
+		'''
+		+50% к запасу здоровья щита
+		Иммунитет к эффекту «Охлаждён»
+		'''
 }
-
 FrostflameDebuff: {
-	DisplayName: Ослабление ледяного пламени
+	DisplayName: Морозное пламя
 	Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
 }
-
 SporeDebuff: {
-	DisplayName: Ослабление спор
+	DisplayName: Споры
 	Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
 }
-
 BlindedDebuff: {
-	DisplayName: Ослепленный
-	Description: Атаки имеют шанс промахнуться
+	DisplayName: Ослепление
+	Description: Атаки могут промахнуться
 }

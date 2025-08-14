@@ -1,61 +1,66 @@
-LifeStealProjectile.DisplayName: Снаряд вампиризма
+LifeStealProjectile.DisplayName: Снаряд похищения жизни
 HomingProjectile.DisplayName: Самонаводящийся снаряд
-SparklingBall.DisplayName: Искрящийся шар
-TomeProjectile.DisplayName: Снаряд из тома
-BowProjectile.DisplayName: Снаряд лука
-BowAltUseProjectile.DisplayName: Снаряд лука (альтернативное использование)
-BowDrawAnimationProjectile.DisplayName: Снаряд анимации натягивания лука
-BasicWoodenBowAnimationProjectile.DisplayName: Снаряд анимации простого деревянного лука
-WoodenBowAnimationProjectile.DisplayName: Снаряд анимации деревянного лука
-BoomerangProjectile.DisplayName: Снаряд бумеранга
-BowAnimationProjectile.DisplayName: Снаряд анимации лука
-FireStarterProjectile.DisplayName: Снаряд зажигалки
-NovaProjectile.DisplayName: Нова
-CorruptedBattleaxeProjectile.DisplayName: Снаряд искаженного боевого топора
-GuardianAngelProjectile.DisplayName: Снаряд ангела-хранителя
-GuardianAngelRay.DisplayName: Луч ангела-хранителя
-SharpenedStickThrown.DisplayName: Заостренная палка
-IronPilumThrown.DisplayName: Железный пилум
-LeadDangpaThrown.DisplayName: Свинцовый дангпа
-IronAngonThrown.DisplayName: Железный ангон
-PlatinumGlaiveThrown.DisplayName: Платиновая глефа
-
+SparklingBall.DisplayName: Сверкающий шар
+TomeProjectile.DisplayName: Снаряд тома
+BowProjectile.DisplayName: Лучный снаряд
+BowAltUseProjectile.DisplayName: Лучный снаряд (альт. режим)
+BowDrawAnimationProjectile.DisplayName: Анимация натяжения лука
+BasicWoodenBowAnimationProjectile.DisplayName: Анимация простого деревянного лука
+WoodenBowAnimationProjectile.DisplayName: Анимация деревянного лука
+BoomerangProjectile.DisplayName: Снаряд-бумеранг
+BowAnimationProjectile.DisplayName: Анимация лука
+FireStarterProjectile.DisplayName: Снаряд Разжигателя огня
+NovaProjectile.DisplayName: Новая
+CorruptedBattleaxeProjectile.DisplayName: Снаряд Осквернённой секиры
+GuardianAngelProjectile.DisplayName: Снаряд «Ангела‑хранителя»
+GuardianAngelRay.DisplayName: Луч «Ангела‑хранителя»
+SharpenedStickThrown.DisplayName: Брошенная заострённая палка
+IronPilumThrown.DisplayName: Брошенный железный пилум
+LeadDangpaThrown.DisplayName: Брошенный свинцовый дангпа
+IronAngonThrown.DisplayName: Брошенный железный ангон
+PlatinumGlaiveThrown.DisplayName: Брошенная платиновая глефа
 OwlSummon: {
 	DisplayName: Сова
-	Description: ""
+	Description:
+		'''
+		Летит к вашему курсору
+		Наносит урон при соприкосновении
+		'''
 }
-
 BatSummon: {
 	DisplayName: Летучая мышь
 	Description: "{$OwlSummon.Description}"
 }
-
 PoacherSummon: {
 	DisplayName: Браконьер
-	Description: ""
+	Description:
+		'''
+		Преследует ваш курсор
+		Прыгает к курсору, если он выше призыва
+		Наносит урон при соприкосновении
+		'''
 }
-
-GrimoireVisageEffect.DisplayName: Эффект лица гримуара
-StarlightBulwarkStar.DisplayName: Звездный бастион Звезда
-StarlightBulwarkComet.DisplayName: Звездный бастион Комета
-MoltenDangpaThrown.DisplayName: Расплавленный дангпа
-MoltenDangpaBubbles.DisplayName: Расплавленные пузыри
-BloodclotterThrown.DisplayName: Кровосгусток
-RottenboneThrown.DisplayName: Гнилая кость
-RottenboneChunks.DisplayName: Куски гнилой кости
+GrimoireVisageEffect.DisplayName: Облик Гримуара
+StarlightBulwarkStar.DisplayName: Звезда Звёздного бастиона
+StarlightBulwarkComet.DisplayName: Комета Звёздного бастиона
+MoltenDangpaThrown.DisplayName: Брошенный расплавленный дангпа
+MoltenDangpaBubbles.DisplayName: Пузырьки расплавленного
+BloodclotterThrown.DisplayName: Брошенный Сгуститель крови
+RottenboneThrown.DisplayName: Брошенная Гнилокость
+RottenboneChunks.DisplayName: Осколки Гнилокости
 CarapaceChunk.DisplayName: Кусок панциря
 ExitPortal.DisplayName: Портал выхода
-FallingSlimeProj.DisplayName: Падающая слизь
-SparklingBallProjectile.DisplayName: Искрящийся шар
+FallingSlimeProj.DisplayName: Падающий слизень
+SparklingBallProjectile.DisplayName: Сверкающий шар
 Teleportal.DisplayName: Телепортал
-FallingPusBlock.DisplayName: Падающая гноящаяся масса
-VoodooRopeProj.DisplayName: Вуду веревка
-LightBallProjectile.DisplayName: Светящийся шар
+FallingPusBlock.DisplayName: Падающий гной
+VoodooRopeProj.DisplayName: Вуду‑верёвка
+LightBallProjectile.DisplayName: Световой шар
 IcicleProjectile.DisplayName: Сосулька
-WoodenWandProjectile.DisplayName: Комок листьев
-MahoganyWandProjectile.DisplayName: "{$WoodenWandProjectile.DisplayName}"
-EbonwoodWandProjectile.DisplayName: "{$WoodenWandProjectile.DisplayName}"
-ShadewoodWandProjectile.DisplayName: "{$WoodenWandProjectile.DisplayName}"
+WoodenWandProjectile.DisplayName: Клок листвы
+MahoganyWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+EbonwoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+ShadewoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
 GemWandProjectile.DisplayName: Самоцвет
 CopperStaffProjectile.DisplayName: Аметистовая энергия
 IronStaffProjectile.DisplayName: Топазовая энергия
@@ -66,60 +71,64 @@ GoldStaffProjectile.DisplayName: Алмазная энергия
 PlatinumStaffProjectile.DisplayName: "{$GoldStaffProjectile.DisplayName}"
 StaffHeldProjectile.DisplayName: Посох
 EoCRitualProj.DisplayName: Ритуал
-EyePortal.DisplayName: Портал глаза
-EoWPortal.DisplayName: Портал пожирателя
-CrimsonMaw.DisplayName: Алый зев
-
+EyePortal.DisplayName: Портал Ока
+EoWPortal.DisplayName: Портал Пожирателя
+CrimsonMaw.DisplayName: Багровая пасть
 HornetSummon: {
 	DisplayName: Шершень
-	Description: ""
+	Description:
+		'''
+		Преследует ваш курсор
+		Стреляет снарядами в ближайшего врага
+		'''
 }
-
-QueenBeePortal.DisplayName: Портал Королевы пчел
+QueenBeePortal.DisplayName: Портал Королевы пчёл
 FallingAshBlock.DisplayName: Падающий пепел
 GeyserPredictionProjectile.DisplayName: Предсказание гейзера
 SkeletronPortal.DisplayName: Портал Скелетрона
 SkeletronRitualProj.DisplayName: Ритуал Скелетрона
-DwarvenGreatswordAltHammer.DisplayName: Дварфский великий молот
-TinyAlaric.DisplayName: Маленький Аларик
-VoidPearlThrown.DisplayName: Жемчужина пустоты (брошенная)
+DwarvenGreatswordAltHammer.DisplayName: Гномий молот‑колот
+TinyAlaric.DisplayName: Крошечный Аларик
+VoidPearlThrown.DisplayName: Брошенная Жемчужина Пустоты
 WoFPortal.DisplayName: Адский портал
 WoFRitualProj.DisplayName: Ритуал
-
 OobodopSummon: {
 	DisplayName: Подобум
-	Description: ""
+	Description:
+		'''
+		Рывком мчится к вашему курсору
+		Растёт в лаве и при попадании по врагам
+		ПКМ — взорваться, расходуя накопленную лаву
+		'''
 }
-
 ExplosionHitbox.DisplayName: Взрыв
 ExplosionHitboxFriendly.DisplayName: Взрыв
-
 DemonSummon: {
 	DisplayName: Демон
-	Description: ""
+	Description:
+		'''
+		Следует за вашим курсором
+		Стреляет различным эфирным оружием в сильнейшего ближайшего врага
+		'''
 }
-
-DemonWeapons.DisplayName: Оружие демона
+DemonWeapons.DisplayName: Демоническое оружие
 FireballProj.DisplayName: Огненный шар
-IceBoltProj.DisplayName: Ледяной заряд
-EntThorn.DisplayName: Шип Энта
-WardensBowShard.DisplayName: Осколок лука Стража
+IceBoltProj.DisplayName: Ледяная стрела
+EntThorn.DisplayName: Шип энта
+WardensBowShard.DisplayName: Осколок Лука Стража
 GroveBoulder.DisplayName: Валун рощи
-
 RunestoneBurst: {
-	DisplayName: Взрыв рунного камня
-
+	DisplayName: Всплеск рунического камня
 	DeathReasons: {
-		0: "{0} was burst apart."
-		1: "{0} was bludgeoned by magical energy."
-		2: "{0} couldn't handle the power."
+		0: "{0} разорвало в клочья."
+		1: "{0} был избит магической энергией."
+		2: "{0} не выдержал мощи."
 	}
 }
-
 FallingStick.DisplayName: Падающая палка
-FallingEntling.DisplayName: Падающий Энтлинг
-FallingBranch.DisplayName: Падающая ветка
-TinyBoulder.DisplayName: Маленький валун
+FallingEntling.DisplayName: Падающий энтёнок
+FallingBranch.DisplayName: Падающая ветвь
+TinyBoulder.DisplayName: Крошечный валун
 LargeRoots.DisplayName: Большие корни
 SawProjectile.DisplayName: Пила
 ConstantLaserProj.DisplayName: Лазер
@@ -127,31 +136,31 @@ ExplosiveTurret.DisplayName: Взрывная турель
 PincerProjectile.DisplayName: Клешня
 PrimeRocket.DisplayName: Ракета Прайма
 PrimeBomb.DisplayName: Бомба Прайма
-LaserClone.DisplayName: Клон лазера
-ShrineAoE.DisplayName: Область действия святилища
-UnstoppableAoE.DisplayName: Непреодолимое святилище
+LaserClone.DisplayName: Лазер‑двойник
+ShrineAoE.DisplayName: Святилище
+UnstoppableAoE.DisplayName: Святилище неудержимости
 GodlikeAoE.DisplayName: Божественное святилище
 DefenseAoE.DisplayName: Святилище защиты
-HasteAoE.DisplayName: Святилище поспешности
+HasteAoE.DisplayName: Святилище скорости
 RestorationAoE.DisplayName: Святилище восстановления
-BallLightning.DisplayName: Шаровой молния
+BallLightning.DisplayName: Шаровая молния
 DevourerFireball.DisplayName: Огненный шар Пожирателя
-SunsoulHead.DisplayName: Душа солнца
-SunsoulSummon.DisplayName: Звезда души солнца
+SunsoulHead.DisplayName: Солнечная душа
+SunsoulSummon.DisplayName: Звезда солнечной души
 Lightray.DisplayName: Луч света
-LightningBurst.DisplayName: Взрыв молнии
+LightningBurst.DisplayName: Всплеск молнии
 SunspotAura.DisplayName: Аура солнечного пятна
 SunDevourerDash.DisplayName: Пожиратель солнца
-WormLightningDeathFX.DisplayName: Смерть молнии червя
+WormLightningDeathFX.DisplayName: Смерть молниевого духа
 SunBlast.DisplayName: Солнечный взрыв
-BubbleshroomBubble.DisplayName: Пузырь пузырчатого гриба
-SpawnSymbols.DisplayName: Символы появления
-PrismatismAfterimage.DisplayName: Последовательное изображение призматизма
+BubbleshroomBubble.DisplayName: Пузырь пузырегриба
+SpawnSymbols.DisplayName: Символы призыва
+PrismatismAfterimage.DisplayName: Послесвечение призматизма
 MLPortal.DisplayName: Портал
-CombustionBlast.DisplayName: Взрыв горения
+CombustionBlast.DisplayName: Взрыв возгорания
 FieryPatch.DisplayName: Огненное пятно
-FesteringSporesProj.DisplayName: Проектиль гноящихся спор
+FesteringSporesProj.DisplayName: Снаряд гниющих спор
 SporeCloud.DisplayName: Облако спор
-PrecisionSpawnerProjectile.DisplayName: Спавнер
-WhipBaseProjectile.DisplayName: Базовый снаряд плети
-// AntlerShardProj.DisplayName: Antler Shard Proj
+PrecisionSpawnerProjectile.DisplayName: Порождающий
+WhipBaseProjectile.DisplayName: Базовый снаряд кнута
+AntlerShardProj.DisplayName: Снаряд «Осколок рога»

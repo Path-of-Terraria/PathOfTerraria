@@ -1,199 +1,173 @@
 Popups: {
-	Line1: Откройте книгу заданий, чтобы увидеть прогресс и этапы выполнения заданий, которые вы выполняете
+	Line1: Откройте Книгу заданий, чтобы увидеть прогресс и шаги по активным квестам.
 	Line2: Книга заданий всегда находится рядом с картой в инвентаре.
-	Line3: Также вы можете нажать {0} чтобы открыть книгу
-	NoKey: (По умолчанию - L)
-	NewQuest: Новый квест:
+	Line3: Вы также можете нажать {0}, чтобы открыть книгу.
+	NoKey: (Не назначена — по умолчанию L)
+	NewQuest: Новое задание:
 }
-
 Bring: {
-	Collect: Собирите
-	GiveItTo: и отдайте это в {0}
+	Collect: Соберите
+	GiveItTo: и отдайте {0}
 }
-
-TalkTo: Talk to {0}
-GiveThem: и дайте им:
-Exploration.Ice: Исследуйте ледяной/снежный биом ({0}%)
-Or: или
-
+TalkTo: Поговорите с {0}
+GiveThem: " и передайте им:"
+Exploration.Ice: Исследуйте биом Льда/Снега ({0}%)
+Or: " или "
 Quest: {
 	TestQuest: {
-		Name: Текстовый квест
-		Description: Используется для тестирования квестов.
+		Name: Тестовое задание
+		Description: Используется для проверки квестов.
 	}
-
 	TestQuestTwo: {
-		Name: Тест 2: Электрический Бугало
-		Description: Испытайте сложнее.
+		Name: Тест 2: Электрический буги-вуги
+		Description: Более сложная проверка.
 	}
-
 	BlacksmithStartQuest: {
 		Name: Ковка нового клинка
 		Description: ""
 		Kill.Zombies: Убейте {0} зомби
 	}
-
 	KingSlimeQuest: {
-		Name: Убейте короля слизней
+		Name: Смерть Королю
 		Description: ""
-		EnterDomain: Войдите во владения короля слизней
-		ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surprass me again. My thanks, however, are in order.
-		Kill.KingSlime: Kill the King Slime
+		EnterDomain: Войдите во владения Короля
+		ThanksDialogue: Поверить не могу… Что ж, ты справился там, где я потерпел неудачу, странник. Мне лучше вернуться к делам — ты больше не застанешь меня врасплох. Но всё же — моё спасибо тебе.
+		Kill.KingSlime: Убейте Короля слизней
 	}
-
 	HunterStartQuest: {
-		Name: Drawing the Bow
+		Name: Натягивая тетиву
 		Description: ""
-		Kill.FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
+		Kill.FloatingMisc: Убейте {0} демонических глаз, кримёр или пожирателей душ
 	}
-
 	WitchStartQuest: {
-		Name: The Ancient Art
+		Name: Древнее искусство
 		Description: ""
 	}
-
 	WizardStartQuest: {
-		Name: Magical Returnal
+		Name: Магическое возвращение
 		Description: ""
 	}
-
 	EoCQuest: {
-		Name: The Rising Omen
+		Name: Надвигающееся знамение
 		Description: ""
-		Kill.EoC: Defeat the Eye of Cthulhu
+		Kill.EoC: Победите Глаз Ктулху
 	}
-
 	EoWQuest: {
-		Name: Whispers of the Deep
+		Name: Шёпот глубин
 		Description: ""
-		MorvenRaven: Get Morven to Ravencrest
-		SmashOrbs: Smash 3 Shadow Orbs
-		KillEoW: Defeat the Eater of Worlds
+		MorvenRaven: Доставьте Морвена в Рэйвенкрист
+		SmashOrbs: Разрушьте 3 Теневых шара
+		KillEoW: Победите Пожирателя миров
 	}
-
 	BoCQuest: {
-		Name: A Heart Still Beating
+		Name: Сердце, что всё ещё бьётся
 		Description: ""
-		SmashOrb: Smash a Crimson Heart
-		EnterDomain: Enter the Brain of Cthulhu domain
-		KillBrain: Kill the Brain of Cthulhu
+		SmashOrb: Разрушьте Багровое сердце
+		EnterDomain: Войдите во владения Мозга Ктулху
+		KillBrain: Убейте Мозг Ктулху
 	}
-
 	QueenBeeQuest: {
-		Name: A Royal Adventure
+		Name: Королевское приключение
 		Description: ""
-		KillQueen: Kill the Queen Bee
+		KillQueen: Победите Королеву пчёл
 	}
-
 	DeerclopsQuest: {
-		Name: Frigid Beast
+		Name: Ледяной зверь
 		Description: ""
-		KillDeerclops: Kill Deerclops
-		// GetAntlersOrShards: Get Strange Antlers or an Antler Shard
+		KillDeerclops: Победите Оленекогтя
+		GetAntlersOrShards: Добудьте Странные рога или Осколок рога
 	}
-
 	SkeletronQuest: {
-		Name: Skeletal Remnants
+		Name: Костяные останки
 		Description: ""
-		EnterDomain: Enter Skeletron's domain
-		KillSkeletron: Kill Skeletron
+		EnterDomain: Войдите во владения Скелетрона
+		KillSkeletron: Победите Скелетрона
 	}
-
 	WoFQuest: {
-		Name: Unleashing Chaos
+		Name: Высвобождение хаоса
 		Description: ""
-		WizardStart: Hm....yes. The ground deep beneath us all shakes with a vigor, from the one they hid away. You see, long ago, a group of adventurers locked an evil into a fascimile. However, with your incredible strength slaying all these beasts around the world, that power seems to have crept its way to that locked evil. Which is to say, we must kill it. Talk to Thrain, Morgana and Elara as soon as you can. They understand, and will give you weapons. Take this, and godspeed. You can thank Morgana for this, too. Just...don't ask about it too much. Busy days here!
-		ThrainHelp: Oh. So it is. Here...I've been preparing for a day like this, hopefully it's up to your standard. Alaric helped with this, it holds the memories of my battles. Enjoy. Good luck.
-		ElaraHelp: Take care, and take this. I'm no fancy weaponsmith, but Thrain helped with it. Keeps it simple. And - the eyes are weakest.
-		MorganaHelp: Oh...? Bahaha! The time comes! Here you are, a veritable buffet of Grimoire materials! Elara helped with these beings...quite the knowledgable lass, she is! Enjoy your boons! Bahahaha!
-		WizardContinue: Here you are. Well, take these. These are...yes...explosive, but it's just how it works. I swear. Throw these upon the ashes of Hell to open a portal to the place that the Wall was confined to. Note - you will have one chance to kill it. No mistakes. And we don't know what happens upon the wall's death. Much is uncertain, aside from that it must die. Good luck. If you need any more, I can summon some...for a small price! Sorry! Commerce never hides!
-		KillWall: Kill the Wall of Flesh
-		WizardFinish: You return! We see many changes, but the earth won't shake and shutter under us any longer. Prepare yourself for the future, as there is much to learn. Especially for myself, for I have...a lot of stuff to try out.
+		WizardStart: Хм… да. Земля глубоко под нами дрожит, и источник — тот, кого когда-то заточили. Давно, группа авантюристов заперла зло в подобии тела. Но с твоей невероятной силой, что сокрушает чудовищ по всему миру, эта сила, похоже, просочилась обратно к заточенному злу. Иными словами — мы должны его уничтожить. Поговори с Трейном, Морганой и Эларой как можно скорее. Они в курсе и дадут тебе оружие. Вот, держи, и да сопутствует удача. Можешь поблагодарить и Моргану — только… не расспрашивай слишком много. Тут сейчас дни напряжённые!
+		ThrainHelp: Вот как… Ну что ж. Вот, я готовился к такому дню, надеюсь, это по твоему вкусу. Аларик помог — в этом оружии память моих битв. Пользуйся. Удачи.
+		ElaraHelp: Береги себя и возьми это. Я не великий кузнец, но Трейн помог в работе. Всё просто. И — помни, глаза уязвимее всего.
+		MorganaHelp: О...? Бхахаха! Время пришло! Вот тебе целый пир из материалов для Гримуара! Элара помогла достать этих созданий… знатная дама она! Наслаждайся дарами! Бхахахаха!
+		WizardContinue: Вот, держи. Это… да… взрывное, но так оно и должно работать. Честно! Брось это на пепел Преисподней, чтобы открыть портал туда, где заточена Стена Плоти. Запомни — шанс будет только один. Ошибок быть не должно. И неизвестно, что произойдёт после её гибели. Одно ясно — она обязана умереть. Удачи. Если понадобится ещё — смогу сделать… за скромную плату! Прости, но торговля есть торговля!
+		KillWall: Убейте Стену Плоти
+		WizardFinish: Ты вернулся! Земля изменилась, но она больше не будет дрожать и содрогаться у нас под ногами. Приготовься к будущему — впереди ещё много тайн. Особенно для меня, ведь у меня столько всего для экспериментов.
 	}
-
 	FirstQuest: {
-		Name: Entering Ravencrest
+		Name: Вход в Рэйвенкрист
 		Description: ""
-		ApproachEntrance: Approach the entrance to Ravencrest
-		EnterRavencrest: Enter Ravencrest
+		ApproachEntrance: Подойдите ко входу в Рэйвенкрист
+		EnterRavencrest: Войдите в Рэйвенкрист
 	}
-
 	QueenSlimeQuest: {
-		// Name: Regal Regime
-		// Description: ""
-		// Tiers: Complete 10 Tier 1 Explorable maps ({1}/10)
-		// EnterDomain: Enter the Queen Slime's domain
-		// Boss: Defeat the Queen Slime
+	Name: Королевский режим
+	Description: ""
+	Tiers: Выполните 10 Исследуемых карт 1-го ранга ({1}/10)
+	EnterDomain: Войдите во владения Королевы слизней
+	Boss: Победите Королеву слизней
 	}
-
 	TwinsQuest: {
-		// Name: Twin Terrors
-		// Description: ""
-		// Tiers: Complete 10 Tier 2 Explorable maps ({1}/10)
-		// EnterDomain: Enter the Twin's domain
-		// Boss: Defeat the Twins
+		Name: Двойной ужас
+		Description: ""
+		Tiers: Выполните 10 Исследуемых карт 2-го ранга ({1}/10)
+		EnterDomain: Войдите во владения Близнецов
+		Boss: Победите Близнецов
 	}
-
 	DestroyerQuest: {
-		// Name: Metal Eartheater
-		// Description: ""
-		// Tiers: Complete 10 Tier 3 Explorable maps ({1}/10)
-		// EnterDomain: Enter the Destroyer's domain
-		// Boss: Defeat the Destroyer
+		Name: Металлический пожиратель земли
+		Description: ""
+		Tiers: Выполните 10 Исследуемых карт 3-го ранга ({1}/10)
+		EnterDomain: Войдите во владения Разрушителя
+		Boss: Победите Разрушителя
 	}
-
 	SkelePrimeQuest: {
-		// Name: Metal Bones
-		// Description: ""
-		// Tiers: Complete 10 Tier 4 Explorable maps ({1}/10)
-		// EnterDomain: Enter Skeletron Prime's domain
-		// Boss: Defeat Skeletron Prime
+		Name: Костяной механизм
+		Description: ""
+		Tiers: Выполните 10 Исследуемых карт 4-го ранга ({1}/10)
+		EnterDomain: Войдите во владения Скелетрона Прайма
+		Boss: Победите Скелетрона Прайма
 	}
-
 	PlanteraQuest: {
-		// Name: Ravenous Bloom
-		// Description: ""
-		// Tiers: Complete 10 Tier 5 Explorable maps ({1}/10)
-		// EnterDomain: Enter Plantera's domain
-		// Boss: Defeat Plantera
+		Name: Ненасытный цветок
+		Description: ""
+		Tiers: Выполните 10 Исследуемых карт 5-го ранга ({1}/10)
+		EnterDomain: Войдите во владения Плантерры
+		Boss: Победите Плантерру
 	}
-
 	GolemQuest: {
-		// Name: Ancient Design
-		// Description: ""
-		// Tiers: Complete 10 Tier 6 Explorable maps ({1}/10)
-		// EnterDomain: Enter Golem's domain
-		// Boss: Defeat Golem
+		Name: Древний замысел
+		Description: ""
+		Tiers: Выполните 10 Исследуемых карт 6-го ранга ({1}/10)
+		EnterDomain: Войдите во владения Голема
+		Boss: Победите Голема
 	}
-
 	FishronQuest: {
-		// Name: Mad Pig...ron
-		// Description: ""
-		// Tiers: Complete 10 Tier 7 Explorable maps ({1}/10)
-		// EnterDomain: Enter Duke Fishron's domain
-		// Boss: Defeat Duke Fishron
+		Name: Безумный свин...рон
+		Description: ""
+		Tiers: Выполните 10 Исследуемых карт 7-го ранга ({1}/10)
+		EnterDomain: Войдите во владения Герцога Рыбсона
+		Boss: Победите Герцога Рыбсона
 	}
-
 	EoLQuest: {
-		// Name: Holy Absolution
-		// Description: ""
-		// Tiers: Complete 10 Tier 8 Explorable maps ({1}/10)
-		// EnterDomain: Enter the Empress of Light's domain
-		// Boss: Defeat the Empress of Light
+		Name: Святое отпущение
+		Description: ""
+		Tiers: Выполните 10 Исследуемых карт 8-го ранга ({1}/10)
+		EnterDomain: Войдите во владения Императрицы света
+		Boss: Победите Императрицу света
 	}
-
 	CultistQuest: {
-		// Name: Lunar Leader
-		// Description: ""
-		// Tiers: Complete 10 Tier 9 Explorable maps ({1}/10)
-		// EnterDomain: Enter the Lunatic Cultist's domain
-		// Boss: Defeat the Lunatic Cultist
+		Name: Лунный вождь
+		Description: ""
+		Tiers: Выполните 10 Исследуемых карт 9-го ранга ({1}/10)
+		EnterDomain: Войдите во владения Лунного культиста
+		Boss: Победите Лунного культиста
+	}
+	MoonLordQuest: {
+		Name: Конец
+		Description: ""
+		EnterDomain: Войдите во владения Лунного лорда
+		Boss: Победите Лунного лорда
 	}
 
-	MoonLordQuest: {
-		// Name: The Ending
-		// Description: ""
-		// EnterDomain: Enter the Moon Lords's domain
-		// Boss: Defeat the Moon Lord
-	}
 }

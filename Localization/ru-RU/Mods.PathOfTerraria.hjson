@@ -1,60 +1,52 @@
 Keybinds: {
-	UseSkill1.DisplayName: Использовать 1 способность
-	UseSkill2.DisplayName: Использовать 2 способность
-	UseSkill3.DisplayName: Использовать 3 способность
-	UseSkill4.DisplayName: Использовать 4 способность
-	UseSkill5.DisplayName: Использовать 5 способность
-	CopyItemInfo.DisplayName: Копировать информацию о товаре
-	StatUIKey.DisplayName: Переключить страницу статистики
-	GearSwap.DisplayName: Обмен оружием
-	QuestUIKey.DisplayName: Ключ квестового интерфейса
-	DropTableKey.DisplayName: Клавиша сброса таблицы
-	PassiveTreeUIKey.DisplayName: Ключ пользовательского интерфейса пассивного дерева
+	UseSkill1.DisplayName: Использовать навык 1
+	UseSkill2.DisplayName: Использовать навык 2
+	UseSkill3.DisplayName: Использовать навык 3
+	UseSkill4.DisplayName: Использовать навык 4
+	UseSkill5.DisplayName: Использовать навык 5
+	CopyItemInfo.DisplayName: Копировать информацию о предмете
+	StatUIKey.DisplayName: Показать/скрыть страницу характеристик
+	GearSwap.DisplayName: Смена оружия
+	QuestUIKey.DisplayName: Окно заданий
+	DropTableKey.DisplayName: Таблица трофеев
+	PassiveTreeUIKey.DisplayName: Древо пассивных навыков
 }
-
 GUI: {
-	PassiveTreeTab: Пассивные
+	PassiveTreeTab: Пассивки
 	SkillTreeTab: Навыки
-	QuestsAvailableTab: Доступный
-	QuestsCompletedTab: Завершенный
-	PlayerStatsTab: Статистика
+	QuestsAvailableTab: Доступные
+	QuestsCompletedTab: Завершённые
+	PlayerStatsTab: Характеристики
 }
-
 Generation: {
-	RavencrestEntrancePass: Открытие Ravencrest
+	RavencrestEntrancePass: Вход в Рэйвенкрист
 	FrozenRuinPass: ""
 }
-
 Tiles: {
-	ArcaneObeliskTile.MapEntry: Плитка «Тайный обелиск»
-	MechChest.MapEntry: Механический корпус
+	ArcaneObeliskTile.MapEntry: Таинственный обелиск
+	MechChest.MapEntry: Механический контейнер
 }
-
 Waypoints: {
-	RavencrestWaypoint.DisplayName: Гребень Ворона
+	RavencrestWaypoint.DisplayName: Рэйвенкрист
 	HomeWaypoint.DisplayName: Дом
 }
-
 Condition: {
 	BossDowned: {
 		Drop: Выпадает только после победы над {0}
-		AnyMech: Любой Мех Босс
-		The: то
+		AnyMech: Любой механический босс
+		The: " "
 	}
 }
-
 TooltipNotices: {
-	NoSwap: (Нечего обменивать)
-	Swap: Если {0} оборудован:
-	Shift: (Удерживайте клавишу Shift, чтобы сравнить статистику)
+	NoSwap: (Нечего сменить)
+	Swap: Если экипировано {0}:
+	Shift: (Зажмите Shift, чтобы сравнить характеристики)
 }
-
 Biomes: {
 	RavencrestBiome: {
-		DisplayName: Гребень Ворона
-		TownNPCDialogueName: Гребень Ворона
+		DisplayName: Рэйвенкрист
+		TownNPCDialogueName: Рэйвенкрист
 	}
-
 	MechBiome: {
 		DisplayName: Механизмы
 		TownNPCDialogueName: Механизмы
