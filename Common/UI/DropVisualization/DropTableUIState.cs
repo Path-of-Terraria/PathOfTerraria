@@ -49,12 +49,13 @@ internal class DropResult(int count)
 
 	public void IncrementRarityCount(ItemRarity rarity)
 	{
-		if (!CountsPerRarity.ContainsKey(rarity))
+		if (!CountsPerRarity.TryGetValue(rarity, out int value))
 		{
-			CountsPerRarity.Add(rarity, 0);
+			value = 0;
+			CountsPerRarity.Add(rarity, value);
 		}
 
-		CountsPerRarity[rarity]++;
+		CountsPerRarity[rarity] = ++value;
 	}
 }
 

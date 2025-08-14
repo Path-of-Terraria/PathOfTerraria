@@ -204,6 +204,7 @@ WizardNPC: {
 		Common3: Ah! I almost turned you into a mole the size of a god. Beware my strength!
 		Quest: Hm. You saw the damage everywhere. Alas! My powers cannot reconstitute the world. I'm far busier on...my...projects. Yes! Alas, I have something more pressing. A goblin burglar took one of my tomes. Powerful as it is, it has to be harnessed by a strong wizard. I suspect they are looking through the tome to learn its secrets...so with haste, return it! I will grant you powers beyond imagination. I will be here, individually placing books on shelves with the strength of magic.
 		Quest2: Aha! Thank you kindly. Your kindness will be rewarded greatly! My powers will push you forward at all times. Here, take a mote of power; a Nova is but a portion of my strength! As for the Library...my strength renewed, it will be repaired by the time you return! Books organized like you've never seen before! Behold it and weep...soon!
+		GiveQSQuest: Hm? Ah, yes. You've got some adventures, haven't you? I cannot simply place you in success - you must find it for yourself! Yes! That's a good reason. Here's a small quest to find your progress. You will be lead all over the world, and perhaps reach even a modicum of my power!
 	}
 
 	BubbleDialogue: {

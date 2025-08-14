@@ -432,7 +432,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 			{
 				string key = "Announcement.HasAwoken";
 				
-				NotificationUtils.ShowNotification(key, Colors.RarityDarkPurple);
+				NotificationUtils.ShowNotification(key, Colors.RarityDarkPurple, Lang.GetNPCName(NPCID.DukeFishron));
 
 				List<Player> players = [];
 

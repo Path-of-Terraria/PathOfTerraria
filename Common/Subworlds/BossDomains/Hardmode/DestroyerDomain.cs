@@ -34,7 +34,6 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 	private static bool BossSpawned = false;
 	private static bool ExitSpawned = false;
-	private static Rectangle Arena = Rectangle.Empty;
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new FlatWorldPass(FloorY, true, null, TileID.TinPlating, ModContent.WallType<TinPlatingUnsafe>()),
@@ -407,55 +406,32 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 		if (!BossSpawned)
 		{
-			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
-			HashSet<int> who = [];
-
-			if (canSpawn)
+			if (NPC.AnyNPCs(NPCID.TheDestroyer))
 			{
-				foreach (Player player in Main.ActivePlayers)
-				{
-					if (!Arena.Intersects(player.Hitbox))
-					{
-						canSpawn = false;
-						break;
-					}
-					else
-					{
-						who.Add(player.whoAmI);
-					}
-				}
-			}
-
-			if (canSpawn && Main.CurrentFrameFlags.ActivePlayersCount > 0 && who.Count > 0)
-			{
-				int plr = Main.rand.Next([.. who]);
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				
-				int npc = NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 25, NPCID.SkeletronPrime);
-				Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
-
-				Main.spawnTileX = (int)Arena.Center().X / 16;
-				Main.spawnTileY = (int)Arena.Center().Y / 16;
-
-				if (Main.netMode == NetmodeID.Server)
-				{
-					NetMessage.SendData(MessageID.WorldData);
-					NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16, 20, 1);
-				}
-
 				BossSpawned = true;
 			}
 		}
 		else
 		{
-			if (!NPC.AnyNPCs(NPCID.SkeletronPrime) && !ExitSpawned)
+			if (!NPC.AnyNPCs(NPCID.TheDestroyer) && !ExitSpawned)
 			{
 				BossTracker.AddDowned(NPCID.TheDestroyer, false, true);
 
 				ExitSpawned = true;
 
+				HashSet<Player> players = [];
+
+				foreach (Player plr in Main.ActivePlayers)
+				{
+					if (!plr.dead)
+					{
+						players.Add(plr);
+					}
+				}
+
 				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Projectile.NewProjectile(src, Arena.Center() - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+				Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
+				Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 			}
 		}
 	}

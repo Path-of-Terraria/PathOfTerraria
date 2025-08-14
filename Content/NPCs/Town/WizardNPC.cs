@@ -16,6 +16,7 @@ using NPCUtils;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -136,6 +137,11 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 		button2 = !QuestUnlockManager.CanStartQuest<WizardStartQuest>() ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+
+		if (button2 == "" && Main.hardMode && Quest.GetLocalPlayerInstance<QueenSlimeQuest>().CanBeStarted)
+		{
+			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -146,15 +152,29 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		}
 		else
 		{
-			Main.npcChatCornerItem = ModContent.ItemType<TomeOfTheElders>();
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
+			if (QuestUnlockManager.CanStartQuest<WizardStartQuest>())
+			{
+				Main.npcChatCornerItem = ModContent.ItemType<TomeOfTheElders>();
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
+			}
+			else
+			{
+				Main.npcChatText = this.GetLocalizedValue("Dialogue.GiveQSQuest");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>();
+			}
 		}
 	}
 
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest = Quest.GetLocalPlayerInstance<WizardStartQuest>();
+
+		if (quest.Completed && Main.hardMode && Quest.GetLocalPlayerInstance<QueenSlimeQuest>().CanBeStarted)
+		{
+			quest = Quest.GetLocalPlayerInstance<QueenSlimeQuest>();
+		}
+
 		return !quest.Completed;
 	}
 }
