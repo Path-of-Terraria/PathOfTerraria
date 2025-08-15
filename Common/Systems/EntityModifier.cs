@@ -81,7 +81,7 @@ public partial class EntityModifier : EntityModifierSegment
 		player.manaRegen = (int)ManaRegen.ApplyTo(player.manaRegen); // dont know if this is the right value
 		player.statDefense += (int)Defense.ApplyTo((int)player.statDefense) - player.statDefense;
 
-		player.endurance *= (int)DamageReduction.ApplyTo(player.endurance); // i think this is right..?
+		player.endurance *= DamageReduction.ApplyTo(player.endurance); // i think this is right..?
 		player.moveSpeed = MovementSpeed.ApplyTo(player.moveSpeed);
 		player.GetDamage(DamageClass.Generic) = player.GetDamage(DamageClass.Generic).CombineWith(Damage);
 		player.GetAttackSpeed(DamageClass.Generic) = AttackSpeed.ApplyTo(player.GetAttackSpeed(DamageClass.Generic));

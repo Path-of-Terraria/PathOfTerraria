@@ -19,7 +19,7 @@ internal class EnduranceItemAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.DamageReduction.Base += Value;
+		modifier.DamageReduction.Base += Value / 100f;
 	}
 }
 

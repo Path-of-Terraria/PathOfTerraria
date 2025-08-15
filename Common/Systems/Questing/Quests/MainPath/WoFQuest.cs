@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
@@ -67,7 +69,7 @@ internal class WoFQuest : Quest
 					}
 				}),
 			new ConditionCheck(_ => Main.hardMode, 1, this.GetLocalization("KillWall")),
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish")),
+			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish"), onSuccess: _ => Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>()),
 		];
 	}
 

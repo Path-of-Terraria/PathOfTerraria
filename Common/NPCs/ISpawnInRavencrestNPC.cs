@@ -3,7 +3,7 @@
 namespace PathOfTerraria.Common.NPCs;
 
 /// <summary>
-/// Spawns the given NPC at <see cref="TileSpawn"/> when Ravencrest is first generated. Otherwise, does nothing.
+/// Spawns the given NPC at <see cref="TileSpawn"/> in Ravencrest.
 /// </summary>
 internal interface ISpawnInRavencrestNPC : ILoadable
 {
@@ -12,10 +12,10 @@ internal interface ISpawnInRavencrestNPC : ILoadable
 
 	/// <summary>
 	/// Whether this NPC can spawn. Useful for characters that can spawn in Ravencrest, but only under specific conditions.<br/>
-	/// By default, only spawns NPCs during worldgen, and not a duplicate just in case.
+	/// By default, only spawns NPCs during worldgen and respawning logic, as long as there is no duplicate NPC.
 	/// </summary>
-	public bool CanSpawn(bool worldGen, bool alreadyExists)
+	public bool CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
 	{
-		return worldGen && !alreadyExists;
+		return timeframe is NPCSpawnTimeframe.WorldGen or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists;
 	}
 }

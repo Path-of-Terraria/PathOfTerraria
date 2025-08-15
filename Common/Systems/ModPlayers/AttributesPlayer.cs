@@ -14,7 +14,7 @@ public class AttributesPlayer : ModPlayer
 	{
 		// Apply buffs
 		Player.statLifeMax2 += LifeBoost;
-		Player.GetAttackSpeed(DamageClass.Melee) += UseSpeedBoost;
+		Player.GetAttackSpeed(DamageClass.Generic) += UseSpeedBoost;
 		Player.statManaMax2 += ManaBoost;
 		
 		// Reset

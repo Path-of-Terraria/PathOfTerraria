@@ -26,6 +26,9 @@ public abstract class Quest : ModType, ILocalizedModType
 		? QuestMarkerType.QuestComplete
 		: QuestMarkerType.QuestPending;
 
+	/// <summary>
+	/// Checks if the quest is both inactive and not completed.
+	/// </summary>
 	public bool CanBeStarted => !Completed && !Active;
 
 	public string LocalizationCategory => $"Quests.Quest";

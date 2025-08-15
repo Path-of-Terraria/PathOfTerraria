@@ -8,6 +8,7 @@ public abstract class Amulet : Gear
 	
 	public override void SetDefaults()
 	{
+		base.SetDefaults();
 		Item.DefaultToAccessory();
 
 		PoTInstanceItemData data = this.GetInstanceData();

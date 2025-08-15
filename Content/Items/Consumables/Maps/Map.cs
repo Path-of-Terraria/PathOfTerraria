@@ -108,9 +108,15 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 			return 0;
 		}
 
+		// Return 1 if we're post-WoF due to the gap of 45-50 in the formula below.
+		if (area >= 45 && area <= 48)
+		{
+			return 1;
+		}
+
 		// area is adjusted by 48 instead of 50 to increase the level by 1 per stage;
-		// i.e. a level 50 area gives a tier 1 map, which gives a level 52 area...
-		return Math.Clamp((area - 48) / 2, 0, 11);
+		// i.e. a level 50 area gives a tier 1 map, which gives a level 52 area, which gives a tier 2...
+		return Math.Clamp((area - 48) / 2, 0, 11) + 1;
 	}
 
 	/// <summary>

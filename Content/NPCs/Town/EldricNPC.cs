@@ -26,9 +26,9 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.Structures["Observatory"].Position.ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
-	bool ISpawnInRavencrestNPC.CanSpawn(bool worldGen, bool alreadyExists)
+	bool ISpawnInRavencrestNPC.CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
 	{
-		return (BossTracker.TotalBossesDowned.Contains(NPCID.EyeofCthulhu) || NPC.downedBoss1) && !worldGen && !alreadyExists;
+		return (BossTracker.TotalBossesDowned.Contains(NPCID.KingSlime) || NPC.downedSlimeKing) && timeframe is NPCSpawnTimeframe.WorldGen or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists;
 	}
 
 	public override void SetStaticDefaults()

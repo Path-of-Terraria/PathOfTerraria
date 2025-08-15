@@ -206,9 +206,23 @@ partial class PoTGlobalItem
 
 		if (item.damage > 0)
 		{
-			// TODO: Slice first space in damage type display name...
+			Player player = Main.LocalPlayer;
+    
+			// Get the weapon's damage type
+			DamageClass damageClass = item.DamageType;
+    
+			// Calculate the actual damage the player would deal with this weapon
+			StatModifier damage = player.GetTotalDamage(damageClass);
+			int baseDamage = item.damage;
+			
+			float finalDamage = damage.ApplyTo(baseDamage);
+    
+			//15% var
+			float minDamage = finalDamage * 0.85f;
+			float maxDamage = finalDamage * 1.15f;
+    
 			string highlightNumbers = HighlightNumbers(
-				$"[{Math.Round(item.damage * 0.85f, 2)}-{Math.Round(item.damage * 1.15f, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})",
+				$"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})",
 				baseColor: "DDDDDD");
 			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
 			AddNewTooltipLine(item, tooltips, damageLine);
@@ -216,14 +230,27 @@ partial class PoTGlobalItem
 		
 		if (item.useTime > 0) 
 		{
+			//We want to ensure default attack speed is not shown on any of the below gear/items.
 			if (data.ItemType != ItemType.Helmet && 
 			    data.ItemType != ItemType.Chestplate && 
 			    data.ItemType != ItemType.Leggings && 
 			    data.ItemType != ItemType.Ring && 
 			    data.ItemType != ItemType.Amulet &&
-			    data.ItemType != ItemType.Accessories)
+			    data.ItemType != ItemType.Accessories &&
+			    data.ItemType != ItemType.Map &&
+			    data.ItemType != ItemType.Shield &&
+			    item.wingSlot <= 0)
 			{
-				float aps = 60f / item.useTime;
+				Player player = Main.LocalPlayer;
+				// Get the player's attack speed multiplier
+				float useTimeMultiplier = player.GetTotalAttackSpeed(item.DamageType);
+		
+				// Calculate effective use time with player bonuses
+				float effectiveUseTime = item.useTime / useTimeMultiplier;
+		
+				// Calculate attacks per second with bonuses
+				float aps = 60f / effectiveUseTime;
+
 				aps = (float) Math.Round(aps, 2);
 				string apsStr = aps.ToString("0.00");
 				string localizeString = item.DamageType == DamageClass.Magic ? "CastSpeed" : "AttackSpeed";
@@ -231,6 +258,24 @@ partial class PoTGlobalItem
 				AddNewTooltipLine(item, tooltips, attackSpeed);
 			}
 		}
+		
+		// Add weapon critical strike chance
+		if (item.damage > 0 && !item.accessory)
+		{
+			Player player = Main.LocalPlayer;
+        
+			// Calculate the actual crit chance for this weapon
+			//(I dont think we are changing base crit of weapons, but this fool proofs the future if we plan to.)
+			float baseCritChance = item.crit;
+			float playerCritChance = player.GetTotalCritChance(item.DamageType);
+			float totalCritChance = baseCritChance + playerCritChance;
+        
+			// Add the tooltip line
+			var critLine = new TooltipLine(Mod, "CriticalStrikeChance",$"[i:{ItemID.SilverBullet}] [{totalCritChance:F1}%] Critical Strike Chance");
+
+			AddNewTooltipLine(item, tooltips, critLine);;
+		}
+
 
 		
 		if (item.mana > 0)
