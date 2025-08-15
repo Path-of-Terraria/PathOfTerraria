@@ -8,10 +8,8 @@ public class AvailablePassivePointsText
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
 		
-		spriteBatch.Draw(tex, position, null, Color.White, 0, tex.Size() / 2f, 1, 0,
-			0);
-		Utils.DrawBorderStringBig(spriteBatch, $"{points}", position,
-			points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
+		spriteBatch.Draw(tex, position, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+		Utils.DrawBorderStringBig(spriteBatch, $"{points}", position, points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
 		Utils.DrawBorderStringBig(spriteBatch, Language.GetTextValue("Mods.PathOfTerraria.UI.PointsRemaining"),
 			position + new Vector2(138, 0), Color.White, 0.6f, 0.5f, 0.35f);
 	}
