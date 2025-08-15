@@ -17,12 +17,16 @@ public class MapDevice : ModItem
 	public override void AddRecipes()
 	{
 		CreateRecipe()
-			.AddIngredient(ItemID.IronBar, 5)
+			.AddRecipeGroup("IronBar", 5)
+			.AddIngredient(ItemID.GoldBar, 5)
+			.AddIngredient(ItemID.Ruby, 1)
 			.AddTile(TileID.WorkBenches)
 			.Register();
 		
 		CreateRecipe()
-			.AddIngredient(ItemID.LeadBar, 5)
+			.AddRecipeGroup("IronBar", 5)
+			.AddIngredient(ItemID.PlatinumBar, 5)
+			.AddIngredient(ItemID.Ruby, 1)
 			.AddTile(TileID.WorkBenches)
 			.Register();
 	}
