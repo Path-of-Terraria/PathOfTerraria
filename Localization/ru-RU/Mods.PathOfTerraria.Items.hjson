@@ -1155,3 +1155,8 @@ SapphireRing: {
 	// DisplayName: Sapphire Ring
 	// Tooltip: ""
 }
+
+EightAllianceStride: {
+	// DisplayName: Eight Alliance Stride
+	// Tooltip: ""
+}
