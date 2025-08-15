@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.BlockSystem;
+using PathOfTerraria.Common.Systems.Charges;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -22,12 +23,22 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		private readonly LocalizedText hover = null;
 
 		public PlayerStatUI(LocalizedText text, Func<Player, string> getValue, float scale = 1f, bool big = false, bool noColon = false, 
-			LocalizedText hover = null) : base("", scale, big)
+			LocalizedText hover = null, bool isHeader = false) : base("", scale, big)
 		{
 			this.text = text;
 			this.getValue = getValue;
 			this.noColon = noColon;
 			this.hover = hover;
+			
+			if (isHeader)
+			{
+				this.TextColor = Color.Gold;
+				scale = Math.Max(scale, 1.2f);
+				noColon = true; // Headers shouldn't have colons
+        
+				this.MarginTop = 10;
+			}
+
 
 			Slot = SlotNumber++;
 			HAlign = 0.5f;
@@ -114,6 +125,8 @@ internal class PlayerStatInnerPanel : SmartUiElement
 
 		list.Add(new UIElement() { Height = StyleDimension.FromPixels(4) }); // Stops the name text from being cut off
 		list.Add(new PlayerStatUI(LocalizedText.Empty, player => player.name, 0.8f, true, true));
+		
+		list.Add(new PlayerStatUI(GetLocalization("CharacterHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(GetLocalization("Level"), player => player.GetModPlayer<ExpModPlayer>().Level.ToString()));
 		list.Add(new PlayerStatUI(GetLocalization("Experience"), player =>
 		{
@@ -121,6 +134,9 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			float expPercent = expPlayer.Exp / (float)expPlayer.NextLevel * 100;
 			return $"{expPlayer.Exp}/{expPlayer.NextLevel} ({expPercent:#0.##}%)";
 		}));
+		
+		// Defense
+		list.Add(new PlayerStatUI(GetLocalization("DefenseHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(GetLocalization("Life"), player =>
 		{
 			float lifePercent = Main.LocalPlayer.statLife / Main.LocalPlayer.statLifeMax2 * 100;
@@ -131,6 +147,32 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			float manaPercent = Main.LocalPlayer.statMana / Main.LocalPlayer.statManaMax * 100;
 			return $"{Main.LocalPlayer.statMana}/{Main.LocalPlayer.statManaMax2} ({manaPercent:#0.##}%)";
 		}));
+		list.Add(new PlayerStatUI(GetLocalization("DamageReduction"), player => $"{player.endurance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("BlockCooldown"), player => $"{player.GetModPlayer<BlockPlayer>().BlockCooldown / 60:#0.##}s"));
+		list.Add(new PlayerStatUI(GetLocalization("FireResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().FireResistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("ColdResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().ColdResistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().LightningResistance * 100:#0.##}%"));
+		// Offense  
+		list.Add(new PlayerStatUI(GetLocalization("OffenseHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(GetLocalization("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
+		
+		// Attributes
+		list.Add(new PlayerStatUI(GetLocalization("AttributesHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(GetLocalization("Strength"), player => $"{player.GetModPlayer<AttributesPlayer>().Strength:#0.##}", hover: GetHelp("Strength")));
+		list.Add(new PlayerStatUI(GetLocalization("Dexterity"), player => $"{player.GetModPlayer<AttributesPlayer>().Dexterity:#0.##}", hover: GetHelp("Dexterity")));
+		list.Add(new PlayerStatUI(GetLocalization("Intelligence"), player => $"{player.GetModPlayer<AttributesPlayer>().Intelligence:#0.##}", hover: GetHelp("Intelligence")));
+		
+		// Charges
+		list.Add(new PlayerStatUI(GetLocalization("ChargesHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(GetLocalization("FrenzyChargeChance"), player => $"{player.GetModPlayer<FrenzyChargePlayer>().ChargeGainChance:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("PowerChargeChance"), player => $"{player.GetModPlayer<PowerChargePlayer>().ChargeGainChance:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("EnduranceChargeChance"), player => $"{player.GetModPlayer<EnduranceChargePlayer>().ChargeGainChance:#0.##}%"));
+		
+		// Misc
+		list.Add(new PlayerStatUI(GetLocalization("MiscHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(GetLocalization("MaxMinions"), player => $"{player.maxMinions.ToString()}"));
 		list.Add(new PlayerStatUI(GetLocalization("HealthPotions"), player =>
 		{
 			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
@@ -141,17 +183,6 @@ internal class PlayerStatInnerPanel : SmartUiElement
 			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 			return $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}";
 		}));
-		list.Add(new PlayerStatUI(GetLocalization("DamageReduction"), player => $"{player.endurance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("BlockCooldown"), player => $"{player.GetModPlayer<BlockPlayer>().BlockCooldown / 60:#0.##}s"));
-		list.Add(new PlayerStatUI(GetLocalization("MaxMinions"), player => $"{player.maxMinions.ToString()}"));
-		list.Add(new PlayerStatUI(GetLocalization("Strength"), player => $"{player.GetModPlayer<AttributesPlayer>().Strength:#0.##}", hover: GetHelp("Strength")));
-		list.Add(new PlayerStatUI(GetLocalization("Dexterity"), player => $"{player.GetModPlayer<AttributesPlayer>().Dexterity:#0.##}", hover: GetHelp("Dexterity")));
-		list.Add(new PlayerStatUI(GetLocalization("Intelligence"), player => $"{player.GetModPlayer<AttributesPlayer>().Intelligence:#0.##}", hover: GetHelp("Intelligence")));
-		list.Add(new PlayerStatUI(GetLocalization("FireResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().FireResistance * 100:#0.##}"));
-		list.Add(new PlayerStatUI(GetLocalization("ColdResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().ColdResistance * 100:#0.##}"));
-		list.Add(new PlayerStatUI(GetLocalization("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().LightningResistance * 100:#0.##}"));
 
 
 		static LocalizedText GetLocalization(string type)

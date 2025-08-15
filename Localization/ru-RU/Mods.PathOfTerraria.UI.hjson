@@ -29,23 +29,33 @@ BaseDamage: Базовый урон: {0}
 Lives: оставшихся жизней
 
 StatUI: {
+	// CharacterHeader: Progression
 	Level: Уровень
 	Experience: Опыт
+	// DefenseHeader: Defense
 	Life: Жизнь
 	Mana: Мана
-	HealthPotions: Зелья здоровья
-	ManaPotions: Зелья маны
 	DamageReduction: Снижение урона
 	BlockChance: Шанс блокировки
 	MaxBlock: Максимальный шанс блокировки
 	BlockCooldown: Перезарядка блокировки
-	// MaxMinions: Maximum Minions
-	Strength: Сила
-	Dexterity: Ловкость
-	Intelligence: Интеллект
 	FireResistance: Сопротивление огню
 	ColdResistance: Сопротивление холоду
 	LightningResistance: Сопротивление молнии
+	// OffenseHeader: Offense
+	// CriticalChance: Critical Strike Chance
+	// AttributesHeader: Attributes
+	Strength: Сила
+	Dexterity: Ловкость
+	Intelligence: Интеллект
+	// ChargesHeader: Charges
+	// FrenzyChargeChance: Frenzy Charge Chance On Kill
+	// PowerChargeChance: Power Charge Chance On Kill
+	// EnduranceChargeChance: Endurance Charge Chance On Kill
+	// MiscHeader: Misc
+	// MaxMinions: Maximum Minions
+	HealthPotions: Зелья здоровья
+	ManaPotions: Зелья маны
 
 	Help: {
 		Strength: Предоставляет 5 дополнительных очков здоровья на каждые 10 очков

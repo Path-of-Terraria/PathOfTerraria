@@ -89,3 +89,18 @@ BlindedDebuff: {
 	DisplayName: Aveugle
 	Description: "Les attaques ont une chance de rater "
 }
+
+FrenzyChargeBuff: {
+	// DisplayName: Frenzy Charge Buff
+	// Description: Mods.PathOfTerraria.Buffs.FrenzyChargeBuff.Description
+}
+
+EnduranceChargeBuff: {
+	// DisplayName: Endurance Charge Buff
+	// Description: Mods.PathOfTerraria.Buffs.EnduranceChargeBuff.Description
+}
+
+PowerChargeBuff: {
+	// DisplayName: Power Charge Buff
+	// Description: Mods.PathOfTerraria.Buffs.PowerChargeBuff.Description
+}

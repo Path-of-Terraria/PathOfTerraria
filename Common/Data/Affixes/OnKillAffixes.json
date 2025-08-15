@@ -1,3 +1,59 @@
 [
-
+	{
+		"affixType": "PowerChargeChanceOnKillAffix",
+		"equipTypes": "Helmet",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 3,
+				"minimumLevel": 45,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 5,
+				"minimumLevel": 60,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "EnduranceChargeChanceOnKillAffix",
+		"equipTypes": "Helmet",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 3,
+				"minimumLevel": 45,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 5,
+				"minimumLevel": 60,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "FrenzyChargeChanceOnKillAffix",
+		"equipTypes": "Helmet",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 3,
+				"minimumLevel": 45,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 5,
+				"minimumLevel": 60,
+				"weight": 1
+			}
+		]
+	}
 ]

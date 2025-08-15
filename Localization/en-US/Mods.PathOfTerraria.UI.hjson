@@ -29,23 +29,33 @@ BaseDamage: Base Damage: {0}
 Lives: lives left
 
 StatUI: {
+	CharacterHeader: Progression
 	Level: Level
 	Experience: Exp
+	DefenseHeader: Defense
 	Life: Life
 	Mana: Mana
-	HealthPotions: Health Potions
-	ManaPotions: Mana Potions
 	DamageReduction: Damage Reduction
 	BlockChance: Block Chance
 	MaxBlock: Block Chance Cap
 	BlockCooldown: Block Cooldown
-	MaxMinions: Maximum Minions
-	Strength: Strength
-	Dexterity: Dexterity
-	Intelligence: Intelligence
 	FireResistance: Fire Resistance
 	ColdResistance: Cold Resistance
 	LightningResistance: Lightning Resistance
+	OffenseHeader: Offense
+	CriticalChance: Critical Strike Chance
+	AttributesHeader: Attributes
+	Strength: Strength
+	Dexterity: Dexterity
+	Intelligence: Intelligence
+	ChargesHeader: Charges
+	FrenzyChargeChance: Frenzy Charge Chance On Kill
+	PowerChargeChance: Power Charge Chance On Kill
+	EnduranceChargeChance: Endurance Charge Chance On Kill
+	MiscHeader: Misc
+	MaxMinions: Maximum Minions
+	HealthPotions: Health Potions
+	ManaPotions: Mana Potions
 
 	Help: {
 		Strength: Grants 5 additional max health per 10 points

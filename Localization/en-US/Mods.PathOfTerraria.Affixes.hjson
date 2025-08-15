@@ -73,3 +73,6 @@ StalwartAffix.Prefix: Stalwart
 FireResistItemAffix.Description: "{1}{0}% fire resistance"
 ColdResistItemAffix.Description: "{1}{0}% cold resistance"
 LightningResistItemAffix.Description: "{1}{0} lightning resistance"
+PowerChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Power Charge on kill"
+FrenzyChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Frenzy Charge on kill"
+EnduranceChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Endurance Charge on kill"

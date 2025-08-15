@@ -85,6 +85,8 @@ public partial class EntityModifier : EntityModifierSegment
 		player.moveSpeed = MovementSpeed.ApplyTo(player.moveSpeed);
 		player.GetDamage(DamageClass.Generic) = player.GetDamage(DamageClass.Generic).CombineWith(Damage);
 		player.GetAttackSpeed(DamageClass.Generic) = AttackSpeed.ApplyTo(player.GetAttackSpeed(DamageClass.Generic));
+		
+		player.GetCritChance(DamageClass.Generic) = CriticalChance.ApplyTo(player.GetCritChance(DamageClass.Generic));
 
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
 		player.GetArmorPenetration(DamageClass.Generic) =
