@@ -1,22 +1,22 @@
 namespace PathOfTerraria.Common.Systems.Charges;
 
-public class FrenzyChargePlayer : ModChargePlayer
+public class HasteChargePlayer : ModChargePlayer
 {
-	protected override int BuffType => ModContent.BuffType<Common.Buffs.FrenzyChargeBuff>();
+	protected override int BuffType => ModContent.BuffType<Common.Buffs.HasteChargeBuff>();
 
-	public float FrenzyChargeBonus = 0.05f;
+	public float HasteChargeBonus = 0.05f;
 		
-	public FrenzyChargePlayer()
+	public HasteChargePlayer()
 	{
 		ChargeColor = Color.Green;
-		ChargeName = "Frenzy";
+		ChargeName = "Haste";
 		ChargeGainChance = 0;
 	}
     
 	protected override void ApplyChargeModifiers(EntityModifier modifier)
 	{
 		// Apply attack speed and movement speed bonuses
-		float multiplier = 1f + (FrenzyChargeBonus * Charges);
+		float multiplier = 1f + (HasteChargeBonus * Charges);
 		modifier.AttackSpeed *= multiplier;
 		modifier.MovementSpeed *= multiplier;
 	}

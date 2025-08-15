@@ -4,7 +4,7 @@ using Terraria.GameContent;
 
 namespace PathOfTerraria.Common.Buffs;
 
-public class EnduranceChargeBuff : ModBuff
+public class AegisChargeBuff : ModBuff
 {
 	public override string Texture => "PathOfTerraria/Assets/Buffs/EnduranceChargeBuff";
 
@@ -25,21 +25,21 @@ public class EnduranceChargeBuff : ModBuff
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<EnduranceChargePlayer>();
+		var chargePlayer = player.GetModPlayer<AegisChargePlayer>();
     
-		buffName = "Endurance Charges";
+		buffName = "Aegis Charges";
 		if (chargePlayer.Charges > 1)
 		{
 			buffName += $" ({chargePlayer.Charges})";
 		}
     
-		tip = $"Increases max health by {chargePlayer.Charges * 20} and damage reduction by {chargePlayer.Charges * 5}%";
+		tip = $"Increases max health by {chargePlayer.Charges * 20} and defense by {chargePlayer.Charges * 5}";
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<EnduranceChargePlayer>();
+		var chargePlayer = player.GetModPlayer<AegisChargePlayer>();
 		
 		if (chargePlayer.Charges <= 1) return; // Don't draw if 1 charges
 		

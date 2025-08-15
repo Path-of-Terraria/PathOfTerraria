@@ -90,17 +90,17 @@ BlindedDebuff: {
 	Description: Attacks have a chance to miss
 }
 
-FrenzyChargeBuff: {
-	DisplayName: Frenzy Charge Buff
-	Description: Mods.PathOfTerraria.Buffs.FrenzyChargeBuff.Description
+HasteChargeBuff: {
+	DisplayName: Haste Charge Buff
+	Description: Mods.PathOfTerraria.Buffs.HasteChargeBuff.Description
 }
 
-EnduranceChargeBuff: {
-	DisplayName: Endurance Charge Buff
-	Description: Mods.PathOfTerraria.Buffs.EnduranceChargeBuff.Description
+AegisChargeBuff: {
+	DisplayName: Aegis Charge Buff
+	Description: Mods.PathOfTerraria.Buffs.AegisChargeBuff.Description
 }
 
-PowerChargeBuff: {
-	DisplayName: Power Charge Buff
-	Description: Mods.PathOfTerraria.Buffs.PowerChargeBuff.Description
+FocusChargeBuff: {
+	DisplayName: Focus Charge Buff
+	Description: Mods.PathOfTerraria.Buffs.FocusChargeBuff.Description
 }

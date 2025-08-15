@@ -51,9 +51,9 @@ StatUI: {
 	Dexterity: Dexterity
 	Intelligence: Intelligence
 	ChargesHeader: Charges
-	FrenzyChargeChance: Frenzy Charge Chance On Kill
-	PowerChargeChance: Power Charge Chance On Kill
-	EnduranceChargeChance: Endurance Charge Chance On Kill
+	HasteChargeChance: Haste Charge Chance On Kill
+	FocusChargeChance: Focus Charge Chance On Kill
+	AegisChargeChance: Aegis Charge Chance On Kill
 	MiscHeader: Misc
 	MaxMinions: Maximum Minions
 	HealthPotions: Health Potions

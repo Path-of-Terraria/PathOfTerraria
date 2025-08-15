@@ -4,7 +4,7 @@ using Terraria.GameContent;
 
 namespace PathOfTerraria.Common.Buffs;
 
-public class PowerChargeBuff : ModBuff
+public class FocusChargeBuff : ModBuff
 {
 	public override string Texture => "PathOfTerraria/Assets/Buffs/PowerChargeBuff";
 
@@ -25,9 +25,9 @@ public class PowerChargeBuff : ModBuff
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<PowerChargePlayer>();
+		var chargePlayer = player.GetModPlayer<FocusChargePlayer>();
     
-		buffName = "Power Charges";
+		buffName = "Focus Charges";
 
 		if (chargePlayer.Charges > 1)
 		{
@@ -40,7 +40,7 @@ public class PowerChargeBuff : ModBuff
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<PowerChargePlayer>();
+		var chargePlayer = player.GetModPlayer<FocusChargePlayer>();
 		
 		if (chargePlayer.Charges <= 1) return; // Don't draw if 1 charges
 		

@@ -34,9 +34,9 @@ StatUI: {
 	Experience: Exp
 	// DefenseHeader: Defense
 	Life: Vie
-	// LifeRegen: Life Regenerated Per Second
+	// LifeRegen: Life Regen/s
 	Mana: Mana
-	// ManaRegen: Mana Regenerated Per Second
+	// ManaRegen: Mana Regen/s
 	DamageReduction: Réduction de Dommage
 	BlockChance: Chance de Blocage
 	MaxBlock: Plafond de Chance de Blocage
@@ -51,9 +51,9 @@ StatUI: {
 	Dexterity: Dextérité
 	Intelligence: Intelligence
 	// ChargesHeader: Charges
-	// FrenzyChargeChance: Frenzy Charge Chance On Kill
-	// PowerChargeChance: Power Charge Chance On Kill
-	// EnduranceChargeChance: Endurance Charge Chance On Kill
+	// HasteChargeChance: Haste Charge Chance On Kill
+	// FocusChargeChance: Focus Charge Chance On Kill
+	// AegisChargeChance: Aegis Charge Chance On Kill
 	// MiscHeader: Misc
 	// MaxMinions: Maximum Minions
 	HealthPotions: Potions de Santé

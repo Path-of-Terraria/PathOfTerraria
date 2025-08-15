@@ -2,29 +2,29 @@ using PathOfTerraria.Common.Systems.Charges;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
-internal class PowerChargeChanceOnKillAffix : ItemAffix
+internal class FocusChargeChanceOnKillAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{       
-		var powerChargePlayer = player.GetModPlayer<PowerChargePlayer>();
-		powerChargePlayer.ChargeGainChance = Value;
+		var FocusChargePlayer = player.GetModPlayer<FocusChargePlayer>();
+		FocusChargePlayer.ChargeGainChance = Value;
 	}
 }
 
-internal class FrenzyChargeChanceOnKillAffix : ItemAffix
+internal class HasteChargeChanceOnKillAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{       
-		var frenzyChargePlayer = player.GetModPlayer<FrenzyChargePlayer>();
-		frenzyChargePlayer.ChargeGainChance = Value;
+		var HasteChargePlayer = player.GetModPlayer<HasteChargePlayer>();
+		HasteChargePlayer.ChargeGainChance = Value;
 	}
 }
 
-internal class EnduranceChargeChanceOnKillAffix : ItemAffix
+internal class AegisChargeChanceOnKillAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{       
-		var enduranceChargePlayer = player.GetModPlayer<EnduranceChargePlayer>();
-		enduranceChargePlayer.ChargeGainChance = Value ;
+		var AegisChargePlayer = player.GetModPlayer<AegisChargePlayer>();
+		AegisChargePlayer.ChargeGainChance = Value ;
 	}
 }

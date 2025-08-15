@@ -168,9 +168,9 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		
 		// Charges
 		list.Add(new PlayerStatUI(GetLocalization("ChargesHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(GetLocalization("FrenzyChargeChance"), player => $"{player.GetModPlayer<FrenzyChargePlayer>().ChargeGainChance:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("PowerChargeChance"), player => $"{player.GetModPlayer<PowerChargePlayer>().ChargeGainChance:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("EnduranceChargeChance"), player => $"{player.GetModPlayer<EnduranceChargePlayer>().ChargeGainChance:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("HasteChargeChance"), player => $"{player.GetModPlayer<HasteChargePlayer>().ChargeGainChance:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("FocusChargeChance"), player => $"{player.GetModPlayer<FocusChargePlayer>().ChargeGainChance:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("AegisChargeChance"), player => $"{player.GetModPlayer<AegisChargePlayer>().ChargeGainChance:#0.##}%"));
 		
 		// Misc
 		list.Add(new PlayerStatUI(GetLocalization("MiscHeader"), player => "", isHeader: true));

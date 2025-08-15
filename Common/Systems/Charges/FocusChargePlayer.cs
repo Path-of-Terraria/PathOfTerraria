@@ -1,24 +1,23 @@
 namespace PathOfTerraria.Common.Systems.Charges;
 
-public class PowerChargePlayer : ModChargePlayer
+public class FocusChargePlayer : ModChargePlayer
 {
-	protected override int BuffType => ModContent.BuffType<Common.Buffs.PowerChargeBuff>();
+	protected override int BuffType => ModContent.BuffType<Common.Buffs.FocusChargeBuff>();
 
-	public float PowerChargeBonus = 0.05f;
+	public float FocusChargeBonus = 0.05f;
 		
-	public PowerChargePlayer()
+	public FocusChargePlayer()
 	{
 		ChargeColor = Color.Blue;
-		ChargeName = "Power";
+		ChargeName = "Focus";
 		ChargeGainChance = 0;
 	}
     
 	protected override void ApplyChargeModifiers(EntityModifier modifier)
 	{
 		// Apply flat critical strike chance and critical strike multiplier
-		float multiplier = 1f + (PowerChargeBonus * Charges);
-		modifier.CriticalChance.Flat += PowerChargeBonus * Charges * 100; // Back to * 100
-		modifier.CriticalDamage.Base += modifier.CriticalChance.Base * PowerChargeBonus;
+		modifier.CriticalChance.Flat += FocusChargeBonus * Charges * 100; // Back to * 100
+		modifier.CriticalDamage.Base += modifier.CriticalChance.Base * FocusChargeBonus;
 	}
 
 	public override void PostUpdateEquips()

@@ -1,6 +1,6 @@
 [
 	{
-		"affixType": "PowerChargeChanceOnKillAffix",
+		"affixType": "FocusChargeChanceOnKillAffix",
 		"equipTypes": "Helmet",
 		"influences": "None",
 		"tiers": [
@@ -19,7 +19,7 @@
 		]
 	},
 	{
-		"affixType": "EnduranceChargeChanceOnKillAffix",
+		"affixType": "AegisChargeChanceOnKillAffix",
 		"equipTypes": "Helmet",
 		"influences": "None",
 		"tiers": [
@@ -38,7 +38,7 @@
 		]
 	},
 	{
-		"affixType": "FrenzyChargeChanceOnKillAffix",
+		"affixType": "HasteChargeChanceOnKillAffix",
 		"equipTypes": "Helmet",
 		"influences": "None",
 		"tiers": [

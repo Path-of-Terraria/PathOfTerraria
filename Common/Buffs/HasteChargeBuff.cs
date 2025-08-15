@@ -4,7 +4,7 @@ using Terraria.GameContent;
 
 namespace PathOfTerraria.Common.Buffs;
 
-public class FrenzyChargeBuff : ModBuff
+public class HasteChargeBuff : ModBuff
 {
 	public override string Texture => "PathOfTerraria/Assets/Buffs/FrenzyChargeBuff";
 
@@ -25,9 +25,9 @@ public class FrenzyChargeBuff : ModBuff
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<FrenzyChargePlayer>();
+		var chargePlayer = player.GetModPlayer<HasteChargePlayer>();
 		
-		buffName = "Frenzy Charges";
+		buffName = "Haste Charges";
     
 		if (chargePlayer.Charges > 1)
 		{
@@ -40,7 +40,7 @@ public class FrenzyChargeBuff : ModBuff
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<FrenzyChargePlayer>();
+		var chargePlayer = player.GetModPlayer<HasteChargePlayer>();
 		
 		if (chargePlayer.Charges <= 1) return; // Don't draw if 1 charges
 		
