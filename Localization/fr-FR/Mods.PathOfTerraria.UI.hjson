@@ -34,7 +34,9 @@ StatUI: {
 	Experience: Exp
 	// DefenseHeader: Defense
 	Life: Vie
+	// LifeRegen: Life Regenerated Per Second
 	Mana: Mana
+	// ManaRegen: Mana Regenerated Per Second
 	DamageReduction: Réduction de Dommage
 	BlockChance: Chance de Blocage
 	MaxBlock: Plafond de Chance de Blocage

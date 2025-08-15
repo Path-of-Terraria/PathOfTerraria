@@ -34,7 +34,9 @@ StatUI: {
 	Experience: Опыт
 	// DefenseHeader: Defense
 	Life: Жизнь
+	// LifeRegen: Life Regenerated Per Second
 	Mana: Мана
+	// ManaRegen: Mana Regenerated Per Second
 	DamageReduction: Снижение урона
 	BlockChance: Шанс блокировки
 	MaxBlock: Максимальный шанс блокировки

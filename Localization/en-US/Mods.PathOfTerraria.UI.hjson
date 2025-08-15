@@ -34,7 +34,9 @@ StatUI: {
 	Experience: Exp
 	DefenseHeader: Defense
 	Life: Life
+	LifeRegen: Life Regen/s
 	Mana: Mana
+	ManaRegen: Mana Regen/s
 	DamageReduction: Damage Reduction
 	BlockChance: Block Chance
 	MaxBlock: Block Chance Cap
