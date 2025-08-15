@@ -6,7 +6,7 @@ namespace PathOfTerraria.Common.Buffs;
 
 public class FocusChargeBuff : ModBuff
 {
-	public override string Texture => "PathOfTerraria/Assets/Buffs/PowerChargeBuff";
+	public override string Texture => "PathOfTerraria/Assets/Buffs/FocusChargeBuff";
 
 	public override void SetStaticDefaults()
 	{

@@ -6,7 +6,7 @@ namespace PathOfTerraria.Common.Buffs;
 
 public class AegisChargeBuff : ModBuff
 {
-	public override string Texture => "PathOfTerraria/Assets/Buffs/EnduranceChargeBuff";
+	public override string Texture => "PathOfTerraria/Assets/Buffs/AegisChargeBuff";
 
 	public override void SetStaticDefaults()
 	{

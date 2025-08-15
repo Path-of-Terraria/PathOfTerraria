@@ -6,7 +6,7 @@ namespace PathOfTerraria.Common.Buffs;
 
 public class HasteChargeBuff : ModBuff
 {
-	public override string Texture => "PathOfTerraria/Assets/Buffs/FrenzyChargeBuff";
+	public override string Texture => "PathOfTerraria/Assets/Buffs/HasteChargeBuff";
 
 	public override void SetStaticDefaults()
 	{
