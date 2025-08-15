@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Common.UI.Utilities;
+﻿using Terraria.Localization;
+
+namespace PathOfTerraria.Common.UI.Utilities;
 
 public class AvailablePassivePointsText
 {
@@ -10,7 +12,7 @@ public class AvailablePassivePointsText
 			0);
 		Utils.DrawBorderStringBig(spriteBatch, $"{points}", position,
 			points > 0 ? Color.Yellow : Color.Gray, 0.5f, 0.5f, 0.35f);
-		Utils.DrawBorderStringBig(spriteBatch, "Points remaining",
+		Utils.DrawBorderStringBig(spriteBatch, Language.GetTextValue("Mods.PathOfTerraria.UI.PointsRemaining"),
 			position + new Vector2(138, 0), Color.White, 0.6f, 0.5f, 0.35f);
 	}
 }

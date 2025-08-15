@@ -258,7 +258,7 @@ public static class PoTItemHelper
 			return mapWorld.AreaLevel;
 		}
 
-		if (clampHardmode && Main.hardMode)
+		if (clampHardmode && Main.hardMode) // Hardmode max if it's clamped.
 		{
 			return 45;
 		}

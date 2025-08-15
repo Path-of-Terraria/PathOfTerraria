@@ -41,6 +41,8 @@ internal class MoonDomainSystem : ModSystem
 	{
 		if (SubworldSystem.Current is not MoonLordDomain)
 		{
+			BossSpawned = false;
+			ExitSpawned = false;
 			return;
 		}
 
