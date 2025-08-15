@@ -102,7 +102,7 @@ internal class ArpgNPC : GlobalNPC
 	{
 		Affixes.ForEach(a => a.OnKill(npc));
 
-		if (DropModifierNPC.GetDropRate(npc) < Main.rand.NextFloat() || npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss)
+		if (DropModifierNPC.GetDropRate(npc) < Main.rand.NextFloat() || npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss || npc.friendly || npc.CountsAsACritter)
 		{
 			return;
 		}
@@ -137,7 +137,7 @@ internal class ArpgNPC : GlobalNPC
 			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind);
 		}
 
-		if (rand < 25) // 10
+		if (rand < 25)
 		{
 			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind);
 		}

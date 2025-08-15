@@ -1,3 +1,4 @@
+using System.Linq;
 using Terraria.ID;
 using Terraria.UI;
 
@@ -70,7 +71,8 @@ internal sealed class HotbarHijack : ModSystem
 		orig(inv, context, slot);
 	}
 
-	private static bool ReserveHotbarSlors_PreventFillingHotbarWithItems(On_Player.orig_GetItem_FillEmptyInventorySlot orig, Player self, int plr, Item newItem, GetItemSettings settings, Item returnItem, int i)
+	private static bool ReserveHotbarSlors_PreventFillingHotbarWithItems(On_Player.orig_GetItem_FillEmptyInventorySlot orig, Player self, int plr, Item newItem, 
+		GetItemSettings settings, Item returnItem, int i)
 	{
 		// If not part of the hotbar, we don't care.
 		if (i > 9)
@@ -122,6 +124,12 @@ public class WeaponPickupItem : GlobalItem
 {
 	public override bool CanPickup(Item item, Player player)
 	{
+		if (player.IsVoidVaultEnabled)
+		{
+			// If the player has the Void Vault open & there's space, allow pickup
+			return true;
+		}
+
 		if (HotbarHijack.IsWeapon(item))
 		{
 			if (player.inventory[0].IsAir)

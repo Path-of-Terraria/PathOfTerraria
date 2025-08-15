@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
@@ -43,7 +44,10 @@ public class ExpBar : SmartUiState
 
 		if (bounding.Contains(Main.MouseScreen.ToPoint()))
 		{
-			Utils.DrawBorderString(spriteBatch, $"Level {mp.Level}\nExperience: {mp.Exp} / {mp.NextLevel} ({Math.Truncate(mp.Exp / (float)mp.NextLevel * 10000) / 100f}%)\n\nClick to open skill tree", Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
+			double percent = Math.Truncate(mp.Exp / (float)mp.NextLevel * 10000) / 100f;
+			// $"Level {mp.Level}\nExperience: {mp.Exp} / {mp.NextLevel} ({percent}%)\n\nClick to open skill tree"
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.PathOfTerraria.UI.ExpBarHover", mp.Level, mp.Exp, mp.NextLevel, percent), 
+				Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
 		}
 	}
 
