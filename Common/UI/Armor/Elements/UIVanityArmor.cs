@@ -28,7 +28,7 @@ public sealed class UIVanityArmor : UIArmorPage
 
 		Append(wings);
 
-		var helmet = new UIHoverImageItemSlot(VanityFrameTexture, HelmetIconTexture, ref Player.armor, 10, $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipArmorVanity)
+		var helmet = new UIHoverImageItemSlot(VanityFrameTexture, HelmetIconTexture, ref Player.armor, 11, $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipArmorVanity)
 		{
 			HAlign = 0.5f,
 			VAlign = 0f,

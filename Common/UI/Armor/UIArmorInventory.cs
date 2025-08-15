@@ -329,6 +329,11 @@ public sealed class UIArmorInventory : UIState
 			Main.LocalPlayer.mouseInterface = true;
 		}
 	}
+	
+	//private float HardmodePadding()
+	//{
+	//	return Main.hardMode ? 50f : 0f;
+	//}
 
 	private UIElement BuildDefenseCounter()
 	{

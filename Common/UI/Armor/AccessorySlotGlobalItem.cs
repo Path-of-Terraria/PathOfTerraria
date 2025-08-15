@@ -10,12 +10,15 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 	{
 		bool result = slot switch
 		{
-			(int)EquipmentSlot.LeftAccessorySlot => IsNormalAccessory(item),
+			(int)EquipmentSlot.AccessorySlot1 => IsNormalAccessory(item),
+			(int)EquipmentSlot.AccessorySlot2 => IsNormalAccessory(item),
+			(int)EquipmentSlot.AccessorySlot3 => IsNormalAccessory(item),
+			//(int)EquipmentSlot.AccessorySlot4 => IsNormalAccessory(item),
 			(int)EquipmentSlot.Wings => item.wingSlot > 0,
 			(int)EquipmentSlot.Necklace => item.ModItem is Amulet,
 			(int)EquipmentSlot.Offhand => item.ModItem is Offhand,
-			(int)EquipmentSlot.Ring1 or (int)EquipmentSlot.Ring2 => item.ModItem is Ring,
-			(int)EquipmentSlot.RightAccessorySlot => IsNormalAccessory(item),
+			(int)EquipmentSlot.Ring1 => item.ModItem is Ring,
+			(int)EquipmentSlot.Ring2 => item.ModItem is Ring,
 			_ => true
 		};
 
@@ -29,12 +32,14 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 	
 	private enum EquipmentSlot
 	{
-		LeftAccessorySlot = 3,
+		AccessorySlot1 = 3,
 		Wings = 4,
 		Necklace = 5,
 		Offhand = 6,
 		Ring1 = 7,
 		Ring2 = 8,
-		RightAccessorySlot = 9
+		AccessorySlot2 = 9,
+		AccessorySlot3 = 10
 	}
+
 }

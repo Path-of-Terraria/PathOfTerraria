@@ -31,7 +31,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		wings.OnMouseOver += UpdateMouseOver;
 		wings.OnMouseOut += UpdateMouseOut;
-
 		Append(wings);
 
 		var helmet = new UIHoverImageItemSlot(DefaultFrameTexture, HelmetIconTexture, ref Player.armor, 0, $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipArmor)
@@ -44,7 +43,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		helmet.OnMouseOver += UpdateMouseOver;
 		helmet.OnMouseOut += UpdateMouseOut;
-
 		Append(helmet);
 
 		var necklace = new UIHoverImageItemSlot(DefaultFrameTexture, NecklaceIconTexture, ref Player.armor, 5, $"Mods.{PoTMod.ModName}.UI.Slots.5", ItemSlot.Context.EquipAccessory)
@@ -57,7 +55,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		necklace.OnMouseOver += UpdateMouseOver;
 		necklace.OnMouseOut += UpdateMouseOut;
-
 		Append(necklace);
 		
 		var weapon = new UIHoverImageItemSlot(DefaultFrameTexture, WeaponIconTexture, ref Player.inventory, 0, $"Mods.{PoTMod.ModName}.UI.Slots.4")
@@ -70,7 +67,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		weapon.OnMouseOver += UpdateMouseOver;
 		weapon.OnMouseOut += UpdateMouseOut;
-
 		Append(weapon);
 
 		var chest = new UIHoverImageItemSlot(DefaultFrameTexture, ChestIconTexture, ref Player.armor, 1, $"Mods.{PoTMod.ModName}.UI.Slots.1", ItemSlot.Context.EquipArmor)
@@ -83,7 +79,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		chest.OnMouseOver += UpdateMouseOver;
 		chest.OnMouseOut += UpdateMouseOut;
-
 		Append(chest);
 
 		var offhand = new UIHoverImageItemSlot(DefaultFrameTexture, OffhandIconTexture, ref Player.armor, 6, $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipAccessory)
@@ -96,7 +91,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		offhand.OnMouseOver += UpdateMouseOver;
 		offhand.OnMouseOut += UpdateMouseOut;
-
 		Append(offhand);
 
 		var leftRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 7, $"Mods.{PoTMod.ModName}.UI.Slots.7", ItemSlot.Context.EquipAccessory)
@@ -109,7 +103,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 		
 		leftRing.OnMouseOver += UpdateMouseOver;
 		leftRing.OnMouseOut += UpdateMouseOut;
-
 		Append(leftRing);
 
 		var legs = new UIHoverImageItemSlot(DefaultFrameTexture, LegsIconTexture, ref Player.armor, 2, $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipArmor)
@@ -122,7 +115,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		legs.OnMouseOver += UpdateMouseOver;
 		legs.OnMouseOut += UpdateMouseOut;
-
 		Append(legs);
 
 		var rightRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 8, $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipAccessory)
@@ -135,22 +127,20 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		rightRing.OnMouseOver += UpdateMouseOver;
 		rightRing.OnMouseOut += UpdateMouseOut;
-
 		Append(rightRing);
 
-		var leftMiscellaneous = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 9, $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipAccessory)
+		var accessorySlot1 = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 3, $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipAccessory)
 		{
 			VAlign = 1f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
 		
-		leftMiscellaneous.OnMouseOver += UpdateMouseOver;
-		leftMiscellaneous.OnMouseOut += UpdateMouseOut;
+		accessorySlot1.OnMouseOver += UpdateMouseOver;
+		accessorySlot1.OnMouseOut += UpdateMouseOut;
+		Append(accessorySlot1);
 		
-		Append(leftMiscellaneous);
-		
-		var middleMiscellaneous = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 3, $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipAccessory)
+		var accessorySlot2 = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 9, $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0.5f,
 			VAlign = 1f,
@@ -158,9 +148,37 @@ public sealed class UIDefaultArmor : UIArmorPage
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
 		
-		middleMiscellaneous.OnMouseOver += UpdateMouseOver;
-		middleMiscellaneous.OnMouseOut += UpdateMouseOut;
+		accessorySlot2.OnMouseOver += UpdateMouseOver;
+		accessorySlot2.OnMouseOut += UpdateMouseOut;
+		Append(accessorySlot2);
 		
-		Append(middleMiscellaneous);
+		var accessorySlot3 = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 10, $"Mods.{PoTMod.ModName}.UI.Slots.11", ItemSlot.Context.EquipAccessory)
+		{
+			HAlign = 1f,
+			VAlign = 1f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+		
+		accessorySlot3.OnMouseOver += UpdateMouseOver;
+		accessorySlot3.OnMouseOut += UpdateMouseOut;
+		Append(accessorySlot3);
+		
+		//var accessorySlot4 = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 7, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessory)
+		//{
+		//	HAlign = 0,
+		//	VAlign = 1.33f,
+		//	ActiveScale = 1.15f,
+		//	ActiveRotation = MathHelper.ToRadians(1f)
+		//};
+		//
+		//accessorySlot4.OnMouseOver += UpdateMouseOver;
+		//accessorySlot4.OnMouseOut += UpdateMouseOut;
+		//
+		//if (Main.hardMode)
+		//{
+		//	Append(accessorySlot4);	
+		//}
+		//DISABLED FOR NOW. Add when condition for killing WOF is added + padding on the gear/defense buttons
 	}
 }
