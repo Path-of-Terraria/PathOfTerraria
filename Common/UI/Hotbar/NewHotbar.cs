@@ -633,7 +633,7 @@ public class HijackHotbarClick : ModSystem
 		{
 			var pos = new Rectangle(offX, offY, SlotSize, SlotSize);
 
-			if (pos.Contains(Main.MouseScreen.ToPoint()) && !Main.playerInventory)
+			if (!Main.playerInventory && pos.Contains(Main.MouseScreen.ToPoint()))
 			{
 				SetHealthOrManaTooltip(i == 0);
 			}

@@ -12,7 +12,7 @@ namespace PathOfTerraria.Common.UI;
 /// <summary>
 /// Draws the popup tooltip when various elements of the UI are hovered over.
 /// </summary>
-public class Tooltip : SmartUiState, ILoadable
+public class Tooltip : SmartUiState
 {
 	private static string text = string.Empty;
 	private static string tooltip = string.Empty;
@@ -26,11 +26,6 @@ public class Tooltip : SmartUiState, ILoadable
 	public override int DepthPriority => 2;
 
 	public override bool Visible => true;
-
-	public void Load(Mod mod)
-	{
-		On_Main.Update += Reset;
-	}
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -59,6 +54,12 @@ public class Tooltip : SmartUiState, ILoadable
 	public static void SetFancyTooltip(List<DrawableTooltipLine> newTooltip)
 	{
 		fancyTooltips = newTooltip;
+	}
+
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		// UI is updated early and at a fixed rate, perfect for global state reset without causing flickering.
+		Reset();
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
@@ -131,13 +132,11 @@ public class Tooltip : SmartUiState, ILoadable
 		}
 	}
 
-	private void Reset(On_Main.orig_Update orig, Main self, GameTime gameTime)
+	private static void Reset()
 	{
 		text = string.Empty;
 		tooltip = string.Empty;
 		fancyTooltips.Clear();
 		DrawWidth = 200;
-
-		orig(self, gameTime);
 	}
 }

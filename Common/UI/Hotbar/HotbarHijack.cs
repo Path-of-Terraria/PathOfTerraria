@@ -1,4 +1,5 @@
-using System.Linq;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
 using Terraria.ID;
 using Terraria.UI;
 
@@ -8,27 +9,16 @@ internal sealed class HotbarHijack : ModSystem
 {
 	public override void Load()
 	{
-		On_Main.GUIHotbarDrawInner += StopVanillaHotbarDrawing;
+		IL_Main.GUIHotbarDrawInner += StopVanillaHotbarDrawing;
 		On_ItemSlot.LeftClick_ItemArray_int_int += ReserveHotbarSlots_PreventLeftClickingItemsIntoHotbar;
 		On_Player.GetItem_FillEmptyInventorySlot += ReserveHotbarSlors_PreventFillingHotbarWithItems;
 	}
 
-	private static void StopVanillaHotbarDrawing(On_Main.orig_GUIHotbarDrawInner orig, Main self)
+	private static void StopVanillaHotbarDrawing(ILContext ctx)
 	{
-		// This detour previously handled preventing the hover text that would
-		// draw when hovering over items in the hotbar.
-		// It has been reworked to prevent all associated drawing of the vanilla
-		// hotbar instead.
-		// This allows for other mods' detours to run if they hook this method
-		// while still sufficiently preventing the vanilla hotbar from drawing.
-
-		// Always set it to true to cause an early return in the vanilla method.
-		bool origPlayerInventory = Main.playerInventory;
-		Main.playerInventory = true;
-
-		orig(self);
-
-		Main.playerInventory = origPlayerInventory;
+		// Simply short-circuit all hotbar rendering, while still letting other mods' detour into this function run as usual.
+		var il = new ILCursor(ctx);
+		il.Emit(OpCodes.Ret);
 	}
 
 	private static void ReserveHotbarSlots_PreventLeftClickingItemsIntoHotbar(On_ItemSlot.orig_LeftClick_ItemArray_int_int orig, Item[] inv, int context, int slot)
