@@ -13,7 +13,7 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 			(int)EquipmentSlot.AccessorySlot1 => IsNormalAccessory(item),
 			(int)EquipmentSlot.AccessorySlot2 => IsNormalAccessory(item),
 			(int)EquipmentSlot.AccessorySlot3 => IsNormalAccessory(item),
-			(int)EquipmentSlot.AccessorySlot4 => IsNormalAccessory(item) && HasFourthSlotUnlocked(player), // Potential 4th slot
+			//(int)EquipmentSlot.AccessorySlot4 => IsNormalAccessory(item),
 			(int)EquipmentSlot.Wings => item.wingSlot > 0,
 			(int)EquipmentSlot.Necklace => item.ModItem is Amulet,
 			(int)EquipmentSlot.Offhand => item.ModItem is Offhand,
@@ -33,20 +33,13 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 	private enum EquipmentSlot
 	{
 		AccessorySlot1 = 3,
-		Wings = 4,          // Wings keep their functionality and position
-		AccessorySlot2 = 5,
-		AccessorySlot3 = 6,
-		AccessorySlot4 = 7, // Potential 4th slot - you can conditionally enable this
-		Necklace = 8,       // Moved specialized slots after normal accessories
-		Offhand = 9,
-		Ring1 = 10,
-		Ring2 = 11
+		Wings = 4,
+		Necklace = 5,
+		Offhand = 6,
+		Ring1 = 7,
+		Ring2 = 8,
+		AccessorySlot2 = 9,
+		AccessorySlot3 = 10
 	}
-	
-	private bool HasFourthSlotUnlocked(Player player)
-	{
-		return Main.hardMode; // Unlocked after Wall of Flesh is defeated (hardmode)
-	}
-
 
 }

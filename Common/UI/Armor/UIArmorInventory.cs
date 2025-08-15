@@ -263,7 +263,7 @@ public sealed class UIArmorInventory : UIState
 			Width = StyleDimension.FromPixels(ArmorPageWidth),
 			Height = StyleDimension.FromPixels(LeftButtonTexture.Height()),
 			Left = StyleDimension.FromPixels(FirstLoadoutIconTexture.Width() + RootPadding),
-			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding + HardmodePadding())
+			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding)
 		};
 
 		var leftButton = new UIHoverTooltipImage(LeftButtonTexture, $"Mods.{PoTMod.ModName}.UI.Gear.Buttons.Previous")
@@ -330,10 +330,10 @@ public sealed class UIArmorInventory : UIState
 		}
 	}
 	
-	private float HardmodePadding()
-	{
-		return Main.hardMode ? 50f : 0f;
-	}
+	//private float HardmodePadding()
+	//{
+	//	return Main.hardMode ? 50f : 0f;
+	//}
 
 	private UIElement BuildDefenseCounter()
 	{
@@ -342,7 +342,7 @@ public sealed class UIArmorInventory : UIState
 			Width = StyleDimension.FromPixels(ArmorPageWidth),
 			Height = StyleDimension.FromPixels(DefenseCounterTexture.Height()),
 			Left = StyleDimension.FromPixels(FirstLoadoutIconTexture.Width() + RootPadding),
-			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding + HardmodePadding())
+			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding)
 		};
 
 		var defenseText = new UIText(Player.statDefense.ToString())

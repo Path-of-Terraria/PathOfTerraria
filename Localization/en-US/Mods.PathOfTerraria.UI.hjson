@@ -15,16 +15,15 @@ Slots: {
 	0: Helmet
 	1: Chest
 	2: Legs
-	3: Accessory 2
+	3: Accessory 1
 	4: Weapon
 	5: Necklace
 	6: Offhand
 	7: Left Ring
 	8: Right Ring
-	9: Accessory 1
+	9: Accessory 2
 	10: Wings
 	11: Accessory 3
-	12: Accessory 4
 }
 
 BaseDamage: Base Damage: {0}
