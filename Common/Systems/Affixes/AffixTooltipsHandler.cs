@@ -116,8 +116,13 @@ public class AffixTooltipsHandler
 				tooltip.OriginalValueBySource.Add(source, value);
 				tooltip.ValueBySource.Add(source, 0);
 			}
+			
+			//This adds the tooltips together if they are the same affix, and stops the weird affix comparison bug from before resulting in neg numbers.
+			if (tooltip.ValueBySource.ContainsKey(source))
+				tooltip.ValueBySource[source] += value; // Add to existing
+			else
+				tooltip.ValueBySource[source] = value;  // First occurrence
 
-			tooltip.ValueBySource[source] = value;
 
 			if (!tooltip.SourceItems.Any(HasSource(item)))
 			{
