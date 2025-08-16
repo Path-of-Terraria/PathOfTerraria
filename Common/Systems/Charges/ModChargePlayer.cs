@@ -4,10 +4,9 @@ public class ModChargePlayer : ModPlayer
 {
 	// Charge stacks
 	public int Charges { get; private set; }
-
 	public const int MaxCharges = 3;
-	
 	protected virtual int BuffType => -1;
+	public bool HasAnyCharges => Charges > 0;
 
 	//Duration
 	public const int DefaultChargeDuration = 600; // 10 seconds
@@ -22,7 +21,7 @@ public class ModChargePlayer : ModPlayer
 	public override void PostUpdateMiscEffects()
 	{
 		// Update shared charge duration
-		if (HasAnyCharges() && chargeDuration > 0)
+		if (HasAnyCharges && chargeDuration > 0)
 		{
 			chargeDuration--;
             
@@ -95,11 +94,6 @@ public class ModChargePlayer : ModPlayer
     protected void ShowChargeGainText()
     {
         CombatText.NewText(Player.getRect(), ChargeColor, $"+{ChargeName} Charge", true);
-    }
-    
-    public bool HasAnyCharges()
-    {
-        return Charges > 0;
     }
     
     public void RemoveAllCharges()
