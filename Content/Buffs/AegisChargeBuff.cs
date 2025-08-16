@@ -1,13 +1,12 @@
 using PathOfTerraria.Common.Systems.Charges;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Localization;
 
-namespace PathOfTerraria.Common.Buffs;
+namespace PathOfTerraria.Content.Buffs;
 
 public class AegisChargeBuff : ModBuff
 {
-	public override string Texture => "PathOfTerraria/Assets/Buffs/AegisChargeBuff";
-
 	public override void SetStaticDefaults()
 	{
 		Main.buffNoSave[Type] = true;
@@ -17,9 +16,7 @@ public class AegisChargeBuff : ModBuff
 
 	public override bool ReApply(Player player, int time, int buffIndex)
 	{
-		// Refresh the buff duration when reapplied
-		player.buffTime[buffIndex] = time;
-		return false;
+		return true;
 	}
 	
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
@@ -27,13 +24,14 @@ public class AegisChargeBuff : ModBuff
 		Player player = Main.LocalPlayer;
 		var chargePlayer = player.GetModPlayer<AegisChargePlayer>();
     
-		buffName = "Aegis Charges";
+		buffName = Language.GetTextValue("Mods.PathOfTerraria.Buffs.AegisChargeBuff.DisplayName");
+
 		if (chargePlayer.Charges > 1)
 		{
 			buffName += $" ({chargePlayer.Charges})";
 		}
-    
-		tip = $"Increases max health by {chargePlayer.Charges * 20} and defense by {chargePlayer.Charges * 5}";
+
+		tip = Language.GetTextValue("Mods.PathOfTerraria.Buffs.AegisChargeBuff.Description", chargePlayer.Charges * 20, chargePlayer.Charges * 5);
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)

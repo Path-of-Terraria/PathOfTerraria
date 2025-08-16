@@ -2,7 +2,7 @@ namespace PathOfTerraria.Common.Systems.Charges;
 
 public class AegisChargePlayer : ModChargePlayer
 {
-	protected override int BuffType => ModContent.BuffType<Common.Buffs.AegisChargeBuff>();
+	protected override int BuffType => ModContent.BuffType<Content.Buffs.AegisChargeBuff>();
 
 	public int AegisChargeHealthBonus = 20;
 	public int AegisDefenseBonus = 5;
@@ -22,7 +22,6 @@ public class AegisChargePlayer : ModChargePlayer
 		// Apply damage reduction multiplier
 		modifier.Defense.Base += AegisDefenseBonus * Charges;
 	}
-
 
 	public override void PostUpdateEquips()
 	{

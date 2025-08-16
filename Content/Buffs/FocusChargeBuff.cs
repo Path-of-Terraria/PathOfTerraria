@@ -1,13 +1,12 @@
 using PathOfTerraria.Common.Systems.Charges;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Localization;
 
-namespace PathOfTerraria.Common.Buffs;
+namespace PathOfTerraria.Content.Buffs;
 
 public class FocusChargeBuff : ModBuff
 {
-	public override string Texture => "PathOfTerraria/Assets/Buffs/FocusChargeBuff";
-
 	public override void SetStaticDefaults()
 	{
 		Main.buffNoSave[Type] = true;
@@ -17,25 +16,24 @@ public class FocusChargeBuff : ModBuff
 
 	public override bool ReApply(Player player, int time, int buffIndex)
 	{
-		// Refresh the buff duration when reapplied
-		player.buffTime[buffIndex] = time;
-		return false;
+		return true;
 	}
 	
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 	{
 		Player player = Main.LocalPlayer;
 		var chargePlayer = player.GetModPlayer<FocusChargePlayer>();
-    
-		buffName = "Focus Charges";
+
+		buffName = Language.GetTextValue("Mods.PathOfTerraria.Buffs.FocusChargeBuff.DisplayName");
 
 		if (chargePlayer.Charges > 1)
 		{
 			buffName += $" ({chargePlayer.Charges})";
 		}
-    
-		tip = $"Increases critical strike chance and multiplier by {chargePlayer.Charges * 5}%";
+
+		tip = Language.GetTextValue("Mods.PathOfTerraria.Buffs.FocusChargeBuff.Description", chargePlayer.Charges * 5);
 	}
+
 
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
 	{

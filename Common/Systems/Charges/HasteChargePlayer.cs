@@ -2,7 +2,7 @@ namespace PathOfTerraria.Common.Systems.Charges;
 
 public class HasteChargePlayer : ModChargePlayer
 {
-	protected override int BuffType => ModContent.BuffType<Common.Buffs.HasteChargeBuff>();
+	protected override int BuffType => ModContent.BuffType<Content.Buffs.HasteChargeBuff>();
 
 	public float HasteChargeBonus = 0.05f;
 		

@@ -2,7 +2,7 @@ namespace PathOfTerraria.Common.Systems.Charges;
 
 public class FocusChargePlayer : ModChargePlayer
 {
-	protected override int BuffType => ModContent.BuffType<Common.Buffs.FocusChargeBuff>();
+	protected override int BuffType => ModContent.BuffType<Content.Buffs.FocusChargeBuff>();
 
 	public float FocusChargeBonus = 0.05f;
 		

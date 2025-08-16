@@ -92,15 +92,15 @@ BlindedDebuff: {
 
 HasteChargeBuff: {
 	DisplayName: Haste Charge Buff
-	Description: Mods.PathOfTerraria.Buffs.HasteChargeBuff.Description
+	Description: Increases attack speed and movement speed by {0}%
 }
 
 AegisChargeBuff: {
 	DisplayName: Aegis Charge Buff
-	Description: Mods.PathOfTerraria.Buffs.AegisChargeBuff.Description
+	Description: Increases max health by {0} and defense by {1}
 }
 
 FocusChargeBuff: {
 	DisplayName: Focus Charge Buff
-	Description: Mods.PathOfTerraria.Buffs.FocusChargeBuff.Description
+	Description: Increases critical strike chance and multiplier by {0}%
 }

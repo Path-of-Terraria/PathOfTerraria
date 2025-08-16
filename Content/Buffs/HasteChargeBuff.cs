@@ -1,13 +1,12 @@
 using PathOfTerraria.Common.Systems.Charges;
 using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.Localization;
 
-namespace PathOfTerraria.Common.Buffs;
+namespace PathOfTerraria.Content.Buffs;
 
 public class HasteChargeBuff : ModBuff
 {
-	public override string Texture => "PathOfTerraria/Assets/Buffs/HasteChargeBuff";
-
 	public override void SetStaticDefaults()
 	{
 		Main.buffNoSave[Type] = true;
@@ -17,9 +16,7 @@ public class HasteChargeBuff : ModBuff
 
 	public override bool ReApply(Player player, int time, int buffIndex)
 	{
-		// Refresh the buff duration when reapplied
-		player.buffTime[buffIndex] = time;
-		return false;
+	    return true;
 	}
 	
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
@@ -27,14 +24,14 @@ public class HasteChargeBuff : ModBuff
 		Player player = Main.LocalPlayer;
 		var chargePlayer = player.GetModPlayer<HasteChargePlayer>();
 		
-		buffName = "Haste Charges";
+		buffName = Language.GetTextValue("Mods.PathOfTerraria.Buffs.HasteChargeBuff.DisplayName");
     
 		if (chargePlayer.Charges > 1)
 		{
 			buffName += $" ({chargePlayer.Charges})";
 		}
     
-		tip = $"Increases attack speed and movement speed by {chargePlayer.Charges * 5}%";
+		tip = Language.GetTextValue("Mods.PathOfTerraria.Buffs.HasteChargeBuff.Description", chargePlayer.Charges * 5);
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
