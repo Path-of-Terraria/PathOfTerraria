@@ -7,6 +7,6 @@ internal class StopExplodingWall : GlobalWall
 {
 	public override bool CanExplode(int i, int j, int type)
 	{
-		return SubworldSystem.Current is not BossDomainSubworld;
+		return SubworldSystem.Current is not MappingWorld;
 	}
 }

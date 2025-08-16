@@ -10,7 +10,7 @@ internal class StopExplodingTile : GlobalTile
 	{
 		Tile tile = Main.tile[i, j];
 		Point16 frame = new(tile.TileFrameX, tile.TileFrameY);
-		return SubworldSystem.Current is not BossDomainSubworld || BuildingWhitelist.InMiningWhitelist(type, frame) || BuildingWhitelist.InExplodingWhitelist(type, frame);
+		return SubworldSystem.Current is not MappingWorld || BuildingWhitelist.InMiningWhitelist(type, frame) || BuildingWhitelist.InExplodingWhitelist(type, frame);
 	}
 
 	public override bool Slope(int i, int j, int type)
