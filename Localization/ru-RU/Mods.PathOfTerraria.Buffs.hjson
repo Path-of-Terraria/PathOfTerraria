@@ -73,3 +73,18 @@ BlindedDebuff: {
 	DisplayName: Ослепленный
 	Description: Атаки имеют шанс промахнуться
 }
+
+HasteChargeBuff: {
+	// DisplayName: Haste Charge Buff
+	// Description: Increases attack speed and movement speed by {0}%
+}
+
+AegisChargeBuff: {
+	// DisplayName: Aegis Charge Buff
+	// Description: Increases max health by {0} and defense by {1}
+}
+
+FocusChargeBuff: {
+	// DisplayName: Focus Charge Buff
+	// Description: Increases critical strike chance and multiplier by {0}%
+}

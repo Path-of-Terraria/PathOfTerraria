@@ -30,23 +30,35 @@ BaseDamage: Dommage de Base : {0}
 Lives: vies restantes
 
 StatUI: {
+	// CharacterHeader: Progression
 	Level: Niveau
 	Experience: Exp
+	// DefenseHeader: Defense
 	Life: Vie
+	// LifeRegen: Life Regen/s
 	Mana: Mana
-	HealthPotions: Potions de Santé
-	ManaPotions: Potions de Mana
+	// ManaRegen: Mana Regen/s
 	DamageReduction: Réduction de Dommage
 	BlockChance: Chance de Blocage
 	MaxBlock: Plafond de Chance de Blocage
 	BlockCooldown: Temps de Recharge de Blocage
-	// MaxMinions: Maximum Minions
-	Strength: Force
-	Dexterity: Dextérité
-	Intelligence: Intelligence
 	FireResistance: Résistance au Feu
 	ColdResistance: Résistance au Froid
 	LightningResistance: Résistance à la Foudre
+	// OffenseHeader: Offense
+	// CriticalChance: Critical Strike Chance
+	// AttributesHeader: Attributes
+	Strength: Force
+	Dexterity: Dextérité
+	Intelligence: Intelligence
+	// ChargesHeader: Charges
+	// HasteChargeChance: Haste Charge Chance On Kill
+	// FocusChargeChance: Focus Charge Chance On Kill
+	// AegisChargeChance: Aegis Charge Chance On Kill
+	// MiscHeader: Misc
+	// MaxMinions: Maximum Minions
+	HealthPotions: Potions de Santé
+	ManaPotions: Potions de Mana
 
 	Help: {
 		Strength: Accorde 5 PV max supplémentaires tous les 10 points
