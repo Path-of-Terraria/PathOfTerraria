@@ -23,7 +23,7 @@ public class HasteChargePlayer : ModChargePlayer
 
 	public override void PostUpdateEquips()
 	{
-		if (HasAnyCharges())
+		if (HasAnyCharges)
 		{
 			EntityModifier modifier = new EntityModifier();
 			ApplyChargeModifiers(modifier);
