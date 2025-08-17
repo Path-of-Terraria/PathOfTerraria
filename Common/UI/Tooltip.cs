@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Content;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
@@ -171,7 +172,8 @@ public class Tooltip : SmartUiState
 			Height = (int)(totalSize.Y + BgOffset * 2),
 		};
 		Color bgColor = Color.White * 0.925f;
-		Utils.DrawInvBG(Main.spriteBatch, bgDstRect, bgColor);
+		Texture2D bgTexture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/TooltipBackground", AssetRequestMode.ImmediateLoad).Value;
+		RenderBackground(Main.spriteBatch, bgTexture, null, bgDstRect, bgColor);
 
 		// Draw the actual lines.
 		Vector2 lineOffset = Vector2.Zero;
@@ -204,6 +206,52 @@ public class Tooltip : SmartUiState
 		{
 			ArrayPool<Vector2>.Shared.Return(lineMeasures);
 			ArrayPool<TooltipPair>.Shared.Return(lines);
+		}
+	}
+
+	private static void RenderBackground(SpriteBatch sb, Texture2D texture, Rectangle? sourceRectangle, Rectangle destinationRectangle, Color color)
+	{
+		Rectangle src = sourceRectangle ?? texture.Bounds;
+		Rectangle dst = destinationRectangle;
+		(int sw, int sh) = (src.Width, src.Height); // Source Size
+		(int dw, int dh) = (dst.Width, dst.Height); // Destination Size
+		(int fw, int fh) = (texture.Width / 3, texture.Height / 3); // Frame size
+		(int fW, int fH) = (fw + fw, fh + fh); // Double frame size
+		(int xx, int yy) = (dst.X, dst.Y); // Position
+
+		// Impose a minimum size.
+		(dw, dh) = (Math.Max(dw, sw), Math.Max(dh, sh));
+		// Align size to the pixel grid.
+		const int AlignX = 4;
+		const int AlignY = 4;
+		dw = (int)MathF.Ceiling(dw / (float)AlignX) * AlignX;
+		dh = (int)MathF.Ceiling(dh / (float)AlignY) * AlignY;
+
+		// Render the tiles.
+		int xTiles = (int)MathF.Floor(dw / (float)fw);
+		int yTiles = (int)MathF.Floor(dh / (float)fh);
+		float xTilesStep = dw / (float)fw - xTiles;
+		float yTilesStep = dh / (float)fh - yTiles;
+
+		for (int y = 0, yOffset = 0; y <= yTiles; y++)
+		{
+			for (int x = 0, xOffset = 0; x <= xTiles; x++)
+			{
+				int xFrame = x == 0 ? 0 : (x == xTiles ? 2 : 1);
+				int yFrame = y == 0 ? 0 : (y == yTiles ? 2 : 1);
+				int xWidth = (x == xTiles - 1) ? (int)(fw * xTilesStep) : fw;
+				int yWidth = (y == yTiles - 1) ? (int)(fh * yTilesStep) : fh;
+
+				sb.Draw(
+					texture,
+					new Rectangle(xx + xOffset, yy + yOffset, xWidth, yWidth),
+					new Rectangle(xFrame * fw, yFrame * fh, xWidth, yWidth),
+					color
+				);
+
+				xOffset += xWidth;
+				yOffset += x == xTiles ? yWidth : 0;
+			}
 		}
 	}
 }
