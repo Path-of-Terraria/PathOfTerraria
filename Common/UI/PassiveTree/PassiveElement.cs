@@ -94,8 +94,12 @@ internal class PassiveElement : SmartUiElement
 			name += $" -- {_passive.ReferenceId}";
 #endif
 
-			Tooltip.SetName(name);
-			Tooltip.SetTooltip(_passive.DisplayTooltip);
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = "Passive",
+				SimpleTitle = name,
+				SimpleSubtitle = _passive.DisplayTooltip,
+			});
 		}
 
 		Recalculate();

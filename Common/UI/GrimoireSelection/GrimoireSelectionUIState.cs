@@ -109,7 +109,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 				_helpOpen = !_helpOpen;
 			}
 
-			Tooltip.SetName("Help");
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = GetType().Name,
+				SimpleTitle = "Help",
+			});
 		}
 
 		if (_helpHover != hover)
@@ -295,10 +299,14 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			return;
 		}
 
-		Tooltip.SetName(item.DisplayName.Value);
 		string tooltip = Language.GetTextValue($"Mods.{item.Mod.Name}.Projectiles.{item.Name}.Description");
 		tooltip += "\n" + Language.GetText($"Mods.{item.Mod.Name}.UI.BaseDamage").Format(item.BaseDamage);
-		Tooltip.SetTooltip(tooltip);
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "SummonIcon",
+			SimpleTitle = item.DisplayName.Value,
+			SimpleSubtitle = tooltip,
+		});
 	}
 
 	private static void BuildStorage(UICloseablePanel panel)
@@ -501,8 +509,11 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			Main.cursorOverride = 9;
 		}
 
-		List<DrawableTooltipLine> tooltips = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
-		Tooltip.SetFancyTooltip(tooltips[1..]);
-		Tooltip.SetName(tooltips[0].Text);
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "GrimoireSelection",
+			AssociatedItem = item,
+			Lines = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer),
+		});
 	}
 }

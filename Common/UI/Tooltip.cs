@@ -1,27 +1,44 @@
-﻿using System.Collections.Generic;
+using System.Buffers;
+using System.Collections.Generic;
 using System.Linq;
-using PathOfTerraria.Common.Utilities;
+using System.Runtime.InteropServices;
 using PathOfTerraria.Core.UI.SmartUI;
-using ReLogic.Graphics;
-using Terraria.GameContent;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI;
 
+#nullable enable
+
+public struct TooltipDescription()
+{
+	public required string Identifier;
+	public string? SimpleTitle;
+	public string? SimpleSubtitle;
+	public List<DrawableTooltipLine> Lines = [];
+	public Vector2? Position;
+	public Item? AssociatedItem;
+	public uint VisibilityTimeInTicks = 2;
+}
+
 /// <summary>
-/// Draws the popup tooltip when various elements of the UI are hovered over.
+/// Draws any amount of popup tooltip swhen various elements of the UI are hovered over.
 /// </summary>
 public class Tooltip : SmartUiState
 {
-	private static string text = string.Empty;
-	private static string tooltip = string.Empty;
-	private static List<DrawableTooltipLine> fancyTooltips = [];
+	private struct TooltipPair
+	{
+		public DrawableTooltipLine Base;
+		public DrawableTooltipLine Copy;
+	}
 
-	/// <summary>
-	/// Width of the drawn tooltip. Defaults and resets to 200 every frame.
-	/// </summary>
-	public static int DrawWidth { get; set; } = 200;
+	private struct TooltipInstance
+	{
+		public TooltipDescription Description;
+		public uint EndTime;
+	}
+
+	private static readonly List<TooltipInstance> tooltips = [];
 
 	public override int DepthPriority => 2;
 
@@ -32,111 +49,161 @@ public class Tooltip : SmartUiState
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Over"));
 	}
 
-	/// <summary>
-	/// Sets the brightly colored main line of the tooltip. This should be a short descriptor of what you're hovering over, like its name.
-	/// </summary>
-	/// <param name="name"></param>
-	public static void SetName(string name)
-	{
-		text = name;
-	}
-
-	/// <summary>
-	/// Sets the more dimly colored 'description' of the tooltip. This should be the 'body' of the tooltip.
-	/// </summary>
-	/// <param name="newTooltip"></param>
-	public static void SetTooltip(string newTooltip)
-	{
-		DynamicSpriteFont font = FontAssets.MouseText.Value;
-		tooltip = StringUtils.WrapString(newTooltip, DrawWidth * 2, font, 1);
-	}
-
-	public static void SetFancyTooltip(List<DrawableTooltipLine> newTooltip)
-	{
-		fancyTooltips = newTooltip;
-	}
-
-	public override void SafeUpdate(GameTime gameTime)
-	{
-		// UI is updated early and at a fixed rate, perfect for global state reset without causing flickering.
-		Reset();
-	}
-
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		if (text == string.Empty)
+		foreach (ref TooltipInstance tooltip in IterateTooltips())
 		{
-			return;
+			Render(tooltip.Description);
+		}
+	}
+
+	private static Span<TooltipInstance> IterateTooltips()
+	{
+		uint currentTime = Main.GameUpdateCount;
+		for (int i = 0; i < tooltips.Count; i++)
+		{
+			if (currentTime > tooltips[i].EndTime)
+			{
+				tooltips.RemoveAt(i--);
+			}
 		}
 
-		DynamicSpriteFont font = FontAssets.MouseText.Value;
+		return CollectionsMarshal.AsSpan(tooltips);
+	}
 
-		float nameWidth = ChatManager.GetStringSize(font, text, Vector2.One).X;
-		float tipWidth = ChatManager.GetStringSize(font, tooltip, Vector2.One).X * 0.9f;
-		float width = Math.Max(nameWidth, tipWidth);
-
-		if (tooltip == string.Empty && fancyTooltips.Count > 0)
+	/// <summary> Enqueues a new tooltip to be drawn in the usual interface layer. </summary>
+	public static void Create(TooltipDescription args)
+	{
+		if (string.IsNullOrEmpty(args.Identifier))
 		{
-			width = fancyTooltips.Max(x => ChatManager.GetStringSize(FontAssets.MouseText.Value, x.Text, Vector2.One).X);
+			throw new ArgumentException("A proper tooltip identifier must be provided.");
 		}
 
-		float height = -16;
-		Vector2 pos;
-
-		if (Main.MouseScreen.X > Main.screenWidth - width)
+		int tooltipIndex;
+		if (tooltips.FindIndex(t => t.Description.Identifier == args.Identifier) is >= 0 and int existing)
 		{
-			pos = Main.MouseScreen - new Vector2(width + 20, 0);
+			tooltipIndex = existing;
 		}
 		else
 		{
-			pos = Main.MouseScreen + new Vector2(40, 0);
+			tooltipIndex = tooltips.Count;
+			tooltips.Add(new TooltipInstance());
 		}
 
-		height += ChatManager.GetStringSize(font, "{Dummy}\n" + tooltip, Vector2.One).Y + 16;
-
-		if (tooltip == string.Empty && fancyTooltips.Count > 0)
-		{
-			height = fancyTooltips.Count * 32;
-		}
-
-		if (pos.Y + height > Main.screenHeight)
-		{
-			pos.Y -= height;
-		}
-
-		Utils.DrawInvBG(Main.spriteBatch, new Rectangle((int)pos.X - 10, (int)pos.Y - 10, (int)width + 20, (int)height + 20), new Color(20, 20, 55) * 0.925f);
-		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, pos, Color.White, 0f, Vector2.Zero, Vector2.One);
-		pos.Y += ChatManager.GetStringSize(font, text, Vector2.One).Y + 4;
-
-		if (tooltip != string.Empty)
-		{
-			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, tooltip, pos, Color.White, 0f, Vector2.Zero, new(0.9f));
-		}
-		else if (fancyTooltips.Count > 0)
-		{
-			float yOffset = 0;
-
-			for (int i = 0; i < fancyTooltips.Count; ++i)
-			{
-				DrawableTooltipLine line = fancyTooltips[i];
-
-				ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, line.Text, pos + new Vector2(0, yOffset), line.OverrideColor ?? line.Color, 0f, line.Origin, new(0.9f));
-				yOffset += 30 * line.BaseScale.Y;
-				int newLineCount = line.Text.Count(x => x == '\n');
-
-				if (newLineCount > 0)
-				{
-					yOffset += 20 * newLineCount;
-				}
-			}
-		}
+		ref TooltipInstance tooltip = ref CollectionsMarshal.AsSpan(tooltips)[tooltipIndex];
+		tooltip.Description = args;
+		tooltip.EndTime = Main.GameUpdateCount + args.VisibilityTimeInTicks;
 	}
 
-	private static void Reset()
+	/// <summary> Immediately draws the provided tooltip on the screen. </summary>
+	private static void Render(TooltipDescription args)
 	{
-		text = string.Empty;
-		tooltip = string.Empty;
-		fancyTooltips.Clear();
-		DrawWidth = 200;
+		const int BaseLineSpacing = 0;
+		int lineCount = args.Lines.Count + (args.SimpleTitle != null ? 1 : 0) + (args.SimpleSubtitle != null ? 1 : 0);
+
+		// Rent and populate arrays.
+		Vector2[] lineMeasures = lineCount != 0 ? ArrayPool<Vector2>.Shared.Rent(lineCount) : [];
+		TooltipPair[] lines = lineCount != 0 ? ArrayPool<TooltipPair>.Shared.Rent(lineCount) : [];
+
+		int fillIndex = 0;
+		if (args.SimpleTitle != null)
+		{
+			lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleTitle", args.SimpleTitle), fillIndex, 0, 0, Color.White);
+		}
+		if (args.SimpleSubtitle != null)
+		{
+			lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleSubtitle", args.SimpleSubtitle), fillIndex, 0, 0, Color.White);
+		}
+		foreach (DrawableTooltipLine source in args.Lines)
+		{
+			lines[fillIndex++].Base = source;
+		}
+
+		// Calculate sizes.
+		Array.Fill(lineMeasures, default, 0, lineCount);
+		Vector2 totalSize = Vector2.Zero;
+
+		for (int i = 0; i < lineCount; i++)
+		{
+			DrawableTooltipLine line = lines[i].Base;
+
+			// Make a cursed copy of the tooltip line for later.
+			lines[i].Copy = new DrawableTooltipLine(line, i, 0, 0, line.Color);
+
+			// Point of caution:
+			// To acquire information necessary for correct bounding box calculations, there is no choice but to call PreDrawTooltipLine twice.
+			// This is a TML design issue -- Mirsario.
+			int spacingOffset = 0;
+			if (args.AssociatedItem != null && !ItemLoader.PreDrawTooltipLine(args.AssociatedItem, line, ref spacingOffset))
+			{
+				lineCount--;
+				continue;
+			}
+
+			Vector2 measure = ChatManager.GetStringSize(line.Font, line.Text, line.BaseScale, line.MaxWidth);
+			int newLineCount = line.Text.Count(c => c == '\n');
+			float lineSpacing = BaseLineSpacing + spacingOffset;
+
+			lineMeasures[i] = measure + new Vector2(0f, lineSpacing);
+			totalSize.X = Math.Max(totalSize.X, lineMeasures[i].X);
+			totalSize.Y += lineMeasures[i].Y + lineSpacing;
+		}
+
+		// Calculate adjusted position.
+		Vector2 pos = args.Position ?? default;
+		if (!args.Position.HasValue)
+		{
+			// Match Main.MouseTextInner logic.
+			const int MouseOffset = 24;
+			pos = new Vector2(Main.mouseX + MouseOffset, Main.mouseY + MouseOffset);
+		}
+
+		pos.X = Math.Max(0, Math.Min(pos.X, Main.screenWidth - totalSize.X));
+		pos.Y = Math.Max(0, Math.Min(pos.Y, Main.screenHeight - totalSize.Y));
+
+		// Draw the background.
+		const int BgOffset = 16;
+		var bgDstRect = new Rectangle
+		{
+			X = (int)(pos.X - BgOffset),
+			Y = (int)(pos.Y - BgOffset),
+			Width = (int)(totalSize.X + BgOffset * 2),
+			Height = (int)(totalSize.Y + BgOffset * 2),
+		};
+		Color bgColor = Color.White * 0.925f;
+		Utils.DrawInvBG(Main.spriteBatch, bgDstRect, bgColor);
+
+		// Draw the actual lines.
+		Vector2 lineOffset = Vector2.Zero;
+
+		for (int i = 0; i < lineCount; i++)
+		{
+			DrawableTooltipLine line = lines[i].Base;
+
+			int spacingOffset = 0;
+			var drawPoint = (pos + lineOffset).ToPoint();
+
+			// A separate instance is used for Pre/PostDraw here, so as that the two PreDraw calls do not stack up state.
+			DrawableTooltipLine lineCopy = lines[i].Copy;
+			lineCopy = new DrawableTooltipLine(lineCopy, i, drawPoint.X, drawPoint.Y, lineCopy.Color);
+
+			if (args.AssociatedItem == null || ItemLoader.PreDrawTooltipLine(args.AssociatedItem, lineCopy, ref spacingOffset))
+			{
+				ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, line.Font, line.Text, drawPoint.ToVector2(), line.OverrideColor ?? line.Color, 0f, line.Origin, line.BaseScale, line.MaxWidth, line.Spread);
+				lineOffset.Y += lineMeasures[i].Y + BaseLineSpacing + spacingOffset;
+			}
+
+			if (args.AssociatedItem != null)
+			{
+				ItemLoader.PostDrawTooltipLine(args.AssociatedItem, lineCopy);
+			}
+		}
+
+		// Return rented arrays.
+		if (lineCount != 0)
+		{
+			ArrayPool<Vector2>.Shared.Return(lineMeasures);
+			ArrayPool<TooltipPair>.Shared.Return(lines);
+		}
 	}
 }

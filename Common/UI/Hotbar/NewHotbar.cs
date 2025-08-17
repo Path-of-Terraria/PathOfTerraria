@@ -285,8 +285,12 @@ public sealed class NewHotbar : SmartUiState
 		{
 			if (skillRect.Contains(Main.MouseScreen.ToPoint()))
 			{
-				Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.NoSkill"));
-				Tooltip.SetTooltip(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.ChooseSkill"));
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = "Skill",
+					SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.NoSkill"),
+					SimpleSubtitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.ChooseSkill"),
+				});
 			}
 
 			return;
@@ -344,7 +348,7 @@ public sealed class NewHotbar : SmartUiState
 	internal static void DrawSkillHoverTooltips(Skill skill, int? skillIndex = null, bool ignoreCanUse = false)
 	{
 		string level = Language.GetText("Mods.PathOfTerraria.Skills.LevelLine").WithFormatArgs(skill.Level, skill.MaxLevel).Value;
-		Tooltip.SetName(skill.DisplayName.Value + " " + level);
+		string title = skill.DisplayName.Value + " " + level;
 
 		SkillFailure failure = default;
 		bool canUse = skill.CanUseSkill(Main.LocalPlayer, ref failure, true);
@@ -399,14 +403,19 @@ public sealed class NewHotbar : SmartUiState
 		skill.ModifyTooltips(tooltips);
 		tooltips.Sort((x, y) => x.Slot.CompareTo(y.Slot));
 
-		string final = "";
+		string subtitle = "";
 
 		foreach (SkillTooltip tooltip in tooltips)
 		{
-			final += tooltip.Text + "\n";
+			subtitle += tooltip.Text + "\n";
 		}
 		
-		Tooltip.SetTooltip(final);
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "Skill",
+			SimpleTitle = title,
+			SimpleSubtitle = subtitle,
+		});
 	}
 
 	private static void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)
@@ -647,10 +656,13 @@ public class HijackHotbarClick : ModSystem
 		string type = health ? "Health" : "Mana";
 		PotionPlayer potions = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 
-		Tooltip.SetName(Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"));
-		Tooltip.SetTooltip(
-			Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
-			+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00")));
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = type,
+			SimpleTitle = Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"),
+			SimpleSubtitle = Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
+				+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00")),
+		});
 	}
 
 	private static void DrawBuildingHotbarTooltips(bool hbLocked, Texture2D back)

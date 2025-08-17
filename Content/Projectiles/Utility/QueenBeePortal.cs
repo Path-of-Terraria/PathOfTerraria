@@ -35,7 +35,11 @@ internal class QueenBeePortal : ModProjectile
 				}
 			}
 
-			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"));
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = "Portal",
+				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+			});
 		});
 	}
 

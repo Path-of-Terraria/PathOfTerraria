@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.UI;
 
 using TooltipUI = PathOfTerraria.Common.UI.Tooltip;
 
@@ -43,9 +44,12 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 	{
 		if (Item == Main.mouseItem || Item == player.inventory[58] && player.IsStandingStillForSpecialEffects && player.whoAmI == Main.myPlayer)
 		{
-			List<DrawableTooltipLine> tooltipLines = ItemTooltipBuilder.BuildTooltips(Item, player);
-			TooltipUI.SetFancyTooltip(tooltipLines[1..]);
-			TooltipUI.SetName($"[c/{tooltipLines[0].Color.Hex3()}:{tooltipLines[0].Text}]");
+			TooltipUI.Create(new TooltipDescription
+			{
+				Identifier = "MouseItem",
+				AssociatedItem = Item,
+				Lines = ItemTooltipBuilder.BuildTooltips(Item, player),
+			});
 		}
 	}
 

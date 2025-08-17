@@ -19,7 +19,11 @@ internal class SkeletronPortal : ModProjectile
 				SubworldSystem.Enter<SkeletronDomain>();
 			}
 
-			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"));
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = "Portal",
+				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+			});
 		});
 	}
 
