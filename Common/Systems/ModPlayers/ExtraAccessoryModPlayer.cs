@@ -1,0 +1,163 @@
+using Terraria.ModLoader.IO;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.ID;
+
+namespace PathOfTerraria.Common.Systems.ModPlayers;
+
+public class ExtraAccessoryModPlayer : ModPlayer
+{
+	private static readonly int[] CustomFunctionalSlots = { 20, 21, 22, 23, 24, 25 } ;
+	
+	public Item[] CustomAccessorySlots = new Item[6];
+	public Item[] CustomVanitySlots = new Item[6];
+	public Item[] CustomDyeSlots = new Item[6];
+
+	
+	public override void Initialize()
+	{
+		for (int i = 0; i < CustomAccessorySlots.Length; i++)
+		{
+			CustomAccessorySlots[i] = new Item();
+			CustomVanitySlots[i] = new Item();
+			CustomDyeSlots[i] = new Item();
+		}
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		for (int i = 0; i < CustomAccessorySlots.Length; i++)
+		{
+			if (!CustomAccessorySlots[i].IsAir)
+			{
+				tag[$"CustomAccessory_{i}"] = CustomAccessorySlots[i];
+			}
+			
+			if (!CustomVanitySlots[i].IsAir)
+			{
+				tag[$"CustomVanity_{i}"] = CustomVanitySlots[i];
+			}
+			
+			if (!CustomDyeSlots[i].IsAir)
+			{
+				tag[$"CustomDye_{i}"] = CustomDyeSlots[i];
+			}
+		}
+	}
+
+	public override void LoadData(TagCompound tag)
+	{
+		for (int i = 0; i < CustomAccessorySlots.Length; i++)
+		{
+			if (tag.TryGet($"CustomAccessory_{i}", out Item item))
+			{
+				CustomAccessorySlots[i] = item;
+			}
+			else
+			{
+				CustomAccessorySlots[i] = new Item();
+			}
+			
+			if (tag.TryGet($"CustomVanity_{i}", out Item vanityItem))
+			{
+				CustomVanitySlots[i] = vanityItem;
+			}
+			else
+			{
+				CustomVanitySlots[i] = new Item();
+			}
+			
+			if (tag.TryGet($"CustomDye_{i}", out Item dyeItem))
+			{
+				CustomDyeSlots[i] = dyeItem;
+			}
+			else
+			{
+				CustomDyeSlots[i] = new Item();
+			}
+		}
+	}
+
+	public override void PostUpdateEquips()
+	{
+		for (int i = 0; i < CustomAccessorySlots.Length; i++)
+		{
+			Item accessory = CustomAccessorySlots[i];
+			if (!accessory.IsAir)
+			{
+				Player.ApplyEquipFunctional(accessory, false);
+			}
+		}
+		
+		for (int i = 0; i < CustomVanitySlots.Length; i++)
+		{
+			Item vanityItem = CustomVanitySlots[i];
+			if (!vanityItem.IsAir)
+			{
+				Player.ApplyEquipVanity(vanityItem);
+			}
+		}
+	}
+
+	public Item GetCustomSlot(int virtualIndex)
+	{
+		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
+		return arrayIndex >= 0 ? CustomAccessorySlots[arrayIndex] : new Item();
+	}
+
+	public void SetCustomSlot(int virtualIndex, Item item)
+	{
+		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
+		if (arrayIndex >= 0)
+		{
+			CustomAccessorySlots[arrayIndex] = item;
+		}
+	}
+	
+	public Item GetCustomVanitySlot(int virtualIndex)
+	{
+		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
+		return arrayIndex >= 0 ? CustomVanitySlots[arrayIndex] : new Item();
+	}
+
+	public void SetCustomVanitySlot(int virtualIndex, Item item)
+	{
+		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
+		if (arrayIndex >= 0)
+		{
+			CustomVanitySlots[arrayIndex] = item;
+		}
+	}
+
+	public Item GetCustomDyeSlot(int virtualIndex)
+	{
+		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
+		return arrayIndex >= 0 ? CustomDyeSlots[arrayIndex] : new Item();
+	}
+
+	public void SetCustomDyeSlot(int virtualIndex, Item item)
+	{
+		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
+		if (arrayIndex >= 0)
+		{
+			CustomDyeSlots[arrayIndex] = item;
+		}
+	}
+
+	private static int GetCustomSlotArrayIndex(int virtualIndex)
+	{
+		for (int i = 0; i < CustomFunctionalSlots.Length; i++)
+		{
+			if (CustomFunctionalSlots[i] == virtualIndex)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	public static bool IsCustomSlot(int slot)
+	{
+		return Array.IndexOf(CustomFunctionalSlots, slot) >= 0;
+	}
+}
