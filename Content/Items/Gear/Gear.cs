@@ -40,19 +40,6 @@ public abstract class Gear : ModItem, GenerateAffixes.IItem, GenerateImplicits.I
 
 	public virtual void PostRoll() { }
 
-	public override void HoldItem(Player player)
-	{
-		if (Item == Main.mouseItem || Item == player.inventory[58] && player.IsStandingStillForSpecialEffects && player.whoAmI == Main.myPlayer)
-		{
-			TooltipUI.Create(new TooltipDescription
-			{
-				Identifier = "MouseItem",
-				AssociatedItem = Item,
-				Lines = ItemTooltipBuilder.BuildTooltips(Item, player),
-			});
-		}
-	}
-
 	/// <summary>
 	/// Allows the modder to modify incoming lines added by Path of Terraria which may not be accessible in <see cref="ModItem.ModifyTooltips(List{TooltipLine})"/>.
 	/// </summary>
