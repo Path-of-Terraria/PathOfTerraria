@@ -220,7 +220,7 @@ public class Tooltip : SmartUiState
 		(int xx, int yy) = (dst.X, dst.Y); // Position
 
 		// Impose a minimum size.
-		(dw, dh) = (Math.Max(dw, sw), Math.Max(dh, sh));
+		(dw, dh) = (Math.Max(dw, fW), Math.Max(dh, fH));
 		// Align size to the pixel grid.
 		const int AlignX = 4;
 		const int AlignY = 4;
