@@ -310,7 +310,7 @@ public static class PoTItemHelper
 
 		if (Main.hardMode)
 		{
-			level = Math.Max(level, 45); 
+			level = 45;
 		}
 
 		// Continue with hardmode bosses if not clamped
