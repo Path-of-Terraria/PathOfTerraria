@@ -93,12 +93,12 @@ public class AffixTooltipsHandler
 		{
 			return AffixTooltip.AffixSource.Necklace;
 		}
-		else if (source.ModItem is Map)
+		else if (source.damage > 0)
 		{
-			return AffixTooltip.AffixSource.NonApplicable;
+			return AffixTooltip.AffixSource.MainItem;
 		}
 
-		return AffixTooltip.AffixSource.MainItem;
+		return AffixTooltip.AffixSource.NonApplicable;
 	}
 
 	public void AddOrModify(Type type, AffixTooltip.AffixSource source, float value, LocalizedText text, bool corrupt, Item item, AffixTooltip.OverrideStringDelegate overrideString = null)
@@ -162,19 +162,20 @@ public class AffixTooltipsHandler
 	/// <param name="tooltips">List to add to.</param>
 	internal void ModifyTooltips(List<TooltipLine> tooltips, Item item)
 	{
+		AffixTooltip.AffixSource source = DetermineItemSource(item);
+
 		int tipNum = 0;
+		bool isEquipment = source is not AffixTooltip.AffixSource.NonApplicable;
 		bool hasShift = Keyboard.GetState().PressingShift();
-		bool isMap = item.ModItem is Map; // Used to disable comparisons on maps since that doesn't make sense
 		IEnumerable<KeyValuePair<Type, AffixTooltip>> differenceTips = null;
 		IEnumerable<KeyValuePair<Type, AffixTooltip>> firstTips = null;
 
-		if (!hasShift || isMap) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
+		if (!isEquipment || !hasShift) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
 		{
 			firstTips = CreateStandaloneTooltips(item);
 		}
 		else // Otherwise, put the tooltips modified by the current item at the top of the list & re-generate the standalone lines
 		{
-			AffixTooltip.AffixSource source = DetermineItemSource(item);
 			differenceTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0);//.Where(x => x.Value.ValueBySource.ContainsKey(source));
 			differenceTips = [.. differenceTips]; // Create a shallow clone of itself in order to de-reference from Tooltips
 
@@ -226,7 +227,7 @@ public class AffixTooltipsHandler
 			}
 		}
 
-		if (differenceTips is not null)
+		if (isEquipment && differenceTips is not null)
 		{
 			// You will see some commented out code here.
 			// This code was originally written to compare only two weapons of the same type - two javelins, two broadswords, two bows, etc.
@@ -265,7 +266,7 @@ public class AffixTooltipsHandler
 			// End code kept for posterity.
 		}
 
-		if (!hasShift && !isMap) // Show "Shift to compare" if they're not doing so (and it's not a map)
+		if (isEquipment && !hasShift) // Show "Shift to compare" if they're not doing so (and it's not a map)
 		{
 			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Shift"))
 			{
