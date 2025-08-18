@@ -45,6 +45,7 @@ public sealed partial class PoTGlobalItem : GlobalItem
 
 		return anyValidTrait && !entity.vanity;
 	}
+	
 	public override void OnCreated(Item item, ItemCreationContext context)
 	{
 		// Only apply to gear items that should use dynamic levels
