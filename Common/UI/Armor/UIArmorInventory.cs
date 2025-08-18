@@ -19,7 +19,7 @@ public sealed class UIArmorInventory : UIState
 	/// <summary>
 	///     The height of each armor page, in pixels.
 	/// </summary>
-	public const float ArmorPageHeight = 248f;
+	public const float ArmorPageHeight = 304f;
 
 	public const float Smoothness = 0.3f;
 
@@ -30,6 +30,10 @@ public sealed class UIArmorInventory : UIState
 	public const float DefensePadding = 4f;
 
 	public const float LoadoutPadding = 8f;
+	
+	//Used for tracking of hardmode UI changes (moves UI down if in HM)
+	private float HardmodeRowHeight => Main.hardMode ? 0f : 56f;
+	private bool wasHardMode = false;
 
 	public static readonly Asset<Texture2D> LeftButtonTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Button_Left", AssetRequestMode.ImmediateLoad);
 
@@ -64,6 +68,9 @@ public sealed class UIArmorInventory : UIState
 	private string previousDefense;
 
 	internal UIElement Root;
+	//Used for tracking of hardmode UI changes
+	private UIElement buttonRoot;
+	private UIElement defenseRoot;
 
 	/// <summary>
 	///     <para>
@@ -137,6 +144,22 @@ public sealed class UIArmorInventory : UIState
 		}
 
 		UpdateRootPosition();
+		// Check for hardmode changes and update UI positioning
+		if (Main.hardMode != wasHardMode)
+		{
+			UpdateHardmodeLayout();
+			wasHardMode = Main.hardMode;
+		}
+	}
+
+	// Used to dynamically update the lower panels if you have the extra accessory slot
+	private void UpdateHardmodeLayout()
+	{
+		// Update button positioning
+		buttonRoot.Top.Set(ArmorPageHeight + RootPadding - HardmodeRowHeight, 0f);
+		
+		// Update defense counter positioning  
+		defenseRoot.Top.Set(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding - HardmodeRowHeight, 0f);
 	}
 
 	private void UpdatePagePosition(UIElement page, int index)
@@ -258,12 +281,13 @@ public sealed class UIArmorInventory : UIState
 
 	private UIElement BuildPageButtons()
 	{
-		var buttonRoot = new UIElement
+		buttonRoot = new UIElement
 		{
 			Width = StyleDimension.FromPixels(ArmorPageWidth),
 			Height = StyleDimension.FromPixels(LeftButtonTexture.Height()),
 			Left = StyleDimension.FromPixels(FirstLoadoutIconTexture.Width() + RootPadding),
-			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding)
+			//Raise it if its not in hardmode.
+			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding - HardmodeRowHeight)
 		};
 
 		var leftButton = new UIHoverTooltipImage(LeftButtonTexture, $"Mods.{PoTMod.ModName}.UI.Gear.Buttons.Previous")
@@ -330,19 +354,14 @@ public sealed class UIArmorInventory : UIState
 		}
 	}
 	
-	//private float HardmodePadding()
-	//{
-	//	return Main.hardMode ? 50f : 0f;
-	//}
-
 	private UIElement BuildDefenseCounter()
 	{
-		var defenseRoot = new UIElement
+		defenseRoot = new UIElement
 		{
 			Width = StyleDimension.FromPixels(ArmorPageWidth),
 			Height = StyleDimension.FromPixels(DefenseCounterTexture.Height()),
 			Left = StyleDimension.FromPixels(FirstLoadoutIconTexture.Width() + RootPadding),
-			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding)
+			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding - HardmodeRowHeight)
 		};
 
 		var defenseText = new UIText(Player.statDefense.ToString())

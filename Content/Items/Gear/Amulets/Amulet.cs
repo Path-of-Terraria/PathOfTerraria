@@ -26,6 +26,6 @@ public abstract class Amulet : Gear
 	public override bool CanEquipAccessory(Player player, int slot, bool modded)
 	{
 		// Ensure amulets can be equipped in amulet slot only
-		return slot == 5;
+		return slot == 5 || slot == 15;
 	}
 }

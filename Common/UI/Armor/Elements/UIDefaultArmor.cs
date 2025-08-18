@@ -16,9 +16,15 @@ public sealed class UIDefaultArmor : UIArmorPage
 {
 	public static readonly Asset<Texture2D> DefaultFrameTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Frame_Default", AssetRequestMode.ImmediateLoad);
 
+	//This is to update the slot once WoF is killed. 
+	private UICustomHoverImageItemSlot accessorySlot4;
+	private bool wasHardMode = false;
+
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
+
+		Player.extraAccessorySlots = 3;
 
 		Width = StyleDimension.FromPixels(UIArmorInventory.ArmorPageWidth);
 		Height = StyleDimension.FromPixels(UIArmorInventory.ArmorPageHeight);
@@ -60,7 +66,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var weapon = new UIHoverImageItemSlot(DefaultFrameTexture, WeaponIconTexture, ref Player.inventory, 0, $"Mods.{PoTMod.ModName}.UI.Slots.4")
 		{
 			HAlign = 0f,
-			VAlign = 0.33f,
+			VAlign = 0.25f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -72,7 +78,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var chest = new UIHoverImageItemSlot(DefaultFrameTexture, ChestIconTexture, ref Player.armor, 1, $"Mods.{PoTMod.ModName}.UI.Slots.1", ItemSlot.Context.EquipArmor)
 		{
 			HAlign = 0.5f,
-			VAlign = 0.33f,
+			VAlign = 0.25f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -84,7 +90,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var offhand = new UIHoverImageItemSlot(DefaultFrameTexture, OffhandIconTexture, ref Player.armor, 6, $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
-			VAlign = 0.33f,
+			VAlign = 0.25f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -96,7 +102,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var leftRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 7, $"Mods.{PoTMod.ModName}.UI.Slots.7", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0f,
-			VAlign = 0.66f,
+			VAlign = 0.5f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -108,7 +114,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var legs = new UIHoverImageItemSlot(DefaultFrameTexture, LegsIconTexture, ref Player.armor, 2, $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipArmor)
 		{
 			HAlign = 0.5f,
-			VAlign = 0.66f,
+			VAlign = 0.5f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -120,7 +126,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var rightRing = new UIHoverImageItemSlot(DefaultFrameTexture, RingIconTexture, ref Player.armor, 8, $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
-			VAlign = 0.66f,
+			VAlign = 0.5f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -131,7 +137,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 
 		var accessorySlot1 = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 3, $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipAccessory)
 		{
-			VAlign = 1f,
+			VAlign = .75f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -143,7 +149,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		var accessorySlot2 = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 9, $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0.5f,
-			VAlign = 1f,
+			VAlign = .75f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -152,10 +158,10 @@ public sealed class UIDefaultArmor : UIArmorPage
 		accessorySlot2.OnMouseOut += UpdateMouseOut;
 		Append(accessorySlot2);
 		
-		var accessorySlot3 = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 10, $"Mods.{PoTMod.ModName}.UI.Slots.11", ItemSlot.Context.EquipAccessory)
+		var accessorySlot3 = new UICustomHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, 20, $"Mods.{PoTMod.ModName}.UI.Slots.11", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 1f,
-			VAlign = 1f,
+			VAlign = .75f,
 			ActiveScale = 1.15f,
 			ActiveRotation = MathHelper.ToRadians(1f)
 		};
@@ -164,21 +170,46 @@ public sealed class UIDefaultArmor : UIArmorPage
 		accessorySlot3.OnMouseOut += UpdateMouseOut;
 		Append(accessorySlot3);
 		
-		//var accessorySlot4 = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, ref Player.armor, 7, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessory)
-		//{
-		//	HAlign = 0,
-		//	VAlign = 1.33f,
-		//	ActiveScale = 1.15f,
-		//	ActiveRotation = MathHelper.ToRadians(1f)
-		//};
-		//
-		//accessorySlot4.OnMouseOver += UpdateMouseOver;
-		//accessorySlot4.OnMouseOut += UpdateMouseOut;
-		//
-		//if (Main.hardMode)
-		//{
-		//	Append(accessorySlot4);	
-		//}
-		//DISABLED FOR NOW. Add when condition for killing WOF is added + padding on the gear/defense buttons
+		accessorySlot4 = new UICustomHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture,  21, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessory)
+		{
+			HAlign = 0,
+			VAlign = 1.0f,
+			ActiveScale = 1.15f,
+			ActiveRotation = MathHelper.ToRadians(1f)
+		};
+		
+		accessorySlot4.OnMouseOver += UpdateMouseOver;
+		accessorySlot4.OnMouseOut += UpdateMouseOut;
+		
+		wasHardMode = Main.hardMode;
+		if (wasHardMode)
+		{
+			Append(accessorySlot4);	
+		}
+
 	}
+	
+	public override void Update(GameTime gameTime)
+	{
+		base.Update(gameTime);
+
+		if (Main.hardMode != wasHardMode)
+		{
+			if (Main.hardMode)
+			{
+				// Make sure the slot is properly initialized before appending
+				if (accessorySlot4.Icon == null)
+				{
+					accessorySlot4.OnInitialize();
+				}
+				Append(accessorySlot4);
+			}
+			else
+			{
+				RemoveChild(accessorySlot4);
+			}
+			wasHardMode = Main.hardMode;
+		}
+	}
+
 }

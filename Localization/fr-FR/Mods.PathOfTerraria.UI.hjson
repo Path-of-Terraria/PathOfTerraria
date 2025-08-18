@@ -24,6 +24,7 @@ Slots: {
 	// 9: Accessory 2
 	// 10: Wings
 	// 11: Accessory 3
+	// 12: Accessory 4
 }
 
 BaseDamage: Dommage de Base : {0}
