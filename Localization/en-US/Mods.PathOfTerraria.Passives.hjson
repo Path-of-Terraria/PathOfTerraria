@@ -101,7 +101,7 @@ AddedCriticalStrikeChance: {
 
 IncreasedCriticalStrikeChance: {
 	Name: Increased Critical Strike Chance
-	Tooltip: Adds 5% increased critical strike chance per level
+	Tooltip: Adds 10% increased critical strike chance per level
 }
 
 IncreasedCriticalStrikeMultiplier: {
