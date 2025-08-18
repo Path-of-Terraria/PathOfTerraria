@@ -10,18 +10,31 @@ namespace PathOfTerraria.Common.UI;
 
 #nullable enable
 
+/// <summary>
+/// Description used to instantiate a tooltip popup in the <see cref="Tooltip"/> system.
+/// </summary>
 public struct TooltipDescription()
 {
+	/// <summary> An identifier used to detect duplicate tooltip instances. </summary>
 	public required string Identifier;
+	/// <summary> If provided, inserts a simple line into the <see cref="Lines"/> list, before <see cref="SimpleSubtitle"/>'s line. </summary>
 	public string? SimpleTitle;
+	/// <summary> If provided, inserts a simple line into the <see cref="Lines"/> list, after <see cref="SimpleTitle"/>'s line. </summary>
 	public string? SimpleSubtitle;
+	/// <summary> Lines to render. </summary>
 	public List<DrawableTooltipLine> Lines = [];
+	/// <summary> Tooltip's position. If not provided, will default to that of the cursor. </summary>
 	public Vector2? Position;
+	/// <summary> Tooltip's origin. </summary>
 	public Vector2 Origin = Vector2.Zero;
 	/// <summary> The higher this value is, the less likely this tooltip is to move when colliding with other tooltips. </summary>
 	public int Stability;
+	/// <summary> If provided, this item instance is used to invoke ItemLoader's Pre/PostDrawTooltip(Line) hooks. </summary>
 	public Item? AssociatedItem;
+	/// <summary> The amount of time in game ticks that this tooltip should be visible for.  </summary>
 	public uint VisibilityTimeInTicks = 2;
+	/// <summary> Padding to add inside the tooltip's background. </summary>
+	public Vector2 Padding = new(16, 16);
 }
 /// <summary>
 /// Calculated information needed to render a tooltip.
