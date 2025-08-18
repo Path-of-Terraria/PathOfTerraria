@@ -150,6 +150,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		TooltipLine nameLine = tooltips.FirstOrDefault(x => x.Name == "ItemName");
 		TooltipLine priceLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Price");
 		TooltipLine materialLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Material");
+		TooltipLine placeableLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Placeable");
 
 		if (setBonusLine is not null)
 		{
@@ -365,7 +366,12 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			tooltips.Add(materialLine);
 		}
-		
+
+		if (placeableLine is not null)
+		{
+			tooltips.Add(placeableLine);
+		}
+
 		if (priceLine is not null)
 		{
 			tooltips.Add(priceLine);
