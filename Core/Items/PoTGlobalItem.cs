@@ -51,7 +51,8 @@ public sealed partial class PoTGlobalItem : GlobalItem
 		// Only apply to gear items that should use dynamic levels
 		if (GearGlobalItem.IsGearItem(item))
 		{
-			int appropriateLevel = PoTItemHelper.PickItemLevel();
+			//Not clamping to hardmode specifically but making sure it's identified as a craft
+			int appropriateLevel = PoTItemHelper.PickItemLevel(false, true);
 			SetItemLevel.Invoke(item, appropriateLevel);
 		}
 	}
