@@ -75,6 +75,8 @@ DropVisualizer: {
 	Normalize: Normalize
 	Count: Count
 	Level: Level
+	RareMod: +Rare
+	RateMod: +Rate
 	Run: Run
 	SortBy: "Sort by: "
 	UniqueItem: (Unique Item)

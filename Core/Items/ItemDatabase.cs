@@ -119,15 +119,24 @@ public sealed class ItemDatabase : ModSystem
 		_items.Add(new ItemRecord(dropChance, rarity, itemId, item));
 	}
 
-	public static float ApplyRarityModifier(float chance, float dropRarityModifier)
+	/// <summary>
+	/// Makes <see cref="ItemRarity.Rare"/> and <see cref="ItemRarity.Unique"/> items more common.
+	/// </summary>
+	/// <param name="item">The item record to reference.</param>
+	/// <param name="dropRarityModifier">The total drop rarity modifier. Higher means more Rare or Unique drops.</param>
+	/// <param name="itemRarityModifier">The total item rarity modifier. Higher means more rarer items.</param>
+	/// <returns>The modified drop chance for the item record.</returns>
+	public static float ApplyDropRateModifiers(ItemRecord item, float dropRarityModifier, float itemRarityModifier)
 	{
-		// this is just some arbitrary function from chat gpt, modified a little...
-		// it is pretty hard to get all this down when we dont know all the items we will have n such;
+		itemRarityModifier = MathHelper.Clamp(itemRarityModifier, 0, 1);
+		float chance = MathHelper.Lerp(item.DropChance, 1, 1 - 1 / (itemRarityModifier + 1));
 
-		chance *= 100f; // to make it effective on <0.1; it works... ok?
-		float powerDecrease = chance * (1 + dropRarityModifier / MagicFindPowerDecrease) /
-							  (1 + chance * dropRarityModifier / MagicFindPowerDecrease);
-		return powerDecrease;
+		if (item.Rarity is ItemRarity.Normal or ItemRarity.Magic)
+		{
+			return chance;
+		}
+
+		return chance * (1 + dropRarityModifier);
 	}
 	
 	/// <summary>

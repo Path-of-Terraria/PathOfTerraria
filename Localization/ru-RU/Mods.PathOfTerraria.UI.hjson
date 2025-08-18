@@ -75,6 +75,8 @@ DropVisualizer: {
 	Normalize: Нормализовать
 	Count: Количество
 	Level: Уровень
+	// RareMod: +Rare
+	// RateMod: +Rate
 	Run: Запуск
 	SortBy: "Сортировать по: "
 	UniqueItem: (Уникальный предмет)
