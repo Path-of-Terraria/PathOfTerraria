@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -43,5 +44,14 @@ public sealed partial class PoTGlobalItem : GlobalItem
 			entity.legSlot > 0 || entity.ModItem is IPoTGlobalItem;
 
 		return anyValidTrait && !entity.vanity;
+	}
+	public override void OnCreated(Item item, ItemCreationContext context)
+	{
+		// Only apply to gear items that should use dynamic levels
+		if (GearGlobalItem.IsGearItem(item))
+		{
+			int appropriateLevel = PoTItemHelper.PickItemLevel();
+			SetItemLevel.Invoke(item, appropriateLevel);
+		}
 	}
 }
