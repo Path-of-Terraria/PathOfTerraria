@@ -1,15 +1,5 @@
-using System.Buffers;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Runtime.InteropServices;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Core.UI.SmartUI;
-using ReLogic.Content;
-using ReLogic.Graphics;
-using Terraria.UI;
-using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI;
 
@@ -71,29 +61,6 @@ public sealed class TooltipOverrides : ModSystem
 	private static void InjectHoverItemTooltipOverride(ILContext ctx)
 	{
 		var il = new ILCursor(ctx);
-
-		// Collect local variable information.
-		int locX = -1;
-		int locY = -1;
-		int locRare = -1;
-		int locDiff = -1;
-		Type cacheType = typeof(Main).GetNestedType("MouseTextCache", BindingFlags.Instance | BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public)!;
-		il.FindNext(out _, i => i.MatchLdfld(cacheType, "rare"), i => i.MatchStloc(out locRare));
-		il.FindNext(out _, i => i.MatchLdfld(cacheType, "diff"), i => i.MatchStloc(out locDiff));
-		//il.FindNext(out _, i => i.MatchLdfld(cacheType, "X"), i => i.MatchStloc(out locX));
-		//il.FindNext(out _, i => i.MatchLdfld(cacheType, "Y"), i => i.MatchStloc(out locY));
-		il.FindNext(out _,
-			i => i.MatchLdsfld(typeof(Main), nameof(Main.mouseX)),
-			i => i.MatchLdcI4(14),
-			i => i.MatchAdd(),
-			i => i.MatchStloc(out locX)
-		);
-		il.FindNext(out _,
-			i => i.MatchLdsfld(typeof(Main), nameof(Main.mouseY)),
-			i => i.MatchLdcI4(14),
-			i => i.MatchAdd(),
-			i => i.MatchStloc(out locY)
-		);
 
 		// Match 'if (HoverItem.type > 0)'.
 		il.GotoNext(
