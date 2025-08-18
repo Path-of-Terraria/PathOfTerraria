@@ -254,7 +254,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			float minDamage = finalDamage * 0.85f;
 			float maxDamage = finalDamage * 1.15f;
     
-			string highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage)}-{Math.Round(maxDamage)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})");
+			string highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})");
 			var damageLine = new TooltipLine(Mod, "Damage", $"{ColoredDot(Colors.StatsAccent)} {highlightNumbers}");
 			AddNewTooltipLine(item, tooltips, damageLine);
 		}
