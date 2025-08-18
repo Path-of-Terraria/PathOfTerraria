@@ -1,5 +1,4 @@
-using System.Buffers;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -19,8 +18,22 @@ public struct TooltipDescription()
 	public List<DrawableTooltipLine> Lines = [];
 	public Vector2? Position;
 	public Vector2 Origin = Vector2.Zero;
+	/// <summary> The higher this value is, the less likely this tooltip is to move when colliding with other tooltips. </summary>
+	public int Stability;
 	public Item? AssociatedItem;
 	public uint VisibilityTimeInTicks = 2;
+}
+/// <summary>
+/// Calculated information needed to render a tooltip.
+/// </summary>
+public struct TooltipCache
+{
+	public int LineCount;
+	public Vector2[] LineMeasures;
+	public (DrawableTooltipLine Base, DrawableTooltipLine Copy)[] Lines;
+	public Vector2 OuterSize;
+	public Vector2 Position;
+	public Vector2 DesiredPosition;
 }
 
 /// <summary>
@@ -28,15 +41,10 @@ public struct TooltipDescription()
 /// </summary>
 public class Tooltip : SmartUiState
 {
-	private struct TooltipPair
-	{
-		public DrawableTooltipLine Base;
-		public DrawableTooltipLine Copy;
-	}
-
 	private struct TooltipInstance
 	{
 		public TooltipDescription Description;
+		public TooltipCache Cache;
 		public uint EndTime;
 	}
 
@@ -53,14 +61,24 @@ public class Tooltip : SmartUiState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		foreach (ref TooltipInstance tooltip in IterateTooltips())
+		Span<TooltipInstance> span = IterateTooltips();
+
+		foreach (ref TooltipInstance tooltip in span)
 		{
-			Render(tooltip.Description);
+			Recalculate(in tooltip.Description, ref tooltip.Cache);
+		}
+
+		ResolveTooltipCollisions(span);
+
+		foreach (ref TooltipInstance tooltip in span)
+		{
+			Render(in tooltip.Description, tooltip.Cache);
 		}
 	}
 
 	private static Span<TooltipInstance> IterateTooltips()
 	{
+		// Remove expired tooltips.
 		uint currentTime = Main.GameUpdateCount;
 		for (int i = 0; i < tooltips.Count; i++)
 		{
@@ -97,41 +115,40 @@ public class Tooltip : SmartUiState
 		tooltip.EndTime = Main.GameUpdateCount + args.VisibilityTimeInTicks;
 	}
 
-	/// <summary> Immediately draws the provided tooltip on the screen. </summary>
-	private static void Render(TooltipDescription args)
+	private static void Recalculate(in TooltipDescription args, ref TooltipCache cache)
 	{
 		const int BaseLineSpacing = 0;
 		int lineCount = args.Lines.Count + (args.SimpleTitle != null ? 1 : 0) + (args.SimpleSubtitle != null ? 1 : 0);
 
-		// Rent and populate arrays.
-		Vector2[] lineMeasures = lineCount != 0 ? ArrayPool<Vector2>.Shared.Rent(lineCount) : [];
-		TooltipPair[] lines = lineCount != 0 ? ArrayPool<TooltipPair>.Shared.Rent(lineCount) : [];
+		// Populate arrays.
+		cache.LineCount = lineCount;
+		Array.Resize(ref cache.Lines, Math.Max(cache.Lines?.Length ?? 0, lineCount));
+		Array.Resize(ref cache.LineMeasures, Math.Max(cache.LineMeasures?.Length ?? 0, lineCount));
 
 		int fillIndex = 0;
 		if (args.SimpleTitle != null)
 		{
-			lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleTitle", args.SimpleTitle), fillIndex, 0, 0, Color.White);
+			cache.Lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleTitle", args.SimpleTitle), fillIndex, 0, 0, Color.White);
 		}
 		if (args.SimpleSubtitle != null)
 		{
-			lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleSubtitle", args.SimpleSubtitle), fillIndex, 0, 0, Color.White);
+			cache.Lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleSubtitle", args.SimpleSubtitle), fillIndex, 0, 0, Color.White);
 		}
 		foreach (DrawableTooltipLine source in args.Lines)
 		{
-			lines[fillIndex++].Base = source;
+			cache.Lines[fillIndex++].Base = source;
 		}
 
 		// Calculate sizes.
-		const int BgOffset = 16;
-		Array.Fill(lineMeasures, default, 0, lineCount);
-		Vector2 totalSize = Vector2.Zero;
+		cache.OuterSize = default;
+		Array.Fill(cache.LineMeasures, default, 0, lineCount);
 
 		for (int i = 0; i < lineCount; i++)
 		{
-			DrawableTooltipLine line = lines[i].Base;
+			DrawableTooltipLine line = cache.Lines[i].Base;
 
 			// Make a cursed copy of the tooltip line for later.
-			lines[i].Copy = new DrawableTooltipLine(line, i, 0, 0, line.Color);
+			cache.Lines[i].Copy = new DrawableTooltipLine(line, i, 0, 0, line.Color);
 
 			// Point of caution:
 			// To acquire information necessary for correct bounding box calculations, there is no choice but to call PreDrawTooltipLine twice.
@@ -147,71 +164,100 @@ public class Tooltip : SmartUiState
 			int newLineCount = line.Text.Count(c => c == '\n');
 			float lineSpacing = BaseLineSpacing + spacingOffset;
 
-			lineMeasures[i] = measure;
-			totalSize.X = Math.Max(totalSize.X, lineMeasures[i].X);
-			totalSize.Y += lineMeasures[i].Y + lineSpacing;
+			cache.LineMeasures[i] = measure;
+			cache.OuterSize.X = Math.Max(cache.OuterSize.X, cache.LineMeasures[i].X);
+			cache.OuterSize.Y += cache.LineMeasures[i].Y + lineSpacing;
 		}
+		// Add padding.
+		cache.OuterSize += args.Padding * 2f;
 
 		// Calculate the top-left position.
-		Vector2 pos = args.Position ?? default;
+		cache.Position = args.Position ?? default;
 		if (!args.Position.HasValue)
 		{
 			// Match Main.MouseTextInner logic.
-			const int MouseOffset = 24;
-			pos = new Vector2(Main.mouseX + MouseOffset, Main.mouseY + MouseOffset);
+			const int MouseOffset = 8;
+			cache.Position = new Vector2(Main.mouseX + MouseOffset, Main.mouseY + MouseOffset);
 		}
 		// Adjust by origin.
-		pos.X = MathHelper.Lerp(pos.X, pos.X - totalSize.X - BgOffset * 2, args.Origin.X);
-		pos.Y = MathHelper.Lerp(pos.Y, pos.Y - totalSize.Y - BgOffset * 2, args.Origin.Y);
-		// Keep everything on the screen.
-		pos.X = Math.Max(BgOffset, Math.Min(pos.X, Main.screenWidth - BgOffset - totalSize.X));
-		pos.Y = Math.Max(BgOffset, Math.Min(pos.Y, Main.screenHeight - BgOffset - totalSize.Y));
+		cache.Position.X = MathHelper.Lerp(cache.Position.X, cache.Position.X - cache.OuterSize.X, args.Origin.X);
+		cache.Position.Y = MathHelper.Lerp(cache.Position.Y, cache.Position.Y - cache.OuterSize.Y, args.Origin.Y);
+		// Make a copy of the computed position in case it is adjusted further.
+		cache.DesiredPosition = cache.Position;
+		// Adjust to screen bounds.
+		cache.Position.X = Math.Max(0, Math.Min(cache.Position.X, Main.screenWidth - cache.OuterSize.X));
+		cache.Position.Y = Math.Max(0, Math.Min(cache.Position.Y, Main.screenHeight - cache.OuterSize.Y));
+	}
 
+	private static void ResolveTooltipCollisions(Span<TooltipInstance> tooltips)
+	{
+		for (int i = 0; i < tooltips.Length; i++)
+		{
+			for (int j = 0; j < tooltips.Length; j++)
+			{
+				if (i == j) { continue; }
+
+				ref TooltipCache a = ref tooltips[i].Cache; // Self
+				ref readonly TooltipCache b = ref tooltips[j].Cache; // Other
+
+				if (tooltips[i].Description.Stability > tooltips[j].Description.Stability) { continue; }
+
+				var aBounds = new Vector4(a.Position, a.Position.X + a.OuterSize.X, a.Position.Y + a.OuterSize.Y);
+				var bBounds = new Vector4(b.Position, b.Position.X + b.OuterSize.X, b.Position.Y + b.OuterSize.Y);
+
+				if (aBounds.X <= bBounds.Z && aBounds.Y <= bBounds.W && aBounds.Z >= bBounds.X && aBounds.W >= bBounds.Y)
+				{
+					Vector2 aCenter = a.DesiredPosition + a.OuterSize * 0.5f;
+					Vector2 bCenter = b.DesiredPosition + b.OuterSize * 0.5f;
+					a.Position.X = aCenter.X <= bCenter.X ? bBounds.X - a.OuterSize.X : bBounds.Z;
+
+					// Adjust to screen bounds.
+					a.Position.X = Math.Max(0, Math.Min(a.Position.X, Main.screenWidth - a.OuterSize.X));
+					a.Position.Y = Math.Max(0, Math.Min(a.Position.Y, Main.screenHeight - a.OuterSize.Y));
+				}
+			}
+		}
+	}
+
+	/// <summary> Immediately draws the provided tooltip on the screen, using the provided cache. </summary>
+	public static void Render(in TooltipDescription args, in TooltipCache cache)
+	{
 		// Draw the background.
-		const int BgOffset = 16;
 		var bgDstRect = new Rectangle
 		{
-			X = (int)(pos.X - BgOffset),
-			Y = (int)(pos.Y - BgOffset),
-			Width = (int)(totalSize.X + BgOffset * 2),
-			Height = (int)(totalSize.Y + BgOffset * 2),
+			X = (int)cache.Position.X,
+			Y = (int)cache.Position.Y,
+			Width = (int)cache.OuterSize.X,
+			Height = (int)cache.OuterSize.Y,
 		};
 		Color bgColor = Color.White * 0.925f;
 		Texture2D bgTexture = ModContent.Request<Texture2D>($"{nameof(PathOfTerraria)}/Assets/UI/TooltipBackground", AssetRequestMode.ImmediateLoad).Value;
 		RenderBackground(Main.spriteBatch, bgTexture, null, bgDstRect, bgColor);
 
 		// Draw the actual lines.
-		Vector2 lineOffset = Vector2.Zero;
+		Vector2 lineOffset = args.Padding;
 
-		for (int i = 0; i < lineCount; i++)
+		for (int i = 0; i < cache.LineCount; i++)
 		{
-			DrawableTooltipLine line = lines[i].Base;
+			DrawableTooltipLine line = cache.Lines[i].Base;
 
 			int spacingOffset = 0;
-			var drawPoint = (pos + lineOffset).ToPoint();
+			var drawPoint = (cache.Position + lineOffset).ToPoint();
 
 			// A separate instance is used for Pre/PostDraw here, so as that the two PreDraw calls do not stack up state.
-			DrawableTooltipLine lineCopy = lines[i].Copy;
+			DrawableTooltipLine lineCopy = cache.Lines[i].Copy;
 			lineCopy = new DrawableTooltipLine(lineCopy, i, drawPoint.X, drawPoint.Y, lineCopy.Color);
 
 			if (args.AssociatedItem == null || ItemLoader.PreDrawTooltipLine(args.AssociatedItem, lineCopy, ref spacingOffset))
 			{
 				ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, line.Font, line.Text, drawPoint.ToVector2(), line.OverrideColor ?? line.Color, 0f, line.Origin, line.BaseScale, line.MaxWidth, line.Spread);
-				float lineSpacing = BaseLineSpacing + spacingOffset;
-				lineOffset.Y += lineMeasures[i].Y + lineSpacing;
+				lineOffset.Y += cache.LineMeasures[i].Y + spacingOffset;
 			}
 
 			if (args.AssociatedItem != null)
 			{
 				ItemLoader.PostDrawTooltipLine(args.AssociatedItem, lineCopy);
 			}
-		}
-
-		// Return rented arrays.
-		if (lineCount != 0)
-		{
-			ArrayPool<Vector2>.Shared.Return(lineMeasures);
-			ArrayPool<TooltipPair>.Shared.Return(lines);
 		}
 	}
 
