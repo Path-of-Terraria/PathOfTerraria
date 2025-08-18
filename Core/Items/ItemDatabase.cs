@@ -122,10 +122,10 @@ public sealed class ItemDatabase : ModSystem
 	/// <summary>
 	/// Makes <see cref="ItemRarity.Rare"/> and <see cref="ItemRarity.Unique"/> items more common.
 	/// </summary>
-	/// <param name="chance"></param>
-	/// <param name="dropRarityModifier"></param>
-	/// <param name="rare"></param>
-	/// <returns></returns>
+	/// <param name="item">The item record to reference.</param>
+	/// <param name="dropRarityModifier">The total drop rarity modifier. Higher means more Rare or Unique drops.</param>
+	/// <param name="itemRarityModifier">The total item rarity modifier. Higher means more rarer items.</param>
+	/// <returns>The modified drop chance for the item record.</returns>
 	public static float ApplyDropRateModifiers(ItemRecord item, float dropRarityModifier, float itemRarityModifier)
 	{
 		itemRarityModifier = MathHelper.Clamp(itemRarityModifier, 0, 1);

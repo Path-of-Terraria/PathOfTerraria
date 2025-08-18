@@ -172,9 +172,8 @@ internal class DropTable
 	private static WeightedRandom<ItemDatabase.ItemRecord> GetGearPool(int itemLevel, ref float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear, 
 		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier)
 	{
-		dropRarityModifier += itemLevel / 10f; // the effect of item level on "magic find"
+		dropRarityModifier += itemLevel / 10f; // Higher levels have a higher likelihood of being Rare or Unique
 
-		// Calculate dropChanceSum based on filtered gear
 		float rarityMod = dropRarityModifier;
 		float dropChanceSum = filteredGear.Where(additionalCondition).Sum(x => ItemDatabase.ApplyDropRateModifiers(x, rarityMod, itemRarityModifier));
 		float choice = Main.rand.NextFloat(dropChanceSum);
