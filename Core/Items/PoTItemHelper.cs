@@ -10,6 +10,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using System.Linq;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -214,7 +215,8 @@ public static class PoTItemHelper
 	public static bool HasMaxAffixesForRarity(Item item)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
-		return data.Affixes.Count >= GetMaxAffixCounts(data.Rarity);
+		int nonImplicitAffixCount = data.Affixes.Count(affix => !affix.IsImplicit);
+		return nonImplicitAffixCount >= GetMaxAffixCounts(data.Rarity);
 	}
 
 	public static void SetMouseItemToHeldItem(Player player)
