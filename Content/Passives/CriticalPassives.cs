@@ -21,7 +21,7 @@ internal class AddedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeChance : Passive
 {
-	private const float AmountPerLevel = 1.05f;
+	private const float AmountPerLevel = 0.10f;
 
 	public override void BuffPlayer(Player player)
 	{
