@@ -145,7 +145,7 @@ public class Tooltip : SmartUiState
 			int newLineCount = line.Text.Count(c => c == '\n');
 			float lineSpacing = BaseLineSpacing + spacingOffset;
 
-			lineMeasures[i] = measure + new Vector2(0f, lineSpacing);
+			lineMeasures[i] = measure;
 			totalSize.X = Math.Max(totalSize.X, lineMeasures[i].X);
 			totalSize.Y += lineMeasures[i].Y + lineSpacing;
 		}
@@ -192,7 +192,8 @@ public class Tooltip : SmartUiState
 			if (args.AssociatedItem == null || ItemLoader.PreDrawTooltipLine(args.AssociatedItem, lineCopy, ref spacingOffset))
 			{
 				ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, line.Font, line.Text, drawPoint.ToVector2(), line.OverrideColor ?? line.Color, 0f, line.Origin, line.BaseScale, line.MaxWidth, line.Spread);
-				lineOffset.Y += lineMeasures[i].Y + BaseLineSpacing + spacingOffset;
+				float lineSpacing = BaseLineSpacing + spacingOffset;
+				lineOffset.Y += lineMeasures[i].Y + lineSpacing;
 			}
 
 			if (args.AssociatedItem != null)
