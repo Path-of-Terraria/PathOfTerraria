@@ -12,6 +12,12 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 	private bool equipped = false;
 	public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)
 	{
+		// Check for duplicates first - applies to all slots
+		if (IsItemAlreadyEquipped(item, player, slot))
+		{
+			return false;
+		}
+
 		// Handle custom slots separately
 		if (ExtraAccessoryModPlayer.IsCustomSlot(slot))
 		{
@@ -33,6 +39,59 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		};
 
 		return result;
+	}
+	
+	private bool IsItemAlreadyEquipped(Item itemToCheck, Player player, int targetSlot)
+	{
+		if (itemToCheck == null || itemToCheck.IsAir)
+			return false;
+
+		ExtraAccessoryModPlayer modPlayer = player.GetModPlayer<ExtraAccessoryModPlayer>();
+
+		// Check all vanilla equipment slots (except the target slot we're trying to equip to)
+		for (int i = 0; i < player.armor.Length; i++)
+		{
+			if (i == targetSlot) continue; // Skip the slot we're trying to equip to
+			
+			if (!player.armor[i].IsAir && ItemsAreSameType(player.armor[i], itemToCheck))
+				return true;
+		}
+
+		// Check all vanilla dye slots
+		for (int i = 0; i < player.dye.Length; i++)
+		{
+			if (!player.dye[i].IsAir && ItemsAreSameType(player.dye[i], itemToCheck))
+				return true;
+		}
+
+		// Check custom accessory slots
+		for (int i = 0; i < modPlayer.CustomAccessorySlots.Length; i++)
+		{
+			if (!modPlayer.CustomAccessorySlots[i].IsAir && ItemsAreSameType(modPlayer.CustomAccessorySlots[i], itemToCheck))
+				return true;
+		}
+
+		// Check custom vanity slots
+		for (int i = 0; i < modPlayer.CustomVanitySlots.Length; i++)
+		{
+			if (!modPlayer.CustomVanitySlots[i].IsAir && ItemsAreSameType(modPlayer.CustomVanitySlots[i], itemToCheck))
+				return true;
+		}
+
+		// Check custom dye slots
+		for (int i = 0; i < modPlayer.CustomDyeSlots.Length; i++)
+		{
+			if (!modPlayer.CustomDyeSlots[i].IsAir && ItemsAreSameType(modPlayer.CustomDyeSlots[i], itemToCheck))
+				return true;
+		}
+
+		return false;
+	}
+	
+	//Compares if two items are the same ID. 
+	private static bool ItemsAreSameType(Item item1, Item item2)
+	{
+		return item1.type == item2.type;
 	}
 
 	public bool IsNormalAccessory(Item item)
@@ -63,6 +122,13 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		var accessorySlotGlobal = ModContent.GetInstance<AccessorySlotGlobalItem>();
         
 		if (!accessorySlotGlobal.IsNormalAccessory(item))
+		{
+			equipped = false;
+			return;
+		}
+		
+		// Check if item is already equipped before trying to equip
+		if (IsItemAlreadyEquipped(item, player, -1)) // -1 means we're not targeting a specific slot
 		{
 			equipped = false;
 			return;
