@@ -16,6 +16,7 @@ public abstract class Affix : ILocalizedModType
 	public float Value = 0;
 	public int Duration = 180; //3 Seconds by default
 	public bool IsCorruptedAffix = false;
+	public bool IsImplicit = false;
 	public bool Round = false;
 	public int Tier = 1;
 

@@ -191,6 +191,12 @@ public sealed class GenerateImplicits : ILoadable
 
 			gl.ModifyImplicits(item, implicits);
 		}
+		
+		// Mark all generated implicits as implicit
+		foreach (ItemAffix affix in implicits)
+		{
+			affix.IsImplicit = true;
+		}
 
 		return implicits;
 	}
