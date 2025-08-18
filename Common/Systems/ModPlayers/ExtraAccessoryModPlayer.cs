@@ -102,7 +102,14 @@ public class ExtraAccessoryModPlayer : ModPlayer
 	public Item GetCustomSlot(int virtualIndex)
 	{
 		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
-		return arrayIndex >= 0 ? CustomAccessorySlots[arrayIndex] : new Item();
+		
+		if (arrayIndex < 0 || arrayIndex >= CustomAccessorySlots.Length)
+		{
+			throw new ArgumentOutOfRangeException(nameof(virtualIndex), 
+				$"Virtual index {virtualIndex} maps to invalid array index {arrayIndex}. Valid range: 0-{CustomAccessorySlots.Length - 1}");
+		}
+	
+		return CustomAccessorySlots[arrayIndex];
 	}
 
 	public void SetCustomSlot(int virtualIndex, Item item)
