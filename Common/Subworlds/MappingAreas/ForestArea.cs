@@ -359,7 +359,7 @@ internal class ForestArea : MappingWorld, IOverrideBiome
 			{
 				for (int k = 0; k < 3; ++k)
 				{
-					ItemDatabase.ItemRecord drop = drops[i];
+					ItemDatabase.ItemRecord drop = drops[k];
 					chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
 				}
 			}

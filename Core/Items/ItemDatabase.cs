@@ -3,7 +3,6 @@ using PathOfTerraria.Common.Enums;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
@@ -130,7 +129,7 @@ public sealed class ItemDatabase : ModSystem
 	public static float ApplyDropRateModifiers(ItemRecord item, float dropRarityModifier, float itemRarityModifier)
 	{
 		itemRarityModifier = MathHelper.Clamp(itemRarityModifier, 0, 1);
-		float chance = MathHelper.Lerp(item.DropChance, 1, itemRarityModifier);
+		float chance = MathHelper.Lerp(item.DropChance, 1, 1 - 1 / (itemRarityModifier + 1));
 
 		if (item.Rarity is ItemRarity.Normal or ItemRarity.Magic)
 		{

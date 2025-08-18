@@ -59,7 +59,7 @@ internal class DropResult(int count)
 
 internal class DropTableUIState : CloseableSmartUi
 {
-	public static readonly Point MainPanelSize = new(1220, 760);
+	public static readonly Point MainPanelSize = new(1160, 760);
 
 	private enum SortMode
 	{
@@ -76,6 +76,7 @@ internal class DropTableUIState : CloseableSmartUi
 	private UIEditableValue _count = null;
 	private UIEditableValue _level = null;
 	private UIEditableValue _rarityMod = null;
+	private UIEditableValue _rateMod = null;
 	private UIButton<string> _sortButton = null;
 	private UIList _resultList = null;
 	private SortMode _sort = SortMode.None;
@@ -208,27 +209,33 @@ internal class DropTableUIState : CloseableSmartUi
 
 		_count = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Count"), 50f, false, 50, false)
 		{
-			Left = StyleDimension.FromPixels(474)
+			Left = StyleDimension.FromPixels(464)
 		};
 		topPanel.Append(_count);
 
 		_level = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Level"), 0.05f, false, 0.01, false)
 		{
-			Left = StyleDimension.FromPixels(588)
+			Left = StyleDimension.FromPixels(598)
 		};
 		topPanel.Append(_level);
 
-		_rarityMod = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.RareMod"), 0.2f, false, 0.05, false)
+		_rarityMod = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.RareMod"), 0, false, 0.05, false)
 		{
-			Left = StyleDimension.FromPixels(692)
+			Left = StyleDimension.FromPixels(702)
 		};
 		topPanel.Append(_rarityMod);
+
+		_rateMod = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.RateMod"), 0, false, 0.05, false)
+		{
+			Left = StyleDimension.FromPixels(810)
+		};
+		topPanel.Append(_rateMod);
 
 		var run = new UIButton<string>(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Run"))
 		{
 			Width = StyleDimension.FromPixels(60),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(840)
+			Left = StyleDimension.FromPixels(920)
 		};
 
 		run.OnLeftClick += RunDatabase;
@@ -238,7 +245,7 @@ internal class DropTableUIState : CloseableSmartUi
 		{
 			Width = StyleDimension.FromPixels(110),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(904)
+			Left = StyleDimension.FromPixels(984)
 		};
 
 		_sortButton.OnLeftClick += ChangeSort;
@@ -277,7 +284,8 @@ internal class DropTableUIState : CloseableSmartUi
 
 	private void RollDatabase(int count, Dictionary<int, DropResult> resultsById)
 	{
-		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops(count, 0, (float)_rarityMod.Value, (float)_gearRate.Value, (float)_currencyRate.Value, (float)_mapRate.Value);
+		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops(count, 0, (float)_rarityMod.Value, (float)_gearRate.Value, (float)_currencyRate.Value, 
+			(float)_mapRate.Value, null, ItemRarity.Invalid, (float)_rateMod.Value);
 
 		for (int i = 0; i < count; ++i)
 		{

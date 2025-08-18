@@ -478,7 +478,7 @@ internal class DesertArea : MappingWorld, IOverrideBiome
 				{
 					if (k < 3)
 					{
-						ItemDatabase.ItemRecord drop = drops[i];
+						ItemDatabase.ItemRecord drop = drops[k];
 						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
 					}
 					else
