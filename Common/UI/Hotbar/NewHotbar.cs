@@ -135,7 +135,7 @@ public sealed class NewHotbar : SmartUiState
 		}
 
 		var itemNamePosition = new Vector2(266f - (FontAssets.MouseText.Value.MeasureString(text) / 2f).X, 6f);
-		Color itemNameColor = item.IsAir ? Color.White : PoTGlobalItem.GetRarityColor(item.GetInstanceData().Rarity);
+		Color itemNameColor = item.IsAir ? Color.White : ItemTooltips.GetRarityColor(item.GetInstanceData().Rarity);
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.MouseText.Value, text, itemNamePosition, itemNameColor, 0f, Vector2.Zero, Vector2.One * 0.9f);
 	}
 

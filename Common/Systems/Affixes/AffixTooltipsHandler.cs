@@ -1,9 +1,8 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Items;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
@@ -13,7 +12,7 @@ namespace PathOfTerraria.Common.Systems.Affixes;
 /// </summary>
 public class AffixTooltipsHandler
 {
-	internal static Color DefaultColor = Color.WhiteSmoke;
+	internal static Color DefaultColor = ItemTooltips.Colors.DefaultText;
 
 	public readonly Dictionary<Type, AffixTooltip> Tooltips = [];
 
@@ -129,14 +128,8 @@ public class AffixTooltipsHandler
 				tooltip.SourceItems.Add(item);
 			}
 
-			if (tooltip.ValueBySource[source] == tooltip.OriginalValueBySource[source])
-			{
-				tooltip.Color = DefaultColor;
-			}
-			else
-			{
-				tooltip.Color = tooltip.OriginalValueBySource[source] > tooltip.ValueBySource[source] ? Color.Red : Color.Green;
-			}
+			int comparison = tooltip.ValueBySource[source].CompareTo(tooltip.OriginalValueBySource[source]);
+			tooltip.Color = comparison < 0 ? ItemTooltips.Colors.Negative : (comparison > 0 ? ItemTooltips.Colors.Positive : DefaultColor);
 		}
 		else
 		{
@@ -283,11 +276,11 @@ public class AffixTooltipsHandler
 
 	private static void AddSingleTooltipLine(List<TooltipLine> tooltips, ref int tipNum, KeyValuePair<Type, AffixTooltip> tip)
 	{
-		string text = $"[i:{ItemID.MusketBall}] " + tip.Value.Get();
+		string text = $"{ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent)} " + tip.Value.Get();
 
 		tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum++, text)
 		{
-			OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
+			OverrideColor = tip.Value.Corrupt ? ItemTooltips.Colors.Corrupt : tip.Value.Color,
 		});
 	}
 

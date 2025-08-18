@@ -1,5 +1,6 @@
-﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Core.Items;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
@@ -131,7 +132,8 @@ public class AffixTooltip
 
 		float originalValue = AggregateValue();
 		ValueBySource[source] = 0;
-		Color = originalValue < AggregateValue() ? Color.Green : Color.Red;
+		int comparison = originalValue.CompareTo(AggregateValue());
+		Color = comparison < 0 ? ItemTooltips.Colors.Negative : (comparison > 0 ? ItemTooltips.Colors.Positive : AffixTooltipsHandler.DefaultColor);
 	}
 
 	/// <summary>
