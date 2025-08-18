@@ -31,29 +31,35 @@ public sealed class TooltipOverrides : ModSystem
 		// Create default tooltips to override the game's with ours.
 		Player player = Main.LocalPlayer;
 
-		bool drawingHoverItem = false;
+
 		Item hoverItem = Main.HoverItem;
-		if ((hoverItem?.IsAir) == false && !Main.mouseText && ShouldOverrideHoverItemTooltip())
+		Item mouseItem = Main.mouseItem?.IsAir == false ? Main.mouseItem : player.inventory[58];
+		bool drawForHoverItem = (hoverItem?.IsAir) == false && ShouldOverrideHoverItemTooltip();
+		bool drawForMouseItem = (mouseItem?.IsAir) == false && Main.LocalPlayer.mouseInterface && !player.ItemAnimationActive && mouseItem.IsNotSameTypePrefixAndStack(hoverItem);
+		bool drawSideBySide = drawForHoverItem && drawForMouseItem;
+
+		if (drawForHoverItem)
 		{
-			drawingHoverItem = true;
 			Tooltip.Create(new TooltipDescription
 			{
 				Identifier = "HoverItem",
 				AssociatedItem = hoverItem,
-				Position = new Vector2(Main.mouseX + 34, Main.mouseY + 34),
+				Position = new Vector2(Main.mouseX + 18, Main.mouseY + 18),
+				Origin = new Vector2(drawSideBySide ? 1f : 0f, 0f),
 				Lines = ItemTooltipBuilder.BuildTooltips(hoverItem, Main.LocalPlayer),
+				VisibilityTimeInTicks = 0,
 			});
 		}
 
-		Item mouseItem = Main.mouseItem?.IsAir == false ? Main.mouseItem : player.inventory[58];
-		if ((mouseItem?.IsAir) == false && player.IsStandingStillForSpecialEffects && !player.ItemAnimationActive && !drawingHoverItem)
+		if (drawForMouseItem)
 		{
 			Tooltip.Create(new TooltipDescription
 			{
 				Identifier = "MouseItem",
 				AssociatedItem = mouseItem,
-				Position = new Vector2(Main.mouseX + 34, Main.mouseY + 34),
+				Position = new Vector2(Main.mouseX + 18, Main.mouseY + 18),
 				Lines = ItemTooltipBuilder.BuildTooltips(mouseItem, Main.LocalPlayer),
+				VisibilityTimeInTicks = 0,
 			});
 		}
 	}
