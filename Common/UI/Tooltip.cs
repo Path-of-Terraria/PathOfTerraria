@@ -18,6 +18,7 @@ public struct TooltipDescription()
 	public string? SimpleSubtitle;
 	public List<DrawableTooltipLine> Lines = [];
 	public Vector2? Position;
+	public Vector2 Origin = Vector2.Zero;
 	public Item? AssociatedItem;
 	public uint VisibilityTimeInTicks = 2;
 }
@@ -121,6 +122,7 @@ public class Tooltip : SmartUiState
 		}
 
 		// Calculate sizes.
+		const int BgOffset = 16;
 		Array.Fill(lineMeasures, default, 0, lineCount);
 		Vector2 totalSize = Vector2.Zero;
 
@@ -150,7 +152,7 @@ public class Tooltip : SmartUiState
 			totalSize.Y += lineMeasures[i].Y + lineSpacing;
 		}
 
-		// Calculate adjusted position.
+		// Calculate the top-left position.
 		Vector2 pos = args.Position ?? default;
 		if (!args.Position.HasValue)
 		{
@@ -158,9 +160,12 @@ public class Tooltip : SmartUiState
 			const int MouseOffset = 24;
 			pos = new Vector2(Main.mouseX + MouseOffset, Main.mouseY + MouseOffset);
 		}
-
-		pos.X = Math.Max(0, Math.Min(pos.X, Main.screenWidth - totalSize.X));
-		pos.Y = Math.Max(0, Math.Min(pos.Y, Main.screenHeight - totalSize.Y));
+		// Adjust by origin.
+		pos.X = MathHelper.Lerp(pos.X, pos.X - totalSize.X - BgOffset * 2, args.Origin.X);
+		pos.Y = MathHelper.Lerp(pos.Y, pos.Y - totalSize.Y - BgOffset * 2, args.Origin.Y);
+		// Keep everything on the screen.
+		pos.X = Math.Max(BgOffset, Math.Min(pos.X, Main.screenWidth - BgOffset - totalSize.X));
+		pos.Y = Math.Max(BgOffset, Math.Min(pos.Y, Main.screenHeight - BgOffset - totalSize.Y));
 
 		// Draw the background.
 		const int BgOffset = 16;
