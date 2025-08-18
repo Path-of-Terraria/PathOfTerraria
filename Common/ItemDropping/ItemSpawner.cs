@@ -43,7 +43,7 @@ internal class ItemSpawner
 	}
 
 	/// <summary>
-	///    Spawns a random item by it's type
+	///    Spawns a random item by its type.
 	/// </summary>
 	public static void SpawnRandomItemByType<T>(Vector2 pos, int iLevel, float dropRarityModifier = 0)
 	{
@@ -87,7 +87,7 @@ internal class ItemSpawner
 	private static int SpawnItemFromList(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition, int itemLevel,
 		float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)
 	{
-		ItemDatabase.ItemRecord item = DropTable.RollList(itemLevel, dropRarityModifier, filteredGear, dropCondition);
+		ItemDatabase.ItemRecord item = DropTable.RollList(itemLevel, dropRarityModifier, filteredGear, dropCondition, 0);
 
 		if (item == ItemDatabase.InvalidItem)
 		{

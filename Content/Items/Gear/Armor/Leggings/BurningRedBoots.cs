@@ -15,7 +15,7 @@ internal class BurningRedBoots : Leggings, GenerateName.IItem
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 0.01f;
+		staticData.DropChance = 0.5f;
 		staticData.IsUnique = true;
 	}
 

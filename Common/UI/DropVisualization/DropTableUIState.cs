@@ -6,10 +6,8 @@ using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
-using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
@@ -61,7 +59,7 @@ internal class DropResult(int count)
 
 internal class DropTableUIState : CloseableSmartUi
 {
-	public static readonly Point MainPanelSize = new(920, 550);
+	public static readonly Point MainPanelSize = new(1220, 760);
 
 	private enum SortMode
 	{
@@ -77,6 +75,7 @@ internal class DropTableUIState : CloseableSmartUi
 	private UIEditableValue _mapRate = null;
 	private UIEditableValue _count = null;
 	private UIEditableValue _level = null;
+	private UIEditableValue _rarityMod = null;
 	private UIButton<string> _sortButton = null;
 	private UIList _resultList = null;
 	private SortMode _sort = SortMode.None;
@@ -103,7 +102,7 @@ internal class DropTableUIState : CloseableSmartUi
 		Main.playerInventory = true;
 
 		CreateMainPanel(false, MainPanelSize, false, true);
-		Panel.VAlign = 0.7f;
+		Panel.VAlign = 0.5f;
 
 		BuildModificationPanel(Panel);
 		BuildDisplay(Panel);
@@ -207,7 +206,7 @@ internal class DropTableUIState : CloseableSmartUi
 		normalize.OnLeftClick += ClickNormalize;
 		topPanel.Append(normalize);
 
-		_count = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Count"), 10f, false, 0.5, false)
+		_count = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Count"), 50f, false, 50, false)
 		{
 			Left = StyleDimension.FromPixels(474)
 		};
@@ -219,11 +218,17 @@ internal class DropTableUIState : CloseableSmartUi
 		};
 		topPanel.Append(_level);
 
+		_rarityMod = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.RareMod"), 0.2f, false, 0.05, false)
+		{
+			Left = StyleDimension.FromPixels(692)
+		};
+		topPanel.Append(_rarityMod);
+
 		var run = new UIButton<string>(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Run"))
 		{
 			Width = StyleDimension.FromPixels(60),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(680)
+			Left = StyleDimension.FromPixels(840)
 		};
 
 		run.OnLeftClick += RunDatabase;
@@ -233,7 +238,7 @@ internal class DropTableUIState : CloseableSmartUi
 		{
 			Width = StyleDimension.FromPixels(110),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(744)
+			Left = StyleDimension.FromPixels(904)
 		};
 
 		_sortButton.OnLeftClick += ChangeSort;
@@ -272,9 +277,11 @@ internal class DropTableUIState : CloseableSmartUi
 
 	private void RollDatabase(int count, Dictionary<int, DropResult> resultsById)
 	{
+		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops(count, 0, (float)_rarityMod.Value, (float)_gearRate.Value, (float)_currencyRate.Value, (float)_mapRate.Value);
+
 		for (int i = 0; i < count; ++i)
 		{
-			ItemDatabase.ItemRecord record = DropTable.RollMobDrops(0, 40, (float)_gearRate.Value, (float)_currencyRate.Value, (float)_mapRate.Value);
+			ItemDatabase.ItemRecord record = items[i];
 
 			if (record == ItemDatabase.InvalidItem)
 			{

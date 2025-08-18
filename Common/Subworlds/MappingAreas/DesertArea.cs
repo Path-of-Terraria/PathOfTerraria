@@ -470,6 +470,7 @@ internal class DesertArea : MappingWorld, IOverrideBiome
 			}
 
 			Tile tile = Main.tile[chest.x, chest.y];
+			List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
 
 			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
 			{
@@ -477,8 +478,7 @@ internal class DesertArea : MappingWorld, IOverrideBiome
 				{
 					if (k < 3)
 					{
-						ItemDatabase.ItemRecord drop = DropTable.RollMobDrops(PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
-
+						ItemDatabase.ItemRecord drop = drops[i];
 						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
 					}
 					else
