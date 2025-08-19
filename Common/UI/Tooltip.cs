@@ -69,7 +69,7 @@ public class Tooltip : SmartUiState
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
-		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Over"));
+		return Math.Max(0, layers.FindIndex(layer => layer.Name.Equals("Vanilla: Cursor")) - 1);
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
