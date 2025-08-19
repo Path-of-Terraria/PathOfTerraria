@@ -13,7 +13,7 @@ namespace PathOfTerraria.Common.UI.Guide;
 
 public class TutorialRestartButton : SmartUiState
 {
-	public int ButtonY => 6;
+	public const int ButtonY = 6;
 
 	public override bool Visible => Main.playerInventory && Main.LocalPlayer.GetModPlayer<TutorialPlayer>().CompletedTutorial;
 
@@ -32,7 +32,7 @@ public class TutorialRestartButton : SmartUiState
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		Texture2D texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Guide/RestartIcon").Value;
-		bool hover = UIHelper.GetInvButtonInfo(ButtonY, out Vector2 pos);
+		bool hover = UIHelper.GetInvButtonInfo(ButtonY, out Vector2 pos, new Terraria.DataStructures.Point16(54, 34));
 
 		if (hover)
 		{

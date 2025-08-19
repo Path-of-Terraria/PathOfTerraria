@@ -127,6 +127,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			}
 
 			Tile tile = Main.tile[chest.x, chest.y];
+			List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
 
 			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
 			{
@@ -134,8 +135,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 				{
 					if (k < 3)
 					{
-						ItemDatabase.ItemRecord drop = DropTable.RollMobDrops(PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
-						
+						ItemDatabase.ItemRecord drop = drops[k];
 						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
 					}
 					else

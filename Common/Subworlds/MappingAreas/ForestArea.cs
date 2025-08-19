@@ -353,13 +353,13 @@ internal class ForestArea : MappingWorld, IOverrideBiome
 			}
 
 			Tile tile = Main.tile[chest.x, chest.y];
+			List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
 
 			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
 			{
 				for (int k = 0; k < 3; ++k)
 				{
-					ItemDatabase.ItemRecord drop = DropTable.RollMobDrops(PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
-
+					ItemDatabase.ItemRecord drop = drops[k];
 					chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
 				}
 			}

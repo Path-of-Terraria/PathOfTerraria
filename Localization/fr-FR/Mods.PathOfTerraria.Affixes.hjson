@@ -73,3 +73,6 @@ NoFallDamageAffix: {
 FireResistItemAffix.Description: "{1}{0}% résistance au feu"
 ColdResistItemAffix.Description: "{1}{0}% résistance au froid"
 LightningResistItemAffix.Description: "{1}{0} résistance à la foudre "
+// FocusChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Focus Charge on kill"
+// HasteChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Haste Charge on kill"
+// AegisChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Aegis Charge on kill"

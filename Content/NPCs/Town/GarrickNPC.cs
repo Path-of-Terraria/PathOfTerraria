@@ -180,12 +180,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<KingSlimeQuest>();
-			int mapItem = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>(), noGrabDelay: true);
-
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-			{
-				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, mapItem);
-			}
 		}
 	}
 

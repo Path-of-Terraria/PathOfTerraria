@@ -10,6 +10,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using System.Linq;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -214,7 +215,8 @@ public static class PoTItemHelper
 	public static bool HasMaxAffixesForRarity(Item item)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
-		return data.Affixes.Count >= GetMaxAffixCounts(data.Rarity);
+		int nonImplicitAffixCount = data.Affixes.Count(affix => !affix.IsImplicit);
+		return nonImplicitAffixCount >= GetMaxAffixCounts(data.Rarity);
 	}
 
 	public static void SetMouseItemToHeldItem(Player player)
@@ -230,119 +232,134 @@ public static class PoTItemHelper
 	/// <summary>
 	/// Picks the most appropriate item level for the current world. This is the following:<br/>
 	/// For explorable maps, such as the Forest, it's variable and depends on the tier of the map.<br/>
-	/// Boss domains/overworld progression, in order:<br/>
-	/// Default: 5<br/>
-	/// King Slime: 10<br/>
-	/// Eye of Cthulhu: 15<br/>
-	/// Eater of Worlds: 20<br/>
-	/// Brain of Cthulhu: 25<br/>
-	/// Queen Bee: 30<br/>
-	/// Deerclops: 35<br/>
-	/// Skeletron: 40<br/>
-	/// Wall of Flesh / <b>Overworld Max</b>: 45<br/>
-	/// Queen Slime: 50<br/>
-	/// Twins: 55<br/>
-	/// Destroyer: 60<br/>
-	/// Skeletron Prime: 65<br/>
-	/// Plantera: 70<br/>
-	/// Golem: 75<br/>
-	/// Cultist: 80<br/>
-	/// Moon Lord: 85
+	/// Boss domains/overworld progression uses an additive system where each boss adds 5 levels:<br/>
+	/// Base level: 5<br/>
+	/// King Slime: +5 (total: 10)<br/>
+	/// Eye of Cthulhu: +5 (total: 15)<br/>
+	/// Eater of Worlds: +5 (total: 20)<br/>
+	/// Brain of Cthulhu: +5 (total: 25, or 30 if both corruption bosses killed)<br/>
+	/// Queen Bee: +5<br/>
+	/// Deerclops: +5<br/>
+	/// Skeletron: +5<br/>
+	/// <b>Hardmode minimum/crafting cap: 45</b><br/>
+	/// Queen Slime: +5 (total: 50)<br/>
+	/// Twins: +5 (total: 55)<br/>
+	/// Destroyer: +5 (total: 60)<br/>
+	/// Skeletron Prime: + (total: 65)br/>
+	/// Plantera: +5 (total: 70)<br/>
+	/// Golem: +5 (total: 75)<br/>
+	/// Cultist: +5 (total: 80)<br/>
+	/// Moon Lord: +5 (maximum: 85)
 	/// </summary>
-	/// <param name="clampHardmode">Clamps level to hardmode (45).</param>
-	/// <returns></returns>
-	public static int PickItemLevel(bool clampHardmode = true)
+	/// <param name="clampHardmode">Clamps level to hardmode maximum (45) for crafted items.</param>
+	/// <param name="isCrafted">Indicates if the item is being crafted, which applies hardmode capping.</param>
+	/// <returns>The calculated item level based on world progression.</returns>
+
+	public static int PickItemLevel(bool clampHardmode = true, bool isCrafted = false)
 	{
-		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.AreaLevel > 0)
+		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.AreaLevel > 0 && !isCrafted)
 		{
 			return mapWorld.AreaLevel;
 		}
 
-		if (clampHardmode && Main.hardMode)
+		if (isCrafted && Main.hardMode) // This accounts for crafting level when you've progressed further than WoF
 		{
 			return 45;
 		}
 
-		if (NPC.downedMoonlord)
-		{
-			return 85;
-		}
-
-		if (NPC.downedAncientCultist)
-		{
-			return 80;
-		}
-
-		if (NPC.downedGolemBoss)
-		{
-			return 75;
-		}
-
-		if (NPC.downedPlantBoss)
-		{
-			return 70;
-		}
-
-		if (NPC.downedMechBoss3) // Skele Prime
-		{
-			return 65;
-		}
-
-		if (NPC.downedMechBoss1) // Destroyer
-		{
-			return 60;
-		}
-
-		if (NPC.downedMechBoss2) // Twins
-		{
-			return 55;
-		}
-
-		if (NPC.downedQueenSlime)
-		{
-			return 50;
-		}
-
-		if (Main.hardMode)
+		if (clampHardmode && Main.hardMode) // Hardmode max if it's clamped.
 		{
 			return 45;
 		}
 
-		if (NPC.downedBoss3) //Skeletron
+		// Start with base level and add for each boss defeated
+		int level = 5;
+
+		if (NPC.downedSlimeKing)
 		{
-			return 40;
+			level += 5; // 10
 		}
 
-		if (NPC.downedDeerclops)
+		if (NPC.downedBoss1)
 		{
-			return 35;
-		}
-		
-		if (NPC.downedQueenBee)
-		{
-			return 30;
-		}
-
-		if (BossTracker.DownedBrainOfCthulhu)
-		{
-			return 25;
+			level += 5; // 15
 		}
 
 		if (BossTracker.DownedEaterOfWorlds)
 		{
-			return 20;
+			level += 5; // 20
 		}
 
-		if (NPC.downedBoss1) //Eye of Cthulhu
+		if (BossTracker.DownedBrainOfCthulhu)
 		{
-			return 15;
+			level += 5; // 20/25
 		}
 
-		if (NPC.downedSlimeKing)
+		if (NPC.downedQueenBee)
 		{
-			return 10;
+			level += 5; // 25/30
 		}
 
-		return 5;
+		if (NPC.downedDeerclops)
+		{
+			level += 5; // 30/35
+		}
+
+		if (NPC.downedBoss3)
+		{
+			level += 5; // 35/40
+		}
+
+		if (Main.hardMode)
+		{
+			level = 45;
+		}
+
+		// Continue with hardmode bosses if not clamped
+		if (!clampHardmode)
+		{
+			if (NPC.downedQueenSlime)
+			{
+				level += 5; // 50
+			}
+
+			if (NPC.downedMechBoss2)
+			{
+				level += 5; // 55
+			}
+
+			if (NPC.downedMechBoss1)
+			{
+				level += 5; // 60
+			}
+
+			if (NPC.downedMechBoss3) 
+			{
+				level += 5; // 65
+			}
+
+			if (NPC.downedPlantBoss)
+			{
+				level += 5; // 70
+			}
+
+			if (NPC.downedGolemBoss)
+			{
+				level += 5; // 75
+			}
+
+			if (NPC.downedAncientCultist)
+			{
+				level += 5; // 80
+			}
+
+			if (NPC.downedMoonlord)
+			{
+				level += 5; // 85
+			}
+		}
+
+		return level;
+
 	}
 }

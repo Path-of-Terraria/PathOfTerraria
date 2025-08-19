@@ -19,7 +19,7 @@ internal class FireStarter : Sword, GenerateName.IItem
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 5f;
+		staticData.DropChance = 1f;
 		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");

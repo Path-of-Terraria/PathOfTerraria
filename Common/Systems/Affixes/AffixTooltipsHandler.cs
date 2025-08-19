@@ -116,8 +116,14 @@ public class AffixTooltipsHandler
 				tooltip.OriginalValueBySource.Add(source, value);
 				tooltip.ValueBySource.Add(source, 0);
 			}
+			else
+			{
+				// Add to existing values - both original and current should be updated
+				tooltip.ValueBySource[source] += value;
+				tooltip.OriginalValueBySource[source] += value;
+			}
 
-			tooltip.ValueBySource[source] = value;
+
 
 			if (!tooltip.SourceItems.Any(HasSource(item)))
 			{

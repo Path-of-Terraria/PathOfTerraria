@@ -73,3 +73,6 @@ StalwartAffix.Prefix: Стойкий
 FireResistItemAffix.Description: "{1}{0}% огнестойкость"
 ColdResistItemAffix.Description: "{1}{0}% устойчивость к холоду"
 LightningResistItemAffix.Description: "{1}{0} Электростойкость"
+// FocusChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Focus Charge on kill"
+// HasteChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Haste Charge on kill"
+// AegisChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Aegis Charge on kill"

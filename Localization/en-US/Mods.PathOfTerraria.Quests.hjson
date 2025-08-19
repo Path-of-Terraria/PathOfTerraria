@@ -37,7 +37,7 @@ Quest: {
 		Name: Kill the King
 		Description: ""
 		EnterDomain: Enter the King's Domain
-		ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surprass me again. My thanks, however, are in order.
+		ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surpass me again. My thanks, however, are in order.
 		Kill.KingSlime: Kill the King Slime
 	}
 

@@ -15,37 +15,51 @@ Slots: {
 	0: Helmet
 	1: Chest
 	2: Legs
-	3: Accessory 2
+	3: Accessory 1
 	4: Weapon
 	5: Necklace
 	6: Offhand
 	7: Left Ring
 	8: Right Ring
-	9: Accessory 1
+	9: Accessory 2
 	10: Wings
+	11: Accessory 3
+	12: Accessory 4
 }
 
 BaseDamage: Base Damage: {0}
 Lives: lives left
 
 StatUI: {
+	CharacterHeader: Progression
 	Level: Level
 	Experience: Exp
+	DefenseHeader: Defense
 	Life: Life
+	LifeRegen: Life Regen/s
 	Mana: Mana
-	HealthPotions: Health Potions
-	ManaPotions: Mana Potions
+	ManaRegen: Mana Regen/s
 	DamageReduction: Damage Reduction
 	BlockChance: Block Chance
 	MaxBlock: Block Chance Cap
 	BlockCooldown: Block Cooldown
-	MaxMinions: Maximum Minions
-	Strength: Strength
-	Dexterity: Dexterity
-	Intelligence: Intelligence
 	FireResistance: Fire Resistance
 	ColdResistance: Cold Resistance
 	LightningResistance: Lightning Resistance
+	OffenseHeader: Offense
+	CriticalChance: Critical Strike Chance
+	AttributesHeader: Attributes
+	Strength: Strength
+	Dexterity: Dexterity
+	Intelligence: Intelligence
+	ChargesHeader: Charges
+	HasteChargeChance: Haste Charge Chance On Kill
+	FocusChargeChance: Focus Charge Chance On Kill
+	AegisChargeChance: Aegis Charge Chance On Kill
+	MiscHeader: Misc
+	MaxMinions: Maximum Minions
+	HealthPotions: Health Potions
+	ManaPotions: Mana Potions
 
 	Help: {
 		Strength: Grants 5 additional max health per 10 points
@@ -61,6 +75,8 @@ DropVisualizer: {
 	Normalize: Normalize
 	Count: Count
 	Level: Level
+	RareMod: +Rare
+	RateMod: +Rate
 	Run: Run
 	SortBy: "Sort by: "
 	UniqueItem: (Unique Item)
@@ -261,3 +277,12 @@ Tips: {
 	29: '''"If you're ever given the choice, choose explosives every time." - Alaric'''
 	30: Always check the alt use of your weapons! They're very diverse, and often useful outside of movement.
 }
+
+PointsRemaining: Points Remaining
+ExpBarHover:
+	'''
+	Level {0}
+	Experience: {1} / {2} ({3}%)
+
+	Click to open skill tree
+	'''

@@ -28,7 +28,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	bool ISpawnInRavencrestNPC.CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
 	{
-		return (BossTracker.TotalBossesDowned.Contains(NPCID.EyeofCthulhu) || NPC.downedBoss1) && timeframe is NPCSpawnTimeframe.WorldGen or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists;
+		return (BossTracker.TotalBossesDowned.Contains(NPCID.KingSlime) || NPC.downedSlimeKing) && timeframe is NPCSpawnTimeframe.WorldGen or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists;
 	}
 
 	public override void SetStaticDefaults()
