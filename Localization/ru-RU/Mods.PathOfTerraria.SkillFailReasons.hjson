@@ -1,6 +1,10 @@
-NotEnoughMana: Not enough mana to cast
-// NeedsWeapon: Needs a {0} weapon to use
-// RangedWeaponConsumable: Needs a non-consumable weapon
-// WeaponInvalid: Held weapon is invalid for this skill
-// NoAmmo: Needs ammo
-// MissingAffix: Needs affix strength
+﻿Other: {
+    RangedWeaponConsumable: Требуется не расходуемое оружие.
+    WeaponInvalid: Вабранное оружие не подходит для этого навыка
+    NoAmmo: Требуются боеприпасы
+  }
+  NotEnoughMana: Недостаточно маны для использования
+  NeedsMelee: Требуется оружие ближнего боя
+  NeedsRanged: Требуется оружие дальнего боя
+  NeedsMagic: Требуется магическое оружие
+  NeedsSummon: Требуется оружие призыва

@@ -1,32 +1,27 @@
-Experience: {
-	LevelUp: Вы достигли уровня {0}!
-	SkillUp: Вы получили 1 очко навыков. Щёлкните по шкале опыта, чтобы открыть дерево навыков.
-}
-
-RarityNames: {
-	Normal: Нормальный
-	Magic: Магия
-	Rare: Редкий
-}
-
-GrimoireConsume: "{0} consumed!"
-GrimoireMaterial: Used for the Grimoire's Menagerie. Right click to add to the Menagerie.
-GrimoireBoon: Traded {0} for coin!
-# This is used for disabling EoW/BoC spawns, instead of spawning the boss it says this.
-ChasmAppears: A chasm appears...
-HealthPotionTooltip: Health Potion
-ManaPotionTooltip: Mana Potion
-RestoresHealthTooltip: Restores {0} health
-RestoresManaTooltip: Restores {0} mana
-CooldownTooltip: "{0} second cooldown"
-NPCLeftWithoutDying: "{0} escaped!"
-AffixTooltipFrom: " from  "
-Enter: Enter
-Exit: Exit
-EnterRavencrest: "{$Enter} Ravencrest"
-Activate: Activate
-# Two new messages for fishron and impending doom (Lunar event beaten) in their respective domains
-FishronSpawn: You hear a roar in the distance...
-ImpendingDoom: A pulse quickens at the center of the world...
-VoidPearlCondition: In hardmode or during the Unleashing Chaos quest
-// SubworldItemDisabler: You cannot use this item in a subworld.
+﻿RarityNames: {
+    Rare: "Редкий "
+    Magic: "Магический "
+    Normal: "Обычный "
+  }
+  Experience: {
+    SkillUp: Вы получили 1 очко навыков. Щёлкните по шкале опыта, чтобы открыть дерево навыков.
+    LevelUp: Вы достигли {0} уровня!
+  }
+  GrimoireConsume: "{0} поглощено!"
+  GrimoireMaterial: Используется для Менagerie Гримуара.
+  GrimoireBoon: Обменяно {0} на монеты!
+  ChasmAppears: Появляется бездна...
+  HealthPotionTooltip: Зелье здоровья
+  ManaPotionTooltip: Зелье маны
+  RestoresHealthTooltip: Восстанавливает {0} здоровья
+  RestoresManaTooltip: Восстанавливает {0} маны
+  CooldownTooltip: "{0} секунд восстановления"
+  NPCLeftWithoutDying: "{0} сбежал!"
+  AffixTooltipFrom: " от "
+  Enter: Войти
+  Exit: Выйти
+  EnterRavencrest: "{$Enter} в Равенкрест"
+  Activate: Активировать
+  FishronSpawn: Вы слышите рев в отдалении...
+  ImpendingDoom: Пульс ускоряется в центре мира...
+  VoidPearlCondition: В сложном режиме или во время квеста 'Раскрытие Хаоса'

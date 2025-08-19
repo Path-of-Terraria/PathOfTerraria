@@ -1,0 +1,13 @@
+﻿TalkTo: Habla con {0}
+  GiveThem: y dale:
+  Or: o
+  Popups: {
+    Line1: Abre el Libro de Misiones para ver el progreso y los pasos de las misiones que aceptaste.
+    Line2: El Libro de misiones siempre se encuentra junto al mapa en el inventario.
+    Line3: Puedes presionar {0} para abrir el Libro de Misiones
+    NoKey: (Sin asignar - predeterminado L)
+    NewQuest: Nueva Misión:
+  }
+  Bring: {
+    Collect: Recoger
+  }

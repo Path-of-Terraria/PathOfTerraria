@@ -1,0 +1,10 @@
+﻿NotEnoughMana: Zbyt mała ilość punktów many by rzucić czar
+  NeedsMelee: Wymaga broni białej
+  NeedsRanged: Wymaga broni dystansowej
+  NeedsMagic: Wymaga broni magicznej
+  NeedsSummon: Wymaga broni przywołującej
+  Other: {
+    RangedWeaponConsumable: Wymaga broni niezużywalnej
+    WeaponInvalid: Wyposażona broń jest nieprawidłowa dla tej umiejętności
+    NoAmmo: Wymaga amunicji
+  }

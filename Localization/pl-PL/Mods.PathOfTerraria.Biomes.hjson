@@ -1,0 +1,8 @@
+﻿RavencrestBiome: {
+    DisplayName: Ravencrest
+    TownNPCDialogueName: Ravencrest
+  }
+  MechBiome: {
+    DisplayName: Mechanizmy
+    TownNPCDialogueName: Mechanizmy
+  }

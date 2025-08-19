@@ -1,0 +1,50 @@
+﻿BaseDamage: Daño base: {0}
+  Lives: vidas restantes
+  Gear: {
+    Buttons: {
+      Previous: Anterior
+      Next: Siguiente
+    }
+    Pages: {
+      Gear: Equipo
+      Vanity: Vanidad
+      Dyes: Tintes
+    }
+  }
+  Slots: {
+    0: Casco
+    1: Cofre
+    2: Grebas
+    3: Accesorio 2
+    4: Arma
+    5: Collar
+    6: Mano secundaria
+    7: Anillo izquierdo
+    8: Anillo derecho
+    9: Accesorio 1
+    10: Alas
+  }
+  StatUI: {
+    Level: Nivel
+    Experience: Exp
+    Life: Vida
+    Mana: Maná
+    HealthPotions: Pociones de vida
+    ManaPotions: Pociones de maná
+    DamageReduction: Reducción de daño
+    BlockChance: Probabilidad de bloquear
+    MaxBlock: Límite de probabilidad de bloqueo
+    BlockCooldown: Enfriamiento de bloqueo
+    MaxMinions: Súbditos máximos
+    Strength: Fuerza
+    Dexterity: Destreza
+    Intelligence: Inteligencia
+    FireResistance: Resistencia al fuego
+    ColdResistance: Resistencia al frio
+    LightningResistance: Resistencia a los rayos
+    Help: {
+      Strength: Otorga 5 puntos de vida máxima por cada 10 puntos
+      Dexterity: Otorga 1% de velocidad de ataque global cada 10 puntos
+      Intelligence: Otorga 5 puntos de maná máximo por cada 10 puntos
+    }
+  }

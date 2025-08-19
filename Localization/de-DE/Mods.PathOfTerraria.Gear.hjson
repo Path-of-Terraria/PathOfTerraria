@@ -1,0 +1,23 @@
+﻿Rarity: {
+    Normal: Normal
+    Magic: Magisch
+    Rare: Selten
+    Unique: Einzigartig
+  }
+  Tooltips: {
+    Cloned: Doppelt
+    Corrupted: "Korrumpiert "
+    Damage: Schaden
+    Level: Level
+    Tier: Stufe
+    Pickaxe: Spitzhacken Stärke
+    Defense: Verteidigung
+    Axe: Axt Stärke
+    Hammer: Hammer Stärke
+    ManaCost: Mana Kosten
+  }
+  Influence: {
+    None: Nichts
+    Lunar: Mond
+    Solar: Solar
+  }

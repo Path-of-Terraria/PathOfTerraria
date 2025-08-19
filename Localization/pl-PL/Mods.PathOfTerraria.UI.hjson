@@ -1,0 +1,90 @@
+﻿Gear: {
+    Buttons: {
+      Previous: Poprzednia
+      Next: Następna
+    }
+    Pages: {
+      Gear: "Uzbrojenie "
+      Vanity: Przebrania
+      Dyes: Barwniki
+    }
+  }
+  BaseDamage: Bazowe Obrażenia: {0}
+  StatUI: {
+    Help: {
+      Dexterity: Przyznaje 1% dodatkowego globalnej prędkości ataku co 10 punktów
+      Intelligence: Przyznaje 5 dodatkowej maksymalnej many co 10 punktów
+      Strength: Przyznaje 5 dodatkowego maksymalnego życia za każde 10 punktów
+    }
+    LightningResistance: "Odporność na "
+    ColdResistance: Odporność na Zimno
+    FireResistance: Odporność na Ogień
+    Intelligence: Inteligencja
+    Dexterity: Zręczność
+    Strength: Siła
+    BlockCooldown: Czas Odnowienia Bloku
+    MaxBlock: Limit Szansy na Blok
+    BlockChance: Szansa na Blok
+    DamageReduction: Redukcja Obrażeń
+    ManaPotions: MIkstura Many
+    HealthPotions: Mikstura Zdrowia
+    Mana: Mana
+    Level: Poziom
+    Experience: Doświadczenie
+    Life: Życie
+    MaxMinions: Maks. przywołanych stworzeń
+  }
+  DropVisualizer: {
+    SortBy: Sortuj według:
+    UniqueItem: (Unikalny Przedmiot)
+    Level: Poziom
+    Map: Mapa
+    Currency: Waluta
+    Gear: Uzbrojenie
+    Normalize: Normalizacja
+    Count: Ilość
+  }
+  SkillUI: {
+    ChooseSkill: Wybierz umiejętność z Menu Umięjętności by ją użyć.
+    NoSkill: (Brak Umiejetności)
+    NoPassives: To drzewo nie posiada punktów pasywnych.
+    Back: Powrót
+  }
+  InvButtons: {
+    Stats: Statystyki
+    Quest: Zadania
+    Grimoire: Grimoire
+    RestartTutorial: Zrestartuj poradnik
+  }
+  Grimoire: {
+    ClickMe: Kliknij mnie!
+    Storage: Magazyn
+  }
+  Guide: {
+    Show: Pokaż
+    Hide: Ukryj
+    SkipStep: "{$Skip} Krok"
+    SkipGuide: "{$Skip} Wszystko"
+    Skip: Pomiń
+    Next: Następny
+    0: Cześć! Witaj w Path of Terraria.\nTa modyfikacja znacznie zmienia gre.\nW zwiazku z tym, ten poradnik wytłumaczy ci zmiany, mechaniki oraz na co warto wypatrywać.\nJeśli chcesz pominąć, kliknij klawisz Pomiń Wszystko lub Pomiń krok w każdym momencie.\nW przeciwnym razie, kliknij Następny
+    1: Po pierwsze, pasek doświadczenia. Znajduje się on bezpośrednio nad tym oknem dialogowym. \nWrogowie pozostawiają po sobie doświadczenie, zazwyczaj zależy ono od ich siły, co pozwala ci awansować na kolejne poziomy.\nZa zdobywanie kolejnych poziomów otrzymujesz punkty pasywne i punkty umiejętności. \nKliknij na pasek doświadczenia, aby otworzyć drzewko umiejętności pasywnych.
+    2: Tutaj znajduje się drzewko umiejętności pasywnych.\n Jeżeli posiadasz punkty umiejętności pasywnych, możesz je przydzielić do wybranych umiejętności . \n Te umiejętności zapewniają bonusy do różnych efektów, takich jak dodatkowe życie, obrażenia lub prędkość. \n Kliknij dowolną umiejętność, aby ją przydzielić, a prawym przyciskiem myszy, aby ją cofnąć.
+    3: Teraz kliknij na zakładkę „Umiejętności” w lewym górnym rogu.
+    5: Wybrane umiejętności zostaną wyświetlone na pasku szybkiego dostępu.\nUmiejętności mają czas odnowienia po użyciu, którego długość zależy od danej umiejętności.\nNiektóre umiejętności są odblokowywane poprzez posiadanie określonych przedmiotów.\nZamknij menu drzewka (naciśnij klawisz Escape lub kliknij czerwony znak X w prawym górnym rogu).
+    4: Oto zakładka (debug) Umiejętności.\nTutaj można zaznaczyć lub odznaczyć określone umiejętności, co pozwala znacznie zmienić styl gry.\nW przyszłości umiejętności będą dostępne wraz z postępem w grze zamiast z tego menu.\nKliknij dowolną umiejętność, aby ją zaznaczyć.
+  }
+  Lives: Pozostało żyć
+  Slots: {
+    4: Broń
+    5: Naszyjnik
+    6: Poboczne
+    8: Prawy pierścień
+    7: Lewy pierścień
+    10: Skrzydła
+    0: Hełm
+    1: Klatka piersiowa
+    2: Nogi
+    9: Pierwsze akcesorium
+    3: Drugie akcesorium
+  }

@@ -1,0 +1,18 @@
+﻿LifeStealProjectile: {
+    DisplayName: Pocisk kradzieży życia
+  }
+  BowAltUseProjectile: {
+    DisplayName: Pocisk z łuku (strzał alternatywny)
+  }
+  BowProjectile: {
+    DisplayName: Pocisk z łuku
+  }
+  BoomerangProjectile: {
+    DisplayName: Pocisk bumerang
+  }
+  HomingProjectile: {
+    DisplayName: Pocisk nakierowany
+  }
+  PlatinumGlaiveThrown: {
+    DisplayName: Platynowa glewia
+  }

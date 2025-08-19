@@ -1,0 +1,60 @@
+﻿IncreasedDamageAffix: {
+    Description: "{1}{0}% daño"
+  }
+  DefenseItemAffix: {
+    Description: "{1}{0} defensa"
+  }
+  EnduranceItemAffix: {
+    Description: "{1}{0}% incrementa tu resistencia al daño"
+  }
+  ResistanceHelmetAffix: {
+    Description: "{1}{0}% debuffs cortos"
+  }
+  BuffBoostHelmetAffix: {
+    Description: "{1}{0}% buffs benéficos mas duraderas"
+  }
+  BaseLifeAffix: {
+    Description: '''	{1}{0} vida maxima'''
+  }
+  AddedLifeAffix: {
+    Description: '''	{1}{0}% vida máxima'''
+  }
+  MultipliedLifeAffix: {
+    Description: '''	{1}{0}% multiplicador de salud máxima'''
+  }
+  ThornyArmorAffix: {
+    Description: "{1}{0} daño plano reflejado"
+  }
+  FlatLifeAffix: {
+    Description: "{1}{0} vida máxima plana"
+  }
+  LifeRegenAffix: {
+    Description: "{1}{0}% regeneración de vida"
+  }
+  LifeRegenMultiplierAffix: {
+    Description: "{1}{0}% multiplicador de regeneración de vida"
+  }
+  LifePotionPowerAffix: {
+    Description: "{1}{0}% pociones curativas mas fuertes"
+  }
+  LifePotionCapAffix: {
+    Description: "{1}{0} pociones de vida máxima "
+  }
+  LifePotionCooldownAffix: {
+    Description: '''	{1}{0}% enfriamiento de poción de mana'''
+  }
+  ManaAffix: {
+    Description: '''	{1}{0} mana máximo'''
+  }
+  ManaRegenAffix: {
+    Description: '''	{1}{0}% regeneración de maná'''
+  }
+  ManaPotionPowerAffix: {
+    Description: "{1}{0}% pociones de maná mas fuertes"
+  }
+  ManaPotionCapAffix: {
+    Description: "{1}{0} máximo de pociones de maná"
+  }
+  ManaPotionCooldownAffix: {
+    Description: '''	{1}{0}% enfriamiento mas corto de la poción de maná'''
+  }

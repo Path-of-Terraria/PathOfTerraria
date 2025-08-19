@@ -1,90 +1,61 @@
-BattleAxeBuff: {
-	DisplayName: Боевая ярость
-	Description: Увеличенный урон и увеличенный получаемый урон
-}
-
-RageBuff: {
-	DisplayName: Берсерк
-	Description: Увеличенный урон и значительно увеличенное отбрасывание
-}
-
-MoltenShieldBuff: {
-	DisplayName: Расплавленный панцирь
-	Description: Получите временный щит\nПолучите небольшую защиту
-}
-
-BloodclotDebuff: {
-	DisplayName: Тромб
-	Description: ""
-	DeathText: "{0} не смог остановить кровотечение"
-}
-
-ArmorShredDebuff: {
-	DisplayName: Ослабление разрушения брони
-	Description: ""
-}
-
-ShockDebuff: {
-	DisplayName: Шок
-	Description: На 10% больше получаемого урона
-}
-
-RootedDebuff: {
-	DisplayName: "Обездвиживание "
-	Description: Тебе нельзя двигаться!
-}
-
-GodlikeBuff: {
-	DisplayName: Богоподобный
-	Description: Вы невосприимчивы ко всем прямым повреждениям
-}
-
-RestorationBuff: {
-	DisplayName: Восстановление
-	Description: Обеспечивает массовую регенерацию жизни
-}
-
-HardinessBuff: {
-	DisplayName: Повышение выносливости
-	Description: +10 защиты +20% шанс блока
-}
-
-HasteBuff: {
-	DisplayName: Усиление скорости
-	Description: +20% скорости передвижения\n+15% скорости атаки
-}
-
-UnstoppableBuff: {
-	DisplayName: Неудержимый бафф
-	Description: +50% к здоровью щита\nИммунитет к охлаждению
-}
-
-FrostflameDebuff: {
-	DisplayName: Ослабление ледяного пламени
-	Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
-}
-
-SporeDebuff: {
-	DisplayName: Ослабление спор
-	Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
-}
-
-BlindedDebuff: {
-	DisplayName: Ослепленный
-	Description: Атаки имеют шанс промахнуться
-}
-
-HasteChargeBuff: {
-	// DisplayName: Haste Charge Buff
-	// Description: Increases attack speed and movement speed by {0}%
-}
-
-AegisChargeBuff: {
-	// DisplayName: Aegis Charge Buff
-	// Description: Increases max health by {0} and defense by {1}
-}
-
-FocusChargeBuff: {
-	// DisplayName: Focus Charge Buff
-	// Description: Increases critical strike chance and multiplier by {0}%
-}
+﻿BattleAxeBuff: {
+    Description: Увеличенный урон и увеличенный получаемый урон
+    DisplayName: Боевая ярость
+  }
+  RageBuff: {
+    Description: Увеличенный урон и значительно увеличенное отбрасывание
+    DisplayName: '''	Берсерк'''
+  }
+  MoltenShieldBuff: {
+    DisplayName: Расплавленный панцирь
+    Description: Получите временный щит\nПолучите небольшую защиту
+  }
+  BloodclotDebuff: {
+    DisplayName: Тромб
+    DeathText: "{0} не смог остановить кровотечение"
+    Description: ""
+  }
+  ArmorShredDebuff: {
+    DisplayName: Ослабление разрушения брони
+    Description: ""
+  }
+  ShockDebuff: {
+    DisplayName: Шок
+    Description: На 10% больше получаемого урона
+  }
+  RootedDebuff: {
+    DisplayName: "Обездвиживание "
+    Description: Тебе нельзя двигаться!
+  }
+  GodlikeBuff: {
+    DisplayName: Богоподобный
+    Description: '''	Вы невосприимчивы ко всем прямым повреждениям'''
+  }
+  RestorationBuff: {
+    DisplayName: Восстановление
+    Description: Обеспечивает массовую регенерацию жизни
+  }
+  HardinessBuff: {
+    Description: +10 защиты +20% шанс блока
+    DisplayName: Повышение выносливости
+  }
+  HasteBuff: {
+    Description: '''	+20% скорости передвижения\n+15% скорости атаки'''
+    DisplayName: Усиление скорости
+  }
+  UnstoppableBuff: {
+    DisplayName: Неудержимый бафф
+    Description: '''	+50% к здоровью щита\nИммунитет к охлаждению'''
+  }
+  FrostflameDebuff: {
+    DisplayName: '''	Ослабление ледяного пламени'''
+    Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
+  }
+  SporeDebuff: {
+    DisplayName: '''	Ослабление спор'''
+    Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
+  }
+  BlindedDebuff: {
+    DisplayName: '''	Ослепленный'''
+    Description: '''	Атаки имеют шанс промахнуться'''
+  }

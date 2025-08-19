@@ -1,0 +1,31 @@
+﻿Shop: Sklep
+  Quest: Zadanie
+  BlacksmithNPC: {
+    DisplayName: Thrain Ironfist
+  }
+  WizardNPC: {
+    BubbleDialogue: {
+      Goblins: {
+        0: Moje moce nie są tylko na pokaz.
+      }
+    }
+    DisplayName: Alarik
+  }
+  BarkeepNPC: {
+    DisplayName: Brom Wytrzymały
+    Dialogue: {
+      Quest: Witaj! Mam do Ciebie pytanie. Przez cały dzień jestem za barem i wygląda na to, że kończy nam się słodzik. Miałem stare zapasy miodu od znajomego mieszkającego kilkaset mil stąd, który był najsmaczniejszy z wszystkich, jakie miałem. Niestety, nie był nieskończony. Czy znasz jakiś miód, który mógłbym zgarnąć? A może nawet lepiej, który mógłbyś mi załatwić? Zapłacę ci uprzejmie. Proszę, weź te butelki i napełnij je. Trzymam kciuki!
+      NeedsMoreHoney: Dzięki! Proszę, weź tę zapłatę. To bardzo miłe z twojej strony. Chociaż... to nie za dużo miodu, prawda? Biorąc pod uwagę mój obecny biznes i różnorodność produktów, które mam tutaj, to wystarczy może na tydzień! Myślisz, że da się to jakoś uprościć? Chętnie sam po to pójdę. Albo... może porozmawiasz z Alarikiem? Facet jest dziwny, ale potrafi zdziałać cuda. Zapytaj go, co może zrobić! Tylko bądź ostrożny.
+      Common3: Dwóch mężczyzn wchodzi do baru, a ja pytam: „Co podać?”... Co? Jaki jest puenta?
+    }
+    BubbleDialogue: {
+      Night: {
+        0: Och! Duża napiwek! Dzięki, nieznajomy. Kimkolwiek jesteś.
+        1: „Facet wchodzi do baru?” Powinienem kiedyś tego użyć.
+        2: Kocham moją pracę.
+      }
+      Goblins: {
+        0: Te cholerne gobliny niech lepiej trzymają się z dala od mojego drinka.
+      }
+    }
+  }

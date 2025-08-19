@@ -1,0 +1,49 @@
+﻿IncreasedMeleeDamagePassive: {
+    Name: Mistrzostwo w zwarciu
+    Tooltip: Zwiększa obrażenia w zwarciu o 5% za poziom
+  }
+  IncreasedRangedDamagePassive: {
+    Name: Mistrzostwo w strzelectwie
+    Tooltip: "Zwiększa obrażenia dystansowe o 5% za poziom "
+  }
+  LongRangePassive: {
+    Name: Snajper
+  }
+  DamageReductionPassive: {
+    Tooltip: Zwiększa redukcje obrażeń o 0.25% co poziom.
+    Name: Żelazna wola
+  }
+  ChanceToBleedPassive: {
+    Name: Karmazynowy/Krwawy taniec
+    Tooltip: Twoje obrażenia w zwarciu wywołują krwawienie, zadawając 5 obrażeń co sekundę. (context?)
+  }
+  ArmorPenetrationPassive: {
+    Name: Zwiększone przebicie pancerza (obrażenia w zwarciu)
+    Tooltip: Daje 15% więcej przebicia pancerza co poziom
+  }
+  AddedStrengthPassive: {
+    Name: Cieżki trening
+    Tooltip: Daje +{0} punkt(ów) do siły co poziom
+  }
+  AddedDexterityPassive: {
+    Name: Zwinne nogi
+    Tooltip: Daje +{0} punkt(ów) do zwinności co poziom
+  }
+  AddedIntelligencePassive: {
+    Tooltip: Daje +{0} punkt(ów) inteligencji co poziom
+  }
+  IncreasedMoveSpeedPassive: {
+    Name: Zwinna praca nóg
+    Tooltip: Daje +{0}% do prędkości poruszania się co poziom
+  }
+  AddedLifePassive: {
+    Tooltip: Zwiększa maksymalną ilość życia o 20 co poziom
+    Name: Wzmocnione mięśnie
+  }
+  AddedManaPassive: {
+    Tooltip: Zwiększa maksymalną ilość życia o 20 co poziom
+  }
+  IncreasedSummoningDamagePassive: {
+    Name: Mistrzostwo Przywoływania
+    Tooltip: Zwiększa obrażenia przywoływanych o 5% co poziom
+  }

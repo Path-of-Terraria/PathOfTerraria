@@ -1,0 +1,10 @@
+﻿Unlock: Naciśnij LPM by odblokować
+  CostLine: Odblokowanie kosztuje {0}
+  Overload: {
+    Name: Przeładowanie
+    Tooltip: Zwiększa obrażenia o {0}% kosztem {1}% zwiększonego użycia many
+  }
+  Concentrate: {
+    Name: Koncentracja
+    Tooltip: Zwiększa obrażenia o {0}%, użycie many o {1}% i zmniejsza obszar efektu
+  }

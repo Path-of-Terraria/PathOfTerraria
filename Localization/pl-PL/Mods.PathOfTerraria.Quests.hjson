@@ -1,0 +1,92 @@
+﻿Or: albo
+  GiveThem: oraz daj im:
+  TalkTo: Porozmawiaj z {0}
+  Popups: {
+    Line1: Otwórz Księge Zadań, aby zobaczyc postęp oraz kroki do podejmowanych zadań.
+    Line2: Księga Zadań zawsze jest obok mapy w ekwipunku.
+    Line3: Możesz również użyć przycisku {0} , aby otworzyć Książke
+    NewQuest: Nowe Zadanie:
+    NoKey: (Nic nie przypisano - domyślnie L)
+  }
+  Bring: {
+    Collect: Zbierz
+    GiveItTo: i daj to {0}
+  }
+  Exploration: {
+    Ice: Odkryj biom Lodowy/Śnieżny ({0}%)
+  }
+  Quest: {
+    TestQuestTwo: {
+      Name: Test 2: Elektryczny Boogaloo
+      Description: Próbuj mocniej.
+    }
+    TestQuest: {
+      Name: Zadanie Testowe
+      Description: Służy do testowania zadań.
+    }
+    BlacksmithStartQuest: {
+      Name: Kucie Nowego Ostrza
+      Kill: {
+        Zombies: Zabij {0} zombie
+      }
+    }
+    KingSlimeQuest: {
+      Name: Zabić Króla
+      EnterDomain: Wejdz do Królewskiej Domeny
+      Kill: {
+        KingSlime: Zabij Króla Szlamu
+      }
+      ThanksDialogue: Ledwo moge temu uwierzyć. Jakimś cudem odnieśliście sukces tam, gdzie poniosłem porażke. Muszę powrócić do swoich poczynań, żebyś nigdy więcej mnie nie przegonił. Moje podziękowania, jednakże, pozostawiam tobie.
+    }
+    HunterStartQuest: {
+      Name: Naciąganie Łuku
+      Kill: {
+        FloatingMisc: Zabij {0} demoniczne oka, krimery bądź zjadaczy dusz.
+      }
+    }
+    WitchStartQuest: {
+      Name: Starorożytny Kunszt
+    }
+    WizardStartQuest: {
+      Name: Magiczny Powrót
+    }
+    EoCQuest: {
+      Kill: {
+        EoC: Pokonaj Oko Cthulhu
+      }
+      Name: Wschodzący Omen
+    }
+    EoWQuest: {
+      MorvenRaven: Zabierz Morven do Ravencrest
+      Name: Szept Otchłani
+      SmashOrbs: Zbij 3 Kule Cienia
+      KillEoW: Pokonaj Pożeracza Światów
+    }
+    BoCQuest: {
+      Name: Serce które dalej bije
+      SmashOrb: Zbij Karmazynowane Serce
+      EnterDomain: Wejdz do domeny Mózgu Cthulhu
+      KillBrain: Zabij Mózg Cthulhu
+    }
+    QueenBeeQuest: {
+      Name: Królewska Przygoda
+      KillQueen: Zabij Królową Pszczół
+    }
+    WoFQuest: {
+      Name: Uwalnianie Chaosu
+    }
+    SkeletronQuest: {
+      KillSkeletron: Zabij Szkieletrona
+      EnterDomain: Wejdz do domeny Szkieletrona
+      Name: Szkielecie Resztki
+    }
+    DeerclopsQuest: {
+      KillDeerclops: Zabij Jelenio-cyklopa
+      Name: Lodowata Bestia
+    }
+    FirstQuest: {
+      EnterRavencrest: Wejdz do Ravencrestu
+      ApproachEntrance: Zbliżenie się do wejścia Ravencrest
+      Name: Wstępienie do Ravencrest
+    }
+  }

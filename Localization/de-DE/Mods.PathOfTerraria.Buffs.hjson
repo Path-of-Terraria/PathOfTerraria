@@ -1,0 +1,8 @@
+﻿BattleAxeBuff: {
+    Description: Erhöht verursachten und erlittenen Schaden
+    DisplayName: Kampfrage
+  }
+  RageBuff: {
+    DisplayName: Berserk
+    Description: Erhöht Schaden und erhöht Rückstoß sehr viel
+  }

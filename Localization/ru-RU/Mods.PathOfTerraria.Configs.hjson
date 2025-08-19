@@ -1,20 +1,20 @@
-DeveloperConfig: {
-	DisplayName: Конфигурация разработчика [i:509]
-
-	DrawUIBorders: {
-		Label: Draw User Interface Borders
-		Tooltip: Draws borders around user interface elements to help with layout debugging.
-	}
-
-	Headers.Graphics: Графический заголовок
-}
-
-UIConfig: {
-	DisplayName: Конфигурация пользовательского интерфейса
-	Headers.UI: Заголовок пользовательского интерфейса
-
-	PreventExpBarClicking: {
-		Label: Prevent Exp Bar Clicking
-		Tooltip: When this is enabled you won't be able to click the experience bar to open the level up menu, but rather only through the Hotkey. This is useful if you find yourself accidentally opening it while trying to click on other UI elements.
-	}
-}
+﻿DeveloperConfig: {
+    DisplayName: '''	Конфигурация разработчика [i:509]'''
+    DrawUIBorders: {
+      Label: '''	Рисовать границы пользовательского интерфейса'''
+      Tooltip: Рисует границы вокруг элементов пользовательского интерфейса, упрощая отладку макета.
+    }
+    Headers: {
+      Graphics: Графический заголовок
+    }
+  }
+  UIConfig: {
+    DisplayName: Конфигурация пользовательского интерфейса
+    Headers: {
+      UI: '''	Заголовок пользовательского интерфейса'''
+    }
+    PreventExpBarClicking: {
+      Label: Предотвратить нажатие на панель опыта
+      Tooltip: Если эта опция включена, вы не сможете нажать на панель опыта, чтобы открыть меню повышения уровня. Это будет возможно только с помощью горячей клавиши. Это полезно, если вы случайно откроете её, пытаясь нажать на другие элементы интерфейса.
+    }
+  }
