@@ -122,11 +122,12 @@ internal class AugmentSlotElement : UIElement
 
 			if (ContainsInner)
 			{
-				string name = augments[Index].DisplayName;
-				string tooltip = augments[Index].Tooltip;
-
-				Tooltip.SetName(name);
-				Tooltip.SetTooltip(tooltip);
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = "AugmentSlot",
+					SimpleTitle = augments[Index].DisplayName,
+					SimpleSubtitle = augments[Index].Tooltip,
+				});
 			}
 
 			return;
@@ -153,8 +154,12 @@ internal class AugmentSlotElement : UIElement
 					tooltip = Language.GetTextValue(common + ".CostLine", ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
 				}
 
-				Tooltip.SetName(Language.GetTextValue(common + ".SlotLine"));
-				Tooltip.SetTooltip(tooltip);
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = "AugmentSlot",
+					SimpleTitle = Language.GetTextValue(common + ".SlotLine"),
+					SimpleSubtitle = tooltip,
+				});
 			}
 		}
 	}
@@ -327,11 +332,12 @@ internal class AugmentRadialElement : UIElement
 
 		if (ContainsPoint(Main.MouseScreen) && Progress == 1)
 		{
-			string name = _augment.DisplayName;
-			string tooltip = _augment.Tooltip;
-
-			Tooltip.SetName(name);
-			Tooltip.SetTooltip(tooltip);
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = "AugmentSlot",
+				SimpleTitle = _augment.DisplayName,
+				SimpleSubtitle = _augment.Tooltip,
+			});
 		}
 	}
 

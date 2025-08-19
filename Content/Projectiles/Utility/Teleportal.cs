@@ -19,7 +19,11 @@ internal class Teleportal : ModProjectile
 				player.Teleport((proj.ModProjectile as Teleportal).TeleportLocation);
 			}
 
-			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"));
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = "Portal",
+				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+			});
 		});
 	}
 
@@ -83,7 +87,11 @@ internal class Teleportal : ModProjectile
 							Player.Teleport(teleportal.TeleportLocation);
 						}
 
-						Tooltip.SetName("Enter");
+						Tooltip.Create(new TooltipDescription
+						{
+							Identifier = "Portal",
+							SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+						});
 					}
 				}
 			}

@@ -1,23 +1,23 @@
 ﻿using System.Collections.Generic;
-using Terraria.Graphics.Effects;
-using Terraria.ID;
-using Terraria.UI;
+using System.Linq;
 using System.Text.RegularExpressions;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using System.Linq;
-using Terraria.Localization;
-using ReLogic.Content;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Gear;
-using PathOfTerraria.Common.Items;
+using PathOfTerraria.Utilities.Xna;
+using ReLogic.Content;
+using Terraria.Graphics.Effects;
+using Terraria.Localization;
+using Terraria.UI;
 
 namespace PathOfTerraria.Core.Items;
 
 // Handles modifying and rendering tooltips.
 
-partial class PoTGlobalItem
+public sealed partial class ItemTooltips : GlobalItem
 {
 	private sealed class Patcher : ILoadable
 	{
@@ -29,11 +29,38 @@ partial class PoTGlobalItem
 		void ILoadable.Unload() { }
 	}
 
+	// Commonly used colors.
+	public static class Colors
+	{
+		public static Color DefaultText => ColorUtils.FromHexRgb(0x_dddddd);
+		public static Color DefaultNumber => ColorUtils.FromHexRgb(0x_a1bdbd);
+		public static Color Positive => ColorUtils.FromHexRgb(0x_99e550);
+		public static Color Negative => ColorUtils.FromHexRgb(0x_ac3232);
+		public static Color Levels => ColorUtils.FromHexRgb(0x_d8b47a);
+		// Accents
+		public static Color StatsAccent => ColorUtils.FromHexRgb(0x_a1bdbd);
+		public static Color AffixAccent => ColorUtils.FromHexRgb(0x_ff2222);
+
+		public static Color Corrupt => Color.Lerp(Color.Purple, Color.White, 0.4f);
+		public static Color Cloned => ColorUtils.FromHexRgb(0x_37946e);
+		public static Color ManaCost => ColorUtils.FromHexRgb(0x_5fcde4);
+	}
+
+	public static string ColoredDot(Color color)
+	{
+		return $"[c/{ColorUtils.ToHexRGB(color)}:◙]";
+	}
+
 	/// <summary>
 	/// Lookup table for textures so we skip some performance.<br/>
 	/// Keys:<br/><c>Normal, Magic, Rare, Unique, Favorite</c>
 	/// </summary>
 	private readonly static Dictionary<string, Asset<Texture2D>> Textures = [];
+
+	public override void Load()
+	{
+		LoadBackImages();
+	}
 
 	#region Modify tooltips and rendering
 
@@ -76,7 +103,6 @@ partial class PoTGlobalItem
 				return true;
 
 			case "AltUseDescription":
-			case "ManaCost":
 			case "Description":
 			case "ShiftNotice":
 			case "SwapNotice":
@@ -85,10 +111,11 @@ partial class PoTGlobalItem
 				return true;
 		}
 
-		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name == "Damage" || line.Name == "Defense" || line.Name.StartsWith("Stat"))
+		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name.StartsWith("Stat")
+		|| line.Name is "Damage" or "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost")
 		{
 			line.BaseScale = new Vector2(0.95f);
-			yOffset = line.Name == "Damage" || line.Name == "Defense" || line.Name.StartsWith("Stat") ? 2 : -4;
+			yOffset = -4;
 			return true;
 		}
 
@@ -116,7 +143,6 @@ partial class PoTGlobalItem
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.Gear.Tooltips." + key);
 		}
 
-		base.ModifyTooltips(item, tooltips);
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
 
@@ -124,6 +150,7 @@ partial class PoTGlobalItem
 		TooltipLine nameLine = tooltips.FirstOrDefault(x => x.Name == "ItemName");
 		TooltipLine priceLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Price");
 		TooltipLine materialLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Material");
+		TooltipLine placeableLine = tooltips.FirstOrDefault(x => x.FullName == "Terraria/Placeable");
 
 		if (setBonusLine is not null)
 		{
@@ -159,7 +186,7 @@ partial class PoTGlobalItem
 		{
 			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Corrupted", $" {Localize("Corrupted")}")
 			{
-				OverrideColor = Color.Lerp(Color.Purple, Color.White, 0.4f)
+				OverrideColor = Colors.Corrupt,
 			});
 		}
 		
@@ -167,32 +194,38 @@ partial class PoTGlobalItem
 		{
 			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "Cloned", $" {Localize("Cloned")}")
 			{
-				OverrideColor = Color.Lerp(Color.DarkCyan, Color.White, 0.4f)
+				OverrideColor = Colors.Cloned
 			});
 		}
 
-		string rarityDesc = GetDescriptor(data.ItemType, data.Rarity, data.Influence);
-
-		if (item.ModItem is GearLocalizationCategory.IItem gear)
+		if (data.ItemType != ItemType.None || data.Rarity > ItemRarity.Normal)
 		{
-			string name = Language.GetTextValue("Mods.PathOfTerraria.Gear." + GearLocalizationCategory.Invoke(item) + ".Name");
-			rarityDesc = GetDescriptor(name, data.Rarity, data.Influence);
-		}
+			string rarityDesc = GetDescriptor(data.ItemType, data.Rarity, data.Influence);
 
-		if (!string.IsNullOrWhiteSpace(rarityDesc))
-		{
-			var rarityLine = new TooltipLine(Mod, "Rarity", rarityDesc)
+			if (item.ModItem is GearLocalizationCategory.IItem gear)
 			{
-				OverrideColor = Color.Lerp(GetRarityColor(data.Rarity), Color.White, 0.5f)
-			};
-			AddNewTooltipLine(item, tooltips, rarityLine);
+				string name = Language.GetTextValue("Mods.PathOfTerraria.Gear." + GearLocalizationCategory.Invoke(item) + ".Name");
+				rarityDesc = GetDescriptor(name, data.Rarity, data.Influence);
+			}
+
+			if (!string.IsNullOrWhiteSpace(rarityDesc))
+			{
+				var rarityLine = new TooltipLine(Mod, "Rarity", rarityDesc)
+				{
+					OverrideColor = Color.Lerp(GetRarityColor(data.Rarity), Color.White, 0.5f)
+				};
+				AddNewTooltipLine(item, tooltips, rarityLine);
+			}
 		}
 
-		var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {Localize("Level")} [c/CCCCFF:{GetItemLevel.Invoke(item)}]")
+		if (GetItemLevel.Invoke(item) is > 0 and int level)
 		{
-			OverrideColor = new Color(170, 170, 170)
-		};
-		AddNewTooltipLine(item, tooltips, itemLevelLine);
+			var itemLevelLine = new TooltipLine(Mod, "ItemLevel", $" {Localize("Level")} [c/{ColorUtils.ToHexRGB(Colors.Levels)}:{level}]")
+			{
+				OverrideColor = Colors.Levels,
+			};
+			AddNewTooltipLine(item, tooltips, itemLevelLine);
+		}
 
 		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
 		{
@@ -221,14 +254,12 @@ partial class PoTGlobalItem
 			float minDamage = finalDamage * 0.85f;
 			float maxDamage = finalDamage * 1.15f;
     
-			string highlightNumbers = HighlightNumbers(
-				$"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})",
-				baseColor: "DDDDDD");
-			var damageLine = new TooltipLine(Mod, "Damage", $"[i:{ItemID.SilverBullet}] {highlightNumbers}");
+			string highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})");
+			var damageLine = new TooltipLine(Mod, "Damage", $"{ColoredDot(Colors.StatsAccent)} {highlightNumbers}");
 			AddNewTooltipLine(item, tooltips, damageLine);
 		}
 		
-		if (item.useTime > 0) 
+		if (item.useTime > 0 && item.damage > 0) 
 		{
 			//We want to ensure default attack speed is not shown on any of the below gear/items.
 			if (data.ItemType != ItemType.Helmet && 
@@ -254,7 +285,9 @@ partial class PoTGlobalItem
 				aps = (float) Math.Round(aps, 2);
 				string apsStr = aps.ToString("0.00");
 				string localizeString = item.DamageType == DamageClass.Magic ? "CastSpeed" : "AttackSpeed";
-				var attackSpeed = new TooltipLine(Mod, "AttacksPerSecond", $"[i:{ItemID.SilverBullet}] [{apsStr}] {Localize(localizeString)}");
+				var attackSpeed = new TooltipLine(Mod, "AttacksPerSecond",
+					$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{apsStr}]")} {Localize(localizeString)}"
+				);
 				AddNewTooltipLine(item, tooltips, attackSpeed);
 			}
 		}
@@ -271,44 +304,41 @@ partial class PoTGlobalItem
 			float totalCritChance = baseCritChance + playerCritChance;
         
 			// Add the tooltip line
-			var critLine = new TooltipLine(Mod, "CriticalStrikeChance",$"[i:{ItemID.SilverBullet}] [{totalCritChance:F1}%] Critical Strike Chance");
+			var critLine = new TooltipLine(Mod, "CriticalStrikeChance",
+				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{totalCritChance:0}%]")} Critical Strike Chance"
+			);
 
 			AddNewTooltipLine(item, tooltips, critLine);;
 		}
 
-
-		
 		if (item.mana > 0)
 		{
-			string manaCost = $"{Localize("ManaCost")}: {item.mana}";
-			var manaLine = new TooltipLine(Mod, "ManaCost", manaCost)
-			{
-				OverrideColor = Color.Cyan
-			};
+			string manaCost = $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{item.mana}]")} [c/{Colors.ManaCost.ToHexRGB()}:{Localize("ManaCost")}]";
+			var manaLine = new TooltipLine(Mod, "ManaCost", manaCost);
 			AddNewTooltipLine(item, tooltips, manaLine);
 		}
 
 		if (item.defense > 0)
 		{
-			var def = new TooltipLine(Mod, "Defense", $"[i:{ItemID.SilverBullet}] " + HighlightNumbers($"+{item.defense} {Localize("Defense")}", baseColor: "DDDDDD"));
+			var def = new TooltipLine(Mod, "Defense", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"+{item.defense} {Localize("Defense")}")}");
 			AddNewTooltipLine(item, tooltips, def);
 		}
 
 		if (item.pick > 0)
 		{
-			var pick = new TooltipLine(Mod, "Pickaxe", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.pick} {Localize("Pickaxe")}", baseColor: "DDDDDD")}");
+			var pick = new TooltipLine(Mod, "Pickaxe", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.pick} {Localize("Pickaxe")}")}");
 			AddNewTooltipLine(item, tooltips, pick);
 		}
 		
 		if (item.axe > 0)
 		{
-			var axe = new TooltipLine(Mod, "Axe", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.axe * 5} {Localize("Axe")}", baseColor: "DDDDDD")}");
+			var axe = new TooltipLine(Mod, "Axe", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.axe * 5} {Localize("Axe")}")}");
 			AddNewTooltipLine(item, tooltips, axe);
 		}
 		
 		if (item.hammer > 0)
 		{
-			var hammer = new TooltipLine(Mod, "Hammer", $"[i:{ItemID.SilverBullet}] {HighlightNumbers($"{item.hammer} {Localize("Hammer")}", baseColor: "DDDDDD")}");
+			var hammer = new TooltipLine(Mod, "Hammer", $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"{item.hammer} {Localize("Hammer")}")}");
 			AddNewTooltipLine(item, tooltips, hammer);
 		}
 		
@@ -324,10 +354,10 @@ partial class PoTGlobalItem
 
 		// Affix tooltips
 		InsertAdditionalTooltipLines.Invoke(item, tooltips);
-		AffixTooltipsHandler.DefaultColor = Color.Green; // Makes any new affixes from this item show as green as they are new and beneficial by default
+		AffixTooltipsHandler.DefaultColor = Colors.Positive; // Makes any new affixes from this item show as green as they are new and beneficial by default
 		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer); // Adds in affix tooltips from this item without applying effects
 		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().PrepareComparisonTooltips(tooltips, item);
-		AffixTooltipsHandler.DefaultColor = Color.White; // Resets color
+		AffixTooltipsHandler.DefaultColor = Colors.DefaultText; // Resets color
 
 		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);
@@ -336,7 +366,12 @@ partial class PoTGlobalItem
 		{
 			tooltips.Add(materialLine);
 		}
-		
+
+		if (placeableLine is not null)
+		{
+			tooltips.Add(placeableLine);
+		}
+
 		if (priceLine is not null)
 		{
 			tooltips.Add(priceLine);
@@ -358,20 +393,23 @@ partial class PoTGlobalItem
 		}
 	}
 
-	private static string HighlightNumbers(string input, string numColor = "CCCCFF", string baseColor = "A0A0A0")
+	public static string HighlightNumbers(string input, Color? numColor = null, Color? baseColor = null)
 	{
+		numColor ??= Colors.DefaultNumber;
+		baseColor ??= Colors.DefaultText;
+
 		Regex regex = NumberHighlightRegex();
 
 		return regex.Replace(input, match =>
 		{
 			if (match.Groups[1].Success)
 			{
-				return $"[c/{numColor}:{match.Value}]";
+				return $"[c/{ColorUtils.ToHexRGB(numColor.Value)}:{match.Value}]";
 			}
 
 			if (match.Groups[2].Success)
 			{
-				return $"[c/{baseColor}:{match.Value}]";
+				return $"[c/{ColorUtils.ToHexRGB(baseColor.Value)}:{match.Value}]";
 			}
 
 			return match.Value;
@@ -383,9 +421,9 @@ partial class PoTGlobalItem
 		return rarity switch
 		{
 			ItemRarity.Normal => Color.White,
-			ItemRarity.Magic => new Color(110, 160, 255),
-			ItemRarity.Rare => new Color(255, 255, 50),
-			ItemRarity.Unique => new Color(25, 255, 25),
+			ItemRarity.Magic => ColorUtils.FromHexRgb(0x_639bff),
+			ItemRarity.Rare => ColorUtils.FromHexRgb(0x_ffe46e),
+			ItemRarity.Unique => ColorUtils.FromHexRgb(0x_5dff46),
 			_ => Color.White,
 		};
 	}
@@ -417,7 +455,7 @@ partial class PoTGlobalItem
 		return $" {influenceName}{rareName}{typeName}";
 	}
 
-	[GeneratedRegex(@"(\d+)|(\D+)")]
+	[GeneratedRegex(@"([\d\%\-\+]+)|([^\d\%\-\+]+)")]
 	private static partial Regex NumberHighlightRegex();
 	#endregion
 

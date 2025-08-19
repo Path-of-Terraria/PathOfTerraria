@@ -51,8 +51,12 @@ internal class PlayerStatInnerPanel : SmartUiElement
 
 			if (hover is not null && ContainsPoint(Main.MouseScreen))
 			{
-				Tooltip.SetName(text.Value);
-				Tooltip.SetTooltip(hover.Value);
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = "PlayerStats",
+					SimpleTitle = text.Value,
+					SimpleSubtitle = hover.Value,
+				});
 			}
 		}
 	}

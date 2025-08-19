@@ -40,8 +40,12 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 
 			if (text != string.Empty)
 			{
-				Tooltip.SetName(title);
-				Tooltip.SetTooltip(text);
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = "QuestReminder",
+					SimpleTitle = title,
+					SimpleSubtitle = text,
+				});
 			}
 		}
 
