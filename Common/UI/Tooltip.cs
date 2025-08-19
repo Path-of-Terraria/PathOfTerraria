@@ -62,6 +62,7 @@ public class Tooltip : SmartUiState
 	}
 
 	private static readonly List<TooltipInstance> tooltips = [];
+	private static uint lastGameUpdateCount;
 
 	public override int DepthPriority => 2;
 
@@ -91,13 +92,23 @@ public class Tooltip : SmartUiState
 
 	private static Span<TooltipInstance> IterateTooltips()
 	{
-		// Remove expired tooltips.
+		// Remove expired tooltips. Account for tick count resets, which are likely to occur if moving between subworlds.
 		uint currentTime = Main.GameUpdateCount;
-		for (int i = 0; i < tooltips.Count; i++)
+		uint previousTime = lastGameUpdateCount;
+		lastGameUpdateCount = currentTime;
+
+		if (currentTime < previousTime)
 		{
-			if (currentTime > tooltips[i].EndTime)
+			tooltips.Clear();
+		}
+		else
+		{
+			for (int i = 0; i < tooltips.Count; i++)
 			{
-				tooltips.RemoveAt(i--);
+				if (currentTime > tooltips[i].EndTime)
+				{
+					tooltips.RemoveAt(i--);
+				}
 			}
 		}
 
