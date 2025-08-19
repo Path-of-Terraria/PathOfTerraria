@@ -290,6 +290,7 @@ public sealed class NewHotbar : SmartUiState
 					Identifier = "Skill",
 					SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.NoSkill"),
 					SimpleSubtitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.ChooseSkill"),
+					VisibilityTimeInTicks = 0,
 				});
 			}
 
@@ -415,6 +416,7 @@ public sealed class NewHotbar : SmartUiState
 			Identifier = "Skill",
 			SimpleTitle = title,
 			SimpleSubtitle = subtitle,
+			VisibilityTimeInTicks = 0,
 		});
 	}
 
@@ -662,6 +664,7 @@ public class HijackHotbarClick : ModSystem
 			SimpleTitle = Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"),
 			SimpleSubtitle = Language.GetTextValue($"Mods.PathOfTerraria.Misc.Restores{type}Tooltip", health ? potions.HealPower : potions.ManaPower)
 				+ "\n" + Language.GetTextValue($"Mods.PathOfTerraria.Misc.CooldownTooltip", MathF.Round((health ? potions.HealDelay : potions.ManaDelay) / 60f, 2).ToString("0.00")),
+			VisibilityTimeInTicks = 0,
 		});
 	}
 

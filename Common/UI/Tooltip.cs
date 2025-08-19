@@ -32,7 +32,7 @@ public struct TooltipDescription()
 	/// <summary> If provided, this item instance is used to invoke ItemLoader's Pre/PostDrawTooltip(Line) hooks. </summary>
 	public Item? AssociatedItem;
 	/// <summary> The amount of time in game ticks that this tooltip should be visible for.  </summary>
-	public uint VisibilityTimeInTicks = 2;
+	public uint VisibilityTimeInTicks = 1;
 	/// <summary> Padding to add inside the tooltip's background. </summary>
 	public Vector2 Padding = new(16, 16);
 }
