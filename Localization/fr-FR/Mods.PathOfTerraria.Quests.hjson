@@ -69,6 +69,7 @@ Quest: {
 		MorvenRaven: Emmenez Morgen à Ravencrest
 		SmashOrbs: Détruire 3 Orbes de l'Ombre
 		KillEoW: Battez le Dévoreur des Mondes
+		// ReturnToOverworld: Return to the Overworld
 	}
 
 	BoCQuest: {
