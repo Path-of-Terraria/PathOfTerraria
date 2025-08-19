@@ -4,6 +4,9 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
+/// <summary>
+/// Allows all players on the server to break Shadow Orbs and Crimson Hearts.
+/// </summary>
 internal class BreakableOrbsHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.BreakableOrbs;

@@ -132,7 +132,7 @@ public class RavencrestSystem : ModSystem
 					}
 					else if (Main.netMode == NetmodeID.MultiplayerClient)
 					{
-						ModContent.GetInstance<SpawnMorvenHandler>().Send();
+						ModContent.GetInstance<SpawnMorvenStuckHandler>().Send();
 					}
 				}
 			}

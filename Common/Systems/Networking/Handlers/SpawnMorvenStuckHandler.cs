@@ -3,7 +3,10 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Networking.Handlers;
 
-internal class SpawnMorvenHandler : Handler
+/// <summary>
+/// Sends a message to the server so that the Morven tile can be spawned and synced properly.
+/// </summary>
+internal class SpawnMorvenStuckHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.TellMorvenToSpawn;
 
