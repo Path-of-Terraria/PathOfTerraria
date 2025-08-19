@@ -49,16 +49,10 @@ internal class FrozenAntlers : ModTile
 		int type = ModContent.NPCType<SkullApparition>();
 		HashSet<Point16> positions = [];
 
-		if (Main.netMode != NetmodeID.MultiplayerClient)
-		{
-			int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 0);
-			Main.npc[npc].velocity = new Vector2(0, 8).RotatedByRandom(0.5f);
-			Main.npc[npc].netUpdate = true;
-		}
-		else
-		{
-			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, new Vector2((i + 1) * 16, (j + 1) * 16), new Vector2(0, 8).RotatedByRandom(0.5f));
-		}
+		// This method runs only on Singleplayer/Server, so a netmode check isn't necessary
+		int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 0);
+		Main.npc[npc].velocity = new Vector2(0, 8).RotatedByRandom(0.5f);
+		Main.npc[npc].netUpdate = true;
 		
 		for (int k = 0; k < 15; ++k)
 		{

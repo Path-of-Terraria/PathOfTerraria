@@ -52,7 +52,7 @@ internal class SimpleCompass : ModItem
 
 		if (player.DistanceSQ(antlers.ToWorldCoordinates()) < MathF.Pow(16 * 35, 2))
 		{
-			//if (Main.netMode != NetmodeID.MultiplayerClient)
+			if (Main.myPlayer == player.whoAmI)
 			{
 				List<RealtimeStep> actions = [];
 
