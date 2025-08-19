@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
@@ -48,6 +49,7 @@ internal class RavencrestSubworld : MappingWorld
 		SubworldSystem.CopyWorldData("dayTime", Main.dayTime); // Keeps time consistent
 		SubworldSystem.CopyWorldData("overworldNPCs", ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.ToArray());
 		SubworldSystem.CopyWorldData("hardMode", Main.hardMode);
+		SubworldSystem.CopyWorldData("canBreakOrb", DisableOrbBreaking.BreakableOrbSystem.CanBreakOrb);
 		ModContent.GetInstance<PersistentDataSystem>().CopyDataToRavencrest();
 	}
 
@@ -59,6 +61,7 @@ internal class RavencrestSubworld : MappingWorld
 		Main.time = SubworldSystem.ReadCopiedWorldData<double>("time");
 		Main.dayTime = SubworldSystem.ReadCopiedWorldData<bool>("dayTime");
 		DisableEvilOrbBossSpawning.ActualOrbsSmashed = SubworldSystem.ReadCopiedWorldData<short>("orbsSmashed");
+		DisableOrbBreaking.BreakableOrbSystem.CanBreakOrb = SubworldSystem.ReadCopiedWorldData<bool>("canBreakOrb");
 
 		ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Clear();
 		string[] set = SubworldSystem.ReadCopiedWorldData<string[]>("overworldNPCs");
