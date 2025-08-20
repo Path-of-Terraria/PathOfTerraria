@@ -26,12 +26,12 @@ Generation: {
 }
 
 Tiles: {
-	ArcaneObeliskTile.MapEntry: Плитка «Тайный обелиск»
+	ArcaneObeliskTile.MapEntry: Блок «Таинственный обелиск»
 	MechChest.MapEntry: Механический корпус
 }
 
 Waypoints: {
-	RavencrestWaypoint.DisplayName: Гребень Ворона
+	RavencrestWaypoint.DisplayName: Вороний пик
 	HomeWaypoint.DisplayName: Дом
 }
 
@@ -46,7 +46,7 @@ Condition: {
 TooltipNotices: {
 	NoSwap: (Нечего обменивать)
 	Swap: Если {0} оборудован:
-	Shift: (Удерживайте клавишу Shift, чтобы сравнить статистику)
+	Shift: (Удерживайте клавишу Shift, чтобы сравнить характеристики)
 }
 
 Biomes: {

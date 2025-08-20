@@ -1,847 +1,835 @@
-// Shop: Shop
-// Quest: Quest
+Shop: Магазин
+Quest: Квест
 
 BlacksmithNPC: {
 	DisplayName: Трейн Железный Кулак
 
 	Dialogue: {
-		// Common0: Forged in steel, I am. Care to buy some?
-		// Common1: Sometimes, I miss the caverns. Rock and stone, brother, rock and stone.
-		// Common2: Nothing quite like a blade that cuts through bone like air. Makes sandwiches easy!
-		// Common3: I could easily beat you in an arm wrestle - the exercise of steel forging is effective.
-		// Quest: As you can see, some terrible event happened that simply obliterated my forge. What happened? I don't know, I sleep like a rock...anyhow. I'd love some help gathering materials, the town's metal has run dry for a while now. And maybe some wood while you're at it.
-		// Quest2: Fantastic! I'll fix the old forge up quick as I can. Here, take this sword. It's a test I made right before the attack. I'd like for you to test it on some zombies; those buggers are awful to deal with. If you'd be so kind, I'd also enjoy some more materials. Then I think we can get the Iron Anvil truly back to her feet!
-		// Quest3: It almost brings a tear to the eye. The Iron Forge is almost ready for work! Here, this is a lesson I've got from my history in battle: Sometimes, you gotta go crazy. Just be careful! And come back whenever you wish - you've been a great help!
-		// OldManDialogue: Hello there, traveler!...what do you say? A man referred me to you? Hm...I recall a man, cloaked in red, come around here...some time ago. Can't tell you how long ago now, but a while. He came asking for some specific things...a book of evil, two candles, and a bar of evil. He said something about throwing evil powder on a book...but...that's all I can say. Not sure what the guy was on about.
+		Common0: Выкован в стали, я. Хотите что-нибудь купить?
+		Common1: Иногда скучаю по пещерам. Камень и сталь, брат, камень и сталь.
+		Common2: Ничто не сравнится с клинком, который режет кости как воздух. Сэндвичи делать проще!
+		Common3: Я легко побью тебя в борьбе на руках - упражнения по ковке стали эффективны.
+		Quest: Как видишь, произошло ужасное событие, которое просто уничтожило мою кузню. Что случилось? Не знаю, я сплю как камень... в любом случае. Я бы с радостью получил помощь в сборе материалов, в городе давно нет металла. И, может, немного дерева заодно.
+		Quest2: Потрясающе! Я быстро починю старую кузню. Вот, возьми этот меч. Это пробный образец, который я сделал прямо перед атакой. Хотел бы, чтобы ты протестировал его на зомби; эти ребята ужасно надоедливы. Если не трудно, я бы также хотел ещё немного материалов. Тогда, думаю, мы сможем вернуть Железный Наковальня в строй!
+		Quest3: Это почти вызывает слёзы. Железная Кузня почти готова к работе! Вот, это урок, который я вынес из своего боевого прошлого: Иногда надо сойти с ума. Только будь осторожен! И возвращайся, когда захочешь - ты был огромной помощью!
+		OldManDialogue: Привет, путешественник!... что ты сказал? Кто-то направил тебя ко мне? Хм... я помню человека, закутанного в красное, он был здесь... некоторое время назад. Не могу сказать, сколько прошло времени, но довольно давно. Он просил кое-что конкретное... книгу зла, две свечи и слиток зла. Он говорил что-то о том, чтобы посыпать книгу порошком зла... но... это всё, что я могу сказать. Не уверен, о чём он говорил.
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: Nothing like a day at the forge.
-			// 1: Love the smell of molten metal in the morning.
-			// 2: The caverns call...not today though.
+			0: Ничто не сравнится с днём у кузни.
+			1: Люблю запах расплавленного металла по утрам.
+			2: Пещеры зовут... но не сегодня.
 		}
 
 		Night: {
-			// 0: The cold night breeze. Who needs anything more?
-			// 1: The best part of metalsmithing is when you wait for it to set.
-			// 2: I hope I didn't leave the forge on!
+			0: Холодный ночной ветерок. Чего ещё желать?
+			1: Лучшая часть кузнечного дела - это ожидание, пока металл застынет.
+			2: Надеюсь, я не оставил кузню включённой!
 		}
 
 		Goblins: {
-			// 0: These guys better not break any doors again.
-			// 1: Hey! Knock it off! I'm forging here!
-			// 2: I'll show these nitwits what a strong hammer can do!
+			0: Эти парни лучше не ломают двери снова.
+			1: Эй! Прекратите! Я здесь кую!
+			2: Я покажу этим глупцам, что может сделать крепкий молот!
 		}
 
 		Rain: {
-			// 0: Forge's still moving. Nothing can stop that, rain or otherwise.
-			// 1: You ever tried cooling a blade in rain? Don't. It doesn't work.
-			// 2: Sometimes, I look at the flowers...and smash them with my well-crafted hammer. Hurrah!
+			0: Кузня всё ещё работает. Ничто не может её остановить, ни дождь, ни что-либо ещё.
+			1: Ты когда-нибудь пробовал охлаждать клинок под дождём? Не делай этого. Это не работает.
+			2: Иногда я смотрю на цветы... и раздавливаю их своим хорошо выкованным молотом. Ура!
 		}
 	}
 
 	Entry: Весёлый гном, Трейн любит весёлые беседы, хороший напиток и изготовление лучшего оружия, которое вы когда-либо видели. Обычно его можно найти в его кузне, изготавливающем оружие.
-	// DownedForest: Mods.PathOfTerraria.NPCs.BlacksmithNPC.DownedForest
 }
 
 BarkeepNPC: {
-	// DisplayName: Brom Hardy
+	DisplayName: Бром Харди
 
 	Dialogue: {
-		// Common0: Got some old friends back in Eternia. Miss 'em every day.
-		// Common1: "'Tavernkeep'? Sure do! Whatcha lookin' for?"
-		// Common2: Between you and I - I'm rather lightweight on drinks. Battle? Heh...yeah, way lightweight in that too, why d'you think I barkeep?
-		// Common3: Two men walk into a bar, and I say; "what'd you like?"...what? What punchline?
-		// Quest: Oh, hi there! Got a question for you. I'm behind the bar all day, and it looks like we're low on sweetener. I had an old cache of honey from a friend a few hundred miles away, most delicious stuff I have. But, alas, twas not infinte. Do you know of honey I could snag? Or, even better, that you could get me? I'll pay you kindly. Here, take these bottles and fill 'em up. Fingers crossed!
-		// NeedsMoreHoney: Thanks! Take this payment. Real kind of you. Though...not all too much honey, is it? With the business I've been getting, and the variety of foods I've got here, this'll last maybe a week! You reckon there's a way to make this easier? I'd be happy to go get it myself. Or...say...could you go talk to Alaric? The guy's weird but he can make miracles happen. Ask him what he can do! Just be careful.
+		Common0: У меня есть старые друзья в Этернии. Скучаю по ним каждый день.
+		Common1: '''"Хозяин таверны"? Конечно! Что ты ищешь?'''
+		Common2: Между нами - у меня довольно мало напитков. Битва? Ха... да, и в этом я тоже слаб, почему, думаешь, я веду таверну?
+		Common3: Два человека заходят в бар, и я говорю: "Что вы хотите?"... что? Какой финал?
+		Quest: О, привет! Есть к тебе вопрос. Я весь день за барной стойкой, и кажется, у нас заканчивается подсластитель. У меня был старый запас мёда от друга за несколько сотен миль, самый вкусный, что у меня есть. Но, увы, он не бесконечный. Знаешь, где можно взять мёд? Или, ещё лучше, не мог бы ты достать его для меня? Я щедро заплачу. Вот, возьми эти бутылки и наполни их. С пальцами crossed!
+		NeedsMoreHoney: Спасибо! Возьми эту плату. Очень любезно с твоей стороны. Хотя... мёда не так много, правда? С учётом бизнеса, который у меня есть, и разнообразия еды, что у меня тут, этого хватит, может, на неделю! Не подскажешь, как это можно упростить? Я был бы счастлив сам пойти за ним. Или... скажи... не мог бы ты поговорить с Алариком? Парень странный, но он может творить чудеса. Спроси, что он может сделать! Только будь осторожен.
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: Keepin' the bar, bar the keepin'...
-			// 1: Maybe I can make a new drink...
-			// 2: Hopin' for a good night of business.
+			0: Держу бар, бар держит...
+			1: Может, я смогу создать новый напиток...
+			2: Надеюсь на хороший вечерний бизнес.
 		}
 
 		Night: {
-			// 0: Oh! A big tip! Thank ya, stranger. Whoever you were.
-			// 1: "'A guy walks into a bar?' I should use that one sometime."
-			// 2: I love my job.
+			0: О! Больший чаевые! Спасибо, незнакомец. Кто бы ты ни был.
+			1: '''"Человек заходит в бар?" Я должен использовать это когда-нибудь.'''
+			2: Я люблю свою работу.
 		}
 
 		Goblins: {
-			// 0: Those DANG goblins better stay away from MY drink.
-			// 1: I've made a molotov a couple a times. What's another spin?
-			// 2: If another glass breaks I swear I'll finally pick up the blade again.
+			0: Эти проклятые гоблины лучше держатся подальше от МОИХ напитков.
+			1: Я пару раз делал молотов. Что ещё за поворот?
+			2: Если ещё один стакан разобьётся, клянусь, я наконец-то возьмусь за клинок.
 		}
 
 		Rain: {
-			// 0: A bar with rain ambiance. Lovely!
-			// 1: I hope the barrels ain't getting soaked through again.
-			// 2: Less business, more relaxin'? Don't mind if I do!
+			0: Бар с атмосферой дождя. Прекрасно!
+			1: Надеюсь, бочки снова не промокают.
+			2: Меньше бизнеса, больше отдыха? Не возражаю!
 		}
 	}
 
-	// Entry: Brom is a simple man. People want a good time? They come to the bar. They talk to Brom Hardy. They have a good time with good people and good drinks. What's not to love?
+	Entry: Бром — простой человек. Люди хотят хорошо провести время? Они приходят в бар. Они разговаривают с Бромом Харди. Они хорошо проводят время с хорошими людьми и хорошими напитками. Чего тут не любить?
 }
 
 HunterNPC: {
-	// DisplayName: Elara
+	DisplayName: Элара
 
 	Dialogue: {
-		// Common0: Greetings, traveler. Need a keen eye and a steady hand?
-		// Common1: I've tracked a beast through these woods many times. Care to join the hunt?
-		// Common2: Be cautious out there. The forest hides many secrets.
-		// Common3: You've returned. Hope your misadventures are treating you well.
-		// Quest: You've surely seen the damage here. Much like my fellow townsmen, I don't know what happened. But we repair anyhow. Could I bother you to grab some supplies? I've got to check inventory for a while.
-		// Quest2: Oh my, so soon? Infinite thanks, my friend. I'll get right to repairing; next time you come back, you should see a nicer Lodge. Not...perfect, though. Take this bow. It's a trusty one. May you be so kind as to kill a few airborne hostiles for me? Ravencrest would appreciate it, as would I. And, if I may be so bold, could I also ask for a bit more building materials? The shop would enjoy that.
-		// Quest3: How wonderful. The Lodge will return to its former glory, thanks to you. Feel free to come when you wish; I will support you as I can. Say, take this; I trained for many years as a ranger. The Flurry has helped me many times. May it help you too.
-		// Deerclops: A Deerclops, you say? Lass called Rhine told you about it? Large, dangerous beast. I don't see much worth in treading its domain, it's...haunted in some form. No matter. Give me a moment...here. Be truly and deeply careful, the dark is always present and always dangerous.
-		// BuyMap: Here. Thanks for your contribution. Hope it goes better this time.
-		// BuyMapFail: You'll need a little more coin for another map, I'm afraid. You know how it is.
+		Common0: Привет, путешественник. Нужен острый глаз и твёрдая рука?
+		Common1: Я много раз отслеживал зверя в этих лесах. Хочешь присоединиться к охоте?
+		Common2: Будь осторожен там. Лес скрывает множество тайн.
+		Common3: Ты вернулся. Надеюсь, твои приключения обходятся с тобой хорошо.
+		Quest: Ты наверняка видел ущерб здесь. Как и мои земляки, я не знаю, что произошло. Но мы чиним всё равно. Не побеспокоило бы тебя взять некоторые припасы? Мне нужно проверить инвентарь на некоторое время.
+		Quest2: О, мой, так скоро? Бесконечная благодарность, мой друг. Я сразу займусь ремонтом; в следующий раз, когда вернёшься, ты должен увидеть более приятный Лодж. Не... идеальный, правда. Возьми этот лук. Это надёжный. Не мог бы ты, так сказать, убить несколько летающих врагов для меня? Равенкрест оценит это, как и я. И, если можно так смело, не мог бы я также попросить ещё немного строительных материалов? Магазину это понравится.
+		Quest3: Как замечательно. Лодж вернётся к своей былой славе, благодаря тебе. Чувствуй себя свободно приходить, когда пожелаешь; я поддержу тебя, как смогу. Скажи, возьми это; я тренировался много лет как рейнджер. Вихрь помог мне много раз. Пусть поможет и тебе.
+		Deerclops: Олень-Клоп, говоришь? Девушка по имени Рейн рассказала тебе об этом? Большой, опасный зверь. Я не вижу смысла в том, чтобы ступать на его территорию, это... в каком-то смысле проклято. Не важно. Дай мне момент... вот. Будь действительно и глубоко осторожен, тьма всегда присутствует и всегда опасна.
+		BuyMap: Вот. Спасибо за твоё участие. Надеюсь, на этот раз всё пройдёт лучше.
+		BuyMapFail: Тебе понадобится немного больше монет для другой карты, боюсь. Ты знаешь, как это бывает.
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: Where'd my arrows go?
-			// 1: Preparation waits for no one.
-			// 2: Let's hope the forest is kind.
+			0: Где мои стрелы?
+			1: Подготовка не ждёт никого.
+			2: Надеюсь, лес будет милостив.
 		}
 
 		Night: {
-			// 0: The night; a time of relaxation. I'm the hunter, not the hunted.
-			// 1: You can never be too safe with your fletching. Polish away.
-			// 2: A moment of clarity can save anyone quite a lot of trouble.
+			0: Ночь; время отдыха. Я охотник, а не добыча.
+			1: Никогда не помешает быть слишком осторожным с твоей перьевой работой. Полируй дальше.
+			2: Момент ясности может спасти любого от многих проблем.
 		}
 
 		Goblins: {
-			// 0: Shoot to kill.
-			// 1: A sorcerer is frail and defenseless; attack with no mercy.
-			// 2: Those spiked balls do not work for bows, do not use them.
+			0: Стреляй, чтобы убить.
+			1: Колдун слаб и беззащитен; атакуй без милости.
+			2: Эти шиповидные шары не работают для луков, не используй их.
 		}
 
 		Rain: {
-			// 0: The wood dampens. I will not be hunting today.
-			// 1: The dance of the rain is nice, if bothersome.
-			// 2: How quaint.
+			0: Дерево намокает. Сегодня я не буду охотиться.
+			1: Танец дождя приятен, если немного раздражает.
+			2: Как мило.
 		}
 	}
 
-	// MapButton: Map (20 gold)
-	// Entry: A stone-cold hunter with more knowledge than you have, Elara isn't talkative. She makes up for that by being an exceedingly good hunter and tracker, with eyes almost everywhere.
+	MapButton: Карта (20 золота)
+	Entry: Холодный как камень охотник с большими знаниями, Элара неразговорчива. Она компенсирует это тем, что является исключительно хорошим охотником и следопытом, с глазами почти везде.
 }
 
 Minera: {
-	// DisplayName: Minera
-	// Entry: A Crimera recently born from an unsavory source. They love to attack in packs.
+	DisplayName: Минера
+	Entry: Минера — это странное существо, которое обитает в глубинах земли. Она известна своей способностью создавать драгоценные камни и металлы из ничего, что делает её ценным союзником для любого искателя приключений.
 }
 
 GarrickNPC: {
-	// DisplayName: Garrick
+	DisplayName: Гаррик
 
 	Dialogue: {
-		// 0: The ground shakes uncontrollably in the King's domain. As if slime seeps into the rock.
-		// 1: Adventurers often fail to tell you of how slimy adventuring is. I am not one of those adventurers. It's extremely slimy.
-		// 2: Watch your head. Generally good advice, but especially in the King's domain.
-		// 3: Forge your blade as powerful as you can. Cutting through slime is deceptively difficult.
-		// Quest: I've heard of an ancient device that can transport adventurers to distant realms. With the right materials - some metal bars and a gem for focus. I could craft one for you. Bring them to me when you can.
+		0: Земля неконтролируемо трясётся в домене Короля. Как будто слизь просачивается в камень.
+		1: Приключенцы часто не рассказывают, насколько скользкое это приключение. Я не из тех приключенцев. Это крайне скользко.
+		2: Смотри на голову. Это вообще хороший совет, но особенно в домене Короля.
+		3: Выкови свой клинок как можно мощнее. Резать слизь обманчиво сложно.
+		Quest: Ты, возможно, можешь сказать - у меня не было лучшего времени. Пытался свалить Короля, почти всё потерял. Ты тот, кто восстановил Равенкрест, да? Не мог бы я попросить тебя; убей Короля Слизи от моего имени? Я щедро награжу тебя. Возьми эту карту; я нарисовал её на долгом пути назад. Удачи!
 		// QuestResponse: Perfect! Here’s the Map Device as promised. I once faced the King and nearly lost everything. You restored Ravencrest, so now I ask you: slay the King Slime for me. You’ll be well rewarded. Take this map and use it with the device.
-		// EoCQuestLine: Oh, the Eye you say? Formidable. I recall Eldric speaking of it, though he almost certainly undersold it. Here, I've been tasked with keeping this. Now is the time to use it.
-		// TradeLunarLiquid: Ah, I've trained for this. Do care though, these aren't a casual adventure to make.
-		// CantTradeLiquid: Oh, lost the Liquid? I'll need a few Lunar Shards to remake it, I'm afraid. Return to me with 5 or more.
-		// GetKingMapAgain: Ah, couldn't manage it? Lost the map or something? Either way, here you are. You're lucky I carry cartography equipment everywhere...just in case.
+		EoCQuestLine: О, Глаз, говоришь? Формируемый. Я помню, как Элдрик говорил об этом, хотя он, почти наверняка, преуменьшил это. Вот, мне было поручено сохранить это. Теперь время использовать это.
+		TradeLunarLiquid: А, я тренировался для этого. Но будь осторожен, эти не для случайного приключения.
+		CantTradeLiquid: О, потерял Жидкость? Мне понадобится несколько Лунных Осколков, чтобы переделать её, боюсь. Вернись ко мне с 5 или более.
+		GetKingMapAgain: А, не справился? Потерял карту или что-то ещё? В любом случае, вот она. Тебе повезло, что я ношу картографическое оборудование везде... на случай, если что.
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: The sun shines...one day the King's crown won't.
-			// 1: Ah...the wounds are clear. Gah...
-			// 2: Curse you, King!
+			0: Солнце светит... однажды корона Короля падёт.
+			1: А... раны видны. Гах...
+			2: Проклинаю тебя, Король!
 		}
 
 		Night: {
-			// 0: I must rest...
-			// 1: I see his jiggly blue carapace, still...
-			// 2: Does anyone have a healing potion?
+			0: Я должен отдохнуть...
+			1: Я всё ещё вижу его дрожащий синий панцирь...
+			2: У кого-нибудь есть зелье исцеления?
 		}
 
 		Goblins: {
-			// 0: I must busy myself with others but the King, to practice.
-			// 1: En garde! I cannot lose again!
-			// 2: You cannot best me forever, King!
+			0: Я должен заняться другими, кроме Короля, чтобы практиковаться.
+			1: На страже! Я не могу проиграть снова!
+			2: Ты не можешь побеждать меня вечно, Король!
 		}
 
 		Rain: {
-			// 0: Rain cleans the wounds. It's nice.
-			// 1: A moment for me and my thoughts.
-			// 2: I hope he's dissolving.
+			0: Дождь очищает раны. Это приятно.
+			1: Момент для меня и моих мыслей.
+			2: Надеюсь, он растворяется.
 		}
 	}
 
-	// LunarLiquidButton: Lunar Liquid
-	// AnotherMap: Map
-	// Entry: A warrior humiliated by a King, Garrick is taking respite in the town of Ravencrest. He seems to hold a grudge to slime, and wishes he could be stronger. Soon, he'll get back on his feet.
+	LunarLiquidButton: Лунная Жидкость
+	AnotherMap: Карта
+	Entry: Гаррик — воин, который посвятил свою жизнь борьбе с силами зла. Он известен своей неукротимой волей и мастерством в бою, а также своей способностью выживать в самых опасных ситуациях.
 }
 
 TownScoutNPC: {
-	// DisplayName: Goblin Surveyor
-	// Entry: A Goblin, looking for a place to pillage. If killed, the Goblins immediately rise to fight back. Otherwise, they bide their time for later...
+	DisplayName: Гоблинский Измеритель
+	Entry: Гоблинский Измеритель — это загадочное существо, которое обладает способностью измерять и анализировать различные аспекты мира. Он часто помогает путешественникам ориентироваться в незнакомых местах.
 }
 
 RavenNPC: {
-	// DisplayName: Ephemeral Raven
-	// Entry: A strange, ghostly raven. It guides travelers to Ravencrest, but otherwise is mired in mystery as it tows the line between this world and another.
+	DisplayName: Эфемерный Ворон
+	Entry: Эфемерный Ворон — это мистическое существо, которое служит связным между миром живых и миром мёртвых. Он часто приносит вести о грядущих событиях и опасностях.
 }
 
-// ControllableSpikeball.DisplayName: Spikeball
+ControllableSpikeball.DisplayName: Шипованный Шар
 
 WizardNPC: {
-	// DisplayName: Alaric
+	DisplayName: Аларик
 
 	Dialogue: {
-		// Common0: Magic is scary. Once, I saw someone turn their hand into a rat. What's the lesson? I don't know.
-		// Common1: Wisdom holds many powers. Angel Statues once did something. It was...well...so...ahem. Time can only tell.
-		// Common2: I've seen the throughline of your destiny. I cannot, for the life of me, put it to words.
-		// Common3: Ah! I almost turned you into a mole the size of a god. Beware my strength!
-		// Common4: I am a...merchant of sorts. Bewildering, ancient shards alongside astonishing majickal materials! It boggles the mind, surely!
-		// Quest: Hm. You saw the damage everywhere. Alas! My powers cannot reconstitute the world. I'm far busier on...my...projects. Yes! Alas, I have something more pressing. A goblin burglar took one of my tomes. Powerful as it is, it has to be harnessed by a strong wizard. I suspect they are looking through the tome to learn its secrets...so with haste, return it! I will grant you powers beyond imagination. I will be here, individually placing books on shelves with the strength of magic.
-		// Quest2: Aha! Thank you kindly. Your kindness will be rewarded greatly! My powers will push you forward at all times. Here, take a mote of power; a Nova is but a portion of my strength! As for the Library...my strength renewed, it will be repaired by the time you return! Books organized like you've never seen before! Behold it and weep...soon!
+		Common0: Магия страшная. Однажды я видел, как кто-то превратил свою руку в крысу. Какой урок? Не знаю.
+		Common1: Мудрость несёт многие силы. Статуи Ангелов когда-то что-то делали. Это было... ну... так... хм. Время покажет.
+		Common2: Я видел нить твоей судьбы. Не могу, ради моей жизни, выразить это словами.
+		Common3: А! Я почти превратил тебя в крота размером с бога. Берегись моей силы!
+		Quest: Хм. Ты видел ущерб повсюду. Увы! Мои силы не могут восстановить мир. Я намного занят... моими... проектами. Да! Увы, у меня есть что-то более срочное. Гоблин-вор украл одну из моих книг. Как бы она ни была мощной, её должен использовать сильный волшебник. Я подозреваю, что они просматривают книгу, чтобы узнать её секреты... так что с поспешностью, верни её! Я дам тебе силы за пределами воображения. Я буду здесь, индивидуально расставляя книги на полках с силой магии.
+		Quest2: Аха! Спасибо добродушно. Твоя доброта будет щедро вознаграждена! Мои силы будут толкать тебя вперёд в любое время. Вот, возьми частицу силы; Нова - лишь часть моей силы! Что касается Библиотеки... с обновлённой силой, она будет отремонтирована к тому времени, как ты вернёшься! Книги организованы, как ты никогда не видел! Смотри и плачь... скоро!
 		// GiveQSQuest: Hm? Ah, yes. You've got some adventures, haven't you? I cannot simply place you in success - you must find it for yourself! Yes! That's a good reason. Here's a small quest to find your progress. You will be lead all over the world, and perhaps reach even a modicum of my power!
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: Should I try to push the sun forward!?...no, not again.
-			// 1: What should I showcase next...?
-			// 2: Did I open the drawer too hard again? Should I start using my hands? Hah, good one Alaric.
+			0: Должен ли я попытаться сдвинуть солнце вперёд!?... нет, не снова.
+			1: Что мне показать дальше...?
+			2: Я снова открыл ящик слишком сильно? Должен ли я начать использовать руки? Ха, хорошая шутка, Аларик.
 		}
 
 		Night: {
-			// 0: Maybe I can make some time for some nice shut eye.
-			// 1: I impress even myself! This sandwich is delicious!
-			// 2: If only I could grab that star...I could...but...alas. I'm too tired!
+			0: Может, я смогу найти время для хорошего сна.
+			1: Я впечатляю даже себя! Этот сэндвич вкусный!
+			2: Если бы только я мог схватить ту звезду... я бы... но... увы. Я слишком устал!
 		}
 
 		Goblins: {
-			// 0: My powers aren't just for show.
-			// 1: Explosions are always a fun display!
-			// 2: I politely declined their entry! I simply had to shock them with every lightning imaginable!
+			0: Мои силы не только для шоу.
+			1: Взрывы всегда весёлое зрелище!
+			2: Я вежливо отказал им во входе! Мне просто пришлось шокировать их всеми мыслимыми молниями!
 		}
 
 		Rain: {
-			// 0: Remember that time you put all the rain water into the house next door? Hah...yeah. Good times.
-			// 1: Don't freeze the rain, don't freeze the rain, don't freeze the -
-			// 2: Perhaps I...no...that'd do too much damage. Dang!
+			0: Помнишь тот раз, когда ты собрал всю дождевую воду в соседний дом? Ха... да. Хорошие времена.
+			1: Не замораживай дождь, не замораживай дождь, не замораживай -
+			2: Возможно, я... нет... это нанесёт слишком много ущерба. Чёрт!
 		}
 	}
 
-	// Entry: Perhaps the most powerful wizard of all time, Alaric still acts like someone who's pretending to be the most powerful wizard of all time. If he's feeling funny, he might cause true and instant catastrophe.
+	Entry: Возможно, самый могущественный волшебник всех времён, Аларик всё ещё ведёт себя так, будто притворяется самым могущественным волшебником всех времён. Если ему весело, он может вызвать настоящую и мгновенную катастрофу.
 }
 
 EldricNPC: {
-	// DisplayName: Eldric
+	DisplayName: Элдрик
 
 	Dialogue: {
-		// Common0: The world's tumultuous, isn't it?
-		// Common1: Stay calm, even if the land around isn't.
-		// Common2: Would you ever enjoy a tea? I certainly would.
-		// Common3: Magic is but one solution. Practicality is another. Bear this in mind.
-		// Quest: Hello, traveler. I am Eldric, and the construction on the west edge of town is mine. I come to warn; a great eye looks down upon us, and seeks to disturb the stars. We have no better a warrior to stop the Eye; may you take him? We'll just need some Lunar Shards from Demon Eyes and Zombies. Talk to Garrick, he knows the other part of the concoction.
-		// QuestLunar: Thank you. Talk to Garrick and we'll be on our way.
-		// Quest2: Thank you. Here's the concoction. Throw this upon the ground and it'll open a portal - temporary as it is - to the Eye's domain. You will have to repeat these steps if the portal is to close, so be sure you succeed. I will continue to build my observatory while you battle. Best of luck.
-		// Quest3: Just as I thought. The Eye returns to...wherever it happens to hide. Regrow? Whatever. I'm able to relax now. Hopefully you'll see this observatory up and running soon. Stop by, if you'd like.
-		// TradeLunarObject: Ah, another? Very well, the Eye isn't a weakling. Here you are, and best of luck once more.
-		// CantTradeObject: Hm, didn't succeed with the Eye? Ah. Well, I believe Garrick can get you more of the Lunar Liquid, and then get me five more Lunar Shards and we'll be on our way.
-		// Donation: Some Lunar stuff remaining? Very well. I've taken it for you, since you won't need it any longer. Enjoy the few silver.
+		Common0: Мир бурный, не так ли?
+		Common1: Оставайся спокойным, даже если земля вокруг нет.
+		Common2: Ты когда-нибудь наслаждался чаем? Я бы точно хотел.
+		Common3: Магия - лишь одно решение. Практичность - другое. Помни об этом.
+		Quest: Привет, путешественник. Ты наткнулся на мою будущую обсерваторию... скоро. Однако я заметил что-то в небе в последнее время. В последний раз, когда это проходило, мне было лет пять. Великий глаз смотрит на нас сверху и вызывает некоторые проблемы со звёздами. У нас нет лучшего воина, чтобы остановить Глаз; не мог бы ты взять его? Нам просто нужны Лунные Осколки от Демонических Глаз и Зомби. Поговори с Гарриком, он знает другую часть смеси.
+		QuestLunar: Спасибо. Поговори с Гарриком, и мы отправимся в путь.
+		Quest2: Спасибо. Вот смесь. Брось это на землю, и она откроет портал - временный, как он есть - в домен Глаза. Тебе придётся повторить эти шаги, если портал должен закрыться, так что удостоверься, что ты преуспеешь. Я продолжу строить свою обсерваторию, пока ты сражаешься. Удачи.
+		Quest3: Как я и думал. Глаз возвращается... куда бы он ни прятался. Перерасти? Как угодно. Теперь я могу расслабиться. Надеюсь, ты скоро увидишь эту обсерваторию работающей. Зайди, если захочешь.
+		TradeLunarObject: А, ещё один? Хорошо, Глаз не слабак. Вот, и ещё раз удачи.
+		CantTradeObject: Хм, не преуспел с Глазом? А. Ну, я верю, Гаррик может достать тебе больше Лунной Жидкости, а затем достать мне ещё пять Лунных Осколков, и мы отправимся в путь.
+		Donation: Осталось немного Лунного материала? Хорошо. Я забрал это для тебя, так как тебе это больше не понадобится. Наслаждайся несколькими серебряными.
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: How pleasant.
-			// 1: The trees dance, good.
-			// 2: Hm...looking jovial.
+			0: Как приятно.
+			1: Деревья танцуют, хорошо.
+			2: Хм... выглядят радостно.
 		}
 
 		Night: {
-			// 0: The stars are...imperfect.
-			// 1: It's so different these nights.
-			// 2: How curious...
+			0: Звёзды... несовершенны.
+			1: Это так отличается эти ночи.
+			2: Как любопытно...
 		}
 
 		Goblins: {
-			// 0: Powers beyond your knowledge play with you, fools.
-			// 1: If only we could talk.
-			// 2: Alas.
+			0: Силы за пределами твоих знаний играют с вами, глупцы.
+			1: Если бы только мы могли поговорить.
+			2: Увы.
 		}
 
 		Rain: {
-			// 0: May the flowers grow.
-			// 1: The preamble to petrichor.
-			// 2: A soft patter is wonderful.
+			0: Пусть цветы растут.
+			1: Преамбула к петрикору.
+			2: Мягкий стук - замечательно.
 		}
 	}
 
-	// CreateConcoction: Create Concoction
-	// DonateLunar: Donate Lunar Shards/Liquid
-	// Entry: Forlorn and solemn, Eldric is one for silence. An observer of the stars, Eldric knows what the cosmos are; he stares, and it stares right back. Enjoys tea.
+	CreateConcoction: Создать Смесь
+	DonateLunar: Пожертвовать Лунные Осколки/Жидкость
+	Entry: Элдрик — астроном, который посвятил свою жизнь изучению звёзд и небесных тел. Он обладает глубокими знаниями о космосе и часто делится ими с путешественниками.
 }
 
 MorvenNPC: {
-	// DisplayName: Morven
+	DisplayName: Морвен
 
 	Dialogue: {
-		// Common0: Any discoveries of late? Always have an ear on science!
-		// Common1: Have you seen any Goblins? I had a guy in there that knew tons of fun science.
-		// Common2: You wouldn't happen to have any advanced medical science on you, would you?
-		// Common3: I bet you don't even know how lamp posts work. Poor soul...
-		// Follow0: Why are you talking to me? Let's get moving!
-		// Follow1: If you get me killed I'll be deeply and truly upset.
-		// Follow2: Charge FORWARD, not stay and TALK. Buffoon.
-		// Follow3: Gather yourself...and let's get moving already.
-		// Rescue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I've become incased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out? I'll...reward you greatly, or something.
-		// Aboveground: Ah, thank you. Out of that stuffy old cave. Say, do you know of a quaint settlement called Ravencrest? I've got old associates there who'd love to have a look at some Demonite I managed to scrounge up. Perhaps you might get some for your time as well?
-		// InRavencrest: It'll take a bit to look presentable, but that can be for later. Thank you, stranger. I reward you with a quest. I was down there for Devourers, sure, but also to spy on these curious little orbs they call Shadow Orbs. Emitting light, floating ominously, strange stories. The lot of it, these things have. Could you break one for me? Just to see what happens.
-		// BeforeBeatingEoW: What? You broke one and a rift appeared and you LEFT? Jump in it! Throw your friends in! I don't care, you've got a study to conduct!
-		// AfterBeatingEoW: I'll be. Would've hardly expected a large, foul beast to appear in that corrupt realm. Alas, knowing that power implies many things. As much as I've disliked you, I do respect you. Whatever this corruption is holds to the land, still, but it's forward progress. Here, have this trinket. I have no use for - well, I'd love to give it to you. Ahem.
-		// Abandoned: FINALLY. Someone leaves me here and expects me to navigate the world. Take me to Ravencrest and this time don't leave me in the lurch.
+		Common0: Какие-нибудь открытия в последнее время? Всегда держу ухо востро на науку!
+		Common1: Вы видели каких-нибудь гоблинов? У меня был парень, который знал кучу интересной науки.
+		Common2: У вас случайно нет с собой передовой медицинской науки, а?
+		Common3: Ставлю, вы даже не знаете, как работают фонарные столбы. Бедная душа...
+		Follow0: Почему ты говоришь со мной? Давай двигаться!
+		Follow1: Если ты убьешь меня, я буду глубоко и искренне расстроен.
+		Follow2: Вперед, а не стой и не болтай. Дурак.
+		Follow3: Соберись... и давай уже двигаться.
+		Rescue: Хм... ох. Привет, незнакомец. Спасибо, что вытащил меня из этой передряги. Боюсь, я спустился сюда, чтобы отследить некоторых Пожирателей, которых я пометил... не важно. Мои надежные инструменты подвели меня, и каким-то образом я оказался запертым в этом вонючем камне. Несколько изнурительных часов я провел здесь. Не могли бы вы любезно сопровождать меня наружу? Я... щедро вознагражу вас, или что-то в этом роде.
+		Aboveground: Ах, спасибо. Из этого душного старого пещерного камня. Скажите, вы знаете о милом поселении под названием Равенкрест? У меня там старые знакомые, которые бы с удовольствием посмотрели на немного Демонита, который мне удалось собрать. Может, и вам что-то перепадет за ваше время?
+		InRavencrest: Потребуется немного времени, чтобы привести себя в порядок, но это можно отложить на потом. Спасибо, незнакомец. Я награждаю вас заданием. Я был там из-за Пожирателей, конечно, но также чтобы шпионить за этими любопытными маленькими шарами, которые они называют Теневыми Сферами. Излучают свет, парят зловеще, странные истории. Все это, эти вещи имеют. Могли бы вы разбить одну для меня? Просто чтобы посмотреть, что произойдет.
+		BeforeBeatingEoW: Что? Ты разбил одну, и появился разлом, и ты ушел? Прыгай в него! Бросай туда своих друзей! Мне все равно, у тебя есть исследование, которое нужно провести!
+		AfterBeatingEoW: Я потрясен. Едва ли ожидал, что в этом порочном царстве появится большое, отвратительное чудовище. Увы, знание этой силы подразумевает многое. Несмотря на то, что ты мне не по нраву, я уважаю тебя. Что бы ни было это искажение, оно все еще держится за землю, но это прогресс вперед. Вот, возьми эту безделушку. Мне она не нужна - ну, я бы с удовольствием отдал ее тебе. Хм.
+		Abandoned: НАКОНЕЦ-ТО. Кто-то оставляет меня здесь и ожидает, что я буду ориентироваться в мире. Отвези меня в Равенкрест, и на этот раз не оставляй меня в беде.
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: I must soon harness the sun...
-			// 1: Aha! This tree works on water!
-			// 2: So many fools surround me...
+			0: Я должен скоро использовать силу солнца...
+			1: Ага! Это дерево работает на воде!
+			2: Столько дураков вокруг меня...
 		}
 
 		Night: {
-			// 0: Now is the time of ingenuity!
-			// 1: The moon...time's greatest trickster.
-			// 2: Sleep science is perhaps the greatest science of all. At least right now.
+			0: Теперь время для изобретательности!
+			1: Луна... величайший обманщик времени.
+			2: Наука сна, возможно, величайшая наука из всех. По крайней мере, прямо сейчас.
 		}
 
 		Goblins: {
-			// 0: Hey! Do you know a guy that has these fancy boots!...they aren't listening.
-			// 1: Tch. You damage something, morons, and I'll have your head!
-			// 2: Where's my charged plasma rifle...
+			0: Эй! Ты знаешь парня, у которого есть эти модные ботинки!... они не слушают.
+			1: Тьфу. Вы что-то повредили, идиоты, и я оторву вам голову!
+			2: Где мой заряженный плазменный ружье...
 		}
 
 		Rain: {
-			// 0: Stupid rain. Go elsewhere!
-			// 1: Tch...how displeasant.
-			// 2: The only thing rain brings is lightning!
+			0: Глупый дождь. Уходи куда-нибудь в другое место!
+			1: Тьфу... как неприятно.
+			2: Единственное, что приносит дождь, - это молнии!
 		}
 
 		Escort: {
-			// 0: Let's keep it moving, you know?
-			// 1: Chop chop, stranger.
-			// 2: I hope you appreciate the additional firepower.
-			// 3: Rocket Boots are awesome.
-			// 4: Those Devourers can be intimidating, huh?
+			0: Давай двигаться дальше, ты знаешь?
+			1: Быстрее, незнакомец.
+			2: Надеюсь, ты ценишь дополнительную огневую мощь.
+			3: Ракетные ботинки крутые.
+			4: Эти Пожиратели могут быть пугающими, а?
 		}
 
 		EscortAttack: {
-			// 0: Keep it moving, this thing's no big deal.
-			// 1: You gonna help me out?
-			// 2: Trusty ol' gun...
+			0: Продолжай двигаться, это не большая проблема.
+			1: Ты собираешься мне помочь?
+			2: Надежное старое ружье...
 		}
 
 		Teleport: {
-			// 0: OW...you gotta be too careful going too far, fool.
-			// 1: Don't leave me behind! This teleporter barely works!
-			// 2: Hey! Hey! Slow down! This teleporter hurts to use!
+			0: АЙ... ты должен быть слишком осторожным, идя слишком далеко, дурак.
+			1: Не оставляй меня позади! Этот телепортер едва работает!
+			2: Эй! Эй! Замедлись! Этот телепортер больно использовать!
 		}
 	}
 
 	Stuck: {
-		// 0: Hey! Anyone up there!
-		// 1: Help a guy out!
-		// 2: Oh man...
+		0: Эй! Есть там кто-нибудь наверху!
+		1: Помогите парню!
+		2: Ох, черт...
 	}
 
-	// Entry: Once stuck in the underground Corruption, this mad scientist gained a little more mad than most. He looks down upon you, but will use you at a moment's notice to "make science".
+	Entry: Морвен — учёный, который увлечён изучением науки и технологий. Он часто экспериментирует с новыми идеями и изобретениями, что делает его ценным источником знаний для путешественников.
 }
 
 LloydNPC: {
-	// DisplayName: Lloyd
+	DisplayName: Ллойд
 
 	Dialogue: {
-		// Common0: I've little to say.
-		// Common1: Keep the world safe.
-		// Common2: Hm?
-		// Common3: Hello, fellow adventurer.
-		// Follow0: Best we keep moving.
-		// Follow1: I've but one goal for the moment.
-		// Follow2: Keep a keen eye.
-		// Follow3: Hmph.
-		// Domain0: This land shakes any man.
-		// Domain1: Please, for me, defeat the Brain. I cannot stand to be here any longer.
-		// Domain2: May my boon help you greatly. I wish I could do more, but the pillars tower over my strength.
-		// Domain3: Cut through the obstacles here. They were never truly living.
-		// Help: Hm. Fellow aide. You seem to know the lay of the land. I'm here looking for the heart that yet beats. Would you be so kind as to guide me to it? I've matters to contend with. I'll fend monsters, you guide.
-		// InDomain: Alas, I'm here once more. I know my strength can't overpower the Brain alone. I am using what I have to allow you three additional jumps to benefit your exploration. Be well, and be swift. I will be ruminating. Ah, and if you fail? The Hearts in the overworld are freed. Break them at your leisure.
-		// Complete: What a great joy. I owe you everything I have, which is not much. Take this. I will be off. To where? Hm.
-		// StayButton: Stay
-		// StayDialogue: I will stay here. Do not be long.
-		// FollowButton: Follow
-		// FollowAgain: Lead me to crimson hearts, aide.
-		// Abandoned: Tell me when you're leaving next time.
+		Common0: У меня мало что сказать.
+		Common1: Держи мир в безопасности.
+		Common2: Хм?
+		Common3: Привет, товарищ-авантюрист.
+		Follow0: Лучше нам двигаться дальше.
+		Follow1: У меня сейчас только одна цель.
+		Follow2: Держи острый глаз.
+		Follow3: Хмпф.
+		Domain0: Эта земля трясет любого человека.
+		Domain1: Пожалуйста, ради меня, одолей Мозг. Я больше не могу здесь оставаться.
+		Domain2: Пусть мое благословение сильно поможет тебе. Я бы хотел сделать больше, но столпы возвышаются над моей силой.
+		Domain3: Прорубай путь через препятствия здесь. Они никогда не были по-настоящему живыми.
+		Help: Хм. Товарищ помощник. Кажется, ты знаешь местность. Я здесь ищу сердце, которое еще бьется. Не могли бы вы любезно провести меня к нему? У меня есть дела, с которыми нужно разобраться. Я буду отгонять монстров, ты веди.
+		InDomain: Увы, я снова здесь. Я знаю, что моя сила не может одолеть Мозг. Я использую то, что у меня есть, чтобы дать тебе три дополнительных прыжка. Столпы земли возвышаются над тобой, и, возможно, будет слишком трудно их преодолеть иначе. Будь здоров и быстр. Я буду размышлять.
+		NeedsReturn: Ты тоже был повержен? Увы. Мощное чудовище, но не без слабостей. Проведи меня к другому все еще бьющемуся сердцу, и мы вернемся. Будь осторожен.
+		Complete: Какое великое удовольствие. Я обязан тебе всем, что у меня есть, что не так уж много. Возьми это. Я вернусь в Равенкрест - я уже был там, не нужно меня вести. Будь здоров и весел.
+		StayButton: Оставаться
+		StayDialogue: Я останусь здесь. Не задерживайся надолго.
+		FollowButton: Следовать
+		FollowAgain: Веди меня к багровым сердцам, помощник.
+		Abandoned: Скажи мне, когда в следующий раз уйдешь.
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: ...
-			// 1: A moment of respite.
-			// 2: May all be well.
+			0: ...
+			1: Момент отдыха.
+			2: Пусть все будет хорошо.
 		}
 
 		Night: {
-			// 0: ...how gentle.
-			// 1: Ah...
-			// 2: I remember, still.
+			0: ...как мягко.
+			1: Ах...
+			2: Я все еще помню.
 		}
 
 		Goblins: {
-			// 0: Do not make choices you'll regret.
-			// 1: Foolish creatures.
-			// 2: Hmph.
+			0: Не принимай решений, о которых ты пожалеешь.
+			1: Глупые существа.
+			2: Хмпф.
 		}
 
 		Rain: {
-			// 0: I hope...I hope all is well, yet.
-			// 1: Each one a life. Each one...
-			// 2: I look forward to the petrichor of the morning.
+			0: Надеюсь... надеюсь, все еще будет хорошо.
+			1: Каждый - это жизнь. Каждый...
+			2: Я с нетерпением жду утреннего петрикора.
 		}
 
 		Escort: {
-			// 0: Grotesque.
-			// 1: Tarry not.
-			// 2: Do not let your guard down.
-			// 3: Be steady.
-			// 4: Awful creatures, this lot.
+			0: Гротескно.
+			1: Не задерживайся.
+			2: Не опускай свою охрану.
+			3: Будь устойчив.
+			4: Ужасные существа, эта компания.
 		}
 
 		EscortAttack: {
-			// 0: Worry not; I've strength aplenty.
-			// 1: May its death be swift.
-			// 2: Yet another death.
+			0: Не волнуйся; у меня достаточно силы.
+			1: Пусть его смерть будет быстрой.
+			2: Еще одна смерть.
 		}
 
 		Teleport: {
-			// 0: I appreciate the hurry, but do take care.
-			// 1: We'll get along nicely if you outpace me.
-			// 2: Not often I see someone as quick-footed as you.
+			0: Я ценю спешку, но будь осторожен.
+			1: Мы поладим, если ты будешь меня опережать.
+			2: Не часто вижу кого-то такого быстрого, как ты.
 		}
 
 		BreakHeart: {
-			// 0: Hm. It seems we must break more. Keep going.
-			// 1: Now would be a good time to recoup. Return when you're prepared.
-			// 2: Here we go.
+			0: Хм. Кажется, нам нужно разбить еще. Продолжай.
+			1: Сейчас было бы хорошее время для отдыха. Вернись, когда будешь готов.
+			2: Пошли.
 		}
 
 		InDomain: {
-			// 0: Be well.
-			// 1: You cannot be too cautious.
-			// 2: The Brain awaits.
+			0: Будь здоров.
+			1: Нельзя быть слишком осторожным.
+			2: Мозг ждет.
 		}
 
 		DomainBossDead: {
-			// 0: It feels lighter.
-			// 1: I hope I can rest now.
-			// 2: Thank you, all.
+			0: Стало легче.
+			1: Надеюсь, теперь я смогу отдохнуть.
+			2: Спасибо вам всем.
 		}
 	}
 }
 
 RhineNPC: {
-	// DisplayName: Rhine
+	DisplayName: Рейн
 
 	Dialogue: {
-		// Common0: Ah! Nothing like a day in Ravencrest for some world-famous mead.
-		// Common1: Say, you do any travelling? Have you ever seen a "cow area"? My family spoke of legends.
-		// Common2: Five gold coins and I can tell you the most wild story you've ever heard. Up for it?
-		// Common3: Good heavens, this tastes like nothing else. You also taking an off day?
-		// Quest: Ah, adventurer. You have any experience with the deep tundra? I've always been curious of a story my mother told me...about one massive, lumbering beast deep in a frigid tundra. She spoke of it as legend, and I've always been curious. Alas, I don't handle the cold well; but perhaps you do? I've high interest, though I'm not sure if it's even real. There's a small fortress in the world's snow, a short distance under the surface. Take this compass, find it, and open it. You'll know what to take.
-		// Antlers: Wow...sorry. I...I genuinely didn't think these were real. My mother spoke of this - even just the shards shaved off of the antlers are...combative. Odd aura. Strangely uncomfortable to hold. Wow. Well. I suppose you should seek the Deer itself, then. The Hunter can tell you about it - she knows all creatures that stalk the woods, white or not. I'll be here. I can only imagine what my mother will think seeing these antlers again.
-		// Success: ...unbelievable. Truly...I don't know what to say. Take this. I'll be here, stewing in revelation. Go have fun. Brom, another mead, please. Never would I have thought...
+		Common0: Ах! Ничто не сравнится с днем в Равенкресте ради всемирно известного меда.
+		Common1: Скажите, вы много путешествуете? Вы когда-нибудь видели "территорию коров"? Моя семья говорила о легендах.
+		Common2: Пять золотых монет, и я расскажу вам самую дикую историю, которую вы когда-либо слышали. Готовы?
+		Common3: Боже мой, это вкусно как ничто иное. Вы тоже отдыхаете?
+		Quest: Ах, авантюрист. У вас есть опыт работы в глубокой тундре? Меня всегда интересовала история, которую моя мать рассказывала мне... о одном огромном, тяжеловесном звере в ледяной тундре. Она говорила об этом как о легенде, и я всегда был любопытен. Увы, я плохо переношу холод; но, возможно, вы можете? У меня большой интерес, хотя я не уверен, существует ли это вообще. Есть маленький форт в снегах мира, недалеко под поверхностью. Возьмите этот компас, найдите его и откройте. Вы поймете, что взять.
+		Antlers: Вау... прости. Я... я действительно не думал, что эти рога настоящие. Моя мать говорила об этом, простом наборе рогов с четырьмя точками с изменением цвета около точек. Странная аура. Странно неудобно держать. Вау. Ну. Думаю, вам следует искать самого Оленя, тогда. Охотница может рассказать вам о нем - она знает все существа, которые бродят по лесам, белые или нет. Я останусь здесь, могу только представить, что моя мать подумает, увидев эти рога снова.
+		Success: ...невероятно. Поистине... я не знаю, что сказать. Возьмите это. Я останусь здесь, размышляя о откровении. Идите развлекайтесь. Бром, еще меда, пожалуйста. Невероятно...
 	}
 
 	BubbleDialogue: {
 		Day: {
-			// 0: Ah, wonderful day out there.
-			// 1: Hm, what should I order next!
-			// 2: Delicious!
+			0: Ах, чудесный день там снаружи.
+			1: Хм, что мне заказать дальше!
+			2: Вкусно!
 		}
 
 		Night: {
-			// 0: Bar's open all night! Keep the mead moving.
-			// 1: Ah...winding down...
-			// 2: Perhaps a couple card games won't hurt...
+			0: Бар открыт всю ночь! Продолжайте двигать мед!
+			1: Ах... замедляюсь...
+			2: Может, несколько карточных игр не повредят...
 		}
 
 		Goblins: {
-			// 0: Gosh, why are these lot here?
-			// 1: Interrupting my mead...buffoons.
-			// 2: En garde! Time to move the old joints!
+			0: Боже, почему эти ребята здесь?
+			1: Прерывают мой мед... идиоты.
+			2: На стражу! Время размяться старым суставам!
 		}
 
 		Rain: {
-			// 0: Good thing I'm not out there!
-			// 1: Thanks for the shelter!
-			// 2: That rain reminds me of home.
+			0: Хорошо, что я не там снаружи!
+			1: Спасибо за укрытие!
+			2: Этот дождь напоминает мне о доме.
 		}
 	}
 
 	NewCompass: {
-		// Button: Craft Compass
-		// OnCraft: Here's another one for you. You're lucky I can carve wood anywhere always. Go get them!...if you can find them.
-		// CantCraft: Did you lose your compass? Give me 15[i:9] and I can sharpen one up for you.
+		Button: Создать Компас
+		OnCraft: Вот еще один для вас. Вам повезло, что я могу вырезать дерево где угодно всегда. Идите за ними!... если сможете их найти.
+		CantCraft: Вы потеряли свой компас? Дайте мне 15[i:9], и я смогу заточить один для вас.
 	}
 
-	// Entry: Rhine is a hard worker. Between travels she visits her family and hunts beasts of legend. Here? She's looking for some good food, some good drink, and people to tell stories at.
+	Entry: Райн — трудолюбивый. В перерывах между путешествиями он навещает родных и охотится на легендарных зверей. Здесь же? Он ищет вкусную еду, выпивку и людей, с которыми можно порассказать истории.
 }
 
-// SkullApparition.DisplayName: Skull Apparition
+SkullApparition.DisplayName: Призрачный Череп
 
 OldMan: {
 	Dialogue: {
-		// QuestStart: Ah...hm? Oh...an adventurer! Hello. I...I don't know who or where I am. But I do know that something terrible is happening, deep below me. I...I can scarcely remember a thing. I do know...a man, shorter, bearded...helped me...some time in the past. In a nearby town. I...don't remember the name. Perhaps look for him? I can't say much else...I'm afraid.
-		/* HasItems:
-			'''
-			...
-			A light at each side;
-			One bar of evil below,
-			A book sits, starting.
-
-			Many skulls screaming,
-			On the bricks of the prison.
-			A portal appears.
-			...
-			''' */
-		// Complete: It was just a few moments ago I returned to my former self! Wow! Felt like I was miles away from myself, yet here all the same. Well. That marks a moment in time for me. Thank you ever so much for freeing me. I'll...reconsider my choices in profession. I owe you much.
+		QuestStart: Ах... хм? Ох... авантюрист! Привет. Я... я не знаю, кто я и где я. Но я знаю, что что-то ужасное происходит глубоко подо мной. Я... я едва могу что-либо вспомнить. Я знаю... человек, ниже, бородатый... помог мне... некоторое время назад. В близлежащем городе. Я... не помню названия. Возможно, поищите его? Я не могу сказать больше... боюсь.
+		HasItems: "'"
+		Complete: Это было всего несколько мгновений назад, как я вернулся к своему прежнему "я"! Вау! Казалось, я был на милю от себя, но все еще здесь. Ну. Это отмечает момент во времени для меня. Спасибо вам огромное за то, что освободили меня. Я... пересмотрю свои профессиональные выборы. Я многим вам обязан.
 
 		Day: {
-			// 0: ...I...don't have anything to say.
-			// 1: ...
-			// 2: The day is long.
+			0: ...Я... ничего не могу сказать.
+			1: ...
+			2: День длинный.
 		}
 
 		Weak: {
-			// 0: You...do you know of a curse...?
-			// 1: Hm...I don't...know...
-			// 2: Please, don't wait.
-			// 3: Take caution, friend...
+			0: Вы... вы знаете о проклятии...?
+			1: Хм... я не... знаю...
+			2: Пожалуйста, не ждите.
+			3: Будь осторожен, друг...
 		}
 
 		Strong: {
-			// 0: You just might be strong enough...
-			// 1: Do...can you? I think you...may...
-			// 2: What was it...book...candle...
-			// 3: The Dungeon awaits.
+			0: Ты, возможно, достаточно силен...
+			1: Делай... можешь ли ты? Я думаю, ты... может...
+			2: Что это было... книга... свеча...
+			3: Подземелье ждет.
 		}
 	}
 }
 
 AshWraith: {
-	// DisplayName: Ash Wraith
-	// Entry: A stir of malicious energy combined with the instability of the Underworld produced this...tumbleweed? Much like their surface cousins, they dash at you, but with another axis of movement.
+	DisplayName: Пепельный Призрак
+	Entry: Всплеск злобной энергии в сочетании с нестабильностью Подземного мира породил это... перекати-поле? Подобно своим поверхностным собратьям, они бросаются на вас, но с другой осью движения.
 }
 
 FireMaw: {
-	// DisplayName: Fire Maw
-	// Entry: An odd mix of flower and foe, found only in the Wall of Flesh's domain. Flourishes inside of buildings, but not outside of them.
+	DisplayName: Огненная Пасть
+	Entry: Странная смесь цветка и врага, встречающаяся только во владениях Стены Плоти. Цветёт внутри зданий, но не снаружи.
 }
 
 MorganaNPC: {
-	// DisplayName: Morgana
-	// QuestCondition: Collect 2 Owl Feathers and 1 Pair of Bat Wings
-	// SummonCondition: Summon the Owl with the Grimoire
+	DisplayName: Моргана
+	QuestCondition: Соберите 2 пера совы и 1 пару крыльев летучей мыши.
+	SummonCondition: Соберите 2 пера совы и 1 пару крыльев летучей мыши.
 
 	Dialogue: {
-		// Common0: Yes...the brew speaks!...it says you're looking to buy! Hm? Are you?
-		// Common1: Mix! Mix! I say, making the most peculiar brews you've heard of. Yes, more Strange than Strange Brews.
-		// Common2: The tail of a rat! The wings of a bat! And to this, I say - rhyme? What's that?
-		// Common3: Betwixt toil and trouble, I reside. Care for a concoction of devilish proportions? Do you? Do you?
-		// Quest: Your guiles intruigue me, stranger. I've summoned the most twisted of creatures before...do you wish to do the same? Do you? If your conviction holds; bring me anything that your Grimoire consumes! No Grimoire? Ohoho! Here you are...don't let your guard down! Open up your Grimoire to see what it's eaten!
-		// Quest2: Bahaha! You return, my trinkets unobscured! Perfection, stranger. Just for my own sake, I ask, with haste - open your Grimoire and summon whichever beast you like! Owl, bat - or perhaps a different creature entirely? Hm? Hm?! Be merry, and may the phoenix find you well!
-		// Quest3: There he is! Your very own summon! Bewitching, isn't it, stranger? Alas, to toil I return. Your Grimoire will serve you well, as it did me. Explore, the creatures of the world can bewilder. Especially if you're a hunter - the materials you gather may summon many different creatures!
-		// QueenBeeQuest: Ah! You return! My guiles are favorable, yes? Yes! I have a query to ask you! Perhaps odd, but normal for one such as I! Yes! I've harkened back to a more...natural time of my life, and I wish to have some of that soul back. Could I ask you to fetch me some hornet's stingers from the jungle? Could I? Could I? You'll get a nice reward if you do.
-		// GotStingers: How wonderful! Yes...here. Take this little morsel. It'll help you summon a cute little fiend from your Grimoire. Cruel, but kind! Alas, I have one more thing to ask. A creature most foul resides in the jungle, one Queen of Bees. Could I ask you to slay it? It seeks to bother me, and I wish it dead! Another award awaits you! Submerge your new hornet friend in honey if you wish to battle!
-		// QueenBeeKilled: Why, you return? So soon? You're quite strong, are you! Aha, yes. Yes! You are! Very well. Many thanks for the chore. I've little to give, but you must take it. Take it! Bahaha! Farewell!
+		Common0: Да... зелье говорит!... оно говорит, что ты хочешь купить! Хм? Хочешь?
+		Common1: Смешивай! Смешивай! Я говорю, создавая самые странные зелья, о которых ты слышал. Да, более странные, чем Странные Зелья.
+		Common2: Хвост крысы! Крылья летучей мыши! И к этому я говорю - рифма? Что это такое?
+		Common3: Между трудом и бедой, я обитаю. Хочешь зелье дьявольских пропорций? Хочешь? Хочешь?
+		Quest: Твои уловки интригуют меня, незнакомец. Я вызывал самых извращенных существ раньше... ты хочешь сделать то же самое? Хочешь? Если твоя решимость сильна; принеси мне перо совы, крылья летучей мыши и хвост скорпиона. И возьми это! Гриммуар поможет тебе. Он поможет, не так ли! Бахаха!
+		Quest2: Бахаха! Ты вернулся, мои безделушки не затемнены! Совершенство, незнакомец. Только ради моего собственного блага, я прошу, с поспешностью - открой свой Гриммуар и вызови Сову! Не зловещее чудовище, но то, которое поможет тебе, несмотря ни на что! Будь здоров, и пусть феникс найдет тебя в добром здравии!
+		Quest3: Вот он! Твой собственный вызов! Зачаровывающий, не так ли, незнакомец? Увы, к труду я возвращаюсь. Твой Гриммуар послужит тебе хорошо, как и мне. Исследуй, существа мира могут ошеломить. Особенно если ты охотник - материалы, которые ты собираешь, могут вызвать множество разных существ!
+		QueenBeeQuest: Ах! Ты вернулся! Мои уловки благоприятны, да? Да! У меня есть вопрос, который я хочу задать тебе! Возможно, странный, но нормальный для такой, как я! Да! Я вспомнил более... естественное время моей жизни, и хочу вернуть часть этой души. Могу ли я попросить тебя принести мне жала шершней из джунглей? Могу ли я? Могу ли я? Ты получишь хорошую награду, если сделаешь это.
+		GotStingers: Как замечательно! Да... вот. Возьми этот маленький кусочек. Это поможет тебе вызвать милого маленького злодея из твоего Гриммуара. Жестокий, но добрый! Увы, у меня есть еще одна вещь, о которой я хочу попросить. В джунглях обитает самое отвратительное существо, одна Королева Пчел. Могу ли я попросить тебя убить ее? Она стремится побеспокоить меня, и я хочу, чтобы она была мертва! Другая награда ждет тебя! Погрузи своего нового шершня в мед, если хочешь сражаться!
+		QueenBeeKilled: Почему, ты вернулся? Так скоро? Ты довольно силен, да ты! Ага, да. Да! Ты есть! Очень хорошо. Много благодарностей за поручение. У меня мало что есть, но ты должен взять это. Возьми это! Бахаха! Прощай!
 	}
 
-	// Entry: Eccentric but decievingly powerful, Morgana offers a lot to Ravencrest. Sure, she may be nearly incomprehensible sometimes, and some might say offputting a lot of the time, but she's good at what she does. Huh? "What does she do?" Uh...
+	Entry: Соберите 2 пера совы и 1 пару крыльев летучей мыши.
 }
 
 Entling: {
-	// DisplayName: Entling
-	// Entry: A small critter of the forest, mischeivious in nature, Entlings seek to steal and rob. Ideally without a fight, but when it comes to it, they step up and battle by jumping a little and running and that's it. Scary!
+	DisplayName: Энтлинг
+	Entry: Энтлинги — маленькие лесные создания, проказники по натуре, которые стремятся украсть и ограбить. В идеале — без боя, но когда дело доходит до дела, они вступают в бой, немного подпрыгивая и разбегаясь, и всё. Страшно!
 }
 
 EntlingAlt: {
-	// DisplayName: Cyclops Entling
-	// Entry: Much like their cousin, the one-eye variant here enjoys a kleptomaniac nature with a penchant for violence. They think their one eye looks better than two.
+	DisplayName: Циклоп Энтлинг
+	Entry: Подобно своему двоюродному брату, одноглазый вариант обладает клептоманской натурой и склонностью к насилию. Он считает, что один глаз у него лучше, чем два.
 }
 
 Ent: {
-	// DisplayName: Ent
-	// Entry: An elder Entling, they hold much more formidable power. Their mischeivious nature has blossomed into abject violence, not caring what they harm as long as their tree is safe.
+	DisplayName: Энт
+	Entry: Будучи старшими энтлингами, они обладают гораздо более грозной силой. Их озорная натура переросла в крайнюю жестокость, и им всё равно, что делать, лишь бы их дерево было в безопасности.
 
 	SlamDeath: {
-		// 0: "{0} was smashed to a pulp."
-		// 1: And to the ground {0} returns.
-		// 2: "{0} inspected roots too closely."
+		0: "{0} был раздавлен в кашу."
+		1: И на землю {0} возвращается.
+		2: "{0} слишком близко рассмотрел корни."
 	}
 }
 
 ClumsyEntling: {
-	// DisplayName: Clumsy Entling
-	// Entry: Sometimes, you have a bad day and you trip. This guy has a bad day very, very often. Be thankful, they're here to steal your stuff.
+	DisplayName: Неуклюжий Энтлинг
+	Entry: Иногда бывает неудачный день, и ты спотыкаешься. У этого парня неудачные дни случаются очень-очень часто. Будь благодарен, они здесь, чтобы украсть твои вещи.
 }
 
 Grovetender: {
-	// DisplayName: Elder Grovetender
-	// Entry: This is the Entling that never died. For one reason or another, it lived too long; from Entling to Ent to Grovetender to now. Rooted in place, it supplants itself and its brethren with a bevvy of magical powers of the nature around it. It bleeds an ancient, magical power.
+	DisplayName: Старший Хранитель Рощи
+	Entry: Это энтлинг, который никогда не умирал. По той или иной причине он прожил слишком долго: от энтинга до энта, от рощевода до наших дней. Укоренившись в одном месте, он вытесняет себя и своих собратьев потоком магических сил окружающей природы. Он истекает древней магической силой.
 
 	BottomDeath: {
-		// 0: "{0} was lost in the tangle."
-		// 1: "{0} was buried in wood."
-		// 2: "{0} was harvested for energy."
+		0: "{0} потерялся в путанице."
+		1: "{0} был погребен в дереве."
+		2: "{0} был собран для энергии."
 	}
 }
 
 CanopyBird: {
-	// DisplayName: Canopy Owl
-	// Entry: A bird of prey with an unusual size, the Canopy Owl seeks to keep any and all creatures off of the great canopy it resides on. They are relatively small, but surprisingly durable, and most of all, innumerable.
+	DisplayName: Совка Кроны
+	Entry: Лесная сова — хищная птица необычных размеров, которая старается не подпускать к своему величественному пологу деревьев всех и вся. Они относительно небольшие, но удивительно живучие и, что самое главное, бесчисленные.
 }
 
 Sawblade: {
-	// DisplayName: Motorized Sawblade
-	// Entry: As a great machinist once said; "Simplicity is key". Sawblade spins, and if touched, sawblade hurts you. It's refreshing, really.
+	DisplayName: Моторизованная Пила
+	Entry: Как сказал однажды великий механик: «Простота — это главное». Пильный диск вращается, и если к нему прикоснуться, он ранит. Это действительно освежает.
 }
 
 CircuitSkull: {
-	// DisplayName: Circuit Skull
-	// Entry: A bizzare form of defense, the Circuit Skull dances around the empty halls of creation. Why does it do so? Couldn't it jump more efficiently? At the end of the day, these are unknown questions.
+	DisplayName: Электрический Череп
+	Entry: Причудливая форма защиты, Цепь Черепа пляшет по пустым залам мироздания. Почему он так делает? Неужели он не мог прыгать эффективнее? В конце концов, это вопросы, на которые нет ответа.
 }
 
 SecurityDrone: {
-	// DisplayName: Security Drone
-	// Entry: Like their sister machine the Probe, Security Drones are designed to peruse the large, empty space of the Mechanisms. They always gun for their target directly and forcefully.
+	DisplayName: Дрон Безопасности
+	Entry: Как и их родственная машина «Зонд», охранные дроны предназначены для исследования обширного пустого пространства Механизмов. Они всегда нацелены на цель прямолинейно и мощно.
 }
 
 Grabber: {
-	// DisplayName: Autoclamp
-	// Entry: The most bizarre of the Mechanism's security protocols, the Autoclamp doesn't do much damage.
+	DisplayName: Автоклемм
+	Entry: Самый странный из протоколов безопасности Механизма — Автозажим, который не наносит особого вреда.
 }
 
 CoreModule: {
-	// DisplayName: Core Module
-	// Entry: When a disturbance so large that it requires immediate, massive force occurs in the Mechanism, the Core Module is sent out. It's large, highly defensive, very offensive and most of all, cool.
+	DisplayName: Ядерный Модуль
+	Entry: Когда в Механизме происходит настолько сильное возмущение, что требуется немедленное применение огромной силы, высылается Основной Модуль. Он большой, высокозащитный, высоконаступательный и, самое главное, крутой.
 }
 
-// CoreModulePlate.DisplayName: Core Module Plate
-// ExplosiveTurret.DisplayName: Explosive Turret
+CoreModulePlate.DisplayName: Пластина Ядерного Модуля
+ExplosiveTurret.DisplayName: Взрывная Турель
 
 HauntedHead: {
-	// DisplayName: Haunted Head
-	// Entry: The long-lost head of a traveller, merchant, or other unfortunate soul seeking revenge. Emerging from the sands, it'll stop at nothing but death to stop you.
+	DisplayName: Одержимая Голова
+	Entry: Давно потерянная голова путешественника, торговца или другого несчастного, жаждущего мести. Выйдя из песков, она не остановится ни перед чем, кроме смерти, чтобы остановить вас.
 }
 
-// ScarabSwarmController.DisplayName: Scarab Swarm
+ScarabSwarmController.DisplayName: Рой Скорпионов
 
 SwarmScarab: {
-	// DisplayName: Swarm Scarab
-	// Entry: One of a swarm of carnivorous scarabs, seeking more food. Why is it with so many other scarabs? Intimidation reasons.
+	DisplayName: Скорпион Роя
+	Entry: Один из роя плотоядных скарабеев, ищущих больше еды. Почему он среди множества других скарабеев? Причина — устрашение.
 }
 
 AntlionTrapper: {
-	// DisplayName: Antlion Trapper
-	// Entry: What happens when an Antlion's jaws get out of hand? They adapt. What happens when you step near them? Only one way to find out!
+	DisplayName: Захватчик Муравьиного Льва
+	Entry: Что происходит, когда челюсти муравьиного льва выходят из-под контроля? Они адаптируются. Что происходит, когда вы подходите к ним? Есть только один способ узнать!
 
 	Death: {
-		// 0: "{0} was turned into mush."
-		// 1: "{0} was snapped up."
-		// 2: "{0} didn't watch where they were going."
+		0: "{0} был превращен в кашу."
+		1: "{0} был схвачен."
+		2: "{0} не смотрел, куда идет."
 	}
 }
 
 SunDevourerNPC: {
-	// DisplayName: Sun Devourer
-	// Entry: An ancient beast in a faraway desert known the world over. While not the largest creature, the beast is known to devour sunlight, growing to strengths beyond its size.
+	DisplayName: Пожиратель Солнца
+	Entry: Древний зверь в далёкой пустыне, известный всему миру. Хотя это существо не самое крупное, оно, как известно, поглощает солнечный свет, достигая силы, превосходящей его размеры.
 }
 
 WormLightning: {
-	// DisplayName: Lightning Sprite
-	// Entry: A being of pure energy, born from the explosion of a burst of lightning. They seek only one thing - to distract from their creator.
+	DisplayName: Молниеносный Спрайт
+	Entry: Существо чистой энергии, рождённое взрывом молнии. Они стремятся лишь к одному — отвлечь внимание от своего создателя.
 }
 
-// WormLightning_Body.DisplayName: "{$WormLightning.DisplayName}"
-// WormLightning_Tail.DisplayName: "{$WormLightning.DisplayName}"
+WormLightning_Body.DisplayName: "{$WormLightning.DisplayName}"
+WormLightning_Tail.DisplayName: "{$WormLightning.DisplayName}"
 
 EnergizerCore: {
-	// DisplayName: Energizer Core
-	// Entry: A self-sustaining, powerful machine made only to keep its fellow automatons alive. It is unknown what the core is doing or why the metal spins around it.
+	DisplayName: Энергетическое Ядро
+	Entry: Самоподдерживающаяся, мощная машина, созданная исключительно для поддержания жизни своих собратьев-автоматонов. Неизвестно, что делает её ядро и почему металл вращается вокруг него.
 }
 
 Minitera: {
-	// DisplayName: Budding Plantera
-	// Entry: An early bloom, this Plantera was not given the time it needed to grow fully. That being said, it's still much more powerful than most foes.
+	DisplayName: Зарождающийся Плантера
+	Entry: '''Эта плантера, цветущая рано, не успела полностью вырасти. Тем не менее, она всё равно гораздо сильнее большинства конкурентов.	'''
 }
 
-// MiniteraHook.DisplayName: Minitera Hook
+MiniteraHook.DisplayName: Крюк Зарождающегося Плантеры
 
 WarriorNPC: {
-	// DisplayName: Warrior
+	DisplayName: Воин
 
 	Names: {
 		Male: {
-			// 0: James
-			// 1: John
-			// 2: Peter
-			// 3: Mark
-			// 4: Salvador
-			// 5: Ezra
-			// 6: Simone
-			// 7: Eduardo
-			// 8: Lee
-			// 9: Enrique
-			// 10: Walter
-			// 11: Sven
-			// 12: Hidehito
-			// 13: Goro
-			// 14: Jamir
-			// 15: Talan
-			// 16: Moises
-			// 17: Felipe
-			// 18: Samuel
+			0: Джеймс
+			1: Джон
+			2: Питер
+			3: Марк
+			4: Сальвадор
+			5: Эзра
+			6: Симоне
+			7: Эдуардо
+			8: Ли
+			9: Энрике
+			10: Вальтер
+			11: Свен
+			12: Хидэхито
+			13: Горо
+			14: Джамир
+			15: Талан
+			16: Моисе
+			17: Фелипе
+			18: Сэмюэл
 		}
 
 		Female: {
-			// 0: Alma
-			// 1: Paula
-			// 2: Jenna
-			// 3: Lyric
-			// 4: Serena
-			// 5: Teagan
-			// 6: Kinsley
-			// 7: Aria
-			// 8: Priya
-			// 9: Ella
-			// 10: Kamora
-			// 11: Damaris
-			// 12: Josephine
-			// 13: Anahi
-			// 14: Halle
-			// 15: Myah
-			// 16: Perla
-			// 17: Fatima
-			// 18: Samantha
+			0: Альма
+			1: Паула
+			2: Дженна
+			3: Лирик
+			4: Сирена
+			5: Тиган
+			6: Кинсли
+			7: Ария
+			8: Прия
+			9: Элла
+			10: Камора
+			11: Дамарис
+			12: Жозефина
+			13: Анахи
+			14: Халле
+			15: Мая
+			16: Перла
+			17: Фатима
+			18: Саманта
 		}
 	}
 
 	Dialogue: {
 		Confident: {
-			// 0: A respite well earned! Cheers, my friend.
-			// 1: Ah, the mead known throughout the world!
-			// 2: Sometimes, a stiff drink and a rest beats adventure!...sometimes.
-			// 3: And so I told Brom - "I hope this drink's not as strong as the beast!" Bahahaha!
+			0: Заслуженный отдых! За здоровье, мой друг!
+			1: Ах, мед, известный по всему миру!
+			2: Иногда крепкий напиток и отдых побеждают приключения!...иногда.
+			3: И вот я сказал Брому - "Надеюсь, этот напиток не такой крепкий, как зверь!" Бахаха!
 		}
 
 		Reserved: {
-			// 0: Well met, stranger.
-			// 1: Hello.
-			// 2: Not often I see that get-up.
-			// 3: Cheers, friend.
+			0: Рад встрече, незнакомец.
+			1: Привет.
+			2: Не часто вижу такой наряд.
+			3: За здоровье, друг.
 		}
 
 		Boastful: {
-			// 0: And so I slayed the Burnfield, like nothing! Legendary beast, meet my blade!
-			// 1: Ohohoh, quite curious? What have you slain? Beasts? Gods?
-			// 2: The Cliffs near the Maw of Earth? Child's play! I remember traipsing through like it's a hike!
-			// 3: Not much beats a strong drink and a great achievement, huh? Aha! Of course not!
+			0: И вот я убил Бернфилда, как ничего! Легендарное чудовище, встречай мой клинок!
+			1: Охохох, довольно любопытно? Что ты убил? Зверей? Богов?
+			2: Скалы у Пасти Земли? Детская игра! Я помню, как проходил через них, как по прогулке!
+			3: Ничто не сравнится с крепким напитком и великим достижением, а? Ага! Конечно, нет!
 		}
 
 		Sly: {
-			// 0: Aye. Don't tell Brom...this is all counterfeit coin. Heh.
-			// 1: They say a great theft can overshadow a greater achievement. You interested?
-			// 2: How much mead do you think I can hide in my waterskin?
-			// 3: Say...you know where this fine establishment keeps its coin? No reason...
+			0: Эй. Не говори Брому... это все фальшивая монета. Хех.
+			1: Говорят, великая кража может затмить более великое достижение. Интересно?
+			2: Сколько меда, ты думаешь, я могу спрятать в своей фляге?
+			3: Слушай... ты знаешь, где это прекрасное заведение хранит свои монеты? Без причины...
 		}
 
 		Partygoer: {
-			// 0: Hey, hey! I know a little magic - you got a coin I could borrow? It'll disappear, but only for a bit!
-			// 1: The best thing in combat? Confusion. You throw a confetti bomb and a wolf hardly knows what's going on.
-			// 2: Look at this - within moments, I can make this mead disappear.
-			// 3: This one's simple - how do you trick the gullible?...I'll tell you later.
+			0: Эй, эй! Я знаю немного магии - у тебя есть монета, которую я мог бы одолжить? Она исчезнет, но только на время!
+			1: Лучшая вещь в бою? Смешение. Ты бросаешь конфетти-бомбу, и волк едва ли понимает, что происходит.
+			2: Смотри на это - за мгновения я могу заставить этот мед исчезнуть.
+			3: Этот простой - как обмануть доверчивых?... Я расскажу тебе позже.
 		}
 
 		Reverent: {
-			// 0: Thank whatever guides you for what you enjoy.
-			// 1: Alas! I am doing my work. Cheers!
-			// 2: Have you seen a Shrine's blessings? Curious boons.
-			// 3: Comfort in the home is worth many a battle.
+			0: Благодари то, что направляет тебя, за то, что тебе нравится.
+			1: Увы! Я занимаюсь своей работой. За здоровье!
+			2: Видел ли ты благословения Святилища? Любопытные дары.
+			3: Уют дома стоит многих битв.
 		}
 	}
 
 	BubbleDialogue: {
 		Confident: {
-			// 0: Ah, yes. A moment...
-			// 1: You can tell the owner here was an adventuerer himself, huh?
-			// 2: I'm already getting excited to head back out...
-			// 3: ...where are the quest listings again...?
+			0: Ах, да. Момент...
+			1: Можно сказать, что владелец здесь сам был авантюристом, а?
+			2: Я уже с нетерпением жду, чтобы выйти снова...
+			3: ...где снова списки квестов...?
 		}
 
 		Reserved: {
-			// 0: Hm.
-			// 1: How nice.
-			// 2: Where'd I leave my coin...
-			// 3: Another drink, perhaps...?
+			0: Хм.
+			1: Как приятно.
+			2: Где я оставил свою монету...
+			3: Еще один напиток, возможно...?
 		}
 
 		Boastful: {
-			// 0: What else to say, what else to say...
-			// 1: I should say that Maw of Earth line again, that one's awesome.
-			// 2: Where's my audience?
-			// 3: Man, I'm so cool.
+			0: Что еще сказать, что еще сказать...
+			1: Я должен повторить ту фразу о Пасти Земли, она крутая.
+			2: Где моя аудитория?
+			3: Чувак, я такой крутой.
 		}
 
 		Sly: {
-			// 0: Act natural, I'm just a normal adventurer...
-			// 1: Is anyone looking?
-			// 2: Hehe...they won't know what hit 'em.
-			// 3: Good thing I've such big pockets...
+			0: Веди себя естественно, я просто обычный авантюрист...
+			1: Кто-нибудь смотрит?
+			2: Хехе... они не поймут, что их ударило.
+			3: Хорошо, что у меня такие большие карманы...
 		}
 
 		Partygoer: {
-			// 0: Whoo, man! That mead's starting to hit...
-			// 1: Brom? Could I get another one...?
-			// 2: Woah. That's where that coin went.
-			// 3: Whooh. Just gonna take a moment...
+			0: Ух, чувак! Этот мед начинает действовать...
+			1: Бром? Можно еще один...?
+			2: Вау. Вот куда делась та монета.
+			3: Уф. Просто возьму момент...
 		}
 
 		Reverent: {
-			// 0: Thank you all for my meal...
-			// 1: Be blessed.
-			// 2: Perhaps the desert next?
-			// 3: Ah...
+			0: Спасибо всем за мою еду...
+			1: Будьте благословенны.
+			2: Может, пустыня следующая?
+			3: Ах...
 		}
 	}
 }
 
 RangerNPC: {
-	// DisplayName: Ranger
-	// Names: "{WarriorNPC.Names}"
-	// Dialogue: "{WarriorNPC.Dialogue}"
-	// BubbleDialogue: "{WarriorNPC.BubbleDialogue}"
+	DisplayName: Рейнджер
+	Names: "{WarriorNPC.Names}"
+	Dialogue: "{WarriorNPC.Dialogue}"
+	BubbleDialogue: "{WarriorNPC.BubbleDialogue}"
 }
 
 GreaterFairy: {
-	// DisplayName: Greater Fairy
-	// Entry: A much less kind version of the fairies sometimes found throughout the world, Greater Fairies align themselves to the absolutution of the Hallow instead.
+	DisplayName: Великая Фея
+	Entry: Много менее добрая версия фей, иногда встречающихся по всему миру. Великие Феи полностью привержены Освящению.
 }
 
 Prismatism: {
-	// DisplayName: Prismatism
-	// Entry: Mysteriously well dressed, this chromatic orb seems to possess either entirely too little movement or altogether too much. It has exactly enough hostility against you to merit that.
+	DisplayName: Призматизм
+	Entry: Таинственно хорошо одетый, этот хроматический шар кажется обладающим либо совершенно недостаточным движением, либо совершенно чрезмерным. У него ровно столько враждебности по отношению к вам, чтобы это оправдать.
 }

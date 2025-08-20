@@ -1,0 +1,200 @@
+Popups: {
+	Line1: Abre el Libro de Misiones para ver el progreso y los pasos de las misiones que aceptaste.
+	Line2: El Libro de misiones siempre se encuentra junto al mapa en el inventario.
+	Line3: Puedes presionar {0} para abrir el Libro de Misiones
+	NoKey: (Sin asignar - predeterminado L)
+	NewQuest: Nueva Misión:
+}
+
+Bring: {
+	Collect: Recoger
+	// GiveItTo: and give it to the {0}
+}
+
+TalkTo: Habla con {0}
+GiveThem: y dale:
+// Exploration.Ice: Explore the Ice/Snow biome ({0}%)
+Or: o
+
+Quest: {
+	TestQuest: {
+		// Name: Test Quest
+		// Description: Used to test quests.
+	}
+
+	TestQuestTwo: {
+		// Name: Test 2: Electric Boogaloo
+		// Description: Test harder.
+	}
+
+	BlacksmithStartQuest: {
+		// Name: Forging a New Blade
+		// Description: ""
+		// Kill.Zombies: Kill {0} zombies
+	}
+
+	KingSlimeQuest: {
+		// Name: Kill the King
+		// Description: ""
+		// EnterDomain: Enter the King's Domain
+		// ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surpass me again. My thanks, however, are in order.
+		// Kill.KingSlime: Kill the King Slime
+	}
+
+	HunterStartQuest: {
+		// Name: Drawing the Bow
+		// Description: ""
+		// Kill.FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
+	}
+
+	WitchStartQuest: {
+		// Name: The Ancient Art
+		// Description: ""
+	}
+
+	WizardStartQuest: {
+		// Name: Magical Returnal
+		// Description: ""
+	}
+
+	EoCQuest: {
+		// Name: The Rising Omen
+		// Description: ""
+		// Kill.EoC: Defeat the Eye of Cthulhu
+	}
+
+	EoWQuest: {
+		// Name: Whispers of the Deep
+		// Description: ""
+		// MorvenRaven: Get Morven to Ravencrest
+		// SmashOrbs: Smash 3 Shadow Orbs
+		// KillEoW: Defeat the Eater of Worlds
+		// ReturnToOverworld: Return to the Overworld
+	}
+
+	BoCQuest: {
+		// Name: A Heart Still Beating
+		// Description: ""
+		// SmashOrb: Smash a Crimson Heart
+		// EnterDomain: Enter the Brain of Cthulhu domain
+		// KillBrain: Kill the Brain of Cthulhu
+	}
+
+	QueenBeeQuest: {
+		// Name: A Royal Adventure
+		// Description: ""
+		// KillQueen: Kill the Queen Bee
+	}
+
+	DeerclopsQuest: {
+		// Name: Frigid Beast
+		// Description: ""
+		// KillDeerclops: Kill Deerclops
+		// GetAntlersOrShards: Get Strange Antlers or an Antler Shard
+	}
+
+	SkeletronQuest: {
+		// Name: Skeletal Remnants
+		// Description: ""
+		// EnterDomain: Enter Skeletron's domain
+		// KillSkeletron: Kill Skeletron
+	}
+
+	WoFQuest: {
+		// Name: Unleashing Chaos
+		// Description: ""
+		// WizardStart: Hm....yes. The ground deep beneath us all shakes with a vigor, from the one they hid away. You see, long ago, a group of adventurers locked an evil into a fascimile. However, with your incredible strength slaying all these beasts around the world, that power seems to have crept its way to that locked evil. Which is to say, we must kill it. Talk to Thrain, Morgana and Elara as soon as you can. They understand, and will give you weapons. Take this, and godspeed. You can thank Morgana for this, too. Just...don't ask about it too much. Busy days here!
+		// ThrainHelp: Oh. So it is. Here...I've been preparing for a day like this, hopefully it's up to your standard. Alaric helped with this, it holds the memories of my battles. Enjoy. Good luck.
+		// ElaraHelp: Take care, and take this. I'm no fancy weaponsmith, but Thrain helped with it. Keeps it simple. And - the eyes are weakest.
+		// MorganaHelp: Oh...? Bahaha! The time comes! Here you are, a veritable buffet of Grimoire materials! Elara helped with these beings...quite the knowledgable lass, she is! Enjoy your boons! Bahahaha!
+		// WizardContinue: Here you are. Well, take these. These are...yes...explosive, but it's just how it works. I swear. Throw these upon the ashes of Hell to open a portal to the place that the Wall was confined to. Note - you will have one chance to kill it. No mistakes. And we don't know what happens upon the wall's death. Much is uncertain, aside from that it must die. Good luck. If you need any more, I can summon some...for a small price! Sorry! Commerce never hides!
+		// KillWall: Kill the Wall of Flesh
+		// WizardFinish: You return! We see many changes, but the earth won't shake and shutter under us any longer. Prepare yourself for the future, as there is much to learn. Especially for myself, for I have...a lot of stuff to try out.
+	}
+
+	FirstQuest: {
+		// Name: Entering Ravencrest
+		// Description: ""
+		// ApproachEntrance: Approach the entrance to Ravencrest
+		// EnterRavencrest: Enter Ravencrest
+	}
+
+	QueenSlimeQuest: {
+		// Name: Regal Regime
+		// Description: ""
+		// Tiers: Complete 10 Tier 1 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Queen Slime's domain
+		// Boss: Defeat the Queen Slime
+	}
+
+	TwinsQuest: {
+		// Name: Twin Terrors
+		// Description: ""
+		// Tiers: Complete 10 Tier 2 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Twin's domain
+		// Boss: Defeat the Twins
+	}
+
+	DestroyerQuest: {
+		// Name: Metal Eartheater
+		// Description: ""
+		// Tiers: Complete 10 Tier 3 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Destroyer's domain
+		// Boss: Defeat the Destroyer
+	}
+
+	SkelePrimeQuest: {
+		// Name: Metal Bones
+		// Description: ""
+		// Tiers: Complete 10 Tier 4 Explorable maps ({1}/10)
+		// EnterDomain: Enter Skeletron Prime's domain
+		// Boss: Defeat Skeletron Prime
+	}
+
+	PlanteraQuest: {
+		// Name: Ravenous Bloom
+		// Description: ""
+		// Tiers: Complete 10 Tier 5 Explorable maps ({1}/10)
+		// EnterDomain: Enter Plantera's domain
+		// Boss: Defeat Plantera
+	}
+
+	GolemQuest: {
+		// Name: Ancient Design
+		// Description: ""
+		// Tiers: Complete 10 Tier 6 Explorable maps ({1}/10)
+		// EnterDomain: Enter Golem's domain
+		// Boss: Defeat Golem
+	}
+
+	FishronQuest: {
+		// Name: Mad Pig...ron
+		// Description: ""
+		// Tiers: Complete 10 Tier 7 Explorable maps ({1}/10)
+		// EnterDomain: Enter Duke Fishron's domain
+		// Boss: Defeat Duke Fishron
+	}
+
+	EoLQuest: {
+		// Name: Holy Absolution
+		// Description: ""
+		// Tiers: Complete 10 Tier 8 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Empress of Light's domain
+		// Boss: Defeat the Empress of Light
+	}
+
+	CultistQuest: {
+		// Name: Lunar Leader
+		// Description: ""
+		// Tiers: Complete 10 Tier 9 Explorable maps ({1}/10)
+		// EnterDomain: Enter the Lunatic Cultist's domain
+		// Boss: Defeat the Lunatic Cultist
+	}
+
+	MoonLordQuest: {
+		// Name: The Ending
+		// Description: ""
+		// EnterDomain: Enter the Moon Lords's domain
+		// Boss: Defeat the Moon Lord
+	}
+}

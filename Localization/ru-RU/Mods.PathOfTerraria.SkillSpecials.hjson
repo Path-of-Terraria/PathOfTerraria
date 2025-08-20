@@ -1,4 +1,4 @@
-OneLine: Only one skill specialization may be selected
+OneLine: Можно выбрать только одну специализацию.
 
 FireNova: {
 	Name: Огненный Всплеск
@@ -16,8 +16,8 @@ LightningNova: {
 }
 
 NaturesBarrage: {
-	Name: Барраж Природы
-	Description: Отравленные наконечники отравляют врагов
+	Name: Залп Природы
+	Description: Ядовитые наконечники отравляют врагов
 }
 
 ExplosiveVolley: {

@@ -1,0 +1,1336 @@
+MapCommon: {
+	PlaceOnDevice: Włóż to na Urządzeniu od Map by użyć
+	BossUses: Można użyć określoną liczbę razy, w zależności od liczby graczy
+	/* BossBase:
+		'''
+		{$PlaceOnDevice}
+		{$BossUses}
+		''' */
+}
+
+HealingPotionPickup: {
+	DisplayName: Podniesiono Miksturę Życia
+	// Tooltip: ""
+	Pickup: Mikstura Życia
+}
+
+ManaPotionPickup: {
+	DisplayName: Podniesiono Miksturę Many
+	// Tooltip: ""
+	Pickup: Mikstura Many
+}
+
+Helmet: {
+	DisplayName: Hełm
+	// Tooltip: ""
+}
+
+Chestplate: {
+	DisplayName: Napierśnik
+	// Tooltip: ""
+}
+
+Leggings: {
+	DisplayName: Nogawice
+	// Tooltip: ""
+}
+
+Sword: {
+	DisplayName: Miecz
+	// Tooltip: ""
+}
+
+Broadsword: {
+	DisplayName: Pałasz
+	// Tooltip: ""
+}
+
+Katana: {
+	DisplayName: Katana
+	// Tooltip: ""
+}
+
+Staff: {
+	DisplayName: Berło
+	// Tooltip: ""
+	Staff: Berło
+}
+
+Wand: {
+	DisplayName: Różdzka
+	// Tooltip: ""
+}
+
+LowTierMap: {
+	// DisplayName: Low Tier Map
+	// Tooltip: ""
+}
+
+BodyArmor: {
+	// DisplayName: Body Armor
+	// Tooltip: ""
+}
+
+Breastplate: {
+	// DisplayName: Breastplate
+	// Tooltip: ""
+}
+
+Crown: {
+	DisplayName: Korona
+	// Tooltip: ""
+}
+
+Visor: {
+	DisplayName: Przyłbica
+	// Tooltip: ""
+}
+
+Boots: {
+	DisplayName: Buty
+	// Tooltip: ""
+}
+
+BurningRedBoots: {
+	// DisplayName: Burning Red Boots
+	// Tooltip: ""
+}
+
+Greaves: {
+	DisplayName: Nagolenniki
+	// Tooltip: ""
+}
+
+Tassets: {
+	// DisplayName: Tassets
+	// Tooltip: ""
+}
+
+Treads: {
+	// DisplayName: Treads
+	// Tooltip: ""
+}
+
+CaveMap: {
+	DisplayName: Mapa jaskiń
+	// Tooltip: ""
+}
+
+Codex: {
+	DisplayName: Kodeks
+	// Tooltip: ""
+}
+
+Lexicon: {
+	DisplayName: Leksykon
+	// Tooltip: ""
+}
+
+Manuscript: {
+	DisplayName: Manuskrypt
+	// Tooltip: ""
+}
+
+Spellbook: {
+	DisplayName: Księga zaklęć
+	// Tooltip: ""
+}
+
+Grimoire: {
+	// DisplayName: Grimoire
+	// Tooltip: ""
+}
+
+CopperBroadsword: {
+	DisplayName: Miedziany pałasz
+	// Tooltip: ""
+}
+
+IronBroadsword: {
+	DisplayName: Żelazny pałasz
+	// Tooltip: ""
+}
+
+SteelBroadsword: {
+	DisplayName: Stalowy pałasz
+	// Tooltip: ""
+}
+
+StoneSword: {
+	DisplayName: Kamienny miecz
+	// Tooltip: ""
+}
+
+WoodenSword: {
+	// DisplayName: Wooden Sword
+	// Tooltip: ""
+}
+
+MapDevice: {
+	// DisplayName: Map Device
+	Tooltip: Używane do podróżowania przez mapy
+}
+
+WoodenBow: {
+	DisplayName: Drewniany łuk
+	// Tooltip: ""
+}
+
+BasicWoodenBow: {
+	// DisplayName: Basic Wooden Bow
+	// Tooltip: ""
+}
+
+WoodenShortBow: {
+	// DisplayName: Wooden Short Bow
+	// Tooltip: ""
+}
+
+LeafWhip: {
+	// DisplayName: Leaf Whip
+	// Tooltip: ""
+}
+
+WoodenBoomerang: {
+	// DisplayName: Wooden Boomerang
+	// Tooltip: ""
+}
+
+CopperBoomerang: {
+	// DisplayName: Copper Boomerang
+	// Tooltip: ""
+}
+
+IronBoomerang: {
+	// DisplayName: Iron Boomerang
+	// Tooltip: ""
+}
+
+SilverBoomerang: {
+	// DisplayName: Silver Boomerang
+	// Tooltip: ""
+}
+
+StoneBoomerang: {
+	// DisplayName: Stone Boomerang
+	// Tooltip: ""
+}
+
+FireStarter: {
+	// DisplayName: Fire Starter
+	// AltUseDescription: 100% chance to apply On Fire! for 3 seconds
+	// Description: A smoldering piece of wood.
+	// Tooltip: ""
+}
+
+YellowJewel: {
+	// DisplayName: Yellow Jewel
+	// Tooltip: ""
+}
+
+BarbedLeatherWhip: {
+	// DisplayName: Barbed Leather Whip
+	// Tooltip: ""
+}
+
+ChainWhip: {
+	// DisplayName: Chain Whip
+	// Tooltip: ""
+}
+
+LeatherWhip: {
+	// DisplayName: Leather Whip
+	// Tooltip: ""
+}
+
+WebWhip: {
+	// DisplayName: Web Whip
+	// Tooltip: ""
+}
+
+CorruptedBattleaxe: {
+	// DisplayName: Corrupted Battleaxe
+	// Tooltip: ""
+	// AltUseDescription: Right click to have the axe chase everything it can kill.
+	// Description: Something doesn't feel right about this axe...
+}
+
+IronBattleaxe: {
+	// DisplayName: Iron Battleaxe
+	// Tooltip: ""
+}
+
+RustedBattleaxe: {
+	// DisplayName: Rusted Battleaxe
+	// Tooltip: ""
+}
+
+SteelBattleaxe: {
+	// DisplayName: Steel Battleaxe
+	// Tooltip: ""
+}
+
+GuardianAngel: {
+	// DisplayName: Guardian Angel
+	// Tooltip: ""
+	// AltUseDescription: Right click to apply a holy ring to nearby enemies.
+	// Description: Holy light fills you with strength
+}
+
+BloodOath: {
+	// DisplayName: Blood Oath
+	// Tooltip: ""
+	/* AltUseDescription:
+		'''
+		Right click to pledge. Every hit does 1 damage to you and adds an Oath to the enemy.
+		Right click again after hitting enemies to heal 3 damage per stack per enemy.
+		''' */
+	// Description: Teeth fill your peripherals, but dissipate when you focus on them
+	// DeathReason: "{0} pledged too much."
+}
+
+GrimoireItem: {
+	// DisplayName: Grimoire
+	// AltUseDescription: Right click while holding to open up the Menagerie.
+	// Control: Control a {0} with your mouse.
+	// ControlNone: "[c/999999:No summon selected! Select one in the Menagerie.]"
+	// Description: "'A small books holds big secrets.'"
+	// Tooltip: ""
+}
+
+BatWings: {
+	// DisplayName: Pair of Bat Wings
+	/* Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Surprisingly strong.'
+		''' */
+}
+
+OwlFeather: {
+	// DisplayName: Owl Feather
+	/* Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Soft to the touch.'
+		''' */
+}
+
+ScorpionTail: {
+	// DisplayName: Scorpion Tail
+	/* Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'It still twitches, sometimes.'
+		''' */
+}
+
+AshWoodSword: {
+	// DisplayName: Ash Wood Sword
+	// Tooltip: ""
+}
+
+SharpenedStick: {
+	// DisplayName: Sharpened Stick
+	// Tooltip: ""
+}
+
+IronPilum: {
+	// DisplayName: Iron Pilum
+	// Tooltip: ""
+}
+
+LeadDangpa: {
+	// DisplayName: Lead Dangpa
+	// Tooltip: ""
+}
+
+IronAngon: {
+	// DisplayName: Iron Angon
+	// Tooltip: ""
+}
+
+PlatinumGlaive: {
+	// DisplayName: Platinum Glaive
+	// Tooltip: ""
+}
+
+MoltenDangpa: {
+	// DisplayName: Molten Dangpa
+	// Tooltip: ""
+	// AltUseDescription: Right click to melt your weapon and throw it, guaranteeing On Fire! on every enemy and splashing a few magma bubbles around.
+	// Description: Hot to the touch, fuel to your power.
+}
+
+WoodPlank: {
+	// DisplayName: Wood Plank
+	// Tooltip: ""
+}
+
+IronWarShield: {
+	// DisplayName: Iron War Shield
+	// Tooltip: ""
+}
+
+LeadBattleBulwark: {
+	// DisplayName: Lead Battle Bulwark
+	// Tooltip: ""
+}
+
+GoldenBattleBulwark: {
+	// DisplayName: Golden Battle Bulwark
+	// Tooltip: ""
+}
+
+PlatinumWarShield: {
+	// DisplayName: Platinum War Shield
+	// Tooltip: ""
+}
+
+StoneWarShield: {
+	// DisplayName: Stone War Shield
+	// Tooltip: ""
+}
+
+SteelWarShield: {
+	// DisplayName: Steel War Shield
+	// Tooltip: ""
+}
+
+Bloodclotter: {
+	// DisplayName: Bloodclotter
+	// Tooltip: ""
+	// AltUseDescription: Right click to bleed, powering up your weapon's damage by 50%.
+	// Description: Its form shifts and dances in place, hiding some power you can only barely see.
+}
+
+ArcaneObeliskItem: {
+	// DisplayName: Arcane Obelisk
+	// Tooltip: Only one can be placed per world
+}
+
+StarlightBulwark: {
+	// DisplayName: Starlight Bulwark
+	// Tooltip: ""
+	/* AltUseDescription:
+		'''
+		Right click to parry enemies and projectiles. Parrying projectiles will send out additional stars.
+		Double-tap right click quickly in order to reduce your bash cooldown to almost nothing, and fly around the sky.
+		''' */
+	// Description: Light but heavy, you can touch the sky.
+}
+
+Rottenbone: {
+	// DisplayName: Rottenbone
+	// Tooltip: ""
+	// AltUseDescription: Right click to throw your weapon, which quickly splits into many pieces, each dealing additional damage or applying Poisoned.
+	// Description: It's genuinely unpleasant to touch. More unpleasant for your opponents, though.
+}
+
+DemonTriggerItem: {
+	// DisplayName: Demon Trigger
+	// Tooltip: ""
+}
+
+ImpTriggerItem: {
+	// DisplayName: Imp Trigger
+	// Tooltip: ""
+}
+
+LavaBatTriggerItem: {
+	// DisplayName: Lava Bat Trigger
+	// Tooltip: ""
+}
+
+LavaSlimeTriggerItem: {
+	// DisplayName: Lava Slime Trigger
+	// Tooltip: ""
+}
+
+ArenaBlockerItem: {
+	// DisplayName: Cursed Brick
+	// Tooltip: ""
+}
+
+DevilTriggerItem: {
+	// DisplayName: Devil Trigger
+	// Tooltip: ""
+}
+
+RavenStatueItem: {
+	// DisplayName: Ravencrest Statue
+	// Tooltip: ""
+}
+
+HiveBlockerItem: {
+	// DisplayName: Hive Blocker Item
+	// Tooltip: ""
+}
+
+BeeTriggerItem: {
+	// DisplayName: Bee Trigger Item
+	// Tooltip: ""
+}
+
+HornetTriggerItem: {
+	// DisplayName: Hornet Trigger Item
+	// Tooltip: ""
+}
+
+MossHornetTriggerItem: {
+	// DisplayName: Moss Hornet Trigger Item
+	// Tooltip: ""
+}
+
+RoyalJelly: {
+	// DisplayName: Royal Jelly
+	// Tooltip: ""
+}
+
+RoyalJellyClump: {
+	// DisplayName: Royal Jelly Clump
+	// Tooltip: ""
+}
+
+RoyalJellyClumpPlacer: {
+	// DisplayName: Royal Jelly Clump Placer
+	// Tooltip: ""
+}
+
+PolarIceLanternItem: {
+	// DisplayName: Polar Ice Lantern
+	// Tooltip: Glows in the oppressive darkness of Deerclop's domain
+}
+
+PolarIceLampItem: {
+	// DisplayName: Polar Ice Lamp Item
+	// Tooltip: ""
+}
+
+PolarIceThrowerItem: {
+	// DisplayName: Polar Ice Thrower Item
+	// Tooltip: ""
+}
+
+RopeClumpItem: {
+	// DisplayName: Rope Clump Item
+	// Tooltip: ""
+}
+
+KingSlimeMap: {
+	// DisplayName: King Slime Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of slime and riches'
+		''' */
+}
+
+TomeOfTheElders: {
+	// DisplayName: Tome Of The Elders
+	// Tooltip: Holds secrets unknowable to most, enlightening to few.
+}
+
+WoodenWand: {
+	// DisplayName: Wooden Wand
+	// Tooltip: Smells of the forest
+}
+
+MahoganyWand: {
+	// DisplayName: Mahogany Wand
+	// Tooltip: Smells of the jungle
+}
+
+EbonwoodWand: {
+	// DisplayName: Ebonwood Wand
+	// Tooltip: Smells of something evil
+}
+
+ShadewoodWand: {
+	// DisplayName: Shadewood Wand
+	// Tooltip: Smells of something disgusting
+}
+
+GemWand: {
+	// DisplayName: Gem Wand
+	// Tooltip: Smells of riches
+}
+
+CopperStaff: {
+	// DisplayName: Copper Staff
+	// Tooltip: ""
+}
+
+IronStaff: {
+	// DisplayName: Iron Staff
+	// Tooltip: ""
+}
+
+LeadStaff: {
+	// DisplayName: Lead Staff
+	// Tooltip: ""
+}
+
+SilverStaff: {
+	// DisplayName: Silver Staff
+	// Tooltip: ""
+}
+
+TungstenStaff: {
+	// DisplayName: Tungsten Staff
+	// Tooltip: ""
+}
+
+GoldStaff: {
+	// DisplayName: Gold Staff
+	// Tooltip: ""
+}
+
+PlatinumStaff: {
+	// DisplayName: Platinum Staff
+	// Tooltip: ""
+}
+
+GlimmeringShard: {
+	// DisplayName: Glimmering Shard
+	/* Tooltip:
+		'''
+		Rerolls the affixes on Magic rarity items
+		Hold an item then right click this Shard to reroll the item
+		'Glimmers and shines unnaturally'
+		''' */
+}
+
+CorruptShard: {
+	// DisplayName: Corrupt Shard
+	/* Tooltip:
+		'''
+		Chaotic and unstable
+		Has a chance to add an additional affix and corrupt any item, disabling any future item interactions
+		Has a chance to reduce Uniques into Rare items of the same kind, rerolling them at the same level
+		Has a large chance to do nothing
+		'Pulses with malaise'
+		''' */
+}
+
+AscendantShard: {
+	// DisplayName: Ascendant Shard
+	/* Tooltip:
+		'''
+		Adds a new affix to an item
+		Hold an item then right click this Shard to add a new affix
+		'A strong sense of power emanates from it'
+		''' */
+}
+
+UnfoldingShard: {
+	// DisplayName: Unfolding Shard
+	/* Tooltip:
+		'''
+		Upgrades a normal item to a magic item
+		Hold an item then right click this Shard to upgrade
+		'It almost looks like it's moving inside'
+		''' */
+}
+
+LunarLiquid: {
+	// DisplayName: Lunar Liquid
+	/* Tooltip:
+		'''
+		Distorts reality for a short time
+		'Tastes terrible'
+		''' */
+}
+
+LunarShard: {
+	// DisplayName: Lunar Shard
+	/* Tooltip:
+		'''
+		A small element used to summon the Eye of Cthulhu's domain
+		Can be given to Eldric after the Rising Omen quest
+		''' */
+	// InQuest: During the Rising Omen quest
+}
+
+LunarObject: {
+	// DisplayName: Lunar Concoction
+	/* Tooltip:
+		'''
+		Drop it on the ground to open a portal to the Eye's domain
+		'Smells of stardust and death'
+		''' */
+}
+
+EoCMap: {
+	// DisplayName: Eye of Cthulhu Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of mildew and petrichor'
+		''' */
+}
+
+EoWMap: {
+	// DisplayName: Eater of Worlds Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of rot and bone'
+		''' */
+}
+
+EchoingShard: {
+	// DisplayName: Echoing Shard
+	/* Tooltip:
+		'''
+		Creates a clone of an item
+		Hold an item then right click this Shard to clone
+		'I can see myself!'
+		''' */
+}
+
+RadiantShard: {
+	// DisplayName: Radiant Shard
+	/* Tooltip:
+		'''
+		Rerolls the affix values of an item
+		Hold an item then right click this Shard to reroll affix values
+		'It's hard to look at'
+		''' */
+}
+
+BoCMap: {
+	// DisplayName: Brain of Cthulhu Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of flesh and bile'
+		''' */
+}
+
+BeeMap: {
+	// DisplayName: Bee Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of sweetness and poison'
+		''' */
+}
+
+LargeStinger: {
+	// DisplayName: Large Stinger
+	/* Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Handle carefully.'
+		''' */
+}
+
+DeerclopsMap: {
+	// DisplayName: Deerclops Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of cold and fear'
+		''' */
+}
+
+SimpleCompass: {
+	// DisplayName: Simple Compass
+	/* Tooltip:
+		'''
+		Hold this item to see the direction to an ancient ruin in the snow biome
+		When close, breaks open the ruin and itself
+		'Simple but effective'
+		''' */
+}
+
+AncientLeadBrickItem: {
+	// DisplayName: Ancient Lead Brick
+	// Tooltip: ""
+}
+
+Antlers: {
+	// DisplayName: Strange Antlers
+	// Tooltip: "'Unpleasantly cold to the touch'"
+}
+
+VigorAmulet: {
+	// DisplayName: Vigor Amulet
+	// Tooltip: ""
+}
+
+StoneRing: {
+	// DisplayName: Stone Ring
+	// Tooltip: ""
+}
+
+AncientEvilBook: {
+	// DisplayName: Ancient Evil Book
+	/* Tooltip:
+		'''
+		Can be used in a simple ritual
+		Inscribed on the inside of the cover is:
+
+		C E C
+		- B -
+
+		'It speaks of misdeeds and misfortune abound'
+		''' */
+
+	PostSkeletronTooltip: {
+		// 0: The inside of the cover is a mess of red and black
+		// 1: "'For now, it speaks elsewhere'"
+	}
+}
+
+SkeletronMap: {
+	// DisplayName: Skeletron Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of cobwebs and metal'
+		''' */
+}
+
+FireMawTriggerItem: {
+	// DisplayName: Fire Maw Trigger Item
+	// Tooltip: ""
+}
+
+DwarvenGreatsword: {
+	// Description: A sword forged by an extremely experienced metalsmith and magified by a madman.
+	// AltUseDescription: Right click to take out the imbued spirit of Thrain Ironfist, widely and rapidly swinging around a Dwarven Greathammer
+	// DisplayName: Dwarven Greatsword
+	// Tooltip: ""
+}
+
+Twinbow: {
+	// DisplayName: Twinbow
+	// Tooltip: ""
+	/* Description:
+		'''
+		A hunter's unending expertise funneled into metal by an experienced metalsmith.
+		Shoots two armor-piercing arrows per shot.
+		''' */
+	// AltUseDescription: Right click to charge up a barrage of 6 defense-piercing arrows.
+}
+
+FlamingEye: {
+	// DisplayName: Flaming Eye
+	/* Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Burns not your skin, but your soul.'
+		''' */
+}
+
+SoulfulAsh: {
+	// DisplayName: Soulful Ash
+	/* Tooltip:
+		'''
+		{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+		'Whispers to you softly.'
+		''' */
+}
+
+TinyHat: {
+	// DisplayName: Tiny Hat
+	// Tooltip: ""
+	// Description: A decent portion of a madman's power brought to life by an ancient witch...in the form of a tiny Alaric
+	// AltUseDescription: Right click to increase tiny Alaric's fire rate significantly for 6 seconds
+}
+
+VoidPearl: {
+	// DisplayName: Void Pearl
+	/* Tooltip:
+		'''
+		Throw upon the Underworld's ash to create havok and summon the Wall of Flesh's domain
+		Note from Alaric: 
+		"This WILL explode a lot, don't throw it at something you care about! Or do, I don't care!"
+		''' */
+}
+
+WoFMap: {
+	// DisplayName: Wall of Flesh Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of dread and hope'
+		''' */
+}
+
+LimpidShard: {
+	// DisplayName: Limpid Shard
+	/* Tooltip:
+		'''
+		Turns a magic or rare item normal
+		Hold an item then right click this Shard to turn item normal
+		'It looks so plain'
+		''' */
+}
+
+MysticShard: {
+	// DisplayName: Mystic Shard
+	/* Tooltip:
+		'''
+		Turns a normal item rare
+		Hold an item then right click this Shard to turn item rare
+		'It's like an ember in the dark'
+		''' */
+}
+
+ShiftingShard: {
+	// DisplayName: Shifting Shard
+	/* Tooltip:
+		'''
+		Reroll the modifiers on a Rare Item
+		Hold an item then right click this Shard to reroll the modifiers
+		'I can't tell what it's doing'
+		''' */
+}
+
+BrokenBookcaseItem: {
+	// DisplayName: Broken Bookcase
+	// Tooltip: ""
+}
+
+PlankShield: {
+	// DisplayName: Plank Shield
+	// Tooltip: ""
+}
+
+CrimsonBulwark: {
+	// DisplayName: Crimson Bulwark
+	// Tooltip: ""
+}
+
+ObsidianShell: {
+	// DisplayName: Obsidian Shell
+	// Tooltip: ""
+}
+
+ShadowBarrier: {
+	// DisplayName: Shadow Barrier
+	// Tooltip: ""
+}
+
+BronzeKiteshield: {
+	// DisplayName: Bronze Kiteshield
+	// Tooltip: ""
+}
+
+LeatherBuckler: {
+	// DisplayName: Leather Buckler
+	// Tooltip: ""
+}
+
+CorrodedTowerShield: {
+	// DisplayName: Corroded Tower Shield
+	// Tooltip: ""
+}
+
+RunestoneItem: {
+	// DisplayName: Runestone
+	// Tooltip: ""
+}
+
+PoweredRunestoneItem: {
+	// DisplayName: Powered Runestone
+	// Tooltip: ""
+}
+
+ForestMap: {
+	// DisplayName: Forest Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of grass and sap'
+		''' */
+}
+
+LivingWoodBlockerItem: {
+	// DisplayName: Living Wood Blocker
+	// Tooltip: ""
+}
+
+// EntBannerItem.DisplayName: Ent Banner
+// EntlingBannerItem.DisplayName: Entling Banner
+
+WardensBow: {
+	// DisplayName: Warden's Bow
+	// Tooltip: ""
+	/* AltUse:
+		'''
+		Right click to shoot an arrow with a natural power
+		The arrow splits into three splinters, dealing additional damage
+		The splinters and the arrow both have a decent chance to inflict Rooted
+		''' */
+}
+
+RootedAmulet: {
+	// DisplayName: Rooted Amulet
+	// Tooltip: ""
+}
+
+// AshWraithBannerItem.DisplayName: Ash Wraith Banner
+// FireMawBannerItem.DisplayName: Fire Maw Banner
+// MineraBannerItem.DisplayName: Minera Banner
+// CanopyBirdBannerItem.DisplayName: Canopy Bird Banner
+
+GrovetenderTrophyItem: {
+	// DisplayName: Grovetender Trophy
+	// Tooltip: ""
+}
+
+QueenSlimeMap: {
+	// DisplayName: Queen Slime Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of pixies and exuberance'
+		''' */
+}
+
+BrittleCrystalItem: {
+	// DisplayName: Brittle Crystal
+	// Tooltip: ""
+}
+
+TwinsMap: {
+	// DisplayName: Twins Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of rot and oil'
+		''' */
+}
+
+MechLampItem: {
+	// DisplayName: Mech Lamp
+	// Tooltip: ""
+}
+
+// CircuitSkullBannerItem.DisplayName: Circuit Skull Banner
+// SecurityDroneBannerItem.DisplayName: Security Drone Banner
+
+ConstantLaserItem: {
+	// DisplayName: Constant Laser
+	// Tooltip: ""
+}
+
+BrokenLaserItem: {
+	// DisplayName: Broken Laser
+	// Tooltip: ""
+}
+
+CannonAnchorItem: {
+	// DisplayName: Cannon Anchor
+	// Tooltip: ""
+}
+
+CannonBombAnchorItem: {
+	// DisplayName: Cannon Bomb Anchor
+	// Tooltip: ""
+}
+
+PincerAnchorItem: {
+	// DisplayName: Pincer Anchor
+	// Tooltip: ""
+}
+
+GrabberAnchorItem: {
+	// DisplayName: Grabber Anchor
+	// Tooltip: ""
+}
+
+PrimeMap: {
+	// DisplayName: Prime Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of metal and singe'
+		''' */
+}
+
+// HauntedHeadBannerItem.DisplayName: Haunted Head Banner
+// SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
+// AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner
+
+DefenseShrineItem: {
+	// DisplayName: Defense Shrine Item
+	// Tooltip: ""
+}
+
+DesertDefenseShrineItem: {
+	// DisplayName: Desert Defense Shrine Item
+	// Tooltip: ""
+}
+
+DesertGodlikeShrineItem: {
+	// DisplayName: Desert Godlike Shrine Item
+	// Tooltip: ""
+}
+
+GodlikeShrineItem: {
+	// DisplayName: Godlike Shrine Item
+	// Tooltip: ""
+}
+
+DesertRestorationShrineItem: {
+	// DisplayName: Desert Restoration Shrine Item
+	// Tooltip: ""
+}
+
+RestorationShrineItem: {
+	// DisplayName: Restoration Shrine Item
+	// Tooltip: ""
+}
+
+ForestDefenseShrineItem: {
+	// DisplayName: Forest Defense Shrine Item
+	// Tooltip: ""
+}
+
+ForestGodlikeShrineItem: {
+	// DisplayName: Forest Godlike Shrine Item
+	// Tooltip: ""
+}
+
+ForestRestorationShrineItem: {
+	// DisplayName: Forest Restoration Shrine Item
+	// Tooltip: ""
+}
+
+DesertHasteShrineItem: {
+	// DisplayName: Desert Haste Shrine Item
+	// Tooltip: ""
+}
+
+ForestHasteShrineItem: {
+	// DisplayName: Forest Haste Shrine Item
+	// Tooltip: ""
+}
+
+DesertUnstoppableShrineItem: {
+	// DisplayName: Desert Unstoppable Shrine Item
+	// Tooltip: ""
+}
+
+ForestUnstoppableShrineItem: {
+	// DisplayName: Forest Unstoppable Shrine Item
+	// Tooltip: ""
+}
+
+DesertMap: {
+	// DisplayName: Desert Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of sand and bone'
+		''' */
+}
+
+DevourersTail: {
+	// DisplayName: Devourer's Tail
+	// Tooltip: The tail of a powerful beast of light
+	/* AltUseDescription:
+		'''
+		Right click to whip significantly faster
+		The whip glows in the dark when swiftly whipping
+		''' */
+}
+
+// WormLightningBannerItem.DisplayName: Lightning Sprite Banner
+
+SunsoulStaffItem: {
+	// DisplayName: Sunsoul Staff
+	// Tooltip: The remaining strength of the sun lies dormant
+	/* AltUseDescription:
+		'''
+		Right click to summon a sun sprite
+		The sun sprite bounces between you and your mouse
+		You can still use the main staff while the sprite is active
+		''' */
+}
+
+AugmentationOrb: {
+	// DisplayName: Skill Augmentation Orb
+	/* Tooltip:
+		'''
+		Can be used to unlock an augmentation slot for a given skill
+		Enter a skill submenu to use
+		''' */
+}
+
+SunDevourerTrophyItem: {
+	// DisplayName: Sun Devourer Trophy
+	// Tooltip: ""
+}
+
+CircuitSkullTriggerItem: {
+	// DisplayName: Circuit Skull Trigger
+	// Tooltip: ""
+}
+
+DroneTriggerItem: {
+	// DisplayName: Drone Trigger
+	// Tooltip: ""
+}
+
+SecurityDroneTriggerItem: {
+	// DisplayName: Security Drone Trigger
+	// Tooltip: ""
+}
+
+MechDrive: {
+	// DisplayName: Mech Drive
+	// Tooltip: "'Seems to interface with unknown signals throughout the ruined city'"
+}
+
+EnergizerCoreTriggerItem: {
+	// DisplayName: Energizer Core Trigger
+	// Tooltip: ""
+}
+
+// EnergizerCoreBannerItem.DisplayName: Energizer Core Banner
+
+MechChip: {
+	// DisplayName: Mech Chip
+	/* Tooltip:
+		'''
+		A small, unstable device that connects to the Destroyer
+		{$MechDrive.Tooltip}
+		''' */
+}
+
+DestroyerMap: {
+	// DisplayName: Destroyer Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of sulfur and rust'
+		''' */
+}
+
+MechChestItem: {
+	// DisplayName: Mech Chest
+	// Tooltip: ""
+}
+
+PlanteraMap: {
+	// DisplayName: Plantera Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of mildew and dirt'
+		''' */
+}
+
+OffsetTool: {
+	// DisplayName: Offset Tool
+	/* Tooltip:
+		'''
+		Used to generate offsets for use in the RoomDatabase system.
+		Use right click to set anchor.
+		Use left click to add in an additional offset to the pool.
+		Hold middle click to paste and clear the offsets.
+		''' */
+}
+
+LihzahrdGuardItem: {
+	// DisplayName: Lihzahrd Guard
+	// Tooltip: Blocks spiky balls from passing through
+}
+
+GolemMap: {
+	// DisplayName: Golem Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of brick and smoke'
+		''' */
+}
+
+FishronMap: {
+	// DisplayName: Duke Fishron Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of stillwater and fungi'
+		''' */
+}
+
+EoLMap: {
+	// DisplayName: Empress of Light Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of light and cloy'
+		''' */
+}
+
+// GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
+// PrismatismBannerItem.DisplayName: Prismatism Banner
+
+MoonMap: {
+	// DisplayName: Moon Lord Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of shimmer'
+		''' */
+}
+
+AncientTabletFour: {
+	// DisplayName: Ancient Tablet Four
+	// Tooltip: A part of a larger tablet
+}
+
+AncientTabletOne: {
+	// DisplayName: Ancient Tablet One
+	// Tooltip: "{$AncientTabletFour.Tooltip}"
+}
+
+AncientTabletThree: {
+	// DisplayName: Ancient Tablet Three
+	// Tooltip: "{$AncientTabletFour.Tooltip}"
+}
+
+AncientTabletTwo: {
+	// DisplayName: Ancient Tablet Two
+	// Tooltip: "{$AncientTabletFour.Tooltip}"
+}
+
+AncientTablet: {
+	// DisplayName: Ancient Tablet
+	// Tooltip: Summons the Lunatic Cultist
+}
+
+CultistMap: {
+	// DisplayName: Lunatic Cultist Map
+	/* Tooltip:
+		'''
+		{$MapCommon.BossBase}
+		'The map smells of soot and space'
+		''' */
+}
+
+AntlerShard: {
+	// DisplayName: Antler Shard
+	/* Tooltip:
+		'''
+		Show this to Rhine in Ravencrest
+		'It has a malice about it'
+		''' */
+}
+
+RubyRing: {
+	// DisplayName: Ruby Ring
+	// Tooltip: ""
+}
+
+SapphireRing: {
+	// DisplayName: Sapphire Ring
+	// Tooltip: ""
+}
