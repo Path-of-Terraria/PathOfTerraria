@@ -82,19 +82,19 @@ public class ExtraAccessoryModPlayer : ModPlayer
 	{
 		for (int i = 0; i < CustomAccessorySlots.Length; i++)
 		{
-			Item accessory = CustomAccessorySlots[i];
-			if (!accessory.IsAir)
+			(Item accessory, int virtualIndex) = (CustomAccessorySlots[i], CustomFunctionalSlots[i]);
+			if (IsCustomSlotActive(virtualIndex) && !accessory.IsAir)
 			{
 				Player.ApplyEquipFunctional(accessory, false);
 			}
 		}
-		
+
 		for (int i = 0; i < CustomVanitySlots.Length; i++)
 		{
-			Item vanityItem = CustomVanitySlots[i];
-			if (!vanityItem.IsAir)
+			(Item accessory, int virtualIndex) = (CustomVanitySlots[i], CustomFunctionalSlots[i]);
+			if (IsCustomSlotActive(virtualIndex) && !accessory.IsAir)
 			{
-				Player.ApplyEquipVanity(vanityItem);
+				Player.ApplyEquipVanity(accessory);
 			}
 		}
 	}
