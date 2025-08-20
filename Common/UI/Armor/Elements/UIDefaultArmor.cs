@@ -1,13 +1,5 @@
 ﻿using PathOfTerraria.Common.UI.Elements;
-using PathOfTerraria.Content.Items.Gear.Amulets;
-using PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
-using PathOfTerraria.Content.Items.Gear.Armor.Helmet;
-using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
-using PathOfTerraria.Content.Items.Gear.Offhands;
-using PathOfTerraria.Content.Items.Gear.Rings;
 using ReLogic.Content;
-using Terraria.Localization;
-using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Armor.Elements;
@@ -16,9 +8,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 {
 	public static readonly Asset<Texture2D> DefaultFrameTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Frame_Default", AssetRequestMode.ImmediateLoad);
 
-	//This is to update the slot once WoF is killed. 
-	private UICustomHoverImageItemSlot accessorySlot4;
-	private bool wasHardMode = false;
+	private UICustomHoverImageItemSlot[] customAccessorySlots = [];
 
 	public override void OnInitialize()
 	{
@@ -170,7 +160,7 @@ public sealed class UIDefaultArmor : UIArmorPage
 		accessorySlot3.OnMouseOut += UpdateMouseOut;
 		Append(accessorySlot3);
 		
-		accessorySlot4 = new UICustomHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture,  21, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessory)
+		var accessorySlot4 = new UICustomHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture,  21, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessory)
 		{
 			HAlign = 0,
 			VAlign = 1.0f,
@@ -180,36 +170,15 @@ public sealed class UIDefaultArmor : UIArmorPage
 		
 		accessorySlot4.OnMouseOver += UpdateMouseOver;
 		accessorySlot4.OnMouseOut += UpdateMouseOut;
-		
-		wasHardMode = Main.hardMode;
-		if (wasHardMode)
-		{
-			Append(accessorySlot4);	
-		}
+		Append(accessorySlot4);
 
+		customAccessorySlots = [ accessorySlot3, accessorySlot4 ];
 	}
-	
+
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
 
-		if (Main.hardMode != wasHardMode)
-		{
-			if (Main.hardMode)
-			{
-				// Make sure the slot is properly initialized before appending
-				if (accessorySlot4.Icon == null)
-				{
-					accessorySlot4.OnInitialize();
-				}
-				Append(accessorySlot4);
-			}
-			else
-			{
-				RemoveChild(accessorySlot4);
-			}
-			wasHardMode = Main.hardMode;
-		}
+		MaintainCustomAccessorySlots(customAccessorySlots);
 	}
-
 }

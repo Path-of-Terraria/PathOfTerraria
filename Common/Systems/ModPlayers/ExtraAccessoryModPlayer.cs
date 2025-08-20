@@ -151,6 +151,11 @@ public class ExtraAccessoryModPlayer : ModPlayer
 		}
 	}
 
+	public static int GetCustomSlotVirtualIndex(int realIndex)
+	{
+		return CustomFunctionalSlots[realIndex];
+	}
+
 	private static int GetCustomSlotArrayIndex(int virtualIndex)
 	{
 		return Array.IndexOf(CustomFunctionalSlots, virtualIndex);
@@ -159,5 +164,31 @@ public class ExtraAccessoryModPlayer : ModPlayer
 	public static bool IsCustomSlot(int slot)
 	{
 		return Array.IndexOf(CustomFunctionalSlots, slot) >= 0;
+	}
+
+	public bool IsCustomSlotActive(int virtualIndex)
+	{
+		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
+		return arrayIndex switch
+		{
+			0 => true, // Add one slot by default.
+			1 => Main.hardMode, // Add one slot after WoF is defeated.
+			_ => false,
+		};
+	}
+
+	public int CountActiveExtraSlots()
+	{
+		int numSlots = 0;
+
+		for (int i = 0; i < CustomAccessorySlots.Length; i++)
+		{
+			if (IsCustomSlotActive(GetCustomSlotVirtualIndex(i)))
+			{
+				numSlots++;
+			}
+		}
+
+		return numSlots;
 	}
 }

@@ -11,10 +11,8 @@ public sealed class UIVanityArmor : UIArmorPage
 {
 	public static readonly Asset<Texture2D> VanityFrameTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Frame_Vanity", AssetRequestMode.ImmediateLoad);
 
-	//This is to update the slot once WoF is killed. 
-	private UICustomHoverImageItemSlot accessorySlot4;
-	private bool wasHardMode = false;
-	
+	private UICustomHoverImageItemSlot[] customAccessorySlots = [];
+
 	public override void OnInitialize()
 	{
 		base.OnInitialize();
@@ -163,7 +161,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		accessorySlot3.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;	
 		Append(accessorySlot3);
 
-		accessorySlot4 = new UICustomHoverImageItemSlot(VanityFrameTexture, MiscellaneousIconTexture, 23, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessoryVanity)
+		var accessorySlot4 = new UICustomHoverImageItemSlot(VanityFrameTexture, MiscellaneousIconTexture, 23, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessoryVanity)
 		{
 			HAlign = 0f,
 			VAlign = 1f,
@@ -174,36 +172,15 @@ public sealed class UIVanityArmor : UIArmorPage
 		accessorySlot4.OnMouseOver += UpdateMouseOver;
 		accessorySlot4.OnMouseOut += UpdateMouseOut;
 		accessorySlot4.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;	
-		
-		wasHardMode = Main.hardMode;
-		if (wasHardMode)
-		{
-			Append(accessorySlot4);	
-		}
+		Append(accessorySlot4);
 
+		customAccessorySlots = [ accessorySlot3, accessorySlot4 ];
 	}
 	
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
 
-		if (Main.hardMode != wasHardMode)
-		{
-			if (Main.hardMode)
-			{
-				// Make sure the slot is properly initialized before appending
-				if (accessorySlot4.Icon == null)
-				{
-					accessorySlot4.OnInitialize();
-				}
-				Append(accessorySlot4);
-			}
-			else
-			{
-				RemoveChild(accessorySlot4);
-			}
-			wasHardMode = Main.hardMode;
-		}
+		MaintainCustomAccessorySlots(customAccessorySlots);
 	}
-
 }

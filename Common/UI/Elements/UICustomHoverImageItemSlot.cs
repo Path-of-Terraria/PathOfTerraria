@@ -15,6 +15,8 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
     private bool IsDyeSlot => Context == ItemSlot.Context.EquipDye;
     private static Item[] dummyArray = [new Item()];
 
+	public int VirtualSlot => virtualSlot;
+
     public UICustomHoverImageItemSlot(
         Asset<Texture2D> backgroundTexture,
         Asset<Texture2D> iconTexture,

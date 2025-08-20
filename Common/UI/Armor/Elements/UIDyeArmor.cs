@@ -13,8 +13,7 @@ public sealed class UIDyeArmor : UIArmorPage
 	public static readonly Asset<Texture2D> DyeIconTexture =
 		ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Dye", AssetRequestMode.ImmediateLoad);
 
-	private UICustomHoverImageItemSlot accessorySlot4;
-	private bool wasHardMode = false;
+	private UICustomHoverImageItemSlot[] customAccessorySlots = [];
 
 	public override void OnInitialize()
 	{
@@ -168,8 +167,8 @@ public sealed class UIDyeArmor : UIArmorPage
 
 		Append(accessorySlot3);
 
-		accessorySlot4 =
 			new UICustomHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, 25, $"Mods.{PoTMod.ModName}.UI.Slots.12",
+		var accessorySlot4 =
 				ItemSlot.Context.EquipDye)
 			{
 				HAlign = 0.0f, VAlign = 1f, ActiveScale = 1.15f, ActiveRotation = MathHelper.ToRadians(1f)
@@ -178,36 +177,13 @@ public sealed class UIDyeArmor : UIArmorPage
 		accessorySlot4.OnMouseOver += UpdateMouseOver;
 		accessorySlot4.OnMouseOut += UpdateMouseOut;
 
-
-		wasHardMode = Main.hardMode;
-		if (wasHardMode)
-		{
-			Append(accessorySlot4);
-		}
+		customAccessorySlots = [ accessorySlot3, accessorySlot4 ];
 	}
 
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
 
-		if (Main.hardMode != wasHardMode)
-		{
-			if (Main.hardMode)
-			{
-				// Make sure the slot is properly initialized before appending
-				if (accessorySlot4.Icon == null)
-				{
-					accessorySlot4.OnInitialize();
-				}
-
-				Append(accessorySlot4);
-			}
-			else
-			{
-				RemoveChild(accessorySlot4);
-			}
-
-			wasHardMode = Main.hardMode;
-		}
+		MaintainCustomAccessorySlots(customAccessorySlots);
 	}
 }	

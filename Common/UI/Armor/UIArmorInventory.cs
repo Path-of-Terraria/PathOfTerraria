@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Armor.Elements;
 using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
@@ -31,10 +32,6 @@ public sealed class UIArmorInventory : UIState
 
 	public const float LoadoutPadding = 8f;
 	
-	//Used for tracking of hardmode UI changes (moves UI down if in HM)
-	private float HardmodeRowHeight => Main.hardMode ? 0f : 56f;
-	private bool wasHardMode = false;
-
 	public static readonly Asset<Texture2D> LeftButtonTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Button_Left", AssetRequestMode.ImmediateLoad);
 
 	public static readonly Asset<Texture2D> RightButtonTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Button_Right", AssetRequestMode.ImmediateLoad);
@@ -144,22 +141,31 @@ public sealed class UIArmorInventory : UIState
 		}
 
 		UpdateRootPosition();
-		// Check for hardmode changes and update UI positioning
-		if (Main.hardMode != wasHardMode)
-		{
-			UpdateHardmodeLayout();
-			wasHardMode = Main.hardMode;
-		}
+		UpdateLayoutBasedOnActiveAccessorySlots();
 	}
 
-	// Used to dynamically update the lower panels if you have the extra accessory slot
-	private void UpdateHardmodeLayout()
+	private void UpdateLayoutBasedOnActiveAccessorySlots()
 	{
+
+		int numRows = 1;
+		if (Main.LocalPlayer.TryGetModPlayer(out ExtraAccessoryModPlayer accPlayer))
+		{
+			const int NumDefaultSlots = 2;
+
+			int numSlots = NumDefaultSlots + accPlayer.CountActiveExtraSlots();
+			numRows = (int)Math.Ceiling(numSlots / 3f);
+		}
+		
+		const int OffsetPerRow = 56;
+		const int BaseRowOffset = -2;
+
+		float positionOffset = (BaseRowOffset + numRows) * OffsetPerRow;
+
 		// Update button positioning
-		buttonRoot.Top.Set(ArmorPageHeight + RootPadding - HardmodeRowHeight, 0f);
+		buttonRoot.Top.Set(ArmorPageHeight + RootPadding + positionOffset, 0f);
 		
 		// Update defense counter positioning  
-		defenseRoot.Top.Set(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding - HardmodeRowHeight, 0f);
+		defenseRoot.Top.Set(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding + positionOffset, 0f);
 	}
 
 	private void UpdatePagePosition(UIElement page, int index)
@@ -287,7 +293,7 @@ public sealed class UIArmorInventory : UIState
 			Height = StyleDimension.FromPixels(LeftButtonTexture.Height()),
 			Left = StyleDimension.FromPixels(FirstLoadoutIconTexture.Width() + RootPadding),
 			//Raise it if its not in hardmode.
-			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding - HardmodeRowHeight)
+			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding)
 		};
 
 		var leftButton = new UIHoverTooltipImage(LeftButtonTexture, $"Mods.{PoTMod.ModName}.UI.Gear.Buttons.Previous")
@@ -361,7 +367,7 @@ public sealed class UIArmorInventory : UIState
 			Width = StyleDimension.FromPixels(ArmorPageWidth),
 			Height = StyleDimension.FromPixels(DefenseCounterTexture.Height()),
 			Left = StyleDimension.FromPixels(FirstLoadoutIconTexture.Width() + RootPadding),
-			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding - HardmodeRowHeight)
+			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding)
 		};
 
 		var defenseText = new UIText(Player.statDefense.ToString())
