@@ -75,7 +75,7 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         }
     }
 
-    protected override void UpdateInteraction()
+	protected override void UpdateInteraction()
     {
         if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface)
         {
@@ -84,9 +84,9 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
 
         HandleTooltip();
 
-        if (Main.mouseLeft && Main.mouseLeftRelease)
+        if ((Main.mouseLeft && Main.mouseLeftRelease) || (Main.mouseRight && Main.mouseRightRelease))
         {
-            HandleLeftClick();
+            HandleLeftOrRightClick();
         }
 
         Main.LocalPlayer.mouseInterface = true;
@@ -126,7 +126,7 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         }
     }
 
-    private void HandleLeftClick()
+    private void HandleLeftOrRightClick()
     {
         if (!Main.mouseItem.IsAir && Predicate?.Invoke(Main.mouseItem, Item) == false)
         {
@@ -135,11 +135,11 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         }
 
         Item tempItem = Item;
-        ItemSlot.Handle(ref tempItem, Context);
-        Item = tempItem;
-    }
+		ItemSlot.Handle(ref tempItem, Context);
+		Item = tempItem;
+	}
 
-    protected override Asset<Texture2D> GetIconToDraw()
+	protected override Asset<Texture2D> GetIconToDraw()
     {
         if (Item.IsAir)
         {
