@@ -42,6 +42,7 @@ BlacksmithNPC: {
 	}
 
 	// Entry: A jovial dwarf, Thrain enjoys hearty discussion, a nice drink, and making the best weapons you've ever seen. He can usually be found in his forge, making weapons.
+	// DownedForest: After beating the Forest domain
 }
 
 BarkeepNPC: {
@@ -203,6 +204,7 @@ WizardNPC: {
 		// Common1: Wisdom holds many powers. Angel Statues once did something. It was...well...so...ahem. Time can only tell.
 		// Common2: I've seen the throughline of your destiny. I cannot, for the life of me, put it to words.
 		// Common3: Ah! I almost turned you into a mole the size of a god. Beware my strength!
+		// Common4: I am a...merchant of sorts. Bewildering, ancient shards alongside astonishing majickal materials! It boggles the mind, surely!
 		// Quest: Hm. You saw the damage everywhere. Alas! My powers cannot reconstitute the world. I'm far busier on...my...projects. Yes! Alas, I have something more pressing. A goblin burglar took one of my tomes. Powerful as it is, it has to be harnessed by a strong wizard. I suspect they are looking through the tome to learn its secrets...so with haste, return it! I will grant you powers beyond imagination. I will be here, individually placing books on shelves with the strength of magic.
 		// Quest2: Aha! Thank you kindly. Your kindness will be rewarded greatly! My powers will push you forward at all times. Here, take a mote of power; a Nova is but a portion of my strength! As for the Library...my strength renewed, it will be repaired by the time you return! Books organized like you've never seen before! Behold it and weep...soon!
 		// GiveQSQuest: Hm? Ah, yes. You've got some adventures, haven't you? I cannot simply place you in success - you must find it for yourself! Yes! That's a good reason. Here's a small quest to find your progress. You will be lead all over the world, and perhaps reach even a modicum of my power!
@@ -377,9 +379,8 @@ LloydNPC: {
 		// Domain2: May my boon help you greatly. I wish I could do more, but the pillars tower over my strength.
 		// Domain3: Cut through the obstacles here. They were never truly living.
 		// Help: Hm. Fellow aide. You seem to know the lay of the land. I'm here looking for the heart that yet beats. Would you be so kind as to guide me to it? I've matters to contend with. I'll fend monsters, you guide.
-		// InDomain: Alas, I'm here once more. I know my strength can't overpower the Brain. I am using what I have to allow you three additional jumps. The pillars of the land tower above, and may be much too difficult to scale otherwise. Be well, and be swift. I will be ruminating.
-		// NeedsReturn: You were felled too? Alas. A mighty beast, but not one without flaw. Guide me to another still-beating heart, and we return. Take caution.
-		// Complete: What a great joy. I owe you everything I have, which is not much. Take this. I shall be returning to Ravencrest - I've been before, no need to take me. Be well, and be merry.
+		// InDomain: Alas, I'm here once more. I know my strength can't overpower the Brain alone. I am using what I have to allow you three additional jumps to benefit your exploration. Be well, and be swift. I will be ruminating. Ah, and if you fail? The Hearts in the overworld are freed. Break them at your leisure.
+		// Complete: What a great joy. I owe you everything I have, which is not much. Take this. I will be off. To where? Hm.
 		// StayButton: Stay
 		// StayDialogue: I will stay here. Do not be long.
 		// FollowButton: Follow
