@@ -118,6 +118,16 @@ internal static class Networking
 		/// <c>int id</c>
 		/// </summary>
 		SyncPlayerDownedBoss,
+
+		/// <summary>
+		/// Tells Morven to get stuck in rock by way of the server. Takes no parameters.
+		/// </summary>
+		TellMorvenToSpawn,
+
+		/// <summary>
+		/// Sends a message to let the server allow Shadow Orbs (and Crimson Hearts) to be broken. Takes no parameters.
+		/// </summary>
+		BreakableOrbs,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
