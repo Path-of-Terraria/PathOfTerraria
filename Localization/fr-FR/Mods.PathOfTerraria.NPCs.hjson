@@ -42,7 +42,7 @@ BlacksmithNPC: {
 	}
 
 	// Entry: A jovial dwarf, Thrain enjoys hearty discussion, a nice drink, and making the best weapons you've ever seen. He can usually be found in his forge, making weapons.
-	// DownedForest: Mods.PathOfTerraria.NPCs.BlacksmithNPC.DownedForest
+	// DownedForest: After beating the Forest domain
 }
 
 BarkeepNPC: {

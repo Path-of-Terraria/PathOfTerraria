@@ -142,15 +142,20 @@ public class AffixTooltipsHandler
 	/// Quick check for if an affix tooltip's sources already has a given item,
 	/// so they aren't listed as being from 1 item twice.
 	/// </summary>
-	/// <param name="item"></param>
+	/// <param name="item">The new item coming in.</param>
 	/// <returns></returns>
 	private static Func<Item, bool> HasSource(Item item)
 	{
 		return x =>
 		{
+			// Stops a KeyNotFound when the item is not comparable / is air
+			if (!item.TryGetGlobalItem(out PoTInstanceItemData itemData))
+			{
+				return false;
+			}
+
 			bool value = !x.IsNotSameTypePrefixAndStack(item);
 			PoTInstanceItemData data = x.GetInstanceData();
-			PoTInstanceItemData itemData = item.GetInstanceData();
 
 			return value && data.Rarity == itemData.Rarity && data.Affixes == itemData.Affixes;
 		};
