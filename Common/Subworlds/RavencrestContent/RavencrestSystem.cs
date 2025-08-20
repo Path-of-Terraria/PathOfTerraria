@@ -294,14 +294,14 @@ public class RavencrestSystem : ModSystem
 					var announceColor = new Color(50, 125, 255);
 					ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasArrived", spawnedNpc.GivenOrTypeName), announceColor);
 				}
+
+				if (++numSpawned >= maxAmount)
+				{
+					break;
+				}
 			}
 
 			pool.RemoveAt(index);
-
-			if (++numSpawned >= maxAmount)
-			{
-				break;
-			}
 		}
 	}
 
