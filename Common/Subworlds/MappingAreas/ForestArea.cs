@@ -42,11 +42,6 @@ internal class ForestArea : MappingWorld, IOverrideBiome
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Terrain", GenerateTerrain), new PassLegacy("Structures", GenStructures),
 		new PassLegacy("Detailing", AddDetails)];
 
-	public override void OnEnter()
-	{
-		SubworldSystem.noReturn = true;
-	}
-
 	public override void Update()
 	{
 		TileEntity.UpdateStart();
