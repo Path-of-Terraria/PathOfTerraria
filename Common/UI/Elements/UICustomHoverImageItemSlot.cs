@@ -35,7 +35,7 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         }
         else
         {
-            Predicate = (item, _) => ModContent.GetInstance<AccessorySlotGlobalItem>().IsNormalAccessory(item);
+            Predicate = (item, _) => AccessorySlotGlobalItem.IsNormalAccessory(item);
         }
     }
 
@@ -44,12 +44,18 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         get
         {
             if (IsDyeSlot)
-                return ModPlayer.GetCustomDyeSlot(virtualSlot);
-            else if (IsVanitySlot)
-                return ModPlayer.GetCustomVanitySlot(virtualSlot);
-            else
-                return ModPlayer.GetCustomSlot(virtualSlot);
-        }
+			{
+				return ModPlayer.GetCustomDyeSlot(virtualSlot);
+			}
+			else if (IsVanitySlot)
+			{
+				return ModPlayer.GetCustomVanitySlot(virtualSlot);
+			}
+			else
+			{
+				return ModPlayer.GetCustomSlot(virtualSlot);
+			}
+		}
         set
         {
             if (IsDyeSlot)
@@ -108,8 +114,10 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         {
             return;
         }
+
         Main.hoverItemName = Item.IsAir ? Language.GetTextValue(Key) : Item.HoverName;
         Main.HoverItem = Item.IsAir ? new Item() : Item.Clone();
+
         if (!Item.IsAir)
         {
             Main.HoverItem.tooltipContext = Context;
@@ -135,6 +143,7 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         {
             return IconTexture;
         }
+
         Main.instance.LoadItem(Item.type);
         return TextureAssets.Item[Item.type];
     }
