@@ -38,6 +38,8 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	public Player FollowPlayer => Main.player[followPlayer];
 
+	private ref float OrbsBroken => ref NPC.localAI[1];
+
 	private bool doPathing = false;
 	private byte followPlayer;
 	private bool abandoned = false;
@@ -129,8 +131,6 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		if (NPC.downedBoss2 && Main.player[Player.FindClosest(NPC.position, NPC.width, NPC.height)].DistanceSQ(NPC.Center) > 2000 * 2000 
 			&& Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Add(FullName);
-
 			NPC.active = false;
 			return false;
 		}
@@ -319,7 +319,8 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 					}
 				}
 
-				int id = Math.Min(DisableEvilOrbBossSpawning.ActualOrbsSmashed, 3) - 1;
+				OrbsBroken++;
+				int id = (int)Math.Clamp(OrbsBroken, 1, 3) - 1;
 				string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.BreakHeart." + id);
 				((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
 				return;
@@ -397,7 +398,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
 	{
-		projType = ProjectileID.BloodShot;
+		projType = ProjectileID.BloodArrow;
 		attackDelay = 1;
 	}
 
@@ -423,7 +424,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
+		//button = Language.GetTextValue("LegacyInterface.28");
 
 		if (Quest.GetLocalPlayerInstance<BoCQuest>().Completed)
 		{

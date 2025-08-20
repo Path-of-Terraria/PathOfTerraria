@@ -21,3 +21,12 @@ internal class PusBlock : ModTile
 		HitSound = SoundID.NPCHit1;
 	}
 }
+
+internal class PusBlockItem : ModItem
+{
+	public override void SetDefaults()
+	{
+		Item.DefaultToPlaceableTile(ModContent.TileType<PusBlock>());
+		Item.value = Item.buyPrice(0, 0, 0, 5);
+	}
+}

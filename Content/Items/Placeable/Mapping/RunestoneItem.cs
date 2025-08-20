@@ -9,6 +9,6 @@ public class RunestoneItem : ModItem
 		Item.DefaultToPlaceableTile(ModContent.TileType<Runestone>());
 		Item.width = 16;
 		Item.height = 16;
-		Item.value = 0;
+		Item.value = Item.buyPrice(0, 0, 0, 10);
 	}
 }

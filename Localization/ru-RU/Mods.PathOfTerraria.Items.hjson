@@ -1155,3 +1155,13 @@ SapphireRing: {
 	// DisplayName: Sapphire Ring
 	// Tooltip: ""
 }
+
+PusBlockItem: {
+	// DisplayName: Pus Block
+	// Tooltip: "'Ew.'"
+}
+
+WeakMalaiseItem: {
+	// DisplayName: Weak Malaise
+	// Tooltip: "'Malicious yet effervescent.'"
+}

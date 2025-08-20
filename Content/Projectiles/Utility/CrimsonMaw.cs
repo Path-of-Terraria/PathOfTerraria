@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using Terraria.Audio;
@@ -23,7 +24,7 @@ internal class CrimsonMaw : ModProjectile
 
 	public override void SetStaticDefaults()
 	{
-		Main.projFrames[Type] = 9;
+		Main.projFrames[Type] = 13;
 	}
 
 	public override void SetDefaults()
@@ -35,6 +36,7 @@ internal class CrimsonMaw : ModProjectile
 		Projectile.Size = new Vector2(100, 100);
 		Projectile.Opacity = 0.5f;
 		Projectile.netImportant = true;
+		Projectile.aiStyle = -1;
 	}
 
 	public override bool? CanDamage()
@@ -46,7 +48,7 @@ internal class CrimsonMaw : ModProjectile
 	{
 		const int EatenWaitTime = 220;
 
-		if (Projectile.timeLeft == 1)
+		if (Projectile.timeLeft == 2)
 		{
 			Projectile.timeLeft++;
 			Projectile.hide = true;
@@ -65,18 +67,24 @@ internal class CrimsonMaw : ModProjectile
 					Main.npc[Target].netUpdate = true;
 					ModContent.GetInstance<BoCDomainSystem>().HasLloyd = true;
 					ModContent.GetInstance<BoCDomainSystem>().LLoydReturnPos = Main.npc[Target].Center;
+					DisableOrbBreaking.BreakableOrbSystem.CanBreakOrb = true;
+					NetMessage.SendData(MessageID.WorldData);
 				}
+			}
+			
+			if (!TargettingPlayer && Main.netMode != NetmodeID.Server)
+			{
+				var lloydNPC = (IOverheadDialogueNPC)(Main.npc[Target].ModNPC as LloydNPC);
 
-				Projectile.Kill();
+				if (lloydNPC != null)
+				{
+					lloydNPC.CurrentDialogue = null;
+				}
 			}
 
-			
-			if (!TargettingPlayer && Main.netMode != NetmodeID.MultiplayerClient)
+			if (Timer >= EatenWaitTime * 1.5f)
 			{
-				if (((IOverheadDialogueNPC)Main.npc[Target].ModNPC as LloydNPC) != null)
-				{
-					((IOverheadDialogueNPC)(Main.npc[Target].ModNPC as LloydNPC)).CurrentDialogue = null;
-				}
+				Projectile.Kill();
 			}
 
 			return;
