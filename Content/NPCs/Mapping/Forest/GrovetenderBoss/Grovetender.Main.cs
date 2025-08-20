@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Content.Items.Gear.Amulets.AddedLife;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Placeable;
@@ -225,5 +226,6 @@ internal partial class Grovetender : ModNPC
 	{
 		Vector2 pos = NPC.Center - new Vector2(0, 100);
 		Projectile.NewProjectile(Terraria.Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+		BossTracker.AddDowned(Type, false, false, true);
 	}
 }
