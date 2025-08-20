@@ -26,7 +26,7 @@ internal class BossDomainLivesUILayer : ILoadable
 			return;
 		}
 
-		int lives = Main.LocalPlayer.GetModPlayer<BossDomainLivesPlayer>().LivesLeft;
+		int lives = Main.LocalPlayer.GetModPlayer<BossDomainLivesPlayer>().GetLivesLeft();
 		string text = lives + " " + Language.GetTextValue("Mods.PathOfTerraria.UI.Lives");
 		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.MouseText.Value;
 		var position = new Vector2(Main.screenWidth - ChatManager.GetStringSize(font, text, Vector2.One).X - 8, 0);

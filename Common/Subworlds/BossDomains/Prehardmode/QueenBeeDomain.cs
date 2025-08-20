@@ -28,8 +28,13 @@ public class QueenBeeDomain : BossDomainSubworld
 	public bool BossSpawned = false;
 	public bool ReadyToExit = false;
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep), new PassLegacy("Tiles", GenTiles), new PassLegacy("Polish", Polish),
-		new PassLegacy("Settle Liquids", SettleLiquidsStep.Generation)];
+	public override List<GenPass> Tasks => [
+		new PassLegacy("Reset", ResetStep),
+		new PassLegacy("Tiles", GenTiles),
+		new PassLegacy("Polish", Polish),
+		new PassLegacy("Settle Liquids", SettleLiquidsStep.Generation),
+		new PassLegacy("AdjustSpawn", AdjustSpawn),
+	];
 
 	private void Polish(GenerationProgress progress, GameConfiguration configuration)
 	{
@@ -174,6 +179,18 @@ public class QueenBeeDomain : BossDomainSubworld
 		}
 
 		StructureTools.PlaceByOrigin($"Assets/Structures/BeeDomain/Mini_{(left ? "" : "R_")}{WorldGen.genRand.Next(4)}", original, new(left ? 1 : 0, 0.5f));
+	}
+
+	private static void AdjustSpawn(GenerationProgress progress, GameConfiguration configuration)
+	{
+		var basePoint = new Point(Main.spawnTileX, Main.spawnTileY);
+		var targetSize = new Point(3, 3);
+		var searchRadius = new Point(40, 40);
+
+		if (GenerationUtilities.TryFindNearestFreePoint(basePoint, targetSize, searchRadius, out Point spawnPoint))
+		{
+			(Main.spawnTileX, Main.spawnTileY) = (spawnPoint.X, spawnPoint.Y);
+		}
 	}
 
 	public override void OnEnter()

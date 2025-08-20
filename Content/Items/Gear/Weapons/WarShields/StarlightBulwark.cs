@@ -174,7 +174,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 			Projectile.velocity *= 0.95f;
 			Projectile.rotation += 0.06f * Projectile.velocity.Length() + 0.006f;
 
-			if (Main.rand.NextBool(45))
+			if (!Main.dedServ && Main.rand.NextBool(45))
 			{
 				Color newColor = GetAlpha(Lighting.GetColor(Projectile.Center.ToTileCoordinates())) ?? Color.White;
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.YellowStarDust, newColor: newColor);
