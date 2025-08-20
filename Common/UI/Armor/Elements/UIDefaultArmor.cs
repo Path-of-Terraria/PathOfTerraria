@@ -14,8 +14,6 @@ public sealed class UIDefaultArmor : UIArmorPage
 	{
 		base.OnInitialize();
 
-		Player.extraAccessorySlots = 3;
-
 		Width = StyleDimension.FromPixels(UIArmorInventory.ArmorPageWidth);
 		Height = StyleDimension.FromPixels(UIArmorInventory.ArmorPageHeight);
 
