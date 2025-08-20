@@ -378,6 +378,16 @@ public class BrainDomain : BossDomainSubworld
 	{
 		bool hasProj = false;
 
+		if (!BossTracker.DownedBrainOfCthulhu && !NPC.AnyNPCs(ModContent.NPCType<LloydNPC>()))
+		{
+			int npc = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Main.spawnTileX * 16, Main.spawnTileY * 16, ModContent.NPCType<LloydNPC>());
+
+			// For a reason I truly don't understand, the above *does not* set the newly spawned NPC as active.
+			// From what I can tell, it sets everything else just fine, just...doesn't set active.
+			// Doing this fixes it. Weird!
+			Main.npc[npc].active = true;
+		}
+
 		foreach (Projectile proj in Main.ActiveProjectiles)
 		{
 			if (proj.type == ModContent.ProjectileType<Teleportal>())

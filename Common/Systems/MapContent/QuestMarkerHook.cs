@@ -63,6 +63,12 @@ internal class QuestMarkerHook : ILoadable
 	{
 		NPC npc = Main.npc[npcSlot];
 		Point mapPos = npc.Center.ToTileCoordinates();
+
+		if (!WorldGen.InWorld(mapPos.X, mapPos.Y))
+		{
+			return;
+		}
+
 		bool revealed = Main.Map.IsRevealed(mapPos.X, mapPos.Y);
 
 		if (!revealed && npc.type == NPCID.OldMan)

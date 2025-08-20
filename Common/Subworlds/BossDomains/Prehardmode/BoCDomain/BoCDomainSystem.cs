@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Content.NPCs.Town;
+﻿using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;

@@ -12,7 +12,6 @@ using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Graphics;
 using SubworldLibrary;
-using Terraria;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -20,7 +19,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
-using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
