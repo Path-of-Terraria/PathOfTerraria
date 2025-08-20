@@ -92,7 +92,7 @@ internal class CrimsonMaw : ModProjectile
 
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.1f);
 		Projectile.velocity *= 0.96f;
-		Projectile.frame = 8 - (int)(Projectile.timeLeft / 5f);
+		Projectile.frame = 12 - (int)(Projectile.timeLeft / 5f);
 
 		if (TargettingPlayer)
 		{
