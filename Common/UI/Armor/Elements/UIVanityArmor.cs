@@ -148,7 +148,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		accessorySlot2.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
 		Append(accessorySlot2);
 		
-		var accessorySlot3 = new UICustomHoverImageItemSlot(VanityFrameTexture, MiscellaneousIconTexture, 22, $"Mods.{PoTMod.ModName}.UI.Slots.11", ItemSlot.Context.EquipAccessoryVanity)
+		var accessorySlot3 = new UICustomHoverImageItemSlot(VanityFrameTexture, MiscellaneousIconTexture, 20, $"Mods.{PoTMod.ModName}.UI.Slots.11", ItemSlot.Context.EquipAccessoryVanity)
 		{
 			HAlign = 1f,
 			VAlign = .75f,
@@ -161,7 +161,7 @@ public sealed class UIVanityArmor : UIArmorPage
 		accessorySlot3.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;	
 		Append(accessorySlot3);
 
-		var accessorySlot4 = new UICustomHoverImageItemSlot(VanityFrameTexture, MiscellaneousIconTexture, 23, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessoryVanity)
+		var accessorySlot4 = new UICustomHoverImageItemSlot(VanityFrameTexture, MiscellaneousIconTexture, 21, $"Mods.{PoTMod.ModName}.UI.Slots.12", ItemSlot.Context.EquipAccessoryVanity)
 		{
 			HAlign = 0f,
 			VAlign = 1f,
@@ -176,7 +176,7 @@ public sealed class UIVanityArmor : UIArmorPage
 
 		customAccessorySlots = [ accessorySlot3, accessorySlot4 ];
 	}
-	
+
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
