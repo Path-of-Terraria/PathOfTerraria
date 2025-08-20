@@ -99,6 +99,30 @@ public class ExtraAccessoryModPlayer : ModPlayer
 		}
 	}
 
+	public override void UpdateVisibleAccessories()
+	{
+		for (int i = 0; i < CustomAccessorySlots.Length; i++)
+		{
+			(Item accessory, int virtualIndex) = (CustomAccessorySlots[i], CustomFunctionalSlots[i]);
+			if (IsCustomSlotActive(virtualIndex) && !accessory.IsAir)
+			{
+				Player.UpdateVisibleAccessories(accessory, false);
+			}
+		}
+	}
+	public override void UpdateVisibleVanityAccessories()
+	{
+		for (int i = 0; i < CustomVanitySlots.Length; i++)
+		{
+			(Item accessory, int virtualIndex) = (CustomVanitySlots[i], CustomFunctionalSlots[i]);
+			if (IsCustomSlotActive(virtualIndex) && !accessory.IsAir)
+			{
+				Player.ApplyEquipVanity(accessory);
+				Player.UpdateVisibleAccessories(accessory, false);
+			}
+		}
+	}
+
 	public Item GetCustomSlot(int virtualIndex)
 	{
 		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
