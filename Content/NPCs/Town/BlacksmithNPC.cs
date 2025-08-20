@@ -16,6 +16,11 @@ using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Content.Items.Placeable.Mapping;
+using Terraria.GameContent.ItemDropRules;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
+using PathOfTerraria.Content.Tiles.BossDomain;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -90,6 +95,9 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		var shop = new NPCShop(Type);
 		shop.Add<RustedBattleaxe>();
 		shop.Add<StoneSword>();
+		shop.Add<DwarvenGreatsword>(Condition.Hardmode);
+		shop.Add<RunestoneItem>(new Condition(this.GetLocalization("DownedForest"), () => BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<Grovetender>())));
+		shop.Add<PoweredRunestoneItem>(new Condition(this.GetLocalization("DownedForest"), () => BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<Grovetender>())));
 		shop.Register();
 	}
 

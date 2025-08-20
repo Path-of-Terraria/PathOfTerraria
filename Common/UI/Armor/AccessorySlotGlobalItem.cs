@@ -41,48 +41,63 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		return result;
 	}
 	
-	private bool IsItemAlreadyEquipped(Item itemToCheck, Player player, int targetSlot)
+	private static bool IsItemAlreadyEquipped(Item itemToCheck, Player player, int targetSlot)
 	{
 		if (itemToCheck == null || itemToCheck.IsAir)
+		{
 			return false;
+		}
 
 		ExtraAccessoryModPlayer modPlayer = player.GetModPlayer<ExtraAccessoryModPlayer>();
 
 		// Check all vanilla equipment slots (except the target slot we're trying to equip to)
 		for (int i = 0; i < player.armor.Length; i++)
 		{
-			if (i == targetSlot) continue; // Skip the slot we're trying to equip to
-			
+			if (i == targetSlot)
+			{
+				continue; // Skip the slot we're trying to equip to
+			}
+
 			if (!player.armor[i].IsAir && ItemsAreSameType(player.armor[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		// Check all vanilla dye slots
 		for (int i = 0; i < player.dye.Length; i++)
 		{
 			if (!player.dye[i].IsAir && ItemsAreSameType(player.dye[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		// Check custom accessory slots
 		for (int i = 0; i < modPlayer.CustomAccessorySlots.Length; i++)
 		{
 			if (!modPlayer.CustomAccessorySlots[i].IsAir && ItemsAreSameType(modPlayer.CustomAccessorySlots[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		// Check custom vanity slots
 		for (int i = 0; i < modPlayer.CustomVanitySlots.Length; i++)
 		{
 			if (!modPlayer.CustomVanitySlots[i].IsAir && ItemsAreSameType(modPlayer.CustomVanitySlots[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		// Check custom dye slots
 		for (int i = 0; i < modPlayer.CustomDyeSlots.Length; i++)
 		{
 			if (!modPlayer.CustomDyeSlots[i].IsAir && ItemsAreSameType(modPlayer.CustomDyeSlots[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		return false;
@@ -94,7 +109,7 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		return item1.type == item2.type;
 	}
 
-	public bool IsNormalAccessory(Item item)
+	public static bool IsNormalAccessory(Item item)
 	{
 		return item is not null && 
 		       item.accessory && 
@@ -108,29 +123,21 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 	{
 		if (!item.accessory)
 		{
-			return base.CanRightClick(item);
+			return false;
 		}
 
-		var accessorySlotGlobal = ModContent.GetInstance<AccessorySlotGlobalItem>();
-		return accessorySlotGlobal.IsNormalAccessory(item);
+		return IsNormalAccessory(item);
 	}
 
 	public override void RightClick(Item item, Player player)
 	{
-
-		var extraAccessoryPlayer = player.GetModPlayer<ExtraAccessoryModPlayer>();
-		var accessorySlotGlobal = ModContent.GetInstance<AccessorySlotGlobalItem>();
-        
-		if (!accessorySlotGlobal.IsNormalAccessory(item))
-		{
-			equipped = false;
-			return;
-		}
+		ExtraAccessoryModPlayer extraAccessoryPlayer = player.GetModPlayer<ExtraAccessoryModPlayer>();
 		
 		// Check if item is already equipped before trying to equip
 		if (IsItemAlreadyEquipped(item, player, -1)) // -1 means we're not targeting a specific slot
 		{
 			equipped = false;
+			item.stack++;
 			return;
 		}
         
@@ -147,6 +154,7 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 			player.armor[9] = item.Clone();
 			equipped = true;
 		}
+
 		// Try custom slots (only functional slots, indices 0 and 1)
 		else if (extraAccessoryPlayer.CustomAccessorySlots[0].IsAir)
 		{
@@ -158,12 +166,6 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 			extraAccessoryPlayer.CustomAccessorySlots[1] = item.Clone();
 			equipped = true;
 		}
-	}
-	
-	public override bool ConsumeItem(Item item, Player player)
-	{
-		// Only consume the item if it was successfully equipped (not swapped)
-		return equipped;
 	}
 	
 	private enum EquipmentSlot
