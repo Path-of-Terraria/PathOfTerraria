@@ -129,7 +129,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	/// <returns></returns>
 	public static int GetBossUseCount()
 	{
-		int def = 6 / BossDomainLivesPlayer.GetLivesPerPlayer();
+		int def = 6 / BossDomainLivesPlayer.GetLivesPerPlayer(Main.CurrentFrameFlags.ActivePlayersCount);
 
 		if (Main.CurrentFrameFlags.ActivePlayersCount > 6)
 		{
