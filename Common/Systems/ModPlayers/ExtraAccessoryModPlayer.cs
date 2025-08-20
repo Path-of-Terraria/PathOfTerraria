@@ -153,14 +153,7 @@ public class ExtraAccessoryModPlayer : ModPlayer
 
 	private static int GetCustomSlotArrayIndex(int virtualIndex)
 	{
-		for (int i = 0; i < CustomFunctionalSlots.Length; i++)
-		{
-			if (CustomFunctionalSlots[i] == virtualIndex)
-			{
-				return i;
-			}
-		}
-		return -1;
+		return Array.IndexOf(CustomFunctionalSlots, virtualIndex);
 	}
 
 	public static bool IsCustomSlot(int slot)
