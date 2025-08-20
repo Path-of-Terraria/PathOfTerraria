@@ -69,6 +69,7 @@ Quest: {
 		MorvenRaven: Zabierz Morven do Ravencrest
 		SmashOrbs: Zbij 3 Kule Cienia
 		KillEoW: Pokonaj Pożeracza Światów
+		// ReturnToOverworld: Return to the Overworld
 	}
 
 	BoCQuest: {

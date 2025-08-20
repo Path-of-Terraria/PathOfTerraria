@@ -69,6 +69,7 @@ Quest: {
 		// MorvenRaven: Get Morven to Ravencrest
 		// SmashOrbs: Smash 3 Shadow Orbs
 		// KillEoW: Defeat the Eater of Worlds
+		// ReturnToOverworld: Return to the Overworld
 	}
 
 	BoCQuest: {

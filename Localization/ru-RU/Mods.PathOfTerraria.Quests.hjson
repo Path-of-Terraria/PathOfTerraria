@@ -69,6 +69,7 @@ Quest: {
 		MorvenRaven: Привести Морвена в Вороний пик
 		SmashOrbs: Разбейте 3 теневых шара
 		KillEoW: Победите Пожирателя Миров
+		// ReturnToOverworld: Return to the Overworld
 	}
 
 	BoCQuest: {
