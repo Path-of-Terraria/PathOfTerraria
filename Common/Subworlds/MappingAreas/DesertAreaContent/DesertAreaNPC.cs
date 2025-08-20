@@ -35,7 +35,7 @@ internal class DesertAreaNPC : GlobalNPC
 
 	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
 	{
-		if (SubworldSystem.Current is not QueenSlimeDomain || spawnRate == int.MinValue)
+		if (SubworldSystem.Current is not DesertArea || spawnRate == int.MinValue)
 		{
 			return;
 		}

@@ -971,8 +971,17 @@ internal class TwinsDomain : BossDomainSubworld
 			if (canSpawn && Main.CurrentFrameFlags.ActivePlayersCount > 0 && who.Count > 0)
 			{
 				int plr = Main.rand.Next([.. who]);
+				Player player = Main.player[plr];
 				NPC.SpawnOnPlayer(plr, NPCID.Spazmatism);
 				NPC.SpawnOnPlayer(plr, NPCID.Retinazer);
+
+				Main.spawnTileX = (int)(player.Center.X / 16);
+				Main.spawnTileY = (int)(player.Center.Y / 16) - 10;
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					NetMessage.SendData(MessageID.WorldData);
+				}
 
 				BossSpawned = true;
 			}

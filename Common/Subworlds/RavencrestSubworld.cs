@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
