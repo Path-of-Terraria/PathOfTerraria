@@ -1,57 +1,90 @@
-﻿BattleAxeBuff: {
-    DisplayName: Szał Bitewny
-    Description: Zwiększone obrażenia i zwiększone otrzymywane obrażenia
-  }
-  RageBuff: {
-    Description: Zwiększone obrażenia i znacznie zwiększony odrzut
-    DisplayName: Szał
-  }
-  ArmorShredDebuff: {
-    DisplayName: Osłabienie Pancerza
-  }
-  RootedDebuff: {
-    DisplayName: Ukorzeniony
-    Description: Nie możesz się ruszyć!
-  }
-  ShockDebuff: {
-    DisplayName: Wstrząs
-    Description: 10% zwiększonych otrzymywanych obrażeń
-  }
-  BloodclotDebuff: {
-    DisplayName: Zakrzep
-    DeathText: "{0} nie mógł zatrzymać krwawienia"
-  }
-  MoltenShieldBuff: {
-    DisplayName: Stopiona Skorupa
-    Description: Daje tymczasową tarczę\nDaje małą ilość defensywy
-  }
-  GodlikeBuff: {
-    DisplayName: Boskie Wzmocnienie
-    Description: Jesteś odporny na wszystkie bezpośrednie obrażenia
-  }
-  RestorationBuff: {
-    DisplayName: Odnowienie
-    Description: Zapewnia olbrzymią regenerację zdrowia
-  }
-  HardinessBuff: {
-    Description: +10 defensywy\n+20% szans na blok
-    DisplayName: Odporność
-  }
-  HasteBuff: {
-    Description: +20% prędkości ruchu\n 15% szybkości ataku
-    DisplayName: Pośpiech
-  }
-  UnstoppableBuff: {
-    DisplayName: Niepowstrzymany
-    Description: +50% ochrony zdrowia\nOdporność na Schłodzenie
-  }
-  FrostflameDebuff: {
-    DisplayName: Płomień Mrozu
-  }
-  SporeDebuff: {
-    DisplayName: Zarodniki
-  }
-  BlindedDebuff: {
-    DisplayName: Oślepienie
-    Description: Ataki mają szanse na chybienie
-  }
+BattleAxeBuff: {
+	DisplayName: Szał Bitewny
+	Description: Zwiększone obrażenia i zwiększone otrzymywane obrażenia
+}
+
+RageBuff: {
+	DisplayName: Szał
+	Description: Zwiększone obrażenia i znacznie zwiększony odrzut
+}
+
+MoltenShieldBuff: {
+	DisplayName: Stopiona Skorupa
+	Description: Daje tymczasową tarczę\nDaje małą ilość defensywy
+}
+
+BloodclotDebuff: {
+	DisplayName: Zakrzep
+	// Description: ""
+	DeathText: "{0} nie mógł zatrzymać krwawienia"
+}
+
+ArmorShredDebuff: {
+	DisplayName: Osłabienie Pancerza
+	// Description: ""
+}
+
+ShockDebuff: {
+	DisplayName: Wstrząs
+	Description: 10% zwiększonych otrzymywanych obrażeń
+}
+
+RootedDebuff: {
+	DisplayName: Ukorzeniony
+	Description: Nie możesz się ruszyć!
+}
+
+GodlikeBuff: {
+	DisplayName: Boskie Wzmocnienie
+	Description: Jesteś odporny na wszystkie bezpośrednie obrażenia
+}
+
+RestorationBuff: {
+	DisplayName: Odnowienie
+	Description: Zapewnia olbrzymią regenerację zdrowia
+}
+
+HardinessBuff: {
+	DisplayName: Odporność
+	Description: +10 defensywy\n+20% szans na blok
+}
+
+HasteBuff: {
+	DisplayName: Pośpiech
+	Description: +20% prędkości ruchu\n 15% szybkości ataku
+}
+
+UnstoppableBuff: {
+	DisplayName: Niepowstrzymany
+	Description: +50% ochrony zdrowia\nOdporność na Schłodzenie
+}
+
+FrostflameDebuff: {
+	DisplayName: Płomień Mrozu
+	// Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
+}
+
+SporeDebuff: {
+	DisplayName: Zarodniki
+	// Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
+}
+
+BlindedDebuff: {
+	DisplayName: Oślepienie
+	Description: Ataki mają szanse na chybienie
+}
+
+HasteChargeBuff: {
+	// DisplayName: Haste Charge Buff
+	// Description: Increases attack speed and movement speed by {0}%
+}
+
+AegisChargeBuff: {
+	// DisplayName: Aegis Charge Buff
+	// Description: Increases max health by {0} and defense by {1}
+}
+
+FocusChargeBuff: {
+	// DisplayName: Focus Charge Buff
+	// Description: Increases critical strike chance and multiplier by {0}%
+}

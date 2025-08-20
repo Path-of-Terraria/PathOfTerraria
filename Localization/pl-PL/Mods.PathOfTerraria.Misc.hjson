@@ -1,18 +1,32 @@
-﻿HealthPotionTooltip: Mikstura życia
-  ManaPotionTooltip: Mikstura many
-  RestoresHealthTooltip: Odnawia {0} życia
-  RestoresManaTooltip: Odnawia {0} many
-  CooldownTooltip: "{0} sekund(a) odnowienia"
-  Exit: Wyjdź
-  Activate: Aktywuj
-  NPCLeftWithoutDying: "{0} uciekło!"
-  AffixTooltipFrom: z
-  Experience: {
-    SkillUp: Otrzymano 1 punkt umiejętności. Kliknij w pasek doświadczenia by otworzyć drzewko umiejętności.
-    LevelUp: Osiągnięto poziom {0}!
-  }
-  RarityNames: {
-    Normal: Zwykły
-    Magic: Magiczny
-    Rare: Rzadki
-  }
+Experience: {
+	LevelUp: Osiągnięto poziom {0}!
+	SkillUp: Otrzymano 1 punkt umiejętności. Kliknij w pasek doświadczenia by otworzyć drzewko umiejętności.
+}
+
+RarityNames: {
+	Normal: Zwykły
+	Magic: Magiczny
+	Rare: Rzadki
+}
+
+// GrimoireConsume: "{0} consumed!"
+// GrimoireMaterial: Used for the Grimoire's Menagerie. Right click to add to the Menagerie.
+// GrimoireBoon: Traded {0} for coin!
+# This is used for disabling EoW/BoC spawns, instead of spawning the boss it says this.
+// ChasmAppears: A chasm appears...
+HealthPotionTooltip: Mikstura życia
+ManaPotionTooltip: Mikstura many
+RestoresHealthTooltip: Odnawia {0} życia
+RestoresManaTooltip: Odnawia {0} many
+CooldownTooltip: "{0} sekund(a) odnowienia"
+NPCLeftWithoutDying: "{0} uciekło!"
+AffixTooltipFrom: z
+// Enter: Enter
+Exit: Wyjdź
+// EnterRavencrest: "{$Enter} Ravencrest"
+Activate: Aktywuj
+# Two new messages for fishron and impending doom (Lunar event beaten) in their respective domains
+// FishronSpawn: You hear a roar in the distance...
+// ImpendingDoom: A pulse quickens at the center of the world...
+// VoidPearlCondition: In hardmode or during the Unleashing Chaos quest
+// SubworldItemDisabler: You cannot use this item in a subworld.

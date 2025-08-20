@@ -1,8 +1,0 @@
-﻿RavencrestBiome: {
-    DisplayName: Вороний пик
-    TownNPCDialogueName: Вороний пик
-  }
-  MechBiome: {
-    DisplayName: Механизмы
-    TownNPCDialogueName: '''	Механизмы'''
-  }

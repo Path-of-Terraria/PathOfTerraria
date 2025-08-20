@@ -1,9 +1,31 @@
-﻿OneLine: Tylko jedna umiejętność specjalizacji może zostać wybrana.
-  FireNova: {
-    Description: Tworzy aurę płomieni opartą na obrażeniach zadawanych przez trzymaną broń magiczną, wywołując efekt Płonący!
-    Name: Ognista powłoka
-  }
-  IceNova: {
-    Name: Nowa mrozu
-    Description: Tworzy falę lodu opartą na obrażeniach zadanych przez trzymaną broń magiczną, wywołując efekt Ochłodzenie.
-  }
+OneLine: Tylko jedna umiejętność specjalizacji może zostać wybrana.
+
+FireNova: {
+	Name: Ognista powłoka
+	Description: Tworzy aurę płomieni opartą na obrażeniach zadawanych przez trzymaną broń magiczną, wywołując efekt Płonący!
+}
+
+IceNova: {
+	Name: Nowa mrozu
+	Description: Tworzy falę lodu opartą na obrażeniach zadanych przez trzymaną broń magiczną, wywołując efekt Ochłodzenie.
+}
+
+LightningNova: {
+	// Name: Thunder Shock
+	// Description: Create a pulse of electricity based on your held magic weapon's damage, dealing a wider range of damage and inflicting Shocked
+}
+
+NaturesBarrage: {
+	// Name: Nature's Barrage
+	// Description: Tampered tips poison enemies
+}
+
+ExplosiveVolley: {
+	// Name: Explosive Valley
+	// Description: Arrows reposition with an explosion in a much wider range.
+}
+
+PiercingPrecision: {
+	// Name: Piercing Precision
+	// Description: Replace the flurry with a delayed barrage with increased armor piercing
+}
