@@ -126,25 +126,22 @@ file class NpcTransformHooksImpl : ILoadable
 			i => i.MatchLdfld(typeof(NPC), nameof(NPC.type)),
 			i => i.MatchStloc(out locOldType)
 		);
-
-		// Emit pre-transform hook
+		// Emit PreTransform hook.
 		il.Emit(OpCodes.Ldarg_0);
 		il.Emit(OpCodes.Ldarg_1);
 		il.EmitDelegate(Hook.InvokePreTransform);
-
 		// Emit export
 		il.Emit(OpCodes.Ldarg_0);
 		il.Emit(OpCodes.Ldloca, locOldGlobals);
 		il.EmitDelegate(ExportGlobals);
 
-		// Match 'shimmerTransparency = num2;'.
+		// Match 'spriteDirection = num5;'.
 		il.GotoNext(
 			MoveType.After,
 			i => i.MatchLdarg0(),
 			i => i.MatchLdloc(out _),
-			i => i.MatchStfld(typeof(NPC), nameof(NPC.shimmerTransparency))
+			i => i.MatchStfld(typeof(NPC), nameof(NPC.spriteDirection))
 		);
-
 		// Emit import.
 		il.Emit(OpCodes.Ldarg_0);
 		il.Emit(OpCodes.Ldloc, locOldType);
@@ -156,8 +153,7 @@ file class NpcTransformHooksImpl : ILoadable
 			MoveType.After,
 			i => i.MatchStfld(typeof(NPC), nameof(NPC.altTexture))
 		);
-
-		// Emit OnTransform invoke.
+		// Emit PostTransform invoke.
 		il.Emit(OpCodes.Ldarg_0);
 		il.Emit(OpCodes.Ldloc, locOldType);
 		il.EmitDelegate(Hook.InvokePostTransform);
