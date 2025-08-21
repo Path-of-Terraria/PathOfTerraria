@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using PathOfTerraria.Common.Systems.RealtimeGen.Generation;
 using PathOfTerraria.Content.Projectiles.Utility;
+using System.IO;
 using Terraria.Chat;
 using Terraria.ID;
 using Terraria.Localization;
@@ -31,6 +32,16 @@ internal class DisableEvilOrbBossSpawning : ModSystem
 	public override void ClearWorld()
 	{
 		ActualOrbsSmashed = 0;
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		writer.Write((short)ActualOrbsSmashed);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		ActualOrbsSmashed = reader.ReadInt16();
 	}
 
 	private void StopBossSpawningOnOrb(ILContext il)
@@ -85,6 +96,11 @@ internal class DisableEvilOrbBossSpawning : ModSystem
 			{
 				ChatHelper.BroadcastChatMessage(NetworkText.FromKey(localizedText.Key), color);
 			}
+		}
+
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			NetMessage.SendData(MessageID.WorldData);
 		}
 
 		if (WorldGen.shadowOrbCount >= 3)

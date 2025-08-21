@@ -1,4 +1,7 @@
-﻿using ReLogic.Content;
+﻿using System.Linq;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.UI.Elements;
+using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
@@ -49,5 +52,32 @@ public abstract class UIArmorPage : UIElement
 				MaxInstances = 1
 			}
 		);
+	}
+
+	protected void MaintainCustomAccessorySlots(ReadOnlySpan<UICustomHoverImageItemSlot> slots)
+	{
+		if (Main.LocalPlayer.TryGetModPlayer(out ExtraAccessoryModPlayer accPlayer))
+		{
+			foreach (UICustomHoverImageItemSlot slot in slots)
+			{
+				bool isPresent = Children.Contains(slot);
+				bool shouldBePresent = accPlayer.IsCustomSlotActive(slot.VirtualSlot);
+
+				if (isPresent != shouldBePresent)
+				{
+					if (shouldBePresent)
+					{
+						// Make sure the slot is properly initialized before appending
+						if (slot.Icon == null) { slot.OnInitialize(); }
+
+						Append(slot);
+					}
+					else
+					{
+						RemoveChild(slot);
+					}
+				}
+			}
+		}
 	}
 }

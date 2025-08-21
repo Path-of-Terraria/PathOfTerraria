@@ -8,8 +8,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class FishronMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 65;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 64 && NPC.downedGolemBoss;
+	public override int WorldTier => WorldLevelBasedOnTier(7) + 1;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(7) && NPC.downedFishron;
 
 	public override void SetStaticDefaults()
 	{

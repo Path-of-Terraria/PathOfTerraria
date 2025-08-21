@@ -82,19 +82,43 @@ public class ExtraAccessoryModPlayer : ModPlayer
 	{
 		for (int i = 0; i < CustomAccessorySlots.Length; i++)
 		{
-			Item accessory = CustomAccessorySlots[i];
-			if (!accessory.IsAir)
+			(Item accessory, int virtualIndex) = (CustomAccessorySlots[i], CustomFunctionalSlots[i]);
+			if (IsCustomSlotActive(virtualIndex) && !accessory.IsAir)
 			{
 				Player.ApplyEquipFunctional(accessory, false);
 			}
 		}
-		
+
 		for (int i = 0; i < CustomVanitySlots.Length; i++)
 		{
-			Item vanityItem = CustomVanitySlots[i];
-			if (!vanityItem.IsAir)
+			(Item accessory, int virtualIndex) = (CustomVanitySlots[i], CustomFunctionalSlots[i]);
+			if (IsCustomSlotActive(virtualIndex) && !accessory.IsAir)
 			{
-				Player.ApplyEquipVanity(vanityItem);
+				Player.ApplyEquipVanity(accessory);
+			}
+		}
+	}
+
+	public override void UpdateVisibleAccessories()
+	{
+		for (int i = 0; i < CustomAccessorySlots.Length; i++)
+		{
+			(Item accessory, int virtualIndex) = (CustomAccessorySlots[i], CustomFunctionalSlots[i]);
+			if (IsCustomSlotActive(virtualIndex) && !accessory.IsAir)
+			{
+				Player.UpdateVisibleAccessories(accessory, false);
+			}
+		}
+	}
+	public override void UpdateVisibleVanityAccessories()
+	{
+		for (int i = 0; i < CustomVanitySlots.Length; i++)
+		{
+			(Item accessory, int virtualIndex) = (CustomVanitySlots[i], CustomFunctionalSlots[i]);
+			if (IsCustomSlotActive(virtualIndex) && !accessory.IsAir)
+			{
+				Player.ApplyEquipVanity(accessory);
+				Player.UpdateVisibleAccessories(accessory, false);
 			}
 		}
 	}
@@ -151,20 +175,44 @@ public class ExtraAccessoryModPlayer : ModPlayer
 		}
 	}
 
+	public static int GetCustomSlotVirtualIndex(int realIndex)
+	{
+		return CustomFunctionalSlots[realIndex];
+	}
+
 	private static int GetCustomSlotArrayIndex(int virtualIndex)
 	{
-		for (int i = 0; i < CustomFunctionalSlots.Length; i++)
-		{
-			if (CustomFunctionalSlots[i] == virtualIndex)
-			{
-				return i;
-			}
-		}
-		return -1;
+		return Array.IndexOf(CustomFunctionalSlots, virtualIndex);
 	}
 
 	public static bool IsCustomSlot(int slot)
 	{
 		return Array.IndexOf(CustomFunctionalSlots, slot) >= 0;
+	}
+
+	public bool IsCustomSlotActive(int virtualIndex)
+	{
+		int arrayIndex = GetCustomSlotArrayIndex(virtualIndex);
+		return arrayIndex switch
+		{
+			0 => true, // Add one slot by default.
+			1 => Main.hardMode, // Add one slot after WoF is defeated.
+			_ => false,
+		};
+	}
+
+	public int CountActiveExtraSlots()
+	{
+		int numSlots = 0;
+
+		for (int i = 0; i < CustomAccessorySlots.Length; i++)
+		{
+			if (IsCustomSlotActive(GetCustomSlotVirtualIndex(i)))
+			{
+				numSlots++;
+			}
+		}
+
+		return numSlots;
 	}
 }

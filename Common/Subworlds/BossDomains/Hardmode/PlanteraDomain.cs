@@ -25,8 +25,11 @@ internal class PlanteraDomain : BossDomainSubworld
 	public static Point16 BulbPosition = new();
 	public static int BulbsBroken = 0;
 
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
+	public FightTracker FightTracker = new([NPCID.Plantera])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenTerrain)];
@@ -34,8 +37,6 @@ internal class PlanteraDomain : BossDomainSubworld
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
 		BulbsBroken = 0;
-		BossSpawned = false;
-		ExitSpawned = false;
 
 		progress.Start(1);
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
@@ -282,8 +283,7 @@ internal class PlanteraDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ExitSpawned = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -298,16 +298,11 @@ internal class PlanteraDomain : BossDomainSubworld
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned && NPC.AnyNPCs(NPCID.Plantera))
-		{
-			BossSpawned = true;
-		}
+		FightState state = FightTracker.UpdateState();
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.Plantera) && !ExitSpawned)
+		if (state == FightState.JustCompleted)
 		{
 			BossTracker.AddDowned(NPCID.Plantera, false, true);
-
-			ExitSpawned = true;
 
 			HashSet<Player> players = [];
 

@@ -30,8 +30,11 @@ public class DeerclopsDomain : BossDomainSubworld
 	public override int[] WhitelistedPlaceableTiles => [TileID.Platforms];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
-	public bool BossSpawned = false;
-	public bool ReadyToExit = false;
+	public FightTracker FightTracker = new([NPCID.Deerclops])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new FlatWorldPass(Surface, true, GetSurfaceNoise(), TileID.SnowBlock, WallID.SnowWallUnsafe),
@@ -472,8 +475,7 @@ public class DeerclopsDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
-		BossSpawned = false;
-		ReadyToExit = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -500,9 +502,10 @@ public class DeerclopsDomain : BossDomainSubworld
 			}
 		}
 
-		if (!BossSpawned && playersOnSurface)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted && playersOnSurface)
 		{
-			BossSpawned = true;
 			NPC.SpawnOnPlayer(0, NPCID.Deerclops);
 
 			Main.spawnTileX = Width / 2 + Main.rand.Next(20, 25) + (Main.rand.NextBool() ? -1 : 1);
@@ -513,14 +516,12 @@ public class DeerclopsDomain : BossDomainSubworld
 				NetMessage.SendData(MessageID.WorldData);
 			}
 		}
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.Deerclops) && !ReadyToExit)
+		else if (state == FightState.JustCompleted)
 		{
 			Vector2 pos = new Vector2(Width / 2, Height / 4 - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.AddDowned(NPCID.Deerclops, false, true);
-			ReadyToExit = true;
 		}
 	}
 }

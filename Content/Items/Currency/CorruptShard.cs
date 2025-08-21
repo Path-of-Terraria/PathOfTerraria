@@ -42,8 +42,6 @@ public class CorruptShard : CurrencyShard
 		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
 		data.Corrupted = true;
 
-		Item.stack--;
-
 		if (Main.rand.NextBool(2)) // 50% chance to do nothing
 		{
 			PoTItemHelper.SetMouseItemToHeldItem(player);

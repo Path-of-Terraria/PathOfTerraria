@@ -1,22 +1,23 @@
+using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
+using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Currency;
+using PathOfTerraria.Content.Items.Quest;
+using PathOfTerraria.Content.Tiles.BossDomain;
+using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Common.Utilities.Extensions;
-using PathOfTerraria.Content.Items.Quest;
-using PathOfTerraria.Common.NPCs;
-using Terraria.DataStructures;
-using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
-using PathOfTerraria.Common.NPCs.QuestMarkers;
-using PathOfTerraria.Content.Items.Currency;
-using PathOfTerraria.Common.Subworlds.RavencrestContent;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -77,6 +78,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common1"));
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common2"));
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common4"));
 			}
 		);
 	}
@@ -95,6 +97,9 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 
 		Condition conditions = new("Mods.PathOfTerraria.Misc.VoidPearlCondition", () => Main.hardMode || QuestReady());
 		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<VoidPearl>()) { shopCustomPrice = Item.buyPrice(0, 50, 0, 0) }, conditions));
+
+		shop.Add<WeakMalaiseItem>(Condition.DownedEowOrBoc);
+		shop.Add<PusBlockItem>(Condition.DownedEowOrBoc);
 		shop.Register();
 	}
 

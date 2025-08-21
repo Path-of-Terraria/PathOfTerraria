@@ -1,8 +1,8 @@
 Popups: {
-	Line1: Откройте книгу заданий, чтобы увидеть прогресс и этапы выполнения заданий, которые вы выполняете
+	Line1: Откройте книгу заданий, чтобы увидеть прогресс и этапы выполнения заданий, которые вы выполняете.
 	Line2: Книга заданий всегда находится рядом с картой в инвентаре.
-	Line3: Также вы можете нажать {0} чтобы открыть книгу
-	NoKey: (По умолчанию - L)
+	Line3: Также вы можете нажать {0} чтобы открыть книгу.
+	NoKey: (Не назначено - по умолчанию L)
 	NewQuest: Новый квест:
 }
 
@@ -11,8 +11,8 @@ Bring: {
 	GiveItTo: и отдайте это в {0}
 }
 
-TalkTo: Talk to {0}
-GiveThem: и дайте им:
+TalkTo: Поговорите с {0}
+GiveThem: и дайте:
 Exploration.Ice: Исследуйте ледяной/снежный биом ({0}%)
 Or: или
 
@@ -37,86 +37,86 @@ Quest: {
 		Name: Убейте короля слизней
 		Description: ""
 		EnterDomain: Войдите во владения короля слизней
-		ThanksDialogue: I can hardly believe it. Well, you've succeeded where I failed, stranger. I best get back to it; you will not surprass me again. My thanks, however, are in order.
-		Kill.KingSlime: Kill the King Slime
+		ThanksDialogue: Я едва могу в это поверить. Что ж, ты преуспел там, где я потерпел неудачу, незнакомец. Мне лучше вернуться к делу; больше ты меня не превзойдешь. Однако ты заслужил мою благодарность.
+		Kill.KingSlime: Убейте Короля слизней
 	}
 
 	HunterStartQuest: {
-		Name: Drawing the Bow
+		Name: Натянуть тетиву
 		Description: ""
-		Kill.FloatingMisc: Kill {0} demon eyes, crimera or eater of souls
+		Kill.FloatingMisc: Убейте {0} глаз демона, кример или пожирателей душ
 	}
 
 	WitchStartQuest: {
-		Name: The Ancient Art
+		Name: Древнее искусство
 		Description: ""
 	}
 
 	WizardStartQuest: {
-		Name: Magical Returnal
+		Name: Волшебное возвращение
 		Description: ""
 	}
 
 	EoCQuest: {
-		Name: The Rising Omen
+		Name: Восходящее предзнаменование
 		Description: ""
-		Kill.EoC: Defeat the Eye of Cthulhu
+		Kill.EoC: Победи Глаз Ктулху
 	}
 
 	EoWQuest: {
-		Name: Whispers of the Deep
+		Name: Шёпот глубин
 		Description: ""
-		MorvenRaven: Get Morven to Ravencrest
-		SmashOrbs: Smash 3 Shadow Orbs
-		KillEoW: Defeat the Eater of Worlds
+		MorvenRaven: Привести Морвена в Вороний пик
+		SmashOrbs: Разбейте 3 теневых шара
+		KillEoW: Победите Пожирателя Миров
 		// ReturnToOverworld: Return to the Overworld
 	}
 
 	BoCQuest: {
-		Name: A Heart Still Beating
+		Name: Сердце все еще бьется
 		Description: ""
-		SmashOrb: Smash a Crimson Heart
-		EnterDomain: Enter the Brain of Cthulhu domain
-		KillBrain: Kill the Brain of Cthulhu
+		SmashOrb: Разбейте сердца багрянца
+		EnterDomain: Войдите в владения мозга Ктулху
+		KillBrain: Убейте мозг Ктулху
 	}
 
 	QueenBeeQuest: {
-		Name: A Royal Adventure
+		Name: Королевские приключения
 		Description: ""
-		KillQueen: Kill the Queen Bee
+		KillQueen: Убейте Королеву Пчел
 	}
 
 	DeerclopsQuest: {
-		Name: Frigid Beast
+		Name: Холодное чудовище
 		Description: ""
-		KillDeerclops: Kill Deerclops
+		KillDeerclops: Убейте циклоп-оленей
 		// GetAntlersOrShards: Get Strange Antlers or an Antler Shard
 	}
 
 	SkeletronQuest: {
-		Name: Skeletal Remnants
+		Name: Остатки скелета
 		Description: ""
-		EnterDomain: Enter Skeletron's domain
-		KillSkeletron: Kill Skeletron
+		EnterDomain: Войдите во владения Скелетрона
+		KillSkeletron: Убейте Скелетрона
 	}
 
 	WoFQuest: {
-		Name: Unleashing Chaos
+		Name: Высвобождение хаоса
 		Description: ""
-		WizardStart: Hm....yes. The ground deep beneath us all shakes with a vigor, from the one they hid away. You see, long ago, a group of adventurers locked an evil into a fascimile. However, with your incredible strength slaying all these beasts around the world, that power seems to have crept its way to that locked evil. Which is to say, we must kill it. Talk to Thrain, Morgana and Elara as soon as you can. They understand, and will give you weapons. Take this, and godspeed. You can thank Morgana for this, too. Just...don't ask about it too much. Busy days here!
-		ThrainHelp: Oh. So it is. Here...I've been preparing for a day like this, hopefully it's up to your standard. Alaric helped with this, it holds the memories of my battles. Enjoy. Good luck.
-		ElaraHelp: Take care, and take this. I'm no fancy weaponsmith, but Thrain helped with it. Keeps it simple. And - the eyes are weakest.
-		MorganaHelp: Oh...? Bahaha! The time comes! Here you are, a veritable buffet of Grimoire materials! Elara helped with these beings...quite the knowledgable lass, she is! Enjoy your boons! Bahahaha!
-		WizardContinue: Here you are. Well, take these. These are...yes...explosive, but it's just how it works. I swear. Throw these upon the ashes of Hell to open a portal to the place that the Wall was confined to. Note - you will have one chance to kill it. No mistakes. And we don't know what happens upon the wall's death. Much is uncertain, aside from that it must die. Good luck. If you need any more, I can summon some...for a small price! Sorry! Commerce never hides!
-		KillWall: Kill the Wall of Flesh
-		WizardFinish: You return! We see many changes, but the earth won't shake and shutter under us any longer. Prepare yourself for the future, as there is much to learn. Especially for myself, for I have...a lot of stuff to try out.
+		WizardStart: Хм... да. Глубоко под нами земля содрогается от того, кого когда-то там спрятали. Видишь ли, давным-давно группа искателей приключений заточила зло в куклу-двойника. Но твоя невероятная сила, с которой ты раз за разом побеждаешь чудовищ по всему миру, кажется, пробудила это зло и оно снова обретает силу. Иными словами, нам придется убить это. Поговори с Трейном, Морганой и Эларой как можно скорее. Они всё поймут и дадут тебе оружие. Возьми это, и да пребудет с тобой удача. Можешь поблагодарить Моргану и за это. Только... не задавай лишних вопросов. Тут все на взводе!
+		ThrainHelp: Ох, вот как. Ладно, держи... Я давно готовился к этому дню, надеюсь, он тебе подойдёт. Аларик помог с ним, он хранит воспоминания о моих сражениях. Смотри не порежься. Удачи.
+		ElaraHelp: Береги себя и возьми это. Я не какая-то там искусная оружейница, но Трейн помог мне с ним. Простота и надёжность. И ещё — глаза самое уязвимое место.
+		MorganaHelp: О...? Ба-ха-ха! Время пришло! Вот ты где — настоящий буфет с материалами для Гримуара! Элара помогала с этими существами... весьма сведущая девчонка, да Наслаждайся дарами! Ба-ха-ха!
+		WizardContinue: Вот ты где. Так, возьми это. Оно... да... взрывоопасно, но имеем что имеем. Честное слово. Брось это на пепел в Аду, чтобы открыть портал туда, где заключена Стена. Учти — у тебя будет только один шанс убить ее. Никаких ошибок. Также мы не знаем что произойдет после гибели Стены. Знаю только то, что она должна быть уничтожена. Ни пуха. Если понадобятся еще такие, могу наколдовать... за небольшую плату! Увы! Деньги лишними не бывают!
+		KillWall: Убить Стену Плоти
+		WizardFinish: Ты вернулся! Мы наблюдаем множество изменений, но земля больше не будет дрожать под нами. Готовься к грядущему — многое предстоит освоить. Особенно мне, ведь у меня… столько всего, что нужно опробовать.
 	}
 
 	FirstQuest: {
-		Name: Entering Ravencrest
+		Name: Вход в Вороний пик
 		Description: ""
-		ApproachEntrance: Approach the entrance to Ravencrest
-		EnterRavencrest: Enter Ravencrest
+		ApproachEntrance: Подойти к входу в Вороний пик
+		EnterRavencrest: Войти в Вороний пик
 	}
 
 	QueenSlimeQuest: {

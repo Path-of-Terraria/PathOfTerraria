@@ -8,8 +8,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class QueenSlimeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 53;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 52 && NPC.downedQueenSlime;
+	public override int WorldTier => WorldLevelBasedOnTier(1) + 1;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(1) && NPC.downedQueenSlime;
 
 	public override void SetStaticDefaults()
 	{

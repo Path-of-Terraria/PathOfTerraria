@@ -11,7 +11,7 @@ public class WoFDomainSystem : ModSystem
 {
 	public override void ModifyScreenPosition()
 	{
-		if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.BossSpawned)
+		if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.FightTracker.Started)
 		{
 			if (domain.LeftBlocked)
 			{
@@ -32,7 +32,7 @@ public class WoFDomainSystem : ModSystem
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.BossSpawned)
+		if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.FightTracker.Started)
 		{
 			writer.Write(domain.LeftBlocked);
 		}
@@ -40,7 +40,7 @@ public class WoFDomainSystem : ModSystem
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.BossSpawned)
+		if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.FightTracker.Started)
 		{
 			domain.LeftBlocked = reader.ReadBoolean();
 		}

@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent;
+﻿using Microsoft.CodeAnalysis.Differencing;
+using Terraria.GameContent;
 
 namespace PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 
@@ -36,6 +37,10 @@ internal partial class Grovetender : ModNPC
 				Lighting.AddLight(drawPos + Main.screenPosition, new Vector3(0.5f, 0.5f, 0.25f) * _eyeOpacity);
 				Main.EntitySpriteDraw(Gradient.Value, drawPos, new Rectangle(0, 0, width, 100), Color.White * _eyeOpacity, 0f, Vector2.Zero, new Vector2(1, 1), effect);
 			}
+		}
+		else
+		{
+			position -= new Vector2(30, -40);
 		}
 
 		Main.EntitySpriteDraw(Sockets.Value, position, NPC.frame, drawColor, NPC.rotation, NPC.frame.Size() / 2f, 1f, effect);

@@ -15,6 +15,8 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
     private bool IsDyeSlot => Context == ItemSlot.Context.EquipDye;
     private static Item[] dummyArray = [new Item()];
 
+	public int VirtualSlot => virtualSlot;
+
     public UICustomHoverImageItemSlot(
         Asset<Texture2D> backgroundTexture,
         Asset<Texture2D> iconTexture,
@@ -35,7 +37,7 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         }
         else
         {
-            Predicate = (item, _) => ModContent.GetInstance<AccessorySlotGlobalItem>().IsNormalAccessory(item);
+            Predicate = (item, _) => AccessorySlotGlobalItem.IsNormalAccessory(item);
         }
     }
 
@@ -44,12 +46,18 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         get
         {
             if (IsDyeSlot)
-                return ModPlayer.GetCustomDyeSlot(virtualSlot);
-            else if (IsVanitySlot)
-                return ModPlayer.GetCustomVanitySlot(virtualSlot);
-            else
-                return ModPlayer.GetCustomSlot(virtualSlot);
-        }
+			{
+				return ModPlayer.GetCustomDyeSlot(virtualSlot);
+			}
+			else if (IsVanitySlot)
+			{
+				return ModPlayer.GetCustomVanitySlot(virtualSlot);
+			}
+			else
+			{
+				return ModPlayer.GetCustomSlot(virtualSlot);
+			}
+		}
         set
         {
             if (IsDyeSlot)
@@ -67,7 +75,7 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         }
     }
 
-    protected override void UpdateInteraction()
+	protected override void UpdateInteraction()
     {
         if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface)
         {
@@ -76,9 +84,9 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
 
         HandleTooltip();
 
-        if (Main.mouseLeft && Main.mouseLeftRelease)
+        if ((Main.mouseLeft && Main.mouseLeftRelease) || (Main.mouseRight && Main.mouseRightRelease))
         {
-            HandleLeftClick();
+            HandleLeftOrRightClick();
         }
 
         Main.LocalPlayer.mouseInterface = true;
@@ -108,15 +116,17 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         {
             return;
         }
+
         Main.hoverItemName = Item.IsAir ? Language.GetTextValue(Key) : Item.HoverName;
         Main.HoverItem = Item.IsAir ? new Item() : Item.Clone();
+
         if (!Item.IsAir)
         {
             Main.HoverItem.tooltipContext = Context;
         }
     }
 
-    private void HandleLeftClick()
+    private void HandleLeftOrRightClick()
     {
         if (!Main.mouseItem.IsAir && Predicate?.Invoke(Main.mouseItem, Item) == false)
         {
@@ -125,16 +135,17 @@ public class UICustomHoverImageItemSlot : UIHoverImageItemSlot
         }
 
         Item tempItem = Item;
-        ItemSlot.Handle(ref tempItem, Context);
-        Item = tempItem;
-    }
+		ItemSlot.Handle(ref tempItem, Context);
+		Item = tempItem;
+	}
 
-    protected override Asset<Texture2D> GetIconToDraw()
+	protected override Asset<Texture2D> GetIconToDraw()
     {
         if (Item.IsAir)
         {
             return IconTexture;
         }
+
         Main.instance.LoadItem(Item.type);
         return TextureAssets.Item[Item.type];
     }

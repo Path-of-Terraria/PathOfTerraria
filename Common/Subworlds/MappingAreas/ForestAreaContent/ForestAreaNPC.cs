@@ -43,4 +43,15 @@ internal class ForestAreaNPC : GlobalNPC
 		pool[NPCID.Raven] = 0.4f;
 		pool[NPCID.PossessedArmor] = 0.6f;
 	}
+
+	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
+	{
+		if (SubworldSystem.Current is not ForestArea || spawnRate == int.MinValue)
+		{
+			return;
+		}
+
+		spawnRate = (int)(spawnRate * 0.7f);
+		maxSpawns += 2;
+	}
 }

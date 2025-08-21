@@ -33,8 +33,11 @@ internal class TwinsDomain : BossDomainSubworld
 	internal static int MetalLayerTransEnd => MetalLayerEnd + 20;
 	internal static int GateLayer => 410;
 
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
+	public FightTracker FightTracker = new([NPCID.Retinazer, NPCID.Spazmatism])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	/// <summary>
 	/// This is used as the check for "everyone's belowground" fails in MP by default. Waiting a bit to do it fixes the issue.
@@ -922,8 +925,7 @@ internal class TwinsDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ExitSpawned = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -938,7 +940,9 @@ internal class TwinsDomain : BossDomainSubworld
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted)
 		{
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
@@ -982,22 +986,15 @@ internal class TwinsDomain : BossDomainSubworld
 				{
 					NetMessage.SendData(MessageID.WorldData);
 				}
-
-				BossSpawned = true;
 			}
 		}
-		else
+		else if (state == FightState.JustCompleted)
 		{
-			if (!NPC.AnyNPCs(NPCID.Spazmatism) && !NPC.AnyNPCs(NPCID.Retinazer) && !ExitSpawned)
-			{
-				BossTracker.AddDowned(NPCID.Retinazer, false, true);
-				BossTracker.AddDowned(NPCID.Spazmatism, false, true);
+			BossTracker.AddDowned(NPCID.Retinazer, false, true);
+			BossTracker.AddDowned(NPCID.Spazmatism, false, true);
 
-				ExitSpawned = true;
-
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Projectile.NewProjectile(src, new Vector2(Width / 2, BlockLayer - 16).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-			}
+			IEntitySource src = Entity.GetSource_NaturalSpawn();
+			Projectile.NewProjectile(src, new Vector2(Width / 2, BlockLayer - 16).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
 	}
 }

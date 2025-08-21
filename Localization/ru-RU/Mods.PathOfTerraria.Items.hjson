@@ -1,17 +1,17 @@
 MapCommon: {
-	PlaceOnDevice: Поместите это на Устройство карты, чтобы использовать
+	PlaceOnDevice: Поместите это на \"Устройство карты"\, чтобы использовать
 	BossUses: Может быть использовано определенное количество раз в зависимости от количества игроков
-	BossBase: "'''"
+	BossBase: '''{$PlaceOnDevice}\n{$BossUses}'''
 }
 
 HealingPotionPickup: {
-	DisplayName: Получение целебного зелья
+	DisplayName: Подобрано зелье здоровья
 	Tooltip: ""
-	Pickup: Целебное зелье
+	Pickup: Зелье здоровья
 }
 
 ManaPotionPickup: {
-	DisplayName: Получение зелья маны
+	DisplayName: Подобрано зелье маны
 	Tooltip: ""
 	Pickup: Зелье маны
 }
@@ -37,7 +37,7 @@ Sword: {
 }
 
 Broadsword: {
-	DisplayName: Фламберг
+	DisplayName: Палаш
 	Tooltip: ""
 }
 
@@ -68,7 +68,7 @@ BodyArmor: {
 }
 
 Breastplate: {
-	DisplayName: Нагрудник
+	DisplayName: " Кираса"
 	Tooltip: ""
 }
 
@@ -78,7 +78,7 @@ Crown: {
 }
 
 Visor: {
-	DisplayName: Маска
+	DisplayName: Забрало
 	Tooltip: ""
 }
 
@@ -93,7 +93,7 @@ BurningRedBoots: {
 }
 
 Greaves: {
-	DisplayName: Поножи
+	DisplayName: Наголенники
 	Tooltip: ""
 }
 
@@ -138,17 +138,17 @@ Grimoire: {
 }
 
 CopperBroadsword: {
-	DisplayName: Медный широкий меч
+	DisplayName: Медный палаш
 	Tooltip: ""
 }
 
 IronBroadsword: {
-	DisplayName: Железный широкий меч
+	DisplayName: Железный палаш
 	Tooltip: ""
 }
 
 SteelBroadsword: {
-	DisplayName: Стальной широкий меч
+	DisplayName: Стальной палаш
 	Tooltip: ""
 }
 
@@ -183,7 +183,7 @@ WoodenShortBow: {
 }
 
 LeafWhip: {
-	DisplayName: Плеть из листьев
+	DisplayName: Хлыст из листьев
 	Tooltip: ""
 }
 
@@ -214,7 +214,7 @@ StoneBoomerang: {
 
 FireStarter: {
 	DisplayName: Воспламенитель
-	AltUseDescription: 100% шанс попадания в огонь! на 3 секунды
+	AltUseDescription: 100% шанс применить «В огне!» на 3 секунды
 	Description: Тлеющий кусок дерева.
 	Tooltip: ""
 }
@@ -225,22 +225,22 @@ YellowJewel: {
 }
 
 BarbedLeatherWhip: {
-	DisplayName: Кожаная плеть с наконечниками
+	DisplayName: Кожаный хлыст с шипами
 	Tooltip: ""
 }
 
 ChainWhip: {
-	DisplayName: Цепная плеть
+	DisplayName: Цепной хлыст
 	Tooltip: ""
 }
 
 LeatherWhip: {
-	DisplayName: Кожаная плеть
+	DisplayName: Кожаный хлыст
 	Tooltip: ""
 }
 
 WebWhip: {
-	DisplayName: Паутинная плеть
+	DisplayName: Паутинный хлыст
 	Tooltip: ""
 }
 
@@ -270,22 +270,22 @@ GuardianAngel: {
 	DisplayName: Ангел-хранитель
 	Tooltip: ""
 	AltUseDescription: Щелкните правой кнопкой мыши, чтобы наложить святое кольцо на ближайших врагов.
-	Description: Священный свет наполняет вас силой
+	Description: Священный свет наполняет тебя силой
 }
 
 BloodOath: {
-	DisplayName: Кровавый обет
+	DisplayName: Клятва кровью
 	Tooltip: ""
-	AltUseDescription: "'''"
-	Description: Зубы мелькают в периферии вашего зрения, но исчезают, когда вы сосредотачиваетесь на них
-	DeathReason: "{0} дал слишком много обетов."
+	AltUseDescription: Щёлкните правой кнопкой мыши, чтобы дать клятву. Каждый удар наносит вам 1 ед. урона и добавляет клятву врагу.\nЩелкните правой кнопкой мыши ещё раз после удара по врагам, чтобы исцелить 3 ед. урона за стек на врага.
+	Description: Зубы заполняют ваше периферийное зрение, но рассеиваются, когда вы концентрируетесь на них.
+	DeathReason: "{0} дал слишком много клятв."
 }
 
 GrimoireItem: {
 	DisplayName: Гримуар
 	AltUseDescription: Щелкните правой кнопкой мыши, чтобы открыть Менagerie.
 	Control: Управляйте {0} с помощью мыши.
-	ControlNone: "[c/999999:Не выбрано ни одного призыва! Выберите одного в Менagerie.]"
+	ControlNone: "[c/999999:Не выбрано ни одного Существа! Выберите одного в Зверинце.]"
 	Description: "'Маленькая книга хранит большие секреты.'"
 	Tooltip: ""
 }
@@ -565,124 +565,92 @@ PlatinumStaff: {
 
 GlimmeringShard: {
 	DisplayName: Мерцающий осколок
-	/* Tooltip:
-		'''
-		Rerolls the affixes on Magic rarity items
-		Hold an item then right click this Shard to reroll the item
-		'Glimmers and shines unnaturally'
-		''' */
+	Tooltip: "'''"
 }
 
 CorruptShard: {
-	DisplayName: Искаженный осколок
-	/* Tooltip:
-		'''
-		Chaotic and unstable
-		Has a chance to add an additional affix and corrupt any item, disabling any future item interactions
-		Has a chance to reduce Uniques into Rare items of the same kind, rerolling them at the same level
-		Has a large chance to do nothing
-		'Pulses with malaise'
-		''' */
+	DisplayName: Осколок Искажения
+	Tooltip: Хаотичный и нестабильный\nИмеет шанс добавить дополнительное свойство и испортить предмет, отключив любые будущие взаимодействия с предметами\nИмеет шанс превратить Уникальные предметы в Редкие того же типа, перебрасывая их на тот же уровень\nИмеет большой шанс ничего не сделать\n'Импульсы с дискомфортом'
 }
 
 AscendantShard: {
-	DisplayName: Возвышенный осколок
-	/* Tooltip:
-		'''
-		Adds a new affix to an item
-		Hold an item then right click this Shard to add a new affix
-		'A strong sense of power emanates from it'
-		''' */
+	DisplayName: Осколок Возвышения
+	Tooltip: Наделяет предмет дополнительным свойством\nУдерживайте предмет, затем щелкните правой кнопкой мыши по этому осколку, чтобы добавить новое свойство\n'От него исходит сильное чувство силы'
 }
 
 UnfoldingShard: {
-	DisplayName: Разворачивающийся осколок
-	/* Tooltip:
-		'''
-		Upgrades a normal item to a magic item
-		Hold an item then right click this Shard to upgrade
-		'It almost looks like it's moving inside'
-		''' */
+	DisplayName: Осколок Превращения
+	Tooltip: Улучшает обычный предмет до магического предмета\nУдерживайте предмет, затем щелкните правой кнопкой мыши по этому осколку, чтобы улучшить его\n'Кажется, будто оно движется внутри'
 }
 
 LunarLiquid: {
 	DisplayName: Лунная жидкость
-	Tooltip: "'''"
+	Tooltip: Искажает реальность на короткое время\n'Ужасный вкус'
 }
 
 LunarShard: {
 	DisplayName: Лунный осколок
-	Tooltip: "'''"
+	Tooltip: Небольшой элемент, используемый для призыва Глаза Ктулху\nМожно отдать Элдрику после квеста «Восходящее знамение»
 	InQuest: Во время квеста 'Восходящее знамение'
 }
 
 LunarObject: {
 	DisplayName: Лунное зелье
-	Tooltip: "'''"
+	Tooltip: Бросьте его на землю, чтобы открыть портал во владения Глаза\n'Запахи звездной пыли и смерти'
 }
 
 EoCMap: {
 	DisplayName: Карта Глаза Ктулху
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет плесенью и дождём'''
 }
 
 EoWMap: {
 	DisplayName: Карта Пожирателя миров
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет гнилью и костями'''
 }
 
 EchoingShard: {
-	DisplayName: Эхо-осколок
-	/* Tooltip:
-		'''
-		Creates a clone of an item
-		Hold an item then right click this Shard to clone
-		'I can see myself!'
-		''' */
+	DisplayName: Осколок Эха
+	Tooltip: Создает клон элемента\nУдерживайте предмет, затем щелкните правой кнопкой мыши этот осколок, чтобы клонировать его\n'Я вижу себя!'
 }
 
 RadiantShard: {
-	DisplayName: Сияющий осколок
-	/* Tooltip:
-		'''
-		Rerolls the affix values of an item
-		Hold an item then right click this Shard to reroll affix values
-		'It's hard to look at'
-		''' */
+	DisplayName: Осколок Сияния
+	Tooltip: Изменяет значения свойства предмета\nУдерживайте предмет, затем щелкните правой кнопкой мыши по этому Осколку, чтобы изменить значения свойства\n'Трудно смотреть на это'
 }
 
 BoCMap: {
 	DisplayName: Карта Мозга Ктулху
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет плотью и желчью'''
 }
 
 BeeMap: {
 	DisplayName: Карта пчел
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет сладостью и ядом'''
 }
 
 LargeStinger: {
 	DisplayName: Большое жало
-	Tooltip: "'''"
+	Tooltip: '''{$Mods.PathOfTerraria.Misc.GrimoireMaterial}\n'Обращаться осторожно.'''
 }
 
 DeerclopsMap: {
 	DisplayName: Карта Дирклопса
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет холодом и страхом'''
 }
 
 SimpleCompass: {
 	DisplayName: Простой компас
-	Tooltip: "'''"
+	Tooltip: Удерживайте, чтобы увидеть путь к древним руинам в снежном биоме\nКогда близко, разбивает руины\n'Просто, но полезно'
 }
 
 AncientLeadBrickItem: {
-	DisplayName: Древний свинцовый кирпич
+	DisplayName: Древний Свинцовый Кирпич
 	Tooltip: ""
 }
 
 Antlers: {
-	DisplayName: Странные рога
+	DisplayName: Странные Рога
 	Tooltip: "'Неприятно холодные на ощупь'"
 }
 
@@ -698,17 +666,17 @@ StoneRing: {
 
 AncientEvilBook: {
 	DisplayName: Древняя зловещая книга
-	Tooltip: "'''"
+	Tooltip: Можно использовать в простом ритуале\nНа внутренней стороне обложки имеется надпись:\n\nC E C\n- B -\n\n'В нем говорится о многочисленных злодеяниях и несчастьях'
 
 	PostSkeletronTooltip: {
-		0: The inside of the cover is a mess of red and black
-		1: "'For now, it speaks elsewhere'"
+		0: Внутренняя часть обложки представляет собой смесь красного и черного
+		1: На данный момент, он говорит в другом месте
 	}
 }
 
 SkeletronMap: {
 	DisplayName: Карта Скелетрона
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет паутиной и металлом'''
 }
 
 FireMawTriggerItem: {
@@ -717,7 +685,7 @@ FireMawTriggerItem: {
 }
 
 DwarvenGreatsword: {
-	Description: Меч, кованный опытным кузнецом и магифицированный безумцем.
+	Description: Меч, кованный опытным кузнецом и увеличен безумцем.
 	AltUseDescription: Щелкните правой кнопкой мыши, чтобы выпустить дух Трайна Железного Кулака, который широко и быстро размахивает Дварфским Великим Молотом
 	DisplayName: Дварфский Великий Меч
 	Tooltip: ""
@@ -726,18 +694,18 @@ DwarvenGreatsword: {
 Twinbow: {
 	DisplayName: Двойной лук
 	Tooltip: ""
-	Description: "'''"
+	Description: Бесконечный опыт охотника, воплощенный в металле опытным мастером-металлистом.\nВыстреливает двумя бронебойными стрелами за выстрел.
 	AltUseDescription: Щелкните правой кнопкой мыши, чтобы зарядить залп из 6 пробивающих защиту стрел.
 }
 
 FlamingEye: {
 	DisplayName: Пылающий глаз
-	Tooltip: "'''"
+	Tooltip: '''{$Mods.PathOfTerraria.Misc.GrimoireMaterial}\n'Обжигает не кожу, а душу.'''
 }
 
 SoulfulAsh: {
 	DisplayName: Душевный пепел
-	Tooltip: "'''"
+	Tooltip: '''{$Mods.PathOfTerraria.Misc.GrimoireMaterial}\n'Тихо шепчет тебе.'''
 }
 
 TinyHat: {
@@ -749,42 +717,27 @@ TinyHat: {
 
 VoidPearl: {
 	DisplayName: Жемчужина пустоты
-	Tooltip: "'''"
+	Tooltip: Бросьте в Подземный мир пепел, чтобы посеять хаос и призвать Стену Плоти\nПримечание от Аларика: \n\"Это будет очень сильно взрываться, не бросайте это в то, что вам дорого! Или бросайте, мне всё равно!\
 }
 
 WoFMap: {
 	DisplayName: Карта Стены Плоти
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет страхом и надеждой'''
 }
 
 LimpidShard: {
-	DisplayName: Прозрачный осколок
-	/* Tooltip:
-		'''
-		Turns a magic or rare item normal
-		Hold an item then right click this Shard to turn item normal
-		'It looks so plain'
-		''' */
+	DisplayName: Осколок Ясности
+	Tooltip: Превращает магический или редкий предмет в обычный\nУдерживайте предмет, затем щелкните правой кнопкой мыши по этому Осколку, чтобы превратить предмет в обычный вид\n'Это выглядит так просто'
 }
 
 MysticShard: {
-	DisplayName: Мистический осколок
-	/* Tooltip:
-		'''
-		Turns a normal item rare
-		Hold an item then right click this Shard to turn item rare
-		'It's like an ember in the dark'
-		''' */
+	DisplayName: Осколок Мистики
+	Tooltip: Превращает обычный предмет в редкий\nУдерживайте предмет, затем щелкните правой кнопкой мыши по этому осколку, чтобы сделать предмет редким\n'Это как тлеющий уголек в темноте'
 }
 
 ShiftingShard: {
-	DisplayName: Изменяющийся осколок
-	/* Tooltip:
-		'''
-		Reroll the modifiers on a Rare Item
-		Hold an item then right click this Shard to reroll the modifiers
-		'I can't tell what it's doing'
-		''' */
+	DisplayName: Осколок Изменений
+	Tooltip: Пересоздать  модификаторы на Редкий предмет\nУдерживайте предмет, затем щелкните правой кнопкой мыши по этому Осколку, чтобы пересоздать модификаторы\n'Я не могу понять, что он делает'
 }
 
 BrokenBookcaseItem: {
@@ -793,7 +746,7 @@ BrokenBookcaseItem: {
 }
 
 PlankShield: {
-	DisplayName: Дощатый щит
+	DisplayName: Щит из Досок
 	Tooltip: ""
 }
 
@@ -803,22 +756,22 @@ CrimsonBulwark: {
 }
 
 ObsidianShell: {
-	DisplayName: Обсидиановая оболочка
+	DisplayName: Обсидиановая Ракушка
 	Tooltip: ""
 }
 
 ShadowBarrier: {
-	DisplayName: Теневая преграда
+	DisplayName: Теневой Барьер
 	Tooltip: ""
 }
 
 BronzeKiteshield: {
-	DisplayName: Бронзовый кайт-щит
+	DisplayName: Бронзовый Каплевидный Щит
 	Tooltip: ""
 }
 
 LeatherBuckler: {
-	DisplayName: Кожаный баклер
+	DisplayName: Кожаный Щит
 	Tooltip: ""
 }
 
@@ -833,27 +786,27 @@ RunestoneItem: {
 }
 
 PoweredRunestoneItem: {
-	DisplayName: Заряженный рунный камень
+	DisplayName: Заряженный Рунный Камень
 	Tooltip: ""
 }
 
 ForestMap: {
 	DisplayName: Карта леса
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет травой и соком растений'''
 }
 
 LivingWoodBlockerItem: {
-	DisplayName: Блокировщик живого дерева
+	DisplayName: Живой Деревянный Блокировщик
 	Tooltip: ""
 }
 
-EntBannerItem.DisplayName: Ent Banner
-EntlingBannerItem.DisplayName: Entling Banner
+EntBannerItem.DisplayName: Знамя Энтов
+EntlingBannerItem.DisplayName: Знамя Энтлинга
 
 WardensBow: {
 	DisplayName: Лук Стража
 	Tooltip: ""
-	AltUse: "'''"
+	AltUse: '''Щелкните правой кнопкой мыши, чтобы выстрелить стрелой с естественной силой\nСтрела разделяется на три осколка, нанося дополнительный урон\nОсколки и стрела имеют хороший шанс нанести эффект обездвиживания '''
 }
 
 RootedAmulet: {
@@ -861,10 +814,10 @@ RootedAmulet: {
 	Tooltip: ""
 }
 
-AshWraithBannerItem.DisplayName: Ash Wraith Banner
-FireMawBannerItem.DisplayName: Fire Maw Banner
-MineraBannerItem.DisplayName: Minera Banner
-CanopyBirdBannerItem.DisplayName: Canopy Bird Banner
+AshWraithBannerItem.DisplayName: Знамя Пепельного призрака
+FireMawBannerItem.DisplayName: Знамя Огненной Пасти
+MineraBannerItem.DisplayName: Знамя Минера
+CanopyBirdBannerItem.DisplayName: Знамя Навес-Птицы
 
 GrovetenderTrophyItem: {
 	DisplayName: Трофей Хранителя рощи
@@ -873,26 +826,26 @@ GrovetenderTrophyItem: {
 
 QueenSlimeMap: {
 	DisplayName: Карта Королевы Слизней
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет феями и изобилием'''
 }
 
 BrittleCrystalItem: {
-	DisplayName: Хрупкий кристалл
+	DisplayName: Хрупкий Кристалл
 	Tooltip: ""
 }
 
 TwinsMap: {
 	DisplayName: Карта Близнецов
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет гнилью и нефтью'''
 }
 
 MechLampItem: {
-	DisplayName: Механическая лампа
+	DisplayName: Механическая Лампа
 	Tooltip: ""
 }
 
-CircuitSkullBannerItem.DisplayName: Circuit Skull Banner
-SecurityDroneBannerItem.DisplayName: Security Drone Banner
+CircuitSkullBannerItem.DisplayName: Знамя Проклятого Черепа
+SecurityDroneBannerItem.DisplayName: Знамя Дрона Безопасности
 
 ConstantLaserItem: {
 	DisplayName: Постоянный лазер
@@ -910,7 +863,7 @@ CannonAnchorItem: {
 }
 
 CannonBombAnchorItem: {
-	DisplayName: Якорь бомбы пушки
+	DisplayName: Якорь Пушка-Бомба
 	Tooltip: ""
 }
 
@@ -926,12 +879,12 @@ GrabberAnchorItem: {
 
 PrimeMap: {
 	DisplayName: Карта Прайма
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет металлом и гарью'''
 }
 
-HauntedHeadBannerItem.DisplayName: Haunted Head Banner
-SwarmScarabBannerItem.DisplayName: Swarm Scarab Banner
-AntlionTrapperBannerItem.DisplayName: Antlion Trapper Banner
+HauntedHeadBannerItem.DisplayName: Знамя Одержимого черепа
+SwarmScarabBannerItem.DisplayName: "Знамя Роя Скарабея "
+AntlionTrapperBannerItem.DisplayName: Знамя Муравьиного Льва
 
 DefenseShrineItem: {
 	DisplayName: Предмет святилища защиты
@@ -1000,26 +953,26 @@ ForestUnstoppableShrineItem: {
 
 DesertMap: {
 	DisplayName: Карта пустыни
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет песком и костями'''
 }
 
 DevourersTail: {
 	DisplayName: Хвост Пожирателя
 	Tooltip: Хвост мощного зверя света
-	AltUseDescription: "'''"
+	AltUseDescription: Щелкните правой кнопкой мыши, чтобы хлестать значительно быстрее\nХлыст светится в темноте при быстром хлестании.
 }
 
-WormLightningBannerItem.DisplayName: Lightning Sprite Banner
+WormLightningBannerItem.DisplayName: Баннер Молниеносного Спрайта
 
 SunsoulStaffItem: {
 	DisplayName: Посох Души Солнца
 	Tooltip: Оставшаяся сила солнца дремлет
-	AltUseDescription: "'''"
+	AltUseDescription: Щелкните правой кнопкой мыши, чтобы вызвать Солнечного Духа\nСолнечный Дух прыгает между вами и вашей мышкой\nПока Дух активен, вы все еще можете использовать основной посох
 }
 
 AugmentationOrb: {
 	DisplayName: Сфера усиления навыков
-	Tooltip: "'''"
+	Tooltip: Может использоваться для разблокировки слота улучшения для данного навыка.\nВойдите в подменю навыка, чтобы использовать
 }
 
 SunDevourerTrophyItem: {
@@ -1044,24 +997,24 @@ SecurityDroneTriggerItem: {
 
 MechDrive: {
 	DisplayName: Механический привод
-	Tooltip: "'Кажется, интерфейсится с неизвестными сигналами по всему разрушенному городу'"
+	Tooltip: "'Кажется, он взаимодействует с неизвестными сигналами по всему разрушенному городу'"
 }
 
 EnergizerCoreTriggerItem: {
-	DisplayName: Триггер Ядра Энергизатора
+	DisplayName: Триггер Энергетического ядра
 	Tooltip: ""
 }
 
-EnergizerCoreBannerItem.DisplayName: Energizer Core Banner
+EnergizerCoreBannerItem.DisplayName: Баннер Энергетического ядра
 
 MechChip: {
 	DisplayName: Механическая микросхема
-	Tooltip: "'''"
+	Tooltip: Небольшое, нестабильное устройство, подключаемое к Разрушителю\n{$MechDrive.Tooltip}
 }
 
 DestroyerMap: {
 	DisplayName: Карта Уничтожителя
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет серой и ржавчиной'''
 }
 
 MechChestItem: {
@@ -1071,12 +1024,12 @@ MechChestItem: {
 
 PlanteraMap: {
 	DisplayName: Карта Плантеры
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет плесенью и грязью'''
 }
 
 OffsetTool: {
 	DisplayName: Инструмент смещения
-	Tooltip: "'''"
+	Tooltip: Используется для создания смещений для использования в системе RoomDatabase.\nЩелкните правой кнопкой мыши для установки якоря.\nЩелкните левой кнопкой мыши, чтобы добавить дополнительное смещение к пулу.\nЗажмите колесико мыши, чтобы вставить и очистить смещения.
 }
 
 LihzahrdGuardItem: {
@@ -1086,25 +1039,25 @@ LihzahrdGuardItem: {
 
 GolemMap: {
 	DisplayName: Карта Голема
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет кирпичом и дымом'''
 }
 
 FishronMap: {
 	DisplayName: Карта Герцога Фишрона
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет чистой водой и грибами'''
 }
 
 EoLMap: {
 	DisplayName: Карта Императрицы Света
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет светом и приторностью'''
 }
 
-GreaterFairyBannerItem.DisplayName: Greater Fairy Banner
-PrismatismBannerItem.DisplayName: Prismatism Banner
+GreaterFairyBannerItem.DisplayName: Великое Знамя Феи
+PrismatismBannerItem.DisplayName: Баннер «Призма»
 
 MoonMap: {
 	DisplayName: Карта Господина Луны
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет мерцанием'''
 }
 
 AncientTabletFour: {
@@ -1134,7 +1087,7 @@ AncientTablet: {
 
 CultistMap: {
 	DisplayName: Карта Лунатичного Культиста
-	Tooltip: "'''"
+	Tooltip: '''{$MapCommon.BossBase}\n'Карта пахнет копотью и космосом'''
 }
 
 AntlerShard: {
@@ -1154,4 +1107,14 @@ RubyRing: {
 SapphireRing: {
 	// DisplayName: Sapphire Ring
 	// Tooltip: ""
+}
+
+PusBlockItem: {
+	// DisplayName: Pus Block
+	// Tooltip: "'Ew.'"
+}
+
+WeakMalaiseItem: {
+	// DisplayName: Weak Malaise
+	// Tooltip: "'Malicious yet effervescent.'"
 }

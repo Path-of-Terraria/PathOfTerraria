@@ -9,9 +9,11 @@ namespace PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 internal class BossDomainLivesPlayer : ModPlayer
 {
 	public bool InDomain = false;
-	public int LivesLeft = 0;
+	public int LivesLost = 0;
+	public int LivesGained = 0;
 
 	private int _deadTime = 0;
+	private int _maxPlayersWitnessed;
 
 	public override void Load()
 	{
@@ -65,7 +67,12 @@ internal class BossDomainLivesPlayer : ModPlayer
 
 	public override bool PreKill(double damage, int hitDirection, bool pvp, ref bool playSound, ref bool genDust, ref PlayerDeathReason damageSource)
 	{
-		if (InDomain && --LivesLeft > 0)
+		if (InDomain)
+		{
+			LivesLost++;
+		}
+
+		if (InDomain && GetLivesLeft() > 0)
 		{
 			Player.statLife = Player.statLifeMax2;
 			Player.Teleport(new Vector2(Main.spawnTileX, Main.spawnTileY).ToWorldCoordinates(), TeleportationStyleID.RodOfDiscord);
@@ -100,15 +107,26 @@ internal class BossDomainLivesPlayer : ModPlayer
 			Player.deadForGood = false;
 		}
 
-		LivesLeft = 0;
+		LivesLost = 0;
+		LivesGained = 0;
+		_maxPlayersWitnessed = 0;
 	}
 
 	private void SetInDomain()
 	{
-		LivesLeft = GetLivesPerPlayer();
+		LivesLost = 0;
+		LivesGained = 0;
+		_maxPlayersWitnessed = 0;
 	}
 
-	public static int GetLivesPerPlayer()
+	public int GetLivesLeft()
+	{
+		_maxPlayersWitnessed = Math.Max(_maxPlayersWitnessed, Main.CurrentFrameFlags.ActivePlayersCount);
+
+		return Math.Max(0, GetLivesPerPlayer(_maxPlayersWitnessed) - LivesLost) + LivesGained;
+	}
+
+	public static int GetLivesPerPlayer(int playerCount)
 	{
 		if (SubworldSystem.Current is WallOfFleshDomain)
 		{
@@ -120,9 +138,7 @@ internal class BossDomainLivesPlayer : ModPlayer
 			return 6;
 		}
 
-		int plr = Main.CurrentFrameFlags.ActivePlayersCount;
-
-		return plr switch
+		return playerCount switch
 		{
 			1 => 6,
 			2 => 3,

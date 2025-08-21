@@ -22,7 +22,7 @@ PlatinumGlaiveThrown.DisplayName: Платиновая глефа
 
 OwlSummon: {
 	DisplayName: Сова
-	Description: ""
+	Description: Летит к курсору. Наносит урон при контакте.
 }
 
 BatSummon: {
@@ -32,7 +32,7 @@ BatSummon: {
 
 PoacherSummon: {
 	DisplayName: Браконьер
-	Description: ""
+	Description: Преследует ваш курсор.\nПрыгает к вашему курсору, если курсор находится над ним.\nНаносит урон при контакте.
 }
 
 GrimoireVisageEffect.DisplayName: Эффект лица гримуара
@@ -72,7 +72,7 @@ CrimsonMaw.DisplayName: Алый зев
 
 HornetSummon: {
 	DisplayName: Шершень
-	Description: ""
+	Description: Преследует курсор.\nСтреляет снарядами в ближайшего врага.
 }
 
 QueenBeePortal.DisplayName: Портал Королевы пчел
@@ -88,7 +88,7 @@ WoFRitualProj.DisplayName: Ритуал
 
 OobodopSummon: {
 	DisplayName: Подобум
-	Description: ""
+	Description: Рывок в сторону курсора. Увеличивается в размере, если находится в лаве или поражает врагов. Щелкните правой кнопкой мыши, чтобы взорваться, поглотив всю накопленную лаву.
 }
 
 ExplosionHitbox.DisplayName: Взрыв
@@ -96,7 +96,7 @@ ExplosionHitboxFriendly.DisplayName: Взрыв
 
 DemonSummon: {
 	DisplayName: Демон
-	Description: ""
+	Description: Следит за курсором. Стреляет различными потусторонними оружиями в самого сильного врага поблизости.
 }
 
 DemonWeapons.DisplayName: Оружие демона
@@ -110,9 +110,9 @@ RunestoneBurst: {
 	DisplayName: Взрыв рунного камня
 
 	DeathReasons: {
-		0: "{0} was burst apart."
-		1: "{0} was bludgeoned by magical energy."
-		2: "{0} couldn't handle the power."
+		0: "{0} разорвало на части."
+		1: "{0} разорвало на части."
+		2: "{0} разорвало на части."
 	}
 }
 

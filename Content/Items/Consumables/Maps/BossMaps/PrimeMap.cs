@@ -8,8 +8,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class PrimeMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 59;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 58 && NPC.downedMechBoss3;
+	public override int WorldTier => WorldLevelBasedOnTier(4) + 1;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(4) && NPC.downedMechBoss3;
 
 	public override void SetStaticDefaults()
 	{

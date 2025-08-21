@@ -11,9 +11,13 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
 internal class MoonDomainSystem : ModSystem
 {
 	public static float EffectStrength = 1f;
-	public static bool BossSpawned = false;
+	public static FightTracker FightTracker = new([NPCID.MoonLordCore])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
-	private static bool ExitSpawned = false;
+	private static bool assumeBossSpawned; // Patch-up for client & server code being mixed. Remove if FightTracker's backing killcount system gets some MP synchronization.
 
 	public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
 	{
@@ -41,8 +45,7 @@ internal class MoonDomainSystem : ModSystem
 	{
 		if (SubworldSystem.Current is not MoonLordDomain)
 		{
-			BossSpawned = false;
-			ExitSpawned = false;
+			FightTracker.UpdateState();
 			return;
 		}
 
@@ -52,7 +55,9 @@ internal class MoonDomainSystem : ModSystem
 			return;
 		}
 
-		if (ExitSpawned)
+		FightState state = FightTracker.UpdateState();
+
+		if (assumeBossSpawned && !NPC.AnyNPCs(NPCID.MoonLordCore))
 		{
 			EffectStrength = MathHelper.Lerp(EffectStrength, 0, 0.05f);
 		}
@@ -68,20 +73,17 @@ internal class MoonDomainSystem : ModSystem
 			}
 		}
 
-		if (!BossSpawned && allPlayersAtop && Main.CurrentFrameFlags.ActivePlayersCount > 0)
+		if (state == FightState.NotStarted && allPlayersAtop && Main.CurrentFrameFlags.ActivePlayersCount > 0)
 		{
-			BossSpawned = true;
-
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
 				int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), Main.maxTilesX * 8, MoonLordDomain.TopOfTheWorld * 16 - 300, NPCID.MoonLordCore);
 			}
+
+			assumeBossSpawned = true;
 		}
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.MoonLordCore) && !ExitSpawned)
+		else if (state == FightState.JustCompleted)
 		{
-			ExitSpawned = true;
-
 			HashSet<Player> players = [];
 
 			foreach (Player plr in Main.ActivePlayers)

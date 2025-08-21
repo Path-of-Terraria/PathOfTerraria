@@ -8,8 +8,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class TwinsMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 55;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 54 && NPC.downedMechBoss2;
+	public override int WorldTier => WorldLevelBasedOnTier(2) + 1;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(2) && NPC.downedMechBoss2;
 
 	public override void SetStaticDefaults()
 	{

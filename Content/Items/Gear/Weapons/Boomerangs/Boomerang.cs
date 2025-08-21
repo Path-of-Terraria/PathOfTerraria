@@ -7,13 +7,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Boomerangs;
 
-internal abstract class Boomerang : Gear, GetItemLevel.IItem
+internal abstract class Boomerang : Gear
 {
-	int GetItemLevel.IItem.GetItemLevel(int realLevel)
-	{
-		return 1;
-	}
-
 	protected virtual int BoomerangCount => 1;
 	protected override string GearLocalizationCategory => "Boomerang";
 

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
@@ -50,7 +51,7 @@ public sealed class ItemTooltipBuilder : ModSystem
 
 			List<DrawableTooltipLine> result = lastDrawTooltipsList;
 			lastDrawTooltipsList = null;
-			return result;
+			return result ?? [];
 		}
 		finally
 		{
@@ -61,10 +62,11 @@ public sealed class ItemTooltipBuilder : ModSystem
 	}
 
 	// This function is an injection target.
+	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
 	private static void VanillaDrawItemTooltip()
 	{
-
 	}
+
 	private static void VanillaDrawItemTooltipCallBuilder(ILContext ctx)
 	{
 		var il = new ILCursor(ctx);

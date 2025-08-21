@@ -35,3 +35,12 @@ internal class WeakMalaise : ModTile
 		(r, g, b) = (sine * 0.67f, sine * 0.2f, sine * 0.9f);
 	}
 }
+
+internal class WeakMalaiseItem : ModItem
+{
+	public override void SetDefaults()
+	{
+		Item.DefaultToPlaceableTile(ModContent.TileType<WeakMalaise>());
+		Item.value = Item.buyPrice(0, 0, 0, 5);
+	}
+}
