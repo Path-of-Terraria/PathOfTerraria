@@ -42,7 +42,6 @@ public class UnAndEquipSocketSystem : ILoadable
 	public static void PotentialGearEquip1(Item onSlot)
 	{
 		Player player = Main.player[Main.myPlayer];
-		Item inHand = Main.mouseItem;
 
 		if (onSlot.active && GearGlobalItem.IsGearItem(onSlot))
 		{

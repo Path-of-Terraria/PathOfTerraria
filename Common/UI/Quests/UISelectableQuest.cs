@@ -28,7 +28,7 @@ public class UISelectableQuest : UISelectableOutlineRectPanel
 		Title = new UISimpleWrappableText(quest.DisplayName.Value, 0.85f);
 		Title.Left.Set(14f, 0f);
 		Title.Top.Set(-8f, 0f);
-		Title.Colour = new Color(43, 28, 17);
+		Title.Colour = quest.Completed ? Color.Gray : new Color(43, 28, 17);
 		Append(Title);
 	}
 
