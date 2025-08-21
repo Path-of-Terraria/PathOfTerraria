@@ -268,6 +268,8 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 		Affixes.ForEach(a => a.PreRarity(npc));
 
+		bool alwaysDisplayHealthbar = false;
+
 		switch (Rarity)
 		{
 			case ItemRarity.Normal:
@@ -277,17 +279,25 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 				npc.lifeMax *= 2; // Magic mobs get 100% increased life
 				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
 				npc.damage = (int)(npc.damage * 1.1f); // Magic mobs get 10% increase damage
+				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Rare:
 				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(255, 255, 0), 0.5f);
 				npc.lifeMax *= 3; // Rare mobs get 200% Increased Life
 				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
 				npc.damage = (int)(npc.damage * 1.2f); // Magic mobs get 20% increase damage
+				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Unique:
+				alwaysDisplayHealthbar = true;
 				break;
 			default:
 				throw new InvalidOperationException("Invalid rarity!");
+		}
+
+		if (alwaysDisplayHealthbar && npc.TryGetGlobalNPC(out HealthbarsNPC healthbars))
+		{
+			healthbars.AlwaysDisplayHealthbar = true;
 		}
 
 		SetName(npc);
