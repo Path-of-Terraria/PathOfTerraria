@@ -3,4 +3,4 @@ NotEnoughMana: Zbyt mała ilość punktów many by rzucić czar
 // RangedWeaponConsumable: Needs a non-consumable weapon
 // WeaponInvalid: Held weapon is invalid for this skill
 // NoAmmo: Needs ammo
-// MissingAffix: Needs affix strength
+// MissingAffix: Needs affix for +skill level on gear

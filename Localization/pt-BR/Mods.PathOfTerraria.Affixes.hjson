@@ -11,7 +11,7 @@
 // BaseLifeAffix.Description: "{1}{0} max health"
 // AddedLifeAffix.Description: "{1}{0}% max health"
 // MultipliedLifeAffix.Description: "{1}{0}% max health multiplier"
-// FlatLifeAffix.Description: "{1}{0} flat max life"
+// FlatLifeAffix.Description: "{1}{0} flat max health"
 // LifeRegenAffix.Description: "{1}{0}% life regeneration"
 // LifeRegenMultiplierAffix.Description: "{1}{0}% life regeneration multiplier"
 // LifePotionPowerAffix.Description: "{1}{0}% stronger healing potions"

@@ -62,9 +62,9 @@ StatUI: {
 	// ManaPotions: Mana Potions
 
 	Help: {
-		// Strength: Grants 5 additional max health per 10 points
+		// Strength: Grants 5 additional maximum health per 10 points
 		// Dexterity: Grants 1% additional global attack speed per 10 points
-		// Intelligence: Grants 5 additional max mana per 10 points
+		// Intelligence: Grants 5 additional maximum mana per 10 points
 	}
 }
 
@@ -273,7 +273,7 @@ Tips: {
 	// 25: The Character Sheet next to the minimap offers a lot of information.
 	// 26: Reforging no longer exists: affixes take their place!
 	// 27: Some domains offer additional movement. Test your jumps!
-	// 28: Fear controls the Deerclops's domain. Keep in the light.
+	// 28: Fear controls the Deerclops' domain. Keep in the light.
 	// 29: '''"If you're ever given the choice, choose explosives every time." - Alaric'''
 	// 30: Always check the alt use of your weapons! They're very diverse, and often useful outside of combat.
 }

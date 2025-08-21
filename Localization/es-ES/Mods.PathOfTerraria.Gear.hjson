@@ -89,7 +89,7 @@ Leggings: {
 
 Battleaxe: {
 	// Name: Battle Axe
-	// AltUse: Right click to sacrifice 5 life to increase damage given and taken temporarily.
+	// AltUse: Right-click to sacrifice 5 health to increase damage given and taken temporarily.
 
 	Prefixes: {
 		// 0: Brutal
@@ -110,7 +110,7 @@ Battleaxe: {
 
 Boomerang: {
 	// Name: Boomerang
-	// AltUse: Right click to send the boomerang in a quick spiral around you.
+	// AltUse: Right-click to send the boomerang in a quick spiral around you.
 
 	Prefixes: {
 		// 0: Spiraling
@@ -131,7 +131,7 @@ Boomerang: {
 
 Bow: {
 	// Name: Bow
-	// AltUse: Right click to charge and fire a significantly stronger and faster shot.
+	// AltUse: Right-click to charge and fire a significantly stronger and faster shot.
 
 	Prefixes: {
 		// 0: Swift
@@ -152,7 +152,7 @@ Bow: {
 
 Staff: {
 	// Name: Staff
-	// AltUse: Right click to overcharge your mana for a short time, summoning projectiles four times faster and automatically firing them
+	// AltUse: Right-click to overcharge your mana for a short time, summoning projectiles four times faster and automatically firing them
 
 	Prefixes: {
 		// 0: Arcane
@@ -175,7 +175,7 @@ Staff: {
 
 Sword: {
 	// Name: Sword
-	// AltUse: Right click to summon a spirit from your blade that lunges forward, healing you for 15 health on hitting an enemy.
+	// AltUse: Right-click to summon a spirit from your blade that lunges forward, healing you for 15 health on hitting an enemy.
 
 	Prefixes: {
 		// 0: Sharp
@@ -217,7 +217,7 @@ Spellbook: {
 
 Wand: {
 	// Name: Wand
-	// AltUse: Right click to summon 4x the normal mana cost to send a flurry of projectiles forward
+	// AltUse: Right-click to summon 4x the normal mana cost to send a flurry of projectiles forward
 
 	Prefixes: {
 		// 0: Forbidden
@@ -238,7 +238,7 @@ Wand: {
 
 Whip: {
 	// Name: Whip
-	// AltUse: Right click to whip once in front of and once behind you in quick succession.
+	// AltUse: Right-click to whip once in front of and once behind you in quick succession.
 
 	Prefixes: {
 		// 0: Searing
@@ -259,7 +259,7 @@ Whip: {
 
 Javelin: {
 	// Name: Javelin
-	// AltUse: Right click to dash towards the cursor, stabbing the first enemy you hit for high damage.
+	// AltUse: Right-click to dash towards the cursor, stabbing the first enemy you hit for high damage.
 
 	Prefixes: {
 		// 0: Piercing
@@ -302,7 +302,7 @@ Grimoire: {
 
 WarShield: {
 	// Name: War Shield
-	// AltUse: Right click to block or reflect projectiles and incoming hits, dealing damage in return.
+	// AltUse: Right-click to block or reflect projectiles and incoming hits, dealing damage in return.
 
 	Prefixes: {
 		// 0: Hardened
