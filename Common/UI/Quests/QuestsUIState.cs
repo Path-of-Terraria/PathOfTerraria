@@ -178,7 +178,7 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			player.PinnedQuest = null;
 		}
 
-		foreach (Quest quest in player.QuestsByName.Values.OrderByDescending(x => x.FullName == player.PinnedQuest))
+		foreach (Quest quest in player.QuestsByName.Values.Where(q => q.Active || q.Completed).OrderByDescending(x => x.FullName == player.PinnedQuest))
 		{
 			UISelectableQuest selectable = new(quest);
 			selectable.OnLeftClick += (a, b) => SelectQuest(quest.FullName);
