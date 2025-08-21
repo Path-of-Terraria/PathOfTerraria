@@ -194,7 +194,7 @@ Quest: {
 	MoonLordQuest: {
 		// Name: The Ending
 		// Description: ""
-		// EnterDomain: Enter the Moon Lords's domain
+		// EnterDomain: Enter the Moon Lord's domain
 		// Boss: Defeat the Moon Lord
 	}
 }
