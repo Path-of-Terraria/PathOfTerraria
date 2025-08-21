@@ -10,16 +10,23 @@ namespace PathOfTerraria.Common.UI;
 /// </summary>
 public sealed class TooltipOverrides : ModSystem
 {
+	private static bool drewHoverItem;
+	private static bool drewMouseItem;
+
 	public override void Load()
 	{
 		IL_Main.MouseTextInner += InjectHoverItemTooltipOverride;
-		On_Main.DrawInterface_33_MouseText += OnDrawMouseText;
-	}
 
-	private static void OnDrawMouseText(On_Main.orig_DrawInterface_33_MouseText orig, Main self)
-	{
-		orig(self);
-		AddDefaultTooltips();
+		On_Main.DrawInterface_34_PlayerChat += static (orig, self) =>
+		{
+			orig(self);
+			AddDefaultTooltips(isLate: false);
+		};
+		On_Main.DrawInterface_41_InterfaceLogic4 += static (orig) =>
+		{
+			orig();
+			AddDefaultTooltips(isLate: true);
+		};
 	}
 
 	private static bool ShouldOverrideHoverItemTooltip()
@@ -27,17 +34,21 @@ public sealed class TooltipOverrides : ModSystem
 		return true;
 	}
 
-	private static void AddDefaultTooltips()
+	private static void AddDefaultTooltips(bool isLate)
 	{
 		// Create default tooltips to override the game's with ours.
 		Player player = Main.LocalPlayer;
 
-
 		Item hoverItem = Main.HoverItem;
 		Item mouseItem = Main.mouseItem?.IsAir == false ? Main.mouseItem : player.inventory[58];
-		bool drawForHoverItem = (hoverItem?.IsAir) == false && ShouldOverrideHoverItemTooltip();
-		bool drawForMouseItem = (mouseItem?.IsAir) == false && Main.LocalPlayer.mouseInterface && !player.ItemAnimationActive && mouseItem.IsNotSameTypePrefixAndStack(hoverItem);
+		bool drawForHoverItem = (!isLate || !drewHoverItem) && (hoverItem?.IsAir) == false && ShouldOverrideHoverItemTooltip();
+		bool drawForMouseItem = (!isLate || !drewMouseItem) && (mouseItem?.IsAir) == false && Main.LocalPlayer.mouseInterface && !player.ItemAnimationActive && mouseItem.IsNotSameTypePrefixAndStack(hoverItem);
 		bool drawSideBySide = drawForHoverItem && drawForMouseItem;
+
+		// If we are reacting to a late Hover/MouseItem mutation, i.e. after the tooltips have already been drawn, then we need to make new instances last a whole tick.
+		uint visibilityTimeInTicks = isLate ? 1u : 0u;
+		drewHoverItem = drawForHoverItem || (isLate && drewHoverItem);
+		drewMouseItem = drawForMouseItem || (isLate && drewHoverItem);
 
 		if (drawForHoverItem)
 		{
@@ -48,7 +59,7 @@ public sealed class TooltipOverrides : ModSystem
 				Position = new Vector2(Main.mouseX + 18, Main.mouseY + 18),
 				Origin = new Vector2(drawSideBySide ? 1f : 0f, 0f),
 				Lines = ItemTooltipBuilder.BuildTooltips(hoverItem, Main.LocalPlayer),
-				VisibilityTimeInTicks = 0,
+				VisibilityTimeInTicks = visibilityTimeInTicks,
 			});
 		}
 
@@ -60,7 +71,7 @@ public sealed class TooltipOverrides : ModSystem
 				AssociatedItem = mouseItem,
 				Position = new Vector2(Main.mouseX + 18, Main.mouseY + 18),
 				Lines = ItemTooltipBuilder.BuildTooltips(mouseItem, Main.LocalPlayer),
-				VisibilityTimeInTicks = 0,
+				VisibilityTimeInTicks = visibilityTimeInTicks,
 			});
 		}
 	}
