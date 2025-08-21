@@ -1,9 +1,8 @@
-﻿using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.ItemDropping;
-using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.Items.Consumables.Maps;
-using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
-using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
+﻿using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
+using Terraria;
+using Terraria.DataStructures;
 
 namespace PathOfTerraria.Core.Commands;
 
@@ -14,18 +13,12 @@ public sealed class SpawnItemCommand : ModCommand
 
 	public override CommandType Type => CommandType.Chat;
 
-	public override string Usage => "[c/ff6a00:Usage: /spawnitem <relative X> <relative Y> <count> <ilevel> <quality increase> <geartype>]";
+	public override string Usage => "[c/ff6a00:Usage: /spawnitem <count> <ilevel> <quality increase> <geartype>]";
 
-	public override string Description => "Spawns item(s) for testing items and loot generation, only x and y positions are necessary.";
+	public override string Description => "Spawns item(s) for testing items and loot generation.";
 
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
-		if (args.Length < 2)
-		{
-			caller.Reply("Command expected 2 arguments", Color.Red);
-			return;
-		}
-
 		string[] nArgs = new string[6];
 		
 		for (int i = 0; i < args.Length; i++)
@@ -35,39 +28,28 @@ public sealed class SpawnItemCommand : ModCommand
 
 		args = nArgs;
 
-		if (!float.TryParse(args[0], out float relX))
-		{
-			caller.Reply("Argument 1 must be a floating-point value", Color.Red);
-			return;
-		}
-
-		if (!float.TryParse(args[1], out float relY))
-		{
-			caller.Reply("Argument 2 must be a floating-point value", Color.Red);
-			return;
-		}
-
-		if (!uint.TryParse(args[2], out uint count))
+		if (!uint.TryParse(args[0], out uint count))
 		{
 			count = 1;
 		}
 
-		if (!uint.TryParse(args[3], out uint ilevel))
+		if (!uint.TryParse(args[1], out uint ilevel))
 		{
 			ilevel = 0;
 		}
 
-		if (!float.TryParse(args[4], out float qualityIncrease))
+		if (!float.TryParse(args[2], out float qualityIncrease))
 		{
 			qualityIncrease = 0;
 		}
 
 		string geartype = args[5];
-		// need to impliment at some point.
+		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops((int)count, (int)ilevel, qualityIncrease);
 
 		for (int i = 0; i < count; i++)
 		{
-			ItemSpawner.SpawnRandomItem(caller.Player.Center + new Vector2(relX, relY), (int)ilevel, qualityIncrease);
+			ItemDatabase.ItemRecord record = items[i];
+			Item.NewItem(new EntitySource_DebugCommand("/spawnitem"), caller.Player.Center, Vector2.Zero, record.Item);
 		}
 
 		caller.Reply("Item(s) spawned!", Color.Green);

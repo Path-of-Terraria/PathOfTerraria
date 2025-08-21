@@ -9,11 +9,13 @@ namespace PathOfTerraria.Common.UI.Utilities;
 public class BlockClickItem : ModSystem
 {
 	// TODO: This is not blocking anything on the right. | or the open achievements button.
-
-	public static bool Block;
+	internal static bool Block;
+	internal static FieldInfo BlockInfo;
 
 	public override void Load()
 	{
+		BlockInfo = typeof(BlockClickItem).GetField("Block", BindingFlags.NonPublic | BindingFlags.Static);
+
 		IL_ItemSlot.OverrideLeftClick += IL_BlockIfBlockingRetTrue;
 		IL_ItemSlot.MouseHover_ItemArray_int_int += IL_BlockIfBlocking;
 		IL_UIElement.MouseOver += IL_BlockIfBlocking;
@@ -34,7 +36,7 @@ public class BlockClickItem : ModSystem
 	private void IL_BlockIfBlocking(ILContext il)
 	{
 		var c = new ILCursor(il);
-		c.Emit(OpCodes.Ldsfld, typeof(BlockClickItem).GetField("Block"));
+		c.Emit(OpCodes.Ldsfld, BlockInfo);
 
 		ILLabel trueLabel = il.DefineLabel();
 		c.Emit(OpCodes.Brfalse, trueLabel);
@@ -46,7 +48,7 @@ public class BlockClickItem : ModSystem
 	private void IL_BlockIfBlockingRetTrue(ILContext il)
 	{
 		var c = new ILCursor(il);
-		c.Emit(OpCodes.Ldsfld, typeof(BlockClickItem).GetField("Block"));
+		c.Emit(OpCodes.Ldsfld, BlockInfo);
 
 		ILLabel trueLabel = c.DefineLabel();
 		c.Emit(OpCodes.Brfalse, trueLabel);

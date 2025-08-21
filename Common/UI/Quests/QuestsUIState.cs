@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
@@ -115,9 +116,9 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		Panel.Append(_completedQuestList = new()
 		{
 			Left = StyleDimension.FromPercent(0.05f),
-			Top = StyleDimension.FromPercent(0.5f),
+			Top = StyleDimension.FromPercent(0.55f),
 			Width = StyleDimension.FromPercent(0.5f),
-			Height = StyleDimension.FromPercent(0.5f)
+			Height = StyleDimension.FromPercent(0.4f)
 		});
 		_completedQuestList.SetScrollbar(new());
 
@@ -170,38 +171,38 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		_completedQuestList.Clear();
 
 		QuestModPlayer player = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
+		Quest pinnedQuest = player.PinnedQuest is not null ? player.QuestsByName[player.PinnedQuest] : null;
+
+		if (pinnedQuest is not null && player.PinnedQuest == pinnedQuest.FullName && pinnedQuest.Completed)
+		{
+			player.PinnedQuest = null;
+		}
 
 		foreach (Quest quest in player.QuestsByName.Values.OrderByDescending(x => x.FullName == player.PinnedQuest))
 		{
-			if (quest.Completed) // Gray out completed quests
+			UISelectableQuest selectable = new(quest);
+			selectable.OnLeftClick += (a, b) => SelectQuest(quest.FullName);
+			selectable.OnRightClick += (a, b) => PinQuest(quest.FullName);
+
+			if (quest.Completed)
 			{
-				_completedQuestList.Add(new UIText(quest.DisplayName.Value, 0.7f)
-				{
-					TextColor = Color.Gray,
-					ShadowColor = Color.Transparent,
-					Left = StyleDimension.FromPixelsAndPercent(26, 0),
-					Height = new(22, 0)
-				});
+				_completedQuestList.Add(selectable);
 			}
-			else if (quest.Active)
+			else
 			{
-				UISelectableQuest selectable = new(quest);
-				selectable.OnLeftClick += (a, b) => SelectQuest(quest.FullName);
-				selectable.OnRightClick += (a, b) => PinQuest(quest.FullName);
-
 				_questList.Add(selectable);
+			}
 
-				if (quest.FullName == player.PinnedQuest)
+			if (quest.FullName == player.PinnedQuest)
+			{
+				Asset<Texture2D> icon = TextureAssets.Cursors[3];
+				UIImage star = new(icon)
 				{
-					Asset<Texture2D> icon = TextureAssets.Cursors[3];
-					UIImage star = new(icon)
-					{
-						Left = new(-icon.Width() / 2, 0),
-						Top = new(-icon.Height() / 2, 0)
-					};
+					Left = new(-icon.Width() / 2, 0),
+					Top = new(-icon.Height() / 2, 0)
+				};
 
-					selectable.Append(star);
-				}
+				selectable.Append(star);
 			}
 		}
 

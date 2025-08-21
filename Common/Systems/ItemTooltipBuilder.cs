@@ -65,8 +65,8 @@ public sealed class ItemTooltipBuilder : ModSystem
 	[MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
 	private static void VanillaDrawItemTooltip()
 	{
-
 	}
+
 	private static void VanillaDrawItemTooltipCallBuilder(ILContext ctx)
 	{
 		var il = new ILCursor(ctx);
