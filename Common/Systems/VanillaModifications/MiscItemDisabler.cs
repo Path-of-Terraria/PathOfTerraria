@@ -1,6 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Utilities;
 using SubworldLibrary;
+using System.Collections;
+using System.Collections.Generic;
 using Terraria.Chat;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
@@ -80,6 +82,19 @@ internal class MiscItemDisabler : ModSystem
 
 		private void NonsenseFixForSkelePrimeBag(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
 		{
+			// I don't know why this fix works, what causes it, or why it's - to my knowledge, only Skeletron Prime.
+			// If you run orig for Skeletron Prime, the boss bag WILL NOT DROP unless the boss is somehow killed more than once in the domain,
+			// or if it's beaten in the overworld. Neither should be possible in the mod. This if just contains vanilla's NPCLoot_DropItems code copy pasted as is.
+
+			// For context, down the line from ItemDropSolver.TryDropping, in ItemDropSolver.ResolveRule, this is thrown right before the item can drop:
+			// Internal error in the C# compiler
+			//		Compiler Exception Type: System.Collections.Generic.KeyNotFoundException
+			//		Compiler Exception Message: The given key was not present in the dictionary.
+			//		Compiler Exception Stack Trace: mscorlib.dll!System.ThrowHelper.ThrowKeyNotFoundException() + 0x5
+			// mscorlib.dll!System.Collections.Generic.Dictionary`2.get_Item(TKey) + 0x1E
+			// Why? I don't know. Why only in the domain? I don't know.
+			// But this works. - GabeHasWon
+
 			if (self.type == NPCID.SkeletronPrime)
 			{
 				DropAttemptInfo dropAttemptInfo = default;
