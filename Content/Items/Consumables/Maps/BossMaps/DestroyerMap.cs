@@ -8,8 +8,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class DestroyerMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 57;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 56 && NPC.downedMechBoss1;
+	public override int WorldTier => WorldLevelBasedOnTier(3) + 1;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(3) && NPC.downedMechBoss1;
 
 	public override void SetStaticDefaults()
 	{

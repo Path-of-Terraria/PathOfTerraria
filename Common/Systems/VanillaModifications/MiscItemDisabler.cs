@@ -73,9 +73,35 @@ internal class MiscItemDisabler : ModSystem
 
 	internal class MiscLootDisabler : GlobalNPC
 	{
+		public override void Load()
+		{
+			On_NPC.NPCLoot_DropItems += NonsenseFixForSkelePrimeBag;
+		}
+
+		private void NonsenseFixForSkelePrimeBag(On_NPC.orig_NPCLoot_DropItems orig, NPC self, Player closestPlayer)
+		{
+			if (self.type == NPCID.SkeletronPrime)
+			{
+				DropAttemptInfo dropAttemptInfo = default;
+				dropAttemptInfo.player = closestPlayer;
+				dropAttemptInfo.npc = self;
+				dropAttemptInfo.IsExpertMode = Main.expertMode;
+				dropAttemptInfo.IsMasterMode = Main.masterMode;
+				dropAttemptInfo.IsInSimulation = false;
+				dropAttemptInfo.rng = Main.rand;
+				DropAttemptInfo info = dropAttemptInfo;
+				Main.ItemDropSolver.TryDropping(info);
+			}
+			else
+			{
+				orig(self, closestPlayer);
+			}
+		}
+
 		public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 		{
 			npcLoot.RemoveWhere(x => x is CommonDrop common && DisabledItems.Contains(common.itemId));
+			npcLoot.RemoveWhere(x => x is MechBossSpawnersDropRule);
 		}
 	}
 	
@@ -86,7 +112,6 @@ internal class MiscItemDisabler : ModSystem
 			return entity.type == ItemID.PirateMap;
 		}
 
-		
 		public override bool CanUseItem(Item item, Player player)
 		{
 			if (SubworldSystem.Current is null)
