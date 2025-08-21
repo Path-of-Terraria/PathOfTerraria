@@ -25,8 +25,11 @@ public class EaterDomain : BossDomainSubworld
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength - 1800, true);
 
 	public Rectangle Arena = Rectangle.Empty;
-	public bool BossSpawned = false;
-	public bool ReadyToExit = false;
+	public FightTracker FightTracker = new([NPCID.EaterofWorldsHead, NPCID.EaterofWorldsBody, NPCID.EaterofWorldsTail])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	private HashSet<Point16> DemonitePositions = [];
 
@@ -554,8 +557,7 @@ public class EaterDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ReadyToExit = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -570,7 +572,9 @@ public class EaterDomain : BossDomainSubworld
 			}
 		}
 
-		if (!BossSpawned && allInArena)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted && allInArena)
 		{
 			for (int i = 0; i < 20; ++i)
 			{
@@ -588,31 +592,14 @@ public class EaterDomain : BossDomainSubworld
 				NetMessage.SendData(MessageID.WorldData);
 				NetMessage.SendTileSquare(-1, Arena.X / 16 + 72, Arena.Y / 16 - 4, 20, 1);
 			}
-
-			BossSpawned = true;
 		}
-
-		if (BossSpawned && NoEoW() && !ReadyToExit)
+		else if (state == FightState.JustCompleted)
 		{
 			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.AddDowned(NPCID.EaterofWorldsHead, false, true);
-			ReadyToExit = true;
 		}
-	}
-
-	private static bool NoEoW()
-	{
-		foreach (NPC npc in Main.ActiveNPCs)
-		{
-			if (npc.type == NPCID.EaterofWorldsBody || npc.type == NPCID.EaterofWorldsHead || npc.type == NPCID.EaterofWorldsTail)
-			{
-				return false;
-			}
-		}
-
-		return true;
 	}
 }
 

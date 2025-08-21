@@ -55,7 +55,7 @@ internal class MoonlordSpawns : GlobalNPC
 			return;
 		}
 
-		if (MoonDomainSystem.BossSpawned)
+		if (MoonDomainSystem.FightTracker.Started)
 		{
 			pool.Clear();
 			return;
@@ -140,7 +140,7 @@ internal class MoonlordSpawns : GlobalNPC
 			return;
 		}
 
-		if (MoonDomainSystem.BossSpawned)
+		if (MoonDomainSystem.FightTracker.Started)
 		{
 			return;
 		}

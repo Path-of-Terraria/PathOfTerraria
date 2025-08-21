@@ -25,8 +25,11 @@ public class QueenBeeDomain : BossDomainSubworld
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<RoyalHoneyClumpTile>()];
 	public override (int time, bool isDay) ForceTime => ((int)Main.dayLength / 2, true);
 
-	public bool BossSpawned = false;
-	public bool ReadyToExit = false;
+	public FightTracker FightTracker = new([NPCID.QueenBee])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [
 		new PassLegacy("Reset", ResetStep),
@@ -195,8 +198,7 @@ public class QueenBeeDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
-		BossSpawned = false;
-		ReadyToExit = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -213,18 +215,14 @@ public class QueenBeeDomain : BossDomainSubworld
 		TileEntity.UpdateEnd();
 		Main.moonPhase = (int)MoonPhase.Full;
 
-		if (!BossSpawned && NPC.AnyNPCs(NPCID.QueenBee))
-		{
-			BossSpawned = true;
-		}
+		FightState state = FightTracker.UpdateState();
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.QueenBee) && !ReadyToExit)
+		if (state == FightState.JustCompleted)
 		{
 			Vector2 pos = new Vector2(Width / 2, Main.spawnTileY - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.AddDowned(NPCID.QueenBee, false, true);
-			ReadyToExit = true;
 		}
 	}
 

@@ -36,10 +36,13 @@ internal class PrimeDomain : BossDomainSubworld
 	public override int[] WhitelistedExplodableTiles => [ModContent.TileType<ExplosivePowder>()];
 	public override int[] WhitelistedMiningTiles => [ModContent.TileType<GrabberAnchor>()];
 
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
 	private static bool LeftSpawn = false;
 	private static Rectangle Arena = Rectangle.Empty;
+	public FightTracker FightTracker = new([NPCID.SkeletronPrime])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenTerrain),
@@ -431,8 +434,7 @@ internal class PrimeDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ExitSpawned = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -447,7 +449,9 @@ internal class PrimeDomain : BossDomainSubworld
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted)
 		{
 			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 			HashSet<int> who = [];
@@ -472,7 +476,7 @@ internal class PrimeDomain : BossDomainSubworld
 			{
 				int plr = Main.rand.Next([.. who]);
 				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				
+
 				int npc = NPC.NewNPC(src, (int)Arena.Center().X, (int)Arena.Center().Y - 25, NPCID.SkeletronPrime);
 				Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
 
@@ -483,20 +487,13 @@ internal class PrimeDomain : BossDomainSubworld
 				{
 					NetMessage.SendData(MessageID.WorldData);
 				}
-
-				BossSpawned = true;
 			}
 		}
-		else
+		else if (state == FightState.JustCompleted)
 		{
-			if (!NPC.AnyNPCs(NPCID.SkeletronPrime) && !ExitSpawned)
-			{
-				BossTracker.AddDowned(NPCID.SkeletronPrime, false, true);
-				ExitSpawned = true;
-
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Projectile.NewProjectile(src, Arena.Center() - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-			}
+			BossTracker.AddDowned(NPCID.SkeletronPrime, false, true);
+			IEntitySource src = Entity.GetSource_NaturalSpawn();
+			Projectile.NewProjectile(src, Arena.Center() - new Vector2(0, 60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
 	}
 }

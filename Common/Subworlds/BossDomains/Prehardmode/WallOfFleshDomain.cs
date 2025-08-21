@@ -23,9 +23,12 @@ public class WallOfFleshDomain : BossDomainSubworld
 	public override int Width => 1800;
 	public override int Height => 250;
 
-	public bool BossSpawned = false;
-	public bool ReadyToExit = false;
 	public bool LeftBlocked = true;
+	public FightTracker FightTracker = new([NPCID.WallofFlesh])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	/// <summary>
 	/// If the boss has surpassed the edge of the world (with the "Player was licked" kill message), don't count the kill.
@@ -60,6 +63,7 @@ public class WallOfFleshDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
+		FightTracker.Reset();
 		SubworldSystem.hideUnderworld = false;
 	}
 
@@ -328,8 +332,6 @@ public class WallOfFleshDomain : BossDomainSubworld
 		HashSet<Point> fleshLocations = [];
 
 		LeftBlocked = WorldGen.genRand.NextBool();
-		BossSpawned = false;
-		ReadyToExit = false;
 
 		for (int i = 0; i < Width; ++i)
 		{
@@ -627,36 +629,34 @@ public class WallOfFleshDomain : BossDomainSubworld
 		}
 
 		TileEntity.UpdateEnd();
-		int wofIndex = NPC.FindFirstNPC(NPCID.WallofFlesh);
 
-		if (wofIndex != -1)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.JustStarted) // Remove all flesh blocks
 		{
-			if (!BossSpawned) // Remove all flesh blocks
+			for (int i = Main.spawnTileX - 100; i < Main.spawnTileX + 100; i++)
 			{
-				for (int i = Main.spawnTileX - 100; i < Main.spawnTileX + 100; i++)
+				for (int j = 0; j < Height; ++j)
 				{
-					for (int j = 0; j < Height; ++j)
+					Tile tile = Main.tile[i, j];
+
+					if (tile.TileType == TileID.FleshBlock)
 					{
-						Tile tile = Main.tile[i, j];
+						tile.HasTile = false;
 
-						if (tile.TileType == TileID.FleshBlock)
+						if (Main.netMode == NetmodeID.Server)
 						{
-							tile.HasTile = false;
-
-							if (Main.netMode == NetmodeID.Server)
-							{
-								NetMessage.SendTileSquare(-1, i, j);
-							}
-
-							WorldGen.SquareTileFrame(i, j, true);
+							NetMessage.SendTileSquare(-1, i, j);
 						}
+
+						WorldGen.SquareTileFrame(i, j, true);
 					}
 				}
 			}
-
-			BossSpawned = true;
-
-			if (!licked)
+		}
+		else if (state == FightState.InProgress)
+		{
+			if (!licked && NPC.FindFirstNPC(NPCID.WallofFlesh) is >= 0 and int wofIndex)
 			{
 				NPC wof = Main.npc[wofIndex];
 
@@ -666,15 +666,21 @@ public class WallOfFleshDomain : BossDomainSubworld
 				}
 			}
 		}
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.WallofFlesh) && !ReadyToExit && !licked)
+		else if (state == FightState.JustCompleted)
 		{
-			Player player = Main.rand.Next(Main.player.Where(x => x.active).ToArray());
-			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center - new Vector2(0, 80),
-				Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+			if (licked)
+			{
+				FightTracker.Reset();
+				licked = false;
+			}
+			else
+			{
+				Player player = Main.rand.Next(Main.player.Where(x => x.active).ToArray());
+				Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), player.Center - new Vector2(0, 80),
+					Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
-			BossTracker.AddDowned(NPCID.WallofFlesh, false, true);
-			ReadyToExit = true;
+				BossTracker.AddDowned(NPCID.WallofFlesh, false, true);
+			}
 		}
 	}
 }

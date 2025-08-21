@@ -28,8 +28,11 @@ internal class GolemDomain : BossDomainSubworld
 	private static readonly List<PairingRoom> Rooms = [];
 
 	private static Rectangle Arena = Rectangle.Empty;
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
+	public FightTracker FightTracker = new([NPCID.Golem])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenTerrain),
@@ -305,9 +308,6 @@ internal class GolemDomain : BossDomainSubworld
 
 	private void GenTerrain(GenerationProgress progress, GameConfiguration configuration)
 	{
-		BossSpawned = false;
-		ExitSpawned = false;
-
 		progress.Start(1);
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Terrain");
 
@@ -341,8 +341,7 @@ internal class GolemDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ExitSpawned = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -358,7 +357,9 @@ internal class GolemDomain : BossDomainSubworld
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted)
 		{
 			bool canSpawn = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 			HashSet<int> who = [];
@@ -393,16 +394,11 @@ internal class GolemDomain : BossDomainSubworld
 				{
 					NetMessage.SendData(MessageID.WorldData);
 				}
-
-				BossSpawned = true;
 			}
 		}
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.Golem) && !ExitSpawned)
+		else if (state == FightState.JustCompleted)
 		{
 			BossTracker.AddDowned(NPCID.Golem, false, true);
-
-			ExitSpawned = true;
 
 			HashSet<Player> players = [];
 
