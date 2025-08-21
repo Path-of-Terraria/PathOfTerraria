@@ -1,39 +1,10 @@
-v0.2.5
-We are working as diligently as we can to address all the reported bugs. Thank you for your patience.
-
-- Fixes the issue where some affixes were not being rounded properly
-- Adjusted max mana and max life potion affixes to much lower values
-- Quest book font size increased slightly
-- Adds message in-game when trying to break a Crimson/Shadow orb normally, stating that you should follow the quest line instead
-- Adds Mana Cost to tooltip display for all weapons that use mana
-- Fixed Morgana quest start dialogue text displaying incorrect parts required
-- Adds “Maximum Minion Count” to character sheet display
-- Fixes swords alt use cooldown triggering when right clicking while swinging
-- Fixes broadswords not having the correct swing speed. Iron and Steel Broadsword were the incorrect ones. You may notice broadswords swinging much slower, this was the intention behind broadswords. Slow but strong
-- Broadswords are now correctly categorized as such. Previously they were just classified as swords, but they are meant to be their own class. They just share the same alt use (for now?)
-- Put the (BETA) tag in the mod name. Some people were expecting a fully polished mod, but in reality this is definitely a beta.
-- Adds in sprites for missing skill augmentations and skill passives
-- Boomerangs received a buff across the board.
-- Damage values for Iron Boomerang and Copper Boomerang were swapped
-- Whips have received a buff across the board
-- Whips progression has been changed slightly. Whips have further spread between dropping item levels, but received large damage boosts at each progression point
-- Added a safeguard around spawning Morven in the Corruption after killing EoC. This should result a common crash when completing EoC kill that would end up resulting in not getting EoC kill completion.
-- Adds in several French localizations
-- Adds in missing Boss Downed tracking for Hardmode bosses
-- Synced Strange Antler location. This should fix the compass pointing in the incorrect direction on Multiplayer.
-- Made Strange Antler shards & tile & projectile for multiplayer compatibility, allowing many more players to complete the quest seamlessly
-- Fixed Alaric not selling Void Pearls during the Unleashing Chaos quest
-- Stopped Burning Sphere (Fire Imp projectile NPC) from dropping gear
-- Stopped the Lightball in the Deerclops domain from doing damage
-- Added more spawns to Ravencrest: a bunch of birds in daytime, Owls commonly at night
-- Increased Owl Feather drop rate to 50% (from 20%)
-- Fixed issue where "consumed" items for the grimoire wouldn't show their name properly
-- Adjusted the Ancient Art: 1st step requires any 1 material, 3rd step requires any 1 summon summoned
-- Adjusted Queen Bee quest to give more stingers
-- Fixed "Free Day" issue in multiplayer; first day is always free, not per person anymore, deprecated per-person system & added docs. This should resolve the “time jumping” / very long days & nights issue.
-- Moved weapon swap hotkey key down a bit to stop overlap
-- Adjusted Goblin Surveyor enemy: More likely to spawn, can jump over small obstacles, steps up 1 tile walls, nicer & faster movement
-- Buffed most Grimoire summons a lot
-- Disabled Goblin Battle Standard's obtainability
-- Fixes Open Character stat sheet image clicking position
-- Quest steps now have additional text displayed when hovering them to add reminders for quest steps that may be confusing without the wiki
+v0.2.12
+- Fixed a critical issue where right clicking a non-equippable item could equip or even duplicate it.
+- Fixed a critical issue where right clicking an accessory could delete it forever.
+- Fixed an issue that could lead to crashes in accessory-adjacent code of other mods such as Calamity's Vanities.
+- Fixed hardmode accessory slots' unreachable items' effects being applied even in non-hardmode worlds.
+- Fixed accessories put in extra accessory slots not being visible.
+- Fixed right clicks not working on extra accessory slots.
+- Removes Desert explorable map spawn rate nerfs
+- Substantially boosts spawn rate in Forest map
+- Improves some Bestiary entries for PoT enemies

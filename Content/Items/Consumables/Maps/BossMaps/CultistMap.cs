@@ -8,8 +8,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class CultistMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 69;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 68 && NPC.downedAncientCultist;
+	public override int WorldTier => WorldLevelBasedOnTier(9) + 1;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(9) && NPC.downedAncientCultist;
 
 	public override void SetStaticDefaults()
 	{

@@ -8,8 +8,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class PlanteraMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 61;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 60 && NPC.downedPlantBoss;
+	public override int WorldTier => WorldLevelBasedOnTier(5) + 1;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(5) && NPC.downedPlantBoss;
 
 	public override void SetStaticDefaults()
 	{
