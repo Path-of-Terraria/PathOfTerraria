@@ -32,8 +32,11 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 	public override int[] WhitelistedMiningTiles => [TileID.Ebonstone, ModContent.TileType<MechCapsule>()];
 	public override int[] WhitelistedCutTiles => [ModContent.TileType<TechDriveTile>()];
 
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
+	public FightTracker FightTracker = new([NPCID.TheDestroyer, NPCID.TheDestroyerBody, NPCID.TheDestroyerTail])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new FlatWorldPass(FloorY, true, null, TileID.TinPlating, ModContent.WallType<TinPlatingUnsafe>()),
@@ -388,8 +391,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ExitSpawned = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -404,35 +406,25 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.JustCompleted)
 		{
-			if (NPC.AnyNPCs(NPCID.TheDestroyer))
+			BossTracker.AddDowned(NPCID.TheDestroyer, false, true);
+
+			HashSet<Player> players = [];
+
+			foreach (Player plr in Main.ActivePlayers)
 			{
-				BossSpawned = true;
-			}
-		}
-		else
-		{
-			if (!NPC.AnyNPCs(NPCID.TheDestroyer) && !ExitSpawned)
-			{
-				BossTracker.AddDowned(NPCID.TheDestroyer, false, true);
-
-				ExitSpawned = true;
-
-				HashSet<Player> players = [];
-
-				foreach (Player plr in Main.ActivePlayers)
+				if (!plr.dead)
 				{
-					if (!plr.dead)
-					{
-						players.Add(plr);
-					}
+					players.Add(plr);
 				}
-
-				IEntitySource src = Entity.GetSource_NaturalSpawn();
-				Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
-				Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 			}
+
+			IEntitySource src = Entity.GetSource_NaturalSpawn();
+			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
+			Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
 	}
 

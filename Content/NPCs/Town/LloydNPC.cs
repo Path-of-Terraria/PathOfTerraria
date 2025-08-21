@@ -598,7 +598,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 		if (SubworldSystem.Current is BrainDomain domain)
 		{
-			return Language.GetTextValue(baseNPC + (domain.BossSpawned && !NPC.AnyNPCs(NPCID.BrainofCthulhu) ? "DomainBossDead." : "InDomain.") + Main.rand.Next(3));
+			return Language.GetTextValue(baseNPC + (domain.FightTracker.Completed ? "DomainBossDead." : "InDomain.") + Main.rand.Next(3));
 		}
 
 		if (doPathing)

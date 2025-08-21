@@ -24,9 +24,12 @@ public class KingSlimeDomain : BossDomainSubworld
 	internal static Point16 ArenaEntrance = Point16.Zero;
 
 	public Rectangle Arena = Rectangle.Empty;
-	public bool BossSpawned = false;
-	public bool ReadyToExit = false;
 	public List<Vector2> SlimePositions = [];
+	public FightTracker FightTracker = new([NPCID.KingSlime])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new FlatWorldPass(200, true, GetGenNoise()),
@@ -44,8 +47,7 @@ public class KingSlimeDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ReadyToExit = false;
+		FightTracker.Reset();
 		SlimePositions.Clear();
 	}
 
@@ -257,7 +259,9 @@ public class KingSlimeDomain : BossDomainSubworld
 			}
 		}
 
-		if (!BossSpawned && allInArena)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted && allInArena)
 		{
 			for (int i = -6; i < 11; ++i)
 			{
@@ -274,17 +278,13 @@ public class KingSlimeDomain : BossDomainSubworld
 				NetMessage.SendTileSquare(-1, ArenaEntrance.X - 6, ArenaEntrance.Y, 16, 1);
 				NetMessage.SendData(MessageID.WorldData);
 			}
-
-			BossSpawned = true;
 		}
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.KingSlime) && !ReadyToExit)
+		else if (state == FightState.JustCompleted)
 		{
 			Vector2 pos = Arena.Center() + new Vector2(0, 150);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.AddDowned(NPCID.KingSlime, false, true);
-			ReadyToExit = true;
 		}
 	}
 }

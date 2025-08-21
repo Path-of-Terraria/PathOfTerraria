@@ -25,8 +25,11 @@ public class EyeDomain : BossDomainSubworld
 	public override (int time, bool isDay) ForceTime => ((int)(Main.nightLength / 2.0), false);
 
 	public Rectangle Arena = Rectangle.Empty;
-	public bool BossSpawned = false;
-	public bool ReadyToExit = false;
+	public FightTracker FightTracker = new([NPCID.EyeofCthulhu])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Surface", GenSurface),
@@ -223,8 +226,7 @@ public class EyeDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ReadyToExit = false;
+		FightTracker.Reset();
 	}
 
 	public override bool GetLight(Tile tile, int x, int y, ref FastRandom rand, ref Vector3 color)
@@ -259,7 +261,9 @@ public class EyeDomain : BossDomainSubworld
 			}
 		}
 
-		if (!BossSpawned && allInArena)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted && allInArena)
 		{
 			for (int i = 0; i < 20; ++i)
 			{
@@ -267,7 +271,6 @@ public class EyeDomain : BossDomainSubworld
 			}
 
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X - 130, Arena.Center.Y - 400, NPCID.EyeofCthulhu);
-			BossSpawned = true;
 
 			Main.spawnTileX = Arena.Center.X / 16;
 			Main.spawnTileY = Arena.Center.Y / 16;
@@ -278,14 +281,12 @@ public class EyeDomain : BossDomainSubworld
 				NetMessage.SendData(MessageID.WorldData);
 			}
 		}
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.EyeofCthulhu) && !ReadyToExit)
+		else if (state == FightState.JustCompleted)
 		{
 			Vector2 pos = Arena.Center() + new Vector2(-130, -300);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.AddDowned(NPCID.EyeofCthulhu, false, true);
-			ReadyToExit = true;
 		}
 	}
 

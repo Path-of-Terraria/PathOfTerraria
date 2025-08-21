@@ -42,7 +42,7 @@ internal class BoCDomainSystem : ModSystem
 		{
 			float strength = NPC.downedBoss2 ? 0.3f : 1;
 
-			if (domain.BossSpawned && !NPC.AnyNPCs(NPCID.BrainofCthulhu))
+			if (domain.FightTracker.Completed)
 			{
 				strength *= 0.5f;
 			}

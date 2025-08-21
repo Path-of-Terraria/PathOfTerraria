@@ -28,10 +28,13 @@ internal class QueenSlimeDomain : BossDomainSubworld
 
 	private static bool LeftSpawn = false;
 	private static Point16 ArenaPos = Point16.Zero;
-	private static bool BossSpawned = false;
 	private static bool PortalSpawned = false;
-	private static bool ExitSpawned = false;
 	private static Point16 PortalPos = Point16.Zero;
+	public FightTracker FightTracker = new([NPCID.QueenSlimeBoss])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Base Terrain", SpawnBaseTerrain),
@@ -42,9 +45,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
 		PortalSpawned = false;
-		ExitSpawned = false;
+		FightTracker.Reset();
 	}
 
 	private void SpawnStructures(GenerationProgress progress, GameConfiguration configuration)
@@ -407,7 +409,9 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			PortalSpawned = true;
 		}
 
-		if (!BossSpawned)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted)
 		{
 			bool canSpawnBoss = Main.CurrentFrameFlags.ActivePlayersCount > 0;
 
@@ -422,8 +426,6 @@ internal class QueenSlimeDomain : BossDomainSubworld
 
 			if (canSpawnBoss)
 			{
-				BossSpawned = true;
-
 				Main.spawnTileX = ArenaPos.X;
 				Main.spawnTileY = ArenaPos.Y;
 
@@ -435,16 +437,9 @@ internal class QueenSlimeDomain : BossDomainSubworld
 				}
 			}
 		}
-		else
+		else if (state == FightState.JustCompleted)
 		{
-			if (NPC.AnyNPCs(NPCID.QueenSlimeBoss) || ExitSpawned)
-			{
-				return;
-			}
-
 			BossTracker.AddDowned(NPCID.QueenSlimeBoss, false, true);
-
-			ExitSpawned = true;
 
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
