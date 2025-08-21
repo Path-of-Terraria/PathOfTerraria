@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
@@ -10,6 +9,7 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Core.Hooks;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.ID;
@@ -18,12 +18,14 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 
-internal class ArpgNPC : GlobalNPC
+internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 {
 	/// <summary>
 	/// Disables affixes for any NPC with an id contained in the set.
 	/// </summary>
 	public static HashSet<int> NoAffixesSet = [];
+
+	private static bool currentlyTransforming;
 
 	public override bool InstancePerEntity => true;
 
@@ -150,9 +152,33 @@ internal class ArpgNPC : GlobalNPC
 		return doKill;
 	}
 
+	void INpcTransformCallbacks.PreTransform(NPC npc, int oldType)
+	{
+		currentlyTransforming = true;
+	}
+	void INpcTransformCallbacks.PostTransform(NPC npc, int oldType)
+	{
+		currentlyTransforming = false;
+	}
+	void INpcTransformCallbacks.TransformTransfer(NPC npc, int oldType, INpcTransformCallbacks oldInstance)
+	{
+		if (oldInstance is ArpgNPC oldSelf)
+		{
+			Rarity = oldSelf.Rarity;
+			Affixes = oldSelf.Affixes;
+
+			ApplyRarity(npc, fromNet: true);
+		}
+	}
+
 	public override void SetDefaults(NPC npc)
 	{
-		//We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
+		if (currentlyTransforming)
+		{
+			return;
+		}
+
+		// We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
 		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type]
 			|| npc.CountsAsACritter || npc.realLife != -1 || NoAffixesSet.Contains(npc.type))
 		{
@@ -242,26 +268,36 @@ internal class ArpgNPC : GlobalNPC
 
 		Affixes.ForEach(a => a.PreRarity(npc));
 
+		bool alwaysDisplayHealthbar = false;
+
 		switch (Rarity)
 		{
 			case ItemRarity.Normal:
 				break;
 			case ItemRarity.Magic:
 				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(125, 125, 255), 0.5f);
-				npc.lifeMax *= 2; //Magic mobs get 100% increased life
-				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
-				npc.damage = (int)(npc.damage * 1.1f); //Magic mobs get 10% increase damage
+				npc.lifeMax *= 2; // Magic mobs get 100% increased life
+				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
+				npc.damage = (int)(npc.damage * 1.1f); // Magic mobs get 10% increase damage
+				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Rare:
 				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(255, 255, 0), 0.5f);
-				npc.lifeMax *= 3; //Rare mobs get 200% Increased Life
-				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
-				npc.damage = (int)(npc.damage * 1.2f); //Magic mobs get 20% increase damage
+				npc.lifeMax *= 3; // Rare mobs get 200% Increased Life
+				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
+				npc.damage = (int)(npc.damage * 1.2f); // Magic mobs get 20% increase damage
+				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Unique:
+				alwaysDisplayHealthbar = true;
 				break;
 			default:
 				throw new InvalidOperationException("Invalid rarity!");
+		}
+
+		if (alwaysDisplayHealthbar && npc.TryGetGlobalNPC(out HealthbarsNPC healthbars))
+		{
+			healthbars.AlwaysDisplayHealthbar = true;
 		}
 
 		SetName(npc);
