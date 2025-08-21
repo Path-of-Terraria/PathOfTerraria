@@ -173,15 +173,14 @@ internal class DropTable
 		Func<ItemDatabase.ItemRecord, bool> additionalCondition, float itemRarityModifier)
 	{
 		dropRarityModifier += itemLevel / 10f; // Higher levels have a higher likelihood of being Rare or Unique
-
-		float rarityMod = dropRarityModifier;
-		float dropChanceSum = filteredGear.Where(additionalCondition).Sum(x => ItemDatabase.ApplyDropRateModifiers(x, rarityMod, itemRarityModifier));
-		float choice = Main.rand.NextFloat(dropChanceSum);
 		WeightedRandom<ItemDatabase.ItemRecord> selection = new();
 
 		foreach (ItemDatabase.ItemRecord item in filteredGear)
 		{
-			selection.Add(item, ItemDatabase.ApplyDropRateModifiers(item, rarityMod, itemRarityModifier));
+			if (additionalCondition.Invoke(item))
+			{
+				selection.Add(item, ItemDatabase.ApplyDropRateModifiers(item, dropRarityModifier, itemRarityModifier));
+			}
 		}
 
 		return selection;

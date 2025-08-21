@@ -12,7 +12,6 @@ using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Tiles.BossDomain;
 using ReLogic.Graphics;
 using SubworldLibrary;
-using Terraria;
 using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
@@ -20,7 +19,6 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
-using Terraria.Utilities;
 
 namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
@@ -114,77 +112,99 @@ public class RavencrestSystem : ModSystem
 				{
 					RavencrestOneTimeChecks();
 				}
-				else if (SubworldSystem.Current is null)
-				{
-					OverworldOneTimeChecks();
-				}
 
 				ModContent.GetInstance<BoCDomainSystem>().OneTimeCheck();
 			}
 
 			TavernManager.OneTimeCheck();
 
+			if (SubworldSystem.Current is null)
+			{
+				OverworldOneTimeChecks();
+
+				if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !BossTracker.DownedBrainOfCthulhu)
+				{
+					if (Main.netMode == NetmodeID.SinglePlayer)
+					{
+						SpawnMorvenStuckInOverworld();
+					}
+					else if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						ModContent.GetInstance<SpawnMorvenStuckHandler>().Send();
+					}
+				}
+			}
+
 			OneTimeCheckDone = true;
 		}
 	}
 
-	private void OverworldOneTimeChecks()
+	private static void OverworldOneTimeChecks()
 	{
-		if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !BossTracker.DownedBrainOfCthulhu)
-		{
-			const int MaxAttempts = 10000;
-
-			for (int attempt = 0; attempt < MaxAttempts; attempt++)
-			{
-				int x = Main.rand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
-				int checkY = Main.rand.Next((int)Main.worldSurface, Main.maxTilesY / 2);
-
-				while (checkY < Main.maxTilesY - 10 && !WorldGen.SolidTile(x, checkY))
-				{
-					checkY++;
-				}
-
-				if (checkY >= Main.maxTilesY - 10)
-				{
-					continue;
-				}
-
-				if (!Main.tile[x, checkY].HasTile || Main.tile[x, checkY].TileType != TileID.Ebonstone)
-				{
-					continue;
-				}
-
-				int placeY = checkY - 2;
-				if (!WorldGen.InWorld(x, placeY, 15))
-				{
-					continue;
-				}
-
-				if (!WorldGen.EmptyTileCheck(x - 1, x + 1, placeY - 3, placeY, 3))
-				{
-					continue;
-				}
-
-				if (!WorldGen.PlaceObject(x, placeY, ModContent.TileType<MorvenStuck>()))
-				{
-					continue;
-				}
-
-				SpawnedMorvenPos = new Point16(x, placeY);
-				break;
-			}
-			
-			if (SpawnedMorvenPos is null)
-			{
-				Main.NewText($"Reached max attempts trying to spawn Morven. Please report this to the mod developers.");
-			}
-		}
-
 		int oldMan = NPC.FindFirstNPC(NPCID.OldMan);
 
 		if (oldMan != -1 && NPC.downedBoss3)
 		{
 			Main.npc[oldMan].Transform(NPCID.Clothier);
+		}
+	}
+
+	internal static void SpawnMorvenStuckInOverworld()
+	{
+		const int MaxAttempts = 10000;
+
+		ref Point16? spawnMorvenPos = ref ModContent.GetInstance<RavencrestSystem>().SpawnedMorvenPos;
+
+		for (int attempt = 0; attempt < MaxAttempts; attempt++)
+		{
+			int x = Main.rand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
+			int checkY = Main.rand.Next((int)Main.worldSurface, Main.maxTilesY / 2);
+
+			while (checkY < Main.maxTilesY - 10 && !WorldGen.SolidTile(x, checkY))
+			{
+				checkY++;
+			}
+
+			if (checkY >= Main.maxTilesY - 10)
+			{
+				continue;
+			}
+
+			if (!Main.tile[x, checkY].HasTile || Main.tile[x, checkY].TileType != TileID.Ebonstone)
+			{
+				continue;
+			}
+
+			int placeY = checkY - 2;
+			if (!WorldGen.InWorld(x, placeY, 15))
+			{
+				continue;
+			}
+
+			if (!WorldGen.EmptyTileCheck(x - 1, x + 1, placeY - 3, placeY, 3))
+			{
+				continue;
+			}
+
+			if (!WorldGen.PlaceObject(x, placeY, ModContent.TileType<MorvenStuck>()))
+			{
+				continue;
+			}
+
+			spawnMorvenPos = new Point16(x, placeY);
+
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				NetMessage.SendTileSquare(-1, x, placeY, 5);
+				NetMessage.SendData(MessageID.WorldData);
+			}
+
+			break;
+		}
+
+		if (spawnMorvenPos is null)
+		{
+			Main.NewText($"Reached max attempts trying to spawn Morven. Please report this to the mod developers.");
 		}
 	}
 
@@ -272,14 +292,14 @@ public class RavencrestSystem : ModSystem
 					var announceColor = new Color(50, 125, 255);
 					ChatHelper.BroadcastChatMessage(NetworkText.FromKey("Announcement.HasArrived", spawnedNpc.GivenOrTypeName), announceColor);
 				}
+
+				if (++numSpawned >= maxAmount)
+				{
+					break;
+				}
 			}
 
 			pool.RemoveAt(index);
-
-			if (++numSpawned >= maxAmount)
-			{
-				break;
-			}
 		}
 	}
 

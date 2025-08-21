@@ -2,6 +2,7 @@
 using PathOfTerraria.Content.Items.Gear.Amulets;
 using PathOfTerraria.Content.Items.Gear.Offhands;
 using PathOfTerraria.Content.Items.Gear.Rings;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Armor;
 
@@ -10,6 +11,34 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 	public override bool InstancePerEntity => true;
 
 	private bool equipped = false;
+
+	public override void Load()
+	{
+		On_ItemSlot.AccessorySwap += OnAccessorySwap;
+	}
+
+	private static bool OnAccessorySwap(On_ItemSlot.orig_AccessorySwap orig, Player player, Item item, ref Item result)
+	{
+		bool origResult = orig(player, item, ref result);
+
+		if (!origResult && player.TryGetModPlayer(out ExtraAccessoryModPlayer accPlayer))
+		{
+			for (int i = 0; i < accPlayer.CustomAccessorySlots.Length; i++)
+			{
+				ref Item slotItem = ref accPlayer.CustomAccessorySlots[i];
+				int virtualIndex = ExtraAccessoryModPlayer.GetCustomSlotVirtualIndex(i);
+
+				if (accPlayer.IsCustomSlotActive(virtualIndex) && (slotItem.IsAir || (item.type == slotItem.type && item.netID == slotItem.netID)))
+				{
+					Utils.Swap(ref result, ref slotItem);
+					return true;
+				}
+			}
+		}
+
+		return origResult;
+	}
+
 	public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)
 	{
 		// Check for duplicates first - applies to all slots
@@ -41,48 +70,63 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		return result;
 	}
 	
-	private bool IsItemAlreadyEquipped(Item itemToCheck, Player player, int targetSlot)
+	private static bool IsItemAlreadyEquipped(Item itemToCheck, Player player, int targetSlot)
 	{
 		if (itemToCheck == null || itemToCheck.IsAir)
+		{
 			return false;
+		}
 
 		ExtraAccessoryModPlayer modPlayer = player.GetModPlayer<ExtraAccessoryModPlayer>();
 
 		// Check all vanilla equipment slots (except the target slot we're trying to equip to)
 		for (int i = 0; i < player.armor.Length; i++)
 		{
-			if (i == targetSlot) continue; // Skip the slot we're trying to equip to
-			
+			if (i == targetSlot)
+			{
+				continue; // Skip the slot we're trying to equip to
+			}
+
 			if (!player.armor[i].IsAir && ItemsAreSameType(player.armor[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		// Check all vanilla dye slots
 		for (int i = 0; i < player.dye.Length; i++)
 		{
 			if (!player.dye[i].IsAir && ItemsAreSameType(player.dye[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		// Check custom accessory slots
 		for (int i = 0; i < modPlayer.CustomAccessorySlots.Length; i++)
 		{
 			if (!modPlayer.CustomAccessorySlots[i].IsAir && ItemsAreSameType(modPlayer.CustomAccessorySlots[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		// Check custom vanity slots
 		for (int i = 0; i < modPlayer.CustomVanitySlots.Length; i++)
 		{
 			if (!modPlayer.CustomVanitySlots[i].IsAir && ItemsAreSameType(modPlayer.CustomVanitySlots[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		// Check custom dye slots
 		for (int i = 0; i < modPlayer.CustomDyeSlots.Length; i++)
 		{
 			if (!modPlayer.CustomDyeSlots[i].IsAir && ItemsAreSameType(modPlayer.CustomDyeSlots[i], itemToCheck))
+			{
 				return true;
+			}
 		}
 
 		return false;
@@ -94,7 +138,7 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		return item1.type == item2.type;
 	}
 
-	public bool IsNormalAccessory(Item item)
+	public static bool IsNormalAccessory(Item item)
 	{
 		return item is not null && 
 		       item.accessory && 
@@ -102,68 +146,6 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		       item.ModItem is not Offhand && 
 		       item.ModItem is not Ring && 
 		       item.ModItem is not Amulet;
-	}
-	
-	public override bool CanRightClick(Item item)
-	{
-		if (!item.accessory)
-		{
-			return base.CanRightClick(item);
-		}
-
-		var accessorySlotGlobal = ModContent.GetInstance<AccessorySlotGlobalItem>();
-		return accessorySlotGlobal.IsNormalAccessory(item);
-	}
-
-	public override void RightClick(Item item, Player player)
-	{
-
-		var extraAccessoryPlayer = player.GetModPlayer<ExtraAccessoryModPlayer>();
-		var accessorySlotGlobal = ModContent.GetInstance<AccessorySlotGlobalItem>();
-        
-		if (!accessorySlotGlobal.IsNormalAccessory(item))
-		{
-			equipped = false;
-			return;
-		}
-		
-		// Check if item is already equipped before trying to equip
-		if (IsItemAlreadyEquipped(item, player, -1)) // -1 means we're not targeting a specific slot
-		{
-			equipped = false;
-			return;
-		}
-        
-		equipped = false;
-		
-		// Try vanilla accessory slots first (3 and 9)
-		if (player.armor[3].IsAir)
-		{
-			player.armor[3] = item.Clone();
-			equipped = true;
-		}
-		else if (player.armor[9].IsAir)
-		{
-			player.armor[9] = item.Clone();
-			equipped = true;
-		}
-		// Try custom slots (only functional slots, indices 0 and 1)
-		else if (extraAccessoryPlayer.CustomAccessorySlots[0].IsAir)
-		{
-			extraAccessoryPlayer.CustomAccessorySlots[0] = item.Clone();
-			equipped = true;
-		}
-		else if (Main.hardMode && extraAccessoryPlayer.CustomAccessorySlots[1].IsAir)
-		{
-			extraAccessoryPlayer.CustomAccessorySlots[1] = item.Clone();
-			equipped = true;
-		}
-	}
-	
-	public override bool ConsumeItem(Item item, Player player)
-	{
-		// Only consume the item if it was successfully equipped (not swapped)
-		return equipped;
 	}
 	
 	private enum EquipmentSlot

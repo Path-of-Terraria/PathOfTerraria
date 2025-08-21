@@ -1,0 +1,23 @@
+// SlotLine: Augmentation Slot
+CostLine: Odblokowanie kosztuje {0}
+Unlock: Naciśnij LPM by odblokować
+
+Overload: {
+	Name: Przeładowanie
+	Tooltip: Zwiększa obrażenia o {0}% kosztem {1}% zwiększonego użycia many
+}
+
+Disperse: {
+	// Name: Disperse
+	// Tooltip: Increases area of effect by {0}% at the cost of {1}% increased mana usage
+}
+
+Concentrate: {
+	Name: Koncentracja
+	Tooltip: Zwiększa obrażenia o {0}%, użycie many o {1}% i zmniejsza obszar efektu
+}
+
+Critical: {
+	// Name: Critical
+	// Tooltip: Increases critical chance by {0}% at the cost of {1}% increased mana usage
+}

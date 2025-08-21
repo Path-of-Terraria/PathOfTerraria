@@ -1,0 +1,20 @@
+DeveloperConfig: {
+	DisplayName: Konfiguracja Dewelopera [i:509]
+
+	DrawUIBorders: {
+		Label: Rysuje granicę interfejsu użytkownika
+		Tooltip: Rysuje granicę wokół interfejsu użytkownika by pomóc w debuggowaniu układów
+	}
+
+	Headers.Graphics: Nagłówek Graficzny
+}
+
+UIConfig: {
+	DisplayName: Konfiguracja UI
+	Headers.UI: Nagłówek UI
+
+	PreventExpBarClicking: {
+		Label: Zapobiegnij klikaniu paska ilości doświadczenia
+		Tooltip: Kiedy to jest włączenia to nie będziesz w stanie kliknąć paska ilości doświadczenia w celu otwarcia menu podniesienia poziomu, będzie można to zrobić jedynie przez wciśnięcie odpowiedniego klawisza. To jest przydatne w momencie gdy łapiesz się na otwieraniu tego menu, gdy starasz się kliknąć w inne elementy UI.
+	}
+}

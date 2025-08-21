@@ -108,5 +108,10 @@ internal class Minitera : ModNPC
 	{
 		NPC.frameCounter++;
 		NPC.frame.Y = (int)(NPC.frameCounter * 0.1f % 4) * frameHeight;
+
+		if (NPC.IsABestiaryIconDummy)
+		{
+			NPC.Opacity = 1f;
+		}
 	}
 }

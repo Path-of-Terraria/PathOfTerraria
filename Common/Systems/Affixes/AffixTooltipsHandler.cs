@@ -1,9 +1,8 @@
-﻿using Microsoft.Xna.Framework.Input;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Items;
-using System.Collections.Generic;
-using System.Linq;
-using Terraria.ID;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
@@ -13,7 +12,7 @@ namespace PathOfTerraria.Common.Systems.Affixes;
 /// </summary>
 public class AffixTooltipsHandler
 {
-	internal static Color DefaultColor = Color.WhiteSmoke;
+	internal static Color DefaultColor = ItemTooltips.Colors.DefaultText;
 
 	public readonly Dictionary<Type, AffixTooltip> Tooltips = [];
 
@@ -94,12 +93,12 @@ public class AffixTooltipsHandler
 		{
 			return AffixTooltip.AffixSource.Necklace;
 		}
-		else if (source.ModItem is Map)
+		else if (source.damage > 0)
 		{
-			return AffixTooltip.AffixSource.NonApplicable;
+			return AffixTooltip.AffixSource.MainItem;
 		}
 
-		return AffixTooltip.AffixSource.MainItem;
+		return AffixTooltip.AffixSource.NonApplicable;
 	}
 
 	public void AddOrModify(Type type, AffixTooltip.AffixSource source, float value, LocalizedText text, bool corrupt, Item item, AffixTooltip.OverrideStringDelegate overrideString = null)
@@ -130,14 +129,8 @@ public class AffixTooltipsHandler
 				tooltip.SourceItems.Add(item);
 			}
 
-			if (tooltip.ValueBySource[source] == tooltip.OriginalValueBySource[source])
-			{
-				tooltip.Color = DefaultColor;
-			}
-			else
-			{
-				tooltip.Color = tooltip.OriginalValueBySource[source] > tooltip.ValueBySource[source] ? Color.Red : Color.Green;
-			}
+			int comparison = tooltip.ValueBySource[source].CompareTo(tooltip.OriginalValueBySource[source]);
+			tooltip.Color = comparison < 0 ? ItemTooltips.Colors.Negative : (comparison > 0 ? ItemTooltips.Colors.Positive : DefaultColor);
 		}
 		else
 		{
@@ -149,15 +142,20 @@ public class AffixTooltipsHandler
 	/// Quick check for if an affix tooltip's sources already has a given item,
 	/// so they aren't listed as being from 1 item twice.
 	/// </summary>
-	/// <param name="item"></param>
+	/// <param name="item">The new item coming in.</param>
 	/// <returns></returns>
 	private static Func<Item, bool> HasSource(Item item)
 	{
 		return x =>
 		{
+			// Stops a KeyNotFound when the item is not comparable / is air
+			if (!item.TryGetGlobalItem(out PoTInstanceItemData itemData))
+			{
+				return false;
+			}
+
 			bool value = !x.IsNotSameTypePrefixAndStack(item);
 			PoTInstanceItemData data = x.GetInstanceData();
-			PoTInstanceItemData itemData = item.GetInstanceData();
 
 			return value && data.Rarity == itemData.Rarity && data.Affixes == itemData.Affixes;
 		};
@@ -170,19 +168,20 @@ public class AffixTooltipsHandler
 	/// <param name="tooltips">List to add to.</param>
 	internal void ModifyTooltips(List<TooltipLine> tooltips, Item item)
 	{
+		AffixTooltip.AffixSource source = DetermineItemSource(item);
+
 		int tipNum = 0;
+		bool isEquipment = source is not AffixTooltip.AffixSource.NonApplicable;
 		bool hasShift = Keyboard.GetState().PressingShift();
-		bool isMap = item.ModItem is Map; // Used to disable comparisons on maps since that doesn't make sense
 		IEnumerable<KeyValuePair<Type, AffixTooltip>> differenceTips = null;
 		IEnumerable<KeyValuePair<Type, AffixTooltip>> firstTips = null;
 
-		if (!hasShift || isMap) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
+		if (!isEquipment || !hasShift) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
 		{
 			firstTips = CreateStandaloneTooltips(item);
 		}
 		else // Otherwise, put the tooltips modified by the current item at the top of the list & re-generate the standalone lines
 		{
-			AffixTooltip.AffixSource source = DetermineItemSource(item);
 			differenceTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0);//.Where(x => x.Value.ValueBySource.ContainsKey(source));
 			differenceTips = [.. differenceTips]; // Create a shallow clone of itself in order to de-reference from Tooltips
 
@@ -234,7 +233,7 @@ public class AffixTooltipsHandler
 			}
 		}
 
-		if (differenceTips is not null)
+		if (isEquipment && differenceTips is not null)
 		{
 			// You will see some commented out code here.
 			// This code was originally written to compare only two weapons of the same type - two javelins, two broadswords, two bows, etc.
@@ -273,7 +272,7 @@ public class AffixTooltipsHandler
 			// End code kept for posterity.
 		}
 
-		if (!hasShift && !isMap) // Show "Shift to compare" if they're not doing so (and it's not a map)
+		if (isEquipment && !hasShift) // Show "Shift to compare" if they're not doing so (and it's not a map)
 		{
 			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Shift"))
 			{
@@ -284,11 +283,11 @@ public class AffixTooltipsHandler
 
 	private static void AddSingleTooltipLine(List<TooltipLine> tooltips, ref int tipNum, KeyValuePair<Type, AffixTooltip> tip)
 	{
-		string text = $"[i:{ItemID.MusketBall}] " + tip.Value.Get();
+		string text = $"{ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent)} " + tip.Value.Get();
 
 		tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum++, text)
 		{
-			OverrideColor = tip.Value.Corrupt ? Color.Lerp(Color.Purple, Color.White, 0.4f) : tip.Value.Color,
+			OverrideColor = tip.Value.Corrupt ? ItemTooltips.Colors.Corrupt : tip.Value.Color,
 		});
 	}
 

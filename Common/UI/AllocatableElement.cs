@@ -97,8 +97,12 @@ internal class AllocatableElement : SmartUiElement
 			name += $" ({Node.Level}/{Node.MaxLevel})";
 		}
 
-		Tooltip.SetName(name);
-		Tooltip.SetTooltip(Node.DisplayTooltip);
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = GetType().Name,
+			SimpleTitle = name,
+			SimpleSubtitle = Node.DisplayTooltip,
+		});
 	}
 
 	public override void SafeClick(UIMouseEvent evt)

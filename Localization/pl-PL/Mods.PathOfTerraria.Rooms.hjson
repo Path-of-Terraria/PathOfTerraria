@@ -1,0 +1,19 @@
+Common: {
+	Missing1: Brakuje {0}.
+	Missing2: Brakuje {0} i {1}.
+	Missing3: Brakuje {0}{1} i {2}.
+	MissingList: "{0}"
+}
+
+Tavern: {
+	DisplayName: Tawerna
+	Description: Musi zajmować conajmniej 100 kratek\nPotrzebuje 3 stolików, 3 krzeseł, 3 stołków barowych, beczki, znaku, drzwi, i źródła światła
+
+	Error: {
+		Tables: 3 stoły
+		BarStools: 3 stołki barowe
+		Chairs: 3 krzesł
+		Keg: beczka
+		Sign: tabliczka
+	}
+}

@@ -29,10 +29,13 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 	internal static int MushroomsBroken = 0;
 
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
 	private static int BossSpawnTimer = 0;
 	private static Point16 NewSpawn = Point16.Zero;
+	public FightTracker FightTracker = new([NPCID.DukeFishron])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", Terrain),
@@ -168,8 +171,6 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		MushroomsBroken = 0;
 		BossSpawnTimer = 0;
 		NewSpawn = Point16.Zero;
-		BossSpawned = false;
-		ExitSpawned = false;
 
 		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Hole"); // Sets the text displayed for this pass
 		GeneratePit();
@@ -401,8 +402,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ExitSpawned = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -417,7 +417,9 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 
 		TileEntity.UpdateEnd();
 
-		if (!BossSpawned && MushroomsBroken >= 7)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted && MushroomsBroken >= 7)
 		{
 			BossSpawnTimer++;
 
@@ -444,8 +446,6 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 				Vector2 pos = Main.rand.Next([.. players]).Center - new Vector2(0, 1200);
 				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), (int)pos.X, (int)pos.Y, NPCID.DukeFishron);
 
-				BossSpawned = true;
-
 				Main.spawnTileX = NewSpawn.X;
 				Main.spawnTileY = NewSpawn.Y;
 
@@ -455,11 +455,9 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 				}
 			}
 		}
-		else if (BossSpawned && !NPC.AnyNPCs(NPCID.DukeFishron) && !ExitSpawned)
+		else if (state == FightState.JustCompleted)
 		{
 			BossTracker.AddDowned(NPCID.DukeFishron, false, true);
-
-			ExitSpawned = true;
 
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Projectile.NewProjectile(src, NewSpawn.ToWorldCoordinates(0, -60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);

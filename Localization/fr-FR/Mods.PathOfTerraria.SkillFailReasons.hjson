@@ -3,4 +3,4 @@ NotEnoughMana: Pas assez de mana pour lancer le sort
 // RangedWeaponConsumable: Needs a non-consumable weapon
 // WeaponInvalid: Held weapon is invalid for this skill
 // NoAmmo: Needs ammo
-// MissingAffix: Needs affix strength
+// MissingAffix: Needs +{0} affix on any equipped item

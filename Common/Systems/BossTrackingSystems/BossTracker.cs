@@ -39,9 +39,13 @@ internal class BossTracker : ModSystem
 		On_NPC.CreateBrickBoxForWallOfFlesh += StopBrickBox;
 	}
 
-	public static void AddDowned(int id, bool fromSync = false, bool setPlayerValues = false)
+	public static void AddDowned(int id, bool fromSync = false, bool setPlayerValues = false, bool dontCache = false)
 	{
-		CachedBossesDowned.Add(id);
+		if (!dontCache)
+		{
+			CachedBossesDowned.Add(id);
+		}
+		
 		TotalBossesDowned.Add(id);
 
 		if (setPlayerValues)

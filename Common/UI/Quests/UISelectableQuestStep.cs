@@ -40,21 +40,25 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 
 			if (text != string.Empty)
 			{
-				Tooltip.SetName(title);
-				Tooltip.SetTooltip(text);
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = "QuestReminder",
+					SimpleTitle = title,
+					SimpleSubtitle = text,
+				});
 			}
 		}
 
 		Vector2 pos = GetDimensions().ToRectangle().TopLeft() + new Vector2(6);
 		QuestStep.StepCompletion completion = QuestStep.StepCompletion.Locked;
 
-		if (quest.CurrentStep == index)
-		{
-			completion = QuestStep.StepCompletion.Current;
-		}
-		else if (quest.CurrentStep > index)
+		if (quest.CurrentStep > index || quest.Completed)
 		{
 			completion = QuestStep.StepCompletion.Completed;
+		}
+		else if (quest.CurrentStep == index)
+		{
+			completion = QuestStep.StepCompletion.Current;
 		}
 
 		Step.DrawQuestStep(pos, out int height, completion);

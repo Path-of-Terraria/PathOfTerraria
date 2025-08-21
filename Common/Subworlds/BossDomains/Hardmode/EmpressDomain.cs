@@ -18,10 +18,13 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 	public override (int time, bool isDay) ForceTime => (3500, false);
 
 	private static Rectangle ArenaBounds = new();
-	private static bool BossSpawned = false;
-	private static bool ExitSpawned = false;
 	private static int Wave = 0;
 	private static int WaitTime = 0;
+	public FightTracker FightTracker = new([NPCID.HallowBoss])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Terrain", GenTerrain)];
@@ -43,26 +46,20 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 	{
 		base.OnEnter();
 
-		BossSpawned = false;
-		ExitSpawned = false;
 		Wave = 0;
 		WaitTime = 0;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
 	{
 		DoWaveFunctionality();
 
-		if (!BossSpawned && NPC.AnyNPCs(NPCID.HallowBoss))
-		{
-			BossSpawned = true;
-		}
+		FightState state = FightTracker.UpdateState();
 
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.HallowBoss) && !ExitSpawned)
+		if (state == FightState.JustCompleted)
 		{
 			BossTracker.AddDowned(NPCID.HallowBoss, false, true);
-
-			ExitSpawned = true;
 
 			HashSet<Player> players = [];
 

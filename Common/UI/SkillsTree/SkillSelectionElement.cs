@@ -45,7 +45,11 @@ internal class SkillSelectionElement : UIElement
 			}
 			else
 			{
-				Tooltip.SetName(Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip", fail.Description));
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = "SkillSelection",
+					SimpleTitle = Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip", fail.Description),
+				});
 			}
 		}
 

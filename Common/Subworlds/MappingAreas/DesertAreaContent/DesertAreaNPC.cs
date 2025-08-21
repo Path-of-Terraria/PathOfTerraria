@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using PathOfTerraria.Content.NPCs.Mapping.Desert;
-using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
+﻿using PathOfTerraria.Content.NPCs.Mapping.Desert;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.ID;
@@ -31,17 +29,6 @@ internal class DesertAreaNPC : GlobalNPC
 		pool[NPCID.DesertDjinn] = 0.3f;
 		pool[NPCID.Scorpion] = 0.1f;
 		pool[NPCID.ScorpionBlack] = 0.1f;
-	}
-
-	public override void EditSpawnRate(Player player, ref int spawnRate, ref int maxSpawns)
-	{
-		if (SubworldSystem.Current is not QueenSlimeDomain || spawnRate == int.MinValue)
-		{
-			return;
-		}
-
-		maxSpawns -= 3;
-		spawnRate = (int)(spawnRate * 2f);
 	}
 
 	public override void ApplyDifficultyAndPlayerScaling(NPC npc, int numPlayers, float balance, float bossAdjustment)

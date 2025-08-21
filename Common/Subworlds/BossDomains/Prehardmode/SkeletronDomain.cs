@@ -79,8 +79,11 @@ public class SkeletronDomain : BossDomainSubworld
 	public Rectangle Arena = Rectangle.Empty;
 	public Point PortalLocation = Point.Zero;
 	public Point WellBottom = Point.Zero;
-	public bool BossSpawned = false;
-	public bool ReadyToExit = false;
+	public FightTracker FightTracker = new([NPCID.SkeletronHead])
+	{
+		ResetOnVanish = true,
+		HaltTimeOnVanish = 60 * 10,
+	};
 
 	private int clearY = 0;
 
@@ -690,8 +693,7 @@ public class SkeletronDomain : BossDomainSubworld
 
 	public override void OnEnter()
 	{
-		BossSpawned = false;
-		ReadyToExit = false;
+		FightTracker.Reset();
 	}
 
 	public override void Update()
@@ -751,10 +753,11 @@ public class SkeletronDomain : BossDomainSubworld
 			}
 		}
 
-		if (!BossSpawned && allInArena)
+		FightState state = FightTracker.UpdateState();
+
+		if (state == FightState.NotStarted && allInArena)
 		{
 			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Arena.Center.X, Arena.Center.Y, NPCID.SkeletronHead, 1);
-			BossSpawned = true;
 
 			Main.spawnTileX = Arena.Center.X / 16;
 			Main.spawnTileY = Arena.Center.Y / 16;
@@ -764,14 +767,12 @@ public class SkeletronDomain : BossDomainSubworld
 				NetMessage.SendData(MessageID.WorldData);
 			}
 		}
-
-		if (BossSpawned && !NPC.AnyNPCs(NPCID.SkeletronHead) && !ReadyToExit)
+		else if (state == FightState.JustCompleted)
 		{
 			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 
 			BossTracker.AddDowned(NPCID.SkeletronHead, false, true);
-			ReadyToExit = true;
 		}
 	}
 }

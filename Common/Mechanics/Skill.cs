@@ -25,7 +25,7 @@ public enum SkillFailReason
 /// <summary> Contains a reason for a skill to fail in any context. </summary>
 /// <param name="reason"></param>
 /// <param name="context"></param>
-public readonly struct SkillFailure(SkillFailReason reason, string context = null)
+public readonly struct SkillFailure(SkillFailReason reason, string context = null,  params object[] formatArgs)
 {
 	/// <summary> Whether <see cref="Reason"/> is a weapons requirement. </summary>
 	public bool WeaponRejected => Reason is SkillFailReason.NeedsMelee or SkillFailReason.NeedsRanged or SkillFailReason.NeedsMagic or SkillFailReason.NeedsSummon;
@@ -33,6 +33,7 @@ public readonly struct SkillFailure(SkillFailReason reason, string context = nul
 
 	public readonly SkillFailReason Reason = reason;
 	private readonly string _context = context;
+	private readonly object[] _formatArgs = formatArgs;
 
 	private readonly LocalizedText GetDescription()
 	{
@@ -51,7 +52,8 @@ public readonly struct SkillFailure(SkillFailReason reason, string context = nul
 			return Language.GetText(path + "NeedsWeapon").WithFormatArgs(value);
 		}
 
-		return Language.GetText(path + (_context ?? Reason.ToString()));
+		var text = Language.GetText(path + (_context ?? Reason.ToString()));
+		return (_formatArgs is { Length: > 0 }) ? text.WithFormatArgs(_formatArgs) : text;
 	}
 }
 

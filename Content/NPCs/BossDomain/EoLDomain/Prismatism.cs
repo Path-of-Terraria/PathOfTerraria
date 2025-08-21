@@ -161,6 +161,11 @@ internal class Prismatism : ModNPC
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
+		if (NPC.IsABestiaryIconDummy)
+		{
+			NPC.rotation += 0.05f;
+		}
+
 		float rot = NPC.velocity.X * 0.2f;
 		Vector2 basePosition = NPC.Center - screenPos;
 		Main.EntitySpriteDraw(ShineTex.Value, basePosition + new Vector2(0, 6), null, NPC.GetAlpha(Color.White), rot, ShineTex.Size() / 2f, 1f, SpriteEffects.None, 0);

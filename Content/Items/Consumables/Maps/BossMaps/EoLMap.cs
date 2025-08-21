@@ -8,8 +8,8 @@ namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 internal class EoLMap : Map
 {
 	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 67;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= 66 && NPC.downedEmpressOfLight;
+	public override int WorldTier => WorldLevelBasedOnTier(8) + 1;
+	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(8) && NPC.downedEmpressOfLight;
 
 	public override void SetStaticDefaults()
 	{

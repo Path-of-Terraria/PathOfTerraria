@@ -98,7 +98,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public static int WorldLevelBasedOnTier(int tier)
 	{
-		return Math.Clamp(50 + tier * 2, 50, 72);
+		return Math.Clamp(48 + tier * 2, 50, 72);
 	}
 
 	public static int TierBasedOnWorldLevel(int area)
@@ -129,7 +129,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	/// <returns></returns>
 	public static int GetBossUseCount()
 	{
-		int def = 6 / BossDomainLivesPlayer.GetLivesPerPlayer();
+		int def = 6 / BossDomainLivesPlayer.GetLivesPerPlayer(Main.CurrentFrameFlags.ActivePlayersCount);
 
 		if (Main.CurrentFrameFlags.ActivePlayersCount > 6)
 		{
@@ -156,11 +156,11 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
 	{
-		// Randomize level a bit if it's == to world level
-		// TODO: Find a better way to do this?
-		if (level == PoTItemHelper.PickItemLevel() && level > 50)
+		//You can find maps 1 tier lower, on your current tier, and 1 tier higher with the below. 
+		//So if youre in tier 2, you can find tier 1 maps, tier 2 maps, and tier 3 maps.
+		if (level == PoTItemHelper.PickItemLevel() && level >= 50)
 		{
-			level = Main.rand.Next(50, level + 1);
+			level = Main.rand.Next(level - 3, level + 1);
 		}
 
 		realLevel = level;

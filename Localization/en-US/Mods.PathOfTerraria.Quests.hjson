@@ -69,6 +69,7 @@ Quest: {
 		MorvenRaven: Get Morven to Ravencrest
 		SmashOrbs: Smash 3 Shadow Orbs
 		KillEoW: Defeat the Eater of Worlds
+		ReturnToOverworld: Return to the Overworld
 	}
 
 	BoCQuest: {
@@ -193,7 +194,7 @@ Quest: {
 	MoonLordQuest: {
 		Name: The Ending
 		Description: ""
-		EnterDomain: Enter the Moon Lords's domain
+		EnterDomain: Enter the Moon Lord's domain
 		Boss: Defeat the Moon Lord
 	}
 }

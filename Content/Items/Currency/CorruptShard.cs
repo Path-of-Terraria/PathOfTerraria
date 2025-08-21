@@ -24,6 +24,11 @@ public class CorruptShard : CurrencyShard
 		staticData.MinDropItemLevel = 5;
 	}
 
+	public override bool CanRightClick()
+	{
+		return base.CanRightClick() && Main.LocalPlayer.selectedItem == 58;
+	}
+
 	public override void SetDefaults()
 	{
 		Item.CloneDefaults(ItemID.Silk);
@@ -39,6 +44,7 @@ public class CorruptShard : CurrencyShard
 
 		if (Main.rand.NextBool(2)) // 50% chance to do nothing
 		{
+			PoTItemHelper.SetMouseItemToHeldItem(player);
 			return;
 		}
 
@@ -48,8 +54,16 @@ public class CorruptShard : CurrencyShard
 
 			if (delevel)
 			{
-				IEnumerable<GearItem> gear = ModContent.GetContent<GearItem>().Where(x => x.GetInstanceData().ItemType == data.ItemType);
-				GearItem chosenItem = gear.ElementAt(Main.rand.Next(gear.Count()));
+				IEnumerable<ItemDatabase.ItemRecord> gear = ItemDatabase.AllItems.Where(x => x.Item.ModItem is GearItem &&
+					x.Item.GetInstanceData().ItemType == data.ItemType && x.Rarity == ItemRarity.Rare);
+				int count = gear.Count();
+
+				if (count == 0)
+				{
+					return;
+				}
+
+				var chosenItem = gear.ElementAt(Main.rand.Next(count)).Item.ModItem as GearItem;
 				int oldLevel = data.RealLevel;
 
 				player.HeldItem.SetDefaults(chosenItem.Type);
@@ -57,6 +71,7 @@ public class CorruptShard : CurrencyShard
 				data.Rarity = ItemRarity.Rare;
 				data.RealLevel = oldLevel;
 				PoTItemHelper.Roll(player.HeldItem, data.RealLevel);
+				data.Corrupted = true;
 			}
 			else
 			{
@@ -68,10 +83,7 @@ public class CorruptShard : CurrencyShard
 			AddAffix(data);
 		}
 
-		if (player.selectedItem == 58) // mouseItem copies over HeldItem otherwise
-		{
-			Main.mouseItem = player.HeldItem;
-		}
+		PoTItemHelper.SetMouseItemToHeldItem(player);
 	}
 
 	private static void AddAffix(PoTInstanceItemData data)

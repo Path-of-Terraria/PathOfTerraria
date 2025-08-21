@@ -68,7 +68,8 @@ public class BloodSiphon : Skill
 	{
 		if (player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>() <= 0)
 		{
-			failReason = new SkillFailure(SkillFailReason.Other, "MissingAffix");
+			// MissingAffix: Needs {0} affix on any equipped item
+			failReason = new SkillFailure(SkillFailReason.Other, "MissingAffix", DisplayName.Value);
 			return false;
 		}
 
