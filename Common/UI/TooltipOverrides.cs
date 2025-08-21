@@ -42,7 +42,8 @@ public sealed class TooltipOverrides : ModSystem
 		Item hoverItem = Main.HoverItem;
 		Item mouseItem = Main.mouseItem?.IsAir == false ? Main.mouseItem : player.inventory[58];
 		bool drawForHoverItem = (!isLate || !drewHoverItem) && (hoverItem?.IsAir) == false && ShouldOverrideHoverItemTooltip();
-		bool drawForMouseItem = (!isLate || !drewMouseItem) && (mouseItem?.IsAir) == false && Main.LocalPlayer.mouseInterface && !player.ItemAnimationActive && mouseItem.IsNotSameTypePrefixAndStack(hoverItem);
+		bool isHoveringOverUI = Main.LocalPlayer.mouseInterface || drawForHoverItem || drewHoverItem;
+		bool drawForMouseItem = (!isLate || !drewMouseItem) && (mouseItem?.IsAir) == false && isHoveringOverUI && !player.ItemAnimationActive && mouseItem.IsNotSameTypePrefixAndStack(hoverItem);
 		bool drawSideBySide = drawForHoverItem && drawForMouseItem;
 
 		// If we are reacting to a late Hover/MouseItem mutation, i.e. after the tooltips have already been drawn, then we need to make new instances last a whole tick.
