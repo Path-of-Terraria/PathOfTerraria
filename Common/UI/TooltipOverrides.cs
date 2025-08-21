@@ -18,6 +18,7 @@ public sealed class TooltipOverrides : ModSystem
 
 	private static void OnDrawMouseText(On_Main.orig_DrawInterface_33_MouseText orig, Main self)
 	{
+		orig(self);
 		AddDefaultTooltips();
 	}
 
