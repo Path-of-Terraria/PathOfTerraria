@@ -147,9 +147,7 @@ internal class ArpgNPC : GlobalNPC
 		// Roll guaranteed rare/magic items first
 		if (Rarity is ItemRarity.Magic or ItemRarity.Rare)
 		{
-			drops.AddRange(DropTable.RollManyMobDrops(1, itemLevel, DropRarity * magicFind,
-				gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f,
-				forceRarity: Rarity));
+			drops.Add(DropTable.RollMobDrops(itemLevel, DropRarity * magicFind, gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, null, forceRarity: Rarity));
 		}
 
 		// Roll the remaining items normally
