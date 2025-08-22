@@ -102,16 +102,33 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 	public override void OnKill(NPC npc)
 	{
+		// Trigger affixes
 		Affixes.ForEach(a => a.OnKill(npc));
 
+		// Early exit conditions
 		if (DropModifierNPC.GetDropRate(npc) < Main.rand.NextFloat() || npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss || npc.friendly || npc.CountsAsACritter)
 		{
 			return;
 		}
 
+		// Determine drop count
 		int minDrop = (int)(DropQuantity * MinDropChanceScale * 100f);
 		int maxDrop = (int)(DropQuantity * 100f);
 		int rand = Main.rand.Next(minDrop, maxDrop + 1);
+
+		int dropCount = 0;
+		while (rand > 99)
+		{
+			rand -= 100;
+			dropCount++;
+		}
+
+		if (rand < 25)
+		{
+			dropCount++;
+		}
+
+		// Calculate magic find
 		float magicFind = 0;
 		int itemLevel = 0;
 
@@ -123,25 +140,32 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		if (SubworldSystem.Current is MappingWorld world)
 		{
 			magicFind += (int)(world.TotalWeight() / 10f) / 100f;
-
 			float modifier = 1 + (world.AreaLevel - 50) / 100f;
 			magicFind += modifier;
 		}
 
+		List<ItemDatabase.ItemRecord> drops = [];
+
+		// Roll guaranteed rare/magic items first
 		if (Rarity is ItemRarity.Magic or ItemRarity.Rare)
 		{
-			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind, forceRarity: Rarity);
+			drops.Add(DropTable.RollMobDrops(itemLevel, DropRarity * magicFind, gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, null, forceRarity: Rarity));
 		}
 
-		while (rand > 99)
+		// Roll the remaining items normally
+		if (dropCount > 0)
 		{
-			rand -= 100;
-			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind);
+			drops.AddRange(DropTable.RollManyMobDrops(dropCount, itemLevel, DropRarity * magicFind,
+				gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f));
 		}
 
-		if (rand < 25)
+		// Spawn all items
+		foreach (ItemDatabase.ItemRecord item in drops)
 		{
-			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind);
+			if (item != ItemDatabase.InvalidItem)
+			{
+				ItemSpawner.SpawnItem(item.ItemId, npc.Center, itemLevel, item.Rarity);
+			}
 		}
 	}
 
