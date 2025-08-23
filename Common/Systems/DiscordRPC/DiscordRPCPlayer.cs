@@ -53,14 +53,15 @@ public class DiscordRPCPlayer : ModPlayer
 		}
 
 		var mappingWorlds = subworlds.OfType<MappingWorld>().ToList();
+		
 		if (mappingWorlds.Count == 0)
 		{
 			return false;
 		}
+		
 		foreach (MappingWorld mappingWorld in mappingWorlds)
 		{
-			// ideally we would add the texture to be used directly in each subworld we create, just using a static one for now
-			discordRPCMod.Call("AddWorld", "https://i.imgur.com/ZWOW3ka.png", mappingWorld.DisplayName.Value.Split("Subworld")[0].Trim());
+			discordRPCMod.Call("AddWorld", mappingWorld.Name , mappingWorld.DisplayName.Value.Split("Subworld")[0].Trim(), "pathofterraria");
 		}
 
 		return true;

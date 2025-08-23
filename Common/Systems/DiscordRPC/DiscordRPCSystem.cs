@@ -7,5 +7,12 @@ public class DiscordRPCSystem : ModSystem
 	public override void Load()
 	{
 		DiscordRPCInitialized = false;
+		
+		if (!ModLoader.TryGetMod("DiscordRPCAPI", out Mod discordRPCMod))
+		{
+			return;
+		}
+		
+		discordRPCMod.Call("AddClient", "1089695863217074227", "pathofterraria");
 	}
 }

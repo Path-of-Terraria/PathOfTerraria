@@ -1,0 +1,510 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>DiscordRPCAPI</name>
+    </assembly>
+    <members>
+        <member name="T:DiscordRPCAPI.Biome">
+            <summary>
+            Data structure representing a biome, structure, event, or other environmental location.<br/>
+            <see cref="T:DiscordRPCAPI.Biome"/>s are always overriden by <see cref="T:DiscordRPCAPI.Boss"/>es.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.Biome.#ctor(System.Func{System.Boolean},System.String,Terraria.Localization.LocalizedText,System.Single,System.String)">
+            <summary>
+            Data structure representing a biome, structure, event, or other environmental location.<br/>
+            <see cref="T:DiscordRPCAPI.Biome"/>s are always overriden by <see cref="T:DiscordRPCAPI.Boss"/>es.
+            </summary>
+        </member>
+        <member name="P:DiscordRPCAPI.Biome.IsActive">
+            <summary>
+            If true, this biome is active. Shorthand for calling <see cref="F:DiscordRPCAPI.Biome.Checker"/>.
+            </summary>
+        </member>
+        <member name="F:DiscordRPCAPI.Biome.Checker">
+            <summary>
+            Delegate for if this biome is active. Use <see cref="P:DiscordRPCAPI.Biome.IsActive"/> instead.
+            </summary>
+        </member>
+        <member name="F:DiscordRPCAPI.Biome.ImageKey">
+            <summary>
+            Image key for the associated large image key; the biome key art's key.
+            </summary>
+        </member>
+        <member name="F:DiscordRPCAPI.Biome.ImageName">
+            <summary>
+            Hover text for the image in Discord.
+            </summary>
+        </member>
+        <member name="F:DiscordRPCAPI.Biome.Priority">
+            <summary>
+            Priority of the boss compared to all other biomes. Higher value = higher priority.
+            </summary>
+        </member>
+        <member name="F:DiscordRPCAPI.Biome.ClientId">
+            <summary>
+            DiscordRP-API instance linked to this biome.
+            </summary>
+        </member>
+        <member name="T:DiscordRPCAPI.Boss">
+            <summary>
+            Data structure for any given NPC, boss or otherwise.<br/>
+            <see cref="T:DiscordRPCAPI.Boss"/>es always override any <see cref="T:DiscordRPCAPI.Biome"/>s.
+            </summary>
+            <param name="ImageKey">The image key for the Discord app to reference.</param>
+            <param name="ImageName">The hover text for the image in Discord.</param>
+            <param name="Priority">Priority of the boss compared to all other bosses/NPCs. Higher value = higher priority.</param>
+            <param name="ClientId">DiscordRPCAPI instance linked to this boss.</param>
+        </member>
+        <member name="M:DiscordRPCAPI.Boss.#ctor(System.String,System.String,System.Single,System.String)">
+            <summary>
+            Data structure for any given NPC, boss or otherwise.<br/>
+            <see cref="T:DiscordRPCAPI.Boss"/>es always override any <see cref="T:DiscordRPCAPI.Biome"/>s.
+            </summary>
+            <param name="ImageKey">The image key for the Discord app to reference.</param>
+            <param name="ImageName">The hover text for the image in Discord.</param>
+            <param name="Priority">Priority of the boss compared to all other bosses/NPCs. Higher value = higher priority.</param>
+            <param name="ClientId">DiscordRPCAPI instance linked to this boss.</param>
+        </member>
+        <member name="P:DiscordRPCAPI.Boss.ImageKey">
+            <summary>The image key for the Discord app to reference.</summary>
+        </member>
+        <member name="P:DiscordRPCAPI.Boss.ImageName">
+            <summary>The hover text for the image in Discord.</summary>
+        </member>
+        <member name="P:DiscordRPCAPI.Boss.Priority">
+            <summary>Priority of the boss compared to all other bosses/NPCs. Higher value = higher priority.</summary>
+        </member>
+        <member name="P:DiscordRPCAPI.Boss.ClientId">
+            <summary>DiscordRPCAPI instance linked to this boss.</summary>
+        </member>
+        <member name="T:DiscordRPCAPI.ClientPlayer">
+            <summary>
+            A custom player class for handling client-side logic in the discord RPC API mod.
+            This class extends <see cref="T:Terraria.ModLoader.ModPlayer"/> to manage discord presence updates based on player events and state.
+            </summary>
+        </member>
+        <member name="F:DiscordRPCAPI.ClientPlayer.NearbyTownNPCCount">
+            <summary>
+            The number of nearby town NPCs within a 1500-unit squared distance from the player.
+            This value is updated in the <see cref="M:DiscordRPCAPI.ClientPlayer.PreUpdate"/> method.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.ClientPlayer.OnEnterWorld">
+            <summary>
+            Called when the player enters a world.
+            Updates the mod's state to indicate the player is in a world, refreshes world and player information for Discord RPC,
+            and forces a lobby info update and client refresh.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.ClientPlayer.PlayerConnect">
+            <summary>
+            Called when the player connects to a multiplayer session.
+            Sets the mod's state to indicate the player is in a world if it's the local player,
+            updates lobby information, and forces a client refresh for Discord RPC.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.ClientPlayer.PlayerDisconnect">
+            <summary>
+            Called when the player disconnects from a multiplayer session.
+            Resets the mod's state to indicate the player is no longer in a world if it's the local player,
+            updates lobby information, and forces a client refresh for Discord RPC.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.ClientPlayer.PreUpdate">
+            <summary>
+            Called before the player's update logic each frame.
+            Calculates and updates the count of nearby active town NPCs within a 1500-unit squared distance.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.ClientPlayer.CurrentTile">
+            <summary>
+            Retrieves the tile at the center position of the local player.
+            </summary>
+            <returns>The <see cref="T:Terraria.Tile"/> object at the local player's center coordinates.</returns>
+        </member>
+        <member name="T:DiscordRPCAPI.ClientStatus">
+            <summary>
+            Defines the required fields when updating
+            the client's Rich Presence status.
+            </summary>
+        </member>
+        <member name="F:DiscordRPCAPI.ClientStatus.State">
+            <value>
+            the user's current party status
+            </value>
+        </member>
+        <member name="F:DiscordRPCAPI.ClientStatus.Description">
+            <value>
+            what the player is currently doing
+            </value>
+        </member>
+        <member name="F:DiscordRPCAPI.ClientStatus.LargeImageKey">
+            <value>
+            name of the uploaded image for the large profile artwork
+            </value>
+        </member>
+        <member name="F:DiscordRPCAPI.ClientStatus.LargeImageText">
+            <value>
+            tooltip for the largeImageKey
+            </value>
+        </member>
+        <member name="F:DiscordRPCAPI.ClientStatus.SmallImageKey">
+            <value>
+            name of the uploaded image for the small profile artwork
+            </value>
+        </member>
+        <member name="F:DiscordRPCAPI.ClientStatus.SmallImageText">
+            <value>
+            tooltip for the smallImageKey
+            </value>
+        </member>
+        <member name="M:DiscordRPCAPI.ClientWorld.TileCountsAvailable(System.ReadOnlySpan{System.Int32})">
+            <summary>
+            Sets <see cref="F:DiscordRPCAPI.ClientWorld.NearClouds"/> or <see cref="F:DiscordRPCAPI.ClientWorld.NearDirt"/> to true if enough blocks are in the vicinity.
+            </summary>
+            <param name="tileCounts"></param>
+        </member>
+        <member name="M:DiscordRPCAPI.DataPopulator.AddBoss(System.Collections.Generic.List{System.Int32},System.ValueTuple{System.String,System.String},System.Single,System.String)">
+            <summary>
+            Add new npc to boss list to detect
+            </summary>
+            <param name="ids">the npc ids</param>
+            <param name="imageKey">image key</param>
+            <param name="priority">priority</param>
+            <param name="client">discord app id key</param>
+        </member>
+        <member name="M:DiscordRPCAPI.DataPopulator.AddBiome(System.Func{System.Boolean},System.String,System.String,System.Single,System.String)">
+            <summary>
+            Add new biome/event to detect
+            </summary>
+            <param name="checker">function to check, detect biome/event if returns true</param>
+            <param name="imageKey">image key</param>
+            <param name="priority">priority</param>
+            <param name="client">discord app id key</param>
+        </member>
+        <member name="T:DiscordRPCAPI.DiscordRPCAPIMod">
+            <summary>
+            The main mod class for the discord RPC API mod, responsible for managing discord rich presence integration with tModLoader.
+            </summary>
+        </member>
+        <member name="P:DiscordRPCAPI.DiscordRPCAPIMod.Instance">
+            <summary>
+            Gets the singleton instance of the <see cref="T:DiscordRPCAPI.DiscordRPCAPIMod"/> class.
+            </summary>
+        </member>
+        <member name="P:DiscordRPCAPI.DiscordRPCAPIMod.Client">
+            <summary>
+            Gets or sets the discord RPC client used for communication with Discord.
+            </summary>
+        </member>
+        <member name="P:DiscordRPCAPI.DiscordRPCAPIMod.RichPresenceInstance">
+            <summary>
+            Gets the current discord rich presence instance.
+            </summary>
+        </member>
+        <member name="P:DiscordRPCAPI.DiscordRPCAPIMod.NowSeconds">
+            <summary>
+            Gets the current time in seconds since the Unix epoch (January 1, 1970).
+            </summary>
+        </member>
+        <member name="P:DiscordRPCAPI.DiscordRPCAPIMod.ModPlayer">
+            <summary>
+            Gets the <see cref="T:DiscordRPCAPI.ClientPlayer"/> instance associated with the local player.
+            </summary>
+        </member>
+        <member name="F:DiscordRPCAPI.DiscordRPCAPIMod.CurrentClient">
+            <summary>
+            Gets or sets the current discord client key (default is "default").
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "F:DiscordRPCAPI.DiscordRPCAPIMod.PrevSend" -->
+        <member name="F:DiscordRPCAPI.DiscordRPCAPIMod.WorldStaticInfo">
+            <summary>
+            Gets or sets the static world information displayed in the discord status.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.AddBoss(System.Int32,DiscordRPCAPI.Boss)">
+            <summary>
+            Adds a boss to the collection of presentable bosses for discord rich presence.
+            </summary>
+            <param name="bossId">The ID of the boss.</param>
+            <param name="boss">The <see cref="T:DiscordRPCAPI.Boss"/> object to add.</param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.BossExists(System.Int32)">
+            <summary>
+            Checks if a boss exists in the presentable bosses collection.
+            </summary>
+            <param name="bossId">The ID of the boss to check.</param>
+            <returns><c>true</c> if the boss exists; otherwise, <c>false</c>.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.GetBossById(System.Int32)">
+            <summary>
+            Retrieves a boss by its ID from the presentable bosses collection.
+            </summary>
+            <param name="bossId">The ID of the boss to retrieve.</param>
+            <returns>The <see cref="T:DiscordRPCAPI.Boss"/> object associated with the ID.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.GetCurrentBoss">
+            <summary>
+            Gets the highest-priority active boss currently in the world.
+            </summary>
+            <returns>The <see cref="T:DiscordRPCAPI.Boss"/> with the highest priority, or <c>null</c> if no boss is active.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.AddBiome(DiscordRPCAPI.Biome)">
+            <summary>
+            Adds a biome to the collection of presentable biomes for discord rich presence.
+            </summary>
+            <param name="biome">The <see cref="T:DiscordRPCAPI.Biome"/> object to add.</param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.GetCurrentBiome">
+            <summary>
+            Gets the highest-priority active biome the player is currently in.
+            </summary>
+            <returns>The <see cref="T:DiscordRPCAPI.Biome"/> with the highest priority, or <c>null</c> if no biome is active.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.AddCustomStat(System.String,System.Func{System.String})">
+            <summary>
+            Adds a custom stat to the list <see cref="F:DiscordRPCAPI.DiscordRPCAPIMod.customStats"/>
+            </summary>
+            <param name="stat"></param>
+            <param name="statValue"></param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.AddWorld(DiscordRPCAPI.World)">
+            <summary>
+            Adds a custom world to the list <see cref="F:DiscordRPCAPI.DiscordRPCAPIMod.customWorlds"/> to show them instead of biome or/and boss
+            </summary>
+            <param name="world"></param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.GetTimeOfDay">
+            <summary>
+            Determines the current time of day in the game world for discord status display.
+            </summary>
+            <returns>A string indicating the time of day ("Dawn", "Day", "Dusk", or "Night"), or <c>null</c> if time display is disabled.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.GetPlayerState">
+            <summary>
+            Retrieves the player's current state (e.g., health, DPS, mana, defense) for Discord status.
+            </summary>
+            <returns>A string summarizing the player's stats, or <c>null</c> if stat display is disabled.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.SetCustomStatus(DiscordRPCAPI.ClientStatus)">
+            <summary>
+            Sets a custom discord rich presence status.
+            </summary>
+            <param name="status">The <see cref="T:DiscordRPCAPI.ClientStatus"/> object containing the custom status details.</param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.Load">
+            <summary>
+            Initializes the mod, setting up the discord rich presence client and related data structures.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.PostSetupContent">
+            <summary>
+            Sets up vanilla bosses, biomes, and events, and registers the client update tick handler.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.ChangeDiscordClient(System.String)">
+            <summary>
+            Change the discord app ID, currently takes 3s to change
+            </summary>
+            <param name="newClient">New discord app ID key</param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.CreateNewDiscordRPCRichPresenceInstance(System.String)">
+            <summary>
+            Create new discordRPC client, currently only used once
+            </summary>
+            <param name="appId">Discord app ID</param>
+            <param name="key">key for app ID</param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.AddDiscordAppID(System.String,System.String)">
+            <summary>
+            Add other Discord App ID
+            </summary>
+            <param name="key">the key</param>
+            <param name="appID">Discord App ID</param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.ClientOnJoin(System.Object,DiscordRPC.Message.JoinMessage)">
+            <summary>
+            Discord OnJoin event, called on the joiner
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.ClientOnJoinRequested(System.Object,DiscordRPC.Message.JoinRequestMessage)">
+            <summary>
+            Discord OnJoinRequested event, called on the host, currently deny everything lol
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.ClientOnMainMenu">
+            <summary>
+            Change the status to main menu
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.ClientSetStatus(DiscordRPCAPI.ClientStatus)">
+            <summary>
+            Changes the status for the current user.
+            </summary>
+            <param name="status">An instance of <see cref="T:DiscordRPCAPI.ClientStatus"/>.</param>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.ClientForceUpdate">
+            <summary>
+            Forces a rich presence update.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.ClientUpdate">
+            <summary>
+            Updates the discord rich presence status every tick, based on the game state.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.Unload">
+            <summary>
+            Cleans up resources when the mod is unloaded.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.Call(System.Object[])">
+            <summary>
+            Handles mod calls from other mods to configure discord rich presence settings.
+            </summary>
+            <param name="args">The arguments for the mod call.</param>
+            <returns>The result of the mod call, or an error message if called on a dedicated server.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.UpdateLobbyInfo">
+            <summary>
+            Updates the discord rich presence lobby information, currently setting party settings to null.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.ClientUpdatePlayer">
+            <summary>
+            method for update the status, checking from item to biome/boss/events
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.GetItemStat">
+            <summary>
+            Retrieves the player's held item stats for discord rich presence display.
+            </summary>
+            <returns>A tuple containing the image key and text description for the player's held item.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCAPIMod.UpdateWorldStaticInfo">
+            <summary>
+            Updates the static world information for discord rich presence, including world name and difficulty.
+            </summary>
+        </member>
+        <member name="T:DiscordRPCAPI.DiscordRPCTooling">
+            <summary>
+            Provides utility methods for handling data conversions and discord rich presence status updates in the discord RPC API mod.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCTooling.ObjectToListInt(System.Object)">
+            <summary>
+            Converts an object to a list of integers.
+            </summary>
+            <param name="data">The object to convert. Expected to be either a <see cref="T:System.Collections.Generic.List`1"/> of <see cref="T:System.Int32"/> or a single <see cref="T:System.Int32"/>.</param>
+            <returns>A <see cref="T:System.Collections.Generic.List`1"/> containing integers if the input is a valid list or single integer; otherwise, <c>null</c>.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCTooling.ObjectToFloat(System.Object,System.Single)">
+            <summary>
+            Converts an object to a float, returning a default value if the conversion is not possible.
+            </summary>
+            <param name="data">The object to convert. Expected to be a <see cref="T:System.Single"/>.</param>
+            <param name="def">The default value to return if the conversion fails.</param>
+            <returns>The converted <see cref="T:System.Single"/> value if the input is a float; otherwise, the default value.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.DiscordRPCTooling.NewMenuStatus(System.String,System.String,System.ValueTuple{System.String,System.String},System.ValueTuple{System.String,System.String})">
+            <summary>
+            Sets a custom discord rich presence status for the main menu.
+            </summary>
+            <param name="details">The upper text to display in the discord status.</param>
+            <param name="additionalDetails">The lower text (state) to display in the discord status.</param>
+            <param name="largeImage">A tuple containing the key and tooltip text for the large image in the discord status.</param>
+            <param name="smallImage">A tuple containing the key and tooltip text for the small image in the discord status.</param>
+        </member>
+        <member name="M:DiscordRPCAPI.ExitHookPlayer.OnWorldUnload">
+            <summary>
+            Show the player status as on main menu only when exiting to the actual main menu
+            </summary>
+        </member>
+        <member name="T:DiscordRPCAPI.ModCalls">
+            <summary>
+            Provides a set of methods to handle mod calls for the discord RPC API mod, allowing other mods to interact with discord rich presence functionality.
+            </summary>
+        </member>
+        <member name="M:DiscordRPCAPI.ModCalls.Call(System.Object[])">
+            <summary>
+            Processes mod calls to configure discord rich presence settings, such as adding bosses, biomes, clients, or setting main menu status.
+            </summary>
+            <param name="args">An array of arguments specifying the type of call and its parameters. The first argument is the message type (e.g., "AddBoss", "AddBiome", "MainMenu", "AddClient").</param>
+            <returns><c>true</c> if the call is processed successfully; otherwise, throws an exception for invalid operations.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if <see cref="P:DiscordRPCAPI.DiscordRPCAPIMod.Instance"/> is null or if the call is invalid.</exception>
+        </member>
+        <member name="M:DiscordRPCAPI.ModCalls.CallAddClient(System.Object[],System.Int32)">
+            <summary>
+            Adds a new Discord client with the specified application ID and key.
+            </summary>
+            <param name="args">The arguments array containing the client ID and key.</param>
+            <param name="argsCount">The number of arguments provided in the original call.</param>
+            <returns><c>true</c> if the client is added successfully.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if the argument count is not 3 or if a client cannot be created at this time.</exception>
+        </member>
+        <member name="M:DiscordRPCAPI.ModCalls.CallAddMainMenu(System.Object[])">
+            <summary>
+            Sets a custom main menu status for discord rich presence.
+            </summary>
+            <param name="args">The arguments array containing details, additional details, and image keys for the discord status.</param>
+            <returns><c>true</c> if the main menu status is set successfully.</returns>
+            <exception cref="T:System.InvalidOperationException">Thrown if a client cannot be created at this time.</exception>
+        </member>
+        <member name="M:DiscordRPCAPI.ModCalls.CallAddBiome(System.Object[],System.String)">
+            <summary>
+            Adds a biome or event to the discord rich presence data with a specified checker function, texture, and priority.
+            </summary>
+            <param name="args">The arguments array containing the checker function, texture path, language key, priority, and client.</param>
+            <param name="message">The type of call ("AddBiome" or "AddEvent").</param>
+            <returns><c>true</c> if the biome or event is added successfully.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.ModCalls.CallAddBoss(System.Object[])">
+            <summary>
+            Adds a boss to the discord rich presence data with specified IDs, image key, and priority.
+            </summary>
+            <param name="args">The arguments array containing the boss IDs, image key, priority, and client.</param>
+            <returns><c>true</c> if the boss is added successfully.</returns>
+        </member>
+        <member name="M:DiscordRPCAPI.ModCalls.CallAddPlayerStat(System.Object[])">
+            <summary>
+            Adds a custom player stat for discord rich presence with <see cref="!:statName"/> and <see cref="!:statValue"/> from args
+            </summary>
+            <param name="args"></param>
+            <returns></returns>
+        </member>
+        <member name="M:DiscordRPCAPI.ModCalls.CallAddWorld(System.Object[])">
+            <summary>
+            Adds a custom world to the discord rich presence data with a specified texture.
+            </summary>
+            <param name="args">The arguments array containing texture path, language key, and client.</param>
+            <returns><c>true</c> if the world is added successfully.</returns>
+        </member>
+        <member name="T:DiscordRPCAPI.World">
+            <summary>
+            Data structure for any world.<br/>
+            </summary>
+            <param name="ImageKey">The image key for the Discord app to reference.</param>
+            <param name="ImageName">The hover text for the image in Discord.</param>
+            <param name="ClientId">DiscordRPCAPI instance linked to this boss.</param>
+        </member>
+        <member name="M:DiscordRPCAPI.World.#ctor(System.String,Terraria.Localization.LocalizedText,System.String)">
+            <summary>
+            Data structure for any world.<br/>
+            </summary>
+            <param name="ImageKey">The image key for the Discord app to reference.</param>
+            <param name="ImageName">The hover text for the image in Discord.</param>
+            <param name="ClientId">DiscordRPCAPI instance linked to this boss.</param>
+        </member>
+        <member name="P:DiscordRPCAPI.World.ImageKey">
+            <summary>The image key for the Discord app to reference.</summary>
+        </member>
+        <member name="P:DiscordRPCAPI.World.ImageName">
+            <summary>The hover text for the image in Discord.</summary>
+        </member>
+        <member name="P:DiscordRPCAPI.World.ClientId">
+            <summary>DiscordRPCAPI instance linked to this boss.</summary>
+        </member>
+    </members>
+</doc>
