@@ -92,3 +92,40 @@ public sealed class ExtraAccessorySlots : ModSystem
 		};
 	}
 }
+
+[Obsolete("Now exists solely to migrate old save data.", true)]
+public class ExtraAccessoryModPlayer : ModPlayer
+{
+	const int NumLegacySlots = 6;
+
+	public override void LoadData(TagCompound tag)
+	{
+		for (int i = 0; i < NumLegacySlots; i++)
+		{
+			if (tag.TryGet($"CustomAccessory_{i}", out Item item))
+			{
+				ExtraAccessorySlots.GetByLocalIndex(i).FunctionalItem = item;
+			}
+
+			if (tag.TryGet($"CustomVanity_{i}", out Item vanityItem))
+			{
+				ExtraAccessorySlots.GetByLocalIndex(i).VanityItem = vanityItem;
+			}
+
+			if (tag.TryGet($"CustomDye_{i}", out Item dyeItem))
+			{
+				ExtraAccessorySlots.GetByLocalIndex(i).DyeItem = dyeItem;
+			}
+		}
+	}
+
+	public override void SaveData(TagCompound tag)
+	{
+		for (int i = 0; i < NumLegacySlots; i++)
+		{
+			tag.Remove($"CustomAccessory_{i}");
+			tag.Remove($"CustomVanity_{i}");
+			tag.Remove($"CustomDye_{i}");
+		}
+	}
+}
