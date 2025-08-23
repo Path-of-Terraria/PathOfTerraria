@@ -19,6 +19,11 @@ internal class StaffHeldProjectile : ModProjectile
 	protected Player Owner => Main.player[Projectile.owner];
 
 	public ref float ItemId => ref Projectile.ai[0];
+	public float SyncDirection
+	{
+		get => Projectile.ai[1] >= 0f ? 1 : -1;
+		set => Projectile.ai[1] = value >= 0f ? 1 : -1;
+	}
 
 	public override void SetDefaults()
 	{
@@ -41,16 +46,15 @@ internal class StaffHeldProjectile : ModProjectile
 	{
 		Owner.heldProj = Projectile.whoAmI;
 
-		// The actual owner's direction is not consistent because the item has useTurn set to true.
-		int direction = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
-		
+		int direction = Projectile.owner == Main.myPlayer ? Math.Sign(Main.MouseWorld.X - Owner.Center.X) : (int)SyncDirection;
 		float armRotation = Projectile.rotation + MathHelper.ToRadians(135f);
 
 		if (direction == 1)
 		{
 			armRotation += MathHelper.Pi;
 		}
-		
+
+		Owner.direction = direction;
 		Owner.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
 		Owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.ThreeQuarters, armRotation);
 		Owner.SetDummyItemTime(2);
@@ -83,7 +87,7 @@ internal class StaffHeldProjectile : ModProjectile
 		{
 			Projectile.rotation = Projectile.rotation.AngleLerp(-MathHelper.PiOver4, 0.5f);
 			
-			Owner.direction = Math.Sign(Main.MouseWorld.X - Owner.Center.X);
+			SyncDirection = Owner.direction;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
