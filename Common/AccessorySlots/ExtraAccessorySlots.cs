@@ -41,7 +41,18 @@ public sealed class ExtraAccessorySlots : ModSystem
 	/// <summary> Returns whether a potentially foreign modded accessory slot is allowed to be shown. </summary>
 	public static bool IsModAccessorySlotAllowed(ModAccessorySlot slot)
 	{
-		return true;
+		// You can use this method to forbid certain mods' slots.
+		return slot.Mod.Name switch
+		{
+			// Allow our mod.
+			nameof(PathOfTerraria) => true,
+
+			// Forbid WingSlot's slots, since we already have a wing slot in our mod.
+			"WingSlot" => false,
+
+			// Default to true.
+			_ => true,
+		};
 	}
 
 	public static bool IsModAccessorySlotVisible(ModAccessorySlot slot)
