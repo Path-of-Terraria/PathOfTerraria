@@ -68,12 +68,7 @@ internal class MappingNPC : GlobalNPC
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
-			if (DownedBossForTier(world))
-			{
-				tracker.AddCompletion(world.MapTier);
-			}
-
-			Dictionary<int, int> completionsByTier = tracker.CompletionsPerTier();
+			tracker.AddCompletion(world.MapTier);
 
 			if (TierPassed(1) && !NPC.downedQueenSlime)
 			{
@@ -129,7 +124,7 @@ internal class MappingNPC : GlobalNPC
 
 			bool TierPassed(int tier)
 			{
-				return completionsByTier.TryGetValue(tier, out int tierValue) && tierValue >= 10;
+				return tracker.CompletionsAtOrAboveTier(tier) >= 10;
 			}
 		}
 	}

@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class SkelePrimeQuest : Quest
+internal class SkelePrimeQuest() : HardmodeQuest(4)
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();

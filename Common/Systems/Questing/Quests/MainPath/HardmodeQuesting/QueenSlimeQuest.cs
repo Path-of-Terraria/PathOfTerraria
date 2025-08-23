@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class QueenSlimeQuest : Quest
+internal class QueenSlimeQuest() : HardmodeQuest(1)
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override int NPCQuestGiver => ModContent.NPCType<WizardNPC>();

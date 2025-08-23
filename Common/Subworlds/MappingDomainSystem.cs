@@ -40,23 +40,17 @@ public class MappingDomainSystem : ModSystem
 			return total;
 		}
 
-		/// <summary>
-		/// Gets the amount of completions at or above every tier currently available. 
-		/// If a tier does not exist, it has not been completed even once.
-		/// </summary>
-		/// <returns>Dictionary mapping tiers to <see cref="CompletionsAtOrAboveTier(int)"/> results.</returns>
-		public Dictionary<int, int> CompletionsPerTier()
+		public void ClearHigherCompletions(int currentTier)
 		{
-			Dictionary<int, int> completionsByTier = [];
-
 			foreach (int tier in TierCompletions.Keys)
 			{
-				completionsByTier[tier] = CompletionsAtOrAboveTier(tier);
+				if (tier > currentTier)
+				{
+					TierCompletions[tier] = 0;
+				}
 			}
-
-			return completionsByTier;
 		}
-
+		
 		public void Save(TagCompound tag)
 		{
 			tag.Add("count", (byte)TierCompletions.Count);

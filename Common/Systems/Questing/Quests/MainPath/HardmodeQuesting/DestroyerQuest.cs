@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class DestroyerQuest : Quest
+internal class DestroyerQuest() : HardmodeQuest(3)
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
