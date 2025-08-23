@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class BeeMap() : BossMap(1, 30, () => NPC.downedQueenBee, false)
+internal class BeeMap() : PreHardmodeBossMap(30, () => NPC.downedQueenBee)
 {
 	public override void SetStaticDefaults()
 	{

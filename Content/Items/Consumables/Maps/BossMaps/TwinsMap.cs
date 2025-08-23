@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class TwinsMap() : BossMap(2, 0, () => NPC.downedMechBoss2, true)
+internal class TwinsMap() : HardmodeBossMap(2, () => NPC.downedMechBoss2)
 {
 	public override void SetStaticDefaults()
 	{

@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class CultistMap() : BossMap(9, 0, () => NPC.downedAncientCultist, true)
+internal class CultistMap() : HardmodeBossMap(9, () => NPC.downedAncientCultist)
 {
 	public override void SetStaticDefaults()
 	{

@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class GolemMap() : BossMap(6, 0, () => NPC.downedGolemBoss, true)
+internal class GolemMap() : HardmodeBossMap(6, () => NPC.downedGolemBoss)
 {
 	public override void SetStaticDefaults()
 	{

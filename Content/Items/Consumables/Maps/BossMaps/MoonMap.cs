@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class MoonMap() : BossMap(10, 0, () => NPC.downedMoonlord, true)
+internal class MoonMap() : HardmodeBossMap(10, () => NPC.downedMoonlord)
 {
 	public override void SetStaticDefaults()
 	{

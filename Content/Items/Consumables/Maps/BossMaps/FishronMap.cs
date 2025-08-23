@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class FishronMap() : BossMap(7, 0, () => NPC.downedFishron, true)
+internal class FishronMap() : HardmodeBossMap(7, () => NPC.downedFishron)
 {
 	public override void SetStaticDefaults()
 	{

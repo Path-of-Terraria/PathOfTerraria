@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class EoLMap() : BossMap(8, 0, () => NPC.downedEmpressOfLight, true)
+internal class EoLMap() : HardmodeBossMap(8, () => NPC.downedEmpressOfLight)
 {
 	public override void SetStaticDefaults()
 	{

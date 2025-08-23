@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class DestroyerMap() : BossMap(3, 0, () => NPC.downedMechBoss1, true)
+internal class DestroyerMap() : HardmodeBossMap(3, () => NPC.downedMechBoss1)
 {
 	public override void SetStaticDefaults()
 	{

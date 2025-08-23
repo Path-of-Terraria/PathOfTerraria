@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class PlanteraMap() : BossMap(5, 0, () => NPC.downedPlantBoss, true)
+internal class PlanteraMap() : HardmodeBossMap(5, () => NPC.downedPlantBoss)
 {
 	public override void SetStaticDefaults()
 	{

@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class PrimeMap() : BossMap(4, 0, () => NPC.downedMechBoss3, true)
+internal class PrimeMap() : HardmodeBossMap(4, () => NPC.downedMechBoss3)
 {
 	public override void SetStaticDefaults()
 	{

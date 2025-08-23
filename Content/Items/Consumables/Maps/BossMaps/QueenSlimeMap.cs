@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class QueenSlimeMap() : BossMap(1, 0, () => NPC.downedQueenSlime, true)
+internal class QueenSlimeMap() : HardmodeBossMap(1, () => NPC.downedQueenSlime)
 {
 	public override void SetStaticDefaults()
 	{

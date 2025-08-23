@@ -5,7 +5,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class WoFMap() : BossMap(1, 45, () => Main.hardMode, false)
+internal class WoFMap() : PreHardmodeBossMap(45, () => Main.hardMode)
 {
 	public override void SetStaticDefaults()
 	{
