@@ -47,21 +47,10 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 	public UIHoverImageItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
-		ref Item[]? inventory,
-		int slot,
-		int context = ItemSlot.Context.InventoryItem
-	) : base(backgroundTexture, iconTexture, ref inventory, slot, context)
-	{
-	}
-
-	public UIHoverImageItemSlot(
-		Asset<Texture2D> backgroundTexture,
-		Asset<Texture2D> iconTexture,
-		ref Item[]? inventory,
-		int slot,
+		SlotWrapper itemHandler,
 		string key,
 		int context = ItemSlot.Context.InventoryItem	
-	) : base(backgroundTexture, iconTexture, ref inventory, slot, context, key)
+	) : base(backgroundTexture, iconTexture, itemHandler, context, key)
 	{
 	}
 

@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Armor.Elements;
 using PathOfTerraria.Common.UI.Elements;
@@ -146,15 +147,9 @@ public sealed class UIArmorInventory : UIState
 
 	private void UpdateLayoutBasedOnActiveAccessorySlots()
 	{
-
-		int numRows = 1;
-		if (Main.LocalPlayer.TryGetModPlayer(out ExtraAccessoryModPlayer accPlayer))
-		{
-			const int NumDefaultSlots = 2;
-
-			int numSlots = NumDefaultSlots + accPlayer.CountActiveExtraSlots();
-			numRows = (int)Math.Ceiling(numSlots / 3f);
-		}
+		const int NumDefaultSlots = 2;
+		int numSlots = NumDefaultSlots + ExtraAccessorySlots.CountActiveAndAllowedExtraAccessorySlots(Main.LocalPlayer);
+		int numRows = (int)Math.Ceiling(numSlots / 3f);
 		
 		const int OffsetPerRow = 56;
 		const int BaseRowOffset = -2;
