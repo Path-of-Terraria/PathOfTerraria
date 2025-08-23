@@ -73,7 +73,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 		return Core.Items.GenerateName.Invoke(Item);
 	}
 
-	public virtual int SetMapTier(int itemLevel)
+	public virtual int GetMapTier(int itemLevel)
 	{
 		return TierBasedOnWorldLevel(itemLevel);
 	}
@@ -170,6 +170,6 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 		realLevel = level;
 		ItemLevel = realLevel;
-		Tier = SetMapTier(ItemLevel);
+		Tier = GetMapTier(ItemLevel);
 	}
 }
