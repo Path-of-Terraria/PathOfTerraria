@@ -3,6 +3,9 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.AccessorySlots;
 
+/// <summary>
+/// A simple extra accessory slot originating from this mod.
+/// </summary>
 [Autoload(false)]
 public sealed class ExtraAccessorySlot : ModAccessorySlot
 {
@@ -55,6 +58,7 @@ public sealed class ExtraAccessorySlots : ModSystem
 		};
 	}
 
+	/// <summary> Determines whether the given accessory slot will be visible in this mod's inventory. </summary>
 	public static bool IsModAccessorySlotVisible(ModAccessorySlot slot)
 	{
 		return (slot.IsEnabled() || slot.IsVisibleWhenNotEnabled()) && !slot.IsHidden() && IsModAccessorySlotAllowed(slot);
@@ -77,11 +81,13 @@ public sealed class ExtraAccessorySlots : ModSystem
 		return amount;
 	}
 
+	/// <summary> Returns the custom slot that originates from this mod and has the provided local index. </summary>
 	public static ExtraAccessorySlot GetByLocalIndex(int localIndex)
 	{
 		return slots[localIndex];
 	}
 
+	/// <summary> Calculates whether a custom slot originating from this mod should be enabled. </summary>
 	public static bool IsLocalSlotActive(int localIndex)
 	{
 		return localIndex switch
