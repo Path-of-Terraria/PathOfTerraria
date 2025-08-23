@@ -1,8 +1,6 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Content.Items.Gear.Amulets;
+﻿using PathOfTerraria.Content.Items.Gear.Amulets;
 using PathOfTerraria.Content.Items.Gear.Offhands;
 using PathOfTerraria.Content.Items.Gear.Rings;
-using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Armor;
 
@@ -16,8 +14,6 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		{
 			(int)EquipmentSlot.AccessorySlot1 => IsNormalAccessory(item),
 			(int)EquipmentSlot.AccessorySlot2 => IsNormalAccessory(item),
-			(int)EquipmentSlot.AccessorySlot3 => IsNormalAccessory(item),
-			(int)EquipmentSlot.AccessorySlot4 => IsNormalAccessory(item),
 			(int)EquipmentSlot.Wings => item.wingSlot > 0,
 			(int)EquipmentSlot.Necklace => item.ModItem is Amulet,
 			(int)EquipmentSlot.Offhand => item.ModItem is Offhand,
@@ -48,7 +44,5 @@ public sealed class AccessorySlotGlobalItem : GlobalItem
 		Ring1 = 7,
 		Ring2 = 8,
 		AccessorySlot2 = 9,
-		AccessorySlot3 = 20,
-		AccessorySlot4 = 21
 	}
 }

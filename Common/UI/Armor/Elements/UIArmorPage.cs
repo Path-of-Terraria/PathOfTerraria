@@ -15,8 +15,6 @@ namespace PathOfTerraria.Common.UI.Armor.Elements;
 
 public abstract class UIArmorPage : UIElement
 {
-	public record struct DefaultSlot(Asset<Texture2D> FrameTexture, Asset<Texture2D> IconTexture, UIImageItemSlot.ItemHandler.RefGetter ItemGetter, string Key, int Context);
-
 	public static readonly Asset<Texture2D> HelmetIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Helmet", AssetRequestMode.ImmediateLoad);
 
 	public static readonly Asset<Texture2D> ChestIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Chest", AssetRequestMode.ImmediateLoad);
@@ -37,7 +35,7 @@ public abstract class UIArmorPage : UIElement
 
 	protected static Player Player => Main.LocalPlayer;
 
-	private List<(ModAccessorySlot Slot, UIHoverImageItemSlot UI)> customSlots = [];
+	private readonly List<(ModAccessorySlot Slot, UIHoverImageItemSlot UI)> customSlots = [];
 
 	protected abstract Asset<Texture2D> DefaultFrameTexture { get; }
 

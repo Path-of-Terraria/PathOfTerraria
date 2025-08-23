@@ -17,20 +17,25 @@ public class UIImageItemSlot : UIElement
 
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
-	public readonly struct ItemHandler(Func<Item> get, Action<Item> set)
+	public readonly struct SlotWrapper
 	{
-		public delegate ref Item RefGetter();
+		public readonly Func<Item> Get;
+		public readonly Action<Item> Set;
+		public readonly Func<(Item[] Inventory, int Slot)> ByInventory;
 
-		public readonly Func<Item> Get = get;
-		public readonly Action<Item> Set = set;
-
-		public ItemHandler(RefGetter refGetter) : this(() => refGetter(), value => refGetter() = value) { }
+		public SlotWrapper(Func<Item> get, Action<Item> set)
+		{
+			(Get, Set) = (get, set);
+		}
+		public SlotWrapper(Func<(Item[] Inventory, int Slot)> byInventory)
+		{
+			ByInventory = byInventory;
+			Get = () => byInventory().Inventory[byInventory().Slot];
+			Set = value => byInventory().Inventory[byInventory().Slot] = value;
+		}
 	}
 
-	public delegate Item ItemGetter();
-	public delegate void ItemSetter(Item value);
-
-	private readonly ItemHandler handler;
+	private readonly SlotWrapper handler;
 
 	/// <summary>
 	///     The item that this slot wraps itself around.
@@ -73,7 +78,6 @@ public class UIImageItemSlot : UIElement
 	/// </summary>
 	public ItemInsertionPredicate? Predicate;
 
-
 	/// <summary>
 	///    The key to look for in Localization for tooltip hover
 	/// </summary>
@@ -85,7 +89,7 @@ public class UIImageItemSlot : UIElement
 	public UIImageItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
-		ItemHandler itemHandler,
+		SlotWrapper itemHandler,
 		int context = ItemSlot.Context.InventoryItem,
 		string key = null
 	)
@@ -194,9 +198,16 @@ public class UIImageItemSlot : UIElement
 			return;
 		}
 
-		Item item = Item;
-		ItemSlot.Handle(ref item, Context);
-		Item = item;
+		if (handler.ByInventory?.Invoke() is { } inv)
+		{
+			ItemSlot.Handle(inv.Inventory, slot: inv.Slot, context: Context);
+		}
+		else
+		{
+			Item item = Item;
+			ItemSlot.Handle(ref item, context: Context);
+			Item = item;
+		}
 
 		if (Key != null)
 		{

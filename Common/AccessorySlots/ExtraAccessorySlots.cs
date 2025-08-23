@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader.Default;
+﻿using PathOfTerraria.Common.UI.Armor;
+using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.AccessorySlots;
@@ -16,6 +17,11 @@ public sealed class ExtraAccessorySlot : ModAccessorySlot
 	public override bool IsEnabled()
 	{
 		return ExtraAccessorySlots.IsLocalSlotActive(IndexInMod);
+	}
+
+	public override bool CanAcceptItem(Item checkItem, AccessorySlotType context)
+	{
+		return ExtraAccessorySlots.CanLocalSlotAcceptItem(IndexInMod, checkItem, context);
 	}
 }
 
@@ -96,6 +102,23 @@ public sealed class ExtraAccessorySlots : ModSystem
 			1 => Main.hardMode, // Add one slot after WoF is defeated.
 			_ => false,
 		};
+	}
+
+	public static bool CanLocalSlotAcceptItem(int localIndex, Item item, AccessorySlotType context)
+	{
+		_ = localIndex;
+
+		if (context == AccessorySlotType.VanitySlot && !item.FitsAccessoryVanitySlot)
+		{
+			return false;
+		}
+
+		if (context != AccessorySlotType.DyeSlot && !AccessorySlotGlobalItem.IsNormalAccessory(item))
+		{
+			return false;
+		}
+
+		return true;
 	}
 }
 
