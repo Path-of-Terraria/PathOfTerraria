@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class MoonMap : Map
+internal class MoonMap() : BossMap(10, 0, () => NPC.downedMoonlord, true)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => WorldLevelBasedOnTier(10) + 1;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(10) && NPC.downedMoonlord;
-
 	public override void SetStaticDefaults()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();

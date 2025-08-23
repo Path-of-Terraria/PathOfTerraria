@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class FishronMap : Map
+internal class FishronMap() : BossMap(7, 0, () => NPC.downedFishron, true)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => WorldLevelBasedOnTier(7) + 1;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(7) && NPC.downedFishron;
-
 	public override void SetStaticDefaults()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();

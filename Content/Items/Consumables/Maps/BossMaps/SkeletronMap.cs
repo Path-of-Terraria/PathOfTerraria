@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class SkeletronMap : Map
+internal class SkeletronMap() : BossMap(1, 40, () => NPC.downedBoss3, false)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 40;
-	public override bool CanDrop => NPC.downedBoss3;
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

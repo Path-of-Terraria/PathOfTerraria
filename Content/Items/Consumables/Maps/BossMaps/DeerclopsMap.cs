@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class DeerclopsMap : Map
+internal class DeerclopsMap() : BossMap(1, 35, () => NPC.downedDeerclops, false)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 35;
-	public override bool CanDrop => NPC.downedDeerclops;
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
