@@ -1,15 +1,22 @@
-﻿using System.Linq;
-using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.ModLoader.Default;
 using Terraria.UI;
+
+#nullable enable
 
 namespace PathOfTerraria.Common.UI.Armor.Elements;
 
 public abstract class UIArmorPage : UIElement
 {
+	public record struct DefaultSlot(Asset<Texture2D> FrameTexture, Asset<Texture2D> IconTexture, UIImageItemSlot.ItemHandler.RefGetter ItemGetter, string Key, int Context);
+
 	public static readonly Asset<Texture2D> HelmetIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Helmet", AssetRequestMode.ImmediateLoad);
 
 	public static readonly Asset<Texture2D> ChestIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Chest", AssetRequestMode.ImmediateLoad);
@@ -29,6 +36,14 @@ public abstract class UIArmorPage : UIElement
 	public static readonly Asset<Texture2D> MiscellaneousIconTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Miscellaneous", AssetRequestMode.ImmediateLoad);
 
 	protected static Player Player => Main.LocalPlayer;
+
+	private List<(ModAccessorySlot Slot, UIHoverImageItemSlot UI)> customSlots = [];
+
+	protected abstract Asset<Texture2D> DefaultFrameTexture { get; }
+
+	protected abstract UIHoverImageItemSlot?[] GetDefaultSlots();
+
+	protected abstract UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot);
 
 	protected virtual void UpdateMouseOver(UIMouseEvent @event, UIElement element)
 	{
@@ -54,29 +69,105 @@ public abstract class UIArmorPage : UIElement
 		);
 	}
 
-	protected void MaintainCustomAccessorySlots(ReadOnlySpan<UICustomHoverImageItemSlot> slots)
+	public override void OnInitialize()
 	{
-		if (Main.LocalPlayer.TryGetModPlayer(out ExtraAccessoryModPlayer accPlayer))
+		base.OnInitialize();
+
+		Width = StyleDimension.FromPixels(UIArmorInventory.ArmorPageWidth);
+		Height = StyleDimension.FromPixels(UIArmorInventory.ArmorPageHeight);
+
+		AddChildren();
+	}
+
+	public override void Update(GameTime gameTime)
+	{
+		base.Update(gameTime);
+
+		MaintainCustomAccessorySlots(CollectionsMarshal.AsSpan(customSlots));
+	}
+
+	public void AddChildren()
+	{
+		UIHoverImageItemSlot?[] defaultSlots = GetDefaultSlots();
+
+		AccessorySlotLoader accessoryLoader = LoaderManager.Get<AccessorySlotLoader>();
+		ModAccessorySlotPlayer accessoryPlayer = Player.GetModPlayer<ModAccessorySlotPlayer>();
+		int numDefaultSlots = defaultSlots.Length;
+		int numAdditionalSlots = accessoryPlayer.SlotCount;
+		int numTotalSlots = numDefaultSlots + numAdditionalSlots;
+		int numLocationsTaken = 0;
+
+		for (int i = 0; i < numTotalSlots; i++)
 		{
-			foreach (UICustomHoverImageItemSlot slot in slots)
+			UIHoverImageItemSlot uiSlot;
+			bool append = true;
+
+			if (i < numDefaultSlots)
 			{
-				bool isPresent = Children.Contains(slot);
-				bool shouldBePresent = accPlayer.IsCustomSlotActive(slot.VirtualSlot);
-
-				if (isPresent != shouldBePresent)
+				if (defaultSlots[i] is not UIHoverImageItemSlot def)
 				{
-					if (shouldBePresent)
-					{
-						// Make sure the slot is properly initialized before appending
-						if (slot.Icon == null) { slot.OnInitialize(); }
-
-						Append(slot);
-					}
-					else
-					{
-						RemoveChild(slot);
-					}
+					numLocationsTaken++;
+					continue;
 				}
+
+				uiSlot = def;
+			}
+			else
+			{
+				ModAccessorySlot modSlot = accessoryLoader.Get(i - numDefaultSlots, Player);
+				bool isVisible = ExtraAccessorySlots.IsModAccessorySlotVisible(modSlot);
+
+				uiSlot = CreateCustomAccessorySlot(modSlot);
+				append = isVisible;
+
+				customSlots.Add((modSlot, uiSlot));
+			}
+
+			uiSlot.ActiveScale = 1.15f;
+			uiSlot.ActiveRotation = MathHelper.ToRadians(1f);
+			uiSlot.OnMouseOver += UpdateMouseOver;
+			uiSlot.OnMouseOut += UpdateMouseOut;
+
+			if (append)
+			{
+				uiSlot.HAlign = (numLocationsTaken % 3) * 0.5f;
+				uiSlot.VAlign = (numLocationsTaken / 3) * 0.25f;
+				numLocationsTaken++;
+
+				Append(uiSlot);
+			}
+		}
+	}
+
+	private void MaintainCustomAccessorySlots(ReadOnlySpan<(ModAccessorySlot, UIHoverImageItemSlot)> slots)
+	{
+		int numLocationsTaken = GetDefaultSlots().Length;
+
+		foreach ((ModAccessorySlot modSlot, UIHoverImageItemSlot uiSlot) in slots)
+		{
+			bool isPresent = Children.Contains(uiSlot);
+			bool shouldBePresent = ExtraAccessorySlots.IsModAccessorySlotVisible(modSlot);
+
+			if (isPresent != shouldBePresent)
+			{
+				if (shouldBePresent)
+				{
+					// Make sure the slot is properly initialized before appending
+					if (uiSlot.Icon == null) { uiSlot.OnInitialize(); }
+
+					Append(uiSlot);
+				}
+				else
+				{
+					RemoveChild(uiSlot);
+				}
+			}
+
+			if (shouldBePresent)
+			{
+				uiSlot.HAlign = (numLocationsTaken % 3) * 0.5f;
+				uiSlot.VAlign = (numLocationsTaken / 3) * 0.25f;
+				numLocationsTaken++;
 			}
 		}
 	}

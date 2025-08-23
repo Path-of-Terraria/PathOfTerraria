@@ -1,5 +1,4 @@
 using ReLogic.Content;
-using System.Xml.Linq;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
@@ -12,48 +11,35 @@ namespace PathOfTerraria.Common.UI.Elements;
 /// <summary>
 ///     Provides an item slot wrapper as a <see cref="UIElement" />.
 /// </summary>
-/// <remarks>
-///     This wrapper allows you to wrap around a singular item through
-///     <see cref="Item" />, or to wrap around an existing array of items
-///     at a given index through <see cref="Inventory" /> and <see cref="Slot" />.
-/// </remarks>
 public class UIImageItemSlot : UIElement
 {
 	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
 
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
+	public readonly struct ItemHandler(Func<Item> get, Action<Item> set)
+	{
+		public delegate ref Item RefGetter();
+
+		public readonly Func<Item> Get = get;
+		public readonly Action<Item> Set = set;
+
+		public ItemHandler(RefGetter refGetter) : this(() => refGetter(), value => refGetter() = value) { }
+	}
+
+	public delegate Item ItemGetter();
+	public delegate void ItemSetter(Item value);
+
+	private readonly ItemHandler handler;
+
 	/// <summary>
 	///     The item that this slot wraps itself around.
 	/// </summary>
-	/// <remarks>
-	///     Defaults to a new item with <see cref="ItemID.None" /> as its identity if
-	///     <see cref="InventoryGetter" /> and <see cref="Slot" /> are not provided.
-	/// </remarks>
 	public Item Item
 	{
-		get => WrapsAroundInventory ? Inventory[Slot] : item;
-		set
-		{
-			if (WrapsAroundInventory)
-			{
-				OnInsertItem?.Invoke(value, Inventory[Slot]);
-
-				Inventory[Slot] = value;
-			}
-			else
-			{
-				OnInsertItem?.Invoke(value, item);
-
-				item = value;
-			}
-		}
+		get => handler.Get();
+		set => handler.Set(value);
 	}
-
-	/// <summary>
-	///     Whether the item slot wraps around an inventory or not.
-	/// </summary>
-	public bool WrapsAroundInventory => Inventory != null && Slot >= 0;
 
 	/// <summary>
 	///     The background of the item slot.
@@ -82,20 +68,10 @@ public class UIImageItemSlot : UIElement
 	/// </summary>
 	public Item[] Inventory;
 
-	private Item item = new(ItemID.None);
-
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
 	/// </summary>
 	public ItemInsertionPredicate? Predicate;
-
-	/// <summary>
-	///     The index of the item that the slots wraps itself around.
-	/// </summary>
-	/// <remarks>
-	///     Will not have any effect if <see cref="Inventory" /> is <c>null</c> or not provided.
-	/// </remarks>
-	public int Slot;
 
 
 	/// <summary>
@@ -109,47 +85,15 @@ public class UIImageItemSlot : UIElement
 	public UIImageItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
-		int context = ItemSlot.Context.InventoryItem
-	)
-	{
-		BackgroundTexture = backgroundTexture;
-		IconTexture = iconTexture;
-
-		Context = context;
-	}
-
-	public UIImageItemSlot(
-		Asset<Texture2D> backgroundTexture,
-		Asset<Texture2D> iconTexture,
-		ref Item[]? inventory,
-		int slot,
-		int context = ItemSlot.Context.InventoryItem
-	)
-	{
-		BackgroundTexture = backgroundTexture;
-		IconTexture = iconTexture;
-
-		Inventory = inventory;
-		Slot = slot;
-		Context = context;
-	}
-
-	public UIImageItemSlot(
-		Asset<Texture2D> backgroundTexture,
-		Asset<Texture2D> iconTexture,
-		ref Item[]? inventory,
-		int slot,
+		ItemHandler itemHandler,
 		int context = ItemSlot.Context.InventoryItem,
 		string key = null
 	)
 	{
 		BackgroundTexture = backgroundTexture;
 		IconTexture = iconTexture;
-
-		Inventory = inventory;
-		Slot = slot;
+		handler = itemHandler;
 		Context = context;
-
 		Key = key;
 	}
 
@@ -250,26 +194,17 @@ public class UIImageItemSlot : UIElement
 			return;
 		}
 
-		if (WrapsAroundInventory)
+		Item item = Item;
+		ItemSlot.Handle(ref item, Context);
+		Item = item;
+
+		if (Key != null)
 		{
-			ItemSlot.Handle(Inventory, Context, Slot);
-
-			if (Key != null)
-			{
-				Main.hoverItemName = Language.GetTextValue(Key);
-				Main.HoverItem = Inventory[Slot].Clone();
-				Main.HoverItem.tooltipContext = Context;
-			}	
+			Main.hoverItemName = Language.GetTextValue(Key);
+			Main.HoverItem = Item.Clone();
+			Main.HoverItem.tooltipContext = Context;
 		}
-		else
-		{
-			Item item = Item;
 
-			ItemSlot.Handle(ref item, Context);
-
-			Item = item;
-		}
-		
 		Main.LocalPlayer.mouseInterface = true;
 	}
 
