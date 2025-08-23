@@ -2,7 +2,7 @@
 using PathOfTerraria.Content.Items.Gear.Offhands;
 using PathOfTerraria.Content.Items.Gear.Rings;
 
-namespace PathOfTerraria.Common.UI.Armor;
+namespace PathOfTerraria.Common.AccessorySlots;
 
 public sealed class AccessorySlotGlobalItem : GlobalItem
 {

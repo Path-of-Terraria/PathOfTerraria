@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.UI.Armor;
-using Terraria.ModLoader.Default;
+﻿using Terraria.ModLoader.Default;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.AccessorySlots;
