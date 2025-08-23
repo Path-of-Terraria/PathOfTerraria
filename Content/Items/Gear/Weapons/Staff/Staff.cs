@@ -41,6 +41,7 @@ internal abstract class Staff : Gear
 		Item.autoReuse = true;
 		Item.mana = 12;
 		Item.useTime = 60;
+		Item.useTurn = true;
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = Common.Enums.ItemType.Staff;
