@@ -55,11 +55,11 @@ public sealed class ExtraAccessorySlots : ModSystem
 			// Allow our mod.
 			nameof(PathOfTerraria) => true,
 
-			//	// Forbid WingSlot's slots, since we already have a wing slot in our mod.
-			//	"WingSlot" => false,
+			// Forbid WingSlot's slots, since we already have a wing slot in our mod.
+			"WingSlot" => false,
 
-			// Default to false.
-			_ => false,
+			// Default to true.
+			_ => true,
 		};
 	}
 
