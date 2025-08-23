@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using PathOfTerraria.Utilities;
 using Terraria.ModLoader.Core;
 using Terraria.UI;
@@ -48,9 +49,18 @@ internal interface IItemAllowDuplicateEquipWith
 
 file sealed class AllowDuplicateEquipWithHookImpl : ILoadable
 {
+	private ILHook? _hook;
 	void ILoadable.Load(Mod mod)
 	{
-		IL_ItemSlot.AccCheck_ForPlayer += AccCheckForPlayerInjection;
+		var method = typeof(ItemSlot).GetMethod(
+			"AccCheck_ForPlayer",
+			BindingFlags.Static | BindingFlags.NonPublic
+		);
+
+		if (method == null)
+			throw new Exception("AccCheck_ForPlayer not found");
+
+		_hook = new ILHook(method, AccCheckForPlayerInjection);
 	}
 
 	private static void AccCheckForPlayerInjection(ILContext ctx)
@@ -81,5 +91,8 @@ file sealed class AllowDuplicateEquipWithHookImpl : ILoadable
 		il.Emit(OpCodes.Brtrue, skipReturningTrue);
 	}
 
-	void ILoadable.Unload() { }
+	void ILoadable.Unload()
+	{
+		_hook?.Dispose();
+	}
 }
