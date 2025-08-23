@@ -33,8 +33,11 @@ internal class SkelePrimeQuest() : HardmodeQuest(4)
 			new ConditionCheck(_ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				return tracker.CompletionsAtOrAboveTier(4) >= 10;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(0, ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(4))),
+				return tracker.CompletionsAtOrAboveTier(4) >= MappingDomainSystem.RequiredCompletionsPerTier;
+			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
+				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
+				MappingDomainSystem.RequiredCompletionsPerTier
+			)),
 			new ConditionCheck(_ => SubworldSystem.Current is PrimeDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck(_ => BossTracker.DownedInDomain<PrimeDomain>(NPCID.SkeletronPrime), 1, this.GetLocalization("Boss")),
 		];

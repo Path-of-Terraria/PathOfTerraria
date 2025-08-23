@@ -32,8 +32,11 @@ internal class TwinsQuest() : HardmodeQuest(2)
 			new ConditionCheck(_ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				return tracker.CompletionsAtOrAboveTier(2) >= 10;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(0, ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(2))),
+				return tracker.CompletionsAtOrAboveTier(2) >= MappingDomainSystem.RequiredCompletionsPerTier;
+			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
+				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
+				MappingDomainSystem.RequiredCompletionsPerTier
+			)),
 			new ConditionCheck(_ => SubworldSystem.Current is TwinsDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck(_ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Retinazer, NPCID.Spazmatism), 1, this.GetLocalization("Boss")),
 		];

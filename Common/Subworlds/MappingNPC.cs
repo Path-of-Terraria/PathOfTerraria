@@ -124,7 +124,7 @@ internal class MappingNPC : GlobalNPC
 
 			bool TierPassed(int tier)
 			{
-				return tracker.CompletionsAtOrAboveTier(tier) >= 10;
+				return tracker.CompletionsAtOrAboveTier(tier) >= MappingDomainSystem.RequiredCompletionsPerTier;
 			}
 		}
 	}

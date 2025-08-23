@@ -13,8 +13,9 @@ namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuestin
 
 internal abstract class HardmodeQuest(int tier) : Quest
 {
+	public readonly int QuestTier = tier;
 	public override void OnCompleted()
 	{
-		ModContent.GetInstance<MappingDomainSystem>().Tracker.ClearHigherCompletions(tier);
+		ModContent.GetInstance<MappingDomainSystem>().Tracker.ClearHigherCompletions(QuestTier);
 	}
 }
