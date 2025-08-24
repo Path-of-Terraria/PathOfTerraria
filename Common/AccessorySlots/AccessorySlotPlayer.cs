@@ -1,4 +1,4 @@
-﻿namespace PathOfTerraria.Common.UI.Armor;
+﻿namespace PathOfTerraria.Common.AccessorySlots;
 
 public sealed class AccessorySlotPlayer : ILoadable
 {
