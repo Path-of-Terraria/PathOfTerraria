@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
 using PathOfTerraria.Utilities;
 using Terraria.ModLoader.Core;
 using Terraria.UI;
@@ -50,7 +51,12 @@ file sealed class AllowDuplicateEquipWithHookImpl : ILoadable
 {
 	void ILoadable.Load(Mod mod)
 	{
-		IL_ItemSlot.AccCheck_ForPlayer += AccCheckForPlayerInjection;
+		// AccCheck_ForLocalPlayer was split with AccCheck_ForPlayer added in this commit:
+		// https://github.com/tModLoader/tModLoader/commit/1a0c5e0
+		// Can be simplified past ~2025-09-05.
+		MethodInfo targetMethod = typeof(ItemSlot).GetMethod("AccCheck_ForPlayer", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+		MethodInfo fallbackMethod = typeof(ItemSlot).GetMethod("AccCheck_ForLocalPlayer", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+		MonoModHooks.Modify(targetMethod ?? fallbackMethod, AccCheckForPlayerInjection);
 	}
 
 	private static void AccCheckForPlayerInjection(ILContext ctx)
