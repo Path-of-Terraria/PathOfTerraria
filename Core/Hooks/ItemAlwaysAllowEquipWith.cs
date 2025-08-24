@@ -49,18 +49,14 @@ internal interface IItemAllowDuplicateEquipWith
 
 file sealed class AllowDuplicateEquipWithHookImpl : ILoadable
 {
-	private ILHook? _hook;
 	void ILoadable.Load(Mod mod)
 	{
-		var method = typeof(ItemSlot).GetMethod(
-			"AccCheck_ForPlayer",
-			BindingFlags.Static | BindingFlags.NonPublic
-		);
-
-		if (method == null)
-			throw new Exception("AccCheck_ForPlayer not found");
-
-		_hook = new ILHook(method, AccCheckForPlayerInjection);
+		// AccCheck_ForLocalPlayer was split with AccCheck_ForPlayer added in this commit:
+		// https://github.com/tModLoader/tModLoader/commit/1a0c5e0
+		// Can be simplified past ~2025-09-05.
+		MethodInfo targetMethod = typeof(ItemSlot).GetMethod("AccCheck_ForPlayer", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+		MethodInfo fallbackMethod = typeof(ItemSlot).GetMethod("AccCheck_ForLocalPlayer", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+		MonoModHooks.Modify(targetMethod ?? fallbackMethod, AccCheckForPlayerInjection);
 	}
 
 	private static void AccCheckForPlayerInjection(ILContext ctx)
@@ -91,8 +87,5 @@ file sealed class AllowDuplicateEquipWithHookImpl : ILoadable
 		il.Emit(OpCodes.Brtrue, skipReturningTrue);
 	}
 
-	void ILoadable.Unload()
-	{
-		_hook?.Dispose();
-	}
+	void ILoadable.Unload() { }
 }
