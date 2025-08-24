@@ -79,22 +79,16 @@ internal interface INpcTransformCallbacks
 		{
 			var newGlobal = (GlobalNPC)newInstance;
 			Hook? oldInstance = null;
+			GlobalNPC? oldGlobal = null;
 
 			// Lookup the old instance matching this global.
-			int oldIndexCopy = oldIndex;
-			for (; oldIndex < oldGlobals.Length; oldIndex++)
+			for (; oldIndex < oldGlobals.Length && (oldGlobal = oldGlobals[oldIndex]).StaticIndex <= newGlobal.StaticIndex; oldIndex++)
 			{
-				GlobalNPC oldGlobal = oldGlobals[oldIndex];
 				if (oldGlobal.StaticIndex == newGlobal.StaticIndex)
 				{
 					oldInstance = (Hook)oldGlobal;
 					break;
 				}
-			}
-
-			if (oldInstance == null)
-			{
-				oldIndex = oldIndexCopy;
 			}
 
 			newInstance.TransformTransfer(npc, oldType, oldInstance);
