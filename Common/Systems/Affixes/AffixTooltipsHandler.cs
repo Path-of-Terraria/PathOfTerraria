@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Content.Items.Consumables.Maps;
@@ -182,37 +183,38 @@ public class AffixTooltipsHandler
 		}
 		else // Otherwise, put the tooltips modified by the current item at the top of the list & re-generate the standalone lines
 		{
-			differenceTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0);//.Where(x => x.Value.ValueBySource.ContainsKey(source));
-			differenceTips = [.. differenceTips]; // Create a shallow clone of itself in order to de-reference from Tooltips
-
-			for (int i = 0; i < differenceTips.Count(); ++i)
+			differenceTips = Tooltips
+				.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type))
+				.Where(x => x.Value.SourceItems.Any(obj => DetermineItemSource(obj) == source))
+				.ToList();
+			
+			foreach (var pair in differenceTips)
 			{
-				KeyValuePair<Type, AffixTooltip> pair = differenceTips.ElementAt(i);
-
+				// Remove all other sources from the affix, this effectively nullifies all other affixes, that aren't affected by the current item
+				var affix = pair.Value;
 				foreach (object val in Enum.GetValues(typeof(AffixTooltip.AffixSource)))
 				{
 					var enumVal = (AffixTooltip.AffixSource)val;
-
 					if (enumVal != source)
 					{
-						pair.Value.OriginalValueBySource.Remove(enumVal);
-						pair.Value.ValueBySource.Remove(enumVal);
+						affix.OriginalValueBySource.Remove(enumVal);
+						affix.ValueBySource.Remove(enumVal);
 					}
 				}
 
+				// Remove the other source items from the affix
 				List<Item> removals = [];
-
-				foreach (Item obj in pair.Value.SourceItems)
+				foreach (Item obj in affix.SourceItems)
 				{
-					if (DetermineItemSource(obj) != source)
+					AffixTooltip.AffixSource itemSource = DetermineItemSource(obj);
+					if (itemSource != source)
 					{
 						removals.Add(obj);
 					}
 				}
-
 				foreach (Item obj in removals)
 				{
-					pair.Value.SourceItems.Remove(obj);
+					affix.SourceItems.Remove(obj);
 				}
 			}
 
@@ -235,41 +237,19 @@ public class AffixTooltipsHandler
 
 		if (isEquipment && differenceTips is not null)
 		{
-			// You will see some commented out code here.
-			// This code was originally written to compare only two weapons of the same type - two javelins, two broadswords, two bows, etc.
-			// This is now no longer intended functionality, but instead of removing it I'm commenting it out since it may be a useful config option.
-			// I also don't really remember how this code works so it'd be tough to rewrite. - GabeHasWon
+			Debug.Assert(hasShift);
+			string swapText = //!anyDif ? Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.NoSwap") : 
+				Language.GetText($"Mods.{PoTMod.ModName}.TooltipNotices.Swap").Format(item.Name);
 
-			//bool anyDif = true;
-			//foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips) // Determine if there is any difference
-			//{
-			//	if (tip.Value.HasDifference)
-			//	{
-			//		anyDif = true;
-			//		break;
-			//	}
-			//}
-
-			if (hasShift) // Display "If X is equipped:" or "(No item to swap)" in comparison page
+			tooltips.Add(new TooltipLine(PoTMod.Instance, "SwapNotice", swapText)
 			{
-				string swapText = //!anyDif ? Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.NoSwap") : 
-					Language.GetText($"Mods.{PoTMod.ModName}.TooltipNotices.Swap").Format(item.Name);
-
-				tooltips.Add(new TooltipLine(PoTMod.Instance, "SwapNotice", swapText)
-				{
-					OverrideColor = Color.Gray,
-				});
-			}
-
-			//if (anyDif) // If there are differences, show comparison
-			//{
+				OverrideColor = Color.Gray,
+			});
+			
 			foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips)
 			{
 				AddSingleTooltipLine(tooltips, ref tipNum, tip);
 			}
-			//}
-
-			// End code kept for posterity.
 		}
 
 		if (isEquipment && !hasShift) // Show "Shift to compare" if they're not doing so (and it's not a map)
