@@ -96,18 +96,52 @@ Guide: {
 	SkipStep: "{$Skip} Krok"
 	Hide: Ukryj
 	Show: Pokaż
-	# Welcome/hello, explain purpose of tutorial
-	0: Cześć! Witaj w Path of Terraria.\nTa modyfikacja znacznie zmienia gre.\nW zwiazku z tym, ten poradnik wytłumaczy ci zmiany, mechaniki oraz na co warto wypatrywać.\nJeśli chcesz pominąć, kliknij klawisz Pomiń Wszystko lub Pomiń krok w każdym momencie.\nW przeciwnym razie, kliknij Następny
-	# Explain EXP bar, click on exp bar
-	1: Po pierwsze, pasek doświadczenia. Znajduje się on bezpośrednio nad tym oknem dialogowym. \nWrogowie pozostawiają po sobie doświadczenie, zazwyczaj zależy ono od ich siły, co pozwala ci awansować na kolejne poziomy.\nZa zdobywanie kolejnych poziomów otrzymujesz punkty pasywne i punkty umiejętności. \nKliknij na pasek doświadczenia, aby otworzyć drzewko umiejętności pasywnych.
-	# Explain Passive tree, ask to [de]allocate.
-	2: Tutaj znajduje się drzewko umiejętności pasywnych.\n Jeżeli posiadasz punkty umiejętności pasywnych, możesz je przydzielić do wybranych umiejętności . \n Te umiejętności zapewniają bonusy do różnych efektów, takich jak dodatkowe życie, obrażenia lub prędkość. \n Kliknij dowolną umiejętność, aby ją przydzielić, a prawym przyciskiem myszy, aby ją cofnąć.
-	# Click on skill tab.
-	3: Teraz kliknij na zakładkę „Umiejętności” w lewym górnym rogu.
-	# Explain the skills tab, select a skill
-	4: Oto zakładka (debug) Umiejętności.\nTutaj można zaznaczyć lub odznaczyć określone umiejętności, co pozwala znacznie zmienić styl gry.\nW przyszłości umiejętności będą dostępne wraz z postępem w grze zamiast z tego menu.\nKliknij dowolną umiejętność, aby ją zaznaczyć.
-	# Explain skills, close menu
-	5: Wybrane umiejętności zostaną wyświetlone na pasku szybkiego dostępu.\nUmiejętności mają czas odnowienia po użyciu, którego długość zależy od danej umiejętności.\nNiektóre umiejętności są odblokowywane poprzez posiadanie określonych przedmiotów.\nZamknij menu drzewka (naciśnij klawisz Escape lub kliknij czerwony znak X w prawym górnym rogu).
+    # Welcome/hello, explain purpose of tutorial
+    0:
+        '''
+        Cześć! Witaj w Path of Terraria.
+        Ta modyfikacja znacznie zmienia grę.
+        W związku z tym, ten poradnik wytłumaczy ci zmiany, mechaniki oraz na co warto zwrócić uwagę.
+        Jeśli chcesz pominąć, kliknij klawisz Pomiń Wszystko lub Pomiń krok w każdym momencie.
+        W przeciwnym razie, kliknij Następny.
+        '''
+    # Explain EXP bar, click on exp bar
+    1:
+        '''
+        Po pierwsze, pasek doświadczenia. Znajduje się on bezpośrednio nad tym oknem dialogowym.
+        Wrogowie pozostawiają po sobie doświadczenie, zazwyczaj zależy ono od ich siły, co pozwala ci awansować na kolejne poziomy.
+        Za zdobywanie kolejnych poziomów otrzymujesz punkty pasywne i punkty umiejętności.
+        Kliknij na pasek doświadczenia, aby otworzyć drzewko umiejętności pasywnych.
+        '''
+    # Explain Passive tree, ask to [de]allocate.
+    2:
+        '''
+        Tutaj znajduje się drzewko umiejętności pasywnych.
+        Jeżeli posiadasz punkty umiejętności pasywnych, możesz je przydzielić do wybranych umiejętności.
+        Te umiejętności zapewniają bonusy do różnych efektów, takich jak dodatkowe życie, obrażenia lub prędkość.
+        Kliknij dowolną umiejętność, aby ją przydzielić, a prawym przyciskiem myszy, aby ją cofnąć.
+        '''
+    # Click on skill tab.
+    3:
+        '''
+        Teraz kliknij na zakładkę „Umiejętności” w lewym górnym rogu.
+        '''
+    # Explain the skills tab, select a skill
+    4:
+        '''
+        Oto zakładka (debug) Umiejętności.
+        Tutaj można zaznaczyć lub odznaczyć określone umiejętności, co pozwala znacznie zmienić styl gry.
+        W przyszłości umiejętności będą dostępne wraz z postępem w grze zamiast z tego menu.
+        Kliknij dowolną umiejętność, aby ją zaznaczyć.
+        '''
+    # Explain skills, close menu
+    5:
+        '''
+        Wybrane umiejętności zostaną wyświetlone na pasku szybkiego dostępu.
+        Umiejętności mają czas odnowienia po użyciu, którego długość zależy od danej umiejętności.
+        Niektóre umiejętności są odblokowywane poprzez posiadanie określonych przedmiotów.
+        Zamknij menu drzewka (naciśnij klawisz Escape lub kliknij czerwony znak X w prawym górnym rogu).
+        '''
 	# Explain weapon requirements, use skill
 	/* 6:
 		'''
