@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class BeeMap : Map
+internal class BeeMap() : PreHardmodeBossMap(30, () => NPC.downedQueenBee)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 30;
-	public override bool CanDrop => NPC.downedQueenBee;
-
 	public override void SetStaticDefaults()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();

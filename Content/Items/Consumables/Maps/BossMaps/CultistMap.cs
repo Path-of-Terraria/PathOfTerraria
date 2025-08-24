@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class CultistMap : Map
+internal class CultistMap() : HardmodeBossMap(9, () => NPC.downedAncientCultist)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => WorldLevelBasedOnTier(9) + 1;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(9) && NPC.downedAncientCultist;
-
 	public override void SetStaticDefaults()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
