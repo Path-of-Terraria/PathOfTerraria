@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class EoCMap : Map
+internal class EoCMap() : PreHardmodeBossMap(15, () => NPC.downedBoss1)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 15;
-	public override bool CanDrop => NPC.downedBoss1;
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

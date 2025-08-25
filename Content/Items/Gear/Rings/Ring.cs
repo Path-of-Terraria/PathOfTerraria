@@ -1,9 +1,10 @@
 ﻿using PathOfTerraria.Core.Items;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core.Hooks;
 
 namespace PathOfTerraria.Content.Items.Gear.Rings;
 
-public abstract class Ring : Gear
+public abstract class Ring : Gear, IItemAllowDuplicateEquipWith
 {
 	protected override string GearLocalizationCategory => "Ring";
 	
@@ -28,6 +29,17 @@ public abstract class Ring : Gear
 	{
 		// Ensure rings can only be equipped in ring slots (7 and 8) (17 and 18 for vanity)
 		return slot == 7 || slot == 8 || slot == 17 || slot == 18;
-}
+	}
+
+	// Allow multiple rings of the same type to be equipped at once.
+	bool IItemAllowDuplicateEquipWith.AllowDuplicateEquipWith(Item equippedItem, Item incomingItem, Player player)
+	{
+		if (equippedItem.ModItem is Ring && incomingItem.ModItem is Ring)
+		{
+			return true;
+		}
+
+		return false;
+	}
 }
 

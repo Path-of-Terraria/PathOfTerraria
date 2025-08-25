@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class GolemMap : Map
+internal class GolemMap() : HardmodeBossMap(6, () => NPC.downedGolemBoss)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => WorldLevelBasedOnTier(6) + 1;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(6) && NPC.downedGolemBoss;
-
 	public override void SetStaticDefaults()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();

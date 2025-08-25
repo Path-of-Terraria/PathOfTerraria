@@ -19,7 +19,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public abstract int MaxUses { get; }
 	public abstract bool CanDrop { get; }
-	public virtual int WorldTier => WorldLevelBasedOnTier(Tier);
+	public virtual int WorldLevel => WorldLevelBasedOnTier(Tier);
 
 	public int RemainingUses = 0;
 
@@ -78,6 +78,11 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public virtual string GetNameAndTier()
 	{
 		return Core.Items.GenerateName.Invoke(Item);
+	}
+
+	public virtual int GetMapTier(int itemLevel)
+	{
+		return TierBasedOnWorldLevel(itemLevel);
 	}
 	
 	public static void SpawnMap<T>(Vector2 pos) where T : Map
@@ -172,6 +177,6 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 		realLevel = level;
 		ItemLevel = realLevel;
-		Tier = TierBasedOnWorldLevel(ItemLevel);
+		Tier = GetMapTier(ItemLevel);
 	}
 }

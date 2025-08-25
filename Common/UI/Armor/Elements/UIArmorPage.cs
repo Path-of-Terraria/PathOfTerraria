@@ -36,6 +36,7 @@ public abstract class UIArmorPage : UIElement
 	protected static Player Player => Main.LocalPlayer;
 
 	private readonly List<(ModAccessorySlot Slot, UIHoverImageItemSlot UI)> customSlots = [];
+	private UIHoverImageItemSlot?[] defaultSlots = [];
 
 	protected abstract Asset<Texture2D> DefaultFrameTexture { get; }
 
@@ -86,7 +87,7 @@ public abstract class UIArmorPage : UIElement
 
 	public void AddChildren()
 	{
-		UIHoverImageItemSlot?[] defaultSlots = GetDefaultSlots();
+		defaultSlots = GetDefaultSlots();
 
 		AccessorySlotLoader accessoryLoader = LoaderManager.Get<AccessorySlotLoader>();
 		ModAccessorySlotPlayer accessoryPlayer = Player.GetModPlayer<ModAccessorySlotPlayer>();
@@ -139,7 +140,7 @@ public abstract class UIArmorPage : UIElement
 
 	private void MaintainCustomAccessorySlots(ReadOnlySpan<(ModAccessorySlot, UIHoverImageItemSlot)> slots)
 	{
-		int numLocationsTaken = GetDefaultSlots().Length;
+		int numLocationsTaken = defaultSlots.Length;
 
 		foreach ((ModAccessorySlot modSlot, UIHoverImageItemSlot uiSlot) in slots)
 		{

@@ -165,7 +165,11 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 			if (item != ItemDatabase.InvalidItem)
 			{
 				ItemSpawner.SpawnItem(item.ItemId, npc.Center, itemLevel, item.Rarity);
+				continue;
 			}
+#if DEBUG
+			Main.NewText($"Rolled an InvalidItem for drop from {npc.TypeName}");
+#endif
 		}
 	}
 

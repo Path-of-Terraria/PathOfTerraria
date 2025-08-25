@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class QueenSlimeQuest : Quest
+internal class QueenSlimeQuest() : HardmodeQuest(1)
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override int NPCQuestGiver => ModContent.NPCType<WizardNPC>();
@@ -32,8 +32,11 @@ internal class QueenSlimeQuest : Quest
 			new ConditionCheck(_ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				return tracker.CompletionsAtOrAboveTier(1) >= 10;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(0, ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(1))),
+				return tracker.CompletionsAtOrAboveTier(1) >= MappingDomainSystem.RequiredCompletionsPerTier;
+			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
+				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
+				MappingDomainSystem.RequiredCompletionsPerTier
+			)),
 			new ConditionCheck(_ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck(_ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss")),
 		];

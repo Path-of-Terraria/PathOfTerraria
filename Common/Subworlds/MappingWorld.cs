@@ -75,6 +75,7 @@ public abstract class MappingWorld : Subworld
 	private string _tip = "";
 	private string _fadingInTip = "";
 	private int _tipTime = 0;
+	private bool needsNetSync;
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
 	{
@@ -133,7 +134,18 @@ public abstract class MappingWorld : Subworld
 		ReadConsistentInfo();
 	}
 
-	private static void ReadConsistentInfo()
+	public override void Update()
+	{
+		base.Update();
+
+		if (needsNetSync && Main.netMode == NetmodeID.Server)
+		{
+			NetMessage.SendData(MessageID.WorldData);
+			needsNetSync = false;
+		}
+	}
+
+	private void ReadConsistentInfo()
 	{
 		TagCompound tag = SubworldSystem.ReadCopiedWorldData<TagCompound>("tracker");
 		var tracker = MappingDomainSystem.TiersDownedTracker.Load(tag);
@@ -155,6 +167,7 @@ public abstract class MappingWorld : Subworld
 				Affixes.Add(Affix.FromTag<MapAffix>(affixTag));
 			}
 		}
+		needsNetSync |= Main.netMode == NetmodeID.Server;
 	}
 
 	public override void CopySubworldData()

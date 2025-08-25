@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class KingSlimeMap : Map
+internal class KingSlimeMap() : PreHardmodeBossMap(5, () => NPC.downedSlimeKing)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 5;
-	public override bool CanDrop => NPC.downedSlimeKing;
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
