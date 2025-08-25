@@ -138,9 +138,15 @@ internal static class Networking
 
 		/// <summary>
 		/// Sends mapping domain info (Level, Tier, Affixes) to the server. <br/>Signature:<br/>
-		/// <c>short level, short tier</c>
+		/// <c>short level, short tier, List{MapAffix}</c>
 		/// </summary>
 		SendMappingDomainInfo,
+
+		/// <summary>
+		/// Requests mapping domain info (Level, Tier, Affixes) from the server.<br/>Signature:<br/>
+		/// <c>byte who</c>
+		/// </summary>
+		RequestMappingDomainInfo,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

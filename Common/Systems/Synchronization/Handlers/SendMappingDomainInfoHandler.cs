@@ -33,11 +33,16 @@ internal class SendMappingDomainInfoHandler : Handler
 
 	internal override void ServerRecieve(BinaryReader reader)
 	{
+		GetAndSetMappingDomainInfo(reader);
+	}
+
+	internal static void GetAndSetMappingDomainInfo(BinaryReader reader)
+	{
 		short level = reader.ReadInt16();
 		short tier = reader.ReadInt16();
 		byte count = reader.ReadByte();
 
-		MappingWorld.Affixes.Clear();
+		MappingWorld.Affixes = [];
 
 		for (int i = 0; i < count; ++i)
 		{

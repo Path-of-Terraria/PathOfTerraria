@@ -34,12 +34,12 @@ internal abstract class Handler : ILoadable
 	/// </summary>
 	internal virtual void ClientRecieve(BinaryReader reader) { }
 
-	public void Load(Mod mod)
+	public virtual void Load(Mod mod)
 	{
 		HandlerForMessage.Add(MessageType, this);
 	}
 
-	public void Unload()
+	public virtual void Unload()
 	{
 		HandlerForMessage.Remove(MessageType);
 	}

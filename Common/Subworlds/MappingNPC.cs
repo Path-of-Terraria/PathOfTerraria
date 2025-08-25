@@ -4,7 +4,9 @@ using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -26,6 +28,30 @@ internal class MappingNPC : GlobalNPC
 				entity.defDamage = entity.damage = (int)(entity.damage * modifier);
 			}
 		}
+	}
+
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+	{
+		if (SubworldSystem.Current is not MappingWorld)
+		{
+			return;
+		}
+
+		binaryWriter.Write(npc.lifeMax);
+		binaryWriter.Write(npc.life);
+		binaryWriter.Write(npc.defDamage);
+	}
+
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+	{
+		if (SubworldSystem.Current is not MappingWorld)
+		{
+			return;
+		}
+
+		npc.lifeMax = binaryReader.ReadInt32();
+		npc.life = binaryReader.ReadInt32();
+		npc.defDamage = binaryReader.ReadInt32();
 	}
 
 	public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)

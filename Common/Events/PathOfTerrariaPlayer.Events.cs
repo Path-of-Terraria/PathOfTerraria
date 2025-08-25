@@ -259,6 +259,15 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 
 		return result;
 	}
+
+	public delegate void OnEnterWorldDelegate(Player player);
+
+	public static event OnEnterWorldDelegate OnEnterWorldEvent;
+
+	public override void OnEnterWorld()
+	{
+		OnEnterWorldEvent.Invoke(Player);
+	}
 	
 	public override void Unload()
 	{

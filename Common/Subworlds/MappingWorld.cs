@@ -118,7 +118,12 @@ public abstract class MappingWorld : Subworld
 		TagCompound worldInfoTag = [];
 		worldInfoTag.Add("level", AreaLevel);
 		worldInfoTag.Add("tier", MapTier);
-		worldInfoTag.Add("affixes", (TagCompound[])[.. Affixes.Select(x => x.SaveAs())]);
+
+		if (Affixes is not null && Affixes.Count > 0)
+		{
+			worldInfoTag.Add("affixes", (TagCompound[])[.. Affixes.Select(x => x.SaveAs())]);
+		}
+
 		SubworldSystem.CopyWorldData("worldInfo", worldInfoTag);
 	}
 
@@ -141,13 +146,14 @@ public abstract class MappingWorld : Subworld
 		TagCompound worldInfoTag = SubworldSystem.ReadCopiedWorldData<TagCompound>("worldInfo");
 		AreaLevel = worldInfoTag.GetInt("level");
 		MapTier = worldInfoTag.GetInt("tier");
+		Affixes = [];
 
-		Affixes.Clear();
-		TagCompound[] affixes = worldInfoTag.Get<TagCompound[]>("affixes");
-
-		foreach (TagCompound affixTag in affixes)
+		if (worldInfoTag.TryGet("affixes", out TagCompound[] affixes))
 		{
-			Affixes.Add(Affix.FromTag<MapAffix>(affixTag));
+			foreach (TagCompound affixTag in affixes)
+			{
+				Affixes.Add(Affix.FromTag<MapAffix>(affixTag));
+			}
 		}
 	}
 
