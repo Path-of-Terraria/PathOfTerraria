@@ -68,12 +68,7 @@ internal class MappingNPC : GlobalNPC
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
-			if (DownedBossForTier(world))
-			{
-				tracker.AddCompletion(world.MapTier);
-			}
-
-			Dictionary<int, int> completionsByTier = tracker.CompletionsPerTier();
+			tracker.AddCompletion(world.MapTier);
 
 			if (TierPassed(1) && !NPC.downedQueenSlime)
 			{
@@ -129,26 +124,8 @@ internal class MappingNPC : GlobalNPC
 
 			bool TierPassed(int tier)
 			{
-				return completionsByTier.TryGetValue(tier, out int tierValue) && tierValue >= 10;
+				return tracker.CompletionsAtOrAboveTier(tier) >= MappingDomainSystem.RequiredCompletionsPerTier;
 			}
 		}
-	}
-
-	private static bool DownedBossForTier(MappingWorld world)
-	{
-		return (world.MapTier - 1) switch
-		{
-			1 => NPC.downedQueenSlime,
-			2 => NPC.downedMechBoss2,
-			3 => NPC.downedMechBoss1,
-			4 => NPC.downedMechBoss3,
-			5 => NPC.downedPlantBoss,
-			6 => NPC.downedGolemBoss,
-			7 => NPC.downedFishron,
-			8 => NPC.downedEmpressOfLight,
-			9 => NPC.downedAncientCultist,
-			10 => NPC.downedMoonlord,
-			_ => true,
-		};
 	}
 }

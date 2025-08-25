@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class PlanteraQuest : Quest
+internal class PlanteraQuest() : HardmodeQuest(5)
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
@@ -32,8 +32,11 @@ internal class PlanteraQuest : Quest
 			new ConditionCheck(_ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				return tracker.CompletionsAtOrAboveTier(5) >= 10;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(0, ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(5))),
+				return tracker.CompletionsAtOrAboveTier(5) >= MappingDomainSystem.RequiredCompletionsPerTier;
+			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
+				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
+				MappingDomainSystem.RequiredCompletionsPerTier
+			)),
 			new ConditionCheck(_ => SubworldSystem.Current is PlanteraDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck(_ => BossTracker.DownedInDomain<PlanteraDomain>(NPCID.Plantera), 1, this.GetLocalization("Boss")),
 		];

@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class PlanteraMap : Map
+internal class PlanteraMap() : HardmodeBossMap(5, () => NPC.downedPlantBoss)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => WorldLevelBasedOnTier(5) + 1;
-	public override bool CanDrop => PoTItemHelper.PickItemLevel() >= WorldLevelBasedOnTier(5) && NPC.downedPlantBoss;
-
 	public override void SetStaticDefaults()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
