@@ -30,8 +30,7 @@ public class EchoingShard : CurrencyShard
 	{
 		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
 
-		var clonedItem = new Item();
-		clonedItem.SetDefaults(player.HeldItem.type);
+		Item clonedItem = player.HeldItem.Clone();
 		PoTInstanceItemData clonedData = clonedItem.GetInstanceData();
 		clonedData.Rarity = data.Rarity;
 		clonedData.Influence = data.Influence;
