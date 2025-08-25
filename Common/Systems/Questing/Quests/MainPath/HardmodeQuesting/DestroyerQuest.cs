@@ -11,7 +11,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class DestroyerQuest : Quest
+internal class DestroyerQuest() : HardmodeQuest(3)
 {
 	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
 	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
@@ -33,8 +33,11 @@ internal class DestroyerQuest : Quest
 			new ConditionCheck(_ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				return tracker.CompletionsAtOrAboveTier(3) >= 10;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(0, ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(3))),
+				return tracker.CompletionsAtOrAboveTier(3) >= MappingDomainSystem.RequiredCompletionsPerTier;
+			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
+				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
+				MappingDomainSystem.RequiredCompletionsPerTier
+			)),
 			new ConditionCheck(_ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck(_ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
 		];
