@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ExperienceSystem;

@@ -302,7 +302,7 @@ internal class PlanteraDomain : BossDomainSubworld
 
 		if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.Plantera, false, true);
+			//BossTracker.AddDowned(NPCID.Plantera, false, true);
 
 			HashSet<Player> players = [];
 

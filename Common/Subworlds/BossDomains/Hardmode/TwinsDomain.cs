@@ -990,8 +990,8 @@ internal class TwinsDomain : BossDomainSubworld
 		}
 		else if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.Retinazer, false, true);
-			BossTracker.AddDowned(NPCID.Spazmatism, false, true);
+			//BossTracker.AddDowned(NPCID.Retinazer, false, true);
+			//BossTracker.AddDowned(NPCID.Spazmatism, false, true);
 
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Projectile.NewProjectile(src, new Vector2(Width / 2, BlockLayer - 16).ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);

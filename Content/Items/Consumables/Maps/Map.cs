@@ -53,14 +53,6 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public virtual void OpenMap()
 	{
 		OpenMapInternal();
-
-		if (SubworldSystem.Current is MappingWorld map)
-		{
-			map.AreaLevel = WorldTier;
-			map.MapTier = Tier;
-			map.Affixes = [];
-			map.Affixes.AddRange(this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x));
-		}
 	}
 
 	protected abstract void OpenMapInternal();

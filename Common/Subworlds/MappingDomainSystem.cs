@@ -25,6 +25,19 @@ public class MappingDomainSystem : ModSystem
 			}
 		}
 
+		/// <summary>
+		/// Forcefully sets the amount of completions in <paramref name="tier"/> to <paramref name="count"/>. Used for syncing.
+		/// </summary>
+		/// <param name="tier">Map tier that has been completed.</param>
+		/// <param name="count">How many times this tier has been completed.</param>
+		internal void SetCompletion(int tier, int count)
+		{
+			if (!TierCompletions.TryAdd(tier, count))
+			{
+				TierCompletions[tier] = count;
+			}
+		}
+
 		public int CompletionsAtOrAboveTier(int checkTier)
 		{
 			int total = 0;

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace PathOfTerraria.Common.Systems.Networking;
+namespace PathOfTerraria.Common.Systems.Synchronization;
 
 /// <summary>
 /// Defines a handler of a given <see cref="Networking.Message"/>. 

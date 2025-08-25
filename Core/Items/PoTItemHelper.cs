@@ -257,9 +257,9 @@ public static class PoTItemHelper
 
 	public static int PickItemLevel(bool clampHardmode = true, bool isCrafted = false)
 	{
-		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.AreaLevel > 0 && !isCrafted)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.AreaLevel > 0 && !isCrafted)
 		{
-			return mapWorld.AreaLevel;
+			return MappingWorld.AreaLevel;
 		}
 
 		if (isCrafted && Main.hardMode) // This accounts for crafting level when you've progressed further than WoF

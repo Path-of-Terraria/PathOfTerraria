@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
-using PathOfTerraria.Content.Items.Quest;
+﻿using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.BossDomain.DeerDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
 using System.Collections.Generic;

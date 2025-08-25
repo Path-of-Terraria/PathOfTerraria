@@ -59,7 +59,7 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 
 		if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.HallowBoss, false, true);
+			//BossTracker.AddDowned(NPCID.HallowBoss, false, true);
 
 			HashSet<Player> players = [];
 

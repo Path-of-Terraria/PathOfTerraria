@@ -410,7 +410,7 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 
 		if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.TheDestroyer, false, true);
+			//BossTracker.AddDowned(NPCID.TheDestroyer, false, true);
 
 			HashSet<Player> players = [];
 

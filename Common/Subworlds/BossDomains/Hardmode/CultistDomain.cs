@@ -210,10 +210,10 @@ internal class CultistDomain : BossDomainSubworld, IOverrideBiome
 				SpawnedLunatic = true;
 			}
 		}
-		else if (!NPC.AnyNPCs(NPCID.CultistBoss))
-		{
-			BossTracker.AddDowned(NPCID.CultistBoss, false, true);
-		}
+		//else if (!NPC.AnyNPCs(NPCID.CultistBoss))
+		//{
+		//	BossTracker.AddDowned(NPCID.CultistBoss, false, true);
+		//}
 	}
 
 	public void OverrideBiome()

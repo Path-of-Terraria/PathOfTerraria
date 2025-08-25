@@ -2,7 +2,7 @@ using PathOfTerraria.Common.Systems.VanillaModifications;
 using System.IO;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Systems.Networking.Handlers;
+namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 /// <summary>
 /// Allows all players on the server to break Shadow Orbs and Crimson Hearts.

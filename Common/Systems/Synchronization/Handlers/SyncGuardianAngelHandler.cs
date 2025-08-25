@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 
-namespace PathOfTerraria.Common.Systems.Networking.Handlers;
+namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class SyncGuardianAngelHandler : Handler
 {

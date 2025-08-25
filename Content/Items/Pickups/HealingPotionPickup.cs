@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using Terraria.Audio;
 using Terraria.ID;
 

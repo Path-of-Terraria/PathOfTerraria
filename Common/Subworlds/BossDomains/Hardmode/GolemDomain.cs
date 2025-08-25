@@ -398,7 +398,7 @@ internal class GolemDomain : BossDomainSubworld
 		}
 		else if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.Golem, false, true);
+			//BossTracker.AddDowned(NPCID.Golem, false, true);
 
 			HashSet<Player> players = [];
 

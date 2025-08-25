@@ -1,7 +1,7 @@
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using System.IO;
 
-namespace PathOfTerraria.Common.Systems.Networking.Handlers;
+namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 /// <summary>
 /// Sends a message to the server so that the Morven tile can be spawned and synced properly.

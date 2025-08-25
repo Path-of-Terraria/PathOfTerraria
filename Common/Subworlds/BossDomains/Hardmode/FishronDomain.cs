@@ -457,7 +457,7 @@ internal class FishronDomain : BossDomainSubworld, IOverrideBiome
 		}
 		else if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.DukeFishron, false, true);
+			//BossTracker.AddDowned(NPCID.DukeFishron, false, true);
 
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Projectile.NewProjectile(src, NewSpawn.ToWorldCoordinates(0, -60), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);

@@ -19,13 +19,13 @@ using SubworldLibrary;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
 using System.IO;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Content.Tiles;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

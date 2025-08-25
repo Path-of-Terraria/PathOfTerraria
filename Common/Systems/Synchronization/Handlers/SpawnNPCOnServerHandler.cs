@@ -2,7 +2,7 @@ using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Systems.Networking.Handlers;
+namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class SpawnNPCOnServerHandler : Handler
 {

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
@@ -55,7 +56,7 @@ public abstract class MappingWorld : Subworld
 	/// </summary>
 	public virtual (int time, bool isDay) ForceTime => (-1, true);
 
-	public List<MapAffix> Affixes = null;
+	public static List<MapAffix> Affixes = null;
 
 	/// <summary>
 	/// The level of the world. This modifies a lot of things:<br/>
@@ -63,13 +64,13 @@ public abstract class MappingWorld : Subworld
 	/// Above level 50, buffs enemies' damage and max health; see <see cref="MappingNPC"/>'s SetDefaults<br/>
 	/// Above level 50, buffs enemy gear droprate and rarity; see <see cref="Systems.MobSystem.ArpgNPC"/>.
 	/// </summary>
-	public int AreaLevel = 0;
+	public static int AreaLevel = 0;
 
 	/// <summary>
 	/// The map tier. This is the unconverted version of <see cref="AreaLevel"/>; the level should be used more often.<br/>
 	/// This is kept as the map tier is used for a couple of things, namely <see cref="MappingDomainSystem.Tracker"/>.
 	/// </summary>
-	public int MapTier = 0;
+	public static int MapTier = 0;
 
 	private string _tip = "";
 	private string _fadingInTip = "";
@@ -113,6 +114,12 @@ public abstract class MappingWorld : Subworld
 		bossTrackerTag.Add("total", (int[])[.. BossTracker.TotalBossesDowned]);
 		bossTrackerTag.Add("cached", (int[])[.. BossTracker.CachedBossesDowned]);
 		SubworldSystem.CopyWorldData("bossTracker", bossTrackerTag);
+
+		TagCompound worldInfoTag = [];
+		worldInfoTag.Add("level", AreaLevel);
+		worldInfoTag.Add("tier", MapTier);
+		worldInfoTag.Add("affixes", (TagCompound[])[.. Affixes.Select(x => x.SaveAs())]);
+		SubworldSystem.CopyWorldData("worldInfo", worldInfoTag);
 	}
 
 	public override void ReadCopiedMainWorldData()
@@ -131,9 +138,16 @@ public abstract class MappingWorld : Subworld
 		BossTracker.TotalBossesDowned = [.. bossTrackerTag.GetIntArray("total")];
 		BossTracker.CachedBossesDowned = [.. bossTrackerTag.GetIntArray("cached")];
 
-		if (Main.netMode != NetmodeID.SinglePlayer)
+		TagCompound worldInfoTag = SubworldSystem.ReadCopiedWorldData<TagCompound>("worldInfo");
+		AreaLevel = worldInfoTag.GetInt("level");
+		MapTier = worldInfoTag.GetInt("tier");
+
+		Affixes.Clear();
+		TagCompound[] affixes = worldInfoTag.Get<TagCompound[]>("affixes");
+
+		foreach (TagCompound affixTag in affixes)
 		{
-			NetMessage.SendData(MessageID.WorldData);
+			Affixes.Add(Affix.FromTag<MapAffix>(affixTag));
 		}
 	}
 
@@ -218,7 +232,7 @@ public abstract class MappingWorld : Subworld
 		return experience + (int)(TotalWeight() / 200f * experience);
 	}
 
-	internal float TotalWeight()
+	internal static float TotalWeight()
 	{
 		if (Affixes is null || Affixes.Count == 0)
 		{

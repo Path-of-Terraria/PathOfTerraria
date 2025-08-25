@@ -1,9 +1,8 @@
 ﻿using SubworldLibrary;
 using System.IO;
-using System.Runtime.CompilerServices;
 using Terraria.ID;
 
-namespace PathOfTerraria.Common.Systems.Networking;
+namespace PathOfTerraria.Common.Systems.Synchronization;
 
 internal static class Networking
 {
@@ -107,17 +106,11 @@ internal static class Networking
 		SyncNewConditionalDropPlayer,
 
 		/// <summary>
-		/// Sends a boss to be downed from the server. This is used for caching boss downs, and redundant data may be sent to the server in quick succession.<br/>Signature:<br/>
+		/// Marks a boss as downed. This is used for sending boss downs to the main server through <see cref="SendPacketToMainServer(ModPacket)"/>.
+		/// <br/>Signature:<br/>
 		/// <c>int id</c>
 		/// </summary>
 		SyncBossDowned,
-
-		/// <summary>
-		/// Tells all players to add the given id to their cache. Used by temporary <see cref="BossTrackingSystems.BossTrackingPlayer"/> downed caching system.<br/>
-		/// This simply assumes every player in a subworld 'beat' the boss, and thus should carry the information forward.<br/>Signature:<br/>
-		/// <c>int id</c>
-		/// </summary>
-		SyncPlayerDownedBoss,
 
 		/// <summary>
 		/// Tells Morven to get stuck in rock by way of the server. Takes no parameters.
@@ -128,6 +121,26 @@ internal static class Networking
 		/// Sends a message to let the server allow Shadow Orbs (and Crimson Hearts) to be broken. Takes no parameters.
 		/// </summary>
 		BreakableOrbs,
+
+		/// <summary>
+		/// Adds a tier to the completion tracker. Meant to be used through <see cref="SendPacketToMainServer(ModPacket)"/>.<br/>Signature:<br/>
+		/// <c>short tier</c><br/><br/>
+		/// <b>Note:</b> This packet sends an additional short, count, to clients so that their downed count is forcefully set to the server's instead of allowing a desync.<br/>
+		/// This should not affect any normal use of this packet however.
+		/// </summary>
+		SendMappingTierDown,
+
+		/// <summary>
+		/// Requests all mapping tier downs from the server.<br/>Signature:<br/>
+		/// <c>byte who</c>
+		/// </summary>
+		RequestMappingTiers,
+
+		/// <summary>
+		/// Sends mapping domain info (Level, Tier, Affixes) to the server. <br/>Signature:<br/>
+		/// <c>short level, short tier</c>
+		/// </summary>
+		SendMappingDomainInfo,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
@@ -158,14 +171,26 @@ internal static class Networking
 	}
 
 	/// <summary>
-	/// Unused. Doesn't work right atm; I don't know how it works, but this would be useful if I understood it. - Gabe
+	/// Takes a <see cref="ModPacket"/> and sends it to the main server. Behaves as if using packet.Send() otherwise.
 	/// </summary>
-	/// <param name="packet"></param>
+	/// <param name="packet">The packet to forward.</param>
 	internal static void SendPacketToMainServer(ModPacket packet)
 	{
-		SubworldSystem.SendToMainServer(PoTMod.Instance, GetBuffer(packet));
+		byte[] data = (packet.BaseStream as MemoryStream).GetBuffer();
+		data = data[4..]; // Packets have a bunch of garbage data for some reason?
 
-		[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "buf")]
-		static extern ref byte[] GetBuffer(ModPacket packet);
+#if DEBUG
+		string text = "";
+
+		foreach (byte b in data)
+		{
+			text += $"{b}, ";
+		}
+
+		text = text[..^2];
+		PoTMod.Instance.Logger.Debug(text);
+#endif
+
+		SubworldSystem.SendToMainServer(PoTMod.Instance, data);
 	}
 }

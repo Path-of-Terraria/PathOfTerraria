@@ -1,9 +1,10 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -11,16 +12,16 @@ internal class MappingNPC : GlobalNPC
 {
 	public override void SetDefaults(NPC entity)
 	{
-		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
-			foreach (MapAffix affix in map.Affixes)
+			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
 				affix.ModifyNewNPC(entity);
 			}
 
-			if (map.AreaLevel > 50 && entity.lifeMax > 5)
+			if (MappingWorld.AreaLevel > 50 && entity.lifeMax > 5)
 			{
-				float modifier = 1 + (map.AreaLevel - 50) / 20f;
+				float modifier = 1 + (MappingWorld.AreaLevel - 50) / 20f;
 				entity.life = entity.lifeMax = (int)(entity.lifeMax * modifier);
 				entity.defDamage = entity.damage = (int)(entity.damage * modifier);
 			}
@@ -29,9 +30,9 @@ internal class MappingNPC : GlobalNPC
 
 	public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
 	{
-		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
-			foreach (MapAffix affix in map.Affixes)
+			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
 				affix.ModifyHitPlayer(npc, target, ref modifiers);
 			}
@@ -40,9 +41,9 @@ internal class MappingNPC : GlobalNPC
 
 	public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
 	{
-		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
-			foreach (MapAffix affix in map.Affixes)
+			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
 				affix.OnHitPlayer(npc, target, hurtInfo);
 			}
@@ -51,9 +52,9 @@ internal class MappingNPC : GlobalNPC
 
 	public override bool PreAI(NPC npc)
 	{
-		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
-			foreach (MapAffix affix in map.Affixes)
+			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
 				affix.PreAI(npc);
 			}
@@ -68,9 +69,16 @@ internal class MappingNPC : GlobalNPC
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
-			if (DownedBossForTier(world))
+			if (DownedBossForTier())
 			{
-				tracker.AddCompletion(world.MapTier);
+				tracker.AddCompletion(MappingWorld.MapTier);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					ModPacket packet = Networking.GetPacket(Networking.Message.SendMappingTierDown, 3);
+					packet.Write((short)MappingWorld.MapTier);
+					Networking.SendPacketToMainServer(packet);
+				}
 			}
 
 			Dictionary<int, int> completionsByTier = tracker.CompletionsPerTier();
@@ -134,9 +142,9 @@ internal class MappingNPC : GlobalNPC
 		}
 	}
 
-	private static bool DownedBossForTier(MappingWorld world)
+	private static bool DownedBossForTier()
 	{
-		return (world.MapTier - 1) switch
+		return (MappingWorld.MapTier - 1) switch
 		{
 			1 => NPC.downedQueenSlime,
 			2 => NPC.downedMechBoss2,
