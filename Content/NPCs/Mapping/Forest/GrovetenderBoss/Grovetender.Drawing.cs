@@ -5,6 +5,12 @@ namespace PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 
 internal partial class Grovetender : ModNPC
 {
+	private bool IsSolidOrSloped(int x, int y)
+	{
+		return x >= 0 && x < Main.maxTilesX &&
+			y >= 0 && y < Main.maxTilesY &&
+			WorldGen.SolidOrSlopedTile(x, y);
+	}
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
 	{
 		Texture2D tex = TextureAssets.Npc[Type].Value;
@@ -16,20 +22,20 @@ internal partial class Grovetender : ModNPC
 		{
 			for (int i = (int)(Main.screenPosition.X / 16f) - 3; i < (int)(Main.screenPosition.X / 16f) + (int)(Main.screenWidth / 16f) + 3; i++)
 			{
-				if (WorldGen.SolidOrSlopedTile(i, Main.maxTilesY - 50))
+				if (IsSolidOrSloped(i, Main.maxTilesY - 50))
 				{
 					continue;
 				}
 
 				var drawPos = new Vector2(i * 16 - Main.screenPosition.X, gradientY);
 				int width = 16;
-
-				if (WorldGen.SolidOrSlopedTile(i - 1, Main.maxTilesY - 50))
+				
+				if (IsSolidOrSloped(i - 1, Main.maxTilesY - 50))
 				{
 					drawPos.X -= 8;
 					width = 24;
 				}
-				else if (WorldGen.SolidOrSlopedTile(i + 1, Main.maxTilesY - 50))
+				else if (IsSolidOrSloped(i + 1, Main.maxTilesY - 50))
 				{
 					width = 24;
 				}
