@@ -4,6 +4,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -12,6 +13,17 @@ using Terraria.Localization;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+
+public class DisableDestroyerDomainSpawns : GlobalNPC
+{
+	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
+	{
+		if (SubworldSystem.Current is DestroyerDomain)
+		{
+			pool.Clear();
+		}
+	}
+}
 
 internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 {
@@ -103,32 +115,46 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 		}
 	}
 
-	private void BuildCity(GenerationProgress progress, GameConfiguration configuration)
+	private List<int> GenerateTowerPositions()
 	{
-		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Structures");
-
+		// Need 5 explorable towers + 1 spawn tower minimum
+		const int MinTowers = 6;
+		List<int> positions = [];
+		
 		int reps = Width / 130;
-		int spawnTower = WorldGen.genRand.Next(reps);
-		int skipped = -1;
-
+		int skipped = 0;
 		for (int i = 0; i < reps; ++i)
 		{
-			if (WorldGen.genRand.NextBool(6) && i != spawnTower && skipped < 4)
+			if (WorldGen.genRand.NextBool(6) && skipped < 5 && reps - skipped > MinTowers)
 			{
 				skipped++;
 				continue;
 			}
 
 			int x = (int)MathHelper.Lerp(130, Main.maxTilesX - 160, i / (reps - 1f)) + WorldGen.genRand.Next(-30, 30);
-			int y = MakeTower(x, FloorY + 1, spawnTower == i);
+			positions.Add(x);
+		}
+		return positions;
+	}
+	
+	private void BuildCity(GenerationProgress progress, GameConfiguration configuration)
+	{
+		progress.Message = Language.GetTextValue($"Mods.{PoTMod.ModName}.Generation.Structures");
+		
+		List<int> towerPositions = GenerateTowerPositions();
+		int spawnTower = WorldGen.genRand.Next(towerPositions.Count);
+		for (int i = 0; i < towerPositions.Count; i++)
+		{
+			int towerX = towerPositions[i];
+			int y = MakeTower(towerX, FloorY + 1, spawnTower == i);
 
 			if (spawnTower == i)
 			{
-				Main.spawnTileX = x + (WorldGen.genRand.NextBool() ? -1 : 1 * WorldGen.genRand.Next(5, 12));
+				Main.spawnTileX = towerX + (WorldGen.genRand.NextBool() ? -1 : 1 * WorldGen.genRand.Next(5, 12));
 				Main.spawnTileY = y + 16;
 			}
 
-			progress.Set(i / (float)reps);
+			progress.Set(i / (float)towerPositions.Count);
 		}
 
 		for (int i = 0; i < 90; ++i)
@@ -390,7 +416,6 @@ internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 	public override void OnEnter()
 	{
 		base.OnEnter();
-
 		FightTracker.Reset();
 	}
 
