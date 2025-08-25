@@ -4,6 +4,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.BossDomain.Mech;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -12,6 +13,17 @@ using Terraria.Localization;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+
+public class DisableDestroyerDomainSpawns : GlobalNPC
+{
+	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
+	{
+		if (SubworldSystem.Current is DestroyerDomain)
+		{
+			pool.Clear();
+		}
+	}
+}
 
 internal class DestroyerDomain : BossDomainSubworld, IOverrideBiome
 {
