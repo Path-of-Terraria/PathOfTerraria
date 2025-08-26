@@ -62,8 +62,8 @@ public sealed partial class PoTGlobalItem : GlobalItem
 	{
 		orig(context);
 
-		// This method is called with with this magic number every time it sets Main.HoverItem to a clone of a recipe result.
-		if (context == 22 && Main.HoverItem is { IsAir: false } hoverItem && GearGlobalItem.IsGearItem(hoverItem) && hoverItem.TryGetGlobalItem(out PoTInstanceItemData data))
+		// This method is called with this context every time it sets Main.HoverItem to a clone of a recipe result.
+		if (context == ItemSlot.Context.CraftingMaterial && Main.HoverItem is { IsAir: false } hoverItem && GearGlobalItem.IsGearItem(hoverItem) && hoverItem.TryGetGlobalItem(out PoTInstanceItemData data))
 		{
 			// Calculate what the crafting level should be
 			int expectedCraftingLevel = PoTItemHelper.PickItemLevel(false, true);
