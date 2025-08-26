@@ -10,7 +10,7 @@ public sealed partial class UIManager : ModSystem
 	/// </summary>
 	/// <param name="identifier">The identifier of the <see cref="UIState"/>.</param>
 	/// <returns><c>true</c> if the state was successfully refreshed; otherwise, <c>false</c>.</returns>
-	internal static bool TryRefresh(string identifier)
+	public static bool TryRefresh(string identifier)
 	{
 		int index = Data.FindIndex(s => s.Identifier == identifier);
 
@@ -35,7 +35,7 @@ public sealed partial class UIManager : ModSystem
 	/// <summary>
 	///		Refreshes all registered <see cref="UIState"/> instances by their type.
 	/// </summary>
-	internal static void RefreshAllStates()
+	public static void RefreshAllStates()
 	{
 		for (int i = 0; i < Data.Count; i++)
 		{
