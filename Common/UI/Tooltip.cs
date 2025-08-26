@@ -62,7 +62,9 @@ public class Tooltip : SmartUiState
 	}
 
 	private static readonly List<TooltipInstance> tooltips = [];
-	private static uint lastGameUpdateCount;
+
+	private static uint tickCount;
+	private static uint lastTickCount;
 
 	public override int DepthPriority => 2;
 
@@ -75,6 +77,8 @@ public class Tooltip : SmartUiState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
+		tickCount++;
+
 		Span<TooltipInstance> span = IterateTooltips();
 
 		foreach (ref TooltipInstance tooltip in span)
@@ -93,9 +97,9 @@ public class Tooltip : SmartUiState
 	private static Span<TooltipInstance> IterateTooltips()
 	{
 		// Remove expired tooltips. Account for tick count resets, which are likely to occur if moving between subworlds.
-		uint currentTime = Main.GameUpdateCount;
-		uint previousTime = lastGameUpdateCount;
-		lastGameUpdateCount = currentTime;
+		uint currentTime = tickCount;
+		uint previousTime = lastTickCount;
+		lastTickCount = currentTime;
 
 		if (currentTime < previousTime)
 		{
@@ -136,7 +140,7 @@ public class Tooltip : SmartUiState
 
 		ref TooltipInstance tooltip = ref CollectionsMarshal.AsSpan(tooltips)[tooltipIndex];
 		tooltip.Description = args;
-		tooltip.EndTime = Main.GameUpdateCount + args.VisibilityTimeInTicks;
+		tooltip.EndTime = tickCount + args.VisibilityTimeInTicks;
 	}
 
 	private static void Recalculate(in TooltipDescription args, ref TooltipCache cache)

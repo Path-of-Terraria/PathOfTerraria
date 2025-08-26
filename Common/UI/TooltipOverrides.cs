@@ -47,7 +47,7 @@ public sealed class TooltipOverrides : ModSystem
 		bool drawSideBySide = drawForHoverItem && drawForMouseItem;
 
 		// If we are reacting to a late Hover/MouseItem mutation, i.e. after the tooltips have already been drawn, then we need to make new instances last a whole tick.
-		uint visibilityTimeInTicks = isLate ? 1u : 0u;
+		uint visibilityTimeInTicks = 1u;// isLate ? 1u : 0u;
 		drewHoverItem = drawForHoverItem || (isLate && drewHoverItem);
 		drewMouseItem = drawForMouseItem || (isLate && drewHoverItem);
 
