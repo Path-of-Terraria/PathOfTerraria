@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using PathOfTerraria.Core.Items;
@@ -158,7 +159,7 @@ public sealed class AffixTooltips
 
 	private void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum)
 	{
-		foreach (AffixTooltipLine tip in Lines.Values)
+		foreach (AffixTooltipLine tip in Lines.Values.OrderByDescending(v => v.Value))
 		{
 			string text = $"{ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent)} {tip.Text.WithFormatArgs(Math.Abs(tip.Value).ToString("#0.##"), tip.Value >= 0 ? "+" : "-").Value}";
 			Color color = tip.Value switch
