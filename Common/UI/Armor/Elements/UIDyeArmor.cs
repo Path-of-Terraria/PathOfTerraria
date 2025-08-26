@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.UI.Elements;
+﻿using PathOfTerraria.Common.AccessorySlots;
+using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
 using Terraria.UI;
 
@@ -16,20 +17,20 @@ public sealed class UIDyeArmor : UIArmorPage
 	protected override UIHoverImageItemSlot?[] GetDefaultSlots()
 	{
 		UIHoverImageItemSlot?[] slots = [
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 4)), $"Mods.{PoTMod.ModName}.UI.Slots.10", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 0)), $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 5)), $"Mods.{PoTMod.ModName}.UI.Slots.5", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Wings)), $"Mods.{PoTMod.ModName}.UI.Slots.10", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Head)), $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Necklace)), $"Mods.{PoTMod.ModName}.UI.Slots.5", ItemSlot.Context.EquipDye),
 			//
 			null,
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 1)), $"Mods.{PoTMod.ModName}.UI.Slots.1", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 6)), $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Body)), $"Mods.{PoTMod.ModName}.UI.Slots.1", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Offhand)), $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipDye),
 			//
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 7)), $"Mods.{PoTMod.ModName}.UI.Slots.7", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 2)), $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 8)), $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOn)), $"Mods.{PoTMod.ModName}.UI.Slots.7", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Legs)), $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOff)), $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipDye),
 			//
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 3)), $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, 9)), $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Accessory1)), $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Accessory2)), $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipDye),
 		];
 
 		foreach (UIHoverImageItemSlot? slot in slots)

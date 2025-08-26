@@ -44,9 +44,10 @@ Condition: {
 }
 
 TooltipNotices: {
-	// NoSwap: (Nothing to swap)
+	// NoSwap: (Nothing to compare with)
 	// Swap: If {0} is equipped:
 	// Shift: (Hold shift to compare stats)
+	// NoDifferences: (No differences)
 }
 
 Biomes: {

@@ -9,9 +9,14 @@ internal class StrengthItemAffix : ItemAffix
 		player.GetModPlayer<AttributesPlayer>().Strength += (int)Math.Round(Value);
 	}
 
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		handler.AddOrModify(GetType(), new AffixTooltipLine
+		{
+			Text = this.GetLocalization("Description"),
+			Value = (int)Math.Round(Value),
+			Corrupt = IsCorruptedAffix,
+		});
 	}
 }
 
@@ -22,9 +27,14 @@ internal class DexterityItemAffix : ItemAffix
 		player.GetModPlayer<AttributesPlayer>().Dexterity += (int)Math.Round(Value);
 	}
 
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		handler.AddOrModify(GetType(), new AffixTooltipLine
+		{
+			Text = this.GetLocalization("Description"),
+			Value = (int)Math.Round(Value),
+			Corrupt = IsCorruptedAffix,
+		});
 	}
 }
 
@@ -35,8 +45,13 @@ internal class IntelligenceItemAffix : ItemAffix
 		player.GetModPlayer<AttributesPlayer>().Intelligence += (int)Math.Round(Value);
 	}
 
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		handler.AddOrModify(GetType(), new AffixTooltipLine
+		{
+			Text = this.GetLocalization("Description"),
+			Value = (int)Math.Round(Value),
+			Corrupt = IsCorruptedAffix,
+		});
 	}
 }

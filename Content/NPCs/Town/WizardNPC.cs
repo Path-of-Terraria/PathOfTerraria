@@ -95,7 +95,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<GlimmeringShard>()) { shopCustomPrice = Item.buyPrice(0, 25, 0, 0) }, 
 			new Condition(LocalizedText.Empty, () => Quest.GetLocalPlayerInstance<WizardStartQuest>().Completed)));
 
-		Condition conditions = new("Mods.PathOfTerraria.Misc.VoidPearlCondition", () => Main.hardMode || QuestReady());
+		Condition conditions = new("Mods.PathOfTerraria.Misc.VoidPearlCondition", () => QuestReady());
 		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<VoidPearl>()) { shopCustomPrice = Item.buyPrice(0, 50, 0, 0) }, conditions));
 
 		shop.Add<WeakMalaiseItem>(Condition.DownedEowOrBoc);

@@ -112,7 +112,7 @@ public sealed class ExtraAccessorySlots : ModSystem
 			return false;
 		}
 
-		if (context != AccessorySlotType.DyeSlot && !AccessorySlotGlobalItem.IsNormalAccessory(item))
+		if (context != AccessorySlotType.DyeSlot && !AccessorySlotRemapping.IsNormalAccessory(item))
 		{
 			return false;
 		}
