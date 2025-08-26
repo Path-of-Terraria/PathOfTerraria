@@ -3,9 +3,7 @@ using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
-/// <summary>
-/// Allows all players on the server to break Shadow Orbs and Crimson Hearts.
-/// </summary>
+/// <inheritdoc cref="Networking.Message.SendMappingTierDown"/>
 internal class SendMappingTierHandler : Handler
 {
 	public override Networking.Message MessageType => Networking.Message.SendMappingTierDown;

@@ -87,7 +87,6 @@ public abstract class Affix : ILocalizedModType
 	public static T FromTag<T>(TagCompound tag) where T : Affix
 	{
 		Type t = typeof(ItemAffix).Assembly.GetType(tag.GetString("type"));
-		t ??= Type.GetType(tag.GetString("type"));
 
 		if (t is null)
 		{

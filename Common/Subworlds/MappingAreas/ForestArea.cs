@@ -64,7 +64,6 @@ internal class ForestArea : MappingWorld, IOverrideBiome
 
 		int grove = ModContent.GetInstance<GrovetenderSystem>().GrovetenderWhoAmI;
 
-		// We need to delay the spawn so the player's 
 		if (!hasPortal && grove == -1 && !NPC.AnyNPCs(ModContent.NPCType<Grovetender>()))
 		{
 			int npc = NPC.NewNPC(new EntitySource_SpawnNPC(), BossSpawnLocation.X, BossSpawnLocation.Y, ModContent.NPCType<Grovetender>());

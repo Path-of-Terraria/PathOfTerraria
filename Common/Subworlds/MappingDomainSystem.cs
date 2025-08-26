@@ -9,10 +9,14 @@ namespace PathOfTerraria.Common.Subworlds;
 public class MappingDomainSystem : ModSystem
 {
 	public const int RequiredCompletionsPerTier = 5;
+
 	public class TiersDownedTracker
 	{
 		private readonly Dictionary<int, int> TierCompletions = [];
 
+		/// <summary>
+		/// Used for getting all tier completions for syncing. Returns <see cref="TierCompletions"/>.
+		/// </summary>
 		internal Dictionary<int, int> GetCompletions()
 		{
 			return TierCompletions;
