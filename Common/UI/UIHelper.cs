@@ -10,10 +10,10 @@ internal static class UIHelper
 	/// <param name="y">Y position of the button.</param>
 	/// <param name="pos">The resulting position of the button.</param>
 	/// <returns>If the button is being hovered over.</returns>
-	public static bool GetInvButtonInfo(int y, out Vector2 pos, Point16? size = null)
+	public static bool GetInvButtonInfo(int y, out Vector2 pos, Point16? size = null, int? x = null)
 	{
 		size ??= new(64, 64);
-		pos = new(GetTextureXPosition(), y);
+		pos = new(x ?? GetTextureXPosition(), y);
 		var bounds = new Rectangle((int)(pos.X - size.Value.X / 1.125f), (int)pos.Y, size.Value.X, size.Value.Y);
 		return bounds.Contains(Main.MouseScreen.ToPoint());
 	}

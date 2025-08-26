@@ -133,6 +133,7 @@ InvButtons: {
 	Quest: Задания
 	Stats: Характеристики
 	RestartTutorial: Перезапустить обучение
+	// DomainInformation: Domain Information
 }
 
 Grimoire: {

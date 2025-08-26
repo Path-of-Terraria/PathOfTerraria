@@ -216,6 +216,7 @@ InvButtons: {
 	Quest: Quêtes
 	Stats: Statistiques
 	// RestartTutorial: Restart Tutorial
+	// DomainInformation: Domain Information
 }
 
 Grimoire: {
