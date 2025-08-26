@@ -1,11 +1,17 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using Terraria.DataStructures;
+using Terraria.UI;
 
 namespace PathOfTerraria.Core.Items;
 
 public sealed partial class PoTGlobalItem : GlobalItem
 {
+	public override void Load()
+	{
+		On_ItemSlot.MouseHover_int += CorrectRecipeResultLevel;
+	}
+
 	// IMPORTANT: Called *after* ModItem::SetDefaults.
 	// https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/Core/GlobalLoaderUtils.cs#L20
 	public override void SetDefaults(Item item)
@@ -49,6 +55,25 @@ public sealed partial class PoTGlobalItem : GlobalItem
 			//Not clamping to hardmode specifically but making sure it's identified as a craft
 			int appropriateLevel = PoTItemHelper.PickItemLevel(false, true);
 			SetItemLevel.Invoke(item, appropriateLevel);
+		}
+	}
+
+	private static void CorrectRecipeResultLevel(On_ItemSlot.orig_MouseHover_int orig, int context)
+	{
+		orig(context);
+
+		// This method is called with this context every time it sets Main.HoverItem to a clone of a recipe result.
+		if (context == ItemSlot.Context.CraftingMaterial && Main.HoverItem is { IsAir: false } hoverItem && GearGlobalItem.IsGearItem(hoverItem) && hoverItem.TryGetGlobalItem(out PoTInstanceItemData data))
+		{
+			// Calculate what the crafting level should be
+			int expectedCraftingLevel = PoTItemHelper.PickItemLevel(false, true);
+
+			// Check if this is a preview for crafting
+			if (data.RealLevel < expectedCraftingLevel)
+			{
+				// Create a temporary item copy with the correct crafting level
+				SetItemLevel.Invoke(hoverItem, expectedCraftingLevel);
+			}
 		}
 	}
 }
