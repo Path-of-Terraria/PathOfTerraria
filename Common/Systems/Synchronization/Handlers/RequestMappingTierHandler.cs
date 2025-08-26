@@ -41,7 +41,7 @@ internal class RequestMappingTierHandler : Handler
 		MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
 		ModPacket packet = Networking.GetPacket(MessageType);
-		Dictionary<int, int> tierCompletions = tracker.CompletionsPerTier();
+		Dictionary<int, int> tierCompletions = tracker.GetCompletions();
 		packet.Write((short)tierCompletions.Count);
 
 		foreach ((int tier, int comp) in tierCompletions)

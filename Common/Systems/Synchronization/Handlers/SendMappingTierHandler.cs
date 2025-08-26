@@ -28,7 +28,7 @@ internal class SendMappingTierHandler : Handler
 
 		ModPacket packet = Networking.GetPacket(MessageType, 5);
 		packet.Write(tier);
-		packet.Write((short)tracker.CompletionsPerTier()[tier]);
+		packet.Write((short)tracker.GetCompletions()[tier]);
 		packet.Send();
 	}
 

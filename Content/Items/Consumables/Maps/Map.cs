@@ -57,14 +57,14 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
-			MappingWorld.AreaLevel = WorldTier;
+			MappingWorld.AreaLevel = WorldLevel;
 			MappingWorld.MapTier = Tier;
 			MappingWorld.Affixes = [];
 			MappingWorld.Affixes.AddRange(collection);
 		}
 		else
 		{
-			ModContent.GetInstance<SendMappingDomainInfoHandler>().Send((short)WorldTier, (short)Tier, collection);
+			ModContent.GetInstance<SendMappingDomainInfoHandler>().Send((short)WorldLevel, (short)Tier, collection);
 		}
 
 		OpenMapInternal();

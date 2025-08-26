@@ -13,6 +13,11 @@ public class MappingDomainSystem : ModSystem
 	{
 		private readonly Dictionary<int, int> TierCompletions = [];
 
+		internal Dictionary<int, int> GetCompletions()
+		{
+			return TierCompletions;
+		}
+
 		/// <summary>
 		/// Adds <paramref name="count"/> completion(s) to the given <paramref name="tier"/>.
 		/// </summary>

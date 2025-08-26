@@ -30,6 +30,10 @@ internal class MappingNPC : GlobalNPC
 		}
 	}
 
+	// This and RecieveExtraAI are both placeholders, just a way to sync the stats shown here
+	// since incoming players don't have the affixes yet, so their clients spawn the unmodified version
+	// and this just fixes that.
+	// TODO: Do this better
 	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
 		if (SubworldSystem.Current is not MappingWorld)
@@ -95,28 +99,25 @@ internal class MappingNPC : GlobalNPC
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
-			if (DownedBossForTier())
-			{
-				tracker.AddCompletion(MappingWorld.MapTier);
+			tracker.AddCompletion(MappingWorld.MapTier);
 
-				if (Main.netMode != NetmodeID.SinglePlayer)
-				{
-					ModPacket packet = Networking.GetPacket(Networking.Message.SendMappingTierDown, 3);
-					packet.Write((short)MappingWorld.MapTier);
-					Networking.SendPacketToMainServer(packet);
-				}
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				ModPacket packet = Networking.GetPacket(Networking.Message.SendMappingTierDown, 3);
+				packet.Write((short)MappingWorld.MapTier);
+				Networking.SendPacketToMainServer(packet);
 			}
 
 			if (TierPassed(1) && !NPC.downedQueenSlime)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
 			}
-			
+
 			if (TierPassed(2) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
 			}
-			
+
 			if (TierPassed(3) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<DestroyerMap>());

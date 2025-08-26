@@ -167,6 +167,7 @@ public abstract class MappingWorld : Subworld
 				Affixes.Add(Affix.FromTag<MapAffix>(affixTag));
 			}
 		}
+
 		needsNetSync |= Main.netMode == NetmodeID.Server;
 	}
 
