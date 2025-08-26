@@ -63,6 +63,7 @@ public class Tooltip : SmartUiState
 
 	private static readonly List<TooltipInstance> tooltips = [];
 
+	// Main.GameUpdateCount doesn't increment normally when autopause is on, this is the workaround
 	private static uint tickCount;
 	private static uint lastTickCount;
 
