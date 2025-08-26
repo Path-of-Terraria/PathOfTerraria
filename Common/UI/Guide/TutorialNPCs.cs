@@ -9,10 +9,10 @@ internal class TutorialNPCs : GlobalNPC
 {
 	public override void EditSpawnPool(IDictionary<int, float> pool, NPCSpawnInfo spawnInfo)
 	{
-		Player p = spawnInfo.Player;
+		Player plr = spawnInfo.Player;
 
-		//Is the player is in a surface evil biome and has not completed the tutorial, disable spawns
-		if (ModContent.GetInstance<TutorialSystem>().FreeDay && (p.ZoneCrimson || p.ZoneCorrupt) && (p.Center.Y / 16) <= Main.worldSurface)
+		// If the player is in a surface evil on the "free day", disable spawns
+		if (ModContent.GetInstance<TutorialSystem>().FreeDay && (plr.ZoneCrimson || plr.ZoneCorrupt) && (plr.Center.Y / 16) <= Main.worldSurface)
 		{
 			pool.Clear();
 		}
