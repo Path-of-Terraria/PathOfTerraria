@@ -353,11 +353,9 @@ public sealed partial class ItemTooltips : GlobalItem
 		}
 
 		// Affix tooltips
+		var tooltipsHandler = AffixTooltipsHandler.CollectAffixTooltips(item, Main.LocalPlayer);
 		InsertAdditionalTooltipLines.Invoke(item, tooltips);
-		AffixTooltipsHandler.DefaultColor = Colors.Positive; // Makes any new affixes from this item show as green as they are new and beneficial by default
-		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer); // Adds in affix tooltips from this item without applying effects
-		Main.LocalPlayer.GetModPlayer<UniversalBuffingPlayer>().PrepareComparisonTooltips(tooltips, item);
-		AffixTooltipsHandler.DefaultColor = Colors.DefaultText; // Resets color
+		tooltipsHandler.ModifyTooltips(tooltips, item, Main.LocalPlayer);
 
 		// These don't need AddNewTooltipLine as they're vanilla tooltips
 		tooltips.AddRange(oldTooltips);

@@ -12,7 +12,7 @@ internal class IncreasedAttackSpeedAffix : ItemAffix
 
 	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), item, Value, this.GetLocalization("Description"), IsCorruptedAffix, null);
+		handler.AddOrModify(GetType(), item, Value, this.GetLocalization("Description"), IsCorruptedAffix);
 	}
 }
 
@@ -55,6 +55,6 @@ internal class IncreasedDamageAffix : ItemAffix
 
 	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), item, Value / 5, this.GetLocalization("Description"), IsCorruptedAffix, null);
+		handler.AddOrModify(GetType(), item, Value / 5, this.GetLocalization("Description"), IsCorruptedAffix);
 	}
 }

@@ -14,19 +14,12 @@ internal class NoFallDamageAffix : ItemAffix
 
 	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
 	{
-		handler.AddOrModify(GetType(), item, 1, this.GetLocalization("Description"), IsCorruptedAffix, ModifyTooltip);
-	}
-
-	private string ModifyTooltip(AffixTooltip self, float value, float difference, float originalValue, LocalizedText text)
-	{
-		bool hasBuff = value > 0;
-		string baseString = this.GetLocalizedValue(hasBuff ? "Description" : "Removed");
-
-		if (!hasBuff && originalValue != value && value == 0)
+		handler.AddOrModify(GetType(), new AffixTooltipLine
 		{
-			self.Color = Color.Red;
-		}
-
-		return baseString;
+			Text = this.GetLocalization("Description"),
+			TextWhenRemoved = this.GetLocalization("Removed"),
+			Value = 1f,
+			Corrupt = IsCorruptedAffix,
+		});
 	}
 }

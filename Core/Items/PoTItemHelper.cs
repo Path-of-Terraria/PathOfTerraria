@@ -153,17 +153,15 @@ public static class PoTItemHelper
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyAffix(player, entityModifier, item);
-			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
 			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}
 
-	public static void ApplyAffixTooltips(Item item, Player player)
+	public static void ApplyAffixTooltips(AffixTooltipsHandler handler, Item item, Player player)
 	{
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
-			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
-			//player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
+			affix.ApplyTooltip(player, item, handler);
 		}
 	}
 

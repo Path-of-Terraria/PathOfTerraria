@@ -1,308 +1,263 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Xna.Framework.Input;
-using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Common.AccessorySlots;
+using PathOfTerraria.Content.Items.Gear.Rings;
 using PathOfTerraria.Core.Items;
+using Terraria.ID;
 using Terraria.Localization;
+
+#nullable enable
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
-/// <summary>
-/// Handles an individual player's <see cref="AffixTooltip"/>s.
-/// </summary>
-public class AffixTooltipsHandler
+/// <summary> Data related to construction of an individual affix's tooltip line.  </summary>
+public struct AffixTooltipLine()
 {
+	public required LocalizedText Text;
+	public LocalizedText? TextWhenRemoved;
+	public float Value;
+	public bool Corrupt;
+	public Color? OverrideColor;
+}
+
+/// <summary>
+/// Accumulates and stores affix tooltip information for specific items.
+/// </summary>
+public sealed class AffixTooltipsHandler
+{
+	private enum AffixSource : byte
+	{
+		MainItem,
+		Helmet,
+		Body,
+		Legs,
+		Wings,
+		Necklace,
+		RingAny, // There is two Ring slots, but comparisons can only be done with the first.
+		Offhand,
+		NonApplicable,
+	}
+
 	internal static Color DefaultColor = ItemTooltips.Colors.DefaultText;
 
-	public readonly Dictionary<Type, AffixTooltip> Tooltips = [];
+	public readonly Dictionary<Type, AffixTooltipLine> Lines = [];
 
 	/// <summary>
-	/// Adds a <see cref="AffixTooltip"/> with the given parameters.
+	/// Determines the <see cref="AffixSource"/> of the given item. <br/>
 	/// </summary>
-	/// <param name="type">The type to use as a lookup. Should be an ItemAffix.</param>
-	/// <param name="source">Source of the tooltip. Use <see cref="DetermineItemSource(Item)"/> if you only have an item.</param>
-	/// <param name="value">Initial value of the new tooltip.</param>
-	/// <param name="text">Localized text of the new tooltip.</param>
-	/// <param name="overrideString">Overriden functionality of the tooltip's result. Defaults to null, which uses default functionality.</param>
-	/// <exception cref="ArgumentException"></exception>
-	public void Add(Type type, AffixTooltip.AffixSource source, float value, LocalizedText text, bool corrupt, Item item, AffixTooltip.OverrideStringDelegate overrideString = null)
+	/// <param name="source"></param>
+	/// <returns></returns>
+	private static AffixSource DetermineItemSource(Item source)
 	{
-		if (!typeof(ItemAffix).IsAssignableFrom(type))
+		// TODO: RingOn, RingOff, Necklace
+
+		AffixSource result;
+
+		if (source.headSlot > 0)
 		{
-			throw new ArgumentException("Type must be an ItemAffix child!", nameof(type));
+			result = AffixSource.Helmet;
+		}
+		else if (source.bodySlot > 0)
+		{
+			result = AffixSource.Body;
+		}
+		else if (source.legSlot > 0)
+		{
+			result = AffixSource.Legs;
+		}
+		else if (source.wingSlot > 0)
+		{
+			result = AffixSource.Wings;
+		}
+		else if (source.accessory && source.neckSlot > 0)
+		{
+			result = AffixSource.Necklace;
+		}
+		else if (source.damage > 0 && source.ammo <= AmmoID.None)
+		{
+			result = AffixSource.MainItem;
+		}
+		else if (source.ModItem is Ring)
+		{
+			result = AffixSource.RingAny;
+		}
+		else
+		{
+			result = AffixSource.NonApplicable;
 		}
 
-		var tooltip = new AffixTooltip()
-		{
-			Text = text,
-			ValueBySource = new Dictionary<AffixTooltip.AffixSource, float>() { { source, value } },
-			OriginalValueBySource = new Dictionary<AffixTooltip.AffixSource, float>() { { source, value } },
-			OverrideString = overrideString,
-			Color = DefaultColor,
-			Corrupt = corrupt,
-		};
-
-		if (item is not null)
-		{
-			tooltip.SourceItems.Add(item);
-		}
-
-		Tooltips.Add(type, tooltip);
+		return result;
 	}
 
 	/// <summary>
-	/// Adds or modifies a <see cref="AffixTooltip"/>. This uses <paramref name="source"/> for <see cref="DetermineItemSource(Item)"/>.
+	/// Adds or modifies a <see cref="AffixTooltipLine"/> to the given handler.
 	/// </summary>
 	/// <param name="type">The type to use as a lookup. Should be an ItemAffix.</param>
 	/// <param name="source">Item who called this. Will run <see cref="DetermineItemSource(Item)"/> for the actual source.</param>
 	/// <param name="value">Initial value of the new tooltip.</param>
 	/// <param name="text">Localized text of the new tooltip.</param>
 	/// <param name="overrideString">Overriden functionality of the tooltip's result. Defaults to null, which uses default functionality.</param>
-	public void AddOrModify(Type type, Item source, float value, LocalizedText text, bool corrupt, AffixTooltip.OverrideStringDelegate overrideString = null)
+	[Obsolete("Use AddOrModify(Type, AffixTooltip)")]
+	public void AddOrModify(Type type, Item item, float value, LocalizedText text, bool corrupt)
 	{
-		AddOrModify(type, DetermineItemSource(source), value, text, corrupt, source, overrideString);
-	}
-
-	/// <summary>
-	/// Determines the <see cref="AffixTooltip.AffixSource"/> of the given item. <br/>
-	/// Currently doesn't support <see cref="AffixTooltip.AffixSource.RingOff"/>, <see cref="AffixTooltip.AffixSource.RingOn"/> or <see cref="AffixTooltip.AffixSource.Necklace"/>.
-	/// </summary>
-	/// <param name="source"></param>
-	/// <returns></returns>
-	public static AffixTooltip.AffixSource DetermineItemSource(Item source)
-	{
-		// TODO: RingOn, RingOff, Necklace
-
-		if (source.headSlot > 0)
+		AddOrModify(type, new AffixTooltipLine
 		{
-			return AffixTooltip.AffixSource.Helmet;
-		}
-		else if (source.bodySlot > 0)
-		{
-			return AffixTooltip.AffixSource.Body;
-		}
-		else if (source.legSlot > 0)
-		{
-			return AffixTooltip.AffixSource.Legs;
-		}
-		else if (source.wingSlot > 0)
-		{
-			return AffixTooltip.AffixSource.Wings;
-		}
-		else if (source.accessory || source.neckSlot > 0)
-		{
-			return AffixTooltip.AffixSource.Necklace;
-		}
-		else if (source.damage > 0)
-		{
-			return AffixTooltip.AffixSource.MainItem;
-		}
-
-		return AffixTooltip.AffixSource.NonApplicable;
-	}
-
-	public void AddOrModify(Type type, AffixTooltip.AffixSource source, float value, LocalizedText text, bool corrupt, Item item, AffixTooltip.OverrideStringDelegate overrideString = null)
-	{
-		if (Tooltips.TryGetValue(type, out AffixTooltip tooltip))
-		{
-			if (source == AffixTooltip.AffixSource.NonApplicable)
-			{
-				return;
-			}
-
-			if (!tooltip.ValueBySource.ContainsKey(source))
-			{
-				tooltip.OriginalValueBySource.Add(source, value);
-				tooltip.ValueBySource.Add(source, 0);
-			}
-			else
-			{
-				// Add to existing values - both original and current should be updated
-				tooltip.ValueBySource[source] += value;
-				tooltip.OriginalValueBySource[source] += value;
-			}
-
-
-
-			if (!tooltip.SourceItems.Any(HasSource(item)))
-			{
-				tooltip.SourceItems.Add(item);
-			}
-
-			int comparison = tooltip.ValueBySource[source].CompareTo(tooltip.OriginalValueBySource[source]);
-			tooltip.Color = comparison < 0 ? ItemTooltips.Colors.Negative : (comparison > 0 ? ItemTooltips.Colors.Positive : DefaultColor);
-		}
-		else
-		{
-			Add(type, source, value, text, corrupt, item, overrideString);
-		}
-	}
-
-	/// <summary>
-	/// Quick check for if an affix tooltip's sources already has a given item,
-	/// so they aren't listed as being from 1 item twice.
-	/// </summary>
-	/// <param name="item">The new item coming in.</param>
-	/// <returns></returns>
-	private static Func<Item, bool> HasSource(Item item)
-	{
-		return x =>
-		{
-			// Stops a KeyNotFound when the item is not comparable / is air
-			if (!item.TryGetGlobalItem(out PoTInstanceItemData itemData))
-			{
-				return false;
-			}
-
-			bool value = !x.IsNotSameTypePrefixAndStack(item);
-			PoTInstanceItemData data = x.GetInstanceData();
-
-			return value && data.Rarity == itemData.Rarity && data.Affixes == itemData.Affixes;
-		};
-	}
-
-	/// <summary>
-	/// Adds all affix tooltips. Tooltips are named "AffixX" and have a Musket Ball sprite prepended.<br/>
-	/// Additionally, adds in a (Hold shift to compare) tooltip &amp; allows for comparison &amp; non-comparison pages.
-	/// </summary>
-	/// <param name="tooltips">List to add to.</param>
-	internal void ModifyTooltips(List<TooltipLine> tooltips, Item item)
-	{
-		AffixTooltip.AffixSource source = DetermineItemSource(item);
-
-		int tipNum = 0;
-		bool isEquipment = source is not AffixTooltip.AffixSource.NonApplicable;
-		bool hasShift = Keyboard.GetState().PressingShift();
-		IEnumerable<KeyValuePair<Type, AffixTooltip>> differenceTips = null;
-		IEnumerable<KeyValuePair<Type, AffixTooltip>> firstTips = null;
-
-		if (!isEquipment || !hasShift) // If we're not holding shift, remove all tooltips & add "Shift to compare" line
-		{
-			firstTips = CreateStandaloneTooltips(item);
-		}
-		else // Otherwise, put the tooltips modified by the current item at the top of the list & re-generate the standalone lines
-		{
-			differenceTips = Tooltips.OrderByDescending(x => x.Value.SourceItems.Any(v => item.type == v.type) ? 1 : 0);//.Where(x => x.Value.ValueBySource.ContainsKey(source));
-			differenceTips = [.. differenceTips]; // Create a shallow clone of itself in order to de-reference from Tooltips
-
-			for (int i = 0; i < differenceTips.Count(); ++i)
-			{
-				KeyValuePair<Type, AffixTooltip> pair = differenceTips.ElementAt(i);
-
-				foreach (object val in Enum.GetValues(typeof(AffixTooltip.AffixSource)))
-				{
-					var enumVal = (AffixTooltip.AffixSource)val;
-
-					if (enumVal != source)
-					{
-						pair.Value.OriginalValueBySource.Remove(enumVal);
-						pair.Value.ValueBySource.Remove(enumVal);
-					}
-				}
-
-				List<Item> removals = [];
-
-				foreach (Item obj in pair.Value.SourceItems)
-				{
-					if (DetermineItemSource(obj) != source)
-					{
-						removals.Add(obj);
-					}
-				}
-
-				foreach (Item obj in removals)
-				{
-					pair.Value.SourceItems.Remove(obj);
-				}
-			}
-
-			Tooltips.Clear();
-			firstTips = CreateStandaloneTooltips(item);
-		}
-
-		if (tooltips.Count == 0 && (differenceTips is null || !differenceTips.Any()) && !firstTips.Any())
-		{
-			return;
-		}
-
-		if (firstTips is not null)
-		{
-			foreach (KeyValuePair<Type, AffixTooltip> tip in firstTips)
-			{
-				AddSingleTooltipLine(tooltips, ref tipNum, tip);
-			}
-		}
-
-		if (isEquipment && differenceTips is not null)
-		{
-			// You will see some commented out code here.
-			// This code was originally written to compare only two weapons of the same type - two javelins, two broadswords, two bows, etc.
-			// This is now no longer intended functionality, but instead of removing it I'm commenting it out since it may be a useful config option.
-			// I also don't really remember how this code works so it'd be tough to rewrite. - GabeHasWon
-
-			//bool anyDif = true;
-			//foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips) // Determine if there is any difference
-			//{
-			//	if (tip.Value.HasDifference)
-			//	{
-			//		anyDif = true;
-			//		break;
-			//	}
-			//}
-
-			if (hasShift) // Display "If X is equipped:" or "(No item to swap)" in comparison page
-			{
-				string swapText = //!anyDif ? Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.NoSwap") : 
-					Language.GetText($"Mods.{PoTMod.ModName}.TooltipNotices.Swap").Format(item.Name);
-
-				tooltips.Add(new TooltipLine(PoTMod.Instance, "SwapNotice", swapText)
-				{
-					OverrideColor = Color.Gray,
-				});
-			}
-
-			//if (anyDif) // If there are differences, show comparison
-			//{
-			foreach (KeyValuePair<Type, AffixTooltip> tip in differenceTips)
-			{
-				AddSingleTooltipLine(tooltips, ref tipNum, tip);
-			}
-			//}
-
-			// End code kept for posterity.
-		}
-
-		if (isEquipment && !hasShift) // Show "Shift to compare" if they're not doing so (and it's not a map)
-		{
-			tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Shift"))
-			{
-				OverrideColor = Color.Gray,
-			});
-		}
-	}
-
-	private static void AddSingleTooltipLine(List<TooltipLine> tooltips, ref int tipNum, KeyValuePair<Type, AffixTooltip> tip)
-	{
-		string text = $"{ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent)} " + tip.Value.Get();
-
-		tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum++, text)
-		{
-			OverrideColor = tip.Value.Corrupt ? ItemTooltips.Colors.Corrupt : tip.Value.Color,
+			Text = text,
+			Value = value,
+			Corrupt = corrupt,
 		});
 	}
 
-	private Dictionary<Type, AffixTooltip> CreateStandaloneTooltips(Item item)
+	/// <summary> Adds a given <see cref="AffixTooltipLine"/> to this handler, stacking it with the . </summary>
+	/// <exception cref="ArgumentException"/>
+	public void AddOrModify(Type affixType, AffixTooltipLine tooltip)
 	{
-		Tooltips.Clear();
-		PoTItemHelper.ApplyAffixTooltips(item, Main.LocalPlayer);
-		return Tooltips;
+		if (!typeof(ItemAffix).IsAssignableFrom(affixType))
+		{
+			throw new ArgumentException("Type must be an ItemAffix child!", nameof(affixType));
+		}
+
+		if (Lines.TryGetValue(affixType, out AffixTooltipLine existing))
+		{
+			tooltip.Value += existing.Value;
+		}
+
+		Lines[affixType] = tooltip;
 	}
 
 	/// <summary>
-	/// Clears the tooltips.
+	/// Adds all affix tooltips. Tooltips are named "AffixX".<br/>
+	/// Additionally, adds in a (Hold shift to compare) tooltip &amp; allows for comparison &amp; non-comparison pages.
 	/// </summary>
-	internal void Reset()
+	/// <param name="tooltips">List to add to.</param>
+	public void ModifyTooltips(List<TooltipLine> tooltips, Item item, Player player)
 	{
-		Tooltips.Clear();
+		AffixSource source = DetermineItemSource(item);
+		_ = player;
+
+		Item? comparisonItem = null;
+		bool canCompareEver = source is not AffixSource.NonApplicable;
+		bool canCompareNow = canCompareEver && TryFindComparisonItem(source, player, out comparisonItem);
+		bool shouldCompare = canCompareNow && Main.keyState.PressingShift();
+
+		int tipNum = 0;
+		AddTooltipLines(tooltips, ref tipNum);
+
+		// Show a notice notifying the user that they can hold shift to compare with equipped item, or that they are, or that they cannot.
+		if (canCompareEver)
+		{
+			if (!canCompareNow)
+			{
+				tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.NoSwap")) { OverrideColor = Color.DarkGray });
+			}
+			else if (shouldCompare)
+			{
+				tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Swap", item.Name)) { OverrideColor = Color.Gray });
+			}
+			else
+			{
+				tooltips.Add(new TooltipLine(PoTMod.Instance, "ShiftNotice", Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Shift")) { OverrideColor = Color.Gray });
+			}
+		}
+
+		if (shouldCompare)
+		{
+			AffixTooltipsHandler otherTooltips = CollectAffixTooltips(comparisonItem!, player);
+			AffixTooltipsHandler comparison = CreateComparison(this, otherTooltips);
+
+			int oldTipNum = tipNum;
+			comparison.AddTooltipLines(tooltips, ref tipNum);
+
+			if (tipNum == oldTipNum)
+			{
+				tooltips.Add(new TooltipLine(PoTMod.Instance, "ComparisonNoDifferences", "No differences") { OverrideColor = ItemTooltips.Colors.DefaultText });
+			}
+		}
+	}
+
+	private void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum)
+	{
+		foreach (AffixTooltipLine tip in Lines.Values)
+		{
+			string text = $"{ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent)} {tip.Text.WithFormatArgs(Math.Abs(tip.Value).ToString("#0.##"), tip.Value >= 0 ? "+" : "-").Value}";
+			Color color = tip.Value switch
+			{
+				_ when tip.OverrideColor.HasValue => tip.OverrideColor.Value,
+				_ when tip.Corrupt => ItemTooltips.Colors.Corrupt,
+				> 0f => ItemTooltips.Colors.Positive,
+				< 0f => ItemTooltips.Colors.Negative,
+				_ => ItemTooltips.Colors.DefaultNumber,
+			};
+
+			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum, text) { OverrideColor = color });
+			tipNum++;
+		}
+	}
+
+	public static AffixTooltipsHandler CollectAffixTooltips(Item item, Player player)
+	{
+		var handler = new AffixTooltipsHandler();
+
+		PoTItemHelper.ApplyAffixTooltips(handler, item, player);
+
+		return handler;
+	}
+
+	public static AffixTooltipsHandler CreateComparison(AffixTooltipsHandler a, AffixTooltipsHandler b)
+	{
+		var comparison = new AffixTooltipsHandler();
+
+		foreach ((Type affixType, AffixTooltipLine tooltipA) in a.Lines)
+		{
+			if (b.Lines.TryGetValue(affixType, out AffixTooltipLine tooltipB))
+			{
+				// Both items have this affix, denote the value difference.
+				float difference = tooltipA.Value - tooltipB.Value;
+
+				comparison.AddOrModify(affixType, tooltipA with
+				{
+					Value = difference,
+				});
+			}
+			else
+			{
+				// This affix will be new if equipped, denote it as is.
+				comparison.AddOrModify(affixType, tooltipA);
+			}
+		}
+
+		foreach ((Type affixType, AffixTooltipLine tooltipB) in b.Lines)
+		{
+			if (!a.Lines.ContainsKey(affixType))
+			{
+				// This affix will be missing if equipped, denote it as gone or negative.
+				comparison.AddOrModify(affixType, tooltipB with
+				{
+					Text = tooltipB.TextWhenRemoved ?? tooltipB.Text,
+					Value = -tooltipB.Value,
+				});
+			}
+		}
+
+		return comparison;
+	}
+
+	private static bool TryFindComparisonItem(AffixSource source, Player player, [NotNullWhen(true)] out Item? result)
+	{
+		result = source switch
+		{
+			AffixSource.MainItem => player.inventory[0],
+			AffixSource.Helmet => player.armor[(int)RemappedEquipSlots.Head],
+			AffixSource.Body => player.armor[(int)RemappedEquipSlots.Body],
+			AffixSource.Legs => player.armor[(int)RemappedEquipSlots.Legs],
+			AffixSource.Wings => player.armor[(int)RemappedEquipSlots.Wings],
+			AffixSource.Necklace => player.armor[(int)RemappedEquipSlots.Necklace],
+			AffixSource.Offhand => player.armor[(int)RemappedEquipSlots.Offhand],
+			AffixSource.RingAny => player.armor[(int)RemappedEquipSlots.RingOn],
+			_ => null,
+		};
+
+		return result?.IsAir == false;
 	}
 }
