@@ -50,8 +50,6 @@ public sealed class AffixTooltips
 	/// <returns></returns>
 	private static AffixSource DetermineItemSource(Item source)
 	{
-		// TODO: RingOn, RingOff, Necklace
-
 		AffixSource result;
 
 		if (source.headSlot > 0)
@@ -90,7 +88,7 @@ public sealed class AffixTooltips
 		return result;
 	}
 
-	/// <summary> Adds a given <see cref="AffixTooltipLine"/> to this handler, stacking it with the . </summary>
+	/// <summary> Adds a given <see cref="AffixTooltipLine"/>, or adds to the value of an existing one. </summary>
 	/// <exception cref="ArgumentException"/>
 	public void AddOrModify(Type affixType, AffixTooltipLine tooltip)
 	{
@@ -115,7 +113,6 @@ public sealed class AffixTooltips
 	public void ModifyTooltips(List<TooltipLine> tooltips, Item item, Player player)
 	{
 		AffixSource source = DetermineItemSource(item);
-		_ = player;
 
 		Item? comparisonItem = null;
 		bool canCompareEver = source is not AffixSource.NonApplicable;
