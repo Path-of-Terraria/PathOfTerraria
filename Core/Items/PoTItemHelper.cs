@@ -157,14 +157,6 @@ public static class PoTItemHelper
 		}
 	}
 
-	public static void ApplyAffixTooltips(AffixTooltipsHandler handler, Item item, Player player)
-	{
-		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
-		{
-			affix.ApplyTooltip(player, item, handler);
-		}
-	}
-
 	public static void ClearAffixes(Item item)
 	{
 		item.GetInstanceData().Affixes.Clear();

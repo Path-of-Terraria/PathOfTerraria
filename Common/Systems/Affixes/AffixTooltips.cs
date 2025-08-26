@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using PathOfTerraria.Core.Items;
@@ -24,7 +23,7 @@ public struct AffixTooltipLine()
 /// <summary>
 /// Accumulates and stores affix tooltip information for specific items.
 /// </summary>
-public sealed class AffixTooltipsHandler
+public sealed class AffixTooltips
 {
 	private enum AffixSource : byte
 	{
@@ -90,25 +89,6 @@ public sealed class AffixTooltipsHandler
 		return result;
 	}
 
-	/// <summary>
-	/// Adds or modifies a <see cref="AffixTooltipLine"/> to the given handler.
-	/// </summary>
-	/// <param name="type">The type to use as a lookup. Should be an ItemAffix.</param>
-	/// <param name="source">Item who called this. Will run <see cref="DetermineItemSource(Item)"/> for the actual source.</param>
-	/// <param name="value">Initial value of the new tooltip.</param>
-	/// <param name="text">Localized text of the new tooltip.</param>
-	/// <param name="overrideString">Overriden functionality of the tooltip's result. Defaults to null, which uses default functionality.</param>
-	[Obsolete("Use AddOrModify(Type, AffixTooltip)")]
-	public void AddOrModify(Type type, Item item, float value, LocalizedText text, bool corrupt)
-	{
-		AddOrModify(type, new AffixTooltipLine
-		{
-			Text = text,
-			Value = value,
-			Corrupt = corrupt,
-		});
-	}
-
 	/// <summary> Adds a given <see cref="AffixTooltipLine"/> to this handler, stacking it with the . </summary>
 	/// <exception cref="ArgumentException"/>
 	public void AddOrModify(Type affixType, AffixTooltipLine tooltip)
@@ -163,8 +143,8 @@ public sealed class AffixTooltipsHandler
 
 		if (shouldCompare)
 		{
-			AffixTooltipsHandler otherTooltips = CollectAffixTooltips(comparisonItem!, player);
-			AffixTooltipsHandler comparison = CreateComparison(this, otherTooltips);
+			AffixTooltips otherTooltips = CollectAffixTooltips(comparisonItem!, player);
+			AffixTooltips comparison = CreateComparison(this, otherTooltips);
 
 			int oldTipNum = tipNum;
 			comparison.AddTooltipLines(tooltips, ref tipNum);
@@ -195,18 +175,21 @@ public sealed class AffixTooltipsHandler
 		}
 	}
 
-	public static AffixTooltipsHandler CollectAffixTooltips(Item item, Player player)
+	public static AffixTooltips CollectAffixTooltips(Item item, Player player)
 	{
-		var handler = new AffixTooltipsHandler();
+		var handler = new AffixTooltips();
 
-		PoTItemHelper.ApplyAffixTooltips(handler, item, player);
+		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
+		{
+			affix.ApplyTooltip(player, item, handler);
+		}
 
 		return handler;
 	}
 
-	public static AffixTooltipsHandler CreateComparison(AffixTooltipsHandler a, AffixTooltipsHandler b)
+	public static AffixTooltips CreateComparison(AffixTooltips a, AffixTooltips b)
 	{
-		var comparison = new AffixTooltipsHandler();
+		var comparison = new AffixTooltips();
 
 		foreach ((Type affixType, AffixTooltipLine tooltipA) in a.Lines)
 		{

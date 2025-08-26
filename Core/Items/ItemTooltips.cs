@@ -353,7 +353,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		}
 
 		// Affix tooltips
-		var tooltipsHandler = AffixTooltipsHandler.CollectAffixTooltips(item, Main.LocalPlayer);
+		var tooltipsHandler = AffixTooltips.CollectAffixTooltips(item, Main.LocalPlayer);
 		InsertAdditionalTooltipLines.Invoke(item, tooltips);
 		tooltipsHandler.ModifyTooltips(tooltips, item, Main.LocalPlayer);
 

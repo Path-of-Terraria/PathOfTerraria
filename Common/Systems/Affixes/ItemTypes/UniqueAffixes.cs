@@ -12,7 +12,7 @@ internal class NoFallDamageAffix : ItemAffix
 		}
 	}
 
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
 	{
 		handler.AddOrModify(GetType(), new AffixTooltipLine
 		{
