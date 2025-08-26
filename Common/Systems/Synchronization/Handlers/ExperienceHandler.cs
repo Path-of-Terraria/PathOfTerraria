@@ -1,7 +1,7 @@
 using PathOfTerraria.Common.Systems.ExperienceSystem;
 using System.IO;
 
-namespace PathOfTerraria.Common.Systems.Networking.Handlers;
+namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class ExperienceHandler : Handler
 {

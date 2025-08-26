@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.RavencrestContent;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.NPCs.Town;
 using Terraria.DataStructures;
 using Terraria.ID;

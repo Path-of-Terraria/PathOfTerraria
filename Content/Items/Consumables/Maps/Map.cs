@@ -1,14 +1,15 @@
 ﻿using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Core.Items;
-using Terraria.ID;
-using Terraria.ModLoader.IO;
-using System.Collections.Generic;
-using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Subworlds;
-using SubworldLibrary;
-using System.Linq;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Core.Items;
+using SubworldLibrary;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -52,15 +53,21 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public virtual void OpenMap()
 	{
-		OpenMapInternal();
+		List<MapAffix> collection = [.. this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x)];
 
-		if (SubworldSystem.Current is MappingWorld map)
+		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
-			map.AreaLevel = WorldLevel;
-			map.MapTier = Tier;
-			map.Affixes = [];
-			map.Affixes.AddRange(this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x));
+			MappingWorld.AreaLevel = WorldLevel;
+			MappingWorld.MapTier = Tier;
+			MappingWorld.Affixes = [];
+			MappingWorld.Affixes.AddRange(collection);
 		}
+		else
+		{
+			ModContent.GetInstance<SendMappingDomainInfoHandler>().Send((short)WorldLevel, (short)Tier, collection);
+		}
+
+		OpenMapInternal();
 	}
 
 	protected abstract void OpenMapInternal();

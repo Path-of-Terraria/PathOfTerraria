@@ -68,8 +68,8 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 			if (SubworldSystem.Current is MappingWorld world)
 			{
-				dropQuantity *= 1 + (int)(world.TotalWeight() / 5f) / 100f;
-				dropQuantity *= 1 + (world.AreaLevel - 50) / 100f;
+				dropQuantity *= 1 + (int)(MappingWorld.TotalWeight() / 5f) / 100f;
+				dropQuantity *= 1 + (MappingWorld.AreaLevel - 50) / 100f;
 			}
 
 			return dropQuantity;
@@ -139,8 +139,8 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 		if (SubworldSystem.Current is MappingWorld world)
 		{
-			magicFind += (int)(world.TotalWeight() / 10f) / 100f;
-			float modifier = 1 + (world.AreaLevel - 50) / 100f;
+			magicFind += (int)(MappingWorld.TotalWeight() / 10f) / 100f;
+			float modifier = 1 + (MappingWorld.AreaLevel - 50) / 100f;
 			magicFind += modifier;
 		}
 

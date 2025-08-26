@@ -73,6 +73,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		NPCID.Sets.TrailingMode[Type] = 3;
 		NPCID.Sets.TrailCacheLength[Type] = 10;
+		NPCID.Sets.ShouldBeCountedAsBoss[Type] = true;
 
 		MaskTexture = ModContent.Request<Texture2D>(Texture + "_Mask");
 		ChainTexture = ModContent.Request<Texture2D>(Texture + "_Chains");

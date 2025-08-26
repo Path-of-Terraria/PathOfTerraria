@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers.MapDevice;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers.MapDevice;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Items;

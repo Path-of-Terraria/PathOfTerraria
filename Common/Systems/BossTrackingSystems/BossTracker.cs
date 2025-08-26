@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.NPCs.GlobalNPCs;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.IO;
@@ -39,7 +40,7 @@ internal class BossTracker : ModSystem
 		On_NPC.CreateBrickBoxForWallOfFlesh += StopBrickBox;
 	}
 
-	public static void AddDowned(int id, bool fromSync = false, bool setPlayerValues = false, bool dontCache = false)
+	public static void AddDowned(int id, bool fromSync = false, bool setBossDowned = false, bool dontCache = false)
 	{
 		if (!dontCache)
 		{
@@ -47,14 +48,6 @@ internal class BossTracker : ModSystem
 		}
 		
 		TotalBossesDowned.Add(id);
-
-		if (setPlayerValues)
-		{
-			foreach (Player player in Main.ActivePlayers)
-			{
-				player.GetModPlayer<BossTrackingPlayer>().CachedBossesDowned.Add(id);
-			}
-		}
 
 		if (Main.netMode != NetmodeID.SinglePlayer && !fromSync)
 		{
@@ -67,15 +60,14 @@ internal class BossTracker : ModSystem
 				NetMessage.SendData(MessageID.WorldData);
 			}
 
-			ModContent.GetInstance<SyncPlayerBossDownedHandler>().Send(id);
+			//ModContent.GetInstance<SyncPlayerBossDownedHandler>().Send(id);
 
-			//if (SubworldSystem.Current is not null)
-			//{
-			//	ModPacket packet = Networking.Networking.GetPacket(Networking.Networking.Message.SyncBossDowned);
-			//	packet.Write(id);
-
-			//	Networking.Networking.SendPacketToMainServer(packet);
-			//}
+			if (SubworldSystem.Current is not null && setBossDowned)
+			{
+				ModPacket packet = Networking.GetPacket(Networking.Message.SyncBossDowned, 5);
+				packet.Write(id);
+				Networking.SendPacketToMainServer(packet);
+			}
 		}
 	}
 
@@ -112,16 +104,21 @@ internal class BossTracker : ModSystem
 		orig(self);
 	}
 
-	private void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
+	private static void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
 	{
 		if (SubworldSystem.Current is BossDomainSubworld && self.boss)
 		{
+			// Spawns the Wall of Flesh's box around itself, which is overriden by this method
+			OnDeathNPC.OnDeathEffects(self);
+
+			if (ContentSamples.NpcsByNetId[self.netID].boss && SubworldSystem.Current is not null)
+			{
+				// Automatically add/send the boss downed cache/packet
+				AddDowned(self.netID, false, true, false);
+			}
+
 			self.type = NPCID.None;
 			self.boss = false;
-		}
-		else
-		{
-			OnDeathNPC.OnDeathEffects(self);
 		}
 
 		orig(self, closestPlayer);

@@ -1,7 +1,7 @@
 using PathOfTerraria.Common.Systems.Skills;
 using System.IO;
 
-namespace PathOfTerraria.Common.Systems.Networking.Handlers;
+namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 internal class RequestOtherSkillSpecializationHandler : Handler
 {

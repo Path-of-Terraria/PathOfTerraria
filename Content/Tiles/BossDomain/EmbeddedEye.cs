@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;

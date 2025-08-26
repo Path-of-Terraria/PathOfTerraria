@@ -439,8 +439,6 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		}
 		else if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.QueenSlimeBoss, false, true);
-
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}

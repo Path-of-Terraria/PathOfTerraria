@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.NPCs.ConditionalDropping;
 using System.IO;
 
-namespace PathOfTerraria.Common.Systems.Networking.Handlers;
+namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 /// <summary>
 /// Handles syncing a conditional drop by sending it to the server and all other clients. This keeps the player's conditional drops consistent.
@@ -29,7 +29,7 @@ internal class SyncNewConditionalDropPlayerHandler : Handler
 
 	internal override void ServerRecieve(BinaryReader reader)
 	{
-		int who = reader.ReadByte();
+		byte who = reader.ReadByte();
 		byte length = reader.ReadByte();
 		Player plr = Main.player[who];
 

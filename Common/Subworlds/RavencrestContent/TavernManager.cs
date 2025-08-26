@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
