@@ -13,6 +13,7 @@ public abstract class SmartUiState : UIState
 	/// The UserInterface automatically assigned to this UIState on load.
 	/// </summary>
 	public UserInterface? UserInterface { get; set; }
+	public bool NeedsRecalculation { get; set; } = true;
 
 	/// <summary>
 	/// Whether the UI should be visible and interactable.
@@ -393,6 +394,13 @@ public abstract class SmartUiState : UIState
 	public sealed override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
+
+		if (NeedsRecalculation)
+		{
+			Recalculate();
+			NeedsRecalculation = false;
+		}
+
 		SafeUpdate(gameTime);
 	}
 

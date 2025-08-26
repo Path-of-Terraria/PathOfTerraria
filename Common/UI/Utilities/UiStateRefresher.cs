@@ -8,7 +8,8 @@ namespace PathOfTerraria.Common.UI.Utilities;
 /// <summary>
 /// This is used for recalculating the bounding box for the UI on resizes.
 /// </summary>
-internal class UiStateRefresher : ModSystem
+[Autoload(Side = ModSide.Client)]
+internal sealed class UiStateRefresher : ModSystem
 {
 	public override void Load()
 	{
@@ -25,12 +26,9 @@ internal class UiStateRefresher : ModSystem
 	/// </summary>
 	public override void OnWorldLoad()
 	{
-		if (Main.netMode != NetmodeID.Server)
-		{
-			RefreshUi(Vector2.Zero);
-		}
+		RefreshUi(new Vector2(Main.screenWidth, Main.screenHeight));
 	}
-	
+
 	/// <summary>
 	/// Refreshes the UI on resolution change.
 	/// Need to call each of the UI states we need to refresh. Only needed for certain panels that have their bounding box smaller than the screen.
