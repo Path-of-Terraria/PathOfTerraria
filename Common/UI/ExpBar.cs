@@ -56,7 +56,7 @@ public class ExpBar : SmartUiState
 				Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
 		}
 
-		string levelText = Language.GetTextValue("Mods.PathOfTerraria.UI.AreaLevel") + PoTItemHelper.PickItemLevel();
+		string levelText = Language.GetTextValue("Mods.PathOfTerraria.UI.AreaLevel") + " " + PoTItemHelper.PickItemLevel();
 		float halfWidth = ChatManager.GetStringSize(FontAssets.MouseText.Value, levelText, Vector2.One).X / 2f;
 		Utils.DrawBorderString(spriteBatch, levelText, pos + new Vector2(-halfWidth - 10, 34), Color.White, 1);
 
