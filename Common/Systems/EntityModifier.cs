@@ -89,8 +89,7 @@ public partial class EntityModifier : EntityModifierSegment
 		player.GetCritChance(DamageClass.Generic) = CriticalChance.ApplyTo(player.GetCritChance(DamageClass.Generic));
 
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
-		player.GetArmorPenetration(DamageClass.Generic) =
-			Knockback.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
+		player.GetArmorPenetration(DamageClass.Generic) = ArmorPenetration.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
 
 		MinorStatsModPlayer msmp = player.GetModPlayer<MinorStatsModPlayer>();
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);

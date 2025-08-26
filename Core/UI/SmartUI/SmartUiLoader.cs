@@ -16,6 +16,14 @@ internal sealed partial class SmartUiLoader : ModSystem
 	private UIState? stateToBlockAt;
 	private SmartUiElement? elementToBlockAt;
 
+	public override void ClearWorld()
+	{
+		foreach (SmartUiState state in uiStates)
+		{
+			state.NeedsRecalculation = true;
+		}
+	}
+
 	public override void UpdateUI(GameTime gameTime)
 	{
 		// Update the user interfaces.

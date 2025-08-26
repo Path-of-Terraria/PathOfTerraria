@@ -80,8 +80,7 @@ public sealed partial class UIManager : ModSystem
 			data.UserInterface = null;
 		}
 
-		Data?.Clear();
-		Data = null;
+		Data.Clear();
 	}
 
 	public override void UpdateUI(GameTime gameTime)

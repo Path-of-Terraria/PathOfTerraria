@@ -364,12 +364,12 @@ internal class AffixHandler : ILoadable
 
 	public void Unload()
 	{
-		foreach (ItemAffix item in _itemAffixes)
+		foreach (ItemAffix item in _itemAffixes ?? Enumerable.Empty<ItemAffix>())
 		{
 			item.OnUnload();
 		}
 
-		foreach (MobAffix item in _mobAffixes)
+		foreach (MobAffix item in _mobAffixes ?? Enumerable.Empty<MobAffix>())
 		{
 			item.OnUnload();
 		}

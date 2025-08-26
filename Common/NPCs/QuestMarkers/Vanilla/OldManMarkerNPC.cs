@@ -50,9 +50,9 @@ internal class OldManModifiers : GlobalNPC
 
 	public override void Unload()
 	{
-		ProfileDict.Remove(NPCID.OldMan);
+		ProfileDict?.Remove(NPCID.OldMan);
 
-		if (OldManHeadSlot != -1)
+		if (OldManHeadSlot != -1 && OldManHeadSlot < NPCHeadID.Sets.CannotBeDrawnInHousingUI.Length)
 		{
 			NPCHeadID.Sets.CannotBeDrawnInHousingUI[OldManHeadSlot] = false;
 			OldManHeadSlot = -1;
