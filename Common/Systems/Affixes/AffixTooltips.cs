@@ -152,7 +152,11 @@ public sealed class AffixTooltips
 
 			if (tipNum == oldTipNum)
 			{
-				tooltips.Add(new TooltipLine(PoTMod.Instance, "ComparisonNoDifferences", "No differences") { OverrideColor = ItemTooltips.Colors.DefaultText });
+				string text = $"{ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent)} {Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.NoDifferences")}";
+				tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix0", text)
+				{
+					OverrideColor = ItemTooltips.Colors.DefaultText,
+				});
 			}
 		}
 	}
