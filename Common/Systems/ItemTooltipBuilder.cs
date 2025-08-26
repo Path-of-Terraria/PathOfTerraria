@@ -5,7 +5,6 @@ using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Utilities;
-using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.Systems;
 
@@ -42,28 +41,9 @@ public sealed class ItemTooltipBuilder : ModSystem
 		Item hoverItemCopy = Main.HoverItem;
 		Player localPlayerCopy = Main.LocalPlayer;
 
-		Item itemToUse = item;
-		
-		//Only run on things with ilvl
-		if (GearGlobalItem.IsGearItem(item))
-		{
-			PoTInstanceItemData data = item.GetInstanceData();
-        
-			// Calculate what the crafting level should be
-			int expectedCraftingLevel = PoTItemHelper.PickItemLevel(false, true);
-        
-			// Check if this is a preview for crafting
-			if (data.RealLevel < expectedCraftingLevel)
-			{
-				// Create a temporary item copy with the correct crafting level
-				itemToUse = item.Clone();
-				SetItemLevel.Invoke(itemToUse, expectedCraftingLevel);
-			}
-		}
-
 		try
 		{
-			Main.HoverItem = itemToUse;
+			Main.HoverItem = item;
 			Main.player[Main.myPlayer] = player;
 			drawTooltipEvaluationCounter = checked(drawTooltipEvaluationCounter + 1);
 
