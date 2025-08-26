@@ -196,13 +196,16 @@ public sealed class AffixTooltips
 		{
 			if (b.Lines.TryGetValue(affixType, out AffixTooltipLine tooltipB))
 			{
-				// Both items have this affix, denote the value difference.
+				// Both items have this affix, denote the value difference, do not mention if it is zero.
 				float difference = tooltipA.Value - tooltipB.Value;
 
-				comparison.AddOrModify(affixType, tooltipA with
+				if (difference != 0f)
 				{
-					Value = difference,
-				});
+					comparison.AddOrModify(affixType, tooltipA with
+					{
+						Value = difference,
+					});
+				}
 			}
 			else
 			{
