@@ -42,6 +42,8 @@ internal class DesertArea : MappingWorld, IOverrideBiome
 
 	public override void Load()
 	{
+		base.Load();
+
 		On_Player.UpdateBiomes += ForceActiveSandstormBiomeInDesert;
 		On_Sandstorm.HandleEffectAndSky += ForceActiveSandstormInDesert;
 	}

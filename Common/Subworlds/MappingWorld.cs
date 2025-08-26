@@ -76,6 +76,11 @@ public abstract class MappingWorld : Subworld
 	private string _fadingInTip = "";
 	private int _tipTime = 0;
 	private bool needsNetSync;
+
+	public override void Load()
+	{
+		Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Name", () => GetType().Name);
+	}
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
 	{
