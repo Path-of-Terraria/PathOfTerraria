@@ -6,9 +6,14 @@ internal class BaseLifeAffix : ItemAffix
 	{
 		modifier.MaximumLife.Base += Value;
 	}
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		handler.AddOrModify(GetType(), new AffixTooltipLine
+		{
+			Text = this.GetLocalization("Description"),
+			Value = (int)Math.Round(Value),
+			Corrupt = IsCorruptedAffix,
+		});
 	}
 }
 
@@ -18,9 +23,14 @@ internal class AddedLifeAffix : ItemAffix
 	{
 		modifier.MaximumLife += Value / 100;
 	}
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		handler.AddOrModify(GetType(), new AffixTooltipLine
+		{
+			Text = this.GetLocalization("Description"),
+			Value = (int)Math.Round(Value),
+			Corrupt = IsCorruptedAffix,
+		});
 	}
 }
 
@@ -44,9 +54,14 @@ internal class FlatLifeAffix : ItemAffix
 		modifier.MaximumLife.Flat += Value;
 	}
 
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		handler.AddOrModify(GetType(), new AffixTooltipLine
+		{
+			Text = this.GetLocalization("Description"),
+			Value = (int)Math.Round(Value),
+			Corrupt = IsCorruptedAffix,
+		});
 	}
 }
 
