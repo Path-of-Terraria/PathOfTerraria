@@ -2,7 +2,7 @@
 // DefaultPlacing: "[i:2] Only torches and ropes can be placed"
 // AllMining: "[i:1] Anything can be mined"
 // Entering: Now travelling to:
-// SubworldInformation: (Subworld Information)
+// Exiting: Returning to Overworld
 
 CultistDomain: {
 	// Name: Distant Dungeon

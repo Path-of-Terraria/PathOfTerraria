@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.MobSystem;
 using PathOfTerraria.Core.UI.SmartUI;
 using SubworldLibrary;
 using Terraria.Audio;
@@ -57,22 +59,39 @@ public class SubworldHelpInvButton : SmartUiState
 		List<DrawableTooltipLine> lines = [];
 		var scale = new Vector2(0.9f);
 		int affixCount = 0;
-		AddLine(lines, "Info", Language.GetTextValue("Mods.PathOfTerraria.Subworlds.SubworldInformation"), new Vector2(0.8f), Color.Gray);
+		AddLine(lines, "Info", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.Info"), new Vector2(0.8f), Color.Gray);
 		AddLine(lines, "Name", CurrentWorld.SubworldName.Value, new Vector2(1.1f));
 		AddLine(lines, "Desc", CurrentWorld.SubworldDescription.Value, scale);
 		AddLine(lines, "Mining", CurrentWorld.SubworldMining.Value, scale);
 		AddLine(lines, "Placing", CurrentWorld.SubworldPlacing.Value, scale);
-		AddLine(lines, "Level", "[i:1343] Level:" + MappingWorld.AreaLevel, scale);
-		AddLine(lines, "Level", "[i:4927] Tier:" + MappingWorld.MapTier, scale);
+		AddLine(lines, "Tier", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.MapTier") + MappingWorld.MapTier, scale);
 
 		if (MappingWorld.Affixes.Count > 0)
 		{
-			AddLine(lines, "Level", "[i:885] Affixes:", scale);
+			AffixTooltips tooltips = new();
+			float totalStrength = 0;
+			AddLine(lines, "AffixHeading", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.Affixes"), new Vector2(1f));
 
 			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
-				AddLine(lines, "MapAffix" + affixCount++, "    [i:278] " + affix.Name, scale);
+				affix.ApplyTooltip(Main.LocalPlayer, null, tooltips);
+				totalStrength += affix.Strength;
 			}
+
+			foreach (KeyValuePair<Type, AffixTooltipLine> affix in tooltips.Lines)
+			{
+				AffixTooltipLine tip = affix.Value;
+				AddLine(lines, "MapAffix" + affixCount++, "    [i:278] " + tip.Text.Format(Math.Abs(tip.Value).ToString("#0.##"), tip.Value >= 0 ? "+" : "-"), scale);
+			}
+
+			AddLine(lines, "ModifierStrength", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.MapStrength") + totalStrength, scale);
+			AddLine(lines, "ExpMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.ExperienceBoost") + (totalStrength / 2f).ToString("#0.###") + "%", scale);
+
+			float rateModifier = ArpgNPC.DomainDropRateBoost(totalStrength);
+			AddLine(lines, "RateMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.DropRateBoost") + (rateModifier * 100f).ToString("#0.###") + "%", scale);
+
+			float rarityModifier = ArpgNPC.DomainRarityBoost(totalStrength);
+			AddLine(lines, "RarityMod", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.DropRarityBoost") + rarityModifier.ToString("#0.##") + "%", scale);
 		}
 
 		return lines;

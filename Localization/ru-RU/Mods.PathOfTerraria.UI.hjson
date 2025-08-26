@@ -136,6 +136,16 @@ InvButtons: {
 	// DomainInformation: Domain Information
 }
 
+SubworldHelp: {
+	// MapTier: "[i:4927] Map Tier: "
+	// Affixes: "[i:885] Affixes:"
+	// MapStrength: "[i:29] Map strength modifier: "
+	// ExperienceBoost: "    [i:278] Experience boost: +"
+	// DropRateBoost: "    [i:278] Drop rate increase: +"
+	// DropRarityBoost: "    [i:278] Rarity boost: +"
+	// Info: (Domain Information)
+}
+
 Grimoire: {
 	Storage: Хранилище
 	ClickMe: Нажми на меня!
@@ -195,3 +205,4 @@ Tips: {
 
 	Click to open skill tree
 	''' */
+// AreaLevel: "Area Level: "

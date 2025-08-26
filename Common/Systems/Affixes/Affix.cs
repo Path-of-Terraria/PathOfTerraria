@@ -116,7 +116,7 @@ public abstract class Affix : ILocalizedModType
 		writer.Write(MinValue);
 	}
 
-	public void NetReceive(BinaryReader reader)
+	public virtual void NetReceive(BinaryReader reader)
 	{
 		Value = reader.ReadSingle();
 		MaxValue = reader.ReadSingle();

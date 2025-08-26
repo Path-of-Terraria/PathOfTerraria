@@ -202,9 +202,16 @@ public abstract class MappingWorld : Subworld
 		string statusText = Main.statusText;
 		GenerationProgress progress = WorldGenerator.CurrentGenerationProgress;
 
-		DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Entering"), Color.LightGray, new Vector2(0, -360), 0.4f);
-		DrawStringCentered(SubworldName.Value, Color.White, new Vector2(0, -310), 1.1f);
-		DrawStringCentered(SubworldDescription.Value, Color.White, new Vector2(0, -250), 0.5f);
+		if (SubworldSystem.Current is not null)
+		{
+			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Entering"), Color.LightGray, new Vector2(0, -360), 0.4f);
+			DrawStringCentered(SubworldName.Value, Color.White, new Vector2(0, -310), 1.1f);
+			DrawStringCentered(SubworldDescription.Value, Color.White, new Vector2(0, -250), 0.5f);
+		}
+		else
+		{
+			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Exiting"), Color.White, new Vector2(0, -310), 0.9f);
+		}
 
 		if (WorldGen.gen && progress is not null)
 		{

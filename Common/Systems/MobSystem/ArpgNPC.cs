@@ -100,6 +100,16 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 		return doDraw;
 	}
 
+	public static float DomainDropRateBoost(float? weight = null)
+	{
+		return (int)((weight ?? MappingWorld.TotalWeight()) / 5f) / 45f;
+	}
+
+	public static float DomainRarityBoost(float? weight = null)
+	{
+		return (weight ?? MappingWorld.TotalWeight());
+	}
+
 	public override void OnKill(NPC npc)
 	{
 		// Trigger affixes
@@ -139,8 +149,8 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 
 		if (SubworldSystem.Current is MappingWorld world)
 		{
-			magicFind += (int)(MappingWorld.TotalWeight() / 10f) / 100f;
-			float modifier = 1 + (MappingWorld.AreaLevel - 50) / 100f;
+			magicFind += DomainRarityBoost();
+			float modifier = MathF.Max(0, 1 + (MappingWorld.AreaLevel - 50) / 100f);
 			magicFind += modifier;
 		}
 
