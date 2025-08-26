@@ -119,7 +119,15 @@ public sealed class AffixTooltips
 
 		Item? comparisonItem = null;
 		bool canCompareEver = source is not AffixSource.NonApplicable;
-		bool canCompareNow = canCompareEver && TryFindComparisonItem(source, player, out comparisonItem);
+		bool canCompareNow = false;
+
+		if (canCompareEver && TryFindComparisonItem(source, player, out comparisonItem))
+		{
+			// Disallow comparing already equipped or literally the same items.
+			canCompareEver &= comparisonItem != item && ItemIdentity.AreItemsRelated(item, comparisonItem) != true;
+			canCompareNow = canCompareEver;
+		}
+
 		bool shouldCompare = canCompareNow && Main.keyState.PressingShift();
 
 		int tipNum = 0;
