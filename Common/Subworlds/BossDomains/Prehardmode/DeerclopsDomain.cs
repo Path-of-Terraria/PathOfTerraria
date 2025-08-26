@@ -44,6 +44,8 @@ public class DeerclopsDomain : BossDomainSubworld
 
 	public override void Load()
 	{
+		base.Load();
+
 		LightGlow = Mod.Assets.Request<Texture2D>("Assets/Misc/VFX/LightGlow");
 	}
 

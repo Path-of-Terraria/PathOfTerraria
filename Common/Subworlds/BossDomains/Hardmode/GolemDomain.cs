@@ -41,6 +41,8 @@ internal class GolemDomain : BossDomainSubworld
 
 	public override void Load()
 	{
+		base.Load();
+
 		On_Player.Teleport += AddGolemTeleporting;
 	}
 

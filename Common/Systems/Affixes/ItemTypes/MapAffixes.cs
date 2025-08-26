@@ -1,4 +1,6 @@
-﻿using Terraria.ID;
+﻿using System.IO;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
@@ -25,6 +27,34 @@ public abstract class MapAffix : ItemAffix
 
 	public virtual void PreAI(NPC npc)
 	{
+	}
+
+	protected override void InternalSaveTo(TagCompound tag)
+	{
+		base.InternalSaveTo(tag);
+
+		tag.Add("strength", Strength);
+	}
+
+	protected override void InternalLoadFrom(TagCompound tag)
+	{
+		base.InternalLoadFrom(tag);
+
+		Strength = tag.GetFloat("strength");
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		base.NetSend(writer);
+
+		writer.Write((Half)Strength);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		base.NetReceive(reader);
+
+		Strength = (float)reader.ReadHalf();
 	}
 }
 

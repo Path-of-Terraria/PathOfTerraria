@@ -12,6 +12,7 @@ using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
+using Terraria.UI.Chat;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;
@@ -72,10 +73,23 @@ public abstract class MappingWorld : Subworld
 	/// </summary>
 	public static int MapTier = 0;
 
+	public LocalizedText SubworldName { get; private set; }
+	public LocalizedText SubworldDescription { get; private set; }
+	public LocalizedText SubworldMining { get; private set; }
+	public LocalizedText SubworldPlacing { get; private set; }
+
 	private string _tip = "";
 	private string _fadingInTip = "";
 	private int _tipTime = 0;
 	private bool needsNetSync;
+
+	public override void Load()
+	{
+		SubworldName = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".DisplayName", () => GetType().Name);
+		SubworldDescription = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Description", () => GetType().Name);
+		SubworldMining = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Mining", () => "\"{$DefaultMining}\"");
+		SubworldPlacing = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Placing", () => "\"{$DefaultPlacing}\"");
+	}
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
 	{
@@ -188,6 +202,17 @@ public abstract class MappingWorld : Subworld
 		string statusText = Main.statusText;
 		GenerationProgress progress = WorldGenerator.CurrentGenerationProgress;
 
+		if (SubworldSystem.Current is not null)
+		{
+			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Entering"), Color.LightGray, new Vector2(0, -360), 0.4f);
+			DrawStringCentered(SubworldName.Value, Color.White, new Vector2(0, -310), 1.1f);
+			DrawStringCentered(SubworldDescription.Value, Color.White, new Vector2(0, -250), 0.5f);
+		}
+		else
+		{
+			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Exiting"), Color.White, new Vector2(0, -310), 0.9f);
+		}
+
 		if (WorldGen.gen && progress is not null)
 		{
 			DrawStringCentered(progress.Message, Color.LightGray, new Vector2(0, 60), 0.6f);
@@ -243,11 +268,12 @@ public abstract class MappingWorld : Subworld
 	private static void DrawStringCentered(string statusText, Color color, Vector2 position = default, float scale = 1f)
 	{
 		Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + position;
-		Vector2 halfSize = FontAssets.DeathText.Value.MeasureString(statusText) / 2f * scale;
-		Main.spriteBatch.DrawString(FontAssets.DeathText.Value, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
+		DynamicSpriteFont font = FontAssets.DeathText.Value;
+		Vector2 halfSize = font.MeasureString(statusText) / 2f * scale;
+		Main.spriteBatch.DrawString(font, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
 	}
 
-	internal int ModifyExperience(int experience)
+	internal static int ModifyExperience(int experience)
 	{
 		return experience + (int)(TotalWeight() / 200f * experience);
 	}

@@ -45,7 +45,7 @@ public class MobExperienceGlobalNPC : GlobalNPC
 
 		if (SubworldSystem.Current is MappingWorld world)
 		{
-			amount += world.ModifyExperience(amount);
+			amount += MappingWorld.ModifyExperience(amount);
 		}
 
 		foreach (Player player in Main.ActivePlayers)
