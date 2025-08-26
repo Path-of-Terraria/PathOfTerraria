@@ -85,7 +85,7 @@ public abstract class MappingWorld : Subworld
 
 	public override void Load()
 	{
-		SubworldName = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Name", () => GetType().Name);
+		SubworldName = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".DisplayName", () => GetType().Name);
 		SubworldDescription = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Description", () => GetType().Name);
 		SubworldMining = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Mining", () => "\"{$DefaultMining}\"");
 		SubworldPlacing = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Placing", () => "\"{$DefaultPlacing}\"");

@@ -5,147 +5,147 @@ Entering: Now travelling to:
 Exiting: Returning to Overworld
 
 CultistDomain: {
-	Name: Distant Dungeon
+	DisplayName: Distant Dungeon
 	Description: Find the 4 shards of the Ancient Tablet to summon the Cultist.
 	Mining: "[i:1] Torches, ropes and the Ancient Tablet pieces can be mined"
 	Placing: "{$DefaultPlacing}"
 }
 
 DestroyerDomain: {
-	Name: Begotten City
+	DisplayName: Begotten City
 	Description: Collect the Mech Drives needed to craft the Mech Chip - summoning the Destroyer.
 	Mining: "[i:1] Torches, ropes and Ebonstone [i:61] can be mined"
 	Placing: "{$DefaultPlacing}"
 }
 
 EmpressDomain: {
-	Name: The Glimmering Plateau
+	DisplayName: The Glimmering Plateau
 	Description: Get through waves of sparkling, overjoyous enemies to challenge the Empress of Light.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 FishronDomain: {
-	Name: Ponds of Truffle
+	DisplayName: Ponds of Truffle
 	Description: Destroy the many outlined glowing mushrooms in the depths below to call the grand, the hungry, Duke Fishron.
 	Mining: "[i:1] Torches, ropes and Sprouting Truffles can be mined"
 	Placing: "{$DefaultPlacing}"
 }
 
 GolemDomain: {
-	Name: Temple of Origin
+	DisplayName: Temple of Origin
 	Description: Delve into the Lihzahrd's first temple and defeat Golem.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 MoonLordDomain: {
-	Name: Lunar Miasma
+	DisplayName: Lunar Miasma
 	Description: Rise up from deep below ground to conquer the Moon Lord.
 	Mining: "{$AllMining}, but doesn't drop"
 	Placing: "{$DefaultPlacing}"
 }
 
 PlanteraDomain: {
-	Name: Slumbering Jungle
+	DisplayName: Slumbering Jungle
 	Description: Follow the flowers to find Plantera.
 	Mining: "{$AllMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 PrimeDomain: {
-	Name: Deep Mechanisms
+	DisplayName: Deep Mechanisms
 	Description: Traverse the four grand halls of this Mechanism and challenge Skeletron Prime.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 QueenSlimeDomain: {
-	Name: Upswept Hollows
+	DisplayName: Upswept Hollows
 	Description: Find the passage through brittle crystal into the Queen Slime's domain.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 TwinsDomain: {
-	Name: Chasmatic Laboratory
+	DisplayName: Chasmatic Laboratory
 	Description: Climb the Corruption, through the Mechanism, and challenge the Twins.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 BrainDomain: {
-	Name: Rising Steps Above Red
+	DisplayName: Rising Steps Above Red
 	Description: Take the portal at the top of grand steps to challenge the Brain of Cthulhu.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 DeerclopsDomain: {
-	Name: Frigid, Dark Wastes
+	DisplayName: Frigid, Dark Wastes
 	Description: Follow the light to the surface where Deerclops reins.
 	Mining: "[i:1] Torches, ropes and thin ice can be mined"
 	Placing: "{$DefaultPlacing}"
 }
 
 EaterDomain: {
-	Name: Festering Chasms
+	DisplayName: Festering Chasms
 	Description: Descend the chasms, cutting through miasma, to conquer the Eater of Worlds.
 	Mining: "[i:1] Torches, ropes and the purple glowing miasma can be mined"
 	Placing: "{$DefaultPlacing}"
 }
 
 EyeDomain: {
-	Name: Resting Place of Flesh
+	DisplayName: Resting Place of Flesh
 	Description: Climb into the Eye of Cthulhu's resting ground and best it.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 KingSlimeDomain: {
-	Name: Slime-Soaked Hideaway
+	DisplayName: Slime-Soaked Hideaway
 	Description: Climb through slime and rock into the King Slime's opulent arena.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 QueenBeeDomain: {
-	Name: Luxurious Hives
+	DisplayName: Luxurious Hives
 	Description: Grab the Royal Honey Clumps from the Queen Bee's hives to call upon her.
 	Mining: "[i:1] Torches, ropes and Royal Honey [i:PathOfTerraria/RoyalHoneyClump] can be mined"
 	Placing: "{$DefaultPlacing}"
 }
 
 SkeletronDomain: {
-	Name: Dungeon of the Frayed Wires
+	DisplayName: Dungeon of the Frayed Wires
 	Description: Explore a treacherous dungeon to free Skeletron of its own curse.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 WallOfFleshDomain: {
-	Name: Hell
+	DisplayName: Hell
 	Description: Traverse lava, ash and flesh in order to break the Wall of Flesh's magical bonds.
 	Mining: "[i:1] Torches, ropes and all platforms [i:94] can be mined"
 	Placing: "[i:2] Torches, ropes and all platforms [i:94] can be placed"
 }
 
 DesertArea: {
-	Name: Sun-Torched Desert
+	DisplayName: Sun-Torched Desert
 	Description: Explore burning sands in order to challenge the Sun Devourer.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 ForestArea: {
-	Name: Overgrown Grove
+	DisplayName: Overgrown Grove
 	Description: Explore in and under sun-starved, massive trees and conquer the Elder Grovetender.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
 }
 
 RavencrestSubworld: {
-	Name: Ravencrest
+	DisplayName: Ravencrest
 	Description: Talk to people, get and complete quests, buy from various merchants - and fight some goblins along the way.
 	Mining: "{$DefaultMining}"
 	Placing: "{$DefaultPlacing}"
