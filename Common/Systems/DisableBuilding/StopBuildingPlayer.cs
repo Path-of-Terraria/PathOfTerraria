@@ -5,7 +5,6 @@ using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using SubworldLibrary;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -17,8 +16,9 @@ public readonly record struct OptionalPoint16(short? X, short? Y);
 
 internal class StopBuildingPlayer : ModPlayer
 {
-	public static HashSet<int> InvalidBuildingIds = [ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench, ItemID.WireKite,
-		ItemID.ActuationRod, ItemID.ActuationAccessory, ItemID.Actuator, ItemID.RodofDiscord, ItemID.RodOfHarmony];
+	public static HashSet<int> InvalidItemsToUse = [ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench, ItemID.WireKite,
+		ItemID.ActuationRod, ItemID.ActuationAccessory, ItemID.Actuator, ItemID.RodofDiscord, ItemID.RodOfHarmony, ItemID.WetBomb, ItemID.HoneyBomb, ItemID.LavaBomb, 
+		ItemID.DirtBomb, ItemID.DirtStickyBomb, ItemID.DryBomb];
 
 	/// <summary>
 	/// Stops the player from building if true. This is reset every frame.
@@ -128,7 +128,7 @@ internal class StopBuildingPlayer : ModPlayer
 	public override bool CanUseItem(Item item)
 	{
 		// Disable wiring stuff
-		if (InvalidBuildingIds.Contains(item.type))
+		if (InvalidItemsToUse.Contains(item.type))
 		{
 			return !LastStopBuilding;
 		}	
