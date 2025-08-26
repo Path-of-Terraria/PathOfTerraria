@@ -46,8 +46,8 @@ public sealed class TooltipOverrides : ModSystem
 		bool drawForMouseItem = (!isLate || !drewMouseItem) && (mouseItem?.IsAir) == false && isHoveringOverUI && !player.ItemAnimationActive && mouseItem.IsNotSameTypePrefixAndStack(hoverItem);
 		bool drawSideBySide = drawForHoverItem && drawForMouseItem;
 
-		// If we are reacting to a late Hover/MouseItem mutation, i.e. after the tooltips have already been drawn, then we need to make new instances last a whole tick.
-		uint visibilityTimeInTicks = isLate ? 1u : 0u;
+		// The tooltip must last at least one tick, otherwise it won't appear when autopause is on
+		uint visibilityTimeInTicks = 1u;
 		drewHoverItem = drawForHoverItem || (isLate && drewHoverItem);
 		drewMouseItem = drawForMouseItem || (isLate && drewHoverItem);
 
