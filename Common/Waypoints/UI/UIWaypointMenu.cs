@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Elements;
@@ -12,6 +13,7 @@ using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
@@ -92,16 +94,17 @@ public sealed class UIWaypointMenu : UIState
 		rootElement.Append(BuildPanel());
 
 		// Add tip to clear up confusion on the return button in tutorial
-		tutorialTipText = new UIText("Tip: During the tutorial, you will be required to press the return button in your settings menu.", 0.3f)
+		string tutorialTipLocalized = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.Waypoints.TutorialTip");
+		tutorialTipText = new UIText(tutorialTipLocalized, 0.8f)
 		{
 			HAlign = 0.5f,
 			VAlign = 0.0f,
-			Top = { Pixels = -15f },
+			Top = { Pixels = -45f },
 			Width = { Pixels = FullWidth },
 			TextOriginX = 0.5f,
-			WrappedTextBottomPadding = 0f
+			WrappedTextBottomPadding = 0f,
+			IsWrapped = true
 		};
-		tutorialTipText.SetText("Tip: During the tutorial, you will be required to press the return button in your settings menu.", 0.3f, true);
 		
 		rootElement.Append(tutorialTipText);
 
@@ -253,13 +256,15 @@ public sealed class UIWaypointMenu : UIState
 		{
 			Main.LocalPlayer.mouseInterface = true;
 		}
+		
+		bool hasArcaneObelisk = ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains("Overworld");
+		bool tutorialTipCurrentlyShowing = rootElement.Children.Contains(tutorialTipText);
 
-		// Check if player is in tutorial and show/hide tip text accordingly
-		bool hasNotCompletedTutorial = !Main.LocalPlayer.GetModPlayer<TutorialPlayer>().CompletedTutorial;
-		tutorialTipText.Remove();
-		if (hasNotCompletedTutorial)
+		// Check if player has placed an obelisk in the main world, and if the tutorialtiptext currently exists
+		if (hasArcaneObelisk && tutorialTipCurrentlyShowing)
 		{
-			rootElement.Append(tutorialTipText);
+			// Remove the tip if obelisk is placed and tip is showing
+			tutorialTipText.Remove();
 		}
 
 		UpdateInput();
