@@ -25,6 +25,8 @@ public abstract class ItemAffix : Affix
 	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
 		ItemAffixData data = GetData();
+		ItemAffixData.TierData tierData = data.Tiers[Tier];
+
 		int level = item.GetInstanceData().RealLevel;
 		(int tierMin, int tierMax) = data.GetPossibleTierRange(level);
 
@@ -33,6 +35,7 @@ public abstract class ItemAffix : Affix
 			Text = this.GetLocalization("Description"),
 			Value = Value,
 			Tier = (Tier, tierMin, tierMax),
+			ValueRollRange = (tierData.MinValue, tierData.MaxValue),
 			Corrupt = IsCorruptedAffix,
 		};
 	}

@@ -18,6 +18,7 @@ internal class NoFallDamageAffix : ItemAffix
 		{
 			TextWhenRemoved = this.GetLocalization("Removed"),
 			Value = 1f,
+			ValueRollRange = null,
 		};
 	}
 }

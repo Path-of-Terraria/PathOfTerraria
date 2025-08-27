@@ -21,6 +21,7 @@ public struct AffixTooltipLine()
 	public float Value;
 	public bool Corrupt;
 	public (int Current, int Min, int Max)? Tier;
+	public (float Min, float Max)? ValueRollRange;
 	public Color? OverrideColor;
 }
 
@@ -180,13 +181,22 @@ public sealed class AffixTooltips
 			sb.Clear();
 			sb.Append(ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent));
 			sb.Append(' ');
+
 			sb.Append(tip.Text.WithFormatArgs(Math.Abs(tip.Value).ToString("#0.##"), tip.Value >= 0 ? "+" : "-").Value);
 
-			if (displayExtraInfo && tip.Tier is { } tipTier)
+			if (displayExtraInfo && (tip.Tier.HasValue || tip.ValueRollRange.HasValue))
 			{
+				sb.Append($" [c/{ItemTooltips.Colors.DefaultNumber.ToHexRGB()}:(");
+
+				// Value range.
+				sb.Append(tip.ValueRollRange is { } r ? Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.AffixValueRange", r.Min.ToString("#0.##"), r.Max.ToString("#0.##")) : string.Empty);
+				// Comma.
+				sb.Append(tip.ValueRollRange.HasValue && tip.Tier.HasValue ? ", " : string.Empty);
+				// Tier and tier range.
 				// Code has tiers starting at zero for backwards compatibility, but we display with them starting at one.
-				string tierLocale = Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Tier", tipTier.Current + 1, tipTier.Max + 1);
-				sb.Append($" [c/{ItemTooltips.Colors.DefaultNumber.ToHexRGB()}:{tierLocale}]");
+				sb.Append(tip.Tier is { } t ? $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.TierXOfY", t.Current + 1, t.Max + 1)}" : string.Empty);
+
+				sb.Append(")]");
 			}
 
 			Color color = tip.Value switch
