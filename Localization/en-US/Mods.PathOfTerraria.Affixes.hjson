@@ -72,7 +72,7 @@ FlamingAffix.Prefix: Flaming
 StalwartAffix.Prefix: Stalwart
 FireResistItemAffix.Description: "{1}{0}% fire resistance"
 ColdResistItemAffix.Description: "{1}{0}% cold resistance"
-LightningResistItemAffix.Description: "{1}{0} lightning resistance"
+LightningResistItemAffix.Description: "{1}{0}% lightning resistance"
 FocusChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Focus Charge on kill"
 HasteChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Haste Charge on kill"
 AegisChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Aegis Charge on kill"

@@ -48,6 +48,8 @@ TooltipNotices: {
 	Swap: Si {0} est équipé :
 	Shift: (Maintenir shift pour comparer les statistiques)
 	// NoDifferences: (No differences)
+	// TierXOfY: Tier {0} of {1}
+	// AffixValueRange: Ranges {0} to {1}
 }
 
 Biomes: {
