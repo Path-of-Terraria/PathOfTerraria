@@ -105,7 +105,7 @@ public abstract class MappingWorld : Subworld
 		WorldGen._genRandSeed = Main.rand.Next();
 
 		int rand = Main.rand.Next(10, 30);
-
+		
 		for (int i = 0; i < rand; ++i)
 		{
 			WorldGen.genRand.Next();
