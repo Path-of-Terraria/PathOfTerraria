@@ -22,13 +22,17 @@ public abstract class ItemAffix : Affix
 		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, item));
 	}
 
-	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	public virtual void ApplyTooltips(Player player, int itemLevel, AffixTooltips handler)
+	{
+		handler.AddOrModify(GetType(), CreateDefaultTooltip(player, itemLevel));
+	}
+
+	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, int itemLevel)
 	{
 		ItemAffixData data = GetData();
 		ItemAffixData.TierData tierData = data.Tiers[Tier];
-
-		int level = GetItemLevel.Invoke(item);
-		(int tierMin, int tierMax) = data.GetPossibleTierRange(level);
+		
+		(int tierMin, int tierMax) = data.GetPossibleTierRange(itemLevel);
 
 		return new AffixTooltipLine
 		{
@@ -38,6 +42,12 @@ public abstract class ItemAffix : Affix
 			ValueRollRange = (tierData.MinValue, tierData.MaxValue),
 			Corrupt = IsCorruptedAffix,
 		};
+	}
+	
+	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	{
+		int level = GetItemLevel.Invoke(item);
+		return CreateDefaultTooltip(player, level);
 	}
 
 	/// <summary>
