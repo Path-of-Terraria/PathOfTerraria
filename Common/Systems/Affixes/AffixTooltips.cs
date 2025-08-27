@@ -184,7 +184,8 @@ public sealed class AffixTooltips
 
 			if (displayExtraInfo && tip.Tier is { } tipTier)
 			{
-				string tierLocale = Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Tier", tipTier.Current, tipTier.Max);
+				// Code has tiers starting at zero for backwards compatibility, but we display with them starting at one.
+				string tierLocale = Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Tier", tipTier.Current + 1, tipTier.Max + 1);
 				sb.Append($" [c/{ItemTooltips.Colors.DefaultNumber.ToHexRGB()}:{tierLocale}]");
 			}
 

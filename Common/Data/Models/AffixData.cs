@@ -34,13 +34,14 @@ public class ItemAffixData
 	{
 		var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
 		
-		return (1, eligibleTiers.Count);
+		return (0, eligibleTiers.Count - 1);
 	}
 
-	public TierData GetAppropriateTierData(int level, out int tierNumber)
+	public TierData GetAppropriateTierData(int level, out int tierIndex)
     {
         var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
-		tierNumber = 1;
+
+		tierIndex = 0;
 
         if (eligibleTiers.Count == 0)
         {
@@ -58,12 +59,12 @@ public class ItemAffixData
 
             if (randomWeight <= cumulativeWeight)
             {
-				tierNumber = eligibleTiers.IndexOf(tier);
+				tierIndex = eligibleTiers.IndexOf(tier);
                 return tier;
             }
         }
 
-		tierNumber = eligibleTiers.Count - 1;
+		tierIndex = eligibleTiers.Count - 1;
         return eligibleTiers.Last(); //Just in case we don't return a tier?
     }
 
