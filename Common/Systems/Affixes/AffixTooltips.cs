@@ -191,7 +191,7 @@ public sealed class AffixTooltips
 
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
-			affix.ApplyTooltip(player, item, handler);
+			affix.ApplyTooltips(player, item, handler);
 		}
 
 		return handler;

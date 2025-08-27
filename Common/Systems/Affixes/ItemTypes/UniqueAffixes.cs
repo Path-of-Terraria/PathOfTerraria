@@ -12,14 +12,12 @@ internal class NoFallDamageAffix : ItemAffix
 		}
 	}
 
-	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		handler.AddOrModify(GetType(), new AffixTooltipLine
+		return base.CreateDefaultTooltip(player, item) with
 		{
-			Text = this.GetLocalization("Description"),
 			TextWhenRemoved = this.GetLocalization("Removed"),
 			Value = 1f,
-			Corrupt = IsCorruptedAffix,
-		});
+		};
 	}
 }
