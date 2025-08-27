@@ -6,6 +6,8 @@ using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
@@ -201,6 +203,25 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (data.ItemType != ItemType.None || data.Rarity > ItemRarity.Normal)
 		{
 			string rarityDesc = GetDescriptor(data.ItemType, data.Rarity, data.Influence);
+
+			// Override the type descriptor for maps to distinguish Explorable vs Boss maps
+			if (item.ModItem is Map)
+			{
+				string mapTypeName = null;
+				if (item.ModItem is ExplorableMap)
+				{
+					mapTypeName = Language.GetTextValue("Mods.PathOfTerraria.Gear.ExplorableMap.Name");
+				}
+				else if (item.ModItem is BossMap)
+				{
+					mapTypeName = Language.GetTextValue("Mods.PathOfTerraria.Gear.BossMap.Name");
+				}
+
+				if (!string.IsNullOrWhiteSpace(mapTypeName))
+				{
+					rarityDesc = GetDescriptor(mapTypeName, data.Rarity, data.Influence);
+				}
+			}
 
 			if (item.ModItem is GearLocalizationCategory.IItem gear)
 			{

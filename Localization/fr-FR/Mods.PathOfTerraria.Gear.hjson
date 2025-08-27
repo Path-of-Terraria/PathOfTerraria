@@ -346,6 +346,12 @@ Shield: {
 }
 
 Map.Name: Carte
+ExplorableMap: {
+    Name: Carte Exploratoire
+}
+BossMap: {
+    Name: Carte de Boss
+}
 // None.Name: None
 Magic.Name: Magique
 Ranged.Name: À distance
