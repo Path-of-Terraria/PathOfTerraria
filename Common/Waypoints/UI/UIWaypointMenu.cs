@@ -3,6 +3,7 @@ using System.Dynamic;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Core.UI;
 using ReLogic.Content;
 using Terraria.Audio;
@@ -73,6 +74,7 @@ public sealed class UIWaypointMenu : UIState
 	private UIImage thumbnailImage;
 
 	private UIText waypointText;
+	private UIText tutorialTipText;
 
 	public override void OnInitialize()
 	{
@@ -88,6 +90,20 @@ public sealed class UIWaypointMenu : UIState
 		};
 
 		rootElement.Append(BuildPanel());
+
+		// Add tip to clear up confusion on the return button in tutorial
+		tutorialTipText = new UIText("Tip: During the tutorial, you will be required to press the return button in your settings menu.", 0.3f)
+		{
+			HAlign = 0.5f,
+			VAlign = 0.0f,
+			Top = { Pixels = -15f },
+			Width = { Pixels = FullWidth },
+			TextOriginX = 0.5f,
+			WrappedTextBottomPadding = 0f
+		};
+		tutorialTipText.SetText("Tip: During the tutorial, you will be required to press the return button in your settings menu.", 0.3f, true);
+		
+		rootElement.Append(tutorialTipText);
 
 		Append(rootElement);
 
@@ -236,6 +252,14 @@ public sealed class UIWaypointMenu : UIState
 		if (rootElement.ContainsPoint(Main.MouseScreen))
 		{
 			Main.LocalPlayer.mouseInterface = true;
+		}
+
+		// Check if player is in tutorial and show/hide tip text accordingly
+		bool hasNotCompletedTutorial = !Main.LocalPlayer.GetModPlayer<TutorialPlayer>().CompletedTutorial;
+		tutorialTipText.Remove();
+		if (hasNotCompletedTutorial)
+		{
+			rootElement.Append(tutorialTipText);
 		}
 
 		UpdateInput();

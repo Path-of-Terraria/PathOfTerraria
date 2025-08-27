@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.UI.Guide;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Waypoints;
@@ -13,6 +14,8 @@ public sealed class HomeWaypoint : ModWaypoint
 
 	public override bool CanGoto()
 	{
-		return SubworldSystem.Current is not null;
+		bool hasNotCompletedTutorial = !Main.LocalPlayer.GetModPlayer<TutorialPlayer>().CompletedTutorial;
+		
+		return SubworldSystem.Current is not null && !hasNotCompletedTutorial;
 	}
 }
