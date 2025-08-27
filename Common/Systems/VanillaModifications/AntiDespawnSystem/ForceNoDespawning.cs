@@ -37,7 +37,8 @@ internal class ForceNoDespawning : GlobalNPC
 
 		orig(self, i);
 
-		if (self.boss && SubworldSystem.Current is MappingWorld && !self.active && life > 0 && AnyPlayerIsAlive)
+		// Aggressively stop despawning by forcing bosses that have health and were active to continue to be active, if we're in a boss domain and any player is alive
+		if ((self.boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type]) && SubworldSystem.Current is BossDomainSubworld && !self.active && life > 0 && AnyPlayerIsAlive)
 		{
 			self.active = true;
 			self.life = life;
@@ -48,7 +49,16 @@ internal class ForceNoDespawning : GlobalNPC
 	{
 		if (npc.type == NPCID.BrainofCthulhu)
 		{
+			// Stop BoC from doing player too distant/dead behaviour
 			npc.localAI[3] = 0;
+		}
+		else if (npc.type == NPCID.HallowBoss)
+		{
+			if (npc.ai[1] == 13) // Stops EoL from despawning from players being distant or dead
+			{
+				npc.alpha = 0;
+				npc.ai[1] = 20;
+			}
 		}
 
 		return true;

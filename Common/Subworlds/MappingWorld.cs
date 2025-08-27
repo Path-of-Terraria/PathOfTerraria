@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using ReLogic.Content;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using Terraria.GameContent;
@@ -19,7 +20,8 @@ namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
 /// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.<br/>
-/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification, and enables <see cref="Systems.ModPlayers.LivesSystem.BossDomainLivesPlayer"/>'s life system.
+/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification, 
+/// and enables <see cref="Systems.ModPlayers.LivesSystem.BossDomainLivesPlayer"/>'s life system.
 /// </summary>
 public abstract class MappingWorld : Subworld
 {
@@ -49,7 +51,11 @@ public abstract class MappingWorld : Subworld
 	/// </summary>
 	public virtual int[] WhitelistedExplodableTiles => [];
 
-	// We are going to first set the world to be completely flat so we can build on top of that
+	/// <summary>
+	/// The amount of scrolling backgrounds this domain has. Defaults to 1.
+	/// </summary>
+	public virtual int ScrollingBackgroundCount => 1;
+
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
 
 	/// <summary>
@@ -73,10 +79,13 @@ public abstract class MappingWorld : Subworld
 	/// </summary>
 	public static int MapTier = 0;
 
+	private static int _walkTimer = 0;
+
 	public LocalizedText SubworldName { get; private set; }
 	public LocalizedText SubworldDescription { get; private set; }
 	public LocalizedText SubworldMining { get; private set; }
 	public LocalizedText SubworldPlacing { get; private set; }
+	public Asset<Texture2D>[] LoadingBackgrounds = [];
 
 	private string _tip = "";
 	private string _fadingInTip = "";
@@ -89,6 +98,24 @@ public abstract class MappingWorld : Subworld
 		SubworldDescription = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Description", () => GetType().Name);
 		SubworldMining = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Mining", () => "\"{$DefaultMining}\"");
 		SubworldPlacing = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Placing", () => "\"{$DefaultPlacing}\"");
+
+		// TODO: Change to throw
+		if (ScrollingBackgroundCount == 1 && ModContent.RequestIfExists("PathOfTerraria/Assets/UI/SubworldLoadScreens/" + GetType().Name, out Asset<Texture2D> image))
+		{
+			LoadingBackgrounds = [image];
+		}
+		else if (ScrollingBackgroundCount > 1)
+		{
+			LoadingBackgrounds = new Asset<Texture2D>[ScrollingBackgroundCount];
+
+			for (int i = 0; i < ScrollingBackgroundCount; i++)
+			{
+				if (ModContent.RequestIfExists($"PathOfTerraria/Assets/UI/SubworldLoadScreens/{GetType().Name}_{i}", out Asset<Texture2D> background))
+				{
+					LoadingBackgrounds[i] = background;
+				}
+			}
+		}
 	}
 	
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
@@ -202,25 +229,35 @@ public abstract class MappingWorld : Subworld
 		string statusText = Main.statusText;
 		GenerationProgress progress = WorldGenerator.CurrentGenerationProgress;
 
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+
+		DrawWalkingBackground();
+
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
+
 		if (SubworldSystem.Current is not null)
 		{
-			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Entering"), Color.LightGray, new Vector2(0, -360), 0.4f);
-			DrawStringCentered(SubworldName.Value, Color.White, new Vector2(0, -310), 1.1f);
-			DrawStringCentered(SubworldDescription.Value, Color.White, new Vector2(0, -250), 0.5f);
+			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Entering"), Color.LightGray, new Vector2(0, -360), 0.4f, true);
+			DrawStringCentered(SubworldName.Value, Color.White, new Vector2(0, -310), 1.1f, true);
+			DrawStringCentered(SubworldDescription.Value, Color.White, new Vector2(0, -250), 0.5f, true);
 		}
 		else
 		{
-			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Exiting"), Color.White, new Vector2(0, -310), 0.9f);
+			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Exiting"), Color.White, new Vector2(0, -310), 0.9f, true);
 		}
+
+		DrawWalkingPlayer();
 
 		if (WorldGen.gen && progress is not null)
 		{
-			DrawStringCentered(progress.Message, Color.LightGray, new Vector2(0, 60), 0.6f);
+			DrawStringCentered(progress.Message, Color.LightGray, new Vector2(0, 150), 0.6f);
 			double percentage = progress.Value / progress.CurrentPassWeight * 100f;
-			DrawStringCentered($"{percentage:#0.##}%", Color.LightGray, new Vector2(0, 120), 0.7f);
+			DrawStringCentered($"{percentage:#0.##}%", Color.LightGray, new Vector2(0, 190), 0.7f);
 		}
 
-		DrawStringCentered(statusText, Color.White);
+		DrawStringCentered(statusText, Color.White, new Vector2(0, 90));
 
 		if (_tip == "")
 		{
@@ -230,13 +267,15 @@ public abstract class MappingWorld : Subworld
 
 		_tipTime++;
 
-		DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.UI.Tips.Title"), Color.White, new Vector2(0, 300), 0.8f);
+		const int TipOffset = 438;
+
+		DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.UI.Tips.Title"), Color.White, new Vector2(0, TipOffset - 38), 0.8f);
 
 		if (_tipTime > 300)
 		{
 			float factor = (_tipTime - 300) / 60f;
-			DrawStringCentered(_tip, Color.White * (1 - factor), new Vector2(0, 338), 0.5f);
-			DrawStringCentered(_fadingInTip, Color.White * factor, new Vector2(0, 338), 0.5f);
+			DrawStringCentered(_tip, Color.White * (1 - factor), new Vector2(0, TipOffset), 0.5f);
+			DrawStringCentered(_fadingInTip, Color.White * factor, new Vector2(0, TipOffset), 0.5f);
 
 			if (_tipTime == 360)
 			{
@@ -246,8 +285,68 @@ public abstract class MappingWorld : Subworld
 		}
 		else
 		{
-			DrawStringCentered(_tip, Color.White, new Vector2(0, 338), 0.5f);
+			DrawStringCentered(_tip, Color.White, new Vector2(0, TipOffset), 0.5f);
 		}
+	}
+
+	private void DrawWalkingBackground()
+	{
+		_walkTimer++;
+
+		var position = new Vector2(-_walkTimer * 1.3f, Main.screenHeight / 2 + 14);
+		var originMod = new Vector2(0, 1);
+
+		if (SubworldSystem.Current is null)
+		{
+			position = new Vector2(_walkTimer * 1.3f, Main.screenHeight / 2 + 14);
+			originMod = new Vector2(1, 1);
+		}
+
+		if (LoadingBackgrounds.Length == 0)
+		{
+			return;
+		}
+
+		if (ScrollingBackgroundCount == 1)
+		{
+			Texture2D tex = LoadingBackgrounds[0].Value;
+			Main.spriteBatch.Draw(tex, position, new Rectangle(0, 0, tex.Width * 300, tex.Height), Color.White, 0f, tex.Size() * originMod, 1f, SpriteEffects.None, 0);
+		}
+		else
+		{
+			Texture2D tex = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/SubworldLoadScreens/DestroyerDomain0").Value;
+			Texture2D tex2 = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/SubworldLoadScreens/DestroyerDomain1").Value;
+			int xOff = 0;
+
+			for (int i = 0; i < 10; ++i)
+			{
+				Texture2D texture = LoadingBackgrounds[i % ScrollingBackgroundCount].Value;
+				Main.spriteBatch.Draw(texture, position, null, Color.White, 0f, tex.Size() * originMod, 1f, SpriteEffects.None, 0);
+				xOff += texture.Width;
+			}
+		}
+	}
+
+	private static void DrawWalkingPlayer()
+	{
+		Player plr = Main.LocalPlayer;
+		using var _currentPlr = new Main.CurrentPlayerOverride(plr);
+
+		plr.direction = SubworldSystem.Current is not null ? 1 : -1;
+		plr.ResetEffects();
+		plr.ResetVisibleAccessories();
+		plr.UpdateMiscCounter();
+		plr.UpdateDyes();
+		plr.PlayerFrame();
+
+		int num = (int)(Main.GlobalTimeWrappedHourly / 0.07f) % 14 + 6;
+		plr.bodyFrame.Y = (plr.legFrame.Y = (plr.headFrame.Y = num * 56));
+		plr.WingFrame(wingFlap: false);
+
+		Item item = plr.inventory[plr.selectedItem];
+		plr.inventory[plr.selectedItem] = new Item(ItemID.None);
+		Main.PlayerRenderer.DrawPlayer(Main.Camera, plr, new Vector2(Main.screenWidth / 2f, Main.screenHeight / 2 - 126) + Main.screenPosition, 0f, Vector2.Zero, 0f, 1f);
+		plr.inventory[plr.selectedItem] = item;
 	}
 
 	/// <summary>
@@ -265,12 +364,30 @@ public abstract class MappingWorld : Subworld
 		} while (_tip == _fadingInTip);
 	}
 
-	private static void DrawStringCentered(string statusText, Color color, Vector2 position = default, float scale = 1f)
+	private static void DrawStringCentered(string test, Color color, Vector2 position = default, float scale = 1f, bool outlined = false)
 	{
 		Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + position;
 		DynamicSpriteFont font = FontAssets.DeathText.Value;
-		Vector2 halfSize = font.MeasureString(statusText) / 2f * scale;
-		Main.spriteBatch.DrawString(font, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
+		Vector2 halfSize = font.MeasureString(test) / 2f * scale;
+
+		if (!outlined)
+		{
+			Main.spriteBatch.DrawString(font, test, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
+		}
+		else
+		{
+			const int Offset = 6;
+
+			Color shadowColor = Color.Black;
+			Color textColor = Color.White;
+
+			Vector2 drawPos = screenCenter - halfSize;
+			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos - new Vector2(Offset, 0), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
+			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos - new Vector2(0, Offset), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
+			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos + new Vector2(Offset, 0), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
+			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos + new Vector2(0, Offset), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
+			ChatManager.DrawColorCodedString(Main.spriteBatch, font, test, drawPos, textColor, 0f, Vector2.Zero, new Vector2(scale));
+		}
 	}
 
 	internal static int ModifyExperience(int experience)

@@ -56,5 +56,7 @@ internal class DropModifierNPC : GlobalNPC
 		AddRateModifier(NPCID.QueenSlimeMinionBlue, 0.2f);
 		AddRateModifier(NPCID.QueenSlimeMinionPurple, 0.2f);
 		AddRateModifier(NPCID.QueenSlimeMinionPink, 0.2f);
+		AddRateModifier(NPCID.AncientLight, 0f);
+		AddRateModifier(NPCID.AncientDoom, 0f);
 	}
 }

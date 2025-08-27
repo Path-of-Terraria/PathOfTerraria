@@ -125,7 +125,7 @@ SkeletronDomain: {
 
 WallOfFleshDomain: {
 	DisplayName: Hell
-	Description: Traverse lava, ash and flesh in order to break the Wall of Flesh's magical bonds.
+	Description: Traverse lava, ash and flesh in order to snap the rope above the Guide Voodoo Doll and finally break the Wall of Flesh's magical bonds.
 	Mining: "[i:1] Torches, ropes and all platforms [i:94] can be mined"
 	Placing: "[i:2] Torches, ropes and all platforms [i:94] can be placed"
 }
