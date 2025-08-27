@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Gear;
@@ -106,13 +107,15 @@ public sealed partial class ItemTooltips : GlobalItem
 			case "Description":
 			case "ShiftNotice":
 			case "SwapNotice":
+			case "BuildBlocked":
+			case "ShootBlocked":
 				yOffset = 2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
 		}
 
 		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name.StartsWith("Stat")
-		|| line.Name is "Damage" or "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost")
+			|| line.Name is "Damage" or "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost")
 		{
 			line.BaseScale = new Vector2(0.95f);
 			yOffset = -4;
@@ -350,6 +353,17 @@ public sealed partial class ItemTooltips : GlobalItem
 			{
 				OverrideColor = new Color(170, 170, 170)
 			});
+		}
+
+		if (StopBuildingPlayer.InvalidItemsToUse.Contains(item.type))
+		{
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "BuildBlocked", Localize("BuildBlocked")) { OverrideColor = new Color(220, 110, 110) });
+		}
+
+		if (StopBuildingProjectiles.ProjectileAliasingsByItemId.TryGetValue(item.type, out StopBuildingProjectiles.ProjectileAlias alias))
+		{
+			string text = Language.GetTextValue("Mods.PathOfTerraria.Gear.Tooltips.ShootBlocked", Lang.GetItemName(alias.AltItemId), alias.AltItemId);
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "ShootBlocked", text) { OverrideColor = new Color(220, 110, 110) });
 		}
 
 		// Affix tooltips

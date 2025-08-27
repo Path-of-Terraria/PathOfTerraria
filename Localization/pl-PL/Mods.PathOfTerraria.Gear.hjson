@@ -18,6 +18,8 @@ Tooltips: {
 	ManaCost: Koszt many
 	// AttackSpeed: Attack Speed
 	// CastSpeed: Cast Speed
+	// BuildBlocked: Blocked by the energies in the domain
+	// ShootBlocked: Will be replaced by {0} [i:{1}] when shot
 }
 
 Influence: {
