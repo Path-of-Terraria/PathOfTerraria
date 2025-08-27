@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Utilities.Xna;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -18,6 +20,7 @@ public struct AffixTooltipLine()
 	public LocalizedText? TextWhenRemoved;
 	public float Value;
 	public bool Corrupt;
+	public (int Current, int Min, int Max)? Tier;
 	public Color? OverrideColor;
 }
 
@@ -125,10 +128,12 @@ public sealed class AffixTooltips
 			canCompareNow = canCompareEver;
 		}
 
-		bool shouldCompare = canCompareNow && Main.keyState.PressingShift();
+		bool isHoldingShift = Main.keyState.PressingShift();
+		bool displayExtraInfo = isHoldingShift;
+		bool shouldCompare = canCompareNow && isHoldingShift;
 
 		int tipNum = 0;
-		AddTooltipLines(tooltips, ref tipNum);
+		AddTooltipLines(tooltips, ref tipNum, displayExtraInfo: displayExtraInfo);
 
 		// Show a notice notifying the user that they can hold shift to compare with equipped item, or that they are, or that they cannot.
 		if (canCompareEver)
@@ -153,7 +158,7 @@ public sealed class AffixTooltips
 			AffixTooltips comparison = CreateComparison(this, otherTooltips);
 
 			int oldTipNum = tipNum;
-			comparison.AddTooltipLines(tooltips, ref tipNum);
+			comparison.AddTooltipLines(tooltips, ref tipNum, displayExtraInfo: false);
 
 			if (tipNum == oldTipNum)
 			{
@@ -166,11 +171,23 @@ public sealed class AffixTooltips
 		}
 	}
 
-	private void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum)
+	private void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum, bool displayExtraInfo)
 	{
+		var sb = new StringBuilder();
+
 		foreach (AffixTooltipLine tip in Lines.Values.OrderByDescending(v => v.Value))
 		{
-			string text = $"{ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent)} {tip.Text.WithFormatArgs(Math.Abs(tip.Value).ToString("#0.##"), tip.Value >= 0 ? "+" : "-").Value}";
+			sb.Clear();
+			sb.Append(ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent));
+			sb.Append(' ');
+			sb.Append(tip.Text.WithFormatArgs(Math.Abs(tip.Value).ToString("#0.##"), tip.Value >= 0 ? "+" : "-").Value);
+
+			if (displayExtraInfo && tip.Tier is { } tipTier)
+			{
+				string tierLocale = Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.Tier", tipTier.Current, tipTier.Max);
+				sb.Append($" [c/{ItemTooltips.Colors.DefaultNumber.ToHexRGB()}:{tierLocale}]");
+			}
+
 			Color color = tip.Value switch
 			{
 				_ when tip.OverrideColor.HasValue => tip.OverrideColor.Value,
@@ -180,7 +197,7 @@ public sealed class AffixTooltips
 				_ => ItemTooltips.Colors.DefaultNumber,
 			};
 
-			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum, text) { OverrideColor = color });
+			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum, sb.ToString()) { OverrideColor = color });
 			tipNum++;
 		}
 	}

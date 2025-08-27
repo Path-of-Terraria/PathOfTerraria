@@ -48,6 +48,7 @@ TooltipNotices: {
 	Swap: If {0} is equipped:
 	Shift: (Hold shift to compare stats)
 	NoDifferences: (No differences)
+	Tier: (Tier {0} of {1})
 }
 
 Biomes: {

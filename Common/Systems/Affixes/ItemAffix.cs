@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Core.Items;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
@@ -23,13 +24,15 @@ public abstract class ItemAffix : Affix
 
 	protected virtual AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		_ = player;
-		_ = item;
+		ItemAffixData data = GetData();
+		int level = item.GetInstanceData().RealLevel;
+		(int tierMin, int tierMax) = data.GetPossibleTierRange(level);
 
 		return new AffixTooltipLine
 		{
 			Text = this.GetLocalization("Description"),
 			Value = Value,
+			Tier = (Tier, tierMin, tierMax),
 			Corrupt = IsCorruptedAffix,
 		};
 	}

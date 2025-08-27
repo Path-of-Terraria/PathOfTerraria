@@ -48,6 +48,7 @@ TooltipNotices: {
 	Swap: Если {0} оборудован:
 	Shift: (Удерживайте клавишу Shift, чтобы сравнить характеристики)
 	// NoDifferences: (No differences)
+	// Tier: (Tier {0} of {1})
 }
 
 Biomes: {

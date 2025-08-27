@@ -30,6 +30,13 @@ public class ItemAffixData
 	public bool Round { get; set; }
 	public List<TierData> Tiers { get; set; }
 
+	public (int MinInclusive, int MaxInclusive) GetPossibleTierRange(int level)
+	{
+		var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
+		
+		return (1, eligibleTiers.Count);
+	}
+
 	public TierData GetAppropriateTierData(int level, out int tierNumber)
     {
         var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
