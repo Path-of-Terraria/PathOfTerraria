@@ -27,7 +27,7 @@ public abstract class ItemAffix : Affix
 		ItemAffixData data = GetData();
 		ItemAffixData.TierData tierData = data.Tiers[Tier];
 
-		int level = item.GetInstanceData().RealLevel;
+		int level = GetItemLevel.Invoke(item);
 		(int tierMin, int tierMax) = data.GetPossibleTierRange(level);
 
 		return new AffixTooltipLine
