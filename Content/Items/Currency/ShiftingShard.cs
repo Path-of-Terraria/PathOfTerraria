@@ -19,7 +19,6 @@ public class ShiftingShard : CurrencyShard
 
 	public override bool CanRightClick()
 	{
-		PoTInstanceItemData data = Main.LocalPlayer.HeldItem.GetInstanceData();
 		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is ItemRarity.Rare;
 	}
 
