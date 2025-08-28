@@ -19,6 +19,12 @@ public class MysticShard : CurrencyShard
 
 	public override bool CanRightClick()
 	{
+		Item heldItem = Main.LocalPlayer.HeldItem;
+		if (heldItem == null || heldItem.IsAir)
+		{
+			return base.CanRightClick();
+		}
+		
 		PoTInstanceItemData data = Main.LocalPlayer.HeldItem.GetInstanceData();
 		return base.CanRightClick() && data.Rarity is ItemRarity.Normal;
 	}
