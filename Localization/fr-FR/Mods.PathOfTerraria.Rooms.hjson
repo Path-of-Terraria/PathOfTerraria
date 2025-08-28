@@ -1,19 +1,21 @@
-Common: {
-	Missing1: Manquant {0}.
-	Missing2: Manquant {0} et{1}.
-	Missing3: Manquant {0}{1} et {2}.
-	MissingList: "{0},"
-}
-
-Tavern: {
-	DisplayName: Taverne
-	Description: Doit occuper au moins 100 tuiles\nNécessite 3 tables, 3 chaises, 3 tabourets de bar, un fût, un panneau, une porte et une source de lumière
-
-	Error: {
-		Tables: 3 tables
-		BarStools: 3 tabourets de bar
-		Chairs: 3 chaises
-		Keg: un fût
-		Sign: un panneau
-	}
-}
+﻿Common: {
+    Missing1: Manquant {0}.
+    Missing2: Manquant {0} et{1}.
+    Missing3: Manquant {0}{1} et {2}.
+    MissingList: "{0},"
+  }
+  Tavern: {
+    DisplayName: Taverne
+    Description:
+      '''
+      Doit occuper au moins 100 tuiles
+      Nécessite 3 tables, 3 chaises, 3 tabourets de bar, un fût, un panneau, une porte et une source de lumière
+      '''
+    Error: {
+      Tables: 3 tables
+      BarStools: 3 tabourets de bar
+      Chairs: 3 chaises
+      Keg: un fût
+      Sign: un panneau
+    }
+  }

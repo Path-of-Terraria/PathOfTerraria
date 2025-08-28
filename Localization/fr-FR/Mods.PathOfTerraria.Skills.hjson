@@ -1,54 +1,43 @@
-# These are used for the hotbar hover in NewHotbar.cs.
-LevelLine: (Niveau {0}/{1})
-ManaLine: Coute {0} mana
-NotEnoughMana: Coute [c/FF6666:{0} mana]
-NoWeaponLine: Aucune arme requise
-NoKeybindLine: Aucune touche détectée
-DurationLine: Dure {0} secondes
-CooldownLine: "{0} seconde de recharge"
-KeybindLine: Appuyez sur {0} pour utiliser
-NeedsWeapon: Besoin d'un objet {0} pour être porté
-BaseDamage: Inflige {0} de dommage de base
-# This is for the hover text in the skills menu.
-CantEquip: Ne peut équiper la compétence : {0}
-
-# These are the actual localization lines for skills.
-Nova: {
-	Name: Nova
-	Description: Créez une onde de choc autour de vous basée sur les dégâts de l'arme magique que vous tenez
-}
-
-Berserk: {
-	Name: Berserker
-	Description: Inflige 150% de dégats supplémentaires tout en subissant 5 dégats supplémentaires à chaque coup
-}
-
-RainOfArrows: {
-	// Name: Flurry
-	// Description: Shoot a flurry of projectiles based on your held ranged weapon towards the cursor after a short delay
-}
-
-MoltenShield: {
-	// Name: Molten Shield
-	// Description: Gain a temporary health buffer that stops 75% of incoming damage until broken.
-}
-
-BloodSiphon: {
-	// Name: Blood Siphon
-	// Description: Consume all nearby Bloodclot stacks to heal 3 health per stack. Max of 30 stacks.
-}
-
-FetidCarapace: {
-	// Name: Fetid Carapace
-	// Description: Gain some orbital projectiles that protect you from enemies and their projectiles.
-}
-
-Fireball: {
-	Name: Boule de Feu
-	Description: Lancez une boule de feu explosive à dégâts élevés qui a une chance de brûler les ennemis.
-}
-
-IceBolt: {
-	Name: "Éclair de Glace "
-	Description: Lancez un éclair de glace qui glace un ennemi qu'il touche.
-}
+﻿LevelLine: (Niveau {0}/{1})
+  ManaLine: Coute {0} mana
+  NotEnoughMana: Coute [c/FF6666:{0} mana]
+  NoWeaponLine: Aucune arme requise
+  NoKeybindLine: Aucune touche détectée
+  DurationLine: Dure {0} secondes
+  CooldownLine: "{0} seconde de recharge"
+  KeybindLine: Appuyez sur {0} pour utiliser
+  NeedsWeapon: Besoin d'un objet {0} pour être porté
+  BaseDamage: Inflige {0} de dommage de base
+  CantEquip: Ne peut équiper la compétence : {0}
+  Berserk: {
+    Name: Berserker
+    Description: Inflige 150% de dégats supplémentaires tout en subissant 5 dégats supplémentaires à chaque coup
+  }
+  Nova: {
+    Name: Nova
+    Description: Créez une onde de choc autour de vous basée sur les dégâts de l'arme magique que vous tenez
+  }
+  Fireball: {
+    Name: Boule de Feu
+    Description: Lancez une boule de feu explosive à dégâts élevés qui a une chance de brûler les ennemis.
+  }
+  IceBolt: {
+    Name: "Éclair de Glace "
+    Description: Lancez un éclair de glace qui glace un ennemi qu'il touche.
+  }
+  RainOfArrows: {
+    Name: "Rafale "
+    Description: Tirez une rafale de projectiles à partir de votre arme à distance vers le curseur après un court délai.
+  }
+  MoltenShield: {
+    Name: Bouclier en fusion
+    Description: Obtenez un bouclier de santé temporaire qui bloque 75% des dégâts subis jusqu'à ce qu'il soit détruit.
+  }
+  BloodSiphon: {
+    Name: Siphon Sanguin
+    Description: Consomme tous les effets de Caillot sanguin à proximité pour restaurer 3 points de vie par effet. Maximum de 30 effets.
+  }
+  FetidCarapace: {
+    Name: Carapace Fétide
+    Description: Obtenez des projectiles orbitaux qui vous protègent contre les ennemis et leurs projectiles.
+  }

@@ -1,362 +1,163 @@
-Rarity: {
-	// Normal: ""
-	Magic: Mágico
-	Rare: Raro
-	Unique: Único
-}
-
-Tooltips: {
-	// Cloned: Cloned
-	Corrupted: Corrupto
-	// Tier: Tier:
-	// Level: Item level:
-	// Damage: Damage
-	// Defense: Defense
-	// Pickaxe: Pickaxe Power
-	// Axe: Axe Power
-	// Hammer: Hammer Power
-	// ManaCost: Mana Cost
-	// AttackSpeed: Attack Speed
-	// CastSpeed: Cast Speed
-	// BuildBlocked: Blocked by the energies in the domain
-	// ShootBlocked: Will be replaced by {0} [i:{1}] when shot
-}
-
-Influence: {
-	// None: ""
-	// Lunar: "Lunar "
-	// Solar: "Solar "
-}
-
-Chestplate: {
-	// Name: Chestplate
-
-	Prefixes: {
-		// 0: Enduring
-		// 1: Dreadknight's
-		// 2: Dragon
-		// 3: Golem
-		// 4: Warden's
-		// 5: Protected
-	}
-
-	Suffixes: {
-		// 0: Core
-		// 1: Heart
-		// 2: Plate
-		// 3: Scale
-		// 4: Essence
-	}
-}
-
-Helmet: {
-	// Name: Helmet
-
-	Prefixes: {
-		// 0: Adept
-		// 1: Tattered
-		// 2: Enchanted
-		// 3: Beautiful
-		// 4: Strange
-	}
-
-	Suffixes: {
-		// 0: Drape
-		// 1: Dome
-		// 2: Thought
-		// 3: Vision
-		// 4: Maw
-	}
-}
-
-Leggings: {
-	// Name: Leggings
-
-	Prefixes: {
-		// 0: Eagle
-		// 1: Swift
-		// 2: Feathered
-		// 3: Spiked
-		// 4: Buckled
-	}
-
-	Suffixes: {
-		// 0: Boots
-		// 1: Treads
-		// 2: Greaves
-		// 3: Tassets
-		// 4: Leggings
-	}
-}
-
-Battleaxe: {
-	// Name: Battle Axe
-	// AltUse: Right-click to sacrifice 5 health to increase damage given and taken temporarily.
-
-	Prefixes: {
-		// 0: Brutal
-		// 1: Savage
-		// 2: Cleaving
-		// 3: War
-		// 4: Bloodthirsty
-	}
-
-	Suffixes: {
-		// 0: Fury
-		// 1: Cleaver
-		// 2: Ravage
-		// 3: Hew
-		// 4: Slayer
-	}
-}
-
-Boomerang: {
-	// Name: Boomerang
-	// AltUse: Right-click to send the boomerang in a quick spiral around you.
-
-	Prefixes: {
-		// 0: Spiraling
-		// 1: Quick
-		// 2: Razor
-		// 3: Enchanted
-		// 4: Storm
-	}
-
-	Suffixes: {
-		// 0: Return
-		// 1: Slice
-		// 2: Glide
-		// 3: Arc
-		// 4: Edge
-	}
-}
-
-Bow: {
-	// Name: Bow
-	// AltUse: Right-click to charge and fire a significantly stronger and faster shot.
-
-	Prefixes: {
-		// 0: Swift
-		// 1: Piercing
-		// 2: Hunter's
-		// 3: Gale
-		// 4: Vengeful
-	}
-
-	Suffixes: {
-		// 0: Flight
-		// 1: Song
-		// 2: Wind
-		// 3: Thorn
-		// 4: Sight
-	}
-}
-
-Staff: {
-	// Name: Staff
-	// AltUse: Right-click to overcharge your mana for a short time, summoning projectiles four times faster and automatically firing them
-
-	Prefixes: {
-		// 0: Arcane
-		// 1: Mystic
-		// 2: Eldritch
-		// 3: Luminous
-		// 4: Sacred
-	}
-
-	Suffixes: {
-		// 0: Wrath
-		// 1: Whisper
-		// 2: Beacon
-		// 3: Veil
-		// 4: Echo
-	}
-}
-
-// Broadsword.Name: Broadsword
-
-Sword: {
-	// Name: Sword
-	// AltUse: Right-click to summon a spirit from your blade that lunges forward, healing you for 15 health on hitting an enemy.
-
-	Prefixes: {
-		// 0: Sharp
-		// 1: Harmonic
-		// 2: Enchanted
-		// 3: Shiny
-		// 4: Strange
-	}
-
-	Suffixes: {
-		// 0: Drape
-		// 1: Dome
-		// 2: Thought
-		// 3: Vision
-		// 4: Maw
-	}
-}
-
-# Spellbook is the same as Staff at the moment.
-Spellbook: {
-	// Name: Spellbook
-
-	Prefixes: {
-		// 0: Arcane
-		// 1: Mystic
-		// 2: Eldritch
-		// 3: Luminous
-		// 4: Sacred
-	}
-
-	Suffixes: {
-		// 0: Wrath
-		// 1: Whisper
-		// 2: Beacon
-		// 3: Veil
-		// 4: Echo
-	}
-}
-
-Wand: {
-	// Name: Wand
-	// AltUse: Right-click to summon 4x the normal mana cost to send a flurry of projectiles forward
-
-	Prefixes: {
-		// 0: Forbidden
-		// 1: Ancient
-		// 2: Holy
-		// 3: Ominous
-		// 4: Sacred
-	}
-
-	Suffixes: {
-		// 0: of Fury
-		// 1: of Creation
-		// 2: of Destruction
-		// 3: of Memories
-		// 4: of Death
-	}
-}
-
-Whip: {
-	// Name: Whip
-	// AltUse: Right-click to whip once in front of and once behind you in quick succession.
-
-	Prefixes: {
-		// 0: Searing
-		// 1: Venomous
-		// 2: Barbed
-		// 3: Fiery
-		// 4: Thunderous
-	}
-
-	Suffixes: {
-		// 0: Lash
-		// 1: Fang
-		// 2: Scourge
-		// 3: Strike
-		// 4: Snap
-	}
-}
-
-Javelin: {
-	// Name: Javelin
-	// AltUse: Right-click to dash towards the cursor, stabbing the first enemy you hit for high damage.
-
-	Prefixes: {
-		// 0: Piercing
-		// 1: Sharp
-		// 2: Barbed
-		// 3: Sleek
-		// 4: Powerful
-	}
-
-	Suffixes: {
-		// 0: Lash
-		// 1: Fang
-		// 2: Scourge
-		// 3: Strike
-		// 4: Snap
-	}
-}
-
-Grimoire: {
-	// Name: Grimoire
-	# This is the alt use line but is used to describe basic functionality. Change to be more clear?
-	// AltUse: Command your conjurations to go towards your cursor.
-
-	Prefixes: {
-		// 0: Ancient
-		// 1: Forsaken
-		// 2: Cursed
-		// 3: Vile
-		// 4: Jealous
-	}
-
-	Suffixes: {
-		// 0: of Sin
-		// 1: of Death
-		// 2: of Fury
-		// 3: of Limbo
-		// 4: of Hell
-	}
-}
-
-WarShield: {
-	// Name: War Shield
-	// AltUse: Right-click to block or reflect projectiles and incoming hits, dealing damage in return.
-
-	Prefixes: {
-		// 0: Hardened
-		// 1: Worn
-		// 2: Blessed
-		// 3: Reinforced
-		// 4: Great
-	}
-
-	Suffixes: {
-		// 0: of Bashing
-		// 1: of Power
-		// 2: of Strength
-		// 3: of Resilience
-		// 4: of Conquery
-	}
-}
-
-// Offhand.Name: Offhand
-
-Shield: {
-	// Name: Shield
-	// Block: "[i:278] +{0}% to block"
-	// Speed: "[i:278] -{0}% movement speed"
-
-	Prefixes: {
-		// 0: Rigid
-		// 1: Battle-Hardened
-		// 2: Ornate
-		// 3: Roughened
-		// 4: Ancient
-	}
-
-	Suffixes: {
-		// 0: of Kings
-		// 1: of Death
-		// 2: of Isolation
-		// 3: of Cowardice
-		// 4: of Protection
-	}
-}
-
-// Map.Name: Map
-ExplorableMap: {
-    Name: Mapa Explorável
-}
-BossMap: {
-    Name: Mapa de Chefe
-}
-// None.Name: None
-// Magic.Name: Magic
-// Ranged.Name: Ranged
-// Melee.Name: Melee
-// Summon.Name: Summon
-// Accessory.Name: Accessory
+﻿Rarity: {
+    Normal: Normalny
+    Magic: Magiczny
+    Rare: Rzadki
+    Unique: Unikatowy
+  }
+  Tooltips: {
+    Cloned: Sklonowany
+    Corrupted: Skorumpowany
+    Tier: Poziom
+    Level: Poziom przedmiotu
+    Damage: Obrażenia
+    Defense: Obrona
+    Pickaxe: Moc kilofa
+    Axe: Moc topora
+    Hammer: Moc młota
+    ManaCost: Koszt many
+    CastSpeed: Szybkość Czarowania
+    AttackSpeed: Szybkość Ataku
+  }
+  Influence: {
+    None: Żaden
+    Lunar: Księżycowy
+    Solar: Słoneczny
+  }
+  Chestplate: {
+    Name: Napierśnik
+    Prefixes: {
+      0: Wytrzymały
+      1: Rycerza strachu
+      2: Smoczy
+      3: Golemi
+      4: Opiekuna
+      5: Chroniony
+    }
+    Suffixes: {
+      0: Rdzeń
+      1: Serce
+      2: Płytowy
+      3: Łuskowy
+      4: Esencja
+    }
+  }
+  Helmet: {
+    Name: Hełm
+    Prefixes: {
+      0: Adept
+      1: Obszarpany
+      2: Zaczarowany
+      3: Piękny
+      4: Dziwny
+    }
+    Suffixes: {
+      1: Kopuła
+      2: Myśli
+      3: Wizja
+      4: Paszcza
+      0: Drapowany
+    }
+  }
+  Leggings: {
+    Name: Spodnie
+    Prefixes: {
+      0: Orzeł
+      1: Zwinny
+      2: Lekki
+      3: Kolczasty
+      4: Zapięty
+    }
+    Suffixes: {
+      0: Buty
+      4: Spodnie
+      3: Tasety
+      1: Podeszwy
+      2: Nagolenniki
+    }
+  }
+  Sword: {
+    Prefixes: {
+      3: Lśniacy
+      4: Dziwny
+      2: Zaklęty
+    }
+    Name: Miecz
+  }
+  WarShield: {
+    Prefixes: {
+      1: znoszony
+      2: świety
+      3: wzmocniony
+      4: wielki
+    }
+    Suffixes: {
+      1: mocy
+      2: siły
+      3: odporności
+      4: podboju
+    }
+  }
+  Shield: {
+    Suffixes: {
+      0: królów
+      1: śmierci
+      2: izolacji
+      4: ochrony
+      3: tchórzostwa
+    }
+    Name: Tarcza
+    Block: "[i:278] + {0}% do bloku"
+    Speed: "[i:278] - {0}% prędkości ruchu"
+  }
+  Magic: {
+    Name: Magiczny
+  }
+  Battleaxe: {
+    Name: Topór Wojenny
+    AltUse: "Wciśnij prawy przycisk myszy by poświęcić 5 punktów zdrowia by tymczasowo zwiększyć obrażenia zadawane i otrzymywane "
+    Prefixes: {
+      0: Brutalny
+      1: Okrutny
+      2: Rozłupywujący
+      3: Bojowy
+      4: Krwiożerczy
+    }
+    Suffixes: {
+      0: Wściekły
+      2: Dewastujący
+      3: Rąbiący
+      1: Tnący
+      4: Zabójczy
+    }
+  }
+  Accessory: {
+    Name: Akcesoria
+  }
+  Summon: {
+    Name: Przywoływanie
+  }
+  Melee: {
+    Name: Wręcz
+  }
+  Ranged: {
+    Name: Dystansowe
+  }
+  None: {
+    Name: Żadne
+  }
+  Map: {
+    Name: Mapa
+  }
+  Boomerang: {
+    Name: Bumerang
+    AltUse: Kliknij prawym przyciskiem myszy, aby wysłać bumerang w szybki spiralny ruch wokół ciebie.
+    Prefixes: {
+      0: Wirujący
+      1: Szybki
+      3: Zaczarowany
+      4: Burzowy
+    }
+    Suffixes: {
+      0: Powracający
+    }
+  }

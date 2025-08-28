@@ -1,6 +1,1 @@
-// NotEnoughMana: Not enough mana to cast
-// NeedsWeapon: Needs a {0} weapon to use
-// RangedWeaponConsumable: Needs a non-consumable weapon
-// WeaponInvalid: Held weapon is invalid for this skill
-// NoAmmo: Needs ammo
-// MissingAffix: Needs +{0} affix on any equipped item
+﻿NotEnoughMana: Zbyt mała ilość punktów many by rzucić czar

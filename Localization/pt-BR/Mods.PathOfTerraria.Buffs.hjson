@@ -1,106 +1,73 @@
-BattleAxeBuff: {
-	// DisplayName: Battle Rage
-	// Description: Increased damage and increased taken damage
-}
-
-RageBuff: {
-	// DisplayName: Berserk
-	// Description: Increased damage and greatly increased knockback
-}
-
-MoltenShieldBuff: {
-	// DisplayName: Molten Shell
-	/* Description:
-		'''
-		Gain a temporary shield
-		Gain a small amount of defense
-		''' */
-}
-
-BloodclotDebuff: {
-	// DisplayName: BloodclotDebuff
-	// Description: ""
-	// DeathText: "{0} couldn't stop the bleeding"
-}
-
-ArmorShredDebuff: {
-	// DisplayName: Armor Shred Debuff
-	// Description: ""
-}
-
-ShockDebuff: {
-	// DisplayName: Shock
-	// Description: 10% increased damage taken
-}
-
-RootedDebuff: {
-	// DisplayName: Rooted Debuff
-	// Description: You can't move!
-}
-
-GodlikeBuff: {
-	// DisplayName: Godlike Buff
-	// Description: You are immune to all direct damage
-}
-
-RestorationBuff: {
-	// DisplayName: Restoration Buff
-	// Description: Provides massive life regeneration
-}
-
-HardinessBuff: {
-	// DisplayName: Hardiness Buff
-	/* Description:
-		'''
-		+10 defense
-		+20% block chance
-		''' */
-}
-
-HasteBuff: {
-	// DisplayName: Haste Buff
-	/* Description:
-		'''
-		+20% movement speed
-		+15% attack speed
-		''' */
-}
-
-UnstoppableBuff: {
-	// DisplayName: Unstoppable Buff
-	/* Description:
-		'''
-		+50% shielding health
-		Immunity to Chilled
-		''' */
-}
-
-FrostflameDebuff: {
-	// DisplayName: Frostflame Debuff
-	// Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
-}
-
-SporeDebuff: {
-	// DisplayName: Spore Debuff
-	// Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
-}
-
-BlindedDebuff: {
-	// DisplayName: Blinded
-	// Description: Attacks have a chance to miss
-}
-
-HasteChargeBuff: {
-	// DisplayName: Haste Charge Buff
-	// Description: Increases attack speed and movement speed by {0}%
-}
-
-AegisChargeBuff: {
-	// DisplayName: Aegis Charge Buff
-	// Description: Increases max health by {0} and defense by {1}
-}
-
-FocusChargeBuff: {
-	// DisplayName: Focus Charge Buff
-	// Description: Increases critical strike chance and multiplier by {0}%
-}
+﻿BattleAxeBuff: {
+    DisplayName: Szał Bitewny
+    Description: Zwiększone obrażenia i zwiększone otrzymywane obrażenia
+  }
+  RageBuff: {
+    Description: Zwiększone obrażenia i znacznie zwiększony odrzut
+    DisplayName: Szał
+  }
+  ArmorShredDebuff: {
+    DisplayName: Osłabienie Pancerza
+  }
+  RootedDebuff: {
+    DisplayName: Ukorzeniony
+    Description: Nie możesz się ruszyć!
+  }
+  ShockDebuff: {
+    DisplayName: Wstrząs
+    Description: 10% zwiększonych otrzymywanych obrażeń
+  }
+  BloodclotDebuff: {
+    DisplayName: Zakrzep
+    DeathText: "{0} nie mógł zatrzymać krwawienia"
+  }
+  MoltenShieldBuff: {
+    DisplayName: Stopiona Skorupa
+    Description:
+      '''
+      Daje tymczasową tarczę
+      Daje małą ilość defensywy
+      '''
+  }
+  GodlikeBuff: {
+    DisplayName: Boskie Wzmocnienie
+    Description: Jesteś odporny na wszystkie bezpośrednie obrażenia
+  }
+  RestorationBuff: {
+    DisplayName: Odnowienie
+    Description: Zapewnia olbrzymią regenerację zdrowia
+  }
+  HardinessBuff: {
+    Description:
+      '''
+      +10 defensywy
+      +20% szans na blok
+      '''
+    DisplayName: Odporność
+  }
+  HasteBuff: {
+    Description:
+      '''
+      +20% prędkości ruchu
+       15% szybkości ataku
+      '''
+    DisplayName: Pośpiech
+  }
+  UnstoppableBuff: {
+    DisplayName: Niepowstrzymany
+    Description:
+      '''
+      +50% ochrony zdrowia
+      Odporność na Schłodzenie
+      '''
+  }
+  FrostflameDebuff: {
+    DisplayName: Płomień Mrozu
+  }
+  SporeDebuff: {
+    DisplayName: Zarodniki
+  }
+  BlindedDebuff: {
+    DisplayName: Oślepienie
+    Description: Ataki mają szanse na chybienie
+  }

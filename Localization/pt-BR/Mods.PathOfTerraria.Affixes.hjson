@@ -1,78 +1,199 @@
-# Each Affix comes with a standard, pre-generated line:
-# "{1}{0} to stat"
-# The {0} is the value of the affix, and the {1} is the sign.
-# An in-game line would look like: -5.58 to stat
-// IncreasedDamageAffix.Description: "{1}{0}% damage"
-// DefenseItemAffix.Description: "{1}{0} defense"
-// EnduranceItemAffix.Description: "{1}{0}% increased damage resistance"
-// ResistanceHelmetAffix.Description: "{1}{0}% shorter debuffs"
-// BuffBoostHelmetAffix.Description: "{1}{0}% longer beneficial buffs"
-// ThornyArmorAffix.Description: "{1}{0} reflected flat damage"
-// BaseLifeAffix.Description: "{1}{0} max health"
-// AddedLifeAffix.Description: "{1}{0}% max health"
-// MultipliedLifeAffix.Description: "{1}{0}% max health multiplier"
-// FlatLifeAffix.Description: "{1}{0} flat max health"
-// LifeRegenAffix.Description: "{1}{0}% life regeneration"
-// LifeRegenMultiplierAffix.Description: "{1}{0}% life regeneration multiplier"
-// LifePotionPowerAffix.Description: "{1}{0}% stronger healing potions"
-// LifePotionCapAffix.Description: "{1}{0} max health potions"
-// LifePotionCooldownAffix.Description: "{1}{0}% mana potion cooldown"
-// ManaAffix.Description: "{1}{0} max mana"
-// ManaRegenAffix.Description: "{1}{0}% mana regeneration"
-// ManaPotionPowerAffix.Description: "{1}{0}% stronger mana potions"
-// ManaPotionCapAffix.Description: "{1}{0} max mana potions"
-// ManaPotionCooldownAffix.Description: "{1}{0}% shorter mana potion cooldown"
-// PiercingItemAffix.Description: "{1}{0}% defense piercing"
-// AddedKnockbackItemAffix.Description: "{1}{0} knockback"
-// IncreasedKnockbackItemAffix.Description: "{1}{0}% knockback"
-// FlatKnockbackItemAffix.Description: "{1}{0} flat knockback"
-// ChanceToApplyOnFireGearAffix.Description: "{1}{0} chance to apply On Fire!"
-// ChanceToApplyArmorShredGearAffix.Description: "{1}{0} chance to apply Armor Shred"
-// ChanceToApplyBloodclotItemAffix.Description: "{1}{0}% chance to apply Bloodclot"
-// ChanceToApplyPoisonItemAffix.Description: "{1}{0}% chance to apply Poisoned"
-// BuffPoisonedHitsAffix.Description: "{1}{0}% damage to poisoned enemies"
-// MovementSpeedAffix.Description: "{1}{0}% movement speed"
-// HealOnKillingBurningEnemiesAffix.Description: "{1}{0} health gained on killing a burned enemy"
-// IncreasedAttackSpeedAffix.Description: "{1}{0}% faster attack speed"
-// AddedAttackSpeedAffix.Description: "{1}{0}% increased attack speed"
-// AddedDamageAffix.Description: "{1}{0} flat damage"
-// MoltenShellAffix.Description: "{1}{0} to Molten Shell"
-// BloodSiphonAffix.Description: "{1}{0} to Blood Siphon"
-// FetidCarapaceAffix.Description: "{1}{0} to Fetid Carapace"
-
-NoFallDamageAffix: {
-	// Description: Immunity to fall damage
-	// Removed: Vulnerable to fall damage
-}
-
-// PercentageIncreasedCriticalStrikeChanceAffix.Description: "{1}{0}% critical strike chance"
-// PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% critical strike multiplier"
-// FlatCriticalStrikeChanceAffix.Description: "{1}{0} flat critical strike chance"
-// PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% critical strike damage"
-// ChanceToApplyShockGearAffix.Description: "{1}{0}% to apply Shock"
-// BuffShockedEffectAffix.Description: "{1}{0}% multiplier to Shock effect"
-// IncreaseBlockAffix.Description: "{1}{0}% increased block chance"
-// StrengthItemAffix.Description: "{1}{0} strength"
-// DexterityItemAffix.Description: "{1}{0} dexterity"
-// IntelligenceItemAffix.Description: "{1}{0} intelligence"
-// DoubleLife.Prefix: Hearty
-// SiphonerAffix.Prefix: Siphoning
-// FastAffix.Prefix: Swift
-// AggravatorAffix.Prefix: Aggravating
-// DamageAffix.Prefix: Harmful
-// ChanceToApplyRootedGearAffix.Description: "{1}{0}% chance to apply Rooted"
-// MapDamageAffix.Description: "{1}{0}% increased mob damage"
-// MapBossHealthAffix.Description: "{1}{0}% increased boss health"
-// MapMobCritChanceAffix.Description: "{1}{0}% increased enemy crit chance"
-// MapMobChillChanceAffix.Description: "{1}{0}% chance for enemies to inflict Chilled"
-// MapIncreasedBehaviourAffix.Description: "{1}{0}% increased enemy behavior speed"
-// ColdAffix.Prefix: Freezing
-// LightningAffix.Prefix: Shocking
-// FlamingAffix.Prefix: Flaming
-// StalwartAffix.Prefix: Stalwart
-// FireResistItemAffix.Description: "{1}{0}% fire resistance"
-// ColdResistItemAffix.Description: "{1}{0}% cold resistance"
-// LightningResistItemAffix.Description: "{1}{0}% lightning resistance"
-// FocusChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Focus Charge on kill"
-// HasteChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Haste Charge on kill"
-// AegisChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Aegis Charge on kill"
+﻿FlatLifeAffix: {
+    Description: "{1}{0}% płytkie maksymalne życie"
+  }
+  MultipliedLifeAffix: {
+    Description: "{1}{0}% zwiększenie maksymalnego zdrowia"
+  }
+  DefenseItemAffix: {
+    Description: "{1}{0} defensywy"
+  }
+  AddedLifeAffix: {
+    Description: "{1}{0}% do maksymalnego zdrowia"
+  }
+  IncreasedDamageAffix: {
+    Description: "{1}{0}% zwiększone obrażenia"
+  }
+  EnduranceItemAffix: {
+    Description: "{1}{0}% zwiększona odporność na obrażenia"
+  }
+  BuffBoostHelmetAffix: {
+    Description: "{1}{0}% dłuższe beneficjujące wzmocnienia"
+  }
+  ThornyArmorAffix: {
+    Description: "{1}{0} odbite płytkie obrażenia"
+  }
+  BaseLifeAffix: {
+    Description: "{1}{0} maksymalne zdrowie"
+  }
+  ResistanceHelmetAffix: {
+    Description: "{1}{0}% krótsze osłabienia"
+  }
+  LifeRegenAffix: {
+    Description: "{1}{0}% regeneracji zdrowia"
+  }
+  LifePotionPowerAffix: {
+    Description: "{1}{0}% silniejsze mikstury zdrowia"
+  }
+  LifePotionCapAffix: {
+    Description: "{1}{0} do maksymalnej ilości mikstur zdrowia"
+  }
+  ManaAffix: {
+    Description: "{1}{0} maksymalnej many"
+  }
+  ManaRegenAffix: {
+    Description: "{1}{0}% regeneracji many"
+  }
+  LifeRegenMultiplierAffix: {
+    Description: "{1}{0}% więcej regeneracji życia"
+  }
+  LifePotionCooldownAffix: {
+    Description: "{1}{0}% czasu oczekiwania na miksturę many"
+  }
+  ManaPotionPowerAffix: {
+    Description: "{1}{0}% silniejsze mikstury many"
+  }
+  ManaPotionCapAffix: {
+    Description: "{1}{0} do maksymalnej ilości mikstur many"
+  }
+  ManaPotionCooldownAffix: {
+    Description: "{1}{0}% krótszy czas oczekiwania na miksturę many"
+  }
+  PiercingItemAffix: {
+    Description: "{1}{0}% przebicia obrony"
+  }
+  AddedKnockbackItemAffix: {
+    Description: "{1}{0} odrzutu"
+  }
+  IncreasedKnockbackItemAffix: {
+    Description: "{1}{0}% zwiększony odrzut"
+  }
+  FlatKnockbackItemAffix: {
+    Description: "{1}{0} bazowego odrzutu"
+  }
+  BuffPoisonedHitsAffix: {
+    Description: "{1}{0}% obrażeń przeciw zatrutym przeciwnikom"
+  }
+  MovementSpeedAffix: {
+    Description: "{1}{0}% prędkości ruchu"
+  }
+  HealOnKillingBurningEnemiesAffix: {
+    Description: "{1}{0} zdobytego życia po zabiciu podpalonego przeciwnika"
+  }
+  IncreasedAttackSpeedAffix: {
+    Description: "{1}{0}% zwiększona szybkość ataku"
+  }
+  AddedAttackSpeedAffix: {
+    Description: "{1}{0}% zwiększona szybkość ataku"
+  }
+  AddedDamageAffix: {
+    Description: "{1}{0} bazowych obrażeń"
+  }
+  NoFallDamageAffix: {
+    Description: Odporność na obrażenia od upadku
+    Removed: Podatność na obrażenia od upadku
+  }
+  PercentageIncreasedCriticalStrikeChanceAffix: {
+    Description: "{1}{0}% zwiększona szansa na trafienie krytyczne"
+  }
+  PercentageCriticalStrikeMultiplierAffix: {
+    Description: "{1}{0}% zwiększone obrażenia od trafień krytycznych"
+  }
+  FlatCriticalStrikeChanceAffix: {
+    Description: "{1}{0} bazowych szans na trafienie krytyczne"
+  }
+  PercentageIncreasedCriticalStrikeDamageAffix: {
+    Description: "{1}{0}% obrażeń od trafień krytycznych"
+  }
+  ChanceToApplyShockGearAffix: {
+    Description: "{1}{0}% do szans na nałożenie wstrząsu"
+  }
+  BuffShockedEffectAffix: {
+    Description: "{1}{0}% zwiększonego efektu wstrząsu"
+  }
+  IncreaseBlockAffix: {
+    Description: "{1}{0}% zwiększona szansa na blok"
+  }
+  StrengthItemAffix: {
+    Description: "{1}{0} siły"
+  }
+  IntelligenceItemAffix: {
+    Description: "{1}{0} inteligencji"
+  }
+  DexterityItemAffix: {
+    Description: "{1}{0} zręczności"
+  }
+  DoubleLife: {
+    Prefix: Krzepki
+  }
+  FastAffix: {
+    Prefix: Szybki
+  }
+  DamageAffix: {
+    Prefix: Szkodliwy
+  }
+  ChanceToApplyRootedGearAffix: {
+    Description: "{1}{0}% szans na nałożenie ukorzenienia"
+  }
+  MapDamageAffix: {
+    Description: "{1}{0}% zwiększonych obrażeń stworów"
+  }
+  MapBossHealthAffix: {
+    Description: "{1}{0}% zwiększonego życia Bossa"
+  }
+  MapMobCritChanceAffix: {
+    Description: "{1}{0}% zwiększonych szans na trafienie krytyczne przeciwników"
+  }
+  MapIncreasedBehaviourAffix: {
+    Description: "{1}{0}% zwiększonej szybkości akcji przeciwników"
+  }
+  MapMobChillChanceAffix: {
+    Description: "{1}{0}% szansy na nałożenie schłodzenia"
+  }
+  ColdAffix: {
+    Prefix: Zamrażanie
+  }
+  LightningAffix: {
+    Prefix: Wstrząsający
+  }
+  FlamingAffix: {
+    Prefix: Ognisty
+  }
+  StalwartAffix: {
+    Prefix: Rosły
+  }
+  FireResistItemAffix: {
+    Description: "{1}{0}% odporności na ogień"
+  }
+  ColdResistItemAffix: {
+    Description: "{1}{0}% odporności na lód"
+  }
+  LightningResistItemAffix: {
+    Description: "{1}{0} odporności na elektryczność"
+  }
+  MoltenShellAffix: {
+    Description: "{1}{0} do Stopionej Skorupy"
+  }
+  ChanceToApplyOnFireGearAffix: {
+    Description: "{1}{0} szansy na nałożenie W Płomieniach!"
+  }
+  ChanceToApplyArmorShredGearAffix: {
+    Description: "{1}{0} szans do nałożenia Poszarpanej Zbroi"
+  }
+  ChanceToApplyBloodclotItemAffix: {
+    Description: "{1}{0}% szans do nałożenia Zakrzepu"
+  }
+  ChanceToApplyPoisonItemAffix: {
+    Description: "{1}{0}% szans do nałożenia Zatrucia"
+  }
+  BloodSiphonAffix: {
+    Description: "{1}{0} do Wysysania Krwi"
+  }
+  FetidCarapaceAffix: {
+    Description: "{1}{0} do Cuchnącego Pancerza"
+  }
+  SiphonerAffix: {
+    Prefix: Wysysający
+  }
+  AggravatorAffix: {
+    Prefix: Obciążający
+  }

@@ -1,300 +1,158 @@
-Gear: {
-	Buttons: {
-		// Previous: Previous
-		// Next: Next
-	}
+﻿Gear: {
+    Buttons: {
+      Previous: Poprzednia
+      Next: Następna
+    }
+    Pages: {
+      Gear: "Uzbrojenie "
+      Vanity: Przebrania
+      Dyes: Barwniki
+    }
+  }
+  BaseDamage: Bazowe Obrażenia: {0}
+  StatUI: {
+    Help: {
+      Dexterity: Przyznaje 1% dodatkowego globalnej prędkości ataku co 10 punktów
+      Intelligence: Przyznaje 5 dodatkowej maksymalnej many co 10 punktów
+      Strength: Przyznaje 5 dodatkowego maksymalnego życia za każde 10 punktów
+    }
+    LightningResistance: "Odporność na "
+    ColdResistance: Odporność na Zimno
+    FireResistance: Odporność na Ogień
+    Intelligence: Inteligencja
+    Dexterity: Zręczność
+    Strength: Siła
+    BlockCooldown: Czas Odnowienia Bloku
+    MaxBlock: Limit Szansy na Blok
+    BlockChance: Szansa na Blok
+    DamageReduction: Redukcja Obrażeń
+    ManaPotions: MIkstura Many
+    HealthPotions: Mikstura Zdrowia
+    Mana: Mana
+    Level: Poziom
+    Experience: Doświadczenie
+    Life: Życie
+    MaxMinions: Maks. przywołanych stworzeń
+  }
+  DropVisualizer: {
+    SortBy: Sortuj według:
+    UniqueItem: (Unikalny Przedmiot)
+    Level: Poziom
+    Map: Mapa
+    Currency: Waluta
+    Gear: Uzbrojenie
+    Normalize: Normalizacja
+    Count: Ilość
+  }
+  SkillUI: {
+    ChooseSkill: Wybierz umiejętność z Menu Umięjętności by ją użyć.
+    NoSkill: (Brak Umiejetności)
+    NoPassives: To drzewo nie posiada punktów pasywnych.
+    Back: Powrót
+  }
+  InvButtons: {
+    Stats: Statystyki
+    Quest: Zadania
+    Grimoire: Grimoire
+    RestartTutorial: Zrestartuj poradnik
+  }
+  Grimoire: {
+    ClickMe: Kliknij mnie!
+    Storage: Magazyn
+  }
+  Guide: {
+    Show: Pokaż
+    Hide: Ukryj
+    SkipStep: "{$Skip} Krok"
+    SkipGuide: "{$Skip} Wszystko"
+    Skip: Pomiń
+    Next: Następny
+    0:
+      '''
+      Cześć! Witaj w Path of Terraria.
+      Ta modyfikacja znacznie zmienia gre.
+      W zwiazku z tym, ten poradnik wytłumaczy ci zmiany, mechaniki oraz na co warto wypatrywać.
+      Jeśli chcesz pominąć, kliknij klawisz Pomiń Wszystko lub Pomiń krok w każdym momencie.
+      W przeciwnym razie, kliknij Następny
+      '''
+    1:
+      '''
+      Po pierwsze, pasek doświadczenia. Znajduje się on bezpośrednio nad tym oknem dialogowym. 
+      Wrogowie pozostawiają po sobie doświadczenie, zazwyczaj zależy ono od ich siły, co pozwala ci awansować na kolejne poziomy.
+      Za zdobywanie kolejnych poziomów otrzymujesz punkty pasywne i punkty umiejętności. 
+      Kliknij na pasek doświadczenia, aby otworzyć drzewko umiejętności pasywnych.
+      '''
+    2:
+      '''
+      Tutaj znajduje się drzewko umiejętności pasywnych.
+       Jeżeli posiadasz punkty umiejętności pasywnych, możesz je przydzielić do wybranych umiejętności . 
+       Te umiejętności zapewniają bonusy do różnych efektów, takich jak dodatkowe życie, obrażenia lub prędkość. 
+       Kliknij dowolną umiejętność, aby ją przydzielić, a prawym przyciskiem myszy, aby ją cofnąć.
+      '''
+    3: Teraz kliknij na zakładkę „Umiejętności” w lewym górnym rogu.
+    5:
+      '''
+      Wybrane umiejętności zostaną wyświetlone na pasku szybkiego dostępu.
+      Umiejętności mają czas odnowienia po użyciu, którego długość zależy od danej umiejętności.
+      Niektóre umiejętności są odblokowywane poprzez posiadanie określonych przedmiotów.
+      Zamknij menu drzewka (naciśnij klawisz Escape lub kliknij czerwony znak X w prawym górnym rogu).
+      '''
+    4:
+      '''
+      Oto zakładka (debug) Umiejętności.
+      Tutaj można zaznaczyć lub odznaczyć określone umiejętności, co pozwala znacznie zmienić styl gry.
+      W przyszłości umiejętności będą dostępne wraz z postępem w grze zamiast z tego menu.
+      Kliknij dowolną umiejętność, aby ją zaznaczyć.
+      '''
+    13:
+      '''
+      Brawo! To wszystko, co musisz wiedzieć o Path of Terraria.
+      Możesz teraz grać swobodnie (po kliknięciu „Dalej”).
+      Powodzenia i baw się dobrze!
 
-	Pages: {
-		// Gear: Gear
-		// Vanity: Vanity
-		// Dyes: Dyes
-	}
-}
-
-Slots: {
-	// 0: Helmet
-	// 1: Chest
-	// 2: Legs
-	// 3: Accessory 1
-	// 4: Weapon
-	// 5: Necklace
-	// 6: Offhand
-	// 7: Left Ring
-	// 8: Right Ring
-	// 9: Accessory 2
-	// 10: Wings
-	// 11: Accessory 3
-	// 12: Accessory 4
-}
-
-// BaseDamage: Base Damage: {0}
-// Lives: lives left
-
-StatUI: {
-	// CharacterHeader: Progression
-	// Level: Level
-	// Experience: Exp
-	// DefenseHeader: Defense
-	// Life: Life
-	// LifeRegen: Life Regen/s
-	// Mana: Mana
-	// ManaRegen: Mana Regen/s
-	// DamageReduction: Damage Reduction
-	// BlockChance: Block Chance
-	// MaxBlock: Block Chance Cap
-	// BlockCooldown: Block Cooldown
-	// FireResistance: Fire Resistance
-	// ColdResistance: Cold Resistance
-	// LightningResistance: Lightning Resistance
-	// OffenseHeader: Offense
-	// CriticalChance: Critical Strike Chance
-	// AttributesHeader: Attributes
-	// Strength: Strength
-	// Dexterity: Dexterity
-	// Intelligence: Intelligence
-	// ChargesHeader: Charges
-	// HasteChargeChance: Haste Charge Chance On Kill
-	// FocusChargeChance: Focus Charge Chance On Kill
-	// AegisChargeChance: Aegis Charge Chance On Kill
-	// MiscHeader: Misc
-	// MaxMinions: Maximum Minions
-	// HealthPotions: Health Potions
-	// ManaPotions: Mana Potions
-
-	Help: {
-		// Strength: Grants 5 additional maximum health per 10 points
-		// Dexterity: Grants 1% additional global attack speed per 10 points
-		// Intelligence: Grants 5 additional maximum mana per 10 points
-	}
-}
-
-DropVisualizer: {
-	// Gear: Gear
-	// Currency: Currency
-	// Map: Map
-	// Normalize: Normalize
-	// Count: Count
-	// Level: Level
-	// RareMod: +Rare
-	// RateMod: +Rate
-	// Run: Run
-	// SortBy: "Sort by: "
-	// UniqueItem: (Unique Item)
-}
-
-SkillUI: {
-	// Back: Back
-	// NoPassives: This skill has no passives.
-	// NoSkill: (No skill)
-	// ChooseSkill: Choose a skill from the Skill menu to use it.
-}
-
-Guide: {
-	// Next: Next
-	// Skip: Skip
-	// SkipGuide: "{$Skip} All"
-	// SkipStep: "{$Skip} Step"
-	// Hide: Hide
-	// Show: Show
-	# Welcome/hello, explain purpose of tutorial
-	/* 0:
-		'''
-		Hello! Welcome to Path of Terraria.
-		This mod changes the game significantly.
-		As such, this guide will explain the changes, mechanics, and what to look out for.
-		If you want to skip ahead, press the Skip Guide or Skip Step buttons at any time. 
-		Otherwise, hit Next.
-		''' */
-	# Explain EXP bar, click on exp bar
-	/* 1:
-		'''
-		First, the experience bar. It's directly above this dialogue.
-		Enemies drop experience, usually depending on how strong they are, which allows you to level up.
-		Levelling up provides you with Passive Points and Skill Points.
-		Click on the experience bar to open the Passives tree.
-		''' */
-	# Explain Passive tree, ask to [de]allocate.
-	/* 2:
-		'''
-		Here you can see the Passives tree.
-		If you have Passive Points, you can allocate them to the passive(s) of your choosing.
-		These passives provide bonuses to various effects, such as added life, damage, or speed.
-		Click on any passive to allocate it, and right click to deallocate.
-		''' */
-	# Click on skill tab.
-	// 3: Now, click on the Skills tab on the top-left.
-	# Explain the skills tab, select a skill
-	/* 4:
-		'''
-		Here is the (debug) Skills tab.
-		Here you can select and deselect certain abilities, allowing you to change up your gameplay significantly.
-		In the future, skills will be instead obtained through progression instead of this menu.
-		Click on any skill to select it.
-		''' */
-	# Explain skills, close menu
-	/* 5:
-		'''
-		Selected skills will be shown in the hotbar.
-		Skills have a cooldown after use, the length of which depending on the skill.
-		Some abilities are unlocked by holding certain items.
-		Close the tree menu (hit escape or click the red X on the top-right).
-		''' */
-	# Explain weapon requirements, use skill
-	/* 6:
-		'''
-		Now, hit the hotkey under your given skill to use it.
-		If nothing appears under the skill, choose a hotkey in Settings -> Controls -> Use Skill 1 - 3.
-		Some abilities require a specific held item. For example, the Nova skill requires holding a Magic weapon.
-		Hovering over the skill will describe any conditions it needs.
-		''' */
-	# Explain inventory
-	/* 7:
-		'''
-		Next up, the hotbar has changed substantially as well.
-		You'll see that when the first hotbar slot is selected, the hotbar is in Combat mode.
-		It shows your skills, weapon and potions. 
-		When off of the first slot, Normal mode is shown, showing the rest of your hotbar normally.
-		Hit the "Next" button when ready.
-		''' */
-	# Explain inventory pt2, hotswapping
-	/* 8:
-		'''
-		Weapons can only be equipped in the first hotbar slot. Additionally, weapons can be hotswapped.
-		Equip a weapon to the first slot, and press your Weapon Swap hotkey (defaults Z).
-		This should swap out your weapon with either air (allowing you to equip another) or the old swapped weapon.
-		Use the Weapon Swap hotkey to swap a weapon. Swap back and forth as you wish.
-		''' */
-	# Character sheet
-	/* 9:
-		'''
-		Moving on, your character has a few additional stats in Path of Terraria.
-		These can all be found in the Character Sheet, which displays all of your stats such as life and experience.
-		You can open the Sheet with the Toggle Stat Page hotkey (defaults V), or click the paper icon next to your minimap.
-		Open the character sheet and look around. Close it when you want to continue.
-		''' */
-	# Explain the Quest Book
-	/* 10:
-		'''
-		Only a few more things to go. Next is the Quest system. Next to the minimap there is a checkmarked book,
-		clicking it or using the Quest hotkey (default L) will open the Quest Book. Click on it and look around.
-		Here, you can see all of your quests, completed or ongoing.
-		Your first quest will be going to Ravencrest, the first and primary town in the mod.
-		Close it when you are ready to continue.
-		''' */
-	# Enter Ravencrest
-	/* 11:
-		'''
-		Oh? That's new. Seems like this ghostly Raven will guide the way.
-		Follow the Raven to the entrance to Ravencrest.
-		Right click on the Raven Statue at the entrance to go to Ravencrest.
-		''' */
-	# In Ravencrest, exit
-	/* 12:
-		'''
-		Ravencrest is the center of all of the content in the mod. It's also the hub for quests.
-		Quests move the game forward, allow you to beat bosses, and keep you getting stronger and stronger.
-		Look around, talk to people. We suggest talking to all the NPCs and accepting the quests they have for you.
-		Once you're done, go into Settings -> Return and you'll be right back at the entrance to Ravencrest.
-		You'll also see you've gotten an Arcane Obelisk - use that in the overworld to fast travel.
-		This quest will complete once you return to the overworld.
-		''' */
-	# Finish
-	/* 13:
-		'''
-		Well done! That is everything about Path of Terraria you need to know.
-		You can now play freely (once you hit "Next").
-		Good luck and enjoy!
-
-		PS: Don't forget to use the Arcane Obelisk!
-		''' */
-}
-
-# For the various inventory buttons. NoGrimoire is only if the Grimoire isn't in the player's inventory.
-InvButtons: {
-	// Grimoire: Grimoire
-	// NoGrimoire: "[c/888888:(Needs] [i:PathOfTerraria/GrimoireItem] [c/888888:Grimoire)]"
-	// Quest: Quests
-	// Stats: Stats
-	// RestartTutorial: Restart Tutorial
-	// DomainInformation: Domain Information
-}
-
-SubworldHelp: {
-	// MapTier: "[i:4927] Map Tier: "
-	// Affixes: "[i:885] Affixes:"
-	// MapStrength: "[i:29] Map strength modifier: "
-	// ExperienceBoost: "    [i:278] Experience boost: +"
-	// DropRateBoost: "    [i:278] Drop rate increase: +"
-	// DropRarityBoost: "    [i:278] Rarity boost: +"
-	// Info: (Domain Information)
-}
-
-Grimoire: {
-	// Storage: Storage
-	// ClickMe: Click me!
-
-	Help: {
-		/* Materials:
-			'''
-			Here you'll find your materials! Stingers, wings and souls galore! 
-			Each can be used to augment your creations... just click on them!
-			Those parts with affixes will boon your summons, and are NOT consumed.
-			''' */
-		/* Summons:
-			'''
-			As for your creatures...say hello! Hello! These freakish critters can be chosen, allowing you to...help them around. Yes, yes! You must first unlock their life; 
-			the materials in storage will allow you to do so. You can see what you must obtain by clicking on hidden summons.
-			''' */
-		// Ritual: Ah, and your ritual! Here you can place materials full of boons! If your pieces have no boons, they have no effect...
-	}
-}
-
-QuestReminderTitles: {
-	// Dialogue: Dialogue
-	// Reminder: Reminder
-}
-
-Tips: {
-	// Title: Tips
-	// 0: Ravencrest is the hub for quests - check there often!
-	// 1: It's always good to carry a hook! Gets you out of tough spots.
-	// 2: All weapons can be upgraded into magic or rare weapons with the right shards.
-	// 3: Your Grimoire is always hungry - check what you've got by right clicking with it!
-	// 4: Goblin Surveyors are known to hide near Ravencrest. Killing them may have adverse consequences...
-	// 5: The passive tree is never big enough.
-	// 6: The underworld is known to quake after enough bosses are defeated...
-	// 7: The Arcane Obelisk is a great way to customize your way into Ravencrest!
-	// 8: Explorable Maps offer your way into the strongest bosses in the game with a little persistence.
-	// 9: Corrupt Shards are not to be trifled with! Be careful what you use them on!
-	// 10: Alaric is crazy. He also happens to be really good at combat if you ever need the help.
-	// 11: You will be given a few lives to complete all boss domains...don't waste them!
-	// 12: Owls can be found in Ravencrest at night quite often. The Grimoire gnashes its teeth...
-	// 13: Shrines found in Explorable Maps offer unique dangers, and unique rewards...
-	// 14: Skills with trees can be very diverse. Look into them whenever you can!
-	// 15: '''"You can never be too ready. Pack potions." - Elara'''
-	// 16: Effective crafting with shards can boost your weapons substantially.
-	// 17: There is no cost to resetting your passive tree - experiment often!
-	// 18: If you ever find a bug, report it to our Discord!
-	// 19: '''"Speak softly and carry a massive sword." - Thrain Ironfist'''
-	// 20: The Quest Book has reminders for some steps - hover over a step if you're lost.
-	// 21: If you find yourself lost in a domain, explore! It's usually just out of sight.
-	// 22: The Old Man is waiting for you at the steps of the dungeon. Probably.
-	// 23: Magic and Rare enemies will always drop an item of the same rarity.
-	// 24: Uniques are specialized versions of items - if you want to switch up gameplay, try a Unique!
-	// 25: The Character Sheet next to the minimap offers a lot of information.
-	// 26: Reforging no longer exists: affixes take their place!
-	// 27: Some domains offer additional movement. Test your jumps!
-	// 28: Fear controls the Deerclops' domain. Keep in the light.
-	// 29: '''"If you're ever given the choice, choose explosives every time." - Alaric'''
-	// 30: Always check the alt use of your weapons! They're very diverse, and often useful outside of combat.
-}
-
-// PointsRemaining: Points Remaining
-/* ExpBarHover:
-	'''
-	Level {0}
-	Experience: {1} / {2} ({3}%)
-
-	Click to open skill tree
-	''' */
-// AreaLevel: "Area Level: "
+      PS: Nie zapomnij użyć Tajemnego Obelisku!
+      '''
+    6:
+      '''
+      Teraz naciśnij klawisz skrótu przypisany do danej umiejętności, aby jej użyć.
+      Jeśli pod umiejętnością nie ma żadnego klawisza, wybierz skrót w Ustawieniach -> Sterowanie -> Użyj Umiejętności 1-3.
+      Niektóre zdolności wymagają trzymania określonego przedmiotu. Na przykład umiejętność Nova wymaga trzymania magicznej broni.
+      Najedź kursorem na umiejętność, aby zobaczyć, jakie warunki musi spełniać.
+      '''
+    7:
+      '''
+      Kolejna zmiana dotyczy paska szybkiego dostępu, który również uległ znacznym modyfikacjom.
+      Zauważysz, że gdy wybrany jest pierwszy slot paska, włącza się tryb walki.
+      Wyświetlane są wtedy twoje umiejętności, broń i mikstury.
+      Gdy nie masz wybranego pierwszego slotu, włączony jest tryb normalny, pokazujący resztę paska szybkiego dostępu w standardowy sposób.
+      Naciśnij przycisk \"Dalej\”, gdy będziesz gotowy.
+      '''
+    8:
+      '''
+      Bronie można wyposażyć tylko w pierwszym slocie paska szybkiego dostępu. Dodatkowo bronie można szybko wymieniać.
+      Wyposaż broń w pierwszy slot i naciśnij klawisz skrótu do zmiany broni (domyślnie Z).
+      To powinno zamienić twoją broń na pusty slot (pozwalając wyposażyć inną) lub na wcześniej wymienioną broń.
+      Użyj klawisza skrótu do zmiany broni, aby wymienić broń. Przełączaj się między nimi, jak chcesz.
+      '''
+    9:
+      '''
+      Przechodząc dalej, twoja postać w Path of Terraria ma kilka dodatkowych statystyk.
+      Wszystkie można znaleźć w Karcie Postaci, która wyświetla wszystkie twoje statystyki, takie jak życie i doświadczenie.
+      Kartę możesz otworzyć za pomocą klawisza skrótu do przełączania strony statystyk (domyślnie V) lub klikając ikonę kartki obok minimapy.
+      Otwórz kartę postaci i rozejrzyj się. Zamknij ją, gdy będziesz gotowy, aby kontynuować.
+      '''
+  }
+  Lives: Pozostało żyć
+  Slots: {
+    4: Broń
+    5: Naszyjnik
+    6: Poboczne
+    8: Prawy pierścień
+    7: Lewy pierścień
+    10: Skrzydła
+    0: Hełm
+    1: Klatka piersiowa
+    2: Nogi
+    9: Pierwsze akcesorium
+    3: Drugie akcesorium
+  }

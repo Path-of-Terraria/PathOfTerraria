@@ -1,78 +1,199 @@
-# Each Affix comes with a standard, pre-generated line:
-# "{1}{0} to stat"
-# The {0} is the value of the affix, and the {1} is the sign.
-# An in-game line would look like: -5.58 to stat
-IncreasedDamageAffix.Description: "{1}{0}% урона"
-DefenseItemAffix.Description: "{1}{0} защиты"
-EnduranceItemAffix.Description: "{1}{0}% к сопротивлению урону"
-ResistanceHelmetAffix.Description: "{1}{0}% более короткие дебаффы"
-BuffBoostHelmetAffix.Description: "{1}{0}% более продолжительные баффы"
-ThornyArmorAffix.Description: "{1}{0} отраженный прямой урон"
-BaseLifeAffix.Description: "{1}{0} максимальное здоровье"
-AddedLifeAffix.Description: "{1}{0}% от максимального здоровья"
-MultipliedLifeAffix.Description: "{1}{0}% максимальный множитель здоровья"
-FlatLifeAffix.Description: "{1}{0} к максимальному здоворью"
-LifeRegenAffix.Description: "{1}{0}% регенерации здоровья"
-LifeRegenMultiplierAffix.Description: "{1}{0}% множитель регенерации жизни"
-LifePotionPowerAffix.Description: "{1}{0}% более сильные лечебные зелья"
-LifePotionCapAffix.Description: "{1}{0} максимум зелий здоровья"
-LifePotionCooldownAffix.Description: "{1}{0}% перезарядки зелья маны"
-ManaAffix.Description: "{1}{0} максимальная мана"
-ManaRegenAffix.Description: "{1}{0}% регенерация маны"
-ManaPotionPowerAffix.Description: "{1}{0}% более сильные зелья маны"
-ManaPotionCapAffix.Description: "{1}{0} максимум зелий маны"
-ManaPotionCooldownAffix.Description: "{1}{0}% сокращено время восстановления зелья маны"
-PiercingItemAffix.Description: "{1}{0}% пробитие защиты"
-AddedKnockbackItemAffix.Description: "{1}{0} отбрасывание"
-IncreasedKnockbackItemAffix.Description: "{1}{0}% отбрасывания"
-FlatKnockbackItemAffix.Description: "{1}{0} прямое отбрасывание"
-ChanceToApplyOnFireGearAffix.Description: '''{1}{0} шанс применить \"Огонь"\'''
-ChanceToApplyArmorShredGearAffix.Description: '''{1}{0} шанс применить \"Клочок брони"\'''
-ChanceToApplyBloodclotItemAffix.Description: '''{1}{0} шанс применить \"Сгусток крови"\'''
-ChanceToApplyPoisonItemAffix.Description: '''{1}{0}% шанс применить \"Отравление"\'''
-BuffPoisonedHitsAffix.Description: "{1}{0}% урона отравленным врагам"
-MovementSpeedAffix.Description: "{1}{0}% скорость движения"
-HealOnKillingBurningEnemiesAffix.Description: "{1}{0} здоровья при убийстве горящего врага"
-IncreasedAttackSpeedAffix.Description: "{1}{0}% Увеличенная скорость атаки"
-AddedAttackSpeedAffix.Description: "{1}{0}% увеличение скорости атаки"
-AddedDamageAffix.Description: "{1}{0} увеличение урона"
-MoltenShellAffix.Description: "{1}{0} в Расплавленный панцирь"
-BloodSiphonAffix.Description: "{1}{0} в Кровавый вампиризм"
-FetidCarapaceAffix.Description: "{1}{0} к зловонному панцирю"
-
-NoFallDamageAffix: {
-	Description: Иммунитет к повреждениям от падений
-	Removed: Уязвимость к падениям
-}
-
-PercentageIncreasedCriticalStrikeChanceAffix.Description: "{1}{0}% шанс критического удара"
-PercentageCriticalStrikeMultiplierAffix.Description: "{1}{0}% множитель критического удара"
-FlatCriticalStrikeChanceAffix.Description: "{1}{0} фиксированный шанс критического удара"
-PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% урона от критического удара"
-ChanceToApplyShockGearAffix.Description: "{1}{0}% для применения шока"
-BuffShockedEffectAffix.Description: "{1}{0}% множитель эффекта шока"
-IncreaseBlockAffix.Description: "{1}{0}% увеличен шанс блока"
-StrengthItemAffix.Description: "{1}{0} сила"
-DexterityItemAffix.Description: "{1}{0} ловкость"
-IntelligenceItemAffix.Description: "{1}{0} интеллект"
-DoubleLife.Prefix: Сытость
-SiphonerAffix.Prefix: Выкачивание
-FastAffix.Prefix: Быстрый
-AggravatorAffix.Prefix: Отягчающий
-DamageAffix.Prefix: Вредный
-ChanceToApplyRootedGearAffix.Description: "{1}{0}% вероятность применить Обездвиживания "
-MapDamageAffix.Description: "{1}{0}% увеличен урон от мобов"
-MapBossHealthAffix.Description: "{1}{0}% увеличено здоровье босса"
-MapMobCritChanceAffix.Description: "{1}{0}% повышен шанс критического удара противника"
-MapMobChillChanceAffix.Description: "{1}{0}% вероятность того, что враги нанесут эффект «Заморозка»"
-MapIncreasedBehaviourAffix.Description: "{1}{0}% увеличена скорость поведения противника"
-ColdAffix.Prefix: Замораживание
-LightningAffix.Prefix: Шокирующий
-FlamingAffix.Prefix: Пылающий
-StalwartAffix.Prefix: Стойкий
-FireResistItemAffix.Description: "{1}{0}% огнестойкость"
-ColdResistItemAffix.Description: "{1}{0}% устойчивость к холоду"
-LightningResistItemAffix.Description: "{1}{0} Электростойкость"
-// FocusChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Focus Charge on kill"
-// HasteChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Haste Charge on kill"
-// AegisChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Aegis Charge on kill"
+﻿IncreasedDamageAffix: {
+    Description: "{1}{0}% урона"
+  }
+  DefenseItemAffix: {
+    Description: "{1}{0} защиты"
+  }
+  EnduranceItemAffix: {
+    Description: "{1}{0}% к сопротивлению урону"
+  }
+  ResistanceHelmetAffix: {
+    Description: "{1}{0}% более короткие дебаффы"
+  }
+  BuffBoostHelmetAffix: {
+    Description: "{1}{0}% более продолжительные баффы"
+  }
+  ThornyArmorAffix: {
+    Description: "{1}{0} отраженный прямой урон"
+  }
+  BaseLifeAffix: {
+    Description: '''	{1}{0} максимальное здоровье'''
+  }
+  AddedLifeAffix: {
+    Description: '''	{1}{0}% от максимального здоровья'''
+  }
+  MultipliedLifeAffix: {
+    Description: "{1}{0}% максимальный множитель здоровья"
+  }
+  FlatLifeAffix: {
+    Description: "{1}{0} к максимальному здоворью"
+  }
+  LifeRegenAffix: {
+    Description: "{1}{0}% регенерации здоровья"
+  }
+  LifeRegenMultiplierAffix: {
+    Description: "{1}{0}% множитель регенерации жизни"
+  }
+  LifePotionPowerAffix: {
+    Description: "{1}{0}% более сильные лечебные зелья"
+  }
+  LifePotionCapAffix: {
+    Description: "{1}{0} максимум зелий здоровья"
+  }
+  LifePotionCooldownAffix: {
+    Description: "{1}{0}% перезарядки зелья маны"
+  }
+  ManaAffix: {
+    Description: "{1}{0} максимальная мана"
+  }
+  ManaRegenAffix: {
+    Description: '''	{1}{0}% регенерация маны'''
+  }
+  ManaPotionPowerAffix: {
+    Description: "{1}{0}% более сильные зелья маны"
+  }
+  ManaPotionCapAffix: {
+    Description: '''	{1}{0} максимум зелий маны'''
+  }
+  ManaPotionCooldownAffix: {
+    Description: "{1}{0}% сокращено время восстановления зелья маны"
+  }
+  PiercingItemAffix: {
+    Description: "{1}{0}% пробитие защиты"
+  }
+  AddedKnockbackItemAffix: {
+    Description: "{1}{0} отбрасывание"
+  }
+  IncreasedKnockbackItemAffix: {
+    Description: "{1}{0}% отбрасывания"
+  }
+  FlatKnockbackItemAffix: {
+    Description: "{1}{0} прямое отбрасывание"
+  }
+  ChanceToApplyOnFireGearAffix: {
+    Description: '''{1}{0} шанс применить \"Огонь"\'''
+  }
+  ChanceToApplyArmorShredGearAffix: {
+    Description: '''{1}{0} шанс применить \"Клочок брони"\'''
+  }
+  ChanceToApplyBloodclotItemAffix: {
+    Description: '''{1}{0} шанс применить \"Сгусток крови"\'''
+  }
+  ChanceToApplyPoisonItemAffix: {
+    Description: '''{1}{0}% шанс применить \"Отравление"\'''
+  }
+  BuffPoisonedHitsAffix: {
+    Description: "{1}{0}% урона отравленным врагам"
+  }
+  MovementSpeedAffix: {
+    Description: "{1}{0}% скорость движения"
+  }
+  HealOnKillingBurningEnemiesAffix: {
+    Description: "{1}{0} здоровья при убийстве горящего врага"
+  }
+  IncreasedAttackSpeedAffix: {
+    Description: "{1}{0}% Увеличенная скорость атаки"
+  }
+  AddedDamageAffix: {
+    Description: "{1}{0} увеличение урона"
+  }
+  AddedAttackSpeedAffix: {
+    Description: "{1}{0}% увеличение скорости атаки"
+  }
+  MoltenShellAffix: {
+    Description: "{1}{0} в Расплавленный панцирь"
+  }
+  BloodSiphonAffix: {
+    Description: "{1}{0} в Кровавый вампиризм"
+  }
+  FetidCarapaceAffix: {
+    Description: "{1}{0} к зловонному панцирю"
+  }
+  NoFallDamageAffix: {
+    Description: Иммунитет к повреждениям от падений
+    Removed: Уязвимость к падениям
+  }
+  PercentageIncreasedCriticalStrikeChanceAffix: {
+    Description: "{1}{0}% шанс критического удара"
+  }
+  PercentageCriticalStrikeMultiplierAffix: {
+    Description: "{1}{0}% множитель критического удара"
+  }
+  FlatCriticalStrikeChanceAffix: {
+    Description: "{1}{0} фиксированный шанс критического удара"
+  }
+  PercentageIncreasedCriticalStrikeDamageAffix: {
+    Description: "{1}{0}% урона от критического удара"
+  }
+  ChanceToApplyShockGearAffix: {
+    Description: "{1}{0}% для применения шока"
+  }
+  BuffShockedEffectAffix: {
+    Description: "{1}{0}% множитель эффекта шока"
+  }
+  IncreaseBlockAffix: {
+    Description: "{1}{0}% увеличен шанс блока"
+  }
+  StrengthItemAffix: {
+    Description: "{1}{0} сила"
+  }
+  DexterityItemAffix: {
+    Description: "{1}{0} ловкость"
+  }
+  IntelligenceItemAffix: {
+    Description: "{1}{0} интеллект"
+  }
+  DoubleLife: {
+    Prefix: Сытость
+  }
+  SiphonerAffix: {
+    Prefix: Выкачивание
+  }
+  FastAffix: {
+    Prefix: Быстрый
+  }
+  AggravatorAffix: {
+    Prefix: Отягчающий
+  }
+  DamageAffix: {
+    Prefix: Вредный
+  }
+  ChanceToApplyRootedGearAffix: {
+    Description: "{1}{0}% вероятность применить Обездвиживания "
+  }
+  MapDamageAffix: {
+    Description: "{1}{0}% увеличен урон от мобов"
+  }
+  MapBossHealthAffix: {
+    Description: "{1}{0}% увеличено здоровье босса"
+  }
+  MapMobCritChanceAffix: {
+    Description: "{1}{0}% повышен шанс критического удара противника"
+  }
+  MapMobChillChanceAffix: {
+    Description: "{1}{0}% вероятность того, что враги нанесут эффект «Заморозка»"
+  }
+  MapIncreasedBehaviourAffix: {
+    Description: "{1}{0}% увеличена скорость поведения противника"
+  }
+  ColdAffix: {
+    Prefix: Замораживание
+  }
+  LightningAffix: {
+    Prefix: Шокирующий
+  }
+  FlamingAffix: {
+    Prefix: Пылающий
+  }
+  StalwartAffix: {
+    Prefix: '''	Стойкий'''
+  }
+  FireResistItemAffix: {
+    Description: "{1}{0}% огнестойкость"
+  }
+  ColdResistItemAffix: {
+    Description: "{1}{0}% устойчивость к холоду"
+  }
+  LightningResistItemAffix: {
+    Description: "{1}{0} Электростойкость"
+  }

@@ -1,56 +1,51 @@
-Terrain: Génération du terrain
-Tunnels: Forage des tunnels
-PopulatingWorld: Peuplage du monde
-Steps: Construction des escaliers
-Arenas: Construction des arènes
-Pathway: Découverte du chemin
-RavenPass: Plus jamais
-TreesAndLeaves: Ajout des arbres et du feuillage
-Structures: Construction des structures
-// Maze: Escaping the maze
-// PopulatingMetals: Scattering metals
-Hole: Creusage de trous
-Growing: Aggrandissement des terres
-Clouds: Exploration du ciel
-// Space: Escaping the atmosphere
-Scanning: Scannage du terrain
-
-EaterSign: {
-	0: "{0} a été instantanément dévoré."
-	1: "{0} est tombé dans les machoires du Dévoreur."
-	2: Le Dévoreur a trouvé la chair de {0} très savoureuse.
-	3: "{0} a été digéré."
-
-	Names: {
-		// 0: Ronny
-		// 1: Jameson
-		// 2: Evan
-		// 3: Polly
-		// 4: Sylvia
-		// 5: Liara
-		// 6: Svetlana
-		// 7: Obie
-		// 8: Jane-Ashley
-	}
-}
-
-EyeSign: {
-	0: "{0} n'a pas pu regarder en retour."
-	1: L'Œil a dévoré {0}.
-	2: "{0} a été surveillé et débordé."
-	3: "{0} n'a pas pu gérer l'audience."
-
-	Names: {
-		// 0: Wilken
-		// 1: Jimmy
-		// 2: Cammy
-		// 3: Samarah
-		// 4: Pyotir
-		// 5: Aabria
-		// 6: Izzy
-		// 7: Gabe
-		// 8: Roald
-	}
-}
-
-// RemoveBeeLarvaeStep: ""
+﻿Terrain: Génération du terrain
+  Tunnels: Forage des tunnels
+  PopulatingWorld: Peuplage du monde
+  Steps: Construction des escaliers
+  Arenas: Construction des arènes
+  Pathway: Découverte du chemin
+  TreesAndLeaves: Ajout des arbres et du feuillage
+  Structures: Construction des structures
+  Clouds: Exploration du ciel
+  Growing: Aggrandissement des terres
+  RavencrestEntrancePass: Ouverture de Ravencrest
+  Scanning: Scannage du terrain
+  Hole: Creusage de trous
+  EaterSign: {
+    0: "{0} a été instantanément dévoré."
+    1: "{0} est tombé dans les machoires du Dévoreur."
+    2: Le Dévoreur a trouvé la chair de {0} très savoureuse.
+    3: "{0} a été digéré."
+    Names: {
+      0: Ronny
+      1: Jameson
+      2: Evan
+      3: Polly
+      4: Sylvia
+      5: Liara
+      6: Svetlana
+      7: Obie
+      8: Jane-Ashley
+    }
+  }
+  EyeSign: {
+    0: "{0} n'a pas pu regarder en retour."
+    1: L'Œil a dévoré {0}.
+    2: "{0} a été surveillé et débordé."
+    3: "{0} n'a pas pu gérer l'audience."
+    Names: {
+      0: Wilken
+      1: Jimmy
+      2: Cammy
+      3: Samarah
+      4: Pyotir
+      5: Aabria
+      6: Izzy
+      7: Gabe
+      8: Roald
+    }
+  }
+  RavenPass: Plus jamais
+  Maze: S'échapper du labyrinthe
+  PopulatingMetals: Dispersion des métaux
+  Space: Échapper à l'atmosphère

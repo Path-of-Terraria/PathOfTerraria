@@ -1,190 +1,74 @@
-# Passives will always be in the format
-# Name:
-# Tooltip:
-# You do not need to generate these yourself, run the mod and it'll add the keys automatically.
-# The {0} is the value of the passive
-
-IncreasedMeleeDamagePassive: {
-	// Name: Martial Mastery
-	// Tooltip: Increases your melee damage by 5% per level
-}
-
-IncreasedRangedDamagePassive: {
-	// Name: Marksmanship Mastery
-	// Tooltip: Increases your ranged damage by 5% per level
-}
-
-IncreasedMagicDamagePassive: {
-	// Name: Arcane Mastery
-	// Tooltip: Increases your magic damage by 5% per level
-}
-
-IncreasedSummoningDamagePassive: {
-	// Name: Summoning Mastery
-	// Tooltip: Increases your summon damage by 5% per level
-}
-
-AddedLifePassive: {
-	// Name: Empowered Flesh
-	// Tooltip: Increases your maximum life by 20 per level
-}
-
-AddedManaPassive: {
-	// Name: AddedManaPassive
-	// Tooltip: Increases your maximum mana by 20 per level
-}
-
-LongRangePassive: {
-	// Name: Sniper
-	// Tooltip: Increases your damage against distant enemies by 10% per level
-}
-
-CloseRangePassive: {
-	// Name: Close Combatant
-	// Tooltip: Increases your damage against nearby enemies by 10% per level
-}
-
-ChanceToBleedPassive: {
-	// Name: Crimson Dance
-	// Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second, for two + level seconds.
-}
-
-DamageReductionPassive: {
-	// Name: Iron Will
-	// Tooltip: Gain 0.25% damage reduction per level.
-}
-
-DamageReflectionPassive: {
-	// Name: Thorny Exterior
-	// Tooltip: Reflect 10 more damage to enemies that deal contact damage per level.
-}
-
-ChanceToConsumeAmmoPassive: {
-	// Name: Secret Compartment
-	// Tooltip: 5% chance to not consume ammo per level
-}
-
-StartPassive: {
-	// Name: Anchor
-	// Tooltip: Your journey starts here
-}
-
-IncreasedSummonDamagePassive: {
-	// Name: Empowered Horde
-	// Tooltip: Increases all summon damage by 10% per level
-}
-
-IncreasedSentryDamagePassive: {
-	// Name: Steadfast Sentries
-	// Tooltip: Increases your sentries' damage by 10% per level
-}
-
-JewelSocket: {
-	// Name: JewelSocket
-	// Tooltip: ""
-}
-
-LifeRegenPassive: {
-	// Name: Stronger Heart
-	// Tooltip: Increased life regeneration
-}
-
-DecreasedManaCostPassive: {
-	// Name: Decreased Mana Cost
-	// Tooltip: Decreases mana cost by 3% per level
-}
-
-AddedCriticalStrikeChance: {
-	// Name: Added Critical Strike Chance
-	// Tooltip: Adds 2% flat critical strike chance per level
-}
-
-IncreasedCriticalStrikeChance: {
-	// Name: Increased Critical Strike Chance
-	// Tooltip: Adds 10% increased critical strike chance per level
-}
-
-IncreasedCriticalStrikeMultiplier: {
-	// Name: Increased Critical Strike Multiplier
-	// Tooltip: Adds 5% critical strike multiplier per level
-}
-
-ArmorPenetrationPassive: {
-	// Name: Increased Armor Penetration (Melee)
-	// Tooltip: Adds 15% more armor penetration per level
-}
-
-AnchorPassive: {
-	// Name: Anchor
-	// Tooltip: The journey starts here.
-}
-
-StrongerChillPassive: {
-	// Name: Stronger Chill
-	// Tooltip: Chilled debuff slows down enemies 10% more.
-}
-
-ShockChancePassive: {
-	// Name: Energy Field
-	// Tooltip: Adds an additional 5% chance to afflict an enemy with Shock per level.
-}
-
-IncreasedMinionDamagePassive: {
-	// Name: Increased Minion Damage
-	// Tooltip: Increases your minions' damage by 10% per level
-}
-
-AddedAggressionPassive: {
-	// Name: Added Aggression
-	// Tooltip: Adds an additional point of aggro per level.
-}
-
-GlancingBlowsPassive: {
-	// Name: Glancing Blows
-	// Tooltip: Blocking a strike deals 50% damage, but max block chance is increased to 50% and block cooldown is reduced to 1 second.
-}
-
-IncreasedBlockChancePassive: {
-	// Name: Heavy Armor
-	// Tooltip: +10% chance to block an attack per level.
-}
-
-AddedIntelligencePassive: {
-	// Name: Highly Studied
-	// Tooltip: Adds +{0} points to intelligence per level.
-}
-
-AddedStrengthPassive: {
-	// Name: Tough Workout
-	// Tooltip: Adds +{0} points to strength per level.
-}
-
-AddedDexterityPassive: {
-	// Name: Nimble Feet
-	// Tooltip: Adds +{0} points to dexterity per level.
-}
-
-IncreasedPotionRecoveryPassive: {
-	// Name: Powerful Potions
-	// Tooltip: Adds +{0}% additional healing from Healing Potions per level.
-}
-
-IncreasedMoveSpeedPassive: {
-	// Name: Swift Footwork
-	// Tooltip: +{0}% increased movement speed per level.
-}
-
-IncreasedWhipDamage: {
-	// Name: Strong Snap
-	// Tooltip: +{0}% increased whip damage per level.
-}
-
-IncreasedWhipSpeed: {
-	// Name: Rapid Whips
-	// Tooltip: +5% increased whip speed per level.
-}
-
-IncreasedJumpHeight: {
-	// Name: High Vaulter
-	// Tooltip: +{0}% faster jump speed.
-}
+﻿IncreasedMeleeDamagePassive: {
+    Name: Mistrzostwo w zwarciu
+    Tooltip: Zwiększa obrażenia w zwarciu o 5% za poziom
+  }
+  IncreasedRangedDamagePassive: {
+    Name: Mistrzostwo w strzelectwie
+    Tooltip: "Zwiększa obrażenia dystansowe o 5% za poziom "
+  }
+  LongRangePassive: {
+    Name: Snajper
+    Tooltip: Zwiększa obrażenia zadawane odległym wrogom o 10% za każdy poziom
+  }
+  DamageReductionPassive: {
+    Tooltip: Zwiększa redukcje obrażeń o 0.25% co poziom.
+    Name: Żelazna wola
+  }
+  ChanceToBleedPassive: {
+    Name: Karmazynowy/Krwawy taniec
+    Tooltip: Twoje obrażenia w zwarciu wywołują krwawienie, zadawając 5 obrażeń co sekundę. (context?)
+  }
+  ArmorPenetrationPassive: {
+    Name: Zwiększone przebicie pancerza (obrażenia w zwarciu)
+    Tooltip: Daje 15% więcej przebicia pancerza co poziom
+  }
+  AddedStrengthPassive: {
+    Name: Cieżki trening
+    Tooltip: Daje +{0} punkt(ów) do siły co poziom
+  }
+  AddedDexterityPassive: {
+    Name: Zwinne nogi
+    Tooltip: Daje +{0} punkt(ów) do zwinności co poziom
+  }
+  AddedIntelligencePassive: {
+    Tooltip: Daje +{0} punkt(ów) inteligencji co poziom
+  }
+  IncreasedMoveSpeedPassive: {
+    Name: Zwinna praca nóg
+    Tooltip: Daje +{0}% do prędkości poruszania się co poziom
+  }
+  AddedLifePassive: {
+    Tooltip: Zwiększa maksymalną ilość życia o 20 co poziom
+    Name: Wzmocnione mięśnie
+  }
+  AddedManaPassive: {
+    Tooltip: Zwiększa maksymalną ilość życia o 20 co poziom
+  }
+  IncreasedSummoningDamagePassive: {
+    Name: Mistrzostwo Przywoływania
+    Tooltip: Zwiększa obrażenia przywoływanych o 5% co poziom
+  }
+  IncreasedMagicDamagePassive: {
+    Name: Mistrzostwo Arkanów
+    Tooltip: Zwiększa twoje obrażenia magiczne o 5% za każdy poziom
+  }
+  DamageReflectionPassive: {
+    Name: Kolczasty Pancerz
+    Tooltip: Odbija o 10 więcej obrażeń na poziom wrogom zadającym obrażenia kontaktowe.
+  }
+  ChanceToConsumeAmmoPassive: {
+    Name: Tajny Magazynek
+    Tooltip: 5% szansy na niewykorzystanie amunicji za każdy poziom
+  }
+  StartPassive: {
+    Name: Kotwica
+    Tooltip: Twoja podróż zaczyna się tutaj
+  }
+  IncreasedSummonDamagePassive: {
+    Name: Wzmocniona Horda
+    Tooltip: Zwiększa obrażenia od przyzywania o 10% za każdy poziom
+  }
+  IncreasedSentryDamagePassive: {
+    Tooltip: Zwiększa obrażenia twoich strażników o 10% za każdy poziom
+    Name: Niezłomne Straże
+  }
