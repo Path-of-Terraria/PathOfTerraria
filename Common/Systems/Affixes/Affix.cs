@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
 using Terraria;
+using System.Diagnostics;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -240,12 +241,26 @@ public abstract class Affix : ILocalizedModType
 			return inputList;
 		}
 
-		var resultList = new List<T>(count);
+#if DEBUG
+		// Assert that we have enough inputs to create enough affixes without duplicates.
+		Debug.Assert(inputList.Count >= count);
+#endif
 
-		for (int i = 0; i < count; i++)
+		count = Math.Min(count, inputList.Count);
+
+		var resultList = new List<T>(count);
+		Span<bool> rolledIndices = stackalloc bool[inputList.Count];
+
+		while (resultList.Count < count)
 		{
 			int randomIndex = Main.rand.Next(0, inputList.Count);
 
+			if (rolledIndices[randomIndex])
+			{
+				continue;
+			}
+
+			rolledIndices[randomIndex] = true;
 			T newItemAffix = inputList[randomIndex].Clone<T>();
 			newItemAffix.Roll();
 

@@ -123,7 +123,7 @@ public static class PoTItemHelper
 			return;
 		}
 
-		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: data.Affixes.Select(a => a.GetData()));
 		if (chosenAffix is null)
 		{
 			return;
