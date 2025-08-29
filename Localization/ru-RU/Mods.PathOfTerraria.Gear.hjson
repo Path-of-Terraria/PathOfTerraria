@@ -348,12 +348,8 @@ Shield: {
 }
 
 Map.Name: Карта
-ExplorableMap: {
-    Name: Исследуемая карта
-}
-BossMap: {
-    Name: Карта босса
-}
+ExplorableMap.Name: Исследуемая карта
+BossMap.Name: Карта босса
 None.Name: Ничто
 Magic.Name: Магия
 Ranged.Name: Дистанционный

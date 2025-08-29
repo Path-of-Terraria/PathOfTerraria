@@ -348,12 +348,8 @@ Shield: {
 }
 
 Map.Name: Mapa
-ExplorableMap: {
-    Name: Mapa Eksploracyjna
-}
-BossMap: {
-    Name: Mapa Bossa
-}
+ExplorableMap.Name: Mapa Eksploracyjna
+BossMap.Name: Mapa Bossa
 None.Name: Żadne
 Magic.Name: Magiczny
 Ranged.Name: Dystansowe
