@@ -96,6 +96,5 @@ internal class AffixFreeNPCs : GlobalNPC
 		ArpgNPC.NoAffixesSet.Add(NPCID.LunarTowerVortex);
 		ArpgNPC.NoAffixesSet.Add(NPCID.CultistBossClone); // Gives away the clone, plus it has no health or contact damage
 		ArpgNPC.NoAffixesSet.Add(NPCID.BurningSphere); // Projectile NPC
-		ArpgNPC.NoAffixesSet.Add(NPCID.CultistBossClone); // Doesn't have health or do damage or anything lol
 	}
 }
