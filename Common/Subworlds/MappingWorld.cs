@@ -86,6 +86,7 @@ public abstract class MappingWorld : Subworld
 	public LocalizedText SubworldMining { get; private set; }
 	public LocalizedText SubworldPlacing { get; private set; }
 	public Asset<Texture2D>[] LoadingBackgrounds = [];
+	public Asset<Texture2D> HideGradientTex = null;
 
 	private string _tip = "";
 	private string _fadingInTip = "";
@@ -98,6 +99,7 @@ public abstract class MappingWorld : Subworld
 		SubworldDescription = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Description", () => GetType().Name);
 		SubworldMining = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Mining", () => "\"{$DefaultMining}\"");
 		SubworldPlacing = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Placing", () => "\"{$DefaultPlacing}\"");
+		HideGradientTex = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/SubworldLoadScreens/HideGradient");
 
 		// TODO: Change to throw
 		if (ScrollingBackgroundCount == 1 && ModContent.RequestIfExists("PathOfTerraria/Assets/UI/SubworldLoadScreens/" + GetType().Name, out Asset<Texture2D> image))
@@ -325,6 +327,10 @@ public abstract class MappingWorld : Subworld
 				xOff += texture.Width;
 			}
 		}
+
+		Texture2D hide = HideGradientTex.Value;
+		var hideSrc = new Rectangle(0, 0, hide.Width * 300, hide.Height);
+		Main.spriteBatch.Draw(hide, position with { X = 0 }, hideSrc, Color.White, 0f, hide.Size() * new Vector2(0, 1), 1f, SpriteEffects.None, 0);
 	}
 
 	private static void DrawWalkingPlayer()
@@ -341,6 +347,7 @@ public abstract class MappingWorld : Subworld
 
 		int num = (int)(Main.GlobalTimeWrappedHourly / 0.07f) % 14 + 6;
 		plr.bodyFrame.Y = (plr.legFrame.Y = (plr.headFrame.Y = num * 56));
+		plr.wings = 0;
 		plr.WingFrame(wingFlap: false);
 
 		Item item = plr.inventory[plr.selectedItem];

@@ -417,13 +417,13 @@ internal class QueenSlimeDomain : BossDomainSubworld
 
 			foreach (Player player in Main.ActivePlayers)
 			{
-				if (player.DistanceSQ(ArenaPos.ToWorldCoordinates()) > 1300 * 1300)
+				if (player.DistanceSQ(ArenaPos.ToWorldCoordinates()) > 1000 * 1000)
 				{
 					canSpawnBoss = false;
 					break;
 				}
 			}
-
+			
 			if (canSpawnBoss)
 			{
 				Main.spawnTileX = ArenaPos.X;

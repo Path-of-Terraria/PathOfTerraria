@@ -56,11 +56,7 @@ internal class MoonDomainSystem : ModSystem
 		}
 
 		FightState state = FightTracker.UpdateState();
-
-		if (assumeBossSpawned && !NPC.AnyNPCs(NPCID.MoonLordCore))
-		{
-			EffectStrength = MathHelper.Lerp(EffectStrength, 0, 0.05f);
-		}
+		EffectStrength = MathHelper.Lerp(EffectStrength, assumeBossSpawned && !NPC.AnyNPCs(NPCID.MoonLordCore) ? 1 : 0, 0.05f);
 
 		bool allPlayersAtop = true;
 

@@ -40,7 +40,7 @@ GolemDomain: {
 }
 
 MoonLordDomain: {
-	DisplayName: Lunar Miasma
+	DisplayName: The Lunar Miasma
 	Description: Rise up from deep below ground to conquer the Moon Lord.
 	Mining: "{$AllMining}, but doesn't drop"
 	Placing: "{$DefaultPlacing}"

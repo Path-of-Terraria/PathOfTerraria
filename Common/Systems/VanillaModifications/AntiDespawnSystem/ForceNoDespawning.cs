@@ -49,7 +49,7 @@ internal class ForceNoDespawning : GlobalNPC
 	{
 		if (npc.type == NPCID.BrainofCthulhu)
 		{
-			// Stop BoC from doing player too distant/dead behaviour
+			// Stop BoC from doing player too distant/targets dead behaviour
 			npc.localAI[3] = 0;
 		}
 		else if (npc.type == NPCID.HallowBoss)
@@ -58,6 +58,14 @@ internal class ForceNoDespawning : GlobalNPC
 			{
 				npc.alpha = 0;
 				npc.ai[1] = 20;
+			}
+		}
+		else if (npc.type == NPCID.SkeletronHead)
+		{
+			if (npc.ai[1] > 1) // Stops Skeletron from entering too distant/targets dead behaviour & forces it closer
+			{
+				npc.ai[1] = 0;
+				npc.velocity = npc.DirectionTo(Main.player[npc.target].Center) * 8;
 			}
 		}
 
