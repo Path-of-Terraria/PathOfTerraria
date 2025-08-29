@@ -348,6 +348,12 @@ public abstract class MappingWorld : Subworld
 		int num = (int)(Main.GlobalTimeWrappedHourly / 0.07f) % 14 + 6;
 		plr.bodyFrame.Y = (plr.legFrame.Y = (plr.headFrame.Y = num * 56));
 		plr.wings = 0;
+
+		if (plr.mount.Active)
+		{
+			plr.QuickMount();
+		}
+
 		plr.WingFrame(wingFlap: false);
 
 		Item item = plr.inventory[plr.selectedItem];
