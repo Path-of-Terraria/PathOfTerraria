@@ -9,7 +9,7 @@
     Corrupted: Corrompu
     Tier: Rang :
     Level: Niveau d'objet :
-    Damage: "Dommage "
+    Damage: Dommage
     Defense: Défense
     Pickaxe: Puissance de la Pioche
     Axe: Puissance de la Hache
@@ -50,7 +50,7 @@
     Suffixes: {
       0: Draper
       3: Vision
-      4: "Gueule "
+      4: Gueule
       2: Pensée
       1: Bombé
     }
@@ -82,7 +82,7 @@
     Suffixes: {
       4: Tueur
       0: Fureur
-      1: "Hachoir "
+      1: Hachoir
       2: Ravage
       3: Coupante
     }
@@ -211,7 +211,7 @@
   }
   Bow: {
     Name: Arc
-    AltUse: "Clic-Droit pour charger et tirer un projectile nettement plus puissant et rapide. "
+    AltUse: Clic-Droit pour charger et tirer un projectile nettement plus puissant et rapide.
     Prefixes: {
       0: Rapide
       1: Perçant
@@ -281,7 +281,7 @@
   }
   Wand: {
     Name: Baguette
-    AltUse: "Clic-Droit pour invoquer une rafale de projectiles vers l'avant. (4 fois le coût normal en mana afin d'envoyer) "
+    AltUse: Clic-Droit pour invoquer une rafale de projectiles vers l'avant. (4 fois le coût normal en mana afin d'envoyer)
     Prefixes: {
       0: Interdite
       1: Ancienne

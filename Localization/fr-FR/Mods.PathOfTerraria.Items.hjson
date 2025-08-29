@@ -706,7 +706,7 @@
     DisplayName: Lampe mécanique
   }
   CircuitSkullBannerItem: {
-    DisplayName: "Bannière Circuit "
+    DisplayName: Bannière Circuit
   }
   SecurityDroneBannerItem: {
     DisplayName: Bannière drone de sécurité
@@ -803,7 +803,7 @@
       '''
   }
   WormLightningBannerItem: {
-    DisplayName: "Bannière lutin éclair "
+    DisplayName: Bannière lutin éclair
   }
   SunsoulStaffItem: {
     DisplayName: Bâton Âme solaire
@@ -862,7 +862,7 @@
       '''
   }
   MechChestItem: {
-    DisplayName: '''	Coffre mécanique'''
+    DisplayName: Coffre mécanique
   }
   PlanteraMap: {
     DisplayName: Carte Plantera
@@ -873,7 +873,7 @@
       '''
   }
   OffsetTool: {
-    DisplayName: "Outil de compensation "
+    DisplayName: Outil de compensation
     Tooltip:
       '''
       Utilisé pour générer des décalages à utiliser dans le système RoomDatabase.

@@ -22,11 +22,11 @@
     Description: Lancez une boule de feu explosive à dégâts élevés qui a une chance de brûler les ennemis.
   }
   IceBolt: {
-    Name: "Éclair de Glace "
+    Name: Éclair de Glace
     Description: Lancez un éclair de glace qui glace un ennemi qu'il touche.
   }
   RainOfArrows: {
-    Name: "Rafale "
+    Name: Rafale
     Description: Tirez une rafale de projectiles à partir de votre arme à distance vers le curseur après un court délai.
   }
   MoltenShield: {

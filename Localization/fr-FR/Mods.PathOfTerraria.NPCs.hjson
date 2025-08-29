@@ -54,7 +54,7 @@
       }
       Night: {
         0: Oh ! Un gros pourboire ! Merci, inconnu. Qui que tu sois.
-        1: " 'Un type entre dans un bar ?' Je devrais utiliser celle-là un jour."
+        1: "'Un type entre dans un bar ?' Je devrais utiliser celle-là un jour."
         2: J'adore mon travail.
       }
       Goblins: {
@@ -65,7 +65,7 @@
       Rain: {
         0: Un bar avec une ambiance pluvieuse. Charmant !
         1: J'espère que les tonneaux ne sont pas encore trempés.
-        2: "Moins de travail, plus de détente ? Pourquoi pas ! "
+        2: Moins de travail, plus de détente ? Pourquoi pas !
       }
     }
     Entry: Brom est un homme simple. Les gens veulent passer un bon moment ? Ils viennent au bar. Ils discutent avec Brom le Robuste. Ils passent un bon moment avec des gens sympas et de bonnes boissons. Que demander de plus ?
@@ -168,7 +168,7 @@
       Common0: La magie fait peur. Une fois, j'ai vu quelqu'un transformer sa main en rat. Quelle est la leçon à en tirer ? Je ne sais pas.
       Common2: J'ai vu le fil conducteur de votre destin. Je ne parviens pas, pour l'amour de Dieu, à le mettre en mots.
       Common1: La sagesse recèle de nombreux pouvoirs. Les statues d'anges ont autrefois accompli quelque chose. C'était... eh bien... tellement... hum. Seul le temps nous le dira.
-      Common3: "Ah ! J'ai failli te transformer en taupe de la taille d'un dieu. Méfie-toi de ma force ! "
+      Common3: Ah ! J'ai failli te transformer en taupe de la taille d'un dieu. Méfie-toi de ma force !
       Quest: Hum. Vous avez vu les dégâts partout. Hélas ! Mes pouvoirs ne peuvent pas reconstituer le monde. Je suis bien trop occupé par... mes... projets. Oui ! Hélas, j'ai quelque chose de plus urgent à faire. Un gobelin voleur a pris l'un de mes grimoires. Aussi puissant soit-il, il doit être maîtrisé par un sorcier puissant. Je soupçonne qu'ils sont en train de parcourir le grimoire pour en découvrir les secrets... alors dépêchez-vous de le rapporter ! Je vous accorderai des pouvoirs au-delà de l'imagination. Je serai ici, à ranger les livres sur les étagères un par un grâce à la puissance de la magie.
       Quest2: Ah ah ! Merci beaucoup. Ta gentillesse sera largement récompensée ! Mes pouvoirs te pousseront toujours vers l'avant. Tiens, prends une parcelle de mon pouvoir ; une Nova n'est qu'une partie de ma force ! Quant à la bibliothèque... ma force renouvelée, elle sera réparée à ton retour ! Des livres organisés comme tu n'en as jamais vu ! Contemple-la et pleure... bientôt !
     }
@@ -335,7 +335,7 @@
       }
       Night: {
         0: ...comme c'est doux.
-        1: '''	Ah...'''
+        1: Ah...
         2: Je m'en souviens encore.
       }
       Goblins: {
@@ -481,7 +481,7 @@
       Quest2: Bahaha ! Tu es de retour, mes babioles sont à nouveau visibles ! Parfait, étranger. Pour mon propre bien, je te demande, sans tarder, d'ouvrir ton grimoire et d'invoquer la bête de ton choix ! Une chouette, une chauve-souris... laquelle choisiras-tu ? Hein ? Hein ?! Sois joyeux, et que le phénix te trouve en bonne santé !
       Quest3: Le voilà ! Votre propre invocation ! Envoûtant, n'est-ce pas, étranger ? Hélas, je dois retourner à mon labeur. Votre grimoire vous sera très utile, comme il m'a été utile. Explorez, les créatures du monde peuvent vous surprendre. Surtout si vous êtes un chasseur : les matériaux que vous collectez peuvent invoquer de nombreuses créatures différentes !
       QueenBeeQuest: Ah ! Vous êtes de retour ! Mes ruses sont efficaces, n'est-ce pas ? Oui ! J'ai une question à vous poser ! Elle peut paraître étrange, mais elle est normale pour quelqu'un comme moi ! Oui ! Je me suis souvenu d'une période plus... naturelle de ma vie, et j'aimerais retrouver une partie de cette âme. Pourrais-je vous demander de me rapporter des dards de frelons de la jungle ? Pourrais-je ? Pourrais-je ? Vous recevrez une belle récompense si vous le faites.
-      GotStingers: "C'est merveilleux ! Oui... tiens. Prends ce petit morceau. Il t'aidera à invoquer un adorable petit démon de ton grimoire. Cruel, mais gentil ! Hélas, j'ai encore une chose à te demander. Une créature des plus répugnantes réside dans la jungle, une reine des abeilles. Pourrais-tu la tuer ? Elle cherche à m'importuner, et je souhaite sa mort ! Une autre récompense t'attend ! Plonge ton nouvel ami frelon dans du miel si tu souhaites te battre "
+      GotStingers: C'est merveilleux ! Oui... tiens. Prends ce petit morceau. Il t'aidera à invoquer un adorable petit démon de ton grimoire. Cruel, mais gentil ! Hélas, j'ai encore une chose à te demander. Une créature des plus répugnantes réside dans la jungle, une reine des abeilles. Pourrais-tu la tuer ? Elle cherche à m'importuner, et je souhaite sa mort ! Une autre récompense t'attend ! Plonge ton nouvel ami frelon dans du miel si tu souhaites te battre
       QueenBeeKilled: Pourquoi, tu reviens ? Déjà ? Tu es plutôt fort, n'est-ce pas ! Ah oui, c'est vrai. Oui ! Tu l'es ! Très bien. Merci beaucoup pour cette corvée. Je n'ai pas grand-chose à t'offrir, mais tu dois le prendre. Prends-le ! Bahaha ! Adieu !
     }
     Entry: Excentrique mais d'une puissance trompeuse, Morgana apporte beaucoup à Ravencrest. Certes, elle peut parfois être difficile à comprendre, et certains pourraient dire qu'elle est souvent rebutante, mais elle est douée dans ce qu'elle fait. Que fait-elle ?... Elle continue.
@@ -499,7 +499,7 @@
     Entry: Les Ents âgés possèdent un pouvoir bien plus redoutable. Leur nature espiègle s'est transformée en une violence abjecte, indifférents aux dégâts qu'ils causent tant que leur arbre est en sécurité.
     SlamDeath: {
       0: "{0} a été réduit en bouillie."
-      1: '''	Et {0} retourne à la terre.'''
+      1: Et {0} retourne à la terre.
       2: "{0} a inspecté les racines de trop près."
     }
   }
@@ -571,7 +571,7 @@
     Entry: Une bête ancienne vivant dans un désert lointain, connue dans le monde entier. Bien qu'elle ne soit pas la plus grande créature, cette bête est réputée pour dévorer la lumière du soleil, ce qui lui confère une force supérieure à sa taille.
   }
   WormLightning: {
-    DisplayName: "Lutin Éclair "
+    DisplayName: Lutin Éclair
     Entry: Une créature faite d'énergie pure, née de l'explosion d'un éclair. Elle n'a qu'un seul objectif : détourner l'attention de son créateur.
   }
   EnergizerCore: {

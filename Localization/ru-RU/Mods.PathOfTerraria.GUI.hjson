@@ -1,5 +1,5 @@
-﻿QuestsAvailableTab: '''	Доступный'''
-  QuestsCompletedTab: '''	Завершенный'''
-  PlayerStatsTab: '''	Статистика'''
+﻿QuestsAvailableTab: Доступный
+  QuestsCompletedTab: Завершенный
+  PlayerStatsTab: Статистика
   SkillTreeTab: Навыки
   PassiveTreeTab: Таланты

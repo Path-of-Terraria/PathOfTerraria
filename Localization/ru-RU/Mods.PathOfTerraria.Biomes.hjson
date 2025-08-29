@@ -4,5 +4,5 @@
   }
   MechBiome: {
     DisplayName: Механизмы
-    TownNPCDialogueName: '''	Механизмы'''
+    TownNPCDialogueName: Механизмы
   }

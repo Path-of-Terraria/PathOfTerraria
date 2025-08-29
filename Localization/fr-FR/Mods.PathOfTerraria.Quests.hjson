@@ -37,12 +37,12 @@
     SkeletronQuest: {
       KillSkeletron: Tuez Squeletron
       EnterDomain: Entrez dans le Domaine de Squeletron
-      Name: "Restes Squelettique "
+      Name: Restes Squelettique
     }
     WoFQuest: {
       Name: Libérer le Chaos
       KillWall: Tuez le Mur de Chair
-      WizardStart: "Hum... oui. Le sol sous nos pieds tremble avec vigueur, à cause de celui qu'ils ont caché. Vous voyez, il y a longtemps, un groupe d'aventuriers a enfermé un démon dans un fascimile. Cependant, grâce à votre incroyable force qui a permis de tuer toutes ces bêtes à travers le monde, ce pouvoir semble s'être frayé un chemin jusqu'à ce démon enfermé. Ce qui signifie que nous devons le tuer. Parlez à Thrain, Morgana et Elara dès que possible. Ils comprennent et vous donneront des armes. Prenez ceci, et bonne chance. Vous pouvez remercier Morgana pour cela aussi. Mais... ne lui posez pas trop de questions. Nous sommes très occupés ici "
+      WizardStart: Hum... oui. Le sol sous nos pieds tremble avec vigueur, à cause de celui qu'ils ont caché. Vous voyez, il y a longtemps, un groupe d'aventuriers a enfermé un démon dans un fascimile. Cependant, grâce à votre incroyable force qui a permis de tuer toutes ces bêtes à travers le monde, ce pouvoir semble s'être frayé un chemin jusqu'à ce démon enfermé. Ce qui signifie que nous devons le tuer. Parlez à Thrain, Morgana et Elara dès que possible. Ils comprennent et vous donneront des armes. Prenez ceci, et bonne chance. Vous pouvez remercier Morgana pour cela aussi. Mais... ne lui posez pas trop de questions. Nous sommes très occupés ici
       ThrainHelp: Oh. C'est vrai. Tiens... Je me suis préparé pour un jour comme celui-ci, j'espère que cela répondra à tes attentes. Alaric m'a aidé à le réaliser, il contient les souvenirs de mes combats. Profites-en bien. Bonne chance.
       ElaraHelp: Prends soin de toi, et prends ça. Je ne suis pas un armurier hors pair, mais Thrain m'a aidé à le fabriquer. C'est simple. Et... les yeux sont le point faible.
       MorganaHelp: Oh... ? Bahaha ! Le moment est venu ! Voici un véritable buffet de matériaux pour grimoires ! Elara m'a aidé à les rassembler... C'est une jeune fille très cultivée ! Profitez bien de vos cadeaux ! Bahahaha !

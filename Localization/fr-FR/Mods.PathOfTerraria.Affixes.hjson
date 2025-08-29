@@ -8,7 +8,7 @@
     Description: "{1}{0}% d'augmentation de la résistance aux dégats"
   }
   LightningResistItemAffix: {
-    Description: "{1}{0} de résistance à la foudre "
+    Description: "{1}{0} de résistance à la foudre"
   }
   ColdResistItemAffix: {
     Description: "{1}{0}% de résistance au froid"
@@ -56,7 +56,7 @@
     Description: "{1}{0} mana max"
   }
   ManaRegenAffix: {
-    Description: " {1}{0}% régénération de mana"
+    Description: "{1}{0}% régénération de mana"
   }
   ManaPotionPowerAffix: {
     Description: "{1}{0}% potions de mana plus puissantes"

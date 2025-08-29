@@ -4,7 +4,7 @@
   }
   RageBuff: {
     Description: Увеличенный урон и значительно увеличенное отбрасывание
-    DisplayName: '''	Берсерк'''
+    DisplayName: Берсерк
   }
   MoltenShieldBuff: {
     DisplayName: Расплавленный панцирь
@@ -28,12 +28,12 @@
     Description: На 10% больше получаемого урона
   }
   RootedDebuff: {
-    DisplayName: "Обездвиживание "
+    DisplayName: Обездвиживание
     Description: Тебе нельзя двигаться!
   }
   GodlikeBuff: {
     DisplayName: Богоподобный
-    Description: '''	Вы невосприимчивы ко всем прямым повреждениям'''
+    Description: Вы невосприимчивы ко всем прямым повреждениям
   }
   RestorationBuff: {
     DisplayName: Восстановление
@@ -46,7 +46,7 @@
   HasteBuff: {
     Description:
       '''
-      	+20% скорости передвижения
+      +20% скорости передвижения
       +15% скорости атаки
       '''
     DisplayName: Усиление скорости
@@ -55,19 +55,19 @@
     DisplayName: Неудержимый бафф
     Description:
       '''
-      	+50% к здоровью щита
+      +50% к здоровью щита
       Иммунитет к охлаждению
       '''
   }
   FrostflameDebuff: {
-    DisplayName: '''	Ослабление ледяного пламени'''
+    DisplayName: Ослабление ледяного пламени
     Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
   }
   SporeDebuff: {
-    DisplayName: '''	Ослабление спор'''
+    DisplayName: Ослабление спор
     Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
   }
   BlindedDebuff: {
-    DisplayName: '''	Ослепленный'''
-    Description: '''	Атаки имеют шанс промахнуться'''
+    DisplayName: Ослепленный
+    Description: Атаки имеют шанс промахнуться
   }

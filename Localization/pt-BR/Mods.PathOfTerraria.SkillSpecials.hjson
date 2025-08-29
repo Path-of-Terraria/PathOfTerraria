@@ -1,9 +1,0 @@
-﻿OneLine: Tylko jedna umiejętność specjalizacji może zostać wybrana.
-  FireNova: {
-    Description: Tworzy aurę płomieni opartą na obrażeniach zadawanych przez trzymaną broń magiczną, wywołując efekt Płonący!
-    Name: Ognista powłoka
-  }
-  IceNova: {
-    Name: Nowa mrozu
-    Description: Tworzy falę lodu opartą na obrażeniach zadanych przez trzymaną broń magiczną, wywołując efekt Ochłodzenie.
-  }

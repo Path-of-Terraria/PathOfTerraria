@@ -24,10 +24,10 @@
   }
   BlindedDebuff: {
     DisplayName: Aveuglé
-    Description: "Les attaques ont une chance de rater "
+    Description: Les attaques ont une chance de rater
   }
   MoltenShieldBuff: {
-    DisplayName: "Carapace en Fusion "
+    DisplayName: Carapace en Fusion
     Description:
       '''
       Gagne temporairement un bouclier

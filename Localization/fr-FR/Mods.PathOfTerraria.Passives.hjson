@@ -28,7 +28,7 @@
   }
   ChanceToBleedPassive: {
     Name: Danse Cramoisie
-    Tooltip: "Vos attaques de mélee inflige saignement, causant 5 dégâts par seconde, pour 2 (+ votre niveau) secondes.  "
+    Tooltip: Vos attaques de mélee inflige saignement, causant 5 dégâts par seconde, pour 2 (+ votre niveau) secondes.
   }
   CloseRangePassive: {
     Tooltip: Augmente vos dégâts contre des ennemis proche de 10% par niveau

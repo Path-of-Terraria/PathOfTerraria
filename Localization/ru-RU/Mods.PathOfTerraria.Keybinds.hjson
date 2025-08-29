@@ -1,8 +1,8 @@
 ﻿PassiveTreeUIKey: {
-    DisplayName: '''	Ключ пользовательского интерфейса пассивного дерева'''
+    DisplayName: Ключ пользовательского интерфейса пассивного дерева
   }
   DropTableKey: {
-    DisplayName: '''	Клавиша сброса таблицы'''
+    DisplayName: Клавиша сброса таблицы
   }
   QuestUIKey: {
     DisplayName: Ключ квестового интерфейса
@@ -14,7 +14,7 @@
     DisplayName: Переключить страницу статистики
   }
   CopyItemInfo: {
-    DisplayName: '''	Копировать информацию о товаре'''
+    DisplayName: Копировать информацию о товаре
   }
   UseSkill4: {
     DisplayName: Использовать 4 способность

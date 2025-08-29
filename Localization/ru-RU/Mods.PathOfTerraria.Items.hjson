@@ -46,7 +46,7 @@
     Tooltip: ""
   }
   Breastplate: {
-    DisplayName: " Кираса"
+    DisplayName: Кираса
     Tooltip: ""
   }
   Crown: {
@@ -673,7 +673,7 @@
     DisplayName: Душевный пепел
     Tooltip:
       '''
-      	{$Mods.PathOfTerraria.Misc.GrimoireMaterial}
+      {$Mods.PathOfTerraria.Misc.GrimoireMaterial}
       'Тихо шепчет тебе.'
       '''
   }
@@ -786,7 +786,7 @@
       '''
       Щелкните правой кнопкой мыши, чтобы выстрелить стрелой с естественной силой
       Стрела разделяется на три осколка, нанося дополнительный урон
-      Осколки и стрела имеют хороший шанс нанести эффект обездвиживания 
+      Осколки и стрела имеют хороший шанс нанести эффект обездвиживания
       '''
   }
   RootedAmulet: {
@@ -1082,7 +1082,7 @@
     DisplayName: Знамя Муравьиного Льва
   }
   SwarmScarabBannerItem: {
-    DisplayName: "Знамя Роя Скарабея "
+    DisplayName: Знамя Роя Скарабея
   }
   HauntedHeadBannerItem: {
     DisplayName: Знамя Одержимого черепа

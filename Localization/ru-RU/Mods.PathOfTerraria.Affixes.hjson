@@ -17,10 +17,10 @@
     Description: "{1}{0} отраженный прямой урон"
   }
   BaseLifeAffix: {
-    Description: '''	{1}{0} максимальное здоровье'''
+    Description: "{1}{0} максимальное здоровье"
   }
   AddedLifeAffix: {
-    Description: '''	{1}{0}% от максимального здоровья'''
+    Description: "{1}{0}% от максимального здоровья"
   }
   MultipliedLifeAffix: {
     Description: "{1}{0}% максимальный множитель здоровья"
@@ -47,13 +47,13 @@
     Description: "{1}{0} максимальная мана"
   }
   ManaRegenAffix: {
-    Description: '''	{1}{0}% регенерация маны'''
+    Description: "{1}{0}% регенерация маны"
   }
   ManaPotionPowerAffix: {
     Description: "{1}{0}% более сильные зелья маны"
   }
   ManaPotionCapAffix: {
-    Description: '''	{1}{0} максимум зелий маны'''
+    Description: "{1}{0} максимум зелий маны"
   }
   ManaPotionCooldownAffix: {
     Description: "{1}{0}% сокращено время восстановления зелья маны"
@@ -159,7 +159,7 @@
     Prefix: Вредный
   }
   ChanceToApplyRootedGearAffix: {
-    Description: "{1}{0}% вероятность применить Обездвиживания "
+    Description: "{1}{0}% вероятность применить Обездвиживания"
   }
   MapDamageAffix: {
     Description: "{1}{0}% увеличен урон от мобов"
@@ -186,7 +186,7 @@
     Prefix: Пылающий
   }
   StalwartAffix: {
-    Prefix: '''	Стойкий'''
+    Prefix: Стойкий
   }
   FireResistItemAffix: {
     Description: "{1}{0}% огнестойкость"

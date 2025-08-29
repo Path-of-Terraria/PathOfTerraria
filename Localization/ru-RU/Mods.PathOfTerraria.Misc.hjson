@@ -1,7 +1,7 @@
 ﻿RarityNames: {
-    Rare: "Редкий "
-    Magic: "Магический "
-    Normal: "Обычный "
+    Rare: Редкий
+    Magic: Магический
+    Normal: Обычный
   }
   Experience: {
     SkillUp: Вы получили 1 очко навыков. Щёлкните по шкале опыта, чтобы открыть дерево навыков.
@@ -17,7 +17,7 @@
   RestoresManaTooltip: Восстанавливает {0} маны
   CooldownTooltip: "{0} секунд восстановления"
   NPCLeftWithoutDying: "{0} сбежал!"
-  AffixTooltipFrom: " от "
+  AffixTooltipFrom: от
   Enter: Войти
   Exit: Выйти
   EnterRavencrest: "{$Enter} в Равенкрест"
