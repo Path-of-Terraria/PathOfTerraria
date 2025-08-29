@@ -322,7 +322,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			Player player = Main.LocalPlayer;
         
 			// Calculate the actual crit chance for this weapon
-			//(I dont think we are changing base crit of weapons, but this fool proofs the future if we plan to.)
+			// Base crit of all weapons atm is 4 (+ any added we have)
 			float baseCritChance = item.crit;
 			float playerCritChance = player.GetTotalCritChance(item.DamageType);
 			float totalCritChance = baseCritChance + playerCritChance;
@@ -337,7 +337,11 @@ public sealed partial class ItemTooltips : GlobalItem
 
 		if (item.mana > 0)
 		{
-			string manaCost = $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{item.mana}]")} [c/{Colors.ManaCost.ToHexRGB()}:{Localize("ManaCost")}]";
+			Player player = Main.LocalPlayer;
+			// Calculate the real mana cost
+			int effectiveManaCost = (int)Math.Round(item.mana * player.manaCost);
+
+			string manaCost = $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{effectiveManaCost}]")} [c/{Colors.ManaCost.ToHexRGB()}:{Localize("ManaCost")}]";
 			var manaLine = new TooltipLine(Mod, "ManaCost", manaCost);
 			AddNewTooltipLine(item, tooltips, manaLine);
 		}
