@@ -126,9 +126,12 @@ public abstract class MappingWorld : Subworld
 		SubworldSystem.CopyWorldData("tracker", trackerTag);
 
 		TagCompound bossTrackerTag = [];
-		bossTrackerTag.Add("total", (int[])[.. BossTracker.TotalBossesDowned]);
-		bossTrackerTag.Add("cached", (int[])[.. BossTracker.CachedBossesDowned]);
+		BossTracker.WriteConsistentInfo(bossTrackerTag);
 		SubworldSystem.CopyWorldData("bossTracker", bossTrackerTag);
+
+		TagCompound eventTrackerTag = [];
+		EventTracker.WriteConsistentInfo(eventTrackerTag);
+		SubworldSystem.CopyWorldData("eventTracker", eventTrackerTag);
 
 		TagCompound worldInfoTag = [];
 		worldInfoTag.Add("level", AreaLevel);
@@ -165,9 +168,8 @@ public abstract class MappingWorld : Subworld
 		var tracker = MappingDomainSystem.TiersDownedTracker.Load(tag);
 		ModContent.GetInstance<MappingDomainSystem>().Tracker = tracker;
 
-		TagCompound bossTrackerTag = SubworldSystem.ReadCopiedWorldData<TagCompound>("bossTracker");
-		BossTracker.TotalBossesDowned = [.. bossTrackerTag.GetIntArray("total")];
-		BossTracker.CachedBossesDowned = [.. bossTrackerTag.GetIntArray("cached")];
+		BossTracker.ReadConsistentInfo(SubworldSystem.ReadCopiedWorldData<TagCompound>("bossTracker"));
+		EventTracker.ReadConsistentInfo(SubworldSystem.ReadCopiedWorldData<TagCompound>("eventTracker"));
 
 		TagCompound worldInfoTag = SubworldSystem.ReadCopiedWorldData<TagCompound>("worldInfo");
 		AreaLevel = worldInfoTag.GetInt("level");
