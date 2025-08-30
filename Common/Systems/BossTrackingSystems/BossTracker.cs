@@ -1,17 +1,16 @@
-﻿using PathOfTerraria.Common.NPCs.GlobalNPCs;
-using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.Synchronization;
-using PathOfTerraria.Common.Systems.Synchronization.Handlers;
-using SubworldLibrary;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using PathOfTerraria.Common.NPCs.GlobalNPCs;
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.Synchronization;
+using SubworldLibrary;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.BossTrackingSystems;
 
-internal class BossTracker : ModSystem
+internal sealed class BossTracker : ModSystem
 {
 	/// <summary>
 	/// Tracks the bosses that were killed in a <see cref="BossDomainSubworld"/>, so we can delay the effects to the main world. 
@@ -26,13 +25,9 @@ internal class BossTracker : ModSystem
 	/// </summary>
 	public static HashSet<int> TotalBossesDowned = [];
 
-	public static BitsByte DownedFlags;
 	public static bool SkipWoFBox;
 
 	private static readonly MethodInfo DoDeathEventsInfo = typeof(NPC).GetMethod("DoDeathEvents", BindingFlags.Instance | BindingFlags.NonPublic);
-
-	public static bool DownedEaterOfWorlds { get => DownedFlags[0]; set => DownedFlags[0] = value; }
-	public static bool DownedBrainOfCthulhu { get => DownedFlags[1]; set => DownedFlags[1] = value; }
 
 	public override void Load()
 	{
@@ -94,14 +89,12 @@ internal class BossTracker : ModSystem
 		return true;
 	}
 
-	private void StopBrickBox(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
+	private static void StopBrickBox(On_NPC.orig_CreateBrickBoxForWallOfFlesh orig, NPC self)
 	{
-		if (SkipWoFBox)
+		if (!SkipWoFBox)
 		{
-			return;
+			orig(self);
 		}
-
-		orig(self);
 	}
 
 	private static void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
@@ -139,9 +132,15 @@ internal class BossTracker : ModSystem
 					npc.boss = true;
 				}
 
-				SkipWoFBox = true;
-				DoDeathEventsInfo.Invoke(npc, [Main.player[0]]);
-				SkipWoFBox = false;
+				try
+				{
+					SkipWoFBox = true;
+					DoDeathEventsInfo.Invoke(npc, [Main.player[0]]);
+				}
+				finally
+				{
+					SkipWoFBox = false;
+				}
 			}
 
 			CachedBossesDowned.Clear();
@@ -150,56 +149,63 @@ internal class BossTracker : ModSystem
 
 	public override void SaveWorldData(TagCompound tag)
 	{
-		tag.Add(nameof(DownedFlags), (byte)DownedFlags);
 		tag.Add(nameof(CachedBossesDowned), (int[])[.. CachedBossesDowned]);
 		tag.Add(nameof(TotalBossesDowned), (int[])[.. TotalBossesDowned]);
 	}
-
 	public override void LoadWorldData(TagCompound tag)
 	{
 		CachedBossesDowned.Clear();
-		DownedFlags = tag.GetByte(nameof(DownedFlags));
 		CachedBossesDowned = [.. tag.GetIntArray(nameof(CachedBossesDowned))];
 		TotalBossesDowned = [.. tag.GetIntArray(nameof(TotalBossesDowned))];
+
+		// Load legacy data.
+		if (tag.ContainsKey("DownedFlags"))
+		{
+			BitsByte oldMask = tag.GetByte("DownedFlags");
+			if (oldMask[0]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds); }
+			if (oldMask[1]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds); }
+		}
 	}
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		writer.Write((byte)DownedFlags);
 		writer.Write(CachedBossesDowned.Count);
-
 		foreach (int item in CachedBossesDowned)
 		{
 			writer.Write(item);
 		}
 
 		writer.Write(TotalBossesDowned.Count);
-
 		foreach (int item in TotalBossesDowned)
 		{
 			writer.Write(item);
 		}
 	}
-
 	public override void NetReceive(BinaryReader reader)
 	{
-		DownedFlags = reader.ReadByte();
 		CachedBossesDowned.Clear();
 		TotalBossesDowned.Clear();
 
-		int count = reader.ReadInt32();
-		
-		for (int i = 0; i < count; ++i)
+		for (int i = 0, count = reader.ReadInt32(); i < count; ++i)
 		{
 			CachedBossesDowned.Add(reader.ReadInt32());
 		}
 
-		count = reader.ReadInt32();
-
-		for (int i = 0; i < count; ++i)
+		for (int i = 0, count = reader.ReadInt32(); i < count; ++i)
 		{
 			TotalBossesDowned.Add(reader.ReadInt32());
 		}
+	}
+
+	public static void WriteConsistentInfo(TagCompound tag)
+	{
+		tag.Add("total", (int[])[.. TotalBossesDowned]);
+		tag.Add("cached", (int[])[.. CachedBossesDowned]);
+	}
+	public static void ReadConsistentInfo(TagCompound tag)
+	{
+		TotalBossesDowned = [.. tag.GetIntArray("total")];
+		CachedBossesDowned = [.. tag.GetIntArray("cached")];
 	}
 
 	public class BossTrackerNPC : GlobalNPC
@@ -209,7 +215,7 @@ internal class BossTracker : ModSystem
 			if (npc.type == NPCID.EaterofWorldsHead && NPC.CountNPCS(NPCID.EaterofWorldsBody) == 0)
 			{
 				// EoW is dumb and won't register as a boss before death so this is the workaround
-				DownedEaterOfWorlds = true;
+				EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds, gameEventId: GameEventClearedID.DefeatedEaterOfWorldsOrBrainOfChtulu);
 
 				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
@@ -224,7 +230,7 @@ internal class BossTracker : ModSystem
 
 			if (npc.type == NPCID.BrainofCthulhu)
 			{
-				DownedBrainOfCthulhu = true;
+				EventTracker.CompleteEvent(EventFlags.DefeatedBrainOfCthulhu, gameEventId: GameEventClearedID.DefeatedEaterOfWorldsOrBrainOfChtulu);
 
 				if (Main.netMode != NetmodeID.SinglePlayer)
 				{
