@@ -26,7 +26,9 @@ internal class SyncBossDownedHandler : Handler
 		packet.Send();
 
 		BossTracker.AddDowned(type, true);
+#if DEBUG
 		PoTMod.Instance.Logger.Debug("Got BOSS: " + type);
+#endif
 	}
 
 	internal override void ClientRecieve(BinaryReader reader)

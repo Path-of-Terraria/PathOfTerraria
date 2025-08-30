@@ -13,7 +13,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.BossTrackingSystems;
 
-// It is okay to change and reorder values here, but do not rename them unless you edit save/load.
+// It is okay to change and reorder values here, but do not rename custom ones unless you edit save/load.
 [Flags]
 public enum EventFlags : ulong
 {
@@ -85,7 +85,9 @@ internal class SyncEventCompletionHandler : Handler
 		packet.Send();
 
 		EventTracker.CompleteEvent(flag, gameEventId, fromSync: true);
+#if DEBUG
 		PoTMod.Instance.Logger.Debug("Got EVENT: " + flag);
+#endif
 	}
 
 	internal override void ClientRecieve(BinaryReader reader)
@@ -109,7 +111,6 @@ internal sealed class EventTracker : ModSystem
 	private static EventFlags globalFlags;
 	/// <summary> Flags set in the local world. Both a storage for new flags and a performance convenience for vanilla ones. </summary>
 	private static EventFlags localFlags;
-	private static bool skipTrackingEventCompletions;
 
 	public override void Load()
 	{
@@ -121,8 +122,6 @@ internal sealed class EventTracker : ModSystem
 		// Set any cached event completion flags using vanilla code where possible, starting lantern night celebrations when fit, etc.
 		if (SubworldSystem.Current is null && cachedEventCompletions.Count != 0)
 		{
-			skipTrackingEventCompletions = true;
-
 			foreach ((EventFlags flag, int? gameEventId) in cachedEventCompletions)
 			{
 				ref bool valueRef = ref GetExternalFlagValueRefOrNull(flag);
@@ -131,9 +130,7 @@ internal sealed class EventTracker : ModSystem
 				{
 					if (gameEventId.HasValue)
 					{
-						skipTrackingEventCompletions = true;
 						NPC.SetEventFlagCleared(ref valueRef, gameEventId.Value);
-						skipTrackingEventCompletions = false;
 					}
 					else
 					{
@@ -250,7 +247,11 @@ internal sealed class EventTracker : ModSystem
 
 		localFlags |= singleEvent;
 		globalFlags |= singleEvent;
-		cachedEventCompletions.Add((singleEvent, gameEventId));
+
+		if (SubworldSystem.Current is not null)
+		{
+			cachedEventCompletions.Add((singleEvent, gameEventId));
+		}
 
 		if (Main.netMode == NetmodeID.Server && !fromSync)
 		{
@@ -330,11 +331,6 @@ internal sealed class EventTracker : ModSystem
 	private static void OnSetEventFlagCleared(On_NPC.orig_SetEventFlagCleared orig, ref bool eventFlag, int gameEventId)
 	{
 		orig(ref eventFlag, gameEventId);
-
-		if (skipTrackingEventCompletions)
-		{
-			return;
-		}
 
 		foreach (EventFlags flag in EventFlagsValues)
 		{
