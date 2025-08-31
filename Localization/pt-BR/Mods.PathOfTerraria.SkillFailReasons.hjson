@@ -1,4 +1,4 @@
-NotEnoughMana: Недостаточно маны для использования
+// NotEnoughMana: Not enough mana to cast
 // NeedsWeapon: Needs a {0} weapon to use
 // RangedWeaponConsumable: Needs a non-consumable weapon
 // WeaponInvalid: Held weapon is invalid for this skill

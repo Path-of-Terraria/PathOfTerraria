@@ -1,148 +1,190 @@
-﻿IncreasedMeleeDamagePassive: {
-    Name: Мастерство рукопашного боя
-    Tooltip: Увеличивает ваш урон в ближнем бою на 5% за уровень
-  }
-  IncreasedRangedDamagePassive: {
-    Name: Мастерство стрельбы
-    Tooltip: Увеличивает ваш урон на расстоянии на 5% за уровень
-  }
-  IncreasedMagicDamagePassive: {
-    Name: Мастерство арканной магии
-    Tooltip: Увеличивает ваш магический урон на 5% за уровень
-  }
-  IncreasedSummoningDamagePassive: {
-    Name: Мастерство призыва
-    Tooltip: Увеличивает урон ваших призывов на 5% за уровень
-  }
-  AddedLifePassive: {
-    Name: Укрепленная плоть
-    Tooltip: Увеличивает ваш максимальный запас здоровья на 20 за уровень
-  }
-  AddedManaPassive: {
-    Name: Добавленная мана
-    Tooltip: Увеличивает ваш максимальный запас маны на 20 за уровень
-  }
-  LongRangePassive: {
-    Name: Снайпер
-    Tooltip: Увеличивает ваш урон против дальних врагов на 10% за уровень
-  }
-  CloseRangePassive: {
-    Name: Боец ближнего боя
-    Tooltip: Увеличивает ваш урон против близких врагов на 10% за уровень
-  }
-  ChanceToBleedPassive: {
-    Name: Кровавый танец
-    Tooltip: Ваши атаки в ближнем бою наносят кровотечение, нанося 5 урона в секунду в течение (2 + уровень) секунд.
-  }
-  DamageReductionPassive: {
-    Name: Железная воля
-    Tooltip: Получаете 0,25% снижения урона за уровень.
-  }
-  DamageReflectionPassive: {
-    Name: Колючая внешность
-    Tooltip: Отражает дополнительно 10 урона за уровень врагам, наносящим контактный урон.
-  }
-  ChanceToConsumeAmmoPassive: {
-    Name: Секретный отсек
-    Tooltip: Шанс не расходовать боеприпасы: +5% за уровень
-  }
-  StartPassive: {
-    Name: Якорь
-    Tooltip: Ваше путешествие начинается здесь
-  }
-  IncreasedSummonDamagePassive: {
-    Name: Усиленная орда
-    Tooltip: Увеличивает весь урон от призывов на 10% за уровень
-  }
-  IncreasedSentryDamagePassive: {
-    Name: Непоколебимые часовые
-    Tooltip: Увеличивает урон ваших часовых на 10% за уровень
-  }
-  JewelSocket: {
-    Name: Гнездо для самоцветов
-    Tooltip: ""
-  }
-  LifeRegenPassive: {
-    Name: Сильное сердце
-    Tooltip: Увеличенное восстановление здоровья
-  }
-  DecreasedManaCostPassive: {
-    Name: Сниженная стоимость маны
-    Tooltip: Снижает стоимость маны на 3% за уровень
-  }
-  AddedCriticalStrikeChance: {
-    Name: Добавленный шанс критического удара
-    Tooltip: Добавляет 2% шанса критического удара за уровень
-  }
-  IncreasedCriticalStrikeChance: {
-    Name: Увеличенный шанс критического удара
-    Tooltip: Увеличивает шанс критического удара на 5% за уровень
-  }
-  IncreasedCriticalStrikeMultiplier: {
-    Name: Увеличенный множитель критического удара
-    Tooltip: Добавляет 5% к множителю критического удара за уровень
-  }
-  ArmorPenetrationPassive: {
-    Name: Увеличенное проникновение брони (ближний бой)
-    Tooltip: Добавляет 15% больше проникновения брони за уровень
-  }
-  AnchorPassive: {
-    Name: Якорь
-    Tooltip: Путешествие начинается здесь.
-  }
-  StrongerChillPassive: {
-    Name: Более сильная заморозка
-    Tooltip: Дебафф заморозки замедляет врагов на 10% больше.
-  }
-  ShockChancePassive: {
-    Name: Энергетическое поле
-    Tooltip: Добавляет дополнительный 5% шанс нанести врагу шок за уровень.
-  }
-  IncreasedMinionDamagePassive: {
-    Name: Увеличенный урон миньонов
-    Tooltip: Увеличивает урон ваших миньонов на 10% за уровень
-  }
-  AddedAggressionPassive: {
-    Name: Добавленная агрессия
-    Tooltip: Добавляет дополнительную единицу аггро за уровень.
-  }
-  GlancingBlowsPassive: {
-    Name: Косвенные удары
-    Tooltip: Блокирование удара наносит 50% урона, но максимальный шанс блокировать увеличивается до 50%, а время восстановления блокирования снижается до 1 секунды.
-  }
-  IncreasedBlockChancePassive: {
-    Name: Тяжелая броня
-    Tooltip: +10% шанс блокировать атаку за уровень.
-  }
-  AddedIntelligencePassive: {
-    Name: Высокообразованный
-    Tooltip: Добавляет +{0} очков интеллекта за уровень.
-  }
-  AddedStrengthPassive: {
-    Name: Интенсивная тренировка
-    Tooltip: Добавляет +{0} очков силы за уровень.
-  }
-  AddedDexterityPassive: {
-    Name: Проворные ноги
-    Tooltip: Добавляет +{0} очков ловкости за уровень.
-  }
-  IncreasedPotionRecoveryPassive: {
-    Name: Мощные зелья
-    Tooltip: Добавляет +{0}% дополнительного исцеления от зелий здоровья за уровень.
-  }
-  IncreasedMoveSpeedPassive: {
-    Name: Быстрая поступь
-    Tooltip: +{0}% увеличение скорости движения за уровень.
-  }
-  IncreasedWhipDamage: {
-    Name: Сильный хлыст
-    Tooltip: +{0}% увеличение урона хлыстом за уровень.
-  }
-  IncreasedWhipSpeed: {
-    Name: Быстрые хлысты
-    Tooltip: +5% увеличение скорости хлыста за уровень.
-  }
-  IncreasedJumpHeight: {
-    Name: Высокий прыгун
-    Tooltip: +{0}% увеличение скорости прыжка.
-  }
+# Passives will always be in the format
+# Name:
+# Tooltip:
+# You do not need to generate these yourself, run the mod and it'll add the keys automatically.
+# The {0} is the value of the passive
+
+IncreasedMeleeDamagePassive: {
+	Name: Мастерство рукопашного боя
+	Tooltip: Увеличивает ваш урон в ближнем бою на 5% за уровень
+}
+
+IncreasedRangedDamagePassive: {
+	Name: Мастерство стрельбы
+	Tooltip: Увеличивает ваш урон на расстоянии на 5% за уровень
+}
+
+IncreasedMagicDamagePassive: {
+	Name: Мастерство арканной магии
+	Tooltip: Увеличивает ваш магический урон на 5% за уровень
+}
+
+IncreasedSummoningDamagePassive: {
+	Name: Мастерство призыва
+	Tooltip: Увеличивает урон ваших призывов на 5% за уровень
+}
+
+AddedLifePassive: {
+	Name: Укрепленная плоть
+	Tooltip: Увеличивает ваш максимальный запас здоровья на 20 за уровень
+}
+
+AddedManaPassive: {
+	Name: Добавленная мана
+	Tooltip: Увеличивает ваш максимальный запас маны на 20 за уровень
+}
+
+LongRangePassive: {
+	Name: Снайпер
+	Tooltip: Увеличивает ваш урон против дальних врагов на 10% за уровень
+}
+
+CloseRangePassive: {
+	Name: Боец ближнего боя
+	Tooltip: Увеличивает ваш урон против близких врагов на 10% за уровень
+}
+
+ChanceToBleedPassive: {
+	Name: Кровавый танец
+	Tooltip: Ваши атаки в ближнем бою наносят кровотечение, нанося 5 урона в секунду в течение (2 + уровень) секунд.
+}
+
+DamageReductionPassive: {
+	Name: Железная воля
+	Tooltip: Получаете 0,25% снижения урона за уровень.
+}
+
+DamageReflectionPassive: {
+	Name: Колючая внешность
+	Tooltip: Отражает дополнительно 10 урона за уровень врагам, наносящим контактный урон.
+}
+
+ChanceToConsumeAmmoPassive: {
+	Name: Секретный отсек
+	Tooltip: Шанс не расходовать боеприпасы: +5% за уровень
+}
+
+StartPassive: {
+	Name: Якорь
+	Tooltip: Ваше путешествие начинается здесь
+}
+
+IncreasedSummonDamagePassive: {
+	Name: Усиленная орда
+	Tooltip: Увеличивает весь урон от призывов на 10% за уровень
+}
+
+IncreasedSentryDamagePassive: {
+	Name: Непоколебимые часовые
+	Tooltip: Увеличивает урон ваших часовых на 10% за уровень
+}
+
+JewelSocket: {
+	Name: Гнездо для самоцветов
+	Tooltip: ""
+}
+
+LifeRegenPassive: {
+	Name: Сильное сердце
+	Tooltip: Увеличенное восстановление здоровья
+}
+
+DecreasedManaCostPassive: {
+	Name: Сниженная стоимость маны
+	Tooltip: Снижает стоимость маны на 3% за уровень
+}
+
+AddedCriticalStrikeChance: {
+	Name: Добавленный шанс критического удара
+	Tooltip: Добавляет 2% шанса критического удара за уровень
+}
+
+IncreasedCriticalStrikeChance: {
+	Name: Увеличенный шанс критического удара
+	Tooltip: Увеличивает шанс критического удара на 5% за уровень
+}
+
+IncreasedCriticalStrikeMultiplier: {
+	Name: Увеличенный множитель критического удара
+	Tooltip: Добавляет 5% к множителю критического удара за уровень
+}
+
+ArmorPenetrationPassive: {
+	Name: Увеличенное проникновение брони (ближний бой)
+	Tooltip: Добавляет 15% больше проникновения брони за уровень
+}
+
+AnchorPassive: {
+	Name: Якорь
+	Tooltip: Путешествие начинается здесь.
+}
+
+StrongerChillPassive: {
+	Name: Более сильная заморозка
+	Tooltip: Дебафф заморозки замедляет врагов на 10% больше.
+}
+
+ShockChancePassive: {
+	Name: Энергетическое поле
+	Tooltip: Добавляет дополнительный 5% шанс нанести врагу шок за уровень.
+}
+
+IncreasedMinionDamagePassive: {
+	Name: Увеличенный урон миньонов
+	Tooltip: Увеличивает урон ваших миньонов на 10% за уровень
+}
+
+AddedAggressionPassive: {
+	Name: Добавленная агрессия
+	Tooltip: Добавляет дополнительную единицу аггро за уровень.
+}
+
+GlancingBlowsPassive: {
+	Name: Косвенные удары
+	Tooltip: Блокирование удара наносит 50% урона, но максимальный шанс блокировать увеличивается до 50%, а время восстановления блокирования снижается до 1 секунды.
+}
+
+IncreasedBlockChancePassive: {
+	Name: Тяжелая броня
+	Tooltip: +10% шанс блокировать атаку за уровень.
+}
+
+AddedIntelligencePassive: {
+	Name: Высокообразованный
+	Tooltip: Добавляет +{0} очков интеллекта за уровень.
+}
+
+AddedStrengthPassive: {
+	Name: Интенсивная тренировка
+	Tooltip: Добавляет +{0} очков силы за уровень.
+}
+
+AddedDexterityPassive: {
+	Name: Проворные ноги
+	Tooltip: Добавляет +{0} очков ловкости за уровень.
+}
+
+IncreasedPotionRecoveryPassive: {
+	Name: Мощные зелья
+	Tooltip: Добавляет +{0}% дополнительного исцеления от зелий здоровья за уровень.
+}
+
+IncreasedMoveSpeedPassive: {
+	Name: Быстрая поступь
+	Tooltip: +{0}% увеличение скорости движения за уровень.
+}
+
+IncreasedWhipDamage: {
+	Name: Сильный хлыст
+	Tooltip: +{0}% увеличение урона хлыстом за уровень.
+}
+
+IncreasedWhipSpeed: {
+	Name: Быстрые хлысты
+	Tooltip: +5% увеличение скорости хлыста за уровень.
+}
+
+IncreasedJumpHeight: {
+	Name: Высокий прыгун
+	Tooltip: +{0}% увеличение скорости прыжка.
+}

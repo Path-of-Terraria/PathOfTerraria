@@ -1,5 +1,5 @@
 DeveloperConfig: {
-	DisplayName: Configuración de Desarrollador [i:509]
+	// DisplayName: Developer Configuration [i:509]
 
 	DrawUIBorders: {
 		// Label: Draw User Interface Borders

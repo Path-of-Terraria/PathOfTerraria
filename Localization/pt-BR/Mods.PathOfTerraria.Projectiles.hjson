@@ -1,13 +1,13 @@
-LifeStealProjectile.DisplayName: Projectile vol de vie
-HomingProjectile.DisplayName: Projectile à tête chercheuse
-SparklingBall.DisplayName: Boule scintillante
-TomeProjectile.DisplayName: Projetile Tome
-BowProjectile.DisplayName: Projectile à arc
-BowAltUseProjectile.DisplayName: Utilisation alternative de projectiles de l'arc
-BowDrawAnimationProjectile.DisplayName: Animation de projectiles de l'arc
+// LifeStealProjectile.DisplayName: Life Steal Projectile
+// HomingProjectile.DisplayName: Homing Projectile
+// SparklingBall.DisplayName: Sparkling Ball
+// TomeProjectile.DisplayName: Tome Projectile
+// BowProjectile.DisplayName: Bow Projectile
+// BowAltUseProjectile.DisplayName: Bow Alt Use Projectile
+// BowDrawAnimationProjectile.DisplayName: Bow Draw Animation Projectile
 // BasicWoodenBowAnimationProjectile.DisplayName: Basic Wooden Bow Animation Projectile
 // WoodenBowAnimationProjectile.DisplayName: Wooden Bow Animation Projectile
-BoomerangProjectile.DisplayName: Projectile boomerang
+// BoomerangProjectile.DisplayName: Boomerang Projectile
 // BowAnimationProjectile.DisplayName: Bow Animation Projectile
 // FireStarterProjectile.DisplayName: Fire Starter Projectile
 // NovaProjectile.DisplayName: Nova
@@ -160,13 +160,13 @@ RunestoneBurst: {
 // DevourerFireball.DisplayName: Devourer Fireball
 // SunsoulHead.DisplayName: Sunsoul
 // SunsoulSummon.DisplayName: Sunsoul Star
-Lightray.DisplayName: Rayon Lumineux
-LightningBurst.DisplayName: Éclair fulgurant
-SunspotAura.DisplayName: Aura de tache solaire
-SunDevourerDash.DisplayName: Dévoreur de Soleil
-WormLightningDeathFX.DisplayName: Mort par foudre vermiforme
-SunBlast.DisplayName: Explosion Solaire
-BubbleshroomBubble.DisplayName: Champignon à bulles
+// Lightray.DisplayName: Lightray
+// LightningBurst.DisplayName: Lightning Burst
+// SunspotAura.DisplayName: Sunspot Aura
+// SunDevourerDash.DisplayName: Sun Devourer
+// WormLightningDeathFX.DisplayName: Worm Lightning Death
+// SunBlast.DisplayName: Sun Blast
+// BubbleshroomBubble.DisplayName: Bubbleshroom Bubble
 // SpawnSymbols.DisplayName: Spawn Symbols
 // PrismatismAfterimage.DisplayName: Prismatism Afterimage
 // MLPortal.DisplayName: Portal

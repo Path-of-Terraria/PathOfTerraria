@@ -1,99 +1,200 @@
-﻿TalkTo: Parlez à {0}
-  GiveThem: et lui donner:
-  Or: ou
-  Popups: {
-    Line1: Ouvrez le Livre de Quêtes pour voir la progression et les étapes des quêtes que vous avez acceptés
-    Line2: Le Livre de Quêtes est toujours à côté de la map dans l'inventaire.
-    Line3: Vous pouvez aussi appuyer sur {0} pour ouvrir le Livre.
-    NoKey: (Non assigné - L par défaut)
-    NewQuest: Nouvelle Quête :
-  }
-  Bring: {
-    Collect: Collecter
-    GiveItTo: et donnez le à {0}
-  }
-  Exploration: {
-    Ice: Explorez le biome de Glace/Neige ({0}%)
-  }
-  Quest: {
-    BlacksmithStartQuest: {
-      Kill: {
-        Zombies: Tuez {0} zombies
-      }
-      Name: Forger une Nouvelle Lame
-    }
-    KingSlimeQuest: {
-      Name: Tuez le Roi
-      EnterDomain: Entrez dans le Domaine du Roi
-      Kill: {
-        KingSlime: Tuez le Roi des Slimes
-      }
-      ThanksDialogue: Je n'arrive pas à y croire. Et bien, vous avez réussi là où j'ai échoué, étranger. Je ferais mieux de m'y remettre ; tu ne me surpasseras plus. Je te remercie quand même.
-    }
-    DeerclopsQuest: {
-      KillDeerclops: Tuez Deerclops
-      Name: Bête Glaciale
-    }
-    SkeletronQuest: {
-      KillSkeletron: Tuez Squeletron
-      EnterDomain: Entrez dans le Domaine de Squeletron
-      Name: Restes Squelettique
-    }
-    WoFQuest: {
-      Name: Libérer le Chaos
-      KillWall: Tuez le Mur de Chair
-      WizardStart: Hum... oui. Le sol sous nos pieds tremble avec vigueur, à cause de celui qu'ils ont caché. Vous voyez, il y a longtemps, un groupe d'aventuriers a enfermé un démon dans un fascimile. Cependant, grâce à votre incroyable force qui a permis de tuer toutes ces bêtes à travers le monde, ce pouvoir semble s'être frayé un chemin jusqu'à ce démon enfermé. Ce qui signifie que nous devons le tuer. Parlez à Thrain, Morgana et Elara dès que possible. Ils comprennent et vous donneront des armes. Prenez ceci, et bonne chance. Vous pouvez remercier Morgana pour cela aussi. Mais... ne lui posez pas trop de questions. Nous sommes très occupés ici
-      ThrainHelp: Oh. C'est vrai. Tiens... Je me suis préparé pour un jour comme celui-ci, j'espère que cela répondra à tes attentes. Alaric m'a aidé à le réaliser, il contient les souvenirs de mes combats. Profites-en bien. Bonne chance.
-      ElaraHelp: Prends soin de toi, et prends ça. Je ne suis pas un armurier hors pair, mais Thrain m'a aidé à le fabriquer. C'est simple. Et... les yeux sont le point faible.
-      MorganaHelp: Oh... ? Bahaha ! Le moment est venu ! Voici un véritable buffet de matériaux pour grimoires ! Elara m'a aidé à les rassembler... C'est une jeune fille très cultivée ! Profitez bien de vos cadeaux ! Bahahaha !
-      WizardContinue: Voilà. Tiens, prends ça. Ce sont... oui... des explosifs, mais c'est comme ça que ça marche. Je te le jure. Jette-les sur les cendres de l'Enfer pour ouvrir un portail vers l'endroit où le Mur était confiné. Remarque : tu n'auras qu'une seule chance de le tuer. Pas d'erreur. Et nous ne savons pas ce qui se passera après la mort du Mur. Beaucoup de choses sont incertaines, à part le fait qu'il doit mourir. Bonne chance. Si tu en as besoin de plus, je peux en invoquer... pour un petit prix ! Désolé ! Le commerce ne se cache jamais !
-      WizardFinish: Tu reviens ! Nous constatons de nombreux changements, mais la terre ne tremblera plus sous nos pieds. Prépare-toi pour l'avenir, car il y a beaucoup à apprendre. Surtout pour moi, car j'ai... beaucoup de choses à essayer.
-    }
-    EoCQuest: {
-      Kill: {
-        EoC: Battez l'Œil de Cthulhu
-      }
-      Name: Le Présage Croissant
-    }
-    EoWQuest: {
-      Name: Murmures des Profondeurs
-      KillEoW: Battez le Dévoreur des Mondes
-      MorvenRaven: Emmenez Morgen à Ravencrest
-      SmashOrbs: Détruire 3 Orbes de l'Ombre
-    }
-    QueenBeeQuest: {
-      Name: Une Aventure Royale
-      KillQueen: Tuez la Reine des Abeilles
-    }
-    BoCQuest: {
-      KillBrain: Tuez le Cerveau de Cthulhu
-      EnterDomain: Entrez dans le Domaine du Cerveau de Cthulhu
-      Name: Un Cœur qui Bat Encore
-      SmashOrb: Détruire un Cœur Carmin
-    }
-    TestQuest: {
-      Name: Quête de Test
-      Description: Utilisé pour tester les quêtes.
-    }
-    TestQuestTwo: {
-      Name: Test 2 : Electric Boogaloo
-      Description: Tester plus fort.
-    }
-    FirstQuest: {
-      Name: Entrer dans Ravencrest
-      ApproachEntrance: Approchez de l'entrée de Ravencrest
-      EnterRavencrest: Entrez dans Ravencrest
-    }
-    WizardStartQuest: {
-      Name: Retour Magique
-    }
-    WitchStartQuest: {
-      Name: L'Art Ancien
-    }
-    HunterStartQuest: {
-      Name: Dégainer l'Arc
-      Kill: {
-        FloatingMisc: Tuez {0} Œil de démon, Carminera ou Dévoreur d'Âmes
-      }
-    }
-  }
+Popups: {
+	Line1: Ouvrez le Livre de Quêtes pour voir la progression et les étapes des quêtes que vous avez acceptés
+	Line2: Le Livre de Quêtes est toujours à côté de la map dans l'inventaire.
+	Line3: Vous pouvez aussi appuyer sur {0} pour ouvrir le Livre.
+	NoKey: (Non assigné - L par défaut)
+	NewQuest: Nouvelle Quête :
+}
+
+Bring: {
+	Collect: Collecter
+	GiveItTo: et donnez le à {0}
+}
+
+TalkTo: Parlez à {0}
+GiveThem: et lui donner:
+Exploration.Ice: Explorez le biome de Glace/Neige ({0}%)
+Or: ou
+
+Quest: {
+	TestQuest: {
+		Name: Quête de Test
+		Description: Utilisé pour tester les quêtes.
+	}
+
+	TestQuestTwo: {
+		Name: Test 2 : Electric Boogaloo
+		Description: Tester plus fort.
+	}
+
+	BlacksmithStartQuest: {
+		Name: Forger une Nouvelle Lame
+		// Description: ""
+		Kill.Zombies: Tuez {0} zombies
+	}
+
+	KingSlimeQuest: {
+		Name: Tuez le Roi
+		// Description: ""
+		EnterDomain: Entrez dans le Domaine du Roi
+		ThanksDialogue: Je n'arrive pas à y croire. Et bien, vous avez réussi là où j'ai échoué, étranger. Je ferais mieux de m'y remettre ; tu ne me surpasseras plus. Je te remercie quand même.
+		Kill.KingSlime: Tuez le Roi des Slimes
+	}
+
+	HunterStartQuest: {
+		Name: Dégainer l'Arc
+		// Description: ""
+		Kill.FloatingMisc: Tuez {0} Œil de démon, Carminera ou Dévoreur d'Âmes
+	}
+
+	WitchStartQuest: {
+		Name: L'Art Ancien
+		// Description: ""
+	}
+
+	WizardStartQuest: {
+		Name: Retour Magique
+		// Description: ""
+	}
+
+	EoCQuest: {
+		Name: Le Présage Croissant
+		// Description: ""
+		Kill.EoC: Battez l'Œil de Cthulhu
+	}
+
+	EoWQuest: {
+		Name: Murmures des Profondeurs
+		// Description: ""
+		MorvenRaven: Emmenez Morgen à Ravencrest
+		SmashOrbs: Détruire 3 Orbes de l'Ombre
+		KillEoW: Battez le Dévoreur des Mondes
+		// ReturnToOverworld: Return to the Overworld
+	}
+
+	BoCQuest: {
+		Name: Un Cœur qui Bat Encore
+		// Description: ""
+		SmashOrb: Détruire un Cœur Carmin
+		EnterDomain: Entrez dans le Domaine du Cerveau de Cthulhu
+		KillBrain: Tuez le Cerveau de Cthulhu
+	}
+
+	QueenBeeQuest: {
+		Name: Une Aventure Royale
+		// Description: ""
+		KillQueen: Tuez la Reine des Abeilles
+	}
+
+	DeerclopsQuest: {
+		Name: Bête Glaciale
+		// Description: ""
+		KillDeerclops: Tuez Deerclops
+		// GetAntlersOrShards: Get Strange Antlers or an Antler Shard
+	}
+
+	SkeletronQuest: {
+		Name: Restes Squelettique
+		// Description: ""
+		EnterDomain: Entrez dans le Domaine de Squeletron
+		KillSkeletron: Tuez Squeletron
+	}
+
+	WoFQuest: {
+		Name: Libérer le Chaos
+		// Description: ""
+		WizardStart: Hum... oui. Le sol sous nos pieds tremble avec vigueur, à cause de celui qu'ils ont caché. Vous voyez, il y a longtemps, un groupe d'aventuriers a enfermé un démon dans un fascimile. Cependant, grâce à votre incroyable force qui a permis de tuer toutes ces bêtes à travers le monde, ce pouvoir semble s'être frayé un chemin jusqu'à ce démon enfermé. Ce qui signifie que nous devons le tuer. Parlez à Thrain, Morgana et Elara dès que possible. Ils comprennent et vous donneront des armes. Prenez ceci, et bonne chance. Vous pouvez remercier Morgana pour cela aussi. Mais... ne lui posez pas trop de questions. Nous sommes très occupés ici
+		ThrainHelp: Oh. C'est vrai. Tiens... Je me suis préparé pour un jour comme celui-ci, j'espère que cela répondra à tes attentes. Alaric m'a aidé à le réaliser, il contient les souvenirs de mes combats. Profites-en bien. Bonne chance.
+		ElaraHelp: Prends soin de toi, et prends ça. Je ne suis pas un armurier hors pair, mais Thrain m'a aidé à le fabriquer. C'est simple. Et... les yeux sont le point faible.
+		MorganaHelp: Oh... ? Bahaha ! Le moment est venu ! Voici un véritable buffet de matériaux pour grimoires ! Elara m'a aidé à les rassembler... C'est une jeune fille très cultivée ! Profitez bien de vos cadeaux ! Bahahaha !
+		WizardContinue: Voilà. Tiens, prends ça. Ce sont... oui... des explosifs, mais c'est comme ça que ça marche. Je te le jure. Jette-les sur les cendres de l'Enfer pour ouvrir un portail vers l'endroit où le Mur était confiné. Remarque : tu n'auras qu'une seule chance de le tuer. Pas d'erreur. Et nous ne savons pas ce qui se passera après la mort du Mur. Beaucoup de choses sont incertaines, à part le fait qu'il doit mourir. Bonne chance. Si tu en as besoin de plus, je peux en invoquer... pour un petit prix ! Désolé ! Le commerce ne se cache jamais !
+		KillWall: Tuez le Mur de Chair
+		WizardFinish: Tu reviens ! Nous constatons de nombreux changements, mais la terre ne tremblera plus sous nos pieds. Prépare-toi pour l'avenir, car il y a beaucoup à apprendre. Surtout pour moi, car j'ai... beaucoup de choses à essayer.
+	}
+
+	FirstQuest: {
+		Name: Entrer dans Ravencrest
+		// Description: ""
+		ApproachEntrance: Approchez de l'entrée de Ravencrest
+		EnterRavencrest: Entrez dans Ravencrest
+	}
+
+	QueenSlimeQuest: {
+		// Name: Regal Regime
+		// Description: ""
+		// Tiers: Complete {1} Tier 1 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Queen Slime's domain
+		// Boss: Defeat the Queen Slime
+	}
+
+	TwinsQuest: {
+		// Name: Twin Terrors
+		// Description: ""
+		// Tiers: Complete {1} Tier 2 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Twin's domain
+		// Boss: Defeat the Twins
+	}
+
+	DestroyerQuest: {
+		// Name: Metal Eartheater
+		// Description: ""
+		// Tiers: Complete {1} Tier 3 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Destroyer's domain
+		// Boss: Defeat the Destroyer
+	}
+
+	SkelePrimeQuest: {
+		// Name: Metal Bones
+		// Description: ""
+		// Tiers: Complete {1} Tier 4 Explorable maps ({0}/{1})
+		// EnterDomain: Enter Skeletron Prime's domain
+		// Boss: Defeat Skeletron Prime
+	}
+
+	PlanteraQuest: {
+		// Name: Ravenous Bloom
+		// Description: ""
+		// Tiers: Complete {1} Tier 5 Explorable maps ({0}/{1})
+		// EnterDomain: Enter Plantera's domain
+		// Boss: Defeat Plantera
+	}
+
+	GolemQuest: {
+		// Name: Ancient Design
+		// Description: ""
+		// Tiers: Complete {1} Tier 6 Explorable maps ({0}/{1})
+		// EnterDomain: Enter Golem's domain
+		// Boss: Defeat Golem
+	}
+
+	FishronQuest: {
+		// Name: Mad Pig...ron
+		// Description: ""
+		// Tiers: Complete {1} Tier 7 Explorable maps ({0}/{1})
+		// EnterDomain: Enter Duke Fishron's domain
+		// Boss: Defeat Duke Fishron
+	}
+
+	EoLQuest: {
+		// Name: Holy Absolution
+		// Description: ""
+		// Tiers: Complete {1} Tier 8 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Empress of Light's domain
+		// Boss: Defeat the Empress of Light
+	}
+
+	CultistQuest: {
+		// Name: Lunar Leader
+		// Description: ""
+		// Tiers: Complete {1} Tier 9 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Lunatic Cultist's domain
+		// Boss: Defeat the Lunatic Cultist
+	}
+
+	MoonLordQuest: {
+		// Name: The Ending
+		// Description: ""
+		// EnterDomain: Enter the Moon Lord's domain
+		// Boss: Defeat the Moon Lord
+	}
+}

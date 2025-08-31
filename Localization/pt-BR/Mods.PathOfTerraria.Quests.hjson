@@ -1,20 +1,20 @@
 Popups: {
-	Line1: Abre el Libro de Misiones para ver el progreso y los pasos de las misiones que aceptaste.
-	Line2: El Libro de misiones siempre se encuentra junto al mapa en el inventario.
-	Line3: Puedes presionar {0} para abrir el Libro de Misiones
-	NoKey: (Sin asignar - predeterminado L)
-	NewQuest: Nueva Misión:
+	// Line1: Open up the Quest Book to see progress & steps for the quests you take.
+	// Line2: The Quest Book is always next to the map in the inventory.
+	// Line3: You can also press {0} to open the Book.
+	// NoKey: (None assigned - default L)
+	// NewQuest: New Quest:
 }
 
 Bring: {
-	Collect: Recoger
+	// Collect: Collect
 	// GiveItTo: and give it to the {0}
 }
 
-TalkTo: Habla con {0}
-GiveThem: y dale:
+// TalkTo: Talk to {0}
+// GiveThem: " and give them:"
 // Exploration.Ice: Explore the Ice/Snow biome ({0}%)
-Or: o
+// Or: " or "
 
 Quest: {
 	TestQuest: {

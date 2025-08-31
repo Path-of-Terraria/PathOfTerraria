@@ -1,108 +1,132 @@
-﻿Anchor: {
-    Name: Ancre
-    Tooltip: Votre voyage commence ici
-  }
-  IgniteChance: {
-    Name: Chance d'embraser
-    Tooltip: +{0}% de chances par niveau d'appliquer En Feu! lors d'un coup
-  }
-  ShockChance: {
-    Name: Chance de choc
-    Tooltip: +{0}% de chances par niveau d'infliger Choc au toucher
-  }
-  Efficiency: {
-    Name: Efficacité
-    Tooltip: Coût en mana réduit de {0}% par niveau
-  }
-  ThunderClaps: {
-    Name: Coup de Tonnerre
-    Tooltip: 5% de chances par niveau de générer une petite nova autour d'une cible touchée.
-  }
-  ConcurrentBlasts: {
-    Name: Explosions Simultanées
-    Tooltip: Inflige {0}% de dégâts supplémentaires si touché par une autre nova provenant du même lanceur.
-  }
-  VolatileNova: {
-    Name: Nova volatile
-    Tooltip:
-      '''
-      Divise votre attaque en 3 petites novae
-      Peut toucher la même cible plusieurs fois
-      '''
-  }
-  FlashFire: {
-    Name: Incendie Instantané
-    Tooltip:
-      '''
-      Temps de recharge réduit de moitié
-      Inflige {0} % de dégâts en moins
-      '''
-  }
-  Combustive: {
-    Name: Combustible
-    Tooltip: Les ennemis créent une explosion de feu à leur mort.
-  }
-  ScorchingTouch: {
-    Name: Toucher Brûlant
-    Tooltip: Les lumières embrasent le terrain au contact
-  }
-  FesteringSpores: {
-    Name: Spores Purulentes
-    Tooltip: Les projectiles qui touchent le sol ont une faible chance de générer des spores explosives et destructrices.
-  }
-  MoldColony: {
-    Name: Colonie de Moisissures
-    Tooltip: Augmente les chances que les projectiles génèrent des spores.
-  }
-  FungalSpread: {
-    Name: Propagation Fongique
-    Tooltip: Les explosions de spores sont 10% plus importantes par pile.
-  }
-  LingeringPoison: {
-    Name: Poison Persistant
-    Tooltip: Les projectiles qui touchent le sol libèrent un gaz toxique.
-  }
-  PowerfulSmog: {
-    Name: Brouillard Puissant
-    Tooltip: Les nuages toxiques persistent une seconde de plus par cumul.
-  }
-  Megatoxin: {
-    Name: Mégatoxine
-    Tooltip: Augmente considérablement les dégâts de poison persistants par cumul.
-  }
-  ColdBlast: {
-    Name: Vague de Froid
-    Tooltip: Toutes les explosions de Salve explosive infligent 2 secondes de Refroidissement et infligent 100% de dégâts de froid.
-  }
-  ShatteringArrows: {
-    Name: Flèches Fracassantes
-    Tooltip: Les salves ont deux fois plus de projectiles, chacun infligeant 70% des dégâts initiaux.
-  }
-  ConcussiveBurst: {
-    Name: Explosion Commotionnelle
-    Tooltip: Ajouter un projectile supplémentaire par niveau
-  }
-  SlicingShrapnel: {
-    Name: Éclats Tranchants
-    Tooltip: Tous les projectiles Briser infligent des saignements pendant 3 secondes.
-  }
-  CreepingVines: {
-    Name: Vignes Rampantes
-    Tooltip: Les ennemis touchés par la pluie seront frappés par une vigne, qui se brise à distance.
-  }
-  Quickload: {
-    Name: Chargement Rapide
-    Tooltip: Les projectiles sont tirés beaucoup plus rapidement.
-  }
-  SharpenedTips: {
-    Name: Pointes Affûtées
-    Tooltip: Augmentation de 10% de la perforation d'armure par cumul.
-  }
-  TargetLock: {
-    Name: Verrouillage de Cible
-    Tooltip: Les projectiles se dirigeront paresseusement vers l'ennemi le plus proche.
-  }
-  Ghostfire: {
-    Name: Feu Fantôme
-    Tooltip: Les projectiles qui touchent un ennemi ont une faible chance de se dupliquer.
-  }
+Anchor: {
+	Name: Ancre
+	Tooltip: Votre voyage commence ici
+}
+
+IgniteChance: {
+	Name: Chance d'embraser
+	Tooltip: +{0}% de chances par niveau d'appliquer En Feu! lors d'un coup
+}
+
+ShockChance: {
+	Name: Chance de choc
+	Tooltip: +{0}% de chances par niveau d'infliger Choc au toucher
+}
+
+Efficiency: {
+	Name: Efficacité
+	Tooltip: Coût en mana réduit de {0}% par niveau
+}
+
+ThunderClaps: {
+	Name: Coup de Tonnerre
+	Tooltip: 5% de chances par niveau de générer une petite nova autour d'une cible touchée.
+}
+
+ConcurrentBlasts: {
+	Name: Explosions Simultanées
+	Tooltip: Inflige {0}% de dégâts supplémentaires si touché par une autre nova provenant du même lanceur.
+}
+
+VolatileNova: {
+	Name: Nova volatile
+	Tooltip:
+		'''
+		Divise votre attaque en 3 petites novae
+		Peut toucher la même cible plusieurs fois
+		'''
+}
+
+FlashFire: {
+	Name: Incendie Instantané
+	Tooltip:
+		'''
+		Temps de recharge réduit de moitié
+		Inflige {0} % de dégâts en moins
+		'''
+}
+
+Combustive: {
+	Name: Combustible
+	Tooltip: Les ennemis créent une explosion de feu à leur mort.
+}
+
+ScorchingTouch: {
+	Name: Toucher Brûlant
+	Tooltip: Les lumières embrasent le terrain au contact
+}
+
+FesteringSpores: {
+	Name: Spores Purulentes
+	Tooltip: Les projectiles qui touchent le sol ont une faible chance de générer des spores explosives et destructrices.
+}
+
+MoldColony: {
+	Name: Colonie de Moisissures
+	Tooltip: Augmente les chances que les projectiles génèrent des spores.
+}
+
+FungalSpread: {
+	Name: Propagation Fongique
+	Tooltip: Les explosions de spores sont 10% plus importantes par pile.
+}
+
+LingeringPoison: {
+	Name: Poison Persistant
+	Tooltip: Les projectiles qui touchent le sol libèrent un gaz toxique.
+}
+
+PowerfulSmog: {
+	Name: Brouillard Puissant
+	Tooltip: Les nuages toxiques persistent une seconde de plus par cumul.
+}
+
+Megatoxin: {
+	Name: Mégatoxine
+	Tooltip: Augmente considérablement les dégâts de poison persistants par cumul.
+}
+
+ColdBlast: {
+	Name: Vague de Froid
+	Tooltip: Toutes les explosions de Salve explosive infligent 2 secondes de Refroidissement et infligent 100% de dégâts de froid.
+}
+
+ShatteringArrows: {
+	Name: Flèches Fracassantes
+	Tooltip: Les salves ont deux fois plus de projectiles, chacun infligeant 70% des dégâts initiaux.
+}
+
+ConcussiveBurst: {
+	Name: Explosion Commotionnelle
+	Tooltip: Ajouter un projectile supplémentaire par niveau
+}
+
+SlicingShrapnel: {
+	Name: Éclats Tranchants
+	Tooltip: Tous les projectiles Briser infligent des saignements pendant 3 secondes.
+}
+
+CreepingVines: {
+	Name: Vignes Rampantes
+	Tooltip: Les ennemis touchés par la pluie seront frappés par une vigne, qui se brise à distance.
+}
+
+Quickload: {
+	Name: Chargement Rapide
+	Tooltip: Les projectiles sont tirés beaucoup plus rapidement.
+}
+
+SharpenedTips: {
+	Name: Pointes Affûtées
+	Tooltip: Augmentation de 10% de la perforation d'armure par cumul.
+}
+
+TargetLock: {
+	Name: Verrouillage de Cible
+	Tooltip: Les projectiles se dirigeront paresseusement vers l'ennemi le plus proche.
+}
+
+Ghostfire: {
+	Name: Feu Fantôme
+	Tooltip: Les projectiles qui touchent un ennemi ont une faible chance de se dupliquer.
+}

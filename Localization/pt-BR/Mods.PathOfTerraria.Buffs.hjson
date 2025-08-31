@@ -1,52 +1,60 @@
 BattleAxeBuff: {
-	DisplayName: Kampfrage
-	Description: Erhöht verursachten und erlittenen Schaden
+	// DisplayName: Battle Rage
+	// Description: Increased damage and increased taken damage
 }
 
 RageBuff: {
-	DisplayName: Berserk
-	Description: Erhöht Schaden und erhöht Rückstoß sehr viel
+	// DisplayName: Berserk
+	// Description: Increased damage and greatly increased knockback
 }
 
 MoltenShieldBuff: {
-	DisplayName: Geschmolzener Panzer
-	Description: Erhalte für kurze Zeit einen Schild/ Erhalte eine kleine Menge Abwehr
+	// DisplayName: Molten Shell
+	/* Description:
+		'''
+		Gain a temporary shield
+		Gain a small amount of defense
+		''' */
 }
 
 BloodclotDebuff: {
-	DisplayName: "Blutgerinnsel  "
+	// DisplayName: BloodclotDebuff
 	// Description: ""
-	DeathText: "Blutung kann nicht gestoppt werden "
+	// DeathText: "{0} couldn't stop the bleeding"
 }
 
 ArmorShredDebuff: {
-	DisplayName: "Rüstungszerlegung "
+	// DisplayName: Armor Shred Debuff
 	// Description: ""
 }
 
 ShockDebuff: {
-	DisplayName: Schock
-	Description: 10% erhöhter erlittener Schaden
+	// DisplayName: Shock
+	// Description: 10% increased damage taken
 }
 
 RootedDebuff: {
-	DisplayName: Gefesselt
-	Description: Du kannst dich nicht Bewegen!
+	// DisplayName: Rooted Debuff
+	// Description: You can't move!
 }
 
 GodlikeBuff: {
-	DisplayName: Göttlichkeit
-	Description: "Du bist immun gegen jeglichen direkten Schaden "
+	// DisplayName: Godlike Buff
+	// Description: You are immune to all direct damage
 }
 
 RestorationBuff: {
-	DisplayName: "Regeneration "
-	Description: "Massiv erhöhte Lebensregeneration "
+	// DisplayName: Restoration Buff
+	// Description: Provides massive life regeneration
 }
 
 HardinessBuff: {
-	DisplayName: Widerstandsfähigkeit
-	Description: +10 Armor und 20% Abwehr Chance
+	// DisplayName: Hardiness Buff
+	/* Description:
+		'''
+		+10 defense
+		+20% block chance
+		''' */
 }
 
 HasteBuff: {

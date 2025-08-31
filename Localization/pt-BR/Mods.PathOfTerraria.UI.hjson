@@ -1,70 +1,70 @@
 Gear: {
 	Buttons: {
-		Previous: Anterior
-		Next: Siguiente
+		// Previous: Previous
+		// Next: Next
 	}
 
 	Pages: {
-		Gear: Equipo
-		Vanity: Vanidad
-		Dyes: Tintes
+		// Gear: Gear
+		// Vanity: Vanity
+		// Dyes: Dyes
 	}
 }
 
 Slots: {
-	0: Casco
-	1: Cofre
-	2: Grebas
-	3: Accesorio 2
-	4: Arma
-	5: Collar
-	6: Mano secundaria
-	7: Anillo izquierdo
-	8: Anillo derecho
-	9: Accesorio 1
-	10: Alas
+	// 0: Helmet
+	// 1: Chest
+	// 2: Legs
+	// 3: Accessory 1
+	// 4: Weapon
+	// 5: Necklace
+	// 6: Offhand
+	// 7: Left Ring
+	// 8: Right Ring
+	// 9: Accessory 2
+	// 10: Wings
 	// 11: Accessory 3
 	// 12: Accessory 4
 }
 
-BaseDamage: Daño base: {0}
-Lives: vidas restantes
+// BaseDamage: Base Damage: {0}
+// Lives: lives left
 
 StatUI: {
 	// CharacterHeader: Progression
-	Level: Nivel
-	Experience: Exp
+	// Level: Level
+	// Experience: Exp
 	// DefenseHeader: Defense
-	Life: Vida
+	// Life: Life
 	// LifeRegen: Life Regen/s
-	Mana: Maná
+	// Mana: Mana
 	// ManaRegen: Mana Regen/s
-	DamageReduction: Reducción de daño
-	BlockChance: Probabilidad de bloquear
-	MaxBlock: Límite de probabilidad de bloqueo
-	BlockCooldown: Enfriamiento de bloqueo
-	FireResistance: Resistencia al fuego
-	ColdResistance: Resistencia al frio
-	LightningResistance: Resistencia a los rayos
+	// DamageReduction: Damage Reduction
+	// BlockChance: Block Chance
+	// MaxBlock: Block Chance Cap
+	// BlockCooldown: Block Cooldown
+	// FireResistance: Fire Resistance
+	// ColdResistance: Cold Resistance
+	// LightningResistance: Lightning Resistance
 	// OffenseHeader: Offense
 	// CriticalChance: Critical Strike Chance
 	// AttributesHeader: Attributes
-	Strength: Fuerza
-	Dexterity: Destreza
-	Intelligence: Inteligencia
+	// Strength: Strength
+	// Dexterity: Dexterity
+	// Intelligence: Intelligence
 	// ChargesHeader: Charges
 	// HasteChargeChance: Haste Charge Chance On Kill
 	// FocusChargeChance: Focus Charge Chance On Kill
 	// AegisChargeChance: Aegis Charge Chance On Kill
 	// MiscHeader: Misc
-	MaxMinions: Súbditos máximos
-	HealthPotions: Pociones de vida
-	ManaPotions: Pociones de maná
+	// MaxMinions: Maximum Minions
+	// HealthPotions: Health Potions
+	// ManaPotions: Mana Potions
 
 	Help: {
-		Strength: Otorga 5 puntos de vida máxima por cada 10 puntos
-		Dexterity: Otorga 1% de velocidad de ataque global cada 10 puntos
-		Intelligence: Otorga 5 puntos de maná máximo por cada 10 puntos
+		// Strength: Grants 5 additional maximum health per 10 points
+		// Dexterity: Grants 1% additional global attack speed per 10 points
+		// Intelligence: Grants 5 additional maximum mana per 10 points
 	}
 }
 

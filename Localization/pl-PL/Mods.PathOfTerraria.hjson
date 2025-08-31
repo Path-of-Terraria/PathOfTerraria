@@ -44,7 +44,7 @@ Condition: {
 }
 
 TooltipNotices: {
-	// NoSwap: (Nothing to compare with)
+	NoSwap: (Nic do zamiany)
 	Swap: Jeśli {0} jest założony:
 	Shift: (Przytrzymaj shift żeby porównać statystyki)
 	// NoDifferences: (No differences)

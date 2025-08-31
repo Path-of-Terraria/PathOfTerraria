@@ -1,25 +1,31 @@
-﻿OneLine: Une seule spécialisation de compétence peut être sélectionnée
-  FireNova: {
-    Name: Explosion de Feu
-    Description: Créez une aura de flamme basée sur les dégâts de l'arme magique que vous tenez, infligeant En feu !
-  }
-  IceNova: {
-    Name: Vague de Glace
-    Description: Créez une vague de glace basée sur les dégâts de l'arme magique que vous tenez, infligeant Refroidissement
-  }
-  LightningNova: {
-    Name: Choc de Tonnerre
-    Description: Créez une pulsation électrique basée sur les dégâts de l'arme magique que vous tenez, infligeant de large dégâts et infligeant Électrification
-  }
-  NaturesBarrage: {
-    Name: Barrage Naturel
-    Description: Les pointes trafiquées empoisonnent les ennemis.
-  }
-  ExplosiveVolley: {
-    Name: Vollée Explosive
-    Description: Les flèches se repositionnent avec une explosion dans une zone beaucoup plus large.
-  }
-  PiercingPrecision: {
-    Name: Perçage Précis
-    Description: Remplacer la rafale par un barrage retardé avec une pénétration d'armure accrue.
-  }
+OneLine: Une seule spécialisation de compétence peut être sélectionnée
+
+FireNova: {
+	Name: Explosion de Feu
+	Description: Créez une aura de flamme basée sur les dégâts de l'arme magique que vous tenez, infligeant En feu !
+}
+
+IceNova: {
+	Name: Vague de Glace
+	Description: Créez une vague de glace basée sur les dégâts de l'arme magique que vous tenez, infligeant Refroidissement
+}
+
+LightningNova: {
+	Name: Choc de Tonnerre
+	Description: Créez une pulsation électrique basée sur les dégâts de l'arme magique que vous tenez, infligeant de large dégâts et infligeant Électrification
+}
+
+NaturesBarrage: {
+	Name: Barrage Naturel
+	Description: Les pointes trafiquées empoisonnent les ennemis.
+}
+
+ExplosiveVolley: {
+	Name: Vollée Explosive
+	Description: Les flèches se repositionnent avec une explosion dans une zone beaucoup plus large.
+}
+
+PiercingPrecision: {
+	Name: Perçage Précis
+	Description: Remplacer la rafale par un barrage retardé avec une pénétration d'armure accrue.
+}
