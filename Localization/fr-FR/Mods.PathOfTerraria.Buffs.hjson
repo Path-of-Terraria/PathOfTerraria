@@ -1,106 +1,73 @@
-BattleAxeBuff: {
-	DisplayName: Rage de Bataille
-	Description: Augmente les dommages et augmente les dommages subis
-}
-
-RageBuff: {
-	DisplayName: Berserker
-	Description: Augmente les dommages et augmente grandement le recul
-}
-
-MoltenShieldBuff: {
-	// DisplayName: Molten Shell
-	/* Description:
-		'''
-		Gain a temporary shield
-		Gain a small amount of defense
-		''' */
-}
-
-BloodclotDebuff: {
-	// DisplayName: BloodclotDebuff
-	// Description: ""
-	// DeathText: "{0} couldn't stop the bleeding"
-}
-
-ArmorShredDebuff: {
-	// DisplayName: Armor Shred Debuff
-	// Description: ""
-}
-
-ShockDebuff: {
-	DisplayName: Choc
-	Description: 10% d'augmentation des dommages subis
-}
-
-RootedDebuff: {
-	// DisplayName: Rooted Debuff
-	// Description: You can't move!
-}
-
-GodlikeBuff: {
-	DisplayName: Buff Divin
-	Description: Vous êtes immunisé contre tous les dommages directs
-}
-
-RestorationBuff: {
-	// DisplayName: Restoration Buff
-	// Description: Provides massive life regeneration
-}
-
-HardinessBuff: {
-	// DisplayName: Hardiness Buff
-	/* Description:
-		'''
-		+10 defense
-		+20% block chance
-		''' */
-}
-
-HasteBuff: {
-	// DisplayName: Haste Buff
-	/* Description:
-		'''
-		+20% movement speed
-		+15% attack speed
-		''' */
-}
-
-UnstoppableBuff: {
-	DisplayName: Buff Inarrêtable
-	/* Description:
-		'''
-		+50% shielding health
-		Immunity to Chilled
-		''' */
-}
-
-FrostflameDebuff: {
-	// DisplayName: Frostflame Debuff
-	// Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
-}
-
-SporeDebuff: {
-	// DisplayName: Spore Debuff
-	// Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
-}
-
-BlindedDebuff: {
-	DisplayName: Aveugle
-	Description: "Les attaques ont une chance de rater "
-}
-
-HasteChargeBuff: {
-	// DisplayName: Haste Charge Buff
-	// Description: Increases attack speed and movement speed by {0}%
-}
-
-AegisChargeBuff: {
-	// DisplayName: Aegis Charge Buff
-	// Description: Increases max health by {0} and defense by {1}
-}
-
-FocusChargeBuff: {
-	// DisplayName: Focus Charge Buff
-	// Description: Increases critical strike chance and multiplier by {0}%
-}
+﻿BattleAxeBuff: {
+    DisplayName: Rage de Bataille
+    Description: Augmente les dégâts et augmente les dégats subis
+  }
+  RageBuff: {
+    DisplayName: Berserker
+    Description: Augmente les dégâts et augmente grandement le recul
+  }
+  ShockDebuff: {
+    DisplayName: Choc
+    Description: 10% d'augmentation des dégâts subis
+  }
+  GodlikeBuff: {
+    DisplayName: Buff Divin
+    Description: Vous êtes immunisé contre tous les dégâts directs
+  }
+  UnstoppableBuff: {
+    DisplayName: Buff Inarrêtable
+    Description:
+      '''
+      +50% de santé de protection
+      Immunité au refroidissement
+      '''
+  }
+  BlindedDebuff: {
+    DisplayName: Aveuglé
+    Description: Les attaques ont une chance de rater
+  }
+  MoltenShieldBuff: {
+    DisplayName: Carapace en Fusion
+    Description:
+      '''
+      Gagne temporairement un bouclier
+      Gagne quelque points de défense
+      '''
+  }
+  BloodclotDebuff: {
+    DeathText: "{0} n'a pas pu arrêter l'hémorragie"
+    DisplayName: Caillot Sanguin
+  }
+  ArmorShredDebuff: {
+    DisplayName: Déchirure d'Armure
+  }
+  RootedDebuff: {
+    Description: Tu ne peux pas bouger !
+    DisplayName: Enraciné
+  }
+  RestorationBuff: {
+    DisplayName: Bonus de restauration
+    Description: Procure une régénération massive de la vie.
+  }
+  HardinessBuff: {
+    DisplayName: Bonus de robustesse
+    Description:
+      '''
+      +10 en défense
+      +20 % de chances de blocage
+      '''
+  }
+  HasteBuff: {
+    DisplayName: Bonus de rapidité
+    Description:
+      '''
+      +20 % de vitesse de déplacement
+      +15 % de vitesse d'attaque
+      '''
+  }
+  FrostflameDebuff: {
+    DisplayName: Malus de Flamme givrante
+  }
+  SporeDebuff: {
+    DisplayName: Malus Spore
+  }

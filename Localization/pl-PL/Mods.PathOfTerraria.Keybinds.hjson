@@ -1,0 +1,30 @@
+﻿PassiveTreeUIKey: {
+    DisplayName: Klawisz UI Drzewka Pasywnego
+  }
+  QuestUIKey: {
+    DisplayName: Klawisz UI Zadań
+  }
+  GearSwap: {
+    DisplayName: Zmiana Broni
+  }
+  StatUIKey: {
+    DisplayName: Przełącz Strone Statystyk
+  }
+  CopyItemInfo: {
+    DisplayName: Skopiuj Informacje o Przedmiocie
+  }
+  UseSkill5: {
+    DisplayName: Użyj Czaru5
+  }
+  UseSkill4: {
+    DisplayName: Użyj Czaru4
+  }
+  UseSkill3: {
+    DisplayName: Użyj Czaru3
+  }
+  UseSkill2: {
+    DisplayName: Użyj Czaru2
+  }
+  UseSkill1: {
+    DisplayName: Użyj Czaru1
+  }
