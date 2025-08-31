@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Guide;
 using SubworldLibrary;
 
@@ -14,8 +15,8 @@ public sealed class HomeWaypoint : ModWaypoint
 
 	public override bool CanGoto()
 	{
-		bool hasNotCompletedTutorial = !Main.LocalPlayer.GetModPlayer<TutorialPlayer>().CompletedTutorial;
+		bool isHomeObeliskMissing = !ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains("Overworld");
 		
-		return SubworldSystem.Current is not null && !hasNotCompletedTutorial;
+		return SubworldSystem.Current is not null && !isHomeObeliskMissing;
 	}
 }
