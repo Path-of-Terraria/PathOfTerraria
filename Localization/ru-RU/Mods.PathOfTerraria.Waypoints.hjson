@@ -1,6 +1,2 @@
-﻿RavencrestWaypoint: {
-    DisplayName: Рейвенкрест
-  }
-  HomeWaypoint: {
-    DisplayName: Дом
-  }
+RavencrestWaypoint.DisplayName: Вороний пик
+HomeWaypoint.DisplayName: Дом

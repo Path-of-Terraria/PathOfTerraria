@@ -1,8 +1,9 @@
-﻿RavencrestBiome: {
-    DisplayName: Rabenwappen
-    TownNPCDialogueName: Rabenwappen
-  }
-  MechBiome: {
-    DisplayName: Mechanismen
-    TownNPCDialogueName: Die Mechanismen
-  }
+RavencrestBiome: {
+	DisplayName: Rabenwappen
+	TownNPCDialogueName: Rabenwappen
+}
+
+MechBiome: {
+	DisplayName: Mechanismen
+	TownNPCDialogueName: Die Mechanismen
+}

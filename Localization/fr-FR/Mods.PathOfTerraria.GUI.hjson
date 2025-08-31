@@ -1,5 +1,5 @@
-﻿PassiveTreeTab: Passifs
-  SkillTreeTab: Compétences
-  QuestsAvailableTab: Disponible
-  QuestsCompletedTab: Complété
-  PlayerStatsTab: Statistiques
+PassiveTreeTab: Passifs
+SkillTreeTab: Compétences
+QuestsAvailableTab: Disponible
+QuestsCompletedTab: Complété
+PlayerStatsTab: Statistiques

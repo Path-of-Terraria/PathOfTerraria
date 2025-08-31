@@ -1,33 +1,11 @@
-﻿UseSkill1: {
-    DisplayName: Utilise la Compétence 1
-  }
-  UseSkill2: {
-    DisplayName: Utilise la Compétence 2
-  }
-  UseSkill3: {
-    DisplayName: Utilise la Compétence 3
-  }
-  UseSkill4: {
-    DisplayName: Utilise la Compétence 4
-  }
-  UseSkill5: {
-    DisplayName: Utilise la Compétence 5
-  }
-  CopyItemInfo: {
-    DisplayName: Copie les Informations de l'Objet
-  }
-  StatUIKey: {
-    DisplayName: Affiche la Page des Statistiques
-  }
-  GearSwap: {
-    DisplayName: Change d'Arme
-  }
-  QuestUIKey: {
-    DisplayName: Touche d'interface de Quête
-  }
-  PassiveTreeUIKey: {
-    DisplayName: Touche d'interface d'Arbre Passif
-  }
-  DropTableKey: {
-    DisplayName: Touche de la Table des Butins
-  }
+UseSkill1.DisplayName: Utilise la Compétence 1
+UseSkill2.DisplayName: Utilise la Compétence 2
+UseSkill3.DisplayName: Utilise la Compétence 3
+UseSkill4.DisplayName: Utilise la Compétence 4
+UseSkill5.DisplayName: Utilise la Compétence 5
+CopyItemInfo.DisplayName: Copie les Informations de l'Objet
+StatUIKey.DisplayName: Affiche la Page des Statistiques
+GearSwap.DisplayName: Change d'Arme
+QuestUIKey.DisplayName: Touche d'interface de Quête
+DropTableKey.DisplayName: Touche de la Table des Butins
+PassiveTreeUIKey.DisplayName: Touche d'interface d'Arbre Passif

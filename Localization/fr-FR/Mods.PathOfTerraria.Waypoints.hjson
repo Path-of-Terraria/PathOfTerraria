@@ -1,6 +1,2 @@
-﻿RavencrestWaypoint: {
-    DisplayName: Ravencrest
-  }
-  HomeWaypoint: {
-    DisplayName: Maison
-  }
+RavencrestWaypoint.DisplayName: Ravencrest
+HomeWaypoint.DisplayName: Maison

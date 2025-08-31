@@ -1,3 +1,6 @@
-﻿Shift: (Przytrzymaj shift żeby porównać statystyki)
-  Swap: Jeśli {0} jest założony:
-  NoSwap: (Nic do zamiany)
+NoSwap: (Nic do zamiany)
+Swap: Jeśli {0} jest założony:
+Shift: (Przytrzymaj shift żeby porównać statystyki)
+// NoDifferences: (No differences)
+// TierXOfY: Tier {0} of {1}
+// AffixValueRange: Ranges {0} to {1}
