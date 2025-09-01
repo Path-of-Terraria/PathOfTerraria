@@ -1,3 +1,5 @@
+using Terraria.Localization;
+
 namespace PathOfTerraria.Common.Enums;
 
 [Flags]
@@ -31,7 +33,7 @@ public enum ItemType : long
 	Shield = 1 << 24,
 
 	Armor = Helmet | Chestplate | Leggings,
-	Accessories = Ring | Charm,
+	Accessories = Ring | Charm | Amulet,
 	Equipment = Armor | Accessories,
 	Offhand = Shield,
 
@@ -46,4 +48,12 @@ public enum ItemType : long
 	AllNoMap = AllGear | Jewel,
 
 	All = AllNoMap | Map,
+}
+
+public static class ItemTypeLocalization
+{
+	public static string LocalizeText(this ItemType type)
+	{
+		return Language.GetTextValue($"Mods.{PoTMod.ModName}.Gear.{type}.Name");
+	}
 }

@@ -21,5 +21,6 @@ internal class StoneWarShield : WarShield
 
 		Item.damage = 13;
 		Item.Size = new(20, 24);
+		Item.value = Item.buyPrice(0, 0, 0, 40);
 	}
 }

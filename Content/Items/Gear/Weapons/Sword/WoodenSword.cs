@@ -6,12 +6,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class WoodenSword : Sword
 {
-	public int ItemLevel
-	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
-	}
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -29,6 +23,7 @@ internal class WoodenSword : Sword
 		Item.Size = new(38);
 		Item.damage = 4;
 		Item.UseSound = SoundID.Item1;
+		Item.value = Item.buyPrice(0, 0, 0, 10);
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;

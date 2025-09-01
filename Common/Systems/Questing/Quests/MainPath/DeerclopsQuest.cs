@@ -1,12 +1,13 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
+using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
@@ -24,13 +25,22 @@ internal class DeerclopsQuest : Quest
 	{
 		return
 		[
-			new CollectCount(ModContent.GetInstance<Antlers>(), 1),
-			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Antlers"),
+			new CollectCount(item => item.type == ModContent.ItemType<Antlers>() || item.type == ModContent.ItemType<AntlerShard>(), 1, this.GetLocalization("GetAntlersOrShards")),
+			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Antlers"),
 				[new GiveItem(1, ModContent.ItemType<Antlers>())], true),
-			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Deerclops"),
-				onSuccess: npc => Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<DeerclopsMap>())),
+			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Deerclops"),
+				onSuccess: npc =>
+				{
+					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<DeerclopsMap>());
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
+				}),
 			new ConditionCheck((_) => NPC.downedDeerclops, 1, this.GetLocalization("KillDeerclops")),
-			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Success"))
+			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Success"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

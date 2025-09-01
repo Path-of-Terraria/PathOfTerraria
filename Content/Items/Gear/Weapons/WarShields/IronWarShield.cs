@@ -21,5 +21,6 @@ internal class IronWarShield : WarShield
 
 		Item.damage = 17;
 		Item.Size = new(28);
+		Item.value = Item.buyPrice(0, 0, 0, 80);
 	}
 }

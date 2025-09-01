@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 using ReLogic.Content;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -12,12 +13,6 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class BloodOath : Sword, GenerateName.IItem
 {
-	public int ItemLevel
-	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
-	}
-
 	protected override bool CloneNewInstances => true;
 
 	private readonly HashSet<int> _hitNpcs = [];
@@ -39,7 +34,7 @@ internal class BloodOath : Sword, GenerateName.IItem
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 5f;
+		staticData.DropChance = 1f;
 		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
@@ -54,18 +49,29 @@ internal class BloodOath : Sword, GenerateName.IItem
 		Item.height = 58;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.None;
+		Item.value = Item.buyPrice(0, 0, 20, 0);
 	}
 
 	string GenerateName.IItem.GenerateName(string defaultName)
 	{
-		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName")}]";
+		return Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName");
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(0, 2, 5);
-		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(0, 10, 10); // Add 10% life
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(2, 5);
+		var lifeAffix = (ItemAffix)Affix.CreateAffix<AddedLifeAffix>(10); // Add 10% life
 		return [sharpAffix, lifeAffix];
+	}
+
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
+	{
+		TooltipLine nameTip = tooltips.First(x => x.Name == "ItemName");
+
+		if (nameTip is not null)
+		{
+			nameTip.OverrideColor = Color.Red;
+		}
 	}
 
 	public override bool AltFunctionUse(Player player)
@@ -117,9 +123,7 @@ internal class BloodOath : Sword, GenerateName.IItem
 			return;
 		}
 
-		var deathReason =
-			PlayerDeathReason.ByCustomReason(
-				Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DeathReason"));
+		var deathReason = PlayerDeathReason.ByCustomReason(NetworkText.FromKey(Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DeathReason")));
 		player.Hurt(deathReason, 1, 0, false, false, ImmunityCooldownID.TileContactDamage, false);
 		player.hurtCooldowns[ImmunityCooldownID.TileContactDamage] = 3;
 		target.GetGlobalNPC<BloodOathNPC>().ApplyStack(player.whoAmI);

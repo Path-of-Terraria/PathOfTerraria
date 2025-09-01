@@ -1,0 +1,106 @@
+BattleAxeBuff: {
+	DisplayName: Rage de Bataille
+	Description: Augmente les dégâts et augmente les dégats subis
+}
+
+RageBuff: {
+	DisplayName: Berserker
+	Description: Augmente les dégâts et augmente grandement le recul
+}
+
+MoltenShieldBuff: {
+	DisplayName: Carapace en Fusion
+	Description:
+		'''
+		Gagne temporairement un bouclier
+		Gagne quelque points de défense
+		'''
+}
+
+BloodclotDebuff: {
+	DisplayName: Caillot Sanguin
+	// Description: ""
+	DeathText: "{0} n'a pas pu arrêter l'hémorragie"
+}
+
+ArmorShredDebuff: {
+	DisplayName: Déchirure d'Armure
+	// Description: ""
+}
+
+ShockDebuff: {
+	DisplayName: Choc
+	Description: 10% d'augmentation des dégâts subis
+}
+
+RootedDebuff: {
+	DisplayName: Enraciné
+	Description: Tu ne peux pas bouger !
+}
+
+GodlikeBuff: {
+	DisplayName: Buff Divin
+	Description: Vous êtes immunisé contre tous les dégâts directs
+}
+
+RestorationBuff: {
+	DisplayName: Bonus de restauration
+	Description: Procure une régénération massive de la vie.
+}
+
+HardinessBuff: {
+	DisplayName: Bonus de robustesse
+	Description:
+		'''
+		+10 en défense
+		+20 % de chances de blocage
+		'''
+}
+
+HasteBuff: {
+	DisplayName: Bonus de rapidité
+	Description:
+		'''
+		+20 % de vitesse de déplacement
+		+15 % de vitesse d'attaque
+		'''
+}
+
+UnstoppableBuff: {
+	DisplayName: Buff Inarrêtable
+	Description:
+		'''
+		+50% de santé de protection
+		Immunité au refroidissement
+		'''
+}
+
+FrostflameDebuff: {
+	DisplayName: Malus de Flamme givrante
+	// Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
+}
+
+SporeDebuff: {
+	DisplayName: Malus Spore
+	// Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
+}
+
+BlindedDebuff: {
+	DisplayName: Aveuglé
+	Description: Les attaques ont une chance de rater
+}
+
+HasteChargeBuff: {
+	// DisplayName: Haste Charge Buff
+	// Description: Increases attack speed and movement speed by {0}%
+}
+
+AegisChargeBuff: {
+	// DisplayName: Aegis Charge Buff
+	// Description: Increases max health by {0} and defense by {1}
+}
+
+FocusChargeBuff: {
+	// DisplayName: Focus Charge Buff
+	// Description: Increases critical strike chance and multiplier by {0}%
+}

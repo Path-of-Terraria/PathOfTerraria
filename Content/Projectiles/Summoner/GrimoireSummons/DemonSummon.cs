@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 
 internal class DemonSummon : GrimoireSummon
 {
-	public override int BaseDamage => 52;
+	public override int BaseDamage => 57;
 
 	private ref float Timer => ref Projectile.ai[1];
 

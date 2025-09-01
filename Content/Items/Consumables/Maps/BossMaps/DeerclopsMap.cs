@@ -1,14 +1,12 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class DeerclopsMap : Map
+internal class DeerclopsMap() : PreHardmodeBossMap(35, () => NPC.downedDeerclops)
 {
-	public override int MaxUses => GetBossUseCount();
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -24,7 +22,7 @@ internal class DeerclopsMap : Map
 		Item.Size = new Vector2(30, 30);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<DeerclopsDomain>();
 	}

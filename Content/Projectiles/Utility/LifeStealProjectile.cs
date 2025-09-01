@@ -1,23 +1,25 @@
-﻿namespace PathOfTerraria.Content.Projectiles.Utility;
+﻿using System.Security.Permissions;
+using Terraria.ID;
+
+namespace PathOfTerraria.Content.Projectiles.Utility;
 
 public class LifeStealProjectile : ModProjectile
 {
 	public override void SetStaticDefaults()
 	{
-		Main.projFrames[Projectile.type] = 4;
+		Main.projFrames[Projectile.type] = 7;
 	}
 
 	public override void SetDefaults()
 	{
-		Projectile.width = 40;
-		Projectile.height = 40;
-
+		Projectile.width = 36;
+		Projectile.height = 36;
 		Projectile.friendly = true;
 		Projectile.DamageType = DamageClass.Melee;
 		Projectile.ignoreWater = true;
-		Projectile.tileCollide = true;
-
-		Projectile.alpha = 255;
+		Projectile.tileCollide = false;
+		Projectile.Opacity = 0;
+		Projectile.penetrate = 2;
 	}
 
 	public override Color? GetAlpha(Color lightColor)
@@ -25,18 +27,30 @@ public class LifeStealProjectile : ModProjectile
 		return new Color(255, 255, 255, 0) * Projectile.Opacity;
 	}
 
+	public override bool? CanHitNPC(NPC target)
+	{
+		return Projectile.penetrate == 2 && !target.friendly;
+	}
+
 	public override void AI()
 	{
 		Projectile.ai[0] += 1f;
 
+		if (Projectile.ai[0] == 1f && Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			Projectile.ai[1] = Main.rand.NextFloat(-0.01f, 0.01f);
+			Projectile.netUpdate = true;
+		}
+
 		FadeInAndOut();
 
-		Projectile.velocity *= 0.98f;
+		Projectile.velocity *= 0.99f;
+		Projectile.velocity = Projectile.velocity.RotatedBy(Projectile.ai[1]);
 
-		if (++Projectile.frameCounter >= 5)
+		if (++Projectile.frameCounter >= 4)
 		{
 			Projectile.frameCounter = 0;
-			;
+			
 			if (++Projectile.frame >= Main.projFrames[Projectile.type])
 			{
 				Projectile.frame = 0;
@@ -49,7 +63,6 @@ public class LifeStealProjectile : ModProjectile
 		}
 
 		Projectile.direction = Projectile.spriteDirection = (Projectile.velocity.X > 0f) ? 1 : -1;
-
 		Projectile.rotation = Projectile.velocity.ToRotation();
 
 		if (Projectile.spriteDirection == -1)
@@ -62,53 +75,20 @@ public class LifeStealProjectile : ModProjectile
 	{
 		if (Projectile.ai[0] <= 50f)
 		{
-			Projectile.alpha -= 25;
-			if (Projectile.alpha < 100)
-			{
-				Projectile.alpha = 100;
-			}
-
+			Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 0.8f, 0.03f);
 			return;
 		}
 
-		Projectile.alpha += 25;
-		if (Projectile.alpha > 255)
-		{
-			Projectile.alpha = 255;
-		}
-	}
-
-	public override bool PreDraw(ref Color lightColor)
-	{
-		SpriteEffects spriteEffects = SpriteEffects.None;
-		if (Projectile.spriteDirection == -1)
-		{
-			spriteEffects = SpriteEffects.FlipHorizontally;
-		}
-
-		Texture2D texture = ModContent.Request<Texture2D>(Texture).Value;
-
-		int frameHeight = texture.Height / Main.projFrames[Projectile.type];
-		int startY = frameHeight * Projectile.frame;
-
-		var sourceRectangle = new Rectangle(0, startY, texture.Width, frameHeight);
-
-		Vector2 origin = sourceRectangle.Size() / 2f;
-
-		const float offsetX = 20f;
-		origin.X = Projectile.spriteDirection == 1 ? sourceRectangle.Width - offsetX : offsetX;
-
-		Color drawColor = Projectile.GetAlpha(lightColor);
-		Main.EntitySpriteDraw(texture,
-			Projectile.Center - Main.screenPosition + new Vector2(0f, Projectile.gfxOffY),
-			sourceRectangle, drawColor, Projectile.rotation, origin, Projectile.scale, spriteEffects, 0);
-
-		return false;
+		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 0f, 0.25f);
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		Player player = Main.LocalPlayer;
-		player.Heal(15);
+		Main.player[Projectile.owner].Heal(15);
+
+		if (Projectile.ai[0] < 50)
+		{
+			Projectile.ai[0] = 50;
+		}
 	}
 }

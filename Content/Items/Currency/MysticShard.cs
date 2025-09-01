@@ -4,23 +4,22 @@ using PathOfTerraria.Core.Items;
 namespace PathOfTerraria.Content.Items.Currency;
 
 /// <summary>
-/// A currency shard that can be used to upgrade a normal item to rare
+/// A currency shard that can be used to upgrade a normal item to rare.
 /// </summary>
-internal class MysticShard : CurrencyShard
+public class MysticShard : CurrencyShard
 {
 	protected override int FrameCount => 5;
 
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 100f;
+		staticData.DropChance = 500f;
 		staticData.MinDropItemLevel = 15;
 	}
 
 	public override bool CanRightClick()
 	{
-		PoTInstanceItemData data = Main.LocalPlayer.HeldItem.GetInstanceData();
-		return base.CanRightClick() && data.Rarity is ItemRarity.Normal;
+		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is ItemRarity.Normal;
 	}
 
 	public override void RightClick(Player player)

@@ -1,0 +1,102 @@
+[
+	{
+		"affixType": "MapDamageAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 8
+			},
+			{
+				"minValue": 20,
+				"maxValue": 25,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 12
+			}
+		]
+	},
+	{
+		"affixType": "MapBossHealthAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 100,
+				"maxValue": 110,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 14
+			},
+			{
+				"minValue": 180,
+				"maxValue": 200,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 18
+			}
+		]
+	},
+	{
+		"affixType": "MapMobCritChanceAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 60,
+				"maxValue": 65,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 10
+			},
+			{
+				"minValue": 75,
+				"maxValue": 85,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 12
+			}
+		]
+	},
+	{
+		"affixType": "MapMobChillChanceAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 4,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 8
+			},
+			{
+				"minValue": 6,
+				"maxValue": 9,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 10
+			}
+		]
+	},
+	{
+		"affixType": "MapIncreasedBehaviourAffix",
+		"equipTypes": "Map",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 45,
+				"weight": 1,
+				"strength": 12
+			},
+			{
+				"minValue": 10,
+				"maxValue": 14,
+				"minimumLevel": 65,
+				"weight": 1,
+				"strength": 16
+			}
+		]
+	}
+]

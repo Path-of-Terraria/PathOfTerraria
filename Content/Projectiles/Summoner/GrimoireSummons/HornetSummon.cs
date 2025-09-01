@@ -1,16 +1,13 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.Projectiles.Utility;
-using SubworldLibrary;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 
 internal class HornetSummon : GrimoireSummon
 {
-	public override int BaseDamage => 16;
+	public override int BaseDamage => 17;
 
 	private ref float Timer => ref Projectile.ai[1];
 	private ref float HoneyTimer => ref Projectile.ai[2];
@@ -71,7 +68,7 @@ internal class HornetSummon : GrimoireSummon
 				Timer = 0;
 			}
 
-			if (Projectile.honeyWet && !NPC.downedQueenBee)
+			if (Projectile.honeyWet && !NPC.downedQueenBee && !HasAnyQBPortal())
 			{
 				HoneyTimer++;
 
@@ -83,6 +80,19 @@ internal class HornetSummon : GrimoireSummon
 				}
 			}
 		}
+	}
+
+	private static bool HasAnyQBPortal()
+	{
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.ModProjectile is QueenBeePortal)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	protected override void AltEffect()

@@ -1,24 +1,132 @@
-# Passives will always be in the format
-# Name:
-# Tooltip:
-# You do not need to generate these yourself, run the mod and it'll add the keys automatically.
-
 Anchor: {
 	Name: Anchor
 	Tooltip: Your journey starts here
 }
 
-LightningNovaSkillPassive: {
-	Name: Lightning Nova
-	Tooltip: Turns your Nova into the Lightning Nova skill
+IgniteChance: {
+	Name: Ignite Chance
+	Tooltip: +{0}% Chance per level to apply On Fire! on hit
 }
 
-FireNovaSkillPassive: {
-	Name: Fire Nova
-	Tooltip: Turns your Nova into the Fire Nova skill
+ShockChance: {
+	Name: Shock Chance
+	Tooltip: +{0}% Chance per level to apply Shock on hit
 }
 
-IceNovaSkillPassive: {
-	Name: Ice Nova
-	Tooltip: Turns your Nova into the Ice Nova skill
+Efficiency: {
+	Name: Efficiency
+	Tooltip: Mana cost reduced by {0}% per level
+}
+
+ThunderClaps: {
+	Name: Thunder Claps
+	Tooltip: 5% chance per level to spawn a tiny nova around a hit target
+}
+
+ConcurrentBlasts: {
+	Name: Concurrent Blasts
+	Tooltip: Deal {0}% more damage if hit by another nova from the same cast
+}
+
+VolatileNova: {
+	Name: Volatile Nova
+	Tooltip:
+		'''
+		Splits your attack into 3 tiny nova
+		Can hit the same target multiple times
+		'''
+}
+
+FlashFire: {
+	Name: Flash Fire
+	Tooltip:
+		'''
+		Cooldown reduced by half
+		Deals {0}% less damage
+		'''
+}
+
+Combustive: {
+	Name: Combustive
+	Tooltip: Enemies create a fiery blast on death
+}
+
+ScorchingTouch: {
+	Name: Scorching Touch
+	Tooltip: Lights terrain ablaze on contact
+}
+
+FesteringSpores: {
+	Name: Festering Spores
+	Tooltip: Projectiles hitting the ground have a small chance to spawn damaging, explosive spores
+}
+
+MoldColony: {
+	Name: Mold Colony
+	Tooltip: Increases the chance for projectiles to spawn spores
+}
+
+FungalSpread: {
+	Name: Fungal Spread
+	Tooltip: Spore explosions are 10% larger per stack
+}
+
+LingeringPoison: {
+	Name: Lingering Poison
+	Tooltip: Projectiles hitting the ground leave poisonous gas
+}
+
+PowerfulSmog: {
+	Name: Powerful Smog
+	Tooltip: Poison clouds linger a second longer per stack
+}
+
+Megatoxin: {
+	Name: Megatoxin
+	Tooltip: Substantially increases lingering poison damage per stack
+}
+
+ColdBlast: {
+	Name: Cold Blast
+	Tooltip: All Explosive Volley explosions inflict 2 seconds of Chilled and deals 100% cold damage
+}
+
+ShatteringArrows: {
+	Name: Shattering Arrows
+	Tooltip: Volleys have twice the amount of projectiles, each dealing 70% of original damage
+}
+
+ConcussiveBurst: {
+	Name: Concussive Burst
+	Tooltip: Add an additional shatter projectile per level
+}
+
+SlicingShrapnel: {
+	Name: Slicing Shrapnel
+	Tooltip: Shatter projectiles all inflict bleeding for 3 seconds
+}
+
+CreepingVines: {
+	Name: Creeping Vines
+	Tooltip: Enemies hit by the rain will be buffeted by a vine, which breaks at a distance
+}
+
+Quickload: {
+	Name: Quickload
+	Tooltip: Projectiles are shot out much faster
+}
+
+SharpenedTips: {
+	Name: Sharpened Tips
+	Tooltip: 10% increased armor piercing per stack.
+}
+
+TargetLock: {
+	Name: Target Lock
+	Tooltip: Projectiles will lazily home on the nearest enemy
+}
+
+Ghostfire: {
+	Name: Ghostfire
+	Tooltip: Projectiles that hit an enemy have a small chance to duplicate
 }

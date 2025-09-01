@@ -8,7 +8,8 @@ public class MapDevice : ModItem
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<MapDevicePlaceable>());
-		Item.width = 48;
+		Item.rare = ItemRarityID.Blue;
+		Item.width = 36;
 		Item.height = 18;
 		Item.value = 0;
 	}
@@ -16,12 +17,16 @@ public class MapDevice : ModItem
 	public override void AddRecipes()
 	{
 		CreateRecipe()
-			.AddIngredient(ItemID.IronBar, 5)
+			.AddRecipeGroup("IronBar", 5)
+			.AddIngredient(ItemID.GoldBar, 5)
+			.AddIngredient(ItemID.Ruby, 1)
 			.AddTile(TileID.WorkBenches)
 			.Register();
 		
 		CreateRecipe()
-			.AddIngredient(ItemID.LeadBar, 5)
+			.AddRecipeGroup("IronBar", 5)
+			.AddIngredient(ItemID.PlatinumBar, 5)
+			.AddIngredient(ItemID.Ruby, 1)
 			.AddTile(TileID.WorkBenches)
 			.Register();
 	}

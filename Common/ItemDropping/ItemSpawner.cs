@@ -18,9 +18,10 @@ internal class ItemSpawner
 	/// <param name="pos">Position to spawn the item on.</param>
 	/// <param name="itemLevel">Level of the item spawned. Defaults to 0, which rolls at the current world level.</param>
 	/// <param name="dropRarityModifier">Drop modifier. Higher = more likely to get rare items.</param>
-	public static int SpawnMobKillItem(Vector2 pos, int itemLevel = 0, float dropRarityModifier = 0, float gearChance = 0.8f, float curChance = 0.15f, float mapChance = 0.05f)
+	public static int SpawnMobKillItem(Vector2 pos, int itemLevel = 0, float dropRarityModifier = 0, float gearChance = 0.8f, float curChance = 0.15f, 
+		float mapChance = 0.05f, ItemRarity forceRarity = ItemRarity.Invalid)
 	{
-		ItemDatabase.ItemRecord item = DropTable.RollMobDrops(itemLevel, dropRarityModifier, gearChance, curChance, mapChance);
+		ItemDatabase.ItemRecord item = DropTable.RollMobDrops(itemLevel, dropRarityModifier, gearChance, curChance, mapChance, null, forceRarity);
 
 		if (item == ItemDatabase.InvalidItem)
 		{
@@ -42,12 +43,12 @@ internal class ItemSpawner
 	}
 
 	/// <summary>
-	///    Spawns a random item by it's type
+	///    Spawns a random item by its type.
 	/// </summary>
 	public static void SpawnRandomItemByType<T>(Vector2 pos, int iLevel, float dropRarityModifier = 0)
 	{
 		IEnumerable<ItemDatabase.ItemRecord> items = ItemDatabase.GetItemByType<T>();
-		SpawnItemFromList(pos, x => true, iLevel, dropRarityModifier, items.ToList());
+		SpawnItemFromList(pos, x => true, iLevel, dropRarityModifier, [.. items]);
 	}
 
 	/// <summary>
@@ -74,7 +75,8 @@ internal class ItemSpawner
 	}
 
 	/// <summary>
-	/// Shorthand for calling <see cref="DropTable.RollList(int, float, List{ItemDatabase.ItemRecord}, Func{ItemDatabase.ItemRecord, bool})"/> and spawning an item with it.
+	/// Shorthand for calling <see cref="DropTable.RollList(int, float, List{ItemDatabase.ItemRecord}, Func{ItemDatabase.ItemRecord, bool})"/> 
+	/// and spawning an item with it.
 	/// </summary>
 	/// <param name="pos">Position of the spawned item.</param>
 	/// <param name="dropCondition">Additional condition for spawning, if any.</param>
@@ -85,7 +87,7 @@ internal class ItemSpawner
 	private static int SpawnItemFromList(Vector2 pos, Func<ItemDatabase.ItemRecord, bool> dropCondition, int itemLevel,
 		float dropRarityModifier, List<ItemDatabase.ItemRecord> filteredGear)
 	{
-		ItemDatabase.ItemRecord item = DropTable.RollList(itemLevel, dropRarityModifier, filteredGear, dropCondition);
+		ItemDatabase.ItemRecord item = DropTable.RollList(itemLevel, dropRarityModifier, filteredGear, dropCondition, 0);
 
 		if (item == ItemDatabase.InvalidItem)
 		{
@@ -114,9 +116,19 @@ internal class ItemSpawner
 	/// <param name="pos">Where to drop it in the world</param>
 	/// <param name="itemLevel">The item level of the item to spawn</param>
 	/// <param name="rarity">Rarity of the item</param>
-	public static int SpawnItemFromCategory<T>(Vector2 pos, int itemLevel = 0, ItemRarity rarity = ItemRarity.Normal) where T : ModItem
+	public static int SpawnItemFromCategory<T>(Vector2 pos, int itemLevel = 0, params ItemRarity[] rarity) where T : ModItem
 	{
-		return SpawnItem(Main.rand.Next(ModContent.GetContent<T>().ToArray()).Type, pos, itemLevel, rarity);
+		HashSet<ItemRarity> validRarity = [.. rarity];
+		bool noRarityCheck = rarity is null || rarity.Length == 0;
+		ItemDatabase.ItemRecord[] array = [.. ItemDatabase.AllItems.Where(x => (noRarityCheck || validRarity.Contains(x.Rarity)) && x.Item.ModItem is T)];
+
+		if (array.Length > 0)
+		{
+			ItemDatabase.ItemRecord record = Main.rand.Next(array);
+			return SpawnItem(record.ItemId, pos, itemLevel, record.Rarity);
+		}
+
+		throw new ArgumentException("Type " + typeof(T).Name + " has " + (noRarityCheck ? "no items." : "no items of the given rarities."));
 	}
 
 	/// <summary>
@@ -129,23 +141,36 @@ internal class ItemSpawner
 	public static int SpawnItem(int type, Vector2 pos, int itemLevel = 0, ItemRarity rarity = ItemRarity.Normal)
 	{
 		var item = new Item(type);
-		PoTInstanceItemData data = item.GetInstanceData();
-		PoTStaticItemData staticData = item.GetStaticData();
 
-		if (staticData.IsUnique)
+		if (item.TryGetGlobalItem<PoTInstanceItemData>(out _))
 		{
-			rarity = ItemRarity.Unique;
-		}
+			PoTInstanceItemData data = item.GetInstanceData();
+			PoTStaticItemData staticData = item.GetStaticData();
 
-		data.Rarity = rarity;
-		PoTItemHelper.Roll(item, itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel);
+			if (staticData.IsUnique)
+			{
+				rarity = ItemRarity.Unique;
+			}
+
+			data.Rarity = rarity;
+			PoTItemHelper.Roll(item, itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel);
+		}
 
 		return Main.netMode switch
 		{
-			NetmodeID.SinglePlayer => Item.NewItem(new EntitySource_DebugCommand("/spawnitem"), pos, Vector2.Zero, item),
-			NetmodeID.MultiplayerClient => Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"),
-				item),
-			_ => -1
+			NetmodeID.MultiplayerClient => Main.LocalPlayer.QuickSpawnItem(new EntitySource_DebugCommand("/spawnitem"), item),
+			_ => Item.NewItem(new EntitySource_DebugCommand("/spawnitem"), pos, Vector2.Zero, item),
 		};
+	}
+
+	/// <summary>
+	/// Used by the SpawnMap command. This seems useless, but I've ported it if only for posterity.
+	/// </summary>
+	/// <param name="pos"></param>
+	public static void SpawnMap(Vector2 pos, int tier)
+	{
+		int type = DropTable.RollMobDrops(tier, 0, 0, 0, 1).Item.type;
+
+		SpawnItem(type, pos, tier);
 	}
 }

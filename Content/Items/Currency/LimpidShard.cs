@@ -6,19 +6,18 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// <summary>
 /// A currency shard that can be used to turn a magic or rare item into a normal item.
 /// </summary>
-internal class LimpidShard : CurrencyShard
+public class LimpidShard : CurrencyShard
 {
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 500f;
+		staticData.DropChance = 1000f;
 		staticData.MinDropItemLevel = 10;
 	}
 
 	public override bool CanRightClick()
 	{
-		PoTInstanceItemData data = Main.LocalPlayer.HeldItem.GetInstanceData();
-		return base.CanRightClick() && data.Rarity is ItemRarity.Magic or ItemRarity.Rare;
+		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is ItemRarity.Magic or ItemRarity.Rare;
 	}
 
 	public override void RightClick(Player player)

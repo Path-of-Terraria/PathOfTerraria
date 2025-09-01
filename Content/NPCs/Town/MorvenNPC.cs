@@ -19,11 +19,13 @@ using SubworldLibrary;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
 using System.IO;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Content.Tiles;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -36,7 +38,6 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public Player FollowPlayer => Main.player[followPlayer];
 
-	private float animCounter;
 	private bool doPathing = false;
 	private byte followPlayer;
 	private bool teleportingToRavencrest = false;
@@ -59,7 +60,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[NPC.type] = 25;
+		Main.npcFrameCount[NPC.type] = 26;
 
 		NPCID.Sets.ExtraFramesCount[NPC.type] = 9;
 		NPCID.Sets.AttackFrameCount[NPC.type] = 4;
@@ -68,6 +69,12 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 3;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -112,6 +119,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public override bool PreAI()
 	{
+		ModContent.GetInstance<RavencrestSystem>().SpawnedMorvenPos = null;
+
 		Tile tile = Main.tile[NPC.Center.ToTileCoordinates16()];
 
 		if (teleportingToRavencrest)
@@ -352,8 +361,22 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !Quest.GetLocalPlayerInstance<EoWQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		//button = Language.GetTextValue("LegacyInterface.28");
+		button2 = "";
+
+		if (Quest.GetLocalPlayerInstance<EoWQuest>().CanBeStarted)
+		{
+			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		}
+		else
+		{
+			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
+
+			if (quest.Active && SubworldSystem.Current is not RavencrestSubworld)
+			{
+				button2 = "Follow";
+			}
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -364,6 +387,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 		else
 		{
+			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
+
 			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
 				followPlayer = 0;
@@ -371,11 +396,14 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			}
 			else
 			{
-				PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+				ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
 			}
 
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+			if (!quest.Active)
+			{
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+			}
 		}
 	}
 
@@ -392,6 +420,19 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			surfaceDialogue = false;
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Aboveground");
 		}
+		
+		var obeliskSystem = ModContent.GetInstance<ArcaneObeliskTile.ArcaneObeliskSystem>();
+		if (obeliskSystem.ArcaneObeliskLocation.HasValue)
+		{
+			Vector2 obeliskWorldPos = obeliskSystem.ArcaneObeliskLocation.Value.ToWorldCoordinates();
+			float distanceToObelisk = Vector2.Distance(NPC.Center, obeliskWorldPos);
+		
+			if (distanceToObelisk < 300f)
+			{
+				return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.NearObelisk");
+			}
+		}
+
 
 		if (ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Contains(FullName) && postOrbPreEoWDialogue && DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2)
 		{
@@ -454,28 +495,6 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		surfaceDialogue = (packed & 0b_10) == 0b_10;
 		postOrbPreEoWDialogue = (packed & 0b_100) == 0b_100;
 		teleportingToRavencrest = (packed & 0b_1000) == 0b_1000;
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)

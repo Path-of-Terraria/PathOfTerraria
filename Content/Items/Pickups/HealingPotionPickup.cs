@@ -1,45 +1,46 @@
 ﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using Terraria.Audio;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
-internal class HealingPotionPickup : ModItem
+internal class HealingPotionPickup : PickupItem
 {
-	public override void SetDefaults()
-	{
-		base.SetDefaults();
-
-		Item.width = 16;
-		Item.height = 16;
-	}
-
-	public override void Update(ref float gravity, ref float maxFallSpeed)
+	public override void PostUpdate()
 	{
 		Lighting.AddLight(Item.Center, new Vector3(0.3f, 0.02f, 0.02f) * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.25f));
 	}
 
-	public override bool ItemSpace(Player player)
-	{
-		return true;
-	}
-
 	public override bool CanPickup(Player player)
 	{
-		return player.GetModPlayer<PotionSystem>().HealingLeft < player.GetModPlayer<PotionSystem>().MaxHealing;
+		int healLeft = player.GetModPlayer<PotionPlayer>().HealingLeft;
+		int maxHeal = player.GetModPlayer<PotionPlayer>().MaxHealing;
+		bool potionSpace = healLeft < maxHeal;
+		bool orAutoHeal = healLeft >= maxHeal && player.statLife < player.statLifeMax2 && !player.HasBuff(BuffID.PotionSickness);
+		return potionSpace || orAutoHeal;
 	}
 
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<PotionSystem>().HealingLeft++;
+		PotionPlayer potionPlr = player.GetModPlayer<PotionPlayer>();
+		ref int healingLeft = ref potionPlr.HealingLeft;
+		
+		if (healingLeft >= player.GetModPlayer<PotionPlayer>().MaxHealing && player.statLife < player.statLifeMax2 && !player.HasBuff(BuffID.PotionSickness))
+		{
+			healingLeft++;
+			PotionPlayer.UseHealingPotion(player, true);
+		}
+		else if (healingLeft < player.GetModPlayer<PotionPlayer>().MaxHealing)
+		{
+			healingLeft++;
+			CombatText.NewText(player.Hitbox, new Color(255, 150, 150), this.GetLocalization("Pickup").Value);
+		}
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, true, (byte)player.GetModPlayer<PotionSystem>().HealingLeft);
+			ModContent.GetInstance<HotbarPotionHandler>().Send((byte)player.whoAmI, true, (byte)player.GetModPlayer<PotionPlayer>().HealingLeft);
 		}
-
-		CombatText.NewText(player.Hitbox, new Color(255, 150, 150), "Healing Potion");
 
 		for (int k = 0; k < 10; k++)
 		{
@@ -68,8 +69,8 @@ internal class HealingPotionPickup : ModItem
 
 		glowColor *= 0.6f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.1f;
 
-		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, glowColor, 0, glow.Size() / 2f, 0.6f, 0, 0);
-		spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, Item.GetAlpha(glowColor), 0, glow.Size() / 2f, 0.6f, 0, 0);
+		spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Item.GetAlpha(Color.White), 0, tex.Size() / 2f, 1, 0, 0);
 
 		return false;
 	}

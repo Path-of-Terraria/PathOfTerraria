@@ -35,12 +35,13 @@ internal class StarlightBulwark : LeadBattleBulwark
 		staticData.Description = this.GetLocalization("Description");
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<ManaAffix>(-1, 15, 20);
-		var noFallDamageAffix = (ItemAffix)Affix.CreateAffix<NoFallDamageAffix>(-1, 1f, 4f);
-		return [addedDamageAffix, attackSpeedAffix, noFallDamageAffix];
+		return [
+			(ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(15, 25),
+			(ItemAffix)Affix.CreateAffix<ManaAffix>(15, 20),
+			(ItemAffix)Affix.CreateAffix<NoFallDamageAffix>(1f, 4f)
+		];
 	}
 
 	public override void SetDefaults()
@@ -49,6 +50,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 
 		Item.Size = new(34);
 		Item.knockBack = 10;
+		Item.value = Item.buyPrice(0, 0, 5, 0);
 	}
 
 	public override bool? UseItem(Player player)
@@ -85,7 +87,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 
 		AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
 
-		if (player.whoAmI == Main.myPlayer && Main.mouseRight && Main.mouseRightRelease && (altUsePlayer.AltFunctionAvailable || altUsePlayer.AltFunctionActive))
+		if (player.whoAmI == Main.myPlayer && Main.mouseRight && Main.mouseRightRelease && altUsePlayer.AltFunctionAvailable)
 		{
 			if (_lastAltClick > 0)
 			{
@@ -172,7 +174,7 @@ internal class StarlightBulwark : LeadBattleBulwark
 			Projectile.velocity *= 0.95f;
 			Projectile.rotation += 0.06f * Projectile.velocity.Length() + 0.006f;
 
-			if (Main.rand.NextBool(45))
+			if (!Main.dedServ && Main.rand.NextBool(45))
 			{
 				Color newColor = GetAlpha(Lighting.GetColor(Projectile.Center.ToTileCoordinates())) ?? Color.White;
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.YellowStarDust, newColor: newColor);

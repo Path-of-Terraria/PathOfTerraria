@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Events;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -22,7 +21,7 @@ internal class AddedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeChance : Passive
 {
-	private const float AmountPerLevel = 1.05f;
+	private const float AmountPerLevel = 0.10f;
 
 	public override void BuffPlayer(Player player)
 	{
@@ -45,11 +44,11 @@ internal class IncreasedCriticalStrikeMultiplier : Passive
 	
 	private void BuffCritStrikeDamageMultiplier(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		int level = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(InternalIdentifier);
+		int level = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
 
 		if (level > 0)
 		{
-			modifiers.CritDamage *= level * AmountPerLevel;
+			modifiers.CritDamage *= 1f + (AmountPerLevel - 1f) * level;
 		}
 	}
 }

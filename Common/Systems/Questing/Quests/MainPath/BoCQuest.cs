@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
@@ -28,7 +28,7 @@ internal class BoCQuest : Quest
 			new ConditionCheck((_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 0, 1, this.GetLocalization("SmashOrb")),
 			new ConditionCheck((_) => SubworldSystem.Current is BrainDomain, 1, this.GetLocalization("EnterDomain")),
 			new KillCount(NPCID.BrainofCthulhu, 1, this.GetLocalization("KillBrain")),
-			new InteractWithNPC(ModContent.NPCType<LloydNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Complete"))
+			new InteractWithNPC(ModContent.NPCType<LloydNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Complete"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

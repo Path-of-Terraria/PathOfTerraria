@@ -21,5 +21,6 @@ internal class LeadBattleBulwark : WarShield
 
 		Item.damage = 14;
 		Item.Size = new(28);
+		Item.value = Item.buyPrice(0, 0, 0, 70);
 	}
 }

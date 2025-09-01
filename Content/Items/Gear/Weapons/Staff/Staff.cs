@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -40,14 +40,11 @@ internal abstract class Staff : Gear
 		Item.channel = true;
 		Item.autoReuse = true;
 		Item.mana = 12;
+		Item.useTime = 60;
+		Item.useTurn = true;
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = Common.Enums.ItemType.Staff;
-	}
-
-	public override bool? CanAutoReuseItem(Player player)
-	{
-		return player.GetModPlayer<StaffPlayer>().Empowered;
 	}
 
 	public override void ModifyManaCost(Player player, ref float reduce, ref float mult)
@@ -62,20 +59,20 @@ internal abstract class Staff : Gear
 
 	public override bool CanUseItem(Player player)
 	{
-		if (player.altFunctionUse == 2)
+		if (player.altFunctionUse != 2)
 		{
-			player.GetModPlayer<StaffPlayer>().EmpoweredStaffTime = AltActiveTime;
-			player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime, AltActiveTime);
-
-			if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
-			{
-				SyncStaffAltHandler.Send((byte)player.whoAmI);
-			}
-
-			return false;
+			return player.ownedProjectileCounts[ModContent.ProjectileType<StaffHeldProjectile>()] == 0;
 		}
 
-		return true;
+		player.GetModPlayer<StaffPlayer>().EmpoweredStaffTime = AltActiveTime;
+		player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime, AltActiveTime);
+
+		if (player.whoAmI == Main.myPlayer && Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			ModContent.GetInstance<SyncStaffAltHandler>().Send((byte)player.whoAmI);
+		}
+
+		return false;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

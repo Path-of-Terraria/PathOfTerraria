@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ObjectData;
@@ -47,7 +47,7 @@ internal class EmbeddedSlimes : ModTile
 		}
 		else
 		{
-			SpawnNPCOnServerHandler.Send(type, new((i + 1) * 16, (j + 1) * 16));
+			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send(type, new Vector2((i + 1) * 16, (j + 1) * 16));
 		}
 
 		for (int k = 0; k < 16; k++)

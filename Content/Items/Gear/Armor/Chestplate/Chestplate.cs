@@ -1,5 +1,8 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Chestplate;
 

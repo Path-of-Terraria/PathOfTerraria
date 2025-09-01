@@ -17,12 +17,11 @@ public class QuestModPlayer : ModPlayer
 
 	public Dictionary<string, Quest> QuestsByName = [];
 
-	/// <summary>
-	/// Defines 
-	/// </summary>
 	public Dictionary<string, QuestMarkerType> MarkerTypeByLocation = [];
 	
 	internal bool FirstQuest = true;
+	/// <summary> The full name of this player's pinned quest. </summary>
+	public string PinnedQuest;
 
 	/// <inheritdoc cref="StartQuest(string, int, bool)"/>
 	/// <typeparam name="T">Quest to start.</typeparam>
@@ -69,6 +68,7 @@ public class QuestModPlayer : ModPlayer
 	{
 		if (ToggleQuestUIKey.JustPressed)
 		{
+			Main.playerInventory = true;
 			SmartUiLoader.GetUiState<QuestsUIState>().Toggle();
 		}
 	}
@@ -160,7 +160,10 @@ public class QuestModPlayer : ModPlayer
 		{
 			foreach (Quest quest in QuestsByName.Values)
 			{
-				quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone); // Quests in enabledQuests are necessarily active
+				if (quest.Active)
+				{
+					quest.ActiveStep.OnKillNPC(Player, target, hit, damageDone); // Quests in enabledQuests are necessarily active
+				}
 			}
 		}
 	}

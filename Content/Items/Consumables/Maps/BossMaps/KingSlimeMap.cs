@@ -1,14 +1,12 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class KingSlimeMap : Map
+internal class KingSlimeMap() : PreHardmodeBossMap(5, () => NPC.downedSlimeKing)
 {
-	public override int MaxUses => GetBossUseCount();
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -24,7 +22,7 @@ internal class KingSlimeMap : Map
 		Item.Size = new Vector2(44, 36);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<KingSlimeDomain>();
 	}

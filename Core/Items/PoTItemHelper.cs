@@ -7,7 +7,10 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Content.Items.Gear.Armor.Leggings;
+using SubworldLibrary;
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using System.Linq;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -62,51 +65,29 @@ public static class PoTItemHelper
 	public static void Roll(Item item, int itemLevel)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
-		PoTStaticItemData staticData = item.GetStaticData();
 
 		SetItemLevel.Invoke(item, itemLevel);
-
-		// Only level 50+ gear can get influence.
-		if (data.RealLevel > 50 && !staticData.IsUnique && (data.ItemType & ItemType.AllGear) == ItemType.AllGear)
-		{
-			// Quality does not affect influence right now.
-			// Might not need to, seems to generaet plenty often late game.
-			int inf = Main.rand.Next(400) - data.RealLevel;
-
-			if (inf < 30)
-			{
-				data.Influence = Main.rand.NextBool() ? Influence.Solar : Influence.Lunar;
-			}
-		}
 
 		RollAffixes(item);
 		PostRoll.Invoke(item);
 		data.SpecialName = GenerateName.Invoke(item);
 	}
 
-	public static void Reroll(Item item)
-	{
-		// TODO: Don't call ANY variant of SetDefaults here... please?
-		item.GetInstanceData().Affixes.Clear();
-		item.ModItem?.SetDefaults();
-		Roll(item, PickItemLevel());
-	}
-
 	private static void RollAffixes(Item item)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
-		PoTStaticItemData staticData = item.GetStaticData();
 
 		data.Affixes.Clear();
-		data.Affixes.AddRange(GenerateAffixes.Invoke(item));
+		data.Affixes.AddRange(GenerateImplicits.Invoke(item));
 		data.ImplicitCount = data.Affixes.Count;
 
-		for (int i = 0; i < GetAffixCount(item); i++)
+		int affixesToRoll = GetAffixCount(item);
+		for (int i = 0; i < affixesToRoll; i++)
 		{
 			AddNewAffix(item, data);
 		}
 
-		List<ItemAffix> uniqueItemAffixes = GenerateImplicits.Invoke(item);
+		List<ItemAffix> uniqueItemAffixes = GenerateAffixes.Invoke(item);
 
 		foreach (ItemAffix affix in uniqueItemAffixes)
 		{
@@ -129,20 +110,20 @@ public static class PoTItemHelper
 	    }
 	}
 
-	///  <summary>
-	/// 		Adds a new random affix to an item. This is used for things like the ascendant shard.
+	///  <summary> 
+	///  Adds a new random affix to an item. This is used for things like the ascendant shard. 
 	///  </summary>
 	///  <param name="item"></param>
 	///  <param name="data"></param>
 	public static void AddNewAffix(Item item, [CanBeNull] PoTInstanceItemData data = null)
 	{
 		data ??= item.GetInstanceData();
-		if (data.Affixes.Count >= GetAffixCount(item))
+		if ((data.Affixes.Count - data.ImplicitCount) >= GetAffixCount(item))
 		{
 			return;
 		}
 
-		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: data.Affixes.Select(a => a.GetData()));
 		if (chosenAffix is null)
 		{
 			return;
@@ -155,6 +136,11 @@ public static class PoTItemHelper
 		}
 
 		affix.Value = AffixRegistry.GetRandomAffixValue(affix, GetItemLevel.Invoke(item));
+		if (affix.Value == 0)
+		{
+			return; //If the affix has no value, don't add it. This usually happens when there's no TierData associated with the given item
+		}
+
 		data.Affixes.Add(affix);
 	}
 
@@ -167,16 +153,6 @@ public static class PoTItemHelper
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyAffix(player, entityModifier, item);
-			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
-			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
-		}
-	}
-
-	public static void ApplyAffixTooltips(Item item, Player player)
-	{
-		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
-		{
-			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
 			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}
@@ -211,10 +187,26 @@ public static class PoTItemHelper
 		};
 	}
 
+	/// <summary>
+	/// Gets the max amount of affixes a mob can have based on the rarity.
+	/// </summary>
+	/// <param name="rarity">Rarity of the mob.</param>
+	/// <returns>How many affixes the mob can have.</returns>
+	public static int GetMaxMobAffixCounts(ItemRarity rarity)
+	{
+		return rarity switch
+		{
+			ItemRarity.Magic => 2,
+			ItemRarity.Rare => 4,
+			_ => 0
+		};
+	}
+
 	public static bool HasMaxAffixesForRarity(Item item)
 	{
 		PoTInstanceItemData data = item.GetInstanceData();
-		return data.Affixes.Count >= GetMaxAffixCounts(data.Rarity);
+		int nonImplicitAffixCount = data.Affixes.Count(affix => !affix.IsImplicit);
+		return nonImplicitAffixCount >= GetMaxAffixCounts(data.Rarity);
 	}
 
 	public static void SetMouseItemToHeldItem(Player player)
@@ -227,74 +219,137 @@ public static class PoTItemHelper
 
 	#endregion
 
-	// TODO: Un-hardcode?
-	public static int PickItemLevel()
+	/// <summary>
+	/// Picks the most appropriate item level for the current world. This is the following:<br/>
+	/// For explorable maps, such as the Forest, it's variable and depends on the tier of the map.<br/>
+	/// Boss domains/overworld progression uses an additive system where each boss adds 5 levels:<br/>
+	/// Base level: 5<br/>
+	/// King Slime: +5 (total: 10)<br/>
+	/// Eye of Cthulhu: +5 (total: 15)<br/>
+	/// Eater of Worlds: +5 (total: 20)<br/>
+	/// Brain of Cthulhu: +5 (total: 25, or 30 if both corruption bosses killed)<br/>
+	/// Queen Bee: +5<br/>
+	/// Deerclops: +5<br/>
+	/// Skeletron: +5<br/>
+	/// <b>Hardmode minimum/crafting cap: 45</b><br/>
+	/// Queen Slime: +5 (total: 50)<br/>
+	/// Twins: +5 (total: 55)<br/>
+	/// Destroyer: +5 (total: 60)<br/>
+	/// Skeletron Prime: + (total: 65)br/>
+	/// Plantera: +5 (total: 70)<br/>
+	/// Golem: +5 (total: 75)<br/>
+	/// Cultist: +5 (total: 80)<br/>
+	/// Moon Lord: +5 (maximum: 85)
+	/// </summary>
+	/// <param name="clampHardmode">Clamps level to hardmode maximum (45) for crafted items.</param>
+	/// <param name="isCrafted">Indicates if the item is being crafted, which applies hardmode capping.</param>
+	/// <returns>The calculated item level based on world progression.</returns>
+
+	public static int PickItemLevel(bool clampHardmode = true, bool isCrafted = false)
 	{
-		if (NPC.downedMoonlord)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.AreaLevel > 0 && !isCrafted)
 		{
-			return Main.rand.Next(150, 201);
+			return MappingWorld.AreaLevel;
 		}
 
-		if (NPC.downedAncientCultist)
+		if (isCrafted && Main.hardMode) // This accounts for crafting level when you've progressed further than WoF
 		{
-			return Main.rand.Next(110, 151);
+			return 45;
 		}
 
-		if (NPC.downedGolemBoss)
+		if (clampHardmode && Main.hardMode) // Hardmode max if it's clamped.
 		{
-			return Main.rand.Next(95, 131);
+			return 45;
 		}
 
-		if (NPC.downedPlantBoss)
+		// Start with base level and add for each boss defeated
+		int level = 5;
+
+		if (NPC.downedSlimeKing)
 		{
-			return Main.rand.Next(80, 121);
+			level += 5; // 10
 		}
 
-		if (NPC.downedMechBossAny)
+		if (NPC.downedBoss1)
 		{
-			return Main.rand.Next(75, 111);
+			level += 5; // 15
 		}
 
-		if (Main.hardMode)
+		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds))
 		{
-			return 50;
+			level += 5; // 20
 		}
 
-		if (NPC.downedBoss3) //Skeletron
+		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
 		{
-			return 40;
-		}
-
-		if (NPC.downedDeerclops)
-		{
-			return 35;
+			level += 5; // 20/25
 		}
 
 		if (NPC.downedQueenBee)
 		{
-			return 30;
+			level += 5; // 25/30
 		}
 
-		if (BossTracker.DownedBrainOfCthulhu)
+		if (NPC.downedDeerclops)
 		{
-			return 25;
+			level += 5; // 30/35
 		}
 
-		if (BossTracker.DownedEaterOfWorlds)
+		if (NPC.downedBoss3)
 		{
-			return 20;
+			level += 5; // 35/40
 		}
 
-		if (NPC.downedBoss1) //Eye of Cthulhu
+		if (Main.hardMode)
 		{
-			return 15;
+			level = 45;
 		}
 
-		if (NPC.downedSlimeKing)
+		// Continue with hardmode bosses if not clamped
+		if (!clampHardmode)
 		{
-			return 10;
+			if (NPC.downedQueenSlime)
+			{
+				level += 5; // 50
+			}
+
+			if (NPC.downedMechBoss2)
+			{
+				level += 5; // 55
+			}
+
+			if (NPC.downedMechBoss1)
+			{
+				level += 5; // 60
+			}
+
+			if (NPC.downedMechBoss3) 
+			{
+				level += 5; // 65
+			}
+
+			if (NPC.downedPlantBoss)
+			{
+				level += 5; // 70
+			}
+
+			if (NPC.downedGolemBoss)
+			{
+				level += 5; // 75
+			}
+
+			if (NPC.downedAncientCultist)
+			{
+				level += 5; // 80
+			}
+
+			if (NPC.downedMoonlord)
+			{
+				level += 5; // 85
+			}
 		}
 
-		return 5;
+		return level;
+
 	}
 }

@@ -22,7 +22,13 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// Gets the quest marker type of this current quest. Assumes the quest is active;
 	/// as such, <see cref="QuestMarkerType.HasQuest"/> can't be returned.
 	/// </summary>
-	public QuestMarkerType Marker => ActiveStep is not null && ActiveStep.CountsAsCompletedOnMarker ? QuestMarkerType.QuestComplete : QuestMarkerType.QuestPending;
+	public QuestMarkerType Marker => ActiveStep is not null && ActiveStep.CountsAsCompletedOnMarker
+		? QuestMarkerType.QuestComplete
+		: QuestMarkerType.QuestPending;
+
+	/// <summary>
+	/// Checks if the quest is both inactive and not completed.
+	/// </summary>
 	public bool CanBeStarted => !Completed && !Active;
 
 	public string LocalizationCategory => $"Quests.Quest";
@@ -41,8 +47,10 @@ public abstract class Quest : ModType, ILocalizedModType
 	public override void SetStaticDefaults()
 	{
 		// Must be initialized here so that NPC types are populated properly.
-		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name", () => GetType().Name);
-		Description = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
+		DisplayName = Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Name",
+			() => GetType().Name);
+		Description =
+			Language.GetOrRegister($"Mods.{PoTMod.ModName}.Quests.Quest.{GetType().Name}.Description", () => "");
 		QuestSteps = SetSteps();
 	}
 
@@ -85,23 +93,44 @@ public abstract class Quest : ModType, ILocalizedModType
 		return QuestsByName[name];
 	}
 
+	/// <inheritdoc cref="GetSingleton(string)"/>
+	/// <typeparam name="T">The type of the quest to get.</typeparam>
+	public static Quest GetSingleton<T>() where T : Quest
+	{
+		return GetSingleton(ModContent.GetInstance<T>().FullName);
+	}
+
 	/// <summary>
-	/// Gets the actual instance of the given quest on the local player.
+	/// Gets the actual instance of the given quest on the local player. If the instance does not exist for some reason, adds it.
 	/// </summary>
-	/// <param name="name"></param>
+	/// <param name="name">The name of the quest to get.</param>
 	/// <returns>The in-use quest instance for the local player.</returns>
 	public static Quest GetLocalPlayerInstance(string name)
 	{
-		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[name];
+		// For some reason, in multiplayer, if a player joins a world without PoT, exits, enables PoT, then re-enters (all in multiplayer),
+		// the QuestsByName list will not be populated. This accounts for that.
+
+		if (!Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName.TryGetValue(name, out Quest value))
+		{
+			value = GetSingleton(name).Clone();
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName.Add(name, value);
+		}
+
+		return value;
 	}
 
 	/// <inheritdoc cref="GetLocalPlayerInstance(string)"/>
 	/// <typeparam name="T">The type of the quest to get.</typeparam>
-	public static T GetLocalPlayerInstance<T>() where T : Quest
+	public static Quest GetLocalPlayerInstance<T>() where T : Quest
 	{
-		return Main.LocalPlayer.GetModPlayer<QuestModPlayer>().QuestsByName[ModContent.GetInstance<T>().FullName] as T;
+		return GetLocalPlayerInstance(ModContent.GetInstance<T>().FullName);
 	}
 
+	public virtual void OnCompleted()
+	{
+		return;
+	}
+	
 	public void StartQuest(Player player, int currentQuest = 0)
 	{
 		CurrentStep = currentQuest;
@@ -111,6 +140,7 @@ public abstract class Quest : ModType, ILocalizedModType
 			Completed = true;
 			Active = false;
 			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
+			OnCompleted();
 			return;
 		}
 
@@ -125,16 +155,7 @@ public abstract class Quest : ModType, ILocalizedModType
 			StartQuest(player, CurrentStep + 1);
 		}
 	}
-
-	public List<QuestStep> GetSteps()
-	{
-		return QuestSteps;
-	}
-
-	public string CurrentQuestString()
-	{
-		return ActiveStep.DisplayString();
-	}
+	
 
 	public void Save(TagCompound tag)
 	{
@@ -194,7 +215,7 @@ public abstract class Quest : ModType, ILocalizedModType
 		ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
 	}
 
-	private void Reset()
+	public void Reset()
 	{
 		Active = false;
 		Completed = false;

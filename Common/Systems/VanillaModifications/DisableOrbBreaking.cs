@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using System.IO;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
@@ -73,6 +74,16 @@ public class DisableOrbBreaking : GlobalTile
 		public override void LoadWorldData(TagCompound tag)
 		{
 			CanBreakOrb = tag.ContainsKey("canBreakOrb");
+		}
+
+		public override void NetSend(BinaryWriter writer)
+		{
+			writer.Write(CanBreakOrb);
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			CanBreakOrb = reader.ReadBoolean();
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 using PathOfTerraria.Common.Systems.DrawLayers;
 using PathOfTerraria.Common.Systems.RealtimeGen;
 using PathOfTerraria.Content.Tiles.BossDomain;
@@ -28,7 +28,7 @@ internal class SimpleCompass : ModItem
 		{
 			Vector2 dir = drawInfo.Center.DirectionTo(ModContent.GetInstance<DeerclopsSystem>().AntlerLocation.ToWorldCoordinates());
 
-			Main.spriteBatch.Draw(_arrowTex.Value, drawInfo.Center - Main.screenPosition + dir * 40, null, Color.White,
+			Main.spriteBatch.Draw(_arrowTex.Value, drawInfo.Center - Main.screenPosition + dir * 38, null, Color.White,
 				dir.ToRotation() + MathHelper.PiOver2, new Vector2(11, 38), 1f, SpriteEffects.None, 0);
 		}
 	}
@@ -52,7 +52,7 @@ internal class SimpleCompass : ModItem
 
 		if (player.DistanceSQ(antlers.ToWorldCoordinates()) < MathF.Pow(16 * 35, 2))
 		{
-			if (Main.netMode != NetmodeID.MultiplayerClient)
+			if (Main.myPlayer == player.whoAmI)
 			{
 				List<RealtimeStep> actions = [];
 
@@ -73,6 +73,12 @@ internal class SimpleCompass : ModItem
 								tile.HasTile = false;
 								Collision.HitTiles(new Vector2(x, y).ToWorldCoordinates(0, 0), Vector2.Zero, 16, 16);
 								WorldGen.SquareTileFrame(x, y);
+
+								if (Main.netMode == NetmodeID.MultiplayerClient)
+								{
+									NetMessage.SendTileSquare(-1, x, y);
+								}
+
 								return true;
 							}, new Point16(x + j, y + i)));
 						}
@@ -93,6 +99,12 @@ internal class SimpleCompass : ModItem
 								tile.HasTile = false;
 								Collision.HitTiles(new Vector2(x, y).ToWorldCoordinates(0, 0), Vector2.Zero, 16, 16);
 								WorldGen.SquareTileFrame(x, y);
+
+								if (Main.netMode == NetmodeID.MultiplayerClient)
+								{
+									NetMessage.SendTileSquare(-1, x, y);
+								}
+
 								return true;
 							}, new Point16(x + j, y + i)));
 						}
@@ -113,6 +125,12 @@ internal class SimpleCompass : ModItem
 								tile.HasTile = false;
 								Collision.HitTiles(new Vector2(x, y).ToWorldCoordinates(0, 0), Vector2.Zero, 16, 16);
 								WorldGen.SquareTileFrame(x, y);
+
+								if (Main.netMode == NetmodeID.MultiplayerClient)
+								{
+									NetMessage.SendTileSquare(-1, x, y);
+								}
+
 								return true;
 							}, new Point16(x + i, y + j)));
 						}

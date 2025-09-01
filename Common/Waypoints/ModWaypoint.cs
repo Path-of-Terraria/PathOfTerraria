@@ -32,4 +32,10 @@ public abstract class ModWaypoint : ModType, ILocalizedModType
 	}
 
 	public abstract void Teleport(Player player);
+
+	/// <summary>
+	/// Used to check if the player can go to this waypoint. For example, stopping the player from "going to" the area they're currently in.
+	/// </summary>
+	/// <returns></returns>
+	public abstract bool CanGoto();
 }

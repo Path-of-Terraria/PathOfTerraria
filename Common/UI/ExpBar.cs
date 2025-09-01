@@ -1,10 +1,18 @@
-using System.Collections.Generic;
+using PathOfTerraria.Common.Config;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
+using SubworldLibrary;
+using System.Collections.Generic;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI;
 
@@ -25,8 +33,13 @@ public class ExpBar : SmartUiState
 		ExpModPlayer mp = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 
 		var pos = new Vector2(Main.screenWidth / 2, 10);
-		var target = new Rectangle((int)(pos.X - bar.Width / 2) + 6, (int)pos.Y + 14, (int)(mp.Exp / (float)mp.NextLevel * fill.Width), fill.Height);
-		var source = new Rectangle(0, 0, target.Width, target.Height);
+		
+		// Clamp the exp fill to 100 to prevent it from going infinitely off screen
+		float fillPercentage = Math.Min(1f, mp.Exp / (float)mp.NextLevel);
+		int fillWidth = (int)(fillPercentage * fill.Width);
+		
+		var target = new Rectangle((int)(pos.X - bar.Width / 2) + 6, (int)pos.Y + 14, fillWidth, fill.Height);
+		var source = new Rectangle(0, 0, fillWidth, target.Height);
 
 		spriteBatch.Draw(bar, pos, null, Color.White, 0, new Vector2(bar.Width / 2f, 0), 1, 0, 0);
 		spriteBatch.Draw(fill, target, source, Color.White);
@@ -37,8 +50,25 @@ public class ExpBar : SmartUiState
 
 		if (bounding.Contains(Main.MouseScreen.ToPoint()))
 		{
-			Utils.DrawBorderString(spriteBatch, $"Level {mp.Level}\nExperience: {mp.Exp} / {mp.NextLevel} ({Math.Truncate(mp.Exp / (float)mp.NextLevel * 10000) / 100f}%)\n\nClick to open skill tree", Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
+			double percent = Math.Truncate(mp.Exp / (float)mp.NextLevel * 10000) / 100f;
+			// $"Level {mp.Level}\nExperience: {mp.Exp} / {mp.NextLevel} ({percent}%)\n\nClick to open skill tree"
+			Utils.DrawBorderString(spriteBatch, Language.GetTextValue("Mods.PathOfTerraria.UI.ExpBarHover", mp.Level, mp.Exp, mp.NextLevel, percent), 
+				Main.MouseScreen + Vector2.One * 24, Main.MouseTextColorReal);
 		}
+
+		string levelText = Language.GetTextValue("Mods.PathOfTerraria.UI.AreaLevel") + " " + PoTItemHelper.PickItemLevel();
+		float halfWidth = ChatManager.GetStringSize(FontAssets.MouseText.Value, levelText, Vector2.One).X / 2f;
+		Utils.DrawBorderString(spriteBatch, levelText, pos + new Vector2(-halfWidth - 10, 34), Color.White, 1);
+
+		if (!Main.LocalPlayer.GetModPlayer<BossDomainLivesPlayer>().InDomain || SubworldSystem.Current is RavencrestSubworld)
+		{
+			return;
+		}
+
+		int lives = Main.LocalPlayer.GetModPlayer<BossDomainLivesPlayer>().GetLivesLeft();
+		string text = lives + " " + Language.GetTextValue("Mods.PathOfTerraria.UI.Lives");
+		halfWidth = ChatManager.GetStringSize(FontAssets.MouseText.Value, text, Vector2.One).X / 2f;
+		Utils.DrawBorderString(spriteBatch, text, pos + new Vector2(-halfWidth - 10, 60), Color.White, 1);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
@@ -52,7 +82,10 @@ public class ExpBar : SmartUiState
 		{
 			return;
 		}
-		
-		SmartUiLoader.GetUiState<TreeState>().Toggle();
+
+		if (!ModContent.GetInstance<UIConfig>().PreventExpBarClicking)
+		{
+			SmartUiLoader.GetUiState<TreeState>().Toggle();
+		}
 	}
 }

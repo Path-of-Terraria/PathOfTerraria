@@ -8,22 +8,24 @@ internal class PotionPickupDropper : GlobalNPC
 {
 	public override void HitEffect(NPC npc, NPC.HitInfo hit)
 	{
-		if (npc.boss && Main.netMode != NetmodeID.MultiplayerClient)
+		const float MaxPotionGates = 2;
+
+		if (IsNPCABoss(npc) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			for (int k = 0; k < 10; k++)
+			for (int k = 0; k < MaxPotionGates; k++)
 			{
-				int gate = (int)(npc.lifeMax * (k / 10f));
+				int gate = (int)(npc.lifeMax * (k / MaxPotionGates));
 
 				if (npc.life >= gate && (npc.life - hit.Damage) < gate)
 				{
-					int amount = Main.rand.Next(2, 6);
+					int amount = Main.rand.Next(4, 6);
 
 					for (int i = 0; i < amount; i++)
 					{
 						if (Main.netMode == NetmodeID.SinglePlayer)
 						{
 							int index = Item.NewItem(npc.GetSource_FromThis(), npc.Hitbox, ModContent.ItemType<HealingPotionPickup>());
-							Main.item[index].velocity = Vector2.UnitX.RotatedBy(i / (float)amount * MathHelper.TwoPi) * 10;
+							Main.item[index].velocity = Vector2.UnitX.RotatedBy(i / (float)amount * MathHelper.TwoPi).RotatedByRandom(0.4f) * 10;
 						}
 						else if (Main.netMode == NetmodeID.Server)
 						{
@@ -44,15 +46,25 @@ internal class PotionPickupDropper : GlobalNPC
 		}
 	}
 
+	private static bool IsNPCABoss(NPC npc)
+	{
+		return npc.boss || npc.type == NPCID.GolemHead;
+	}
+
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		LeadingConditionRule notBoss = new(new Conditions.LegacyHack_IsABoss());
-		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 1, 1, 1));
-		notBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 1, 1, 1));
+		if (NPCID.Sets.ProjectileNPC[npc.type] || npc.CountsAsACritter || npc.friendly)
+		{
+			return;
+		}
 
-		notBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 7, 1, 1));
-		notBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 7, 1, 1));
+		LeadingConditionRule isBoss = new(new Conditions.LegacyHack_IsABoss());
+		isBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 1, 1, 1), true);
+		isBoss.OnSuccess(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 1, 1, 1), true);
+
+		isBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<HealingPotionPickup>(), 7, 1, 1), true);
+		isBoss.OnFailedConditions(ItemDropRule.Common(ModContent.ItemType<ManaPotionPickup>(), 7, 1, 1), true);
 		
-		npcLoot.Add(notBoss);
+		npcLoot.Add(isBoss);
 	}
 }

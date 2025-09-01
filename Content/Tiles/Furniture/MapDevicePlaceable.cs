@@ -1,10 +1,10 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers.MapDevice;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers.MapDevice;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
+using PathOfTerraria.Core.Items;
 using ReLogic.Content;
 using System.IO;
 using Terraria.DataStructures;
-using Terraria.Enums;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
@@ -15,13 +15,22 @@ namespace PathOfTerraria.Content.Tiles.Furniture;
 
 public class MapDevicePlaceable : ModTile
 {
-	private const int FrameWidth = 18 * 3;
-	private const int FrameHeight = 18 * 4 + 20;
+	public const int FullWidth = 18 * 5;
+	public const int FullHeight = 18 * 5;
 
 	private static Asset<Texture2D> _portalTex;
 
 	/// This is the portal that will appear above
 	protected virtual string Portal => $"{PoTMod.ModName}/Assets/Items/Placeable/Portal";
+
+	public static Point16 GetTopLeft(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		i -= tile.TileFrameX % FullWidth / 18;
+		j -= tile.TileFrameY % FullHeight / 18;
+
+		return new(i, j);
+	}
 
 	public override void Load()
 	{
@@ -36,22 +45,19 @@ public class MapDevicePlaceable : ModTile
 		TileID.Sets.InteractibleByNPCs[Type] = true;
 		
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
+		TileObjectData.newTile.Width = 5;
 		TileObjectData.newTile.Height = 5;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
 		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(ModContent.GetInstance<MapDeviceEntity>().Hook_AfterPlacement, -1, 0, false);
 		TileObjectData.newTile.LavaDeath = false;
 		TileObjectData.newTile.DrawYOffset = 2;
-		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
-		TileObjectData.newTile.StyleHorizontal = false;
-		TileObjectData.newTile.StyleWrapLimitVisualOverride = 2;
-		TileObjectData.newTile.StyleMultiplier = 2;
-		TileObjectData.newTile.StyleWrapLimit = 2;
-		TileObjectData.newTile.styleLineSkipVisualOverride = 0;
-		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
-		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
-		TileObjectData.addAlternate(1);
+		TileObjectData.newTile.StyleHorizontal = true;
+		TileObjectData.newTile.RandomStyleRange = 3;
+		TileObjectData.newTile.AnchorBottom = new AnchorData(TileObjectData.newTile.AnchorBottom.type, TileObjectData.newTile.Width, 0);
+		TileObjectData.newTile.Origin = new(3, 4);
 		TileObjectData.addTile(Type);
 
+		RegisterItemDrop(ModContent.ItemType<MapDevice>());
 		AddMapEntry(new Color(233, 207, 94), Language.GetText("MapObject.MapDevice"));
 	}
 
@@ -62,17 +68,15 @@ public class MapDevicePlaceable : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18;
-		j -= tile.TileFrameY / 18 % 5;
-		ModContent.GetInstance<MapDeviceEntity>().Kill(i, j);
+		Point16 coords = GetTopLeft(i, j);
+		ModContent.GetInstance<MapDeviceEntity>().Kill(coords.X, coords.Y);
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		Tile tile = Main.tile[i, j];
 
-		if (tile.TileFrameX != 0 || tile.TileFrameY != 0 && tile.TileFrameY != 90)
+		if (tile.TileFrameX / 18 % 5 == 0 || tile.TileFrameY != 0)
 		{
 			return;
 		}
@@ -87,7 +91,8 @@ public class MapDevicePlaceable : ModTile
 
 		// Take the tile, check if it actually exists
 		var p = new Point(i, j);
-		tile = Main.tile[p.X, p.Y];
+		tile = Main.tile[p];
+
 		if (tile == null || !tile.HasTile)
 		{
 			return;
@@ -95,13 +100,13 @@ public class MapDevicePlaceable : ModTile
 
 		// Get the initial draw parameters
 		Texture2D texture = _portalTex.Value;
-		int frameY = tile.TileFrameX / FrameWidth; // Picks the frame on the sheet based on the placeStyle of the item
+		int frameY = tile.TileFrameX % 90 / FullWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
-		Vector2 worldPos = p.ToWorldCoordinates(24f, 64f);
-		Color color = Lighting.GetColor(p.X, p.Y);
+		Vector2 worldPos = p.ToWorldCoordinates(40f, 64f);
+		var color = Color.Lerp(Lighting.GetColor(p.X, p.Y), Color.White, 0.4f);
 		bool direction =
-			tile.TileFrameY / FrameHeight != 0; // This is related to the alternate tile data we registered before
+			tile.TileFrameY / FullHeight != 0; // This is related to the alternate tile data we registered before
 		SpriteEffects effects = direction ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 		// Some math magic to make it smoothly move up and down over time
@@ -113,11 +118,11 @@ public class MapDevicePlaceable : ModTile
 		{
 			float rotation = Main.GlobalTimeWrappedHourly * 7f * (k % 2 == 0 ? -1 : 1);
 			Color drawColor = color * (1 - k * 0.2f);
-			spriteBatch.Draw(texture, drawPos, frame, drawColor with { A = 150 }, rotation, origin, 1f - k * 0.2f, effects, 0f);
+			spriteBatch.Draw(texture, drawPos, frame, drawColor with { A = 150 }, rotation, origin, 1.3f - k * 0.2f, effects, 0f);
 		}
 
 		Texture2D itemTex = TextureAssets.Item[entity.StoredMap.type].Value;
-		spriteBatch.Draw(itemTex, drawPos, null, Color.White * 0.95f, 0f, itemTex.Size() / 2f, 0.5f, effects, 0f);
+		spriteBatch.Draw(itemTex, drawPos, null, new Color(140, 230, 255) * 0.95f, 0f, itemTex.Size() / 2f, 0.75f, effects, 0f);
 
 		// Draw the periodic glow effect
 		float scale = (float)Math.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 2f) * 0.3f + 0.7f;
@@ -143,25 +148,22 @@ public class MapDevicePlaceable : ModTile
 
 	public override void MouseOver(int i, int j)
 	{
-		if (TryGetEntity(ref i, ref j, out MapDeviceEntity entity))
-		{
-			Player player = Main.LocalPlayer;
-			player.noThrow = 2;
-			player.cursorItemIconEnabled = true;
-			player.cursorItemIconID = ModContent.ItemType<MapDevice>();
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = ModContent.ItemType<MapDevice>();
 
-			if (entity.StoredMap != null)
-			{
-				player.cursorItemIconID = entity.StoredMap.type;
-			}
+		if (TryGetEntity(ref i, ref j, out MapDeviceEntity entity) && entity.StoredMap != null)
+		{ 
+			player.cursorItemIconID = entity.StoredMap.type;
 		}
 	}
 
 	private static bool TryGetEntity(ref int i, ref int j, out MapDeviceEntity entity)
 	{
-		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18;
-		j -= tile.TileFrameY / 18 % 5;
+		Point16 pos = GetTopLeft(i, j);
+		i = pos.X;
+		j = pos.Y;
 
 		if (TileEntity.ByPosition.TryGetValue(new(i, j), out TileEntity tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
@@ -185,26 +187,18 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
-		Tile tile = Main.tile[i, j];
-		i -= tile.TileFrameX / 18;
-		j -= tile.TileFrameY / 18 % 5;
+		var tileData = TileObjectData.GetTileData(type, style, alternate);
+		int topLeftX = i - tileData.Origin.X;
+		int topLeftY = j - tileData.Origin.Y;
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
-			// Sync the entire multitile's area.
-			NetMessage.SendTileSquare(Main.myPlayer, i, j, 3, 5);
-
-			// Sync the placement of the tile entity with other clients. Needs to match Place() coordinates
-			// The "type" parameter refers to the tile type which placed the tile entity, so "Type" (the type of the tile entity) needs to be used here instead
-			NetMessage.SendData(MessageID.TileEntityPlacement, number: i, number2: j, number3: Type);
+			NetMessage.SendTileSquare(Main.myPlayer, topLeftX, topLeftY, tileData.Width, tileData.Height);
+			NetMessage.SendData(MessageID.TileEntityPlacement, number: topLeftX, number2: topLeftY, number3: Type);
 			return -1;
 		}
 
-		// ModTileEntity.Place() handles checking if the entity can be placed, then places it for you
-		// Set "tileOrigin" to the same value you set TileObjectData.newTile.Origin to in the ModTile
-		int placedEntity = Place(i, j);
-
-		return placedEntity;
+		return Place(topLeftX, topLeftY);
 	}
 
 	public override void OnKill()
@@ -273,7 +267,7 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			if (Main.netMode != NetmodeID.SinglePlayer)
 			{
-				ConsumeMapDeviceHandler.Send((byte)Main.myPlayer, new Point16(i, j));
+				ModContent.GetInstance<ConsumeMapDeviceHandler>().Send((byte)Main.myPlayer, new Point16(i, j));
 			}
 
 			var map = StoredMap.ModItem as Map;
@@ -313,9 +307,11 @@ internal class MapDeviceEntity : ModTileEntity
 			heldItem.TurnToAir();
 		}
 
+		PoTItemHelper.SetMouseItemToHeldItem(Main.LocalPlayer);
+
 		if (Main.netMode != NetmodeID.SinglePlayer)
 		{
-			PlaceMapInDeviceHandler.Send((byte)Main.myPlayer, (short)clone.type, new Point16(i, j));
+			ModContent.GetInstance<PlaceMapInDeviceHandler>().Send((byte)Main.myPlayer, (short)clone.type, new Point16(i, j));
 		}
 	}
 

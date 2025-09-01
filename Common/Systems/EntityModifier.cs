@@ -22,7 +22,7 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier ProjectileSpeed = new();
 	public StatModifier ProjectileCount = new(); // would be neat
 	public StatModifier Damage = new();
-	public StatModifier Attackspeed = new();
+	public StatModifier AttackSpeed = new();
 	public StatModifier ArmorPenetration = new();
 	public StatModifier Knockback = new();
 	public StatModifier CriticalChance = new();
@@ -81,24 +81,25 @@ public partial class EntityModifier : EntityModifierSegment
 		player.manaRegen = (int)ManaRegen.ApplyTo(player.manaRegen); // dont know if this is the right value
 		player.statDefense += (int)Defense.ApplyTo((int)player.statDefense) - player.statDefense;
 
-		player.endurance *= (int)DamageReduction.ApplyTo(player.endurance); // i think this is right..?
+		player.endurance *= DamageReduction.ApplyTo(player.endurance); // i think this is right..?
 		player.moveSpeed = MovementSpeed.ApplyTo(player.moveSpeed);
 		player.GetDamage(DamageClass.Generic) = player.GetDamage(DamageClass.Generic).CombineWith(Damage);
-		player.GetAttackSpeed(DamageClass.Generic) = Attackspeed.ApplyTo(player.GetAttackSpeed(DamageClass.Generic));
+		player.GetAttackSpeed(DamageClass.Generic) = AttackSpeed.ApplyTo(player.GetAttackSpeed(DamageClass.Generic));
+		
+		player.GetCritChance(DamageClass.Generic) = CriticalChance.ApplyTo(player.GetCritChance(DamageClass.Generic));
 
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
-		player.GetArmorPenetration(DamageClass.Generic) =
-			Knockback.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
+		player.GetArmorPenetration(DamageClass.Generic) = ArmorPenetration.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
 
 		MinorStatsModPlayer msmp = player.GetModPlayer<MinorStatsModPlayer>();
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);
 
-		PotionSystem ps = player.GetModPlayer<PotionSystem>();
+		PotionPlayer ps = player.GetModPlayer<PotionPlayer>();
 		ps.MaxHealing = (int)MaxHealthPotions.ApplyTo(ps.MaxHealing);
 		ps.HealPower = (int)PotionHealPower.ApplyTo(ps.HealPower);
 		ps.HealDelay = (int)PotionHealDelay.ApplyTo(ps.HealDelay);
 
-		ps.MaxMana = (int)MaxHealthPotions.ApplyTo(ps.MaxMana);
+		ps.MaxMana = (int)MaxManaPotions.ApplyTo(ps.MaxMana);
 		ps.ManaPower = (int)PotionManaPower.ApplyTo(ps.ManaPower);
 		ps.ManaDelay = (int)PotionManaDelay.ApplyTo(ps.ManaDelay);
 

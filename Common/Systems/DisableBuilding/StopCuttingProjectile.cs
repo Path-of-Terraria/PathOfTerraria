@@ -1,14 +1,17 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using SubworldLibrary;
+using System.Data;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
 
 internal class StopCuttingProjectile : GlobalProjectile
 {
-	private static bool Cutting = false;
+	private static Projectile CuttingProjectile = null;
 
 	public override void Load()
 	{
@@ -42,17 +45,19 @@ internal class StopCuttingProjectile : GlobalProjectile
 
 	public static bool CanCutTile(Projectile projectile, int i, int j)
 	{
-		bool cantCutWhitelist = Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding && !BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
-		return !cantCutWhitelist && (ModContent.GetModTile(Main.tile[i, j].TileType) is not ICanCutTile cutTile || cutTile.CanCut(i, j));
+		Tile tile = Main.tile[i, j];
+		Point16 frame = new(tile.TileFrameX, tile.TileFrameY);
+		bool cantCutWhitelist = Main.player[projectile.owner].GetModPlayer<StopBuildingPlayer>().LastStopBuilding && !BuildingWhitelist.InCuttingWhitelist(tile.TileType, frame);
+		return !cantCutWhitelist && (ModContent.GetModTile(tile.TileType) is not ICanCutTile cutTile || cutTile.CanCut(i, j));
 	}
 
 	private bool CutCheck(On_DelegateMethods.orig_CutTiles orig, int x, int y)
 	{
 		bool vanilla = orig(x, y);
 
-		if (Cutting && SubworldSystem.Current is BossDomainSubworld domain)
+		if (CuttingProjectile is not null && SubworldSystem.Current is BossDomainSubworld domain and not MoonLordDomain && Main.tile[x, y].HasTile && Main.tileCut[Main.tile[x, y].TileType])
 		{
-			return vanilla && BuildingWhitelist.InCuttingWhitelist(Main.tile[x, y].TileType);
+			return vanilla && CanCutTile(CuttingProjectile, x, y);
 		}
 
 		return vanilla;
@@ -60,9 +65,9 @@ internal class StopCuttingProjectile : GlobalProjectile
 
 	private void AddCutCheck(On_Projectile.orig_CutTiles orig, Projectile self)
 	{
-		Cutting = true;
+		CuttingProjectile = self;
 		orig(self);
-		Cutting = false;
+		CuttingProjectile = null;
 	}
 
 	public override bool PreKill(Projectile projectile, int timeLeft)

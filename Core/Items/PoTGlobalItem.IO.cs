@@ -29,7 +29,7 @@ partial class PoTGlobalItem : GlobalItem
 		foreach (ItemAffix affix in data.Affixes)
 		{
 			var newTag = new TagCompound();
-			affix.Save(newTag);
+			affix.SaveTo(newTag);
 			affixTags.Add(newTag);
 		}
 
@@ -53,6 +53,7 @@ partial class PoTGlobalItem : GlobalItem
 
 		data.Affixes.Clear();
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
+
 		foreach (TagCompound newTag in affixTags)
 		{
 			if (Affix.FromTag<ItemAffix>(newTag) is ItemAffix g)

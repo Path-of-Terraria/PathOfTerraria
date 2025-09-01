@@ -1,16 +1,26 @@
-﻿using Terraria.Audio;
+﻿using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PlayerStats;
 
-internal class PlayerStatUIState : CloseableSmartUi
+internal class PlayerStatUIState : CloseableSmartUi, IMutuallyExclusiveUI
 {
 	public override int DepthPriority => 3;
-	public override bool IsCentered => true;
+	protected override bool IsCentered => true;
 
 	private PlayerStatInnerPanel statPanel = null;
+
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		if (!Main.playerInventory)
+		{
+			Toggle();
+		}
+	}
 
 	public void Toggle()
 	{
@@ -21,21 +31,24 @@ internal class PlayerStatUIState : CloseableSmartUi
 			return;
 		}
 
+		Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.OpenedCharSheet);
+
 		if (!HasChild(Panel))
 		{
 			Width = StyleDimension.FromPixels(512);
-			Height = StyleDimension.FromPixels(448);
+			Height = StyleDimension.FromPixels(660);
 			HAlign = 0.5f;
-			VAlign = 0.25f;
+			VAlign = 0.4f;
 
 			RemoveAllChildren();
+			ModContent.GetInstance<SmartUiLoader>().ClearMutuallyExclusive<PlayerStatUIState>();
 
-			base.CreateMainPanel(false, new Point(512, 448), false, true);
+			base.CreateMainPanel(false, new Point(512, 660), false, true);
 
 			statPanel = new()
 			{
 				Width = StyleDimension.FromPixels(512),
-				Height = StyleDimension.FromPixels(448),
+				Height = StyleDimension.Fill,
 				HAlign = 0.5f,
 				VAlign = 0.5f
 			};

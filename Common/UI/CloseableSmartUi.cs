@@ -14,13 +14,12 @@ public abstract class CloseableSmartUi : SmartUiState
     public UIImageButton CloseButton;
     public bool IsVisible;
 
-    protected const int PointsAndExitPadding = 10;
-
-    public virtual int TopPadding => -400;
-    public virtual int PanelHeight => 800;
-    public virtual int LeftPadding => -450;
-    public virtual int PanelWidth => 900;
-    public virtual bool IsCentered => false;
+    protected virtual int PointsAndExitPadding => 10;
+    protected virtual int TopPadding => -400;
+    protected virtual int PanelHeight => 800;
+    protected virtual int LeftPadding => -450;
+    protected virtual int PanelWidth => 900;
+    protected virtual bool IsCentered => false;
     public override bool Visible => IsVisible;
 
     public override int InsertionIndex(List<GameInterfaceLayer> layers)
@@ -64,6 +63,12 @@ public abstract class CloseableSmartUi : SmartUiState
             AddCloseButton();
         }
     }
+    
+    protected virtual void DefaultClose()
+    {
+	    IsVisible = false;
+	    SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
+    }
 
     protected void AddCloseButton()
     {
@@ -72,11 +77,7 @@ public abstract class CloseableSmartUi : SmartUiState
         CloseButton.Top.Set(10, 0f);
         CloseButton.Width.Set(38, 0);
         CloseButton.Height.Set(38, 0);
-        CloseButton.OnLeftClick += (a, b) =>
-        {
-            IsVisible = false;
-            SoundEngine.PlaySound(SoundID.MenuClose, Main.LocalPlayer.Center);
-        };
+        CloseButton.OnLeftClick += (a, b) => DefaultClose();
         CloseButton.SetVisibility(1, 1);
         Panel.Append(CloseButton);
     }

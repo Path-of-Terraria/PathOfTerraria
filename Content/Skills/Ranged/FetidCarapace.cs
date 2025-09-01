@@ -1,22 +1,21 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class FetidCarapace : Skill
 {
 	public override int MaxLevel => 3;
-	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = 30 * 60;
-		Timer = 0;
+		Cooldown = MaxCooldown = 30 * 60;
 		ManaCost = 20;
 		Duration = (6 + Level * 4) * 60;
 		WeaponType = ItemType.Ranged;
@@ -24,27 +23,34 @@ public class FetidCarapace : Skill
 
 	public override void UseSkill(Player player)
 	{
+		base.UseSkill(player);
+
 		// Level to the strength of all FetidCarapaceAffix
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<FetidCarapaceAffix>());
 
-		int damage = (int)(30 * (1f - (3 - Level) * 0.2f));
+		int damage = GetTotalDamage(30 * (1f - (3 - Level) * 0.2f));
 		int max = 1 + Level;
 		int type = ModContent.ProjectileType<CarapaceChunk>();
 
 		for (int i = 0; i < max; ++i)
 		{
-			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), player.Center, Vector2.Zero, type, damage, 8f, player.whoAmI, 0, max, i);
-			Main.projectile[proj].timeLeft = Duration;
+			var proj = Projectile.NewProjectileDirect(new EntitySource_UseSkill(player, this), player.Center, Vector2.Zero, type, damage, 8f, player.whoAmI, 0, max, i);
+			proj.timeLeft = Duration;
+			proj.netUpdate = true;
 		}
-
-		Timer = Cooldown;
 	}
 
-	public override bool CanUseSkill(Player player)
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
 	{
-		bool canUse = base.CanUseSkill(player);
+		if (!player.HeldItem.CountsAsClass(DamageClass.Ranged))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsRanged);
+			return false;
+		}
 
-		if (!canUse) // If we can't use the skill, attempt to shoot the projectiles
+		bool canUse = base.CanUseSkill(player, ref failReason, true);
+
+		if (!canUse && !justChecking) // If we can't use the skill, attempt to shoot the projectiles
 		{
 			foreach (Projectile proj in Main.ActiveProjectiles)
 			{
@@ -59,13 +65,19 @@ public class FetidCarapace : Skill
 		return canUse;
 	}
 
-	public override bool CanEquipSkill(Player player)
+	protected override bool ProtectedCanEquip(Player player, ref SkillFailure failReason)
 	{
-		// TODO: If this needs to be equippable without the affix, figure out that system
-		return player.GetModPlayer<AffixPlayer>().StrengthOf<FetidCarapaceAffix>() > 0;
+		if (player.GetModPlayer<AffixPlayer>().StrengthOf<FetidCarapaceAffix>() <= 0)
+		{
+			// MissingAffix: Needs {0} affix on any equipped item
+			failReason = new SkillFailure(SkillFailReason.Other, "MissingAffix", DisplayName.Value);
+			return false;
+		}
+
+		return true;
 	}
 
-	internal class CarapaceChunk : ModProjectile
+	internal class CarapaceChunk : SkillProjectile<FetidCarapace>
 	{
 		public override string Texture => $"{PoTMod.ModName}/Assets/Items/Gear/Weapons/Javelins/{GetType().Name}";
 

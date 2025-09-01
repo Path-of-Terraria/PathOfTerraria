@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using ReLogic.Content.Sources;
 using System.IO;
-using PathOfTerraria.Common.Systems.Networking;
 using PathOfTerraria.Core.Sources;
+using PathOfTerraria.Common.Systems.Synchronization;
 
 namespace PathOfTerraria;
 
@@ -30,13 +30,16 @@ public sealed class PoTMod : Mod
 	{
 		base.Load();
 
+		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
+		
 		Debug.Assert(Name == ModName, "Internal mod name does not match expected contsant.");
 	}
 
 	public override void Unload()
 	{
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
+		NPCUtils.NPCUtils.UnloadMod(this);
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
@@ -49,10 +52,9 @@ public sealed class PoTMod : Mod
 		// Use our own SmartContentSource which wraps IContentSource with additional
 		// behavior.
 		var source = new SmartContentSource(base.CreateDefaultContentSource());
-		{
-			// Redirects requests for ModName/Content/... to ModName/Assets/...
-			source.AddDirectoryRedirect("Content", "Assets");
-		}
+		
+		// Redirects requests for ModName/Content/... to ModName/Assets/...
+		source.AddDirectoryRedirect("Content", "Assets");
 
 		return source;
 	}

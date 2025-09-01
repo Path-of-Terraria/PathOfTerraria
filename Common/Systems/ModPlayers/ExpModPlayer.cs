@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.RavencrestContent;
-using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.World.Passes;
+﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using Terraria.Audio;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
@@ -25,20 +23,18 @@ public class ExpModPlayer : ModPlayer
 			return;
 		}
 
-		SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5"));
-
 		Exp -= NextLevel;
 		Level++;
 
-		Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.LevelUp").WithFormatArgs(Level).Value, new Color(145, 255, 160));
-		Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.SkillUp"), new Color(255, 255, 160));
+		if (Main.myPlayer == Player.whoAmI && !Main.dedServ) //Only use level up text and sounds on the local client, despite progress being otherwise synced
+		{
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Tier5"));
+
+			Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.LevelUp").WithFormatArgs(Level).Value, new Color(145, 255, 160));
+			Main.NewText(Language.GetText("Mods.PathOfTerraria.Misc.Experience.SkillUp"), new Color(255, 255, 160));
+		}
 
 		Player.GetModPlayer<PassiveTreePlayer>().Points++;
-
-		if (Level == 1 && !ModContent.GetInstance<RavencrestSystem>().SpawnedRaven)
-		{
-			new RavenPass().Generate(null, null);
-		}
 	}
 
 	public override void SaveData(TagCompound tag)

@@ -1,0 +1,181 @@
+﻿using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.Graphics;
+using Terraria.Graphics.Shaders;
+using Terraria.ID;
+
+namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
+
+public sealed class DevourerFireball : ModProjectile
+{
+	private static readonly VertexStrip Strip = new();
+
+	/// <summary>
+	///		Gets or sets the timer of the projectile. Shorthand for <c>Projectile.ai[0]</c>.
+	/// </summary>
+	public ref float Timer => ref Projectile.ai[0];
+
+	/// <summary>
+	///		Gets or sets the index of the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Projectile.ai[1]</c>.
+	/// </summary>
+	public ref float Index => ref Projectile.ai[1];
+
+	public ref float FloorY => ref Projectile.ai[2];
+
+	/// <summary>
+	///		Gets the <see cref="Player"/> instance the projectile is homing towards. Shorthand for <c>Main.player[(int)Projectile.ai[1]]</c>.
+	/// </summary>
+	public Player Player => Main.player[(int)Index];
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+
+		Main.projFrames[Type] = 2;
+
+		ProjectileID.Sets.TrailingMode[Type] = 3;
+		ProjectileID.Sets.TrailCacheLength[Type] = 40;
+		ProjectileID.Sets.DrawScreenCheckFluff[Type] = 15 * 16;
+	}
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
+		Projectile.friendly = false;
+		Projectile.hostile = true;
+
+		Projectile.width = 80;
+		Projectile.height = 80;
+	}
+
+	public override void OnSpawn(IEntitySource source)
+	{
+		base.OnSpawn(source);
+
+		Projectile.frame = Main.rand.Next(2);
+	}
+
+	public override bool CanHitPlayer(Player target)
+	{
+		return Timer != -1;
+	}
+
+	public override void OnKill(int timeLeft)
+	{
+		if (Timer == -1)
+		{
+			return;
+		}
+
+		base.OnKill(timeLeft);
+
+		for (int i = 0; i < 15; i++)
+		{
+			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Torch, Scale: Main.rand.NextFloat(2, 4));
+			dust.velocity.Y = Main.rand.NextFloat(-1, 1);
+			dust.velocity *= 4f;
+			dust.noGravity = true;
+		}
+	}
+
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
+		OnKill(0);
+		Timer = -1;
+
+		return false;
+	}
+
+	public override void AI()
+	{
+		base.AI();
+
+		if (Timer == -1)
+		{
+			Projectile.velocity = Vector2.Zero;
+
+			if (Projectile.oldPos[^1] == Projectile.oldPos[0])
+			{
+				Projectile.Kill();
+			}
+
+			return;
+		}
+
+		Timer++;
+
+		Projectile.tileCollide = Projectile.Center.Y > FloorY || InObsidian();
+		Projectile.velocity.X += MathF.Cos(Timer * 0.1f) * 0.01f;
+		Projectile.velocity.Y += 0.3f;
+
+		UpdateDustEffects();
+	}
+
+	private bool InObsidian()
+	{
+		Tile tile = Main.tile[Projectile.Center.ToTileCoordinates()];
+		return tile.HasTile && tile.TileType == TileID.Obsidian;
+	}
+
+	private void UpdateDustEffects()
+	{
+		if (!Main.rand.NextBool(5))
+		{
+			return;
+		}
+
+		var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.FlameBurst);
+		dust.velocity *= 2f;
+		dust.noGravity = true;
+	}
+
+	public override bool PreDraw(ref Color lightColor)
+	{
+		lightColor = new Color(235, 97, 52, 0);
+
+		DrawProjectileTrail();
+
+		if (Timer != -1)
+		{
+			DrawProjectile(in lightColor);
+		}
+
+		return false;
+	}
+
+	private void DrawProjectile(in Color lightColor)
+	{
+		Texture2D texture = TextureAssets.Projectile[Type].Value;
+		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(DrawOffsetX, Projectile.gfxOffY);
+		Rectangle frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame);
+		Vector2 origin = frame.Size() / 2f + new Vector2(DrawOriginOffsetX, DrawOriginOffsetY);
+		SpriteEffects effects = Projectile.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(lightColor), Projectile.rotation, origin, Projectile.scale, effects);
+	}
+
+	private void DrawProjectileTrail()
+	{
+		MiscShaderData data = GameShaders.Misc["FlameLash"];
+
+		data.UseSaturation(-2f);
+		data.UseOpacity(10f);
+
+		data.Apply();
+
+		Strip.PrepareStripWithProceduralPadding
+		(
+			Projectile.oldPos,
+			Projectile.oldRot,
+			static (progress) => new Color(235, 97, 52, 0) * progress,
+			static (progress) => MathHelper.SmoothStep(30f, 0f, progress),
+			-Main.screenPosition + Projectile.Size / 2f
+		);
+
+		Strip.DrawTrail();
+
+		Main.pixelShader.CurrentTechnique.Passes[0].Apply();
+	}
+}

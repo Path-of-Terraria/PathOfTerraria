@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.World.Generation;
+using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent.RGB;
 
 namespace PathOfTerraria.Common.World;
 
@@ -119,5 +121,28 @@ internal static class Ellipse
 				}
 			}
 		}
+	}
+
+	public static void GenOval(Vector2 origin, float size, float angle, bool isWall, int typeId, FastNoiseLite noise)
+	{
+		var otherEnd = (origin + new Vector2(size, size / 2)).ToPoint16();
+		List<Point16> results = [];
+		float ySize = size / WorldGen.genRand.NextFloat(2, 3);
+		
+		Fill(!isWall ? (x, y) => FastPlaceTile(x, y, typeId) : (x, y) => FastPlaceWall(x, y, typeId),
+			origin.ToPoint16(), size, ySize, angle - MathHelper.PiOver2, ref results, (x, y) => noise.GetNoise(x, y) * 10);
+	}
+
+	public static void FastPlaceTile(int x, int y, int type)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.TileType = (ushort)type;
+		tile.HasTile = true;
+	}
+
+	public static void FastPlaceWall(int x, int y, int type)
+	{
+		Tile tile = Main.tile[x, y];
+		tile.WallType = (ushort)type;
 	}
 }

@@ -1,14 +1,12 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class EoWMap : Map
+internal class EoWMap() : PreHardmodeBossMap(20, () => NPC.downedBoss2)
 {
-	public override int MaxUses => GetBossUseCount();
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
@@ -24,7 +22,7 @@ internal class EoWMap : Map
 		Item.Size = new Vector2(40, 30);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<EaterDomain>();
 	}

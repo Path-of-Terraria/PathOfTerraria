@@ -2,12 +2,14 @@
 using PathOfTerraria.Common.Subworlds.Passes;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
+using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
@@ -17,13 +19,13 @@ namespace PathOfTerraria.Common.Subworlds;
 
 internal class RavencrestSubworld : MappingWorld
 {
-	public override int Width => 1200;
+	public override int Width => 1010;
 	public override int Height => 340;
 	public override bool ShouldSave => true;
 	public override int[] WhitelistedMiningTiles => [TileID.Tombstones];
 	public override int[] WhitelistedPlaceableTiles => [TileID.Tombstones];
 
-	public override List<GenPass> Tasks => [new FlatWorldPass(200, true, null, TileID.Dirt, WallID.Dirt), 
+	public override List<GenPass> Tasks => [new FlatWorldPass(126, true, null, TileID.Dirt, WallID.Dirt), 
 		new PassLegacy("World", SpawnWorld), new PassLegacy("Smooth", SmoothPass)];
 
 	private void SmoothPass(GenerationProgress progress, GameConfiguration configuration)
@@ -39,6 +41,8 @@ internal class RavencrestSubworld : MappingWorld
 
 	public override void CopyMainWorldData()
 	{
+		base.CopyMainWorldData();
+
 		SubworldSystem.CopyWorldData("smashedOrb", WorldGen.shadowOrbSmashed); // Copies this bool over since TownScoutNPC needs this
 		SubworldSystem.CopyWorldData("orbsSmashed", (short)DisableEvilOrbBossSpawning.ActualOrbsSmashed); // Copies this bool over since Morven/Whispers of the Deep quest needs this
 		SubworldSystem.CopyWorldData("time", Main.time); // Keeps time consistent
@@ -50,6 +54,8 @@ internal class RavencrestSubworld : MappingWorld
 
 	public override void ReadCopiedMainWorldData()
 	{
+		base.ReadCopiedMainWorldData();
+
 		WorldGen.shadowOrbSmashed = SubworldSystem.ReadCopiedWorldData<bool>("smashedOrb");
 		Main.time = SubworldSystem.ReadCopiedWorldData<double>("time");
 		Main.dayTime = SubworldSystem.ReadCopiedWorldData<bool>("dayTime");
@@ -69,24 +75,29 @@ internal class RavencrestSubworld : MappingWorld
 	private void SpawnWorld(GenerationProgress progress, GameConfiguration configuration)
 	{
 		Main.spawnTileX = 398;
-		Main.spawnTileY = 181;
+		Main.spawnTileY = 141;
 
-		WorldFile.LoadWorld_Version2(new BinaryReader(new MemoryStream(PoTMod.Instance.GetFileBytes("Assets/Structures/Worlds/RavencrestSubworld.wld"))));
+		StructureTools.PlaceByOrigin("Assets/Structures/Worlds/Ravencrest_Structure", new Point16(40, 22), Vector2.Zero);
 
-		foreach (ISpawnInRavencrestNPC npc in ModContent.GetContent<ISpawnInRavencrestNPC>())
-		{
-			int x = npc.TileSpawn.X * 16;
-			int y = npc.TileSpawn.Y * 16;
-			NPC.NewNPC(Entity.GetSource_TownSpawn(), x, y, npc.Type);
-		}
+		RavencrestSystem.SpawnNativeNpcs(NPCSpawnTimeframe.WorldGen);
 
 		Main.hardMode = false;
 	}
 
 	public override void Update()
 	{
-		// Time wasn't being incremented for some reason by default
 		Main.time++;
+
+		if (Main.dayTime && Main.time >= Main.dayLength)
+		{
+			Main.dayTime = false;
+			Main.time = 0;
+		}
+		else if (!Main.dayTime && Main.time >= Main.nightLength)
+		{
+			Main.dayTime = true;
+			Main.time = 0;
+		}
 	}
 
 	public class RavencrestNPC : GlobalNPC 
@@ -110,6 +121,18 @@ internal class RavencrestSubworld : MappingWorld
 			if (scoutChance > 0)
 			{
 				pool.Add(ModContent.NPCType<TownScoutNPC>(), scoutChance);
+			}
+
+			if (Main.dayTime)
+			{
+				pool[NPCID.Bird] = 0.3f;
+				pool[NPCID.BirdBlue] = 0.3f;
+				pool[NPCID.BirdRed] = 0.3f;
+				pool[NPCID.GoldBird] = 0.005f;
+			}
+			else
+			{
+				pool[NPCID.Owl] = 0.6f;
 			}
 		}
 	}

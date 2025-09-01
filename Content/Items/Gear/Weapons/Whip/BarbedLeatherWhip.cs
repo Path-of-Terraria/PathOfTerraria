@@ -14,14 +14,15 @@ internal class BarbedLeatherWhip : Whip
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.MinDropItemLevel = 5;
+		staticData.MinDropItemLevel = 13;
 	}
 
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
-		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 7, 2, 4);
+		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 18, 2, 4);
 		Item.channel = true;
+		Item.value = Item.buyPrice(0, 0, 0, 50);
 	}
 }

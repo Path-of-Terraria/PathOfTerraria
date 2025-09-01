@@ -1,6 +1,9 @@
 ﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Common.UI.Hotbar;
 using Terraria.GameContent;
+using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
 
@@ -15,6 +18,7 @@ internal class SkillSelectionElement : UIElement
 	{
 		_skill = skill;
 		_parentPanel = parentPanel;
+		_skill.LevelTo(1);
 		Width.Set(skill.Size.X, 0);
 		Height.Set(skill.Size.Y, 0);
 		Top.Set(60, 0);
@@ -26,14 +30,31 @@ internal class SkillSelectionElement : UIElement
 		base.Draw(spriteBatch);
 
 		Texture2D tex = ModContent.Request<Texture2D>(_skill.Texture).Value;
+		SkillFailure fail = default;
 
 		if (tex == null)
 		{
 			return;
 		}
 
+		if (ContainsPoint(Main.MouseScreen))
+		{
+			if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(_skill.Name) || _skill.CanEquipSkill(Main.LocalPlayer, ref fail))
+			{
+				NewHotbar.DrawSkillHoverTooltips(_skill, null, true);
+			}
+			else
+			{
+				Tooltip.Create(new TooltipDescription
+				{
+					Identifier = "SkillSelection",
+					SimpleTitle = Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip", fail.Description),
+				});
+			}
+		}
+
 		Vector2 position = GetDimensions().Position() + new Vector2(Width.Pixels / 2, Height.Pixels / 2);
-		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
+		spriteBatch.Draw(tex, position, null, _skill.CanEquipSkill(Main.LocalPlayer, ref fail) ? Color.White : Color.Gray, 0f, tex.Size() / 2f, 1f, SpriteEffects.None, 0f);
 
 		if (Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().HasSkill(_skill.Name))
 		{
@@ -47,15 +68,18 @@ internal class SkillSelectionElement : UIElement
 	public override void LeftClick(UIMouseEvent evt)
 	{
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
-		Main.NewText("Clicked on " + _skill.Name);
-		skillCombatPlayer.TryAddSkill(_skill);
-		_parentPanel.SelectedSkill = _skill;
-		_parentPanel.RebuildTree();
+
+		if (skillCombatPlayer.TryAddSkill(_skill))
+		{
+			_parentPanel.SelectedSkill = _skill;
+			_parentPanel.RebuildTree();
+
+			Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);
+		}
 	}
 
 	public override void RightClick(UIMouseEvent evt)
 	{
-		Main.NewText("Right Clicked on " + _skill.Name);
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 		skillCombatPlayer.TryRemoveSkill(_skill);
 	}

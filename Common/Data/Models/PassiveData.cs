@@ -9,4 +9,5 @@ public class PassiveData
 	public PassivePosition Position { get; set; }
 	public int MaxLevel { get; set; }
 	public List<PassiveConnection> Connections { get; set; }
+	public int Value { get; set; }
 }

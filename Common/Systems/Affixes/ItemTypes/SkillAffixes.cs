@@ -9,7 +9,7 @@ internal class MoltenShellAffix : ItemAffix
 {
 	public override void OnLoad()
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableMoltenShellIfOpen;
+		OnSwapPlayer.LateSwapMainItem += EnableMoltenShellIfOpen;
 	}
 
 	private void EnableMoltenShellIfOpen(Player self, Item newItem, Item oldItem)
@@ -17,7 +17,7 @@ internal class MoltenShellAffix : ItemAffix
 		if (newItem.type == ModContent.ItemType<MoltenDangpa>())
 		{
 			SkillCombatPlayer skillCombatPlayer = self.GetModPlayer<SkillCombatPlayer>();
-			skillCombatPlayer.TryAddSkill(new MoltenShield());
+			skillCombatPlayer.TryAddSkill(new MoltenShield(), true);
 		}
 	}
 }
@@ -26,7 +26,7 @@ internal class BloodSiphonAffix : ItemAffix
 {
 	public override void OnLoad()
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableBloodSiphonIfOpen;
+		OnSwapPlayer.LateSwapMainItem += EnableBloodSiphonIfOpen;
 	}
 
 	private void EnableBloodSiphonIfOpen(Player self, Item newItem, Item oldItem)
@@ -34,7 +34,7 @@ internal class BloodSiphonAffix : ItemAffix
 		if (newItem.type == ModContent.ItemType<Bloodclotter>())
 		{
 			SkillCombatPlayer skillCombatPlayer = self.GetModPlayer<SkillCombatPlayer>();
-			skillCombatPlayer.TryAddSkill(new BloodSiphon());
+			skillCombatPlayer.TryAddSkill(new BloodSiphon(), true);
 		}
 	}
 }
@@ -43,7 +43,7 @@ internal class FetidCarapaceAffix : ItemAffix
 {
 	public override void OnLoad()
 	{
-		OnSwapPlayer.OnSwapMainItem += EnableFetidCarapaceIfOpen;
+		OnSwapPlayer.LateSwapMainItem += EnableFetidCarapaceIfOpen;
 	}
 
 	private void EnableFetidCarapaceIfOpen(Player self, Item newItem, Item oldItem)
@@ -51,7 +51,7 @@ internal class FetidCarapaceAffix : ItemAffix
 		if (newItem.type == ModContent.ItemType<Rottenbone>())
 		{
 			SkillCombatPlayer skillCombatPlayer = self.GetModPlayer<SkillCombatPlayer>();
-			skillCombatPlayer.TryAddSkill(new FetidCarapace());
+			skillCombatPlayer.TryAddSkill(new FetidCarapace(), true);
 		}
 	}
 }

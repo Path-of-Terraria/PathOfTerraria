@@ -4,14 +4,14 @@ using PathOfTerraria.Core.Items;
 namespace PathOfTerraria.Content.Items.Currency;
 
 /// <summary>
-/// A currency shard that will turn a normal item into magic
+/// A currency shard that will turn a normal item into magic.
 /// </summary>
-internal class UnfoldingShard : CurrencyShard
+public class UnfoldingShard : CurrencyShard
 {
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 5000f;
+		staticData.DropChance = 20000f;
 	}
 
 	public override bool CanRightClick()

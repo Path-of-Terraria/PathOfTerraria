@@ -21,6 +21,7 @@ internal class SilverStaff : Staff
 		Item.shoot = ModContent.ProjectileType<SilverStaffProjectile>();
 		Item.damage = 30;
 		Item.knockBack = 2;
+		Item.value = Item.buyPrice(0, 0, 1, 0);
 	}
 
 	public class SilverStaffProjectile : StaffProjectile
@@ -28,5 +29,7 @@ internal class SilverStaff : Staff
 		public override int DustType => DustID.GemEmerald;
 		public override int MaxCharge => 70;
 		public override int TorchType => TorchID.Green;
+
+		public override Vector2 ChargeOffset => base.ChargeOffset - new Vector2(0f, 6f);
 	}
 }

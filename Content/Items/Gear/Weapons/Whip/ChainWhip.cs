@@ -18,14 +18,15 @@ internal class ChainWhip : Whip
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.MinDropItemLevel = 15;
+		staticData.MinDropItemLevel = 26;
 	}
 
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
-		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 13, 2, 4);
+		Item.DefaultToWhip(ModContent.ProjectileType<WhipBaseProjectile>(), 28, 2, 4);
 		Item.channel = true;
+		Item.value = Item.buyPrice(0, 0, 0, 80);
 	}
 }

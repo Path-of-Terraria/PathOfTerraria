@@ -21,11 +21,14 @@ internal class IronStaff : Staff
 		Item.shoot = ModContent.ProjectileType<IronStaffProjectile>();
 		Item.damage = 24;
 		Item.knockBack = 1.2f;
+		Item.value = Item.buyPrice(0, 0, 0, 50);
 	}
 
 	public class IronStaffProjectile : StaffProjectile
 	{
 		public override int DustType => DustID.GemTopaz;
 		public override int TorchType => TorchID.Yellow;
+
+		public override Vector2 ChargeOffset => base.ChargeOffset - new Vector2(0f, 6f);
 	}
 }

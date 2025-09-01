@@ -62,6 +62,11 @@ internal abstract class Javelin : Gear
 		data.ItemType = Common.Enums.ItemType.Javelin;
 	}
 
+	public override bool AltFunctionUse(Player player)
+	{
+		return true;
+	}
+
 	public override bool CanUseItem(Player player)
 	{
 		AltUsePlayer altUsePlayer = player.GetModPlayer<AltUsePlayer>();
@@ -140,7 +145,7 @@ internal abstract class Javelin : Gear
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc.Hitbox.Intersects(Player.Hitbox))
+				if (npc.Hitbox.Intersects(Player.Hitbox) && npc.CanBeChasedBy())
 				{
 					npc.SimpleStrikeNPC((int)(Player.HeldItem.damage * 1.5f), Math.Sign(StoredVelocity.X), true);
 

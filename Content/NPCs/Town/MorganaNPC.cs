@@ -4,6 +4,7 @@ using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities.Extensions;
@@ -21,7 +22,7 @@ namespace PathOfTerraria.Content.NPCs.Town;
 [LegacyName("WitchNPC")]
 public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 {
-	public Point16 TileSpawn => new(970, 190);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => (RavencrestSystem.Structures["Burrow"].Position + new Point(18, 20)).ToPoint16();
 
 	public override void SetStaticDefaults()
 	{
@@ -81,7 +82,11 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
+		Quest startQuest = Quest.GetLocalPlayerInstance<WitchStartQuest>();
+		if (startQuest.Active || startQuest.Completed) //Don't display the shop until the player has received the first quest
+		{
+			button = Language.GetTextValue("LegacyInterface.28"); //Shop
+		}
 
 		Quest quest = DetermineNewestQuest();
 		button2 = !quest.CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
@@ -109,13 +114,13 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 
 		if (quest is WitchStartQuest)
 		{
-			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<GrimoireItem>());
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.Quest");
+			Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), ModContent.ItemType<GrimoireItem>());
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WitchStartQuest>();
 		}
 		else
 		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WitchNPC.Dialogue.QueenBeeQuest");
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeQuest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenBeeQuest>();
 		}
 	}
@@ -123,8 +128,7 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 	public override void AddShops()
 	{
 		new NPCShop(Type)
-			.Add<WoodenBow>()
-			.Add<WoodenShortBow>()
+			.Add<GrimoireItem>()
 			.Register();
 	}
 

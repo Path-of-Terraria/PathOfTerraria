@@ -1,14 +1,25 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using SubworldLibrary;
+using System.Collections.Generic;
+using Terraria.DataStructures;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.DisableBuilding;
 
+public readonly record struct FramedTileBlockers(int TileType, OptionalPoint16 Frame);
+
+public readonly record struct OptionalPoint16(short? X, short? Y);
+
 internal class StopBuildingPlayer : ModPlayer
 {
+	public static HashSet<int> InvalidItemsToUse = [ItemID.Wrench, ItemID.BlueWrench, ItemID.GreenWrench, ItemID.YellowWrench, ItemID.MulticolorWrench, ItemID.WireKite,
+		ItemID.ActuationRod, ItemID.ActuationAccessory, ItemID.Actuator, ItemID.RodofDiscord, ItemID.RodOfHarmony, ItemID.WetBomb, ItemID.HoneyBomb, ItemID.LavaBomb, 
+		ItemID.DirtBomb, ItemID.DirtStickyBomb, ItemID.DryBomb, ItemID.MagicConch, ItemID.DemonConch, ItemID.ShellphoneOcean, ItemID.ShellphoneHell];
+
 	/// <summary>
 	/// Stops the player from building if true. This is reset every frame.
 	/// </summary>
@@ -80,7 +91,10 @@ internal class StopBuildingPlayer : ModPlayer
 
 	public static bool CanCutTile(Player player, int i, int j)
 	{
-		return !player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding || BuildingWhitelist.InCuttingWhitelist(Main.tile[i, j].TileType);
+		Tile tile = Main.tile[i, j];
+		Point16 tileFrame = new(tile.TileFrameX, tile.TileFrameY);
+		bool defaultCanBreak = !player.GetModPlayer<StopBuildingPlayer>().LastStopBuilding || BuildingWhitelist.InCuttingWhitelist(tile.TileType, tileFrame);
+		return defaultCanBreak && (ModContent.GetModTile(Main.tile[i, j].TileType) is not ICanCutTile cutTile || cutTile.CanCut(i, j));
 	}
 
 	private bool CanDig(int x, int y, bool isWall)
@@ -94,7 +108,7 @@ internal class StopBuildingPlayer : ModPlayer
 
 		if (!isWall)
 		{
-			return !BuildingWhitelist.InMiningWhitelist(tile.TileType);
+			return !BuildingWhitelist.InMiningWhitelist(tile.TileType, new Point16(tile.TileFrameX, tile.TileFrameY));
 		}
 
 		return true;
@@ -105,7 +119,7 @@ internal class StopBuildingPlayer : ModPlayer
 		LastStopBuilding = ConstantStopBuilding;
 		ConstantStopBuilding = false;
 
-		if (SubworldSystem.Current is MappingWorld)
+		if (SubworldSystem.Current is MappingWorld and not MoonLordDomain)
 		{
 			ConstantStopBuilding = true;
 		}
@@ -114,9 +128,7 @@ internal class StopBuildingPlayer : ModPlayer
 	public override bool CanUseItem(Item item)
 	{
 		// Disable wiring stuff
-		if (item.type == ItemID.Wrench || item.type == ItemID.BlueWrench || item.type == ItemID.GreenWrench || 
-			item.type == ItemID.YellowWrench || item.type == ItemID.MulticolorWrench || item.type == ItemID.WireKite 
-			|| item.type == ItemID.ActuationRod)
+		if (InvalidItemsToUse.Contains(item.type))
 		{
 			return !LastStopBuilding;
 		}	
@@ -127,7 +139,7 @@ internal class StopBuildingPlayer : ModPlayer
 			bool isRope = item.createTile >= TileID.Dirt && Main.tileRope[item.createTile] && SubworldSystem.Current is not WallOfFleshDomain;
 			bool isTorch = item.createTile >= TileID.Dirt && TileID.Sets.Torch[item.createTile];
 
-			if (!isRope && !isTorch && !BuildingWhitelist.InPlacingWhitelist(item.createTile))
+			if (!isRope && !isTorch && !BuildingWhitelist.InPlacingWhitelist(item.createTile, null))
 			{
 				return !LastStopBuilding;
 			}

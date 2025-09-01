@@ -1,0 +1,23 @@
+SlotLine: Emplacement d'Augmentation
+CostLine: Coûte un {0} pour débloquer
+Unlock: Clic-Gauche pour débloquer
+
+Overload: {
+	Name: Surcharge
+	Tooltip: Augmente les dégâts de {0}% au coût d'une augmentation de {1}% de l'utilisation de mana
+}
+
+Disperse: {
+	Name: Dispersion
+	Tooltip: Augmente la zone d'effet de {0}% au coût de l'augmentation de {1}% de l'utilisation de mana
+}
+
+Concentrate: {
+	Name: Concentration
+	Tooltip: Augmente les dégâts de {0}% au coût de l'augmentation de {1}% de l'utilisation de mana et {2}% de réduction de la zone d'effet
+}
+
+Critical: {
+	Name: Critique
+	Tooltip: Augmente les chances de critiques de {0}% au coût de l'augmentation de {1}% de l'utilisation de mana
+}

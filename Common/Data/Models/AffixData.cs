@@ -13,6 +13,11 @@ public class ItemAffixData
 		public int MinimumLevel { get; set; }
 		public float Weight { get; set; }
 
+		/// <summary>
+		/// Used exclusively for <see cref="Systems.Affixes.ItemTypes.MapAffix"/>es.
+		/// </summary>
+		public float Strength { get; set; }
+
 		public override string ToString()
 		{
 			return $"Value Range: {MinValue}-{MaxValue}, Min. Level: {MinimumLevel}, Weight: {Weight}";
@@ -22,11 +27,21 @@ public class ItemAffixData
 	public string AffixType { get; set; }
 	public string EquipTypes { get; set; }
 	public string Influences { get; set; }
+	public bool Round { get; set; }
 	public List<TierData> Tiers { get; set; }
 
-    public TierData GetAppropriateTierData(int level)
+	public (int MinInclusive, int MaxInclusive) GetPossibleTierRange(int level)
+	{
+		var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
+		
+		return (0, eligibleTiers.Count - 1);
+	}
+
+	public TierData GetAppropriateTierData(int level, out int tierIndex)
     {
         var eligibleTiers = Tiers.Where(t => t.MinimumLevel <= level).ToList();
+
+		tierIndex = 0;
 
         if (eligibleTiers.Count == 0)
         {
@@ -44,10 +59,12 @@ public class ItemAffixData
 
             if (randomWeight <= cumulativeWeight)
             {
+				tierIndex = eligibleTiers.IndexOf(tier);
                 return tier;
             }
         }
 
+		tierIndex = eligibleTiers.Count - 1;
         return eligibleTiers.Last(); //Just in case we don't return a tier?
     }
 

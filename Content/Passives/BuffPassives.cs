@@ -1,6 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Content.Buffs;
 using Terraria.ID;
 
@@ -22,7 +21,7 @@ internal class StrongerChillPassive : Passive
 					multiplier += chillPower * 0.1f;
 				}
 
-				npc.GetGlobalNPC<SlowDownNPC>().SlowDown += 0.1f * multiplier;
+				npc.GetGlobalNPC<SlowDownNPC>().SpeedModifier += 0.1f * multiplier;
 			}
 		}
 	}
@@ -35,6 +34,14 @@ internal class ShockChancePassive : Passive
 		public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
 		{
 			ApplyChance(npc, player);
+		}
+
+		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
+		{
+			if (projectile.TryGetOwner(out Player owner))
+			{
+				ApplyChance(npc, owner);
+			}
 		}
 
 		private static void ApplyChance(NPC npc, Player player)
@@ -51,14 +58,6 @@ internal class ShockChancePassive : Passive
 			if (canAfflict)
 			{
 				npc.AddBuff(ModContent.BuffType<ShockDebuff>(), 10 * 60);
-			}
-		}
-
-		public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
-		{
-			if (projectile.TryGetOwner(out Player owner))
-			{
-				ApplyChance(npc, owner);
 			}
 		}
 	}

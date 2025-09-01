@@ -5,6 +5,8 @@ using System.Linq;
 using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
+using Terraria;
+using System.Diagnostics;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -15,6 +17,9 @@ public abstract class Affix : ILocalizedModType
 	public float Value = 0;
 	public int Duration = 180; //3 Seconds by default
 	public bool IsCorruptedAffix = false;
+	public bool IsImplicit = false;
+	public bool Round = false;
+	public int Tier = 1;
 
 	public string LocalizationCategory => "Affixes";
 	public Mod Mod => PoTMod.Instance; // TODO: Cross mod compat?
@@ -25,9 +30,15 @@ public abstract class Affix : ILocalizedModType
 
 	public virtual void Roll()
 	{
-		if (Value == 0)
+		if (Value != 0)
 		{
-			Value = Main.rand.NextFloat(MinValue, MaxValue);
+			return;
+		}
+
+		Value = Main.rand.NextFloat(MinValue, MaxValue);
+		if (Round)
+		{
+			Value = (float) Math.Round(Value);
 		}
 	}
 
@@ -49,54 +60,24 @@ public abstract class Affix : ILocalizedModType
 	{
 	}
 
-	public void Save(TagCompound tag)
+	public void SaveTo(TagCompound tag)
 	{
-		tag["type"] = GetType().FullName;
+		tag.Add("type", GetType().FullName);
+		InternalSaveTo(tag);
+	}
+
+	public TagCompound SaveAs()
+	{
+		TagCompound tag = [];
+		SaveTo(tag);
+		return tag;
+	}
+
+	protected virtual void InternalSaveTo(TagCompound tag)
+	{
 		tag["value"] = Value;
 		tag["maxValue"] = MaxValue;
 		tag["minValue"] = MinValue;
-	}
-
-	public void Load(TagCompound tag)
-	{
-		Value = tag.GetFloat("value");
-		MaxValue = tag.GetFloat("maxValue");
-		MinValue = tag.GetFloat("minValue");
-	}
-
-	public void NetSend(BinaryWriter writer)
-	{
-		writer.Write(AffixHandler.IndexFromItemAffix(this));
-
-		writer.Write(Value);
-		writer.Write(MaxValue); // it seems that min and max get swapped here...
-		writer.Write(MinValue);
-	}
-
-	public void NetReceive(BinaryReader reader)
-	{
-		Value = reader.ReadSingle();
-		MaxValue = reader.ReadSingle();
-		MinValue = reader.ReadSingle();
-	}
-
-	public static Affix CreateAffix<T>(float value = -1, float minValue = 0f, float maxValue = 1f)
-	{
-		var instance = (Affix)Activator.CreateInstance(typeof(T));
-
-		instance.MinValue = minValue;
-		instance.MaxValue = maxValue;
-
-		if (value == -1)
-		{
-			instance.Roll();
-		}
-		else
-		{
-			instance.Value = value;
-		}
-
-		return instance;
 	}
 
 	/// <summary>
@@ -107,16 +88,93 @@ public abstract class Affix : ILocalizedModType
 	public static T FromTag<T>(TagCompound tag) where T : Affix
 	{
 		Type t = typeof(ItemAffix).Assembly.GetType(tag.GetString("type"));
+
 		if (t is null)
 		{
 			PoTMod.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
 			return null;
 		}
 
-		var affix = (T)Activator.CreateInstance(t);
+		string type = tag.GetString("type");
+		var affix = Activator.CreateInstance(Type.GetType(type)) as Affix;
+		affix.InternalLoadFrom(tag);
+		return (T)affix;
+	}
 
-		affix.Load(tag);
-		return affix;
+	protected virtual void InternalLoadFrom(TagCompound tag)
+	{
+		Value = tag.GetFloat("value");
+		MaxValue = tag.GetFloat("maxValue");
+		MinValue = tag.GetFloat("minValue");
+	}
+
+	public virtual void NetSend(BinaryWriter writer)
+	{
+		writer.Write(AffixHandler.IndexFromItemAffix(this));
+
+		writer.Write(Value);
+		writer.Write(MaxValue);
+		writer.Write(MinValue);
+	}
+
+	public virtual void NetReceive(BinaryReader reader)
+	{
+		Value = reader.ReadSingle();
+		MaxValue = reader.ReadSingle();
+		MinValue = reader.ReadSingle();
+	}
+
+	/// <summary>
+	/// Creates an affix with the given value. If you want a range, use <see cref="CreateAffix{T}(float, float)"/>.
+	/// </summary>
+	/// <param name="value">The set value of the affix.</param>
+	/// <typeparam name="T">The affix type to create.</typeparam>
+	/// <returns>The new affix.</returns>
+	public static Affix CreateAffix<T>(float value) where T : Affix
+	{
+		return CreateAffix(typeof(T), value);
+	}
+
+	/// <summary>
+	/// Creates an affix with the given value. If you want a range, use <see cref="CreateAffix{T}(float, float)"/>.
+	/// </summary>
+	/// <param name="type">The type of affix to create.</param>
+	/// <param name="value">The set value of the affix.</param>
+	/// <returns>The new affix.</returns>
+	public static Affix CreateAffix(Type type, float value)
+	{
+		Affix instance = (Affix)Activator.CreateInstance(type) ?? throw new Exception($"Could not create affix of type {type.Name}");
+		instance.Value = value;
+		return instance;
+	}
+	
+	/// <summary>
+	/// Creates an affix with a value between <paramref name="minValue"/> and <paramref name="maxValue"/>.
+	/// </summary>
+	/// <param name="minValue">The minimum value of the roll range for the affix</param>
+	/// <param name="maxValue">The maximum value of the roll range for the affix</param>
+	/// <typeparam name="T">The affix type to create.</typeparam>
+	/// <returns>The new affix.</returns>
+	public static Affix CreateAffix<T>(float minValue = 0f, float maxValue = 1f) where T : Affix
+	{
+		return CreateAffix(typeof(T), minValue, maxValue);
+	}
+
+	/// <summary>
+	/// Creates an affix with a value between <paramref name="minValue"/> and <paramref name="maxValue"/>.
+	/// </summary>
+	/// <param name="type">The type of affix to create.</param>
+	/// <param name="minValue">The minimum value of the roll range for the affix</param>
+	/// <param name="maxValue">The maximum value of the roll range for the affix</param>
+	/// <returns>The new affix.</returns>
+	public static Affix CreateAffix(Type type, float minValue = 0f, float maxValue = 1f)
+	{
+		Affix instance = (Affix)Activator.CreateInstance(type) ?? throw new Exception($"Could not create affix of type {type.Name}");
+		instance.MinValue = minValue;
+		instance.MaxValue = maxValue;
+		instance.Roll();
+
+		return instance;
 	}
 
 	/// <summary>
@@ -135,7 +193,26 @@ public abstract class Affix : ILocalizedModType
 		}
 
 		var affix = (ItemAffix)Activator.CreateInstance(t);
+		affix.NetReceive(reader);
+		return affix;
+	}
 
+	/// <summary>
+	/// Generates an affix from a binary reader, used on load to re-populate affixes
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	internal static MobAffix RecieveMobAffix(BinaryReader reader)
+	{
+		int aId = reader.ReadInt32();
+		Type t = AffixHandler.MobAffixTypeFromIndex(aId);
+		if (t is null)
+		{
+			PoTMod.Instance.Logger.Error($"Could not load affix of internal id {aId}");
+			return null;
+		}
+
+		var affix = (MobAffix)Activator.CreateInstance(t);
 		affix.NetReceive(reader);
 		return affix;
 	}
@@ -164,12 +241,26 @@ public abstract class Affix : ILocalizedModType
 			return inputList;
 		}
 
-		var resultList = new List<T>(count);
+#if DEBUG
+		// Assert that we have enough inputs to create enough affixes without duplicates.
+		Debug.Assert(inputList.Count >= count);
+#endif
 
-		for (int i = 0; i < count; i++)
+		count = Math.Min(count, inputList.Count);
+
+		var resultList = new List<T>(count);
+		Span<bool> rolledIndices = stackalloc bool[inputList.Count];
+
+		while (resultList.Count < count)
 		{
 			int randomIndex = Main.rand.Next(0, inputList.Count);
 
+			if (rolledIndices[randomIndex])
+			{
+				continue;
+			}
+
+			rolledIndices[randomIndex] = true;
 			T newItemAffix = inputList[randomIndex].Clone<T>();
 			newItemAffix.Roll();
 
@@ -199,7 +290,8 @@ internal class AffixHandler : ILoadable
 	public static List<ItemAffix> GetAffixes(Item item)
 	{
 		return _itemAffixes
-			.Where(proto => proto.RequiredInfluence == Influence.None || proto.RequiredInfluence == item.GetInstanceData().Influence)
+			.Where(proto => proto.RequiredInfluence == Influence.None ||
+			                proto.RequiredInfluence == item.GetInstanceData().Influence)
 			.Where(proto => (item.GetInstanceData().ItemType & proto.PossibleTypes) == item.GetInstanceData().ItemType)
 			.ToList();
 	}
@@ -217,7 +309,7 @@ internal class AffixHandler : ILoadable
 	public static int IndexFromItemAffix(Affix affix)
 	{
 		ItemAffix a = _itemAffixes.First(a => affix.GetType() == a.GetType());
-		
+
 		if (a is null)
 		{
 			return 0;
@@ -226,16 +318,30 @@ internal class AffixHandler : ILoadable
 		return _itemAffixes.IndexOf(a);
 	}
 
+	public static Type MobAffixTypeFromIndex(int idx)
+	{
+		return _mobAffixes[idx].GetType();
+	}
+
+	public static int IndexFromMobAffix(MobAffix affix)
+	{
+		MobAffix a = _mobAffixes.First(a => affix.GetType() == a.GetType());
+
+		if (a is null)
+		{
+			return 0;
+		}
+
+		return _mobAffixes.IndexOf(a);
+	}
+
 	/// <summary>
-	/// Returns a list of mob affixes that are valid for the given type. Typically used to roll affixes.
+	/// Returns a list of mob affixes that are valid for the given NPC and rarity.
 	/// </summary>
 	/// <returns></returns>
-	public static List<MobAffix> GetAffixes(ItemRarity rarity)
+	public static List<MobAffix> GetMobAffixes(NPC npc, ItemRarity rarity)
 	{
-		return _mobAffixes
-			.Where(proto => rarity >= proto.MinimumRarity)
-			.Where(proto => proto.Allowed)
-			.ToList();
+		return _mobAffixes.Where(x => rarity >= x.MinimumRarity && x.CanApplyTo(npc)).ToList();
 	}
 
 	public void Load(Mod mod)
@@ -261,6 +367,8 @@ internal class AffixHandler : ILoadable
 					continue;
 				case MobAffix mobAffix:
 					_mobAffixes.Add(mobAffix);
+
+					MobAffix.MobAffixIconsByAffixName[mobAffix.GetType().AssemblyQualifiedName] = ModContent.Request<Texture2D>(mobAffix.TexturePath);
 					break;
 			}
 		}
@@ -271,12 +379,12 @@ internal class AffixHandler : ILoadable
 
 	public void Unload()
 	{
-		foreach (ItemAffix item in _itemAffixes)
+		foreach (ItemAffix item in _itemAffixes ?? Enumerable.Empty<ItemAffix>())
 		{
 			item.OnUnload();
 		}
 
-		foreach (MobAffix item in _mobAffixes)
+		foreach (MobAffix item in _mobAffixes ?? Enumerable.Empty<MobAffix>())
 		{
 			item.OnUnload();
 		}

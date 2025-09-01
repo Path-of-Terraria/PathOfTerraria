@@ -1,0 +1,848 @@
+Shop: Magasin
+Quest: Quête
+
+BlacksmithNPC: {
+	DisplayName: Thrain Poing de fer
+
+	Dialogue: {
+		Common0: Je suis forgé dans l'acier. Ça vous intéresse d'en acheter ?
+		Common1: Parfois, les cavernes me manquent. Roche et pierre, frère, roche et pierre.
+		Common2: Rien de tel qu'une lame qui coupe l'os comme si c'était de l'air. Ça facilite la préparation des sandwichs !
+		Common3: Je pourrais facilement te battre au bras de fer - l'exercice de forgeage de l'acier est efficace.
+		Quest: Comme vous pouvez le voir, un terrible événement s'est produit qui a tout simplement détruit ma forge. Que s'est-il passé ? Je n'en sais rien, je dors comme une souche... Quoi qu'il en soit, j'aurais bien besoin d'aide pour rassembler des matériaux, car la ville est à court de métal depuis un certain temps déjà. Et peut-être aussi du bois, tant que vous y êtes.
+		Quest2: Fantastique ! Je vais réparer l'ancienne forge aussi vite que possible. Tiens, prends cette épée. C'est un prototype que j'ai fabriqué juste avant l'attaque. J'aimerais que tu la testes sur quelques zombies ; ces saletés sont vraiment pénibles à combattre. Si tu veux bien, j'aimerais aussi avoir un peu plus de matériaux. Je pense qu'on pourra alors vraiment remettre l'enclume de fer sur pied !
+		Quest3: Cela me fait presque venir les larmes aux yeux. La forge de fer est presque prête à fonctionner ! Voici une leçon que j'ai tirée de mon expérience au combat : parfois, il faut savoir se lâcher. Mais soyez prudent ! Et revenez quand vous le souhaitez, vous m'avez été d'une grande aide !
+		OldManDialogue: Bonjour, voyageur !... Que dites-vous ? Un homme m'a parlé de vous ? Hum... Je me souviens d'un homme vêtu d'une cape rouge qui est venu ici... il y a quelque temps. Je ne sais plus exactement quand, mais ça fait un moment. Il est venu demander des choses bien précises... un livre maléfique, deux bougies et une barre maléfique. Il a parlé de jeter de la poudre maléfique sur un livre... mais... c'est tout ce que je peux dire. Je ne sais pas trop de quoi il parlait.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Rien de tel qu'une journée à la forge.
+			1: J'adore l'odeur du métal en fusion le matin.
+			2: Les cavernes m'appellent... mais pas aujourd'hui.
+		}
+
+		Night: {
+			0: La brise fraîche de la nuit. Que demander de plus ?
+			1: Le meilleur moment dans le travail du métal, c'est quand on attend qu'il durcisse.
+			2: J'espère que je n'ai pas laissé la forge allumée !
+		}
+
+		Goblins: {
+			0: Ces types feraient mieux de ne plus casser de portes.
+			1: Hé ! Arrête ça ! Je suis en train de forger !
+			2: Je vais montrer à ces imbéciles ce qu'un marteau puissant peut faire !
+		}
+
+		Rain: {
+			0: La forge continue de fonctionner. Rien ne peut l'arrêter, ni la pluie ni quoi que ce soit d'autre.
+			1: Avez-vous déjà essayé de refroidir une lame sous la pluie ? Ne le faites pas. Ça ne marche pas.
+			2: Parfois, je regarde les fleurs... et je les écrase avec mon marteau bien fait. Hourra !
+		}
+	}
+
+	Entry: Thrain est un nain jovial qui aime les discussions animées, les bons verres et fabriquer les meilleures armes que vous ayez jamais vues. On le trouve généralement dans sa forge, en train de fabriquer des armes.
+	// DownedForest: After beating the Forest domain
+}
+
+BarkeepNPC: {
+	DisplayName: Brom Le Robuste
+
+	Dialogue: {
+		Common0: J'ai quelques vieux amis à Eternia. Ils me manquent tous les jours.
+		Common1: "'Tavernier' ? Bien sûr ! Que cherchez-vous ?"
+		Common2: Entre toi et moi, je ne tiens pas très bien l'alcool. La bagarre ? Hé... oui, je ne suis pas très doué pour ça non plus, pourquoi crois-tu que je suis barman ?
+		Common3: Deux hommes entrent dans un bar, et je leur demande; \"Qu'est-ce que vous voulez ?"\ ... Quoi ? Quelle chute ?
+		Quest: Oh, bonjour ! J'ai une question à vous poser. Je suis derrière le bar toute la journée, et il semble que nous soyons à court d'édulcorant. J'avais une vieille réserve de miel provenant d'un ami qui habite à quelques centaines de kilomètres d'ici, le plus délicieux que j'ai jamais goûté. Mais hélas, il n'était pas infini. Connais-tu un endroit où je pourrais me procurer du miel ? Ou mieux encore, pourrais-tu m'en procurer ? Je te paierai volontiers. Tiens, prends ces bouteilles et remplis-les. Je croise les doigts !
+		NeedsMoreHoney: Merci ! Prends ce paiement. C'est très gentil de ta part. Mais... ce n'est pas beaucoup, n'est-ce pas ? Avec le travail que j'ai et la variété de produits que j'ai ici, ça ne durera peut-être qu'une semaine ! Tu penses qu'il y a un moyen de faciliter les choses ? Je serais ravi d'aller le chercher moi-même. Ou... disons... tu pourrais aller parler à Alaric ? Ce type est bizarre, mais il peut faire des miracles. Demande-lui ce qu'il peut faire ! Mais fais attention.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Garder le bar, sauf le gardien...
+			1: Peut-être que je pourrais créer une nouvelle boisson...
+			2: En espérant que la soirée soit bonne pour les affaires.
+		}
+
+		Night: {
+			0: Oh ! Un gros pourboire ! Merci, inconnu. Qui que tu sois.
+			1: "'Un type entre dans un bar ?' Je devrais utiliser celle-là un jour."
+			2: J'adore mon travail.
+		}
+
+		Goblins: {
+			0: Ces fichus gobelins feraient mieux de rester loin de MA boisson.
+			1: J'ai déjà fabriqué des cocktails Molotov à plusieurs reprises. Pourquoi pas une nouvelle tentative ?
+			2: Si un autre verre se casse, je jure que je vais enfin reprendre le couteau.
+		}
+
+		Rain: {
+			0: Un bar avec une ambiance pluvieuse. Charmant !
+			1: J'espère que les tonneaux ne sont pas encore trempés.
+			2: Moins de travail, plus de détente ? Pourquoi pas !
+		}
+	}
+
+	Entry: Brom est un homme simple. Les gens veulent passer un bon moment ? Ils viennent au bar. Ils discutent avec Brom le Robuste. Ils passent un bon moment avec des gens sympas et de bonnes boissons. Que demander de plus ?
+}
+
+HunterNPC: {
+	DisplayName: Elara
+
+	Dialogue: {
+		Common0: Bonjour, voyageur. Vous avez besoin d'un œil vif et d'une main sûre ?
+		Common1: J'ai traqué une bête dans ces bois à de nombreuses reprises. Ça vous dit de vous joindre à la chasse ?
+		Common2: Soyez prudent là-bas. La forêt cache de nombreux secrets.
+		Common3: Tu es de retour. J'espère que tes mésaventures te traitent bien.
+		Quest: Vous avez sûrement vu les dégâts ici. Tout comme mes concitoyens, je ne sais pas ce qui s'est passé. Mais nous réparons quand même. Pourriez-vous aller chercher quelques provisions ? Je dois vérifier l'inventaire pendant un moment.
+		Quest2: Oh là là, si tôt ? Merci infiniment, mon ami. Je vais m'atteler tout de suite aux réparations ; la prochaine fois que tu reviendras, tu devrais voir un pavillon plus agréable. Pas parfait, cependant. Prends cet arc. Il est très fiable. Pourrais-tu avoir la gentillesse de tuer quelques ennemis aériens pour moi ? Ravencrest t'en serait reconnaissant, tout comme moi. Et, si je peux me permettre, pourrais-tu également me procurer un peu plus de matériaux de construction ? L'atelier en serait ravi.
+		Quest3: C'est merveilleux. Grâce à vous, le Lodge retrouvera sa gloire d'antan. N'hésitez pas à venir quand vous le souhaitez, je vous aiderai autant que possible. Tenez, prenez ceci. J'ai suivi une formation de garde forestier pendant de nombreuses années. Le Flurry m'a aidé à plusieurs reprises. J'espère qu'il vous sera également utile.
+		Deerclops: Un Deerclops, tu dis ? C'est une fille appelée Rhine qui t'en a parlé ? C'est une bête énorme et dangereuse. Je ne vois pas l'intérêt de m'aventurer dans son territoire, il est... hanté d'une certaine manière. Peu importe. Donne-moi un instant... ici. Sois très prudent, l'obscurité est toujours présente et toujours dangereuse.
+		BuyMap: Voici. Merci pour votre contribution. J'espère que ça ira mieux cette fois-ci.
+		BuyMapFail: Il vous faudra un peu plus d'argent pour une autre carte, j'en ai bien peur. Vous savez comment ça se passe.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Où sont passées mes flèches ?
+			1: La préparation n'attend personne.
+			2: Espérons que la forêt soit clémente.
+		}
+
+		Night: {
+			0: La nuit, un moment de détente. Je suis le chasseur, pas la proie.
+			1: On n'est jamais trop prudent avec ses plumes. Polissez-les bien.
+			2: Un moment de lucidité peut éviter bien des ennuis à n'importe qui.
+		}
+
+		Goblins: {
+			0: Tirez pour tuer.
+			1: Un sorcier est fragile et sans défense ; attaquez-le sans pitié.
+			2: Ces boules à pointes ne fonctionnent pas avec les arcs, ne les utilisez pas.
+		}
+
+		Rain: {
+			0: Le bois est humide. Je ne chasserai pas aujourd'hui.
+			1: La danse de la pluie est agréable, même si elle est gênante.
+			2: Comme c'est pittoresque.
+		}
+	}
+
+	MapButton: Carte (20 pièces d'or)
+	Entry: Chasseuse impitoyable et plus expérimentée que vous, Elara n'est pas très bavarde. Elle compense cela par ses talents exceptionnels de chasseuse et de pisteuse, avec des yeux presque partout.
+}
+
+Minera: {
+	DisplayName: Minera
+	Entry: Une Crimera récemment née d'une source peu recommandable. Elles adorent attaquer en groupe.
+}
+
+GarrickNPC: {
+	DisplayName: Garrick
+
+	Dialogue: {
+		0: Le sol tremble de manière incontrôlable dans le domaine du roi. Comme si de la boue s'infiltrait dans la roche.
+		1: Les aventuriers omettent souvent de vous dire à quel point l'aventure est glissante. Je ne fais pas partie de ces aventuriers. C'est extrêmement glissant.
+		2: Attention à votre tête. C'est un bon conseil en général, mais particulièrement dans le domaine du roi.
+		3: Forgez votre lame aussi puissante que possible. Couper à travers la boue est plus difficile qu'il n'y paraît.
+		Quest: Tu l'as peut-être remarqué, je n'ai pas passé le meilleur moment de ma vie. J'ai essayé de renverser le roi et j'ai failli tout perdre. C'est toi qui as restauré Ravencrest, n'est-ce pas ? Je voudrais te demander de tuer le roi Slime pour moi. Je te récompenserai généreusement. Prends cette carte, je l'ai dessinée pendant mon long voyage de retour. Bonne chance !
+		// QuestResponse: Perfect! Here’s the Map Device as promised. I once faced the King and nearly lost everything. You restored Ravencrest, so now I ask you: slay the King Slime for me. You’ll be well rewarded. Take this map and use it with the device.
+		EoCQuestLine: Oh, l'Œil, dites-vous ? Formidable. Je me souviens qu'Eldric en a parlé, mais il l'a certainement sous-estimé. Tenez, on m'a chargé de garder ceci. Le moment est venu de l'utiliser.
+		TradeLunarLiquid: Ah, je me suis entraîné pour ça. Mais attention, ce n'est pas une aventure à prendre à la légère.
+		CantTradeLiquid: Oh, tu as perdu le liquide ? Il me faudra quelques éclats lunaires pour le refaire, j'en ai bien peur. Reviens me voir avec au moins 5 éclats.
+		GetKingMapAgain: Ah, tu n'as pas réussi ? Tu as perdu la carte ou quoi ? Quoi qu'il en soit, tu es là. Tu as de la chance que j'emporte toujours mon matériel de cartographie avec moi... au cas où.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Le soleil brille... un jour, la couronne du roi ne brillera plus.
+			1: Ah... les blessures sont évidentes. Argh...
+			2: Maudit sois-tu, roi !
+		}
+
+		Night: {
+			0: Je dois me reposer...
+			1: Je vois sa carapace bleue tremblotante, immobile...
+			2: Quelqu'un a-t-il une potion de guérison ?
+		}
+
+		Goblins: {
+			0: Je dois m'occuper des autres, sauf du roi, pour m'entraîner.
+			1: En garde ! Je ne peux pas perdre à nouveau !
+			2: Tu ne pourras pas me battre éternellement, roi !
+		}
+
+		Rain: {
+			0: La pluie nettoie les blessures. C'est agréable.
+			1: Un moment pour moi et mes pensées.
+			2: J'espère qu'il est en train de se dissoudre.
+		}
+	}
+
+	LunarLiquidButton: Liquide lunaire
+	AnotherMap: Carte
+	Entry: Humilié par un roi, Garrick se repose dans la ville de Ravencrest. Il semble en vouloir aux slimes et aimerait être plus fort. Bientôt, il se remettra sur pied.
+}
+
+TownScoutNPC: {
+	DisplayName: Goblin arpenteur
+	Entry: Un gobelin à la recherche d'un endroit à piller. S'il est tué, les gobelins se relèvent immédiatement pour riposter. Sinon, ils attendent leur heure pour plus tard...
+}
+
+RavenNPC: {
+	DisplayName: Corbeau éphémère
+	Entry: Un corbeau étrange et fantomatique. Il guide les voyageurs vers Ravencrest, mais reste autrement entouré de mystère, car il se trouve à la frontière entre ce monde et un autre.
+}
+
+ControllableSpikeball.DisplayName: Balle à pointes
+
+WizardNPC: {
+	DisplayName: Alaric
+
+	Dialogue: {
+		Common0: La magie fait peur. Une fois, j'ai vu quelqu'un transformer sa main en rat. Quelle est la leçon à en tirer ? Je ne sais pas.
+		Common1: La sagesse recèle de nombreux pouvoirs. Les statues d'anges ont autrefois accompli quelque chose. C'était... eh bien... tellement... hum. Seul le temps nous le dira.
+		Common2: J'ai vu le fil conducteur de votre destin. Je ne parviens pas, pour l'amour de Dieu, à le mettre en mots.
+		Common3: Ah ! J'ai failli te transformer en taupe de la taille d'un dieu. Méfie-toi de ma force !
+		// Common4: I am a...merchant of sorts. Bewildering, ancient shards alongside astonishing majickal materials! It boggles the mind, surely!
+		Quest: Hum. Vous avez vu les dégâts partout. Hélas ! Mes pouvoirs ne peuvent pas reconstituer le monde. Je suis bien trop occupé par... mes... projets. Oui ! Hélas, j'ai quelque chose de plus urgent à faire. Un gobelin voleur a pris l'un de mes grimoires. Aussi puissant soit-il, il doit être maîtrisé par un sorcier puissant. Je soupçonne qu'ils sont en train de parcourir le grimoire pour en découvrir les secrets... alors dépêchez-vous de le rapporter ! Je vous accorderai des pouvoirs au-delà de l'imagination. Je serai ici, à ranger les livres sur les étagères un par un grâce à la puissance de la magie.
+		Quest2: Ah ah ! Merci beaucoup. Ta gentillesse sera largement récompensée ! Mes pouvoirs te pousseront toujours vers l'avant. Tiens, prends une parcelle de mon pouvoir ; une Nova n'est qu'une partie de ma force ! Quant à la bibliothèque... ma force renouvelée, elle sera réparée à ton retour ! Des livres organisés comme tu n'en as jamais vu ! Contemple-la et pleure... bientôt !
+		// GiveQSQuest: Hm? Ah, yes. You've got some adventures, haven't you? I cannot simply place you in success - you must find it for yourself! Yes! That's a good reason. Here's a small quest to find your progress. You will be lead all over the world, and perhaps reach even a modicum of my power!
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Dois-je essayer de faire avancer le soleil ?! ... Non, pas encore.
+			1: Que devrais-je présenter ensuite... ?
+			2: Ai-je encore ouvert le tiroir trop brusquement ? Devrais-je commencer à utiliser mes mains ? Ha, bien vu, Alaric.
+		}
+
+		Night: {
+			0: Peut-être que je pourrais trouver le temps de faire une petite sieste.
+			1: Je m'impressionne moi-même ! Ce sandwich est délicieux !
+			2: Si seulement je pouvais attraper cette étoile... Je pourrais... mais... hélas. Je suis trop fatigué !
+		}
+
+		Goblins: {
+			0: Mes pouvoirs ne sont pas seulement pour faire joli.
+			1: Les explosions sont toujours un spectacle amusant !
+			2: J'ai poliment refusé leur entrée ! Je devais simplement les choquer avec tous les éclairs imaginables !
+		}
+
+		Rain: {
+			0: Tu te souviens quand tu as fait couler toute l'eau de pluie dans la maison d'à côté ? Ha... oui. C'était le bon temps.
+			1: Ne gèle pas la pluie, ne gèle pas la pluie, ne gèle pas la...
+			2: Peut-être que je... non... ça causerait trop de dégâts. Zut !
+		}
+	}
+
+	Entry: Peut-être le sorcier le plus puissant de tous les temps, Alaric continue d'agir comme quelqu'un qui prétend être le sorcier le plus puissant de tous les temps. S'il est d'humeur capricieuse, il peut provoquer une véritable catastrophe instantanée.
+}
+
+EldricNPC: {
+	DisplayName: Eldric
+
+	Dialogue: {
+		Common0: Le monde est tumultueux, n'est-ce pas ?
+		Common1: Restez calme, même si le monde autour de vous ne l'est pas.
+		Common2: Aimeriez-vous prendre le thé ? Moi, oui, sans hésiter.
+		Common3: La magie n'est qu'une solution parmi d'autres. La praticité en est une autre. Gardez cela à l'esprit.
+		Quest: Bonjour, voyageur. Vous êtes tombé par hasard sur mon futur observatoire... bientôt. Cependant, j'ai remarqué quelque chose dans le ciel ces derniers temps. La dernière fois que cela s'est produit, j'étais encore enfant. Un grand œil nous observe d'en haut et cause des problèmes parmi les étoiles. Nous n'avons pas de meilleur guerrier pour arrêter l'Œil ; pouvez-vous vous en charger ? Nous aurons juste besoin de quelques éclats lunaires provenant d'yeux de démons et de zombies. Parle à Garrick, il connaît l'autre partie de la potion.
+		QuestLunar: Merci. Parlez à Garrick et nous partirons.
+		Quest2: Merci. Voici la potion. Jetez-la sur le sol et elle ouvrira un portail, temporaire certes, vers le domaine de l'Œil. Vous devrez répéter ces étapes si le portail se referme, alors assurez-vous de réussir. Je vais continuer à construire mon observatoire pendant que vous combattez. Bonne chance.
+		Quest3: Comme je le pensais. L'Œil retourne là où il se cache. Repousser ? Peu importe. Je peux enfin me détendre. J'espère que vous verrez bientôt cet observatoire en activité. Passez nous voir si vous le souhaitez.
+		TradeLunarObject: Ah, encore un autre ? Très bien, l'Œil n'est pas un faible. Voilà, bonne chance une fois de plus.
+		CantTradeObject: Hum, tu n'as pas réussi avec l'Œil ? Ah. Eh bien, je pense que Garrick pourra te procurer davantage de Liquide lunaire, puis apporte-moi cinq autres Éclats lunaires et nous pourrons partir.
+		Donation: Il reste encore des objets lunaires ? Très bien. Je les ai pris pour vous, puisque vous n'en avez plus besoin. Profitez bien de ces quelques pièces d'argent.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Comme c'est agréable.
+			1: Les arbres dansent, c'est bien.
+			2: Hum... ça a l'air sympa.
+		}
+
+		Night: {
+			0: Les étoiles sont... imparfaites.
+			1: C'est tellement différent ces nuits-ci.
+			2: Comme c'est étrange...
+		}
+
+		Goblins: {
+			0: Des pouvoirs qui dépassent votre compréhension jouent avec vous, imbéciles.
+			1: Si seulement nous pouvions parler.
+			2: Hélas.
+		}
+
+		Rain: {
+			0: Que les fleurs poussent.
+			1: Le préambule à petrichor.
+			2: Un doux crépitement, c'est merveilleux.
+		}
+	}
+
+	CreateConcoction: Créer une potion
+	DonateLunar: Faire un don de fragments/liquide lunaires
+	Entry: Solitaire et solennel, Eldric est un homme de silence. Observateur des étoiles, Eldric connaît la nature du cosmos ; il le contemple, et celui-ci le contemple en retour. Il apprécie le thé.
+}
+
+MorvenNPC: {
+	DisplayName: Morven
+
+	Dialogue: {
+		Common0: Des découvertes récentes ? Restez toujours à l'écoute de la science !
+		Common1: Avez-vous vu des gobelins ? Il y avait là-bas un type qui connaissait plein de trucs scientifiques amusants.
+		Common2: Vous n'auriez pas par hasard des connaissances avancées en médecine, par hasard ?
+		Common3: Je parie que tu ne sais même pas comment fonctionnent les lampadaires. Pauvre âme...
+		Follow0: Pourquoi tu me parles ? Allez, on y va !
+		Follow1: Si tu me fais tuer, je serai profondément et sincèrement bouleversé.
+		Follow2: CHARGEZ, ne restez pas là à discuter. Bouffon.
+		Follow3: Reprends tes esprits... et allons-y.
+		Rescue: Hum... oh. Bonjour, étranger. Merci de m'avoir sorti de cette situation délicate. Je crains d'être descendu ici pour traquer certains Dévoreurs que j'avais marqués... peu importe. Mes fidèles outils m'ont lâché, et je me suis retrouvé emprisonné dans cette pierre fétide. Cela fait plusieurs heures que je suis ici. Auriez-vous l'amabilité de m'aider à sortir ? Je vous récompenserai généreusement, ou quelque chose comme ça.
+		Aboveground: Ah, merci. Loin de cette vieille caverne étouffante. Dites, connaissez-vous un village pittoresque appelé Ravencrest ? J'ai là-bas de vieux associés qui aimeraient bien voir un peu de démonite que j'ai réussi à récupérer. Peut-être pourriez-vous en obtenir un peu en échange de votre aide ?
+		InRavencrest: Il faudra un peu de temps pour que ça ait l'air présentable, mais ça peut attendre. Merci, étranger. Je te récompense avec une quête. J'étais là-bas pour les Dévoreurs, bien sûr, mais aussi pour espionner ces curieuses petites sphères qu'ils appellent les Orbes de l'Ombre. Elles émettent de la lumière, flottent de manière inquiétante, et sont entourées d'histoires étranges. Elles ont tout pour elles, ces choses-là. Pourrais-tu en casser une pour moi ? Juste pour voir ce qui se passe.
+		// NearObelisk: Well, this is... interesting. Though I could have sworn I asked for the Raven Statue. But hey, what do I know? I'm just the one giving directions.
+		BeforeBeatingEoW: Quoi ? Tu en as cassé un, une faille est apparue et tu es PARTI ? Saute dedans ! Jette tes amis dedans ! Je m'en fiche, tu as une étude à mener !
+		AfterBeatingEoW: Je vais y aller. Je ne m'attendais pas à voir une grosse bête répugnante apparaître dans ce royaume corrompu. Hélas, je sais que le pouvoir implique beaucoup de choses. Même si je ne t'aime pas beaucoup, je te respecte. Cette corruption continue de régner sur le pays, mais c'est un pas en avant. Tiens, prends ce bibelot. Je n'en ai pas besoin... enfin, j'aimerais te le donner. Hum hum.
+		Abandoned: ENFIN. Quelqu'un me laisse ici et s'attend à ce que je me débrouille tout seul. Emmène-moi à Ravencrest et cette fois, ne me laisse pas tomber.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Je dois bientôt exploiter le soleil...
+			1: Ah ah ! Cet arbre fonctionne sur l'eau !
+			2: Il y a tellement d'imbéciles autour de moi...
+		}
+
+		Night: {
+			0: C'est le moment de faire preuve d'ingéniosité !
+			1: La lune... la plus grande trompeuse du temps.
+			2: La science du sommeil est peut-être la plus grande science qui soit. Du moins pour l'instant.
+		}
+
+		Goblins: {
+			0: Hé ! Tu connais un type qui a ces bottes fantaisie ?... Ils n'écoutent pas.
+			1: Tch. Si vous cassez quelque chose, bande d'imbéciles, je vous coupe la tête !
+			2: Où est mon fusil à plasma chargé...
+		}
+
+		Rain: {
+			0: Stupide pluie. Va voir ailleurs !
+			1: Tss... quel désagrément.
+			2: La seule chose que la pluie apporte, c'est la foudre !
+		}
+
+		Escort: {
+			0: Continuons d'avancer, d'accord ?
+			1: Allez, dépêchez-vous, étranger.
+			2: J'espère que vous apprécierez cette puissance de feu supplémentaire.
+			3: Les bottes à réaction sont géniales.
+			4: Ces Dévoreurs peuvent être intimidants, n'est-ce pas ?
+		}
+
+		EscortAttack: {
+			0: Continuez, ce n'est pas grave.
+			1: Tu vas m'aider ?
+			2: Mon fidèle vieux pistolet...
+		}
+
+		Teleport: {
+			0: Aïe... tu dois faire attention à ne pas aller trop loin, idiot.
+			1: Ne me laissez pas derrière ! Ce téléporteur fonctionne à peine !
+			2: Hé ! Hé ! Ralentis ! Ce téléporteur fait mal quand on l'utilise !
+		}
+	}
+
+	Stuck: {
+		0: Hé ! Il y a quelqu'un là-haut ?
+		1: Aidez-moi, s'il vous plaît !
+		2: Oh là là...
+	}
+
+	Entry: Une fois pris au piège dans les profondeurs souterraines de Corruption, ce savant fou est devenu encore plus fou que la plupart de ses semblables. Il vous méprise, mais n'hésitera pas à vous utiliser à tout moment pour « faire de la science ».
+}
+
+LloydNPC: {
+	DisplayName: Lloyd
+
+	Dialogue: {
+		Common0: Je n'ai pas grand-chose à dire.
+		Common1: Protégez le monde.
+		Common2: Hum ?
+		Common3: Bonjour, cher compagnon d'aventure.
+		Follow0: Mieux vaut continuer à avancer.
+		Follow1: Je n'ai qu'un seul objectif pour le moment.
+		Follow2: Restez vigilant.
+		Follow3: Hmph
+		Domain0: Cette terre ébranle n'importe quel homme.
+		Domain1: S'il te plaît, pour moi, bats le Cerveau. Je ne supporte plus d'être ici.
+		Domain2: Que ma bénédiction vous soit d'un grand secours. J'aimerais pouvoir faire plus, mais les piliers dépassent mes forces.
+		Domain3: Surmontez les obstacles ici. Ils n'ont jamais vraiment vécu.
+		Help: Hum. Cher collègue. Vous semblez bien connaître les lieux. Je suis ici à la recherche du cœur qui bat encore. Auriez-vous l'amabilité de me guider jusqu'à lui ? J'ai des affaires à régler. Je combattrai les monstres, vous me guiderez.
+		InDomain: Hélas, me voici de retour. Je sais que ma force ne peut vaincre le Cerveau. J'utilise ce dont je dispose pour vous permettre trois sauts supplémentaires. Les piliers de la terre s'élèvent au-dessus de nous et pourraient être bien trop difficiles à escalader autrement. Portez-vous bien et soyez rapides. Je vais ruminer.
+		Complete: Quelle joie ! Je te dois tout ce que j'ai, même si ce n'est pas grand-chose. Prends ça. Je retourne à Ravencrest. J'y suis déjà allé, tu n'as pas besoin de m'accompagner. Prends soin de toi et sois heureux.
+		StayButton: Reste
+		StayDialogue: Je vais rester ici. Ne tarde pas trop
+		FollowButton: Suivre
+		FollowAgain: Conduis-moi vers les cœurs cramoisis, aide-moi.
+		Abandoned: Dites-moi quand vous partirez la prochaine fois.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: ...
+			1: Un moment de répit.
+			2: Que tout aille bien.
+		}
+
+		Night: {
+			0: ...comme c'est doux.
+			1: Ah...
+			2: Je m'en souviens encore.
+		}
+
+		Goblins: {
+			0: Ne prenez pas de décisions que vous regretterez.
+			1: Créatures stupides.
+			2: Hmph.
+		}
+
+		Rain: {
+			0: J'espère... J'espère que tout va bien, pour l'instant.
+			1: Chacun une vie. Chacun...
+			2: J'attends avec impatience le parfum de la pluie du matin.
+		}
+
+		Escort: {
+			0: Grotesque.
+			1: Ne tardez pas.
+			2: Ne baissez pas votre garde.
+			3: Restez calme.
+			4: Quelle bande de créatures horribles !
+		}
+
+		EscortAttack: {
+			0: Ne t'inquiète pas, j'ai beaucoup de force.
+			1: Que sa mort soit rapide.
+			2: Encore un autre mort.
+		}
+
+		Teleport: {
+			0: Je comprends que vous soyez pressé, mais faites attention.
+			1: Nous nous entendrons bien si vous me dépassez.
+			2: Je ne vois pas souvent quelqu'un d'aussi rapide que toi.
+		}
+
+		BreakHeart: {
+			0: Hum. Il semble que nous devions en casser davantage. Continuez.
+			1: C'est le moment idéal pour récupérer. Revenez quand vous serez prêt.
+			2: C'est parti.
+		}
+
+		InDomain: {
+			0: Portez-vous bien.
+			1: On n'est jamais trop prudent.
+			2: Le Cerveau attend.
+		}
+
+		DomainBossDead: {
+			0: Il semble plus léger.
+			1: J'espère pouvoir me reposer maintenant.
+			2: Merci à tous.
+		}
+	}
+}
+
+RhineNPC: {
+	DisplayName: Rhine
+
+	Dialogue: {
+		Common0: Ah ! Rien de tel qu'une journée à Ravencrest pour déguster une hydromel de renommée mondiale.
+		Common1: Dis, tu voyages parfois ? As-tu déjà vu une \"zone de vaches \" ? Ma famille parlait de légendes.
+		Common2: Cinq pièces d'or et je te raconterai l'histoire la plus folle que tu aies jamais entendue. Ça te dit ?
+		Common3: Bon sang, ça n'a vraiment aucun goût. Tu prends aussi un jour de congé ?
+		Quest: Ah, aventurier. Avez-vous déjà exploré la toundra profonde ? J'ai toujours été intrigué par une histoire que ma mère m'a racontée... celle d'une bête massive et pesante qui vivrait au cœur d'une toundra glaciale. Elle en parlait comme d'une légende, et cela m'a toujours intrigué. Hélas, je ne supporte pas bien le froid, mais peut-être que toi, oui ? Je suis très intéressé, même si je ne sais pas si cette histoire est vraie. Il existe une petite forteresse dans la neige, à une courte distance sous la surface. Prends cette boussole, trouve-la et ouvre-la. Tu sauras quoi emporter
+		Antlers: Wow... désolé. Je... je ne pensais vraiment pas que c'était vrai. Ma mère m'en a parlé, un simple ensemble de bois à quatre pointes avec une décoloration près des pointes. Une aura étrange. Étrangement inconfortable à tenir. Wow. Eh bien. Je suppose que vous devriez chercher le cerf lui-même, alors. La chasseuse pourra vous en parler, elle connaît toutes les créatures qui rôdent dans les bois, blanches ou non. Je resterai ici, je ne peux qu'imaginer ce que ma mère pensera en revoyant ces bois.
+		Success: ... incroyable. Vraiment... Je ne sais pas quoi dire. Prends ça. Je vais rester ici, à ruminer cette révélation. Va t'amuser. Brom, un autre hydromel, s'il te plaît. Incroyable...
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Ah, quelle belle journée dehors.
+			1: Hum, que vais-je commander ensuite ?
+			2: Délicieux !
+		}
+
+		Night: {
+			0: Le bar est ouvert toute la nuit ! Continuez à servir l'hydromel.
+			1: Ah... je me détends...
+			2: Peut-être que quelques parties de cartes ne feront pas de mal...
+		}
+
+		Goblins: {
+			0: Bon sang, pourquoi sont-ils tous là ?
+			1: Vous interrompez ma dégustation d'hydromel... bande de bouffons.
+			2: En garde ! Il est temps de faire bouger vos vieilles articulations !
+		}
+
+		Rain: {
+			0: Heureusement que je ne suis pas là-bas !
+			1: Merci pour l'hébergement !
+			2: Cette pluie me rappelle mon pays natal.
+		}
+	}
+
+	NewCompass: {
+		Button: Boussole artisanale
+		OnCraft: En voici une autre pour toi. Tu as de la chance que je puisse sculpter le bois n'importe où, n'importe quand. Va les chercher !... si tu arrives à les trouver.
+		CantCraft: Tu as perdu ta boussole ? Donne-moi 15 [i:9] et je t'en affûterai une.
+	}
+
+	Entry: Rhine est une grande travailleuse. Entre deux voyages, elle rend visite à sa famille et chasse des bêtes légendaires.  Ici ? Elle cherche de la bonne nourriture, de bonnes boissons et des gens à qui raconter des histoires.
+}
+
+SkullApparition.DisplayName: Apparition du crâne
+
+OldMan: {
+	Dialogue: {
+		QuestStart: Ah... hum ? Oh... un aventurier ! Bonjour. Je... je ne sais pas qui je suis ni où je me trouve. Mais je sais qu'il se passe quelque chose de terrible, loin sous mes pieds. Je... je ne me souviens presque de rien. Je sais... qu'un homme, plus petit, barbu... m'a aidé... il y a quelque temps. Dans une ville voisine. Je... ne me souviens plus du nom. Peut-être devriez-vous le chercher ? Je ne peux pas en dire plus... j'en ai peur.
+		HasItems:
+			'''
+			...
+			Une lumière de chaque côté ;
+			Une barre maléfique en dessous,
+			Un livre posé, ouvert.
+
+			De nombreux crânes hurlants,
+			Sur les briques de la prison.
+			Un portail apparaît.
+			...
+			'''
+		Complete: Il y a quelques instants à peine, j'ai retrouvé mon ancienne personnalité ! Waouh ! J'avais l'impression d'être à des kilomètres de moi-même, tout en étant là, ici même. Eh bien. Cela marque un tournant dans ma vie. Merci infiniment de m'avoir libéré. Je vais... reconsidérer mes choix professionnels. Je vous dois beaucoup.
+
+		Day: {
+			0: ... Je... n'ai rien à dire.
+			1: ...
+			2: La journée est longue.
+		}
+
+		Weak: {
+			0: Vous... connaissez-vous une malédiction... ?
+			1: Hum... Je ne sais pas...
+			2: S'il vous plaît, n'attendez pas.
+			3: Fais attention, mon ami...
+		}
+
+		Strong: {
+			0: Tu es peut-être assez fort...
+			1: Tu peux... ? Je pense que tu... peut-être...
+			2: C'était quoi... un livre... une bougie...
+			3: Le donjon vous attend.
+		}
+	}
+}
+
+AshWraith: {
+	DisplayName: Spectre de cendres
+	Entry: Une agitation d'énergie malveillante combinée à l'instabilité du monde souterrain a produit cette... plante roulante ? Tout comme leurs cousins de la surface, ils se précipitent sur vous, mais avec un autre axe de mouvement.
+}
+
+FireMaw: {
+	DisplayName: Gueule de feu
+	Entry: Un mélange étrange de fleur et d'ennemi, que l'on ne trouve que dans le domaine du Mur de chair. Il prospère à l'intérieur des bâtiments, mais pas à l'extérieur.
+}
+
+MorganaNPC: {
+	DisplayName: Morgana
+	QuestCondition: Récupérez 2 plumes de hibou et 1 paire d'ailes de chauve-souris.
+	SummonCondition: Invoquez la chouette avec le Grimoire .
+
+	Dialogue: {
+		Common0: Oui... la bière parle ! Elle dit que tu veux acheter ! Hein ? C'est vrai ?
+		Common1: Mélangez ! Mélangez ! Je vous le dis, préparez les breuvages les plus étranges que vous ayez jamais entendus. Oui, plus étranges encore que Strange Brews.
+		Common2: La queue d'un rat ! Les ailes d'une chauve-souris ! Et à cela, je réponds : une rime ? Qu'est-ce que c'est ?
+		Common3: Entre labeur et tourments, je réside. Envie d'une concoction aux proportions diaboliques ? Vraiment ? Vraiment ?
+		Quest: Tes ruses m'intriguent, étranger. J'ai déjà invoqué les créatures les plus maléfiques... souhaites-tu faire de même ? Vraiment ? Si tu es convaincu, apporte-moi une plume de hibou et des ailes de chauve-souris. Et prends ceci ! Le grimoire t'aidera dans ta tâche. N'est-ce pas ? Bahaha !
+		Quest2: Bahaha ! Tu es de retour, mes babioles sont à nouveau visibles ! Parfait, étranger. Pour mon propre bien, je te demande, sans tarder, d'ouvrir ton grimoire et d'invoquer la bête de ton choix ! Une chouette, une chauve-souris... laquelle choisiras-tu ? Hein ? Hein ?! Sois joyeux, et que le phénix te trouve en bonne santé !
+		Quest3: Le voilà ! Votre propre invocation ! Envoûtant, n'est-ce pas, étranger ? Hélas, je dois retourner à mon labeur. Votre grimoire vous sera très utile, comme il m'a été utile. Explorez, les créatures du monde peuvent vous surprendre. Surtout si vous êtes un chasseur : les matériaux que vous collectez peuvent invoquer de nombreuses créatures différentes !
+		QueenBeeQuest: Ah ! Vous êtes de retour ! Mes ruses sont efficaces, n'est-ce pas ? Oui ! J'ai une question à vous poser ! Elle peut paraître étrange, mais elle est normale pour quelqu'un comme moi ! Oui ! Je me suis souvenu d'une période plus... naturelle de ma vie, et j'aimerais retrouver une partie de cette âme. Pourrais-je vous demander de me rapporter des dards de frelons de la jungle ? Pourrais-je ? Pourrais-je ? Vous recevrez une belle récompense si vous le faites.
+		GotStingers: C'est merveilleux ! Oui... tiens. Prends ce petit morceau. Il t'aidera à invoquer un adorable petit démon de ton grimoire. Cruel, mais gentil ! Hélas, j'ai encore une chose à te demander. Une créature des plus répugnantes réside dans la jungle, une reine des abeilles. Pourrais-tu la tuer ? Elle cherche à m'importuner, et je souhaite sa mort ! Une autre récompense t'attend ! Plonge ton nouvel ami frelon dans du miel si tu souhaites te battre
+		QueenBeeKilled: Pourquoi, tu reviens ? Déjà ? Tu es plutôt fort, n'est-ce pas ! Ah oui, c'est vrai. Oui ! Tu l'es ! Très bien. Merci beaucoup pour cette corvée. Je n'ai pas grand-chose à t'offrir, mais tu dois le prendre. Prends-le ! Bahaha ! Adieu !
+	}
+
+	Entry: Excentrique mais d'une puissance trompeuse, Morgana apporte beaucoup à Ravencrest. Certes, elle peut parfois être difficile à comprendre, et certains pourraient dire qu'elle est souvent rebutante, mais elle est douée dans ce qu'elle fait. Que fait-elle ?... Elle continue.
+}
+
+Entling: {
+	DisplayName: Entling
+	Entry: Petites créatures espiègles de la forêt, les Entlings cherchent à voler et à piller. Idéalement, ils préfèrent éviter les combats, mais lorsqu'ils y sont contraints, ils se battent en sautant un peu et en courant, et c'est tout. Effrayant !
+}
+
+EntlingAlt: {
+	DisplayName: Cyclope Entling
+	Entry: Tout comme leur cousin, la variante à un œil présente ici une nature kleptomane avec un penchant pour la violence. Ils pensent que leur œil unique est plus beau que deux yeux.
+}
+
+Ent: {
+	DisplayName: Ent
+	Entry: Les Ents âgés possèdent un pouvoir bien plus redoutable. Leur nature espiègle s'est transformée en une violence abjecte, indifférents aux dégâts qu'ils causent tant que leur arbre est en sécurité.
+
+	SlamDeath: {
+		0: "{0} a été réduit en bouillie."
+		1: Et {0} retourne à la terre.
+		2: "{0} a inspecté les racines de trop près."
+	}
+}
+
+ClumsyEntling: {
+	DisplayName: Entling Maladroit
+	Entry: Parfois, vous passez une mauvaise journée et vous trébuchez. Ce type passe très souvent de mauvaises journées. Soyez reconnaissant, ils sont là pour vous voler vos affaires.
+}
+
+Grovetender: {
+	DisplayName: Ancien Grovetender
+	Entry: C'est l'Entling qui n'est jamais mort. Pour une raison ou une autre, il a vécu trop longtemps ; d'Entling à Ent, puis à Grovetender, jusqu'à aujourd'hui. Enraciné à cet endroit, il se substitue à lui-même et à ses frères grâce à une multitude de pouvoirs magiques issus de la nature qui l'entoure. Il dégage une puissance magique ancestrale.
+
+	BottomDeath: {
+		0: "{0} s'est perdu dans l'enchevêtrement."
+		1: "{0} a été enterré dans le bois."
+		2: "{0} a été récolté à des fins énergétiques."
+	}
+}
+
+CanopyBird: {
+	DisplayName: Hibou des canopées
+	Entry: Oiseau de proie de taille inhabituelle, la chouette des canopées cherche à éloigner toutes les créatures de la grande canopée où elle réside. Elles sont relativement petites, mais étonnamment résistantes, et surtout, innombrables.
+}
+
+Sawblade: {
+	DisplayName: Lame de scie motorisée
+	Entry: Comme l'a dit un jour un grand machiniste : \"La simplicité est la clé\". La lame de scie tourne, et si vous la touchez, elle vous blesse. C'est vraiment rafraîchissant.
+}
+
+CircuitSkull: {
+	DisplayName: Circuit Crâne
+	Entry: Une forme de défense étrange, le Circuit Skull danse dans les couloirs vides de la création. Pourquoi agit-il ainsi ? Ne pourrait-il pas sauter plus efficacement ? Au bout du compte, ces questions restent sans réponse.
+}
+
+SecurityDrone: {
+	DisplayName: Drone de sécurité
+	Entry: Tout comme leur machine sœur, la Probe, les drones de sécurité sont conçus pour parcourir les vastes espaces vides des Mécanismes. Ils attaquent toujours leur cible de manière directe et énergique.
+}
+
+Grabber: {
+	DisplayName: Pince automatique
+	Entry: Le plus étrange des protocoles de sécurité du Mécanisme, l'Autoclamp ne cause pas beaucoup de dégâts.
+}
+
+CoreModule: {
+	DisplayName: Module Principal
+	Entry: Lorsqu'une perturbation suffisamment importante pour nécessiter une intervention immédiate et massive se produit dans le Mécanisme, le module principal est envoyé sur place. Il est imposant, très défensif, très offensif et surtout, très cool.
+}
+
+CoreModulePlate.DisplayName: Plaque du module principal
+ExplosiveTurret.DisplayName: Tourelle explosive
+
+HauntedHead: {
+	DisplayName: Tête hantée
+	Entry: La tête perdue depuis longtemps d'un voyageur, d'un marchand ou d'une autre âme malheureuse en quête de vengeance. Émergeant des sables, elle ne reculera devant rien, sauf la mort, pour vous arrêter.
+}
+
+ScarabSwarmController.DisplayName: Essaim de scarabées
+
+SwarmScarab: {
+	DisplayName: Essaim de scarabées
+	Entry: L'un des nombreux scarabées carnivores à la recherche de nourriture. Pourquoi est-il accompagné d'autant d'autres scarabées ? Pour intimider ses proies.
+}
+
+AntlionTrapper: {
+	DisplayName: Piège à fourmilions
+	Entry: Que se passe-t-il lorsque les mâchoires d'une fourmilion se déchaînent ? Elles s'adaptent. Que se passe-t-il lorsque vous vous approchez d'elles ? Il n'y a qu'un seul moyen de le savoir !
+
+	Death: {
+		0: "{0} a été réduit en bouillie."
+		1: "{0} a été pris d'assaut."
+		2: "{0} n'a pas regardé où il allait."
+	}
+}
+
+SunDevourerNPC: {
+	DisplayName: Dévoreur de soleil
+	Entry: Une bête ancienne vivant dans un désert lointain, connue dans le monde entier. Bien qu'elle ne soit pas la plus grande créature, cette bête est réputée pour dévorer la lumière du soleil, ce qui lui confère une force supérieure à sa taille.
+}
+
+WormLightning: {
+	DisplayName: Lutin Éclair
+	Entry: Une créature faite d'énergie pure, née de l'explosion d'un éclair. Elle n'a qu'un seul objectif : détourner l'attention de son créateur.
+}
+
+// WormLightning_Body.DisplayName: "{$WormLightning.DisplayName}"
+// WormLightning_Tail.DisplayName: "{$WormLightning.DisplayName}"
+
+EnergizerCore: {
+	DisplayName: Noyau d'énergie
+	Entry: Une machine autonome et puissante, conçue uniquement pour maintenir en vie ses semblables. On ignore ce que fait le noyau et pourquoi le métal tourne autour de lui.
+}
+
+Minitera: {
+	DisplayName: Plantera en herbe
+	Entry: Cette Plantera, qui a fleuri prématurément, n'a pas eu le temps nécessaire pour atteindre sa pleine croissance. Cela dit, elle reste néanmoins bien plus puissante que la plupart de ses adversaires.
+}
+
+MiniteraHook.DisplayName: Crochet Minitera
+
+WarriorNPC: {
+	DisplayName: Warrior
+
+	Names: {
+		Male: {
+			0: James
+			1: John
+			2: Peter
+			3: Mark
+			4: Salvador
+			5: Ezra
+			6: Simone
+			7: Eduardo
+			8: Lee
+			9: Enrique
+			10: Walter
+			11: Sven
+			12: Hidehito
+			13: Goro
+			14: Jamir
+			15: Talan
+			16: Moises
+			17: Felipe
+			18: Samuel
+		}
+
+		Female: {
+			0: Alma
+			1: Paula
+			2: Jenna
+			3: Lyric
+			4: Serena
+			5: Teagan
+			6: Kinsley
+			7: Aria
+			8: Priya
+			9: Ella
+			10: Kamora
+			11: Damaris
+			12: Josephine
+			13: Anahi
+			14: Halle
+			15: Myah
+			16: Perla
+			17: Fatima
+			18: Samantha
+		}
+	}
+
+	Dialogue: {
+		Confident: {
+			0: Un répit bien mérité ! Santé, mon ami.
+			1: Ah, l'hydromel connu dans le monde entier !
+			2: Parfois, un verre bien fort et un peu de repos valent mieux que l'aventure !... parfois.
+			3: Et j'ai dit à Brom - \"J'espère que cette boisson n'est pas aussi forte que la bête ! \" Bahahaha !
+		}
+
+		Reserved: {
+			0: Bienvenue, voyageur.
+			1: Bonjour.
+			2: Je ne vois pas souvent ce genre de tenue.
+			3: Salut, mon ami.
+		}
+
+		Boastful: {
+			0: Et j'ai donc terrassé le Burnfield, comme si de rien n'était ! Bête légendaire, voici ma lame !
+			1: Ohohoh, tu es curieux ? Qu'as-tu tué ? Des bêtes ? Des dieux ?
+			2: Les falaises près de la Gueule de la Terre ? Un jeu d'enfant ! Je me souviens les avoir parcourues comme si c'était une simple randonnée !
+			3: Il n'y a rien de mieux qu'un bon verre et une belle réussite, n'est-ce pas ? Ah ah ! Bien sûr que non !
+		}
+
+		Sly: {
+			0: Oui. Ne le dis pas à Brom... ce sont toutes des fausses pièces. Hé hé.
+			1: On dit qu'un grand vol peut éclipser une plus grande réussite. Ça t'intéresse ?
+			2: Combien de hydromel pensez-vous que je puisse cacher dans mon outre ?
+			3: Dis... tu sais où cet établissement garde son argent ? Sans raison particulière...
+		}
+
+		Partygoer: {
+			0: Hé, hé ! Je connais un petit tour de magie. Tu aurais une pièce à me prêter ? Elle va disparaître, mais juste pour un instant !
+			1: La meilleure chose au combat ? La confusion. Vous lancez une bombe à confettis et le loup ne sait plus où il en est.
+			2: Regarde ça : en quelques instants, je peux faire disparaître cet hydromel.
+			3: C'est simple : comment tromper les crédules ?... Je vous le dirai plus tard.
+		}
+
+		Reverent: {
+			0: Remerciez ce qui vous guide pour ce que vous appréciez.
+			1: Hélas ! Je fais mon travail. À la vôtre !
+			2: Avez-vous déjà vu les bienfaits d'un sanctuaire ? Des bienfaits curieux.
+			3: Le confort dans la maison vaut bien quelques sacrifices.
+		}
+	}
+
+	BubbleDialogue: {
+		Confident: {
+			0: Ah, oui. Un instant...
+			1: On voit bien que le propriétaire était lui-même un aventurier, n'est-ce pas ?
+			2: Je suis déjà impatient de repartir...
+			3: ... où se trouvent les listes de quêtes, déjà ?...
+		}
+
+		Reserved: {
+			0: Hum.
+			1: Comme c'est gentil.
+			2: Où ai-je laissé ma pièce...
+			3: Un autre verre, peut-être... ?
+		}
+
+		Boastful: {
+			0: Que dire d'autre, que dire d'autre...
+			1: Je devrais dire encore une fois cette phrase de Maw of Earth, elle est géniale.
+			2: Où est mon public ?
+			3: Mec, je suis trop cool.
+		}
+
+		Sly: {
+			0: Agis naturellement, je ne suis qu'un aventurier comme les autres...
+			1: Quelqu'un regarde ?
+			2: Hé hé... ils ne sauront pas ce qui leur arrive.
+			3: Heureusement que j'ai de grandes poches...
+		}
+
+		Partygoer: {
+			0: Ouah, mec ! Cette hydromel commence à faire effet...
+			1: Brom ? Je peux en avoir un autre... ?
+			2: Waouh. C'est là que la pièce est tombée.
+			3: Ouf. Je vais prendre un moment...
+		}
+
+		Reverent: {
+			0: Merci à tous pour ce repas...
+			1: Soyez bénis.
+			2: Peut-être le désert ensuite ?
+			3: Ah...
+		}
+	}
+}
+
+RangerNPC: {
+	DisplayName: Ranger
+	// Names: "{WarriorNPC.Names}"
+	// Dialogue: "{WarriorNPC.Dialogue}"
+	// BubbleDialogue: "{WarriorNPC.BubbleDialogue}"
+}
+
+GreaterFairy: {
+	DisplayName: Grande fée
+	Entry: Une version beaucoup moins bienveillante des fées que l'on trouve parfois à travers le monde, les Grandes Fées s'alignent plutôt sur l'absolutisation du Hallow.
+}
+
+Prismatism: {
+	// DisplayName: Prismatism
+	Entry: Mystérieusement bien habillé, cet orbe chromatique semble posséder soit trop peu de mouvement, soit beaucoup trop. Il éprouve exactement assez d'hostilité à votre égard pour mériter cela.
+}

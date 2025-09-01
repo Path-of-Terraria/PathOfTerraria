@@ -21,6 +21,7 @@ internal class GoldStaff : Staff
 		Item.shoot = ModContent.ProjectileType<GoldStaffProjectile>();
 		Item.damage = 42;
 		Item.knockBack = 3;
+		Item.value = Item.buyPrice(0, 0, 2, 50);
 	}
 
 	public class GoldStaffProjectile : StaffProjectile

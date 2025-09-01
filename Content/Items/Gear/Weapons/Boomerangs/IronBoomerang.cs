@@ -10,15 +10,16 @@ internal class IronBoomerang : Boomerang
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
-		staticData.MinDropItemLevel = 5;
+		staticData.MinDropItemLevel = 8;
 	}
 
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
-		Item.damage = 9;
+		Item.damage = 14;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;
+		Item.value = Item.buyPrice(0, 0, 1, 60);
 	}
 }

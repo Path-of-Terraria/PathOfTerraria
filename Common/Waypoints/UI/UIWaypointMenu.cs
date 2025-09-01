@@ -1,14 +1,19 @@
 using System.Collections.Generic;
 using System.Dynamic;
+using System.Linq;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Core.UI;
 using ReLogic.Content;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.Waypoints.UI;
@@ -33,6 +38,8 @@ public sealed class UIWaypointMenu : UIState
 
 	public const float InfoFullWidth = 360f;
 	public const float InfoFullHeight = FullHeight;
+
+	internal static Point InWorldAnchor = Point.Zero;
 
 	public const float ElementPadding = 12f;
 
@@ -69,6 +76,7 @@ public sealed class UIWaypointMenu : UIState
 	private UIImage thumbnailImage;
 
 	private UIText waypointText;
+	private UIText tutorialTipText;
 
 	public override void OnInitialize()
 	{
@@ -84,6 +92,21 @@ public sealed class UIWaypointMenu : UIState
 		};
 
 		rootElement.Append(BuildPanel());
+
+		// Add tip to clear up confusion on the return button in tutorial
+		string tutorialTipLocalized = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.Waypoints.TutorialTip");
+		tutorialTipText = new UIText(tutorialTipLocalized, 0.8f)
+		{
+			HAlign = 0.5f,
+			VAlign = 0.0f,
+			Top = { Pixels = -45f },
+			Width = { Pixels = FullWidth },
+			TextOriginX = 0.5f,
+			WrappedTextBottomPadding = 0f,
+			IsWrapped = true
+		};
+		
+		rootElement.Append(tutorialTipText);
 
 		Append(rootElement);
 
@@ -122,7 +145,7 @@ public sealed class UIWaypointMenu : UIState
 
 		buttonElement.OnLeftClick += (_, _) =>
 		{
-			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.LocationEnum))
+			if (ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains(SelectedListWaypoint.LocationEnum) && SelectedListWaypoint.CanGoto())
 			{
 				SelectedListWaypoint.Teleport(Main.LocalPlayer);
 				Enabled = false;
@@ -201,7 +224,7 @@ public sealed class UIWaypointMenu : UIState
 
 		closeImage.OnMouseOut += HandleMouseOutSound;
 		closeImage.OnMouseOver += HandleMouseOverSound;
-		closeImage.OnLeftClick += (_, _) => Enabled = false;
+		closeImage.OnLeftClick += (_, _) => UIManager.TryDisable(Identifier);
 
 		infoRoot.Append(closeImage);
 	}
@@ -224,9 +247,24 @@ public sealed class UIWaypointMenu : UIState
 	{
 		base.Update(gameTime);
 
+		if (Vector2.DistanceSquared(InWorldAnchor.ToVector2(), Main.LocalPlayer.Center) > 300 * 300 && Enabled)
+		{
+			UIManager.TryDisable(Identifier);
+		}
+
 		if (rootElement.ContainsPoint(Main.MouseScreen))
 		{
 			Main.LocalPlayer.mouseInterface = true;
+		}
+		
+		bool hasArcaneObelisk = ModContent.GetInstance<PersistentDataSystem>().ObelisksByLocation.Contains("Overworld");
+		bool tutorialTipCurrentlyShowing = rootElement.Children.Contains(tutorialTipText);
+
+		// Check if player has placed an obelisk in the main world, and if the tutorialtiptext currently exists
+		if (hasArcaneObelisk && tutorialTipCurrentlyShowing)
+		{
+			// Remove the tip if obelisk is placed and tip is showing
+			tutorialTipText.Remove();
 		}
 
 		UpdateInput();
@@ -234,7 +272,6 @@ public sealed class UIWaypointMenu : UIState
 		float target = Enabled ? 0f : Main.screenHeight;
 
 		rootElement.Top.Pixels = MathHelper.SmoothStep(rootElement.Top.Pixels, target, 0.3f);
-
 		buttonPanel.BorderColor = Color.Lerp(buttonPanel.BorderColor, buttonElement.IsMouseHovering ? Color.White : new Color(68, 97, 175), 0.3f)
 			* 0.8f;
 
@@ -300,23 +337,19 @@ public sealed class UIWaypointMenu : UIState
 		for (int i = 0; i < ModWaypointLoader.WaypointCount; i++)
 		{
 			ModWaypoint waypoint = ModWaypointLoader.Waypoints[i];
-
 			Asset<Texture2D> icon = ModContent.Request<Texture2D>(waypoint.IconPath, AssetRequestMode.ImmediateLoad);
 
-			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.LocationEnum);
-
+			var tab = new UIWaypointListElement(icon, waypoint.DisplayName, i, waypoint.LocationEnum, waypoint);
 			tab.OnUpdate += _ => tab.Selected = tab.Index == SelectedWaypointIndex;
-
 			tab.OnLeftClick += (_, _) =>
 			{
-				if (tab.CanClick)
+				if (tab.CanClick && waypoint.CanGoto())
 				{
 					ProcessIndex(tab.Index);
 				}
 			};
-			
-			list.Add(tab);
 
+			list.Add(tab);
 			tabs.Add(tab);
 		}
 	}

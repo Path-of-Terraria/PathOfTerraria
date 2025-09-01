@@ -4,14 +4,14 @@ using PathOfTerraria.Core.Items;
 namespace PathOfTerraria.Content.Items.Currency;
 
 /// <summary>
-/// A currency shard that will reroll the values of the affixes of an item
+/// A currency shard that will reroll the values of the affixes of an item.
 /// </summary>
-internal class RadiantShard : CurrencyShard
+public class RadiantShard : CurrencyShard
 {
 	protected override void SetStaticData()
 	{
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 100f;
+		staticData.DropChance = 250f;
 		staticData.MinDropItemLevel = 25;
 	}
 

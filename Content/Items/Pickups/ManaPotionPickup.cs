@@ -1,45 +1,39 @@
 ﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.Audio;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
-internal class ManaPotionPickup : ModItem
+internal class ManaPotionPickup : PickupItem
 {
-	public override void SetDefaults()
-	{
-		base.SetDefaults();
-
-		Item.width = 16;
-		Item.height = 16;
-	}
-
-	public override void Update(ref float gravity, ref float maxFallSpeed)
+	public override void PostUpdate()
 	{
 		Lighting.AddLight(Item.Center, new Vector3(0.02f, 0.05f, 0.3f) * (0.5f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.25f));
 	}
 
-	public override bool ItemSpace(Player player)
-	{
-		return true;
-	}
-
 	public override bool CanPickup(Player player)
 	{
-		return player.GetModPlayer<PotionSystem>().ManaLeft < player.GetModPlayer<PotionSystem>().MaxMana;
+		int manaLeft = player.GetModPlayer<PotionPlayer>().ManaLeft;
+		int maxMana = player.GetModPlayer<PotionPlayer>().MaxMana;
+		bool potionSpace = manaLeft < maxMana;
+		bool orAutoMana = manaLeft >= maxMana && player.statMana < player.statManaMax2 && !player.HasBuff(BuffID.ManaSickness);
+		return potionSpace || orAutoMana;
 	}
-
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<PotionSystem>().ManaLeft++;
+		PotionPlayer potionPlr = player.GetModPlayer<PotionPlayer>();
+		ref int manaLeft = ref potionPlr.ManaLeft;
 
-		if (Main.netMode != NetmodeID.SinglePlayer)
+		if (manaLeft >= player.GetModPlayer<PotionPlayer>().MaxMana && player.statMana < player.statManaMax2 && !player.HasBuff(BuffID.ManaSickness))
 		{
-			HotbarPotionHandler.SendHotbarPotionUse((byte)player.whoAmI, false, (byte)player.GetModPlayer<PotionSystem>().ManaLeft);
+			manaLeft++;
+			PotionPlayer.UseManaPotion(player, true);
 		}
-
-		CombatText.NewText(player.Hitbox, new Color(150, 190, 255), "Mana Potion");
+		else if (manaLeft < player.GetModPlayer<PotionPlayer>().MaxMana)
+		{
+			manaLeft++;
+			CombatText.NewText(player.Hitbox, new Color(150, 190, 255), this.GetLocalization("Pickup").Value);
+		}
 
 		for (int k = 0; k < 10; k++)
 		{
@@ -68,8 +62,8 @@ internal class ManaPotionPickup : ModItem
 
 		glowColor *= 0.6f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.1f;
 
-		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, glowColor, 0, glow.Size() / 2f, 0.6f, 0, 0);
-		spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Color.White, 0, tex.Size() / 2f, 1, 0, 0);
+		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, Item.GetAlpha(glowColor), 0, glow.Size() / 2f, 0.6f, 0, 0);
+		spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Item.GetAlpha(Color.White), 0, tex.Size() / 2f, 1, 0, 0);
 
 		return false;
 	}

@@ -1,31 +1,31 @@
+using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
+using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Items.Currency;
+using PathOfTerraria.Content.Items.Quest;
+using PathOfTerraria.Content.Tiles.BossDomain;
+using Terraria.DataStructures;
 using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
 using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Common.Utilities.Extensions;
-using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
-using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
-using PathOfTerraria.Content.Items.Quest;
-using PathOfTerraria.Common.NPCs;
-using Terraria.DataStructures;
-using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
-using PathOfTerraria.Common.NPCs.QuestMarkers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
 public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => new(782, 162);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => (RavencrestSystem.Structures["Library"].Position + new Point(50, 40)).ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
-
-	private float animCounter;
 
 	public override void SetStaticDefaults()
 	{
@@ -38,6 +38,12 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -72,6 +78,7 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common1"));
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common2"));
 				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common3"));
+				c.AddDialogue(new NPCTownDialogue.DialogueEntry($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Common4"));
 			}
 		);
 	}
@@ -84,9 +91,22 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	public override void AddShops()
 	{
 		var shop = new NPCShop(Type);
-		shop.Add<Staff>();
-		shop.Add<Wand>();
+		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<UnfoldingShard>()) { shopCustomPrice = Item.buyPrice(0, 10, 0, 0) }));
+		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<GlimmeringShard>()) { shopCustomPrice = Item.buyPrice(0, 25, 0, 0) }, 
+			new Condition(LocalizedText.Empty, () => Quest.GetLocalPlayerInstance<WizardStartQuest>().Completed)));
+
+		Condition conditions = new("Mods.PathOfTerraria.Misc.VoidPearlCondition", () => QuestReady());
+		shop.Add(new NPCShop.Entry(new Item(ModContent.ItemType<VoidPearl>()) { shopCustomPrice = Item.buyPrice(0, 50, 0, 0) }, conditions));
+
+		shop.Add<WeakMalaiseItem>(Condition.DownedEowOrBoc);
+		shop.Add<PusBlockItem>(Condition.DownedEowOrBoc);
 		shop.Register();
+	}
+
+	public static bool QuestReady()
+	{
+		var quest = Quest.GetLocalPlayerInstance<WoFQuest>();
+		return quest.Active && quest.CurrentStep > 2;
 	}
 
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
@@ -122,6 +142,11 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 		button2 = !QuestUnlockManager.CanStartQuest<WizardStartQuest>() ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+
+		if (button2 == "" && Main.hardMode && Quest.GetLocalPlayerInstance<QueenSlimeQuest>().CanBeStarted)
+		{
+			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -132,37 +157,29 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		}
 		else
 		{
-			Main.npcChatCornerItem = ModContent.ItemType<TomeOfTheElders>();
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
+			if (QuestUnlockManager.CanStartQuest<WizardStartQuest>())
+			{
+				Main.npcChatCornerItem = ModContent.ItemType<TomeOfTheElders>();
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
+			}
+			else
+			{
+				Main.npcChatText = this.GetLocalizedValue("Dialogue.GiveQSQuest");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>();
+			}
 		}
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
 	}
 
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest = Quest.GetLocalPlayerInstance<WizardStartQuest>();
+
+		if (quest.Completed && Main.hardMode && Quest.GetLocalPlayerInstance<QueenSlimeQuest>().CanBeStarted)
+		{
+			quest = Quest.GetLocalPlayerInstance<QueenSlimeQuest>();
+		}
+
 		return !quest.Completed;
 	}
 }

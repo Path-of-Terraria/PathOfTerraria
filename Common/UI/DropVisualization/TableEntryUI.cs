@@ -26,9 +26,9 @@ internal class TableEntryUI : UIElement
 
 		var text = new UIText($"[i:{ItemId}] {Lang.GetItemNameValue(ItemId)}:");
 		text.Append(new UIText($"#: {Result.Count}") { Left = StyleDimension.FromPixels(240) });
-		text.Append(new UIText($"%: {Result.Count / (float)Count * 100f:#0.###}%") { Left = StyleDimension.FromPixels(320) });
+		text.Append(new UIText($"%: {Result.Count / (float)Count * 100f:#0.####}%") { Left = StyleDimension.FromPixels(320) });
 
-		int xOff = 430;
+		int xOff = 444;
 
 		if (Result.IsUnique)
 		{
@@ -49,7 +49,7 @@ internal class TableEntryUI : UIElement
 				xOff += 120;
 			}
 		}
-
+		
 		Append(text);
 	}
 }

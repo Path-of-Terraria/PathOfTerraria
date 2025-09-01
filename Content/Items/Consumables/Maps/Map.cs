@@ -1,31 +1,41 @@
 ﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Core.Items;
+using SubworldLibrary;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
-using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, GenerateName.IItem
+public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
 {
+	protected sealed override bool CloneNewInstances => true;
+
 	public abstract int MaxUses { get; }
+	public abstract bool CanDrop { get; }
+	public virtual int WorldLevel => WorldLevelBasedOnTier(Tier);
 
 	public int RemainingUses = 0;
 
-	private int _tier;
+	internal int Tier = 1;
+	internal int ItemLevel = 1;
 
-	int GetItemLevel.IItem.GetItemLevel(int realLevel)
+	public override ModItem Clone(Item newEntity)
 	{
-		return _tier;
+		var map = base.Clone(newEntity) as Map;
+		map.Tier = Tier;
+		map.ItemLevel = ItemLevel;
+		return map;
 	}
 
-	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
+	public override void SetDefaults() 
 	{
-		realLevel = level;
-		_tier = 1 + (int)Math.Floor(realLevel / 20f);
-	}
-
-	public override void SetDefaults() {
 		base.SetDefaults();
 
 		Item.width = 32;
@@ -41,73 +51,85 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 
 	public virtual ushort GetTileAt(int x, int y) { return TileID.Stone; }
 
-	public abstract void OpenMap();
+	public virtual void OpenMap()
+	{
+		List<MapAffix> collection = [.. this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x)];
+
+		if (Main.netMode == NetmodeID.SinglePlayer)
+		{
+			MappingWorld.AreaLevel = WorldLevel;
+			MappingWorld.MapTier = Tier;
+			MappingWorld.Affixes = [];
+			MappingWorld.Affixes.AddRange(collection);
+		}
+		else
+		{
+			ModContent.GetInstance<SendMappingDomainInfoHandler>().Send((short)WorldLevel, (short)Tier, collection);
+		}
+
+		OpenMapInternal();
+	}
+
+	protected abstract void OpenMapInternal();
 
 	/// <summary>
 	/// Gets name and what tier the map is of as a singular string.
 	/// </summary>
 	public virtual string GetNameAndTier()
 	{
-		return Core.Items.GenerateName.Invoke(Item) + ": " + _tier;
+		return Core.Items.GenerateName.Invoke(Item);
 	}
 
-	public override bool PreDrawTooltipLine(DrawableTooltipLine line, ref int yOffset)
+	public virtual int GetMapTier(int itemLevel)
 	{
-		if (line.Mod == Mod.Name && line.Name == "Name")
-		{
-			yOffset = -2;
-			line.BaseScale = Vector2.One * 1.1f;
-			return true;
-		}
-
-		if (line.Mod == Mod.Name && line.Name == "Map")
-		{
-			yOffset = -8;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
-
-		if (line.Mod == Mod.Name && line.Name == "Tier")
-		{
-			yOffset = 2;
-			line.BaseScale = Vector2.One * 0.8f;
-			return true;
-		}
-		
-		return true;
-	}
-
-	public static void SpawnItem(Vector2 pos)
-	{
-		SpawnMap<LowTierMap>(pos);
-		SpawnMap<CaveMap>(pos);
+		return TierBasedOnWorldLevel(itemLevel);
 	}
 	
 	public static void SpawnMap<T>(Vector2 pos) where T : Map
 	{
 		var item = new Item();
 		item.SetDefaults(ModContent.ItemType<T>());
-		if (item.ModItem is T map)
-		{
-			map._tier = 1;
-		}
+		(item.ModItem as Map).Tier = 1;
 
 		Item.NewItem(null, pos, Vector2.Zero, item);
 	}
 	
 	public override void SaveData(TagCompound tag)
 	{
-		tag["tier"] = _tier;
 		tag.Add("usesLeft", (byte)RemainingUses);
+		tag.Add("tier", (short)Tier);
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
-		_tier = tag.GetInt("tier");
 		RemainingUses = tag.GetByte("usesLeft");
+		Tier = tag.GetShort("tier");
 	}
 
 	public abstract string GenerateName(string defaultName);
+
+	public static int WorldLevelBasedOnTier(int tier)
+	{
+		return Math.Clamp(48 + tier * 2, 50, 72);
+	}
+
+	public static int TierBasedOnWorldLevel(int area)
+	{
+		if (area < 45)
+		{
+			return 0;
+		}
+
+		// Return 1 if we're post-WoF due to the gap of 45-48 in the formula below.
+		if (area >= 45 && area <= 48)
+		{
+			return 1;
+		}
+
+		// area is adjusted by 48 instead of 50 to increase the level by 1 per stage;
+		// i.e. a level 50 area gives a tier 1 map, which gives a level 52 area, which gives a tier 2...
+		return Math.Clamp((area - 48) / 2, 0, 11) + 1;
+	}
 
 	/// <summary>
 	/// Determines how many times a boss domain map can be used. This means the following:<br/>
@@ -119,7 +141,7 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 	/// <returns></returns>
 	public static int GetBossUseCount()
 	{
-		int def = 6 / BossDomainPlayer.GetLivesPerPlayer();
+		int def = 6 / BossDomainLivesPlayer.GetLivesPerPlayer(Main.CurrentFrameFlags.ActivePlayersCount);
 
 		if (Main.CurrentFrameFlags.ActivePlayersCount > 6)
 		{
@@ -127,5 +149,34 @@ public abstract class Map : ModItem, GetItemLevel.IItem, SetItemLevel.IItem, Gen
 		}
 
 		return def;
+	}
+
+	public List<ItemAffix> GenerateImplicits()
+	{
+		return [];
+	}
+
+	public List<ItemAffix> GenerateAffixes()
+	{
+		return [];
+	}
+
+	int GetItemLevel.IItem.GetItemLevel(int realLevel)
+	{
+		return ItemLevel;
+	}
+
+	void SetItemLevel.IItem.SetItemLevel(int level, ref int realLevel)
+	{
+		//You can find maps 1 tier lower, on your current tier, and 1 tier higher with the below. 
+		//So if youre in tier 2, you can find tier 1 maps, tier 2 maps, and tier 3 maps.
+		if (level == PoTItemHelper.PickItemLevel() && level >= 50)
+		{
+			level = Main.rand.Next(level - 3, level + 1);
+		}
+
+		realLevel = level;
+		ItemLevel = realLevel;
+		Tier = GetMapTier(ItemLevel);
 	}
 }

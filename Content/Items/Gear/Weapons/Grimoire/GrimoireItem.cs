@@ -4,7 +4,10 @@ using PathOfTerraria.Common.UI.GrimoireSelection;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
@@ -42,6 +45,8 @@ internal class GrimoireItem : Gear
 		Item.channel = true;
 		Item.noMelee = true;
 
+		Item.shopCustomPrice = Item.buyPrice(silver: 10);
+
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Grimoire;
 	}
@@ -59,26 +64,66 @@ internal class GrimoireItem : Gear
 			return false;
 		}
 
-		return player.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId != -1;
+		return GrimoirePlayer.Get(player).CurrentSummonId != -1;
 	}
 
 	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 	{
-		type = player.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
-		damage = (ContentSamples.ProjectilesByType[type].ModProjectile as GrimoireSummon).BaseDamage;
+		type = GrimoirePlayer.Get(player).CurrentSummonId;
+
+		if (type != -1)
+		{
+			damage = (ContentSamples.ProjectilesByType[type].ModProjectile as GrimoireSummon).BaseDamage;
+		}
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (type == -1)
+		{
+			return false;
+		}
+
 		int proj = Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
 		Main.projectile[proj].damage = damage;
 		Main.projectile[proj].originalDamage = damage;
+
+		for (int i = 0; i < 10; i++)
+		{
+			float strength = Main.rand.NextFloat();
+			Vector2 unit = Main.rand.NextVector2Unit() * strength;
+
+			var dust = Dust.NewDustPerfect(position, DustID.GreenTorch, unit * 3, newColor: Color.White with { A = 0 }, Scale: strength * 3f);
+			dust.noGravity = true;
+			dust.noLightEmittence = true;
+
+			Dust.NewDustPerfect(position, DustID.Smoke, unit, Alpha: 150, newColor: Color.Black, Scale: strength * 3f);
+		}
+
+		ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.TerraBlade, new() { PositionInWorld = position });
+
+		SoundEngine.PlaySound(SoundID.AbigailSummon with { Volume = 0.3f, Pitch = -0.2f, PitchVariance = 0.2f }, player.Center);
+		SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.5f, Pitch = 0.5f }, player.Center);
+
 		return false;
 	}
 
 	public override bool OnPickup(Player player)
 	{
-		player.GetModPlayer<GrimoireSummonPlayer>().HasObtainedGrimoire = true;
+		GrimoirePlayer.Get(player).HasObtainedGrimoire = true;
+		return true;
+	}
+
+	public override bool ModifyNewTooltipLine(TooltipLine line)
+	{
+		if (line.Name == "Description")
+		{
+			int id = GrimoirePlayer.Get().CurrentSummonId;
+			bool hasSummon = id != -1;
+			string control = hasSummon ? this.GetLocalization("Control").Format(Lang.GetProjectileName(id).Value) : this.GetLocalization("ControlNone").Value;
+			line.Text = control + "\n" + this.GetLocalization("Description");
+		}
+
 		return true;
 	}
 }

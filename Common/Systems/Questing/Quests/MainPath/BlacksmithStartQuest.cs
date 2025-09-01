@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -9,7 +8,7 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Skills.Melee;
-using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -26,23 +25,8 @@ internal class BlacksmithStartQuest : Quest
 		new ActionRewards((p, v) =>
 			{
 				p.GetModPlayer<ExpModPlayer>().Exp += 500;
-				int sword = ItemSpawner.SpawnItemFromCategory<Sword>(v);
-
-				if (sword != -1)
-				{
-					Item item = Main.item[sword];
-					item.GetInstanceData().Rarity = ItemRarity.Magic;
-					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
-				}
-				
-				int axe = ItemSpawner.SpawnItemFromCategory<Battleaxe>(v);
-
-				if (axe != -1)
-				{
-					Item item = Main.item[axe];
-					item.GetInstanceData().Rarity = ItemRarity.Magic;
-					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
-				}
+				ItemSpawner.SpawnItemFromCategory<Sword>(v, Main.rand.Next(6, 11), ItemRarity.Magic);
+				ItemSpawner.SpawnItemFromCategory<Battleaxe>(v, Main.rand.Next(6, 11), ItemRarity.Magic);
 			},
 			"500 experience (POC giving experience)\nSome gear with an affix\nA unique item\nAgain, just for POC reasons"),
 	];
@@ -51,24 +35,32 @@ internal class BlacksmithStartQuest : Quest
 	{
 		return 
 		[
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2"),
-			[
-				new GiveItem(20, ItemID.IronOre, ItemID.LeadOre), new(1, ItemID.IronHammer, ItemID.LeadHammer), new(50, ItemID.StoneBlock), new(20, ItemID.Wood)
-			], true),
+			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2"),
+				[
+					new GiveItem(20, ItemID.IronOre, ItemID.LeadOre), new(1, ItemID.IronHammer, ItemID.LeadHammer), new(50, ItemID.StoneBlock), new(20, ItemID.Wood)
+				], true),
 			new ActionStep((_, _) => 
 			{
 				RavencrestSystem.UpgradeBuilding("Forge");
 
 				int npc = NPC.FindFirstNPC(ModContent.NPCType<BlacksmithNPC>());
-				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
+				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+				}
+
 				return true;
 			}),
-			new KillCount(NPCID.Zombie, 15, this.GetLocalization("Kill.Zombies")),
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3"),
-			[
-				new GiveItem(30, ItemID.StoneBlock), new(50, ItemID.Wood), new(10, ItemID.GoldBar, ItemID.PlatinumBar)
-			], true) { CountsAsCompletedOnMarker = true },
-			new ActionStep((_, _) =>
+			new KillCount(static npc => NPCID.Sets.Zombies[npc.type], 15, this.GetLocalization("Kill.Zombies")),
+			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3"),
+				[
+					new GiveItem(30, ItemID.StoneBlock), new(50, ItemID.Wood), new(10, ItemID.GoldBar, ItemID.PlatinumBar)
+				], true) { CountsAsCompletedOnMarker = true },
+				new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Forge");
 				Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().TryAddSkill(new Berserk());

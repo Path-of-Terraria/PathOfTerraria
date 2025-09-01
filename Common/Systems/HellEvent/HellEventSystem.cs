@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using SubworldLibrary;
@@ -50,7 +50,7 @@ internal class HellEventSystem : ModSystem
 
 		foreach (Player player in Main.ActivePlayers)
 		{
-			if (player.Center.Y / 16 > Main.maxTilesX - 400 && QuestUnlockManager.CanStartQuest<WoFQuest>())
+			if (player.Center.Y / 16 > Main.maxTilesY - 400 && Quest.GetSingleton<WoFQuest>().Available())
 			{
 				canEventOccur = true;
 				break;

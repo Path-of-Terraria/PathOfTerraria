@@ -1,0 +1,32 @@
+Experience: {
+	LevelUp: Vous avez atteint le niveau {0} !
+	SkillUp: Vous avez gagné 1 point de compétence. Cliquez sur la barre d'expérience pour ouvrir l'arbre de compétence.
+}
+
+RarityNames: {
+	Normal: Normale
+	Magic: Magique
+	Rare: Rare
+}
+
+GrimoireConsume: "{0} consommé !"
+GrimoireMaterial: Utilisé pour la ménagerie du grimoire. Clic-Droit pour l'ajouter à la Ménagerie.
+GrimoireBoon: A échangé {0} contre des pièces !
+# This is used for disabling EoW/BoC spawns, instead of spawning the boss it says this.
+ChasmAppears: Un gouffre apparaît ...
+HealthPotionTooltip: Potion de Soin
+ManaPotionTooltip: Potion de Mana
+RestoresHealthTooltip: Restore {0} de santé
+RestoresManaTooltip: Restore {0} de mana
+CooldownTooltip: "{0} seconde de temps de recharge"
+NPCLeftWithoutDying: "{0} s'est échappé !"
+AffixTooltipFrom: de
+Enter: Entrée
+Exit: Sortie
+EnterRavencrest: "{$Enter} Ravencrest"
+Activate: Activer
+# Two new messages for fishron and impending doom (Lunar event beaten) in their respective domains
+FishronSpawn: Vous entendez un rugissement au loin ...
+ImpendingDoom: Un pouls s'accélère au centre du monde ...
+VoidPearlCondition: En mode difficile ou pendant la quête Déchaîner le chaos
+// SubworldItemDisabler: You cannot use this item in a subworld.

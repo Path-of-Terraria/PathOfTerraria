@@ -10,24 +10,46 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// </summary>
 /// <param name="condition"></param>
 /// <param name="displayText"></param>
-internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, LocalizedText displayText) : QuestStep
+internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, Func<LocalizedText> displayText, LocalizedText reminderText = null) : QuestStep
 {
 	private readonly float ExploreTime = exploreTime;
+	private readonly LocalizedText Reminder = reminderText ?? LocalizedText.Empty;
+	private readonly Func<LocalizedText> DisplayText = displayText;
+	private readonly Func<Player, bool> Condition = condition;
 
 	private float _explore = 0;
 
+	public ConditionCheck(Func<Player, bool> condition, float exploreTime, LocalizedText displayText, LocalizedText reminderText = null) 
+		: this(condition, exploreTime, () => null, reminderText)
+	{
+		DisplayText = () => displayText.WithFormatArgs(IsDone ? 100 : (_explore / ExploreTime * 100).ToString("#0.##"));
+	}
+
 	public override string DisplayString()
 	{
-		return displayText.WithFormatArgs(IsDone ? 100 : (_explore / ExploreTime * 100).ToString("#0.##")).Value;
+		return DisplayText.Invoke().Value;
+	}
+
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
+	{
+		DrawString(DisplayString(), topLeft, StepColor(currentStep), currentStep);
+
+		uiHeight = 22;
 	}
 
 	public override bool Track(Player player)
 	{
-		if (condition(player))
+		if (Condition(player))
 		{
 			_explore++;
 		}
 
 		return _explore > ExploreTime;
+	}
+
+	public override string ReminderText(ref string title)
+	{
+		title = Language.GetTextValue("Mods.PathOfTerraria.UI.QuestReminderTitles.Reminder");
+		return Reminder.Value;
 	}
 }

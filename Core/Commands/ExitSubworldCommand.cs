@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 
 namespace PathOfTerraria.Core.Commands;
 
@@ -16,7 +15,5 @@ public sealed class ExitSubworldCommand : ModCommand
 	public override void Action(CommandCaller caller, string input, string[] args)
 	{
 		SubworldSystem.Exit();
-		
-		MappingSystem.Map = null;
 	}
 }

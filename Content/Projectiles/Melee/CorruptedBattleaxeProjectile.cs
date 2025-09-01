@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Content.Projectiles.Melee;
+﻿using Terraria.ID;
+
+namespace PathOfTerraria.Content.Projectiles.Melee;
 
 public class CorruptedBattleaxeProjectile : ModProjectile
 {
@@ -26,33 +28,36 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 	public override void AI()
 	{
 		Projectile.rotation += 0.2f;
+
+		if (Projectile.timeLeft < 60)
+		{
+			Projectile.Opacity = Projectile.timeLeft / 60f;
+		}
 		
 		if (_targetingPlayer)
 		{
 			Player player = FindClosestPlayer(_distance);
+
 			if (player == null)
 			{
 				return;
 			}
 			
-			Vector2 direction = player.Center - Projectile.Center;
+			Vector2 direction = Projectile.DirectionTo(player.Center) * 10;
 			Projectile.friendly = false;
 			Projectile.hostile = true; 
-			direction.Normalize();
-			direction *= 10f;
 			Projectile.velocity = direction;
 		}
 		else
 		{
 			NPC closestNpc = FindClosestNpc(_distance);
+
 			if (closestNpc == null)
 			{
 				return;
 			}
 
-			Vector2 direction = closestNpc.Center - Projectile.Center;
-			direction.Normalize();
-			direction *= 10f;
+			Vector2 direction = Projectile.DirectionTo(closestNpc.Center) * 10;
 			Projectile.velocity = (Projectile.velocity * 20f + direction) / 21f;	
 		}
 	}
@@ -94,12 +99,12 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 	{
 		Projectile.damage *= 2;
 		_targetingPlayer = false;
+
 		NPC newTarget = FindClosestNpc(_distance);
+
 		if (newTarget != null)
 		{
-			Vector2 direction = newTarget.Center - Projectile.Center;
-			direction.Normalize();
-			direction *= 10f;
+			Vector2 direction = Projectile.DirectionTo(newTarget.Center) * 10;
 			Projectile.friendly = true;
 			Projectile.hostile = false;
 			Projectile.velocity = direction;
@@ -107,6 +112,11 @@ public class CorruptedBattleaxeProjectile : ModProjectile
 		else
 		{
 			Projectile.Kill(); // No more targets, kill the projectile
+
+			for (int i = 0; i < 5; ++i)
+			{
+				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Demonite, Projectile.velocity.X, Projectile.velocity.Y);
+			}
 		}
 	}
 

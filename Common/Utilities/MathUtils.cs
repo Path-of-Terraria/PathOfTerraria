@@ -21,4 +21,10 @@ public static class MathUtils
 			Precent = MathHelper.SmoothStep(from.Precent, to.Precent, t),
 		};
 	}
+
+	/// <summary> Rounds <paramref name="value"/> to the nearest percent. </summary>
+	public static int Percent(float value)
+	{
+		return (int)Math.Round(value * 100);
+	}
 }

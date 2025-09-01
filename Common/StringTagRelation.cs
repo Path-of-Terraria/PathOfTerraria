@@ -32,7 +32,7 @@ internal class Line(string _prefix, string _tagString, string _val)
 }
 internal class Line<T>(string _prefix, string _tagString, object _val) : Line(_prefix, _tagString, _val is null ? "" : _val.ToString())
 {
-	public virtual void AddTo(TagCompound tag)
+	public override void AddTo(TagCompound tag)
 	{
 		if (typeof(T) == typeof(int))
 		{

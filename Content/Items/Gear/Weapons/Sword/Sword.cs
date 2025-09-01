@@ -10,6 +10,8 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal abstract class Sword : Gear
 {
+	private const int AltCooldownTime = 60 * 4;
+	
 	protected override string GearLocalizationCategory => "Sword";
 
 	public override void SetStaticDefaults()
@@ -37,38 +39,34 @@ internal abstract class Sword : Gear
 		Item.crit = 6;
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.PurificationPowder;
+		Item.useTurn = true;
 		Item.shootSpeed = 10f;
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;
 	}
-
+	
 	public override bool AltFunctionUse(Player player)
 	{
-		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
-
-		// If cooldown is still active, do not allow alt usage.
-		if (!modPlayer.AltFunctionAvailable || !modPlayer.Player.CheckMana(5))
+		if (!player.CheckMana(5))
 		{
 			return false;
 		}
-
-		// Otherwise, set the cooldown and allow alt usage.
-		modPlayer.SetAltCooldown(180);
-		return true;
+		
+		return !player.GetModPlayer<AltUsePlayer>().OnCooldown;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position,
 		Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (player.altFunctionUse != 2)
+		if (player.altFunctionUse != 2 || !player.ItemAnimationJustStarted)
 		{
 			return false;
 		}
 
-		AltUsePlayer modPlayer = player.GetModPlayer<AltUsePlayer>();
-		modPlayer.Player.statMana -= 5;
+		player.CheckMana(5, true);
 		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI);
+		player.GetModPlayer<AltUsePlayer>().SetAltCooldown(AltCooldownTime);
 
 		return false;
 	}

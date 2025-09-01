@@ -1,0 +1,200 @@
+Popups: {
+	Line1: Откройте книгу заданий, чтобы увидеть прогресс и этапы выполнения заданий, которые вы выполняете.
+	Line2: Книга заданий всегда находится рядом с картой в инвентаре.
+	Line3: Также вы можете нажать {0} чтобы открыть книгу.
+	NoKey: (Не назначено - по умолчанию L)
+	NewQuest: Новый квест:
+}
+
+Bring: {
+	Collect: Собирите
+	GiveItTo: и отдайте это в {0}
+}
+
+TalkTo: Поговорите с {0}
+GiveThem: и дайте:
+Exploration.Ice: Исследуйте ледяной/снежный биом ({0}%)
+Or: или
+
+Quest: {
+	TestQuest: {
+		Name: Текстовый квест
+		Description: Используется для тестирования квестов.
+	}
+
+	TestQuestTwo: {
+		Name: Тест 2: Электрический Бугало
+		Description: Испытайте сложнее.
+	}
+
+	BlacksmithStartQuest: {
+		Name: Ковка нового клинка
+		Description: ""
+		Kill.Zombies: Убейте {0} зомби
+	}
+
+	KingSlimeQuest: {
+		Name: Убейте короля слизней
+		Description: ""
+		EnterDomain: Войдите во владения короля слизней
+		ThanksDialogue: Я едва могу в это поверить. Что ж, ты преуспел там, где я потерпел неудачу, незнакомец. Мне лучше вернуться к делу; больше ты меня не превзойдешь. Однако ты заслужил мою благодарность.
+		Kill.KingSlime: Убейте Короля слизней
+	}
+
+	HunterStartQuest: {
+		Name: Натянуть тетиву
+		Description: ""
+		Kill.FloatingMisc: Убейте {0} глаз демона, кример или пожирателей душ
+	}
+
+	WitchStartQuest: {
+		Name: Древнее искусство
+		Description: ""
+	}
+
+	WizardStartQuest: {
+		Name: Волшебное возвращение
+		Description: ""
+	}
+
+	EoCQuest: {
+		Name: Восходящее предзнаменование
+		Description: ""
+		Kill.EoC: Победи Глаз Ктулху
+	}
+
+	EoWQuest: {
+		Name: Шёпот глубин
+		Description: ""
+		MorvenRaven: Привести Морвена в Вороний пик
+		SmashOrbs: Разбейте 3 теневых шара
+		KillEoW: Победите Пожирателя Миров
+		// ReturnToOverworld: Return to the Overworld
+	}
+
+	BoCQuest: {
+		Name: Сердце все еще бьется
+		Description: ""
+		SmashOrb: Разбейте сердца багрянца
+		EnterDomain: Войдите в владения мозга Ктулху
+		KillBrain: Убейте мозг Ктулху
+	}
+
+	QueenBeeQuest: {
+		Name: Королевские приключения
+		Description: ""
+		KillQueen: Убейте Королеву Пчел
+	}
+
+	DeerclopsQuest: {
+		Name: Холодное чудовище
+		Description: ""
+		KillDeerclops: Убейте циклоп-оленей
+		// GetAntlersOrShards: Get Strange Antlers or an Antler Shard
+	}
+
+	SkeletronQuest: {
+		Name: Остатки скелета
+		Description: ""
+		EnterDomain: Войдите во владения Скелетрона
+		KillSkeletron: Убейте Скелетрона
+	}
+
+	WoFQuest: {
+		Name: Высвобождение хаоса
+		Description: ""
+		WizardStart: Хм... да. Глубоко под нами земля содрогается от того, кого когда-то там спрятали. Видишь ли, давным-давно группа искателей приключений заточила зло в куклу-двойника. Но твоя невероятная сила, с которой ты раз за разом побеждаешь чудовищ по всему миру, кажется, пробудила это зло и оно снова обретает силу. Иными словами, нам придется убить это. Поговори с Трейном, Морганой и Эларой как можно скорее. Они всё поймут и дадут тебе оружие. Возьми это, и да пребудет с тобой удача. Можешь поблагодарить Моргану и за это. Только... не задавай лишних вопросов. Тут все на взводе!
+		ThrainHelp: Ох, вот как. Ладно, держи... Я давно готовился к этому дню, надеюсь, он тебе подойдёт. Аларик помог с ним, он хранит воспоминания о моих сражениях. Смотри не порежься. Удачи.
+		ElaraHelp: Береги себя и возьми это. Я не какая-то там искусная оружейница, но Трейн помог мне с ним. Простота и надёжность. И ещё — глаза самое уязвимое место.
+		MorganaHelp: О...? Ба-ха-ха! Время пришло! Вот ты где — настоящий буфет с материалами для Гримуара! Элара помогала с этими существами... весьма сведущая девчонка, да Наслаждайся дарами! Ба-ха-ха!
+		WizardContinue: Вот ты где. Так, возьми это. Оно... да... взрывоопасно, но имеем что имеем. Честное слово. Брось это на пепел в Аду, чтобы открыть портал туда, где заключена Стена. Учти — у тебя будет только один шанс убить ее. Никаких ошибок. Также мы не знаем что произойдет после гибели Стены. Знаю только то, что она должна быть уничтожена. Ни пуха. Если понадобятся еще такие, могу наколдовать... за небольшую плату! Увы! Деньги лишними не бывают!
+		KillWall: Убить Стену Плоти
+		WizardFinish: Ты вернулся! Мы наблюдаем множество изменений, но земля больше не будет дрожать под нами. Готовься к грядущему — многое предстоит освоить. Особенно мне, ведь у меня… столько всего, что нужно опробовать.
+	}
+
+	FirstQuest: {
+		Name: Вход в Вороний пик
+		Description: ""
+		ApproachEntrance: Подойти к входу в Вороний пик
+		EnterRavencrest: Войти в Вороний пик
+	}
+
+	QueenSlimeQuest: {
+		// Name: Regal Regime
+		// Description: ""
+		// Tiers: Complete {1} Tier 1 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Queen Slime's domain
+		// Boss: Defeat the Queen Slime
+	}
+
+	TwinsQuest: {
+		// Name: Twin Terrors
+		// Description: ""
+		// Tiers: Complete {1} Tier 2 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Twin's domain
+		// Boss: Defeat the Twins
+	}
+
+	DestroyerQuest: {
+		// Name: Metal Eartheater
+		// Description: ""
+		// Tiers: Complete {1} Tier 3 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Destroyer's domain
+		// Boss: Defeat the Destroyer
+	}
+
+	SkelePrimeQuest: {
+		// Name: Metal Bones
+		// Description: ""
+		// Tiers: Complete {1} Tier 4 Explorable maps ({0}/{1})
+		// EnterDomain: Enter Skeletron Prime's domain
+		// Boss: Defeat Skeletron Prime
+	}
+
+	PlanteraQuest: {
+		// Name: Ravenous Bloom
+		// Description: ""
+		// Tiers: Complete {1} Tier 5 Explorable maps ({0}/{1})
+		// EnterDomain: Enter Plantera's domain
+		// Boss: Defeat Plantera
+	}
+
+	GolemQuest: {
+		// Name: Ancient Design
+		// Description: ""
+		// Tiers: Complete {1} Tier 6 Explorable maps ({0}/{1})
+		// EnterDomain: Enter Golem's domain
+		// Boss: Defeat Golem
+	}
+
+	FishronQuest: {
+		// Name: Mad Pig...ron
+		// Description: ""
+		// Tiers: Complete {1} Tier 7 Explorable maps ({0}/{1})
+		// EnterDomain: Enter Duke Fishron's domain
+		// Boss: Defeat Duke Fishron
+	}
+
+	EoLQuest: {
+		// Name: Holy Absolution
+		// Description: ""
+		// Tiers: Complete {1} Tier 8 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Empress of Light's domain
+		// Boss: Defeat the Empress of Light
+	}
+
+	CultistQuest: {
+		// Name: Lunar Leader
+		// Description: ""
+		// Tiers: Complete {1} Tier 9 Explorable maps ({0}/{1})
+		// EnterDomain: Enter the Lunatic Cultist's domain
+		// Boss: Defeat the Lunatic Cultist
+	}
+
+	MoonLordQuest: {
+		// Name: The Ending
+		// Description: ""
+		// EnterDomain: Enter the Moon Lord's domain
+		// Boss: Defeat the Moon Lord
+	}
+}

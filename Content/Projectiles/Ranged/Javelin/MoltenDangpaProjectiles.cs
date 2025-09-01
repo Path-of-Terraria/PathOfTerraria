@@ -72,10 +72,10 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 
 	public override void OnKill(int timeLeft)
 	{
+		DeathDust();
+
 		if (Projectile.timeLeft > 3)
 		{
-			DeathDust();
-
 			if (UsingAlt && Main.myPlayer == Projectile.owner)
 			{
 				int projCount = Main.rand.Next(3, 6);
@@ -84,7 +84,8 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 				{
 					int type = ModContent.ProjectileType<MoltenDangpaBubbles>();
 					Vector2 velocity = -Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(0.5f, 1f);
-					Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center - Projectile.velocity * 3, velocity, type, (int)(Projectile.damage * 0.75f), 0);
+					Vector2 position = Projectile.Center - Projectile.velocity * 3;
+					Projectile.NewProjectile(Projectile.GetSource_Death(), position, velocity, type, (int)(Projectile.damage * 0.75f), 0, Projectile.owner);
 				}
 			}
 		}
@@ -92,12 +93,17 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 
 	private void DeathDust()
 	{
+		if (UsingAlt) // For some reason I can't figure out, alt use causes it to spawn an offset line of dust at about 45 degrees always. No dust looks fine
+		{
+			return;
+		}
+
 		Vector2 location = Projectile.Center;
 		Vector2 tip = ItemSize.RotatedBy(Projectile.rotation + MathHelper.PiOver2);
 
 		for (int i = 0; i < 16; ++i)
 		{
-			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, UsingAlt ? DustType : DustID.Lead);
+			Dust.NewDust(location + tip * Main.rand.NextFloat(), 1, 1, DustID.Lead);
 		}
 	}
 
@@ -107,7 +113,8 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 		Main.instance.LoadItem(moltenId);
 		Texture2D tex = UsingAlt ? TextureAssets.Projectile[Type].Value : TextureAssets.Item[moltenId].Value;
 		Color color = lightColor * Projectile.Opacity;
-		Main.EntitySpriteDraw(tex, Projectile.Center - Main.screenPosition, null, color, Projectile.rotation, tex.Size() * new Vector2(0.75f, 0.25f), 1f, SpriteEffects.None, 0);
+		Vector2 position = Projectile.Center - Main.screenPosition;
+		Main.EntitySpriteDraw(tex, position, null, color, Projectile.rotation, tex.Size() * new Vector2(0.75f, 0.25f), 1f, SpriteEffects.None, 0);
 
 		return false;
 	}
@@ -122,6 +129,8 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 			set => Projectile.ai[2] = value ? 1 : 0;
 		}
 
+		public ref float Timer => ref Projectile.localAI[2];
+
 		public override void SetStaticDefaults()
 		{
 			Main.projFrames[Type] = 3;
@@ -131,7 +140,7 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 		{
 			Projectile.CloneDefaults(ProjectileID.SpikyBall);
 			Projectile.timeLeft = 500;
-			Projectile.Size = new Vector2(18);
+			Projectile.Size = new Vector2(24);
 			Projectile.penetrate = -1;
 		}
 
@@ -150,13 +159,19 @@ internal class MoltenDangpaThrown() : JavelinThrown("MoltenDangpaThrown", new(94
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Torch);
 			}
 
-			return !Stuck;
+			if (Stuck && ++Timer >= 5)
+			{
+				Projectile.rotation += Projectile.velocity.X * 0.05f;
+				Projectile.velocity *= 0.9f;
+				Projectile.velocity.Y += 0.05f;
+			}
+
+			return !Stuck || Timer < 5;
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			Stuck = true;
-			Projectile.velocity = Vector2.Zero;
 			return false;
 		}
 	}

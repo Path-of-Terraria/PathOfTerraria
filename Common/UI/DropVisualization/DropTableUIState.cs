@@ -2,13 +2,12 @@
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
-using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
@@ -48,18 +47,19 @@ internal class DropResult(int count)
 
 	public void IncrementRarityCount(ItemRarity rarity)
 	{
-		if (!CountsPerRarity.ContainsKey(rarity))
+		if (!CountsPerRarity.TryGetValue(rarity, out int value))
 		{
-			CountsPerRarity.Add(rarity, 0);
+			value = 0;
+			CountsPerRarity.Add(rarity, value);
 		}
 
-		CountsPerRarity[rarity]++;
+		CountsPerRarity[rarity] = ++value;
 	}
 }
 
 internal class DropTableUIState : CloseableSmartUi
 {
-	public static readonly Point MainPanelSize = new(920, 550);
+	public static readonly Point MainPanelSize = new(1160, 760);
 
 	private enum SortMode
 	{
@@ -68,13 +68,15 @@ internal class DropTableUIState : CloseableSmartUi
 		Alphabetical
 	}
 
-	public override bool IsCentered => true;
+	protected override bool IsCentered => true;
 
-	private EditableValueUI _gearRate = null;
-	private EditableValueUI _currencyRate = null;
-	private EditableValueUI _mapRate = null;
-	private EditableValueUI _count = null;
-	private EditableValueUI _level = null;
+	private UIEditableValue _gearRate = null;
+	private UIEditableValue _currencyRate = null;
+	private UIEditableValue _mapRate = null;
+	private UIEditableValue _count = null;
+	private UIEditableValue _level = null;
+	private UIEditableValue _rarityMod = null;
+	private UIEditableValue _rateMod = null;
 	private UIButton<string> _sortButton = null;
 	private UIList _resultList = null;
 	private SortMode _sort = SortMode.None;
@@ -101,7 +103,7 @@ internal class DropTableUIState : CloseableSmartUi
 		Main.playerInventory = true;
 
 		CreateMainPanel(false, MainPanelSize, false, true);
-		Panel.VAlign = 0.7f;
+		Panel.VAlign = 0.5f;
 
 		BuildModificationPanel(Panel);
 		BuildDisplay(Panel);
@@ -205,23 +207,35 @@ internal class DropTableUIState : CloseableSmartUi
 		normalize.OnLeftClick += ClickNormalize;
 		topPanel.Append(normalize);
 
-		_count = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Count"), 10f, false, 0.5, false)
+		_count = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Count"), 50f, false, 50, false)
 		{
-			Left = StyleDimension.FromPixels(474)
+			Left = StyleDimension.FromPixels(464)
 		};
 		topPanel.Append(_count);
 
 		_level = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Level"), 0.05f, false, 0.01, false)
 		{
-			Left = StyleDimension.FromPixels(588)
+			Left = StyleDimension.FromPixels(598)
 		};
 		topPanel.Append(_level);
+
+		_rarityMod = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.RareMod"), 0, false, 0.05, false)
+		{
+			Left = StyleDimension.FromPixels(702)
+		};
+		topPanel.Append(_rarityMod);
+
+		_rateMod = new(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.RateMod"), 0, false, 0.05, false)
+		{
+			Left = StyleDimension.FromPixels(810)
+		};
+		topPanel.Append(_rateMod);
 
 		var run = new UIButton<string>(Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.DropVisualizer.Run"))
 		{
 			Width = StyleDimension.FromPixels(60),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(680)
+			Left = StyleDimension.FromPixels(920)
 		};
 
 		run.OnLeftClick += RunDatabase;
@@ -231,7 +245,7 @@ internal class DropTableUIState : CloseableSmartUi
 		{
 			Width = StyleDimension.FromPixels(110),
 			Height = StyleDimension.FromPixels(60),
-			Left = StyleDimension.FromPixels(744)
+			Left = StyleDimension.FromPixels(984)
 		};
 
 		_sortButton.OnLeftClick += ChangeSort;
@@ -270,9 +284,12 @@ internal class DropTableUIState : CloseableSmartUi
 
 	private void RollDatabase(int count, Dictionary<int, DropResult> resultsById)
 	{
+		List<ItemDatabase.ItemRecord> items = DropTable.RollManyMobDrops(count, 0, (float)_rarityMod.Value, (float)_gearRate.Value, (float)_currencyRate.Value, 
+			(float)_mapRate.Value, null, ItemRarity.Invalid, (float)_rateMod.Value);
+
 		for (int i = 0; i < count; ++i)
 		{
-			ItemDatabase.ItemRecord record = DropTable.RollMobDrops(0, 40, (float)_gearRate.Value, (float)_currencyRate.Value, (float)_mapRate.Value);
+			ItemDatabase.ItemRecord record = items[i];
 
 			if (record == ItemDatabase.InvalidItem)
 			{

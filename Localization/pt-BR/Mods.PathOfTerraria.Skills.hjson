@@ -1,0 +1,54 @@
+# These are used for the hotbar hover in NewHotbar.cs.
+// LevelLine: (Level {0}/{1})
+// ManaLine: Costs {0} mana
+// NotEnoughMana: Costs [c/FF6666:{0} mana]
+// NoWeaponLine: No weapon required
+// NoKeybindLine: No keybind detected
+// DurationLine: Lasts {0} seconds
+// CooldownLine: "{0} second cooldown"
+// KeybindLine: Press {0} to use
+// NeedsWeapon: Requires a {0} item to be held
+// BaseDamage: Deals {0} base damage
+# This is for the hover text in the skills menu.
+// CantEquip: Can't equip skill: {0}
+
+# These are the actual localization lines for skills.
+Nova: {
+	// Name: Nova
+	// Description: Create a shockwave around you based on your held magic weapon's damage
+}
+
+Berserk: {
+	// Name: Berserk
+	// Description: Deal 150% more melee damage while taking 5 more damage each time hit
+}
+
+RainOfArrows: {
+	// Name: Flurry
+	// Description: Shoot a flurry of projectiles based on your held ranged weapon towards the cursor after a short delay
+}
+
+MoltenShield: {
+	// Name: Molten Shield
+	// Description: Gain a temporary health buffer that stops 75% of incoming damage until broken.
+}
+
+BloodSiphon: {
+	// Name: Blood Siphon
+	// Description: Consume all nearby Bloodclot stacks to heal 3 health per stack. Max of 30 stacks.
+}
+
+FetidCarapace: {
+	// Name: Fetid Carapace
+	// Description: Gain some orbital projectiles that protect you from enemies and their projectiles.
+}
+
+Fireball: {
+	// Name: Fireball
+	// Description: Cast a high-damage, explosive fireball which has a chance to burn enemies.
+}
+
+IceBolt: {
+	// Name: Ice Bolt
+	// Description: Cast an ice bolt that chills any enemy it hits.
+}

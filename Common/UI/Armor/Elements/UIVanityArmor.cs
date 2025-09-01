@@ -1,136 +1,41 @@
-﻿using PathOfTerraria.Common.UI.Elements;
+﻿using PathOfTerraria.Common.AccessorySlots;
+using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
 using Terraria.UI;
+
+#nullable enable
 
 namespace PathOfTerraria.Common.UI.Armor.Elements;
 
 public sealed class UIVanityArmor : UIArmorPage
 {
-	public static readonly Asset<Texture2D> VanityFrameTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Frame_Vanity", AssetRequestMode.ImmediateLoad);
+	protected override Asset<Texture2D> DefaultFrameTexture { get; } = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Frame_Vanity", AssetRequestMode.ImmediateLoad);
 
-	public override void OnInitialize()
+	protected override UIHoverImageItemSlot?[] GetDefaultSlots()
 	{
-		base.OnInitialize();
+		return [
+			new(DefaultFrameTexture, WingsIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityWings)), $"Mods.{PoTMod.ModName}.UI.Slots.10", ItemSlot.Context.EquipAccessoryVanity),
+			new(DefaultFrameTexture, HelmetIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityHead)), $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipArmorVanity),
+			new(DefaultFrameTexture, NecklaceIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityNecklace)), $"Mods.{PoTMod.ModName}.UI.Slots.5", ItemSlot.Context.EquipAccessoryVanity),
+			//
+			null,
+			new(DefaultFrameTexture, ChestIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityBody)), $"Mods.{PoTMod.ModName}.UI.Slots.1", ItemSlot.Context.EquipArmorVanity),
+			new(DefaultFrameTexture, OffhandIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityOffhand)), $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipAccessoryVanity),
+			//
+			new(DefaultFrameTexture, RingIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityRingOn)), $"Mods.{PoTMod.ModName}.UI.Slots.7", ItemSlot.Context.EquipAccessoryVanity),
+			new(DefaultFrameTexture, LegsIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityLegs)), $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipArmorVanity),
+			new(DefaultFrameTexture, RingIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityRingOff)), $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipAccessoryVanity),
+			//
+			new(DefaultFrameTexture, MiscellaneousIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityAccessory1)), $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipAccessoryVanity),
+			new(DefaultFrameTexture, MiscellaneousIconTexture, new(() => (Player.armor, (int)RemappedEquipSlots.VanityAccessory2)), $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipAccessoryVanity),
+		];
+	}
 
-		Width = StyleDimension.FromPixels(UIArmorInventory.ArmorPageWidth);
-		Height = StyleDimension.FromPixels(UIArmorInventory.ArmorPageHeight);
+	protected override UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot)
+	{
+		var handler = new UIImageItemSlot.SlotWrapper(() => modSlot.VanityItem, value => modSlot.VanityItem = value);
+		var uiSlot = new UIHoverImageItemSlot(DefaultFrameTexture, MiscellaneousIconTexture, handler, $"Mods.{PoTMod.ModName}.UI.Slots.10", ItemSlot.Context.ModdedVanityAccessorySlot);
 
-		var wings = new UIHoverImageItemSlot(VanityFrameTexture, WingsIconTexture, ref Player.armor, 14, ItemSlot.Context.EquipAccessoryVanity)
-		{
-			ActiveScale = 1.15f,
-			ActiveRotation = MathHelper.ToRadians(1f)
-		};
-
-		wings.OnMouseOver += UpdateMouseOver;
-		wings.OnMouseOut += UpdateMouseOut;
-
-		wings.Predicate = (item, _) => item.wingSlot > 0;
-
-		Append(wings);
-
-		var helmet = new UIHoverImageItemSlot(VanityFrameTexture, HelmetIconTexture, ref Player.armor, 10, ItemSlot.Context.EquipArmorVanity)
-		{
-			HAlign = 0.5f,
-			VAlign = 0f,
-			ActiveScale = 1.15f,
-			ActiveRotation = MathHelper.ToRadians(1f)
-		};
-
-		helmet.OnMouseOver += UpdateMouseOver;
-		helmet.OnMouseOut += UpdateMouseOut;
-
-		helmet.Predicate = (item, _) => item.headSlot > 0;
-
-		Append(helmet);
-
-		var necklace = new UIHoverImageItemSlot(VanityFrameTexture, NecklaceIconTexture, ref Player.armor, 15, ItemSlot.Context.EquipAccessoryVanity)
-		{
-			HAlign = 1f,
-			VAlign = 0f,
-			ActiveScale = 1.15f,
-			ActiveRotation = MathHelper.ToRadians(1f)
-		};
-
-		necklace.OnMouseOver += UpdateMouseOver;
-		necklace.OnMouseOut += UpdateMouseOut;
-
-		necklace.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
-
-		Append(necklace);
-
-		var chest = new UIHoverImageItemSlot(VanityFrameTexture, ChestIconTexture, ref Player.armor, 11, ItemSlot.Context.EquipArmorVanity)
-		{
-			HAlign = 0.5f,
-			VAlign = 0.5f,
-			ActiveScale = 1.15f,
-			ActiveRotation = MathHelper.ToRadians(1f)
-		};
-
-		chest.OnMouseOver += UpdateMouseOver;
-		chest.OnMouseOut += UpdateMouseOut;
-
-		chest.Predicate = (item, _) => item.bodySlot > 0;
-
-		Append(chest);
-
-		var offhand = new UIHoverImageItemSlot(VanityFrameTexture, OffhandIconTexture, ref Player.armor, 16, ItemSlot.Context.EquipAccessoryVanity)
-		{
-			HAlign = 1f,
-			VAlign = 0.5f,
-			ActiveScale = 1.15f,
-			ActiveRotation = MathHelper.ToRadians(1f)
-		};
-
-		offhand.OnMouseOver += UpdateMouseOver;
-		offhand.OnMouseOut += UpdateMouseOut;
-
-		offhand.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
-
-		Append(offhand);
-
-		var leftRing = new UIHoverImageItemSlot(VanityFrameTexture, RingIconTexture, ref Player.armor, 17, ItemSlot.Context.EquipAccessoryVanity)
-		{
-			HAlign = 0f,
-			VAlign = 1f,
-			ActiveScale = 1.15f,
-			ActiveRotation = MathHelper.ToRadians(1f)
-		};
-
-		leftRing.OnMouseOver += UpdateMouseOver;
-		leftRing.OnMouseOut += UpdateMouseOut;
-
-		leftRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
-
-		Append(leftRing);
-
-		var legs = new UIHoverImageItemSlot(VanityFrameTexture, LegsIconTexture, ref Player.armor, 12, ItemSlot.Context.EquipArmorVanity)
-		{
-			HAlign = 0.5f,
-			VAlign = 1f,
-			ActiveScale = 1.15f,
-			ActiveRotation = MathHelper.ToRadians(1f)
-		};
-
-		legs.OnMouseOver += UpdateMouseOver;
-		legs.OnMouseOut += UpdateMouseOut;
-
-		legs.Predicate = (item, _) => item.legSlot > 0;
-
-		Append(legs);
-
-		var rightRing = new UIHoverImageItemSlot(VanityFrameTexture, RingIconTexture, ref Player.armor, 18, ItemSlot.Context.EquipAccessoryVanity)
-		{
-			HAlign = 1f,
-			VAlign = 1f,
-			ActiveScale = 1.15f,
-			ActiveRotation = MathHelper.ToRadians(1f)
-		};
-
-		rightRing.OnMouseOver += UpdateMouseOver;
-		rightRing.OnMouseOut += UpdateMouseOut;
-
-		rightRing.Predicate = (item, _) => item.accessory && item.wingSlot <= 0;
-
-		Append(rightRing);
+		return uiSlot;
 	}
 }

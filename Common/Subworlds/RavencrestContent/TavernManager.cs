@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,9 +13,11 @@ namespace PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 internal class TavernManager : ModSystem
 {
+	public const int SeatY = 154;
+
 	public static readonly List<string> TavernNPCFullNames = [];
 
-	private static readonly Point16[] Seats = [new Point16(505, 193), new Point16(509, 193), new Point16(511, 193), new Point16(515, 193)];
+	private static readonly Point16[] Seats = [new Point16(505, SeatY), new Point16(509, SeatY), new Point16(511, SeatY), new Point16(515, SeatY)];
 
 	public override void PostSetupContent()
 	{
@@ -32,7 +35,10 @@ internal class TavernManager : ModSystem
 		}
 	}
 
-	internal void OneTimeCheck()
+	/// <summary>
+	/// Checks spawns for taverns. Runs on all clients + server.
+	/// </summary>
+	internal static void OneTimeCheck()
 	{
 		if (SubworldSystem.Current is not RavencrestSubworld)
 		{
@@ -47,7 +53,15 @@ internal class TavernManager : ModSystem
 			}
 		}
 
-		WeightedRandom<int> entries = new();
+		if (!Main.dedServ)
+		{
+			SpawnTownNPCs();
+		}
+	}
+
+	private static void SpawnTownNPCs()
+	{
+		WeightedRandom<int> entries = new(Main.rand);
 		HashSet<int> guarantees = [];
 
 		foreach (string npcName in TavernNPCFullNames)
@@ -59,10 +73,15 @@ internal class TavernManager : ModSystem
 			{
 				guarantees.Add(npc.type);
 			}
-			else
+			else if (Main.rand.NextFloat() < tavernNPC.SpawnChanceInTavern())
 			{
-				entries.Add(npc.type, tavernNPC.SpawnChanceInTavern());
+				entries.Add(npc.type);
 			}
+		}
+
+		if (entries.elements.Count == 0 && guarantees.Count == 0)
+		{
+			return;
 		}
 
 		Queue<int> types = new(guarantees);
@@ -85,7 +104,19 @@ internal class TavernManager : ModSystem
 			int type = types.Dequeue();
 			Point16 pos = seatsToUse.Dequeue();
 
-			NPC.NewNPC(Entity.GetSource_NaturalSpawn(), pos.X * 16, pos.Y * 16, type);
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), pos.X * 16, pos.Y * 16, type);
+			}
+			else
+			{
+				ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, pos.ToWorldCoordinates());
+			}
+
+			if (seatsToUse.Count == 0)
+			{
+				return;
+			}
 		}
 	}
 }

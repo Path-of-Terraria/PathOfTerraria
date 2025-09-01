@@ -5,6 +5,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.Audio;
 using Terraria.ID;
+using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
@@ -14,6 +15,7 @@ public class QuestPanelButton : SmartUiState
 	public override bool Visible => (Main.playerInventory || UIQuestPopupState.FlashQuestButton > 0) && !Main.LocalPlayer.GetModPlayer<QuestModPlayer>().FirstQuest;
 
 	private static Asset<Texture2D> BookTexture = null;
+	private static bool LastHover = false;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -29,11 +31,7 @@ public class QuestPanelButton : SmartUiState
 	{
 		base.SafeUpdate(gameTime);
 
-		Vector2 pos = new(GetTextureXPosition(), 80);
-		Texture2D texture = BookTexture.Value;
-		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f), (int)pos.Y, texture.Width, texture.Height);
-
-		if (bounding.Contains(Main.MouseScreen.ToPoint()))
+		if (UIHelper.GetInvButtonInfo(80, out _))
 		{
 			Main.LocalPlayer.mouseInterface = true;
 		}
@@ -42,7 +40,7 @@ public class QuestPanelButton : SmartUiState
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		Texture2D texture = BookTexture.Value;
-		Vector2 pos = new(GetTextureXPosition(), 80);
+		bool hover = UIHelper.GetInvButtonInfo(80, out Vector2 pos);
 		Color color = Color.White;
 
 		if (!Main.playerInventory && UIQuestPopupState.FlashQuestButton > 0)
@@ -55,7 +53,23 @@ public class QuestPanelButton : SmartUiState
 			}
 		}
 
-		spriteBatch.Draw(texture, pos, null, color, 0, new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
+		if (hover)
+		{
+			Player player = Main.LocalPlayer;
+			player.cursorItemIconText = Language.GetTextValue("Mods.PathOfTerraria.UI.InvButtons.Quest");
+			player.noThrow = 2;
+			player.cursorItemIconID = -1;
+			player.cursorItemIconEnabled = true;
+		}
+
+		if (hover != LastHover)
+		{
+			SoundEngine.PlaySound(LastHover ? SoundID.MenuTick with { Pitch = -0.3f } : SoundID.MenuTick);
+		}
+
+		LastHover = hover;
+
+		spriteBatch.Draw(texture, pos, new Rectangle(0, hover ? 64 : 0, 64, 64), color, 0, new Vector2(texture.Width / 1.125f, 0), 1, 0, 0);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
@@ -63,7 +77,8 @@ public class QuestPanelButton : SmartUiState
 		Texture2D texture = BookTexture.Value;
 		Vector2 pos = new(GetTextureXPosition(), 80);
 
-		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f), (int)pos.Y, texture.Width, texture.Height);
+		//Uses just a 64/64 texture size
+		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f), (int)pos.Y, 64, 64);
 
 		if (!bounding.Contains(Main.MouseScreen.ToPoint()))
 		{
@@ -72,9 +87,10 @@ public class QuestPanelButton : SmartUiState
 
 		SoundEngine.PlaySound(SoundID.MenuOpen);
 		SmartUiLoader.GetUiState<QuestsUIState>().Toggle();
+		Main.playerInventory = true;
 	}
 
-	private float GetTextureXPosition()
+	private static float GetTextureXPosition()
 	{
 		float screenWidth = Main.screenWidth / 1.12f;
 		return screenWidth switch

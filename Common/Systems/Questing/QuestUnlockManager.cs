@@ -19,7 +19,10 @@ internal class QuestUnlockManager : ModSystem
 
 	public static bool CanStartQuest(string name)
 	{
-		return ModContent.GetInstance<QuestUnlockManager>().isAvailable[name];
+		// We need to use TryGetValue here as otherwise very early access to this method can throw KeyNotFound.
+		// This is because the isAvailable population occurs late in the update process.
+		QuestUnlockManager manager = ModContent.GetInstance<QuestUnlockManager>();
+		return manager.isAvailable.TryGetValue(name, out bool value) && value && Quest.GetLocalPlayerInstance(name).CanBeStarted;
 	}
 
 	public static bool LocationHasQuest(string location)

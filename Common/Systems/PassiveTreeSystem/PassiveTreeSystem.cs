@@ -2,33 +2,14 @@
 using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.PassiveTreeSystem;
-
-public class PassiveEdge(Passive start, Passive end)
-{
-	public readonly Passive Start = start;
-	public readonly Passive End = end;
-
-	public bool Contains(Passive p)
-	{
-		return p == Start || p == End;
-	}
-
-	/// <summary>
-	/// Assuming that p is either start or end - Contains returned true.
-	/// </summary>
-	public Passive Other(Passive p)
-	{
-		return p == Start ? End : Start;
-	}
-}
 
 // ReSharper disable once ClassNeverInstantiated.Global
 internal class PassiveTreePlayer : ModPlayer
@@ -44,7 +25,7 @@ internal class PassiveTreePlayer : ModPlayer
 	public int ExtraPoints;
 
 	public List<Passive> ActiveNodes = [];
-	public List<PassiveEdge> Edges = [];
+	public List<Edge> Edges = [];
 
 	private TagCompound _saveData = [];
 
@@ -55,28 +36,20 @@ internal class PassiveTreePlayer : ModPlayer
 
 	public void CreateTree()
 	{
-		ActiveNodes = [];
-		Edges = [];
-
-		Dictionary<int, Passive> passives = [];
-		List<PassiveData> data = PassiveRegistry.GetPassiveData();
-
-		data.ForEach(n => 
-		{
-			passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n)); 
-			ActiveNodes.Add(passives[n.ReferenceId]); 
-		});
-
-		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new PassiveEdge(passives[n.ReferenceId], passives[connection.ReferenceId]))));
+		ResetNodes();
 
 		ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 		Points = expPlayer.EffectiveLevel + ExtraPoints;
+
+		SetTree();
+	}
+
+	private void SetTree()
+	{
 		foreach (Passive passive in ActiveNodes)
 		{
-			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.InternalIdentifier == "AnchorPassive" ? 1 : 0;
-			// standard is id 1 is anchor for now.
-			// no handling for multiple anchors..
-			
+			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.Name == "AnchorPassive" ? 1 : 0;
+
 			if (passive is JewelSocket jsPassive)
 			{
 				if (_saveData.TryGet("_" + passive.ReferenceId, out TagCompound tag))
@@ -85,11 +58,28 @@ internal class PassiveTreePlayer : ModPlayer
 				}
 			}
 
-			if (passive.InternalIdentifier != "AnchorPassive" && passive.Level > 0)
+			if (passive.Name != "AnchorPassive" && passive.Level > 0)
 			{
 				Points -= passive.Level;
 			}
 		}
+	}
+
+	private void ResetNodes()
+	{
+		ActiveNodes = [];
+		Edges = [];
+
+		Dictionary<int, Passive> passives = [];
+		List<PassiveData> data = PassiveRegistry.GetPassiveData();
+
+		data.ForEach(n =>
+		{
+			passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n));
+			ActiveNodes.Add(passives[n.ReferenceId]);
+		});
+
+		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new Edge(passives[n.ReferenceId], passives[connection.ReferenceId]))));
 	}
 
 	public override void UpdateEquips()
@@ -101,7 +91,11 @@ internal class PassiveTreePlayer : ModPlayer
 	{
 		foreach (Passive passive in ActiveNodes)
 		{
-			tag[passive.ReferenceId.ToString()] = passive.Level;
+			if (passive.Level > 0)
+			{
+				tag[passive.ReferenceId.ToString()] = passive.Level;
+			}
+
 			if (passive is JewelSocket jsPassive && jsPassive.Socketed is not null)
 			{
 				TagCompound jewelTag = [];
@@ -111,12 +105,17 @@ internal class PassiveTreePlayer : ModPlayer
 		}
 		
 		tag["extraPoints"] = ExtraPoints;
+
+		_saveData = tag;
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
 		_saveData = tag;
 		ExtraPoints = tag.GetInt("extraPoints");
+
+		ResetNodes();
+		SetTree();
 	}
 
 	internal int GetCumulativeLevel(string internalIdentifier)
@@ -125,7 +124,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 		foreach (Passive passive in ActiveNodes)
 		{
-			if (passive.InternalIdentifier == internalIdentifier)
+			if (passive.Name == internalIdentifier)
 			{
 				level += passive.Level;
 			}
@@ -136,23 +135,23 @@ internal class PassiveTreePlayer : ModPlayer
 
 	public bool FullyLinkedWithout(Passive passive)
 	{
-		HashSet<Passive> autoComplete = [];
+		HashSet<Allocatable> autoComplete = [];
 
-		foreach (PassiveEdge e in Edges)
+		foreach (Edge e in Edges)
 		{
 			if (!e.Contains(passive) || e.Other(passive).Level <= 0)
 			{
 				continue;
 			}
 
-			Tuple<bool, HashSet<Passive>> ret = CanFindAnchor(e.Other(passive), autoComplete, passive);
+			Tuple<bool, HashSet<Allocatable>> ret = CanFindAnchor(e.Other(passive), autoComplete, passive);
 
 			if (!ret.Item1)
 			{
 				return false;
 			}
 
-			foreach (Passive p in ret.Item2)
+			foreach (Allocatable p in ret.Item2)
 			{
 				if (p != passive)
 				{
@@ -164,29 +163,29 @@ internal class PassiveTreePlayer : ModPlayer
 		return true;
 	}
 
-	private Tuple<bool, HashSet<Passive>> CanFindAnchor(Passive from, HashSet<Passive> autoComplete, Passive removed)
+	private Tuple<bool, HashSet<Allocatable>> CanFindAnchor(Allocatable from, HashSet<Allocatable> autoComplete, Allocatable removed)
 	{
-		if (autoComplete.Contains(from) || from.InternalIdentifier == "AnchorPassive")
+		if (autoComplete.Contains(from) || from.Name == "AnchorPassive")
 		{
-			return new Tuple<bool, HashSet<Passive>>(true, []);
+			return new Tuple<bool, HashSet<Allocatable>>(true, []);
 		}
 
-		HashSet<Passive> passed = [from, removed];
-		List<Passive> toCheck = [from];
+		HashSet<Allocatable> passed = [from, removed];
+		List<Allocatable> toCheck = [from];
 
 		while (toCheck.Count != 0)
 		{
-			Passive p = toCheck[0];
+			Allocatable p = toCheck[0];
 			if (Edges.Any(e => e.Contains(p) && autoComplete.Contains(e.Other(p))))
 			{
-				return new Tuple<bool, HashSet<Passive>>(true, passed);
+				return new Tuple<bool, HashSet<Allocatable>>(true, passed);
 			}
 
-			IEnumerable<Passive> add = Edges.Where(e => e.Contains(p) && e.Other(p).Level > 0 && !passed.Contains(e.Other(p))).Select(e => e.Other(p));
+			IEnumerable<Allocatable> add = Edges.Where(e => e.Contains(p) && e.Other(p).Level > 0 && !passed.Contains(e.Other(p))).Select(e => e.Other(p));
 
-			if (add.Any(p => p.InternalIdentifier == "AnchorPassive"))
+			if (add.Any(p => p.Name == "AnchorPassive"))
 			{
-				return new Tuple<bool, HashSet<Passive>>(true, passed);
+				return new Tuple<bool, HashSet<Allocatable>>(true, passed);
 			}
 
 			toCheck.AddRange(add);

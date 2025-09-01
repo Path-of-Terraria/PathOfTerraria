@@ -24,16 +24,39 @@ internal class OldManMarkerNPC : IQuestMarkerNPC
 
 internal class OldManModifiers : GlobalNPC
 {
+	private static Dictionary<int, ITownNPCProfile> ProfileDict;
+	private static int OldManHeadSlot = -1;
+
 	public override void Load()
 	{
 		int slot = Mod.AddNPCHeadTexture(NPCID.OldMan, $"{PoTMod.ModName}/Assets/NPCs/Town/OldMan_Head");
 
 		// Properly add a NPC head to the Old Man
 		FieldInfo internalDictInfo = typeof(TownNPCProfiles).GetField("_townNPCProfiles", BindingFlags.Instance | BindingFlags.NonPublic);
-		var dict = internalDictInfo.GetValue(TownNPCProfiles.Instance) as Dictionary<int, ITownNPCProfile>;
-		dict[NPCID.OldMan] = TownNPCProfiles.LegacyWithSimpleShimmer("OldMan", slot, -1, uniquePartyTexture: false, uniquePartyTextureShimmered: false);
+		ProfileDict = internalDictInfo.GetValue(TownNPCProfiles.Instance) as Dictionary<int, ITownNPCProfile>;
+		ITownNPCProfile prof = TownNPCProfiles.LegacyWithSimpleShimmer("OldMan", slot, -1, uniquePartyTexture: false, uniquePartyTextureShimmered: false);
+		ProfileDict[NPCID.OldMan] = prof;
+
+		// Gets the head slot from the new profile so we can disable it from appearing, since Old Man can't move in anywhere
+		OldManHeadSlot = prof.GetHeadTextureIndex(ContentSamples.NpcsByNetId[NPCID.OldMan]);
 
 		IL_Main.GUIChatDrawInner += AddOldManButtonHook;
+	}
+
+	public override void SetStaticDefaults()
+	{
+		NPCHeadID.Sets.CannotBeDrawnInHousingUI[OldManHeadSlot] = true;
+	}
+
+	public override void Unload()
+	{
+		ProfileDict?.Remove(NPCID.OldMan);
+
+		if (OldManHeadSlot != -1 && OldManHeadSlot < NPCHeadID.Sets.CannotBeDrawnInHousingUI.Length)
+		{
+			NPCHeadID.Sets.CannotBeDrawnInHousingUI[OldManHeadSlot] = false;
+			OldManHeadSlot = -1;
+		}
 	}
 
 	private void AddOldManButtonHook(ILContext il)
@@ -54,10 +77,14 @@ internal class OldManModifiers : GlobalNPC
 	{
 		NPC talkNPC = Main.LocalPlayer.TalkNPC;
 
-		if (talkNPC is not null && talkNPC.type == NPCID.OldMan && QuestUnlockManager.CanStartQuest<SkeletronQuest>())
+		if (talkNPC is not null && talkNPC.type == NPCID.OldMan)
 		{
 			buttonOne = "";
-			buttonTwo = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+
+			if (QuestUnlockManager.CanStartQuest<SkeletronQuest>())
+			{
+				buttonTwo = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+			}
 		}
 	}
 

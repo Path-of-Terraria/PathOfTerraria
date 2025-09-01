@@ -1,3 +1,5 @@
+using PathOfTerraria.Common.AccessorySlots;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Armor.Elements;
 using PathOfTerraria.Common.UI.Elements;
 using ReLogic.Content;
@@ -19,18 +21,18 @@ public sealed class UIArmorInventory : UIState
 	/// <summary>
 	///     The height of each armor page, in pixels.
 	/// </summary>
-	public const float ArmorPageHeight = 190f;
+	public const float ArmorPageHeight = 304f;
 
 	public const float Smoothness = 0.3f;
 
-	public const float Margin = 40f;
+	public const float Margin = 42f;
 
 	public const float RootPadding = 16f;
 
 	public const float DefensePadding = 4f;
 
 	public const float LoadoutPadding = 8f;
-
+	
 	public static readonly Asset<Texture2D> LeftButtonTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Button_Left", AssetRequestMode.ImmediateLoad);
 
 	public static readonly Asset<Texture2D> RightButtonTexture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Inventory/Button_Right", AssetRequestMode.ImmediateLoad);
@@ -64,6 +66,9 @@ public sealed class UIArmorInventory : UIState
 	private string previousDefense;
 
 	internal UIElement Root;
+	//Used for tracking of hardmode UI changes
+	private UIElement buttonRoot;
+	private UIElement defenseRoot;
 
 	/// <summary>
 	///     <para>
@@ -137,6 +142,25 @@ public sealed class UIArmorInventory : UIState
 		}
 
 		UpdateRootPosition();
+		UpdateLayoutBasedOnActiveAccessorySlots();
+	}
+
+	private void UpdateLayoutBasedOnActiveAccessorySlots()
+	{
+		const int NumDefaultSlots = 2;
+		int numSlots = NumDefaultSlots + ExtraAccessorySlots.CountActiveAndAllowedExtraAccessorySlots(Main.LocalPlayer);
+		int numRows = (int)Math.Ceiling(numSlots / 3f);
+		
+		const int OffsetPerRow = 56;
+		const int BaseRowOffset = -2;
+
+		float positionOffset = (BaseRowOffset + numRows) * OffsetPerRow;
+
+		// Update button positioning
+		buttonRoot.Top.Set(ArmorPageHeight + RootPadding + positionOffset, 0f);
+		
+		// Update defense counter positioning  
+		defenseRoot.Top.Set(ArmorPageHeight + RootPadding + DefenseCounterTexture.Height() + RootPadding + positionOffset, 0f);
 	}
 
 	private void UpdatePagePosition(UIElement page, int index)
@@ -258,11 +282,12 @@ public sealed class UIArmorInventory : UIState
 
 	private UIElement BuildPageButtons()
 	{
-		var buttonRoot = new UIElement
+		buttonRoot = new UIElement
 		{
 			Width = StyleDimension.FromPixels(ArmorPageWidth),
 			Height = StyleDimension.FromPixels(LeftButtonTexture.Height()),
 			Left = StyleDimension.FromPixels(FirstLoadoutIconTexture.Width() + RootPadding),
+			//Raise it if its not in hardmode.
 			Top = StyleDimension.FromPixels(ArmorPageHeight + RootPadding)
 		};
 
@@ -278,6 +303,7 @@ public sealed class UIArmorInventory : UIState
 		leftButton.OnLeftClick += HandleLeftPageClick;
 		leftButton.OnMouseOver += UpdateMouseOver;
 		leftButton.OnMouseOut += UpdateMouseOut;
+		leftButton.OnUpdate += GenericHover;
 
 		buttonRoot.Append(leftButton);
 
@@ -293,6 +319,7 @@ public sealed class UIArmorInventory : UIState
 		rightButton.OnLeftClick += HandleRightPageClick;
 		rightButton.OnMouseOver += UpdateMouseOver;
 		rightButton.OnMouseOut += UpdateMouseOut;
+		rightButton.OnUpdate += GenericHover;
 
 		buttonRoot.Append(rightButton);
 
@@ -320,9 +347,17 @@ public sealed class UIArmorInventory : UIState
 		return buttonRoot;
 	}
 
+	private void GenericHover(UIElement affectedElement)
+	{
+		if (affectedElement.ContainsPoint(Main.MouseScreen))
+		{
+			Main.LocalPlayer.mouseInterface = true;
+		}
+	}
+	
 	private UIElement BuildDefenseCounter()
 	{
-		var defenseRoot = new UIElement
+		defenseRoot = new UIElement
 		{
 			Width = StyleDimension.FromPixels(ArmorPageWidth),
 			Height = StyleDimension.FromPixels(DefenseCounterTexture.Height()),

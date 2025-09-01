@@ -19,8 +19,9 @@ internal class WoodenBoomerang : Boomerang
 	{
 		base.SetDefaults();
 
-		Item.damage = 5;
+		Item.damage = 6;
 		Item.shootSpeed = 12;
 		Item.autoReuse = true;
+		Item.value = Item.buyPrice(0, 0, 0, 10);
 	}
 }

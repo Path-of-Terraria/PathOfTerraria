@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
+using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -13,18 +14,12 @@ namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
 internal class FireStarter : Sword, GenerateName.IItem
 {
-	public int ItemLevel
-	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
-	}
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
 
 		PoTStaticItemData staticData = this.GetStaticData();
-		staticData.DropChance = 5f;
+		staticData.DropChance = 1f;
 		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
@@ -37,17 +32,28 @@ internal class FireStarter : Sword, GenerateName.IItem
 		Item.damage = 4;
 		Item.Size = new(38);
 		Item.UseSound = SoundID.Item1;
+		Item.value = Item.buyPrice(0, 0, 5, 0);
 	}
 	
 	string GenerateName.IItem.GenerateName(string defaultName)
 	{
-		return $"[c/FF0000:{Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName")}]";
+		return Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName");
 	}
-	
-	public override List<ItemAffix> GenerateImplicits()
+
+	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
-		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
-		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(-1, 0.1f, 0.15f);
+		TooltipLine nameTip = tooltips.First(x => x.Name == "ItemName");
+
+		if (nameTip is not null)
+		{
+			nameTip.OverrideColor = Color.Red;
+		}
+	}
+
+	public override List<ItemAffix> GenerateAffixes()
+	{
+		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(1, 4);
+		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(0.1f, 0.15f);
 		return [sharpAffix, onFireAffix];
 	}
 	

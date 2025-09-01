@@ -1,23 +1,27 @@
-﻿using Terraria.Localization;
+﻿using Terraria.GameContent;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 
 public readonly struct GiveItem(int stack, params int[] ids)
 {
+	/// <summary> Returns a formatted list of names corresponding to <see cref="Ids"/> with stack indicators. </summary>
 	public string Names
 	{
 		get
 		{
-			string names = "";
 			string or = Language.GetTextValue($"Mods.{PoTMod.ModName}.Quests.Or");
+			string names = string.Empty;
 
 			for (int i = 0; i < Ids.Length; i++)
 			{
-				int id = Ids[i];
-				names += Lang.GetItemNameValue(id) + (i == Ids.Length - 1 ? "" : (i == Ids.Length - 2 ? or : ", "));
+				int type = Ids[i];
+				int localCount = Math.Min(Main.LocalPlayer.CountItem(type, Stack), Stack);
+
+				names += Lang.GetItemNameValue(type) + $" ({localCount} / {Stack})" + ((i == Ids.Length - 2) ? or : ", ");
 			}
 
-			return names;
+			return names[..^2];
 		}
 	}
 
@@ -35,13 +39,14 @@ public readonly struct GiveItem(int stack, params int[] ids)
 /// <param name="reqItems">If not null, the items required to be held by the player when talking to the NPC.</param>
 /// <param name="removeItems">If true, and <paramref name="reqItems"/> is not null, all <paramref name="reqItems"/> will be taken up to the required stack.</param>
 /// <param name="onSuccessfulInteraction">An action that is run when the interaction is successful (the step is completed).</param>
-internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveItem[] reqItems = null, 
+internal class InteractWithNPC(int npcId, LocalizedText reminder, LocalizedText dialogue = null, GiveItem[] reqItems = null, 
 	bool removeItems = false, Action<NPC> onSuccess = null) : QuestStep
 {
 	private static LocalizedText TalkToText = null;
 
 	private readonly int NpcId = npcId;
 	private readonly LocalizedText NpcDialogue = dialogue;
+	private readonly LocalizedText Reminder = reminder;
 	private readonly GiveItem[] RequiredItems = reqItems;
 	private readonly bool RemoveItems = removeItems;
 	private readonly Action<NPC> OnSuccess = onSuccess;
@@ -56,15 +61,38 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 		if (RequiredItems is not null)
 		{
 			baseText += Language.GetText($"Mods.{PoTMod.ModName}.Quests.GiveThem");
-			int id = 0;
 
-			foreach (GiveItem item in RequiredItems)
+			for (int i = 0; i < RequiredItems.Length; i++)
 			{
-				baseText += $"\n  {++id}. {item.Stack}x {item.Names}";
+				GiveItem item = RequiredItems[i];
+				baseText += $"\n  {i + 1}. {item.Stack}x {item.Names}";
 			}
 		}
 		
 		return baseText;
+	}
+
+	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)
+	{
+		ReLogic.Graphics.DynamicSpriteFont font = FontAssets.ItemStack.Value;
+		Color col = StepColor(currentStep);
+		string[] texts = DisplayString().Split('\n');
+		bool throwaway = false;
+
+		for (int i = 0; i < texts.Length; ++i)
+		{
+			Vector2 pos = topLeft + new Vector2(0, i * 20);
+			Color color = col;
+
+			if (currentStep == StepCompletion.Current && i > 0 && CheckSingleItem(Main.LocalPlayer, ref throwaway, RequiredItems[i - 1]))
+			{
+				color = Color.Green;
+			}
+
+			DrawString(texts[i], pos, color, currentStep);
+		}
+
+		uiHeight = texts.Length * 22;
 	}
 
 	public override bool Track(Player player)
@@ -79,18 +107,7 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 			{
 				foreach (GiveItem item in RequiredItems)
 				{
-					int count = 0;
-
-					for (int i = 0; i < item.Ids.Length; ++i)
-					{
-						count += player.CountItem(item.Ids[i]);
-					}
-
-					if (count < item.Stack)
-					{
-						hasAllItems = false;
-						break;
-					}
+					CheckSingleItem(player, ref hasAllItems, item);
 				}
 
 				if (hasAllItems)
@@ -136,5 +153,29 @@ internal class InteractWithNPC(int npcId, LocalizedText dialogue = null, GiveIte
 		}
 
 		return finished;
+	}
+
+	private static bool CheckSingleItem(Player player, ref bool hasAllItems, GiveItem item)
+	{
+		int count = 0;
+
+		for (int i = 0; i < item.Ids.Length; ++i)
+		{
+			count += player.CountItem(item.Ids[i]);
+		}
+
+		if (count < item.Stack)
+		{
+			hasAllItems = false;
+			return false;
+		}
+
+		return true;
+	}
+
+	public override string ReminderText(ref string title)
+	{
+		title = Language.GetTextValue("Mods.PathOfTerraria.UI.QuestReminderTitles.Dialogue");
+		return Reminder.Value;
 	}
 }

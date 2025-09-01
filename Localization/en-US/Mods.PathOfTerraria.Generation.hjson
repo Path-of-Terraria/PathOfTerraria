@@ -1,3 +1,5 @@
+RavencrestEntrancePass: Opening Ravencrest
+FrozenRuinPass: ""
 Terrain: Generating terrain
 Tunnels: Digging tunnels
 PopulatingWorld: Populating world
@@ -5,6 +7,15 @@ Steps: Building steps
 Arenas: Building arenas
 Pathway: Discovering pathway
 RavenPass: Nevermore
+TreesAndLeaves: Adding trees and leaves
+Structures: Building structures
+Maze: Escaping the maze
+PopulatingMetals: Scattering metals
+Hole: Digging hole
+Growing: Growing land
+Clouds: Exploring the sky
+Space: Escaping the atmosphere
+Scanning: Scanning terrain
 
 EaterSign: {
 	0: "{0} was instantly devoured."
@@ -43,3 +54,5 @@ EyeSign: {
 		8: Roald
 	}
 }
+
+RemoveBeeLarvaeStep: ""

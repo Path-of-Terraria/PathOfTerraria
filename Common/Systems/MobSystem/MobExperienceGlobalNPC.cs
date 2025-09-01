@@ -1,5 +1,8 @@
 using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Common.Systems.Experience;
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.ExperienceSystem;
+using SubworldLibrary;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 
@@ -11,12 +14,12 @@ public class MobExperienceGlobalNPC : GlobalNPC
 	/// <param name="npc"></param>
 	public override void OnKill(NPC npc)
 	{
-		if (npc.friendly || npc.CountsAsACritter)
+		if (npc.friendly || npc.CountsAsACritter || !npc.AnyInteractions() || NPCID.Sets.ProjectileNPC[npc.type])
 		{
 			return;
 		}
 		
-		MobAprgSystem npcSystem = npc.GetGlobalNPC<MobAprgSystem>();
+		ArpgNPC npcSystem = npc.GetGlobalNPC<ArpgNPC>();
 
 		if (npcSystem is null)
 		{
@@ -31,14 +34,20 @@ public class MobExperienceGlobalNPC : GlobalNPC
 #endif
 		
 		int amount = npcSystem.Experience ?? (int)Math.Max(1, npc.lifeMax * 0.25f);
+
 		amount = npcSystem.Rarity
 			switch //We will need to evaluate this as magic/rare natively get more HP. So we do even want this? Was just POC, maybe just change amount evaluation?
 			{
-				ItemRarity.Rare => Convert.ToInt32(amount * 1.1), //Rare mobs give 10% increase xp
-				ItemRarity.Magic => Convert.ToInt32(amount * 1.05), //Magic mobs give 5% increase xp
+				ItemRarity.Rare => (int)(amount * 1.1f), //Rare mobs give 10% increase xp
+				ItemRarity.Magic => (int)(amount * 1.05f), //Magic mobs give 5% increase xp
 				_ => amount
 			};
-		
+
+		if (SubworldSystem.Current is MappingWorld world)
+		{
+			amount += MappingWorld.ModifyExperience(amount);
+		}
+
 		foreach (Player player in Main.ActivePlayers)
 		{
 			if (Vector2.DistanceSquared(player.Center, npc.Center) > 2000 * 2000)

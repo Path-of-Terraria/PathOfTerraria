@@ -1,22 +1,35 @@
-﻿using PathOfTerraria.Common.Systems.ModPlayers;
+﻿using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using Terraria.DataStructures;
+using Terraria.UI;
 
 namespace PathOfTerraria.Core.Items;
 
-internal sealed partial class PoTGlobalItem : GlobalItem
+public sealed partial class PoTGlobalItem : GlobalItem
 {
 	public override void Load()
 	{
-		LoadBackImages();
+		On_ItemSlot.MouseHover_int += CorrectRecipeResultLevel;
 	}
 
 	// IMPORTANT: Called *after* ModItem::SetDefaults.
 	// https://github.com/tModLoader/tModLoader/blob/1.4.4/patches/tModLoader/Terraria/ModLoader/Core/GlobalLoaderUtils.cs#L20
-	public override void SetDefaults(Item entity)
+	public override void SetDefaults(Item item)
 	{
-		base.SetDefaults(entity);
+		base.SetDefaults(item);
+
+		PoTInstanceItemData data = item.GetInstanceData();
+		PoTStaticItemData staticData = item.GetStaticData();
 
 		// Makes Affixes use a new reference so that rerolling or updating Affixes in another instance doesn't share the reference
-		entity.GetInstanceData().Affixes = [];
+		data.Affixes = [];
+
+		if (staticData.IsUnique)
+		{
+			data.Rarity = ItemRarity.Unique;
+		}
+
+		PoTItemHelper.Roll(item, PoTItemHelper.PickItemLevel());
 	}
 
 	public override void UpdateEquip(Item item, Player player)
@@ -32,5 +45,35 @@ internal sealed partial class PoTGlobalItem : GlobalItem
 			entity.legSlot > 0 || entity.ModItem is IPoTGlobalItem;
 
 		return anyValidTrait && !entity.vanity;
+	}
+	
+	public override void OnCreated(Item item, ItemCreationContext context)
+	{
+		// Only apply to gear items that should use dynamic levels
+		if (GearGlobalItem.IsGearItem(item))
+		{
+			//Not clamping to hardmode specifically but making sure it's identified as a craft
+			int appropriateLevel = PoTItemHelper.PickItemLevel(false, true);
+			SetItemLevel.Invoke(item, appropriateLevel);
+		}
+	}
+
+	private static void CorrectRecipeResultLevel(On_ItemSlot.orig_MouseHover_int orig, int context)
+	{
+		orig(context);
+
+		// This method is called with this context every time it sets Main.HoverItem to a clone of a recipe result.
+		if (context == ItemSlot.Context.CraftingMaterial && Main.HoverItem is { IsAir: false } hoverItem && GearGlobalItem.IsGearItem(hoverItem) && hoverItem.TryGetGlobalItem(out PoTInstanceItemData data))
+		{
+			// Calculate what the crafting level should be
+			int expectedCraftingLevel = PoTItemHelper.PickItemLevel(false, true);
+
+			// Check if this is a preview for crafting
+			if (data.RealLevel < expectedCraftingLevel)
+			{
+				// Create a temporary item copy with the correct crafting level
+				SetItemLevel.Invoke(hoverItem, expectedCraftingLevel);
+			}
+		}
 	}
 }

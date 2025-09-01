@@ -16,15 +16,15 @@ using Terraria.Localization;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
-using Terraria;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
 public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverheadDialogueNPC
 {
-	Point16 ISpawnInRavencrestNPC.TileSpawn => new(319, 163);
+	Point16 ISpawnInRavencrestNPC.TileSpawn => (RavencrestSystem.Structures["Lodge"].Position + new Point(18, 28)).ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
 	public override void SetStaticDefaults()

@@ -1,6 +1,6 @@
 using System.Collections.Generic;
+using System.Linq;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Core.Graphics;
 
 namespace PathOfTerraria.Common.Mechanics;
 
@@ -19,57 +19,73 @@ public sealed class Experience
 		public const int OrbLargeBlue =    10000;
 	}
 
-	private const int ExtraUpdates = 7;
+	private const int ExtraUpdates = 1;
 
 	public readonly float Rotation;
+	public readonly int Target;
 
-	private readonly Queue<Vector2> _oldCenters;
-	private readonly int _value;
+	private readonly List<Vector2> _oldCenters;
 	private readonly float _magnitude;
-	private readonly int _target;
 
 	public Vector2 Center;
 	public bool Active;
 	public bool Collected;
 
 	private Vector2 _velocity;
-	private Color[] _collectedTrail;
-	private bool _oldCollected;
+	private int _value;
+	private byte _canMergeTimer = 255;
+	private float _modMagnitude = 0;
 
 	public Experience(int xp, Vector2 startPosition, Vector2 startVelocity, int targetPlayer)
 	{
 		_value = xp;
 
-		Vector2 size = GetSize();
-		if (size == Vector2.Zero)
-		{
-			throw new Exception("Invalid xp count: " + xp);
-		}
+		GetSize(); // Used only to throw an ArgumentException if it fails
 
 		Center = startPosition;
 		Active = true;
 		Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
+		Target = targetPlayer;
 
 		_velocity = startVelocity;
-		_target = targetPlayer;
 		_magnitude = startVelocity.Length();
-		_oldCenters = new Queue<Vector2>();
+		_oldCenters = [.. Enumerable.Repeat(Center, 8)];
+		_canMergeTimer = 120;
+		_modMagnitude = _magnitude;
 	}
 
-	public Vector2 GetSize()
+	public int GetSize()
 	{
 		return _value switch
 		{
-			Sizes.OrbSmallYellow or Sizes.OrbSmallGreen or Sizes.OrbSmallBlue => new Vector2(6),
-			Sizes.OrbMediumYellow or Sizes.OrbMediumGreen or Sizes.OrbMediumBlue => new Vector2(8),
-			Sizes.OrbLargeYellow or Sizes.OrbLargeGreen or Sizes.OrbLargeBlue => new Vector2(10),
-			_ => Vector2.Zero
+			>= Sizes.OrbLargeBlue => Sizes.OrbLargeBlue,
+			>= Sizes.OrbLargeGreen => Sizes.OrbLargeGreen,
+			>= Sizes.OrbLargeYellow => Sizes.OrbLargeYellow,
+			>= Sizes.OrbMediumBlue => Sizes.OrbMediumBlue,
+			>= Sizes.OrbMediumGreen => Sizes.OrbMediumGreen,
+			>= Sizes.OrbMediumYellow => Sizes.OrbMediumYellow,
+			>= Sizes.OrbSmallBlue => Sizes.OrbSmallBlue,
+			>= Sizes.OrbSmallGreen => Sizes.OrbSmallGreen,
+			>= Sizes.OrbSmallYellow => Sizes.OrbSmallYellow,
+			_ => throw new ArgumentException("value is equal to or less than 0. This should never happen.")
 		};
+	}
+
+	public float GetScale()
+	{
+		float scale = 1f;
+
+		if (GetSize() == Sizes.OrbLargeBlue)
+		{
+			scale += MathF.Sqrt((_value - Sizes.OrbLargeBlue) * 0.00001f);
+		}
+
+		return scale;
 	}
 
 	private Color GetTrailColor()
 	{
-		return _value switch
+		return GetSize() switch
 		{
 			Sizes.OrbSmallYellow or Sizes.OrbMediumYellow or Sizes.OrbLargeYellow => Color.Yellow,
 			Sizes.OrbSmallGreen or Sizes.OrbMediumGreen or Sizes.OrbLargeGreen => Color.LimeGreen,
@@ -80,7 +96,7 @@ public sealed class Experience
 
 	public Rectangle GetSourceRectangle()
 	{
-		return _value switch
+		return GetSize() switch
 		{
 			Sizes.OrbSmallYellow => new Rectangle(0, 0, 6, 6),
 			Sizes.OrbSmallGreen => new Rectangle(8, 0, 6, 6),
@@ -95,40 +111,36 @@ public sealed class Experience
 		};
 	}
 
-	public void Update()
+	public void Update(int who, Experience[] experienceList)
 	{
 		if (!Active)
 		{
 			return;
 		}
 
-		_oldCollected = Collected;
+		Player player = Main.player[Target];
 
-		//Home in on the player, unless they've disconnected
-		Player player = Main.player[_target];
-
-		if (!player.active)
+		if (!player.active) // Clear if the player isn't active
 		{
 			Collected = true;
+			return;
 		}
 
 		if (Collected)
 		{
-			//Make the trail shrink
-			if (_oldCenters.Count == 0)
+			if (_oldCenters.Count == 0) // Make the trail shrink
 			{
 				Active = false;
 			}
 			else
 			{
-				for (int i = 0; i < ExtraUpdates + 1; i++)
-				{
-					_oldCenters.Dequeue();
-				}
+				_oldCenters.RemoveAt(0);
 			}
 
 			return;
 		}
+
+		MergeFunctionality(who, experienceList);
 
 		for (int i = 0; i < ExtraUpdates + 1; i++)
 		{
@@ -136,24 +148,65 @@ public sealed class Experience
 		}
 	}
 
+	private void MergeFunctionality(int who, Experience[] experienceList)
+	{
+		if (_canMergeTimer > 0)
+		{
+			_canMergeTimer--;
+		}
+
+		if (!Collected && who != experienceList.Length - 1 && _canMergeTimer == 0)
+		{
+			for (int i = who + 1; i < experienceList.Length; i++)
+			{
+				Experience exp = experienceList[i];
+
+				if (exp != null && !exp.Collected && exp.Target == Target && (long)exp._value + _value < int.MaxValue)
+				{
+					float dist = Center.DistanceSQ(exp.Center);
+
+					if (dist < 5 * 5)
+					{
+						exp.Collected = true;
+						_value += exp._value;
+					}
+					else if (dist < 24 * 24)
+					{
+						exp._velocity += exp.Center.DirectionTo(Center) * 0.7f;
+						exp._modMagnitude = exp._magnitude * 1.25f;
+					}
+				}
+			}
+		}
+	}
+
 	private void InnerUpdate()
 	{
-		Player player = Main.player[_target];
+		Player player = Main.player[Target];
 
-		// Lazily home towards player
-		_velocity += player.DirectionFrom(Center) * 0.1f;
+		_velocity += player.DirectionFrom(Center) * 0.2f; // Lazily home towards player
 
-		if (_velocity.LengthSquared() > _magnitude * _magnitude) // Cap speed to original magnitude
+		if (player.DistanceSQ(Center) < 120 * 120) // Decay velocity a bit so the exp doesn't forever dance around the player
 		{
-			_velocity = Vector2.Normalize(_velocity) * _magnitude;
+			_velocity *= 0.99f;
 		}
 
-		if (_oldCenters.Count >= 30 * (ExtraUpdates + 1))
+		if (_velocity.LengthSquared() > _modMagnitude * _modMagnitude) // Cap speed to original magnitude
 		{
-			_oldCenters.Dequeue();
+			_velocity = Vector2.Normalize(_velocity) * _modMagnitude;
 		}
 
-		_oldCenters.Enqueue(Center);
+		_modMagnitude = MathHelper.Lerp(_modMagnitude, _magnitude, 0.1f);
+
+		if (Main.GameUpdateCount % 2 == 0) // Increase spacing for trails
+		{
+			if (_oldCenters.Count >= 8 * (ExtraUpdates + 1))
+			{
+				_oldCenters.RemoveAt(0);
+			}
+
+			_oldCenters.Add(Center);
+		}
 
 		Center += _velocity / (ExtraUpdates + 1);
 
@@ -170,66 +223,50 @@ public sealed class Experience
 		Color color = GetTrailColor();
 		int trailColorCount = _oldCenters.Count + 1;
 		var colors = new Color[trailColorCount];
-
-		if (_oldCollected && _collectedTrail is not null)
-		{
-			return;
-		}
-
-		colors[^1] = color;
-		int i = 0;
-		foreach (Vector2 _ in _oldCenters)
-		{
-			colors[i] = Color.Lerp(color, Color.Transparent, 1f - i / (float)trailColorCount);
-			i++;
-		}
-
-		_collectedTrail = colors;
 	}
 
-	public void DrawTrail()
+	public override string ToString()
+	{
+		return $"{Active}: Collected: {Collected} Value: {_value}";
+	}
+
+	internal void Draw(SpriteBatch batch, Texture2D texture, bool isTrail = false, Vector2? centerOverride = null, float opacity = 1f)
 	{
 		if (!Active)
 		{
 			return;
 		}
 
-		Vector2 size = GetSize();
+		if (!isTrail)
+		{
+			DrawTrail(batch, texture);
+		}
+
+		Vector2 size = GetSize() switch
+		{
+			Sizes.OrbSmallYellow or Sizes.OrbSmallGreen or Sizes.OrbSmallBlue => new Vector2(6),
+			Sizes.OrbMediumYellow or Sizes.OrbMediumGreen or Sizes.OrbMediumBlue => new Vector2(8),
+			Sizes.OrbLargeYellow or Sizes.OrbLargeGreen or Sizes.OrbLargeBlue => new Vector2(10),
+			_ => Vector2.Zero
+		};
+
 		if (size == Vector2.Zero)
 		{
 			return;
 		}
 
-		//No trail yet
-		if (_oldCenters.Count == 0)
+		Rectangle source = GetSourceRectangle();
+		float scale = GetScale();
+
+		batch.Draw(texture, (centerOverride ?? Center) - Main.screenPosition, source, Color.White * opacity, Rotation, size / 2f, scale, SpriteEffects.None, 0);
+	}
+
+	internal void DrawTrail(SpriteBatch batch, Texture2D texture)
+	{
+		for (int i = 0; i < _oldCenters.Count; i++)
 		{
-			return;
+			Vector2 item = _oldCenters[i];
+			Draw(batch, texture, true, item, i / (float)_oldCenters.Count * 0.5f);
 		}
-
-		Color color = GetTrailColor();
-		int trailColorCount = _oldCenters.Count + 1;
-		var colors = new Color[trailColorCount];
-
-		if (!_oldCollected)
-		{
-			//Manually set the colors
-			colors[^1] = color;
-			int i = 0;
-			foreach (Vector2 _ in _oldCenters)
-			{
-				colors[i] = Color.Lerp(color, Color.Transparent, 1f - i / (float)trailColorCount);
-				i++;
-			}
-		}
-		else
-		{
-			Array.Copy(_collectedTrail, _collectedTrail.Length - trailColorCount, colors, 0, trailColorCount);
-		}
-
-		var points = new Vector2[trailColorCount];
-		points[^1] = Center;
-		_oldCenters.CopyTo(points, 0);
-
-		PrimitiveDrawing.DrawLineStrip(points, colors);
 	}
 }

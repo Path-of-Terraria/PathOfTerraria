@@ -6,7 +6,7 @@ namespace PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
 
 internal class PoacherSummon : GrimoireSummon
 {
-	public override int BaseDamage => 12;
+	public override int BaseDamage => 36;
 
 	protected bool WallClimb
 	{

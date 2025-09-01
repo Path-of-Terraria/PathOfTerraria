@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.MiscUtilities;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -8,7 +9,7 @@ namespace PathOfTerraria.Content.Tiles.BossDomain;
 
 internal class HiveSpawner : ModTile
 {
-	private static int LastFrameX = 0;
+	private static short LastFrameX = 0;
 
 	public override void SetStaticDefaults()
 	{
@@ -64,6 +65,11 @@ internal class HiveSpawner : ModTile
 			if (type == NPCID.Bee)
 			{
 				Main.npc[npc].velocity = new Vector2(2, 0).RotatedByRandom(MathHelper.TwoPi);
+			}
+
+			if (Main.netMode != NetmodeID.MultiplayerClient)
+			{
+				SpawnerSystem.SpawnerRecord.TryAdd(npc, new(Type, LastFrameX, new Point16(i, j)));
 			}
 		}
 	}

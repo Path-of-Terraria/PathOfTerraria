@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
@@ -9,6 +11,8 @@ using PathOfTerraria.Content.Items.Pickups.GrimoirePickups;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Content.NPCs.Town;
 using Terraria.DataStructures;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 
@@ -26,27 +30,46 @@ internal class WoFQuest : Quest
 	{
 		return
 		[
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardStart"),
+			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardStart"), LocalizedText.Empty,
 				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<TinyHat>())),
 			new ParallelQuestStep([
-				new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), this.GetLocalization("ThrainHelp"),
+				new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("ThrainHelp"),
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<DwarvenGreatsword>())),
-				new InteractWithNPC(ModContent.NPCType<HunterNPC>(), this.GetLocalization("ElaraHelp"),
+				new InteractWithNPC(ModContent.NPCType<HunterNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("ElaraHelp"),
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<Twinbow>())),
-				new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), this.GetLocalization("MorganaHelp"),
+				new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("MorganaHelp"),
 					null, false, (npc) => 
 					{
 						for (int i = 0; i < 3; ++i)
 						{
-							Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<SoulfulAsh>());
-							Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<FlamingEye>());
+							int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<SoulfulAsh>());
+
+							if (Main.netMode == NetmodeID.MultiplayerClient)
+							{
+								NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+							}
+
+							item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<FlamingEye>());
+
+							if (Main.netMode == NetmodeID.MultiplayerClient)
+							{
+								NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+							}
 						}
 					}),
 			]),
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardContinue"),
-				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>())),
+			new InteractWithNPC(NPCQuestGiver, LocalizedText.Empty, this.GetLocalization("WizardContinue"),
+				null, false, (npc) =>
+				{
+					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>());
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
+				}),
 			new ConditionCheck(_ => Main.hardMode, 1, this.GetLocalization("KillWall")),
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish")),
+			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish"), onSuccess: _ => Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>()),
 		];
 	}
 

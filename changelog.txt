@@ -1,0 +1,10 @@
+v0.2.12
+- Fixed a critical issue where right clicking a non-equippable item could equip or even duplicate it.
+- Fixed a critical issue where right clicking an accessory could delete it forever.
+- Fixed an issue that could lead to crashes in accessory-adjacent code of other mods such as Calamity's Vanities.
+- Fixed hardmode accessory slots' unreachable items' effects being applied even in non-hardmode worlds.
+- Fixed accessories put in extra accessory slots not being visible.
+- Fixed right clicks not working on extra accessory slots.
+- Removes Desert explorable map spawn rate nerfs
+- Substantially boosts spawn rate in Forest map
+- Improves some Bestiary entries for PoT enemies

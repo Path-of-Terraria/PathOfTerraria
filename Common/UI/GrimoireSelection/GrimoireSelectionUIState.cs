@@ -1,27 +1,32 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Utilities;
-using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
+using PathOfTerraria.Content.Items.Pickups;
 using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
+using ReLogic.Graphics;
+using System.Collections.Generic;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.UI.GrimoireSelection;
 
-internal class GrimoireSelectionUIState : CloseableSmartUi
+internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 {
 	public static readonly Point MainPanelSize = new(900, 550);
 
-	public override bool IsCentered => true;
+	protected override bool IsCentered => true;
 
 	public static Asset<Texture2D> EmptySummonTexture = null;
+	public static Asset<Texture2D> MorganaHelp = null;
+	public static Asset<Texture2D> HelpBack = null;
 
 	public static Item EmptyItem
 	{
@@ -33,14 +38,15 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		}
 	}
 
-	private readonly static Item[] _parts = [EmptyItem, EmptyItem, EmptyItem, EmptyItem, EmptyItem];
-
 	private static UIGrid _storageGrid = null;
 	private static UIGrid _summonGrid = null;
 	private static UIGrimoireSacrifice _sacrificePanel = null;
-	private static UIImage _currentSummon = null;
 	private static Item _trashItem = null;
 	private static UIItemIcon _trashSlot = null;
+	private static bool _helpOpen = false;
+	private static bool _helpHover = false;
+	private static bool _heyHelp = false;
+	private static float _helpOpacity = 0;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -51,8 +57,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 	{
 		base.SafeUpdate(gameTime);
 
-		bool offItem = Main.LocalPlayer.HeldItem.ModItem is not GrimoireItem && !Main.LocalPlayer.controlTorch;
-		if (IsVisible && (offItem || !Main.playerInventory))
+		if (IsVisible && !Main.playerInventory)
 		{
 			Toggle();
 		}
@@ -64,22 +69,98 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		Main.inventoryScale = 0.8f;
 		base.Draw(spriteBatch);
 		Main.inventoryScale = invSize;
+
+		DrawMorganaHelp(spriteBatch);
 	}
 
-	internal void Toggle()
+	private void DrawMorganaHelp(SpriteBatch spriteBatch)
+	{
+		if (Main.LocalPlayer.GetModPlayer<GrimoirePlayer>().FirstOpenMenagerie)
+		{
+			_heyHelp = true;
+		}
+
+		Main.LocalPlayer.GetModPlayer<GrimoirePlayer>().FirstOpenMenagerie = false;
+
+		CalculatedStyle panelSize = Panel.GetDimensions();
+		Vector2 topLeft = panelSize.Position();
+		Vector2 pos = topLeft + new Vector2(66, 14);
+		Rectangle rect = new((int)pos.X, (int)pos.Y, 34, 34);
+		bool hover = rect.Contains(Main.MouseScreen.ToPoint());
+		Rectangle src = new(36 * hover.ToInt(), 36 * _helpOpen.ToInt(), 34, 34);
+		spriteBatch.Draw(MorganaHelp.Value, pos, src, Color.White);
+
+		if (_heyHelp)
+		{
+			if (_helpOpen)
+			{
+				_heyHelp = false;
+			}
+
+			string heyText = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.ClickMe");
+			Vector2 heyPos = topLeft + new Vector2(52, -6 + MathF.Sin((float)Main.timeForVisualEffects * 0.1f) * 4);
+			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, heyText, heyPos, Color.White, -0.2f, Vector2.Zero, Vector2.One);
+		}
+
+		if (hover)
+		{
+			if (Main.mouseLeft && Main.mouseLeftRelease)
+			{
+				_helpOpen = !_helpOpen;
+			}
+
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = GetType().Name,
+				SimpleTitle = "Help",
+			});
+		}
+
+		if (_helpHover != hover)
+		{
+			SoundEngine.PlaySound(SoundID.MenuTick, Main.LocalPlayer.Center);
+		}
+
+		_helpHover = hover;
+		_helpOpacity = MathHelper.Lerp(_helpOpacity, _helpOpen ? 1 : 0, 0.08f);
+
+		if (_helpOpacity < 0.01f)
+		{
+			return;
+		}
+
+		spriteBatch.Draw(HelpBack.Value, topLeft, Color.White * _helpOpacity);
+		DynamicSpriteFont font = FontAssets.ItemStack.Value;
+		string text = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.Help.Materials");
+		DrawHelpText(spriteBatch, topLeft + new Vector2(30, panelSize.Y * 1.5f), font, text, 320);
+
+		text = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.Help.Summons");
+		DrawHelpText(spriteBatch, topLeft + new Vector2(430, 250), font, text, 420);
+
+		text = Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.Help.Ritual");
+		DrawHelpText(spriteBatch, topLeft + new Vector2(446, 544), font, text, 420);
+	}
+
+	private static void DrawHelpText(SpriteBatch spriteBatch, Vector2 position, DynamicSpriteFont font, string text, int maxWidth)
+	{
+		Vector2 size = ChatManager.GetStringSize(font, text, Vector2.One, maxWidth);
+		position.Y += 28;
+		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, text, position, Color.White * _helpOpacity, 0f, size * new Vector2(0f, 1f), Vector2.One, maxWidth);
+	}
+
+	public void Toggle()
 	{
 		RemoveAllChildren();
+
+		_helpOpen = false;
 
 		Width = StyleDimension.Fill;
 		Height = StyleDimension.Fill;
 
 		EmptySummonTexture ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/Projectiles/Summoner/GrimoireSummons/Empty_Icon");
+		MorganaHelp ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/MorganaHelp");
+		HelpBack ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/Grimoire/HelpBack");
 		IsVisible = !IsVisible;
-
-		for (int i = 0; i < _parts.Length; i++)
-		{
-			_parts[i] = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().StoredParts[i];
-		}
 
 		if (!IsVisible)
 		{
@@ -88,6 +169,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			return;
 		}
 
+		ModContent.GetInstance<SmartUiLoader>().ClearMutuallyExclusive<GrimoireSelectionUIState>();
+
 		Main.playerInventory = true;
 
 		CreateMainPanel(false, MainPanelSize, false, true);
@@ -95,7 +178,12 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 		BuildSummonSelect(Panel);
 		BuildStorage(Panel);
-		BuildSacrifice(Panel);
+
+		Panel.Append(_sacrificePanel = new UIGrimoireSacrifice()
+		{
+			HAlign = 0.86f,
+			VAlign = 0.9f
+		});
 
 		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
 		CloseButton.Left.Set(PointsAndExitPadding, 0);
@@ -113,58 +201,6 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		Recalculate();
 	}
 
-	private static void BuildSacrifice(UICloseablePanel panel)
-	{
-		_sacrificePanel = new UIGrimoireSacrifice()
-		{
-			HAlign = 0.86f,
-			VAlign = 0.9f
-		};
-		panel.Append(_sacrificePanel);
-
-		_currentSummon = new UIImage(EmptySummonTexture)
-		{
-			Width = StyleDimension.FromPixels(32),
-			Height = StyleDimension.FromPixels(32),
-			HAlign = 0.5f,
-			VAlign = -0.2f
-		};
-		_sacrificePanel.Append(_currentSummon);
-		SetCurrentSummonImage();
-
-		for (int i = 0; i < 5; ++i)
-		{
-			var pos = UIGrimoireSacrifice.GetSlotPosition(i).ToPoint();
-			var slot = new UIItemSlot(_parts, i, ItemSlot.Context.ChestItem)
-			{
-				Width = StyleDimension.FromPixels(32),
-				Height = StyleDimension.FromPixels(32),
-				HAlign = 0.5f,
-				VAlign = 0.5f,
-				Left = StyleDimension.FromPixels(pos.X),
-				Top = StyleDimension.FromPixels(pos.Y),
-			};
-
-			int currentSlot = i;
-			slot.OnLeftClick += (_, _) => PutSlotItemInStorage(currentSlot);
-			slot.OnUpdate += (self) => HoverOverItem(self, _parts[currentSlot]);
-			_sacrificePanel.Append(slot);
-		}
-	}
-
-	private static void PutSlotItemInStorage(int partsSlot)
-	{
-		if (_parts[partsSlot].IsAir)
-		{
-			return;
-		}
-
-		Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(_parts[partsSlot].Clone());
-		Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().StoredParts[partsSlot] = EmptyItem;
-		_parts[partsSlot] = EmptyItem;
-		RefreshStorage();
-	}
-
 	private static void BuildSummonSelect(UICloseablePanel panel)
 	{
 		var mainPanel = new UIPanel()
@@ -175,7 +211,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		panel.Append(mainPanel);
 
-		mainPanel.Append(new UIImage(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GrimoireButton"))
+		mainPanel.Append(new UIImageFramed(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Grimoire/GrimoireButton"), new Rectangle(0, 0, 64, 64))
 		{
 			VAlign = -0.24f,
 			HAlign = 0.5f,
@@ -221,7 +257,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			_summonGrid.Add(summonIcon);
 
 			summonIcon.OnUpdate += (self) => UpdateSummonIcon(self as UIColoredImageButton, summon);
-			summonIcon.OnLeftClick += (_, _) => ClickSummon(summon);
+			summonIcon.OnLeftClick += (a, b) => ClickSummon(summon);
 		}
 
 		_summonGrid.Recalculate();
@@ -229,73 +265,48 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void ClickSummon(GrimoireSummon summon)
 	{
-		GrimoireSummonPlayer summoner = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>();
-
-		if (summoner.HasSummon(summon.Type))
+		if (GrimoirePlayer.Get().CanUseSummon(summon, out GrimoireSummonLoader.Requirement requirements))
 		{
-			summoner.CurrentSummonId = summoner.CurrentSummonId == summon.Type ? -1 : summon.Type;
-			SetCurrentSummonImage();
-			RefreshStorage();
-
-			for (int i = 0; i < 5; ++i)
-			{
-				PutSlotItemInStorage(i);
-			}
-
-			return;
-		}
-
-		// Kinda messy code that checks for unlocks
-		Dictionary<int, int> storage = Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().GetStoredCount();
-		bool cantUnlock = false;
-		Dictionary<int, int> requirements = ModContent.GetInstance<GrimoireSummonLoader>().RequiredPartsByProjectileId[summon.Type];
-
-		foreach (KeyValuePair<int, int> item in requirements)
-		{
-			if (!storage.TryGetValue(item.Key, out int value) || value < item.Value)
-			{
-				cantUnlock = true;
-				break;
-			}
-		}
-
-		if (cantUnlock)
-		{
-			_sacrificePanel.SetHint(requirements);
+			ToggleSummon(summon, requirements);
 		}
 		else
 		{
-			summoner.UnlockSummon(summon.Type);
-
-			for (int i = 0; i < 16; ++i)
-			{
-				Dust.NewDust(Main.LocalPlayer.position, Player.defaultWidth, Player.defaultHeight, DustID.Confetti + Main.rand.Next(4), 0, -6);
-			}
+			_sacrificePanel.SetHint(requirements);
+			SoundEngine.PlaySound(SoundID.Item1 with { Pitch = 0.5f });
 		}
 
 		RefreshStorage();
-	}
 
-	private static void SetCurrentSummonImage()
-	{
-		int id = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
-		_currentSummon.SetImage(id == -1 ? EmptySummonTexture : GrimoireSummon.IconsById[id]);
-		_currentSummon.Recalculate();
+		static void ToggleSummon(GrimoireSummon summon, GrimoireSummonLoader.Requirement items)
+		{
+			var summoner = GrimoirePlayer.Get();
+			bool deactivate = summoner.CurrentSummonId == summon.Type;
+
+			summoner.CurrentSummonId = deactivate ? -1 : summon.Type;
+			_sacrificePanel.RefreshSummonImage();
+			RefreshStorage();
+
+			SoundEngine.PlaySound((deactivate ? SoundID.MenuClose : SoundID.MenuOpen) with { Pitch = 0.5f });
+		}
 	}
 
 	private static void UpdateSummonIcon(UIColoredImageButton self, GrimoireSummon item)
 	{
-		self.SetColor(Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().HasSummon(item.Type) ? Color.White : new Color(100, 100, 100));
+		self.SetColor(GrimoirePlayer.Get().CanUseSummon(item, out _) ? Color.White : new Color(100, 100, 100));
 
 		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()))
 		{
 			return;
 		}
 
-		Tooltip.SetName(item.DisplayName.Value);
 		string tooltip = Language.GetTextValue($"Mods.{item.Mod.Name}.Projectiles.{item.Name}.Description");
 		tooltip += "\n" + Language.GetText($"Mods.{item.Mod.Name}.UI.BaseDamage").Format(item.BaseDamage);
-		Tooltip.SetTooltip(tooltip);
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "SummonIcon",
+			SimpleTitle = item.DisplayName.Value,
+			SimpleSubtitle = tooltip,
+		});
 	}
 
 	private static void BuildStorage(UICloseablePanel panel)
@@ -307,7 +318,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		panel.Append(mainPanel);
 
-		mainPanel.Append(new UIText("Storage", 1, true)
+		mainPanel.Append(new UIText(Language.GetTextValue("Mods.PathOfTerraria.UI.Grimoire.Storage"), 1, true)
 		{
 			HAlign = 0.5f,
 		});
@@ -336,6 +347,8 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 		};
 		_storageGrid.SetScrollbar(scrollBar);
 		_storageGrid.OnUpdate += SpamRecalculate;
+		_storageGrid.OnLeftClick += (a, b) => StoreItem(Main.mouseItem);
+
 		mainPanel.Append(scrollBar);
 
 		RefreshStorage();
@@ -358,9 +371,14 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	internal static void RefreshStorage()
 	{
+		if (_storageGrid is null)
+		{
+			return;
+		}
+		
 		_storageGrid.Clear();
 
-		int summonId = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>().CurrentSummonId;
+		int summonId = GrimoirePlayer.Get().CurrentSummonId;
 		Dictionary<int, int> parts = null;
 
 		if (summonId > ProjectileID.None)
@@ -369,7 +387,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			parts = summon.GetRequiredParts();
 		}
 
-		foreach (Item item in Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage)
+		foreach (Item item in Main.LocalPlayer.GetModPlayer<GrimoirePlayer>().Storage)
 		{
 			if (parts != null && !parts.ContainsKey(item.type))
 			{
@@ -383,8 +401,14 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			};
 			_storageGrid.Add(storageIcon);
 
-			storageIcon.OnUpdate += (self) => HoverOverItem(self, item);
 			storageIcon.OnLeftClick += (_, self) => ClickStorageItem(item);
+			storageIcon.OnUpdate += (self) =>
+			{
+				if (self.ContainsPoint(Main.MouseScreen))
+				{
+					UpdateSlot(item);
+				}
+			};
 		}
 
 		_storageGrid.Recalculate();
@@ -393,40 +417,49 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 
 	private static void ClickStorageItem(Item item)
 	{
-		GrimoireStoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>();
-
-		if (Main.LocalPlayer.controlTorch)
+		var summoner = GrimoirePlayer.Get();
+		if (ItemSlot.ShiftInUse)
 		{
-			storagePlayer.Storage.Remove(item);
-			_trashItem = item.Clone();
-			item.TurnToAir();
-			RefreshStorage();
-			BuildTrashSlot(true);
+			summoner.Storage.Remove(item);
+
+			for (int i = 0; i < summoner.StoredParts.Length; ++i)
+			{
+				if (summoner.StoredParts[i].IsAir)
+				{
+					summoner.Storage.Remove(item);
+					summoner.StoredParts[i] = item.Clone();
+					RefreshStorage();
+
+					break;
+				}
+			}
+
+			summoner.StoredParts.CopyTo(summoner.StoredParts, 0);
 			return;
 		}
 
-		GrimoireSummonPlayer grimSummoner = Main.LocalPlayer.GetModPlayer<GrimoireSummonPlayer>();
-
-		for (int i = 0; i < _parts.Length; ++i)
+		if (Main.mouseItem.IsAir)
 		{
-			Item part = _parts[i];
-
-			if (part == item)
-			{
-				_parts[i] = EmptyItem.Clone();
-				break;
-			}
-
-			if (part.IsAir)
-			{
-				storagePlayer.Storage.Remove(item);
-				_parts[i] = item;
-				RefreshStorage();
-				break;
-			}
+			summoner.Storage.Remove(item);
+			Main.mouseItem = item.Clone();
 		}
 
-		_parts.CopyTo(grimSummoner.StoredParts, 0);
+		RefreshStorage();
+	}
+
+	private static void StoreItem(Item item)
+	{
+		if (item.ModItem is not GrimoirePickup)
+		{
+			return;
+		}
+
+		GrimoirePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<GrimoirePlayer>();
+
+		storagePlayer.Storage.Add(item.Clone());
+		item.TurnToAir();
+
+		RefreshStorage();
 	}
 
 	private static void BuildTrashSlot(bool remove)
@@ -446,7 +479,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			Left = StyleDimension.FromPixelsAndPercent(-38, 0.5f)
 		};
 
-		_trashSlot.OnLeftClick += (_, _) => PutTrashBackInStorage();
+		_trashSlot.OnLeftClick += (a, b) => PutTrashBackInStorage();
 		panel.Append(_trashSlot);
 	}
 
@@ -457,22 +490,30 @@ internal class GrimoireSelectionUIState : CloseableSmartUi
 			return;
 		}
 
-		Main.LocalPlayer.GetModPlayer<GrimoireStoragePlayer>().Storage.Add(_trashItem.Clone());
+		Main.LocalPlayer.GetModPlayer<GrimoirePlayer>().Storage.Add(_trashItem.Clone());
 		_trashItem = new Item(ItemID.TrashCan);
 
 		BuildTrashSlot(true);
 		RefreshStorage();
 	}
 
-	private static void HoverOverItem(UIElement self, Item item)
+	public static void UpdateSlot(Item item)
 	{
-		if (!self.GetDimensions().ToRectangle().Contains(Main.MouseScreen.ToPoint()) || item.IsAir || item.type == ItemID.None)
+		if (item.IsAir || item.type == ItemID.None)
 		{
 			return;
 		}
 
-		List<DrawableTooltipLine> tooltips = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
-		Tooltip.SetFancyTooltip(tooltips[1..]);
-		Tooltip.SetName(tooltips[0].Text);
+		if (ItemSlot.ShiftInUse)
+		{
+			Main.cursorOverride = 9;
+		}
+
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "GrimoireSelection",
+			AssociatedItem = item,
+			Lines = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer),
+		});
 	}
 }

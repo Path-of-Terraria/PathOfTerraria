@@ -1,4 +1,6 @@
-﻿using Terraria.ID;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.BossDomain;
 

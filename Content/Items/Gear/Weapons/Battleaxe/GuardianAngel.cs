@@ -2,7 +2,7 @@
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.Projectiles.Melee;
 using PathOfTerraria.Core.Items;
 using ReLogic.Content;
@@ -30,6 +30,7 @@ internal class GuardianAngel : SteelBattleaxe
 
 		Item.width = 54;
 		Item.height = 54;
+		Item.value = Item.buyPrice(0, 0, 15, 0);
 	}
 	
 	public override bool AltFunctionUse(Player player)
@@ -61,11 +62,11 @@ internal class GuardianAngel : SteelBattleaxe
 		}
 	}
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(-1, 1, 4);
-		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(-1, 0.2f, 0.6f);
-		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>(-1, 0.1f, 0.2f);
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(1, 4);
+		var attackSpeedAffix = (ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(0.2f, 0.6f);
+		var armorShredAffix = (ItemAffix)Affix.CreateAffix<AddedKnockbackItemAffix>(0.1f, 0.2f);
 		var noFallDamage = (ItemAffix)Affix.CreateAffix<NoFallDamageAffix>(1);
 		return [addedDamageAffix, attackSpeedAffix, armorShredAffix, noFallDamage];
 	}
@@ -114,7 +115,7 @@ internal class GuardianAngel : SteelBattleaxe
 
 			if (Main.netMode != NetmodeID.SinglePlayer && !fromNet)
 			{
-				SyncGuardianAngelHandler.Send((byte)playerWho, (short)npc.whoAmI);
+				ModContent.GetInstance<SyncGuardianAngelHandler>().Send((byte)playerWho, (short)npc.whoAmI);
 			}
 		}
 

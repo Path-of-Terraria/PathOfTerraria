@@ -1,20 +1,20 @@
+using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.Localization;
-using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
-using PathOfTerraria.Common.NPCs.QuestMarkers;
-using PathOfTerraria.Content.Items.Quest;
-using Terraria.DataStructures;
+using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
-using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Content.Items.Quest;
+using Terraria;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -22,8 +22,6 @@ namespace PathOfTerraria.Content.NPCs.Town;
 public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNPC
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
-
-	private float animCounter;
 
 	public override void SetStaticDefaults()
 	{
@@ -36,6 +34,12 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -74,14 +78,6 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		return Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue." + Main.rand.Next(4));
 	}
 
-	public override void AddShops()
-	{
-		if (!ShopUtils.TryCloneNpcShop("Terraria/DD2Bartender/Shop", Type))
-		{
-			Mod.Logger.Error($"Failed to clone shop 'Terraria/DD2Bartender/Shop' to NPC '{Name}'!");
-		}
-	}
-
 	public override void TownNPCAttackStrength(ref int damage, ref float knockback)
 	{
 		damage = 13;
@@ -116,7 +112,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		button = Language.GetTextValue("LegacyInterface.28");
 		button2 = !Quest.GetLocalPlayerInstance<KingSlimeQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 
-		EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
 		{
@@ -124,7 +120,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 			Main.npcChatCornerItem = ModContent.ItemType<LunarLiquid>();
 		}
 
-		KingSlimeQuest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
+		Quest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
 
 		if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
 		{
@@ -141,12 +137,18 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 		}
 		else
 		{
-			EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
-			KingSlimeQuest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
+			Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+			Quest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
 
 			if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
 			{
-				Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>());
+				int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>(), noGrabDelay: true);
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+				}
+
 				Main.npcChatText = this.GetLocalization("Dialogue.GetKingMapAgain").Value;
 				return;
 			}
@@ -156,7 +158,12 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 				if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5)
 				{
 					Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarLiquid").Value;
-					Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>());
+					int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>(), noGrabDelay: true);
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
 
 					for (int i = 0; i < 5; ++i)
 					{
@@ -173,30 +180,12 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<KingSlimeQuest>();
-			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>());
 		}
 	}
 
-	public override void FindFrame(int frameHeight)
+	public override bool CanTownNPCSpawn(int numTownNPCs)
 	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
+		return true; //Tavern NPCs can only move into Tavern rooms
 	}
 
 	public bool HasQuestMarker(out Quest quest)
@@ -207,7 +196,9 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 
 	public bool ForceSpawnInTavern()
 	{
-		return Quest.GetLocalPlayerInstance<KingSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
+		bool kingSlime = Quest.GetLocalPlayerInstance<KingSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
+		bool eoC = Quest.GetLocalPlayerInstance<EoCQuest>().Active;
+		return kingSlime || eoC;
 	}
 
 	public float SpawnChanceInTavern()

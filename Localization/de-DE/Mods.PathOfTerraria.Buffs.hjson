@@ -1,0 +1,98 @@
+BattleAxeBuff: {
+	DisplayName: Kampfrage
+	Description: Erhöht verursachten und erlittenen Schaden
+}
+
+RageBuff: {
+	DisplayName: Berserk
+	Description: Erhöht Schaden und erhöht Rückstoß sehr viel
+}
+
+MoltenShieldBuff: {
+	DisplayName: Geschmolzener Panzer
+	Description: Erhalte für kurze Zeit einen Schild/ Erhalte eine kleine Menge Abwehr
+}
+
+BloodclotDebuff: {
+	DisplayName: "Blutgerinnsel  "
+	// Description: ""
+	DeathText: "Blutung kann nicht gestoppt werden "
+}
+
+ArmorShredDebuff: {
+	DisplayName: "Rüstungszerlegung "
+	// Description: ""
+}
+
+ShockDebuff: {
+	DisplayName: Schock
+	Description: 10% erhöhter erlittener Schaden
+}
+
+RootedDebuff: {
+	DisplayName: Gefesselt
+	Description: Du kannst dich nicht Bewegen!
+}
+
+GodlikeBuff: {
+	DisplayName: Göttlichkeit
+	Description: "Du bist immun gegen jeglichen direkten Schaden "
+}
+
+RestorationBuff: {
+	DisplayName: "Regeneration "
+	Description: "Massiv erhöhte Lebensregeneration "
+}
+
+HardinessBuff: {
+	DisplayName: Widerstandsfähigkeit
+	Description: +10 Armor und 20% Abwehr Chance
+}
+
+HasteBuff: {
+	// DisplayName: Haste Buff
+	/* Description:
+		'''
+		+20% movement speed
+		+15% attack speed
+		''' */
+}
+
+UnstoppableBuff: {
+	// DisplayName: Unstoppable Buff
+	/* Description:
+		'''
+		+50% shielding health
+		Immunity to Chilled
+		''' */
+}
+
+FrostflameDebuff: {
+	// DisplayName: Frostflame Debuff
+	// Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
+}
+
+SporeDebuff: {
+	// DisplayName: Spore Debuff
+	// Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
+}
+
+BlindedDebuff: {
+	// DisplayName: Blinded
+	// Description: Attacks have a chance to miss
+}
+
+HasteChargeBuff: {
+	// DisplayName: Haste Charge Buff
+	// Description: Increases attack speed and movement speed by {0}%
+}
+
+AegisChargeBuff: {
+	// DisplayName: Aegis Charge Buff
+	// Description: Increases max health by {0} and defense by {1}
+}
+
+FocusChargeBuff: {
+	// DisplayName: Focus Charge Buff
+	// Description: Increases critical strike chance and multiplier by {0}%
+}

@@ -1,14 +1,15 @@
-﻿using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
-using PathOfTerraria.Core.Items;
-using ReLogic.Content;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.GrimoireSelection;
+using PathOfTerraria.Content.Projectiles.Summoner.GrimoireSummons;
+using PathOfTerraria.Core.Items;
+using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Content;
+using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
-using PathOfTerraria.Core.UI.SmartUI;
-using Terraria.DataStructures;
+using Terraria.UI;
 
 namespace PathOfTerraria.Content.Items.Pickups;
 
@@ -37,6 +38,7 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Grimoire;
+		Item.value = Item.sellPrice(silver: 20);
 	}
 
 	public override void OnSpawn(IEntitySource source)
@@ -54,17 +56,25 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 		PoTItemHelper.Roll(Item, PoTItemHelper.PickItemLevel());
 	}
 
-	public override bool ItemSpace(Player player)
+	public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+	{
+		if (this.GetInstanceData().Affixes.Count > 0)
+		{
+			spriteBatch.Draw(GrimoirePickupLoader.AffixIconTex.Value, position - origin * 0.9f, Color.White);
+		}
+	}
+	
+	public override bool CanRightClick()
 	{
 		return true;
 	}
-
+	
 	public override bool OnPickup(Player player)
 	{
-		List<Item> storage = player.GetModPlayer<GrimoireStoragePlayer>().Storage;
-		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Item.Name).Value;
+		string spawnText = Language.GetText("Mods.PathOfTerraria.Misc.GrimoireConsume").WithFormatArgs(Lang.GetItemName(Type)).Value;
+
+		StoreItem(Item);
 		Color textColor = Color.IndianRed;
-		storage.Add(Item);
 		int projType = ModContent.ProjectileType<GrimoireVisageEffect>();
 		
 		if (player.ownedProjectileCounts[projType] <= 0)
@@ -82,20 +92,32 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 
 		PopupText.NewText(request, player.Center);
 
-		if (Item.type != ItemID.SilverCoin && player.whoAmI == Main.myPlayer && SmartUiLoader.GetUiState<GrimoireSelectionUIState>().IsVisible)
-		{
-			GrimoireSelectionUIState.RefreshStorage();
-		}
-
-		return Item.type == ItemID.SilverCoin;
+		return true;
 	}
-
-	public override void PostDrawInInventory(SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+	
+	public override void RightClick(Player player)
 	{
-		if (this.GetInstanceData().Affixes.Count > 0)
+		if (!SmartUiLoader.GetUiState<GrimoireSelectionUIState>().IsVisible)
 		{
-			spriteBatch.Draw(GrimoirePickupLoader.AffixIconTex.Value, position - origin * 0.9f, Color.White);
+			SmartUiLoader.GetUiState<GrimoireSelectionUIState>().Toggle();
 		}
+		
+		StoreItem(Item);
+	}
+	
+	private static void StoreItem(Item item)
+	{
+		if (item.ModItem is not GrimoirePickup)
+		{
+			return;
+		}
+
+		GrimoirePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<GrimoirePlayer>();
+
+		storagePlayer.Storage.Add(item.Clone());
+		item.TurnToAir();
+
+		GrimoireSelectionUIState.RefreshStorage();
 	}
 
 	public abstract void AddDrops(NPC npc, ref NPCLoot loot);
@@ -117,11 +139,9 @@ internal class GrimoirePickupLoader : GlobalNPC
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
 	{
-		for (int i = 0; i < ItemLoader.ItemCount; ++i)
+		foreach (KeyValuePair<int, Item> pair in ContentSamples.ItemsByType)
 		{
-			var item = new Item(i);
-
-			if (item.ModItem is GrimoirePickup grim)
+			if (pair.Value.ModItem is GrimoirePickup grim)
 			{
 				grim.AddDrops(npc, ref npcLoot);
 			}

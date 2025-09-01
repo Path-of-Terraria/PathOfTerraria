@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
@@ -40,8 +40,8 @@ public class BossDownedCondition(BossDownedCondition.Bosses boss) : IItemDropRul
 				Bosses.Skeletron => NPC.downedBoss3,
 				Bosses.QueenBee => NPC.downedQueenBee,
 				Bosses.Any_Mech => NPC.downedMechBossAny,
-				Bosses.EaterofWorlds => BossTracker.DownedEaterOfWorlds,
-				Bosses.BrainOfCthulhu => BossTracker.DownedBrainOfCthulhu,
+				Bosses.EaterofWorlds => EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds),
+				Bosses.BrainOfCthulhu => EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu),
 				Bosses.Deerclops => NPC.downedDeerclops,
 				Bosses.WallOfFlesh => Main.hardMode,
 				_ => false,

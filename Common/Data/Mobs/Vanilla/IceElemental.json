@@ -1,5 +1,14 @@
 {
   "netId": 169,
   "friendlyName": "Ice Elemental",
+  "damage": [
+    {
+      "minLevel": 1,
+      "cold": {
+        "added": 20,
+        "conversion": 0.75
+      }
+    }
+  ],
   "entries": []
 }

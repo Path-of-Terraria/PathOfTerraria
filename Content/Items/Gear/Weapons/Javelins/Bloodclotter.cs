@@ -1,12 +1,10 @@
-﻿using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
-using System.Collections.Generic;
-
-using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Projectiles.Ranged.Javelin;
 using PathOfTerraria.Core.Items;
-
+using System.Collections.Generic;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
@@ -18,11 +16,11 @@ internal class Bloodclotter : PlatinumGlaive
 	public override bool UseChargeAlt => false;
 	public override bool AutoloadProjectile => false;
 
-	public override List<ItemAffix> GenerateImplicits()
+	public override List<ItemAffix> GenerateAffixes()
 	{
-		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(-1, 15, 25);
-		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<BloodSiphonAffix>(1, 1, 1);
-		var bloodclotAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyBloodclotItemAffix>(1, 1, 1);
+		var addedDamageAffix = (ItemAffix)Affix.CreateAffix<IncreasedDamageAffix>(15, 25);
+		var moltenShellAffix = (ItemAffix)Affix.CreateAffix<BloodSiphonAffix>(1);
+		var bloodclotAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyBloodclotItemAffix>(1);
 		return [addedDamageAffix, moltenShellAffix, bloodclotAffix];
 	}
 
@@ -41,6 +39,7 @@ internal class Bloodclotter : PlatinumGlaive
 		base.SetDefaults();
 
 		Item.shoot = ModContent.ProjectileType<BloodclotterThrown>();
+		Item.value = Item.buyPrice(0, 0, 40, 0);
 	}
 
 	public override bool CanUseItem(Player player)

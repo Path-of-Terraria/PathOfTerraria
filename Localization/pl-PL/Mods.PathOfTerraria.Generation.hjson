@@ -1,0 +1,58 @@
+// RavencrestEntrancePass: Opening Ravencrest
+// FrozenRuinPass: ""
+Terrain: Generowanie Terenu
+Tunnels: Kopanie Tuneli
+PopulatingWorld: Zaludnianie świata
+// Steps: Building steps
+Arenas: Budowanie Aren
+Pathway: Odkrywanie ścieżek
+// RavenPass: Nevermore
+// TreesAndLeaves: Adding trees and leaves
+Structures: Budowanie struktur
+// Maze: Escaping the maze
+// PopulatingMetals: Scattering metals
+Hole: Wykopywanie dziury
+// Growing: Growing land
+Clouds: Eksploracja nieba
+// Space: Escaping the atmosphere
+Scanning: Skanowanie tereny
+
+EaterSign: {
+	0: "{0} został natychmiast pożarty."
+	1: "{0} wpadł w szczeki pożeracza."
+	// 2: The Eater found {0}'s flesh very tasty.
+	3: "{0} został przetrawiony."
+
+	Names: {
+		// 0: Ronny
+		// 1: Jameson
+		// 2: Evan
+		// 3: Polly
+		4: Sylwia
+		// 5: Liara
+		6: Swietłana
+		// 7: Obie
+		// 8: Jane-Ashley
+	}
+}
+
+EyeSign: {
+	// 0: "{0} couldn't stare back."
+	// 1: The Eye devoured {0}.
+	// 2: "{0} was overseen and overwhelmed."
+	// 3: "{0} couldn't handle the audience."
+
+	Names: {
+		// 0: Wilken
+		// 1: Jimmy
+		// 2: Cammy
+		// 3: Samarah
+		4: Piotr
+		// 5: Aabria
+		// 6: Izzy
+		// 7: Gabe
+		// 8: Roald
+	}
+}
+
+// RemoveBeeLarvaeStep: ""

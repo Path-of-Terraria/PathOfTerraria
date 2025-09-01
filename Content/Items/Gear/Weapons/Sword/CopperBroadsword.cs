@@ -21,10 +21,11 @@ internal class CopperBroadsword : Broadsword
 	{
 		base.SetDefaults();
 
-		Item.damage = 8;
-		Item.width = 42;
-		Item.height = 42;
+		Item.damage = 18;
+		Item.width = 38;
+		Item.height = 38;
 		Item.UseSound = SoundID.Item1;
+		Item.value = Item.buyPrice(0, 0, 1, 10);
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;

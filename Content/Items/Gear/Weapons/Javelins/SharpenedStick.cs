@@ -1,5 +1,4 @@
-﻿
-using Terraria.ID;
+﻿using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Javelins;
 
@@ -13,5 +12,6 @@ internal class SharpenedStick : Javelin
 		base.SetDefaults();
 
 		Item.damage = 5;
+		Item.value = Item.buyPrice(0, 0, 0, 20);
 	}
 }

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Content.Projectiles.Hostile;
@@ -92,7 +93,8 @@ internal class HellEventPlayer : ModPlayer
 
 		var vel = new Vector2(0, Main.rand.NextFloat(2));
 		IEntitySource source = Terraria.Entity.GetSource_NaturalSpawn();
-		Projectile.NewProjectile(source, loc.ToWorldCoordinates(8, 0), Vector2.Zero, ModContent.ProjectileType<GeyserPredictionProjectile>(), 30, 0.1f, Main.myPlayer, 1);
+		int damage = ModeUtils.ProjectileDamage(50, 65, 85);
+		Projectile.NewProjectile(source, loc.ToWorldCoordinates(8, 0), Vector2.Zero, ModContent.ProjectileType<GeyserPredictionProjectile>(), damage, 0.1f, Main.myPlayer, 1);
 	}
 
 	// Spawns the ash blocks that fall from the ceiling
@@ -115,7 +117,8 @@ internal class HellEventPlayer : ModPlayer
 
 		var vel = new Vector2(0, Main.rand.NextFloat(2));
 		IEntitySource source = Terraria.Entity.GetSource_NaturalSpawn();
-		Projectile.NewProjectile(source, loc.ToWorldCoordinates(8, 24), vel, ModContent.ProjectileType<FallingAshBlock>(), 30, 0.1f, Main.myPlayer);
+		int damage = ModeUtils.ProjectileDamage(45, 55, 70);
+		Projectile.NewProjectile(source, loc.ToWorldCoordinates(8, 24), vel, ModContent.ProjectileType<FallingAshBlock>(), damage, 0.1f, Main.myPlayer);
 
 		for (int i = 0; i < 20; ++i)
 		{

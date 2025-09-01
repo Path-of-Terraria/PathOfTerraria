@@ -3,29 +3,31 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Buffs;
 using ReLogic.Content;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class BloodSiphon : Skill
 {
 	public override int MaxLevel => 3;
-	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
 		Level = level;
-		Cooldown = 15 * 60;
-		Timer = 0;
-		ManaCost = 20;
+		Cooldown = MaxCooldown = (15 - Level * 2) * 60;
+		ManaCost = 20 - Level * 5;
 		Duration = 0;
 		WeaponType = ItemType.Ranged;
 	}
 
 	public override void UseSkill(Player player)
 	{
+		base.UseSkill(player);
+
 		// Level to the strength of all BloodSiphonAffix
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>());
 
@@ -49,14 +51,29 @@ public class BloodSiphon : Skill
 				}
 			}
 		}
-
-		Timer = Cooldown;
 	}
 
-	public override bool CanEquipSkill(Player player)
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
 	{
-		// TODO: If this needs to be equippable without the affix, figure out that system
-		return player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>() > 0;
+		if (!player.HeldItem.CountsAsClass(DamageClass.Ranged))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsRanged);
+			return false;
+		}
+
+		return base.CanUseSkill(player, ref failReason, justChecking);
+	}
+
+	protected override bool ProtectedCanEquip(Player player, ref SkillFailure failReason)
+	{
+		if (player.GetModPlayer<AffixPlayer>().StrengthOf<BloodSiphonAffix>() <= 0)
+		{
+			// MissingAffix: Needs {0} affix on any equipped item
+			failReason = new SkillFailure(SkillFailReason.Other, "MissingAffix", DisplayName.Value);
+			return false;
+		}
+
+		return true;
 	}
 }
 

@@ -14,7 +14,8 @@ using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using PathOfTerraria.Content.Items.Quest;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
-using Microsoft.Build.Tasks.Hosting;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using System.Collections.Generic;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -34,6 +35,12 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -108,8 +115,9 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Main.LocalPlayer.HasItem(ModContent.ItemType<SimpleCompass>()) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.Button");
-		button2 = !Quest.GetLocalPlayerInstance<DeerclopsQuest>().CanBeStarted && NPC.downedBoss1 ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		bool needsCompass = !Main.LocalPlayer.HasItem(ModContent.ItemType<SimpleCompass>()) && Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active;
+		button = !needsCompass ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.Button");
+		button2 = !QuestUnlockManager.CanStartQuest<DeerclopsQuest>() ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -121,7 +129,12 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 				if (Main.LocalPlayer.CountItem(ItemID.Wood, 16) >= 15)
 				{
 					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.NewCompass.OnCraft");
-					Item.NewItem(new EntitySource_Gift(NPC), NPC.Bottom, ModContent.ItemType<SimpleCompass>());
+					int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Bottom, ModContent.ItemType<SimpleCompass>());
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
 
 					for (int i = 0; i < 15; ++i)
 					{
@@ -134,52 +147,39 @@ public class RhineNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ITavernNP
 				}
 			}
 		}
-		else
+		else if (QuestUnlockManager.CanStartQuest<DeerclopsQuest>())
 		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<DeerclopsQuest>();
 
-			Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<SimpleCompass>());
+			int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<SimpleCompass>());
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+			}
 		}
 	}
 
-	private float animCounter;
-
-	public override void FindFrame(int frameHeight)
+	public override bool CanTownNPCSpawn(int numTownNPCs)
 	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
+		return true; //Tavern NPCs can only move into Tavern rooms
 	}
 
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest =	Quest.GetLocalPlayerInstance<DeerclopsQuest>();
-		return !quest.Completed;
+		return QuestUnlockManager.CanStartQuest<DeerclopsQuest>() && !quest.Completed;
 	}
 
 	public bool ForceSpawnInTavern()
 	{
-		return NPC.downedBoss1 && !NPC.downedDeerclops;
+		HashSet<int> downed = BossTracker.TotalBossesDowned;
+		return downed.Contains(NPCID.EyeofCthulhu) && !downed.Contains(NPCID.Deerclops) || Quest.GetLocalPlayerInstance<DeerclopsQuest>().Active;
 	}
 
 	public float SpawnChanceInTavern()
 	{
-		return 0.2f;
+		return 1f;
 	}
 }

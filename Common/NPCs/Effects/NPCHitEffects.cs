@@ -121,6 +121,11 @@ public sealed class NPCHitEffects : NPCComponent
 		{ }
 	}
 
+	/// <summary>
+	/// Simply checks if this NPC is dead.
+	/// </summary>
+	/// <param name="npc"></param>
+	/// <returns></returns>
 	public static bool OnDeath(NPC npc)
 	{
 		return npc.life <= 0;
@@ -161,7 +166,7 @@ public sealed class NPCHitEffects : NPCComponent
 
 	public override void HitEffect(NPC npc, NPC.HitInfo hit)
 	{
-		if (!Enabled || npc.life > 0 || Main.netMode == NetmodeID.Server)
+		if (!Enabled || Main.netMode == NetmodeID.Server)
 		{
 			return;
 		}

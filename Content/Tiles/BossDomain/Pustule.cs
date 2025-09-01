@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
 using PathOfTerraria.Content.Projectiles.Hostile;
 using Terraria.DataStructures;
@@ -51,7 +51,7 @@ internal class Pustule : ModTile
 				else
 				{
 					Vector2 vel = new Vector2(0, -Main.rand.NextFloat(5, 8)).RotatedByRandom(0.9f);
-					SpawnNPCOnServerHandler.Send((short)ModContent.NPCType<Minera>(), new Vector2((i + 1) * 16, (j + 1) * 16), vel);
+					ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)ModContent.NPCType<Minera>(), new Vector2((i + 1) * 16, (j + 1) * 16), vel);
 				}
 			}
 		}

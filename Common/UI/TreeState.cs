@@ -6,15 +6,16 @@ using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.UI.SmartUI;
+using Terraria.GameContent.UI.Elements;
 using Terraria.Localization;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
 /// <summary>
-/// UI state for the Passive and Skill trees. Despite being a <see cref="DraggableSmartUi"/>, cannot be moved - left as-is for ease of use.
+/// UI state for the Passive and Skill trees.
 /// </summary>
-internal class TreeState : DraggableSmartUi
+internal class TreeState : TabsUiState
 {
 	private const int ShrinkX = 80;
 	private const int ShrinkY = 20;
@@ -23,17 +24,22 @@ internal class TreeState : DraggableSmartUi
 	private SkillSelectionPanel _skillSelection;
 
 	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillSelection];
-
+	protected static PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 	public override int DepthPriority => 1;
 
-	protected static PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
-
-	public Vector2 TopLeftTree;
-	public Vector2 BotRightTree;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
+	}
+
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		if (Panel is not null)
+		{
+			Panel.Left = StyleDimension.FromPixels(ShrinkX);
+			Panel.Top = StyleDimension.FromPixels(ShrinkY);
+		}
 	}
 
 	public void Toggle()
@@ -47,28 +53,35 @@ internal class TreeState : DraggableSmartUi
 			return;
 		}
 
-		if (_passiveTreeInner == null || _skillSelection == null)
-		{
-			_passiveTreeInner = new PassiveTreeInnerPanel();
-			_skillSelection = new SkillSelectionPanel();
+		_passiveTreeInner = new PassiveTreeInnerPanel();
+		_skillSelection = new SkillSelectionPanel();
 
-			TopLeftTree = Vector2.Zero;
-			BotRightTree = Vector2.Zero;
-			var localizedTexts = new (string key, LocalizedText text)[]
-			{
+		var localizedTexts = new (string key, LocalizedText text)[]
+		{
 				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
 				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
-			};
-			base.CreateMainPanel(localizedTexts, false, panelSize: new Point(Main.screenWidth - ShrinkX * 2, Main.screenHeight - ShrinkY * 2));
-			base.AppendChildren();
-			AddCloseButton();
-			ResetTree();
-		}
+		};
+		base.CreateMainPanel(localizedTexts, false, panelSize: new Point(Main.screenWidth - ShrinkX * 2, Main.screenHeight - ShrinkY * 2));
+		base.AppendChildren();
+		AddCloseButton();
+		ResetTree();
 
 		IsVisible = true;
 	}
 
-	internal void ResetTree()
+	private new void AddCloseButton()
+	{
+		CloseButton = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton"));
+		CloseButton.Left.Set(-38 - PointsAndExitPadding, 1f);
+		CloseButton.Top.Set(10, 0f);
+		CloseButton.Width.Set(38, 0);
+		CloseButton.Height.Set(38, 0);
+		CloseButton.OnLeftClick += (a, b) => Toggle();
+		CloseButton.SetVisibility(1, 1);
+		Panel.Append(CloseButton);
+	}
+
+	private void ResetTree()
 	{
 		_passiveTreeInner.RemoveAllChildren();
 
@@ -77,11 +90,11 @@ internal class TreeState : DraggableSmartUi
 		{
 			if (n is JewelSocket socket)
 			{
-				_passiveTreeInner.Append(new PassiveSocket(socket));
+				_passiveTreeInner.AppendAsDraggable(new PassiveSocket(socket));
 			}
 			else
 			{
-				_passiveTreeInner.Append(new PassiveElement(n));
+				_passiveTreeInner.AppendAsDraggable(new PassiveElement(n));
 			}
 		});
 	}
@@ -100,31 +113,22 @@ internal class TreeState : DraggableSmartUi
 		}
 	}
 
-	public override void SafeUpdate(GameTime gameTime)
-	{
-		if (Panel is not null)
-		{
-			Panel.Left = StyleDimension.FromPixels(ShrinkX);
-			Panel.Top = StyleDimension.FromPixels(ShrinkY);
-		}
-	}
-
 	protected void DrawPanelText(SpriteBatch spriteBatch)
 	{
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/PassiveFrameSmall").Value;
 		PassiveTreePlayer passiveTreePlayer = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 		SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 
-		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) +
-		                         tex.Size() / 2;
+		Vector2 pointsDrawPoin = new Vector2(PointsAndExitPadding, PointsAndExitPadding + DraggablePanelHeight) + tex.Size() / 2;
 
-		int points = Panel.ActiveTab switch
+		int points = TabPanel.ActiveTab switch
 		{
 			"PassiveTree" => passiveTreePlayer.Points,
 			"SkillTree" => skillCombatPlayer.Points,
 			_ => 0
 		};
-		if (Panel.ActiveTab != "PassiveTree") //Temp to only draw for passive tree
+
+		if (TabPanel.ActiveTab != "PassiveTree") //Temp to only draw for passive tree
 		{
 			return;
 		}
@@ -132,11 +136,7 @@ internal class TreeState : DraggableSmartUi
 		AvailablePassivePointsText.DrawAvailablePassivePoint(spriteBatch, points, GetRectangle().TopLeft() + pointsDrawPoin);
 	}
 
-	public Rectangle GetRectangle()
-	{
-		return Panel.GetDimensions().ToRectangle();
-	}
-
+	// ReSharper disable once UnusedType.Local
 	private class StopInvPlayer : ModPlayer
 	{
 		public override void SetControls()
@@ -145,11 +145,8 @@ internal class TreeState : DraggableSmartUi
 			{
 				if (Player.controlInv && Player.releaseInventory)
 				{
-					SmartUiLoader.GetUiState<TreeState>().DefaultClose();
+					SmartUiLoader.GetUiState<TreeState>().Toggle();
 				}
-
-				Player.controlInv = false;
-				Player.releaseInventory = false;
 			}
 		}
 	}

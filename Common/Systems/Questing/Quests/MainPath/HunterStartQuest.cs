@@ -1,16 +1,14 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
-using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
-using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Core.Items;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -27,20 +25,11 @@ internal class HunterStartQuest : Quest
 		new ActionRewards((p, v) =>
 			{
 				p.GetModPlayer<ExpModPlayer>().Exp += 500;
-				int sword = ItemSpawner.SpawnItemFromCategory<Sword>(v);
+				int sword = ItemSpawner.SpawnItemFromCategory<Bow>(v);
 
 				if (sword != -1)
 				{
 					Item item = Main.item[sword];
-					item.GetInstanceData().Rarity = ItemRarity.Magic;
-					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
-				}
-				
-				int axe = ItemSpawner.SpawnItemFromCategory<Battleaxe>(v);
-
-				if (axe != -1)
-				{
-					Item item = Main.item[axe];
 					item.GetInstanceData().Rarity = ItemRarity.Magic;
 					PoTItemHelper.Roll(item, Main.rand.Next(6, 11));
 				}
@@ -52,20 +41,28 @@ internal class HunterStartQuest : Quest
 	{
 		return 
 		[
-			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"),
+			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"),
 			[
-				new GiveItem(20, ItemID.Silk), new(50, ItemID.Wood), new(50, ItemID.StoneBlock),
+				new GiveItem(5, ItemID.Silk), new(50, ItemID.Wood), new(50, ItemID.StoneBlock),
 			], true),
 			new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Lodge", 1);
 
 				int npc = NPC.FindFirstNPC(ModContent.NPCType<HunterNPC>());
-				Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<WoodenBow>());
+				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<WoodenBow>());
+
+				if (Main.netMode == NetmodeID.MultiplayerClient)
+				{
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+				}
+
 				return true;
 			}),
-			new KillCount(npc => npc.type is NPCID.DemonEye or NPCID.Crimera or NPCID.EaterofSouls, 10, this.GetLocalization("Kill.FloatingMisc")),
-			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest3"),
+			new KillCount(npc => npc.type is NPCID.Crimera or NPCID.EaterofSouls || NPCID.Sets.DemonEyes[npc.type], 10, this.GetLocalization("Kill.FloatingMisc")),
+			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest3"),
 			[
 				new GiveItem(40, ItemID.Wood), new(10, ItemID.Gel), new(20, ItemID.IronBar, ItemID.LeadBar)
 			], true),

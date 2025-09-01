@@ -23,6 +23,7 @@ internal class Twinbow : Bow
 
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = null;
+		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
 
@@ -61,6 +62,8 @@ internal class Twinbow : Bow
 		Item.height = 30;
 		Item.damage = 20;
 		Item.autoReuse = true;
+		Item.shootSpeed = 10;
+		Item.value = Item.buyPrice(0, 5, 0, 0);
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -71,7 +74,7 @@ internal class Twinbow : Bow
 
 			for (int i = 0; i < 2; ++i)
 			{
-				Vector2 modVel = velocity.RotatedByRandom(0.05f) * Main.rand.NextFloat(0.9f, 1.2f);
+				Vector2 modVel = i == 0 ? velocity : velocity.RotatedByRandom(0.05f) * Main.rand.NextFloat(0.9f, 1.2f);
 				int proj = Projectile.NewProjectile(source, position, modVel, type, damage, knockback, player.whoAmI);
 				Main.projectile[proj].GetGlobalProjectile<TwinbowArrow>().PiercingArrow = true;
 			}
@@ -100,9 +103,9 @@ internal class Twinbow : Bow
 			{
 				Texture2D tex = ShineTex.Value;
 				Vector2 pos = projectile.Center - Main.screenPosition;
-				Color color = Color.Lerp(lightColor, Color.White, 0.5f) * 0.5f;
+				Color color = Color.Lerp(lightColor, Color.White, 0.5f) * 0.6f;
 
-				Main.spriteBatch.Draw(tex, pos, null, color, Main.GameUpdateCount * 0.2f, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
+				Main.spriteBatch.Draw(tex, pos, null, color, Main.GameUpdateCount * 0.1f + projectile.whoAmI, tex.Size() / 2f, 1f, SpriteEffects.None, 0);
 			}
 		}
 	}

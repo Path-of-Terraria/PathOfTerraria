@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.BossDomains;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
@@ -23,15 +23,17 @@ internal class SkeletronQuest : Quest
 
 	public override List<QuestStep> SetSteps()
 	{
+		LocalizedText oldManIntro = Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.OldManDialogue");
+
 		return
 		[
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.OldManDialogue")),
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.HasItems"), 
+			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.QuestStart"), oldManIntro),
+			new InteractWithNPC(NPCQuestGiver, oldManIntro, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.HasItems"),
 				[new GiveItem(2, ItemID.Candle, ItemID.PlatinumCandle), new GiveItem(1, ItemID.CrimtaneBar, ItemID.DemoniteBar),
 					new GiveItem(1, ModContent.ItemType<AncientEvilBook>())]),
 			new ConditionCheck((_) => SubworldSystem.Current is SkeletronDomain, 1, this.GetLocalization("EnterDomain")),
 			new ConditionCheck((_) => NPC.downedBoss3, 1, this.GetLocalization("KillSkeletron")),
-			new InteractWithNPC(NPCID.Clothier, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.Complete"))
+			new InteractWithNPC(NPCID.Clothier, LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.Complete"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

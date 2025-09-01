@@ -14,10 +14,14 @@ internal class WeakMalaise : ModTile
 		Main.tileBlockLight[Type] = true;
 		Main.tileLighted[Type] = true;
 
-		Main.tileMerge[Type][TileID.Stone] = true;
-		Main.tileMerge[TileID.Stone][Type] = true;
 		Main.tileMerge[Type][TileID.Ebonstone] = true;
 		Main.tileMerge[TileID.Ebonstone][Type] = true;
+		Main.tileMerge[Type][TileID.Ebonsand] = true;
+		Main.tileMerge[TileID.Ebonsand][Type] = true;
+		Main.tileMerge[Type][TileID.Stone] = true;
+		Main.tileMerge[TileID.Stone][Type] = true;
+		Main.tileMerge[Type][TileID.Dirt] = true;
+		Main.tileMerge[TileID.Dirt][Type] = true;
 
 		AddMapEntry(new Color(116, 63, 136));
 
@@ -29,5 +33,14 @@ internal class WeakMalaise : ModTile
 	{
 		float sine = MathF.Sin((i + j) * 20 + Main.GameUpdateCount * 0.06f) * 0.3f;
 		(r, g, b) = (sine * 0.67f, sine * 0.2f, sine * 0.9f);
+	}
+}
+
+internal class WeakMalaiseItem : ModItem
+{
+	public override void SetDefaults()
+	{
+		Item.DefaultToPlaceableTile(ModContent.TileType<WeakMalaise>());
+		Item.value = Item.buyPrice(0, 0, 0, 5);
 	}
 }

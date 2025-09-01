@@ -1,5 +1,8 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Content.Tiles.BossDomain;
+using PathOfTerraria.Content.Tiles.BossDomain.Mech;
+using PathOfTerraria.Content.Tiles.Maps.Desert;
+using PathOfTerraria.Content.Tiles.Maps.Forest;
 using SubworldLibrary;
 
 namespace PathOfTerraria.Common.Systems.MiscUtilities;
@@ -11,13 +14,15 @@ public class BlockerSystem : ModSystem
 
 	public override void PreUpdatePlayers()
 	{
+		FadeOut = MathHelper.Lerp(FadeOut, !HasArenaEnemies ? 0 : 1, 0.06f);
+		HasArenaEnemies = false;
+
 		// Fixes issue where during hardmode worldgen, this throws.
 		if (SubworldSystem.Current is null)
 		{
+			SetBlockerSolidity(false);
 			return;
 		}
-
-		HasArenaEnemies = false;
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
@@ -28,16 +33,17 @@ public class BlockerSystem : ModSystem
 			}
 		}
 
-		Main.tileSolid[ModContent.TileType<HiveBlocker>()] = HasArenaEnemies;
-		Main.tileSolid[ModContent.TileType<ArenaBlocker>()] = HasArenaEnemies;
+		SetBlockerSolidity();
+	}
 
-		if (HasArenaEnemies)
+	private static void SetBlockerSolidity(bool? overrideValue = null)
+	{
+		int[] types = [ModContent.TileType<HiveBlocker>(), ModContent.TileType<ArenaBlocker>(), ModContent.TileType<LivingWoodBlocker>(), 
+			ModContent.TileType<BlockingGate>(), ModContent.TileType<SandstoneBrickBlocker>()];
+
+		foreach (int type in types)
 		{
-			FadeOut = MathHelper.Lerp(FadeOut, 1, 0.06f);
-		}
-		else
-		{
-			FadeOut = MathHelper.Lerp(FadeOut, 0, 0.06f);
+			Main.tileSolid[type] = overrideValue ?? HasArenaEnemies;
 		}
 	}
 

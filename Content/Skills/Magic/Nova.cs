@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
-using PathOfTerraria.Content.SkillPassives;
-using PathOfTerraria.Content.SkillPassives.Magic;
-using Terraria.DataStructures;
+using PathOfTerraria.Content.SkillPassives.Generic;
+using PathOfTerraria.Content.SkillPassives.NovaTree;
+using PathOfTerraria.Content.SkillSpecials.NovaSpecials;
+using ReLogic.Content;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.Utilities;
@@ -23,67 +27,18 @@ public class Nova : Skill
 	}
 
 	public override int MaxLevel => 3;
-	
-	public override List<SkillPassive> Passives =>
-	[
-		new SkillPassiveAnchor(this),
-		new LightningNovaSkillPassive(this),
-		new FireNovaSkillPassive(this),
-		new IceNovaSkillPassive(this)
-	];
 
-	public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTexture();
-	public override LocalizedText DisplayName => GetLocalization("Name", base.DisplayName);
-	public override LocalizedText Description => GetLocalization("Description", base.Description);
-
-	private LocalizedText GetLocalization(string postfix, LocalizedText def)
+	private static NovaType GetNovaType(Nova nova)
 	{
-		NovaType type = GetNovaType();
-		return type switch
+		SkillSpecial special = nova.Tree.Specialization;
+
+		return special switch
 		{
-			NovaType.Fire or NovaType.Ice or NovaType.Lightning => Language.GetText("Mods.PathOfTerraria.Skills." + Name + "." + type.ToString() + "." + postfix),
-			_ => def,
+			FireNova => NovaType.Fire,
+			IceNova => NovaType.Ice,
+			LightningNova => NovaType.Lightning,
+			_ => NovaType.Normal
 		};
-	}
-
-	private string GetTexture()
-	{
-		return GetNovaType() switch
-		{
-			NovaType.Fire => "FireNova",
-			NovaType.Lightning => "LightningNova",
-			NovaType.Ice => "IceNova",
-			_ => GetType().Name,
-		};
-	}
-
-	private NovaType GetNovaType()
-	{
-		return GetNovaType(this);
-	}
-
-	public static NovaType GetNovaType(Nova nova)
-	{
-		Player player = Main.LocalPlayer;
-		SkillPassivePlayer skillPassive = player.GetModPlayer<SkillPassivePlayer>();
-
-		if (skillPassive.AllocatedPassives.TryGetValue(nova, out Dictionary<string, SkillPassive> passives))
-		{
-			if (passives.ContainsKey(nameof(FireNovaSkillPassive)))
-			{
-				return NovaType.Fire;
-			}
-			else if (passives.ContainsKey(nameof(IceNovaSkillPassive)))
-			{
-				return NovaType.Ice;
-			}
-			else if (passives.ContainsKey(nameof(LightningNovaSkillPassive)))
-			{
-				return NovaType.Lightning;
-			}
-		}
-
-		return NovaType.Normal;
 	}
 
 	public override void LevelTo(byte level)
@@ -97,50 +52,83 @@ public class Nova : Skill
 
 	public override void UseSkill(Player player)
 	{
-		player.statMana -= ManaCost;
-		Timer = Cooldown;
+		base.UseSkill(player);
 
-		int damage = (int)(player.HeldItem.damage * (2 + 0.5f * Level));
+		int damage = GetTotalDamage(player.HeldItem.damage * (2 + 0.5f * Level));
 		var source = new EntitySource_UseSkill(player, this);
-		NovaType type = GetNovaType();
+		NovaType type = GetNovaType(this);
 		float knockback = 2f;
 
-		if (type == NovaType.Fire)
+		switch (type)
 		{
-			knockback = 4f;
-		}
-		else if (type == NovaType.Lightning)
-		{
-			WeightedRandom<float> mult = new(Main.rand);
-			mult.Add(1f, 1f);
-			mult.Add(0.75f, 1f);
-			mult.Add(0.5f, 1f);
-			mult.Add(1.5f, 1f);
-			mult.Add(2f, 1f);
+			case NovaType.Fire:
+				knockback = 4f;
+				break;
+			case NovaType.Lightning:
+				{
+					WeightedRandom<float> mult = new(Main.rand);
+					mult.Add(1f, 1f);
+					mult.Add(0.75f, 1f);
+					mult.Add(0.5f, 1f);
+					mult.Add(1.5f, 1f);
+					mult.Add(2f, 1f);
 
-			damage = (int)(damage * mult);
-		}
-		else if (type == NovaType.Ice)
-		{
-			damage = (int)(damage * 0.9f);
+					damage = (int)(damage * mult);
+					break;
+				}
+			case NovaType.Ice:
+				damage = (int)(damage * 0.9f);
+				break;
 		}
 
-		Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
+		if (Tree.TryGetNode(out VolatileNova vNova) && vNova.Allocated) //Passive synergy
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2 position = player.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(NovaProjectile.AreaOfEffect);
+
+				var smallBlast = Projectile.NewProjectileDirect(source, position, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
+				smallBlast.scale = Main.rand.NextFloat(0.2f, 0.3f);
+				smallBlast.netUpdate = true;
+			}
+		}
+		else
+		{
+			Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
+		}
 	}
 
-	public override bool CanUseSkill(Player player)
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
 	{
-		return base.CanUseSkill(player) && player.HeldItem.CountsAsClass(DamageClass.Magic);
+		if (!player.HeldItem.CountsAsClass(DamageClass.Magic))
+		{
+			failReason = new SkillFailure(SkillFailReason.NeedsMagic);
+			return false;
+		}
+
+		return base.CanUseSkill(player, ref failReason, true);
 	}
 
-	private class NovaProjectile : ModProjectile
+	public override void ModifyTooltips(List<NewHotbar.SkillTooltip> tooltips)
 	{
-		private const int TotalRadius = 300;
+		if (Main.LocalPlayer.HeldItem.CountsAsClass(DamageClass.Magic))
+		{
+			NewHotbar.SkillTooltip tooltip = tooltips.First(x => x.Name == "Description");
+			string text = Language.GetText($"Mods.{PoTMod.ModName}.Skills.BaseDamage").Format(Main.LocalPlayer.HeldItem.damage);
+			tooltips.Add(new NewHotbar.SkillTooltip("ExtraDamage", text, tooltip.Slot + 0.1f));
+		}
+	}
+
+	private class NovaProjectile : SkillProjectile<Nova>
+	{
+		public const int AreaOfEffect = 300;
+		public int Spread => (int)((1 - Projectile.timeLeft / 30f) * Skill.GetTotalAreaOfEffect(300f * Projectile.scale));
 
 		public override string Texture => "Terraria/Images/NPC_0";
 
-		private int Spread => (int)((1 - Projectile.timeLeft / 30f) * TotalRadius);
 		private NovaType NovaType => (NovaType)Projectile.ai[0];
+		private ref float Timer => ref Projectile.ai[1];
+		private ref float DecaySpeed => ref Projectile.ai[2];
 
 		public override void SetDefaults()
 		{
@@ -154,44 +142,67 @@ public class Nova : Skill
 
 		public override void AI()
 		{
-			if (NovaType != NovaType.Lightning && NovaType != NovaType.Ice)
+			if (DecaySpeed == 0)
 			{
-				SpamNormalDust();
+				DecaySpeed = 0.075f;
+			}
+
+			Timer += 0.04f;
+			DecaySpeed *= 0.94f;
+
+			if (Main.myPlayer == Projectile.owner && Projectile.timeLeft % 8 == 0 && Skill.Tree.TryGetNode(out ScorchingTouch scorching) && scorching.Allocated)
+			{
+				ScorchSurface();
+			}
+
+			if (NovaType == NovaType.Fire)
+			{
+				SpamFireDust();
 			}
 			else if (NovaType == NovaType.Ice)
 			{
 				SpamIceDust();
 			}
-			else
+			else if (NovaType == NovaType.Lightning)
 			{
 				SpamLightningDust();
 			}
 		}
 
-		private void SpamNormalDust()
+		private void ScorchSurface()
 		{
-			const float MaxDustIterations = 60;
+			float spread = Spread * 2f;
 
-			int dustType = NovaType switch
+			var position = ((Projectile.position - new Vector2(spread / 2)) / 16).ToPoint();
+			var size = (new Vector2(spread) / 16).ToPoint();
+
+			for (int x = position.X; x < position.X + size.X; x++)
 			{
-				NovaType.Fire => DustID.Torch,
-				_ => DustID.Astra
-			};
-
-			for (int i = 0; i < MaxDustIterations; ++i)
-			{
-				Vector2 spread = new Vector2(Spread, 0).RotatedBy(i / MaxDustIterations * MathHelper.TwoPi);
-				float scale = 0.5f;
-
-				if (NovaType == NovaType.Fire)
+				for (int y = position.Y; y < position.Y + size.Y; y++)
 				{
-					spread = spread.RotatedBy(Projectile.timeLeft / 8f * Spread / TotalRadius);
-					spread *= Main.rand.NextFloat(0.9f, 1f);
-					scale = Main.rand.NextFloat(0.75f, 1.7f);
+					if (WorldGen.InWorld(x, y, 2) && IsSolid(x, y) && !IsSolid(x, y, true) && Main.rand.NextBool(3))
+					{
+						int type = ModContent.ProjectileType<ScorchingTouch.FieryPatch>();
+						Vector2 pos = new Vector2(x, y).ToWorldCoordinates();
+						Projectile.NewProjectile(Projectile.GetSource_FromAI(), pos, Vector2.Zero, type, Projectile.damage / 5, 0, Projectile.owner);
+					}
 				}
+			}
 
-				Vector2 position = Projectile.Center + spread;
-				Dust.NewDustPerfect(position, dustType, spread / Spread * 6, Scale: scale);
+			static bool IsSolid(int x, int y, bool checkSloped = false)
+			{
+				return (checkSloped ? WorldGen.SolidOrSlopedTile(x, y) : WorldGen.SolidTile(x, y)) || Main.tileSolidTop[Main.tile[x, y].TileType];
+			}
+		}
+
+		private void SpamFireDust()
+		{
+			for (int i = 0; i < 2; ++i)
+			{
+				Vector2 offset = Main.rand.NextVector2CircularEdge(Spread, Spread);
+				Vector2 pos = Projectile.Center + offset;
+				var dust = Dust.NewDustPerfect(pos, DustID.Torch, Vector2.Normalize(offset) * Main.rand.NextFloat(2, 4), Scale: Main.rand.NextFloat(1, 2));
+				dust.noGravity = true;
 			}
 		}
 
@@ -225,7 +236,7 @@ public class Nova : Skill
 		{
 			float dustIterations = Main.rand.Next(5, 8);
 
-			if (Projectile.timeLeft % 3 != 0)
+			if (Projectile.timeLeft % 3 <= 1)
 			{
 				return;
 			}
@@ -252,20 +263,106 @@ public class Nova : Skill
 			return distanceSq > MathF.Pow(Spread - 20, 2) && distanceSq < MathF.Pow(Spread + 20, 2);
 		}
 
+		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (Skill.Tree.TryGetNode(out ConcurrentBlasts blasts) && blasts.Allocated && target.TryGetGlobalNPC(out ConcurrentNPC cNPC))
+			{
+				if (cNPC.Vulnerable)
+				{
+					modifiers.FinalDamage *= ConcurrentBlasts.BonusDamage;
+				}
+
+				cNPC.ApplyBlastTimer();
+			}
+		}
+
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (NovaType == NovaType.Fire)
+			//Passive synergies
+			if (target.life <= 0 && Skill.Tree.TryGetNode(out Combustive combustive) && combustive.Allocated)
 			{
-				target.AddBuff(BuffID.OnFire, 5 * 60);
+				Projectile.NewProjectile(Projectile.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<Combustive.CombustionBlast>(), (int)(target.lifeMax * 0.05f), 3);
 			}
-			else if (NovaType == NovaType.Lightning)
+
+			if (Skill.Tree.TryGetNode(out IgniteChance ignite) && ignite.Allocated && Main.rand.NextFloat() < 0.02f * ignite.Level)
 			{
-				target.AddBuff(ModContent.BuffType<ShockDebuff>(), 5 * 60);
+				target.AddBuff(BuffID.OnFire, 8 * 60);
 			}
-			else if (NovaType == NovaType.Ice)
+
+			if (Skill.Tree.TryGetNode(out ShockChance shock) && shock.Allocated && Main.rand.NextFloat() < 0.02f * shock.Level)
 			{
-				target.AddBuff(BuffID.Chilled, 5 * 60);
+				target.AddBuff(ModContent.BuffType<ShockDebuff>(), 8 * 60);
 			}
+
+			if (Skill.Tree.TryGetNode(out ThunderClaps thunderClaps) && thunderClaps.Allocated && Main.rand.NextFloat() < 0.05f * thunderClaps.Level)
+			{
+				Vector2 position = target.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(AreaOfEffect / 3f);
+
+				var smallBlast = Projectile.NewProjectileDirect(Projectile.GetSource_OnHit(target), position, Vector2.Zero, Type, Projectile.damage, Projectile.knockBack, Projectile.owner, (int)NovaType);
+				smallBlast.scale = 0.25f;
+				smallBlast.netUpdate = true;
+			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Vector2 position = Projectile.position - Main.screenPosition;
+			float timer = Timer * 300f;
+			var topLeft = new Vector3(position - new Vector2(timer), 0);
+			Color color = Color.White;
+
+			short[] indices = [0, 1, 2, 1, 3, 2];
+
+			VertexPositionColorTexture[] vertices =
+			[
+				new(topLeft, color, new Vector2(0, 0)),
+				new(topLeft + new Vector3(new Vector2(timer * 2, 0), 0), color, new Vector2(1, 0)),
+				new(topLeft + new Vector3(new Vector2(0, timer * 2), 0), color, new Vector2(0, 1)),
+				new(topLeft + new Vector3(new Vector2(timer * 2), 0), color, new Vector2(1, 1)),
+			];
+
+			Effect effect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/RunestoneRing", AssetRequestMode.ImmediateLoad).Value;
+			var projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, -1, 1);
+			Matrix view = Main.GameViewMatrix.TransformationMatrix;
+			Matrix renderMatrix = view * projection;
+			float opacity = MathF.Min(Projectile.timeLeft / 30f, 1);
+			float lerpFactor = MathF.Pow(MathF.Sin((float)Main.timeForVisualEffects * 0.5f), 2);
+			(Color, Color) colorPair = GetColorPair();
+			var drawColor = Vector4.Lerp(colorPair.Item1.ToVector4(), colorPair.Item2.ToVector4(), lerpFactor);
+			
+			foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+			{
+				effect.Parameters["baseColor"].SetValue(drawColor * opacity);
+				effect.Parameters["uWorldViewProjection"].SetValue(renderMatrix);
+				pass.Apply();
+
+				Main.instance.GraphicsDevice.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, 4, indices, 0, 2);
+			}
+
+			return false;
+		}
+
+		private (Color, Color) GetColorPair()
+		{
+			(Color, Color) pair = NovaType switch
+			{
+				NovaType.Fire => (new Color(255, 150, 150), new Color(255, 255, 150)),
+				NovaType.Ice => (new Color(150, 150, 255), new Color(160, 180, 235)),
+				NovaType.Lightning => (Color.LightBlue, Color.SkyBlue),
+				_ => (new Color(255, 255, 255), new Color(150, 150, 255))
+			};
+			
+			return pair;
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Projectile.scale);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Projectile.scale = reader.ReadSingle();
 		}
 	}
 }

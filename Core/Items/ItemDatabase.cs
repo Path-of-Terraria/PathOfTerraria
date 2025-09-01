@@ -1,6 +1,8 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Data.Models;
+using PathOfTerraria.Common.Enums;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
@@ -44,6 +46,26 @@ public sealed class ItemDatabase : ModSystem
 	public override void PostSetupContent()
 	{
 		base.PostSetupContent();
+
+		for (int i = 0; i < ItemLoader.ItemCount; i++)
+		{
+			byte[] bytes = Mod.GetFileBytes("Common/Data/VanillaItemData/" + ItemID.Search.GetName(i) + ".json");
+
+			if (bytes is null)
+			{
+				continue;
+			}
+
+			string str = System.Text.Encoding.UTF8.GetString(bytes);
+			VanillaItemData data = JsonSerializer.Deserialize<VanillaItemData>(str);
+
+			// Make sure this counts as a Gear item by checking if it would have a PoTGlobalItem
+			// Otherwise this allows random items to be gear even if they shouldn't count as it
+			if (ModContent.GetInstance<PoTGlobalItem>().AppliesToEntity(new Item(i), true))
+			{
+				RegisterVanillaItemAsGear(i, Enum.Parse<ItemType>(data.ItemType));
+			}
+		}
 
 		for (int i = 0; i < ItemLoader.ItemCount; i++)
 		{
@@ -97,15 +119,24 @@ public sealed class ItemDatabase : ModSystem
 		_items.Add(new ItemRecord(dropChance, rarity, itemId, item));
 	}
 
-	public static float ApplyRarityModifier(float chance, float dropRarityModifier)
+	/// <summary>
+	/// Makes <see cref="ItemRarity.Rare"/> and <see cref="ItemRarity.Unique"/> items more common.
+	/// </summary>
+	/// <param name="item">The item record to reference.</param>
+	/// <param name="dropRarityModifier">The total drop rarity modifier. Higher means more Rare or Unique drops.</param>
+	/// <param name="itemRarityModifier">The total item rarity modifier. Higher means more rarer items.</param>
+	/// <returns>The modified drop chance for the item record.</returns>
+	public static float ApplyDropRateModifiers(ItemRecord item, float dropRarityModifier, float itemRarityModifier)
 	{
-		// this is just some arbitrary function from chat gpt, modified a little...
-		// it is pretty hard to get all this down when we dont know all the items we will have n such;
+		itemRarityModifier = MathHelper.Clamp(itemRarityModifier, 0, 1);
+		float chance = MathHelper.Lerp(item.DropChance, 1, 1 - 1 / (itemRarityModifier + 1));
 
-		chance *= 100f; // to make it effective on <0.1; it works... ok?
-		float powerDecrease = chance * (1 + dropRarityModifier / MagicFindPowerDecrease) /
-							  (1 + chance * dropRarityModifier / MagicFindPowerDecrease);
-		return powerDecrease;
+		if (item.Rarity is ItemRarity.Normal or ItemRarity.Magic)
+		{
+			return chance;
+		}
+
+		return chance * (1 + dropRarityModifier);
 	}
 	
 	/// <summary>

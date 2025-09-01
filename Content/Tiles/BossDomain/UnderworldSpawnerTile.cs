@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.WoFDomain;
+﻿using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.MiscUtilities;
 using PathOfTerraria.Content.NPCs.HellEvent;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -9,7 +10,7 @@ namespace PathOfTerraria.Content.Tiles.BossDomain;
 
 internal class UnderworldSpawnerTile : ModTile
 {
-	private static int LastFrameX = 0;
+	private static short LastFrameX = 0;
 
 	public override void SetStaticDefaults()
 	{
@@ -55,6 +56,11 @@ internal class UnderworldSpawnerTile : ModTile
 		int npc = NPC.NewNPC(new EntitySource_TileBreak(i, j), (i + 1) * 16, (j + 1) * 16, type, 1);
 		Main.npc[npc].netUpdate = true;
 		Main.npc[npc].GetGlobalNPC<ArenaEnemyNPC>().Arena = true;
+
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			SpawnerSystem.SpawnerRecord.Add(npc, new(Type, LastFrameX, new Point16(i, j)));
+		}
 	}
 
 #if !DEBUG

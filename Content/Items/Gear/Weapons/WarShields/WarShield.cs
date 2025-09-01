@@ -7,7 +7,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.WarShields;
 
-internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
+internal abstract class WarShield : Gear, IParryItem
 {
 	/// <summary>
 	/// Stores shield data, namely how long the dash is, how long the cooldown is, and the speed of the dash.
@@ -22,11 +22,6 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 		public readonly int Cooldown = cooldown;
 		public readonly float DashMagnitude = dashMagnitude;
 		public readonly int BashDust = bashDust;
-	}
-
-	int GetItemLevel.IItem.GetItemLevel(int realLevel)
-	{
-		return 1;
 	}
 
 	public virtual ShieldData Data => new(15, 100, 12, DustID.WoodFurniture);
@@ -61,6 +56,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 		Item.useTime = Data.DashTime;
 		Item.useAnimation = Data.DashTime;
 		Item.useStyle = ItemUseStyleID.Shoot;
+		Item.UseSound = SoundID.Item70;
 		Item.damage = 5;
 		Item.channel = true;
 		Item.noMelee = true;
@@ -84,7 +80,7 @@ internal abstract class WarShield : Gear, IParryItem, GetItemLevel.IItem
 
 	public override bool AltFunctionUse(Player player)
 	{
-		return true;
+		return CanRaiseShield(player);
 	}
 
 	public override bool? UseItem(Player player)

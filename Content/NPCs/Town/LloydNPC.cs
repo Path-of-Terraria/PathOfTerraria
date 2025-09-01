@@ -11,18 +11,16 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.Pathfinding;
 using System.Linq;
 using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.RavencrestContent;
-using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.DataStructures;
 using Terraria.Audio;
 using Terraria.ModLoader.IO;
 using System.IO;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using SubworldLibrary;
-using PathOfTerraria.Common.Subworlds.BossDomains;
 using Terraria.Chat;
-using PathOfTerraria.Common.Subworlds.BossDomains.BoCDomain;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -38,7 +36,8 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	public Player FollowPlayer => Main.player[followPlayer];
 
-	private float animCounter;
+	private ref float OrbsBroken => ref NPC.localAI[1];
+
 	private bool doPathing = false;
 	private byte followPlayer;
 	private bool abandoned = false;
@@ -48,7 +47,6 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	// Sound timers
 	private int walkTime = 0;
-	private int rocketTime = 0;
 
 	// Attack info
 	private int attackTime = 0;
@@ -68,6 +66,12 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 3;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -125,8 +129,6 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		if (NPC.downedBoss2 && Main.player[Player.FindClosest(NPC.position, NPC.width, NPC.height)].DistanceSQ(NPC.Center) > 2000 * 2000 
 			&& Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Add(FullName);
-
 			NPC.active = false;
 			return false;
 		}
@@ -315,7 +317,8 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 					}
 				}
 
-				int id = Math.Min(DisableEvilOrbBossSpawning.ActualOrbsSmashed, 3) - 1;
+				OrbsBroken++;
+				int id = (int)Math.Clamp(OrbsBroken, 1, 3) - 1;
 				string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.BubbleDialogue.BreakHeart." + id);
 				((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
 				return;
@@ -367,25 +370,6 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		}
 	}
 
-	private void RocketBootDust()
-	{
-		if (!Main.rand.NextBool(3))
-		{
-			for (int i = 0; i < 2; ++i)
-			{
-				var vector = new Vector2((i % 2 == 0 ? -1 : 1) - NPC.velocity.X * 0.3f, 2f - NPC.velocity.Y * 0.3f);
-				Dust.NewDustPerfect(NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), 0), DustID.Torch, vector, 0, default, Main.rand.NextFloat(2, 2.5f));
-			}
-		}
-
-		if (rocketTime++ >= 20)
-		{
-			SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.6f, PitchRange = (-0.1f, 0.1f) }, NPC.Bottom);
-
-			rocketTime = 0;
-		}
-	}
-
 	private static Vector2 AveragePathDirection(List<Pathfinder.FoundPoint> foundPoints)
 	{
 		Vector2 dir = Vector2.Zero;
@@ -412,7 +396,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	public override void TownNPCAttackProj(ref int projType, ref int attackDelay)
 	{
-		projType = ProjectileID.BloodShot;
+		projType = ProjectileID.BloodArrow;
 		attackDelay = 1;
 	}
 
@@ -438,7 +422,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
+		//button = Language.GetTextValue("LegacyInterface.28");
 
 		if (Quest.GetLocalPlayerInstance<BoCQuest>().Completed)
 		{
@@ -467,7 +451,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 					}
 					else
 					{
-						PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, false);
+						ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, false);
 					}
 
 					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.StayDialogue");
@@ -481,7 +465,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 					}
 					else
 					{
-						PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+						ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
 					}
 
 					Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.FollowAgain");
@@ -496,7 +480,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 				}
 				else
 				{
-					PathfindStateChangeHandler.Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+					ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
 				}
 
 				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Help");
@@ -507,6 +491,12 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 	public override string GetChat()
 	{
+		if (abandoned)
+		{
+			abandoned = false;
+			return Language.GetTextValue("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Abandoned");
+		}
+
 		if (SubworldSystem.Current is BrainDomain && brainDialogue)
 		{
 			brainDialogue = false;
@@ -539,28 +529,6 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 		doPathing = reader.ReadBoolean();
 		followPlayer = reader.ReadByte();
 		//pathfinder.ReadPath(reader);
-	}
-
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
 	}
 
 	public override bool PreDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -628,7 +596,7 @@ public sealed class LloydNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IP
 
 		if (SubworldSystem.Current is BrainDomain domain)
 		{
-			return Language.GetTextValue(baseNPC + (domain.BossSpawned && !NPC.AnyNPCs(NPCID.BrainofCthulhu) ? "DomainBossDead." : "InDomain.") + Main.rand.Next(3));
+			return Language.GetTextValue(baseNPC + (domain.FightTracker.Completed ? "DomainBossDead." : "InDomain.") + Main.rand.Next(3));
 		}
 
 		if (doPathing)

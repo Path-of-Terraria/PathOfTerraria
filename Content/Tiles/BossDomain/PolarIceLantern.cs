@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
-using PathOfTerraria.Common.Subworlds.BossDomains.DeerDomain;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.DeerDomain;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.ID;
@@ -32,9 +31,9 @@ internal class PolarIceLantern : ModTile
 			return;
 		}
 
-		DeerclopsDomain.LightMultiplier = 1f;
-		Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), new Vector3(0.6f, 0.6f, 0.8f));
-		DeerclopsDomain.LightMultiplier = 0f;
+		DeerclopsDomainLightEdits.LightMultiplier = 1f;
+		Lighting.AddLight(new Vector2(i, j).ToWorldCoordinates(), new Vector3(0.6f, 0.6f, 0.8f) * 1.25f);
+		DeerclopsDomainLightEdits.LightMultiplier = 0f;
 	}
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)

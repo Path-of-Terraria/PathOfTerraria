@@ -18,12 +18,6 @@ internal abstract class Bow : Gear
 	/// </summary>
 	public static Dictionary<int, Asset<Texture2D>> BowProjectileSpritesById = [];
 
-	public int ItemLevel
-	{
-		get => 1;
-		set => this.GetInstanceData().RealLevel = value; // Technically preserves previous behavior.
-	}
-
 	protected override string GearLocalizationCategory => "Bow";
 	protected virtual int AnimationSpeed => 6;
 	protected virtual float CooldownTimeInSeconds => 5;

@@ -23,6 +23,7 @@ internal class EbonwoodWand : Wand
 		Item.shoot = ModContent.ProjectileType<EbonwoodWandProjectile>();
 		Item.shootSpeed = 10;
 		Item.UseSound = SoundID.Item7;
+		Item.value = Item.buyPrice(0, 0, 1, 0);
 	}
 
 	public class EbonwoodWandProjectile : ModProjectile
@@ -33,6 +34,8 @@ internal class EbonwoodWand : Wand
 			Projectile.friendly = true;
 			Projectile.penetrate = 2;
 			Projectile.timeLeft = 250;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 20;
 		}
 
 		public override void AI()

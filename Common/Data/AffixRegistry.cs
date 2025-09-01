@@ -5,6 +5,7 @@ using System.Text.Json;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ModLoader.Core;
 
 namespace PathOfTerraria.Common.Data;
@@ -122,11 +123,17 @@ public class AffixRegistry : ILoadable
 	/// </summary>
 	/// <param name="itemType">The ItemType to filter by.</param>
 	/// <returns>Random ItemAffixData entry matching the ItemType.</returns>
-	public static ItemAffixData GetRandomAffixDataByItemType(ItemType itemType)
+	public static ItemAffixData GetRandomAffixDataByItemType(ItemType itemType, IEnumerable<ItemAffixData> excludedAffixes = null)
 	{
-		var filteredAffixData = ItemAffixData.Values
-			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None)
-			.ToList();
+		IEnumerable<ItemAffixData> enumerable = ItemAffixData.Values
+			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None);
+
+		if (enumerable != null)
+		{
+			enumerable = enumerable.Except(excludedAffixes);
+		}
+
+		var filteredAffixData = enumerable.ToList();
 
 		if (filteredAffixData.Count == 0)
 		{
@@ -160,22 +167,22 @@ public class AffixRegistry : ILoadable
 		}
 		
 		// Get the appropriate TierData based on itemLevel
-		ItemAffixData.TierData tierData = affixData.GetAppropriateTierData(itemLevel);
+		ItemAffixData.TierData tierData = affixData.GetAppropriateTierData(itemLevel, out int tier);
+		affix.Tier = tier;
+
+		if (tierData is null)
+		{
+			return 0;
+		}
 
 		// Generate a random value within the specified range
-		float randomValue = GenerateRandomValue(tierData.MinValue, tierData.MaxValue);
+		float randomValue = Main.rand.NextFloat(tierData.MinValue, tierData.MaxValue);
 
-		return randomValue;
-	}
+		if (affix is MapAffix map)
+		{
+			map.Strength = tierData.Strength;
+		}
 
-	/// <summary>
-	/// Generates a random value within the specified range.
-	/// </summary>
-	/// <param name="min">Minimum value (inclusive).</param>
-	/// <param name="max">Maximum value (inclusive).</param>
-	/// <returns>Random value within the range.</returns>
-	private static float GenerateRandomValue(float min, float max)
-	{
-		return (float)(Main.rand.NextDouble() * (max - min) + min);
+		return affix.Round ? (float)Math.Round(randomValue) : randomValue;
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.ItemDropping;
-using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.ConditionalDropping;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -33,17 +33,18 @@ internal class WizardStartQuest : Quest
 		[
 			new ActionStep((player, _) => 
 			{
-				ConditionalDropHandler.AddId(ModContent.ItemType<TomeOfTheElders>());
+				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().AddId(ModContent.ItemType<TomeOfTheElders>());
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
+			new InteractWithNPC(ModContent.NPCType<WizardNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest2"),
 			[
 				new GiveItem(1, ModContent.ItemType<TomeOfTheElders>())
 			], true),
 			new ActionStep((player, _) =>
 			{
-				ConditionalDropHandler.RemoveId(ModContent.ItemType<TomeOfTheElders>());
+				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().RemoveId(ModContent.ItemType<TomeOfTheElders>());
 				RavencrestSystem.UpgradeBuilding("Library");
 				return true;
 			}) { CountsAsCompletedOnMarker = true },

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Common.Tiles;
 using Terraria.DataStructures;
 using Terraria.Enums;
 using Terraria.GameContent;
@@ -48,7 +49,7 @@ internal class CorruptSacks : ModTile
 		}
 		else
 		{
-			SpawnNPCOnServerHandler.Send((short)type, new((i + 1) * 16, (j + 1) * 16), velocity);
+			ModContent.GetInstance<SpawnNPCOnServerHandler>().Send((short)type, new Vector2((i + 1) * 16, (j + 1) * 16), velocity);
 		}
 
 		for (int k = 0; k < 16; k++)
@@ -81,9 +82,8 @@ internal class CorruptSacks : ModTile
 	{
 		Tile tile = Main.tile[i, j];
 		Texture2D tex = TextureAssets.Tile[Type].Value;
-		Vector2 offScreen = Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange);
-		Vector2 position = new Vector2(i, j).ToWorldCoordinates(0, 0) - Main.screenPosition + offScreen + Vector2.One * 8;
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
+		Vector2 position = TileExtensions.DrawPosition(i, j) + Vector2.One * 8;
+		Rectangle source = tile.BasicFrame();
 		float sine = MathF.Max(0, 3 * MathF.Sin(-i - j + 0.05f * Main.GameUpdateCount)) * 0.05f;
 
 		spriteBatch.Draw(tex, position, source, Lighting.GetColor(i, j), 0f, Vector2.One * 8, 1f + sine, SpriteEffects.None, 0);

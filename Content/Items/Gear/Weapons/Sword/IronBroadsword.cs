@@ -21,10 +21,11 @@ internal class IronBroadsword : Broadsword
 	{
 		base.SetDefaults();
 
-		Item.damage = 10;
+		Item.damage = 26;
 		Item.width = 46;
 		Item.height = 46;
 		Item.UseSound = SoundID.Item1;
+		Item.value = Item.buyPrice(0, 0, 0, 80);
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Sword;

@@ -18,7 +18,11 @@ internal class ExitPortal : ModProjectile
 				SubworldSystem.Exit();
 			}
 
-			Tooltip.SetName(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Exit"));
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = "Portal",
+				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+			});
 		});
 	}
 
@@ -81,7 +85,11 @@ internal class ExitPortal : ModProjectile
 							SubworldSystem.Exit();
 						}
 
-						Tooltip.SetName("Exit");
+						Tooltip.Create(new TooltipDescription
+						{
+							Identifier = "Portal",
+							SimpleTitle = "Exit",
+						});
 					}
 				}
 			}

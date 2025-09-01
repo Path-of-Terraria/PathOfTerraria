@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Systems.TreeSystem;
+using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -22,26 +22,6 @@ internal class PassiveElement : SmartUiElement
 	{
 		float halfSizeX = passive.Size.X / 2;
 		float halfSizeY = passive.Size.Y / 2;
-
-		if (passive.TreePos.X - halfSizeX < UiTreeState.TopLeftTree.X)
-		{
-			UiTreeState.TopLeftTree.X = passive.TreePos.X - halfSizeX;
-		}
-		
-		if (passive.TreePos.Y - halfSizeY < UiTreeState.TopLeftTree.Y)
-		{
-			UiTreeState.TopLeftTree.Y = passive.TreePos.Y - halfSizeY;
-		}
-
-		if (passive.TreePos.X + halfSizeX > UiTreeState.BotRightTree.X)
-		{
-			UiTreeState.BotRightTree.X = passive.TreePos.X + halfSizeX;
-		}
-		
-		if (passive.TreePos.Y + halfSizeY > UiTreeState.BotRightTree.Y)
-		{
-			UiTreeState.BotRightTree.Y = passive.TreePos.Y + halfSizeY;
-		}
 
 		_passive = passive;
 		Left.Set(passive.TreePos.X - halfSizeX, 0.5f);
@@ -114,8 +94,12 @@ internal class PassiveElement : SmartUiElement
 			name += $" -- {_passive.ReferenceId}";
 #endif
 
-			Tooltip.SetName(name);
-			Tooltip.SetTooltip(_passive.DisplayTooltip);
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = "Passive",
+				SimpleTitle = name,
+				SimpleSubtitle = _passive.DisplayTooltip,
+			});
 		}
 
 		Recalculate();
@@ -123,13 +107,17 @@ internal class PassiveElement : SmartUiElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		if (!_passive.CanAllocate(Main.LocalPlayer) || !CheckMouseContained())
+		Player p = Main.LocalPlayer;
+
+		if (!_passive.CanAllocate(p) || !CheckMouseContained())
 		{
 			return;
 		}
 
 		_passive.Level++;
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points--;
+		p.GetModPlayer<PassiveTreePlayer>().Points--;
+		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
+		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
 
 		_flashTimer = 20;
 
@@ -138,16 +126,20 @@ internal class PassiveElement : SmartUiElement
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
+		Player p = Main.LocalPlayer;
+
 		if (!_passive.CanDeallocate(Main.LocalPlayer) || !CheckMouseContained())
 		{
 			return;
 		}
 
 		_passive.Level--;
-		Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points++;
+		p.GetModPlayer<PassiveTreePlayer>().Points++;
+		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
 
 		_redFlashTimer = 20;
 
 		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
+		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
 	}
 }

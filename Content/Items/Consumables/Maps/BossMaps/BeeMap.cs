@@ -1,18 +1,14 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class BeeMap : Map
+internal class BeeMap() : PreHardmodeBossMap(30, () => NPC.downedQueenBee)
 {
-	public override int MaxUses => GetBossUseCount();
-
 	public override void SetStaticDefaults()
 	{
-		base.SetStaticDefaults();
-
 		PoTStaticItemData staticData = this.GetStaticData();
 		staticData.DropChance = 1f;
 	}
@@ -24,7 +20,7 @@ internal class BeeMap : Map
 		Item.Size = new Vector2(36, 36);
 	}
 
-	public override void OpenMap()
+	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<QueenBeeDomain>();
 	}

@@ -1,3 +1,4 @@
+using PathOfTerraria.Common.NPCs;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -28,6 +29,11 @@ public sealed class ControllableSpikeball : ModNPC
 
 	private ref float Timer => ref NPC.localAI[1];
 
+	public override void SetStaticDefaults()
+	{
+		NPCID.Sets.DontDoHardmodeScaling[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		NPC.CloneDefaults(NPCID.SpikeBall);
@@ -36,6 +42,11 @@ public sealed class ControllableSpikeball : ModNPC
 		NPC.scale = 1f;
 		NPC.ShowNameOnHover = false;
 		NPC.netAlways = true;
+	}
+
+	public override void ApplyDifficultyAndPlayerScaling(int numPlayers, float balance, float bossAdjustment)
+	{
+		NPC.damage = ModeUtils.ByMode(50, 65, 80, 115);
 	}
 
 	public override void AI()

@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.TreeSystem;
 using PathOfTerraria.Core.Items;
 using Terraria.ModLoader.IO;

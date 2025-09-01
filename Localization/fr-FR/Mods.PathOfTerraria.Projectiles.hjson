@@ -1,0 +1,179 @@
+LifeStealProjectile.DisplayName: Projectile vol de vie
+HomingProjectile.DisplayName: Projectile à tête chercheuse
+SparklingBall.DisplayName: Boule scintillante
+TomeProjectile.DisplayName: Projetile Tome
+BowProjectile.DisplayName: Projectile à arc
+BowAltUseProjectile.DisplayName: Utilisation alternative de projectiles de l'arc
+BowDrawAnimationProjectile.DisplayName: Animation de projectiles de l'arc
+// BasicWoodenBowAnimationProjectile.DisplayName: Basic Wooden Bow Animation Projectile
+// WoodenBowAnimationProjectile.DisplayName: Wooden Bow Animation Projectile
+BoomerangProjectile.DisplayName: Projectile boomerang
+// BowAnimationProjectile.DisplayName: Bow Animation Projectile
+// FireStarterProjectile.DisplayName: Fire Starter Projectile
+// NovaProjectile.DisplayName: Nova
+// CorruptedBattleaxeProjectile.DisplayName: Corrupted Battleaxe Projectile
+// GuardianAngelProjectile.DisplayName: Guardian Angel Projectile
+// GuardianAngelRay.DisplayName: Guardian Angel Ray
+// SharpenedStickThrown.DisplayName: Sharpened Stick
+// IronPilumThrown.DisplayName: Iron Pilum
+// LeadDangpaThrown.DisplayName: Lead Dangpa
+// IronAngonThrown.DisplayName: Iron Angon
+// PlatinumGlaiveThrown.DisplayName: Platinum Glaive
+
+OwlSummon: {
+	// DisplayName: Owl
+	/* Description:
+		'''
+		Flies towards your cursor
+		Deals damage on contact
+		''' */
+}
+
+BatSummon: {
+	// DisplayName: Bat
+	// Description: "{$OwlSummon.Description}"
+}
+
+PoacherSummon: {
+	// DisplayName: Poacher
+	/* Description:
+		'''
+		Chases your cursor
+		Jumps toward your cursor if the cursor is above it
+		Deals damage on contact
+		''' */
+}
+
+// GrimoireVisageEffect.DisplayName: Grimoire Visage Effect
+// StarlightBulwarkStar.DisplayName: Starlight Bulwark Star
+// StarlightBulwarkComet.DisplayName: Starlight Bulwark Comet
+// MoltenDangpaThrown.DisplayName: Molten Dangpa
+// MoltenDangpaBubbles.DisplayName: Molten Bubbles
+// BloodclotterThrown.DisplayName: Bloodclotter
+// RottenboneThrown.DisplayName: Rottenbone
+// RottenboneChunks.DisplayName: Rottenbone Chunks
+// CarapaceChunk.DisplayName: Carapace Chunk
+// ExitPortal.DisplayName: Exit Portal
+// FallingSlimeProj.DisplayName: Falling Slime
+// SparklingBallProjectile.DisplayName: Sparkling Ball
+// Teleportal.DisplayName: Teleportal
+// FallingPusBlock.DisplayName: Falling Pus
+// VoodooRopeProj.DisplayName: Voodoo Rope
+// LightBallProjectile.DisplayName: Light Ball
+// IcicleProjectile.DisplayName: Icicle
+// WoodenWandProjectile.DisplayName: Clump of Leaves
+// MahoganyWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+// EbonwoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+// ShadewoodWandProjectile.DisplayName: "{WoodenWandProjectile.DisplayName}"
+// GemWandProjectile.DisplayName: Gem
+// CopperStaffProjectile.DisplayName: Amethyst Energy
+// IronStaffProjectile.DisplayName: Topaz Energy
+// LeadStaffProjectile.DisplayName: Sapphire Energy
+// SilverStaffProjectile.DisplayName: Emerald Energy
+// TungstenStaffProjectile.DisplayName: Ruby Energy
+// GoldStaffProjectile.DisplayName: Diamond Energy
+// PlatinumStaffProjectile.DisplayName: "{$GoldStaffProjectile.DisplayName}"
+// StaffHeldProjectile.DisplayName: Staff
+// EoCRitualProj.DisplayName: Ritual
+// EyePortal.DisplayName: Eye Portal
+// EoWPortal.DisplayName: Eater Portal
+// CrimsonMaw.DisplayName: Crimson Maw
+
+HornetSummon: {
+	// DisplayName: Hornet
+	/* Description:
+		'''
+		Chases your cursor
+		Shoots projectiles at the closest enemy
+		''' */
+}
+
+// QueenBeePortal.DisplayName: Queen Bee Portal
+// FallingAshBlock.DisplayName: Falling Ash
+// GeyserPredictionProjectile.DisplayName: Geyser Prediction
+// SkeletronPortal.DisplayName: Skeletron Portal
+// SkeletronRitualProj.DisplayName: Skeletron Ritual
+// DwarvenGreatswordAltHammer.DisplayName: Dwarven Greathammer
+// TinyAlaric.DisplayName: Tiny Alaric
+// VoidPearlThrown.DisplayName: Void Pearl Thrown
+// WoFPortal.DisplayName: Hellish Portal
+// WoFRitualProj.DisplayName: Ritual
+
+OobodopSummon: {
+	// DisplayName: Podoboom
+	/* Description:
+		'''
+		Dashes at your cursor
+		Grows in size if in lava or when hitting enemies
+		Right click to explode, consuming all accrued lava
+		''' */
+}
+
+// ExplosionHitbox.DisplayName: Explosion
+// ExplosionHitboxFriendly.DisplayName: Explosion
+
+DemonSummon: {
+	// DisplayName: Demon
+	/* Description:
+		'''
+		Follows your cursor
+		Shoots various ethereal weapons at the strongest nearby enemy
+		''' */
+}
+
+// DemonWeapons.DisplayName: Demon Weapon
+// FireballProj.DisplayName: Fireball
+// IceBoltProj.DisplayName: Ice Bolt
+// EntThorn.DisplayName: Ent Thorn
+// WardensBowShard.DisplayName: Wardens Bow Shard
+// GroveBoulder.DisplayName: Grove Boulder
+
+RunestoneBurst: {
+	// DisplayName: Runestone Burst
+
+	DeathReasons: {
+		// 0: "{0} was burst apart."
+		// 1: "{0} was bludgeoned by magical energy."
+		// 2: "{0} couldn't handle the power."
+	}
+}
+
+// FallingStick.DisplayName: Falling Stick
+// FallingEntling.DisplayName: Falling Entling
+// FallingBranch.DisplayName: Falling Branch
+// TinyBoulder.DisplayName: Tiny Boulder
+// LargeRoots.DisplayName: Large Roots
+// SawProjectile.DisplayName: Saw
+// ConstantLaserProj.DisplayName: Laser
+// ExplosiveTurret.DisplayName: Explosive Turret
+// PincerProjectile.DisplayName: Pincer
+// PrimeRocket.DisplayName: Prime Rocket
+// PrimeBomb.DisplayName: Prime Bomb
+// LaserClone.DisplayName: Laser Clone
+// ShrineAoE.DisplayName: Shrine Shrine
+// UnstoppableAoE.DisplayName: Unstoppable Shrine
+// GodlikeAoE.DisplayName: Godlike Shrine
+// DefenseAoE.DisplayName: Defense Shrine
+// HasteAoE.DisplayName: Haste Shrine
+// RestorationAoE.DisplayName: Restoration Shrine
+// BallLightning.DisplayName: Ball Lightning
+// DevourerFireball.DisplayName: Devourer Fireball
+// SunsoulHead.DisplayName: Sunsoul
+// SunsoulSummon.DisplayName: Sunsoul Star
+Lightray.DisplayName: Rayon Lumineux
+LightningBurst.DisplayName: Éclair fulgurant
+SunspotAura.DisplayName: Aura de tache solaire
+SunDevourerDash.DisplayName: Dévoreur de Soleil
+WormLightningDeathFX.DisplayName: Mort par foudre vermiforme
+SunBlast.DisplayName: Explosion Solaire
+BubbleshroomBubble.DisplayName: Champignon à bulles
+// SpawnSymbols.DisplayName: Spawn Symbols
+// PrismatismAfterimage.DisplayName: Prismatism Afterimage
+// MLPortal.DisplayName: Portal
+// CombustionBlast.DisplayName: Combustion Blast
+// FieryPatch.DisplayName: Fiery Patch
+// FesteringSporesProj.DisplayName: Festering Spores Proj
+// SporeCloud.DisplayName: Spore Cloud
+// PrecisionSpawnerProjectile.DisplayName: Spawner
+// WhipBaseProjectile.DisplayName: Whip Base Projectile
+// AntlerShardProj.DisplayName: Antler Shard Proj

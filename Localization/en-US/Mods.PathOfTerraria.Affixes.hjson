@@ -3,7 +3,7 @@
 # The {0} is the value of the affix, and the {1} is the sign.
 # An in-game line would look like: -5.58 to stat
 IncreasedDamageAffix.Description: "{1}{0}% damage"
-DefenseItemAffix.Description: "{1}{0} increased defense"
+DefenseItemAffix.Description: "{1}{0} defense"
 EnduranceItemAffix.Description: "{1}{0}% increased damage resistance"
 ResistanceHelmetAffix.Description: "{1}{0}% shorter debuffs"
 BuffBoostHelmetAffix.Description: "{1}{0}% longer beneficial buffs"
@@ -11,7 +11,7 @@ ThornyArmorAffix.Description: "{1}{0} reflected flat damage"
 BaseLifeAffix.Description: "{1}{0} max health"
 AddedLifeAffix.Description: "{1}{0}% max health"
 MultipliedLifeAffix.Description: "{1}{0}% max health multiplier"
-FlatLifeAffix.Description: "{1}{0} flat max life"
+FlatLifeAffix.Description: "{1}{0} flat max health"
 LifeRegenAffix.Description: "{1}{0}% life regeneration"
 LifeRegenMultiplierAffix.Description: "{1}{0}% life regeneration multiplier"
 LifePotionPowerAffix.Description: "{1}{0}% stronger healing potions"
@@ -31,7 +31,7 @@ ChanceToApplyArmorShredGearAffix.Description: "{1}{0} chance to apply Armor Shre
 ChanceToApplyBloodclotItemAffix.Description: "{1}{0}% chance to apply Bloodclot"
 ChanceToApplyPoisonItemAffix.Description: "{1}{0}% chance to apply Poisoned"
 BuffPoisonedHitsAffix.Description: "{1}{0}% damage to poisoned enemies"
-MovementSpeed.Description: "{1}{0}% movement speed"
+MovementSpeedAffix.Description: "{1}{0}% movement speed"
 HealOnKillingBurningEnemiesAffix.Description: "{1}{0} health gained on killing a burned enemy"
 IncreasedAttackSpeedAffix.Description: "{1}{0}% faster attack speed"
 AddedAttackSpeedAffix.Description: "{1}{0}% increased attack speed"
@@ -51,3 +51,28 @@ FlatCriticalStrikeChanceAffix.Description: "{1}{0} flat critical strike chance"
 PercentageIncreasedCriticalStrikeDamageAffix.Description: "{1}{0}% critical strike damage"
 ChanceToApplyShockGearAffix.Description: "{1}{0}% to apply Shock"
 BuffShockedEffectAffix.Description: "{1}{0}% multiplier to Shock effect"
+IncreaseBlockAffix.Description: "{1}{0}% increased block chance"
+StrengthItemAffix.Description: "{1}{0} strength"
+DexterityItemAffix.Description: "{1}{0} dexterity"
+IntelligenceItemAffix.Description: "{1}{0} intelligence"
+DoubleLife.Prefix: Hearty
+SiphonerAffix.Prefix: Siphoning
+FastAffix.Prefix: Swift
+AggravatorAffix.Prefix: Aggravating
+DamageAffix.Prefix: Harmful
+ChanceToApplyRootedGearAffix.Description: "{1}{0}% chance to apply Rooted"
+MapDamageAffix.Description: "{1}{0}% increased mob damage"
+MapBossHealthAffix.Description: "{1}{0}% increased boss health"
+MapMobCritChanceAffix.Description: "{1}{0}% increased enemy crit chance"
+MapMobChillChanceAffix.Description: "{1}{0}% chance for enemies to inflict Chilled"
+MapIncreasedBehaviourAffix.Description: "{1}{0}% increased enemy behavior speed"
+ColdAffix.Prefix: Freezing
+LightningAffix.Prefix: Shocking
+FlamingAffix.Prefix: Flaming
+StalwartAffix.Prefix: Stalwart
+FireResistItemAffix.Description: "{1}{0}% fire resistance"
+ColdResistItemAffix.Description: "{1}{0}% cold resistance"
+LightningResistItemAffix.Description: "{1}{0}% lightning resistance"
+FocusChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Focus Charge on kill"
+HasteChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Haste Charge on kill"
+AegisChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Aegis Charge on kill"

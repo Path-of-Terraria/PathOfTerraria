@@ -1,5 +1,42 @@
 {
   "netId": 60,
   "friendlyName": "Hellbat",
-  "entries": []
+  "damage": [
+    {
+      "minLevel": 1,
+      "fire": {
+        "added": 10,
+        "conversion": 0.5
+      }
+    },
+    {
+      "minLevel": 10,
+      "fire": {
+        "added": 15,
+        "conversion": 0.75
+      }
+    }
+  ],
+  "entries": [
+  {
+    "weight": 0.75,
+    "prefix": "Electric",
+    "stats": {
+      "level": 3,
+      "experience": 5
+    },
+    "damageOverrides": [
+      {
+        "minLevel": 1,
+        "lightning": {
+          "added": 15,
+          "conversion": 0.75
+        },
+        "fire": {
+          "conversion": 0.25
+        }
+      }
+    ]
+  }
+  ]
 }

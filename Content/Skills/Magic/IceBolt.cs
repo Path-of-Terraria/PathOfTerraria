@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Projectiles;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -10,8 +10,6 @@ namespace PathOfTerraria.Content.Skills.Magic;
 public class IceBolt : Skill
 {
 	public override int MaxLevel => 3;
-
-	public override List<SkillPassive> Passives => [];
 
 	public override void LevelTo(byte level)
 	{
@@ -24,10 +22,9 @@ public class IceBolt : Skill
 
 	public override void UseSkill(Player player)
 	{
-		player.statMana -= ManaCost;
-		Timer = Cooldown;
+		base.UseSkill(player);
 
-		int damage = Level * 10 + 5;
+		int damage = GetTotalDamage(Level * 10 + 5);
 		var source = new EntitySource_UseSkill(player, this);
 		float knockback = 2f;
 		int type = ModContent.ProjectileType<IceBoltProj>();
@@ -36,7 +33,7 @@ public class IceBolt : Skill
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
 	}
 
-	private class IceBoltProj : ModProjectile
+	private class IceBoltProj : SkillProjectile<IceBolt>
 	{
 		public override string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetType().Name;
 

@@ -1,27 +1,35 @@
+using NPCUtils;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
+using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.NPCs.Effects;
-using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.Localization;
-using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Common.NPCs.OverheadDialogue;
+using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Common.NPCs.OverheadDialogue;
-using PathOfTerraria.Common.NPCs.Dialogue;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
-using PathOfTerraria.Common.NPCs.QuestMarkers;
+using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Quest;
+using System.Collections.Generic;
 using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
+public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC, ITavernNPC
 {
+	Point16 ISpawnInRavencrestNPC.TileSpawn => RavencrestSystem.Structures["Observatory"].Position.ToPoint16();
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
-	private float animCounter;
+	bool ISpawnInRavencrestNPC.CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
+	{
+		return (BossTracker.TotalBossesDowned.Contains(NPCID.KingSlime) || NPC.downedSlimeKing) && timeframe is NPCSpawnTimeframe.WorldGen or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists;
+	}
 
 	public override void SetStaticDefaults()
 	{
@@ -34,6 +42,12 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		NPCID.Sets.AttackTime[NPC.type] = 16;
 		NPCID.Sets.AttackAverageChance[NPC.type] = 30;
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
+
+		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers()
+		{
+			Velocity = 1f
+		};
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 	}
 
 	public override void SetDefaults()
@@ -107,9 +121,9 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
-		button = Language.GetTextValue("LegacyInterface.28");
+		//button = Language.GetTextValue("LegacyInterface.28");
 
-		EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		button2 = !quest.CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
@@ -117,6 +131,10 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 			button2 = this.GetLocalization("CreateConcoction").Value;
 
 			Main.npcChatCornerItem = ModContent.ItemType<LunarObject>();
+		}
+		else if (quest.Completed && (Main.LocalPlayer.HasItem(ModContent.ItemType<LunarShard>()) || Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>())))
+		{
+			button2 = this.GetLocalization("DonateLunar").Value;
 		}
 	}
 
@@ -128,14 +146,19 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 		}
 		else
 		{
-			EoCQuest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+			Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 
 			if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarObject>()))
 			{
 				if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5 && Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
 				{
 					Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarObject").Value;
-					Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarObject>());
+					int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarObject>(), noGrabDelay: true);
+
+					if (Main.netMode == NetmodeID.MultiplayerClient)
+					{
+						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+					}
 
 					Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarLiquid>());
 
@@ -151,37 +174,45 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC
 
 				return;
 			}
+			else if (quest.Completed)
+			{
+				Main.npcChatText = this.GetLocalization("Dialogue.Donation").Value;
+				int shardCount = Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>());
+				int count = shardCount + Main.LocalPlayer.CountItem(ModContent.ItemType<LunarLiquid>());
+				Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), ItemID.SilverCoin, count);
+
+				for (int i = 0; i < count - shardCount; ++i)
+				{
+					Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarLiquid>());
+				}
+
+				for (int i = 0; i < shardCount; ++i)
+				{
+					Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarShard>());
+				}
+
+				return;
+			}
 
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoCQuest>();
 		}
 	}
 
-	public override void FindFrame(int frameHeight)
-	{
-		if (!NPC.IsABestiaryIconDummy)
-		{
-			return;
-		}
-
-		animCounter += 0.25f;
-
-		if (animCounter >= 16)
-		{
-			animCounter = 2;
-		}
-		else if (animCounter < 2)
-		{
-			animCounter = 2;
-		}
-
-		int frame = (int)animCounter;
-		NPC.frame.Y = frame * frameHeight;
-	}
-
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 		return !quest.Completed;
+	}
+
+	public bool ForceSpawnInTavern()
+	{
+		HashSet<int> downs = BossTracker.TotalBossesDowned;
+		return downs.Contains(NPCID.KingSlime) && !downs.Contains(NPCID.EyeofCthulhu) || Quest.GetLocalPlayerInstance<EoCQuest>().Active;
+	}
+
+	public float SpawnChanceInTavern()
+	{
+		return 0f;
 	}
 }
