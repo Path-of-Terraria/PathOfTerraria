@@ -81,9 +81,16 @@ public class SeeflowerSystem : ModSystem
 	{
 		if (SubworldSystem.Current is PlanteraDomain)
 		{
+			Vector2 bulbInWorld = PlanteraDomain.BulbPosition.ToWorldCoordinates();
+
+			if (NPC.AnyNPCs(NPCID.Plantera))
+			{
+				bulbInWorld = Main.npc[NPC.FindFirstNPC(NPCID.Plantera)].Center;
+			}
+
 			foreach (Point16 point in Seeflower.AngleByPosition.Keys)
 			{
-				float targetAngle = point.ToWorldCoordinates().AngleTo(PlanteraDomain.BulbPosition.ToWorldCoordinates()) - 0.6f;
+				float targetAngle = point.ToWorldCoordinates().AngleTo(bulbInWorld) - 0.6f;
 				Seeflower.AngleByPosition[point] = Utils.AngleLerp(Seeflower.AngleByPosition[point], targetAngle, 0.03f);
 			}
 		}

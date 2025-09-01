@@ -55,8 +55,6 @@ internal sealed class BossTracker : ModSystem
 				NetMessage.SendData(MessageID.WorldData);
 			}
 
-			//ModContent.GetInstance<SyncPlayerBossDownedHandler>().Send(id);
-
 			if (SubworldSystem.Current is not null && setBossDowned)
 			{
 				ModPacket packet = Networking.GetPacket(Networking.Message.SyncBossDowned, 5);
@@ -99,15 +97,27 @@ internal sealed class BossTracker : ModSystem
 
 	private static void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
 	{
-		if (SubworldSystem.Current is BossDomainSubworld && self.boss)
+		bool isBoss = ContentSamples.NpcsByNetId[self.netID].boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type];
+
+		if (SubworldSystem.Current is BossDomainSubworld && isBoss)
 		{
 			// Spawns the Wall of Flesh's box around itself, which is overriden by this method
 			OnDeathNPC.OnDeathEffects(self);
 
-			if (ContentSamples.NpcsByNetId[self.netID].boss && SubworldSystem.Current is not null)
+			if (CheckSpecialConditions(self, isBoss) && SubworldSystem.Current is not null)
 			{
 				// Automatically add/send the boss downed cache/packet
 				AddDowned(self.netID, false, true, false);
+
+				// Sends both bosses for consistency for the Twins
+				if (self.netID == NPCID.Retinazer)
+				{
+					AddDowned(NPCID.Spazmatism, false, true, false);
+				}
+				else if (self.netID == NPCID.Spazmatism)
+				{
+					AddDowned(NPCID.Retinazer, false, true, false);
+				}
 			}
 
 			self.type = NPCID.None;
@@ -115,6 +125,44 @@ internal sealed class BossTracker : ModSystem
 		}
 
 		orig(self, closestPlayer);
+	}
+
+	private static bool CheckSpecialConditions(NPC self, bool isBoss)
+	{
+		int type = self.type;
+
+		if (type is NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail or NPCID.EaterofWorldsBody) // EoW should only count once every other EoW is dead
+		{
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.whoAmI != self.whoAmI && self.type == NPCID.EaterofWorldsBody)
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		if (!isBoss)
+		{
+			return false;
+		}
+
+		if (type is NPCID.LunarTowerNebula or NPCID.LunarTowerSolar or NPCID.LunarTowerStardust or NPCID.LunarTowerVortex) // Towers don't count
+		{
+			return false;
+		}
+		else if (type == NPCID.Spazmatism) // Spazmatism/Retinazer only count if the other is defeated
+		{
+			return !NPC.AnyNPCs(NPCID.Retinazer);
+		}
+		else if (type == NPCID.Retinazer)
+		{
+			return !NPC.AnyNPCs(NPCID.Spazmatism);
+		}
+
+		return isBoss;
 	}
 
 	public override void PreUpdateEntities()

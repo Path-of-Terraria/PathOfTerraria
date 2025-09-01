@@ -24,6 +24,7 @@ internal class SpawnSymbols : ModProjectile
 		Projectile.timeLeft = 240;
 		Projectile.Opacity = 0f;
 		Projectile.scale = 1f;
+		Projectile.netImportant = true;
 	}
 
 	public override void AI()

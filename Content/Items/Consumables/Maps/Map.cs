@@ -115,12 +115,12 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public static int TierBasedOnWorldLevel(int area)
 	{
-		if (area == 0)
+		if (area < 45)
 		{
 			return 0;
 		}
 
-		// Return 1 if we're post-WoF due to the gap of 45-50 in the formula below.
+		// Return 1 if we're post-WoF due to the gap of 45-48 in the formula below.
 		if (area >= 45 && area <= 48)
 		{
 			return 1;

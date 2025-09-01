@@ -5,6 +5,8 @@ using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
+using PathOfTerraria.Common.UI;
+using ReLogic.Content;
 using ReLogic.Graphics;
 using SubworldLibrary;
 using Terraria.GameContent;
@@ -19,7 +21,8 @@ namespace PathOfTerraria.Common.Subworlds;
 
 /// <summary>
 /// This is the base class for all mapping worlds. It sets the width and height of the world to 1000x1000 and disables world saving.<br/>
-/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification, and enables <see cref="Systems.ModPlayers.LivesSystem.BossDomainLivesPlayer"/>'s life system.
+/// Additionally, it also makes <see cref="StopBuildingPlayer"/> disable world modification, 
+/// and enables <see cref="Systems.ModPlayers.LivesSystem.BossDomainLivesPlayer"/>'s life system.
 /// </summary>
 public abstract class MappingWorld : Subworld
 {
@@ -49,7 +52,11 @@ public abstract class MappingWorld : Subworld
 	/// </summary>
 	public virtual int[] WhitelistedExplodableTiles => [];
 
-	// We are going to first set the world to be completely flat so we can build on top of that
+	/// <summary>
+	/// The amount of scrolling backgrounds this domain has. Defaults to 1.
+	/// </summary>
+	public virtual int ScrollingBackgroundCount => 1;
+
 	public override List<GenPass> Tasks => [new FlatWorldPass()];
 
 	/// <summary>
@@ -78,9 +85,11 @@ public abstract class MappingWorld : Subworld
 	public LocalizedText SubworldMining { get; private set; }
 	public LocalizedText SubworldPlacing { get; private set; }
 
-	private string _tip = "";
-	private string _fadingInTip = "";
-	private int _tipTime = 0;
+	/// <summary>
+	/// The loading backgrounds for this <see cref="MappingWorld"/>. Used by <see cref="SubworldLoadingScreen"/>.
+	/// </summary>
+	public Asset<Texture2D>[] LoadingBackgrounds = [];
+
 	private bool needsNetSync;
 
 	public override void Load()
@@ -89,8 +98,33 @@ public abstract class MappingWorld : Subworld
 		SubworldDescription = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Description", () => GetType().Name);
 		SubworldMining = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Mining", () => "\"{$DefaultMining}\"");
 		SubworldPlacing = Language.GetOrRegister("Mods.PathOfTerraria.Subworlds." + GetType().Name + ".Placing", () => "\"{$DefaultPlacing}\"");
+
+		if (!Main.dedServ)
+		{
+			LoadLoadingScreens();
+		}
 	}
-	
+
+	private void LoadLoadingScreens()
+	{
+		if (ScrollingBackgroundCount == 1 && ModContent.RequestIfExists("PathOfTerraria/Assets/UI/SubworldLoadScreens/" + GetType().Name, out Asset<Texture2D> image))
+		{
+			LoadingBackgrounds = [image];
+		}
+		else if (ScrollingBackgroundCount > 1)
+		{
+			LoadingBackgrounds = new Asset<Texture2D>[ScrollingBackgroundCount];
+
+			for (int i = 0; i < ScrollingBackgroundCount; i++)
+			{
+				if (ModContent.RequestIfExists($"PathOfTerraria/Assets/UI/SubworldLoadScreens/{GetType().Name}_{i}", out Asset<Texture2D> background))
+				{
+					LoadingBackgrounds[i] = background;
+				}
+			}
+		}
+	}
+
 	internal virtual void ModifyDefaultWhitelist(HashSet<int> results, BuildingWhitelist.WhitelistUse use, List<FramedTileBlockers> blockers)
 	{
 	}
@@ -105,7 +139,7 @@ public abstract class MappingWorld : Subworld
 		WorldGen._genRandSeed = Main.rand.Next();
 
 		int rand = Main.rand.Next(10, 30);
-
+		
 		for (int i = 0; i < rand; ++i)
 		{
 			WorldGen.genRand.Next();
@@ -141,7 +175,7 @@ public abstract class MappingWorld : Subworld
 		{
 			worldInfoTag.Add("affixes", (TagCompound[])[.. Affixes.Select(x => x.SaveAs())]);
 		}
-
+		
 		SubworldSystem.CopyWorldData("worldInfo", worldInfoTag);
 	}
 
@@ -201,78 +235,7 @@ public abstract class MappingWorld : Subworld
 
 	public override void DrawMenu(GameTime gameTime)
 	{
-		string statusText = Main.statusText;
-		GenerationProgress progress = WorldGenerator.CurrentGenerationProgress;
-
-		if (SubworldSystem.Current is not null)
-		{
-			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Entering"), Color.LightGray, new Vector2(0, -360), 0.4f);
-			DrawStringCentered(SubworldName.Value, Color.White, new Vector2(0, -310), 1.1f);
-			DrawStringCentered(SubworldDescription.Value, Color.White, new Vector2(0, -250), 0.5f);
-		}
-		else
-		{
-			DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.Subworlds.Exiting"), Color.White, new Vector2(0, -310), 0.9f);
-		}
-
-		if (WorldGen.gen && progress is not null)
-		{
-			DrawStringCentered(progress.Message, Color.LightGray, new Vector2(0, 60), 0.6f);
-			double percentage = progress.Value / progress.CurrentPassWeight * 100f;
-			DrawStringCentered($"{percentage:#0.##}%", Color.LightGray, new Vector2(0, 120), 0.7f);
-		}
-
-		DrawStringCentered(statusText, Color.White);
-
-		if (_tip == "")
-		{
-			SetTip();
-			_tipTime = 0;
-		}
-
-		_tipTime++;
-
-		DrawStringCentered(Language.GetTextValue("Mods.PathOfTerraria.UI.Tips.Title"), Color.White, new Vector2(0, 300), 0.8f);
-
-		if (_tipTime > 300)
-		{
-			float factor = (_tipTime - 300) / 60f;
-			DrawStringCentered(_tip, Color.White * (1 - factor), new Vector2(0, 338), 0.5f);
-			DrawStringCentered(_fadingInTip, Color.White * factor, new Vector2(0, 338), 0.5f);
-
-			if (_tipTime == 360)
-			{
-				SetTip(_fadingInTip);
-				_tipTime = 0;
-			}
-		}
-		else
-		{
-			DrawStringCentered(_tip, Color.White, new Vector2(0, 338), 0.5f);
-		}
-	}
-
-	/// <summary>
-	/// Sets the tip to <paramref name="text"/>, or if <paramref name="text"/> is null, any random tip.
-	/// </summary>
-	private void SetTip(string text = null)
-	{
-		const int MaxTips = 31;
-
-		_tip = text ?? Language.GetTextValue("Mods.PathOfTerraria.UI.Tips." + Main.rand.Next(MaxTips));
-
-		do
-		{
-			_fadingInTip = Language.GetTextValue("Mods.PathOfTerraria.UI.Tips." + Main.rand.Next(MaxTips));
-		} while (_tip == _fadingInTip);
-	}
-
-	private static void DrawStringCentered(string statusText, Color color, Vector2 position = default, float scale = 1f)
-	{
-		Vector2 screenCenter = new Vector2(Main.screenWidth, Main.screenHeight) / 2f + position;
-		DynamicSpriteFont font = FontAssets.DeathText.Value;
-		Vector2 halfSize = font.MeasureString(statusText) / 2f * scale;
-		Main.spriteBatch.DrawString(font, statusText, screenCenter - halfSize, color, 0f, Vector2.Zero, scale, SpriteEffects.None, 0);
+		SubworldLoadingScreen.DrawLoading(this);
 	}
 
 	internal static int ModifyExperience(int experience)

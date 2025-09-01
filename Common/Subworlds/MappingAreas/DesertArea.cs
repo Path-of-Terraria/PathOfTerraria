@@ -9,7 +9,6 @@ using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Generation;
