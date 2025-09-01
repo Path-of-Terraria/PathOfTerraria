@@ -199,11 +199,6 @@ IncreasedColdDamagePassive: {
 	// Tooltip: +{0}% Increased Cold Damage
 }
 
-TestMasteryPassive: {
-	// Name: TestMasteryPassive
-	// Tooltip: ""
-}
-
 IncreasedWhipDamagePassive: {
 	// Name: IncreasedWhipDamagePassive
 	// Tooltip: ""
