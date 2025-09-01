@@ -4,8 +4,11 @@ using System.Text.RegularExpressions;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
@@ -41,6 +44,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color StatsAccent => ColorUtils.FromHexRgb(0x_a1bdbd);
 		public static Color AffixAccent => ColorUtils.FromHexRgb(0x_ff2222);
 
+		public static Color Implicit => ColorUtils.FromHexRgb(0x_72abcb);
 		public static Color Corrupt => Color.Lerp(Color.Purple, Color.White, 0.4f);
 		public static Color Cloned => ColorUtils.FromHexRgb(0x_37946e);
 		public static Color ManaCost => ColorUtils.FromHexRgb(0x_5fcde4);
@@ -106,13 +110,15 @@ public sealed partial class ItemTooltips : GlobalItem
 			case "Description":
 			case "ShiftNotice":
 			case "SwapNotice":
+			case "BuildBlocked":
+			case "ShootBlocked":
 				yOffset = 2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
 		}
 
 		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name.StartsWith("Stat")
-		|| line.Name is "Damage" or "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost")
+			|| line.Name is "Damage" or "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost")
 		{
 			line.BaseScale = new Vector2(0.95f);
 			yOffset = -4;
@@ -201,6 +207,25 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (data.ItemType != ItemType.None || data.Rarity > ItemRarity.Normal)
 		{
 			string rarityDesc = GetDescriptor(data.ItemType, data.Rarity, data.Influence);
+
+			// Override the type descriptor for maps to distinguish Explorable vs Boss maps
+			if (item.ModItem is Map)
+			{
+				string mapTypeName = null;
+				if (item.ModItem is ExplorableMap)
+				{
+					mapTypeName = Language.GetTextValue("Mods.PathOfTerraria.Gear.ExplorableMap.Name");
+				}
+				else if (item.ModItem is BossMap)
+				{
+					mapTypeName = Language.GetTextValue("Mods.PathOfTerraria.Gear.BossMap.Name");
+				}
+
+				if (!string.IsNullOrWhiteSpace(mapTypeName))
+				{
+					rarityDesc = GetDescriptor(mapTypeName, data.Rarity, data.Influence);
+				}
+			}
 
 			if (item.ModItem is GearLocalizationCategory.IItem gear)
 			{
@@ -298,7 +323,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			Player player = Main.LocalPlayer;
         
 			// Calculate the actual crit chance for this weapon
-			//(I dont think we are changing base crit of weapons, but this fool proofs the future if we plan to.)
+			// Base crit of all weapons atm is 4 (+ any added we have)
 			float baseCritChance = item.crit;
 			float playerCritChance = player.GetTotalCritChance(item.DamageType);
 			float totalCritChance = baseCritChance + playerCritChance;
@@ -313,7 +338,11 @@ public sealed partial class ItemTooltips : GlobalItem
 
 		if (item.mana > 0)
 		{
-			string manaCost = $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{item.mana}]")} [c/{Colors.ManaCost.ToHexRGB()}:{Localize("ManaCost")}]";
+			Player player = Main.LocalPlayer;
+			// Calculate the real mana cost
+			int effectiveManaCost = (int)Math.Round(item.mana * player.manaCost);
+
+			string manaCost = $"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{effectiveManaCost}]")} [c/{Colors.ManaCost.ToHexRGB()}:{Localize("ManaCost")}]";
 			var manaLine = new TooltipLine(Mod, "ManaCost", manaCost);
 			AddNewTooltipLine(item, tooltips, manaLine);
 		}
@@ -350,6 +379,17 @@ public sealed partial class ItemTooltips : GlobalItem
 			{
 				OverrideColor = new Color(170, 170, 170)
 			});
+		}
+
+		if (StopBuildingPlayer.InvalidItemsToUse.Contains(item.type))
+		{
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "BuildBlocked", Localize("BuildBlocked")) { OverrideColor = new Color(220, 110, 110) });
+		}
+
+		if (StopBuildingProjectiles.ProjectileAliasingsByItemId.TryGetValue(item.type, out StopBuildingProjectiles.ProjectileAlias alias))
+		{
+			string text = Language.GetTextValue("Mods.PathOfTerraria.Gear.Tooltips.ShootBlocked", Lang.GetItemName(alias.AltItemId), alias.AltItemId);
+			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "ShootBlocked", text) { OverrideColor = new Color(220, 110, 110) });
 		}
 
 		// Affix tooltips

@@ -1,132 +1,132 @@
 Anchor: {
-	// Name: Anchor
-	// Tooltip: Your journey starts here
+	Name: Ancre
+	Tooltip: Votre voyage commence ici
 }
 
 IgniteChance: {
-	// Name: Ignite Chance
-	// Tooltip: +{0}% Chance per level to apply On Fire! on hit
+	Name: Chance d'embraser
+	Tooltip: +{0}% de chances par niveau d'appliquer En Feu! lors d'un coup
 }
 
 ShockChance: {
-	// Name: Shock Chance
-	// Tooltip: +{0}% Chance per level to apply Shock on hit
+	Name: Chance de choc
+	Tooltip: +{0}% de chances par niveau d'infliger Choc au toucher
 }
 
 Efficiency: {
-	// Name: Efficiency
-	// Tooltip: Mana cost reduced by {0}% per level
+	Name: Efficacité
+	Tooltip: Coût en mana réduit de {0}% par niveau
 }
 
 ThunderClaps: {
-	// Name: Thunder Claps
-	// Tooltip: 5% chance per level to spawn a tiny nova around a hit target
+	Name: Coup de Tonnerre
+	Tooltip: 5% de chances par niveau de générer une petite nova autour d'une cible touchée.
 }
 
 ConcurrentBlasts: {
-	// Name: Concurrent Blasts
-	// Tooltip: Deal {0}% more damage if hit by another nova from the same cast
+	Name: Explosions Simultanées
+	Tooltip: Inflige {0}% de dégâts supplémentaires si touché par une autre nova provenant du même lanceur.
 }
 
 VolatileNova: {
-	// Name: Volatile Nova
-	/* Tooltip:
+	Name: Nova volatile
+	Tooltip:
 		'''
-		Splits your attack into 3 tiny nova
-		Can hit the same target multiple times
-		''' */
+		Divise votre attaque en 3 petites novae
+		Peut toucher la même cible plusieurs fois
+		'''
 }
 
 FlashFire: {
-	// Name: Flash Fire
-	/* Tooltip:
+	Name: Incendie Instantané
+	Tooltip:
 		'''
-		Cooldown reduced by half
-		Deals {0}% less damage
-		''' */
+		Temps de recharge réduit de moitié
+		Inflige {0} % de dégâts en moins
+		'''
 }
 
 Combustive: {
-	// Name: Combustive
-	// Tooltip: Enemies create a fiery blast on death
+	Name: Combustible
+	Tooltip: Les ennemis créent une explosion de feu à leur mort.
 }
 
 ScorchingTouch: {
-	// Name: Scorching Touch
-	// Tooltip: Lights terrain ablaze on contact
+	Name: Toucher Brûlant
+	Tooltip: Les lumières embrasent le terrain au contact
 }
 
 FesteringSpores: {
-	// Name: Festering Spores
-	// Tooltip: Projectiles hitting the ground have a small chance to spawn damaging, explosive spores
+	Name: Spores Purulentes
+	Tooltip: Les projectiles qui touchent le sol ont une faible chance de générer des spores explosives et destructrices.
 }
 
 MoldColony: {
-	// Name: Mold Colony
-	// Tooltip: Increases the chance for projectiles to spawn spores
+	Name: Colonie de Moisissures
+	Tooltip: Augmente les chances que les projectiles génèrent des spores.
 }
 
 FungalSpread: {
-	// Name: Fungal Spread
-	// Tooltip: Spore explosions are 10% larger per stack
+	Name: Propagation Fongique
+	Tooltip: Les explosions de spores sont 10% plus importantes par pile.
 }
 
 LingeringPoison: {
-	// Name: Lingering Poison
-	// Tooltip: Projectiles hitting the ground leave poisonous gas
+	Name: Poison Persistant
+	Tooltip: Les projectiles qui touchent le sol libèrent un gaz toxique.
 }
 
 PowerfulSmog: {
-	// Name: Powerful Smog
-	// Tooltip: Poison clouds linger a second longer per stack
+	Name: Brouillard Puissant
+	Tooltip: Les nuages toxiques persistent une seconde de plus par cumul.
 }
 
 Megatoxin: {
-	// Name: Megatoxin
-	// Tooltip: Substantially increases lingering poison damage per stack
+	Name: Mégatoxine
+	Tooltip: Augmente considérablement les dégâts de poison persistants par cumul.
 }
 
 ColdBlast: {
-	// Name: Cold Blast
-	// Tooltip: All Explosive Volley explosions inflict 2 seconds of Chilled and deals 100% cold damage
+	Name: Vague de Froid
+	Tooltip: Toutes les explosions de Salve explosive infligent 2 secondes de Refroidissement et infligent 100% de dégâts de froid.
 }
 
 ShatteringArrows: {
-	// Name: Shattering Arrows
-	// Tooltip: Volleys have twice the amount of projectiles, each dealing 70% of original damage
+	Name: Flèches Fracassantes
+	Tooltip: Les salves ont deux fois plus de projectiles, chacun infligeant 70% des dégâts initiaux.
 }
 
 ConcussiveBurst: {
-	// Name: Concussive Burst
-	// Tooltip: Add an additional shatter projectile per level
+	Name: Explosion Commotionnelle
+	Tooltip: Ajouter un projectile supplémentaire par niveau
 }
 
 SlicingShrapnel: {
-	// Name: Slicing Shrapnel
-	// Tooltip: Shatter projectiles all inflict bleeding for 3 seconds
+	Name: Éclats Tranchants
+	Tooltip: Tous les projectiles Briser infligent des saignements pendant 3 secondes.
 }
 
 CreepingVines: {
-	// Name: Creeping Vines
-	// Tooltip: Enemies hit by the rain will be buffeted by a vine, which breaks at a distance
+	Name: Vignes Rampantes
+	Tooltip: Les ennemis touchés par la pluie seront frappés par une vigne, qui se brise à distance.
 }
 
 Quickload: {
-	// Name: Quickload
-	// Tooltip: Projectiles are shot out much faster
+	Name: Chargement Rapide
+	Tooltip: Les projectiles sont tirés beaucoup plus rapidement.
 }
 
 SharpenedTips: {
-	// Name: Sharpened Tips
-	// Tooltip: 10% increased armor piercing per stack.
+	Name: Pointes Affûtées
+	Tooltip: Augmentation de 10% de la perforation d'armure par cumul.
 }
 
 TargetLock: {
-	// Name: Target Lock
-	// Tooltip: Projectiles will lazily home on the nearest enemy
+	Name: Verrouillage de Cible
+	Tooltip: Les projectiles se dirigeront paresseusement vers l'ennemi le plus proche.
 }
 
 Ghostfire: {
-	// Name: Ghostfire
-	// Tooltip: Projectiles that hit an enemy have a small chance to duplicate
+	Name: Feu Fantôme
+	Tooltip: Les projectiles qui touchent un ennemi ont une faible chance de se dupliquer.
 }

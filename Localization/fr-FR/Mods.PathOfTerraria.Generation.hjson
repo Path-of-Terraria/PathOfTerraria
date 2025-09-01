@@ -1,3 +1,5 @@
+RavencrestEntrancePass: Ouverture de Ravencrest
+// FrozenRuinPass: ""
 Terrain: Génération du terrain
 Tunnels: Forage des tunnels
 PopulatingWorld: Peuplage du monde
@@ -7,12 +9,12 @@ Pathway: Découverte du chemin
 RavenPass: Plus jamais
 TreesAndLeaves: Ajout des arbres et du feuillage
 Structures: Construction des structures
-// Maze: Escaping the maze
-// PopulatingMetals: Scattering metals
+Maze: S'échapper du labyrinthe
+PopulatingMetals: Dispersion des métaux
 Hole: Creusage de trous
 Growing: Aggrandissement des terres
 Clouds: Exploration du ciel
-// Space: Escaping the atmosphere
+Space: Échapper à l'atmosphère
 Scanning: Scannage du terrain
 
 EaterSign: {
@@ -22,15 +24,15 @@ EaterSign: {
 	3: "{0} a été digéré."
 
 	Names: {
-		// 0: Ronny
-		// 1: Jameson
-		// 2: Evan
-		// 3: Polly
-		// 4: Sylvia
-		// 5: Liara
-		// 6: Svetlana
-		// 7: Obie
-		// 8: Jane-Ashley
+		0: Ronny
+		1: Jameson
+		2: Evan
+		3: Polly
+		4: Sylvia
+		5: Liara
+		6: Svetlana
+		7: Obie
+		8: Jane-Ashley
 	}
 }
 
@@ -41,15 +43,15 @@ EyeSign: {
 	3: "{0} n'a pas pu gérer l'audience."
 
 	Names: {
-		// 0: Wilken
-		// 1: Jimmy
-		// 2: Cammy
-		// 3: Samarah
-		// 4: Pyotir
-		// 5: Aabria
-		// 6: Izzy
-		// 7: Gabe
-		// 8: Roald
+		0: Wilken
+		1: Jimmy
+		2: Cammy
+		3: Samarah
+		4: Pyotir
+		5: Aabria
+		6: Izzy
+		7: Gabe
+		8: Roald
 	}
 }
 

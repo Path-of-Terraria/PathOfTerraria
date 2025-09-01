@@ -122,7 +122,7 @@ public class RavencrestSystem : ModSystem
 			{
 				OverworldOneTimeChecks();
 
-				if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !BossTracker.DownedBrainOfCthulhu)
+				if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
 				{
 					if (Main.netMode == NetmodeID.SinglePlayer)
 					{

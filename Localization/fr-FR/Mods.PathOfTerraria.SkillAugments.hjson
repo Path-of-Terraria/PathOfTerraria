@@ -4,7 +4,7 @@ Unlock: Clic-Gauche pour débloquer
 
 Overload: {
 	Name: Surcharge
-	Tooltip: "Augmente les dégâts de {0}% au coût d'une augmentation de {1}% de l'utilisation de mana "
+	Tooltip: Augmente les dégâts de {0}% au coût d'une augmentation de {1}% de l'utilisation de mana
 }
 
 Disperse: {
@@ -19,5 +19,5 @@ Concentrate: {
 
 Critical: {
 	Name: Critique
-	Tooltip: "Augmente les chances de critiques de {0}% au coût de l'augmentation de {1}% de l'utilisation de mana "
+	Tooltip: Augmente les chances de critiques de {0}% au coût de l'augmentation de {1}% de l'utilisation de mana
 }

@@ -10,14 +10,16 @@ Tooltips: {
 	Corrupted: Corrompu
 	Tier: Rang :
 	Level: Niveau d'objet :
-	Damage: "Dommage "
+	Damage: Dommage
 	Defense: Défense
 	Pickaxe: Puissance de la Pioche
 	Axe: Puissance de la Hache
 	Hammer: Puissance du Marteau
-	// ManaCost: Mana Cost
+	ManaCost: Coût en Mana
 	// AttackSpeed: Attack Speed
 	// CastSpeed: Cast Speed
+	// BuildBlocked: Blocked by the energies in the domain
+	// ShootBlocked: Will be replaced by {0} [i:{1}] when shot
 }
 
 Influence: {
@@ -31,7 +33,7 @@ Chestplate: {
 
 	Prefixes: {
 		0: Durable
-		// 1: Dreadknight's
+		1: Chevalier de la Terreur
 		2: Dragon
 		3: Golem
 		4: Gardien
@@ -59,11 +61,11 @@ Helmet: {
 	}
 
 	Suffixes: {
-		// 0: Drape
-		// 1: Dome
-		// 2: Thought
-		// 3: Vision
-		// 4: Maw
+		0: Draper
+		1: Bombé
+		2: Pensée
+		3: Vision
+		4: Gueule
 	}
 }
 
@@ -71,168 +73,168 @@ Leggings: {
 	Name: Cuissardes
 
 	Prefixes: {
-		// 0: Eagle
+		0: Aigle
 		1: Rapide
-		// 2: Feathered
+		2: À plumes
 		3: à Pointes
-		4: Voilé
+		4: Attaché
 	}
 
 	Suffixes: {
-		// 0: Boots
-		// 1: Treads
+		0: Bottes
+		1: à marches
 		2: Jambières
-		// 3: Tassets
+		3: Tassettes
 		// 4: Leggings
 	}
 }
 
 Battleaxe: {
 	Name: Hache de Combat
-	AltUse: Clic-Droit pour sacrifier 5 PV pour augmenter temporairement les dommages infligés et subiss
+	AltUse: Clic-Droit pour sacrifier 5 PV pour augmenter temporairement les dommages infligés et subis
 
 	Prefixes: {
-		0: Brutal
+		0: Brutale
 		1: Sauvage
-		// 2: Cleaving
-		3: Guerre
+		2: Fendage
+		3: de Guerre
 		4: Sanguinaire
 	}
 
 	Suffixes: {
-		// 0: Fury
-		// 1: Cleaver
-		// 2: Ravage
-		// 3: Hew
+		0: Fureur
+		1: Hachoir
+		2: Ravage
+		3: Coupante
 		4: Tueur
 	}
 }
 
 Boomerang: {
-	// Name: Boomerang
-	// AltUse: Right-click to send the boomerang in a quick spiral around you.
+	Name: Boomerang
+	AltUse: Clic-Droit pour envoyer le boomerang en une spirale rapide autour de vous.
 
 	Prefixes: {
-		// 0: Spiraling
-		// 1: Quick
-		// 2: Razor
-		// 3: Enchanted
-		// 4: Storm
+		0: En spirale
+		1: Rapide
+		2: Rasoir
+		3: Enchanté
+		4: Tempétueux
 	}
 
 	Suffixes: {
-		// 0: Return
-		// 1: Slice
-		// 2: Glide
-		// 3: Arc
-		// 4: Edge
+		0: Revenant
+		1: Tranchant
+		2: Plannant
+		3: Arquer
+		4: Tranchant
 	}
 }
 
 Bow: {
-	// Name: Bow
-	// AltUse: Right-click to charge and fire a significantly stronger and faster shot.
+	Name: Arc
+	AltUse: Clic-Droit pour charger et tirer un projectile nettement plus puissant et rapide.
 
 	Prefixes: {
-		// 0: Swift
-		// 1: Piercing
-		// 2: Hunter's
-		// 3: Gale
-		// 4: Vengeful
+		0: Rapide
+		1: Perçant
+		2: de Chasseur
+		3: Tempêtueux
+		4: Vengeur
 	}
 
 	Suffixes: {
-		// 0: Flight
-		// 1: Song
-		// 2: Wind
-		// 3: Thorn
-		// 4: Sight
+		0: Volant
+		1: Musicale
+		2: Venteux
+		3: à Epines
+		4: de Vision
 	}
 }
 
 Staff: {
-	// Name: Staff
-	// AltUse: Right-click to overcharge your mana for a short time, summoning projectiles four times faster and automatically firing them
+	Name: Bâton
+	AltUse: Clic-Droit pour surcharger votre mana pendant un court instant, invoquant des projectiles quatre fois plus rapidement et les tirant automatiquement.
 
 	Prefixes: {
-		// 0: Arcane
-		// 1: Mystic
-		// 2: Eldritch
-		// 3: Luminous
-		// 4: Sacred
+		0: Arcanique
+		1: Mystique
+		2: Étrange
+		3: Lumineux
+		4: Sacré
 	}
 
 	Suffixes: {
-		// 0: Wrath
-		// 1: Whisper
-		// 2: Beacon
-		// 3: Veil
-		// 4: Echo
+		0: Colèrique
+		1: Chuchoteur
+		2: Balisé
+		3: Voilé
+		4: Résonant
 	}
 }
 
 // Broadsword.Name: Broadsword
 
 Sword: {
-	// Name: Sword
-	// AltUse: Right-click to summon a spirit from your blade that lunges forward, healing you for 15 health on hitting an enemy.
+	Name: Épée
+	AltUse: Clic-Droit pour invoquer un esprit depuis votre lame qui se précipite vers l'avant et vous soigne de 15 points de vie lorsqu'il touche un ennemi.
 
 	Prefixes: {
-		// 0: Sharp
-		// 1: Harmonic
-		// 2: Enchanted
-		// 3: Shiny
-		// 4: Strange
+		0: Aiguisée
+		1: Harmonique
+		2: Enchantée
+		3: Brillante
+		4: Étrange
 	}
 
 	Suffixes: {
-		// 0: Drape
-		// 1: Dome
-		// 2: Thought
-		// 3: Vision
+		0: Drapée
+		1: Bombée
+		2: de la Pensée
+		3: de la Vision
 		// 4: Maw
 	}
 }
 
 # Spellbook is the same as Staff at the moment.
 Spellbook: {
-	// Name: Spellbook
+	Name: Livre de sorts
 
 	Prefixes: {
-		// 0: Arcane
-		// 1: Mystic
-		// 2: Eldritch
-		// 3: Luminous
-		// 4: Sacred
+		0: Arcanique
+		1: Mystique
+		2: Étrange
+		3: Lumineux
+		4: Sacré
 	}
 
 	Suffixes: {
-		// 0: Wrath
-		// 1: Whisper
-		// 2: Beacon
-		// 3: Veil
-		// 4: Echo
+		0: Colèrique
+		1: Chuchoteur
+		2: Balisé
+		3: Voilé
+		4: Résonant
 	}
 }
 
 Wand: {
-	// Name: Wand
-	// AltUse: Right-click to summon 4x the normal mana cost to send a flurry of projectiles forward
+	Name: Baguette
+	AltUse: Clic-Droit pour invoquer une rafale de projectiles vers l'avant. (4 fois le coût normal en mana afin d'envoyer)
 
 	Prefixes: {
-		// 0: Forbidden
-		// 1: Ancient
-		// 2: Holy
-		// 3: Ominous
-		// 4: Sacred
+		0: Interdite
+		1: Ancienne
+		2: Sainte
+		3: Sinistre
+		4: Sacrée
 	}
 
 	Suffixes: {
-		// 0: of Fury
-		// 1: of Creation
-		// 2: of Destruction
-		// 3: of Memories
-		// 4: of Death
+		0: de la Fureur
+		1: de la Création
+		2: de Destruction
+		3: des Souvenirs
+		4: de la Mort
 	}
 }
 
@@ -241,25 +243,25 @@ Whip: {
 	AltUse: Clic-Droit pour fouetter une fois devant et derrière successivement et rapidement.
 
 	Prefixes: {
-		// 0: Searing
+		0: Brûlant
 		1: Venimeux
 		2: Barbelé
-		// 3: Fiery
-		// 4: Thunderous
+		3: Fougueux
+		4: Tonitruant
 	}
 
 	Suffixes: {
 		// 0: Lash
-		1: Croc
+		1: à Croc
 		2: Fléau
-		// 3: Strike
+		3: Frappant
 		// 4: Snap
 	}
 }
 
 Javelin: {
 	Name: Javelot
-	AltUse: Clic-Droit pour sélancer vers le curseur, poignardant le premier ennemi que vous touchez et infligeant de lourd dégâts.
+	AltUse: Clic-Droit pour pour foncer vers le curseur et poignarder le premier ennemi que vous touchez, lui infligeant ainsi des dégâts importants.
 
 	Prefixes: {
 		0: Perçant
@@ -271,9 +273,9 @@ Javelin: {
 
 	Suffixes: {
 		// 0: Lash
-		1: Croc
-		2: Fléau
-		// 3: Strike
+		1: à Croc
+		2: du Fléau
+		3: Frappant
 		// 4: Snap
 	}
 }
@@ -281,20 +283,20 @@ Javelin: {
 Grimoire: {
 	Name: Grimoire
 	# This is the alt use line but is used to describe basic functionality. Change to be more clear?
-	AltUse: Ordonnez à vos conjurations d'aller vers votre curseur.
+	AltUse: Ordonnez à vos invocations d'aller vers votre curseur.
 
 	Prefixes: {
 		0: Ancien
 		1: Abandonné
 		2: Maudit
-		3: Vile
+		3: Infâme
 		4: Jaloux
 	}
 
 	Suffixes: {
 		0: du Péché
 		1: de la Mort
-		2: de Fureur
+		2: de la Fureur
 		3: des Limbes
 		4: de l'Enfer
 	}
@@ -309,7 +311,7 @@ WarShield: {
 		1: Usé
 		2: Béni
 		3: Renforcé
-		4: Super
+		4: Grand
 	}
 
 	Suffixes: {
@@ -321,7 +323,7 @@ WarShield: {
 	}
 }
 
-// Offhand.Name: Offhand
+Offhand.Name: Seconde Main
 
 Shield: {
 	Name: Bouclier
@@ -346,9 +348,11 @@ Shield: {
 }
 
 Map.Name: Carte
-// None.Name: None
+// ExplorableMap.Name: Explorable Map
+// BossMap.Name: Boss Map
+None.Name: Aucun
 Magic.Name: Magique
 Ranged.Name: À distance
 Melee.Name: Mélée
 Summon.Name: Invocation
-// Accessory.Name: Accessory
+Accessory.Name: Accessoire

@@ -1,0 +1,5 @@
+BossDowned: {
+	Drop: Se dropea cuando {0} a sido derrotado
+	AnyMech: "Cualquier jefe mecánico "
+	The: El
+}

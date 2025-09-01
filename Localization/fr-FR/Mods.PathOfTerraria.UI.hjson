@@ -12,17 +12,17 @@ Gear: {
 }
 
 Slots: {
-	// 0: Helmet
-	// 1: Chest
-	// 2: Legs
-	// 3: Accessory 1
-	// 4: Weapon
-	// 5: Necklace
-	// 6: Offhand
-	// 7: Left Ring
-	// 8: Right Ring
-	// 9: Accessory 2
-	// 10: Wings
+	0: Casque
+	1: Plastron
+	2: Jambes
+	3: Accessoire 2
+	4: Arme
+	5: Collier
+	6: Seconde Main
+	7: Anneau Gauche
+	8: Anneau Droit
+	9: Accessoire 1
+	10: Ailes
 	// 11: Accessory 3
 	// 12: Accessory 4
 }
@@ -57,7 +57,7 @@ StatUI: {
 	// FocusChargeChance: Focus Charge Chance On Kill
 	// AegisChargeChance: Aegis Charge Chance On Kill
 	// MiscHeader: Misc
-	// MaxMinions: Maximum Minions
+	MaxMinions: Serviteurs Maximum
 	HealthPotions: Potions de Santé
 	ManaPotions: Potions de Mana
 
@@ -72,12 +72,12 @@ DropVisualizer: {
 	Gear: Accessoire
 	Currency: Monnaie
 	Map: Carte
-	// Normalize: Normalize
-	// Count: Count
+	Normalize: Normaliser
+	Count: Compte
 	Level: Niveau
 	// RareMod: +Rare
 	// RateMod: +Rate
-	// Run: Run
+	Run: Exécuter
 	SortBy: Trier par :
 	UniqueItem: (Objet Unique)
 }
@@ -97,116 +97,109 @@ Guide: {
 	Hide: Cacher
 	Show: Montrer
 	# Welcome/hello, explain purpose of tutorial
-	/* 0:
-		'''
-		Hello! Welcome to Path of Terraria.
-		This mod changes the game significantly.
-		As such, this guide will explain the changes, mechanics, and what to look out for.
-		If you want to skip ahead, press the Skip Guide or Skip Step buttons at any time. 
-		Otherwise, hit Next.
-		''' */
+	0: Bonjour ! Bienvenue dans Path of Terraria. Ce mod modifie considérablement le jeu. Ce guide explique donc les changements, les mécanismes et les points à surveiller. Si vous souhaitez passer directement à la suite, cliquez à tout moment sur les boutons « Passer le guide » ou « Passer l'étape ». Sinon, cliquez sur « Suivant ».
 	# Explain EXP bar, click on exp bar
-	/* 1:
+	1:
 		'''
-		First, the experience bar. It's directly above this dialogue.
-		Enemies drop experience, usually depending on how strong they are, which allows you to level up.
-		Levelling up provides you with Passive Points and Skill Points.
-		Click on the experience bar to open the Passives tree.
-		''' */
+		Tout d'abord, la barre d'expérience. Elle se trouve juste au-dessus de cette boîte de dialogue. 
+		Les ennemis vous rapportent de l'expérience, généralement en fonction de leur puissance, ce qui vous permet de gagner des niveaux. 
+		Gagner des niveaux vous rapporte des points passifs et des points de compétence. 
+		Cliquez sur la barre d'expérience pour ouvrir l'arbre des passifs.
+		'''
 	# Explain Passive tree, ask to [de]allocate.
-	/* 2:
+	2:
 		'''
-		Here you can see the Passives tree.
-		If you have Passive Points, you can allocate them to the passive(s) of your choosing.
-		These passives provide bonuses to various effects, such as added life, damage, or speed.
-		Click on any passive to allocate it, and right click to deallocate.
-		''' */
+		Vous pouvez voir ici l'arbre des passifs.
+		Si vous disposez de points passifs, vous pouvez les attribuer au(x) passif(s) de votre choix.
+		Ces passifs confèrent des bonus à divers effets, tels que des points de vie, des dégâts ou de la vitesse supplémentaires.
+		Cliquez sur un passif pour l'attribuer, et faites un clic droit pour le désattribuer.
+		'''
 	# Click on skill tab.
-	// 3: Now, click on the Skills tab on the top-left.
+	3: Maintenant, cliquez sur l'onglet Compétences en haut à gauche.
 	# Explain the skills tab, select a skill
-	/* 4:
+	4:
 		'''
-		Here is the (debug) Skills tab.
-		Here you can select and deselect certain abilities, allowing you to change up your gameplay significantly.
-		In the future, skills will be instead obtained through progression instead of this menu.
-		Click on any skill to select it.
-		''' */
+		Voici l'onglet Compétences (débogage).
+		Vous pouvez ici sélectionner et désélectionner certaines capacités, ce qui vous permet de modifier considérablement votre style de jeu.
+		À l'avenir, les compétences seront obtenues au fur et à mesure de votre progression, et non plus via ce menu.
+		Cliquez sur une compétence pour la sélectionner.
+		'''
 	# Explain skills, close menu
-	/* 5:
+	5:
 		'''
-		Selected skills will be shown in the hotbar.
-		Skills have a cooldown after use, the length of which depending on the skill.
-		Some abilities are unlocked by holding certain items.
-		Close the tree menu (hit escape or click the red X on the top-right).
-		''' */
+		Les compétences sélectionnées s'affichent dans la barre d'accès rapide.
+		Les compétences ont un temps de recharge après utilisation, dont la durée dépend de la compétence.
+		Certaines capacités sont débloquées en conservant certains objets.
+		Fermez le menu arborescent (appuyez sur Échap ou cliquez sur le X rouge en haut à droite).
+		'''
 	# Explain weapon requirements, use skill
-	/* 6:
+	6:
 		'''
-		Now, hit the hotkey under your given skill to use it.
-		If nothing appears under the skill, choose a hotkey in Settings -> Controls -> Use Skill 1 - 3.
-		Some abilities require a specific held item. For example, the Nova skill requires holding a Magic weapon.
-		Hovering over the skill will describe any conditions it needs.
-		''' */
+		Maintenant, appuyez sur la touche de raccourci sous la compétence donnée pour l'utiliser.
+		Si rien n'apparaît sous la compétence, choisissez une touche de raccourci dans Paramètres -> Commandes -> Utiliser les compétences 1 à 3.
+		Certaines capacités nécessitent un objet spécifique. Par exemple, la compétence Nova nécessite de tenir une arme magique.
+		Passez la souris sur la compétence pour voir les conditions requises.
+		'''
 	# Explain inventory
-	/* 7:
+	7:
 		'''
-		Next up, the hotbar has changed substantially as well.
-		You'll see that when the first hotbar slot is selected, the hotbar is in Combat mode.
-		It shows your skills, weapon and potions. 
-		When off of the first slot, Normal mode is shown, showing the rest of your hotbar normally.
-		Hit the "Next" button when ready.
-		''' */
+		Ensuite, la barre d'accès rapide a également été considérablement modifiée. 
+		Vous remarquerez que lorsque le premier emplacement de la barre d'accès rapide est sélectionné, celle-ci est en mode Combat. 
+		Elle affiche vos compétences, vos armes et vos potions. 
+		Lorsque vous n'êtes pas sur le premier emplacement, le mode Normal s'affiche, montrant le reste de votre barre d'accès rapide normalement. 
+		Appuyez sur le bouton "Suivant" lorsque vous êtes prêt.
+		'''
 	# Explain inventory pt2, hotswapping
-	/* 8:
+	8:
 		'''
-		Weapons can only be equipped in the first hotbar slot. Additionally, weapons can be hotswapped.
-		Equip a weapon to the first slot, and press your Weapon Swap hotkey (defaults Z).
-		This should swap out your weapon with either air (allowing you to equip another) or the old swapped weapon.
-		Use the Weapon Swap hotkey to swap a weapon. Swap back and forth as you wish.
-		''' */
+		Les armes ne peuvent être équipées que dans le premier emplacement de la barre d'accès rapide. De plus, les armes peuvent être remplacées à chaud. 
+		Équipez une arme dans le premier emplacement, puis appuyez sur la touche de raccourci « Weapon Swap » (par défaut, Z). 
+		Cela devrait remplacer votre arme par de l'air (vous permettant d'en équiper une autre) ou par l'ancienne arme remplacée. 
+		Utilisez la touche de raccourci « Weapon Swap » pour remplacer une arme. Vous pouvez effectuer autant de remplacements que vous le souhaitez.
+		'''
 	# Character sheet
-	/* 9:
+	9:
 		'''
-		Moving on, your character has a few additional stats in Path of Terraria.
-		These can all be found in the Character Sheet, which displays all of your stats such as life and experience.
-		You can open the Sheet with the Toggle Stat Page hotkey (defaults V), or click the paper icon next to your minimap.
-		Open the character sheet and look around. Close it when you want to continue.
-		''' */
+		Passons à autre chose, votre personnage dispose de quelques statistiques supplémentaires dans Path of Terraria. 
+		Vous les trouverez toutes dans la fiche de personnage, qui affiche toutes vos statistiques telles que la vie et l'expérience. 
+		Vous pouvez ouvrir la fiche à l'aide du raccourci clavier « Toggle Stat Page » (par défaut V), ou en cliquant sur l'icône en forme de papier à côté de votre mini-carte. 
+		Ouvrez la fiche de personnage et explorez-la. Fermez-la lorsque vous souhaitez continuer.
+		'''
 	# Explain the Quest Book
-	/* 10:
+	10:
 		'''
-		Only a few more things to go. Next is the Quest system. Next to the minimap there is a checkmarked book,
-		clicking it or using the Quest hotkey (default L) will open the Quest Book. Click on it and look around.
-		Here, you can see all of your quests, completed or ongoing.
-		Your first quest will be going to Ravencrest, the first and primary town in the mod.
-		Close it when you are ready to continue.
-		''' */
+		Il ne reste plus que quelques éléments à aborder. Passons maintenant au système de quêtes. À côté de la mini-carte se trouve un livre coché. 
+		Cliquez dessus ou utilisez le raccourci clavier des quêtes (par défaut L) pour ouvrir le livre des quêtes. Cliquez dessus et explorez-le. 
+		Vous pouvez y voir toutes vos quêtes, terminées ou en cours. 
+		Votre première quête vous mènera à Ravencrest, la première et principale ville du mod. 
+		Fermez-le lorsque vous êtes prêt à continuer.
+		'''
 	# Enter Ravencrest
-	/* 11:
+	11:
 		'''
-		Oh? That's new. Seems like this ghostly Raven will guide the way.
-		Follow the Raven to the entrance to Ravencrest.
-		Right click on the Raven Statue at the entrance to go to Ravencrest.
-		''' */
+		Oh ? C'est nouveau. On dirait que ce corbeau fantomatique va nous guider. 
+		Suivez le corbeau jusqu'à l'entrée de Ravencrest. 
+		Cliquez avec le bouton droit sur la statue du corbeau à l'entrée pour vous rendre à Ravencrest.
+		'''
 	# In Ravencrest, exit
-	/* 12:
+	12:
 		'''
-		Ravencrest is the center of all of the content in the mod. It's also the hub for quests.
-		Quests move the game forward, allow you to beat bosses, and keep you getting stronger and stronger.
-		Look around, talk to people. We suggest talking to all the NPCs and accepting the quests they have for you.
-		Once you're done, go into Settings -> Return and you'll be right back at the entrance to Ravencrest.
-		You'll also see you've gotten an Arcane Obelisk - use that in the overworld to fast travel.
-		This quest will complete once you return to the overworld.
-		''' */
+		Ravencrest est le centre de tout le contenu du mod. C'est également le point central des quêtes. 
+		Les quêtes font avancer le jeu, vous permettent de vaincre des boss et vous rendent de plus en plus fort. 
+		Regardez autour de vous, parlez aux gens. Nous vous suggérons de parler à tous les PNJ et d'accepter les quêtes qu'ils vous proposent. 
+		Une fois que vous avez terminé, allez dans Paramètres -> Retour et vous vous retrouverez à l'entrée de Ravencrest. 
+		Vous verrez également que vous avez obtenu un obélisque arcanique. Utilisez-le dans le monde extérieur pour vous déplacer rapidement. 
+		Cette quête sera terminée une fois que vous serez de retour dans le monde extérieur.
+		'''
 	# Finish
-	/* 13:
+	13:
 		'''
-		Well done! That is everything about Path of Terraria you need to know.
-		You can now play freely (once you hit "Next").
-		Good luck and enjoy!
+		Bravo ! Voilà tout ce que vous devez savoir sur Path of Terraria.
+		Vous pouvez désormais jouer librement (une fois que vous aurez cliqué sur "Suivant").
+		Bonne chance et amusez-vous bien !
 
-		PS: Don't forget to use the Arcane Obelisk!
-		''' */
+		PS : N'oubliez pas d'utiliser l'Obélisque arcanique !
+		'''
 }
 
 # For the various inventory buttons. NoGrimoire is only if the Grimoire isn't in the player's inventory.
@@ -215,7 +208,7 @@ InvButtons: {
 	// NoGrimoire: "[c/888888:(Needs] [i:PathOfTerraria/GrimoireItem] [c/888888:Grimoire)]"
 	Quest: Quêtes
 	Stats: Statistiques
-	// RestartTutorial: Restart Tutorial
+	RestartTutorial: Redémarrer le tutoriel
 	// DomainInformation: Domain Information
 }
 
@@ -234,18 +227,18 @@ Grimoire: {
 	ClickMe: Cliquez-moi !
 
 	Help: {
-		/* Materials:
+		Materials:
 			'''
-			Here you'll find your materials! Stingers, wings and souls galore! 
-			Each can be used to augment your creations... just click on them!
-			Those parts with affixes will boon your summons, and are NOT consumed.
-			''' */
-		/* Summons:
+			Vous trouverez ici tous vos matériaux ! Des dards, des ailes et des âmes à profusion ! 
+			Chacun d'entre eux peut être utilisé pour améliorer vos créations... il suffit de cliquer dessus !
+			Les pièces accompagnées d'affixes amélioreront vos invocations et ne sont PAS consommées.
 			'''
-			As for your creatures...say hello! Hello! These freakish critters can be chosen, allowing you to...help them around. Yes, yes! You must first unlock their life; 
-			the materials in storage will allow you to do so. You can see what you must obtain by clicking on hidden summons.
-			''' */
-		// Ritual: Ah, and your ritual! Here you can place materials full of boons! If your pieces have no boons, they have no effect...
+		Summons:
+			'''
+			Quant à vos créatures... dites bonjour ! Bonjour ! Vous pouvez choisir ces créatures étranges et les aider à accomplir certaines tâches. Oui, oui ! Vous devez d'abord débloquer leur vie ; 
+			les matériaux stockés vous permettront de le faire. Vous pouvez voir ce que vous devez obtenir en cliquant sur les invocations cachées.
+			'''
+		Ritual: Ah, et votre rituel ! Ici, vous pouvez placer des objets remplis de bonus ! Si vos objets n'ont pas de bonus, ils n'ont aucun effet...
 	}
 }
 
@@ -298,3 +291,4 @@ Tips: {
 	Click to open skill tree
 	''' */
 // AreaLevel: Area Level:
+// Waypoints.TutorialTip: In order to use the Home waypoint, you must have an Arcane Obelisk placed in the main world. Use the Return button in your settings menu to proceed.

@@ -113,6 +113,13 @@ internal static class Networking
 		SyncBossDowned,
 
 		/// <summary>
+		/// Marks an event as completed. This is used for sending boss downs to the main server through <see cref="SendPacketToMainServer(ModPacket)"/>.
+		/// <br/>Signature:<br/>
+		/// <c>EventFlags flag, int gameEventId</c>
+		/// </summary>
+		SyncEventCompletion,
+
+		/// <summary>
 		/// Tells Morven to get stuck in rock by way of the server. Takes no parameters.
 		/// </summary>
 		TellMorvenToSpawn,

@@ -60,7 +60,7 @@ SiphonerAffix.Prefix: Выкачивание
 FastAffix.Prefix: Быстрый
 AggravatorAffix.Prefix: Отягчающий
 DamageAffix.Prefix: Вредный
-ChanceToApplyRootedGearAffix.Description: "{1}{0}% вероятность применить Обездвиживания "
+ChanceToApplyRootedGearAffix.Description: "{1}{0}% вероятность применить Обездвиживания"
 MapDamageAffix.Description: "{1}{0}% увеличен урон от мобов"
 MapBossHealthAffix.Description: "{1}{0}% увеличено здоровье босса"
 MapMobCritChanceAffix.Description: "{1}{0}% повышен шанс критического удара противника"

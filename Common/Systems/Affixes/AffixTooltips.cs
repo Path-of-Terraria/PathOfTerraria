@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Text;
 using PathOfTerraria.Common.AccessorySlots;
 using PathOfTerraria.Content.Items.Gear.Rings;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Utilities.Xna;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -18,6 +20,9 @@ public struct AffixTooltipLine()
 	public LocalizedText? TextWhenRemoved;
 	public float Value;
 	public bool Corrupt;
+	public bool Implicit;
+	public (int Current, int Min, int Max)? Tier;
+	public (float Min, float Max)? ValueRollRange;
 	public Color? OverrideColor;
 }
 
@@ -125,10 +130,12 @@ public sealed class AffixTooltips
 			canCompareNow = canCompareEver;
 		}
 
-		bool shouldCompare = canCompareNow && Main.keyState.PressingShift();
+		bool isHoldingShift = Main.keyState.PressingShift();
+		bool displayExtraInfo = isHoldingShift;
+		bool shouldCompare = canCompareNow && isHoldingShift;
 
 		int tipNum = 0;
-		AddTooltipLines(tooltips, ref tipNum);
+		AddTooltipLines(tooltips, ref tipNum, displayExtraInfo: displayExtraInfo);
 
 		// Show a notice notifying the user that they can hold shift to compare with equipped item, or that they are, or that they cannot.
 		if (canCompareEver)
@@ -153,7 +160,7 @@ public sealed class AffixTooltips
 			AffixTooltips comparison = CreateComparison(this, otherTooltips);
 
 			int oldTipNum = tipNum;
-			comparison.AddTooltipLines(tooltips, ref tipNum);
+			comparison.AddTooltipLines(tooltips, ref tipNum, displayExtraInfo: false);
 
 			if (tipNum == oldTipNum)
 			{
@@ -166,21 +173,54 @@ public sealed class AffixTooltips
 		}
 	}
 
-	private void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum)
+	public List<TooltipLine> CreateTooltipLines(bool displayExtraInfo)
 	{
-		foreach (AffixTooltipLine tip in Lines.Values.OrderByDescending(v => v.Value))
+		int tipNum = 0;
+		var result = new List<TooltipLine>(capacity: Lines.Values.Count);
+
+		AddTooltipLines(result, ref tipNum, displayExtraInfo);
+
+		return result;
+	}
+
+	public void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum, bool displayExtraInfo)
+	{
+		var sb = new StringBuilder();
+
+		foreach (AffixTooltipLine tip in Lines.Values.OrderByDescending(v => v.Value).OrderBy(v => v.Implicit ? 0f : 1f))
 		{
-			string text = $"{ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent)} {tip.Text.WithFormatArgs(Math.Abs(tip.Value).ToString("#0.##"), tip.Value >= 0 ? "+" : "-").Value}";
+			sb.Clear();
+			sb.Append(ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent));
+			sb.Append(' ');
+
+			sb.Append(tip.Text.WithFormatArgs(Math.Abs(tip.Value).ToString("#0.##"), tip.Value >= 0 ? "+" : "-").Value);
+
+			if (displayExtraInfo && (tip.Tier.HasValue || tip.ValueRollRange.HasValue))
+			{
+				sb.Append($" [c/{ItemTooltips.Colors.DefaultNumber.ToHexRGB()}:(");
+
+				// Value range.
+				sb.Append(tip.ValueRollRange is { } r ? Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.AffixValueRange", r.Min.ToString("#0.##"), r.Max.ToString("#0.##")) : string.Empty);
+				// Comma.
+				sb.Append(tip.ValueRollRange.HasValue && tip.Tier.HasValue ? ", " : string.Empty);
+				// Tier and tier range.
+				// Code has tiers starting at zero for backwards compatibility, but we display with them starting at one.
+				sb.Append(tip.Tier is { } t ? $"{Language.GetTextValue($"Mods.{PoTMod.ModName}.TooltipNotices.TierXOfY", t.Current + 1, t.Max + 1)}" : string.Empty);
+
+				sb.Append(")]");
+			}
+
 			Color color = tip.Value switch
 			{
 				_ when tip.OverrideColor.HasValue => tip.OverrideColor.Value,
+				_ when tip.Implicit => ItemTooltips.Colors.Implicit,
 				_ when tip.Corrupt => ItemTooltips.Colors.Corrupt,
 				> 0f => ItemTooltips.Colors.Positive,
 				< 0f => ItemTooltips.Colors.Negative,
 				_ => ItemTooltips.Colors.DefaultNumber,
 			};
 
-			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum, text) { OverrideColor = color });
+			tooltips.Add(new TooltipLine(PoTMod.Instance, "Affix" + tipNum, sb.ToString()) { OverrideColor = color });
 			tipNum++;
 		}
 	}
@@ -191,7 +231,7 @@ public sealed class AffixTooltips
 
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
-			affix.ApplyTooltip(player, item, handler);
+			affix.ApplyTooltips(player, item, handler);
 		}
 
 		return handler;

@@ -78,7 +78,7 @@ public class SubworldHelpInvButton : SmartUiState
 
 			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
-				affix.ApplyTooltip(Main.LocalPlayer, null, tooltips);
+				affix.ApplyTooltips(Main.LocalPlayer, MappingWorld.AreaLevel, tooltips);
 				totalStrength += affix.Strength;
 			}
 

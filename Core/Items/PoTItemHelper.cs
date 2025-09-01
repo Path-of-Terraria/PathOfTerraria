@@ -123,7 +123,7 @@ public static class PoTItemHelper
 			return;
 		}
 
-		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: data.Affixes.Select(a => a.GetData()));
 		if (chosenAffix is null)
 		{
 			return;
@@ -275,12 +275,12 @@ public static class PoTItemHelper
 			level += 5; // 15
 		}
 
-		if (BossTracker.DownedEaterOfWorlds)
+		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds))
 		{
 			level += 5; // 20
 		}
 
-		if (BossTracker.DownedBrainOfCthulhu)
+		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
 		{
 			level += 5; // 20/25
 		}
