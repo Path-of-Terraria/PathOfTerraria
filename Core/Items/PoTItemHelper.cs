@@ -123,7 +123,7 @@ public static class PoTItemHelper
 			return;
 		}
 
-		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType);
+		ItemAffixData chosenAffix = AffixRegistry.GetRandomAffixDataByItemType(data.ItemType, excludedAffixes: data.Affixes.Select(a => a.GetData()));
 		if (chosenAffix is null)
 		{
 			return;
@@ -153,17 +153,7 @@ public static class PoTItemHelper
 		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
 		{
 			affix.ApplyAffix(player, entityModifier, item);
-			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
 			player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
-		}
-	}
-
-	public static void ApplyAffixTooltips(Item item, Player player)
-	{
-		foreach (ItemAffix affix in item.GetInstanceData().Affixes)
-		{
-			affix.ApplyTooltip(player, item, player.GetModPlayer<UniversalBuffingPlayer>().AffixTooltipHandler);
-			//player?.GetModPlayer<AffixPlayer>().AddStrength(affix.GetType().AssemblyQualifiedName, affix.Value);
 		}
 	}
 
@@ -257,9 +247,9 @@ public static class PoTItemHelper
 
 	public static int PickItemLevel(bool clampHardmode = true, bool isCrafted = false)
 	{
-		if (SubworldSystem.Current is MappingWorld mapWorld && mapWorld.AreaLevel > 0 && !isCrafted)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.AreaLevel > 0 && !isCrafted)
 		{
-			return mapWorld.AreaLevel;
+			return MappingWorld.AreaLevel;
 		}
 
 		if (isCrafted && Main.hardMode) // This accounts for crafting level when you've progressed further than WoF
@@ -285,12 +275,12 @@ public static class PoTItemHelper
 			level += 5; // 15
 		}
 
-		if (BossTracker.DownedEaterOfWorlds)
+		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedEaterOfWorlds))
 		{
 			level += 5; // 20
 		}
 
-		if (BossTracker.DownedBrainOfCthulhu)
+		if (EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
 		{
 			level += 5; // 20/25
 		}

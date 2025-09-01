@@ -126,6 +126,11 @@ public abstract class Quest : ModType, ILocalizedModType
 		return GetLocalPlayerInstance(ModContent.GetInstance<T>().FullName);
 	}
 
+	public virtual void OnCompleted()
+	{
+		return;
+	}
+	
 	public void StartQuest(Player player, int currentQuest = 0)
 	{
 		CurrentStep = currentQuest;
@@ -135,6 +140,7 @@ public abstract class Quest : ModType, ILocalizedModType
 			Completed = true;
 			Active = false;
 			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
+			OnCompleted();
 			return;
 		}
 

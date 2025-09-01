@@ -100,7 +100,7 @@ public class ConstantLaser : ModTile
 
 				Vector2 pos = Projectile.Center + Projectile.velocity * 36;
 
-				while (!Collision.SolidCollision(pos, 8, 8))
+				while (!Collision.SolidCollision(pos, 8, 8) && Math.Abs(Projectile.Center.Y - pos.Y) < 1200)
 				{
 					pos += Projectile.velocity * 12;
 				}

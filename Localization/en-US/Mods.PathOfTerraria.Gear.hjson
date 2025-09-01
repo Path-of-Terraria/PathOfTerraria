@@ -18,6 +18,8 @@ Tooltips: {
 	ManaCost: Mana Cost
 	AttackSpeed: Attack Speed
 	CastSpeed: Cast Speed
+	BuildBlocked: Blocked by the energies in the domain
+	ShootBlocked: Will be replaced by {0} [i:{1}] when shot
 }
 
 Influence: {
@@ -346,6 +348,8 @@ Shield: {
 }
 
 Map.Name: Map
+ExplorableMap.Name: Explorable Map
+BossMap.Name: Boss Map
 None.Name: None
 Magic.Name: Magic
 Ranged.Name: Ranged

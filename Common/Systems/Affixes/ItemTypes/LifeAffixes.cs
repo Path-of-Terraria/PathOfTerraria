@@ -6,9 +6,10 @@ internal class BaseLifeAffix : ItemAffix
 	{
 		modifier.MaximumLife.Base += Value;
 	}
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 
@@ -18,9 +19,10 @@ internal class AddedLifeAffix : ItemAffix
 	{
 		modifier.MaximumLife += Value / 100;
 	}
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 
@@ -44,9 +46,9 @@ internal class FlatLifeAffix : ItemAffix
 		modifier.MaximumLife.Flat += Value;
 	}
 
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		handler.AddOrModify(GetType(), item, (int)Math.Round(Value), this.GetLocalization("Description"), IsCorruptedAffix);
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
 	}
 }
 

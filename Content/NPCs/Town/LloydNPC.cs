@@ -11,18 +11,16 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.Pathfinding;
 using System.Linq;
 using System.Collections.Generic;
-using PathOfTerraria.Common.Subworlds.RavencrestContent;
-using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.DataStructures;
 using Terraria.Audio;
 using Terraria.ModLoader.IO;
 using System.IO;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using SubworldLibrary;
 using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 

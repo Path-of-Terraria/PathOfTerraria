@@ -2,7 +2,6 @@
 using PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
 using System.Collections.Generic;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -15,7 +14,7 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 {
 	public override int Width => 670;
 	public override int Height => 600;
-	public override (int time, bool isDay) ForceTime => (3500, false);
+	public override (int time, bool isDay) ForceTime => (8000, false);
 
 	private static Rectangle ArenaBounds = new();
 	private static int Wave = 0;
@@ -59,8 +58,6 @@ internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 
 		if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.HallowBoss, false, true);
-
 			HashSet<Player> players = [];
 
 			foreach (Player plr in Main.ActivePlayers)

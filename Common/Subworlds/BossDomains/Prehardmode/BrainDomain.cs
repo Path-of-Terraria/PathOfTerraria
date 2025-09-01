@@ -380,7 +380,7 @@ public class BrainDomain : BossDomainSubworld
 	{
 		bool hasProj = false;
 
-		if (!BossTracker.DownedBrainOfCthulhu && !NPC.AnyNPCs(ModContent.NPCType<LloydNPC>()))
+		if (!EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu) && !NPC.AnyNPCs(ModContent.NPCType<LloydNPC>()))
 		{
 			int npc = NPC.NewNPC(Entity.GetSource_NaturalSpawn(), Main.spawnTileX * 16, Main.spawnTileY * 16, ModContent.NPCType<LloydNPC>());
 
@@ -435,8 +435,6 @@ public class BrainDomain : BossDomainSubworld
 		{
 			Vector2 pos = Arena.Center() + new Vector2(30, 100);
 			int proj = Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-
-			BossTracker.AddDowned(NPCID.BrainofCthulhu, false, true);
 		}
 	}
 

@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.Tiles;
 using Terraria.DataStructures;
 using Terraria.Enums;

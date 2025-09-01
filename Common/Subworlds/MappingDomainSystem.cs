@@ -8,9 +8,19 @@ namespace PathOfTerraria.Common.Subworlds;
 /// </summary>
 public class MappingDomainSystem : ModSystem
 {
+	public const int RequiredCompletionsPerTier = 5;
+
 	public class TiersDownedTracker
 	{
 		private readonly Dictionary<int, int> TierCompletions = [];
+
+		/// <summary>
+		/// Used for getting all tier completions for syncing. Returns <see cref="TierCompletions"/>.
+		/// </summary>
+		internal Dictionary<int, int> GetCompletions()
+		{
+			return TierCompletions;
+		}
 
 		/// <summary>
 		/// Adds <paramref name="count"/> completion(s) to the given <paramref name="tier"/>.
@@ -22,6 +32,19 @@ public class MappingDomainSystem : ModSystem
 			if (!TierCompletions.TryAdd(tier, count))
 			{
 				TierCompletions[tier] += count;
+			}
+		}
+
+		/// <summary>
+		/// Forcefully sets the amount of completions in <paramref name="tier"/> to <paramref name="count"/>. Used for syncing.
+		/// </summary>
+		/// <param name="tier">Map tier that has been completed.</param>
+		/// <param name="count">How many times this tier has been completed.</param>
+		internal void SetCompletion(int tier, int count)
+		{
+			if (!TierCompletions.TryAdd(tier, count))
+			{
+				TierCompletions[tier] = count;
 			}
 		}
 
@@ -40,23 +63,17 @@ public class MappingDomainSystem : ModSystem
 			return total;
 		}
 
-		/// <summary>
-		/// Gets the amount of completions at or above every tier currently available. 
-		/// If a tier does not exist, it has not been completed even once.
-		/// </summary>
-		/// <returns>Dictionary mapping tiers to <see cref="CompletionsAtOrAboveTier(int)"/> results.</returns>
-		public Dictionary<int, int> CompletionsPerTier()
+		public void ClearHigherCompletions(int currentTier)
 		{
-			Dictionary<int, int> completionsByTier = [];
-
 			foreach (int tier in TierCompletions.Keys)
 			{
-				completionsByTier[tier] = CompletionsAtOrAboveTier(tier);
+				if (tier > currentTier)
+				{
+					TierCompletions[tier] = 0;
+				}
 			}
-
-			return completionsByTier;
 		}
-
+		
 		public void Save(TagCompound tag)
 		{
 			tag.Add("count", (byte)TierCompletions.Count);

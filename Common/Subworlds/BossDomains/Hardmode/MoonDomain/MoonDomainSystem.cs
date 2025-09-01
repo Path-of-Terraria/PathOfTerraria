@@ -56,11 +56,7 @@ internal class MoonDomainSystem : ModSystem
 		}
 
 		FightState state = FightTracker.UpdateState();
-
-		if (assumeBossSpawned && !NPC.AnyNPCs(NPCID.MoonLordCore))
-		{
-			EffectStrength = MathHelper.Lerp(EffectStrength, 0, 0.05f);
-		}
+		EffectStrength = MathHelper.Lerp(EffectStrength, assumeBossSpawned && !NPC.AnyNPCs(NPCID.MoonLordCore) ? 1 : 0, 0.05f);
 
 		bool allPlayersAtop = true;
 
@@ -93,9 +89,7 @@ internal class MoonDomainSystem : ModSystem
 					players.Add(plr);
 				}
 			}
-
-			BossTracker.AddDowned(NPCID.MoonLordCore, false, true);
-
+			
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Vector2 position = Main.rand.Next([.. players]).Center - new Vector2(0, 60);
 			Projectile.NewProjectile(src, position, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);

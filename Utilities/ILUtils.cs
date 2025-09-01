@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Mono.Cecil;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 
@@ -21,5 +22,22 @@ internal static class ILUtils
 		}
 
 		return cursor;
+	}
+
+	/// <inheritdoc cref="AddLocalVariable(ILContext, Type)"/>
+	public static int AddLocalVariable(ILCursor cursor, Type type)
+	{
+		return AddLocalVariable(cursor.Context, type);
+	}
+
+	/// <summary> Declares a new local variable in the context's body. Returns its index. </summary>
+	public static int AddLocalVariable(ILContext ctx, Type type)
+	{
+		TypeReference importedType = ctx.Import(type);
+		int localId = ctx.Body.Variables.Count;
+
+		ctx.Body.Variables.Add(new VariableDefinition(importedType));
+
+		return localId;
 	}
 }

@@ -17,8 +17,7 @@ public class LimpidShard : CurrencyShard
 
 	public override bool CanRightClick()
 	{
-		PoTInstanceItemData data = Main.LocalPlayer.HeldItem.GetInstanceData();
-		return base.CanRightClick() && data.Rarity is ItemRarity.Magic or ItemRarity.Rare;
+		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is ItemRarity.Magic or ItemRarity.Rare;
 	}
 
 	public override void RightClick(Player player)

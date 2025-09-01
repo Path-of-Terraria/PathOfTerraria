@@ -85,15 +85,6 @@ internal abstract class MobAffix : Affix
 	/// </summary>
 	public static MobAffix FromTag(TagCompound tag)
 	{
-		var affix = (MobAffix)Activator.CreateInstance(typeof(MobAffix).Assembly.GetType(tag.GetString("type")));
-
-		if (affix is null)
-		{
-			PoTMod.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
-			return null;
-		}
-
-		affix.Load(tag);
-		return affix;
+		return FromTag<MobAffix>(tag);
 	}
 }

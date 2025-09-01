@@ -1,5 +1,4 @@
 using ReLogic.Content;
-using System.Xml.Linq;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameInput;
@@ -12,48 +11,40 @@ namespace PathOfTerraria.Common.UI.Elements;
 /// <summary>
 ///     Provides an item slot wrapper as a <see cref="UIElement" />.
 /// </summary>
-/// <remarks>
-///     This wrapper allows you to wrap around a singular item through
-///     <see cref="Item" />, or to wrap around an existing array of items
-///     at a given index through <see cref="Inventory" /> and <see cref="Slot" />.
-/// </remarks>
 public class UIImageItemSlot : UIElement
 {
 	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
 
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
-	/// <summary>
-	///     The item that this slot wraps itself around.
-	/// </summary>
-	/// <remarks>
-	///     Defaults to a new item with <see cref="ItemID.None" /> as its identity if
-	///     <see cref="InventoryGetter" /> and <see cref="Slot" /> are not provided.
-	/// </remarks>
-	public Item Item
+	public readonly struct SlotWrapper
 	{
-		get => WrapsAroundInventory ? Inventory[Slot] : item;
-		set
+		public readonly Func<Item> Get;
+		public readonly Action<Item> Set;
+		public readonly Func<(Item[] Inventory, int Slot)> ByInventory;
+
+		public SlotWrapper(Func<Item> get, Action<Item> set)
 		{
-			if (WrapsAroundInventory)
-			{
-				OnInsertItem?.Invoke(value, Inventory[Slot]);
-
-				Inventory[Slot] = value;
-			}
-			else
-			{
-				OnInsertItem?.Invoke(value, item);
-
-				item = value;
-			}
+			(Get, Set) = (get, set);
+		}
+		public SlotWrapper(Func<(Item[] Inventory, int Slot)> byInventory)
+		{
+			ByInventory = byInventory;
+			Get = () => byInventory().Inventory[byInventory().Slot];
+			Set = value => byInventory().Inventory[byInventory().Slot] = value;
 		}
 	}
 
+	private readonly SlotWrapper handler;
+
 	/// <summary>
-	///     Whether the item slot wraps around an inventory or not.
+	///     The item that this slot wraps itself around.
 	/// </summary>
-	public bool WrapsAroundInventory => Inventory != null && Slot >= 0;
+	public Item Item
+	{
+		get => handler.Get();
+		set => handler.Set(value);
+	}
 
 	/// <summary>
 	///     The background of the item slot.
@@ -82,21 +73,10 @@ public class UIImageItemSlot : UIElement
 	/// </summary>
 	public Item[] Inventory;
 
-	private Item item = new(ItemID.None);
-
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
 	/// </summary>
 	public ItemInsertionPredicate? Predicate;
-
-	/// <summary>
-	///     The index of the item that the slots wraps itself around.
-	/// </summary>
-	/// <remarks>
-	///     Will not have any effect if <see cref="Inventory" /> is <c>null</c> or not provided.
-	/// </remarks>
-	public int Slot;
-
 
 	/// <summary>
 	///    The key to look for in Localization for tooltip hover
@@ -109,47 +89,15 @@ public class UIImageItemSlot : UIElement
 	public UIImageItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
-		int context = ItemSlot.Context.InventoryItem
-	)
-	{
-		BackgroundTexture = backgroundTexture;
-		IconTexture = iconTexture;
-
-		Context = context;
-	}
-
-	public UIImageItemSlot(
-		Asset<Texture2D> backgroundTexture,
-		Asset<Texture2D> iconTexture,
-		ref Item[]? inventory,
-		int slot,
-		int context = ItemSlot.Context.InventoryItem
-	)
-	{
-		BackgroundTexture = backgroundTexture;
-		IconTexture = iconTexture;
-
-		Inventory = inventory;
-		Slot = slot;
-		Context = context;
-	}
-
-	public UIImageItemSlot(
-		Asset<Texture2D> backgroundTexture,
-		Asset<Texture2D> iconTexture,
-		ref Item[]? inventory,
-		int slot,
+		SlotWrapper itemHandler,
 		int context = ItemSlot.Context.InventoryItem,
 		string key = null
 	)
 	{
 		BackgroundTexture = backgroundTexture;
 		IconTexture = iconTexture;
-
-		Inventory = inventory;
-		Slot = slot;
+		handler = itemHandler;
 		Context = context;
-
 		Key = key;
 	}
 
@@ -250,26 +198,24 @@ public class UIImageItemSlot : UIElement
 			return;
 		}
 
-		if (WrapsAroundInventory)
+		if (handler.ByInventory?.Invoke() is { } inv)
 		{
-			ItemSlot.Handle(Inventory, Context, Slot);
-
-			if (Key != null)
-			{
-				Main.hoverItemName = Language.GetTextValue(Key);
-				Main.HoverItem = Inventory[Slot].Clone();
-				Main.HoverItem.tooltipContext = Context;
-			}	
+			ItemSlot.Handle(inv.Inventory, slot: inv.Slot, context: Context);
 		}
 		else
 		{
 			Item item = Item;
-
-			ItemSlot.Handle(ref item, Context);
-
+			ItemSlot.Handle(ref item, context: Context);
 			Item = item;
 		}
-		
+
+		if (Key != null)
+		{
+			Main.hoverItemName = Language.GetTextValue(Key);
+			Main.HoverItem = Item.Clone();
+			Main.HoverItem.tooltipContext = Context;
+		}
+
 		Main.LocalPlayer.mouseInterface = true;
 	}
 

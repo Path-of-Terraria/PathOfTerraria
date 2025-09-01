@@ -7,7 +7,6 @@ using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.Tiles.Maps.Forest;
 using PathOfTerraria.Core.Items;
-using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
@@ -102,7 +101,7 @@ internal class ForestArea : MappingWorld, IOverrideBiome
 				}
 			}
 
-			if (allPlayersClose)
+			if (allPlayersClose && mostDistantWho != -1)
 			{
 				Player closest = Main.player[mostDistantWho];
 				Main.spawnTileX = (int)closest.Center.X / 16;

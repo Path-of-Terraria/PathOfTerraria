@@ -4,8 +4,8 @@ using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.BoCDomain;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.StructureImprovementSystem;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.World.Generation.Tools;
@@ -122,7 +122,7 @@ public class RavencrestSystem : ModSystem
 			{
 				OverworldOneTimeChecks();
 
-				if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !BossTracker.DownedBrainOfCthulhu)
+				if (NPC.downedBoss1 && SpawnedMorvenPos is null && !WorldGen.crimson && !EventTracker.HasFlagsAnywhere(EventFlags.DefeatedBrainOfCthulhu))
 				{
 					if (Main.netMode == NetmodeID.SinglePlayer)
 					{

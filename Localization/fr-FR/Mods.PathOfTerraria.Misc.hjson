@@ -10,7 +10,7 @@ RarityNames: {
 }
 
 GrimoireConsume: "{0} consommé !"
-// GrimoireMaterial: Used for the Grimoire's Menagerie. Right click to add to the Menagerie.
+GrimoireMaterial: Utilisé pour la ménagerie du grimoire. Clic-Droit pour l'ajouter à la Ménagerie.
 GrimoireBoon: A échangé {0} contre des pièces !
 # This is used for disabling EoW/BoC spawns, instead of spawning the boss it says this.
 ChasmAppears: Un gouffre apparaît ...
@@ -20,13 +20,13 @@ RestoresHealthTooltip: Restore {0} de santé
 RestoresManaTooltip: Restore {0} de mana
 CooldownTooltip: "{0} seconde de temps de recharge"
 NPCLeftWithoutDying: "{0} s'est échappé !"
-// AffixTooltipFrom: " from  "
+AffixTooltipFrom: de
 Enter: Entrée
 Exit: Sortie
-// EnterRavencrest: "{$Enter} Ravencrest"
+EnterRavencrest: "{$Enter} Ravencrest"
 Activate: Activer
 # Two new messages for fishron and impending doom (Lunar event beaten) in their respective domains
 FishronSpawn: Vous entendez un rugissement au loin ...
 ImpendingDoom: Un pouls s'accélère au centre du monde ...
-// VoidPearlCondition: In hardmode or during the Unleashing Chaos quest
+VoidPearlCondition: En mode difficile ou pendant la quête Déchaîner le chaos
 // SubworldItemDisabler: You cannot use this item in a subworld.

@@ -10,7 +10,11 @@ RageBuff: {
 
 MoltenShieldBuff: {
 	DisplayName: Расплавленный панцирь
-	Description: Получите временный щит\nПолучите небольшую защиту
+	Description:
+		'''
+		Получите временный щит
+		Получите небольшую защиту
+		'''
 }
 
 BloodclotDebuff: {
@@ -30,7 +34,7 @@ ShockDebuff: {
 }
 
 RootedDebuff: {
-	DisplayName: "Обездвиживание "
+	DisplayName: Обездвиживание
 	Description: Тебе нельзя двигаться!
 }
 
@@ -51,12 +55,20 @@ HardinessBuff: {
 
 HasteBuff: {
 	DisplayName: Усиление скорости
-	Description: +20% скорости передвижения\n+15% скорости атаки
+	Description:
+		'''
+		+20% скорости передвижения
+		+15% скорости атаки
+		'''
 }
 
 UnstoppableBuff: {
 	DisplayName: Неудержимый бафф
-	Description: +50% к здоровью щита\nИммунитет к охлаждению
+	Description:
+		'''
+		+50% к здоровью щита
+		Иммунитет к охлаждению
+		'''
 }
 
 FrostflameDebuff: {

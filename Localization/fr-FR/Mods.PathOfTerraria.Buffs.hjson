@@ -1,93 +1,93 @@
 BattleAxeBuff: {
 	DisplayName: Rage de Bataille
-	Description: Augmente les dommages et augmente les dommages subis
+	Description: Augmente les dégâts et augmente les dégats subis
 }
 
 RageBuff: {
 	DisplayName: Berserker
-	Description: Augmente les dommages et augmente grandement le recul
+	Description: Augmente les dégâts et augmente grandement le recul
 }
 
 MoltenShieldBuff: {
-	// DisplayName: Molten Shell
-	/* Description:
+	DisplayName: Carapace en Fusion
+	Description:
 		'''
-		Gain a temporary shield
-		Gain a small amount of defense
-		''' */
+		Gagne temporairement un bouclier
+		Gagne quelque points de défense
+		'''
 }
 
 BloodclotDebuff: {
-	// DisplayName: BloodclotDebuff
+	DisplayName: Caillot Sanguin
 	// Description: ""
-	// DeathText: "{0} couldn't stop the bleeding"
+	DeathText: "{0} n'a pas pu arrêter l'hémorragie"
 }
 
 ArmorShredDebuff: {
-	// DisplayName: Armor Shred Debuff
+	DisplayName: Déchirure d'Armure
 	// Description: ""
 }
 
 ShockDebuff: {
 	DisplayName: Choc
-	Description: 10% d'augmentation des dommages subis
+	Description: 10% d'augmentation des dégâts subis
 }
 
 RootedDebuff: {
-	// DisplayName: Rooted Debuff
-	// Description: You can't move!
+	DisplayName: Enraciné
+	Description: Tu ne peux pas bouger !
 }
 
 GodlikeBuff: {
 	DisplayName: Buff Divin
-	Description: Vous êtes immunisé contre tous les dommages directs
+	Description: Vous êtes immunisé contre tous les dégâts directs
 }
 
 RestorationBuff: {
-	// DisplayName: Restoration Buff
-	// Description: Provides massive life regeneration
+	DisplayName: Bonus de restauration
+	Description: Procure une régénération massive de la vie.
 }
 
 HardinessBuff: {
-	// DisplayName: Hardiness Buff
-	/* Description:
+	DisplayName: Bonus de robustesse
+	Description:
 		'''
-		+10 defense
-		+20% block chance
-		''' */
+		+10 en défense
+		+20 % de chances de blocage
+		'''
 }
 
 HasteBuff: {
-	// DisplayName: Haste Buff
-	/* Description:
+	DisplayName: Bonus de rapidité
+	Description:
 		'''
-		+20% movement speed
-		+15% attack speed
-		''' */
+		+20 % de vitesse de déplacement
+		+15 % de vitesse d'attaque
+		'''
 }
 
 UnstoppableBuff: {
 	DisplayName: Buff Inarrêtable
-	/* Description:
+	Description:
 		'''
-		+50% shielding health
-		Immunity to Chilled
-		''' */
+		+50% de santé de protection
+		Immunité au refroidissement
+		'''
 }
 
 FrostflameDebuff: {
-	// DisplayName: Frostflame Debuff
+	DisplayName: Malus de Flamme givrante
 	// Description: Mods.PathOfTerraria.Buffs.FrostflameDebuff.Description
 }
 
 SporeDebuff: {
-	// DisplayName: Spore Debuff
+	DisplayName: Malus Spore
 	// Description: Mods.PathOfTerraria.Buffs.SporeDebuff.Description
 }
 
 BlindedDebuff: {
-	DisplayName: Aveugle
-	Description: "Les attaques ont une chance de rater "
+	DisplayName: Aveuglé
+	Description: Les attaques ont une chance de rater
 }
 
 HasteChargeBuff: {

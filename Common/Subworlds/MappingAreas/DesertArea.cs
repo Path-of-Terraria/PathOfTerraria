@@ -9,7 +9,6 @@ using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent.Events;
 using Terraria.GameContent.Generation;
@@ -42,6 +41,8 @@ internal class DesertArea : MappingWorld, IOverrideBiome
 
 	public override void Load()
 	{
+		base.Load();
+
 		On_Player.UpdateBiomes += ForceActiveSandstormBiomeInDesert;
 		On_Sandstorm.HandleEffectAndSky += ForceActiveSandstormInDesert;
 	}

@@ -77,8 +77,8 @@ internal class SurfaceBackgroundPositionModifier : ILoadable
 
 	public void Unload()
 	{
-		OffsetFarHook.Undo();
-		OffsetMiddleHook.Undo();
+		OffsetFarHook?.Undo();
+		OffsetMiddleHook?.Undo();
 
 		OffsetMiddleHook = OffsetFarHook = null;
 	}

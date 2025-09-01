@@ -16,16 +16,16 @@ LightningNova: {
 }
 
 NaturesBarrage: {
-	// Name: Nature's Barrage
-	// Description: Tampered tips poison enemies
+	Name: Barrage Naturel
+	Description: Les pointes trafiquées empoisonnent les ennemis.
 }
 
 ExplosiveVolley: {
-	// Name: Explosive Valley
-	// Description: Arrows reposition with an explosion in a much wider range.
+	Name: Vollée Explosive
+	Description: Les flèches se repositionnent avec une explosion dans une zone beaucoup plus large.
 }
 
 PiercingPrecision: {
-	// Name: Piercing Precision
-	// Description: Replace the flurry with a delayed barrage with increased armor piercing
+	Name: Perçage Précis
+	Description: Remplacer la rafale par un barrage retardé avec une pénétration d'armure accrue.
 }

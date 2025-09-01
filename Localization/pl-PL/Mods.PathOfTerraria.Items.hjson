@@ -1344,3 +1344,13 @@ WeakMalaiseItem: {
 	// DisplayName: Weak Malaise
 	// Tooltip: "'Malicious yet effervescent.'"
 }
+
+AquamarineRing: {
+	// DisplayName: Aquamarine Ring
+	// Tooltip: ""
+}
+
+LapisLazuliRing: {
+	// DisplayName: Lapis Lazuli Ring
+	// Tooltip: ""
+}

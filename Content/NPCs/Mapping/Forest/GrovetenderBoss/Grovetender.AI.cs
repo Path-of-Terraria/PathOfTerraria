@@ -176,14 +176,9 @@ internal partial class Grovetender : ModNPC
 					x += Main.rand.Next(-5, 5);
 				}
 
-				while (!Main.tile[x, y].HasTile || !Main.tile[x, y].HasUnactuatedTile || !ValidRainTiles.Contains(Main.tile[x, y].TileType))
+				while (WorldGen.InWorld(x, y, 10) && (!Main.tile[x, y].HasTile || !Main.tile[x, y].HasUnactuatedTile || !ValidRainTiles.Contains(Main.tile[x, y].TileType)))
 				{
 					y--;
-
-					if (y < 20)
-					{
-						break;
-					}
 				}
 
 				if (y < 20)
@@ -250,6 +245,12 @@ internal partial class Grovetender : ModNPC
 		y++;
 
 		Point16 smashPos = new(x, y);
+
+		if (_rootPositionsAndTimers.ContainsKey(smashPos))
+		{
+			return;
+		}
+
 		_rootPositionsAndTimers.Add(smashPos, 0);
 
 		FastNoiseLite noise = new();

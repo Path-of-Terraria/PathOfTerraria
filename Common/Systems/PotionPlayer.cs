@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -27,7 +27,7 @@ internal class PotionPlayer : ModPlayer
 	{
 		PotionPlayer mp = self.GetModPlayer<PotionPlayer>();
 
-		if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness))
+		if (mp.HealingLeft <= 0 || self.HasBuff(BuffID.PotionSickness) || self.statLife >= self.statLifeMax2)
 		{
 			return;
 		}
@@ -58,7 +58,7 @@ internal class PotionPlayer : ModPlayer
 	{
 		PotionPlayer mp = self.GetModPlayer<PotionPlayer>();
 
-		if (mp.ManaLeft <= 0 || self.HasBuff(BuffID.ManaSickness))
+		if (mp.ManaLeft <= 0 || self.HasBuff(BuffID.ManaSickness) || self.statMana >= self.statManaMax2)
 		{
 			return;
 		}

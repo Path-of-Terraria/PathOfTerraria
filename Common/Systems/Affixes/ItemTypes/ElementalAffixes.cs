@@ -4,10 +4,7 @@ namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 internal abstract class ResistItemAffix : ItemAffix
 {
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
-	{
-		handler.AddOrModify(GetType(), item, Value, this.GetLocalization("Description"), IsCorruptedAffix);
-	}
+	
 }
 
 internal class FireResistItemAffix : ResistItemAffix
@@ -31,10 +28,5 @@ internal class LightningResistItemAffix : ResistItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		player.GetModPlayer<ElementalPlayer>().LightningResistance += Value * 0.01f;
-	}
-
-	public override void ApplyTooltip(Player player, Item item, AffixTooltipsHandler handler)
-	{
-		handler.AddOrModify(GetType(), item, Value, this.GetLocalization("Description"), IsCorruptedAffix);
 	}
 }

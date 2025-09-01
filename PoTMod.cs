@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using ReLogic.Content.Sources;
 using System.IO;
-using PathOfTerraria.Common.Systems.Networking;
 using PathOfTerraria.Core.Sources;
+using PathOfTerraria.Common.Systems.Synchronization;
 
 namespace PathOfTerraria;
 

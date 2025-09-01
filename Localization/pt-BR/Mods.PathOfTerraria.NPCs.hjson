@@ -299,9 +299,10 @@ MorvenNPC: {
 		// Follow1: If you get me killed I'll be deeply and truly upset.
 		// Follow2: Charge FORWARD, not stay and TALK. Buffoon.
 		// Follow3: Gather yourself...and let's get moving already.
-		// Rescue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I've become incased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out? I'll...reward you greatly, or something.
-		// Aboveground: Ah, thank you. Out of that stuffy old cave. Say, do you know of a quaint settlement called Ravencrest? I've got old associates there who'd love to have a look at some Demonite I managed to scrounge up. Perhaps you might get some for your time as well?
+		// Rescue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I've become encased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out and bring me to the Raven Statue? I'll reward you greatly...or something.
+		// Aboveground: Ah, thank you. Out of that stuffy old cave. Say, do you know of a quaint settlement called Ravencrest? I've got old associates there who'd love to have a look at some Demonite I managed to scrounge up. Bring me to the Raven Statue and perhaps you might get some for your time as well.
 		// InRavencrest: It'll take a bit to look presentable, but that can be for later. Thank you, stranger. I reward you with a quest. I was down there for Devourers, sure, but also to spy on these curious little orbs they call Shadow Orbs. Emitting light, floating ominously, strange stories. The lot of it, these things have. Could you break one for me? Just to see what happens.
+		// NearObelisk: Well, this is... interesting. Though I could have sworn I asked for the Raven Statue. But hey, what do I know? I'm just the one giving directions.
 		// BeforeBeatingEoW: What? You broke one and a rift appeared and you LEFT? Jump in it! Throw your friends in! I don't care, you've got a study to conduct!
 		// AfterBeatingEoW: I'll be. Would've hardly expected a large, foul beast to appear in that corrupt realm. Alas, knowing that power implies many things. As much as I've disliked you, I do respect you. Whatever this corruption is holds to the land, still, but it's forward progress. Here, have this trinket. I have no use for - well, I'd love to give it to you. Ahem.
 		// Abandoned: FINALLY. Someone leaves me here and expects me to navigate the world. Take me to Ravencrest and this time don't leave me in the lurch.
@@ -554,8 +555,8 @@ FireMaw: {
 
 MorganaNPC: {
 	// DisplayName: Morgana
-	// QuestCondition: Collect 2 Owl Feathers and 1 Pair of Bat Wings
-	// SummonCondition: Summon the Owl with the Grimoire
+	// QuestCondition: Collect any Grimoire material
+	// SummonCondition: Summon anything with the Grimoire
 
 	Dialogue: {
 		// Common0: Yes...the brew speaks!...it says you're looking to buy! Hm? Are you?

@@ -6,6 +6,7 @@ using PathOfTerraria.Common.Enums;
 using Terraria.ModLoader.IO;
 using Terraria.ModLoader.Core;
 using Terraria;
+using System.Diagnostics;
 
 namespace PathOfTerraria.Common.Systems.Affixes;
 
@@ -59,15 +60,48 @@ public abstract class Affix : ILocalizedModType
 	{
 	}
 
-	public void Save(TagCompound tag)
+	public void SaveTo(TagCompound tag)
 	{
-		tag["type"] = GetType().FullName;
+		tag.Add("type", GetType().FullName);
+		InternalSaveTo(tag);
+	}
+
+	public TagCompound SaveAs()
+	{
+		TagCompound tag = [];
+		SaveTo(tag);
+		return tag;
+	}
+
+	protected virtual void InternalSaveTo(TagCompound tag)
+	{
 		tag["value"] = Value;
 		tag["maxValue"] = MaxValue;
 		tag["minValue"] = MinValue;
 	}
 
-	public void Load(TagCompound tag)
+	/// <summary>
+	/// Generates an affix from a tag, used on load to re-populate affixes
+	/// </summary>
+	/// <param name="tag"></param>
+	/// <returns></returns>
+	public static T FromTag<T>(TagCompound tag) where T : Affix
+	{
+		Type t = typeof(ItemAffix).Assembly.GetType(tag.GetString("type"));
+
+		if (t is null)
+		{
+			PoTMod.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
+			return null;
+		}
+
+		string type = tag.GetString("type");
+		var affix = Activator.CreateInstance(Type.GetType(type)) as Affix;
+		affix.InternalLoadFrom(tag);
+		return (T)affix;
+	}
+
+	protected virtual void InternalLoadFrom(TagCompound tag)
 	{
 		Value = tag.GetFloat("value");
 		MaxValue = tag.GetFloat("maxValue");
@@ -83,7 +117,7 @@ public abstract class Affix : ILocalizedModType
 		writer.Write(MinValue);
 	}
 
-	public void NetReceive(BinaryReader reader)
+	public virtual void NetReceive(BinaryReader reader)
 	{
 		Value = reader.ReadSingle();
 		MaxValue = reader.ReadSingle();
@@ -141,26 +175,6 @@ public abstract class Affix : ILocalizedModType
 		instance.Roll();
 
 		return instance;
-	}
-
-	/// <summary>
-	/// Generates an affix from a tag, used on load to re-populate affixes
-	/// </summary>
-	/// <param name="tag"></param>
-	/// <returns></returns>
-	public static T FromTag<T>(TagCompound tag) where T : Affix
-	{
-		Type t = typeof(ItemAffix).Assembly.GetType(tag.GetString("type"));
-		if (t is null)
-		{
-			PoTMod.Instance.Logger.Error($"Could not load affix {tag.GetString("type")}, was it removed?");
-			return null;
-		}
-
-		var affix = (T)Activator.CreateInstance(t);
-
-		affix.Load(tag);
-		return affix;
 	}
 
 	/// <summary>
@@ -227,12 +241,26 @@ public abstract class Affix : ILocalizedModType
 			return inputList;
 		}
 
-		var resultList = new List<T>(count);
+#if DEBUG
+		// Assert that we have enough inputs to create enough affixes without duplicates.
+		Debug.Assert(inputList.Count >= count);
+#endif
 
-		for (int i = 0; i < count; i++)
+		count = Math.Min(count, inputList.Count);
+
+		var resultList = new List<T>(count);
+		Span<bool> rolledIndices = stackalloc bool[inputList.Count];
+
+		while (resultList.Count < count)
 		{
 			int randomIndex = Main.rand.Next(0, inputList.Count);
 
+			if (rolledIndices[randomIndex])
+			{
+				continue;
+			}
+
+			rolledIndices[randomIndex] = true;
 			T newItemAffix = inputList[randomIndex].Clone<T>();
 			newItemAffix.Roll();
 
@@ -351,12 +379,12 @@ internal class AffixHandler : ILoadable
 
 	public void Unload()
 	{
-		foreach (ItemAffix item in _itemAffixes)
+		foreach (ItemAffix item in _itemAffixes ?? Enumerable.Empty<ItemAffix>())
 		{
 			item.OnUnload();
 		}
 
-		foreach (MobAffix item in _mobAffixes)
+		foreach (MobAffix item in _mobAffixes ?? Enumerable.Empty<MobAffix>())
 		{
 			item.OnUnload();
 		}

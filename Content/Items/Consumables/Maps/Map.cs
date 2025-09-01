@@ -1,14 +1,15 @@
 ﻿using PathOfTerraria.Common.Enums;
-using PathOfTerraria.Core.Items;
-using Terraria.ID;
-using Terraria.ModLoader.IO;
-using System.Collections.Generic;
-using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Subworlds;
-using SubworldLibrary;
-using System.Linq;
+using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Core.Items;
+using SubworldLibrary;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -18,7 +19,7 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public abstract int MaxUses { get; }
 	public abstract bool CanDrop { get; }
-	public virtual int WorldTier => WorldLevelBasedOnTier(Tier);
+	public virtual int WorldLevel => WorldLevelBasedOnTier(Tier);
 
 	public int RemainingUses = 0;
 
@@ -52,15 +53,21 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public virtual void OpenMap()
 	{
-		OpenMapInternal();
+		List<MapAffix> collection = [.. this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x)];
 
-		if (SubworldSystem.Current is MappingWorld map)
+		if (Main.netMode == NetmodeID.SinglePlayer)
 		{
-			map.AreaLevel = WorldTier;
-			map.MapTier = Tier;
-			map.Affixes = [];
-			map.Affixes.AddRange(this.GetInstanceData().Affixes.Where(x => x is MapAffix).Select(x => (MapAffix)x));
+			MappingWorld.AreaLevel = WorldLevel;
+			MappingWorld.MapTier = Tier;
+			MappingWorld.Affixes = [];
+			MappingWorld.Affixes.AddRange(collection);
 		}
+		else
+		{
+			ModContent.GetInstance<SendMappingDomainInfoHandler>().Send((short)WorldLevel, (short)Tier, collection);
+		}
+
+		OpenMapInternal();
 	}
 
 	protected abstract void OpenMapInternal();
@@ -71,6 +78,11 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	public virtual string GetNameAndTier()
 	{
 		return Core.Items.GenerateName.Invoke(Item);
+	}
+
+	public virtual int GetMapTier(int itemLevel)
+	{
+		return TierBasedOnWorldLevel(itemLevel);
 	}
 	
 	public static void SpawnMap<T>(Vector2 pos) where T : Map
@@ -103,12 +115,12 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 	public static int TierBasedOnWorldLevel(int area)
 	{
-		if (area == 0)
+		if (area < 45)
 		{
 			return 0;
 		}
 
-		// Return 1 if we're post-WoF due to the gap of 45-50 in the formula below.
+		// Return 1 if we're post-WoF due to the gap of 45-48 in the formula below.
 		if (area >= 45 && area <= 48)
 		{
 			return 1;
@@ -165,6 +177,6 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 
 		realLevel = level;
 		ItemLevel = realLevel;
-		Tier = TierBasedOnWorldLevel(ItemLevel);
+		Tier = GetMapTier(ItemLevel);
 	}
 }

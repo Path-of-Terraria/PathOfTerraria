@@ -1,9 +1,12 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain;
-using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using System.Collections.Generic;
+using System.IO;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Subworlds;
 
@@ -11,27 +14,55 @@ internal class MappingNPC : GlobalNPC
 {
 	public override void SetDefaults(NPC entity)
 	{
-		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
-			foreach (MapAffix affix in map.Affixes)
+			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
 				affix.ModifyNewNPC(entity);
 			}
 
-			if (map.AreaLevel > 50 && entity.lifeMax > 5)
+			if (MappingWorld.AreaLevel > 50 && entity.lifeMax > 5)
 			{
-				float modifier = 1 + (map.AreaLevel - 50) / 20f;
+				float modifier = 1 + (MappingWorld.AreaLevel - 50) / 20f;
 				entity.life = entity.lifeMax = (int)(entity.lifeMax * modifier);
 				entity.defDamage = entity.damage = (int)(entity.damage * modifier);
 			}
 		}
 	}
 
+	// This and RecieveExtraAI are both placeholders, just a way to sync the stats shown here
+	// since incoming players don't have the affixes yet, so their clients spawn the unmodified version
+	// and this just fixes that.
+	// TODO: Do this better
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+	{
+		if (SubworldSystem.Current is not MappingWorld)
+		{
+			return;
+		}
+
+		binaryWriter.Write(npc.lifeMax);
+		binaryWriter.Write(npc.life);
+		binaryWriter.Write(npc.defDamage);
+	}
+
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+	{
+		if (SubworldSystem.Current is not MappingWorld)
+		{
+			return;
+		}
+
+		npc.lifeMax = binaryReader.ReadInt32();
+		npc.life = binaryReader.ReadInt32();
+		npc.defDamage = binaryReader.ReadInt32();
+	}
+
 	public override void ModifyHitPlayer(NPC npc, Player target, ref Player.HurtModifiers modifiers)
 	{
-		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
-			foreach (MapAffix affix in map.Affixes)
+			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
 				affix.ModifyHitPlayer(npc, target, ref modifiers);
 			}
@@ -40,9 +71,9 @@ internal class MappingNPC : GlobalNPC
 
 	public override void OnHitPlayer(NPC npc, Player target, Player.HurtInfo hurtInfo)
 	{
-		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
-			foreach (MapAffix affix in map.Affixes)
+			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
 				affix.OnHitPlayer(npc, target, hurtInfo);
 			}
@@ -51,9 +82,9 @@ internal class MappingNPC : GlobalNPC
 
 	public override bool PreAI(NPC npc)
 	{
-		if (SubworldSystem.Current is MappingWorld map && map.Affixes is not null)
+		if (SubworldSystem.Current is MappingWorld && MappingWorld.Affixes is not null)
 		{
-			foreach (MapAffix affix in map.Affixes)
+			foreach (MapAffix affix in MappingWorld.Affixes)
 			{
 				affix.PreAI(npc);
 			}
@@ -68,23 +99,25 @@ internal class MappingNPC : GlobalNPC
 		{
 			MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 
-			if (DownedBossForTier(world))
-			{
-				tracker.AddCompletion(world.MapTier);
-			}
+			tracker.AddCompletion(MappingWorld.MapTier);
 
-			Dictionary<int, int> completionsByTier = tracker.CompletionsPerTier();
+			if (Main.netMode != NetmodeID.SinglePlayer)
+			{
+				ModPacket packet = Networking.GetPacket(Networking.Message.SendMappingTierDown, 3);
+				packet.Write((short)MappingWorld.MapTier);
+				Networking.SendPacketToMainServer(packet);
+			}
 
 			if (TierPassed(1) && !NPC.downedQueenSlime)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<QueenSlimeMap>());
 			}
-			
+
 			if (TierPassed(2) && NPC.downedQueenSlime && !NPC.downedMechBoss2)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<TwinsMap>());
 			}
-			
+
 			if (TierPassed(3) && NPC.downedMechBoss2 && !NPC.downedMechBoss1)
 			{
 				Item.NewItem(npc.GetSource_Death(), npc.Hitbox, ModContent.ItemType<DestroyerMap>());
@@ -129,26 +162,8 @@ internal class MappingNPC : GlobalNPC
 
 			bool TierPassed(int tier)
 			{
-				return completionsByTier.TryGetValue(tier, out int tierValue) && tierValue >= 10;
+				return tracker.CompletionsAtOrAboveTier(tier) >= MappingDomainSystem.RequiredCompletionsPerTier;
 			}
 		}
-	}
-
-	private static bool DownedBossForTier(MappingWorld world)
-	{
-		return (world.MapTier - 1) switch
-		{
-			1 => NPC.downedQueenSlime,
-			2 => NPC.downedMechBoss2,
-			3 => NPC.downedMechBoss1,
-			4 => NPC.downedMechBoss3,
-			5 => NPC.downedPlantBoss,
-			6 => NPC.downedGolemBoss,
-			7 => NPC.downedFishron,
-			8 => NPC.downedEmpressOfLight,
-			9 => NPC.downedAncientCultist,
-			10 => NPC.downedMoonlord,
-			_ => true,
-		};
 	}
 }

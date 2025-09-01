@@ -5,12 +5,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
-internal class WoFMap : Map
+internal class WoFMap() : PreHardmodeBossMap(45, () => Main.hardMode)
 {
-	public override int MaxUses => GetBossUseCount();
-	public override int WorldTier => 45;
-	public override bool CanDrop => Main.hardMode;
-
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();

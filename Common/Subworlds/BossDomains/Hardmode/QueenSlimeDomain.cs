@@ -417,13 +417,13 @@ internal class QueenSlimeDomain : BossDomainSubworld
 
 			foreach (Player player in Main.ActivePlayers)
 			{
-				if (player.DistanceSQ(ArenaPos.ToWorldCoordinates()) > 1300 * 1300)
+				if (player.DistanceSQ(ArenaPos.ToWorldCoordinates()) > 1000 * 1000)
 				{
 					canSpawnBoss = false;
 					break;
 				}
 			}
-
+			
 			if (canSpawnBoss)
 			{
 				Main.spawnTileX = ArenaPos.X;
@@ -439,8 +439,6 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		}
 		else if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.QueenSlimeBoss, false, true);
-
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
 			Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}

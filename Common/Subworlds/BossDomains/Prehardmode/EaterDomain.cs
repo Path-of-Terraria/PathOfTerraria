@@ -348,11 +348,13 @@ public class EaterDomain : BossDomainSubworld
 
 			for (int y = (int)useY; y < Main.maxTilesY; ++y)
 			{
-				WorldGen.PlaceTile(x, y, y > 400 + noiseOffset ? TileID.Ebonstone : TileID.Dirt);
+				Tile tile = Main.tile[x, y];
+				tile.TileType = y > 400 + noiseOffset ? TileID.Ebonstone : TileID.Dirt;
+				tile.HasTile = true;
 
 				if (y > useY + 4)
 				{
-					WorldGen.PlaceWall(x, y, WallID.EbonstoneUnsafe, true);
+					tile.WallType = WallID.EbonstoneUnsafe;
 				}
 
 				if (y > 400 + noiseOffset && WorldGen.genRand.NextBool(1600))
@@ -597,8 +599,6 @@ public class EaterDomain : BossDomainSubworld
 		{
 			Vector2 pos = Arena.Center() + new Vector2(0, 240);
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-
-			BossTracker.AddDowned(NPCID.EaterofWorldsHead, false, true);
 		}
 	}
 }

@@ -38,6 +38,7 @@ internal abstract class GrimoirePickup : ModItem, IPoTGlobalItem
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = ItemType.Grimoire;
+		Item.value = Item.sellPrice(silver: 20);
 	}
 
 	public override void OnSpawn(IEntitySource source)

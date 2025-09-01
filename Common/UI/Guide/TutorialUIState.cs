@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.PlayerStats;
@@ -18,6 +17,7 @@ using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Placeable;
 using Terraria.DataStructures;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 namespace PathOfTerraria.Common.UI.Guide;
 

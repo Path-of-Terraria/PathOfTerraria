@@ -1,4 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.Networking.Handlers;
+﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.NPCs.BossDomain.BrainDomain;
 using PathOfTerraria.Content.Projectiles.Hostile;
 using Terraria.DataStructures;

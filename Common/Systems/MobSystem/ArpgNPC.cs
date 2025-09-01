@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
@@ -10,6 +9,7 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Core.Hooks;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.ID;
@@ -18,12 +18,14 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.MobSystem;
 
-internal class ArpgNPC : GlobalNPC
+internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 {
 	/// <summary>
 	/// Disables affixes for any NPC with an id contained in the set.
 	/// </summary>
 	public static HashSet<int> NoAffixesSet = [];
+
+	private static bool currentlyTransforming;
 
 	public override bool InstancePerEntity => true;
 
@@ -66,8 +68,8 @@ internal class ArpgNPC : GlobalNPC
 
 			if (SubworldSystem.Current is MappingWorld world)
 			{
-				dropQuantity *= 1 + (int)(world.TotalWeight() / 5f) / 100f;
-				dropQuantity *= 1 + (world.AreaLevel - 50) / 100f;
+				dropQuantity *= 1 + (int)(MappingWorld.TotalWeight() / 5f) / 100f;
+				dropQuantity *= 1 + (MappingWorld.AreaLevel - 50) / 100f;
 			}
 
 			return dropQuantity;
@@ -98,18 +100,45 @@ internal class ArpgNPC : GlobalNPC
 		return doDraw;
 	}
 
+	public static float DomainDropRateBoost(float? weight = null)
+	{
+		return (int)((weight ?? MappingWorld.TotalWeight()) / 5f) / 45f;
+	}
+
+	public static float DomainRarityBoost(float? weight = null)
+	{
+		return (weight ?? MappingWorld.TotalWeight());
+	}
+
 	public override void OnKill(NPC npc)
 	{
+		// Trigger affixes
 		Affixes.ForEach(a => a.OnKill(npc));
 
+		// Early exit conditions
 		if (DropModifierNPC.GetDropRate(npc) < Main.rand.NextFloat() || npc.lifeMax <= 5 || npc.SpawnedFromStatue || npc.boss || npc.friendly || npc.CountsAsACritter)
 		{
 			return;
 		}
 
+		// Determine drop count
 		int minDrop = (int)(DropQuantity * MinDropChanceScale * 100f);
 		int maxDrop = (int)(DropQuantity * 100f);
 		int rand = Main.rand.Next(minDrop, maxDrop + 1);
+
+		int dropCount = 0;
+		while (rand > 99)
+		{
+			rand -= 100;
+			dropCount++;
+		}
+
+		if (rand < 25)
+		{
+			dropCount++;
+		}
+
+		// Calculate magic find
 		float magicFind = 0;
 		int itemLevel = 0;
 
@@ -120,26 +149,37 @@ internal class ArpgNPC : GlobalNPC
 
 		if (SubworldSystem.Current is MappingWorld world)
 		{
-			magicFind += (int)(world.TotalWeight() / 10f) / 100f;
-
-			float modifier = 1 + (world.AreaLevel - 50) / 100f;
+			magicFind += DomainRarityBoost();
+			float modifier = MathF.Max(0, 1 + (MappingWorld.AreaLevel - 50) / 100f);
 			magicFind += modifier;
 		}
 
+		List<ItemDatabase.ItemRecord> drops = [];
+
+		// Roll guaranteed rare/magic items first
 		if (Rarity is ItemRarity.Magic or ItemRarity.Rare)
 		{
-			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind, forceRarity: Rarity);
+			drops.Add(DropTable.RollMobDrops(itemLevel, DropRarity * magicFind, gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f, null, forceRarity: Rarity));
 		}
 
-		while (rand > 99)
+		// Roll the remaining items normally
+		if (dropCount > 0)
 		{
-			rand -= 100;
-			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind);
+			drops.AddRange(DropTable.RollManyMobDrops(dropCount, itemLevel, DropRarity * magicFind,
+				gearChance: 0.8f, currencyChance: 0.15f, mapChance: 0.05f));
 		}
 
-		if (rand < 25)
+		// Spawn all items
+		foreach (ItemDatabase.ItemRecord item in drops)
 		{
-			ItemSpawner.SpawnMobKillItem(npc.Center, itemLevel, DropRarity * magicFind);
+			if (item != ItemDatabase.InvalidItem)
+			{
+				ItemSpawner.SpawnItem(item.ItemId, npc.Center, itemLevel, item.Rarity);
+				continue;
+			}
+#if DEBUG
+			Main.NewText($"Rolled an InvalidItem for drop from {npc.TypeName}");
+#endif
 		}
 	}
 
@@ -150,9 +190,33 @@ internal class ArpgNPC : GlobalNPC
 		return doKill;
 	}
 
+	void INpcTransformCallbacks.PreTransform(NPC npc, int oldType)
+	{
+		currentlyTransforming = true;
+	}
+	void INpcTransformCallbacks.PostTransform(NPC npc, int oldType)
+	{
+		currentlyTransforming = false;
+	}
+	void INpcTransformCallbacks.TransformTransfer(NPC npc, int oldType, INpcTransformCallbacks oldInstance)
+	{
+		if (oldInstance is ArpgNPC oldSelf)
+		{
+			Rarity = oldSelf.Rarity;
+			Affixes = oldSelf.Affixes;
+
+			ApplyRarity(npc, fromNet: true);
+		}
+	}
+
 	public override void SetDefaults(NPC npc)
 	{
-		//We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
+		if (currentlyTransforming)
+		{
+			return;
+		}
+
+		// We only want to trigger these changes on hostile non-boss, mortal & damageable non-critter NPCs that aren't in NoAffixesSet
 		if (npc.IsABestiaryIconDummy || npc.friendly || npc.boss || Main.gameMenu || npc.immortal || npc.dontTakeDamage || NPCID.Sets.ProjectileNPC[npc.type]
 			|| npc.CountsAsACritter || npc.realLife != -1 || NoAffixesSet.Contains(npc.type))
 		{
@@ -242,26 +306,36 @@ internal class ArpgNPC : GlobalNPC
 
 		Affixes.ForEach(a => a.PreRarity(npc));
 
+		bool alwaysDisplayHealthbar = false;
+
 		switch (Rarity)
 		{
 			case ItemRarity.Normal:
 				break;
 			case ItemRarity.Magic:
 				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(125, 125, 255), 0.5f);
-				npc.lifeMax *= 2; //Magic mobs get 100% increased life
-				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
-				npc.damage = (int)(npc.damage * 1.1f); //Magic mobs get 10% increase damage
+				npc.lifeMax *= 2; // Magic mobs get 100% increased life
+				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
+				npc.damage = (int)(npc.damage * 1.1f); // Magic mobs get 10% increase damage
+				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Rare:
 				npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(255, 255, 0), 0.5f);
-				npc.lifeMax *= 3; //Rare mobs get 200% Increased Life
-				npc.life = npc.lifeMax + 1; //This will trigger health bar to appear
-				npc.damage = (int)(npc.damage * 1.2f); //Magic mobs get 20% increase damage
+				npc.lifeMax *= 3; // Rare mobs get 200% Increased Life
+				npc.life = currentlyTransforming ? npc.life : npc.lifeMax;
+				npc.damage = (int)(npc.damage * 1.2f); // Magic mobs get 20% increase damage
+				alwaysDisplayHealthbar = true;
 				break;
 			case ItemRarity.Unique:
+				alwaysDisplayHealthbar = true;
 				break;
 			default:
 				throw new InvalidOperationException("Invalid rarity!");
+		}
+
+		if (alwaysDisplayHealthbar && npc.TryGetGlobalNPC(out HealthbarsNPC healthbars))
+		{
+			healthbars.AlwaysDisplayHealthbar = true;
 		}
 
 		SetName(npc);

@@ -1,23 +1,23 @@
-﻿using System.Collections.Generic;
+﻿using PathOfTerraria.Common.Subworlds.Passes;
+using PathOfTerraria.Common.World.Generation;
+using PathOfTerraria.Common.World.Passes;
+using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Content.Tiles.BossDomain;
+using ReLogic.Content;
+using System.Collections.Generic;
+using System.Linq;
+using Terraria.DataStructures;
+using Terraria.Enums;
+using Terraria.GameContent.Events;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
 using Terraria.IO;
-using Terraria.WorldBuilding;
-using Terraria.Enums;
-using PathOfTerraria.Common.World.Generation;
-using Terraria.DataStructures;
-using PathOfTerraria.Common.Subworlds.Passes;
 using Terraria.Utilities;
-using System.Linq;
-using PathOfTerraria.Content.Tiles.BossDomain;
-using ReLogic.Content;
-using PathOfTerraria.Common.World.Passes;
-using PathOfTerraria.Content.Projectiles.Utility;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
-public class DeerclopsDomain : BossDomainSubworld
+public class DeerclopsDomain : BossDomainSubworld, IOverrideBiome
 {
 	public const int Surface = 200;
 
@@ -44,6 +44,8 @@ public class DeerclopsDomain : BossDomainSubworld
 
 	public override void Load()
 	{
+		base.Load();
+
 		LightGlow = Mod.Assets.Request<Texture2D>("Assets/Misc/VFX/LightGlow");
 	}
 
@@ -90,7 +92,7 @@ public class DeerclopsDomain : BossDomainSubworld
 						tile.TileType = TileID.IceBlock;
 					}
 
-					if (WorldGen.genRand.NextBool(300) && j < Surface + 5 && OpenExtensions.GetOpenings(i, j).HasFlag(OpenFlags.Above) && WorldGen.InWorld(i, j, 30))
+					if (WorldGen.genRand.NextBool(300) && j < Surface + 5 && OpenExtensions.GetOpenings(i, j).HasFlag(OpenFlags.Above) && WorldGen.InWorld(i, j, 50))
 					{
 						structures.Add(new Point16(i, j));
 					}
@@ -159,7 +161,7 @@ public class DeerclopsDomain : BossDomainSubworld
 				pos = new Point16(pos.X, pos.Y - 2);
 			}
 
-			StructureTools.PlaceByOrigin("Assets/Structures/DeerclopsDomain/Surface_" + id, new Point16(pos.X, pos.Y + 2), origin);
+			StructureTools.PlaceByOrigin("Assets/Structures/DeerclopsDomain/Surface_" + id, new Point16(pos.X, pos.Y + 2), origin, cullAbove: true);
 		}
 	}
 
@@ -188,7 +190,7 @@ public class DeerclopsDomain : BossDomainSubworld
 		last = points.Last();
 		var chasmPoints = points.Clone() as Vector2[];
 		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 3.5f);
-		last = CreateHorizontalTunnel(noise, points, chasmPoints);
+		last = CreateHorizontalTunnel(noise, points, chasmPoints, false);
 
 		progress.Set(0.67f);
 
@@ -199,7 +201,7 @@ public class DeerclopsDomain : BossDomainSubworld
 		last = points.Last();
 		chasmPoints = points.Clone() as Vector2[];
 		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 2.5f);
-		CreateHorizontalTunnel(noise, points, chasmPoints);
+		CreateHorizontalTunnel(noise, points, chasmPoints, false);
 		last = points.Last();
 
 		progress.Set(0.9f);
@@ -210,12 +212,17 @@ public class DeerclopsDomain : BossDomainSubworld
 		AddLanterns(points, 8);
 	}
 
-	private Vector2 CreateHorizontalTunnel(FastNoiseLite noise, Vector2[] points, Vector2[] chasmPoints)
+	private Vector2 CreateHorizontalTunnel(FastNoiseLite noise, Vector2[] points, Vector2[] chasmPoints, bool skipPonds)
 	{
 		DigThrough(points, noise, 4);
 		PlaceThrower(GetXDirection(points.First().X), points.First());
 		Vector2 last = points.Last();
-		FindPondLocation(points);
+
+		if (!skipPonds)
+		{
+			FindPondLocation(points);
+		}
+
 		FindWalls(points, 2, chasmPoints);
 		return last;
 	}
@@ -321,13 +328,13 @@ public class DeerclopsDomain : BossDomainSubworld
 
 	private void StartTunnel(FastNoiseLite noise, int firstTunnelXStart, out Vector2 last)
 	{
-		Vector2[] points = Tunnel.GeneratePoints([new(Main.spawnTileX, Main.spawnTileY), new(firstTunnelXStart, Main.spawnTileY - 60)], 6, 4);
+		Vector2[] points = Tunnel.GeneratePoints([new(Main.spawnTileX, Main.spawnTileY), new(firstTunnelXStart, Main.spawnTileY - 60)], 6, 2);
 		DigThrough(points, noise, 1);
 		AddLanterns(points);
 		last = points.Last();
 		var chasmPoints = points.Clone() as Vector2[];
 		points = Tunnel.CreateEquidistantSet([last, new Vector2(GetOppositeX(last.X), last.Y)], 4);
-		last = CreateHorizontalTunnel(noise, points, chasmPoints);
+		last = CreateHorizontalTunnel(noise, points, chasmPoints, true);
 	}
 
 	private static void PlaceThrower(int dir, Vector2 position)
@@ -520,8 +527,15 @@ public class DeerclopsDomain : BossDomainSubworld
 		{
 			Vector2 pos = new Vector2(Width / 2, Height / 4 - 8) * 16;
 			Projectile.NewProjectile(Entity.GetSource_NaturalSpawn(), pos, Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
-
-			BossTracker.AddDowned(NPCID.Deerclops, false, true);
 		}
+	}
+
+	public void OverrideBiome()
+	{
+		Main.bgStyle = SurfaceBackgroundID.Snow;
+		short music = Main.LocalPlayer.Center.Y / 16 > Main.worldSurface ? MusicID.Ice : MusicID.Snow;
+		Main.newMusic = music;
+		Main.curMusic = music;
+		Main.LocalPlayer.ZoneBeach = false;
 	}
 }

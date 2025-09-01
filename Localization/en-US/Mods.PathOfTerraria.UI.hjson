@@ -216,6 +216,17 @@ InvButtons: {
 	Quest: Quests
 	Stats: Stats
 	RestartTutorial: Restart Tutorial
+	DomainInformation: Domain Information
+}
+
+SubworldHelp: {
+	MapTier: "[i:4927] Map Tier: "
+	Affixes: "[i:885] Affixes:"
+	MapStrength: "[i:29] Map strength modifier: "
+	ExperienceBoost: "    [i:278] Experience boost: +"
+	DropRateBoost: "    [i:278] Drop rate increase: +"
+	DropRarityBoost: "    [i:278] Rarity boost: +"
+	Info: (Domain Information)
 }
 
 Grimoire: {
@@ -286,3 +297,5 @@ ExpBarHover:
 
 	Click to open skill tree
 	'''
+AreaLevel: Area Level:
+Waypoints.TutorialTip: In order to use the Home waypoint, you must have an Arcane Obelisk placed in the main world. Use the Return button in your settings menu to proceed.

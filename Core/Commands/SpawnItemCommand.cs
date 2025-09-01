@@ -49,7 +49,7 @@ public sealed class SpawnItemCommand : ModCommand
 		for (int i = 0; i < count; i++)
 		{
 			ItemDatabase.ItemRecord record = items[i];
-			Item.NewItem(new EntitySource_DebugCommand("/spawnitem"), caller.Player.Center, Vector2.Zero, record.Item);
+			ItemSpawner.SpawnItem(record.ItemId, caller.Player.Center, 0, record.Rarity);
 		}
 
 		caller.Reply("Item(s) spawned!", Color.Green);

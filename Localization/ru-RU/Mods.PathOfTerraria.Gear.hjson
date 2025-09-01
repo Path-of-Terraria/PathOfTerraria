@@ -1,5 +1,5 @@
 Rarity: {
-	Normal: Нормальный
+	Normal: Обычный
 	Magic: Магический
 	Rare: Редкий
 	Unique: Уникальный
@@ -15,9 +15,11 @@ Tooltips: {
 	Pickaxe: Мощность кирки
 	Axe: Мощность топора
 	Hammer: Мощность молота
-	ManaCost: "Расход маны "
+	ManaCost: Расход маны
 	// AttackSpeed: Attack Speed
 	// CastSpeed: Cast Speed
+	// BuildBlocked: Blocked by the energies in the domain
+	// ShootBlocked: Will be replaced by {0} [i:{1}] when shot
 }
 
 Influence: {
@@ -237,7 +239,7 @@ Wand: {
 }
 
 Whip: {
-	Name: Кнут
+	Name: Хлыст
 	AltUse: Правый клик, чтобы хлестнуть один раз перед собой и один раз позади себя быстро подряд.
 
 	Prefixes: {
@@ -346,6 +348,8 @@ Shield: {
 }
 
 Map.Name: Карта
+// ExplorableMap.Name: Explorable Map
+// BossMap.Name: Boss Map
 None.Name: Ничто
 Magic.Name: Магия
 Ranged.Name: Дистанционный

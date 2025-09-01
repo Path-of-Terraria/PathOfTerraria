@@ -1,4 +1,6 @@
-﻿using Terraria.ID;
+﻿using System.IO;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
@@ -26,6 +28,34 @@ public abstract class MapAffix : ItemAffix
 	public virtual void PreAI(NPC npc)
 	{
 	}
+
+	protected override void InternalSaveTo(TagCompound tag)
+	{
+		base.InternalSaveTo(tag);
+
+		tag.Add("strength", Strength);
+	}
+
+	protected override void InternalLoadFrom(TagCompound tag)
+	{
+		base.InternalLoadFrom(tag);
+
+		Strength = tag.GetFloat("strength");
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		base.NetSend(writer);
+
+		writer.Write((Half)Strength);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		base.NetReceive(reader);
+
+		Strength = (float)reader.ReadHalf();
+	}
 }
 
 public class MapDamageAffix : MapAffix
@@ -40,7 +70,7 @@ public class MapBossHealthAffix : MapAffix
 {
 	public override void ModifyNewNPC(NPC npc)
 	{
-		if (npc.boss)
+		if (npc.boss || NPCID.Sets.ShouldBeCountedAsBoss[npc.type])
 		{
 			npc.lifeMax = (int)(npc.lifeMax * (1 + Value / 100f));
 			npc.life = npc.lifeMax;

@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Core.Items;
 using Terraria.DataStructures;
 using Terraria.Enums;
@@ -41,6 +41,7 @@ internal abstract class Staff : Gear
 		Item.autoReuse = true;
 		Item.mana = 12;
 		Item.useTime = 60;
+		Item.useTurn = true;
 
 		PoTInstanceItemData data = this.GetInstanceData();
 		data.ItemType = Common.Enums.ItemType.Staff;

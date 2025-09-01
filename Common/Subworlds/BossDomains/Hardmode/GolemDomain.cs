@@ -41,6 +41,8 @@ internal class GolemDomain : BossDomainSubworld
 
 	public override void Load()
 	{
+		base.Load();
+
 		On_Player.Teleport += AddGolemTeleporting;
 	}
 
@@ -398,8 +400,6 @@ internal class GolemDomain : BossDomainSubworld
 		}
 		else if (state == FightState.JustCompleted)
 		{
-			BossTracker.AddDowned(NPCID.Golem, false, true);
-
 			HashSet<Player> players = [];
 
 			foreach (Player plr in Main.ActivePlayers)

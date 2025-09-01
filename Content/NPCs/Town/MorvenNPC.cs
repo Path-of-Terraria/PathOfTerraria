@@ -19,12 +19,13 @@ using SubworldLibrary;
 using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 using Terraria.ModLoader.IO;
 using System.IO;
-using PathOfTerraria.Common.Systems.Networking.Handlers;
 using Terraria.GameContent.Bestiary;
 using NPCUtils;
 using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Content.Tiles;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
@@ -419,6 +420,19 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			surfaceDialogue = false;
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Aboveground");
 		}
+		
+		var obeliskSystem = ModContent.GetInstance<ArcaneObeliskTile.ArcaneObeliskSystem>();
+		if (obeliskSystem.ArcaneObeliskLocation.HasValue)
+		{
+			Vector2 obeliskWorldPos = obeliskSystem.ArcaneObeliskLocation.Value.ToWorldCoordinates();
+			float distanceToObelisk = Vector2.Distance(NPC.Center, obeliskWorldPos);
+		
+			if (distanceToObelisk < 300f)
+			{
+				return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.NearObelisk");
+			}
+		}
+
 
 		if (ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Contains(FullName) && postOrbPreEoWDialogue && DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2)
 		{

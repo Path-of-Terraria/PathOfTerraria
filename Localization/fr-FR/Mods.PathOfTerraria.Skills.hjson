@@ -24,23 +24,23 @@ Berserk: {
 }
 
 RainOfArrows: {
-	// Name: Flurry
-	// Description: Shoot a flurry of projectiles based on your held ranged weapon towards the cursor after a short delay
+	Name: Rafale
+	Description: Tirez une rafale de projectiles à partir de votre arme à distance vers le curseur après un court délai.
 }
 
 MoltenShield: {
-	// Name: Molten Shield
-	// Description: Gain a temporary health buffer that stops 75% of incoming damage until broken.
+	Name: Bouclier en fusion
+	Description: Obtenez un bouclier de santé temporaire qui bloque 75% des dégâts subis jusqu'à ce qu'il soit détruit.
 }
 
 BloodSiphon: {
-	// Name: Blood Siphon
-	// Description: Consume all nearby Bloodclot stacks to heal 3 health per stack. Max of 30 stacks.
+	Name: Siphon Sanguin
+	Description: Consomme tous les effets de Caillot sanguin à proximité pour restaurer 3 points de vie par effet. Maximum de 30 effets.
 }
 
 FetidCarapace: {
-	// Name: Fetid Carapace
-	// Description: Gain some orbital projectiles that protect you from enemies and their projectiles.
+	Name: Carapace Fétide
+	Description: Obtenez des projectiles orbitaux qui vous protègent contre les ennemis et leurs projectiles.
 }
 
 Fireball: {
@@ -49,6 +49,6 @@ Fireball: {
 }
 
 IceBolt: {
-	Name: "Éclair de Glace "
+	Name: Éclair de Glace
 	Description: Lancez un éclair de glace qui glace un ennemi qu'il touche.
 }
