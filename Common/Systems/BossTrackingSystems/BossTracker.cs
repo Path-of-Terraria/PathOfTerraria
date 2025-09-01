@@ -97,14 +97,14 @@ internal sealed class BossTracker : ModSystem
 
 	private static void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
 	{
-		if (SubworldSystem.Current is BossDomainSubworld && self.boss)
+		bool isBoss = ContentSamples.NpcsByNetId[self.netID].boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type];
+
+		if (SubworldSystem.Current is BossDomainSubworld && isBoss)
 		{
 			// Spawns the Wall of Flesh's box around itself, which is overriden by this method
 			OnDeathNPC.OnDeathEffects(self);
 
-			bool isBoss = ContentSamples.NpcsByNetId[self.netID].boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type];
-
-			if (CheckSpecialConditions(self.netID, isBoss) && SubworldSystem.Current is not null)
+			if (CheckSpecialConditions(self, isBoss) && SubworldSystem.Current is not null)
 			{
 				// Automatically add/send the boss downed cache/packet
 				AddDowned(self.netID, false, true, false);
@@ -127,13 +127,15 @@ internal sealed class BossTracker : ModSystem
 		orig(self, closestPlayer);
 	}
 
-	private static bool CheckSpecialConditions(int type, bool isBoss)
+	private static bool CheckSpecialConditions(NPC self, bool isBoss)
 	{
-		if (type == NPCID.EaterofWorldsHead) // EoW should only count once every other EoW is dead
+		int type = self.type;
+
+		if (type is NPCID.EaterofWorldsHead or NPCID.EaterofWorldsTail or NPCID.EaterofWorldsBody) // EoW should only count once every other EoW is dead
 		{
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc.type is NPCID.EaterofWorldsHead or NPCID.EaterofWorldsBody or NPCID.EaterofWorldsTail)
+				if (npc.whoAmI != self.whoAmI && self.type == NPCID.EaterofWorldsBody)
 				{
 					return false;
 				}

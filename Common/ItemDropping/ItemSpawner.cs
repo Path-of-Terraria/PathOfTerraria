@@ -141,16 +141,20 @@ internal class ItemSpawner
 	public static int SpawnItem(int type, Vector2 pos, int itemLevel = 0, ItemRarity rarity = ItemRarity.Normal)
 	{
 		var item = new Item(type);
-		PoTInstanceItemData data = item.GetInstanceData();
-		PoTStaticItemData staticData = item.GetStaticData();
 
-		if (staticData.IsUnique)
+		if (item.TryGetGlobalItem<PoTInstanceItemData>(out _))
 		{
-			rarity = ItemRarity.Unique;
-		}
+			PoTInstanceItemData data = item.GetInstanceData();
+			PoTStaticItemData staticData = item.GetStaticData();
 
-		data.Rarity = rarity;
-		PoTItemHelper.Roll(item, itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel);
+			if (staticData.IsUnique)
+			{
+				rarity = ItemRarity.Unique;
+			}
+
+			data.Rarity = rarity;
+			PoTItemHelper.Roll(item, itemLevel == 0 ? PoTItemHelper.PickItemLevel() : itemLevel);
+		}
 
 		return Main.netMode switch
 		{

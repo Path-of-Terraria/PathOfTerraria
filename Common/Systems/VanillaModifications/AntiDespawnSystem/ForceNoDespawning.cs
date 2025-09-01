@@ -38,7 +38,9 @@ internal class ForceNoDespawning : GlobalNPC
 		orig(self, i);
 
 		// Aggressively stop despawning by forcing bosses that have health and were active to continue to be active, if we're in a boss domain and any player is alive
-		if ((self.boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type]) && SubworldSystem.Current is BossDomainSubworld && !self.active && life > 0 && AnyPlayerIsAlive)
+		// Note - excludes EoW's Head and Tail, which caused a crazy bug that spammed exp and item drops infinitely
+		if ((self.boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type]) && SubworldSystem.Current is BossDomainSubworld && !self.active && life > 0 && AnyPlayerIsAlive
+			&& self.type is not NPCID.EaterofWorldsHead and not NPCID.EaterofWorldsTail)
 		{
 			self.active = true;
 			self.life = life;
