@@ -20,6 +20,7 @@ public struct AffixTooltipLine()
 	public LocalizedText? TextWhenRemoved;
 	public float Value;
 	public bool Corrupt;
+	public bool Implicit;
 	public (int Current, int Min, int Max)? Tier;
 	public (float Min, float Max)? ValueRollRange;
 	public Color? OverrideColor;
@@ -176,7 +177,7 @@ public sealed class AffixTooltips
 	{
 		var sb = new StringBuilder();
 
-		foreach (AffixTooltipLine tip in Lines.Values.OrderByDescending(v => v.Value))
+		foreach (AffixTooltipLine tip in Lines.Values.OrderByDescending(v => v.Value).OrderBy(v => v.Implicit ? 0f : 1f))
 		{
 			sb.Clear();
 			sb.Append(ItemTooltips.ColoredDot(ItemTooltips.Colors.AffixAccent));
@@ -202,6 +203,7 @@ public sealed class AffixTooltips
 			Color color = tip.Value switch
 			{
 				_ when tip.OverrideColor.HasValue => tip.OverrideColor.Value,
+				_ when tip.Implicit => ItemTooltips.Colors.Implicit,
 				_ when tip.Corrupt => ItemTooltips.Colors.Corrupt,
 				> 0f => ItemTooltips.Colors.Positive,
 				< 0f => ItemTooltips.Colors.Negative,

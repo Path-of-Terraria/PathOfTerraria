@@ -41,6 +41,7 @@ public abstract class ItemAffix : Affix
 			Tier = (Tier, tierMin, tierMax),
 			ValueRollRange = (tierData.MinValue, tierData.MaxValue),
 			Corrupt = IsCorruptedAffix,
+			Implicit = IsImplicit,
 		};
 	}
 	
