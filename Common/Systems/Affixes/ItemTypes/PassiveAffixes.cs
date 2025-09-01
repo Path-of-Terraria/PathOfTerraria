@@ -48,13 +48,8 @@ internal class IncreasedDamageAffix : ItemAffix
 		modifier.Damage += Value / 500;
 	}
 
-	public override void ApplyTooltip(Player player, Item item, AffixTooltips handler)
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
-		handler.AddOrModify(GetType(), new AffixTooltipLine
-		{
-			Text = this.GetLocalization("Description"),
-			Value = Value / 5f,
-			Corrupt = IsCorruptedAffix,
-		});
+		return base.CreateDefaultTooltip(player, item) with { Value = Value / 5f };
 	}
 }

@@ -4,9 +4,9 @@ Experience: {
 }
 
 RarityNames: {
-	Normal: "Обычный "
-	Magic: "Магический "
-	Rare: "Редкий "
+	Normal: Обычный
+	Magic: Магический
+	Rare: Редкий
 }
 
 GrimoireConsume: "{0} поглощено!"
@@ -20,7 +20,7 @@ RestoresHealthTooltip: Восстанавливает {0} здоровья
 RestoresManaTooltip: Восстанавливает {0} маны
 CooldownTooltip: "{0} секунд восстановления"
 NPCLeftWithoutDying: "{0} сбежал!"
-AffixTooltipFrom: " от "
+AffixTooltipFrom: от
 Enter: Войти
 Exit: Выйти
 EnterRavencrest: "{$Enter} в Равенкрест"

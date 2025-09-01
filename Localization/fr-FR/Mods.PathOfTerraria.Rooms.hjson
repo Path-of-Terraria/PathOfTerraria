@@ -7,7 +7,11 @@ Common: {
 
 Tavern: {
 	DisplayName: Taverne
-	Description: Doit occuper au moins 100 tuiles\nNécessite 3 tables, 3 chaises, 3 tabourets de bar, un fût, un panneau, une porte et une source de lumière
+	Description:
+		'''
+		Doit occuper au moins 100 tuiles
+		Nécessite 3 tables, 3 chaises, 3 tabourets de bar, un fût, un panneau, une porte et une source de lumière
+		'''
 
 	Error: {
 		Tables: 3 tables

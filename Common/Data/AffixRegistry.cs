@@ -123,11 +123,17 @@ public class AffixRegistry : ILoadable
 	/// </summary>
 	/// <param name="itemType">The ItemType to filter by.</param>
 	/// <returns>Random ItemAffixData entry matching the ItemType.</returns>
-	public static ItemAffixData GetRandomAffixDataByItemType(ItemType itemType)
+	public static ItemAffixData GetRandomAffixDataByItemType(ItemType itemType, IEnumerable<ItemAffixData> excludedAffixes = null)
 	{
-		var filteredAffixData = ItemAffixData.Values
-			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None)
-			.ToList();
+		IEnumerable<ItemAffixData> enumerable = ItemAffixData.Values
+			.Where(affixData => (itemType & affixData.GetEquipTypes()) != ItemType.None);
+
+		if (enumerable != null)
+		{
+			enumerable = enumerable.Except(excludedAffixes);
+		}
+
+		var filteredAffixData = enumerable.ToList();
 
 		if (filteredAffixData.Count == 0)
 		{

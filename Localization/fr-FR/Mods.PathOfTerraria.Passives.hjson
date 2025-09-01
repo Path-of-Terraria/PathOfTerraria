@@ -5,186 +5,186 @@
 # The {0} is the value of the passive
 
 IncreasedMeleeDamagePassive: {
-	// Name: Martial Mastery
-	// Tooltip: Increases your melee damage by 5% per level
+	Name: Maîtrise Martiale
+	Tooltip: Augmente vos dégâts de mélée de 5% par niveau
 }
 
 IncreasedRangedDamagePassive: {
-	// Name: Marksmanship Mastery
-	// Tooltip: Increases your ranged damage by 5% per level
+	Name: Maîtrise du Tir
+	Tooltip: Augmente vos dégâts de distance de 5% par niveau
 }
 
 IncreasedMagicDamagePassive: {
-	// Name: Arcane Mastery
-	// Tooltip: Increases your magic damage by 5% per level
+	Name: Maîtrise des Arcanes
+	Tooltip: Augmente vos dégâts de magie de 5% par niveau
 }
 
 IncreasedSummoningDamagePassive: {
-	// Name: Summoning Mastery
-	// Tooltip: Increases your summon damage by 5% per level
+	Name: Maîtrise des Invocations
+	Tooltip: Augmente vos dégâts d'invocation de 5% par niveau
 }
 
 AddedLifePassive: {
-	// Name: Empowered Flesh
-	// Tooltip: Increases your maximum life by 20 per level
+	Name: Chair Renforcée
+	Tooltip: Augmente votre santé maximale de 20 par niveau
 }
 
 AddedManaPassive: {
-	// Name: AddedManaPassive
-	// Tooltip: Increases your maximum mana by 20 per level
+	Name: Mana Passif
+	Tooltip: Augmente votre mana maximale de 20 par niveau
 }
 
 LongRangePassive: {
-	// Name: Sniper
-	// Tooltip: Increases your damage against distant enemies by 10% per level
+	Name: Tireur d'Élite
+	Tooltip: Augmente vos dégâts contre un ennemi distant de 10% par niveau
 }
 
 CloseRangePassive: {
-	// Name: Close Combatant
-	// Tooltip: Increases your damage against nearby enemies by 10% per level
+	Name: Combattant Rapproché
+	Tooltip: Augmente vos dégâts contre des ennemis proche de 10% par niveau
 }
 
 ChanceToBleedPassive: {
-	// Name: Crimson Dance
-	// Tooltip: Your melee attacks inflict bleeding, dealing 5 damage per second, for two + level seconds.
+	Name: Danse Cramoisie
+	Tooltip: Vos attaques de mélee inflige saignement, causant 5 dégâts par seconde, pour 2 (+ votre niveau) secondes.
 }
 
 DamageReductionPassive: {
-	// Name: Iron Will
-	// Tooltip: Gain 0.25% damage reduction per level.
+	Name: Volonté de Fer
+	Tooltip: Gagne 0.25% de réduction de dégâts par niveau.
 }
 
 DamageReflectionPassive: {
-	// Name: Thorny Exterior
-	// Tooltip: Reflect 10 more damage to enemies that deal contact damage per level.
+	Name: Extérieur épineux
+	Tooltip: Renvoie 10 points de dégâts supplémentaires aux ennemis qui infligent des dégâts de contact par niveau.
 }
 
 ChanceToConsumeAmmoPassive: {
-	// Name: Secret Compartment
-	// Tooltip: 5% chance to not consume ammo per level
+	Name: Compartiment Secret
+	Tooltip: 5% de chance de ne pas consummer de munition par niveau
 }
 
 StartPassive: {
-	// Name: Anchor
-	// Tooltip: Your journey starts here
+	Name: Ancre
+	Tooltip: Votre voyage commence ici
 }
 
 IncreasedSummonDamagePassive: {
-	// Name: Empowered Horde
-	// Tooltip: Increases all summon damage by 10% per level
+	Name: Horde Renforcée
+	Tooltip: Augmente tout vos dégâts d'invocation de 10% par niveau
 }
 
 IncreasedSentryDamagePassive: {
-	// Name: Steadfast Sentries
-	// Tooltip: Increases your sentries' damage by 10% per level
+	Name: Sentinelles inébranlables
+	Tooltip: Augmente les dégâts infligés par vos sentinelles de 10 % par niveau.
 }
 
 JewelSocket: {
-	// Name: JewelSocket
+	Name: Emplacement pour bijoux
 	// Tooltip: ""
 }
 
 LifeRegenPassive: {
-	// Name: Stronger Heart
-	// Tooltip: Increased life regeneration
+	Name: Cœur Puissant
+	Tooltip: Augmente votre régénération de santé
 }
 
 DecreasedManaCostPassive: {
-	// Name: Decreased Mana Cost
-	// Tooltip: Decreases mana cost by 3% per level
+	Name: Coût en Mana Réduit
+	Tooltip: Réduit le coût en mana de 3% par niveau
 }
 
 AddedCriticalStrikeChance: {
-	// Name: Added Critical Strike Chance
-	// Tooltip: Adds 2% flat critical strike chance per level
+	Name: Chance de coup critique ajoutée
+	Tooltip: Ajoute 2% de chances de coup critique par niveau.
 }
 
 IncreasedCriticalStrikeChance: {
-	// Name: Increased Critical Strike Chance
-	// Tooltip: Adds 10% increased critical strike chance per level
+	Name: Augmentation des chances de coup critique
+	Tooltip: Augmente les chances de coup critique de 5% par niveau.
 }
 
 IncreasedCriticalStrikeMultiplier: {
-	// Name: Increased Critical Strike Multiplier
-	// Tooltip: Adds 5% critical strike multiplier per level
+	Name: Multiplicateur de coup critique augmenté
+	Tooltip: Ajoute un multiplicateur de coup critique de 5% par niveau.
 }
 
 ArmorPenetrationPassive: {
-	// Name: Increased Armor Penetration (Melee)
-	// Tooltip: Adds 15% more armor penetration per level
+	Name: Augmentation de la pénétration d'armure (mêlée)
+	Tooltip: Ajoute 15% de pénétration d'armure supplémentaire par niveau.
 }
 
 AnchorPassive: {
-	// Name: Anchor
-	// Tooltip: The journey starts here.
+	Name: Ancre
+	Tooltip: Le voyage commence ici.
 }
 
 StrongerChillPassive: {
-	// Name: Stronger Chill
-	// Tooltip: Chilled debuff slows down enemies 10% more.
+	Name: Froid plus intense
+	Tooltip: Le débuff « Refroidissement » ralentit les ennemis de 10% supplémentaires.
 }
 
 ShockChancePassive: {
-	// Name: Energy Field
-	// Tooltip: Adds an additional 5% chance to afflict an enemy with Shock per level.
+	Name: Champ énergétique
+	Tooltip: Ajoute 5% de chances supplémentaires d'infliger Choc à un ennemi par niveau.
 }
 
 IncreasedMinionDamagePassive: {
-	// Name: Increased Minion Damage
-	// Tooltip: Increases your minions' damage by 10% per level
+	Name: Augmentation des dégâts infligés par les serviteurs
+	Tooltip: Augmente les dégâts infligés par vos serviteurs de 10% par niveau.
 }
 
 AddedAggressionPassive: {
-	// Name: Added Aggression
-	// Tooltip: Adds an additional point of aggro per level.
+	Name: Agressivité accrue
+	Tooltip: Ajoute un point d'aggro supplémentaire par niveau.
 }
 
 GlancingBlowsPassive: {
-	// Name: Glancing Blows
-	// Tooltip: Blocking a strike deals 50% damage, but max block chance is increased to 50% and block cooldown is reduced to 1 second.
+	Name: Coups obliques
+	Tooltip: Bloquer une attaque inflige 50% de dégâts, mais la chance maximale de blocage est augmentée à 50% et le temps de recharge du blocage est réduit à 1 seconde.
 }
 
 IncreasedBlockChancePassive: {
-	// Name: Heavy Armor
-	// Tooltip: +10% chance to block an attack per level.
+	Name: Armure lourde
+	Tooltip: +10% de chances de bloquer une attaque par niveau.
 }
 
 AddedIntelligencePassive: {
-	// Name: Highly Studied
-	// Tooltip: Adds +{0} points to intelligence per level.
+	Name: Très étudié
+	Tooltip: Ajoute +{0} points d'intelligence par niveau.
 }
 
 AddedStrengthPassive: {
-	// Name: Tough Workout
-	// Tooltip: Adds +{0} points to strength per level.
+	Name: Entraînement intensif
+	Tooltip: Ajoute +{0} points à la force par niveau.
 }
 
 AddedDexterityPassive: {
-	// Name: Nimble Feet
-	// Tooltip: Adds +{0} points to dexterity per level.
+	Name: Pieds agiles
+	Tooltip: Ajoute +{0} points à la dextérité par niveau.
 }
 
 IncreasedPotionRecoveryPassive: {
-	// Name: Powerful Potions
-	// Tooltip: Adds +{0}% additional healing from Healing Potions per level.
+	Name: Potions puissantes
+	Tooltip: Ajoute +{0}% de soins supplémentaires provenant des potions de soins par niveau.
 }
 
 IncreasedMoveSpeedPassive: {
-	// Name: Swift Footwork
-	// Tooltip: +{0}% increased movement speed per level.
+	Name: Jeu de jambes rapide
+	Tooltip: +{0}% d'augmentation de la vitesse de déplacement par niveau.
 }
 
 IncreasedWhipDamage: {
-	// Name: Strong Snap
-	// Tooltip: +{0}% increased whip damage per level.
+	Name: Coup sec
+	Tooltip: +{0}% d'augmentation des dégâts infligés par le fouet par niveau.
 }
 
 IncreasedWhipSpeed: {
-	// Name: Rapid Whips
-	// Tooltip: +5% increased whip speed per level.
+	Name: Fouets rapides
+	Tooltip: +5% d'augmentation de la vitesse du fouet par niveau.
 }
 
 IncreasedJumpHeight: {
-	// Name: High Vaulter
-	// Tooltip: +{0}% faster jump speed.
+	Name: Sauteur en hauteur
+	Tooltip: +{0}% de vitesse de saut en plus.
 }
