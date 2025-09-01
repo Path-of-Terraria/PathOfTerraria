@@ -6,6 +6,11 @@ namespace PathOfTerraria.Common.Systems.DisableBuilding;
 
 internal class StopExplodingTile : GlobalTile
 {
+	public override bool CanReplace(int i, int j, int type, int tileTypeBeingPlaced)
+	{
+		return SubworldSystem.Current is not MappingWorld;
+	}
+
 	public override bool CanExplode(int i, int j, int type)
 	{
 		Tile tile = Main.tile[i, j];

@@ -25,6 +25,7 @@ public sealed class TownScoutNPC : ModNPC
 	public override void SetDefaults()
 	{
 		NPC.CloneDefaults(NPCID.GoblinScout);
+		NPC.rarity = 1;
 
 		AnimationType = NPCID.GoblinScout;
 		AIType = NPCID.GoblinScout;
