@@ -44,6 +44,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color StatsAccent => ColorUtils.FromHexRgb(0x_a1bdbd);
 		public static Color AffixAccent => ColorUtils.FromHexRgb(0x_ff2222);
 
+		public static Color Implicit => ColorUtils.FromHexRgb(0x_72abcb);
 		public static Color Corrupt => Color.Lerp(Color.Purple, Color.White, 0.4f);
 		public static Color Cloned => ColorUtils.FromHexRgb(0x_37946e);
 		public static Color ManaCost => ColorUtils.FromHexRgb(0x_5fcde4);
