@@ -19,11 +19,6 @@ IncreasedMagicDamagePassive: {
 	Tooltip: Augmente vos dégâts de magie de 5% par niveau
 }
 
-IncreasedSummoningDamagePassive: {
-	Name: Maîtrise des Invocations
-	Tooltip: Augmente vos dégâts d'invocation de 5% par niveau
-}
-
 AddedLifePassive: {
 	Name: Chair Renforcée
 	Tooltip: Augmente votre santé maximale de 20 par niveau
@@ -57,11 +52,6 @@ DamageReductionPassive: {
 DamageReflectionPassive: {
 	Name: Extérieur épineux
 	Tooltip: Renvoie 10 points de dégâts supplémentaires aux ennemis qui infligent des dégâts de contact par niveau.
-}
-
-ChanceToConsumeAmmoPassive: {
-	Name: Compartiment Secret
-	Tooltip: 5% de chance de ne pas consummer de munition par niveau
 }
 
 StartPassive: {
@@ -187,4 +177,34 @@ IncreasedWhipSpeed: {
 IncreasedJumpHeight: {
 	Name: Sauteur en hauteur
 	Tooltip: +{0}% de vitesse de saut en plus.
+}
+
+PercentIncreasedMaximumManaPassive: {
+	// Name: Deep in Thought
+	// Tooltip: +{0}% Increased Maximum Mana
+}
+
+IncreasedFireDamagePassive: {
+	// Name: Burning Fury
+	// Tooltip: +{0}% Increased Fire Damage
+}
+
+IncreasedLightningDamagePassive: {
+	// Name: Voltaic Surge
+	// Tooltip: +{0}% Increased Lightning Damage
+}
+
+IncreasedColdDamagePassive: {
+	// Name: Chilling Precision
+	// Tooltip: +{0}% Increased Cold Damage
+}
+
+IncreasedWhipDamagePassive: {
+	// Name: IncreasedWhipDamagePassive
+	// Tooltip: ""
+}
+
+IncreasedWhipSpeedPassive: {
+	// Name: IncreasedWhipSpeedPassive
+	// Tooltip: ""
 }

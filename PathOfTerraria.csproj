@@ -1,9 +1,10 @@
-
+﻿
 <Project Sdk="Microsoft.NET.Sdk">
 	<Import Project="..\tModLoader.targets" />
 	<PropertyGroup>
 		<AssemblyName>PathOfTerraria</AssemblyName>
 		<LangVersion>latest</LangVersion>
+		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
 	<PropertyGroup>
 		<ExecutablePath Condition=" Exists('/etc/NIXOS') ">steam-run</ExecutablePath>
