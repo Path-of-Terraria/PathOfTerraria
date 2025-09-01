@@ -173,7 +173,17 @@ public sealed class AffixTooltips
 		}
 	}
 
-	private void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum, bool displayExtraInfo)
+	public List<TooltipLine> CreateTooltipLines(bool displayExtraInfo)
+	{
+		int tipNum = 0;
+		var result = new List<TooltipLine>(capacity: Lines.Values.Count);
+
+		AddTooltipLines(result, ref tipNum, displayExtraInfo);
+
+		return result;
+	}
+
+	public void AddTooltipLines(List<TooltipLine> tooltips, ref int tipNum, bool displayExtraInfo)
 	{
 		var sb = new StringBuilder();
 
