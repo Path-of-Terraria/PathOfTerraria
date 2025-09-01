@@ -38,7 +38,6 @@ public class SubworldHelpInvButton : SmartUiState
 			Tooltip.Create(new TooltipDescription()
 			{
 				Identifier = "SubworldHelp",
-				//SimpleTitle = CurrentWorld.SubworldName.Value,
 				Lines = lines,
 				Stability = 5,
 			});
@@ -64,7 +63,12 @@ public class SubworldHelpInvButton : SmartUiState
 		AddLine(lines, "Desc", CurrentWorld.SubworldDescription.Value, scale);
 		AddLine(lines, "Mining", CurrentWorld.SubworldMining.Value, scale);
 		AddLine(lines, "Placing", CurrentWorld.SubworldPlacing.Value, scale);
-		AddLine(lines, "Tier", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.MapTier") + MappingWorld.MapTier, scale);
+
+		// Only add this line if there is a tier to begin with
+		if (Content.Items.Consumables.Maps.Map.TierBasedOnWorldLevel(MappingWorld.AreaLevel) > 0)
+		{
+			AddLine(lines, "Tier", Language.GetTextValue("Mods.PathOfTerraria.UI.SubworldHelp.MapTier") + MappingWorld.MapTier, scale);
+		}
 
 		if (MappingWorld.Affixes.Count > 0)
 		{
