@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Common.Projectiles;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Common.UI;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -19,7 +19,7 @@ internal class SkeletronPortal : ModProjectile
 				SubworldSystem.Enter<SkeletronDomain>();
 			}
 
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.Questing;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Utilities;
 using Terraria.UI;
 
@@ -40,7 +41,7 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 
 			if (text != string.Empty)
 			{
-				Tooltip.Create(new TooltipDescription
+				Tooltips.Create(new()
 				{
 					Identifier = "QuestReminder",
 					SimpleTitle = title,

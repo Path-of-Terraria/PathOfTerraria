@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Hotbar;
@@ -45,7 +46,7 @@ internal class SkillSelectionElement : UIElement
 			}
 			else
 			{
-				Tooltip.Create(new TooltipDescription
+				Tooltips.Create(new()
 				{
 					Identifier = "SkillSelection",
 					SimpleTitle = Language.GetTextValue("Mods.PathOfTerraria.Skills.CantEquip", fail.Description),

@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.BlockSystem;
 using PathOfTerraria.Common.Systems.Charges;
 using PathOfTerraria.Common.Systems.ElementalDamage;
@@ -51,7 +52,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 
 			if (hover is not null && ContainsPoint(Main.MouseScreen))
 			{
-				Tooltip.Create(new TooltipDescription
+				Tooltips.Create(new()
 				{
 					Identifier = "PlayerStats",
 					SimpleTitle = text.Value,

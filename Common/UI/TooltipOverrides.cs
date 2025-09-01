@@ -1,4 +1,5 @@
 using MonoMod.Cil;
+using PathOfTerraria.Api.Tooltips;
 using PathOfTerraria.Common.Systems;
 
 namespace PathOfTerraria.Common.UI;
@@ -53,7 +54,7 @@ public sealed class TooltipOverrides : ModSystem
 
 		if (drawForHoverItem)
 		{
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = "HoverItem",
 				AssociatedItem = hoverItem,
@@ -66,7 +67,7 @@ public sealed class TooltipOverrides : ModSystem
 
 		if (drawForMouseItem)
 		{
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = "MouseItem",
 				AssociatedItem = mouseItem,

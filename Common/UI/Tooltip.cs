@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using PathOfTerraria.Api.Tooltips;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.UI;
@@ -10,36 +13,8 @@ namespace PathOfTerraria.Common.UI;
 
 #nullable enable
 
-/// <summary>
-/// Description used to instantiate a tooltip popup in the <see cref="Tooltip"/> system.
-/// </summary>
-public struct TooltipDescription()
-{
-	/// <summary> An identifier used to detect duplicate tooltip instances. </summary>
-	public required string Identifier;
-	/// <summary> If provided, inserts a simple line into the <see cref="Lines"/> list, before <see cref="SimpleSubtitle"/>'s line. </summary>
-	public string? SimpleTitle;
-	/// <summary> If provided, inserts a simple line into the <see cref="Lines"/> list, after <see cref="SimpleTitle"/>'s line. </summary>
-	public string? SimpleSubtitle;
-	/// <summary> Lines to render. </summary>
-	public List<DrawableTooltipLine> Lines = [];
-	/// <summary> Tooltip's position. If not provided, will default to that of the cursor. </summary>
-	public Vector2? Position;
-	/// <summary> Tooltip's origin. </summary>
-	public Vector2 Origin = Vector2.Zero;
-	/// <summary> The higher this value is, the less likely this tooltip is to move when colliding with other tooltips. </summary>
-	public int Stability;
-	/// <summary> If provided, this item instance is used to invoke ItemLoader's Pre/PostDrawTooltip(Line) hooks. </summary>
-	public Item? AssociatedItem;
-	/// <summary> The amount of time in game ticks that this tooltip should be visible for.  </summary>
-	public uint VisibilityTimeInTicks = 1;
-	/// <summary> Padding to add inside the tooltip's background. </summary>
-	public Vector2 Padding = new(16, 16);
-}
-/// <summary>
-/// Calculated information needed to render a tooltip.
-/// </summary>
-public struct TooltipCache
+/// <summary> Calculated information needed to render a tooltip. </summary>
+internal struct TooltipCache
 {
 	public int LineCount;
 	public Vector2[] LineMeasures;
@@ -49,14 +24,49 @@ public struct TooltipCache
 	public Vector2 DesiredPosition;
 }
 
-/// <summary>
-/// Draws any amount of popup tooltip swhen various elements of the UI are hovered over.
-/// </summary>
-public class Tooltip : SmartUiState
+[Obsolete("Use the API namespace.", error: true)]
+[EditorBrowsable(EditorBrowsableState.Never)]
+internal struct TooltipDescription()
+{
+	public required string Identifier;
+	public string? SimpleTitle;
+	public string? SimpleSubtitle;
+	public List<DrawableTooltipLine> Lines = [];
+	public Vector2? Position;
+	public Vector2 Origin = Vector2.Zero;
+	public int Stability;
+	public Item? AssociatedItem;
+	public uint VisibilityTimeInTicks = 1;
+	public Vector2 Padding = new(16, 16);
+}
+
+[Obsolete("Use the API namespace.", error: true)]
+[EditorBrowsable(EditorBrowsableState.Never)]
+internal static class Tooltip
+{
+	public static void Create(TooltipDescription args)
+	{
+		Tooltips.Create(new()
+		{
+			Identifier = args.Identifier,
+			SimpleTitle = args.SimpleTitle,
+			SimpleSubtitle = args.SimpleSubtitle,
+			Lines = args.Lines,
+			Position = args.Position,
+			Origin = args.Origin,
+			Stability = args.Stability,
+			AssociatedItem = args.AssociatedItem,
+			VisibilityTimeInTicks = args.VisibilityTimeInTicks,
+			Padding = args.Padding,
+		});
+	}
+}
+
+internal class TooltipsImpl : SmartUiState
 {
 	private struct TooltipInstance
 	{
-		public TooltipDescription Description;
+		public Api.Tooltips.TooltipDescription Description;
 		public TooltipCache Cache;
 		public uint EndTime;
 	}
@@ -120,8 +130,7 @@ public class Tooltip : SmartUiState
 		return CollectionsMarshal.AsSpan(tooltips);
 	}
 
-	/// <summary> Enqueues a new tooltip to be drawn in the usual interface layer. </summary>
-	public static void Create(TooltipDescription args)
+	public static void Create(Api.Tooltips.TooltipDescription args)
 	{
 		if (string.IsNullOrEmpty(args.Identifier))
 		{
@@ -144,7 +153,7 @@ public class Tooltip : SmartUiState
 		tooltip.EndTime = tickCount + args.VisibilityTimeInTicks;
 	}
 
-	private static void Recalculate(in TooltipDescription args, ref TooltipCache cache)
+	private static void Recalculate(in Api.Tooltips.TooltipDescription args, ref TooltipCache cache)
 	{
 		const int BaseLineSpacing = 0;
 		int lineCount = args.Lines.Count + (args.SimpleTitle != null ? 1 : 0) + (args.SimpleSubtitle != null ? 1 : 0);
@@ -249,7 +258,7 @@ public class Tooltip : SmartUiState
 	}
 
 	/// <summary> Immediately draws the provided tooltip on the screen, using the provided cache. </summary>
-	public static void Render(in TooltipDescription args, in TooltipCache cache)
+	public static void Render(in Api.Tooltips.TooltipDescription args, in TooltipCache cache)
 	{
 		// Draw the background.
 		var bgDstRect = new Rectangle

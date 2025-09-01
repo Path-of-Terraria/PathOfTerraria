@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -97,7 +98,7 @@ internal class AllocatableElement : SmartUiElement
 			name += $" ({Node.Level}/{Node.MaxLevel})";
 		}
 
-		Tooltip.Create(new TooltipDescription
+		Tooltips.Create(new()
 		{
 			Identifier = GetType().Name,
 			SimpleTitle = name,

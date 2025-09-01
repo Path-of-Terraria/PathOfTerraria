@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Projectiles;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Items.Consumables.Maps;
@@ -33,7 +34,7 @@ internal class WoFPortal : ModProjectile, ISaveProjectile
 				}
 			}
 
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),

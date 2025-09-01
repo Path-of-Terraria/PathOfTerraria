@@ -1,9 +1,10 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using System.Linq;
+using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Sounds;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
@@ -122,7 +123,7 @@ internal class AugmentSlotElement : UIElement
 
 			if (ContainsInner)
 			{
-				Tooltip.Create(new TooltipDescription
+				Tooltips.Create(new()
 				{
 					Identifier = "AugmentSlot",
 					SimpleTitle = augments[Index].DisplayName,
@@ -154,7 +155,7 @@ internal class AugmentSlotElement : UIElement
 					tooltip = Language.GetTextValue(common + ".CostLine", ModContent.GetInstance<AugmentationOrb>().DisplayName.Value);
 				}
 
-				Tooltip.Create(new TooltipDescription
+				Tooltips.Create(new()
 				{
 					Identifier = "AugmentSlot",
 					SimpleTitle = Language.GetTextValue(common + ".SlotLine"),
@@ -332,7 +333,7 @@ internal class AugmentRadialElement : UIElement
 
 		if (ContainsPoint(Main.MouseScreen) && Progress == 1)
 		{
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = "AugmentSlot",
 				SimpleTitle = _augment.DisplayName,

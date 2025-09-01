@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.Passives;
 using PathOfTerraria.Core.Sounds;
@@ -94,7 +95,7 @@ internal class PassiveElement : SmartUiElement
 			name += $" -- {_passive.ReferenceId}";
 #endif
 
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = "Passive",
 				SimpleTitle = name,

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Api.Tooltips;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -35,7 +36,7 @@ public class SubworldHelpInvButton : SmartUiState
 		{
 			List<DrawableTooltipLine> lines = GetInformation();
 
-			Tooltip.Create(new TooltipDescription()
+			Tooltips.Create(new()
 			{
 				Identifier = "SubworldHelp",
 				//SimpleTitle = CurrentWorld.SubworldName.Value,

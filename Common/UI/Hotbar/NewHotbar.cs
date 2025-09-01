@@ -1,3 +1,7 @@
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Linq;
+using PathOfTerraria.Api.Tooltips;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -5,9 +9,6 @@ using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using ReLogic.Graphics;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameInput;
@@ -285,7 +286,7 @@ public sealed class NewHotbar : SmartUiState
 		{
 			if (skillRect.Contains(Main.MouseScreen.ToPoint()))
 			{
-				Tooltip.Create(new TooltipDescription
+				Tooltips.Create(new()
 				{
 					Identifier = "Skill",
 					SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.UI.SkillUI.NoSkill"),
@@ -411,7 +412,7 @@ public sealed class NewHotbar : SmartUiState
 			subtitle += tooltip.Text + "\n";
 		}
 		
-		Tooltip.Create(new TooltipDescription
+		Tooltips.Create(new()
 		{
 			Identifier = "Skill",
 			SimpleTitle = title,
@@ -658,7 +659,7 @@ public class HijackHotbarClick : ModSystem
 		string type = health ? "Health" : "Mana";
 		PotionPlayer potions = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 
-		Tooltip.Create(new TooltipDescription
+		Tooltips.Create(new()
 		{
 			Identifier = type,
 			SimpleTitle = Language.GetTextValue($"Mods.PathOfTerraria.Misc.{type}PotionTooltip"),

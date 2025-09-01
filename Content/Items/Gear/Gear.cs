@@ -1,10 +1,6 @@
-﻿using PathOfTerraria.Core.Items;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
-using PathOfTerraria.Common.Systems;
-using PathOfTerraria.Common.UI;
-
-using TooltipUI = PathOfTerraria.Common.UI.Tooltip;
+using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear;
 

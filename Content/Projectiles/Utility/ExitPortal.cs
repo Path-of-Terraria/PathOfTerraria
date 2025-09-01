@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common.Projectiles;
-using PathOfTerraria.Common.UI;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Projectiles;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -18,7 +18,7 @@ internal class ExitPortal : ModProjectile
 				SubworldSystem.Exit();
 			}
 
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
@@ -85,7 +85,7 @@ internal class ExitPortal : ModProjectile
 							SubworldSystem.Exit();
 						}
 
-						Tooltip.Create(new TooltipDescription
+						Tooltips.Create(new()
 						{
 							Identifier = "Portal",
 							SimpleTitle = "Exit",

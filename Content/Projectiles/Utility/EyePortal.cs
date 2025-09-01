@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Common.Projectiles;
+﻿using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using SubworldLibrary;
 using Terraria.GameContent;
@@ -33,7 +33,7 @@ internal class EyePortal : ModProjectile, ISaveProjectile
 				}
 			}
 
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),

@@ -1,4 +1,6 @@
-﻿using PathOfTerraria.Common.Systems;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Api.Tooltips;
+using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.Utilities;
 using PathOfTerraria.Content.Items.Pickups;
@@ -6,7 +8,6 @@ using PathOfTerraria.Content.Projectiles.Summoner;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using ReLogic.Graphics;
-using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -109,7 +110,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 				_helpOpen = !_helpOpen;
 			}
 
-			Tooltip.Create(new TooltipDescription
+			Tooltips.Create(new()
 			{
 				Identifier = GetType().Name,
 				SimpleTitle = "Help",
@@ -301,7 +302,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 
 		string tooltip = Language.GetTextValue($"Mods.{item.Mod.Name}.Projectiles.{item.Name}.Description");
 		tooltip += "\n" + Language.GetText($"Mods.{item.Mod.Name}.UI.BaseDamage").Format(item.BaseDamage);
-		Tooltip.Create(new TooltipDescription
+		Tooltips.Create(new()
 		{
 			Identifier = "SummonIcon",
 			SimpleTitle = item.DisplayName.Value,
@@ -509,7 +510,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			Main.cursorOverride = 9;
 		}
 
-		Tooltip.Create(new TooltipDescription
+		Tooltips.Create(new()
 		{
 			Identifier = "GrimoireSelection",
 			AssociatedItem = item,
