@@ -4,6 +4,7 @@
 	<PropertyGroup>
 		<AssemblyName>PathOfTerraria</AssemblyName>
 		<LangVersion>latest</LangVersion>
+		<TargetFramework>net8.0</TargetFramework>
 		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
 	<PropertyGroup>
