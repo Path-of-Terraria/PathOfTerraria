@@ -39,6 +39,9 @@
 	<Reference Include="HousingAPI">
 		<HintPath>lib\HousingAPI.dll</HintPath>
 	</Reference>
+	<Reference Include="Wayfarer">
+	  <HintPath>lib\Wayfarer.dll</HintPath>
+	</Reference>
 	</ItemGroup>
 	<ItemGroup>
 	  <Folder Include="Common\Data\VanillaItemData\" />

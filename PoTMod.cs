@@ -1,8 +1,9 @@
-using System.Diagnostics;
-using ReLogic.Content.Sources;
-using System.IO;
-using PathOfTerraria.Core.Sources;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Core.Sources;
+using ReLogic.Content.Sources;
+using System.Diagnostics;
+using System.IO;
+using Wayfarer.API;
 
 namespace PathOfTerraria;
 
@@ -40,6 +41,7 @@ public sealed class PoTMod : Mod
 	{
 		NPCUtils.NPCUtils.UnloadBestiaryHelper();
 		NPCUtils.NPCUtils.UnloadMod(this);
+		WayfarerAPI.Shutdown();
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)

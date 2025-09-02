@@ -1,40 +1,49 @@
+using NPCUtils;
+using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.Components;
 using PathOfTerraria.Common.NPCs.Effects;
-using Terraria.GameContent;
-using Terraria.ID;
-using Terraria.Localization;
-using PathOfTerraria.Common.Utilities.Extensions;
-using PathOfTerraria.Common.Systems.Questing;
-using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
-using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.Pathfinding;
-using System.Linq;
-using System.Collections.Generic;
-using PathOfTerraria.Content.Tiles.Town;
-using PathOfTerraria.Common.Subworlds.RavencrestContent;
-using Terraria.DataStructures;
-using Terraria.Audio;
-using SubworldLibrary;
-using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
-using Terraria.ModLoader.IO;
-using System.IO;
-using Terraria.GameContent.Bestiary;
-using NPCUtils;
-using Terraria.Chat;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Content.Tiles;
+using PathOfTerraria.Common.Subworlds.RavencrestContent;
+using PathOfTerraria.Common.Systems.Questing;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
+using PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
+using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Content.Tiles;
+using PathOfTerraria.Content.Tiles.Town;
+using SubworldLibrary;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Terraria.Audio;
+using Terraria.Chat;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.GameContent.Bestiary;
+using Terraria.ID;
+using Terraria.Localization;
+using Terraria.ModLoader.IO;
+using Wayfarer.API;
+using Wayfarer.Data;
+using Wayfarer.Edges;
+using Wayfarer.Pathfinding;
 
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, IPathfindSyncingNPC
+public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC//, IPathfindSyncingNPC
 {
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
-	private readonly Pathfinder pathfinder = new(20);
+	//private readonly Pathfinder pathfinder = new(20);
+
+	private WayfarerHandle handle;
+	private PathResult path;
 
 	public Player FollowPlayer => Main.player[followPlayer];
 
@@ -42,11 +51,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	private byte followPlayer;
 	private bool teleportingToRavencrest = false;
 	private bool abandoned = false;
-	private short syncTimer = 0;
+	//private short syncTimer = 0;
+	private bool pathReady = false;
+	private Point16 targetTile = Point16.Zero;
 
 	// Sound timers
-	private int walkTime = 0;
-	private int rocketTime = 0;
+	//private int walkTime = 0;
+	//private int rocketTime = 0;
 
 	// Dialogue stuff
 	private bool surfaceDialogue = true;
@@ -117,6 +128,52 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		bestiaryEntry.AddInfo(this, "Surface");
 	}
 
+	public override void OnSpawn(IEntitySource source)
+	{
+		base.OnSpawn(source);
+
+		BuildPathfindingInfo();
+	}
+
+	private void BuildPathfindingInfo()
+	{
+		NavMeshParameters navMeshParameters = new(
+			NPC.Center.ToTileCoordinates(),
+			100,
+			WayfarerPresets.DefaultIsTileValid
+		);
+
+		NavigatorParameters navigatorParameters = new(
+			NPC.Hitbox,
+			WayfarerPresets.DefaultJumpFunction,
+			new(8, 10),
+			() => NPC.gravity,
+			points =>
+			{
+				Point? result = null;
+				Vector2 back = FollowPlayer.Center + new Vector2(-FollowPlayer.direction * 64, 0);
+
+				foreach (Point point in points)
+				{
+					if (result is null || back.DistanceSQ(point.ToWorldCoordinates()) < back.DistanceSQ(result.Value.ToWorldCoordinates()))
+					{
+						result = point;
+					}
+				}
+
+				targetTile = result.Value.ToPoint16();
+				return result.Value;
+			}
+		);
+
+		WayfarerAPI.TryCreatePathfindingInstance(navMeshParameters, navigatorParameters, out handle);
+	}
+
+	public override void OnKill()
+	{
+		handle.Dispose();
+	}
+
 	public override bool PreAI()
 	{
 		ModContent.GetInstance<RavencrestSystem>().SpawnedMorvenPos = null;
@@ -144,7 +201,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 		if (doPathing)
 		{
-			PathedMovement();
+			//PathedMovement();
+			Pathfinding();
 			CustomAttackHelper.CheckShootAttack(NPC, ref attackTime, ref attackingTime, ref attackDir, ref attackRotation);
 			return false;
 		}
@@ -152,104 +210,182 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		return true;
 	}
 
-	private void PathedMovement()
+	private void Pathfinding()
 	{
-		// Once every few seconds, sync the npc - bandaid on pathfinder in mp
-		if (++syncTimer > 60)
+		if (!pathReady)
 		{
-			NPC.netUpdate = true;
-			syncTimer = 0;
-		}
-
-		Vector2 target = FollowPlayer.position;
-
-		// If the player is too far away from the NPC, teleport the NPC and hurt him.
-		// This reduces pathfinding load, especially if the player becomes fully blocked off somehow.
-		if (Vector2.DistanceSquared(target, NPC.Center) > MathF.Pow(250 * 16, 2))
-		{
-			TeleportEffects();
-
-			NPC.Center = target;
-			NPC.SimpleStrikeNPC((int)(NPC.lifeMax / 3f), 0, true, noPlayerInteraction: true);
-
-			TeleportEffects();
-
-			string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
-			((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
-			return;
-		}
-
-		// Determines path using a slightly adjusted position and hitbox size.
-		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
-		Point16 pathEnd = target.ToTileCoordinates16();
-		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
-
-		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
-
-		if (!canPath) // Retry pathing but slightly offset
-		{
-			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
-			pathEnd = target.ToTileCoordinates16();
-
-			// Set RefreshTimer to 1 so it's 0 by the time it's checked & skips caching
-			pathfinder.RefreshTimer = 1;
-			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
-
-			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
-		}
-
-		if (canPath && NPC.DistanceSQ(target) > 160 * 160)
-		{
-			int index = pathfinder.Path.IndexOf(pathfinder.Path.MinBy(x => x.Position.ToVector2().DistanceSQ(NPC.position / 16f)));
-			List<Pathfinder.FoundPoint> checkPoints = pathfinder.Path[^(Math.Min(pathfinder.Path.Count, 6))..];
-			Vector2 direction = -AveragePathDirection(checkPoints) * 2;
-
-			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, direction.X, 0.08f);
-			NPC.velocity.Y += 0.1f;
-
-			if (direction.Y < 0)
+			if (!handle.Initialized)
 			{
-				NPC.velocity.Y -= 0.6f;
-				NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -5, 20);
-
-				RocketBootDust();
+				BuildPathfindingInfo();
 			}
 
-			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+			Point[] tiles = [(NPC.BottomLeft + new Vector2(4, 6)).ToTileCoordinates(), (NPC.BottomLeft + new Vector2(20, 6)).ToTileCoordinates()];
 
-			// Debugging to show the calculated path.
-			// This'll only show in DEBUG, for the local player.
-#if DEBUG
-			if (Main.myPlayer == followPlayer)
+			if (tiles.Length < 1)
 			{
-				foreach (Pathfinder.FoundPoint item in pathfinder.Path)
+				return;
+			}
+
+			WayfarerAPI.RecalculateNavMesh(handle, NPC.Center.ToTileCoordinates());
+
+			WayfarerAPI.RecalculatePath(handle, tiles, result =>
+			{
+				if (pathReady)
 				{
-					var vel = Pathfinder.ToVector2(item.Direction);
-					int id = checkPoints.Contains(item) ? item == checkPoints.Last() ? DustID.Poisoned : DustID.GreenFairy : DustID.YellowStarDust;
-					var dust = Dust.NewDustPerfect(item.Position.ToWorldCoordinates(), id, vel * 2);
-					dust.noGravity = true;
+					return;
 				}
-			}
-#endif
+
+				pathReady = true;
+				path = result;
+			});
 		}
 		else
 		{
-			NPC.velocity *= 0.9f;
+			if (path is null || !path.HasPath)
+			{
+				pathReady = false;
+				return;
+			}
+
+			PathEdge edge = path.Current;
+
+			if (edge.Is<Walk>())
+			{
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, MathF.Sign(edge.To.X * 16 - NPC.Center.X) * 4, 0.08f);
+				GotoNextStep(edge);
+			}
+			else if (edge.Is<Jump>())
+			{
+				NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, MathF.Sign(edge.To.X * 16 - NPC.Center.X) * 3, 0.03f);
+
+				if (Collision.SolidCollision(NPC.BottomLeft, NPC.width, 6))
+				{
+					NPC.velocity.Y = -6;
+				}
+
+				GotoNextStep(edge);
+			}
+
+			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 		}
 
-		if (NPC.velocity.Y > 0 && !Collision.SolidCollision(NPC.BottomLeft, NPC.width, 60))
+		void GotoNextStep(PathEdge edge)
 		{
-			NPC.velocity.Y -= canPath ? 0.3f : 0.2f;
-			RocketBootDust();
-		}
+			bool goalReachedCondition = NPC.Center.DistanceSQ(edge.To.ToWorldCoordinates()) < 40 * 40 
+				|| NPC.Center.DistanceSQ(targetTile.ToWorldCoordinates()) < targetTile.ToWorldCoordinates().DistanceSQ(edge.To.ToWorldCoordinates());
 
-		RunDustEffects();
+			if (goalReachedCondition)
+			{
+				path.Advance(out bool atGoal);
 
-		if (Math.Abs(NPC.velocity.X) > 0.1f)
-		{
-			NPC.direction = NPC.spriteDirection = MathF.Sign(NPC.velocity.X);
+				// atGoal is true if there are no next edges, i.e. the path is completed.
+				if (atGoal)
+				{
+					/* Transition to AI state responsible for doing things at the destination */
+					return;
+				}
+			}
 		}
 	}
+
+//	private void PathedMovement()
+//	{
+//		// Once every few seconds, sync the npc - bandaid on pathfinder in mp
+//		if (++syncTimer > 60)
+//		{
+//			NPC.netUpdate = true;
+//			syncTimer = 0;
+//		}
+
+//		Vector2 target = FollowPlayer.position;
+
+//		// If the player is too far away from the NPC, teleport the NPC and hurt him.
+//		// This reduces pathfinding load, especially if the player becomes fully blocked off somehow.
+//		if (Vector2.DistanceSquared(target, NPC.Center) > MathF.Pow(250 * 16, 2))
+//		{
+//			TeleportEffects();
+
+//			NPC.Center = target;
+//			NPC.SimpleStrikeNPC((int)(NPC.lifeMax / 3f), 0, true, noPlayerInteraction: true);
+
+//			TeleportEffects();
+
+//			string text = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.BubbleDialogue.Teleport." + Main.rand.Next(3));
+//			((IOverheadDialogueNPC)this).CurrentDialogue = new OverheadDialogueInstance(text, 300);
+//			return;
+//		}
+
+//		// Determines path using a slightly adjusted position and hitbox size.
+//		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
+//		Point16 pathEnd = target.ToTileCoordinates16();
+//		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
+
+//		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+
+//		if (!canPath) // Retry pathing but slightly offset
+//		{
+//			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
+//			pathEnd = target.ToTileCoordinates16();
+
+//			// Set RefreshTimer to 1 so it's 0 by the time it's checked & skips caching
+//			pathfinder.RefreshTimer = 1;
+//			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
+
+//			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+//		}
+
+//		if (canPath && NPC.DistanceSQ(target) > 160 * 160)
+//		{
+//			int index = pathfinder.Path.IndexOf(pathfinder.Path.MinBy(x => x.Position.ToVector2().DistanceSQ(NPC.position / 16f)));
+//			List<Pathfinder.FoundPoint> checkPoints = pathfinder.Path[^(Math.Min(pathfinder.Path.Count, 6))..];
+//			Vector2 direction = -AveragePathDirection(checkPoints) * 2;
+
+//			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, direction.X, 0.08f);
+//			NPC.velocity.Y += 0.1f;
+
+//			if (direction.Y < 0)
+//			{
+//				NPC.velocity.Y -= 0.6f;
+//				NPC.velocity.Y = MathHelper.Clamp(NPC.velocity.Y, -5, 20);
+
+//				RocketBootDust();
+//			}
+
+//			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
+
+//			// Debugging to show the calculated path.
+//			// This'll only show in DEBUG, for the local player.
+//#if DEBUG
+//			if (Main.myPlayer == followPlayer)
+//			{
+//				foreach (Pathfinder.FoundPoint item in pathfinder.Path)
+//				{
+//					var vel = Pathfinder.ToVector2(item.Direction);
+//					int id = checkPoints.Contains(item) ? item == checkPoints.Last() ? DustID.Poisoned : DustID.GreenFairy : DustID.YellowStarDust;
+//					var dust = Dust.NewDustPerfect(item.Position.ToWorldCoordinates(), id, vel * 2);
+//					dust.noGravity = true;
+//				}
+//			}
+//#endif
+//		}
+//		else
+//		{
+//			NPC.velocity *= 0.9f;
+//		}
+
+//		if (NPC.velocity.Y > 0 && !Collision.SolidCollision(NPC.BottomLeft, NPC.width, 60))
+//		{
+//			NPC.velocity.Y -= canPath ? 0.3f : 0.2f;
+//			RocketBootDust();
+//		}
+
+//		RunDustEffects();
+
+//		if (Math.Abs(NPC.velocity.X) > 0.1f)
+//		{
+//			NPC.direction = NPC.spriteDirection = MathF.Sign(NPC.velocity.X);
+//		}
+//	}
 
 	private void TeleportEffects()
 	{
@@ -261,53 +397,53 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 	}
 
-	private void RunDustEffects()
-	{
-		bool ground = NPC.velocity.Y == 0 || NPC.velocity.Y == 0.1f;
-		int chance = 6 - (int)Math.Min(5, Math.Abs(NPC.velocity.X));
+	//private void RunDustEffects()
+	//{
+	//	bool ground = NPC.velocity.Y == 0 || NPC.velocity.Y == 0.1f;
+	//	int chance = 6 - (int)Math.Min(5, Math.Abs(NPC.velocity.X));
 
-		if (ground && Collision.SolidCollision(NPC.BottomLeft, NPC.width, 6) && (chance < 1 || Main.rand.NextBool(chance)) && Math.Abs(NPC.velocity.X) > 2)
-		{
-			Point floorPos = NPC.Center.ToTileCoordinates();
+	//	if (ground && Collision.SolidCollision(NPC.BottomLeft, NPC.width, 6) && (chance < 1 || Main.rand.NextBool(chance)) && Math.Abs(NPC.velocity.X) > 2)
+	//	{
+	//		Point floorPos = NPC.Center.ToTileCoordinates();
 
-			while (!WorldGen.SolidOrSlopedTile(floorPos.X, floorPos.Y))
-			{
-				floorPos.Y++;
-			}
+	//		while (!WorldGen.SolidOrSlopedTile(floorPos.X, floorPos.Y))
+	//		{
+	//			floorPos.Y++;
+	//		}
 
-			Vector2 dustPos = floorPos.ToWorldCoordinates() + new Vector2(Main.rand.NextFloat(NPC.width), NPC.gfxOffY - 8);
-			Vector2 vel = new Vector2(-NPC.velocity.X * 0.1f, Main.rand.NextFloat(-0.5f, 0.5f)).RotatedByRandom(0.2f);
-			Dust.NewDustPerfect(dustPos, DustID.Cloud, vel, Scale: Main.rand.NextFloat(1.2f, 1.8f));
+	//		Vector2 dustPos = floorPos.ToWorldCoordinates() + new Vector2(Main.rand.NextFloat(NPC.width), NPC.gfxOffY - 8);
+	//		Vector2 vel = new Vector2(-NPC.velocity.X * 0.1f, Main.rand.NextFloat(-0.5f, 0.5f)).RotatedByRandom(0.2f);
+	//		Dust.NewDustPerfect(dustPos, DustID.Cloud, vel, Scale: Main.rand.NextFloat(1.2f, 1.8f));
 
-			walkTime += (int)Math.Abs(NPC.velocity.X);
+	//		walkTime += (int)Math.Abs(NPC.velocity.X);
 
-			if (walkTime > 40)
-			{
-				SoundEngine.PlaySound(SoundID.Run with { Volume = 0.8f, PitchRange = (-0.1f, 0.1f) }, NPC.Bottom);
+	//		if (walkTime > 40)
+	//		{
+	//			SoundEngine.PlaySound(SoundID.Run with { Volume = 0.8f, PitchRange = (-0.1f, 0.1f) }, NPC.Bottom);
 
-				walkTime = 0;
-			}
-		}
-	}
+	//			walkTime = 0;
+	//		}
+	//	}
+	//}
 
-	private void RocketBootDust()
-	{
-		if (!Main.rand.NextBool(3))
-		{
-			for (int i = 0; i < 2; ++i)
-			{
-				var vector = new Vector2((i % 2 == 0 ? -1 : 1) - NPC.velocity.X * 0.3f, 2f - NPC.velocity.Y * 0.3f);
-				Dust.NewDustPerfect(NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), 0), DustID.Torch, vector, 0, default, Main.rand.NextFloat(2, 2.5f));
-			}
-		}
+	//private void RocketBootDust()
+	//{
+	//	if (!Main.rand.NextBool(3))
+	//	{
+	//		for (int i = 0; i < 2; ++i)
+	//		{
+	//			var vector = new Vector2((i % 2 == 0 ? -1 : 1) - NPC.velocity.X * 0.3f, 2f - NPC.velocity.Y * 0.3f);
+	//			Dust.NewDustPerfect(NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), 0), DustID.Torch, vector, 0, default, Main.rand.NextFloat(2, 2.5f));
+	//		}
+	//	}
 
-		if (rocketTime++ >= 20)
-		{
-			SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.6f, PitchRange = (-0.1f, 0.1f) }, NPC.Bottom);
+	//	if (rocketTime++ >= 20)
+	//	{
+	//		SoundEngine.PlaySound(SoundID.Item13 with { Volume = 0.6f, PitchRange = (-0.1f, 0.1f) }, NPC.Bottom);
 
-			rocketTime = 0;
-		}
-	}
+	//		rocketTime = 0;
+	//	}
+	//}
 
 	private static Vector2 AveragePathDirection(List<Pathfinder.FoundPoint> foundPoints)
 	{
