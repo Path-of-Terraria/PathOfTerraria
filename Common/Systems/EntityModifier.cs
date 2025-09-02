@@ -90,7 +90,12 @@ public partial class EntityModifier : EntityModifierSegment
 
 		player.GetKnockback(DamageClass.Generic) = player.GetKnockback(DamageClass.Generic).CombineWith(Knockback);
 		player.GetArmorPenetration(DamageClass.Generic) = ArmorPenetration.ApplyTo(player.GetArmorPenetration(DamageClass.Generic));
-
+		
+		// Apply projectile modifiers
+		ProjectileModifierPlayer projPlayer = player.GetModPlayer<ProjectileModifierPlayer>();
+		projPlayer.ProjectileSpeedMultiplier = ProjectileSpeed;
+		projPlayer.ProjectileCountModifier = ProjectileCount;
+		
 		MinorStatsModPlayer msmp = player.GetModPlayer<MinorStatsModPlayer>();
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);
 

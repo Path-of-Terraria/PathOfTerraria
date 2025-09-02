@@ -238,3 +238,18 @@ IncreasedAttackSpeedPassive: {
 	Name: Swift Strikes
 	Tooltip: +{0}% Global Attack Speed
 }
+
+IncreasedManaRegenerationRatePassive: {
+	Name: IncreasedManaRegenerationRatePassive
+	Tooltip: +{0}% Mana Regeneration Rate
+}
+
+IncreasedProjectileCountPassive: {
+	Name: IncreasedProjectileCountPassive
+	Tooltip: ""
+}
+
+IncreasedProjectileSpeedPassive: {
+	Name: IncreasedProjectileSpeedPassive
+	Tooltip: ""
+}
