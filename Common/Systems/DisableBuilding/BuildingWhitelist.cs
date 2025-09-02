@@ -50,11 +50,11 @@ internal class BuildingWhitelist
 		Exploding,
 	}
 
-	public static HashSet<int> DefaultWhitelist = [TileID.Torches, TileID.Rope, TileID.Tombstones];
+	public static readonly int[] DefaultWhitelist = [TileID.Torches, TileID.Rope, TileID.Tombstones];
 
 	public static Whitelist GetUsedWhitelist(WhitelistUse use)
 	{
-		HashSet<int> results = use is WhitelistUse.Placing or WhitelistUse.Mining ? DefaultWhitelist : [];
+		HashSet<int> results = use is WhitelistUse.Placing or WhitelistUse.Mining ? [.. DefaultWhitelist] : [];
 		List<FramedTileBlockers> framed = [];
 
 		if (SubworldSystem.Current is MappingWorld domain)

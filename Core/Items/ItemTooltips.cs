@@ -5,7 +5,6 @@ using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Items;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.DisableBuilding;
-using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Consumables.Maps.ExplorableMaps;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
