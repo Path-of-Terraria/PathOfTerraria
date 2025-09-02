@@ -201,10 +201,55 @@ IncreasedColdDamagePassive: {
 
 IncreasedWhipDamagePassive: {
 	// Name: IncreasedWhipDamagePassive
-	// Tooltip: ""
+	// Tooltip: +{0}% Increased Whip Damage
 }
 
 IncreasedWhipSpeedPassive: {
 	// Name: IncreasedWhipSpeedPassive
+	// Tooltip: +{0}% Increased Whip Speed
+}
+
+IncreasedMagicAndSummonDamagePassive: {
+	// Name: Arcane Synergy
+	// Tooltip: +{0}% Increased Magic and Summon Damage
+}
+
+AddedFireResistancePassive: {
+	// Name: Fire Ward
+	// Tooltip: +{0}% Fire Resistance
+}
+
+AddedColdResistancePassive: {
+	// Name: Frost Ward
+	// Tooltip: +{0}% Cold Resistance
+}
+
+AddedLightningResistancePassive: {
+	// Name: Storm Ward
+	// Tooltip: +{0}% Lightning Resistance
+}
+
+AddedAllResistancePassive: {
+	// Name: Elemental Ward
+	// Tooltip: +{0}% All Resistances
+}
+
+IncreasedAttackSpeedPassive: {
+	// Name: Swift Strikes
+	// Tooltip: +{0}% Global Attack Speed
+}
+
+IncreasedManaRegenerationRatePassive: {
+	// Name: IncreasedManaRegenerationRatePassive
+	// Tooltip: +{0}% Mana Regeneration Rate
+}
+
+IncreasedProjectileCountPassive: {
+	// Name: IncreasedProjectileCountPassive
+	// Tooltip: ""
+}
+
+IncreasedProjectileSpeedPassive: {
+	// Name: IncreasedProjectileSpeedPassive
 	// Tooltip: ""
 }
