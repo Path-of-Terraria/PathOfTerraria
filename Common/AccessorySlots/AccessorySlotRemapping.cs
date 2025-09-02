@@ -67,13 +67,15 @@ public sealed class AccessorySlotRemapping : ModSystem
 
 	public static bool IsNormalAccessory(Item item)
 	{
-		return item?.IsAir == false
+		bool result = item?.IsAir == false
 			&& item.accessory
 			// Exclude accessores for which specific slots will exist.
 			&& item.wingSlot <= 0
 			&& item.ModItem is not Offhand
 			&& item.ModItem is not Ring
 			&& item.ModItem is not Amulet;
+
+		return result;
 	}
 
 	private static bool Player_IsItemSlotUnlockedAndUsable_Hook(On_Player.orig_IsItemSlotUnlockedAndUsable orig, Player self, int slot)
@@ -97,6 +99,8 @@ file sealed class ItemAccessorySlotRemapping : GlobalItem
 			(int)RemappedEquipSlots.Offhand => item.ModItem is Offhand,
 			(int)RemappedEquipSlots.RingOn => item.ModItem is Ring,
 			(int)RemappedEquipSlots.RingOff => item.ModItem is Ring,
+			// For some reason, TML does a weird last-moment "can go into slot zero" check, so we have to account for that.
+			(int)RemappedEquipSlots.Head => item.headSlot > 0,
 			_ => true
 		};
 
