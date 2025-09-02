@@ -24,6 +24,8 @@ internal static class SubworldLoadingScreen
 		string statusText = Main.statusText;
 		GenerationProgress progress = WorldGenerator.CurrentGenerationProgress;
 
+		// The Player draw call doesn't layer properly if we don't specifcally replace the SpriteBatch like this -
+		// it's not anything functional otherwise.
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
 
@@ -86,6 +88,8 @@ internal static class SubworldLoadingScreen
 
 	private static void DrawWalkingBackground(MappingWorld world)
 	{
+		const float LoopingCount = 1500;
+
 		HideGradientTex ??= ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/SubworldLoadScreens/HideGradient");
 
 		_walkTimer++;
@@ -96,7 +100,7 @@ internal static class SubworldLoadingScreen
 		if (SubworldSystem.Current is null)
 		{
 			position = new Vector2(_walkTimer * 1.3f, Main.screenHeight / 2 + 14);
-			originMod = new Vector2(1, 1);
+			originMod = new Vector2(LoopingCount, 1);
 		}
 
 		if (world.LoadingBackgrounds.Length == 0)
@@ -107,7 +111,7 @@ internal static class SubworldLoadingScreen
 		if (world.ScrollingBackgroundCount == 1)
 		{
 			Texture2D tex = world.LoadingBackgrounds[0].Value;
-			Main.spriteBatch.Draw(tex, position, new Rectangle(0, 0, tex.Width * 300, tex.Height), Color.White, 0f, tex.Size() * originMod, 1f, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, position, new Rectangle(0, 0, tex.Width * (int)LoopingCount, tex.Height), Color.White, 0f, tex.Size() * originMod, 1f, SpriteEffects.None, 0);
 		}
 		else
 		{
@@ -182,16 +186,15 @@ internal static class SubworldLoadingScreen
 		}
 		else
 		{
-			const int Offset = 6;
-
+			float off = 6 * MathHelper.Lerp(scale, 1, 0.3f);
 			Color shadowColor = Color.Black;
 			Color textColor = Color.White;
-
 			Vector2 drawPos = screenCenter - halfSize;
-			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos - new Vector2(Offset, 0), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
-			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos - new Vector2(0, Offset), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
-			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos + new Vector2(Offset, 0), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
-			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos + new Vector2(0, Offset), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
+
+			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos - new Vector2(off, 0), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
+			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos - new Vector2(0, off), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
+			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos + new Vector2(off, 0), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
+			ChatManager.DrawColorCodedStringShadow(Main.spriteBatch, font, test, drawPos + new Vector2(0, off), shadowColor, 0f, Vector2.Zero, new Vector2(scale));
 			ChatManager.DrawColorCodedString(Main.spriteBatch, font, test, drawPos, textColor, 0f, Vector2.Zero, new Vector2(scale));
 		}
 	}
