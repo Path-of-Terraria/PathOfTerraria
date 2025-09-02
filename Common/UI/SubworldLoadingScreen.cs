@@ -24,7 +24,7 @@ internal static class SubworldLoadingScreen
 		string statusText = Main.statusText;
 		GenerationProgress progress = WorldGenerator.CurrentGenerationProgress;
 
-		// The Player draw call doesn't layer properly if we don't specifcally replace the SpriteBatch like this -
+		// The Player draw call doesn't layer properly if we don't specifically replace the SpriteBatch like this -
 		// it's not anything functional otherwise.
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointWrap, DepthStencilState.None, Main.Rasterizer, null, Main.UIScaleMatrix);
