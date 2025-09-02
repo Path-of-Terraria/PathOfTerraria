@@ -1,5 +1,4 @@
 using PathOfTerraria.Common.Config;
-using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
@@ -7,9 +6,7 @@ using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI.SmartUI;
 using SubworldLibrary;
 using System.Collections.Generic;
-using Terraria.Audio;
 using Terraria.GameContent;
-using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 using Terraria.UI.Chat;
