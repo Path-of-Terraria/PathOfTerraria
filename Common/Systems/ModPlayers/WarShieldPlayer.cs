@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Content.Items.Gear.Weapons.WarShields;
+using Terraria.Audio;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
@@ -12,7 +13,7 @@ internal class WarShieldPlayer : ModPlayer
 
 	public Vector2 StoredVelocity = Vector2.Zero;
 
-	private int _bashCooldown = 0;
+	private float _bashCooldown = 0;
 	private int _bashTime = 0;
 
 	public override ModPlayer Clone(Player newEntity)
@@ -25,8 +26,22 @@ internal class WarShieldPlayer : ModPlayer
 
 	public override void PreUpdateMovement()
 	{
-		_bashCooldown--;
-		_bashTime--;
+		if (_bashCooldown > 0)
+		{
+			bool holdingShield = Player.HeldItem?.ModItem is WarShield;
+
+			// Nerf umbrella flight by reducing the cooldown at a lesser rate when swapped to another item.
+			const float ReducedCooldownRate = 0.65f;
+			_bashCooldown = Math.Max(0, _bashCooldown - (holdingShield ? 1 : ReducedCooldownRate));
+
+			// Play a quiet notification sound.
+			if (!Main.dedServ && _bashCooldown == 0 && Player.whoAmI == Main.myPlayer)
+			{
+				SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 0.1f, Pitch = -0.6f, PitchVariance = 0.2f});
+			}
+		}
+
+		_bashTime = Math.Max(0, _bashTime - 1);
 
 		if (!Bashing)
 		{

@@ -31,7 +31,7 @@ public sealed class TooltipOverrides : ModSystem
 
 	private static bool ShouldOverrideHoverItemTooltip()
 	{
-		return true;
+		return !Main.gameMenu;
 	}
 
 	private static void AddDefaultTooltips(bool isLate)

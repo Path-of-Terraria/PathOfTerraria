@@ -96,6 +96,12 @@ internal abstract class Bow : Gear
 		return player.GetModPlayer<AltUsePlayer>().AltFunctionCooldown <= 0;
 	}
 
+	public override bool CanConsumeAmmo(Item ammo, Player player)
+	{
+		// Do not consume ammo when right clicking.
+		return !IsChanneling;
+	}
+
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (player.altFunctionUse != 2)

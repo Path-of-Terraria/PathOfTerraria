@@ -16,12 +16,7 @@ IncreasedRangedDamagePassive: {
 
 IncreasedMagicDamagePassive: {
 	// Name: Arcane Mastery
-	// Tooltip: Increases your magic damage by 5% per level
-}
-
-IncreasedSummoningDamagePassive: {
-	Name: Mistrzostwo Przywoływania
-	Tooltip: Zwiększa obrażenia przywoływanych o 5% co poziom
+	// Tooltip: Increases your magic damage by {0}% per level
 }
 
 AddedLifePassive: {
@@ -36,7 +31,7 @@ AddedManaPassive: {
 
 LongRangePassive: {
 	Name: Snajper
-	// Tooltip: Increases your damage against distant enemies by 10% per level
+	// Tooltip: Increases your damage against distant enemies by {0}% per level
 }
 
 CloseRangePassive: {
@@ -56,27 +51,22 @@ DamageReductionPassive: {
 
 DamageReflectionPassive: {
 	// Name: Thorny Exterior
-	// Tooltip: Reflect 10 more damage to enemies that deal contact damage per level.
-}
-
-ChanceToConsumeAmmoPassive: {
-	// Name: Secret Compartment
-	// Tooltip: 5% chance to not consume ammo per level
+	// Tooltip: Reflect {0} more damage to enemies that deal contact damage per level.
 }
 
 StartPassive: {
-	// Name: Anchor
-	// Tooltip: Your journey starts here
+	// Name: Magic Path
+	// Tooltip: Your magic journey starts here
 }
 
 IncreasedSummonDamagePassive: {
 	// Name: Empowered Horde
-	// Tooltip: Increases all summon damage by 10% per level
+	// Tooltip: Increases all summon damage by {0}% per level
 }
 
 IncreasedSentryDamagePassive: {
 	// Name: Steadfast Sentries
-	// Tooltip: Increases your sentries' damage by 10% per level
+	// Tooltip: Increases your sentries' damage by {0}% per level
 }
 
 JewelSocket: {
@@ -86,27 +76,27 @@ JewelSocket: {
 
 LifeRegenPassive: {
 	// Name: Stronger Heart
-	// Tooltip: Increased life regeneration
+	// Tooltip: Increase life regeneration by {0} per level
 }
 
 DecreasedManaCostPassive: {
 	// Name: Decreased Mana Cost
-	// Tooltip: Decreases mana cost by 3% per level
+	// Tooltip: Decreases mana cost by {0}% per level
 }
 
 AddedCriticalStrikeChance: {
 	// Name: Added Critical Strike Chance
-	// Tooltip: Adds 2% flat critical strike chance per level
+	// Tooltip: Adds {0}% flat critical strike chance per level
 }
 
 IncreasedCriticalStrikeChance: {
 	// Name: Increased Critical Strike Chance
-	// Tooltip: Adds 10% increased critical strike chance per level
+	// Tooltip: Adds {0}% increased critical strike chance per level
 }
 
 IncreasedCriticalStrikeMultiplier: {
 	// Name: Increased Critical Strike Multiplier
-	// Tooltip: Adds 5% critical strike multiplier per level
+	// Tooltip: Adds {0}% critical strike multiplier per level
 }
 
 ArmorPenetrationPassive: {
@@ -131,7 +121,7 @@ ShockChancePassive: {
 
 IncreasedMinionDamagePassive: {
 	// Name: Increased Minion Damage
-	// Tooltip: Increases your minions' damage by 10% per level
+	// Tooltip: Increases your minions' damage by {0}% per level
 }
 
 AddedAggressionPassive: {
@@ -181,10 +171,85 @@ IncreasedWhipDamage: {
 
 IncreasedWhipSpeed: {
 	// Name: Rapid Whips
-	// Tooltip: +5% increased whip speed per level.
+	// Tooltip: +{0}% increased whip speed per level.
 }
 
 IncreasedJumpHeight: {
 	// Name: High Vaulter
 	// Tooltip: +{0}% faster jump speed.
+}
+
+PercentIncreasedMaximumManaPassive: {
+	// Name: Deep in Thought
+	// Tooltip: +{0}% Increased Maximum Mana
+}
+
+IncreasedFireDamagePassive: {
+	// Name: Burning Fury
+	// Tooltip: +{0}% Increased Fire Damage
+}
+
+IncreasedLightningDamagePassive: {
+	// Name: Voltaic Surge
+	// Tooltip: +{0}% Increased Lightning Damage
+}
+
+IncreasedColdDamagePassive: {
+	// Name: Chilling Precision
+	// Tooltip: +{0}% Increased Cold Damage
+}
+
+IncreasedWhipDamagePassive: {
+	// Name: IncreasedWhipDamagePassive
+	// Tooltip: +{0}% Increased Whip Damage
+}
+
+IncreasedWhipSpeedPassive: {
+	// Name: IncreasedWhipSpeedPassive
+	// Tooltip: +{0}% Increased Whip Speed
+}
+
+IncreasedMagicAndSummonDamagePassive: {
+	// Name: Arcane Synergy
+	// Tooltip: +{0}% Increased Magic and Summon Damage
+}
+
+AddedFireResistancePassive: {
+	// Name: Fire Ward
+	// Tooltip: +{0}% Fire Resistance
+}
+
+AddedColdResistancePassive: {
+	// Name: Frost Ward
+	// Tooltip: +{0}% Cold Resistance
+}
+
+AddedLightningResistancePassive: {
+	// Name: Storm Ward
+	// Tooltip: +{0}% Lightning Resistance
+}
+
+AddedAllResistancePassive: {
+	// Name: Elemental Ward
+	// Tooltip: +{0}% All Resistances
+}
+
+IncreasedAttackSpeedPassive: {
+	// Name: Swift Strikes
+	// Tooltip: +{0}% Global Attack Speed
+}
+
+IncreasedManaRegenerationRatePassive: {
+	// Name: IncreasedManaRegenerationRatePassive
+	// Tooltip: +{0}% Mana Regeneration Rate
+}
+
+IncreasedProjectileCountPassive: {
+	// Name: IncreasedProjectileCountPassive
+	// Tooltip: ""
+}
+
+IncreasedProjectileSpeedPassive: {
+	// Name: IncreasedProjectileSpeedPassive
+	// Tooltip: ""
 }
