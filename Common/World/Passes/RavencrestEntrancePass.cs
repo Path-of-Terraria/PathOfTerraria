@@ -3,6 +3,7 @@ using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -45,9 +46,25 @@ internal class RavencrestEntrancePass : AutoGenStep
 		RavencrestMicrobiome biome = GenVars.configuration.CreateBiome<RavencrestMicrobiome>();
 		int attempts = 0;
 
+		const int MinDistanceFromSpawn = 180;
+		const int NumAttemptsBeforeReducingConditions = 2000;
+
+		int worldMiddleX = Main.maxTilesX / 2;
+		int desperateCornerOffset = WorldGen.beachDistance;
+		int idealCornerOffset = Math.Max(WorldGen.beachDistance, Main.maxTilesX / 3);
+		(int Left, int Right) desperateRange = (desperateCornerOffset, Main.maxTilesX - desperateCornerOffset);
+		(int Left, int Right) currentRange = (idealCornerOffset, Main.maxTilesX - idealCornerOffset);
+
+		Debug.Assert(MinDistanceFromSpawn * 2 < (desperateRange.Right - desperateRange.Left));
+
 		while (true)
 		{
 			attempts++;
+
+			if (attempts == NumAttemptsBeforeReducingConditions)
+			{
+				currentRange = desperateRange;
+			}
 
 			int x;
 			int y;
@@ -55,11 +72,10 @@ internal class RavencrestEntrancePass : AutoGenStep
 			// Find the first suitable surface tile.
 			while (true)
 			{
-				do
-				{
-					x = WorldGen.genRand.Next(WorldGen.beachDistance, Main.maxTilesX - WorldGen.beachDistance);
-					y = 21;
-				} while (Math.Abs(x - Main.maxTilesX / 2) <= 180);
+				// Avoid the middle.
+				x = WorldGen.genRand.Next(currentRange.Left, currentRange.Right - MinDistanceFromSpawn * 2);
+				x = (x < (worldMiddleX - MinDistanceFromSpawn) ? x : x + MinDistanceFromSpawn * 2);
+				y = 21;
 
 				while (!WorldGen.SolidTile(x, y++) && WorldGen.InWorld(x, y, 20))
 				{
@@ -73,7 +89,7 @@ internal class RavencrestEntrancePass : AutoGenStep
 				}
 			}
 
-			if (attempts < 2000 && !AvoidsEvilPath((short)x)) //Include an additional 'attempts' failsafe
+			if (attempts < NumAttemptsBeforeReducingConditions && !AvoidsEvilPath((short)x)) //Include an additional 'attempts' failsafe
 			{
 				continue;
 			}
