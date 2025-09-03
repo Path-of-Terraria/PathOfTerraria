@@ -12,7 +12,7 @@ internal class AddedCriticalStrikeChance : Passive
 
 	public override void BuffPlayer(Player player)
 	{
-		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) + AmountPerLevel * Level;
+		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) + Value * Level;
 	}
 }
 
@@ -21,11 +21,9 @@ internal class AddedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeChance : Passive
 {
-	private const float AmountPerLevel = 0.10f;
-
 	public override void BuffPlayer(Player player)
 	{
-		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) * (1 + AmountPerLevel * Level);
+		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) * (1 + Value * Level);
 	}
 }
 
@@ -35,8 +33,6 @@ internal class IncreasedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeMultiplier : Passive
 {
-	private const float AmountPerLevel = 1.05f;
-
 	public override void OnLoad()
 	{
 		PathOfTerrariaPlayerEvents.ModifyHitNPCEvent += BuffCritStrikeDamageMultiplier;
@@ -45,6 +41,7 @@ internal class IncreasedCriticalStrikeMultiplier : Passive
 	private void BuffCritStrikeDamageMultiplier(NPC target, ref NPC.HitModifiers modifiers)
 	{
 		int level = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
+		float AmountPerLevel = 1.05f;
 
 		if (level > 0)
 		{

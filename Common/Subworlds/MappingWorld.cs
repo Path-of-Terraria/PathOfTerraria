@@ -7,14 +7,11 @@ using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.UI;
 using ReLogic.Content;
-using ReLogic.Graphics;
 using SubworldLibrary;
-using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.IO;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
-using Terraria.UI.Chat;
 using Terraria.WorldBuilding;
 
 namespace PathOfTerraria.Common.Subworlds;

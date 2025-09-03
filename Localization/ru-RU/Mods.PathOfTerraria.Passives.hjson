@@ -19,11 +19,6 @@ IncreasedMagicDamagePassive: {
 	Tooltip: Увеличивает ваш магический урон на 5% за уровень
 }
 
-IncreasedSummoningDamagePassive: {
-	Name: Мастерство призыва
-	Tooltip: Увеличивает урон ваших призывов на 5% за уровень
-}
-
 AddedLifePassive: {
 	Name: Укрепленная плоть
 	Tooltip: Увеличивает ваш максимальный запас здоровья на 20 за уровень
@@ -57,11 +52,6 @@ DamageReductionPassive: {
 DamageReflectionPassive: {
 	Name: Колючая внешность
 	Tooltip: Отражает дополнительно 10 урона за уровень врагам, наносящим контактный урон.
-}
-
-ChanceToConsumeAmmoPassive: {
-	Name: Секретный отсек
-	Tooltip: Шанс не расходовать боеприпасы: +5% за уровень
 }
 
 StartPassive: {
@@ -187,4 +177,79 @@ IncreasedWhipSpeed: {
 IncreasedJumpHeight: {
 	Name: Высокий прыгун
 	Tooltip: +{0}% увеличение скорости прыжка.
+}
+
+PercentIncreasedMaximumManaPassive: {
+	// Name: Deep in Thought
+	// Tooltip: +{0}% Increased Maximum Mana
+}
+
+IncreasedFireDamagePassive: {
+	// Name: Burning Fury
+	// Tooltip: +{0}% Increased Fire Damage
+}
+
+IncreasedLightningDamagePassive: {
+	// Name: Voltaic Surge
+	// Tooltip: +{0}% Increased Lightning Damage
+}
+
+IncreasedColdDamagePassive: {
+	// Name: Chilling Precision
+	// Tooltip: +{0}% Increased Cold Damage
+}
+
+IncreasedWhipDamagePassive: {
+	// Name: IncreasedWhipDamagePassive
+	// Tooltip: +{0}% Increased Whip Damage
+}
+
+IncreasedWhipSpeedPassive: {
+	// Name: IncreasedWhipSpeedPassive
+	// Tooltip: +{0}% Increased Whip Speed
+}
+
+IncreasedMagicAndSummonDamagePassive: {
+	// Name: Arcane Synergy
+	// Tooltip: +{0}% Increased Magic and Summon Damage
+}
+
+AddedFireResistancePassive: {
+	// Name: Fire Ward
+	// Tooltip: +{0}% Fire Resistance
+}
+
+AddedColdResistancePassive: {
+	// Name: Frost Ward
+	// Tooltip: +{0}% Cold Resistance
+}
+
+AddedLightningResistancePassive: {
+	// Name: Storm Ward
+	// Tooltip: +{0}% Lightning Resistance
+}
+
+AddedAllResistancePassive: {
+	// Name: Elemental Ward
+	// Tooltip: +{0}% All Resistances
+}
+
+IncreasedAttackSpeedPassive: {
+	// Name: Swift Strikes
+	// Tooltip: +{0}% Global Attack Speed
+}
+
+IncreasedManaRegenerationRatePassive: {
+	// Name: IncreasedManaRegenerationRatePassive
+	// Tooltip: +{0}% Mana Regeneration Rate
+}
+
+IncreasedProjectileCountPassive: {
+	// Name: IncreasedProjectileCountPassive
+	// Tooltip: ""
+}
+
+IncreasedProjectileSpeedPassive: {
+	// Name: IncreasedProjectileSpeedPassive
+	// Tooltip: ""
 }

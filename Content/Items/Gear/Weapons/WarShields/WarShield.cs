@@ -83,13 +83,16 @@ internal abstract class WarShield : Gear, IParryItem
 		return CanRaiseShield(player);
 	}
 
-	public override bool? UseItem(Player player)
+	public override void UseAnimation(Player player)
 	{
 		if (player.altFunctionUse != 2)
 		{
 			player.GetModPlayer<WarShieldPlayer>().StartBash(Data.DashTime, Data.Cooldown, Data.DashMagnitude);
 		}
+	}
 
+	public override bool? UseItem(Player player)
+	{
 		return true;
 	}
 

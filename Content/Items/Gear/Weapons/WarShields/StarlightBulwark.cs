@@ -53,14 +53,12 @@ internal class StarlightBulwark : LeadBattleBulwark
 		Item.value = Item.buyPrice(0, 0, 5, 0);
 	}
 
-	public override bool? UseItem(Player player)
+	public override void UseAnimation(Player player)
 	{
 		if (player.altFunctionUse != 2 && player.GetModPlayer<WarShieldPlayer>().CanBash)
 		{
 			player.GetModPlayer<WarShieldPlayer>().StartBash(Data.DashTime, _specialAlt ? Data.DashTime : Data.Cooldown, Data.DashMagnitude);
 		}
-
-		return true;
 	}
 
 	public override void HoldItem(Player player)

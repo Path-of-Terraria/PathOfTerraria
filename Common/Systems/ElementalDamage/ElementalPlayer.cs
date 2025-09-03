@@ -23,6 +23,10 @@ public class ElementalPlayer : ModPlayer
 		get => _lightningResistance;
 		set => _lightningResistance = MathHelper.Clamp(value, 0f, 0.75f);
 	}
+	
+	public float FireDamageMultiplier = 1f;
+	public float ColdDamageMultiplier = 1f;
+	public float LightningDamageMultiplier = 1f;
 
 	// TODO: could be a ModConfig toggle
 	public static bool DebugMessages => false;
@@ -32,6 +36,11 @@ public class ElementalPlayer : ModPlayer
 		FireResistance = 0f;
 		ColdResistance = 0.5f;
 		LightningResistance = 0f;
+		
+		// Reset percent increase
+		FireDamageMultiplier = 1f;
+		ColdDamageMultiplier = 1f;
+		LightningDamageMultiplier = 1f;
 	}
 
 	public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)

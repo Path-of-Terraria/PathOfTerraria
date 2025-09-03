@@ -8,31 +8,27 @@ namespace PathOfTerraria.Common.UI;
 internal abstract class AllocatableInnerPanel : SmartUiElement
 {
 	public abstract IEnumerable<Edge> Connections { get; }
+	private readonly HashSet<UIElement> _draggable = [];
 
-	private readonly UIElement _draggable;
 	protected Vector2 DragOffset;
+	protected Vector2 DragCenter;
 
 	public AllocatableInnerPanel()
 	{
 		Width = Height = StyleDimension.Fill;
 		OverflowHidden = true;
-
-		_draggable = new();
-		_draggable.Width = _draggable.Height = StyleDimension.Fill;
-
-		Append(_draggable);
 	}
 
 	/// <summary> Appends <paramref name="e"/> and allows it to be dragged. </summary>
 	public void AppendAsDraggable(UIElement e)
 	{
-		_draggable.Append(e);
-		Append(_draggable);
+		Append(e);
+		_draggable.Add(e);
 	}
 
 	protected override void DrawChildren(SpriteBatch spriteBatch)
 	{
-		Vector2 center = _draggable.GetDimensions().Center();
+		Vector2 center = GetDimensions().Center() + DragCenter;
 
 		foreach (Edge edge in Connections) //Drawing connections here means it gets clipped by OverflowHidden correctly
 		{
@@ -93,11 +89,14 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 
 		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft) //Manually check mouse input because other elements shouldn't be allowed to interfere
 		{
-			var size = new Point((int)_draggable.GetDimensions().Width, (int)_draggable.GetDimensions().Height);
-			var bounds = new Rectangle(-(size.X / 2), -(size.Y / 2), size.X, size.Y);
+			Vector2 velocity = DragOffset - oldOffset;
+			DragCenter += velocity;
 
-			_draggable.Left.Pixels = Math.Clamp(_draggable.Left.Pixels + (DragOffset - oldOffset).X, bounds.TopLeft().X, bounds.BottomRight().X);
-			_draggable.Top.Pixels = Math.Clamp(_draggable.Top.Pixels + (DragOffset - oldOffset).Y, bounds.TopLeft().Y, bounds.BottomRight().Y);
+			foreach (UIElement c in _draggable)
+			{
+				c.Left.Pixels += velocity.X;
+				c.Top.Pixels += velocity.Y;
+			}
 
 			Recalculate();
 		}
