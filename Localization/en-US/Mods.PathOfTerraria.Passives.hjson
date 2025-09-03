@@ -255,11 +255,16 @@ IncreasedProjectileSpeedPassive: {
 }
 
 IncreasedChannelingDamagePassive: {
-	Name: Increased Channeling Damage
+	Name: Increased Damage While Channeling
 	Tooltip: "{0}% increased damage while channeling"
 }
 
 IncreasedDefenseWhileChanneling: {
 	Name: Increased Defense While Channeling
 	Tooltip: +{0} defense while channeling
+}
+
+ReducedManaCostWhileChannelingPassive: {
+	Name: Reduced Mana Cost While Channeling
+	Tooltip: +{0}% reduced mana cost while channeling
 }
