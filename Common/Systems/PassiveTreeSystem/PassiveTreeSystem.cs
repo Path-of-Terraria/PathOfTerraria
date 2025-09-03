@@ -151,6 +151,15 @@ internal class PassiveTreePlayer : ModPlayer
 				return false;
 			}
 
+			// Make sure that the other node will have enough nearby active edges to stay available.
+			if (e.Other(passive) is { RequiredAllocatedEdges: > 1 } other)
+			{
+				if (Edges.Count(e => e.End == other && e.Start.Level > 0) <= other.RequiredAllocatedEdges)
+				{
+					return false;
+				}
+			}
+
 			foreach (Allocatable p in ret.Item2)
 			{
 				if (p != passive)

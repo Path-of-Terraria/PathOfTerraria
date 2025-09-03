@@ -2562,7 +2562,8 @@
 		"position": {
 			"x": -9,
 			"y": -1065
-		}
+		},
+		"requiredAllocatedEdges": 5
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
