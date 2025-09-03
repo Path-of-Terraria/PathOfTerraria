@@ -10,5 +10,6 @@ public class PassiveData()
 	public int MaxLevel { get; set; }
 	public List<PassiveConnection> Connections { get; set; }
 	public int Value { get; set; }
+	public bool IsHidden { get; set; }
 	public int RequiredAllocatedEdges { get; set; } = 1;
 }

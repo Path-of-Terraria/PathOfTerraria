@@ -88,6 +88,11 @@ internal class TreeState : TabsUiState
 		PassiveTreeSystem.CreateTree();
 		PassiveTreeSystem.ActiveNodes.ForEach(n =>
 		{
+			if (n.IsHidden)
+			{
+				return;
+			}
+
 			if (n is JewelSocket socket)
 			{
 				_passiveTreeInner.AppendAsDraggable(new PassiveSocket(socket));
