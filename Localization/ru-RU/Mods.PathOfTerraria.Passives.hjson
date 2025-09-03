@@ -253,3 +253,8 @@ IncreasedProjectileSpeedPassive: {
 	// Name: IncreasedProjectileSpeedPassive
 	// Tooltip: ""
 }
+
+MasteryPassive: {
+	// Name: MasteryPassive
+	// Tooltip: ""
+}
