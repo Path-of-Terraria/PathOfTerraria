@@ -2476,6 +2476,9 @@
 		"connections": [
 			{
 				"referenceId": 171
+			},
+			{
+				"referenceId": 999
 			}
 		],
 		"position": {
@@ -2487,6 +2490,11 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 169,
 		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 999
+			}
+		],
 		"position": {
 			"x": -9,
 			"y": -925
@@ -2502,6 +2510,9 @@
 			},
 			{
 				"referenceId": 168
+			},
+			{
+				"referenceId": 999
 			}
 		],
 		"position": {
@@ -2516,6 +2527,9 @@
 		"connections": [
 			{
 				"referenceId": 169
+			},
+			{
+				"referenceId": 999
 			}
 		],
 		"position": {
@@ -2530,11 +2544,24 @@
 		"connections": [
 			{
 				"referenceId": 169
+			},
+			{
+				"referenceId": 999
 			}
 		],
 		"position": {
 			"x": 69,
 			"y": -1172
+		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 999,
+		"maxLevel": 1,
+		"connections": [],
+		"position": {
+			"x": -9,
+			"y": -1065
 		}
 	},
 	{
