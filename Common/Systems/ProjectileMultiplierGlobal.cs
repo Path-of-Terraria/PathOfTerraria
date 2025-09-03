@@ -1,5 +1,6 @@
 using PathOfTerraria.Common.Systems.ModPlayers;
 using Terraria.DataStructures;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ProjectileMultiplication;
 
@@ -9,11 +10,6 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
-		if (source is EntitySource_Misc misc && misc.Context == "ProjectileMultiplication")
-		{
-			return;
-		}
-
 		if (source is not EntitySource_ItemUse_WithAmmo itemSource)
 		{
 			return;
@@ -23,7 +19,7 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 		// ProjectileID.LaserMachinegun, ProjectileID.LaserDrill, ProjectileID.ChargedBlasterCannon, ProjectileID.Arkhalis,
 		// ProjectileID.PortalGun, ProjectileID.SolarWhipSword, ProjectileID.VortexBeater, ProjectileID.Phantasm, ProjectileID.LastPrism,
 		// ProjectileID.DD2PhoenixBow, ProjectileID.Celeb2Weapon, ProjectileID.Terragrim, ProjectileID.PiercingStarlight
-		if (projectile.aiStyle == 75)
+		if (projectile.aiStyle == ProjAIStyleID.HeldProjectile)
 		{
 			return;
 		}
@@ -42,8 +38,7 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 			if (additionalProjectiles <= 0)
 				return;
 		}
-
-		// Use EntitySource_Misc to prevent infinite recursion
+		
 		EntitySource_Misc multiSource = new("ProjectileMultiplication");
 
 		for (int i = 0; i < additionalProjectiles; i++)
