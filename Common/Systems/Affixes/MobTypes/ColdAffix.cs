@@ -9,13 +9,13 @@ internal class ColdAffix : MobAffix
 
 	public override void PostRarity(NPC npc)
 	{
-		if (!npc.GetGlobalNPC<ElementalNPC>().ColdDamage.Valid)
+		if (!npc.GetGlobalNPC<ElementalNPC>().Container.ColdDamageModifier.Valid)
 		{
-			npc.GetGlobalNPC<ElementalNPC>().ColdDamage = new ElementalDamage.ElementalDamage(ElementType.Cold, 10, 1);
+			npc.GetGlobalNPC<ElementalNPC>().Container.ColdDamageModifier = new ElementalDamage.ElementalDamage(ElementType.Cold, 10, 1);
 		}
 		else
 		{
-			npc.GetGlobalNPC<ElementalNPC>().ColdDamage.ApplyOverride(10, 1f);
+			npc.GetGlobalNPC<ElementalNPC>().Container.ColdDamageModifier.AddModifiers(10, 1f);
 		}
 
 		npc.color = Color.Lerp(npc.color == Color.Transparent ? Color.White : npc.color, new Color(72, 139, 179), 0.25f);

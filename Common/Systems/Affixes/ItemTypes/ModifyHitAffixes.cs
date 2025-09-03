@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Content.Buffs;
+﻿using PathOfTerraria.Common.Systems.ElementalDamage;
+using PathOfTerraria.Content.Buffs;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;

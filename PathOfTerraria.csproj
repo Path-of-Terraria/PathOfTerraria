@@ -1,5 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\tModLoader.targets"/>
+	<Import Project="..\tModLoader.targets" />
 	<PropertyGroup>
 		<AssemblyName>PathOfTerraria</AssemblyName>
 		<LangVersion>latest</LangVersion>
@@ -17,15 +17,15 @@
 		<BuildCommand Condition=" '$(BuildCommand)' == '' ">dotnet</BuildCommand>
 	</PropertyGroup>
 	<ItemGroup>
-		<AdditionalFiles Remove="Localization\es-ES\Mods.PathOfTerraria.Condition.hjson"/>
+		<AdditionalFiles Remove="Localization\es-ES\Mods.PathOfTerraria.Condition.hjson" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="JetBrains.Annotations" Version="2025.2.0"/>
-		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all"/>
+		<PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
+		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
 		<Compile Update="JsonCreator\CreateMobJsonFiles.cs">
 			<Link>ClassLibrary1\CreateMobJsonFiles.cs</Link>
 		</Compile>
-		<PackageReference Update="tModLoader.CodeAssist" Version="0.1.5"/>
+		<PackageReference Update="tModLoader.CodeAssist" Version="0.1.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<Reference Include="StructureHelper">
@@ -42,9 +42,9 @@
 		</Reference>
 	</ItemGroup>
 	<ItemGroup>
-		<Folder Include="Common\Data\VanillaItemData\"/>
+		<Folder Include="Common\Data\VanillaItemData\" />
 	</ItemGroup>
 	<Target Name="BuildMod" AfterTargets="Build">
-		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)"/>
+		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />
 	</Target>
 </Project>

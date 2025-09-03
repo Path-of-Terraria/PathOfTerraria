@@ -104,3 +104,8 @@ FocusChargeBuff: {
 	DisplayName: Focus Charge Buff
 	Description: Increases critical strike chance and multiplier by {0}%
 }
+
+IgnitedDebuff: {
+	DisplayName: Ignited Debuff
+	Description: Mods.PathOfTerraria.Buffs.IgnitedDebuff.Description
+}

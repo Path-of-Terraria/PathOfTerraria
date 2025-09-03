@@ -2,52 +2,21 @@
 
 public class ElementalPlayer : ModPlayer
 {
-
-	private float _fireResistance;
-	public float FireResistance
-	{
-		get => _fireResistance;
-		set => _fireResistance = MathHelper.Clamp(value, 0f, 0.75f);
-	}
-
-	private float _coldResistance;
-	public float ColdResistance
-	{
-		get => _coldResistance;
-		set => _coldResistance = MathHelper.Clamp(value, 0f, 0.75f);
-	}
-
-	private float _lightningResistance;
-	public float LightningResistance
-	{
-		get => _lightningResistance;
-		set => _lightningResistance = MathHelper.Clamp(value, 0f, 0.75f);
-	}
-	
-	public float FireDamageMultiplier = 1f;
-	public float ColdDamageMultiplier = 1f;
-	public float LightningDamageMultiplier = 1f;
+	public ElementalContainer Container = new();
 
 	// TODO: could be a ModConfig toggle
-	public static bool DebugMessages => false;
+	public static bool DebugMessages => true;
 
 	public override void ResetEffects()
 	{
-		FireResistance = 0f;
-		ColdResistance = 0.5f;
-		LightningResistance = 0f;
-		
-		// Reset percent increase
-		FireDamageMultiplier = 1f;
-		ColdDamageMultiplier = 1f;
-		LightningDamageMultiplier = 1f;
+		Container.Reset(true);
 	}
 
 	public override void ModifyHitByProjectile(Projectile proj, ref Player.HurtModifiers modifiers)
 	{
 		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
-			ElementModifyDamage(elemProj.FireDamage, elemProj.ColdDamage, elemProj.LightningDamage, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
+			ElementModifyDamage(elemProj.Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
 		}
 	}
 
@@ -55,29 +24,32 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementModifyDamage(elemNPC.FireDamage, elemNPC.ColdDamage, elemNPC.LightningDamage, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
+			ElementModifyDamage(elemNPC.Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
 		}
 	}
 
-	private void ElementModifyDamage(ElementalDamage fire, ElementalDamage cold, ElementalDamage lightning, ref MultipliableFloat preDefenseMultiplier, ref StatModifier sourceDamage)
+	private static void ElementModifyDamage(ElementalContainer container, ref MultipliableFloat preDefenseMultiplier, ref StatModifier sourceDamage)
 	{
-		float totalConversion = MathHelper.Clamp(fire.DamageConversion + cold.DamageConversion + lightning.DamageConversion, 0f, 1f);
+		ElementalDamage fire = container.FireDamageModifier;
+		ElementalDamage cold = container.ColdDamageModifier;
+		ElementalDamage light = container.LightningDamageModifier;
 
 		// Apply multiplier to original damage BEFORE DEFENSE, by each element conversion percent (accounting for resistance) 
-		float totalMultiplier = fire.DamageConversion * (1f - FireResistance) + cold.DamageConversion * (1f - ColdResistance) + lightning.DamageConversion * (1f - LightningResistance) + (1f - totalConversion);
+		float totalMultiplier = fire.DamageConversion * (1f - container.FireResistance) + cold.DamageConversion * (1f - container.ColdResistance) + light.DamageConversion 
+			* (1f - container.LightningResistance) + (1f - container.TotalConversion);
 		preDefenseMultiplier *= totalMultiplier;
 
 		// Apply flat extra damage (accounting for resistance)
-		sourceDamage.Flat += fire.DamageBonus * (1f - FireResistance);
-		sourceDamage.Flat += cold.DamageBonus * (1f - ColdResistance);
-		sourceDamage.Flat += lightning.DamageBonus * (1f - LightningResistance);
+		sourceDamage.Flat += fire.DamageBonus * (1f - container.FireResistance);
+		sourceDamage.Flat += cold.DamageBonus * (1f - container.ColdResistance);
+		sourceDamage.Flat += light.DamageBonus * (1f - container.LightningResistance);
 
-		if (DebugMessages && (fire.Valid || cold.Valid || lightning.Valid))
+		if (DebugMessages && (fire.Valid || cold.Valid || light.Valid))
 		{
 			Main.NewText("[DEBUG] Elemental Damage Modifiers:");
-			Main.NewText($"  Fire:      Conversion: {fire.DamageConversion * 100}%, Flat: {fire.DamageBonus:0.##}, Resistance: {FireResistance * 100}%");
-			Main.NewText($"  Cold:      Conversion: {cold.DamageConversion * 100}%, Flat: {cold.DamageBonus:0.##}, Resistance: {ColdResistance * 100}%");
-			Main.NewText($"  Lightning: Conversion: {lightning.DamageConversion * 100}%, Flat: {lightning.DamageBonus:0.##}, Resistance: {LightningResistance * 100}%");
+			Main.NewText($"  Fire:      Conversion: {fire.DamageConversion * 100}%, Flat: {fire.DamageBonus:0.##}, Resistance: {container.FireResistance * 100}%");
+			Main.NewText($"  Cold:      Conversion: {cold.DamageConversion * 100}%, Flat: {cold.DamageBonus:0.##}, Resistance: {container.ColdResistance * 100}%");
+			Main.NewText($"  Lightning: Conversion: {light.DamageConversion * 100}%, Flat: {light.DamageBonus:0.##}, Resistance: {container.LightningResistance * 100}%");
 			Main.NewText($"  Total Multiplier Applied: {totalMultiplier:0.####}");
 		}
 	}
@@ -86,7 +58,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
-			ElementOnHit(Player, elemProj.FireDamage, elemProj.ColdDamage, elemProj.LightningDamage, hurtInfo.SourceDamage, hurtInfo.Damage);
+			ElementOnHit(Player, elemProj.Container, hurtInfo.SourceDamage, hurtInfo.Damage);
 		}
 	}
 
@@ -94,25 +66,34 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(Player, elemNPC.FireDamage, elemNPC.ColdDamage, elemNPC.LightningDamage, hurtInfo.SourceDamage, hurtInfo.Damage);
+			ElementOnHit(Player, elemNPC.Container, hurtInfo.SourceDamage, hurtInfo.Damage);
 		}
 	}
 
-	private void ElementOnHit(Entity target, ElementalDamage fire, ElementalDamage cold, ElementalDamage lightning, float sourceDamage, int finalDamage)
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		// Conversion %
-		float totalConversion = MathHelper.Clamp(fire.DamageConversion + cold.DamageConversion + lightning.DamageConversion, 0f, 1f);
+		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC)) 
+		{
+			ElementOnHit(target, Container, hit.SourceDamage, hit.Damage);
+		}
+	}
+
+	private void ElementOnHit(Entity target, ElementalContainer container, float sourceDamage, int finalDamage)
+	{
+		ElementalDamage fire = container.FireDamageModifier;
+		ElementalDamage cold = container.ColdDamageModifier;
+		ElementalDamage light = container.LightningDamageModifier;
 
 		// Flat bonus, with resistance
-		float fireFlat = fire.DamageBonus * (1f - FireResistance);
-		float coldFlat = cold.DamageBonus * (1f - ColdResistance);
-		float lightningFlat = lightning.DamageBonus * (1f - LightningResistance);
+		float fireFlat = fire.DamageBonus * (1f - container.FireResistance);
+		float coldFlat = cold.DamageBonus * (1f - container.ColdResistance);
+		float lightningFlat = light.DamageBonus * (1f - container.LightningResistance);
 
 		// Conversion % accounting for resistance
-		float fireFraction = fire.DamageConversion * (1f - FireResistance);
-		float coldFraction = cold.DamageConversion * (1f - ColdResistance);
-		float lightningFraction = lightning.DamageConversion * (1f - LightningResistance);
-		float baseFraction = 1f - totalConversion;
+		float fireFraction = fire.DamageConversion * (1f - container.FireResistance);
+		float coldFraction = cold.DamageConversion * (1f - container.ColdResistance);
+		float lightningFraction = light.DamageConversion * (1f - container.LightningResistance);
+		float baseFraction = 1f - container.TotalConversion;
 		float total = fireFraction + coldFraction + lightningFraction + baseFraction;
 
 		// Original damage (pre-defense, pre-resistance) without flat bonus
@@ -142,7 +123,7 @@ public class ElementalPlayer : ModPlayer
 
 		TryAddElementBuff(target, fire, fireDamage);
 		TryAddElementBuff(target, cold, coldDamage);
-		TryAddElementBuff(target, lightning, lightningDamage);
+		TryAddElementBuff(target, light, lightningDamage);
 	}
 
 	private bool TryAddElementBuff(Entity target, ElementalDamage damage, int elementalDamageDone)
@@ -153,20 +134,12 @@ public class ElementalPlayer : ModPlayer
 		}
 
 		int buffType = damage.GetBuffType();
-		float chance = damage.GetDebuffChance((float)elementalDamageDone / Player.statLifeMax2);
+		float chance = damage.GetDebuffChance((float)elementalDamageDone / Player.statLifeMax2) * 1000;
 
 		if (buffType > 0 && buffType <= BuffLoader.BuffCount && Main.rand.NextFloat() < chance)
 		{
 			int timeToAdd = damage.GetBuffDuration();
-
-			if (target is NPC npc)
-			{
-				npc.AddBuff(buffType, timeToAdd);
-			}
-			else if (target is Player player)
-			{
-				player.AddBuff(buffType, timeToAdd);
-			}
+			damage.ApplyBuff(target, buffType, timeToAdd, elementalDamageDone);
 
 			if (DebugMessages)
 			{

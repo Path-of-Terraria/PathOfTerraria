@@ -1,8 +1,6 @@
 ﻿using PathOfTerraria.Common.ItemDropping;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
-using Terraria;
-using Terraria.DataStructures;
 
 namespace PathOfTerraria.Core.Commands;
 

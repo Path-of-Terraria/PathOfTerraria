@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using PathOfTerraria.Content.Buffs.ElementalBuffs;
+using System.IO;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
@@ -41,13 +42,21 @@ public readonly struct ElementalDamage
 		return new ElementalDamage(ElementType, damageBonus, damageConversion);
 	}
 
+	public ElementalDamage AddModifiers(int? newBonus, float? newConversion)
+	{
+		int damageBonus = DamageBonus;
+		float damageConversion = DamageConversion;
+
+		return new ElementalDamage(ElementType, damageBonus + (newBonus ?? 0), damageConversion + (newConversion ?? 0));
+	}
+
 	// TODO: could depend on level, damage done, etc. for applying stronger debuffs (e.g. OnFire2, Frostburn, etc.)
 	/// <summary> The debuff type to apply. </summary>
 	public int GetBuffType()
 	{
 		return ElementType switch
 		{
-			ElementType.Fire => BuffID.OnFire,
+			ElementType.Fire => ModContent.BuffType<IgnitedDebuff>(),
 			ElementType.Cold => BuffID.Frostburn,
 			ElementType.Lightning => BuffID.Electrified,
 			_ => 0
@@ -60,11 +69,33 @@ public readonly struct ElementalDamage
 		return ElementType switch
 		{
 			// values TBD
-			ElementType.Fire => 5 * 60,
+			ElementType.Fire => 4 * 60,
 			ElementType.Cold => 5 * 60,
 			ElementType.Lightning => 5 * 60,
 			_ => 0
 		};
+	}
+
+	public void ApplyBuff(Entity entity, int buffType, int timeToAdd, int elementalDamageDealt)
+	{
+		switch (ElementType)
+		{
+			case ElementType.Fire when entity is NPC burningNPC:
+				IgnitedDebuff.ApplyTo(burningNPC, (int)(elementalDamageDealt * 0.9f));
+				break;
+
+			default:
+				if (entity is NPC npc)
+				{
+					npc.AddBuff(buffType, timeToAdd);
+				}
+				else if (entity is Player player)
+				{
+					player.AddBuff(buffType, timeToAdd);
+				}
+
+				break;
+		}
 	}
 
 	/// <summary> Get the chance of applying the <see cref="GetBuffType()"/> </summary>
@@ -100,6 +131,11 @@ public readonly struct ElementalDamage
 		int bonus = reader.ReadInt32();
 		float conversion = reader.ReadSingle();
 		return new ElementalDamage(element, bonus, conversion);
+	}
+
+	public override string ToString()
+	{
+		return $"{ElementType}: Flat: {DamageBonus} Conv: {DamageConversion}";
 	}
 }
 
