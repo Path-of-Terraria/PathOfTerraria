@@ -55,5 +55,5 @@ IceBolt: {
 
 FlameSage: {
 	Name: Flame Sage
-	Description: ""
+	Description: Conjure a fiery sentry that can draw the attention of enemies.
 }

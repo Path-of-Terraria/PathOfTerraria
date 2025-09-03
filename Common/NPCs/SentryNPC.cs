@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Terraria;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.NPCs;
@@ -22,6 +23,15 @@ public abstract class SentryNPC : ModNPC, ITargetable
 	{
 		int type = ModContent.NPCType<T>();
 		NPC.ReleaseNPC((int)position.X, (int)position.Y, type, 0, owner.whoAmI);
+	}
+
+	/// <summary> Calls <see cref="Player.FindSentryRestingSpot"/> in addition to performing a solid collision check. </summary>
+	public static bool FindRestingSpot(Player owner, out Vector2 worldCoords, Vector2 offset = default)
+	{
+		owner.FindSentryRestingSpot(0, out int x, out int y, out _);
+		worldCoords = new Vector2(x, y) + offset;
+
+		return !Collision.SolidCollision(new(worldCoords.X - 8, worldCoords.Y - 8), 16, 16);
 	}
 
 	public override void SetStaticDefaults()

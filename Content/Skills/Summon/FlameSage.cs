@@ -23,14 +23,26 @@ public class FlameSage : Skill
 		WeaponType = ItemType.None;
 	}
 
+	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking = true)
+	{
+		if (!justChecking && !SentryNPC.FindRestingSpot(player, out _, new Vector2(0, -20)))
+		{
+			failReason = new(SkillFailReason.Other);
+			return false;
+		}
+
+		return base.CanUseSkill(player, ref failReason, justChecking);
+	}
+
 	public override void UseSkill(Player player)
 	{
 		base.UseSkill(player);
 
-		TryDestroyOldest(player);
-
-		player.FindSentryRestingSpot(0, out int x, out int y, out _);
-		SentryNPC.Spawn<FlameSentry>(player, new(x, y - 20));
+		if (SentryNPC.FindRestingSpot(player, out Vector2 worldCoords, new Vector2(0, -20)))
+		{
+			TryDestroyOldest(player);
+			SentryNPC.Spawn<FlameSentry>(player, worldCoords);
+		}
 
 		static void TryDestroyOldest(Player owner)
 		{
