@@ -14,7 +14,7 @@ public sealed class TargetLoader : ILoadable
 
 	public void Load(Mod mod)
 	{
-		//Insert a delegate right after target logic and before final checks
+		//Emit a delegate right after target logic and before final checks
 		IL_NPC.SetTargetTrackingValues += static (il) =>
 		{
 			ILCursor c = new(il);
@@ -35,8 +35,8 @@ public sealed class TargetLoader : ILoadable
 	{
 		if (TryFindPriorityPoint(npc, out FocusPoint pt))
 		{
-			//Only target this point if 'self' has no player target or the player's aggro value is lower than this point's
-			if (!npc.HasPlayerTarget || Main.player[npc.target].aggro <= pt.Priority)
+			//Only target this point if 'npc' has no player target or the player's aggro value is lower than that of 'pt'
+			if (!npc.HasPlayerTarget || Main.player[npc.target].aggro < pt.Priority)
 			{
 				npc.targetRect = pt.Hitbox;
 				npc.direction = (npc.Center.X > npc.targetRect.Center.X) ? -1 : 1;
@@ -57,6 +57,14 @@ public sealed class TargetLoader : ILoadable
 				point = pt;
 			}
 		}
+
+		/*foreach (Projectile p in Main.ActiveProjectiles) //Check against ITargetable projectiles //Not necessary yet
+		{
+			if (p.ModProjectile is ITargetable item && item.CanBeTargetedBy(npc, out FocusPoint pt) && pt.Priority > point.Priority)
+			{
+				point = pt;
+			}
+		}*/
 
 		return point.Priority > int.MinValue;
 	}
