@@ -67,7 +67,7 @@ public abstract class SkillTree : ILoadable
 
 			if (i != 0)
 			{
-				Edges.Add(new(c, list[0]));
+				Edges.Add(new(c, list[0], EdgeFlags.None));
 			}
 		}
 	}

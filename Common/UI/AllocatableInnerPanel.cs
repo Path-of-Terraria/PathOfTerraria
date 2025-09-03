@@ -29,12 +29,16 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	protected override void DrawChildren(SpriteBatch spriteBatch)
 	{
 		Vector2 center = GetDimensions().Center() + DragCenter;
+		Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 
 		foreach (Edge edge in Connections) //Drawing connections here means it gets clipped by OverflowHidden correctly
 		{
-			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
-			Color color = Color.Gray;
+			if (edge.Flags.HasFlag(EdgeFlags.Hidden))
+			{
+				continue;
+			}
 
+			Color color = Color.Gray;
 			Allocatable start = edge.Start;
 			Allocatable end = edge.End;
 
