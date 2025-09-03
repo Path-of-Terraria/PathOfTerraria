@@ -2478,7 +2478,8 @@
 				"referenceId": 171
 			},
 			{
-				"referenceId": 999
+				"referenceId": 999,
+				"isHidden": true
 			}
 		],
 		"position": {
@@ -2492,7 +2493,8 @@
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 999
+				"referenceId": 999,
+				"isHidden": true
 			}
 		],
 		"position": {
@@ -2512,7 +2514,8 @@
 				"referenceId": 168
 			},
 			{
-				"referenceId": 999
+				"referenceId": 999,
+				"isHidden": true
 			}
 		],
 		"position": {
@@ -2529,7 +2532,8 @@
 				"referenceId": 169
 			},
 			{
-				"referenceId": 999
+				"referenceId": 999,
+				"isHidden": true
 			}
 		],
 		"position": {
@@ -2546,7 +2550,8 @@
 				"referenceId": 169
 			},
 			{
-				"referenceId": 999
+				"referenceId": 999,
+				"isHidden": true
 			}
 		],
 		"position": {

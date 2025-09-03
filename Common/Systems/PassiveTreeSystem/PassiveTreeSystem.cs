@@ -82,11 +82,11 @@ internal class PassiveTreePlayer : ModPlayer
 			}
 		});
 
-		data.ForEach(n => n.Connections.ForEach(connection =>
+		data.ForEach(n => n.Connections.ForEach(c =>
 		{
 			if (passives[n.ReferenceId] != null)
 			{
-				Edges.Add(new Edge(passives[n.ReferenceId], passives[connection.ReferenceId]));
+				Edges.Add(new Edge(passives[n.ReferenceId], passives[c.ReferenceId], c.IsHidden ? EdgeFlags.Hidden : 0));
 			}
 		}));
 	}
