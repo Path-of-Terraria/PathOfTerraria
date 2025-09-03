@@ -416,7 +416,7 @@ public sealed class NewHotbar : SmartUiState
 			Identifier = "Skill",
 			SimpleTitle = title,
 			SimpleSubtitle = subtitle,
-			VisibilityTimeInTicks = 0,
+			VisibilityTimeInTicks = 1,
 		});
 	}
 
