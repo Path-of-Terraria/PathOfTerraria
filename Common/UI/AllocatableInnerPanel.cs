@@ -33,14 +33,14 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 
 		foreach (Edge edge in Connections) //Drawing connections here means it gets clipped by OverflowHidden correctly
 		{
-			if (edge.Flags.HasFlag(EdgeFlags.Hidden))
-			{
-				continue;
-			}
-
 			Color color = Color.Gray;
 			Allocatable start = edge.Start;
 			Allocatable end = edge.End;
+
+			if (edge.Flags.HasFlag(EdgeFlags.Hidden) || start.IsHidden || end.IsHidden)
+			{
+				continue;
+			}
 
 			if (end.CanAllocate(Main.LocalPlayer) && end.Allocated)
 			{

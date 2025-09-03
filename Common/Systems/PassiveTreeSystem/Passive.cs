@@ -89,6 +89,7 @@ public abstract class Passive : Allocatable
 		p.MaxLevel = data.MaxLevel;
 		p.ReferenceId = data.ReferenceId;
 		p.Value = data.Value;
+		p.IsHidden = data.IsHidden;
 		p.RequiredAllocatedEdges = data.RequiredAllocatedEdges;
 
 		return p;
