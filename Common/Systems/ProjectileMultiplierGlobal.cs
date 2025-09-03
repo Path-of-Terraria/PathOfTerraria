@@ -15,10 +15,7 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 			return;
 		}
 		
-		// Prevents the following list of weapon projectiles from being +'d. Note that this is only the weapon visual itself, not the projectiles it fires.
-		// ProjectileID.LaserMachinegun, ProjectileID.LaserDrill, ProjectileID.ChargedBlasterCannon, ProjectileID.Arkhalis,
-		// ProjectileID.PortalGun, ProjectileID.SolarWhipSword, ProjectileID.VortexBeater, ProjectileID.Phantasm, ProjectileID.LastPrism,
-		// ProjectileID.DD2PhoenixBow, ProjectileID.Celeb2Weapon, ProjectileID.Terragrim, ProjectileID.PiercingStarlight
+		// Skip held weapon projectiles using ProjAIStyleID constants. Reference: https://docs.tmodloader.net/docs/1.4-preview/class_terraria_1_1_i_d_1_1_proj_a_i_style_i_d.html
 		if (projectile.aiStyle == ProjAIStyleID.HeldProjectile)
 		{
 			return;
