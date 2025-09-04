@@ -5,7 +5,7 @@ public class ElementalPlayer : ModPlayer
 	public ElementalContainer Container = new();
 
 	// TODO: could be a ModConfig toggle
-	public static bool DebugMessages => true;
+	public static bool DebugMessages => false;
 
 	public override void ResetEffects()
 	{
@@ -134,9 +134,9 @@ public class ElementalPlayer : ModPlayer
 		}
 
 		int buffType = damage.GetBuffType();
-		float chance = damage.GetDebuffChance((float)elementalDamageDone / Player.statLifeMax2) * 1000;
+		float chance = 1;// damage.GetDebuffChance((float)elementalDamageDone / Player.statLifeMax2);
 
-		if (buffType > 0 && buffType <= BuffLoader.BuffCount && Main.rand.NextFloat() < chance)
+		if (elementalDamageDone > 0 && buffType > 0 && buffType <= BuffLoader.BuffCount && Main.rand.NextFloat() < chance)
 		{
 			int timeToAdd = damage.GetBuffDuration();
 			damage.ApplyBuff(target, buffType, timeToAdd, elementalDamageDone);

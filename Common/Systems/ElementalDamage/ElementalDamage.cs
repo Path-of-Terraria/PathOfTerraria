@@ -4,13 +4,27 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
+/// <summary>
+/// Controls a single element
+/// </summary>
 public readonly struct ElementalDamage
 {
 	public ElementType ElementType { get; init; }
 	public int DamageBonus { get; init; }
 	public float DamageConversion { get; init; }
 
-	public bool Valid => ElementType != ElementType.None;
+	public bool Valid
+	{
+		get
+		{
+			if (ElementType == ElementType.None)
+			{
+				int i = 0;
+			}
+
+			return ElementType != ElementType.None;
+		}
+	}
 
 	public ElementalDamage(ElementType elementType)
 	{

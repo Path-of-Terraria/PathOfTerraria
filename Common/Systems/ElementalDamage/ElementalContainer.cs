@@ -7,20 +7,30 @@ namespace PathOfTerraria.Common.Systems.ElementalDamage;
 public class ElementalContainer
 {
 	private float _fireResistance;
+	private float _coldResistance;
+	private float _lightningResistance;
+
+	/// <summary>
+	/// Controls the flat damage increase from <see cref="FireDamageModifier"/>.
+	/// </summary>
 	public float FireResistance
 	{
 		get => _fireResistance;
 		set => _fireResistance = MathHelper.Clamp(value, 0f, 0.75f);
 	}
 
-	private float _coldResistance;
+	/// <summary>
+	/// Controls the flat damage increase from <see cref="ColdDamageModifier"/>.
+	/// </summary>
 	public float ColdResistance
 	{
 		get => _coldResistance;
 		set => _coldResistance = MathHelper.Clamp(value, 0f, 0.75f);
 	}
 
-	private float _lightningResistance;
+	/// <summary>
+	/// Controls the flat damage increase from <see cref="LightningDamageModifier"/>.
+	/// </summary>
 	public float LightningResistance
 	{
 		get => _lightningResistance;
@@ -28,7 +38,7 @@ public class ElementalContainer
 	}
 
 	/// <summary>
-	/// % of damage-to-be-done that will be converted to an elemental damage type.
+	/// Percent of damage-to-be-done that will be converted to an elemental damage type.
 	/// </summary>
 	public float TotalConversion => MathHelper.Clamp(FireDamageModifier.DamageConversion + ColdDamageModifier.DamageConversion + LightningDamageModifier.DamageConversion, 0f, 1f);
 
