@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -9,27 +8,22 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
-internal class AllocatableElement : SmartUiElement
+internal abstract class AllocatableElement : SmartUiElement
 {
 	public static Asset<Texture2D> GlowAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
 	public static Asset<Texture2D> StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
 
-	public readonly SkillNode Node;
+	public Allocatable Node { get; }
 
 	private int _flashTimer;
 	private int _redFlashTimer;
 
-	public AllocatableElement(SkillNode node)
+	public AllocatableElement(Allocatable node)
 	{
 		var size = node.Size.ToPoint();
 
 		Width.Set(size.X, 0);
 		Height.Set(size.Y, 0);
-
-		if (Node is Anchor)
-		{
-			(Node as SkillPassive).Level = 1;
-		}
 
 		Node = node;
 	}
@@ -79,7 +73,7 @@ internal class AllocatableElement : SmartUiElement
 			_redFlashTimer--;
 		}
 
-		if (IsMouseHovering)
+		if (IsMouseHovering && GetElementAt(Main.MouseScreen) == this)
 		{
 			DrawHoverTooltip();
 		}
@@ -97,6 +91,13 @@ internal class AllocatableElement : SmartUiElement
 			name += $" ({Node.Level}/{Node.MaxLevel})";
 		}
 
+#if DEBUG
+		if (Node is Systems.PassiveTreeSystem.Passive passive)
+		{
+			name += $" -- {passive.ReferenceId}";
+		}
+#endif
+
 		Tooltip.Create(new TooltipDescription
 		{
 			Identifier = GetType().Name,
@@ -111,10 +112,7 @@ internal class AllocatableElement : SmartUiElement
 
 		if (CheckMouseContained() && Node.CanAllocate(p))
 		{
-			Node.OnAllocate(p);
-			_flashTimer = 20;
-
-			TreeSoundEngine.PlaySoundForTreeAllocation(Node.Level, Node.MaxLevel);
+			Allocate(Node, 1);
 		}
 	}
 
@@ -124,9 +122,23 @@ internal class AllocatableElement : SmartUiElement
 
 		if (CheckMouseContained() && Node.CanDeallocate(p))
 		{
-			Node.OnDeallocate(p);
-			_redFlashTimer = 20;
-			SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
+			Deallocate(Node, 1);
 		}
+	}
+
+	protected virtual void Allocate(Allocatable node, int usedCost)
+	{
+		_flashTimer = 20;
+
+		node.OnAllocate(Main.LocalPlayer);
+		TreeSoundEngine.PlaySoundForTreeAllocation(Node.Level, Node.MaxLevel);
+	}
+
+	protected virtual void Deallocate(Allocatable node, int usedCost)
+	{
+		_redFlashTimer = 20;
+
+		node.OnDeallocate(Main.LocalPlayer);
+		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
 }
