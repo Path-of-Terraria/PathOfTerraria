@@ -18,6 +18,10 @@ internal class PassiveElement : SmartUiElement
 	private int _flashTimer;
 	private int _redFlashTimer;
 
+	public Passive Passive => _passive;
+
+	public virtual Passive DrawnPassive => Passive;
+
 	public PassiveElement(Passive passive)
 	{
 		float halfSizeX = passive.Size.X / 2;
@@ -38,7 +42,9 @@ internal class PassiveElement : SmartUiElement
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		_passive.Draw(spriteBatch, GetDimensions().Center());
+		base.Draw(spriteBatch);
+
+		DrawnPassive.Draw(spriteBatch, GetDimensions().Center());
 		DrawOnto(spriteBatch, GetDimensions().Center());
 
 		if (_flashTimer > 0)
@@ -81,7 +87,7 @@ internal class PassiveElement : SmartUiElement
 			_redFlashTimer--;
 		}
 
-		if (IsMouseHovering)
+		if (IsMouseHovering && GetElementAt(Main.MouseScreen) == this)
 		{
 			string name = _passive.DisplayName;
 
@@ -107,33 +113,39 @@ internal class PassiveElement : SmartUiElement
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
+		if (_passive.CanAllocate(Main.LocalPlayer) && CheckMouseContained())
+		{
+			Allocate(_passive);
+		}
+	}
+
+	protected void Allocate(Passive passive)
+	{
 		Player p = Main.LocalPlayer;
 
-		if (!_passive.CanAllocate(p) || !CheckMouseContained())
-		{
-			return;
-		}
-
-		_passive.Level++;
+		passive.Level++;
 		p.GetModPlayer<PassiveTreePlayer>().Points--;
 		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
 		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
 
 		_flashTimer = 20;
 
-		TreeSoundEngine.PlaySoundForTreeAllocation(_passive.MaxLevel, _passive.Level);
+		TreeSoundEngine.PlaySoundForTreeAllocation(passive.MaxLevel, passive.Level);
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
+		if (_passive.CanDeallocate(Main.LocalPlayer) && CheckMouseContained())
+		{
+			Deallocate(_passive);
+		}
+	}
+
+	protected void Deallocate(Passive passive)
+	{
 		Player p = Main.LocalPlayer;
 
-		if (!_passive.CanDeallocate(Main.LocalPlayer) || !CheckMouseContained())
-		{
-			return;
-		}
-
-		_passive.Level--;
+		passive.Level--;
 		p.GetModPlayer<PassiveTreePlayer>().Points++;
 		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
 

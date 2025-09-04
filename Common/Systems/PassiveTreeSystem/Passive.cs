@@ -23,6 +23,9 @@ public abstract class Passive : Allocatable
 {
 	public static Dictionary<string, Type> Passives = [];
 
+	/// <summary> If true, this passive will be given a special UI element that allows players to choose only one of its children. </summary>
+	public bool IsChoiceNode { get; set; }
+
 	/// <summary> The internal identifier of this passive. <para/>
 	/// This is used to map the JSON data to the correct passive. This is also what's used to grab the texture of this passive.
 	/// </summary>
@@ -90,6 +93,7 @@ public abstract class Passive : Allocatable
 		p.ReferenceId = data.ReferenceId;
 		p.Value = data.Value;
 		p.IsHidden = data.IsHidden;
+		p.IsChoiceNode = data.IsChoiceNode;
 		p.RequiredAllocatedEdges = data.RequiredAllocatedEdges;
 
 		return p;

@@ -97,6 +97,10 @@ internal class TreeState : TabsUiState
 			{
 				_passiveTreeInner.AppendAsDraggable(new PassiveSocket(socket));
 			}
+			else if (n.IsChoiceNode)
+			{
+				_passiveTreeInner.AppendAsDraggable(new MultiPassiveElement(n));
+			}
 			else
 			{
 				_passiveTreeInner.AppendAsDraggable(new PassiveElement(n));
