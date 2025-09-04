@@ -1,5 +1,5 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\tModLoader.targets" />
+<Project Sdk="Microsoft.NET.Sdk">
+	<Import Project="..\tModLoader.targets"/>
 	<PropertyGroup>
 		<AssemblyName>PathOfTerraria</AssemblyName>
 		<LangVersion>latest</LangVersion>

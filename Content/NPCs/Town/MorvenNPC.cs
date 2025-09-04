@@ -182,19 +182,19 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		// Determines path using a slightly adjusted position and hitbox size.
 		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
-		pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
+		bool blocked = !Collision.SolidCollision(NPC.position, NPC.width, NPC.height);
+
+		if (blocked)
+		{
+			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
+		}
 
 		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 
-		if (!canPath) // Retry pathing but slightly offset
+		if (pathfinder.RefreshTimer == 0 && !blocked || !canPath)
 		{
-			pathStart = (NPC.Top - new Vector2(8, 0)).ToTileCoordinates16();
-			pathEnd = target.ToTileCoordinates16();
-
-			// Set RefreshTimer to 1 so it's 0 by the time it's checked & skips caching
 			pathfinder.RefreshTimer = 1;
-			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
-
+			pathfinder.CheckDrawPath(pathStart - new Point16(0, 1), pathEnd, new Vector2(NPC.width / 16f - 0.3f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2 - 6, -16));
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		}
 
