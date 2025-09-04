@@ -1,8 +1,8 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Core.UI.SmartUI;
-using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.UI;
@@ -68,7 +68,11 @@ internal class SkillSelectionPanel : SmartUiElement
 
 		foreach (SkillNode node in list)
 		{
-			UIElement element = (node is SpareSlot) ? new AugmentSlotElement(spareSlotCounter++, true, node) : new AllocatableElement(node);
+			UIElement element = node switch
+			{
+				SpareSlot => new AugmentSlotElement(spareSlotCounter++, true, node),
+				_ => new SkillElement(node),
+			};
 			element.Left.Set(node.TreePos.X - node.Size.X / 2, 0.5f);
 			element.Top.Set(node.TreePos.Y - node.Size.Y / 2, 0.5f);
 
