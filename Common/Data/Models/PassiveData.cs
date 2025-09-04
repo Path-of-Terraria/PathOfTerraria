@@ -11,5 +11,6 @@ public class PassiveData()
 	public List<PassiveConnection> Connections { get; set; }
 	public int Value { get; set; }
 	public bool IsHidden { get; set; }
+	public bool IsChoiceNode { get; set; }
 	public int RequiredAllocatedEdges { get; set; } = 1;
 }

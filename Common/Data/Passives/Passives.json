@@ -2563,12 +2563,70 @@
 		"internalIdentifier": "MasteryPassive",
 		"referenceId": 999,
 		"maxLevel": 1,
-		"connections": [],
+		"connections": [
+			{
+				"referenceId": 1001,
+				"isHidden": true
+			},
+			{
+				"referenceId": 1002,
+				"isHidden": true
+			},
+			{
+				"referenceId": 1003,
+				"isHidden": true
+			},
+			{
+				"referenceId": 1004,
+				"isHidden": true
+			}
+		],
 		"position": {
 			"x": -9,
 			"y": -1065
 		},
+		"isChoiceNode": true,
 		"requiredAllocatedEdges": 5
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1001,
+		"maxLevel": 1,
+		"position": {
+			"x": -59,
+			"y": -1065
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1002,
+		"maxLevel": 1,
+		"position": {
+			"x": 41,
+			"y": -1065
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1003,
+		"maxLevel": 1,
+		"position": {
+			"x": -9,
+			"y": -1015
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1004,
+		"maxLevel": 1,
+		"position": {
+			"x": -9,
+			"y": -1115
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
