@@ -20,8 +20,6 @@ internal class PassiveElement : SmartUiElement
 
 	public Passive Passive => _passive;
 
-	public virtual Passive DrawnPassive => Passive;
-
 	public PassiveElement(Passive passive)
 	{
 		float halfSizeX = passive.Size.X / 2;
@@ -44,7 +42,7 @@ internal class PassiveElement : SmartUiElement
 	{
 		base.Draw(spriteBatch);
 
-		DrawnPassive.Draw(spriteBatch, GetDimensions().Center());
+		Passive.Draw(spriteBatch, GetDimensions().Center());
 		DrawOnto(spriteBatch, GetDimensions().Center());
 
 		if (_flashTimer > 0)
