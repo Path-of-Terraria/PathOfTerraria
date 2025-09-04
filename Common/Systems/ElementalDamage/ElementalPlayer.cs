@@ -44,7 +44,7 @@ public class ElementalPlayer : ModPlayer
 		sourceDamage.Flat += cold.DamageBonus * (1f - container.ColdResistance);
 		sourceDamage.Flat += light.DamageBonus * (1f - container.LightningResistance);
 
-		if (DebugMessages && (fire.Valid || cold.Valid || light.Valid))
+		if (DebugMessages && (fire.HasValues || cold.HasValues || light.HasValues))
 		{
 			Main.NewText("[DEBUG] Elemental Damage Modifiers:");
 			Main.NewText($"  Fire:      Conversion: {fire.DamageConversion * 100}%, Flat: {fire.DamageBonus:0.##}, Resistance: {container.FireResistance * 100}%");
@@ -58,7 +58,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
-			ElementOnHit(Player, elemProj.Container, hurtInfo.SourceDamage, hurtInfo.Damage);
+			ElementOnHit(Player, elemProj.Container, hurtInfo.SourceDamage, hurtInfo.Damage, null);
 		}
 	}
 
@@ -66,7 +66,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(Player, elemNPC.Container, hurtInfo.SourceDamage, hurtInfo.Damage);
+			ElementOnHit(Player, elemNPC.Container, hurtInfo.SourceDamage, hurtInfo.Damage, null);
 		}
 	}
 
@@ -74,11 +74,11 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC)) 
 		{
-			ElementOnHit(target, Container, hit.SourceDamage, hit.Damage);
+			ElementOnHit(target, Container, hit.SourceDamage, hit.Damage, hit);
 		}
 	}
 
-	private void ElementOnHit(Entity target, ElementalContainer container, float sourceDamage, int finalDamage)
+	private void ElementOnHit(Entity target, ElementalContainer container, float sourceDamage, int finalDamage, NPC.HitInfo? optionalHitInfo)
 	{
 		ElementalDamage fire = container.FireDamageModifier;
 		ElementalDamage cold = container.ColdDamageModifier;
@@ -121,29 +121,37 @@ public class ElementalPlayer : ModPlayer
 			Main.NewText($"  Original dmg: {(int)(finalDamage * ((sourceDamage - (fireFlat + coldFlat + lightningFlat)) / sourceDamage))}");
 		}
 
-		TryAddElementBuff(target, fire, fireDamage);
-		TryAddElementBuff(target, cold, coldDamage);
-		TryAddElementBuff(target, light, lightningDamage);
+		if (optionalHitInfo is not null)
+		{
+			TryAddElementBuff(target, fire, fireDamage, optionalHitInfo.Value);
+			TryAddElementBuff(target, cold, coldDamage, optionalHitInfo.Value);
+			TryAddElementBuff(target, light, lightningDamage, optionalHitInfo.Value);
+		}
 	}
 
-	private bool TryAddElementBuff(Entity target, ElementalDamage damage, int elementalDamageDone)
+	private static bool TryAddElementBuff(Entity target, ElementalDamage damage, int elementalDamageDone, NPC.HitInfo hitInfo)
 	{
-		if (!damage.Valid)
+		if (!damage.HasValues)
 		{
 			return false;
 		}
 
-		int buffType = damage.GetBuffType();
-		float chance = 1;// damage.GetDebuffChance((float)elementalDamageDone / Player.statLifeMax2);
-
-		if (elementalDamageDone > 0 && buffType > 0 && buffType <= BuffLoader.BuffCount && Main.rand.NextFloat() < chance)
+		int lifeMax = target switch
 		{
-			int timeToAdd = damage.GetBuffDuration();
-			damage.ApplyBuff(target, buffType, timeToAdd, elementalDamageDone);
+			NPC npc => npc.lifeMax,
+			Player player => player.statLifeMax2,
+			_ => throw new ArgumentException("target should be an NPC or Player!")
+		};
+
+		float chance = ElementalDamage.GetDebuffChance((float)elementalDamageDone / lifeMax);
+
+		if (elementalDamageDone > 0 && damage.CanDebuff(hitInfo, chance < Main.rand.NextFloat()))
+		{
+			damage.ApplyBuff(target, elementalDamageDone);
 
 			if (DebugMessages)
 			{
-				Main.NewText($"[DEBUG] Debuff {buffType} applied for {timeToAdd} ticks!");
+				Main.NewText($"[DEBUG] Debuff for {damage.ElementType} applied!");
 			}
 
 			return true;

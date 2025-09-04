@@ -1,9 +1,11 @@
-﻿using System.ComponentModel;
-using System.IO;
+﻿using System.IO;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
+/// <summary>
+/// Holds all relevant elemental information for an entity, such as damage boosts and damage resistance.
+/// </summary>
 public class ElementalContainer
 {
 	private float _fireResistance;
@@ -11,7 +13,7 @@ public class ElementalContainer
 	private float _lightningResistance;
 
 	/// <summary>
-	/// Controls the flat damage increase from <see cref="FireDamageModifier"/>.
+	/// Controls the scaling damage decrease from fire damage. Clamps at 75%.
 	/// </summary>
 	public float FireResistance
 	{
@@ -20,7 +22,7 @@ public class ElementalContainer
 	}
 
 	/// <summary>
-	/// Controls the flat damage increase from <see cref="ColdDamageModifier"/>.
+	/// Controls the scaling damage decrease from cold damage. Clamps at 75%.
 	/// </summary>
 	public float ColdResistance
 	{
@@ -29,7 +31,7 @@ public class ElementalContainer
 	}
 
 	/// <summary>
-	/// Controls the flat damage increase from <see cref="LightningDamageModifier"/>.
+	/// Controls the scaling damage decrease from lightning damage. Clamps at 75%.
 	/// </summary>
 	public float LightningResistance
 	{
@@ -46,11 +48,15 @@ public class ElementalContainer
 	public ElementalDamage ColdDamageModifier = new(ElementType.Cold);
 	public ElementalDamage LightningDamageModifier = new(ElementType.Lightning);
 
-	// Kept from unused code. Not sure their purpose?
+	// I don't know what these are for? They're used in some passives, but they don't actually do anything...
 	public float FireMultiplier = 1f;
 	public float ColdMultiplier = 1f;
 	public float LightningMultiplier = 1f;
 
+	/// <summary>
+	/// Resets the modifiers on this instance for use in something like <see cref="ModPlayer.ResetEffects"/>.
+	/// </summary>
+	/// <param name="resetModifiers">Whether the elemental modifiers (such as <see cref="LightningDamageModifier"/>) should be reset. NPCs shouldn't reset them.</param>
 	public void Reset(bool resetModifiers)
 	{
 		FireMultiplier = ColdMultiplier = LightningMultiplier = 1;
@@ -58,39 +64,40 @@ public class ElementalContainer
 
 		if (resetModifiers)
 		{
-			FireDamageModifier = new(ElementType.Fire);
-			ColdDamageModifier = new(ElementType.Cold);
-			LightningDamageModifier = new(ElementType.Lightning);
+			FireDamageModifier.ApplyOverride(0, 0);
+			ColdDamageModifier.ApplyOverride(0, 0);
+			LightningDamageModifier.ApplyOverride(0, 0);
 		}
 	}
 
 	/// <summary>
 	/// Writes this <see cref="ElementalContainer"/> to the given bit/binary writers.
 	/// </summary>
-	/// <param name="bitWriter"></param>
-	/// <param name="binaryWriter"></param>
 	public void WriteTo(BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
-		bitWriter.WriteBit(FireDamageModifier.Valid);
-		bitWriter.WriteBit(ColdDamageModifier.Valid);
-		bitWriter.WriteBit(LightningDamageModifier.Valid);
+		bitWriter.WriteBit(FireDamageModifier.HasValues);
+		bitWriter.WriteBit(ColdDamageModifier.HasValues);
+		bitWriter.WriteBit(LightningDamageModifier.HasValues);
 
-		if (FireDamageModifier.Valid)
+		if (FireDamageModifier.HasValues)
 		{
 			FireDamageModifier.Write(binaryWriter);
 		}
 
-		if (ColdDamageModifier.Valid)
+		if (ColdDamageModifier.HasValues)
 		{
 			ColdDamageModifier.Write(binaryWriter);
 		}
 
-		if (LightningDamageModifier.Valid)
+		if (LightningDamageModifier.HasValues)
 		{
 			LightningDamageModifier.Write(binaryWriter);
 		}
 	}
 
+	/// <summary>
+	/// Updates this container to use the values passed in by another <see cref="WriteTo(BitWriter, BinaryWriter)"/> call.
+	/// </summary>
 	public void ReadFrom(BitReader bitReader, BinaryReader binaryReader)
 	{
 		bool fire = bitReader.ReadBit();

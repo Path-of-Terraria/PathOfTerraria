@@ -8,6 +8,9 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
+/// <summary>
+/// Stores elemental info for NPCs, namely their individual <see cref="ElementalContainer"/> instance.
+/// </summary>
 internal class ElementalNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
@@ -44,38 +47,17 @@ internal class ElementalNPC : GlobalNPC
 				{
 					if (mobDamage.Fire != null)
 					{
-						if (!Container.FireDamageModifier.Valid)
-						{
-							Container.FireDamageModifier = new ElementalDamage(ElementType.Fire, mobDamage.Fire.Added ?? 0, mobDamage.Fire.Conversion ?? 0f);
-						}
-						else
-						{
-							Container.FireDamageModifier = Container.FireDamageModifier.ApplyOverride(mobDamage.Fire.Added, mobDamage.Fire.Conversion);
-						}
+						Container.FireDamageModifier = Container.FireDamageModifier.ApplyOverride(mobDamage.Fire.Added, mobDamage.Fire.Conversion);
 					}
 
 					if (mobDamage.Cold != null)
 					{
-						if (!Container.ColdDamageModifier.Valid)
-						{
-							Container.ColdDamageModifier = new ElementalDamage(ElementType.Cold, mobDamage.Cold.Added ?? 0, mobDamage.Cold.Conversion ?? 0f);
-						}
-						else
-						{
-							Container.ColdDamageModifier = Container.ColdDamageModifier.ApplyOverride(mobDamage.Cold.Added, mobDamage.Cold.Conversion);
-						}
+						Container.ColdDamageModifier = Container.ColdDamageModifier.ApplyOverride(mobDamage.Cold.Added, mobDamage.Cold.Conversion);
 					}
 
 					if (mobDamage.Lightning != null)
 					{
-						if (!Container.LightningDamageModifier.Valid)
-						{
-							Container.LightningDamageModifier = new ElementalDamage(ElementType.Lightning, mobDamage.Lightning.Added ?? 0, mobDamage.Lightning.Conversion ?? 0f);
-						}
-						else
-						{
-							Container.LightningDamageModifier = Container.LightningDamageModifier.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
-						}
+						Container.LightningDamageModifier = Container.LightningDamageModifier.ApplyOverride(mobDamage.Lightning.Added, mobDamage.Lightning.Conversion);
 					}
 
 					break;

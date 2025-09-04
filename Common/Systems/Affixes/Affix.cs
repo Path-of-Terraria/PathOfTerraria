@@ -78,6 +78,7 @@ public abstract class Affix : ILocalizedModType
 		tag["value"] = Value;
 		tag["maxValue"] = MaxValue;
 		tag["minValue"] = MinValue;
+		tag["tier"] = Tier;
 	}
 
 	/// <summary>
@@ -106,6 +107,7 @@ public abstract class Affix : ILocalizedModType
 		Value = tag.GetFloat("value");
 		MaxValue = tag.GetFloat("maxValue");
 		MinValue = tag.GetFloat("minValue");
+		Tier = tag.GetInt("tier");
 	}
 
 	public virtual void NetSend(BinaryWriter writer)
