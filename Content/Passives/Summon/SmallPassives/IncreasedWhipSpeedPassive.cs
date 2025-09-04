@@ -6,8 +6,10 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Passives;
 
-
 internal class IncreasedWhipSpeedPassive : Passive
 {
-	
+	public override void BuffPlayer(Player player)
+	{
+		player.GetAttackSpeed(DamageClass.SummonMeleeSpeed) += (Value/100.0f) * Level;
+	}
 }
