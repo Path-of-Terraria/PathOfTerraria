@@ -113,16 +113,16 @@ internal class PassiveElement : SmartUiElement
 	{
 		if (_passive.CanAllocate(Main.LocalPlayer) && CheckMouseContained())
 		{
-			Allocate(_passive);
+			Allocate(_passive, usedCost: 1);
 		}
 	}
 
-	protected void Allocate(Passive passive)
+	protected void Allocate(Passive passive, int usedCost)
 	{
 		Player p = Main.LocalPlayer;
 
 		passive.Level++;
-		p.GetModPlayer<PassiveTreePlayer>().Points--;
+		p.GetModPlayer<PassiveTreePlayer>().Points -= usedCost;
 		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
 		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
 
@@ -135,16 +135,16 @@ internal class PassiveElement : SmartUiElement
 	{
 		if (_passive.CanDeallocate(Main.LocalPlayer) && CheckMouseContained())
 		{
-			Deallocate(_passive);
+			Deallocate(_passive, usedCost: 1);
 		}
 	}
 
-	protected void Deallocate(Passive passive)
+	protected void Deallocate(Passive passive, int usedCost)
 	{
 		Player p = Main.LocalPlayer;
 
 		passive.Level--;
-		p.GetModPlayer<PassiveTreePlayer>().Points++;
+		p.GetModPlayer<PassiveTreePlayer>().Points += usedCost;
 		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
 
 		_redFlashTimer = 20;
