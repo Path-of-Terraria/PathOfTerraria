@@ -96,13 +96,6 @@ internal class IgnitedNPC : GlobalNPC
 					npc.StrikeNPC(info);
 				}
 
-				//AdvancedPopupRequest request = default;
-				//request.Text = halfDamage.ToString();
-				//request.DurationInFrames = 30;
-				//request.Color = Color.Lerp(Color.OrangeRed, Color.Orange, Main.rand.NextFloat());
-				//request.Velocity = new Vector2(0, -12);
-				//PopupText.NewText(request, npc.Top);
-
 				CombatText.NewText(npc.Hitbox, Color.Lerp(Color.OrangeRed, Color.Orange, Main.rand.NextFloat()), halfDamage, false, true);
 			}
 
