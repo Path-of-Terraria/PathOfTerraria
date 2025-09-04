@@ -14,6 +14,8 @@ using ReLogic.Content;
 using Terraria.Graphics.Effects;
 using Terraria.Localization;
 using Terraria.UI;
+using SubworldLibrary;
+using PathOfTerraria.Common.Subworlds;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -380,7 +382,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			});
 		}
 
-		if (StopBuildingPlayer.InvalidItemsToUse.Contains(item.type))
+		if (StopBuildingPlayer.InvalidItemsToUse.Contains(item.type) && SubworldSystem.Current is MappingWorld)
 		{
 			AddNewTooltipLine(item, tooltips, new TooltipLine(Mod, "BuildBlocked", Localize("BuildBlocked")) { OverrideColor = new Color(220, 110, 110) });
 		}
