@@ -245,11 +245,26 @@ IncreasedManaRegenerationRatePassive: {
 }
 
 IncreasedProjectileCountPassive: {
-	// Name: IncreasedProjectileCountPassive
-	// Tooltip: ""
+	// Name: Increased Projectile Count
+	// Tooltip: "{0}% increased projectile count"
 }
 
 IncreasedProjectileSpeedPassive: {
-	// Name: IncreasedProjectileSpeedPassive
-	// Tooltip: ""
+	// Name: Increased Projectile Speed
+	// Tooltip: "{0}% increased projectile speed"
+}
+
+IncreasedChannelingDamagePassive: {
+	// Name: Increased Damage While Channeling
+	// Tooltip: "{0}% increased damage while channeling"
+}
+
+IncreasedDefenseWhileChanneling: {
+	// Name: Increased Defense While Channeling
+	// Tooltip: +{0} defense while channeling
+}
+
+ReducedManaCostWhileChannelingPassive: {
+	// Name: Reduced Mana Cost While Channeling
+	// Tooltip: +{0}% reduced mana cost while channeling
 }
