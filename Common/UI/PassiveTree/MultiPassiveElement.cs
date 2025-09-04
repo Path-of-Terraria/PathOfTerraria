@@ -15,8 +15,6 @@ internal class MultiPassiveElement : PassiveElement
 	public Passive[] InnerPassives { get; }
 	public Passive? ActivePassive => InnerPassives.FirstOrDefault(p => p.Level > 0);
 
-	public override Passive DrawnPassive => ActivePassive ?? Passive;
-
 	public MultiPassiveElement(Passive passive) : base(passive)
 	{
 		PassiveTreePlayer passiveTreeSystem = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
@@ -49,6 +47,11 @@ internal class MultiPassiveElement : PassiveElement
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		base.Draw(spriteBatch);
+
+		if (ActivePassive is { } inner)
+		{
+			inner.Draw(spriteBatch, GetDimensions().Center());
+		}
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
@@ -98,7 +101,7 @@ internal class MultiPassiveElement : PassiveElement
 
 		foreach (Passive outgoing in InnerPassives)
 		{
-			Append(new PassiveRadialElement(outgoing, Vector2.Zero, index));
+			Append(new PassiveRadialElement(outgoing, Vector2.Zero, index, InnerPassives.Length));
 			index++;
 		}
 
@@ -109,18 +112,20 @@ internal class MultiPassiveElement : PassiveElement
 internal class PassiveRadialElement : PassiveElement
 {
 	private readonly int _index;
+	private readonly int _numRadials;
 
 	public MultiPassiveElement? Handler => Parent is MultiPassiveElement e ? e : null;
 
 	private float Progress => Handler is { } handler ? (float)Handler.AnimationTime / Handler.AnimationTimeMax : 0f;
 
-	public PassiveRadialElement(Passive passive, Vector2 origin, int index) : base(passive)
+	public PassiveRadialElement(Passive passive, Vector2 origin, int index, int numRadials) : base(passive)
 	{
 		var size = passive.Texture.Size().ToPoint();
 
 		Debug.Assert(size.X > 1 && size.Y > 1);
 
 		_index = index;
+		_numRadials = numRadials;
 
 		Width.Set(size.X, 0);
 		Height.Set(size.Y, 0);
@@ -132,11 +137,10 @@ internal class PassiveRadialElement : PassiveElement
 	{
 		base.SafeUpdate(gameTime);
 
-		int space = 8;
-
 		Vector2 origin = Vector2.Zero;
 		float distance = (Height.Pixels + 22) * Progress + (float)Math.Sin(Progress * Math.PI) * 30; // The total distance to move
-		var newPos = (origin - (Vector2.UnitY * distance).RotatedBy(MathHelper.TwoPi / space * _index)).ToPoint();
+		float angle = MathHelper.TwoPi * (_index / (float)_numRadials);
+		var newPos = (origin - (Vector2.UnitY * distance).RotatedBy(angle)).ToPoint();
 
 		Left.Set(newPos.X - Width.Pixels / 2, 0.5f);
 		Top.Set(newPos.Y - Height.Pixels / 2, 0.5f);
