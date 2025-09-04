@@ -74,8 +74,8 @@ internal class MultiPassiveElement : PassiveElement
 
 			if (canAllocateInner)
 			{
-				Allocate(Passive);
-				Allocate(radial.Passive);
+				Allocate(Passive, usedCost: 0);
+				Allocate(radial.Passive, usedCost: 1);
 			}
 		}
 	}
@@ -84,8 +84,8 @@ internal class MultiPassiveElement : PassiveElement
 	{
 		if (ActivePassive is Passive active)
 		{
-			Deallocate(active);
-			Deallocate(Passive);
+			Deallocate(active, usedCost: 1);
+			Deallocate(Passive, usedCost: 0);
 		}
 	}
 
