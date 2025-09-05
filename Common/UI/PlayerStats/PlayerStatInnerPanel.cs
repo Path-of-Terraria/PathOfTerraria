@@ -157,9 +157,9 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		list.Add(new PlayerStatUI(GetLocalization("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(GetLocalization("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(GetLocalization("BlockCooldown"), player => $"{player.GetModPlayer<BlockPlayer>().BlockCooldown / 60:#0.##}s"));
-		list.Add(new PlayerStatUI(GetLocalization("FireResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().FireResistance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("ColdResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().ColdResistance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().LightningResistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("FireResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container.FireResistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("ColdResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container.ColdResistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(GetLocalization("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container.LightningResistance * 100:#0.##}%"));
 		// Offense  
 		list.Add(new PlayerStatUI(GetLocalization("OffenseHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(GetLocalization("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));

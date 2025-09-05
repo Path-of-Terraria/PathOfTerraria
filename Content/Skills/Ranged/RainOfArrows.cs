@@ -275,7 +275,7 @@ public class RainOfArrows : Skill
 						Projectile newProj = Main.projectile[proj];
 						newProj.localAI[0] = BuffID.Chilled;
 						newProj.localAI[1] = 120;
-						newProj.GetGlobalProjectile<ElementalProjectile>().ColdDamage.ApplyOverride(0, 1);
+						newProj.GetGlobalProjectile<ElementalProjectile>().Container.ColdDamageModifier.ApplyOverride(0, 1);
 					}
 				}
 

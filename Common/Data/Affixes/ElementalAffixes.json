@@ -160,5 +160,167 @@
 				"weight": 1
 			}
 		]
+	},
+	{
+		"affixType": "FireConversionDamage",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 11,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 15,
+				"minimumLevel": 19,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 26,
+				"weight": 1
+			},
+			{
+				"minValue": 21,
+				"maxValue": 24,
+				"minimumLevel": 35,
+				"weight": 1
+			},
+			{
+				"minValue": 25,
+				"maxValue": 28,
+				"minimumLevel": 47,
+				"weight": 1
+			},
+			{
+				"minValue": 28,
+				"maxValue": 33,
+				"minimumLevel": 56,
+				"weight": 1
+			},
+			{
+				"minValue": 33,
+				"maxValue": 36,
+				"minimumLevel": 63,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ColdConversionDamage",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 11,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 15,
+				"minimumLevel": 19,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 26,
+				"weight": 1
+			},
+			{
+				"minValue": 21,
+				"maxValue": 24,
+				"minimumLevel": 35,
+				"weight": 1
+			},
+			{
+				"minValue": 25,
+				"maxValue": 28,
+				"minimumLevel": 47,
+				"weight": 1
+			},
+			{
+				"minValue": 28,
+				"maxValue": 33,
+				"minimumLevel": 56,
+				"weight": 1
+			},
+			{
+				"minValue": 33,
+				"maxValue": 36,
+				"minimumLevel": 63,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "LightningConversionDamage",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 11,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 15,
+				"minimumLevel": 19,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 26,
+				"weight": 1
+			},
+			{
+				"minValue": 21,
+				"maxValue": 24,
+				"minimumLevel": 35,
+				"weight": 1
+			},
+			{
+				"minValue": 25,
+				"maxValue": 28,
+				"minimumLevel": 47,
+				"weight": 1
+			},
+			{
+				"minValue": 28,
+				"maxValue": 33,
+				"minimumLevel": 56,
+				"weight": 1
+			},
+			{
+				"minValue": 33,
+				"maxValue": 36,
+				"minimumLevel": 63,
+				"weight": 1
+			}
+		]
 	}
 ]

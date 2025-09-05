@@ -22,7 +22,7 @@ public class AegisChargeBuff : ModBuff
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<AegisChargePlayer>();
+		AegisChargePlayer chargePlayer = player.GetModPlayer<AegisChargePlayer>();
     
 		buffName = Language.GetTextValue("Mods.PathOfTerraria.Buffs.AegisChargeBuff.DisplayName");
 
@@ -37,15 +37,18 @@ public class AegisChargeBuff : ModBuff
 	public override void PostDraw(SpriteBatch spriteBatch, int buffIndex, BuffDrawParams drawParams)
 	{
 		Player player = Main.LocalPlayer;
-		var chargePlayer = player.GetModPlayer<AegisChargePlayer>();
+		AegisChargePlayer chargePlayer = player.GetModPlayer<AegisChargePlayer>();
 		
-		if (chargePlayer.Charges <= 1) return; // Don't draw if 1 charges
-		
+		if (chargePlayer.Charges <= 1)
+		{
+			return; // Don't draw if 1 charges
+		}
+
 		string chargeText = chargePlayer.Charges.ToString();
 		Vector2 textSize = FontAssets.MouseText.Value.MeasureString(chargeText);
 		
 		//Top middle of buff icon
-		Vector2 textPosition = new Vector2(
+		Vector2 textPosition = new(
 			drawParams.Position.X + 22 - textSize.X - 2,
 			drawParams.Position.Y + 20 - textSize.Y - 2 
 		);

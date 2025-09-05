@@ -7,8 +7,8 @@ internal class AddedFireResistancePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		var elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.FireResistance += Value / 100f;
+		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
+		elemental.Container.FireResistance += Value / 100f;
 	}
 }
 
@@ -17,8 +17,8 @@ internal class AddedColdResistancePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		var elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.ColdResistance += Value / 100f;
+		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
+		elemental.Container.ColdResistance += Value / 100f;
 	}
 }
 
@@ -27,8 +27,8 @@ internal class AddedLightningResistancePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		var elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.LightningResistance += Value / 100f;
+		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
+		elemental.Container.LightningResistance += Value / 100f;
 	}
 }
 
@@ -37,11 +37,11 @@ internal class AddedAllResistancePassive : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		var elemental = player.GetModPlayer<ElementalPlayer>();
+		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
 		float resistanceBonus = Value / 100f;
 		
-		elemental.FireResistance += resistanceBonus;
-		elemental.ColdResistance += resistanceBonus;
-		elemental.LightningResistance += resistanceBonus;
+		elemental.Container.FireResistance += resistanceBonus;
+		elemental.Container.ColdResistance += resistanceBonus;
+		elemental.Container.LightningResistance += resistanceBonus;
 	}
 }

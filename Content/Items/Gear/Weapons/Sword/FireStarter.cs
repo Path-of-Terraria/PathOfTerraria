@@ -54,7 +54,8 @@ internal class FireStarter : Sword, GenerateName.IItem
 	{
 		var sharpAffix = (ItemAffix)Affix.CreateAffix<AddedDamageAffix>(1, 4);
 		var onFireAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyOnFireGearAffix>(0.1f, 0.15f);
-		return [sharpAffix, onFireAffix];
+		var fireConvAffix = (ItemAffix)Affix.CreateAffix<FireConversionDamage>(0.1f, 0.15f);
+		return [sharpAffix, onFireAffix, fireConvAffix];
 	}
 	
 	public override bool AltFunctionUse(Player player)

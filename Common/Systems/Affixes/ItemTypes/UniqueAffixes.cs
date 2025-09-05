@@ -1,5 +1,3 @@
-using Terraria.Localization;
-
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 internal class NoFallDamageAffix : ItemAffix
