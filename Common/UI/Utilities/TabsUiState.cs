@@ -29,9 +29,9 @@ public abstract class TabsUiState : CloseableSmartUi
 		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Mouse Text"));
 	}
 
-	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true, Point? panelSize = null, Action extraOnTabChanged = null)
+	protected virtual void CreateMainPanel((string key, LocalizedText text)[] tabs, bool showCloseButton = true, (StyleDimension Width, StyleDimension Height)? panelSize = null, Action extraOnTabChanged = null)
 	{
-		panelSize ??= new Point(PanelWidth, PanelHeight);
+		panelSize ??= (StyleDimension.FromPixels(PanelWidth), StyleDimension.FromPixels(PanelHeight));
 
 		Panel = new UITabsPanel(false, false, tabs, DraggablePanelHeight);
 		TabPanel.OnActiveTabChanged += HandleActiveTabChanged;
@@ -43,8 +43,8 @@ public abstract class TabsUiState : CloseableSmartUi
 
 		Panel.Left.Set(LeftPadding, 0.5f);
 		Panel.Top.Set(TopPadding, 0.5f);
-		Panel.Width.Set(panelSize.Value.X, 0);
-		Panel.Height.Set(panelSize.Value.Y, 0);
+		Panel.Width = panelSize.Value.Width;
+		Panel.Height = panelSize.Value.Height;
 		Append(Panel);
 
 		if (showCloseButton)
