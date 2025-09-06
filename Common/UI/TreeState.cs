@@ -24,9 +24,10 @@ internal class TreeState : TabsUiState
 	private SkillSelectionPanel _skillSelection;
 
 	public override List<SmartUiElement> TabPanels => [_passiveTreeInner, _skillSelection];
-	protected static PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
-	public override int DepthPriority => 1;
 
+	protected static PassiveTreePlayer PassiveTreeSystem => Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
+
+	public override int DepthPriority => 1;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -61,10 +62,12 @@ internal class TreeState : TabsUiState
 				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
 				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
 		};
-		base.CreateMainPanel(localizedTexts, false, panelSize: new Point(Main.screenWidth - ShrinkX * 2, Main.screenHeight - ShrinkY * 2));
+
+		base.CreateMainPanel(localizedTexts, false, panelSize: (Width: new(-ShrinkX * 2, 1f), Height: new(-ShrinkY * 2, 1f)));
 		base.AppendChildren();
 		AddCloseButton();
 		ResetTree();
+		Recalculate();
 
 		IsVisible = true;
 	}
