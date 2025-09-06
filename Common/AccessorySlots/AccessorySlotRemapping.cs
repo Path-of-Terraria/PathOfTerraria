@@ -90,7 +90,7 @@ file sealed class ItemAccessorySlotRemapping : GlobalItem
 
 	public override bool CanEquipAccessory(Item item, Player player, int slot, bool modded)
 	{
-		bool result = slot switch
+		bool result = modded || slot switch
 		{
 			(int)RemappedEquipSlots.Accessory1 => AccessorySlotRemapping.IsNormalAccessory(item),
 			(int)RemappedEquipSlots.Accessory2 => AccessorySlotRemapping.IsNormalAccessory(item),
