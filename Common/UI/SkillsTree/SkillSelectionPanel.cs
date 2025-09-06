@@ -93,12 +93,6 @@ internal class SkillSelectionPanel : SmartUiElement
 			}
 		}
 
-		//	int count = Math.Min(SkillTree.DefaultAugmentCount, tree.Augments.Count);
-		//	for (int i = 0; i < count; i++)
-		//	{
-		//		_skillTreeInnerPanel.Append(new AugmentSlotElement(spareSlotCounter++, tree.Augments[i].Unlocked));
-		//	}
-
 		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))
 		{
 			Width = StyleDimension.FromPixels(80),
