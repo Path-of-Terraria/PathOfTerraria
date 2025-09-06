@@ -82,7 +82,13 @@ internal class PassiveTreePlayer : ModPlayer
 			}
 		});
 
-		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new Edge(passives[n.ReferenceId], passives[connection.ReferenceId]))));
+		data.ForEach(n => n.Connections.ForEach(connection =>
+		{
+			if (passives[n.ReferenceId] != null)
+			{
+				Edges.Add(new Edge(passives[n.ReferenceId], passives[connection.ReferenceId]));
+			}
+		}));
 	}
 
 	public override void UpdateEquips()
