@@ -84,7 +84,7 @@ public class FlameSage : Skill
 		{
 			const int range = 300;
 
-			if ((Cooldown = Math.Max(Cooldown - 1, 0)) == 0)
+			/*if ((Cooldown = Math.Max(Cooldown - 1, 0)) == 0)
 			{
 				Terraria.Utilities.NPCUtils.TargetSearchResults results = FindTarget();
 				NPC target = results.NearestNPC;
@@ -96,7 +96,7 @@ public class FlameSage : Skill
 
 					Cooldown = CooldownMax;
 				}
-			}
+			}*/
 
 			if (NPC.Opacity == 0) //Just spawned in
 			{
