@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
 using Terraria.UI;
@@ -31,7 +32,10 @@ public struct TooltipDescription()
 	public int Stability;
 	/// <summary> If provided, this item instance is used to invoke ItemLoader's Pre/PostDrawTooltip(Line) hooks. </summary>
 	public Item? AssociatedItem;
-	/// <summary> The amount of time in game ticks that this tooltip should be visible for.  </summary>
+	/// <summary>
+	/// The amount of time in game ticks that this tooltip should be visible for.
+	/// <br/>If you are refreshing this tooltip every frame, then set this to zero to render for a single frame rather than all the frames of a tick.
+	/// </summary>
 	public uint VisibilityTimeInTicks = 1;
 	/// <summary> Padding to add inside the tooltip's background. </summary>
 	public Vector2 Padding = new(16, 16);
@@ -58,14 +62,12 @@ public class Tooltip : SmartUiState
 	{
 		public TooltipDescription Description;
 		public TooltipCache Cache;
-		public uint EndTime;
+		public ulong EndTime;
 	}
 
 	private static readonly List<TooltipInstance> tooltips = [];
 
-	// Main.GameUpdateCount doesn't increment normally when autopause is on, this is the workaround
-	private static uint tickCount;
-	private static uint lastTickCount;
+	private static ulong lastTickCount;
 
 	public override int DepthPriority => 2;
 
@@ -78,8 +80,6 @@ public class Tooltip : SmartUiState
 
 	public override void Draw(SpriteBatch spriteBatch)
 	{
-		tickCount++;
-
 		Span<TooltipInstance> span = IterateTooltips();
 
 		foreach (ref TooltipInstance tooltip in span)
@@ -98,8 +98,8 @@ public class Tooltip : SmartUiState
 	private static Span<TooltipInstance> IterateTooltips()
 	{
 		// Remove expired tooltips. Account for tick count resets, which are likely to occur if moving between subworlds.
-		uint currentTime = tickCount;
-		uint previousTime = lastTickCount;
+		ulong currentTime = TimeSystem.UpdateCount;
+		ulong previousTime = lastTickCount;
 		lastTickCount = currentTime;
 
 		if (currentTime < previousTime)
@@ -141,7 +141,7 @@ public class Tooltip : SmartUiState
 
 		ref TooltipInstance tooltip = ref CollectionsMarshal.AsSpan(tooltips)[tooltipIndex];
 		tooltip.Description = args;
-		tooltip.EndTime = tickCount + args.VisibilityTimeInTicks;
+		tooltip.EndTime = TimeSystem.UpdateCount + args.VisibilityTimeInTicks;
 	}
 
 	private static void Recalculate(in TooltipDescription args, ref TooltipCache cache)
