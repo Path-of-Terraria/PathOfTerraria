@@ -12,7 +12,7 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 /// <summary> Offers a choice of one of multiple passives contained within. Every hidden child node is considered an inner node. </summary>
 internal class MultiPassiveElement : PassiveElement
 {
-	private readonly Edge<AllocatableElement>[]_extraEdges;
+	private readonly Edge<AllocatableElement>[] _extraEdges;
 
 	public int AnimationTime { get; set; }
 	public int AnimationTimeMax => 60;

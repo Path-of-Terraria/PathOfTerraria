@@ -4,12 +4,15 @@ using System.Runtime.InteropServices;
 using Microsoft.Xna.Framework.Graphics;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Content;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
 internal abstract class AllocatableInnerPanel : SmartUiElement
 {
+	private static readonly Asset<Texture2D> _chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link");
+
 	private readonly HashSet<UIElement> _draggable = [];
 
 	protected Vector2 DragOffset;
@@ -41,7 +44,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	public static void DrawEdgeConnections(SpriteBatch spriteBatch, ReadOnlySpan<Edge<AllocatableElement>> connections)
 	{
 		Vector2 center = default;
-		Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
+		Texture2D chainTex = _chainTex.Value;
 
 		foreach (Edge<AllocatableElement> edge in connections)
 		{
