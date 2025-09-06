@@ -111,7 +111,7 @@ KingSlimeDomain: {
 
 QueenBeeDomain: {
 	DisplayName: Luxurious Hives
-	Description: Grab the Royal Honey Clumps from the Queen Bee's hives to call upon her.
+	Description: Grab the Royal Honey Clumps from the Queen Bee's hives. Craft the royal jelly from the clumps and use it to lure her out. 
 	Mining: "[i:1] Torches, ropes and Royal Honey [i:PathOfTerraria/RoyalHoneyClump] can be mined"
 	Placing: "{$DefaultPlacing}"
 }
