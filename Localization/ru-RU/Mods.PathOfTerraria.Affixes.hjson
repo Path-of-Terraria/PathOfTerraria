@@ -26,19 +26,19 @@ PiercingItemAffix.Description: "{1}{0}% пробитие защиты"
 AddedKnockbackItemAffix.Description: "{1}{0} отбрасывание"
 IncreasedKnockbackItemAffix.Description: "{1}{0}% отбрасывания"
 FlatKnockbackItemAffix.Description: "{1}{0} прямое отбрасывание"
-ChanceToApplyOnFireGearAffix.Description: '''{1}{0} шанс применить \"Огонь"\'''
-ChanceToApplyArmorShredGearAffix.Description: '''{1}{0} шанс применить \"Клочок брони"\'''
-ChanceToApplyBloodclotItemAffix.Description: '''{1}{0} шанс применить \"Сгусток крови"\'''
-ChanceToApplyPoisonItemAffix.Description: '''{1}{0}% шанс применить \"Отравление"\'''
+ChanceToApplyOnFireGearAffix.Description: "{1}{0} шанс применить «В огне!»"
+ChanceToApplyArmorShredGearAffix.Description: "{1}{0} шанс применить «Прореха в броне»"
+ChanceToApplyBloodclotItemAffix.Description: "{1}{0} шанс применить «Сгусток крови»"
+ChanceToApplyPoisonItemAffix.Description: "{1}{0}% шанс применить «Отравление»"
 BuffPoisonedHitsAffix.Description: "{1}{0}% урона отравленным врагам"
 MovementSpeedAffix.Description: "{1}{0}% скорость движения"
 HealOnKillingBurningEnemiesAffix.Description: "{1}{0} здоровья при убийстве горящего врага"
 IncreasedAttackSpeedAffix.Description: "{1}{0}% Увеличенная скорость атаки"
 AddedAttackSpeedAffix.Description: "{1}{0}% увеличение скорости атаки"
 AddedDamageAffix.Description: "{1}{0} увеличение урона"
-MoltenShellAffix.Description: "{1}{0} в Расплавленный панцирь"
-BloodSiphonAffix.Description: "{1}{0} в Кровавый вампиризм"
-FetidCarapaceAffix.Description: "{1}{0} к зловонному панцирю"
+MoltenShellAffix.Description: "{1}{0} в «Расплавленная оболочка»"
+BloodSiphonAffix.Description: "{1}{0} к «Переливание крови»"
+FetidCarapaceAffix.Description: "{1}{0} к «Гнилой панцирь»"
 
 NoFallDamageAffix: {
 	Description: Иммунитет к повреждениям от падений
@@ -70,9 +70,9 @@ ColdAffix.Prefix: Замораживание
 LightningAffix.Prefix: Шокирующий
 FlamingAffix.Prefix: Пылающий
 StalwartAffix.Prefix: Стойкий
-FireResistItemAffix.Description: "{1}{0}% огнестойкость"
-ColdResistItemAffix.Description: "{1}{0}% устойчивость к холоду"
-LightningResistItemAffix.Description: "{1}{0} Электростойкость"
+FireResistItemAffix.Description: "{1}{0}% сопротивления к огню"
+ColdResistItemAffix.Description: "{1}{0}% сопротивления к холоду"
+LightningResistItemAffix.Description: "{1}{0} сопротивления к молнии"
 // FocusChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Focus Charge on kill"
 // HasteChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Haste Charge on kill"
 // AegisChargeChanceOnKillAffix.Description: "{1}{0}% chance to gain a Aegis Charge on kill"

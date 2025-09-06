@@ -66,7 +66,7 @@ Quest: {
 	EoWQuest: {
 		Name: Шёпот глубин
 		Description: ""
-		MorvenRaven: Привести Морвена в Вороний пик
+		MorvenRaven: Привести Морвена в Гребень Ворона
 		SmashOrbs: Разбейте 3 теневых шара
 		KillEoW: Победите Пожирателя Миров
 		// ReturnToOverworld: Return to the Overworld
@@ -113,10 +113,10 @@ Quest: {
 	}
 
 	FirstQuest: {
-		Name: Вход в Вороний пик
+		Name: Вход в Гребень Ворона
 		Description: ""
-		ApproachEntrance: Подойти к входу в Вороний пик
-		EnterRavencrest: Войти в Вороний пик
+		ApproachEntrance: Подойти к входу в Гребень Ворона
+		EnterRavencrest: Войти в Гребень Ворона
 	}
 
 	QueenSlimeQuest: {

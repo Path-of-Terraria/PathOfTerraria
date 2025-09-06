@@ -10,7 +10,7 @@ RarityNames: {
 }
 
 GrimoireConsume: "{0} поглощено!"
-GrimoireMaterial: Используется для Менagerie Гримуара.
+GrimoireMaterial: Используется для зверинца Гримуара.
 GrimoireBoon: Обменяно {0} на монеты!
 # This is used for disabling EoW/BoC spawns, instead of spawning the boss it says this.
 ChasmAppears: Появляется бездна...
