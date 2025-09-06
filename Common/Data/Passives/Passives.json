@@ -2479,7 +2479,7 @@
 			},
 			{
 				"referenceId": 999,
-				"isHidden": true
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2494,7 +2494,7 @@
 		"connections": [
 			{
 				"referenceId": 999,
-				"isHidden": true
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2515,7 +2515,7 @@
 			},
 			{
 				"referenceId": 999,
-				"isHidden": true
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2533,7 +2533,7 @@
 			},
 			{
 				"referenceId": 999,
-				"isHidden": true
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2551,7 +2551,7 @@
 			},
 			{
 				"referenceId": 999,
-				"isHidden": true
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2565,20 +2565,16 @@
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 1001,
-				"isHidden": true
+				"referenceId": 1001
 			},
 			{
-				"referenceId": 1002,
-				"isHidden": true
+				"referenceId": 1002
 			},
 			{
-				"referenceId": 1003,
-				"isHidden": true
+				"referenceId": 1003
 			},
 			{
-				"referenceId": 1004,
-				"isHidden": true
+				"referenceId": 1004
 			}
 		],
 		"position": {
@@ -2593,7 +2589,7 @@
 		"referenceId": 1001,
 		"maxLevel": 1,
 		"position": {
-			"x": -59,
+			"x": -84,
 			"y": -1065
 		},
 		"isHidden": true
@@ -2603,7 +2599,7 @@
 		"referenceId": 1002,
 		"maxLevel": 1,
 		"position": {
-			"x": 41,
+			"x": 66,
 			"y": -1065
 		},
 		"isHidden": true
@@ -2614,7 +2610,7 @@
 		"maxLevel": 1,
 		"position": {
 			"x": -9,
-			"y": -1015
+			"y": -1140
 		},
 		"isHidden": true
 	},
@@ -2624,7 +2620,7 @@
 		"maxLevel": 1,
 		"position": {
 			"x": -9,
-			"y": -1115
+			"y": -990
 		},
 		"isHidden": true
 	},

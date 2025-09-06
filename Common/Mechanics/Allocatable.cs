@@ -78,6 +78,4 @@ public abstract class Allocatable
 	{
 		return Allocated;
 	}
-
-	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position) { }
 }

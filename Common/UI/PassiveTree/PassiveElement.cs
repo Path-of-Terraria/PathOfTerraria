@@ -30,16 +30,6 @@ internal class PassiveElement : AllocatableElement
 		}
 	}
 
-	public override void Draw(SpriteBatch spriteBatch)
-	{
-		base.Draw(spriteBatch);
-	}
-
-	public override void DrawHoverTooltip()
-	{
-		base.DrawHoverTooltip();
-	}
-
 	public override void SafeClick(UIMouseEvent evt)
 	{
 		if (Passive.CanAllocate(Main.LocalPlayer) && CheckMouseContained())
