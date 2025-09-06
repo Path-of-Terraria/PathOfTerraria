@@ -4,160 +4,323 @@
 		"referenceId": 0,
 		"maxLevel": 1,
 		"connections": [
+		]
+	},
+	{
+		"internalIdentifier": "IncreasedMagicDamagePassive",
+		"referenceId": 1,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
 			{
-				"referenceId": 12
+				"referenceId": 0
 			}
 		],
 		"position": {
-			"x": -330,
-			"y": -5
+			"x": 100,
+			"y": 0
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 1,
-		"maxLevel": 1,
+		"internalIdentifier": "IncreasedMeleeDamagePassive",
+		"referenceId": 2,
+		"maxLevel": 3,
+		"value": 10,
 		"connections": [
 			{
-				"referenceId": -2
+				"referenceId": 0
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": 100
+		}
+	},
+	{
+		"internalIdentifier": "AddedLifePassive",
+		"referenceId": 3,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 12
 			},
 			{
-				"referenceId": 78
+				"referenceId": 7
+			}
+		],
+		"position": {
+			"x": 150,
+			"y": 150
+		}
+	},
+	{
+		"internalIdentifier": "AddedLifePassive",
+		"referenceId": 4,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 21
+			}
+		],
+		"position": {
+			"x": -150,
+			"y": 150
+		}
+	},
+	{
+		"internalIdentifier": "DecreasedManaCostPassive",
+		"referenceId": 5,
+		"maxLevel": 3,
+		"value": 3,
+		"connections": [
+			{
+				"referenceId": 18
 			},
 			{
 				"referenceId": 20
 			}
 		],
 		"position": {
-			"x": 425,
-			"y": -102
+			"x": -150,
+			"y": -150
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 2,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 79
-			},
-			{
-				"referenceId": 3
-			}
-		],
-		"position": {
-			"x": 425,
-			"y": 94
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 3,
-		"maxLevel": 1,
-		"position": {
-			"x": 388,
-			"y": 202
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 4,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 3
-			}
-		],
-		"position": {
-			"x": 320,
-			"y": 304
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 5,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 4
-			},
-			{
-				"referenceId": 6
-			}
-		],
-		"position": {
-			"x": 204,
-			"y": 391
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 6,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": -1
-			},
-			{
-				"referenceId": 219
-			}
-		],
-		"position": {
-			"x": 85,
-			"y": 440
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "DamageReductionPassive",
 		"referenceId": 7,
-		"maxLevel": 1,
+		"maxLevel": 3,
+		"value": 2,
+		"connections": [
+			{
+				"referenceId": 2
+			}
+		],
+		"position": {
+			"x": 50,
+			"y": 200
+		}
+	},
+	{
+		"internalIdentifier": "AddedCriticalStrikeChance",
+		"referenceId": 8,
+		"maxLevel": 3,
+		"value": 1,
+		"connections": [
+			{
+				"referenceId": 3
+			}
+		],
+		"position": {
+			"x": 150,
+			"y": 225
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedCriticalStrikeMultiplier",
+		"referenceId": 9,
+		"maxLevel": 3,
+		"value": 3,
 		"connections": [
 			{
 				"referenceId": 8
-			},
-			{
-				"referenceId": 218
 			}
 		],
 		"position": {
-			"x": -102,
-			"y": 439
+			"x": 200,
+			"y": 300
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 8,
-		"maxLevel": 1,
+		"internalIdentifier": "IncreasedCriticalStrikeChance",
+		"referenceId": 10,
+		"maxLevel": 3,
+		"value": 15,
 		"connections": [
 			{
 				"referenceId": 9
 			}
 		],
 		"position": {
-			"x": -221,
-			"y": 388
+			"x": 300,
+			"y": 300
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 9,
-		"maxLevel": 1,
+		"internalIdentifier": "ArmorPenetrationPassive",
+		"referenceId": 11,
+		"maxLevel": 3,
+		"value": 2,
 		"connections": [
 			{
-				"referenceId": 10
+				"referenceId": 2
 			},
 			{
-				"referenceId": 267
+				"referenceId": 4
 			}
 		],
 		"position": {
-			"x": -340,
-			"y": 301
+			"x": -50,
+			"y": 200
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 10,
+		"internalIdentifier": "StrongerChillPassive",
+		"referenceId": 12,
+		"maxLevel": 1,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 1
+			}
+		],
+		"position": {
+			"x": 200,
+			"y": 50
+		}
+	},
+	{
+		"internalIdentifier": "ShockChancePassive",
+		"referenceId": 13,
+		"maxLevel": 1,
+		"value": 12,
+		"connections": [
+			{
+				"referenceId": 1
+			}
+		],
+		"position": {
+			"x": 200,
+			"y": -50
+		}
+	},
+	{
+		"internalIdentifier": "DecreasedManaCostPassive",
+		"referenceId": 14,
+		"maxLevel": 3,
+		"value": 2,
+		"connections": [
+			{
+				"referenceId": 13
+			},
+			{
+				"referenceId": 19
+			}
+		],
+		"position": {
+			"x": 150,
+			"y": -150
+		}
+	},
+	{
+		"internalIdentifier": "DamageReductionPassive",
+		"referenceId": 15,
+		"maxLevel": 1,
+		"value": 1,
+		"connections": [
+			{
+				"referenceId": 0
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedRangedDamagePassive",
+		"referenceId": 16,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 0
+			}
+		],
+		"position": {
+			"x": -100,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 17,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 0
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": -100
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedSentryDamagePassive",
+		"referenceId": 18,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 17
+			}
+		],
+		"position": {
+			"x": -50,
+			"y": -200
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMinionDamagePassive",
+		"referenceId": 19,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 17
+			}
+		],
+		"position": {
+			"x": 50,
+			"y": -200
+		}
+	},
+	{
+		"internalIdentifier": "LongRangePassive",
+		"referenceId": 20,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 16
+			}
+		],
+		"position": {
+			"x": -200,
+			"y": -50
+		}
+	},
+	{
+		"internalIdentifier": "CloseRangePassive",
+		"referenceId": 21,
+		"maxLevel": 3,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 16
+			}
+		],
+		"position": {
+			"x": -200,
+			"y": 50
+		}
+	},
+	{
+		"internalIdentifier": "ChanceToBleedPassive",
+		"referenceId": 22,
 		"maxLevel": 1,
 		"connections": [
 			{
@@ -165,3993 +328,251 @@
 			}
 		],
 		"position": {
-			"x": -408,
-			"y": 209
+			"x": -50,
+			"y": 300
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 11,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 0
-			},
-			{
-				"referenceId": 174
-			}
-		],
-		"position": {
-			"x": -456,
-			"y": 95
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 12,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 13
-			},
-			{
-				"referenceId": 173
-			}
-		],
-		"position": {
-			"x": -456,
-			"y": -102
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 13,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 14
-			}
-		],
-		"position": {
-			"x": -408,
-			"y": -230
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 14,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 15
-			},
-			{
-				"referenceId": 266
-			}
-		],
-		"position": {
-			"x": -323,
-			"y": -335
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 15,
-		"maxLevel": 1,
-		"position": {
-			"x": -221,
-			"y": -411
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 16,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 15
-			},
-			{
-				"referenceId": -3
-			}
-		],
-		"position": {
-			"x": -102,
-			"y": -463
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 17,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 127
-			}
-		],
-		"position": {
-			"x": 85,
-			"y": -463
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 18,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 17
-			}
-		],
-		"position": {
-			"x": 204,
-			"y": -417
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 19,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 18
-			}
-		],
-		"position": {
-			"x": 306,
-			"y": -337
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 20,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 19
-			}
-		],
-		"position": {
-			"x": 386,
-			"y": -231
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 21,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 44
-			}
-		],
-		"position": {
-			"x": 677,
-			"y": -440
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 22,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 84
-			},
-			{
-				"referenceId": 23
-			},
-			{
-				"referenceId": 21
-			}
-		],
-		"position": {
-			"x": 758,
-			"y": -248
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedAggressionPassive",
 		"referenceId": 23,
-		"maxLevel": 1,
-		"position": {
-			"x": 804,
-			"y": -11
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 24,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 23
-			},
-			{
-				"referenceId": 25
-			},
-			{
-				"referenceId": 278
-			}
-		],
-		"position": {
-			"x": 762,
-			"y": 238
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 25,
-		"maxLevel": 1,
-		"position": {
-			"x": 703,
-			"y": 394
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 26,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 264
-			},
-			{
-				"referenceId": 25
-			},
-			{
-				"referenceId": 279
-			},
-			{
-				"referenceId": 280
-			}
-		],
-		"position": {
-			"x": 587,
-			"y": 553
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 27,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 26
-			}
-		],
-		"position": {
-			"x": 409,
-			"y": 699
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 28,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 27
-			},
-			{
-				"referenceId": 281
-			},
-			{
-				"referenceId": 219
-			},
-			{
-				"referenceId": 225
-			},
-			{
-				"referenceId": 236
-			}
-		],
-		"position": {
-			"x": 204,
-			"y": 789
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 29,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 28
-			}
-		],
-		"position": {
-			"x": -9,
-			"y": 816
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 30,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 29
-			},
-			{
-				"referenceId": 218
-			},
-			{
-				"referenceId": 282
-			}
-		],
-		"position": {
-			"x": -221,
-			"y": 784
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 31,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 30
-			}
-		],
-		"position": {
-			"x": -416,
-			"y": 700
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 32,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 31
-			},
-			{
-				"referenceId": 283
-			},
-			{
-				"referenceId": 272
-			}
-		],
-		"position": {
-			"x": -607,
-			"y": 555
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 33,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 32
-			},
-			{
-				"referenceId": 205
-			}
-		],
-		"position": {
-			"x": -721,
-			"y": 394
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 34,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 33
-			},
-			{
-				"referenceId": 285
-			}
-		],
-		"position": {
-			"x": -785,
-			"y": 238
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 35,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 34
-			}
-		],
-		"position": {
-			"x": -821,
-			"y": -10
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 36,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 35
-			},
-			{
-				"referenceId": 179
-			},
-			{
-				"referenceId": 173
-			},
-			{
-				"referenceId": 187
-			},
-			{
-				"referenceId": 286
-			}
-		],
-		"position": {
-			"x": -785,
-			"y": -248
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 37,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 36
-			},
-			{
-				"referenceId": 38
-			}
-		],
-		"position": {
-			"x": -699,
-			"y": -433
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 38,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 39
-			},
-			{
-				"referenceId": 266
-			}
-		],
-		"position": {
-			"x": -573,
-			"y": -590
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 39,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 142
-			}
-		],
-		"position": {
-			"x": -408,
-			"y": -705
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 40,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 39
-			},
-			{
-				"referenceId": 132
-			},
-			{
-				"referenceId": 126
-			}
-		],
-		"position": {
-			"x": -221,
-			"y": -780
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 41,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 40
-			}
-		],
-		"position": {
-			"x": -9,
-			"y": -807
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 42,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 41
-			},
-			{
-				"referenceId": 133
-			},
-			{
-				"referenceId": 290
-			}
-		],
-		"position": {
-			"x": 204,
-			"y": -787
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 43,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 42
-			}
-		],
-		"position": {
-			"x": 392,
-			"y": -711
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 44,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 265
-			},
-			{
-				"referenceId": 276
-			},
-			{
-				"referenceId": 43
-			}
-		],
-		"position": {
-			"x": 554,
-			"y": -592
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 45,
-		"maxLevel": 1,
-		"position": {
-			"x": 1240,
-			"y": -848
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 46,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 47
-			},
-			{
-				"referenceId": 45
-			},
-			{
-				"referenceId": 292
-			}
-		],
-		"position": {
-			"x": 1376,
-			"y": -598
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 47,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 96
-			},
-			{
-				"referenceId": 48
-			}
-		],
-		"position": {
-			"x": 1457,
-			"y": -332
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 48,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 91
-			}
-		],
-		"position": {
-			"x": 1486,
-			"y": -14
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 49,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 48
-			}
-		],
-		"position": {
-			"x": 1460,
-			"y": 255
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 50,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 51
-			},
-			{
-				"referenceId": 49
-			}
-		],
-		"position": {
-			"x": 1386,
-			"y": 514
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 51,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 112
-			}
-		],
-		"position": {
-			"x": 1255,
-			"y": 772
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 52,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 53
-			},
-			{
-				"referenceId": 51
-			},
-			{
-				"referenceId": 271
-			}
-		],
-		"position": {
-			"x": 1071,
-			"y": 1008
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 53,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 242
-			}
-		],
-		"position": {
-			"x": 813,
-			"y": 1206
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 54,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 55
-			},
-			{
-				"referenceId": 53
-			}
-		],
-		"position": {
-			"x": 576,
-			"y": 1357
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 55,
-		"maxLevel": 1,
-		"position": {
-			"x": 292,
-			"y": 1451
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 56,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 57
-			},
-			{
-				"referenceId": 55
-			}
-		],
-		"position": {
-			"x": -9,
-			"y": 1474
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 57,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 228
-			}
-		],
-		"position": {
-			"x": -323,
-			"y": 1448
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 58,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 59
-			},
-			{
-				"referenceId": 57
-			},
-			{
-				"referenceId": 250
-			}
-		],
-		"position": {
-			"x": -577,
-			"y": 1370
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 59,
-		"maxLevel": 1,
-		"position": {
-			"x": -833,
-			"y": 1227
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 60,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 61
-			},
-			{
-				"referenceId": 59
-			}
-		],
-		"position": {
-			"x": -1091,
-			"y": 1008
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 61,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 216
-			}
-		],
-		"position": {
-			"x": -1267,
-			"y": 791
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 62,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 63
-			},
-			{
-				"referenceId": 61
-			}
-		],
-		"position": {
-			"x": -1390,
-			"y": 548
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 63,
-		"maxLevel": 1,
-		"position": {
-			"x": -1470,
-			"y": 291
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 64,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 65
-			},
-			{
-				"referenceId": 63
-			}
-		],
-		"position": {
-			"x": -1502,
-			"y": -9
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 65,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 184
-			}
-		],
-		"position": {
-			"x": -1472,
-			"y": -314
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 66,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 65
-			},
-			{
-				"referenceId": 67
-			},
-			{
-				"referenceId": 199
-			}
-		],
-		"position": {
-			"x": -1384,
-			"y": -605
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 67,
-		"maxLevel": 1,
-		"position": {
-			"x": -1251,
-			"y": -850
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 68,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 67
-			},
-			{
-				"referenceId": 69
-			},
-			{
-				"referenceId": 275
-			}
-		],
-		"position": {
-			"x": -1054,
-			"y": -1088
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 69,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 155
-			}
-		],
-		"position": {
-			"x": -799,
-			"y": -1284
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 70,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 71
-			},
-			{
-				"referenceId": 69
-			}
-		],
-		"position": {
-			"x": -544,
-			"y": -1409
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 71,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 140
-			}
-		],
-		"position": {
-			"x": -289,
-			"y": -1491
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 72,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 71
-			},
-			{
-				"referenceId": 73
-			}
-		],
-		"position": {
-			"x": -9,
-			"y": -1522
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 73,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 141
-			}
-		],
-		"position": {
-			"x": 292,
-			"y": -1491
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 74,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 73
-			},
-			{
-				"referenceId": 75
-			}
-		],
-		"position": {
-			"x": 576,
-			"y": -1396
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 75,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 76
-			}
-		],
-		"position": {
-			"x": 813,
-			"y": -1278
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 76,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 45
-			},
-			{
-				"referenceId": 269
-			}
-		],
-		"position": {
-			"x": 1041,
-			"y": -1088
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 78,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 22
-			},
-			{
-				"referenceId": 82
-			}
-		],
-		"position": {
-			"x": 587,
-			"y": -182
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 79,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 24
-			}
-		],
-		"position": {
-			"x": 587,
-			"y": 170
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 80,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 79
-			}
-		],
-		"position": {
-			"x": 495,
-			"y": 37
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 81,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 78
-			},
-			{
-				"referenceId": 80
-			}
-		],
-		"position": {
-			"x": 495,
-			"y": -68
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 82,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 83
-			}
-		],
-		"position": {
-			"x": 682,
-			"y": -66
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 83,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 79
-			}
-		],
-		"position": {
-			"x": 682,
-			"y": 37
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 84,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 94
-			},
-			{
-				"referenceId": 114
-			}
-		],
-		"position": {
-			"x": 937,
-			"y": -285
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 85,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 23
-			},
-			{
-				"referenceId": 88
-			}
-		],
-		"position": {
-			"x": 937,
-			"y": -131
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 86,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 23
-			}
-		],
-		"position": {
-			"x": 937,
-			"y": 107
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 87,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 24
-			}
-		],
-		"position": {
-			"x": 937,
-			"y": 258
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 88,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 90
-			}
-		],
-		"position": {
-			"x": 1103,
-			"y": -133
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 89,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 86
-			},
-			{
-				"referenceId": 90
-			}
-		],
-		"position": {
-			"x": 1103,
-			"y": 107
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 90,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 91
-			}
-		],
-		"position": {
-			"x": 1207,
-			"y": -14
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 91,
-		"maxLevel": 1,
-		"position": {
-			"x": 1364,
-			"y": -11
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 92,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 91
-			}
-		],
-		"position": {
-			"x": 1306,
-			"y": -160
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 93,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 92
-			}
-		],
-		"position": {
-			"x": 1201,
-			"y": -192
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 94,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 93
-			}
-		],
-		"position": {
-			"x": 1149,
-			"y": -285
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 95,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 94
-			},
-			{
-				"referenceId": 96
-			}
-		],
-		"position": {
-			"x": 1251,
-			"y": -374
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 96,
-		"maxLevel": 1,
-		"position": {
-			"x": 1357,
-			"y": -345
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 97,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 96
-			},
-			{
-				"referenceId": 92
-			}
-		],
-		"position": {
-			"x": 1375,
-			"y": -236
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 98,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 91
-			}
-		],
-		"position": {
-			"x": 1312,
-			"y": 136
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 99,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 98
-			}
-		],
-		"position": {
-			"x": 1201,
-			"y": 172
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 100,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 99
-			},
-			{
-				"referenceId": 87
-			}
-		],
-		"position": {
-			"x": 1135,
-			"y": 258
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 101,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 100
-			}
-		],
-		"position": {
-			"x": 1201,
-			"y": 372
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 102,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 101
-			},
-			{
-				"referenceId": 103
-			}
-		],
-		"position": {
-			"x": 1314,
-			"y": 366
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 103,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 98
-			},
-			{
-				"referenceId": 49
-			}
-		],
-		"position": {
-			"x": 1364,
-			"y": 261
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 104,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 87
-			},
-			{
-				"referenceId": 106
-			}
-		],
-		"position": {
-			"x": 893,
-			"y": 372
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 105,
-		"maxLevel": 1,
-		"position": {
-			"x": 762,
-			"y": 479
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 106,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 108
-			}
-		],
-		"position": {
-			"x": 802,
-			"y": 618
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 107,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 104
-			},
-			{
-				"referenceId": 105
-			}
-		],
-		"position": {
-			"x": 980,
-			"y": 618
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 108,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 105
-			}
-		],
-		"position": {
-			"x": 1018,
-			"y": 479
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 109,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 110
-			},
-			{
-				"referenceId": 51
-			}
-		],
-		"position": {
-			"x": 1085,
-			"y": 697
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 110,
-		"maxLevel": 1,
-		"position": {
-			"x": 1097,
-			"y": 595
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 111,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 112
-			},
-			{
-				"referenceId": 110
-			}
-		],
-		"position": {
-			"x": 1201,
-			"y": 540
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 112,
-		"maxLevel": 1,
-		"position": {
-			"x": 1274,
-			"y": 615
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 113,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 114
-			}
-		],
-		"position": {
-			"x": 980,
-			"y": -406
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 114,
-		"maxLevel": 1,
-		"position": {
-			"x": 867,
-			"y": -390
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 115,
-		"maxLevel": 1,
+		"maxLevel": 2,
 		"connections": [
 			{
 				"referenceId": 21
-			}
-		],
-		"position": {
-			"x": 762,
-			"y": -532
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 116,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 115
-			}
-		],
-		"position": {
-			"x": 845,
-			"y": -628
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 117,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 116
 			},
 			{
-				"referenceId": 120
+				"referenceId": 11
 			}
 		],
 		"position": {
-			"x": 833,
-			"y": -729
+			"x": -250,
+			"y": 250
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 118,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 116
-			}
-		],
-		"position": {
-			"x": 952,
-			"y": -628
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 119,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 118
-			}
-		],
-		"position": {
-			"x": 1063,
-			"y": -747
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 120,
-		"maxLevel": 1,
-		"position": {
-			"x": 952,
-			"y": -843
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 121,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 119
-			},
-			{
-				"referenceId": 120
-			}
-		],
-		"position": {
-			"x": 952,
-			"y": -747
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 122,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 292
-			}
-		],
-		"position": {
-			"x": 1180,
-			"y": -462
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 123,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 122
-			}
-		],
-		"position": {
-			"x": 1076,
-			"y": -513
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 124,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 123
-			}
-		],
-		"position": {
-			"x": 1129,
-			"y": -621
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 125,
-		"maxLevel": 1,
-		"position": {
-			"x": 1244,
-			"y": -622
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 126,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 129
-			},
-			{
-				"referenceId": 128
-			},
-			{
-				"referenceId": 16
-			}
-		],
-		"position": {
-			"x": -168,
-			"y": -621
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 127,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 42
-			}
-		],
-		"position": {
-			"x": 156,
-			"y": -621
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 128,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 131
-			}
-		],
-		"position": {
-			"x": -73,
-			"y": -705
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 129,
-		"maxLevel": 1,
-		"position": {
-			"x": -73,
-			"y": -537
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 130,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 127
-			},
-			{
-				"referenceId": 129
-			}
-		],
-		"position": {
-			"x": 54,
-			"y": -537
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 131,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 127
-			}
-		],
-		"position": {
-			"x": 54,
-			"y": -705
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 132,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 134
-			},
-			{
-				"referenceId": 170
-			}
-		],
-		"position": {
-			"x": -252,
-			"y": -951
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 133,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 168
-			},
-			{
-				"referenceId": 158
-			}
-		],
-		"position": {
-			"x": 240,
-			"y": -953
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 134,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 136
-			},
-			{
-				"referenceId": 148
-			}
-		],
-		"position": {
-			"x": -263,
-			"y": -1120
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 135,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 133
-			},
-			{
-				"referenceId": 164
-			}
-		],
-		"position": {
-			"x": 252,
-			"y": -1120
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 136,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 138
-			},
-			{
-				"referenceId": 140
-			}
-		],
-		"position": {
-			"x": -245,
-			"y": -1253
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 137,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 135
-			}
-		],
-		"position": {
-			"x": 224,
-			"y": -1253
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 138,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 139
-			}
-		],
-		"position": {
-			"x": -111,
-			"y": -1291
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 139,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 137
-			}
-		],
-		"position": {
-			"x": 97,
-			"y": -1288
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 140,
-		"maxLevel": 1,
-		"position": {
-			"x": -272,
-			"y": -1377
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 141,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 137
-			}
-		],
-		"position": {
-			"x": 258,
-			"y": -1374
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 142,
-		"maxLevel": 1,
-		"position": {
-			"x": -525,
-			"y": -733
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 143,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 146
-			},
-			{
-				"referenceId": 142
-			}
-		],
-		"position": {
-			"x": -639,
-			"y": -797
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 144,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 145
-			},
-			{
-				"referenceId": 142
-			}
-		],
-		"position": {
-			"x": -442,
-			"y": -850
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 145,
-		"maxLevel": 1,
-		"position": {
-			"x": -471,
-			"y": -957
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 146,
-		"maxLevel": 1,
-		"position": {
-			"x": -668,
-			"y": -905
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 147,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 145
-			},
-			{
-				"referenceId": 146
-			}
-		],
-		"position": {
-			"x": -607,
-			"y": -1062
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 148,
-		"maxLevel": 1,
-		"position": {
-			"x": -372,
-			"y": -1144
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 149,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 148
-			}
-		],
-		"position": {
-			"x": -477,
-			"y": -1065
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 150,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 149
-			},
-			{
-				"referenceId": 151
-			}
-		],
-		"position": {
-			"x": -582,
-			"y": -1144
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 151,
-		"maxLevel": 1,
-		"position": {
-			"x": -628,
-			"y": -1255
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 152,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 151
-			},
-			{
-				"referenceId": 70
-			}
-		],
-		"position": {
-			"x": -564,
-			"y": -1330
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 153,
-		"maxLevel": 1,
-		"position": {
-			"x": -395,
-			"y": -1330
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 154,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 153
-			},
-			{
-				"referenceId": 148
-			}
-		],
-		"position": {
-			"x": -337,
-			"y": -1255
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 155,
-		"maxLevel": 1,
-		"position": {
-			"x": -731,
-			"y": -1181
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 156,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 155
-			},
-			{
-				"referenceId": 157
-			}
-		],
-		"position": {
-			"x": -838,
-			"y": -1128
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 157,
-		"maxLevel": 1,
-		"position": {
-			"x": -731,
-			"y": -1037
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 158,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 161
-			}
-		],
-		"position": {
-			"x": 347,
-			"y": -1005
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 159,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 158
-			}
-		],
-		"position": {
-			"x": 454,
-			"y": -964
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 160,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 159
-			}
-		],
-		"position": {
-			"x": 561,
-			"y": -925
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 161,
-		"maxLevel": 1,
-		"position": {
-			"x": 445,
-			"y": -875
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 162,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 161
-			},
-			{
-				"referenceId": 163
-			}
-		],
-		"position": {
-			"x": 352,
-			"y": -816
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 163,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 161
-			}
-		],
-		"position": {
-			"x": 476,
-			"y": -772
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 164,
-		"maxLevel": 1,
-		"position": {
-			"x": 308,
-			"y": -1190
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 165,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 164
-			},
-			{
-				"referenceId": 166
-			}
-		],
-		"position": {
-			"x": 398,
-			"y": -1231
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 166,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 167
-			}
-		],
-		"position": {
-			"x": 446,
-			"y": -1159
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 167,
-		"maxLevel": 1,
-		"position": {
-			"x": 497,
-			"y": -1090
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 168,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 171
-			}
-		],
-		"position": {
-			"x": 124,
-			"y": -1018
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 169,
-		"maxLevel": 1,
-		"position": {
-			"x": -9,
-			"y": -925
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 170,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 172
-			},
-			{
-				"referenceId": 168
-			}
-		],
-		"position": {
-			"x": -145,
-			"y": -1018
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 171,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 169
-			}
-		],
-		"position": {
-			"x": -88,
-			"y": -1172
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 172,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 169
-			}
-		],
-		"position": {
-			"x": 69,
-			"y": -1172
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 173,
-		"maxLevel": 1,
-		"position": {
-			"x": -622,
-			"y": -180
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 174,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 34
-			}
-		],
-		"position": {
-			"x": -618,
-			"y": 166
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 175,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 174
-			}
-		],
-		"position": {
-			"x": -529,
-			"y": 42
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 176,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 173
-			},
-			{
-				"referenceId": 175
-			}
-		],
-		"position": {
-			"x": -529,
-			"y": -61
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 177,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 173
-			}
-		],
-		"position": {
-			"x": -708,
-			"y": -64
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 178,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 174
-			},
-			{
-				"referenceId": 177
-			}
-		],
-		"position": {
-			"x": -708,
-			"y": 42
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 179,
-		"maxLevel": 1,
-		"position": {
-			"x": -952,
-			"y": -178
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 180,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 34
-			}
-		],
-		"position": {
-			"x": -952,
-			"y": 154
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 181,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 179
-			},
-			{
-				"referenceId": 180
-			}
-		],
-		"position": {
-			"x": -1060,
-			"y": -14
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 182,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 184
-			},
-			{
-				"referenceId": 181
-			}
-		],
-		"position": {
-			"x": -1198,
-			"y": -132
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 183,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 185
-			},
-			{
-				"referenceId": 181
-			},
-			{
-				"referenceId": 208
-			}
-		],
-		"position": {
-			"x": -1198,
-			"y": 110
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 184,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 186
-			}
-		],
-		"position": {
-			"x": -1345,
-			"y": -192
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 185,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 63
-			},
-			{
-				"referenceId": 186
-			}
-		],
-		"position": {
-			"x": -1345,
-			"y": 175
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 186,
-		"maxLevel": 1,
-		"position": {
-			"x": -1382,
-			"y": -9
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 187,
-		"maxLevel": 1,
-		"position": {
-			"x": -913,
-			"y": -344
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 188,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 187
-			}
-		],
-		"position": {
-			"x": -995,
-			"y": -451
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 189,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 188
-			}
-		],
-		"position": {
-			"x": -995,
-			"y": -580
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 190,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 189
-			}
-		],
-		"position": {
-			"x": -889,
-			"y": -632
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 191,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 190
-			},
-			{
-				"referenceId": 192
-			}
-		],
-		"position": {
-			"x": -763,
-			"y": -566
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 192,
-		"maxLevel": 1,
-		"position": {
-			"x": -829,
-			"y": -436
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 193,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 195
-			},
-			{
-				"referenceId": 194
-			},
-			{
-				"referenceId": 182
-			}
-		],
-		"position": {
-			"x": -1247,
-			"y": -256
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 194,
-		"maxLevel": 1,
-		"position": {
-			"x": -1349,
-			"y": -346
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 195,
-		"maxLevel": 1,
-		"position": {
-			"x": -1139,
-			"y": -346
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 196,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 194
-			}
-		],
-		"position": {
-			"x": -1349,
-			"y": -500
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 197,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 195
-			},
-			{
-				"referenceId": 198
-			}
-		],
-		"position": {
-			"x": -1139,
-			"y": -500
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 198,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 196
-			},
-			{
-				"referenceId": 66
-			}
-		],
-		"position": {
-			"x": -1247,
-			"y": -574
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 199,
-		"maxLevel": 1,
-		"position": {
-			"x": -1272,
-			"y": -700
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 200,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 199
-			},
-			{
-				"referenceId": 201
-			},
-			{
-				"referenceId": 203
-			}
-		],
-		"position": {
-			"x": -1170,
-			"y": -765
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 201,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 204
-			}
-		],
-		"position": {
-			"x": -1073,
-			"y": -811
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 202,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 201
-			},
-			{
-				"referenceId": 275
-			}
-		],
-		"position": {
-			"x": -976,
-			"y": -859
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 203,
-		"maxLevel": 1,
-		"position": {
-			"x": -1170,
-			"y": -667
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 204,
-		"maxLevel": 1,
-		"position": {
-			"x": -1073,
-			"y": -680
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 205,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 206
-			}
-		],
-		"position": {
-			"x": -846,
-			"y": 372
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 206,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 207
-			}
-		],
-		"position": {
-			"x": -921,
-			"y": 454
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 207,
-		"maxLevel": 1,
-		"position": {
-			"x": -975,
-			"y": 322
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 208,
-		"maxLevel": 1,
-		"position": {
-			"x": -1232,
-			"y": 245
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 209,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 208
-			}
-		],
-		"position": {
-			"x": -1232,
-			"y": 418
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 210,
-		"maxLevel": 1,
-		"position": {
-			"x": -1139,
-			"y": 437
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 211,
-		"maxLevel": 1,
-		"position": {
-			"x": -1323,
-			"y": 437
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 212,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 211
-			}
-		],
-		"position": {
-			"x": -1323,
-			"y": 308
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 213,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 210
-			}
-		],
-		"position": {
-			"x": -1139,
-			"y": 308
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 214,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 216
-			},
-			{
-				"referenceId": 215
-			}
-		],
-		"position": {
-			"x": -1124,
-			"y": 554
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 215,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 217
-			}
-		],
-		"position": {
-			"x": -995,
-			"y": 554
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 216,
-		"maxLevel": 1,
-		"position": {
-			"x": -1107,
-			"y": 758
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 217,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 216
-			}
-		],
-		"position": {
-			"x": -1011,
-			"y": 758
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 218,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 220
-			}
-		],
-		"position": {
-			"x": -172,
-			"y": 608
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 219,
-		"maxLevel": 1,
-		"position": {
-			"x": 155,
-			"y": 612
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 220,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 221
-			}
-		],
-		"position": {
-			"x": -74,
-			"y": 524
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 221,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 219
-			}
-		],
-		"position": {
-			"x": 53,
-			"y": 524
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 222,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 218
-			},
-			{
-				"referenceId": 223
-			}
-		],
-		"position": {
-			"x": -74,
-			"y": 692
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 223,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 219
-			}
-		],
-		"position": {
-			"x": 53,
-			"y": 692
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 224,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 256
-			},
-			{
-				"referenceId": 30
-			},
-			{
-				"referenceId": 226
-			}
-		],
-		"position": {
-			"x": -172,
-			"y": 940
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 225,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 227
-			}
-		],
-		"position": {
-			"x": 163,
-			"y": 940
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 226,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 228
-			}
-		],
-		"position": {
-			"x": -140,
-			"y": 1122
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 227,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 263
-			},
-			{
-				"referenceId": 229
-			}
-		],
-		"position": {
-			"x": 128,
-			"y": 1122
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 228,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 247
-			}
-		],
-		"position": {
-			"x": -206,
-			"y": 1298
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 229,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 55
-			}
-		],
-		"position": {
-			"x": 194,
-			"y": 1306
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 230,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 229
-			},
-			{
-				"referenceId": 231
-			}
-		],
-		"position": {
-			"x": 294,
-			"y": 1297
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 231,
-		"maxLevel": 1,
-		"position": {
-			"x": 304,
-			"y": 1172
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 232,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 231
-			},
-			{
-				"referenceId": 233
-			}
-		],
-		"position": {
-			"x": 243,
-			"y": 1073
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 233,
-		"maxLevel": 1,
-		"position": {
-			"x": 400,
-			"y": 1032
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 234,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 233
-			},
-			{
-				"referenceId": 235
-			}
-		],
-		"position": {
-			"x": 563,
-			"y": 986
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 235,
-		"maxLevel": 1,
-		"position": {
-			"x": 537,
-			"y": 1094
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 236,
-		"maxLevel": 1,
-		"position": {
-			"x": 301,
-			"y": 840
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 237,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 236
-			},
-			{
-				"referenceId": 239
-			}
-		],
-		"position": {
-			"x": 349,
-			"y": 926
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 238,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 240
-			},
-			{
-				"referenceId": 236
-			}
-		],
-		"position": {
-			"x": 402,
-			"y": 781
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 239,
-		"maxLevel": 1,
-		"position": {
-			"x": 449,
-			"y": 867
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 240,
-		"maxLevel": 1,
-		"position": {
-			"x": 520,
-			"y": 712
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 241,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 239
-			}
-		],
-		"position": {
-			"x": 579,
-			"y": 818
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 242,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 243
-			},
-			{
-				"referenceId": 246
-			}
-		],
-		"position": {
-			"x": 813,
-			"y": 1140
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 243,
-		"maxLevel": 1,
-		"position": {
-			"x": 625,
-			"y": 1140
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 244,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 243
-			}
-		],
-		"position": {
-			"x": 610,
-			"y": 887
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 245,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 244
-			}
-		],
-		"position": {
-			"x": 719,
-			"y": 784
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 246,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 245
-			}
-		],
-		"position": {
-			"x": 827,
-			"y": 887
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 247,
-		"maxLevel": 1,
-		"position": {
-			"x": -264,
-			"y": 1192
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 248,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 247
-			},
-			{
-				"referenceId": 249
-			}
-		],
-		"position": {
-			"x": -403,
-			"y": 1226
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 249,
-		"maxLevel": 1,
-		"position": {
-			"x": -454,
-			"y": 1095
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 250,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 251
-			}
-		],
-		"position": {
-			"x": -607,
-			"y": 1214
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 251,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 253
-			}
-		],
-		"position": {
-			"x": -609,
-			"y": 1083
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 252,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 250
-			},
-			{
-				"referenceId": 255
-			}
-		],
-		"position": {
-			"x": -713,
-			"y": 1164
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 253,
-		"maxLevel": 1,
-		"position": {
-			"x": -668,
-			"y": 970
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 254,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 252
-			}
-		],
-		"position": {
-			"x": -786,
-			"y": 1019
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 255,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 254
-			}
-		],
-		"position": {
-			"x": -881,
-			"y": 1119
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 256,
-		"maxLevel": 1,
-		"position": {
-			"x": -265,
-			"y": 922
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 257,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 258
-			},
-			{
-				"referenceId": 256
-			}
-		],
-		"position": {
-			"x": -406,
-			"y": 859
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 258,
-		"maxLevel": 1,
-		"position": {
-			"x": -552,
-			"y": 774
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 259,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 258
-			},
-			{
-				"referenceId": 260
-			}
-		],
-		"position": {
-			"x": -674,
-			"y": 684
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 260,
-		"maxLevel": 1,
-		"position": {
-			"x": -649,
-			"y": 854
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 261,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 256
-			}
-		],
-		"position": {
-			"x": -421,
-			"y": 985
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 262,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 226
-			},
-			{
-				"referenceId": 227
-			}
-		],
-		"position": {
-			"x": -9,
-			"y": 991
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 263,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 226
-			}
-		],
-		"position": {
-			"x": -9,
-			"y": 1260
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 264,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 4
-			}
-		],
-		"position": {
-			"x": 446,
-			"y": 417
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 265,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 19
-			}
-		],
-		"position": {
-			"x": 427,
-			"y": -461
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 266,
-		"maxLevel": 1,
-		"position": {
-			"x": -454,
-			"y": -468
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 267,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 32
-			}
-		],
-		"position": {
-			"x": -472,
-			"y": 432
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 268,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 44
-			},
-			{
-				"referenceId": 269
-			}
-		],
-		"position": {
-			"x": 712,
-			"y": -756
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 269,
-		"maxLevel": 1,
-		"position": {
-			"x": 879,
-			"y": -928
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 270,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 26
-			}
-		],
-		"position": {
-			"x": 740,
-			"y": 692
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 271,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 270
-			}
-		],
-		"position": {
-			"x": 901,
-			"y": 845
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 272,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 259
-			}
-		],
-		"position": {
-			"x": -772,
-			"y": 706
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 273,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 272
-			},
-			{
-				"referenceId": 60
-			},
-			{
-				"referenceId": 217
-			}
-		],
-		"position": {
-			"x": -921,
-			"y": 847
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 274,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 38
-			},
-			{
-				"referenceId": 275
-			}
-		],
-		"position": {
-			"x": -731,
-			"y": -756
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 275,
-		"maxLevel": 1,
-		"position": {
-			"x": -891,
-			"y": -914
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 276,
-		"maxLevel": 1,
-		"position": {
-			"x": 554,
-			"y": -463
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 277,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 22
-			}
-		],
-		"position": {
-			"x": 658,
-			"y": -299
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 278,
-		"maxLevel": 1,
-		"position": {
-			"x": 661,
-			"y": 285
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 279,
-		"maxLevel": 1,
-		"position": {
-			"x": 576,
-			"y": 436
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 280,
-		"maxLevel": 1,
-		"position": {
-			"x": 454,
-			"y": 543
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 281,
-		"maxLevel": 1,
-		"position": {
-			"x": 260,
-			"y": 663
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 282,
-		"maxLevel": 1,
-		"position": {
-			"x": -273,
-			"y": 655
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 283,
-		"maxLevel": 1,
-		"position": {
-			"x": -468,
-			"y": 540
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 284,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 32
-			}
-		],
-		"position": {
-			"x": -593,
-			"y": 428
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 285,
-		"maxLevel": 1,
-		"position": {
-			"x": -684,
-			"y": 278
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 286,
-		"maxLevel": 1,
-		"position": {
-			"x": -673,
-			"y": -294
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 287,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 38
-			}
-		],
-		"position": {
-			"x": -565,
-			"y": -470
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 288,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 38
-			}
-		],
-		"position": {
-			"x": -448,
-			"y": -582
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 289,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 40
-			}
-		],
-		"position": {
-			"x": -275,
-			"y": -665
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 290,
-		"maxLevel": 1,
-		"position": {
-			"x": 247,
-			"y": -694
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 291,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 44
-			}
-		],
-		"position": {
-			"x": 429,
-			"y": -587
-		}
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 292,
-		"maxLevel": 1,
-		"connections": [
-			{
-				"referenceId": 125
-			}
-		],
-		"position": {
-			"x": 1287,
-			"y": -517
-		}
-	},
-	{
-		"internalIdentifier": "AnchorPassive",
-		"referenceId": -1,
-		"maxLevel": 1,
+		"internalIdentifier": "IncreasedBlockChancePassive",
+		"referenceId": 24,
+		"maxLevel": 2,
 		"connections": [
 			{
 				"referenceId": 7
 			}
 		],
 		"position": {
-			"x": -10,
+			"x": 50,
 			"y": 300
 		}
 	},
 	{
-		"internalIdentifier": "AnchorPassive",
-		"referenceId": -2,
+		"internalIdentifier": "GlancingBlowsPassive",
+		"referenceId": 25,
 		"maxLevel": 1,
 		"connections": [
 			{
-				"referenceId": 2
+				"referenceId": 24
+			}
+		],
+		"position": {
+			"x": 133,
+			"y": 367
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 26,
+		"maxLevel": 2,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 3
+			}
+		],
+		"position": {
+			"x": 233,
+			"y": 233
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 27,
+		"maxLevel": 2,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 3
+			}
+		],
+		"position": {
+			"x": 250,
+			"y": 150
+		}
+	},
+	{
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 28,
+		"maxLevel": 2,
+		"value": 5,
+		"connections": [
+			{
+				"referenceId": 27
+			},
+			{
+				"referenceId": 26
+			}
+		],
+		"position": {
+			"x": 350,
+			"y": 210
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 29,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 21
+			},
+			{
+				"referenceId": 20
+			}
+		],
+		"position": {
+			"x": -300,
+			"y": 0
+		}
+	},
+	{
+		"internalIdentifier": "AddedStrengthPassive",
+		"referenceId": 30,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 13
+			},
+			{
+				"referenceId": 12
 			}
 		],
 		"position": {
 			"x": 300,
-			"y": -5
+			"y": 0
 		}
 	},
 	{
-		"internalIdentifier": "AnchorPassive",
-		"referenceId": -3,
-		"maxLevel": 1,
+		"internalIdentifier": "AddedDexterityPassive",
+		"referenceId": 31,
+		"maxLevel": 2,
+		"value": 10,
 		"connections": [
 			{
-				"referenceId": 17
+				"referenceId": 21
+			},
+			{
+				"referenceId": 29
 			}
 		],
 		"position": {
-			"x": -10,
-			"y": -330
+			"x": -300,
+			"y": 75
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 32,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 13
+			},
+			{
+				"referenceId": 30
+			}
+		],
+		"position": {
+			"x": 300,
+			"y": -75
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedPotionRecoveryPassive",
+		"referenceId": 33,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 19
+			},
+			{
+				"referenceId": 18
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": -290
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedMoveSpeedPassive",
+		"referenceId": 34,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": -380
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedWhipDamage",
+		"referenceId": 35,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": 120,
+			"y": -320
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedWhipSpeed",
+		"referenceId": 36,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": -120,
+			"y": -370
+		}
+	},
+	{
+		"internalIdentifier": "IncreasedJumpHeight",
+		"referenceId": 37,
+		"maxLevel": 2,
+		"value": 10,
+		"connections": [
+			{
+				"referenceId": 33
+			}
+		],
+		"position": {
+			"x": -220,
+			"y": -320
 		}
 	}
 ]

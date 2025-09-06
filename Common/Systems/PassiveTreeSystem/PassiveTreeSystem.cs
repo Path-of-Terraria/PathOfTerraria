@@ -46,7 +46,7 @@ internal class PassiveTreePlayer : ModPlayer
 
 	private void SetTree()
 	{
-		foreach (Passive passive in ActiveNodes)
+		foreach (Passive passive in ActiveNodes.Where(passive => passive != null))
 		{
 			passive.Level = _saveData.TryGet(passive.ReferenceId.ToString(), out int level) ? level : passive.Name == "AnchorPassive" ? 1 : 0;
 
@@ -76,7 +76,10 @@ internal class PassiveTreePlayer : ModPlayer
 		data.ForEach(n =>
 		{
 			passives.Add(n.ReferenceId, Passive.GetPassiveFromData(n));
-			ActiveNodes.Add(passives[n.ReferenceId]);
+			if (passives[n.ReferenceId] != null)
+			{
+				ActiveNodes.Add(passives[n.ReferenceId]);
+			}
 		});
 
 		data.ForEach(n => n.Connections.ForEach(connection => Edges.Add(new Edge(passives[n.ReferenceId], passives[connection.ReferenceId]))));

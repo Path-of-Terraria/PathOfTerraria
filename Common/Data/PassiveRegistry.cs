@@ -51,11 +51,11 @@ public class PassiveRegistry : ILoadable
 		string passiveJson = passiveReader.ReadToEnd();
 		List<PassiveData> passiveData = JsonSerializer.Deserialize<List<PassiveData>>(passiveJson, Options);
 
-		passiveData // no clue how to handle empty values, lol
-			.ForEach(d => {
-				d.Connections ??= [];
-				d.Position ??= new PassivePosition();
-			});
+		foreach (PassiveData d in passiveData)
+		{
+			d.Connections ??= [];
+			d.Position ??= new PassivePosition();
+		}
 
 		Passives.AddRange(passiveData);
 		passiveStream.Close();
@@ -72,19 +72,20 @@ public class PassiveRegistry : ILoadable
 	private static Stream GetPassiveJsonStream()
 	{
 #if DEBUG
-		string sourcePath = Path.Combine(PassiveFileWatcher.SourcePath, "Passives.json");
+		string sourcePath = Path.Combine(PassiveFileWatcher.SourcePath, "Passives-dev.json");
 		string tmodPath = Path.Combine(ModLoader.ModPath, PoTMod.ModName + ".tmod");
 
 		// If the mod was built later than the passives file was opened, open the internal file
 		if (File.GetLastWriteTime(sourcePath).CompareTo(File.GetLastWriteTime(tmodPath)) <= 0)
 		{
-			return PoTMod.Instance.GetFileStream($"Common/Data/Passives/Passives.json");
+			return PoTMod.Instance.GetFileStream($"Common/Data/Passives/Passives-dev.json");
 		}
 
 		// Otherwise, return the in-dev file
 		return new FileStream(sourcePath, FileMode.Open, FileAccess.Read);
 #else
 		// Release code always uses the internal file
+		
 		return PoTMod.Instance.GetFileStream($"Common/Data/Passives/Passives.json");
 #endif
 	}

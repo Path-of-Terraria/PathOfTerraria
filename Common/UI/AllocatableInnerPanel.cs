@@ -32,6 +32,11 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 
 		foreach (Edge edge in Connections) //Drawing connections here means it gets clipped by OverflowHidden correctly
 		{
+			if (edge.Start == null || edge.End == null)
+			{
+				continue;
+			}
+			
 			Texture2D chainTex = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Link").Value;
 			Color color = Color.Gray;
 
