@@ -1,5 +1,7 @@
-﻿using System.Diagnostics;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using Terraria.UI;
 
@@ -10,8 +12,10 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 /// <summary> Offers a choice of one of multiple passives contained within. Every hidden child node is considered an inner node. </summary>
 internal class MultiPassiveElement : PassiveElement
 {
+	private readonly Edge<AllocatableElement>[]_extraEdges;
+
 	public int AnimationTime { get; set; }
-	public int AnimationTimeMax => 20;
+	public int AnimationTimeMax => 60;
 	public Passive[] InnerPassives { get; }
 	public Passive? ActivePassive => InnerPassives.FirstOrDefault(p => p.Level > 0);
 
@@ -19,6 +23,7 @@ internal class MultiPassiveElement : PassiveElement
 	{
 		PassiveTreePlayer passiveTreeSystem = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 		InnerPassives = passiveTreeSystem.Edges.Where(e => e.Start == Passive && e.End.IsHidden).Select(e => (Passive)e.End).ToArray();
+		_extraEdges = new Edge<AllocatableElement>[InnerPassives.Length];
 	}
 
 	public override void SafeUpdate(GameTime gameTime)
@@ -30,6 +35,8 @@ internal class MultiPassiveElement : PassiveElement
 		bool shouldShowRadials = shouldHaveRadials || AnimationTime > 0;
 
 		AnimationTime = shouldHaveRadials ? Math.Min(AnimationTimeMax, AnimationTime + 1) : Math.Max(0, AnimationTime - 1);
+		// Speed up closing animation.
+		AnimationTime = !shouldHaveRadials ? Math.Min(AnimationTime, AnimationTimeMax / 4) : AnimationTime;
 
 		if (showsRadials != shouldShowRadials)
 		{
@@ -44,14 +51,29 @@ internal class MultiPassiveElement : PassiveElement
 		}
 	}
 
-	public override void Draw(SpriteBatch spriteBatch)
+	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
-		base.Draw(spriteBatch);
+		base.DrawSelf(spriteBatch);
 
 		if (ActivePassive is { } inner)
 		{
-			inner.Draw(spriteBatch, GetDimensions().Center());
+			DrawNode(inner, spriteBatch, GetDimensions().Center());
 		}
+	}
+
+	public override void Draw(SpriteBatch spriteBatch)
+	{
+		// Not calling base on purpose.
+
+		if (Children.Any())
+		{
+			AllocatableInnerPanel.DrawEdgeConnections(spriteBatch, _extraEdges);
+		}
+
+		DrawChildren(spriteBatch);
+
+		// Draw self above children.
+		DrawSelf(spriteBatch);
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
@@ -60,7 +82,6 @@ internal class MultiPassiveElement : PassiveElement
 
 		if (evt?.Target is PassiveRadialElement radial && ActivePassive == null && Passive.CanAllocate(player))
 		{
-			// The inner CanAllocate will likely check for our current node's level, so we must falsify the evidence.
 			bool canAllocateInner;
 			try
 			{
@@ -95,14 +116,19 @@ internal class MultiPassiveElement : PassiveElement
 		return base.ContainsPoint(point) || Children.Any(e => e.ContainsPoint(point));
 	}
 
+	public override void DrawHoverTooltip(Allocatable node)
+	{
+		base.DrawHoverTooltip(ActivePassive is { } active ? active : node);
+	}
+
 	private void AddRadials()
 	{
-		int index = 0;
-
-		foreach (Passive outgoing in InnerPassives)
+		for (int i = 0; i < InnerPassives.Length; i++)
 		{
-			Append(new PassiveRadialElement(outgoing, Vector2.Zero, index, InnerPassives.Length));
-			index++;
+			Passive inner = InnerPassives[i];
+			var element = new PassiveRadialElement(inner, Vector2.Zero, inner.TreePos - Passive.TreePos);
+			Append(element);
+			_extraEdges[i] = new Edge<AllocatableElement>(this, element, Flags: 0);
 		}
 
 		RecalculateChildren();
@@ -111,39 +137,59 @@ internal class MultiPassiveElement : PassiveElement
 
 internal class PassiveRadialElement : PassiveElement
 {
-	private readonly int _index;
-	private readonly int _numRadials;
+	private readonly Vector2 _startOffset;
+	private readonly Vector2 _targetOffset;
 
 	public MultiPassiveElement? Handler => Parent is MultiPassiveElement e ? e : null;
 
 	private float Progress => Handler is { } handler ? (float)Handler.AnimationTime / Handler.AnimationTimeMax : 0f;
 
-	public PassiveRadialElement(Passive passive, Vector2 origin, int index, int numRadials) : base(passive)
+	public PassiveRadialElement(Passive passive, Vector2 startOffset, Vector2 targetOffset) : base(passive)
 	{
 		var size = passive.Texture.Size().ToPoint();
 
 		Debug.Assert(size.X > 1 && size.Y > 1);
 
-		_index = index;
-		_numRadials = numRadials;
+		_startOffset = startOffset;
+		_targetOffset = targetOffset;
 
 		Width.Set(size.X, 0);
 		Height.Set(size.Y, 0);
-		Left.Set(origin.X - Width.Pixels / 2, 0.5f);
-		Top.Set(origin.Y - Height.Pixels / 2, 0.5f);
+		Left.Set(_startOffset.X - Width.Pixels * 0.5f, 0.5f);
+		Top.Set(_startOffset.Y - Height.Pixels * 0.5f, 0.5f);
 	}
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
 		base.SafeUpdate(gameTime);
 
-		Vector2 origin = Vector2.Zero;
-		float distance = (Height.Pixels + 22) * Progress + (float)Math.Sin(Progress * Math.PI) * 30; // The total distance to move
-		float angle = MathHelper.TwoPi * (_index / (float)_numRadials);
-		var newPos = (origin - (Vector2.UnitY * distance).RotatedBy(angle)).ToPoint();
+		static float EaseOutElastic(float x)
+		{
+			// https://easings.net/#easeOutElastic
+			const float c4 = (2f * MathF.PI) / 3f;
+			return x <= 0f ? 0f : (x >= 1f ? 1f : (MathF.Pow(2f, -10f * x) * MathF.Sin((x * 10f - 0.75f) * c4) + 1f));
+		}
 
-		Left.Set(newPos.X - Width.Pixels / 2, 0.5f);
-		Top.Set(newPos.Y - Height.Pixels / 2, 0.5f);
+		float animationProgress = Progress;
+		float lerpStep = EaseOutElastic(animationProgress);
+		var newPos = Vector2.Lerp(_startOffset, _targetOffset, lerpStep);
+
+		Left.Set(newPos.X - Width.Pixels * 0.5f, 0.5f);
+		Top.Set(newPos.Y - Height.Pixels * 0.5f, 0.5f);
+	}
+
+	public override bool AppearsAsCanBeAllocated(Allocatable? nodeOverride = null)
+	{
+		return Handler?.AppearsAsCanBeAllocated(Handler.Node) == true;
+	}
+
+	public override void DrawHoverTooltip(Allocatable node)
+	{
+		// Prevent tooltip overlaps as the radials appear.
+		if (Progress >= 0.25f)
+		{
+			base.DrawHoverTooltip(node);
+		}
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)

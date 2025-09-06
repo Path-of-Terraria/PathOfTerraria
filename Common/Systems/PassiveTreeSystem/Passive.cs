@@ -99,29 +99,6 @@ public abstract class Passive : Allocatable
 		return p;
 	}
 
-	public override void Draw(SpriteBatch spriteBatch, Vector2 center)
-	{
-		Texture2D tex = Texture.Value;
-		Color color = Color.Gray;
-
-		if (CanAllocate(Main.LocalPlayer))
-		{
-			color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
-		}
-
-		if (Level > 0)
-		{
-			color = Color.White;
-		}
-
-		spriteBatch.Draw(tex, center, null, color, 0, Size / 2f, 1, 0, 0);
-
-		if (MaxLevel > 1)
-		{
-			Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", center + Size / 2f, color, 1, 0.5f, 0.5f);
-		}
-	}
-
 	/// <summary>
 	/// If this passive is able to be allocated or not
 	/// </summary>

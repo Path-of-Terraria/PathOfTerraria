@@ -11,7 +11,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
-internal class AugmentSlotElement : UIElement
+internal class AugmentSlotElement : SkillElement
 {
 	/// <summary>
 	/// Defines both clickbox size and the hoverbox size for showing/hiding radial augments.
@@ -21,7 +21,6 @@ internal class AugmentSlotElement : UIElement
 	public const int HoverTimeMax = 10;
 
 	public readonly int Index;
-	public readonly SkillNode Node;
 
 	public int HoverTime;
 	private bool _unlocked;
@@ -56,10 +55,9 @@ internal class AugmentSlotElement : UIElement
 		}
 	}
 
-	public AugmentSlotElement(int index, bool unlocked = false, SkillNode node = null)
+	public AugmentSlotElement(SkillNode node, int index, bool unlocked = false) : base(node)
 	{
 		Index = index;
-		Node = node;
 
 		if (Index >= SkillTree.Current.Augments.Count) //Failsafe
 		{
@@ -74,9 +72,9 @@ internal class AugmentSlotElement : UIElement
 		Left.Set(100, 0);
 	}
 
-	public override void Update(GameTime gameTime)
+	public override void SafeUpdate(GameTime gameTime)
 	{
-		base.Update(gameTime);
+		base.SafeUpdate(gameTime);
 
 		if (!_unlocked)
 		{
@@ -108,10 +106,8 @@ internal class AugmentSlotElement : UIElement
 		}
 	}
 
-	public override void Draw(SpriteBatch spriteBatch)
+	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
-		base.Draw(spriteBatch);
-
 		Vector2 center = GetDimensions().Center();
 		SkillAugment[] augments = [.. SkillTree.Current.Augments.Select(x => x.Augment)];
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/AugmentFrame").Value;
@@ -188,7 +184,7 @@ internal class AugmentSlotElement : UIElement
 		}
 	}
 
-	public override void LeftClick(UIMouseEvent evt)
+	public override void SafeClick(UIMouseEvent evt)
 	{
 		if (_unlocked)
 		{
@@ -210,7 +206,7 @@ internal class AugmentSlotElement : UIElement
 		}
 	}
 
-	public override void RightClick(UIMouseEvent evt)
+	public override void SafeRightClick(UIMouseEvent evt)
 	{
 		bool hadAugment = SkillTree.Current.Augments[Index].Augment != null;
 		SkillTree.PackedAugment a = SkillTree.Current.Augments[Index];
@@ -237,20 +233,9 @@ internal class AugmentRadialElement : UIElement
 	private int _flashTimer;
 	private int _redFlashTimer;
 
-	public AugmentSlotElement Handler
-	{
-		get
-		{
-			if (Parent is AugmentSlotElement e)
-			{
-				return e;
-			}
+	public AugmentSlotElement? Handler => Parent as AugmentSlotElement;
 
-			return new(0);
-		}
-	}
-
-	private float Progress => (float)Handler.HoverTime / AugmentSlotElement.HoverTimeMax;
+	private float Progress => Handler is { } handler ? (float)Handler.HoverTime / AugmentSlotElement.HoverTimeMax : 0f;
 
 	public AugmentRadialElement(Vector2 origin, SkillAugment augment, int index)
 	{
@@ -343,6 +328,11 @@ internal class AugmentRadialElement : UIElement
 
 	public override void LeftClick(UIMouseEvent evt)
 	{
+		if (Handler == null)
+		{
+			return;
+		}
+
 		SkillTree.PackedAugment a = SkillTree.Current.Augments[Handler.Index];
 
 		if (a.Augment == _augment)

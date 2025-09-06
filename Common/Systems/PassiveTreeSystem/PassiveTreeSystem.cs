@@ -25,7 +25,7 @@ internal class PassiveTreePlayer : ModPlayer
 	public int ExtraPoints;
 
 	public List<Passive> ActiveNodes = [];
-	public List<Edge> Edges = [];
+	public List<Edge<Allocatable>> Edges = [];
 
 	private TagCompound _saveData = [];
 
@@ -86,7 +86,10 @@ internal class PassiveTreePlayer : ModPlayer
 		{
 			if (passives[n.ReferenceId] != null)
 			{
-				Edges.Add(new Edge(passives[n.ReferenceId], passives[c.ReferenceId], c.IsHidden ? EdgeFlags.Hidden : 0));
+				EdgeFlags flags = 0;
+				flags |= c.IsHidden ? EdgeFlags.Hidden : 0;
+				flags |= c.EffectsOnly ? EdgeFlags.EffectsOnly : 0;
+				Edges.Add(new(passives[n.ReferenceId], passives[c.ReferenceId], flags));
 			}
 		}));
 	}
@@ -146,7 +149,7 @@ internal class PassiveTreePlayer : ModPlayer
 	{
 		HashSet<Allocatable> autoComplete = [];
 
-		foreach (Edge e in Edges)
+		foreach (Edge<Allocatable> e in Edges)
 		{
 			if (!e.Contains(passive) || e.Other(passive).Level <= 0)
 			{

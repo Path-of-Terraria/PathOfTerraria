@@ -1,24 +1,27 @@
-﻿namespace PathOfTerraria.Common.Mechanics;
+﻿using System.Numerics;
+
+namespace PathOfTerraria.Common.Mechanics;
 
 [Flags]
 internal enum EdgeFlags : byte
 {
 	None,
 	Hidden = 1 << 0,
+	EffectsOnly = 2 << 0,
 }
 
-internal readonly record struct Edge(Allocatable Start, Allocatable End, EdgeFlags Flags)
+internal readonly record struct Edge<T>(T Start, T End, EdgeFlags Flags) where T : class
 {
-	public readonly Allocatable Start = Start;
-	public readonly Allocatable End = End;
+	public readonly T Start = Start;
+	public readonly T End = End;
 	public readonly EdgeFlags Flags = Flags;
 
-	public bool Contains(Allocatable p)
+	public bool Contains(T p)
 	{
 		return p == Start || p == End;
 	}
 
-	public Allocatable Other(Allocatable p)
+	public T Other(T p)
 	{
 		return p == Start ? End : Start;
 	}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.UI.PassiveTree;
@@ -86,26 +87,42 @@ internal class TreeState : TabsUiState
 		_passiveTreeInner.RemoveAllChildren();
 
 		PassiveTreeSystem.CreateTree();
-		PassiveTreeSystem.ActiveNodes.ForEach(n =>
+
+		// Add nodes
+		var mapping = new Dictionary<int, AllocatableElement>(capacity: PassiveTreeSystem.ActiveNodes.Count);
+		foreach (Passive passive in PassiveTreeSystem.ActiveNodes)
 		{
-			if (n.IsHidden)
+			if (passive.IsHidden)
 			{
-				return;
+				continue;
 			}
 
-			if (n is JewelSocket socket)
+			PassiveElement element = passive switch
 			{
-				_passiveTreeInner.AppendAsDraggable(new PassiveSocket(socket));
-			}
-			else if (n.IsChoiceNode)
+				JewelSocket socket => new PassiveSocket(socket),
+				_ when passive.IsChoiceNode => new MultiPassiveElement(passive),
+				_ => new PassiveElement(passive),
+			};
+
+			if (element != null)
 			{
-				_passiveTreeInner.AppendAsDraggable(new MultiPassiveElement(n));
+				mapping[passive.ReferenceId] = element;
+				_passiveTreeInner.AppendAsDraggable(element);
 			}
-			else
+		}
+
+		// Add edges
+		_passiveTreeInner.Connections.Clear();
+		_passiveTreeInner.Connections.EnsureCapacity(PassiveTreeSystem.Edges.Count);
+		foreach (Edge<Allocatable> edge in PassiveTreeSystem.Edges)
+		{
+			if (edge is { Start: Passive start, End: Passive end }
+			&& mapping.TryGetValue(start.ReferenceId, out AllocatableElement uiStart)
+			&& mapping.TryGetValue(end.ReferenceId, out AllocatableElement uiEnd))
 			{
-				_passiveTreeInner.AppendAsDraggable(new PassiveElement(n));
+				_passiveTreeInner.Connections.Add(new(uiStart, uiEnd, edge.Flags));
 			}
-		});
+		}
 	}
 
 	public override void Draw(SpriteBatch spriteBatch)
