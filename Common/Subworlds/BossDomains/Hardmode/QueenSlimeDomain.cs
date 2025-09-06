@@ -138,7 +138,10 @@ internal class QueenSlimeDomain : BossDomainSubworld
 					if (k < 3)
 					{
 						ItemDatabase.ItemRecord drop = drops[k];
-						chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+						if (drop.Item != null)
+						{
+							chest.item[k] = new Item(drop.ItemId, drop.Item.stack);
+						}
 					}
 					else
 					{
