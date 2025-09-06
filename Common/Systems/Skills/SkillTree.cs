@@ -22,7 +22,7 @@ public abstract class SkillTree : ILoadable
 
 	public List<SkillNode> Nodes = [];
 
-	internal List<Edge> Edges = [];
+	internal List<Edge<Allocatable>> Edges = [];
 
 	/// <summary> The number of points available for spending in this skill tree. </summary>
 	public int Points;
@@ -67,7 +67,7 @@ public abstract class SkillTree : ILoadable
 
 			if (i != 0)
 			{
-				Edges.Add(new(c, list[0]));
+				Edges.Add(new(c, list[0], EdgeFlags.None));
 			}
 		}
 	}

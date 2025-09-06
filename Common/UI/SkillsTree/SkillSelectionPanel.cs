@@ -1,8 +1,8 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using System.Collections.Generic;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Core.UI.SmartUI;
-using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.UI;
@@ -55,30 +55,49 @@ internal class SkillSelectionPanel : SmartUiElement
 			return;
 		}
 
-		SkillTree.Current = SelectedSkill.Tree;
+		SkillTree tree = SkillTree.Current = SelectedSkill.Tree;
 
 		RemoveAllChildren();
 
 		_skillTreeInnerPanel = new SkillTreeInnerPanel(SelectedSkill);
 		Append(_skillTreeInnerPanel);
 
-		List<SkillNode> list = SkillTree.Current.Nodes;
 		int spareSlotCounter = 0;
-		int count = Math.Min(SkillTree.DefaultAugmentCount, SkillTree.Current.Augments.Count);
-
-		foreach (SkillNode node in list)
+		
+		// Add nodes.
+		var mapping = new Dictionary<Allocatable, AllocatableElement>(capacity: tree.Nodes.Count);
+		foreach (SkillNode node in tree.Nodes)
 		{
-			UIElement element = (node is SpareSlot) ? new AugmentSlotElement(spareSlotCounter++, true, node) : new AllocatableElement(node);
+			AllocatableElement element = node switch
+			{
+				SpareSlot => new AugmentSlotElement(node, spareSlotCounter++, true),
+				SkillSpecial special => new SkillSpecialElement(special),
+				_ => new SkillElement(node),
+			};
 			element.Left.Set(node.TreePos.X - node.Size.X / 2, 0.5f);
 			element.Top.Set(node.TreePos.Y - node.Size.Y / 2, 0.5f);
+
+			mapping[node] = element;
 
 			_skillTreeInnerPanel.AppendAsDraggable(element);
 		}
 
-		for (int i = 0; i < count; i++)
+		// Add edges.
+		_skillTreeInnerPanel.Connections.EnsureCapacity(tree.Edges.Count);
+		foreach (Edge<Allocatable> edge in tree.Edges)
 		{
-			_skillTreeInnerPanel.Append(new AugmentSlotElement(spareSlotCounter++, SkillTree.Current.Augments[i].Unlocked));
+			if (mapping.TryGetValue(edge.Start, out AllocatableElement uiStart)
+			&& mapping.TryGetValue(edge.End, out AllocatableElement uiEnd))
+			{
+				_skillTreeInnerPanel.Connections.Add(new(uiStart, uiEnd, edge.Flags));
+			}
 		}
+
+		//	int count = Math.Min(SkillTree.DefaultAugmentCount, tree.Augments.Count);
+		//	for (int i = 0; i < count; i++)
+		//	{
+		//		_skillTreeInnerPanel.Append(new AugmentSlotElement(spareSlotCounter++, tree.Augments[i].Unlocked));
+		//	}
 
 		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))
 		{

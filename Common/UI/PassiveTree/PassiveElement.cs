@@ -1,145 +1,72 @@
-﻿using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.Passives;
-using PathOfTerraria.Core.Sounds;
-using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.PassiveTree;
 
-internal class PassiveElement : SmartUiElement
+internal class PassiveElement : AllocatableElement
 {
-	private static TreeState UiTreeState => SmartUiLoader.GetUiState<TreeState>();
+	public Passive Passive { get; }
 
-	private readonly Passive _passive;
-
-	private int _flashTimer;
-	private int _redFlashTimer;
-
-	public PassiveElement(Passive passive)
+	public PassiveElement(Passive passive) : base(passive)
 	{
 		float halfSizeX = passive.Size.X / 2;
 		float halfSizeY = passive.Size.Y / 2;
 
-		_passive = passive;
+		Passive = passive;
 		Left.Set(passive.TreePos.X - halfSizeX, 0.5f);
 		Top.Set(passive.TreePos.Y - halfSizeY, 0.5f);
 		Width.Set(passive.Size.X, 0);
 		Height.Set(passive.Size.Y, 0);
 
 		// Anchor passive should always be "unlocked", thus this hardcoding
-		if (_passive is AnchorPassive)
+		if (Passive is AnchorPassive)
 		{
-			_passive.Level = 1;
+			Passive.Level = 1;
 		}
-	}
-
-	public override void Draw(SpriteBatch spriteBatch)
-	{
-		_passive.Draw(spriteBatch, GetDimensions().Center());
-		DrawOnto(spriteBatch, GetDimensions().Center());
-
-		if (_flashTimer > 0)
-		{
-			Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
-			Texture2D star = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha").Value;
-
-			float prog = _flashTimer / 20f;
-
-			var glowColor = new Color(255, 230, 150)
-			{
-				A = 0
-			};
-
-			glowColor *= prog * 0.5f;
-
-			spriteBatch.Draw(glow, GetDimensions().Center(), null, glowColor, 0, glow.Size() / 2f, 1 + (1f - prog), 0, 0);
-			spriteBatch.Draw(star, GetDimensions().Center(), null, glowColor * 0.5f, 0, star.Size() / 2f, 1 + (1f - prog), 0, 0);
-
-			_flashTimer--;
-		}
-
-		if (_redFlashTimer > 0)
-		{
-			Texture2D glow = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha").Value;
-			Texture2D star = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha").Value;
-
-			float prog = _redFlashTimer / 20f;
-
-			var glowColor = new Color(255, 60, 60)
-			{
-				A = 0
-			};
-
-			glowColor *= prog * 0.5f;
-
-			spriteBatch.Draw(glow, GetDimensions().Center(), null, glowColor, 0, glow.Size() / 2f, 1 + (1f - prog), 0, 0);
-			spriteBatch.Draw(star, GetDimensions().Center(), null, glowColor * 0.5f, 0, star.Size() / 2f, 1 + prog, 0, 0);
-
-			_redFlashTimer--;
-		}
-
-		if (IsMouseHovering)
-		{
-			string name = _passive.DisplayName;
-
-			if (_passive.MaxLevel > 1)
-			{
-				name += $" ({_passive.Level}/{_passive.MaxLevel})";
-			}
-			
-#if DEBUG
-			name += $" -- {_passive.ReferenceId}";
-#endif
-
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "Passive",
-				SimpleTitle = name,
-				SimpleSubtitle = _passive.DisplayTooltip,
-			});
-		}
-
-		Recalculate();
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
+		if (Passive.CanAllocate(Main.LocalPlayer) && CheckMouseContained())
+		{
+			Allocate(Passive, usedCost: 1);
+		}
+	}
+
+	protected override void Allocate(Allocatable passive, int usedCost)
+	{
+		base.Allocate(passive, usedCost);
+
 		Player p = Main.LocalPlayer;
 
-		if (!_passive.CanAllocate(p) || !CheckMouseContained())
-		{
-			return;
-		}
-
-		_passive.Level++;
-		p.GetModPlayer<PassiveTreePlayer>().Points--;
-		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
+		p.GetModPlayer<PassiveTreePlayer>().Points -= usedCost;
+		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); // Instantly save the result because _saveData is needed whenever the element reloads
 		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.AllocatedPassive);
-
-		_flashTimer = 20;
-
-		TreeSoundEngine.PlaySoundForTreeAllocation(_passive.MaxLevel, _passive.Level);
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)
 	{
+		if (Passive.CanDeallocate(Main.LocalPlayer) && CheckMouseContained())
+		{
+			Deallocate(Passive, usedCost: 1);
+		}
+	}
+
+	protected override void Deallocate(Allocatable passive, int usedCost)
+	{
+		base.Deallocate(passive, usedCost);
+
 		Player p = Main.LocalPlayer;
 
-		if (!_passive.CanDeallocate(Main.LocalPlayer) || !CheckMouseContained())
-		{
-			return;
-		}
-
-		_passive.Level--;
-		p.GetModPlayer<PassiveTreePlayer>().Points++;
-		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); //Instantly save the result because _saveData is needed whenever the element reloads
-
-		_redFlashTimer = 20;
-
-		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
+		p.GetModPlayer<PassiveTreePlayer>().Points += usedCost;
+		p.GetModPlayer<PassiveTreePlayer>().SaveData([]); // Instantly save the result because _saveData is needed whenever the element reloads
 		p.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.DeallocatedPassive);
+		
+		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
 }

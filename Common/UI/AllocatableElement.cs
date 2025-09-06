@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Mechanics;
-using PathOfTerraria.Content.SkillPassives;
 using PathOfTerraria.Core.Sounds;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -7,36 +6,35 @@ using Terraria.Audio;
 using Terraria.ID;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI;
 
-internal class AllocatableElement : SmartUiElement
+internal abstract class AllocatableElement : SmartUiElement
 {
 	public static Asset<Texture2D> GlowAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
 	public static Asset<Texture2D> StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
 
-	public readonly SkillNode Node;
+	public Allocatable Node { get; }
 
 	private int _flashTimer;
 	private int _redFlashTimer;
 
-	public AllocatableElement(SkillNode node)
+	public AllocatableElement(Allocatable node)
 	{
 		var size = node.Size.ToPoint();
 
 		Width.Set(size.X, 0);
 		Height.Set(size.Y, 0);
 
-		if (Node is Anchor)
-		{
-			(Node as SkillPassive).Level = 1;
-		}
-
 		Node = node;
 	}
 
-	public override void Draw(SpriteBatch spriteBatch)
+	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
-		Node.Draw(spriteBatch, GetDimensions().Center());
+		base.DrawSelf(spriteBatch);
+
+		DrawNode(Node, spriteBatch, GetDimensions().Center());
 		DrawOnto(spriteBatch, GetDimensions().Center());
 
 		if (_flashTimer > 0)
@@ -79,43 +77,76 @@ internal class AllocatableElement : SmartUiElement
 			_redFlashTimer--;
 		}
 
-		if (IsMouseHovering)
+		if (IsMouseHovering && GetElementAt(Main.MouseScreen) == this)
 		{
-			DrawHoverTooltip();
+			DrawHoverTooltip(Node);
+		}
+	}
+
+	public virtual void DrawNode(Allocatable node, SpriteBatch spriteBatch, Vector2 center)
+	{
+		Texture2D tex = node.Texture.Value;
+		Color color = Color.Gray;
+
+		if (AppearsAsCanBeAllocated(node))
+		{
+			color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
 		}
 
-		Recalculate();
+		if (AppearsAsAllocated(node))
+		{
+			color = Color.White;
+		}
+
+		spriteBatch.Draw(tex, center, null, color, 0, node.Size * 0.5f, 1, 0, 0);
+
+		if (node.MaxLevel > 1)
+		{
+			Utils.DrawBorderString(spriteBatch, $"{node.Level}/{node.MaxLevel}", center + node.Size * 0.5f, color, 1, 0.5f, 0.5f);
+		}
 	}
 
 	/// <summary> Draws the name and tooltip of <see cref="Node"/> when hovered over. </summary>
-	public virtual void DrawHoverTooltip()
+	public virtual void DrawHoverTooltip(Allocatable node)
 	{
-		string name = Node.DisplayName;
+		string name = node.DisplayName;
 
-		if (Node.MaxLevel > 1)
+		if (node.MaxLevel > 1)
 		{
-			name += $" ({Node.Level}/{Node.MaxLevel})";
+			name += $" ({node.Level}/{node.MaxLevel})";
 		}
+
+#if DEBUG
+		if (node is Systems.PassiveTreeSystem.Passive passive)
+		{
+			name += $" -- {passive.ReferenceId}";
+		}
+#endif
 
 		Tooltip.Create(new TooltipDescription
 		{
 			Identifier = GetType().Name,
 			SimpleTitle = name,
-			SimpleSubtitle = Node.DisplayTooltip,
+			SimpleSubtitle = node.DisplayTooltip,
 		});
 	}
 
 	public override void SafeClick(UIMouseEvent evt)
 	{
-		Player p = Main.LocalPlayer;
-
-		if (CheckMouseContained() && Node.CanAllocate(p))
+		if (CheckMouseContained() && Node.CanAllocate(Main.LocalPlayer))
 		{
-			Node.OnAllocate(p);
-			_flashTimer = 20;
-
-			TreeSoundEngine.PlaySoundForTreeAllocation(Node.Level, Node.MaxLevel);
+			Allocate(Node, 1);
 		}
+	}
+
+	public virtual bool AppearsAsCanBeAllocated(Allocatable? nodeOverride = null)
+	{
+		return (nodeOverride ?? Node).CanAllocate(Main.LocalPlayer);
+	}
+
+	public virtual bool AppearsAsAllocated(Allocatable? nodeOverride = null)
+	{
+		return (nodeOverride ?? Node).Allocated;
 	}
 
 	public override void SafeRightClick(UIMouseEvent evt)
@@ -124,9 +155,23 @@ internal class AllocatableElement : SmartUiElement
 
 		if (CheckMouseContained() && Node.CanDeallocate(p))
 		{
-			Node.OnDeallocate(p);
-			_redFlashTimer = 20;
-			SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
+			Deallocate(Node, 1);
 		}
+	}
+
+	protected virtual void Allocate(Allocatable node, int usedCost)
+	{
+		_flashTimer = 20;
+
+		node.OnAllocate(Main.LocalPlayer);
+		TreeSoundEngine.PlaySoundForTreeAllocation(Node.Level, Node.MaxLevel);
+	}
+
+	protected virtual void Deallocate(Allocatable node, int usedCost)
+	{
+		_redFlashTimer = 20;
+
+		node.OnDeallocate(Main.LocalPlayer);
+		SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath);
 	}
 }

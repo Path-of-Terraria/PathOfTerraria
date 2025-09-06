@@ -4,4 +4,8 @@ namespace PathOfTerraria.Content.Passives;
 
 internal class AnchorPassive : Passive
 {
+	public override bool CanDeallocate(Player player)
+	{
+		return false;
+	}
 }
