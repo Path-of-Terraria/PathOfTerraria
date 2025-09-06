@@ -99,7 +99,7 @@ internal static class SubworldLoadingScreen
 
 		if (SubworldSystem.Current is null)
 		{
-			position = new Vector2(_walkTimer * 1.3f, Main.screenHeight / 2 + 14);
+			position = new Vector2(_walkTimer * 1.3f + Main.screenWidth, Main.screenHeight / 2 + 14);
 			originMod = new Vector2(LoopingCount, 1);
 		}
 
