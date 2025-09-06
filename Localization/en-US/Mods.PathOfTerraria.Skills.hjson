@@ -52,3 +52,8 @@ IceBolt: {
 	Name: Ice Bolt
 	Description: Cast an ice bolt that chills any enemy it hits.
 }
+
+FlameSage: {
+	Name: Flame Sage
+	Description: Conjure a fiery sentry that can draw the attention of enemies.
+}

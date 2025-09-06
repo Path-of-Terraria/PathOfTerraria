@@ -52,3 +52,8 @@ IceBolt: {
 	Name: Ледяной заряд
 	Description: Заклинайте ледяной заряд, который охлаждает любого врага, которого он поражает.
 }
+
+FlameSage: {
+	// Name: Flame Sage
+	// Description: Conjure a fiery sentry that can draw the attention of enemies.
+}

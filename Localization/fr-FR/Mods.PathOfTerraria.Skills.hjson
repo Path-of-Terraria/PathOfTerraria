@@ -52,3 +52,8 @@ IceBolt: {
 	Name: Éclair de Glace
 	Description: Lancez un éclair de glace qui glace un ennemi qu'il touche.
 }
+
+FlameSage: {
+	// Name: Flame Sage
+	// Description: Conjure a fiery sentry that can draw the attention of enemies.
+}
