@@ -20,6 +20,7 @@ internal class LunarLiquid : ModItem
 		Item.buffType = BuffID.VortexDebuff;
 		Item.useTime = Item.useAnimation = 5;
 		Item.useStyle = ItemUseStyleID.DrinkLiquid;
+		Item.reuseDelay = 120;
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)

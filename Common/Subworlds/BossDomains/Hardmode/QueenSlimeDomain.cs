@@ -30,16 +30,19 @@ internal class QueenSlimeDomain : BossDomainSubworld
 	private static Point16 ArenaPos = Point16.Zero;
 	private static bool PortalSpawned = false;
 	private static Point16 PortalPos = Point16.Zero;
+
 	public FightTracker FightTracker = new([NPCID.QueenSlimeBoss])
 	{
-		ResetOnVanish = true,
-		HaltTimeOnVanish = 60 * 10,
+		ResetOnVanish = true, HaltTimeOnVanish = 60 * 10,
 	};
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
+	public override List<GenPass> Tasks =>
+	[
+		new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Base Terrain", SpawnBaseTerrain),
 		new PassLegacy("Structures", SpawnStructures),
-		new PassLegacy("Decor", SpawnDecor)];
+		new PassLegacy("Decor", SpawnDecor)
+	];
 
 	public override void OnEnter()
 	{
@@ -129,7 +132,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			}
 
 			Tile tile = Main.tile[chest.x, chest.y];
-			List<ItemDatabase.ItemRecord> drops = DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
+			List<ItemDatabase.ItemRecord> drops =
+				DropTable.RollManyMobDrops(3, PoTItemHelper.PickItemLevel(), 1f, random: WorldGen.genRand);
 
 			if (tile.HasTile && TileID.Sets.BasicChest[tile.TileType])
 			{
@@ -146,7 +150,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 					else
 					{
 						(int type, Range stackRange) = miscChestLoot.Get();
-						chest.item[k] = new Item(type, Main.rand.Next(stackRange.Start.Value, stackRange.End.Value + 1));
+						chest.item[k] = new Item(type,
+							Main.rand.Next(stackRange.Start.Value, stackRange.End.Value + 1));
 					}
 				}
 			}
@@ -157,7 +162,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 	{
 		if (flags != OpenFlags.None)
 		{
-			if (WorldGen.genRand.NextBool(40) && WorldGen.SolidOrSlopedTile(position.X, position.Y) && WorldGen.InWorld(position.X, position.Y, 60))
+			if (WorldGen.genRand.NextBool(40) && WorldGen.SolidOrSlopedTile(position.X, position.Y) &&
+			    WorldGen.InWorld(position.X, position.Y, 60))
 			{
 				string str = "Assets/Structures/QueenSlimeDomain/Crystal_" + Main.rand.Next(16);
 
@@ -197,7 +203,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 				WorldGen.PlaceTile(position.X, position.Y - 1, type, style: WorldGen.genRand.Next(styleRange));
 			}
 		}
-		
+
 		if (flags.HasFlag(OpenFlags.Below) && WorldGen.genRand.NextBool(3, 5))
 		{
 			int count = WorldGen.genRand.Next(4, 9) + 1;
@@ -251,10 +257,13 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			for (int j = 2; j < Main.maxTilesY - 2; j++)
 			{
 				float dist = MathTools.ModDistance(new Vector2(i, j), CircleCenter.ToVector2(), 1, 5);
-				float cutoff = 650 + 10f * noise.GetNoise((new Vector2(i, j).AngleTo(CircleCenter.ToVector2()) + MathHelper.Pi) * 40, 0);
-				float stoneCutoff = 780 + 20f * noise.GetNoise((new Vector2(i, j).AngleTo(CircleCenter.ToVector2()) + MathHelper.Pi) * 50, 0);
+				float cutoff = 650 + 10f *
+					noise.GetNoise((new Vector2(i, j).AngleTo(CircleCenter.ToVector2()) + MathHelper.Pi) * 40, 0);
+				float stoneCutoff = 780 + 20f *
+					noise.GetNoise((new Vector2(i, j).AngleTo(CircleCenter.ToVector2()) + MathHelper.Pi) * 50, 0);
 
-				bool stone = (stoneNoise.GetNoise(i, j) * (stoneNoise2.GetNoise(i, j) + 0.4f)) > Utils.GetLerpValue(stoneCutoff, cutoff, dist, true) * 0.15f;
+				bool stone = (stoneNoise.GetNoise(i, j) * (stoneNoise2.GetNoise(i, j) + 0.4f)) >
+				             Utils.GetLerpValue(stoneCutoff, cutoff, dist, true) * 0.15f;
 
 				if (dist > cutoff)
 				{
@@ -280,25 +289,37 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		FastNoiseLite noise = new(WorldGen._genRandSeed);
 		HashSet<Point> crystals = [];
 
-		DigSingleTunnel([new Vector2(LeftSpawn ? 200 : Main.maxTilesX - 200, 220),
-			new Vector2(LeftSpawn ? 430 : Main.maxTilesX - 430, Height * 0.7f - 20), new Vector2(Width / 2, Height * 0.8f - 20)], noise, crystals, null);
+		DigSingleTunnel([
+			new Vector2(LeftSpawn ? 200 : Main.maxTilesX - 200, 220),
+			new Vector2(LeftSpawn ? 430 : Main.maxTilesX - 430, Height * 0.7f - 20),
+			new Vector2(Width / 2, Height * 0.8f - 20)
+		], noise, crystals, null);
 
-		DigSingleTunnel([new Vector2(LeftSpawn ? 380 : Main.maxTilesX - 380, 200),
-			new Vector2(LeftSpawn ? 550 : Main.maxTilesX - 550, Height * 0.6f - 20), new Vector2(Width / 2, Height * 0.8f - 20)], noise, crystals, null);
+		DigSingleTunnel([
+			new Vector2(LeftSpawn ? 380 : Main.maxTilesX - 380, 200),
+			new Vector2(LeftSpawn ? 550 : Main.maxTilesX - 550, Height * 0.6f - 20),
+			new Vector2(Width / 2, Height * 0.8f - 20)
+		], noise, crystals, null);
 
 		int portalTunnel = WorldGen.genRand.Next(3);
 
-		DigSingleTunnel([new Vector2(Width / 2, Height * 0.8f - 20),
+		DigSingleTunnel([
+			new Vector2(Width / 2, Height * 0.8f - 20),
 			new Vector2(!LeftSpawn ? 400 : Main.maxTilesX - 400, Height * 0.45f),
-			new Vector2(!LeftSpawn ? 300 : Main.maxTilesX - 300, Height * 0.25f - 20)], noise, crystals, portalTunnel == 0);
+			new Vector2(!LeftSpawn ? 300 : Main.maxTilesX - 300, Height * 0.25f - 20)
+		], noise, crystals, portalTunnel == 0);
 
-		DigSingleTunnel([new Vector2(Width / 2, Height * 0.8f - 20),
+		DigSingleTunnel([
+			new Vector2(Width / 2, Height * 0.8f - 20),
 			new Vector2(!LeftSpawn ? 450 : Main.maxTilesX - 450, Height * 0.6f),
-			new Vector2(!LeftSpawn ? 200 : Main.maxTilesX - 200, Height * 0.45f - 20)], noise, crystals, portalTunnel == 1);
+			new Vector2(!LeftSpawn ? 200 : Main.maxTilesX - 200, Height * 0.45f - 20)
+		], noise, crystals, portalTunnel == 1);
 
-		DigSingleTunnel([new Vector2(Width / 2, Height * 0.8f - 20),
+		DigSingleTunnel([
+			new Vector2(Width / 2, Height * 0.8f - 20),
 			new Vector2(!LeftSpawn ? 500 : Main.maxTilesX - 500, Height * 0.725f),
-			new Vector2(!LeftSpawn ? 100 : Main.maxTilesX - 100, Height * 0.65f - 20)], noise, crystals, portalTunnel == 2);
+			new Vector2(!LeftSpawn ? 100 : Main.maxTilesX - 100, Height * 0.65f - 20)
+		], noise, crystals, portalTunnel == 2);
 
 		foreach (Point crystal in crystals)
 		{
@@ -306,7 +327,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		}
 	}
 
-	private static void DigSingleTunnel(Vector2[] positions, FastNoiseLite noise, HashSet<Point> crystals, bool? spawnEnd)
+	private static void DigSingleTunnel(Vector2[] positions, FastNoiseLite noise, HashSet<Point> crystals,
+		bool? spawnEnd)
 	{
 		positions = Tunnel.GeneratePoints(positions, 8, 6);
 		Vector2 end = positions[^1];
@@ -324,7 +346,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 			}
 			else
 			{
-				StructureTools.PlaceByOrigin("Assets/Structures/QueenSlimeDomain/Cove_" + Main.rand.Next(3), end.ToPoint16(), new Vector2(0.5f));
+				StructureTools.PlaceByOrigin("Assets/Structures/QueenSlimeDomain/Cove_" + Main.rand.Next(3),
+					end.ToPoint16(), new Vector2(0.5f));
 			}
 		}
 	}
@@ -333,7 +356,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 	{
 		TunnelDig(noise, pos);
 
-		if (Main.rand.NextBool(20) && !crystals.Any(cry => Vector2.DistanceSquared(pos, cry.ToVector2()) < 60 * 60) && Vector2.DistanceSquared(end, pos) > 50 * 50)
+		if (Main.rand.NextBool(20) && !crystals.Any(cry => Vector2.DistanceSquared(pos, cry.ToVector2()) < 60 * 60) &&
+		    Vector2.DistanceSquared(end, pos) > 50 * 50)
 		{
 			crystals.Add(pos.ToPoint());
 		}
@@ -342,7 +366,7 @@ internal class QueenSlimeDomain : BossDomainSubworld
 	private static void SpawnCrystalWall(Point pos)
 	{
 		float originalY = pos.Y;
-		
+
 		while (!WorldGen.SolidOrSlopedTile(Main.tile[pos]))
 		{
 			pos.Y--;
@@ -407,7 +431,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		if (!PortalSpawned)
 		{
 			int type = ModContent.ProjectileType<Teleportal>();
-			Projectile.NewProjectile(new EntitySource_SpawnNPC(), PortalPos.ToWorldCoordinates(), Vector2.Zero, type, 0, 0, Main.myPlayer, ArenaPos.X * 16, ArenaPos.Y * 16);
+			Projectile.NewProjectile(new EntitySource_SpawnNPC(), PortalPos.ToWorldCoordinates(), Vector2.Zero, type, 0,
+				0, Main.myPlayer, ArenaPos.X * 16, ArenaPos.Y * 16);
 
 			PortalSpawned = true;
 		}
@@ -426,13 +451,14 @@ internal class QueenSlimeDomain : BossDomainSubworld
 					break;
 				}
 			}
-			
+
 			if (canSpawnBoss)
 			{
 				Main.spawnTileX = ArenaPos.X;
 				Main.spawnTileY = ArenaPos.Y;
 
-				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), ArenaPos.X * 16, (ArenaPos.Y + 20) * 16, NPCID.QueenSlimeBoss);
+				NPC.NewNPC(Entity.GetSource_NaturalSpawn(), ArenaPos.X * 16, (ArenaPos.Y + 20) * 16,
+					NPCID.QueenSlimeBoss);
 
 				if (Main.netMode == NetmodeID.Server)
 				{
@@ -443,7 +469,8 @@ internal class QueenSlimeDomain : BossDomainSubworld
 		else if (state == FightState.JustCompleted)
 		{
 			IEntitySource src = Entity.GetSource_NaturalSpawn();
-			Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
+			Projectile.NewProjectile(src, ArenaPos.ToWorldCoordinates(), Vector2.Zero,
+				ModContent.ProjectileType<ExitPortal>(), 0, 0, Main.myPlayer);
 		}
 	}
 }
