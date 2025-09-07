@@ -23,6 +23,9 @@ public abstract class Passive : Allocatable
 {
 	public static Dictionary<string, Type> Passives = [];
 
+	/// <summary> If true, this passive will be given a special UI element that allows players to choose only one of its children. </summary>
+	public bool IsChoiceNode { get; set; }
+
 	/// <summary> The internal identifier of this passive. <para/>
 	/// This is used to map the JSON data to the correct passive. This is also what's used to grab the texture of this passive.
 	/// </summary>
@@ -89,31 +92,11 @@ public abstract class Passive : Allocatable
 		p.MaxLevel = data.MaxLevel;
 		p.ReferenceId = data.ReferenceId;
 		p.Value = data.Value;
+		p.IsHidden = data.IsHidden;
+		p.IsChoiceNode = data.IsChoiceNode;
+		p.RequiredAllocatedEdges = data.RequiredAllocatedEdges;
 
 		return p;
-	}
-
-	public override void Draw(SpriteBatch spriteBatch, Vector2 center)
-	{
-		Texture2D tex = Texture.Value;
-		Color color = Color.Gray;
-
-		if (CanAllocate(Main.LocalPlayer))
-		{
-			color = Color.Lerp(Color.Gray, Color.White, (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.5f + 0.5f);
-		}
-
-		if (Level > 0)
-		{
-			color = Color.White;
-		}
-
-		spriteBatch.Draw(tex, center, null, color, 0, Size / 2f, 1, 0, 0);
-
-		if (MaxLevel > 1)
-		{
-			Utils.DrawBorderString(spriteBatch, $"{Level}/{MaxLevel}", center + Size / 2f, color, 1, 0.5f, 0.5f);
-		}
 	}
 
 	/// <summary>
@@ -127,7 +110,7 @@ public abstract class Passive : Allocatable
 		return
 			Level < MaxLevel &&
 			Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().Points > 0 &&
-			passiveTreeSystem.Edges.Any(e => e.Contains(this) && e.Other(this).Level > 0);
+			passiveTreeSystem.Edges.Count(e => e.Contains(this) && e.Other(this).Level > 0) >= RequiredAllocatedEdges;
 	}
 
 	/// <summary>
@@ -136,11 +119,6 @@ public abstract class Passive : Allocatable
 	/// <returns></returns>
 	public override bool CanDeallocate(Player player)
 	{
-		if (Name == "AnchorPassive")
-		{
-			return false;
-		}
-
 		PassiveTreePlayer passiveTreeSystem = player.GetModPlayer<PassiveTreePlayer>();
 
 		return Level > 0 && (Level > 1 || passiveTreeSystem.FullyLinkedWithout(this));

@@ -2476,6 +2476,10 @@
 		"connections": [
 			{
 				"referenceId": 171
+			},
+			{
+				"referenceId": 999,
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2487,6 +2491,12 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 169,
 		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 999,
+				"effectsOnly": true
+			}
+		],
 		"position": {
 			"x": -9,
 			"y": -925
@@ -2502,6 +2512,10 @@
 			},
 			{
 				"referenceId": 168
+			},
+			{
+				"referenceId": 999,
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2516,6 +2530,10 @@
 		"connections": [
 			{
 				"referenceId": 169
+			},
+			{
+				"referenceId": 999,
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2530,12 +2548,81 @@
 		"connections": [
 			{
 				"referenceId": 169
+			},
+			{
+				"referenceId": 999,
+				"effectsOnly": true
 			}
 		],
 		"position": {
 			"x": 69,
 			"y": -1172
 		}
+	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 999,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1001
+			},
+			{
+				"referenceId": 1002
+			},
+			{
+				"referenceId": 1003
+			},
+			{
+				"referenceId": 1004
+			}
+		],
+		"position": {
+			"x": -9,
+			"y": -1065
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 5
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1001,
+		"maxLevel": 1,
+		"position": {
+			"x": -84,
+			"y": -1065
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1002,
+		"maxLevel": 1,
+		"position": {
+			"x": 66,
+			"y": -1065
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1003,
+		"maxLevel": 1,
+		"position": {
+			"x": -9,
+			"y": -1140
+		},
+		"isHidden": true
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1004,
+		"maxLevel": 1,
+		"position": {
+			"x": -9,
+			"y": -990
+		},
+		"isHidden": true
 	},
 	{
 		"internalIdentifier": "AddedIntelligencePassive",

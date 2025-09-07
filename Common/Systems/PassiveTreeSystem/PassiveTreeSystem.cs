@@ -25,7 +25,7 @@ internal class PassiveTreePlayer : ModPlayer
 	public int ExtraPoints;
 
 	public List<Passive> ActiveNodes = [];
-	public List<Edge> Edges = [];
+	public List<Edge<Allocatable>> Edges = [];
 
 	private TagCompound _saveData = [];
 
@@ -82,11 +82,14 @@ internal class PassiveTreePlayer : ModPlayer
 			}
 		});
 
-		data.ForEach(n => n.Connections.ForEach(connection =>
+		data.ForEach(n => n.Connections.ForEach(c =>
 		{
 			if (passives[n.ReferenceId] != null)
 			{
-				Edges.Add(new Edge(passives[n.ReferenceId], passives[connection.ReferenceId]));
+				EdgeFlags flags = 0;
+				flags |= c.IsHidden ? EdgeFlags.Hidden : 0;
+				flags |= c.EffectsOnly ? EdgeFlags.EffectsOnly : 0;
+				Edges.Add(new(passives[n.ReferenceId], passives[c.ReferenceId], flags));
 			}
 		}));
 	}
@@ -146,7 +149,7 @@ internal class PassiveTreePlayer : ModPlayer
 	{
 		HashSet<Allocatable> autoComplete = [];
 
-		foreach (Edge e in Edges)
+		foreach (Edge<Allocatable> e in Edges)
 		{
 			if (!e.Contains(passive) || e.Other(passive).Level <= 0)
 			{
@@ -158,6 +161,15 @@ internal class PassiveTreePlayer : ModPlayer
 			if (!ret.Item1)
 			{
 				return false;
+			}
+
+			// Make sure that the other node will have enough nearby active edges to stay available.
+			if (e.Other(passive) is { RequiredAllocatedEdges: > 1 } other)
+			{
+				if (Edges.Count(e => e.End == other && e.Start.Level > 0) <= other.RequiredAllocatedEdges)
+				{
+					return false;
+				}
 			}
 
 			foreach (Allocatable p in ret.Item2)

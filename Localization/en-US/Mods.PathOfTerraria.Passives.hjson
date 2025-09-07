@@ -268,3 +268,8 @@ ReducedManaCostWhileChannelingPassive: {
 	Name: Reduced Mana Cost While Channeling
 	Tooltip: +{0}% reduced mana cost while channeling
 }
+
+MasteryPassive: {
+	Name: MasteryPassive
+	Tooltip: ""
+}

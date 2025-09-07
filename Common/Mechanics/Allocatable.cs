@@ -42,6 +42,12 @@ public abstract class Allocatable
 	/// <summary> Shorthand for checking <see cref="Level"/> > 0.</summary>
 	public bool Allocated => Level > 0;
 
+	/// <summary> If true, there will not be any UI element created for this node. </summary>
+	public bool IsHidden { get; set; }
+
+	/// <summary> The amount of neighbouring nodes that must be allocated before this node becomes available itself. </summary>
+	public int RequiredAllocatedEdges { get; set; } = 1;
+
 	/// <summary> Shorthand for Type name. </summary>
 	public virtual string Name => GetType().Name;
 
@@ -72,6 +78,4 @@ public abstract class Allocatable
 	{
 		return Allocated;
 	}
-
-	public virtual void Draw(SpriteBatch spriteBatch, Vector2 position) { }
 }
