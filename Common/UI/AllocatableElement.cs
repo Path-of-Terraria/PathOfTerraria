@@ -10,7 +10,15 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI;
 
-internal abstract class AllocatableElement : SmartUiElement
+/// <summary> Methods needed to properly render dynamic edge connections. </summary>
+internal interface IConnectedAllocatableNode
+{
+	Vector2 GetCenter();
+	bool AppearsAsAllocated(Allocatable? nodeOverride = null);
+	bool AppearsAsCanBeAllocated(Allocatable? nodeOverride = null);
+}
+
+internal abstract class AllocatableElement : SmartUiElement, IConnectedAllocatableNode
 {
 	public static Asset<Texture2D> GlowAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/GlowAlpha");
 	public static Asset<Texture2D> StarAlpha = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/StarAlpha");
@@ -137,6 +145,11 @@ internal abstract class AllocatableElement : SmartUiElement
 		{
 			Allocate(Node, 1);
 		}
+	}
+
+	public virtual Vector2 GetCenter()
+	{
+		return GetDimensions().Center();
 	}
 
 	public virtual bool AppearsAsCanBeAllocated(Allocatable? nodeOverride = null)

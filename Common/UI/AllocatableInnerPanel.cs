@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using Microsoft.Xna.Framework.Graphics;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -18,7 +16,7 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 	protected Vector2 DragOffset;
 	protected Vector2 DragCenter;
 
-	public List<Edge<AllocatableElement>> Connections { get; } = [];
+	public List<Edge<IConnectedAllocatableNode>> Connections { get; } = [];
 
 	public AllocatableInnerPanel()
 	{
@@ -41,16 +39,16 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 		base.DrawChildren(spriteBatch);
 	}
 
-	public static void DrawEdgeConnections(SpriteBatch spriteBatch, ReadOnlySpan<Edge<AllocatableElement>> connections)
+	public static void DrawEdgeConnections(SpriteBatch spriteBatch, ReadOnlySpan<Edge<IConnectedAllocatableNode>> connections)
 	{
 		Vector2 center = default;
 		Texture2D chainTex = _chainTex.Value;
 
-		foreach (Edge<AllocatableElement> edge in connections)
+		foreach (Edge<IConnectedAllocatableNode> edge in connections)
 		{
 			Color color = Color.Gray;
-			AllocatableElement start = edge.Start;
-			AllocatableElement end = edge.End;
+			IConnectedAllocatableNode start = edge.Start;
+			IConnectedAllocatableNode end = edge.End;
 
 			if (start == null || end == null)
 			{
@@ -73,8 +71,8 @@ internal abstract class AllocatableInnerPanel : SmartUiElement
 				color = Color.White;
 			}
 
-			Vector2 startPos = start.GetDimensions().Center();
-			Vector2 endPos = end.GetDimensions().Center();
+			Vector2 startPos = start.GetCenter();
+			Vector2 endPos = end.GetCenter();
 
 			if (!edge.Flags.HasFlag(EdgeFlags.EffectsOnly))
 			{
