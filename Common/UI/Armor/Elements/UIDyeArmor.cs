@@ -14,23 +14,25 @@ public sealed class UIDyeArmor : UIArmorPage
 
 	protected override Asset<Texture2D> DefaultFrameTexture => DyeFrameTexture;
 
-	protected override UIHoverImageItemSlot?[] GetDefaultSlots()
+	protected override UIHoverImageItemSlot?[] GetDefaultSlots(ref int numAccessorySlots)
 	{
+		numAccessorySlots += 2;
+
 		UIHoverImageItemSlot?[] slots = [
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Wings)), $"Mods.{PoTMod.ModName}.UI.Slots.10", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Head)), $"Mods.{PoTMod.ModName}.UI.Slots.0", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Necklace)), $"Mods.{PoTMod.ModName}.UI.Slots.5", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Wings)), ($"Mods.{PoTMod.ModName}.UI.Slots.Wings", null), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Head)), ($"Mods.{PoTMod.ModName}.UI.Slots.Head", null), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Necklace)), ($"Mods.{PoTMod.ModName}.UI.Slots.Necklace", null), ItemSlot.Context.EquipDye),
 			//
 			null,
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Body)), $"Mods.{PoTMod.ModName}.UI.Slots.1", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Offhand)), $"Mods.{PoTMod.ModName}.UI.Slots.6", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Body)), ($"Mods.{PoTMod.ModName}.UI.Slots.Body", null), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Offhand)), ($"Mods.{PoTMod.ModName}.UI.Slots.Offhand", null), ItemSlot.Context.EquipDye),
 			//
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOn)), $"Mods.{PoTMod.ModName}.UI.Slots.7", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Legs)), $"Mods.{PoTMod.ModName}.UI.Slots.2", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOff)), $"Mods.{PoTMod.ModName}.UI.Slots.8", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOn)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingLeft", null), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Legs)), ($"Mods.{PoTMod.ModName}.UI.Slots.Legs", null), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.RingOff)), ($"Mods.{PoTMod.ModName}.UI.Slots.RingRight", null), ItemSlot.Context.EquipDye),
 			//
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Accessory1)), $"Mods.{PoTMod.ModName}.UI.Slots.3", ItemSlot.Context.EquipDye),
-			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Accessory2)), $"Mods.{PoTMod.ModName}.UI.Slots.9", ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Accessory1)), ($"Mods.{PoTMod.ModName}.UI.Slots.NumberedAccessory", 1), ItemSlot.Context.EquipDye),
+			new(DyeFrameTexture, DyeIconTexture, new(() => (Player.dye, (int)RemappedEquipSlots.Accessory2)), ($"Mods.{PoTMod.ModName}.UI.Slots.NumberedAccessory", 2), ItemSlot.Context.EquipDye),
 		];
 
 		foreach (UIHoverImageItemSlot? slot in slots)
@@ -44,10 +46,11 @@ public sealed class UIDyeArmor : UIArmorPage
 		return slots;
 	}
 
-	protected override UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot)
+	protected override UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot, ref int numAccessorySlots)
 	{
+		int accessoryNumber = ++numAccessorySlots;
 		var handler = new UIImageItemSlot.SlotWrapper(() => modSlot.DyeItem, value => modSlot.DyeItem = value);
-		var uiSlot = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, handler, $"Mods.{PoTMod.ModName}.UI.Slots.10", ItemSlot.Context.ModdedDyeSlot);
+		var uiSlot = new UIHoverImageItemSlot(DyeFrameTexture, DyeIconTexture, handler, ($"Mods.{PoTMod.ModName}.UI.Slots.NumberedAccessory", accessoryNumber), ItemSlot.Context.ModdedDyeSlot);
 
 		return uiSlot;
 	}

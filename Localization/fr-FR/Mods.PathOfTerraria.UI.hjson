@@ -12,19 +12,16 @@ Gear: {
 }
 
 Slots: {
-	0: Casque
-	1: Plastron
-	2: Jambes
-	3: Accessoire 2
-	4: Arme
-	5: Collier
-	6: Seconde Main
-	7: Anneau Gauche
-	8: Anneau Droit
-	9: Accessoire 1
-	10: Ailes
-	// 11: Accessory 3
-	// 12: Accessory 4
+	Head: Casque
+	Body: Plastron
+	Legs: Jambes
+	Weapon: Arme
+	Necklace: Collier
+	Offhand: Seconde Main
+	RingLeft: Anneau Gauche
+	RingRight: Anneau Droit
+	Wings: Ailes
+	NumberedAccessory: Akcesorium {0}
 }
 
 BaseDamage: Dommage de Base : {0}

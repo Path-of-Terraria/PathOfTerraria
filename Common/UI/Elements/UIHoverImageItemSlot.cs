@@ -48,9 +48,9 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
 		SlotWrapper itemHandler,
-		string key,
+		(string Key, object Arg0) hoverText,
 		int context = ItemSlot.Context.InventoryItem	
-	) : base(backgroundTexture, iconTexture, itemHandler, context, key)
+	) : base(backgroundTexture, iconTexture, itemHandler, context, hoverText)
 	{
 	}
 

@@ -12,19 +12,16 @@ Gear: {
 }
 
 Slots: {
-	0: Hełm
-	1: Klatka piersiowa
-	2: Nogi
-	3: Drugie akcesorium
-	4: Broń
-	5: Naszyjnik
-	6: Poboczne
-	7: Lewy pierścień
-	8: Prawy pierścień
-	9: Pierwsze akcesorium
-	10: Skrzydła
-	// 11: Accessory 3
-	// 12: Accessory 4
+	Head: Hełm
+	Body: Klatka piersiowa
+	Legs: Nogi
+	Weapon: Broń
+	Necklace: Naszyjnik
+	Offhand: Poboczne
+	RingLeft: Lewy pierścień
+	RingRight: Prawy pierścień
+	Wings: Skrzydła
+	NumberedAccessory: Akcesorium {0}
 }
 
 BaseDamage: Bazowe Obrażenia: {0}

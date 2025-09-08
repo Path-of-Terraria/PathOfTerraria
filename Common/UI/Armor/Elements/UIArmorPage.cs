@@ -40,9 +40,9 @@ public abstract class UIArmorPage : UIElement
 
 	protected abstract Asset<Texture2D> DefaultFrameTexture { get; }
 
-	protected abstract UIHoverImageItemSlot?[] GetDefaultSlots();
+	protected abstract UIHoverImageItemSlot?[] GetDefaultSlots(ref int numAccessorySlots);
 
-	protected abstract UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot);
+	protected abstract UIHoverImageItemSlot CreateCustomAccessorySlot(ModAccessorySlot modSlot, ref int numAccessorySlots);
 
 	protected virtual void UpdateMouseOver(UIMouseEvent @event, UIElement element)
 	{
@@ -87,7 +87,9 @@ public abstract class UIArmorPage : UIElement
 
 	public void AddChildren()
 	{
-		defaultSlots = GetDefaultSlots();
+		int numAccessorySlots = 0;
+
+		defaultSlots = GetDefaultSlots(ref numAccessorySlots);
 
 		AccessorySlotLoader accessoryLoader = LoaderManager.Get<AccessorySlotLoader>();
 		ModAccessorySlotPlayer accessoryPlayer = Player.GetModPlayer<ModAccessorySlotPlayer>();
@@ -116,7 +118,7 @@ public abstract class UIArmorPage : UIElement
 				ModAccessorySlot modSlot = accessoryLoader.Get(i - numDefaultSlots, Player);
 				bool isVisible = ExtraAccessorySlots.IsModAccessorySlotVisible(modSlot);
 
-				uiSlot = CreateCustomAccessorySlot(modSlot);
+				uiSlot = CreateCustomAccessorySlot(modSlot, ref numAccessorySlots);
 				append = isVisible;
 
 				customSlots.Add((modSlot, uiSlot));
