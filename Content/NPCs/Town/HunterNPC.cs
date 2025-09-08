@@ -128,6 +128,7 @@ public class HunterNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		new NPCShop(Type)
 			.Add<WoodenBow>()
 			.Add<WoodenShortBow>()
+			.Add<Twinbow>(Condition.Hardmode)
 			.Register();
 	}
 
