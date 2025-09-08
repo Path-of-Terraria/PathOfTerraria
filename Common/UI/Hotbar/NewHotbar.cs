@@ -154,10 +154,7 @@ public sealed class NewHotbar : SmartUiState
 		// rectangle API, so we most draw it in this manner:
 		// - render active slot textures (hotbar background)
 		// - render item slot items,
-		// - render inactive slot textures OVER active textures and items,
-		//   - these *are* rendered with a source rectangle, allowing us to
-		//     cleanly transition within context of the position of the
-		//     selector.
+		// - render inactive slot textures for empty slots.
 
 		Texture2D specialInactiveCombat = Textures["InactiveCombat"].Value;
 		Texture2D specialInactiveBuilding = Textures["InactiveBuilding"].Value;
@@ -167,42 +164,46 @@ public sealed class NewHotbar : SmartUiState
 		// Draw offhand slot
 		Main.spriteBatch.Draw(specialActive, new Vector2(2, -2), new Rectangle(0, 0, 60, 72), Color.White, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0);
 
-		if (TryGetKeybindName(GearSwapKeybind.SwapKeybind, true, out string swapKey)) 
+		if (TryGetKeybindName(GearSwapKeybind.SwapKeybind, true, out string swapKey))
 		{
 			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, swapKey, new Vector2(8, 40), Color.White, 0f, Vector2.Zero, new Vector2(0.9f));
 		}
 
-		Main.inventoryScale = 0.7f;
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.GetModPlayer<GearSwapManager>().Inventory[0], ItemSlot.Context.HotbarItem, new Vector2(4, 4));
-		Main.inventoryScale = 1f;
-
-		// Draw active slot textures (hotbar background).
-		Main.spriteBatch.Draw(specialActive, new Vector2(20f), null, Color.White);
-
-		// Draw item slot items.
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], ItemSlot.Context.HotbarItem, new Vector2(24, 30));
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], ItemSlot.Context.HotbarItem, new Vector2(24 + 62f, 30));
-
-		// Render inactive slot textures OVER active textures and items.
-		const int Height = 72;
-		float normalizedLeftmostPos = specialSelector.X - 20f;
-		float spaceToTheRight = -(specialSelector.X - 22f - 60f);
-		int rightXOffset = Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60);
-		int spaceToTheRightRounded = (int)MathF.Round(spaceToTheRight);
-		int spaceToTheRightClamped = Math.Clamp(spaceToTheRightRounded, 0, 60);
-		int inverseSpaceToTheRight = 60 - spaceToTheRightClamped;
-		int hackyTotal = 82 + rightXOffset + spaceToTheRightClamped;
-		
-		// I'd like to replace this with a more elegant solution, but I don't
-		// want to waste time determining what causes strange offsets.
-		if (hackyTotal != 142)
+		try
 		{
-			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal; 
+			Main.inventoryScale = 0.7f;
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.GetModPlayer<GearSwapManager>().Inventory[0], ItemSlot.Context.HotbarItem, new Vector2(4, 4));
+		}
+		finally
+		{
+			Main.inventoryScale = 1f;
 		}
 
-		//Draw greyed out icons when inactive
-		//Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
-		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
+		// Draw active slot textures (hotbar background), but only if there is an item in there.
+		if (Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem] is { IsAir: false })
+		{
+			Main.spriteBatch.Draw(specialActive, new Vector2(20f), null, Color.White);
+		}
+
+		// Draw item slot items.
+		for (int i = 0; i < 2; i++)
+		{
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[i], ItemSlot.Context.HotbarItem, new Vector2(24 + (i * 62), 30));
+		}
+
+		// Draw greyed out icons when empty.
+		for (int i = 0; i < 2; i++)
+		{
+			if (Main.LocalPlayer.inventory[i] is { IsAir: false })
+			{
+				continue;
+			}
+
+			Texture2D tex = i == 0 ? specialInactiveCombat : specialInactiveBuilding;
+			var position = new Vector2(20 + (i * 62), 20);
+
+			Main.spriteBatch.Draw(tex, position, Color.White);
+		}
 	}
 
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
