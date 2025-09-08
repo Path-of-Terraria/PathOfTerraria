@@ -99,7 +99,7 @@ public readonly struct ElementalDamage
 		return type switch
 		{
 			ElementType.Fire => ModContent.BuffType<IgnitedDebuff>(),
-			ElementType.Cold => BuffID.Frostburn,
+			ElementType.Cold => ModContent.BuffType<FreezeDebuff>(),
 			ElementType.Lightning => BuffID.Electrified,
 			_ => 0
 		};
@@ -111,6 +111,10 @@ public readonly struct ElementalDamage
 		{
 			case ElementType.Fire when entity is NPC burningNPC:
 				IgnitedDebuff.ApplyTo(burningNPC, (int)(elementalDamageDealt * 0.9f));
+				break;
+
+			case ElementType.Cold when entity is NPC frozenNPC:
+				frozenNPC.AddBuff(GetBuffType(ElementType), 200 * 90);
 				break;
 
 			default:
@@ -140,7 +144,7 @@ public readonly struct ElementalDamage
 	{
 		return ElementType switch
 		{
-			ElementType.Fire => info.Crit,
+			ElementType.Fire or ElementType.Cold => info.Crit,
 			_ => defaultPercent,
 		};
 	}

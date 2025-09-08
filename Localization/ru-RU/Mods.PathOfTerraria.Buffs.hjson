@@ -105,3 +105,8 @@ IgnitedDebuff: {
 	// DisplayName: Ignited Debuff
 	// Description: Mods.PathOfTerraria.Buffs.IgnitedDebuff.Description
 }
+
+FreezeDebuff: {
+	// DisplayName: Freeze Debuff
+	// Description: Mods.PathOfTerraria.Buffs.FreezeDebuff.Description
+}
