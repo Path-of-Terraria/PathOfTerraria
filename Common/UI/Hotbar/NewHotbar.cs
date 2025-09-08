@@ -437,13 +437,7 @@ public sealed class NewHotbar : SmartUiState
 		for (int k = 2; k <= 9; k++)
 		{
 			var pos = new Vector2(24 + 124 + 52 * (k - 2), 30 + off);
-			var bounds = new Rectangle((int)pos.X, (int)pos.Y, 64, 64);
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21, pos, Color.White * opacity);
-
-			if (bounds.Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft && Main.mouseLeftRelease)
-			{
-				Main.LocalPlayer.selectedItem = k;
-			}
 		}
 
 		if (Main.LocalPlayer.selectedItem > 10)
