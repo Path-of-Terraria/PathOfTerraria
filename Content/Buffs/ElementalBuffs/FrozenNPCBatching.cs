@@ -20,7 +20,8 @@ internal class FrozenNPCBatching : GlobalNPC
 	public override void Load()
 	{
 		//On_Main.DrawNPCs += DrawFrozenNPCs;
-		On_Main.DoDraw_DrawNPCsOverTiles += DrawFrozenNPCs;
+		On_Main.CheckMonoliths += DrawCachedNPCs;
+		On_Main.DoDraw_WallsTilesNPCs += eg;
 
 		FrozenEffect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/FrozenEffect");
 
@@ -32,11 +33,18 @@ internal class FrozenNPCBatching : GlobalNPC
 		});
 	}
 
-	private void DrawFrozenNPCs(On_Main.orig_DoDraw_DrawNPCsOverTiles orig, Main self)
+	private void eg(On_Main.orig_DoDraw_WallsTilesNPCs orig, Main self)
 	{
 		orig(self);
 
-		DrawNPCs(false);
+		DrawNPCs(true);
+	}
+
+	private void DrawCachedNPCs(On_Main.orig_CheckMonoliths orig)
+	{
+		//DrawNPCs(false);
+		orig();
+
 	}
 
 	private static void DrawNPCs(bool behindTiles)
@@ -45,15 +53,19 @@ internal class FrozenNPCBatching : GlobalNPC
 		{
 			return;
 		}
+		Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
 
 		Drawing = true;
+		Main.spriteBatch.End();
+
+		RenderTargetBinding[] targets = Main.instance.GraphicsDevice.GetRenderTargets();
 
 		Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
 
 		Matrix trans = Main.GameViewMatrix.TransformationMatrix;
 		Effect effect = FrozenEffect.Value;
 		effect.Parameters["scroller"].SetValue(Main.GameUpdateCount * 0.01f);
-		RenderTargetBinding[] targets = Main.instance.GraphicsDevice.GetRenderTargets();
+
 		Main.instance.GraphicsDevice.SetRenderTarget(FrozenTarget);
 		Main.instance.GraphicsDevice.Clear(Color.Transparent);
 
@@ -68,12 +80,12 @@ internal class FrozenNPCBatching : GlobalNPC
 		Drawing = false;
 
 		Main.instance.GraphicsDevice.SetRenderTargets(targets);
+		Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
 
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, trans);
 
 		Main.spriteBatch.Draw(FrozenTarget, Vector2.Zero, Color.White);
 
-		Main.spriteBatch.End();
-		Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
+		//Main.spriteBatch.End();
 	}
 }

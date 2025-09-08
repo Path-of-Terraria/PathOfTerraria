@@ -144,7 +144,7 @@ public readonly struct ElementalDamage
 	{
 		return ElementType switch
 		{
-			ElementType.Fire or ElementType.Cold => info.Crit,
+			ElementType.Fire or ElementType.Cold => true,//info.Crit,
 			_ => defaultPercent,
 		};
 	}

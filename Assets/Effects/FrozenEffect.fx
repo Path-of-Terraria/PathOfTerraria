@@ -32,7 +32,7 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 		lum = 1;
 	}
 	
-	color = lerp(lerp(float4(0.12549, 0.21568, 114, 1), float4(0.6, 0.6667, 0.7776, 1), lum), lerp(float4(0.6, 0.6667, 0.7776, 1), float4(1, 1, 1, 1), lum), lum);
+	color = lerp(lerp(float4(0.06224, 0.10523, 0.16432, 1), float4(0.6, 0.6667, 0.7776, 1), lum), lerp(float4(0.6, 0.6667, 0.7776, 1), float4(1, 1, 1, 1), lum), lum);
 	color *= alpha;
 	return color;
 }
