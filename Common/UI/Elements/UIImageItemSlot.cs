@@ -79,26 +79,26 @@ public class UIImageItemSlot : UIElement
 	public ItemInsertionPredicate? Predicate;
 
 	/// <summary>
-	///    The key to look for in Localization for tooltip hover
+	///    The localization key and optional argument to use for tooltip hover.
 	/// </summary>
 	/// <remarks>
-	///     Will not have any effect if <see cref="Key" /> is <c>null</c> or not provided.
+	///     Will not have any effect if <see cref="HoverText" /> is <c>null</c> or not provided.
 	/// </remarks>
-	public string Key;
+	public (string Key, object Arg0)? HoverText;
 
 	public UIImageItemSlot(
 		Asset<Texture2D> backgroundTexture,
 		Asset<Texture2D> iconTexture,
 		SlotWrapper itemHandler,
 		int context = ItemSlot.Context.InventoryItem,
-		string key = null
+		(string Key, object Arg0)? hoverText = null
 	)
 	{
 		BackgroundTexture = backgroundTexture;
 		IconTexture = iconTexture;
 		handler = itemHandler;
 		Context = context;
-		Key = key;
+		HoverText = hoverText;
 	}
 
 	/// <summary>
@@ -209,9 +209,9 @@ public class UIImageItemSlot : UIElement
 			Item = item;
 		}
 
-		if (Key != null)
+		if (HoverText is { } hoverText)
 		{
-			Main.hoverItemName = Language.GetTextValue(Key);
+			Main.hoverItemName = hoverText.Arg0 != null ? Language.GetTextValue(hoverText.Key, hoverText.Arg0) : Language.GetTextValue(hoverText.Key);
 			Main.HoverItem = Item.Clone();
 			Main.HoverItem.tooltipContext = Context;
 		}

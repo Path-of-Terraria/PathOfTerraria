@@ -154,10 +154,7 @@ public sealed class NewHotbar : SmartUiState
 		// rectangle API, so we most draw it in this manner:
 		// - render active slot textures (hotbar background)
 		// - render item slot items,
-		// - render inactive slot textures OVER active textures and items,
-		//   - these *are* rendered with a source rectangle, allowing us to
-		//     cleanly transition within context of the position of the
-		//     selector.
+		// - render inactive slot textures for empty slots.
 
 		Texture2D specialInactiveCombat = Textures["InactiveCombat"].Value;
 		Texture2D specialInactiveBuilding = Textures["InactiveBuilding"].Value;
@@ -167,42 +164,46 @@ public sealed class NewHotbar : SmartUiState
 		// Draw offhand slot
 		Main.spriteBatch.Draw(specialActive, new Vector2(2, -2), new Rectangle(0, 0, 60, 72), Color.White, 0f, Vector2.Zero, 0.7f, SpriteEffects.None, 0);
 
-		if (TryGetKeybindName(GearSwapKeybind.SwapKeybind, true, out string swapKey)) 
+		if (TryGetKeybindName(GearSwapKeybind.SwapKeybind, true, out string swapKey))
 		{
 			ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.ItemStack.Value, swapKey, new Vector2(8, 40), Color.White, 0f, Vector2.Zero, new Vector2(0.9f));
 		}
 
-		Main.inventoryScale = 0.7f;
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.GetModPlayer<GearSwapManager>().Inventory[0], ItemSlot.Context.HotbarItem, new Vector2(4, 4));
-		Main.inventoryScale = 1f;
-
-		// Draw active slot textures (hotbar background).
-		Main.spriteBatch.Draw(specialActive, new Vector2(20f), null, Color.White);
-
-		// Draw item slot items.
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[0], ItemSlot.Context.HotbarItem, new Vector2(24, 30));
-		ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[1], ItemSlot.Context.HotbarItem, new Vector2(24 + 62f, 30));
-
-		// Render inactive slot textures OVER active textures and items.
-		const int Height = 72;
-		float normalizedLeftmostPos = specialSelector.X - 20f;
-		float spaceToTheRight = -(specialSelector.X - 22f - 60f);
-		int rightXOffset = Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60);
-		int spaceToTheRightRounded = (int)MathF.Round(spaceToTheRight);
-		int spaceToTheRightClamped = Math.Clamp(spaceToTheRightRounded, 0, 60);
-		int inverseSpaceToTheRight = 60 - spaceToTheRightClamped;
-		int hackyTotal = 82 + rightXOffset + spaceToTheRightClamped;
-		
-		// I'd like to replace this with a more elegant solution, but I don't
-		// want to waste time determining what causes strange offsets.
-		if (hackyTotal != 142)
+		try
 		{
-			rightXOffset -= hackyTotal > 142 ? hackyTotal - 142 : 142 - hackyTotal; 
+			Main.inventoryScale = 0.7f;
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.GetModPlayer<GearSwapManager>().Inventory[0], ItemSlot.Context.HotbarItem, new Vector2(4, 4));
+		}
+		finally
+		{
+			Main.inventoryScale = 1f;
 		}
 
-		//Draw greyed out icons when inactive
-		//Main.spriteBatch.Draw(specialInactiveCombat, new Vector2(20f), new Rectangle(0, 0, Math.Clamp((int)MathF.Round(normalizedLeftmostPos), 0, 60), Height), Color.White);
-		Main.spriteBatch.Draw(specialInactiveBuilding, new Vector2(82f + rightXOffset, 20f), new Rectangle(inverseSpaceToTheRight, 0, spaceToTheRightClamped, Height), Color.White);
+		// Draw active slot textures (hotbar background), but only if there is an item in there.
+		if (Main.LocalPlayer.inventory[Main.LocalPlayer.selectedItem] is { IsAir: false })
+		{
+			Main.spriteBatch.Draw(specialActive, new Vector2(20f), null, Color.White);
+		}
+
+		// Draw item slot items.
+		for (int i = 0; i < 2; i++)
+		{
+			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[i], ItemSlot.Context.HotbarItem, new Vector2(24 + (i * 62), 30));
+		}
+
+		// Draw greyed out icons when empty.
+		for (int i = 0; i < 2; i++)
+		{
+			if (Main.LocalPlayer.inventory[i] is { IsAir: false })
+			{
+				continue;
+			}
+
+			Texture2D tex = i == 0 ? specialInactiveCombat : specialInactiveBuilding;
+			var position = new Vector2(20 + (i * 62), 20);
+
+			Main.spriteBatch.Draw(tex, position, Color.White);
+		}
 	}
 
 	private static void DrawCombat(SpriteBatch spriteBatch, float off, float opacity)
@@ -437,13 +438,7 @@ public sealed class NewHotbar : SmartUiState
 		for (int k = 2; k <= 9; k++)
 		{
 			var pos = new Vector2(24 + 124 + 52 * (k - 2), 30 + off);
-			var bounds = new Rectangle((int)pos.X, (int)pos.Y, 64, 64);
 			ItemSlot.Draw(spriteBatch, ref Main.LocalPlayer.inventory[k], 21, pos, Color.White * opacity);
-
-			if (bounds.Contains(Main.MouseScreen.ToPoint()) && Main.mouseLeft && Main.mouseLeftRelease)
-			{
-				Main.LocalPlayer.selectedItem = k;
-			}
 		}
 
 		if (Main.LocalPlayer.selectedItem > 10)
@@ -577,47 +572,26 @@ public class HijackHotbarClick : ModSystem
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
 		bool hbLocked = Main.LocalPlayer.hbLocked; // Lock hotbar for the original method so we don't fight against vanilla
-		Main.LocalPlayer.hbLocked = true;
-		orig(self);
-		Main.LocalPlayer.hbLocked = hbLocked;
-
-		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
+		try
 		{
-			DrawMainItemHover(hbLocked);
-			DrawPotionHotbarTooltips(hbLocked);
-
-			return;
+			Main.LocalPlayer.hbLocked = true;
+			orig(self);
+		}
+		finally
+		{
+			Main.LocalPlayer.hbLocked = hbLocked;
 		}
 
-		Texture2D back = NewHotbar.Textures["HotbarBack"].Value;
-		DrawBuildingHotbarTooltips(hbLocked, back);
-	}
+		bool combatMode = Main.LocalPlayer.selectedItem == 0;
 
-	private static void DrawMainItemHover(bool hbLocked)
-	{
-		const int FirstSlot = 0;
-
-		if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !WasInInventory)
+		if (combatMode)
 		{
-			var pos = new Rectangle(26 * (FirstSlot + 1) - 4, 30, 60, 60);
+			DrawPotionHotbarTooltips(hbLocked);
+		}
 
-			if (pos.Contains(Main.MouseScreen.ToPoint()))
-			{
-				Main.LocalPlayer.mouseInterface = true;
-				Main.LocalPlayer.cursorItemIconEnabled = false;
-				Main.hoverItemName = Main.LocalPlayer.inventory[FirstSlot].AffixName();
-				Main.rare = Main.LocalPlayer.inventory[FirstSlot].rare;
-
-				if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
-				{
-					Main.LocalPlayer.changeItem = FirstSlot;
-				}
-
-				if (Main.LocalPlayer.inventory[FirstSlot].stack > 1)
-				{
-					Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[FirstSlot].stack + ")";
-				}
-			}
+		if (NewHotbar.Textures.TryGetValue("HotbarBack", out Asset<Texture2D> back))
+		{
+			DrawItemHotbarTooltips(hbLocked, combatMode, back.Value);
 		}
 	}
 
@@ -668,30 +642,62 @@ public class HijackHotbarClick : ModSystem
 		});
 	}
 
-	private static void DrawBuildingHotbarTooltips(bool hbLocked, Texture2D back)
+	private static void DrawItemHotbarTooltips(bool hbLocked, bool combatMode, Texture2D back)
 	{
-		for (int i = 1; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
+		// Combat mode just needs the first two slots handled, otherwise we go through all the slots.
+		int start = combatMode ? 0 : 0;
+		int end = combatMode ? 1 : 9;
+
+		const int FirstSlot = 0;
+		const int NumLargeSlots = 2;
+		const int BaseXOffset = 20;
+		const int BaseYOffset = 30;
+		const int LargeToSmallXOffset = 6;
+		(int LargeXSize, int LargeYSize, int LargeXOffset) = (60, 60, 2);
+		(int SmallXSize, int SmallYSize, int SmallXOffset) = (back.Width, back.Height, 4);
+
+		if (!PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !Main.playerInventory && !hbLocked)
 		{
-			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !Main.playerInventory)
+			for (int i = start; i <= end; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 			{
-				var pos = new Rectangle(52 * (i + 1) - 4, 30, back.Width, back.Height);
+				var pos = new Rectangle(
+					BaseXOffset
+					+ (Math.Min(i, NumLargeSlots) * (LargeXSize + LargeXOffset))
+					+ (i >= NumLargeSlots ? LargeToSmallXOffset : 0)
+					+ (Math.Max(0, i - NumLargeSlots) * (SmallXSize + SmallXOffset)),
+					BaseYOffset,
+					i < NumLargeSlots ? LargeXSize : SmallXSize,
+					i < NumLargeSlots ? LargeYSize : SmallYSize
+				);
 
 				if (pos.Contains(Main.MouseScreen.ToPoint()))
 				{
+					bool fullTooltip = combatMode && i == FirstSlot;
+
 					Main.LocalPlayer.mouseInterface = true;
 					Main.LocalPlayer.cursorItemIconEnabled = false;
-					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
 					Main.rare = Main.LocalPlayer.inventory[i].rare;
+
+					if (fullTooltip)
+					{
+						Main.HoverItem = Main.LocalPlayer.inventory[FirstSlot].Clone();
+					}
+					else
+					{
+						Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
+					}
 
 					if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
 					{
 						Main.LocalPlayer.changeItem = i;
 					}
 
-					if (Main.LocalPlayer.inventory[i].stack > 1)
+					if (!fullTooltip && Main.LocalPlayer.inventory[i].stack > 1)
 					{
 						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
 					}
+
+					break;
 				}
 			}
 		}

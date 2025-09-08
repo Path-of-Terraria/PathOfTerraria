@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using PathOfTerraria.Common.Data;
 using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
@@ -405,6 +406,12 @@ internal class ArpgNPC : GlobalNPC, INpcTransformCallbacks
 	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
 	{
 		Rarity = (ItemRarity)binaryReader.ReadByte();
+		
+		if (!Enum.GetValues<ItemRarity>().Contains(Rarity))
+		{
+			Mod.Logger.Warn($"Received invalid rarity byte: {(byte)Rarity}");
+		}
+
 		Affixes.Clear();
 
 		byte count = binaryReader.ReadByte();
