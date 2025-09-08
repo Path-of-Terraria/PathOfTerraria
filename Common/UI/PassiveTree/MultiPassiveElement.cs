@@ -12,7 +12,7 @@ namespace PathOfTerraria.Common.UI.PassiveTree;
 /// <summary> Offers a choice of one of multiple passives contained within. Every hidden child node is considered an inner node. </summary>
 internal class MultiPassiveElement : PassiveElement
 {
-	private readonly Edge<AllocatableElement>[] _extraEdges;
+	private readonly Edge<IConnectedAllocatableNode>[] _extraEdges;
 
 	public int AnimationTime { get; set; }
 	public int AnimationTimeMax => 60;
@@ -23,7 +23,7 @@ internal class MultiPassiveElement : PassiveElement
 	{
 		PassiveTreePlayer passiveTreeSystem = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>();
 		InnerPassives = passiveTreeSystem.Edges.Where(e => e.Start == Passive && e.End.IsHidden).Select(e => (Passive)e.End).ToArray();
-		_extraEdges = new Edge<AllocatableElement>[InnerPassives.Length];
+		_extraEdges = new Edge<IConnectedAllocatableNode>[InnerPassives.Length];
 	}
 
 	public override void SafeUpdate(GameTime gameTime)
@@ -128,7 +128,7 @@ internal class MultiPassiveElement : PassiveElement
 			Passive inner = InnerPassives[i];
 			var element = new PassiveRadialElement(inner, Vector2.Zero, inner.TreePos - Passive.TreePos);
 			Append(element);
-			_extraEdges[i] = new Edge<AllocatableElement>(this, element, Flags: 0);
+			_extraEdges[i] = new Edge<IConnectedAllocatableNode>(this, element, Flags: 0);
 		}
 
 		RecalculateChildren();

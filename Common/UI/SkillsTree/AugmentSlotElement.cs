@@ -1,17 +1,21 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using System;
+using System.Linq;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Sounds;
-using System.Linq;
+using PathOfTerraria.Core.UI.SmartUI;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
-internal class AugmentSlotElement : SkillElement
+internal class AugmentSlotElement : SmartUiElement, IConnectedAllocatableNode
 {
 	/// <summary>
 	/// Defines both clickbox size and the hoverbox size for showing/hiding radial augments.
@@ -20,7 +24,8 @@ internal class AugmentSlotElement : SkillElement
 
 	public const int HoverTimeMax = 10;
 
-	public readonly int Index;
+	public int Index { get; }
+	public Allocatable? Node { get; }
 
 	public int HoverTime;
 	private bool _unlocked;
@@ -55,8 +60,9 @@ internal class AugmentSlotElement : SkillElement
 		}
 	}
 
-	public AugmentSlotElement(SkillNode node, int index, bool unlocked = false) : base(node)
+	public AugmentSlotElement(SkillNode? node, int index, bool unlocked = false)
 	{
+		Node = node;
 		Index = index;
 
 		if (Index >= SkillTree.Current.Augments.Count) //Failsafe
@@ -222,6 +228,21 @@ internal class AugmentSlotElement : SkillElement
 				Node.OnDeallocate(Main.LocalPlayer);
 			}
 		}
+	}
+
+	Vector2 IConnectedAllocatableNode.GetCenter()
+	{
+		return GetDimensions().Center();
+	}
+
+	bool IConnectedAllocatableNode.AppearsAsAllocated(Allocatable? nodeOverride)
+	{
+		return SkillTree.Current.Augments[Index].Augment != null;
+	}
+
+	bool IConnectedAllocatableNode.AppearsAsCanBeAllocated(Allocatable? nodeOverride)
+	{
+		return _unlocked && SkillTree.Current.Augments[Index].Augment == null;
 	}
 }
 

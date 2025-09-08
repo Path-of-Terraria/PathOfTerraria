@@ -65,10 +65,10 @@ internal class SkillSelectionPanel : SmartUiElement
 		int spareSlotCounter = 0;
 		
 		// Add nodes.
-		var mapping = new Dictionary<Allocatable, AllocatableElement>(capacity: tree.Nodes.Count);
+		var mapping = new Dictionary<Allocatable, IConnectedAllocatableNode>(capacity: tree.Nodes.Count);
 		foreach (SkillNode node in tree.Nodes)
 		{
-			AllocatableElement element = node switch
+			UIElement element = node switch
 			{
 				SpareSlot => new AugmentSlotElement(node, spareSlotCounter++, true),
 				SkillSpecial special => new SkillSpecialElement(special),
@@ -77,7 +77,7 @@ internal class SkillSelectionPanel : SmartUiElement
 			element.Left.Set(node.TreePos.X - node.Size.X / 2, 0.5f);
 			element.Top.Set(node.TreePos.Y - node.Size.Y / 2, 0.5f);
 
-			mapping[node] = element;
+			mapping[node] = (IConnectedAllocatableNode)element;
 
 			_skillTreeInnerPanel.AppendAsDraggable(element);
 		}
@@ -86,11 +86,18 @@ internal class SkillSelectionPanel : SmartUiElement
 		_skillTreeInnerPanel.Connections.EnsureCapacity(tree.Edges.Count);
 		foreach (Edge<Allocatable> edge in tree.Edges)
 		{
-			if (mapping.TryGetValue(edge.Start, out AllocatableElement uiStart)
-			&& mapping.TryGetValue(edge.End, out AllocatableElement uiEnd))
+			if (mapping.TryGetValue(edge.Start, out IConnectedAllocatableNode uiStart)
+			&& mapping.TryGetValue(edge.End, out IConnectedAllocatableNode uiEnd))
 			{
 				_skillTreeInnerPanel.Connections.Add(new(uiStart, uiEnd, edge.Flags));
 			}
+		}
+
+		// Add additional augment slots to the side.
+		int count = Math.Min(SkillTree.DefaultAugmentCount, tree.Augments.Count);
+		for (int i = 0; i < count; i++)
+		{
+			_skillTreeInnerPanel.Append(new AugmentSlotElement(node: null, index: spareSlotCounter++, unlocked: tree.Augments[i].Unlocked));
 		}
 
 		UIButton<string> closeButton = new(Language.GetTextValue("Mods.PathOfTerraria.UI.SkillUI.Back"))
