@@ -577,47 +577,26 @@ public class HijackHotbarClick : ModSystem
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
 		bool hbLocked = Main.LocalPlayer.hbLocked; // Lock hotbar for the original method so we don't fight against vanilla
-		Main.LocalPlayer.hbLocked = true;
-		orig(self);
-		Main.LocalPlayer.hbLocked = hbLocked;
-
-		if (Main.LocalPlayer.selectedItem == 0) // If we're on the combat hotbar, don't do any of the following
+		try
 		{
-			DrawMainItemHover(hbLocked);
-			DrawPotionHotbarTooltips(hbLocked);
-
-			return;
+			Main.LocalPlayer.hbLocked = true;
+			orig(self);
+		}
+		finally
+		{
+			Main.LocalPlayer.hbLocked = hbLocked;
 		}
 
-		Texture2D back = NewHotbar.Textures["HotbarBack"].Value;
-		DrawBuildingHotbarTooltips(hbLocked, back);
-	}
+		bool combatMode = Main.LocalPlayer.selectedItem == 0;
 
-	private static void DrawMainItemHover(bool hbLocked)
-	{
-		const int FirstSlot = 0;
-
-		if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !WasInInventory)
+		if (combatMode)
 		{
-			var pos = new Rectangle(26 * (FirstSlot + 1) - 4, 30, 60, 60);
+			DrawPotionHotbarTooltips(hbLocked);
+		}
 
-			if (pos.Contains(Main.MouseScreen.ToPoint()))
-			{
-				Main.LocalPlayer.mouseInterface = true;
-				Main.LocalPlayer.cursorItemIconEnabled = false;
-				Main.hoverItemName = Main.LocalPlayer.inventory[FirstSlot].AffixName();
-				Main.rare = Main.LocalPlayer.inventory[FirstSlot].rare;
-
-				if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
-				{
-					Main.LocalPlayer.changeItem = FirstSlot;
-				}
-
-				if (Main.LocalPlayer.inventory[FirstSlot].stack > 1)
-				{
-					Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[FirstSlot].stack + ")";
-				}
-			}
+		if (NewHotbar.Textures.TryGetValue("HotbarBack", out Asset<Texture2D> back))
+		{
+			DrawItemHotbarTooltips(hbLocked, combatMode, back.Value);
 		}
 	}
 
@@ -668,20 +647,40 @@ public class HijackHotbarClick : ModSystem
 		});
 	}
 
-	private static void DrawBuildingHotbarTooltips(bool hbLocked, Texture2D back)
+	private static void DrawItemHotbarTooltips(bool hbLocked, bool combatMode, Texture2D back)
 	{
-		for (int i = 1; i <= 9; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
+		// Combat mode just needs the first two slots handled, otherwise we go through all the slots.
+		int start = combatMode ? 0 : 0;
+		int end = combatMode ? 1 : 9;
+
+		const int FirstSlot = 0;
+		const int NumLargeSlots = 2;
+		const int BaseXOffset = 20;
+		const int BaseYOffset = 30;
+		const int LargeToSmallXOffset = 6;
+		(int LargeXSize, int LargeYSize, int LargeXOffset) = (60, 60, 2);
+		(int SmallXSize, int SmallYSize, int SmallXOffset) = (back.Width, back.Height, 4);
+
+		if (!PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !Main.playerInventory && !hbLocked)
 		{
-			if (!hbLocked && !PlayerInput.IgnoreMouseInterface && !Main.LocalPlayer.channel && !Main.playerInventory)
+			for (int i = start; i <= end; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 			{
-				var pos = new Rectangle(52 * (i + 1) - 4, 30, back.Width, back.Height);
+				var pos = new Rectangle(
+					BaseXOffset
+					+ (Math.Min(i, NumLargeSlots) * (LargeXSize + LargeXOffset))
+					+ (i >= NumLargeSlots ? LargeToSmallXOffset : 0)
+					+ (Math.Max(0, i - NumLargeSlots) * (SmallXSize + SmallXOffset)),
+					BaseYOffset,
+					i < NumLargeSlots ? LargeXSize : SmallXSize,
+					i < NumLargeSlots ? LargeYSize : SmallYSize
+				);
 
 				if (pos.Contains(Main.MouseScreen.ToPoint()))
 				{
 					Main.LocalPlayer.mouseInterface = true;
 					Main.LocalPlayer.cursorItemIconEnabled = false;
-					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
 					Main.rare = Main.LocalPlayer.inventory[i].rare;
+					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
 
 					if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
 					{
@@ -692,6 +691,8 @@ public class HijackHotbarClick : ModSystem
 					{
 						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
 					}
+
+					break;
 				}
 			}
 		}
