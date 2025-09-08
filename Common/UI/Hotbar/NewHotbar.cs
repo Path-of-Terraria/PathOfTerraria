@@ -677,17 +677,27 @@ public class HijackHotbarClick : ModSystem
 
 				if (pos.Contains(Main.MouseScreen.ToPoint()))
 				{
+					bool fullTooltip = combatMode && i == FirstSlot;
+
 					Main.LocalPlayer.mouseInterface = true;
 					Main.LocalPlayer.cursorItemIconEnabled = false;
 					Main.rare = Main.LocalPlayer.inventory[i].rare;
-					Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
+
+					if (fullTooltip)
+					{
+						Main.HoverItem = Main.LocalPlayer.inventory[FirstSlot].Clone();
+					}
+					else
+					{
+						Main.hoverItemName = Main.LocalPlayer.inventory[i].AffixName();
+					}
 
 					if (Main.mouseLeft && !hbLocked && !Main.blockMouse)
 					{
 						Main.LocalPlayer.changeItem = i;
 					}
 
-					if (Main.LocalPlayer.inventory[i].stack > 1)
+					if (!fullTooltip && Main.LocalPlayer.inventory[i].stack > 1)
 					{
 						Main.hoverItemName = Main.hoverItemName + " (" + Main.LocalPlayer.inventory[i].stack + ")";
 					}
