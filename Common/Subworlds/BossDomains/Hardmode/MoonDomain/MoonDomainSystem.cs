@@ -51,7 +51,7 @@ internal class MoonDomainSystem : ModSystem
 			return;
 		}
 
-		if (Main.spawnTileY > Main.maxTilesY - 250 || WorldGen.gen)
+		if (Main.spawnTileY > Main.maxTilesY - 250)
 		{
 			EffectStrength = 1f;
 			return;
