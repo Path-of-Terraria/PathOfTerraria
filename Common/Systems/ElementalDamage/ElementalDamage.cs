@@ -121,6 +121,9 @@ public readonly struct ElementalDamage
 					frozenNPC.AddBuff(GetBuffType(ElementType), (int)(duration * 60));
 				}
 
+				frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
+				FreezeNPC.ConvertFrozenGore(frozenNPC);
+
 				break;
 
 			default:

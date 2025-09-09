@@ -1,8 +1,13 @@
-﻿using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Terraria.GameContent;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
@@ -14,6 +19,7 @@ internal class FrozenNPCBatching : GlobalNPC
 	public static bool Drawing { get; private set; }
 
 	public static Queue<int> CachedNPCs = [];
+	public static HashSet<int> CachedGore = [];
 
 	private static Asset<Effect> FrozenEffect;
 	private static RenderTarget2D FrozenTarget;
@@ -21,22 +27,50 @@ internal class FrozenNPCBatching : GlobalNPC
 	public override void Load()
 	{
 		On_Main.DoDraw_WallsTilesNPCs += DrawFrozenNPCs;
+		IL_Main.DrawGore += AddGoreDrawHook;
 
 		FrozenEffect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/FrozenEffect");
 
-		Main.QueueMainThreadAction(() =>
+		Main.RunOnMainThread(() =>
 		{
 			const RenderTargetUsage UsageType = RenderTargetUsage.PreserveContents;
 			GraphicsDevice device = Main.instance.GraphicsDevice;
 			FrozenTarget = new RenderTarget2D(device, Main.displayWidth.Max(), Main.displayHeight.Max(), false, SurfaceFormat.Color, DepthFormat.None, 1, UsageType);
-		});
 
-		Main.RunOnMainThread(() =>
-			{
-				Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
-				Main.graphics.ApplyChanges();
-			}
-		);
+			Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+			Main.graphics.ApplyChanges();
+		});
+	}
+
+	private void AddGoreDrawHook(ILContext il)
+	{
+		ILCursor c = new(il);
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall<Main>(nameof(Main.LoadGore))))
+		{
+			return;
+		}
+
+		ILLabel label = null;
+		
+		if (!c.TryGotoPrev(x => x.MatchBr(out label)))
+		{
+			return;
+		}
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall<Main>(nameof(Main.LoadGore))))
+		{
+			return;
+		}
+
+		c.Emit(OpCodes.Ldloc_0);
+		c.EmitDelegate(PreDrawGore);
+		c.Emit(OpCodes.Brfalse, label);
+	}
+
+	public static bool PreDrawGore(int who)
+	{
+		return CachedGore.Contains(who) == Drawing;
 	}
 
 	private void DrawFrozenNPCs(On_Main.orig_DoDraw_WallsTilesNPCs orig, Main self)
@@ -47,7 +81,7 @@ internal class FrozenNPCBatching : GlobalNPC
 
 	private static void DrawNPCs(bool behindTiles)
 	{
-		if (CachedNPCs.Count <= 0)
+		if (CachedNPCs.Count <= 0 && CachedGore.Count <= 0)
 		{
 			return;
 		}
@@ -97,8 +131,58 @@ internal class FrozenNPCBatching : GlobalNPC
 			npc.position = pos;
 		}
 
+		DrawFrozenGore();
+
 		Main.spriteBatch.End();
 		Drawing = false;
+	}
+
+	private static void DrawFrozenGore()
+	{
+		foreach (int i in CachedGore)
+		{
+			Gore gore = Main.gore[i];
+
+			if (!gore.active || gore.type <= 0)
+			{
+				continue;
+			}
+
+			/*
+			if (((gore[i].type >= 706 && gore[i].type <= 717) || gore[i].type == 943 || gore[i].type == 1147 || (gore[i].type >= 1160 && gore[i].type <= 1162)) 
+				&& (gore[i].frame < 7 || gore[i].frame > 9)) {
+			*/
+			//if (GoreID.Sets.DrawBehind[gore[i].type] || (GoreID.Sets.LiquidDroplet[gore[i].type] && gore[i].frame is < 7 or > 9))
+			//{
+			//	drawBackGore = true;
+			//	continue;
+			//}
+
+			//TML: Added '+ gore[i].drawOffset' to draw calls below
+			if (gore.Frame.ColumnCount > 1 || gore.Frame.RowCount > 1)
+			{
+				Asset<Texture2D> tex = TextureAssets.Gore[gore.type];
+				Rectangle src = gore.Frame.GetSourceRectangle(tex.Value);
+				Vector2 vector = new(0f, 0f);
+
+				if (gore.type == 1217)
+				{
+					vector.Y += 4f;
+				}
+
+				vector += gore.drawOffset;
+				Color alpha = gore.GetAlpha(Lighting.GetColor((int)(gore.position.X + src.Width * 0.5) / 16, (int)((gore.position.Y + src.Height * 0.5) / 16.0)));
+				Vector2 pos = new Vector2(gore.position.X + (src.Width / 2), gore.position.Y + (src.Height / 2) - 2f) + vector - Main.screenPosition;
+				Main.spriteBatch.Draw(tex.Value, pos, src, alpha, gore.rotation, new Vector2(src.Width / 2, src.Height / 2), gore.scale, SpriteEffects.None, 0f);
+			}
+			else
+			{
+				Asset<Texture2D> tex = TextureAssets.Gore[gore.type];
+				Color alpha2 = gore.GetAlpha(Lighting.GetColor((int)(gore.position.X + tex.Width() * 0.5) / 16, (int)((gore.position.Y + tex.Height() * 0.5) / 16.0)));
+				Vector2 pos = new Vector2(gore.position.X + (tex.Width() / 2), gore.position.Y + tex.Height() / 2) + gore.drawOffset - Main.screenPosition;
+				Main.spriteBatch.Draw(tex.Value, pos, new Rectangle(0, 0, tex.Width(), tex.Height()), alpha2, gore.rotation, tex.Size() / 2f, gore.scale, SpriteEffects.None, 0f);
+			}
+		}
 	}
 
 	/// <summary>

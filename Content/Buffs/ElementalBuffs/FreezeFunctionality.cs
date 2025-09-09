@@ -1,4 +1,5 @@
-﻿using Terraria.Audio;
+﻿using System.Collections.Generic;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -50,15 +51,65 @@ internal class FreezeNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
 
+	internal readonly static HashSet<int> LastSpawnedDeathGore = [];
+	
+	/// <summary>
+	/// Used to populate & reset values in <see cref="LastSpawnedDeathGore"/>.
+	/// </summary>
+	private static bool dying = false;
+
 	public bool Frozen = false;
 	public bool LastFrozen = false;
-	
+
 	private double lastFrame = -1;
 
 	public override void Load()
 	{
 		On_NPC.StrikeNPC_HitInfo_bool_bool += HijackSoundEffect;
 		On_NPC.checkDead += HijackDeathEffect;
+		On_Gore.NewGore_IEntitySource_Vector2_Vector2_int_float += AddFrozenGore;
+		On_NPC.VanillaHitEffect += FindSpawnedGore;
+	}
+
+	private void FindSpawnedGore(On_NPC.orig_VanillaHitEffect orig, NPC self, int hitDirection, double dmg, bool instantKill)
+	{
+		LastSpawnedDeathGore.Clear();
+
+		dying = true;
+		orig(self, hitDirection, dmg, instantKill);
+		dying = false;
+	}
+
+	// Caches death gore so it can be used 
+	private int AddFrozenGore(On_Gore.orig_NewGore_IEntitySource_Vector2_Vector2_int_float orig, IEntitySource source, Vector2 Position, Vector2 Velocity, int Type, float Scale)
+	{
+		int gore = orig(source, Position, Velocity, Type, Scale);
+
+		if (dying)
+		{
+			LastSpawnedDeathGore.Add(gore);
+		}
+
+		return gore;
+	}
+
+	// Converts gore spawned by death into frozen gore.
+	// This workaround is necessary because
+	/// <summary>
+	/// Converts gore spawned by death into frozen gore.<br/>
+	/// This workaround is necessary because NPC.checkDead/NPC.HitEffect runs BEFORE on hit effects, 
+	/// namely <see cref="ModPlayer.OnHitNPC"/>, making it impossible to do cleanly.<br/>
+	/// </summary>
+	/// <param name="frozenNPC">NPC that is being killed and should replace the gore of.</param>
+	internal static void ConvertFrozenGore(NPC frozenNPC)
+	{
+		if (frozenNPC.life <= 0)
+		{
+			foreach (int gore in LastSpawnedDeathGore)
+			{
+				FrozenNPCBatching.CachedGore.Add(gore);
+			}
+		}
 	}
 
 	// Replace the death sound effect with the shatter sound
@@ -73,7 +124,7 @@ internal class FreezeNPC : GlobalNPC
 
 		orig(self);
 
-		// I don't think I need to reset this but I will if only for posterity
+		// I don't think I need to reset this sound but I will if only for posterity
 		self.DeathSound = hitSound;
 	}
 
@@ -124,9 +175,9 @@ internal class FreezeNPC : GlobalNPC
 			lastFrame = npc.frameCounter;
 			npc.position -= npc.velocity;
 
-			if (Main.rand.NextBool(420))
+			if (Main.rand.NextBool(30))
 			{
-				Vector2 vel = new Vector2(Main.rand.NextFloat(1, 5), 0).RotatedByRandom(MathHelper.TwoPi);
+				Vector2 vel = new Vector2(Main.rand.NextFloat(1, 3), 0).RotatedByRandom(MathHelper.TwoPi);
 				Gore.NewGore(npc.GetSource_FromAI(), npc.Center, vel, ModContent.GoreType<ColdAir>(), Main.rand.NextFloat(0.8f, 1.5f));
 			}
 
