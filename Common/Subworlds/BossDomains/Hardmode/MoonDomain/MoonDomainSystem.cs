@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode.MoonDomain.Generation;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
-using PathOfTerraria.Content.Projectiles.Utility;
+﻿using PathOfTerraria.Content.Projectiles.Utility;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.DataStructures;
@@ -45,11 +43,15 @@ internal class MoonDomainSystem : ModSystem
 	{
 		if (SubworldSystem.Current is not MoonLordDomain)
 		{
-			FightTracker.UpdateState();
+			if (FightTracker.Started)
+			{
+				FightTracker.Reset();
+			}
+
 			return;
 		}
 
-		if (Main.spawnTileY > Main.maxTilesY - 250)
+		if (Main.spawnTileY > Main.maxTilesY - 250 || WorldGen.gen)
 		{
 			EffectStrength = 1f;
 			return;
