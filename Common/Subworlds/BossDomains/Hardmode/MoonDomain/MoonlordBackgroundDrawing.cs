@@ -97,13 +97,7 @@ internal class MoonlordBackgroundDrawing : ModSystem
 			if (y < MoonLordDomain.PlanetTop - 200)
 			{
 				opacity = bossDead ? 1 : 0;
-				DrawingSpecialStars = 1;// - MoonDomainSystem.EffectStrength;
-				//opacity = DrawingSpecialStars.Value;
-
-				//if (MoonDomainSystem.EffectStrength > 0.99f)
-				//{
-				//	return;
-				//}
+				DrawingSpecialStars = 1;
 			}
 			else if (y < MoonLordDomain.PlanetTop && !bossDead)
 			{
