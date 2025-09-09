@@ -107,5 +107,10 @@ FocusChargeBuff: {
 
 IgnitedDebuff: {
 	DisplayName: Ignited Debuff
-	Description: Mods.PathOfTerraria.Buffs.IgnitedDebuff.Description
+	Description: Substantial and variable damage over time
+}
+
+FreezeDebuff: {
+	DisplayName: Freeze Debuff
+	Description: You can't move!
 }

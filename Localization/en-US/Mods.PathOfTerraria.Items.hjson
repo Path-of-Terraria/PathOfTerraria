@@ -53,7 +53,6 @@ Katana: {
 Staff: {
 	DisplayName: Staff
 	Tooltip: ""
-	Staff: Staff
 }
 
 Wand: {

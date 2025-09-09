@@ -99,7 +99,7 @@ public readonly struct ElementalDamage
 		return type switch
 		{
 			ElementType.Fire => ModContent.BuffType<IgnitedDebuff>(),
-			ElementType.Cold => BuffID.Frostburn,
+			ElementType.Cold => ModContent.BuffType<FreezeDebuff>(),
 			ElementType.Lightning => BuffID.Electrified,
 			_ => 0
 		};
@@ -111,6 +111,19 @@ public readonly struct ElementalDamage
 		{
 			case ElementType.Fire when entity is NPC burningNPC:
 				IgnitedDebuff.ApplyTo(burningNPC, (int)(elementalDamageDealt * 0.9f));
+				break;
+
+			case ElementType.Cold when entity is NPC frozenNPC:
+				float duration = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
+
+				if (duration > 0.3f)
+				{
+					frozenNPC.AddBuff(GetBuffType(ElementType), (int)(duration * 60));
+				}
+
+				frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
+				FreezeNPC.ConvertFrozenGore(frozenNPC);
+
 				break;
 
 			default:
@@ -136,11 +149,12 @@ public readonly struct ElementalDamage
 	/// <param name="info"></param>
 	/// <param name="defaultPercent"></param>
 	/// <returns></returns>
-	internal bool CanDebuff(NPC.HitInfo info, bool defaultPercent)
+	internal bool CanDebuff(Entity entity, NPC.HitInfo info, bool defaultPercent)
 	{
 		return ElementType switch
 		{
 			ElementType.Fire => info.Crit,
+			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
 			_ => defaultPercent,
 		};
 	}

@@ -72,13 +72,13 @@ public class ElementalPlayer : ModPlayer
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC)) 
+		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
 			ElementOnHit(target, Container, hit.SourceDamage, hit.Damage, hit);
 		}
 	}
 
-	private void ElementOnHit(Entity target, ElementalContainer container, float sourceDamage, int finalDamage, NPC.HitInfo? optionalHitInfo)
+	private static void ElementOnHit(Entity target, ElementalContainer container, float sourceDamage, int finalDamage, NPC.HitInfo? optionalHitInfo)
 	{
 		ElementalDamage fire = container.FireDamageModifier;
 		ElementalDamage cold = container.ColdDamageModifier;
@@ -145,7 +145,7 @@ public class ElementalPlayer : ModPlayer
 
 		float chance = ElementalDamage.GetDebuffChance((float)elementalDamageDone / lifeMax);
 
-		if (elementalDamageDone > 0 && damage.CanDebuff(hitInfo, chance < Main.rand.NextFloat()))
+		if (elementalDamageDone > 0 && damage.CanDebuff(target, hitInfo, chance < Main.rand.NextFloat()))
 		{
 			damage.ApplyBuff(target, elementalDamageDone);
 
