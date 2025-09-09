@@ -24,15 +24,18 @@ float4 PixelShaderFunction(VertexShaderOutput input) : COLOR0
 	float4 color = tex2D(sampler0, input.TextureCoordinates);
 	float alpha = color.a;
 	float lum = lerp(((0.9 * color.r) + (1.8 * color.g) + (0.3 * color.b)) / 3.0, 1, 0.3f);
+	float scroll = (input.TextureCoordinates.x + input.TextureCoordinates.y + scroller) % 1;
 	
-	lum = round(lum * 10) / 10;
-	
-	if ((input.TextureCoordinates.x + input.TextureCoordinates.y + scroller) % 1 < 0.05)
+	// This adds in the little 'glint' effect
+	if (scroll < 0.02 || (scroll > 0.49 && scroll < 0.51))
 	{
 		lum = 1;
 	}
 	
-	color = lerp(lerp(float4(0.06224, 0.10523, 0.16432, 1), float4(0.6, 0.6667, 0.7776, 1), lum), lerp(float4(0.6, 0.6667, 0.7776, 1), float4(1, 1, 1, 1), lum), lum);
+	// Lerp the color based on the luminosity of the input color; basically, remap the palette to an icy blue ramp
+	color = lerp(lerp(float4(0.06, 0.1, 0.6, 1), float4(0.1, 0.18, 0.8, 1), lum), lerp(float4(0.2, 0.3, 0.8, 1), float4(0.85, 0.9, 1, 1), lum), lum);
+	
+	// But also keep the alpha consistency so we don't get random opaque blocks
 	color *= alpha;
 	return color;
 }

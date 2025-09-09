@@ -145,7 +145,7 @@ public class ElementalPlayer : ModPlayer
 
 		float chance = ElementalDamage.GetDebuffChance((float)elementalDamageDone / lifeMax);
 
-		if (elementalDamageDone > 0 && damage.CanDebuff(hitInfo, chance < Main.rand.NextFloat()))
+		if (elementalDamageDone > 0 && damage.CanDebuff(target, hitInfo, chance < Main.rand.NextFloat()))
 		{
 			damage.ApplyBuff(target, elementalDamageDone);
 

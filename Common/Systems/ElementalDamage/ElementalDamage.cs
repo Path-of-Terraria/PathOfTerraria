@@ -114,7 +114,13 @@ public readonly struct ElementalDamage
 				break;
 
 			case ElementType.Cold when entity is NPC frozenNPC:
-				frozenNPC.AddBuff(GetBuffType(ElementType), 200 * 90);
+				float duration = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
+
+				if (duration > 0.3f)
+				{
+					frozenNPC.AddBuff(GetBuffType(ElementType), (int)(duration * 60));
+				}
+
 				break;
 
 			default:
@@ -140,11 +146,12 @@ public readonly struct ElementalDamage
 	/// <param name="info"></param>
 	/// <param name="defaultPercent"></param>
 	/// <returns></returns>
-	internal bool CanDebuff(NPC.HitInfo info, bool defaultPercent)
+	internal bool CanDebuff(Entity entity, NPC.HitInfo info, bool defaultPercent)
 	{
 		return ElementType switch
 		{
-			ElementType.Fire or ElementType.Cold => true,//info.Crit,
+			ElementType.Fire => info.Crit,
+			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
 			_ => defaultPercent,
 		};
 	}

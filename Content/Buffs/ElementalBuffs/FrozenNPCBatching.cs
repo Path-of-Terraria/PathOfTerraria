@@ -2,6 +2,7 @@
 using ReLogic.Content;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
@@ -19,9 +20,7 @@ internal class FrozenNPCBatching : GlobalNPC
 
 	public override void Load()
 	{
-		//On_Main.DrawNPCs += DrawFrozenNPCs;
-		On_Main.CheckMonoliths += DrawCachedNPCs;
-		On_Main.DoDraw_WallsTilesNPCs += eg;
+		On_Main.DoDraw_WallsTilesNPCs += DrawFrozenNPCs;
 
 		FrozenEffect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/FrozenEffect");
 
@@ -31,20 +30,19 @@ internal class FrozenNPCBatching : GlobalNPC
 			GraphicsDevice device = Main.instance.GraphicsDevice;
 			FrozenTarget = new RenderTarget2D(device, Main.displayWidth.Max(), Main.displayHeight.Max(), false, SurfaceFormat.Color, DepthFormat.None, 1, UsageType);
 		});
+
+		Main.RunOnMainThread(() =>
+			{
+				Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
+				Main.graphics.ApplyChanges();
+			}
+		);
 	}
 
-	private void eg(On_Main.orig_DoDraw_WallsTilesNPCs orig, Main self)
+	private void DrawFrozenNPCs(On_Main.orig_DoDraw_WallsTilesNPCs orig, Main self)
 	{
-		orig(self);
-
 		DrawNPCs(true);
-	}
-
-	private void DrawCachedNPCs(On_Main.orig_CheckMonoliths orig)
-	{
-		//DrawNPCs(false);
-		orig();
-
+		orig(self);
 	}
 
 	private static void DrawNPCs(bool behindTiles)
@@ -53,18 +51,30 @@ internal class FrozenNPCBatching : GlobalNPC
 		{
 			return;
 		}
-		Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
 
 		Drawing = true;
+
+		RenderToTarget(behindTiles, out RenderTargetBinding[] targets, out Matrix trans, out Effect effect);
+
+		Main.instance.GraphicsDevice.SetRenderTargets(targets);
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, trans);
+
+		Main.spriteBatch.Draw(FrozenTarget, Vector2.Zero, Color.White);
+
+		Main.spriteBatch.End();
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, trans);
+	}
+
+	private static void RenderToTarget(bool behindTiles, out RenderTargetBinding[] targets, out Matrix trans, out Effect effect)
+	{
 		Main.spriteBatch.End();
 
-		RenderTargetBinding[] targets = Main.instance.GraphicsDevice.GetRenderTargets();
+		targets = Main.instance.GraphicsDevice.GetRenderTargets();
+		ApplyToBindings(targets);
 
-		Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
-
-		Matrix trans = Main.GameViewMatrix.TransformationMatrix;
-		Effect effect = FrozenEffect.Value;
-		effect.Parameters["scroller"].SetValue(Main.GameUpdateCount * 0.01f);
+		trans = Main.GameViewMatrix.TransformationMatrix;
+		effect = FrozenEffect.Value;
+		effect.Parameters["scroller"].SetValue(Main.GameUpdateCount * 0.004f);
 
 		Main.instance.GraphicsDevice.SetRenderTarget(FrozenTarget);
 		Main.instance.GraphicsDevice.Clear(Color.Transparent);
@@ -73,19 +83,40 @@ internal class FrozenNPCBatching : GlobalNPC
 
 		while (CachedNPCs.Count > 0)
 		{
-			Main.instance.DrawNPCDirect(Main.spriteBatch, Main.npc[CachedNPCs.Dequeue()], behindTiles, Main.screenPosition);
+			NPC npc = Main.npc[CachedNPCs.Dequeue()];
+			Vector2 pos = npc.position;
+
+			// The NPC "shakes" half a second before being unfrozen
+			if (npc.FindBuffIndex(ModContent.BuffType<FreezeDebuff>()) is int index and not -1 && npc.buffTime[index] < 30)
+			{
+				npc.position += Main.rand.NextVector2CircularEdge(2, 2);
+			}
+
+			Main.instance.DrawNPCDirect(Main.spriteBatch, npc, behindTiles, Main.screenPosition);
+
+			npc.position = pos;
 		}
 
 		Main.spriteBatch.End();
 		Drawing = false;
+	}
 
-		Main.instance.GraphicsDevice.SetRenderTargets(targets);
-		Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.DiscardContents;
+	/// <summary>
+	/// Forces all targets to use the PreserveContents <see cref="RenderTargetUsage"/> so they're not cleared.
+	/// </summary>
+	public static void ApplyToBindings(RenderTargetBinding[] bindings)
+	{
+		foreach (RenderTargetBinding binding in bindings)
+		{
+			if (binding.RenderTarget is not RenderTarget2D rt)
+			{
+				continue;
+			}
 
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, trans);
+			SetRenderTargetUsage(rt, RenderTargetUsage.PreserveContents);
+		}
 
-		Main.spriteBatch.Draw(FrozenTarget, Vector2.Zero, Color.White);
-
-		//Main.spriteBatch.End();
+		[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "set_RenderTargetUsage")]
+		static extern void SetRenderTargetUsage(RenderTarget2D rt, RenderTargetUsage render);
 	}
 }
