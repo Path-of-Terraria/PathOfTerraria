@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.Events;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
+using PathOfTerraria.Common.Data;
+using System.Linq;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -12,7 +14,7 @@ internal class AddedCriticalStrikeChance : Passive
 
 	public override void BuffPlayer(Player player)
 	{
-		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) + Value * Level;
+		player.GetCritChance(DamageClass.Generic) += Value * Level;
 	}
 }
 
@@ -23,7 +25,7 @@ internal class IncreasedCriticalStrikeChance : Passive
 {
 	public override void BuffPlayer(Player player)
 	{
-		player.GetCritChance(DamageClass.Generic) = player.GetCritChance(DamageClass.Generic) * (1 + Value * Level);
+		player.GetCritChance(DamageClass.Generic) *= (1 + (Value / 100f) * Level);
 	}
 }
 
@@ -40,12 +42,19 @@ internal class IncreasedCriticalStrikeMultiplier : Passive
 	
 	private void BuffCritStrikeDamageMultiplier(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		int level = Main.LocalPlayer.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
-		float AmountPerLevel = 1.05f;
+		Player player = Main.LocalPlayer;
+		PassiveTreePlayer treePlayer = player.GetModPlayer<PassiveTreePlayer>();
+		int level = treePlayer.GetCumulativeLevel(Name);
 
 		if (level > 0)
 		{
-			modifiers.CritDamage *= 1f + (AmountPerLevel - 1f) * level;
+			//This works but the other way is through a mod player. This is a bit of a hacky way to do it.
+			var passiveData = PassiveRegistry.GetPassiveData().FirstOrDefault(p => p.InternalIdentifier == Name);
+			
+			if (passiveData != null)
+			{
+				modifiers.CritDamage *= 1f + (passiveData.Value / 100f) * level;
+			}
 		}
 	}
 }
