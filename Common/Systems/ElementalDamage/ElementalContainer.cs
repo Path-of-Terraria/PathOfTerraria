@@ -44,7 +44,7 @@ public class ElementInstance(ElementType type, bool isGeneric)
 
 		if (resetModifiers)
 		{
-			DamageModifier.ApplyOverride(0, 0);
+			DamageModifier = DamageModifier.ApplyOverride(0, 0);
 		}
 	}
 

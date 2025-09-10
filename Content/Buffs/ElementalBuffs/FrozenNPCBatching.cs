@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 using ReLogic.Content;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
@@ -139,16 +137,20 @@ internal class FrozenNPCBatching : GlobalNPC
 
 	private static void DrawFrozenGore()
 	{
+		HashSet<int> removals = [];
+
 		foreach (int i in CachedGore)
 		{
 			Gore gore = Main.gore[i];
 
 			if (!gore.active || gore.type <= 0)
 			{
+				removals.Add(i);
 				continue;
 			}
 
 			/*
+			// I don't know what this code is for - this was copied from vanilla. I just commented it out because idk - Gabe
 			if (((gore[i].type >= 706 && gore[i].type <= 717) || gore[i].type == 943 || gore[i].type == 1147 || (gore[i].type >= 1160 && gore[i].type <= 1162)) 
 				&& (gore[i].frame < 7 || gore[i].frame > 9)) {
 			*/
@@ -158,7 +160,6 @@ internal class FrozenNPCBatching : GlobalNPC
 			//	continue;
 			//}
 
-			//TML: Added '+ gore[i].drawOffset' to draw calls below
 			if (gore.Frame.ColumnCount > 1 || gore.Frame.RowCount > 1)
 			{
 				Asset<Texture2D> tex = TextureAssets.Gore[gore.type];
@@ -182,6 +183,11 @@ internal class FrozenNPCBatching : GlobalNPC
 				Vector2 pos = new Vector2(gore.position.X + (tex.Width() / 2), gore.position.Y + tex.Height() / 2) + gore.drawOffset - Main.screenPosition;
 				Main.spriteBatch.Draw(tex.Value, pos, new Rectangle(0, 0, tex.Width(), tex.Height()), alpha2, gore.rotation, tex.Size() / 2f, gore.scale, SpriteEffects.None, 0f);
 			}
+		}
+
+		foreach (int value in removals)
+		{
+			CachedGore.Remove(value);
 		}
 	}
 

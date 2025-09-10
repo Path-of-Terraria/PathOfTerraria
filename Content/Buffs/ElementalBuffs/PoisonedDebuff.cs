@@ -1,13 +1,30 @@
 ﻿using PathOfTerraria.Common.Buffs;
 using System.Collections.Generic;
+using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
 internal class PoisonedDebuff : ModBuff
 {
-	public static void Apply(NPC npc, int damage, int time)
+	public override void Load()
 	{
-		npc.GetGlobalNPC<PoisonNPC>().Stacks.Add(new PoisonNPC.PoisonStack(damage, time));
+		On_NPC.AddBuff += ModifyPoisonAddition;
+	}
+
+	private void ModifyPoisonAddition(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
+	{
+		if (type == BuffID.Poisoned)
+		{
+			Apply(self, time);
+			return;
+		}
+
+		orig(self, type, time, quiet);
+	}
+
+	public static void Apply(NPC npc, int time)
+	{
+		npc.GetGlobalNPC<PoisonNPC>().Stacks.Add(time);
 		npc.AddBuff(ModContent.BuffType<PoisonedDebuff>(), time);
 	}
 
@@ -28,24 +45,17 @@ internal class PoisonedDebuff : ModBuff
 
 internal class PoisonNPC : GlobalNPC
 {
-	public class PoisonStack(int damage, int time)
-	{
-		public int Damage = damage;
-		public int Time = time;
-	}
-
 	public override bool InstancePerEntity => true;
 
-	internal readonly List<PoisonStack> Stacks = [];
+	internal readonly List<int> Stacks = [];
 	internal float ElapsedDoT = 0;
 
 	public override bool PreAI(NPC npc)
 	{
-		foreach (PoisonStack stack in Stacks)
+		for (int i = 0; i < Stacks.Count; i++)
 		{
-			stack.Time--;
-
-			ElapsedDoT += stack.Damage / 60f;
+			Stacks[i]--;
+			ElapsedDoT += 4 / 60f;
 		}
 
 		if (ElapsedDoT > 60)
