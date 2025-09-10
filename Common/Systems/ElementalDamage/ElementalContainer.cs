@@ -97,9 +97,9 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 		{
 			float total = 0f;
 
-			foreach (ElementType key in Instances.Keys)
+			foreach (ElementInstance instance in this)
 			{
-				total += Instances[key].DamageModifier.DamageConversion;
+				total += instance.DamageModifier.DamageConversion;
 			}
 
 			return MathHelper.Clamp(total, 0f, 1f);
@@ -127,9 +127,9 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 	/// <param name="resetModifiers">Whether the elemental modifiers (such as <see cref="LightningDamageModifier"/>) should be reset. NPCs shouldn't reset them.</param>
 	public void Reset(bool resetModifiers)
 	{
-		foreach (ElementType key in Instances.Keys)
+		foreach (ElementInstance instance in this)
 		{
-			Instances[key].Reset(resetModifiers);
+			instance.Reset(resetModifiers);
 		}
 	}
 
@@ -138,9 +138,9 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 	/// </summary>
 	public void WriteTo(BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
-		foreach (ElementType key in Instances.Keys)
+		foreach (ElementInstance instance in this)
 		{
-			Instances[key].WriteTo(bitWriter, binaryWriter);
+			instance.WriteTo(bitWriter, binaryWriter);
 		}
 	}
 
@@ -149,9 +149,9 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 	/// </summary>
 	public void ReadFrom(BitReader bitReader, BinaryReader binaryReader)
 	{
-		foreach (ElementType key in Instances.Keys)
+		foreach (ElementInstance instance in this)
 		{
-			Instances[key].ReadFrom(bitReader, binaryReader);
+			instance.ReadFrom(bitReader, binaryReader);
 		}
 	}
 
