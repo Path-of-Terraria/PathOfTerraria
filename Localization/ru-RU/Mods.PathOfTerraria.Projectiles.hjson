@@ -165,3 +165,6 @@ PrecisionSpawnerProjectile.DisplayName: Спавнер
 WhipBaseProjectile.DisplayName: Базовый снаряд плети
 // AntlerShardProj.DisplayName: Antler Shard Proj
 FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
+// FlamethrowerSentryFlame.DisplayName: Flamethrower Sentry Flame
+// MoltenSentryAura.DisplayName: Molten Sentry Aura
+// FlamethrowerFlame.DisplayName: Flamethrower Flame

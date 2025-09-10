@@ -29,3 +29,13 @@ PiercingPrecision: {
 	Name: Perçage Précis
 	Description: Remplacer la rafale par un barrage retardé avec une pénétration d'armure accrue.
 }
+
+Flamethrower: {
+	// Name: Flamethrower
+	// Description: Conjure a fiery sentry that deals continuous damage to enemies in a cone
+}
+
+MoltenSentinel: {
+	// Name: Molten Sentinel
+	// Description: Conjure a fiery sentry that deals continuous damage to enemies in a radius
+}

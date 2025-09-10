@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Content.SkillSpecials.FlameSageSpecials;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
@@ -41,7 +42,25 @@ public class FlameSage : Skill
 		if (SentryNPC.FindRestingSpot(player, out Vector2 worldCoords, new Vector2(0, -20)))
 		{
 			TryDestroyOldest(player);
-			SentryNPC.Spawn<FlameSentry>(player, worldCoords);
+			
+			switch (Tree.Specialization)
+			{
+				case Flamethrower:
+					SentryNPC.Spawn<Flamethrower.FlamethrowerSentry>(player, worldCoords);
+					break;
+
+				case MoltenSentinel:
+					SentryNPC.Spawn<MoltenSentinel.MoltenSentry>(player, worldCoords);
+					break;
+
+				case VolatileConstruct:
+					SentryNPC.Spawn<VolatileConstruct.VolatileSentry>(player, worldCoords);
+					break;
+
+				case null:
+					SentryNPC.Spawn<FlameSentry>(player, worldCoords);
+					break;
+			}
 		}
 
 		static void TryDestroyOldest(Player owner)
@@ -56,10 +75,8 @@ public class FlameSage : Skill
 		}
 	}
 
-	private class FlameSentry : SentryNPC
+	public class FlameSentry : SentryNPC
 	{
-		public const int CooldownMax = 60;
-
 		public ref float Cooldown => ref NPC.ai[0];
 		public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.DD2LightningAuraT1;
 
@@ -82,6 +99,7 @@ public class FlameSage : Skill
 
 		public override void AI()
 		{
+			const int cooldownMax = 60;
 			const int range = 300;
 
 			if ((Cooldown = Math.Max(Cooldown - 1, 0)) == 0)
@@ -94,7 +112,7 @@ public class FlameSage : Skill
 					int damage = (int)Owner.GetDamage(DamageClass.Summon).ApplyTo(NPC.damage);
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.DirectionTo(target.Center) * 10, ModContent.ProjectileType<FlameSentryFireball>(), damage, 3, Owner.whoAmI);
 
-					Cooldown = CooldownMax;
+					Cooldown = cooldownMax;
 				}
 			}
 
@@ -129,7 +147,7 @@ public class FlameSage : Skill
 		}
 	}
 
-	private class FlameSentryFireball : ModProjectile
+	public class FlameSentryFireball : ModProjectile
 	{
 		public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.DD2FlameBurstTowerT1Shot;
 

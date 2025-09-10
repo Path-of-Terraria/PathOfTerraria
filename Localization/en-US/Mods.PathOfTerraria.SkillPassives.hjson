@@ -130,3 +130,18 @@ Ghostfire: {
 	Name: Ghostfire
 	Tooltip: Projectiles that hit an enemy have a small chance to duplicate
 }
+
+IntenseHeat: {
+	Name: Intense Heat
+	Tooltip: All allies in the area are granted {0}% Increased Fire Damage
+}
+
+FlameWard: {
+	Name: Flame Ward
+	Tooltip: All allies in the area are granted {0}% Increased Fire Resistance
+}
+
+LivingFurnace: {
+	Name: Living Furnace
+	Tooltip: Sentinel is granted +10 aggro and has 25% increased health
+}
