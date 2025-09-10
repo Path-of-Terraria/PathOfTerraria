@@ -79,3 +79,6 @@ LightningResistItemAffix.Description: "{1}{0} de résistance à la foudre"
 // FireConversionDamage.Description: "{1}{0}% fire damage conversion"
 // ColdConversionDamage.Description: "{1}{0}% cold damage conversion"
 // LightningConversionDamage.Description: "{1}{0}% lightning damage conversion"
+// ChaosResistItemAffix.Description: "{1}{0} to stat"
+// ChaosConversionDamage.Description: "{1}{0} to stat"
+// ChaoticAffix.Prefix: Mods.PathOfTerraria.Affixes.ChaoticAffix.Prefix

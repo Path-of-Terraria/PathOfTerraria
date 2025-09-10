@@ -114,3 +114,8 @@ FreezeDebuff: {
 	DisplayName: Freeze Debuff
 	Description: You can't move!
 }
+
+PoisonedDebuff: {
+	DisplayName: Poisoned Debuff
+	Description: Mods.PathOfTerraria.Buffs.PoisonedDebuff.Description
+}

@@ -99,10 +99,15 @@ FocusChargeBuff: {
 
 IgnitedDebuff: {
 	// DisplayName: Ignited Debuff
-	// Description: Mods.PathOfTerraria.Buffs.IgnitedDebuff.Description
+	// Description: Substantial and variable damage over time
 }
 
 FreezeDebuff: {
 	// DisplayName: Freeze Debuff
-	// Description: Mods.PathOfTerraria.Buffs.FreezeDebuff.Description
+	// Description: You can't move!
+}
+
+PoisonedDebuff: {
+	// DisplayName: Poisoned Debuff
+	// Description: Mods.PathOfTerraria.Buffs.PoisonedDebuff.Description
 }
