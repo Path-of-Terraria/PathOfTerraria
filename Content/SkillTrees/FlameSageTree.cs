@@ -18,8 +18,12 @@ internal class FlameSageTree : SkillTree
 		var intenseHeat = new IntenseHeat(this) { TreePos = new Vector2(-100, 200) };
 		var flameWard = new FlameWard(this) { TreePos = new Vector2(100, 200) };
 		var livingFurnace = new LivingFurnace(this) { TreePos = new Vector2(0, 300) };
+		var heatCompression = new HeatCompression(this) { TreePos = new Vector2(-200, -100) };
+		var combustiveAura = new CombustiveAura(this) { TreePos = new Vector2(-300, 0) };
+		var meltingPoint = new MeltingPoint(this) { TreePos = new Vector2(-200, 100) };
 
 		AddNodes(anchor, flamethrower, sentinel);
 		AddNodes(sentinel, intenseHeat, flameWard, livingFurnace);
+		AddNodes(flamethrower, heatCompression, combustiveAura, meltingPoint);
 	}
 }

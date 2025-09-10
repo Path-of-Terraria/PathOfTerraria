@@ -145,3 +145,18 @@ LivingFurnace: {
 	Name: Living Furnace
 	Tooltip: Sentinel is granted +10 aggro and has 25% increased health
 }
+
+HeatCompression: {
+	Name: Heat Compression
+	Tooltip: Reduces the flame's effective radius by {0}% and increases damage by {1}%
+}
+
+CombustiveAura: {
+	Name: Combustive Aura
+	Tooltip: Nearby enemies take additional damage over time
+}
+
+MeltingPoint: {
+	Name: Melting Point
+	Tooltip: Enemies take {0}% increased damage over time after burning for more than {1} seconds
+}

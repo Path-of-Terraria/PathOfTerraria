@@ -16,23 +16,21 @@ public class MoltenSentinel(SkillTree tree) : SkillSpecial(tree)
 {
 	public class MoltenSentry : FlameSage.FlameSentry
 	{
-		public override void AI()
+		public override void OnSpawn()
 		{
-			if (Cooldown == 0)
+			int furnaceStrength = Owner.GetPassiveStrength<FlameSageTree, LivingFurnace>();
+			if (furnaceStrength > 0)
 			{
-				int furnaceStrength = Owner.GetPassiveStrength<FlameSageTree, LivingFurnace>();
-				if (furnaceStrength > 0)
-				{
-					Aggro += 10 * furnaceStrength;
-					NPC.life = (int)(NPC.life * (1f + (0.25f * furnaceStrength)));
-				}
-
-				int damage = (int)Owner.GetDamage(DamageClass.Summon).ApplyTo(NPC.damage);
-				Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<MoltenSentryAura>(), damage, 0, Owner.whoAmI, NPC.whoAmI);
-
-				Cooldown++;
+				Aggro += 10 * furnaceStrength;
+				NPC.life = NPC.lifeMax = (int)(NPC.lifeMax * (1f + (0.25f * furnaceStrength)));
 			}
 
+			int damage = (int)Owner.GetDamage(DamageClass.Summon).ApplyTo(NPC.damage);
+			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<MoltenSentryAura>(), damage, 0, Owner.whoAmI, NPC.whoAmI);
+		}
+
+		public override void AI()
+		{
 			if (NPC.Opacity == 0) //Just spawned in
 			{
 				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, NPC.Center);
