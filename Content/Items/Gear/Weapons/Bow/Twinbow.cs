@@ -50,6 +50,8 @@ internal class Twinbow : Bow
 				Main.projectile[projIndex].GetGlobalProjectile<TwinbowArrow>().PiercingArrow = true;
 			}
 		};
+
+		// The drop rule for this item from WoF & its bag is in TinyHat's file
 	}
 
 	public override void SetDefaults()
@@ -63,7 +65,7 @@ internal class Twinbow : Bow
 		Item.damage = 20;
 		Item.autoReuse = true;
 		Item.shootSpeed = 10;
-		Item.value = Item.buyPrice(0, 5, 0, 0);
+		Item.value = Item.buyPrice(0, 15, 0, 0);
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
