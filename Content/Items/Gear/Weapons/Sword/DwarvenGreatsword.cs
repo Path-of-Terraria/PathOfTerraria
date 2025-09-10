@@ -20,6 +20,8 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+
+		// The drop rule for this item from WoF & its bag is in TinyHat's file
 	}
 
 	public override void SetDefaults()

@@ -96,7 +96,6 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		var shop = new NPCShop(Type);
 		shop.Add<RustedBattleaxe>();
 		shop.Add<StoneSword>();
-		shop.Add<DwarvenGreatsword>(Condition.Hardmode);
 		shop.Add<RunestoneItem>(new Condition(this.GetLocalization("DownedForest"), () => BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<Grovetender>())));
 		shop.Add<PoweredRunestoneItem>(new Condition(this.GetLocalization("DownedForest"), () => BossTracker.TotalBossesDowned.Contains(ModContent.NPCType<Grovetender>())));
 		shop.Register();

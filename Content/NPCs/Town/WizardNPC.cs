@@ -101,7 +101,6 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 
 		shop.Add<WeakMalaiseItem>(Condition.DownedEowOrBoc);
 		shop.Add<PusBlockItem>(Condition.DownedEowOrBoc);
-		shop.Add<TinyHat>(Condition.Hardmode);
 		shop.Register();
 	}
 

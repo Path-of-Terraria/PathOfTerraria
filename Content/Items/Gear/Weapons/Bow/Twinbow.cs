@@ -50,6 +50,8 @@ internal class Twinbow : Bow
 				Main.projectile[projIndex].GetGlobalProjectile<TwinbowArrow>().PiercingArrow = true;
 			}
 		};
+
+		// The drop rule for this item from WoF & its bag is in TinyHat's file
 	}
 
 	public override void SetDefaults()
