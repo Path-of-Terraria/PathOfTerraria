@@ -81,4 +81,4 @@ LightningResistItemAffix.Description: "{1}{0} Электростойкость"
 // LightningConversionDamage.Description: "{1}{0}% lightning damage conversion"
 // ChaosResistItemAffix.Description: "{1}{0} to stat"
 // ChaosConversionDamage.Description: "{1}{0} to stat"
-// ChaoticAffix.Prefix: Mods.PathOfTerraria.Affixes.ChaoticAffix.Prefix
+// ChaoticAffix.Prefix: Chaotic
