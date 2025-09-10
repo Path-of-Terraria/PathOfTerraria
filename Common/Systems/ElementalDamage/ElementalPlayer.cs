@@ -5,7 +5,7 @@ public class ElementalPlayer : ModPlayer
 	public ElementalContainer Container = new();
 
 	// TODO: could be a ModConfig toggle
-	public static bool DebugMessages => true;
+	public static bool DebugMessages => false;
 
 	public override void ResetEffects()
 	{
