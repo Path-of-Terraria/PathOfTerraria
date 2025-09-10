@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Buffs;
+using PathOfTerraria.Common.Systems.MobSystem;
 using ReLogic.Content;
 using System.Collections.Generic;
 using Terraria.GameContent;
@@ -70,9 +71,9 @@ internal class PoisonNPC : GlobalNPC
 
 		Stacks.RemoveAll(x => x <= 0);
 
-		if (ElapsedDoT > 30)
+		if (ElapsedDoT > 30 || ElapsedDoT > npc.life)
 		{
-			DoTFunctionality.ApplyDoT(npc, 30, ref ElapsedDoT, Color.Brown, Color.Red);
+			DoTFunctionality.ApplyDoT(npc, Math.Min(30, npc.life), ref ElapsedDoT, Color.Brown, Color.Red);
 		}
 		else if (Stacks.Count == 0)
 		{
@@ -100,6 +101,12 @@ internal class PoisonNPC : GlobalNPC
 		}
 
 		Vector2 position = npc.Top - screenPos - new Vector2(0, 20 - npc.gfxOffY);
+
+		if (npc.GetGlobalNPC<ArpgNPC>().Affixes.Count > 0)
+		{
+			position.Y -= 20;
+		}
+
 		spriteBatch.Draw(PoisonIcon.Value, position, null, drawColor, 0f, PoisonIcon.Size() / 2f, 1f, SpriteEffects.None, 0);
 		string stacks = "x" + Stacks.Count;
 		ChatManager.DrawColorCodedStringWithShadow(spriteBatch, FontAssets.ItemStack.Value, stacks, position + new Vector2(8, -2), drawColor, 0f, Vector2.Zero, new(0.8f));

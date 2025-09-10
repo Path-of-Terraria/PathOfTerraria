@@ -80,5 +80,5 @@ LightningResistItemAffix.Description: "{1}{0} de résistance à la foudre"
 // ColdConversionDamage.Description: "{1}{0}% cold damage conversion"
 // LightningConversionDamage.Description: "{1}{0}% lightning damage conversion"
 // ChaosResistItemAffix.Description: "{1}{0}% chaos resistance"
-// ChaosConversionDamage.Description: "{1}{0} chaotic damage conversion"
+// ChaosConversionDamage.Description: "{1}{0}% chaotic damage conversion"
 // ChaoticAffix.Prefix: Chaotic
