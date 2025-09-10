@@ -64,9 +64,9 @@ public class ElementalContainer
 
 		if (resetModifiers)
 		{
-			FireDamageModifier.ApplyOverride(0, 0);
-			ColdDamageModifier.ApplyOverride(0, 0);
-			LightningDamageModifier.ApplyOverride(0, 0);
+			FireDamageModifier = FireDamageModifier.ApplyOverride(0, 0);
+			ColdDamageModifier = ColdDamageModifier.ApplyOverride(0, 0);
+			LightningDamageModifier = LightningDamageModifier.ApplyOverride(0, 0);
 		}
 	}
 

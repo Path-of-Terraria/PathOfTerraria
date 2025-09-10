@@ -93,8 +93,6 @@ internal class FreezeNPC : GlobalNPC
 		return gore;
 	}
 
-	// Converts gore spawned by death into frozen gore.
-	// This workaround is necessary because
 	/// <summary>
 	/// Converts gore spawned by death into frozen gore.<br/>
 	/// This workaround is necessary because NPC.checkDead/NPC.HitEffect runs BEFORE on hit effects, 
