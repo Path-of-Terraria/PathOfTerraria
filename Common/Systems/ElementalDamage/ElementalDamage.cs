@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Content.Buffs.ElementalBuffs;
+﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using System.IO;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
@@ -100,7 +100,7 @@ public readonly struct ElementalDamage
 		{
 			ElementType.Fire => ModContent.BuffType<IgnitedDebuff>(),
 			ElementType.Cold => ModContent.BuffType<FreezeDebuff>(),
-			ElementType.Lightning => BuffID.Electrified,
+			ElementType.Lightning => ModContent.BuffType<ShockDebuff>(),
 			_ => 0
 		};
 	}
