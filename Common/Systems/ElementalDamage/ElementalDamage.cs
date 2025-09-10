@@ -29,7 +29,7 @@ public readonly struct ElementalDamage
 	public float DamageConversion { get; init; }
 
 	/// <summary>
-	/// Whether the object has any non-zero damage-related values. If it doesn't, this struct is "default" and shouldn't be synced or used for further functionality.
+	/// Whether this object has any non-zero damage-related values. If it doesn't, this struct is "default" and shouldn't be synced or used for further functionality.
 	/// </summary>
 	public bool HasValues => DamageBonus > 0 || DamageConversion > 0;
 
@@ -155,6 +155,7 @@ public readonly struct ElementalDamage
 		{
 			ElementType.Fire => info.Crit,
 			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
+			ElementType.Chaos => false,
 			_ => defaultPercent,
 		};
 	}
