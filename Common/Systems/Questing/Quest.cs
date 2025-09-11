@@ -7,7 +7,16 @@ namespace PathOfTerraria.Common.Systems.Questing;
 
 public abstract class Quest : ModType, ILocalizedModType
 {
+	private enum State
+	{
+		NotStarted,
+		InProgress,
+		Completed,
+	}
+
 	private static readonly Dictionary<string, Quest> QuestsByName = [];
+
+	private State state;
 
 	public abstract QuestTypes QuestType { get; }
 	public abstract int NPCQuestGiver { get; }
@@ -29,15 +38,15 @@ public abstract class Quest : ModType, ILocalizedModType
 	/// <summary>
 	/// Checks if the quest is both inactive and not completed.
 	/// </summary>
-	public bool CanBeStarted => !Completed && !Active;
+	public bool CanBeStarted => state == State.NotStarted;
 
 	public string LocalizationCategory => $"Quests.Quest";
 
 	public QuestStep ActiveStep => QuestSteps[CurrentStep];
 
-	public int CurrentStep;
-	public bool Completed;
-	public bool Active = false;
+	public int CurrentStep { get; private set; }
+	public bool Completed => state == State.Completed;
+	public bool Active => state == State.InProgress;
 
 	public sealed override void SetupContent()
 	{
@@ -131,31 +140,66 @@ public abstract class Quest : ModType, ILocalizedModType
 		return;
 	}
 	
-	public void StartQuest(Player player, int currentQuest = 0)
+	public void Start(Player player, int currentStep = 0)
 	{
-		CurrentStep = currentQuest;
+		CurrentStep = currentStep;
 
 		if (CurrentStep >= QuestSteps.Count)
 		{
-			Completed = true;
-			Active = false;
-			QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
-			OnCompleted();
+			Complete(player);
 			return;
 		}
 
-		Active = true;
+		state = State.InProgress;
+	}
+
+	public void Complete(Player player)
+	{
+		state = State.Completed;
+
+		GiveRewards(player);
+		OnCompleted();
+	}
+
+	public void GiveRewards(Player player)
+	{
+		QuestRewards.ForEach(qr => qr.GiveReward(player, player.Center));
+	}
+
+	/// <summary> Advances or reverts the quest's steps, calling necessary completion events. </summary>
+	public void Advance(Player player, int delta)
+	{
+		int targetStep = Math.Max(0, Math.Min(CurrentStep + delta, QuestSteps.Count)); // Exclusive end.
+		delta = targetStep - CurrentStep;
+
+		if (delta < 0)
+		{
+			Start(player, targetStep);
+		}
+		else if (delta > 0)
+		{
+			for (int i = 0; i < delta; i++)
+			{
+				try
+				{
+					ActiveStep.OnComplete();
+					Start(player, CurrentStep + 1);
+				}
+				catch
+				{
+					break;
+				}
+			}
+		}
 	}
 
 	public void Update(Player player)
 	{
 		if (ActiveStep.Track(player))
 		{
-			ActiveStep.OnComplete();
-			StartQuest(player, CurrentStep + 1);
+			Advance(player, 1);
 		}
 	}
-	
 
 	public void Save(TagCompound tag)
 	{
@@ -190,22 +234,21 @@ public abstract class Quest : ModType, ILocalizedModType
 	{
 		Reset();
 
-		Completed = tag.GetBool("completed");
+		if (tag.GetBool("completed"))
+		{
+			state = State.Completed;
+			return;
+		}
 
-		if (Completed)
+		if (!tag.GetBool("active"))
 		{
 			return;
 		}
 
-		Active = tag.GetBool("active");
-
-		if (!Active)
-		{
-			return;
-		}
+		state = State.InProgress;
 
 		int step = tag.GetInt("currentQuest");
-		StartQuest(player, step);
+		Start(player, step);
 
 		for (int i = 0; i < step; ++i)
 		{
@@ -217,8 +260,7 @@ public abstract class Quest : ModType, ILocalizedModType
 
 	public void Reset()
 	{
-		Active = false;
-		Completed = false;
+		state = State.NotStarted;
 		CurrentStep = 0;
 		QuestSteps = SetSteps();
 	}
