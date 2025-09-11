@@ -38,10 +38,10 @@ internal class KingSlimeQuest : Quest
 					new GiveItem(1, ItemID.Ruby),
 				], true),
 			//Give the map device to the player once req mats are given
-			new ActionStep((_, _) => 
+			new ActionStep((player, _) => 
 			{
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<GarrickNPC>());
-				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<Content.Items.Placeable.MapDevice>());
+				Entity entity = NPC.FindFirstNPC(ModContent.NPCType<GarrickNPC>()) is >= 0 and int npc ? Main.npc[npc] : player;
+				int item = Item.NewItem(new EntitySource_Gift(entity), entity.Center, ModContent.ItemType<Content.Items.Placeable.MapDevice>());
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{
@@ -51,10 +51,10 @@ internal class KingSlimeQuest : Quest
 				return true;
 			}),
 			//Give the map as well
-			new ActionStep((_, _) => 
+			new ActionStep((player, _) => 
 			{
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<GarrickNPC>());
-				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<KingSlimeMap>());
+				Entity entity = NPC.FindFirstNPC(ModContent.NPCType<GarrickNPC>()) is >= 0 and int npc ? Main.npc[npc] : player;
+				int item = Item.NewItem(new EntitySource_Gift(entity), entity.Center, ModContent.ItemType<KingSlimeMap>());
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{

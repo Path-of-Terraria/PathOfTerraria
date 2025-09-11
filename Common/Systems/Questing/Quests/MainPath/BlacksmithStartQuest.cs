@@ -40,12 +40,12 @@ internal class BlacksmithStartQuest : Quest
 				[
 					new GiveItem(20, ItemID.IronOre, ItemID.LeadOre), new(1, ItemID.IronHammer, ItemID.LeadHammer), new(50, ItemID.StoneBlock), new(20, ItemID.Wood)
 				], true),
-			new ActionStep((_, _) => 
+			new ActionStep((player, _) => 
 			{
 				RavencrestSystem.UpgradeBuilding("Forge");
 
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<BlacksmithNPC>());
-				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
+				Entity entity = NPC.FindFirstNPC(ModContent.NPCType<BlacksmithNPC>()) is >= 0 and int npc ? Main.npc[npc] : player;
+				int item = Item.NewItem(new EntitySource_Gift(entity), entity.Center, ModContent.ItemType<IronBroadsword>());
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{

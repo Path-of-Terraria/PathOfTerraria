@@ -46,12 +46,12 @@ internal class HunterStartQuest : Quest
 			[
 				new GiveItem(5, ItemID.Silk), new(50, ItemID.Wood), new(50, ItemID.StoneBlock),
 			], true),
-			new ActionStep((_, _) =>
+			new ActionStep((player, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Lodge", 1);
 
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<HunterNPC>());
-				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<WoodenBow>());
+				Entity entity = NPC.FindFirstNPC(ModContent.NPCType<HunterNPC>()) is >= 0 and int npc ? Main.npc[npc] : player;
+				int item = Item.NewItem(new EntitySource_Gift(entity), entity.Center, ModContent.ItemType<WoodenBow>());
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{
