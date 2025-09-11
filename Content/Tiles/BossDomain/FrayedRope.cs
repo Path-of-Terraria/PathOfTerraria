@@ -9,6 +9,9 @@ internal class FrayedRope : ModTile
 		Main.tileCut[Type] = true;
 		Main.tileSolid[Type] = false;
 
+		Main.tileMerge[Type][TileID.Rope] = true;
+		Main.tileMerge[TileID.Rope][Type] = true;
+
 		DustType = DustID.Rope;
 
 		AddMapEntry(new Color(183, 163, 152));
