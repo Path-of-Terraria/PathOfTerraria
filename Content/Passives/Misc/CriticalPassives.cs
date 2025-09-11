@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Data;
 using System.Linq;
+using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Passives;
 
@@ -35,6 +36,11 @@ internal class IncreasedCriticalStrikeChance : Passive
 /// </summary>
 internal class IncreasedCriticalStrikeMultiplier : Passive
 {
+	public override void BuffPlayer(Player player)
+	{
+		//This is more so just visual. The critical damage on hit is actually being applied in BuffCritStrikeDamageMultiplier. Maybe theres a better way to do this?
+		player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.CriticalMultiplier.Base += Value * Level;
+	}
 	public override void OnLoad()
 	{
 		PathOfTerrariaPlayerEvents.ModifyHitNPCEvent += BuffCritStrikeDamageMultiplier;
@@ -48,13 +54,8 @@ internal class IncreasedCriticalStrikeMultiplier : Passive
 
 		if (level > 0)
 		{
-			//This works but the other way is through a mod player. This is a bit of a hacky way to do it.
-			var passiveData = PassiveRegistry.GetPassiveData().FirstOrDefault(p => p.InternalIdentifier == Name);
-			
-			if (passiveData != null)
-			{
-				modifiers.CritDamage *= 1f + (passiveData.Value / 100f) * level;
-			}
+			float passiveValue = treePlayer.GetCumulativeValue<Passive>();
+			modifiers.CritDamage *= 1f + (passiveValue / 100f) * level;
 		}
 	}
 }

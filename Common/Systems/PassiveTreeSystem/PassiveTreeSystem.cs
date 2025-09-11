@@ -144,6 +144,20 @@ internal class PassiveTreePlayer : ModPlayer
 
 		return level;
 	}
+	
+	internal float GetCumulativeValue<T>()
+	{
+		float value = 0f;
+
+		foreach (Passive passive in ActiveNodes)
+		{
+			if (passive is T && passive.Level > 0)
+			{
+				value += passive.Value * passive.Level;
+			}
+		}
+		return value;
+	}
 
 	public bool FullyLinkedWithout(Passive passive)
 	{

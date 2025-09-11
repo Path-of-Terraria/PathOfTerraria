@@ -163,7 +163,13 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		// Offense  
 		list.Add(new PlayerStatUI(GetLocalization("OffenseHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(GetLocalization("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
-		
+		list.Add(new PlayerStatUI(GetLocalization("CriticalMultiplier"), player =>
+		{
+			UniversalBuffingPlayer buffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
+			float critMultiplier = buffingPlayer.UniversalModifier.CriticalMultiplier.Base;
+			return $"{critMultiplier:#0.##}%";
+		}));
+
 		// Attributes
 		list.Add(new PlayerStatUI(GetLocalization("AttributesHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(GetLocalization("Strength"), player => $"{player.GetModPlayer<AttributesPlayer>().Strength:#0.##}", hover: GetHelp("Strength")));
