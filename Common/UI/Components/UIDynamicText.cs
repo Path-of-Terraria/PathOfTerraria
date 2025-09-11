@@ -23,6 +23,8 @@ internal sealed class UIDynamicText(Func<string> textGetter) : UIComponent
 		}
 
 		element.OnUpdate += OnUpdate;
+
+		UpdateText(element);
 	}
 	protected override void OnDetach(UIElement element)
 	{
@@ -35,6 +37,11 @@ internal sealed class UIDynamicText(Func<string> textGetter) : UIComponent
 	}
 
 	private void OnUpdate(UIElement element)
+	{
+		UpdateText(element);
+	}
+
+	private void UpdateText(UIElement element)
 	{
 		string newText = GetText();
 

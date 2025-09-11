@@ -322,5 +322,7 @@ public sealed class QuestDebugState : SmartUiState
 				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * questIndex), width: (1.0f, +0), height: (0f, +40));
 			});
 		}
+
+		Recalculate();
 	}
 }
