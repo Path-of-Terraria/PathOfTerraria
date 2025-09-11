@@ -16,7 +16,7 @@ public class MoltenSentinel(SkillTree tree) : SkillSpecial(tree)
 {
 	public class MoltenSentry : FlameSage.FlameSentry
 	{
-		public override void OnSpawn()
+		public override void OnSyncedSpawn()
 		{
 			int furnaceStrength = Owner.GetPassiveStrength<FlameSageTree, LivingFurnace>();
 			if (furnaceStrength > 0)

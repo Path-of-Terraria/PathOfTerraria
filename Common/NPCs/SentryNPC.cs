@@ -5,6 +5,8 @@ namespace PathOfTerraria.Common.NPCs;
 
 public abstract class SentryNPC : ModNPC, ITargetable
 {
+	public const int DefaultSentryDuration = 60 * 5;
+
 	/// <summary> The degree in which this sentry draws other NPC attention. </summary>
 	public int Aggro;
 	/// <summary> The time remaining until this NPC automatically expires. </summary>
@@ -62,6 +64,7 @@ public abstract class SentryNPC : ModNPC, ITargetable
 		NPC.knockBackResist = 0;
 
 		Aggro = 0;
+		InitializeTimeLeft(DefaultSentryDuration);
 	}
 
 	/// <summary><inheritdoc cref="ModNPC.PreAI"/><para/>
@@ -70,10 +73,8 @@ public abstract class SentryNPC : ModNPC, ITargetable
 	{
 		if (!_justSpawned)
 		{
-			InitializeTimeLeft(Owner.GetModPlayer<SentryNPCPlayer>().SentryDuration);
 			_justSpawned = true;
-
-			OnSpawn();
+			OnSyncedSpawn();
 		}
 
 		if (--TimeLeft <= 0 && Main.netMode != NetmodeID.MultiplayerClient)
@@ -86,7 +87,7 @@ public abstract class SentryNPC : ModNPC, ITargetable
 	}
 
 	/// <summary> Called on all sides when this NPC just spawns. </summary>
-	public virtual void OnSpawn() { }
+	public virtual void OnSyncedSpawn() { }
 
 	public virtual Terraria.Utilities.NPCUtils.TargetSearchResults FindTarget()
 	{
@@ -110,15 +111,11 @@ public abstract class SentryNPC : ModNPC, ITargetable
 
 internal class SentryNPCPlayer : ModPlayer
 {
-	public const int DefaultSentryDuration = 60 * 5;
-
 	public int SentrySlots;
-	public int SentryDuration;
 
 	public override void ResetEffects()
 	{
 		SentrySlots = 2;
-		SentryDuration = DefaultSentryDuration;
 	}
 
 	public HashSet<SentryNPC> GetSentries()
