@@ -21,10 +21,21 @@ namespace PathOfTerraria.Common.Quests;
 
 internal sealed class QuestDebugging : ModSystem
 {
+#if DEBUG
+	private static ModKeybind keyToggleQuestDebugging = null!;
+#endif
+
+	public override void Load()
+	{
+#if DEBUG
+		keyToggleQuestDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleQuestDebugging", Keys.NumPad1);
+#endif
+	}
+
 	public override void PreUpdateEntities()
 	{
 #if DEBUG
-		if (Main.keyState.IsKeyDown(Keys.NumPad1) && !Main.oldKeyState.IsKeyDown(Keys.NumPad1))
+		if (keyToggleQuestDebugging.JustPressed)
 		{
 			SmartUiLoader.GetUiState<QuestDebugState>().Toggle();
 		}
