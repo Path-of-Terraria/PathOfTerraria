@@ -158,9 +158,9 @@ public sealed class QuestDebugState : SmartUiState
 		{
 			e.SetDimensions(x: (0.00f, +StartX), y: (0.00f, +StartY), width: (1.00f, -48), height: (1.00f, -64));
 		});
-		QuestScrollbar = Panel.AddElement(new UIScrollbar(), e =>
+		QuestScrollbar = Panel.AddElement(new FixedUIScrollbar(UserInterface), e =>
 		{
-			e.SetDimensions(x: (1.00f, -26), y: (0.00f, +StartY + 8), width: (0.00f, +20), height: (1.00f, -80));
+			e.SetDimensions(x: (1.00f, -26), y: (0.00f, +StartY + 6), width: (0.00f, +20), height: (1.00f, -80));
 		});
 		QuestList.SetScrollbar(QuestScrollbar);
 
