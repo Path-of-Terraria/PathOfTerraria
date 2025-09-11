@@ -75,7 +75,7 @@ internal class WoFQuest : Quest
 
 	public override bool Available()
 	{
-		return NPC.downedDeerclops.ToInt() + NPC.downedQueenBee.ToInt() + NPC.downedBoss3.ToInt() + NPC.downedBoss2.ToInt() >= 3;
+		return NPC.downedDeerclops.ToInt() + NPC.downedQueenBee.ToInt() + NPC.downedBoss3.ToInt() >= 2 && NPC.downedBoss2;
 	}
 
 	public override string MarkerLocation()

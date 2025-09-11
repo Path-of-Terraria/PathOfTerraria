@@ -398,12 +398,6 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			{
 				ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
 			}
-
-			if (!quest.Active)
-			{
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
-			}
 		}
 	}
 
@@ -420,8 +414,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			surfaceDialogue = false;
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Aboveground");
 		}
-		
-		var obeliskSystem = ModContent.GetInstance<ArcaneObeliskTile.ArcaneObeliskSystem>();
+
+		ArcaneObeliskTile.ArcaneObeliskSystem obeliskSystem = ModContent.GetInstance<ArcaneObeliskTile.ArcaneObeliskSystem>();
 		if (obeliskSystem.ArcaneObeliskLocation.HasValue)
 		{
 			Vector2 obeliskWorldPos = obeliskSystem.ArcaneObeliskLocation.Value.ToWorldCoordinates();
@@ -432,7 +426,6 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 				return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.NearObelisk");
 			}
 		}
-
 
 		if (ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Contains(FullName) && postOrbPreEoWDialogue && DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2)
 		{

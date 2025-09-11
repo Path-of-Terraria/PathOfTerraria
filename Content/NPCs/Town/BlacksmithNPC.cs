@@ -12,14 +12,11 @@ using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
-using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Items.Placeable.Mapping;
 using PathOfTerraria.Content.NPCs.Mapping.Forest.GrovetenderBoss;
-using PathOfTerraria.Content.Tiles.BossDomain;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
-using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -133,7 +130,12 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>() ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		button2 = !QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>() ? string.Empty : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+
+		if (!QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>() && QuestUnlockManager.CanStartQuest<EoWQuest>())
+		{
+			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+		}
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -144,13 +146,20 @@ public class BlacksmithNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOv
 		}
 		else
 		{
+			if (!QuestUnlockManager.CanStartQuest<BlacksmithStartQuest>())
+			{
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.Quests.EoWQuest.BlacksmithInput");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+			}
+
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<BlacksmithStartQuest>();
 		}
 	}
+
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest = Quest.GetLocalPlayerInstance<BlacksmithStartQuest>();
-		return !quest.Completed;
+		return !quest.Completed || QuestUnlockManager.CanStartQuest<EoWQuest>();
 	}
 }

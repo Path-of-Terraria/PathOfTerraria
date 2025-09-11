@@ -70,6 +70,8 @@ Quest: {
 		// SmashOrbs: Smash 3 Shadow Orbs
 		// KillEoW: Defeat the Eater of Worlds
 		// ReturnToOverworld: Return to the Overworld
+		// BlacksmithInput: Aha! Welcome back, warrior. Say, I've heard of a strong metal in around your area...you know anything of it? The great evil areas hold something strong, but these old bones can't head back in...could you fetch some for me? Plus, I heard some science man was wanting to check it out too.
+		// MorvenDialogue: Hm...oh. Hello, stranger. Thank you for getting me out of that bind. I'm afraid I went down here to track some Devourers I tagged...no matter. My trusty tools failed me, and somehow I've become encased in this fetid stone. For a grueling few hours I've been here. Would you be so kind as to escort me out and bring me to the Raven Statue? I'll reward you greatly...or something.
 	}
 
 	BoCQuest: {
