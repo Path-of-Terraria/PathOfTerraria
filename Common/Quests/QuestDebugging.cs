@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities.Xna;
@@ -219,6 +220,8 @@ public sealed class QuestDebugState : SmartUiState
 					{
 						quest.Advance(Main.LocalPlayer, delta: 1);
 					}
+
+					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
 				e.OnRightClick += (evt, self) =>
 				{
@@ -235,6 +238,8 @@ public sealed class QuestDebugState : SmartUiState
 					{
 						quest.Reset();
 					}
+
+					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
 
 				buttonX += e.Width.Pixels + 8f;
@@ -251,7 +256,11 @@ public sealed class QuestDebugState : SmartUiState
 			questPanel.AddElement(new UIButton<string>("Force Reset"), e =>
 			{
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +128), height: (0f, +32));
-				e.OnLeftClick += (evt, self) => quest.Reset();
+				e.OnLeftClick += (evt, self) =>
+				{
+					quest.Reset();
+					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
+				};
 
 				buttonX += e.Width.Pixels + 8f;
 			});
