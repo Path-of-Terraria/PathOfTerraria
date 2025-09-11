@@ -31,6 +31,11 @@ internal class FrozenNPCBatching : GlobalNPC
 
 		Main.RunOnMainThread(() =>
 		{
+			if (Main.dedServ)
+			{
+				return;
+			}
+
 			const RenderTargetUsage UsageType = RenderTargetUsage.PreserveContents;
 			GraphicsDevice device = Main.instance.GraphicsDevice;
 			FrozenTarget = new RenderTarget2D(device, Main.displayWidth.Max(), Main.displayHeight.Max(), false, SurfaceFormat.Color, DepthFormat.None, 1, UsageType);
