@@ -136,4 +136,9 @@ internal class ObsidianAdversaryItem : ModItem
 		Item.DefaultToPlaceableTile(ModContent.TileType<ObsidianAdversaryVanity>());
 		Item.value = Item.buyPrice(0, 0, 15, 0);
 	}
+
+	public override void AddRecipes()
+	{
+		CreateRecipe(1).AddIngredient(ItemID.Obsidian, 20).AddTile(TileID.WorkBenches).Register();
+	}
 }
