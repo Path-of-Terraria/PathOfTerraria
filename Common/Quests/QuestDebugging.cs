@@ -114,15 +114,17 @@ public sealed class QuestDebugState : SmartUiState
 		});
 
 		// Header
-
 		Panel.AddElement(new UIText("Quest Debugging"), e =>
 		{
 			e.SetDimensions(x: (0.0f, +StartX), y: (0.00f, +4));
 			e.IgnoresMouseInteraction = true;
 		});
-		Panel.AddElement(new UIButton<string>("X"), e =>
+
+		// Close button.
+		Panel.AddElement(new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton")), e =>
 		{
-			e.SetDimensions(x: (1.0f, -32), y: (0.00f, +0), width: (0.0f, +32), height: (0f, +32));
+			e.SetDimensions(x: (1.0f, -35), y: (0.00f, -3), width: (0.0f, +38), height: (0f, +38));
+			e.SetVisibility(1f, 0.8f);
 			e.OnLeftClick += (evt, self) => SetEnabled(false);
 		});
 
