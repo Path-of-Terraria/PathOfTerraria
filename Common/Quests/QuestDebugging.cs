@@ -194,16 +194,62 @@ public sealed class QuestDebugState : SmartUiState
 
 			float buttonX = 0f;
 
-			// Activation and advancement button.
+			// Backtrack '-' button.
+			questPanel.AddElement(new UIButton<string>(""), e =>
+			{
+				e.AltHoverText = "Click to go back by a step.";
+				e.AltPanelColor = e.AltHoverPanelColor = Color.IndianRed;
+				e.UseAltColors = () => quest.Active && quest.CurrentStep > 0;
+				// Make invisible when inactive:
+				(e.AltBorderColor, e.AltHoverBorderColor) = (e.BorderColor, e.HoverBorderColor);
+				e.HoverPanelColor = e.HoverBorderColor = e.BorderColor = e.BackgroundColor;
+
+				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +32), height: (0f, +32));
+				e.AddComponent(new UIDynamicText(() => quest.Active && quest.CurrentStep > 0 ? "-" : ""));
+
+				e.OnLeftClick += (evt, self) =>
+				{
+					if (!quest.Active && !quest.Completed)
+					{
+						return;
+					}
+
+					if (!quest.Completed && quest.CurrentStep <= 0)
+					{
+						return;
+					}
+
+					quest.Advance(Main.LocalPlayer, delta: -1);
+					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
+				};
+
+				buttonX += e.Width.Pixels;
+			});
+			// State info panel. Button, but doesn't do anything.
 			questPanel.AddElement(new UIButton<string>(""), e =>
 			{
 				e.BackgroundColor = e.HoverPanelColor = Color.IndianRed;
-				e.AltPanelColor = e.AltHoverPanelColor = Color.YellowGreen;
+				e.AltPanelColor = e.AltHoverPanelColor = Color.Orange;
+				e.AltHoverBorderColor = e.HoverBorderColor = e.BorderColor;
 				e.UseAltColors = () => quest.Active || quest.Completed;
-				e.HoverText = e.AltHoverText = "Left Click to advance, Right click to backtrack.";
 
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +128), height: (0f, +32));
 				e.AddComponent(new UIDynamicText(() => quest.Completed ? "Completed" : (quest.Active ? $"Stage {quest.CurrentStep + 1} of {quest.QuestSteps.Count}" : "Inactive")));
+
+				buttonX += e.Width.Pixels;
+			});
+			// Advance '+' button.
+			questPanel.AddElement(new UIButton<string>(""), e =>
+			{
+				e.AltHoverText = "Click to advance.";
+				e.AltPanelColor = e.AltHoverPanelColor = Color.YellowGreen;
+				e.UseAltColors = () => !quest.Completed;
+				// Make invisible when inactive:
+				(e.AltBorderColor, e.AltHoverBorderColor) = (e.BorderColor, e.HoverBorderColor);
+				e.HoverPanelColor = e.HoverBorderColor = e.BorderColor = e.BackgroundColor;
+
+				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +32), height: (0f, +32));
+				e.AddComponent(new UIDynamicText(() => !quest.Completed ? "+" : ""));
 
 				e.OnLeftClick += (evt, self) =>
 				{
@@ -223,27 +269,10 @@ public sealed class QuestDebugState : SmartUiState
 
 					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
 				};
-				e.OnRightClick += (evt, self) =>
-				{
-					if (!quest.Active && !quest.Completed)
-					{
-						return;
-					}
-
-					if (quest.Completed || quest.CurrentStep > 0)
-					{
-						quest.Advance(Main.LocalPlayer, delta: -1);
-					}
-					else
-					{
-						quest.Reset();
-					}
-
-					SmartUiLoader.GetUiState<QuestsUIState>().Refresh();
-				};
 
 				buttonX += e.Width.Pixels + 8f;
 			});
+
 			// 'Give Rewards' button.
 			questPanel.AddElement(new UIButton<string>("Give Rewards"), e =>
 			{
@@ -252,10 +281,11 @@ public sealed class QuestDebugState : SmartUiState
 
 				buttonX += e.Width.Pixels + 8f;
 			});
+
 			// 'Force Reset' button.
-			questPanel.AddElement(new UIButton<string>("Force Reset"), e =>
+			questPanel.AddElement(new UIButton<string>("Reset"), e =>
 			{
-				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +128), height: (0f, +32));
+				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +80), height: (0f, +32));
 				e.OnLeftClick += (evt, self) =>
 				{
 					quest.Reset();
