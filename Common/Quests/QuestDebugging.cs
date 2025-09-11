@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Components;
+using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities.Xna;
@@ -51,9 +52,12 @@ internal sealed class QuestDebugCommand : ModCommand
 
 public sealed class QuestDebugState : SmartUiState
 {
+	private string? lastSearchString;
+
 	public UIPanel Panel { get; private set; } = null!;
 	public UIList QuestList { get; private set; } = null!;
 	public UIScrollbar QuestScrollbar { get; private set; } = null!;
+	public UIEditableText SearchBar { get; private set; } = null!;
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -113,18 +117,38 @@ public sealed class QuestDebugState : SmartUiState
 		Panel.AddElement(new UIText("Quest Debugging"), e =>
 		{
 			e.SetDimensions(x: (0.0f, +StartX), y: (0.00f, +4));
+			e.IgnoresMouseInteraction = true;
 		});
-#if DEBUG
-		Panel.AddElement(new UIButton<string>("Refresh"), e =>
-		{
-			e.SetDimensions(x: (1.0f, -128 - 8), y: (0.00f, +0), width: (0.0f, +96), height: (0f, +32));
-			e.OnLeftClick += (evt, self) => Rebuild();
-		});
-#endif
 		Panel.AddElement(new UIButton<string>("X"), e =>
 		{
 			e.SetDimensions(x: (1.0f, -32), y: (0.00f, +0), width: (0.0f, +32), height: (0f, +32));
 			e.OnLeftClick += (evt, self) => SetEnabled(false);
+		});
+
+		// Search bar
+
+		UIPanel searchBG = Panel.AddElement(new UIPanel(), e =>
+		{
+			e.SetDimensions(x: (0.0f, +160), y: (0.00f, +0), width: (1.0f, -200), height: (0f, +32));
+		});
+		SearchBar = Panel.AddElement(SearchBar ?? new UIEditableText(backingText: "Search..."), e =>
+		{
+			e.SetDimensions(x: (0.0f, +160 + 8f), y: (0.00f, +0), width: (1.0f, -200 - 16f), height: (0f, +32));
+
+			if (SearchBar != null)
+			{
+				return;
+			}
+
+			e.CurrentValue = lastSearchString;
+			e.OnUpdate += uiElement =>
+			{
+				if (uiElement is UIEditableText e && e.CurrentValue != lastSearchString)
+				{
+					Main.QueueMainThreadAction(Rebuild);
+					lastSearchString = e.CurrentValue;
+				}
+			};
 		});
 
 		// List
@@ -139,12 +163,19 @@ public sealed class QuestDebugState : SmartUiState
 		});
 		QuestList.SetScrollbar(QuestScrollbar);
 
+		// List entries
+
 		int questIndex = -1;
 		StringBuilder stringBuilder = new();
 		QuestModPlayer playerQuests = Main.LocalPlayer.GetModPlayer<QuestModPlayer>();
 
 		foreach (Quest quest in playerQuests.QuestsByName.Values.OrderBy(q => q.Name))
 		{
+			if (!string.IsNullOrEmpty(SearchBar.CurrentValue) && !quest.Name.Contains(SearchBar.CurrentValue, StringComparison.InvariantCultureIgnoreCase))
+			{
+				continue;
+			}
+
 			questIndex++;
 
 			UIPanel questPanel = QuestList.AddElement(new UIPanel(), e =>
@@ -240,6 +271,14 @@ public sealed class QuestDebugState : SmartUiState
 
 					return stringBuilder.ToString();
 				}));
+			});
+		}
+
+		if (questIndex < 0)
+		{
+			QuestList.AddElement(new UITextPanel<string>("No quests found"), e =>
+			{
+				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * questIndex), width: (1.0f, +0), height: (0f, +40));
 			});
 		}
 	}
