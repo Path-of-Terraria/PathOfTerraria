@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 using ReLogic.Content;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 

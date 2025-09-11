@@ -10,7 +10,7 @@ internal class IncreasedFireDamagePassive : Passive
 	public override void BuffPlayer(Player player)
 	{
 		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.Container.FireMultiplier += MultPerLevel * Level;
+		elemental.Container[ElementType.Fire].Multiplier += MultPerLevel * Level;
 	}
 }
 
@@ -21,7 +21,7 @@ internal class IncreasedColdDamagePassive : Passive
 	public override void BuffPlayer(Player player)
 	{
 		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.Container.ColdMultiplier += MultPerLevel * Level;
+		elemental.Container[ElementType.Cold].Multiplier += MultPerLevel * Level;
 	}
 }
 
@@ -32,6 +32,6 @@ internal class IncreasedLightningDamagePassive : Passive
 	public override void BuffPlayer(Player player)
 	{
 		ElementalPlayer elemental = player.GetModPlayer<ElementalPlayer>();
-		elemental.Container.LightningMultiplier += MultPerLevel * Level;
+		elemental.Container[ElementType.Lightning].Multiplier += MultPerLevel * Level;
 	}
 }

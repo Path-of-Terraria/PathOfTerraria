@@ -1,57 +1,125 @@
-﻿using System.IO;
+﻿using System.Collections;
+using System.Collections.Generic;
+using System.IO;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
-/// <summary>
-/// Holds all relevant elemental information for an entity, such as damage boosts and damage resistance.
-/// </summary>
-public class ElementalContainer
+public class ElementInstance(ElementType type, bool isGeneric)
 {
-	private float _fireResistance;
-	private float _coldResistance;
-	private float _lightningResistance;
+	public readonly ElementType Type = type;
 
 	/// <summary>
-	/// Controls the scaling damage decrease from fire damage. Clamps at 75%.
+	/// Determines if this element is "generic", i.e. it's included in "All elemental" affixes or effects.
 	/// </summary>
-	public float FireResistance
+	public readonly bool IsGeneric = isGeneric;
+
+	/// <summary>
+	/// How much of damage is being converted by this instance, taking in <see cref="Resistance"/>.
+	/// </summary>
+	public float TotalConversion => DamageModifier.DamageConversion * (1f - Resistance);
+
+	/// <summary>
+	/// How much damage is flatly added to the hit, taking in <see cref="Resistance"/>.
+	/// </summary>
+	public float TotalFlatDamage => DamageModifier.DamageBonus * (1f - Resistance);
+
+	public float Resistance
 	{
-		get => _fireResistance;
-		set => _fireResistance = MathHelper.Clamp(value, 0f, 0.75f);
+		get => _resistance;
+		set => _resistance = MathHelper.Clamp(value, 0f, 0.75f);
+	}
+
+	private float _resistance = 0;
+
+	public ElementalDamage DamageModifier = new(type);
+
+	// Copied from original implementation, where this also did nothing
+	public float Multiplier = 0;
+
+	public void Reset(bool resetModifiers)
+	{
+		Multiplier = 1;
+		Resistance = 0;
+
+		if (resetModifiers)
+		{
+			DamageModifier = DamageModifier.ApplyOverride(0, 0);
+		}
 	}
 
 	/// <summary>
-	/// Controls the scaling damage decrease from cold damage. Clamps at 75%.
+	/// Writes this <see cref="ElementInstance"/> to the writers.
 	/// </summary>
-	public float ColdResistance
+	public void WriteTo(BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
-		get => _coldResistance;
-		set => _coldResistance = MathHelper.Clamp(value, 0f, 0.75f);
+		bitWriter.WriteBit(DamageModifier.HasValues);
+
+		if (DamageModifier.HasValues)
+		{
+			DamageModifier.Write(binaryWriter);
+		}
 	}
 
 	/// <summary>
-	/// Controls the scaling damage decrease from lightning damage. Clamps at 75%.
+	/// Updates this <see cref="ElementInstance"/> to use the values passed in by another <see cref="WriteTo(BitWriter, BinaryWriter)"/> call.
 	/// </summary>
-	public float LightningResistance
+	public void ReadFrom(BitReader bitReader, BinaryReader binaryReader)
 	{
-		get => _lightningResistance;
-		set => _lightningResistance = MathHelper.Clamp(value, 0f, 0.75f);
+		bool hasValue = bitReader.ReadBit();
+
+		if (hasValue)
+		{
+			DamageModifier = ElementalDamage.Read(binaryReader);
+		}
 	}
+}
+
+/// <summary>
+/// Holds all relevant elemental information for an entity, such as damage boosts and damage resistance.<br/>
+/// These can be enumerated, returning every <see cref="ElementInstance"/> in the container.
+/// </summary>
+public class ElementalContainer : IEnumerable<ElementInstance>
+{
+	/// <summary>
+	/// Returns the <see cref="ElementInstance"/> of the given type from this container.
+	/// </summary>
+	public ElementInstance this[ElementType type] => Instances[type];
+
+	public readonly Dictionary<ElementType, ElementInstance> Instances;
 
 	/// <summary>
 	/// Percent of damage-to-be-done that will be converted to an elemental damage type.
 	/// </summary>
-	public float TotalConversion => MathHelper.Clamp(FireDamageModifier.DamageConversion + ColdDamageModifier.DamageConversion + LightningDamageModifier.DamageConversion, 0f, 1f);
+	public float TotalConversion
+	{
+		get
+		{
+			float total = 0f;
 
-	public ElementalDamage FireDamageModifier = new(ElementType.Fire);
-	public ElementalDamage ColdDamageModifier = new(ElementType.Cold);
-	public ElementalDamage LightningDamageModifier = new(ElementType.Lightning);
+			foreach (ElementInstance instance in this)
+			{
+				total += instance.DamageModifier.DamageConversion;
+			}
 
-	// I don't know what these are for? They're used in some passives, but they don't actually do anything...
-	public float FireMultiplier = 1f;
-	public float ColdMultiplier = 1f;
-	public float LightningMultiplier = 1f;
+			return MathHelper.Clamp(total, 0f, 1f);
+		}
+	}
+
+	public ElementalContainer()
+	{
+		Instances = [];
+
+		AddNewElement(ElementType.Fire);
+		AddNewElement(ElementType.Cold);
+		AddNewElement(ElementType.Lightning);
+		AddNewElement(ElementType.Chaos, false);
+
+		void AddNewElement(ElementType type, bool generic = true)
+		{
+			Instances.Add(type, new ElementInstance(type, generic));
+		}
+	}
 
 	/// <summary>
 	/// Resets the modifiers on this instance for use in something like <see cref="ModPlayer.ResetEffects"/>.
@@ -59,14 +127,9 @@ public class ElementalContainer
 	/// <param name="resetModifiers">Whether the elemental modifiers (such as <see cref="LightningDamageModifier"/>) should be reset. NPCs shouldn't reset them.</param>
 	public void Reset(bool resetModifiers)
 	{
-		FireMultiplier = ColdMultiplier = LightningMultiplier = 1;
-		FireResistance = ColdResistance = LightningResistance = 0;
-
-		if (resetModifiers)
+		foreach (ElementInstance instance in this)
 		{
-			FireDamageModifier = FireDamageModifier.ApplyOverride(0, 0);
-			ColdDamageModifier = ColdDamageModifier.ApplyOverride(0, 0);
-			LightningDamageModifier = LightningDamageModifier.ApplyOverride(0, 0);
+			instance.Reset(resetModifiers);
 		}
 	}
 
@@ -75,23 +138,9 @@ public class ElementalContainer
 	/// </summary>
 	public void WriteTo(BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
-		bitWriter.WriteBit(FireDamageModifier.HasValues);
-		bitWriter.WriteBit(ColdDamageModifier.HasValues);
-		bitWriter.WriteBit(LightningDamageModifier.HasValues);
-
-		if (FireDamageModifier.HasValues)
+		foreach (ElementInstance instance in this)
 		{
-			FireDamageModifier.Write(binaryWriter);
-		}
-
-		if (ColdDamageModifier.HasValues)
-		{
-			ColdDamageModifier.Write(binaryWriter);
-		}
-
-		if (LightningDamageModifier.HasValues)
-		{
-			LightningDamageModifier.Write(binaryWriter);
+			instance.WriteTo(bitWriter, binaryWriter);
 		}
 	}
 
@@ -100,23 +149,24 @@ public class ElementalContainer
 	/// </summary>
 	public void ReadFrom(BitReader bitReader, BinaryReader binaryReader)
 	{
-		bool fire = bitReader.ReadBit();
-		bool cold = bitReader.ReadBit();
-		bool lightning = bitReader.ReadBit();
-
-		if (fire)
+		foreach (ElementInstance instance in this)
 		{
-			FireDamageModifier = ElementalDamage.Read(binaryReader);
+			instance.ReadFrom(bitReader, binaryReader);
 		}
+	}
 
-		if (cold)
-		{
-			ColdDamageModifier = ElementalDamage.Read(binaryReader);
-		}
+	public ElementalContainer Clone()
+	{
+		return (ElementalContainer)MemberwiseClone();
+	}
 
-		if (lightning)
-		{
-			LightningDamageModifier = ElementalDamage.Read(binaryReader);
-		}
+	public IEnumerator<ElementInstance> GetEnumerator()
+	{
+		return Instances.Values.GetEnumerator();
+	}
+
+	IEnumerator IEnumerable.GetEnumerator()
+	{
+		return GetEnumerator();
 	}
 }

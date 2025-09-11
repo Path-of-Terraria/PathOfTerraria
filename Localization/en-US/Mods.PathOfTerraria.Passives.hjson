@@ -273,3 +273,8 @@ MasteryPassive: {
 	Name: MasteryPassive
 	Tooltip: ""
 }
+
+AddedChaosResistancePassive: {
+	Name: AddedChaosResistancePassive
+	Tooltip: ""
+}
