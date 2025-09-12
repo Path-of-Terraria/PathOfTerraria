@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
@@ -23,24 +22,20 @@ internal sealed class QuestDebugging : ModSystem
 {
 #if DEBUG
 	private static ModKeybind keyToggleQuestDebugging = null!;
-#endif
 
 	public override void Load()
 	{
-#if DEBUG
-		keyToggleQuestDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleQuestDebugging", Keys.NumPad1);
-#endif
+		keyToggleQuestDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleQuestDebugging", Microsoft.Xna.Framework.Input.Keys.NumPad1);
 	}
 
 	public override void PreUpdateEntities()
 	{
-#if DEBUG
 		if (keyToggleQuestDebugging.JustPressed)
 		{
 			SmartUiLoader.GetUiState<QuestDebugState>().Toggle();
 		}
-#endif
 	}
+#endif
 }
 
 internal sealed class QuestDebugCommand : ModCommand

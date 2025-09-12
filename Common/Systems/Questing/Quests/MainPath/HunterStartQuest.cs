@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -50,13 +51,7 @@ internal class HunterStartQuest : Quest
 			{
 				RavencrestSystem.UpgradeBuilding("Lodge", 1);
 
-				Entity entity = NPC.FindFirstNPC(ModContent.NPCType<HunterNPC>()) is >= 0 and int npc ? Main.npc[npc] : player;
-				int item = Item.NewItem(new EntitySource_Gift(entity), entity.Center, ModContent.ItemType<WoodenBow>());
-
-				if (Main.netMode == NetmodeID.MultiplayerClient)
-				{
-					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
-				}
+				QuestUtils.SpawnNPCQuestRewardItem(player, ModContent.NPCType<HunterNPC>(), ModContent.ItemType<WoodenBow>());
 
 				return true;
 			}),
