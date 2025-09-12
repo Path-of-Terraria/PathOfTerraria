@@ -1,5 +1,8 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using System.Collections;
+using System.Collections.Generic;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.ItemDropping;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -8,7 +11,6 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Battleaxe;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
 using PathOfTerraria.Content.Skills.Melee;
-using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.Localization;
@@ -40,17 +42,11 @@ internal class BlacksmithStartQuest : Quest
 				[
 					new GiveItem(20, ItemID.IronOre, ItemID.LeadOre), new(1, ItemID.IronHammer, ItemID.LeadHammer), new(50, ItemID.StoneBlock), new(20, ItemID.Wood)
 				], true),
-			new ActionStep((_, _) => 
+			new ActionStep((player, _) => 
 			{
 				RavencrestSystem.UpgradeBuilding("Forge");
 
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<BlacksmithNPC>());
-				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<IronBroadsword>());
-
-				if (Main.netMode == NetmodeID.MultiplayerClient)
-				{
-					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
-				}
+				QuestUtils.SpawnNPCQuestRewardItem(player, ModContent.NPCType<BlacksmithNPC>(), ModContent.ItemType<IronBroadsword>());
 
 				return true;
 			}),
