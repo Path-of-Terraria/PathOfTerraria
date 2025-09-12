@@ -41,7 +41,10 @@ public class VolatileConstruct(SkillTree tree) : SkillSpecial(tree)
 				Rectangle hitbox = NPC.Hitbox;
 				hitbox.Inflate(100, 100);
 
-				FlamethrowerNPC.DealDoT(hitbox, (int)(NPC.damage * 0.2f * slowBurn), static (npc) =>
+				int accelerant = Owner.GetPassiveStrength<FlameSageTree, Accelerant>();
+				int dotDamage = (int)((NPC.damage * 0.2f * slowBurn) * (1 + (accelerant * Accelerant.DamageIncrease)));
+
+				FlamethrowerNPC.DealDoT(hitbox, dotDamage, static (npc) =>
 				{
 					int size = (npc.width * npc.height) / 500;
 					for (int i = 0; i < size; i++)
@@ -67,7 +70,12 @@ public class VolatileConstruct(SkillTree tree) : SkillSpecial(tree)
 			int slowBurn = Owner.GetPassiveStrength<FlameSageTree, SlowBurn>();
 			if (slowBurn > 0)
 			{
-				NPC.lifeRegen -= slowBurn * (int)(NPC.lifeMax / SlowBurn.Seconds) * 2;
+				int accelerant = Owner.GetPassiveStrength<FlameSageTree, Accelerant>();
+
+				float slowBurnDrain = slowBurn * (NPC.lifeMax / SlowBurn.Seconds);
+				float accelerantDrain = 1 + (accelerant * Accelerant.LifeLoss);
+
+				NPC.lifeRegen -= (int)(slowBurnDrain * accelerantDrain * 2);
 			}
 		}
 	}

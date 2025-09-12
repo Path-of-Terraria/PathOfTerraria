@@ -25,6 +25,12 @@ public class MoltenSentinel(SkillTree tree) : SkillSpecial(tree)
 				NPC.life = NPC.lifeMax = (int)(NPC.lifeMax * (1f + (0.25f * furnaceStrength)));
 			}
 
+			int endurance = Owner.GetPassiveStrength<FlameSageTree, Vitality>();
+			if (endurance > 0)
+			{
+				NPC.life = NPC.lifeMax = (int)(NPC.lifeMax * (1f + (Vitality.Increase * furnaceStrength)));
+			}
+
 			int damage = (int)Owner.GetDamage(DamageClass.Summon).ApplyTo(NPC.damage);
 			Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, Vector2.Zero, ModContent.ProjectileType<MoltenSentryAura>(), damage, 0, Owner.whoAmI, NPC.whoAmI);
 		}

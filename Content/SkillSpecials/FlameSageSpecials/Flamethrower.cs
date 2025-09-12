@@ -170,15 +170,21 @@ internal class FlamethrowerNPC : GlobalNPC
 		if (DamageOverTime > 0)
 		{
 			npc.lifeRegen = Math.Min(npc.lifeRegen, 0);
+			float finalDamage = DamageOverTime;
 
-			float finalDamage = DamageOverTime * 2;
-			if (_ticksOnFire > 60 * MeltingPoint.Seconds && npc.AnyInteractions())
+			if (npc.AnyInteractions())
 			{
-				int melting = Main.player[npc.lastInteraction].GetPassiveStrength<FlameSageTree, MeltingPoint>();
-				finalDamage *= 1 + MeltingPoint.DamageBonus * melting;
+				if (_ticksOnFire > (60 * MeltingPoint.Seconds))
+				{
+					int melting = Main.player[npc.lastInteraction].GetPassiveStrength<FlameSageTree, MeltingPoint>();
+					finalDamage *= 1 + MeltingPoint.DamageBonus * melting;
+				}
+
+				int enduringFlame = Main.player[npc.lastInteraction].GetPassiveStrength<FlameSageTree, EnduringFlame>();
+				finalDamage *= 1 + (EnduringFlame.DamageBonus * (_ticksOnFire / 60) * enduringFlame);
 			}
 
-			npc.lifeRegen -= (int)finalDamage; //Translate to damage per second
+			npc.lifeRegen -= (int)(finalDamage * 2); //Translate to damage per second
 
 			DamageOverTime = 0;
 			_ticksOnFire++;
