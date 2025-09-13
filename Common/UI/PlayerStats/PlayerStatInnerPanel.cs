@@ -162,9 +162,9 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		list.Add(new PlayerStatUI(Localize("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].Resistance * 100:#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("ChaosResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].Resistance * 100:#0.##}%"));
 		// Offense  
-		list.Add(new PlayerStatUI(GetLocalization("OffenseHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(GetLocalization("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("CriticalMultiplier"), player =>
+		list.Add(new PlayerStatUI(Localize("OffenseHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("CriticalMultiplier"), player =>
 		{
 			UniversalBuffingPlayer buffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
 			float critMultiplier = buffingPlayer.UniversalModifier.CriticalMultiplier.Base;
