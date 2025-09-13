@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Content.Buffs.ElementalBuffs;
+﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using System.IO;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
@@ -29,7 +29,7 @@ public readonly struct ElementalDamage
 	public float DamageConversion { get; init; }
 
 	/// <summary>
-	/// Whether the object has any non-zero damage-related values. If it doesn't, this struct is "default" and shouldn't be synced or used for further functionality.
+	/// Whether this object has any non-zero damage-related values. If it doesn't, this struct is "default" and shouldn't be synced or used for further functionality.
 	/// </summary>
 	public bool HasValues => DamageBonus > 0 || DamageConversion > 0;
 
@@ -99,8 +99,8 @@ public readonly struct ElementalDamage
 		return type switch
 		{
 			ElementType.Fire => ModContent.BuffType<IgnitedDebuff>(),
-			ElementType.Cold => BuffID.Frostburn,
-			ElementType.Lightning => BuffID.Electrified,
+			ElementType.Cold => ModContent.BuffType<FreezeDebuff>(),
+			ElementType.Lightning => ModContent.BuffType<ShockDebuff>(),
 			_ => 0
 		};
 	}
@@ -111,6 +111,19 @@ public readonly struct ElementalDamage
 		{
 			case ElementType.Fire when entity is NPC burningNPC:
 				IgnitedDebuff.ApplyTo(burningNPC, (int)(elementalDamageDealt * 0.9f));
+				break;
+
+			case ElementType.Cold when entity is NPC frozenNPC:
+				float duration = 3.6f * (elementalDamageDealt / (float)frozenNPC.lifeMax);
+
+				if (duration > 0.3f)
+				{
+					frozenNPC.AddBuff(GetBuffType(ElementType), (int)(duration * 60));
+				}
+
+				frozenNPC.GetGlobalNPC<FreezeNPC>().Frozen = true;
+				FreezeNPC.ConvertFrozenGore(frozenNPC);
+
 				break;
 
 			default:
@@ -136,11 +149,13 @@ public readonly struct ElementalDamage
 	/// <param name="info"></param>
 	/// <param name="defaultPercent"></param>
 	/// <returns></returns>
-	internal bool CanDebuff(NPC.HitInfo info, bool defaultPercent)
+	internal bool CanDebuff(Entity entity, NPC.HitInfo info, bool defaultPercent)
 	{
 		return ElementType switch
 		{
 			ElementType.Fire => info.Crit,
+			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
+			ElementType.Chaos => false,
 			_ => defaultPercent,
 		};
 	}

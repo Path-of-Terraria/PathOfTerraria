@@ -43,6 +43,7 @@ StatUI: {
 	FireResistance: Resistencia al fuego
 	ColdResistance: Resistencia al frio
 	LightningResistance: Resistencia a los rayos
+	// ChaosResistance: Chaos Resistance
 	// OffenseHeader: Offense
 	// CriticalChance: Critical Strike Chance
 	// CriticalMultiplier: Critical Strike Multiplier

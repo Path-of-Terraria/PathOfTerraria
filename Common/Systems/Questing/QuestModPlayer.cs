@@ -38,7 +38,7 @@ public class QuestModPlayer : ModPlayer
 	/// <param name="fromLoad">Skips the quest popups &amp; sound effects if true.</param>
 	public void StartQuest(string name, int step = -1, bool fromLoad = false)
 	{
-		QuestsByName[name].StartQuest(Player, step == -1 ? 0 : step);
+		QuestsByName[name].Start(Player, step == -1 ? 0 : step);
 
 		if (Main.myPlayer == Player.whoAmI && !fromLoad)
 		{
@@ -130,11 +130,7 @@ public class QuestModPlayer : ModPlayer
 
 			quest.Update(Player);
 
-			if (quest.Completed)
-			{
-				quest.Active = false;
-			}
-			else
+			if (!quest.Completed)
 			{
 				// Update markers per area.
 				// This uses all quests, which define their location and complete-ness already,

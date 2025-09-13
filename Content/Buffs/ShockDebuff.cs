@@ -38,7 +38,7 @@ public sealed class ShockDebuff : ModBuff
 
 				if (projectile.TryGetOwner(out Player owner))
 				{
-					mul *= owner.GetModPlayer<AffixPlayer>().StrengthOf<ChanceToApplyShockGearAffix>() * 0.01f;
+					mul *= 1 + owner.GetModPlayer<AffixPlayer>().StrengthOf<ChanceToApplyShockGearAffix>() * 0.01f;
 				}
 
 				modifiers.FinalDamage += mul;

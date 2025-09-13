@@ -25,7 +25,7 @@ public partial class UIEditableText(InputType inputType = InputType.Text, string
 	private readonly int _maxChars = maxChars;
 	private readonly bool _leftAligned = leftAligned;
 
-	public string UseValue => CurrentValue == string.Empty ? _backingString : CurrentValue;
+	public string UseValue => CurrentValue == string.Empty && !_typing ? _backingString : CurrentValue;
 
 	public string CurrentValue = "";
 
@@ -78,6 +78,8 @@ public partial class UIEditableText(InputType inputType = InputType.Text, string
 		{
 			SetNotTyping();
 		}
+
+		base.Update(gameTime);
 	}
 
 	public void HandleText()
@@ -162,7 +164,7 @@ public partial class UIEditableText(InputType inputType = InputType.Text, string
 
 		string displayed = CurrentValue ?? "";
 
-		if (displayed != string.Empty)
+		if (displayed != string.Empty || _typing)
 		{
 			Utils.DrawBorderString(spriteBatch, displayed, pos, color, Scale, _leftAligned ? 0 : 1);
 		}

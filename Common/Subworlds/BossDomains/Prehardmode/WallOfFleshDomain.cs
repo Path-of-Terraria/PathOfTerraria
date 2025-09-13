@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Systems.BossTrackingSystems;
-using PathOfTerraria.Common.Systems.DisableBuilding;
+﻿using PathOfTerraria.Common.Systems.DisableBuilding;
 using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Common.World.Passes;
@@ -46,6 +45,8 @@ public class WallOfFleshDomain : BossDomainSubworld
 
 			results.Add(TileID.Platforms);
 			results.Add(ModContent.TileType<FrayedRope>());
+			results.Add(TileID.DemoniteBrick);
+			results.Add(TileID.CrimtaneBrick);
 		}
 
 		if (use == BuildingWhitelist.WhitelistUse.Placing)
