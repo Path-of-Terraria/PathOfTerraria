@@ -110,7 +110,8 @@ OobodopSummon: {
 }
 
 // ExplosionHitbox.DisplayName: Explosion
-// ExplosionHitboxFriendly.DisplayName: Explosion
+// ExplosionHitboxFriendly.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
+// Explosion.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
 
 DemonSummon: {
 	// DisplayName: Demon

@@ -102,6 +102,7 @@ OobodopSummon: {
 
 ExplosionHitbox.DisplayName: Взрыв
 ExplosionHitboxFriendly.DisplayName: Взрыв
+// Explosion.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
 
 DemonSummon: {
 	DisplayName: Демон

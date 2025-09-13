@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Content.SkillPassives.FlameSage;
 using PathOfTerraria.Content.Skills.Summon;
@@ -64,7 +65,7 @@ public class Flamethrower(SkillTree tree) : SkillSpecial(tree)
 				Rectangle hitbox = NPC.Hitbox;
 				hitbox.Inflate(100, 100);
 
-				FlamethrowerNPC.DealDoT(hitbox, (int)(NPC.damage * 0.5f * combustion), static (npc) =>
+				FlamethrowerNPC.DealDoT(hitbox, (int)(NPC.damage * 0.5f * combustion), Owner, static (npc) =>
 				{
 					int size = (npc.width * npc.height) / 500;
 					for (int i = 0; i < size; i++)
@@ -72,6 +73,18 @@ public class Flamethrower(SkillTree tree) : SkillSpecial(tree)
 						var dust = Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.Torch, Scale: Main.rand.NextFloat(1, 3));
 						dust.noGravity = true;
 						dust.velocity = -Vector2.UnitY;
+					}
+
+					if (npc.AnyInteractions()) //Apply effects from the Overwhelming Pressure passive
+					{
+						Player player = Main.player[npc.lastInteraction];
+						int overwhelmingPressure = player.GetPassiveStrength<FlameSageTree, OverwhelmingPressure>();
+
+						if (overwhelmingPressure > 0)
+						{
+							int weakening = player.GetPassiveStrength<FlameSageTree, Weakening>();
+							npc.GetGlobalNPC<ElementalNPC>().Container.FireResistance -= ((overwhelmingPressure * OverwhelmingPressure.ResistanceDecrease) + (weakening * Weakening.ResistanceDecrease));
+						}
 					}
 				});
 			}
@@ -130,12 +143,12 @@ public class Flamethrower(SkillTree tree) : SkillSpecial(tree)
 			Projectile.alpha = (int)(TimeSpan * 255f);
 			Projectile.scale = TimeSpan * 1.25f;
 
-			FlamethrowerNPC.DealDoT(Projectile.Hitbox, Projectile.damage);
+			FlamethrowerNPC.DealDoT(Projectile.Hitbox, Projectile.damage, Main.player[Projectile.owner]);
 		}
 
 		public override bool? CanDamage()
 		{
-			return false;
+			return false; //Damage is instead dealt over time in AI
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -174,13 +187,15 @@ internal class FlamethrowerNPC : GlobalNPC
 
 			if (npc.AnyInteractions())
 			{
+				Player player = Main.player[npc.lastInteraction];
+
 				if (_ticksOnFire > (60 * MeltingPoint.Seconds))
 				{
-					int melting = Main.player[npc.lastInteraction].GetPassiveStrength<FlameSageTree, MeltingPoint>();
+					int melting = player.GetPassiveStrength<FlameSageTree, MeltingPoint>();
 					finalDamage *= 1 + MeltingPoint.DamageBonus * melting;
 				}
 
-				int enduringFlame = Main.player[npc.lastInteraction].GetPassiveStrength<FlameSageTree, EnduringFlame>();
+				int enduringFlame = player.GetPassiveStrength<FlameSageTree, EnduringFlame>();
 				finalDamage *= 1 + (EnduringFlame.DamageBonus * (_ticksOnFire / 60) * enduringFlame);
 			}
 
@@ -191,12 +206,14 @@ internal class FlamethrowerNPC : GlobalNPC
 		}
 	}
 
-	public static void DealDoT(Rectangle hitbox, int damage, Action<NPC> extraAction = null)
+	public static void DealDoT(Rectangle hitbox, int damage, Player source, Action<NPC> extraAction = null)
 	{
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
 			if (npc.CanBeChasedBy() && npc.Hitbox.Intersects(hitbox) && npc.TryGetGlobalNPC(out FlamethrowerNPC global))
 			{
+				npc.ApplyInteraction(source.whoAmI);
+
 				extraAction?.Invoke(npc);
 				global.DamageOverTime += damage;
 			}
