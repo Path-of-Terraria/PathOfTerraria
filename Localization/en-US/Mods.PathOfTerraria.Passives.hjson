@@ -295,31 +295,31 @@ AegisChargeMaxChargesPassive: {
 }
 
 FocusChargeChanceOnKillPassive: {
-	Name: FocusChargeChanceOnKillPassive
-	Tooltip: ""
+	Name: Focus Charge Chance on Kill
+	Tooltip: "+{0}% chance to gain a Focus Charge on kill"
 }
 
 FocusChargeDamageBonusPassive: {
-	Name: FocusChargeDamageBonusPassive
-	Tooltip: ""
+	Name: Focus Charge Damage Bonus
+	Tooltip: "+{0}% damage per Focus Charge"
 }
 
 FocusChargeMaxChargesPassive: {
-	Name: FocusChargeMaxChargesPassive
-	Tooltip: ""
+	Name: Maximum Focus Charges
+	Tooltip: "+{0} maximum Focus Charges"
 }
 
 HasteChargeChanceOnKillPassive: {
-	Name: HasteChargeChanceOnKillPassive
-	Tooltip: ""
+	Name: Haste Charge Chance on Kill
+	Tooltip: "+{0}% chance to gain a Haste Charge on kill"
 }
 
 HasteChargeProjectileSpeedPassive: {
-	Name: HasteChargeProjectileSpeedPassive
-	Tooltip: ""
+	Name: Haste Charge Projectile Speed
+	Tooltip: "+{0}% projectile speed per Haste Charge"
 }
 
 HasteChargeMaxChargesPassive: {
-	Name: HasteChargeMaxChargesPassive
-	Tooltip: ""
+	Name: Maximum Haste Charges
+	Tooltip: "+{0} maximum Haste Charges"
 }
