@@ -45,6 +45,7 @@ StatUI: {
 	LightningResistance: Résistance à la Foudre
 	// OffenseHeader: Offense
 	// CriticalChance: Critical Strike Chance
+	// CriticalMultiplier: Critical Strike Multiplier
 	// AttributesHeader: Attributes
 	Strength: Force
 	Dexterity: Dextérité
