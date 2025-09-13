@@ -47,7 +47,7 @@ StatUI: {
 	// OffenseHeader: Offense
 	// CriticalChance: Critical Strike Chance
 	// ProjectileSpeed: Projectile Speed
-	// ProjectileCount: Projectiles
+	// ProjectileCount: Additional Projectiles
 	// AttributesHeader: Attributes
 	Strength: Siła
 	Dexterity: Zręczność

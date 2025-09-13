@@ -165,7 +165,7 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		list.Add(new PlayerStatUI(Localize("OffenseHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(Localize("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
 		list.Add(new PlayerStatUI(Localize("ProjectileSpeed"), player => $"{player.GetModPlayer<ProjectileModifierPlayer>().ProjectileSpeedMultiplier.ApplyTo(1f) * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(Localize("ProjectileCount"), player => $"{player.GetModPlayer<ProjectileModifierPlayer>().ProjectileCountModifier.ApplyTo(1f):#0.##}"));
+		list.Add(new PlayerStatUI(Localize("ProjectileCount"), player => $"{player.GetModPlayer<ProjectileModifierPlayer>().ProjectileCountModifier.ApplyTo(0f):#0.##}"));
 		
 		// Attributes
 		list.Add(new PlayerStatUI(Localize("AttributesHeader"), player => "", isHeader: true));
