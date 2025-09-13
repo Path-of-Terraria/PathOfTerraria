@@ -180,6 +180,8 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		// Misc
 		list.Add(new PlayerStatUI(Localize("MiscHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(Localize("MaxMinions"), player => $"{player.maxMinions.ToString()}"));
+		list.Add(new PlayerStatUI(Localize("AmmoConsumptionChance"), player => $"{player.GetModPlayer<AmmoConsumptionPlayer>().AmmoSaveChance * 100:#0.##}%"));
+
 		list.Add(new PlayerStatUI(Localize("HealthPotions"), player =>
 		{
 			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();

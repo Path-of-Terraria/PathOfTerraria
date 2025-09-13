@@ -56,6 +56,7 @@ StatUI: {
 	// AegisChargeChance: Aegis Charge Chance On Kill
 	// MiscHeader: Misc
 	MaxMinions: Serviteurs Maximum
+	// AmmoConsumptionChance: Chance to Not Consume Ammo
 	HealthPotions: Potions de Santé
 	ManaPotions: Potions de Mana
 

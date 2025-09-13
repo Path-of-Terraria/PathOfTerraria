@@ -19,6 +19,7 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier MovementSpeed = new();
 	public StatModifier ProjectileSpeed = new();
 	public StatModifier ProjectileCount = new(); // would be neat
+	public StatModifier ProjectileDamage = new();
 	public StatModifier Damage = new();
 	public StatModifier AttackSpeed = new();
 	public StatModifier ArmorPenetration = new();
@@ -93,6 +94,7 @@ public partial class EntityModifier : EntityModifierSegment
 		ProjectileModifierPlayer projPlayer = player.GetModPlayer<ProjectileModifierPlayer>();
 		projPlayer.ProjectileSpeedMultiplier = ProjectileSpeed;
 		projPlayer.ProjectileCountModifier = ProjectileCount;
+		projPlayer.ProjectileDamageMultiplier = ProjectileDamage;
 		
 		MinorStatsModPlayer msmp = player.GetModPlayer<MinorStatsModPlayer>();
 		msmp.MagicFind = MagicFind.ApplyTo(msmp.MagicFind);
