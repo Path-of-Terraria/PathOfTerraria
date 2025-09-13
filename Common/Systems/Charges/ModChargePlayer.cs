@@ -4,7 +4,7 @@ public class ModChargePlayer : ModPlayer
 {
 	// Charge stacks
 	public int Charges { get; private set; }
-	public const int MaxCharges = 3;
+	public int MaxCharges = 3;
 	protected virtual int BuffType => -1;
 	public bool HasAnyCharges => Charges > 0;
 
@@ -36,11 +36,6 @@ public class ModChargePlayer : ModPlayer
 				RemoveAllCharges();
 			}
 		}
-	}
-
-	public override void ResetEffects()
-	{
-		ChargeGainChance = 0;
 	}
 	
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

@@ -275,6 +275,51 @@ MasteryPassive: {
 }
 
 AddedChaosResistancePassive: {
-	// Name: AddedChaosResistancePassive
+	// Name: Chaos Ward
+	// Tooltip: +{0}% Chaos Resistance
+}
+
+AegisChargeChanceOnKillPassive: {
+	// Name: Aegis Charge Chance
+	// Tooltip: +{0}% chance to gain an Aegis Charge on Kill
+}
+
+AegisChargePercentMaxHealthPassive: {
+	// Name: Aegis Health Bonus
+	// Tooltip: +{0}% Max Health per Aegis Charge
+}
+
+AegisChargeMaxChargesPassive: {
+	// Name: Maximum Aegis Charges
+	// Tooltip: +{0} to Maximum Aegis Charges
+}
+
+FocusChargeChanceOnKillPassive: {
+	// Name: FocusChargeChanceOnKillPassive
+	// Tooltip: ""
+}
+
+FocusChargeDamageBonusPassive: {
+	// Name: FocusChargeDamageBonusPassive
+	// Tooltip: ""
+}
+
+FocusChargeMaxChargesPassive: {
+	// Name: FocusChargeMaxChargesPassive
+	// Tooltip: ""
+}
+
+HasteChargeChanceOnKillPassive: {
+	// Name: HasteChargeChanceOnKillPassive
+	// Tooltip: ""
+}
+
+HasteChargeProjectileSpeedPassive: {
+	// Name: HasteChargeProjectileSpeedPassive
+	// Tooltip: ""
+}
+
+HasteChargeMaxChargesPassive: {
+	// Name: HasteChargeMaxChargesPassive
 	// Tooltip: ""
 }
