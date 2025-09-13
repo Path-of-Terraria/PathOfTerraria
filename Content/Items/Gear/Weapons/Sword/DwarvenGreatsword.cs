@@ -20,6 +20,8 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		staticData.IsUnique = true;
 		staticData.Description = this.GetLocalization("Description");
 		staticData.AltUseDescription = this.GetLocalization("AltUseDescription");
+
+		// The drop rule for this item from WoF & its bag is in TinyHat's file
 	}
 
 	public override void SetDefaults()
@@ -33,7 +35,7 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.None;
 		Item.useTime = Item.useAnimation = 34;
-		Item.value = Item.buyPrice(0, 5, 0, 0);
+		Item.value = Item.buyPrice(0, 15, 0, 0);
 	}
 
 	string GenerateName.IItem.GenerateName(string defaultName)

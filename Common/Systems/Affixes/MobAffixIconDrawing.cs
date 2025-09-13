@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.MobSystem;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using System.Collections.Generic;
 using Terraria.GameInput;
 
@@ -14,7 +15,7 @@ internal class MobAffixIconDrawing : GlobalNPC
 	{
 		List<MobAffix> affixes = npc.GetGlobalNPC<ArpgNPC>().Affixes;
 
-		if (affixes.Count == 0)
+		if (affixes.Count == 0 || npc.GetGlobalNPC<FreezeNPC>().Frozen)
 		{
 			return;
 		}

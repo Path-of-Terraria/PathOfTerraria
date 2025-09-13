@@ -4,5 +4,6 @@ public enum ElementType
 	None,
 	Fire,
 	Cold,
-	Lightning
+	Lightning,
+	Chaos,
 }

@@ -25,11 +25,8 @@ internal static class OnDeathNPC
 
 					if (i == x - width || i == x + width || j == y - width || j == y + width)
 					{
-						if (!tile.HasTile)
-						{
-							tile.TileType = (ushort)(WorldGen.crimson ? 347u : 140u);
-							tile.HasTile = true;
-						}
+						tile.TileType = (ushort)(WorldGen.crimson ? 347u : 140u);
+						tile.HasTile = true;
 					}
 
 					tile.LiquidType = LiquidID.Water;

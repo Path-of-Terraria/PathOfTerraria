@@ -1,3 +1,4 @@
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -10,7 +11,7 @@ internal class HealOnKillingBurningEnemiesAffix : ItemAffix
 		{
 			base.OnHitByProjectile(npc, projectile, hit, damageDone);
 			
-			if (!npc.HasBuff(BuffID.OnFire) && !npc.HasBuff(BuffID.OnFire3) || npc.life > 0)
+			if (!npc.HasBuff(BuffID.OnFire) && !npc.HasBuff(BuffID.OnFire3) && !npc.HasBuff(ModContent.BuffType<IgnitedDebuff>()) || npc.life > 0)
 			{
 				return;
 			}

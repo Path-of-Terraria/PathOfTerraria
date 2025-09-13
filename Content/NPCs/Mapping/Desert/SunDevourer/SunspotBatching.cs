@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer;
 
 /// <summary>
-/// Handles batching <see cref="SunspotAura"/> draw calls to safe a bit of performance.
+/// Handles batching <see cref="SunspotAura"/> draw calls to save a bit of performance.
 /// </summary>
 internal class SunspotBatching : ModSystem
 {
@@ -23,7 +23,7 @@ internal class SunspotBatching : ModSystem
 	public static Queue<Sunspot> FullSunspots = new();
 	public static Queue<Sunspot> SparseSunspots = new();
 
-	private static Asset<Texture2D> RGBDisplacement;
+	public static Asset<Texture2D> RGBDisplacement;
 	private static Asset<Texture2D> RGDisplacement;
 	private static Asset<Effect> OffsetEffect;
 
