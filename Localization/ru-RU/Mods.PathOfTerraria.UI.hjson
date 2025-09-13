@@ -46,6 +46,8 @@ StatUI: {
 	// ChaosResistance: Chaos Resistance
 	// OffenseHeader: Offense
 	// CriticalChance: Critical Strike Chance
+	// ProjectileSpeed: Projectile Speed
+	// ProjectileCount: Projectiles
 	// AttributesHeader: Attributes
 	Strength: Сила
 	Dexterity: Ловкость

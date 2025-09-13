@@ -246,17 +246,17 @@ IncreasedManaRegenerationRatePassive: {
 
 IncreasedProjectileCountPassive: {
 	// Name: Increased Projectile Count
-	// Tooltip: "{0}% increased projectile count"
+	// Tooltip: +{0} increased projectile count
 }
 
 IncreasedProjectileSpeedPassive: {
 	// Name: Increased Projectile Speed
-	// Tooltip: "{0}% increased projectile speed"
+	// Tooltip: +{0}% increased projectile speed
 }
 
 IncreasedChannelingDamagePassive: {
 	// Name: Increased Damage While Channeling
-	// Tooltip: "{0}% increased damage while channeling"
+	// Tooltip: +{0}% increased damage while channeling
 }
 
 IncreasedDefenseWhileChanneling: {
