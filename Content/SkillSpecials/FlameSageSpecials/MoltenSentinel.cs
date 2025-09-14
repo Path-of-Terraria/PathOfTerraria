@@ -71,6 +71,11 @@ public class MoltenSentinel(SkillTree tree) : SkillSpecial(tree)
 			Projectile.localNPCHitCooldown = 30;
 		}
 
+		public override void SyncedSpawn()
+		{
+			Projectile.Size = new Vector2(Skill.GetTotalAreaOfEffect(200));
+		}
+
 		public override void AI()
 		{
 			if (Main.npc[Parent] is NPC parent && parent.active)
