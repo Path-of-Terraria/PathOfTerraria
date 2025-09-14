@@ -83,7 +83,7 @@ public class Flamethrower(SkillTree tree) : SkillSpecial(tree)
 						if (overwhelmingPressure > 0)
 						{
 							int weakening = player.GetPassiveStrength<FlameSageTree, Weakening>();
-							npc.GetGlobalNPC<ElementalNPC>().Container.FireResistance -= ((overwhelmingPressure * OverwhelmingPressure.ResistanceDecrease) + (weakening * Weakening.ResistanceDecrease));
+							npc.GetGlobalNPC<ElementalNPC>().Container[ElementType.Fire].Resistance -= ((overwhelmingPressure * OverwhelmingPressure.ResistanceDecrease) + (weakening * Weakening.ResistanceDecrease));
 						}
 					}
 				});

@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.Utilities;
+using PathOfTerraria.Content.Skills.Ranged;
 
 namespace PathOfTerraria.Content.SkillAugments;
 
@@ -17,6 +18,6 @@ internal class Extend : SkillAugment
 
 	public override bool CanBeApplied(Skill skill)
 	{
-		return skill.Duration > 0;
+		return skill.Duration > 0 || skill is RainOfArrows; //Make a special case for Rain of Arrows
 	}
 }

@@ -13,6 +13,6 @@ internal class FlameWardBuff : ModBuff
 	public override void Update(Player player, ref int buffIndex)
 	{
 		int buff = player.GetPassiveStrength<FlameSageTree, ImprovedWarding>();
-		player.GetModPlayer<ElementalPlayer>().Container.FireResistance += (FlameWard.ResistanceIncrease + (buff * ImprovedWarding.ResistanceIncrease));
+		player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].Resistance += (FlameWard.ResistanceIncrease + (buff * ImprovedWarding.ResistanceIncrease));
 	}
 }

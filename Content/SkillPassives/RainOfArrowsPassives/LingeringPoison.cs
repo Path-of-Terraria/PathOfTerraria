@@ -13,7 +13,7 @@ internal class LingeringPoison(SkillTree tree) : SkillPassive(tree)
 	{
 		private ref float Timer => ref Projectile.ai[0];
 
-		private float MaxTimeLeft => Main.player[Projectile.owner].GetPassiveStrength<RainOfArrowsTree, PowerfulSmog>() * 60 + 120;
+		private float MaxTimeLeft => Projectile.GetOwner().GetPassiveStrength<RainOfArrowsTree, PowerfulSmog>() * 60 + Skill.Stats.Duration.ApplyTo(120);
 
 		public override void SetDefaults()
 		{

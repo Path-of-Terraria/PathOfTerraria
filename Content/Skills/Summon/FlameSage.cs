@@ -1,9 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Content.SkillSpecials.FlameSageSpecials;
-using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
@@ -11,9 +9,16 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Summon;
 
-public class FlameSage : Skill
+public class FlameSage : SummonSkill
 {
 	public override int MaxLevel => 3;
+	public override int SummonNPCType => Tree.Specialization switch
+	{
+		Flamethrower => ModContent.NPCType<Flamethrower.FlamethrowerSentry>(),
+		MoltenSentinel => ModContent.NPCType<MoltenSentinel.MoltenSentry>(),
+		VolatileConstruct => ModContent.NPCType<VolatileConstruct.VolatileSentry>(),
+		_ => ModContent.NPCType<FlameSentry>()
+	};
 
 	public override void LevelTo(byte level)
 	{
@@ -22,48 +27,6 @@ public class FlameSage : Skill
 		ManaCost = 20 - Level * 5;
 		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.None;
-	}
-
-	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking = true)
-	{
-		if (!justChecking && !SentryNPC.FindRestingSpot(player, out _, new Vector2(0, -20)))
-		{
-			failReason = new(SkillFailReason.Other);
-			return false;
-		}
-
-		return base.CanUseSkill(player, ref failReason, justChecking);
-	}
-
-	public override void UseSkill(Player player)
-	{
-		base.UseSkill(player);
-
-		bool hasDuplicate = Tree.Augments.Any(x => x.Augment is Duplicate);
-		for (int i = 0; i < (hasDuplicate ? 2 : 1); i++)
-		{
-			Vector2 offset = new(0, -20);
-			if (hasDuplicate)
-			{
-				offset.X = (i == 0) ? -20 : 20;
-			}
-
-			if (SentryNPC.FindRestingSpot(player, out Vector2 worldCoords, offset))
-			{
-				SentryNPC.TryDestroyOldest(player);
-
-				int type = Tree.Specialization switch
-				{
-					Flamethrower => ModContent.NPCType<Flamethrower.FlamethrowerSentry>(),
-					MoltenSentinel => ModContent.NPCType<MoltenSentinel.MoltenSentry>(),
-					VolatileConstruct => ModContent.NPCType<VolatileConstruct.VolatileSentry>(),
-					_ => ModContent.NPCType<FlameSentry>()
-				};
-
-				NPC npc = SentryNPC.Spawn(type, player, worldCoords, TotalDuration);
-				npc.damage = GetTotalDamage(npc.damage);
-			}
-		}
 	}
 
 	public class FlameSentry : SentryNPC

@@ -14,7 +14,7 @@ internal class IntenseHeatBuff : ModBuff
 	{
 		int buff = player.GetPassiveStrength<FlameSageTree, ImprovedBurning>();
 
-		ref ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container.FireDamageModifier;
+		ref ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
 		damage = damage.AddModifiers((int)(damage.DamageBonus * IntenseHeat.DamageIncrease * (1 + (buff * ImprovedBurning.DamageIncrease))), null);
 	}
 }

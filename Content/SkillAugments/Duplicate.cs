@@ -2,7 +2,6 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.Utilities;
-using PathOfTerraria.Content.Skills.Summon;
 
 namespace PathOfTerraria.Content.SkillAugments;
 
@@ -18,6 +17,6 @@ internal class Duplicate : SkillAugment
 
 	public override bool CanBeApplied(Skill skill)
 	{
-		return skill is FlameSage;
+		return skill is SummonSkill;
 	}
 }

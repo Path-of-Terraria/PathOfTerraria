@@ -25,7 +25,7 @@ public class MoltenShield : Skill
 
 		// Level to the strength of all MoltenShellAffixes
 		LevelTo((byte)player.GetModPlayer<AffixPlayer>().StrengthOf<MoltenShellAffix>());
-		player.GetModPlayer<MoltenShieldBuff.MoltenShieldPlayer>().SetBuff(Level, Duration);
+		player.GetModPlayer<MoltenShieldBuff.MoltenShieldPlayer>().SetBuff(Level, TotalDuration);
 	}
 
 	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
