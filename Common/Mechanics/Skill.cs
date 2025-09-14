@@ -52,7 +52,7 @@ public readonly struct SkillFailure(SkillFailReason reason, string context = nul
 			return Language.GetText(path + "NeedsWeapon").WithFormatArgs(value);
 		}
 
-		var text = Language.GetText(path + (_context ?? Reason.ToString()));
+		LocalizedText text = Language.GetText(path + (_context ?? Reason.ToString()));
 		return (_formatArgs is { Length: > 0 }) ? text.WithFormatArgs(_formatArgs) : text;
 	}
 }

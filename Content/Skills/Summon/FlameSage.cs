@@ -1,8 +1,8 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Content.SkillSpecials.FlameSageSpecials;
-using System.Collections.Generic;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.GameContent;
@@ -20,7 +20,7 @@ public class FlameSage : Skill
 		Level = level;
 		Cooldown = MaxCooldown = 120;
 		ManaCost = 20 - Level * 5;
-		Duration = 0;
+		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.None;
 	}
 
@@ -39,38 +39,29 @@ public class FlameSage : Skill
 	{
 		base.UseSkill(player);
 
-		if (SentryNPC.FindRestingSpot(player, out Vector2 worldCoords, new Vector2(0, -20)))
+		bool hasDuplicate = Tree.Augments.Any(x => x.Augment is Duplicate);
+		for (int i = 0; i < (hasDuplicate ? 2 : 1); i++)
 		{
-			TryDestroyOldest(player);
-			
-			switch (Tree.Specialization)
+			Vector2 offset = new(0, -20);
+			if (hasDuplicate)
 			{
-				case Flamethrower:
-					SentryNPC.Spawn<Flamethrower.FlamethrowerSentry>(player, worldCoords);
-					break;
-
-				case MoltenSentinel:
-					SentryNPC.Spawn<MoltenSentinel.MoltenSentry>(player, worldCoords);
-					break;
-
-				case VolatileConstruct:
-					SentryNPC.Spawn<VolatileConstruct.VolatileSentry>(player, worldCoords);
-					break;
-
-				case null:
-					SentryNPC.Spawn<FlameSentry>(player, worldCoords);
-					break;
+				offset.X = (i == 0) ? -20 : 20;
 			}
-		}
 
-		static void TryDestroyOldest(Player owner)
-		{
-			SentryNPCPlayer mp = owner.GetModPlayer<SentryNPCPlayer>();
-			HashSet<SentryNPC> sentries = mp.GetSentries();
-
-			if (sentries.Count >= mp.SentrySlots && sentries.OrderBy(x => (float)x.TimeLeft / x.TimeLeftMax).FirstOrDefault() is SentryNPC item && item != default)
+			if (SentryNPC.FindRestingSpot(player, out Vector2 worldCoords, offset))
 			{
-				item.NPC.StrikeInstantKill();
+				SentryNPC.TryDestroyOldest(player);
+
+				int type = Tree.Specialization switch
+				{
+					Flamethrower => ModContent.NPCType<Flamethrower.FlamethrowerSentry>(),
+					MoltenSentinel => ModContent.NPCType<MoltenSentinel.MoltenSentry>(),
+					VolatileConstruct => ModContent.NPCType<VolatileConstruct.VolatileSentry>(),
+					_ => ModContent.NPCType<FlameSentry>()
+				};
+
+				NPC npc = SentryNPC.Spawn(type, player, worldCoords, TotalDuration);
+				npc.damage = GetTotalDamage(npc.damage);
 			}
 		}
 	}

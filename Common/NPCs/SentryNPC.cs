@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.NPCs;
@@ -19,11 +21,25 @@ public abstract class SentryNPC : ModNPC, ITargetable
 	/// <summary> The player that this sentry belongs to, indicated by <see cref="NPC.releaseOwner"/>. </summary>
 	public Player Owner => Main.player[NPC.releaseOwner];
 
-	/// <summary> Spawns the given sentry NPC at <paramref name="position"/> and assigns the owner accordingly. </summary>
-	public static void Spawn<T>(Player owner, Vector2 position) where T : SentryNPC
+	#region static helpers
+	/// <inheritdoc cref="Spawn(int, Player, Vector2)"/>
+	public static NPC Spawn<T>(Player owner, Vector2 position, int timeLeft = DefaultSentryDuration) where T : SentryNPC
 	{
-		int type = ModContent.NPCType<T>();
-		NPC.ReleaseNPC((int)position.X, (int)position.Y, type, 0, owner.whoAmI);
+		return Spawn(ModContent.NPCType<T>(), owner, position, timeLeft);
+	}
+
+	/// <summary> Spawns the given sentry NPC at <paramref name="position"/> and assigns the owner accordingly. </summary>
+	public static NPC Spawn(int type, Player owner, Vector2 position, int timeLeft = DefaultSentryDuration)
+	{
+		NPC npc = Main.npc[NPC.ReleaseNPC((int)position.X, (int)position.Y, type, 0, owner.whoAmI)];
+
+		if (npc.ModNPC is SentryNPC s)
+		{
+			s.InitializeTimeLeft(timeLeft);
+			npc.netUpdate = true;
+		}
+
+		return npc;
 	}
 
 	/// <summary> Finds a valid spawn position with custom checks. </summary>
@@ -47,6 +63,19 @@ public abstract class SentryNPC : ModNPC, ITargetable
 		return !Collision.SolidCollision(new(worldCoords.X - 8, worldCoords.Y - 8), 16, 16);
 	}
 
+	/// <summary> Destroys the oldest <see cref="SentryNPC"/> owned by <paramref name="owner"/> over capacity. </summary>
+	public static void TryDestroyOldest(Player owner)
+	{
+		SentryNPCPlayer mp = owner.GetModPlayer<SentryNPCPlayer>();
+		HashSet<SentryNPC> sentries = mp.GetSentries();
+
+		if (sentries.Count >= mp.SentrySlots && sentries.OrderBy(x => (float)x.TimeLeft / x.TimeLeftMax).FirstOrDefault() is SentryNPC item && item != default)
+		{
+			item.NPC.StrikeInstantKill();
+		}
+	}
+	#endregion
+
 	public override void SetStaticDefaults()
 	{
 		NPCID.Sets.UsesNewTargetting[Type] = true;
@@ -68,7 +97,7 @@ public abstract class SentryNPC : ModNPC, ITargetable
 	}
 
 	/// <summary><inheritdoc cref="ModNPC.PreAI"/><para/>
-	/// Additionally handles <see cref="TimeLeft"/> expiry logic. </summary>
+	/// Additionally handles spawn, immunity and <see cref="TimeLeft"/> expiry logic. </summary>
 	public override bool PreAI()
 	{
 		if (!_justSpawned)
@@ -88,6 +117,24 @@ public abstract class SentryNPC : ModNPC, ITargetable
 
 	/// <summary> Called on all sides when this NPC just spawns. </summary>
 	public virtual void OnSyncedSpawn() { }
+
+	/// <summary><inheritdoc cref="ModNPC.SendExtraAI(BinaryWriter)"/><para/>
+	/// Base implementation is used to send additional data. </summary>
+	public override void SendExtraAI(BinaryWriter writer)
+	{
+		writer.Write((ushort)TimeLeft);
+		writer.Write((ushort)TimeLeftMax);
+		writer.Write((ushort)NPC.damage);
+	}
+
+	/// <summary><inheritdoc cref="ModNPC.ReceiveExtraAI(BinaryReader)"/><para/>
+	/// Base implementation is used to receive additional data. </summary>
+	public override void ReceiveExtraAI(BinaryReader reader)
+	{
+		TimeLeft = reader.ReadUInt16();
+		TimeLeftMax = reader.ReadUInt16();
+		NPC.damage = reader.ReadUInt16();
+	}
 
 	public virtual Terraria.Utilities.NPCUtils.TargetSearchResults FindTarget()
 	{

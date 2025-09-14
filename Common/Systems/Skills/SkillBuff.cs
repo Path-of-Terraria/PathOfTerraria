@@ -10,4 +10,5 @@ public class SkillBuff
 	public StatModifier AreaOfEffect = StatModifier.Default;
 	public StatModifier CritChance = StatModifier.Default;
 	public StatModifier Cooldown = StatModifier.Default;
+	public StatModifier Duration = StatModifier.Default;
 }
