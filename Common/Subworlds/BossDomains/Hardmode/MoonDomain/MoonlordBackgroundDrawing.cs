@@ -91,19 +91,15 @@ internal class MoonlordBackgroundDrawing : ModSystem
 		if (SubworldSystem.Current is MoonLordDomain)
 		{
 			float opacity;
-			float y = Main.LocalPlayer.Center.Y / 16;   
-			
+			float y = Main.LocalPlayer.Center.Y / 16;
+			bool bossDead = MoonDomainSystem.FightTracker.Completed || MoonDomainSystem.FightTracker.AnnouncedStart;
+
 			if (y < MoonLordDomain.PlanetTop - 200)
 			{
-				DrawingSpecialStars = 1 - MoonDomainSystem.EffectStrength;
-				opacity = DrawingSpecialStars.Value;
-
-				if (MoonDomainSystem.EffectStrength > 0.99f)
-				{
-					return;
-				}
+				opacity = bossDead ? 1 : 0;
+				DrawingSpecialStars = 1;
 			}
-			else if (y < MoonLordDomain.PlanetTop)
+			else if (y < MoonLordDomain.PlanetTop && !bossDead)
 			{
 				opacity = MathHelper.Lerp(Utils.GetLerpValue(MoonLordDomain.PlanetTop - 200, MoonLordDomain.PlanetTop, y, true), 1, 1 - MoonDomainSystem.EffectStrength);
 				DrawingSpecialStars = opacity;

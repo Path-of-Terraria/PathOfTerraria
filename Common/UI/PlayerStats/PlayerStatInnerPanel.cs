@@ -130,9 +130,9 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		list.Add(new UIElement() { Height = StyleDimension.FromPixels(4) }); // Stops the name text from being cut off
 		list.Add(new PlayerStatUI(LocalizedText.Empty, player => player.name, 0.8f, true, true));
 		
-		list.Add(new PlayerStatUI(GetLocalization("CharacterHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(GetLocalization("Level"), player => player.GetModPlayer<ExpModPlayer>().Level.ToString()));
-		list.Add(new PlayerStatUI(GetLocalization("Experience"), player =>
+		list.Add(new PlayerStatUI(Localize("CharacterHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("Level"), player => player.GetModPlayer<ExpModPlayer>().Level.ToString()));
+		list.Add(new PlayerStatUI(Localize("Experience"), player =>
 		{
 			ExpModPlayer expPlayer = Main.LocalPlayer.GetModPlayer<ExpModPlayer>();
 			float expPercent = expPlayer.Exp / (float)expPlayer.NextLevel * 100;
@@ -140,58 +140,58 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		}));
 		
 		// Defense
-		list.Add(new PlayerStatUI(GetLocalization("DefenseHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(GetLocalization("Life"), player =>
+		list.Add(new PlayerStatUI(Localize("DefenseHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("Life"), player =>
 		{
 			float lifePercent = Main.LocalPlayer.statLife / Main.LocalPlayer.statLifeMax2 * 100;
 			return $"{Main.LocalPlayer.statLife}/{Main.LocalPlayer.statLifeMax2} ({lifePercent:#0.##}%)";
 		}));
-		list.Add(new PlayerStatUI(GetLocalization("LifeRegen"), player => $"{Main.LocalPlayer.lifeRegen}"));
-		list.Add(new PlayerStatUI(GetLocalization("Mana"), player =>
+		list.Add(new PlayerStatUI(Localize("LifeRegen"), player => $"{Main.LocalPlayer.lifeRegen}"));
+		list.Add(new PlayerStatUI(Localize("Mana"), player =>
 		{
 			float manaPercent = Main.LocalPlayer.statMana / Main.LocalPlayer.statManaMax * 100;
 			return $"{Main.LocalPlayer.statMana}/{Main.LocalPlayer.statManaMax2} ({manaPercent:#0.##}%)";
 		}));
-		list.Add(new PlayerStatUI(GetLocalization("ManaRegen"), player => $"{Main.LocalPlayer.manaRegen}"));
-		list.Add(new PlayerStatUI(GetLocalization("DamageReduction"), player => $"{player.endurance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("BlockCooldown"), player => $"{player.GetModPlayer<BlockPlayer>().BlockCooldown / 60:#0.##}s"));
-		list.Add(new PlayerStatUI(GetLocalization("FireResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container.FireResistance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("ColdResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container.ColdResistance * 100:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container.LightningResistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("ManaRegen"), player => $"{Main.LocalPlayer.manaRegen}"));
+		list.Add(new PlayerStatUI(Localize("DamageReduction"), player => $"{player.endurance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("BlockChance"), player => $"{player.GetModPlayer<BlockPlayer>().ActualBlockChance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("MaxBlock"), player => $"{player.GetModPlayer<BlockPlayer>().MaxBlockChance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("BlockCooldown"), player => $"{player.GetModPlayer<BlockPlayer>().BlockCooldown / 60:#0.##}s"));
+		list.Add(new PlayerStatUI(Localize("FireResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].Resistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("ColdResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].Resistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("LightningResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].Resistance * 100:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("ChaosResistance"), player => $"{player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].Resistance * 100:#0.##}%"));
 		// Offense  
-		list.Add(new PlayerStatUI(GetLocalization("OffenseHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(GetLocalization("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("OffenseHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
 		
 		// Attributes
-		list.Add(new PlayerStatUI(GetLocalization("AttributesHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(GetLocalization("Strength"), player => $"{player.GetModPlayer<AttributesPlayer>().Strength:#0.##}", hover: GetHelp("Strength")));
-		list.Add(new PlayerStatUI(GetLocalization("Dexterity"), player => $"{player.GetModPlayer<AttributesPlayer>().Dexterity:#0.##}", hover: GetHelp("Dexterity")));
-		list.Add(new PlayerStatUI(GetLocalization("Intelligence"), player => $"{player.GetModPlayer<AttributesPlayer>().Intelligence:#0.##}", hover: GetHelp("Intelligence")));
+		list.Add(new PlayerStatUI(Localize("AttributesHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("Strength"), player => $"{player.GetModPlayer<AttributesPlayer>().Strength:#0.##}", hover: GetHelp("Strength")));
+		list.Add(new PlayerStatUI(Localize("Dexterity"), player => $"{player.GetModPlayer<AttributesPlayer>().Dexterity:#0.##}", hover: GetHelp("Dexterity")));
+		list.Add(new PlayerStatUI(Localize("Intelligence"), player => $"{player.GetModPlayer<AttributesPlayer>().Intelligence:#0.##}", hover: GetHelp("Intelligence")));
 		
 		// Charges
-		list.Add(new PlayerStatUI(GetLocalization("ChargesHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(GetLocalization("HasteChargeChance"), player => $"{player.GetModPlayer<HasteChargePlayer>().ChargeGainChance:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("FocusChargeChance"), player => $"{player.GetModPlayer<FocusChargePlayer>().ChargeGainChance:#0.##}%"));
-		list.Add(new PlayerStatUI(GetLocalization("AegisChargeChance"), player => $"{player.GetModPlayer<AegisChargePlayer>().ChargeGainChance:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("ChargesHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("HasteChargeChance"), player => $"{player.GetModPlayer<HasteChargePlayer>().ChargeGainChance:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("FocusChargeChance"), player => $"{player.GetModPlayer<FocusChargePlayer>().ChargeGainChance:#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("AegisChargeChance"), player => $"{player.GetModPlayer<AegisChargePlayer>().ChargeGainChance:#0.##}%"));
 		
 		// Misc
-		list.Add(new PlayerStatUI(GetLocalization("MiscHeader"), player => "", isHeader: true));
-		list.Add(new PlayerStatUI(GetLocalization("MaxMinions"), player => $"{player.maxMinions.ToString()}"));
-		list.Add(new PlayerStatUI(GetLocalization("HealthPotions"), player =>
+		list.Add(new PlayerStatUI(Localize("MiscHeader"), player => "", isHeader: true));
+		list.Add(new PlayerStatUI(Localize("MaxMinions"), player => $"{player.maxMinions.ToString()}"));
+		list.Add(new PlayerStatUI(Localize("HealthPotions"), player =>
 		{
 			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 			return $"{potionPlayer.HealingLeft}/{potionPlayer.MaxHealing}";
 		}));
-		list.Add(new PlayerStatUI(GetLocalization("ManaPotions"), player =>
+		list.Add(new PlayerStatUI(Localize("ManaPotions"), player =>
 		{
 			PotionPlayer potionPlayer = Main.LocalPlayer.GetModPlayer<PotionPlayer>();
 			return $"{potionPlayer.ManaLeft}/{potionPlayer.MaxMana}";
 		}));
 
-
-		static LocalizedText GetLocalization(string type)
+		static LocalizedText Localize(string type)
 		{
 			return Language.GetText($"Mods.{PoTMod.ModName}.UI.StatUI." + type);
 		}

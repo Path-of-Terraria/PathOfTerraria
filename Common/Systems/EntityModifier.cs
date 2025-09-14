@@ -10,8 +10,6 @@ public class EntityModifierSegment
 
 public partial class EntityModifier : EntityModifierSegment
 {
-	private static readonly EntityModifier _default = new();
-
 	public StatModifier MaximumLife = new();
 	public StatModifier LifeRegen = new();
 	public StatModifier MaximumMana = new();
@@ -28,7 +26,7 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier CriticalChance = new();
 	public StatModifier CriticalDamage = new();
 	public StatModifier CriticalMultiplier = new();
-	public OnHitDeBuffer Buffer = new();
+	public OnHitDeBuffer Buffer = [];
 
 	// MinorStatsModPlayer:
 	public StatModifier MagicFind = new();

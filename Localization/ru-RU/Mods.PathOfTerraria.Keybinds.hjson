@@ -9,3 +9,4 @@ GearSwap.DisplayName: Обмен оружием
 QuestUIKey.DisplayName: Ключ квестового интерфейса
 DropTableKey.DisplayName: Клавиша сброса таблицы
 PassiveTreeUIKey.DisplayName: Ключ пользовательского интерфейса пассивного дерева
+// ToggleQuestDebugging.DisplayName: Debug: Toggle Quest Debugging

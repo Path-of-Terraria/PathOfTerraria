@@ -53,7 +53,6 @@ Katana: {
 Staff: {
 	DisplayName: Bâton
 	// Tooltip: ""
-	Staff: Bâton
 }
 
 Wand: {
@@ -1340,4 +1339,14 @@ AquamarineRing: {
 LapisLazuliRing: {
 	// DisplayName: Lapis Lazuli Ring
 	// Tooltip: ""
+}
+
+ObsidianAdversaryDebug: {
+	// DisplayName: Obsidian Adversary
+	// Tooltip: Places the debug version of the Obsidian Adversary for use in Wall of Flesh mini arenas
+}
+
+ObsidianAdversaryItem: {
+	// DisplayName: Obsidian Adversary
+	// Tooltip: "'The harrowing visage seems to stare back...'"
 }
