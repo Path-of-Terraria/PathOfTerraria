@@ -18,4 +18,9 @@ internal class Critical : SkillAugment
 		buff.CritChance *= CritChanceMult;
 		buff.ManaCost *= ManaMult;
 	}
+
+	public override bool CanBeApplied(Skill skill)
+	{
+		return skill is not SummonSkill;
+	}
 }

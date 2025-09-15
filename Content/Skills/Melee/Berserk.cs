@@ -48,7 +48,7 @@ public class Berserk : Skill
 	public override void UseSkill(Player player)
 	{
 		base.UseSkill(player);
-		player.AddBuff(ModContent.BuffType<RageBuff>(), Duration);
+		player.AddBuff(ModContent.BuffType<RageBuff>(), TotalDuration);
 	}
 
 	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)

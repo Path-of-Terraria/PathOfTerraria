@@ -119,3 +119,13 @@ PoisonedDebuff: {
 	// DisplayName: Poisoned Debuff
 	// Description: Mods.PathOfTerraria.Buffs.PoisonedDebuff.Description
 }
+
+FlameWardBuff: {
+	// DisplayName: Flame Ward
+	// Description: Increases fire resistance by {0}%
+}
+
+IntenseHeatBuff: {
+	// DisplayName: Intense Heat
+	// Description: Increases fire damage by {0}%
+}

@@ -126,7 +126,7 @@ public abstract class SkillTree : ILoadable
 
 		IList<string> augmentNames = tag.GetList<string>("augmentNames");
 		IList<bool> augmentUnlocked = tag.GetList<bool>("augmentUnlocks");
-		int count = Math.Min(augmentUnlocked.Count, DefaultAugmentCount);
+		int count = Math.Max(augmentUnlocked.Count, DefaultAugmentCount);
 
 		for (int c = 0; c < count; c++)
 		{

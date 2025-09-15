@@ -29,3 +29,18 @@ PiercingPrecision: {
 	Name: Piercing Precision
 	Description: Replace the flurry with a delayed barrage with increased armor piercing
 }
+
+Flamethrower: {
+	Name: Flamethrower
+	Description: Conjure a fiery sentry that deals continuous damage to enemies in a cone
+}
+
+MoltenSentinel: {
+	Name: Molten Sentinel
+	Description: Conjure a fiery sentry that deals continuous damage to enemies in a radius
+}
+
+VolatileConstruct: {
+	Name: Volatile Construct
+	Description: Conjure a fiery sentry that explodes after {0} seconds, dealing additional damage based on remaining life
+}
