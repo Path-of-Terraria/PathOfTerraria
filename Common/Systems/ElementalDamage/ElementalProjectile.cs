@@ -14,9 +14,7 @@ internal class ElementalProjectile : GlobalProjectile
 	{
 		if (source is EntitySource_Parent parent && parent.Entity is NPC npc && npc.TryGetGlobalNPC(out ElementalNPC elemNPC) && Main.netMode != NetmodeID.MultiplayerClient)
 		{
-			Container.FireDamageModifier = elemNPC.Container.FireDamageModifier;
-			Container.ColdDamageModifier = elemNPC.Container.ColdDamageModifier;
-			Container.LightningDamageModifier = elemNPC.Container.LightningDamageModifier;
+			Container = elemNPC.Container.Clone();
 			projectile.netUpdate = true;
 		}
 	}

@@ -1,11 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using PathOfTerraria.Common.Quests;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
+using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using Terraria.DataStructures;
@@ -38,28 +40,16 @@ internal class KingSlimeQuest : Quest
 					new GiveItem(1, ItemID.Ruby),
 				], true),
 			//Give the map device to the player once req mats are given
-			new ActionStep((_, _) => 
+			new ActionStep((player, _) => 
 			{
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<GarrickNPC>());
-				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<Content.Items.Placeable.MapDevice>());
-
-				if (Main.netMode == NetmodeID.MultiplayerClient)
-				{
-					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
-				}
+				QuestUtils.SpawnNPCQuestRewardItem(player, ModContent.NPCType<GarrickNPC>(), ModContent.ItemType<Content.Items.Placeable.MapDevice>());
 
 				return true;
 			}),
 			//Give the map as well
-			new ActionStep((_, _) => 
+			new ActionStep((player, _) => 
 			{
-				int npc = NPC.FindFirstNPC(ModContent.NPCType<GarrickNPC>());
-				int item = Item.NewItem(new EntitySource_Gift(Main.npc[npc]), Main.npc[npc].Center, ModContent.ItemType<KingSlimeMap>());
-
-				if (Main.netMode == NetmodeID.MultiplayerClient)
-				{
-					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
-				}
+				QuestUtils.SpawnNPCQuestRewardItem(player, ModContent.NPCType<GarrickNPC>(), ModContent.ItemType<KingSlimeMap>());
 
 				return true;
 			}),

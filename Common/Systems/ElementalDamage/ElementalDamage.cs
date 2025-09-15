@@ -1,6 +1,6 @@
-﻿using PathOfTerraria.Content.Buffs.ElementalBuffs;
+﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using System.IO;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
@@ -29,7 +29,7 @@ public readonly struct ElementalDamage
 	public float DamageConversion { get; init; }
 
 	/// <summary>
-	/// Whether the object has any non-zero damage-related values. If it doesn't, this struct is "default" and shouldn't be synced or used for further functionality.
+	/// Whether this object has any non-zero damage-related values. If it doesn't, this struct is "default" and shouldn't be synced or used for further functionality.
 	/// </summary>
 	public bool HasValues => DamageBonus > 0 || DamageConversion > 0;
 
@@ -100,7 +100,7 @@ public readonly struct ElementalDamage
 		{
 			ElementType.Fire => ModContent.BuffType<IgnitedDebuff>(),
 			ElementType.Cold => ModContent.BuffType<FreezeDebuff>(),
-			ElementType.Lightning => BuffID.Electrified,
+			ElementType.Lightning => ModContent.BuffType<ShockDebuff>(),
 			_ => 0
 		};
 	}
@@ -155,6 +155,7 @@ public readonly struct ElementalDamage
 		{
 			ElementType.Fire => info.Crit,
 			ElementType.Cold => entity is NPC { boss: false } && info.Crit,
+			ElementType.Chaos => false,
 			_ => defaultPercent,
 		};
 	}

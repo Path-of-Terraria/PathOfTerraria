@@ -70,6 +70,17 @@ public class QuestsUIState : CloseableSmartUi, IMutuallyExclusiveUI
 		}
 	}
 
+	public override void Refresh()
+	{
+		base.Refresh();
+
+		if (Visible)
+		{
+			Toggle();
+			Toggle();
+		}
+	}
+
 	public void Toggle()
 	{
 		ViewedQuest = null;

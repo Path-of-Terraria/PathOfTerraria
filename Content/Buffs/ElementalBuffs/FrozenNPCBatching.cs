@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil.Cil;
+﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using PathOfTerraria.Content.NPCs.Mapping.Desert.SunDevourer.Projectiles;
 using ReLogic.Content;
@@ -7,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using Terraria.GameContent;
-using Terraria.ID;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
 
@@ -33,6 +31,11 @@ internal class FrozenNPCBatching : GlobalNPC
 
 		Main.RunOnMainThread(() =>
 		{
+			if (Main.dedServ)
+			{
+				return;
+			}
+
 			const RenderTargetUsage UsageType = RenderTargetUsage.PreserveContents;
 			GraphicsDevice device = Main.instance.GraphicsDevice;
 			FrozenTarget = new RenderTarget2D(device, Main.displayWidth.Max(), Main.displayHeight.Max(), false, SurfaceFormat.Color, DepthFormat.None, 1, UsageType);
