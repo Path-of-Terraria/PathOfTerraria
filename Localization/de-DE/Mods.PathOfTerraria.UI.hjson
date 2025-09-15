@@ -46,6 +46,8 @@ StatUI: {
 	// ChaosResistance: Chaos Resistance
 	// OffenseHeader: Offense
 	// CriticalChance: Critical Strike Chance
+	// ProjectileSpeed: Projectile Speed
+	// ProjectileCount: Additional Projectiles
 	// AttributesHeader: Attributes
 	// Strength: Strength
 	// Dexterity: Dexterity
@@ -56,6 +58,7 @@ StatUI: {
 	// AegisChargeChance: Aegis Charge Chance On Kill
 	// MiscHeader: Misc
 	// MaxMinions: Maximum Minions
+	// AmmoConsumptionChance: Ammo Reservation
 	// HealthPotions: Health Potions
 	// ManaPotions: Mana Potions
 
