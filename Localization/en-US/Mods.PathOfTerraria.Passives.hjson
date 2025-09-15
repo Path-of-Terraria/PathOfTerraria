@@ -280,11 +280,11 @@ AddedChaosResistancePassive: {
 }
 
 ChanceToConsumeAmmoPassive: {
-	Name: ChanceToConsumeAmmoPassive
-	Tooltip: +{0}% Chance to Not Consume Ammo
+	Name: Ammo Reservation Chance
+	Tooltip: +{0}% chance to reserve ammo
 }
 
 IncreasedProjectileDamagePassive: {
-	Name: IncreasedProjectileDamagePassive
-	Tooltip: +{0}% Projectile Damage
+	Name: Increased Projectile Damage
+	Tooltip: +{0}% projectile damage
 }
