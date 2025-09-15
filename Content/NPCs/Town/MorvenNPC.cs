@@ -179,6 +179,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			return;
 		}
 
+		RavenStatueNearby(ref target, out bool statue);
+
 		// Determines path using a slightly adjusted position and hitbox size.
 		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
@@ -198,7 +200,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		}
 
-		if (canPath && NPC.DistanceSQ(target) > 160 * 160)
+		if (canPath && (statue || NPC.DistanceSQ(target) > 160 * 160))
 		{
 			int index = pathfinder.Path.IndexOf(pathfinder.Path.MinBy(x => x.Position.ToVector2().DistanceSQ(NPC.position / 16f)));
 			List<Pathfinder.FoundPoint> checkPoints = pathfinder.Path[^(Math.Min(pathfinder.Path.Count, 6))..];
@@ -249,6 +251,30 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		{
 			NPC.direction = NPC.spriteDirection = MathF.Sign(NPC.velocity.X);
 		}
+	}
+
+	private void RavenStatueNearby(ref Vector2 target, out bool statue)
+	{
+		const int Size = 40;
+
+		Point16 pos = NPC.Center.ToTileCoordinates16();
+
+		for (int i = pos.X - Size; i < pos.X + Size; ++i)
+		{
+			for (int j = pos.Y - Size; j < pos.Y + Size; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && tile.TileType == ModContent.TileType<RavenStatue>())
+				{
+					target = new Vector2(i, j) * 16;
+					statue = true;
+					return;
+				}
+			}
+		}
+
+		statue = false;
 	}
 
 	private void TeleportEffects()
@@ -368,14 +394,9 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		{
 			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		}
-		else
+		else if (Quest.GetLocalPlayerInstance<EoWQuest>().Active && SubworldSystem.Current is not RavencrestSubworld)
 		{
-			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
-
-			if (quest.Active && SubworldSystem.Current is not RavencrestSubworld)
-			{
-				button2 = "Follow";
-			}
+			button2 = "Follow";
 		}
 	}
 
@@ -389,14 +410,21 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		{
 			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
 
-			if (Main.netMode == NetmodeID.SinglePlayer)
+			if (quest.CanBeStarted)
 			{
-				followPlayer = 0;
-				doPathing = true;
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
 			}
 			else
 			{
-				ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+				if (Main.netMode == NetmodeID.SinglePlayer)
+				{
+					followPlayer = 0;
+					doPathing = true;
+				}
+				else
+				{
+					ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+				}
 			}
 		}
 	}
