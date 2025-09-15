@@ -15,11 +15,9 @@ public class AegisChargePlayer : ModChargePlayer
 		ChargeGainChance = 0;
 	}
 	
-	public override void ResetEffects()
+	protected override void InternalResetEffects()
 	{
 		AegisPercentHealthBonus = 0f;
-		ChargeGainChance = 0;
-		MaxCharges = 3;
 	}
     
 	protected override void ApplyChargeModifiers(EntityModifier modifier)

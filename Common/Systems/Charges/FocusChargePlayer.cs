@@ -14,18 +14,16 @@ public class FocusChargePlayer : ModChargePlayer
 		ChargeGainChance = 0;
 	}
 	
-	public override void ResetEffects()
+	protected override void InternalResetEffects()
 	{
 		FocusChargeDamageBonus = 0f;
-		ChargeGainChance = 0;
-		MaxCharges = 3;
 	}
     
 	protected override void ApplyChargeModifiers(EntityModifier modifier)
 	{
 		// Apply flat critical strike chance and critical strike multiplier
 		modifier.CriticalChance.Flat += FocusChargeBonus * Charges * 100; // Back to * 100
-		modifier.CriticalDamage.Base += modifier.CriticalChance.Base * FocusChargeBonus;
+		modifier.CriticalDamage.Base += FocusChargeBonus * Charges;
 		
 		// Apply percentage damage bonus per charge
 		if (FocusChargeDamageBonus > 0f)
