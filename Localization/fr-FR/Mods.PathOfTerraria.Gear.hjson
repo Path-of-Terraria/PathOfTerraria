@@ -356,3 +356,23 @@ Ranged.Name: À distance
 Melee.Name: Mélée
 Summon.Name: Invocation
 Accessory.Name: Accessoire
+
+Ring: {
+	// Name: Ring
+
+	Prefixes: {
+		// 0: Cursed
+		// 1: Hollow
+		// 2: Shattered
+		// 3: Sturdy
+		// 4: Reinforced
+	}
+
+	Suffixes: {
+		// 0: Forgotten
+		// 1: of Memories
+		// 2: Nevermore
+		// 3: of Hatred
+		// 4: of Fury
+	}
+}

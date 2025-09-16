@@ -356,3 +356,23 @@ Ranged.Name: Ranged
 Melee.Name: Melee
 Summon.Name: Summon
 Accessory.Name: Accessory
+
+Ring: {
+	Name: Ring
+
+	Prefixes: {
+		0: Cursed
+		1: Hollow
+		2: Shattered
+		3: Sturdy
+		4: Reinforced
+	}
+
+	Suffixes: {
+		0: of Embers
+		1: of Memories
+		2: of Nevermore
+		3: of Hatred
+		4: of Fury
+	}
+}

@@ -17,6 +17,7 @@ internal class SkeletronPortal : ModProjectile
 			if (Main.mouseRight && Main.mouseRightRelease)
 			{
 				SubworldSystem.Enter<SkeletronDomain>();
+				return true;
 			}
 
 			Tooltip.Create(new TooltipDescription
@@ -24,6 +25,7 @@ internal class SkeletronPortal : ModProjectile
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
 			});
+			return false;
 		});
 	}
 

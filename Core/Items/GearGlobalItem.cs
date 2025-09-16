@@ -235,18 +235,13 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		}
 	}
 
-	void GeneratePrefix.IGlobal.ModifyPrefix(Item item, ref string prefix)
+	void GeneratePrefix.IGlobal.ModifyPrefix(Item item, ref sbyte prefix)
 	{
-		prefix = Language.SelectRandom((key, _) => BasicAffixSearchFilter(item, key, true)).Value;
+		prefix = (sbyte)Main.rand.Next(5);
 	}
 
-	void GenerateSuffix.IGlobal.ModifySuffix(Item item, ref string suffix)
+	void GenerateSuffix.IGlobal.ModifySuffix(Item item, ref sbyte suffix)
 	{
-		suffix = Language.SelectRandom((key, _) => BasicAffixSearchFilter(item, key, false)).Value;
-	}
-
-	private static bool BasicAffixSearchFilter(Item item, string key, bool isPrefix)
-	{
-		return key.StartsWith("Mods.PathOfTerraria.Gear." + GearLocalizationCategory.Invoke(item) + (isPrefix ? ".Prefixes" : ".Suffixes"));
+		suffix = (sbyte)Main.rand.Next(5);
 	}
 }

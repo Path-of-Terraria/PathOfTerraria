@@ -17,6 +17,7 @@ internal class Teleportal : ModProjectile
 			if (Main.mouseRight && Main.mouseRightRelease)
 			{
 				player.Teleport((proj.ModProjectile as Teleportal).TeleportLocation);
+				return true;
 			}
 
 			Tooltip.Create(new TooltipDescription
@@ -24,6 +25,8 @@ internal class Teleportal : ModProjectile
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
 			});
+
+			return false;
 		});
 	}
 

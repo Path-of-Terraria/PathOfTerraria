@@ -24,6 +24,8 @@ partial class PoTGlobalItem : GlobalItem
 		tag["ItemLevel"] = data.RealLevel;
 		tag["corrupt"] = data.Corrupted;
 		tag["cloned"] = data.Cloned;
+		tag["namePrefix"] = (short)data.NameAffix.Prefix;
+		tag["nameSuffix"] = (short)data.NameAffix.Suffix;
 
 		List<TagCompound> affixTags = [];
 		foreach (ItemAffix affix in data.Affixes)
@@ -50,6 +52,8 @@ partial class PoTGlobalItem : GlobalItem
 		data.RealLevel = tag.GetInt("ItemLevel");
 		data.Corrupted = tag.GetBool("corrupt");
 		data.Cloned = tag.GetBool("cloned");
+
+		data.NameAffix = new((sbyte)tag.GetShort("namePrefix"), (sbyte)tag.GetShort("nameSuffix"));
 
 		data.Affixes.Clear();
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
@@ -81,6 +85,8 @@ partial class PoTGlobalItem : GlobalItem
 		// Probably should save the name as
 		// `GenericPrefix-ID (Item.Name can probably be omitted) GenericSuffix-ID`.
 		writer.Write(data.SpecialName);
+		writer.Write(data.NameAffix.Prefix);
+		writer.Write(data.NameAffix.Suffix);
 		writer.Write((byte)data.RealLevel);
 
 		writer.Write((byte)data.Affixes.Count);
@@ -103,6 +109,7 @@ partial class PoTGlobalItem : GlobalItem
 		data.Cloned = reader.ReadBoolean();
 		data.SpecialName = reader.ReadString();
 		data.RealLevel = reader.ReadByte();
+		data.NameAffix = new(reader.ReadSByte(), reader.ReadSByte());
 
 		data.Affixes.Clear();
 		int affixes = reader.ReadByte();

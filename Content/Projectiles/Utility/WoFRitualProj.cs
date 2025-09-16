@@ -74,10 +74,13 @@ internal class WoFRitualProj : ModProjectile
 
 			SoundEngine.PlaySound(SoundID.Item14 with { PitchRange = (-0.8f, 0.2f), Volume = 0.7f }, pos);
 
-			int type = ModContent.ProjectileType<ExplosionHitbox>();
-			IEntitySource source = Projectile.GetSource_FromThis();
+			if (Main.myPlayer == Projectile.owner)
+			{
+				int type = ModContent.ProjectileType<ExplosionHitbox>();
+				IEntitySource source = Projectile.GetSource_FromThis();
 
-			Projectile.NewProjectile(source, Projectile.Center, Vector2.Zero, type, 20, 6f, Projectile.owner, 20 * size, 20 * size);
+				Projectile.NewProjectile(source, Projectile.Center, Vector2.Zero, type, 20, 6f, Projectile.owner, 20 * size, 20 * size);
+			}
 
 			explosionCap -= 0.5f;
 			ExplosionTimer = 0;
@@ -101,16 +104,18 @@ internal class WoFRitualProj : ModProjectile
 			PunchCameraModifier modifier = new(Projectile.Center, rotation, 9, 10f, 100, 6000, "SkeletronRitual");
 			Main.instance.CameraModifiers.Add(modifier);
 
-			IEntitySource src = Projectile.GetSource_Death();
-			int type = ModContent.ProjectileType<WoFPortal>();
-			Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -1), type, 0, 0, Main.myPlayer);
-
 			SoundEngine.PlaySound(SoundID.Item14 with { Pitch = -0.2f, Volume = 1f }, Projectile.Center);
 			Digging.CircleOpening(Projectile.Center / 16f, 8);
 
-			type = ModContent.ProjectileType<ExplosionHitbox>();
+			if (Main.myPlayer == Projectile.owner)
+			{
+				IEntitySource src = Projectile.GetSource_Death();
+				int type = ModContent.ProjectileType<WoFPortal>();
+				Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -1), type, 0, 0, Main.myPlayer);
 
-			Projectile.NewProjectile(src, Projectile.Center, Vector2.Zero, type, 30, 6f, Projectile.owner, 18 * 8, 18 * 8);
+				type = ModContent.ProjectileType<ExplosionHitbox>();
+				Projectile.NewProjectile(src, Projectile.Center, Vector2.Zero, type, 30, 6f, Projectile.owner, 18 * 8, 18 * 8);
+			}
 		}
 	}
 	public override bool PreDraw(ref Color lightColor)

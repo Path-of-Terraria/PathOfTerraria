@@ -70,7 +70,7 @@ public static class PoTItemHelper
 
 		RollAffixes(item);
 		PostRoll.Invoke(item);
-		data.SpecialName = GenerateName.Invoke(item);
+		data.NameAffix = GenerateNameAffixes.Invoke(item);
 	}
 
 	private static void RollAffixes(Item item)

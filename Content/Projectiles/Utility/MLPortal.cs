@@ -27,6 +27,8 @@ internal class MLPortal : ModProjectile, ISaveProjectile
 				{
 					proj.Kill();
 				}
+
+				return true;
 			}
 
 			Tooltip.Create(new TooltipDescription
@@ -34,6 +36,7 @@ internal class MLPortal : ModProjectile, ISaveProjectile
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
 			});
+			return false;
 		});
 	}
 

@@ -16,6 +16,7 @@ internal class ExitPortal : ModProjectile
 			if (Main.mouseRight && Main.mouseRightRelease)
 			{
 				SubworldSystem.Exit();
+				return true;
 			}
 
 			Tooltip.Create(new TooltipDescription
@@ -23,6 +24,7 @@ internal class ExitPortal : ModProjectile
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
 			});
+			return false;
 		});
 	}
 

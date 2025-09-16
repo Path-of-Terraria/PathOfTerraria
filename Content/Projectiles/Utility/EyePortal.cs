@@ -31,6 +31,8 @@ internal class EyePortal : ModProjectile, ISaveProjectile
 				{
 					proj.Kill();
 				}
+
+				return true;
 			}
 
 			Tooltip.Create(new TooltipDescription
@@ -38,6 +40,7 @@ internal class EyePortal : ModProjectile, ISaveProjectile
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
 			});
+			return false;
 		});
 	}
 

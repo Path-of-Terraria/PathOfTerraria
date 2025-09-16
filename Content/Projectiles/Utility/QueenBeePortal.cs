@@ -33,6 +33,8 @@ internal class QueenBeePortal : ModProjectile
 				{
 					proj.Kill();
 				}
+
+				return true;
 			}
 
 			Tooltip.Create(new TooltipDescription
@@ -40,6 +42,8 @@ internal class QueenBeePortal : ModProjectile
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
 			});
+
+			return false;
 		});
 	}
 

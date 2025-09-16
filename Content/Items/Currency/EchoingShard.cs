@@ -38,6 +38,7 @@ public class EchoingShard : CurrencyShard
 		clonedData.ImplicitCount = data.ImplicitCount;
 		clonedData.RealLevel = data.RealLevel;
 		clonedData.Affixes = [..data.Affixes];
+		clonedData.NameAffix = data.NameAffix;
 		clonedData.Cloned = true;
 
 		var source = new Terraria.DataStructures.EntitySource_Misc("EchoingShard");

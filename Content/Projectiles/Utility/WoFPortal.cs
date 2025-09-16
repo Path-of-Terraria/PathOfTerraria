@@ -12,7 +12,6 @@ namespace PathOfTerraria.Content.Projectiles.Utility;
 
 internal class WoFPortal : ModProjectile, ISaveProjectile
 {
-	private ref float Timer => ref Projectile.ai[0];
 	private ref float Uses => ref Projectile.ai[1];
 	private ref float MaxUses => ref Projectile.ai[2];
 
@@ -20,7 +19,7 @@ internal class WoFPortal : ModProjectile, ISaveProjectile
 	{
 		ClickableProjectilePlayer.RegisterProjectile(Type, static (proj, _) =>
 		{
-			if (Main.mouseRight && Main.mouseRightRelease)
+			if (Main.mouseRight && Main.mouseRightRelease && SubworldSystem.Current is null)
 			{
 				SubworldSystem.Enter<WallOfFleshDomain>();
 
@@ -31,6 +30,8 @@ internal class WoFPortal : ModProjectile, ISaveProjectile
 				{
 					proj.Kill();
 				}
+
+				return true;
 			}
 
 			Tooltip.Create(new TooltipDescription
@@ -38,6 +39,7 @@ internal class WoFPortal : ModProjectile, ISaveProjectile
 				Identifier = "Portal",
 				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
 			});
+			return false;
 		});
 	}
 

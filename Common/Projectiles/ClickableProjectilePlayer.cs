@@ -8,14 +8,14 @@ namespace PathOfTerraria.Common.Projectiles;
 /// </summary>
 internal class ClickableProjectilePlayer : ModPlayer
 {
-	private readonly static Dictionary<int, Action<Projectile, Player>> OnHoverProjectile = [];
+	private readonly static Dictionary<int, Func<Projectile, Player, bool>> OnHoverProjectile = [];
 
 	/// <summary>
 	/// Registers a projectile ID and a corresponding hover action to the internal dictionary. This should be run in <see cref="ModType.SetStaticDefaults"/>.
 	/// </summary>
 	/// <param name="projectile">Projectile ID to use.</param>
 	/// <param name="onClick">Behaviour to run for the projectile. Takes in the current projectile and the client.</param>
-	public static void RegisterProjectile(int projectile, Action<Projectile, Player> onClick)
+	public static void RegisterProjectile(int projectile, Func<Projectile, Player, bool> onClick)
 	{
 		if (Main.dedServ)
 		{
@@ -31,10 +31,13 @@ internal class ClickableProjectilePlayer : ModPlayer
 		{
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
-				if (OnHoverProjectile.TryGetValue(projectile.type, out Action<Projectile, Player> value) && projectile.Hitbox.Contains(Main.MouseWorld.ToPoint())
+				if (OnHoverProjectile.TryGetValue(projectile.type, out Func<Projectile, Player, bool> value) && projectile.Hitbox.Contains(Main.MouseWorld.ToPoint())
 					&& Player.IsInTileInteractionRange(Player.tileTargetX, Player.tileTargetY, Terraria.DataStructures.TileReachCheckSettings.Simple))
 				{
-					value.Invoke(projectile, Player);
+					if (value.Invoke(projectile, Player))
+					{
+						return;
+					}
 				}
 			}
 		}
