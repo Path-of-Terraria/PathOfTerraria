@@ -102,6 +102,7 @@ OobodopSummon: {
 
 ExplosionHitbox.DisplayName: Взрыв
 ExplosionHitboxFriendly.DisplayName: Взрыв
+// Explosion.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
 
 DemonSummon: {
 	DisplayName: Демон
@@ -165,3 +166,7 @@ PrecisionSpawnerProjectile.DisplayName: Спавнер
 WhipBaseProjectile.DisplayName: Базовый снаряд плети
 // AntlerShardProj.DisplayName: Antler Shard Proj
 FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
+// FlamethrowerSentryFlame.DisplayName: Flamethrower Sentry Flame
+// MoltenSentryAura.DisplayName: Molten Sentry Aura
+// FlamethrowerFlame.DisplayName: Flamethrower Flame
+// Flame.DisplayName: Flame

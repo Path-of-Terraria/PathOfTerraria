@@ -1,10 +1,10 @@
 namespace PathOfTerraria.Common.Systems.Charges;
 
-public class ModChargePlayer : ModPlayer
+public abstract class ModChargePlayer : ModPlayer
 {
 	// Charge stacks
 	public int Charges { get; private set; }
-	public const int MaxCharges = 3;
+	public int MaxCharges = 3;
 	protected virtual int BuffType => -1;
 	public bool HasAnyCharges => Charges > 0;
 
@@ -17,6 +17,20 @@ public class ModChargePlayer : ModPlayer
 
 	protected Color ChargeColor;
 	protected string ChargeName;
+
+	public sealed override void ResetEffects()
+	{
+		ChargeGainChance = 0;
+		MaxCharges = 3;
+		
+		// Allow child classes to reset their own values
+		InternalResetEffects();
+	}
+
+	protected virtual void InternalResetEffects()
+	{
+		// Child classes can override this
+	}
 
 	public override void PostUpdateMiscEffects()
 	{
@@ -36,11 +50,6 @@ public class ModChargePlayer : ModPlayer
 				RemoveAllCharges();
 			}
 		}
-	}
-
-	public override void ResetEffects()
-	{
-		ChargeGainChance = 0;
 	}
 	
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)

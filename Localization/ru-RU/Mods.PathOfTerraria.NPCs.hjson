@@ -837,3 +837,6 @@ Prismatism: {
 }
 
 // FlameSentry.DisplayName: Flame Sentry
+// FlamethrowerSentry.DisplayName: Flamethrower Sentry
+// MoltenSentry.DisplayName: Molten Sentry
+// VolatileSentry.DisplayName: Volatile Sentry
