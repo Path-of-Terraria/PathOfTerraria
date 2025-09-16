@@ -35,7 +35,7 @@ public class FetidCarapace : Skill
 		for (int i = 0; i < max; ++i)
 		{
 			var proj = Projectile.NewProjectileDirect(new EntitySource_UseSkill(player, this), player.Center, Vector2.Zero, type, damage, 8f, player.whoAmI, 0, max, i);
-			proj.timeLeft = Duration;
+			proj.timeLeft = TotalDuration;
 			proj.netUpdate = true;
 		}
 	}

@@ -21,3 +21,13 @@ Critical: {
 	Name: Критический удар
 	Tooltip: Увеличивает шанс критического удара на {0}% за счет увеличения расхода маны на {1}%
 }
+
+Duplicate: {
+	// Name: Duplicate
+	// Tooltip: Allows 2 summons simultaneously at the cost of {0}% reduced damage
+}
+
+Extend: {
+	// Name: Extend
+	// Tooltip: Increases duration by {0}%
+}

@@ -11,7 +11,8 @@ public abstract partial class Skill
 	public int TotalCooldown => (int)Stats.Cooldown.ApplyTo(MaxCooldown);
 	/// <summary> The final mana cost of this skill affected by modifications. </summary>
 	public int TotalManaCost => (int)Stats.ManaCost.ApplyTo(ManaCost);
-
+	/// <summary> The final duration of this skill affected by modifications. </summary>
+	public int TotalDuration => (int)Stats.Duration.ApplyTo(Duration);
 	/// <summary> Shorthand for applying to <see cref="SkillBuff.Damage"/>. </summary>
 	public int GetTotalDamage(float apply)
 	{
@@ -50,12 +51,7 @@ public abstract partial class Skill
 
 		foreach (SkillAugment a in tree.Augments.Select(x => x.Augment))
 		{
-			if (a is null)
-			{
-				continue;
-			}
-
-			a.AugmentEffects(ref stats);
+			a?.AugmentEffects(ref stats);
 		}
 
 		return Stats = stats;

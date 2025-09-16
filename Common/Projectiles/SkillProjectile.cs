@@ -5,7 +5,7 @@ namespace PathOfTerraria.Common.Projectiles;
 
 /// <summary> Helper for projectiles bound to a particular player skill. See <see cref="Skill"/>. </summary>
 /// <typeparam name="T"> The skill this projectile is associated with. </typeparam>
-internal abstract class SkillProjectile<T> : ModProjectile where T : Skill
+public abstract class SkillProjectile<T> : ModProjectile where T : Skill
 {
 	public Skill Skill
 	{

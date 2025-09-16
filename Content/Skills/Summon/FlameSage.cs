@@ -1,8 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
-using System.Collections.Generic;
-using System.Linq;
+using PathOfTerraria.Content.SkillSpecials.FlameSageSpecials;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.GameContent.Drawing;
@@ -10,56 +9,28 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Summon;
 
-public class FlameSage : Skill
+public class FlameSage : SummonSkill
 {
 	public override int MaxLevel => 3;
+	public override int SummonNPCType => Tree.Specialization switch
+	{
+		Flamethrower => ModContent.NPCType<Flamethrower.FlamethrowerSentry>(),
+		MoltenSentinel => ModContent.NPCType<MoltenSentinel.MoltenSentry>(),
+		VolatileConstruct => ModContent.NPCType<VolatileConstruct.VolatileSentry>(),
+		_ => ModContent.NPCType<FlameSentry>()
+	};
 
 	public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 120;
 		ManaCost = 20 - Level * 5;
-		Duration = 0;
+		Duration = SentryNPC.DefaultSentryDuration;
 		WeaponType = ItemType.None;
 	}
 
-	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking = true)
+	public class FlameSentry : SentryNPC
 	{
-		if (!justChecking && !SentryNPC.FindRestingSpot(player, out _, new Vector2(0, -20)))
-		{
-			failReason = new(SkillFailReason.Other);
-			return false;
-		}
-
-		return base.CanUseSkill(player, ref failReason, justChecking);
-	}
-
-	public override void UseSkill(Player player)
-	{
-		base.UseSkill(player);
-
-		if (SentryNPC.FindRestingSpot(player, out Vector2 worldCoords, new Vector2(0, -20)))
-		{
-			TryDestroyOldest(player);
-			SentryNPC.Spawn<FlameSentry>(player, worldCoords);
-		}
-
-		static void TryDestroyOldest(Player owner)
-		{
-			SentryNPCPlayer mp = owner.GetModPlayer<SentryNPCPlayer>();
-			HashSet<SentryNPC> sentries = mp.GetSentries();
-
-			if (sentries.Count >= mp.SentrySlots && sentries.OrderBy(x => (float)x.TimeLeft / x.TimeLeftMax).FirstOrDefault() is SentryNPC item && item != default)
-			{
-				item.NPC.StrikeInstantKill();
-			}
-		}
-	}
-
-	private class FlameSentry : SentryNPC
-	{
-		public const int CooldownMax = 60;
-
 		public ref float Cooldown => ref NPC.ai[0];
 		public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.DD2LightningAuraT1;
 
@@ -82,6 +53,7 @@ public class FlameSage : Skill
 
 		public override void AI()
 		{
+			const int cooldownMax = 60;
 			const int range = 300;
 
 			if ((Cooldown = Math.Max(Cooldown - 1, 0)) == 0)
@@ -94,7 +66,7 @@ public class FlameSage : Skill
 					int damage = (int)Owner.GetDamage(DamageClass.Summon).ApplyTo(NPC.damage);
 					Projectile.NewProjectile(NPC.GetSource_FromAI(), NPC.Center, NPC.DirectionTo(target.Center) * 10, ModContent.ProjectileType<FlameSentryFireball>(), damage, 3, Owner.whoAmI);
 
-					Cooldown = CooldownMax;
+					Cooldown = cooldownMax;
 				}
 			}
 
@@ -129,7 +101,7 @@ public class FlameSage : Skill
 		}
 	}
 
-	private class FlameSentryFireball : ModProjectile
+	public class FlameSentryFireball : ModProjectile
 	{
 		public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.DD2FlameBurstTowerT1Shot;
 

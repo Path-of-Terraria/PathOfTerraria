@@ -130,3 +130,78 @@ Ghostfire: {
 	Name: Feu Fantôme
 	Tooltip: Les projectiles qui touchent un ennemi ont une faible chance de se dupliquer.
 }
+
+IntenseHeat: {
+	// Name: Intense Heat
+	// Tooltip: All allies in the area are granted {0}% Increased Fire Damage
+}
+
+FlameWard: {
+	// Name: Flame Ward
+	// Tooltip: All allies in the area are granted {0}% Increased Fire Resistance
+}
+
+LivingFurnace: {
+	// Name: Living Furnace
+	// Tooltip: Sentinel is granted +10 aggro and has 25% increased health
+}
+
+HeatCompression: {
+	// Name: Heat Compression
+	// Tooltip: Reduces the flame's effective radius by {0}% and increases damage by {1}%
+}
+
+CombustiveAura: {
+	// Name: Combustive Aura
+	// Tooltip: Nearby enemies take additional damage over time
+}
+
+MeltingPoint: {
+	// Name: Melting Point
+	// Tooltip: Enemies take {0}% increased damage over time after burning for more than {1} seconds
+}
+
+SlowBurn: {
+	// Name: Slow Burn
+	// Tooltip: Sentinel rapidly loses life and expires after {0} seconds, dealing continuous damage in a radius
+}
+
+ImprovedWarding: {
+	// Name: Improved Warding
+	// Tooltip: +{0}% increased fire resistance per level
+}
+
+ImprovedBurning: {
+	// Name: Improved Burning
+	// Tooltip: +{0}% increased fire damage per level
+}
+
+Vitality: {
+	// Name: Vitality
+	// Tooltip: +{0}% increased sentry life per level
+}
+
+EnduringFlame: {
+	// Name: Enduring Flame
+	// Tooltip: +{0}% increased damage per second enemy is in flame
+}
+
+OverwhelmingPressure: {
+	// Name: Overwhelming Pressure
+	// Tooltip: Enemies in the {$Mods.PathOfTerraria.SkillPassives.CombustiveAura.Name} range have -{0}% fire resistance
+}
+
+Weakening: {
+	// Name: Weakening
+	// Tooltip: -{0}% fire resistance per level
+}
+
+BlastForce: {
+	// Name: Blast Force
+	// Tooltip: +{0}% increased explosion range per level
+}
+
+Accelerant: {
+	// Name: Accelerant
+	// Tooltip: +{0}% increased sentinel life loss per second and +{0}% increased damage
+}

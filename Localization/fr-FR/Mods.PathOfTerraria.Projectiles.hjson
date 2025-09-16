@@ -110,7 +110,8 @@ OobodopSummon: {
 }
 
 // ExplosionHitbox.DisplayName: Explosion
-// ExplosionHitboxFriendly.DisplayName: Explosion
+// ExplosionHitboxFriendly.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
+// Explosion.DisplayName: "{$Mods.PathOfTerraria.Projectiles.ExplosionHitbox.Name}"
 
 DemonSummon: {
 	// DisplayName: Demon
@@ -178,3 +179,7 @@ BubbleshroomBubble.DisplayName: Champignon à bulles
 // WhipBaseProjectile.DisplayName: Whip Base Projectile
 // AntlerShardProj.DisplayName: Antler Shard Proj
 FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
+// FlamethrowerSentryFlame.DisplayName: Flamethrower Sentry Flame
+// MoltenSentryAura.DisplayName: Molten Sentry Aura
+// FlamethrowerFlame.DisplayName: Flamethrower Flame
+// Flame.DisplayName: Flame
