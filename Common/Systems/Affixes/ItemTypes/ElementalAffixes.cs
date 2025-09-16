@@ -74,3 +74,59 @@ internal class ChaosConversionDamage : ItemAffix
 		damage = damage.AddModifiers(null, Value / 100f);
 	}
 }
+
+internal class FireFlatDamage : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
+		damage = damage.AddModifiers((int)Value, null);
+	}
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	{
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+	}
+}
+
+internal class ColdFlatDamage : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].DamageModifier;
+		damage = damage.AddModifiers((int)Value, null);
+	}
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	{
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+	}
+}
+
+internal class LightningFlatDamage : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].DamageModifier;
+		damage = damage.AddModifiers((int)Value, null);
+	}
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	{
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+	}
+}
+
+internal class ChaosFlatDamage : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].DamageModifier;
+		damage = damage.AddModifiers((int)Value, null);
+	}
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	{
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+	}
+}

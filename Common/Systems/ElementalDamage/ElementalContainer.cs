@@ -18,14 +18,63 @@ public class ElementInstance(ElementType type, bool isGeneric)
 	public LocalizedText ElementDisplayName => Language.GetOrRegister("Mods.PathOfTerraria.Misc.Element." + Type + ".Name");
 
 	/// <summary>
-	/// How much of damage is being converted by this instance, taking in <see cref="Resistance"/>.
+	/// <inheritdoc cref="GetTotalConversion(float)"/>
 	/// </summary>
-	public float TotalConversion => DamageModifier.DamageConversion * (1f - Resistance);
+	/// <param name="container">The container to get the resistance of which corresponds to the current <see cref="ElementInstance"/>'s <see cref="Type"/>.</param>
+	/// <returns><inheritdoc cref="GetTotalConversion(float)"/></returns>
+	public float GetTotalConversion(ElementalContainer container)
+	{
+		return GetTotalConversion(container[Type].Resistance);
+	}
 
 	/// <summary>
-	/// How much damage is flatly added to the hit, taking in <see cref="Resistance"/>.
+	/// <inheritdoc cref="GetTotalConversion(float)"/>
 	/// </summary>
-	public float TotalFlatDamage => DamageModifier.DamageBonus * (1f - Resistance);
+	/// <param name="instance">The element to get the resistance of.</param>
+	/// <returns><inheritdoc cref="GetTotalConversion(float)"/></returns>
+	public float GetTotalConversion(ElementInstance instance)
+	{
+		return GetTotalConversion(instance.Resistance);
+	}
+
+	/// <summary>
+	/// How much of damage is being converted by this instance, taking into account the victim's resistance.
+	/// </summary>
+	/// <param name="resistance">% of resistance of this element the victim has.</param>
+	/// <returns>Final conversion %, accounting for resistance.</returns>
+	public float GetTotalConversion(float resistance)
+	{
+		return DamageModifier.DamageConversion * (1f - resistance);
+	}
+
+	/// <summary>
+	/// <inheritdoc cref="GetFlatDamage(float)"/>
+	/// </summary>
+	/// <param name="container">The container to get the flat damage of which corresponds to the current <see cref="ElementInstance"/>'s <see cref="Type"/>.</param>
+	/// <returns><inheritdoc cref="GetFlatDamage(float)"/></returns>
+	public float GetFlatDamage(ElementalContainer container)
+	{
+		return GetFlatDamage(container[Type].Resistance);
+	}
+
+	/// <summary>
+	/// <inheritdoc cref="GetFlatDamage(float)"/>
+	/// </summary>
+	/// <param name="instance">The element to get the flat damage of.</param>
+	/// <returns><inheritdoc cref="GetFlatDamage(float)"/></returns>
+	public float GetFlatDamage(ElementInstance instance)
+	{
+		return GetFlatDamage(instance.Resistance);
+	}
+
+	/// <summary>
+	/// How much damage is flatly added to the hit, taking in the victim's resistance.
+	/// </summary>
+	/// <returns>The total flat damage done, accounting for resistance.</returns>
+	public float GetFlatDamage(float resistance)
+	{
+		return DamageModifier.DamageBonus * (1f - resistance);
+	}
 
 	public float Resistance
 	{

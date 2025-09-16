@@ -18,7 +18,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
-			ElementModifyDamage(elemProj.Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
+			ElementModifyDamage(elemProj.Container, Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
 		}
 	}
 
@@ -26,21 +26,21 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementModifyDamage(elemNPC.Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
+			ElementModifyDamage(elemNPC.Container, Container, ref modifiers.IncomingDamageMultiplier, ref modifiers.SourceDamage);
 		}
 	}
 
-	private static void ElementModifyDamage(ElementalContainer container, ref MultipliableFloat preDefenseMultiplier, ref StatModifier sourceDamage)
+	private static void ElementModifyDamage(ElementalContainer container, ElementalContainer other, ref MultipliableFloat preDefenseMultiplier, ref StatModifier sourceDamage)
 	{
 		// Apply multiplier to original damage BEFORE DEFENSE, by each element conversion percent (accounting for resistance) 
-		float totalMultiplier = container[ElementType.Fire].TotalConversion + container[ElementType.Cold].TotalConversion + container[ElementType.Lightning].TotalConversion 
-			+ container[ElementType.Chaos].TotalConversion + (1f - container.TotalConversion);
+		float totalMultiplier = container[ElementType.Fire].GetTotalConversion(other) + container[ElementType.Cold].GetTotalConversion(other) 
+			+ container[ElementType.Lightning].GetTotalConversion(other) + container[ElementType.Chaos].GetTotalConversion(other) + (1f - container.TotalConversion);
 		preDefenseMultiplier *= totalMultiplier;
 
 		// Apply flat extra damage (accounting for resistance)
 		foreach (ElementInstance element in container)
 		{
-			sourceDamage.Flat += element.TotalFlatDamage;
+			sourceDamage.Flat += element.GetFlatDamage(other);
 		}
 
 		if (DebugMessages && (container.Any(x => x.DamageModifier.HasValues)))
@@ -61,7 +61,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
 		{
-			ElementOnHit(Player, elemProj.Container, hurtInfo.SourceDamage, hurtInfo.Damage, null);
+			ElementOnHit(Player, elemProj.Container, Container, hurtInfo.SourceDamage, hurtInfo.Damage, null);
 		}
 	}
 
@@ -69,7 +69,7 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (npc.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(Player, elemNPC.Container, hurtInfo.SourceDamage, hurtInfo.Damage, null);
+			ElementOnHit(Player, elemNPC.Container, Container, hurtInfo.SourceDamage, hurtInfo.Damage, null);
 		}
 	}
 
@@ -77,23 +77,23 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(target, Container, hit.SourceDamage, hit.Damage, hit);
+			ElementOnHit(target, Container, Container, hit.SourceDamage, hit.Damage, hit);
 		}
 	}
 
-	private static void ElementOnHit(Entity target, ElementalContainer container, float sourceDamage, int finalDamage, NPC.HitInfo? optionalHitInfo)
+	private static void ElementOnHit(Entity target, ElementalContainer container, ElementalContainer other, float sourceDamage, int finalDamage, NPC.HitInfo? optionalHitInfo)
 	{
 		float baseFraction = 1f - container.TotalConversion;
-		float total = container.Sum(x => x.TotalConversion) + baseFraction;
+		float total = container.Sum(x => x.GetTotalConversion(other)) + baseFraction;
 
-		float originalDamage = sourceDamage - container.Sum(x => x.TotalFlatDamage);
+		float originalDamage = sourceDamage - container.Sum(x => x.GetFlatDamage(other));
 		float baseOriginal = originalDamage * (baseFraction / total);
-		float totalOriginal = container.Sum(x => originalDamage * (x.TotalConversion / total) + x.TotalFlatDamage) + baseOriginal;
+		float totalOriginal = container.Sum(x => originalDamage * (x.GetTotalConversion(other) / total) + x.GetFlatDamage(other)) + baseOriginal;
 
 		// Elemental damage done, rounded down
 		foreach (ElementInstance element in container)
 		{
-			float original = originalDamage * (element.TotalConversion / total) + element.TotalFlatDamage;
+			float original = originalDamage * (element.GetTotalConversion(other) / total) + element.GetFlatDamage(other);
 			int damage = (int)(finalDamage * (original / totalOriginal));
 
 			if (DebugMessages && damage > 0)

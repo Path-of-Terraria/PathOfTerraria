@@ -287,21 +287,16 @@ public sealed partial class ItemTooltips : GlobalItem
 
 			foreach (ElementInstance instance in player.GetModPlayer<ElementalPlayer>().Container)
 			{
-				bool hasFlat = instance.TotalFlatDamage > 0;
+				int flat = (int)Math.Truncate(instance.GetFlatDamage(0));
+				string elementName = instance.ElementDisplayName.Value.ToLower().Trim() + " " + Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage");
 
-				if (instance.TotalConversion > 0)
+				float elementDamage = finalDamage * instance.GetTotalConversion(0);
+				minDamage = (elementDamage + flat) * 0.85f;
+				maxDamage = (elementDamage + flat) * 1.15f;
+
+				if (minDamage > 0)
 				{
-					finalDamage *= instance.TotalConversion;
-					minDamage = finalDamage * 0.85f;
-					maxDamage = finalDamage * 1.15f;
-					string elementName = instance.ElementDisplayName.Value.ToLower().Trim() + " " + Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage");
-					highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}]");
-
-					if (hasFlat)
-					{
-						highlightNumbers += $"+ {instance.TotalFlatDamage}";
-					}
-
+					highlightNumbers = HighlightNumbers($"[{Math.Truncate(minDamage)}-{Math.Truncate(maxDamage)}]");
 					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type, $"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
 					AddNewTooltipLine(item, tooltips, newDamageLine);
 				}
