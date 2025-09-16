@@ -180,73 +180,63 @@ IncreasedJumpHeight: {
 }
 
 PercentIncreasedMaximumManaPassive: {
-	// Name: Deep in Thought
+	// Name: Increased Maximum Mana
 	// Tooltip: +{0}% Increased Maximum Mana
 }
 
 IncreasedFireDamagePassive: {
-	// Name: Burning Fury
+	// Name: Increased Fire Damage
 	// Tooltip: +{0}% Increased Fire Damage
 }
 
 IncreasedLightningDamagePassive: {
-	// Name: Voltaic Surge
+	// Name: Increased Lightning Damage
 	// Tooltip: +{0}% Increased Lightning Damage
 }
 
 IncreasedColdDamagePassive: {
-	// Name: Chilling Precision
+	// Name: Increased Cold Damage
 	// Tooltip: +{0}% Increased Cold Damage
 }
 
-IncreasedWhipDamagePassive: {
-	// Name: IncreasedWhipDamagePassive
-	// Tooltip: +{0}% Increased Whip Damage
-}
-
-IncreasedWhipSpeedPassive: {
-	// Name: IncreasedWhipSpeedPassive
-	// Tooltip: +{0}% Increased Whip Speed
-}
-
 IncreasedMagicAndSummonDamagePassive: {
-	// Name: Arcane Synergy
+	// Name: Increased Magic and Summon Damage
 	// Tooltip: +{0}% Increased Magic and Summon Damage
 }
 
 AddedFireResistancePassive: {
-	// Name: Fire Ward
+	// Name: Added Fire Resistance
 	// Tooltip: +{0}% Fire Resistance
 }
 
 AddedColdResistancePassive: {
-	// Name: Frost Ward
+	// Name: Added Cold Resistance
 	// Tooltip: +{0}% Cold Resistance
 }
 
 AddedLightningResistancePassive: {
-	// Name: Storm Ward
+	// Name: Added Lightning Resistance
 	// Tooltip: +{0}% Lightning Resistance
 }
 
 AddedAllResistancePassive: {
-	// Name: Elemental Ward
+	// Name: Added All Resistances
 	// Tooltip: +{0}% All Resistances
 }
 
 IncreasedAttackSpeedPassive: {
-	// Name: Swift Strikes
+	// Name: Increased Attack Speed
 	// Tooltip: +{0}% Global Attack Speed
 }
 
 IncreasedManaRegenerationRatePassive: {
-	// Name: IncreasedManaRegenerationRatePassive
+	// Name: Increased Mana Regeneration Rate
 	// Tooltip: +{0}% Mana Regeneration Rate
 }
 
 IncreasedProjectileCountPassive: {
-	// Name: Increased Projectile Count
-	// Tooltip: +{0} increased projectile count
+	// Name: Added Projectile Count
+	// Tooltip: +{0} projectiles fired
 }
 
 IncreasedProjectileSpeedPassive: {
@@ -275,8 +265,53 @@ MasteryPassive: {
 }
 
 AddedChaosResistancePassive: {
-	// Name: AddedChaosResistancePassive
-	// Tooltip: ""
+	// Name: Added Chaos Resistance
+	// Tooltip: +{0}% Chaos Resistance
+}
+
+AegisChargeChanceOnKillPassive: {
+	// Name: Added Aegis Charge Chance
+	// Tooltip: +{0}% chance to gain an Aegis Charge on Kill
+}
+
+AegisChargePercentMaxHealthPassive: {
+	// Name: Increased Health per Aegis Charge
+	// Tooltip: +{0}% Max Health per Aegis Charge
+}
+
+AegisChargeMaxChargesPassive: {
+	// Name: Added Maximum Aegis Charges
+	// Tooltip: +{0} to Maximum Aegis Charges
+}
+
+FocusChargeChanceOnKillPassive: {
+	// Name: Added Focus Charge Chance
+	// Tooltip: +{0}% chance to gain a Focus Charge on kill
+}
+
+FocusChargeDamageBonusPassive: {
+	// Name: Increased Damage per Focus Charge
+	// Tooltip: +{0}% damage per Focus Charge
+}
+
+FocusChargeMaxChargesPassive: {
+	// Name: Added Maximum Focus Charges
+	// Tooltip: +{0} maximum Focus Charges
+}
+
+HasteChargeChanceOnKillPassive: {
+	// Name: Added Haste Charge Chance
+	// Tooltip: +{0}% chance to gain a Haste Charge on kill
+}
+
+HasteChargeProjectileSpeedPassive: {
+	// Name: Increased Projectile Speed per Haste Charge
+	// Tooltip: +{0}% projectile speed per Haste Charge
+}
+
+HasteChargeMaxChargesPassive: {
+	// Name: Added Maximum Haste Charges
+	// Tooltip: +{0} maximum Haste Charges
 }
 
 ChanceToConsumeAmmoPassive: {

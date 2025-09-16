@@ -56,6 +56,9 @@ StatUI: {
 	// HasteChargeChance: Haste Charge Chance On Kill
 	// FocusChargeChance: Focus Charge Chance On Kill
 	// AegisChargeChance: Aegis Charge Chance On Kill
+	// MaxHasteCharges: Maximum Haste Charges
+	// MaxFocusCharges: Maximum Focus Charges
+	// MaxAegisCharges: Maximum Aegis Charges
 	// MiscHeader: Misc
 	MaxMinions: Maks. przywołanych stworzeń
 	// AmmoConsumptionChance: Ammo Reservation
