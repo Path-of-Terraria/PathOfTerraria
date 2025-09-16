@@ -241,12 +241,12 @@ IncreasedProjectileCountPassive: {
 
 IncreasedProjectileSpeedPassive: {
 	Name: Increased Projectile Speed
-	Tooltip: "{0}% increased projectile speed"
+	Tooltip: +{0}% increased projectile speed
 }
 
 IncreasedChannelingDamagePassive: {
 	Name: Increased Damage While Channeling
-	Tooltip: "{0}% increased damage while channeling"
+	Tooltip: +{0}% increased damage while channeling
 }
 
 IncreasedDefenseWhileChanneling: {
@@ -322,4 +322,14 @@ IncreasedWhipDamagePassive: {
 IncreasedWhipSpeedPassive: {
 	Name: IncreasedWhipSpeedPassive
 	Tooltip: ""
+}
+
+ChanceToConsumeAmmoPassive: {
+	Name: Ammo Reservation Chance
+	Tooltip: +{0}% chance to reserve ammo
+}
+
+IncreasedProjectileDamagePassive: {
+	Name: Increased Projectile Damage
+	Tooltip: +{0}% projectile damage
 }

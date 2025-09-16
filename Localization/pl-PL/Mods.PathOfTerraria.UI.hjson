@@ -46,7 +46,8 @@ StatUI: {
 	// ChaosResistance: Chaos Resistance
 	// OffenseHeader: Offense
 	// CriticalChance: Critical Strike Chance
-	// ProjectileSpeed: Projectile Speed Bonus
+	// ProjectileSpeed: Projectile Speed
+	// ProjectileCount: Additional Projectiles
 	// AttributesHeader: Attributes
 	Strength: Siła
 	Dexterity: Zręczność
@@ -60,6 +61,7 @@ StatUI: {
 	// MaxAegisCharges: Maximum Aegis Charges
 	// MiscHeader: Misc
 	MaxMinions: Maks. przywołanych stworzeń
+	// AmmoConsumptionChance: Ammo Reservation
 	HealthPotions: Mikstura Zdrowia
 	ManaPotions: MIkstura Many
 
