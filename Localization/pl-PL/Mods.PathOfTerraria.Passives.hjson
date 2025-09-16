@@ -314,16 +314,6 @@ HasteChargeMaxChargesPassive: {
 	// Tooltip: +{0} maximum Haste Charges
 }
 
-IncreasedWhipDamagePassive: {
-	// Name: IncreasedWhipDamagePassive
-	// Tooltip: ""
-}
-
-IncreasedWhipSpeedPassive: {
-	// Name: IncreasedWhipSpeedPassive
-	// Tooltip: ""
-}
-
 ChanceToConsumeAmmoPassive: {
 	// Name: Ammo Reservation Chance
 	// Tooltip: +{0}% chance to reserve ammo
