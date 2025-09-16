@@ -323,3 +323,13 @@ IncreasedProjectileDamagePassive: {
 	Name: Increased Projectile Damage
 	Tooltip: +{0}% projectile damage
 }
+
+IncreasedWhipDamagePassive: {
+	Name: IncreasedWhipDamagePassive
+	Tooltip: ""
+}
+
+IncreasedWhipSpeedPassive: {
+	Name: IncreasedWhipSpeedPassive
+	Tooltip: ""
+}

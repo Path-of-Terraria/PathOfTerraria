@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
@@ -13,6 +14,8 @@ public class ElementInstance(ElementType type, bool isGeneric)
 	/// Determines if this element is "generic", i.e. it's included in "All elemental" affixes or effects.
 	/// </summary>
 	public readonly bool IsGeneric = isGeneric;
+
+	public LocalizedText ElementDisplayName => Language.GetOrRegister("Mods.PathOfTerraria.Misc.Element." + Type + ".Name");
 
 	/// <summary>
 	/// How much of damage is being converted by this instance, taking in <see cref="Resistance"/>.
@@ -118,6 +121,7 @@ public class ElementalContainer : IEnumerable<ElementInstance>
 		void AddNewElement(ElementType type, bool generic = true)
 		{
 			Instances.Add(type, new ElementInstance(type, generic));
+			_ = Instances[type].ElementDisplayName; // Autoregister the element name
 		}
 	}
 

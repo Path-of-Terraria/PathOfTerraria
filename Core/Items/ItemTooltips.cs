@@ -16,6 +16,7 @@ using Terraria.Localization;
 using Terraria.UI;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -119,7 +120,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		}
 
 		if (line.Name.Contains("Affix") || line.Name.Contains("Socket") || line.Name.StartsWith("Stat")
-			|| line.Name is "Damage" or "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost")
+			|| line.Name is "Defense" or "AttacksPerSecond" or "CriticalStrikeChance" or "ManaCost" || line.Name.StartsWith("Damage"))
 		{
 			line.BaseScale = new Vector2(0.95f);
 			yOffset = -4;
@@ -283,6 +284,28 @@ public sealed partial class ItemTooltips : GlobalItem
 			string highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})");
 			var damageLine = new TooltipLine(Mod, "Damage", $"{ColoredDot(Colors.StatsAccent)} {highlightNumbers}");
 			AddNewTooltipLine(item, tooltips, damageLine);
+
+			foreach (ElementInstance instance in player.GetModPlayer<ElementalPlayer>().Container)
+			{
+				bool hasFlat = instance.TotalFlatDamage > 0;
+
+				if (instance.TotalConversion > 0)
+				{
+					finalDamage *= instance.TotalConversion;
+					minDamage = finalDamage * 0.85f;
+					maxDamage = finalDamage * 1.15f;
+					string elementName = instance.ElementDisplayName.Value.ToLower().Trim() + " " + Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage");
+					highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}]");
+
+					if (hasFlat)
+					{
+						highlightNumbers += $"+ {instance.TotalFlatDamage}";
+					}
+
+					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type, $"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
+					AddNewTooltipLine(item, tooltips, newDamageLine);
+				}
+			}
 		}
 		
 		if (item.useTime > 0 && item.damage > 0) 
