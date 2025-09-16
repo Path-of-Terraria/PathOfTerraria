@@ -28,11 +28,6 @@ internal class BurningRedBoots : Leggings
 		];
 	}
 
-	//string GenerateNameAffixes.IItem.GenerateName(string defaultName)
-	//{
-	//	return Language.GetTextValue("Mods.PathOfTerraria.Items.BurningRedBoots.DisplayName");
-	//}
-
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
 		TooltipLine nameTip = tooltips.First(x => x.Name == "ItemName");

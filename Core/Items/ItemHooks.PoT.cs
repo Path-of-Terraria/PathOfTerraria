@@ -211,7 +211,7 @@ public sealed class GenerateImplicits : ILoadable
 	}
 }
 
-public sealed class GenerateName
+public static class GenerateName
 {
 	public static string Invoke(Item item)
 	{

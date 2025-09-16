@@ -34,7 +34,6 @@ public class EchoingShard : CurrencyShard
 		PoTInstanceItemData clonedData = clonedItem.GetInstanceData();
 		clonedData.Rarity = data.Rarity;
 		clonedData.Influence = data.Influence;
-		clonedData.SpecialName = data.SpecialName;
 		clonedData.ImplicitCount = data.ImplicitCount;
 		clonedData.RealLevel = data.RealLevel;
 		clonedData.Affixes = [..data.Affixes];

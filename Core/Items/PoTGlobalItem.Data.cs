@@ -30,7 +30,6 @@ public sealed class PoTInstanceItemData : GlobalItem
 		clone.ItemType = ItemType;
 		clone.Rarity = Rarity;
 		clone.Influence = Influence;
-		clone.SpecialName = SpecialName;
 		clone.ImplicitCount = ImplicitCount;
 		clone.RealLevel = RealLevel;
 		clone.Affixes = Affixes;
@@ -57,12 +56,7 @@ public sealed class PoTInstanceItemData : GlobalItem
 	public Influence Influence { get; set; }
 
 	/// <summary>
-	///		The formatted, post-rolled name containing formatting for rarities.
-	/// </summary>
-	public string SpecialName { get; set; } = string.Empty;
-
-	/// <summary>
-	///		The localization ID for the prefix. Defaults to -1.
+	///		The localization IDs for the prefix/suffix. Defaults to -1, -1.
 	/// </summary>
 	public NameAffixes NameAffix { get; set; } = new();
 

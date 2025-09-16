@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
 using Terraria.Localization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -237,11 +238,13 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 
 	void GeneratePrefix.IGlobal.ModifyPrefix(Item item, ref sbyte prefix)
 	{
-		prefix = (sbyte)Main.rand.Next(5);
+		PoTInstanceItemData data = item.GetInstanceData();
+		prefix = (sbyte)(data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare ? -1 : Main.rand.Next(5));
 	}
 
 	void GenerateSuffix.IGlobal.ModifySuffix(Item item, ref sbyte suffix)
 	{
-		suffix = (sbyte)Main.rand.Next(5);
+		PoTInstanceItemData data = item.GetInstanceData();
+		suffix = (sbyte)(data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare ? -1 : Main.rand.Next(5));
 	}
 }
