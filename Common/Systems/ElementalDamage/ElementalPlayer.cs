@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Terraria;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
@@ -57,6 +58,11 @@ public class ElementalPlayer : ModPlayer
 		}
 	}
 
+	public float GetConversionMultiplier(ElementType type, Item item, ElementalContainer other)
+	{
+		return MathF.Min(Container[ElementType.Fire].GetTotalConversion(other), ElementalWeaponSets.GetElementStrength(item.type, type));
+	}
+
 	public override void OnHitByProjectile(Projectile proj, Player.HurtInfo hurtInfo)
 	{
 		if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj))
@@ -73,27 +79,36 @@ public class ElementalPlayer : ModPlayer
 		}
 	}
 
-	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+	public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(target, Container, Container, hit.SourceDamage, hit.Damage, hit);
+			ElementOnHit(target, Container, elemNPC.Container, hit.SourceDamage, hit.Damage, hit, item);
 		}
 	}
 
-	private static void ElementOnHit(Entity target, ElementalContainer container, ElementalContainer other, float sourceDamage, int finalDamage, NPC.HitInfo? optionalHitInfo)
+	public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
+		{
+			ElementOnHit(target, Container, elemNPC.Container, hit.SourceDamage, hit.Damage, hit);
+		}
+	}
+
+	private static void ElementOnHit(Entity target, ElementalContainer container, ElementalContainer other, float sourceDamage, int finalDamage, NPC.HitInfo? optionalHitInfo, 
+		Item item = null)
 	{
 		float baseFraction = 1f - container.TotalConversion;
-		float total = container.Sum(x => x.GetTotalConversion(other)) + baseFraction;
+		float total = container.Sum(GetTotalConversion) + baseFraction;
 
 		float originalDamage = sourceDamage - container.Sum(x => x.GetFlatDamage(other));
 		float baseOriginal = originalDamage * (baseFraction / total);
-		float totalOriginal = container.Sum(x => originalDamage * (x.GetTotalConversion(other) / total) + x.GetFlatDamage(other)) + baseOriginal;
+		float totalOriginal = container.Sum(x => originalDamage * (GetTotalConversion(x) / total) + x.GetFlatDamage(other)) + baseOriginal;
 
 		// Elemental damage done, rounded down
 		foreach (ElementInstance element in container)
 		{
-			float original = originalDamage * (element.GetTotalConversion(other) / total) + element.GetFlatDamage(other);
+			float original = originalDamage * (GetTotalConversion(element) / total) + element.GetFlatDamage(other);
 			int damage = (int)(finalDamage * (original / totalOriginal));
 
 			if (DebugMessages && damage > 0)
@@ -106,6 +121,13 @@ public class ElementalPlayer : ModPlayer
 			{
 				TryAddElementBuff(target, element.DamageModifier, damage, optionalHitInfo.Value);
 			}
+		}
+
+		float GetTotalConversion(ElementInstance instance)
+		{
+			return item is null ? 
+				instance.GetTotalConversion(other) :
+				MathF.Min(instance.GetTotalConversion(other) + ElementalWeaponSets.GetElementStrength(item.type, instance.Type), 1);
 		}
 	}
 
@@ -124,6 +146,7 @@ public class ElementalPlayer : ModPlayer
 		};
 
 		float chance = ElementalDamage.GetDebuffChance((float)elementalDamageDone / lifeMax);
+		Main.NewText(chance);
 
 		if (elementalDamageDone > 0 && damage.CanDebuff(target, hitInfo, chance < Main.rand.NextFloat()))
 		{

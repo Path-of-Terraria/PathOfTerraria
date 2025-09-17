@@ -17,6 +17,7 @@ using Terraria.UI;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -290,10 +291,10 @@ public sealed partial class ItemTooltips : GlobalItem
 				int flat = (int)Math.Truncate(instance.GetFlatDamage(0));
 				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
 
-				float elementDamage = finalDamage * instance.GetTotalConversion(0);
+				float elementDamage = finalDamage * MathF.Min(instance.GetTotalConversion(0) + ElementalWeaponSets.GetElementStrength(item.type, instance.Type), 1);
 				minDamage = (elementDamage + flat) * 0.85f;
 				maxDamage = (elementDamage + flat) * 1.15f;
-
+				
 				if (minDamage > 0)
 				{
 					highlightNumbers = HighlightNumbers($"[{Math.Truncate(minDamage)}-{Math.Truncate(maxDamage)}]");
