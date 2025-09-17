@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.ElementalDamage;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.Json;
 using Terraria.ID;
@@ -17,7 +19,7 @@ internal class VanillaItemDataExporter : ModSystem
 	{
 		Directory.CreateDirectory("VanillaItemData");
 		var options = new JsonSerializerOptions() { IncludeFields = true, WriteIndented = true };
-
+		
 		for (int i = 0; i < ItemID.Count; ++i)
 		{
 			Item item = new(i);
@@ -26,6 +28,11 @@ internal class VanillaItemDataExporter : ModSystem
 			if (item.accessory && !item.vanity)
 			{
 				type = ItemType.Accessories;
+
+				if (item.shieldSlot > 0)
+				{
+					type = ItemType.Shield;
+				}
 			}
 			else if (item.defense > 0 && !item.vanity)
 			{
@@ -106,7 +113,17 @@ internal class VanillaItemDataExporter : ModSystem
 			if (type != ItemType.None)
 			{
 				using FileStream stream = File.OpenWrite("VanillaItemData\\" + ItemID.Search.GetName(i) + ".json");
-				JsonSerializer.Serialize(stream, new VanillaItemData() { ItemType = type.ToString() }, options);
+				JsonSerializer.Serialize(stream, new VanillaItemData()
+				{
+					ItemType = type.ToString(),
+					ElementProportions = new Dictionary<ElementType, float>()
+					{
+						{ ElementType.Fire, 0 },
+						{ ElementType.Cold, 0 },
+						{ ElementType.Lightning, 0 },
+						{ ElementType.Chaos, 0 },
+					}
+				}, options);
 			}
 		}
 	}
