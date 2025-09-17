@@ -5,8 +5,6 @@ using PathOfTerraria.Content.Socketables;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
-using Terraria.Localization;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PathOfTerraria.Core.Items;
 
