@@ -44,6 +44,10 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	private bool abandoned = false;
 	private short syncTimer = 0;
 
+	// Statue scanning info
+	private short statueScanTimer = 0;
+	private Point16 statuePlace = Point16.Zero;
+
 	// Sound timers
 	private int walkTime = 0;
 	private int rocketTime = 0;
@@ -179,7 +183,18 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			return;
 		}
 
-		RavenStatueNearby(ref target, out bool statue);
+		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+		bool statue;
+
+		if (statueScanTimer != -1)
+		{
+			RavenStatueNearby(ref target, out statue);
+		}
+		else
+		{
+			statue = true;
+			target = statuePlace.ToWorldCoordinates();
+		}
 
 		// Determines path using a slightly adjusted position and hitbox size.
 		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
@@ -191,7 +206,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
 		}
 
-		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+		canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 
 		if (pathfinder.RefreshTimer == 0 && !blocked || !canPath)
 		{
@@ -255,11 +270,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	private void RavenStatueNearby(ref Vector2 target, out bool statue)
 	{
-		const int Size = 40;
+		const int Size = 10;
+
+		statueScanTimer = (short)((statueScanTimer + 1) % 8);
 
 		Point16 pos = NPC.Center.ToTileCoordinates16();
-		(int xStart, int xEnd) = (Math.Max(0, pos.X - Size), Math.Min(pos.X + Size, Main.maxTilesX));
-		(int yStart, int yEnd) = (Math.Max(0, pos.Y - Size), Math.Min(pos.Y + Size, Main.maxTilesY));
+		(int xStart, int xEnd) = (Math.Max(0, pos.X - Size * 4 + Size * statueScanTimer), Math.Min(pos.X + Size * statueScanTimer, Main.maxTilesX));
+		(int yStart, int yEnd) = (Math.Max(0, pos.Y - Size * 4 + Size * statueScanTimer), Math.Min(pos.Y + Size * statueScanTimer, Main.maxTilesY));
 
 		for (int x = xStart; x < xEnd; x++)
 		{
@@ -271,6 +288,9 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 				{
 					target = new Vector2(x, y) * 16;
 					statue = true;
+
+					statueScanTimer = -1;
+					statuePlace = new Point16(x, y);
 					return;
 				}
 			}
@@ -415,6 +435,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			if (quest.CanBeStarted)
 			{
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+				Main.npcChatText = Quest.GetSingleton<EoWQuest>().GetLocalization("MorvenDialogue").Value;
 			}
 			else
 			{
@@ -508,6 +529,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 
 		writer.Write(packed);
+		writer.Write(statueScanTimer);
+
+		if (statueScanTimer == -1)
+		{
+			writer.Write(statuePlace.X);
+			writer.Write(statuePlace.Y);
+		}
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -518,6 +546,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		surfaceDialogue = (packed & 0b_10) == 0b_10;
 		postOrbPreEoWDialogue = (packed & 0b_100) == 0b_100;
 		teleportingToRavencrest = (packed & 0b_1000) == 0b_1000;
+
+		statueScanTimer = reader.ReadInt16();
+
+		if (statueScanTimer == -1)
+		{
+			statuePlace = new Point16(reader.ReadInt16(), reader.ReadInt16());
+		}
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -530,7 +565,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+		quest = Quest.GetLocalPlayerInstance<EoWQuest>();
 		return !quest.Completed;
 	}
 
