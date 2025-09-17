@@ -1,4 +1,5 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using System.Collections.Generic;
 using System.Reflection;
@@ -269,10 +270,25 @@ internal class SkillTreePlayer : ModPlayer
 			TagCompound pairTag = treeTag.GetCompound("pair" + i);
 			string passiveName = pairTag.GetString("name");
 			int str = pairTag.GetInt("str");
+			Type type = typeof(PoTMod).Assembly.GetType(passiveName);
+
+			if (type is null)
+			{
+				Mod.Logger.Error($"SkillTreePlayer.LoadIndividualTree: Could not find passive type {passiveName}!");
+				continue;
+			}
+
 			passives.Add(typeof(PoTMod).Assembly.GetType(passiveName), str);
 		}
 
 		Type treeType = typeof(PoTMod).Assembly.GetType(name);
+
+		if (treeType is null)
+		{
+			Mod.Logger.Error($"SkillTreePlayer.LoadIndividualTree: Could not find tree type called {name}!");
+			return;
+		}
+
 		var tree = Activator.CreateInstance(treeType) as SkillTree;
 		TotalLevelByTypeByTree.Add(SkillTree.TypeToSkillTree[tree.ParentSkill], passives);
 	}

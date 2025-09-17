@@ -430,5 +430,101 @@
 				"weight": 1
 			}
 		]
+	},
+	{
+		"affixType": "FireFlatDamage",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 3,
+				"minimumLevel": 30,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 6,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 10,
+				"minimumLevel": 70,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ColdFlatDamage",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 3,
+				"minimumLevel": 30,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 6,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 10,
+				"minimumLevel": 70,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "LightningFlatDamage",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 3,
+				"minimumLevel": 30,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 6,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 10,
+				"minimumLevel": 70,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ChaosFlatDamage",
+		"equipTypes": "AllGear",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 3,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 6,
+				"minimumLevel": 70,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 10,
+				"minimumLevel": 90,
+				"weight": 1
+			}
+		]
 	}
 ]

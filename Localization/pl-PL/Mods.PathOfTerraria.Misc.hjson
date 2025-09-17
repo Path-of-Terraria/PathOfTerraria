@@ -30,3 +30,11 @@ Activate: Aktywuj
 // ImpendingDoom: A pulse quickens at the center of the world...
 // VoidPearlCondition: In hardmode or during the Unleashing Chaos quest
 // SubworldItemDisabler: You cannot use this item in a subworld.
+// Damage: "{0} damage"
+
+Element: {
+	// Fire.Name: Fire
+	// Cold.Name: Cold
+	// Lightning.Name: Lightning
+	// Chaos.Name: Chaos
+}
