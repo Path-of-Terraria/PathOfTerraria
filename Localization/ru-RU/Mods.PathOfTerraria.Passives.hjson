@@ -164,16 +164,6 @@ IncreasedMoveSpeedPassive: {
 	Tooltip: +{0}% увеличение скорости движения за уровень.
 }
 
-IncreasedWhipDamage: {
-	Name: Сильный хлыст
-	Tooltip: +{0}% увеличение урона хлыстом за уровень.
-}
-
-IncreasedWhipSpeed: {
-	Name: Быстрые хлысты
-	Tooltip: +5% увеличение скорости хлыста за уровень.
-}
-
 IncreasedJumpHeight: {
 	Name: Высокий прыгун
 	Tooltip: +{0}% увеличение скорости прыжка.
@@ -325,11 +315,11 @@ IncreasedProjectileDamagePassive: {
 }
 
 IncreasedWhipDamagePassive: {
-	// Name: IncreasedWhipDamagePassive
-	// Tooltip: ""
+	// Name: Increased Whip Damage
+	// Tooltip: +{0}% increased whip damage.
 }
 
 IncreasedWhipSpeedPassive: {
-	// Name: IncreasedWhipSpeedPassive
-	// Tooltip: ""
+	// Name: Increased Whip Speed
+	// Tooltip: +{0}% increased whip speed.
 }
