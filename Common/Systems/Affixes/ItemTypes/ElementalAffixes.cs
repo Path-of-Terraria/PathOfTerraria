@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Systems.ElementalDamage;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
