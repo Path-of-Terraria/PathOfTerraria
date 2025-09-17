@@ -164,16 +164,6 @@ IncreasedMoveSpeedPassive: {
 	Tooltip: +{0}% d'augmentation de la vitesse de déplacement par niveau.
 }
 
-IncreasedWhipDamage: {
-	Name: Coup sec
-	Tooltip: +{0}% d'augmentation des dégâts infligés par le fouet par niveau.
-}
-
-IncreasedWhipSpeed: {
-	Name: Fouets rapides
-	Tooltip: +5% d'augmentation de la vitesse du fouet par niveau.
-}
-
 IncreasedJumpHeight: {
 	Name: Sauteur en hauteur
 	Tooltip: +{0}% de vitesse de saut en plus.
@@ -325,11 +315,11 @@ IncreasedProjectileDamagePassive: {
 }
 
 IncreasedWhipDamagePassive: {
-	// Name: IncreasedWhipDamagePassive
-	// Tooltip: ""
+	// Name: Increased Whip Damage
+	// Tooltip: +{0}% increased whip damage.
 }
 
 IncreasedWhipSpeedPassive: {
-	// Name: IncreasedWhipSpeedPassive
-	// Tooltip: ""
+	// Name: Increased Whip Speed
+	// Tooltip: +{0}% increased whip speed.
 }

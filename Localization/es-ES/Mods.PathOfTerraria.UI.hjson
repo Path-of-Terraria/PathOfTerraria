@@ -46,6 +46,7 @@ StatUI: {
 	// ChaosResistance: Chaos Resistance
 	// OffenseHeader: Offense
 	// CriticalChance: Critical Strike Chance
+	// CriticalMultiplier: Critical Strike Multiplier
 	// ProjectileSpeed: Projectile Speed
 	// ProjectileCount: Additional Projectiles
 	// AttributesHeader: Attributes

@@ -164,6 +164,12 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		// Offense  
 		list.Add(new PlayerStatUI(Localize("OffenseHeader"), player => "", isHeader: true));
 		list.Add(new PlayerStatUI(Localize("CriticalChance"), player => $"{player.GetTotalCritChance(DamageClass.Generic):#0.##}%"));
+		list.Add(new PlayerStatUI(Localize("CriticalMultiplier"), player =>
+		{
+			UniversalBuffingPlayer buffingPlayer = player.GetModPlayer<UniversalBuffingPlayer>();
+			float critMultiplier = buffingPlayer.UniversalModifier.CriticalMultiplier.Base;
+			return $"{critMultiplier:#0.##}%";
+		}));
 		list.Add(new PlayerStatUI(Localize("ProjectileSpeed"), player => 
 		{
 			var modifier = player.GetModPlayer<ProjectileModifierPlayer>().ProjectileSpeedMultiplier;
