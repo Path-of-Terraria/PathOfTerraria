@@ -258,16 +258,18 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		const int Size = 40;
 
 		Point16 pos = NPC.Center.ToTileCoordinates16();
+		(int xStart, int xEnd) = (Math.Max(0, pos.X - Size), Math.Min(pos.X + Size, Main.maxTilesX));
+		(int yStart, int yEnd) = (Math.Max(0, pos.Y - Size), Math.Min(pos.Y + Size, Main.maxTilesY));
 
-		for (int i = pos.X - Size; i < pos.X + Size; ++i)
+		for (int x = xStart; x < xEnd; x++)
 		{
-			for (int j = pos.Y - Size; j < pos.Y + Size; ++j)
+			for (int y = yStart; y < yEnd; y++)
 			{
-				Tile tile = Main.tile[i, j];
+				Tile tile = Main.tile[x, y];
 
 				if (tile.HasTile && tile.TileType == ModContent.TileType<RavenStatue>())
 				{
-					target = new Vector2(i, j) * 16;
+					target = new Vector2(x, y) * 16;
 					statue = true;
 					return;
 				}
