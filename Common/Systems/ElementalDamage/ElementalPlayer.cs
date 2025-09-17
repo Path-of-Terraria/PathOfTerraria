@@ -119,7 +119,10 @@ public class ElementalPlayer : ModPlayer
 			// Apply the buff if the hit info exists (we hit an NPC)
 			if (optionalHitInfo is not null)
 			{
-				TryAddElementBuff(target, element.DamageModifier, damage, optionalHitInfo.Value);
+				if (element.DamageModifier.HasValues || item is not null && ElementalWeaponSets.GetElementStrength(item.type, element.Type) > 0)
+				{
+					TryAddElementBuff(target, element.DamageModifier, damage, optionalHitInfo.Value);
+				}
 			}
 		}
 
@@ -133,11 +136,6 @@ public class ElementalPlayer : ModPlayer
 
 	private static bool TryAddElementBuff(Entity target, ElementalDamage damage, int elementalDamageDone, NPC.HitInfo hitInfo)
 	{
-		if (!damage.HasValues)
-		{
-			return false;
-		}
-
 		int lifeMax = target switch
 		{
 			NPC npc => npc.lifeMax,
