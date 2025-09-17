@@ -2373,6 +2373,10 @@
 		"connections": [
 			{
 				"referenceId": 159
+			},
+			{
+				"referenceId": 1004,
+				"effectsOnly": true
 			}
 		],
 		"position": {
@@ -2384,6 +2388,12 @@
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 161,
 		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1004,
+				"effectsOnly": true
+			}
+		],
 		"position": {
 			"x": 445,
 			"y": -875
@@ -2420,6 +2430,33 @@
 			"y": -772
 		}
 	},
+	{
+		"internalIdentifier": "MasteryPassive",
+		"referenceId": 1004,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 1005
+			}
+		],
+		"position": {
+			"x": 680,
+			"y": -879
+		},
+		"isChoiceNode": true,
+		"requiredAllocatedEdges": 2
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 1005,
+		"maxLevel": 1,
+		"position": {
+			"x": 600,
+			"y": -879
+		},
+		"isHidden": true
+	},
+	
 	{
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 164,
@@ -2572,9 +2609,6 @@
 			},
 			{
 				"referenceId": 1003
-			},
-			{
-				"referenceId": 1004
 			}
 		],
 		"position": {
@@ -2611,16 +2645,6 @@
 		"position": {
 			"x": -9,
 			"y": -1140
-		},
-		"isHidden": true
-	},
-	{
-		"internalIdentifier": "AddedIntelligencePassive",
-		"referenceId": 1004,
-		"maxLevel": 1,
-		"position": {
-			"x": -9,
-			"y": -990
 		},
 		"isHidden": true
 	},
@@ -2807,9 +2831,6 @@
 		"connections": [
 			{
 				"referenceId": 63
-			},
-			{
-				"referenceId": 186
 			}
 		],
 		"position": {
@@ -2817,13 +2838,13 @@
 			"y": 175
 		}
 	},
-	{
+	{	
 		"internalIdentifier": "AddedIntelligencePassive",
 		"referenceId": 186,
 		"maxLevel": 1,
 		"position": {
-			"x": -1382,
-			"y": -9
+			"x": -1422,
+			"y": -90
 		}
 	},
 	{
@@ -3829,7 +3850,7 @@
 		],
 		"position": {
 			"x": -9,
-			"y": 991
+			"y": 1122
 		}
 	},
 	{
@@ -3839,11 +3860,14 @@
 		"connections": [
 			{
 				"referenceId": 226
+			},
+			{
+				"referenceId": 56
 			}
 		],
 		"position": {
 			"x": -9,
-			"y": 1260
+			"y": 1355
 		}
 	},
 	{
@@ -4197,6 +4221,102 @@
 		"position": {
 			"x": 1287,
 			"y": -517
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 293,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 184
+			},
+			{
+				"referenceId": 294
+			}
+		],
+		"position": {
+			"x": -1262,
+			"y": -92
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 294,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 185
+			}
+		],
+		"position": {
+			"x": -1262,
+			"y": 67
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 295,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 186
+			},
+			{
+				"referenceId": 185
+			}
+		],
+		"position": {
+			"x": -1422,
+			"y": 67
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 296,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 224
+			},
+			{
+				"referenceId": 297
+			}
+		],
+		"position": {
+			"x": -90,
+			"y": 880
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 297,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 225
+			}
+		],
+		"position": {
+			"x": 82,
+			"y": 880
+		}
+	},
+	{
+		"internalIdentifier": "AddedIntelligencePassive",
+		"referenceId": 298,
+		"maxLevel": 1,
+		"connections": [
+			{
+				"referenceId": 225
+			},
+			{
+				"referenceId": 224
+			}
+		],
+		"position": {
+			"x": 0,
+			"y": 1050
 		}
 	},
 	{
