@@ -8,27 +8,8 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class SkeletronPortal : ModProjectile
+internal class SkeletronPortal : ModProjectile, IRightClickableProjectile
 {
-	public override void SetStaticDefaults()
-	{
-		ClickableProjectilePlayer.RegisterProjectile(Type, (_, _) =>
-		{
-			if (Main.mouseRight && Main.mouseRightRelease)
-			{
-				SubworldSystem.Enter<SkeletronDomain>();
-				return true;
-			}
-
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "Portal",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-			});
-			return false;
-		});
-	}
-
 	public override void SetDefaults()
 	{
 		Projectile.friendly = false;
@@ -72,6 +53,22 @@ internal class SkeletronPortal : ModProjectile
 			Main.spriteBatch.Draw(tex, position, null, color, rotation, tex.Size() / 2f, 1f - i * 0.2f, SpriteEffects.None, 0);
 		}
 
+		return false;
+	}
+
+	bool IRightClickableProjectile.RightClick(Projectile self, Player player)
+	{
+		if (Main.mouseRight && Main.mouseRightRelease)
+		{
+			SubworldSystem.Enter<SkeletronDomain>();
+			return true;
+		}
+
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "Portal",
+			SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+		});
 		return false;
 	}
 }

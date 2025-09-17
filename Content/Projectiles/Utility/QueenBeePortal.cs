@@ -6,45 +6,17 @@ using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class QueenBeePortal : ModProjectile
+internal class QueenBeePortal : ModProjectile, IRightClickableProjectile
 {
 	private ref float Timer => ref Projectile.ai[0];
-	private ref float Uses => ref Projectile.ai[1];
 	private ref float MaxUses => ref Projectile.ai[2];
 
 	public override void SetStaticDefaults()
 	{
 		Main.projFrames[Type] = 3;
-
-		ClickableProjectilePlayer.RegisterProjectile(Type, static (proj, _) =>
-		{
-			if (Main.mouseRight && Main.mouseRightRelease)
-			{
-				SubworldSystem.Enter<QueenBeeDomain>();
-
-				proj.ai[1]++;
-				proj.netUpdate = true;
-
-				if (proj.ai[1] > proj.ai[2])
-				{
-					proj.Kill();
-				}
-
-				return true;
-			}
-
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "Portal",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-			});
-
-			return false;
-		});
 	}
 
 	public override void SetDefaults()
@@ -110,21 +82,36 @@ internal class QueenBeePortal : ModProjectile
 			float rotation = Projectile.rotation * (i % 2 == 0 ? -1 : 1);
 			Vector2 position = Projectile.Center - Main.screenPosition;
 			Color color = lightColor * ((3 - i) * 0.2f) * Projectile.Opacity;
-			Rectangle frame = new Rectangle(0, 60 * Projectile.frame, 60, 58);
+			Rectangle frame = new(0, 60 * Projectile.frame, 60, 58);
 			Main.spriteBatch.Draw(tex, position, frame, color, rotation, frame.Size() / 2f, 1f - i * 0.2f, SpriteEffects.None, 0);
 		}
 
 		return false;
 	}
 
-	public void SaveData(TagCompound tag)
+	bool IRightClickableProjectile.RightClick(Projectile self, Player player)
 	{
-		tag.Add("uses", Uses);
-	}
+		if (Main.mouseRight && Main.mouseRightRelease)
+		{
+			SubworldSystem.Enter<QueenBeeDomain>();
 
-	public void LoadData(TagCompound tag, Projectile projectile)
-	{
-		projectile.ai[0] = 49;
-		projectile.ai[1] = tag.GetFloat("uses");
+			self.ai[1]++;
+			self.netUpdate = true;
+
+			if (self.ai[1] > self.ai[2])
+			{
+				self.Kill();
+			}
+
+			return true;
+		}
+
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "Portal",
+			SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+		});
+
+		return false;
 	}
 }

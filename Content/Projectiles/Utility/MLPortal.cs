@@ -8,37 +8,9 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class MLPortal : ModProjectile, ISaveProjectile
+internal class MLPortal : ModProjectile, ISaveProjectile, IRightClickableProjectile
 {
 	private ref float MaxUses => ref Projectile.ai[2];
-
-	public override void SetStaticDefaults()
-	{
-		ClickableProjectilePlayer.RegisterProjectile(Type, static (proj, _) =>
-		{
-			if (Main.mouseRight && Main.mouseRightRelease)
-			{
-				SubworldSystem.Enter<MoonLordDomain>();
-
-				proj.ai[1]++;
-				proj.netUpdate = true;
-
-				if (proj.ai[1] > proj.ai[2])
-				{
-					proj.Kill();
-				}
-
-				return true;
-			}
-
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "Portal",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-			});
-			return false;
-		});
-	}
 
 	public override void SetDefaults()
 	{
@@ -88,6 +60,31 @@ internal class MLPortal : ModProjectile, ISaveProjectile
 			Main.spriteBatch.Draw(tex, position, null, color, rotation, tex.Size() / 2f, 2f - i * 0.4f, SpriteEffects.None, 0);
 		}
 
+		return false;
+	}
+
+	bool IRightClickableProjectile.RightClick(Projectile self, Player player)
+	{
+		if (Main.mouseRight && Main.mouseRightRelease)
+		{
+			SubworldSystem.Enter<MoonLordDomain>();
+
+			self.ai[1]++;
+			self.netUpdate = true;
+
+			if (self.ai[1] > self.ai[2])
+			{
+				self.Kill();
+			}
+
+			return true;
+		}
+
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "Portal",
+			SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+		});
 		return false;
 	}
 }
