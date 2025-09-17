@@ -276,7 +276,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 		Point16 pos = NPC.Center.ToTileCoordinates16();
 		(int xStart, int xEnd) = (Math.Max(0, pos.X - Size * 4 + Size * statueScanTimer), Math.Min(pos.X + Size * statueScanTimer, Main.maxTilesX));
-		(int yStart, int yEnd) = (Math.Max(0, pos.Y - Size * 4 + Size * statueScanTimer), Math.Min(pos.Y + Size * statueScanTimer, Main.maxTilesY));
+		(int yStart, int yEnd) = (Math.Max(0, pos.Y - Size * 4), Math.Min(pos.Y + Size * 4, Main.maxTilesY));
 
 		for (int x = xStart; x < xEnd; x++)
 		{
