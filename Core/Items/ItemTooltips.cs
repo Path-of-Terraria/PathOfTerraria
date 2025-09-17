@@ -288,7 +288,7 @@ public sealed partial class ItemTooltips : GlobalItem
 			foreach (ElementInstance instance in player.GetModPlayer<ElementalPlayer>().Container)
 			{
 				int flat = (int)Math.Truncate(instance.GetFlatDamage(0));
-				string elementName = instance.ElementDisplayName.Value.ToLower().Trim() + " " + Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage");
+				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
 
 				float elementDamage = finalDamage * instance.GetTotalConversion(0);
 				minDamage = (elementDamage + flat) * 0.85f;
