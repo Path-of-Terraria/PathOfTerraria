@@ -82,3 +82,7 @@ LightningResistItemAffix.Description: "{1}{0}% Donnerresistenz"
 // ChaosResistItemAffix.Description: "{1}{0}% chaos resistance"
 // ChaosConversionDamage.Description: "{1}{0}% chaotic damage conversion"
 // ChaoticAffix.Prefix: Chaotic
+// FireFlatDamage.Description: "{1}{0} flat fire damage"
+// ColdFlatDamage.Description: "{1}{0} flat cold damage"
+// LightningFlatDamage.Description: "{1}{0} flat lightning damage"
+// ChaosFlatDamage.Description: "{1}{0} flat chaos damage"

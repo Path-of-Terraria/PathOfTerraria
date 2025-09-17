@@ -30,3 +30,11 @@ FishronSpawn: Vous entendez un rugissement au loin ...
 ImpendingDoom: Un pouls s'accélère au centre du monde ...
 VoidPearlCondition: En mode difficile ou pendant la quête Déchaîner le chaos
 // SubworldItemDisabler: You cannot use this item in a subworld.
+// Damage: "{0} damage"
+
+Element: {
+	// Fire.Name: Fire
+	// Cold.Name: Cold
+	// Lightning.Name: Lightning
+	// Chaos.Name: Chaos
+}
