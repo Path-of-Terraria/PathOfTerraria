@@ -154,6 +154,12 @@ internal static class Networking
 		/// <c>byte who</c>
 		/// </summary>
 		RequestMappingDomainInfo,
+
+		/// <summary>
+		/// Synchronizes <see cref="Encounters.EnemySpawning"/>'s enemy spawn effects.
+		/// <br/><b>Signature:</b> <c>NPC npc, EnemySpawnEffect effect, Vector2 position</c>
+		/// </summary>
+		EnemySpawn,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
