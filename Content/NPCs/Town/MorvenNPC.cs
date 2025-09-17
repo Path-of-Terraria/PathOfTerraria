@@ -44,6 +44,10 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 	private bool abandoned = false;
 	private short syncTimer = 0;
 
+	// Statue scanning info
+	private short statueScanTimer = 0;
+	private Point16 statuePlace = Point16.Zero;
+
 	// Sound timers
 	private int walkTime = 0;
 	private int rocketTime = 0;
@@ -179,6 +183,19 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			return;
 		}
 
+		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+		bool statue;
+
+		if (statueScanTimer != -1)
+		{
+			RavenStatueNearby(ref target, out statue);
+		}
+		else
+		{
+			statue = true;
+			target = statuePlace.ToWorldCoordinates();
+		}
+
 		// Determines path using a slightly adjusted position and hitbox size.
 		Point16 pathStart = (NPC.Top + new Vector2(8, 0)).ToTileCoordinates16();
 		Point16 pathEnd = target.ToTileCoordinates16();
@@ -189,7 +206,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			pathfinder.CheckDrawPath(pathStart, pathEnd, new Vector2(NPC.width / 16f, NPC.height / 16f - 0.2f), null, new(-NPC.width / 2, 0));
 		}
 
-		bool canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
+		canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 
 		if (pathfinder.RefreshTimer == 0 && !blocked || !canPath)
 		{
@@ -198,7 +215,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			canPath = pathfinder.HasPath && pathfinder.Path.Count > 0;
 		}
 
-		if (canPath && NPC.DistanceSQ(target) > 160 * 160)
+		if (canPath && (statue || NPC.DistanceSQ(target) > 160 * 160))
 		{
 			int index = pathfinder.Path.IndexOf(pathfinder.Path.MinBy(x => x.Position.ToVector2().DistanceSQ(NPC.position / 16f)));
 			List<Pathfinder.FoundPoint> checkPoints = pathfinder.Path[^(Math.Min(pathfinder.Path.Count, 6))..];
@@ -249,6 +266,37 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		{
 			NPC.direction = NPC.spriteDirection = MathF.Sign(NPC.velocity.X);
 		}
+	}
+
+	private void RavenStatueNearby(ref Vector2 target, out bool statue)
+	{
+		const int Size = 10;
+
+		statueScanTimer = (short)((statueScanTimer + 1) % 8);
+
+		Point16 pos = NPC.Center.ToTileCoordinates16();
+		(int xStart, int xEnd) = (Math.Max(0, pos.X - Size * 4 + Size * statueScanTimer), Math.Min(pos.X + Size * statueScanTimer, Main.maxTilesX));
+		(int yStart, int yEnd) = (Math.Max(0, pos.Y - Size * 4), Math.Min(pos.Y + Size * 4, Main.maxTilesY));
+
+		for (int x = xStart; x < xEnd; x++)
+		{
+			for (int y = yStart; y < yEnd; y++)
+			{
+				Tile tile = Main.tile[x, y];
+
+				if (tile.HasTile && tile.TileType == ModContent.TileType<RavenStatue>())
+				{
+					target = new Vector2(x, y) * 16;
+					statue = true;
+
+					statueScanTimer = -1;
+					statuePlace = new Point16(x, y);
+					return;
+				}
+			}
+		}
+
+		statue = false;
 	}
 
 	private void TeleportEffects()
@@ -368,14 +416,9 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		{
 			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		}
-		else
+		else if (Quest.GetLocalPlayerInstance<EoWQuest>().Active && SubworldSystem.Current is not RavencrestSubworld)
 		{
-			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
-
-			if (quest.Active && SubworldSystem.Current is not RavencrestSubworld)
-			{
-				button2 = "Follow";
-			}
+			button2 = "Follow";
 		}
 	}
 
@@ -389,20 +432,22 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		{
 			Quest quest = Quest.GetLocalPlayerInstance<EoWQuest>();
 
-			if (Main.netMode == NetmodeID.SinglePlayer)
+			if (quest.CanBeStarted)
 			{
-				followPlayer = 0;
-				doPathing = true;
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+				Main.npcChatText = Quest.GetSingleton<EoWQuest>().GetLocalization("MorvenDialogue").Value;
 			}
 			else
 			{
-				ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
-			}
-
-			if (!quest.Active)
-			{
-				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Rescue");
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoWQuest>();
+				if (Main.netMode == NetmodeID.SinglePlayer)
+				{
+					followPlayer = 0;
+					doPathing = true;
+				}
+				else
+				{
+					ModContent.GetInstance<PathfindStateChangeHandler>().Send((byte)Main.myPlayer, (byte)NPC.whoAmI, true);
+				}
 			}
 		}
 	}
@@ -420,8 +465,8 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 			surfaceDialogue = false;
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.Aboveground");
 		}
-		
-		var obeliskSystem = ModContent.GetInstance<ArcaneObeliskTile.ArcaneObeliskSystem>();
+
+		ArcaneObeliskTile.ArcaneObeliskSystem obeliskSystem = ModContent.GetInstance<ArcaneObeliskTile.ArcaneObeliskSystem>();
 		if (obeliskSystem.ArcaneObeliskLocation.HasValue)
 		{
 			Vector2 obeliskWorldPos = obeliskSystem.ArcaneObeliskLocation.Value.ToWorldCoordinates();
@@ -432,7 +477,6 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 				return Language.GetTextValue($"Mods.{PoTMod.ModName}.NPCs.{Name}.Dialogue.NearObelisk");
 			}
 		}
-
 
 		if (ModContent.GetInstance<RavencrestSystem>().HasOverworldNPC.Contains(FullName) && postOrbPreEoWDialogue && DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2)
 		{
@@ -485,6 +529,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		}
 
 		writer.Write(packed);
+		writer.Write(statueScanTimer);
+
+		if (statueScanTimer == -1)
+		{
+			writer.Write(statuePlace.X);
+			writer.Write(statuePlace.Y);
+		}
 	}
 
 	public override void ReceiveExtraAI(BinaryReader reader)
@@ -495,6 +546,13 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 		surfaceDialogue = (packed & 0b_10) == 0b_10;
 		postOrbPreEoWDialogue = (packed & 0b_100) == 0b_100;
 		teleportingToRavencrest = (packed & 0b_1000) == 0b_1000;
+
+		statueScanTimer = reader.ReadInt16();
+
+		if (statueScanTimer == -1)
+		{
+			statuePlace = new Point16(reader.ReadInt16(), reader.ReadInt16());
+		}
 	}
 
 	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
@@ -507,7 +565,7 @@ public sealed class MorvenNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+		quest = Quest.GetLocalPlayerInstance<EoWQuest>();
 		return !quest.Completed;
 	}
 

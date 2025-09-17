@@ -1,5 +1,8 @@
 ﻿using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.UI.Utilities;
+using ReLogic.Text;
+using Terraria.Chat;
+using Terraria.GameContent;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Quests;
@@ -36,7 +39,7 @@ public class UISelectableQuestStep : UISelectableOutlineRectPanel
 		if (ContainsPoint(Main.MouseScreen) && quest.CurrentStep == index)
 		{
 			string title = "Reminder";
-			string text = Step.ReminderText(ref title);
+			string text = UISimpleWrappableText.WrapText(FontAssets.ItemStack.Value, Step.ReminderText(ref title), 600);
 
 			if (text != string.Empty)
 			{
