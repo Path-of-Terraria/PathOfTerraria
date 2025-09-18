@@ -1,9 +1,9 @@
 {
   "ItemType": "Melee",
   "ElementProportions": {
-    "Fire": 0,
+    "Fire": 0.5,
     "Cold": 0,
     "Lightning": 0,
-    "Chaos": 0
+    "Chaos": 0.5
   }
 }

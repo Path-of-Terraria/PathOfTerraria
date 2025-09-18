@@ -3,7 +3,7 @@
   "ElementProportions": {
     "Fire": 0,
     "Cold": 0,
-    "Lightning": 0,
+    "Lightning": 1,
     "Chaos": 0
   }
 }
