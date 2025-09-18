@@ -1,18 +1,18 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.Diagnostics;
+using System.Reflection.Metadata;
 using MonoMod.Cil;
 using PathOfTerraria.Utilities;
 using Terraria.DataStructures;
 using Terraria.ID;
 
 #nullable enable
+#pragma warning disable IDE1006 // Naming Styles
 #pragma warning disable IDE2003 // Blank line required between block and subsequent statement
 
 namespace PathOfTerraria.Common.Encounters;
 
 /// <summary> Description used to create an enemy encounter. </summary>
-internal struct Encounter()
+internal struct EncounterDescription()
 {
 	/// <summary> An identifier for this encounter. Does not do anything on its own. </summary>
 	public required string Identifier { get; set; } = string.Empty;
@@ -38,43 +38,104 @@ internal struct EncounterWave()
 	public required EnemySpawn[] Spawns { get; set; }
 }
 
-internal enum EncounterState
+/// <summary> An encounter instance's activation state. </summary>
+public enum EncounterState
 {
 	NotStarted,
 	InProgress,
 	Completed,
 }
 
+/// <summary> Information regarding an encounter instance. </summary>
 internal struct EncounterInstance()
 {
-	public EncounterState State = EncounterState.NotStarted;
-	public int WaveIndex;
-	public int EnemiesSpawnedThisWave;
-	public uint SpawnCooldown;
-	public required Encounter Encounter;
+	/// <summary> The activation state. </summary>
+	public EncounterState State { get; set; } = EncounterState.NotStarted;
+	/// <summary> The currently active wave. </summary>
+	public int WaveIndex { get; set; }
+	/// <summary> The amount of enemies that have been spawned for the current wave. </summary>
+	public int EnemiesSpawnedThisWave { get; set; }
+}
+
+/// <summary> A versioned handle for an encounter instance. </summary>
+internal record struct Encounter(uint Index, uint Version) : IHandle
+{
+	/// <summary> Returns whether an encounter matching this handle still exists. Check for this often. </summary>
+	public readonly bool IsValid => EnemyEncounters.encounters.IsValid(this);
+
+	/// <summary> An immutable reference to this encounter's instance data. </summary>
+	public readonly ref readonly EncounterInstance Instance => ref EnemyEncounters.encounters.Get(this).Instance;
+
+	/// <summary> An immutable reference to this encounter's data. </summary>
+	public readonly ref readonly EncounterDescription Description => ref EnemyEncounters.encounters.Get(this).Description;
+
+	/// <summary> Starts this encounter. </summary>
+	public readonly void Start()
+	{
+		Reset();
+
+		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
+		data.Instance.State = EncounterState.InProgress;
+	}
+
+	/// <summary> Marks this encounter as completed. </summary>
+	public readonly void Complete()
+	{
+		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
+		data.Instance.State = EncounterState.Completed;
+	}
+
+	/// <summary> Resets this encounter. </summary>
+	public readonly void Reset()
+	{
+		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
+		data = new() { Description = data.Description };
+	}
+
+	/// <summary> Removes this encounter if it is valid, returning whether that was the case. </summary>
+	public readonly bool Remove()
+	{
+		return EnemyEncounters.encounters.Remove(this);
+	}
 }
 
 internal sealed class EnemyEncounters : ModSystem
 {
+	internal struct InstanceData()
+	{
+		public required EncounterDescription Description;
+		public EncounterInstance Instance = new();
+		public uint SpawnCooldown;
+	}
+
+	// Wraps GenerationalArena's iterator to keep it an implementation detail. Enumerator methods do not cut it.
+	public ref struct Iterator()
+	{
+		private GenerationalArena<Encounter, InstanceData>.Iterator inner = encounters.GetEnumerator();
+		public readonly Encounter Current => inner.Current;
+
+		public bool MoveNext() { return inner.MoveNext(); }
+		public readonly Iterator GetEnumerator() { return this; }
+	}
+
 	private sealed class NpcLogic : GlobalNPC
 	{
 		public override void OnSpawn(NPC npc, IEntitySource source)
 		{
 			// Reset mapping for this slot.
-			enemyToEncounterMapping[npc.whoAmI] = -1;
+			enemyToEncounterMapping[npc.whoAmI] = default;
 		}
 	}
 
-	private static readonly List<EncounterInstance> encounters = [];
+	internal static readonly GenerationalArena<Encounter, InstanceData> encounters = new();
 	/// <summary> Maps spawned enemies to the encounter that spawned them. </summary>
-	private static readonly int[] enemyToEncounterMapping = new int[Main.maxNPCs + 1];
+	private static readonly Encounter[] enemyToEncounterMapping = new Encounter[Main.maxNPCs + 1];
 
-	public static int Count => encounters.Count;
-	public static ReadOnlySpan<EncounterInstance> Encounters => CollectionsMarshal.AsSpan(encounters);
+	public static uint Count => encounters.Count;
 
 	static EnemyEncounters()
 	{
-		Array.Fill(enemyToEncounterMapping, -1);
+		
 	}
 
 	public override void Load()
@@ -90,14 +151,17 @@ internal sealed class EnemyEncounters : ModSystem
 	}
 
 	/// <summary> Creates an encounter with the given parameters. </summary>
-	public static void CreateEncounter(in Encounter encounter)
+	public static Encounter CreateEncounter(in EncounterDescription description)
 	{
-		encounters.Add(new EncounterInstance
+		Encounter encounter = encounters.Put(new InstanceData
 		{
-			Encounter = encounter,
-			//EndTime = encounter.TimeInSeconds.HasValue ? (ulong)(Main.GameUpdateCount + (encounter.TimeInSeconds.Value * TimeSystem.LogicFramerate)) : null,
+			Description = description,
 		});
+		return encounter;
 	}
+
+	/// <summary> Iterates all registered encounters, including those completed and not yet started. </summary>
+	public static Iterator IterateEncounters() { return new(); }
 
 	private static void UpdateEncounters()
 	{
@@ -106,62 +170,58 @@ internal sealed class EnemyEncounters : ModSystem
 			return;
 		}
 
-		Span<EncounterInstance> span = CollectionsMarshal.AsSpan(encounters);
-		StartEncounters(span);
-		SpawnEnemies(span);
-		ProgressEncounters(span);
+		StartEncounters();
+		SpawnEnemies();
+		ProgressEncounters();
 		DebugEncounters();
 	}
 
-	private static void StartEncounters(Span<EncounterInstance> encounters)
+	private static void StartEncounters()
 	{
 		// Begin encounters approached by a player.
-		foreach (ref EncounterInstance instance in encounters)
+		foreach (Encounter encounter in encounters)
 		{
-			if (instance.State != EncounterState.NotStarted) { continue; }
+			ref InstanceData data = ref encounters.Get(encounter);
 
-			ref readonly Encounter encounter = ref instance.Encounter;
-			float sqrRange = encounter.ActivationRange * encounter.ActivationRange;
+			if (data.Instance.State != EncounterState.NotStarted) { continue; }
+
+			ref readonly EncounterDescription description = ref data.Description;
+			float sqrRange = description.ActivationRange * description.ActivationRange;
 
 			foreach (Player player in Main.ActivePlayers)
 			{
-				if (player.Center.DistanceSQ(encounter.ActivationOrigin) <= sqrRange)
+				if (player.Center.DistanceSQ(description.ActivationOrigin) <= sqrRange)
 				{
-					StartEncounter(ref instance);
+					encounter.Start();
 					break;
 				}
 			}
 		}
 	}
 
-	private static void StartEncounter(ref EncounterInstance instance)
-	{
-		instance.State = EncounterState.InProgress;
-	}
-
-	private static void SpawnEnemies(Span<EncounterInstance> encounters)
+	private static void SpawnEnemies()
 	{
 		IEntitySource? source = null;
 
-		for (int encounterIdx = 0; encounterIdx < encounters.Length; encounterIdx++)
+		foreach (Encounter encounter in encounters)
 		{
-			ref EncounterInstance instance = ref encounters[encounterIdx];
-			ref readonly Encounter encounter = ref instance.Encounter;
-			ref readonly EncounterWave wave = ref encounter.Waves[instance.WaveIndex];
+			ref InstanceData data = ref encounters.Get(encounter);
+			ref readonly EncounterDescription description = ref data.Description;
+			ref readonly EncounterWave wave = ref description.Waves[data.Instance.WaveIndex];
 
-			if (instance.State != EncounterState.InProgress) { continue; }
-			if (instance.SpawnCooldown > 0 && --instance.SpawnCooldown > 0) { continue; }
+			if (data.Instance.State != EncounterState.InProgress) { continue; }
+			if (data.SpawnCooldown > 0 && --data.SpawnCooldown > 0) { continue; }
 
 			// Spawn enemies for the current wave.
-			for (int enemyIndexInWave = instance.EnemiesSpawnedThisWave; enemyIndexInWave < wave.Spawns.Length; enemyIndexInWave++)
+			for (int enemyIndexInWave = data.Instance.EnemiesSpawnedThisWave; enemyIndexInWave < wave.Spawns.Length; enemyIndexInWave++)
 			{
 				EnemySpawn spawn = wave.Spawns[enemyIndexInWave];
 
 				// Supply overrides for placement.
 				if (spawn.SpawnPlacement is { } placement)
 				{
-					if (placement.Area == default) { placement.Area = encounter.SpawnArea; }
-					if (placement.AreaOrigin == default) { placement.AreaOrigin = encounter.SpawnOrigin; }
+					if (placement.Area == default) { placement.Area = description.SpawnArea; }
+					if (placement.AreaOrigin == default) { placement.AreaOrigin = description.SpawnOrigin; }
 
 					spawn.SpawnPlacement = placement;
 				}
@@ -173,11 +233,11 @@ internal sealed class EnemyEncounters : ModSystem
 					break;
 				}
 
-				instance.EnemiesSpawnedThisWave++;
-				instance.SpawnCooldown += spawn.CooldownInTicks;
-				enemyToEncounterMapping[npc.whoAmI] = encounterIdx;
+				data.Instance.EnemiesSpawnedThisWave++;
+				data.SpawnCooldown += spawn.CooldownInTicks;
+				enemyToEncounterMapping[npc.whoAmI] = encounter;
 
-				if (instance.SpawnCooldown > 0)
+				if (data.SpawnCooldown > 0)
 				{
 					break;
 				}
@@ -185,54 +245,50 @@ internal sealed class EnemyEncounters : ModSystem
 		}
 	}
 
-	private static void ProgressEncounters(Span<EncounterInstance> encounters)
+	private static void ProgressEncounters()
 	{
-		for (int encounterIdx = 0; encounterIdx < encounters.Length; encounterIdx++)
+		foreach (Encounter encounter in encounters)
 		{
-			ref EncounterInstance instance = ref encounters[encounterIdx];
-			ref readonly Encounter encounter = ref instance.Encounter;
-			ref readonly EncounterWave wave = ref encounter.Waves[instance.WaveIndex];
+			ref InstanceData data = ref encounters.Get(encounter);
+			ref readonly EncounterDescription description = ref data.Description;
+			ref readonly EncounterWave wave = ref description.Waves[data.Instance.WaveIndex];
 
-			if (instance.State != EncounterState.InProgress) { continue; }
+			if (data.Instance.State != EncounterState.InProgress) { continue; }
 
 			// Switch to next wave or end the encounter if all of its spawned enemies have been killed.
-			if (instance.EnemiesSpawnedThisWave >= wave.Spawns.Length)
+			if (data.Instance.EnemiesSpawnedThisWave >= wave.Spawns.Length)
 			{
-				int livingCount = CountLivingEnemiesFromEncounter(encounterIdx);
+				int livingCount = CountLivingEnemiesFromEncounter(encounter);
 
 				if (livingCount == 0)
 				{
-					if (instance.WaveIndex + 1 >= encounter.Waves.Length)
+					if (data.Instance.WaveIndex + 1 >= description.Waves.Length)
 					{
-						EndEncounter(ref instance);
+						encounter.Complete();
 					}
 					else
 					{
-						NextWave(ref instance);
+						NextWave(encounter);
 					}
 				}
 			}
 		}
 	}
 
-	private static void NextWave(ref EncounterInstance instance)
+	private static void NextWave(Encounter encounter)
 	{
-		instance.WaveIndex++;
-		instance.EnemiesSpawnedThisWave = 0;
+		ref InstanceData data = ref encounters.Get(encounter);
+		data.Instance.WaveIndex++;
+		data.Instance.EnemiesSpawnedThisWave = 0;
 	}
 
-	private static void EndEncounter(ref EncounterInstance instance)
-	{
-		instance.State = EncounterState.Completed;
-	}
-
-	private static int CountLivingEnemiesFromEncounter(int encounterIndex)
+	private static int CountLivingEnemiesFromEncounter(Encounter encounter)
 	{
 		int result = 0;
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			if (enemyToEncounterMapping[npc.whoAmI] == encounterIndex)
+			if (enemyToEncounterMapping[npc.whoAmI] == encounter)
 			{
 				result += 1;
 			}
@@ -258,17 +314,19 @@ internal sealed class EnemyEncounters : ModSystem
 	{
 		Player localPlayer = Main.LocalPlayer;
 
-		foreach (ref readonly EncounterInstance instance in Encounters)
+		foreach (Encounter encounter in encounters)
 		{
-			if (instance.State != EncounterState.InProgress) { continue; }
-			if (instance.Encounter.MusicIndex <= 0) { continue; }
-			if (instance.Encounter.SceneEffectPriority < priority) { continue; }
+			ref readonly InstanceData data = ref encounters.Get(encounter);
 
-			float increasedSqrRange = MathF.Pow(instance.Encounter.ActivationRange * 3f, 2f);
-			if (localPlayer.DistanceSQ(instance.Encounter.ActivationOrigin) > increasedSqrRange) { continue; }
+			if (data.Instance.State != EncounterState.InProgress) { continue; }
+			if (data.Description.MusicIndex <= 0) { continue; }
+			if (data.Description.SceneEffectPriority < priority) { continue; }
 
-			priority = instance.Encounter.SceneEffectPriority;
-			music = instance.Encounter.MusicIndex;
+			float increasedSqrRange = MathF.Pow(data.Description.ActivationRange * 3f, 2f);
+			if (localPlayer.DistanceSQ(data.Description.ActivationOrigin) > increasedSqrRange) { continue; }
+
+			priority = data.Description.SceneEffectPriority;
+			music = data.Description.MusicIndex;
 		}
 	}
 

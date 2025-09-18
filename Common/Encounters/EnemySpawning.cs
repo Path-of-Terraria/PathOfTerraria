@@ -1,13 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.IO;
-using Microsoft.CodeAnalysis;
-using Microsoft.Xna.Framework.Graphics;
 using PathOfTerraria.Common.Systems.Synchronization;
-using PathOfTerraria.Common.Systems.Synchronization.Handlers;
-using PathOfTerraria.Common.Systems.VanillaModifications;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
-using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 
