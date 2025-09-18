@@ -106,12 +106,6 @@ public class CorruptShard : CurrencyShard
 		ItemAffix chosenAffix = affixes.Get();
 		chosenAffix.IsCorruptedAffix = true;
 		chosenAffix.Tier = 0;
-
-		if (item.ModItem is Map)
-		{
-			(chosenAffix as MapAffix).Strength = 10;
-		}
-
 		data.Affixes.Add(chosenAffix);
 	}
 
