@@ -79,6 +79,7 @@ public abstract class Affix : ILocalizedModType
 		tag["maxValue"] = MaxValue;
 		tag["minValue"] = MinValue;
 		tag["tier"] = Tier;
+		tag["implicit"] = IsImplicit;
 	}
 
 	/// <summary>
@@ -108,6 +109,7 @@ public abstract class Affix : ILocalizedModType
 		MaxValue = tag.GetFloat("maxValue");
 		MinValue = tag.GetFloat("minValue");
 		Tier = tag.GetInt("tier");
+		IsImplicit = tag.GetBool("implicit");
 	}
 
 	public virtual void NetSend(BinaryWriter writer)
@@ -117,6 +119,8 @@ public abstract class Affix : ILocalizedModType
 		writer.Write(Value);
 		writer.Write(MaxValue);
 		writer.Write(MinValue);
+		writer.Write((byte)Tier);
+		writer.Write(IsImplicit);
 	}
 
 	public virtual void NetReceive(BinaryReader reader)
@@ -124,6 +128,8 @@ public abstract class Affix : ILocalizedModType
 		Value = reader.ReadSingle();
 		MaxValue = reader.ReadSingle();
 		MinValue = reader.ReadSingle();
+		Tier = reader.ReadByte();
+		IsImplicit = reader.ReadBoolean();
 	}
 
 	/// <summary>
