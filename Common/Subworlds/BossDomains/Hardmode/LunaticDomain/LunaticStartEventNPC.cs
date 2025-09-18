@@ -13,6 +13,12 @@ internal class LunaticStartEventNPC : GlobalNPC
 	public override void Load()
 	{
 		On_WorldGen.StartImpendingDoom += NoSubworldDoom;
+		On_WorldGen.UpdateLunarApocalypse += Help;
+	}
+
+	private void Help(On_WorldGen.orig_UpdateLunarApocalypse orig)
+	{
+		orig();
 	}
 
 	private void NoSubworldDoom(On_WorldGen.orig_StartImpendingDoom orig, int countdownTime)

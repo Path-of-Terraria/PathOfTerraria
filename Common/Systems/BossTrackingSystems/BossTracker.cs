@@ -98,8 +98,9 @@ internal sealed class BossTracker : ModSystem
 	private static void HijackDeathEffects(On_NPC.orig_DoDeathEvents orig, NPC self, Player closestPlayer)
 	{
 		bool isBoss = ContentSamples.NpcsByNetId[self.netID].boss || NPCID.Sets.ShouldBeCountedAsBoss[self.type];
+		bool isPillar = self.type is NPCID.LunarTowerNebula or NPCID.LunarTowerSolar or NPCID.LunarTowerStardust or NPCID.LunarTowerVortex;
 
-		if (SubworldSystem.Current is BossDomainSubworld && isBoss)
+		if (SubworldSystem.Current is BossDomainSubworld && isBoss && !isPillar)
 		{
 			// Spawns the Wall of Flesh's box around itself, which is overriden by this method
 			OnDeathNPC.OnDeathEffects(self);
@@ -149,11 +150,7 @@ internal sealed class BossTracker : ModSystem
 			return false;
 		}
 
-		if (type is NPCID.LunarTowerNebula or NPCID.LunarTowerSolar or NPCID.LunarTowerStardust or NPCID.LunarTowerVortex) // Towers don't count
-		{
-			return false;
-		}
-		else if (type == NPCID.Spazmatism) // Spazmatism/Retinazer only count if the other is defeated
+		if (type == NPCID.Spazmatism) // Spazmatism/Retinazer only count if the other is defeated
 		{
 			return !NPC.AnyNPCs(NPCID.Retinazer);
 		}
@@ -210,8 +207,11 @@ internal sealed class BossTracker : ModSystem
 		if (tag.ContainsKey("DownedFlags"))
 		{
 			BitsByte oldMask = tag.GetByte("DownedFlags");
-			if (oldMask[0]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds); }
-			if (oldMask[1]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds); }
+
+			// These calls are counted as "fromSync" since they don't need to sync - incoming players will have the result synced for them, and
+			// at the time this is loaded players can't be joined to the server already
+			if (oldMask[0]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds, null, true); }
+			if (oldMask[1]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds, null, true); }
 		}
 	}
 
