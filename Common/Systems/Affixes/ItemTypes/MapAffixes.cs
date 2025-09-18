@@ -48,6 +48,8 @@ public abstract class MapAffix : ItemAffix
 		base.NetSend(writer);
 
 		writer.Write((Half)Strength);
+		writer.Write((byte)Tier);
+		writer.Write(IsCorruptedAffix);
 	}
 
 	public override void NetReceive(BinaryReader reader)
@@ -55,6 +57,8 @@ public abstract class MapAffix : ItemAffix
 		base.NetReceive(reader);
 
 		Strength = (float)reader.ReadHalf();
+		Tier = reader.ReadByte();
+		IsCorruptedAffix = reader.ReadBoolean();
 	}
 }
 

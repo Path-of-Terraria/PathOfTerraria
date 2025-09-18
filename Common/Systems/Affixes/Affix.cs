@@ -80,6 +80,7 @@ public abstract class Affix : ILocalizedModType
 		tag["minValue"] = MinValue;
 		tag["tier"] = Tier;
 		tag["implicit"] = IsImplicit;
+		tag["corrupt"] = IsCorruptedAffix;
 	}
 
 	/// <summary>
@@ -110,6 +111,7 @@ public abstract class Affix : ILocalizedModType
 		MinValue = tag.GetFloat("minValue");
 		Tier = tag.GetInt("tier");
 		IsImplicit = tag.GetBool("implicit");
+		IsCorruptedAffix = tag.GetBool("corrupt");
 	}
 
 	public virtual void NetSend(BinaryWriter writer)
@@ -121,6 +123,7 @@ public abstract class Affix : ILocalizedModType
 		writer.Write(MinValue);
 		writer.Write((byte)Tier);
 		writer.Write(IsImplicit);
+		writer.Write(IsCorruptedAffix);
 	}
 
 	public virtual void NetReceive(BinaryReader reader)
@@ -130,6 +133,7 @@ public abstract class Affix : ILocalizedModType
 		MinValue = reader.ReadSingle();
 		Tier = reader.ReadByte();
 		IsImplicit = reader.ReadBoolean();
+		IsCorruptedAffix = reader.ReadBoolean();
 	}
 
 	/// <summary>

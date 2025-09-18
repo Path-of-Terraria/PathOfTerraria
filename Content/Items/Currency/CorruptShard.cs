@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,26 +76,55 @@ public class CorruptShard : CurrencyShard
 			}
 			else
 			{
-				AddAffix(data);
+				AddAffix(data, player.HeldItem);
 			}
 		}
 		else
 		{
-			AddAffix(data);
+			AddAffix(data, player.HeldItem);
 		}
 
 		PoTItemHelper.SetMouseItemToHeldItem(player);
 	}
 
-	private static void AddAffix(PoTInstanceItemData data)
+	private static void AddAffix(PoTInstanceItemData data, Item item)
 	{
 		WeightedRandom<ItemAffix> affixes = new();
-		affixes.Add((ItemAffix)Affix.CreateAffix<FlatLifeAffix>(10, 20), 1);
-		affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(4, 6), 1);
-		affixes.Add((ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(5), 0.01f);
+
+		if (item.ModItem is not Map)
+		{
+			affixes.Add((ItemAffix)Affix.CreateAffix<FlatLifeAffix>(10, 20), 1);
+			affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(4, 6), 1);
+			affixes.Add((ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(5), 0.01f);
+		}
+		else
+		{
+			affixes.Add(GenerateMapAffix<MapDamageAffix>(20, 35, 5, 7.5f), 1);
+			affixes.Add(GenerateMapAffix<MapMobCritChanceAffix>(30, 50, 10, 14), 0.5f);
+		}
 
 		ItemAffix chosenAffix = affixes.Get();
 		chosenAffix.IsCorruptedAffix = true;
+		chosenAffix.Tier = 0;
+
+		if (item.ModItem is Map)
+		{
+			(chosenAffix as MapAffix).Strength = 10;
+		}
+
 		data.Affixes.Add(chosenAffix);
+	}
+
+	/// <summary>
+	/// Generates a map affix with the given value and strength ranges. Value and strength will correspond to each other.
+	/// </summary>
+	private static MapAffix GenerateMapAffix<T>(float min, float max, float strengthMin, float strengthMax) where T : MapAffix
+	{
+		float factor = Main.rand.NextFloat();
+		float strength = MathHelper.Lerp(strengthMin, strengthMax, factor);
+		float value = MathHelper.Lerp(min, max, factor);
+		var mapAffix = (MapAffix)Affix.CreateAffix<MapDamageAffix>(value);
+		mapAffix.Strength = strength;
+		return mapAffix;
 	}
 }
