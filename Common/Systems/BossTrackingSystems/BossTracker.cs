@@ -210,8 +210,8 @@ internal sealed class BossTracker : ModSystem
 
 			// These calls are counted as "fromSync" since they don't need to sync - incoming players will have the result synced for them, and
 			// at the time this is loaded players can't be joined to the server already
-			if (oldMask[0]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds, null, true); }
-			if (oldMask[1]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds, null, true); }
+			if (oldMask[0]) { EventTracker.CompleteEvent(EventFlags.DefeatedEaterOfWorlds, fromSync: true); }
+			if (oldMask[1]) { EventTracker.CompleteEvent(EventFlags.DefeatedBrainOfCthulhu, fromSync: true); }
 		}
 	}
 
