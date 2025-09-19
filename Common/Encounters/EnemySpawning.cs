@@ -5,6 +5,7 @@ using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader.Config;
 
 namespace PathOfTerraria.Common.Encounters;
 
@@ -15,22 +16,23 @@ internal enum EnemySpawnEffect
 }
 
 /// <summary> An enemy spawn description. </summary>
-internal struct EnemySpawn()
+internal record struct EnemySpawn()
 {
 	/// <summary> The NPC type to spawn. </summary>
-	public required int NpcType { get; set; }
+	public required NPCDefinition NpcType { get; set; }
 	/// <summary> Pre-determined spawn position to use. Mutually exclusive with <see cref="SpawnPlacement"/>. </summary>
 	public required Vector2? SpawnPosition { get; set; }
 	/// <summary> Pre-determined spawn position to use. Mutually exclusive with <see cref="SpawnPlacement"/>. </summary>
 	public required SpawnPlacement? SpawnPlacement { get; set; }
 	/// <summary> The time in ticks that must pass before the next enemy in queue will be spawned. </summary>
+	[Range(0, 5 * 60 * 60)]
 	public uint CooldownInTicks { get; set; } = 10;
 	/// <summary> Which effect to use for this spawn. </summary>
 	public EnemySpawnEffect Effect { get; set; }
 }
 
 /// <summary> A description used to calculate a placement for an enemy spawn. </summary>
-internal struct SpawnPlacement()
+internal record struct SpawnPlacement()
 {
 	/// <summary> The enemy's width and height. </summary>
 	public required Point16 CollisionSize { get; set; }
@@ -48,6 +50,20 @@ internal struct SpawnPlacement()
 	public float MinDistanceFromPlayers { get; set; } = 256f;
 	/// <summary> How far away from existing enemies, in pixels, must the spawn be placed. </summary>
 	public float MinDistanceFromEnemies { get; set; } = 256f;
+
+	/// <summary> Guesses defaults to use for a given NPC sample. Not always ideal. </summary>
+	public SpawnPlacement WithDefaults(int npcType)
+	{
+		NPC npc = ContentSamples.NpcsByNetId[npcType];
+		bool isFlying = npc.aiStyle is NPCAIStyleID.Flying or NPCAIStyleID.FlyingFish;
+		bool isSwimming = npc.aiStyle is NPCAIStyleID.Piranha;
+
+		OnGround = !isFlying && !isSwimming;
+		RequiredLiquids = isSwimming ? LiquidMask.Water : LiquidMask.None;
+		SkippedLiquids = isSwimming ? LiquidMask.None : LiquidMask.All;
+
+		return this;
+	}
 }
 
 /// <summary> Functions for spawning enemies in automated and fancy ways. </summary>
@@ -110,7 +126,7 @@ internal static class EnemySpawning
 			}
 		}
 
-		npc = NPC.NewNPCDirect(source, spawnPosition, spawn.NpcType);
+		npc = NPC.NewNPCDirect(source, spawnPosition, spawn.NpcType.Type);
 
 		if (npc.whoAmI == Main.maxNPCs)
 		{

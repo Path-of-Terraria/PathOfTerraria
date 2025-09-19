@@ -7,7 +7,7 @@ namespace PathOfTerraria.Utilities.Terraria;
 internal static class TileUtils
 {
 	/// <summary> The size of a tile in pixel units. </summary>
-	public const float TileSizeInPixels = 16f;
+	public const int TileSizeInPixels = 16;
 	/// <summary> The size of a pixel in tile units. </summary>
 	public const float PixelSizeInUnits = 1f / TileSizeInPixels;
 

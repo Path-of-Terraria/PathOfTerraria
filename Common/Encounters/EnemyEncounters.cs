@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Reflection.Metadata;
 using MonoMod.Cil;
 using PathOfTerraria.Utilities;
 using Terraria.DataStructures;
 using Terraria.ID;
+using Terraria.ModLoader.Config;
 
 #nullable enable
 #pragma warning disable IDE1006 // Naming Styles
@@ -12,13 +12,14 @@ using Terraria.ID;
 namespace PathOfTerraria.Common.Encounters;
 
 /// <summary> Description used to create an enemy encounter. </summary>
-internal struct EncounterDescription()
+internal record struct EncounterDescription()
 {
 	/// <summary> An identifier for this encounter. Does not do anything on its own. </summary>
 	public required string Identifier { get; set; } = string.Empty;
 	/// <summary> The encounter's activation center in world-space (pixels). </summary>
 	public required Vector2 ActivationOrigin { get; set; }
 	/// <summary> The encounter's activation range in world-space (pixels). </summary>
+	[Range(64f, 4096f), Increment(64f)]
 	public required float ActivationRange { get; set; }
 	/// <summary> The encounter's spawn area in tile-space. This will be supplied to all spawns with zeroed <see cref="SpawnPlacement.Area"/>. </summary>
 	public required Rectangle SpawnArea { get; set; }
@@ -27,12 +28,22 @@ internal struct EncounterDescription()
 	/// <summary> The waves that this encounter consists of. </summary>
 	public required EncounterWave[] Waves { get; set; }
 	/// <summary> If set together with <see cref="SceneEffectPriority"/>, overrides played music when active and near. </summary>
+	[Range(-1, ushort.MaxValue)]
 	public int MusicIndex { get; set; } = -1;
 	/// <summary> The priority to use for effects such as <see cref="MusicIndex"/>. </summary>
 	public SceneEffectPriority SceneEffectPriority { get; set; }
+
+	/// <summary> Verifies that the description is sane and usable. Throws exceptions if it is not. </summary>
+	public readonly void Verify()
+	{
+		if (Waves == null) { throw new ArgumentNullException(nameof(Waves)); }
+		if (Waves.Length == 0) { throw new ArgumentOutOfRangeException(nameof(Waves)); }
+		if (Identifier == null) { throw new ArgumentNullException(nameof(Identifier)); }
+		if (SpawnArea.Width == 0 | SpawnArea.Height == 0) { throw new ArgumentOutOfRangeException(nameof(SpawnArea)); }
+	}
 }
 
-internal struct EncounterWave()
+internal record struct EncounterWave()
 {
 	/// <summary> The enemies to spawn. </summary>
 	public required EnemySpawn[] Spawns { get; set; }
@@ -47,10 +58,12 @@ public enum EncounterState
 }
 
 /// <summary> Information regarding an encounter instance. </summary>
-internal struct EncounterInstance()
+internal record struct EncounterInstance()
 {
 	/// <summary> The activation state. </summary>
 	public EncounterState State { get; set; } = EncounterState.NotStarted;
+	/// <summary> Whether the encounter is paused. </summary>
+	public bool IsPaused { get; set; }
 	/// <summary> The currently active wave. </summary>
 	public int WaveIndex { get; set; }
 	/// <summary> The amount of enemies that have been spawned for the current wave. </summary>
@@ -69,10 +82,10 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 	/// <summary> An immutable reference to this encounter's data. </summary>
 	public readonly ref readonly EncounterDescription Description => ref EnemyEncounters.encounters.Get(this).Description;
 
-	/// <summary> Starts this encounter. </summary>
+	/// <summary> Starts (and unpauses) this encounter. </summary>
 	public readonly void Start()
 	{
-		Reset();
+		SetPaused(false);
 
 		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
 		data.Instance.State = EncounterState.InProgress;
@@ -96,6 +109,29 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 	public readonly bool Remove()
 	{
 		return EnemyEncounters.encounters.Remove(this);
+	}
+
+	/// <summary> Pauses or unpauses this encounter. </summary>
+	public readonly void SetPaused(bool value)
+	{
+		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
+		data.Instance.IsPaused = value;
+	}
+
+	/// <summary> Performs a checked description mutation. </summary>
+	public readonly void ModifyDescription(EncounterDescription description)
+	{
+		description.Verify();
+
+		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
+
+		data.Description = description;
+
+		if (data.Instance.WaveIndex >= data.Description.Waves.Length)
+		{
+			data.Instance.WaveIndex = data.Description.Waves.Length - 1;
+			data.Instance.EnemiesSpawnedThisWave = 0;
+		}
 	}
 }
 
@@ -183,7 +219,7 @@ internal sealed class EnemyEncounters : ModSystem
 		{
 			ref InstanceData data = ref encounters.Get(encounter);
 
-			if (data.Instance.State != EncounterState.NotStarted) { continue; }
+			if (data.Instance.State != EncounterState.NotStarted || data.Instance.IsPaused) { continue; }
 
 			ref readonly EncounterDescription description = ref data.Description;
 			float sqrRange = description.ActivationRange * description.ActivationRange;
@@ -211,6 +247,7 @@ internal sealed class EnemyEncounters : ModSystem
 
 			if (data.Instance.State != EncounterState.InProgress) { continue; }
 			if (data.SpawnCooldown > 0 && --data.SpawnCooldown > 0) { continue; }
+			if (data.Instance.IsPaused) { continue; }
 
 			// Spawn enemies for the current wave.
 			for (int enemyIndexInWave = data.Instance.EnemiesSpawnedThisWave; enemyIndexInWave < wave.Spawns.Length; enemyIndexInWave++)
@@ -222,6 +259,7 @@ internal sealed class EnemyEncounters : ModSystem
 				{
 					if (placement.Area == default) { placement.Area = description.SpawnArea; }
 					if (placement.AreaOrigin == default) { placement.AreaOrigin = description.SpawnOrigin; }
+					if (placement.CollisionSize == default) { placement.CollisionSize = ContentSamples.NpcsByNetId[spawn.NpcType.Type].Size.ToPoint16(); }
 
 					spawn.SpawnPlacement = placement;
 				}
@@ -254,6 +292,7 @@ internal sealed class EnemyEncounters : ModSystem
 			ref readonly EncounterWave wave = ref description.Waves[data.Instance.WaveIndex];
 
 			if (data.Instance.State != EncounterState.InProgress) { continue; }
+			if (data.Instance.IsPaused) { continue; }
 
 			// Switch to next wave or end the encounter if all of its spawned enemies have been killed.
 			if (data.Instance.EnemiesSpawnedThisWave >= wave.Spawns.Length)

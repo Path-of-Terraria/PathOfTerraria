@@ -1,0 +1,1281 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Text;
+using PathOfTerraria.Common.UI.Components;
+using PathOfTerraria.Common.UI.Elements;
+using PathOfTerraria.Content.NPCs.Mapping.Forest;
+using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
+using PathOfTerraria.Utilities.Terraria;
+using PathOfTerraria.Utilities.Xna;
+using ReLogic.Content;
+using Terraria.DataStructures;
+using Terraria.GameContent;
+using Terraria.GameContent.UI.Elements;
+using Terraria.GameContent.UI.States;
+using Terraria.GameInput;
+using Terraria.ID;
+using Terraria.ModLoader.Config;
+using Terraria.ModLoader.UI;
+using Terraria.ModLoader.UI.Elements;
+using Terraria.UI;
+using FixedUIScrollbar = Terraria.GameContent.UI.Elements.FixedUIScrollbar;
+
+#nullable enable
+#pragma warning disable IDE0023 // Use block body for conversion operator.
+#pragma warning disable IDE0053 // Use expression body for lambda expression
+#pragma warning disable IDE0028, IDE0306 // Collection initialization can be 'simplified'.
+
+namespace PathOfTerraria.Common.Encounters;
+
+internal struct EncounterBox(object description, WaveBox[] waves)
+{
+	public object Description = description;
+	public List<WaveBox> Waves = new(waves);
+	public static explicit operator EncounterBox(EncounterDescription dsc) => new(dsc with { Waves = null! }, dsc.Waves.Select(w => (WaveBox)w).ToArray());
+}
+internal struct WaveBox(object wave, SpawnBox[] spawns)
+{
+	public object Wave = wave;
+	public List<SpawnBox> Spawns = new(spawns);
+	public static explicit operator WaveBox(EncounterWave src) => new(src with { Spawns = null! }, src.Spawns.Select(s => (SpawnBox)s).ToArray());
+}
+internal struct SpawnBox(object spawn, object placement)
+{
+	public object Spawn = spawn;
+	public object Placement = placement;
+	public static explicit operator SpawnBox(EnemySpawn src) => new(src, src.SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(src.NpcType.Type));
+}
+
+internal sealed class EncounterEditor : ModSystem
+{
+	// C# unions never.
+	public enum DragKind
+	{
+		EncounterOrigin,
+		EncounterArea,
+		SpawnPosition,
+	}
+	public struct DragContext()
+	{
+		public required DragKind Kind;
+		public Vector2 Axes = Vector2.One;
+		public bool? MouseLeftValueToStopAt = false;
+		public bool? MouseRightValueToStopAt;
+	}
+
+	private static LegacyGameInterfaceLayer? gizmosLayer;
+#if DEBUG
+	private static ModKeybind keyToggleEncounterDebugging = null!;
+#endif
+
+	public static DragContext? ActiveDrag { get; set; }
+	public static SpawnPlacement DefaultPlacement { get; } = new() { Area = default, CollisionSize = default };
+
+	public override void Load()
+	{
+#if DEBUG
+		keyToggleEncounterDebugging = KeybindLoader.RegisterKeybind(Mod, "ToggleEncounterDebugging", Microsoft.Xna.Framework.Input.Keys.NumPad4);
+#endif
+	}
+
+	public override void PreUpdateEntities()
+	{
+		EncounterEditorState state = SmartUiLoader.GetUiState<EncounterEditorState>();
+
+#if DEBUG
+		if (keyToggleEncounterDebugging.JustPressed)
+		{
+			state.Toggle();
+		}
+#endif
+
+		HandlePlacement();
+		DragObjects();
+	}
+
+	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
+	{
+		if (SmartUiLoader.GetUiState<EncounterEditorState>().Visible)
+		{
+			gizmosLayer ??= new LegacyGameInterfaceLayer($"{nameof(PathOfTerraria)}: Encounter Gizmos", DrawGizmos, InterfaceScaleType.Game);
+			layers.Insert(Math.Max(0, layers.FindIndex(l => l.Name.Equals("Vanilla: Mouse Text")) - 1), gizmosLayer);
+		}
+	}
+
+	private static void HandlePlacement()
+	{
+		EncounterEditorState state = SmartUiLoader.GetUiState<EncounterEditorState>();
+
+		if (state.PlacementMode && state is { SelectedEncounter.IsValid: true, SelectedWave: uint selectedWave })
+		{
+			if (ConsumeMouseClick(0))
+			{
+				var spawnCopy = (EnemySpawn)(state.SelectedSpawn.HasValue ? state.BoxedEncounter.Waves[(int)state.SelectedWave.Value].Spawns[(int)state.SelectedSpawn.Value].Spawn : state.BoxedSpawn.Spawn);
+				spawnCopy.SpawnPosition = Main.MouseWorld;
+				spawnCopy.SpawnPlacement = null;
+
+				state.BoxedEncounter.Waves[(int)selectedWave].Spawns.Add((SpawnBox)spawnCopy);
+				state.Rebuild();
+			}
+			else if (ConsumeMouseClick(1))
+			{
+				state.PlacementMode = false;
+				state.Rebuild();
+			}
+		}
+	}
+
+	private static void DragObjects()
+	{
+		if (ActiveDrag is not { } ctx) { return; }
+
+		static void Reset()
+		{
+			ActiveDrag = null;
+			SmartUiLoader.GetUiState<EncounterEditorState>().Rebuild();
+		}
+
+		if (Main.mouseLeft == ctx.MouseLeftValueToStopAt || Main.mouseRight == ctx.MouseRightValueToStopAt)
+		{
+			Reset();
+			return;
+		}
+
+		Vector2 mouseWorld = Main.MouseWorld;
+		Point16 mouseTilePos = mouseWorld.ToTileCoordinates16();
+		EncounterEditorState state = SmartUiLoader.GetUiState<EncounterEditorState>();
+
+		// We operate on the UI State's boxed copies to not interfer with it.
+		switch (ctx.Kind)
+		{
+			case DragKind.EncounterOrigin when state is { SelectedEncounter.IsValid: true }:
+				// Refuse placement into solid tiles.
+				if (mouseTilePos.X >= 0 && mouseTilePos.Y >= 0 && mouseTilePos.X < Main.maxTilesX && mouseTilePos.Y < Main.maxTilesY)
+				{
+					Tile tile = Main.tile[mouseTilePos];
+					if (tile.HasTile && Main.tileSolid[tile.TileType]) { break; }
+				}
+
+				ref EncounterDescription dsc = ref Unsafe.Unbox<EncounterDescription>(state.BoxedEncounter.Description);
+				dsc.ActivationOrigin = mouseWorld;
+				dsc.SpawnOrigin = mouseTilePos;
+				dsc.SpawnArea = dsc.SpawnArea with { X = mouseTilePos.X - (dsc.SpawnArea.Width / 2), Y = mouseTilePos.Y - (dsc.SpawnArea.Height / 2) };
+				break;
+			case DragKind.SpawnPosition when state is { SelectedEncounter.IsValid: true, SelectedWave: uint waveIndex, SelectedSpawn: uint spawnIndex }:
+				ref EnemySpawn existingSpawn = ref Unsafe.Unbox<EnemySpawn>(state.BoxedEncounter.Waves[(int)waveIndex].Spawns[(int)spawnIndex].Spawn);
+				existingSpawn.SpawnPosition = mouseWorld;
+				existingSpawn.SpawnPlacement = null;
+				break;
+			default:
+				Reset();
+				break;
+		}
+	}
+
+	private static bool DrawGizmos()
+	{
+		SpriteBatch sb = Main.spriteBatch;
+		EncounterEditorState state = SmartUiLoader.GetUiState<EncounterEditorState>();
+
+		static float Pulse(float scale)
+		{
+			return (MathF.Sin(Main.GameUpdateCount * scale) + 1f) * 0.5f;
+		}
+
+		float activeAnim = Pulse(0.075f);
+		float inactiveAnim = Pulse(0.03f);
+		var mousePoint = new Point(Main.mouseX, Main.mouseY);
+		bool allowMouseInteractions = !ActiveDrag.HasValue && !state.PlacementMode;
+
+		if (state.PlacementMode)
+		{
+			SpawnBox spawnBox = state.SelectedSpawn.HasValue ? state.BoxedEncounter.Waves[(int)state.SelectedWave!.Value].Spawns[(int)state.SelectedSpawn.Value] : state.BoxedSpawn;
+			ref readonly EnemySpawn spawn = ref Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn);
+			RenderSpawnGizmo(sb, in spawn, Main.MouseWorld, Color.Lerp(Color.White, Color.YellowGreen, Pulse(0.2f)), default);
+			
+			Main.instance.MouseText($"Left click to place\nRight click to cancel");
+		}
+
+		foreach (Encounter encounter in EnemyEncounters.IterateEncounters())
+		{
+			ref readonly EncounterDescription description = ref encounter.Description;
+			bool isEncounterSelected = state.SelectedEncounter == encounter;
+
+			// Draw spawn origin.
+			Texture2D originTexture = TextureAssets.NpcHeadBoss[19].Value;
+			Vector2 originPos = description.SpawnOrigin.ToWorldCoordinates() - Main.screenPosition;
+			var originColor = Color.Lerp(Color.MediumPurple, Color.White, activeAnim);
+			sb.Draw(originTexture, originPos, null, originColor, 0f, originTexture.Size() * 0.5f, 1.5f, 0, 0f);
+
+			if (allowMouseInteractions && Main.MouseWorld.DistanceSQ(description.SpawnOrigin.ToWorldCoordinates()) < 32f * 32f)
+			{
+				Main.LocalPlayer.mouseInterface = true;
+				Main.instance.MouseText($"Encounter: {description.Identifier} (#{encounter.Index}v{encounter.Version})\n[Click and hold to move]");
+
+				// Select and drag the encounter when clicked on.
+				if (ConsumeMouseClick(0))
+				{
+					if (encounter != state.SelectedEncounter)
+					{
+						state.SetSelections(encounter, null, null);
+					}
+
+					ActiveDrag = new DragContext
+					{
+						Kind = DragKind.EncounterOrigin,
+					};
+				}
+			}
+
+			// Draw spawn area.
+
+			Color areaColor = (isEncounterSelected ? Color.Gold : Color.IndianRed).MultiplyRGBA(new Color(Vector4.One * MathHelper.Lerp(0.25f, 0.35f, activeAnim)));
+			Rectangle spawnArea = description.SpawnArea;
+			Vector4Int worldArea = new Vector4Int(spawnArea.Left, spawnArea.Top, spawnArea.Right, spawnArea.Bottom) * TileUtils.TileSizeInPixels;
+
+			for (int i = 0; i < 4; i++)
+			{
+				var dstRect = new Rectangle
+				{
+					X = (i is not 3 ? worldArea.X : (worldArea.Z - TileUtils.TileSizeInPixels)) - (int)Main.screenPosition.X,
+					Y = (i is not 1 ? worldArea.Y : (worldArea.W - TileUtils.TileSizeInPixels)) - (int)Main.screenPosition.Y,
+					Width = i < 2 ? (worldArea.Z - worldArea.X) : TileUtils.TileSizeInPixels,
+					Height = i < 2 ? TileUtils.TileSizeInPixels : (worldArea.W - worldArea.Y),
+				};
+
+				sb.Draw(TextureAssets.BlackTile.Value, dstRect, areaColor);
+			}
+
+			// Draw manually assigned enemy spawn points for every wave.
+
+			for (uint waveIndex = 0; waveIndex < encounter.Description.Waves.Length; waveIndex++)
+			{
+				ref readonly EncounterWave wave = ref encounter.Description.Waves[waveIndex];
+				bool isWaveCurrent = waveIndex == encounter.Instance.WaveIndex;
+				bool isWaveSelected = isEncounterSelected && state.SelectedWave == waveIndex;
+
+				for (uint spawnIndex = 0; spawnIndex < wave.Spawns.Length; spawnIndex++)
+				{
+					ref readonly EnemySpawn spawn = ref wave.Spawns[spawnIndex];
+					bool isSpawnSelected = isWaveSelected && state.SelectedSpawn == spawnIndex;
+
+					if (spawn.SpawnPosition is not { } spawnPoint) { continue; }
+
+					Color fgColor = new(Vector4.One * MathHelper.Lerp(0.50f, 0.75f, isEncounterSelected ? activeAnim : inactiveAnim));
+					Color bgColor = isSpawnSelected ? Color.GreenYellow : (isWaveSelected ? Color.Orange : new Color(Color.DarkRed.ToVector4() * 0.5f));
+					Rectangle npcRect = RenderSpawnGizmo(sb, in spawn, spawnPoint, fgColor, bgColor);
+
+					// Mouse interaction. Select and drag the spawn when clicked on.
+					if (allowMouseInteractions && npcRect.Inflated(8, 8).Contains(mousePoint))
+					{
+						Main.LocalPlayer.mouseInterface = true;
+						Main.instance.MouseText($"Spawn #{spawnIndex} ({ContentSamples.NpcsByNetId[spawn.NpcType.Type].TypeName})\n[Click and hold to move]\n[Right click to remove]");
+
+						if (ConsumeMouseClick(0))
+						{
+							state.SetSelections(encounter, waveIndex, spawnIndex);
+							ActiveDrag = new DragContext
+							{
+								Kind = DragKind.SpawnPosition,
+							};
+						}
+						else if (ConsumeMouseClick(1) && spawnIndex < state.BoxedEncounter.Waves[(int)waveIndex].Spawns.Count)
+						{
+							// This needs to run before removal, as it can trigger recreation of the boxed tree.
+							if (state.SelectedWave == waveIndex && state.SelectedSpawn >= spawnIndex)
+							{
+								state.SetSelections(state.SelectedEncounter, state.SelectedWave, state.SelectedSpawn > spawnIndex ? (state.SelectedSpawn - 1) : null);
+							}
+
+							state.BoxedEncounter.Waves[(int)waveIndex].Spawns.RemoveAt((int)spawnIndex);
+						}
+					}
+				}
+			}
+		}
+
+		return true;
+	}
+
+	private static Rectangle RenderSpawnGizmo(SpriteBatch sb, ref readonly EnemySpawn spawn, Vector2 spawnPoint, Color color, Color backgroundColor)
+	{
+		// Prepare.
+		NPC sample = ContentSamples.NpcsByNetId[spawn.NpcType.Type];
+		
+		Main.instance.LoadNPC(sample.type);
+		Texture2D texture = TextureAssets.Npc[sample.type].Value;
+
+		Rectangle srcRect = new SpriteFrame(1, (byte)Main.npcFrameCount[sample.type]).GetSourceRectangle(texture);
+		Rectangle dstRect = new
+		(
+			(int)(spawnPoint.X - (srcRect.Width * 0.5f) - Main.screenPosition.X),
+			(int)(spawnPoint.Y - (srcRect.Height * 0.5f) - Main.screenPosition.Y),
+			sample.width,
+			sample.height
+		);
+		
+		Color opaqueColor = sample.color.A == 0 ? Color.White : new(sample.color.ToVector4() / (sample.color.A / (float)byte.MaxValue));
+		Color spawnColor = opaqueColor.MultiplyRGBA(color);
+
+		// Draw hitbox background.
+		sb.Draw(TextureAssets.BlackTile.Value, dstRect, backgroundColor);
+		// Draw NPC sprite.
+		sb.Draw(texture, dstRect.Center(), srcRect, spawnColor, 0f, srcRect.Size() * 0.5f, 1f, 0, 0f);
+
+		return dstRect;
+	}
+
+	private static bool ConsumeMouseClick(int button)
+	{
+		ref bool pressed = ref (button == 0 ? ref Main.mouseLeft : ref Main.mouseRight);
+		ref bool notReleased = ref (button == 0 ? ref Main.mouseLeftRelease : ref Main.mouseRightRelease);
+
+		if (pressed && notReleased)
+		{
+			notReleased = false;
+			return true;
+		}
+
+		return false;
+	}
+}
+
+internal sealed class EncounterEditorCommand : ModCommand
+{
+	public override string Command => "potEncounterEditor";
+	public override CommandType Type => CommandType.Chat;
+
+	public override void Action(CommandCaller caller, string input, string[] args)
+	{
+		// Encounters are a server-side concept, no packets exist to synchronize information about them from the client to server.
+		if (Main.netMode != NetmodeID.SinglePlayer)
+		{
+			throw new UsageException("This command is only available in singleplayer.");
+		}
+
+		SmartUiLoader.GetUiState<EncounterEditorState>().Toggle();
+	}
+}
+
+/// <summary>
+/// A big encounter editor GUI.
+/// <br/> Due to limitations of internally used ModConfig code, operates on boxed copies of data.
+/// </summary>
+internal sealed class EncounterEditorState : SmartUiState
+{
+	public enum SpawningMode
+	{
+		EditingExisting,
+		PlacingCopy,
+		EditingNew,
+		PlacingNew,
+	}
+
+	private const int ScrollbarWidth = 20;
+	private const int ScrollbarOffset = 4;
+
+	private string? lastSearchString;
+
+	public SpawnBox BoxedSpawn;
+	public EncounterBox BoxedEncounter;
+
+	// Selection
+	public Encounter SelectedEncounter { get; private set; }
+	public uint? SelectedWave { get; private set; }
+	public uint? SelectedSpawn { get; private set; }
+	// Encounters & Waves
+	public bool EncountersVisible { get; set; } = true;
+	public UIEditableText EncountersSearchBar { get; private set; } = null!;
+	// Spawning
+	public bool SpawningVisible { get; set; } = true;
+	public bool PlacementMode { get; set; }
+	public bool EditingExistingSpawn => SelectedEncounter.IsValid && SelectedWave.HasValue && SelectedSpawn.HasValue;
+	public SpawningMode CurrentSpawningMode => PlacementMode
+		? (EditingExistingSpawn ? SpawningMode.PlacingCopy : SpawningMode.PlacingNew)
+		: (EditingExistingSpawn ? SpawningMode.EditingExisting : SpawningMode.EditingNew);
+
+#if DEBUG
+	public override bool Visible
+	{
+		// Hide when alt-tabbed to prevent hot reload crashes.
+		get => base.Visible && Main.hasFocus;
+		set => base.Visible = value;
+	}
+#endif
+
+	public override int InsertionIndex(List<GameInterfaceLayer> layers)
+	{
+		return layers.FindIndex(layer => layer.Name.Equals("Vanilla: Cursor")) - 1;
+	}
+
+	public override void SafeUpdate(GameTime gameTime)
+	{
+		if (!PlayerInput.WritingText)
+		{
+			ExportData();
+		}
+	}
+
+	public void Toggle()
+	{
+		if (!Visible)
+		{
+			EncountersVisible = true;
+			SpawningVisible = true;
+		}
+
+		SetEnabled(!Visible);
+	}
+
+	public void SetEnabled(bool value)
+	{
+		if (Visible == value)
+		{
+			return;
+		}
+
+		Visible = value;
+
+		if (Visible)
+		{
+			Rebuild();
+		}
+		else
+		{
+			RemoveAllChildren();
+		}
+	}
+
+	public void EnqueueRebuild()
+	{
+		Main.QueueMainThreadAction(Rebuild);
+	}
+
+	public void Rebuild()
+	{
+		RemoveAllChildren();
+
+		if (!EncountersVisible && !SpawningVisible)
+		{
+			Visible = false;
+		}
+
+		if (EncountersVisible) { BuildEncountersWindow(); }
+
+		if (SpawningVisible) { BuildSpawningWindow(); }
+	}
+
+	public void SetSelections(Encounter encounter, uint? waveIndex, uint? spawnIndex, bool noRebuild = false)
+	{
+		// Update indices.
+		SelectedEncounter = encounter;
+		SelectedWave = (encounter.IsValid && waveIndex.HasValue) ? (uint)Math.Min(waveIndex.Value, (encounter.Description.Waves.Length - 1)) : null;
+		SelectedSpawn = (encounter.IsValid && SelectedWave.HasValue && spawnIndex.HasValue) ? (uint)Math.Min(spawnIndex.Value, encounter.Description.Waves[SelectedWave.Value].Spawns.Length - 1) : null;
+
+		ImportData(encounter.IsValid ? encounter.Description : null);
+		
+		// Update the placement mode spawn data.
+		if (SelectedSpawn.HasValue)
+		{
+			EnemySpawn spawn = encounter.Description.Waves[SelectedWave!.Value].Spawns[SelectedSpawn.Value];
+			BoxedSpawn.Spawn = spawn;
+			BoxedSpawn.Placement = spawn.SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(spawn.NpcType.Type);
+		}
+		else
+		{
+			int npcType = NPCID.Zombie;
+			BoxedSpawn.Spawn ??= new EnemySpawn {
+				NpcType = new(npcType),
+				SpawnPlacement = null,
+				SpawnPosition = Main.LocalPlayer.Center,
+			};
+			BoxedSpawn.Placement ??= ((EnemySpawn)BoxedSpawn.Spawn).SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(npcType);
+		}
+
+		if (!noRebuild) { EnqueueRebuild(); }
+	}
+
+	/// <summary> Updates internal box copies from the provided encounter description. </summary>
+	public void ImportData(EncounterDescription? tree)
+	{
+		// Create a tree of boxed objects from the selected encounter.
+		BoxedEncounter = tree.HasValue ? (EncounterBox)tree : default;
+	}
+
+	/// <summary> Synchronizes the selected encounter's data with its internal boxed copies. </summary>
+	public void ExportData()
+	{
+		if (!SelectedEncounter.IsValid) { return; }
+
+		if (BoxedEncounter.Waves == default) { return; }
+
+		bool needsRebuild = false;
+		bool isDifferent = false;
+		List<WaveBox> waveBoxes = BoxedEncounter.Waves;
+		ref readonly EncounterDescription refDesc = ref SelectedEncounter.Description;
+		ref EncounterDescription boxDesc = ref Unsafe.Unbox<EncounterDescription>(BoxedEncounter.Description!);
+		EncounterDescription dstDesc = boxDesc with { Waves = refDesc.Waves };
+
+		// Update wave destination array sizes.
+		if (refDesc.Waves.Length != waveBoxes.Count)
+		{
+			(EncounterWave[] waves, int oldLength, int newLength) = (refDesc.Waves, refDesc.Waves.Length, waveBoxes.Count);
+			Array.Resize(ref waves, newLength);
+			for (int i = oldLength; i < newLength; i++) { waves[i] = ((EncounterWave)waveBoxes[i].Wave) with { Spawns = [] }; }
+
+			(dstDesc.Waves, isDifferent, needsRebuild) = (waves, true, true);
+		}
+
+		for (int waveIndex = 0, leastWaves = Math.Min(waveBoxes.Count, refDesc.Waves.Length); waveIndex < leastWaves; waveIndex++)
+		{
+			List<SpawnBox> spawnBoxes = waveBoxes[waveIndex].Spawns;
+			ref EncounterWave refWave = ref refDesc.Waves[waveIndex];
+			ref EncounterWave boxWave = ref Unsafe.Unbox<EncounterWave>(waveBoxes[waveIndex].Wave);
+			EncounterWave dstWave = boxWave with { Spawns = refWave.Spawns };
+
+			// Update wave contents.
+			if (refWave != dstWave)
+			{
+				refWave = dstWave;
+				isDifferent = true;
+			}
+
+			// Update spawn destination array sizes.
+			if (refWave.Spawns.Length != spawnBoxes.Count)
+			{
+				(EnemySpawn[] spawns, int oldLength, int newLength) = (refWave.Spawns, refWave.Spawns.Length, spawnBoxes.Count);
+				Array.Resize(ref spawns, newLength);
+				for (int i = oldLength; i < newLength; i++) { spawns[i] = (EnemySpawn)spawnBoxes[i].Spawn; }
+
+				(refWave.Spawns, isDifferent, needsRebuild) = (spawns, true, true);
+			}
+
+			// Update spawn destination array contents.
+			for (int spawnIndex = 0; spawnIndex < refWave.Spawns.Length; spawnIndex++)
+			{
+				ref EnemySpawn refSpawn = ref refWave.Spawns[spawnIndex];
+				ref EnemySpawn boxSpawn = ref Unsafe.Unbox<EnemySpawn>(spawnBoxes[spawnIndex].Spawn);
+				ref SpawnPlacement boxPlacement = ref Unsafe.Unbox<SpawnPlacement>(spawnBoxes[spawnIndex].Placement);
+
+				if (boxSpawn != refSpawn)
+				{
+					needsRebuild |= boxSpawn.NpcType.Type != refSpawn.NpcType.Type;
+					(refSpawn, isDifferent) = (boxSpawn, true);
+				}
+
+				if (refSpawn.SpawnPlacement.HasValue && refSpawn.SpawnPlacement.Value != boxPlacement)
+				{
+					(refSpawn.SpawnPlacement, isDifferent) = (boxPlacement, true);
+				}
+			}
+		}
+
+		isDifferent |= refDesc != dstDesc;
+
+		if (isDifferent)
+		{
+			// Sanitize.
+			dstDesc.Identifier = !dstDesc.Identifier.All(char.IsAsciiLetterOrDigit) ? new string(dstDesc.Identifier.Where(char.IsAsciiLetterOrDigit).ToArray()) : dstDesc.Identifier;
+			dstDesc.Identifier = dstDesc.Identifier.Length == 0 ? refDesc.Identifier : dstDesc.Identifier;
+			dstDesc.MusicIndex = Math.Max(-1, Math.Min(dstDesc.MusicIndex, MusicLoader.MusicCount));
+
+			needsRebuild |= dstDesc.Identifier != refDesc.Identifier;
+			SelectedEncounter.ModifyDescription(dstDesc);
+		}
+
+		if (needsRebuild)
+		{
+			EnqueueRebuild();
+		}
+	}
+
+	private UIElement BuildEncountersWindow()
+	{
+		var padding = new Vector4(8f, 40f, 8f, 8f);
+
+		UIElement window = this.AddElement(new UIPanel(), e =>
+		{
+			e.MinWidth.Set(+960f, 0f);
+			e.MinHeight.Set(+300f, 0f);
+
+			e.SetDimensions(x: (0.0f, +32), y: (1.00f, -(450 + 32)), width: (0.0f, +512), height: (0f, +450));
+
+			e.AddComponent(new UIPersistent("Encounters_MainWindow"));
+			e.AddComponent(new UIMouseDrag(canMove: true, canResize: true));
+		});
+		// Header.
+		window.AddElement(new UIText("Encounters"), e =>
+		{
+			e.SetDimensions(x: (0.0f, +padding.X), y: (0.00f, +4));
+			e.IgnoresMouseInteraction = true;
+		});
+		// Close button.
+		window.AddElement(new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton")), e =>
+		{
+			e.SetDimensions(x: (1.0f, -34), y: (0.00f, -3), width: (0.0f, +38), height: (0f, +38));
+			e.SetVisibility(1f, 0.8f);
+			e.OnLeftClick += (evt, self) =>
+			{
+				EncountersVisible = false;
+				EnqueueRebuild();
+			};
+		});
+
+		// 'Add' button.
+		window.AddElement(new UIButton<string>("Add New"), e =>
+		{
+			e.SetDimensions(x: (0.0f, +padding.X + 96f), y: (0.00f, +0), width: (0.0f, +80), height: (0f, +32));
+			e.OnLeftClick += (evt, self) =>
+			{
+				Vector2 basePosition = Main.LocalPlayer.Center;
+				Point16 basePoint = basePosition.ToTileCoordinates16();
+				EnemySpawn[] dummySpawns =
+				[
+					new EnemySpawn { NpcType = new(NPCID.BlueSlime), SpawnPlacement = EncounterEditor.DefaultPlacement.WithDefaults(NPCID.BlueSlime), SpawnPosition = null },
+					new EnemySpawn { NpcType = new(NPCID.DemonEye), SpawnPlacement = EncounterEditor.DefaultPlacement.WithDefaults(NPCID.DemonEye), SpawnPosition = null },
+					new EnemySpawn { NpcType = new(NPCID.Zombie), SpawnPlacement = EncounterEditor.DefaultPlacement.WithDefaults(NPCID.Zombie), SpawnPosition = null },
+				];
+				var dummyWave = new EncounterWave { Spawns = dummySpawns };
+
+				Encounter encounter = EnemyEncounters.CreateEncounter(new EncounterDescription
+				{
+					Identifier = "NewEncounter",
+					ActivationRange = 512f,
+					ActivationOrigin = basePosition,
+					SpawnArea = new Rectangle(basePoint.X - 32, basePoint.Y - 16, 64, 32),
+					SpawnOrigin = basePoint,
+					Waves = [dummyWave],
+				});
+
+				encounter.SetPaused(true);
+				SetSelections(encounter, 0, null);
+			};
+		});
+
+		// Search bar
+
+		UIPanel searchBG = window.AddElement(new UIPanel(), e =>
+		{
+			e.SetDimensions(x: (0.0f, +192), y: (0.00f, +0), width: (1.0f, -232), height: (0f, +32));
+		});
+		EncountersSearchBar = window.AddElement(EncountersSearchBar ?? new UIEditableText(backingText: "Search..."), e =>
+		{
+			e.SetDimensions(x: (0.0f, +192 + 8f), y: (0.00f, +0), width: (1.0f, -232 - 16f), height: (0f, +32));
+
+			if (EncountersSearchBar != null)
+			{
+				return;
+			}
+
+			e.CurrentValue = lastSearchString;
+			e.OnUpdate += uiElement =>
+			{
+				if (uiElement is UIEditableText e && e.CurrentValue != lastSearchString)
+				{
+					EnqueueRebuild();
+					lastSearchString = e.CurrentValue;
+				}
+			};
+		});
+
+		const int EncountersWidth = 480; 
+
+		UIElement listArea = window.AddElement(new UIElement(), e =>
+		{
+			e.SetDimensions(x: (0.00f, +padding.X), y: (0.00f, +padding.Y), width: (0.00f, +EncountersWidth - (padding.X + padding.Z)), height: (1.00f, -(padding.Y + padding.W)));
+		});
+		UIElement detailsArea = window.AddElement(new UIElement(), e =>
+		{
+			e.SetDimensions(x: (0.00f, +EncountersWidth + padding.X), y: (0.00f, +padding.Y), width: (1.00f, -(EncountersWidth + (padding.X + padding.Z))), height: (1.00f, -(padding.Y + padding.W)));
+		});
+
+		BuildEncountersList(listArea);
+		BuildEncounterDetails(detailsArea);
+
+		return window;
+	}
+
+	private void BuildEncountersList(UIElement parent)
+	{
+		// Encounter list
+
+		UIList list = parent.AddElement(new UIList(), e =>
+		{
+			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
+		});
+		parent.AddElement(new FixedUIScrollbar(UserInterface), e =>
+		{
+			e.SetDimensions(x: (1.00f, -ScrollbarWidth), y: (0.00f, +6), width: (0.00f, +ScrollbarWidth), height: (1.00f, -12));
+			e.AddComponent(new UIPersistent("EncountersListScrollbar"));
+			list.SetScrollbar(e);
+		});
+
+		StringBuilder stringBuilder = new();
+		int encounterIndex = -1;
+
+		foreach (Encounter encounter in EnemyEncounters.IterateEncounters())
+		{
+			ref readonly EncounterDescription description = ref encounter.Description;
+
+			if (!string.IsNullOrEmpty(EncountersSearchBar.CurrentValue) && !description.Identifier.Contains(EncountersSearchBar.CurrentValue, StringComparison.InvariantCultureIgnoreCase))
+			{
+				continue;
+			}
+
+			encounterIndex++;
+
+			// Select the first encounter in the list if none is selected.
+			if (!SelectedEncounter.IsValid)
+			{
+				SetSelections(encounter, null, null, noRebuild: true);
+			}
+
+			// Selectable Panel
+			float buttonX = 0f;
+			UIPanel itemPanel = list.AddElement(new UIPanel(), e =>
+			{
+				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * encounterIndex), width: (1.0f, +0), height: (0f, +80));
+
+				Color defaultBorderColor = e.BorderColor = Color.PaleVioletRed;
+				e.OnUpdate += self => ((UIPanel)self).BorderColor = SelectedEncounter == encounter ? Color.Gold : defaultBorderColor;
+				e.OnLeftClick += (self, evt) => SetSelections(encounter, null, null);
+			});
+
+			// Name
+			itemPanel.AddElement(new UIText($"[c/{Color.YellowGreen.ToHexRGB()}:{description.Identifier}] (#{encounterIndex})"), e =>
+			{
+				e.SetDimensions(x: (0.0f, +0), y: (0.0f, +0), width: (0.0f, +0), height: (0f, +128));
+				e.IgnoresMouseInteraction = true;
+			});
+
+			// State info panel
+			itemPanel.AddElement(new UIButton<string>(""), e =>
+			{
+				e.BackgroundColor = e.HoverPanelColor = Color.IndianRed;
+				e.AltPanelColor = e.AltHoverPanelColor = Color.Orange;
+				e.AltHoverBorderColor = e.HoverBorderColor = e.BorderColor;
+				e.UseAltColors = () => encounter.IsValid && encounter.Instance.State is not EncounterState.NotStarted && !encounter.Instance.IsPaused;
+
+				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +128), height: (0f, +32));
+				e.AddComponent(new UIDynamicText(() =>
+				{
+					if (!encounter.IsValid) { return string.Empty; }
+
+					return encounter.Instance.State switch
+					{
+						_ when encounter.Instance.IsPaused => "Paused",
+						EncounterState.InProgress => $"Wave {encounter.Instance.WaveIndex + 1} of {encounter.Description.Waves.Length}",
+						EncounterState.NotStarted => "Inactive",
+						EncounterState.Completed => "Completed",
+						_ => throw new NotImplementedException(),
+					};
+				}));
+
+				buttonX += e.Width.Pixels + 8f;
+			});
+
+			// 'Start'/'Complete' button
+			itemPanel.AddElement(new UIButton<string>("Start"), e =>
+			{
+				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +80), height: (0f, +32));
+				e.AddComponent(new UIDynamicText(() =>
+				{
+					if (!encounter.IsValid) { return string.Empty; }
+
+					return encounter.Instance.State is EncounterState.NotStarted or EncounterState.Completed ? "Start" : "Complete";
+				}));
+
+				e.OnLeftClick += (evt, self) =>
+				{
+					if (!encounter.IsValid) { return; }
+
+					if (encounter.Instance.State is EncounterState.NotStarted or EncounterState.Completed) { encounter.Start(); } else { encounter.Complete(); }
+				};
+
+				buttonX += e.Width.Pixels + 2f;
+			});
+			// 'Pause'/'Resume' button
+			itemPanel.AddElement(new UIButton<string>("Pause"), e =>
+			{
+				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +80), height: (0f, +32));
+				e.AddComponent(new UIDynamicText(() =>
+				{
+					if (!encounter.IsValid) { return string.Empty; }
+
+					return !encounter.Instance.IsPaused ? "Pause" : "Resume";
+				}));
+				e.OnLeftClick += (evt, self) => encounter.SetPaused(!encounter.Instance.IsPaused);
+
+				buttonX += e.Width.Pixels + 2f;
+			});
+			// 'Reset' button
+			itemPanel.AddElement(new UIButton<string>("Reset"), e =>
+			{
+				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +80), height: (0f, +32));
+				e.OnLeftClick += (evt, self) =>
+				{
+					if (!encounter.IsValid) { return; }
+
+					bool wasPaused = encounter.Instance.IsPaused;
+					encounter.Reset();
+					encounter.SetPaused(wasPaused);
+				};
+
+				buttonX += e.Width.Pixels + 2f;
+			});
+			// Removal button
+			itemPanel.AddElement(new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton")), e =>
+			{
+				e.SetDimensions(x: (1.0f, -33f), y: (0.0f, +20), width: (0.0f, +38), height: (0f, +38));
+				e.SetVisibility(1f, 0.8f);
+				e.OnLeftClick += (evt, self) =>
+				{
+					encounter.Remove();
+					EnqueueRebuild();
+				};
+			});
+		}
+
+		// Notify that no encounters exist.
+		if (encounterIndex < 0)
+		{
+			list.AddElement(new UITextPanel<string>("No encounters exist. Click 'Add New' above."), e =>
+			{
+				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * 0), width: (1.0f, +0), height: (0f, +40));
+			});
+		}
+	}
+
+	private void BuildEncounterDetails(UIElement parent)
+	{
+		UIList list = parent.AddElement(new UIList(), e =>
+		{
+			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
+		});
+		parent.AddElement(new FixedUIScrollbar(UserInterface), e =>
+		{
+			e.SetDimensions(x: (1.00f, -ScrollbarWidth), y: (0.00f, +6), width: (0.00f, +ScrollbarWidth), height: (1.00f, -12));
+			e.AddComponent(new UIPersistent("EncounterDetailsScrollBar"));
+			list.SetScrollbar(e);
+		});
+
+		if (!SelectedEncounter.IsValid)
+		{
+			list.AddElement(new UITextPanel<string>("Click an encounter panel to select it."), e =>
+			{
+				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * 0), width: (1.0f, +0), height: (0f, +40));
+			});
+		}
+		else
+		{
+			// Add options for all elements, reusing ModConfig code.
+
+			int yPos = 0;
+			int elementIndex = 0;
+
+			// Encounter properties:
+			AddSortableElement(list, elementIndex++, new UIText($"Encounter: {SelectedEncounter.Description.Identifier}"));
+
+			foreach (PropertyInfo property in typeof(EncounterDescription).GetProperties())
+			{
+				// Skip properties handled in other ways.
+				if (property.Name is { }
+					and not nameof(EncounterDescription.Waves)
+					and not nameof(EncounterDescription.SpawnArea)
+					and not nameof(EncounterDescription.SpawnOrigin)
+					and not nameof(EncounterDescription.ActivationOrigin))
+				{
+					ConfigManager.WrapIt(list, ref yPos, new(property), BoxedEncounter.Description, elementIndex++);
+				}
+			}
+
+			// Waves properties:
+			PopulateListWithAllWaveControls(list, SelectedEncounter, ref elementIndex, ref yPos);
+		}
+	}
+
+	private void PopulateListWithAllWaveControls(UIList list, Encounter encounter, ref int elementIndex, ref int yPos)
+	{
+		for (uint waveIndex = 0; waveIndex < encounter.Description.Waves.Length; waveIndex++)
+		{
+			AddSortableElement(list, elementIndex++, new UIText($"Wave #{waveIndex}"));
+
+			PopulateListWithSingleWaveControls(list, encounter, waveIndex, ref elementIndex, ref yPos);
+		}
+
+		AddSortableElement(list, elementIndex++, new UIButton<string>($"New Wave"), e =>
+		{
+			e.SetDimensions(width: (1f, +0f), height: (0f, +24f));
+
+			e.OnLeftClick += (evt, e) =>
+			{
+				if (!encounter.IsValid) { return; }
+
+				ref readonly EncounterWave baseWave = ref encounter.Description.Waves[^1];
+				BoxedEncounter.Waves.Add((WaveBox)(baseWave with { Spawns = [] }));
+				ExportData();
+				EnqueueRebuild();
+			};
+		});
+	}
+
+	private void PopulateListWithSingleWaveControls(UIList list, Encounter encounter, uint waveIndex, ref int elementIndex, ref int yPos)
+	{
+		ref readonly EncounterWave wave = ref encounter.Description.Waves[waveIndex];
+		bool isWaveSelected = SelectedWave == waveIndex;
+
+		int gridButtonSize = 48;
+		int gridRows = 3;
+		int gridHeight = (gridButtonSize * gridRows) + 12;
+		int panelHeight = (gridHeight + 64);
+
+		UIPanel wavePanel = CreateSortableElement(elementIndex++, new UIButton<string>(string.Empty), e =>
+		{
+			// Temporary dimensions.
+			e.SetDimensions(width: (0f, +list.GetInnerDimensions().Width), height: (0f, +1024));
+
+			if (isWaveSelected)
+			{
+				e.BackgroundColor = Color.DarkGoldenrod;
+				e.HoverPanelColor = Color.Goldenrod;
+			}
+
+			e.OnLeftClick += (evt, e) =>
+			{
+				if (SelectedEncounter.IsValid && SelectedWave != waveIndex) { SetSelections(SelectedEncounter, waveIndex, null); }
+			};
+		});
+		UIList wavePanelList = wavePanel.AddElement(new UIList(), e =>
+		{
+			e.SetDimensions(width: (1f, +0), height: (1f, +0));
+		});
+
+		// Selected wave properties:
+
+		foreach (PropertyInfo property in typeof(EncounterWave).GetProperties())
+		{
+			// Skip properties handled in other ways.
+			if (property.Name is not nameof(EncounterWave.Spawns))
+			{
+				ConfigManager.WrapIt(wavePanelList, ref yPos, new(property), BoxedEncounter.Waves[(int)waveIndex].Wave, elementIndex++);
+			}
+		}
+
+		// Wave spawn selectors:
+
+		AddSortableElement(wavePanelList, elementIndex++, new UIText("Spawns"), e =>
+		{
+			e.IgnoresMouseInteraction = true;
+		});
+		UIGrid grid = wavePanelList.AddElement(new UIGrid(), e =>
+		{
+			e.SetDimensions(width: (1f, +0f), height: (1f, +0));
+		});
+
+		for (uint spawnIndex = 0; spawnIndex < wave.Spawns.Length; spawnIndex++)
+		{
+			uint spawnIndexCopy = spawnIndex;
+			bool isSpawnSelected = isWaveSelected && spawnIndexCopy == SelectedSpawn;
+			EnemySpawn spawn = wave.Spawns[spawnIndex];
+
+			int type = ContentSamples.NpcsByNetId[spawn.NpcType.Type].type;
+			Main.instance.LoadNPC(type);
+			Asset<Texture2D> texture = TextureAssets.Npc[type];
+			Rectangle frame = new SpriteFrame(1, (byte)Main.npcFrameCount[type]).GetSourceRectangle(texture.Value);
+
+			UISortableElement sortable = grid.AddElement(new UISortableElement((int)spawnIndex));
+			UIButton<string> container = sortable.AddElement(new UIButton<string>(string.Empty), e =>
+			{
+				e.SetDimensions(width: (0f, +gridButtonSize), height: (0f, +gridButtonSize));
+				e.OverflowHidden = true;
+				e.BorderColor = spawn.SpawnPosition.HasValue ? Color.Orange : Color.LightSkyBlue;
+				e.HoverText = $"Spawn #{spawnIndexCopy} ({spawn.NpcType.DisplayName})\nRight click to remove";
+
+				if (isSpawnSelected)
+				{
+					e.BackgroundColor = ColorUtils.FromHexRgb(0x798fde);
+					e.HoverPanelColor = ColorUtils.FromHexRgb(0x7ea9c2);
+				}
+
+				e.OnLeftClick += (evt, e) =>
+				{
+					if (evt.Target == e) { SetSelections(SelectedEncounter, waveIndex, spawnIndexCopy); }
+				};
+				e.OnRightClick += (evt, e) =>
+				{
+					if (evt.Target != e || !SelectedEncounter.IsValid) { return; }
+
+					if (spawnIndexCopy >= BoxedEncounter.Waves[(int)waveIndex].Spawns.Count) { return; }
+
+					// This needs to run before removal, as it can trigger recreation of the boxed tree.
+					if (SelectedWave == waveIndex && SelectedSpawn >= spawnIndexCopy)
+					{
+						SetSelections(SelectedEncounter, SelectedWave, SelectedSpawn > spawnIndexCopy ? (SelectedSpawn - 1) : null);
+					}
+
+					BoxedEncounter.Waves[(int)waveIndex].Spawns.RemoveAt((int)spawnIndexCopy);
+				};
+			});
+
+			container.AddElement(new UIImageFramed(texture, frame), e =>
+			{
+				e.SetDimensions(x: (0.5f, -(frame.Width * 0.5f)), y: (0.5f, -(frame.Height * 0.5f)), width: (0f, +0f), height: (0f, +0f));
+				e.IgnoresMouseInteraction = true;
+			});
+
+			sortable.CopyDimensionsFrom(container);
+		}
+
+		// Update sizes.
+		grid.Recalculate();
+		grid.Height.Set(grid.GetTotalHeight(), 0f);
+		wavePanelList.Recalculate();
+		wavePanelList.Height.Set(wavePanelList.GetTotalHeight(), 0f);
+		wavePanel.Height.Set(wavePanelList.GetTotalHeight() + wavePanel.PaddingTop + wavePanel.PaddingBottom, 0f);
+		
+		// We have to delay addition due to the buggy list implementation seemingly not recalculating its inner element.
+		list.Add(wavePanel);
+		list.Remove(wavePanel);
+		list.Add(wavePanel);
+	}
+
+	private UIElement BuildSpawningWindow()
+	{
+		var padding = new Vector4(0f, 40f, 0f, 8f);
+
+		UIElement window = this.AddElement(new UIPanel(), e =>
+		{
+			e.MinWidth.Set(+300f, 0f);
+			e.MinHeight.Set(+300f, 0f);
+
+			float alpha = e.BackgroundColor.A / (float)byte.MaxValue;
+
+			if (PlacementMode || EncounterEditor.ActiveDrag is { Kind: EncounterEditor.DragKind.SpawnPosition })
+			{
+				e.BackgroundColor = Color.DarkSlateGray.MultiplyRGBA(new(Vector4.One * alpha));
+			}
+			else if (CurrentSpawningMode == SpawningMode.EditingExisting)
+			{
+				e.BackgroundColor = Color.PaleVioletRed.MultiplyRGBA(new(Vector4.One * alpha));
+			}
+
+			e.SetDimensions(x: (1.0f, -(512 + 32)), y: (1.0f, -(300 + 32)), width: (0.0f, +512), height: (0.00f, +300));
+
+			e.AddComponent(new UIPersistent("Encounters_SpawningWindow"));
+			e.AddComponent(new UIMouseDrag(canMove: true, canResize: true));
+		});
+		// Header.
+		window.AddElement(new UIText(""), e =>
+		{
+			e.SetDimensions(x: (0.0f, +padding.X), y: (0.00f, +4));
+			e.AddComponent(new UIDynamicText(() => CurrentSpawningMode switch
+			{
+				SpawningMode.EditingExisting when EncounterEditor.ActiveDrag is { Kind: EncounterEditor.DragKind.SpawnPosition } => "Moving Existing...",
+				SpawningMode.PlacingNew or SpawningMode.PlacingCopy => "Placing Spawn...",
+				SpawningMode.EditingExisting => "Editing Spawn",
+				SpawningMode.EditingNew => "New Spawn",
+				_ => "",
+			}));
+			e.IgnoresMouseInteraction = true;
+		});
+		// Close button.
+		window.AddElement(new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton")), e =>
+		{
+			e.SetDimensions(x: (1.0f, -34), y: (0.00f, -3), width: (0.0f, +38), height: (0f, +38));
+			e.SetVisibility(1f, 0.8f);
+			e.OnLeftClick += (evt, self) =>
+			{
+				SpawningVisible = false;
+				EnqueueRebuild();
+			};
+		});
+
+		UIElement innerArea = window.AddElement(new UIElement(), e =>
+		{
+			e.SetDimensions(x: (0.00f, +padding.X), y: (0.00f, +padding.Y), width: (1.00f, -(padding.X + padding.Z)), height: (1.00f, -(padding.Y + padding.W)));
+		});
+
+		UIList list = innerArea.AddElement(new UIList(), e =>
+		{
+			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
+		});
+		innerArea.AddElement(new FixedUIScrollbar(UserInterface), e =>
+		{
+			e.SetDimensions(x: (1.00f, -ScrollbarWidth), y: (0.00f, +6), width: (0.00f, +ScrollbarWidth), height: (1.00f, -12));
+			e.AddComponent(new UIPersistent("SpawningWindowScrollbar"));
+			list.SetScrollbar(e);
+		});
+
+		if (!SelectedEncounter.IsValid || !SelectedWave.HasValue)
+		{
+			list.AddElement(new UIText("No encounter or wave selected."));
+		}
+		else
+		{
+			int yPos = 0;
+			int elementIndex = 0;
+			SpawnBox usedSpawnBox = CurrentSpawningMode == SpawningMode.EditingExisting ? BoxedEncounter.Waves[(int)SelectedWave.Value].Spawns[(int)SelectedSpawn!.Value] : BoxedSpawn;
+			PopulateListWithSpawnControls(list, usedSpawnBox, ref elementIndex, ref yPos);
+		}
+
+		return window;
+	}
+
+	private void PopulateListWithSpawnControls(UIList list, SpawnBox spawnBox, ref int elementIndex, ref int yPos)
+	{
+		// Editing->Adding one-way mode toggle.
+		AddSortableElement(list, elementIndex++, new UIText("Control"), e =>
+		{
+			const float LeftF = 0.25f;
+			const float WidthF = 0.75f * 0.5f;
+
+			(e.TextOriginX, e.TextOriginY) = (0f, 0.5f);
+			e.SetDimensions(x: (0f, +0f), width: (1f, +0f), height: (0f, +32f));
+
+			// Place/Add/Duplicate button.
+			e.AddElement(new UIButton<string>(""), e =>
+			{
+				e.SetDimensions(x: (LeftF, +0f), width: (WidthF, +0f), height: (1f, +0f));
+				e.AddComponent(new UIDynamicText(() =>
+				{
+					return CurrentSpawningMode switch
+					{
+						SpawningMode.EditingExisting => "Copy",
+						SpawningMode.EditingNew => "Add",
+						_ => "",
+					};
+				}));
+
+				e.OnLeftClick += (evt, e) =>
+				{
+					if (evt.Target != e || !SelectedEncounter.IsValid || !SelectedWave.HasValue) { return; }
+
+					if (CurrentSpawningMode is SpawningMode.EditingNew or SpawningMode.EditingExisting)
+					{
+						bool existing = CurrentSpawningMode == SpawningMode.EditingExisting;
+						var spawnCopy = (EnemySpawn)spawnBox.Spawn;
+
+						if (spawnCopy.SpawnPlacement.HasValue)
+						{
+							List<SpawnBox> spawns = BoxedEncounter.Waves[(int)SelectedWave.Value].Spawns;
+							int index = SelectedSpawn.HasValue ? ((int)SelectedSpawn.Value + 1) : spawns.Count;
+							spawns.Insert(index, (SpawnBox)spawnCopy);
+						}
+						else
+						{
+							PlacementMode = true;
+						}
+
+						EnqueueRebuild();
+					}
+				};
+			});
+
+			// Stop/Cancel button.
+			e.AddElement(new UIButton<string>(""), e =>
+			{
+				e.SetDimensions(x: (LeftF + WidthF, +0f), width: (WidthF, +0f), height: (1f, +0f));
+				e.AddComponent(new UIDynamicText(() => CurrentSpawningMode switch
+				{
+					SpawningMode.EditingExisting => "Stop Editing",
+					SpawningMode.PlacingNew => "Cancel Placement",
+					_ => ""
+				}));
+
+				e.OnLeftClick += (evt, e) =>
+				{
+					if (evt.Target != e || !SelectedEncounter.IsValid) { return; }
+
+					SetSelections(SelectedEncounter, SelectedWave, null);
+				};
+			});
+		});
+
+		foreach (PropertyInfo property in typeof(EnemySpawn).GetProperties())
+		{
+			// Skip properties handled in other ways.
+			if (property.Name is not nameof(EnemySpawn.SpawnPosition) and not nameof(EnemySpawn.SpawnPlacement))
+			{
+				ConfigManager.WrapIt(list, ref yPos, new(property), spawnBox.Spawn, elementIndex++);
+			}
+		}
+
+		// Manual/Automatic placement toggle.
+		AddSortableElement(list, elementIndex++, new UIText(""), e =>
+		{
+			(e.TextOriginX, e.TextOriginY) = (0.0f, 0.5f);
+			e.SetDimensions(width: (1f, +0f), height: (0f, +32f));
+			e.AddComponent(new UIDynamicText
+			(
+				() => SelectedEncounter.IsValid && Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn).SpawnPosition.HasValue ? "Manual Placement" : "Automatic Placement"
+			));
+
+			e.AddElement(new UIButton<string>(""), e =>
+			{
+				e.SetDimensions(x: (0.5f, +0f), width: (0.5f, +0f), height: (1f, +0f));
+				e.AddComponent(new UIDynamicText
+				(
+					() => SelectedEncounter.IsValid && Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn).SpawnPosition.HasValue ? "Use Dynamic Placement" : "Use Manual Position"
+				));
+				e.OnLeftClick += (evt, e) =>
+				{
+					if (!SelectedEncounter.IsValid) { return; }
+
+					ref EnemySpawn spawn = ref Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn);
+					bool makingDynamic = !spawn.SpawnPlacement.HasValue;
+
+					spawn.SpawnPlacement = makingDynamic ? (spawnBox.Placement is SpawnPlacement placement ? placement : EncounterEditor.DefaultPlacement.WithDefaults(spawn.NpcType.Type)) : null;
+					spawn.SpawnPosition = makingDynamic ? null : Main.LocalPlayer.Center;
+
+					// If the spawn exists, define a position for it now.
+					if (!makingDynamic && SelectedSpawn.HasValue)
+					{
+						EncounterEditor.ActiveDrag = new()
+						{
+							Kind = EncounterEditor.DragKind.SpawnPosition,
+							MouseLeftValueToStopAt = true,
+							MouseRightValueToStopAt = true,
+						};
+					}
+
+					EnqueueRebuild();
+				};
+			});
+		});
+
+		ref EnemySpawn spawn = ref Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn);
+
+		if (spawn.SpawnPlacement.HasValue)
+		{
+			foreach (PropertyInfo property in typeof(SpawnPlacement).GetProperties())
+			{
+				if (property.Name is nameof(SpawnPlacement.Area) or nameof(SpawnPlacement.AreaOrigin) or nameof(SpawnPlacement.CollisionSize)) { continue; }
+
+				ConfigManager.WrapIt(list, ref yPos, new(property), spawnBox.Placement, elementIndex++);
+			}
+		}
+	}
+
+	private static T AddSortableElement<T>(UIElement parent, int elementIndex, T child, Action<T>? initAction = null) where T : UIElement
+	{
+		return parent.AddElement(CreateSortableElement(elementIndex, child, initAction));
+	}
+	private static T CreateSortableElement<T>(int elementIndex, T child, Action<T>? initAction = null) where T : UIElement
+	{
+		UISortableElement container = new UISortableElement(elementIndex);
+		container.SetDimensions(width: (1f, +0f), height: (1f, +0f));
+
+		T result = container.AddElement(child, initAction);
+		container.Recalculate();
+
+		container.SetDimensions(width: (1f, +0f), height: (0f, result.GetOuterDimensions().Height));
+
+		return result;
+	}
+}
