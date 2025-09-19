@@ -43,6 +43,10 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color Positive => ColorUtils.FromHexRgb(0x_99e550);
 		public static Color Negative => ColorUtils.FromHexRgb(0x_ac3232);
 		public static Color Levels => ColorUtils.FromHexRgb(0x_d8b47a);
+		public static Color FireDamage => ColorUtils.FromHexRgb(0xFF6A6A); 
+		public static Color ColdDamage => ColorUtils.FromHexRgb(0x5FCDE4);
+		public static Color LightningDamage => ColorUtils.FromHexRgb(0xFFF68F); 
+		public static Color ChaosDamage => ColorUtils.FromHexRgb(0xC084FC);
 		// Accents
 		public static Color StatsAccent => ColorUtils.FromHexRgb(0x_a1bdbd);
 		public static Color AffixAccent => ColorUtils.FromHexRgb(0x_ff2222);
@@ -281,26 +285,63 @@ public sealed partial class ItemTooltips : GlobalItem
 			//15% var
 			float minDamage = finalDamage * 0.85f;
 			float maxDamage = finalDamage * 1.15f;
-    
-			string highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})");
-			var damageLine = new TooltipLine(Mod, "Damage", $"{ColoredDot(Colors.StatsAccent)} {highlightNumbers}");
-			AddNewTooltipLine(item, tooltips, damageLine);
+			
+			// Track extra element damage for any added bonuses
+			float extraMin = 0f;
+			float extraMax = 0f;
+			
+			//We are doing calcs and storing it here, so tooltip placement order isnt messed up, and the final damage tooltip is accurate
+			List<TooltipLine> elementLines = new();
 
 			foreach (ElementInstance instance in player.GetModPlayer<ElementalPlayer>().Container)
 			{
-				int flat = (int)Math.Truncate(instance.GetFlatDamage(0));
+				int flat = (int)Math.Round(instance.GetFlatDamage(0));
 				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
 
 				float elementDamage = finalDamage * MathF.Min(instance.GetTotalConversion(0) + ElementalWeaponSets.GetElementStrength(item.type, instance.Type), 1);
-				minDamage = (elementDamage + flat) * 0.85f;
-				maxDamage = (elementDamage + flat) * 1.15f;
+				minDamage = (elementDamage * 0.85f) + flat;
+				maxDamage = (elementDamage * 1.15f) + flat;
 				
 				if (minDamage > 0)
 				{
-					highlightNumbers = HighlightNumbers($"[{Math.Truncate(minDamage)}-{Math.Truncate(maxDamage)}]");
+					extraMin += minDamage;
+					extraMax += maxDamage;
+					
+					// pick element color based on type
+					Color elementColor = instance.Type switch
+					{
+						ElementType.Fire      => Colors.FireDamage,
+						ElementType.Cold      => Colors.ColdDamage,
+						ElementType.Lightning => Colors.LightningDamage,
+						ElementType.Chaos     => Colors.ChaosDamage,
+						_                     => Colors.DefaultNumber
+					};
+					
+					// numbers tinted with element color
+					string highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}]", elementColor);
 					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type, $"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
-					AddNewTooltipLine(item, tooltips, newDamageLine);
+					elementLines.Add(newDamageLine);
 				}
+			}
+			float totalMin = minDamage + extraMin;
+			float totalMax = maxDamage + extraMax;
+			string topHighlightNumbers = HighlightNumbers(
+				$"[{Math.Round(totalMin, 2)}-{Math.Round(totalMax, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})"
+			);
+			
+			var damageLine = new TooltipLine(
+				Mod,
+				"Damage",
+				$"{ColoredDot(Colors.StatsAccent)} {topHighlightNumbers}"
+			);
+			
+			//Add the actual damage line
+			AddNewTooltipLine(item, tooltips, damageLine);
+			
+			// Then add all elemental lines
+			foreach (TooltipLine line in elementLines)
+			{
+				AddNewTooltipLine(item, tooltips, line);
 			}
 		}
 		

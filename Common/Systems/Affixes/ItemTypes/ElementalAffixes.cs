@@ -80,7 +80,7 @@ internal class FireFlatDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Fire].DamageModifier;
-		damage = damage.AddModifiers((int)Value, null);
+		damage = damage.AddModifiers((int)Math.Round(Value), null);
 	}
 
 	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
@@ -94,7 +94,7 @@ internal class ColdFlatDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Cold].DamageModifier;
-		damage = damage.AddModifiers((int)Value, null);
+		damage = damage.AddModifiers((int)Math.Round(Value), null);
 	}
 
 	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
@@ -108,7 +108,7 @@ internal class LightningFlatDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Lightning].DamageModifier;
-		damage = damage.AddModifiers((int)Value, null);
+		damage = damage.AddModifiers((int)Math.Round(Value), null);
 	}
 
 	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
@@ -122,7 +122,7 @@ internal class ChaosFlatDamage : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		ref ElementalDamage.ElementalDamage damage = ref player.GetModPlayer<ElementalPlayer>().Container[ElementType.Chaos].DamageModifier;
-		damage = damage.AddModifiers((int)Value, null);
+		damage = damage.AddModifiers((int)Math.Round(Value), null);
 	}
 
 	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
