@@ -1,7 +1,7 @@
 [
 	{
 		"affixType": "FireResistItemAffix",
-		"equipTypes": "AllGear",
+		"equipTypes": "Equipment",
 		"tiers": [
 			{
 				"minValue": 4,
@@ -55,7 +55,7 @@
 	},
 	{
 		"affixType": "ColdResistItemAffix",
-		"equipTypes": "AllGear",
+		"equipTypes": "Equipment",
 		"tiers": [
 			{
 				"minValue": 4,
@@ -109,7 +109,7 @@
 	},
 	{
 		"affixType": "LightningResistItemAffix",
-		"equipTypes": "AllGear",
+		"equipTypes": "Equipment",
 		"tiers": [
 			{
 				"minValue": 4,
@@ -163,7 +163,7 @@
 	},
 	{
 		"affixType": "ChaosResistItemAffix",
-		"equipTypes": "AllGear",
+		"equipTypes": "Equipment",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -217,7 +217,7 @@
 	},
 	{
 		"affixType": "FireConversionDamage",
-		"equipTypes": "AllGear",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 2,
@@ -271,7 +271,7 @@
 	},
 	{
 		"affixType": "ColdConversionDamage",
-		"equipTypes": "AllGear",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 2,
@@ -325,7 +325,7 @@
 	},
 	{
 		"affixType": "LightningConversionDamage",
-		"equipTypes": "AllGear",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 2,
@@ -379,7 +379,7 @@
 	},
 	{
 		"affixType": "ChaosConversionDamage",
-		"equipTypes": "AllGear",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -433,7 +433,7 @@
 	},
 	{
 		"affixType": "FireFlatDamage",
-		"equipTypes": "AllGear",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -457,7 +457,7 @@
 	},
 	{
 		"affixType": "ColdFlatDamage",
-		"equipTypes": "AllGear",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -481,7 +481,7 @@
 	},
 	{
 		"affixType": "LightningFlatDamage",
-		"equipTypes": "AllGear",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -505,7 +505,7 @@
 	},
 	{
 		"affixType": "ChaosFlatDamage",
-		"equipTypes": "AllGear",
+		"equipTypes": "Weapon",
 		"tiers": [
 			{
 				"minValue": 1,

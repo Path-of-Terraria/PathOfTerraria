@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Terraria;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
 
@@ -9,6 +9,8 @@ public class ElementalPlayer : ModPlayer
 
 	// TODO: could be a ModConfig toggle
 	public static bool DebugMessages => false;
+	
+	private static bool isProcessingElementalDamage = false;
 
 	public override void ResetEffects()
 	{
@@ -91,41 +93,95 @@ public class ElementalPlayer : ModPlayer
 	{
 		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
 		{
-			ElementOnHit(target, Container, elemNPC.Container, hit.SourceDamage, hit.Damage, hit);
+			var item = new Item();
+			if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj) && elemProj.SourceItem > ItemID.None)
+			{
+				item.SetDefaults(elemProj.SourceItem);
+			}
+			ElementOnHit(target, Container, elemNPC.Container, hit.SourceDamage, hit.Damage, hit, item);
 		}
 	}
 
 	private static void ElementOnHit(Entity target, ElementalContainer container, ElementalContainer other, float sourceDamage, int finalDamage, NPC.HitInfo? optionalHitInfo, 
 		Item item = null)
 	{
-		float baseFraction = 1f - container.TotalConversion;
-		float total = container.Sum(GetTotalConversion) + baseFraction;
+		// Prevent recursion (I commented this out and it seems to not be doing anything so im not sure if its needed...) Gabe?
+		if (isProcessingElementalDamage)
+		{
+			return;
+		}
 
-		float originalDamage = sourceDamage - container.Sum(x => x.GetFlatDamage(other));
-		float baseOriginal = originalDamage * (baseFraction / total);
-		float totalOriginal = container.Sum(x => originalDamage * (GetTotalConversion(x) / total) + x.GetFlatDamage(other)) + baseOriginal;
-
-		// Elemental damage done, rounded down
+		// Elemental damage done & debuffs
 		foreach (ElementInstance element in container)
 		{
-			float original = originalDamage * (GetTotalConversion(element) / total) + element.GetFlatDamage(other);
-			int damage = (int)(finalDamage * (original / totalOriginal));
+			// Get total conversion for this element
+			float totalConversion = GetTotalConversion(element);
 
-			if (DebugMessages && damage > 0)
+			// Check if this is a base weapon element. True if it IS a part of the base element damage.
+			bool isBaseElement = ElementalWeaponSets.GetElementStrength(item?.type ?? ItemID.None, element.Type) > 0f;
+
+			// Get added conversion (only player/gear bonuses, excludes base weapon)
+			float addedConversion = element.DamageModifier.DamageConversion;
+
+			// Calculate additional conversion damage and  flat damage bonus - skip for base elements as it's already in main hit
+			int conversionDamage = 0;
+			int flatDamage = 0;
+			// We only want to have the base damage be stuff be calculated in ModifyHitNPCWithItem & Projectile below, to ensure it's not ANOTHER hit.
+			if (!isBaseElement)
 			{
-				Main.NewText($"  {element.Type}:	{damage}");
+				flatDamage = (int)element.GetFlatDamage(other);
 			}
 
-			// Apply the buff if the hit info exists (we hit an NPC)
+			conversionDamage = (int)(finalDamage * addedConversion);
+
+			// Total additional damage for this element
+			int totalAdditionalDamage = conversionDamage + flatDamage;
+
+			if (DebugMessages && totalAdditionalDamage > 0)
+			{
+				Main.NewText($"  {element.Type}:        {totalAdditionalDamage}");
+			}
+
+			// Apply additional elemental damage via StrikeNPC if any
+			if (totalAdditionalDamage > 0 && target is NPC npc)
+			{
+				isProcessingElementalDamage = true;
+	
+				try
+				{
+					float knockback = 0f; // Dont want multiple instances of knockback
+					bool crit = false; // TODO: Crit damage is applying properly. However, the text isnt orange as it's not counted as an actual crit. 
+		
+					var additionalHitInfo = npc.CalculateHitInfo(totalAdditionalDamage, 0, crit, knockback);
+					//In the future, we can add some kind of "delayed" echo effect to this Strike. 
+					npc.StrikeNPC(additionalHitInfo);
+
+					if (DebugMessages)
+					{
+						Main.NewText($"Applied {totalAdditionalDamage} additional {element.Type} damage ({conversionDamage} conversion + {flatDamage} flat) via StrikeNPC");
+					}
+				}
+				finally
+				{
+					isProcessingElementalDamage = false;
+				}
+			}
+
+			// Debuff applications
 			if (optionalHitInfo is not null)
 			{
-				if (element.DamageModifier.HasValues || item is not null && ElementalWeaponSets.GetElementStrength(item.type, element.Type) > 0)
+				// If theres any conversion being done on either base elemental or added/echod elemental damage
+				bool hasElement = (totalConversion > 0f) || element.DamageModifier.HasValues;
+
+				if (hasElement)
 				{
-					TryAddElementBuff(target, element.DamageModifier, damage, optionalHitInfo.Value);
+					// Calculate total elemental damage for debuff purposes (includes base weapon damage)
+					int totalElementalDamageForDebuff = (int)(finalDamage * totalConversion) + flatDamage;
+					TryAddElementBuff(target, element.DamageModifier, totalElementalDamageForDebuff, optionalHitInfo.Value);
 				}
 			}
 		}
-
+		
 		float GetTotalConversion(ElementInstance instance)
 		{
 			return item is null ? 
@@ -144,7 +200,10 @@ public class ElementalPlayer : ModPlayer
 		};
 
 		float chance = ElementalDamage.GetDebuffChance((float)elementalDamageDone / lifeMax);
-		Main.NewText(chance);
+		if (DebugMessages)
+		{
+			Main.NewText($"[DEBUG] Chance to debuff for {damage.ElementType}: {chance * 100:0.##}%");
+		}
 
 		if (elementalDamageDone > 0 && damage.CanDebuff(target, hitInfo, chance < Main.rand.NextFloat()))
 		{
@@ -160,4 +219,52 @@ public class ElementalPlayer : ModPlayer
 
 		return false;
 	}
+		
+	public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
+	{
+		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
+		{
+			ElementModifyNPCDamage(Container, elemNPC.Container, ref modifiers.SourceDamage, item);
+		}
+	}
+
+	public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
+	{
+		if (target.TryGetGlobalNPC(out ElementalNPC elemNPC))
+		{
+			Item item = null;
+			if (proj.TryGetGlobalProjectile(out ElementalProjectile elemProj) && elemProj.SourceItem > ItemID.None)
+			{
+				item = new Item();
+				item.SetDefaults(elemProj.SourceItem);
+			}
+			ElementModifyNPCDamage(Container, elemNPC.Container, ref modifiers.SourceDamage, item);
+		}
+	}
+
+	//This modifies the base elemental hit
+	private void ElementModifyNPCDamage(ElementalContainer attackerContainer, ElementalContainer targetContainer, ref StatModifier sourceDamage, Item item = null)
+	{
+		// Add flat damage and added conversion for matching base weapon elements to source damage
+		foreach (ElementInstance element in attackerContainer)
+		{
+			// Check if this weapon has this element as a base element
+			float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, element.Type) : 0f;
+			bool isBaseElement = baseWeaponConversion > 0f;
+	
+			if (isBaseElement)
+			{
+				// For base elements, add flat damage to source so it's part of the main hit
+				float flatDamage = element.GetFlatDamage(targetContainer);
+				sourceDamage.Flat += flatDamage;
+
+				if (DebugMessages && (flatDamage > 0))
+				{
+					Main.NewText($"[DEBUG] Base {element.Type}: +{flatDamage} flat to main hit");
+				}
+			}
+		}
+	}
+
+
 }

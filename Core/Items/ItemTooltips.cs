@@ -298,7 +298,18 @@ public sealed partial class ItemTooltips : GlobalItem
 				int flat = (int)Math.Round(instance.GetFlatDamage(0));
 				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
 
-				float elementDamage = finalDamage * MathF.Min(instance.GetTotalConversion(0) + ElementalWeaponSets.GetElementStrength(item.type, instance.Type), 1);
+				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
+				bool isBaseElement = baseWeaponConversion > 0f;
+
+				float elementDamage = 0f;
+				if (isBaseElement)
+				{
+					elementDamage = finalDamage * ((ElementalWeaponSets.GetElementStrength(item.type, instance.Type) + instance.GetTotalConversion(0)));
+				}
+				else
+				{
+					elementDamage = finalDamage * (instance.GetTotalConversion(0));
+				}
 				minDamage = (elementDamage * 0.85f) + flat;
 				maxDamage = (elementDamage * 1.15f) + flat;
 				
@@ -323,10 +334,8 @@ public sealed partial class ItemTooltips : GlobalItem
 					elementLines.Add(newDamageLine);
 				}
 			}
-			float totalMin = minDamage + extraMin;
-			float totalMax = maxDamage + extraMax;
 			string topHighlightNumbers = HighlightNumbers(
-				$"[{Math.Round(totalMin, 2)}-{Math.Round(totalMax, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})"
+				$"[{Math.Round(extraMin, 2)}-{Math.Round(extraMax, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})"
 			);
 			
 			var damageLine = new TooltipLine(

@@ -11,6 +11,8 @@ internal class ElementalProjectile : GlobalProjectile
 	public override bool InstancePerEntity => true;
 
 	public ElementalContainer Container = new();
+	
+	public int SourceItem { get; private set; } = ItemID.None;
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
@@ -20,11 +22,18 @@ internal class ElementalProjectile : GlobalProjectile
 			projectile.netUpdate = true;
 		}
 
-		if (source is EntitySource_ItemUse_WithAmmo { Entity: Item item } && ElementalWeaponSets.GetElementalProportions(item.type, out Dictionary<ElementType, float> value))
+		if (source is EntitySource_ItemUse_WithAmmo itemSource)
 		{
-			foreach (KeyValuePair<ElementType, float> pair in value)
+			//Keeping track of the original weapon for elemental debuff purposes
+			Item item = itemSource.Item;
+			SourceItem = item.type;
+
+			if (ElementalWeaponSets.GetElementalProportions(item.type, out var value))
 			{
-				Container[pair.Key].DamageModifier.AddModifiers(null, pair.Value);
+				foreach (KeyValuePair<ElementType, float> pair in value)
+				{
+					Container[pair.Key].DamageModifier.AddModifiers(null, pair.Value);
+				}
 			}
 		}
 	}
