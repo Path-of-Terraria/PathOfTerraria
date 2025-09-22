@@ -108,7 +108,8 @@ internal class ChanceToApplyBleedingItemAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
-		modifier.Buffer.Add(BuffID.Bleeding, Duration, Value * 20.01f, (player, npc, _, damage, time) => BleedDebuff.Apply(player, npc, time * 2, damage));
+		// TODO: Needs duration modifier?
+		modifier.Buffer.Add(BuffID.Bleeding, 5 * 60, Value * 0.01f, (player, npc, _, damage, time) => BleedDebuff.Apply(player, npc, 5 * 60, damage));
 	}
 }
 
