@@ -1,5 +1,5 @@
-﻿using PathOfTerraria.Common.Systems.ElementalDamage;
-using PathOfTerraria.Content.Buffs;
+﻿using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
@@ -76,7 +76,7 @@ internal class BuffPoisonedHitsAffix : ItemAffix
 		{
 			base.ModifyHitNPC(target, ref modifiers);
 			
-			if (target.HasBuff(BuffID.Poisoned))
+			if (target.HasBuff(BuffID.Poisoned) || target.HasBuff<PoisonedDebuff>())
 			{
 				modifiers.FinalDamage += Player.GetModPlayer<AffixPlayer>().StrengthOf<BuffPoisonedHitsAffix>() * 0.01f;
 			}
@@ -101,5 +101,34 @@ internal class ChanceToApplyRootedGearAffix : ItemAffix
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
 	{
 		modifier.Buffer.Add(ModContent.BuffType<RootedDebuff>(), Duration, Value * 0.01f);
+	}
+}
+
+internal class ChanceToApplyBleedingItemAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.Buffer.Add(BuffID.Bleeding, Duration, Value * 20.01f, (player, npc, _, damage, time) => BleedDebuff.Apply(player, npc, time * 2, damage));
+	}
+}
+
+internal class AddedBleedStackAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetModPlayer<BleedPlayer>().MaxBleedStacks += (int)Math.Round(Value);
+	}
+
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
+	{
+		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
+	}
+}
+
+internal class BetterBleedAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetModPlayer<BleedPlayer>().BleedEffectiveness += Value / 100f;
 	}
 }
