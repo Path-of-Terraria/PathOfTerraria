@@ -282,62 +282,61 @@ public sealed partial class ItemTooltips : GlobalItem
 			
 			float finalDamage = damage.ApplyTo(baseDamage);
     
-			//15% var
+			// 15% variability, default range
 			float minDamage = finalDamage * 0.85f;
 			float maxDamage = finalDamage * 1.15f;
+
+			// Base values for the base tooltip
+			float baseMinDamage = minDamage;
+			float baseMaxDamage = maxDamage;
 			
-			// Track extra element damage for any added bonuses
-			float extraMin = 0f;
-			float extraMax = 0f;
-			
-			//We are doing calcs and storing it here, so tooltip placement order isnt messed up, and the final damage tooltip is accurate
-			List<TooltipLine> elementLines = new();
+			// We are doing calcs and storing it here, so tooltip placement order isnt messed up, and the final damage tooltip is accurate
+			List<TooltipLine> elementLines = [];
 
 			foreach (ElementInstance instance in player.GetModPlayer<ElementalPlayer>().Container)
 			{
 				int flat = (int)Math.Round(instance.GetFlatDamage(0));
 				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
-
 				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
 				bool isBaseElement = baseWeaponConversion > 0f;
 
-				float elementDamage = 0f;
+				float elementDamage;
+
 				if (isBaseElement)
 				{
-					elementDamage = finalDamage * ((ElementalWeaponSets.GetElementStrength(item.type, instance.Type) + instance.GetTotalConversion(0)));
+					elementDamage = finalDamage * (baseWeaponConversion + instance.GetTotalConversion(0));
 				}
 				else
 				{
 					elementDamage = finalDamage * (instance.GetTotalConversion(0));
 				}
-				minDamage = (elementDamage * 0.85f) + flat;
-				maxDamage = (elementDamage * 1.15f) + flat;
+
+				float eleMinDamage = (elementDamage * 0.85f) + flat;
+				float eleMaxDamage = (elementDamage * 1.15f) + flat;
 				
-				if (minDamage > 0)
+				if (eleMinDamage > 0)
 				{
-					extraMin += minDamage;
-					extraMax += maxDamage;
-					
 					// pick element color based on type
-					Color elementColor = instance.Type switch
-					{
-						ElementType.Fire      => Colors.FireDamage,
-						ElementType.Cold      => Colors.ColdDamage,
-						ElementType.Lightning => Colors.LightningDamage,
-						ElementType.Chaos     => Colors.ChaosDamage,
-						_                     => Colors.DefaultNumber
-					};
+					Color elementColor = instance.Type.ElementColor();
 					
 					// numbers tinted with element color
-					string highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}]", elementColor);
+					string highlightNumbers = HighlightNumbers($"[{Math.Round(eleMinDamage, 2)}-{Math.Round(eleMaxDamage, 2)}]", elementColor);
 					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type, $"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
 					elementLines.Add(newDamageLine);
 				}
 			}
+
+			// Elemental multiplier for the weapon's base damage
+			float totalMultiplier = 1 + MathF.Min(player.GetModPlayer<ElementalPlayer>().Container.Sum(x => ElementalPlayer.GetConversionMultiplier(x, item, 0)), 1);
 			string topHighlightNumbers = HighlightNumbers(
-				$"[{Math.Round(extraMin, 2)}-{Math.Round(extraMax, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})"
+				$"[{Math.Round(minDamage * totalMultiplier, 2)}-{Math.Round(maxDamage * totalMultiplier, 2)}] {item.DamageType.DisplayName.Value.Trim()}"
 			);
-			
+
+			if (Main.keyState.PressingShift())
+			{
+				topHighlightNumbers += $" ({HighlightNumbers($"[{baseMinDamage:#0.#}-{baseMaxDamage:#0.#}]")} [c/{Colors.DefaultNumber.ToHexRGB()}:base])";
+			}
+
 			var damageLine = new TooltipLine(
 				Mod,
 				"Damage",
