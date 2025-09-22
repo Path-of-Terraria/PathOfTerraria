@@ -253,7 +253,7 @@ internal sealed class EventTracker : ModSystem
 			cachedEventCompletions.Add((singleEvent, gameEventId));
 		}
 
-		if (Main.netMode == NetmodeID.Server && !fromSync)
+		if (Main.netMode == NetmodeID.Server && !fromSync && SubworldSystem.Current is not null)
 		{
 			ModPacket packet = Networking.GetPacket(Networking.Message.SyncEventCompletion, capacity: 12);
 			packet.Write((ulong)singleEvent);
@@ -331,6 +331,11 @@ internal sealed class EventTracker : ModSystem
 	private static void OnSetEventFlagCleared(On_NPC.orig_SetEventFlagCleared orig, ref bool eventFlag, int gameEventId)
 	{
 		orig(ref eventFlag, gameEventId);
+
+		if (SubworldSystem.Current is null)
+		{
+			return;
+		}
 
 		foreach (EventFlags flag in EventFlagsValues)
 		{
