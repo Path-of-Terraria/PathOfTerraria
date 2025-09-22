@@ -8,7 +8,7 @@ public class ElementalPlayer : ModPlayer
 	public ElementalContainer Container = new();
 
 	// TODO: could be a ModConfig toggle
-	public static bool DebugMessages => true;
+	public static bool DebugMessages => false;
 
 	public override void ResetEffects()
 	{
@@ -52,9 +52,26 @@ public class ElementalPlayer : ModPlayer
 	private static void ElementModifyDamage(ElementalContainer container, ElementalContainer other, ref MultipliableFloat preDefenseMultiplier, ref StatModifier sourceDamage, 
 		bool skipPreDefense = false, Item item = null)
 	{
+		// Calculate base weapon elemental strength and additional conversion separately
+		float baseElementalStrength = 0f;
+		float additionalConversion = 0f;
+		
+		foreach (ElementInstance element in container)
+		{
+			float weaponStrength = item is null ? 0 : ElementalWeaponSets.GetElementStrength(item.type, element.Type);
+			float playerConversion = element.GetTotalConversion(other);
+			
+			baseElementalStrength += weaponStrength;
+			additionalConversion += playerConversion;
+		}
+		
+		// Cap base elemental strength at 1.0 (can't be more than 100% elemental)
+		baseElementalStrength = MathF.Min(baseElementalStrength, 1f);
+	
+		float totalConversion = baseElementalStrength + additionalConversion;
+		
 		// Apply multiplier to original damage BEFORE DEFENSE, by each element conversion percent (accounting for resistance) 
-		float totalMultiplier = MathF.Min(container.Sum(x => GetConversionMultiplier(x, item, other)), 1);
-
+		float totalMultiplier = MathF.Max(0f, totalConversion - baseElementalStrength);
 		if (!skipPreDefense)
 		{
 			// Adds X% damage to the hit, depending on the total conversion multiplier, before defense - only applies to players
@@ -65,17 +82,17 @@ public class ElementalPlayer : ModPlayer
 			// Adds X% final damage to the hit, depending on the total conversion multiplier - only applies to NPCs
 			sourceDamage += totalMultiplier;
 		}
-
+		
 		// Apply flat extra damage (accounting for resistance)
 		foreach (ElementInstance element in container)
 		{
 			sourceDamage.Flat += element.GetFlatDamage(other);
 		}
-
+	
 		if (DebugMessages && (container.Any(x => x.DamageModifier.HasValues)))
 		{
 			Main.NewText("[DEBUG] Elemental Damage Modifiers:");
-
+	
 			foreach (ElementInstance element in container)
 			{
 				ElementalDamage mod = element.DamageModifier;
@@ -151,8 +168,16 @@ public class ElementalPlayer : ModPlayer
 			// Check if the item being used has implicit conversion
 			bool isBaseElement = ElementalWeaponSets.GetElementStrength(item?.type ?? ItemID.None, element.Type) > 0f;
 
-			// Get added conversion (only player/gear bonuses, excludes base weapon)
-			float addedConversion = element.DamageModifier.DamageConversion;
+			float addedConversion;
+			// Get added conversion
+			if (isBaseElement)
+			{
+				addedConversion = ElementalWeaponSets.GetElementStrength(item.type, element.Type);
+			}
+			else
+			{
+				addedConversion = element.DamageModifier.DamageConversion;
+			}
 
 			// Calculate additional conversion damage and flat damage bonus - skip for base elements as it's already in main hit
 			int conversionDamage = (int)(finalDamage * addedConversion);

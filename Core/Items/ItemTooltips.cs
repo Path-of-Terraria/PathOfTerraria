@@ -290,6 +290,9 @@ public sealed partial class ItemTooltips : GlobalItem
 			float baseMinDamage = minDamage;
 			float baseMaxDamage = maxDamage;
 			
+			// Calculate total flat damage to add to main tooltip
+			float totalFlatDamage = player.GetModPlayer<ElementalPlayer>().Container.Sum(x => x.GetFlatDamage(0));
+			
 			// We are doing calcs and storing it here, so tooltip placement order isnt messed up, and the final damage tooltip is accurate
 			List<TooltipLine> elementLines = [];
 
@@ -327,9 +330,9 @@ public sealed partial class ItemTooltips : GlobalItem
 			}
 
 			// Elemental multiplier for the weapon's base damage
-			float totalMultiplier = 1 + MathF.Min(player.GetModPlayer<ElementalPlayer>().Container.Sum(x => ElementalPlayer.GetConversionMultiplier(x, item, 0)), 1);
+			float totalMultiplier = 1 + player.GetModPlayer<ElementalPlayer>().Container.Sum(x => x.GetTotalConversion(0));
 			string topHighlightNumbers = HighlightNumbers(
-				$"[{Math.Round(minDamage * totalMultiplier, 2)}-{Math.Round(maxDamage * totalMultiplier, 2)}] {item.DamageType.DisplayName.Value.Trim()}"
+				$"[{Math.Round((minDamage * totalMultiplier) + totalFlatDamage, 2)}-{Math.Round((maxDamage * totalMultiplier) + totalFlatDamage, 2)}] {item.DamageType.DisplayName.Value.Trim()}"
 			);
 
 			if (Main.keyState.PressingShift())
