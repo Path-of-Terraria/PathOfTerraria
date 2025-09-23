@@ -323,7 +323,7 @@
 	},
 	{
 		"affixType": "AddedBleedStackAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "MeleeOrRanged",
 		"influences": "None",
 		"tiers": [
 			{
@@ -354,7 +354,7 @@
 	},
 	{
 		"affixType": "BetterBleedAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "MeleeOrRanged",
 		"influences": "None",
 		"tiers": [
 			{
@@ -385,7 +385,7 @@
 	},
 	{
 		"affixType": "ChanceToApplyBleedingItemAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "MeleeOrRanged",
 		"influences": "None",
 		"tiers": [
 			{

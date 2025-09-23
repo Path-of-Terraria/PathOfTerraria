@@ -41,6 +41,7 @@ public enum ItemType : long
 	Magic = Staff | Tome | Wand,
 	Ranged = Bow | Gun | Boomerang | RangedFlail | Launcher | Javelin,
 	Summoner = Whip | Grimoire,
+	MeleeOrRanged = Melee | Ranged,
 	Weapon = Melee | Magic | Ranged | Whip,
 
 	AllGear = Equipment | Weapon,
