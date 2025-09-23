@@ -54,7 +54,7 @@ internal class BuildingWhitelist
 
 	public static Whitelist GetUsedWhitelist(WhitelistUse use)
 	{
-		HashSet<int> results = use is WhitelistUse.Placing or WhitelistUse.Mining ? [.. DefaultWhitelist] : [];
+		HashSet<int> results = (use is WhitelistUse.Placing or WhitelistUse.Mining) ? new HashSet<int>(DefaultWhitelist): new HashSet<int>();
 		List<FramedTileBlockers> framed = [];
 
 		if (SubworldSystem.Current is MappingWorld domain)

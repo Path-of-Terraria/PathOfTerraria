@@ -125,6 +125,11 @@ public class ElementInstance(ElementType type, bool isGeneric)
 			DamageModifier = ElementalDamage.Read(binaryReader);
 		}
 	}
+
+	public override string ToString()
+	{
+		return $"{Type}: Conv: {GetTotalConversion(0)} Flat: {GetFlatDamage(0)}";
+	}
 }
 
 /// <summary>

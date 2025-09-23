@@ -1,14 +1,18 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.ElementalDamage;
+
 internal class ElementalProjectile : GlobalProjectile
 {
 	public override bool InstancePerEntity => true;
 
 	public ElementalContainer Container = new();
+	
+	public int SourceItem { get; private set; } = ItemID.None;
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
@@ -16,6 +20,21 @@ internal class ElementalProjectile : GlobalProjectile
 		{
 			Container = elemNPC.Container.Clone();
 			projectile.netUpdate = true;
+		}
+
+		if (source is EntitySource_ItemUse_WithAmmo itemSource)
+		{
+			//Keeping track of the original weapon for elemental debuff purposes
+			Item item = itemSource.Item;
+			SourceItem = item.type;
+
+			if (ElementalWeaponSets.GetElementalProportions(item.type, out var value))
+			{
+				foreach (KeyValuePair<ElementType, float> pair in value)
+				{
+					Container[pair.Key].DamageModifier.AddModifiers(null, pair.Value);
+				}
+			}
 		}
 	}
 

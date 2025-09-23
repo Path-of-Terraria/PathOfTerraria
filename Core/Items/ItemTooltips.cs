@@ -17,6 +17,7 @@ using Terraria.UI;
 using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
+using Terraria.ID;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -42,6 +43,10 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color Positive => ColorUtils.FromHexRgb(0x_99e550);
 		public static Color Negative => ColorUtils.FromHexRgb(0x_ac3232);
 		public static Color Levels => ColorUtils.FromHexRgb(0x_d8b47a);
+		public static Color FireDamage => ColorUtils.FromHexRgb(0xFF6A6A); 
+		public static Color ColdDamage => ColorUtils.FromHexRgb(0x5FCDE4);
+		public static Color LightningDamage => ColorUtils.FromHexRgb(0xFFF68F); 
+		public static Color ChaosDamage => ColorUtils.FromHexRgb(0xC084FC);
 		// Accents
 		public static Color StatsAccent => ColorUtils.FromHexRgb(0x_a1bdbd);
 		public static Color AffixAccent => ColorUtils.FromHexRgb(0x_ff2222);
@@ -277,29 +282,77 @@ public sealed partial class ItemTooltips : GlobalItem
 			
 			float finalDamage = damage.ApplyTo(baseDamage);
     
-			//15% var
+			// 15% variability, default range
 			float minDamage = finalDamage * 0.85f;
 			float maxDamage = finalDamage * 1.15f;
-    
-			string highlightNumbers = HighlightNumbers($"[{Math.Round(minDamage, 2)}-{Math.Round(maxDamage, 2)}] {Localize("Damage")} ({item.DamageType.DisplayName.Value.Trim()})");
-			var damageLine = new TooltipLine(Mod, "Damage", $"{ColoredDot(Colors.StatsAccent)} {highlightNumbers}");
-			AddNewTooltipLine(item, tooltips, damageLine);
+
+			// Base values for the base tooltip
+			float baseMinDamage = minDamage;
+			float baseMaxDamage = maxDamage;
+			
+			// Calculate total flat damage to add to main tooltip
+			float totalFlatDamage = player.GetModPlayer<ElementalPlayer>().Container.Sum(x => x.GetFlatDamage(0));
+			
+			// We are doing calcs and storing it here, so tooltip placement order isnt messed up, and the final damage tooltip is accurate
+			List<TooltipLine> elementLines = [];
 
 			foreach (ElementInstance instance in player.GetModPlayer<ElementalPlayer>().Container)
 			{
-				int flat = (int)Math.Truncate(instance.GetFlatDamage(0));
+				int flat = (int)Math.Round(instance.GetFlatDamage(0));
 				string elementName = Language.GetTextValue("Mods.PathOfTerraria.Misc.Damage", instance.ElementDisplayName.Value.ToLower().Trim());
+				float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, instance.Type) : 0f;
+				bool isBaseElement = baseWeaponConversion > 0f;
 
-				float elementDamage = finalDamage * instance.GetTotalConversion(0);
-				minDamage = (elementDamage + flat) * 0.85f;
-				maxDamage = (elementDamage + flat) * 1.15f;
+				float elementDamage;
 
-				if (minDamage > 0)
+				if (isBaseElement)
 				{
-					highlightNumbers = HighlightNumbers($"[{Math.Truncate(minDamage)}-{Math.Truncate(maxDamage)}]");
-					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type, $"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
-					AddNewTooltipLine(item, tooltips, newDamageLine);
+					elementDamage = finalDamage * (baseWeaponConversion + instance.GetTotalConversion(0));
 				}
+				else
+				{
+					elementDamage = finalDamage * (instance.GetTotalConversion(0));
+				}
+
+				float eleMinDamage = (elementDamage * 0.85f) + flat;
+				float eleMaxDamage = (elementDamage * 1.15f) + flat;
+				
+				if (eleMinDamage > 0)
+				{
+					// pick element color based on type
+					Color elementColor = instance.Type.ElementColor();
+					
+					// numbers tinted with element color
+					string highlightNumbers = HighlightNumbers($"[{Math.Round(eleMinDamage, 2)}-{Math.Round(eleMaxDamage, 2)}]", elementColor);
+					var newDamageLine = new TooltipLine(Mod, "Damage" + instance.Type, $"    {ColoredDot(Colors.StatsAccent)} {highlightNumbers} {elementName}");
+					elementLines.Add(newDamageLine);
+				}
+			}
+
+			// Elemental multiplier for the weapon's base damage
+			float totalMultiplier = 1 + player.GetModPlayer<ElementalPlayer>().Container.Sum(x => x.GetTotalConversion(0));
+			string topHighlightNumbers = HighlightNumbers(
+				$"[{Math.Round((minDamage * totalMultiplier) + totalFlatDamage, 2)}-{Math.Round((maxDamage * totalMultiplier) + totalFlatDamage, 2)}] {item.DamageType.DisplayName.Value.Trim()}"
+			);
+
+			if (Main.keyState.PressingShift())
+			{
+				topHighlightNumbers += $" ({HighlightNumbers($"[{baseMinDamage:#0.#}-{baseMaxDamage:#0.#}]")} [c/{Colors.DefaultNumber.ToHexRGB()}:base])";
+			}
+
+			var damageLine = new TooltipLine(
+				Mod,
+				"Damage",
+				$"{ColoredDot(Colors.StatsAccent)} {topHighlightNumbers}"
+			);
+			
+			//Add the actual damage line
+			AddNewTooltipLine(item, tooltips, damageLine);
+			
+			// Then add all elemental lines
+			foreach (TooltipLine line in elementLines)
+			{
+				AddNewTooltipLine(item, tooltips, line);
 			}
 		}
 		

@@ -1,3 +1,9 @@
 {
-  "ItemType": "Battleaxe"
+  "ItemType": "Battleaxe",
+  "ElementProportions": {
+    "Fire": 0,
+    "Cold": 0,
+    "Lightning": 0,
+    "Chaos": 0
+  }
 }
