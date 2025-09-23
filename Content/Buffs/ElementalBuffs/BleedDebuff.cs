@@ -37,7 +37,7 @@ internal class BleedDebuff : ModBuff
 
 	public override void Update(NPC npc, ref int buffIndex)
 	{
-		if (npc.GetGlobalNPC<PoisonNPC>().Stacks.Count == 0)
+		if (npc.GetGlobalNPC<BleedDebuffNPC>().Stacks.Count == 0)
 		{
 			npc.DelBuff(buffIndex);
 			buffIndex--;
