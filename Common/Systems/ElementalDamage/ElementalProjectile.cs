@@ -22,10 +22,9 @@ internal class ElementalProjectile : GlobalProjectile
 			projectile.netUpdate = true;
 		}
 
-		if (source is EntitySource_ItemUse_WithAmmo itemSource)
+		if (source is EntitySource_ItemUse_WithAmmo { Item: Item item })
 		{
 			//Keeping track of the original weapon for elemental debuff purposes
-			Item item = itemSource.Item;
 			SourceItem = item.type;
 
 			if (ElementalWeaponSets.GetElementalProportions(item.type, out var value))
