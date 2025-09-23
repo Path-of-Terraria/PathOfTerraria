@@ -173,12 +173,12 @@ public readonly struct ElementalDamage
 		// Cap chance at 20% once damage percent >= 50%
 		else if (damagePercent >= 0.5f)
 		{
-			return 0.2f;
+			return 0.5f;
 		}
 		// Linearly increase chance from 0% -> 20% as damage goes from 2% -> 50% of max health
 		else
 		{
-			return damagePercent * (0.2f / 0.5f);
+			return damagePercent * (0.5f / 0.5f);
 		}
 	}
 
