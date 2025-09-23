@@ -64,7 +64,7 @@ public class PestSwarm : Skill
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
 		{
-			behindProjectiles.Add(index);
+			overPlayers.Add(index);
 		}
 
 		public override bool? CanDamage()
@@ -161,6 +161,7 @@ public class PestSwarm : Skill
 			}
 			else if (Target == -1 || InvalidTarget())
 			{
+				Target = -1;
 				FindTarget();
 			}
 
@@ -225,8 +226,11 @@ public class PestSwarm : Skill
 
 				if (Timer > 15)
 				{
-					Projectile.velocity.X = targetSpeedX;
-					Projectile.velocity.Y = -4;
+					bool inHitbox = target.Hitbox.Intersects(Projectile.Hitbox);
+
+					Projectile.velocity.X = inHitbox ? 0 : targetSpeedX;
+					Projectile.velocity.Y = inHitbox ? -3 : -4;
+
 					Timer = 0;
 				}
 			}
@@ -258,6 +262,16 @@ public class PestSwarm : Skill
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
 			return false;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			if (TimeLeft < 60)
+			{
+				return Color.Lerp(lightColor, Color.Red, MathF.Sin(TimeLeft * 0.2f) * 0.25f + 0.25f);
+			}
+
+			return null;
 		}
 
 		public override void OnKill(int timeLeft)
