@@ -59,6 +59,9 @@ public sealed class PoTInstanceItemData : GlobalItem
 	///		The localization IDs for the prefix/suffix. Defaults to -1, -1.
 	/// </summary>
 	public NameAffixes NameAffix { get; set; } = new();
+	
+	[Obsolete($"Use {nameof(NameAffix)}", error: true)]
+	public string SpecialName { get => string.Empty; set { } }
 
 	/// <summary>
 	///		The affixes of the item.
