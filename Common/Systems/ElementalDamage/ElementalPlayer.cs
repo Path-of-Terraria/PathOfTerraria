@@ -164,20 +164,9 @@ public class ElementalPlayer : ModPlayer
 		{
 			// Get total conversion for this element (and item if applicable)
 			float totalConversion = GetConversionMultiplier(element, item, other);
-
-			// Check if the item being used has implicit conversion
-			bool isBaseElement = ElementalWeaponSets.GetElementStrength(item?.type ?? ItemID.None, element.Type) > 0f;
-
-			float addedConversion;
-			// Get added conversion
-			if (isBaseElement)
-			{
-				addedConversion = ElementalWeaponSets.GetElementStrength(item.type, element.Type);
-			}
-			else
-			{
-				addedConversion = element.DamageModifier.DamageConversion;
-			}
+			
+			float baseWeaponConversion = item?.type > ItemID.None ? ElementalWeaponSets.GetElementStrength(item.type, element.Type) : 0f;
+			float addedConversion = baseWeaponConversion + element.GetTotalConversion(0);
 
 			// Calculate additional conversion damage and flat damage bonus - skip for base elements as it's already in main hit
 			int conversionDamage = (int)(finalDamage * addedConversion);
