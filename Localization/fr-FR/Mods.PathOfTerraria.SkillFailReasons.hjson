@@ -4,3 +4,4 @@ NotEnoughMana: Pas assez de mana pour lancer le sort
 // WeaponInvalid: Held weapon is invalid for this skill
 // NoAmmo: Needs ammo
 // MissingAffix: Needs +{0} affix on any equipped item
+// Blocked: Placement is blocked

@@ -4,3 +4,4 @@ NotEnoughMana: Недостаточно маны для использовани
 // WeaponInvalid: Held weapon is invalid for this skill
 // NoAmmo: Needs ammo
 // MissingAffix: Needs +{0} affix on any equipped item
+// Blocked: Placement is blocked

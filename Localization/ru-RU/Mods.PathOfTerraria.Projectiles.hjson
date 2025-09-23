@@ -170,3 +170,5 @@ FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // MoltenSentryAura.DisplayName: Molten Sentry Aura
 // FlamethrowerFlame.DisplayName: Flamethrower Flame
 // Flame.DisplayName: Flame
+// SimpleLocust.DisplayName: Simple Locust
+// LocustSpawnCircle.DisplayName: Locust Spawn Circle
