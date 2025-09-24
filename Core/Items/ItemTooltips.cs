@@ -169,10 +169,10 @@ public sealed partial class ItemTooltips : GlobalItem
 		PoTInstanceItemData data = item.GetInstanceData();
 		PoTStaticItemData staticData = item.GetStaticData();
 
-		if (data.Rarity > ItemRarity.Normal && data.NameAffix.Empty) // Make sure SpecialName generated if it hasn't already for some reason
-		{
-			data.NameAffix = GenerateNameAffixes.Invoke(item);
-		}
+		//if (data.Rarity > ItemRarity.Normal && data.NameAffix.Empty) // Make sure SpecialName generated if it hasn't already for some reason
+		//{
+		//	data.NameAffix = GenerateNameAffixes.Invoke(item);
+		//}
 
 		if (nameLine is null)
 		{
