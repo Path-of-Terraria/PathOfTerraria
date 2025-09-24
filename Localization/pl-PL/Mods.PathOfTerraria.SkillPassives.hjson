@@ -201,3 +201,8 @@ Accelerant: {
 	// Name: Accelerant
 	// Tooltip: +{0}% increased sentinel life loss per second and +{0}% increased damage
 }
+
+BiggerBrood: {
+	// Name: Bigger Brood
+	// Tooltip: +1 egg per level
+}

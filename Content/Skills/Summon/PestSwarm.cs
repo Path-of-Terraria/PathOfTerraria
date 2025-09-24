@@ -2,8 +2,8 @@
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Content.SkillSpecials.PestSwarmSpecials;
 using System.Collections.Generic;
-using Terraria;
 using Terraria.GameContent;
 using Terraria.ID;
 
@@ -39,7 +39,14 @@ public class PestSwarm : Skill
 
 		Vector2 pos = GetTarget(player);
 		int type = ModContent.ProjectileType<LocustSpawnCircle>();
-		Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, 20 * Level, 0, player.whoAmI, TotalDuration);
+		int damage = 15 * Level;
+
+		if (Tree.Specialization is AntlionSwarm)
+		{
+			damage = 25 * Level;
+		}
+
+		Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
 	}
 
 	private static Vector2 GetTarget(Player player)
@@ -99,6 +106,12 @@ public class PestSwarm : Skill
 			if (TimeLeft == (int)MaxTime / 2 && Main.myPlayer == Projectile.owner)
 			{
 				int type = ModContent.ProjectileType<SimpleLocust>();
+
+				if (Skill.Tree.Specialization is AntlionSwarm)
+				{
+					type = ModContent.ProjectileType<AntlionSwarmerSummon>();
+				}
+
 				var src = new EntitySource_UseSkill(Main.player[Projectile.owner], Skill);
 				Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -1), type, Projectile.damage, 0, Projectile.owner, 0, 0, Duration);
 			}
@@ -237,6 +250,162 @@ public class PestSwarm : Skill
 			else
 			{
 				Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X, targetSpeedX, 0.01f);
+			}
+		}
+
+		private void FindTarget()
+		{
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (!npc.CanBeChasedBy())
+				{
+					continue;
+				}
+
+				float dist = npc.DistanceSQ(Projectile.Center);
+
+				if (dist < 400 * 400 && (Target == -1 || Main.npc[Target].DistanceSQ(Projectile.Center) > dist))
+				{
+					Target = npc.whoAmI;
+					Timer = 0;
+				}
+			}
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			return false;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			if (TimeLeft < 60)
+			{
+				return Color.Lerp(lightColor, Color.Red, MathF.Sin(TimeLeft * 0.2f) * 0.25f + 0.25f);
+			}
+
+			return null;
+		}
+
+		public override void OnKill(int timeLeft)
+		{
+			for (int i = 0; i < 17; ++i)
+			{
+				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, i < 8 ? DustID.Blood : ModContent.DustType<LocustDust>());
+			}
+		}
+	}
+
+	public class AntlionSwarmerSummon : ModProjectile
+	{
+		private bool Initialized
+		{
+			get => Projectile.ai[0] == 1;
+			set => Projectile.ai[0] = value ? 1 : 0;
+		}
+
+		private int Target
+		{
+			get => (int)Projectile.ai[1];
+			set => Projectile.ai[1] = value;
+		}
+
+		private ref float TimeLeft => ref Projectile.ai[2];
+
+		private ref float Timer => ref Projectile.localAI[0];
+
+		public override void SetStaticDefaults()
+		{
+			Main.projFrames[Type] = 2;
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.Size = new(42, 24);
+			Projectile.friendly = true;
+			Projectile.hostile = false;
+			Projectile.DamageType = DamageClass.Summon;
+			Projectile.aiStyle = -1;
+			Projectile.penetrate = -1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 20;
+			Projectile.Opacity = 0f;
+		}
+
+		public override bool? CanCutTiles()
+		{
+			return false;
+		}
+
+		public override void AI()
+		{
+			if (!Initialized)
+			{
+				Initialized = true;
+				Target = -1;
+
+				FindTarget();
+			}
+			else if (Target == -1 || InvalidTarget())
+			{
+				Target = -1;
+				FindTarget();
+			}
+
+			if (Target != -1)
+			{
+				Chase();
+			}
+			else
+			{
+				Idle();
+			}
+
+			if (TimeLeft-- <= 0)
+			{
+				Projectile.Kill();
+				return;
+			}
+
+			Projectile.frame = (int)((Projectile.frameCounter++ * 0.4f) % 2);
+			Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.05f);
+			Projectile.rotation = Projectile.velocity.X * 0.05f;
+
+			if (Math.Abs(Projectile.velocity.X) > 0.001f)
+			{
+				Projectile.spriteDirection = Projectile.direction = Math.Sign(Projectile.velocity.X);
+			}
+		}
+
+		private bool InvalidTarget()
+		{
+			NPC npc = Main.npc[Target];
+			return !npc.CanBeChasedBy() || npc.DistanceSQ(Projectile.Center) > 600 * 600;
+		}
+
+		private void Idle()
+		{
+			Projectile.velocity *= 0.95f;
+			Timer++;
+
+			if (Timer > 45)
+			{
+				Projectile.velocity = Main.rand.NextVector2Circular(2, 2);
+				Projectile.netUpdate = true;
+
+				Timer = 0;
+			}
+		}
+
+		private void Chase()
+		{
+			NPC target = Main.npc[Target];
+
+			Projectile.velocity += Projectile.DirectionTo(target.Center) * 0.4f;
+
+			if (Projectile.velocity.LengthSquared() > 8 * 8)
+			{
+				Projectile.velocity = Vector2.Normalize(Projectile.velocity) * 8;
 			}
 		}
 
