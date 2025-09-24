@@ -75,8 +75,8 @@ PoacherSummon: {
 // PlatinumStaffProjectile.DisplayName: "{$GoldStaffProjectile.DisplayName}"
 // StaffHeldProjectile.DisplayName: Staff
 // EoCRitualProj.DisplayName: Ritual
-// EyePortal.DisplayName: Eye Portal
-// EoWPortal.DisplayName: Eater Portal
+// EyePortal.DisplayName: Portal
+// EoWPortal.DisplayName: Portal
 // CrimsonMaw.DisplayName: Crimson Maw
 
 HornetSummon: {
@@ -88,10 +88,10 @@ HornetSummon: {
 		''' */
 }
 
-// QueenBeePortal.DisplayName: Queen Bee Portal
+// QueenBeePortal.DisplayName: Portal
 // FallingAshBlock.DisplayName: Falling Ash
 // GeyserPredictionProjectile.DisplayName: Geyser Prediction
-// SkeletronPortal.DisplayName: Skeletron Portal
+// SkeletronPortal.DisplayName: Portal
 // SkeletronRitualProj.DisplayName: Skeletron Ritual
 // DwarvenGreatswordAltHammer.DisplayName: Dwarven Greathammer
 // TinyAlaric.DisplayName: Tiny Alaric
