@@ -11,7 +11,7 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class BloodOath : Sword, GenerateName.IItem
+internal class BloodOath : Sword
 {
 	protected override bool CloneNewInstances => true;
 
@@ -50,11 +50,6 @@ internal class BloodOath : Sword, GenerateName.IItem
 		Item.UseSound = SoundID.Item1;
 		Item.shoot = ProjectileID.None;
 		Item.value = Item.buyPrice(0, 0, 20, 0);
-	}
-
-	string GenerateName.IItem.GenerateName(string defaultName)
-	{
-		return Language.GetTextValue("Mods.PathOfTerraria.Items.BloodOath.DisplayName");
 	}
 
 	public override List<ItemAffix> GenerateAffixes()

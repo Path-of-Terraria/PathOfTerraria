@@ -13,6 +13,14 @@ namespace PathOfTerraria.Core.Items;
 ///	</summary>
 public sealed class PoTInstanceItemData : GlobalItem
 {
+	public class NameAffixes(sbyte pre = -1, sbyte suf = -1)
+	{
+		public bool Empty => Prefix == -1 && Suffix == -1;
+
+		public sbyte Prefix { get; set; } = pre;
+		public sbyte Suffix { get; set; } = suf;
+	}
+
 	public override bool InstancePerEntity => true;
 	protected override bool CloneNewInstances => true;
 
@@ -22,12 +30,12 @@ public sealed class PoTInstanceItemData : GlobalItem
 		clone.ItemType = ItemType;
 		clone.Rarity = Rarity;
 		clone.Influence = Influence;
-		clone.SpecialName = SpecialName;
 		clone.ImplicitCount = ImplicitCount;
 		clone.RealLevel = RealLevel;
 		clone.Affixes = Affixes;
 		clone.Corrupted = Corrupted;
 		clone.Cloned = Cloned;
+		clone.NameAffix = NameAffix;
 		return clone;
 	}
 
@@ -48,9 +56,12 @@ public sealed class PoTInstanceItemData : GlobalItem
 	public Influence Influence { get; set; }
 
 	/// <summary>
-	///		The formatted, post-rolled name containing formatting for rarities.
+	///		The localization IDs for the prefix/suffix. Defaults to -1, -1.
 	/// </summary>
-	public string SpecialName { get; set; } = string.Empty;
+	public NameAffixes NameAffix { get; set; } = new();
+	
+	[Obsolete($"Use {nameof(NameAffix)}", error: true)]
+	public string SpecialName { get => string.Empty; set { } }
 
 	/// <summary>
 	///		The affixes of the item.

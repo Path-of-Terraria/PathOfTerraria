@@ -4,15 +4,25 @@ using System.Linq;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
 
+#nullable enable
+
 /// <summary>
 /// Used to add on-hit [de]buffs for a player to provide.
 /// </summary>
-public class OnHitDeBuffer : EntityModifierSegment, IEnumerable<KeyValuePair<int, Dictionary<int, StatModifier>>>
+public class OnHitDeBuffer : EntityModifierSegment, IEnumerable<KeyValuePair<int, OnHitDeBuffer.DebufferInstance>>
 {
-	private readonly Dictionary<int, Dictionary<int, StatModifier>> Buffs = [];
+	public class DebufferInstance
+	{
+		public delegate void ApplyDebufferDelegate(Player player, NPC target, NPC.HitInfo info, int damageDone, int time);
+
+		public Dictionary<int, StatModifier> ModifiersByDuration = [];
+		public ApplyDebufferDelegate? OnApplyOverride = null;
+	}
+
+	private readonly Dictionary<int, DebufferInstance> Buffs = [];
 	
 	public override Dictionary<string, StatModifier> Modifiers => Buffs
-		.SelectMany(outer => outer.Value
+		.SelectMany(outer => outer.Value.ModifiersByDuration
 			.Select(inner => new KeyValuePair<string, StatModifier>("+" + Lang.GetBuffName(outer.Key) + " (" + MathF.Round(inner.Key / 60f, 2) + " s)", inner.Value)))
 		.ToDictionary(v => v.Key, v => v.Value);
 
@@ -25,24 +35,21 @@ public class OnHitDeBuffer : EntityModifierSegment, IEnumerable<KeyValuePair<int
 	/// <param name="id">Buff ID to use.</param>
 	/// <param name="duration">Duration to use. This also creates its own tracker per duration.</param>
 	/// <param name="chance">Additive chance for the buff to proc.</param>
-	public void Add(int id, int duration, float chance)
+	public void Add(int id, int duration, float chance, DebufferInstance.ApplyDebufferDelegate? customBuffAction = null)
 	{
-		if (!Buffs.ContainsKey(id))
+		if (!Buffs.TryGetValue(id, out DebufferInstance? value))
 		{
-			Buffs.Add(id, []);
+			value = new() { OnApplyOverride = customBuffAction };
+			Buffs.Add(id, value);
 		}
 
-		if (!Buffs[id].ContainsKey(duration))
-		{
-			Buffs[id].Add(duration, StatModifier.Default);
-		}
-
-		Buffs[id][duration] += chance;
+		value.ModifiersByDuration.TryAdd(duration, StatModifier.Default);
+		value.ModifiersByDuration[duration] += chance;
 	}
 
-	public IEnumerator<KeyValuePair<int, Dictionary<int, StatModifier>>> GetEnumerator()
+	public IEnumerator<KeyValuePair<int, DebufferInstance>> GetEnumerator()
 	{
-		foreach (KeyValuePair<int, Dictionary<int, StatModifier>> val in Buffs)
+		foreach (KeyValuePair<int, DebufferInstance> val in Buffs)
 		{
 			yield return val;
 		}

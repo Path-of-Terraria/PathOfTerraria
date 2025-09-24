@@ -18,6 +18,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.Quests;
 
+[Autoload(true, Side = ModSide.Client)]
 internal sealed class QuestDebugging : ModSystem
 {
 #if DEBUG

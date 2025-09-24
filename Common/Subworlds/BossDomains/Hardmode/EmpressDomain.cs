@@ -12,7 +12,7 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 {
-	public override int Width => 670;
+	public override int Width => 654;
 	public override int Height => 600;
 	public override (int time, bool isDay) ForceTime => (8000, false);
 

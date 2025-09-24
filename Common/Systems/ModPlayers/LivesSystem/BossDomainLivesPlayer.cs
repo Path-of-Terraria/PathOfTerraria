@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using SubworldLibrary;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -38,7 +39,7 @@ internal class BossDomainLivesPlayer : ModPlayer
 		}
 	}
 
-	public override void ResetEffects()
+	public override void OnEnterWorld()
 	{
 		bool inDomain = SubworldSystem.Current is MappingWorld;
 
@@ -98,13 +99,21 @@ internal class BossDomainLivesPlayer : ModPlayer
 		return true;
 	}
 
+	/// <summary>
+	/// Called when the player exits a domain. Local player only.
+	/// </summary>
 	private void ExitDomain()
 	{
 		if (Player.dead || Player.ghost)
 		{
-			Player.Spawn(PlayerSpawnContext.ReviveFromDeath);
 			Player.ghost = false;
 			Player.deadForGood = false;
+			Player.Spawn(PlayerSpawnContext.ReviveFromDeath);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+			{
+				ModContent.GetInstance<RequestCheckSectionHandler>().Send((byte)Player.whoAmI, Player.Center);
+			}
 		}
 
 		LivesLost = 0;

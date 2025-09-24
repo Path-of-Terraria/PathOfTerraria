@@ -52,14 +52,14 @@ internal class UniversalBuffingPlayer : ModPlayer
 	/// <param name="damageDone"></param>
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
-		foreach (KeyValuePair<int, Dictionary<int, StatModifier>> buff in UniversalModifier.Buffer)
+		foreach (KeyValuePair<int, OnHitDeBuffer.DebufferInstance> buff in UniversalModifier.Buffer)
 		{
 			int id = buff.Key;
 			int time = 0;
 
 			float roll = Main.rand.NextFloat();
 
-			foreach (KeyValuePair<int, StatModifier> instance in buff.Value)
+			foreach (KeyValuePair<int, StatModifier> instance in buff.Value.ModifiersByDuration)
 			{
 				if (roll <= (instance.Value.ApplyTo(1f) - 1f))
 				{
@@ -69,7 +69,14 @@ internal class UniversalBuffingPlayer : ModPlayer
 
 			if (time > 0)
 			{
-				target.AddBuff(id, time);
+				if (buff.Value.OnApplyOverride is not null)
+				{
+					buff.Value.OnApplyOverride(Player, target, hit, damageDone, time);
+				}
+				else
+				{
+					target.AddBuff(id, time);
+				}
 			}
 		}
 	}

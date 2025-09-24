@@ -5,7 +5,6 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.ModPlayers.LivesSystem;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Core.Items;
-using SubworldLibrary;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
@@ -13,7 +12,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
-public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
+public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.IItem, GenerateImplicits.IItem, IPoTGlobalItem, GetItemLevel.IItem, SetItemLevel.IItem
 {
 	protected sealed override bool CloneNewInstances => true;
 
@@ -71,14 +70,6 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 	}
 
 	protected abstract void OpenMapInternal();
-
-	/// <summary>
-	/// Gets name and what tier the map is of as a singular string.
-	/// </summary>
-	public virtual string GetNameAndTier()
-	{
-		return Core.Items.GenerateName.Invoke(Item);
-	}
 
 	public virtual int GetMapTier(int itemLevel)
 	{
@@ -178,5 +169,10 @@ public abstract class Map : ModItem, GenerateName.IItem, GenerateAffixes.IItem, 
 		realLevel = level;
 		ItemLevel = realLevel;
 		Tier = GetMapTier(ItemLevel);
+	}
+
+	(sbyte, sbyte) GenerateNameAffixes.IItem.GenerateAffixIds()
+	{
+		return (-1, -1);
 	}
 }

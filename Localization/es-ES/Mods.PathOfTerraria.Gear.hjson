@@ -10,7 +10,6 @@ Tooltips: {
 	// Corrupted: Corrupted
 	// Tier: Tier:
 	// Level: Item level:
-	// Damage: Damage
 	// Defense: Defense
 	// Pickaxe: Pickaxe Power
 	// Axe: Axe Power
@@ -173,7 +172,26 @@ Staff: {
 	}
 }
 
-// Broadsword.Name: Broadsword
+Broadsword: {
+	// Name: Broadsword
+	// AltUse: Right-click to summon a spirit from your blade that lunges forward, healing you for 15 health on hitting an enemy.
+
+	Prefixes: {
+		// 0: "{$Sword.Prefixes.0}"
+		// 1: "{$Sword.Prefixes.1}"
+		// 2: "{$Sword.Prefixes.2}"
+		// 3: "{$Sword.Prefixes.3}"
+		// 4: "{$Sword.Prefixes.4}"
+	}
+
+	Suffixes: {
+		// 0: "{$Sword.Suffixes.0}"
+		// 1: "{$Sword.Suffixes.1}"
+		// 2: "{$Sword.Suffixes.2}"
+		// 3: "{$Sword.Suffixes.3}"
+		// 4: "{$Sword.Suffixes.4}"
+	}
+}
 
 Sword: {
 	// Name: Sword
@@ -356,3 +374,23 @@ BossMap.Name: Mapa de Jefe
 // Melee.Name: Melee
 // Summon.Name: Summon
 // Accessory.Name: Accessory
+
+Ring: {
+	// Name: Ring
+
+	Prefixes: {
+		// 0: Cursed
+		// 1: Hollow
+		// 2: Shattered
+		// 3: Sturdy
+		// 4: Reinforced
+	}
+
+	Suffixes: {
+		// 0: of Embers
+		// 1: of Memories
+		// 2: of Nevermore
+		// 3: of Hatred
+		// 4: of Fury
+	}
+}
