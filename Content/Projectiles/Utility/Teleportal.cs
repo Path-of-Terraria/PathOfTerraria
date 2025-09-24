@@ -6,26 +6,9 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class Teleportal : ModProjectile
+internal class Teleportal : ModProjectile, IRightClickableProjectile
 {
 	public Vector2 TeleportLocation => new(Projectile.ai[0], Projectile.ai[1]);
-
-	public override void SetStaticDefaults()
-	{
-		ClickableProjectilePlayer.RegisterProjectile(Type, (proj, player) =>
-		{
-			if (Main.mouseRight && Main.mouseRightRelease)
-			{
-				player.Teleport((proj.ModProjectile as Teleportal).TeleportLocation);
-			}
-
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "Portal",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-			});
-		});
-	}
 
 	public override void SetDefaults()
 	{
@@ -68,6 +51,23 @@ internal class Teleportal : ModProjectile
 			Color color = lightColor * ((3 - i) * 0.2f) * Projectile.Opacity;
 			Main.spriteBatch.Draw(tex, position, null, color, rotation, tex.Size() / 2f, 1f - i * 0.2f, SpriteEffects.None, 0);
 		}
+
+		return false;
+	}
+
+	bool IRightClickableProjectile.RightClick(Projectile self, Player player)
+	{
+		if (Main.mouseRight && Main.mouseRightRelease)
+		{
+			player.Teleport((self.ModProjectile as Teleportal).TeleportLocation);
+			return true;
+		}
+
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "Portal",
+			SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+		});
 
 		return false;
 	}

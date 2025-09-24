@@ -248,6 +248,13 @@ public abstract class Quest : ModType, ILocalizedModType
 		state = State.InProgress;
 
 		int step = tag.GetInt("currentQuest");
+
+		if (step >= QuestSteps.Count)
+		{
+			Mod.Logger.Debug("Quest " + Name + " needed to have loaded step adjusted.");
+			step = QuestSteps.Count - 1;
+		}
+
 		Start(player, step);
 
 		for (int i = 0; i < step; ++i)

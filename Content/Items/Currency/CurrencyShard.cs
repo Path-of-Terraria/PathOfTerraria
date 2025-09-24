@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.Items.Currency;
 /// <summary>
 /// Base class for currency shards. Defaults to having a 4-frame animation, consumable, and has a default <see cref="CanRightClick"/>.
 /// </summary>
-public abstract class CurrencyShard : ModItem
+public abstract class CurrencyShard : ModItem, GenerateNameAffixes.IItem
 {
 	protected virtual int FrameCount => 4;
 
@@ -43,5 +43,10 @@ public abstract class CurrencyShard : ModItem
 
 		PoTInstanceItemData item = Main.LocalPlayer.HeldItem.GetInstanceData();
 		return !item.Corrupted && !item.Cloned;
+	}
+
+	(sbyte, sbyte) GenerateNameAffixes.IItem.GenerateAffixIds()
+	{
+		return (-1, -1);
 	}
 }

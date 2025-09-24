@@ -4,7 +4,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Socketables;
 
-public abstract class Socketable : ModItem, GenerateName.IItem
+public abstract class Socketable : ModItem, GenerateNameAffixes.IItem
 {
 	public override string Texture => $"{PoTMod.ModName}/Assets/Items/Socketable/Placeholder";
 	
@@ -28,8 +28,6 @@ public abstract class Socketable : ModItem, GenerateName.IItem
 	/// <param name="player">the player wielding the weapon this is socketed into.</param>
 	/// <param name="item">the item this is socketed into.</param>
 	public virtual void UpdateEquip(Player player, Item item) { }
-
-	public virtual string GenerateName(string defaultName) { return "Unknown Socket"; }
 
 	public void Save(TagCompound tag)
 	{
@@ -61,4 +59,6 @@ public abstract class Socketable : ModItem, GenerateName.IItem
 		(item.ModItem as Socketable)?.Load(tag);
 		return item.ModItem as Socketable;
 	}
+
+	public abstract (sbyte, sbyte) GenerateAffixIds();
 }

@@ -131,7 +131,7 @@ internal class FreezeNPC : GlobalNPC
 	{
 		SoundStyle? hitSound = self.HitSound;
 
-		if (self.GetGlobalNPC<FreezeNPC>().Frozen)
+		if (self.TryGetGlobalNPC(out FreezeNPC freeze) && freeze.Frozen)
 		{
 			self.HitSound = SoundID.Item27;
 		}

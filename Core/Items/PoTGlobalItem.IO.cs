@@ -20,10 +20,11 @@ partial class PoTGlobalItem : GlobalItem
 
 		tag["implicits"] = data.ImplicitCount;
 
-		tag["name"] = data.SpecialName;
 		tag["ItemLevel"] = data.RealLevel;
 		tag["corrupt"] = data.Corrupted;
 		tag["cloned"] = data.Cloned;
+		tag["namePrefix"] = (short)data.NameAffix.Prefix;
+		tag["nameSuffix"] = (short)data.NameAffix.Suffix;
 
 		List<TagCompound> affixTags = [];
 		foreach (ItemAffix affix in data.Affixes)
@@ -46,10 +47,11 @@ partial class PoTGlobalItem : GlobalItem
 
 		data.ImplicitCount = tag.GetInt("implicits");
 
-		data.SpecialName = tag.GetString("name");
 		data.RealLevel = tag.GetInt("ItemLevel");
 		data.Corrupted = tag.GetBool("corrupt");
 		data.Cloned = tag.GetBool("cloned");
+
+		data.NameAffix = new((sbyte)tag.GetShort("namePrefix"), (sbyte)tag.GetShort("nameSuffix"));
 
 		data.Affixes.Clear();
 		IList<TagCompound> affixTags = tag.GetList<TagCompound>("affixes");
@@ -72,15 +74,12 @@ partial class PoTGlobalItem : GlobalItem
 		writer.Write((byte)data.ItemType);
 		writer.Write((byte)data.Rarity);
 		writer.Write((byte)data.Influence);
-
 		writer.Write((byte)data.ImplicitCount);
+
 		writer.Write(data.Corrupted);
 		writer.Write(data.Cloned);
-
-		// Is this necessary?
-		// Probably should save the name as
-		// `GenericPrefix-ID (Item.Name can probably be omitted) GenericSuffix-ID`.
-		writer.Write(data.SpecialName);
+		writer.Write(data.NameAffix.Prefix);
+		writer.Write(data.NameAffix.Suffix);
 		writer.Write((byte)data.RealLevel);
 
 		writer.Write((byte)data.Affixes.Count);
@@ -97,12 +96,12 @@ partial class PoTGlobalItem : GlobalItem
 		data.ItemType = (ItemType)reader.ReadByte();
 		data.Rarity = (ItemRarity)reader.ReadByte();
 		data.Influence = (Influence)reader.ReadByte();
-
 		data.ImplicitCount = reader.ReadByte();
+
 		data.Corrupted = reader.ReadBoolean();
 		data.Cloned = reader.ReadBoolean();
-		data.SpecialName = reader.ReadString();
 		data.RealLevel = reader.ReadByte();
+		data.NameAffix = new(reader.ReadSByte(), reader.ReadSByte());
 
 		data.Affixes.Clear();
 		int affixes = reader.ReadByte();

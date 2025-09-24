@@ -10,36 +10,10 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class WoFPortal : ModProjectile, ISaveProjectile
+internal class WoFPortal : ModProjectile, ISaveProjectile, IRightClickableProjectile
 {
-	private ref float Timer => ref Projectile.ai[0];
 	private ref float Uses => ref Projectile.ai[1];
 	private ref float MaxUses => ref Projectile.ai[2];
-
-	public override void SetStaticDefaults()
-	{
-		ClickableProjectilePlayer.RegisterProjectile(Type, static (proj, _) =>
-		{
-			if (Main.mouseRight && Main.mouseRightRelease)
-			{
-				SubworldSystem.Enter<WallOfFleshDomain>();
-
-				proj.ai[1]++;
-				proj.netUpdate = true;
-
-				if (proj.ai[1] > proj.ai[2])
-				{
-					proj.Kill();
-				}
-			}
-
-			Tooltip.Create(new TooltipDescription
-			{
-				Identifier = "Portal",
-				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-			});
-		});
-	}
 
 	public override void SetDefaults()
 	{
@@ -115,5 +89,30 @@ internal class WoFPortal : ModProjectile, ISaveProjectile
 	public void LoadData(TagCompound tag, Projectile projectile)
 	{
 		projectile.ai[1] = tag.GetFloat("uses");
+	}
+
+	bool IRightClickableProjectile.RightClick(Projectile self, Player player)
+	{
+		if (Main.mouseRight && Main.mouseRightRelease && SubworldSystem.Current is null)
+		{
+			SubworldSystem.Enter<WallOfFleshDomain>();
+
+			self.ai[1]++;
+			self.netUpdate = true;
+
+			if (self.ai[1] > self.ai[2])
+			{
+				self.Kill();
+			}
+
+			return true;
+		}
+
+		Tooltip.Create(new TooltipDescription
+		{
+			Identifier = "Portal",
+			SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+		});
+		return false;
 	}
 }

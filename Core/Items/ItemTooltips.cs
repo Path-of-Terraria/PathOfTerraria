@@ -175,21 +175,21 @@ public sealed partial class ItemTooltips : GlobalItem
 		PoTInstanceItemData data = item.GetInstanceData();
 		PoTStaticItemData staticData = item.GetStaticData();
 
-		if (data.SpecialName == string.Empty) // Make sure SpecialName generated if it hasn't already for some reason
-		{
-			data.SpecialName = GenerateName.Invoke(item);
-		}
+		//if (data.Rarity > ItemRarity.Normal && data.NameAffix.Empty) // Make sure SpecialName generated if it hasn't already for some reason
+		//{
+		//	data.NameAffix = GenerateNameAffixes.Invoke(item);
+		//}
 
 		if (nameLine is null)
 		{
-			nameLine = new TooltipLine(Mod, "Name", data.SpecialName)
+			nameLine = new TooltipLine(Mod, "Name", GenerateName.Invoke(item))
 			{
 				OverrideColor = GetRarityColor(data.Rarity)
 			};
 		}
 		else
 		{
-			nameLine.Text = data.SpecialName;
+			nameLine.Text = GenerateName.Invoke(item);
 			nameLine.OverrideColor ??= GetRarityColor(data.Rarity);
 		}
 

@@ -5,11 +5,10 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 using Terraria.GameContent;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class DwarvenGreatsword : Sword, GenerateName.IItem
+internal class DwarvenGreatsword : Sword
 {
 	public override void SetStaticDefaults()
 	{
@@ -36,11 +35,6 @@ internal class DwarvenGreatsword : Sword, GenerateName.IItem
 		Item.shoot = ProjectileID.None;
 		Item.useTime = Item.useAnimation = 34;
 		Item.value = Item.buyPrice(0, 15, 0, 0);
-	}
-
-	string GenerateName.IItem.GenerateName(string defaultName)
-	{
-		return Language.GetTextValue("Mods.PathOfTerraria.Items.DwarvenGreatsword.DisplayName");
 	}
 
 	public override List<ItemAffix> GenerateAffixes()

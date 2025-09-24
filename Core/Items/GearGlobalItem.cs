@@ -4,6 +4,7 @@ using PathOfTerraria.Content.Items.Gear;
 using PathOfTerraria.Content.Socketables;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -11,7 +12,70 @@ namespace PathOfTerraria.Core.Items;
 
 internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalTooltipLines.IGlobal, ExtraRolls.IGlobal, SwapItemModifiers.IGlobal, GeneratePrefix.IGlobal, GenerateSuffix.IGlobal
 {
+	/// <summary>
+	/// All prefixes associated with a Gear category, defined by <see cref="GearLocalizationCategory"/>'s functionality.
+	/// </summary>
+	private static readonly Dictionary<string, List<sbyte>> GearPrefixIdsByCategory = [];
+
+	/// <summary>
+	/// All suffixes associated with a Gear category, defined by <see cref="GearLocalizationCategory"/>'s functionality.
+	/// </summary>
+	private static readonly Dictionary<string, List<sbyte>> GearSuffixIdsByCategory = [];
+
 	private static HashSet<int> _optInGearItems = [];
+
+	public override void SetStaticDefaults()
+	{
+		GearPrefixIdsByCategory.Clear();
+		GearSuffixIdsByCategory.Clear();
+
+		Dictionary<string, LocalizedText> texts = GetTexts(LanguageManager.Instance);
+
+		// Load and store all possible prefixes for every "gear category" in the mod.
+		// This is necessary since Language/LanguageManager don't expose a way to both
+		// get a LocalizedText in a "category" randomly, AND also get the key associated with it.
+		foreach (KeyValuePair<string, LocalizedText> pair in texts)
+		{
+			const string Prefix = "Mods.PathOfTerraria.Gear.";
+
+			if (!pair.Key.StartsWith(Prefix))
+			{
+				continue;
+			}
+
+			string[] split = pair.Key.Replace(Prefix, "").Split('.');
+
+			if (split.Length != 3)
+			{
+				continue;
+			}
+
+			string category = split[0];
+			
+			if (!sbyte.TryParse(split[2], out sbyte id))
+			{
+				continue;
+			}
+
+			if (split[1].Equals("Prefixes", StringComparison.OrdinalIgnoreCase))
+			{
+				if (!GearPrefixIdsByCategory.TryAdd(category, [id]))
+				{
+					GearPrefixIdsByCategory[category].Add(id);
+				}
+			}
+			else if (split[1].Equals("Suffixes", StringComparison.OrdinalIgnoreCase))
+			{
+				if (!GearSuffixIdsByCategory.TryAdd(category, [id]))
+				{
+					GearSuffixIdsByCategory[category].Add(id);
+				}
+			}
+		}
+
+		[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_localizedTexts")]
+		static extern ref Dictionary<string, LocalizedText> GetTexts(LanguageManager mananger);
+	}
 
 	public static void EquipItem(Item item, Player player)
 	{
@@ -235,18 +299,29 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		}
 	}
 
-	void GeneratePrefix.IGlobal.ModifyPrefix(Item item, ref string prefix)
+	void GeneratePrefix.IGlobal.ModifyPrefix(Item item, ref sbyte prefix)
 	{
-		prefix = Language.SelectRandom((key, _) => BasicAffixSearchFilter(item, key, true)).Value;
+		if (GearLocalizationCategory.Invoke(item) is not { } category || category == string.Empty)
+		{
+			prefix = -1;
+			return;
+		}
+
+		PoTInstanceItemData data = item.GetInstanceData();
+		bool noPrefix = data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare || !GearPrefixIdsByCategory.ContainsKey(category);
+		prefix = (sbyte)(noPrefix ? -1 : Main.rand.Next(GearPrefixIdsByCategory[category]));
 	}
 
-	void GenerateSuffix.IGlobal.ModifySuffix(Item item, ref string suffix)
+	void GenerateSuffix.IGlobal.ModifySuffix(Item item, ref sbyte suffix)
 	{
-		suffix = Language.SelectRandom((key, _) => BasicAffixSearchFilter(item, key, false)).Value;
-	}
+		if (GearLocalizationCategory.Invoke(item) is not { } category || category == string.Empty)
+		{
+			suffix = -1;
+			return;
+		}
 
-	private static bool BasicAffixSearchFilter(Item item, string key, bool isPrefix)
-	{
-		return key.StartsWith("Mods.PathOfTerraria.Gear." + GearLocalizationCategory.Invoke(item) + (isPrefix ? ".Prefixes" : ".Suffixes"));
+		PoTInstanceItemData data = item.GetInstanceData();
+		bool noPrefix = data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare || !GearSuffixIdsByCategory.ContainsKey(category);
+		suffix = (sbyte)(noPrefix ? -1 : Main.rand.Next(GearSuffixIdsByCategory[category]));
 	}
 }
