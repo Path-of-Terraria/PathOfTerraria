@@ -321,7 +321,7 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 		}
 
 		PoTInstanceItemData data = item.GetInstanceData();
-		bool noPrefix = data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare || !GearSuffixIdsByCategory.ContainsKey(category);
-		suffix = (sbyte)(noPrefix ? -1 : Main.rand.Next(GearSuffixIdsByCategory[category]));
+		bool noSuffix = data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare || !GearSuffixIdsByCategory.ContainsKey(category);
+		suffix = (sbyte)(noSuffix ? -1 : Main.rand.Next(GearSuffixIdsByCategory[category]));
 	}
 }

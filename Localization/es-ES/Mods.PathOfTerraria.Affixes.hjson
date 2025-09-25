@@ -89,3 +89,4 @@ NoFallDamageAffix: {
 // ChanceToApplyBleedingItemAffix.Description: "{1}{0}% chance to apply a stack of Bleed on hit"
 // AddedBleedStackAffix.Description: "{1}{0} max Bleed stacks"
 // BetterBleedAffix.Description: "{1}{0}% more damage used for Bleed"
+// EoLDaylightAffix.Description: Fight in the daylight

@@ -100,8 +100,8 @@ partial class PoTGlobalItem : GlobalItem
 
 		data.Corrupted = reader.ReadBoolean();
 		data.Cloned = reader.ReadBoolean();
-		data.RealLevel = reader.ReadByte();
 		data.NameAffix = new(reader.ReadSByte(), reader.ReadSByte());
+		data.RealLevel = reader.ReadByte();
 
 		data.Affixes.Clear();
 		int affixes = reader.ReadByte();

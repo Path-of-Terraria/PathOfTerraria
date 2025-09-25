@@ -2,6 +2,7 @@
 using Terraria.DataStructures;
 using Terraria.GameContent.Tile_Entities;
 using Terraria.ID;
+using Terraria.ObjectData;
 
 namespace PathOfTerraria.Common.World.Generation.Tools;
 
@@ -17,10 +18,16 @@ internal class GenerationUtilities
 			for (int j = 2; j < Main.maxTilesY - 2; ++j)
 			{
 				Tile tile = Main.tile[i, j];
-
-				if (tile.HasTile && TileID.Sets.IsAContainer[tile.TileType] && TileID.Sets.BasicChest[tile.TileType])
+				bool badType = tile.TileType is not TileID.FakeContainers and not TileID.FakeContainers2;
+				
+				if (tile.HasTile && TileID.Sets.IsAContainer[tile.TileType] && TileID.Sets.BasicChest[tile.TileType] && badType)
 				{
-					Chest.CreateChest(i, j);
+					bool isTopLeft = tile.TileFrameX % 36 == 0 && tile.TileFrameY % 36 == 0;
+
+					if (isTopLeft)
+					{
+						Chest.CreateChest(i, j);
+					}
 				}
 			}
 		}

@@ -91,7 +91,7 @@ public class CorruptShard : CurrencyShard
 	{
 		WeightedRandom<ItemAffix> affixes = new();
 
-		if (item.ModItem is not Map)
+		if (item.ModItem is not Map map)
 		{
 			affixes.Add((ItemAffix)Affix.CreateAffix<FlatLifeAffix>(10, 20), 1);
 			affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(4, 6), 1);
@@ -101,6 +101,8 @@ public class CorruptShard : CurrencyShard
 		{
 			affixes.Add(GenerateMapAffix<MapDamageAffix>(20, 35, 5, 7.5f), 1);
 			affixes.Add(GenerateMapAffix<MapMobCritChanceAffix>(30, 50, 10, 14), 0.5f);
+
+			map.ModifyCorruptionAffixes(affixes);
 		}
 
 		ItemAffix chosenAffix = affixes.Get();
@@ -112,12 +114,12 @@ public class CorruptShard : CurrencyShard
 	/// <summary>
 	/// Generates a map affix with the given value and strength ranges. Value and strength will correspond to each other.
 	/// </summary>
-	private static MapAffix GenerateMapAffix<T>(float min, float max, float strengthMin, float strengthMax) where T : MapAffix
+	public static MapAffix GenerateMapAffix<T>(float min, float max, float strengthMin, float strengthMax) where T : MapAffix
 	{
 		float factor = Main.rand.NextFloat();
 		float strength = MathHelper.Lerp(strengthMin, strengthMax, factor);
 		float value = MathHelper.Lerp(min, max, factor);
-		var mapAffix = (MapAffix)Affix.CreateAffix<MapDamageAffix>(value);
+		var mapAffix = (MapAffix)Affix.CreateAffix<T>(value);
 		mapAffix.Strength = strength;
 		return mapAffix;
 	}

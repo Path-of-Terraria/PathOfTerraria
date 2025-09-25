@@ -1,7 +1,10 @@
-﻿using PathOfTerraria.Common.World.Generation;
+﻿using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Common.World.Generation;
 using PathOfTerraria.Content.NPCs.BossDomain.EoLDomain;
 using PathOfTerraria.Content.Projectiles.Utility;
+using SubworldLibrary;
 using System.Collections.Generic;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.ID;
@@ -12,9 +15,11 @@ namespace PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 
 internal class EmpressDomain : BossDomainSubworld, IOverrideBiome
 {
+	public static bool IsDay => SubworldSystem.Current is EmpressDomain && Affixes?.Count > 0 && Affixes.Any(x => x is EoLDaylightAffix);
+
 	public override int Width => 654;
 	public override int Height => 600;
-	public override (int time, bool isDay) ForceTime => (8000, false);
+	public override (int time, bool isDay) ForceTime => IsDay ? ((int)Main.dayLength / 2, true) : (8000, false);
 
 	private static Rectangle ArenaBounds = new();
 	private static int Wave = 0;

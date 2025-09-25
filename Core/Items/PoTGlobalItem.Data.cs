@@ -19,6 +19,11 @@ public sealed class PoTInstanceItemData : GlobalItem
 
 		public sbyte Prefix { get; set; } = pre;
 		public sbyte Suffix { get; set; } = suf;
+
+		public override string ToString()
+		{
+			return $"Pre: {Prefix} Suf: {Suffix}";
+		}
 	}
 
 	public override bool InstancePerEntity => true;
