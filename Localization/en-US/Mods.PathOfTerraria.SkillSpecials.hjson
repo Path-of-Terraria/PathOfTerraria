@@ -49,3 +49,8 @@ AntlionSwarm: {
 	Name: Airborne Antlions
 	Description: Halve the maximum amount of insects, but the insects fly and deal more damage
 }
+
+LocustBrood: {
+	Name: Locust Brood
+	Description: Twice the amount of insects spawn as eggs all at once, spawning after some time
+}

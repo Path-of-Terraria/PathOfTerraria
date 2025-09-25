@@ -14,11 +14,12 @@ internal class PestSwarmTree : SkillTree
 	{
 		var anchor = new Anchor(this) { Level = 1 };
 		var swarm = new AntlionSwarm(this) { TreePos = new Vector2(200, 0) };
+		var locusts = new LocustBrood(this) { TreePos = new Vector2(0, -200) };
 		
-		AddNodes(anchor, swarm);
+		AddNodes(anchor, swarm, locusts);
 
-		//var brood = new BiggerBrood(this) { TreePos = new Vector2(200, -100) };
+		var brood = new BiggerBrood(this) { TreePos = new Vector2(200, -100) };
 
-		//AddNodes(swarm, brood);
+		AddNodes(locusts, brood);
 	}
 }
