@@ -49,7 +49,7 @@ internal class WardensBow : WoodenBow
 
 	public override List<ItemAffix> GenerateAffixes()
 	{
-		var lifeAffix = (ItemAffix)Affix.CreateAffix<FlatLifeAffix>(25, 35);
+		var lifeAffix = (ItemAffix)Affix.CreateAffix<BaseLifeAffix>(25, 35);
 		var dexAffix = (ItemAffix)Affix.CreateAffix<DexterityItemAffix>(15f, 25f);
 		var fetidCarapace = (ItemAffix)Affix.CreateAffix<FetidCarapaceAffix>(1);
 		var armorShredAffix = (ItemAffix)Affix.CreateAffix<ChanceToApplyRootedGearAffix>(0.2f, 0.3f);
