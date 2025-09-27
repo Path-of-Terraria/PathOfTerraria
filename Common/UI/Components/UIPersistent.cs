@@ -32,7 +32,7 @@ internal sealed class UIPersistent(string Identifier) : UIComponent
 		element.OnUpdate -= OnUpdate;
 	}
 
-	private void Import(UIElement element)
+	public void Import(UIElement element)
 	{
 		if (cache.TryGetValue(Identifier, out Data data))
 		{

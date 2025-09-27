@@ -760,6 +760,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			};
 		});
 
+		UIPersistent? scrollbarPersistence = null;
 		UIElement listArea = window.AddElement(new UIElement(), e =>
 		{
 			e.SetDimensions(x: (0.00f, +padding.X), y: (0.00f, +padding.Y), width: (1.00f, -(padding.X + padding.Z)), height: (1.00f, -(padding.Y + padding.W)));
@@ -768,17 +769,21 @@ internal sealed class EncounterEditorState : SmartUiState
 		{
 			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
 		});
-		listArea.AddElement(new FixedUIScrollbar(UserInterface), e =>
+		UIScrollbar scrollbar = listArea.AddElement(new FixedUIScrollbar(UserInterface), e =>
 		{
 			e.SetDimensions(x: (1.00f, -ScrollbarWidth), y: (0.00f, +6), width: (0.00f, +ScrollbarWidth), height: (1.00f, -12));
-			e.AddComponent(new UIPersistent("EncounterDetailsScrollBar"));
 			list.SetScrollbar(e);
+			
+			scrollbarPersistence = e.AddComponent(new UIPersistent("EncounterDetailsScrollBar"));
 		});
 
 		int yPos = 0;
 		int elementIndex = 0;
 		PopulateListWithEncounterControls(list, ref elementIndex, ref yPos);
 		PopulateListWithEncounterDetails(list, ref elementIndex, ref yPos);
+
+		window.Recalculate();
+		scrollbarPersistence?.Import(scrollbar);
 
 		return window;
 	}
@@ -1160,15 +1165,17 @@ internal sealed class EncounterEditorState : SmartUiState
 			e.SetDimensions(x: (0.00f, +padding.X), y: (0.00f, +padding.Y), width: (1.00f, -(padding.X + padding.Z)), height: (1.00f, -(padding.Y + padding.W)));
 		});
 
+		UIPersistent? scrollbarPersistence = null;
 		UIList list = innerArea.AddElement(new UIList(), e =>
 		{
 			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
 		});
-		innerArea.AddElement(new FixedUIScrollbar(UserInterface), e =>
+		UIScrollbar scrollbar = innerArea.AddElement(new FixedUIScrollbar(UserInterface), e =>
 		{
 			e.SetDimensions(x: (1.00f, -ScrollbarWidth), y: (0.00f, +6), width: (0.00f, +ScrollbarWidth), height: (1.00f, -12));
-			e.AddComponent(new UIPersistent("SpawningWindowScrollbar"));
 			list.SetScrollbar(e);
+
+			scrollbarPersistence = e.AddComponent(new UIPersistent("SpawningWindowScrollbar"));
 		});
 
 		if (!SelectedEncounter.IsValid || SelectedWave < 0)
@@ -1181,6 +1188,9 @@ internal sealed class EncounterEditorState : SmartUiState
 			int elementIndex = 0;
 			PopulateListWithSpawnControls(list, CurrentSpawnBox, ref elementIndex, ref yPos);
 		}
+
+		window.Recalculate();
+		scrollbarPersistence?.Import(scrollbar);
 
 		return window;
 	}
