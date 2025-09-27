@@ -387,6 +387,27 @@ Quiver: {
 	}
 }
 
+Talisman: {
+	// Name: Talisman
+	// MinionDamage: "[i:278] +{0}% increased minion damage"
+
+	Prefixes: {
+		// 0: Summoner's
+		// 1: Conjuring
+		// 2: Binding
+		// 3: Ancient
+		// 4: Mystical
+	}
+
+	Suffixes: {
+		// 0: of Dominion
+		// 1: of Command
+		// 2: of the Overlord
+		// 3: of Servitude
+		// 4: of the Necromancer
+	}
+}
+
 Map.Name: Mapa
 ExplorableMap.Name: Mapa Eksploracyjna
 BossMap.Name: Mapa Bossa

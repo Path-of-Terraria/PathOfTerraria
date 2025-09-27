@@ -10,7 +10,6 @@ internal abstract class Quiver : Offhand
 {
 	protected abstract float MovementSpeedBonus { get; }
 	protected abstract float AmmoConsumptionChance { get; }
-	protected abstract int Defence { get; }
 	protected override string GearLocalizationCategory => "Quiver";
 
 	public override void SetStaticDefaults()

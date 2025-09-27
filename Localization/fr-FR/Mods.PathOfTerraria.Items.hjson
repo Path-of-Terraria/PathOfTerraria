@@ -926,6 +926,11 @@ LeatherQuiver: {
 	// Tooltip: ""
 }
 
+WoodenTalisman: {
+	// DisplayName: Wooden Talisman
+	// Tooltip: ""
+}
+
 RunestoneItem: {
 	DisplayName: Pierre runique
 	// Tooltip: ""

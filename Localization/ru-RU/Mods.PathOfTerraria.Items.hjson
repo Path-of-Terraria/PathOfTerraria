@@ -913,6 +913,11 @@ LeatherQuiver: {
 	// Tooltip: ""
 }
 
+WoodenTalisman: {
+	// DisplayName: Wooden Talisman
+	// Tooltip: ""
+}
+
 RunestoneItem: {
 	DisplayName: Рунный камень
 	Tooltip: ""
