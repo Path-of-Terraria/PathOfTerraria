@@ -274,6 +274,21 @@ internal sealed class EncounterEditor : ModSystem
 		list.Insert(insertionIndex ?? list.Count, value ?? ((WaveBox)new EncounterWave { Spawns = [] }));
 	}
 
+	public static void RemoveWave(Encounter encounter, int waveIndex)
+	{
+		if (!encounter.IsValid) { return; }
+
+		List<WaveBox> list = BoxedEncounters[encounter.Index].Waves;
+		if (waveIndex >= list.Count || list.Count <= 1) { return; }
+
+		if (State.SelectedEncounter == encounter && State.SelectedWave >= waveIndex)
+		{
+			State.SetSelections(State.SelectedEncounter, State.SelectedWave > waveIndex ? (State.SelectedWave - 1) : -1, -1);
+		}
+
+		list.RemoveAt(waveIndex);
+	}
+
 	public static void RemoveSpawn(Encounter encounter, int waveIndex, int spawnIndex)
 	{
 		if (spawnIndex >= BoxedEncounters[encounter.Index].Waves[waveIndex].Spawns.Count) { return; }
@@ -1029,6 +1044,16 @@ internal sealed class EncounterEditorState : SmartUiState
 			e.SetDimensions(width: (1f, +0f), height: (1f, +0));
 		});
 
+		if (wave.Spawns.Length == 0)
+		{
+			grid.AddElement(new UIButton<string>("N/A"), e =>
+			{
+				(e.HoverPanelColor, e.HoverBorderColor) = (e.BackgroundColor, e.BorderColor);
+				e.HoverText = "Add new spawns using the spawning window";
+				e.SetDimensions(width: (0f, +gridButtonSize), height: (0f, +gridButtonSize));
+			});
+		}
+
 		for (int spawnIndex = 0; spawnIndex < wave.Spawns.Length; spawnIndex++)
 		{
 			int spawnIndexCopy = spawnIndex;
@@ -1073,6 +1098,16 @@ internal sealed class EncounterEditorState : SmartUiState
 			});
 
 			sortable.CopyDimensionsFrom(container);
+		}
+
+		// Removal button
+		if (encounter.Description.Waves.Length >= 2)
+		{
+			AddSortableElement(wavePanelList, elementIndex++, new UIButton<string>($"Remove Wave"), e =>
+			{
+				e.SetDimensions(width: (1f, +0f), height: (0f, +24f));
+				e.OnLeftClick += (evt, self) => EncounterEditor.RemoveWave(encounter, waveIndex);
+			});
 		}
 
 		// Update sizes.

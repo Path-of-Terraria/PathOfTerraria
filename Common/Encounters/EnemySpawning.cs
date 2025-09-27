@@ -26,7 +26,7 @@ internal record struct EnemySpawn()
 	public required SpawnPlacement? SpawnPlacement { get; set; }
 	/// <summary> The time in ticks that must pass before the next enemy in queue will be spawned. </summary>
 	[Range(0, 5 * 60 * 60)]
-	public uint CooldownInTicks { get; set; } = 10;
+	public uint CooldownInTicks { get; set; } = 0;
 	/// <summary> Which effect to use for this spawn. </summary>
 	public EnemySpawnEffect Effect { get; set; }
 }

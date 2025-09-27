@@ -163,7 +163,7 @@ internal sealed class EnemyEncounters : ModSystem
 		}
 	}
 
-	internal static readonly GenerationalArena<Encounter, InstanceData> encounters = new();
+	internal static readonly GenerationalArena<Encounter, InstanceData> encounters = new(initialCapacity: 16);
 	/// <summary> Maps spawned enemies to the encounter that spawned them. </summary>
 	private static readonly Encounter[] enemyToEncounterMapping = new Encounter[Main.maxNPCs + 1];
 
