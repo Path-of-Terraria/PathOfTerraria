@@ -66,6 +66,7 @@ internal sealed class EncounterEditor : ModSystem
 	public struct DragContext()
 	{
 		public required DragKind Kind;
+		public Vector2 Offset;
 		public Vector2 Axes = Vector2.One;
 		public bool? MouseLeftValueToStopAt = false;
 		public bool? MouseRightValueToStopAt;
@@ -340,27 +341,28 @@ internal sealed class EncounterEditor : ModSystem
 		}
 
 		Vector2 mouseWorld = Main.MouseWorld;
-		Point16 mouseTilePos = mouseWorld.ToTileCoordinates16();
+		Vector2 targetPos = Main.MouseWorld + ctx.Offset;
+		Point16 targetTilePos = targetPos.ToTileCoordinates16();
 
 		// We operate on the UI State's boxed copies to not interfer with it.
 		switch (ctx.Kind)
 		{
 			case DragKind.EncounterOrigin when State is { SelectedEncounter: { IsValid: true } encounter }:
 				// Refuse placement into solid tiles.
-				if (mouseTilePos.X >= 0 && mouseTilePos.Y >= 0 && mouseTilePos.X < Main.maxTilesX && mouseTilePos.Y < Main.maxTilesY)
+				if (targetTilePos.X >= 0 && targetTilePos.Y >= 0 && targetTilePos.X < Main.maxTilesX && targetTilePos.Y < Main.maxTilesY)
 				{
-					Tile tile = Main.tile[mouseTilePos];
+					Tile tile = Main.tile[targetTilePos];
 					if (tile.HasTile && Main.tileSolid[tile.TileType]) { break; }
 				}
 
 				ref EncounterDescription dsc = ref Unsafe.Unbox<EncounterDescription>(BoxedEncounters[encounter.Index].Description);
-				dsc.ActivationOrigin = mouseWorld;
-				dsc.SpawnOrigin = mouseTilePos;
-				dsc.SpawnArea = dsc.SpawnArea with { X = mouseTilePos.X - (dsc.SpawnArea.Width / 2), Y = mouseTilePos.Y - (dsc.SpawnArea.Height / 2) };
+				dsc.ActivationOrigin = targetPos;
+				dsc.SpawnOrigin = targetTilePos;
+				dsc.SpawnArea = dsc.SpawnArea with { X = targetTilePos.X - (dsc.SpawnArea.Width / 2), Y = targetTilePos.Y - (dsc.SpawnArea.Height / 2) };
 				break;
 			case DragKind.SpawnPosition when State is { SelectedEncounter: { IsValid: true } encounter, SelectedWave: int waveIndex, SelectedSpawn: int spawnIndex }:
 				ref EnemySpawn existingSpawn = ref Unsafe.Unbox<EnemySpawn>(BoxedEncounters[encounter.Index].Waves[waveIndex].Spawns[spawnIndex].Spawn);
-				existingSpawn.SpawnPosition = mouseWorld;
+				existingSpawn.SpawnPosition = targetPos;
 				existingSpawn.SpawnPlacement = null;
 				break;
 			default:
@@ -381,7 +383,9 @@ internal sealed class EncounterEditor : ModSystem
 
 		float activeAnim = Pulse(0.075f);
 		float inactiveAnim = Pulse(0.03f);
-		var mousePoint = new Point(Main.mouseX, Main.mouseY);
+		var mouseScreenPoint = Main.MouseScreen.ToPoint();
+		var mouseWorldPoint = Main.MouseWorld.ToPoint();
+		var mouseTilePoint = Main.MouseWorld.ToTileCoordinates();
 		bool allowMouseInteractions = !ActiveDrag.HasValue && !PlacementMode && Main.mouseLeftRelease;
 
 		if (PlacementMode)
@@ -419,6 +423,7 @@ internal sealed class EncounterEditor : ModSystem
 					ActiveDrag = new DragContext
 					{
 						Kind = DragKind.EncounterOrigin,
+						Offset = encounter.Description.ActivationOrigin - Main.MouseWorld,
 					};
 				}
 			}
@@ -426,8 +431,8 @@ internal sealed class EncounterEditor : ModSystem
 			// Draw spawn area.
 
 			Color areaColor = (isEncounterSelected ? Color.Gold : Color.IndianRed).MultiplyRGBA(new Color(Vector4.One * MathHelper.Lerp(0.25f, 0.35f, activeAnim)));
-			Rectangle spawnArea = description.SpawnArea;
-			Vector4Int worldArea = new Vector4Int(spawnArea.Left, spawnArea.Top, spawnArea.Right, spawnArea.Bottom) * TileUtils.TileSizeInPixels;
+			Vector4Int tileArea = new(description.SpawnArea.Left, description.SpawnArea.Top, description.SpawnArea.Right, description.SpawnArea.Bottom);
+			Vector4Int worldArea = tileArea * TileUtils.TileSizeInPixels;
 
 			for (int i = 0; i < 4; i++)
 			{
@@ -462,7 +467,7 @@ internal sealed class EncounterEditor : ModSystem
 					Rectangle npcRect = RenderSpawnGizmo(sb, in spawn, spawnPoint, fgColor, bgColor);
 
 					// Mouse interaction. Select and drag the spawn when clicked on.
-					if (allowMouseInteractions && npcRect.Inflated(8, 8).Contains(mousePoint))
+					if (allowMouseInteractions && npcRect.Inflated(8, 8).Contains(mouseScreenPoint))
 					{
 						Main.LocalPlayer.mouseInterface = true;
 						Main.instance.MouseText($"Spawn #{spawnIndex} ({ContentSamples.NpcsByNetId[spawn.NpcType.Type].TypeName})\n[Click and hold to move]\n[Right click to remove]");
@@ -473,6 +478,7 @@ internal sealed class EncounterEditor : ModSystem
 							ActiveDrag = new DragContext
 							{
 								Kind = DragKind.SpawnPosition,
+								Offset = spawnPoint - Main.MouseWorld,
 							};
 						}
 						else if (ConsumeMouseClick(1))
