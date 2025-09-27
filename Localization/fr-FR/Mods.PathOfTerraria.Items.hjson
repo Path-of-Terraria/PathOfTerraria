@@ -921,6 +921,11 @@ CorrodedTowerShield: {
 	// Tooltip: ""
 }
 
+LeatherQuiver: {
+	// DisplayName: Leather Quiver
+	// Tooltip: ""
+}
+
 RunestoneItem: {
 	DisplayName: Pierre runique
 	// Tooltip: ""

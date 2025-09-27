@@ -365,6 +365,28 @@ Shield: {
 	}
 }
 
+Quiver: {
+	// Name: Quiver
+	// Movement: "[i:278] +{0}% increased movement speed"
+	// AmmoSave: "[i:278] +{0}% chance to reserve ammo"
+
+	Prefixes: {
+		// 0: Swift
+		// 1: Keen
+		// 2: Masterwork
+		// 3: Weathered
+		// 4: Elven
+	}
+
+	Suffixes: {
+		// 0: of the Marksman
+		// 1: of Piercing
+		// 2: of the Hunt
+		// 3: of the Agile
+		// 4: of Warding
+	}
+}
+
 Map.Name: Mapa
 ExplorableMap.Name: Mapa Eksploracyjna
 BossMap.Name: Mapa Bossa

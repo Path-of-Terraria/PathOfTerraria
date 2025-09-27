@@ -1,0 +1,498 @@
+[
+	{
+		"affixType": "MovementSpeedAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 15,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedAttackSpeedAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 7,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 25,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "PiercingItemAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 16,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 17,
+				"maxValue": 22,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ChanceToApplyPoisonItemAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 5,
+				"maxValue": 10,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 18,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 26,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 27,
+				"maxValue": 35,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ChanceToApplyArmorShredGearAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 7,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 14,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 15,
+				"maxValue": 22,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 23,
+				"maxValue": 30,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ChanceToApplyShockGearAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 4,
+				"maxValue": 8,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 15,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 23,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 24,
+				"maxValue": 32,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ChanceToApplyBleedingItemAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 5,
+				"maxValue": 10,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 17,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 18,
+				"maxValue": 25,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 26,
+				"maxValue": 35,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "BetterBleedAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 10,
+				"maxValue": 20,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 21,
+				"maxValue": 35,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 36,
+				"maxValue": 50,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 51,
+				"maxValue": 70,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "FireFlatDamage",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 3,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ColdFlatDamage",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 3,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "LightningFlatDamage",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 3,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ChaosFlatDamage",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 3,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 7,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "FireResistItemAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 8,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 15,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 22,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 23,
+				"maxValue": 30,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ColdResistItemAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 8,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 15,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 22,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 23,
+				"maxValue": 30,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "LightningResistItemAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 8,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 15,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 22,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 23,
+				"maxValue": 30,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ChaosResistItemAffix",
+		"equipTypes": "Quiver",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 3,
+				"maxValue": 8,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 15,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 22,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 23,
+				"maxValue": 30,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	}
+]
