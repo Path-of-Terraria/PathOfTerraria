@@ -701,10 +701,10 @@ internal sealed class EncounterEditorState : SmartUiState
 
 		UIElement window = this.AddElement(new UIPanel(), e =>
 		{
-			e.MinWidth.Set(+960f, 0f);
+			e.MinWidth.Set(+512f, 0f);
 			e.MinHeight.Set(+300f, 0f);
 
-			e.SetDimensions(x: (0.0f, +32), y: (1.00f, -(450 + 32)), width: (0.0f, +512), height: (0f, +450));
+			e.SetDimensions(x: (0.0f, +32), y: (1.00f, -(600 + 32)), width: (0.0f, +512), height: (0f, +600));
 
 			e.AddComponent(new UIPersistent("Encounters_MainWindow"));
 			e.AddComponent(new UIMouseDrag(canMove: true, canResize: true));
@@ -760,38 +760,31 @@ internal sealed class EncounterEditorState : SmartUiState
 			};
 		});
 
-		const int EncountersWidth = 480; 
-
 		UIElement listArea = window.AddElement(new UIElement(), e =>
 		{
-			e.SetDimensions(x: (0.00f, +padding.X), y: (0.00f, +padding.Y), width: (0.00f, +EncountersWidth - (padding.X + padding.Z)), height: (1.00f, -(padding.Y + padding.W)));
+			e.SetDimensions(x: (0.00f, +padding.X), y: (0.00f, +padding.Y), width: (1.00f, -(padding.X + padding.Z)), height: (1.00f, -(padding.Y + padding.W)));
 		});
-		UIElement detailsArea = window.AddElement(new UIElement(), e =>
+		UIList list = listArea.AddElement(new UIList(), e =>
 		{
-			e.SetDimensions(x: (0.00f, +EncountersWidth + padding.X), y: (0.00f, +padding.Y), width: (1.00f, -(EncountersWidth + (padding.X + padding.Z))), height: (1.00f, -(padding.Y + padding.W)));
+			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
+		});
+		listArea.AddElement(new FixedUIScrollbar(UserInterface), e =>
+		{
+			e.SetDimensions(x: (1.00f, -ScrollbarWidth), y: (0.00f, +6), width: (0.00f, +ScrollbarWidth), height: (1.00f, -12));
+			e.AddComponent(new UIPersistent("EncounterDetailsScrollBar"));
+			list.SetScrollbar(e);
 		});
 
-		BuildEncountersList(listArea);
-		BuildEncounterDetails(detailsArea);
+		int yPos = 0;
+		int elementIndex = 0;
+		PopulateListWithEncounterControls(list, ref elementIndex, ref yPos);
+		PopulateListWithEncounterDetails(list, ref elementIndex, ref yPos);
 
 		return window;
 	}
 
-	private void BuildEncountersList(UIElement parent)
+	private void PopulateListWithEncounterControls(UIList list, ref int elementIndex, ref int yPos)
 	{
-		// Encounter list
-
-		UIList list = parent.AddElement(new UIList(), e =>
-		{
-			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
-		});
-		parent.AddElement(new FixedUIScrollbar(UserInterface), e =>
-		{
-			e.SetDimensions(x: (1.00f, -ScrollbarWidth), y: (0.00f, +6), width: (0.00f, +ScrollbarWidth), height: (1.00f, -12));
-			e.AddComponent(new UIPersistent("EncountersListScrollbar"));
-			list.SetScrollbar(e);
-		});
-
 		StringBuilder stringBuilder = new();
 		int encounterIndex = -1;
 
@@ -816,7 +809,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 			// Selectable Panel
 			float buttonX = 0f;
-			UIPanel itemPanel = list.AddElement(new UIPanel(), e =>
+			UIPanel itemPanel = AddSortableElement(list, elementIndex++, new UIPanel(), e =>
 			{
 				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * encounterIndex), width: (1.0f, +0), height: (0f, +80));
 
@@ -919,59 +912,47 @@ internal sealed class EncounterEditorState : SmartUiState
 		// Notify that no encounters exist.
 		if (encounterIndex < 0)
 		{
-			list.AddElement(new UITextPanel<string>("No encounters exist. Click 'Add New' above."), e =>
+			AddSortableElement(list, elementIndex++, new UITextPanel<string>("No encounters exist. Click 'Add New' above."), e =>
 			{
 				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * 0), width: (1.0f, +0), height: (0f, +40));
 			});
 		}
 	}
 
-	private void BuildEncounterDetails(UIElement parent)
+	private void PopulateListWithEncounterDetails(UIList list, ref int elementIndex, ref int yPos)
 	{
-		UIList list = parent.AddElement(new UIList(), e =>
-		{
-			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
-		});
-		parent.AddElement(new FixedUIScrollbar(UserInterface), e =>
-		{
-			e.SetDimensions(x: (1.00f, -ScrollbarWidth), y: (0.00f, +6), width: (0.00f, +ScrollbarWidth), height: (1.00f, -12));
-			e.AddComponent(new UIPersistent("EncounterDetailsScrollBar"));
-			list.SetScrollbar(e);
-		});
-
 		if (!SelectedEncounter.IsValid)
 		{
-			list.AddElement(new UITextPanel<string>("Click an encounter panel to select it."), e =>
+			if (EnemyEncounters.Count != 0)
 			{
-				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * 0), width: (1.0f, +0), height: (0f, +40));
-			});
-		}
-		else
-		{
-			// Add options for all elements, reusing ModConfig code.
-
-			int yPos = 0;
-			int elementIndex = 0;
-
-			// Encounter properties:
-			AddSortableElement(list, elementIndex++, new UIText($"Encounter: {SelectedEncounter.Description.Identifier}"));
-
-			foreach (PropertyInfo property in typeof(EncounterDescription).GetProperties())
-			{
-				// Skip properties handled in other ways.
-				if (property.Name is { }
-					and not nameof(EncounterDescription.Waves)
-					and not nameof(EncounterDescription.SpawnArea)
-					and not nameof(EncounterDescription.SpawnOrigin)
-					and not nameof(EncounterDescription.ActivationOrigin))
+				AddSortableElement(list, elementIndex++, new UITextPanel<string>("Click an encounter panel to select it."), e =>
 				{
-					ConfigManager.WrapIt(list, ref yPos, new(property), EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Description, elementIndex++);
-				}
+					e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * 0), width: (1.0f, +0), height: (0f, +40));
+				});
 			}
 
-			// Waves properties:
-			PopulateListWithAllWaveControls(list, SelectedEncounter, ref elementIndex, ref yPos);
+			return;
 		}
+
+		// Encounter properties:
+		AddSortableElement(list, elementIndex++, new UIText($"Encounter: {SelectedEncounter.Description.Identifier}"));
+
+		// Add options for all elements, reusing ModConfig code.
+		foreach (PropertyInfo property in typeof(EncounterDescription).GetProperties())
+		{
+			// Skip properties handled in other ways.
+			if (property.Name is { }
+				and not nameof(EncounterDescription.Waves)
+				and not nameof(EncounterDescription.SpawnArea)
+				and not nameof(EncounterDescription.SpawnOrigin)
+				and not nameof(EncounterDescription.ActivationOrigin))
+			{
+				ConfigManager.WrapIt(list, ref yPos, new(property), EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Description, elementIndex++);
+			}
+		}
+
+		// Waves properties:
+		PopulateListWithAllWaveControls(list, SelectedEncounter, ref elementIndex, ref yPos);
 	}
 
 	private void PopulateListWithAllWaveControls(UIList list, Encounter encounter, ref int elementIndex, ref int yPos)
@@ -1345,7 +1326,7 @@ internal sealed class EncounterEditorState : SmartUiState
 	}
 	private static T CreateSortableElement<T>(int elementIndex, T child, Action<T>? initAction = null) where T : UIElement
 	{
-		UISortableElement container = new UISortableElement(elementIndex);
+		var container = new UISortableElement(elementIndex);
 		container.SetDimensions(width: (1f, +0f), height: (1f, +0f));
 
 		T result = container.AddElement(child, initAction);
