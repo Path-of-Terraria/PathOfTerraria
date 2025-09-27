@@ -168,6 +168,7 @@ internal sealed class EnemyEncounters : ModSystem
 	private static readonly Encounter[] enemyToEncounterMapping = new Encounter[Main.maxNPCs + 1];
 
 	public static uint Count => encounters.Count;
+	public static uint Capacity => encounters.Capacity;
 
 	static EnemyEncounters()
 	{

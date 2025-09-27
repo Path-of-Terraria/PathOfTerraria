@@ -33,11 +33,12 @@ using FixedUIScrollbar = Terraria.GameContent.UI.Elements.FixedUIScrollbar;
 
 namespace PathOfTerraria.Common.Encounters;
 
-internal struct EncounterBox(object description, WaveBox[] waves)
+internal struct EncounterBox(Encounter handle, object description, WaveBox[] waves)
 {
+	public Encounter Handle = handle;
 	public object Description = description;
 	public List<WaveBox> Waves = new(waves);
-	public static explicit operator EncounterBox(EncounterDescription dsc) => new(dsc with { Waves = null! }, dsc.Waves.Select(w => (WaveBox)w).ToArray());
+	public static explicit operator EncounterBox(Encounter src) => new(src, src.Description with { Waves = null! }, src.Description.Waves.Select(w => (WaveBox)w).ToArray());
 }
 internal struct WaveBox(object wave, SpawnBox[] spawns)
 {
@@ -52,6 +53,7 @@ internal struct SpawnBox(object spawn, object placement)
 	public static explicit operator SpawnBox(EnemySpawn src) => new(src, src.SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(src.NpcType.Type));
 }
 
+[Autoload(Side = ModSide.Client)]
 internal sealed class EncounterEditor : ModSystem
 {
 	// C# unions never.
@@ -69,13 +71,21 @@ internal sealed class EncounterEditor : ModSystem
 		public bool? MouseRightValueToStopAt;
 	}
 
+	private static bool wasWritingTextInPreviousTick;
 	private static LegacyGameInterfaceLayer? gizmosLayer;
 #if DEBUG
 	private static ModKeybind keyToggleEncounterDebugging = null!;
 #endif
 
-	public static DragContext? ActiveDrag { get; set; }
+	public static SpawnBox BoxedSpawn;
+	public static EncounterBox[] BoxedEncounters = []; // Sparse array, may contain zeroed values.
+
 	public static SpawnPlacement DefaultPlacement { get; } = new() { Area = default, CollisionSize = default };
+	public static EncounterEditorState State { get; private set; } = null!;
+	public static DragContext? ActiveDrag { get; set; }
+	public static bool PlacementMode { get; set; }
+
+	public static bool WritingText => PlayerInput.WritingText | wasWritingTextInPreviousTick;
 
 	public override void Load()
 	{
@@ -84,49 +94,216 @@ internal sealed class EncounterEditor : ModSystem
 #endif
 	}
 
+	public override void PostSetupContent()
+	{
+		State = SmartUiLoader.GetUiState<EncounterEditorState>();
+	}
+
 	public override void PreUpdateEntities()
 	{
-		EncounterEditorState state = SmartUiLoader.GetUiState<EncounterEditorState>();
-
 #if DEBUG
 		if (keyToggleEncounterDebugging.JustPressed)
 		{
-			state.Toggle();
+			State.Toggle();
 		}
 #endif
 
 		HandlePlacement();
 		DragObjects();
+		ExportData();
+	}
+
+	public override void PostDrawInterface(SpriteBatch spriteBatch)
+	{
+		wasWritingTextInPreviousTick = PlayerInput.WritingText;
 	}
 
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 	{
-		if (SmartUiLoader.GetUiState<EncounterEditorState>().Visible)
+		if (State.Visible)
 		{
 			gizmosLayer ??= new LegacyGameInterfaceLayer($"{nameof(PathOfTerraria)}: Encounter Gizmos", DrawGizmos, InterfaceScaleType.Game);
 			layers.Insert(Math.Max(0, layers.FindIndex(l => l.Name.Equals("Vanilla: Mouse Text")) - 1), gizmosLayer);
 		}
 	}
 
+	/// <summary> Updates internal box copies from the provided encounter description. Returns whether any operation has occurred. </summary>
+	public static bool ImportData(bool onlyNewEntries = false)
+	{
+		// Create a tree of boxed objects.
+		bool didAnything = false;
+		Array.Resize(ref BoxedEncounters, (int)EnemyEncounters.Capacity);
+
+		foreach (Encounter encounter in EnemyEncounters.IterateEncounters())
+		{
+			if (!onlyNewEntries || BoxedEncounters[encounter.Index].Description == null)
+			{
+				BoxedEncounters[encounter.Index] = (EncounterBox)encounter;
+				didAnything = true;
+			}
+		}
+
+		return didAnything;
+	}
+
+	/// <summary> Synchronizes all encounters' data with their internal boxed copies. </summary>
+	public static void ExportData()
+	{
+		bool needsRebuild = false;
+
+		needsRebuild |= ImportData(onlyNewEntries: true);
+
+		for (int encounterIndex = 0; encounterIndex < BoxedEncounters.Length; encounterIndex++)
+		{
+			ref EncounterBox encounterBox = ref BoxedEncounters[encounterIndex];
+
+			if (!encounterBox.Handle.IsValid) { continue; }
+
+			if (encounterBox.Waves == default) { continue; }
+
+			bool isDifferent = false;
+			List<WaveBox> waveBoxes = encounterBox.Waves;
+			ref readonly EncounterDescription refDesc = ref encounterBox.Handle.Description;
+			ref EncounterDescription boxDesc = ref Unsafe.Unbox<EncounterDescription>(encounterBox.Description!);
+			EncounterDescription dstDesc = boxDesc with { Waves = refDesc.Waves };
+
+			// Update wave destination array sizes.
+			if (refDesc.Waves.Length != waveBoxes.Count)
+			{
+				(EncounterWave[] waves, int oldLength, int newLength) = (refDesc.Waves, refDesc.Waves.Length, waveBoxes.Count);
+				Array.Resize(ref waves, newLength);
+				for (int i = oldLength; i < newLength; i++) { waves[i] = ((EncounterWave)waveBoxes[i].Wave) with { Spawns = [] }; }
+
+				(dstDesc.Waves, isDifferent, needsRebuild) = (waves, true, true);
+			}
+
+			for (int waveIndex = 0, leastWaves = Math.Min(waveBoxes.Count, refDesc.Waves.Length); waveIndex < leastWaves; waveIndex++)
+			{
+				List<SpawnBox> spawnBoxes = waveBoxes[waveIndex].Spawns;
+				ref EncounterWave refWave = ref refDesc.Waves[waveIndex];
+				ref EncounterWave boxWave = ref Unsafe.Unbox<EncounterWave>(waveBoxes[waveIndex].Wave);
+				EncounterWave dstWave = boxWave with { Spawns = refWave.Spawns };
+
+				// Update wave contents.
+				if (refWave != dstWave)
+				{
+					refWave = dstWave;
+					isDifferent = true;
+				}
+
+				// Update spawn destination array sizes.
+				if (refWave.Spawns.Length != spawnBoxes.Count)
+				{
+					(EnemySpawn[] spawns, int oldLength, int newLength) = (refWave.Spawns, refWave.Spawns.Length, spawnBoxes.Count);
+					Array.Resize(ref spawns, newLength);
+					for (int i = oldLength; i < newLength; i++) { spawns[i] = (EnemySpawn)spawnBoxes[i].Spawn; }
+
+					(refWave.Spawns, isDifferent, needsRebuild) = (spawns, true, true);
+				}
+
+				// Update spawn destination array contents.
+				for (int spawnIndex = 0; spawnIndex < refWave.Spawns.Length; spawnIndex++)
+				{
+					ref EnemySpawn refSpawn = ref refWave.Spawns[spawnIndex];
+					ref EnemySpawn boxSpawn = ref Unsafe.Unbox<EnemySpawn>(spawnBoxes[spawnIndex].Spawn);
+					ref SpawnPlacement boxPlacement = ref Unsafe.Unbox<SpawnPlacement>(spawnBoxes[spawnIndex].Placement);
+
+					if (boxSpawn != refSpawn)
+					{
+						needsRebuild |= boxSpawn.NpcType.Type != refSpawn.NpcType.Type;
+						(refSpawn, isDifferent) = (boxSpawn, true);
+					}
+
+					if (refSpawn.SpawnPlacement.HasValue && refSpawn.SpawnPlacement.Value != boxPlacement)
+					{
+						(refSpawn.SpawnPlacement, isDifferent) = (boxPlacement, true);
+					}
+				}
+			}
+
+			isDifferent |= refDesc != dstDesc;
+
+			if (isDifferent)
+			{
+				// Sanitize.
+				dstDesc.Identifier = !dstDesc.Identifier.All(char.IsAsciiLetterOrDigit) ? new string(dstDesc.Identifier.Where(char.IsAsciiLetterOrDigit).ToArray()) : dstDesc.Identifier;
+				dstDesc.Identifier = dstDesc.Identifier.Length == 0 ? refDesc.Identifier : dstDesc.Identifier;
+				dstDesc.MusicIndex = Math.Max(-1, Math.Min(dstDesc.MusicIndex, MusicLoader.MusicCount));
+
+				needsRebuild |= dstDesc.Identifier != refDesc.Identifier;
+				encounterBox.Handle.ModifyDescription(dstDesc);
+			}
+		}
+
+		if (needsRebuild)
+		{
+			State.Rebuild();
+		}
+	}
+
+	public static void AddEncounter()
+	{
+		Vector2 basePosition = Main.LocalPlayer.Center;
+		Point16 basePoint = basePosition.ToTileCoordinates16();
+		var dummyWave = new EncounterWave { Spawns = [] };
+
+		Encounter encounter = EnemyEncounters.CreateEncounter(new EncounterDescription
+		{
+			Identifier = "NewEncounter",
+			ActivationRange = 512f,
+			ActivationOrigin = basePosition,
+			SpawnArea = new Rectangle(basePoint.X - 32, basePoint.Y - 16, 64, 32),
+			SpawnOrigin = basePoint,
+			Waves = [dummyWave],
+		});
+
+		encounter.SetPaused(true);
+		State.SetSelections(encounter, 0, -1);
+	}
+
+	public static void RemoveEncounter(Encounter encounter)
+	{
+		encounter.Remove();
+		State.Rebuild();
+	}
+
+	public static void AddWave(Encounter encounter, int? insertionIndex, WaveBox? value)
+	{
+		if (!encounter.IsValid) { return; }
+		List<WaveBox> list = BoxedEncounters[encounter.Index].Waves;
+		list.Insert(insertionIndex ?? list.Count, value ?? ((WaveBox)new EncounterWave { Spawns = [] }));
+	}
+
+	public static void RemoveSpawn(Encounter encounter, int waveIndex, int spawnIndex)
+	{
+		if (spawnIndex >= BoxedEncounters[encounter.Index].Waves[waveIndex].Spawns.Count) { return; }
+
+		// This needs to run before removal, as it can trigger recreation of the boxed tree.
+		if (State.SelectedEncounter == encounter && State.SelectedWave == waveIndex && State.SelectedSpawn >= spawnIndex)
+		{
+			State.SetSelections(State.SelectedEncounter, State.SelectedWave, State.SelectedSpawn > spawnIndex ? (State.SelectedSpawn - 1) : -1);
+		}
+
+		BoxedEncounters[encounter.Index].Waves[waveIndex].Spawns.RemoveAt(spawnIndex);
+	}
+
 	private static void HandlePlacement()
 	{
-		EncounterEditorState state = SmartUiLoader.GetUiState<EncounterEditorState>();
-
-		if (state.PlacementMode && state is { SelectedEncounter.IsValid: true, SelectedWave: uint selectedWave })
+		if (PlacementMode && State is { SelectedEncounter: { IsValid: true } encounter, SelectedWave: int selectedWave })
 		{
 			if (ConsumeMouseClick(0))
 			{
-				var spawnCopy = (EnemySpawn)(state.SelectedSpawn.HasValue ? state.BoxedEncounter.Waves[(int)state.SelectedWave.Value].Spawns[(int)state.SelectedSpawn.Value].Spawn : state.BoxedSpawn.Spawn);
+				var spawnCopy = (EnemySpawn)(State.CurrentSpawnBox.Spawn);
 				spawnCopy.SpawnPosition = Main.MouseWorld;
 				spawnCopy.SpawnPlacement = null;
 
-				state.BoxedEncounter.Waves[(int)selectedWave].Spawns.Add((SpawnBox)spawnCopy);
-				state.Rebuild();
+				BoxedEncounters[encounter.Index].Waves[selectedWave].Spawns.Add((SpawnBox)spawnCopy);
+				State.Rebuild(immediate: true);
 			}
 			else if (ConsumeMouseClick(1))
 			{
-				state.PlacementMode = false;
-				state.Rebuild();
+				PlacementMode = false;
+				State.Rebuild(immediate: true);
 			}
 		}
 	}
@@ -138,7 +315,7 @@ internal sealed class EncounterEditor : ModSystem
 		static void Reset()
 		{
 			ActiveDrag = null;
-			SmartUiLoader.GetUiState<EncounterEditorState>().Rebuild();
+			State.Rebuild(immediate: true);
 		}
 
 		if (Main.mouseLeft == ctx.MouseLeftValueToStopAt || Main.mouseRight == ctx.MouseRightValueToStopAt)
@@ -149,12 +326,11 @@ internal sealed class EncounterEditor : ModSystem
 
 		Vector2 mouseWorld = Main.MouseWorld;
 		Point16 mouseTilePos = mouseWorld.ToTileCoordinates16();
-		EncounterEditorState state = SmartUiLoader.GetUiState<EncounterEditorState>();
 
 		// We operate on the UI State's boxed copies to not interfer with it.
 		switch (ctx.Kind)
 		{
-			case DragKind.EncounterOrigin when state is { SelectedEncounter.IsValid: true }:
+			case DragKind.EncounterOrigin when State is { SelectedEncounter: { IsValid: true } encounter }:
 				// Refuse placement into solid tiles.
 				if (mouseTilePos.X >= 0 && mouseTilePos.Y >= 0 && mouseTilePos.X < Main.maxTilesX && mouseTilePos.Y < Main.maxTilesY)
 				{
@@ -162,13 +338,13 @@ internal sealed class EncounterEditor : ModSystem
 					if (tile.HasTile && Main.tileSolid[tile.TileType]) { break; }
 				}
 
-				ref EncounterDescription dsc = ref Unsafe.Unbox<EncounterDescription>(state.BoxedEncounter.Description);
+				ref EncounterDescription dsc = ref Unsafe.Unbox<EncounterDescription>(BoxedEncounters[encounter.Index].Description);
 				dsc.ActivationOrigin = mouseWorld;
 				dsc.SpawnOrigin = mouseTilePos;
 				dsc.SpawnArea = dsc.SpawnArea with { X = mouseTilePos.X - (dsc.SpawnArea.Width / 2), Y = mouseTilePos.Y - (dsc.SpawnArea.Height / 2) };
 				break;
-			case DragKind.SpawnPosition when state is { SelectedEncounter.IsValid: true, SelectedWave: uint waveIndex, SelectedSpawn: uint spawnIndex }:
-				ref EnemySpawn existingSpawn = ref Unsafe.Unbox<EnemySpawn>(state.BoxedEncounter.Waves[(int)waveIndex].Spawns[(int)spawnIndex].Spawn);
+			case DragKind.SpawnPosition when State is { SelectedEncounter: { IsValid: true } encounter, SelectedWave: int waveIndex, SelectedSpawn: int spawnIndex }:
+				ref EnemySpawn existingSpawn = ref Unsafe.Unbox<EnemySpawn>(BoxedEncounters[encounter.Index].Waves[waveIndex].Spawns[spawnIndex].Spawn);
 				existingSpawn.SpawnPosition = mouseWorld;
 				existingSpawn.SpawnPlacement = null;
 				break;
@@ -191,12 +367,11 @@ internal sealed class EncounterEditor : ModSystem
 		float activeAnim = Pulse(0.075f);
 		float inactiveAnim = Pulse(0.03f);
 		var mousePoint = new Point(Main.mouseX, Main.mouseY);
-		bool allowMouseInteractions = !ActiveDrag.HasValue && !state.PlacementMode;
+		bool allowMouseInteractions = !ActiveDrag.HasValue && !PlacementMode && Main.mouseLeftRelease;
 
-		if (state.PlacementMode)
+		if (PlacementMode)
 		{
-			SpawnBox spawnBox = state.SelectedSpawn.HasValue ? state.BoxedEncounter.Waves[(int)state.SelectedWave!.Value].Spawns[(int)state.SelectedSpawn.Value] : state.BoxedSpawn;
-			ref readonly EnemySpawn spawn = ref Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn);
+			ref readonly EnemySpawn spawn = ref Unsafe.Unbox<EnemySpawn>(state.CurrentSpawnBox.Spawn);
 			RenderSpawnGizmo(sb, in spawn, Main.MouseWorld, Color.Lerp(Color.White, Color.YellowGreen, Pulse(0.2f)), default);
 			
 			Main.instance.MouseText($"Left click to place\nRight click to cancel");
@@ -223,7 +398,7 @@ internal sealed class EncounterEditor : ModSystem
 				{
 					if (encounter != state.SelectedEncounter)
 					{
-						state.SetSelections(encounter, null, null);
+						state.SetSelections(encounter, -1, -1);
 					}
 
 					ActiveDrag = new DragContext
@@ -254,13 +429,13 @@ internal sealed class EncounterEditor : ModSystem
 
 			// Draw manually assigned enemy spawn points for every wave.
 
-			for (uint waveIndex = 0; waveIndex < encounter.Description.Waves.Length; waveIndex++)
+			for (int waveIndex = 0; waveIndex < encounter.Description.Waves.Length; waveIndex++)
 			{
 				ref readonly EncounterWave wave = ref encounter.Description.Waves[waveIndex];
 				bool isWaveCurrent = waveIndex == encounter.Instance.WaveIndex;
 				bool isWaveSelected = isEncounterSelected && state.SelectedWave == waveIndex;
 
-				for (uint spawnIndex = 0; spawnIndex < wave.Spawns.Length; spawnIndex++)
+				for (int spawnIndex = 0; spawnIndex < wave.Spawns.Length; spawnIndex++)
 				{
 					ref readonly EnemySpawn spawn = ref wave.Spawns[spawnIndex];
 					bool isSpawnSelected = isWaveSelected && state.SelectedSpawn == spawnIndex;
@@ -285,15 +460,9 @@ internal sealed class EncounterEditor : ModSystem
 								Kind = DragKind.SpawnPosition,
 							};
 						}
-						else if (ConsumeMouseClick(1) && spawnIndex < state.BoxedEncounter.Waves[(int)waveIndex].Spawns.Count)
+						else if (ConsumeMouseClick(1))
 						{
-							// This needs to run before removal, as it can trigger recreation of the boxed tree.
-							if (state.SelectedWave == waveIndex && state.SelectedSpawn >= spawnIndex)
-							{
-								state.SetSelections(state.SelectedEncounter, state.SelectedWave, state.SelectedSpawn > spawnIndex ? (state.SelectedSpawn - 1) : null);
-							}
-
-							state.BoxedEncounter.Waves[(int)waveIndex].Spawns.RemoveAt((int)spawnIndex);
+							RemoveSpawn(state.SelectedEncounter, waveIndex, spawnIndex);
 						}
 					}
 				}
@@ -367,6 +536,7 @@ internal sealed class EncounterEditorCommand : ModCommand
 /// A big encounter editor GUI.
 /// <br/> Due to limitations of internally used ModConfig code, operates on boxed copies of data.
 /// </summary>
+[Autoload(Side = ModSide.Client)]
 internal sealed class EncounterEditorState : SmartUiState
 {
 	public enum SpawningMode
@@ -381,22 +551,20 @@ internal sealed class EncounterEditorState : SmartUiState
 	private const int ScrollbarOffset = 4;
 
 	private string? lastSearchString;
-
-	public SpawnBox BoxedSpawn;
-	public EncounterBox BoxedEncounter;
+	private bool rebuildEnqueuePending;
 
 	// Selection
 	public Encounter SelectedEncounter { get; private set; }
-	public uint? SelectedWave { get; private set; }
-	public uint? SelectedSpawn { get; private set; }
+	public int SelectedWave { get; private set; } = -1;
+	public int SelectedSpawn { get; private set; } = -1;
 	// Encounters & Waves
 	public bool EncountersVisible { get; set; } = true;
 	public UIEditableText EncountersSearchBar { get; private set; } = null!;
 	// Spawning
 	public bool SpawningVisible { get; set; } = true;
-	public bool PlacementMode { get; set; }
-	public bool EditingExistingSpawn => SelectedEncounter.IsValid && SelectedWave.HasValue && SelectedSpawn.HasValue;
-	public SpawningMode CurrentSpawningMode => PlacementMode
+	public bool EditingExistingSpawn => SelectedEncounter.IsValid && SelectedWave >= 0 && SelectedSpawn >= 0;
+	public SpawnBox CurrentSpawnBox => EditingExistingSpawn ? EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Waves[SelectedWave].Spawns[SelectedSpawn] : EncounterEditor.BoxedSpawn;
+	public SpawningMode CurrentSpawningMode => EncounterEditor.PlacementMode
 		? (EditingExistingSpawn ? SpawningMode.PlacingCopy : SpawningMode.PlacingNew)
 		: (EditingExistingSpawn ? SpawningMode.EditingExisting : SpawningMode.EditingNew);
 
@@ -416,9 +584,9 @@ internal sealed class EncounterEditorState : SmartUiState
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
-		if (!PlayerInput.WritingText)
+		if (rebuildEnqueuePending && !EncounterEditor.WritingText)
 		{
-			ExportData();
+			Rebuild();
 		}
 	}
 
@@ -452,13 +620,25 @@ internal sealed class EncounterEditorState : SmartUiState
 		}
 	}
 
-	public void EnqueueRebuild()
+	public void Rebuild(bool immediate = false)
 	{
-		Main.QueueMainThreadAction(Rebuild);
-	}
+		rebuildEnqueuePending = false;
 
-	public void Rebuild()
-	{
+		if (!immediate)
+		{
+			Main.QueueMainThreadAction(() => Rebuild(immediate: true));
+			return;
+		}
+
+		// Delay rebuilds when the player may be typing text into an element here.
+		if (EncounterEditor.WritingText)
+		{
+			rebuildEnqueuePending = true;
+			return;
+		}
+
+		EncounterEditor.ExportData();
+		EncounterEditor.ImportData();
 		RemoveAllChildren();
 
 		if (!EncountersVisible && !SpawningVisible)
@@ -471,128 +651,33 @@ internal sealed class EncounterEditorState : SmartUiState
 		if (SpawningVisible) { BuildSpawningWindow(); }
 	}
 
-	public void SetSelections(Encounter encounter, uint? waveIndex, uint? spawnIndex, bool noRebuild = false)
+	public void SetSelections(Encounter encounter, int waveIndex, int spawnIndex, bool noRebuild = false)
 	{
 		// Update indices.
 		SelectedEncounter = encounter;
-		SelectedWave = (encounter.IsValid && waveIndex.HasValue) ? (uint)Math.Min(waveIndex.Value, (encounter.Description.Waves.Length - 1)) : null;
-		SelectedSpawn = (encounter.IsValid && SelectedWave.HasValue && spawnIndex.HasValue) ? (uint)Math.Min(spawnIndex.Value, encounter.Description.Waves[SelectedWave.Value].Spawns.Length - 1) : null;
+		SelectedWave = (encounter.IsValid && waveIndex >= 0) ? Math.Min(waveIndex, (encounter.Description.Waves.Length - 1)) : -1;
+		SelectedSpawn = (encounter.IsValid && SelectedWave >= 0 && spawnIndex >= 0) ? Math.Min(spawnIndex, encounter.Description.Waves[SelectedWave].Spawns.Length - 1) : -1;
 
-		ImportData(encounter.IsValid ? encounter.Description : null);
-		
 		// Update the placement mode spawn data.
-		if (SelectedSpawn.HasValue)
+		ref SpawnBox spawnBox = ref EncounterEditor.BoxedSpawn;
+		if (SelectedSpawn >= 0)
 		{
-			EnemySpawn spawn = encounter.Description.Waves[SelectedWave!.Value].Spawns[SelectedSpawn.Value];
-			BoxedSpawn.Spawn = spawn;
-			BoxedSpawn.Placement = spawn.SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(spawn.NpcType.Type);
+			EnemySpawn spawn = encounter.Description.Waves[SelectedWave].Spawns[SelectedSpawn];
+			spawnBox.Spawn = spawn;
+			spawnBox.Placement = spawn.SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(spawn.NpcType.Type);
 		}
 		else
 		{
 			int npcType = NPCID.Zombie;
-			BoxedSpawn.Spawn ??= new EnemySpawn {
+			spawnBox.Spawn ??= new EnemySpawn {
 				NpcType = new(npcType),
 				SpawnPlacement = null,
 				SpawnPosition = Main.LocalPlayer.Center,
 			};
-			BoxedSpawn.Placement ??= ((EnemySpawn)BoxedSpawn.Spawn).SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(npcType);
+			spawnBox.Placement ??= ((EnemySpawn)spawnBox.Spawn).SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(npcType);
 		}
 
-		if (!noRebuild) { EnqueueRebuild(); }
-	}
-
-	/// <summary> Updates internal box copies from the provided encounter description. </summary>
-	public void ImportData(EncounterDescription? tree)
-	{
-		// Create a tree of boxed objects from the selected encounter.
-		BoxedEncounter = tree.HasValue ? (EncounterBox)tree : default;
-	}
-
-	/// <summary> Synchronizes the selected encounter's data with its internal boxed copies. </summary>
-	public void ExportData()
-	{
-		if (!SelectedEncounter.IsValid) { return; }
-
-		if (BoxedEncounter.Waves == default) { return; }
-
-		bool needsRebuild = false;
-		bool isDifferent = false;
-		List<WaveBox> waveBoxes = BoxedEncounter.Waves;
-		ref readonly EncounterDescription refDesc = ref SelectedEncounter.Description;
-		ref EncounterDescription boxDesc = ref Unsafe.Unbox<EncounterDescription>(BoxedEncounter.Description!);
-		EncounterDescription dstDesc = boxDesc with { Waves = refDesc.Waves };
-
-		// Update wave destination array sizes.
-		if (refDesc.Waves.Length != waveBoxes.Count)
-		{
-			(EncounterWave[] waves, int oldLength, int newLength) = (refDesc.Waves, refDesc.Waves.Length, waveBoxes.Count);
-			Array.Resize(ref waves, newLength);
-			for (int i = oldLength; i < newLength; i++) { waves[i] = ((EncounterWave)waveBoxes[i].Wave) with { Spawns = [] }; }
-
-			(dstDesc.Waves, isDifferent, needsRebuild) = (waves, true, true);
-		}
-
-		for (int waveIndex = 0, leastWaves = Math.Min(waveBoxes.Count, refDesc.Waves.Length); waveIndex < leastWaves; waveIndex++)
-		{
-			List<SpawnBox> spawnBoxes = waveBoxes[waveIndex].Spawns;
-			ref EncounterWave refWave = ref refDesc.Waves[waveIndex];
-			ref EncounterWave boxWave = ref Unsafe.Unbox<EncounterWave>(waveBoxes[waveIndex].Wave);
-			EncounterWave dstWave = boxWave with { Spawns = refWave.Spawns };
-
-			// Update wave contents.
-			if (refWave != dstWave)
-			{
-				refWave = dstWave;
-				isDifferent = true;
-			}
-
-			// Update spawn destination array sizes.
-			if (refWave.Spawns.Length != spawnBoxes.Count)
-			{
-				(EnemySpawn[] spawns, int oldLength, int newLength) = (refWave.Spawns, refWave.Spawns.Length, spawnBoxes.Count);
-				Array.Resize(ref spawns, newLength);
-				for (int i = oldLength; i < newLength; i++) { spawns[i] = (EnemySpawn)spawnBoxes[i].Spawn; }
-
-				(refWave.Spawns, isDifferent, needsRebuild) = (spawns, true, true);
-			}
-
-			// Update spawn destination array contents.
-			for (int spawnIndex = 0; spawnIndex < refWave.Spawns.Length; spawnIndex++)
-			{
-				ref EnemySpawn refSpawn = ref refWave.Spawns[spawnIndex];
-				ref EnemySpawn boxSpawn = ref Unsafe.Unbox<EnemySpawn>(spawnBoxes[spawnIndex].Spawn);
-				ref SpawnPlacement boxPlacement = ref Unsafe.Unbox<SpawnPlacement>(spawnBoxes[spawnIndex].Placement);
-
-				if (boxSpawn != refSpawn)
-				{
-					needsRebuild |= boxSpawn.NpcType.Type != refSpawn.NpcType.Type;
-					(refSpawn, isDifferent) = (boxSpawn, true);
-				}
-
-				if (refSpawn.SpawnPlacement.HasValue && refSpawn.SpawnPlacement.Value != boxPlacement)
-				{
-					(refSpawn.SpawnPlacement, isDifferent) = (boxPlacement, true);
-				}
-			}
-		}
-
-		isDifferent |= refDesc != dstDesc;
-
-		if (isDifferent)
-		{
-			// Sanitize.
-			dstDesc.Identifier = !dstDesc.Identifier.All(char.IsAsciiLetterOrDigit) ? new string(dstDesc.Identifier.Where(char.IsAsciiLetterOrDigit).ToArray()) : dstDesc.Identifier;
-			dstDesc.Identifier = dstDesc.Identifier.Length == 0 ? refDesc.Identifier : dstDesc.Identifier;
-			dstDesc.MusicIndex = Math.Max(-1, Math.Min(dstDesc.MusicIndex, MusicLoader.MusicCount));
-
-			needsRebuild |= dstDesc.Identifier != refDesc.Identifier;
-			SelectedEncounter.ModifyDescription(dstDesc);
-		}
-
-		if (needsRebuild)
-		{
-			EnqueueRebuild();
-		}
+		if (!noRebuild) { Rebuild(); }
 	}
 
 	private UIElement BuildEncountersWindow()
@@ -623,7 +708,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			e.OnLeftClick += (evt, self) =>
 			{
 				EncountersVisible = false;
-				EnqueueRebuild();
+				Rebuild();
 			};
 		});
 
@@ -631,31 +716,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		window.AddElement(new UIButton<string>("Add New"), e =>
 		{
 			e.SetDimensions(x: (0.0f, +padding.X + 96f), y: (0.00f, +0), width: (0.0f, +80), height: (0f, +32));
-			e.OnLeftClick += (evt, self) =>
-			{
-				Vector2 basePosition = Main.LocalPlayer.Center;
-				Point16 basePoint = basePosition.ToTileCoordinates16();
-				EnemySpawn[] dummySpawns =
-				[
-					new EnemySpawn { NpcType = new(NPCID.BlueSlime), SpawnPlacement = EncounterEditor.DefaultPlacement.WithDefaults(NPCID.BlueSlime), SpawnPosition = null },
-					new EnemySpawn { NpcType = new(NPCID.DemonEye), SpawnPlacement = EncounterEditor.DefaultPlacement.WithDefaults(NPCID.DemonEye), SpawnPosition = null },
-					new EnemySpawn { NpcType = new(NPCID.Zombie), SpawnPlacement = EncounterEditor.DefaultPlacement.WithDefaults(NPCID.Zombie), SpawnPosition = null },
-				];
-				var dummyWave = new EncounterWave { Spawns = dummySpawns };
-
-				Encounter encounter = EnemyEncounters.CreateEncounter(new EncounterDescription
-				{
-					Identifier = "NewEncounter",
-					ActivationRange = 512f,
-					ActivationOrigin = basePosition,
-					SpawnArea = new Rectangle(basePoint.X - 32, basePoint.Y - 16, 64, 32),
-					SpawnOrigin = basePoint,
-					Waves = [dummyWave],
-				});
-
-				encounter.SetPaused(true);
-				SetSelections(encounter, 0, null);
-			};
+			e.OnLeftClick += (evt, self) => EncounterEditor.AddEncounter();
 		});
 
 		// Search bar
@@ -678,7 +739,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			{
 				if (uiElement is UIEditableText e && e.CurrentValue != lastSearchString)
 				{
-					EnqueueRebuild();
+					Rebuild();
 					lastSearchString = e.CurrentValue;
 				}
 			};
@@ -719,8 +780,10 @@ internal sealed class EncounterEditorState : SmartUiState
 		StringBuilder stringBuilder = new();
 		int encounterIndex = -1;
 
-		foreach (Encounter encounter in EnemyEncounters.IterateEncounters())
+		foreach (EncounterBox encounterBox in EncounterEditor.BoxedEncounters)
 		{
+			if (encounterBox is not { Handle: { IsValid: true } encounter }) { continue; }
+
 			ref readonly EncounterDescription description = ref encounter.Description;
 
 			if (!string.IsNullOrEmpty(EncountersSearchBar.CurrentValue) && !description.Identifier.Contains(EncountersSearchBar.CurrentValue, StringComparison.InvariantCultureIgnoreCase))
@@ -733,7 +796,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			// Select the first encounter in the list if none is selected.
 			if (!SelectedEncounter.IsValid)
 			{
-				SetSelections(encounter, null, null, noRebuild: true);
+				SetSelections(encounter, -1, -1, noRebuild: true);
 			}
 
 			// Selectable Panel
@@ -744,7 +807,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 				Color defaultBorderColor = e.BorderColor = Color.PaleVioletRed;
 				e.OnUpdate += self => ((UIPanel)self).BorderColor = SelectedEncounter == encounter ? Color.Gold : defaultBorderColor;
-				e.OnLeftClick += (self, evt) => SetSelections(encounter, null, null);
+				e.OnLeftClick += (self, evt) => SetSelections(encounter, -1, -1);
 			});
 
 			// Name
@@ -834,11 +897,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			{
 				e.SetDimensions(x: (1.0f, -33f), y: (0.0f, +20), width: (0.0f, +38), height: (0f, +38));
 				e.SetVisibility(1f, 0.8f);
-				e.OnLeftClick += (evt, self) =>
-				{
-					encounter.Remove();
-					EnqueueRebuild();
-				};
+				e.OnLeftClick += (evt, self) => EncounterEditor.RemoveEncounter(encounter);
 			});
 		}
 
@@ -891,7 +950,7 @@ internal sealed class EncounterEditorState : SmartUiState
 					and not nameof(EncounterDescription.SpawnOrigin)
 					and not nameof(EncounterDescription.ActivationOrigin))
 				{
-					ConfigManager.WrapIt(list, ref yPos, new(property), BoxedEncounter.Description, elementIndex++);
+					ConfigManager.WrapIt(list, ref yPos, new(property), EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Description, elementIndex++);
 				}
 			}
 
@@ -902,7 +961,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 	private void PopulateListWithAllWaveControls(UIList list, Encounter encounter, ref int elementIndex, ref int yPos)
 	{
-		for (uint waveIndex = 0; waveIndex < encounter.Description.Waves.Length; waveIndex++)
+		for (int waveIndex = 0; waveIndex < encounter.Description.Waves.Length; waveIndex++)
 		{
 			AddSortableElement(list, elementIndex++, new UIText($"Wave #{waveIndex}"));
 
@@ -913,19 +972,11 @@ internal sealed class EncounterEditorState : SmartUiState
 		{
 			e.SetDimensions(width: (1f, +0f), height: (0f, +24f));
 
-			e.OnLeftClick += (evt, e) =>
-			{
-				if (!encounter.IsValid) { return; }
-
-				ref readonly EncounterWave baseWave = ref encounter.Description.Waves[^1];
-				BoxedEncounter.Waves.Add((WaveBox)(baseWave with { Spawns = [] }));
-				ExportData();
-				EnqueueRebuild();
-			};
+			e.OnLeftClick += (evt, e) => EncounterEditor.AddWave(SelectedEncounter, null, null);
 		});
 	}
 
-	private void PopulateListWithSingleWaveControls(UIList list, Encounter encounter, uint waveIndex, ref int elementIndex, ref int yPos)
+	private void PopulateListWithSingleWaveControls(UIList list, Encounter encounter, int waveIndex, ref int elementIndex, ref int yPos)
 	{
 		ref readonly EncounterWave wave = ref encounter.Description.Waves[waveIndex];
 		bool isWaveSelected = SelectedWave == waveIndex;
@@ -948,7 +999,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 			e.OnLeftClick += (evt, e) =>
 			{
-				if (SelectedEncounter.IsValid && SelectedWave != waveIndex) { SetSelections(SelectedEncounter, waveIndex, null); }
+				if (SelectedEncounter.IsValid && SelectedWave != waveIndex) { SetSelections(SelectedEncounter, waveIndex, -1); }
 			};
 		});
 		UIList wavePanelList = wavePanel.AddElement(new UIList(), e =>
@@ -963,7 +1014,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			// Skip properties handled in other ways.
 			if (property.Name is not nameof(EncounterWave.Spawns))
 			{
-				ConfigManager.WrapIt(wavePanelList, ref yPos, new(property), BoxedEncounter.Waves[(int)waveIndex].Wave, elementIndex++);
+				ConfigManager.WrapIt(wavePanelList, ref yPos, new(property), EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Waves[waveIndex].Wave, elementIndex++);
 			}
 		}
 
@@ -978,9 +1029,9 @@ internal sealed class EncounterEditorState : SmartUiState
 			e.SetDimensions(width: (1f, +0f), height: (1f, +0));
 		});
 
-		for (uint spawnIndex = 0; spawnIndex < wave.Spawns.Length; spawnIndex++)
+		for (int spawnIndex = 0; spawnIndex < wave.Spawns.Length; spawnIndex++)
 		{
-			uint spawnIndexCopy = spawnIndex;
+			int spawnIndexCopy = spawnIndex;
 			bool isSpawnSelected = isWaveSelected && spawnIndexCopy == SelectedSpawn;
 			EnemySpawn spawn = wave.Spawns[spawnIndex];
 
@@ -989,7 +1040,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			Asset<Texture2D> texture = TextureAssets.Npc[type];
 			Rectangle frame = new SpriteFrame(1, (byte)Main.npcFrameCount[type]).GetSourceRectangle(texture.Value);
 
-			UISortableElement sortable = grid.AddElement(new UISortableElement((int)spawnIndex));
+			UISortableElement sortable = grid.AddElement(new UISortableElement(spawnIndex));
 			UIButton<string> container = sortable.AddElement(new UIButton<string>(string.Empty), e =>
 			{
 				e.SetDimensions(width: (0f, +gridButtonSize), height: (0f, +gridButtonSize));
@@ -1011,15 +1062,7 @@ internal sealed class EncounterEditorState : SmartUiState
 				{
 					if (evt.Target != e || !SelectedEncounter.IsValid) { return; }
 
-					if (spawnIndexCopy >= BoxedEncounter.Waves[(int)waveIndex].Spawns.Count) { return; }
-
-					// This needs to run before removal, as it can trigger recreation of the boxed tree.
-					if (SelectedWave == waveIndex && SelectedSpawn >= spawnIndexCopy)
-					{
-						SetSelections(SelectedEncounter, SelectedWave, SelectedSpawn > spawnIndexCopy ? (SelectedSpawn - 1) : null);
-					}
-
-					BoxedEncounter.Waves[(int)waveIndex].Spawns.RemoveAt((int)spawnIndexCopy);
+					EncounterEditor.RemoveSpawn(SelectedEncounter, waveIndex, spawnIndexCopy);
 				};
 			});
 
@@ -1056,7 +1099,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 			float alpha = e.BackgroundColor.A / (float)byte.MaxValue;
 
-			if (PlacementMode || EncounterEditor.ActiveDrag is { Kind: EncounterEditor.DragKind.SpawnPosition })
+			if (EncounterEditor.PlacementMode || EncounterEditor.ActiveDrag is { Kind: EncounterEditor.DragKind.SpawnPosition })
 			{
 				e.BackgroundColor = Color.DarkSlateGray.MultiplyRGBA(new(Vector4.One * alpha));
 			}
@@ -1092,7 +1135,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			e.OnLeftClick += (evt, self) =>
 			{
 				SpawningVisible = false;
-				EnqueueRebuild();
+				Rebuild();
 			};
 		});
 
@@ -1112,7 +1155,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			list.SetScrollbar(e);
 		});
 
-		if (!SelectedEncounter.IsValid || !SelectedWave.HasValue)
+		if (!SelectedEncounter.IsValid || SelectedWave < 0)
 		{
 			list.AddElement(new UIText("No encounter or wave selected."));
 		}
@@ -1120,8 +1163,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		{
 			int yPos = 0;
 			int elementIndex = 0;
-			SpawnBox usedSpawnBox = CurrentSpawningMode == SpawningMode.EditingExisting ? BoxedEncounter.Waves[(int)SelectedWave.Value].Spawns[(int)SelectedSpawn!.Value] : BoxedSpawn;
-			PopulateListWithSpawnControls(list, usedSpawnBox, ref elementIndex, ref yPos);
+			PopulateListWithSpawnControls(list, CurrentSpawnBox, ref elementIndex, ref yPos);
 		}
 
 		return window;
@@ -1154,7 +1196,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 				e.OnLeftClick += (evt, e) =>
 				{
-					if (evt.Target != e || !SelectedEncounter.IsValid || !SelectedWave.HasValue) { return; }
+					if (evt.Target != e || !SelectedEncounter.IsValid || SelectedWave < 0) { return; }
 
 					if (CurrentSpawningMode is SpawningMode.EditingNew or SpawningMode.EditingExisting)
 					{
@@ -1163,16 +1205,16 @@ internal sealed class EncounterEditorState : SmartUiState
 
 						if (spawnCopy.SpawnPlacement.HasValue)
 						{
-							List<SpawnBox> spawns = BoxedEncounter.Waves[(int)SelectedWave.Value].Spawns;
-							int index = SelectedSpawn.HasValue ? ((int)SelectedSpawn.Value + 1) : spawns.Count;
+							List<SpawnBox> spawns = EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Waves[SelectedWave].Spawns;
+							int index = SelectedSpawn >= 0 ? (SelectedSpawn + 1) : spawns.Count;
 							spawns.Insert(index, (SpawnBox)spawnCopy);
 						}
 						else
 						{
-							PlacementMode = true;
+							EncounterEditor.PlacementMode = true;
 						}
 
-						EnqueueRebuild();
+						Rebuild();
 					}
 				};
 			});
@@ -1192,7 +1234,7 @@ internal sealed class EncounterEditorState : SmartUiState
 				{
 					if (evt.Target != e || !SelectedEncounter.IsValid) { return; }
 
-					SetSelections(SelectedEncounter, SelectedWave, null);
+					SetSelections(SelectedEncounter, SelectedWave, -1);
 				};
 			});
 		});
@@ -1234,7 +1276,7 @@ internal sealed class EncounterEditorState : SmartUiState
 					spawn.SpawnPosition = makingDynamic ? null : Main.LocalPlayer.Center;
 
 					// If the spawn exists, define a position for it now.
-					if (!makingDynamic && SelectedSpawn.HasValue)
+					if (!makingDynamic && SelectedSpawn >= 0)
 					{
 						EncounterEditor.ActiveDrag = new()
 						{
@@ -1244,7 +1286,7 @@ internal sealed class EncounterEditorState : SmartUiState
 						};
 					}
 
-					EnqueueRebuild();
+					Rebuild();
 				};
 			});
 		});

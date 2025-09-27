@@ -36,6 +36,9 @@ internal class GenerationalArena<THandle, TData> where THandle : unmanaged, IHan
 	/// <summary> The amount of active handle & data pairs this arena currently holds. </summary>
 	public uint Count { get; private set; }
 
+	/// <summary> The current capacity of the backing arrays. </summary>
+	public uint Capacity => (uint)items.Length;
+
 	public GenerationalArena(uint initialCapacity = 64)
 	{
 		EnsureCapacity(initialCapacity);
