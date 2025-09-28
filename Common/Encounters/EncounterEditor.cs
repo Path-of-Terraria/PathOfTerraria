@@ -358,7 +358,7 @@ internal sealed class EncounterEditor : ModSystem
 				Rectangle newSpawnArea = dsc.SpawnArea;
 				newSpawnArea.X += originOffset.X;
 				newSpawnArea.Y += originOffset.Y;
-				dsc.ActivationOrigin = targetPos;
+				dsc.ActivationOrigin = targetTilePos.ToWorldCoordinates();
 				dsc.SpawnOrigin = targetTilePos;
 				dsc.SpawnArea = newSpawnArea;
 				break;
@@ -439,6 +439,11 @@ internal sealed class EncounterEditor : ModSystem
 				}
 			}
 
+			// Draw activation range.
+
+			Vector2 screenSpaceOrigin = encounter.Description.ActivationOrigin - Main.screenPosition;
+			DebugRendering.DrawCircle(Main.spriteBatch, screenSpaceOrigin, encounter.Description.ActivationRange, Color.White.MultiplyRGBA(new(Vector4.One * 0.5f)), resolution: 64);
+
 			// Draw spawn area.
 
 			Color areaColor = (isEncounterSelected ? Color.Gold : Color.IndianRed).MultiplyRGBA(new Color(Vector4.One * MathHelper.Lerp(0.25f, 0.35f, activeAnim)));
@@ -465,7 +470,7 @@ internal sealed class EncounterEditor : ModSystem
 			if (tileAreaRect.Contains(mouseTilePoint) && !tileAreaRectInner.Contains(mouseTilePoint))
 			{
 				Main.LocalPlayer.mouseInterface = true;
-				Main.instance.MouseText($"[Click and hold to resize]");
+				Main.instance.MouseText($"{description.Identifier}'s Spawn Area\n[Click and hold to resize]");
 
 				if (ConsumeMouseClick(0))
 				{
