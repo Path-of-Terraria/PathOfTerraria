@@ -47,8 +47,10 @@ internal record struct SpawnPlacement()
 	/// <summary> If not zero, the spawn point must be submerged into any of the liquids within this mask. </summary>
 	public LiquidMask RequiredLiquids { get; set; }
 	/// <summary> How far away from players, in pixels, must the spawn be placed. </summary>
+	[Range(0, 2048), Increment(8)]
 	public float MinDistanceFromPlayers { get; set; } = 256f;
 	/// <summary> How far away from existing enemies, in pixels, must the spawn be placed. </summary>
+	[Range(0, 2048), Increment(8)]
 	public float MinDistanceFromEnemies { get; set; } = 256f;
 
 	/// <summary> Guesses defaults to use for a given NPC sample. Not always ideal. </summary>
