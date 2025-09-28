@@ -66,8 +66,7 @@ internal sealed class EncounterEditor : ModSystem
 	public struct DragContext()
 	{
 		public required DragKind Kind;
-		public Vector2 Offset;
-		public Vector2 Axes = Vector2.One;
+		public required RectangleDrag Drag;
 		public bool? MouseLeftValueToStopAt = false;
 		public bool? MouseRightValueToStopAt;
 	}
@@ -341,10 +340,9 @@ internal sealed class EncounterEditor : ModSystem
 		}
 
 		Vector2 mouseWorld = Main.MouseWorld;
-		Vector2 targetPos = Main.MouseWorld + ctx.Offset;
-		Point16 targetTilePos = targetPos.ToTileCoordinates16();
+		(Vector2 targetPos, Vector2 targetSize) = ctx.Drag.Calculate(mouseWorld);
+		(Point16 targetTilePos, Point16 targetTileSize) = (targetPos.ToTileCoordinates16(), targetSize.ToTileCoordinates16());
 
-		// We operate on the UI State's boxed copies to not interfer with it.
 		switch (ctx.Kind)
 		{
 			case DragKind.EncounterOrigin when State is { SelectedEncounter: { IsValid: true } encounter }:
@@ -356,9 +354,22 @@ internal sealed class EncounterEditor : ModSystem
 				}
 
 				ref EncounterDescription dsc = ref Unsafe.Unbox<EncounterDescription>(BoxedEncounters[encounter.Index].Description);
+				Point16 originOffset = targetTilePos - dsc.SpawnOrigin;
+				Rectangle newSpawnArea = dsc.SpawnArea;
+				newSpawnArea.X += originOffset.X;
+				newSpawnArea.Y += originOffset.Y;
 				dsc.ActivationOrigin = targetPos;
 				dsc.SpawnOrigin = targetTilePos;
-				dsc.SpawnArea = dsc.SpawnArea with { X = targetTilePos.X - (dsc.SpawnArea.Width / 2), Y = targetTilePos.Y - (dsc.SpawnArea.Height / 2) };
+				dsc.SpawnArea = newSpawnArea;
+				break;
+			case DragKind.EncounterArea when State is { SelectedEncounter: { IsValid: true } encounter }:
+				Unsafe.Unbox<EncounterDescription>(BoxedEncounters[encounter.Index].Description).SpawnArea = new Rectangle
+				{
+					X = targetTilePos.X,
+					Y = targetTilePos.Y,
+					Width = targetTileSize.X,
+					Height = targetTileSize.Y,
+				};
 				break;
 			case DragKind.SpawnPosition when State is { SelectedEncounter: { IsValid: true } encounter, SelectedWave: int waveIndex, SelectedSpawn: int spawnIndex }:
 				ref EnemySpawn existingSpawn = ref Unsafe.Unbox<EnemySpawn>(BoxedEncounters[encounter.Index].Waves[waveIndex].Spawns[spawnIndex].Spawn);
@@ -383,9 +394,9 @@ internal sealed class EncounterEditor : ModSystem
 
 		float activeAnim = Pulse(0.075f);
 		float inactiveAnim = Pulse(0.03f);
-		var mouseScreenPoint = Main.MouseScreen.ToPoint();
-		var mouseWorldPoint = Main.MouseWorld.ToPoint();
-		var mouseTilePoint = Main.MouseWorld.ToTileCoordinates();
+		Point mouseScreenPoint = Main.MouseScreen.ToPoint();
+		Point mouseWorldPoint = Main.MouseWorld.ToPoint();
+		Point mouseTilePoint = Main.MouseWorld.ToTileCoordinates();
 		bool allowMouseInteractions = !ActiveDrag.HasValue && !PlacementMode && Main.mouseLeftRelease;
 
 		if (PlacementMode)
@@ -423,7 +434,7 @@ internal sealed class EncounterEditor : ModSystem
 					ActiveDrag = new DragContext
 					{
 						Kind = DragKind.EncounterOrigin,
-						Offset = encounter.Description.ActivationOrigin - Main.MouseWorld,
+						Drag = new(encounter.Description.ActivationOrigin, default, Main.MouseWorld, Vector2.One, default),
 					};
 				}
 			}
@@ -445,6 +456,38 @@ internal sealed class EncounterEditor : ModSystem
 				};
 
 				sb.Draw(TextureAssets.BlackTile.Value, dstRect, areaColor);
+			}
+
+			// Interact with the spawn area edges.
+			Vector4Int tileAreaInner = new(tileArea.X + 1, tileArea.Y + 1, tileArea.Z - 2, tileArea.W - 2);
+			Rectangle tileAreaRect = new(tileArea.X, tileArea.Y, tileArea.Z - tileArea.X, tileArea.W - tileArea.Y);
+			Rectangle tileAreaRectInner = new(tileAreaInner.X, tileAreaInner.Y, tileAreaInner.Z - tileAreaInner.X, tileAreaInner.W - tileAreaInner.Y);
+			if (tileAreaRect.Contains(mouseTilePoint) && !tileAreaRectInner.Contains(mouseTilePoint))
+			{
+				Main.LocalPlayer.mouseInterface = true;
+				Main.instance.MouseText($"[Click and hold to resize]");
+
+				if (ConsumeMouseClick(0))
+				{
+					if (encounter != state.SelectedEncounter)
+					{
+						state.SetSelections(encounter, -1, -1);
+					}
+
+					Vector2 areaWorldPos = description.SpawnArea.TopLeft() * TileUtils.TileSizeInPixels;
+					Vector2 areaWorldSize = description.SpawnArea.Size() * TileUtils.TileSizeInPixels;
+					var resizeSigns = new Vector2
+					(
+						(mouseTilePoint.X == tileArea.X) ? -1f : ((mouseTilePoint.X == tileArea.Z - 1) ? 1f : 0f),
+						(mouseTilePoint.Y == tileArea.Y) ? -1f : ((mouseTilePoint.Y == tileArea.W - 1) ? 1f : 0f)
+					);
+
+					ActiveDrag = new DragContext
+					{
+						Kind = DragKind.EncounterArea,
+						Drag = new RectangleDrag(areaWorldPos, areaWorldSize, Main.MouseWorld, Vector2.Zero, resizeSigns),
+					};
+				}
 			}
 
 			// Draw manually assigned enemy spawn points for every wave.
@@ -478,7 +521,7 @@ internal sealed class EncounterEditor : ModSystem
 							ActiveDrag = new DragContext
 							{
 								Kind = DragKind.SpawnPosition,
-								Offset = spawnPoint - Main.MouseWorld,
+								Drag = new(spawnPoint, default, Main.MouseWorld, Vector2.One, default),
 							};
 						}
 						else if (ConsumeMouseClick(1))
@@ -1313,6 +1356,7 @@ internal sealed class EncounterEditorState : SmartUiState
 						EncounterEditor.ActiveDrag = new()
 						{
 							Kind = EncounterEditor.DragKind.SpawnPosition,
+							Drag = new RectangleDrag(Main.MouseWorld, default, Main.MouseWorld, Vector2.One, Vector2.Zero),
 							MouseLeftValueToStopAt = true,
 							MouseRightValueToStopAt = true,
 						};
