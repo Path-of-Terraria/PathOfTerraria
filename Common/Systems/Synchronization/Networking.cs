@@ -160,6 +160,11 @@ internal static class Networking
 		/// <br/><b>Signature:</b> <c>NPC npc, EnemySpawnEffect effect, Vector2 position</c>
 		/// </summary>
 		EnemySpawn,
+
+		/// Calls <see cref="RemoteClient.CheckSection(int, Vector2, int)"/> on the server for the given player.<br/>Signature:<br/>
+		/// <c>byte who, Vector2 position</c>
+		/// </summary>
+		RequestCheckSection,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

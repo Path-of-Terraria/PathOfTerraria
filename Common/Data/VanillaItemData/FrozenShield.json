@@ -1,3 +1,9 @@
 {
-  "ItemType": "Accessories"
+  "ItemType": "Offhand",
+  "ElementProportions": {
+    "Fire": 0,
+    "Cold": 0,
+    "Lightning": 0,
+    "Chaos": 0
+  }
 }

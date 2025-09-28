@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Content.Tiles.BossDomain;
 using System.Collections.Generic;
+using Terraria.Localization;
 using Terraria.ModLoader.Core;
 using Terraria.UI;
 
@@ -209,27 +211,39 @@ public sealed class GenerateImplicits : ILoadable
 	}
 }
 
-public sealed class GenerateName : ILoadable
+public static class GenerateName
+{
+	public static string Invoke(Item item)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
+		PoTInstanceItemData.NameAffixes affixes = data.NameAffix;
+		string prefix = affixes.Prefix == -1 ? string.Empty : Language.GetTextValue("Mods.PathOfTerraria.Gear." + data.ItemType + ".Prefixes." + affixes.Prefix) + " ";
+		string suffix = affixes.Suffix == -1 ? string.Empty : " " + Language.GetTextValue("Mods.PathOfTerraria.Gear." + data.ItemType + ".Suffixes." + affixes.Suffix);
+		return prefix + item.Name + suffix;
+	}
+}
+
+public sealed class GenerateNameAffixes : ILoadable
 {
 	public interface IItem
 	{
-		string GenerateName(string defaultName);
+		(sbyte, sbyte) GenerateAffixIds();
 	}
 
 	public interface IGlobal
 	{
-		void ModifyName(Item item, ref string name);
+		void ModifyNameAffixes(Item item, ref sbyte prefix, ref sbyte suffix);
 	}
 
-	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).ModifyName));
+	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).ModifyNameAffixes));
 
-	public static string Invoke(Item item)
+	public static PoTInstanceItemData.NameAffixes Invoke(Item item)
 	{
-		string name = GetDefaultName(item);
+		(sbyte pre, sbyte suf) = GetDefaultNameAffixes(item);
 
 		if (item.ModItem is IItem i)
 		{
-			name = i.GenerateName(name);
+			(pre, suf) = i.GenerateAffixIds();
 		}
 
 		foreach (GlobalItem g in _hook.Enumerate(item))
@@ -239,21 +253,19 @@ public sealed class GenerateName : ILoadable
 				continue;
 			}
 
-			gl.ModifyName(item, ref name);
+			gl.ModifyNameAffixes(item, ref pre, ref suf);
 		}
 
-		return name;
+		return new(pre, suf);
 	}
 
-	public static string GetDefaultName(Item item)
+	public static (sbyte, sbyte) GetDefaultNameAffixes(Item item)
 	{
 		return item.GetInstanceData().Rarity switch
 		{
-			ItemRarity.Normal => item.Name,
-			ItemRarity.Magic => $"{GeneratePrefix.Invoke(item)} {item.Name}",
-			ItemRarity.Rare => $"{GeneratePrefix.Invoke(item)} {item.Name} {GenerateSuffix.Invoke(item)}",
-			ItemRarity.Unique => item.Name, // uniques might just want to override the GenerateName function
-			_ => "Unknown Item"
+			ItemRarity.Magic => (GeneratePrefix.Invoke(item), -1),
+			ItemRarity.Rare => (GeneratePrefix.Invoke(item), GenerateSuffix.Invoke(item)),
+			_ => (-1, -1),
 		};
 	}
 
@@ -269,19 +281,19 @@ public sealed class GeneratePrefix : ILoadable
 {
 	public interface IItem
 	{
-		string GeneratePrefix(string defaultPrefix);
+		sbyte GeneratePrefix(sbyte defaultId);
 	}
 
 	public interface IGlobal
 	{
-		void ModifyPrefix(Item item, ref string prefix);
+		void ModifyPrefix(Item item, ref sbyte prefix);
 	}
 
 	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).ModifyPrefix));
 
-	public static string Invoke(Item item)
+	public static sbyte Invoke(Item item)
 	{
-		string prefix = GetDefaultPrefix();
+		sbyte prefix = GetDefaultPrefix();
 
 		if (item.ModItem is IItem i)
 		{
@@ -301,9 +313,9 @@ public sealed class GeneratePrefix : ILoadable
 		return prefix;
 	}
 
-	public static string GetDefaultPrefix()
+	public static sbyte GetDefaultPrefix()
 	{
-		return "";
+		return -1;
 	}
 
 	void ILoadable.Load(Mod mod) { }
@@ -318,19 +330,19 @@ public sealed class GenerateSuffix : ILoadable
 {
 	public interface IItem
 	{
-		string GenerateSuffix(string defaultSuffix);
+		sbyte GenerateSuffix(sbyte defaultId);
 	}
 
 	public interface IGlobal
 	{
-		void ModifySuffix(Item item, ref string suffix);
+		void ModifySuffix(Item item, ref sbyte suffix);
 	}
 
 	private static GlobalHookList<GlobalItem> _hook = ItemLoader.AddModHook(GlobalHookList<GlobalItem>.Create(x => ((IGlobal)x).ModifySuffix));
 
-	public static string Invoke(Item item)
+	public static sbyte Invoke(Item item)
 	{
-		string suffix = GetDefaultSuffix();
+		sbyte suffix = GetDefaultSuffix();
 
 		if (item.ModItem is IItem i)
 		{
@@ -350,9 +362,9 @@ public sealed class GenerateSuffix : ILoadable
 		return suffix;
 	}
 
-	public static string GetDefaultSuffix()
+	public static sbyte GetDefaultSuffix()
 	{
-		return "";
+		return -1;
 	}
 
 	void ILoadable.Load(Mod mod) { }

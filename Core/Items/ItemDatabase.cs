@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Data.Models;
 using PathOfTerraria.Common.Enums;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
@@ -64,6 +65,7 @@ public sealed class ItemDatabase : ModSystem
 			if (ModContent.GetInstance<PoTGlobalItem>().AppliesToEntity(new Item(i), true))
 			{
 				RegisterVanillaItemAsGear(i, Enum.Parse<ItemType>(data.ItemType));
+				ElementalWeaponSets.WeaponElementProportionsById.Add(i, data.ElementProportions);
 			}
 		}
 

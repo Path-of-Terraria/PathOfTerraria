@@ -1,3 +1,9 @@
 {
-  "ItemType": "Ranged"
+  "ItemType": "Ranged",
+  "ElementProportions": {
+    "Fire": 0,
+    "Cold": 2,
+    "Lightning": 0,
+    "Chaos": 0
+  }
 }

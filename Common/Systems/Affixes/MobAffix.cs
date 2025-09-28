@@ -80,6 +80,13 @@ internal abstract class MobAffix : Affix
 		writer.Write(MinValue);
 	}
 
+	public override void NetReceive(BinaryReader reader)
+	{
+		Value = reader.ReadSingle();
+		MaxValue = reader.ReadSingle();
+		MinValue = reader.ReadSingle();
+	}
+
 	/// <summary>
 	/// Generates an affix from a tag, used on load to re-populate affixes.
 	/// </summary>

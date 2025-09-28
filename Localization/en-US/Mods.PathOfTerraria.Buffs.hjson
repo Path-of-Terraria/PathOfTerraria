@@ -117,7 +117,7 @@ FreezeDebuff: {
 
 PoisonedDebuff: {
 	DisplayName: Poisoned Debuff
-	Description: Mods.PathOfTerraria.Buffs.PoisonedDebuff.Description
+	Description: Steady, stacking damage over time
 }
 
 FlameWardBuff: {
@@ -128,4 +128,9 @@ FlameWardBuff: {
 IntenseHeatBuff: {
 	DisplayName: Intense Heat
 	Description: Increases fire damage by {0}%
+}
+
+BleedDebuff: {
+	DisplayName: Bleeding
+	Description: Strong, stacking damage over time
 }
