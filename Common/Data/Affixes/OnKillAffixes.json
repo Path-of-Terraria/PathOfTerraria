@@ -55,5 +55,115 @@
 				"weight": 1
 			}
 		]
+	},
+	{
+		"affixType": "LifeOnKillAffix",
+		"equipTypes": "Weapon",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 2,
+				"minimumLevel": 20,
+				"weight": 1
+			},
+			{
+				"minValue": 3,
+				"maxValue": 4,
+				"minimumLevel": 30,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 5,
+				"minimumLevel": 40,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 7,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 9,
+				"minimumLevel": 60,
+				"weight": 1
+			},
+			{
+				"minValue": 10,
+				"maxValue": 12,
+				"minimumLevel": 70,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 80,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 90,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ManaOnKillAffix",
+		"equipTypes": "Weapon",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 2,
+				"minimumLevel": 20,
+				"weight": 1
+			},
+			{
+				"minValue": 3,
+				"maxValue": 4,
+				"minimumLevel": 30,
+				"weight": 1
+			},
+			{
+				"minValue": 4,
+				"maxValue": 5,
+				"minimumLevel": 40,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 7,
+				"minimumLevel": 50,
+				"weight": 1
+			},
+			{
+				"minValue": 8,
+				"maxValue": 9,
+				"minimumLevel": 60,
+				"weight": 1
+			},
+			{
+				"minValue": 10,
+				"maxValue": 12,
+				"minimumLevel": 70,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 80,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 90,
+				"weight": 1
+			}
+		]
 	}
 ]

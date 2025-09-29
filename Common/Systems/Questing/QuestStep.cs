@@ -22,11 +22,18 @@ public abstract class QuestStep
 
 	public bool IsDone { get; internal set; }
 
+	private readonly bool countsAsCompleteDefault = false;
+
 	/// <summary>
 	/// This means the current step will make the marker show as completed on the <see cref="IQuestMarkerNPC"/>.<br/>
-	/// Set this on every step that is either completed automatically or requires only talking to the NPC.
+	/// Set this on every step that is either completed automatically or requires only talking to the NPC.<br/>
+	/// For more specific completed conditions, use <see cref="InternalCountsAsComplete(bool)"/>, which is run through this property.
 	/// </summary>
-	public bool CountsAsCompletedOnMarker { get; init; }
+	public bool CountsAsCompletedOnMarker 
+	{ 
+		get => InternalCountsAsComplete(countsAsCompleteDefault);
+		init => countsAsCompleteDefault = value; 
+	}
 
 	/// <summary>
 	/// Called every frame on the player. This should be used to complete steps, check conditions, so on and so on.
@@ -95,6 +102,14 @@ public abstract class QuestStep
 			StepCompletion.Current => DefaultTextColor,
 			_ => Color.Green,
 		};
+	}
+
+	/// <summary>
+	/// Determines if this step counts as "completed" on associated NPC's quest markers. By default, returns <paramref name="defaultValue"/>.
+	/// </summary>
+	protected virtual bool InternalCountsAsComplete(bool defaultValue)
+	{
+		return defaultValue;
 	}
 
 	public virtual void Save(TagCompound tag) { }

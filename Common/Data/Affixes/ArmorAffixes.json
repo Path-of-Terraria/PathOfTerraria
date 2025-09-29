@@ -180,6 +180,7 @@
 		]
 	},
 	{
+
 		"affixType": "LifeRegenMultiplierAffix",
 		"equipTypes": "Armor Shield",
 		"tiers": [

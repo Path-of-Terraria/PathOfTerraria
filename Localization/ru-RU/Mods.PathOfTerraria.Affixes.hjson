@@ -10,8 +10,6 @@ BuffBoostHelmetAffix.Description: "{1}{0}% более продолжительн
 ThornyArmorAffix.Description: "{1}{0} отраженный прямой урон"
 BaseLifeAffix.Description: "{1}{0} максимальное здоровье"
 AddedLifeAffix.Description: "{1}{0}% от максимального здоровья"
-MultipliedLifeAffix.Description: "{1}{0}% максимальный множитель здоровья"
-FlatLifeAffix.Description: "{1}{0} к максимальному здоворью"
 LifeRegenAffix.Description: "{1}{0}% регенерации здоровья"
 LifeRegenMultiplierAffix.Description: "{1}{0}% множитель регенерации жизни"
 LifePotionPowerAffix.Description: "{1}{0}% более сильные лечебные зелья"
@@ -25,7 +23,6 @@ ManaPotionCooldownAffix.Description: "{1}{0}% сокращено время во
 PiercingItemAffix.Description: "{1}{0}% пробитие защиты"
 AddedKnockbackItemAffix.Description: "{1}{0} отбрасывание"
 IncreasedKnockbackItemAffix.Description: "{1}{0}% отбрасывания"
-FlatKnockbackItemAffix.Description: "{1}{0} прямое отбрасывание"
 ChanceToApplyOnFireGearAffix.Description: '''{1}{0} шанс применить \"Огонь"\'''
 ChanceToApplyArmorShredGearAffix.Description: '''{1}{0} шанс применить \"Клочок брони"\'''
 ChanceToApplyBloodclotItemAffix.Description: '''{1}{0} шанс применить \"Сгусток крови"\'''
@@ -94,3 +91,5 @@ LightningResistItemAffix.Description: "{1}{0} Электростойкость"
 // IncreasedMeleeDamageAffix.Description: "{1}{0}% increased Melee damage"
 // IncreasedRangedDamageAffix.Description: "{1}{0}% increased Ranged damage"
 // IncreasedMagicDamageAffix.Description: "{1}{0}% increased Magic damage"
+// LifeOnKillAffix.Description: "{1}{0} life restored on kill"
+// ManaOnKillAffix.Description: "{1}{0} mana restored on kill"
