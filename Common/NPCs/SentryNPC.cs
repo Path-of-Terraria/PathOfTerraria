@@ -87,6 +87,8 @@ public abstract class SentryNPC : ModNPC, ITargetable
 
 	public override void SetStaticDefaults()
 	{
+		// For some reason, this is necessary for using NPC.ReleaseNPC in multiplayer.
+		// It doesn't actually allow the NPC to be caught in a net.
 		Main.npcCatchable[Type] = true;
 
 		NPCID.Sets.UsesNewTargetting[Type] = true;
