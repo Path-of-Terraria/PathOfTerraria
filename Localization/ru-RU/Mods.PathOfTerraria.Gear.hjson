@@ -345,8 +345,6 @@ Offhand.Name: Вторая рука
 
 Shield: {
 	Name: Щит
-	Block: "[i:278] +{0}% блокировки"
-	Speed: "[i:278] -{0}% скорости перемещения"
 
 	Prefixes: {
 		0: Жесткий
@@ -367,8 +365,6 @@ Shield: {
 
 Quiver: {
 	// Name: Quiver
-	// Movement: "[i:278] +{0}% increased movement speed"
-	// AmmoSave: "[i:278] +{0}% chance to reserve ammo"
 
 	Prefixes: {
 		// 0: Swift
@@ -389,7 +385,6 @@ Quiver: {
 
 Talisman: {
 	// Name: Talisman
-	// MinionDamage: "[i:278] +{0}% increased minion damage"
 
 	Prefixes: {
 		// 0: Summoner's
