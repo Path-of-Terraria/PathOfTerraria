@@ -206,3 +206,18 @@ BiggerBrood: {
 	// Name: Bigger Brood
 	// Tooltip: +1 egg per level
 }
+
+Gestation: {
+	// Name: Gestation
+	// Tooltip: 10% chance to spawn an additional egg when a locust kills an enemy
+}
+
+QuickerHatching: {
+	// Name: Quicker Hatching
+	// Tooltip: Eggs spawn 10% quicker per level
+}
+
+CarnivorousLarvae: {
+	// Name: Carnivorous Larvae
+	// Tooltip: Additional 2% chance for an egg to spawn in a fallen enemy per level
+}

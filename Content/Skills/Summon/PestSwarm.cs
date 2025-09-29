@@ -1,13 +1,17 @@
-﻿using PathOfTerraria.Common.Enums;
+﻿using PathOfTerraria.Common;
+using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.SkillPassives.SwarmPassives;
 using PathOfTerraria.Content.SkillSpecials.PestSwarmSpecials;
+using PathOfTerraria.Content.SkillTrees;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Content.Skills.Summon;
 
@@ -65,9 +69,10 @@ public class PestSwarm : Skill
 
 		HashSet<Point16> points = [];
 		Point16 center = player.Center.ToTileCoordinates16();
-		int tries = 300;
+		int tries = 3000;
+		int cap = 10 + player.GetPassiveStrength<PestSwarmTree, BiggerBrood>();
 
-		while (points.Count < 10 && tries > 0)
+		while (points.Count < cap && tries > 0)
 		{
 			tries--;
 
@@ -87,10 +92,13 @@ public class PestSwarm : Skill
 			}
 		}
 
+		int type = ModContent.ProjectileType<LocustEgg>();
+		var src = new EntitySource_UseSkill(player, this);
+
 		foreach (Point16 point in points)
 		{
-			var src = new EntitySource_UseSkill(player, this);
-			Projectile.NewProjectile(src, point.ToWorldCoordinates(), Vector2.Zero, ModContent.ProjectileType<LocustEgg>(), 15 * Level, 0, player.whoAmI, 30);
+			float duration = 30 * Main.rand.NextFloat(0.9f, 1.1f) * (1 - player.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
+			Projectile.NewProjectile(src, point.ToWorldCoordinates(8, -14), Vector2.Zero, type, 15 * Level, 0, player.whoAmI, duration, 0, TotalDuration);
 		}
 	}
 
@@ -500,6 +508,10 @@ public class PestSwarm : Skill
 	public class LocustEgg : ModProjectile
 	{
 		private ref float LifeTime => ref Projectile.ai[0];
+		private ref float MaxLifeTime => ref Projectile.ai[1];
+		private ref float Duration => ref Projectile.ai[2];
+
+		private ref float AttachedNPC => ref Projectile.localAI[0];
 
 		public override void SetStaticDefaults()
 		{
@@ -514,6 +526,7 @@ public class PestSwarm : Skill
 			Projectile.friendly = true;
 			Projectile.hostile = false;
 			Projectile.scale = 0f;
+			Projectile.frame = Main.rand.Next(3);
 		}
 
 		public override bool? CanDamage()
@@ -523,15 +536,63 @@ public class PestSwarm : Skill
 
 		public override void AI()
 		{
-			Projectile.velocity.Y += 0.1f;
-			Projectile.scale = MathF.Min(Projectile.scale + 0.05f, 1);
+			if (MaxLifeTime <= 5)
+			{
+				MaxLifeTime = LifeTime;
+				AttachedNPC = -1;
+				Projectile.Size = new Vector2(16, 20);
+			}
+
+			if (AttachedNPC == -1)
+			{
+				Projectile.velocity.Y += 0.1f;
+
+				foreach (NPC npc in Main.ActiveNPCs)
+				{
+					if (npc.CanBeChasedBy() && npc.Hitbox.Intersects(Projectile.Hitbox))
+					{
+						AttachedNPC = npc.whoAmI;
+						Projectile.tileCollide = false;
+						Projectile.netUpdate = true;
+						break;
+					}
+				}
+			}
+			else
+			{
+				Projectile.velocity = Main.npc[(int)AttachedNPC].velocity;
+			}
+
+			Projectile.scale = MathF.Min(Projectile.scale + (1 / MaxLifeTime), 1);
 
 			LifeTime--;
 
 			if (LifeTime < 0)
 			{
-				Projectile.Kill();
+				if (Projectile.alpha == 0 && Main.myPlayer == Projectile.owner)
+				{
+					Vector2 vel = new Vector2(0, -Main.rand.NextFloat(5, 9)).RotatedByRandom(MathHelper.PiOver2 * 0.9f);
+					int type = ModContent.ProjectileType<SimpleLocust>();
+					Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel, type, Projectile.damage, 1f, Projectile.owner, 0, 0, Duration);
+				}
+
+				Projectile.alpha += 10;
+
+				if (Projectile.alpha > 250)
+				{
+					Projectile.Kill();
+				}
 			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write((short)AttachedNPC);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			AttachedNPC = reader.ReadInt16();
 		}
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
@@ -543,11 +604,12 @@ public class PestSwarm : Skill
 		{
 			Texture2D tex = TextureAssets.Projectile[Type].Value;
 			Vector2 position = Projectile.Center - Main.screenPosition;
+			int frameWidth = tex.Width / 3;
 			int frameHeight = tex.Height / Main.projFrames[Type];
-			Rectangle frame = new Rectangle(0, Projectile.frame * frameHeight, tex.Width, frameHeight);
+			Rectangle frame = new(frameWidth * (int)(Projectile.alpha / 85f), Projectile.frame * frameHeight, frameWidth, frameHeight);
 			var scale = new Vector2(2 - Projectile.scale, Projectile.scale);
 			
-			Main.spriteBatch.Draw(tex, position, frame, Color.White, Projectile.rotation, frame.Size() * new Vector2(0.5f, 1), scale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, position, frame, Color.White * Projectile.Opacity, Projectile.rotation, frame.Size() * new Vector2(0.5f, 1), scale, SpriteEffects.None, 0);
 			return false;
 		}
 	}
@@ -565,3 +627,51 @@ public class LocustDust : ModDust
 		return lightColor;
 	}
 }
+
+public class PestSwarmPlayer : ModPlayer
+{
+	public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (!Player.HasTreePassive<PestSwarmTree, Gestation>() || proj.type != ModContent.ProjectileType<PestSwarm.SimpleLocust>())
+		{
+			return;
+		}
+
+		float maxChance = 0.1f + Player.GetPassiveStrength<PestSwarmTree, CarnivorousLarvae>() * 0.02f;
+
+		if (target.life <= 0 && Main.rand.NextFloat() < maxChance && Player.GetModPlayer<SkillCombatPlayer>().TryGetSkill<PestSwarm>(out Skill swarm))
+		{
+			float duration = 30 * Main.rand.NextFloat(0.9f, 1.1f) * (1 - Player.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
+			int type = ModContent.ProjectileType<PestSwarm.LocustEgg>();
+			Projectile.NewProjectile(target.GetSource_Death(), target.Center, Vector2.Zero, type, 15 * swarm.Level, 0, Player.whoAmI, duration, 0, swarm.TotalDuration);
+		}
+	}
+}
+
+//Swarm: Will be a skill similar to that of Summon Raging Spirits on Path of Exile.They will be short lived summons that you can have several of these minions out at once.Increasing cast speed and increasing minion attack speed/dmg will be your scalers.Maximum 7 summoned, lasts 5 seconds.No cooldown, just cast time.By default these are ground walking insects that jump towards their target
+
+//Volatile Insects: Once they reach their target after 1 second they explode dealing small AoE around them. Deals fire damage
+
+//Antlion Swarm: DONE
+
+//Locusts: DONE
+
+//Gestation: DONE
+
+//Increased Spawn Rate: DONE
+
+//Eggsplosion: Eggs deal damage around them when hatching. This could allow a good bit of burst on a boss if placed correctly.
+
+//Infected Detonation: Enemies that die from this explosion have a 10% chance ot explode dealing % based life (10%) in a small radius.So if the enemy had 1000 health, they deal 100 damage.Fire damage.
+
+//Startling Emergence: Nearby enemies are shocked when an egg hatches.
+
+//Glacial Antlion: Summoned antlion is now a Glacial Antlion. Dealing cold damage instead (100% conversion)
+
+//Frosted Mandibles: Antlions have increased cold damage and a 10% chance to apply chilled on hit.
+
+//Shattering Carapace: When antlions kill an enemy they shatter dealing damage around them.
+
+//Carapace Cracker: Antlions apply a debuff reducing damage reduction to hit enemies.
+
+//Vicious Bites: Antlions deal bites that apply a bleed effect.
