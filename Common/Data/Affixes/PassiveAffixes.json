@@ -1,3 +1,152 @@
 [
-	
+	{
+		"affixType": "AmmoReservationAffix",
+		"equipTypes": "Ranged Quiver",
+		"tiers": [
+			{
+				"minValue": 2,
+				"maxValue": 5,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 6,
+				"maxValue": 10,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 11,
+				"maxValue": 15,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 16,
+				"maxValue": 20,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedSummonDamageAffix",
+		"equipTypes": "Summoner",
+		"tiers": [
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 25,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 26,
+				"maxValue": 32,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedMeleeDamageAffix",
+		"equipTypes": "Melee",
+		"tiers": [
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 25,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 26,
+				"maxValue": 32,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedRangedDamageAffix",
+		"equipTypes": "Ranged",
+		"tiers": [
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 25,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 26,
+				"maxValue": 32,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "IncreasedMagicDamageAffix",
+		"equipTypes": "Magic",
+		"tiers": [
+			{
+				"minValue": 8,
+				"maxValue": 12,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 18,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 19,
+				"maxValue": 25,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 26,
+				"maxValue": 32,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	}
 ]

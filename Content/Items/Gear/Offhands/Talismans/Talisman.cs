@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 using Terraria.Localization;
 
@@ -5,7 +8,7 @@ namespace PathOfTerraria.Content.Items.Gear.Offhands.Talismans;
 
 internal abstract class Talisman : Offhand
 {
-	protected abstract float MinionDamage { get; }
+	protected abstract float SummonDamage { get; }
 	protected override string GearLocalizationCategory => "Talisman";
 
 	public override void SetStaticDefaults()
@@ -29,18 +32,11 @@ internal abstract class Talisman : Offhand
 	{
 	}
 	
-	public override void UpdateAccessory(Player player, bool hideVisual)
+	public override List<ItemAffix> GenerateImplicits()
 	{
-		player.GetDamage(DamageClass.Summon) += MinionDamage;
-	}
-
-	public override void ModifyTooltips(System.Collections.Generic.List<Terraria.ModLoader.TooltipLine> tooltips)
-	{
-		base.ModifyTooltips(tooltips);
-
-		if (MinionDamage > 0)
-		{
-			tooltips.Add(new TooltipLine(Mod, "StatMinionDamage", Language.GetText("Mods.PathOfTerraria.Gear.Talisman.MinionDamage").Format((MinionDamage * 100).ToString("#0.##"))));
-		}
+		return
+		[
+			(ItemAffix)Affix.CreateAffix<IncreasedSummonDamageAffix>(SummonDamage),
+		];
 	}
 }

@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.Systems.BlockSystem;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
@@ -31,16 +33,13 @@ internal abstract class Shield : Offhand
 	protected virtual void InternalDefaults()
 	{
 	}
-
-	public override void UpdateAccessory(Player player, bool hideVisual)
+	
+	public override List<ItemAffix> GenerateImplicits()
 	{
-		player.GetModPlayer<BlockPlayer>().AddBlockChance(BlockChance);
-		player.moveSpeed *= 1 - SpeedReduction;
-	}
-
-	public override void ModifyTooltips(List<TooltipLine> tooltips)
-	{
-		tooltips.Add(new TooltipLine(Mod, "StatBlock", Language.GetText("Mods.PathOfTerraria.Gear.Shield.Block").Format((BlockChance * 100).ToString("#0.##"))));
-		tooltips.Add(new TooltipLine(Mod, "StatSpeed", Language.GetText("Mods.PathOfTerraria.Gear.Shield.Speed").Format((SpeedReduction * 100).ToString("#0.##"))));
+		return
+		[
+			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(-SpeedReduction),
+			(ItemAffix)Affix.CreateAffix<IncreaseBlockAffix>(BlockChance),
+		];
 	}
 }

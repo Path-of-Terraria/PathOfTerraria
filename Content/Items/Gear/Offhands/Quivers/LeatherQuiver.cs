@@ -4,8 +4,8 @@ namespace PathOfTerraria.Content.Items.Gear.Offhands.Quivers;
 
 internal class LeatherQuiver : Quiver
 {
-	protected override float AmmoConsumptionChance => 0.05f;
-	protected override float MovementSpeedBonus => 0.0f;
+	protected override float AmmoConsumptionChance => 5f;
+	protected override float MovementSpeedBonus => 2.5f;
 
 	public override void SetStaticDefaults()
 	{

@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Common.Systems.BlockSystem;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Core.Items;
@@ -33,23 +35,12 @@ internal abstract class Quiver : Offhand
 	{
 	}
 
-	public override void UpdateAccessory(Player player, bool hideVisual)
+	public override List<ItemAffix> GenerateImplicits()
 	{
-		player.moveSpeed += MovementSpeedBonus;
-
-		player.GetModPlayer<AmmoConsumptionPlayer>().AmmoSaveChance += AmmoConsumptionChance;
-	}
-
-	public override void ModifyTooltips(List<TooltipLine> tooltips)
-	{
-		if (MovementSpeedBonus > 0)
-		{
-			tooltips.Add(new TooltipLine(Mod, "StatMovement", Language.GetText("Mods.PathOfTerraria.Gear.Quiver.Movement").Format((MovementSpeedBonus * 100).ToString("#0.##"))));
-		}
-		
-		if (AmmoConsumptionChance > 0)
-		{
-			tooltips.Add(new TooltipLine(Mod, "StatAmmo", Language.GetText("Mods.PathOfTerraria.Gear.Quiver.AmmoSave").Format((AmmoConsumptionChance * 100).ToString("#0.##"))));
-		}
+		return
+		[
+			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(MovementSpeedBonus),
+			(ItemAffix)Affix.CreateAffix<AmmoReservationAffix>(AmmoConsumptionChance),
+		];
 	}
 }

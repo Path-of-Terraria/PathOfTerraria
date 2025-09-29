@@ -4,7 +4,7 @@ namespace PathOfTerraria.Content.Items.Gear.Offhands.Talismans;
 
 internal class WoodenTalisman : Talisman
 {
-	protected override float MinionDamage => 0.03f;
+	protected override float SummonDamage => 3f;
 
 	public override void SetStaticDefaults()
 	{

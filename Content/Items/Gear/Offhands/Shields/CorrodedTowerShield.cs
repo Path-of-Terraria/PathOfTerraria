@@ -5,7 +5,7 @@ namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
 internal class CorrodedTowerShield : Shield
 {
 	protected override float BlockChance => 0.22f;
-	protected override float SpeedReduction => 0.05f;
+	protected override float SpeedReduction => 1.5f;
 
 	protected override void InternalDefaults()
 	{
