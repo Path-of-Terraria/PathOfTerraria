@@ -3,12 +3,11 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using System.Linq;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Armor.Leggings;
 
 [AutoloadEquip(EquipType.Legs)]
-internal class BurningRedBoots : Leggings, GenerateName.IItem
+internal class BurningRedBoots : Leggings
 {
 	public override void SetStaticDefaults()
 	{
@@ -27,11 +26,6 @@ internal class BurningRedBoots : Leggings, GenerateName.IItem
 			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(),
 			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>()
 		];
-	}
-
-	string GenerateName.IItem.GenerateName(string defaultName)
-	{
-		return Language.GetTextValue("Mods.PathOfTerraria.Items.BurningRedBoots.DisplayName");
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)

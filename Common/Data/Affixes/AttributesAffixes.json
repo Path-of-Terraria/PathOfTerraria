@@ -1,7 +1,7 @@
 [
 	{
 		"affixType": "DexterityItemAffix",
-		"equipTypes": "AllNoMap",
+		"equipTypes": "AllNoMap Quiver",
 		"round": true,
 		"tiers": [
 			{
@@ -44,7 +44,7 @@
 	},
 	{
 		"affixType": "StrengthItemAffix",
-		"equipTypes": "AllNoMap",
+		"equipTypes": "AllNoMap Shield",
 		"round": true,
 		"tiers": [
 			{
@@ -87,7 +87,7 @@
 	},
 	{
 		"affixType": "IntelligenceItemAffix",
-		"equipTypes": "AllNoMap",
+		"equipTypes": "AllNoMap Talisman",
 		"round": true,
 		"tiers": [
 			{

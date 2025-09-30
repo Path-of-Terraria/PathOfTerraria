@@ -9,14 +9,7 @@ internal class RemoveBeeLarvaeStep : AutoGenStep
 {
 	public override void Generate(GenerationProgress progress, GameConfiguration config)
 	{
-		Range xRange = (Main.maxTilesX / 3)..(Main.maxTilesX - 100);
-
-		if (Main.dungeonX < 0)
-		{
-			xRange = 100..(int)(Main.maxTilesX / 1.5f);
-		}
-
-		for (int i = xRange.Start.Value; i <= xRange.End.Value; i++)
+		for (int i = 100; i <= Main.maxTilesX - 100; i++)
 		{
 			for (int j = (int)Main.worldSurface; j < Main.maxTilesY - 200; ++j)
 			{

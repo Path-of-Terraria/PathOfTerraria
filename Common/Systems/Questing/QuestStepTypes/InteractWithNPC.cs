@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent;
+﻿using Terraria;
+using Terraria.GameContent;
 using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -177,5 +178,22 @@ internal class InteractWithNPC(int npcId, LocalizedText reminder, LocalizedText 
 	{
 		title = Language.GetTextValue("Mods.PathOfTerraria.UI.QuestReminderTitles.Dialogue");
 		return Reminder.Value;
+	}
+
+	protected override bool InternalCountsAsComplete(bool defaultValue)
+	{
+		if (RequiredItems == null)
+		{
+			return defaultValue;
+		}
+
+		bool hasAllItems = true;
+
+		foreach (GiveItem item in RequiredItems)
+		{
+			CheckSingleItem(Main.LocalPlayer, ref hasAllItems, item);
+		}
+
+		return defaultValue || hasAllItems;
 	}
 }

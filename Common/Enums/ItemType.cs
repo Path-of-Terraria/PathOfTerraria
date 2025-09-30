@@ -31,16 +31,19 @@ public enum ItemType : long
 	Battleaxe = 1 << 22,
 	Amulet = 1 << 23,
 	Shield = 1 << 24,
+	Quiver = 1 << 25,
+	Talisman = 1 << 26,
 
 	Armor = Helmet | Chestplate | Leggings,
 	Accessories = Ring | Charm | Amulet,
 	Equipment = Armor | Accessories,
-	Offhand = Shield,
+	Offhand = Shield | Quiver | Talisman,
 
 	Melee = Sword | Spear | MeleeFlail | WarShield | Battleaxe,
 	Magic = Staff | Tome | Wand,
 	Ranged = Bow | Gun | Boomerang | RangedFlail | Launcher | Javelin,
 	Summoner = Whip | Grimoire,
+	MeleeOrRanged = Melee | Ranged,
 	Weapon = Melee | Magic | Ranged | Whip,
 
 	AllGear = Equipment | Weapon,

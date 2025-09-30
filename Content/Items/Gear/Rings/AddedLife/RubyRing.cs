@@ -14,6 +14,6 @@ public class RubyRing : Ring
 
 	public override List<ItemAffix> GenerateImplicits()
 	{
-		return [(ItemAffix)Affix.CreateAffix<FlatLifeAffix>(4, 7)];
+		return [(ItemAffix)Affix.CreateAffix<BaseLifeAffix>(4, 7)];
 	}
 }

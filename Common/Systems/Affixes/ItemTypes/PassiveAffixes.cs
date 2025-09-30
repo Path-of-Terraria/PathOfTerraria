@@ -1,4 +1,6 @@
-﻿namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
+
+namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
 /// <summary>
 /// Increases the player's attack speed by a percentage (Value).
@@ -51,5 +53,45 @@ internal class IncreasedDamageAffix : ItemAffix
 	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
 	{
 		return base.CreateDefaultTooltip(player, item) with { Value = Value / 5f };
+	}
+}
+
+internal class AmmoReservationAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetModPlayer<AmmoConsumptionPlayer>().AmmoSaveChance += Value / 100f;
+	}
+}
+
+internal class IncreasedSummonDamageAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetDamage(DamageClass.Summon) +=  Value / 100f;
+	}
+}
+
+internal class IncreasedMeleeDamageAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetDamage(DamageClass.Melee) += Value / 100f;
+	}
+}
+
+internal class IncreasedRangedDamageAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetDamage(DamageClass.Ranged) += Value / 100f;
+	}
+}
+
+internal class IncreasedMagicDamageAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		player.GetDamage(DamageClass.Magic) += Value / 100f;
 	}
 }

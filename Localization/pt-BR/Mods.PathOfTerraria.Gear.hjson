@@ -172,7 +172,26 @@ Staff: {
 	}
 }
 
-// Broadsword.Name: Broadsword
+Broadsword: {
+	// Name: Broadsword
+	// AltUse: Right-click to summon a spirit from your blade that lunges forward, healing you for 15 health on hitting an enemy.
+
+	Prefixes: {
+		// 0: "{$Sword.Prefixes.0}"
+		// 1: "{$Sword.Prefixes.1}"
+		// 2: "{$Sword.Prefixes.2}"
+		// 3: "{$Sword.Prefixes.3}"
+		// 4: "{$Sword.Prefixes.4}"
+	}
+
+	Suffixes: {
+		// 0: "{$Sword.Suffixes.0}"
+		// 1: "{$Sword.Suffixes.1}"
+		// 2: "{$Sword.Suffixes.2}"
+		// 3: "{$Sword.Suffixes.3}"
+		// 4: "{$Sword.Suffixes.4}"
+	}
+}
 
 Sword: {
 	// Name: Sword
@@ -326,8 +345,6 @@ WarShield: {
 
 Shield: {
 	// Name: Shield
-	// Block: "[i:278] +{0}% to block"
-	// Speed: "[i:278] -{0}% movement speed"
 
 	Prefixes: {
 		// 0: Rigid
@@ -346,6 +363,46 @@ Shield: {
 	}
 }
 
+Quiver: {
+	// Name: Quiver
+
+	Prefixes: {
+		// 0: Swift
+		// 1: Keen
+		// 2: Masterwork
+		// 3: Weathered
+		// 4: Elven
+	}
+
+	Suffixes: {
+		// 0: of the Marksman
+		// 1: of Piercing
+		// 2: of the Hunt
+		// 3: of the Agile
+		// 4: of Warding
+	}
+}
+
+Talisman: {
+	// Name: Talisman
+
+	Prefixes: {
+		// 0: Summoner's
+		// 1: Conjuring
+		// 2: Binding
+		// 3: Ancient
+		// 4: Mystical
+	}
+
+	Suffixes: {
+		// 0: of Dominion
+		// 1: of Command
+		// 2: of the Overlord
+		// 3: of Servitude
+		// 4: of the Necromancer
+	}
+}
+
 // Map.Name: Map
 // ExplorableMap.Name: Explorable Map
 // BossMap.Name: Boss Map
@@ -355,3 +412,23 @@ Shield: {
 // Melee.Name: Melee
 // Summon.Name: Summon
 // Accessory.Name: Accessory
+
+Ring: {
+	// Name: Ring
+
+	Prefixes: {
+		// 0: Cursed
+		// 1: Hollow
+		// 2: Shattered
+		// 3: Sturdy
+		// 4: Reinforced
+	}
+
+	Suffixes: {
+		// 0: of Embers
+		// 1: of Memories
+		// 2: of Nevermore
+		// 3: of Hatred
+		// 4: of Fury
+	}
+}

@@ -26,32 +26,6 @@ internal class AddedLifeAffix : ItemAffix
 	}
 }
 
-internal class MultipliedLifeAffix : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		modifier.MaximumLife *= 1 + Value / 100;
-	}
-}
-
-internal class FlatLifeAffix : ItemAffix
-{
-	public FlatLifeAffix()
-	{
-		Round = true;
-	}
-	
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		modifier.MaximumLife.Flat += Value;
-	}
-
-	protected override AffixTooltipLine CreateDefaultTooltip(Player player, Item item)
-	{
-		return base.CreateDefaultTooltip(player, item) with { Value = (int)Math.Round(Value) };
-	}
-}
-
 internal class LifeRegenAffix : ItemAffix
 {
 	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)

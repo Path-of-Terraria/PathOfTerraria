@@ -70,7 +70,7 @@ public static class PoTItemHelper
 
 		RollAffixes(item);
 		PostRoll.Invoke(item);
-		data.SpecialName = GenerateName.Invoke(item);
+		data.NameAffix = GenerateNameAffixes.Invoke(item);
 	}
 
 	private static void RollAffixes(Item item)
@@ -118,7 +118,7 @@ public static class PoTItemHelper
 	public static void AddNewAffix(Item item, [CanBeNull] PoTInstanceItemData data = null)
 	{
 		data ??= item.GetInstanceData();
-		if ((data.Affixes.Count - data.ImplicitCount) >= GetAffixCount(item))
+		if ((data.Affixes.Count - data.ImplicitCount) >= GetMaxAffixCounts(data.Rarity))
 		{
 			return;
 		}

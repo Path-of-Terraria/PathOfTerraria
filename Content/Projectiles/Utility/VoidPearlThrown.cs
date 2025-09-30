@@ -53,9 +53,12 @@ internal class VoidPearlThrown : ModProjectile
 	{
 		if (AnyAshNearby())
 		{
-			IEntitySource src = Projectile.GetSource_Death();
-			int type = ModContent.ProjectileType<WoFRitualProj>();
-			Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, 0), type, 0, 0, Main.myPlayer);
+			if (Main.myPlayer == Projectile.owner)
+			{
+				IEntitySource src = Projectile.GetSource_Death();
+				int type = ModContent.ProjectileType<WoFRitualProj>();
+				Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, 0), type, 0, 0, Main.myPlayer);
+			}
 
 			foreach (Particle particle in localDusts)
 			{

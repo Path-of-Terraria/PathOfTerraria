@@ -1,7 +1,7 @@
 [
 	{
 		"affixType": "PercentageIncreasedCriticalStrikeChanceAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Offhand",
 		"tiers": [
 			{
 				"minValue": 5,
@@ -31,7 +31,7 @@
 	},
 	{
 		"affixType": "PercentageCriticalStrikeMultiplierAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Offhand",
 		"tiers": [
 			{
 				"minValue": 5,
@@ -61,7 +61,7 @@
 	},
 	{
 		"affixType": "FlatCriticalStrikeChanceAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Offhand",
 		"tiers": [
 			{
 				"minValue": 5,
@@ -91,7 +91,7 @@
 	},
 	{
 		"affixType": "PercentageIncreasedCriticalStrikeDamageAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Offhand",
 		"tiers": [
 			{
 				"minValue": 5,
@@ -121,7 +121,7 @@
 	},
 	{
 		"affixType": "ChanceToApplyBloodclotItemAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Offhand",
 		"influences": "None",
 		"tiers": [
 			{
@@ -152,7 +152,7 @@
 	},
 	{
 		"affixType": "BuffPoisonedHitsAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Offhand",
 		"influences": "None",
 		"tiers": [
 			{
@@ -261,7 +261,7 @@
 	},
 	{
 		"affixType": "ChanceToApplyShockGearAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Offhand",
 		"influences": "None",
 		"tiers": [
 			{
@@ -292,7 +292,100 @@
 	},
 	{
 		"affixType": "BuffShockedEffectAffix",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Offhand",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "AddedBleedStackAffix",
+		"equipTypes": "MeleeOrRanged Offhand",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 2,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 3,
+				"maxValue": 4,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 6,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 7,
+				"maxValue": 8,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "BetterBleedAffix",
+		"equipTypes": "MeleeOrRanged Offhand",
+		"influences": "None",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+		"affixType": "ChanceToApplyBleedingItemAffix",
+		"equipTypes": "MeleeOrRanged Offhand",
 		"influences": "None",
 		"tiers": [
 			{

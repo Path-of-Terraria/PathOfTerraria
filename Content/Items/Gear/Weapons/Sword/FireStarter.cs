@@ -8,11 +8,10 @@ using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 
-internal class FireStarter : Sword, GenerateName.IItem
+internal class FireStarter : Sword
 {
 	public override void SetStaticDefaults()
 	{
@@ -35,11 +34,6 @@ internal class FireStarter : Sword, GenerateName.IItem
 		Item.value = Item.buyPrice(0, 0, 5, 0);
 	}
 	
-	string GenerateName.IItem.GenerateName(string defaultName)
-	{
-		return Language.GetTextValue("Mods.PathOfTerraria.Items.FireStarter.DisplayName");
-	}
-
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
 	{
 		TooltipLine nameTip = tooltips.First(x => x.Name == "ItemName");
