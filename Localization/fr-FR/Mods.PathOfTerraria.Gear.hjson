@@ -345,8 +345,6 @@ Offhand.Name: Seconde Main
 
 Shield: {
 	Name: Bouclier
-	Block: "[i:278] +{0}% pour bloquer"
-	Speed: "[i:278] -{0}% vitesse de déplacement"
 
 	Prefixes: {
 		0: Rigide
@@ -362,6 +360,46 @@ Shield: {
 		2: d'Isolement
 		3: de la Lacheté
 		4: de Protection
+	}
+}
+
+Quiver: {
+	// Name: Quiver
+
+	Prefixes: {
+		// 0: Swift
+		// 1: Keen
+		// 2: Masterwork
+		// 3: Weathered
+		// 4: Elven
+	}
+
+	Suffixes: {
+		// 0: of the Marksman
+		// 1: of Piercing
+		// 2: of the Hunt
+		// 3: of the Agile
+		// 4: of Warding
+	}
+}
+
+Talisman: {
+	// Name: Talisman
+
+	Prefixes: {
+		// 0: Summoner's
+		// 1: Conjuring
+		// 2: Binding
+		// 3: Ancient
+		// 4: Mystical
+	}
+
+	Suffixes: {
+		// 0: of Dominion
+		// 1: of Command
+		// 2: of the Overlord
+		// 3: of Servitude
+		// 4: of the Necromancer
 	}
 }
 

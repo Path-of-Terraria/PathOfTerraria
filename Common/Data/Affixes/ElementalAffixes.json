@@ -1,7 +1,7 @@
 [
 	{
 		"affixType": "FireResistItemAffix",
-		"equipTypes": "Equipment",
+		"equipTypes": "Equipment Quiver",
 		"tiers": [
 			{
 				"minValue": 4,
@@ -55,7 +55,7 @@
 	},
 	{
 		"affixType": "ColdResistItemAffix",
-		"equipTypes": "Equipment",
+		"equipTypes": "Equipment Quiver",
 		"tiers": [
 			{
 				"minValue": 4,
@@ -109,7 +109,7 @@
 	},
 	{
 		"affixType": "LightningResistItemAffix",
-		"equipTypes": "Equipment",
+		"equipTypes": "Equipment Quiver",
 		"tiers": [
 			{
 				"minValue": 4,
@@ -163,7 +163,7 @@
 	},
 	{
 		"affixType": "ChaosResistItemAffix",
-		"equipTypes": "Equipment",
+		"equipTypes": "Equipment Quiver",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -433,7 +433,7 @@
 	},
 	{
 		"affixType": "FireFlatDamage",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Quiver",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -457,7 +457,7 @@
 	},
 	{
 		"affixType": "ColdFlatDamage",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Quiver",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -481,7 +481,7 @@
 	},
 	{
 		"affixType": "LightningFlatDamage",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Quiver",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -505,7 +505,7 @@
 	},
 	{
 		"affixType": "ChaosFlatDamage",
-		"equipTypes": "Weapon",
+		"equipTypes": "Weapon Quiver",
 		"tiers": [
 			{
 				"minValue": 1,

@@ -1,7 +1,7 @@
 [
 	{
 		"affixType": "DefenseItemAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Shield",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -31,7 +31,7 @@
 	},
 	{
 		"affixType": "EnduranceItemAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Shield",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -61,7 +61,7 @@
 	},
 	{
 		"affixType": "ThornyArmorAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Shield",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -91,7 +91,7 @@
 	},
 	{
 		"affixType": "BaseLifeAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Shield",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -121,7 +121,7 @@
 	},
 	{
 		"affixType": "AddedLifeAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Shield",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -150,8 +150,39 @@
 		]
 	},
 	{
+		"affixType": "MultipliedLifeAffix",
+		"equipTypes": "Armor Shield",
+		"tiers": [
+			{
+				"minValue": 1,
+				"maxValue": 4,
+				"minimumLevel": 1,
+				"weight": 1
+			},
+			{
+				"minValue": 5,
+				"maxValue": 8,
+				"minimumLevel": 21,
+				"weight": 1
+			},
+			{
+				"minValue": 9,
+				"maxValue": 12,
+				"minimumLevel": 52,
+				"weight": 1
+			},
+			{
+				"minValue": 13,
+				"maxValue": 16,
+				"minimumLevel": 73,
+				"weight": 1
+			}
+		]
+	},
+	{
+
 		"affixType": "LifeRegenMultiplierAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Shield",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -265,7 +296,7 @@
 	},
 	{
 		"affixType": "ManaAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Talisman",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -295,7 +326,7 @@
 	},
 	{
 		"affixType": "ManaRegenAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Talisman",
 		"tiers": [
 			{
 				"minValue": 1,
@@ -415,7 +446,7 @@
 	},
 	{
 		"affixType": "MovementSpeedAffix",
-		"equipTypes": "Armor",
+		"equipTypes": "Armor Quiver",
 		"tiers": [
 			{
 				"minValue": 1,

@@ -1,17 +1,15 @@
-﻿using PathOfTerraria.Common.Systems.BlockSystem;
-using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Core.Items;
 using Terraria.Localization;
 
-namespace PathOfTerraria.Content.Items.Gear.Offhands.Shields;
+namespace PathOfTerraria.Content.Items.Gear.Offhands.Talismans;
 
-internal abstract class Shield : Offhand
+internal abstract class Talisman : Offhand
 {
-	protected abstract float BlockChance { get; }
-	protected abstract float SpeedReduction { get; }
-	protected override string GearLocalizationCategory => "Shield";
+	protected abstract float SummonDamage { get; }
+	protected override string GearLocalizationCategory => "Talisman";
 
 	public override void SetStaticDefaults()
 	{
@@ -25,7 +23,7 @@ internal abstract class Shield : Offhand
 		Item.accessory = true;
 
 		PoTInstanceItemData data = this.GetInstanceData();
-		data.ItemType = Common.Enums.ItemType.Shield;
+		data.ItemType = Common.Enums.ItemType.Talisman;
 
 		InternalDefaults();
 	}
@@ -38,8 +36,7 @@ internal abstract class Shield : Offhand
 	{
 		return
 		[
-			(ItemAffix)Affix.CreateAffix<MovementSpeedAffix>(-SpeedReduction),
-			(ItemAffix)Affix.CreateAffix<IncreaseBlockAffix>(BlockChance),
+			(ItemAffix)Affix.CreateAffix<IncreasedSummonDamageAffix>(SummonDamage),
 		];
 	}
 }

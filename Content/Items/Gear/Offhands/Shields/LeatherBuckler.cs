@@ -3,7 +3,7 @@
 internal class LeatherBuckler : Shield
 {
 	protected override float BlockChance => 0.18f;
-	protected override float SpeedReduction => 0.02f;
+	protected override float SpeedReduction => 1.2f;
 
 	protected override void InternalDefaults()
 	{

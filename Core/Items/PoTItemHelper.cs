@@ -118,7 +118,7 @@ public static class PoTItemHelper
 	public static void AddNewAffix(Item item, [CanBeNull] PoTInstanceItemData data = null)
 	{
 		data ??= item.GetInstanceData();
-		if ((data.Affixes.Count - data.ImplicitCount) >= GetAffixCount(item))
+		if ((data.Affixes.Count - data.ImplicitCount) >= GetMaxAffixCounts(data.Rarity))
 		{
 			return;
 		}
