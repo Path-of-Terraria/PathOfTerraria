@@ -235,3 +235,18 @@ ShockingEmergence: {
 	// Name: Shocking Emergence
 	// Tooltip: Eggsplosions shock nearby enemies
 }
+
+ViciousBites: {
+	// Name: Vicious Bites
+	// Tooltip: Antlions inflict bleed on hit
+}
+
+VolatileInsects: {
+	// Name: Volatile Insects
+	// Tooltip: Antlions explode after hitting their target, dealing 300% fire damage
+}
+
+InfectedDetonation: {
+	// Name: InfectedDetonation
+	// Tooltip: Mods.PathOfTerraria.SkillPassives.InfectedDetonation.Tooltip
+}

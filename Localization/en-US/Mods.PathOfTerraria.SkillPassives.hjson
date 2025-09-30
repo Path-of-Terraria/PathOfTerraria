@@ -235,3 +235,18 @@ ShockingEmergence: {
 	Name: Shocking Emergence
 	Tooltip: Eggsplosions shock nearby enemies
 }
+
+ViciousBites: {
+	Name: Vicious Bites
+	Tooltip: Antlions inflict bleed on hit
+}
+
+VolatileInsects: {
+	Name: Volatile Insects
+	Tooltip: Antlions explode after hitting their target, dealing 300% fire damage
+}
+
+InfectedDetonation: {
+	Name: Infected Detonation
+	Tooltip: Enemies killed by the Volatile Insects explosion have a chance to explode, dealing 10% of their max health as damage
+}

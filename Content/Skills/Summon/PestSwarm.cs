@@ -7,6 +7,7 @@ using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.SkillPassives.SwarmPassives;
 using PathOfTerraria.Content.SkillSpecials.PestSwarmSpecials;
@@ -147,7 +148,7 @@ public class PestSwarm : Skill
 
 			Projectile.scale += 1 / (MaxTime + 5);
 
-			if (Projectile.timeLeft > MaxTime / 2)
+			if (TimeLeft > MaxTime / 2)
 			{
 				Projectile.Opacity += 1 / (MaxTime / 2f);
 			}
@@ -156,10 +157,7 @@ public class PestSwarm : Skill
 				Projectile.Opacity -= 1 / (MaxTime / 2f);
 			}
 
-			if (TimeLeft-- <= 0)
-			{
-				Projectile.Kill();
-			}
+			TimeLeft--;
 
 			if (TimeLeft == (int)MaxTime / 2 && Main.myPlayer == Projectile.owner)
 			{
@@ -361,7 +359,7 @@ public class PestSwarm : Skill
 			if (target.life <= 0 && Main.rand.NextFloat() < maxChance && plr.GetModPlayer<SkillCombatPlayer>().TryGetSkill<PestSwarm>(out Skill swarm))
 			{
 				float duration = 30 * Main.rand.NextFloat(0.9f, 1.1f) * (1 - plr.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
-				int type = ModContent.ProjectileType<PestSwarm.LocustEgg>();
+				int type = ModContent.ProjectileType<LocustEgg>();
 				Projectile.NewProjectile(target.GetSource_Death(), target.Center, Vector2.Zero, type, 15 * swarm.Level, 0, plr.whoAmI, duration, 0, swarm.TotalDuration);
 			}
 		}
@@ -369,6 +367,8 @@ public class PestSwarm : Skill
 
 	public class AntlionSwarmerSummon : SkillProjectile<PestSwarm>
 	{
+		private bool IsExplosive => Main.player[Projectile.owner].HasTreePassive<PestSwarmTree, VolatileInsects>();
+
 		private bool Initialized
 		{
 			get => Projectile.ai[0] == 1;
@@ -508,7 +508,7 @@ public class PestSwarm : Skill
 		{
 			if (TimeLeft < 60)
 			{
-				return Color.Lerp(lightColor, Color.Red, MathF.Sin(TimeLeft * 0.2f) * 0.25f + 0.25f);
+				return Color.Lerp(lightColor, Color.Red, MathF.Sin(TimeLeft * (IsExplosive ? 0.6f : 0.2f)) * 0.25f + 0.25f);
 			}
 
 			return null;
@@ -520,6 +520,15 @@ public class PestSwarm : Skill
 			{
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, i < 8 ? DustID.Blood : ModContent.DustType<LocustDust>());
 			}
+
+			if (IsExplosive)
+			{
+				int exp = ModContent.ProjectileType<ExplosionHitboxFriendly>();
+				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, Projectile.damage * 3, 8, Projectile.owner, 60, 60);
+				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1f);
+
+				ExplosionHitbox.VFX(Projectile, new ExplosionHitbox.VFXPackage(2, 8, 4, true, 0.4f, null));
+			}
 		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -528,6 +537,12 @@ public class PestSwarm : Skill
 
 			if (plr.HasTreePassive<PestSwarmTree, ViciousBites>())
 			{
+				BleedDebuff.Apply(plr, target, 5 * 60, damageDone);
+			}
+
+			if (plr.HasTreePassive<PestSwarmTree, VolatileInsects>())
+			{
+				TimeLeft = 5;
 			}
 		}
 	}
@@ -624,7 +639,7 @@ public class PestSwarm : Skill
 				if (has)
 				{
 					int exp = ModContent.ProjectileType<ExplosionHitboxFriendly>();
-					int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, 20, 8, Projectile.owner);
+					int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, Projectile.damage, 8, Projectile.owner, 60, 60);
 					Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 0.33f);
 				}
 			}
