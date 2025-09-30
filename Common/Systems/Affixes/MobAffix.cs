@@ -86,12 +86,4 @@ internal abstract class MobAffix : Affix
 		MaxValue = reader.ReadSingle();
 		MinValue = reader.ReadSingle();
 	}
-
-	/// <summary>
-	/// Generates an affix from a tag, used on load to re-populate affixes.
-	/// </summary>
-	public static MobAffix FromTag(TagCompound tag)
-	{
-		return FromTag<MobAffix>(tag);
-	}
 }
