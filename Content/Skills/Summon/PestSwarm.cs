@@ -2,13 +2,18 @@
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.NPCs.GlobalNPCs;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
+using PathOfTerraria.Content.Buffs;
+using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.SkillPassives.SwarmPassives;
 using PathOfTerraria.Content.SkillSpecials.PestSwarmSpecials;
 using PathOfTerraria.Content.SkillTrees;
 using System.Collections.Generic;
 using System.IO;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -97,8 +102,8 @@ public class PestSwarm : Skill
 
 		foreach (Point16 point in points)
 		{
-			float duration = 30 * Main.rand.NextFloat(0.9f, 1.1f) * (1 - player.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
-			Projectile.NewProjectile(src, point.ToWorldCoordinates(8, -14), Vector2.Zero, type, 15 * Level, 0, player.whoAmI, duration, 0, TotalDuration);
+			float duration = 30 * Main.rand.NextFloat(0.9f, 2.5f) * (1 - player.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
+			Projectile.NewProjectile(src, point.ToWorldCoordinates(8, -22), Vector2.Zero, type, 15 * Level, 0, player.whoAmI, duration, 0, TotalDuration);
 		}
 	}
 
@@ -347,9 +352,22 @@ public class PestSwarm : Skill
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, i < 8 ? DustID.Blood : ModContent.DustType<LocustDust>());
 			}
 		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Player plr = Main.player[Projectile.owner];
+			float maxChance = 0.1f + plr.GetPassiveStrength<PestSwarmTree, CarnivorousLarvae>() * 0.02f;
+
+			if (target.life <= 0 && Main.rand.NextFloat() < maxChance && plr.GetModPlayer<SkillCombatPlayer>().TryGetSkill<PestSwarm>(out Skill swarm))
+			{
+				float duration = 30 * Main.rand.NextFloat(0.9f, 1.1f) * (1 - plr.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
+				int type = ModContent.ProjectileType<PestSwarm.LocustEgg>();
+				Projectile.NewProjectile(target.GetSource_Death(), target.Center, Vector2.Zero, type, 15 * swarm.Level, 0, plr.whoAmI, duration, 0, swarm.TotalDuration);
+			}
+		}
 	}
 
-	public class AntlionSwarmerSummon : ModProjectile
+	public class AntlionSwarmerSummon : SkillProjectile<PestSwarm>
 	{
 		private bool Initialized
 		{
@@ -503,9 +521,18 @@ public class PestSwarm : Skill
 				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, i < 8 ? DustID.Blood : ModContent.DustType<LocustDust>());
 			}
 		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Player plr = Main.player[Projectile.owner];
+
+			if (plr.HasTreePassive<PestSwarmTree, ViciousBites>())
+			{
+			}
+		}
 	}
 
-	public class LocustEgg : ModProjectile
+	public class LocustEgg : SkillProjectile<PestSwarm>
 	{
 		private ref float LifeTime => ref Projectile.ai[0];
 		private ref float MaxLifeTime => ref Projectile.ai[1];
@@ -569,11 +596,9 @@ public class PestSwarm : Skill
 
 			if (LifeTime < 0)
 			{
-				if (Projectile.alpha == 0 && Main.myPlayer == Projectile.owner)
+				if (Projectile.alpha == 0)
 				{
-					Vector2 vel = new Vector2(0, -Main.rand.NextFloat(5, 9)).RotatedByRandom(MathHelper.PiOver2 * 0.9f);
-					int type = ModContent.ProjectileType<SimpleLocust>();
-					Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel, type, Projectile.damage, 1f, Projectile.owner, 0, 0, Duration);
+					PopFunctionality();
 				}
 
 				Projectile.alpha += 10;
@@ -581,6 +606,62 @@ public class PestSwarm : Skill
 				if (Projectile.alpha > 250)
 				{
 					Projectile.Kill();
+				}
+			}
+		}
+
+		private void PopFunctionality()
+		{
+			Player player = Main.player[Projectile.owner];
+			bool has = player.HasTreePassive<PestSwarmTree, Eggsplosion>();
+
+			if (Main.myPlayer == Projectile.owner)
+			{
+				Vector2 vel = new Vector2(0, -Main.rand.NextFloat(5, 9)).RotatedByRandom(MathHelper.PiOver2 * 0.9f);
+				int type = ModContent.ProjectileType<SimpleLocust>();
+				Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, vel, type, Projectile.damage, 1f, Projectile.owner, 0, 0, Duration);
+
+				if (has)
+				{
+					int exp = ModContent.ProjectileType<ExplosionHitboxFriendly>();
+					int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, 20, 8, Projectile.owner);
+					Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 0.33f);
+				}
+			}
+
+			if (has)
+			{
+				ExplosionHitbox.VFX(Projectile, new ExplosionHitbox.VFXPackage(1, 4, 2, true, 0.4f, null));
+				Projectile.Kill();
+
+				for (int i = 0; i < 8; ++i)
+				{
+					Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.MothronEgg);
+				}
+			}
+			else
+			{
+				SoundEngine.PlaySound(SoundID.Item50 with { Volume = Main.rand.NextFloat(0.1f, 0.25f), PitchRange = (0.7f, 1f) }, Projectile.Center);
+
+				for (int i = 0; i < 3; ++i)
+				{
+					Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.MothronEgg, 0, -6);
+				}
+			}
+
+			if (player.HasTreePassive<PestSwarmTree, ShockingEmergence>())
+			{
+				foreach (NPC npc in Main.ActiveNPCs)
+				{
+					if (npc.CanBeChasedBy() && npc.DistanceSQ(Projectile.Center) < 80 * 80)
+					{
+						npc.AddBuff(ModContent.BuffType<ShockDebuff>(), 5 * 60);
+					}
+				}
+
+				for (int i = 0; i < 15; ++i)
+				{
+					Dust.NewDust(Projectile.Center + new Vector2(Main.rand.NextFloat(-80, 80), Main.rand.NextFloat(-80, 80)), 1, 1, DustID.Electric, 0, 0);
 				}
 			}
 		}
@@ -603,10 +684,10 @@ public class PestSwarm : Skill
 		public override bool PreDraw(ref Color lightColor)
 		{
 			Texture2D tex = TextureAssets.Projectile[Type].Value;
-			Vector2 position = Projectile.Center - Main.screenPosition;
+			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.height / 2);
 			int frameWidth = tex.Width / 3;
 			int frameHeight = tex.Height / Main.projFrames[Type];
-			Rectangle frame = new(frameWidth * (int)(Projectile.alpha / 85f), Projectile.frame * frameHeight, frameWidth, frameHeight);
+			Rectangle frame = new(frameWidth * (int)(Projectile.alpha / 90f), Projectile.frame * frameHeight, frameWidth, frameHeight);
 			var scale = new Vector2(2 - Projectile.scale, Projectile.scale);
 			
 			Main.spriteBatch.Draw(tex, position, frame, Color.White * Projectile.Opacity, Projectile.rotation, frame.Size() * new Vector2(0.5f, 1), scale, SpriteEffects.None, 0);
@@ -628,26 +709,6 @@ public class LocustDust : ModDust
 	}
 }
 
-public class PestSwarmPlayer : ModPlayer
-{
-	public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
-	{
-		if (!Player.HasTreePassive<PestSwarmTree, Gestation>() || proj.type != ModContent.ProjectileType<PestSwarm.SimpleLocust>())
-		{
-			return;
-		}
-
-		float maxChance = 0.1f + Player.GetPassiveStrength<PestSwarmTree, CarnivorousLarvae>() * 0.02f;
-
-		if (target.life <= 0 && Main.rand.NextFloat() < maxChance && Player.GetModPlayer<SkillCombatPlayer>().TryGetSkill<PestSwarm>(out Skill swarm))
-		{
-			float duration = 30 * Main.rand.NextFloat(0.9f, 1.1f) * (1 - Player.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
-			int type = ModContent.ProjectileType<PestSwarm.LocustEgg>();
-			Projectile.NewProjectile(target.GetSource_Death(), target.Center, Vector2.Zero, type, 15 * swarm.Level, 0, Player.whoAmI, duration, 0, swarm.TotalDuration);
-		}
-	}
-}
-
 //Swarm: Will be a skill similar to that of Summon Raging Spirits on Path of Exile.They will be short lived summons that you can have several of these minions out at once.Increasing cast speed and increasing minion attack speed/dmg will be your scalers.Maximum 7 summoned, lasts 5 seconds.No cooldown, just cast time.By default these are ground walking insects that jump towards their target
 
 //Volatile Insects: Once they reach their target after 1 second they explode dealing small AoE around them. Deals fire damage
@@ -660,7 +721,7 @@ public class PestSwarmPlayer : ModPlayer
 
 //Increased Spawn Rate: DONE
 
-//Eggsplosion: Eggs deal damage around them when hatching. This could allow a good bit of burst on a boss if placed correctly.
+//Eggsplosion: DONE
 
 //Infected Detonation: Enemies that die from this explosion have a 10% chance ot explode dealing % based life (10%) in a small radius.So if the enemy had 1000 health, they deal 100 damage.Fire damage.
 

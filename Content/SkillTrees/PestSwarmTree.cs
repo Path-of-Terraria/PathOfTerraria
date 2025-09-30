@@ -19,8 +19,9 @@ internal class PestSwarmTree : SkillTree
 
 		var brood = new BiggerBrood(this) { TreePos = new Vector2(0, -300), MaxLevel = 2 };
 		var gest = new Gestation(this) { TreePos = new Vector2(100, -200) };
-		AddNodes(locusts, brood, gest);
-
+		var egg = new Eggsplosion(this) { TreePos = new Vector2(-100, -200) };
+		AddNodes(locusts, brood, gest, egg);
+		AddNodes(egg, new ShockingEmergence(this) { TreePos = new Vector2(-100, -100) });
 		AddNodes(gest, new QuickerHatching(this) { TreePos = new Vector2(200, -200), MaxLevel = 2 }, new CarnivorousLarvae(this) { TreePos = new Vector2(100, -300) });
 	}
 }

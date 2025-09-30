@@ -218,10 +218,20 @@ Gestation: {
 
 QuickerHatching: {
 	// Name: Quicker Hatching
-	// Tooltip: Eggs spawn 10% quicker per level
+	// Tooltip: Eggs spawn 20% quicker per level
 }
 
 CarnivorousLarvae: {
 	// Name: Carnivorous Larvae
 	// Tooltip: Additional 2% chance for an egg to spawn in a fallen enemy per level
+}
+
+Eggsplosion: {
+	// Name: Eggsplosion
+	// Tooltip: Hatching eggs explode in a small radius
+}
+
+ShockingEmergence: {
+	// Name: Shocking Emergence
+	// Tooltip: Eggsplosions shock nearby enemies
 }

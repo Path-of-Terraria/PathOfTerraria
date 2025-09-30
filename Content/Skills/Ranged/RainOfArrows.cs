@@ -279,11 +279,11 @@ public class RainOfArrows : Skill
 					}
 				}
 
-				ExplosionHitbox.VFXPackage package = new(1);
+				ExplosionHitbox.VFXPackage package = new(4);
 
 				if (coldBlast)
 				{
-					package = new ExplosionHitbox.VFXPackage(1, 20, 16, true, null, DustID.Smoke, DustID.IceTorch);
+					package = new ExplosionHitbox.VFXPackage(4, 20, 16, true, 1f, null, DustID.Smoke, DustID.IceTorch);
 				}
 
 				ExplosionHitbox.VFX(projectile, package);
