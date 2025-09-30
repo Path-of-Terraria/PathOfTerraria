@@ -182,6 +182,11 @@ internal class InteractWithNPC(int npcId, LocalizedText reminder, LocalizedText 
 
 	protected override bool InternalCountsAsComplete(bool defaultValue)
 	{
+		if (RequiredItems == null)
+		{
+			return defaultValue;
+		}
+
 		bool hasAllItems = true;
 
 		foreach (GiveItem item in RequiredItems)
