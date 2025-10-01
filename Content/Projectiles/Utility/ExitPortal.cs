@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Common.UI;
+using ReLogic.Content;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -7,8 +9,17 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class ExitPortal : ModProjectile, IRightClickableProjectile
+internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 {
+	private static Asset<Texture2D> Highlight = null;
+
+	public override void SetStaticDefaults()
+	{
+		ProjectileID.Sets.IsInteractable[Type] = true;
+
+		Highlight = ModContent.Request<Texture2D>(Texture + "_Highlight");
+	}
+
 	public override void SetDefaults()
 	{
 		Projectile.friendly = false;
@@ -30,6 +41,8 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile
 		Projectile.rotation += 0.2f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.1f);
 
+		Main.CurrentFrameFlags.HadAnActiveInteractibleProjectile = true;
+
 		if (Main.rand.NextBool(14))
 		{
 			Dust.NewDust(Projectile.position + new Vector2(8), Projectile.width - 16, Projectile.height - 16, DustID.Firework_Red);
@@ -41,19 +54,20 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
+		Vector2 position = Projectile.Center - Main.screenPosition;
 
 		for (int i = 0; i < 3; ++i)
 		{
 			float rotation = Projectile.rotation * (i % 2 == 0 ? -1 : 1);
-			Vector2 position = Projectile.Center - Main.screenPosition;
 			Color color = lightColor * ((3 - i) * 0.2f) * Projectile.Opacity;
 			Main.spriteBatch.Draw(tex, position, null, color, rotation, tex.Size() / 2f, 1f - i * 0.2f, SpriteEffects.None, 0);
 		}
 
+		this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
 		return false;
 	}
 
-	bool IRightClickableProjectile.RightClick(Projectile self, Player player)
+	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
 	{
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
@@ -61,37 +75,15 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile
 			return true;
 		}
 
-		Tooltip.Create(new TooltipDescription
+		if (mouseDirectlyOver)
 		{
-			Identifier = "Portal",
-			SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-		});
-		return false;
-	}
-
-	public class ClickExitPortalPlayer : ModPlayer
-	{
-		public override void PostUpdate()
-		{
-			if (Main.myPlayer == Player.whoAmI)
+			Tooltip.Create(new TooltipDescription
 			{
-				foreach (Projectile projectile in Main.ActiveProjectiles)
-				{
-					if (projectile.type == ModContent.ProjectileType<ExitPortal>() && projectile.Hitbox.Contains(Main.MouseWorld.ToPoint()))
-					{
-						if (Main.mouseRight && Main.mouseRightRelease)
-						{
-							SubworldSystem.Exit();
-						}
-
-						Tooltip.Create(new TooltipDescription
-						{
-							Identifier = "Portal",
-							SimpleTitle = "Exit",
-						});
-					}
-				}
-			}
+				Identifier = "Portal",
+				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+			});
 		}
+
+		return false;
 	}
 }

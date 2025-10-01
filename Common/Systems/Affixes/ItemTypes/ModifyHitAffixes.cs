@@ -27,14 +27,6 @@ internal class IncreasedKnockbackItemAffix : ItemAffix
 		modifier.Knockback *= Value / 100;
 	}
 }
-
-internal class FlatKnockbackItemAffix : ItemAffix
-{
-	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
-	{
-		modifier.Knockback.Flat += Value;
-	}
-}
 	
 internal class ChanceToApplyOnFireGearAffix : ItemAffix
 {

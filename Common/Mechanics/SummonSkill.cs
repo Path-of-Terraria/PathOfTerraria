@@ -1,6 +1,8 @@
 ﻿using PathOfTerraria.Common.NPCs;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Content.SkillAugments;
 using System.Linq;
+using Terraria.ID;
 
 namespace PathOfTerraria.Common.Mechanics;
 
@@ -38,8 +40,16 @@ public abstract class SummonSkill : Skill
 
 				int type = SummonNPCType;
 
-				NPC npc = SentryNPC.Spawn(type, player, worldCoords, TotalDuration);
-				npc.damage = GetTotalDamage(npc.damage);
+				if (Main.netMode == NetmodeID.SinglePlayer)
+				{
+					NPC npc = SentryNPC.Spawn(type, player, worldCoords, TotalDuration);
+					npc.damage = GetTotalDamage(npc.damage);
+				}
+				else
+				{
+					ushort damage = (ushort)GetTotalDamage(ContentSamples.NpcsByNetId[type].damage);
+					ModContent.GetInstance<SpawnSentryNPCHandler>().Send((ushort)type, (byte)player.whoAmI, worldCoords, (ushort)TotalDuration, damage);
+				}
 			}
 		}
 	}

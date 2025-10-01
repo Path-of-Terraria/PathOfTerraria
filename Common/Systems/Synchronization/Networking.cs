@@ -160,6 +160,12 @@ internal static class Networking
 		/// <c>byte who, Vector2 position</c>
 		/// </summary>
 		RequestCheckSection,
+
+		/// <summary>
+		/// Spawns a Sentry NPC on the server. All NPCs need to be spawned on the server.<br/>Signature:<br/>
+		/// <c>ushort type, byte owner, Vector2 position, ushort timeLeft, ushort damage</c>
+		/// </summary>
+		SpawnSentryNPC,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

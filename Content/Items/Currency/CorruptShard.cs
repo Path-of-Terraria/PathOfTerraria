@@ -93,7 +93,7 @@ public class CorruptShard : CurrencyShard
 
 		if (item.ModItem is not Map map)
 		{
-			affixes.Add((ItemAffix)Affix.CreateAffix<FlatLifeAffix>(10, 20), 1);
+			affixes.Add((ItemAffix)Affix.CreateAffix<BaseLifeAffix>(10, 20), 1);
 			affixes.Add((ItemAffix)Affix.CreateAffix<DefenseItemAffix>(4, 6), 1);
 			affixes.Add((ItemAffix)Affix.CreateAffix<IncreasedAttackSpeedAffix>(5), 0.01f);
 		}

@@ -929,6 +929,16 @@ CorrodedTowerShield: {
 	Tooltip: ""
 }
 
+LeatherQuiver: {
+	DisplayName: Leather Quiver
+	Tooltip: ""
+}
+
+WoodenTalisman: {
+	DisplayName: Wooden Talisman
+	Tooltip: ""
+}
+
 RunestoneItem: {
 	DisplayName: Runestone
 	Tooltip: ""

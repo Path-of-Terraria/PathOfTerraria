@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using SubworldLibrary;
 using System.IO;
@@ -8,7 +9,7 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class EoWPortal : ModProjectile, ISaveProjectile
+internal class EoWPortal : ModProjectile, ISaveProjectile, IMapIcon
 {
 	private ref float Uses => ref Projectile.ai[1];
 	private ref float MaxUses => ref Projectile.ai[2];
