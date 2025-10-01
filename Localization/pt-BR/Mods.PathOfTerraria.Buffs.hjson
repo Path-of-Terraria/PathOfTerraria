@@ -136,6 +136,6 @@ BleedDebuff: {
 }
 
 CrackedCarapaceDebuff: {
-	// DisplayName: Cracked Carapace Debuff
-	// Description: Mods.PathOfTerraria.Buffs.CrackedCarapaceDebuff.Description
+	// DisplayName: Cracked Carapace
+	// Description: Defense is halved
 }
