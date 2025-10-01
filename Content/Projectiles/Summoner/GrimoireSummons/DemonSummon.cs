@@ -51,13 +51,13 @@ internal class DemonSummon : GrimoireSummon
 
 				foreach (NPC npc in Main.ActiveNPCs)
 				{
-					if (npc.CanBeChasedBy() && (npcIndex == -1 || npc.lifeMax > Main.npc[npcIndex].lifeMax))
+					if (npc.CanBeChasedBy() && (npcIndex == -1 || npc.lifeMax > Main.npc[npcIndex].lifeMax) && npc.DistanceSQ(Projectile.Center) < 800 * 800)
 					{
 						npcIndex = npc.whoAmI;
 					}
 				}
 
-				if (npcIndex != -1 && Main.npc[npcIndex].DistanceSQ(Projectile.Center) < 800 * 800)
+				if (npcIndex != -1)
 				{
 					Vector2 velocity = Projectile.DirectionTo(Main.npc[npcIndex].Center) * 14 + Main.npc[npcIndex].velocity * 2;
 					Projectile.NewProjectile(Projectile.GetSource_FromAI(), Projectile.Center, velocity, ModContent.ProjectileType<DemonWeapons>(), Projectile.damage, 1f);

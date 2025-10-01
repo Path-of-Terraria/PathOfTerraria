@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps;
 
@@ -98,6 +99,10 @@ public abstract class Map : ModItem, GenerateNameAffixes.IItem, GenerateAffixes.
 	}
 
 	public abstract string GenerateName(string defaultName);
+
+	public virtual void ModifyCorruptionAffixes(WeightedRandom<ItemAffix> affixes)
+	{
+	}
 
 	public static int WorldLevelBasedOnTier(int tier)
 	{

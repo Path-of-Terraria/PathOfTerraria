@@ -1,7 +1,11 @@
 ﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+using PathOfTerraria.Common.Systems.Affixes;
+using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
+using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Items;
 using SubworldLibrary;
 using Terraria.Localization;
+using Terraria.Utilities;
 
 namespace PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 
@@ -23,6 +27,11 @@ internal class EoLMap() : HardmodeBossMap(8, () => NPC.downedEmpressOfLight)
 	protected override void OpenMapInternal()
 	{
 		SubworldSystem.Enter<EmpressDomain>();
+	}
+
+	public override void ModifyCorruptionAffixes(WeightedRandom<ItemAffix> affixes)
+	{
+		affixes.Add(CorruptShard.GenerateMapAffix<EoLDaylightAffix>(1, 1, 30, 30));
 	}
 
 	public override string GenerateName(string defaultName)

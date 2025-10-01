@@ -83,6 +83,7 @@ LightningResistItemAffix.Description: "{1}{0}% Donnerresistenz"
 // ColdFlatDamage.Description: "{1}{0} added cold damage"
 // LightningFlatDamage.Description: "{1}{0} added lightning damage"
 // ChaosFlatDamage.Description: "{1}{0} added chaos damage"
+// EoLDaylightAffix.Description: Fight in the daylight
 // ChanceToApplyBleedingItemAffix.Description: "{1}{0}% chance to apply a stack of bleed on hit"
 // AddedBleedStackAffix.Description: "{1}{0} max bleed stacks"
 // BetterBleedAffix.Description: "{1}{0}% more damage used for bleed"
