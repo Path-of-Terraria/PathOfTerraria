@@ -1,7 +1,4 @@
-﻿using System.ComponentModel;
-using System.Linq;
-using Hjson;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.Config;
@@ -15,7 +12,7 @@ internal static class EncounterSerialization
 	private static JsonSerializerSettings Settings => new()
 	{
 		DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
-		Converters = [new FixedXnaJsonConverter()],
+		Converters = [new FixedXnaJsonConverter(), new EntityDefinitionJsonConverter()],
 	};
 
 	public static string ToJson(Encounter encounter)
@@ -36,8 +33,6 @@ internal static class EncounterSerialization
 /// <summary> A converter that prevents XNA/FNA formats from being serialized as strings, instead using single-line arrays where possible. </summary>
 internal sealed class FixedXnaJsonConverter : JsonConverter
 {
-	public override bool CanWrite => true;
-
 	public override bool CanConvert(Type objectType)
 	{
 		Type checkedType = objectType.IsGenericType && objectType.GetGenericTypeDefinition() == typeof(Nullable<>) ? objectType.GenericTypeArguments[0] : objectType;
@@ -117,8 +112,6 @@ internal sealed class FixedXnaJsonConverter : JsonConverter
 
 internal sealed class EntityDefinitionJsonConverter : JsonConverter
 {
-	public override bool CanWrite => true;
-
 	public override bool CanConvert(Type objectType)
 	{
 		return typeof(EntityDefinition).IsAssignableFrom(objectType);
@@ -143,7 +136,7 @@ internal sealed class EntityDefinitionJsonConverter : JsonConverter
 			throw new InvalidOperationException($"Expected a string, but got '{reader.TokenType}' instead.");
 		}
 
-		object? result = val.Value != null ? TypeDescriptor.GetConverter(objectType).ConvertFromString((string)val.Value) : null;
+		object? result = val.Value != null ? objectType.GetConstructor([typeof(string)])!.Invoke([val.Value]) : null;
 
 		return result;
 	}

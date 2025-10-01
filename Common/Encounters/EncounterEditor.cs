@@ -230,7 +230,6 @@ internal sealed class EncounterEditor : ModSystem
 				// Sanitize.
 				dstDesc.Identifier = !dstDesc.Identifier.All(char.IsAsciiLetterOrDigit) ? new string(dstDesc.Identifier.Where(char.IsAsciiLetterOrDigit).ToArray()) : dstDesc.Identifier;
 				dstDesc.Identifier = dstDesc.Identifier.Length == 0 ? refDesc.Identifier : dstDesc.Identifier;
-				dstDesc.MusicIndex = Math.Max(0, Math.Min(dstDesc.MusicIndex, MusicLoader.MusicCount));
 
 				needsRebuild |= dstDesc.Identifier != refDesc.Identifier;
 				encounterBox.Handle.ModifyDescription(dstDesc);

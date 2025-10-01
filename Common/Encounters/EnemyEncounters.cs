@@ -4,6 +4,7 @@ using MonoMod.Cil;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PathOfTerraria.Utilities;
+using PathOfTerraria.Utilities.Terraria;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.Config;
@@ -31,9 +32,9 @@ internal record struct EncounterDescription()
 	/// <summary> The waves that this encounter consists of. </summary>
 	public required EncounterWave[] Waves { get; set; }
 	/// <summary> If set together with <see cref="SceneEffectPriority"/>, overrides played music when active and near. </summary>
-	[Range(0, ushort.MaxValue), DefaultValue(0)]
-	public int MusicIndex { get; set; } = 0;
-	/// <summary> The priority to use for effects such as <see cref="MusicIndex"/>. </summary>
+	[JsonConverter(typeof(EntityDefinitionJsonConverter))]
+	public MusicDefinition Music { get; set; } = new(0);
+	/// <summary> The priority to use for effects such as <see cref="Music"/>. </summary>
 	[JsonConverter(typeof(StringEnumConverter)), DefaultValue(SceneEffectPriority.None)]
 	public SceneEffectPriority SceneEffectPriority { get; set; }
 
@@ -363,14 +364,14 @@ internal sealed class EnemyEncounters : ModSystem
 			ref readonly InstanceData data = ref encounters.Get(encounter);
 
 			if (data.Instance.State != EncounterState.InProgress) { continue; }
-			if (data.Description.MusicIndex <= 0) { continue; }
+			if (data.Description.Music.Type <= 0) { continue; }
 			if (data.Description.SceneEffectPriority < priority) { continue; }
 
 			float increasedSqrRange = MathF.Pow(data.Description.ActivationRange * 3f, 2f);
 			if (localPlayer.DistanceSQ(data.Description.ActivationOrigin) > increasedSqrRange) { continue; }
 
 			priority = data.Description.SceneEffectPriority;
-			music = data.Description.MusicIndex;
+			music = data.Description.Music.Type;
 		}
 	}
 
