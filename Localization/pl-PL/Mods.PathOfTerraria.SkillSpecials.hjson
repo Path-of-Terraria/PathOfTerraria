@@ -54,3 +54,8 @@ LocustBrood: {
 	// Name: Locust Brood
 	// Description: Twice the amount of insects spawn as eggs all at once, spawning after some time
 }
+
+GlacialAntlions: {
+	// Name: Glacial Antlions
+	// Description: Antlions deal 100% cold damage
+}

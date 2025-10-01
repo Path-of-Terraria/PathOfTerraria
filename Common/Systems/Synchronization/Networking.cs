@@ -160,6 +160,12 @@ internal static class Networking
 		/// <c>byte who, Vector2 position</c>
 		/// </summary>
 		RequestCheckSection,
+
+		/// <summary>
+		/// Adds a stack of Bleed to an NPC.<br/>Signature:<br/>
+		/// <c>byte who, short npcWho, ushort time, ushort damage</c>
+		/// </summary>
+		BleedStack,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

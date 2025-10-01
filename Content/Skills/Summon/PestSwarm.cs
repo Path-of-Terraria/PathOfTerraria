@@ -1,8 +1,8 @@
 ﻿using PathOfTerraria.Common;
+using PathOfTerraria.Common.Buffs;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
-using PathOfTerraria.Common.NPCs.GlobalNPCs;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -12,6 +12,7 @@ using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Content.SkillPassives.SwarmPassives;
 using PathOfTerraria.Content.SkillSpecials.PestSwarmSpecials;
 using PathOfTerraria.Content.SkillTrees;
+using ReLogic.Content;
 using System.Collections.Generic;
 using System.IO;
 using Terraria.Audio;
@@ -65,7 +66,13 @@ public class PestSwarm : Skill
 				damage = 25 * Level;
 			}
 
-			Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+			int proj = Projectile.NewProjectile(new EntitySource_UseSkill(player, this), pos, Vector2.Zero, type, damage, 0, player.whoAmI, TotalDuration);
+
+			if (Tree.Specialization is GlacialAntlions)
+			{
+				int bonusDamage = player.HasTreePassive<PestSwarmTree, FrostbiteMandibles>() ? 5 + player.GetPassiveStrength<PestSwarmTree, AggressiveChill>() * 3 : 0;
+				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Cold].DamageModifier.AddModifiers(bonusDamage, 1);
+			}
 		}
 	}
 
@@ -161,7 +168,7 @@ public class PestSwarm : Skill
 
 			if (TimeLeft == (int)MaxTime / 2 && Main.myPlayer == Projectile.owner)
 			{
-				int type = ModContent.ProjectileType<SimpleLocust>();
+				int type = ModContent.ProjectileType<AntlionSummon>();
 
 				if (Skill.Tree.Specialization is AntlionSwarm)
 				{
@@ -169,7 +176,8 @@ public class PestSwarm : Skill
 				}
 
 				var src = new EntitySource_UseSkill(Main.player[Projectile.owner], Skill);
-				Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -1), type, Projectile.damage, 0, Projectile.owner, 0, 0, Duration);
+				int proj = Projectile.NewProjectile(src, Projectile.Center, new Vector2(0, -1), type, Projectile.damage, 0, Projectile.owner, 0, 0, Duration);
+				Main.projectile[proj].localAI[1] = Skill.Tree.Specialization is GlacialAntlions ? 1 : 0;
 			}
 		}
 
@@ -459,7 +467,7 @@ public class PestSwarm : Skill
 			Projectile.velocity *= 0.95f;
 			Timer++;
 
-			if (Timer > 45)
+			if (Timer > 45 && Main.myPlayer == Projectile.owner)
 			{
 				Projectile.velocity = Main.rand.NextVector2Circular(2, 2);
 				Projectile.netUpdate = true;
@@ -523,7 +531,7 @@ public class PestSwarm : Skill
 
 			if (IsExplosive)
 			{
-				int exp = ModContent.ProjectileType<ExplosionHitboxFriendly>();
+				int exp = ModContent.ProjectileType<AntlionExplosion>();
 				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, Projectile.damage * 3, 8, Projectile.owner, 60, 60);
 				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1f);
 
@@ -538,6 +546,17 @@ public class PestSwarm : Skill
 			if (plr.HasTreePassive<PestSwarmTree, ViciousBites>())
 			{
 				BleedDebuff.Apply(plr, target, 5 * 60, damageDone);
+			}
+
+			if (plr.HasTreePassive<PestSwarmTree, OverheatingBugs>())
+			{
+				float mod = 1 + plr.GetPassiveStrength<PestSwarmTree, SuperheatedBugs>() * 0.15f;
+				IgnitedDebuff.ApplyTo(target, (int)(damageDone / 4f * mod));
+			}
+
+			if (plr.HasTreePassive<PestSwarmTree, CarapaceCracker>())
+			{
+				target.AddBuff(ModContent.BuffType<CarapaceCracker.CrackedCarapaceDebuff>(), 4 * 60);
 			}
 
 			if (plr.HasTreePassive<PestSwarmTree, VolatileInsects>())
@@ -709,6 +728,264 @@ public class PestSwarm : Skill
 			return false;
 		}
 	}
+
+	internal class AntlionExplosion : ExplosionHitboxFriendly
+	{
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Player owner = Main.player[Projectile.owner];
+			float addedChance = owner.GetPassiveStrength<PestSwarmTree, CombustableGuts>() * 0.02f;
+
+			if (owner.HasTreePassive<PestSwarmTree, OverheatingBugs>())
+			{
+				IgnitedDebuff.ApplyTo(target, damageDone);
+			}
+
+			if (target.life <= 0 && owner.HasTreePassive<PestSwarmTree, InfectedDetonation>() && Main.rand.NextFloat() < 0.1f + addedChance)
+			{
+				int exp = ModContent.ProjectileType<AntlionExplosion>();
+				int damage = (int)(target.life * 0.1f + (owner.GetPassiveStrength<PestSwarmTree, HeartierExplosions>() * 0.02f));
+				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, damage, 8, Projectile.owner, 60, 60);
+				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1f);
+
+				VFX(Projectile, new VFXPackage(4, 12, 6, true, 0.8f, null));
+
+				for (int i = 0; i < 12; ++i)
+				{
+					Vector2 vel = Main.rand.NextVector2Circular(6, 6) + target.velocity;
+					Dust.NewDust(target.position, target.width, target.height, DustID.Lava, vel.X, vel.Y);
+				}
+			}
+		}
+	}
+
+	public class AntlionSummon : SkillProjectile<PestSwarm>
+	{
+		private static Asset<Texture2D> GlacierTexture = null;
+
+		private bool Initialized
+		{
+			get => Projectile.ai[0] == 1;
+			set => Projectile.ai[0] = value ? 1 : 0;
+		}
+
+		private int Target
+		{
+			get => (int)Projectile.ai[1];
+			set => Projectile.ai[1] = value;
+		}
+
+		private ref float TimeLeft => ref Projectile.ai[2];
+
+		private ref float Timer => ref Projectile.localAI[0];
+
+		private bool Glacier => Projectile.localAI[1] == 1;
+
+		public override void SetStaticDefaults()
+		{
+			GlacierTexture = ModContent.Request<Texture2D>(Texture.Replace("AntlionSummon", "GlacialAntlionSummon"));
+		}
+
+		public override void SetDefaults()
+		{
+			Projectile.Size = new(26, 18);
+			Projectile.friendly = true;
+			Projectile.hostile = false;
+			Projectile.DamageType = DamageClass.Summon;
+			Projectile.aiStyle = -1;
+			Projectile.penetrate = -1;
+			Projectile.usesLocalNPCImmunity = true;
+			Projectile.localNPCHitCooldown = 20;
+			Projectile.Opacity = 0f;
+		}
+
+		public override bool? CanCutTiles()
+		{
+			return false;
+		}
+
+		public override void AI()
+		{
+			if (!Initialized)
+			{
+				Initialized = true;
+				Target = -1;
+
+				FindTarget();
+
+				Projectile.netUpdate = true;
+			}
+			else if (Target == -1 || InvalidTarget())
+			{
+				Target = -1;
+				FindTarget();
+			}
+
+			if (Target != -1)
+			{
+				Chase();
+			}
+			else
+			{
+				Idle();
+			}
+
+			Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref Projectile.stepSpeed, ref Projectile.gfxOffY);
+
+			if (TimeLeft-- <= 0)
+			{
+				Projectile.Kill();
+				return;
+			}
+
+			Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.05f);
+			Projectile.velocity.Y += 0.2f;
+			Projectile.rotation = Projectile.velocity.X * 0.05f;
+
+			if (Math.Abs(Projectile.velocity.X) > 0.1f)
+			{
+				Projectile.spriteDirection = Projectile.direction = Math.Sign(Projectile.velocity.X);
+			}
+		}
+
+		private bool InvalidTarget()
+		{
+			NPC npc = Main.npc[Target];
+			return !npc.CanBeChasedBy() || npc.DistanceSQ(Projectile.Center) > 600 * 600;
+		}
+
+		private void Idle()
+		{
+			if (Projectile.velocity.Y == 0)
+			{
+				Timer++;
+				Projectile.velocity.X *= 0.95f;
+
+				if (Timer > 45 && Main.myPlayer == Projectile.owner)
+				{
+					Projectile.velocity.X = Main.rand.NextFloat(2, 3) * (Main.rand.NextBool() ? -1 : 1);
+					Projectile.netUpdate = true;
+
+					Timer = 0;
+				}
+			}
+		}
+
+		private void Chase()
+		{
+			NPC target = Main.npc[Target];
+			float targetSpeedX = MathF.Sign(target.Center.X - Projectile.Center.X) * 5f;
+			Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X, targetSpeedX, 0.035f);
+		}
+
+		private void FindTarget()
+		{
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (!npc.CanBeChasedBy())
+				{
+					continue;
+				}
+
+				float dist = npc.DistanceSQ(Projectile.Center);
+
+				if (dist < 400 * 400 && (Target == -1 || Main.npc[Target].DistanceSQ(Projectile.Center) > dist))
+				{
+					Target = npc.whoAmI;
+					Timer = 0;
+				}
+			}
+		}
+
+		public override void SendExtraAI(BinaryWriter writer)
+		{
+			writer.Write(Timer);
+			writer.Write(Glacier);
+		}
+
+		public override void ReceiveExtraAI(BinaryReader reader)
+		{
+			Timer = reader.ReadSingle();
+			Projectile.localAI[1] = reader.ReadBoolean() ? 1 : 0;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity)
+		{
+			return false;
+		}
+
+		public override Color? GetAlpha(Color lightColor)
+		{
+			if (TimeLeft < 60)
+			{
+				return Color.Lerp(lightColor, Glacier ? Color.MediumBlue : Color.Red, MathF.Sin(TimeLeft * 0.2f) * 0.25f + 0.25f);
+			}
+
+			return null;
+		}
+
+		public override void OnKill(int timeLeft)
+		{
+			int mainDust = Glacier ? DustID.Ice : ModContent.DustType<LocustDust>();
+
+			for (int i = 0; i < 17; ++i)
+			{
+				Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, i < 8 ? DustID.Blood : mainDust);
+			}
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			Player plr = Main.player[Projectile.owner];
+			float maxChance = 0.1f + plr.GetPassiveStrength<PestSwarmTree, CarnivorousLarvae>() * 0.02f;
+
+			if (target.life <= 0)
+			{
+				if (Main.rand.NextFloat() < maxChance && plr.HasTreePassive<PestSwarmTree, Gestation>())
+				{
+					float duration = 30 * Main.rand.NextFloat(0.9f, 1.1f) * (1 - plr.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
+					int type = ModContent.ProjectileType<LocustEgg>();
+					Projectile.NewProjectile(target.GetSource_Death(), target.Center, Vector2.Zero, type, 15 * Skill.Level, 0, plr.whoAmI, duration, 0, Skill.TotalDuration);
+				}
+
+				if (Glacier)
+				{
+					if (plr.HasTreePassive<PestSwarmTree, ColdBlooded>())
+					{
+						TimeLeft += 60 + (30 * plr.GetPassiveStrength<PestSwarmTree, ThermalConversion>());
+					}
+
+					if (plr.HasTreePassive<PestSwarmTree, ShatteringCarapace>())
+					{
+						int type = ModContent.ProjectileType<ShatteringCarapace.IceShards>();
+						Vector2 pos = target.Top;
+
+						while (Collision.SolidCollision(pos - new Vector2(10), 20, 20))
+						{
+							pos.Y -= 4;
+						}
+
+						Projectile.NewProjectile(target.GetSource_Death(), pos, target.velocity, type, target.lifeMax / 5, 0, plr.whoAmI);
+					}
+				}
+			}
+
+			if (plr.HasTreePassive<PestSwarmTree, FrostbiteMandibles>() && Main.rand.NextFloat() < 0.1f + plr.GetPassiveStrength<PestSwarmTree, IceVenom>() * 0.1f)
+			{
+				target.AddBuff(BuffID.Chilled, 3 * 60);
+			}
+		}
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D tex = Glacier ? GlacierTexture.Value : TextureAssets.Projectile[Type].Value;
+			SpriteEffects effect = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
+			
+			Main.EntitySpriteDraw(tex, position, null, Projectile.GetAlpha(lightColor), Projectile.rotation, tex.Size() / 2f, 1f, effect, 0);
+			return false;
+		}
+	}
 }
 
 public class LocustDust : ModDust
@@ -723,31 +1000,3 @@ public class LocustDust : ModDust
 		return lightColor;
 	}
 }
-
-//Swarm: Will be a skill similar to that of Summon Raging Spirits on Path of Exile.They will be short lived summons that you can have several of these minions out at once.Increasing cast speed and increasing minion attack speed/dmg will be your scalers.Maximum 7 summoned, lasts 5 seconds.No cooldown, just cast time.By default these are ground walking insects that jump towards their target
-
-//Volatile Insects: Once they reach their target after 1 second they explode dealing small AoE around them. Deals fire damage
-
-//Antlion Swarm: DONE
-
-//Locusts: DONE
-
-//Gestation: DONE
-
-//Increased Spawn Rate: DONE
-
-//Eggsplosion: DONE
-
-//Infected Detonation: Enemies that die from this explosion have a 10% chance ot explode dealing % based life (10%) in a small radius.So if the enemy had 1000 health, they deal 100 damage.Fire damage.
-
-//Startling Emergence: Nearby enemies are shocked when an egg hatches.
-
-//Glacial Antlion: Summoned antlion is now a Glacial Antlion. Dealing cold damage instead (100% conversion)
-
-//Frosted Mandibles: Antlions have increased cold damage and a 10% chance to apply chilled on hit.
-
-//Shattering Carapace: When antlions kill an enemy they shatter dealing damage around them.
-
-//Carapace Cracker: Antlions apply a debuff reducing damage reduction to hit enemies.
-
-//Vicious Bites: Antlions deal bites that apply a bleed effect.

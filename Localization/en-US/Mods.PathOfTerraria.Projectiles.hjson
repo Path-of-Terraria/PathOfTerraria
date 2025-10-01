@@ -187,3 +187,6 @@ SimpleLocust.DisplayName: Simple Locust
 LocustSpawnCircle.DisplayName: Locust Spawn Circle
 AntlionSwarmerSummon.DisplayName: Antlion Swarmer Summon
 LocustEgg.DisplayName: Locust Egg
+AntlionExplosion.DisplayName: Antlion Explosion
+AntlionSummon.DisplayName: Antlion Summon
+IceShards.DisplayName: Ice Shards

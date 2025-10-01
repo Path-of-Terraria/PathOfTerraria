@@ -126,3 +126,8 @@ BleedDebuff: {
 	// DisplayName: Bleeding
 	// Description: Strong, stacking damage over time
 }
+
+CrackedCarapaceDebuff: {
+	// DisplayName: Cracked Carapace Debuff
+	// Description: Mods.PathOfTerraria.Buffs.CrackedCarapaceDebuff.Description
+}

@@ -243,6 +243,61 @@ VolatileInsects: {
 }
 
 InfectedDetonation: {
-	// Name: InfectedDetonation
-	// Tooltip: Mods.PathOfTerraria.SkillPassives.InfectedDetonation.Tooltip
+	// Name: Infected Detonation
+	// Tooltip: Enemies killed by the {$VolatileInsects.Name} explosion have a 10% chance to explode, dealing 10% of their max health as damage
+}
+
+HeartierExplosions: {
+	// Name: Heartier Explosions
+	// Tooltip: +2% max health converted to {$InfectedDetonation.Name} damage per level
+}
+
+CombustableGuts: {
+	// Name: Combustable Guts
+	// Tooltip: +2% chance for {$InfectedDetonation.Name} explosions to occur on enemy death
+}
+
+OverheatingBugs: {
+	// Name: Overheating Bugs
+	// Tooltip: Bugs and their explosions inflict On Fire!
+}
+
+SuperheatedBugs: {
+	// Name: Superheated Bugs
+	// Tooltip: Bugs and their explosions deal 15% more On Fire! damage
+}
+
+ColdBlooded: {
+	// Name: Cold Blooded
+	// Tooltip: Antlions gain an additional second of life per kill
+}
+
+ThermalConversion: {
+	// Name: Thermal Conversion
+	// Tooltip: +0.5 seconds life gained per kill per level
+}
+
+FrostbiteMandibles: {
+	// Name: Frostbite Mandibles
+	// Tooltip: Increased cold damage and a 10% chance to inflict Chilled on hit
+}
+
+AggressiveChill: {
+	// Name: Aggressive Chill
+	// Tooltip: Increased cold damage
+}
+
+IceVenom: {
+	// Name: Ice Venom
+	// Tooltip: Much higher chance to inflict Chilled on hit
+}
+
+ShatteringCarapace: {
+	// Name: Shattering Carapace
+	// Tooltip: Defeated enemies shatter into ice shards, which deal extra damage based on the enemy's max health
+}
+
+CarapaceCracker: {
+	// Name: Carapace Cracker
+	// Tooltip: Antlions apply a damage-piercing debuff on hit
 }
