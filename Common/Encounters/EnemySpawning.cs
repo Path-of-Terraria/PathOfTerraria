@@ -6,6 +6,7 @@ using Newtonsoft.Json.Converters;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
 using Terraria.ModLoader.Config;
@@ -157,6 +158,8 @@ internal static class EnemySpawning
 
 		if (effect == EnemySpawnEffect.Teleport)
 		{
+			SoundEngine.PlaySound(SoundID.Item4 with { Volume = 0.25f, Pitch = -0.6f, PitchVariance = 0.2f }, position);
+
 			for (int i = 0; i < 10; i++)
 			{
 				Dust.NewDustDirect(npc.position, npc.width, npc.height, DustID.WitherLightning);
