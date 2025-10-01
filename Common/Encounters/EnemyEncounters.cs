@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Diagnostics.Metrics;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using MonoMod.Cil;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -121,6 +124,31 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 	{
 		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
 		data.Instance.IsPaused = value;
+	}
+
+	/// <summary> Offsets this encounter's origins, area, and manual spawns, towards the given position. </summary>
+	public readonly void MoveEverythingTo(Point16 targetTilePos)
+	{
+		EncounterDescription dsc = Description;
+		Point16 tileOffset = targetTilePos - dsc.SpawnOrigin;
+		Vector2 worldOffset = tileOffset.ToWorldCoordinates();
+
+		dsc.SpawnOrigin = targetTilePos;
+		dsc.SpawnArea = dsc.SpawnArea with { X = dsc.SpawnArea.X + tileOffset.X, Y = dsc.SpawnArea.Y + tileOffset.Y };
+		dsc.ActivationOrigin += worldOffset;
+
+		foreach (ref EncounterWave wave in dsc.Waves.AsSpan())
+		{
+			foreach (ref EnemySpawn spawn in wave.Spawns.AsSpan())
+			{
+				if (spawn.SpawnPosition is Vector2 spawnPos)
+				{
+					spawn.SpawnPosition = spawnPos + worldOffset;
+				}
+			}
+		}
+
+		ModifyDescription(dsc);
 	}
 
 	/// <summary> Performs a checked description mutation. </summary>

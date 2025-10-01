@@ -274,13 +274,13 @@ internal sealed class EncounterEditor : ModSystem
 
 	public static void SaveEncounter(Encounter encounter)
 	{
-		string defaultPath = Path.GetFullPath($"./{encounter.Description.Identifier ?? "Encounter"}.json");
+		string defaultPath = Path.Combine(Path.GetFullPath(PoTMod.Instance.SourceFolder is { Length: > 0 } src ? src : "."), (encounter.Description.Identifier ?? "Encounter") + EncounterIO.Extension);
 
-		if (nativefiledialog.NFD_SaveDialog("json", defaultPath, out string? outPath) == nativefiledialog.nfdresult_t.NFD_OKAY)
+		if (nativefiledialog.NFD_SaveDialog(EncounterIO.Extension[1..], defaultPath, out string? outPath) == nativefiledialog.nfdresult_t.NFD_OKAY)
 		{
 			try
 			{
-				File.WriteAllText(outPath!, EncounterSerialization.ToJson(encounter));
+				File.WriteAllText(outPath!, EncounterIO.ToJson(encounter));
 			}
 			catch (Exception e)
 			{
@@ -291,13 +291,13 @@ internal sealed class EncounterEditor : ModSystem
 
 	public static void LoadEncounter(Encounter encounter)
 	{
-		string defaultPath = Path.GetFullPath($"./{encounter.Description.Identifier ?? "Encounter"}.json");
+		string defaultPath = Path.Combine(Path.GetFullPath(PoTMod.Instance.SourceFolder is { Length: > 0 } src ? src : "."), (encounter.Description.Identifier ?? "Encounter") + EncounterIO.Extension);
 
-		if (nativefiledialog.NFD_OpenDialog("json", defaultPath, out string? inPath) == nativefiledialog.nfdresult_t.NFD_OKAY)
+		if (nativefiledialog.NFD_OpenDialog(EncounterIO.Extension[1..], defaultPath, out string? inPath) == nativefiledialog.nfdresult_t.NFD_OKAY)
 		{
 			try
 			{
-				EncounterDescription description = EncounterSerialization.FromJson(File.ReadAllText(inPath!));
+				EncounterDescription description = EncounterIO.FromJson(File.ReadAllText(inPath!));
 				BoxedEncounters[encounter.Index] = new(encounter, description);
 			}
 			catch (Exception e)

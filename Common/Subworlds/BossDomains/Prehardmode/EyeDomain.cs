@@ -13,6 +13,9 @@ using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Encounters;
+using PathOfTerraria.Utilities.Terraria;
+using PathOfTerraria.Utilities.Xna;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -79,6 +82,7 @@ public class EyeDomain : BossDomainSubworld
 		}
 
 		int structureX = 0;
+		List<Vector2Int> encounterPoints = [];
 
 		foreach (Point16 position in grasses)
 		{
@@ -117,7 +121,8 @@ public class EyeDomain : BossDomainSubworld
 
 				if (WorldGen.genRand.NextBool(20))
 				{
-					WorldGen.PlaceObject(position.X, position.Y - 1, ModContent.TileType<EmbeddedEye>(), true, WorldGen.genRand.Next(2));
+					//WorldGen.PlaceObject(position.X, position.Y - 1, ModContent.TileType<EmbeddedEye>(), true, WorldGen.genRand.Next(2));
+					encounterPoints.Add(new(position.X, position.Y - 5));
 				}
 
 				continue;
@@ -134,6 +139,14 @@ public class EyeDomain : BossDomainSubworld
 		}
 
 		CheckForSigns(new Point16(20, 20), new Point16(Main.maxTilesX - 60, Main.maxTilesY - 60));
+
+		foreach (Vector2Int point in encounterPoints)
+		{
+			if (TileUtils.TryFitRectangleIntoTilemap(point, new(5, 5), out Vector2Int adjustedPoint))
+			{
+				EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/EyefullOfTroubles").MoveEverythingTo((Point16)adjustedPoint);
+			}
+		}
 	}
 
 	private static void CheckForSigns(Point16 pos, Point16 size)

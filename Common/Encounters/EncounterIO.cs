@@ -1,5 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using System.IO;
+using System.Text;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.ModLoader.Config;
 
@@ -7,8 +10,10 @@ using Terraria.ModLoader.Config;
 
 namespace PathOfTerraria.Common.Encounters;
 
-internal static class EncounterSerialization
+internal static class EncounterIO
 {
+	public static readonly string Extension = ".encounter.json";
+
 	private static JsonSerializerSettings Settings => new()
 	{
 		DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
@@ -27,6 +32,18 @@ internal static class EncounterSerialization
 		EncounterDescription result = JsonConvert.DeserializeObject<EncounterDescription>(json, Settings);
 
 		return result;
+	}
+
+	public static Encounter CreateEncounterFromModPath(Mod mod, string filePathWithoutExtension)
+	{
+		return CreateEncounterFromJson(Encoding.UTF8.GetString(mod.GetFileBytes(filePathWithoutExtension + Extension)));
+	}
+
+	public static Encounter CreateEncounterFromJson(string json)
+	{
+		EncounterDescription description = FromJson(json);
+		Encounter encounter = EnemyEncounters.CreateEncounter(description);
+		return encounter;
 	}
 }
 

@@ -171,7 +171,7 @@ internal static class EnemySpawning
 			throw new ArgumentException("Invalid area.");
 		}
 
-		const int MaxRandomAttempts = 50;
+		const int MaxRandomAttempts = 10;
 
 		float minSqrDistanceFromPlayers = spawn.MinDistanceFromPlayers * spawn.MinDistanceFromPlayers;
 		float minSqrDistanceFromEnemies = spawn.MinDistanceFromEnemies * spawn.MinDistanceFromEnemies;
@@ -191,6 +191,11 @@ internal static class EnemySpawning
 		Vector2Int adjustedSpawnOrigin = default;
 		if (spawn.AreaOrigin is { } spawnOrigin && !TileUtils.TryFitRectangleIntoTilemap(spawnOrigin, sizeInTiles, out adjustedSpawnOrigin))
 		{
+#if DEBUG
+			string message = "Attempted to find an enemy spawn with a bad origin point given!";
+			PoTMod.Instance.Logger.Warn(message);
+			Main.NewText($"Warning: {message}", Color.MediumVioletRed);
+#endif
 			spawnPosition = default;
 			return false;
 		}
