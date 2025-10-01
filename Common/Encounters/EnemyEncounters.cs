@@ -220,6 +220,11 @@ internal sealed class EnemyEncounters : ModSystem
 		UpdateEncounters();
 	}
 
+	public override void ClearWorld()
+	{
+		RemoveAllEncounters();
+	}
+
 	/// <summary> Creates an encounter with the given parameters. </summary>
 	public static Encounter CreateEncounter(in EncounterDescription description)
 	{
@@ -232,6 +237,12 @@ internal sealed class EnemyEncounters : ModSystem
 
 	/// <summary> Iterates all registered encounters, including those completed and not yet started. </summary>
 	public static Iterator IterateEncounters() { return new(); }
+
+	/// <summary> Removes all encounters that exist. </summary>
+	public static void RemoveAllEncounters()
+	{
+		encounters.Clear();
+	}
 
 	private static void UpdateEncounters()
 	{

@@ -133,6 +133,11 @@ internal sealed class EncounterEditor : ModSystem
 		wasWritingTextInPreviousTick = PlayerInput.WritingText;
 	}
 
+	public override void ClearWorld()
+	{
+		State.Visible = false;
+	}
+
 	/// <summary> Updates internal box copies from the provided encounter description. Returns whether any operation has occurred. </summary>
 	public static bool ImportData(bool onlyNewEntries = false)
 	{

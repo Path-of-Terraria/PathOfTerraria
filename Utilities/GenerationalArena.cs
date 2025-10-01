@@ -97,6 +97,26 @@ internal class GenerationalArena<THandle, TData> where THandle : unmanaged, IHan
 		return false;
 	}
 
+	/// <summary> Invalidates all handles and zeroes out memory. </summary>
+	public void Clear()
+	{
+		// Invalidate handles.
+		for (int baseIndex = 0, maskIndex = 0; maskIndex < presenceMasks.Length; maskIndex++, baseIndex += BitMask.BitSize)
+		{
+			foreach (int bitIndex in presenceMasks[maskIndex])
+			{
+				int index = baseIndex + bitIndex;
+
+				if (index >= nextIndex) { continue; }
+
+				versions[index]++;
+			}
+		}
+
+		Array.Fill(items, default);
+		Array.Fill(presenceMasks, default);
+	}
+
 	private HandleRefPair AllocateHandle()
 	{
 		uint index;
