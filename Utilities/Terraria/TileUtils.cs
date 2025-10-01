@@ -41,7 +41,8 @@ internal static class TileUtils
 					for (int checkY = checkY1; checkY < checkY2; checkY++)
 					{
 						Tile tile = Main.tile[checkX, checkY];
-						if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType])
+						
+						if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])
 						{
 							goto ContinueAttempts;
 						}
