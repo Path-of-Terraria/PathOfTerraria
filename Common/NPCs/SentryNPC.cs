@@ -31,7 +31,16 @@ public abstract class SentryNPC : ModNPC, ITargetable
 	/// <summary> Spawns the given sentry NPC at <paramref name="position"/> and assigns the owner accordingly. </summary>
 	public static NPC Spawn(int type, Player owner, Vector2 position, int timeLeft = DefaultSentryDuration)
 	{
-		NPC npc = Main.npc[NPC.ReleaseNPC((int)position.X, (int)position.Y, type, 0, owner.whoAmI)];
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+#if DEBUG
+			Main.NewText("SentryNPC.Spawn should not be run on a multiplayer client!");
+#endif
+			return null;
+		}
+
+		int newNpc = NPC.ReleaseNPC((int)position.X, (int)position.Y, type, 0, owner.whoAmI);
+		NPC npc = Main.npc[newNpc];
 
 		if (npc.ModNPC is SentryNPC s)
 		{
@@ -78,6 +87,10 @@ public abstract class SentryNPC : ModNPC, ITargetable
 
 	public override void SetStaticDefaults()
 	{
+		// For some reason, this is necessary for using NPC.ReleaseNPC in multiplayer.
+		// It doesn't actually allow the NPC to be caught in a net.
+		Main.npcCatchable[Type] = true;
+
 		NPCID.Sets.UsesNewTargetting[Type] = true;
 		NPCID.Sets.NeverDropsResourcePickups[Type] = true;
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new() { Hide = true });
