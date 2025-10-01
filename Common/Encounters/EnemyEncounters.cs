@@ -1,5 +1,8 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using MonoMod.Cil;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using PathOfTerraria.Utilities;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -28,9 +31,10 @@ internal record struct EncounterDescription()
 	/// <summary> The waves that this encounter consists of. </summary>
 	public required EncounterWave[] Waves { get; set; }
 	/// <summary> If set together with <see cref="SceneEffectPriority"/>, overrides played music when active and near. </summary>
-	[Range(-1, ushort.MaxValue)]
-	public int MusicIndex { get; set; } = -1;
+	[Range(0, ushort.MaxValue), DefaultValue(0)]
+	public int MusicIndex { get; set; } = 0;
 	/// <summary> The priority to use for effects such as <see cref="MusicIndex"/>. </summary>
+	[JsonConverter(typeof(StringEnumConverter)), DefaultValue(SceneEffectPriority.None)]
 	public SceneEffectPriority SceneEffectPriority { get; set; }
 
 	/// <summary> Verifies that the description is sane and usable. Throws exceptions if it is not. </summary>

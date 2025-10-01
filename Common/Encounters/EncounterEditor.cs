@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -14,6 +15,7 @@ using PathOfTerraria.Core.UI.SmartUI;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
+using ReLogic.OS;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
@@ -33,24 +35,24 @@ using FixedUIScrollbar = Terraria.GameContent.UI.Elements.FixedUIScrollbar;
 
 namespace PathOfTerraria.Common.Encounters;
 
-internal struct EncounterBox(Encounter handle, object description, WaveBox[] waves)
+internal struct EncounterBox(Encounter handle, EncounterDescription description)
 {
 	public Encounter Handle = handle;
-	public object Description = description;
-	public List<WaveBox> Waves = new(waves);
-	public static explicit operator EncounterBox(Encounter src) => new(src, src.Description with { Waves = null! }, src.Description.Waves.Select(w => (WaveBox)w).ToArray());
+	public object Description = description with { Waves = null! };
+	public List<WaveBox> Waves = new(description.Waves.Select(w => (WaveBox)w));
+	public static explicit operator EncounterBox(Encounter src) => new(src, src.Description);
 }
-internal struct WaveBox(object wave, SpawnBox[] spawns)
+internal struct WaveBox(EncounterWave wave, SpawnBox[] spawns)
 {
-	public object Wave = wave;
+	public object Wave = wave with { Spawns = null! };
 	public List<SpawnBox> Spawns = new(spawns);
-	public static explicit operator WaveBox(EncounterWave src) => new(src with { Spawns = null! }, src.Spawns.Select(s => (SpawnBox)s).ToArray());
+	public static explicit operator WaveBox(EncounterWave src) => new(src, src.Spawns.Select(s => (SpawnBox)s).ToArray());
 }
-internal struct SpawnBox(object spawn, object placement)
+internal struct SpawnBox(EnemySpawn spawn, SpawnPlacement? placement)
 {
 	public object Spawn = spawn;
-	public object Placement = placement;
-	public static explicit operator SpawnBox(EnemySpawn src) => new(src, src.SpawnPlacement ?? EncounterEditor.DefaultPlacement.WithDefaults(src.NpcType.Type));
+	public object Placement = placement ?? EncounterEditor.DefaultPlacement.WithDefaults(spawn.NpcType.Type);
+	public static explicit operator SpawnBox(EnemySpawn src) => new(src, src.SpawnPlacement);
 }
 
 [Autoload(Side = ModSide.Client)]
@@ -228,7 +230,7 @@ internal sealed class EncounterEditor : ModSystem
 				// Sanitize.
 				dstDesc.Identifier = !dstDesc.Identifier.All(char.IsAsciiLetterOrDigit) ? new string(dstDesc.Identifier.Where(char.IsAsciiLetterOrDigit).ToArray()) : dstDesc.Identifier;
 				dstDesc.Identifier = dstDesc.Identifier.Length == 0 ? refDesc.Identifier : dstDesc.Identifier;
-				dstDesc.MusicIndex = Math.Max(-1, Math.Min(dstDesc.MusicIndex, MusicLoader.MusicCount));
+				dstDesc.MusicIndex = Math.Max(0, Math.Min(dstDesc.MusicIndex, MusicLoader.MusicCount));
 
 				needsRebuild |= dstDesc.Identifier != refDesc.Identifier;
 				encounterBox.Handle.ModifyDescription(dstDesc);
@@ -265,6 +267,41 @@ internal sealed class EncounterEditor : ModSystem
 	{
 		encounter.Remove();
 		State.Rebuild();
+	}
+
+	public static void SaveEncounter(Encounter encounter)
+	{
+		string defaultPath = Path.GetFullPath($"./{encounter.Description.Identifier ?? "Encounter"}.json");
+
+		if (nativefiledialog.NFD_SaveDialog("json", defaultPath, out string? outPath) == nativefiledialog.nfdresult_t.NFD_OKAY)
+		{
+			try
+			{
+				File.WriteAllText(outPath!, EncounterSerialization.ToJson(encounter));
+			}
+			catch (Exception e)
+			{
+				Main.NewText($"Error saving encounter: {e.Message}", Color.MediumVioletRed);
+			}
+		}
+	}
+
+	public static void LoadEncounter(Encounter encounter)
+	{
+		string defaultPath = Path.GetFullPath($"./{encounter.Description.Identifier ?? "Encounter"}.json");
+
+		if (nativefiledialog.NFD_OpenDialog("json", defaultPath, out string? inPath) == nativefiledialog.nfdresult_t.NFD_OKAY)
+		{
+			try
+			{
+				EncounterDescription description = EncounterSerialization.FromJson(File.ReadAllText(inPath!));
+				BoxedEncounters[encounter.Index] = new(encounter, description);
+			}
+			catch (Exception e)
+			{
+				Main.NewText($"Error loading encounter: {e.Message}", Color.MediumVioletRed);
+			}
+		}
 	}
 
 	public static void AddWave(Encounter encounter, int? insertionIndex, WaveBox? value)
@@ -467,7 +504,7 @@ internal sealed class EncounterEditor : ModSystem
 			Vector4Int tileAreaInner = new(tileArea.X + 1, tileArea.Y + 1, tileArea.Z - 2, tileArea.W - 2);
 			Rectangle tileAreaRect = new(tileArea.X, tileArea.Y, tileArea.Z - tileArea.X, tileArea.W - tileArea.Y);
 			Rectangle tileAreaRectInner = new(tileAreaInner.X, tileAreaInner.Y, tileAreaInner.Z - tileAreaInner.X, tileAreaInner.W - tileAreaInner.Y);
-			if (tileAreaRect.Contains(mouseTilePoint) && !tileAreaRectInner.Contains(mouseTilePoint))
+			if (allowMouseInteractions && tileAreaRect.Contains(mouseTilePoint) && !tileAreaRectInner.Contains(mouseTilePoint))
 			{
 				Main.LocalPlayer.mouseInterface = true;
 				Main.instance.MouseText($"{description.Identifier}'s Spawn Area\n[Click and hold to resize]");
@@ -995,6 +1032,23 @@ internal sealed class EncounterEditorState : SmartUiState
 
 		// Encounter properties:
 		AddSortableElement(list, elementIndex++, new UIText($"Encounter: {SelectedEncounter.Description.Identifier}"));
+
+		// Save/Load.
+		AddSortableElement(list, elementIndex++, new UIElement(), e =>
+		{
+			e.SetDimensions(width: (1.0f, +0), height: (0f, +24));
+
+			e.AddElement(new UIButton<string>($"Save Encounter"), e =>
+			{
+				e.SetDimensions(width: (0.5f, +0), height: (1.0f, +0));
+				e.OnLeftClick += (evt, e) => Main.QueueMainThreadAction(() => EncounterEditor.SaveEncounter(SelectedEncounter));
+			});
+			e.AddElement(new UIButton<string>($"Load Encounter"), e =>
+			{
+				e.SetDimensions(x: (0.5f, +0), width: (0.5f, +0), height: (1.0f, +0));
+				e.OnLeftClick += (evt, e) => Main.QueueMainThreadAction(() => EncounterEditor.LoadEncounter(SelectedEncounter));
+			});
+		});
 
 		// Add options for all elements, reusing ModConfig code.
 		foreach (PropertyInfo property in typeof(EncounterDescription).GetProperties())

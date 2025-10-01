@@ -1,5 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
@@ -19,15 +22,17 @@ internal enum EnemySpawnEffect
 internal record struct EnemySpawn()
 {
 	/// <summary> The NPC type to spawn. </summary>
+	[JsonConverter(typeof(EntityDefinitionJsonConverter))]
 	public required NPCDefinition NpcType { get; set; }
 	/// <summary> Pre-determined spawn position to use. Mutually exclusive with <see cref="SpawnPlacement"/>. </summary>
 	public required Vector2? SpawnPosition { get; set; }
 	/// <summary> Pre-determined spawn position to use. Mutually exclusive with <see cref="SpawnPlacement"/>. </summary>
 	public required SpawnPlacement? SpawnPlacement { get; set; }
 	/// <summary> The time in ticks that must pass before the next enemy in queue will be spawned. </summary>
-	[Range(0, 5 * 60 * 60)]
+	[Range(0, 5 * 60 * 60), DefaultValue(0)]
 	public uint CooldownInTicks { get; set; } = 0;
 	/// <summary> Which effect to use for this spawn. </summary>
+	[JsonConverter(typeof(StringEnumConverter))]
 	public EnemySpawnEffect Effect { get; set; }
 }
 
@@ -43,14 +48,16 @@ internal record struct SpawnPlacement()
 	/// <summary> Whether this enemy has to spawn on the ground. </summary>
 	public bool OnGround { get; set; }
 	/// <summary> If not zero, the spawn point must not intersect with any of the liquids within this mask. </summary>
+	[DefaultValue(LiquidMask.All)]
 	public LiquidMask SkippedLiquids { get; set; } = LiquidMask.All;
 	/// <summary> If not zero, the spawn point must be submerged into any of the liquids within this mask. </summary>
-	public LiquidMask RequiredLiquids { get; set; }
+	[DefaultValue(LiquidMask.None)]
+	public LiquidMask RequiredLiquids { get; set; } = LiquidMask.None;
 	/// <summary> How far away from players, in pixels, must the spawn be placed. </summary>
-	[Range(0, 2048), Increment(8)]
+	[Range(0, 2048), Increment(8), DefaultValue(256f)]
 	public float MinDistanceFromPlayers { get; set; } = 256f;
 	/// <summary> How far away from existing enemies, in pixels, must the spawn be placed. </summary>
-	[Range(0, 2048), Increment(8)]
+	[Range(0, 2048), Increment(8), DefaultValue(256f)]
 	public float MinDistanceFromEnemies { get; set; } = 256f;
 
 	/// <summary> Guesses defaults to use for a given NPC sample. Not always ideal. </summary>
