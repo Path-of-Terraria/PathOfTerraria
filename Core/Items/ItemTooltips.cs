@@ -71,6 +71,19 @@ public sealed partial class ItemTooltips : GlobalItem
 	public override void Load()
 	{
 		LoadBackImages();
+
+		On_ItemSlot.MouseHover_ItemArray_int_int += FixSetBonusTooltipNotAppearing;
+	}
+
+	private void FixSetBonusTooltipNotAppearing(On_ItemSlot.orig_MouseHover_ItemArray_int_int orig, Item[] inv, int context, int slot)
+	{
+		orig(inv, context, slot);
+
+		// The original code checks for the context and if slot <= 2, since all vanilla armor slots are indexes <= 2
+		if (context == ItemSlot.Context.EquipArmor)
+		{
+			inv[slot].wornArmor = true;
+		}
 	}
 
 	#region Modify tooltips and rendering
