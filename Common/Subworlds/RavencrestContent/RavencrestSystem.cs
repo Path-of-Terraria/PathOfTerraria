@@ -220,21 +220,28 @@ public class RavencrestSystem : ModSystem
 			for (int j = 0; j < Main.maxTilesY; ++j)
 			{
 				WorldGen.TileFrame(i, j, true);
-				int sign = Sign.ReadSign(i, j, true);
-
-				if (sign != -1)
+			
+				// Only try to read signs if the tile is actually a sign
+				Tile tile = Main.tile[i, j];
+				if (tile.HasTile && (tile.TileType == TileID.Signs || tile.TileType == TileID.AnnouncementBox))
 				{
-					string text = i switch
-					{
-						< 220 => "the Iron Anvil",
-						< 360 => "The Lodge",
-						_ => "<-- Lodge, Forge\nLibrary, Hovel -->"
-					};
+					int sign = Sign.ReadSign(i, j, true);
 
-					Sign.TextSign(sign, text);
+					if (sign != -1)
+					{
+						string text = i switch
+						{
+							< 220 => "the Iron Anvil",
+							< 360 => "The Lodge",
+							_ => "<-- Lodge, Forge\nLibrary, Hovel -->"
+						};
+
+						Sign.TextSign(sign, text);
+					}
 				}
 			}
 		}
+
 
 		GenerationUtilities.ManuallyPopulateChests();
 

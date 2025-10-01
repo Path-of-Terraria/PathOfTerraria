@@ -122,11 +122,13 @@ Quest: {
 	}
 
 	QueenSlimeQuest: {
-		// Name: Regal Regime
+		// Name: Slay the Queen
 		// Description: ""
 		// Tiers: Complete {1} Tier 1 Explorable maps ({0}/{1})
 		// EnterDomain: Enter the Queen Slime's domain
 		// Boss: Defeat the Queen Slime
+		// IlluminantSlimes: Defeat {0}/{1} Illuminant Slimes
+		// TalkToGarrick: Return to Garrick
 	}
 
 	TwinsQuest: {
@@ -134,7 +136,18 @@ Quest: {
 		// Description: ""
 		// Tiers: Complete {1} Tier 2 Explorable maps ({0}/{1})
 		// EnterDomain: Enter the Twin's domain
-		// Boss: Defeat the Twins
+		// Boss1: Defeat Retinazor
+		// Boss2: Defeat Spazmatism
+		// Wraiths: Defeat {0}/{1} Wraiths
+		// PossessedArmors: Defeat {0}/{1} Possessed Armors
+		// WanderingEyes: Defeat {0}/{1} Wandering Eyes
+		// CollectFragments: Collect {0}/{1} Lunar Fragments
+	}
+
+	TinkerIntroQuest: {
+		// Name: Repairing the Workshop
+		// Description: ""
+		// CollectMaterials: Collect 100 Wood, 20 Wires, 50 Stone, 1 Teleporter, and bring them back to Pyra.
 	}
 
 	DestroyerQuest: {

@@ -6,6 +6,7 @@ using PathOfTerraria.Common.NPCs.OverheadDialogue;
 using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Quest;
@@ -110,8 +111,7 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !Quest.GetLocalPlayerInstance<KingSlimeQuest>().CanBeStarted ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
-
+		button2 = (!Quest.GetLocalPlayerInstance<KingSlimeQuest>().CanBeStarted && !Quest.GetLocalPlayerInstance<QueenSlimeQuest>().CanBeStarted) ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
 		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
 
 		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
@@ -128,60 +128,71 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 			Main.npcChatCornerItem = ModContent.ItemType<KingSlimeMap>();
 		}
 	}
-
-	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
+public override void OnChatButtonClicked(bool firstButton, ref string shopName)
+{
+	if (firstButton)
 	{
-		if (firstButton)
-		{
-			shopName = "Shop";
-		}
-		else
-		{
-			Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
-			Quest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
+		shopName = "Shop";
+	}
+	else
+	{
+		Quest quest = Quest.GetLocalPlayerInstance<EoCQuest>();
+		Quest kingQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
 
-			if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
+		if (kingQuest.Active && kingQuest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<KingSlimeMap>()))
+		{
+			int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>(), noGrabDelay: true);
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
 			{
-				int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<KingSlimeMap>(), noGrabDelay: true);
+				NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
+			}
+
+			Main.npcChatText = this.GetLocalization("Dialogue.GetKingMapAgain").Value;
+			return;
+		}
+
+		if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
+		{
+			if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5)
+			{
+				Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarLiquid").Value;
+				int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>(), noGrabDelay: true);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 				{
 					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 				}
 
-				Main.npcChatText = this.GetLocalization("Dialogue.GetKingMapAgain").Value;
-				return;
+				for (int i = 0; i < 5; ++i)
+				{
+					Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarShard>());
+				}
 			}
-
-			if (quest.Active && quest.CurrentStep >= 1 && !Main.LocalPlayer.HasItem(ModContent.ItemType<LunarLiquid>()))
+			else
 			{
-				if (Main.LocalPlayer.CountItem(ModContent.ItemType<LunarShard>(), 5) >= 5)
-				{
-					Main.npcChatText = this.GetLocalization("Dialogue.TradeLunarLiquid").Value;
-					int item = Item.NewItem(new EntitySource_Gift(NPC), NPC.Hitbox, ModContent.ItemType<LunarLiquid>(), noGrabDelay: true);
-
-					if (Main.netMode == NetmodeID.MultiplayerClient)
-					{
-						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
-					}
-
-					for (int i = 0; i < 5; ++i)
-					{
-						Main.LocalPlayer.ConsumeItem(ModContent.ItemType<LunarShard>());
-					}
-				}
-				else
-				{
-					Main.npcChatText = this.GetLocalization("Dialogue.CantTradeLiquid").Value;
-				}
-
-				return; // EoC quest is after King Slime quest, shouldn't be possible to do this before needing KS quest
+				Main.npcChatText = this.GetLocalization("Dialogue.CantTradeLiquid").Value;
 			}
 
+			return; // EoC quest is after King Slime quest, shouldn't be possible to do this before needing KS quest
+		}
+
+		// Determine which quest to start based on availability
+		Quest kingSlimeQuest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
+		Quest queenSlimeQuest = Quest.GetLocalPlayerInstance<QueenSlimeQuest>();
+
+		if (kingSlimeQuest.CanBeStarted)
+		{
 			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.Quest");
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<KingSlimeQuest>();
 		}
+		else if (queenSlimeQuest.CanBeStarted)
+		{
+			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime1");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>();
+		}
 	}
+}
 
 	public override bool CanTownNPCSpawn(int numTownNPCs)
 	{
@@ -191,14 +202,15 @@ public sealed class GarrickNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, 
 	public bool HasQuestMarker(out Quest quest)
 	{
 		quest = Quest.GetLocalPlayerInstance<KingSlimeQuest>();
-		return !quest.Completed;
+		return !quest.Completed || !Quest.GetLocalPlayerInstance<QueenSlimeQuest>().Completed;
 	}
 
 	public bool ForceSpawnInTavern()
 	{
 		bool kingSlime = Quest.GetLocalPlayerInstance<KingSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<KingSlimeQuest>();
 		bool eoC = Quest.GetLocalPlayerInstance<EoCQuest>().Active;
-		return kingSlime || eoC;
+		bool queenSlime = Quest.GetLocalPlayerInstance<QueenSlimeQuest>().Active || QuestUnlockManager.CanStartQuest<QueenSlimeQuest>();
+		return kingSlime || eoC || queenSlime;
 	}
 
 	public float SpawnChanceInTavern()

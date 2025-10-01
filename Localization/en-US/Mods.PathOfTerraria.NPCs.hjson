@@ -151,6 +151,9 @@ GarrickNPC: {
 		TradeLunarLiquid: Ah, I've trained for this. Do care though, these aren't a casual adventure to make.
 		CantTradeLiquid: Oh, lost the Liquid? I'll need a few Lunar Shards to remake it, I'm afraid. Return to me with 5 or more.
 		GetKingMapAgain: Ah, couldn't manage it? Lost the map or something? Either way, here you are. You're lucky I carry cartography equipment everywhere...just in case.
+		QueenSlime1: Do you feel it, explorer? The land itself has shifted, and something unnatural radiates from the creatures in that new glowing area. I need you to gather this energy. Bring it back to me so we can understand what power we’re truly dealing with.
+		QueenSlime2: It’s just as I feared… You can keep the souls, I know exactly who my new target is. The King’s corruption was only the beginning. An even greater slime stirs, the Queen Slime. Venture into the glistening caverns with this map and bring me the Royal Jelly Core. Only then can we hope to stop the slime reign.
+		QueenSlime3: This is it then… Leave the core with me. I will destroy it and finally put an end to this corrupt slime royalty. Thank you, adventurer, I can finally rest.
 	}
 
 	BubbleDialogue: {
@@ -850,3 +853,47 @@ FlameSentry.DisplayName: Flame Sentry
 FlamethrowerSentry.DisplayName: Flamethrower Sentry
 MoltenSentry.DisplayName: Molten Sentry
 VolatileSentry.DisplayName: Volatile Sentry
+
+TinkerNPC: {
+	DisplayName: Pyra Cogwright
+
+	Dialogue: {
+		Common0: Ah, metal and magic intertwining… delightful chaos.
+		Common1: Careful with that lever; I can't promise nothing will explode if you flip it.
+		Common2: If it clanks, whirrs, or explodes, you know it's my handiwork.
+		Common3: Machines never lie… people do.
+		TinkerIntroDialogue1: Ah! You there! I'm Pyra Cogwright, arcane engineer and enthusiast of things that go clank, whirr, and occasionally explode! I've been tracking some unusual mechanical disturbances, and they've led me straight to this place. I'm setting up my workshop here in Ravencrest, but I'll need materials to stabilize my equipment. Could you fetch some for me? It'll be worth your while!
+		TinkerIntroDialogue2: Perfect! Just what I needed, adventurer! With these supplies, I can finally get my workshop humming properly. Now I can channel all this strange energy into my instruments and see what we're really dealing with… Come back to me once I'm done constructing this hut, I won't be long!
+		TinkerTwinsDialogue1: …Astounding…these readings are truly fascinating! Two signatures, bound together, both mimicking the Eye of Cthulhu… but forged of gears, flame, and steel. They aren't natural, but recreation. Machines built to replace what was once torn from the Great Old One himself. Retinazer and Spazmatism… the Twins. Their energy flares brightest under the moonlight, feeding on the night. To pinpoint their exact domain, I'll need fragments of lunar essence. Bring them here, and we can lock onto their signal.
+		TinkerTwinsDialogue2: Excellent! These lunar fragments resonate perfectly with their signal, the interference is so strong it nearly fried my instruments! I've calibrated the teleporter to their rough location. When you're ready, use it to enter their domain. But be warned, adventurer… the Twins are not mere machines. They're the Great Old One's legacy reforged, relentless and merciless. Slay them and return to me. If you fail, simply use the teleporter when you're ready once again.
+		TinkerTwinsDialogue3: Well done! TODO: The rest of the dialogue here.
+		TinkerDestroyerDialogue1: Just when I thought my instruments might finally cool down, they've picked up a new signal… something colossal beneath the earth. The signal pulses like a thousand interlocking engines moving in unison. A serpentine construct of impossible length. If my theory holds, this must be the replacement for the Eater of Worlds itself! To study its energy patterns, I'll need samples of cursed flame and proof you've faced its smaller kin. Think you can handle that?
+		TinkerDestroyerDialogue2: Marvelous! These cursed flames burn with both corruption and raw machinery, it's exactly the resonance I expected. My calibrations confirm it: the Destroyer lurks below, a writhing coil of steel and mandible. I've tuned the teleporter to lock onto its massive signal. Use it when you're ready, but tread carefully, adventurer… this machine is less a beast and more a weapon, designed only to annihilate.
+		TinkerDestroyerDialogue3: Unbelievable… you've done it! The Destroyer lies in ruin, its endless gears finally silent. To think, a monstrosity of such size and precision could exist at all. It's almost beautiful, in a terrifying way! With it gone, the very earth feels lighter. Still… if the Great Old One's eye and worm have both been reforged, I dread what else may be lurking, waiting to awaken.
+		TinkerSkeletronPrimeDialogue1: Adventurer, my instruments are once again spiking with a new signal, one even darker than before. It is radiating from the old dungeon, where Skeletron once kept his vigil. The signature is thick with both necrotic and mechanical energy. Whoever forged the Twins and the Destroyer has not stopped. They have rebuilt the dungeon's guardian itself into something far worse. I will need souls steeped in shadow, a good supply of bones, and any mechanical scraps from the dungeon you can find to finish my calibrations.
+		TinkerSkeletronPrimeDialogue2: Yes, these materials are perfect! The readings are clear now. The creature waiting below is Skeletron Prime, a reconstruction of the cursed guardian, enhanced with gears, cannons, and blades. It is more machine than bone now. The teleporter is ready whenever you are, but be prepared. This will surely be your toughest battle yet.
+		TinkerSkeletronPrimeDialogue3: Well done! TODO: The rest of the dialogue here.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			0: Nothing like a day of tinkering, hammering, and exploding things!
+			1: The sun helps with precision, but sparks are always unpredictable.
+			2: Do you think machines have dreams? I do!
+		}
+
+		Night: {
+			0: Not much darkness around with all of these lights and explosions!
+			1: Difficult to tinker safely in the moonlight...
+			2: Is inventing in the darkness a good idea...? Oh well. I'm going to do it anyways!
+		}
+
+		Rain: {
+			0: Rain hisses against my workshop, and yet the gears sing their own song. Fascinating!
+			1: Moisture and machinery… usually a disaster. Tonight, maybe a spectacle!
+			2: The storm stirs more than just water… it awakens the thrill of invention!!!
+		}
+	}
+
+	Entry: Todo:
+}

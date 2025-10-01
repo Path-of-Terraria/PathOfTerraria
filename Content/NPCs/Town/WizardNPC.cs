@@ -164,11 +164,6 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest");
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
 			}
-			else
-			{
-				Main.npcChatText = this.GetLocalizedValue("Dialogue.GiveQSQuest");
-				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>();
-			}
 		}
 	}
 

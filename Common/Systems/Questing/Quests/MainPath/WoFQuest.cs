@@ -69,7 +69,7 @@ internal class WoFQuest : Quest
 					}
 				}),
 			new ConditionCheck(_ => Main.hardMode, 1, this.GetLocalization("KillWall")),
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish"), onSuccess: _ => Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenSlimeQuest>()),
+			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish"))
 		];
 	}
 
