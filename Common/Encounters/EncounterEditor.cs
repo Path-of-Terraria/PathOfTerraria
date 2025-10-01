@@ -23,6 +23,7 @@ using Terraria.GameContent.UI.States;
 using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.ModLoader.Config;
+using Terraria.ModLoader.Config.UI;
 using Terraria.ModLoader.UI;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
@@ -110,23 +111,26 @@ internal sealed class EncounterEditor : ModSystem
 		}
 #endif
 
+		if (!State.Visible) { return; }
+
 		HandlePlacement();
 		DragObjects();
 		ExportData();
-	}
-
-	public override void PostDrawInterface(SpriteBatch spriteBatch)
-	{
-		wasWritingTextInPreviousTick = PlayerInput.WritingText;
 	}
 
 	public override void ModifyInterfaceLayers(List<GameInterfaceLayer> layers)
 	{
 		if (State.Visible)
 		{
+			FixMouseInterface();
 			gizmosLayer ??= new LegacyGameInterfaceLayer($"{nameof(PathOfTerraria)}: Encounter Gizmos", DrawGizmos, InterfaceScaleType.Game);
 			layers.Insert(Math.Max(0, layers.FindIndex(l => l.Name.Equals("Vanilla: Mouse Text")) - 1), gizmosLayer);
 		}
+	}
+
+	public override void PostDrawInterface(SpriteBatch spriteBatch)
+	{
+		wasWritingTextInPreviousTick = PlayerInput.WritingText;
 	}
 
 	/// <summary> Updates internal box copies from the provided encounter description. Returns whether any operation has occurred. </summary>
@@ -338,6 +342,17 @@ internal sealed class EncounterEditor : ModSystem
 		BoxedEncounters[encounter.Index].Waves[waveIndex].Spawns.RemoveAt(spawnIndex);
 	}
 
+	private static void FixMouseInterface()
+	{
+		foreach (UIElement child in State.Children)
+		{
+			if (child.IsMouseHovering)
+			{
+				Main.LocalPlayer.mouseInterface = true;
+			}
+		}
+	}
+
 	private static void HandlePlacement()
 	{
 		if (PlacementMode && State is { SelectedEncounter: { IsValid: true } encounter, SelectedWave: int selectedWave })
@@ -433,7 +448,7 @@ internal sealed class EncounterEditor : ModSystem
 		Point mouseScreenPoint = Main.MouseScreen.ToPoint();
 		Point mouseWorldPoint = Main.MouseWorld.ToPoint();
 		Point mouseTilePoint = Main.MouseWorld.ToTileCoordinates();
-		bool allowMouseInteractions = !ActiveDrag.HasValue && !PlacementMode && Main.mouseLeftRelease;
+		bool allowMouseInteractions = !ActiveDrag.HasValue && !PlacementMode && Main.mouseLeftRelease && !Main.LocalPlayer.mouseInterface;
 
 		if (PlacementMode)
 		{
@@ -506,7 +521,7 @@ internal sealed class EncounterEditor : ModSystem
 			if (allowMouseInteractions && tileAreaRect.Contains(mouseTilePoint) && !tileAreaRectInner.Contains(mouseTilePoint))
 			{
 				Main.LocalPlayer.mouseInterface = true;
-				Main.instance.MouseText($"{description.Identifier}'s Spawn Area\n[Click and hold to resize]");
+				Main.instance.MouseText($"{description.Identifier}'s Spawn Area\n{description.SpawnArea}\n[Click and hold to resize]");
 
 				if (ConsumeMouseClick(0))
 				{
@@ -857,6 +872,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		});
 		UIList list = listArea.AddElement(new UIList(), e =>
 		{
+			e.ManualSortMethod = _ => { };
 			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
 		});
 		UIScrollbar scrollbar = listArea.AddElement(new FixedUIScrollbar(UserInterface), e =>
@@ -867,10 +883,8 @@ internal sealed class EncounterEditorState : SmartUiState
 			scrollbarPersistence = e.AddComponent(new UIPersistent("EncounterDetailsScrollBar"));
 		});
 
-		int yPos = 0;
-		int elementIndex = 0;
-		PopulateListWithEncounterControls(list, ref elementIndex, ref yPos);
-		PopulateListWithEncounterDetails(list, ref elementIndex, ref yPos);
+		PopulateListWithEncounterControls(list);
+		PopulateListWithEncounterDetails(list);
 
 		window.Recalculate();
 		scrollbarPersistence?.Import(scrollbar);
@@ -878,7 +892,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		return window;
 	}
 
-	private void PopulateListWithEncounterControls(UIList list, ref int elementIndex, ref int yPos)
+	private void PopulateListWithEncounterControls(UIList list)
 	{
 		StringBuilder stringBuilder = new();
 		int encounterIndex = -1;
@@ -904,7 +918,7 @@ internal sealed class EncounterEditorState : SmartUiState
 
 			// Selectable Panel
 			float buttonX = 0f;
-			UIPanel itemPanel = AddSortableElement(list, elementIndex++, new UIPanel(), e =>
+			UIPanel itemPanel = list.AddElement(new UIPanel(), e =>
 			{
 				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * encounterIndex), width: (1.0f, +0), height: (0f, +80));
 
@@ -1007,20 +1021,20 @@ internal sealed class EncounterEditorState : SmartUiState
 		// Notify that no encounters exist.
 		if (encounterIndex < 0)
 		{
-			AddSortableElement(list, elementIndex++, new UITextPanel<string>("No encounters exist. Click 'Add New' above."), e =>
+			list.AddElement(new UITextPanel<string>("No encounters exist. Click 'Add New' above."), e =>
 			{
 				e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * 0), width: (1.0f, +0), height: (0f, +40));
 			});
 		}
 	}
 
-	private void PopulateListWithEncounterDetails(UIList list, ref int elementIndex, ref int yPos)
+	private void PopulateListWithEncounterDetails(UIList list)
 	{
 		if (!SelectedEncounter.IsValid)
 		{
 			if (EnemyEncounters.Count != 0)
 			{
-				AddSortableElement(list, elementIndex++, new UITextPanel<string>("Click an encounter panel to select it."), e =>
+				list.AddElement(new UITextPanel<string>("Click an encounter panel to select it."), e =>
 				{
 					e.SetDimensions(x: (0.0f, +0), y: (0.1f, +128 * 0), width: (1.0f, +0), height: (0f, +40));
 				});
@@ -1030,10 +1044,10 @@ internal sealed class EncounterEditorState : SmartUiState
 		}
 
 		// Encounter properties:
-		AddSortableElement(list, elementIndex++, new UIText($"Encounter: {SelectedEncounter.Description.Identifier}"));
+		list.AddElement(new UIText($"Encounter: {SelectedEncounter.Description.Identifier}"));
 
 		// Save/Load.
-		AddSortableElement(list, elementIndex++, new UIElement(), e =>
+		list.AddElement(new UIElement(), e =>
 		{
 			e.SetDimensions(width: (1.0f, +0), height: (0f, +24));
 
@@ -1059,24 +1073,24 @@ internal sealed class EncounterEditorState : SmartUiState
 				and not nameof(EncounterDescription.SpawnOrigin)
 				and not nameof(EncounterDescription.ActivationOrigin))
 			{
-				ConfigManager.WrapIt(list, ref yPos, new(property), EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Description, elementIndex++);
+				AddConfigElement(list, new(property), EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Description);
 			}
 		}
 
 		// Waves properties:
-		PopulateListWithAllWaveControls(list, SelectedEncounter, ref elementIndex, ref yPos);
+		PopulateListWithAllWaveControls(list, SelectedEncounter);
 	}
 
-	private void PopulateListWithAllWaveControls(UIList list, Encounter encounter, ref int elementIndex, ref int yPos)
+	private void PopulateListWithAllWaveControls(UIList list, Encounter encounter)
 	{
 		for (int waveIndex = 0; waveIndex < encounter.Description.Waves.Length; waveIndex++)
 		{
-			AddSortableElement(list, elementIndex++, new UIText($"Wave #{waveIndex}"));
+			list.AddElement(new UIText($"Wave #{waveIndex}"));
 
-			PopulateListWithSingleWaveControls(list, encounter, waveIndex, ref elementIndex, ref yPos);
+			PopulateListWithSingleWaveControls(list, encounter, waveIndex);
 		}
 
-		AddSortableElement(list, elementIndex++, new UIButton<string>($"New Wave"), e =>
+		list.AddElement(new UIButton<string>($"New Wave"), e =>
 		{
 			e.SetDimensions(width: (1f, +0f), height: (0f, +24f));
 
@@ -1084,7 +1098,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		});
 	}
 
-	private void PopulateListWithSingleWaveControls(UIList list, Encounter encounter, int waveIndex, ref int elementIndex, ref int yPos)
+	private void PopulateListWithSingleWaveControls(UIList list, Encounter encounter, int waveIndex)
 	{
 		ref readonly EncounterWave wave = ref encounter.Description.Waves[waveIndex];
 		bool isWaveSelected = SelectedWave == waveIndex;
@@ -1094,7 +1108,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		int gridHeight = (gridButtonSize * gridRows) + 12;
 		int panelHeight = (gridHeight + 64);
 
-		UIPanel wavePanel = CreateSortableElement(elementIndex++, new UIButton<string>(string.Empty), e =>
+		UIPanel wavePanel = list.AddElement(new UIButton<string>(string.Empty), e =>
 		{
 			// Temporary dimensions.
 			e.SetDimensions(width: (0f, +list.GetInnerDimensions().Width), height: (0f, +1024));
@@ -1112,6 +1126,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		});
 		UIList wavePanelList = wavePanel.AddElement(new UIList(), e =>
 		{
+			e.ManualSortMethod = _ => { };
 			e.SetDimensions(width: (1f, +0), height: (1f, +0));
 		});
 
@@ -1122,13 +1137,13 @@ internal sealed class EncounterEditorState : SmartUiState
 			// Skip properties handled in other ways.
 			if (property.Name is not nameof(EncounterWave.Spawns))
 			{
-				ConfigManager.WrapIt(wavePanelList, ref yPos, new(property), EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Waves[waveIndex].Wave, elementIndex++);
+				AddConfigElement(wavePanelList, new(property), EncounterEditor.BoxedEncounters[SelectedEncounter.Index].Waves[waveIndex].Wave);
 			}
 		}
 
 		// Wave spawn selectors:
 
-		AddSortableElement(wavePanelList, elementIndex++, new UIText("Spawns"), e =>
+		wavePanelList.AddElement(new UIText("Spawns"), e =>
 		{
 			e.IgnoresMouseInteraction = true;
 		});
@@ -1196,7 +1211,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		// Removal button
 		if (encounter.Description.Waves.Length >= 2)
 		{
-			AddSortableElement(wavePanelList, elementIndex++, new UIButton<string>($"Remove Wave"), e =>
+			wavePanelList.AddElement(new UIButton<string>($"Remove Wave"), e =>
 			{
 				e.SetDimensions(width: (1f, +0f), height: (0f, +24f));
 				e.OnLeftClick += (evt, self) => EncounterEditor.RemoveWave(encounter, waveIndex);
@@ -1209,9 +1224,8 @@ internal sealed class EncounterEditorState : SmartUiState
 		wavePanelList.Recalculate();
 		wavePanelList.Height.Set(wavePanelList.GetTotalHeight(), 0f);
 		wavePanel.Height.Set(wavePanelList.GetTotalHeight() + wavePanel.PaddingTop + wavePanel.PaddingBottom, 0f);
-		
-		// We have to delay addition due to the buggy list implementation seemingly not recalculating its inner element.
-		list.Add(wavePanel);
+
+		// Silly workaround for the buggy list implementation seemingly not recalculating its inner element.
 		list.Remove(wavePanel);
 		list.Add(wavePanel);
 	}
@@ -1275,6 +1289,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		UIPersistent? scrollbarPersistence = null;
 		UIList list = innerArea.AddElement(new UIList(), e =>
 		{
+			e.ManualSortMethod = _ => { };
 			e.SetDimensions(x: (0.00f, +0), y: (0.00f, +0), width: (1.00f, -(ScrollbarWidth + ScrollbarOffset)), height: (1.00f, +0));
 		});
 		UIScrollbar scrollbar = innerArea.AddElement(new FixedUIScrollbar(UserInterface), e =>
@@ -1291,9 +1306,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		}
 		else
 		{
-			int yPos = 0;
-			int elementIndex = 0;
-			PopulateListWithSpawnControls(list, CurrentSpawnBox, ref elementIndex, ref yPos);
+			PopulateListWithSpawnControls(list, CurrentSpawnBox);
 		}
 
 		window.Recalculate();
@@ -1302,10 +1315,10 @@ internal sealed class EncounterEditorState : SmartUiState
 		return window;
 	}
 
-	private void PopulateListWithSpawnControls(UIList list, SpawnBox spawnBox, ref int elementIndex, ref int yPos)
+	private void PopulateListWithSpawnControls(UIList list, SpawnBox spawnBox)
 	{
 		// Editing->Adding one-way mode toggle.
-		AddSortableElement(list, elementIndex++, new UIText("Control"), e =>
+		list.AddElement(new UIText("Control"), e =>
 		{
 			const float LeftF = 0.25f;
 			const float WidthF = 0.75f * 0.5f;
@@ -1377,12 +1390,12 @@ internal sealed class EncounterEditorState : SmartUiState
 			// Skip properties handled in other ways.
 			if (property.Name is not nameof(EnemySpawn.SpawnPosition) and not nameof(EnemySpawn.SpawnPlacement))
 			{
-				ConfigManager.WrapIt(list, ref yPos, new(property), spawnBox.Spawn, elementIndex++);
+				AddConfigElement(list, new(property), spawnBox.Spawn);
 			}
 		}
 
 		// Manual/Automatic placement toggle.
-		AddSortableElement(list, elementIndex++, new UIText(""), e =>
+		list.AddElement(new UIText(""), e =>
 		{
 			(e.TextOriginX, e.TextOriginY) = (0.0f, 0.5f);
 			e.SetDimensions(width: (1f, +0f), height: (0f, +32f));
@@ -1433,25 +1446,18 @@ internal sealed class EncounterEditorState : SmartUiState
 			{
 				if (property.Name is nameof(SpawnPlacement.Area) or nameof(SpawnPlacement.AreaOrigin) or nameof(SpawnPlacement.CollisionSize)) { continue; }
 
-				ConfigManager.WrapIt(list, ref yPos, new(property), spawnBox.Placement, elementIndex++);
+				AddConfigElement(list, new(property), spawnBox.Placement);
 			}
 		}
 	}
 
-	private static T AddSortableElement<T>(UIElement parent, int elementIndex, T child, Action<T>? initAction = null) where T : UIElement
+	/// <summary> Adds a config element, omitting the sortable wrapper. </summary>
+	private static void AddConfigElement(UIList list, PropertyFieldWrapper memberInfo, object item)
 	{
-		return parent.AddElement(CreateSortableElement(elementIndex, child, initAction));
-	}
-	private static T CreateSortableElement<T>(int elementIndex, T child, Action<T>? initAction = null) where T : UIElement
-	{
-		var container = new UISortableElement(elementIndex);
-		container.SetDimensions(width: (1f, +0f), height: (1f, +0f));
-
-		T result = container.AddElement(child, initAction);
-		container.Recalculate();
-
-		container.SetDimensions(width: (1f, +0f), height: (0f, result.GetOuterDimensions().Height));
-
-		return result;
+		int yPos = 0;
+		int order = 0;
+		(UIElement container, UIElement element) = ConfigManager.WrapIt(list, ref yPos, memberInfo, item, order);
+		list.Remove(container);
+		list.Add(element);
 	}
 }
