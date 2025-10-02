@@ -129,6 +129,8 @@ internal class GenerationalArena<THandle, TData> where THandle : unmanaged, IHan
 			index = nextIndex++;
 		}
 
+		EnsureCapacity(index + 1);
+
 		// Mark index as taken.
 		(uint div, uint rem) = Math.DivRem(index, BitMask.BitSize);
 		presenceMasks[div].Set((int)rem);
@@ -171,11 +173,13 @@ internal class GenerationalArena<THandle, TData> where THandle : unmanaged, IHan
 
 	private uint? PopFreeIndex()
 	{
-		foreach (BitMask<ulong> mask in presenceMasks)
+		for (uint maskIndex = 0; maskIndex < presenceMasks.Length; maskIndex++)
 		{
+			BitMask mask = presenceMasks[maskIndex];
+
 			foreach (int bit in ~mask)
 			{
-				return (uint)bit;
+				return (uint)bit + (maskIndex * BitMask.BitSize);
 			}
 		}
 
