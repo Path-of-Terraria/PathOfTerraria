@@ -170,7 +170,7 @@ internal static class Networking
 		/// <summary>
 		/// Spawns arbitrary, pre-defined VFX on all clients. 
 		/// Used for code run on only one client that should be shown on all clients, such as projectile spawning VFX, or server-side operations.<br/>Signature:<br/>
-		/// <c></c>
+		/// <c>Vector2 position, SendSpawnVFXModule.VFXType type</c>
 		/// </summary>
 		SpawnVFX,
 	}
