@@ -304,7 +304,7 @@ internal sealed class EnemyEncounters : ModSystem
 				{
 					if (placement.Area == default) { placement.Area = description.SpawnArea; }
 					if (placement.AreaOrigin == default) { placement.AreaOrigin = description.SpawnOrigin; }
-					if (placement.CollisionSize == default) { placement.CollisionSize = ContentSamples.NpcsByNetId[spawn.NpcType.Type].Size.ToPoint16(); }
+					if (placement.CollisionSize == default) { placement.CollisionSize = ContentSamples.NpcsByNetId[spawn.NpcType.Type].Size.ToPoint(); }
 
 					spawn.SpawnPlacement = placement;
 				}

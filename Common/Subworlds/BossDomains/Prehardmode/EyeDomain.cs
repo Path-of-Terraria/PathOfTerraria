@@ -34,9 +34,13 @@ public class EyeDomain : BossDomainSubworld
 		HaltTimeOnVanish = 60 * 10,
 	};
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
+	public override List<GenPass> Tasks =>
+	[
+		new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Surface", GenSurface),
-		new PassLegacy("Grass", (progress, _) => PlaceGrassAndDecor(progress, true, Mod, out Arena))];
+		new PassLegacy("Grass", (progress, _) => PlaceGrassAndDecor(progress, true, Mod, out Arena)),
+		new PassLegacy("Encounters", PlaceEncounters),
+	];
 
 	public static void PlaceGrassAndDecor(GenerationProgress progress, bool includeFleshStuff, Mod mod, out Rectangle arena)
 	{
@@ -82,7 +86,6 @@ public class EyeDomain : BossDomainSubworld
 		}
 
 		int structureX = 0;
-		List<Vector2Int> encounterPoints = [];
 
 		foreach (Point16 position in grasses)
 		{
@@ -121,8 +124,7 @@ public class EyeDomain : BossDomainSubworld
 
 				if (WorldGen.genRand.NextBool(20))
 				{
-					//WorldGen.PlaceObject(position.X, position.Y - 1, ModContent.TileType<EmbeddedEye>(), true, WorldGen.genRand.Next(2));
-					encounterPoints.Add(new(position.X, position.Y - 5));
+					WorldGen.PlaceObject(position.X, position.Y - 1, ModContent.TileType<EmbeddedEye>(), true, WorldGen.genRand.Next(2));
 				}
 
 				continue;
@@ -139,14 +141,6 @@ public class EyeDomain : BossDomainSubworld
 		}
 
 		CheckForSigns(new Point16(20, 20), new Point16(Main.maxTilesX - 60, Main.maxTilesY - 60));
-
-		foreach (Vector2Int point in encounterPoints)
-		{
-			if (TileUtils.TryFitRectangleIntoTilemap(point, new(5, 5), out Vector2Int adjustedPoint))
-			{
-				EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/EyefullOfTroubles").MoveEverythingTo((Point16)adjustedPoint);
-			}
-		}
 	}
 
 	private static void CheckForSigns(Point16 pos, Point16 size)
@@ -220,6 +214,32 @@ public class EyeDomain : BossDomainSubworld
 			}
 
 			progress.Value = (float)x / Main.maxTilesX;
+		}
+	}
+
+	public static void PlaceEncounters(GenerationProgress progress, GameConfiguration configuration)
+	{
+		const int worldEdgeOffset = 5;
+		const int freeSpaceInTiles = 7;
+
+		var placement = new SpawnPlacement
+		{
+			Area = new Rectangle(worldEdgeOffset, worldEdgeOffset, Main.maxTilesX - (worldEdgeOffset * 2), Main.maxTilesY - (worldEdgeOffset * 2)),
+			CollisionSize = new(freeSpaceInTiles * TileUtils.TileSizeInPixels, freeSpaceInTiles * TileUtils.TileSizeInPixels),
+			OnGround = true,
+			MinDistanceFromEnemies = 0f,
+			MinDistanceFromPlayers = 0f,
+			MaxSearchAttempts = 512,
+		};
+
+		for (int i = 0; i < 20; i++)
+		{
+			if (!EnemySpawning.TryFindingSpawnPosition(in placement, out Vector2 position))
+			{
+				break;
+			}
+
+			EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/EyefullOfTroubles").MoveEverythingTo(position.ToTileCoordinates16());
 		}
 	}
 
@@ -303,7 +323,7 @@ public class EyeDomain : BossDomainSubworld
 
 	public class EyeSceneEffect : ModSceneEffect
 	{
-		public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
+		public override SceneEffectPriority Priority => SceneEffectPriority.Event;
 		public override int Music => MusicID.Eerie;
 
 		public override bool IsSceneEffectActive(Player player)

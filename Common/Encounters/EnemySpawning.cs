@@ -4,6 +4,7 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Content.Tiles.BossDomain.Moon;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
@@ -40,8 +41,8 @@ internal record struct EnemySpawn()
 /// <summary> A description used to calculate a placement for an enemy spawn. </summary>
 internal record struct SpawnPlacement()
 {
-	/// <summary> The enemy's width and height. </summary>
-	public required Point16 CollisionSize { get; set; }
+	/// <summary> The required free space's width and height, in pixels. </summary>
+	public required Point CollisionSize { get; set; }
 	/// <summary> The available spawn area to use, in tile-space. </summary>
 	public required Rectangle Area { get; set; }
 	/// <summary> If provided, a pathfinding check will be performed towards this tile-space position to determine if a given spawn position is valid. </summary>
@@ -60,6 +61,9 @@ internal record struct SpawnPlacement()
 	/// <summary> How far away from existing enemies, in pixels, must the spawn be placed. </summary>
 	[Range(0, 2048), Increment(8), DefaultValue(256f)]
 	public float MinDistanceFromEnemies { get; set; } = 256f;
+	/// <summary> How many dynamic placement attempts to perform before giving up. High values may affect performance. </summary>
+	[Range(1, 1024), Increment(1), DefaultValue(10)]
+	public int MaxSearchAttempts { get; set; } = 10;
 
 	/// <summary> Guesses defaults to use for a given NPC sample. Not always ideal. </summary>
 	public SpawnPlacement WithDefaults(int npcType)
@@ -129,7 +133,7 @@ internal static class EnemySpawning
 
 		if (spawn.SpawnPosition is not { } spawnPosition)
 		{
-			if (!TryFindSpawnPosition(spawn.SpawnPlacement!.Value, out spawnPosition))
+			if (!TryFindingSpawnPosition(spawn.SpawnPlacement!.Value, out spawnPosition))
 			{
 				npc = default;
 				return false;
@@ -167,28 +171,43 @@ internal static class EnemySpawning
 		}
 	}
 
-	private static bool TryFindSpawnPosition(in SpawnPlacement spawn, out Vector2 spawnPosition)
+	/// <summary>
+	/// Attempts to pick a suitable spawn position with the given <see cref="SpawnPlacement"/> options.
+	/// </summary>
+	public static bool TryFindingSpawnPosition(in SpawnPlacement spawn, out Vector2 spawnPosition)
 	{
 		if (spawn.Area == default)
 		{
 			throw new ArgumentException("Invalid area.");
 		}
 
-		const int MaxRandomAttempts = 10;
-
 		float minSqrDistanceFromPlayers = spawn.MinDistanceFromPlayers * spawn.MinDistanceFromPlayers;
 		float minSqrDistanceFromEnemies = spawn.MinDistanceFromEnemies * spawn.MinDistanceFromEnemies;
+		bool checksPlayerAdjacency = minSqrDistanceFromPlayers > 0f;
+		bool checksEnemyAdjacency = minSqrDistanceFromEnemies > 0f;
+		bool checksForLiquids = (spawn.SkippedLiquids | spawn.RequiredLiquids) != 0;
 
 		var sizeInTiles = new Vector2Int(
 			(int)MathF.Ceiling(spawn.CollisionSize.X / (float)TileUtils.TileSizeInPixels),
 			(int)MathF.Ceiling(spawn.CollisionSize.Y / (float)TileUtils.TileSizeInPixels)
 		);
 		Vector2 sizeInTilesHalf = sizeInTiles * 0.5f;
-		(int sizeOffsetX1, int sizeOffsetX2) = ((int)MathF.Floor(-sizeInTilesHalf.X), (int)MathF.Floor(sizeInTilesHalf.X) - 1);
-		(int sizeOffsetY1, int sizeOffsetY2) = ((int)MathF.Floor(-sizeInTilesHalf.Y), (int)MathF.Floor(sizeInTilesHalf.Y) - 1);
+		var sizeTileExtents = new Vector4Int
+		(
+			(int)MathF.Floor(-sizeInTilesHalf.X),
+			(int)MathF.Floor(-sizeInTilesHalf.Y),
+			(int)MathF.Floor(+sizeInTilesHalf.X) - 1,
+			(int)MathF.Floor(+sizeInTilesHalf.Y) - 1
+		);
 
-		(int xMin, int xMax) = (Math.Max(0, spawn.Area.X), Math.Min(spawn.Area.X + spawn.Area.Width, Main.maxTilesX - 1));
-		(int yMin, int yMax) = (Math.Max(0, spawn.Area.Y), Math.Min(spawn.Area.Y + spawn.Area.Height, Main.maxTilesY - 1));
+		// Exclusive upper bounds.
+		var area = new Vector4Int
+		(
+			Math.Max(0, spawn.Area.X),
+			Math.Max(0, spawn.Area.Y),
+			Math.Min(Main.maxTilesX, spawn.Area.X + spawn.Area.Width),
+			Math.Min(Main.maxTilesY, spawn.Area.Y + spawn.Area.Height)
+		);
 
 		// Ensure that the spawn origin is in a location reachable by inflated floodfill.
 		Vector2Int adjustedSpawnOrigin = default;
@@ -203,9 +222,9 @@ internal static class EnemySpawning
 			return false;
 		}
 
-		for (int i = 0; i < MaxRandomAttempts; i++)
+		for (int i = 0; i < spawn.MaxSearchAttempts; i++)
 		{
-			(int x, int y) = (Main.rand.Next(xMin, xMax + 1), Main.rand.Next(yMin, yMax + 1));
+			(int x, int y) = (Main.rand.Next(area.X, area.Z), Main.rand.Next(area.Y, area.W));
 
 			Tile baseTile = Main.tile[x, y];
 			if (TileUtils.HasUnactuatedSolid(baseTile)) { continue; }
@@ -226,38 +245,44 @@ internal static class EnemySpawning
 			// Ensure that the ground position has enough space.
 			// While doing this, we also offset the spawn position off the ground, so that the later
 			// floodfill cycle does not think that we are in a wall due to collision check inflation.
-			if (TileUtils.TryFitRectangleIntoTilemap(new Vector2Int(x, y), sizeInTiles, out Vector2Int adjustedSelfRect))
+			if (TileUtils.TryFitRectangleIntoTilemap(new Vector2Int(x, y), sizeInTiles, out Vector2Int adjustedPoint))
 			{
-				x = adjustedSelfRect.X;
-				y = adjustedSelfRect.Y;
+				x = adjustedPoint.X;
+				y = adjustedPoint.Y;
 			}
 			else
 			{
 				continue;
 			}
 
-			spawnPosition = new Point(x, y).ToWorldCoordinates(autoAddY: 16);
+			spawnPosition = new Point16(x, y).ToWorldCoordinates(autoAddY: spawn.OnGround ? 15 : 8);
 
 			// Ensure that this is not too close to a player.
-			foreach (Player player in Main.ActivePlayers)
+			if (checksPlayerAdjacency)
 			{
-				if (player.DistanceSQ(spawnPosition) <= minSqrDistanceFromPlayers)
+				foreach (Player player in Main.ActivePlayers)
 				{
-					goto Continue;
+					if (player.DistanceSQ(spawnPosition) <= minSqrDistanceFromPlayers)
+					{
+						goto Continue;
+					}
 				}
 			}
 
 			// Ensure that this is not too close to an existing enemy.
-			foreach (NPC npc in Main.ActiveNPCs)
+			if (checksEnemyAdjacency)
 			{
-				if (npc.DistanceSQ(spawnPosition) <= minSqrDistanceFromEnemies)
+				foreach (NPC npc in Main.ActiveNPCs)
 				{
-					goto Continue;
+					if (npc.DistanceSQ(spawnPosition) <= minSqrDistanceFromEnemies)
+					{
+						goto Continue;
+					}
 				}
 			}
 
 			// Check for liquids if needed.
-			if ((spawn.SkippedLiquids | spawn.RequiredLiquids) != 0)
+			if (checksForLiquids)
 			{
 				if (!LiquidUtils.CheckAreaWithMasks(new Rectangle(x, y, sizeInTiles.X, sizeInTiles.Y), spawn.SkippedLiquids, spawn.RequiredLiquids))
 				{
@@ -265,53 +290,8 @@ internal static class EnemySpawning
 				}
 			}
 
-			// As the last check, perform a floodfill loop to see if we can reach the encounter's center.
-			const int FloodFillExtent = 8;
-			var floodFillStart = new Vector2Int(x, y);
-			var floodFillArea = new Vector4Int(
-				Math.Max(xMin - FloodFillExtent, 1),
-				Math.Max(yMin - FloodFillExtent, 1),
-				Math.Min(xMax + FloodFillExtent, Main.maxTilesX - 2),
-				Math.Min(yMax + FloodFillExtent, Main.maxTilesY - 2)
-			);
-			var floodFillRect = new Rectangle(
-				floodFillArea.X,
-				floodFillArea.Y,
-				floodFillArea.Z - floodFillArea.X,
-				floodFillArea.W - floodFillArea.Y
-			);
-			bool floodFillSuccess = false;
-
-			foreach (GeometryUtils.FloodFill.Result step in new GeometryUtils.FloodFill(floodFillStart, floodFillRect))
-			{
-				// Inclusive.
-				(int checkX1, int checkX2) = (step.Point.X + sizeOffsetX1, step.Point.X + sizeOffsetX2);
-				(int checkY1, int checkY2) = (step.Point.Y + sizeOffsetY1, step.Point.Y + sizeOffsetY2);
-				bool isPointFree = true;
-
-				for (int checkX = checkX1; checkX <= checkX2; checkX++)
-				{
-					for (int checkY = checkY1; checkY <= checkY2; checkY++)
-					{
-						if (TileUtils.HasUnactuatedSolid(Main.tile[checkX, checkY]))
-						{
-							isPointFree = false;
-							goto CycleBreak;
-						}
-					}
-				}
-
-				CycleBreak: step.IsPointFree = isPointFree;
-
-				if (step.Point.X == adjustedSpawnOrigin.X & step.Point.Y == adjustedSpawnOrigin.Y)
-				{
-					floodFillSuccess = true;
-					break;
-				}
-			}
-
-			// Failure, the origin point has never been reached.
-			if (!floodFillSuccess)
+			// As the last check, perform an optional floodfill loop to see if we can reach the encounter's center.
+			if (spawn.AreaOrigin.HasValue && !PathfindToSpawnOrigin(area, new(x, y), adjustedSpawnOrigin, sizeTileExtents))
 			{
 				continue;
 			}
@@ -324,6 +304,55 @@ internal static class EnemySpawning
 		}
 
 		spawnPosition = default;
+		return false;
+	}
+
+	private static bool PathfindToSpawnOrigin(Vector4Int baseArea, Vector2Int startPoint, Vector2Int target, Vector4Int sizeTileExtents)
+	{
+		const int FloodFillExtent = 8;
+
+		// Inclusive upper bounds.
+		var area = new Vector4Int(
+			Math.Max(baseArea.X - FloodFillExtent, 1),
+			Math.Max(baseArea.Y - FloodFillExtent, 1),
+			Math.Min(baseArea.Z + FloodFillExtent, Main.maxTilesX - 2),
+			Math.Min(baseArea.W + FloodFillExtent, Main.maxTilesY - 2)
+		);
+		var rect = new Rectangle(
+			area.X,
+			area.Y,
+			area.Z - area.X,
+			area.W - area.Y
+		);
+
+		foreach (GeometryUtils.FloodFill.Result step in new GeometryUtils.FloodFill(startPoint, rect))
+		{
+			// Inclusive.
+			(int checkX1, int checkX2) = (step.Point.X + sizeTileExtents.X, step.Point.X + sizeTileExtents.Z);
+			(int checkY1, int checkY2) = (step.Point.Y + sizeTileExtents.Y, step.Point.Y + sizeTileExtents.W);
+			bool isPointFree = true;
+
+			for (int checkX = checkX1; checkX <= checkX2; checkX++)
+			{
+				for (int checkY = checkY1; checkY <= checkY2; checkY++)
+				{
+					if (TileUtils.HasUnactuatedSolid(Main.tile[checkX, checkY]))
+					{
+						isPointFree = false;
+						goto CycleBreak;
+					}
+				}
+			}
+
+			CycleBreak: step.IsPointFree = isPointFree;
+
+			if (step.Point.X == target.X & step.Point.Y == target.Y)
+			{
+				return true;
+			}
+		}
+
+		// Failure, the origin point has never been reached.
 		return false;
 	}
 }
