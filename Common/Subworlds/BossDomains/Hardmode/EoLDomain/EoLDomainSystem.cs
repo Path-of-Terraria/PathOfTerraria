@@ -6,7 +6,7 @@ internal class EoLDomainSystem : ModSystem
 {
 	public override void ModifySunLightColor(ref Color tileColor, ref Color backgroundColor)
 	{
-		if (SubworldSystem.Current is not EmpressDomain)
+		if (SubworldSystem.Current is not EmpressDomain || EmpressDomain.IsDay)
 		{
 			return;
 		}

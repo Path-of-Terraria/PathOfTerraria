@@ -1,5 +1,4 @@
-﻿using Microsoft.CodeAnalysis.CSharp.Syntax;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using System.Collections.Generic;
 using System.Reflection;
@@ -254,6 +253,13 @@ internal class SkillTreePlayer : ModPlayer
 		Assembly assembly = GetType().Assembly;
 		Type specType = assembly.GetType(specName);
 		Type skillType = assembly.GetType(skillName);
+
+		if (specType is null || skillType is null)
+		{
+			Mod.Logger.Error($"Failed to load either specType (name {specName}, result {specType}) or skillType (name {skillName}, result {skillType}).");
+			return;
+		}
+
 		SkillTree tree = SkillTree.TypeToSkillTree[skillType];
 		var spec = Activator.CreateInstance(specType, tree) as SkillSpecial;
 		SetSpecializationForSkill(skillType, spec, sync);

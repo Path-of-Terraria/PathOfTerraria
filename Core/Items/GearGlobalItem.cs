@@ -301,7 +301,7 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 
 	void GeneratePrefix.IGlobal.ModifyPrefix(Item item, ref sbyte prefix)
 	{
-		if (GearLocalizationCategory.Invoke(item) is not { } category || category == string.Empty)
+		if (GearLocalizationCategory.Invoke(item) is not { } category || category == string.Empty || item.ModItem is null)
 		{
 			prefix = -1;
 			return;
@@ -314,14 +314,14 @@ internal sealed partial class GearGlobalItem : GlobalItem, InsertAdditionalToolt
 
 	void GenerateSuffix.IGlobal.ModifySuffix(Item item, ref sbyte suffix)
 	{
-		if (GearLocalizationCategory.Invoke(item) is not { } category || category == string.Empty)
+		if (GearLocalizationCategory.Invoke(item) is not { } category || category == string.Empty || item.ModItem is null)
 		{
 			suffix = -1;
 			return;
 		}
 
 		PoTInstanceItemData data = item.GetInstanceData();
-		bool noPrefix = data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare || !GearSuffixIdsByCategory.ContainsKey(category);
-		suffix = (sbyte)(noPrefix ? -1 : Main.rand.Next(GearSuffixIdsByCategory[category]));
+		bool noSuffix = data.ItemType == ItemType.None && data.Rarity is ItemRarity.Magic or ItemRarity.Rare || !GearSuffixIdsByCategory.ContainsKey(category);
+		suffix = (sbyte)(noSuffix ? -1 : Main.rand.Next(GearSuffixIdsByCategory[category]));
 	}
 }

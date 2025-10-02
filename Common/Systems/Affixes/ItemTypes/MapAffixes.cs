@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Terraria.ID;
 using Terraria.ModLoader.IO;
+using static PathOfTerraria.Common.Data.Models.ItemAffixData;
 
 namespace PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 
@@ -105,5 +106,21 @@ public class MapIncreasedBehaviourAffix : MapAffix
 	public override void PreAI(NPC npc)
 	{
 		npc.GetGlobalNPC<SpeedUpNPC>().ExtraAISpeed += Value / 100f;
+	}
+}
+
+public class EoLDaylightAffix : MapAffix
+{
+	protected override AffixTooltipLine CreateDefaultTooltip(Player player, int itemLevel)
+	{
+		return new AffixTooltipLine
+		{
+			Text = this.GetLocalization("Description"),
+			Value = Value,
+			Tier = null,
+			ValueRollRange = null,
+			Corrupt = IsCorruptedAffix,
+			Implicit = IsImplicit,
+		};
 	}
 }

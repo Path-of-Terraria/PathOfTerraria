@@ -1,7 +1,9 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
+using PathOfTerraria.Common.Systems.MapContent;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Content.Items.Consumables.Maps;
+using ReLogic.Content;
 using SubworldLibrary;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -9,14 +11,19 @@ using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Projectiles.Utility;
 
-internal class QueenBeePortal : ModProjectile, IRightClickableProjectile
+internal class QueenBeePortal : ModProjectile, IRightClickableProjectile, IMapIcon
 {
+	private static Asset<Texture2D> Highlight = null;
+
 	private ref float Timer => ref Projectile.ai[0];
 	private ref float MaxUses => ref Projectile.ai[2];
 
 	public override void SetStaticDefaults()
 	{
 		Main.projFrames[Type] = 3;
+		ProjectileID.Sets.IsInteractable[Type] = true;
+
+		Highlight = ModContent.Request<Texture2D>(Texture + "_Highlight");
 	}
 
 	public override void SetDefaults()
@@ -42,6 +49,8 @@ internal class QueenBeePortal : ModProjectile, IRightClickableProjectile
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.05f);
 		Projectile.velocity *= 0.96f;
 		Projectile.frame = (int)Math.Abs(Timer-- * 0.15f % 3);
+
+		Main.CurrentFrameFlags.HadAnActiveInteractibleProjectile = true;
 
 		if (NPC.downedQueenBee)
 		{
@@ -76,41 +85,45 @@ internal class QueenBeePortal : ModProjectile, IRightClickableProjectile
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
+		Vector2 position = Projectile.Center - Main.screenPosition;
 
 		for (int i = 0; i < 3; ++i)
 		{
 			float rotation = Projectile.rotation * (i % 2 == 0 ? -1 : 1);
-			Vector2 position = Projectile.Center - Main.screenPosition;
 			Color color = lightColor * ((3 - i) * 0.2f) * Projectile.Opacity;
 			Rectangle frame = new(0, 60 * Projectile.frame, 60, 58);
 			Main.spriteBatch.Draw(tex, position, frame, color, rotation, frame.Size() / 2f, 1f - i * 0.2f, SpriteEffects.None, 0);
 		}
 
+		this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
 		return false;
 	}
 
-	bool IRightClickableProjectile.RightClick(Projectile self, Player player)
+	bool IRightClickableProjectile.RightClick(Player player, bool mouseDirectlyOver)
 	{
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
 			SubworldSystem.Enter<QueenBeeDomain>();
 
-			self.ai[1]++;
-			self.netUpdate = true;
+			Projectile.ai[1]++;
+			Projectile.netUpdate = true;
 
-			if (self.ai[1] > self.ai[2])
+			if (Projectile.ai[1] > Projectile.ai[2])
 			{
-				self.Kill();
+				Projectile.Kill();
 			}
 
 			return true;
 		}
 
-		Tooltip.Create(new TooltipDescription
+		if (mouseDirectlyOver)
 		{
-			Identifier = "Portal",
-			SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
-		});
+			Tooltip.Create(new TooltipDescription
+			{
+				Identifier = "Portal",
+				SimpleTitle = Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.Enter"),
+			});
+		}
 
 		return false;
 	}
