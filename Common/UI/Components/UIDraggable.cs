@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.UI;
+using PathOfTerraria.Utilities.Xna;
 using Terraria.UI;
 
 #nullable enable
@@ -8,15 +9,12 @@ namespace PathOfTerraria.Common.UI.Components;
 /// <summary> Makes an element movable and resizable using the left mouse button. </summary>
 internal sealed class UIMouseDrag(bool canMove, bool canResize) : UIComponent
 {
-	private Vector2 dragMousePosition;
-	private Vector2 dragElementPosition;
-	private Vector2 dragElementSize;
-	private Vector2 dragMoveAxes;
-	private Vector2 dragResizeAxes;
+	private RectangleDrag drag;
 
 	public bool CanMove { get; set;  } = canMove;
 	public bool CanResize { get; set; } = canResize;
-	public bool IsDragging { get; private set; }
+
+	public bool IsDragging => drag.Move.Axis != default || drag.Resize.Axis != default;
 
 	protected override void OnAttach(UIElement element)
 	{
@@ -33,7 +31,7 @@ internal sealed class UIMouseDrag(bool canMove, bool canResize) : UIComponent
 	{
 		Vector2 mousePosition = Main.MouseScreen;
 
-		if (IsDragging ? (dragResizeAxes != Vector2.Zero) : (CanResize && CheckResizeArea(element, mousePosition, out _, out _, out _, out _)))
+		if (IsDragging ? (drag.Resize.Axis != Vector2.Zero) : (CanResize && CheckResizeArea(element, mousePosition, out _)))
 		{
 			Main.cursorOverride = 2;
 		}
@@ -43,25 +41,23 @@ internal sealed class UIMouseDrag(bool canMove, bool canResize) : UIComponent
 			return;
 		}
 
-		Vector2 mouseDelta = mousePosition - dragMousePosition;
+		//TODO: Deal in calculated space, to account for factors and not violate min/max sizes.
 		Vector2 oldPosition = new(element.Left.Pixels, element.Top.Pixels);
 		Vector2 oldSize = new(element.Width.Pixels, element.Height.Pixels);
+		(Vector2 newPosition, Vector2 newSize) = drag.Calculate(mousePosition);
 
-		Vector2 moveOffset = mouseDelta * dragMoveAxes;
-		Vector2 resizeOffset = mouseDelta * dragResizeAxes;
-		element.Left.Pixels = dragElementPosition.X + moveOffset.X;
-		element.Top.Pixels = dragElementPosition.Y + moveOffset.Y;
-		element.Width.Pixels = dragElementSize.X + resizeOffset.X;
-		element.Height.Pixels = dragElementSize.Y + resizeOffset.Y;
-
-		if (element.Left.Pixels != oldPosition.X || element.Top.Pixels != oldPosition.Y || element.Width.Pixels != oldSize.X || element.Height.Pixels != oldSize.Y)
+		if (newPosition != oldPosition || newSize != oldSize)
 		{
+			element.Left.Pixels = newPosition.X;
+			element.Top.Pixels = newPosition.Y;
+			element.Width.Pixels = newSize.X;
+			element.Height.Pixels = newSize.Y;
 			element.Recalculate();
 		}
 
 		if (!Main.mouseLeft)
 		{
-			IsDragging = false;
+			drag = default;
 		}
 	}
 
@@ -73,33 +69,15 @@ internal sealed class UIMouseDrag(bool canMove, bool canResize) : UIComponent
 		}
 
 		Vector2 mousePosition = Main.MouseScreen;
+		Vector2 elemPos = new(element.Left.Pixels, element.Top.Pixels);
+		Vector2 elemSize = new(element.Width.Pixels, element.Height.Pixels);
+		
+		CheckResizeArea(element, mousePosition, out Vector2 resizeSigns);
 
-		if (CanResize)
-		{
-			var dimensions = element.GetOuterDimensions().ToRectangle();
-			bool isResizing = CheckResizeArea(element, mousePosition, out bool left, out bool right, out bool top, out bool bottom);
-
-			if (!CanMove && !isResizing)
-			{
-				return;
-			}
-
-			dragResizeAxes = isResizing ? new Vector2(left ? -1f : (right ? 1f : 0f), top ? -1f : (bottom ? 1f : 0f)) : default;
-			dragMoveAxes = isResizing ? new Vector2(left ? 1f : 0f, top ? 1f : 0f) : Vector2.One;
-		}
-		else
-		{
-			dragResizeAxes = Vector2.Zero;
-			dragMoveAxes = Vector2.One;
-		}
-
-		IsDragging = true;
-		dragMousePosition = mousePosition;
-		dragElementPosition = new Vector2(element.Left.Pixels, element.Top.Pixels);
-		dragElementSize = new Vector2(element.Width.Pixels, element.Height.Pixels);
+		drag = new RectangleDrag(elemPos, elemSize, mousePosition, CanMove ? Vector2.One : Vector2.Zero, CanResize ? resizeSigns : Vector2.Zero);
 	}
 
-	private static bool CheckResizeArea(UIElement element, Vector2 mousePosition, out bool resizingLeft, out bool resizingRight, out bool resizingTop, out bool resizingBottom)
+	private static bool CheckResizeArea(UIElement element, Vector2 mousePosition, out Vector2 resizeSigns)
 	{
 		const float ResizeRadius = 12f;
 
@@ -107,15 +85,13 @@ internal sealed class UIMouseDrag(bool canMove, bool canResize) : UIComponent
 
 		if (!dimensions.Contains(mousePosition.ToPoint()))
 		{
-			(resizingLeft, resizingRight, resizingTop, resizingBottom) = (false, false, false, false);
+			resizeSigns = default;
 			return false; 
 		}
 
-		resizingRight = mousePosition.X >= dimensions.Right - ResizeRadius;
-		resizingLeft = !resizingRight && mousePosition.X <= dimensions.Left + ResizeRadius;
-		resizingBottom = mousePosition.Y >= dimensions.Bottom - ResizeRadius;
-		resizingTop = !resizingBottom && mousePosition.Y <= dimensions.Top + ResizeRadius;
+		resizeSigns.X = (mousePosition.X >= dimensions.Right - ResizeRadius) ? 1f : ((mousePosition.X <= dimensions.Left + ResizeRadius) ? -1f : 0f);
+		resizeSigns.Y = (mousePosition.Y >= dimensions.Bottom - ResizeRadius) ? 1f : ((mousePosition.Y <= dimensions.Top + ResizeRadius) ? -1f : 0f);
 
-		return resizingLeft | resizingRight | resizingTop | resizingBottom;
+		return resizeSigns != default;
 	}
 }

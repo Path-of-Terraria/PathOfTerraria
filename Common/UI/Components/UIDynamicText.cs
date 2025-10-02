@@ -51,6 +51,7 @@ internal sealed class UIDynamicText(Func<string> textGetter) : UIComponent
 				if (newText != ui.Text)
 				{
 					ui.SetText(newText);
+					ui.Recalculate();
 				}
 
 				break;
@@ -58,6 +59,7 @@ internal sealed class UIDynamicText(Func<string> textGetter) : UIComponent
 				if (newText != ui.Text)
 				{
 					ui.SetText(newText);
+					ui.Recalculate();
 				}
 
 				break;
@@ -65,6 +67,7 @@ internal sealed class UIDynamicText(Func<string> textGetter) : UIComponent
 				if (newText != ui.Text)
 				{
 					ui.SetText(newText);
+					ui.Recalculate();
 				}
 
 				break;

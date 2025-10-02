@@ -10,3 +10,4 @@ QuestUIKey.DisplayName: Ключ квестового интерфейса
 DropTableKey.DisplayName: Клавиша сброса таблицы
 PassiveTreeUIKey.DisplayName: Ключ пользовательского интерфейса пассивного дерева
 // ToggleQuestDebugging.DisplayName: Debug: Toggle Quest Debugging
+// ToggleEncounterDebugging.DisplayName: Debug: Toggle Encounter Debugging
