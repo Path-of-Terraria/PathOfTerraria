@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -14,7 +15,8 @@ internal static class EncounterIO
 {
 	public static readonly string Extension = ".encounter.json";
 
-	private static JsonSerializerSettings Settings => new()
+	private static readonly Dictionary<string, EncounterDescription> cache = new(StringComparer.InvariantCultureIgnoreCase);
+	private static readonly JsonSerializerSettings serializerSettings = new()
 	{
 		DefaultValueHandling = DefaultValueHandling.IgnoreAndPopulate,
 		Converters = [new FixedXnaJsonConverter(), new EntityDefinitionJsonConverter()],
@@ -22,28 +24,33 @@ internal static class EncounterIO
 
 	public static string ToJson(Encounter encounter)
 	{
-		string jsonText = JsonConvert.SerializeObject(encounter.Description, Formatting.Indented, Settings);
+		string jsonText = JsonConvert.SerializeObject(encounter.Description, Formatting.Indented, serializerSettings);
 
 		return jsonText;
 	}
 
 	public static EncounterDescription FromJson(string json)
 	{
-		EncounterDescription result = JsonConvert.DeserializeObject<EncounterDescription>(json, Settings);
+		EncounterDescription result = JsonConvert.DeserializeObject<EncounterDescription>(json, serializerSettings);
 
 		return result;
 	}
 
-	public static Encounter CreateEncounterFromModPath(Mod mod, string filePathWithoutExtension)
+	public static EncounterDescription GetEncounterFromModPath(Mod mod, string filePathWithoutExtension)
 	{
-		return CreateEncounterFromJson(Encoding.UTF8.GetString(mod.GetFileBytes(filePathWithoutExtension + Extension)));
+		string identifier = $"{mod.Name}/{filePathWithoutExtension}";
+
+		if (!cache.TryGetValue(identifier, out EncounterDescription description))
+		{
+			cache[identifier] = description = FromJson(Encoding.UTF8.GetString(mod.GetFileBytes(filePathWithoutExtension + Extension)));
+		}
+
+		return description;
 	}
 
-	public static Encounter CreateEncounterFromJson(string json)
+	public static Encounter CreateEncounterFromModPath(Mod mod, string filePathWithoutExtension)
 	{
-		EncounterDescription description = FromJson(json);
-		Encounter encounter = EnemyEncounters.CreateEncounter(description);
-		return encounter;
+		return EnemyEncounters.CreateEncounter(GetEncounterFromModPath(mod, filePathWithoutExtension));
 	}
 }
 
