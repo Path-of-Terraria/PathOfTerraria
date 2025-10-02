@@ -208,15 +208,14 @@ internal static class EnemySpawning
 			(int x, int y) = (Main.rand.Next(xMin, xMax + 1), Main.rand.Next(yMin, yMax + 1));
 
 			Tile baseTile = Main.tile[x, y];
-			if (baseTile.HasUnactuatedTile && Main.tileSolid[baseTile.TileType]) { continue; }
+			if (TileUtils.HasUnactuatedSolid(baseTile)) { continue; }
 
 			// Move the spawn point to the ground if needed.
 			if (spawn.OnGround)
 			{
 				for (int yy = y; yy < Main.maxTilesY + 1; yy++)
 				{
-					Tile tile = Main.tile[x, yy];
-					if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType])
+					if (TileUtils.HasUnactuatedSolid(Main.tile[x, yy]))
 					{
 						y = yy - 1;
 						break;
@@ -294,8 +293,7 @@ internal static class EnemySpawning
 				{
 					for (int checkY = checkY1; checkY <= checkY2; checkY++)
 					{
-						Tile tile = Main.tile[checkX, checkY];
-						if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType])
+						if (TileUtils.HasUnactuatedSolid(Main.tile[checkX, checkY]))
 						{
 							isPointFree = false;
 							goto CycleBreak;

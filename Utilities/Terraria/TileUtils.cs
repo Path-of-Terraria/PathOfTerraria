@@ -13,6 +13,20 @@ internal static class TileUtils
 
 	// Tilemap utilities.
 
+	/// <summary> Inlined method that checks for HasTile, tileSolid, and !tileSolidTop. </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+	public static bool HasSolid(Tile tile)
+	{
+		return tile.HasTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
+	}
+
+	/// <summary> Inlined method that checks for HasUnactuatedTile, tileSolid, and !tileSolidTop. </summary>
+	[MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
+	public static bool HasUnactuatedSolid(Tile tile)
+	{
+		return tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType];
+	}
+
 	/// <summary> Attempts to fit an AABB rectangle into a given point. Avoid calling this in loops. </summary>
 	[MethodImpl(MethodImplOptions.AggressiveOptimization)]
 	public static bool TryFitRectangleIntoTilemap(Vector2Int point, Vector2Int size, out Vector2Int adjustedPoint)
@@ -42,7 +56,7 @@ internal static class TileUtils
 					{
 						Tile tile = Main.tile[checkX, checkY];
 						
-						if (tile.HasUnactuatedTile && Main.tileSolid[tile.TileType] && !Main.tileSolidTop[tile.TileType])
+						if (HasUnactuatedSolid(tile))
 						{
 							goto ContinueAttempts;
 						}
