@@ -193,10 +193,10 @@ internal static class EnemySpawning
 		Vector2 sizeInTilesHalf = sizeInTiles * 0.5f;
 		var sizeTileExtents = new Vector4Int
 		(
-			(int)MathF.Floor(-sizeInTilesHalf.X),
-			(int)MathF.Floor(-sizeInTilesHalf.Y),
-			(int)MathF.Floor(+sizeInTilesHalf.X) - 1,
-			(int)MathF.Floor(+sizeInTilesHalf.Y) - 1
+			(int)-MathF.Floor(-sizeInTilesHalf.X),
+			(int)-MathF.Floor(-sizeInTilesHalf.Y),
+			(int)+MathF.Floor(+sizeInTilesHalf.X) - 1,
+			(int)+MathF.Floor(+sizeInTilesHalf.Y) - 1
 		);
 
 		// Exclusive upper bounds.
@@ -312,10 +312,10 @@ internal static class EnemySpawning
 
 		// Inclusive upper bounds.
 		var area = new Vector4Int(
-			Math.Max(baseArea.X - FloodFillExtent, 1),
-			Math.Max(baseArea.Y - FloodFillExtent, 1),
-			Math.Min(baseArea.Z + FloodFillExtent, Main.maxTilesX - 2),
-			Math.Min(baseArea.W + FloodFillExtent, Main.maxTilesY - 2)
+			Math.Max(baseArea.X - FloodFillExtent, 1 + sizeTileExtents.X),
+			Math.Max(baseArea.Y - FloodFillExtent, 1 + sizeTileExtents.Y),
+			Math.Min(baseArea.Z + FloodFillExtent, Main.maxTilesX - 2 - sizeTileExtents.Z),
+			Math.Min(baseArea.W + FloodFillExtent, Main.maxTilesY - 2 - sizeTileExtents.W)
 		);
 		var rect = new Rectangle(
 			area.X,
@@ -324,11 +324,14 @@ internal static class EnemySpawning
 			area.W - area.Y
 		);
 
+		startPoint.X = Math.Min(area.X, Math.Max(startPoint.X, area.Z)); 
+		startPoint.Y = Math.Min(area.Y, Math.Max(startPoint.Y, area.W));
+
 		foreach (GeometryUtils.FloodFill.Result step in new GeometryUtils.FloodFill(startPoint, rect))
 		{
 			// Inclusive.
-			(int checkX1, int checkX2) = (step.Point.X + sizeTileExtents.X, step.Point.X + sizeTileExtents.Z);
-			(int checkY1, int checkY2) = (step.Point.Y + sizeTileExtents.Y, step.Point.Y + sizeTileExtents.W);
+			(int checkX1, int checkX2) = (step.Point.X - sizeTileExtents.X, step.Point.X + sizeTileExtents.Z);
+			(int checkY1, int checkY2) = (step.Point.Y - sizeTileExtents.Y, step.Point.Y + sizeTileExtents.W);
 			bool isPointFree = true;
 
 			for (int checkX = checkX1; checkX <= checkX2; checkX++)
