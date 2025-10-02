@@ -65,10 +65,6 @@ internal class ManaPotionPickup : PickupItem
 
 		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, Item.GetShimmeredAlpha(glowColor), 0, glow.Size() / 2f, 0.6f, 0, 0);
 		Item.DrawSelfQuick(lightColor, rotation);
-		if (Item.shimmered)
-		{
-			spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Item.GetShimmeredAlpha(Color.White) with { A = 0 }, 0, tex.Size() / 2f, 1, 0, 0);
-		}
 
 		return false;
 	}
