@@ -23,7 +23,7 @@
 // PiercingItemAffix.Description: "{1}{0}% defense piercing"
 // AddedKnockbackItemAffix.Description: "{1}{0} added knockback"
 // IncreasedKnockbackItemAffix.Description: "{1}{0}% increased knockback"
-// ChanceToApplyOnFireGearAffix.Description: "{1}{0} chance to apply On Fire!"
+// ChanceToApplyOnFireGearAffix.Description: "{1}{0} chance to apply on fire!"
 // ChanceToApplyArmorShredGearAffix.Description: "{1}{0} chance to apply armor shred"
 // ChanceToApplyBloodclotItemAffix.Description: "{1}{0}% chance to apply bloodclot"
 // ChanceToApplyPoisonItemAffix.Description: "{1}{0}% chance to apply poisoned"

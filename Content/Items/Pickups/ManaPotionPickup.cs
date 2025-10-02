@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.Utilities.Extensions;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -62,8 +63,12 @@ internal class ManaPotionPickup : PickupItem
 
 		glowColor *= 0.6f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.1f;
 
-		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, Item.GetAlpha(glowColor), 0, glow.Size() / 2f, 0.6f, 0, 0);
-		spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Item.GetAlpha(Color.White), 0, tex.Size() / 2f, 1, 0, 0);
+		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, Item.GetShimmeredAlpha(glowColor), 0, glow.Size() / 2f, 0.6f, 0, 0);
+		Item.DrawSelfQuick(lightColor, rotation);
+		if (Item.shimmered)
+		{
+			spriteBatch.Draw(tex, Item.Center - Main.screenPosition, null, Item.GetShimmeredAlpha(Color.White) with { A = 0 }, 0, tex.Size() / 2f, 1, 0, 0);
+		}
 
 		return false;
 	}

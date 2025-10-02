@@ -1,9 +1,12 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.MapContent;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Content.Items.Pickups;
 using ReLogic.Content;
 using SubworldLibrary;
 using Terraria.GameContent;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -12,6 +15,8 @@ namespace PathOfTerraria.Content.Projectiles.Utility;
 internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 {
 	private static Asset<Texture2D> Highlight = null;
+
+	private ref float ItemMagnetTimer => ref Projectile.ai[0];
 
 	public override void SetStaticDefaults()
 	{
@@ -49,6 +54,64 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 		}
 
 		Lighting.AddLight(Projectile.Center, TorchID.Red);
+
+		if (ItemMagnetTimer++ == 60 && Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			foreach (Item item in Main.ActiveItems)
+			{
+				if (item.IsACoin || item.type == ModContent.ItemType<HealingPotionPickup>() || item.type == ModContent.ItemType<ManaPotionPickup>())
+				{
+					continue;
+				}
+
+				Vector2 pos;
+
+				do
+				{
+					pos = Projectile.Center + Main.rand.NextVector2Circular(80, 80);
+				} while (Collision.SolidCollision(pos, item.width, item.height) || Collision.LavaCollision(pos, item.width, item.height));
+
+				SpawnVFX(item.Center);
+
+				item.Center = pos;
+				item.shimmered = true;
+
+				if (Main.netMode == NetmodeID.Server)
+				{
+					NetMessage.SendData(MessageID.SyncItemsWithShimmer, -1, -1, null, item.whoAmI);
+				}
+
+				SpawnVFX(item.Center);
+			}
+		}
+
+		return;
+
+		static void SpawnVFX(Vector2 position)
+		{
+			if (Main.netMode == NetmodeID.Server)
+			{
+				ModContent.GetInstance<SendSpawnVFXModule>().Send(position, SendSpawnVFXModule.VFXType.ShimmerTeleport);
+			}
+			else if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				SpawnShimmerTeleportVFX(position);
+			}
+		}
+	}
+
+	public static void SpawnShimmerTeleportVFX(Vector2 center)
+	{
+		for (int i = 0; i < 1; ++i)
+		{
+			var settings = new ParticleOrchestraSettings
+			{
+				PositionInWorld = center,
+				MovementVector = new Vector2(0, -18).RotatedByRandom(0.2f) * Main.rand.NextFloat(0.6f, 1.2f),
+			};
+
+			ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.RainbowRodHit, settings);
+		}
 	}
 
 	public override bool PreDraw(ref Color lightColor)
