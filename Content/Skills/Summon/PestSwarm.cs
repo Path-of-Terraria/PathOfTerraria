@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common;
-using PathOfTerraria.Common.Buffs;
 using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.NPCs;
