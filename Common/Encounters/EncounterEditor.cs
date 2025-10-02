@@ -952,10 +952,12 @@ internal sealed class EncounterEditorState : SmartUiState
 				{
 					if (!encounter.IsValid) { return string.Empty; }
 
+					bool spawning = encounter.Instance.EnemiesSpawnedThisWave < encounter.Description.Waves[encounter.Instance.WaveIndex].Spawns.Length;
+
 					return encounter.Instance.State switch
 					{
 						_ when encounter.Instance.IsPaused => "Paused",
-						EncounterState.InProgress => $"Wave {encounter.Instance.WaveIndex + 1} of {encounter.Description.Waves.Length}",
+						EncounterState.InProgress => $"{(spawning ? "Spawning" : "Waiting")} (Wave {encounter.Instance.WaveIndex + 1}/{encounter.Description.Waves.Length})",
 						EncounterState.NotStarted => "Inactive",
 						EncounterState.Completed => "Completed",
 						_ => throw new NotImplementedException(),
