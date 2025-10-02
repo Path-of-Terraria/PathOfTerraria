@@ -4,7 +4,6 @@ using System.IO;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using PathOfTerraria.Common.Systems.Synchronization;
-using PathOfTerraria.Content.Tiles.BossDomain.Moon;
 using PathOfTerraria.Utilities.Terraria;
 using PathOfTerraria.Utilities.Xna;
 using Terraria.Audio;
