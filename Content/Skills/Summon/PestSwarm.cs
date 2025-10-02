@@ -82,24 +82,22 @@ public class PestSwarm : Skill
 
 		HashSet<Point16> points = [];
 		Point16 center = player.Center.ToTileCoordinates16();
-		int tries = 3000;
+		int tries = 500;
 		int cap = 10 + player.GetPassiveStrength<PestSwarmTree, BiggerBrood>();
+		// Exclusive upper bounds.
+		int xMin = Math.Max(0, center.X - Range);
+		int yMin = Math.Max(1, center.Y - Range);
+		int xMax = Math.Min(Main.maxTilesX, center.X + Range);
+		int yMax = Math.Min(Main.maxTilesY, center.Y + Range);
 
-		while (points.Count < cap && tries > 0)
+		while (points.Count < cap && --tries > 0)
 		{
-			tries--;
-
-			Point16 point = new(center.X + Main.rand.Next(Range * 2) - Range, center.Y + Main.rand.Next(Range * 2) - Range);
-
-			if (points.Contains(point))
-			{
-				continue;
-			}
-
+			Point16 point = new(Main.rand.Next(xMin, xMax), Main.rand.Next(yMin, yMax));
 			Tile cur = Main.tile[point];
 			Tile above = Main.tile[point.X, point.Y - 1];
 
-			if (WorldGen.SolidTile(cur) && !above.HasTile)
+			//TODO: Replace these utilities, as they needlessly include a try-catch.
+			if (WorldGen.SolidTile(cur) && !WorldGen.SolidTile(above))
 			{
 				points.Add(point);
 			}
