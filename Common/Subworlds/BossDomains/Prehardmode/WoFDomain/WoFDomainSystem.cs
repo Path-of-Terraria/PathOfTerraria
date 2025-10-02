@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
-using SubworldLibrary;
+﻿using SubworldLibrary;
 using System.IO;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode.WoFDomain;
@@ -32,7 +31,7 @@ public class WoFDomainSystem : ModSystem
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.FightTracker.Started)
+		if (SubworldSystem.Current is WallOfFleshDomain domain)
 		{
 			writer.Write(domain.LeftBlocked);
 		}
@@ -40,7 +39,7 @@ public class WoFDomainSystem : ModSystem
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		if (SubworldSystem.Current is WallOfFleshDomain domain && !domain.FightTracker.Started)
+		if (SubworldSystem.Current is WallOfFleshDomain domain)
 		{
 			domain.LeftBlocked = reader.ReadBoolean();
 		}

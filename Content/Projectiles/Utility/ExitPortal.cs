@@ -55,11 +55,20 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 
 		Lighting.AddLight(Projectile.Center, TorchID.Red);
 
-		if (ItemMagnetTimer++ == 60 && Main.netMode != NetmodeID.MultiplayerClient)
+		if (ItemMagnetTimer++ == 60)
 		{
-			foreach (Item item in Main.ActiveItems)
+			for (int i = 0; i < Main.maxItems; ++i)
 			{
-				if (item.IsACoin || item.type == ModContent.ItemType<HealingPotionPickup>() || item.type == ModContent.ItemType<ManaPotionPickup>())
+				Item item = Main.item[i];
+
+				// Invalid items to teleport (inactive or takes up a lot of space, might push items far away)
+				if (!item.active || item.IsACoin || item.type == ModContent.ItemType<HealingPotionPickup>() || item.type == ModContent.ItemType<ManaPotionPickup>())
+				{
+					continue;
+				}
+
+				// Only update items if this is a server, or if this item is a client-only item
+				if (Main.netMode == NetmodeID.MultiplayerClient && item.playerIndexTheItemIsReservedFor != Main.myPlayer)
 				{
 					continue;
 				}
@@ -78,7 +87,7 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 
 				if (Main.netMode == NetmodeID.Server)
 				{
-					NetMessage.SendData(MessageID.SyncItemsWithShimmer, -1, -1, null, item.whoAmI);
+					NetMessage.SendData(MessageID.SyncItemsWithShimmer, -1, -1, null, i, 1);
 				}
 
 				SpawnVFX(item.Center);
@@ -89,13 +98,13 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 
 		static void SpawnVFX(Vector2 position)
 		{
-			if (Main.netMode == NetmodeID.Server)
-			{
-				ModContent.GetInstance<SendSpawnVFXModule>().Send(position, SendSpawnVFXModule.VFXType.ShimmerTeleport);
-			}
-			else if (Main.netMode == NetmodeID.SinglePlayer)
+			if (Main.netMode == NetmodeID.SinglePlayer)
 			{
 				SpawnShimmerTeleportVFX(position);
+			}
+			else if (Main.netMode == NetmodeID.Server)
+			{
+				ModContent.GetInstance<SendSpawnVFXModule>().Send(position, SendSpawnVFXModule.VFXType.ShimmerTeleport);
 			}
 		}
 	}
