@@ -167,6 +167,11 @@ internal static class Networking
 		RequestCheckSection,
 
 		/// <summary>
+		/// Adds a stack of Bleed to an NPC.<br/>Signature:<br/>
+		/// <c>byte who, short npcWho, ushort time, ushort damage</c>
+		/// </summary>
+		BleedStack,
+
 		/// Spawns a Sentry NPC on the server. All NPCs need to be spawned on the server.<br/>Signature:<br/>
 		/// <c>ushort type, byte owner, Vector2 position, ushort timeLeft, ushort damage</c>
 		/// </summary>

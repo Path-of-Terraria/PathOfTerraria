@@ -26,6 +26,9 @@ internal class SkillPassiveValueHandler : Handler
 		}
 	}
 
+	/// <summary>
+	/// Forcefully sets the player's strength for the given <paramref name="nodeName"/> on the given <paramref name="treeName"/>.
+	/// </summary>
 	private static void SetPlayerNodeStrength(byte player, string treeName, string nodeName, byte level)
 	{
 		Type treeType = typeof(PoTMod).Assembly.GetType(treeName);

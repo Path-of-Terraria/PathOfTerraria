@@ -57,3 +57,8 @@ FlameSage: {
 	// Name: Flame Sage
 	// Description: Conjure a fiery sentry that can draw the attention of enemies.
 }
+
+PestSwarm: {
+	// Name: Pest Swarm
+	// Description: Summon a short-lived creature to fight for you.
+}
