@@ -10,3 +10,4 @@ QuestUIKey.DisplayName: Klawisz UI Zadań
 // DropTableKey.DisplayName: Drop Table Key
 PassiveTreeUIKey.DisplayName: Klawisz UI Drzewka Pasywnego
 // ToggleQuestDebugging.DisplayName: Debug: Toggle Quest Debugging
+// ToggleEncounterDebugging.DisplayName: Debug: Toggle Encounter Debugging
