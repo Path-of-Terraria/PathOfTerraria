@@ -9,7 +9,7 @@ public abstract class SkillPassive(SkillTree tree) : SkillNode(tree)
 	public override string DisplayName => Language.GetOrRegister("Mods.PathOfTerraria.SkillPassives." + Name + ".Name", () => GetType().Name).Value;
 	public override string DisplayTooltip => Language.GetOrRegister("Mods.PathOfTerraria.SkillPassives." + Name + ".Tooltip").Format(TooltipArguments);
 
-	public virtual object[] TooltipArguments { get; }
+	public virtual object[] TooltipArguments { get; } = [];
 
 	/// <summary> The effects of this skill passive. </summary>
 	public virtual void PassiveEffects(ref SkillBuff buff) { }
