@@ -5,6 +5,9 @@ internal sealed class TimeSystem : ModSystem
 	/// <summary> Logical update count, including those during which the game has been paused. </summary>
 	public static ulong UpdateCount { get; private set; }
 
+	public static int LogicFramerate => 60;
+	public static float LogicDeltaTime => 1f / LogicFramerate;
+
 	public override void Load()
 	{
 		Main.OnTickForInternalCodeOnly += OnTickForInternalCodeOnly;
