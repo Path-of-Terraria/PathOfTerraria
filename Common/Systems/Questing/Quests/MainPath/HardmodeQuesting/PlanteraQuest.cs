@@ -7,21 +7,22 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
 internal class PlanteraQuest() : HardmodeQuest(5)
 {
-	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
+	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct2;
+	public override int NPCQuestGiver => ModContent.NPCType<MorganaNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
-			p.GetModPlayer<QuestModPlayer>().StartQuest<GolemQuest>();
 		}, "30000 experience"),
 	];
 
@@ -29,16 +30,27 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 	{
 		return
 		[
-			new ConditionCheck(_ => 
-			{
-				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				return tracker.CompletionsAtOrAboveTier(5) >= MappingDomainSystem.RequiredCompletionsPerTier;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
-				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
-				MappingDomainSystem.RequiredCompletionsPerTier
-			)),
-			new ConditionCheck(_ => SubworldSystem.Current is PlanteraDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<PlanteraDomain>(NPCID.Plantera), 1, this.GetLocalization("Boss")),
+			new ParallelQuestStep([			
+				new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1"), 
+					Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1"),
+					[
+						new GiveItem(5, ItemID.Vine), // TODO: Replace this with Plant Growth item from post-mech jg mob.
+						new GiveItem(10, ItemID.JungleSpores), 
+					]),
+				new KillCount(NPCID.Plantera, 10, this.GetLocalization("Plantera")) //TODO: Change this to the Plant growth item mob from above^^
+			], Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1")),
+
+			// TODO: Add a step here that has something to do with the plant growths. Likely something that will lead into a portal spawning for plantera. 
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue2"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue2"),
+				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<PlanteraMap>())),
+			
+			new ConditionCheck(_ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
+			
+			new ConditionCheck(_ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
+	
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue3"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue3"))
 		];
 	}
 
@@ -49,6 +61,7 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 
 	public override bool Available()
 	{
-		return false;
+		Quest skelePrimeQuest = GetLocalPlayerInstance<SkelePrimeQuest>();
+		return skelePrimeQuest.Completed && NPC.downedMechBoss3;
 	}
 }

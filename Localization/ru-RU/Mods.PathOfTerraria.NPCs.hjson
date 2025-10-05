@@ -13,6 +13,10 @@ BlacksmithNPC: {
 		Quest2: Потрясающе! Я быстро починю старую кузню. Вот, возьми этот меч. Это пробный образец, который я сделал прямо перед атакой. Хотел бы, чтобы ты протестировал его на зомби; эти ребята ужасно надоедливы. Если не трудно, я бы также хотел ещё немного материалов. Тогда, думаю, мы сможем вернуть Железный Наковальня в строй!
 		Quest3: Это почти вызывает слёзы. Железная Кузня почти готова к работе! Вот, это урок, который я вынес из своего боевого прошлого: Иногда надо сойти с ума. Только будь осторожен! И возвращайся, когда захочешь - ты был огромной помощью!
 		OldManDialogue: Привет, путешественник!... что ты сказал? Кто-то направил тебя ко мне? Хм... я помню человека, закутанного в красное, он был здесь... некоторое время назад. Не могу сказать, сколько прошло времени, но довольно давно. Он просил кое-что конкретное... книгу зла, две свечи и слиток зла. Он говорил что-то о том, чтобы посыпать книгу порошком зла... но... это всё, что я могу сказать. Не уверен, о чём он говорил.
+		// EoWDialogue: Aha! Welcome back, warrior. Listen, there's a scientist who's been studying the corruption in those cursed lands - brilliant fellow, but a bit reckless. He ventured into one of the corrupted biomes days ago and hasn't returned. I'm worried something's happened to him. Could you seek him out? He knows far more about those dark energies than I do, and we'll need his expertise for what's coming.
+		// GolemDialogue1: Adventurer, I’ve heard the old jungle temple has been stirring. After Plantera’s fall, the place has opened its doors once more. Aye, it was built by the Lihzahrds long ago, stone stacked upon stone, and deep inside waits their creation… the Golem. A living statue, forged to protect their halls. If you’re set on facing it, you’ll need to use the Temple Key to gain entry, and gather some power cells from within. Only then can you stand before their guardian.
+		// GolemDialogue2: Well done! With  power cells in hand, you’ve got all that’s needed to rouse the beast. The Golem is no mere statue… it’s a sentinel of stone and flame, built to crush any who trespass. When you’re ready, use the altar within to travel to its domain. Just remember, lad, stone may be silent, but when it moves, it strikes harder than steel.
+		// GolemDialogue3: By the stone, you actually felled it… the Golem lies broken! The Lihzahrds must’ve worshiped that statue as their greatest creation, and now it’s rubble. Aye, it was a marvel of craft. Stone bound with flame, moving as if alive. Strange, though… its forging feels different than the others. Not twisted like the machines, nor cursed like the dungeon’s bones. This was ancient, primordial work. Whatever power shaped it is older than the Old Ones, and far heavier on my heart. I fear something far greater is just over the horizon, adventurer.
 	}
 
 	BubbleDialogue: {
@@ -560,6 +564,9 @@ MorganaNPC: {
 		QueenBeeQuest: Ах! Ты вернулся! Мои уловки благоприятны, да? Да! У меня есть вопрос, который я хочу задать тебе! Возможно, странный, но нормальный для такой, как я! Да! Я вспомнил более... естественное время моей жизни, и хочу вернуть часть этой души. Могу ли я попросить тебя принести мне жала шершней из джунглей? Могу ли я? Могу ли я? Ты получишь хорошую награду, если сделаешь это.
 		GotStingers: Как замечательно! Да... вот. Возьми этот маленький кусочек. Это поможет тебе вызвать милого маленького злодея из твоего Гриммуара. Жестокий, но добрый! Увы, у меня есть еще одна вещь, о которой я хочу попросить. В джунглях обитает самое отвратительное существо, одна Королева Пчел. Могу ли я попросить тебя убить ее? Она стремится побеспокоить меня, и я хочу, чтобы она была мертва! Другая награда ждет тебя! Погрузи своего нового шершня в мед, если хочешь сражаться!
 		QueenBeeKilled: Почему, ты вернулся? Так скоро? Ты довольно силен, да ты! Ага, да. Да! Ты есть! Очень хорошо. Много благодарностей за поручение. У меня мало что есть, но ты должен взять это. Возьми это! Бахаха! Прощай!
+		// PlanteraDialogue1: Ahhh… do you feel it, stranger? The jungle stirs, whispers from beneath its roots! A blossom, long dormant, yet twisting with decay. A guardian of that ghastly temple. Its heart beats in rhythm with foul spores. Bring me those spores, and a sample of any new creatures the fall of those mechs has surely awoken, and I shall weave the ritual. Yes… yes, the flower must bloom once more!
+		// PlanteraDialogue2: Marvelous, marvelous! The spores cling to my fingers, and the growth pulses in my grasp as if it’s alive! Oh, how it grows, yes, how it grows! I see it now… Plantera, the jungle’s fierce protector, guardian no more. Its vines will strangle, its petals will bleed. I’ve attuned the Grimoire I own to its foul domain. Enter, adventurer, and cut the bloom before it consumes the whole jungle!
+		// PlanteraDialogue3: Ohoho! The jungle’s guardian withers at your feet, does it? Yes… yes! How delicious. The Lihzahrds brewed their own protector, one of stone and sunfire, forged not of corruption but of tradition. Their ritual lives in the cracks of that place… Hmhmhm… marvelous! Be wary though, stranger… break one root, and the rest of the jungle will writhe. And deeper still, something waits, older than even their worship. Do you feel it, stranger? The Great Old One is coming... Bahahaha!
 	}
 
 	Entry: Соберите 2 пера совы и 1 пару крыльев летучей мыши.
@@ -873,7 +880,8 @@ TinkerNPC: {
 
 		Night: {
 			// 0: Not much darkness around with all of these lights and explosions!
-			// 1: Difficult to tinker safely in the moonlight... Apologies if you get hurt!
+			// 1: Difficult to tinker safely in the moonlight...
+			// 2: Is inventing in the darkness a good idea...? Oh well. I'm going to do it anyways!
 		}
 
 		Rain: {

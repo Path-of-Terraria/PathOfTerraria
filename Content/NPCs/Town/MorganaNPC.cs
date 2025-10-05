@@ -7,6 +7,7 @@ using PathOfTerraria.Common.NPCs.QuestMarkers;
 using PathOfTerraria.Common.Subworlds.RavencrestContent;
 using PathOfTerraria.Common.Systems.Questing;
 using PathOfTerraria.Common.Systems.Questing.Quests.MainPath;
+using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Gear.Weapons.Grimoire;
@@ -88,18 +89,30 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 			button = Language.GetTextValue("LegacyInterface.28"); //Shop
 		}
 
-		Quest quest = DetermineNewestQuest();
-		button2 = !quest.CanBeStarted ? "" : Language.GetOrRegister($"Mods.{PoTMod.ModName}.NPCs.Quest").Value;
+		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<WitchStartQuest>() ||
+		                         QuestUnlockManager.CanStartQuest<PlanteraQuest>() ||
+		                         QuestUnlockManager.CanStartQuest<QueenBeeQuest>();
+
+		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
 	}
 
+	//TODO: This should probably be a base NPC functionality as many NPC's will have multiple quests. 
 	private static Quest DetermineNewestQuest()
 	{
-		if (!Quest.GetLocalPlayerInstance<WitchStartQuest>().Completed)
+		
+		if (QuestUnlockManager.CanStartQuest<WitchStartQuest>())
 		{
 			return Quest.GetLocalPlayerInstance<WitchStartQuest>();
 		}
-
-		return Quest.GetLocalPlayerInstance<QueenBeeQuest>();
+		if (QuestUnlockManager.CanStartQuest<QueenBeeQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<QueenBeeQuest>();
+		}
+		if (QuestUnlockManager.CanStartQuest<PlanteraQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<PlanteraQuest>();
+		}
+		return Quest.GetLocalPlayerInstance<WitchStartQuest>(); //Shouldn't be possible, but just in case
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -112,16 +125,21 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 
 		Quest quest = DetermineNewestQuest();
 
-		if (quest is WitchStartQuest)
+		switch (quest)
 		{
-			Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), ModContent.ItemType<GrimoireItem>());
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WitchStartQuest>();
-		}
-		else
-		{
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeQuest");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenBeeQuest>();
+			case WitchStartQuest:
+				Main.LocalPlayer.QuickSpawnItem(new EntitySource_Gift(NPC), ModContent.ItemType<GrimoireItem>());
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WitchStartQuest>();
+				break;
+			case QueenBeeQuest:
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.QueenBeeQuest");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<QueenBeeQuest>();
+				break;
+			case PlanteraQuest:
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue1");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<PlanteraQuest>();
+				break;
 		}
 	}
 

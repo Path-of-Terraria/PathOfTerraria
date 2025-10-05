@@ -31,14 +31,15 @@ internal class TinkerIntroQuest() : Quest
 		return
 		[
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue1"), 
-				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue1")),
+				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue1"), 
+				[
+					new GiveItem(100, ItemID.Wood),
+					new GiveItem(20, ItemID.Wire),
+					new GiveItem(50, ItemID.StoneBlock),
+					new GiveItem(1, ItemID.Teleporter),
+				], true), 
 			
-			new ParallelQuestStep([
-				new CollectCount(ItemID.Wood, 100),
-				new CollectCount(ItemID.Wire, 20), 
-				new CollectCount(ItemID.StoneBlock, 50),
-				new CollectCount(ItemID.Teleporter, 1)
-			], this.GetLocalization("CollectMaterials")),
+			//TODO Add the construction of her workshop here.
 			
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue2")),

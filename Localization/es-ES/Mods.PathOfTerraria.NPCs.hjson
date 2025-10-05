@@ -13,6 +13,10 @@ BlacksmithNPC: {
 		// Quest2: Fantastic! I'll fix the old forge up quick as I can. Here, take this sword. It's a test I made right before the attack. I'd like for you to test it on some zombies; those buggers are awful to deal with. If you'd be so kind, I'd also enjoy some more materials. Then I think we can get the Iron Anvil truly back to her feet!
 		// Quest3: It almost brings a tear to the eye. The Iron Forge is almost ready for work! Here, this is a lesson I've got from my history in battle: Sometimes, you gotta go crazy. Just be careful! And come back whenever you wish - you've been a great help!
 		// OldManDialogue: Hello there, traveler!...what do you say? A man referred me to you? Hm...I recall a man, cloaked in red, come around here...some time ago. Can't tell you how long ago now, but a while. He came asking for some specific things...a book of evil, two candles, and a bar of evil. He said something about throwing evil powder on a book...but...that's all I can say. Not sure what the guy was on about.
+		// EoWDialogue: Aha! Welcome back, warrior. Listen, there's a scientist who's been studying the corruption in those cursed lands - brilliant fellow, but a bit reckless. He ventured into one of the corrupted biomes days ago and hasn't returned. I'm worried something's happened to him. Could you seek him out? He knows far more about those dark energies than I do, and we'll need his expertise for what's coming.
+		// GolemDialogue1: Adventurer, I’ve heard the old jungle temple has been stirring. After Plantera’s fall, the place has opened its doors once more. Aye, it was built by the Lihzahrds long ago, stone stacked upon stone, and deep inside waits their creation… the Golem. A living statue, forged to protect their halls. If you’re set on facing it, you’ll need to use the Temple Key to gain entry, and gather some power cells from within. Only then can you stand before their guardian.
+		// GolemDialogue2: Well done! With  power cells in hand, you’ve got all that’s needed to rouse the beast. The Golem is no mere statue… it’s a sentinel of stone and flame, built to crush any who trespass. When you’re ready, use the altar within to travel to its domain. Just remember, lad, stone may be silent, but when it moves, it strikes harder than steel.
+		// GolemDialogue3: By the stone, you actually felled it… the Golem lies broken! The Lihzahrds must’ve worshiped that statue as their greatest creation, and now it’s rubble. Aye, it was a marvel of craft. Stone bound with flame, moving as if alive. Strange, though… its forging feels different than the others. Not twisted like the machines, nor cursed like the dungeon’s bones. This was ancient, primordial work. Whatever power shaped it is older than the Old Ones, and far heavier on my heart. I fear something far greater is just over the horizon, adventurer.
 	}
 
 	BubbleDialogue: {
@@ -571,6 +575,9 @@ MorganaNPC: {
 		// QueenBeeQuest: Ah! You return! My guiles are favorable, yes? Yes! I have a query to ask you! Perhaps odd, but normal for one such as I! Yes! I've harkened back to a more...natural time of my life, and I wish to have some of that soul back. Could I ask you to fetch me some hornet's stingers from the jungle? Could I? Could I? You'll get a nice reward if you do.
 		// GotStingers: How wonderful! Yes...here. Take this little morsel. It'll help you summon a cute little fiend from your Grimoire. Cruel, but kind! Alas, I have one more thing to ask. A creature most foul resides in the jungle, one Queen of Bees. Could I ask you to slay it? It seeks to bother me, and I wish it dead! Another award awaits you! Submerge your new hornet friend in honey if you wish to battle!
 		// QueenBeeKilled: Why, you return? So soon? You're quite strong, are you! Aha, yes. Yes! You are! Very well. Many thanks for the chore. I've little to give, but you must take it. Take it! Bahaha! Farewell!
+		// PlanteraDialogue1: Ahhh… do you feel it, stranger? The jungle stirs, whispers from beneath its roots! A blossom, long dormant, yet twisting with decay. A guardian of that ghastly temple. Its heart beats in rhythm with foul spores. Bring me those spores, and a sample of any new creatures the fall of those mechs has surely awoken, and I shall weave the ritual. Yes… yes, the flower must bloom once more!
+		// PlanteraDialogue2: Marvelous, marvelous! The spores cling to my fingers, and the growth pulses in my grasp as if it’s alive! Oh, how it grows, yes, how it grows! I see it now… Plantera, the jungle’s fierce protector, guardian no more. Its vines will strangle, its petals will bleed. I’ve attuned the Grimoire I own to its foul domain. Enter, adventurer, and cut the bloom before it consumes the whole jungle!
+		// PlanteraDialogue3: Ohoho! The jungle’s guardian withers at your feet, does it? Yes… yes! How delicious. The Lihzahrds brewed their own protector, one of stone and sunfire, forged not of corruption but of tradition. Their ritual lives in the cracks of that place… Hmhmhm… marvelous! Be wary though, stranger… break one root, and the rest of the jungle will writhe. And deeper still, something waits, older than even their worship. Do you feel it, stranger? The Great Old One is coming... Bahahaha!
 	}
 
 	// Entry: Eccentric but decievingly powerful, Morgana offers a lot to Ravencrest. Sure, she may be nearly incomprehensible sometimes, and some might say offputting a lot of the time, but she's good at what she does. Huh? "What does she do?" Uh...
@@ -884,7 +891,8 @@ TinkerNPC: {
 
 		Night: {
 			// 0: Not much darkness around with all of these lights and explosions!
-			// 1: Difficult to tinker safely in the moonlight... Apologies if you get hurt!
+			// 1: Difficult to tinker safely in the moonlight...
+			// 2: Is inventing in the darkness a good idea...? Oh well. I'm going to do it anyways!
 		}
 
 		Rain: {

@@ -25,7 +25,7 @@ internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText disp
 
 	public override string DisplayString()
 	{
-		return Display.WithFormatArgs(MaxRemaining - _remaining + "/" + MaxRemaining).Value;
+		return Display.WithFormatArgs(MaxRemaining - _remaining, MaxRemaining).Value;	
 	}
 
 	public override void DrawQuestStep(Vector2 topLeft, out int uiHeight, StepCompletion currentStep)

@@ -7,21 +7,22 @@ using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
 using SubworldLibrary;
 using System.Collections.Generic;
+using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
+using Terraria.Localization;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
-internal class SkelePrimeQuest() : HardmodeQuest(4)
+internal class SkelePrimeQuest() : Quest
 {
-	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct1;
-	public override int NPCQuestGiver => ModContent.NPCType<BlacksmithNPC>();
+	public override QuestTypes QuestType => QuestTypes.MainStoryQuestAct2;
+	public override int NPCQuestGiver => ModContent.NPCType<TinkerNPC>();
 
 	public override List<QuestReward> QuestRewards =>
 	[
 		new ActionRewards((p, v) =>
 		{
 			p.GetModPlayer<ExpModPlayer>().Exp += 30000;
-			p.GetModPlayer<QuestModPlayer>().StartQuest<PlanteraQuest>();
 		},
 			"30000 experience"),
 	];
@@ -30,16 +31,25 @@ internal class SkelePrimeQuest() : HardmodeQuest(4)
 	{
 		return
 		[
-			new ConditionCheck(_ => 
-			{
-				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
-				return tracker.CompletionsAtOrAboveTier(4) >= MappingDomainSystem.RequiredCompletionsPerTier;
-			}, 1, () => this.GetLocalization("Tiers").WithFormatArgs(
-				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
-				MappingDomainSystem.RequiredCompletionsPerTier
-			)),
-			new ConditionCheck(_ => SubworldSystem.Current is PrimeDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<PrimeDomain>(NPCID.SkeletronPrime), 1, this.GetLocalization("Boss")),
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue1"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue1"),
+				[
+					new GiveItem(10, ItemID.SoulofNight),
+					new GiveItem(20, ItemID.Bone),
+					new GiveItem(5, ItemID.MechanicalWagonPiece), //TODO: Replace this with a new item dropped from a "mech" monster from the HM dung
+				]),
+			
+			//TODO: I think having a second, greater ritual (akin to skeletron) would be good here, with the above items (Souls of night can be made into Soul of Night in a bottle probably)
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue2"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue2"),
+				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<PrimeMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE
+			
+			new ConditionCheck(_ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
+			
+			new ConditionCheck(_ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
+	
+			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue3"), 
+				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue3"))
 		];
 	}
 
@@ -50,6 +60,7 @@ internal class SkelePrimeQuest() : HardmodeQuest(4)
 
 	public override bool Available()
 	{
-		return false;
+		Quest destroyerQuest = GetLocalPlayerInstance<DestroyerQuest>();
+		return destroyerQuest.Completed && NPC.downedMechBoss1;
 	}
 }
