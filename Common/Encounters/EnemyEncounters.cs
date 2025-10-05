@@ -1,5 +1,7 @@
-﻿using System.ComponentModel;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using MonoMod.Cil;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -52,6 +54,15 @@ internal record struct EncounterWave()
 {
 	/// <summary> The enemies to spawn. </summary>
 	public required EnemySpawn[] Spawns { get; set; }
+	/// <summary> The kill score ratio that needs to be reached from killing enemies specifically spawned by this wave to advance to the next wave. </summary>
+	[Range(0f, 1f), DefaultValue(0.0f)]
+	public float TargetSpawnScore { get; set; } = 0.0f;
+	/// <summary> The kill score ratio that needs to be reached from killing any enemies during this wave to advance to the next wave. </summary>
+	[Range(0f, 1f), DefaultValue(0.8f)]
+	public float TargetWaveScore { get; set; } = 0.8f;
+	/// <summary> The kill score ratio that needs to be reached from killing enemies from this and all preceding waves to advance to the next wave. </summary>
+	[Range(0f, 1f), DefaultValue(0.0f)]
+	public float TargetEncounterScore { get; set; } = 0.0f;
 }
 
 /// <summary> An encounter instance's activation state. </summary>
@@ -73,6 +84,19 @@ internal record struct EncounterInstance()
 	public int WaveIndex { get; set; }
 	/// <summary> The amount of enemies that have been spawned for the current wave. </summary>
 	public int EnemiesSpawnedThisWave { get; set; }
+	/// <summary> The kill score that has been accumulated during the whole encounter. </summary>
+	public float EncounterScore { get; set; }
+	/// <summary> The kill score that has been accumulated from killing any enemies during the current wave. </summary>
+	public float WaveScore { get; set; }
+	/// <summary> The kill score that has been accumulated from killing enemies spawned specifically by the current wave. </summary>
+	public float SpawnScore { get; set; }
+
+	/// <summary> The <see cref="EncounterScore"/> value that must be reached to advance to the next encounter. </summary>
+	public float TargetEncounterScore { get; set; }
+	/// <summary> The <see cref="WaveScore"/> value that must be reached to advance to the next encounter. </summary>
+	public float TargetWaveScore { get; set; }
+	/// <summary> The <see cref="SpawnScore"/> value that must be reached to advance to the next encounter. </summary>
+	public float TargetSpawnScore { get; set; }
 }
 
 /// <summary> A versioned handle for an encounter instance. </summary>
@@ -94,6 +118,7 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 
 		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
 		data.Instance.State = EncounterState.InProgress;
+		RecalculateCache();
 	}
 
 	/// <summary> Marks this encounter as completed. </summary>
@@ -108,6 +133,19 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 	{
 		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
 		data = new() { Description = data.Description };
+	}
+
+	/// <summary> Resets this encounter's current wave. </summary>
+	public readonly void ResetWave()
+	{
+		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
+		ref readonly EncounterWave wave = ref data.Description.Waves[data.Instance.WaveIndex];
+
+		data.Instance.EnemiesSpawnedThisWave = 0;
+		data.Instance.WaveScore = 0f;
+		data.Instance.SpawnScore = 0f;
+
+		RecalculateCache();
 	}
 
 	/// <summary> Removes this encounter if it is valid, returning whether that was the case. </summary>
@@ -160,8 +198,40 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 		if (data.Instance.WaveIndex >= data.Description.Waves.Length)
 		{
 			data.Instance.WaveIndex = data.Description.Waves.Length - 1;
-			data.Instance.EnemiesSpawnedThisWave = 0;
+			ResetWave();
 		}
+	}
+
+	/// <summary> Iterates all active NPCs associated with this encounter. </summary>
+	public readonly IEnumerable<NPC> IterateRemainingEnemies()
+	{
+		if (!IsValid) { yield break; }
+
+		for (int i = 0; i < Main.maxNPCs; i++)
+		{
+			if (Main.npc[i] is { active: true } npc && EnemyEncounters.enemyToEncounterMapping[npc.whoAmI].Encounter == this)
+			{
+				yield return npc;
+			}
+		}
+	}
+
+	private readonly void RecalculateCache()
+	{
+		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
+		ref readonly EncounterWave wave = ref data.Description.Waves[data.Instance.WaveIndex];
+		float lastMaxScore = 0f;
+		float totalMaxScore = 0f;
+
+		for (int waveIndex = 0; waveIndex <= data.Instance.WaveIndex; waveIndex++)
+		{
+			lastMaxScore = data.Description.Waves[waveIndex].Spawns.Sum(s => s.KillScore);
+			totalMaxScore += lastMaxScore;
+		}
+
+		data.Instance.TargetEncounterScore = totalMaxScore * wave.TargetEncounterScore;
+		data.Instance.TargetWaveScore = lastMaxScore * wave.TargetWaveScore;
+		data.Instance.TargetSpawnScore = lastMaxScore * wave.TargetSpawnScore;
 	}
 }
 
@@ -174,6 +244,8 @@ internal sealed class EnemyEncounters : ModSystem
 		public uint SpawnCooldown;
 	}
 
+	internal record struct EnemyInstanceData(Encounter Encounter, int WaveIndex, float Score);
+
 	// Wraps GenerationalArena's iterator to keep it an implementation detail. Enumerator methods do not cut it.
 	public ref struct Iterator()
 	{
@@ -184,18 +256,24 @@ internal sealed class EnemyEncounters : ModSystem
 		public readonly Iterator GetEnumerator() { return this; }
 	}
 
-	private sealed class NpcLogic : GlobalNPC
+	private sealed class EncounterNpc : GlobalNPC
 	{
 		public override void OnSpawn(NPC npc, IEntitySource source)
 		{
 			// Reset mapping for this slot.
-			enemyToEncounterMapping[npc.whoAmI] = default;
+			TrackEnemyKill(npc.whoAmI);
+		}
+
+		public override void OnKill(NPC npc)
+		{
+			// Reset mapping for this slot.
+			TrackEnemyKill(npc.whoAmI);
 		}
 	}
 
 	internal static readonly GenerationalArena<Encounter, InstanceData> encounters = new(initialCapacity: 16);
-	/// <summary> Maps spawned enemies to the encounter that spawned them. </summary>
-	private static readonly Encounter[] enemyToEncounterMapping = new Encounter[Main.maxNPCs + 1];
+	/// <summary> Maps spawned enemies to the encounter wave that spawned them, and their advancement score. </summary>
+	internal static readonly EnemyInstanceData[] enemyToEncounterMapping = new EnemyInstanceData[Main.maxNPCs + 1];
 
 	public static uint Count => encounters.Count;
 	public static uint Capacity => encounters.Capacity;
@@ -250,6 +328,7 @@ internal sealed class EnemyEncounters : ModSystem
 
 		StartEncounters();
 		SpawnEnemies();
+		TrackEnemyKills();
 		ProgressEncounters();
 		DebugEncounters();
 	}
@@ -315,7 +394,7 @@ internal sealed class EnemyEncounters : ModSystem
 
 				data.Instance.EnemiesSpawnedThisWave++;
 				data.SpawnCooldown += spawn.CooldownInTicks;
-				enemyToEncounterMapping[npc.whoAmI] = encounter;
+				enemyToEncounterMapping[npc.whoAmI] = new(encounter, data.Instance.WaveIndex, spawn.KillScore);
 
 				if (data.SpawnCooldown > 0)
 				{
@@ -325,25 +404,58 @@ internal sealed class EnemyEncounters : ModSystem
 		}
 	}
 
+	private static void TrackEnemyKills()
+	{
+		// Account for sudden disappearances.
+		for (int i = 0; i < Main.maxNPCs; i++)
+		{
+			ref EnemyInstanceData mapping = ref enemyToEncounterMapping[i];
+			NPC npc = Main.npc[i];
+
+			if (!npc.active && mapping.Encounter.IsValid)
+			{
+				TrackEnemyKill(i);
+			}
+		}
+	}
+
+	private static void TrackEnemyKill(int index)
+	{
+		ref EnemyInstanceData mapping = ref enemyToEncounterMapping[index];
+
+		if (mapping.Encounter is { IsValid: true } encounter)
+		{
+			ref InstanceData data = ref encounters.Get(encounter);
+			data.Instance.EncounterScore += mapping.Score;
+			data.Instance.WaveScore += mapping.Score;
+			data.Instance.SpawnScore += encounter.Instance.WaveIndex == mapping.WaveIndex ? mapping.Score : 0f;
+		}
+
+		mapping = default;
+	}
+
 	private static void ProgressEncounters()
 	{
 		foreach (Encounter encounter in encounters)
 		{
 			ref InstanceData data = ref encounters.Get(encounter);
-			ref readonly EncounterDescription description = ref data.Description;
-			ref readonly EncounterWave wave = ref description.Waves[data.Instance.WaveIndex];
+			ref readonly EncounterWave wave = ref data.Description.Waves[data.Instance.WaveIndex];
 
 			if (data.Instance.State != EncounterState.InProgress) { continue; }
 			if (data.Instance.IsPaused) { continue; }
 
-			// Switch to next wave or end the encounter if all of its spawned enemies have been killed.
+			// Switch to next wave or end the encounter if enough of its spawned enemies have been killed.
 			if (data.Instance.EnemiesSpawnedThisWave >= wave.Spawns.Length)
 			{
-				int livingCount = CountLivingEnemiesFromEncounter(encounter);
+				bool isFinalWave = data.Instance.WaveIndex + 1 >= data.Description.Waves.Length;
+				bool killedAll = isFinalWave && CountLivingEnemiesFromEncounter(encounter) == 0;
+				bool anyWaveAnyEnemy = data.Instance.EncounterScore >= data.Instance.TargetEncounterScore;
+				bool localWaveAnyEnemy = data.Instance.WaveScore >= data.Instance.TargetWaveScore;
+				bool localWaveLocalEnemy = data.Instance.SpawnScore >= data.Instance.TargetSpawnScore;
 
-				if (livingCount == 0)
+				if (anyWaveAnyEnemy & localWaveAnyEnemy & localWaveLocalEnemy)
 				{
-					if (data.Instance.WaveIndex + 1 >= description.Waves.Length)
+					if (isFinalWave)
 					{
 						encounter.Complete();
 					}
@@ -360,16 +472,22 @@ internal sealed class EnemyEncounters : ModSystem
 	{
 		ref InstanceData data = ref encounters.Get(encounter);
 		data.Instance.WaveIndex++;
-		data.Instance.EnemiesSpawnedThisWave = 0;
+		encounter.ResetWave();
+
+#if DEBUG
+		Main.NewText($"Wave {data.Instance.WaveIndex} of {data.Description.Waves.Length}", Color.MediumVioletRed);
+#endif
 	}
 
 	private static int CountLivingEnemiesFromEncounter(Encounter encounter)
 	{
+		if (!encounter.IsValid) { return 0; }
+
 		int result = 0;
 
 		foreach (NPC npc in Main.ActiveNPCs)
 		{
-			if (enemyToEncounterMapping[npc.whoAmI] == encounter)
+			if (enemyToEncounterMapping[npc.whoAmI].Encounter == encounter)
 			{
 				result += 1;
 			}

@@ -29,12 +29,16 @@ internal record struct EnemySpawn()
 	public required Vector2? SpawnPosition { get; set; }
 	/// <summary> Pre-determined spawn position to use. Mutually exclusive with <see cref="SpawnPlacement"/>. </summary>
 	public required SpawnPlacement? SpawnPlacement { get; set; }
-	/// <summary> The time in ticks that must pass before the next enemy in queue will be spawned. </summary>
-	[Range(0, 5 * 60 * 60), DefaultValue(0)]
-	public uint CooldownInTicks { get; set; } = 0;
 	/// <summary> Which effect to use for this spawn. </summary>
 	[JsonConverter(typeof(StringEnumConverter))]
 	public EnemySpawnEffect Effect { get; set; }
+
+	/// <summary> The time in ticks that must pass before the next enemy in queue will be spawned. </summary>
+	[Range(0, 5 * 60 * 60), DefaultValue(0)]
+	public uint CooldownInTicks { get; set; } = 0;
+	/// <summary> The encounter kill score given for killing this enemy. </summary>
+	[DefaultValue(1f)]
+	public float KillScore { get; set; } = 1f;
 }
 
 /// <summary> A description used to calculate a placement for an enemy spawn. </summary>
@@ -151,7 +155,10 @@ internal static class EnemySpawning
 		return true;
 	}
 
-	private static void SpawnEffects(NPC npc, EnemySpawnEffect effect, Vector2 position)
+	/// <summary>
+	/// Triggers spawn effects for the given enemy at a given position. Synchronized from server to clients.
+	/// </summary>
+	public static void SpawnEffects(NPC npc, EnemySpawnEffect effect, Vector2 position)
 	{
 		if (Main.netMode == NetmodeID.Server)
 		{
