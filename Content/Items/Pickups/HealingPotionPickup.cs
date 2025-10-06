@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.Utilities.Extensions;
+using PathOfTerraria.Utilities.Terraria;
 using Terraria.Audio;
 using Terraria.ID;
 
@@ -70,8 +71,8 @@ internal class HealingPotionPickup : PickupItem
 
 		glowColor *= 0.6f + (float)Math.Sin(Main.GameUpdateCount * 0.1f) * 0.1f;
 
-		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, Item.GetShimmeredAlpha(glowColor), 0, glow.Size() / 2f, 0.6f, 0, 0);
-		Item.DrawSelfQuick(lightColor, rotation);
+		spriteBatch.Draw(glow, Item.Center - Main.screenPosition, null, ShimmerUtils.GetShimmeredAlpha(Item, glowColor), 0, glow.Size() / 2f, 0.6f, 0, 0);
+		ItemDrawing.DrawSelfQuick(Item, lightColor, rotation);
 
 		return false;
 	}

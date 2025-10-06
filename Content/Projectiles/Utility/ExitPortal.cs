@@ -57,44 +57,47 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 
 		if (ItemMagnetTimer++ == 60)
 		{
-			for (int i = 0; i < Main.maxItems; ++i)
-			{
-				Item item = Main.item[i];
-
-				// Invalid items to teleport (inactive or takes up a lot of space, might push items far away)
-				if (!item.active || item.IsACoin || item.type == ModContent.ItemType<HealingPotionPickup>() || item.type == ModContent.ItemType<ManaPotionPickup>())
-				{
-					continue;
-				}
-
-				// Only update items if this is a server, or if this item is a client-only item
-				if (Main.netMode == NetmodeID.MultiplayerClient && item.playerIndexTheItemIsReservedFor != Main.myPlayer)
-				{
-					continue;
-				}
-
-				Vector2 pos;
-
-				do
-				{
-					pos = Projectile.Center + Main.rand.NextVector2Circular(80, 80);
-				} while (Collision.SolidCollision(pos, item.width, item.height) || Collision.LavaCollision(pos, item.width, item.height));
-
-				SpawnVFX(item.Center);
-
-				item.Center = pos;
-				item.shimmered = true;
-
-				if (Main.netMode == NetmodeID.Server)
-				{
-					NetMessage.SendData(MessageID.SyncItemsWithShimmer, -1, -1, null, i, 1);
-				}
-
-				SpawnVFX(item.Center);
-			}
+			MagnetizeItems();
 		}
 
 		return;
+	}
+
+	private void MagnetizeItems()
+	{
+		foreach (Item item in Main.ActiveItems)
+		{
+			// Invalid items to teleport (inactive or takes up a lot of space, might push items far away)
+			if (!item.active || item.IsACoin || item.type == ModContent.ItemType<HealingPotionPickup>() || item.type == ModContent.ItemType<ManaPotionPickup>())
+			{
+				continue;
+			}
+
+			// Only update items if this is a server, or if this item is a client-only item
+			if (Main.netMode == NetmodeID.MultiplayerClient && item.playerIndexTheItemIsReservedFor != Main.myPlayer)
+			{
+				continue;
+			}
+
+			Vector2 pos;
+
+			do
+			{
+				pos = Projectile.Center + Main.rand.NextVector2Circular(80, 80);
+			} while (Collision.SolidCollision(pos, item.width, item.height) || Collision.LavaCollision(pos, item.width, item.height));
+
+			SpawnVFX(item.Center);
+
+			item.Center = pos;
+			item.shimmered = true;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncItemsWithShimmer, -1, -1, null, item.whoAmI, 1);
+			}
+
+			SpawnVFX(item.Center);
+		}
 
 		static void SpawnVFX(Vector2 position)
 		{
