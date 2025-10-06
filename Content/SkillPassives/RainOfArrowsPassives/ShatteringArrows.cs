@@ -1,0 +1,9 @@
+﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
+
+namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
+
+internal class ShatteringArrows(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["70"];
+}
