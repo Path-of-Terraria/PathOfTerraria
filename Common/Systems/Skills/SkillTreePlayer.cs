@@ -106,7 +106,7 @@ internal class SkillTreePlayer : ModPlayer
 
 		if (!levelByType.TryAdd(nodeType, levelAdjustment))
 		{
-			if (set)
+			if (!set)
 			{
 				levelByType[nodeType] += levelAdjustment;
 			}

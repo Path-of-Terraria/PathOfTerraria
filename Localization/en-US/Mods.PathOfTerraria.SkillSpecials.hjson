@@ -44,3 +44,18 @@ VolatileConstruct: {
 	Name: Volatile Construct
 	Description: Conjure a fiery sentry that explodes after {0} seconds, dealing additional damage based on remaining life
 }
+
+AntlionSwarm: {
+	Name: Airborne Antlions
+	Description: Halve the maximum amount of insects, but the insects fly and deal more damage
+}
+
+LocustBrood: {
+	Name: Locust Brood
+	Description: Twice the amount of insects spawn as eggs all at once, spawning after some time
+}
+
+GlacialAntlions: {
+	Name: Glacial Antlions
+	Description: Antlions deal 100% cold damage
+}

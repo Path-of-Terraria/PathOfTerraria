@@ -10,7 +10,20 @@ namespace PathOfTerraria.Content.Projectiles.Utility;
 /// </summary>
 internal class ExplosionHitbox : ModProjectile
 {
-	public readonly record struct VFXPackage(int GoreRepeats = 1, int SmokeDustCount = 20, int TorchDustCount = 10, bool Sfx = true, Range? GoreRange = null, 
+	/// <summary>
+	/// 
+	/// </summary>
+	/// <param name="GoreCount">How many smoke gores to spawn. Defaults to 4 repeat.</param>
+	/// <param name="SmokeDustCount">How many smoke dusts to spawn. Defaults to 20.</param>
+	/// <param name="TorchDustCount">
+	/// How many torch dusts to spawn. Defaults to 10. 
+	/// Note that this will loop <paramref name="TorchDustCount"/> / 2 times, since the loop has two dust spawns in it..
+	/// </param>
+	/// <param name="Sfx">Whether the sfx should play.</param>
+	/// <param name="GoreRange"></param>
+	/// <param name="SmokeDustType"></param>
+	/// <param name="TorchDustType"></param>
+	public readonly record struct VFXPackage(int GoreCount = 4, int SmokeDustCount = 20, int TorchDustCount = 10, bool Sfx = true, float Volume = 1f, Range? GoreRange = null,
 		int SmokeDustType = DustID.Smoke, int TorchDustType = DustID.Torch);
 
 	public override string Texture => "Terraria/Images/NPC_0";
@@ -52,20 +65,13 @@ internal class ExplosionHitbox : ModProjectile
 	/// Copies vanilla's bomb/grenade explosion VFX with some modifyability.
 	/// </summary>
 	/// <param name="entity">Enity that's spawning the VFX.</param>
-	/// <param name="goreRepeats">How many times to <b>repeat</b> the gore spawning. Spawns 4 gore per repeat. Defaults to 1 repeat.</param>
-	/// <param name="smokeDustCount">How many smoke dusts to spawn. Defaults to 20.</param>
-	/// <param name="torchDustCount">
-	/// How many torch dusts to spawn. Defaults to 10. 
-	/// Note that this will loop <paramref name="torchDustCount"/> / 2 times, since the loop has two dust spawns in it..
-	/// </param>
-	/// <param name="sfx">Whether to play the SFX or not.</param>
 	public static void VFX(Entity entity, VFXPackage? package = null)
 	{
-		VFXPackage value = package ?? new VFXPackage(1);
+		VFXPackage value = package ?? new VFXPackage(4);
 
 		if (value.Sfx && !Main.dedServ)
 		{
-			SoundEngine.PlaySound(in SoundID.Item14, entity.position);
+			SoundEngine.PlaySound(SoundID.Item14 with { Volume = package.Value.Volume }, entity.position);
 		}
 
 		for (int i = 0; i < value.SmokeDustCount; i++)
@@ -95,31 +101,13 @@ internal class ExplosionHitbox : ModProjectile
 		IEntitySource src = entity.GetSource_Death();
 		Range goreIdRange = value.GoreRange ?? GoreID.Smoke1..GoreID.Smoke3;
 
-		for (int i = 0; i < value.GoreRepeats; ++i)
+		for (int i = 0; i < value.GoreCount; ++i)
 		{
-			int slot = Gore.NewGore(src, entity.position, default, RandomSmoke(goreIdRange));
+			int slot = Gore.NewGore(src, entity.position, new Vector2(1, 0).RotatedBy(MathHelper.PiOver2 * (i % 4)), RandomSmoke(goreIdRange));
 			Gore gore = Main.gore[slot];
 			gore.velocity *= 0.4f;
 			gore.velocity.X += 1f;
 			gore.velocity.Y += 1f;
-
-			slot = Gore.NewGore(src, entity.position, default, RandomSmoke(goreIdRange));
-			gore = Main.gore[slot];
-			gore.velocity *= 0.4f;
-			gore.velocity.X -= 1f;
-			gore.velocity.Y += 1f;
-
-			slot = Gore.NewGore(src, entity.position, default, RandomSmoke(goreIdRange));
-			gore = Main.gore[slot];
-			gore.velocity *= 0.4f;
-			gore.velocity.X += 1f;
-			gore.velocity.Y -= 1f;
-
-			slot = Gore.NewGore(src, entity.position, default, RandomSmoke(goreIdRange));
-			gore = Main.gore[slot];
-			gore.velocity *= 0.4f;
-			gore.velocity.X -= 1f;
-			gore.velocity.Y -= 1f;
 		}
 
 		return;

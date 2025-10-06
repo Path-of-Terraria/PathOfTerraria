@@ -177,7 +177,11 @@ public abstract partial class Skill
 		return Name.GetHashCode(); // Again, you can use other properties here if needed
 	}
 
-	/// <summary> What this skill actually does.<br/>Consumes mana based on <see cref="TotalManaCost"/> and applies <see cref="MaxCooldown"/> by default. </summary>
+	/// <summary>
+	/// What this skill actually does.<br/>
+	/// By default, consumes mana based on <see cref="TotalManaCost"/> and applies <see cref="MaxCooldown"/>.<br/>
+	/// This only runs on the local client.
+	/// </summary>
 	/// <param name="player">The player using the skill</param>
 	public virtual void UseSkill(Player player)
 	{

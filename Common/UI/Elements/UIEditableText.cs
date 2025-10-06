@@ -27,6 +27,8 @@ public partial class UIEditableText(InputType inputType = InputType.Text, string
 
 	public string UseValue => CurrentValue == string.Empty && !_typing ? _backingString : CurrentValue;
 
+	public bool IsTyping => _typing;
+
 	public string CurrentValue = "";
 
 	private bool _typing;
