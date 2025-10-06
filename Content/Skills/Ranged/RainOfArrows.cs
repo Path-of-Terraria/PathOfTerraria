@@ -324,14 +324,14 @@ public class RainOfArrows : Skill
 				if (Main.rand.NextFloat() < 0.05f + count && Main.myPlayer == projectile.owner)
 				{
 					int damage = (int)(projectile.damage * 1.5f);
-					int type = ModContent.ProjectileType<FesteringSpores.FesteringSporesProj>();
+					int type = ModContent.ProjectileType<FesteringSporesProj>();
 					Projectile.NewProjectile(projectile.GetSource_Death(), projectile.Center, Vector2.Zero, type, damage, 8f, projectile.owner);
 				}
 			}
 
 			if (projectile.GetOwner().GetPassiveStrength<RainOfArrowsTree, LingeringPoison>() > 0 && Main.myPlayer == projectile.owner)
 			{
-				int type = ModContent.ProjectileType<LingeringPoison.SporeCloud>();
+				int type = ModContent.ProjectileType<SporeCloud>();
 				Vector2 velocity = Main.rand.NextVector2Circular(0.6f, 0.6f);
 				Projectile.NewProjectile(projectile.GetSource_Death(), projectile.Center, velocity, type, projectile.damage, 8f, projectile.owner);
 			}
@@ -393,7 +393,7 @@ public class RainOfArrows : Skill
 				target.AddBuff(BuffID.Bleeding, 60 * 3);
 			}
 
-			if (target.TryGetGlobalNPC(out CreepingVines.VineNPC vinedNpc))
+			if (target.TryGetGlobalNPC(out VineNPC vinedNpc))
 			{
 				ref Vector2? vine = ref vinedNpc.Vined;
 

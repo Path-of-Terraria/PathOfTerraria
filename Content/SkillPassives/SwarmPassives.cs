@@ -13,7 +13,10 @@ namespace PathOfTerraria.Content.SkillPassives.SwarmPassives;
 
 internal class AggressiveChill(SkillTree tree) : SkillPassive(tree);
 
-internal class BiggerBrood(SkillTree tree) : SkillPassive(tree);
+internal class BiggerBrood(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["1"];
+}
 
 internal class CarapaceCracker(SkillTree tree) : SkillPassive(tree)
 {
@@ -37,27 +40,52 @@ internal class CarapaceCracker(SkillTree tree) : SkillPassive(tree)
 	}
 }
 
-internal class CarnivorousLarvae(SkillTree tree) : SkillPassive(tree);
+internal class CarnivorousLarvae(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["2"];
+}
 
-internal class ColdBlooded(SkillTree tree) : SkillPassive(tree);
+internal class ColdBlooded(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["1"];
+}
 
-internal class CombustableGuts(SkillTree tree) : SkillPassive(tree);
+internal class CombustableGuts(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["2"];
+}
 
 internal class Eggsplosion(SkillTree tree) : SkillPassive(tree);
 
-internal class FrostbiteMandibles(SkillTree tree) : SkillPassive(tree);
+internal class FrostbiteMandibles(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["10"];
+}
 
-internal class Gestation(SkillTree tree) : SkillPassive(tree);
+internal class Gestation(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["10"];
+}
 
-internal class HeartierExplosions(SkillTree tree) : SkillPassive(tree);
+internal class HeartierExplosions(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["2"];
+}
 
 internal class IceVenom(SkillTree tree) : SkillPassive(tree);
 
-internal class InfectedDetonation(SkillTree tree) : SkillPassive(tree);
+internal class InfectedDetonation(SkillTree tree) : SkillPassive(tree)
+{
+	// % chance to explode, % of max health used as damage
+	public override object[] TooltipArguments => ["10", "10"];
+}
 
 internal class OverheatingBugs(SkillTree tree) : SkillPassive(tree);
 
-internal class QuickerHatching(SkillTree tree) : SkillPassive(tree);
+internal class QuickerHatching(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["20"];
+}
 
 internal class ShatteringCarapace(SkillTree tree) : SkillPassive(tree)
 {
@@ -109,14 +137,22 @@ internal class ShatteringCarapace(SkillTree tree) : SkillPassive(tree)
 
 internal class ShockingEmergence(SkillTree tree) : SkillPassive(tree);
 
-internal class SuperheatedBugs(SkillTree tree) : SkillPassive(tree);
+internal class SuperheatedBugs(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["15"];
+}
 
-internal class ThermalConversion(SkillTree tree) : SkillPassive(tree);
+internal class ThermalConversion(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["0.5"];
+}
 
 internal class ViciousBites(SkillTree tree) : SkillPassive(tree);
 
 internal class VolatileInsects(SkillTree tree) : SkillPassive(tree)
 {
+	public override object[] TooltipArguments => ["300"];
+
 	internal class AntlionExplosion : ExplosionHitboxFriendly
 	{
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
