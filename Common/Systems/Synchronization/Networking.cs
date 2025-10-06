@@ -176,6 +176,13 @@ internal static class Networking
 		/// <c>ushort type, byte owner, Vector2 position, ushort timeLeft, ushort damage</c>
 		/// </summary>
 		SpawnSentryNPC,
+
+		/// <summary>
+		/// Spawns arbitrary, pre-defined VFX on all clients. 
+		/// Used for code run on only one client that should be shown on all clients, such as projectile spawning VFX, or server-side operations.<br/>Signature:<br/>
+		/// <c>Vector2 position, SendSpawnVFXModule.VFXType type</c>
+		/// </summary>
+		SpawnVFX,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

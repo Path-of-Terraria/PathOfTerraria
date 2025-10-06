@@ -1,3 +1,6 @@
+using Microsoft.Xna.Framework.Graphics;
+using Terraria.GameContent;
+
 namespace PathOfTerraria.Common.Utilities.Extensions;
 
 /// <summary>

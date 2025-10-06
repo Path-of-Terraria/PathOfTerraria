@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.MapContent;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
 using ReLogic.Content;
 using Terraria.GameContent;
@@ -73,7 +74,8 @@ internal class Teleportal : ModProjectile, IRightClickableProjectile, IMapIcon
 	{
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
-			player.Teleport((Projectile.ModProjectile as Teleportal).TeleportLocation);
+			player.Teleport(TeleportLocation);
+			ModContent.GetInstance<RequestCheckSectionHandler>().Send((byte)player.whoAmI, TeleportLocation);
 			return true;
 		}
 
