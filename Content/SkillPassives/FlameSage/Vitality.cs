@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.SkillPassives.FlameSage;
 internal class Vitality : SkillPassive
 {
 	public const float Increase = 0.05f;
-	public override string DisplayTooltip => string.Format(base.DisplayTooltip, MathUtils.Percent(Increase));
+	public override object[] TooltipArguments => [MathUtils.Percent(Increase)];
 
 	public Vitality(SkillTree tree) : base(tree)
 	{

@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.SkillPassives.FlameSage;
 internal class ImprovedBurning : SkillPassive
 {
 	public const float DamageIncrease = 0.05f;
-	public override string DisplayTooltip => string.Format(base.DisplayTooltip, MathUtils.Percent(DamageIncrease));
+	public override object[] TooltipArguments => [MathUtils.Percent(DamageIncrease)];
 
 	public ImprovedBurning(SkillTree tree) : base(tree)
 	{

@@ -7,7 +7,7 @@ namespace PathOfTerraria.Content.SkillPassives.FlameSage;
 internal class Weakening : SkillPassive
 {
 	public const float ResistanceDecrease = 0.01f;
-	public override string DisplayTooltip => string.Format(base.DisplayTooltip, MathUtils.Percent(ResistanceDecrease));
+	public override object[] TooltipArguments => [MathUtils.Percent(ResistanceDecrease)];
 
 	public Weakening(SkillTree tree) : base(tree)
 	{
