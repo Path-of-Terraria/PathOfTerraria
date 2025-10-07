@@ -95,7 +95,10 @@ internal class TavernManager : ModSystem
 				types.Enqueue(entry);
 				entries.elements.RemoveAll(x => x.Item1 == entry);
 			}
+		}
 
+		for (int i = 0; i < types.Count; ++i)
+		{
 			seatsToUse.Enqueue(Seats[i]);
 		}
 
