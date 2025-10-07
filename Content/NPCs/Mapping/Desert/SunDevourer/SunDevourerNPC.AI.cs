@@ -149,7 +149,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	/// </summary>
 	/// <param name="angle">The angle to convert.</param>
 	/// <returns>The position on a square with the range [-1, -1] to [1, 1].</returns>
-	private Vector2 TransformAngleToSquareEdge(float angle)
+	private static Vector2 TransformAngleToSquareEdge(float angle)
 	{
 		Vector2 p = angle.ToRotationVector2();
 		float sqrt2 = MathF.Sqrt(2);

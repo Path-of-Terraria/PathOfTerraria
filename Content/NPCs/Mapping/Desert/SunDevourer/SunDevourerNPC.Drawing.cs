@@ -12,6 +12,42 @@ public sealed partial class SunDevourerNPC : ModNPC
 		return false;
 	}
 
+	public override void FindFrame(int frameHeight)
+	{
+		float target = 1;
+
+		if (State == DevourerState.Trapped)
+		{
+			target = 0;
+		}
+		else if (State == DevourerState.LightningAdds)
+		{
+			target = 0.5f;
+		}
+		else if (State == DevourerState.ReturnToIdle)
+		{
+			target = 0.8f;
+		}
+		else if (State == DevourerState.BallLightning)
+		{
+			target = 1.1f;
+		}
+		else if (State is DevourerState.Firefall or DevourerState.Dawning)
+		{
+			target = 1.2f;
+
+			if (State == DevourerState.Firefall && AdditionalData == 1)
+			{
+				target = 1.3f;
+			}
+		}
+
+		animSpeed = MathHelper.Lerp(animSpeed, target, 0.06f);
+		
+		NPC.frameCounter += animSpeed;
+		NPC.frame.Y = frameHeight * (int)(NPC.frameCounter % 30f / 5f);
+	}
+
 	private void DrawNPC(in Vector2 screenPosition, in Color drawColor)
 	{
 		Texture2D texture = TextureAssets.Npc[Type].Value;
@@ -29,11 +65,15 @@ public sealed partial class SunDevourerNPC : ModNPC
 			DrawAllChains(position);
 		}
 
+		Main.EntitySpriteDraw(TailTexture.Value, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
+		Main.EntitySpriteDraw(WingsTexture.Value, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
 		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
 
 		if (State == DevourerState.Godrays && Timer <= GodrayHideTime)
 		{
 			Color maskColor = Color.White * (Timer / GodrayHideTime);
+			Main.EntitySpriteDraw(TailTexture.Value, position, NPC.frame with { X = 300 }, maskColor, NPC.rotation, origin, NPC.scale, effects);
+			Main.EntitySpriteDraw(WingsTexture.Value, position, NPC.frame with { X = 300 }, maskColor, NPC.rotation, origin, NPC.scale, effects);
 			Main.EntitySpriteDraw(MaskTexture.Value, position, NPC.frame, maskColor, NPC.rotation, origin, NPC.scale, effects);
 		}
 	}
