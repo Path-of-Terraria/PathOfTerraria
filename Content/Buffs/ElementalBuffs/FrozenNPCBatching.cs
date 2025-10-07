@@ -24,8 +24,8 @@ internal class FrozenNPCBatching : GlobalNPC
 
 	public override void Load()
 	{
-		On_Main.DoDraw_WallsTilesNPCs += DrawFrozenNPCs;
 		IL_Main.DrawGore += AddGoreDrawHook;
+		On_Main.DoDraw_DrawNPCsOverTiles += DrawFrozenNPCs;
 
 		FrozenEffect = ModContent.Request<Effect>($"{PoTMod.ModName}/Assets/Effects/FrozenEffect");
 
@@ -43,6 +43,12 @@ internal class FrozenNPCBatching : GlobalNPC
 			Main.graphics.GraphicsDevice.PresentationParameters.RenderTargetUsage = RenderTargetUsage.PreserveContents;
 			Main.graphics.ApplyChanges();
 		});
+	}
+
+	private void DrawFrozenNPCs(On_Main.orig_DoDraw_DrawNPCsOverTiles orig, Main self)
+	{
+		orig(self);
+		DrawNPCs(true);
 	}
 
 	private void AddGoreDrawHook(ILContext il)
@@ -76,12 +82,6 @@ internal class FrozenNPCBatching : GlobalNPC
 		return CachedGore.Contains(who) == Drawing;
 	}
 
-	private void DrawFrozenNPCs(On_Main.orig_DoDraw_WallsTilesNPCs orig, Main self)
-	{
-		DrawNPCs(true);
-		orig(self);
-	}
-
 	private static void DrawNPCs(bool behindTiles)
 	{
 		if (CachedNPCs.Count <= 0 && CachedGore.Count <= 0)
@@ -99,13 +99,10 @@ internal class FrozenNPCBatching : GlobalNPC
 		Main.spriteBatch.Draw(FrozenTarget, Vector2.Zero, Color.White);
 
 		Main.spriteBatch.End();
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, trans);
 	}
 
 	private static void RenderToTarget(bool behindTiles, out RenderTargetBinding[] targets, out Matrix trans, out Effect effect)
 	{
-		Main.spriteBatch.End();
-
 		targets = Main.instance.GraphicsDevice.GetRenderTargets();
 		ApplyToBindings(targets);
 
@@ -116,7 +113,7 @@ internal class FrozenNPCBatching : GlobalNPC
 		Main.instance.GraphicsDevice.SetRenderTarget(FrozenTarget);
 		Main.instance.GraphicsDevice.Clear(Color.Transparent);
 
-		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, trans);
+		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
 
 		while (CachedNPCs.Count > 0)
 		{
