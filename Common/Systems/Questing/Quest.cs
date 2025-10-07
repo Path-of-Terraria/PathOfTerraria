@@ -242,7 +242,7 @@ public abstract class Quest : ModType, ILocalizedModType
 
 		state = State.InProgress;
 
-		if (tag.TryGet("currentQuest", out int step) // Legacy numerical ID
+		if (tag.TryGet("currentQuest", out int step)) // Legacy numerical ID
 		{
 			if (step >= QuestSteps.Count)
 			{
