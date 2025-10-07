@@ -29,7 +29,7 @@ internal class QueenSlimeQuest() : HardmodeQuest(1)
 	{
 		return
 		[
-			new ConditionCheck(_ => 
+			new ConditionCheck("Count", _ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 				return tracker.CompletionsAtOrAboveTier(1) >= MappingDomainSystem.RequiredCompletionsPerTier;
@@ -37,8 +37,8 @@ internal class QueenSlimeQuest() : HardmodeQuest(1)
 				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
-			new ConditionCheck(_ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Enter", _ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss")),
 		];
 	}
 

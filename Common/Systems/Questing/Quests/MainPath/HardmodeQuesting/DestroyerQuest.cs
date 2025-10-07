@@ -30,7 +30,7 @@ internal class DestroyerQuest() : HardmodeQuest(3)
 	{
 		return
 		[
-			new ConditionCheck(_ => 
+			new ConditionCheck("Count", _ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 				return tracker.CompletionsAtOrAboveTier(3) >= MappingDomainSystem.RequiredCompletionsPerTier;
@@ -38,8 +38,8 @@ internal class DestroyerQuest() : HardmodeQuest(3)
 				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
-			new ConditionCheck(_ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Enter", _ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
 		];
 	}
 

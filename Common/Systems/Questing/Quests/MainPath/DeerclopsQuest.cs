@@ -25,11 +25,12 @@ internal class DeerclopsQuest : Quest
 	{
 		return
 		[
-			new CollectCount(item => item.type == ModContent.ItemType<Antlers>() || item.type == ModContent.ItemType<AntlerShard>(), 1, this.GetLocalization("GetAntlersOrShards")),
-			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest"), 
+			new CollectCount("GetAntler", item => item.type == ModContent.ItemType<Antlers>() || item.type == ModContent.ItemType<AntlerShard>(), 1, 
+				this.GetLocalization("GetAntlersOrShards")),
+			new InteractWithNPC("TalkRhine", ModContent.NPCType<RhineNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Quest"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Antlers"),
 				[new GiveItem(1, ModContent.ItemType<Antlers>())], true),
-			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Deerclops"),
+			new InteractWithNPC("TalkHunter", ModContent.NPCType<HunterNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Deerclops"),
 				onSuccess: npc =>
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<DeerclopsMap>());
@@ -39,8 +40,8 @@ internal class DeerclopsQuest : Quest
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 					}
 				}),
-			new ConditionCheck((_) => NPC.downedDeerclops, 1, this.GetLocalization("KillDeerclops")),
-			new InteractWithNPC(ModContent.NPCType<RhineNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Success"))
+			new ConditionCheck("KillDeerclops", (_) => NPC.downedDeerclops, 1, this.GetLocalization("KillDeerclops")),
+			new InteractWithNPC("Finish", ModContent.NPCType<RhineNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.RhineNPC.Dialogue.Success"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

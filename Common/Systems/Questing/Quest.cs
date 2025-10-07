@@ -213,17 +213,12 @@ public abstract class Quest : ModType, ILocalizedModType
 
 		tag.Add("active", Active);
 
-		if (!Active)
+		if (!Active || ActiveStep is null)
 		{
 			return;
 		}
 
-		tag.Add("currentQuest", CurrentStep);
-
-		if (ActiveStep is null)
-		{
-			return;
-		}
+		tag.Add("activeStep", ActiveStep.Id);
 
 		var newTag = new TagCompound();
 		ActiveStep.Save(newTag);
@@ -247,12 +242,24 @@ public abstract class Quest : ModType, ILocalizedModType
 
 		state = State.InProgress;
 
-		int step = tag.GetInt("currentQuest");
-
-		if (step >= QuestSteps.Count)
+		if (tag.TryGet("currentQuest", out int step)) // Legacy numerical ID
 		{
-			Mod.Logger.Debug("Quest " + Name + " needed to have loaded step adjusted.");
-			step = QuestSteps.Count - 1;
+			if (step >= QuestSteps.Count)
+			{
+				Mod.Logger.Debug("Quest " + Name + " needed to have loaded step adjusted.");
+				step = QuestSteps.Count - 1;
+			}
+		}
+		else // Modern string ID
+		{
+			string activeStep = tag.GetString("activeStep");
+			step = QuestSteps.FindIndex(x => x.Id == activeStep);
+
+			if (step == -1)
+			{
+				Mod.Logger.Debug($"Quest {Name} could not find quest step {activeStep}.");
+				step = 0;
+			}
 		}
 
 		Start(player, step);

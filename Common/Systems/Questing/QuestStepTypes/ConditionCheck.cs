@@ -10,7 +10,7 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// </summary>
 /// <param name="condition"></param>
 /// <param name="displayText"></param>
-internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, Func<LocalizedText> displayText, LocalizedText reminderText = null) : QuestStep
+internal class ConditionCheck(string id, Func<Player, bool> condition, float exploreTime, Func<LocalizedText> displayText, LocalizedText reminderText = null) : QuestStep(id)
 {
 	private readonly float ExploreTime = exploreTime;
 	private readonly LocalizedText Reminder = reminderText ?? LocalizedText.Empty;
@@ -19,8 +19,8 @@ internal class ConditionCheck(Func<Player, bool> condition, float exploreTime, F
 
 	private float _explore = 0;
 
-	public ConditionCheck(Func<Player, bool> condition, float exploreTime, LocalizedText displayText, LocalizedText reminderText = null) 
-		: this(condition, exploreTime, () => null, reminderText)
+	public ConditionCheck(string id, Func<Player, bool> condition, float exploreTime, LocalizedText displayText, LocalizedText reminderText = null) 
+		: this(id, condition, exploreTime, () => null, reminderText)
 	{
 		DisplayText = () => displayText.WithFormatArgs(IsDone ? 100 : (_explore / ExploreTime * 100).ToString("#0.##"));
 	}
