@@ -2,6 +2,9 @@
 
 	<!-- Import TML targets. -->
 	<Import Project="..\tModLoader.targets" />
+	<!-- Import shader compiler -->
+	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.props" />
+	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.targets" />
 
 	<!-- General -->
 	<PropertyGroup>
@@ -39,6 +42,9 @@
 
 	<!-- Content -->
 	<ItemGroup>
+		<Compile Remove="BuildTools\**" />
+		<EmbeddedResource Remove="BuildTools\**" />
+		
 		<Folder Include="Common\Data\VanillaItemData\" />
 	</ItemGroup>
 
