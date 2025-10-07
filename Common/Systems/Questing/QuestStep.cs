@@ -6,7 +6,7 @@ using Terraria.GameContent;
 
 namespace PathOfTerraria.Common.Systems.Questing;
 
-public abstract class QuestStep
+public abstract class QuestStep(string id)
 {
 	public enum StepCompletion
 	{
@@ -21,6 +21,8 @@ public abstract class QuestStep
 	public virtual bool NoUI => false;
 
 	public bool IsDone { get; internal set; }
+
+	public string Id = id;
 
 	private readonly bool countsAsCompleteDefault = false;
 

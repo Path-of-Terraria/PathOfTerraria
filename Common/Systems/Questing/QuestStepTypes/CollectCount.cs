@@ -9,14 +9,14 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// <param name="includes">The condition(s) for if an item is valid.</param>
 /// <param name="count">How many items to get.</param>
 /// <param name="itemDescription">Appended to the display string to describe what the player needs to get.</param>
-internal class CollectCount(Func<Item, bool> includes, int count, LocalizedText itemDescription) : QuestStep
+internal class CollectCount(string id, Func<Item, bool> includes, int count, LocalizedText itemDescription) : QuestStep(id)
 {
-	public CollectCount(int itemType, int count) : this(item => item.type == itemType, count, Lang.GetItemName(itemType))
+	public CollectCount(string id, int itemType, int count) : this(id, item => item.type == itemType, count, Lang.GetItemName(itemType))
 	{
 	}
 
 	// ModItem localization isn't loaded by here through Lang.GetItemName for quests so we need the instance itself
-	public CollectCount(ModItem modItem, int count) : this(item => item.type == modItem.Type, count, modItem.DisplayName)
+	public CollectCount(string id, ModItem modItem, int count) : this(id, item => item.type == modItem.Type, count, modItem.DisplayName)
 	{
 	}
 

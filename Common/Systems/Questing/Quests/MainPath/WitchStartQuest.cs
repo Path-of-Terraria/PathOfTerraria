@@ -42,13 +42,13 @@ internal class WitchStartQuest : Quest
 	{
 		return
 		[
-			new ConditionCheck(plr => GrimoirePlayer.Get(plr).GetStoredCount().Count > 0, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.QuestCondition"),
+			new ConditionCheck("Start", plr => GrimoirePlayer.Get(plr).GetStoredCount().Count > 0, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.QuestCondition"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest")),
-			new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.QuestCondition"),
+			new InteractWithNPC("StepTwo", ModContent.NPCType<MorganaNPC>(), Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.QuestCondition"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest2")),
-			new ConditionCheck(p => p.GetModPlayer<GrimoirePlayer>().CurrentSummonId > -1, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.SummonCondition"),
+			new ConditionCheck("GetSummon", p => p.GetModPlayer<GrimoirePlayer>().CurrentSummonId > -1, 1, Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.SummonCondition"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest2")),
-			new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.SummonCondition"),
+			new InteractWithNPC("Finish", ModContent.NPCType<MorganaNPC>(), Language.GetText($"Mods.{PoTMod.ModName}.NPCs.MorganaNPC.SummonCondition"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.Quest3")),
 		];
 	}

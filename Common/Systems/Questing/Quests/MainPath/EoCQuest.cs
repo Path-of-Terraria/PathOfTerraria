@@ -33,9 +33,9 @@ internal class EoCQuest : Quest
 				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().AddId<LunarShard>();
 				return true;
 			}),
-			new ParallelQuestStep(
+			new ParallelQuestStep("GetMaterials",
 			[
-				new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.EoCQuestLine"),
+				new InteractWithNPC("TalkGarrick", ModContent.NPCType<GarrickNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.EoCQuestLine"),
 					null, false, (npc) => 
 					{
 						int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<LunarLiquid>());
@@ -45,7 +45,7 @@ internal class EoCQuest : Quest
 							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 						}
 					}),
-				new InteractWithNPC(ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.QuestLunar"),
+				new InteractWithNPC("TalkEldric", ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.QuestLunar"),
 					[
 						new GiveItem(5, ModContent.ItemType<LunarShard>())
 					], true),
@@ -55,7 +55,7 @@ internal class EoCQuest : Quest
 				RavencrestSystem.UpgradeBuilding("Observatory");
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"),
+			new InteractWithNPC("SecondEldric", ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest2"),
 				[ new GiveItem(1, ModContent.ItemType<LunarLiquid>()) ], true, (npc) =>
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Bottom, ModContent.ItemType<LunarObject>());
@@ -66,13 +66,13 @@ internal class EoCQuest : Quest
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 					}
 				}),
-			new KillCount(NPCID.EyeofCthulhu, 1, this.GetLocalization("Kill.EoC")),
+			new KillCount("KillEoC", NPCID.EyeofCthulhu, 1, this.GetLocalization("Kill.EoC")),
 			new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Observatory");
 				return true;
 			}),
-			new InteractWithNPC(ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest3"))
+			new InteractWithNPC("Finish", ModContent.NPCType<EldricNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest3"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

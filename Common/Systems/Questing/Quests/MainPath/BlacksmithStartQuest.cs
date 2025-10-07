@@ -37,7 +37,7 @@ internal class BlacksmithStartQuest : Quest
 	{
 		return 
 		[
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest"),
+			new InteractWithNPC("StartStep", ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2"),
 				[
 					new GiveItem(20, ItemID.IronOre, ItemID.LeadOre), new(1, ItemID.IronHammer, ItemID.LeadHammer), new(50, ItemID.StoneBlock), new(20, ItemID.Wood)
@@ -50,13 +50,13 @@ internal class BlacksmithStartQuest : Quest
 
 				return true;
 			}),
-			new KillCount(static npc => NPCID.Sets.Zombies[npc.type], 15, this.GetLocalization("Kill.Zombies")),
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2"),
+			new KillCount("KillZombies", static npc => NPCID.Sets.Zombies[npc.type], 15, this.GetLocalization("Kill.Zombies")),
+			new InteractWithNPC("TalkBlacksmith", ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest2"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.Quest3"),
 				[
 					new GiveItem(30, ItemID.StoneBlock), new(50, ItemID.Wood), new(10, ItemID.GoldBar, ItemID.PlatinumBar)
 				], true) { CountsAsCompletedOnMarker = true },
-				new ActionStep((_, _) =>
+			new ActionStep((_, _) =>
 			{
 				RavencrestSystem.UpgradeBuilding("Forge");
 				Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>().TryAddSkill(new Berserk());

@@ -30,7 +30,7 @@ internal class FishronQuest() : HardmodeQuest(7)
 	{
 		return
 		[
-			new ConditionCheck(_ => 
+			new ConditionCheck("Count", _ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 				return tracker.CompletionsAtOrAboveTier(7) >= MappingDomainSystem.RequiredCompletionsPerTier;
@@ -38,8 +38,8 @@ internal class FishronQuest() : HardmodeQuest(7)
 				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
-			new ConditionCheck(_ => SubworldSystem.Current is FishronDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<FishronDomain>(NPCID.DukeFishron), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Enter", _ => SubworldSystem.Current is FishronDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<FishronDomain>(NPCID.DukeFishron), 1, this.GetLocalization("Boss")),
 		];
 	}
 

@@ -8,7 +8,7 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// For example, getting 10 Iron Bars or killing the Moon Lord.
 /// </summary>
 /// <param name="stepsLists">The steps to run in parallel.</param>
-internal class SplitQuestSteps(List<QuestStep> stepsLists) : QuestStep
+internal class SplitQuestSteps(string id, List<QuestStep> stepsLists) : QuestStep(id)
 {
 	public override int LineCount => steps.Count + 2;
 
