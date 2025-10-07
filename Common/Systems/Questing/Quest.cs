@@ -218,7 +218,7 @@ public abstract class Quest : ModType, ILocalizedModType
 			return;
 		}
 
-		tag.Add("id", ActiveStep.Id);
+		tag.Add("activeStep", ActiveStep.Id);
 
 		var newTag = new TagCompound();
 		ActiveStep.Save(newTag);
@@ -252,12 +252,12 @@ public abstract class Quest : ModType, ILocalizedModType
 		}
 		else // Modern string ID
 		{
-			string id = tag.GetString("id");
-			step = QuestSteps.FindIndex(x => x.Id == id);
+			string activeStep = tag.GetString("activeStep");
+			step = QuestSteps.FindIndex(x => x.Id == activeStep);
 
 			if (step == -1)
 			{
-				Mod.Logger.Debug($"Quest {Name} could not find quest step {id}.");
+				Mod.Logger.Debug($"Quest {Name} could not find quest step {activeStep}.");
 				step = 0;
 			}
 		}

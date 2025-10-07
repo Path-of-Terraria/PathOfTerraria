@@ -20,9 +20,8 @@ public abstract class QuestStep(string id)
 	public virtual int LineCount => 1;
 	public virtual bool NoUI => false;
 
+	public string Id { get; } = id;
 	public bool IsDone { get; internal set; }
-
-	public string Id = id;
 
 	private readonly bool countsAsCompleteDefault = false;
 
