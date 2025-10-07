@@ -241,12 +241,14 @@ public abstract class Quest : ModType, ILocalizedModType
 		}
 
 		state = State.InProgress;
+		bool dropStepState = false;
 
 		if (tag.TryGet("currentQuest", out int step)) // Legacy numerical ID
 		{
 			if (step >= QuestSteps.Count)
 			{
 				Mod.Logger.Debug("Quest " + Name + " needed to have loaded step adjusted.");
+				dropStepState = true;
 				step = QuestSteps.Count - 1;
 			}
 		}
@@ -258,6 +260,7 @@ public abstract class Quest : ModType, ILocalizedModType
 			if (step == -1)
 			{
 				Mod.Logger.Debug($"Quest {Name} could not find quest step {activeStep}.");
+				dropStepState = true;
 				step = 0;
 			}
 		}
@@ -269,7 +272,10 @@ public abstract class Quest : ModType, ILocalizedModType
 			QuestSteps[i].IsDone = true;
 		}
 
-		ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
+		if (!dropStepState)
+		{
+			ActiveStep.Load(tag.Get<TagCompound>("currentQuestTag"));
+		}
 	}
 
 	public void Reset()
