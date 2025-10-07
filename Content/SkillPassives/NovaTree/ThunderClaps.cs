@@ -3,4 +3,7 @@ using PathOfTerraria.Common.Systems.Skills;
 
 namespace PathOfTerraria.Content.SkillPassives.NovaTree;
 
-internal class ThunderClaps(SkillTree tree) : SkillPassive(tree);
+internal class ThunderClaps(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["5"];
+}

@@ -7,5 +7,5 @@ namespace PathOfTerraria.Content.SkillPassives.FlameSage;
 internal class OverwhelmingPressure(SkillTree tree) : SkillPassive(tree)
 {
 	public const float ResistanceDecrease = 0.05f;
-	public override string DisplayTooltip => string.Format(base.DisplayTooltip, MathUtils.Percent(ResistanceDecrease));
+	public override object[] TooltipArguments => [MathUtils.Percent(ResistanceDecrease)];
 }
