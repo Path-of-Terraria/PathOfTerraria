@@ -52,6 +52,11 @@ public sealed class NewHotbar : SmartUiState
 
 	public readonly static Dictionary<string, Asset<Texture2D>> Textures = [];
 
+	/// <summary>
+	/// Whether the <see cref="Main.LocalPlayer"/> is in "combat mode" (the weapon is selected and skills are displaying).
+	/// </summary>
+	public static bool LocalCombatMode => InCombatMode(Main.LocalPlayer);
+
 	private readonly Selector specialSelector = new();
 	private readonly Selector buildingSelector = new();
 	private readonly DynamicSpriteFont _font = FontAssets.DeathText.Value;
@@ -59,6 +64,11 @@ public sealed class NewHotbar : SmartUiState
 	private int _animation;
 
 	public override bool Visible => !Main.playerInventory;
+
+	public static bool InCombatMode(Player player)
+	{
+		return player.selectedItem == 0;
+	}
 
 	public override int InsertionIndex(List<GameInterfaceLayer> layers)
 	{
@@ -86,7 +96,7 @@ public sealed class NewHotbar : SmartUiState
 
 		float prog;
 
-		if (Main.LocalPlayer.selectedItem == 0)
+		if (LocalCombatMode)
 		{
 			if (_animation > 0)
 			{
@@ -557,16 +567,9 @@ public sealed class NewHotbar : SmartUiState
 
 public class HijackHotbarClick : ModSystem
 {
-	private static bool WasInInventory = false;
-
 	public override void Load()
 	{
 		On_Main.GUIHotbarDrawInner += StopClickOnHotbar;
-	}
-
-	public override void PreUpdateNPCs()
-	{
-		WasInInventory = Main.playerInventory; // Needs manual check for old value because HotbarHijack.cs overrides this value for the below method
 	}
 
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
@@ -582,7 +585,7 @@ public class HijackHotbarClick : ModSystem
 			Main.LocalPlayer.hbLocked = hbLocked;
 		}
 
-		bool combatMode = Main.LocalPlayer.selectedItem == 0;
+		bool combatMode = NewHotbar.LocalCombatMode;
 
 		if (combatMode)
 		{

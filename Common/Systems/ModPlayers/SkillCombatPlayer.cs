@@ -1,5 +1,7 @@
-﻿using PathOfTerraria.Common.Mechanics;
+﻿using Microsoft.Xna.Framework.Input;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.UI.Guide;
+using PathOfTerraria.Common.UI.Hotbar;
 using System.Collections.Generic;
 using System.Linq;
 using Terraria.GameInput;
@@ -47,9 +49,62 @@ internal class SkillCombatPlayer : ModPlayer
 #endif
 	}
 
+	public override void SetControls()
+	{
+		if (!NewHotbar.LocalCombatMode)
+		{
+			return;
+		}
+
+		for (int i = 1; i < 11; ++i)
+		{
+			CheckHotbarOverlap("Hotbar" + i);
+		}
+	}
+
+	/// <summary>
+	/// "Unsets" a hotbar hotkey if it overlaps with a skill keybind, so you can use a skill and not switch items.
+	/// </summary>
+	/// <param name="hotbarKey"></param>
+	private static void CheckHotbarOverlap(string hotbarKey)
+	{
+		if (PlayerInput.Triggers.Current.KeyStatus[hotbarKey] && SkillMatchesVanillaKeyBind(hotbarKey))
+		{
+			PlayerInput.Triggers.Current.KeyStatus[hotbarKey] = false;
+		}
+	}
+
+	private static bool SkillMatchesVanillaKeyBind(string key)
+	{
+		if (PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus[key].Count == 0)
+		{
+			return false;
+		}
+
+		foreach (string hotkey in PlayerInput.CurrentProfile.InputModes[InputMode.Keyboard].KeyStatus[key])
+		{
+			if (Skill1Keybind.GetAssignedKeys().Contains(hotkey))
+			{
+				return true;
+			}
+
+			if (Skill2Keybind.GetAssignedKeys().Contains(hotkey))
+			{
+				return true;
+			}
+
+			if (Skill3Keybind.GetAssignedKeys().Contains(hotkey))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		if (Player.dead)
+		if (Player.dead || !NewHotbar.LocalCombatMode)
 		{
 			return;
 		}
