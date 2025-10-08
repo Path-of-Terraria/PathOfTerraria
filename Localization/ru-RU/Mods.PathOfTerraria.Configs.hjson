@@ -17,4 +17,9 @@ UIConfig: {
 		Label: Предотвратить нажатие на панель опыта
 		Tooltip: Если эта опция включена, вы не сможете нажать на панель опыта, чтобы открыть меню повышения уровня. Это будет возможно только с помощью горячей клавиши. Это полезно, если вы случайно откроете её, пытаясь нажать на другие элементы интерфейса.
 	}
+
+	UseVirtualBag: {
+		// Label: Use Sack of Holding
+		// Tooltip: Allows use of the Sack of Holding in domains for easier inventory management.
+	}
 }

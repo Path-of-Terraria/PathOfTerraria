@@ -178,11 +178,17 @@ internal static class Networking
 		SpawnSentryNPC,
 
 		/// <summary>
-		/// Spawns arbitrary, pre-defined VFX on all clients. 
+		/// Spawns arbitrary, pre-defined VFX on all clients and server. 
 		/// Used for code run on only one client that should be shown on all clients, such as projectile spawning VFX, or server-side operations.<br/>Signature:<br/>
 		/// <c>Vector2 position, SendSpawnVFXModule.VFXType type</c>
 		/// </summary>
 		SpawnVFX,
+
+		/// <summary>
+		/// Enables or disables the player's <see cref="UI.VirtualBagUI.VirtualBagStoragePlayer.UsesVirtualBag"/> for all clients.<br/>Signature:<br/>
+		/// <c>byte player, bool enabled</c>
+		/// </summary>
+		PlayerUseSackOfHolding,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)
