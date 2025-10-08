@@ -22,7 +22,7 @@ internal static class UIHelper
 	/// Adjusts the X position of a minimap-aligned inventory button based on screen width.
 	/// </summary>
 	/// <returns>X position of the button.</returns>
-	private static float GetTextureXPosition()
+	internal static float GetTextureXPosition()
 	{
 		float screenWidth = Main.screenWidth / 1.12f;
 		return screenWidth switch

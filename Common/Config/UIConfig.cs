@@ -10,4 +10,7 @@ public sealed class UIConfig : ModConfig
 	[Header("UI")]
 	[DefaultValue(false)]
 	public bool PreventExpBarClicking { get; set; } = false;
+
+	[DefaultValue(true)]
+	public bool UseVirtualBag { get; set; } = true;
 }
