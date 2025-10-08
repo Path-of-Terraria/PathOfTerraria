@@ -1,5 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers;
-using PathOfTerraria.Common.UI.VirtualBagUI;
+using PathOfTerraria.Common.Looting.VirtualBagUI;
 using System.ComponentModel;
 using Terraria.ID;
 using Terraria.ModLoader.Config;

@@ -1,6 +1,4 @@
-﻿using PathOfTerraria.Common.Config;
-
-namespace PathOfTerraria.Common.UI.VirtualBagUI;
+﻿namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
 internal class VirtualBagItemFunctionality : GlobalItem
 {

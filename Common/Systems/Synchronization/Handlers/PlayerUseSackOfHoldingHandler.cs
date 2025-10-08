@@ -1,4 +1,4 @@
-using PathOfTerraria.Common.UI.VirtualBagUI;
+using PathOfTerraria.Common.Looting.VirtualBagUI;
 using System.IO;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;

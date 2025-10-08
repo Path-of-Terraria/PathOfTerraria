@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Common.Systems;
+using PathOfTerraria.Common.UI;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using SubworldLibrary;
@@ -10,7 +11,7 @@ using Terraria.Localization;
 using Terraria.ModLoader.UI.Elements;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.UI.VirtualBagUI;
+namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
 internal class VirtualBagUIState : UIState
 {

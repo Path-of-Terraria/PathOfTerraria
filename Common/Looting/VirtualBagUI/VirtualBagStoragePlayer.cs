@@ -11,7 +11,7 @@ using Terraria.GameInput;
 using Terraria.ID;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.UI.VirtualBagUI;
+namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
 internal class VirtualBagStoragePlayer : ModPlayer 
 {

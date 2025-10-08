@@ -1,18 +1,21 @@
+using PathOfTerraria.Common.Subworlds;
+using PathOfTerraria.Common.UI;
 using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
+using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.UI.VirtualBagUI;
+namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
 public class VirtualBagIcon : SmartUiState
 {
-	public override bool Visible => Main.playerInventory && VirtualBagStoragePlayer.LocalUseVirtualBag;// && SubworldSystem.Current is not null and not RavencrestSubworld;
+	public override bool Visible => Main.playerInventory && VirtualBagStoragePlayer.LocalUseVirtualBag && SubworldSystem.Current is not null and not RavencrestSubworld;
 
 	private static int NewXPosition => (int)UIHelper.GetTextureXPosition() - 64;
 
