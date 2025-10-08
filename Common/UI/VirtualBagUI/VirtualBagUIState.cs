@@ -1,10 +1,9 @@
 ﻿using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
+using SubworldLibrary;
 using System.Collections.Generic;
-using System.Linq;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
@@ -32,7 +31,9 @@ internal class VirtualBagUIState : UIState
 		Append(panel);
 
 		panel.Append(new UIText(Language.GetText(Path + "Title"), 0.6f, true) { Top = StyleDimension.FromPixels(6), Left = StyleDimension.FromPixels(6) });
-		panel.Append(new UIText(Language.GetText(Path + "Description")) { HAlign = 1f, Left = StyleDimension.FromPixels(-50), Top =	StyleDimension.FromPixels(6) });
+
+		string desc = Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().ConfirmedExit ? "Review" : "Description";
+		panel.Append(new UIText(Language.GetText(Path + desc), 0.9f) { HAlign = 1f, Left = StyleDimension.FromPixels(-50), Top =	StyleDimension.FromPixels(6) });
 
 		var close = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton")) { HAlign = 1f };
 		close.SetVisibility(1, 0.6f);
@@ -74,6 +75,11 @@ internal class VirtualBagUIState : UIState
 	public override void OnDeactivate()
 	{
 		RemoveAllChildren();
+
+		if (Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>().ConfirmedExit)
+		{
+			SubworldSystem.Exit();
+		}
 	}
 
 	internal void RefreshStorage()
@@ -167,7 +173,7 @@ internal class VirtualBagUIState : UIState
 		List<DrawableTooltipLine> lines = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
 		float factor = MathF.Sin(Main.GameUpdateCount * 0.08f) * 0.5f + 0.5f;
 		var color = Color.Lerp(Color.White, ItemTooltips.Colors.Positive, factor);
-		var baseTip = new TooltipLine(PoTMod.Instance, "ClickNotice", "(Right click to add to your inventory)");
+		var baseTip = new TooltipLine(PoTMod.Instance, "ClickNotice", Language.GetTextValue("Mods.PathOfTerraria.UI.RightClick"));
 		lines.Add(new DrawableTooltipLine(baseTip, lines.Count, 0, 0, color) { BaseScale = new(0.9f) });
 
 		int nameLine = lines.FindIndex(x => x.Name == "ItemName");

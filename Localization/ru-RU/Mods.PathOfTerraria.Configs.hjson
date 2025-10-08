@@ -19,7 +19,7 @@ UIConfig: {
 	}
 
 	UseVirtualBag: {
-		// Label: Use Virtual Bag
-		// Tooltip: ""
+		// Label: Use Sack of Holding
+		// Tooltip: Allows use of the Sack of Holding in domains for easier inventory management.
 	}
 }
