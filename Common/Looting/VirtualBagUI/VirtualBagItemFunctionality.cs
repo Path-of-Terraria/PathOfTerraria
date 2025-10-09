@@ -1,8 +1,12 @@
-﻿namespace PathOfTerraria.Common.Looting.VirtualBagUI;
+﻿using PathOfTerraria.Core.UI;
+using SubworldLibrary;
+using Terraria.GameContent.UI.States;
+
+namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
 internal class VirtualBagItemFunctionality : GlobalItem
 {
-	public static bool IsInAPlaceForPickup => true;
+	public static bool IsInAPlaceForPickup => SubworldSystem.Current is not null;
 
 	public override bool ItemSpace(Item item, Player player)
 	{
@@ -25,6 +29,12 @@ internal class VirtualBagItemFunctionality : GlobalItem
 		request.Color = Color.MediumPurple;
 
 		PopupText.NewText(request, item.Center);
+
+		if (Main.myPlayer == player.whoAmI && UIManager.TryGet(VirtualBagUIState.Identifier, out UIManager.UIStateData data) && data.Enabled)
+		{
+			(data.Value as VirtualBagUIState).RefreshStorage();
+		}
+
 		return false;
 	}
 }

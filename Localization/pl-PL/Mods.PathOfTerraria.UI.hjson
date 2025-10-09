@@ -192,6 +192,7 @@ InvButtons: {
 	RestartTutorial: Zrestartuj poradnik
 	// DomainInformation: Domain Information
 	// VirtualBag: Virtual Storage
+	// CurrencyPouch: Currency Pouch
 }
 
 SubworldHelp: {
@@ -280,4 +281,10 @@ VirtualBag: {
 	// Description: Holds all your gear! This will be cleared outside of the domain.
 	// RightClick: (Right click to add to your inventory)
 	// Review: Review your items (Closing this will exit the subworld)
+}
+
+CurrencyPouch: {
+	// Title: Pouch
+	// Description: Currency Shards go here.
+	// Apply: Right click to apply to held item
 }

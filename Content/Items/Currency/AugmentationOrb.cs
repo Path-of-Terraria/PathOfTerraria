@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Items;
+using System.Diagnostics.CodeAnalysis;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency;
@@ -23,5 +24,16 @@ internal class AugmentationOrb : CurrencyShard
 	public override bool CanRightClick()
 	{
 		return false;
+	}
+
+	// Both of these hooks can't be used since this isn't a standard currency shard
+	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
+	{
+		failKey = null;
+		return false;
+	}
+
+	public override void ApplyToItem(Item slotItem)
+	{
 	}
 }

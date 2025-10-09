@@ -1,7 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using System.Diagnostics.CodeAnalysis;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -25,35 +25,39 @@ public class AscendantShard : CurrencyShard
 		Item.rare = ItemRarityID.Blue;
 	}
 
-	public override bool CanRightClick()
+	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
 	{
-		Item heldItem = Main.LocalPlayer.HeldItem;
-
-		if (!heldItem.TryGetGlobalItem(out PoTGlobalItem _))
+		if (!DefaultValidityCheck(slotItem, out failKey))
 		{
 			return false;
 		}
 
-		ItemRarity rare = heldItem.GetInstanceData().Rarity;
+		ItemRarity rare = slotItem.GetInstanceData().Rarity;
 
 		if (rare != ItemRarity.Magic && rare != ItemRarity.Rare)
 		{
-			//Main.NewText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.ShardNotifs.Ascendant.NotRareOrMagic"));
+			failKey = "NotRareOrMagic";
 			return false;
 		}
 
-		if (PoTItemHelper.HasMaxAffixesForRarity(heldItem))
+		if (PoTItemHelper.HasMaxAffixesForRarity(slotItem))
 		{
-			//Main.NewText(Language.GetTextValue($"Mods.{PoTMod.ModName}.Misc.ShardNotifs.Ascendant.MaxAffixes"));
+			failKey = "MaxAffixes";
 			return false;
 		}
-		
-		return base.CanRightClick();
+
+		failKey = null;
+		return true;
 	}
 
 	public override void RightClick(Player player)
 	{
-		PoTItemHelper.AddNewAffix(player.HeldItem);
+		base.RightClick(player);
 		PoTItemHelper.SetMouseItemToHeldItem(player);
+	}
+
+	public override void ApplyToItem(Item slotItem)
+	{
+		PoTItemHelper.AddNewAffix(slotItem);
 	}
 }

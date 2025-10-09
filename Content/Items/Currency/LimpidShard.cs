@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -15,17 +16,38 @@ public class LimpidShard : CurrencyShard
 		staticData.MinDropItemLevel = 10;
 	}
 
-	public override bool CanRightClick()
+	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
 	{
-		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is ItemRarity.Magic or ItemRarity.Rare;
+		if (!DefaultValidityCheck(slotItem, out failKey))
+		{
+			return false;
+		}
+
+		if (Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is ItemRarity.Normal or ItemRarity.Unique)
+		{
+			failKey = "NotRareOrMagic";
+			return false;
+		}
+
+		return true;
 	}
 
 	public override void RightClick(Player player)
 	{
-		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
+		ApplyChanges(player.HeldItem);
+		PoTItemHelper.SetMouseItemToHeldItem(player);
+	}
+
+	public override void ApplyToItem(Item slotItem)
+	{
+		ApplyToItem(slotItem);
+	}
+
+	private static void ApplyChanges(Item item)
+	{
+		PoTInstanceItemData data = item.GetInstanceData();
 		data.Rarity = ItemRarity.Normal;
 		data.Affixes = [];
-		PoTItemHelper.Roll(player.HeldItem, data.RealLevel);
-		PoTItemHelper.SetMouseItemToHeldItem(player);
+		PoTItemHelper.Roll(item, data.RealLevel);
 	}
 }

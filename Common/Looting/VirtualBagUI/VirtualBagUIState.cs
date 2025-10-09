@@ -2,6 +2,7 @@
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
+using PathOfTerraria.Core.UI.SmartUI;
 using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.Audio;
@@ -13,7 +14,7 @@ using Terraria.UI;
 
 namespace PathOfTerraria.Common.Looting.VirtualBagUI;
 
-internal class VirtualBagUIState : UIState
+internal class VirtualBagUIState : UIState, IMutuallyExclusiveUI
 {
 	public const string Identifier = "Virtual Bag UI";
 	private UIGrid _storageGrid;
@@ -23,6 +24,8 @@ internal class VirtualBagUIState : UIState
 		const string TexturePath = "PathOfTerraria/Assets/UI/SquarePanel";
 		const int GridBuffer = 50;
 		const string Path = "Mods.PathOfTerraria.UI.VirtualBag.";
+
+		ModContent.GetInstance<SmartUiLoader>().ClearMutuallyExclusive<VirtualBagUIState>();
 
 		UIPanel panel = new();
 		panel.SetDimensions((0f, 0), (0, 0), (0, 800), (0, 500));
@@ -166,15 +169,10 @@ internal class VirtualBagUIState : UIState
 			return;
 		}
 
-		if (ItemSlot.ShiftInUse)
-		{
-			Main.cursorOverride = 9;
-		}
-
 		List<DrawableTooltipLine> lines = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
 		float factor = MathF.Sin(Main.GameUpdateCount * 0.08f) * 0.5f + 0.5f;
 		var color = Color.Lerp(Color.White, ItemTooltips.Colors.Positive, factor);
-		var baseTip = new TooltipLine(PoTMod.Instance, "ClickNotice", Language.GetTextValue("Mods.PathOfTerraria.UI.RightClick"));
+		var baseTip = new TooltipLine(PoTMod.Instance, "ClickNotice", Language.GetTextValue("Mods.PathOfTerraria.UI.VirtualBag.RightClick"));
 		lines.Add(new DrawableTooltipLine(baseTip, lines.Count, 0, 0, color) { BaseScale = new(0.9f) });
 
 		int nameLine = lines.FindIndex(x => x.Name == "ItemName");
@@ -187,5 +185,10 @@ internal class VirtualBagUIState : UIState
 			AssociatedItem = item,
 			Lines = lines,
 		});
+	}
+
+	public void Toggle()
+	{
+		UIManager.TryToggleOrRegister(Identifier, "Vanilla: Mouse Text", new VirtualBagUIState(), 0, InterfaceScaleType.UI);
 	}
 }
