@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Core.Time;
@@ -338,6 +339,15 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			< 1.000f => 3,
 			_ => 4,
 		};
+
+		float multiplier = 1f;
+		// 5% increase per map tier.
+		multiplier += (MappingWorld.MapTier * 0.05f);
+		// 2% increase per map modifier weight.
+		multiplier += (MappingWorld.TotalWeight() * 0.02f);
+
+		rewardAmount = (int)MathF.Floor(rewardAmount * multiplier);
+
 		for (int i = 0; i < rewardAmount; i++)
 		{
 			int itemIdx = Item.NewItem(null, Projectile.Center + Main.rand.NextVector2Circular(72f, 72f), rewardType, 1, noBroadcast: true);

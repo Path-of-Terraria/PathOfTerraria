@@ -72,7 +72,13 @@ internal sealed class ConfluxRifts : ModSystem
 			MaxSearchAttempts = 4096,
 		};
 
-		int targetRifts = 3;
+		int targetRifts = MappingWorld.MapTier switch
+		{
+			>= 8 => 3,
+			>= 4 => 2,
+			_ => 1,
+		};
+
 		IEntitySource? source = Entity.GetSource_None();
 		var rifts = new List<Projectile>(capacity: targetRifts);
 
