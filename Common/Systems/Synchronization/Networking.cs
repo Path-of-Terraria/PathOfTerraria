@@ -176,6 +176,11 @@ internal static class Networking
 		/// <c>ushort type, byte owner, Vector2 position, ushort timeLeft, ushort damage</c>
 		/// </summary>
 		SpawnSentryNPC,
+
+		/// Synchronizes right click interactions with rifts.<br/>Signature:<br/>
+		/// <c>byte sender, int riftIdentity</c>
+		/// </summary>
+		RiftInteraction,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

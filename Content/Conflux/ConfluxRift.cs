@@ -1,14 +1,18 @@
-﻿using PathOfTerraria.Common.Conflux;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.CompilerServices;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Core.Time;
 using PathOfTerraria.Utilities.Xna;
 using ReLogic.Content;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
-using Terraria.ModLoader.Config;
 
 #nullable enable
 
@@ -16,21 +20,46 @@ namespace PathOfTerraria.Content.Conflux;
 
 internal enum ConfluxRiftKind : byte
 {
-	Ice,
-	Flames,
-	Lightning,
+	Glacial,
+	Infernal,
+	Celestial,
 	Count,
 }
 
 internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 {
+	[Flags]
+	public enum Flags : int
+	{
+		Activated = 1,
+		Closing = 2,
+	}
+
 	private static Asset<Texture2D> Highlight = null!;
 
+	public uint EndTime { get; set; }
+	public Encounter Encounter { get; private set; }
+	public float OpeningAnimation { get; private set; }
+	public float ClosingAnimation { get; private set; }
+
+	/// <summary> The rift's type. </summary>
 	public ConfluxRiftKind Kind
 	{
 		get => (ConfluxRiftKind)(byte)Projectile.ai[0];
 		set => Projectile.ai[0] = (byte)value;
 	}
+	/// <summary> The rift's state flags. </summary>
+	public Flags BitFlags
+	{
+		get => Unsafe.BitCast<float, Flags>(Projectile.ai[1]);
+		set => Projectile.ai[1] = Unsafe.BitCast<Flags, float>(value);
+	}
+	/// <summary> The synchronized progress of the rift's encounter. </summary>
+	public ref float Progress => ref Projectile.ai[2];
+	/// <summary> Whether the rift has been opened. </summary>
+	public bool Activated => (BitFlags & Flags.Activated) != 0;
+	/// <summary> Whether the rift is about to disappear. </summary>
+	public bool Closing => (BitFlags & Flags.Closing) != 0;
 
 	public override void SetStaticDefaults()
 	{
@@ -50,6 +79,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		Projectile.tileCollide = false;
 		Projectile.Size = new Vector2(120, 120);
 		Projectile.Opacity = 0f;
+		Projectile.hide = true;
 	}
 
 	public override bool? CanDamage()
@@ -59,7 +89,12 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 	public override bool PreAI()
 	{
-		Projectile.timeLeft++;
+		// Despawn only after the closing animation finishes.
+		if (!Closing || ClosingAnimation < 1f)
+		{
+			Projectile.timeLeft++;
+		}
+
 		return base.PreAI();
 	}
 
@@ -68,6 +103,32 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		Projectile.rotation += 0.05f;
 		Projectile.Opacity = MathHelper.Lerp(Projectile.Opacity, 1f, 0.25f);
 
+		if (Closing)
+		{
+			ClosingAnimation = MathF.Min(1f, ClosingAnimation + (TimeSystem.LogicDeltaTime / 3f));
+		}
+		else if (Activated)
+		{
+			OpeningAnimation = MathF.Min(1f, OpeningAnimation + (TimeSystem.LogicDeltaTime / 3f));
+		}
+
+		// Encounter logic.
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			// Synchronize the progress to clients.
+			if (Activated && Encounter.IsValid)
+			{
+				UpdateProgress();
+			}
+
+			// Start closing when the encounter has been completed, or if the players have ran out of time.
+			if (Activated && !Closing && (!Encounter.IsValid || Encounter.Instance.State == EncounterState.Completed || Main.GameUpdateCount >= EndTime))
+			{
+				Close();
+			}
+		}
+
+		// Effects.
 		if (!Main.dedServ)
 		{
 			(int torchId, int dustId, _) = GetVisualParameters();
@@ -81,19 +142,38 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 	}
 
+	public override void OnKill(int timeLeft)
+	{
+		Close();
+	}
+
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
+	{
+		behindNPCsAndTiles.Add(index);
+	}
+
 	public override bool PreDraw(ref Color lightColor)
 	{
 		Texture2D tex = TextureAssets.Projectile[Type].Value;
 		Vector2 position = Projectile.Center - Main.screenPosition;
-
 		(_, _, Color colorBase) = GetVisualParameters();
+		var sizeTargets = Vector2.Lerp
+		(
+			Vector2.Lerp(new(0.5f, 0.75f), new(3.50f, 3.75f), OpeningAnimation),
+			new(0.0f, 0.0f),
+			ClosingAnimation
+		);
+		(float minSize, float maxSize) = (sizeTargets.X, sizeTargets.Y);
 
-		for (int i = 0; i < 3; ++i)
+		const int numLayers = 3;
+
+		for (int i = 0; i < numLayers; ++i)
 		{
 			float rotation = (Projectile.rotation * (i % 2 == 0 ? -1 : 1)) + (i * 1.5f);
 			Color color = colorBase * ((3 - i) * 0.33f) * Projectile.Opacity;
+			float size = MathHelper.Lerp(minSize, maxSize, i / (float)(numLayers - 1));
 
-			Main.spriteBatch.Draw(tex, position, null, color, rotation, tex.Size() / 2f, 1.25f - (i * 0.25f), SpriteEffects.None, 0);
+			Main.EntitySpriteDraw(tex, position, null, color, rotation, tex.Size() / 2f, size, SpriteEffects.None, 0);
 		}
 
 		this.DrawHighlightAndCheckRightClickInteraction(Highlight.Value, position, lightColor);
@@ -101,13 +181,183 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		return false;
 	}
 
+	public void Activate()
+	{
+		if ((BitFlags & Flags.Activated) != 0) { return; }
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			Vector2 compareSpot = Main.LocalPlayer.Center;
+			if (!Main.LocalPlayer.IsProjectileInteractibleAndInInteractionRange(Projectile, ref compareSpot)) { return; }
+
+			ModContent.GetInstance<RiftInteractionHandler>().Send(Main.myPlayer, Projectile.identity);
+			return;
+		}
+
+		const uint lengthInSeconds = 30;
+
+		Encounter = CreateEncounter();
+		BitFlags |= Flags.Activated;
+		EndTime = Main.GameUpdateCount + (lengthInSeconds * (uint)TimeSystem.LogicFramerate);
+		Projectile.netUpdate = true;
+	}
+
+	public void Close()
+	{
+		if (Closing || Main.netMode == NetmodeID.MultiplayerClient) { return; }
+
+		BitFlags |= Flags.Closing;
+		Projectile.netUpdate = true;
+
+		UpdateProgress();
+		RemoveEncounter();
+		DropRewards();
+	}
+
+	public void UpdateProgress()
+	{
+		if (Main.netMode == NetmodeID.MultiplayerClient) { return; }
+
+		float progress = Encounter.Instance.EncounterScore / MathF.Max(0.001f, Encounter.Instance.TotalBaseScore);
+		if (progress != Progress)
+		{
+			Progress = progress;
+			Projectile.netUpdate = true;
+		}
+	}
+
+	private Encounter CreateEncounter()
+	{
+		const int extentsW = 40;
+		const int extentsH = 20;
+		Vector2 worldOrigin = Projectile.Center;
+		Point16 tileOrigin = worldOrigin.ToTileCoordinates16();
+
+		var area = new Vector4Int
+		{
+			X = Math.Max(tileOrigin.X - extentsW, 0),
+			Y = Math.Max(tileOrigin.Y - extentsH, 0),
+			Z = Math.Min(tileOrigin.X + extentsW, Main.maxTilesX - 1),
+			W = Math.Min(tileOrigin.Y + extentsH, Main.maxTilesY - 1),
+		};
+		var rectangle = new Rectangle(area.X, area.Y, area.Z - area.X, area.W - area.Y);
+
+		int[] possibleTypes =
+		[
+			NPCID.Zombie,
+			NPCID.ArmedZombie,
+			NPCID.Skeleton,
+			NPCID.EaterofSouls,
+			NPCID.BigEater,
+			NPCID.DemonEye,
+		];
+
+		var waves = new EncounterWave[10];
+
+		for (int waveIndex = 0; waveIndex < waves.Length; waveIndex++)
+		{
+			var spawns = new EnemySpawn[10];
+
+			for (int spawnIndex = 0; spawnIndex < spawns.Length; spawnIndex++)
+			{
+				int type = possibleTypes[Main.rand.Next(possibleTypes.Length)];
+				spawns[spawnIndex] = new EnemySpawn
+				{
+					NpcType = new(type),
+					SpawnPosition = null,
+					SpawnPlacement = new SpawnPlacement
+					{
+						Area = default,
+						CollisionSize = default,
+						OnGround = ContentSamples.NpcsByNetId[type].aiStyle == NPCAIStyleID.Fighter,
+						MinDistanceFromPlayers = 192f,
+						MinDistanceFromEnemies = 8f,
+					},
+					Effect = EnemySpawnEffect.Teleport,
+					CooldownInTicks = spawnIndex <= 1 ? 0 : (uint)Main.rand.Next(15, 30),
+				};
+			}
+
+			waves[waveIndex] = new EncounterWave
+			{
+				Spawns = spawns,
+				TargetEncounterScore = 0.125f,
+				TargetWaveScore = 0.10f,
+				TargetSpawnScore = 0.0f,
+			};
+		}
+
+		Encounter encounter = EnemyEncounters.CreateEncounter(new EncounterDescription
+		{
+			Identifier = "Rift",
+			SpawnOrigin = tileOrigin,
+			ActivationOrigin = worldOrigin,
+			ActivationRange = 2048f,
+			SpawnArea = rectangle,
+			Waves = waves,
+			Music = new(MusicID.LunarBoss),
+			SceneEffectPriority = SceneEffectPriority.BossLow,
+		});
+
+		return encounter;
+	}
+
+	private void RemoveEncounter()
+	{
+		if (!Encounter.IsValid) { return; }
+
+		// Despawn all remaining NPCs.
+		foreach (NPC npc in Encounter.IterateRemainingEnemies())
+		{
+			EnemySpawning.SpawnEffects(npc, EnemySpawnEffect.Teleport, npc.Center);
+			npc.active = false;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncNPC, number: npc.whoAmI);
+			}
+		}
+
+		// Remove encounter.
+		Encounter.Remove();
+	}
+
+	private void DropRewards()
+	{
+		int rewardType = Kind switch
+		{
+			ConfluxRiftKind.Glacial => ModContent.ItemType<GlacialConflux>(),
+			ConfluxRiftKind.Celestial => ModContent.ItemType<CelestialConflux>(),
+			_ => ModContent.ItemType<InfernalConflux>(),
+		};
+		int rewardAmount = Progress switch
+		{
+			<= 0.20f => 0,
+			<= 0.50f => 1,
+			<= 0.80f => 2,
+			< 1.000f => 3,
+			_ => 4,
+		};
+		for (int i = 0; i < rewardAmount; i++)
+		{
+			int itemIdx = Item.NewItem(null, Projectile.Center + Main.rand.NextVector2Circular(72f, 72f), rewardType, 1, noBroadcast: true);
+			Item item = Main.item[itemIdx];
+			item.velocity = Main.rand.NextVector2Circular(10f, 10f);
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncItem, number: itemIdx);
+			}
+		}
+	}
+
 	private (int torchId, int dustId, Color colorBase) GetVisualParameters()
 	{
 		return Kind switch
 		{
-			ConfluxRiftKind.Ice => (TorchID.Ice, DustID.Firework_Blue, Color.AliceBlue),
-			ConfluxRiftKind.Flames => (TorchID.Red, DustID.Firework_Red, Color.OrangeRed),
-			ConfluxRiftKind.Lightning => (TorchID.Purple, DustID.WitherLightning, Color.MediumVioletRed),
+			ConfluxRiftKind.Glacial => (TorchID.Ice, DustID.Firework_Blue, Color.AliceBlue),
+			ConfluxRiftKind.Infernal => (TorchID.Red, DustID.Firework_Red, Color.OrangeRed),
+			ConfluxRiftKind.Celestial => (TorchID.Purple, DustID.WitherLightning, Color.MediumVioletRed),
 			_ => throw new NotImplementedException(),
 		};
 	}
@@ -116,8 +366,8 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 	{
 		if (Main.mouseRight && Main.mouseRightRelease)
 		{
-			ConfluxRifts.ActivateRift(Projectile);
-			//Projectile.active = false;
+			Activate();
+
 			return true;
 		}
 
@@ -131,5 +381,38 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 
 		return false;
+	}
+}
+
+internal class RiftInteractionHandler : Handler
+{
+	public override Networking.Message MessageType => Networking.Message.RiftInteraction;
+
+	/// <inheritdoc cref="Networking.Message.RiftInteraction"/>
+	public override void Send(params object[] parameters)
+	{
+		CastParameters(parameters, out byte sender, out int riftIdentity);
+
+		ModPacket packet = Networking.GetPacket(MessageType);
+		packet.Write(sender);
+		packet.Write(riftIdentity);
+		packet.Send();
+	}
+
+	internal override void ServerRecieve(BinaryReader reader)
+	{
+		ModPacket packet = Networking.GetPacket(MessageType);
+		byte sender = reader.ReadByte();
+		int riftIdentity = reader.ReadInt32();
+
+		if (Main.player[sender] is not { active: true } player) { return; }
+		
+		if (Main.projectile.FirstOrDefault(p => p.identity == riftIdentity) is not { ModProjectile: ConfluxRift rift }) { return; }
+
+		// Increased reach distance for synchronization grace.
+		Point tileTarget = rift.Projectile.Hitbox.ClosestPointInRect(player.Center).ToTileCoordinates();
+		if (!player.IsInTileInteractionRange(tileTarget.X, tileTarget.Y, TileReachCheckSettings.Simple with { TileRangeMultiplier = 2 })) { return; }
+
+		rift.Activate();
 	}
 }
