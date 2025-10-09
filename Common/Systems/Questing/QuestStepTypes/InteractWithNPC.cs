@@ -40,8 +40,8 @@ public readonly struct GiveItem(int stack, params int[] ids)
 /// <param name="reqItems">If not null, the items required to be held by the player when talking to the NPC.</param>
 /// <param name="removeItems">If true, and <paramref name="reqItems"/> is not null, all <paramref name="reqItems"/> will be taken up to the required stack.</param>
 /// <param name="onSuccessfulInteraction">An action that is run when the interaction is successful (the step is completed).</param>
-internal class InteractWithNPC(int npcId, LocalizedText reminder, LocalizedText dialogue = null, GiveItem[] reqItems = null, 
-	bool removeItems = false, Action<NPC> onSuccess = null) : QuestStep
+internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, LocalizedText dialogue = null, GiveItem[] reqItems = null, 
+	bool removeItems = false, Action<NPC> onSuccess = null) : QuestStep(id)
 {
 	private static LocalizedText TalkToText = null;
 

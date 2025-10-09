@@ -1,0 +1,16 @@
+{
+	"friendlyName": "Budding Plantera",
+	"entries": [
+		{
+			"scale": null,
+			"prefix": null,
+			"weight": 1,
+			"stats": {
+				"level": 1,
+				"experience": 3000
+			},
+			"affixes": null,
+			"requirements": "Jungle"
+		}
+	]
+}

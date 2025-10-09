@@ -11,3 +11,4 @@ QuestUIKey.DisplayName: Klawisz UI Zadań
 PassiveTreeUIKey.DisplayName: Klawisz UI Drzewka Pasywnego
 // ToggleQuestDebugging.DisplayName: Debug: Toggle Quest Debugging
 // ToggleEncounterDebugging.DisplayName: Debug: Toggle Encounter Debugging
+// VirtualBagHotkey.DisplayName: Toggle Sack of Holding

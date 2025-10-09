@@ -1,5 +1,4 @@
-﻿using Terraria.GameContent.Creative;
-using Terraria.Localization;
+﻿using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -10,10 +9,9 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// <param name="includes">Whether a kill counts.</param>
 /// <param name="count">How many kills to track.</param>
 /// <param name="displayText">The text to display.</param>
-internal class KillCount(Func<NPC, bool> includes, int count, LocalizedText displayText) : QuestStep
+internal class KillCount(string id, Func<NPC, bool> includes, int count, LocalizedText displayText) : QuestStep(id)
 {
-	public KillCount(int npcId, int count, LocalizedText displayText) : this(
-		(NPC npcKilled) => npcKilled.netID == npcId, count, displayText)
+	public KillCount(string id, int npcId, int count, LocalizedText displayText) : this(id, (NPC npcKilled) => npcKilled.netID == npcId, count, displayText)
 	{
 	}
 

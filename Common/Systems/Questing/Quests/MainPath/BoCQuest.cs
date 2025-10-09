@@ -25,10 +25,10 @@ internal class BoCQuest : Quest
 	{
 		return
 		[
-			new ConditionCheck((_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 0, 1, this.GetLocalization("SmashOrb")),
-			new ConditionCheck((_) => SubworldSystem.Current is BrainDomain, 1, this.GetLocalization("EnterDomain")),
-			new KillCount(NPCID.BrainofCthulhu, 1, this.GetLocalization("KillBrain")),
-			new InteractWithNPC(ModContent.NPCType<LloydNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Complete"))
+			new ConditionCheck("SmashOrbs", (_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 0, 1, this.GetLocalization("SmashOrb")),
+			new ConditionCheck("EnterDomain", (_) => SubworldSystem.Current is BrainDomain, 1, this.GetLocalization("EnterDomain")),
+			new KillCount("KillBrain", NPCID.BrainofCthulhu, 1, this.GetLocalization("KillBrain")),
+			new InteractWithNPC("TalkLloyd", ModContent.NPCType<LloydNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.LloydNPC.Dialogue.Complete"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

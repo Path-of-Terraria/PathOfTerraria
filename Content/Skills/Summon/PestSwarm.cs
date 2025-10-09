@@ -528,7 +528,7 @@ public class PestSwarm : Skill
 
 			if (IsExplosive)
 			{
-				int exp = ModContent.ProjectileType<VolatileInsects.AntlionExplosion>();
+				int exp = ModContent.ProjectileType<AntlionExplosion>();
 				int proj = Projectile.NewProjectile(Projectile.GetSource_Death(), Projectile.Center, Vector2.Zero, exp, Projectile.damage * 3, 8, Projectile.owner, 60, 60);
 				Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1f);
 
@@ -924,7 +924,7 @@ public class PestSwarm : Skill
 
 					if (plr.HasTreePassive<PestSwarmTree, ShatteringCarapace>())
 					{
-						int type = ModContent.ProjectileType<ShatteringCarapace.IceShards>();
+						int type = ModContent.ProjectileType<IceShards>();
 						Vector2 pos = target.Top;
 
 						while (Collision.SolidCollision(pos - new Vector2(10), 20, 20))

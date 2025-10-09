@@ -24,8 +24,8 @@ internal class MoonLordQuest() : HardmodeQuest(10)
 	{
 		return
 		[
-			new ConditionCheck(_ => SubworldSystem.Current is MoonLordDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<MoonLordDomain>(NPCID.MoonLordCore), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Enter", _ => SubworldSystem.Current is MoonLordDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<MoonLordDomain>(NPCID.MoonLordCore), 1, this.GetLocalization("Boss")),
 		];
 	}
 

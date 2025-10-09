@@ -29,7 +29,7 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 	{
 		return
 		[
-			new ConditionCheck(_ => 
+			new ConditionCheck("Count", _ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 				return tracker.CompletionsAtOrAboveTier(5) >= MappingDomainSystem.RequiredCompletionsPerTier;
@@ -37,8 +37,8 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
-			new ConditionCheck(_ => SubworldSystem.Current is PlanteraDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<PlanteraDomain>(NPCID.Plantera), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Enter", _ => SubworldSystem.Current is PlanteraDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<PlanteraDomain>(NPCID.Plantera), 1, this.GetLocalization("Boss")),
 		];
 	}
 

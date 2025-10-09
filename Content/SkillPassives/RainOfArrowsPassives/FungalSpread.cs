@@ -3,4 +3,7 @@ using PathOfTerraria.Common.Systems.Skills;
 
 namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 
-internal class FungalSpread(SkillTree tree) : SkillPassive(tree);
+internal class FungalSpread(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["10"];
+}

@@ -9,5 +9,5 @@ internal class HeatCompression(SkillTree tree) : SkillPassive(tree)
 	public float RadiusReduction = 0.5f;
 	public const float DamageBonus = 0.25f;
 
-	public override string DisplayTooltip => string.Format(base.DisplayTooltip, MathUtils.Percent(RadiusReduction), MathUtils.Percent(DamageBonus));
+	public override object[] TooltipArguments => [MathUtils.Percent(RadiusReduction), MathUtils.Percent(DamageBonus)];
 }

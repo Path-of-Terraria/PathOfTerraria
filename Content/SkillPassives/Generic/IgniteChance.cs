@@ -8,7 +8,7 @@ namespace PathOfTerraria.Content.SkillPassives.Generic;
 internal class IgniteChance : SkillPassive
 {
 	public const float Chance = 0.02f;
-	public override string DisplayTooltip => base.DisplayTooltip.FormatWith(MathUtils.Percent(Chance));
+	public override object[] TooltipArguments => [MathUtils.Percent(Chance)];
 
 	public IgniteChance(SkillTree tree) : base(tree)
 	{

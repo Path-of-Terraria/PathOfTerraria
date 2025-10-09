@@ -30,7 +30,7 @@ internal class CultistQuest() : HardmodeQuest(9)
 	{
 		return
 		[
-			new ConditionCheck(_ => 
+			new ConditionCheck("Completions", _ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 				return tracker.CompletionsAtOrAboveTier(9) >= MappingDomainSystem.RequiredCompletionsPerTier;
@@ -38,8 +38,8 @@ internal class CultistQuest() : HardmodeQuest(9)
 				MathHelper.Clamp(ModContent.GetInstance<MappingDomainSystem>().Tracker.CompletionsAtOrAboveTier(QuestTier), 0, MappingDomainSystem.RequiredCompletionsPerTier),
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
-			new ConditionCheck(_ => SubworldSystem.Current is CultistDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<CultistDomain>(NPCID.CultistBoss), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Enter", _ => SubworldSystem.Current is CultistDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Finish", _ => BossTracker.DownedInDomain<CultistDomain>(NPCID.CultistBoss), 1, this.GetLocalization("Boss")),
 		];
 	}
 

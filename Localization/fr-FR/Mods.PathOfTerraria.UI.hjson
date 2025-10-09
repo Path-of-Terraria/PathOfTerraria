@@ -215,6 +215,7 @@ InvButtons: {
 	Stats: Statistiques
 	RestartTutorial: Redémarrer le tutoriel
 	// DomainInformation: Domain Information
+	// VirtualBag: Virtual Storage
 }
 
 SubworldHelp: {
@@ -297,3 +298,10 @@ Tips: {
 	''' */
 // AreaLevel: Area Level:
 // Waypoints.TutorialTip: In order to use the Home waypoint, you must have an Arcane Obelisk placed in the main world. Use the Return button in your settings menu to proceed.
+
+VirtualBag: {
+	// Title: Sack of Holding
+	// Description: Holds all your gear! This will be cleared outside of the domain.
+	// RightClick: (Right click to add to your inventory)
+	// Review: Review your items (Closing this will exit the subworld)
+}

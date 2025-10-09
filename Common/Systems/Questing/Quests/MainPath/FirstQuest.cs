@@ -27,9 +27,9 @@ internal class FirstQuest : Quest
 	{
 		return
 		[
-			new ConditionCheck(plr => plr.DistanceSQ(ModContent.GetInstance<RavencrestSystem>().EntrancePosition.ToWorldCoordinates()) < 400 * 400,
+			new ConditionCheck("Approach", plr => plr.DistanceSQ(ModContent.GetInstance<RavencrestSystem>().EntrancePosition.ToWorldCoordinates()) < 400 * 400,
 				1, this.GetLocalization("ApproachEntrance")),
-			new ConditionCheck(_ => SubworldSystem.Current is RavencrestSubworld, 1, this.GetLocalization("EnterRavencrest")),
+			new ConditionCheck("Enter", _ => SubworldSystem.Current is RavencrestSubworld, 1, this.GetLocalization("EnterRavencrest")),
 			new ActionStep((plr, step) =>
 			{
 				int item = Item.NewItem(new EntitySource_Misc("Quest"), plr.Bottom, ModContent.ItemType<ArcaneObeliskItem>());
