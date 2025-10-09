@@ -41,7 +41,7 @@ internal sealed class ConfluxRifts : ModSystem
 	{
 		foreach (Projectile projectile in Main.ActiveProjectiles)
 		{
-			if (projectile.ModProjectile is not ConfluxRift rift) { continue; }
+			if (projectile.ModProjectile is not ConfluxRift { Activated: true } rift) { continue; }
 
 			ChatManager.DrawColorCodedString(sb, FontAssets.MouseText.Value, $"Stability: {rift.Progress * 100:0.00}%", Main.ScreenSize.ToVector2() - new Vector2(256f, 64f), Color.White, 0f, default, Vector2.One);
 		}
