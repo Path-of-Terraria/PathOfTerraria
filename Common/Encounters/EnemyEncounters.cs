@@ -91,6 +91,8 @@ internal record struct EncounterInstance()
 	/// <summary> The kill score that has been accumulated from killing enemies spawned specifically by the current wave. </summary>
 	public float SpawnScore { get; set; }
 
+	/// <summary> A sum of all waves' spawns possible kill score. </summary>
+	public float TotalBaseScore { get; set; }
 	/// <summary> The <see cref="EncounterScore"/> value that must be reached to advance to the next encounter. </summary>
 	public float TargetEncounterScore { get; set; }
 	/// <summary> The <see cref="WaveScore"/> value that must be reached to advance to the next encounter. </summary>
@@ -220,18 +222,22 @@ internal record struct Encounter(uint Index, uint Version) : IHandle
 	{
 		ref EnemyEncounters.InstanceData data = ref EnemyEncounters.encounters.Get(this);
 		ref readonly EncounterWave wave = ref data.Description.Waves[data.Instance.WaveIndex];
-		float lastMaxScore = 0f;
-		float totalMaxScore = 0f;
+		float totalBaseScore = 0f;
 
-		for (int waveIndex = 0; waveIndex <= data.Instance.WaveIndex; waveIndex++)
+		for (int waveIndex = 0; waveIndex < data.Description.Waves.Length; waveIndex++)
 		{
-			lastMaxScore = data.Description.Waves[waveIndex].Spawns.Sum(s => s.KillScore);
-			totalMaxScore += lastMaxScore;
+			float baseScore = data.Description.Waves[waveIndex].Spawns.Sum(s => s.KillScore);
+			totalBaseScore += baseScore;
+
+			if (waveIndex == data.Instance.WaveIndex)
+			{
+				data.Instance.TargetEncounterScore = totalBaseScore * wave.TargetEncounterScore;
+				data.Instance.TargetWaveScore = baseScore * wave.TargetWaveScore;
+				data.Instance.TargetSpawnScore = baseScore * wave.TargetSpawnScore;
+			}
 		}
 
-		data.Instance.TargetEncounterScore = totalMaxScore * wave.TargetEncounterScore;
-		data.Instance.TargetWaveScore = lastMaxScore * wave.TargetWaveScore;
-		data.Instance.TargetSpawnScore = lastMaxScore * wave.TargetSpawnScore;
+		data.Instance.TotalBaseScore = totalBaseScore;
 	}
 }
 
