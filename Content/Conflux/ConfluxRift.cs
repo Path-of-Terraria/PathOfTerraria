@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using PathOfTerraria.Common.Encounters;
 using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Subworlds;
@@ -197,9 +199,9 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 
 		const uint lengthInSeconds = 30;
 
-		Encounter = CreateEncounter();
 		BitFlags |= Flags.Activated;
 		EndTime = Main.GameUpdateCount + (lengthInSeconds * (uint)TimeSystem.LogicFramerate);
+		Encounter = CreateEncounter(lengthInSeconds);
 		Projectile.netUpdate = true;
 	}
 
@@ -227,7 +229,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		}
 	}
 
-	private Encounter CreateEncounter()
+	private Encounter CreateEncounter(uint lengthInSeconds)
 	{
 		const int extentsW = 40;
 		const int extentsH = 20;
@@ -243,49 +245,63 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 		};
 		var rectangle = new Rectangle(area.X, area.Y, area.Z - area.X, area.W - area.Y);
 
-		int[] possibleTypes =
+		string[] encounterPaths =
 		[
-			NPCID.Zombie,
-			NPCID.ArmedZombie,
-			NPCID.Skeleton,
-			NPCID.EaterofSouls,
-			NPCID.BigEater,
-			NPCID.DemonEye,
+			"Content/Encounters/Squads/BloodSquadSmall",
+			"Content/Encounters/Squads/CaveSquadMedium",
+			"Content/Encounters/Squads/CorruptionSquadSmall",
+			"Content/Encounters/Squads/UndeadSquadLarge",
+			"Content/Encounters/Squads/ZombieSquadLarge",
+			"Content/Encounters/Squads/ZombieSquadSmall",
 		];
+		EncounterDescription[] baseEncounters = encounterPaths.Select(p => EncounterIO.GetEncounterFromModPath(Mod, p)).ToArray();
 
-		var waves = new EncounterWave[10];
+		const uint timeInSecondsToCeaseSpawningFor = 15;
+		uint encounterSpawnDelays = 0;
+		uint encounterTargetSpawnDelays = Math.Max(0, (uint)((lengthInSeconds - timeInSecondsToCeaseSpawningFor) * TimeSystem.LogicFramerate));
+		var waves = new List<EncounterWave>();
 
-		for (int waveIndex = 0; waveIndex < waves.Length; waveIndex++)
+		// The amount of enemies spawned every second is scaled by map tier.
+		uint cooldownPerEnemy = (uint)(180 / MathHelper.Lerp(1f, 5f, MathHelper.Clamp(MappingWorld.MapTier, 1f, 10f)));
+		uint accumulatedCooldown = 0;
+		uint cooldownPerBatch = 60;
+
+		// Add base encounters as waves until we hit the time quota.
+		while (encounterSpawnDelays < encounterTargetSpawnDelays)
 		{
-			var spawns = new EnemySpawn[10];
+			ref readonly EncounterDescription baseEncounter = ref baseEncounters[Main.rand.Next(baseEncounters.Length)];
 
-			for (int spawnIndex = 0; spawnIndex < spawns.Length; spawnIndex++)
+			EnemySpawn[] spawns = baseEncounter.Waves.SelectMany(w => w.Spawns).ToArray();
+
+			foreach (ref EnemySpawn spawn in spawns.AsSpan())
 			{
-				int type = possibleTypes[Main.rand.Next(possibleTypes.Length)];
-				spawns[spawnIndex] = new EnemySpawn
+				spawn.Effect = EnemySpawnEffect.Teleport;
+				if (spawn.SpawnPlacement.HasValue)
 				{
-					NpcType = new(type),
-					SpawnPosition = null,
-					SpawnPlacement = new SpawnPlacement
-					{
-						Area = default,
-						CollisionSize = default,
-						OnGround = ContentSamples.NpcsByNetId[type].aiStyle == NPCAIStyleID.Fighter,
-						MinDistanceFromPlayers = 192f,
-						MinDistanceFromEnemies = 8f,
-					},
-					Effect = EnemySpawnEffect.Teleport,
-					CooldownInTicks = spawnIndex <= 1 ? 0 : (uint)Main.rand.Next(15, 30),
-				};
+					spawn.SpawnPlacement = spawn.SpawnPlacement.Value with { MinDistanceFromEnemies = 8f };
+				}
+
+				accumulatedCooldown += cooldownPerEnemy;
+				uint cooldown = 0;
+
+				if (accumulatedCooldown >= cooldownPerBatch)
+				{
+					cooldown = cooldownPerBatch;
+					accumulatedCooldown -= cooldownPerBatch;
+				}
+
+				spawn.CooldownInTicks = cooldown;
+				encounterSpawnDelays += cooldown;
 			}
 
-			waves[waveIndex] = new EncounterWave
+			waves.Add(new EncounterWave
 			{
-				Spawns = spawns,
-				TargetEncounterScore = 0.125f,
-				TargetWaveScore = 0.10f,
+				Spawns = spawns.ToArray(),
+				// Spawning does not wait for the player to kill anything. Waves can be thought of as cosmetic.
+				TargetEncounterScore = 0.0f,
+				TargetWaveScore = 0.0f,
 				TargetSpawnScore = 0.0f,
-			};
+			});
 		}
 
 		Encounter encounter = EnemyEncounters.CreateEncounter(new EncounterDescription
@@ -295,7 +311,7 @@ internal sealed class ConfluxRift : ModProjectile, IRightClickableProjectile
 			ActivationOrigin = worldOrigin,
 			ActivationRange = 2048f,
 			SpawnArea = rectangle,
-			Waves = waves,
+			Waves = waves.ToArray(),
 			Music = new(MusicID.LunarBoss),
 			SceneEffectPriority = SceneEffectPriority.BossLow,
 		});

@@ -459,7 +459,7 @@ internal sealed class EnemyEncounters : ModSystem
 				bool localWaveAnyEnemy = data.Instance.WaveScore >= data.Instance.TargetWaveScore;
 				bool localWaveLocalEnemy = data.Instance.SpawnScore >= data.Instance.TargetSpawnScore;
 
-				if (anyWaveAnyEnemy & localWaveAnyEnemy & localWaveLocalEnemy)
+				if (isFinalWave ? killedAll : (anyWaveAnyEnemy & localWaveAnyEnemy & localWaveLocalEnemy))
 				{
 					if (isFinalWave)
 					{
