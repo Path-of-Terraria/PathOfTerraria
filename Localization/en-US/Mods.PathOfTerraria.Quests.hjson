@@ -194,9 +194,10 @@ Quest: {
 	EoLQuest: {
 		Name: Holy Absolution
 		Description: ""
-		Tiers: Complete {1} Tier 8 Explorable maps ({0}/{1})
-		EnterDomain: Enter the Empress of Light's domain
+		EnterDomain: Enter the Hallow Rift
 		Boss: Defeat the Empress of Light
+		EquipGlasses: Craft and Equip the Rose-Colored Glasses
+		ExploreHallow: Explore the Hallow with the glasses equipped
 	}
 
 	CultistQuest: {

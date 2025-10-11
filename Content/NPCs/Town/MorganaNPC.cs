@@ -99,7 +99,6 @@ public class MorganaNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC
 	//TODO: This should probably be a base NPC functionality as many NPC's will have multiple quests. 
 	private static Quest DetermineNewestQuest()
 	{
-		
 		if (QuestUnlockManager.CanStartQuest<WitchStartQuest>())
 		{
 			return Quest.GetLocalPlayerInstance<WitchStartQuest>();

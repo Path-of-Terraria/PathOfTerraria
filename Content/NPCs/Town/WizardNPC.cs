@@ -138,16 +138,34 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 	{
 		return this.GetDefaultProfile();
 	}
+	
+	private static Quest DetermineNewestQuest()
+	{
+		if (QuestUnlockManager.CanStartQuest<WizardStartQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<WizardStartQuest>();
+		}
+		if (QuestUnlockManager.CanStartQuest<EoLQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<EoLQuest>();
+		}
+		return Quest.GetLocalPlayerInstance<WizardStartQuest>(); //Shouldn't be possible, but just in case
+	}
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
-		button2 = !QuestUnlockManager.CanStartQuest<WizardStartQuest>() ? "" : Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
-
-		if (button2 == "" && Main.hardMode && Quest.GetLocalPlayerInstance<QueenSlimeQuest>().CanBeStarted)
+		
+		Quest startQuest = Quest.GetLocalPlayerInstance<WizardStartQuest>();
+		if (startQuest.Active || startQuest.Completed) //Don't display the shop until the player has received the first quest
 		{
-			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest");
+			button = Language.GetTextValue("LegacyInterface.28"); //Shop
 		}
+
+		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<WizardStartQuest>() ||
+		                         QuestUnlockManager.CanStartQuest<EoLQuest>();
+
+		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -156,26 +174,25 @@ public class WizardNPC : ModNPC, IQuestMarkerNPC, ISpawnInRavencrestNPC, IOverhe
 		{
 			shopName = "Shop";
 		}
-		else
+		
+		Quest quest = DetermineNewestQuest();
+
+		switch (quest)
 		{
-			if (QuestUnlockManager.CanStartQuest<WizardStartQuest>())
-			{
-				Main.npcChatCornerItem = ModContent.ItemType<TomeOfTheElders>();
+			case WizardStartQuest:
 				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.Quest");
 				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<WizardStartQuest>();
-			}
+				break;
+			case EoLQuest:
+				Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue1");
+				Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoLQuest>();
+				break;
 		}
 	}
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		quest = Quest.GetLocalPlayerInstance<WizardStartQuest>();
-
-		if (quest.Completed && Main.hardMode && Quest.GetLocalPlayerInstance<QueenSlimeQuest>().CanBeStarted)
-		{
-			quest = Quest.GetLocalPlayerInstance<QueenSlimeQuest>();
-		}
-
+		quest = DetermineNewestQuest();
 		return !quest.Completed;
 	}
 }
