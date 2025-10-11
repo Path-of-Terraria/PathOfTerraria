@@ -45,9 +45,9 @@ internal class PlanteraQuest() : HardmodeQuest(5)
 				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<PlanteraMap>())),
 			
-			new ConditionCheck(_ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck(_ => SubworldSystem.Current is PlanteraDomain, 1, this.GetLocalization("EnterDomain")),
 			
-			new ConditionCheck(_ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
+			new ConditionCheck(_ => BossTracker.DownedInDomain<PlanteraDomain>(NPCID.Plantera), 1, this.GetLocalization("Boss")),
 	
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue3"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.MorganaNPC.Dialogue.PlanteraDialogue3"))

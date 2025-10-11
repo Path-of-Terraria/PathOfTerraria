@@ -188,6 +188,7 @@ Quest: {
 		Tiers: Complete {1} Tier 7 Explorable maps ({0}/{1})
 		EnterDomain: Enter Duke Fishron's domain
 		Boss: Defeat Duke Fishron
+		OceanEnemies: Kill ({0}/{1}) Ocean Enemies
 	}
 
 	EoLQuest: {

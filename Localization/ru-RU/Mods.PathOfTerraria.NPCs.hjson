@@ -893,3 +893,40 @@ TinkerNPC: {
 
 	// Entry: Todo:
 }
+
+FishermanNPC: {
+	// DisplayName: Marlin
+
+	Dialogue: {
+		// Common0: Nets torn again… sea’s been restless lately.
+		// Common1: Folks say the ocean is endless. I say it just hides what it doesn’t want you to see.
+		// Common2: Bait, rod, and patience. That’s all a fisherman needs. Well… maybe a sharp knife too.
+		// Common3: You ever hear a fish scream? …No? Good. Best keep it that way.
+		// FishermanFishronDialogue1: Ahoy stranger… The name's Marlin. I can feel that the ocean’s restless tonight. I’ve seen her moods, but this one’s different. Something’s hunting, deep below. If you want to see it with your own eyes, prove to me you can handle the sea first. Bring me the rarest fish you can hook, and a few scraps of the ocean’s bed. Let’s see if you’ve got the stomach for what’s coming.
+		// FishermanFishronDialogue2: So you saw it, didn’t you? That tear in the seabed… the Rift. Never thought I’d live to see the ocean split open like a wound. The water around it stinks of death, and every fish you dragged up feels like it was trying to escape. Whatever waits inside that dark hollow, it’s no natural beast. If my hunch is right, the Rift’s calling for one thing… the reclusive Truffle Worm. Bring me one, adventurer, and we’ll have our answer.
+		// FishermanFishronDialogue3: You’ve got the worm… by the tides… I don’t envy you for holding that thing, it writhes like it knows where it’s headed. The ocean’s Rift is hungry, and this bait is the key. Cast it into the Rift’s maw, and what stirs will come for you. Duke Fishron, the abyssal tyrant… he’ll rise to defend his throne. Steel yourself, adventurer. This is no fishing trip. It’s a reckoning.
+		// FishermanFishronDialogue4: You went in… and somehow lived to tell the tale. I can scarcely believe it. The Rift shook with fury when you fought him. I felt it from the shore. And then, silence. The Duke’s reign is broken, if only for now. Still, the Rift remains… a scar at the ocean’s floor, watching and waiting. You’ve proven stronger than this tide, adventurer, but never forget, the sea always takes back what it’s owed.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: Sea breeze keeps me steady. Better than ale, most days.
+			// 1: Sunlight on water… almost makes you forget what’s beneath.
+			// 2: Rod in hand, line in the tide. Feels like home.
+		}
+
+		Night: {
+			// 0: Ocean sings at night. Sometimes it’s a lullaby… sometimes a warning.
+			// 1: Stars above, waves below. I’m caught between two beauties.
+			// 2: Careful near the docks... not all eyes watching you belong to men.
+		}
+
+		Rain: {
+			// 0: Rain or shine, the sea always takes its due.
+			// 1: Nets are heavier in the rain, but the catch is sweeter.
+			// 2: Some say storms wake things from the deep. I say they just bring them closer.
+		}
+	}
+
+	// Entry: Todo:
+}
