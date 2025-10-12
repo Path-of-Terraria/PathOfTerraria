@@ -18,16 +18,18 @@ using Terraria.Localization;
 namespace PathOfTerraria.Content.NPCs.Town;
 
 [AutoloadHead]
-public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
+public class AzarielNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnInRavencrestNPC
 {
 	Point16 ISpawnInRavencrestNPC.TileSpawn =>
-		(RavencrestSystem.Structures["Burrow"].Position + new Point(20, 20)).ToPoint16();
+		(RavencrestSystem.Structures["Library"].Position + new Point(55, 45)).ToPoint16();
 
 	OverheadDialogueInstance IOverheadDialogueNPC.CurrentDialogue { get; set; }
 
+	private static bool hasSeenInitialDialogue;
+
 	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[Type] = 23;
+		Main.npcFrameCount[NPC.type] = Main.npcFrameCount[NPCID.Guide];
 
 		NPCID.Sets.ExtraFramesCount[Type] = 9;
 		NPCID.Sets.AttackFrameCount[Type] = 2;
@@ -43,17 +45,16 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 
 	public override void SetDefaults()
 	{
+		NPC.CloneDefaults(NPCID.ArmsDealer);
 		NPC.townNPC = true;
 		NPC.friendly = true;
+		NPC.aiStyle = 7;
+		NPC.defense = 30;
 		NPC.lifeMax = 250;
-		NPC.width = 30;
-		NPC.height = 50;
-		NPC.knockBackResist = 0.4f;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath1;
-		NPC.aiStyle = NPCAIStyleID.Passive;
-
-		AnimationType = NPCID.Mechanic;
+		NPC.knockBackResist = 0.5f;
+		AnimationType = NPCID.Guide;
 
 		/*
 		NPC.TryEnableComponent<NPCHitEffects>(
@@ -84,18 +85,37 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 		bestiaryEntry.AddInfo(this, "Surface");
 	}
 	
-	//TODO: Use DetermineNewestQuest in this npc
+	private static Quest DetermineNewestQuest()
+	{
+		if (QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
+		}
+		if (QuestUnlockManager.CanStartQuest<EpilogueQuest>())
+		{
+			return Quest.GetLocalPlayerInstance<EpilogueQuest>();
+		}
+		return Quest.GetLocalPlayerInstance<CultistMoonlordQuest>(); //Shouldn't be possible, but just in case
+	}
 
 	public override void SetChatButtons(ref string button, ref string button2)
 	{
 		button = Language.GetTextValue("LegacyInterface.28"); // Shop
 
-		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<TinkerIntroQuest>() || 
-		                         QuestUnlockManager.CanStartQuest<TwinsQuest>() || 
-		                         QuestUnlockManager.CanStartQuest<DestroyerQuest>() || 
-		                         QuestUnlockManager.CanStartQuest<SkelePrimeQuest>();
+		bool hasAvailableQuest = QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>() || QuestUnlockManager.CanStartQuest<EpilogueQuest>();
+		//Also epilogue quest
 
-		button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+		Quest cultistQuest = Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
+		// Check if quest just started and player hasn't seen the initial dialogue yet
+		if (cultistQuest.Active && cultistQuest.CurrentStep == 0 && !hasSeenInitialDialogue)
+		{
+			button2 = Language.GetTextValue("Mods.PathOfTerraria.NPCs.Next");
+		}
+		else
+		{
+			button2 = hasAvailableQuest ? Language.GetTextValue("Mods.PathOfTerraria.NPCs.Quest") : "";
+		}
+
 	}
 
 	public override void OnChatButtonClicked(bool firstButton, ref string shopName)
@@ -105,33 +125,27 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 			shopName = "Shop";
 			return;
 		}
-
-		if (QuestUnlockManager.CanStartQuest<TinkerIntroQuest>())
+		//Next button to show part 2 of the dialogue
+		Quest cultistQuest = Quest.GetLocalPlayerInstance<CultistMoonlordQuest>();
+		if (cultistQuest.Active && cultistQuest.CurrentStep == 0)
 		{
 			Main.npcChatText =
-				Language.GetTextValue("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue1");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<TinkerIntroQuest>();
+				Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue2");
 		}
-		else if (QuestUnlockManager.CanStartQuest<TwinsQuest>())
+		if (QuestUnlockManager.CanStartQuest<CultistMoonlordQuest>())
 		{
 			Main.npcChatText =
-				Language.GetTextValue("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue1");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<TwinsQuest>();
+				Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue1");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<CultistMoonlordQuest>();
 		}
-		else if (QuestUnlockManager.CanStartQuest<DestroyerQuest>())
+		else if (QuestUnlockManager.CanStartQuest<EpilogueQuest>())
 		{
 			Main.npcChatText =
-				Language.GetTextValue("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<DestroyerQuest>();
+				Language.GetTextValue("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialogue1");
+			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EpilogueQuest>();
 		}
-		else if (QuestUnlockManager.CanStartQuest<SkelePrimeQuest>())
-		{
-			Main.npcChatText =
-				Language.GetTextValue("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue1");
-			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<SkelePrimeQuest>();
-		}
-
 	}
+
 
 	public override void AddShops()
 	{
@@ -172,38 +186,12 @@ public class TinkerNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, ISpawnIn
 
 	public bool CanSpawn(NPCSpawnTimeframe timeframe, bool alreadyExists)
 	{
-		return Main.hardMode && (timeframe is NPCSpawnTimeframe.WorldGen or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists);
+		return Main.hardMode && (timeframe is NPCSpawnTimeframe.WorldGen or NPCSpawnTimeframe.NaturalSpawn && !alreadyExists) && NPC.downedEmpressOfLight;
 	}
 
 	public bool HasQuestMarker(out Quest quest)
 	{
-		Quest tinkerIntroQuest = Quest.GetLocalPlayerInstance<TinkerIntroQuest>();
-		Quest twinsQuest = Quest.GetLocalPlayerInstance<TwinsQuest>();
-		Quest destroyerQuest = Quest.GetLocalPlayerInstance<DestroyerQuest>();
-		Quest skelePrimeQuest = Quest.GetLocalPlayerInstance<SkelePrimeQuest>();
-
-		if (tinkerIntroQuest.CanBeStarted || (tinkerIntroQuest.Active && !tinkerIntroQuest.Completed))
-		{
-			quest = tinkerIntroQuest;
-			return true;
-		}
-		if (twinsQuest.CanBeStarted || (twinsQuest.Active && !twinsQuest.Completed))
-		{
-			quest = twinsQuest;
-			return true;
-		}
-		if (destroyerQuest.CanBeStarted || (destroyerQuest.Active && !destroyerQuest.Completed))
-		{
-			quest = destroyerQuest;
-			return true;
-		}
-		if (skelePrimeQuest.CanBeStarted || (skelePrimeQuest.Active && !skelePrimeQuest.Completed))
-		{
-			quest = skelePrimeQuest;
-			return true;
-		}
-	
-		quest = null;
-		return false;
+		quest = DetermineNewestQuest();
+		return !quest.Completed;
 	}
 }

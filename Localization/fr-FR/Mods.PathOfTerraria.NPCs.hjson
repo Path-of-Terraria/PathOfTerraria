@@ -1,5 +1,6 @@
 Shop: Magasin
 Quest: Quête
+// Next: Next
 
 BlacksmithNPC: {
 	DisplayName: Thrain Poing de fer
@@ -939,6 +940,46 @@ FishermanNPC: {
 			// 0: Rain or shine, the sea always takes its due.
 			// 1: Nets are heavier in the rain, but the catch is sweeter.
 			// 2: Some say storms wake things from the deep. I say they just bring them closer.
+		}
+	}
+
+	// Entry: Todo:
+}
+
+AzarielNPC: {
+	// DisplayName: Azariel
+
+	Dialogue: {
+		// Common0: I bear the weight of a thousand regrets... yet still I must try to make amends.
+		// Common1: Why do you place trust in one who once served darkness? I question it myself.
+		// Common2: This mask... it hides what I've become, but never what I've done.
+		// Common3: The shadows whisper of my past failures. I pray my future holds redemption.
+		// CultistMoonlordDialogue1: Hah… so, you’ve survived the recent Rifts that have opened… I can sense it. My name is Azariel, I once served a higher cause, mortal… a cause that nearly destroyed all life. As I’m sure you know by now, The Ancient One is coming. I realized that my inane devotion to the false being was bringing upon ruin, when I naively once thought it would blossom into fresh creation. I need your help adventurer, to stop this madness once and for all.
+		// CultistMoonlordDialogue2: I know of the corruption that has cursed these lands, I also know of it to be the source of much of this world's power. Collect for me the Sigils of these corruptions, so we can begin the ritual to summon the Great Old One, but with these Sigils, he will be in a weakened state. I have faith that this will be enough for us to destroy him once and for all.
+		// CultistMoonlordDialogue3: So… these are the sigils. You’ve done well, stranger. Yet I must ask… Why place your trust in me? We are little more than acquaintances, and I, a former servant of the very darkness we seek to oppose. Perhaps you see something in me that I cannot… or perhaps fate binds our paths. No matter. With these sigils, the ritual can begin. Steel yourself, Adventurer, when I begin, they will surely come for us. Only together can we stand against what approaches.
+		// CultistMoonlordDialogue4: How foolish of me to think that wielding the world’s corruption would be a good idea… Regardless, It is done, and my former master lies defeated. For that, I thank you, stranger. You’ve accomplished what I could not. And yet… the struggle is far from over. In their dying breath, he summoned the Celestial Pillars, anchors of the Ancient One's power. They now fester within your world, corrupting it with his essence. You must return, adventurer, and destroy the Pillars before their influence consumes everything.
+		// CultistMoonlordDialogue5: Do you feel that?! The world itself… it’s pulsing, writhing! The air is tearing apart, and the veil is breaking faster than I ever could have imagined.This is the end of all things, unless we stop him here! I will follow you through the portal, lead the way, stranger!
+		// EpilogueDialogue1: It’s over… or so it seems. But it is clear that the rifts were not the Moon Lord’s doing. No corpse should vanish like that. Something… or someone… is causing these rifts. I have lived long enough with deceit, stranger. Whatever truth lies beyond these Rifts, we will uncover it. But I must now give you this, stranger. It’s a map. A fragment of a place that shouldn’t exist. A moment in time that should now be long forgotten. I obtained this while serving the Cult, though I never understood it’s purpose. Now… I see them for what they are. Keys. Portals. Invitations. Use this on your map device, but be prepared. Whatever awaits you on the other side will not welcome your presence.
+		// EpilogueDialogue2: So… you’ve returned. And not empty-handed. Tell me, did you see it too? The elemental Rifts within the map… they bled with power not of this world, yet shaped to resemble our own elements - Fire, frost, and lightning. These are no mere accidents of nature. Whoever forges these Rifts, it bends raw creation into prisons of trial. I fear this was only the first step, stranger. This “Riftmaker” clearly seeks to test us.  And we must be ready. Explore more of these maps, uncover the truth behind who this mysterious entity is.
+	}
+
+	BubbleDialogue: {
+		Day: {
+			// 0: The darkness calls to me still... but I will not answer.
+			// 1: Even in daylight, the shadows of my past linger close.
+			// 2: Perhaps there is still hope for redemption... the sun seems to think so.
+		}
+
+		Night: {
+			// 0: Ocean sings at night. Sometimes it’s a lullaby… sometimes a warning.
+			// 1: Under these stars, I once performed rituals of unspeakable evil.
+			// 2: Night reminds me of what I was. Dawn reminds me of what I could become.
+		}
+
+		Rain: {
+			// 0: The rain cannot wash away my sins, but perhaps it can cool my guilt.
+			// 1: Each drop feels like judgment... yet I welcome it.
+			// 2: Even the sky weeps for what I've done. As it should.
 		}
 	}
 

@@ -200,18 +200,20 @@ Quest: {
 		// ExploreHallow: Explore the Hallow with the glasses equipped
 	}
 
-	CultistQuest: {
-		// Name: Lunar Leader
+	CultistMoonlordQuest: {
+		// Name: World's End
 		// Description: ""
-		// Tiers: Complete {1} Tier 9 Explorable maps ({0}/{1})
-		// EnterDomain: Enter the Lunatic Cultist's domain
-		// Boss: Defeat the Lunatic Cultist
+		// CollectSigils: Collect 5 Biome Sigils
+		// EnterDomain1: Enter the Lunatic Cultist's Domain
+		// EnterDomain2: Enter the Moon Lord's Domain
+		// Boss1: Defeat Lunatic Cultist
+		// Boss2: Defeat Moon Lord
+		// EnterDomain: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.EnterDomain
+		// Boss: Mods.PathOfTerraria.Quests.Quest.CultistMoonlordQuest.Boss
 	}
 
-	MoonLordQuest: {
-		// Name: The Ending
+	EpilogueQuest: {
+		// Name: A New Dawn
 		// Description: ""
-		// EnterDomain: Enter the Moon Lord's domain
-		// Boss: Defeat the Moon Lord
 	}
 }
