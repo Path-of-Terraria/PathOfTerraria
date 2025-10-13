@@ -23,7 +23,7 @@ public class LimpidShard : CurrencyShard
 			return false;
 		}
 
-		if (Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is ItemRarity.Normal or ItemRarity.Unique)
+		if (slotItem.GetInstanceData().Rarity is ItemRarity.Normal or ItemRarity.Unique)
 		{
 			failKey = "NotRareOrMagic";
 			return false;
@@ -34,20 +34,15 @@ public class LimpidShard : CurrencyShard
 
 	public override void RightClick(Player player)
 	{
-		ApplyChanges(player.HeldItem);
+		base.RightClick(player);
 		PoTItemHelper.SetMouseItemToHeldItem(player);
 	}
 
 	public override void ApplyToItem(Item slotItem)
 	{
-		ApplyToItem(slotItem);
-	}
-
-	private static void ApplyChanges(Item item)
-	{
-		PoTInstanceItemData data = item.GetInstanceData();
+		PoTInstanceItemData data = slotItem.GetInstanceData();
 		data.Rarity = ItemRarity.Normal;
 		data.Affixes = [];
-		PoTItemHelper.Roll(item, data.RealLevel);
+		PoTItemHelper.Roll(slotItem, data.RealLevel);
 	}
 }

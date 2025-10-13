@@ -14,7 +14,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.Looting.CurrencyPouchUI;
+namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
 internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 {
@@ -22,6 +22,8 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 	public const string Identifier = "Currency Pouch UI";
 
 	private static readonly Item[] _backingSlot = [new()];
+
+	private static CurrencyPouchBackUI _backdrop = null;
 
 	private static Item SlottedItem => _backingSlot[0];
 
@@ -52,17 +54,33 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		close.OnLeftClick += Close;
 		panel.Append(close);
 
-		UIImage backdrop = new(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CurrencyBack"));
-		backdrop.SetDimensions((0, 0), (0, GridBuffer), (1, 0), (1, -GridBuffer));
-		panel.Append(backdrop);
+		_backdrop = new();
+		_backdrop.SetDimensions((0, 0), (0, GridBuffer), (1, 0), (1, -GridBuffer));
+		panel.Append(_backdrop);
 
-		BuildItemSlots(backdrop);
+		BuildItemSlots(_backdrop);
 
 		_modifyItemSlot = new NoBGItemSlot(_backingSlot, 0, SlotContext) { Left = StyleDimension.FromPixels(175), Top = StyleDimension.FromPixels(70) };
-		backdrop.Append(_modifyItemSlot);
+		_modifyItemSlot.OnUpdate += DisplayConstantTooltipIfSlotted;
+		_backdrop.Append(_modifyItemSlot);
 	}
 
-	private static void BuildItemSlots(UIImage backdrop)
+	private void DisplayConstantTooltipIfSlotted(UIElement affectedElement)
+	{
+		var slot = affectedElement as NoBGItemSlot;
+		
+		if (!slot.Item.IsAir)
+		{
+			List<DrawableTooltipLine> lines = ItemTooltipBuilder.BuildTooltips(slot.Item, Main.LocalPlayer);
+			_backdrop.SetTooltips(lines);
+		}
+		else
+		{
+			_backdrop.SetTooltips(null);
+		}
+	}
+
+	private void BuildItemSlots(CurrencyPouchBackUI backdrop)
 	{
 		TryAppendSingleItem<UnfoldingShard>(backdrop, new Vector2(20, 12));
 		TryAppendSingleItem<GlimmeringShard>(backdrop, new Vector2(70, 12));
@@ -75,7 +93,7 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		TryAppendSingleItem<EchoingShard>(backdrop, new Vector2(342, 14));
 	}
 
-	private static void TryAppendSingleItem<T>(UIImage backdrop, Vector2 position) where T : CurrencyShard
+	private void TryAppendSingleItem<T>(CurrencyPouchBackUI backdrop, Vector2 position) where T : CurrencyShard
 	{
 		UIItemIcon icon = BuildSingleSlot<T>(position);
 
@@ -85,7 +103,7 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 		}
 	}
 
-	public static UIItemIcon BuildSingleSlot<T>(Vector2 position) where T : CurrencyShard
+	public UIItemIcon BuildSingleSlot<T>(Vector2 position) where T : CurrencyShard
 	{
 		int type = ModContent.ItemType<T>();
 		position -= new Vector2(1, 4);
@@ -115,9 +133,36 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 
 		UIText stack = new("x1", 0.75f) { Left = StyleDimension.FromPixels(30), Top = StyleDimension.FromPixels(30) };
 		storageIcon.Append(stack);
-		stack.AddComponent(new UIDynamicText(() => "x" + Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType[type].ToString()));
+		stack.AddComponent(new UIDynamicText(x =>
+		{
+			int amount = Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType[type];
+			(x as UIText).TextColor = amount == Item.CommonMaxStack ? Color.Red : Color.White;
+			return "x" + amount.ToString();
+		}));
+
+		storageIcon.OnRightClick += (_, _) => RightClickItem(item);
 
 		return storageIcon;
+	}
+
+	private void RightClickItem(Item item)
+	{
+		var shard = item.ModItem as CurrencyShard;
+
+		if (!shard.CanUseInPouch(SlottedItem, out _))
+		{
+			return;
+		}
+
+		Dictionary<int, int> storage = Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType;
+		storage[item.type] = Math.Max(storage[item.type] - 1, 0);
+		shard.ApplyToItem(SlottedItem);
+
+		if (storage[item.type] == 0)
+		{
+			Toggle();
+			Toggle();
+		}
 	}
 
 	private void Close(UIMouseEvent evt, UIElement listeningElement)

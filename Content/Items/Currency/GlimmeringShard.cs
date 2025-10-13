@@ -22,7 +22,7 @@ public class GlimmeringShard : CurrencyShard
 			return false;
 		}
 
-		if (slotItem.GetInstanceData().Rarity == ItemRarity.Magic)
+		if (slotItem.GetInstanceData().Rarity != ItemRarity.Magic)
 		{
 			failKey = "NotMagic";
 			return false;

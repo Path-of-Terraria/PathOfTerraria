@@ -943,7 +943,7 @@ internal sealed class EncounterEditorState : SmartUiState
 				e.UseAltColors = () => encounter.IsValid && encounter.Instance.State is not EncounterState.NotStarted && !encounter.Instance.IsPaused;
 
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +128), height: (0f, +32));
-				e.AddComponent(new UIDynamicText(() =>
+				e.AddComponent(new UIDynamicText(x =>
 				{
 					if (!encounter.IsValid) { return string.Empty; }
 
@@ -966,7 +966,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			itemPanel.AddElement(new UIButton<string>("Start"), e =>
 			{
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +80), height: (0f, +32));
-				e.AddComponent(new UIDynamicText(() =>
+				e.AddComponent(new UIDynamicText(x =>
 				{
 					if (!encounter.IsValid) { return string.Empty; }
 
@@ -986,7 +986,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			itemPanel.AddElement(new UIButton<string>("Pause"), e =>
 			{
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +80), height: (0f, +32));
-				e.AddComponent(new UIDynamicText(() =>
+				e.AddComponent(new UIDynamicText(x =>
 				{
 					if (!encounter.IsValid) { return string.Empty; }
 
@@ -1261,7 +1261,7 @@ internal sealed class EncounterEditorState : SmartUiState
 		window.AddElement(new UIText(""), e =>
 		{
 			e.SetDimensions(x: (0.0f, +padding.X), y: (0.00f, +4));
-			e.AddComponent(new UIDynamicText(() => CurrentSpawningMode switch
+			e.AddComponent(new UIDynamicText(x => CurrentSpawningMode switch
 			{
 				SpawningMode.EditingExisting when EncounterEditor.ActiveDrag is { Kind: EncounterEditor.DragKind.SpawnPosition } => "Moving Existing...",
 				SpawningMode.PlacingNew or SpawningMode.PlacingCopy => "Placing Spawn...",
@@ -1332,7 +1332,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			e.AddElement(new UIButton<string>(""), e =>
 			{
 				e.SetDimensions(x: (LeftF, +0f), width: (WidthF, +0f), height: (1f, +0f));
-				e.AddComponent(new UIDynamicText(() =>
+				e.AddComponent(new UIDynamicText(x =>
 				{
 					return CurrentSpawningMode switch
 					{
@@ -1371,7 +1371,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			e.AddElement(new UIButton<string>(""), e =>
 			{
 				e.SetDimensions(x: (LeftF + WidthF, +0f), width: (WidthF, +0f), height: (1f, +0f));
-				e.AddComponent(new UIDynamicText(() => CurrentSpawningMode switch
+				e.AddComponent(new UIDynamicText(x => CurrentSpawningMode switch
 				{
 					SpawningMode.EditingExisting => "Stop Editing",
 					SpawningMode.PlacingNew => "Cancel Placement",
@@ -1403,7 +1403,7 @@ internal sealed class EncounterEditorState : SmartUiState
 			e.SetDimensions(width: (1f, +0f), height: (0f, +32f));
 			e.AddComponent(new UIDynamicText
 			(
-				() => SelectedEncounter.IsValid && Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn).SpawnPosition.HasValue ? "Manual Placement" : "Automatic Placement"
+				x => SelectedEncounter.IsValid && Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn).SpawnPosition.HasValue ? "Manual Placement" : "Automatic Placement"
 			));
 
 			e.AddElement(new UIButton<string>(""), e =>
@@ -1411,7 +1411,7 @@ internal sealed class EncounterEditorState : SmartUiState
 				e.SetDimensions(x: (0.5f, +0f), width: (0.5f, +0f), height: (1f, +0f));
 				e.AddComponent(new UIDynamicText
 				(
-					() => SelectedEncounter.IsValid && Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn).SpawnPosition.HasValue ? "Use Dynamic Placement" : "Use Manual Position"
+					x => SelectedEncounter.IsValid && Unsafe.Unbox<EnemySpawn>(spawnBox.Spawn).SpawnPosition.HasValue ? "Use Dynamic Placement" : "Use Manual Position"
 				));
 				e.OnLeftClick += (evt, e) =>
 				{

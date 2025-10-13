@@ -1,7 +1,7 @@
-﻿using PathOfTerraria.Common.Looting.CurrencyPouchUI;
-using PathOfTerraria.Core.UI;
+﻿using PathOfTerraria.Core.UI;
+using System.Collections.Generic;
 
-namespace PathOfTerraria.Common.Looting.VirtualBagUI;
+namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
 internal class CurrencyPouchItemFunctionality : GlobalItem
 {
@@ -17,8 +17,9 @@ internal class CurrencyPouchItemFunctionality : GlobalItem
 			return true;
 		}
 
-		player.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType.TryAdd(item.type, 0);
-		player.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType[item.type] += item.stack;
+		Dictionary<int, int> storage = player.GetModPlayer<CurrencyPouchStoragePlayer>().StorageByType;
+		storage.TryAdd(item.type, 0);
+		storage[item.type] = Math.Min(storage[item.type] + item.stack, item.maxStack);
 
 		AdvancedPopupRequest request = default;
 		request.Velocity = new Vector2(0, -16);
@@ -30,7 +31,8 @@ internal class CurrencyPouchItemFunctionality : GlobalItem
 
 		if (Main.myPlayer == player.whoAmI && UIManager.TryGet(CurrencyPouchUIState.Identifier, out UIManager.UIStateData data) && data.Enabled)
 		{
-			//(data.Value as CurrencyPouchUIState).RefreshStorage();
+			(data.Value as CurrencyPouchUIState).Toggle();
+			(data.Value as CurrencyPouchUIState).Toggle();
 		}
 
 		return false;

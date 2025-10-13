@@ -8,7 +8,7 @@ using Terraria.ID;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.Looting.CurrencyPouchUI;
+namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
 internal class CurrencyPouchStoragePlayer : ModPlayer 
 {

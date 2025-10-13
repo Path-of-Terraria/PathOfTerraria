@@ -215,7 +215,7 @@ InvButtons: {
 	Stats: Statistiques
 	RestartTutorial: Redémarrer le tutoriel
 	// DomainInformation: Domain Information
-	// VirtualBag: Virtual Storage
+	// VirtualBag: Sack of Holding
 	// CurrencyPouch: Currency Pouch
 }
 
@@ -308,7 +308,12 @@ VirtualBag: {
 }
 
 CurrencyPouch: {
-	// Title: Pouch
-	// Description: Currency Shards go here.
+	// Title: Currency Pouch
 	// Apply: Right click to apply to held item
 }
+
+PassiveTreeTab: Passifs
+SkillTreeTab: Compétences
+QuestsAvailableTab: Disponible
+QuestsCompletedTab: Complété
+PlayerStatsTab: Statistiques

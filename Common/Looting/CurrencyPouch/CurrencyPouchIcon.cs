@@ -1,4 +1,3 @@
-using PathOfTerraria.Common.Looting.VirtualBagUI;
 using PathOfTerraria.Common.UI;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -9,7 +8,7 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.Looting.CurrencyPouchUI;
+namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
 public class CurrencyPouchIcon : SmartUiState
 {

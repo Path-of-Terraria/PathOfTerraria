@@ -1,10 +1,11 @@
-﻿using Terraria.GameContent;
-using Terraria.UI;
+﻿using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Elements;
 
 public class NoBGItemSlot : UIElement
 {
+	public Item Item => _itemArray[_itemIndex];
+
 	private readonly Item[] _itemArray;
 	private readonly int _itemIndex;
 	private readonly int _itemSlotContext;
