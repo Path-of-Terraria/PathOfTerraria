@@ -1,6 +1,5 @@
 using ReLogic.Content;
 using Terraria.GameContent;
-using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Elements;
@@ -11,7 +10,15 @@ namespace PathOfTerraria.Common.UI.Elements;
 /// <remarks>
 ///     <inheritdoc cref="UIImageItemSlot" />
 /// </remarks>
-public class UIHoverImageItemSlot : UIImageItemSlot
+public class UIHoverImageItemSlot(
+	Asset<Texture2D> backgroundTexture,
+	Asset<Texture2D> iconTexture,
+UIImageItemSlot.SlotWrapper itemHandler,
+	(string Key, object Arg0) hoverText,
+	int context = ItemSlot.Context.InventoryItem,
+	bool skipAutoSize = false,
+	float iconScalingSize = UIImageItemSlot.DefaultIconSize
+	) : UIImageItemSlot(backgroundTexture, iconTexture, itemHandler, context, hoverText, skipAutoSize, iconScalingSize)
 {
 	/// <summary>
 	///     The target rotation for this image when it's being hovered by the mouse, in radians. Defaults to <c>0f</c>.
@@ -44,16 +51,6 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 
 	private float smoothness = 0.3f;
 
-	public UIHoverImageItemSlot(
-		Asset<Texture2D> backgroundTexture,
-		Asset<Texture2D> iconTexture,
-		SlotWrapper itemHandler,
-		(string Key, object Arg0) hoverText,
-		int context = ItemSlot.Context.InventoryItem	
-	) : base(backgroundTexture, iconTexture, itemHandler, context, hoverText)
-	{
-	}
-
 	public override void Update(GameTime gameTime)
 	{
 		base.Update(gameTime);
@@ -67,10 +64,9 @@ public class UIHoverImageItemSlot : UIImageItemSlot
 		if (!Item.IsAir)
 		{
 			Texture2D texture = TextureAssets.Item[Item.type].Value;
-			
 			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
 
-			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 24f, ref frame, out _, out float finalDrawScale);
+			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, IconSize, ref frame, out _, out float finalDrawScale);
 
 			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, finalDrawScale * (IsMouseHovering ? ActiveScale : InactiveScale), Smoothness);
 		}

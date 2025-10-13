@@ -12,4 +12,4 @@ PassiveTreeUIKey.DisplayName: Ключ пользовательского инт
 // ToggleQuestDebugging.DisplayName: Debug: Toggle Quest Debugging
 // ToggleEncounterDebugging.DisplayName: Debug: Toggle Encounter Debugging
 // VirtualBagHotkey.DisplayName: Toggle Sack of Holding
-// CurrencyPouchHotkey.DisplayName: Currency Pouch Hotkey
+// CurrencyPouchHotkey.DisplayName: Toggle Currency Pouch

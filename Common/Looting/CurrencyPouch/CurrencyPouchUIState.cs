@@ -1,14 +1,18 @@
 ﻿using PathOfTerraria.Common.Looting.VirtualBagUI;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Common.UI.Armor.Elements;
 using PathOfTerraria.Common.UI.Components;
 using PathOfTerraria.Common.UI.Elements;
 using PathOfTerraria.Content.Items.Currency;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
+using ReLogic.Content;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Terraria.Audio;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ID;
 using Terraria.Localization;
@@ -21,13 +25,13 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 	public const int SlotContext = ItemSlot.Context.ChestItem;
 	public const string Identifier = "Currency Pouch UI";
 
-	private static readonly Item[] _backingSlot = [new()];
+	//private static readonly Item[] _backingSlot = [new()];
 
 	private static CurrencyPouchBackUI _backdrop = null;
 
-	private static Item SlottedItem => _backingSlot[0];
+	private static ref Item SlottedItem => ref Main.LocalPlayer.GetModPlayer<CurrencyPouchStoragePlayer>().SlottedItem;
 
-	private NoBGItemSlot _modifyItemSlot = null;
+	private UIImageItemSlot _modifyItemSlot = null;
 
 	public override void OnActivate()
 	{
@@ -60,14 +64,21 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 
 		BuildItemSlots(_backdrop);
 
-		_modifyItemSlot = new NoBGItemSlot(_backingSlot, 0, SlotContext) { Left = StyleDimension.FromPixels(175), Top = StyleDimension.FromPixels(70) };
+		UIElement container = _backdrop.AddElement(new UIElement(), x => x.SetDimensions((0, 170), (0, 62), (0, 54), (0, 54)));
+
+		var wrapper = new UIImageItemSlot.SlotWrapper(() => SlottedItem, x => SlottedItem = x);
+		Asset<Texture2D> back = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/CurrencyWeaponIcon", AssetRequestMode.ImmediateLoad);
+		_modifyItemSlot = new UIImageItemSlot(back, TextureAssets.Npc[0], wrapper, SlotContext, null, true, 48);
+		_modifyItemSlot.SetDimensions((0, 0), (0, 0), (1, 0), (1, 0));
+		_modifyItemSlot.HAlign = 0.5f;
+		_modifyItemSlot.VAlign = 0.5f;
 		_modifyItemSlot.OnUpdate += DisplayConstantTooltipIfSlotted;
-		_backdrop.Append(_modifyItemSlot);
+		container.Append(_modifyItemSlot);
 	}
 
 	private void DisplayConstantTooltipIfSlotted(UIElement affectedElement)
 	{
-		var slot = affectedElement as NoBGItemSlot;
+		var slot = affectedElement as UIImageItemSlot;
 		
 		if (!slot.Item.IsAir)
 		{
@@ -193,7 +204,7 @@ internal class CurrencyPouchUIState : UIState, IMutuallyExclusiveUI
 
 		List<DrawableTooltipLine> lines = ItemTooltipBuilder.BuildTooltips(item, Main.LocalPlayer);
 
-		if (!_backingSlot[0].IsAir)
+		if (!SlottedItem.IsAir)
 		{
 			var shard = item.ModItem as CurrencyShard;
 			string text = Language.GetTextValue("Mods.PathOfTerraria.UI.CurrencyPouch.Apply");

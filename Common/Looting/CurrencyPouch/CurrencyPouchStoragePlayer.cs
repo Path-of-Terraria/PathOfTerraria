@@ -15,6 +15,7 @@ internal class CurrencyPouchStoragePlayer : ModPlayer
 	public static ModKeybind CurrencyPouchKeybind;
 
 	public Dictionary<int, int> StorageByType = [];
+	public Item SlottedItem = new(0);
 
 	public override void Load()
 	{
@@ -55,12 +56,15 @@ internal class CurrencyPouchStoragePlayer : ModPlayer
 	{
 		tag.Add("keys", (int[])[.. StorageByType.Keys]);
 		tag.Add("values", (int[])[.. StorageByType.Values]);
+		tag.Add("slottedItem", SlottedItem);
 	}
 
 	public override void LoadData(TagCompound tag)
 	{
 		int[] keys = tag.GetIntArray("keys");
 		int[] values = tag.GetIntArray("values");
+
+		SlottedItem = tag.Get<Item>("slottedItem");
 
 		Debug.Assert(keys.Length == values.Length, "[CurrencyPouchStoragePlayer] Key-value pairs don't match in length.");
 
