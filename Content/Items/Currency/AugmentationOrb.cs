@@ -29,8 +29,7 @@ internal class AugmentationOrb : CurrencyShard
 	// Both of these hooks can't be used since this isn't a standard currency shard
 	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
 	{
-		failKey = null;
-		return false;
+		throw new NotImplementedException("How did you get here? This should not be run.");
 	}
 
 	public override void ApplyToItem(Item slotItem)
