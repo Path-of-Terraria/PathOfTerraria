@@ -60,8 +60,8 @@ internal class TreeState : TabsUiState
 
 		var localizedTexts = new (string key, LocalizedText text)[]
 		{
-				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_passiveTreeInner.TabName}Tab")),
-				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.GUI.{_skillSelection.TabName}Tab"))
+				(_passiveTreeInner.TabName, Language.GetText($"Mods.PathOfTerraria.UI.{_passiveTreeInner.TabName}Tab")),
+				(_skillSelection.TabName, Language.GetText($"Mods.PathOfTerraria.UI.{_skillSelection.TabName}Tab"))
 		};
 
 		base.CreateMainPanel(localizedTexts, false, panelSize: (Width: new(-ShrinkX * 2, 1f), Height: new(-ShrinkY * 2, 1f)));

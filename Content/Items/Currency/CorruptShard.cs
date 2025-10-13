@@ -4,6 +4,7 @@ using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Core.Items;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using Terraria.ID;
 using Terraria.Utilities;
@@ -25,11 +26,6 @@ public class CorruptShard : CurrencyShard
 		staticData.MinDropItemLevel = 5;
 	}
 
-	public override bool CanRightClick()
-	{
-		return base.CanRightClick() && Main.LocalPlayer.selectedItem == 58;
-	}
-
 	public override void SetDefaults()
 	{
 		Item.CloneDefaults(ItemID.Silk);
@@ -38,14 +34,29 @@ public class CorruptShard : CurrencyShard
 		Item.consumable = true; // Purely for the tooltip line
 	}
 
+	public override bool CanRightClick()
+	{
+		return DefaultValidityCheck(Main.LocalPlayer.HeldItem, out _) && Main.LocalPlayer.selectedItem == 58;
+	}
+
+	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
+	{
+		return DefaultValidityCheck(slotItem, out failKey);
+	}
+
 	public override void RightClick(Player player)
 	{
-		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
+		base.RightClick(player);
+		PoTItemHelper.SetMouseItemToHeldItem(player);
+	}
+
+	public override void ApplyToItem(Item slotItem)
+	{
+		PoTInstanceItemData data = slotItem.GetInstanceData();
 		data.Corrupted = true;
 
 		if (Main.rand.NextBool(2)) // 50% chance to do nothing
 		{
-			PoTItemHelper.SetMouseItemToHeldItem(player);
 			return;
 		}
 
@@ -67,24 +78,22 @@ public class CorruptShard : CurrencyShard
 				var chosenItem = gear.ElementAt(Main.rand.Next(count)).Item.ModItem as GearItem;
 				int oldLevel = data.RealLevel;
 
-				player.HeldItem.SetDefaults(chosenItem.Type);
-				data = player.HeldItem.GetInstanceData();
+				slotItem.SetDefaults(chosenItem.Type);
+				data = slotItem.GetInstanceData();
 				data.Rarity = ItemRarity.Rare;
 				data.RealLevel = oldLevel;
-				PoTItemHelper.Roll(player.HeldItem, data.RealLevel);
+				PoTItemHelper.Roll(slotItem, data.RealLevel);
 				data.Corrupted = true;
 			}
 			else
 			{
-				AddAffix(data, player.HeldItem);
+				AddAffix(data, slotItem);
 			}
 		}
 		else
 		{
-			AddAffix(data, player.HeldItem);
+			AddAffix(data, slotItem);
 		}
-
-		PoTItemHelper.SetMouseItemToHeldItem(player);
 	}
 
 	private static void AddAffix(PoTInstanceItemData data, Item item)

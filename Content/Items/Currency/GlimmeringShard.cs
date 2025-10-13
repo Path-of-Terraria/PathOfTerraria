@@ -1,6 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
-using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -15,25 +15,24 @@ public class GlimmeringShard : CurrencyShard
 		staticData.DropChance = 10000f;
 	}
 
-	public override bool CanRightClick()
+	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
 	{
-		Item heldItem = Main.LocalPlayer.HeldItem;
-
-		if (heldItem == null || heldItem.IsAir)
+		if (!DefaultValidityCheck(slotItem, out failKey))
 		{
 			return false;
 		}
 
-		if (heldItem.TryGetGlobalItem(out PoTInstanceItemData data) && data.Rarity == ItemRarity.Magic)
+		if (slotItem.GetInstanceData().Rarity != ItemRarity.Magic)
 		{
-			return base.CanRightClick();
+			failKey = "NotMagic";
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
-	public override void RightClick(Player player)
+	public override void ApplyToItem(Item slotItem)
 	{
-		PoTItemHelper.Roll(player.HeldItem, player.HeldItem.GetInstanceData().RealLevel);
+		PoTItemHelper.Roll(slotItem, slotItem.GetInstanceData().RealLevel);
 	}
 }

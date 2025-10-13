@@ -214,7 +214,7 @@ public sealed class QuestDebugState : SmartUiState
 				e.HoverPanelColor = e.HoverBorderColor = e.BorderColor = e.BackgroundColor;
 
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +32), height: (0f, +32));
-				e.AddComponent(new UIDynamicText(() => quest.Active && quest.CurrentStep > 0 ? "-" : ""));
+				e.AddComponent(new UIDynamicText(x => quest.Active && quest.CurrentStep > 0 ? "-" : ""));
 
 				e.OnLeftClick += (evt, self) =>
 				{
@@ -243,7 +243,7 @@ public sealed class QuestDebugState : SmartUiState
 				e.UseAltColors = () => quest.Active || quest.Completed;
 
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +128), height: (0f, +32));
-				e.AddComponent(new UIDynamicText(() => quest.Completed ? "Completed" : (quest.Active ? $"Stage {quest.CurrentStep + 1} of {quest.QuestSteps.Count}" : "Inactive")));
+				e.AddComponent(new UIDynamicText(x => quest.Completed ? "Completed" : (quest.Active ? $"Stage {quest.CurrentStep + 1} of {quest.QuestSteps.Count}" : "Inactive")));
 
 				buttonX += e.Width.Pixels;
 			});
@@ -258,7 +258,7 @@ public sealed class QuestDebugState : SmartUiState
 				e.HoverPanelColor = e.HoverBorderColor = e.BorderColor = e.BackgroundColor;
 
 				e.SetDimensions(x: (0.0f, +buttonX), y: (0.0f, +24), width: (0.0f, +32), height: (0f, +32));
-				e.AddComponent(new UIDynamicText(() => !quest.Completed ? "+" : ""));
+				e.AddComponent(new UIDynamicText(x => !quest.Completed ? "+" : ""));
 
 				e.OnLeftClick += (evt, self) =>
 				{
@@ -308,7 +308,7 @@ public sealed class QuestDebugState : SmartUiState
 			questPanel.AddElement(new UIText($"[{quest.Name}]"), e =>
 			{
 				e.SetDimensions(x: (0.0f, +0), y: (0.0f, +64), width: (0.0f, +0), height: (0f, +128));
-				e.AddComponent(new UIDynamicText(() =>
+				e.AddComponent(new UIDynamicText(x =>
 				{
 					stringBuilder.Clear();
 

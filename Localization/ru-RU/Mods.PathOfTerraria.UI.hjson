@@ -222,7 +222,8 @@ InvButtons: {
 	Stats: Характеристики
 	RestartTutorial: Перезапустить обучение
 	// DomainInformation: Domain Information
-	// VirtualBag: Virtual Storage
+	// VirtualBag: Sack of Holding
+	// CurrencyPouch: Currency Pouch
 }
 
 SubworldHelp: {
@@ -318,3 +319,14 @@ VirtualBag: {
 	// RightClick: (Right click to add to your inventory)
 	// Review: Review your items (Closing this will exit the subworld)
 }
+
+CurrencyPouch: {
+	// Title: Currency Pouch
+	// Apply: Right click to apply to held item
+}
+
+PassiveTreeTab: Пассивные
+SkillTreeTab: Навыки
+QuestsAvailableTab: Доступный
+QuestsCompletedTab: Завершенный
+PlayerStatsTab: Статистика

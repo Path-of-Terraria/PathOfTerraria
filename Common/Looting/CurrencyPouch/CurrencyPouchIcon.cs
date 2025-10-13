@@ -1,21 +1,18 @@
-using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.UI;
-using PathOfTerraria.Common.UI.Quests;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
-using SubworldLibrary;
 using System.Collections.Generic;
 using Terraria.Audio;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
-namespace PathOfTerraria.Common.Looting.VirtualBagUI;
+namespace PathOfTerraria.Common.Looting.CurrencyPouch;
 
-public class VirtualBagIcon : SmartUiState
+public class CurrencyPouchIcon : SmartUiState
 {
-	public override bool Visible => Main.playerInventory && VirtualBagStoragePlayer.LocalUseVirtualBag && SubworldSystem.Current is not null and not RavencrestSubworld;
+	public override bool Visible => Main.playerInventory;
 
 	private static int NewXPosition => (int)UIHelper.GetTextureXPosition() - 64;
 
@@ -29,14 +26,14 @@ public class VirtualBagIcon : SmartUiState
 
 	public override void OnInitialize()
 	{
-		Texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/VirtualBag");
+		Texture = ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CurrencyPouchButton");
 	}
 
 	public override void SafeUpdate(GameTime gameTime)
 	{
 		base.SafeUpdate(gameTime);
 
-		if (UIHelper.GetInvButtonInfo(80, out _, null, NewXPosition))
+		if (UIHelper.GetInvButtonInfo(150, out _, null, NewXPosition))
 		{
 			Main.LocalPlayer.mouseInterface = true;
 		}
@@ -45,13 +42,13 @@ public class VirtualBagIcon : SmartUiState
 	public override void Draw(SpriteBatch spriteBatch)
 	{
 		Texture2D texture = Texture.Value;
-		bool hover = UIHelper.GetInvButtonInfo(80, out Vector2 pos, null, NewXPosition);
+		bool hover = UIHelper.GetInvButtonInfo(150, out Vector2 pos, null, NewXPosition);
 		Color color = Color.White;
 
 		if (hover)
 		{
 			Player player = Main.LocalPlayer;
-			player.cursorItemIconText = Language.GetTextValue("Mods.PathOfTerraria.UI.InvButtons.VirtualBag");
+			player.cursorItemIconText = Language.GetTextValue("Mods.PathOfTerraria.UI.InvButtons.CurrencyPouch");
 			player.noThrow = 2;
 			player.cursorItemIconID = -1;
 			player.cursorItemIconEnabled = true;
@@ -70,7 +67,7 @@ public class VirtualBagIcon : SmartUiState
 	public override void SafeClick(UIMouseEvent evt)
 	{
 		Texture2D texture = Texture.Value;
-		Vector2 pos = new(UIHelper.GetTextureXPosition(), 80);
+		Vector2 pos = new(UIHelper.GetTextureXPosition(), 150);
 
 		//Uses just a 64/64 texture size
 		var bounding = new Rectangle((int)(pos.X - texture.Width / 1.125f) - 64, (int)pos.Y, 64, 64);
@@ -81,6 +78,6 @@ public class VirtualBagIcon : SmartUiState
 		}
 
 		SoundEngine.PlaySound(SoundID.MenuOpen);
-		UIManager.TryToggleOrRegister(VirtualBagUIState.Identifier, "Vanilla: Mouse Text", new VirtualBagUIState(), 0, InterfaceScaleType.UI);
+		UIManager.TryToggleOrRegister(CurrencyPouchUIState.Identifier, "Vanilla: Mouse Text", new CurrencyPouchUIState(), 0, InterfaceScaleType.UI);
 	}
 }

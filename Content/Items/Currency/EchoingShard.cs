@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using System.Diagnostics.CodeAnalysis;
 using Terraria.ID;
 
 namespace PathOfTerraria.Content.Items.Currency;
@@ -17,26 +18,43 @@ public class EchoingShard : CurrencyShard
 		Item.rare = ItemRarityID.Master;
 	}
 	
-	public override bool CanRightClick()
+	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
 	{
-		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is not ItemRarity.Unique;
+		if (!DefaultValidityCheck(slotItem, out failKey))
+		{
+			return false;
+		}
+
+		if (slotItem.GetInstanceData().Rarity == ItemRarity.Unique)
+		{
+			failKey = "IsUnique";
+			return false;
+		}
+
+		failKey = null;
+		return true;
+	}
+
+	public override void ApplyToItem(Item slotItem)
+	{
+		CloneItem(slotItem, Main.LocalPlayer);
 	}
 
 	/// <summary>
 	/// Clones the item in the player's hand, adding the Cloned tag on the item
 	/// </summary>
 	/// <param name="player"></param>
-	public override void RightClick(Player player)
+	private static void CloneItem(Item item, Player player)
 	{
-		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
+		PoTInstanceItemData data = item.GetInstanceData();
 
-		Item clonedItem = player.HeldItem.Clone();
+		Item clonedItem = item.Clone();
 		PoTInstanceItemData clonedData = clonedItem.GetInstanceData();
 		clonedData.Rarity = data.Rarity;
 		clonedData.Influence = data.Influence;
 		clonedData.ImplicitCount = data.ImplicitCount;
 		clonedData.RealLevel = data.RealLevel;
-		clonedData.Affixes = [..data.Affixes];
+		clonedData.Affixes = [.. data.Affixes];
 		clonedData.NameAffix = data.NameAffix;
 		clonedData.Cloned = true;
 
