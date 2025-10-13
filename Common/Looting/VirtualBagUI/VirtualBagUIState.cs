@@ -46,7 +46,7 @@ internal class VirtualBagUIState : UIState
 		gridPanel.SetDimensions((0, 0), (0, GridBuffer), (1, -30), (1, -GridBuffer));
 		panel.Append(gridPanel);
 
-		_storageGrid = [];
+		_storageGrid = new UIGrid();
 		_storageGrid.SetDimensions((0, 0), (0, 0), (1, 0), (1, 0));
 		gridPanel.Append(_storageGrid);
 
