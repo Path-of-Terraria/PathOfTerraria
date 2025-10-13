@@ -149,7 +149,7 @@ public sealed partial class SunDevourerNPC : ModNPC
 	/// </summary>
 	/// <param name="angle">The angle to convert.</param>
 	/// <returns>The position on a square with the range [-1, -1] to [1, 1].</returns>
-	private Vector2 TransformAngleToSquareEdge(float angle)
+	private static Vector2 TransformAngleToSquareEdge(float angle)
 	{
 		Vector2 p = angle.ToRotationVector2();
 		float sqrt2 = MathF.Sqrt(2);
@@ -690,25 +690,9 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 			Vector2 position = NPC.Center - Main.screenPosition;
 
-			if (Timer == 30)
+			if (Timer <= 180)
 			{
-				DrawOrBreakChains(position + new Vector2(140, 0), position + new Vector2(190, -120), true);
-			}
-			else if (Timer == 80)
-			{
-				DrawOrBreakChains(position - new Vector2(120, -20), position + new Vector2(-160, 140), true);
-			}
-			else if (Timer == 110)
-			{
-				DrawOrBreakChains(position - new Vector2(120, -20), position + new Vector2(-160, -140), true);
-			}
-			else if (Timer == 130)
-			{
-				DrawOrBreakChains(position - new Vector2(20, 0), position + new Vector2(20, -140), true);
-			}
-			else if (Timer == 140)
-			{
-				DrawOrBreakChains(position + new Vector2(00, 30), position + new Vector2(120, 140), true);
+				DoChainActions(position, true);
 			}
 			else if (Timer > 180)
 			{
