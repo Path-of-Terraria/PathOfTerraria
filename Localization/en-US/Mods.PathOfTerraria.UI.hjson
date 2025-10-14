@@ -338,13 +338,15 @@ ClassPages: {
 	PreferredWeapons: Preferred Weapons
 	Awakenings: Awakenings
 	Skill: Skill
+	DefaultNouns: Stranger Adventurer
 
 	Melee: {
 		Description: The warrior, adept at close-range, high risk combat. Starts with the standard items and the Berserk skill.
 		Weapons: "[i:PathOfTerraria/IronBroadsword] Swords, [i:PathOfTerraria/SteelWarShield] War Shields, [i:PathOfTerraria/IronBattleaxe]  Battleaxes"
 		Awakenings: Place, Holder
 		Skill: Gain a temporary damage up - for and against you
-		Nouns: Warrior Soldier Swordsman
+		SkillTitle: - Berserk
+		Nouns: Warrior Soldier
 	}
 
 	Ranged: {
@@ -352,7 +354,8 @@ ClassPages: {
 		Weapons: "[i:PathOfTerraria/WoodenBow] Bows, [i:PathOfTerraria/LeadDangpa] Javelins, [i:PathOfTerraria/IronBoomerang] Boomerangs"
 		Awakenings: Make, Shift
 		Skill: Spawn a flurry of arrows based on your held ranged weapon
-		Nouns: Sharpshooter Deadeye Archer Marksman
+		SkillTitle: - Barrage
+		Nouns: Sharpshooter Marksman
 	}
 
 	Magic: {
@@ -360,7 +363,8 @@ ClassPages: {
 		Weapons: "[i:PathOfTerraria/WoodenWand] Wands, [i:PathOfTerraria/LeadStaff] Staffs"
 		Awakenings: Stand, In
 		Skill: Shoot a large, explosive fireball towards the cursor
-		Nouns: Wizard Mage Magician
+		SkillTitle: - Fireball
+		Nouns: Wizard Mage
 	}
 
 	Summon: {
@@ -368,6 +372,7 @@ ClassPages: {
 		Weapons: "[i:PathOfTerraria/GrimoireItem] Grimoire"
 		Awakenings: To, Be, Done
 		Skill: Summon a short-lived, damageable sentry below your cursor
+		SkillTitle: - Flame Sage
 		Nouns: Conjurer Summoner
 	}
 }

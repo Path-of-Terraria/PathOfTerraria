@@ -21,6 +21,7 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 	const float DefaultTextScale = 0.8f;
 
 	public static readonly Rectangle SeperatorFrame = new(0, 0, PaddedPanelWidth, 1);
+	public static readonly Color BackColor = Color.Black * 0.6f;
 
 	private readonly Action resetAction = resetAction;
 	private readonly Player player = player;
@@ -60,17 +61,17 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 			self.Left = StyleDimension.FromPixels(40);
 		});
 
-		panel.AddElement(new UIImageFramed(TextureAssets.MagicPixel, SeperatorFrame), x => x.Top = StyleDimension.FromPixels(44));
+		panel.AddElement(new UIImageFramed(TextureAssets.MagicPixel, SeperatorFrame), x => x.Top = StyleDimension.FromPixels(48));
 
 		panel.AddElement(new UIImageButton(ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/LeftArrow", AssetRequestMode.ImmediateLoad)), self =>
 		{
-			self.Top = StyleDimension.FromPixels(50);
+			self.Top = StyleDimension.FromPixels(54);
 			self.OnLeftClick += (_, _) => SwitchClass(classes - 1, panel);
 		});
 
 		panel.AddElement(new UIImageButton(ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/RightArrow", AssetRequestMode.ImmediateLoad)), self =>
 		{
-			self.Top = StyleDimension.FromPixels(50);
+			self.Top = StyleDimension.FromPixels(54);
 			self.OnLeftClick += (_, _) => SwitchClass(classes + 1, panel);
 			self.HAlign = 1f;
 		});
@@ -79,7 +80,7 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 		{
 			self.Width = StyleDimension.FromPixels(120);
 			self.Height = StyleDimension.FromPixels(24);
-			self.Top = StyleDimension.FromPixels(50);
+			self.Top = StyleDimension.FromPixels(54);
 			self.HAlign = 0.5f;
 
 			self.OnLeftClick += (_, _) =>
@@ -99,27 +100,31 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 		panel.AddElement(new UISimpleWrappableText(desc, DefaultTextScale)
 		{
 			Wrappable = true,
-			Top = StyleDimension.FromPixels(80),
-			Width = StyleDimension.FromPixels(PaddedPanelWidth)
+			Top = StyleDimension.FromPixels(84),
+			Width = StyleDimension.FromPixels(PaddedPanelWidth),
+			BorderColour = BackColor,
+			Border = true,
 		});
 
-		float yOffset = 80 + ChatManager.GetStringSize(FontAssets.MouseText.Value, desc, new Vector2(DefaultTextScale), PaddedPanelWidth).Y;
+		float yOffset = 84 + ChatManager.GetStringSize(FontAssets.MouseText.Value, desc, new Vector2(DefaultTextScale), PaddedPanelWidth).Y;
 		GenerateSection(classes, panel, ref yOffset, "PreferredWeapons", "Weapons");
-		GenerateSection(classes, panel, ref yOffset, "Awakenings", "Awakenings");
-		GenerateSection(classes, panel, ref yOffset, "Skill", "Skill");
+		//GenerateSection(classes, panel, ref yOffset, "Awakenings", "Awakenings");
+		GenerateSection(classes, panel, ref yOffset, "Skill", "Skill", Language.GetTextValue("Mods.PathOfTerraria.UI.ClassPages." + classes + ".SkillTitle"));
 
 		panel.Height = StyleDimension.FromPixels(yOffset + 24);
 		Recalculate();
 	}
 
-	private static float GenerateSection(StarterClasses classes, UIPanel panel, ref float yOffset, string title, string info, bool skipAddEndY = false)
+	private static float GenerateSection(StarterClasses classes, UIPanel panel, ref float yOffset, string title, string info, string addTitle = "")
 	{
-		string awakeningsTitle = Language.GetTextValue("Mods.PathOfTerraria.UI.ClassPages." + title);
+		string awakeningsTitle = Language.GetTextValue("Mods.PathOfTerraria.UI.ClassPages." + title) + addTitle;
 		panel.AddElement(new UISimpleWrappableText(awakeningsTitle, 1f)
 		{
 			Wrappable = true,
 			Top = StyleDimension.FromPixels(yOffset),
-			Width = StyleDimension.FromPixels(PaddedPanelWidth)
+			Width = StyleDimension.FromPixels(PaddedPanelWidth),
+			BorderColour = BackColor,
+			Border = true,
 		});
 
 		yOffset += 24;
@@ -133,14 +138,12 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 		{
 			Wrappable = true,
 			Top = StyleDimension.FromPixels(yOffset),
-			Width = StyleDimension.FromPixels(PaddedPanelWidth)
+			Width = StyleDimension.FromPixels(PaddedPanelWidth),
+			BorderColour = BackColor,
+			Border = true,
 		});
 
-		if (!skipAddEndY)
-		{
-			yOffset += ChatManager.GetStringSize(FontAssets.MouseText.Value, infoText, new Vector2(DefaultTextScale), PaddedPanelWidth).Y;
-		}
-
+		yOffset += ChatManager.GetStringSize(FontAssets.MouseText.Value, infoText, new Vector2(DefaultTextScale), PaddedPanelWidth).Y;
 		return yOffset;
 	}
 

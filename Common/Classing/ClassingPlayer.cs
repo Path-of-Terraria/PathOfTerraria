@@ -1,4 +1,5 @@
-﻿using Terraria.ModLoader.IO;
+﻿using Terraria.Localization;
+using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Common.Classing;
 
@@ -7,14 +8,25 @@ internal class ClassingPlayer : ModPlayer
 	public StarterClasses Class = StarterClasses.None;
 
 	/// <summary>
-	/// Gets a random class noun, i.e. Warrior or Marksman, 
+	/// Gets the class noun, i.e. Warrior or Marksman. Returns "Stranger" if the player has no selected class.
 	/// </summary>
 	/// <param name="player"></param>
 	/// <returns></returns>
-	public static string GetRandomClassNoun(Player player)
+	public static string GetClassNoun(Player player, int index = 0)
 	{
 		ClassingPlayer plr = player.GetModPlayer<ClassingPlayer>();
-		return Main.rand.Next(plr.Class.GetNouns().Split(' '));
+		string noun;
+
+		if (plr.Class == StarterClasses.None)
+		{
+			noun = Language.GetTextValue("Mods.PathOfTerraria.UI.ClassPages.DefaultNouns");
+		}
+		else
+		{
+			noun = plr.Class.GetNouns();
+		}
+
+		return noun.Split(' ')[index];
 	}
 
 	public override void SaveData(TagCompound tag)

@@ -1,4 +1,5 @@
-﻿using Terraria;
+﻿using PathOfTerraria.Common.NPCs;
+using Terraria;
 using Terraria.GameContent;
 using Terraria.Localization;
 
@@ -143,7 +144,7 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 
 		if (talkingToNpc && goodToGo && NpcDialogue is not null)
 		{ 
-			Main.npcChatText = NpcDialogue.Value;
+			Main.npcChatText = DialogueHelper.PolishString(NpcDialogue.Value);
 		}
 
 		bool finished = talkingToNpc && goodToGo;

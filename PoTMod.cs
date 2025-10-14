@@ -1,8 +1,10 @@
-using System.Diagnostics;
-using ReLogic.Content.Sources;
-using System.IO;
-using PathOfTerraria.Core.Sources;
+using PathOfTerraria.Common.NPCs.Dialogue;
 using PathOfTerraria.Common.Systems.Synchronization;
+using PathOfTerraria.Core.Sources;
+using ReLogic.Content.Sources;
+using System.Diagnostics;
+using System.IO;
+using Terraria.UI.Chat;
 
 namespace PathOfTerraria;
 
@@ -34,6 +36,8 @@ public sealed class PoTMod : Mod
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
 		
 		Debug.Assert(Name == ModName, "Internal mod name does not match expected contsant.");
+
+		ChatManager.Register<ClassNounTagHandler>("cn");
 	}
 
 	public override void Unload()

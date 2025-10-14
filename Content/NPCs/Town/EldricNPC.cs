@@ -194,7 +194,7 @@ public sealed class EldricNPC : ModNPC, IQuestMarkerNPC, IOverheadDialogueNPC, I
 				return;
 			}
 
-			Main.npcChatText = Language.GetTextValue("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest");
+			Main.npcChatText = DialogueHelper.PolishString(Language.GetTextValue("Mods.PathOfTerraria.NPCs.EldricNPC.Dialogue.Quest"));
 			Main.LocalPlayer.GetModPlayer<QuestModPlayer>().StartQuest<EoCQuest>();
 		}
 	}

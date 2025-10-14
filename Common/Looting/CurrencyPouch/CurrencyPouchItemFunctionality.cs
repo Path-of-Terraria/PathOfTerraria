@@ -24,13 +24,14 @@ internal class CurrencyPouchItemFunctionality : GlobalItem
 		AdvancedPopupRequest request = default;
 		request.Velocity = new Vector2(0, -16);
 		request.DurationInFrames = 120;
-		request.Text = item.Name;
+		request.Text = item.Name + $" ({item.stack})";
 		request.Color = Color.LightBlue;
 
 		PopupText.NewText(request, item.Center);
 
 		if (Main.myPlayer == player.whoAmI && UIManager.TryGet(CurrencyPouchUIState.Identifier, out UIManager.UIStateData data) && data.Enabled)
 		{
+			// Force a reload
 			(data.Value as CurrencyPouchUIState).Toggle();
 			(data.Value as CurrencyPouchUIState).Toggle();
 		}
