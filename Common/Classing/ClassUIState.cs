@@ -42,11 +42,14 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 
 	private void BuildPage(StarterClasses classes, UIPanel panel)
 	{
-		panel.AddElement(new UICharacter(player, true, false, 1.5f), x =>
+		if (Main.gameMenu)
 		{
-			x.HAlign = 0.5f;
-			x.Top = StyleDimension.FromPixels(-60);
-		});
+			panel.AddElement(new UICharacter(player, true, false, 1.5f), x =>
+			{
+				x.HAlign = 0.5f;
+				x.Top = StyleDimension.FromPixels(-60);
+			});
+		}
 
 		UIText title = panel.AddElement(new UIText(classes.Localize(), 0.8f, true) { Top = StyleDimension.FromPixels(6) });
 		title.AddElement(new UIItemIcon(ContentSamples.ItemsByType[classes switch
@@ -90,11 +93,14 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 			};
 		});
 
-		var close = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton")) { HAlign = 1f };
-		close.SetVisibility(1, 0.6f);
-		close.SetDimensions((0, 0), (0, 0), (0, 38), (0, 38));
-		close.OnLeftClick += Close;
-		panel.Append(close);
+		if (Main.gameMenu)
+		{
+			var close = new UIImageButton(ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/CloseButton")) { HAlign = 1f };
+			close.SetVisibility(1, 0.6f);
+			close.SetDimensions((0, 0), (0, 0), (0, 38), (0, 38));
+			close.OnLeftClick += Close;
+			panel.Append(close);
+		}
 
 		string desc = Language.GetTextValue("Mods.PathOfTerraria.UI.ClassPages." + classes + ".Description");
 		panel.AddElement(new UISimpleWrappableText(desc, DefaultTextScale)
@@ -113,6 +119,11 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 
 		panel.Height = StyleDimension.FromPixels(yOffset + 24);
 		Recalculate();
+	}
+
+	public override void OnDeactivate()
+	{
+		RemoveAllChildren();
 	}
 
 	private static float GenerateSection(StarterClasses classes, UIPanel panel, ref float yOffset, string title, string info, string addTitle = "")

@@ -83,6 +83,8 @@ internal class VirtualBagStoragePlayer : ModPlayer
 			{
 				ModContent.GetInstance<PlayerUseSackOfHoldingHandler>().Send((byte)Main.myPlayer, UsesVirtualBag);
 			}
+
+			UIManager.TryDisable(VirtualBagUIState.Identifier);
 		}
 
 		Storage.Clear();

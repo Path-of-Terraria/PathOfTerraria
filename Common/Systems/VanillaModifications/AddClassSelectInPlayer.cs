@@ -1,14 +1,12 @@
 ﻿using PathOfTerraria.Common.Classing;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
-using PathOfTerraria.Content.Items.Gear.Weapons.Staff;
 using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
 using PathOfTerraria.Content.Skills.Magic;
 using PathOfTerraria.Content.Skills.Melee;
 using PathOfTerraria.Content.Skills.Ranged;
 using PathOfTerraria.Content.Skills.Summon;
 using System.Runtime.CompilerServices;
-using Terraria;
 using Terraria.GameContent.UI.States;
 using Terraria.ID;
 
@@ -52,7 +50,7 @@ internal class AddClassSelectInPlayer : ModSystem
 	{
 		Player player = GetPlayer(self);
 
-		if (player.GetModPlayer<ClassingPlayer>().Class is { } classType && classType == StarterClasses.None)
+		if (player.GetModPlayer<ClassingPlayer>().Class == StarterClasses.None)
 		{
 			void Reset()
 			{

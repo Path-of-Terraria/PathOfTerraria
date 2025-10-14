@@ -1,5 +1,8 @@
-﻿using Terraria.Localization;
+﻿using PathOfTerraria.Common.Looting.VirtualBagUI;
+using PathOfTerraria.Core.UI;
+using Terraria.Localization;
 using Terraria.ModLoader.IO;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.Classing;
 
@@ -35,5 +38,13 @@ internal class ClassingPlayer : ModPlayer
 	public override void LoadData(TagCompound tag)
 	{
 		Class = (StarterClasses)tag.GetByte("class");
+	}
+
+	public override void OnEnterWorld()
+	{
+		if (Main.myPlayer == Player.whoAmI && Class == StarterClasses.None)
+		{
+			UIManager.TryToggleOrRegister("Temp Class UI", "Vanilla: Mouse Text", new ClassUIState(() => UIManager.TryDisable("Temp Class UI"), Player), 0, InterfaceScaleType.UI);
+		}
 	}
 }

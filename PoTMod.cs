@@ -35,9 +35,9 @@ public sealed class PoTMod : Mod
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
 		
-		Debug.Assert(Name == ModName, "Internal mod name does not match expected contsant.");
+		Debug.Assert(Name == ModName, "Internal mod name does not match expected constant.");
 
-		ChatManager.Register<ClassNounTagHandler>("cn");
+		ChatManager.Register<ClassNounTagHandler>("plrclass");
 	}
 
 	public override void Unload()
