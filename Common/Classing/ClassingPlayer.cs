@@ -10,8 +10,6 @@ internal class ClassingPlayer : ModPlayer
 	/// <summary>
 	/// Gets the class noun, i.e. Warrior or Marksman. Returns "Stranger" if the player has no selected class.
 	/// </summary>
-	/// <param name="player"></param>
-	/// <returns></returns>
 	public static string GetClassNoun(Player player, int index = 0)
 	{
 		ClassingPlayer plr = player.GetModPlayer<ClassingPlayer>();

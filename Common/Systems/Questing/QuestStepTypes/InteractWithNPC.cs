@@ -144,7 +144,7 @@ internal class InteractWithNPC(string id, int npcId, LocalizedText reminder, Loc
 
 		if (talkingToNpc && goodToGo && NpcDialogue is not null)
 		{ 
-			Main.npcChatText = DialogueHelper.PolishString(NpcDialogue.Value);
+			Main.npcChatText = NpcDialogue.Value;
 		}
 
 		bool finished = talkingToNpc && goodToGo;
