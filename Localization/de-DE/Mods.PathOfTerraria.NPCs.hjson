@@ -10,7 +10,7 @@ BlacksmithNPC: {
 		// Common2: Nothing quite like a blade that cuts through bone like air. Makes sandwiches easy!
 		// Common3: I could easily beat you in an arm wrestle - the exercise of steel forging is effective.
 		// Quest: As you can see, some terrible event happened that simply obliterated my forge. What happened? I don't know, I sleep like a rock...anyhow. I'd love some help gathering materials, the town's metal has run dry for a while now. And maybe some wood while you're at it.
-		// Quest2: Fantastic! I'll fix the old forge up quick as I can. Here, take this sword. It's a test I made right before the attack. I'd like for you to test it on some zombies; those buggers are awful to deal with. If you'd be so kind, I'd also enjoy some more materials. Then I think we can get the Iron Anvil truly back to her feet!
+		// Quest2: Fantastic! I'll fix the old forge up quick as I can. Here, take this sword. It's a practice forge I made right before the attack. I'd like for you to test it on some zombies; those buggers are awful to deal with. If you'd be so kind, I'd also enjoy some more materials. Then I think we can get the Iron Anvil truly back to her feet!
 		// Quest3: It almost brings a tear to the eye. The Iron Forge is almost ready for work! Here, this is a lesson I've got from my history in battle: Sometimes, you gotta go crazy. Just be careful! And come back whenever you wish - you've been a great help!
 		// OldManDialogue: Hello there, traveler!...what do you say? A man referred me to you? Hm...I recall a man, cloaked in red, come around here...some time ago. Can't tell you how long ago now, but a while. He came asking for some specific things...a book of evil, two candles, and a bar of evil. He said something about throwing evil powder on a book...but...that's all I can say. Not sure what the guy was on about.
 	}
@@ -90,7 +90,7 @@ HunterNPC: {
 	// DisplayName: Elara
 
 	Dialogue: {
-		// Common0: Greetings, traveler. Need a keen eye and a steady hand?
+		// Common0: Greetings, {ClassNoun}. Need a keen eye and a steady hand?
 		// Common1: I've tracked a beast through these woods many times. Care to join the hunt?
 		// Common2: Be cautious out there. The forest hides many secrets.
 		// Common3: You've returned. Hope your misadventures are treating you well.

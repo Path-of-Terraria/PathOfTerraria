@@ -60,6 +60,7 @@ public sealed class NPCTownDialogue : NPCComponent
 		{
 			if (TryGetDialogue(out chat))
 			{
+				chat = DialogueHelper.PolishString(chat);
 				return;
 			}
 			else

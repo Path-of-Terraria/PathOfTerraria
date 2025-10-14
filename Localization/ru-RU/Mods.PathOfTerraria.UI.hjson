@@ -1,3 +1,5 @@
+// Confirm: Confirm
+
 Gear: {
 	Buttons: {
 		Previous: Предыдущий
@@ -330,3 +332,48 @@ SkillTreeTab: Навыки
 QuestsAvailableTab: Доступный
 QuestsCompletedTab: Завершенный
 PlayerStatsTab: Статистика
+
+ClassPages: {
+	StarterClasses: {
+		// Melee: Melee
+		// Magic: Magic
+		// Ranged: Ranged
+		// Summon: Summon
+	}
+
+	// PreferredWeapons: Preferred Weapons
+	// Awakenings: Awakenings
+	// Skill: Skill
+
+	Melee: {
+		// Description: The warrior, adept at close-range, high risk combat. Starts with the standard items and the Berserk skill.
+		// Weapons: "[i:PathOfTerraria/IronBroadsword] Swords, [i:PathOfTerraria/SteelWarShield] War Shields, [i:PathOfTerraria/IronBattleaxe]  Battleaxes"
+		// Awakenings: Place, Holder
+		// Skill: Gain a temporary damage up - for and against you
+		// Nouns: Warrior Soldier Swordsman
+	}
+
+	Ranged: {
+		// Description: The ranger, striking from a distance. Starts with an additional Wooden Shortbow and the Barrage skill.
+		// Weapons: "[i:PathOfTerraria/WoodenBow] Bows, [i:PathOfTerraria/LeadDangpa] Javelins, [i:PathOfTerraria/IronBoomerang] Boomerangs"
+		// Awakenings: Make, Shift
+		// Skill: Spawn a flurry of arrows based on your held ranged weapon
+		// Nouns: Sharpshooter Deadeye Archer Marksman
+	}
+
+	Magic: {
+		// Description: The wizard; harnessing fantastical powers for...good? Starts with an Ebonwood Wand and the Fireball skill.
+		// Weapons: "[i:PathOfTerraria/WoodenWand] Wands, [i:PathOfTerraria/LeadStaff] Staffs"
+		// Awakenings: Stand, In
+		// Skill: Shoot a large, explosive fireball towards the cursor
+		// Nouns: Wizard Mage Magician
+	}
+
+	Summon: {
+		// Description: The summoner orders their miniature army towards assailants. Starts with a Slime Staff and the Flame Sage skill.
+		// Weapons: "[i:PathOfTerraria/GrimoireItem] Grimoire"
+		// Awakenings: To, Be, Done
+		// Skill: Summon a short-lived, damageable sentry below your cursor
+		// Nouns: Conjurer Summoner
+	}
+}
