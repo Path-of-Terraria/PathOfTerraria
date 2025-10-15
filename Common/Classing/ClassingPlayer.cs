@@ -10,8 +10,7 @@ namespace PathOfTerraria.Common.Classing;
 
 internal class ClassingPlayer : ModPlayer
 {
-
-	public StarterClasses Class = StarterClasses.None;
+	public StarterClasses Class { get; set; } = StarterClasses.None;
 
 	/// <summary>
 	/// Gets the class noun, i.e. Warrior or Marksman. Returns "Stranger" if the player has no selected class.
