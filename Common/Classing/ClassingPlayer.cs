@@ -10,7 +10,7 @@ namespace PathOfTerraria.Common.Classing;
 
 internal class ClassingPlayer : ModPlayer
 {
-	public StarterClasses Class { get; set; } = StarterClasses.None;
+	public StarterClass Class { get; set; } = StarterClass.None;
 
 	/// <summary>
 	/// Gets the class noun, i.e. Warrior or Marksman. Returns "Stranger" if the player has no selected class.
@@ -20,7 +20,7 @@ internal class ClassingPlayer : ModPlayer
 		ClassingPlayer plr = player.GetModPlayer<ClassingPlayer>();
 		string noun;
 
-		if (plr.Class == StarterClasses.None)
+		if (plr.Class == StarterClass.None)
 		{
 			noun = Language.GetTextValue("Mods.PathOfTerraria.UI.ClassPages.DefaultNouns");
 		}
@@ -46,12 +46,12 @@ internal class ClassingPlayer : ModPlayer
 
 	public override void LoadData(TagCompound tag)
 	{
-		Class = (StarterClasses)tag.GetByte("class");
+		Class = (StarterClass)tag.GetByte("class");
 	}
 
 	public override void OnEnterWorld()
 	{
-		if (Main.myPlayer == Player.whoAmI && Class == StarterClasses.None)
+		if (Main.myPlayer == Player.whoAmI && Class == StarterClass.None)
 		{
 			UIManager.TryToggleOrRegister("Temp Class UI", "Vanilla: Mouse Text", new ClassUIState(() => UIManager.TryDisable("Temp Class UI"), Player), 0, InterfaceScaleType.UI);
 		}

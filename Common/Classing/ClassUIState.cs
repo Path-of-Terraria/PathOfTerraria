@@ -37,10 +37,10 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 			x.VAlign = 0.5f;
 		});
 
-		BuildPage(StarterClasses.Melee, panel);
+		BuildPage(StarterClass.Melee, panel);
 	}
 
-	private void BuildPage(StarterClasses classes, UIPanel panel)
+	private void BuildPage(StarterClass classes, UIPanel panel)
 	{
 		if (Main.gameMenu)
 		{
@@ -54,10 +54,10 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 		UIText title = panel.AddElement(new UIText(classes.Localize(), 0.8f, true) { Top = StyleDimension.FromPixels(6) });
 		title.AddElement(new UIItemIcon(ContentSamples.ItemsByType[classes switch
 		{
-			StarterClasses.Melee => ItemID.BreakerBlade,
-			StarterClasses.Ranged => ItemID.DemonBow,
-			StarterClasses.Magic => ItemID.RainbowRod,
-			StarterClasses.Summon or _ => ItemID.SlimeStaff,
+			StarterClass.Melee => ItemID.BreakerBlade,
+			StarterClass.Ranged => ItemID.DemonBow,
+			StarterClass.Magic => ItemID.RainbowRod,
+			StarterClass.Summon or _ => ItemID.SlimeStaff,
 		}], false), self =>
 		{
 			self.HAlign = 1f;
@@ -126,7 +126,7 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 		RemoveAllChildren();
 	}
 
-	private static float GenerateSection(StarterClasses classes, UIPanel panel, ref float yOffset, string title, string info, string addTitle = "")
+	private static float GenerateSection(StarterClass classes, UIPanel panel, ref float yOffset, string title, string info, string addTitle = "")
 	{
 		string awakeningsTitle = Language.GetTextValue("Mods.PathOfTerraria.UI.ClassPages." + title) + addTitle;
 		panel.AddElement(new UISimpleWrappableText(awakeningsTitle, 1f)
@@ -158,15 +158,15 @@ internal class ClassUIState(Action resetAction, Player player) : UIState
 		return yOffset;
 	}
 
-	private void SwitchClass(StarterClasses newClass, UIPanel panel)
+	private void SwitchClass(StarterClass newClass, UIPanel panel)
 	{
-		if (newClass == StarterClasses.None)
+		if (newClass == StarterClass.None)
 		{
-			newClass = StarterClasses.Summon;
+			newClass = StarterClass.Summon;
 		}
-		else if (newClass > StarterClasses.Summon)
+		else if (newClass > StarterClass.Summon)
 		{
-			newClass = StarterClasses.Melee;
+			newClass = StarterClass.Melee;
 		}
 
 		panel.RemoveAllChildren();

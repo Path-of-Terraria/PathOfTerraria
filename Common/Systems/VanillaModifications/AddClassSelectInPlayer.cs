@@ -19,10 +19,14 @@ internal class AddClassSelectInPlayer : ModSystem
 		orig(self);
 
 		Player player = GetPlayer(self);
-		StarterClasses classType = player.GetModPlayer<ClassingPlayer>().Class;
-		StarterClassInfo info = StarterClassInfo.InfoByClass[classType];
+		StarterClass classType = player.GetModPlayer<ClassingPlayer>().Class;
+		StarterClassInfo info = StarterClasses.GetInfo(classType);
 
-		player.GetModPlayer<SkillCombatPlayer>().TryAddSkill(Activator.CreateInstance(info.SkillType) as Skill, true);
+		foreach (Type skillType in info.SkillTypes)
+		{
+			player.GetModPlayer<SkillCombatPlayer>().TryAddSkill(Activator.CreateInstance(skillType) as Skill, true);
+		}
+
 		player.inventory[0].SetDefaults(info.WeaponItemId);
 	}
 
@@ -30,7 +34,7 @@ internal class AddClassSelectInPlayer : ModSystem
 	{
 		Player player = GetPlayer(self);
 
-		if (player.GetModPlayer<ClassingPlayer>().Class == StarterClasses.None)
+		if (player.GetModPlayer<ClassingPlayer>().Class == StarterClass.None)
 		{
 			void Reset()
 			{
