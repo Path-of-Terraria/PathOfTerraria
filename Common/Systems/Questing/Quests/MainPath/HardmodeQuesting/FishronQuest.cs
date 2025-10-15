@@ -51,7 +51,7 @@ internal class FishronQuest() : Quest
 
 			new ConditionCheck(_ => SubworldSystem.Current is FishronDomain, 1, this.GetLocalization("EnterDomain")),
 			
-			new ConditionCheck(_ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
+			new ConditionCheck(_ => BossTracker.DownedInDomain<FishronDomain>(NPCID.DukeFishron), 1, this.GetLocalization("Boss")),
 	
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue4"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue4"))

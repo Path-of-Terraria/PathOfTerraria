@@ -1,5 +1,4 @@
-﻿using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
+﻿using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
@@ -44,6 +43,7 @@ internal class CultistMoonlordQuest() : Quest
 
 			// TODO: Place sigils into the altar slots. This will create a rift that the player is sucked into. Inside, the Cultist Invasion will begin on the "alternate"
 			// destroyed Ravencrest.
+			// This may not be the case; needs more discussion - Gabe
 			
 			// TODO: Once invasion is done, the cultist will spawn in ravencrest (OR youll enter their domain portal) and you must kill them.
 			new ConditionCheck(_ => SubworldSystem.Current is CultistDomain, 1, this.GetLocalization("EnterDomain1")),

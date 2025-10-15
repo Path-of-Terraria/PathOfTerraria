@@ -10,6 +10,8 @@ using System.Collections.Generic;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
 using Terraria.Localization;
+using PathOfTerraria.Content.Items.Quest;
+using PathOfTerraria.Common.NPCs.ConditionalDropping;
 
 namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
@@ -32,14 +34,26 @@ internal class TwinsQuest() : Quest
 		[
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue1"), 
 					Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue1")),
-				
+
+			new ActionStep((_, _) =>
+			{
+				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().AddId<LunarFragment>();
+				return true;
+			}),
+
 			new ParallelQuestStep([
-				new CollectCount(ItemID.LunarOre, 5), // Using Lunar Ore as placeholder for now. TODO: <
+				new CollectCount(ModContent.ItemType<LunarFragment>(), 5),
 				new KillCount(NPCID.Wraith, 3, this.GetLocalization("Wraiths")),
 				new KillCount(NPCID.PossessedArmor, 3, this.GetLocalization("PossessedArmors")),
 				new KillCount(NPCID.WanderingEye, 3, this.GetLocalization("WanderingEyes")),
 			], this.GetLocalization("CollectFragments")),
-			
+
+			new ActionStep((_, _) =>
+			{
+				Main.LocalPlayer.GetModPlayer<ConditionalDropPlayer>().RemoveId<LunarFragment>();
+				return true;
+			}),
+
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<TwinsMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE

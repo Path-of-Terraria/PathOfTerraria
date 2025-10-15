@@ -36,10 +36,9 @@ internal class SkelePrimeQuest() : Quest
 				[
 					new GiveItem(10, ItemID.SoulofNight),
 					new GiveItem(20, ItemID.Bone),
-					new GiveItem(5, ItemID.MechanicalWagonPiece), //TODO: Replace this with a new item dropped from a "mech" monster from the HM dung
+					new GiveItem(5, ItemID.MechanicalWagonPiece), //TODO: Replace this with a new item dropped from a "mech" monster that Pyra spawns in Ravencrest
 				]),
 			
-			//TODO: I think having a second, greater ritual (akin to skeletron) would be good here, with the above items (Souls of night can be made into Soul of Night in a bottle probably)
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<PrimeMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE

@@ -33,7 +33,8 @@ internal class EoLQuest() : Quest
 			// TODO: Change this to be new prismatic fragment item 
 			new CollectCount(ItemID.CrystalBall, 10),
 		
-			new InteractWithNPC(NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),Language.GetText("Mods.PathOfTerraria.NPCs.AlaricNPC.Dialogue.WizardEmpressDialogue2")),
+			new InteractWithNPC(NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2")),
 		
 			// TODO: Make rose colored glasses item.
 			new ParallelQuestStep([

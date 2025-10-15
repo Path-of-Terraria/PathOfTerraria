@@ -36,9 +36,11 @@ internal class DestroyerQuest() : Quest
 
 			new ParallelQuestStep([
 				new CollectCount(ItemID.CursedFlame, 20),
-				new KillCount(NPCID.SeekerHead, 5, this.GetLocalization("WorldFeeders"))
+				new KillCount(NPCID.Clinger, 5, this.GetLocalization("WorldFeeders"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1")),
 			
+			// TODO: Add in wavelength matching minigame? Placing antennae in overworld?
+
 			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<DestroyerMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE
