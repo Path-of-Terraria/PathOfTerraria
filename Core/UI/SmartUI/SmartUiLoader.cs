@@ -120,5 +120,13 @@ internal sealed partial class SmartUiLoader : ModSystem
 				toggle.Toggle();
 			}
 		}
+
+		foreach (UIManager.UIStateData data in UIManager.Data)
+		{
+			if (data.Enabled && data.Value is IMutuallyExclusiveUI toggle)
+			{
+				toggle.Toggle();
+			}
+		}
 	}
 }

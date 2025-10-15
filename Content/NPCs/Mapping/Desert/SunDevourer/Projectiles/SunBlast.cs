@@ -51,7 +51,7 @@ public sealed class SunBlast : ModProjectile
 
 		Vector2 toIdle = Parent.DirectionTo((Parent.ModNPC as SunDevourerNPC).IdleSpot);
 
-		Projectile.Center = Parent.Center + toIdle * 170 + new Vector2(0, 10);
+		Projectile.Center = Parent.Center + toIdle * 100 + new Vector2(0, 10);
 		Projectile.velocity = toIdle;
 		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 		Projectile.timeLeft = 4;

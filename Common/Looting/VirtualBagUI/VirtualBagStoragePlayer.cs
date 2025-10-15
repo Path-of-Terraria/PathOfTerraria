@@ -42,7 +42,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 
 	public override void ProcessTriggers(TriggersSet triggersSet)
 	{
-		if (BagKeybind.JustPressed)
+		if (BagKeybind.JustPressed && VirtualBagItemFunctionality.IsInAPlaceForPickup)
 		{
 			UIManager.TryToggleOrRegister(VirtualBagUIState.Identifier, "Vanilla: Mouse Text", new VirtualBagUIState(), 0, InterfaceScaleType.UI);
 

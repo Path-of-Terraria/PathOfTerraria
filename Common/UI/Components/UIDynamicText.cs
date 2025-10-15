@@ -11,9 +11,10 @@ namespace PathOfTerraria.Common.UI.Components;
 /// Makes an element update its text value in real time using the provided delegate in a cached manner.
 /// <br/> Supports UIText, UITextBox, UIButton, UITextPanel(string), UIAutoScaleTextTextPanel(string).
 /// </summary>
-internal sealed class UIDynamicText(Func<string> textGetter) : UIComponent
+internal sealed class UIDynamicText(Func<UIElement, string> textGetter) : UIComponent
 {
-	private readonly Func<string> textGetter = textGetter;
+	private readonly Func<UIElement, string> textGetter = textGetter;
+	private UIElement? attachedElement;
 
 	protected override void OnAttach(UIElement element)
 	{
@@ -22,6 +23,7 @@ internal sealed class UIDynamicText(Func<string> textGetter) : UIComponent
 			throw new InvalidOperationException($"{GetType().Name} cannot be used on element of type '{element.GetType().Name}'.");
 		}
 
+		attachedElement = element;
 		element.OnUpdate += OnUpdate;
 
 		UpdateText(element);
@@ -33,7 +35,7 @@ internal sealed class UIDynamicText(Func<string> textGetter) : UIComponent
 
 	public string GetText()
 	{
-		return textGetter();
+		return textGetter(attachedElement!);
 	}
 
 	private void OnUpdate(UIElement element)

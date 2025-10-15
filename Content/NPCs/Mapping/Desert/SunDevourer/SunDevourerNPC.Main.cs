@@ -31,7 +31,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 	private static Asset<Texture2D> MaskTexture;
 	private static Asset<Texture2D> ChainTexture;
-
+	public static Asset<Texture2D> TailTexture;
+	public static Asset<Texture2D> WingsTexture;
 	public bool NightStage { get; set; }
 
 	/// <summary>
@@ -67,9 +68,13 @@ public sealed partial class SunDevourerNPC : ModNPC
 	private bool doDamage = false;
 	private bool flipVert = false;
 
+	private float animSpeed = 0f;
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
+
+		Main.npcFrameCount[Type] = 6;
 
 		NPCID.Sets.TrailingMode[Type] = 3;
 		NPCID.Sets.TrailCacheLength[Type] = 10;
@@ -77,6 +82,8 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		MaskTexture = ModContent.Request<Texture2D>(Texture + "_Mask");
 		ChainTexture = ModContent.Request<Texture2D>(Texture + "_Chains");
+		TailTexture = ModContent.Request<Texture2D>(Texture + "_Tail");
+		WingsTexture = ModContent.Request<Texture2D>(Texture + "_Wings");
 	}
 
 	public override void SetDefaults()

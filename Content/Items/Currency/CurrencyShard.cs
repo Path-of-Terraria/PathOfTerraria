@@ -1,4 +1,5 @@
 ﻿using PathOfTerraria.Core.Items;
+using System.Diagnostics.CodeAnalysis;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -36,17 +37,40 @@ public abstract class CurrencyShard : ModItem, GenerateNameAffixes.IItem
 
 	public override bool CanRightClick()
 	{
-		if (!Main.LocalPlayer.HeldItem.TryGetGlobalItem(out PoTGlobalItem _))
+		return CanUseInPouch(Main.LocalPlayer.HeldItem, out _);
+	}
+
+	public override void RightClick(Player player)
+	{
+		ApplyToItem(player.HeldItem);
+	}
+
+	protected static bool DefaultValidityCheck(Item item, out string failKey)
+	{
+		if (!item.TryGetGlobalItem(out PoTGlobalItem _))
 		{
+			failKey = "Invalid";
 			return false;
 		}
 
-		PoTInstanceItemData item = Main.LocalPlayer.HeldItem.GetInstanceData();
-		return !item.Corrupted && !item.Cloned;
+		failKey = null;
+		PoTInstanceItemData data = item.GetInstanceData();
+
+		if (data.Corrupted || data.Cloned)
+		{
+			failKey = "CorruptOrCloned";
+			return false;
+		}
+
+		return true;
 	}
 
 	(sbyte, sbyte) GenerateNameAffixes.IItem.GenerateAffixIds()
 	{
 		return (-1, -1);
 	}
+
+	public abstract bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey);
+
+	public abstract void ApplyToItem(Item slotItem);
 }

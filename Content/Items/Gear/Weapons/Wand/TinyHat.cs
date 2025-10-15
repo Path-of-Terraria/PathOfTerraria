@@ -4,6 +4,7 @@ using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
 using PathOfTerraria.Content.Items.Gear.Weapons.Sword;
 using PathOfTerraria.Content.Projectiles.Magic;
 using PathOfTerraria.Core.Items;
+using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.ID;
 
@@ -38,6 +39,7 @@ internal class TinyHat : Wand
 		Item.useTime = Item.useAnimation = 25;
 		Item.UseSound = SoundID.Item7;
 		Item.value = Item.buyPrice(0, 15, 0, 0);
+		Item.noUseGraphic = true;
 	}
 
 	public override void HoldItem(Player player)
@@ -46,5 +48,10 @@ internal class TinyHat : Wand
 		{
 			Projectile.NewProjectile(player.GetSource_ItemUse(Item), player.Center, Vector2.Zero, ModContent.ProjectileType<TinyAlaric>(), Item.damage, 8, player.whoAmI);
 		}
+	}
+
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		return false;
 	}
 }
