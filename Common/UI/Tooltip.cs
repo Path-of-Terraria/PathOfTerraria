@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using PathOfTerraria.Common.ModCompatibility.Wikithis;
 using PathOfTerraria.Core.Time;
 using PathOfTerraria.Core.UI.SmartUI;
 using ReLogic.Content;
@@ -172,6 +173,9 @@ public class Tooltip : SmartUiState
 		cache.OuterSize = default;
 		Array.Fill(cache.LineMeasures, default, 0, lineCount);
 
+		// This stops PreDrawTooltipLine from returning false, and thus gives an accurate line count.
+		StopWikithisFromDrawing.StopDrawcode = true;
+
 		for (int i = 0; i < lineCount; i++)
 		{
 			DrawableTooltipLine line = cache.Lines[i].Base;
@@ -197,6 +201,9 @@ public class Tooltip : SmartUiState
 			cache.OuterSize.X = Math.Max(cache.OuterSize.X, cache.LineMeasures[i].X);
 			cache.OuterSize.Y += cache.LineMeasures[i].Y + lineSpacing;
 		}
+
+		StopWikithisFromDrawing.StopDrawcode = false;
+
 		// Add padding.
 		cache.OuterSize += args.Padding * 2f;
 
