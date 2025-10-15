@@ -34,6 +34,7 @@ public class Berserk : Skill
 		IsLooped = true,
 	};
 
+	public override SkillTags Tags => SkillTags.Melee | SkillTags.Buff;
 	public override int MaxLevel => 3;
 
 	public override void LevelTo(byte level)

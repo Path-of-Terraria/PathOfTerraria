@@ -12,7 +12,6 @@ using PathOfTerraria.Content.SkillTrees;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -25,6 +24,7 @@ public class RainOfArrows : Skill
 {
 	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Flamethrower, ItemID.ElfMelter];
 
+	public override SkillTags Tags => SkillTags.Projectile | SkillTags.Ranged;
 	public override int MaxLevel => 3;
 
 	public override void LevelTo(byte level)

@@ -26,6 +26,7 @@ public class Nova : Skill
 		Lightning,
 	}
 
+	public override SkillTags Tags => SkillTags.Magic | SkillTags.AreaOfEffect;
 	public override int MaxLevel => 3;
 
 	private static NovaType GetNovaType(Nova nova)

@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -9,6 +10,7 @@ namespace PathOfTerraria.Content.Skills.Magic;
 
 public class Fireball : Skill
 {
+	public override SkillTags Tags => SkillTags.Magic | SkillTags.Projectile | SkillTags.Fire;
 	public override int MaxLevel => 3;
 
 	public override void LevelTo(byte level)
@@ -30,7 +32,8 @@ public class Fireball : Skill
 		int type = ModContent.ProjectileType<FireballProj>();
 		Vector2 velocity = player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * 8 * Main.rand.NextFloat(0.9f, 1.1f);
 		
-		Projectile.NewProjectile(source, player.Center - new Vector2(0, 12), velocity, type, damage, knockback, player.whoAmI, Level);
+		int proj = Projectile.NewProjectile(source, player.Center - new Vector2(0, 12), velocity, type, damage, knockback, player.whoAmI, Level);
+		Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
 	}
 

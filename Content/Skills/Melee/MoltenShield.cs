@@ -8,6 +8,7 @@ namespace PathOfTerraria.Content.Skills.Melee;
 
 public class MoltenShield : Skill
 {
+	public override SkillTags Tags => SkillTags.Melee | SkillTags.Buff;
 	public override int MaxLevel => 3;
 
 	public override void LevelTo(byte level)

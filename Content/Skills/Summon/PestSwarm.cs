@@ -23,6 +23,7 @@ namespace PathOfTerraria.Content.Skills.Summon;
 
 public class PestSwarm : Skill
 {
+	public override SkillTags Tags => SkillTags.Summon | SkillTags.Projectile;
 	public override int MaxLevel => 3;
 
 	public override void LevelTo(byte level)

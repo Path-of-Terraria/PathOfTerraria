@@ -11,6 +11,7 @@ namespace PathOfTerraria.Content.Skills.Summon;
 
 public class FlameSage : SummonSkill
 {
+	public override SkillTags Tags => SkillTags.Summon | SkillTags.Projectile | SkillTags.Fire;
 	public override int MaxLevel => 3;
 	public override int SummonNPCType => Tree.Specialization switch
 	{
