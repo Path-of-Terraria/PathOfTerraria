@@ -9,9 +9,9 @@ internal class ClassNounTagHandler : ITagHandler
 	{
 		Player player;
 		
-		if (int.TryParse(text, out int value) && value > -1 && value < Main.maxPlayers && Main.player[int.Parse(text)].active)
+		if (int.TryParse(text, out int value) && value >= 0 && value < Main.maxPlayers && Main.player[value] is { active: true} p)
 		{
-			player = Main.player[int.Parse(text)];
+			player = p;
 		}
 		else
 		{
