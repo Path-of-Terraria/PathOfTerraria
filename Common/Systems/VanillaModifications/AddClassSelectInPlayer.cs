@@ -1,14 +1,8 @@
 ﻿using PathOfTerraria.Common.Classing;
+using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
-using PathOfTerraria.Content.Items.Gear.Weapons.Bow;
-using PathOfTerraria.Content.Items.Gear.Weapons.Wand;
-using PathOfTerraria.Content.Skills.Magic;
-using PathOfTerraria.Content.Skills.Melee;
-using PathOfTerraria.Content.Skills.Ranged;
-using PathOfTerraria.Content.Skills.Summon;
 using System.Runtime.CompilerServices;
 using Terraria.GameContent.UI.States;
-using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.VanillaModifications;
 
@@ -26,24 +20,10 @@ internal class AddClassSelectInPlayer : ModSystem
 
 		Player player = GetPlayer(self);
 		StarterClasses classType = player.GetModPlayer<ClassingPlayer>().Class;
+		StarterClassInfo info = StarterClassInfo.InfoByClass[classType];
 
-		player.GetModPlayer<SkillCombatPlayer>().TryAddSkill(classType switch
-		{
-			StarterClasses.Melee => new Berserk(),
-			StarterClasses.Ranged => new RainOfArrows(),
-			StarterClasses.Summon => new FlameSage(),
-			StarterClasses.Magic or _ => new Fireball(),
-		}, true);
-
-		if (classType != StarterClasses.Melee)
-		{
-			player.inventory[0].SetDefaults(classType switch
-			{
-				StarterClasses.Ranged => ModContent.ItemType<WoodenShortBow>(),
-				StarterClasses.Summon => ItemID.SlimeStaff,
-				StarterClasses.Magic or _ => ModContent.ItemType<EbonwoodWand>()
-			});
-		}
+		player.GetModPlayer<SkillCombatPlayer>().TryAddSkill(Activator.CreateInstance(info.SkillType) as Skill, true);
+		player.inventory[0].SetDefaults(info.WeaponItemId);
 	}
 
 	private void FinishCreatingChar(On_UICharacterCreation.orig_FinishCreatingCharacter orig, UICharacterCreation self)

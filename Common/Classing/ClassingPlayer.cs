@@ -1,5 +1,7 @@
 ﻿using PathOfTerraria.Common.Looting.VirtualBagUI;
 using PathOfTerraria.Core.UI;
+using System.Collections.Generic;
+using System.Diagnostics;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
@@ -8,6 +10,7 @@ namespace PathOfTerraria.Common.Classing;
 
 internal class ClassingPlayer : ModPlayer
 {
+
 	public StarterClasses Class = StarterClasses.None;
 
 	/// <summary>
@@ -27,7 +30,14 @@ internal class ClassingPlayer : ModPlayer
 			noun = plr.Class.GetNouns();
 		}
 
-		return noun.Split(' ')[index];
+		string[] nouns = noun.Split(';');
+
+		if (index >= nouns.Length)
+		{
+			PoTMod.Instance.Logger.Error("[ClassingPlayer] Index was greater than noun count.", new IndexOutOfRangeException());
+		}
+
+		return noun.Split(';')[index % nouns.Length];
 	}
 
 	public override void SaveData(TagCompound tag)

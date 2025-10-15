@@ -331,7 +331,7 @@ ClassPages: {
 	// PreferredWeapons: Preferred Weapons
 	// Awakenings: Awakenings
 	// Skill: Skill
-	// DefaultNouns: Stranger Adventurer
+	// DefaultNouns: Stranger;Adventurer
 
 	Melee: {
 		// Description: The warrior, adept at close-range, high risk combat. Starts with the standard items and the Berserk skill.
@@ -339,7 +339,7 @@ ClassPages: {
 		// Awakenings: Place, Holder
 		// Skill: Gain a temporary damage up - for and against you
 		// SkillTitle: - Berserk
-		// Nouns: Warrior Soldier
+		// Nouns: Warrior;Soldier
 	}
 
 	Ranged: {
@@ -348,16 +348,16 @@ ClassPages: {
 		// Awakenings: Make, Shift
 		// Skill: Spawn a flurry of arrows based on your held ranged weapon
 		// SkillTitle: - Barrage
-		// Nouns: Sharpshooter Marksman
+		// Nouns: Sharpshooter;Marksman
 	}
 
 	Magic: {
-		// Description: The wizard; harnessing fantastical powers for...good? Starts with an Ebonwood Wand and the Fireball skill.
+		// Description: The wizard; harnessing fantastical powers for...good? Starts with an Rich Mahogany Wand and the Fireball skill.
 		// Weapons: "[i:PathOfTerraria/WoodenWand] Wands, [i:PathOfTerraria/LeadStaff] Staffs"
 		// Awakenings: Stand, In
 		// Skill: Shoot a large, explosive fireball towards the cursor
 		// SkillTitle: - Fireball
-		// Nouns: Wizard Mage
+		// Nouns: Wizard;Mage
 	}
 
 	Summon: {
@@ -366,6 +366,6 @@ ClassPages: {
 		// Awakenings: To, Be, Done
 		// Skill: Summon a short-lived, damageable sentry below your cursor
 		// SkillTitle: - Flame Sage
-		// Nouns: Conjurer Summoner
+		// Nouns: Conjurer;Summoner
 	}
 }

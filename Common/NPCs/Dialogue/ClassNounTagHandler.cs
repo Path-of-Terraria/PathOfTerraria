@@ -1,5 +1,4 @@
 ﻿using PathOfTerraria.Common.Classing;
-using System.Text;
 using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Common.NPCs.Dialogue;
@@ -10,7 +9,7 @@ internal class ClassNounTagHandler : ITagHandler
 	{
 		Player player;
 		
-		if (int.TryParse(text, out int value) && value != -1)
+		if (int.TryParse(text, out int value) && value > -1 && value < Main.maxPlayers && Main.player[int.Parse(text)].active)
 		{
 			player = Main.player[int.Parse(text)];
 		}
