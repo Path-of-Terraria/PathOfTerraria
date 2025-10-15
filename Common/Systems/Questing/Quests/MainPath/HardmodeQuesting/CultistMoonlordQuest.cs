@@ -31,35 +31,38 @@ internal class CultistMoonlordQuest() : Quest
 		return
 		[
 			// TODO: Change this to be the 5 new sigils found in the respective biomes.
-			new ParallelQuestStep([
-				new CollectCount(ItemID.CelestialSigil, 1),
-				new CollectCount(ItemID.CelestialSigil, 1),
-				new CollectCount(ItemID.CelestialSigil, 1),
-				new CollectCount(ItemID.CelestialSigil, 1),
-				new CollectCount(ItemID.CelestialSigil, 1),
+			new ParallelQuestStep("Start", [
+				new CollectCount("Sigil1", ItemID.CelestialSigil, 1),
+				new CollectCount("Sigil2", ItemID.CelestialSigil, 1),
+				new CollectCount("Sigil3", ItemID.CelestialSigil, 1),
+				new CollectCount("Sigil4", ItemID.CelestialSigil, 1),
+				new CollectCount("Sigil4", ItemID.CelestialSigil, 1),
 			], this.GetLocalization("CollectSigils")),
 		
-			new InteractWithNPC(NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3"),Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3")),
+			new InteractWithNPC("Talk", NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue3")),
 
 			// TODO: Place sigils into the altar slots. This will create a rift that the player is sucked into. Inside, the Cultist Invasion will begin on the "alternate"
 			// destroyed Ravencrest.
 			// This may not be the case; needs more discussion - Gabe
 			
 			// TODO: Once invasion is done, the cultist will spawn in ravencrest (OR youll enter their domain portal) and you must kill them.
-			new ConditionCheck(_ => SubworldSystem.Current is CultistDomain, 1, this.GetLocalization("EnterDomain1")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<CultistDomain>(NPCID.CultistBoss), 1, this.GetLocalization("Boss1")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is CultistDomain, 1, this.GetLocalization("EnterDomain1")),
+			new ConditionCheck("Cultist", _ => BossTracker.DownedInDomain<CultistDomain>(NPCID.CultistBoss), 1, this.GetLocalization("Boss1")),
 			
-			new InteractWithNPC(NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue4"),Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue4")),
+			new InteractWithNPC("PostCultist", NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue4"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue4")),
 			
 			// TODO: The 4 pillars will now be spawned in your main world. You must destroy all 4 pillars, and return to Azariel.
 			// (step to kill all 4 pillars)
 			
-			new InteractWithNPC(NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue5"),Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue5")),
+			new InteractWithNPC("PostPillars", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue5"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.CultistMoonlordDialogue5")),
 			
 			// TODO: Once again, a portal/rift will open at the altar and Azariel will follow you through into the moon lord domain.
 
-			new ConditionCheck(_ => SubworldSystem.Current is MoonLordDomain, 1, this.GetLocalization("EnterDomain2")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<MoonLordDomain>(NPCID.MoonLordCore), 1, this.GetLocalization("Boss2")),
+			new ConditionCheck("MoonDomain", _ => SubworldSystem.Current is MoonLordDomain, 1, this.GetLocalization("EnterDomain2")),
+			new ConditionCheck("MoonLord", _ => BossTracker.DownedInDomain<MoonLordDomain>(NPCID.MoonLordCore), 1, this.GetLocalization("Boss2")),
 		];
 	}
 

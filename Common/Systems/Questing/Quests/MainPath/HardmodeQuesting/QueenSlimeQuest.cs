@@ -31,23 +31,23 @@ internal class QueenSlimeQuest() : Quest
 	{
 		return
 		[
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("TalkToGarrick"), 
+			new InteractWithNPC("Start", NPCQuestGiver, this.GetLocalization("TalkToGarrick"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime1")),
 			
-			new ParallelQuestStep([
-				new CollectCount(ItemID.SoulofLight, 5),
-				new KillCount(NPCID.IlluminantSlime, 10, this.GetLocalization("IlluminantSlimes"))
+			new ParallelQuestStep("Branch", [
+				new CollectCount("Item", ItemID.SoulofLight, 5),
+				new KillCount("Kill", NPCID.IlluminantSlime, 10, this.GetLocalization("IlluminantSlimes"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime1")),
 
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("TalkToGarrick"), 
+			new InteractWithNPC("Talk", NPCQuestGiver, this.GetLocalization("TalkToGarrick"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<QueenSlimeMap>())),
 
-			new ConditionCheck(_ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is QueenSlimeDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<QueenSlimeDomain>(NPCID.QueenSlimeBoss), 1, this.GetLocalization("Boss")),
 			
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("TalkToGarrick"), Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime3"), [new GiveItem(1, ModContent.ItemType<RoyalJellyCore>())], true),
-
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("TalkToGarrick"), Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QueenSlime3"), 
+				[new GiveItem(1, ModContent.ItemType<RoyalJellyCore>())], true),
 		];
 	}
 

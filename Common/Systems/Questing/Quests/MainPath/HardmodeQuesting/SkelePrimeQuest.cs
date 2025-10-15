@@ -31,7 +31,7 @@ internal class SkelePrimeQuest() : Quest
 	{
 		return
 		[
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue1"), 
+			new InteractWithNPC("Start", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue1"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue1"),
 				[
 					new GiveItem(10, ItemID.SoulofNight),
@@ -39,15 +39,15 @@ internal class SkelePrimeQuest() : Quest
 					new GiveItem(5, ItemID.MechanicalWagonPiece), //TODO: Replace this with a new item dropped from a "mech" monster that Pyra spawns in Ravencrest
 				]),
 			
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue2"), 
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<PrimeMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE
 			
-			new ConditionCheck(_ => SubworldSystem.Current is PrimeDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is PrimeDomain, 1, this.GetLocalization("EnterDomain")),
 			
-			new ConditionCheck(_ => BossTracker.DownedInDomain<PrimeDomain>(NPCID.SkeletronPrime), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<PrimeDomain>(NPCID.SkeletronPrime), 1, this.GetLocalization("Boss")),
 	
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue3"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue3"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerSkeletronPrimeDialogue3"))
 		];
 	}

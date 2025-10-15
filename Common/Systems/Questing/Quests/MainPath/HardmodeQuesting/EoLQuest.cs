@@ -31,26 +31,26 @@ internal class EoLQuest() : Quest
 		return
 		[
 			// TODO: Change this to be new prismatic fragment item 
-			new CollectCount(ItemID.CrystalBall, 10),
+			new CollectCount("Start", ItemID.CrystalBall, 10),
 		
-			new InteractWithNPC(NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
+			new InteractWithNPC("Talk", NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue2")),
 		
 			// TODO: Make rose colored glasses item.
-			new ParallelQuestStep([
-				new CollectCount(ItemID.IronHelmet, 1),
-				new ConditionCheck(_ => Main.LocalPlayer.armor[0].type == ItemID.IronHelmet, 1, this.GetLocalization("EquipGlasses"))
+			new ParallelQuestStep("Branch", [
+				new CollectCount("Glasses", ItemID.IronHelmet, 1),
+				new ConditionCheck("Equip", _ => Main.LocalPlayer.armor[0].type == ItemID.IronHelmet, 1, this.GetLocalization("EquipGlasses"))
 			], this.GetLocalization("EquipGlasses")),
 		
 			// Explore the Hallow
-			new ConditionCheck(_ => Main.LocalPlayer.ZoneHallow, 1, this.GetLocalization("ExploreHallow")),
+			new ConditionCheck("Explore", _ => Main.LocalPlayer.ZoneHallow, 1, this.GetLocalization("ExploreHallow")),
 		
 			// Enter the rift (Enter the Empress domain)
-			new ConditionCheck(_ => SubworldSystem.Current is EmpressDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is EmpressDomain, 1, this.GetLocalization("EnterDomain")),
 		
-			new ConditionCheck(_ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<EmpressDomain>(NPCID.HallowBoss), 1, this.GetLocalization("Boss")),
 		
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue3"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue3"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.WizardNPC.Dialogue.WizardEmpressDialogue3"))
 		];
 	}

@@ -31,17 +31,17 @@ internal class FishronQuest() : Quest
 	{
 		return
 		[
-			new ParallelQuestStep([
-				new CollectCount(ItemID.Coral, 10),
+			new ParallelQuestStep("Start", [
+				new CollectCount("Coral", ItemID.Coral, 10),
 				//TODO: Change to be 5 of ANY fish.
-				new CollectCount(ItemID.Fish, 5),
-				new KillCount(npc => npc.netID == NPCID.Shark || npc.netID == NPCID.Crab || npc.netID == NPCID.BlueJellyfish || npc.netID == NPCID.GreenJellyfish || npc.netID == NPCID.PinkJellyfish, 10, this.GetLocalization("OceanEnemies"))
+				new CollectCount("Fish", ItemID.Fish, 5),
+				new KillCount("Kill", npc => npc.netID is NPCID.Shark or NPCID.Crab or NPCID.BlueJellyfish or NPCID.GreenJellyfish or NPCID.PinkJellyfish, 10, this.GetLocalization("OceanEnemies"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue1")),
 
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue2"), 
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue2")),
 			
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue3"), 
+			new InteractWithNPC("TruffleWorm", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue3"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue3"),
 				[
 					new GiveItem(1, ItemID.TruffleWorm),
@@ -49,11 +49,11 @@ internal class FishronQuest() : Quest
 				//TODO: This needs to be changed to the rift in the ocean, throwing a truffle worm in it will drag you into it, teleporting to the fishrom map.
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<FishronMap>())),
 
-			new ConditionCheck(_ => SubworldSystem.Current is FishronDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is FishronDomain, 1, this.GetLocalization("EnterDomain")),
 			
-			new ConditionCheck(_ => BossTracker.DownedInDomain<FishronDomain>(NPCID.DukeFishron), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<FishronDomain>(NPCID.DukeFishron), 1, this.GetLocalization("Boss")),
 	
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue4"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue4"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.FishermanNPC.Dialogue.FishermanFishronDialogue4"))
 		];
 	}

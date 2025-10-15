@@ -1,17 +1,12 @@
-namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
-
-using PathOfTerraria.Common.Subworlds;
-using PathOfTerraria.Common.Subworlds.BossDomains.Hardmode;
-using PathOfTerraria.Common.Systems.BossTrackingSystems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 using PathOfTerraria.Common.Systems.Questing.RewardTypes;
 using PathOfTerraria.Content.NPCs.Town;
-using SubworldLibrary;
 using System.Collections.Generic;
-using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using Terraria.ID;
 using Terraria.Localization;
+
+namespace PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 
 internal class TinkerIntroQuest() : Quest
 {
@@ -30,7 +25,7 @@ internal class TinkerIntroQuest() : Quest
 	{
 		return
 		[
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue1"), 
+			new InteractWithNPC("Start", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue1"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue1"), 
 				[
 					new GiveItem(100, ItemID.Wood),
@@ -41,7 +36,7 @@ internal class TinkerIntroQuest() : Quest
 			
 			//TODO Add the construction of her workshop here.
 			
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue2"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerIntroDialogue2")),
 		];
 	}

@@ -26,7 +26,7 @@ internal class EpilogueQuest() : Quest
 	{
 		return
 		[
-			new ConditionCheck(_ => 
+			new ConditionCheck("Start", _ => 
 			{
 				MappingDomainSystem.TiersDownedTracker tracker = ModContent.GetInstance<MappingDomainSystem>().Tracker;
 				//TODO: This is done using the old system. Theres probably a better way to do this.
@@ -36,10 +36,11 @@ internal class EpilogueQuest() : Quest
 				MappingDomainSystem.RequiredCompletionsPerTier
 			)),
 			
-			new InteractWithNPC(NPCQuestGiver,Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialoue2"),Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpliogueDialogue2")),
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpilogueDialoue2"),
+				Language.GetText("Mods.PathOfTerraria.NPCs.AzarielNPC.Dialogue.EpliogueDialogue2")),
 			
 			//TODO: This needs to be 100 of ANY of the elemental currencies from the Conflux league.
-			new CollectCount(ItemID.FragmentNebula, 100)
+			new CollectCount("Finish?", ItemID.FragmentNebula, 100)
 		];
 	}
 

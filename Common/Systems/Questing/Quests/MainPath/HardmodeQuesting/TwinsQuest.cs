@@ -32,7 +32,7 @@ internal class TwinsQuest() : Quest
 	{
 		return
 		[
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue1"), 
+			new InteractWithNPC("Start", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue1"), 
 					Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue1")),
 
 			new ActionStep((_, _) =>
@@ -41,11 +41,11 @@ internal class TwinsQuest() : Quest
 				return true;
 			}),
 
-			new ParallelQuestStep([
-				new CollectCount(ModContent.ItemType<LunarFragment>(), 5),
-				new KillCount(NPCID.Wraith, 3, this.GetLocalization("Wraiths")),
-				new KillCount(NPCID.PossessedArmor, 3, this.GetLocalization("PossessedArmors")),
-				new KillCount(NPCID.WanderingEye, 3, this.GetLocalization("WanderingEyes")),
+			new ParallelQuestStep("Branch", [
+				new CollectCount("Collect", ModContent.ItemType<LunarFragment>(), 5),
+				new KillCount("Wraith", NPCID.Wraith, 3, this.GetLocalization("Wraiths")),
+				new KillCount("Armor", NPCID.PossessedArmor, 3, this.GetLocalization("PossessedArmors")),
+				new KillCount("Eye", NPCID.WanderingEye, 3, this.GetLocalization("WanderingEyes")),
 			], this.GetLocalization("CollectFragments")),
 
 			new ActionStep((_, _) =>
@@ -54,18 +54,18 @@ internal class TwinsQuest() : Quest
 				return true;
 			}),
 
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue2"), 
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<TwinsMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE
 			
-			new ConditionCheck(_ => SubworldSystem.Current is TwinsDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is TwinsDomain, 1, this.GetLocalization("EnterDomain")),
 			
-			new ParallelQuestStep([ 
-				new ConditionCheck(_ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Retinazer), 1, this.GetLocalization("Boss1")),
-				new ConditionCheck(_ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Spazmatism), 1, this.GetLocalization("Boss2")),
+			new ParallelQuestStep("Kill", [
+				new ConditionCheck("Retinazer", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Retinazer), 1, this.GetLocalization("Boss1")),
+				new ConditionCheck("Spazmatism", _ => BossTracker.DownedInDomain<TwinsDomain>(NPCID.Spazmatism), 1, this.GetLocalization("Boss2")),
 			]),
 	
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue3"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue3"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerTwinsDialogue3"))
 		];
 	}

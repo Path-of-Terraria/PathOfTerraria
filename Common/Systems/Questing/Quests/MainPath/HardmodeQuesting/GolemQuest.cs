@@ -31,26 +31,26 @@ internal class GolemQuest() : Quest
 	{
 		return
 		[
-			new ParallelQuestStep([			
-				new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1"), 
+			new ParallelQuestStep("Start", [
+				new InteractWithNPC("GiveCells", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1"), 
 					Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1"),
 					[
 						new GiveItem(2, ItemID.LihzahrdPowerCell),
 					]),
 				//TODO: The below seems to not always count the Lihzahrds as kills and im not sure why. Something is weird here.
-				new KillCount(npc => npc.netID == NPCID.Lihzahrd || npc.netID == NPCID.LihzahrdCrawler, 10, this.GetLocalization("Lihzards"))
+				new KillCount("Kill", npc => npc.netID == NPCID.Lihzahrd || npc.netID == NPCID.LihzahrdCrawler, 10, this.GetLocalization("Lihzards"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue1")),
 
 			// TODO: REMOVE LATER for -> After step 1, Thrain will give you an item to use on the Altar in the temple. This will summon the Golem domain portal in the temple. 
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue2"), 
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<GolemMap>())),
 			
-			new ConditionCheck(_ => SubworldSystem.Current is GolemDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is GolemDomain, 1, this.GetLocalization("EnterDomain")),
 			
-			new ConditionCheck(_ => BossTracker.DownedInDomain<GolemDomain>(NPCID.Golem), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<GolemDomain>(NPCID.Golem), 1, this.GetLocalization("Boss")),
 	
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue3"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue3"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.BlacksmithNPC.Dialogue.GolemDialogue3"))
 		];
 	}

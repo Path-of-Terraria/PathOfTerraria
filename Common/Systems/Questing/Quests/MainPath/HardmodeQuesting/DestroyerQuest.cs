@@ -31,25 +31,25 @@ internal class DestroyerQuest() : Quest
 	{
 		return
 		[
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1"), 
+			new InteractWithNPC("Start", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1")),
 
-			new ParallelQuestStep([
-				new CollectCount(ItemID.CursedFlame, 20),
-				new KillCount(NPCID.Clinger, 5, this.GetLocalization("WorldFeeders"))
+			new ParallelQuestStep("Branch", [
+				new CollectCount("GetFlames", ItemID.CursedFlame, 20),
+				new KillCount("Kill", NPCID.Clinger, 5, this.GetLocalization("WorldFeeders"))
 			], Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue1")),
 			
 			// TODO: Add in wavelength matching minigame? Placing antennae in overworld?
 
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue2"), 
+			new InteractWithNPC("Talk", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue2"),
 				onSuccess: _ => Main.LocalPlayer.QuickSpawnItem(Main.LocalPlayer.GetSource_GiftOrReward(), ModContent.ItemType<DestroyerMap>())), //TODO: THIS WILL BE SOME TELEPORTER FEATURE IN THE FUTURE
 			
-			new ConditionCheck(_ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Domain", _ => SubworldSystem.Current is DestroyerDomain, 1, this.GetLocalization("EnterDomain")),
 			
-			new ConditionCheck(_ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
+			new ConditionCheck("Boss", _ => BossTracker.DownedInDomain<DestroyerDomain>(NPCID.TheDestroyer), 1, this.GetLocalization("Boss")),
 	
-			new InteractWithNPC(NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue3"), 
+			new InteractWithNPC("Finish", NPCQuestGiver, Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue3"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.TinkerNPC.Dialogue.TinkerDestroyerDialogue3"))
 		];
 	}
