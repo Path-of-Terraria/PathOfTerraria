@@ -49,3 +49,5 @@ ShardInvalidations: {
 	NotRare: Needs a Rare rarity item
 	NotNormal: Needs a Normal rarity item
 }
+
+RiftStability: Rift Stability
