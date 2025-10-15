@@ -27,12 +27,11 @@ internal class EoWQuest : Quest
 	{
 		return
 		[
-			new ConditionCheck((player) => player.ZoneCorrupt, 1, this.GetLocalization("EnterEvilBiome")),
-			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), this.GetLocalization("MorvenDialogue"), this.GetLocalization("MorvenDialogue")),
-			new ConditionCheck((_) => SubworldSystem.Current is RavencrestSubworld && NPC.AnyNPCs(ModContent.NPCType<MorvenNPC>()), 1, this.GetLocalization("MorvenRaven")),
-			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Aboveground"),
+			new InteractWithNPC("Start", ModContent.NPCType<MorvenNPC>(), this.GetLocalization("BlacksmithInput"), this.GetLocalization("MorvenDialogue")),
+			new ConditionCheck("Raven", (_) => SubworldSystem.Current is RavencrestSubworld && NPC.AnyNPCs(ModContent.NPCType<MorvenNPC>()), 1, this.GetLocalization("MorvenRaven")),
+			new InteractWithNPC("MorvenAboveground", ModContent.NPCType<MorvenNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.Aboveground"),
 			    Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.InRavencrest")),
-			new ConditionCheck((_) => SubworldSystem.Current is null, 1, this.GetLocalization("ReturnToOverworld")),
+			new ConditionCheck("Return", (_) => SubworldSystem.Current is null, 1, this.GetLocalization("ReturnToOverworld")),
 			new ActionStep((_, _) =>
 			{
 				if (Main.netMode != NetmodeID.SinglePlayer)
@@ -46,9 +45,9 @@ internal class EoWQuest : Quest
 
 				return true;
 			}),
-			new ConditionCheck((_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2, 1, this.GetLocalization("SmashOrbs")),
-			new ConditionCheck((_) => NPC.downedBoss2, 1, this.GetLocalization("KillEoW")),
-			new InteractWithNPC(ModContent.NPCType<MorvenNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.AfterBeatingEoW"))
+			new ConditionCheck("Orbs", (_) => DisableEvilOrbBossSpawning.ActualOrbsSmashed > 2, 1, this.GetLocalization("SmashOrbs")),
+			new ConditionCheck("KillEoW", (_) => NPC.downedBoss2, 1, this.GetLocalization("KillEoW")),
+			new InteractWithNPC("Finish", ModContent.NPCType<MorvenNPC>(), LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.MorvenNPC.Dialogue.AfterBeatingEoW"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

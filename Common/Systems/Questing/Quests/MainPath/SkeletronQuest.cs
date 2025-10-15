@@ -27,13 +27,13 @@ internal class SkeletronQuest : Quest
 
 		return
 		[
-			new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.QuestStart"), oldManIntro),
-			new InteractWithNPC(NPCQuestGiver, oldManIntro, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.HasItems"),
+			new InteractWithNPC("Start", ModContent.NPCType<BlacksmithNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.QuestStart"), oldManIntro),
+			new InteractWithNPC("HasItems", NPCQuestGiver, oldManIntro, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.HasItems"),
 				[new GiveItem(2, ItemID.Candle, ItemID.PlatinumCandle), new GiveItem(1, ItemID.CrimtaneBar, ItemID.DemoniteBar),
 					new GiveItem(1, ModContent.ItemType<AncientEvilBook>())]),
-			new ConditionCheck((_) => SubworldSystem.Current is SkeletronDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck((_) => NPC.downedBoss3, 1, this.GetLocalization("KillSkeletron")),
-			new InteractWithNPC(NPCID.Clothier, LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.Complete"))
+			new ConditionCheck("Enter", (_) => SubworldSystem.Current is SkeletronDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Kill", (_) => NPC.downedBoss3, 1, this.GetLocalization("KillSkeletron")),
+			new InteractWithNPC("Finish", NPCID.Clothier, LocalizedText.Empty, Language.GetText("Mods.PathOfTerraria.NPCs.OldMan.Dialogue.Complete"))
 			{
 				CountsAsCompletedOnMarker = true
 			},

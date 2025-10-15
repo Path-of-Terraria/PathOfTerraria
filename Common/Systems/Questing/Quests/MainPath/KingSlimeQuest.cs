@@ -31,7 +31,7 @@ internal class KingSlimeQuest : Quest
 	{
 		return 
 		[
-			new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), 
+			new InteractWithNPC("Start", ModContent.NPCType<GarrickNPC>(), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QuestResponse"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.GarrickNPC.Dialogue.QuestResponse"),
 				[
@@ -54,9 +54,9 @@ internal class KingSlimeQuest : Quest
 				return true;
 			}),
 
-			new ConditionCheck(_ => SubworldSystem.Current is KingSlimeDomain, 1, this.GetLocalization("EnterDomain")),
-			new ConditionCheck(_ => BossTracker.DownedInDomain<KingSlimeDomain>(NPCID.KingSlime), 1, this.GetLocalization("Kill.KingSlime")),
-			new InteractWithNPC(ModContent.NPCType<GarrickNPC>(), LocalizedText.Empty, this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
+			new ConditionCheck("Enter", _ => SubworldSystem.Current is KingSlimeDomain, 1, this.GetLocalization("EnterDomain")),
+			new ConditionCheck("Kill", _ => BossTracker.DownedInDomain<KingSlimeDomain>(NPCID.KingSlime), 1, this.GetLocalization("Kill.KingSlime")),
+			new InteractWithNPC("Finish", ModContent.NPCType<GarrickNPC>(), LocalizedText.Empty, this.GetLocalization("ThanksDialogue")) { CountsAsCompletedOnMarker = true }
 		];
 	}
 

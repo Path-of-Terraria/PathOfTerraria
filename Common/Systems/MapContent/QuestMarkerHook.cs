@@ -10,7 +10,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.MapContent;
 
-internal class QuestMarkerHook : ILoadable
+internal class QuestMarkerHook : GlobalNPC
 {
 	public static Dictionary<int, IQuestMarkerNPC> VanillaQuestMarkerNPCs = new()
 	{
@@ -20,9 +20,9 @@ internal class QuestMarkerHook : ILoadable
 
 	private static Asset<Texture2D> _markers = null;
 
-	public void Load(Mod mod)
+	public override void Load()
 	{
-		_markers = mod.Assets.Request<Texture2D>("Assets/UI/QuestMarkers");
+		_markers = Mod.Assets.Request<Texture2D>("Assets/UI/QuestMarkers");
 
 		On_NPCHeadRenderer.DrawWithOutlines += Draw;
 		IL_Main.DrawMap += HideOldManText;
@@ -92,16 +92,29 @@ internal class QuestMarkerHook : ILoadable
 
 		if (entity is NPC npc && (npc.ModNPC is IQuestMarkerNPC questNPC || VanillaQuestMarkerNPCs.TryGetValue(npc.type, out questNPC)) && revealed)
 		{
-			QuestMarkerType markerType = DetermineMarker(questNPC);
-
-			if (markerType == QuestMarkerType.None)
-			{
-				return;
-			}
-
-			Rectangle source = new(0, (sbyte)markerType * 32, 32, 32);
-			Main.spriteBatch.Draw(_markers.Value, position - new Vector2(0, 36 * scale), source, color, 0f, source.Size() / 2f, scale, SpriteEffects.None, 0);
+			DrawMarkerIcon(position, color, scale, questNPC);
 		}
+	}
+
+	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		if (!npc.IsABestiaryIconDummy && npc.ModNPC is IQuestMarkerNPC questNPC || VanillaQuestMarkerNPCs.TryGetValue(npc.type, out questNPC))
+		{
+			DrawMarkerIcon(npc.Top - new Vector2(0, -12) - screenPos, Lighting.GetColor(npc.Top.ToTileCoordinates()), npc.scale, questNPC);
+		}
+	}
+
+	private static void DrawMarkerIcon(Vector2 position, Color color, float scale, IQuestMarkerNPC questNPC)
+	{
+		QuestMarkerType markerType = DetermineMarker(questNPC);
+
+		if (markerType == QuestMarkerType.None)
+		{
+			return;
+		}
+
+		Rectangle source = new(0, (sbyte)markerType * 32, 32, 32);
+		Main.spriteBatch.Draw(_markers.Value, position - new Vector2(0, 36 * scale), source, color, 0f, source.Size() / 2f, scale, SpriteEffects.None, 0);
 	}
 
 	public static QuestMarkerType DetermineMarker(IQuestMarkerNPC questNPC)
@@ -128,9 +141,5 @@ internal class QuestMarkerHook : ILoadable
 		}
 
 		return markerType;
-	}
-
-	public void Unload()
-	{
 	}
 }

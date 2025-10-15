@@ -96,6 +96,11 @@ public abstract class SkillTree : ILoadable
 		var augments = Augments.ToList();
 		tag["augmentNames"] = augments.Select(x => x.Augment?.Name ?? "null").ToList();
 		tag["augmentUnlocks"] = augments.Select(x => x.Unlocked).ToList();
+
+		if (augments.Count > 10000)
+		{
+			PoTMod.Instance.Logger.Error("Augments length is WAY too high. Uh oh?");
+		}
 	}
 
 	public virtual void LoadData(Skill skill, TagCompound tag, Player loadingPlayer)

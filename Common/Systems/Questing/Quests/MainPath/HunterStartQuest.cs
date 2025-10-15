@@ -42,7 +42,7 @@ internal class HunterStartQuest : Quest
 	{
 		return 
 		[
-			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest"),
+			new InteractWithNPC("Start", ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest"),
 				Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"),
 			[
 				new GiveItem(5, ItemID.Silk), new(50, ItemID.Wood), new(50, ItemID.StoneBlock),
@@ -55,8 +55,8 @@ internal class HunterStartQuest : Quest
 
 				return true;
 			}),
-			new KillCount(npc => npc.type is NPCID.Crimera or NPCID.EaterofSouls || NPCID.Sets.DemonEyes[npc.type], 10, this.GetLocalization("Kill.FloatingMisc")),
-			new InteractWithNPC(ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"), 
+			new KillCount("Kills", npc => npc.type is NPCID.Crimera or NPCID.EaterofSouls || NPCID.Sets.DemonEyes[npc.type], 10, this.GetLocalization("Kill.FloatingMisc")),
+			new InteractWithNPC("Finish", ModContent.NPCType<HunterNPC>(), Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest2"), 
 				Language.GetText("Mods.PathOfTerraria.NPCs.HunterNPC.Dialogue.Quest3"),
 			[
 				new GiveItem(40, ItemID.Wood), new(10, ItemID.Gel), new(20, ItemID.IronBar, ItemID.LeadBar)

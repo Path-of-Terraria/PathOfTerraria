@@ -9,7 +9,7 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// Wraps around two or more steps to do in parallel. For example, getting 10 Iron Bars, killing the Eye and exploring the Jungle.
 /// </summary>
 /// <param name="stepsLists">The steps to run in parallel.</param>
-internal class ParallelQuestStep(List<QuestStep> stepsLists, LocalizedText reminder = null, LocalizedText reminderTitle = null) : QuestStep
+internal class ParallelQuestStep(string id, List<QuestStep> stepsLists, LocalizedText reminder = null, LocalizedText reminderTitle = null) : QuestStep(id)
 {
 	public override int LineCount => steps.Count + 2;
 

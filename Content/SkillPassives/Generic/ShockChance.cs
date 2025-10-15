@@ -1,14 +1,12 @@
-﻿using Humanizer;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.Skills;
-using PathOfTerraria.Common.Utilities;
 
 namespace PathOfTerraria.Content.SkillPassives.Generic;
 
 internal class ShockChance : SkillPassive
 {
 	public const float Chance = 0.02f;
-	public override string DisplayTooltip => base.DisplayTooltip.FormatWith(MathUtils.Percent(Chance));
+	public override object[] TooltipArguments => ["5"];
 
 	public ShockChance(SkillTree tree) : base(tree)
 	{

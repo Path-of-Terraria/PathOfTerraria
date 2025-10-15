@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems.ModPlayers;
@@ -115,20 +116,21 @@ internal class AugmentSlotElement : SmartUiElement, IConnectedAllocatableNode
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
 		Vector2 center = GetDimensions().Center();
-		SkillAugment[] augments = [.. SkillTree.Current.Augments.Select(x => x.Augment)];
+		List<SkillTree.PackedAugment> augments = SkillTree.Current.Augments;
 		Texture2D tex = ModContent.Request<Texture2D>($"{PoTMod.Instance.Name}/Assets/UI/AugmentFrame").Value;
 
-		if (Index < augments.Length && augments[Index] != null)
+		if (Index < augments.Count && augments[Index].Augment != null)
 		{
-			augments[Index].Draw(spriteBatch, center, Color.White);
+			SkillAugment augment = augments[Index].Augment;
+			augment.Draw(spriteBatch, center, Color.White);
 
 			if (ContainsInner)
 			{
 				Tooltip.Create(new TooltipDescription
 				{
 					Identifier = "AugmentSlot",
-					SimpleTitle = augments[Index].DisplayName,
-					SimpleSubtitle = augments[Index].Tooltip,
+					SimpleTitle = augment.DisplayName,
+					SimpleSubtitle = augment.Tooltip,
 				});
 			}
 
@@ -294,7 +296,7 @@ internal class AugmentRadialElement : UIElement
 		// This just forces left click to work properly because something else is blocking it.
 		if (ContainsPoint(Main.MouseScreen) && Main.mouseLeft)
 		{
-			LeftClick(null);
+			LeftClick(null!);
 		}
 	}
 

@@ -13,6 +13,9 @@ using Terraria.Localization;
 using PathOfTerraria.Common.World.Generation.Tools;
 using PathOfTerraria.Content.Projectiles.Utility;
 using PathOfTerraria.Common.Systems.BossTrackingSystems;
+using PathOfTerraria.Common.Encounters;
+using PathOfTerraria.Utilities.Terraria;
+using PathOfTerraria.Utilities.Xna;
 
 namespace PathOfTerraria.Common.Subworlds.BossDomains.Prehardmode;
 
@@ -31,9 +34,13 @@ public class EyeDomain : BossDomainSubworld
 		HaltTimeOnVanish = 60 * 10,
 	};
 
-	public override List<GenPass> Tasks => [new PassLegacy("Reset", ResetStep),
+	public override List<GenPass> Tasks =>
+	[
+		new PassLegacy("Reset", ResetStep),
 		new PassLegacy("Surface", GenSurface),
-		new PassLegacy("Grass", (progress, _) => PlaceGrassAndDecor(progress, true, Mod, out Arena))];
+		new PassLegacy("Grass", (progress, _) => PlaceGrassAndDecor(progress, true, Mod, out Arena)),
+		new PassLegacy("Encounters", PlaceEncounters),
+	];
 
 	public static void PlaceGrassAndDecor(GenerationProgress progress, bool includeFleshStuff, Mod mod, out Rectangle arena)
 	{
@@ -210,6 +217,32 @@ public class EyeDomain : BossDomainSubworld
 		}
 	}
 
+	public static void PlaceEncounters(GenerationProgress progress, GameConfiguration configuration)
+	{
+		const int worldEdgeOffset = 5;
+		const int freeSpaceInTiles = 7;
+
+		var placement = new SpawnPlacement
+		{
+			Area = new Rectangle(worldEdgeOffset, worldEdgeOffset, Main.maxTilesX - (worldEdgeOffset * 2), Main.maxTilesY - (worldEdgeOffset * 2)),
+			CollisionSize = new(freeSpaceInTiles * TileUtils.TileSizeInPixels, freeSpaceInTiles * TileUtils.TileSizeInPixels),
+			OnGround = true,
+			MinDistanceFromEnemies = 0f,
+			MinDistanceFromPlayers = 0f,
+			MaxSearchAttempts = 512,
+		};
+
+		for (int i = 0; i < 20; i++)
+		{
+			if (!EnemySpawning.TryFindingSpawnPosition(in placement, out Vector2 position))
+			{
+				break;
+			}
+
+			EncounterIO.CreateEncounterFromModPath(PoTMod.Instance, "Content/Encounters/EyefullOfTroubles").MoveEverythingTo(position.ToTileCoordinates16());
+		}
+	}
+
 	private static bool StepX(int x)
 	{
 		return x is > 100 and < 150 || x is > 300 and < 400 || x is > 500 and < 550;
@@ -290,7 +323,7 @@ public class EyeDomain : BossDomainSubworld
 
 	public class EyeSceneEffect : ModSceneEffect
 	{
-		public override SceneEffectPriority Priority => SceneEffectPriority.BossHigh;
+		public override SceneEffectPriority Priority => SceneEffectPriority.Event;
 		public override int Music => MusicID.Eerie;
 
 		public override bool IsSceneEffectActive(Player player)

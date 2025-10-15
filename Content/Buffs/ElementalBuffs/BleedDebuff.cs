@@ -1,8 +1,12 @@
 ﻿using PathOfTerraria.Common.Buffs;
 using PathOfTerraria.Common.Systems.MobSystem;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using ReLogic.Content;
 using System.Collections.Generic;
+using System.IO;
 using Terraria.GameContent;
+using Terraria.ID;
+using Terraria.ModLoader.IO;
 using Terraria.UI.Chat;
 
 namespace PathOfTerraria.Content.Buffs.ElementalBuffs;
@@ -11,6 +15,12 @@ internal class BleedDebuff : ModBuff
 {
 	public static void Apply(Player player, NPC npc, int time, int damage)
 	{
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			ModContent.GetInstance<BleedStackHandler>().Send((byte)player.whoAmI, (short)npc.whoAmI, (ushort)time, (ushort)damage);
+			return;
+		}
+
 		List<BleedStack> stats = npc.GetGlobalNPC<BleedDebuffNPC>().Stacks;
 		BleedPlayer bleedPlayer = player.GetModPlayer<BleedPlayer>();
 		
@@ -92,6 +102,29 @@ internal class BleedDebuffNPC : GlobalNPC
 		}
 
 		return true;
+	}
+
+	public override void SendExtraAI(NPC npc, BitWriter bitWriter, BinaryWriter binaryWriter)
+	{
+		binaryWriter.Write((short)Stacks.Count);
+
+		foreach (BleedStack stack in Stacks)
+		{
+			binaryWriter.Write((short)stack.TimeLeft);
+			binaryWriter.Write(stack.Damage);
+		}
+	}
+
+	public override void ReceiveExtraAI(NPC npc, BitReader bitReader, BinaryReader binaryReader)
+	{
+		Stacks.Clear();
+		short count = binaryReader.ReadInt16();
+
+		for (int i = 0; i < count; ++i)
+		{
+			short time = binaryReader.ReadInt16();
+			Stacks.Add(new BleedStack(binaryReader.ReadInt32()) { TimeLeft = time });
+		}
 	}
 
 	public override Color? GetAlpha(NPC npc, Color drawColor)

@@ -11,8 +11,18 @@ namespace PathOfTerraria.Common.UI.Elements;
 /// <summary>
 ///     Provides an item slot wrapper as a <see cref="UIElement" />.
 /// </summary>
-public class UIImageItemSlot : UIElement
+public class UIImageItemSlot(
+	Asset<Texture2D> backgroundTexture,
+	Asset<Texture2D> iconTexture,
+UIImageItemSlot.SlotWrapper itemHandler,
+	int context = ItemSlot.Context.InventoryItem,
+	(string Key, object Arg0)? hoverText = null,
+	bool skipAutoSizing = false,
+	float iconScalingSize = UIImageItemSlot.DefaultIconSize
+	) : UIElement
 {
+	public const float DefaultIconSize = 24f;
+
 	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
 
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
@@ -35,7 +45,10 @@ public class UIImageItemSlot : UIElement
 		}
 	}
 
-	private readonly SlotWrapper handler;
+	protected readonly float IconSize = iconScalingSize;
+
+	private readonly SlotWrapper handler = itemHandler;
+	private readonly bool skipAutoSize = skipAutoSizing;
 
 	/// <summary>
 	///     The item that this slot wraps itself around.
@@ -56,7 +69,7 @@ public class UIImageItemSlot : UIElement
 	/// </summary>
 	public UIImage Icon { get; protected set; }
 
-	protected Asset<Texture2D> BackgroundTexture;
+	protected Asset<Texture2D> BackgroundTexture = backgroundTexture;
 
 	/// <summary>
 	///     The context of the item slot.
@@ -64,9 +77,9 @@ public class UIImageItemSlot : UIElement
 	/// <remarks>
 	///     Defaults to <see cref="ItemSlot.Context.InventoryItem" />.
 	/// </remarks>
-	public int Context;
+	public int Context = context;
 
-	protected Asset<Texture2D> IconTexture;
+	protected Asset<Texture2D> IconTexture = iconTexture;
 
 	/// <summary>
 	///     The inventory that the slots wraps itself around.
@@ -84,22 +97,7 @@ public class UIImageItemSlot : UIElement
 	/// <remarks>
 	///     Will not have any effect if <see cref="HoverText" /> is <c>null</c> or not provided.
 	/// </remarks>
-	public (string Key, object Arg0)? HoverText;
-
-	public UIImageItemSlot(
-		Asset<Texture2D> backgroundTexture,
-		Asset<Texture2D> iconTexture,
-		SlotWrapper itemHandler,
-		int context = ItemSlot.Context.InventoryItem,
-		(string Key, object Arg0)? hoverText = null
-	)
-	{
-		BackgroundTexture = backgroundTexture;
-		IconTexture = iconTexture;
-		handler = itemHandler;
-		Context = context;
-		HoverText = hoverText;
-	}
+	public (string Key, object Arg0)? HoverText = hoverText;
 
 	/// <summary>
 	///     Can be used to register a callback to execute logic when an item is inserted into the slot.
@@ -110,8 +108,11 @@ public class UIImageItemSlot : UIElement
 	{
 		base.OnInitialize();
 
-		Width.Set(BackgroundTexture.Width(), 0f);
-		Height.Set(BackgroundTexture.Height(), 0f);
+		if (!skipAutoSize)
+		{
+			Width.Set(BackgroundTexture.Width(), 0f);
+			Height.Set(BackgroundTexture.Height(), 0f);
+		}
 
 		Background = new UIImage(BackgroundTexture)
 		{
@@ -144,7 +145,8 @@ public class UIImageItemSlot : UIElement
 		// scaling and centering the item, so we have to manually offset the item
 		// left to counteract this automatic positioning.
 		Asset<Texture2D> tex = GetIconToDraw();
-		if (tex.Width() > BackgroundTexture.Width())
+
+		if (tex.Width() > BackgroundTexture.Width() && !skipAutoSize)
 		{
 			Icon.Left = StyleDimension.FromPixels(-(tex.Width() - BackgroundTexture.Width()) / 2f);
 		}
@@ -153,15 +155,15 @@ public class UIImageItemSlot : UIElement
 			Icon.Left = StyleDimension.FromPixels(0);
 		}
 
-		if (tex.Height() > BackgroundTexture.Height())
+		if (tex.Height() > BackgroundTexture.Height() && !skipAutoSize)
 		{
 			Icon.Top = StyleDimension.FromPixels(-(tex.Height() - BackgroundTexture.Height()) / 2f);
 		}
 		else
 		{
-			Icon.Top = StyleDimension.FromPercent(0);
+			Icon.Top = StyleDimension.FromPixels(0);
 		}
-		
+
 		UpdateIcon();
 	}
 
@@ -178,8 +180,9 @@ public class UIImageItemSlot : UIElement
 		{
 			Texture2D texture = TextureAssets.Item[Item.type].Value;
 			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
+			float size = Math.Min(MathF.Min(frame.Width, frame.Height), IconSize);
 
-			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, 32f, ref frame, out _, out float finalDrawScale);
+			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, size, ref frame, out _, out float finalDrawScale);
 
 			Icon.ImageScale = finalDrawScale;
 		}

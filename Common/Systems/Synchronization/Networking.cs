@@ -156,16 +156,39 @@ internal static class Networking
 		RequestMappingDomainInfo,
 
 		/// <summary>
+		/// Synchronizes <see cref="Encounters.EnemySpawning"/>'s enemy spawn effects.
+		/// <br/><b>Signature:</b> <c>NPC npc, EnemySpawnEffect effect, Vector2 position</c>
+		/// </summary>
+		EnemySpawn,
+
 		/// Calls <see cref="RemoteClient.CheckSection(int, Vector2, int)"/> on the server for the given player.<br/>Signature:<br/>
 		/// <c>byte who, Vector2 position</c>
 		/// </summary>
 		RequestCheckSection,
 
 		/// <summary>
+		/// Adds a stack of Bleed to an NPC.<br/>Signature:<br/>
+		/// <c>byte who, short npcWho, ushort time, ushort damage</c>
+		/// </summary>
+		BleedStack,
+
 		/// Spawns a Sentry NPC on the server. All NPCs need to be spawned on the server.<br/>Signature:<br/>
 		/// <c>ushort type, byte owner, Vector2 position, ushort timeLeft, ushort damage</c>
 		/// </summary>
 		SpawnSentryNPC,
+
+		/// <summary>
+		/// Spawns arbitrary, pre-defined VFX on all clients and server. 
+		/// Used for code run on only one client that should be shown on all clients, such as projectile spawning VFX, or server-side operations.<br/>Signature:<br/>
+		/// <c>Vector2 position, SendSpawnVFXModule.VFXType type</c>
+		/// </summary>
+		SpawnVFX,
+
+		/// <summary>
+		/// Enables or disables the player's <see cref="UI.VirtualBagUI.VirtualBagStoragePlayer.UsesVirtualBag"/> for all clients.<br/>Signature:<br/>
+		/// <c>byte player, bool enabled</c>
+		/// </summary>
+		PlayerUseSackOfHolding,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

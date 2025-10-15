@@ -12,11 +12,49 @@ public sealed partial class SunDevourerNPC : ModNPC
 		return false;
 	}
 
+	public override void FindFrame(int frameHeight)
+	{
+		float target = 1;
+
+		if (State == DevourerState.Trapped)
+		{
+			target = 0;
+			NPC.frameCounter = 8;
+		}
+		else if (State == DevourerState.LightningAdds)
+		{
+			target = 0.5f;
+		}
+		else if (State == DevourerState.ReturnToIdle)
+		{
+			target = 0.8f;
+		}
+		else if (State == DevourerState.BallLightning)
+		{
+			target = 1.1f;
+		}
+		else if (State is DevourerState.Firefall or DevourerState.Dawning)
+		{
+			target = 1.2f;
+
+			if (State == DevourerState.Firefall && AdditionalData == 1)
+			{
+				target = 1.3f;
+			}
+		}
+
+		animSpeed = MathHelper.Lerp(animSpeed, target, 0.06f);
+		
+		NPC.frameCounter += animSpeed;
+		NPC.frame.Y = frameHeight * (int)(NPC.frameCounter % 24f / 4f);
+	}
+
 	private void DrawNPC(in Vector2 screenPosition, in Color drawColor)
 	{
 		Texture2D texture = TextureAssets.Npc[Type].Value;
 		Vector2 position = NPC.Center - screenPosition + new Vector2(0f, NPC.gfxOffY + DrawOffsetY);
-		Vector2 origin = NPC.frame.Size() / 2f;
+		Rectangle frame = NPC.frame with { Width = 300 };
+		Vector2 origin = frame.Size() / 2f;
 		SpriteEffects effects = NPC.spriteDirection == -1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 
 		if (flipVert)
@@ -26,43 +64,53 @@ public sealed partial class SunDevourerNPC : ModNPC
 
 		if (State == DevourerState.Trapped)
 		{
-			DrawAllChains(position);
+			DoChainActions(position, false);
 		}
 
-		Main.EntitySpriteDraw(texture, position, NPC.frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
+		Main.EntitySpriteDraw(TailTexture.Value, position, frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
+		Main.EntitySpriteDraw(WingsTexture.Value, position, frame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
+		Rectangle bodyFrame = State == DevourerState.Trapped ? frame with { X = 300, Y = 0 } : frame;
+		Main.EntitySpriteDraw(texture, position, bodyFrame, NPC.GetAlpha(drawColor), NPC.rotation, origin, NPC.scale, effects);
 
 		if (State == DevourerState.Godrays && Timer <= GodrayHideTime)
 		{
 			Color maskColor = Color.White * (Timer / GodrayHideTime);
-			Main.EntitySpriteDraw(MaskTexture.Value, position, NPC.frame, maskColor, NPC.rotation, origin, NPC.scale, effects);
+			Main.EntitySpriteDraw(TailTexture.Value, position, frame with { X = 300 }, maskColor, NPC.rotation, origin, NPC.scale, effects);
+			Main.EntitySpriteDraw(WingsTexture.Value, position, frame with { X = 300 }, maskColor, NPC.rotation, origin, NPC.scale, effects);
+			Main.EntitySpriteDraw(MaskTexture.Value, position, frame, maskColor, NPC.rotation, origin, NPC.scale, effects);
 		}
 	}
 
-	private void DrawAllChains(Vector2 position)
+	private void DoChainActions(Vector2 position, bool gore)
 	{
-		if (Timer < 30)
+		if (TimerCheck(30))
 		{
-			DrawOrBreakChains(position + new Vector2(140, 0), position + new Vector2(190, -120));
+			DrawOrBreakChains(position + new Vector2(40, -50), position + new Vector2(190, -120), gore);
 		}
 
-		if (Timer < 80)
+		if (TimerCheck(80))
 		{
-			DrawOrBreakChains(position - new Vector2(120, -20), position + new Vector2(-160, 140));
+			DrawOrBreakChains(position - new Vector2(0, 20), position + new Vector2(-160, 140), gore);
 		}
 
-		if (Timer < 110)
+		if (TimerCheck(110))
 		{
-			DrawOrBreakChains(position - new Vector2(120, -20), position + new Vector2(-160, -140));
+			DrawOrBreakChains(position - new Vector2(70, 50), position - new Vector2(160, 140), gore);
 		}
 
-		if (Timer < 130)
+		if (TimerCheck(130))
 		{
-			DrawOrBreakChains(position - new Vector2(20, 0), position + new Vector2(20, -140));
+			DrawOrBreakChains(position - new Vector2(20, 0), position + new Vector2(20, -140), gore);
 		}
 
-		if (Timer < 140)
+		if (TimerCheck(140))
 		{
-			DrawOrBreakChains(position + new Vector2(00, 30), position + new Vector2(120, 140));
+			DrawOrBreakChains(position + new Vector2(00, 30), position + new Vector2(120, 140), gore);
+		}
+
+		bool TimerCheck(int threshold)
+		{
+			return gore ? Timer == threshold : Timer < threshold;
 		}
 	}
 

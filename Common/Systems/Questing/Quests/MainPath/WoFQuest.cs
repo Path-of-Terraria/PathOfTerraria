@@ -30,14 +30,14 @@ internal class WoFQuest : Quest
 	{
 		return
 		[
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardStart"), LocalizedText.Empty,
+			new InteractWithNPC("Start", NPCQuestGiver, this.GetLocalization("WizardStart"), LocalizedText.Empty,
 				null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<TinyHat>())),
-			new ParallelQuestStep([
-				new InteractWithNPC(ModContent.NPCType<BlacksmithNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("ThrainHelp"),
+			new ParallelQuestStep("Branch", [
+				new InteractWithNPC("Thrain", ModContent.NPCType<BlacksmithNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("ThrainHelp"),
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<DwarvenGreatsword>())),
-				new InteractWithNPC(ModContent.NPCType<HunterNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("ElaraHelp"),
+				new InteractWithNPC("Elara", ModContent.NPCType<HunterNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("ElaraHelp"),
 					null, false, (npc) => Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<Twinbow>())),
-				new InteractWithNPC(ModContent.NPCType<MorganaNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("MorganaHelp"),
+				new InteractWithNPC("Morgana", ModContent.NPCType<MorganaNPC>(), this.GetLocalization("WizardStart"), this.GetLocalization("MorganaHelp"),
 					null, false, (npc) => 
 					{
 						for (int i = 0; i < 3; ++i)
@@ -58,7 +58,7 @@ internal class WoFQuest : Quest
 						}
 					}),
 			]),
-			new InteractWithNPC(NPCQuestGiver, LocalizedText.Empty, this.GetLocalization("WizardContinue"),
+			new InteractWithNPC("Continue", NPCQuestGiver, LocalizedText.Empty, this.GetLocalization("WizardContinue"),
 				null, false, (npc) =>
 				{
 					int item = Item.NewItem(new EntitySource_Gift(npc), npc.Hitbox, ModContent.ItemType<VoidPearl>());
@@ -68,8 +68,8 @@ internal class WoFQuest : Quest
 						NetMessage.SendData(MessageID.SyncItem, -1, -1, null, item);
 					}
 				}),
-			new ConditionCheck(_ => Main.hardMode, 1, this.GetLocalization("KillWall")),
-			new InteractWithNPC(NPCQuestGiver, this.GetLocalization("WizardFinish"))
+			new ConditionCheck("Kill", _ => Main.hardMode, 1, this.GetLocalization("KillWall")),
+			new InteractWithNPC("Finish", NPCQuestGiver, this.GetLocalization("WizardFinish")),
 		];
 	}
 

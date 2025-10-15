@@ -411,6 +411,7 @@ internal class GrimoireSelectionUIState : CloseableSmartUi, IMutuallyExclusiveUI
 			};
 		}
 
+		// Double recalc is necessary, otherwise it won't reorder properly
 		_storageGrid.Recalculate();
 		_storageGrid.Recalculate();
 	}

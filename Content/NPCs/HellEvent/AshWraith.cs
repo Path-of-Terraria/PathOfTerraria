@@ -5,6 +5,7 @@ using PathOfTerraria.Common.Systems.HellEvent;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;
 using Terraria.ID;
+using Terraria.ModLoader.Utilities;
 
 namespace PathOfTerraria.Content.NPCs.HellEvent;
 
@@ -67,7 +68,7 @@ public sealed class AshWraith : ModNPC
 			return 0f;
 		}
 
-		return 0.6f;
+		return SpawnCondition.Underworld.Chance * 0.6f;
 	}
 
 	public override void AI()

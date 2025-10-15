@@ -126,3 +126,8 @@ BleedDebuff: {
 	// DisplayName: Bleeding
 	// Description: Strong, stacking damage over time
 }
+
+CrackedCarapaceDebuff: {
+	// DisplayName: Cracked Carapace
+	// Description: Defense is halved
+}

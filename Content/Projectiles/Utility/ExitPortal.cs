@@ -1,9 +1,12 @@
 ﻿using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.MapContent;
+using PathOfTerraria.Common.Systems.Synchronization.Handlers;
 using PathOfTerraria.Common.UI;
+using PathOfTerraria.Content.Items.Pickups;
 using ReLogic.Content;
 using SubworldLibrary;
 using Terraria.GameContent;
+using Terraria.GameContent.Drawing;
 using Terraria.ID;
 using Terraria.Localization;
 
@@ -12,6 +15,8 @@ namespace PathOfTerraria.Content.Projectiles.Utility;
 internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 {
 	private static Asset<Texture2D> Highlight = null;
+
+	private ref float ItemMagnetTimer => ref Projectile.ai[0];
 
 	public override void SetStaticDefaults()
 	{
@@ -49,6 +54,76 @@ internal class ExitPortal : ModProjectile, IRightClickableProjectile, IMapIcon
 		}
 
 		Lighting.AddLight(Projectile.Center, TorchID.Red);
+
+		if (ItemMagnetTimer++ == 60)
+		{
+			MagnetizeItems();
+		}
+
+		return;
+	}
+
+	private void MagnetizeItems()
+	{
+		foreach (Item item in Main.ActiveItems)
+		{
+			// Invalid items to teleport (inactive or takes up a lot of space, might push items far away)
+			if (!item.active || item.IsACoin || item.type == ModContent.ItemType<HealingPotionPickup>() || item.type == ModContent.ItemType<ManaPotionPickup>())
+			{
+				continue;
+			}
+
+			// Only update items if this is a server, or if this item is a client-only item
+			if (Main.netMode == NetmodeID.MultiplayerClient && item.playerIndexTheItemIsReservedFor != Main.myPlayer)
+			{
+				continue;
+			}
+
+			Vector2 pos;
+
+			do
+			{
+				pos = Projectile.Center + Main.rand.NextVector2Circular(80, 80);
+			} while (Collision.SolidCollision(pos, item.width, item.height) || Collision.LavaCollision(pos, item.width, item.height));
+
+			SpawnVFX(item.Center);
+
+			item.Center = pos;
+			item.shimmered = true;
+
+			if (Main.netMode == NetmodeID.Server)
+			{
+				NetMessage.SendData(MessageID.SyncItemsWithShimmer, -1, -1, null, item.whoAmI, 1);
+			}
+
+			SpawnVFX(item.Center);
+		}
+
+		static void SpawnVFX(Vector2 position)
+		{
+			if (Main.netMode == NetmodeID.SinglePlayer)
+			{
+				SpawnShimmerTeleportVFX(position);
+			}
+			else if (Main.netMode == NetmodeID.Server)
+			{
+				ModContent.GetInstance<SendSpawnVFXModule>().Send(position, SendSpawnVFXModule.VFXType.ShimmerTeleport);
+			}
+		}
+	}
+
+	public static void SpawnShimmerTeleportVFX(Vector2 center)
+	{
+		for (int i = 0; i < 1; ++i)
+		{
+			var settings = new ParticleOrchestraSettings
+			{
+				PositionInWorld = center,
+				MovementVector = new Vector2(0, -18).RotatedByRandom(0.2f) * Main.rand.NextFloat(0.6f, 1.2f),
+			};
+
+			ParticleOrchestrator.RequestParticleSpawn(clientOnly: false, ParticleOrchestraType.RainbowRodHit, settings);
+		}
 	}
 
 	public override bool PreDraw(ref Color lightColor)

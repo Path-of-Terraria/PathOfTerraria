@@ -191,6 +191,8 @@ InvButtons: {
 	Stats: Statystyki
 	RestartTutorial: Zrestartuj poradnik
 	// DomainInformation: Domain Information
+	// VirtualBag: Sack of Holding
+	// CurrencyPouch: Currency Pouch
 }
 
 SubworldHelp: {
@@ -273,3 +275,21 @@ Tips: {
 	''' */
 // AreaLevel: Area Level:
 // Waypoints.TutorialTip: In order to use the Home waypoint, you must have an Arcane Obelisk placed in the main world. Use the Return button in your settings menu to proceed.
+
+VirtualBag: {
+	// Title: Sack of Holding
+	// Description: Holds all your gear! This will be cleared outside of the domain.
+	// RightClick: (Right click to add to your inventory)
+	// Review: Review your items (Closing this will exit the subworld)
+}
+
+CurrencyPouch: {
+	// Title: Currency Pouch
+	// Apply: Right click to apply to held item
+}
+
+PassiveTreeTab: Umiejętności bierne
+SkillTreeTab: Umiejętności
+QuestsAvailableTab: Dostępne
+QuestsCompletedTab: Zakończone powodzeniem
+PlayerStatsTab: Statystyki

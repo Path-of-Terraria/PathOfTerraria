@@ -205,3 +205,103 @@ Accelerant: {
 	// Name: Accelerant
 	// Tooltip: +{0}% increased sentinel life loss per second and +{0}% increased damage
 }
+
+BiggerBrood: {
+	// Name: Bigger Brood
+	// Tooltip: +{0} egg per level
+}
+
+Gestation: {
+	// Name: Gestation
+	// Tooltip: "{0}% chance to spawn an additional egg when a locust kills an enemy"
+}
+
+QuickerHatching: {
+	// Name: Quicker Hatching
+	// Tooltip: Eggs spawn {0}% quicker per level
+}
+
+CarnivorousLarvae: {
+	// Name: Carnivorous Larvae
+	// Tooltip: Additional {0}% chance for an egg to spawn in a fallen enemy per level
+}
+
+Eggsplosion: {
+	// Name: Eggsplosion
+	// Tooltip: Hatching eggs explode in a small radius
+}
+
+ShockingEmergence: {
+	// Name: Shocking Emergence
+	// Tooltip: Eggsplosions shock nearby enemies
+}
+
+ViciousBites: {
+	// Name: Vicious Bites
+	// Tooltip: Antlions inflict bleed on hit
+}
+
+VolatileInsects: {
+	// Name: Volatile Insects
+	// Tooltip: Antlions explode after hitting their target, dealing {0}% fire damage
+}
+
+InfectedDetonation: {
+	// Name: Infected Detonation
+	// Tooltip: Enemies killed by the {$VolatileInsects.Name} explosion have a {0}% chance to explode, dealing {1}% of their max health as damage
+}
+
+HeartierExplosions: {
+	// Name: Heartier Explosions
+	// Tooltip: +{0}% max health converted to {$InfectedDetonation.Name} damage per level
+}
+
+CombustableGuts: {
+	// Name: Combustable Guts
+	// Tooltip: +{0}% chance for {$InfectedDetonation.Name} explosions to occur on enemy death
+}
+
+OverheatingBugs: {
+	// Name: Overheating Bugs
+	// Tooltip: Bugs and their explosions inflict On Fire!
+}
+
+SuperheatedBugs: {
+	// Name: Superheated Bugs
+	// Tooltip: Bugs and their explosions deal {0}% more On Fire! damage
+}
+
+ColdBlooded: {
+	// Name: Cold Blooded
+	// Tooltip: Antlions gain {0} additional {^0:second;seconds} of life per kill
+}
+
+ThermalConversion: {
+	// Name: Thermal Conversion
+	// Tooltip: +{0} seconds life gained per kill per level
+}
+
+FrostbiteMandibles: {
+	// Name: Frostbite Mandibles
+	// Tooltip: Increased cold damage and a {0}% chance to inflict Chilled on hit
+}
+
+AggressiveChill: {
+	// Name: Aggressive Chill
+	// Tooltip: Increased cold damage
+}
+
+IceVenom: {
+	// Name: Ice Venom
+	// Tooltip: Much higher chance to inflict Chilled on hit
+}
+
+ShatteringCarapace: {
+	// Name: Shattering Carapace
+	// Tooltip: Defeated enemies shatter into ice shards, which deal extra damage based on the enemy's max health
+}
+
+CarapaceCracker: {
+	// Name: Carapace Cracker
+	// Tooltip: Antlions apply a damage-piercing debuff on hit
+}

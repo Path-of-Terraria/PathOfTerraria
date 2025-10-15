@@ -10,7 +10,6 @@ using PathOfTerraria.Common.Systems.Questing.Quests.MainPath.HardmodeQuesting;
 using PathOfTerraria.Common.Utilities.Extensions;
 using PathOfTerraria.Content.Items.Consumables.Maps.BossMaps;
 using PathOfTerraria.Content.Items.Quest;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.GameContent.Bestiary;

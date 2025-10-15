@@ -6,7 +6,7 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// This step does not show on the UI.
 /// </summary>
 /// <param name="action">What this step does.</param>
-internal class ActionStep(Func<Player, QuestStep, bool> action) : QuestStep
+internal class ActionStep(Func<Player, QuestStep, bool> action) : QuestStep("") // ActionSteps have no ID as they can't be saved
 {
 	private readonly Func<Player, QuestStep, bool> Action = action;
 

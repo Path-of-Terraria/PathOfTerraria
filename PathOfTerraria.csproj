@@ -1,11 +1,20 @@
-<Project Sdk="Microsoft.NET.Sdk">
-	<Import Project="..\tModLoader.targets"/>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<!-- Import TML targets. -->
+	<Import Project="..\tModLoader.targets" />
+	<!-- Import shader compiler -->
+	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.props" />
+	<Import Project="BuildTools\ShaderCompiler\KBOFXCTask.targets" />
+
+	<!-- General -->
 	<PropertyGroup>
 		<AssemblyName>PathOfTerraria</AssemblyName>
 		<LangVersion>latest</LangVersion>
 		<TargetFramework>net8.0</TargetFramework>
 		<Platforms>AnyCPU;x64</Platforms>
 	</PropertyGroup>
+
+	<!-- Conditional Paths -->
 	<PropertyGroup>
 		<ExecutablePath Condition=" Exists('/etc/NIXOS') ">steam-run</ExecutablePath>
 		<ExecutablePath Condition=" '$(ExecutablePath)' == '' ">$(DotNetName)</ExecutablePath>
@@ -16,35 +25,32 @@
 		<BuildCommand Condition=" Exists('/etc/NIXOS') ">steam-run dotnet</BuildCommand>
 		<BuildCommand Condition=" '$(BuildCommand)' == '' ">dotnet</BuildCommand>
 	</PropertyGroup>
-	<ItemGroup>
-		<AdditionalFiles Remove="Localization\es-ES\Mods.PathOfTerraria.Condition.hjson" />
-	</ItemGroup>
+
+	<!-- References -->
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="2025.2.0" />
 		<PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="3.3.4" PrivateAssets="all" />
-		<Compile Update="JsonCreator\CreateMobJsonFiles.cs">
-			<Link>ClassLibrary1\CreateMobJsonFiles.cs</Link>
-		</Compile>
-		<PackageReference Update="tModLoader.CodeAssist" Version="0.1.5" />
 	</ItemGroup>
+
+	<!-- Mod References -->
 	<ItemGroup>
-		<Reference Include="StructureHelper">
-			<HintPath>lib\StructureHelper.dll</HintPath>
-		</Reference>
-		<Reference Include="SubworldLibrary">
-			<HintPath>Dependencies\SubworldLibrary.dll</HintPath>
-		</Reference>
-		<Reference Include="NPCUtils">
-			<HintPath>lib\NPCUtils.dll</HintPath>
-		</Reference>
-		<Reference Include="HousingAPI">
-			<HintPath>lib\HousingAPI.dll</HintPath>
-		</Reference>
+		<Reference Include="StructureHelper" HintPath="lib\StructureHelper.dll" />
+		<Reference Include="SubworldLibrary" HintPath="lib\SubworldLibrary.dll" />
+		<Reference Include="NPCUtils" HintPath="lib\NPCUtils.dll" />
+		<Reference Include="HousingAPI" HintPath="lib\HousingAPI.dll" />
 	</ItemGroup>
+
+	<!-- Content -->
 	<ItemGroup>
+		<Compile Remove="BuildTools\**" />
+		<EmbeddedResource Remove="BuildTools\**" />
+		
 		<Folder Include="Common\Data\VanillaItemData\" />
 	</ItemGroup>
+
+	<!-- Altered build target, utilizing the BuildCommand variable. -->
 	<Target Name="BuildMod" AfterTargets="Build">
 		<Exec Command="$(BuildCommand) $(tMLServerPath) -build $(ProjectDir) -eac $(TargetPath) -define &quot;$(DefineConstants)&quot; -unsafe $(AllowUnsafeBlocks) $(ExtraBuildModFlags)" WorkingDirectory="$(tMLSteamPath)" />
 	</Target>
+
 </Project>

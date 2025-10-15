@@ -15,7 +15,7 @@ namespace PathOfTerraria.Common.Systems.Questing.QuestStepTypes;
 /// <param name="npcId">The NPC to talk to.</param>
 /// <param name="takeItems">If true, the NPC will "take" all of the items from the player.</param>
 /// <param name="npcDialogue">If not null, the NPC's dialogue will change to this on success.</param>
-internal class BringCount((int id, int count)[] stacks, int npcId, bool takeItems = false, LocalizedText npcDialogue = null) : QuestStep
+internal class BringCount(string id, (int id, int count)[] stacks, int npcId, bool takeItems = false, LocalizedText npcDialogue = null) : QuestStep(id)
 {
 	private static LocalizedText CollectText = null;
 	private static LocalizedText GiveText = null;

@@ -3,4 +3,7 @@ using PathOfTerraria.Common.Systems.Skills;
 
 namespace PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 
-internal class PowerfulSmog(SkillTree tree) : SkillPassive(tree);
+internal class PowerfulSmog(SkillTree tree) : SkillPassive(tree)
+{
+	public override object[] TooltipArguments => ["1"];
+}

@@ -1,0 +1,66 @@
+{
+  "Identifier": "EyefullOfTroubles",
+  "ActivationOrigin": [ 33688, 4104 ],
+  "ActivationRange": 2048.0,
+  "SpawnArea": [ 2074, 210, 64, 64 ],
+  "SpawnOrigin": [ 2105, 256 ],
+  "Waves": [
+    {
+      "Spawns": [
+        {
+          "NpcType": "Terraria/DemonEye2",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        },
+        {
+          "NpcType": "Terraria/DemonEye2",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        },
+        {
+          "NpcType": "Terraria/DemonEye2",
+          "SpawnPlacement": {
+            "OnGround": true
+          }
+        }
+      ]
+    },
+    {
+      "Spawns": [
+        {
+          "NpcType": "Terraria/DemonEye2",
+          "SpawnPlacement": {},
+          "CooldownInTicks": 30,
+          "Effect": "Teleport"
+        },
+        {
+          "NpcType": "Terraria/DemonEye2",
+          "SpawnPlacement": {},
+          "CooldownInTicks": 30,
+          "Effect": "Teleport"
+        },
+        {
+          "NpcType": "Terraria/DemonEye2",
+          "SpawnPlacement": {},
+          "CooldownInTicks": 30,
+          "Effect": "Teleport"
+        },
+        {
+          "NpcType": "Terraria/DemonEye2",
+          "SpawnPlacement": {},
+          "CooldownInTicks": 30,
+          "Effect": "Teleport"
+        },
+        {
+          "NpcType": "Terraria/DemonEye2",
+          "SpawnPlacement": {},
+          "CooldownInTicks": 30,
+          "Effect": "Teleport"
+        }
+      ]
+    }
+  ],
+  "Music": "Terraria/None"
+}

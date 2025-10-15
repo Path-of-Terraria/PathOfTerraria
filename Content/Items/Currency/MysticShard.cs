@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -17,17 +18,33 @@ public class MysticShard : CurrencyShard
 		staticData.MinDropItemLevel = 15;
 	}
 
-	public override bool CanRightClick()
+	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
 	{
-		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity is ItemRarity.Normal;
+		if (!DefaultValidityCheck(slotItem, out failKey))
+		{
+			return false;
+		}
+
+		if (slotItem.GetInstanceData().Rarity != ItemRarity.Normal)
+		{
+			failKey = "NotNormal";
+			return false;
+		}
+
+		return true;
 	}
 
 	public override void RightClick(Player player)
 	{
-		PoTInstanceItemData data = player.HeldItem.GetInstanceData();
+		base.RightClick(player);
+		PoTItemHelper.SetMouseItemToHeldItem(player);
+	}
+
+	public override void ApplyToItem(Item slotItem)
+	{
+		PoTInstanceItemData data = slotItem.GetInstanceData();
 		data.Rarity = ItemRarity.Rare;
 		data.Affixes = [];
-		PoTItemHelper.Roll(player.HeldItem, data.RealLevel);
-		PoTItemHelper.SetMouseItemToHeldItem(player);
+		PoTItemHelper.Roll(slotItem, data.RealLevel);
 	}
 }

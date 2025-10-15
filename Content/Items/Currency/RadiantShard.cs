@@ -1,5 +1,6 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Core.Items;
+using System.Diagnostics.CodeAnalysis;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
@@ -15,13 +16,24 @@ public class RadiantShard : CurrencyShard
 		staticData.MinDropItemLevel = 25;
 	}
 
-	public override bool CanRightClick()
+	public override bool CanUseInPouch(Item slotItem, [NotNullWhen(false)] out string failKey)
 	{
-		return base.CanRightClick() && Main.LocalPlayer.HeldItem.GetInstanceData().Rarity != ItemRarity.Normal;
+		if (!DefaultValidityCheck(slotItem, out failKey))
+		{
+			return false;
+		}
+
+		if (slotItem.GetInstanceData().Rarity is ItemRarity.Normal or ItemRarity.Unique)
+		{
+			failKey = "NotRareOrMagic";
+			return false;
+		}
+
+		return true;
 	}
 
-	public override void RightClick(Player player)
+	public override void ApplyToItem(Item slotItem)
 	{
-		PoTItemHelper.RerollAffixValues(player.HeldItem);
+		PoTItemHelper.RerollAffixValues(slotItem);
 	}
 }
