@@ -37,7 +37,7 @@ internal class ClassingPlayer : ModPlayer
 			PoTMod.Instance.Logger.Error("[ClassingPlayer] Index was greater than noun count.", new IndexOutOfRangeException());
 		}
 
-		return noun.Split(';')[index % nouns.Length];
+		return nouns[Math.Abs(index) % nouns.Length];
 	}
 
 	public override void SaveData(TagCompound tag)
