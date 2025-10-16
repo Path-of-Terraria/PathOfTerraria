@@ -8,6 +8,7 @@ using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.Buffs.ElementalBuffs;
 using PathOfTerraria.Content.Projectiles.Utility;
+using PathOfTerraria.Content.SkillPassives.RainOfArrowsPassives;
 using PathOfTerraria.Content.SkillPassives.SwarmPassives;
 using PathOfTerraria.Content.SkillSpecials.PestSwarmSpecials;
 using PathOfTerraria.Content.SkillTrees;
@@ -23,8 +24,32 @@ namespace PathOfTerraria.Content.Skills.Summon;
 
 public class PestSwarm : Skill
 {
-	public override SkillTags Tags => SkillTags.Summon | SkillTags.Projectile;
 	public override int MaxLevel => 3;
+
+	public override SkillTags Tags()
+	{
+		SkillTags tags = SkillTags.Summon | SkillTags.Projectile;
+
+		if (Tree.Specialization is GlacialAntlions)
+		{
+			tags |= SkillTags.Cold;
+		}
+
+        foreach (SkillNode node in Tree.Nodes)
+        {
+            if (node is VolatileInsects vola && vola.Allocated)
+            {
+                tags |= SkillTags.Fire;
+            }
+
+            if (node is ShockingEmergence shock && shock.Allocated)
+            {
+                tags |= SkillTags.Lightning;
+            }
+        }
+
+        return tags;
+    }
 
 	public override void LevelTo(byte level)
 	{

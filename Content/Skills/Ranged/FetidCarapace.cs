@@ -9,7 +9,11 @@ namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class FetidCarapace : Skill
 {
-	public override SkillTags Tags => SkillTags.Projectile;
+	public override SkillTags Tags()
+	{
+		return SkillTags.Projectile;
+	}
+
 	public override int MaxLevel => 3;
 
 	public override void LevelTo(byte level)

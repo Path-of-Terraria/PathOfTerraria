@@ -11,6 +11,29 @@ NeedsWeapon: Требуется держать предмет {0}
 BaseDamage: Наносит {0} базового урона
 # This is for the hover text in the skills menu.
 CantEquip: Невозможно оснастить умение: {0}
+// TagsLine: Tags:
+
+Tags: {
+	// None: None
+	// Fire: Fire
+	// Cold: Cold
+	// Lightning: Lightning
+	// Chaos: Chaos
+	// Melee: Melee
+	// Ranged: Ranged
+	// Magic: Magic
+	// Summon: Summon
+	// Projectile: Projectile
+	// Channeling: Channeling
+	// AreaOfEffect: Area of Effect
+	// Sentry: Sentry
+	// Minion: Minion
+	// Debuff: Debuff
+	// Buff: Buff
+	// Movement: Movement
+	// Critical: Critical
+	// Healing: Healing
+}
 
 # These are the actual localization lines for skills.
 Nova: {

@@ -91,8 +91,6 @@ public abstract partial class Skill
 	public abstract int MaxLevel { get; }
 	public int PassivePoints { get; set; } = 1;
 
-	public abstract SkillTags Tags { get; }
-
 	public virtual string Name => GetType().Name;
 	public virtual string Texture => $"{PoTMod.ModName}/Assets/Skills/" + GetTextureName();
 
@@ -110,6 +108,11 @@ public abstract partial class Skill
 	public byte Level = 1;
 
 	private Vector2 _size;
+
+	/// <summary>
+	/// The tags this skill applies to.
+	/// </summary>
+	public abstract SkillTags Tags();
 
 	private string GetTextureName()
 	{

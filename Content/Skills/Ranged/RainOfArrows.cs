@@ -24,10 +24,30 @@ public class RainOfArrows : Skill
 {
 	private static readonly HashSet<int> WeaponBlacklist = [ItemID.Harpoon, ItemID.Flamethrower, ItemID.ElfMelter];
 
-	public override SkillTags Tags => SkillTags.Projectile | SkillTags.Ranged;
 	public override int MaxLevel => 3;
 
-	public override void LevelTo(byte level)
+    public override SkillTags Tags()
+    {
+		SkillTags tags = SkillTags.Projectile | SkillTags.Ranged;
+
+		if (Tree.Specialization is NaturesBarrage)
+		{
+			tags |= SkillTags.Chaos;
+		}
+
+		foreach (SkillNode node in Tree.Nodes)
+		{
+			if (node is ColdBlast blast && blast.Level > 0)
+			{
+				tags |= SkillTags.Cold;
+				break;
+			}
+		}
+
+        return tags;
+    }
+
+    public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 8 * 60;

@@ -13,10 +13,14 @@ public class BloodSiphon : Skill
 {
 	const int DefaultAoERange = 16 * 30;
 
-	public override SkillTags Tags => SkillTags.Healing | SkillTags.AreaOfEffect;
 	public override int MaxLevel => 3;
 
-	public override void LevelTo(byte level)
+    public override SkillTags Tags()
+    {
+        return SkillTags.Healing | SkillTags.AreaOfEffect;
+    }
+
+    public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (15 - Level * 2) * 60;

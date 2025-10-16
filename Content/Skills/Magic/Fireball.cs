@@ -10,10 +10,14 @@ namespace PathOfTerraria.Content.Skills.Magic;
 
 public class Fireball : Skill
 {
-	public override SkillTags Tags => SkillTags.Magic | SkillTags.Projectile | SkillTags.Fire;
 	public override int MaxLevel => 3;
 
-	public override void LevelTo(byte level)
+    public override SkillTags Tags()
+    {
+        return SkillTags.Magic | SkillTags.Projectile | SkillTags.Fire;
+    }
+
+    public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 8 * 60;

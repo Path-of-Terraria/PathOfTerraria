@@ -153,7 +153,7 @@ public sealed class NewHotbar : SmartUiState
 	///		Draws the two leftmost slots, which should always be visible and
 	///		won't move as part of the hotbar transition.
 	/// </summary>
-	private void DrawSpecial(SpriteBatch spriteBatch)
+	private static void DrawSpecial(SpriteBatch spriteBatch)
 	{
 		// The inactive texture contains the special, textured "inactive"
 		// hotbar slots, which are silver and contain icons for the items they
@@ -400,10 +400,10 @@ public sealed class NewHotbar : SmartUiState
 			};
 
 			keybindLine = new("Keybind", Language.GetText("Mods.PathOfTerraria.Skills.KeybindLine").WithFormatArgs(keybindName).Value + "\n", 0);
+			tooltips.Add(keybindLine);
 		}
 
 		tooltips.Add(manaCost);
-		tooltips.Add(keybindLine);
 		tooltips.Add(new SkillTooltip("Description", skill.Description.Value, 1));
 
 		if (skill.Duration != 0)
@@ -412,23 +412,58 @@ public sealed class NewHotbar : SmartUiState
 		}
 
 		tooltips.Add(new("Cooldown", Language.GetText("Mods.PathOfTerraria.Skills.CooldownLine").WithFormatArgs($"{skill.MaxCooldown / 60f:#0.##}").Value, 5));
+		tooltips.Add(new("Tags", GetDisplayTags(skill.Tags()), 0.25f));
+		tooltips.Add(new("Empty", "\n", 0.3f));
 		skill.ModifyTooltips(tooltips);
 		tooltips.Sort((x, y) => x.Slot.CompareTo(y.Slot));
 
-		string subtitle = "";
+		List<DrawableTooltipLine> lines = [];
 
 		foreach (SkillTooltip tooltip in tooltips)
 		{
-			subtitle += tooltip.Text + "\n";
+			TooltipLine line = new(PoTMod.Instance, tooltip.Name, tooltip.Text);
+			Vector2 scale = Vector2.One;
+			Color color = Color.White;
+
+			if (line.Name is "Tags" or "Keybind" or "NoKeybind")
+			{
+				scale = new(0.8f);
+			}
+
+			DrawableTooltipLine drawable = new(line, lines.Count, 0, 0, color)
+			{
+				BaseScale = scale,
+			};
+
+			lines.Add(drawable);
 		}
 		
 		Tooltip.Create(new TooltipDescription
 		{
 			Identifier = "Skill",
 			SimpleTitle = title,
-			SimpleSubtitle = subtitle,
+			Lines = lines,
 			VisibilityTimeInTicks = 0,
+			Stability = 1,
 		});
+	}
+
+	private static string GetDisplayTags(SkillTags tags)
+	{
+		string text = Language.GetTextValue("Mods.PathOfTerraria.Skills.TagsLine");
+
+		foreach (Enum value in Enum.GetValues<SkillTags>())
+		{
+			var tag = (SkillTags)value;
+
+			// Only show singular tags, not compound tags like Elemental
+			if (System.Numerics.BitOperations.PopCount((ulong)tag) == 1 && tags.HasFlag(tag))
+			{
+				text += " " + Language.GetTextValue("Mods.PathOfTerraria.Skills.Tags." + tag) + ",";
+			}
+		}
+
+		return text[..^1];
 	}
 
 	private static void DrawBuilding(SpriteBatch spriteBatch, float off, float opacity)

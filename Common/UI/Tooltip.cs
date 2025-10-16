@@ -159,10 +159,12 @@ public class Tooltip : SmartUiState
 		{
 			cache.Lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleTitle", args.SimpleTitle), fillIndex, 0, 0, Color.White);
 		}
+
 		if (args.SimpleSubtitle != null)
 		{
 			cache.Lines[fillIndex++].Base = new DrawableTooltipLine(new TooltipLine(PoTMod.Instance, "SimpleSubtitle", args.SimpleSubtitle), fillIndex, 0, 0, Color.White);
 		}
+
 		foreach (DrawableTooltipLine source in args.Lines)
 		{
 			cache.Lines[fillIndex++].Base = source;
@@ -189,7 +191,7 @@ public class Tooltip : SmartUiState
 				continue;
 			}
 
-			Vector2 measure = ChatManager.GetStringSize(line.Font, line.Text, line.BaseScale, line.MaxWidth);
+			Vector2 measure = ChatManager.GetStringSize(line.Font, line.Text, Vector2.One, line.MaxWidth) * line.BaseScale;
 			int newLineCount = line.Text.Count(c => c == '\n');
 			float lineSpacing = BaseLineSpacing + spacingOffset;
 

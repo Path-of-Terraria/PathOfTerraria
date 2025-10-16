@@ -1,7 +1,7 @@
 ﻿namespace PathOfTerraria.Common.Mechanics;
 
 [Flags]
-public enum SkillTags : long
+public enum SkillTags : ulong
 {
 	None = 0,
 	Fire = 1,

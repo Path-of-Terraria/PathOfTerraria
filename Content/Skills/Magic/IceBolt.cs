@@ -10,10 +10,14 @@ namespace PathOfTerraria.Content.Skills.Magic;
 
 public class IceBolt : Skill
 {
-	public override SkillTags Tags => SkillTags.Projectile | SkillTags.Magic | SkillTags.Cold;
 	public override int MaxLevel => 3;
 
-	public override void LevelTo(byte level)
+    public override SkillTags Tags()
+    {
+        return SkillTags.Projectile | SkillTags.Magic | SkillTags.Cold;
+    }
+
+    public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (int)((5.5f - 0.5f * Level) * 60);

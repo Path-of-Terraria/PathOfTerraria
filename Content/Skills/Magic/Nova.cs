@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using PathOfTerraria.Common.UI.Hotbar;
 using PathOfTerraria.Content.Buffs;
 using PathOfTerraria.Content.SkillPassives.Generic;
@@ -26,10 +27,29 @@ public class Nova : Skill
 		Lightning,
 	}
 
-	public override SkillTags Tags => SkillTags.Magic | SkillTags.AreaOfEffect;
 	public override int MaxLevel => 3;
 
-	private static NovaType GetNovaType(Nova nova)
+	public override SkillTags Tags()
+	{
+		SkillTags tags = SkillTags.Magic | SkillTags.AreaOfEffect;
+
+		if (Tree.Specialization is LightningNova)
+		{
+			tags |= SkillTags.Lightning;
+		}
+		else if (Tree.Specialization is FireNova)
+		{
+			tags |= SkillTags.Fire;
+		}
+		else if (Tree.Specialization is IceNova)
+		{
+			tags |= SkillTags.Cold;
+		}
+
+		return tags;
+    }
+
+    private static NovaType GetNovaType(Nova nova)
 	{
 		SkillSpecial special = nova.Tree.Specialization;
 
@@ -82,21 +102,37 @@ public class Nova : Skill
 				break;
 		}
 
-		if (Tree.TryGetNode(out VolatileNova vNova) && vNova.Allocated) //Passive synergy
+		int projType = ModContent.ProjectileType<NovaProjectile>();
+
+        if (Tree.TryGetNode(out VolatileNova vNova) && vNova.Allocated) //Passive synergy
 		{
 			for (int i = 0; i < 3; i++)
 			{
 				Vector2 position = player.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(NovaProjectile.AreaOfEffect);
 
-				var smallBlast = Projectile.NewProjectileDirect(source, position, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
+				var smallBlast = Projectile.NewProjectileDirect(source, position, Vector2.Zero, projType, damage, knockback, player.whoAmI, (int)type);
 				smallBlast.scale = Main.rand.NextFloat(0.2f, 0.3f);
 				smallBlast.netUpdate = true;
 			}
 		}
 		else
 		{
-			Projectile.NewProjectile(source, player.Center, Vector2.Zero, ModContent.ProjectileType<NovaProjectile>(), damage, knockback, player.whoAmI, (int)type);
-		}
+			int proj = Projectile.NewProjectile(source, player.Center, Vector2.Zero, projType, damage, knockback, player.whoAmI, (int)type);
+			ElementalContainer container = Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container;
+
+			if (Tree.Specialization is LightningNova)
+			{
+				container[ElementType.Lightning].DamageModifier.AddModifiers(0, 1);
+			}
+			else if (Tree.Specialization is FireNova)
+            {
+                container[ElementType.Fire].DamageModifier.AddModifiers(0, 1);
+            }
+			else if (Tree.Specialization is IceNova)
+            {
+                container[ElementType.Cold].DamageModifier.AddModifiers(0, 1);
+            }
+        }
 	}
 
 	public override bool CanUseSkill(Player player, ref SkillFailure failReason, bool justChecking)
