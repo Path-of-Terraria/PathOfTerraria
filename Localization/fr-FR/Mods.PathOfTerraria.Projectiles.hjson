@@ -190,3 +190,4 @@ FlameSentryFireball.DisplayName: "{$ProjectileName.CultistBossFireBall}"
 // AntlionExplosion.DisplayName: Antlion Explosion
 // AntlionSummon.DisplayName: Antlion Summon
 // IceShards.DisplayName: Ice Shards
+// DelayedStrike.DisplayName: Delayed Strike

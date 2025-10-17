@@ -1,5 +1,7 @@
-﻿using System.Linq;
+﻿using Mono.Cecil;
+using System.Linq;
 using Terraria.DataStructures;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PathOfTerraria.Common.Events;
 
@@ -268,6 +270,55 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 	{
 		OnEnterWorldEvent.Invoke(Player);
 	}
+
+	public delegate bool ShootDelegate(Player player, Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback);
+
+	/// <summary> If any <see cref="OnShootEvent"/> returns false, the default behavior is overridden. </summary>
+	public static event ShootDelegate ShootEvent;
+
+	public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		bool result = true;
+
+		if (ShootEvent is null)
+		{
+			return result;
+		}
+
+		foreach (Delegate del in ShootEvent.GetInvocationList())
+		{
+			if (del is ShootDelegate shootDel)
+			{
+				result &= shootDel.Invoke(Player, item, source, position, velocity, type, damage, knockback);
+			}
+		}
+
+		return result;
+	}
+
+	public delegate float UseSpeedMultiplierDelegate(Player player, Item item);
+
+	public static event UseSpeedMultiplierDelegate UseSpeedMultiplierEvent;
+
+	public override float UseSpeedMultiplier(Item item)
+	{
+		float result = 1;
+
+		if (UseSpeedMultiplierEvent is null)
+		{
+			return result;
+		}
+
+		foreach (Delegate del in UseSpeedMultiplierEvent.GetInvocationList())
+		{
+			if (del is UseSpeedMultiplierDelegate multiplierDel)
+			{
+				result += (multiplierDel.Invoke(Player, item) - 1);
+			}
+		}
+
+		return result;
+	}
 	
 	public override void Unload()
 	{
@@ -288,5 +339,7 @@ public class PathOfTerrariaPlayerEvents : ModPlayer
 		PostUpdateRunSpeedsEvent = null;
 		ModifyDrawInfoEvent = null;
 		PreUpdateMovementEvent = null;
+		ShootEvent = null;
+		UseSpeedMultiplierEvent = null;
 	}
 }

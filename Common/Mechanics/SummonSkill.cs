@@ -6,6 +6,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Common.Mechanics;
 
+/// <summary> Encapsulates a skill used to summon an NPC. </summary>
 public abstract class SummonSkill : Skill
 {
 	public abstract int SummonNPCType { get; }
