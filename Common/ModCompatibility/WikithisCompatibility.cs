@@ -36,11 +36,18 @@ internal class WikithisCompatibility : ModSystem
 
 		On_Main.Update += JustStopDrawcode;
 	
-		if (wiki != null && !Main.dedServ)
+		// TODO: Our custom wiki is organized differently, in manner of /en/Gear/ItemName. This is not what Wikithis expects.
+		/*
+		if (!Main.dedServ)
 		{
-			// I'm pretty sure our custom wiki format doesn't work for Wikithis, but it's good to have I guess
-			wiki.Call("AddModURL", this, "https://wiki.pathofterraria.com/{}");
+			try
+			{
+				// I'm pretty sure our custom wiki format doesn't work for Wikithis, but it's good to have I guess
+				wiki.Call("AddModURL", PoTMod.Instance, "https://wiki.pathofterraria.com/{}");
+			}
+			catch { }
 		}
+		*/
 	}
 
 	private static void JustStopDrawcode(On_Main.orig_Update orig, Main self, GameTime gameTime)
