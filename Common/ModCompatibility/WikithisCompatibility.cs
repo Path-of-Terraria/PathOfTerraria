@@ -1,8 +1,10 @@
 ﻿using MonoMod.RuntimeDetour;
 
-namespace PathOfTerraria.Common.ModCompatibility.Wikithis;
+#nullable enable
 
-internal class StopWikithisFromDrawing : ModSystem
+namespace PathOfTerraria.Common.ModCompatibility;
+
+internal class WikithisCompatibility : ModSystem
 {
 	private delegate bool PreDrawTooltipLineDetour(GlobalItem self, Item item, DrawableTooltipLine line, ref int yOffset);
 
@@ -11,7 +13,7 @@ internal class StopWikithisFromDrawing : ModSystem
 	/// </summary>
 	internal static bool StopDrawcode = false;
 
-	private static Hook WikithisItemPreDrawTooltipHook = null;
+	private static Hook? WikithisItemPreDrawTooltipHook = null;
 
 	public override void Load()
 	{
