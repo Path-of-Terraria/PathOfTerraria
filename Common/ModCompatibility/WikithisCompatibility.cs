@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using MonoMod.Cil;
+using PathOfTerraria.Utilities;
 
 #nullable enable
 
@@ -52,9 +53,8 @@ internal class WikithisCompatibility : ModSystem
 
 	private static void JustStopDrawcode(On_Main.orig_Update orig, Main self, GameTime gameTime)
 	{
-		StopDrawcode = true;
+		using var _ = ValueOverride.Create(ref StopDrawcode, true);
 		orig(self, gameTime);
-		StopDrawcode = false;
 	}
 
 	private static void WsPreDrawTooltipLineInjection(ILContext ctx)
