@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using PathOfTerraria.Common.ModCompatibility;
 using System.Collections.Generic;
 using Terraria.UI.Chat;
 
@@ -40,6 +41,8 @@ internal class TooltipBackingFix : ILoadable
 	{
 		float maxWidth = 0;
 
+		WikithisCompatibility.StopDrawcode = true;
+
 		foreach (DrawableTooltipLine tooltip in tooltips)
 		{
 			int yOffset = 0; // Used for getting real height
@@ -56,6 +59,8 @@ internal class TooltipBackingFix : ILoadable
 			maxWidth = MathF.Max(maxWidth, lineSize.X);
 			tooltip.BaseScale = oldScale;
 		}
+
+		WikithisCompatibility.StopDrawcode = false;
 
 		size.X = maxWidth; // Max width is accurately calculated by the above
 		size.Y -= tooltips.Count * 1.2f; // Max height isn't accurately calculated by the above for whatever reason, use bandaid
