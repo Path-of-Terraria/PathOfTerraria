@@ -1,4 +1,5 @@
-﻿using MonoMod.RuntimeDetour;
+﻿using System.Reflection;
+using MonoMod.Cil;
 
 #nullable enable
 
@@ -13,8 +14,6 @@ internal class WikithisCompatibility : ModSystem
 	/// </summary>
 	internal static bool StopDrawcode = false;
 
-	private static Hook? WikithisItemPreDrawTooltipHook = null;
-
 	public override void Load()
 	{
 		if (!ModLoader.TryGetMod("Wikithis", out Mod wiki))
@@ -22,8 +21,18 @@ internal class WikithisCompatibility : ModSystem
 			return;
 		}
 
-		Type itemType = wiki.GetType().Assembly.GetType("Wikithis.WikithisItem");
-		WikithisItemPreDrawTooltipHook = new Hook(itemType.GetMethod(nameof(GlobalItem.PreDrawTooltipLine)), DetourWikithisPreDrawTooltipLine);
+		const string WikithisItemType = "Wikithis.WikithisItem";
+
+		if (wiki.Code.GetType(WikithisItemType) is Type itemType
+		&& itemType.GetMethod(nameof(GlobalItem.PreDrawTooltipLine)) is MethodInfo preDrawTooltip)
+		{
+			try { MonoModHooks.Modify(preDrawTooltip, WsPreDrawTooltipLineInjection); }
+			catch { } // TML will log this on its own.
+		}
+		else
+		{
+			Mod.Logger.Warn($"Could not inject into {WikithisItemType}.{nameof(GlobalItem.PreDrawTooltipLine)} method!");
+		}
 
 		On_Main.Update += JustStopDrawcode;
 	
@@ -34,20 +43,23 @@ internal class WikithisCompatibility : ModSystem
 		}
 	}
 
-	private void JustStopDrawcode(On_Main.orig_Update orig, Main self, GameTime gameTime)
+	private static void JustStopDrawcode(On_Main.orig_Update orig, Main self, GameTime gameTime)
 	{
 		StopDrawcode = true;
 		orig(self, gameTime);
 		StopDrawcode = false;
 	}
 
-	private static bool DetourWikithisPreDrawTooltipLine(PreDrawTooltipLineDetour orig, GlobalItem self, Item item, DrawableTooltipLine line, ref int yOffset)
+	private static void WsPreDrawTooltipLineInjection(ILContext ctx)
 	{
-		if (StopDrawcode)
-		{
-			return true;
-		}
+		var il = new ILCursor(ctx);
 
-		return orig(self, item, line, ref yOffset);
+		// Return true if StopDrawcode is true.
+		ILLabel skipReturn = il.DefineLabel();
+		il.EmitDelegate(() => StopDrawcode);
+		il.EmitBrfalse(skipReturn);
+		il.EmitLdcI4(1);
+		il.EmitRet();
+		il.MarkLabel(skipReturn);
 	}
 }
