@@ -1,4 +1,3 @@
-using PathOfTerraria.Common.Events;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Systems.TreeSystem;
@@ -7,21 +6,18 @@ using Terraria.ModLoader.IO;
 
 namespace PathOfTerraria.Content.Passives;
 
-
 internal class IncreasedMinionDamagePassive : Passive
 {
-	public override void OnLoad()
+	public sealed class IncreasedMinionDamagePassivePlayer : ModPlayer
 	{
-		PathOfTerrariaPlayerEvents.ModifyHitNPCWithProjEvent += BuffMinions;
-	}
-
-	private void BuffMinions(Player player, Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
-	{
-		int level = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
-		
-		if (proj.minion)
+		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 		{
-			modifiers.FinalDamage += (Value/100.0f) * level;
+			int level = Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name);
+
+			if (proj.minion)
+			{
+				modifiers.FinalDamage += (ModContent.GetInstance<IncreasedMinionDamagePassive>().Value / 100.0f) * level;
+			}
 		}
 	}
 }

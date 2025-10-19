@@ -1,7 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using PathOfTerraria.Common.Events;
-using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Common.Systems.ModPlayers;
@@ -10,16 +7,9 @@ internal class UniversalBuffingPlayer : ModPlayer
 {
 	public EntityModifier UniversalModifier;
 
-	public override void Load()
+	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		PathOfTerrariaPlayerEvents.ModifyHitNPCEvent += ModifyCriticalDamage;
-	}
-	
-	private void ModifyCriticalDamage(NPC target, ref NPC.HitModifiers modifiers)
-	{
-		Player player = Main.LocalPlayer;
-		
-		float critMultiplier = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.CriticalMultiplier.ApplyTo(1f);
+		float critMultiplier = Player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.CriticalMultiplier.ApplyTo(1f);
 		
 		modifiers.CritDamage *= critMultiplier;
 	}
