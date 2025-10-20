@@ -4,12 +4,16 @@ using PathOfTerraria.Common.Projectiles;
 using PathOfTerraria.Common.Systems.Affixes;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using Terraria.ID;
-using Terraria.Localization;
 
 namespace PathOfTerraria.Content.Skills.Ranged;
 
 public class FetidCarapace : Skill
 {
+	public override SkillTags Tags()
+	{
+		return SkillTags.Projectile;
+	}
+
 	public override int MaxLevel => 3;
 
 	public override void LevelTo(byte level)
