@@ -62,7 +62,7 @@ internal class VirtualBagStoragePlayer : ModPlayer
 		VirtualBagStoragePlayer storagePlayer = Main.LocalPlayer.GetModPlayer<VirtualBagStoragePlayer>();
 		ref bool confirmed = ref storagePlayer.ConfirmedExit;
 
-		if (Main.netMode == NetmodeID.Server || !storagePlayer.UsesVirtualBag || confirmed)
+		if (Main.netMode == NetmodeID.Server || !storagePlayer.UsesVirtualBag || confirmed || storagePlayer.Storage.Count == 0)
 		{
 			orig();
 			return;
@@ -83,6 +83,8 @@ internal class VirtualBagStoragePlayer : ModPlayer
 			{
 				ModContent.GetInstance<PlayerUseSackOfHoldingHandler>().Send((byte)Main.myPlayer, UsesVirtualBag);
 			}
+
+			UIManager.TryDisable(VirtualBagUIState.Identifier);
 		}
 
 		Storage.Clear();
