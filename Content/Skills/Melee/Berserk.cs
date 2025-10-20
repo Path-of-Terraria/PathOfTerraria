@@ -15,7 +15,6 @@ public class Berserk : Skill
 		Volume = 0.4f,
 		PitchVariance = 0.2f,
 	};
-
 	private static SoundStyle BerserkHitSound => new($"{PoTMod.ModName}/Assets/Sounds/Skills/BerserkHit")
 	{
 		Volume = 0.90f,
@@ -24,13 +23,11 @@ public class Berserk : Skill
 		MaxInstances = 3,
 		SoundLimitBehavior = SoundLimitBehavior.ReplaceOldest,
 	};
-
 	private static SoundStyle BerserkEndSound => new($"{PoTMod.ModName}/Assets/Sounds/Skills/BerserkEnd")
 	{
 		Volume = 0.35f,
 		PitchVariance = 0.2f,
 	};
-
 	private static SoundStyle BerserkLoopSound => new($"{PoTMod.ModName}/Assets/Sounds/Skills/BerserkLoop")
 	{
 		Volume = 0.4f,

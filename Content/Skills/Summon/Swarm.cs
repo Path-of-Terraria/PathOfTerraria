@@ -22,7 +22,7 @@ using Terraria.ID;
 
 namespace PathOfTerraria.Content.Skills.Summon;
 
-public class PestSwarm : Skill
+public class Swarm : Skill
 {
 	public override int MaxLevel => 3;
 
@@ -143,7 +143,7 @@ public class PestSwarm : Skill
 		return player.Center + player.DirectionTo(Main.MouseWorld) * MathF.Min(player.Distance(Main.MouseWorld), 120);
 	}
 
-	public class LocustSpawnCircle : SkillProjectile<PestSwarm>
+	public class LocustSpawnCircle : SkillProjectile<Swarm>
 	{
 		const float MaxTime = 24;
 
@@ -387,7 +387,7 @@ public class PestSwarm : Skill
 			Player plr = Main.player[Projectile.owner];
 			float maxChance = 0.1f + plr.GetPassiveStrength<PestSwarmTree, CarnivorousLarvae>() * 0.02f;
 
-			if (target.life <= 0 && Main.rand.NextFloat() < maxChance && plr.GetModPlayer<SkillCombatPlayer>().TryGetSkill<PestSwarm>(out Skill swarm))
+			if (target.life <= 0 && Main.rand.NextFloat() < maxChance && plr.GetModPlayer<SkillCombatPlayer>().TryGetSkill<Swarm>(out Skill swarm))
 			{
 				float duration = 30 * Main.rand.NextFloat(0.9f, 1.1f) * (1 - plr.GetPassiveStrength<PestSwarmTree, QuickerHatching>() * 0.2f);
 				int type = ModContent.ProjectileType<LocustEgg>();
@@ -396,7 +396,7 @@ public class PestSwarm : Skill
 		}
 	}
 
-	public class AntlionSwarmerSummon : SkillProjectile<PestSwarm>
+	public class AntlionSwarmerSummon : SkillProjectile<Swarm>
 	{
 		private bool IsExplosive => Main.player[Projectile.owner].HasTreePassive<PestSwarmTree, VolatileInsects>();
 
@@ -589,7 +589,7 @@ public class PestSwarm : Skill
 		}
 	}
 
-	public class LocustEgg : SkillProjectile<PestSwarm>
+	public class LocustEgg : SkillProjectile<Swarm>
 	{
 		private ref float LifeTime => ref Projectile.ai[0];
 		private ref float MaxLifeTime => ref Projectile.ai[1];
@@ -752,7 +752,7 @@ public class PestSwarm : Skill
 		}
 	}
 
-	public class AntlionSummon : SkillProjectile<PestSwarm>
+	public class AntlionSummon : SkillProjectile<Swarm>
 	{
 		private static Asset<Texture2D> GlacierTexture = null;
 

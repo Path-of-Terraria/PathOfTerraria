@@ -85,3 +85,8 @@ PestSwarm: {
 	// Name: Pest Swarm
 	// Description: Summon a short-lived creature to fight for you.
 }
+
+Swarm: {
+	// Name: ""
+	// Description: ""
+}
