@@ -14,12 +14,10 @@ internal class PassiveLoader : ILoadable
 		Passive.LoadPassives();
 	}
 
-	public void Unload()
-	{
-	}
+	public void Unload() { }
 }
 
-public abstract class Passive : Allocatable
+public abstract class Passive : Allocatable, ILoadable
 {
 	public static Dictionary<string, Type> Passives = [];
 
@@ -47,15 +45,24 @@ public abstract class Passive : Allocatable
 
 	public int Value;
 
+	void ILoadable.Load(Mod mod)
+	{
+		OnLoad();
+	}
+
+	public virtual void Unload() { }
+
 	public virtual void BuffPlayer(Player player) { }
 
 	public virtual void OnLoad() { }
 
 	public static void LoadPassives()
 	{
+		Mod mod = PoTMod.Instance;
+
 		Passives.Clear();
 
-		foreach (Type type in AssemblyManager.GetLoadableTypes(PoTMod.Instance.Code))
+		foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code))
 		{
 			if (type.IsAbstract || !type.IsSubclassOf(typeof(Passive)))
 			{
@@ -63,7 +70,7 @@ public abstract class Passive : Allocatable
 			}
 
 			var instance = (Passive)Activator.CreateInstance(type);
-			instance.OnLoad();
+			mod.AddContent(instance);
 
 			// Automatically registers the given keys for each instance loaded, and sets Name to the class's name and Description to empty if they do not exist.
 			Language.GetOrRegister("Mods.PathOfTerraria.Passives." + instance.Name + ".Name", () => type.Name);

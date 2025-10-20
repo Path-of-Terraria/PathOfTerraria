@@ -1,8 +1,5 @@
-﻿using PathOfTerraria.Common.Events;
+﻿using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
-using PathOfTerraria.Common.Data;
-using System.Linq;
-using PathOfTerraria.Common.Systems.ModPlayers;
 
 namespace PathOfTerraria.Content.Passives;
 
