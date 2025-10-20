@@ -198,7 +198,8 @@ public class Tooltip : SmartUiState
 					continue;
 				}
 
-        // Note - GetStringSize takes in a scale parameter, but that seems to work inconsistently, unlike manually multiplying by scale
+				// Note - GetStringSize takes in a scale parameter, but that seems to work inconsistently, unlike manually multiplying by scale
+				// This seems to be a vanilla issue of some sort?
 				Vector2 measure = ChatManager.GetStringSize(line.Font, line.Text, Vector2.One, line.MaxWidth) * line.BaseScale;
 				int newLineCount = line.Text.Count(c => c == '\n');
 				float lineSpacing = BaseLineSpacing + spacingOffset;
