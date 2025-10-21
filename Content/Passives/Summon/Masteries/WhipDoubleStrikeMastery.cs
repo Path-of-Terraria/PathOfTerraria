@@ -1,10 +1,7 @@
 ﻿using Humanizer;
-using PathOfTerraria.Common.Events;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Utilities;
-using Terraria;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using Terraria.ID;
 using Terraria.Localization;
@@ -138,7 +135,7 @@ internal class WhipDoubleStrikeMastery : Passive
 	{
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (ProjectileID.Sets.IsAWhip[proj.type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name) != 0)
+			if (ProjectileID.Sets.IsAWhip[proj.type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(WhipDoubleStrikeMastery)) != 0)
 			{
 				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<DelayedStrike>(), (int)(damageDone * DamageMult), 0, Player.whoAmI, target.whoAmI);
 			}
