@@ -1,8 +1,7 @@
-using PathOfTerraria.Common.Events;
+using System.IO;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.Affixes.ItemTypes;
 using SubworldLibrary;
-using System.IO;
 using Terraria.ID;
 
 namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
@@ -10,20 +9,18 @@ namespace PathOfTerraria.Common.Systems.Synchronization.Handlers;
 /// <inheritdoc cref="Networking.Message.RequestMappingDomainInfo"/>
 internal class RequestMappingDomainInfoHandler : Handler
 {
-	public override Networking.Message MessageType => Networking.Message.RequestMappingDomainInfo;
-
-	public override void Load(Mod mod)
+	public sealed class RequestMappingDomainInfoHandlerPlayer : ModPlayer
 	{
-		base.Load(mod);
-
-		PathOfTerrariaPlayerEvents.OnEnterWorldEvent += player =>
+		public override void OnEnterWorld()
 		{
 			if (Main.netMode != NetmodeID.SinglePlayer && SubworldSystem.Current is MappingWorld)
 			{
-				ModContent.GetInstance<RequestMappingDomainInfoHandler>().Send((byte)player.whoAmI);
+				ModContent.GetInstance<RequestMappingDomainInfoHandler>().Send((byte)Player.whoAmI);
 			}
-		};
+		}
 	}
+
+	public override Networking.Message MessageType => Networking.Message.RequestMappingDomainInfo;
 
 	/// <inheritdoc cref="Networking.Message.RequestMappingDomainInfo"/>
 	public override void Send(params object[] parameters)

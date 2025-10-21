@@ -8,7 +8,7 @@ namespace PathOfTerraria.Content.SkillTrees;
 
 internal class PestSwarmTree : SkillTree
 {
-	public override Type ParentSkill => typeof(PestSwarm);
+	public override Type ParentSkill => typeof(Swarm);
 
 	public override void Populate()
 	{

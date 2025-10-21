@@ -1,6 +1,7 @@
 ﻿using PathOfTerraria.Common.Enums;
 using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Projectiles;
+using PathOfTerraria.Common.Systems.ElementalDamage;
 using Terraria.Audio;
 using Terraria.GameContent;
 using Terraria.ID;
@@ -11,7 +12,12 @@ public class IceBolt : Skill
 {
 	public override int MaxLevel => 3;
 
-	public override void LevelTo(byte level)
+    public override SkillTags Tags()
+    {
+        return SkillTags.Projectile | SkillTags.Magic | SkillTags.Cold;
+    }
+
+    public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = (int)((5.5f - 0.5f * Level) * 60);
@@ -29,7 +35,8 @@ public class IceBolt : Skill
 		float knockback = 2f;
 		int type = ModContent.ProjectileType<IceBoltProj>();
 
-		Projectile.NewProjectile(source, player.Center, player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * 8, type, damage, knockback, player.whoAmI, Level);
+		int proj = Projectile.NewProjectile(source, player.Center, player.DirectionTo(Main.MouseWorld).RotatedByRandom(0.05f) * 8, type, damage, knockback, player.whoAmI, Level);
+		Main.projectile[proj].GetGlobalProjectile<ElementalProjectile>().Container[ElementType.Cold].DamageModifier.AddModifiers(0, 1);
 		SoundEngine.PlaySound(SoundID.Item20 with { PitchRange = (-0.8f, 0.2f) }, player.Center);
 	}
 

@@ -20,6 +20,11 @@ public class FlameSage : SummonSkill
 		_ => ModContent.NPCType<FlameSentry>()
 	};
 
+	public override SkillTags Tags()
+	{
+		return SkillTags.Summon | SkillTags.Projectile | SkillTags.Fire;
+	}
+
 	public override void LevelTo(byte level)
 	{
 		Level = level;
