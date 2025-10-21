@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PathOfTerraria.Common.UI.Utilities;
+using PathOfTerraria.Utilities;
 using Terraria.UI;
 
 namespace PathOfTerraria.Core.UI.SmartUI;
@@ -96,6 +97,8 @@ internal sealed partial class SmartUiLoader : ModSystem
 					{
 						if (state.Visible)
 						{
+							// Temporarily disable the click blocking, so that it does not interfere with Smart UIs themselves.
+							using var _ = ValueOverride.Create(ref BlockClickItem.Block, false);
 							state.Draw(Main.spriteBatch);
 						}
 
