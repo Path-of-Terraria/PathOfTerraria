@@ -17,7 +17,7 @@ internal class HornetSummon : GrimoireSummon
 		Main.projFrames[Type] = 3;
 	}
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Projectile.width = 26;
 		Projectile.height = 34;

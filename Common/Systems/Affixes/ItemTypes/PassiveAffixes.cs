@@ -95,3 +95,11 @@ internal class IncreasedMagicDamageAffix : ItemAffix
 		player.GetDamage(DamageClass.Magic) += Value / 100f;
 	}
 }
+
+internal class AddedSummonCritAffix : ItemAffix
+{
+	public override void ApplyAffix(Player player, EntityModifier modifier, Item item)
+	{
+		modifier.SummonCritChance += Value / 100f;
+	}
+}

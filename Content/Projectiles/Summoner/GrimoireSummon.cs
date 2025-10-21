@@ -46,6 +46,16 @@ internal abstract class GrimoireSummon : ModProjectile
 
 	public virtual void StaticDefaults() { }
 
+	public sealed override void SetDefaults()
+	{
+		Projectile.minion = true;
+		Projectile.DamageType = DamageClass.Summon;
+
+		Defaults();
+	}
+
+	public virtual void Defaults() { }
+
 	public override bool? CanCutTiles()
 	{
 		return false;

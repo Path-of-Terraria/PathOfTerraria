@@ -3,9 +3,9 @@ using PathOfTerraria.Core.Items;
 
 namespace PathOfTerraria.Content.Items.Gear.Offhands.Talismans;
 
-internal class WoodenTalisman : Talisman<IncreasedSummonDamageAffix>
+internal class YellowCore : Talisman<AddedSummonCritAffix>
 {
-	protected override float AffixStrength => 3f;
+	protected override float AffixStrength => 11f;
 
 	public override void SetStaticDefaults()
 	{
@@ -16,8 +16,8 @@ internal class WoodenTalisman : Talisman<IncreasedSummonDamageAffix>
 
 	protected override void InternalDefaults()
 	{
-		Item.Size = new(22, 34);
+		Item.Size = new(22, 24);
 		Item.value = Item.buyPrice(0, 0, 1, 0);
-		Item.defense = 2;
+		Item.defense = 1;
 	}
 }

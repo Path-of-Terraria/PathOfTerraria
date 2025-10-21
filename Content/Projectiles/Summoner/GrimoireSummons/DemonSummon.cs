@@ -14,7 +14,7 @@ internal class DemonSummon : GrimoireSummon
 		Main.projFrames[Type] = 5;
 	}
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Projectile.width = 52;
 		Projectile.height = 52;

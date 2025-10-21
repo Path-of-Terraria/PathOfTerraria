@@ -19,7 +19,7 @@ internal class PoacherSummon : GrimoireSummon
 		Main.projFrames[Type] = 9;
 	}
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Projectile.width = 62;
 		Projectile.height = 40;
