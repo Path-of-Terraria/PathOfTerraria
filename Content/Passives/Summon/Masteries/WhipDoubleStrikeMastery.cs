@@ -2,7 +2,9 @@
 using PathOfTerraria.Common.Events;
 using PathOfTerraria.Common.Systems.PassiveTreeSystem;
 using PathOfTerraria.Common.Utilities;
+using Terraria;
 using Terraria.Audio;
+using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using Terraria.ID;
 using Terraria.Localization;
@@ -132,20 +134,18 @@ internal class WhipDoubleStrikeMastery : Passive
 		}
 	}
 
+	public sealed class WhipDoubleStrikeMasteryPlayer : ModPlayer
+	{
+		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (ProjectileID.Sets.IsAWhip[proj.type] && Player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name) != 0)
+			{
+				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<DelayedStrike>(), (int)(damageDone * DamageMult), 0, Player.whoAmI, target.whoAmI);
+			}
+		}
+	}
+
 	public const float DamageMult = 0.5f;
 
 	public override string DisplayTooltip => Language.GetTextValue($"Mods.PathOfTerraria.Passives.{Name}.Tooltip").FormatWith(MathUtils.Percent(DamageMult));
-
-	public override void OnLoad()
-	{
-		PathOfTerrariaPlayerEvents.OnHitNPCWithProjEvent += SpawnHitProjectile;
-	}
-
-	private void SpawnHitProjectile(Player player, Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
-	{
-		if (ProjectileID.Sets.IsAWhip[proj.type] && player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(Name) != 0)
-		{
-			Projectile.NewProjectile(player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<DelayedStrike>(), (int)(damageDone * DamageMult), 0, player.whoAmI, target.whoAmI);
-		}
-	}
 }
