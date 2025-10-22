@@ -1,3 +1,6 @@
+// RelatedMechs: Related mechanics:
+// Shift: (Hold shift to see related mechanics)
+
 Error: {
 	// Tag: (Invalid)
 	// Description: This mechanics tag is invalid.
@@ -10,7 +13,11 @@ Self: {
 
 ElementalDamage: {
 	// Tag: Elemental Damage
-	// Description: Elemental damage can be added (flat) or converted (%) to other damage, dealing additional damage, synergizing with other mechanics, and applying debuffs.
+	/* Description:
+		'''
+		Elemental damage can be added (flat) or converted (%) to other damage. 
+		This allows them to deal additional damage, synergize with other mechanics, and apply debuffs.
+		''' */
 }
 
 Fire: {
@@ -36,4 +43,67 @@ Chaos: {
 Ravencrest: {
 	// Tag: Ravencrest
 	// Description: The primary town, gathering place for adventurers, and a hotspot for quests.
+}
+
+Mapping: {
+	// Tag: Mapping
+	// Description: Using the Map Device allows you to travel to any Map you have, namely for boss domains.
+}
+
+Blocking: {
+	// Tag: Blocking
+	// Description: Some equipables, namely Shields, allow you to "block" attacks randomly.
+}
+
+Affixes: {
+	// Tag: Affixes
+	// Description: Affixes are randomly applied, boosting the object they're applied to in some way.
+}
+
+MapAffixes: {
+	// Tag: Map Affixes
+	// Description: Affixes that modify the map, increasing the difficulty substantially. These scale with area level.
+}
+
+ItemAffixes: {
+	// Tag: Item Affixes
+	/* Description:
+		'''
+		Affixes that modify items randomly.
+		These affixes depend on the item's level, type, and rarity.
+		''' */
+}
+
+EnemyAffixes: {
+	// Tag: Enemy Affixes
+	// Description: Affixes that modify enemies, usually applied alongside an NPC rarity - common (no affixes), magic (2) or rare (4).
+}
+
+AreaLevel: {
+	// Tag: Area Level
+	// Description: The level of the area you're in - modifies loot level, what affixes you can get, enemy stats, and item/NPC rarity.
+}
+
+ItemRarity: {
+	// Tag: Item Rarity
+	/* Description:
+		'''
+		A randomized rarity, which depends on an area's level and map affixes. Magic can give 1-2 affixes, and Rare can give 3-4.
+		Uniques are separate, and are less randomized, but usually more complex as a weapon.
+		''' */
+}
+
+GrimoirePickups: {
+	// Tag: Grimoire Pickups
+	// Description: Materials used for conjuring summons through the Grimoire. Only found in the Grimoire's storage once picked up.
+}
+
+Questing: {
+	// Tag: Questing
+	// Description: Traversing through the world, you can find quests to track in your Quest Book. These lead you towards new bosses, additional content and rewards.
+}
+
+DamageOverTime: {
+	// Tag: Damage over Time
+	// Description: A debuff which inflicts damage at a consistent rate, such as Poisoned or Ignited.
 }
