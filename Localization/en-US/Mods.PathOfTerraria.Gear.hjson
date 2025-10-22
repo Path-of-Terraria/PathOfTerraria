@@ -432,3 +432,43 @@ Ring: {
 		4: of Fury
 	}
 }
+
+Focus: {
+	Name: Focus
+
+	Prefixes: {
+		0: Anchoring
+		1: Enhanced
+		2: Compressed
+		3: Charged
+		4: Faultless
+	}
+
+	Suffixes: {
+		0: Thrice-over
+		1: of Holiness
+		2: without Fail
+		3: of Grace
+		4: of Power
+	}
+}
+
+Amulet: {
+	Name: Amulet
+
+	Prefixes: {
+		0: Lost
+		1: Coveted
+		2: Forgotten
+		3: Haunted
+		4: Empty
+	}
+
+	Suffixes: {
+		0: of Fortune
+		1: Replica
+		2: of Sorrow
+		3: Reforged
+		4: of Conviction
+	}
+}
