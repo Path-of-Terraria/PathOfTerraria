@@ -77,7 +77,7 @@ public class UIHoverImage(Asset<Texture2D> texture) : UIImage(texture)
 				position = position.Floor();
 			}
 
-			Main.DrawItemIcon(spriteBatch, item, position, Color.White, 26f * ImageScale);
+			ItemSlot.DrawItemIcon(item, ItemSlot.Context.InventoryItem, spriteBatch, position, 1f * ImageScale, 24f * ImageScale, Color.White);
 		}
 	}
 }

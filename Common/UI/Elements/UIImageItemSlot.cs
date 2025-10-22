@@ -145,7 +145,6 @@ UIImageItemSlot.SlotWrapper itemHandler,
 		// scaling and centering the item, so we have to manually offset the item
 		// left to counteract this automatic positioning.
 		Asset<Texture2D> tex = GetIconToDraw();
-		Icon.SetItem(Item);
 
 		if (tex.Width() > BackgroundTexture.Width() && !skipAutoSize)
 		{
@@ -179,17 +178,20 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	{
 		if (!Item.IsAir)
 		{
-			Texture2D texture = TextureAssets.Item[Item.type].Value;
-			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
-			float size = Math.Min(MathF.Min(frame.Width, frame.Height), IconSize);
+			Icon.SetItem(Item);
 
-			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, size, ref frame, out _, out float finalDrawScale);
+			//Texture2D texture = TextureAssets.Item[Item.type].Value;
+			//Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
+			//float size = Math.Min(MathF.Min(frame.Width, frame.Height), IconSize);
 
-			Icon.ImageScale = finalDrawScale;
+			//ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, size, ref frame, out _, out float finalDrawScale);
+
+			//Icon.ImageScale = finalDrawScale;
 		}
 		else
 		{
 			Icon.ImageScale = 1f;
+			Icon.SetItem(null);
 		}
 
 		Icon.SetImage(GetIconToDraw());
