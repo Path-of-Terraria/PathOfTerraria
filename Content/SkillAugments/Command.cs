@@ -19,6 +19,6 @@ internal class Command : SkillAugment
 
 	public override bool CanBeApplied(Skill skill)
 	{
-		return skill is SummonSkill || skill is PestSwarm;
+		return skill is SummonSkill || skill is Swarm;
 	}
 }
