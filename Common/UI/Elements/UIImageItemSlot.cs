@@ -67,7 +67,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	/// <summary>
 	///     The icon of the item slot.
 	/// </summary>
-	public UIImage Icon { get; protected set; }
+	public UIHoverImage Icon { get; protected set; }
 
 	protected Asset<Texture2D> BackgroundTexture = backgroundTexture;
 
@@ -123,7 +123,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 
 		Append(Background);
 
-		Icon = new UIImage(IconTexture)
+		Icon = new(IconTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
 			HAlign = 0.5f,
@@ -178,17 +178,20 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	{
 		if (!Item.IsAir)
 		{
-			Texture2D texture = TextureAssets.Item[Item.type].Value;
-			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
-			float size = Math.Min(MathF.Min(frame.Width, frame.Height), IconSize);
+			Icon.SetItem(Item);
 
-			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, size, ref frame, out _, out float finalDrawScale);
+			//Texture2D texture = TextureAssets.Item[Item.type].Value;
+			//Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
+			//float size = Math.Min(MathF.Min(frame.Width, frame.Height), IconSize);
 
-			Icon.ImageScale = finalDrawScale;
+			//ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, size, ref frame, out _, out float finalDrawScale);
+
+			//Icon.ImageScale = finalDrawScale;
 		}
 		else
 		{
 			Icon.ImageScale = 1f;
+			Icon.SetItem(null);
 		}
 
 		Icon.SetImage(GetIconToDraw());

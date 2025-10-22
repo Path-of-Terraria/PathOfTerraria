@@ -112,7 +112,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				return true;
 
 			case "Rarity" or "Corrupted" or "Cloned":
-				yOffset = -8;
+				yOffset = -2;
 				line.BaseScale = new Vector2(0.8f);
 				return true;
 

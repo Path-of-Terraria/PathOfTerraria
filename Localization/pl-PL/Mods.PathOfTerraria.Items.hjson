@@ -1373,3 +1373,23 @@ ObsidianAdversaryItem: {
 	// DisplayName: Obsidian Adversary
 	// Tooltip: "'The harrowing visage seems to stare back...'"
 }
+
+Faeflame: {
+	// DisplayName: Faeflame
+	// Tooltip: ""
+}
+
+SporeLoci: {
+	// DisplayName: Spore Loci
+	// Tooltip: ""
+}
+
+CoralCrown: {
+	// DisplayName: Coral Crown
+	// Tooltip: ""
+}
+
+StoneStar: {
+	// DisplayName: Stone Star
+	// Tooltip: ""
+}
