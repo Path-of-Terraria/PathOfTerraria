@@ -31,3 +31,8 @@ Extend: {
 	Name: Extend
 	Tooltip: Increases duration by {0}%
 }
+
+Command: {
+	Name: Command
+	Tooltip: Increases minion damage by {0}%
+}
