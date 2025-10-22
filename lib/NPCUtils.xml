@@ -153,7 +153,7 @@
             <summary>
             Disables loading if NPCType is invalid.
             </summary>
-            <param name="mod"></param>
+            <param name="mod">The mod loading the banner.</param>
             <returns></returns>
         </member>
         <member name="M:NPCUtils.BaseBannerTile.SetStaticDefaults">
@@ -434,7 +434,7 @@
             The mod. Used for loading all utilities contained in the mod.
             </summary>
         </member>
-        <member name="M:NPCUtils.NPCUtils.TryLoadBestiaryHelper">
+        <member name="M:NPCUtils.NPCUtils.TryLoadBestiaryHelper(Terraria.ModLoader.Mod)">
             <summary>
             Loads <see cref="T:NPCUtils.BestiaryHelper"/> if it's not yet loaded. This should be called in <see cref="M:Terraria.ModLoader.Mod.Load"/>, alongside <see cref="M:NPCUtils.NPCUtils.UnloadBestiaryHelper"/> in <see cref="M:Terraria.ModLoader.Mod.Unload"/>.
             </summary>
