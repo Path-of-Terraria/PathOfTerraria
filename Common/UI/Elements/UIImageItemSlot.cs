@@ -67,7 +67,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	/// <summary>
 	///     The icon of the item slot.
 	/// </summary>
-	public UIImage Icon { get; protected set; }
+	public UIHoverImage Icon { get; protected set; }
 
 	protected Asset<Texture2D> BackgroundTexture = backgroundTexture;
 
@@ -123,7 +123,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 
 		Append(Background);
 
-		Icon = new UIImage(IconTexture)
+		Icon = new(IconTexture)
 		{
 			OverrideSamplerState = SamplerState.PointClamp,
 			HAlign = 0.5f,
@@ -145,6 +145,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 		// scaling and centering the item, so we have to manually offset the item
 		// left to counteract this automatic positioning.
 		Asset<Texture2D> tex = GetIconToDraw();
+		Icon.SetItem(Item);
 
 		if (tex.Width() > BackgroundTexture.Width() && !skipAutoSize)
 		{

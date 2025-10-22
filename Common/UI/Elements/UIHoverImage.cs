@@ -1,12 +1,16 @@
+using Microsoft.Xna.Framework.Graphics;
 using ReLogic.Content;
+using Terraria.DataStructures;
+using Terraria.GameContent;
 using Terraria.GameContent.UI.Elements;
+using Terraria.UI;
 
 namespace PathOfTerraria.Common.UI.Elements;
 
 /// <summary>
 ///     Provides a <see cref="UIImage" /> that contains hover transform effects.
 /// </summary>
-public class UIHoverImage : UIImage
+public class UIHoverImage(Asset<Texture2D> texture) : UIImage(texture)
 {
 	/// <summary>
 	///     The target rotation for this image when it's being hovered by the mouse, in radians. Defaults to <c>0f</c>.
@@ -37,9 +41,11 @@ public class UIHoverImage : UIImage
 		set => smoothness = MathHelper.Clamp(value, 0f, 1f);
 	}
 
+	/// <summary>
+	/// Item to show in place of the standard image.
+	/// </summary>
+	private Item item = null;
 	private float smoothness = 0.3f;
-
-	public UIHoverImage(Asset<Texture2D> texture) : base(texture) { }
 
 	public override void Update(GameTime gameTime)
 	{
@@ -47,5 +53,31 @@ public class UIHoverImage : UIImage
 
 		Rotation = MathHelper.SmoothStep(Rotation, IsMouseHovering ? ActiveRotation : InactiveRotation, Smoothness);
 		ImageScale = MathHelper.SmoothStep(ImageScale, IsMouseHovering ? ActiveScale : InactiveScale, Smoothness);
+	}
+
+	public void SetItem(Item item)
+	{
+		this.item = item;
+	}
+
+	protected override void DrawSelf(SpriteBatch spriteBatch)
+	{
+		if (item is null || item.IsAir)
+		{
+			base.DrawSelf(spriteBatch);
+		}
+		else
+		{
+			CalculatedStyle dimensions = Parent.GetDimensions();
+			Vector2 size = new(dimensions.Width, dimensions.Height);
+			Vector2 position = dimensions.Position() + size / 2f + size * NormalizedOrigin;
+
+			if (RemoveFloatingPointsFromDrawPosition)
+			{
+				position = position.Floor();
+			}
+
+			Main.DrawItemIcon(spriteBatch, item, position, Color.White, 26f * ImageScale);
+		}
 	}
 }

@@ -14,7 +14,7 @@ public abstract class Ring : Gear, IItemAllowDuplicateEquipWith
 		Item.DefaultToAccessory();
 
 		PoTInstanceItemData data = this.GetInstanceData();
-		data.ItemType = Common.Enums.ItemType.Ring;
+		data.ItemType = ItemType.Ring;
 	}
 	
 	public override void SetStaticDefaults()

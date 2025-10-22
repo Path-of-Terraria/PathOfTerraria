@@ -2,7 +2,7 @@
 
 namespace PathOfTerraria.Content.Items.Gear.Offhands;
 
-public abstract class Offhand : Gear, GenerateNameAffixes.IItem
+public abstract class Offhand : Gear//, GenerateNameAffixes.IItem
 {
 	protected override string GearLocalizationCategory => "Offhand";
 
