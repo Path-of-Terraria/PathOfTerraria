@@ -8,6 +8,8 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.Systems.VanillaModifications.BossItemRemovals;
 
 internal class DisableEvilOrbBossSpawning : ModSystem
@@ -48,27 +50,33 @@ internal class DisableEvilOrbBossSpawning : ModSystem
 	{
 		ILCursor c = new(il);
 
-		if (!c.TryGotoNext(x => x.MatchLdsfld<WorldGen>(nameof(WorldGen.noTileActions))))
+		ILLabel? skipEverythingLabel = null!;
+
+		// In release mode, find the label that the '!noTileActions' check jumps to on failure.
+		if (!c.TryGotoNext(
+			MoveType.After,
+			i => i.MatchLdsfld<WorldGen>(nameof(WorldGen.noTileActions)),
+			i => i.MatchBrtrue(out skipEverythingLabel)
+		))
 		{
-			return;
+			// Else, in debug mode, match whatever the switch breaks to.
+			c.GotoNext(MoveType.After, i => i.MatchLdsfld<WorldGen>(nameof(WorldGen.noTileActions)));
+			int tempLoc = -1;
+			c.GotoNext(MoveType.After,
+				i => i.MatchStloc(out tempLoc),
+				i => i.MatchLdloc(tempLoc),
+				i => i.MatchBrfalse(out skipEverythingLabel)
+			);
 		}
 
-		ILLabel label = null;
+		// Match after the store of 'shadowOrbCount++;'.
+		c.GotoNext(MoveType.After, x => x.MatchStsfld<WorldGen>(nameof(WorldGen.shadowOrbCount)));
 
-		if (!c.TryGotoNext(x => x.MatchBr(out label)))
-		{
-			return;
-		}
-
-		if (!c.TryGotoNext(MoveType.After, x => x.MatchStsfld<WorldGen>(nameof(WorldGen.shadowOrbCount))))
-		{
-			return;
-		}
-
+		// Emit conditional resets.
 		c.Emit(OpCodes.Ldarg_0);
 		c.Emit(OpCodes.Ldarg_1);
 		c.EmitDelegate(ResetOrbCountIfHigh);
-		c.Emit(OpCodes.Br, label);
+		c.Emit(OpCodes.Br, skipEverythingLabel);
 	}
 
 	public static void ResetOrbCountIfHigh(int i, int j)
