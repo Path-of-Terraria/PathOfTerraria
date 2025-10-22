@@ -1,0 +1,39 @@
+Error: {
+	// Tag: (Invalid)
+	// Description: This mechanics tag is invalid.
+}
+
+Self: {
+	// Tag: Mechanics Tag
+	// Description: Hover over underlined tags - like this one - to read more on their functionality!
+}
+
+ElementalDamage: {
+	// Tag: Elemental Damage
+	// Description: Elemental damage can be added (flat) or converted (%) to other damage, dealing additional damage, synergizing with other mechanics, and applying debuffs.
+}
+
+Fire: {
+	// Tag: Fire Damage
+	// Description: A form of Elemental Damage that inflicts Ignited on critical hits, a Damage over Time debuff scaling off of the damage of the hit.
+}
+
+Cold: {
+	// Tag: Cold Damage
+	// Description: A form of Elemental Damage that inflicts Freeze rarely, completely stopping an enemy from acting, lasting based off the damage of the hit.
+}
+
+Lightning: {
+	// Tag: Lightning Damage
+	// Description: A form of Elemental Damage that inflicts Shocked, which increases the amount of damage the NPC takes.
+}
+
+Chaos: {
+	// Tag: Chaos Damage
+	// Description: NOT an Elemental Damage type, but similar in function. Chaos inflicts Poison, a stacking Damage over Time debuff.
+}
+
+Ravencrest: {
+	// Tag: Ravencrest
+	// Description: The primary town, gathering place for adventurers, and a hotspot for quests.
+}
