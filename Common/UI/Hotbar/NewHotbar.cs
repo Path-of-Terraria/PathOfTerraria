@@ -459,7 +459,14 @@ public sealed class NewHotbar : SmartUiState
 			// Only show singular tags, not compound tags like Elemental
 			if (System.Numerics.BitOperations.PopCount((ulong)tag) == 1 && tags.HasFlag(tag))
 			{
-				text += " " + Language.GetTextValue("Mods.PathOfTerraria.Skills.Tags." + tag) + ",";
+				string name = "";
+
+				if (Main.mouseLeft)
+				{
+					name = $"[c/888888:{Language.GetTextValue("Mods.PathOfTerraria.Skills.Tags." + tag)}]  ";
+				}
+
+				text += $" {name}[tex/s1.00,h:{PoTMod.ModName}/Assets/UI/SkillTagIcons/{tag}] ";
 			}
 		}
 
@@ -610,6 +617,7 @@ public class HijackHotbarClick : ModSystem
 	private void StopClickOnHotbar(On_Main.orig_GUIHotbarDrawInner orig, Main self)
 	{
 		bool hbLocked = Main.LocalPlayer.hbLocked; // Lock hotbar for the original method so we don't fight against vanilla
+
 		try
 		{
 			Main.LocalPlayer.hbLocked = true;
