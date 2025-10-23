@@ -64,12 +64,6 @@ UIImageItemSlot.SlotWrapper itemHandler,
 		if (!Item.IsAir)
 		{
 			Icon.SetItem(Item);
-
-			//Texture2D texture = TextureAssets.Item[Item.type].Value;
-			//Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
-
-			//ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, IconSize, ref frame, out _, out float finalDrawScale);
-
 			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, (IsMouseHovering ? ActiveScale : InactiveScale), Smoothness);
 		}
 		else
