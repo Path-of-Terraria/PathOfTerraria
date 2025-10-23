@@ -431,12 +431,12 @@
         </member>
         <member name="T:NPCUtils.NPCUtils">
             <summary>
-            The mod. Used for loading all utilities contained in the mod.
+            Used for loading all utilities contained in the mod.
             </summary>
         </member>
         <member name="M:NPCUtils.NPCUtils.TryLoadBestiaryHelper(Terraria.ModLoader.Mod)">
             <summary>
-            Loads <see cref="T:NPCUtils.BestiaryHelper"/> if it's not yet loaded. This should be called in <see cref="M:Terraria.ModLoader.Mod.Load"/>, alongside <see cref="M:NPCUtils.NPCUtils.UnloadBestiaryHelper"/> in <see cref="M:Terraria.ModLoader.Mod.Unload"/>.
+            Loads <see cref="T:NPCUtils.BestiaryHelper"/> if it's not yet loaded. This should be called in <see cref="M:Terraria.ModLoader.Mod.Load"/>, and is unloaded automatically.
             </summary>
         </member>
         <member name="M:NPCUtils.NPCUtils.UnloadBestiaryHelper">
@@ -447,7 +447,7 @@
         <member name="M:NPCUtils.NPCUtils.AutoloadModBannersAndCritters(Terraria.ModLoader.Mod)">
             <summary>
             Autoloads all banners and critter items in the mod, given that the associated NPC uses <see cref="T:NPCUtils.AutoloadBannerAttribute"/> or <see cref="T:NPCUtils.AutoloadCritterAttribute"/>.<br/>
-            Make sure to use <see cref="M:NPCUtils.NPCUtils.UnloadMod(Terraria.ModLoader.Mod)"/> if you use this in order to properly reload content if needed.
+            This is unloaded automatically.
             </summary>
             <param name="mod">The mod to autoload banners from.</param>
         </member>
