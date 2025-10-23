@@ -77,14 +77,14 @@ internal class MechanicsTagHandler : ITagHandler
 
 			DynamicSpriteFont font = FontAssets.MouseText.Value;
 			spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)position.X - 2, (int)position.Y + (int)size.Y - 10, (int)size.X + 4, 6), Color.Black);
-			spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)position.X, (int)position.Y + (int)size.Y - 8, (int)size.X, 2), Color.White);
-			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, Tag, position, baseColor, Color.Black, 0f, Vector2.Zero, new Vector2(scale), spread: 2f);
+			spriteBatch.Draw(TextureAssets.MagicPixel.Value, new Rectangle((int)position.X, (int)position.Y + (int)size.Y - 8, (int)size.X, 2), GetVisibleColor());
+			ChatManager.DrawColorCodedStringWithShadow(spriteBatch, font, Tag, position, GetVisibleColor(), Color.Black, 0f, Vector2.Zero, new Vector2(scale), spread: 2f);
 			return true;
 		}
 
 		public override Color GetVisibleColor()
 		{
-			return Color.White;
+			return Color.Yellow;
 		}
 
 		public override float GetStringLength(DynamicSpriteFont font)
@@ -107,7 +107,7 @@ internal class MechanicsTagHandler : ITagHandler
 					foreach (Mechanic mech in MechanicsTagInformation.AssociatedMechanics[mechanic])
 					{
 						string desc = Language.GetTextValue("Mods.PathOfTerraria.Mechanics." + mech + ".Description");
-						sub += $"\n[c/888888:{Language.GetTextValue("Mods.PathOfTerraria.Mechanics." + mech + ".Tag")}:]\n{desc}\n";
+						sub += $"\n[c/{GetVisibleColor().Hex3()}:{Language.GetTextValue("Mods.PathOfTerraria.Mechanics." + mech + ".Tag")}:]\n{desc}\n";
 					}
 				}
 				else
