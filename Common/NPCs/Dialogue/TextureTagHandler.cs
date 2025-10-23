@@ -1,5 +1,4 @@
-﻿using Microsoft.Build.Tasks.Hosting;
-using ReLogic.Content;
+﻿using ReLogic.Content;
 using ReLogic.Graphics;
 using System.Globalization;
 using Terraria.GameContent;
@@ -14,6 +13,7 @@ public class TextureTagHandler : ITagHandler
 		float parsedScale = 1f;
 		float yOffset = 0f;
 		bool hard = false;
+		string hoverText = "";
 
 		if (!string.IsNullOrEmpty(options))
 		{
@@ -33,11 +33,20 @@ public class TextureTagHandler : ITagHandler
 				{
 					hard = true;
 				}
+
+				if (opt.StartsWith("t="))
+				{
+					hoverText = opt[2..];
+				}
 			}
 		}
 
-		Asset<Texture2D> asset = ModContent.Request<Texture2D>(text.Trim(), AssetRequestMode.ImmediateLoad);
-		return new TextureSnippet(asset, parsedScale, yOffset, hard) { Color = baseColor };
+		if (!ModContent.RequestIfExists(text.Trim(), out Asset<Texture2D> asset, AssetRequestMode.ImmediateLoad))
+		{
+			asset = ModContent.Request<Texture2D>("PathOfTerraria/Assets/UI/UnknownImage");
+		}
+
+		return new TextureSnippet(asset, parsedScale, yOffset, hard) { Color = baseColor, Text = hoverText };
 	}
 
 	private sealed class TextureSnippet : TextSnippet
@@ -98,19 +107,10 @@ public class TextureTagHandler : ITagHandler
 
 		public override void OnHover()
 		{
-			if (_tex.Name.Contains("Developer"))
+			if (Text != string.Empty)
 			{
-				Main.instance.MouseText("A developer of Path of Terraria");
-				return;
+				Main.instance.MouseText(Text);
 			}
-
-			if (_tex.Name.Contains("Moderator"))
-			{
-				Main.instance.MouseText("A moderator of Path of Terraria.");
-				return;
-			}
-
-			Main.instance.MouseText("A supporter of Path of Terraria.");
 		}
 	}
 }

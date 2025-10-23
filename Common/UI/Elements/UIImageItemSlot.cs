@@ -221,7 +221,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 			Main.HoverItem = Item.Clone();
 			Main.HoverItem.tooltipContext = Context;
 		}
-
+		
 		Main.LocalPlayer.mouseInterface = true;
 	}
 

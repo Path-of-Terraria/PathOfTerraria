@@ -22,7 +22,7 @@ public class FlameSage : SummonSkill
 
 	public override SkillTags Tags()
 	{
-		return SkillTags.Summon | SkillTags.Projectile | SkillTags.Fire;
+		return SkillTags.Summon | SkillTags.Projectile | SkillTags.Fire | SkillTags.Sentry;
 	}
 
 	public override void LevelTo(byte level)
