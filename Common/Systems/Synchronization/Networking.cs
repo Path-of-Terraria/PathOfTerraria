@@ -194,11 +194,6 @@ internal static class Networking
 		/// <c>byte player, bool enabled</c>
 		/// </summary>
 		PlayerUseSackOfHolding,
-
-		/// Synchronizes right click interactions with rifts.<br/>Signature:<br/>
-		/// <c>byte sender, int riftIdentity</c>
-		/// </summary>
-		RiftInteraction,
 	}
 
 	internal static void HandlePacket(BinaryReader reader)

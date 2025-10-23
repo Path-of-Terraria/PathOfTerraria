@@ -1375,18 +1375,18 @@ ObsidianAdversaryItem: {
 }
 
 CelestialConflux: {
-	// DisplayName: Celestial Conflux
-	// Tooltip: ""
+	DisplayName: Celestial Conflux
+	Tooltip: ""
 }
 
 GlacialConflux: {
-	// DisplayName: Glacial Conflux
-	// Tooltip: ""
+	DisplayName: Glacial Conflux
+	Tooltip: ""
 }
 
 InfernalConflux: {
-	// DisplayName: Infernal Conflux
-	// Tooltip: ""
+	DisplayName: Infernal Conflux
+	Tooltip: ""
 }
 
 Faeflame: {
