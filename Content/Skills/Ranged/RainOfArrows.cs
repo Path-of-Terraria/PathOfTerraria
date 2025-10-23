@@ -12,7 +12,6 @@ using PathOfTerraria.Content.SkillTrees;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.ID;
@@ -27,7 +26,28 @@ public class RainOfArrows : Skill
 
 	public override int MaxLevel => 3;
 
-	public override void LevelTo(byte level)
+    public override SkillTags Tags()
+    {
+		SkillTags tags = SkillTags.Projectile | SkillTags.Ranged;
+
+		if (Tree.Specialization is NaturesBarrage)
+		{
+			tags |= SkillTags.Chaos;
+		}
+
+		foreach (SkillNode node in Tree.Nodes)
+		{
+			if (node is ColdBlast blast && blast.Level > 0)
+			{
+				tags |= SkillTags.Cold;
+				break;
+			}
+		}
+
+        return tags;
+    }
+
+    public override void LevelTo(byte level)
 	{
 		Level = level;
 		Cooldown = MaxCooldown = 8 * 60;

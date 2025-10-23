@@ -1367,3 +1367,23 @@ InfernalConflux: {
 	// DisplayName: Infernal Conflux
 	// Tooltip: ""
 }
+
+Faeflame: {
+	// DisplayName: Faeflame
+	// Tooltip: ""
+}
+
+SporeLoci: {
+	// DisplayName: Spore Loci
+	// Tooltip: ""
+}
+
+CoralCrown: {
+	// DisplayName: Coral Crown
+	// Tooltip: ""
+}
+
+StoneStar: {
+	// DisplayName: Stone Star
+	// Tooltip: ""
+}

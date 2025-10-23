@@ -323,3 +323,18 @@ IncreasedWhipSpeedPassive: {
 	// Name: Increased Whip Speed
 	// Tooltip: +{0}% increased whip speed.
 }
+
+WhipCritDamageMastery: {
+	// Name: Branded
+	// Tooltip: Enemies hit by your whip take {0}% increased critical damage from your minions for 3 seconds.
+}
+
+WhipDoubleStrikeMastery: {
+	// Name: Lightning Strikes Twice
+	// Tooltip: Whip attacks hit an additional time for {0}% damage.
+}
+
+WhipReachMastery: {
+	// Name: Crackling Reach
+	// Tooltip: "{0}% Increased Whip range, but attack {1}% slower."
+}

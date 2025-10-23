@@ -109,6 +109,11 @@ public abstract partial class Skill
 
 	private Vector2 _size;
 
+	/// <summary>
+	/// The tags this skill applies to.
+	/// </summary>
+	public abstract SkillTags Tags();
+
 	private string GetTextureName()
 	{
 		return Tree?.Specialization?.Name ?? Name;
