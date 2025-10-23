@@ -102,7 +102,7 @@ internal class MechanicsTagHandler : ITagHandler
 			{
 				if (Main.keyState.PressingShift())
 				{
-					sub += "\n\n" + Language.GetTextValue("Mods.PathOfTerraria.Mechanics.RelatedMechs");
+					sub += "\n";
 
 					foreach (Mechanic mech in MechanicsTagInformation.AssociatedMechanics[mechanic])
 					{
