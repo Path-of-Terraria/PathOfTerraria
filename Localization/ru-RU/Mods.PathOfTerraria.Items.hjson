@@ -1372,3 +1372,12 @@ StoneStar: {
 	// DisplayName: Stone Star
 	// Tooltip: ""
 }
+
+SeveranceShard: {
+	// DisplayName: Severance Shard
+	/* Tooltip:
+		'''
+		Removes a random affix from an item
+		'It shatters and regrows constantly'
+		''' */
+}

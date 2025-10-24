@@ -595,7 +595,6 @@ GlimmeringShard: {
 	/* Tooltip:
 		'''
 		Rerolls the affixes on Magic rarity items
-		Hold an item then right click this Shard to reroll the item
 		'Glimmers and shines unnaturally'
 		''' */
 }
@@ -617,7 +616,6 @@ AscendantShard: {
 	/* Tooltip:
 		'''
 		Adds a new affix to an item
-		Hold an item then right click this Shard to add a new affix
 		'A strong sense of power emanates from it'
 		''' */
 }
@@ -627,7 +625,6 @@ UnfoldingShard: {
 	/* Tooltip:
 		'''
 		Upgrades a normal item to a magic item
-		Hold an item then right click this Shard to upgrade
 		'It almost looks like it's moving inside'
 		''' */
 }
@@ -683,7 +680,6 @@ EchoingShard: {
 	/* Tooltip:
 		'''
 		Creates a clone of an item
-		Hold an item then right click this Shard to clone
 		'I can see myself!'
 		''' */
 }
@@ -693,7 +689,6 @@ RadiantShard: {
 	/* Tooltip:
 		'''
 		Rerolls the affix values of an item
-		Hold an item then right click this Shard to reroll affix values
 		'It's hard to look at'
 		''' */
 }
@@ -864,7 +859,6 @@ LimpidShard: {
 	/* Tooltip:
 		'''
 		Turns a magic or rare item normal
-		Hold an item then right click this Shard to turn item normal
 		'It looks so plain'
 		''' */
 }
@@ -874,7 +868,6 @@ MysticShard: {
 	/* Tooltip:
 		'''
 		Turns a normal item rare
-		Hold an item then right click this Shard to turn item rare
 		'It's like an ember in the dark'
 		''' */
 }
@@ -884,7 +877,6 @@ ShiftingShard: {
 	/* Tooltip:
 		'''
 		Reroll the modifiers on a Rare Item
-		Hold an item then right click this Shard to reroll the modifiers
 		'I can't tell what it's doing'
 		''' */
 }
@@ -1392,4 +1384,13 @@ CoralCrown: {
 StoneStar: {
 	// DisplayName: Stone Star
 	// Tooltip: ""
+}
+
+SeveranceShard: {
+	// DisplayName: Severance Shard
+	/* Tooltip:
+		'''
+		Removes a random affix from an item
+		'It shatters and regrows constantly'
+		''' */
 }
