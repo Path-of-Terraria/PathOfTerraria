@@ -1,5 +1,6 @@
 ﻿using Mono.Cecil.Cil;
 using MonoMod.Cil;
+using PathOfTerraria.Utilities;
 using System.Reflection;
 using Terraria.GameContent;
 
@@ -16,63 +17,45 @@ internal class HouseBannerHook : ILoadable
 		IL_Main.DrawNPCHousesInWorld += IL_Main_DrawNPCHousesInWorld;
 	}
 
-	private void IL_Main_DrawNPCHousesInWorld(ILContext il)
+	private void IL_Main_DrawNPCHousesInWorld(ILContext ctx)
 	{
-		ILCursor c = new(il);
+		var il = new ILCursor(ctx);
 
-		for (int i = 0; i < 2; ++i)
-		{
-			if (!c.TryGotoNext(x => x.MatchLdsfld<Main>(nameof(Main.spriteBatch))))
-			{
-				return;
-			}
-		}
-
-		MethodInfo method = typeof(SpriteBatch).GetMethod
-		(
-			nameof(SpriteBatch.Draw),
-			BindingFlags.Public | BindingFlags.Instance,
-			[typeof(Texture2D), typeof(Vector2), typeof(Rectangle?), typeof(Color), typeof(float), typeof(Vector2), typeof(float), typeof(SpriteEffects), typeof(float)]
+		// Match 'NPC npc = npc[num];' to acquire locals.
+		int locNpcInstance = -1;
+		il.GotoNext(MoveType.After,
+			i => i.MatchLdsfld(typeof(Main), nameof(Main.npc)),
+			i => i.MatchLdloc(out _), // NPC index.
+			i => i.MatchLdelemRef(),
+			i => i.MatchStloc(out locNpcInstance)
 		);
 
-		if (!c.TryGotoNext(MoveType.After, x => x.MatchCallvirt(method)))
-		{
-			return;
-		}
+		// Match 'int headIndexSafe = TownNPCProfiles.GetHeadIndexSafe(npc);', which should be right after the first draw.
+		il.GotoNext(MoveType.Before,
+			i => i.MatchLdloc(locNpcInstance),
+			i => i.MatchCall(typeof(TownNPCProfiles), nameof(TownNPCProfiles.GetHeadIndexSafe))
+		);
+		ILUtils.HijackIncomingLabels(il);
 
-		ILLabel label = c.MarkLabel();
+		// Emit a conditional jump over the following code, up to the end of the head draw.
+		ILLabel skipHeadDrawLabel = il.DefineLabel();
+		il.Emit(OpCodes.Ldloc_S, (byte)locNpcInstance);
+		il.EmitDelegate(PreDrawNPCHeadIcon);
+		il.Emit(OpCodes.Brfalse, skipHeadDrawLabel);
 
-		if (!c.TryGotoPrev(x => x.MatchCall<TownNPCProfiles>(nameof(TownNPCProfiles.GetHeadIndexSafe))))
-		{
-			return;
-		}
+		// Go after the head draw and mark the label.
+		il.GotoNext(MoveType.After, i => i.MatchLdsfld(typeof(Main), nameof(Main.spriteBatch)), i => i.MatchLdsfld(typeof(TextureAssets), nameof(TextureAssets.NpcHead)));
+		il.GotoNext(MoveType.After, i => i.MatchCallOrCallvirt(typeof(SpriteBatch), nameof(SpriteBatch.Draw)));
+		ILUtils.HijackIncomingLabels(il);
+		il.MarkLabel(skipHeadDrawLabel);
 
-		c.Index--;
-
-		c.Emit(OpCodes.Ldloc_S, (byte)3);
-		c.Emit(OpCodes.Ldloc_S, (byte)14);
-		c.Emit(OpCodes.Ldloc_S, (byte)7);
-		c.Emit(OpCodes.Ldloc_S, (byte)19);
-		c.Emit(OpCodes.Ldloca_S, (byte)18);
-		c.EmitDelegate(PreDrawNPCHeadIcon);
-		c.Emit(OpCodes.Brfalse, label);
+		MonoModHooks.DumpIL(PoTMod.Instance, ctx);
 	}
 
-	public static bool PreDrawNPCHeadIcon(NPC npc, float baseY, int homeTileY, float drawScale, ref int headIndex)
+	public static bool PreDrawNPCHeadIcon(NPC npc)
 	{
-		const int XOffset = 8;
-
-		int yOffset = 18;
-
-		if (Main.tile[npc.homeTileX, homeTileY].TileType == 19)
-		{
-			yOffset -= 8;
-		}
-
-		Vector2 position = new Vector2(npc.homeTileX * 16 + XOffset, baseY + yOffset + 2f) - Main.screenPosition;
-		Color color = Lighting.GetColor(npc.homeTileX, homeTileY);
-
-		if (npc.ModNPC is PlayerContainerNPC container) // Stops player container NPCs from having their head drawn at all
+		// Stops player container NPCs from having their head drawn at all.
+		if (npc.ModNPC is PlayerContainerNPC container)
 		{
 			return false;
 		}

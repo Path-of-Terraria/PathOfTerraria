@@ -63,15 +63,18 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	{
 		if (!Item.IsAir)
 		{
-			Texture2D texture = TextureAssets.Item[Item.type].Value;
-			Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
+			Icon.SetItem(Item);
 
-			ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, IconSize, ref frame, out _, out float finalDrawScale);
+			//Texture2D texture = TextureAssets.Item[Item.type].Value;
+			//Rectangle frame = Main.itemAnimations[Item.type] == null ? texture.Frame() : Main.itemAnimations[Item.type].GetFrame(texture);
 
-			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, finalDrawScale * (IsMouseHovering ? ActiveScale : InactiveScale), Smoothness);
+			//ItemSlot.DrawItem_GetColorAndScale(Item, Item.scale, ref Icon.Color, IconSize, ref frame, out _, out float finalDrawScale);
+
+			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, (IsMouseHovering ? ActiveScale : InactiveScale), Smoothness);
 		}
 		else
 		{
+			Icon.SetItem(null);
 			Icon.Rotation = MathHelper.SmoothStep(Icon.Rotation, IsMouseHovering ? ActiveRotation : InactiveRotation, Smoothness);
 			Icon.ImageScale = MathHelper.SmoothStep(Icon.ImageScale, IsMouseHovering ? ActiveScale : InactiveScale, Smoothness);
 		}
