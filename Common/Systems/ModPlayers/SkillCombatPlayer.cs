@@ -226,8 +226,10 @@ internal class SkillCombatPlayer : ModPlayer
 		return false;
 	}
 
+	/// <summary> Tries to add the given skill to the player. </summary>
 	/// <param name="suppress"> Whether to display Main.NewText feedback. </param>
-	public bool TryAddSkill(Skill skill, bool suppress = false)
+	/// <param name="slot"> The slot to add to directly. Used only by <see cref="UI.SkillSelect.SkillSelectUI"/>. </param>
+	public bool TryAddSkill(Skill skill, bool suppress = false, int slot = -1)
 	{
 		SkillFailure fail = default;
 		if (!skill.CanEquipSkill(Player, ref fail))
@@ -241,20 +243,34 @@ internal class SkillCombatPlayer : ModPlayer
 			if (HotbarSkills[i] != null && HotbarSkills[i].Name == skill.Name)
 			{
 				NewText("Skill already added.");
-				return true; // Return true because the skill can be added, it just is equipped already
+
+				// When slot is -1, return true to allow the skill tree to be opened
+				// Otherwise, return false since it was not successfully equipped
+				return slot == -1;
 			}
 		}
 
-		for (int i = 0; i < HotbarSkills.Length; i++)
+		if (slot == -1)
 		{
-			if (HotbarSkills[i] == null)
+			for (int i = 0; i < HotbarSkills.Length; i++)
 			{
-				HotbarSkills[i] = skill;
-				HotbarSkills[i].LevelTo(HotbarSkills[i].Level);
+				if (HotbarSkills[i] == null)
+				{
+					HotbarSkills[i] = skill;
+					HotbarSkills[i].LevelTo(HotbarSkills[i].Level);
 
-				NewText("Skill added successfully.");
-				return true; // Equipped skill, return true
+					NewText("Skill added successfully.");
+					return true; // Equipped skill, return true
+				}
 			}
+		}
+		else
+		{
+			HotbarSkills[slot] = skill;
+			HotbarSkills[slot].LevelTo(HotbarSkills[slot].Level);
+
+			NewText("Skill added successfully.");
+			return true; // Equipped skill, return true
 		}
 
 		NewText("No available space to add the skill.");

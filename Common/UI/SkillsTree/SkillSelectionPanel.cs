@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
-using PathOfTerraria.Common.Mechanics;
+﻿using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.Systems.Skills;
+using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Content.SkillAugments;
 using PathOfTerraria.Core.UI.SmartUI;
+using System.Collections.Generic;
 using Terraria.Localization;
 using Terraria.ModLoader.Core;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
+using static PathOfTerraria.Common.UI.SkillsTree.SkillSelectionElement;
 
 namespace PathOfTerraria.Common.UI.SkillsTree;
 
@@ -34,15 +37,25 @@ internal class SkillSelectionPanel : SmartUiElement
 	{
 		int index = 0;
 
-		foreach (Type type in AssemblyManager.GetLoadableTypes(PoTMod.Instance.Code))
+		foreach (Skill skill in ModContent.GetContent<Skill>())
 		{
-			if (type.IsAbstract || !type.IsSubclassOf(typeof(Skill)))
+			var element = new SkillSelectionElement(skill, (parent, self) =>
 			{
-				continue;
-			}
+				SkillCombatPlayer skillCombatPlayer = Main.LocalPlayer.GetModPlayer<SkillCombatPlayer>();
 
-			var skill = (Skill) Activator.CreateInstance(type);
-			var element = new SkillSelectionElement(skill, index, this);
+				if (skillCombatPlayer.TryAddSkill(skill))
+				{
+					var panel = parent as SkillSelectionPanel;
+					panel.SelectedSkill = self.Skill;
+					panel.RebuildTree();
+
+					Main.LocalPlayer.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.SelectedSkill);
+				}
+			});
+
+			element.Top.Set(60, 0);
+			element.Left.Set(25 + 75 * index, 0);
+
 			Append(element);
 			index += 1;
 		}
