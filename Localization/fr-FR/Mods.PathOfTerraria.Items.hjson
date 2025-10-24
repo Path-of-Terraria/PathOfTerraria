@@ -1395,3 +1395,13 @@ StoneStar: {
 	// DisplayName: Stone Star
 	// Tooltip: ""
 }
+
+BerylRing: {
+	// DisplayName: Beryl Ring
+	// Tooltip: ""
+}
+
+FireDiamondRing: {
+	// DisplayName: Fire Diamond Ring
+	// Tooltip: ""
+}
