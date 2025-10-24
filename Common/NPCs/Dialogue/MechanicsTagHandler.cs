@@ -32,6 +32,36 @@ public enum Mechanic : byte
 
 internal class MechanicsTagHandler : ITagHandler
 {
+	internal class Loader : ILoadable
+	{
+		public static Dictionary<Mechanic, HashSet<Mechanic>> AssociatedMechanics = [];
+
+		public void Load(Mod mod)
+		{
+			foreach (Mechanic enu in Enum.GetValues<Mechanic>())
+			{
+				_ = Language.GetOrRegister("Mods.PathOfTerraria.Mechanics." + enu + ".Tag");
+				_ = Language.GetOrRegister("Mods.PathOfTerraria.Mechanics." + enu + ".Description");
+			}
+
+			AssociatedMechanics.Add(Mechanic.Fire, [Mechanic.ElementalDamage, Mechanic.DamageOverTime]);
+			AssociatedMechanics.Add(Mechanic.Cold, [Mechanic.ElementalDamage]);
+			AssociatedMechanics.Add(Mechanic.Lightning, [Mechanic.ElementalDamage]);
+			AssociatedMechanics.Add(Mechanic.Chaos, [Mechanic.DamageOverTime]);
+			AssociatedMechanics.Add(Mechanic.Affixes, [Mechanic.ItemRarity]);
+			AssociatedMechanics.Add(Mechanic.MapAffixes, [Mechanic.Affixes]);
+			AssociatedMechanics.Add(Mechanic.ItemAffixes, [Mechanic.Affixes]);
+			AssociatedMechanics.Add(Mechanic.EnemyAffixes, [Mechanic.Affixes]);
+			AssociatedMechanics.Add(Mechanic.ItemRarity, [Mechanic.Affixes]);
+
+			ChatManager.Register<MechanicsTagHandler>("mechanic");
+		}
+
+		public void Unload()
+		{
+		}
+	}
+
 	internal class MechanicsTextSnippet : TextSnippet
 	{
 		public string Tag
@@ -96,7 +126,7 @@ internal class MechanicsTagHandler : ITagHandler
 		public override void OnHover()
 		{
 			string sub = Language.GetTextValue("Mods.PathOfTerraria.Mechanics." + mechanic + ".Description");
-			bool hasMechs = MechanicsTagInformation.AssociatedMechanics.ContainsKey(mechanic);
+			bool hasMechs = Loader.AssociatedMechanics.ContainsKey(mechanic);
 
 			if (hasMechs)
 			{
@@ -104,7 +134,7 @@ internal class MechanicsTagHandler : ITagHandler
 				{
 					sub += "\n";
 
-					foreach (Mechanic mech in MechanicsTagInformation.AssociatedMechanics[mechanic])
+					foreach (Mechanic mech in Loader.AssociatedMechanics[mechanic])
 					{
 						string desc = Language.GetTextValue("Mods.PathOfTerraria.Mechanics." + mech + ".Description");
 						sub += $"\n[c/{GetVisibleColor().Hex3()}:{Language.GetTextValue("Mods.PathOfTerraria.Mechanics." + mech + ".Tag")}:]\n{desc}\n";
@@ -139,33 +169,5 @@ internal class MechanicsTagHandler : ITagHandler
 		}
 
 		return new MechanicsTextSnippet(display, baseColor, text == display.ToString().ToLower());
-	}
-}
-
-internal class MechanicsTagInformation : ILoadable
-{
-	public static Dictionary<Mechanic, HashSet<Mechanic>> AssociatedMechanics = [];
-
-	public void Load(Mod mod)
-	{
-		foreach (Mechanic enu in Enum.GetValues<Mechanic>())
-		{
-			_ = Language.GetOrRegister("Mods.PathOfTerraria.Mechanics." + enu + ".Tag");
-			_ = Language.GetOrRegister("Mods.PathOfTerraria.Mechanics." + enu + ".Description");
-		}
-
-		AssociatedMechanics.Add(Mechanic.Fire, [Mechanic.ElementalDamage, Mechanic.DamageOverTime]);
-		AssociatedMechanics.Add(Mechanic.Cold, [Mechanic.ElementalDamage]);
-		AssociatedMechanics.Add(Mechanic.Lightning, [Mechanic.ElementalDamage]);
-		AssociatedMechanics.Add(Mechanic.Chaos, [Mechanic.DamageOverTime]);
-		AssociatedMechanics.Add(Mechanic.Affixes, [Mechanic.ItemRarity]);
-		AssociatedMechanics.Add(Mechanic.MapAffixes, [Mechanic.Affixes]);
-		AssociatedMechanics.Add(Mechanic.ItemAffixes, [Mechanic.Affixes]);
-		AssociatedMechanics.Add(Mechanic.EnemyAffixes, [Mechanic.Affixes]);
-		AssociatedMechanics.Add(Mechanic.ItemRarity, [Mechanic.Affixes]);
-	}
-
-	public void Unload()
-	{
 	}
 }
