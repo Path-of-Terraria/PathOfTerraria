@@ -29,6 +29,9 @@ public partial class EntityModifier : EntityModifierSegment
 	public StatModifier CriticalMultiplier = new();
 	public OnHitDeBuffer Buffer = [];
 
+	// SummonCritPlayer:
+	public AddableFloat SummonCritChance = new();
+
 	// MinorStatsModPlayer:
 	public StatModifier MagicFind = new();
 

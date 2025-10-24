@@ -12,7 +12,7 @@ internal class OwlSummon : GrimoireSummon
 		Main.projFrames[Type] = 13;
 	}
 
-	public override void SetDefaults()
+	public override void Defaults()
 	{
 		Projectile.width = 26;
 		Projectile.height = 34;

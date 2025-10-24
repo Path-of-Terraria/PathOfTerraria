@@ -1374,6 +1374,21 @@ ObsidianAdversaryItem: {
 	Tooltip: "'The harrowing visage seems to stare back...'"
 }
 
+GreenCore: {
+	DisplayName: Natural Core
+	Tooltip: ""
+}
+
+RichMahoganyTalisman: {
+	DisplayName: Rich Mahogany Talisman
+	Tooltip: ""
+}
+
+YellowCore: {
+	DisplayName: Caged Core
+  Tooltip: ""
+}
+
 Faeflame: {
 	DisplayName: Faeflame
 	Tooltip: ""
