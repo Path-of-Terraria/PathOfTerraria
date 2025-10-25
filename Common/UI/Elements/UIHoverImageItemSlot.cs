@@ -2,6 +2,8 @@ using ReLogic.Content;
 using Terraria.GameContent;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI.Elements;
 
 /// <summary>
@@ -14,7 +16,7 @@ public class UIHoverImageItemSlot(
 	Asset<Texture2D> backgroundTexture,
 	Asset<Texture2D> iconTexture,
 UIImageItemSlot.SlotWrapper itemHandler,
-	(string Key, object Arg0) hoverText,
+	(string Key, object Arg0)? hoverText = null,
 	int context = ItemSlot.Context.InventoryItem,
 	bool skipAutoSize = false,
 	float iconScalingSize = UIImageItemSlot.DefaultIconSize

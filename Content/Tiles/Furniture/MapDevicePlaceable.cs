@@ -1,15 +1,25 @@
-﻿using PathOfTerraria.Common.Systems.Synchronization.Handlers.MapDevice;
+﻿using System.Collections.Generic;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
+using PathOfTerraria.Common.Mapping;
+using PathOfTerraria.Common.Systems.Synchronization;
 using PathOfTerraria.Content.Items.Consumables.Maps;
 using PathOfTerraria.Content.Items.Placeable;
 using PathOfTerraria.Core.Items;
+using PathOfTerraria.Utilities;
 using ReLogic.Content;
-using System.IO;
+using Terraria.Audio;
+using Terraria.Chat;
 using Terraria.DataStructures;
 using Terraria.GameContent;
 using Terraria.ID;
 using Terraria.Localization;
 using Terraria.ModLoader.IO;
 using Terraria.ObjectData;
+
+#nullable enable
 
 namespace PathOfTerraria.Content.Tiles.Furniture;
 
@@ -18,10 +28,10 @@ public class MapDevicePlaceable : ModTile
 	public const int FullWidth = 18 * 5;
 	public const int FullHeight = 18 * 5;
 
-	private static Asset<Texture2D> _portalTex;
+	private static Asset<Texture2D>? _portalTex;
 
-	/// This is the portal that will appear above
-	protected virtual string Portal => $"{PoTMod.ModName}/Assets/Items/Placeable/Portal";
+	/// <summary> This is the portal that will appear above. </summary>
+	protected virtual string PortalTexturePath => $"{PoTMod.ModName}/Assets/Items/Placeable/Portal";
 
 	public static Point16 GetTopLeft(int i, int j)
 	{
@@ -32,18 +42,18 @@ public class MapDevicePlaceable : ModTile
 		return new(i, j);
 	}
 
-	public override void Load()
-	{
-		// Cache the extra texture displayed on the pedestal
-		_portalTex = ModContent.Request<Texture2D>(Portal);
-	}
-
 	public override void SetStaticDefaults()
 	{
+		Main.tileNoAttach[Type] = true;
 		Main.tileFrameImportant[Type] = true;
 
-		TileID.Sets.InteractibleByNPCs[Type] = true;
+		// Counts as a container, but does not bring up a chest UI.
+		(Main.tileFrameImportant[Type], TileID.Sets.IsAContainer[Type]) = (true, true);
 		
+		TileID.Sets.HasOutlines[Type] = true;
+		TileID.Sets.InteractibleByNPCs[Type] = true;
+		TileID.Sets.DisableSmartCursor[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 		TileObjectData.newTile.Width = 5;
 		TileObjectData.newTile.Height = 5;
@@ -81,7 +91,7 @@ public class MapDevicePlaceable : ModTile
 			return;
 		}
 
-		if (!TryGetEntity(ref i, ref j, out MapDeviceEntity entity) || entity.StoredMap == null)
+		if (!TryGetEntity(ref i, ref j, out MapDeviceEntity? entity) || !entity.PortalActive || entity.StoredMap is not { IsAir: false })
 		{
 			return;
 		}
@@ -93,13 +103,18 @@ public class MapDevicePlaceable : ModTile
 		var p = new Point(i, j);
 		tile = Main.tile[p];
 
-		if (tile == null || !tile.HasTile)
+		if (!tile.HasTile)
+		{
+			return;
+		}
+
+		// Start loading the texture and wait for it.
+		if ((_portalTex ??= ModContent.Request<Texture2D>(PortalTexturePath)) is not { IsLoaded: true, Value: { } texture })
 		{
 			return;
 		}
 
 		// Get the initial draw parameters
-		Texture2D texture = _portalTex.Value;
 		int frameY = tile.TileFrameX % 90 / FullWidth; // Picks the frame on the sheet based on the placeStyle of the item
 		Rectangle frame = texture.Frame(1, 1, 0, frameY);
 		Vector2 origin = frame.Size() / 2f;
@@ -138,9 +153,9 @@ public class MapDevicePlaceable : ModTile
 
 	public override bool RightClick(int i, int j)
 	{
-		if (TryGetEntity(ref i, ref j, out MapDeviceEntity entity))
+		if (TryGetEntity(ref i, ref j, out MapDeviceEntity? entity) && Main.netMode != NetmodeID.Server)
 		{
-			entity.TryPlaceMap(i, j);
+			entity.TryOpeningInterface();
 		}
 
 		return true;
@@ -153,19 +168,19 @@ public class MapDevicePlaceable : ModTile
 		player.cursorItemIconEnabled = true;
 		player.cursorItemIconID = ModContent.ItemType<MapDevice>();
 
-		if (TryGetEntity(ref i, ref j, out MapDeviceEntity entity) && entity.StoredMap != null)
+		if (TryGetEntity(ref i, ref j, out MapDeviceEntity? entity) && entity.StoredMap is { IsAir: false })
 		{ 
 			player.cursorItemIconID = entity.StoredMap.type;
 		}
 	}
 
-	private static bool TryGetEntity(ref int i, ref int j, out MapDeviceEntity entity)
+	private static bool TryGetEntity(ref int i, ref int j, [NotNullWhen(true)] out MapDeviceEntity? entity)
 	{
 		Point16 pos = GetTopLeft(i, j);
 		i = pos.X;
 		j = pos.Y;
 
-		if (TileEntity.ByPosition.TryGetValue(new(i, j), out TileEntity tileEntity) && tileEntity is MapDeviceEntity mapEntity)
+		if (TileEntity.ByPosition.TryGetValue(new(i, j), out TileEntity? tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
 			entity = mapEntity;
 			return true;
@@ -178,7 +193,20 @@ public class MapDevicePlaceable : ModTile
 
 internal class MapDeviceEntity : ModTileEntity
 {
-	public Item StoredMap = null;
+	public static int StorageSize { get; } = 5 * 4;
+
+	public Item StoredMap { get; set; }
+	public Item[] Storage { get; set; }
+	public bool PortalActive { get; set; }
+	public int PortalUsesLeft { get; set; }
+	public int? InteractingPlayer { get; private set; }
+
+	public MapDeviceEntity()
+	{
+		StoredMap = new();
+		Storage = new Item[StorageSize];
+		for (int i = 0; i < Storage.Length; i++) { Storage[i] = new(); }
+	}
 
 	public override bool IsTileValidForEntity(int x, int y)
 	{
@@ -203,19 +231,39 @@ internal class MapDeviceEntity : ModTileEntity
 
 	public override void OnKill()
 	{
-		if (StoredMap is not null)
+		// Drop storage items. NewItem checks for it not being air.
+		foreach (Item item in Storage)
+		{
+			if (item is not { IsAir: false }) { continue; }
+
+			Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), item);
+		}
+
+		// Drop the map, but only if the portal has not been activated.
+		if (!PortalActive && StoredMap is { IsAir: false })
 		{
 			Item.NewItem(new EntitySource_TileBreak(Position.X, Position.Y), Position.ToWorldCoordinates(), StoredMap);
-			StoredMap = null;
 		}
 	}
 
 	public override void SaveData(TagCompound tag)
 	{
-		if (StoredMap is not null)
+		if (StoredMap is { IsAir: false })
 		{
 			tag.Add("item", ItemIO.Save(StoredMap));
 		}
+
+		var storage = new TagCompound();
+
+		for (int i = 0; i < Storage.Length; i++)
+		{
+			if (Storage[i] is { IsAir: false } item)
+			{
+				storage[i.ToString()] = ItemIO.Save(item);
+			}
+		}
+
+		if (storage.Count > 0) { tag.Add("storage", storage); }
 	}
 
 	public override void LoadData(TagCompound tag)
@@ -224,105 +272,426 @@ internal class MapDeviceEntity : ModTileEntity
 		{
 			StoredMap = ItemIO.Load(itemTag);
 		}
+
+		if (tag.TryGet("storage", out TagCompound storage))
+		{
+			foreach (KeyValuePair<string, object> pair in storage)
+			{
+				if (int.TryParse(pair.Key, out int key) && key >= 0 && key < Storage.Length && ItemIO.Load((TagCompound)pair.Value) is { IsAir: false } item)
+				{
+					Storage[key] = item;
+				}
+			}
+		}
 	}
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		writer.Write(StoredMap is not null);
-		
-		if (StoredMap is not null)
-		{
-			writer.Write((short)StoredMap.type);
-			writer.Write((byte)(StoredMap.ModItem as Map).RemainingUses);
-		}
+		MapDeviceSync.WriteInto(writer, this, MapDeviceSync.Flags.FullSync, null);
 	}
-
 	public override void NetReceive(BinaryReader reader)
 	{
-		bool hasMap = reader.ReadBoolean();
-
-		if (hasMap)
-		{
-			short type = reader.ReadInt16();
-			int remainingUses = reader.ReadByte();
-
-			SetItem(type, remainingUses);
-		}
+		MapDeviceSync.ReadInto(sender: byte.MaxValue, reader, this, out _);
 	}
 
-	internal void SetItem(short itemId, int remainingUses = -1)
+	/// <summary>
+	/// Attempts to have the local player or <paramref name="netSender"/> open the map device UI.
+	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
+	/// </summary>
+	public bool TryOpeningInterface(byte? netSender = null)
 	{
-		if (ContentSamples.ItemsByType[itemId].ModItem is not Map map)
+		// Request interaction.
+		if (Main.netMode == NetmodeID.MultiplayerClient && !netSender.HasValue)
 		{
-			return;
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenInterface);
+			return true;
 		}
 
-		StoredMap = new Item(itemId);
-		(StoredMap.ModItem as Map).RemainingUses = remainingUses == -1 ? map.MaxUses : remainingUses;
+		if (Main.netMode != NetmodeID.Server)
+		{
+			// Finish clientside interaction.
+			MapDeviceInterface.Open(this);
+		}
+		else
+		{
+			Debug.Assert(netSender != null);
+
+			// Refuse interaction and notify of the refusal.
+			if (InteractingPlayer.HasValue && InteractingPlayer != netSender)
+			{
+				var text = NetworkText.FromKey($"Mods.{nameof(PathOfTerraria)}.UI.MapDevice.AlreadyInUse");
+				ChatHelper.SendChatMessageToClient(text, Color.PaleVioletRed, netSender.Value);
+
+				return false;
+			}
+
+			// Acknowledge interaction.
+			InteractingPlayer = netSender.Value;
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenInterface, toClient: netSender.Value);
+		}
+
+		return true;
 	}
 
-	internal void TryPlaceMap(int i, int j)
+	/// <summary>
+	/// Writes down that a given player has closed the interface, if one has been open.
+	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
+	/// </summary>
+	public bool TryClosingInterface(byte? netSender = null)
 	{
-		if (StoredMap is not null)
+		// Request interaction.
+		if (Main.netMode == NetmodeID.MultiplayerClient && !netSender.HasValue)
 		{
-			if (Main.netMode != NetmodeID.SinglePlayer)
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.CloseInterface);
+			return true;
+		}
+
+		if (Main.netMode != NetmodeID.Server)
+		{
+			// Finish clientside interaction.
+			MapDeviceInterface.Close(fromEntity: true);
+		}
+		else if (InteractingPlayer != null)
+		{
+			if (netSender != null && InteractingPlayer == netSender.Value)
 			{
-				ModContent.GetInstance<ConsumeMapDeviceHandler>().Send((byte)Main.myPlayer, new Point16(i, j));
+				// Finish serverside interaction.
+				InteractingPlayer = null;
 			}
-
-			var map = StoredMap.ModItem as Map;
-
-			if (map is null)
+			else
 			{
-				StoredMap = null;
-				return;
+				// Force close for the client currently interacting.
+				MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.CloseInterface, toClient: InteractingPlayer.Value);
+				InteractingPlayer = null;
 			}
+		}
 
+		return true;
+	}
+
+	/// <summary>
+	/// Attempts to have the local player enter the portal.
+	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
+	/// </summary>
+	public bool TryEnterPortal(byte? netSender = null)
+	{
+		if (!PortalActive || StoredMap is not { IsAir: false, ModItem: Map map })
+		{
+			return false;
+		}
+
+		// Request interaction.
+		if (Main.netMode == NetmodeID.MultiplayerClient && netSender == null)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EnterPortal);
+			return true;
+		}
+
+		if (Main.netMode != NetmodeID.Server)
+		{
+			// Finish clientside interaction.
 			map.OpenMap();
-			map.RemainingUses--;
+		}
+		else
+		{
+			// Acknowledge interaction.
+			Debug.Assert(netSender != null);
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.EnterPortal, toClient: netSender.Value);
+		}
 
-			if (map.RemainingUses <= 0)
+		// Roll down uses and close the portal if needed.
+		if (Main.netMode != NetmodeID.MultiplayerClient)
+		{
+			PortalUsesLeft--;
+
+			if (PortalUsesLeft <= 0)
 			{
-				StoredMap = null;
+				TryClosingPortal();
+			}
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// Attempts to open a portal for the map stored within the device.
+	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
+	/// </summary>
+	public bool TryOpeningPortal(byte? netSender = null)
+	{
+		if (PortalActive || StoredMap is not { IsAir: false, ModItem: Map map })
+		{
+			return false;
+		}
+
+		// Request interaction.
+		if (Main.netMode == NetmodeID.MultiplayerClient && netSender == null)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenPortal);
+			return true;
+		}
+
+		// Refuse interaction if sent by someone other than the interacting player.
+		if (Main.netMode == NetmodeID.Server && netSender.HasValue && InteractingPlayer != netSender)
+		{
+			return false;
+		}
+
+		PortalActive = true;
+		PortalUsesLeft = map.MaxUses;
+
+		// Broadcast the interaction.
+		if (Main.netMode == NetmodeID.Server)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.OpenPortal);
+		}
+
+		if (!Main.dedServ)
+		{
+			//TODO: Replace.
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Skills/BerserkStart")
+			{
+				Volume = 0.75f,
+				PitchVariance = 0.2f,
+			});
+		}
+
+		return true;
+	}
+
+	/// <summary>
+	/// Attempts to close the currently open portal.
+	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
+	/// </summary>
+	public bool TryClosingPortal(byte? netSender = null)
+	{
+		if (!PortalActive)
+		{
+			return false;
+		}
+
+		// Request interaction.
+		if (Main.netMode == NetmodeID.MultiplayerClient && netSender == null)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.ClosePortal);
+			return true;
+		}
+
+		// Refuse interaction if sent by someone other than the interacting player.
+		if (Main.netMode == NetmodeID.Server && netSender.HasValue && InteractingPlayer != netSender)
+		{
+			return false;
+		}
+
+		// The map is destroyed if the portal is ever closed.
+		StoredMap = new();
+		PortalActive = false;
+		PortalUsesLeft = 0;
+
+		// Broadcast the interaction.
+		if (Main.netMode == NetmodeID.Server)
+		{
+			MapDeviceInteraction.Send(ID, MapDeviceInteraction.Kind.ClosePortal);
+		}
+
+		if (!Main.dedServ)
+		{
+			//TODO: Replace.
+			SoundEngine.PlaySound(new SoundStyle($"{PoTMod.ModName}/Assets/Sounds/Skills/BerserkEnd")
+			{
+				Volume = 0.75f,
+				PitchVariance = 0.2f,
+			});
+		}
+
+		return true;
+	}
+}
+
+internal class MapDeviceInteraction : Handler
+{
+	public enum Kind : byte
+	{
+		OpenInterface,
+		CloseInterface,
+		OpenPortal,
+		ClosePortal,
+		EnterPortal,
+	}
+
+	public override Networking.Message MessageType => Networking.Message.MapDeviceInteraction;
+
+	public static void Send(int entityId, Kind kind, int toClient = -1, int ignoreClient = -1)
+	{
+		ModPacket packet = Networking.GetPacket(Networking.Message.MapDeviceInteraction);
+		packet.Write(entityId);
+		packet.Write((byte)kind);
+		packet.Send(toClient, ignoreClient);
+	}
+
+	internal override void Receive(BinaryReader reader, byte sender)
+	{
+		int entityId = reader.ReadInt32();
+		var kind = (Kind)reader.ReadByte();
+
+		if (TileEntity.ByID.TryGetValue(entityId, out TileEntity? tileEntity) && tileEntity is MapDeviceEntity mapEntity)
+		{
+			switch (kind)
+			{
+				case Kind.OpenInterface: mapEntity.TryOpeningInterface(netSender: sender); break;
+				case Kind.CloseInterface: mapEntity.TryClosingInterface(netSender: sender); break;
+				case Kind.OpenPortal: mapEntity.TryOpeningPortal(netSender: sender); break;
+				case Kind.ClosePortal: mapEntity.TryClosingPortal(netSender: sender); break;
+				case Kind.EnterPortal: mapEntity.TryEnterPortal(netSender: sender); break;
+			}
+		}
+	}
+}
+
+internal class MapDeviceSync : Handler
+{
+	[Flags]
+	public enum Flags : byte
+	{
+		Status = 1 << 0,
+		Map = 1 << 1,
+		Storage = 1 << 2,
+		FullSync = Status | Map | Storage,
+	}
+
+	public override Networking.Message MessageType => Networking.Message.MapDeviceSync;
+
+	public static void Send(int entityId, Flags flags, IEnumerable<int>? itemIndices, int toClient = -1, int ignoreClient = -1)
+	{
+		if (!TileEntity.ByID.TryGetValue(entityId, out TileEntity? tileEntity) || tileEntity is not MapDeviceEntity device)
+		{
+			return;
+		}
+
+		// Never send status from clients.
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+		{
+			flags &= ~Flags.Status;
+		}
+
+		if (flags == 0)
+		{
+			return;
+		}
+
+		ModPacket packet = Networking.GetPacket(Networking.Message.MapDeviceSync);
+		packet.Write(entityId);
+		WriteInto(packet, device, flags, itemIndices);
+		packet.Send(toClient, ignoreClient);
+	}
+	public static void WriteInto(BinaryWriter writer, MapDeviceEntity device, Flags flags, IEnumerable<int>? itemIndices)
+	{
+		writer.Write((byte)flags);
+
+		if (flags.HasFlag(Flags.Status))
+		{
+			writer.Write(device.PortalActive);
+			writer.Write(device.PortalUsesLeft);
+		}
+
+		if (flags.HasFlag(Flags.Map))
+		{
+			ItemIO.Send(device.StoredMap, writer, writeStack: true);
+		}
+
+		if (flags.HasFlag(Flags.Storage))
+		{
+			// Write preceding masks.
+			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[device.Storage.Length / 8];
+			foreach (int storageIndex in itemIndices ?? Enumerable.Range(0, device.Storage.Length))
+			{
+				(int div, int rem) = Math.DivRem(storageIndex, 8);
+				masks[div].Set(rem);
 			}
 
-			return;
-		}
-
-		Item heldItem = Main.LocalPlayer.HeldItem;
-		if (heldItem.ModItem is not Map heldMap)
-		{
-			return;
-		}
-
-		Item clone = heldItem.Clone();
-		clone.stack = 1;
-		StoredMap = clone;
-		(StoredMap.ModItem as Map).RemainingUses = heldMap.MaxUses;
-		heldItem.stack--;
-
-		// If the stack is empty, remove the item from the player's inventory
-		if (heldItem.stack <= 0)
-		{
-			heldItem.TurnToAir();
-		}
-
-		PoTItemHelper.SetMouseItemToHeldItem(Main.LocalPlayer);
-
-		if (Main.netMode != NetmodeID.SinglePlayer)
-		{
-			ModContent.GetInstance<PlaceMapInDeviceHandler>().Send((byte)Main.myPlayer, (short)clone.type, new Point16(i, j));
+			// Write item data.
+			for (int maskIndex = 0, storageIndex = 0; maskIndex < masks.Length; maskIndex++)
+			{
+				foreach (int bitIndex in masks[maskIndex])
+				{
+					ItemIO.Send(device.Storage[storageIndex], writer, writeStack: true);
+				}
+			}
 		}
 	}
 
-	internal void ConsumeMap()
+	private static bool Receive(byte sender, BinaryReader reader, out int entityId, out Flags flags)
 	{
-		var map = StoredMap.ModItem as Map;
-		map.RemainingUses--;
+		entityId = reader.ReadInt32();
 
-		if (map.RemainingUses <= 0)
+		// Try to acquire the entity. We still have to finish reading the packet whole if we fail.
+		MapDeviceEntity? mapEntity = TileEntity.ByID.TryGetValue(entityId, out TileEntity? te) && te is MapDeviceEntity e ? e : null;
+
+		ReadInto(sender, reader, mapEntity, out flags);
+
+		return mapEntity != null;
+	}
+	public static void ReadInto(byte sender, BinaryReader reader, MapDeviceEntity? mapEntity, out Flags flags)
+	{
+		flags = (Flags)reader.ReadByte();
+
+		if (flags.HasFlag(Flags.Status))
 		{
-			StoredMap = null;
+			bool isActive = reader.ReadBoolean();
+			byte remainingUses = reader.ReadByte();
+
+			// On servers, refuse applying status data if it is received from clients.
+			if (mapEntity != null && Main.netMode != NetmodeID.Server)
+			{
+				mapEntity.PortalActive = isActive;
+				mapEntity.PortalUsesLeft = remainingUses;
+			}
 		}
+
+		if (flags.HasFlag(Flags.Map))
+		{
+			// On servers, refuse applying client's map item if the portal has already been opened.
+			bool forceDummy = Main.netMode == NetmodeID.Server && mapEntity?.PortalActive == true;
+			Item mapSlot = !forceDummy ? (mapEntity?.StoredMap ?? new()) : new();
+			ItemIO.Receive(mapSlot!, reader, readStack: true);
+
+			// Drop the received map if it went into a dummy slot.
+			if (Main.netMode == NetmodeID.Server && mapSlot != mapEntity?.StoredMap && mapSlot is { IsAir: false } && Main.player[sender] is { active: true } player)
+			{
+				Item.NewItem(null, player.Center, mapSlot);
+			}
+		}
+
+		if (flags.HasFlag(Flags.Storage))
+		{
+			// Read masks.
+			Span<BitMask<byte>> masks = stackalloc BitMask<byte>[MapDeviceEntity.StorageSize / 8];
+			for (int i = 0; i < masks.Length; i++) { masks[i] = new(reader.ReadByte()); }
+
+			// On servers, refuse applying client's storage items if they are not the one interacting with the device.
+			bool forceDummy = Main.netMode == NetmodeID.Server && mapEntity?.InteractingPlayer != sender;
+
+			// Read items.
+			for (int maskIndex = 0, storageIndex = 0; maskIndex < masks.Length; maskIndex++)
+			{
+				foreach (int bitIndex in masks[maskIndex])
+				{
+					Item item = !forceDummy ? (mapEntity?.Storage[storageIndex] ?? new()) : new();
+					ItemIO.Receive(item, reader, readStack: true);
+				}
+			}
+		}
+	}
+
+	internal override void ServerReceive(BinaryReader reader, byte sender)
+	{
+		if (Receive(sender, reader, out int entityId, out Flags flags))
+		{
+			Send(entityId, flags, null, ignoreClient: sender);
+		}
+	}
+	internal override void ClientReceive(BinaryReader reader, byte sender)
+	{
+		Receive(sender, reader, out _, out _);
 	}
 }

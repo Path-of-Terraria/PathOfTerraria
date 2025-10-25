@@ -34,16 +34,15 @@ internal static class Networking
 		SpawnNPCOnServer,
 
 		/// <summary>
-		/// Syncs placing an item in a map device.<br/>Signature:<br/>
-		/// <c>byte fromWho, short itemId, Point16 entityKey</c>
+		/// Syncs map devices.
+		/// <br/> Does not implement <see cref="Handler.Send"/>.
 		/// </summary>
-		SyncMapDevicePlaceMap,
-
+		MapDeviceSync,
 		/// <summary>
-		/// Takes 1 "use" off of a given map device.<br/>Signature:<br/>
-		/// <c>byte fromWho, Point16 entityKey</c>
+		/// Reports various map interactions.
+		/// <br/> Does not implement <see cref="Handler.Send"/>.
 		/// </summary>
-		ConsumeMapOffOfDevice,
+		MapDeviceInteraction,
 
 		/// <summary>
 		/// Sets the index of a given Ravencrest structure.<br/>Signature:<br/>

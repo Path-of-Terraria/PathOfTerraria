@@ -6,6 +6,8 @@ using Terraria.ID;
 using Terraria.Localization;
 using Terraria.UI;
 
+#nullable enable
+
 namespace PathOfTerraria.Common.UI.Elements;
 
 /// <summary>
@@ -23,7 +25,9 @@ UIImageItemSlot.SlotWrapper itemHandler,
 {
 	public const float DefaultIconSize = 24f;
 
-	public delegate void ItemInsertionCallback(Item newItem, Item currentItem);
+	public delegate void ItemUpdateCallback(UIElement element, Item oldItem, Item newItem);
+
+	public delegate bool IsLockedPredicate(UIImageItemSlot slot);
 
 	public delegate bool ItemInsertionPredicate(Item newItem, Item currentItem);
 
@@ -31,7 +35,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	{
 		public readonly Func<Item> Get;
 		public readonly Action<Item> Set;
-		public readonly Func<(Item[] Inventory, int Slot)> ByInventory;
+		public readonly Func<(Item[] Inventory, int Slot)>? ByInventory;
 
 		public SlotWrapper(Func<Item> get, Action<Item> set)
 		{
@@ -62,12 +66,12 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	/// <summary>
 	///     The background of the item slot.
 	/// </summary>
-	public UIImage Background { get; protected set; }
+	public UIImage Background { get; protected set; } = null!;
 
 	/// <summary>
 	///     The icon of the item slot.
 	/// </summary>
-	public UIHoverImage Icon { get; protected set; }
+	public UIHoverImage Icon { get; protected set; } = null!;
 
 	protected Asset<Texture2D> BackgroundTexture = backgroundTexture;
 
@@ -82,14 +86,14 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	protected Asset<Texture2D> IconTexture = iconTexture;
 
 	/// <summary>
-	///     The inventory that the slots wraps itself around.
+	///     Can be used to determine whether an item can be inserted into the slot or not.
 	/// </summary>
-	public Item[] Inventory;
+	public ItemInsertionPredicate? Predicate { get; set; }
 
 	/// <summary>
 	///     Can be used to determine whether an item can be inserted into the slot or not.
 	/// </summary>
-	public ItemInsertionPredicate? Predicate;
+	public IsLockedPredicate? IsLocked { get; set; }
 
 	/// <summary>
 	///    The localization key and optional argument to use for tooltip hover.
@@ -102,7 +106,7 @@ UIImageItemSlot.SlotWrapper itemHandler,
 	/// <summary>
 	///     Can be used to register a callback to execute logic when an item is inserted into the slot.
 	/// </summary>
-	public event ItemInsertionCallback? OnInsertItem;
+	public event ItemUpdateCallback? OnModifyItem;
 
 	public override void OnInitialize()
 	{
@@ -199,20 +203,39 @@ UIImageItemSlot.SlotWrapper itemHandler,
 
 	protected virtual void UpdateInteraction()
 	{
-		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface || !Main.mouseItem.IsAir && Predicate?.Invoke(Main.mouseItem, Item) == false)
+		if (!IsMouseHovering || PlayerInput.IgnoreMouseInterface)
 		{
 			return;
 		}
 
+		if (IsLocked?.Invoke(this) == true)
+		{
+			return;
+		}
+
+		if (!Main.mouseItem.IsAir && Predicate?.Invoke(Main.mouseItem, Item) == false)
+		{
+			return;
+		}
+
+		Item item = Item;
+		(Item oldItem, int oldType, int oldStack, int oldPrefix) = (item, item.type, item.stack, item.prefix);
+
 		if (handler.ByInventory?.Invoke() is { } inv)
 		{
 			ItemSlot.Handle(inv.Inventory, slot: inv.Slot, context: Context);
+			item = Item;
 		}
 		else
 		{
-			Item item = Item;
 			ItemSlot.Handle(ref item, context: Context);
 			Item = item;
+		}
+
+		// Invoke event if the item is perceived as modified.
+		if (item != oldItem || item.type != oldType || item.stack != oldStack || item.prefix != oldPrefix)
+		{
+			OnModifyItem?.Invoke(this, oldItem, item);
 		}
 
 		if (HoverText is { } hoverText)
