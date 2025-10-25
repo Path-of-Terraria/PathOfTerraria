@@ -191,19 +191,12 @@ internal static class Networking
 		PlayerUseSackOfHolding,
 	}
 
-	internal static void HandlePacket(BinaryReader reader)
+	internal static void HandlePacket(BinaryReader reader, byte sender)
 	{
 		var message = (Message)reader.ReadByte();
 		Handler handler = Handler.HandlerForMessage[message];
 
-		if (Main.netMode == NetmodeID.Server)
-		{
-			handler.ServerRecieve(reader);
-		}
-		else
-		{
-			handler.ClientRecieve(reader);
-		}
+		handler.Receive(reader, sender);
 
 #if DEBUG
 		PoTMod.Instance.Logger.Debug($"[PoT] Network got: {message}");
