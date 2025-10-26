@@ -42,6 +42,11 @@ public class MapDevicePlaceable : ModTile
 		return new(i, j);
 	}
 
+	public static bool IsPointOnPortal(Point16 origin, Point16 point)
+	{
+		return point.Y <= origin.Y + 3;
+	}
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileNoAttach[Type] = true;
@@ -91,7 +96,7 @@ public class MapDevicePlaceable : ModTile
 			return;
 		}
 
-		if (!TryGetEntity(ref i, ref j, out MapDeviceEntity? entity) || !entity.PortalActive || entity.StoredMap is not { IsAir: false })
+		if (!TryGetEntity(i, j, out MapDeviceEntity? entity) || !entity.PortalActive || entity.StoredMap is not { IsAir: false })
 		{
 			return;
 		}
@@ -100,7 +105,7 @@ public class MapDevicePlaceable : ModTile
 		var offScreen = new Vector2(Main.drawToScreen ? 0 : Main.offScreenRange);
 
 		// Take the tile, check if it actually exists
-		var p = new Point(i, j);
+		Point16 p = entity.Position;
 		tile = Main.tile[p];
 
 		if (!tile.HasTile)
@@ -151,36 +156,51 @@ public class MapDevicePlaceable : ModTile
 		}
 	}
 
-	public override bool RightClick(int i, int j)
+	public override bool RightClick(int x, int y)
 	{
-		if (TryGetEntity(ref i, ref j, out MapDeviceEntity? entity) && Main.netMode != NetmodeID.Server)
+		if (TryGetEntity(x, y, out MapDeviceEntity? entity) && Main.netMode != NetmodeID.Server)
 		{
-			entity.TryOpeningInterface();
+			if (IsPointOnPortal(entity.Position, new(x, y)))
+			{
+				entity.TryEnteringPortal();
+			}
+			else
+			{
+				entity.TryOpeningInterface();
+			}
 		}
 
 		return true;
 	}
 
-	public override void MouseOver(int i, int j)
+	public override void MouseOver(int x, int y)
 	{
 		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
-		player.cursorItemIconEnabled = true;
-		player.cursorItemIconID = ModContent.ItemType<MapDevice>();
 
-		if (TryGetEntity(ref i, ref j, out MapDeviceEntity? entity) && entity.StoredMap is { IsAir: false })
-		{ 
-			player.cursorItemIconID = entity.StoredMap.type;
+		if (TryGetEntity(x, y, out MapDeviceEntity? entity))
+		{
+			if (IsPointOnPortal(entity.Position, new(x, y)))
+			{
+				if (entity.TryEnteringPortal(evalMode: true))
+				{
+					player.cursorItemIconEnabled = true;
+					player.cursorItemIconID = entity.StoredMap.type;
+				}
+			}
+			else if (entity.TryOpeningInterface(evalMode: true))
+			{
+				player.cursorItemIconEnabled = true;
+				player.cursorItemIconID = ModContent.ItemType<MapDevice>();
+			}
 		}
 	}
 
-	private static bool TryGetEntity(ref int i, ref int j, [NotNullWhen(true)] out MapDeviceEntity? entity)
+	private static bool TryGetEntity(int x, int y, [NotNullWhen(true)] out MapDeviceEntity? entity)
 	{
-		Point16 pos = GetTopLeft(i, j);
-		i = pos.X;
-		j = pos.Y;
+		Point16 topLeft = GetTopLeft(x, y);
 
-		if (TileEntity.ByPosition.TryGetValue(new(i, j), out TileEntity? tileEntity) && tileEntity is MapDeviceEntity mapEntity)
+		if (TileEntity.ByPosition.TryGetValue(topLeft, out TileEntity? tileEntity) && tileEntity is MapDeviceEntity mapEntity)
 		{
 			entity = mapEntity;
 			return true;
@@ -298,8 +318,17 @@ internal class MapDeviceEntity : ModTileEntity
 	/// Attempts to have the local player or <paramref name="netSender"/> open the map device UI.
 	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
 	/// </summary>
-	public bool TryOpeningInterface(byte? netSender = null)
+	public bool TryOpeningInterface(bool evalMode = false, byte? netSender = null)
 	{
+		// Do not bother if already open on client.
+		if (!Main.dedServ && MapDeviceInterface.Active)
+		{
+			return false;
+		}
+
+		// Short-circuit in evaluation mode.
+		if (evalMode) { return true; }
+
 		// Request interaction.
 		if (Main.netMode == NetmodeID.MultiplayerClient && !netSender.HasValue)
 		{
@@ -373,12 +402,15 @@ internal class MapDeviceEntity : ModTileEntity
 	/// Attempts to have the local player enter the portal.
 	/// <br/> Returns whether an attempt to perform the interaction will be made, not whether it will succeed.
 	/// </summary>
-	public bool TryEnterPortal(byte? netSender = null)
+	public bool TryEnteringPortal(bool evalMode = false, byte? netSender = null)
 	{
 		if (!PortalActive || StoredMap is not { IsAir: false, ModItem: Map map })
 		{
 			return false;
 		}
+
+		// Short-circuit in evaluation mode.
+		if (evalMode) { return true; }
 
 		// Request interaction.
 		if (Main.netMode == NetmodeID.MultiplayerClient && netSender == null)
@@ -542,7 +574,7 @@ internal class MapDeviceInteraction : Handler
 				case Kind.CloseInterface: mapEntity.TryClosingInterface(netSender: sender); break;
 				case Kind.OpenPortal: mapEntity.TryOpeningPortal(netSender: sender); break;
 				case Kind.ClosePortal: mapEntity.TryClosingPortal(netSender: sender); break;
-				case Kind.EnterPortal: mapEntity.TryEnterPortal(netSender: sender); break;
+				case Kind.EnterPortal: mapEntity.TryEnteringPortal(netSender: sender); break;
 			}
 		}
 	}
