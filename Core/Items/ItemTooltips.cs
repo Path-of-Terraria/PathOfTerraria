@@ -19,6 +19,9 @@ using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using Terraria.ID;
 using Terraria.GameContent.RGB;
+using PathOfTerraria.Common.UI;
+using Terraria.GameContent;
+using System.Net.Http.Headers;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -107,9 +110,27 @@ public sealed partial class ItemTooltips : GlobalItem
 			return true;
 		}
 
-		if (line.Name.StartsWith("Seperator"))
+		if (line.Name.StartsWith("Separator"))
 		{
-			yOffset = -6;
+			yOffset = 12;
+
+			if (Tooltip.CachedTooltip is not { } cache || Tooltip.SuppressDrawing)
+			{
+				return Tooltip.SuppressDrawing;
+			}
+
+			Vector2 pos = new(line.X, line.Y);
+			float width = cache.OuterSize.X - 28;
+			Texture2D tex = Textures["Separator"].Value;
+			float middleWidth = width - 20;
+			var middleScale = new Vector2(middleWidth / 100f, 1);
+			Color col = Color.Gray;
+
+			Main.spriteBatch.Draw(tex, pos, new Rectangle(0, 0, 10, 6), col);
+			Main.spriteBatch.Draw(tex, pos + new Vector2(10, 0), new Rectangle(10, 0, 100, 6), col, 0f, Vector2.Zero, middleScale, SpriteEffects.None, 0);
+			Main.spriteBatch.Draw(tex, pos + new Vector2(middleWidth + 6, 0), new Rectangle(110, 0, 10, 6), col);
+
+			// Return true - draws nothing (aka ""), but this is necessary to add the yOffset properly
 			return true;
 		}
 
@@ -509,7 +530,7 @@ public sealed partial class ItemTooltips : GlobalItem
 	/// </summary>
 	internal static void AddSeparator(Item item, Mod mod, List<TooltipLine> lines)
 	{
-		var tooltip = new TooltipLine(mod, "Separator" + _seperatorCount, "[tex/y=-6:PathOfTerraria/Assets/UI/Separator]");
+		var tooltip = new TooltipLine(mod, "Separator" + _seperatorCount, "");
 
 		if (item is not null)
 		{
@@ -612,6 +633,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		Textures.Add("Rare", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/RareBack"));
 		Textures.Add("Unique", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/UniqueBack"));
 		Textures.Add("Favorite", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/Slots/FavoriteOverlay"));
+		Textures.Add("Separator", ModContent.Request<Texture2D>($"{PoTMod.ModName}/Assets/UI/Separator"));
 	}
 
 	#region Special rendering for rarities and influences
