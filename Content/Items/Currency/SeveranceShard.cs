@@ -4,6 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace PathOfTerraria.Content.Items.Currency;
 
+#nullable enable
+
 /// <summary>
 /// A currency shard that removes a random affix.
 /// </summary>
