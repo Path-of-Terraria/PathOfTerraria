@@ -1378,7 +1378,7 @@ RichMahoganyTalisman: {
 
 YellowCore: {
 	DisplayName: Caged Core
-  Tooltip: ""
+	Tooltip: ""
 }
 
 Faeflame: {
@@ -1409,7 +1409,7 @@ SeveranceShard: {
 		'It shatters and regrows constantly'
 		'''
 }
-    
+
 BerylRing: {
 	DisplayName: Beryl Ring
 	Tooltip: ""

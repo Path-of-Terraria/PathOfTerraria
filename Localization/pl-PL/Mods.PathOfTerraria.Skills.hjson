@@ -12,6 +12,7 @@ BaseDamage: Zadaje bazowe {0} obrażeń
 # This is for the hover text in the skills menu.
 CantEquip: Nie można nałożyć umiejętności: {0}
 // TagsLine: Tags:
+// ShowTags: (Shift to show tag names)
 
 Tags: {
 	// None: None
@@ -78,15 +79,14 @@ IceBolt: {
 
 FlameSage: {
 	// Name: Flame Sage
-	// Description: Conjure a fiery sentry that can draw the attention of enemies.
-}
-
-PestSwarm: {
-	// Name: Pest Swarm
-	// Description: Summon a short-lived creature to fight for you.
+	/* Description:
+		'''
+		Conjure a fiery sentry that can draw the attention of enemies.
+		Only two sentries can be out at a time.
+		''' */
 }
 
 Swarm: {
-	// Name: ""
-	// Description: ""
+	// Name: Pest Swarm
+	// Description: Summon a short-lived creature to fight for you, which targets enemies automatically.
 }

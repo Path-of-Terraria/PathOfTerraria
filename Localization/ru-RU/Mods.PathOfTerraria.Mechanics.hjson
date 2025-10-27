@@ -36,7 +36,7 @@ Lightning: {
 
 Chaos: {
 	// Tag: Chaos Damage
-	// Description: NOT an Elemental Damage type, but similar in function. Chaos inflicts Poison, a stacking Damage over Time debuff.
+	// Description: Chaos damage inflicts Poison, a stacking Damage over Time debuff. Does not count as Elemental damage.
 }
 
 Ravencrest: {
