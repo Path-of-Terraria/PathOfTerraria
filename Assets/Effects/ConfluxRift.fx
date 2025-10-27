@@ -5,18 +5,19 @@ float3 primaryScaling;
 float3 secondary;
 
 float progress;
+float timeManual;
 
-texture sampleTexture;
-sampler2D  u_tex0 = sampler_state { texture = <sampleTexture>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
+texture sampleTexture : register(ps, s0);
+sampler2D u_tex0 = sampler_state { Texture = sampleTexture; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
 
-texture _PaletteTex;
-sampler2D u_tex1 = sampler_state { texture = <_PaletteTex>; magfilter = NONE; minfilter = NONE; mipfilter = NONE; AddressU = clamp; AddressV = clamp; };
+texture _PaletteTex : register(ps, s1);
+sampler2D u_tex2 = sampler_state { Texture = _PaletteTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Clamp; AddressV = Clamp; };
 
-texture _PNoiseTex;
-sampler2D u_tex2 = sampler_state { texture = <_PNoiseTex>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
+texture _PNoiseTex : register(ps, s2);
+sampler2D u_tex3 = sampler_state { Texture = _PNoiseTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
 
-texture _DNoiseTex;
-sampler2D u_tex3 = sampler_state { texture = <_DNoiseTex>; magfilter = LINEAR; minfilter = LINEAR; mipfilter = LINEAR; AddressU = wrap; AddressV = wrap; };
+texture _DNoiseTex : register(ps, s3);
+sampler2D u_tex4 = sampler_state { Texture = _DNoiseTex; magfilter = POINT; minfilter = POINT; mipfilter = POINT; AddressU = Wrap; AddressV = Wrap; };
 
 float inverseLerp(float a, float b, float val)
 {
@@ -48,15 +49,15 @@ float fract(float inp)
     return inp % 1.0;
 }
 
-float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR0
+float4 PixelShaderFunction(float2 startUV : TEXCOORD) : COLOR0
 {
    //=====================================================
-    float ballProgress = clamp01(inverseLerp(0.44, 0.55, progress));
+    float ballProgress = clamp01(inverseLerp(0.0, 0.2, progress));
     
-    float expandProgress = clamp01(inverseLerp(0.65,0.75, progress));
+    float expandProgress = clamp01(inverseLerp(0.3,0.5, progress));
     expandProgress = pow(expandProgress, 0.65);
     
-    float ringProgress = clamp01(inverseLerp(0.65, 0.78, progress));
+    float ringProgress = clamp01(inverseLerp(0.3, 0.5, progress));
     ringProgress = pow(ringProgress, 2.5);
     
     float smallRiftXNoiseScale = 0.4; //Increase for more chaotic X noise on the rift before expansion
@@ -79,12 +80,12 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR0
     
     float thicknessNoiseYScrollSpeed = 0.21; //Increase for faster scroll on X noise that determiens thickness
     float thicknessNoiseYScaleBefore = 2.0; //Increase for more chaotic thickness variation on the Y axis before expansion
-    float thicknessNoiseYScaleAfter = 0.5; //Increase for more chaotic thickness variation on the Y axis after expansion
+    float thicknessNoiseYScaleAfter = 1.1; //Increase for more chaotic thickness variation on the Y axis after expansion
     
     float thicknessValPow = 1.0; //Increase for more thickness/less variance
     
     float minThicknessPow = 30.0; //Increase for a thinner maximum thickness
-    float maxThicknessPow = lerp(200.0, 30.0, expandProgress); //Increase for a thinner minimum thickness
+    float maxThicknessPow = lerp(200.0, 80.0, expandProgress); //Increase for a thinner minimum thickness
     
     float thicknessPowBeforeExpansion = 1.0;
     float thickenssPowAfterExpansion = 0.4;
@@ -92,9 +93,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR0
     float thicknessTotalPow = lerp(2.0, 2.0, expandProgress);
     
     float riftHeightInverseBefore = 7.0;
-    float riftHeightInverseAfter = 2.45;
+    float riftHeightInverseAfter = 2.05;
     
-    float riftHeightPow = 4.0;
+    float riftHeightPow = 2.0;
     
     float radialCoordsXMult = 1.0;
     float radialCoordsYMult = 3.0;
@@ -136,10 +137,12 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR0
     float paletteBallCutoff = 1.0000;
     
 //========================================================
+	float2 uv = startUV;
+	uv = floor(uv * 256.0) / 256.0;
      float2 dNoiseCoords = float2(uv.x * lerp(smallRiftXNoiseScale, largeRiftXNoiseScale, step(0.0001, expandProgress)),uv.y * lerp(smallRiftYNoiseScale,largeRiftYNoiseScale, expandProgress));
      dNoiseCoords.x += (min(progress, 0.65) * 6) * riftXScrollSpeed;
-     dNoiseCoords.x += u_time * 0.1;
-     float dNoiseVal = tex2D(u_tex3, dNoiseCoords).r;
+     dNoiseCoords.x += timeManual * 0.1;
+     float dNoiseVal = tex2D(u_tex4, dNoiseCoords).r;
      dNoiseVal += dNoiseOffset;
      
      float anchorX = anchorCenterX + (lerp(anchorSwayBeforeExpansion, anchorSwayAfterExpansion, expandProgress)* dNoiseVal * pow(abs(uv.y - anchorCenterY), lerp(anchorCenterPowBefore, anchorCenterPowAfter, step(0.0001, expandProgress))));
@@ -147,8 +150,8 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR0
     
      
      
-     float2 noiseCoordsTwo = float2((u_time * thicknessNoiseYScrollSpeed),uv.y * lerp(thicknessNoiseYScaleBefore, thicknessNoiseYScaleAfter, expandProgress));
-     float noiseVal2 = tex2D(u_tex2, noiseCoordsTwo).r;
+     float2 noiseCoordsTwo = float2((timeManual * thicknessNoiseYScrollSpeed),uv.y * lerp(thicknessNoiseYScaleBefore, thicknessNoiseYScaleAfter, expandProgress));
+     float noiseVal2 = tex2D(u_tex3, noiseCoordsTwo).r;
      noiseVal2 = pow(noiseVal2, thicknessValPow);
      centerDistX = pow(centerDistX * lerp(minThicknessPow, maxThicknessPow, noiseVal2) * lerp(thicknessPowBeforeExpansion, thickenssPowAfterExpansion, expandProgress), thicknessTotalPow);
      float paletteX = centerDistX;
@@ -163,9 +166,9 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR0
      radialCoords.x *= radialCoordsXMult;
      radialCoords.y *= radialCoordsYMult;
      
-     radialCoords.y -= u_time * ringSpinSpeed;
+     radialCoords.y -= timeManual * ringSpinSpeed;
      
-     float ballVal = tex2D(u_tex3, radialCoords).r + 0.03;
+     float ballVal = tex2D(u_tex4, radialCoords).r + 0.03;
      
      float2 ballLength = uv - float2(lerp(0.5, anchorX, expandProgress),0.5);
      ballLength.x *= lerp(ballXScaleStart, ballXScaleEnd, pow(ballProgress - expandProgress, ballXScaleEasing));
@@ -184,20 +187,26 @@ float4 PixelShaderFunction(float2 uv : TEXCOORD) : COLOR0
      //paletteX -= ringVal * ballProgress;
 
 
-      float2 portalCoords = makeCoordsRadial(float2((uv.x - 0.5) * lerp(2.5, 1.5, expandProgress), (uv.y - 0.5) * 1.25));
+      float2 portalCoords = makeCoordsRadial(float2((uv.x - 0.5) * lerp(7.0, 3.5, expandProgress), (uv.y - 0.5) * 1.6));
       
-      float2 bumpCoords = float2((portalCoords.x * 1.0) + (u_time * 0.025), (portalCoords.y) - (u_time * 0.05));
-      float portalBumps = tex2D(u_tex3, bumpCoords).r;
-      portalCoords.y += 0.13 * portalBumps;
+      float2 bumpCoords = float2((portalCoords.x * 1.0) + (timeManual * 0.1), (portalCoords.y) - (timeManual * 0.15));
+      float portalBumps = tex2D(u_tex4, bumpCoords).r;
+      portalCoords.y += 0.32 * portalBumps;
+	  portalCoords.x *= 0.75;
       float portalDist = portalCoords.y;
-      portalCoords.y *= 3.0;
-      portalCoords.y += u_time * 0.21;
-     float portalVal = tex2D(u_tex2, portalCoords).r + 0.1;
+      portalCoords.y *= 0.5;
+      portalCoords.y += timeManual * 0.15;
+     float portalVal = tex2D(u_tex3, portalCoords).r + 0.1;
      
-     portalVal *= pow(inverseLerp(0.15 * pow(expandProgress,1.7), 0.3 * pow(expandProgress,1.4), portalDist), 3.0);
+     portalVal *= pow(inverseLerp(0.2 * pow(expandProgress,1.7), 0.4 * pow(expandProgress,1.4), portalDist), 3);
      paletteX = min(paletteX, portalVal);
-     float2 paletteCoords = float2(paletteX, 0.5);
-     return tex2D(u_tex1, paletteCoords);
+     float2 paletteCoords = float2(paletteX, tex2D(u_tex0, uv).r * 0.1);
+     float4 ret = tex2D(u_tex2, paletteCoords);
+	 if (length(ret.rgb) == 0.0)
+	 {
+		return float4(0,0,0,0);
+	 }
+	 return ret;
 }
 
 technique SpriteDrawing
