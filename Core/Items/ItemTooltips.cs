@@ -18,6 +18,7 @@ using SubworldLibrary;
 using PathOfTerraria.Common.Subworlds;
 using PathOfTerraria.Common.Systems.ElementalDamage;
 using Terraria.ID;
+using Terraria.GameContent.RGB;
 
 namespace PathOfTerraria.Core.Items;
 
@@ -56,6 +57,8 @@ public sealed partial class ItemTooltips : GlobalItem
 		public static Color Cloned => ColorUtils.FromHexRgb(0x_37946e);
 		public static Color ManaCost => ColorUtils.FromHexRgb(0x_5fcde4);
 	}
+
+	private static int _seperatorCount = 0;
 
 	public static string ColoredDot(Color color)
 	{
@@ -101,6 +104,12 @@ public sealed partial class ItemTooltips : GlobalItem
 		// Don't mess with tooltip lines that we aren't responsible for.
 		if (line.Mod != Mod.Name)
 		{
+			return true;
+		}
+
+		if (line.Name.StartsWith("Seperator"))
+		{
+			yOffset = -6;
 			return true;
 		}
 
@@ -168,6 +177,8 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			return Language.GetTextValue($"Mods.{PoTMod.ModName}.Gear.Tooltips." + key);
 		}
+
+		_seperatorCount = 0;
 
 		var oldTooltips = tooltips.Where(x => x.Name.StartsWith("Tooltip")).ToList();
 		var oldStats = tooltips.Where(x => x.Name.StartsWith("Stat")).ToList();
@@ -270,6 +281,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				OverrideColor = Colors.Levels,
 			};
 			AddNewTooltipLine(item, tooltips, itemLevelLine);
+			AddSeparator(item, Mod, tooltips);
 		}
 
 		if (!string.IsNullOrWhiteSpace(staticData.AltUseDescription.Value))
@@ -280,6 +292,7 @@ public sealed partial class ItemTooltips : GlobalItem
 		if (!string.IsNullOrWhiteSpace(staticData.Description.Value))
 		{
 			AddNewTooltipLine(item, tooltips, new(Mod, "Description", staticData.Description.Value));
+			AddSeparator(item, Mod, tooltips);
 		}
 
 		if (item.damage > 0)
@@ -408,7 +421,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				$"{ColoredDot(Colors.StatsAccent)} {HighlightNumbers($"[{totalCritChance:0}%]")} Critical Strike Chance"
 			);
 
-			AddNewTooltipLine(item, tooltips, critLine);;
+			AddNewTooltipLine(item, tooltips, critLine);
 		}
 
 		if (item.mana > 0)
@@ -489,6 +502,25 @@ public sealed partial class ItemTooltips : GlobalItem
 		{
 			tooltips.Add(priceLine);
 		}
+	}
+
+	/// <summary>
+	/// Adds a simple separator into the tooltips. This is done using the texture tag.
+	/// </summary>
+	internal static void AddSeparator(Item item, Mod mod, List<TooltipLine> lines)
+	{
+		var tooltip = new TooltipLine(mod, "Separator" + _seperatorCount, "[tex/y=-6:PathOfTerraria/Assets/UI/Separator]");
+
+		if (item is not null)
+		{
+			AddNewTooltipLine(item, lines, tooltip);
+		}
+		else
+		{
+			lines.Add(tooltip);
+		}
+
+		_seperatorCount++;
 	}
 
 	/// <summary>
