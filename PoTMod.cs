@@ -36,8 +36,6 @@ public sealed class PoTMod : Mod
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper(this);
 
 		Debug.Assert(Name == ModName, "Internal mod name does not match expected constant.");
-
-		ChatManager.Register<ClassNounTagHandler>("plrclass");
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)
