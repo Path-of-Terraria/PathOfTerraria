@@ -119,7 +119,7 @@ public sealed partial class ItemTooltips : GlobalItem
 				return Tooltip.SuppressDrawing;
 			}
 
-			Vector2 pos = new(line.X, line.Y);
+			Vector2 pos = new(line.X, line.Y - 2);
 			float width = cache.OuterSize.X - 28;
 			Texture2D tex = Textures["Separator"].Value;
 			float middleWidth = width - 20;
