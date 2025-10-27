@@ -28,25 +28,16 @@ public sealed class PoTMod : Mod
 	/// </summary>
 	public static bool CheatModEnabled => ModLoader.HasMod("CheatSheet") || ModLoader.HasMod("HerosMod") || ModLoader.HasMod("DragonLens");
 
-	private bool loadedNpcUtilsBestiaryHelper;
-	private bool loadedNpcUtilsMod;
-
 	public override void Load()
 	{
 		base.Load();
 
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
-		loadedNpcUtilsMod = true;
-		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
-		loadedNpcUtilsBestiaryHelper = true;
+		NPCUtils.NPCUtils.TryLoadBestiaryHelper(this);
 
 		Debug.Assert(Name == ModName, "Internal mod name does not match expected constant.");
-	}
 
-	public override void Unload()
-	{
-		if (loadedNpcUtilsBestiaryHelper) { NPCUtils.NPCUtils.UnloadBestiaryHelper(); }
-		if (loadedNpcUtilsMod) { NPCUtils.NPCUtils.UnloadMod(this); }
+		ChatManager.Register<ClassNounTagHandler>("plrclass");
 	}
 
 	public override void HandlePacket(BinaryReader reader, int whoAmI)

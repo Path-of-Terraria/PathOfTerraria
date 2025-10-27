@@ -723,9 +723,8 @@ public class HijackHotbarClick : ModSystem
 			for (int i = start; i <= end; i++) // This mimics how Terraria handles clicking on the slots by default. Almost entirely grabbed from the vanilla method this detours.
 			{
 				var pos = new Rectangle(
-					BaseXOffset
-					+ (Math.Min(i, NumLargeSlots) * (LargeXSize + LargeXOffset))
-					+ (i >= NumLargeSlots ? LargeToSmallXOffset : 0)
+					BaseXOffset + (Math.Min(i, NumLargeSlots) * (LargeXSize + LargeXOffset)) 
+					+ (i >= NumLargeSlots ? LargeToSmallXOffset : 0) 
 					+ (Math.Max(0, i - NumLargeSlots) * (SmallXSize + SmallXOffset)),
 					BaseYOffset,
 					i < NumLargeSlots ? LargeXSize : SmallXSize,
