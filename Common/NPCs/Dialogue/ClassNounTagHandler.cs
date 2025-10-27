@@ -5,6 +5,18 @@ namespace PathOfTerraria.Common.NPCs.Dialogue;
 
 internal class ClassNounTagHandler : ITagHandler
 {
+	private class Loader : ILoadable
+	{
+		public void Load(Mod mod)
+		{
+			ChatManager.Register<ClassNounTagHandler>("plrclass");
+		}
+
+		public void Unload()
+		{
+		}
+	}
+
 	public TextSnippet Parse(string text, Color baseColor = default, string options = null)
 	{
 		Player player;

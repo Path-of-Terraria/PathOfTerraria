@@ -40,11 +40,7 @@ public sealed class PoTMod : Mod
 		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
 		loadedNpcUtilsBestiaryHelper = true;
 
-
 		Debug.Assert(Name == ModName, "Internal mod name does not match expected constant.");
-
-		ChatManager.Register<ClassNounTagHandler>("plrclass");
-		ChatManager.Register<TextureTagHandler>("tex");
 	}
 
 	public override void Unload()

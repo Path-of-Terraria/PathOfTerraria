@@ -8,6 +8,18 @@ namespace PathOfTerraria.Common.NPCs.Dialogue;
 
 public class TextureTagHandler : ITagHandler
 {
+	private class Loader : ILoadable
+	{
+		public void Load(Mod mod)
+		{
+			ChatManager.Register<TextureTagHandler>("tex");
+		}
+
+		public void Unload()
+		{
+		}
+	}
+
 	public TextSnippet Parse(string text, Color baseColor, string options)
 	{
 		float parsedScale = 1f;
