@@ -2,6 +2,7 @@ using PathOfTerraria.Common.Mechanics;
 using PathOfTerraria.Common.Systems;
 using PathOfTerraria.Common.Systems.ModPlayers;
 using PathOfTerraria.Common.UI.SkillSelect;
+using PathOfTerraria.Common.UI.SkillsTree;
 using PathOfTerraria.Core.Items;
 using PathOfTerraria.Core.UI;
 using PathOfTerraria.Core.UI.SmartUI;
@@ -379,6 +380,14 @@ public sealed class NewHotbar : SmartUiState
 			{
 				skillCombatPlayer.HotbarSkills[skillIndex] = null;
 			}
+
+			if (Main.mouseMiddle && Main.mouseMiddleRelease && !SmartUiLoader.GetUiState<TreeState>().Visible && skill.Tree is not null)
+			{
+				TreeState tree = SmartUiLoader.GetUiState<TreeState>();
+				tree.Toggle();
+				tree.TabPanel.SetActivePage("SkillTree");
+				tree.SetSkillTree(skill);
+			}
 		}
 	}
 
@@ -447,7 +456,9 @@ public sealed class NewHotbar : SmartUiState
 			tooltips.Add(new("NoTags", $"[c/888888:{Language.GetTextValue("Mods.PathOfTerraria.Skills.ShowTags")}]", 0.25f));
 		}
 
+		tooltips.Add(new("TreeLine", $"[c/888888:{Language.GetTextValue("Mods.PathOfTerraria.Skills." + (skill.Tree is null ? "NoTree" : "OpenTree"))}]", 0.2f));
 		tooltips.Add(new("Empty", "\n", 0.3f));
+
 		skill.ModifyTooltips(tooltips);
 		tooltips.Sort(static (x, y) => x.Slot.CompareTo(y.Slot));
 
@@ -459,7 +470,7 @@ public sealed class NewHotbar : SmartUiState
 			Vector2 scale = Vector2.One;
 			Color color = Color.White;
 
-			if (line.Name is "Tags" or "Keybind" or "NoKeybind" or "NoTags")
+			if (line.Name is "Tags" or "Keybind" or "NoKeybind" or "NoTags" or "TreeLine")
 			{
 				scale = new(0.8f);
 			}
