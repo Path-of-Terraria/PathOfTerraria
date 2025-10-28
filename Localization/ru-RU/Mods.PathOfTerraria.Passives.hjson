@@ -338,3 +338,23 @@ WhipReachMastery: {
 	// Name: Crackling Reach
 	// Tooltip: "{0}% Increased Whip range, but attack {1}% slower."
 }
+
+YoyoDamagePassive: {
+	// Name: YoyoDamagePassive
+	// Tooltip: ""
+}
+
+YoyoDurationPassive: {
+	// Name: YoyoDurationPassive
+	// Tooltip: ""
+}
+
+YoyoRangePassive: {
+	// Name: YoyoRangePassive
+	// Tooltip: ""
+}
+
+YoyoSpeedPassive: {
+	// Name: YoyoSpeedPassive
+	// Tooltip: ""
+}

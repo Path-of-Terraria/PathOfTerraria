@@ -12,6 +12,8 @@ BaseDamage: Zadaje bazowe {0} obrażeń
 # This is for the hover text in the skills menu.
 CantEquip: Nie można nałożyć umiejętności: {0}
 // TagsLine: Tags:
+// CantBeAdded: Skill cannot be added.
+// AlreadyAdded: Skill is already equipped.
 // ShowTags: (Shift to show tag names)
 
 Tags: {
