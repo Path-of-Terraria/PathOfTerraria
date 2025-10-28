@@ -232,9 +232,10 @@ internal class SkillCombatPlayer : ModPlayer
 	public bool TryAddSkill(Skill skill, bool suppress = false, int slot = -1)
 	{
 		SkillFailure fail = default;
+
 		if (!skill.CanEquipSkill(Player, ref fail))
 		{
-			NewText($"Skill cannot be added. ({fail.Description.Value})");
+			NewText($"{Language.GetTextValue("Mods.PathOfTerraria.Skills.CantBeAdded")} ({fail.Description.Value})");
 			return false; // Couldn't equip skill, return false
 		}
 
@@ -242,7 +243,7 @@ internal class SkillCombatPlayer : ModPlayer
 		{
 			if (HotbarSkills[i] != null && HotbarSkills[i].Name == skill.Name)
 			{
-				NewText("Skill already added.");
+				NewText(Language.GetTextValue("Mods.PathOfTerraria.Skills.AlreadyAdded"));
 
 				// When slot is -1, return true to allow the skill tree to be opened
 				// Otherwise, return false since it was not successfully equipped
@@ -259,7 +260,6 @@ internal class SkillCombatPlayer : ModPlayer
 					HotbarSkills[i] = skill;
 					HotbarSkills[i].LevelTo(HotbarSkills[i].Level);
 
-					NewText("Skill added successfully.");
 					return true; // Equipped skill, return true
 				}
 			}
@@ -269,11 +269,9 @@ internal class SkillCombatPlayer : ModPlayer
 			HotbarSkills[slot] = skill;
 			HotbarSkills[slot].LevelTo(HotbarSkills[slot].Level);
 
-			NewText("Skill added successfully.");
 			return true; // Equipped skill, return true
 		}
 
-		NewText("No available space to add the skill.");
 		return false; // No space, fail
 
 		void NewText(string value)
@@ -292,12 +290,10 @@ internal class SkillCombatPlayer : ModPlayer
 			if (HotbarSkills[i] != null && HotbarSkills[i].GetType() == skill.GetType())
 			{
 				HotbarSkills[i] = null;
-				Main.NewText("Skill removed successfully.");
 				return true;
 			}
 		}
 
-		Main.NewText("Skill not found in the current skill set.");
 		return false;
 	}
 }
