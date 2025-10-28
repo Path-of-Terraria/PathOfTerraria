@@ -172,12 +172,12 @@ internal class PlayerStatInnerPanel : SmartUiElement
 		}));
 		list.Add(new PlayerStatUI(Localize("ProjectileSpeed"), player => 
 		{
-			var modifier = player.GetModPlayer<ProjectileModifierPlayer>().ProjectileSpeedMultiplier;
-			var totalMultiplier = modifier.ApplyTo(1f);
-			var percentageBonus = (totalMultiplier - 1f) * 100f;
+			StatModifier modifier = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ProjectileSpeed;
+			float totalMultiplier = modifier.ApplyTo(1f);
+			float percentageBonus = (totalMultiplier - 1f) * 100f;
 			return $"{percentageBonus:#0.##}%";
 		}));
-		list.Add(new PlayerStatUI(Localize("ProjectileCount"), player => $"{player.GetModPlayer<ProjectileModifierPlayer>().ProjectileCountModifier.ApplyTo(0f):#0.##}"));
+		list.Add(new PlayerStatUI(Localize("ProjectileCount"), player => $"{player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ProjectileSpeed.ApplyTo(0f):#0.##}"));
 
 		// Attributes
 		list.Add(new PlayerStatUI(Localize("AttributesHeader"), player => "", isHeader: true));

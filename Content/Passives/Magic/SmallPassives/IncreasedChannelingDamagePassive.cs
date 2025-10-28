@@ -15,6 +15,7 @@ public class IncreasedChannelingDamagePassive : Passive
 			}
 
 			float bonus = Player.GetModPlayer<ChannelingModPlayer>().ChannelingDamageBonus;
+
 			if (bonus > 0)
 			{
 				modifiers.FinalDamage += bonus;

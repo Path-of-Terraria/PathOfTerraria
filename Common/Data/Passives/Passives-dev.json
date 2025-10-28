@@ -1723,9 +1723,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ShockChancePassive",
 		"referenceId": 113,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 114
@@ -1737,18 +1738,20 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "AddedLightningDamageConversionPassive",
 		"referenceId": 114,
 		"maxLevel": 1,
+		"value": 10,
 		"position": {
 			"x": 867,
 			"y": -390
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 115,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 21
@@ -1760,9 +1763,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedMagicAndSummonDamagePassive",
 		"referenceId": 116,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 115
@@ -1774,9 +1778,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
 		"referenceId": 117,
 		"maxLevel": 1,
+		"value": 5,
 		"connections": [
 			{
 				"referenceId": 116
@@ -1791,7 +1796,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ReducedSkillCooldownPassive",
 		"referenceId": 118,
 		"maxLevel": 1,
 		"connections": [
@@ -1805,7 +1810,7 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ReducedSkillCooldownPassive",
 		"referenceId": 119,
 		"maxLevel": 1,
 		"connections": [
@@ -1819,18 +1824,20 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedAttackSpeedPassive",
 		"referenceId": 120,
 		"maxLevel": 1,
+		"value": 5,
 		"position": {
 			"x": 952,
 			"y": -843
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedProjectileSpeedPassive",
 		"referenceId": 121,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 119
@@ -1845,9 +1852,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedChannelingDamagePassive",
 		"referenceId": 122,
 		"maxLevel": 1,
+		"value": 10,
 		"connections": [
 			{
 				"referenceId": 292
@@ -1873,9 +1881,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "IncreasedDefenseWhileChanneling",
 		"referenceId": 124,
 		"maxLevel": 1,
+		"value":  5,
 		"connections": [
 			{
 				"referenceId": 123
@@ -1887,9 +1896,10 @@
 		}
 	},
 	{
-		"internalIdentifier": "AddedIntelligencePassive",
+		"internalIdentifier": "ReducedManaCostWhileChannelingPassive",
 		"referenceId": 125,
 		"maxLevel": 1,
+		"value": 10,
 		"position": {
 			"x": 1244,
 			"y": -622

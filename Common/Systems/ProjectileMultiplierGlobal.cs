@@ -1,4 +1,5 @@
 using PathOfTerraria.Common.Systems.ModPlayers;
+using System.Collections.Generic;
 using Terraria.DataStructures;
 using Terraria.ID;
 
@@ -14,7 +15,7 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 		{
 			return;
 		}
-		
+
 		// Skip held weapon projectiles using ProjAIStyleID constants. Reference: https://docs.tmodloader.net/docs/1.4-preview/class_terraria_1_1_i_d_1_1_proj_a_i_style_i_d.html
 		if (projectile.aiStyle == ProjAIStyleID.HeldProjectile)
 		{
@@ -22,20 +23,21 @@ internal class ProjectileMultiplierGlobal : GlobalProjectile
 		}
 
 		Player player = itemSource.Player;
-		ProjectileModifierPlayer modPlayer = player.GetModPlayer<ProjectileModifierPlayer>();
+		StatModifier projCountMod = player.GetModPlayer<UniversalBuffingPlayer>().UniversalModifier.ProjectileCount;
 
 		// Skip if no modifier applied
-		if (modPlayer.ProjectileCountModifier == StatModifier.Default)
+		if (projCountMod == StatModifier.Default)
 		{
 			return;
 		}
 
-		int additionalProjectiles = (int)modPlayer.ProjectileCountModifier.ApplyTo(0f);
+		int additionalProjectiles = (int)projCountMod.ApplyTo(0f);
+
+		if (additionalProjectiles <= 0)
 		{
-			if (additionalProjectiles <= 0)
-				return;
+			return;
 		}
-		
+
 		EntitySource_Misc multiSource = new("ProjectileMultiplication");
 
 		for (int i = 0; i < additionalProjectiles; i++)

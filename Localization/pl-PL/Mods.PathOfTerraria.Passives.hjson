@@ -191,37 +191,37 @@ IncreasedColdDamagePassive: {
 
 IncreasedMagicAndSummonDamagePassive: {
 	// Name: Increased Magic and Summon Damage
-	// Tooltip: +{0}% Increased Magic and Summon Damage
+	// Tooltip: +{0}% increased magic and summon damage
 }
 
 AddedFireResistancePassive: {
 	// Name: Added Fire Resistance
-	// Tooltip: +{0}% Fire Resistance
+	// Tooltip: +{0}% fire resistance
 }
 
 AddedColdResistancePassive: {
 	// Name: Added Cold Resistance
-	// Tooltip: +{0}% Cold Resistance
+	// Tooltip: +{0}% cold resistance
 }
 
 AddedLightningResistancePassive: {
 	// Name: Added Lightning Resistance
-	// Tooltip: +{0}% Lightning Resistance
+	// Tooltip: +{0}% lightning resistance
 }
 
 AddedAllResistancePassive: {
 	// Name: Added All Resistances
-	// Tooltip: +{0}% All Resistances
+	// Tooltip: +{0}% to all resistances
 }
 
 IncreasedAttackSpeedPassive: {
 	// Name: Increased Attack Speed
-	// Tooltip: +{0}% Global Attack Speed
+	// Tooltip: +{0}% attack speed
 }
 
 IncreasedManaRegenerationRatePassive: {
 	// Name: Increased Mana Regeneration Rate
-	// Tooltip: +{0}% Mana Regeneration Rate
+	// Tooltip: +{0}% mana regeneration rate
 }
 
 IncreasedProjectileCountPassive: {
@@ -337,4 +337,24 @@ WhipDoubleStrikeMastery: {
 WhipReachMastery: {
 	// Name: Crackling Reach
 	// Tooltip: "{0}% Increased Whip range, but attack {1}% slower."
+}
+
+ReducedSkillCooldownPassive: {
+	// Name: Reduced Skill Cooldown
+	// Tooltip: 10% reduced skill cooldown per level
+}
+
+AddedFireDamageConversionPassive: {
+	// Name: AddedFireDamageConversionPassive
+	// Tooltip: ""
+}
+
+AddedColdDamageConversionPassive: {
+	// Name: AddedColdDamageConversionPassive
+	// Tooltip: ""
+}
+
+AddedLightningDamageConversionPassive: {
+	// Name: AddedLightningDamageConversionPassive
+	// Tooltip: ""
 }

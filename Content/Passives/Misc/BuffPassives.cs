@@ -46,7 +46,7 @@ internal class ShockChancePassive : Passive
 
 		private static void ApplyChance(NPC npc, Player player)
 		{
-			float str = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeLevel(nameof(ShockChancePassive));
+			float str = player.GetModPlayer<PassiveTreePlayer>().GetCumulativeValue<ShockChancePassive>();
 
 			if (str <= 0)
 			{

@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using PathOfTerraria.Common.Mechanics;
+using PathOfTerraria.Common.Systems.Skills;
 using PathOfTerraria.Common.UI.Guide;
 using PathOfTerraria.Common.UI.Hotbar;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ internal class SkillCombatPlayer : ModPlayer
 	public Skill[] UnlockedSkills = [];
 	
 	public int Points;
+	public SkillBuff GlobalBuff = new();
 
 	public override void Load()
 	{
@@ -133,13 +135,15 @@ internal class SkillCombatPlayer : ModPlayer
 		{
 			Player.GetModPlayer<TutorialPlayer>().TutorialChecks.Add(TutorialCheck.UsedASkill);
 
-			HotbarSkills[index].RecalculateStats();
+			HotbarSkills[index].RecalculateStats(Player);
 			HotbarSkills[index]?.UseSkill(Player);
 		}
 	}
 
 	public override void ResetEffects()
 	{
+		GlobalBuff.Reset();
+
 		if (HotbarSkills == null || HotbarSkills.Length == 0)
 		{
 			return;
